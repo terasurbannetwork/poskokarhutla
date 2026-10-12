@@ -1,4 +1,13 @@
 .env
-data/raw/
+data/raw/*
+!data/raw/banjir/
+data/raw/banjir/*
+# titik & ambang sungai/rob mahal dibuat ulang (kuota Open-Meteo): ikut di-commit
+!data/raw/banjir/sungai_titik.json
+!data/raw/banjir/sungai_ambang.json
+!data/raw/banjir/rob/
+data/raw/banjir/rob/*
+!data/raw/banjir/rob/titik.json
+!data/raw/banjir/rob/ambang.json
 __pycache__/
 .DS_Store

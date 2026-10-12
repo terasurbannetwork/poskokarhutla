@@ -1,0 +1,1424 @@
+{
+ "versi": "2026-10-13",
+ "catatan": "format param = [tengah, rendah, tinggi, satuan, sumber, catatan]; harga = [Rp, sumber, estimasi(0/1)]; sarana item = [nama, satuan, jumlah_min, sumber]; 'R' = rekomendasi platform, bukan regulasi; nama item sarana = kunci di harga",
+ "param": {
+  "stimulan_rumah_rb": [
+   60000000.0,
+   50000000.0,
+   60000000.0,
+   "Rp/rumah",
+   "Satgas PRR Sumatra 2025-26: RR Rp15 jt, RS Rp30 jt, RB huntap Rp60 jt https://www.metrotvnews.com/read/KZmCQ05d-penyintas-bencana-sumatra-terima-dana-perbaikan-rumah ; https://www.metrotvnews.com/read/N0BC12QX-prabowo-setujui-rp60-juta-per-rumah-untuk-korban-bencana ; Skema lama BNPB (Lombok 2018, Sulbar 2021): 50/25/10 jt https://kabar24.bisnis.com/read/20210117/15/1344001/gempa-sulbar-bnpb-berikan-dana-bantuan-rp50-juta-per-keluarga ; Cianjur 2022 60/30/15 https://kemenkopmk.go.id/node/3416",
+   "rendah = skema lama 2018-2021; 2022 ke atas Rp60 jt (huntap)"
+  ],
+  "stimulan_rumah_rs": [
+   30000000.0,
+   25000000.0,
+   30000000.0,
+   "Rp/rumah",
+   "Satgas PRR Sumatra 2025-26: RR Rp15 jt, RS Rp30 jt, RB huntap Rp60 jt https://www.metrotvnews.com/read/KZmCQ05d-penyintas-bencana-sumatra-terima-dana-perbaikan-rumah ; https://www.metrotvnews.com/read/N0BC12QX-prabowo-setujui-rp60-juta-per-rumah-untuk-korban-bencana ; Skema lama BNPB (Lombok 2018, Sulbar 2021): 50/25/10 jt https://kabar24.bisnis.com/read/20210117/15/1344001/gempa-sulbar-bnpb-berikan-dana-bantuan-rp50-juta-per-keluarga ; Cianjur 2022 60/30/15 https://kemenkopmk.go.id/node/3416",
+   ""
+  ],
+  "stimulan_rumah_rr": [
+   15000000.0,
+   10000000.0,
+   15000000.0,
+   "Rp/rumah",
+   "Satgas PRR Sumatra 2025-26: RR Rp15 jt, RS Rp30 jt, RB huntap Rp60 jt https://www.metrotvnews.com/read/KZmCQ05d-penyintas-bencana-sumatra-terima-dana-perbaikan-rumah ; https://www.metrotvnews.com/read/N0BC12QX-prabowo-setujui-rp60-juta-per-rumah-untuk-korban-bencana ; Skema lama BNPB (Lombok 2018, Sulbar 2021): 50/25/10 jt https://kabar24.bisnis.com/read/20210117/15/1344001/gempa-sulbar-bnpb-berikan-dana-bantuan-rp50-juta-per-keluarga ; Cianjur 2022 60/30/15 https://kemenkopmk.go.id/node/3416",
+   ""
+  ],
+  "huntara_per_rumah": [
+   30000000.0,
+   30000000.0,
+   30000000.0,
+   "Rp/rumah",
+   "Rapat Posko Terpadu Aceh 7 Des 2025 https://www.metrotvnews.com/read/N0BC12QX-prabowo-setujui-rp60-juta-per-rumah-untuk-korban-bencana",
+   "hanya untuk rumah rusak berat yang menunggu huntap"
+  ],
+  "porsi_rumah_rb": [
+   0.2,
+   0.05,
+   0.4,
+   "porsi rumah rusak yang rusak berat",
+   "ASUMSI; data kejadian.json hanya memberi total rumah_rusak",
+   "lemah: pecah per tingkat dari DIBI (kolom rusak berat/sedang/ringan) sebelum dipakai"
+  ],
+  "porsi_rumah_rs": [
+   0.3,
+   0.2,
+   0.4,
+   "porsi rumah rusak yang rusak sedang",
+   "Satgas PRR Aceh Mar 2026: RS 9.065 vs RR 12.856 (RS/(RS+RR)=41%) https://www.metrotvnews.com/read/KZmCQ05d-penyintas-bencana-sumatra-terima-dana-perbaikan-rumah",
+   "lemah: satu kejadian besar; sisanya RR"
+  ],
+  "nilai_nyawa_statistik": [
+   13900000000.0,
+   6000000000.0,
+   15700000000.0,
+   "Rp/jiwa",
+   "Viscusi & Masterman 2017 JBCA 8(2): Indonesia US$0,592 jt (GNI 2015 US$3.440, elastisitas 1,0), diskalakan ke GNI ~US$4.900 -> US$0,84 jt x Rp16.500; rendah: Swantika dkk. 2023 (transfer Bank Dunia, Rp6 M); tinggi: kertas kerja hedonik 'Deriving Indonesia's VSL' US$950 rb https://doi.org/10.1017/bca.2017.12",
+   "PILIHAN KEBIJAKAN: Indonesia belum punya VSL resmi; tampilkan terpisah dari kerugian aset"
+  ],
+  "kurs": [
+   16500,
+   15500,
+   17000,
+   "Rp/USD",
+   "sama dengan poskokarhutla",
+   ""
+  ],
+  "air_bersih_l": [
+   15,
+   7,
+   15,
+   "L/orang/hari",
+   "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. E.1a",
+   "7 L tiga hari pertama, lalu 15 L (sama dengan Sphere 2018)"
+  ],
+  "air_minum_l": [
+   2.5,
+   2.5,
+   2.5,
+   "L/orang/hari",
+   "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. E.2a",
+   ""
+  ],
+  "beras_g": [
+   400,
+   400,
+   400,
+   "g/orang/hari",
+   "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. B",
+   "setara 2.100 kkal bersama lauk; dapur umum 2 kali makan/hari"
+  ],
+  "ruang_m2": [
+   3,
+   3,
+   3.5,
+   "m2/orang",
+   "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. A; Sphere 2018 3,5 m2",
+   ""
+  ],
+  "orang_per_jamban": [
+   20,
+   20,
+   20,
+   "orang/jamban",
+   "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. E.3c",
+   "Sphere 2018 juga 1:20"
+  ],
+  "jadup": [
+   10000,
+   10000,
+   10000,
+   "Rp/orang/hari",
+   "Kemensos (Permensos 2015, rev. 2020), dipakai banjir Sumatra 2025 selama 3 bulan https://www.cnnindonesia.com/nasional/20251217233045-20-1308046/pemerintah-siapkan-jaminan-hidup-korban-banjir-sumatra-rp10-ribu-hari/amp",
+   "jaminan hidup tunai; usulan kenaikan belum final"
+  ],
+  "lauk_pauk": [
+   15000,
+   15000,
+   15000,
+   "Rp/orang/hari",
+   "Mensos 31 Des 2025 (banjir Sumatra) https://tirto.id/korban-bencana-sumatra-dapat-bantuan-lauk-pauk-selama-3-bulan-hoBb",
+   "bukan biaya makan penuh"
+  ],
+  "biaya_pengungsi_hari": [
+   35000,
+   25000,
+   60000,
+   "Rp/orang/hari",
+   "TURUNAN: beras 0,4 kg x ~Rp14.000 + lauk Rp15.000 (Kemensos 2025) + air minum 2,5 L + air bersih 15 L + operasional dapur umum; tinggi = 2 nasi bungkus siap saji Rp20-25 rb + air",
+   "lemah: belum ada indeks resmi Rp per pengungsi per hari; tidak termasuk huntara/kesehatan"
+  ],
+  "hari_mengungsi": [
+   7,
+   3,
+   30,
+   "hari per pengungsi per kejadian",
+   "ASUMSI (genangan kota 3-7 hari; bandang/longsor jauh lebih lama, Sumatra 2025 jadup 90 hari)",
+   "lemah: dataset hanya memberi jumlah pengungsi, bukan lamanya"
+  ],
+  "ews_kurangi_rugi_aset": [
+   0.1,
+   0.0,
+   0.35,
+   "porsi kerugian aset bergerak/isi rumah yang dihindari",
+   "GCA 2019 Adapt Now: peringatan 24 jam memangkas kerusakan 30% (badai/gelombang panas); UNISDR via Bank Dunia: hingga 35%; kurva lead-time (Colorado CWCB) 11%->23% bila 4->14 jam; Parker dkk. 2007 Nat Hazards 43: manfaat riil 'lebih terbatas'",
+   "lemah untuk Indonesia: tengah 0,10 karena hanya isi rumah/kendaraan yang bisa diselamatkan dan respons warga tidak penuh; rumah/struktur tidak terselamatkan"
+  ],
+  "ews_kurangi_kematian": [
+   0.3,
+   0.1,
+   0.8,
+   "porsi kematian banjir yang dihindari",
+   "Haque dkk. 2012 Bull WHO (siklon Bangladesh turun >100x, multi-intervensi); NHESS 25:1501 2025 (ABM banjir Ahr: hingga 80% bila peringatan tepat waktu + evakuasi); UNDRR/WMO EW4All: kematian 6x lebih rendah di negara ber-EWS (asosiasi)",
+   "lemah: tidak ada studi kausal untuk banjir Indonesia; banjir bandang/longsor lead time pendek -> pakai rendah"
+  ],
+  "ews_bcr_rujukan": [
+   10,
+   4,
+   36,
+   "rasio manfaat/biaya",
+   "Hallegatte 2012 WPS6058 (4-36); GCA 2019 (>10x); EFAS Eropa ~400 (Pappenberger dkk. 2015 Env Sci Pol 51)",
+   "pembanding sanity check, bukan input"
+  ],
+  "ews_kurangi_hari_mengungsi": [
+   0,
+   0,
+   0.2,
+   "porsi hari-pengungsi dihindari",
+   "tidak ditemukan bukti",
+   "lemah: biarkan 0 di skenario tengah"
+  ],
+  "lead_time_katulampa_jam": [
+   12,
+   9,
+   14,
+   "jam dari Katulampa ke Jakarta",
+   "Undip (Siaga 1 ~9-10 jam); studi LSTM 13-14 jam",
+   "contoh lead time banjir kiriman; banjir lokal/bandang < 1-3 jam"
+  ],
+  "ef_tanggul_rob_luas": [
+   0.43,
+   0.2,
+   0.5,
+   "porsi luas genangan turun",
+   "Pekalongan: 1.730 ha (2020) -> 980 ha (2022) -> 881 ha (2023), Jurnal Litbang Kota Pekalongan https://jurnal.pekalongankota.go.id/index.php/litbang/article/download/292/182",
+   "lemah: gabungan tanggul+pompa+drainase, bukan efek tanggul saja; survei warga (Jurnal Ilmu Lingkungan Undip) menilai 'kurang berhasil'"
+  ],
+  "ha_terlindung_per_km_tanggul": [
+   100,
+   50,
+   150,
+   "ha/km",
+   "NCICD Tahap A: >13 km tanggul, genangan berkurang 1.300 ha, >10.000 jiwa (abstrak IAHR) https://www.iahr.org/library/info?pid=38127",
+   "lemah: satu proyek, angka ringkasan"
+  ],
+  "rugi_rob_semarang": [
+   616000000000.0,
+   546000000000.0,
+   2800000000000.0,
+   "Rp (total, periode tidak jelas)",
+   "Undip Geodesi: permukiman Rp545,985 M + infrastruktur Rp70,466 M; UGM 2023: Rp101 M-2,8 T per skenario genangan Semarang Utara",
+   "lemah: bukan per tahun; jangan dipakai sebagai kerugian tahunan"
+  ],
+  "rugi_banjir_jabodetabek_2007": [
+   5200000000000.0,
+   5200000000000.0,
+   8800000000000.0,
+   "Rp/kejadian",
+   "Bappenas DaLA 2007: langsung Rp5,2 T (Rp4,5 T aset swasta/warga); + Rp3,6 T usaha/asuransi",
+   "pembanding per kejadian besar; 2020 >Rp10 T (DPR/INDEF, metode tak terverifikasi)"
+  ],
+  "rugi_banjir_bandang_garut_2016": [
+   396500000000.0,
+   44000000000.0,
+   396500000000.0,
+   "Rp/kejadian",
+   "Skripsi Unpar (exposure tata guna lahan) https://repository.unpar.ac.id/handle/123456789/6879; usulan dana darurat Pemkab Rp44 M",
+   "lemah: estimasi akademik, bukan Jitupasna resmi"
+  ],
+  "konsumsi_petugas": [
+   150000.0,
+   100000.0,
+   150000.0,
+   "Rp/orang/hari",
+   "sama dengan poskokarhutla ASUMSI.konsumsi",
+   "lemah: asumsi"
+  ],
+  "uh_dalam_kota": [
+   170000.0,
+   170000.0,
+   230000.0,
+   "Rp/orang/hari",
+   "SBM 2026 (PMK 32/2025): dalam kota >8 jam 170-230 rb (detik.com)",
+   ""
+  ],
+  "bbm_pertalite": [
+   10000,
+   10000,
+   10000,
+   "Rp/L",
+   "harga resmi Pertamina (sama dengan poskokarhutla)",
+   "mesin tempel 2-tak + oli samping"
+  ],
+  "bbm_solar": [
+   6800,
+   6800,
+   14000,
+   "Rp/L",
+   "solar subsidi Rp6.800; tinggi = Dexlite (nonsubsidi, berubah bulanan)",
+   "pompa mobile & alat berat pemda umumnya nonsubsidi"
+  ],
+  "l_mesin_tempel_jam": [
+   15,
+   10,
+   20,
+   "L/jam",
+   "PRAKTIK: mesin 2-tak 40 PK pada gas penuh",
+   "lemah: verifikasi spesifikasi pabrikan"
+  ],
+  "l_pompa_alkon_jam": [
+   1.2,
+   1.0,
+   1.5,
+   "L/jam",
+   "PRAKTIK: mesin 5,5 HP kelas GX160",
+   "lemah"
+  ],
+  "jam_perahu_hari": [
+   6,
+   4,
+   10,
+   "jam operasi/perahu/hari",
+   "ASUMSI",
+   "lemah"
+  ],
+  "orang_per_rit_perahu": [
+   8,
+   6,
+   10,
+   "orang/rit",
+   "spesifikasi perahu karet rescue 10 orang (listing Tokopedia/Indotrading), dikurangi 2 awak",
+   ""
+  ],
+  "sewa_excavator_jam": [
+   600000.0,
+   509000.0,
+   750000.0,
+   "Rp/jam",
+   "Jurnal UM Buton 2021: PC200 Rp508.940/jam; Perda Banjarbaru 9/2016 SK200 Rp750.000/jam",
+   "belum termasuk mobilisasi; data lama"
+  ],
+  "sewa_mobil_hari": [
+   1500000.0,
+   1000000.0,
+   2000000.0,
+   "Rp/hari",
+   "sama dengan poskokarhutla ASUMSI.sewaMobil",
+   "lemah"
+  ],
+  "starlink_bulan": [
+   1639000.0,
+   750000.0,
+   1639000.0,
+   "Rp/bulan",
+   "sama dengan poskokarhutla ASUMSI.starlink",
+   ""
+  ],
+  "umur_alat": [
+   5,
+   3,
+   8,
+   "tahun",
+   "sama dengan poskokarhutla (ASUMSI)",
+   ""
+  ],
+  "bunga": [
+   0.1,
+   0.06,
+   0.12,
+   "tingkat diskonto",
+   "sama dengan poskokarhutla (ADB 2017)",
+   ""
+  ]
+ },
+ "harga": {
+  "Perahu karet bermesin (LCR)": [
+   166500000.0,
+   "SiRUP BPBD Kutai Timur 2024: 4 unit perahu karet Rp666 jt (dibagi rata, diasumsikan termasuk mesin); cek: hypalon Rp99 jt + mesin 40 PK Rp54,1 jt = Rp153 jt",
+   0
+  ],
+  "Perahu karet dayung": [
+   49000000.0,
+   "Indotrading Zebec Armada 420A PVC, belum PPN",
+   0
+  ],
+  "Perahu karet rescue hypalon 10 orang (tanpa mesin)": [
+   99000000.0,
+   "Tokopedia aquamarine-indo (LCR 430, rekomendasi mesin 30 PK) https://tokopedia.com/aquamarine-indo/perahu-karet-hypalon-military-10-orang",
+   0
+  ],
+  "Perahu karet rescue 4,8 m (Zebec 480)": [
+   120000000.0,
+   "Indotrading, belum PPN, diperbarui Jun 2026 https://en.indotrading.com/jual-perahukaret/4",
+   0
+  ],
+  "Perahu karet PVC 4,2 m (dayung/mesin kecil)": [
+   49000000.0,
+   "Indotrading Zebec Armada 420A, belum PPN",
+   0
+  ],
+  "Paket perahu karet + mesin (pengadaan BPBD)": [
+   166500000.0,
+   "SiRUP BPBD Kutai Timur 2024: 4 unit Rp666 jt (dibagi rata) https://bpbd.kutaitimurkab.go.id/ppid/download/NDUz",
+   0
+  ],
+  "Mesin tempel 40 PK": [
+   54100000.0,
+   "Dealer Yamaha Hasjrat E40XMHS (tinggi Rp68,9 jt Tokopedia stpteknik) https://yamaha.hasjrat.co.id/mesin-tempel-2-tak/e40xmh-xw-40-pk",
+   0
+  ],
+  "Mesin tempel 15-25 PK": [
+   35000000.0,
+   "estimasi",
+   1
+  ],
+  "Pelampung (life jacket)": [
+   310000.0,
+   "Tokopedia Tonata Safety https://www.tokopedia.com/tonatasurabaya/product",
+   0
+  ],
+  "Ring pelampung": [
+   234000.0,
+   "Tokopedia Savetex ID https://www.tokopedia.com/savetexid/etalase/water-safety",
+   0
+  ],
+  "Tali lempar rescue": [
+   500000.0,
+   "estimasi",
+   1
+  ],
+  "Pompa celup 6 inci 3 kW": [
+   5200000.0,
+   "Tokopedia Maxpump 150QY160 (160 m3/jam) https://www.tokopedia.com/pompa-ak/etalase/pompa-celup",
+   0
+  ],
+  "Pompa jinjing 3 inci": [
+   6600000.0,
+   "Tokopedia Honda GX160 (dari HARGA poskokarhutla)",
+   0
+  ],
+  "Pompa apung": [
+   100000000.0,
+   "Dinas SDA DKI 2020: 65 unit Rp6,5 M https://tirto.id/antisipasi-banjir-pemprov-dki-beli-65-pompa-apung-rp65-miliar-f5GV",
+   0
+  ],
+  "Pompa mobile 250 L/detik (trailer diesel)": [
+   600000000.0,
+   "estimasi kasar; cari HPS LPSE/e-katalog",
+   1
+  ],
+  "Selang buang 6 inci": [
+   2500000.0,
+   "estimasi",
+   1
+  ],
+  "WTP mobile 5 L/detik": [
+   1500000000.0,
+   "Pemkab PPU: Rp3 M untuk 2 unit (LAPI ITB), berita lama https://kaltim.antaranews.com/berita/11975/pemkab-ppu-akan-beli-wtp-mobile",
+   0
+  ],
+  "Water treatment portabel (~300 L/jam)": [
+   75000000.0,
+   "estimasi",
+   1
+  ],
+  "Tangki air lipat / water pillow 2.000 L": [
+   8000000.0,
+   "estimasi (dari HARGA poskokarhutla)",
+   1
+  ],
+  "Tenda regu / posko 4x6": [
+   3500000.0,
+   "Tokopedia tenda regu/komando 4x6 D300 (rentang Rp1,5-4,3 jt)",
+   0
+  ],
+  "Tenda pleton 6x14": [
+   25000000.0,
+   "estimasi; Indotrading hanya RFQ",
+   1
+  ],
+  "Tenda komando": [
+   25000000.0,
+   "estimasi",
+   1
+  ],
+  "Tenda keluarga": [
+   4000000.0,
+   "Ruparupa Montec Family 6P (proksi ritel) https://www.ruparupa.com/montec-tenda-family-rangka-aluminium-6p-hitam.html",
+   0
+  ],
+  "Velbed lipat": [
+   404000.0,
+   "Tokopedia StarAsia/SPEEDS aluminium 150 kg https://www.tokopedia.com/find/velbed",
+   0
+  ],
+  "Matras / alas tidur": [
+   100000.0,
+   "estimasi",
+   1
+  ],
+  "Toilet portabel": [
+   15000000.0,
+   "estimasi; tidak ada harga publik",
+   1
+  ],
+  "Peralatan dapur umum lapangan (set)": [
+   25000000.0,
+   "estimasi",
+   1
+  ],
+  "Genset 3-5 kVA": [
+   24750000.0,
+   "SSH Sulsel, Hyundai 5 kVA (dari HARGA poskokarhutla)",
+   0
+  ],
+  "Genset 10 kVA": [
+   45000000.0,
+   "estimasi (dari HARGA poskokarhutla)",
+   1
+  ],
+  "Lampu sorot": [
+   1000000.0,
+   "estimasi",
+   1
+  ],
+  "Radio genggam (HT)": [
+   3500000.0,
+   "estimasi",
+   1
+  ],
+  "Radio base station + antena": [
+   12000000.0,
+   "estimasi",
+   1
+  ],
+  "Repeater radio": [
+   25000000.0,
+   "estimasi",
+   1
+  ],
+  "Telepon satelit": [
+   15000000.0,
+   "estimasi",
+   1
+  ],
+  "Internet satelit (Starlink kit)": [
+   5900000.0,
+   "Starlink kit 2026 (dari HARGA poskokarhutla)",
+   0
+  ],
+  "Megafon": [
+   600000.0,
+   "estimasi",
+   1
+  ],
+  "Laptop": [
+   15000000.0,
+   "estimasi",
+   1
+  ],
+  "Drone pemetaan": [
+   120000000.0,
+   "estimasi",
+   1
+  ],
+  "Papan peta & status harian": [
+   1000000.0,
+   "estimasi",
+   1
+  ],
+  "Kotak P3K": [
+   750000.0,
+   "estimasi",
+   1
+  ],
+  "Karung pasir / geobag": [
+   5000.0,
+   "estimasi",
+   1
+  ],
+  "Sirene EWS banjir + AWLR (paket per titik)": [
+   150000000.0,
+   "estimasi; SoW Mercy Corps tanpa nilai https://www.mercycorps.or.id/sites/default/files/attachments/SoW%20Instalasi%20EWS%20Banjir%20Sigi_UG.pdf",
+   1
+  ],
+  "Rambu ukur pasang surut (peilschaal)": [
+   2000000.0,
+   "estimasi",
+   1
+  ],
+  "Gergaji mesin": [
+   12000000.0,
+   "estimasi (dari HARGA poskokarhutla)",
+   1
+  ],
+  "Peralatan vertical rescue (set)": [
+   30000000.0,
+   "estimasi",
+   1
+  ],
+  "Ekstensometer / EWS longsor sederhana": [
+   25000000.0,
+   "estimasi",
+   1
+  ],
+  "Terpal": [
+   300000.0,
+   "estimasi",
+   1
+  ],
+  "Mobil double cabin 4x4": [
+   497900000.0,
+   "Auto2000 (dari HARGA poskokarhutla; disewa)",
+   0
+  ],
+  "Truk angkut": [
+   497900000.0,
+   "proksi double cabin (disewa)",
+   1
+  ],
+  "Mobil tangki air": [
+   800800000.0,
+   "SSH Lombok Tengah 2027 (dari HARGA poskokarhutla; disewa/pinjam)",
+   0
+  ],
+  "Ekskavator (sewa)": [
+   0,
+   "disewa per jam, lihat param sewa_excavator_jam",
+   0
+  ]
+ },
+ "sarana": {
+  "lapangan": [
+   [
+    "Evakuasi air",
+    [
+     [
+      "Perahu karet bermesin (LCR)",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12: fasilitas dasar bencana banjir"
+     ],
+     [
+      "Perahu karet dayung",
+      "unit",
+      2,
+      "R (Perka 17/2009 daftar banjir; jumlah rekomendasi)"
+     ],
+     [
+      "Mesin tempel 40 PK",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Pelampung (life jacket)",
+      "unit",
+      20,
+      "R: 2x kapasitas perahu"
+     ],
+     [
+      "Ring pelampung",
+      "unit",
+      4,
+      "R"
+     ],
+     [
+      "Tali lempar rescue",
+      "unit",
+      4,
+      "R"
+     ]
+    ]
+   ],
+   [
+    "Pompa",
+    [
+     [
+      "Pompa jinjing 3 inci",
+      "unit",
+      2,
+      "R (Perka 17/2009: Mesin Pompa Air, daftar banjir)"
+     ],
+     [
+      "Pompa celup 6 inci 3 kW",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Selang buang 6 inci",
+      "roll",
+      2,
+      "R"
+     ]
+    ]
+   ],
+   [
+    "Posko",
+    [
+     [
+      "Tenda regu / posko 4x6",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12 (tenda regu)"
+     ],
+     [
+      "Genset 3-5 kVA",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12"
+     ],
+     [
+      "Lampu sorot",
+      "unit",
+      2,
+      "Perka 17/2009 (Genset + lampu sorot)"
+     ],
+     [
+      "Radio genggam (HT)",
+      "unit",
+      6,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-11/12 (radio VHF/UHF)"
+     ],
+     [
+      "Megafon",
+      "unit",
+      2,
+      "Perka 17/2009 daftar dasar"
+     ],
+     [
+      "Internet satelit (Starlink kit)",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12 (akses internet)"
+     ],
+     [
+      "Papan peta & status harian",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Kotak P3K",
+      "unit",
+      2,
+      "R"
+     ]
+    ]
+   ],
+   [
+    "Pengungsian (per 100 pengungsi)",
+    [
+     [
+      "Ruang hunian",
+      "m2",
+      300,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (3 m2/orang)"
+     ],
+     [
+      "Tenda pleton 6x14",
+      "unit",
+      4,
+      "turunan Perka 7/2008: 84 m2 / 3 m2 = 28 orang per tenda"
+     ],
+     [
+      "Toilet portabel",
+      "unit",
+      5,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (1:20)"
+     ],
+     [
+      "Air bersih",
+      "L/hari",
+      1500,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (15 L/orang)"
+     ],
+     [
+      "Air minum",
+      "L/hari",
+      250,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (2,5 L/orang)"
+     ],
+     [
+      "Beras",
+      "kg/hari",
+      40,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (400 g/orang)"
+     ],
+     [
+      "Tempat sampah 100 L",
+      "unit",
+      3,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf (1 per 10 KK, ~25 KK)"
+     ],
+     [
+      "Velbed lipat",
+      "unit",
+      30,
+      "R: kelompok rentan (lansia, ibu hamil, sakit)"
+     ],
+     [
+      "Matras / alas tidur",
+      "unit",
+      100,
+      "Perka BNPB 7/2008 Lampiran (Standar Minimal Bantuan) https://www.gitews.de/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%207-2008_Tata%20Cara%20Pemberian%20Bantuan%20Pemenuhan%20Kebutuhan%20Dasar.pdf bag. D.1i (setiap orang alas tidur)"
+     ],
+     [
+      "Tangki air lipat / water pillow 2.000 L",
+      "unit",
+      1,
+      "Perka 17/2009 (Water Pillow)"
+     ]
+    ]
+   ]
+  ],
+  "kabupaten": [
+   [
+    "Komando & komunikasi",
+    [
+     [
+      "Tenda komando",
+      "unit",
+      1,
+      "Perka 17/2009 Bab II.A"
+     ],
+     [
+      "Genset 10 kVA",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Radio base station + antena",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-11"
+     ],
+     [
+      "Repeater radio",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Telepon satelit",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12"
+     ],
+     [
+      "Internet satelit (Starlink kit)",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Laptop",
+      "unit",
+      3,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12 (perangkat komputer)"
+     ],
+     [
+      "Drone pemetaan",
+      "unit",
+      1,
+      "R"
+     ]
+    ]
+   ],
+   [
+    "Evakuasi & pompa (cadangan kabupaten)",
+    [
+     [
+      "Perahu karet bermesin (LCR)",
+      "unit",
+      2,
+      "TURUNAN Perka 17/2009: jumlah per provinsi ~ jumlah kab/kota (lemah)"
+     ],
+     [
+      "Perahu karet dayung",
+      "unit",
+      4,
+      "TURUNAN Perka 17/2009 (rasio perahu karet:bermesin ~2:1)"
+     ],
+     [
+      "Pelampung (life jacket)",
+      "unit",
+      50,
+      "R"
+     ],
+     [
+      "Pompa apung",
+      "unit",
+      1,
+      "R"
+     ],
+     [
+      "Pompa jinjing 3 inci",
+      "unit",
+      4,
+      "R"
+     ]
+    ]
+   ],
+   [
+    "Kebutuhan dasar",
+    [
+     [
+      "Peralatan dapur umum lapangan (set)",
+      "set",
+      1,
+      "Perka 17/2009 (Dapur Umum); Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf"
+     ],
+     [
+      "Toilet portabel",
+      "unit",
+      2,
+      "Perka 17/2009 (Toilet Mobile)"
+     ],
+     [
+      "Water treatment portabel (~300 L/jam)",
+      "unit",
+      1,
+      "Perka 17/2009 (Mobile Water Treatment)"
+     ],
+     [
+      "Tenda pleton 6x14",
+      "unit",
+      4,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12"
+     ],
+     [
+      "Velbed lipat",
+      "unit",
+      100,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12 (velbed)"
+     ]
+    ]
+   ],
+   [
+    "Kendaraan (sewa/pinjam)",
+    [
+     [
+      "Mobil double cabin 4x4",
+      "unit",
+      2,
+      "Perka 17/2009 (Mobil Rescue)"
+     ],
+     [
+      "Truk angkut",
+      "unit",
+      1,
+      "Perka 17/2009 (Mobil Truk)"
+     ],
+     [
+      "Mobil tangki air",
+      "unit",
+      1,
+      "Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12"
+     ]
+    ]
+   ]
+  ],
+  "provinsi": [
+   [
+    "Standar minimal provinsi (median 33 provinsi, Perka BNPB 17/2009 Bab III.B)",
+    [
+     [
+      "Perahu karet dayung",
+      "unit",
+      20,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 5-99; Jateng 99, DKI 20)"
+     ],
+     [
+      "Perahu karet bermesin (LCR)",
+      "unit",
+      9,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 2-33)"
+     ],
+     [
+      "Pelampung (life jacket)",
+      "unit",
+      50,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 20-300)"
+     ],
+     [
+      "Pompa jinjing 3 inci",
+      "unit",
+      7,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Mesin Pompa Air' (rentang 1-23)"
+     ],
+     [
+      "Pompa celup 6 inci 3 kW",
+      "unit",
+      7,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Mesin Penyedot Air' (rentang 1-23)"
+     ],
+     [
+      "Tenda komando",
+      "unit",
+      1,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf"
+     ],
+     [
+      "Tenda pleton 6x14",
+      "unit",
+      9,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 2-23)"
+     ],
+     [
+      "Tenda regu / posko 4x6",
+      "unit",
+      30,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 12-300)"
+     ],
+     [
+      "Tenda keluarga",
+      "unit",
+      50,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 25-300)"
+     ],
+     [
+      "Velbed lipat",
+      "unit",
+      100,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 50-1.000)"
+     ],
+     [
+      "Toilet portabel",
+      "unit",
+      5,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Toilet Mobile' (rentang 1-10)"
+     ],
+     [
+      "WTP mobile 5 L/detik",
+      "unit",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Mobile Water Treatment' (rentang 1-7)"
+     ],
+     [
+      "Water treatment portabel (~300 L/jam)",
+      "unit",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Instalasi Penjernih Air' (rentang 1-5)"
+     ],
+     [
+      "Tangki air lipat / water pillow 2.000 L",
+      "unit",
+      100,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 50-1.000)"
+     ],
+     [
+      "Peralatan dapur umum lapangan (set)",
+      "set",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 1-6)"
+     ],
+     [
+      "Genset 10 kVA",
+      "unit",
+      5,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Genset + lampu sorot' (rentang 2-14)"
+     ],
+     [
+      "Radio base station + antena",
+      "unit",
+      9,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Alat Komunikasi' (rentang 2-33)"
+     ],
+     [
+      "Megafon",
+      "unit",
+      9,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 2-33)"
+     ],
+     [
+      "Gergaji mesin",
+      "unit",
+      10,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Chainsaw' (rentang 3-90)"
+     ],
+     [
+      "Peralatan vertical rescue (set)",
+      "set",
+      30,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf (rentang 10-200)"
+     ]
+    ]
+   ],
+   [
+    "Kendaraan & alat berat (sewa/pinjam PUPR)",
+    [
+     [
+      "Mobil double cabin 4x4",
+      "unit",
+      5,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Mobil Rescue' (rentang 1-33)"
+     ],
+     [
+      "Mobil tangki air",
+      "unit",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf"
+     ],
+     [
+      "Truk angkut",
+      "unit",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf"
+     ],
+     [
+      "Ekskavator (sewa)",
+      "unit",
+      2,
+      "Perka BNPB 17/2009 Pedoman Standarisasi Peralatan PB (BN 2014/1089) https://bpbd.bangka.go.id/sites/default/files/dokumen/produk_hukum/PERKA%20NO%2017%20THN%202009%20PEDOMAN%20STANDARISASI%20PENANGGULANGAN%20BENCANA.pdf 'Beco' (rentang 1-6)"
+     ]
+    ]
+   ],
+   [
+    "Pusat komando",
+    [
+     [
+      "Laptop",
+      "unit",
+      6,
+      "R"
+     ],
+     [
+      "Telepon satelit",
+      "unit",
+      2,
+      "R"
+     ],
+     [
+      "Internet satelit (Starlink kit)",
+      "unit",
+      2,
+      "R"
+     ],
+     [
+      "Drone pemetaan",
+      "unit",
+      2,
+      "R"
+     ]
+    ]
+   ]
+  ],
+  "rob": [
+   [
+    "Tambahan untuk posko rob (pesisir)",
+    [
+     [
+      "Pompa celup 6 inci 3 kW",
+      "unit",
+      2,
+      "PRAKTIK (pompa stasioner/mobile dikelola Dinas SDA)"
+     ],
+     [
+      "Pompa apung",
+      "unit",
+      1,
+      "PRAKTIK DKI"
+     ],
+     [
+      "Karung pasir / geobag",
+      "karung",
+      1000,
+      "PRAKTIK"
+     ],
+     [
+      "Rambu ukur pasang surut (peilschaal)",
+      "unit",
+      2,
+      "PRAKTIK; acuan prakiraan pasang BMKG maritim"
+     ],
+     [
+      "Perahu karet dayung",
+      "unit",
+      1,
+      "Perka 17/2009 Bab II.I (Abrasi: Perahu Evakuasi)"
+     ],
+     [
+      "Pelampung (life jacket)",
+      "unit",
+      10,
+      "R"
+     ],
+     [
+      "Sirene EWS banjir + AWLR (paket per titik)",
+      "titik",
+      1,
+      "R"
+     ]
+    ]
+   ]
+  ],
+  "longsor": [
+   [
+    "Tambahan untuk posko longsor",
+    [
+     [
+      "Ekskavator (sewa)",
+      "unit",
+      1,
+      "Perka 17/2009 Bab II.E (Beco, Buldozer, Scope Loader); Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf Lampiran-12 (alat berat: fasilitas dasar longsor)"
+     ],
+     [
+      "Gergaji mesin",
+      "unit",
+      2,
+      "Perka 17/2009 daftar banjir/angin"
+     ],
+     [
+      "Peralatan vertical rescue (set)",
+      "set",
+      1,
+      "Perka 17/2009"
+     ],
+     [
+      "Terpal",
+      "lembar",
+      20,
+      "PRAKTIK: tutup retakan lereng"
+     ],
+     [
+      "Ekstensometer / EWS longsor sederhana",
+      "unit",
+      1,
+      "PRAKTIK"
+     ],
+     [
+      "Lampu sorot",
+      "unit",
+      2,
+      "R"
+     ],
+     [
+      "Bronjong",
+      "unit",
+      0,
+      "Perka 17/2009 (median provinsi 1.000) - pekerjaan PUPR, bukan posko"
+     ]
+    ]
+   ]
+  ]
+ },
+ "ambang": {
+  "hujan_harian_bmkg": {
+   "ringan": [
+    5,
+    20
+   ],
+   "sedang": [
+    20,
+    50
+   ],
+   "lebat": [
+    50,
+    100
+   ],
+   "sangat_lebat": [
+    100,
+    150
+   ],
+   "ekstrem": [
+    150,
+    null
+   ],
+   "satuan": "mm/hari",
+   "sumber": "BMKG (dikutip data.ntbprov.go.id; analisis klimatologis BMKG https://cdn.bmkg.go.id/Web/ANALISIS-KLIMATOLOGIS-HUJAN-EKSTREM-LOMBOK-BARAT.pdf)",
+   "catatan": "Stamet Citeko pernah memakai ambang lokal lebih rendah (ekstrem >100 mm)"
+  },
+  "hujan_bulanan_bmkg": {
+   "rendah": [
+    0,
+    100
+   ],
+   "menengah": [
+    100,
+    300
+   ],
+   "tinggi": [
+    300,
+    500
+   ],
+   "sangat_tinggi": [
+    500,
+    null
+   ],
+   "satuan": "mm/bulan",
+   "sumber": "BMKG prakiraan bulanan (tirto.id)",
+   "catatan": "dipakai PVMBG untuk prakiraan gerakan tanah bulanan"
+  },
+  "ibf_bmkg": {
+   "tingkat": [
+    "waspada",
+    "siaga",
+    "awas"
+   ],
+   "sumber": "BMKG Prakiraan Berbasis Dampak, signature.bmkg.go.id",
+   "catatan": "matriks kemungkinan x dampak, bukan ambang mm tunggal; waspada = genangan/luapan/longsor lokal; siaga = banjir, bandang, longsor berdampak; awas = tertinggi"
+  },
+  "longsor_ilews_jawa": {
+   "hujan_1hari_mm": 30,
+   "hujan_3hari_mm": 64,
+   "sumber": "Balai Sabo ILEWS (tabel suplemen Faqi, Yuniawan, Sutanto, preprint Research Square rs-9938553); metode Yuniawan dkk. 2022 Geosciences 12(3):129 doi:10.3390/geosciences12030129",
+   "catatan": "hujan efektif anteseden, data GPM; Youden 0,545 di Jawa; lemah: angka dari tabel preprint, belum dicek di naskah 2022"
+  },
+  "longsor_ilews_sumatra": {
+   "hujan_1hari_mm": 32.86,
+   "hujan_3hari_mm": 91.29,
+   "sumber": "idem (Yuniawan dkk. 2022)",
+   "catatan": "Youden 0,740"
+  },
+  "longsor_lokal": [
+   {
+    "lokasi": "Banjarmangu/Banjarnegara",
+    "rumus": "I = 43,2 D^-0,87 (mm/jam, D jam); P3 = 120,75 - 0,475 P15",
+    "sumber": "studi ambang + indeks kelembapan tanah, data 2011-2017 (IOP EES 243:012028 dkk.)"
+   },
+   {
+    "lokasi": "DAS Grindulu (Pacitan)",
+    "rumus": "P3 = 0,4675 P15 - 46,9 (R2 0,58); pemicu ~40 mm/3 hari bila P15 ~320 mm",
+    "sumber": "Miardini & Susanti, J. Degraded & Mining Lands Mgmt https://jdmlm.ub.ac.id/index.php/jdmlm/article/view/623"
+   },
+   {
+    "lokasi": "DAS Wadas Lintang (Wonosobo)",
+    "rumus": "I = 63,683 D^-0,336 (D hari); hujan hari-H minimal 37 mm + anteseden 5 hari",
+    "sumber": "tesis UGM 2010",
+    "catatan": "lemah"
+   },
+   {
+    "lokasi": "Magelang",
+    "rumus": "E = a D^b per bentuk lahan, mis. Merapi E=0,26 D^1,68; Sumbing E=0,16 D^1,48 (5% exceedance, IMERG)",
+    "sumber": "studi E-D Kabupaten Magelang (repository.umy / etd UGM)"
+   }
+  ],
+  "gerakan_tanah_pvmbg": {
+   "metode": "tumpang susun zona kerentanan gerakan tanah PVMBG x prakiraan hujan bulanan BMKG",
+   "zona_menengah": "dapat terjadi bila hujan di atas normal",
+   "zona_tinggi": "gerakan tanah lama dapat aktif kembali",
+   "sumber": "BPBD DKI / PVMBG via pemberitaan (kompas.tv)",
+   "catatan": "tidak ditemukan ambang mm resmi PVMBG"
+  },
+  "rob_bmkg": {
+   "pemicu": "fase bulan purnama/bulan baru bersamaan perigee (~6-8 kali/tahun) + pasang maksimum",
+   "contoh_tinggi_cm_di_atas_MSL": {
+    "Jatim Nov 2025": [
+     130,
+     150
+    ],
+    "Jatim Jun 2026": [
+     120,
+     140
+    ],
+    "NTB Jul 2026": [
+     190,
+     190
+    ]
+   },
+   "genangan_darat_cm": [
+    10,
+    30
+   ],
+   "sumber": "peringatan dini BMKG maritim (kabar24 3 Nov 2025; kompas.tv Jun 2026; nu.or.id Jul 2026)",
+   "catatan": "ambang tergantung datum stasiun; tidak ada ambang nasional tunggal"
+  },
+  "rob_jakarta_pasar_ikan": {
+   "siaga_3_cm": 185,
+   "siaga_2_cm": [
+    202,
+    207
+   ],
+   "siaga_1": "status Bahaya saat pasang maksimum (Nov 2024, Nov 2025)",
+   "sumber": "laporan BPBD DKI via medcom/republika/tirto",
+   "catatan": "lemah: tabel resmi tidak ditemukan; ambang tampak berubah antar tahun"
+  },
+  "banjir_kiriman_katulampa": {
+   "siaga_1_cm": [
+    200,
+    250
+   ],
+   "debit_siaga_1_m3s": 733,
+   "waktu_tempuh_jam": [
+    9,
+    14
+   ],
+   "sumber": "studi Undip ejournal3.undip.ac.id/index.php/jkts/article/view/10675; studi LSTM Katulampa",
+   "catatan": "ambang Siaga 2-4 Katulampa belum dicek di sumber primer"
+  }
+ },
+ "komando": {
+  "dasar": "Perka BNPB 3/2016 Sistem Komando Penanganan Darurat Bencana (BN 2016/1777) https://peraturan.go.id/files/bn1777-2016.pdf (menggantikan Perka 10/2008 & 14/2010); struktur bidang dari Perka BNPB 10/2008 Pedoman Komando Tanggap Darurat (Bab III, Lampiran-12) https://www.gitews.org/tsunami-kit/id/E6/sumber_lainnya/produk_hukum_nasional/peraturan_kepala_BNPB/Perka%20BNPB%2010-2008_Pedoman%20Komando%20Tanggap%20Darurat%20Bencana.pdf",
+  "provinsi": {
+   "posko": "Pos Komando Tanggap Darurat tingkat provinsi (Perka 3/2016: posko = pengendali operasi; bisa diaktifkan pada siaga darurat)",
+   "peran": [
+    "Komandan",
+    "Wakil Komandan",
+    "Sekretariat",
+    "Hubungan Masyarakat",
+    "Keselamatan & Keamanan",
+    "Perwakilan instansi/lembaga",
+    "Bidang Operasi",
+    "Bidang Perencanaan",
+    "Bidang Logistik & Peralatan",
+    "Bidang Administrasi Keuangan"
+   ],
+   "tugas": "rencana operasi, permintaan sumber daya, informasi publik, dukungan kabupaten (Pos Pendukung/Pendampingan)",
+   "komunikasi": "radio SSB/HF, VHF/UHF, telepon satelit, internet (Perka 10/2008 Lampiran-11)"
+  },
+  "kabupaten": {
+   "posko": "Pos Komando Tanggap Darurat kabupaten/kota di ibu kota daerah",
+   "peran": [
+    "Komandan (ditunjuk Kepala BPBD)",
+    "Wakil Komandan",
+    "Sekretariat",
+    "Humas",
+    "Keselamatan & Keamanan",
+    "Perwakilan instansi",
+    "Bidang Operasi (seksi: SAR/evakuasi, kesehatan, dapur umum, pengungsian)",
+    "Bidang Perencanaan (data & kaji cepat)",
+    "Bidang Logistik & Peralatan",
+    "Bidang Administrasi Keuangan"
+   ],
+   "komunikasi": "radio base + repeater, HT, telepon seluler/satelit, internet"
+  },
+  "lapangan": {
+   "posko": "Pos Lapangan / Poskolap (pelaksana operasi di lokasi bencana)",
+   "peran": [
+    "Koordinator Pos Lapangan",
+    "Regu SAR/evakuasi air",
+    "Regu dapur umum",
+    "Regu pengungsian & data",
+    "Petugas kesehatan",
+    "Petugas logistik",
+    "Operator radio"
+   ],
+   "komunikasi": "HT VHF/UHF ke posko kabupaten; internet satelit bila sinyal putus",
+   "catatan": "jumlah personel per regu tidak diatur dalam Perka; ditentukan rencana operasi (lemah)"
+  }
+ },
+ "uh_sbm2026": {
+  "_sumber": "PMK 32/2025 SBM TA 2026 (via detik.com & kiakrikil.com; lampiran resmi gagal diunduh); kode BPS provinsi",
+  "_catatan": "provinsi yang tidak tercantum: pakai poskokarhutla UH atau lampiran PMK 32/2025",
+  "11": 360000.0,
+  "12": 370000.0,
+  "13": 380000.0,
+  "14": 370000.0,
+  "15": 370000.0,
+  "16": 380000.0,
+  "21": 370000.0,
+  "31": 530000.0,
+  "32": 430000.0,
+  "51": 480000.0,
+  "52": 440000.0,
+  "53": 430000.0,
+  "61": 380000.0,
+  "62": 360000.0,
+  "63": 380000.0,
+  "64": 430000.0,
+  "65": 430000.0,
+  "73": 430000.0,
+  "82": 430000.0,
+  "91": 480000.0,
+  "92": 480000.0,
+  "93": 580000.0,
+  "94": 580000.0,
+  "95": 580000.0,
+  "96": 480000.0
+ }
+}

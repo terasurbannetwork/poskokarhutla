@@ -1,0 +1,980 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Posko Banjir Indonesia</title>
+<meta name="description" content="Prakiraan banjir dan longsor per kecamatan: hujan, debit sungai, indeks bahaya, dan riwayat kejadian untuk 38 provinsi Indonesia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<style>
+:root{
+  --paper:oklch(97.6% .006 255); --card:oklch(100% 0 0); --surface:oklch(95.5% .012 255);
+  --ink:oklch(25.5% .075 256); --ink2:oklch(50% .045 258); --line:oklch(90% .015 255);
+  --brand:oklch(25.5% .075 256); --brand2:oklch(42% .11 255); --accent:oklch(68% .09 252);
+  --ok:oklch(62% .16 150); --warn:oklch(76% .16 75); --bad:oklch(57% .21 27); --info:oklch(66% .13 235);
+  --f0:oklch(72% .15 150); --f1:oklch(86% .16 98); --f2:oklch(73% .17 58); --f3:oklch(57% .21 27);
+  --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
+  --r:16px; --r-sm:10px; --top:58px;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- top bar ---------- */
+header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.mark svg{flex:none}
+.mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
+.mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
+nav.tabs{display:flex;gap:2px;margin:0 auto;overflow-x:auto;scrollbar-width:none;min-width:0;flex:0 1 auto;mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent)}
+.stat,.mark{flex:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{border:0;background:transparent;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
+nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
+.stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
+.stat .jam{font-family:var(--display);font-weight:700;font-size:14px}
+.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{background:oklch(100% 0 0 / .22)}
+@media (max-width:900px){.stat .upd,.mark small{display:none}}
+@media (max-width:1500px){.mark small,.stat .upd{display:none}}
+@media (max-width:1100px){.mark > div{display:none}}
+@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
+
+/* ---------- pages ---------- */
+main{position:fixed;inset:var(--top) 0 0 0}
+.page{position:absolute;inset:0;display:none}
+.page.on{display:block}
+.scroll{overflow-y:auto;padding:22px 18px 60px}
+.wrap{max-width:1240px;margin:0 auto}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.pad{padding:18px}
+.grid{display:grid;gap:14px}
+.grid>*{min-width:0}
+@media (min-width:900px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
+.head>*{min-width:0;max-width:100%}
+.head p{margin:4px 0 0;color:var(--ink2);max-width:70ch}
+
+/* ---------- map page ---------- */
+#peta,#simPeta{position:absolute;inset:0}
+canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:none}
+.garis-waktu{position:absolute;z-index:6;left:50%;transform:translateX(-50%);bottom:18px;width:min(620px,calc(100% - 820px));min-width:340px;padding:8px 10px;display:none;align-items:center;gap:10px}
+.garis-waktu.on{display:flex}
+.garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
+@media (max-width:900px){.garis-waktu{bottom:auto;top:112px;width:calc(100% - 24px);min-width:0}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
+.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.panel > *{pointer-events:auto}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
+.kpi .lbl{display:block;background:var(--brand);color:#fff;padding:4px 6px;font-size:9.5px}
+:root[data-theme="dark"] .kpi .lbl{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi .lbl{color:oklch(18% .035 256)}}
+.kpi b{display:block;font-family:var(--display);font-size:22px;font-weight:800;padding:6px 4px 0;font-variant-numeric:tabular-nums}
+.kpi small{display:block;color:var(--ink2);font-size:11px;padding:0 6px 7px}
+.list{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.list .top{padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.crumb{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px;margin-bottom:8px}
+.crumb button{border:0;background:none;padding:2px 4px;border-radius:6px;color:var(--brand2);font-weight:600;cursor:pointer}
+.crumb button:hover{background:var(--surface)}
+.crumb span{color:var(--ink2)}
+.cari{position:relative}
+.cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:13px}
+.cari svg{position:absolute;left:12px;top:10px;color:var(--ink2)}
+.hasil{position:absolute;left:0;right:0;top:40px;z-index:10;max-height:280px;overflow:auto;padding:4px}
+.hasil button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.hasil button:hover,.hasil button:focus{background:var(--surface)}
+.hasil small{color:var(--ink2)}
+.rows{overflow-y:auto;flex:1;padding:4px 6px 8px}
+.row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
+.tb{display:grid;grid-template-columns:20px minmax(0,1fr) 56px 50px 70px;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
+.tb:hover{background:var(--surface)}
+.tb.kepala{position:sticky;top:0;z-index:1;background:var(--card);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:6px 8px}
+.tb > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb .n{text-align:right;font-variant-numeric:tabular-nums}
+.tb .rk{color:var(--ink2);font-size:11px;font-weight:700;text-align:right}
+.tb .pill{height:19px;padding:0 7px;font-size:10.5px;justify-self:end}
+.kartu{margin:-10px -12px;min-width:270px;overflow:hidden;border-radius:12px}
+.kartu .kp{padding:8px 30px 8px 12px;color:#fff;display:flex;align-items:center;gap:10px}
+.kartu .kp>div{min-width:0}
+.lambang{flex:none;width:30px;height:36px;object-fit:contain;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .35))}
+.dlg .dh .lambang{width:40px;height:48px}
+.kartu .kp small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
+.kartu .kp b{display:block;font-family:var(--display);font-size:14px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.kartu .kg{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;padding:4px 12px 2px}
+.kartu .kb{display:flex;justify-content:space-between;gap:6px;padding:4px 0;border-bottom:1px solid var(--line);font-size:11.5px;line-height:1.3;min-width:0}
+.kartu .kb span{color:var(--ink2);white-space:nowrap}
+.kartu .kb b{text-align:right;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;font-variant-numeric:tabular-nums}
+.kartu .kb.penuh{grid-column:1 / -1}
+.kartu .kk{padding:6px 12px 10px;font-size:11px;color:var(--ink2);line-height:1.4}
+.kartu .kk button{margin-top:6px;width:100%}
+.maplibregl-popup-close-button{color:#fff;font-size:18px;right:4px;top:3px}
+.row:hover{background:var(--surface)}
+.row .rk{font-size:11px;color:var(--ink2);font-weight:700;text-align:right}
+.row .nm{display:block;font-weight:600;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .sub{display:block;color:var(--ink2);font-size:11px;line-height:1.35;margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .bar{height:4px;border-radius:4px;background:var(--surface);margin-top:5px;overflow:hidden}
+.row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--f2),var(--f3));border-radius:4px}
+.row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px}
+.row .vl small{display:block;font-weight:500;color:var(--ink2);font-size:10.5px}
+.prio{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bad);margin-left:5px;vertical-align:middle}
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.l0{background:oklch(62% .16 150 / .14);color:oklch(45% .13 150)}
+.l1{background:oklch(66% .13 235 / .14);color:oklch(46% .12 240)}
+.l2{background:oklch(76% .16 75 / .2);color:oklch(48% .12 65)}
+.l3{background:oklch(57% .21 27 / .14);color:oklch(50% .2 27)}
+:root[data-theme="dark"] .l0{color:oklch(80% .14 150)} :root[data-theme="dark"] .l1{color:oklch(80% .1 235)}
+:root[data-theme="dark"] .l2{color:oklch(84% .13 75)} :root[data-theme="dark"] .l3{color:oklch(76% .15 27)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .l0{color:oklch(80% .14 150)}:root:not([data-theme="light"]) .l1{color:oklch(80% .1 235)}:root:not([data-theme="light"]) .l2{color:oklch(84% .13 75)}:root:not([data-theme="light"]) .l3{color:oklch(76% .15 27)}}
+
+.tools{position:absolute;z-index:5;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:250px}
+.seg{display:inline-flex;flex-shrink:0;max-width:100%;overflow-x:auto;scrollbar-width:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+.seg.penuh{display:flex;width:100%}.seg.penuh button{flex:1;text-align:center}
+.seg button{border:0;background:none;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px;width:100%}
+.lapis label{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0 3px 4px;cursor:pointer}
+.lapis details{border-top:1px solid var(--line);padding:4px 0}
+.lapis summary{cursor:pointer;font-size:12px;font-weight:700;padding:3px 0;list-style:none;display:flex;justify-content:space-between}
+.lapis summary::-webkit-details-marker{display:none}
+.lapis summary::after{content:"▾";color:var(--ink2);transition:transform .15s}
+.lapis details:not([open]) summary::after{transform:rotate(-90deg)}
+.tools{max-height:calc(100% - 24px);overflow-y:auto;scrollbar-width:thin}
+.tools #lapis{display:none}
+.tools #lapis.buka{display:block}
+#lapisBtn{align-self:flex-end}
+#legenda summary{cursor:pointer;list-style:none}
+.lapis input{accent-color:var(--brand2);width:15px;height:15px}
+.leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
+.leg .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.leg .dot{border-radius:50%}
+.legscale{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:4px 0 2px}
+.legscale i{flex:1}
+.legnum{display:flex;justify-content:space-between;font-size:10px;color:var(--ink2)}
+
+.laci{position:absolute;z-index:8;top:12px;right:12px;bottom:12px;width:390px;display:none;flex-direction:column;overflow:hidden}
+.laci.on{display:flex}
+.laci .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.laci .hd h2{font-size:17px}
+.laci .bd{overflow-y:auto;padding:14px 16px 18px}
+.tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.kv div{background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
+.kv b{display:block;font-family:var(--display);font-size:16px;font-variant-numeric:tabular-nums}
+.kv span{font-size:10px;color:var(--ink2);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:13px}
+.sop ul{margin:6px 0 0;padding-left:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:13.5px}
+.btn.pri{background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.muat{position:absolute;inset:0;display:grid;place-items:center;z-index:20;background:var(--paper);transition:opacity .3s}
+.muat.hilang{opacity:0;pointer-events:none}
+.muat div{text-align:center;color:var(--ink2)}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand2);margin:0 auto 10px;animation:putar 1s linear infinite}
+@keyframes putar{to{transform:rotate(360deg)}}
+.handle{display:none}
+.maplibregl-popup-content{background:var(--card);color:var(--ink);border-radius:12px;box-shadow:var(--shadow-lg);padding:10px 12px;font:13px/1.45 var(--font)}
+.maplibregl-popup-tip{border-top-color:var(--card)!important;border-bottom-color:var(--card)!important}
+.maplibregl-ctrl-attrib{font-size:10px}
+
+@media (max-width:900px){
+  .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:46%;gap:0;transition:height .25s}
+  .panel.min{height:96px}
+  .panel .kpis{display:none}
+  .panel .list{border-radius:18px 18px 0 0}
+  .handle{display:block;width:44px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 0;border:0;cursor:pointer}
+  .tools{width:auto;right:8px;top:8px}
+  .tools .box{display:none}
+  .tools .box.buka{display:block;width:230px}
+  .laci{inset:auto 0 0 0;width:auto;height:72%;border-radius:18px 18px 0 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- tables ---------- */
+.tbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.tbar input{height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;min-width:220px}
+.tbar .sp{flex:1}
+.tw{overflow:auto;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:2px solid var(--accent)}
+:root[data-theme="dark"] thead th{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) thead th{color:oklch(18% .035 256)}}
+thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+thead th.n,td.n{text-align:right}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
+tbody tr:hover{background:oklch(42% .11 255 / .06)}
+tfoot td{padding:9px 10px;background:var(--brand);color:#fff;font-weight:800}
+:root[data-theme="dark"] tfoot td{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) tfoot td{color:oklch(18% .035 256)}}
+td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0;cursor:pointer;padding:0}
+.rp{display:flex;justify-content:space-between;gap:10px;min-width:96px}.rp i{font-style:normal;color:var(--ink2)}
+.pager{display:flex;gap:6px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:12.5px;color:var(--ink2)}
+.kosong{padding:28px;text-align:center;color:var(--ink2)}
+
+/* ---------- sim ---------- */
+.simpanel{position:absolute;z-index:5;top:12px;left:12px;width:360px;max-height:calc(100% - 24px);overflow:auto;padding:16px}
+.simpanel h2{font-size:17px}
+.fld{max-width:100%;display:flex;flex-direction:column;gap:4px;margin:10px 0}
+.fld select,.fld input[type=number]{max-width:100%;min-width:0;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px}
+.waktu{position:absolute;z-index:5;left:50%;transform:translateX(-50%);bottom:18px;width:min(620px,calc(100% - 24px));padding:12px 16px;display:flex;gap:12px;align-items:center}
+.waktu input[type=range]{flex:1;accent-color:var(--bad)}
+.waktu b{font-family:var(--display);min-width:64px;text-align:right}
+@media (max-width:900px){.simpanel{top:auto;bottom:86px;left:8px;right:8px;width:auto;max-height:42%}}
+
+/* ---------- bars / charts ---------- */
+.hbar{display:grid;grid-template-columns:150px 1fr 70px;gap:8px;align-items:center;font-size:12.5px;padding:3px 0}
+.hbar div{height:12px;border-radius:6px;background:var(--surface);overflow:hidden}
+.hbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--f2),var(--f3))}
+.chk{display:grid;grid-template-columns:1fr 88px 70px 64px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.chk input{height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface);padding:0 8px;width:100%;text-align:right}
+.fold{border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:10px;box-shadow:var(--shadow)}
+.fold > button{all:unset;box-sizing:border-box;display:flex;width:100%;padding:12px 16px;cursor:pointer;font-weight:700;gap:10px;align-items:center}
+.fold > button .chev{margin-left:auto;transition:transform .2s}
+.fold > button[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.fold > div{padding:0 16px 12px}
+.rumus{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;white-space:pre}
+.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
+.toast.on{display:block}
+tr.klik{cursor:pointer}
+tr.klik:hover td{background:var(--surface)}
+dialog.dlg{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);padding:0;width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 48px);box-shadow:var(--shadow-lg)}
+dialog.dlg::backdrop{background:oklch(15% .03 256 / .55)}
+.dlg .dh{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.dlg .dh h3{font-size:18px}
+.dlg .dh p{margin:2px 0 0;color:var(--ink2);font-size:13px}
+.dlg .dh button{margin-left:auto;border:0;background:var(--surface);width:32px;height:32px;border-radius:50%;cursor:pointer;flex:none;font-size:18px;line-height:1}
+.dlg .db{padding:14px 18px 18px;display:grid;gap:14px}
+details.lipat{border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
+details.lipat>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:8px;padding:10px 14px;font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:var(--surface)}
+details.lipat>summary::-webkit-details-marker{display:none}
+details.lipat>summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg);transition:transform .2s}
+details.lipat[open]>summary::after{transform:rotate(-135deg)}
+details.lipat>summary span{text-transform:none;letter-spacing:0;font-weight:500}
+details.lipat .isi{display:grid;gap:8px;padding:12px 14px 14px}
+.laci details.lipat{box-shadow:none}
+.laci .kv{margin:0}
+table.tb2{width:100%;font-size:12.5px;border-collapse:collapse}
+table.tb2 td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:top}
+table.tb2 td.n{text-align:right;padding-left:10px;font-weight:600}
+table.tb2 tr:last-child td{border-bottom:0}
+table.tb3{width:100%;font-size:12px;border-collapse:collapse}
+table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
+table.tb3 td{padding:6px 3px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tb3 .n{text-align:right;white-space:nowrap}
+table.tb3 td small{display:block;color:var(--ink2);font-size:11px}
+table.tb3 tr:last-child td{border-bottom:0}
+.dlg .kpi b{font-size:20px}
+.fnd{margin:0;font-size:12px;color:var(--ink2)}
+.dlg .dlist{display:grid;gap:4px}
+.dlg .dlist button{display:flex;align-items:center;gap:8px;text-align:left;border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:6px 10px;font-size:12.5px;cursor:pointer}
+.dlg .dlist button span:not(.pill){color:var(--ink2);margin-left:auto;font-size:11.5px}
+.dlg .dlist button:hover{border-color:var(--brand2)}
+.dlg table.skor{width:100%;font-size:12.5px;border-collapse:collapse}
+.dlg table.skor td{padding:5px 6px;border-bottom:1px solid var(--line)}
+.dlg table.skor td:first-child{font-weight:700;white-space:nowrap}
+@media (max-width:700px){.dlg .db .grid.g4{grid-template-columns:1fr 1fr}}
+.dlg .baris{display:grid;grid-template-columns:110px 1fr 54px;gap:10px;align-items:center;font-size:13px}
+.dlg .baris i{display:block;height:8px;border-radius:4px;background:var(--surface);overflow:hidden}
+.dlg .baris i b{display:block;height:100%;background:linear-gradient(90deg,#f29a3c,#d6453a)}
+.kal{display:grid;grid-template-columns:150px repeat(36,minmax(14px,1fr)) 160px;min-width:900px;font-size:12px}
+.kal>div{padding:0;height:26px;display:flex;align-items:center}
+.kal .bl{grid-column:span 3;justify-content:center;font-size:10.5px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;height:22px}
+.kal .nm{padding:0 10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.kal .nm[aria-current="true"]{color:var(--brand)}
+.kal .c{margin:1px;border-radius:3px;height:24px}
+.kal .c.kini{outline:2px solid var(--ink);outline-offset:-1px}
+.kal .sg{padding:0 10px;color:var(--ink2);white-space:nowrap}
+/* ---------- insight: exhibit bergaya konsultan ---------- */
+.ins-hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:260px;display:flex;align-items:flex-end;margin-bottom:18px;background:var(--brand)}
+.ins-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ins-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(15% .03 256 / .05) 30%,oklch(15% .03 256 / .85))}
+.ins-hero div{position:relative;z-index:1;padding:22px 24px;color:#fff;max-width:900px}
+.ins-hero h2{font-size:clamp(22px,3vw,32px);line-height:1.15}
+.ins-hero p{margin:6px 0 0;opacity:.9;font-size:14px}
+.ins-hero small{position:absolute;right:10px;top:8px;text-shadow:0 1px 2px rgb(0 0 0 / .6);z-index:1;color:#fff;opacity:.7;font-size:10.5px}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px 16px;margin-bottom:18px}
+.ex h3{font-size:clamp(17px,2vw,21px);line-height:1.3;max-width:62ch}
+.ex .hl{color:var(--bad)}
+.ex .sub{margin:8px 0 0;font-weight:700;font-size:13.5px}
+.ex .unit{margin:2px 0 12px;color:var(--ink2);font-size:12.5px}
+.ex .fn{margin:10px 0 0;color:var(--ink2);font-size:11.5px;border-top:1px solid var(--line);padding-top:8px}
+.ex svg{display:block;width:100%;height:auto;overflow:visible}
+.ex svg text{fill:currentColor}
+.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 10px}
+.ex .ctl select{height:32px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 12px;font-size:12.5px}
+.ex2{display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
+.foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
+.foto figure{margin:0;border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid var(--line)}
+.foto img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+.foto figcaption{padding:8px 10px;font-size:12px;line-height:1.35}
+.foto figcaption small{display:block;color:var(--ink2);font-size:10.5px;margin-top:2px}
+#tip{position:fixed;z-index:60;pointer-events:none;background:oklch(18% .035 256);color:#fff;font-size:12px;line-height:1.4;padding:7px 10px;border-radius:8px;box-shadow:var(--shadow-lg);max-width:260px;opacity:0;transition:opacity .12s}
+#tip.on{opacity:1}
+.ex [data-tip]{cursor:pointer}
+.ex [data-tip]:hover{opacity:.82}
+.ex .hov{transition:fill .15s}
+.ex g:hover>.hov{fill:var(--surface)}
+.ex [data-set]{cursor:pointer}
+@keyframes tumbuh{from{transform:scaleY(0)}}
+@keyframes tumbuhX{from{transform:scaleX(0)}}
+@keyframes muncul{from{opacity:0}}
+.ex .gy{transform-box:fill-box;transform-origin:bottom;animation:tumbuh .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 18ms)}
+.ex .gx{transform-box:fill-box;transform-origin:left;animation:tumbuhX .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
+.ex .gf{animation:muncul .5s both;animation-delay:calc(var(--i,0) * 18ms + .2s)}
+@media (prefers-reduced-motion:reduce){.ex .gy,.ex .gx,.ex .gf{animation:none}}
+.sens{display:grid;grid-template-columns:220px 1fr 210px;gap:10px;align-items:center;font-size:12.5px;padding:3px 0}
+@media (max-width:700px){.sens{grid-template-columns:1fr;gap:3px;padding:6px 0}}
+figure.banner{position:relative;margin:0 0 16px;border-radius:var(--r);overflow:hidden;height:150px;background:var(--surface)}
+figure.banner img{width:100%;height:100%;object-fit:cover;display:block}
+figure.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,oklch(15% .03 256 / .7),transparent 60%)}
+figure.banner figcaption{position:absolute;left:16px;bottom:12px;right:16px;z-index:1;color:#fff;font-size:13px;font-weight:600;max-width:60ch}
+figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px;font-weight:400;margin-top:2px}
+@media (max-width:700px){figure.banner{height:110px}}
+.kv>*{min-width:0}
+.ringkas{padding:10px 10px 4px}
+.ringkas .kv{margin:6px 0 4px}
+.garis-waktu{display:flex}
+.bencana{position:relative}
+.bencana summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap;color:#fff}
+.bencana summary::-webkit-details-marker{display:none}
+.bencana summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.8}
+.bencana .menu{position:absolute;top:calc(100% + 10px);left:0;z-index:50;min-width:250px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
+.bencana .menu a{display:flex;flex-direction:column;padding:8px 10px;border-radius:10px;text-decoration:none;color:inherit;font-weight:700;font-size:13.5px}
+.bencana .menu a small{font-weight:400;color:var(--ink2);font-size:11.5px}
+.bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
+.tarik{position:absolute;top:0;bottom:0;width:10px;cursor:col-resize;z-index:6;pointer-events:auto;touch-action:none}
+.tarik::after{content:"";position:absolute;top:50%;left:3px;width:4px;height:44px;margin-top:-22px;border-radius:4px;background:var(--line);transition:background .15s}
+.tarik:hover::after,.tarik.aktif::after{background:var(--brand2)}
+.panel .tarik{right:-9px}
+.tools .tarik{left:-9px}
+@media (max-width:900px){.tarik{display:none}}
+</style>
+</head>
+<body>
+<div id="tip" role="tooltip"></div>
+<dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
+<header class="top">
+  <div class="mark">
+    <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c3 4.4 7 8.6 7 13a7 7 0 0 1-14 0c0-4.4 4-8.6 7-13Z" fill="oklch(74% .13 235)"/><path d="M6 25c2.5 0 2.5-1.6 5-1.6s2.5 1.6 5 1.6 2.5-1.6 5-1.6 2.5 1.6 5 1.6" stroke="oklch(92% .05 235)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
+    <details class="bencana"><summary>Posko Banjir, Longsor & Rob</summary><div class="menu"><a href="../">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="../banjir/" aria-current="page">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a></div></details>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <span class="jam num" id="jam" aria-label="Jam WIB">--.--.--</span>
+    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="page on" id="p-peta" aria-label="Peta pemantauan">
+    <div id="peta"></div>
+    <div class="muat" id="muat"><div><div class="spin"></div>Memuat prakiraan banjir seluruh Indonesia…</div></div>
+    <div class="panel" id="panel">
+      <div class="card list">
+        <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
+        <div class="top">
+          <div class="seg penuh" role="group" aria-label="Jenis bahaya" id="bahayaSeg" style="box-shadow:none;margin-bottom:8px"><button data-b="b" aria-pressed="true">Banjir</button><button data-b="l" aria-pressed="false">Longsor</button></div>
+          <div class="crumb" id="crumb"></div>
+          <div class="cari">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, atau kecamatan" autocomplete="off" aria-label="Cari wilayah">
+            <div class="hasil card" id="hasil" hidden></div>
+          </div>
+        </div>
+        <div class="rows" id="rows" role="list"></div>
+      </div>
+    </div>
+    <div class="tools" id="tools">
+      <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta"><button data-mp="status" aria-pressed="true">Status</button><button data-mp="hujan" aria-pressed="false">Hujan</button><button data-mp="sungai" aria-pressed="false">Sungai</button><button data-mp="rob" aria-pressed="false">Rob</button><button data-mp="riwayat" aria-pressed="false">Riwayat</button></div>
+      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Lapisan peta" title="Lapisan peta">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+      </button>
+      <div class="box lapis" id="lapis">
+        <div class="lbl" style="margin-bottom:2px">Lapisan</div>
+        <details open><summary>Banjir & longsor</summary>
+          <label><input type="checkbox" data-l="wilayah" checked> Status wilayah</label>
+          <label><input type="checkbox" data-l="sungai" checked> Titik sungai (GloFAS)</label>
+          <label><input type="checkbox" data-l="rob" checked> Titik pantai (rob)</label>
+        </details>
+        <details open><summary>Cuaca</summary>
+          <label><input type="checkbox" data-l="hujan"> Hujan harian</label>
+          <label><input type="checkbox" data-l="h3"> Hujan 3 hari (puncak)</label>
+        </details>
+        <details><summary>Peta dasar</summary>
+          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+        </details>
+      </div>
+      <div class="box" id="legenda"></div>
+    </div>
+    <div class="card garis-waktu on" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Hari</span><div id="hariSeg" style="flex:1"></div></div>
+  </section>
+
+  <section class="page scroll" id="p-insight" aria-label="Insight banjir"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-prakiraan" aria-label="Prakiraan per wilayah"><div class="wrap" id="prakiraan"></div></section>
+  <section class="page scroll" id="p-daftar" aria-label="Wilayah siaga"><div class="wrap" id="daftar"></div></section>
+  <section class="page scroll" id="p-provinsi" aria-label="Provinsi"><div class="wrap" id="provinsiTab"></div></section>
+  <section class="page scroll" id="p-rob" aria-label="Banjir rob"><div class="wrap" id="robTab"></div></section>
+  <section class="page scroll" id="p-sungai" aria-label="Sungai"><div class="wrap" id="sungaiTab"></div></section>
+  <section class="page scroll" id="p-tren" aria-label="Riwayat kejadian"><div class="wrap" id="tren"></div></section>
+  <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<div id="basi" role="alert" hidden style="position:fixed;top:calc(var(--top) + 8px);left:50%;transform:translateX(-50%);z-index:40;background:var(--bad);color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg)"></div>
+
+<script>
+"use strict";
+/* ================================================================ util (sama dengan Posko Karhutla) */
+const $ = s => document.querySelector(s);
+const fmt = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const WIB = {timeZone: "Asia/Jakarta"};
+const jamWIB = d => new Date(d).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
+const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
+const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
+const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600); };
+const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const rb = v => v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " jt" : v >= 1e4 ? fmt(Math.round(v / 1e3)) + " rb" : v >= 1e3 ? fmt(Math.round(v / 100) / 10) + " rb" : fmt(Math.round(v));
+async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
+function gradasi(st, v) { for (let k = 1; k < st.length; k++) if (v <= st[k][0]) { const [a, ca] = st[k - 1], [b, cb] = st[k], t = (v - a) / (b - a);
+    return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); } return st[st.length - 1][1]; }
+
+/* ================================================================ istilah */
+/* Tingkat peringatan mengikuti istilah BNPB/BPBD: Normal, Waspada, Siaga, Awas */
+const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"], WARNA_LV = ["#4caf73", "#f2c94c", "#f29a3c", "#d6453a"];
+const NAMA_B = {b: "banjir", l: "longsor"};
+/* hujan harian (mm): skala BMKG ringan < 20, sedang 20-50, lebat 50-100, sangat lebat 100-150, ekstrem > 150 */
+const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 205, 240, 90]], [5, [110, 180, 235, 150]], [20, [60, 140, 220, 200]], [50, [40, 80, 200, 225]], [100, [110, 50, 190, 235]], [150, [190, 40, 140, 245]], [250, [120, 20, 60, 250]]];
+const kelasHujan = v => v < 20 ? "ringan" : v < 50 ? "sedang" : v < 100 ? "lebat" : v < 150 ? "sangat lebat" : "ekstrem";
+const AKSI = {
+  b: [["Pantau prakiraan harian dan tinggi muka air", "Bersihkan saluran dan pintu air"],
+      ["Siapkan jalur dan titik evakuasi", "Cek pompa, perahu karet, dan logistik dasar", "Sebarkan informasi ke RT/RW di bantaran sungai"],
+      ["Aktifkan posko siaga di kecamatan", "Siagakan tim evakuasi dan dapur umum", "Koordinasi buka-tutup pintu air dengan BBWS/BPBD", "Evakuasi dini kelompok rentan di zona genangan langganan"],
+      ["Evakuasi warga di bantaran dan dataran banjir", "Tutup akses jalan yang tergenang", "Aktifkan posko komando kabupaten", "Usulkan status tanggap darurat ke kepala daerah bila meluas"]],
+  l: [["Pantau retakan tanah dan rembesan di lereng", "Hindari menambah beban di bibir lereng"],
+      ["Periksa lereng di atas permukiman dan jalan", "Siapkan jalur evakuasi menjauhi alur sungai"],
+      ["Ungsikan sementara rumah di kaki lereng curam saat hujan lebat", "Siagakan alat berat untuk buka akses"],
+      ["Evakuasi permukiman di zona longsor", "Tutup ruas jalan rawan", "Siagakan tim SAR"]],
+};
+
+/* ================================================================ state */
+const S = {meta: null, st: null, hujan: null, sungai: null, bahaya: {}, kejadian: null, geo: {prov: null, kab: {}, kec: {}},
+  b: "b", hari: 0, jalur: [], mode: "status"};
+const namaProv = k => S.meta?.provinsi?.[k] ?? k;
+
+/* ================================================================ tabs */
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["prakiraan", "Prakiraan"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["tren", "Riwayat"], ["metode", "Metode"]];
+function bukaTab(id, dorong = true) {
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
+  if (dorong) history.replaceState(null, "", "#" + id);
+  nanti(() => { if (id === "peta" && peta) peta.resize(); const f = {insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, metode: Metode}[id]; f && f.render(); });
+}
+$("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}">${n}</button>`).join("");
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
+setInterval(() => $("#jam").textContent = new Date().toLocaleTimeString("id-ID", {...WIB, hour12: false}).replace(/:/g, ".") + " WIB", 1000);
+const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
+const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+$("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
+let LAMBANG = {}; muatJSON("../lambang/kabkota.json").then(d => LAMBANG = d).catch(() => {});
+const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `../lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `../lambang/provinsi/${prov}.png`;
+  return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
+
+/* ================================================================ data */
+async function muatData() {
+  const [meta, st, hujan, sungai, prov] = await Promise.all([muatJSON("data/meta.json"), muatJSON("data/status.json"), muatJSON("data/hujan.json"),
+    muatJSON("data/sungai.json").catch(() => ({hari: [], titik: []})), muatJSON("../geo/provinsi.json")]);
+  Object.assign(S, {meta, st, hujan, sungai}); S.geo.prov = prov;
+  S.rob = await muatJSON("data/rob.json").catch(() => null);
+  muatJSON("data/bahaya.json").then(d => S.bahaya = d.kec || {}).catch(() => {});
+  muatJSON("data/kejadian.json").then(d => S.kejadian = d).catch(() => {});
+  /* sel hujan: indeks cepat lat,lon -> sel */
+  S.selHujan = new Map(hujan.grid.map(g => [g.lat.toFixed(2) + "," + g.lon.toFixed(2), g]));
+  S.hari = 0;
+  $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  const umur = (Date.now() - new Date(meta.dibuat)) / 36e5;
+  if (umur > 30) { $("#basi").hidden = false; $("#basi").textContent = `Prakiraan terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}).`; }
+}
+/* level kecamatan untuk bahaya & hari aktif; agregat ke kab/prov = level tertinggi, plus hitungan per level */
+const lvKec = (k, b = S.b, h = S.hari) => S.st.kec[k]?.[b]?.[h] || 0;
+function agregat(b = S.b, h = S.hari) {
+  const o = {};
+  for (const [k, v] of Object.entries(S.st.kec)) { const l = v[b]?.[h] || 0; if (!l) continue; const [p, kb] = k.split("|");
+    for (const key of [p, p + "|" + kb, k]) { const a = o[key] ||= {lv: 0, n: [0, 0, 0, 0]}; a.lv = Math.max(a.lv, l); a.n[l]++; } }
+  return o; }
+const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s / 2) / s) * s + s / 2, o = Math.round((lon - s / 2) / s) * s + s / 2;
+  return S.selHujan.get(a.toFixed(2) + "," + o.toFixed(2)) || null; };
+
+/* ================================================================ peta */
+let peta = null;
+const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
+const kiriPad = () => innerWidth > 900 ? {top: 40, bottom: 80, left: 430, right: 280} : {top: 40, bottom: innerHeight * .48, left: 20, right: 20};
+function kotak(fitur) { let a = [180, 90, -180, -90];
+  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
+  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+const Peta = {
+  async init() {
+    peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
+    peta.touchZoomRotate.disableRotation();
+    peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
+    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
+    peta.on("style.load", () => this.pasang());
+    await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r)); },
+  lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
+  bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
+  pasang() {
+    if (peta.getSource("wil")) return;
+    const bl = this.bawahLabel();
+    peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
+    peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: {visibility: this.lihat("satelit") ? "visible" : "none"}}, bl);
+    const g = this.gambarHujan();
+    peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
+    peta.addLayer({id: "hujan", type: "raster", source: "hujan", layout: {visibility: this.lihat("hujan") || this.lihat("h3") ? "visible" : "none"}, paint: {"raster-opacity": .75, "raster-resampling": "linear", "raster-fade-duration": 0}}, bl);
+    peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});
+    peta.addLayer({id: "wil-fill", type: "fill", source: "wil", layout: {visibility: this.lihat("wilayah") ? "visible" : "none"},
+      paint: {"fill-color": ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "rgba(0,0,0,0)"],
+        "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], .8, .55]}}, bl);
+    peta.addLayer({id: "wil-line", type: "line", source: "wil", paint: {"line-color": gelap() ? "#9fb3d1" : "#1d4e89", "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.4, .6], "line-opacity": .7}});
+    peta.addSource("prov", {type: "geojson", data: S.geo.prov});
+    peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
+    peta.addSource("sungai", {type: "geojson", data: this.geoSungai()});
+    peta.addLayer({id: "sungai", type: "circle", source: "sungai", layout: {visibility: this.lihat("sungai") ? "visible" : "none", "circle-sort-key": ["get", "k"]},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 2.5, 5], 9, ["match", ["get", "k"], 0, 6, 11]],
+        "circle-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "#2f80c0"], "circle-stroke-color": "#fff", "circle-stroke-width": ["match", ["get", "k"], 0, .8, 1.8],
+        "circle-opacity": ["match", ["get", "k"], 0, .65, 1]}});
+    if (S.rob) { peta.addSource("rob", {type: "geojson", data: this.geoRob()});
+      peta.addLayer({id: "rob", type: "symbol", source: "rob", layout: {visibility: this.lihat("rob") ? "visible" : "none", "text-field": "▲", "text-size": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 9, 15], 9, ["match", ["get", "k"], 0, 16, 24]], "text-allow-overlap": true, "symbol-sort-key": ["get", "k"]},
+        paint: {"text-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "#14a3a3"], "text-halo-color": "#fff", "text-halo-width": 1.4}}); }
+    this.aturWilayah(false); this.interaksi(); },
+  /* titik pantai: level rob pada hari aktif (indeks hari rob.json disejajarkan dengan tanggal) */
+  geoRob() { const j = S.rob.hari.indexOf(S.st.hari[S.hari]);
+    return {type: "FeatureCollection", features: S.rob.titik.map((t, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]}, properties: {i, k: j < 0 ? 0 : t.lv[j] || 0}}))}; },
+  geoSungai() { return {type: "FeatureCollection", features: S.sungai.titik.map((t, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]},
+    properties: {i, k: this.kelasHariSungai(t)}}))}; },
+  /* kelas sungai pada hari aktif: debit rata-rata ansambel hari itu dibanding Q2/Q5/Q20 */
+  kelasHariSungai(t) { const j = S.sungai.hari.indexOf(S.st.hari[S.hari]), q = j < 0 ? t.puncak : Math.max(t.q[j] ?? 0, 0);
+    return q >= t.q20 ? 3 : q >= t.q5 ? 2 : q >= t.q2 ? 1 : 0; },
+  /* hujan sebagai gambar 1 piksel per sel; MapLibre menghaluskan antarsel (gaya Windy) */
+  gambarHujan() {
+    const H = S.hujan, sel = H.sel, x0 = 94.5, x1 = 141.5, y0 = -11.5, y1 = 6.5, w = Math.round((x1 - x0) / sel), h = Math.round((y1 - y0) / sel);
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
+    const iH = H.hari.indexOf(S.st.hari[S.hari]), pakaiH3 = this.lihat("h3") && !this.lihat("hujan");
+    for (const g of H.grid) { const v = pakaiH3 ? g.h3 : g.h[iH]; if (v == null) continue;
+      const cx = Math.floor((g.lon - x0) / sel), cy = Math.floor((y1 - g.lat) / sel); if (cx < 0 || cy < 0 || cx >= w || cy >= h) continue;
+      const c = gradasi(ST_HUJAN, pakaiH3 ? v / 2 : v), o = (cy * w + cx) * 4; img.data.set(c, o); }
+    ctx.putImageData(img, 0, 0);
+    return {url: cv.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
+  segarkan() {
+    if (!peta?.getSource("wil")) return;
+    const g = this.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor});
+    peta.getSource("sungai").setData(this.geoSungai()); if (peta.getSource("rob")) peta.getSource("rob").setData(this.geoRob()); this.aturWilayah(false); },
+  async aturWilayah(terbang = true) {
+    const j = S.jalur; let fc;
+    if (j.length === 0) fc = S.geo.prov;
+    else if (j.length === 1) fc = S.geo.kab[j[0]] ||= await muatJSON(`../geo/kabupaten/${j[0]}.json`);
+    else { const kec = S.geo.kec[j[0]] ||= await muatJSON(`../geo/kecamatan/${j[0]}.json`); fc = {type: "FeatureCollection", features: kec.features.filter(f => f.properties.kab === j[1])}; }
+    const ag = agregat(); let id = 0;
+    S.fiturWil = fc.features.map(f => { const p = f.properties, kunci = j.length === 0 ? p.kode : j.length === 1 ? j[0] + "|" + p.kab : j[0] + "|" + j[1] + "|" + p.kec;
+      return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : j.length === 1 ? p.kab : p.kec, lv: ag[kunci]?.lv || 0}}; });
+    S.ag = ag;
+    if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: S.fiturWil});
+    if (terbang && S.fiturWil.length) peta.fitBounds(kotak(S.fiturWil), {padding: kiriPad(), duration: 700, maxZoom: 11});
+    else if (terbang) peta.flyTo({center: [118, -2.4], zoom: 4.1});
+    renderCrumb(); renderDaftar(); },
+  interaksi() {
+    let hov = null;
+    peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
+      hov = e.features[0].id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); });
+    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; });
+    peta.on("mouseenter", "sungai", () => peta.getCanvas().style.cursor = "pointer");
+    peta.on("mouseenter", "rob", () => peta.getCanvas().style.cursor = "pointer");
+    peta.on("click", e => {
+      const rb_ = peta.getLayer("rob") && peta.queryRenderedFeatures(e.point, {layers: ["rob"]});
+      if (rb_ && rb_.length) return Rob.titik(rb_[0].properties.i);
+      const s = peta.getLayer("sungai") && peta.queryRenderedFeatures(e.point, {layers: ["sungai"]});
+      if (s && s.length) return Analisa.sungai(s[0].properties.i);
+      const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
+      if (!w.length) return;
+      const k = w[0].properties.kunci;
+      if (S.jalur.length >= 2 || S.mode === "riwayat") return Analisa.wilayah(k);
+      turun(k); }); },
+};
+function turun(kunci) { S.jalur = kunci.split("|"); nanti(() => Peta.aturWilayah()); }
+function naik(n) { S.jalur = S.jalur.slice(0, n); nanti(() => Peta.aturWilayah()); }
+
+/* ---------- panel ---------- */
+function renderCrumb() {
+  const j = S.jalur, b = [`<button data-n="0">Indonesia</button>`];
+  if (j[0]) b.push(`<span>›</span><button data-n="1">${esc(namaProv(j[0]))}</button>`);
+  if (j[1]) b.push(`<span>›</span><button data-n="2">${esc(j[1])}</button>`);
+  $("#crumb").innerHTML = b.join(""); }
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
+const pill = l => `<span class="pill l${l}">${LEVEL[l]}</span>`;
+function renderDaftar() {
+  const j = S.jalur, g = "grid-template-columns:20px minmax(0,1fr) 46px 46px 78px";
+  const item = [...new Map((S.fiturWil || []).map(f => [f.properties.kunci, f.properties])).values()].map(p => {
+    const a = S.ag[p.kunci], c = j.length >= 2 ? selDekat(...pusat(p.kunci)) : null;
+    return {kunci: p.kunci, nama: p.nama, lv: a?.lv || 0, n: a ? a.n[3] * 1e6 + a.n[2] * 1e3 + a.n[1] : 0, awas: a?.n[3] || 0, siaga: a?.n[2] || 0, h3: S.st.kec[p.kunci]?.h3 ?? c?.h3}; })
+    .sort((a, b) => b.lv - a.lv || b.n - a.n || a.nama.localeCompare(b.nama));
+  const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${j.length >= 2 ? "Hujan 3h" : "Awas"}</span><span class="n">${j.length >= 2 ? "" : "Siaga"}</span><span style="text-align:right">Status</span></div>`;
+  $("#rows").innerHTML = ringkasHari() + kepala + (item.map((i, n) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${n + 1}</span><span style="font-weight:600">${esc(i.nama)}</span>
+    <span class="n">${j.length >= 2 ? (i.h3 != null ? fmt(Math.round(i.h3)) + " mm" : "–") : i.awas ? `<b style="color:var(--bad)">${fmt(i.awas)}</b>` : "–"}</span><span class="n">${j.length >= 2 ? "" : i.siaga ? fmt(i.siaga) : "–"}</span>
+    <span style="text-align:right">${i.lv ? pill(i.lv) : `<span style="color:var(--ink2);font-size:11.5px">Normal</span>`}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
+}
+/* ringkas: jumlah kecamatan per level di wilayah aktif untuk hari aktif */
+function ringkasHari() {
+  const pre = S.jalur.join("|"), n = [0, 0, 0, 0];
+  for (const [k, v] of Object.entries(S.st.kec)) if (!pre || k.startsWith(pre + "|") || k === pre) n[v[S.b]?.[S.hari] || 0]++;
+  return `<div class="ringkas"><div class="lbl">${NAMA_B[S.b] === "banjir" ? "Banjir" : "Longsor"} · ${tglPendek(S.st.hari[S.hari])} · kecamatan</div>
+    <div class="kv" style="grid-template-columns:repeat(3,1fr)">${[3, 2, 1].map(l => `<div><b style="color:${WARNA_LV[l]}">${fmt(n[l])}</b><span>${LEVEL[l]}</span></div>`).join("")}</div></div>`; }
+function pusat(kunci) { const f = S.fiturWil?.find(f => f.properties.kunci === kunci); if (!f) return [0, 0]; const b = kotak([f]); return [(b[0][1] + b[1][1]) / 2, (b[0][0] + b[1][0]) / 2]; }
+$("#rows").addEventListener("click", e => { const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 2 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
+$("#handle").onclick = () => $("#panel").classList.toggle("min");
+$("#bahayaSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.b = b.dataset.b;
+  $("#bahayaSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.aturWilayah(false); renderLegenda(); }); });
+
+/* ---------- hari & mode ---------- */
+function renderHari() {
+  $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${S.st.hari.map((t, i) => `<button data-i="${i}" aria-pressed="${S.hari === i}">${i ? tglPendek(t) : "Hari ini"}</button>`).join("")}</div>`; }
+$("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.i;
+  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => Peta.segarkan()); });
+const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
+$("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.mp;
+  $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", false); setLapis("sungai", S.mode === "sungai" || S.mode === "status"); setLapis("rob", S.mode === "rob" || S.mode === "status");
+  if (S.mode === "riwayat") Riwayat.pasang(); else Riwayat.lepas();
+  renderLegenda(); });
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
+  const map = {wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], hujan: ["hujan"], h3: ["hujan"], satelit: ["satelit"]}[i.dataset.l];
+  if (i.dataset.l === "hujan" || i.dataset.l === "h3") { const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none"); const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); }
+  else map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
+  renderLegenda(); });
+$("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
+function renderLegenda() {
+  const hj = Peta.lihat("hujan") || Peta.lihat("h3");
+  $("#legenda").innerHTML = `<details open id="legDet"><summary class="lbl" style="display:flex;justify-content:space-between">Legenda <span>▾</span></summary><div style="margin-top:6px">
+    ${S.mode === "riwayat" ? `<div class="lbl">Kejadian ${NAMA_B[S.b]} tercatat BNPB per kab/kota</div><div class="legscale">${Riwayat.SKALA.map(c => `<i style="background:${c}"></i>`).join("")}</div><div class="legnum"><span>1</span><span>5</span><span>10</span><span>20</span><span>40+</span></div>` :
+    `<div class="lbl">Status ${NAMA_B[S.b]} per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => `<span><i class="sw" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>`}
+    ${Peta.lihat("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#2f80c0"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
+    ${Peta.lihat("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#14a3a3">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
+    ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
+      <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}</div></details>`; }
+
+/* ================================================================ riwayat: kejadian BNPB per kab/kota */
+const Riwayat = {
+  SKALA: ["#e3f0fb", "#a9d0f0", "#5aa3dd", "#2366b4", "#123d7a"],
+  async pasang() { if (!S.kejadian) S.kejadian = await muatJSON("data/kejadian.json").catch(() => null);
+    if (!S.kejadian) return toast("Data riwayat kejadian belum tersedia");
+    if (S.jalur.length === 0) toast("Pilih provinsi untuk melihat kejadian per kabupaten/kota");
+    const jenis = S.b === "b" ? "banjir" : "longsor", tot = k => Object.values(S.kejadian.kab?.[k]?.[jenis] || {}).reduce((a, b) => a + b, 0);
+    peta.setPaintProperty("wil-fill", "fill-color", ["step", ["get", "rw"], "rgba(0,0,0,0)", 1, this.SKALA[0], 5, this.SKALA[1], 10, this.SKALA[2], 20, this.SKALA[3], 40, this.SKALA[4]]);
+    const f = S.fiturWil.map(x => ({...x, properties: {...x.properties, rw: S.jalur.length === 1 ? tot(x.properties.kunci) : 0}}));
+    peta.getSource("wil").setData({type: "FeatureCollection", features: f}); },
+  lepas() { if (!peta?.getLayer("wil-fill")) return; peta.setPaintProperty("wil-fill", "fill-color", ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "rgba(0,0,0,0)"]); Peta.aturWilayah(false); },
+};
+</script>
+<script>
+"use strict";
+/* ================================================================ popup analisa */
+const lipat = (judul, isi, buka = true) => `<details class="lipat" ${buka ? "open" : ""}><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
+const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
+const km = (a, b, c, d) => { const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); };
+/* grafik batang hujan 10 hari (3 lalu + 7 prakiraan), garis ambang 50 & 100 mm */
+function grafikHujan(c) {
+  const H = S.hujan, W = 660, B = 130, m = Math.max(110, ...c.h), gap = W / c.h.length, iH = H.hari.indexOf(H.hari_ini);
+  let g = [50, 100].map(v => `<line x1="0" x2="${W}" y1="${B - v / m * 110}" y2="${B - v / m * 110}" stroke="currentColor" stroke-dasharray="4 3" opacity=".35"/><text x="${W}" y="${B - v / m * 110 - 4}" text-anchor="end" font-size="10" opacity=".6">${v} mm</text>`).join("");
+  c.h.forEach((v, j) => { const h = (v || 0) / m * 110, lalu = j < iH;
+    g += `<rect x="${j * gap + gap * .15}" y="${B - h}" width="${gap * .7}" height="${Math.max(1, h)}" rx="3" fill="rgb(${gradasi(ST_HUJAN, Math.max(v, 8)).slice(0, 3).join(",")})" opacity="${lalu ? .55 : 1}" data-tip="<b>${tglPendek(H.hari[j])}</b>${lalu ? " · teramati" : " · prakiraan"}<br>${fmt(v)} mm (${kelasHujan(v)})${c.p?.[j] != null ? `<br>peluang hujan ${c.p[j]}%` : ""}"/>
+      <text x="${j * gap + gap / 2}" y="${B - h - 4}" text-anchor="middle" font-size="10.5" font-weight="700">${v >= 1 ? fmt(Math.round(v)) : ""}</text>
+      <text x="${j * gap + gap / 2}" y="${B + 14}" text-anchor="middle" font-size="10" opacity="${j === iH ? 1 : .65}" font-weight="${j === iH ? 800 : 400}">${j === iH ? "Hari ini" : H.hari[j].slice(8) + "/" + H.hari[j].slice(5, 7)}</text>`; });
+  return `<svg viewBox="0 -12 ${W} ${B + 22}" width="100%" role="img" aria-label="Hujan harian">${g}</svg>`; }
+/* hidrograf sungai: debit ansambel rata-rata dan maksimum vs Q2/Q5/Q20 */
+function grafikSungai(t) {
+  const hr = S.sungai.hari, W = 660, B = 140, m = Math.max(t.q20 * 1.1, ...t.qmax.map(x => x || 0), ...t.q), X = j => j / (hr.length - 1) * (W - 40) + 20, Y = v => B - v / m * 120;
+  let g = [[t.q2, 1], [t.q5, 2], [t.q20, 3]].map(([q, l]) => `<line x1="20" x2="${W - 20}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${W - 20}" y="${Y(q) - 4}" text-anchor="end" font-size="10" style="fill:${WARNA_LV[l]}">banjir ${[0, 2, 5, 20][l]} tahunan · ${fmt(Math.round(q))} m³/s</text>`).join("");
+  g += `<path d="${t.qmax.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")} ${t.q.map((v, j) => "L" + X(hr.length - 1 - j) + "," + Y(t.q[hr.length - 1 - j] || 0)).join("")}Z" fill="#2f80c0" opacity=".15"/>`;
+  g += `<path d="${t.q.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")}" fill="none" stroke="#2f80c0" stroke-width="2.5"/>`;
+  g += t.q.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v || 0)}" r="3.5" fill="#2f80c0" data-tip="<b>${tglPendek(hr[j])}</b><br>debit ${fmt(Math.round(v))} m³/s (maks ansambel ${fmt(Math.round(t.qmax[j]))})"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity=".65">${hr[j].slice(8)}/${hr[j].slice(5, 7)}</text>`).join("");
+  return `<svg viewBox="0 -8 ${W} ${B + 22}" width="100%" role="img" aria-label="Debit sungai">${g}</svg>`; }
+const Analisa = {
+  buka(html, kepala) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
+    d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => { if (e.target === d) return d.close();
+      const s = e.target.closest("[data-sg]"); if (s) return this.sungai(+s.dataset.sg); const w = e.target.closest("[data-wil]"); if (w) return this.wilayah(w.dataset.wil); };
+    d.showModal(); },
+  wilayah(kunci) {
+    const p = kunci.split("|"), jenis = ["prov", "kab", "kec"][p.length - 1], f = S.fiturWil?.find(x => x.properties.kunci === kunci);
+    const [lat, lon] = f ? pusat(kunci) : [0, 0], c = selDekat(lat, lon), v = S.st.kec[kunci], ag = agregat(S.b, 0);
+    const lvH = h => jenis === "kec" ? (v?.[S.b]?.[h] || 0) : (agregat(S.b, h)[kunci]?.lv || 0);
+    const sg = S.sungai.titik.map((t, i) => ({...t, i, d: km(lat, lon, t.lat, t.lon)})).filter(t => t.d <= (jenis === "prov" ? 400 : jenis === "kab" ? 80 : 30)).sort((a, b) => b.kelas - a.kelas || a.d - b.d).slice(0, 6);
+    const bh = S.bahaya[kunci], kj = S.kejadian, jn = S.b === "b" ? "banjir" : "longsor";
+    const riw = jenis === "prov" ? kj?.prov?.[p[0]]?.[jn] : jenis === "kab" ? Object.fromEntries(Object.entries(kj?.kab?.[kunci]?.[jn] || {}).map(([t, n]) => [t, {kejadian: n}])) : null;
+    const thR = riw ? Object.keys(riw).sort() : [], mR = Math.max(1, ...thR.map(t => riw[t].kejadian || 0));
+    const nama = jenis === "prov" ? namaProv(p[0]) : p.at(-1), sub = {prov: "Provinsi", kab: "Kabupaten/kota · " + namaProv(p[0]), kec: "Kecamatan · " + p[1] + " · " + namaProv(p[0])}[jenis];
+    const kepala = `${jenis === "prov" ? lambang(p[0]) : lambang(p[0], p[1])}<div><h3 id="dlgJudul">${esc(nama)}</h3><p>${esc(sub)}</p></div>`;
+    const isi = `<div class="grid g4">${S.st.hari.map((t, h) => kot(h ? tglPendek(t) : "Hari ini", `<span style="color:${WARNA_LV[lvH(h)]}">${LEVEL[lvH(h)]}</span>`, NAMA_B[S.b])).join("")}</div>
+      ${jenis !== "kec" && ag[kunci] ? `<p class="fnd">Hari ini: ${[3, 2, 1].map(l => `${fmt(ag[kunci].n[l])} kecamatan ${LEVEL[l].toLowerCase()}`).join(" · ")}.</p>` : ""}
+      ${c ? lipat("Hujan 10 hari · 3 hari teramati + 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
+        <p class="fnd">Sel 0,25° terdekat (${c.lat.toFixed(2)}, ${c.lon.toFixed(2)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
+      ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1984–2025.</p>`) : ""}
+      ${bh ? lipat("Indeks bahaya InaRISK (0–1)", `<table class="tb2"><tbody>${[["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => `<tr><td>${n}</td><td class="n">${fmt(Math.round(bh[k] * 100) / 100)} · ${bh[k] >= .66 ? "tinggi" : bh[k] >= .33 ? "sedang" : "rendah"}</td></tr>`).join("")}</tbody></table><p class="fnd">Sampel raster InaRISK BNPB di titik tengah kecamatan.</p>`) : ""}
+      ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
+          return `<rect x="${j * 26 + 3}" y="${72 - h}" width="20" height="${Math.max(1, h)}" rx="3" fill="#2f80c0" data-tip="<b>${t}</b><br>${fmt(n)} kejadian${riw[t].meninggal != null ? `<br>${fmt(riw[t].meninggal)} meninggal · ${rb(riw[t].terdampak || 0)} terdampak` : ""}"/><text x="${j * 26 + 13}" y="${68 - h}" text-anchor="middle" font-size="9.5">${n || ""}</text><text x="${j * 26 + 13}" y="86" text-anchor="middle" font-size="9" opacity=".6">${t.slice(2)}</text>`; }).join("")}</svg>
+        <p class="fnd">Total ${fmt(thR.reduce((a, t) => a + (riw[t].kejadian || 0), 0))} kejadian, ${thR[0]}–${thR.at(-1)}. Sumber: BNPB (data.bnpb.go.id).</p>`, false) : ""}
+      ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${AKSI[S.b][Math.max(...S.st.hari.map((_, h) => lvH(h)))].map(a => `<li>${esc(a)}</li>`).join("")}</ul><p class="fnd">Mengikuti status tertinggi 4 hari ke depan. Disusun dari praktik penanggulangan banjir/longsor; ikuti arahan BPBD setempat.</p>`)}
+      <p class="fnd">Status dari aturan di tab Metode. Data ${jamWIB(S.meta.dibuat)}.</p>`;
+    this.buka(isi, kepala); },
+  sungai(i) {
+    const t = S.sungai.titik[i]; if (!t) return;
+    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", fmt(Math.round(t.q2)), "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", fmt(Math.round(t.puncak / t.q2 * 100) / 100) + "×", t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
+      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari maksimum tahunan 1984–2025 (Gumbel).</p>`)}
+      <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${t.lat.toFixed(3)}, ${t.lon.toFixed(3)}.</p>`;
+    this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)} · ${esc(namaProv(t.prov))}</p></div>`); },
+};
+
+/* ================================================================ prakiraan per provinsi */
+const Prakiraan = {
+  render() {
+    const pv = Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    const baris = pv.map(k => { const lv = S.st.hari.map((_, h) => agregat(S.b, h)[k]); const sel = S.hujan.grid.filter(g => g.prov === k);
+      return {k, lv, h3: Math.max(0, ...sel.map(g => g.h3 || 0)), n: lv[0]?.n || [0, 0, 0, 0], skor: Math.max(...lv.map(a => a?.lv || 0)) * 1e6 + (lv[0]?.n[3] || 0) * 1e3 + (lv[0]?.n[2] || 0)}; }).sort((a, b) => b.skor - a.skor || b.h3 - a.h3);
+    $("#prakiraan").innerHTML = `<div class="head"><div><h2>Prakiraan ${NAMA_B[S.b]} 4 hari · 38 provinsi</h2><p>Status tertinggi kecamatan di tiap provinsi per hari.</p></div>
+      <div class="seg" id="pkB">${[["b", "Banjir"], ["l", "Longsor"]].map(([v, n]) => `<button data-b="${v}" aria-pressed="${S.b === v}">${n}</button>`).join("")}</div></div>
+      <div class="tw"><table><thead><tr><th>Provinsi</th>${S.st.hari.map((t, h) => `<th>${h ? tglPendek(t) : "Hari ini"}</th>`).join("")}<th class="n">Awas hari ini</th><th class="n">Siaga hari ini</th><th class="n">Hujan 3 hari maks</th></tr></thead><tbody>
+      ${baris.map(r => `<tr data-k="${r.k}" style="cursor:pointer"><td><b>${esc(namaProv(r.k))}</b></td>${r.lv.map(a => `<td>${a ? pill(a.lv) : `<span style="color:var(--ink2);font-size:12px">Normal</span>`}</td>`).join("")}
+        <td class="n num">${r.n[3] ? `<b style="color:var(--bad)">${fmt(r.n[3])}</b>` : "–"}</td><td class="n num">${r.n[2] ? fmt(r.n[2]) : "–"}</td><td class="n num">${fmt(Math.round(r.h3))} mm</td></tr>`).join("")}</tbody></table></div>
+      <p class="fnd" style="margin-top:8px">Klik provinsi untuk membukanya di peta. Hujan 3 hari maks = sel 0,25° terbasah di provinsi itu.</p>`;
+    $("#pkB").onclick = e => { const b = e.target.closest("button"); if (!b) return; S.b = b.dataset.b; $("#bahayaSeg").querySelector(`[data-b="${S.b}"]`).click(); nanti(() => this.render()); };
+    $("#prakiraan").querySelector("tbody").onclick = e => { const tr = e.target.closest("[data-k]"); if (tr) { bukaTab("peta"); turun(tr.dataset.k); } }; },
+};
+
+/* ================================================================ sungai */
+const Sungai = {
+  urut: "rasio",
+  render() {
+    const T = S.sungai.titik.map((t, i) => ({...t, i, r: t.puncak / t.q2})).sort(this.urut === "debit" ? (a, b) => b.puncak - a.puncak : (a, b) => b.r - a.r).slice(0, 120);
+    const n = [1, 2, 3].map(l => S.sungai.titik.filter(t => t.kelas === l).length);
+    $("#sungaiTab").innerHTML = `<div class="head"><div><h2>Sungai besar · prakiraan debit GloFAS 7 hari</h2><p>${fmt(S.sungai.titik.length)} titik sungai; ${fmt(n[2])} di atas banjir 20 tahunan, ${fmt(n[1])} di atas 5 tahunan, ${fmt(n[0])} di atas 2 tahunan.</p></div>
+      <div class="seg" id="sgU"><button data-u="rasio" aria-pressed="${this.urut === "rasio"}">Urut: puncak ÷ Q2</button><button data-u="debit" aria-pressed="${this.urut === "debit"}">Urut: debit</button></div></div>
+      <div class="tw"><table><thead><tr><th>Lokasi</th><th>Provinsi</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Q5</th><th class="n">Q20</th><th class="n">Puncak ÷ Q2</th><th>Status</th></tr></thead><tbody>
+      ${T.map(t => `<tr data-i="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b> · ${esc(t.kab)}</td><td>${esc(namaProv(t.prov))}</td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.q5))}</td><td class="n num">${fmt(Math.round(t.q20))}</td>
+        <td class="n num"><b>${fmt(Math.round(t.r * 100) / 100)}×</b></td><td>${pill(t.kelas)}</td></tr>`).join("")}</tbody></table></div>
+      <p class="fnd" style="margin-top:8px">Klik baris untuk hidrograf. Ambang dari maksimum tahunan 1984–2025, distribusi Gumbel. Sumber: Copernicus GloFAS lewat Open-Meteo.</p>`;
+    $("#sgU").onclick = e => { const b = e.target.closest("button"); if (b) { this.urut = b.dataset.u; nanti(() => this.render()); } };
+    $("#sungaiTab").querySelector("tbody").onclick = e => { const tr = e.target.closest("[data-i]"); if (tr) Analisa.sungai(+tr.dataset.i); }; },
+};
+
+/* ================================================================ riwayat kejadian (BNPB) */
+const Tren = {
+  jenis: "banjir",
+  async render() {
+    const el = $("#tren"); if (!S.kejadian) S.kejadian = await muatJSON("data/kejadian.json").catch(() => null);
+    if (!S.kejadian) { el.innerHTML = `<div class="kosong">Data kejadian BNPB belum tersedia.</div>`; return; }
+    const K = S.kejadian, JENIS = [["banjir", "Banjir"], ["longsor", "Tanah longsor"], ["cuaca", "Cuaca ekstrem"], ["kering", "Kekeringan"], ["gelombang", "Gelombang & abrasi"], ["rob", "Rob"], ["semua", "Semua bencana"]].filter(([j]) => Object.values(K.prov || {}).some(p => p[j])), th = K.tahun.map(String);
+    const prov = Object.keys(K.prov || {}), nil = (k, t, f = "kejadian") => K.prov[k]?.[this.jenis]?.[t]?.[f] || 0;
+    const tot = th.map(t => prov.reduce((a, k) => a + nil(k, t), 0)), totM = th.map(t => prov.reduce((a, k) => a + nil(k, t, "meninggal"), 0)), mx = Math.max(1, ...tot);
+    const W = 940, B = 220, gap = (W - 40) / th.length, bw = gap * .7;
+    let g = tot.map((v, i) => { const h = v / mx * 180; return `<rect x="${40 + i * gap}" y="${B - h}" width="${bw}" height="${h}" rx="3" fill="#2f80c0" data-tip="<b>${th[i]}</b><br>${fmt(v)} kejadian · ${fmt(totM[i])} meninggal"/><text x="${40 + i * gap + bw / 2}" y="${B + 14}" text-anchor="middle" font-size="10.5" opacity=".7">${th[i].slice(2)}</text>${v === mx ? `<text x="${40 + i * gap + bw / 2}" y="${B - h - 5}" text-anchor="middle" font-size="11" font-weight="700">${fmt(v)}</text>` : ""}`; }).join("");
+    const rank = prov.map(k => ({k, n: th.reduce((a, t) => a + nil(k, t), 0), m: th.reduce((a, t) => a + nil(k, t, "meninggal"), 0), d: th.reduce((a, t) => a + nil(k, t, "terdampak"), 0)})).sort((a, b) => b.n - a.n);
+    el.innerHTML = `<div class="head"><div><h2>Riwayat kejadian ${(JENIS.find(x => x[0] === this.jenis) || ["", this.jenis])[1].toLowerCase()} ${th[0]}–${th.at(-1)}</h2><p>Kejadian tercatat BNPB per tahun dan per provinsi.${K.catatan ? " " + esc(K.catatan) : ""}</p></div>
+      <div class="seg" id="trJ">${JENIS.map(([j, n]) => `<button data-j="${j}" aria-pressed="${this.jenis === j}">${n}</button>`).join("")}</div></div>
+      <div class="card pad"><svg viewBox="0 0 ${W} ${B + 22}" width="100%" role="img" aria-label="Kejadian per tahun">${g}</svg>
+      <p class="fnd">Total ${fmt(tot.reduce((a, b) => a + b, 0))} kejadian dan ${fmt(totM.reduce((a, b) => a + b, 0))} meninggal. ${esc(K.sumber || "")}</p></div>
+      <div class="tw" style="margin-top:14px"><table><thead><tr><th class="n">#</th><th>Provinsi</th><th class="n">Kejadian</th><th class="n">Meninggal</th><th class="n">Terdampak</th><th>Pola ${th[0]}–${th.at(-1)}</th></tr></thead><tbody>
+      ${rank.map((r, i) => { const v = th.map(t => nil(r.k, t)), m = Math.max(1, ...v); return `<tr><td class="n num">${i + 1}</td><td><b>${esc(namaProv(r.k))}</b></td><td class="n num">${fmt(r.n)}</td><td class="n num">${fmt(r.m)}</td><td class="n num">${rb(r.d)}</td>
+        <td><svg viewBox="0 0 ${v.length * 6} 16" width="${v.length * 6}" height="16" aria-hidden="true">${v.map((x, j) => `<rect x="${j * 6}" y="${16 - x / m * 15}" width="4.5" height="${Math.max(.5, x / m * 15)}" fill="#2f80c0"/>`).join("")}</svg></td></tr>`; }).join("")}</tbody></table></div>`;
+    $("#trJ").onclick = e => { const b = e.target.closest("button"); if (b) { this.jenis = b.dataset.j; nanti(() => this.render()); } }; },
+};
+
+/* ================================================================ insight */
+const Insight = {
+  render() {
+    const ag0 = agregat("b", 0), agL = agregat("l", 0), pv = Object.keys(S.meta.provinsi);
+    const nKec = l => Object.values(S.st.kec).filter(v => (v.b?.[0] || 0) === l).length, nKecH = (l, h) => Object.values(S.st.kec).filter(v => Math.max(...(v.b || [0]).slice(0, h + 1)) >= l).length;
+    const top = pv.map(k => ({k, a: ag0[k]})).filter(x => x.a).sort((a, b) => b.a.lv - a.a.lv || b.a.n[3] - a.a.n[3] || b.a.n[2] - a.a.n[2]).slice(0, 12);
+    const W = 940, rh = 30, L = 200, mx = Math.max(1, ...top.map(x => x.a.n[1] + x.a.n[2] + x.a.n[3])), X = v => v / mx * (W - L - 60);
+    let g = top.map((x, i) => { let acc = 0; return `<text x="${L - 10}" y="${i * rh + 19}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(x.k))}</text>` + [3, 2, 1].map(l => { const w = X(x.a.n[l]), s = `<rect x="${L + acc}" y="${i * rh + 6}" width="${w}" height="${rh - 12}" fill="${WARNA_LV[l]}" data-tip="<b>${esc(namaProv(x.k))}</b><br>${fmt(x.a.n[l])} kecamatan ${LEVEL[l].toLowerCase()}"/>`; acc += w; return s; }).join("") + `<text x="${L + acc + 6}" y="${i * rh + 19}" font-size="12" font-weight="700">${fmt(x.a.n[1] + x.a.n[2] + x.a.n[3])}</text>`; }).join("");
+    const terbasah = [...S.hujan.grid].sort((a, b) => b.h3 - a.h3).slice(0, 10);
+    $("#insight").innerHTML = `<div class="head"><div><h2>Insight banjir & longsor</h2><p>${new Date().toLocaleDateString("id-ID", {...WIB, weekday: "long", day: "numeric", month: "long", year: "numeric"})} · data ${jamWIB(S.meta.dibuat)}</p></div></div>
+      <article class="ex"><h3><span class="hl">${fmt(nKec(3) + nKec(2))} kecamatan</span> berstatus siaga atau awas banjir hari ini; ${fmt(nKecH(2, 3))} dalam 4 hari ke depan</h3><p class="sub">Kecamatan berstatus Waspada ke atas per provinsi, hari ini</p><p class="unit">jumlah kecamatan; warna = status</p>
+        <svg viewBox="0 0 ${W} ${top.length * rh + 6}" role="img" aria-label="Status banjir per provinsi">${g}</svg><p class="fn">Longsor: ${fmt(Object.values(S.st.kec).filter(v => (v.l?.[0] || 0) >= 2).length)} kecamatan siaga/awas hari ini. Aturan status ada di tab Metode.</p></article>
+      <article class="ex"><h3>Hujan terlebat 3 hari ke depan: <span class="hl">${fmt(Math.round(terbasah[0]?.h3 || 0))} mm</span> di ${esc(namaProv(terbasah[0]?.prov))}</h3><p class="sub">10 sel 0,25° dengan akumulasi 3 hari tertinggi</p><p class="unit">mm; ≥ 100 mm/3 hari berisiko banjir di dataran rendah</p>
+        <div class="tw" style="border:0;box-shadow:none"><table><thead><tr><th>Provinsi</th><th class="n">Lintang, bujur</th><th class="n">Hujan 3 hari</th><th class="n">Hujan 7 hari lalu</th></tr></thead><tbody>${terbasah.map(c => `<tr><td>${esc(namaProv(c.prov))}</td><td class="n num">${c.lat.toFixed(2)}, ${c.lon.toFixed(2)}</td><td class="n num"><b>${fmt(Math.round(c.h3))} mm</b></td><td class="n num">${fmt(Math.round(c.a7))} mm</td></tr>`).join("")}</tbody></table></div>
+        <p class="fn">Sumber: Open-Meteo (ECMWF/ICON/GFS), diperbarui harian.</p></article>`; },
+};
+
+/* ================================================================ metode */
+const Metode = {
+  render() {
+    const sek = (j, isi) => `<details class="lipat"><summary>${j}</summary><div class="isi" style="font-size:13.5px;line-height:1.6">${isi}</div></details>`;
+    $("#metode").innerHTML = `<div class="head"><div><h2>Metode & data</h2><p>Cara tiap status dihitung, dari data mana, dan batasnya.</p></div></div><div style="display:grid;gap:10px">
+      ${sek("1. Hujan", `<p>Prakiraan hujan harian 7 hari dan hujan teramati 7 hari terakhir dari Open-Meteo (model ECMWF IFS, DWD ICON, NOAA GFS dipadukan), pada kisi 0,25° (± 28 km) di sel daratan Indonesia. Sel dianggap daratan bila titik tengahnya atau salah satu dari empat titik ±0,08° jatuh di kecamatan Kemendagri.</p>
+        <p><b>h3</b> = jumlah hujan 3 hari berturut-turut tertinggi dalam jendela prakiraan. <b>a7</b> = hujan 7 hari terakhir (kejenuhan tanah). Kelas hujan harian mengikuti BMKG: ringan &lt; 20 mm, sedang 20–50, lebat 50–100, sangat lebat 100–150, ekstrem &gt; 150 mm.</p>`)}
+      ${sek("2. Sungai (GloFAS)", `<p>Debit harian sungai besar dari Copernicus GloFAS lewat Open-Meteo Flood API. Titik sungai dipilih dari sel daratan yang median debitnya cukup besar (sungai utama). Untuk tiap titik, debit maksimum tahunan 1984–2025 dipasang ke distribusi Gumbel (metode momen): Q<sub>T</sub> = μ − σ·(√6/π)·[0,5772 + ln(−ln(1 − 1/T))]. Q2, Q5, Q20 = debit banjir 2, 5, 20 tahunan.</p>
+        <p>Status titik: Waspada bila puncak debit rata-rata ansambel ≥ Q2, Siaga ≥ Q5, Awas ≥ Q20. GloFAS tidak menangkap banjir sungai kecil, drainase kota, atau rob.</p>`)}
+      ${sek("3. Status banjir per kecamatan", `<p>Untuk tiap kecamatan dan tiap hari (hari ini sampai +3): sel hujan terdekat, indeks bahaya banjir InaRISK di titik tengah kecamatan, dan titik sungai terdekat dalam 25 km.</p>
+        <ul><li><b>Awas</b>: sungai Awas, atau h3 ≥ 150 mm dan bahaya ≥ 0,66</li><li><b>Siaga</b>: sungai Siaga, atau h3 ≥ 100 mm dan bahaya ≥ 0,33</li><li><b>Waspada</b>: sungai Waspada, atau h3 ≥ 50 mm</li><li>selain itu <b>Normal</b></li></ul>
+        <p>Provinsi dan kabupaten mengambil status tertinggi kecamatannya. Ambang ini belum diuji balik terhadap kejadian BNPB; uji balik adalah langkah berikutnya.</p>`)}
+      ${sek("4. Status longsor", `<p>Longsor dipicu hujan lebat di atas tanah yang sudah jenuh di lereng rawan: memakai h3, a7, dan indeks bahaya longsor InaRISK. Aturan rinci ada di scripts/data/status.py.</p>`)}
+      ${sek("5. Riwayat kejadian", `<p>Jumlah kejadian, korban, dan dampak per jenis bencana dari portal data terbuka BNPB (data.bnpb.go.id, API CKAN, tanpa kunci). Catatan: pencatatan bergantung pada laporan daerah; kejadian kecil dan rob rutin cenderung tidak tercatat.</p>`)}
+      ${sek("6. Sumber data", `<table class="tb2"><tbody>${[["Prakiraan & arsip hujan", "Open-Meteo (ECMWF, ICON, GFS)", "harian"], ["Debit sungai", "Copernicus GloFAS lewat Open-Meteo Flood API", "harian"], ["Indeks bahaya", "InaRISK BNPB (gis.bnpb.go.id)", "statis"], ["Kejadian bencana", "BNPB data.bnpb.go.id", "tahunan"], ["Batas wilayah", "Kemendagri (provinsi, kab/kota, kecamatan)", "statis"]].map(r => `<tr><td>${r[0]}</td><td>${r[1]}</td><td class="n">${r[2]}</td></tr>`).join("")}</tbody></table>`)}
+    </div>`; },
+};
+
+/* ================================================================ daftar wilayah siaga (setara daftar kompleks api) */
+const unduh = (nama, isi) => { const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob([isi], {type: "text/csv"})); a.download = nama; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
+const csv = rows => rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n");
+const Daftar = {
+  q: "", urut: "lv", hal: 0,
+  baris() { const q = this.q.toLowerCase();
+    return Object.entries(S.st.kec).map(([k, v]) => { const [p, kb, kc] = k.split("|"), b = v.b || [0], l = v.l || [0];
+      return {k, p, kb, kc, b, l, mb: Math.max(...b), ml: Math.max(...l), h3: v.h3, a7: v.a7, bh: S.bahaya[k]?.banjir}; })
+      .filter(r => (r.mb || r.ml) && (!q || (r.kc + " " + r.kb + " " + namaProv(r.p)).toLowerCase().includes(q)))
+      .sort(this.urut === "h3" ? (a, b) => (b.h3 || 0) - (a.h3 || 0) : (a, b) => Math.max(b.mb, b.ml) - Math.max(a.mb, a.ml) || b.mb - a.mb || (b.h3 || 0) - (a.h3 || 0)); },
+  render() {
+    const R = this.baris(), per = 60, jml = Math.ceil(R.length / per), hal = R.slice(this.hal * per, (this.hal + 1) * per);
+    $("#daftar").innerHTML = `<div class="head"><div><h2>Wilayah siaga · ${fmt(R.length)} kecamatan</h2><p>Kecamatan berstatus Waspada ke atas dalam 4 hari, diurutkan dari yang paling mendesak.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input class="btn sec" id="dfQ" placeholder="Cari kecamatan atau kabupaten" value="${esc(this.q)}" style="min-width:220px">
+      <div class="seg" id="dfU"><button data-u="lv" aria-pressed="${this.urut === "lv"}">Urut: status</button><button data-u="h3" aria-pressed="${this.urut === "h3"}">Urut: hujan</button></div>
+      <button class="btn sec" id="dfCsv">Unduh CSV</button>${jml > 1 ? `<span class="num" style="font-size:12px">${this.hal + 1}/${jml}</span>${this.hal ? `<button class="btn sec" data-h="${this.hal - 1}">‹</button>` : ""}${this.hal < jml - 1 ? `<button class="btn sec" data-h="${this.hal + 1}">›</button>` : ""}` : ""}</div></div>
+      <div class="tw"><table><thead><tr><th>Kecamatan</th><th>Kab/Kota</th><th>Provinsi</th>${S.st.hari.map((t, h) => `<th>${h ? tglPendek(t) : "Hari ini"}</th>`).join("")}<th>Longsor</th><th class="n">Hujan 3h</th><th class="n">Hujan 7h lalu</th><th class="n">Bahaya InaRISK</th></tr></thead><tbody>
+      ${hal.map(r => `<tr data-k="${esc(r.k)}" style="cursor:pointer"><td><b>${esc(r.kc)}</b></td><td>${esc(r.kb)}</td><td>${esc(namaProv(r.p))}</td>${r.b.map(l => `<td>${l ? pill(l) : `<span style="color:var(--ink2);font-size:11.5px">–</span>`}</td>`).join("")}
+        <td>${r.ml ? pill(r.ml) : "–"}</td><td class="n num">${r.h3 != null ? fmt(Math.round(r.h3)) + " mm" : "–"}</td><td class="n num">${r.a7 != null ? fmt(Math.round(r.a7)) + " mm" : "–"}</td><td class="n num">${r.bh != null ? fmt(Math.round(r.bh * 100) / 100) : "–"}</td></tr>`).join("") || `<tr><td colspan="11" class="kosong">Tidak ada kecamatan berstatus.</td></tr>`}</tbody></table></div>`;
+    $("#dfQ").oninput = e => { this.q = e.target.value; this.hal = 0; clearTimeout(this._t); this._t = setTimeout(() => { this.render(); $("#dfQ").focus(); $("#dfQ").setSelectionRange(this.q.length, this.q.length); }, 250); };
+    $("#dfU").onclick = e => { const b = e.target.closest("button"); if (b) { this.urut = b.dataset.u; nanti(() => this.render()); } };
+    $("#dfCsv").onclick = () => unduh("wilayah-siaga-banjir.csv", csv([["Provinsi", "Kab/Kota", "Kecamatan", ...S.st.hari.map(t => "Banjir " + t), "Longsor maks", "Hujan 3 hari (mm)", "Hujan 7 hari lalu (mm)", "Bahaya InaRISK"], ...R.map(r => [namaProv(r.p), r.kb, r.kc, ...r.b.map(l => LEVEL[l]), LEVEL[r.ml], r.h3, r.a7, r.bh])]));
+    $("#daftar").querySelectorAll("[data-h]").forEach(b => b.onclick = () => { this.hal = +b.dataset.h; nanti(() => this.render()); });
+    $("#daftar").querySelector("tbody").onclick = e => { const tr = e.target.closest("[data-k]"); if (!tr) return; const p = tr.dataset.k.split("|"); S.jalur = p.slice(0, 2); bukaTab("peta"); Peta.aturWilayah().then(() => Analisa.wilayah(tr.dataset.k)); }; },
+};
+
+/* ================================================================ provinsi (setara Prioritas) */
+const Provinsi = {
+  render() {
+    const K = S.kejadian, ag = S.st.hari.map((_, h) => agregat("b", h)), agL = agregat("l", 0);
+    const pv = Object.keys(S.meta.provinsi).map(k => { const sel = S.hujan.grid.filter(g => g.prov === k), sg = S.sungai.titik.filter(t => t.prov === k), rob = S.rob?.titik.filter(t => t.prov === k) || [];
+      const ev = K?.prov?.[k]; const thn = ev ? Object.keys(ev.semua || ev.banjir || {}).sort() : [];
+      return {k, lv: ag.map(a => a[k]?.lv || 0), n: ag[0][k]?.n || [0, 0, 0, 0], l: agL[k]?.n || [0, 0, 0, 0], h3: Math.max(0, ...sel.map(g => g.h3 || 0)), sg: sg.filter(t => t.kelas).length, sgN: sg.length,
+        rob: rob.filter(t => Math.max(...t.lv) > 0).length, banjir: ev?.banjir, semua: ev?.semua, thn}; })
+      .sort((a, b) => Math.max(...b.lv) - Math.max(...a.lv) || b.n[3] - a.n[3] || b.n[2] - a.n[2] || b.h3 - a.h3);
+    const kartu = pv.map(r => { const v = r.thn.map(t => r.semua?.[t]?.kejadian ?? r.semua?.[t] ?? 0), m = Math.max(1, ...v), lb = r.banjir ? Object.entries(r.banjir).sort().at(-1) : null;
+      return `<article class="card pad" style="display:grid;gap:8px"><div style="display:flex;gap:10px;align-items:center">${lambang(r.k)}<div style="min-width:0"><h3 style="font-size:16px">${esc(namaProv(r.k))}</h3>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${r.lv.map((l, h) => `<span title="${S.st.hari[h]}">${l ? pill(l) : `<span class="pill" style="background:var(--surface);color:var(--ink2)">Normal</span>`}</span>`).join("")}</div></div></div>
+        <div class="kv"><div><b style="color:${WARNA_LV[3]}">${fmt(r.n[3])}</b><span>kec. awas banjir</span></div><div><b style="color:${WARNA_LV[2]}">${fmt(r.n[2])}</b><span>kec. siaga banjir</span></div><div><b>${fmt(r.l[2] + r.l[3])}</b><span>kec. siaga+ longsor</span></div></div>
+        <table class="tb2"><tbody><tr><td>Hujan 3 hari terlebat</td><td class="n">${fmt(Math.round(r.h3))} mm</td></tr><tr><td>Sungai di atas Q2</td><td class="n">${fmt(r.sg)} dari ${fmt(r.sgN)} titik</td></tr>${S.rob ? `<tr><td>Titik pantai berstatus rob</td><td class="n">${fmt(r.rob)}</td></tr>` : ""}
+          ${lb ? `<tr><td>Banjir ${lb[0]} (BNPB)</td><td class="n">${fmt(lb[1].kejadian ?? lb[1])} kejadian${lb[1].meninggal != null ? " · " + fmt(lb[1].meninggal) + " meninggal" : ""}</td></tr>` : ""}</tbody></table>
+        ${v.length ? `<div><div class="lbl">Semua bencana tercatat ${r.thn[0]}–${r.thn.at(-1)}</div><svg viewBox="0 0 ${v.length * 10} 30" width="100%" height="34" preserveAspectRatio="none" aria-hidden="true">${v.map((x, j) => `<rect x="${j * 10 + 1}" y="${30 - x / m * 28}" width="8" height="${Math.max(.5, x / m * 28)}" fill="#2f80c0" data-tip="${r.thn[j]}: ${fmt(x)} kejadian"/>`).join("")}</svg></div>` : ""}
+        <button class="btn sec" data-k="${r.k}">Lihat di peta</button></article>`; }).join("");
+    $("#provinsiTab").innerHTML = `<div class="head"><div><h2>38 provinsi</h2><p>Diurutkan dari status banjir tertinggi 4 hari ke depan.</p></div></div><div class="grid g3">${kartu}</div>`;
+    $("#provinsiTab").onclick = e => { const b = e.target.closest("button[data-k]"); if (b) { bukaTab("peta"); turun(b.dataset.k); } }; },
+};
+
+/* ================================================================ rob */
+/* grafik pasang: tinggi muka laut maksimum harian vs ambang p95 / p99 / maks titik itu */
+function grafikPasang(t) {
+  const hr = S.rob.hari, W = 660, B = 140, lo = Math.min(...t.h.filter(v => v != null), t.p95) - .1, hi = Math.max(...t.h.filter(v => v != null), t.amax) + .05, Y = v => B - (v - lo) / (hi - lo) * 120, X = j => j / (hr.length - 1) * (W - 40) + 20;
+  const iH = hr.indexOf(S.hujan.hari_ini);
+  let g = [[t.p95, 1, "persentil 95"], [t.p99, 2, "persentil 99"], [t.amax, 3, "tertinggi tercatat"]].map(([v, l, n]) => `<line x1="20" x2="${W - 20}" y1="${Y(v)}" y2="${Y(v)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${W - 20}" y="${Y(v) - 4}" text-anchor="end" font-size="10" style="fill:${WARNA_LV[l]}">${n} · ${fmt(Math.round(v * 100) / 100)} m</text>`).join("");
+  g += `<path d="${t.h.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v ?? lo)).join("")}" fill="none" stroke="#14a3a3" stroke-width="2.5"/>`;
+  g += t.h.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v ?? lo)}" r="${j === iH ? 5 : 3.5}" fill="${t.lv[j] ? WARNA_LV[t.lv[j]] : "#14a3a3"}" data-tip="<b>${tglPendek(hr[j])}</b>${j < iH ? " · lalu" : ""}<br>muka laut maks ${fmt(Math.round(v * 100) / 100)} m${t.w?.[j] != null ? `<br>gelombang maks ${fmt(Math.round(t.w[j] * 10) / 10)} m` : ""}<br>${LEVEL[t.lv[j] || 0]}"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity="${j === iH ? 1 : .6}" font-weight="${j === iH ? 800 : 400}">${j === iH ? "Hari ini" : hr[j].slice(8) + "/" + hr[j].slice(5, 7)}</text>`).join("");
+  return `<svg viewBox="0 -8 ${W} ${B + 22}" width="100%" role="img" aria-label="Pasang laut harian">${g}</svg>`; }
+const Rob = {
+  /* peringatan resmi BMKG yang menyebut kabupaten/kecamatan titik ini */
+  bmkg(t) { const kunci = [t.kab, t.kec].filter(Boolean).map(x => x.toLowerCase().replace(/^kota /, ""));
+    return (S.rob.bmkg?.rob || []).filter(w => kunci.some(k => (w.lokasi || w.wilayah || "").toLowerCase().includes(k))); },
+  titik(i) {
+    const t = S.rob.titik[i]; if (!t) return; const iH = S.rob.hari.indexOf(S.hujan.hari_ini), maju = t.lv.slice(Math.max(0, iH)), puncak = Math.max(0, ...maju);
+    const jP = iH + maju.indexOf(puncak), bm = this.bmkg(t), kt = S.rob.kab_tahun?.[t.prov + "|" + t.kab];
+    const isi = `<div class="grid g4">${kot("Status puncak", `<span style="color:${puncak ? WARNA_LV[puncak] : "inherit"}">${LEVEL[puncak]}</span>`, puncak ? tglPendek(S.rob.hari[jP]) : "10 hari ke depan")}${kot("Muka laut maks", fmt(Math.round(Math.max(...t.h.slice(iH).filter(v => v != null)) * 100) / 100) + " m", "10 hari, terhadap MSL")}${kot("Ambang siaga", fmt(Math.round(t.p99 * 100) / 100) + " m", "persentil 99 sejak 2022")}${kot("Peringatan BMKG", bm.length ? `<span style="color:var(--bad)">${bm.length}</span>` : "–", bm.length ? "menyebut wilayah ini" : "tidak menyebut")}</div>
+      ${lipat("Pasang 13 hari · 3 lalu + 10 prakiraan", `${grafikPasang(t)}<p class="fnd">Muka laut maksimum harian dari Open-Meteo Marine (pasang + efek tekanan udara), terhadap muka laut rata-rata global. Ambang dihitung dari arsip titik ini sejak 2022.</p>`)}
+      ${bm.length ? lipat("Peringatan dini rob BMKG", `<table class="tb3"><thead><tr><th>Lokasi</th><th>Periode</th><th>Keterangan</th></tr></thead><tbody>${bm.map(w => `<tr><td>${esc(w.lokasi || w.wilayah)}</td><td>${esc(w.tanggal_mulai || "")}${w.tanggal_selesai ? " – " + esc(w.tanggal_selesai) : ""}</td><td>${esc(w.keterangan || "")}</td></tr>`).join("")}</tbody></table><p class="fnd">Sumber resmi: BMKG Maritim (${esc(S.rob.bmkg?.sumber || "")}).</p>`) : ""}
+      ${t.ioc ? lipat("Alat ukur pasut terdekat (IOC)", `<table class="tb2"><tbody><tr><td>Stasiun</td><td class="n">${esc(t.ioc.stasiun)}</td></tr><tr><td>Selisih model – alat ukur</td><td class="n">${fmt(Math.round(t.ioc.offset * 100) / 100)} m</td></tr><tr><td>Korelasi pola pasang</td><td class="n">${fmt(Math.round(t.ioc.r * 100) / 100)}</td></tr><tr><td>Data terakhir</td><td class="n">${t.ioc.lag_jam != null ? fmt(Math.round(t.ioc.lag_jam)) + " jam lalu" : "–"}</td></tr></tbody></table>`, false) : ""}
+      ${kt ? lipat("Kejadian rob tercatat (DIBI BNPB)", `<table class="tb2"><tbody>${Object.entries(kt).sort().map(([th, n]) => `<tr><td>${th}</td><td class="n">${fmt(n)} kejadian</td></tr>`).join("")}</tbody></table>`, false) : ""}
+      ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${[["Pantau jadwal pasang tertinggi harian"], ["Siapkan pompa dan karung pasir di titik tanggul rendah", "Informasikan jam pasang tertinggi ke warga pesisir"], ["Siagakan pompa dan tim di tanggul dan pintu air", "Pindahkan barang berharga dan ternak ke tempat tinggi", "Atur lalu lintas di jalan pantai yang rawan tergenang"], ["Evakuasi kelompok rentan di permukiman pesisir terendah", "Tutup jalan pantai yang tergenang", "Koordinasi BPBD, PUPR, dan pengelola pelabuhan"]][puncak].map(a => `<li>${esc(a)}</li>`).join("")}</ul>`)}
+      <p class="fnd">Koordinat titik ${t.lat.toFixed(3)}, ${t.lon.toFixed(3)}. Ketinggian adalah muka laut, bukan tinggi genangan di darat; dampak di darat bergantung pada tanggul dan penurunan tanah setempat.</p>`;
+    Analisa.buka(isi, `${lambang(t.prov, t.kab)}<div><h3 id="dlgJudul">Pantai ${esc(t.kec || t.kab)}</h3><p>${esc(t.kab)} · ${esc(namaProv(t.prov))}</p></div>`); },
+  render() {
+    const el = $("#robTab"); if (!S.rob) { el.innerHTML = `<div class="kosong">Data rob belum tersedia.</div>`; return; }
+    const iH = S.rob.hari.indexOf(S.hujan.hari_ini), T = S.rob.titik.map((t, i) => ({...t, i, pk: Math.max(0, ...t.lv.slice(Math.max(0, iH))), hm: Math.max(...t.h.slice(Math.max(0, iH)).filter(v => v != null))}))
+      .sort((a, b) => b.pk - a.pk || (b.hm - b.p99) - (a.hm - a.p99));
+    const n = [1, 2, 3].map(l => T.filter(t => t.pk === l).length), V = S.rob.validasi || {}, bm = S.rob.bmkg?.rob || [];
+    el.innerHTML = `<div class="head"><div><h2>Banjir rob · prakiraan pasang 10 hari</h2><p>${fmt(T.length)} titik pantai; ${fmt(n[2])} awas, ${fmt(n[1])} siaga, ${fmt(n[0])} waspada dalam 10 hari ke depan.</p></div></div>
+      ${bm.length ? `<article class="ex"><h3>Peringatan dini rob resmi BMKG: <span class="hl">${fmt(bm.length)} wilayah</span></h3><p class="sub">Dibaca otomatis dari dokumen BMKG Maritim</p><p class="unit">diambil ${S.rob.bmkg.diambil ? jamWIB(S.rob.bmkg.diambil) : "–"}</p>
+        <div class="tw" style="border:0;box-shadow:none"><table><thead><tr><th>Lokasi</th><th>Periode</th><th>Keterangan</th></tr></thead><tbody>${bm.map(w => `<tr><td>${esc(w.lokasi || w.wilayah)}</td><td>${esc(w.tanggal_mulai || "")}${w.tanggal_selesai ? " – " + esc(w.tanggal_selesai) : ""}</td><td>${esc(w.keterangan || "")}</td></tr>`).join("")}</tbody></table></div>
+        <p class="fn">Pembacaan dokumen bisa meleset bila format BMKG berubah; dokumen asli: <a href="${esc(S.rob.bmkg.sumber)}" target="_blank" rel="noopener">${esc(S.rob.bmkg.sumber)}</a>.</p></article>` : ""}
+      <div class="tw"><table><thead><tr><th>Titik pantai</th><th>Provinsi</th>${S.rob.hari.slice(Math.max(0, iH), Math.max(0, iH) + 7).map((d, j) => `<th class="n">${j ? tglPendek(d) : "Hari ini"}</th>`).join("")}<th class="n">Maks 10 hari</th><th class="n">Ambang p99</th></tr></thead><tbody>
+      ${T.map(t => `<tr data-i="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec || t.kab)}</b><small style="display:block;color:var(--ink2)">${esc(t.kab)}</small></td><td>${esc(namaProv(t.prov))}</td>
+        ${t.lv.slice(Math.max(0, iH), Math.max(0, iH) + 7).map(l => `<td class="n">${l ? pill(l) : `<span style="color:var(--ink2);font-size:11.5px">–</span>`}</td>`).join("")}<td class="n num"><b>${fmt(Math.round(t.hm * 100) / 100)} m</b></td><td class="n num">${fmt(Math.round(t.p99 * 100) / 100)} m</td></tr>`).join("")}</tbody></table></div>
+      ${V.ringkas ? `<p class="fnd" style="margin-top:8px">Uji terhadap kejadian rob DIBI: ${esc(V.ringkas)}</p>` : ""}
+      <p class="fnd">Klik baris untuk grafik pasang. Sumber: Open-Meteo Marine (CC BY 4.0), IOC Sea Level Monitoring, BMKG Maritim, DIBI BNPB.</p>`;
+    el.querySelectorAll("[data-i]").forEach(tr => tr.onclick = () => this.titik(+tr.dataset.i)); },
+};
+
+/* ================================================================ cari */
+$("#cari").addEventListener("input", async e => {
+  const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
+  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.st.kec).map(k => { const p = k.split("|"); return {k, n: p[2], j: "Kec. · " + p[1]}; })];
+  const hs = idx.filter(i => i.n.toLowerCase().includes(q)).slice(0, 12);
+  h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan di wilayah berstatus.</div>`; h.hidden = false; });
+$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
+  if (p.length === 3) { S.jalur = p.slice(0, 2); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); } else turun(b.dataset.k); });
+
+/* tooltip */
+(() => { const t = $("#tip");
+  document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); t.innerHTML = x.dataset.tip; t.classList.add("on"); });
+  document.addEventListener("pointermove", e => { if (!t.classList.contains("on")) return; t.style.left = Math.min(innerWidth - t.offsetWidth - 8, e.clientX + 14) + "px"; t.style.top = Math.max(8, e.clientY - t.offsetHeight - 12) + "px"; });
+  document.addEventListener("scroll", () => t.classList.remove("on"), true); })();
+
+/* ================================================================ mulai */
+(async () => {
+  try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  renderHari(); await Peta.init(); renderLegenda();
+  $("#muat").classList.add("hilang");
+  const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) bukaTab(h, false);
+})();
+/* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
+(() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
+  const h = document.createElement("div"); h.className = "tarik"; h.title = "Tarik untuk mengubah lebar"; h.setAttribute("role", "separator"); h.setAttribute("aria-orientation", "vertical"); el.appendChild(h);
+  h.addEventListener("pointerdown", e => { e.preventDefault(); h.setPointerCapture(e.pointerId); h.classList.add("aktif"); const x0 = e.clientX, w = el.getBoundingClientRect().width;
+    const gerak = ev => { const lebar = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))); el.style.width = lebar + "px"; };
+    const lepas = () => { h.classList.remove("aktif"); h.removeEventListener("pointermove", gerak); h.removeEventListener("pointerup", lepas); simpanLokal(kunci, Math.round(el.getBoundingClientRect().width)); if (typeof peta !== "undefined" && peta) peta.resize(); };
+    h.addEventListener("pointermove", gerak); h.addEventListener("pointerup", lepas); });
+  h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };
+  atur(document.querySelector(".panel"), "lebar-panel", "kanan", 320, Math.min(900, innerWidth * .6));
+  atur(document.querySelector(".tools"), "lebar-tools", "kiri", 220, 520); })();
+document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
+</script>
+</body>
+</html>

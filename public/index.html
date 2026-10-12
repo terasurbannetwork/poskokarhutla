@@ -370,6 +370,12 @@ figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px
 .bencana .menu a{display:flex;flex-direction:column;padding:8px 10px;border-radius:10px;text-decoration:none;color:inherit;font-weight:700;font-size:13.5px}
 .bencana .menu a small{font-weight:400;color:var(--ink2);font-size:11.5px}
 .bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
+.tarik{position:absolute;top:0;bottom:0;width:10px;cursor:col-resize;z-index:6;pointer-events:auto;touch-action:none}
+.tarik::after{content:"";position:absolute;top:50%;left:3px;width:4px;height:44px;margin-top:-22px;border-radius:4px;background:var(--line);transition:background .15s}
+.tarik:hover::after,.tarik.aktif::after{background:var(--brand2)}
+.panel .tarik{right:-9px}
+.tools .tarik{left:-9px}
+@media (max-width:900px){.tarik{display:none}}
 </style>
 </head>
 <body>
@@ -378,7 +384,7 @@ figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px
 <header class="top">
   <div class="mark">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z" fill="oklch(76% .16 58)"/><path d="M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z" fill="oklch(90% .12 95)"/></svg>
-    <details class="bencana"><summary>Posko Karhutla</summary><div class="menu"><a href="./" aria-current="page">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Posko Banjir, Longsor & Rob<small>Hujan, sungai, pasang laut, status kecamatan</small></a></div></details>
+    <details class="bencana"><summary>Posko Karhutla</summary><div class="menu"><a href="./" aria-current="page">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
@@ -682,8 +688,8 @@ const Peta = {
     peta.setLayoutProperty("wil-fill", "visibility", riw || this.lihat("wilayah") ? "visible" : "none");
     /* mode riwayat: permukaan halus jadi warna utama, poligon cukup tipis supaya tetap bisa diklik */
     peta.setPaintProperty("wil-fill", "fill-opacity", riw ? .06 : ["interpolate", ["linear"], ["zoom"], 5, ["case", ["boolean", ["feature-state", "hover"], false], .78, .55], 8.5, ["case", ["boolean", ["feature-state", "hover"], false], .35, .12]]);
-    if (riw) Riwayat.raster().then(() => peta.setLayoutProperty("riwayat", "visibility", "visible")).catch(() => {});
-    else if (peta.getLayer("riwayat")) peta.setLayoutProperty("riwayat", "visibility", "none"); },
+    if (riw) Riwayat.raster().then(() => { peta.setLayoutProperty("riwayat", "visibility", "visible"); Riwayat.label(); }).catch(() => {});
+    else { if (peta.getLayer("riwayat")) peta.setLayoutProperty("riwayat", "visibility", "none"); if (peta.getLayer("riw-lbl")) peta.setLayoutProperty("riw-lbl", "visibility", "none"); } },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : true; },
   geoTitik() {
     return {type: "FeatureCollection", features: S.titik.filter(masuk).map(b => ({type: "Feature",
@@ -721,7 +727,7 @@ const Peta = {
       const kunci = j.length === 0 ? p.kode : j.length === 1 ? j[0] + "|" + p.kab : j[0] + "|" + j[1] + "|" + p.kec;
       return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : (j.length === 1 ? p.kab : p.kec),
         v: S.hit[kunci] || 0, lv: S.riw && S.riw[kunci] ? S.riw[kunci].lv : -1}}; });
-    S.fiturWil = fitur;
+    S.fiturWil = fitur; if (S.panel === "riw") nanti(() => Riwayat.label());
     if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: fitur});
     if (terbang && fitur.length) { const bb = kotak(fitur); peta.fitBounds(bb, {padding: kiriPad(), duration: 700, maxZoom: 11}); }
     else if (terbang) peta.flyTo({center: [118, -2.4], zoom: 4.1});
@@ -729,6 +735,11 @@ const Peta = {
   },
   interaksi() {
     let hov = null;
+    const tip = $("#tip");
+    peta.on("mousemove", e => { if (S.panel !== "riw" || !Riwayat.grid) return; const d = Riwayat.baca(e.lngLat.lng, e.lngLat.lat), G = Riwayat.grid;
+      tip.innerHTML = d[2] ? `<b>Terbakar ${d[2]} dari ${G.tahun} tahun</b><br>rata-rata ${fmt(d[3])} titik panas per tahun<br><small>sel ± 11 km · MODIS 2002–2025</small>` : `Tidak pernah terbakar berarti (≥ ${G.ambang} titik setahun)`;
+      tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
+    peta.on("mouseout", () => tip.classList.remove("on"));
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer";
       if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
       hov = e.features[0].id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); });
@@ -888,6 +899,35 @@ function kotak(fitur) { let a = [180, 90, -180, -90];
 function turun(kunci) { S.jalur = kunci.split("|"); renderCrumb(); nanti(() => Peta.aturWilayah()); }
 function naik(n) { S.jalur = S.jalur.slice(0, n); renderCrumb(); nanti(() => Peta.aturWilayah()); }
 
+/* ---------- permukaan kepadatan titik panas saat ini (gaya Windy) ---------- */
+/* titik panas dalam rentang aktif (sensor utama) dihitung per sel 0,05 derajat, diwarnai skala log, lalu dihaluskan */
+const Kini = {
+  SEL: .1, ST: [[0, [255, 230, 120, 0]], [.15, [255, 220, 110, 150]], [.35, [250, 170, 60, 200]], [.55, [240, 110, 45, 220]], [.75, [210, 50, 40, 235]], [1, [120, 20, 60, 245]]],
+  gambar() { const x0 = 94.5, x1 = 141.5, y0 = -11.5, y1 = 6.5, w = Math.round((x1 - x0) / this.SEL), h = Math.round((y1 - y0) / this.SEL), n = new Uint16Array(w * h);
+    for (const b of S.titik) { if (!S.utama.has(b[3]) || !masuk(b)) continue; const cx = Math.floor((b[1] - x0) / this.SEL), cy = Math.floor((y1 - b[0]) / this.SEL);
+      if (cx >= 0 && cy >= 0 && cx < w && cy < h) n[cy * w + cx]++; }
+    /* kepadatan kernel: dua kali rata-rata kotak 3x3 sel (mendekati Gaussian, radius ± 15 km), dihitung sebagai titik per sel */
+    const kotakBlur = (a, r) => { const o = new Float32Array(a.length), t = new Float32Array(a.length);
+      for (let y = 0; y < h; y++) { let s = 0; for (let x = -r; x < w + r; x++) { if (x + r < w && x + r >= 0) s += a[y * w + x + r]; if (x - r - 1 >= 0 && x - r - 1 < w) s -= a[y * w + x - r - 1]; if (x >= 0 && x < w) t[y * w + x] = s / (2 * r + 1); } }
+      for (let x = 0; x < w; x++) { let s = 0; for (let y = -r; y < h + r; y++) { if (y + r < h && y + r >= 0) s += t[(y + r) * w + x]; if (y - r - 1 >= 0 && y - r - 1 < h) s -= t[(y - r - 1) * w + x]; if (y >= 0 && y < h) o[y * w + x] = s / (2 * r + 1); } }
+      return o; };
+    const d = kotakBlur(kotakBlur(Float32Array.from(n), 1), 1);
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h), lm = Math.log1p(30);
+    for (let i = 0; i < d.length; i++) if (d[i] > .04) img.data.set(gradasi(this.ST, Math.min(1, Math.log1p(d[i]) / lm)), i * 4);
+    ctx.putImageData(img, 0, 0);
+    /* diperbesar 3x lalu diburamkan: permukaan menyambung antarsel seperti Windy, inti tetap tajam */
+    const cv2 = document.createElement("canvas"); cv2.width = w * 3; cv2.height = h * 3; const c2 = cv2.getContext("2d"); c2.imageSmoothingEnabled = true;
+    c2.filter = "blur(2px)"; c2.drawImage(cv, 0, 0, cv2.width, cv2.height);
+    return {url: cv2.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
+  tampil(on) { this.on = on; if (!peta) return;
+    if (on && !peta.getSource("kini")) { const g = this.gambar(); peta.addSource("kini", {type: "image", url: g.url, coordinates: g.kor});
+      peta.addLayer({id: "kini", type: "raster", source: "kini", paint: {"raster-opacity": .85, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); }
+    if (peta.getLayer("kini")) peta.setLayoutProperty("kini", "visibility", on ? "visible" : "none");
+    /* titik: tetap ada tapi baru menonjol saat diperbesar, supaya permukaan terbaca di skala nasional */
+    if (peta.getLayer("titik")) peta.setPaintProperty("titik", "circle-opacity", on ? ["interpolate", ["linear"], ["zoom"], 5, 0, 7, .9] : ["interpolate", ["linear"], ["zoom"], 4, gelap() ? .7 : .85, 8, .95]); },
+  segarkan() { if (this.on && peta?.getSource("kini")) { const g = this.gambar(); peta.getSource("kini").updateImage({url: g.url, coordinates: g.kor}); } },
+};
+
 /* ---------- panel ---------- */
 function renderCrumb() {
   const j = S.jalur, b = [`<button data-n="0">Indonesia</button>`];
@@ -1010,7 +1050,7 @@ $("#rentang").addEventListener("click", e => { const b = e.target.closest("butto
   S.rentang = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; simpanLokal("pk-rentang2", S.rentang);
   if (S.rentang === 168 && !S.titikPenuh) toast("Memuat titik 7 hari…");
   $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); }); });
+  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); }); });
 
 /* lapisan */
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
@@ -1026,7 +1066,10 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   const set = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
   ["fwi", "angin"].forEach(k => set(k, m === "cuaca"));
+  /* Sekarang: permukaan kepadatan titik panas + kompleks + posko; Cuaca: titik di atas FWI; Riwayat: permukaan riwayat */
+  if (m === "kini") ["titik", "kluster", "posko", "daops"].forEach(k => set(k, true));
   if (m === "cuaca") set("titik", true);
+  Kini.tampil(m === "kini"); renderLegenda();
   const pm = $(`#panelMode [data-m="${m === "riw" ? "riw" : "wil"}"]`); if (pm.getAttribute("aria-pressed") !== "true") pm.click(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderFwiHari() {
@@ -1045,22 +1088,22 @@ $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("butto
 function renderLegenda() {
   const fwiOn = Peta.lihat("fwi");
   $("#legenda").innerHTML = `<details ${S.legBuka === false ? "" : "open"} id="legDet"><summary class="lbl" style="display:flex;justify-content:space-between">Legenda <span>▾</span></summary><div style="margin-top:6px">
-    <div class="lbl">Umur titik panas</div>
+    ${S.panel === "riw" || !Peta.lihat("titik") ? "" : `<div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
-    <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>
+    <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>`}
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
-    <div class="leg" style="margin:4px 0 6px"><span>Klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `<div class="lbl">Jumlah titik per wilayah</div>
+    <div class="leg" style="margin:4px 0 6px"><span>Label: <b>skor risiko · tahun terbakar</b> per wilayah. Arahkan kursor untuk angka tiap sel; klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `${Kini.on ? `<div class="lbl">Kepadatan titik panas (per sel ± 11 km)</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") ? `<div class="lbl">Jumlah titik per wilayah</div>
     <div class="legscale">${["#fde7c8", "#f9c48b", "#f39a53", "#e0612f", "#b8321f", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
-    <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>`}
-    ${S.panel === "riw" ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
+    <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
+    ${S.panel === "riw" || !(Peta.lihat("posko") || Peta.lihat("daops")) ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
     <div class="leg" style="margin:4px 0 0"><span><i class="sw dot" style="background:#0b2545;border:2px solid #fff;box-shadow:0 0 0 1px #0b2545"></i>Posko pusat (provinsi)</span>
       <span><i class="sw dot" style="background:#7b5cd6;border:2px solid #fff"></i>Posko menengah (kabupaten), zoom 6+</span>
       <span><i class="sw dot" style="background:#1a9e8f;border:2px solid #fff"></i>Posko permanen (dari riwayat 2015–2026), zoom 7,5+</span>
       <span><i class="sw dot" style="background:#fff;border:2px solid #7b5cd6"></i>Posko aju (sementara, untuk api di luar jangkauan)</span>
       <span><i class="sw dot" style="background:#38a3e8;border:2px solid #fff"></i>Markas Daops Manggala Agni</span></div>
-    <div class="lbl" style="margin-top:8px">Status kompleks</div>
+    `}${S.panel === "riw" || !Peta.lihat("kluster") ? "" : `<div class="lbl" style="margin-top:8px">Status kompleks</div>
     <div class="leg" style="margin-top:4px">${S.meta.status.map((s, i) => `<span><i class="sw" style="background:${["#4caf73", "#4f9bd9", "#f29a3c", "#d6453a"][i]}"></i>${s}${i === 3 ? " (tampil di semua skala)" : ""}</span>`).slice(1).join("")}</div>
 `}
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
@@ -1453,6 +1496,22 @@ const Riwayat = {
       this.gambar = {url: cv2.toDataURL(), kor: [[G.x0, G.y1], [G.x0 + G.w * G.sel, G.y1], [G.x0 + G.w * G.sel, G.y1 - G.h * G.sel], [G.x0, G.y1 - G.h * G.sel]]}; }
     if (!peta.getSource("riwayat")) { peta.addSource("riwayat", {type: "image", url: this.gambar.url, coordinates: this.gambar.kor});
       peta.addLayer({id: "riwayat", type: "raster", source: "riwayat", paint: {"raster-opacity": .78, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); } },
+  /* label nilai di peta: skor & tahun terbakar tiap wilayah di tingkat aktif (titik tengah kotak batasnya) */
+  label() {
+    if (!peta || !S.riw || !S.fiturWil) return;
+    const th = this.th.length, f = [...new Map(S.fiturWil.map(x => [x.properties.kunci, x])).values()].map(x => { const r = S.riw[x.properties.kunci]; if (!r) return null;
+      const b = kotak([x]); return {type: "Feature", geometry: {type: "Point", coordinates: [(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2]},
+        properties: {t: `${x.properties.nama}\n${r.skor} · ${r.tahun}/${th} thn`, s: r.skor}}; }).filter(Boolean);
+    const data = {type: "FeatureCollection", features: f};
+    if (!peta.getSource("riw-lbl")) { peta.addSource("riw-lbl", {type: "geojson", data});
+      peta.addLayer({id: "riw-lbl", type: "symbol", source: "riw-lbl", layout: {"text-field": ["get", "t"], "text-size": ["interpolate", ["linear"], ["get", "s"], 20, 10, 90, 13], "text-font": ["Noto Sans Bold"],
+        "symbol-sort-key": ["-", 100, ["get", "s"]], "text-padding": 4},
+        paint: {"text-color": gelap() ? "#ffffff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.8}}); }
+    else peta.getSource("riw-lbl").setData(data);
+    peta.setLayoutProperty("riw-lbl", "visibility", S.panel === "riw" ? "visible" : "none"); },
+  /* angka sel di bawah kursor */
+  baca(lng, lat) { const G = this.grid; if (!G) return null; const ix = Math.floor((lng - G.x0) / G.sel), iy = Math.floor((G.y1 - lat) / G.sel);
+    this._idx ||= new Map(G.sel_data.map(d => [d[0] + "," + d[1], d])); return this._idx.get(ix + "," + iy) || [ix, iy, 0, 0]; },
   /* popup analisa satu wilayah */
   buka(kunci) { const r = S.riw && S.riw[kunci]; if (r) Tren.rinci(r, this.th, true); },
 };
@@ -2695,6 +2754,7 @@ class Heap { constructor() { this.a = []; } get size() { return this.a.length; }
   await Peta.init();
   renderLegenda(); renderFwiHari(); garisWaktu();
   $("#lapis").classList.remove("buka");
+  Kini.tampil(true); renderLegenda();
   $("#muat").classList.add("hilang");
   if (!S.titikPenuh) muatJSON("data/hotspot.json").then(hs => { S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
     S.titikPenuh = true; if (S.rentang === 168) { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); } }).catch(() => {});
@@ -2703,6 +2763,16 @@ class Heap { constructor() { this.a = []; } get size() { return this.a.length; }
   else if (h.startsWith("sim")) { S.pilihK = h.split("/")[1] || null; bukaTab("sim", false); }
   else if (TABS.some(t => t[0] === h)) bukaTab(h, false);
 })();
+/* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
+(() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
+  const h = document.createElement("div"); h.className = "tarik"; h.title = "Tarik untuk mengubah lebar"; h.setAttribute("role", "separator"); h.setAttribute("aria-orientation", "vertical"); el.appendChild(h);
+  h.addEventListener("pointerdown", e => { e.preventDefault(); h.setPointerCapture(e.pointerId); h.classList.add("aktif"); const x0 = e.clientX, w = el.getBoundingClientRect().width;
+    const gerak = ev => { const lebar = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))); el.style.width = lebar + "px"; };
+    const lepas = () => { h.classList.remove("aktif"); h.removeEventListener("pointermove", gerak); h.removeEventListener("pointerup", lepas); simpanLokal(kunci, Math.round(el.getBoundingClientRect().width)); if (typeof peta !== "undefined" && peta) peta.resize(); };
+    h.addEventListener("pointermove", gerak); h.addEventListener("pointerup", lepas); });
+  h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };
+  atur(document.querySelector(".panel"), "lebar-panel", "kanan", 320, Math.min(900, innerWidth * .6));
+  atur(document.querySelector(".tools"), "lebar-tools", "kiri", 220, 520); })();
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 </body>
