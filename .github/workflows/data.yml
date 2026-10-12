@@ -39,6 +39,10 @@ jobs:
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py
 
+      - name: Prakiraan asap CAMS (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/asap.py
+
       - name: Data pelengkap (boleh gagal, data lama tetap dipakai)
         continue-on-error: true
         run: |
