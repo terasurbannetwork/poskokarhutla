@@ -1,7 +1,10 @@
 """Banjir rob (pasang laut) -> public/banjir/data/rob.json
 
 Sumber (lihat poskorob-riset/RISET.md):
-- Open-Meteo Marine (SMOC 0,08 deg): sea_level_height_msl per jam, 3 hari lalu + 10 hari ke depan, dan wave_height.
+- Open-Meteo Marine (SMOC 0,08 deg): sea_level_height_msl per jam, 3 hari lalu + 10 hari ke depan, dan maks harian
+  wave_height (w), swell_wave_height (sw), wind_wave_height (ww), wave_period (wp, detik). 5 variabel x 13 hari = bobot 1/titik.
+  gabung = 1 bila muka laut >= p95 DAN gelombang >= 1,25 m (air tinggi + gelombang, rob diperparah ombak). Ambang level
+  tidak berubah; gabung hanya penanda tambahan.
 - Arsip Open-Meteo Marine (isi sejak 2022-11-24): maksimum harian -> ambang per titik (persentil iklim model itu sendiri,
   jadi bias datum model saling hapus). Arsip mahal (kuota ~125 panggilan per titik), jadi:
   data/raw/banjir/rob/titik.json + ambang.json di-commit, arsip_*.json cuma cache lokal/Actions.
@@ -34,6 +37,7 @@ ARSIP_MULAI = "2022-11-24"  # arsip SMOC di Open-Meteo: jam sebelum ini null (di
 JARAK_MAKS = 30  # km dari pusat kecamatan ke sel laut model
 JARAK_ANTAR = 15  # km minimum antar-titik (selain titik terbaik tiap kabupaten)
 PERSENTIL = (80, 90, 95, 97, 99)
+OMBAK_GABUNG = 1.25  # m, batas bawah kategori gelombang "sedang" BMKG (1,25-2,5 m)
 
 # Pantura: hanya kecamatan pesisir (cek geometri). Kota di luar Jawa: semua kecamatan (rob muara/sungai pasang).
 PANTURA = {
@@ -82,6 +86,13 @@ def level(h, a):
     if h >= max(a["p99"] + 0.10, a["amax"]):
         return 3
     return 2 if h >= a["p99"] else 1 if h >= a["p95"] else 0
+
+
+def gabung(h, w, a):
+    """Air tinggi + gelombang: 1 bila maks harian muka laut >= p95 DAN gelombang maks >= OMBAK_GABUNG; None bila tak ada data."""
+    if h is None or w is None or not a:
+        return None
+    return int(h >= a["p95"] and w >= OMBAK_GABUNG)
 
 
 def norm_kab(s):
@@ -597,13 +608,15 @@ def main():
     prakiraan = [None] * len(titik)
     for j in range(0, len(titik), 50):
         idx = list(range(j, min(j + 50, len(titik))))
-        res = marine([tuple(titik[i]["sel"]) for i in idx], hourly="sea_level_height_msl,wave_height",
+        res = marine([tuple(titik[i]["sel"]) for i in idx], hourly="sea_level_height_msl,wave_height,swell_wave_height,wind_wave_height,wave_period",
                      past_days=3, forecast_days=10)
         for i, d in zip(idx, res):
             h = d["hourly"]
             geser = dt.timedelta(seconds=d.get("utc_offset_seconds", 0))
             hm, wm = maks_harian(h["time"], h["sea_level_height_msl"], 1), maks_harian(h["time"], h["wave_height"], 1)
+            ekstra = {k: maks_harian(h["time"], h[v], 1) for k, v in (("sw", "swell_wave_height"), ("ww", "wind_wave_height"), ("wp", "wave_period"))}
             prakiraan[i] = {"h": [hm.get(x) for x in hari], "w": [wm.get(x) for x in hari],
+                            **{k: [None if v.get(x) is None else round(v[x], 2) for x in hari] for k, v in ekstra.items()},
                             "utc": {(dt.datetime.fromisoformat(t) - geser).strftime("%Y-%m-%dT%H"): v
                                     for t, v in zip(h["time"], h["sea_level_height_msl"]) if v is not None}}
 
@@ -619,12 +632,15 @@ def main():
         keluar.append({"lat": t["lat"], "lon": t["lon"], "sel": t["sel"], "prov": t["prov"], "kab": t["kab"], "kec": t["kec"],
                        "h": p["h"] if p else [], "w": p["w"] if p else [],
                        "p95": a["p95"] if a else None, "p99": a["p99"] if a else None, "amax": a["amax"] if a else None,
+                       "sw": p["sw"] if p else [], "ww": p["ww"] if p else [], "wp": p["wp"] if p else [],
+                       "gabung": [gabung(h, w, a) for h, w in zip(p["h"], p["w"])] if p else [],
                        "lv": [level(h, a) for h in p["h"]] if p else [], "ioc": gauge.get(i)})
     for k in kejadian:
         del k["kp"]
     rob = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "hari": hari, "titik": keluar, "bmkg": b,
            "kejadian": kejadian, "kab_tahun": kab_tahun, "validasi": simpanan["validasi"],
            "aturan": {"waspada": "maks harian >= p95", "siaga": ">= p99", "awas": ">= max(p99 + 0,10 m, tertinggi 2022+)",
+                      "gabung": f"muka laut >= p95 dan gelombang >= {OMBAK_GABUNG} m",
                       "datum": "MSL global model SMOC; ambang dari iklim model sendiri, bukan datum lokal",
                       "kalibrasi": "p95 dipertahankan untuk Waspada. Uji DIBI 13 Okt 2026 (26 kejadian, 16 kab): PSS p90 0,73, "
                                    "p95 0,67, p97 0,69 -- selisihnya < 1 galat baku POD (~0,08), sedangkan p90 menggandakan "
@@ -633,6 +649,7 @@ def main():
                       "DIBI BNPB", "BMKG Maritim"]}
     simpan(os.path.join(KELUAR, "rob.json"), rob)
     lv = [max((x for x in t["lv"] if x is not None), default=0) for t in keluar]
+    print(f"gabung (air tinggi + gelombang >= {OMBAK_GABUNG} m): {sum(1 for t in keluar if any(t['gabung']))} titik")
     print(f"rob.json: {len(keluar)} titik, waspada+ {sum(x >= 1 for x in lv)}, siaga+ {sum(x >= 2 for x in lv)}, "
           f"awas {sum(x >= 3 for x in lv)}; {os.path.getsize(os.path.join(KELUAR, 'rob.json')) / 1024:.0f} KB; "
           f"{time.time() - t0:.0f} dtk")
@@ -644,6 +661,7 @@ def uji():
     a = {"p95": 0.8, "p99": 0.9, "amax": 1.05}
     assert [level(h, a) for h in (0.5, 0.8, 0.95, 1.0, 1.05, None)] == [0, 1, 2, 2, 3, None]
     assert level(0.9, None) is None
+    assert [gabung(h, w, a) for h, w in ((0.8, 1.25), (0.8, 1.2), (0.7, 2), (None, 2))] == [1, 0, 0, None]
     assert norm_kab("Kota Adm. Jakarta Utara") == norm_kab("Kota Administrasi Jakarta Utara") == "kotajakartautara"
     assert norm_kab("Kab. Demak") == norm_kab("Demak") != norm_kab("Kota Pekalongan")
     assert abs(pearson([1, 2, 3], [2, 4, 6]) - 1) < 1e-9 and pearson([1, 1, 1], [1, 2, 3]) is None

@@ -1,7 +1,9 @@
 """Prakiraan asap: PM2.5 dan CO dari CAMS (Copernicus) lewat Open-Meteo Air Quality API -> public/data/asap.json
 
 Grid 1 derajat seluruh kotak Indonesia (darat dan laut, karena asap melintas laut), 4 hari, nilai harian:
-PM2.5 maksimum per jam (ug/m3) dan CO rata-rata (ug/m3). Tidak butuh kunci.
+PM2.5 maksimum per jam (ug/m3), CO rata-rata (ug/m3), lalu (ditambah, kolom lama tidak berubah) CO maksimum per jam
+(ug/m3) dan AOD 550 nm maksimum per jam (tanpa satuan; > 1 = asap/kabut asap tebal). Tidak butuh kunci.
+Kuota Open-Meteo: 3 variabel x 4 hari = bobot 1 per lokasi -> 799 panggilan/hari.
 """
 import datetime as dt, json, os, sys, time, urllib.request
 
@@ -28,23 +30,26 @@ def main():
     for a in range(0, len(titik), 100):
         b = titik[a:a + 100]
         d = ambil(f"{URL}?latitude={','.join(str(x[0]) for x in b)}&longitude={','.join(str(x[1]) for x in b)}"
-                  "&hourly=pm2_5,carbon_monoxide&forecast_days=4&timezone=Asia%2FJakarta")
+                  "&hourly=pm2_5,carbon_monoxide,aerosol_optical_depth&forecast_days=4&timezone=Asia%2FJakarta")
         for (la, lo), x in zip(b, d if isinstance(d, list) else [d]):
             h = x["hourly"]
             tgl = sorted({t[:10] for t in h["time"]})
             hari = hari or tgl
-            pm, co = [], []
+            pm, co, com, aod = [], [], [], []
             for t in tgl:
                 i = [k for k, w in enumerate(h["time"]) if w.startswith(t)]
                 p = [h["pm2_5"][k] for k in i if h["pm2_5"][k] is not None]
                 c = [h["carbon_monoxide"][k] for k in i if h["carbon_monoxide"][k] is not None]
                 pm.append(round(max(p)) if p else None)
+                a = [h["aerosol_optical_depth"][k] for k in i if h["aerosol_optical_depth"][k] is not None]
                 co.append(round(sum(c) / len(c)) if c else None)
-            hasil.append([la, lo, pm, co])
+                com.append(round(max(c)) if c else None)
+                aod.append(round(max(a), 2) if a else None)
+            hasil.append([la, lo, pm, co, com, aod])
         time.sleep(1)
     with open(os.path.join(AKAR, "public/data/asap.json"), "w") as f:
         json.dump({"sumber": "CAMS (Copernicus) via Open-Meteo", "dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
-                   "sel": 1, "hari": hari, "kolom": ["lat", "lon", "pm25_maks", "co_rata"], "grid": hasil}, f, separators=(",", ":"))
+                   "sel": 1, "hari": hari, "kolom": ["lat", "lon", "pm25_maks", "co_rata", "co_maks", "aod_maks"], "grid": hasil}, f, separators=(",", ":"))
     print(f"{len(hasil)} sel, hari {hari}", file=sys.stderr)
 
 

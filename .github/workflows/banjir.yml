@@ -41,10 +41,20 @@ jobs:
           restore-keys: data-
 
       - name: Uji aturan
-        run: for s in hujan sungai bahaya kejadian status rob posko; do python3 scripts/banjir/$s.py uji; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status rob posko peringatan riwayat; do python3 scripts/banjir/$s.py uji; done
 
       - name: Prakiraan hujan
         run: python3 scripts/banjir/hujan.py
+
+      # ~1.780 panggilan kuota (349 titik x 51 anggota / 10); sebelum isi-ulang arsip sungai yang menghabiskan sisa kuota.
+      # Gagal: status.py jalan tanpa jalur P3 (hujan_ansambel.json lama yang basi diabaikan karena tanggalnya).
+      - name: Ansambel hujan ECMWF (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/ansambel_hujan.py
+
+      - name: Peringatan BMKG nowcast dan gelombang (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/peringatan.py
 
       # ambang 29 tahun dilanjut 6 titik per hari (kuota Open-Meteo 10.000/hari dibagi dengan hujan & rob)
       - name: Debit sungai GloFAS
@@ -65,6 +75,10 @@ jobs:
         run: |
           [ -f public/banjir/data/bahaya.json ] || python3 scripts/banjir/bahaya.py
           [ -f public/banjir/data/kejadian.json ] || python3 scripts/banjir/kejadian.py
+
+      - name: Riwayat, peringkat risiko, kalender musim (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/riwayat.py
 
       - name: Status kecamatan dan posko
         run: |
