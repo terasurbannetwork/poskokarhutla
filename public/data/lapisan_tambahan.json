@@ -1,0 +1,63 @@
+{
+ "diperiksa": "2026-10-13",
+ "catatan": "Ubin raster langsung dari Global Forest Watch: tanpa kunci API, CORS *, PNG transparan (render_type=true_color). 'latest' dialihkan 307 ke versi terbaru (header pengalihan juga ber-CORS). {mulai}/{akhir} diisi UI (YYYY-MM-DD).",
+ "lapisan": {
+  "hilang": {
+   "nama": "Kehilangan tutupan hutan 2021–2025",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss/latest/dynamic/{z}/{x}/{y}.png?start_year=2021&end_year=2025&tree_cover_density_threshold=30&render_type=true_color"
+   ],
+   "tileSize": 512,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "warna": "#dc6c9c",
+   "atribusi": "Hutan hilang: Hansen/UMD/Google/USGS/NASA via Global Forest Watch (CC BY 4.0)",
+   "lisensi": "CC BY 4.0",
+   "pembaruan": "tahunan (v1.13 = s.d. 2025)"
+  },
+  "hilang_api": {
+   "nama": "Hutan hilang akibat kebakaran 2015–2025",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/umd_tree_cover_loss_from_fires/latest/dynamic/{z}/{x}/{y}.png?start_year=2015&end_year=2025&render_type=true_color"
+   ],
+   "tileSize": 512,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "warna": "#e58a45",
+   "atribusi": "Hutan hilang akibat kebakaran: Tyukavina dkk. 2022, UMD GLAD via Global Forest Watch (CC BY 4.0)",
+   "lisensi": "CC BY 4.0",
+   "pembaruan": "tahunan"
+  },
+  "peringatan": {
+   "nama": "Peringatan gangguan hutan 90 hari",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/gfw_integrated_dist_alerts/latest/dynamic/{z}/{x}/{y}.png?render_type=true_color&start_date={mulai}&end_date={akhir}"
+   ],
+   "tileSize": 256,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "hari": 90,
+   "warna": "#dc6c9c",
+   "atribusi": "Peringatan gangguan terintegrasi (DIST-ALERT, RADD, GLAD): Global Forest Watch (CC BY 4.0)",
+   "lisensi": "CC BY 4.0",
+   "pembaruan": "harian–mingguan; awan dan asap menunda deteksi optik, RADD (radar) tetap jalan"
+  },
+  "satelit": {
+   "nama": "Citra satelit warna asli",
+   "tiles": [
+    "https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_NOAA20_CorrectedReflectance_TrueColor/default/{kemarin}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg"
+   ],
+   "tileSize": 256,
+   "minzoom": 1,
+   "maxzoom": 9,
+   "atribusi": "Citra: NASA GIBS / VIIRS NOAA-20",
+   "lisensi": "domain publik",
+   "pembaruan": "harian"
+  }
+ },
+ "tidak_dipakai": {
+  "gfw_integrated_alerts": "dialihkan otomatis ke gfw_integrated_dist_alerts (produk lama dihentikan)",
+  "wur_radd_alerts, umd_glad_*_alerts": "hanya ubin 'encoded' (tanggal & keyakinan disandi di RGB), perlu dekoder shader; sudah tercakup di peringatan terintegrasi",
+  "kanal gambut BRG/PRIMS": "tidak ada layanan ubin/unduhan terbuka tanpa login yang ditemukan; kanal diambil dari OpenStreetMap (data/kanal.json)"
+ }
+}

@@ -15,3 +15,4 @@ data/raw/berita/*
 !data/raw/berita/label_uji.json
 __pycache__/
 .DS_Store
+data/graf_jalan.json.gz

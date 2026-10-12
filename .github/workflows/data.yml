@@ -34,6 +34,10 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # cache public/data lama tidak boleh menimpa lapisan statis yang di-commit jalan bulanan (statis.yml)
+      - name: Pakai lapisan statis dari repo, bukan dari cache
+        run: git checkout HEAD -- public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson public/data/lapisan_tambahan.json 2>/dev/null || true
+
       - name: Titik panas, kompleks, FWI, BNPB
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
@@ -83,6 +87,23 @@ jobs:
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py
 
+      - name: Pulihkan graf jalan
+        uses: actions/cache/restore@v4
+        with:
+          path: data/graf_jalan.json.gz
+          key: graf-${{ github.run_id }}
+          restore-keys: graf-
+
+      - name: Waktu tempuh regu (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/scrape/akses.py
+
+      # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
+      - name: Indeks iklim ENSO/IOD (boleh gagal)
+        continue-on-error: true
+        run: |
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f public/data/iklim.json ]; then python3 scripts/data/iklim.py; fi
+
       - name: Data keputusan & InaRISK/BPBD (boleh gagal)
         continue-on-error: true
         run: |
@@ -112,6 +133,8 @@ jobs:
           python3 scripts/data/berita.py uji
           python3 scripts/data/ansambel.py uji
           python3 scripts/data/tanah.py uji
+          python3 scripts/data/penduduk.py paparan > /dev/null
+          python3 scripts/scrape/akses.py uji
 
       - name: Simpan data untuk jalan berikutnya
         uses: actions/cache/save@v4

@@ -1,0 +1,53 @@
+name: Lapisan statis (OSM, WorldPop)
+
+# Tanggal 2 tiap bulan pukul 02.00 WIB, saat Overpass publik sepi: jalan, fasilitas, kanal, penduduk.
+on:
+  schedule:
+    - cron: "0 19 2 * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  statis:
+    runs-on: ubuntu-latest
+    timeout-minutes: 240   # Overpass publik sering 504; tarik_osm mengulang sendiri dengan jeda
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Tarik OSM (jalan, fasilitas, kanal) 9 provinsi
+        run: |
+          python3 scripts/scrape/tarik_osm.py fasilitas
+          python3 scripts/scrape/tarik_osm.py jalan
+          python3 scripts/scrape/tarik_osm.py sungai
+
+      - name: Bangun lapisan
+        run: |
+          python3 scripts/scrape/fasilitas.py
+          python3 scripts/scrape/kanal.py
+          python3 scripts/scrape/akses.py graf
+          python3 scripts/data/penduduk.py
+
+      - name: Simpan graf jalan untuk jalan harian
+        uses: actions/cache/save@v4
+        with:
+          path: data/graf_jalan.json.gz
+          key: graf-${{ github.run_id }}
+
+      - name: Commit
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson public/data/penduduk.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: lapisan statis $(TZ=Asia/Jakarta date +%F)"
+          git pull -q --rebase && git push -q
