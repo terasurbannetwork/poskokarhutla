@@ -23,7 +23,7 @@ HARI = 7
 SENSOR_UTAMA = {"M", "N", "N20"}
 # Kejadian api (FEDS, Chen dkk. 2022; Indradjad dkk. 2024): VIIRS 3 satelit, keyakinan nominal+tinggi,
 # DBSCAN Haversine eps 1 km, minPts 1 (titik tunggal tetap kejadian), jendela 5 hari, aktif bila terdeteksi <= 72 jam.
-EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM = 1.0, 1, 5, 72
+EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
 R_BUMI = 6371.0088
 PIKSEL_HA = 0.375 * 0.375 * 100  # 14,0625 ha per piksel VIIRS 375 m
 
@@ -74,9 +74,9 @@ ambil.__wrapped__ = _ambil
 def hotspot(k, w):
     hari_ini = dt.datetime.now(dt.timezone.utc).date()
     tugas = []
-    for s in SENSOR:  # API NRT maksimal 5 hari per panggilan
-        tugas.append((s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{BBOX}/5/{hari_ini}"))
-        tugas.append((s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{BBOX}/5/{hari_ini - dt.timedelta(days=5)}"))
+    for s in SENSOR:  # DATE = tanggal AWAL jendela, rentang maks 5 hari: dua jendela = 10 hari UTC, lalu dipotong 7 x 24 jam
+        for mulai in (4, 9):
+            tugas.append((s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{BBOX}/5/{hari_ini - dt.timedelta(days=mulai)}"))
     with ThreadPoolExecutor(4) as ex:
         teks = list(ex.map(lambda t: (t[0], ambil(t[1])), tugas))
     batas = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI)
@@ -103,6 +103,7 @@ def hotspot(k, w):
                 "lat": lat, "lon": lon, "t": t, "s": {"VIIRS_SNPP_NRT": "N", "VIIRS_NOAA20_NRT": "N20",
                                                       "VIIRS_NOAA21_NRT": "N21", "MODIS_NRT": "M"}[sensor],
                 "frp": round(float(r.get("frp") or 0), 1), "c": kc, "adm": adm,
+                "px": max(float(r.get("scan") or .4), float(r.get("track") or .4)),  # ukuran piksel sebenarnya (km)
             })
     titik.sort(key=lambda p: p["t"])
     return titik
@@ -116,18 +117,28 @@ def haversine(a, b):
     return 2 * R_BUMI * math.asin(math.sqrt(h))
 
 
-def dbscan(pts, eps=EPS_KM, min_pts=MIN_PTS):
-    """Label per titik: -1 noise, 0..n kluster. Indeks sel ~eps supaya tetangga cukup dicari di 3x3 sel."""
-    sel = eps / 111.0
+def dbscan(pts, eps=EPS_KM, min_pts=MIN_PTS, jam=48):
+    """ST-DBSCAN. Dua titik bertetangga bila jaraknya <= eps_ij dan selisih waktunya <= jam.
+    eps_ij = 1,5 x ukuran piksel terbesar keduanya (piksel VIIRS melebar ke tepi sapuan), dibatasi 0,6-eps km.
+    Sel indeks dihitung dari eps dalam derajat bujur pada lintang 12 derajat (Indonesia ada di |lintang| < 11)."""
+    sel = eps / (111.195 * math.cos(math.radians(12)))
     grid = {}
     for i, p in enumerate(pts):
         grid.setdefault((math.floor(p["lon"] / sel), math.floor(p["lat"] / sel)), []).append(i)
+    batas_t = dt.timedelta(hours=jam)
 
     def tetangga(i):
         p = pts[i]
         gx, gy = math.floor(p["lon"] / sel), math.floor(p["lat"] / sel)
-        return [j for dx in (-1, 0, 1) for dy in (-1, 0, 1)
-                for j in grid.get((gx + dx, gy + dy), ()) if haversine(p, pts[j]) <= eps]
+        out = []
+        for dx in (-1, 0, 1):
+            for dy in (-1, 0, 1):
+                for j in grid.get((gx + dx, gy + dy), ()):
+                    q = pts[j]
+                    e = min(eps, max(0.6, 1.5 * max(p.get("px", .4), q.get("px", .4))))
+                    if abs(p["t"] - q["t"]) <= batas_t and haversine(p, q) <= e:
+                        out.append(j)
+        return out
 
     label, inti, k = [None] * len(pts), [False] * len(pts), -1
     for i in range(len(pts)):
