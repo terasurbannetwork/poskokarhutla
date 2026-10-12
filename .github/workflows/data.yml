@@ -39,6 +39,47 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python3 scripts/data/harian.py
 
+      # arsip berita bergulir 120 hari dibawa lewat cache tersendiri (bukan commit: berubah tiap hari).
+      # Cache hilang -> berita.py membangun ulang arsip 120 hari sendiri (± 8 menit).
+      - name: Pulihkan iklim tanah
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/tanah_klim.json
+          key: tanah-${{ github.run_id }}
+          restore-keys: tanah-
+
+      # ansambel ECMWF dan kelembapan tanah: kuota Open-Meteo ~3.200/hari (lihat docstring masing-masing)
+      - name: Ansambel FWI dan kelembapan tanah (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/data/ansambel.py
+          python3 scripts/data/tanah.py
+
+      - name: Simpan iklim tanah
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/tanah_klim.json
+          key: tanah-${{ github.run_id }}
+
+      - name: Pulihkan arsip berita
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/berita/arsip.json
+          key: berita-${{ github.run_id }}
+          restore-keys: berita-
+
+      - name: Bot berita (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        run: python3 scripts/data/berita.py
+
+      - name: Simpan arsip berita
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/berita/arsip.json
+          key: berita-${{ github.run_id }}
+
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py
 
@@ -68,6 +109,9 @@ jobs:
           python3 scripts/data/aturan.py
           python3 scripts/data/posko.py uji
           python3 scripts/data/udara_rekom.py uji
+          python3 scripts/data/berita.py uji
+          python3 scripts/data/ansambel.py uji
+          python3 scripts/data/tanah.py uji
 
       - name: Simpan data untuk jalan berikutnya
         uses: actions/cache/save@v4
@@ -84,6 +128,9 @@ jobs:
           path: public/banjir/data
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
+
+      - name: Salin peringatan BMKG terbaru dari data banjir
+        run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
 
       - name: Terbitkan ke Cloudflare
         env:

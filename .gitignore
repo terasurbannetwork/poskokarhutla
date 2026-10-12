@@ -9,5 +9,9 @@ data/raw/banjir/*
 data/raw/banjir/rob/*
 !data/raw/banjir/rob/titik.json
 !data/raw/banjir/rob/ambang.json
+# berita: label tangan untuk validasi sentimen ikut di-commit; arsip.json lewat cache Actions, pusat.json dibuat ulang
+!data/raw/berita/
+data/raw/berita/*
+!data/raw/berita/label_uji.json
 __pycache__/
 .DS_Store
