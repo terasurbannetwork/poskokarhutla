@@ -285,8 +285,8 @@ table.tb2 td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:to
 table.tb2 td.n{text-align:right;padding-left:10px;font-weight:600}
 table.tb2 tr:last-child td{border-bottom:0}
 table.tb3{width:100%;font-size:12px;border-collapse:collapse}
-table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 4px;border-bottom:1px solid var(--line);white-space:nowrap}
-table.tb3 td{padding:6px 4px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
+table.tb3 td{padding:6px 3px;border-bottom:1px solid var(--line);vertical-align:top}
 table.tb3 .n{text-align:right;white-space:nowrap}
 table.tb3 td small{display:block;color:var(--ink2);font-size:11px}
 table.tb3 tr:last-child td{border-bottom:0}
@@ -352,6 +352,13 @@ table.tb3 tr:last-child td{border-bottom:0}
 @media (prefers-reduced-motion:reduce){.ex .gy,.ex .gx,.ex .gf{animation:none}}
 .sens{display:grid;grid-template-columns:220px 1fr 210px;gap:10px;align-items:center;font-size:12.5px;padding:3px 0}
 @media (max-width:700px){.sens{grid-template-columns:1fr;gap:3px;padding:6px 0}}
+figure.banner{position:relative;margin:0 0 16px;border-radius:var(--r);overflow:hidden;height:150px;background:var(--surface)}
+figure.banner img{width:100%;height:100%;object-fit:cover;display:block}
+figure.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,oklch(15% .03 256 / .7),transparent 60%)}
+figure.banner figcaption{position:absolute;left:16px;bottom:12px;right:16px;z-index:1;color:#fff;font-size:13px;font-weight:600;max-width:60ch}
+figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px;font-weight:400;margin-top:2px}
+@media (max-width:700px){figure.banner{height:110px}}
+.kv>*{min-width:0}
 </style>
 </head>
 <body>
@@ -443,17 +450,17 @@ table.tb3 tr:last-child td{border-bottom:0}
 
   <!-- ================= KEPUTUSAN ================= -->
   <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div></section>
-  <section class="page scroll" id="p-keputusan" aria-label="Keputusan musim kebakaran"><div class="wrap" id="keputusan"></div></section>
+  <section class="page scroll" id="p-keputusan" aria-label="Keputusan musim kebakaran"><div class="wrap"><figure class="banner" data-foto="sekat" hidden></figure><div id="keputusan"></div></div></section>
   <!-- ================= POSKO ================= -->
-  <section class="page scroll" id="p-posko" aria-label="Rekomendasi lokasi posko"><div class="wrap" id="posko"></div></section>
+  <section class="page scroll" id="p-posko" aria-label="Rekomendasi lokasi posko"><div class="wrap"><figure class="banner" data-foto="pemadam" hidden></figure><div id="posko"></div></div></section>
   <!-- ================= TREN ================= -->
-  <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap" id="tren"></div></section>
+  <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><figure class="banner" data-foto="pasca" hidden></figure><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
-  <section class="page scroll" id="p-kompleks" aria-label="Daftar kompleks kebakaran"><div class="wrap" id="kompleks"></div></section>
+  <section class="page scroll" id="p-kompleks" aria-label="Daftar kompleks kebakaran"><div class="wrap"><figure class="banner" data-foto="gambut" hidden></figure><div id="kompleks"></div></div></section>
   <!-- ================= PRIORITAS ================= -->
-  <section class="page scroll" id="p-prioritas" aria-label="Sembilan provinsi prioritas"><div class="wrap" id="prioritas"></div></section>
+  <section class="page scroll" id="p-prioritas" aria-label="Sembilan provinsi prioritas"><div class="wrap"><figure class="banner" data-foto="satelit" hidden></figure><div id="prioritas"></div></div></section>
   <!-- ================= SARANA ================= -->
-  <section class="page scroll" id="p-sarana" aria-label="Kesiapan sarana pemadam"><div class="wrap" id="sarana"></div></section>
+  <section class="page scroll" id="p-sarana" aria-label="Kesiapan sarana pemadam"><div class="wrap"><figure class="banner" data-foto="heli" hidden></figure><div id="sarana"></div></div></section>
   <!-- ================= METODE ================= -->
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
 </main>
@@ -531,6 +538,9 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 let LAMBANG = {}; muatJSON("lambang/kabkota.json").then(d => LAMBANG = d).catch(() => {});
 const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `lambang/provinsi/${prov}.png`;
   return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
+/* foto banner tiap halaman (Wikimedia Commons, kredit wajib tampil) */
+muatJSON("img/kredit.json").then(kr => document.querySelectorAll("figure.banner[data-foto]").forEach(b => { const f = kr.find(x => x.topik === b.dataset.foto); if (!f) return;
+  b.innerHTML = `<img src="img/${f.file}" alt="${esc(f.judul)}" loading="lazy"><figcaption>${esc(f.judul)}${f.lokasi_tahun ? " · " + esc(f.lokasi_tahun) : ""}<a href="${esc(f.sumber)}" target="_blank" rel="noopener">${esc(f.penulis)} · ${esc(f.lisensi)}</a></figcaption>`; b.hidden = false; })).catch(() => {});
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
@@ -1106,7 +1116,7 @@ const Laci = {
         <table class="tb2"><tbody>${baris("Bahaya InaRISK", S.inarisk?.[p.id] != null ? fmt(S.inarisk[p.id]) + " (" + kelasInarisk(S.inarisk[p.id]) + ")" : "tidak ada data")}${baris("Lahan gambut", p.gambut ? "ya" : p.gambut === false ? "tidak" : "–")}</tbody></table>
         <p class="fnd">Status lahan dari peta kawasan hutan 2017 dan konsesi ± 2014; pastikan ke KPH/ATR.</p>`)}
       ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id} · ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km · menjangkau ${fmt(ps.kompleks.length)} kompleks (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
-        <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Waktu darat</th></tr></thead><tbody>
+        <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Via darat</th></tr></thead><tbody>
           ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
           ${bp ? `<tr><td><b>${esc(bp.nama)}</b><small>${bp.pusdalops ? "Pusdalops " + esc(bp.pusdalops) : "kantor BPBD"}</small></td><td class="n">–</td><td class="n">–</td><td class="n num"><b>${fmt(Math.round(bp.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(bp.jarak))}</td></tr>` : ""}</tbody></table>
         ${dk[0]?.jarak > 150 ? `<p class="fnd" style="color:var(--bad)">Daops terdekat lebih dari 150 km. Andalkan MPA, BPBD, dan regu perusahaan setempat.</p>` : ""}`)}
@@ -1592,7 +1602,7 @@ const pendek = k => namaProv(k).replace("Kalimantan", "Kal.").replace("Sumatera"
 const Insight = {
   data: {},
   st: {harian: "harian", ytd: "rasio", musim: "p_semua", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 12},
-  EX: ["harian", "ytd", "musim", "cuaca", "foto1", "bnpb", "tahun", "luas", "foto2", "kec"],
+  EX: ["harian", "ytd", "musim", "cuaca", "bnpb", "tahun", "luas", "kec"],
   ex(judul, sub, unit, isi, catatan, ctl = "") {
     return `<article class="ex"><h3>${judul}</h3><p class="sub">${sub}</p><p class="unit">${unit}</p>${ctl ? `<div class="ctl">${ctl}</div>` : ""}${isi}<p class="fn">${catatan}</p></article>`; },
   hl: t => `<span class="hl">${t}</span>`,
