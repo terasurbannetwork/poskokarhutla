@@ -847,7 +847,8 @@ const Insight = {
     const W = 940, rh = 28, L = 200, mx = Math.max(1, ...pv.map(x => x.a.n[1] + x.a.n[2] + x.a.n[3])), X = v => v / mx * (W - L - 70);
     const g = pv.map((x, i) => { let acc = 0; return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${i * rh + 18}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(x.k))}</text>` + [3, 2, 1].map(l => { const w = X(x.a.n[l]), s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${i * rh + 5}" width="${w}" height="${rh - 10}" fill="${WARNA_LV[l]}" data-tip="<b>${esc(namaProv(x.k))}</b><br>${fmt(x.a.n[l])} kecamatan ${LEVEL[l].toLowerCase()}<br>klik untuk buka di peta"/>`; acc += w; return s; }).join("") + `<text x="${L + acc + 6}" y="${i * rh + 18}" font-size="12" font-weight="700">${fmt(x.a.n[1] + x.a.n[2] + x.a.n[3])}</text></g>`; }).join("");
     const nTot = l => Object.values(S.st.kec).filter(v => (v[b]?.[h] || 0) === l).length, nama = NAMA_B[b];
-    return this.ex(pv.length ? `${this.hl(fmt(nTot(3) + nTot(2)) + " kecamatan")} berstatus siaga atau awas ${nama} pada ${h ? tglPendek(S.st.hari[h]) : "hari ini"}; ${fmt(nTot(1))} lainnya waspada` : `Tidak ada kecamatan berstatus ${nama} pada ${h ? tglPendek(S.st.hari[h]) : "hari ini"}`,
+    const kapan = h ? tglPendek(S.st.hari[h]) : "hari ini";
+    return this.ex(pv.length ? (nTot(3) + nTot(2) ? `${this.hl(fmt(nTot(3) + nTot(2)) + " kecamatan")} berstatus siaga atau awas ${nama} ${kapan}; ${fmt(nTot(1))} lainnya waspada` : `Belum ada kecamatan siaga atau awas ${nama} ${kapan}; ${this.hl(fmt(nTot(1)) + " kecamatan")} waspada`) : `Tidak ada kecamatan berstatus ${nama} pada ${h ? tglPendek(S.st.hari[h]) : "hari ini"}`,
       `Kecamatan berstatus per provinsi`, `jumlah kecamatan; warna = tingkat status. Klik provinsi untuk membukanya di peta.`,
       pv.length ? `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Status per provinsi">${g}</svg>` : `<p class="kosong">Semua kecamatan normal.</p>`, `Aturan status ada di tab Metode. Sumber: Open-Meteo, GloFAS, InaRISK.`,
       this.seg("status", [["b", "Banjir"], ["l", "Longsor"]]) + this.seg("hari", S.st.hari.map((t, i) => [i, i ? tglPendek(t) : "Hari ini"]))); },
@@ -958,7 +959,7 @@ const Insight = {
       <rect class="gx" style="--i:${i}" x="${L}" y="${i * rh + 6}" width="${X(x.b)}" height="${rh - 12}" fill="#3f7fb8" data-tip="<b>${esc(namaProv(x.k))}</b><br>banjir: ${fmt(x.b)}"/><rect class="gx" style="--i:${i}" x="${L + X(x.b)}" y="${i * rh + 6}" width="${X(x.l)}" height="${rh - 12}" fill="#9a7448" data-tip="<b>${esc(namaProv(x.k))}</b><br>longsor: ${fmt(x.l)}"/>
       <text x="${L + X(x.n) + 6}" y="${i * rh + 18}" font-size="12" font-weight="700">${rb(x.n)}</text>`).join("");
     const nm = {meninggal: "korban meninggal", terdampak: "warga terdampak", mengungsi: "warga mengungsi", rumah_rusak: "rumah rusak"}[f];
-    return this.ex(`${th}: ${this.hl(rb(tot))} ${nm} akibat banjir dan longsor di 15 provinsi teratas; ${esc(namaProv(T[0]?.k))} terbanyak`,
+    return this.ex(`${th}: ${this.hl(f === "meninggal" ? fmt(tot) : rb(tot))} ${nm} akibat banjir dan longsor di 15 provinsi teratas; ${esc(namaProv(T[0]?.k))} terbanyak`,
       `Dampak banjir dan longsor per provinsi, ${th}`, `biru = banjir, cokelat = longsor`,
       `<svg viewBox="0 0 ${W} ${T.length * rh + 22}" role="img" aria-label="Dampak per provinsi">${g}</svg>`, `Sumber: rekap kejadian & dampak BNPB ${th}.`,
       this.seg("dampak", [["meninggal", "Meninggal"], ["mengungsi", "Mengungsi"], ["terdampak", "Terdampak"], ["rumah_rusak", "Rumah rusak"]])); },
