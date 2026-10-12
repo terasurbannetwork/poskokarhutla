@@ -668,7 +668,11 @@ const Peta = {
     const riw = S.panel === "riw";
     peta.setPaintProperty("wil-fill", "fill-color", riw ? ["match", ["get", "lv"], 3, "#7c1d16", 2, "#d6453a", 1, "#f39a53", 0, "#fde7c8", "rgba(0,0,0,0)"]
       : ["step", ["get", "v"], "rgba(0,0,0,0)", 1, "#fde7c8", 10, "#f9c48b", 50, "#f39a53", 200, "#e0612f", 1000, "#b8321f", 4000, "#7c1d16"]);
-    peta.setLayoutProperty("wil-fill", "visibility", riw || this.lihat("wilayah") ? "visible" : "none"); },
+    peta.setLayoutProperty("wil-fill", "visibility", riw || this.lihat("wilayah") ? "visible" : "none");
+    /* mode riwayat: permukaan halus jadi warna utama, poligon cukup tipis supaya tetap bisa diklik */
+    peta.setPaintProperty("wil-fill", "fill-opacity", riw ? .06 : ["interpolate", ["linear"], ["zoom"], 5, ["case", ["boolean", ["feature-state", "hover"], false], .78, .55], 8.5, ["case", ["boolean", ["feature-state", "hover"], false], .35, .12]]);
+    if (riw) Riwayat.raster().then(() => peta.setLayoutProperty("riwayat", "visibility", "visible")).catch(() => {});
+    else if (peta.getLayer("riwayat")) peta.setLayoutProperty("riwayat", "visibility", "none"); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : true; },
   geoTitik() {
     return {type: "FeatureCollection", features: S.titik.filter(masuk).map(b => ({type: "Feature",
@@ -1033,9 +1037,10 @@ function renderLegenda() {
     <div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>
-    ${S.panel === "riw" ? `<div class="lbl">Risiko riwayat 2002–2026 (klik wilayah)</div>
-    <div class="legscale">${["#fde7c8", "#f39a53", "#d6453a", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
-    <div class="legnum"><span>Rendah</span><span>Sedang</span><span>Tinggi</span><span>Sgt tinggi</span></div>` : `<div class="lbl">Jumlah titik per wilayah</div>
+    ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
+    <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
+    <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
+    <div class="leg" style="margin:4px 0 6px"><span>Klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `<div class="lbl">Jumlah titik per wilayah</div>
     <div class="legscale">${["#fde7c8", "#f9c48b", "#f39a53", "#e0612f", "#b8321f", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>`}
     <div class="lbl" style="margin-top:8px">Posko & regu</div>
@@ -1423,6 +1428,18 @@ const Riwayat = {
       [[pv, "prov", namaProv(pv)], [pv + "|" + kb, "kab", kb], [k, "kec", kc]].forEach(([kk, jenis, nama], i) => {
         const r = tk[i][kk] ||= {kunci: kk, jenis, prov: pv, kab: kb, nama, v: th.map(() => 0)}; v.forEach((x, j) => r.v[j] += x); }); }
     S.riw = {}; tk.forEach(o => skorRiwayat(Object.values(o), th).forEach(r => S.riw[r.kunci] = r)); },
+  /* permukaan kekerapan terbakar per sel 0,1 derajat (gaya Windy): hijau = jarang, merah = hampir tiap tahun */
+  ST: [[0, [60, 170, 90, 0]], [.08, [70, 175, 95, 150]], [.25, [175, 210, 60, 190]], [.4, [245, 215, 60, 210]], [.55, [242, 150, 50, 225]], [.75, [214, 69, 58, 235]], [1, [120, 25, 70, 245]]],
+  async raster() {
+    const G = this.grid ||= await muatJSON("data/riwayat_grid.json");
+    if (!this.gambar) { const cv = document.createElement("canvas"); cv.width = G.w; cv.height = G.h; const ctx = cv.getContext("2d"), img = ctx.createImageData(G.w, G.h);
+      for (const [ix, iy, f] of G.sel_data) { if (!f) continue; const c = gradasi(this.ST, f / G.tahun), o = (iy * G.w + ix) * 4; img.data.set([c[0], c[1], c[2], c[3]], o); }
+      ctx.putImageData(img, 0, 0);
+      /* haluskan sedikit supaya batas sel tidak terlihat; MapLibre menambah interpolasi linear */
+      const cv2 = document.createElement("canvas"); cv2.width = G.w * 2; cv2.height = G.h * 2; const c2 = cv2.getContext("2d"); c2.filter = "blur(1.2px)"; c2.drawImage(cv, 0, 0, cv2.width, cv2.height);
+      this.gambar = {url: cv2.toDataURL(), kor: [[G.x0, G.y1], [G.x0 + G.w * G.sel, G.y1], [G.x0 + G.w * G.sel, G.y1 - G.h * G.sel], [G.x0, G.y1 - G.h * G.sel]]}; }
+    if (!peta.getSource("riwayat")) { peta.addSource("riwayat", {type: "image", url: this.gambar.url, coordinates: this.gambar.kor});
+      peta.addLayer({id: "riwayat", type: "raster", source: "riwayat", paint: {"raster-opacity": .78, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); } },
   /* popup analisa satu wilayah */
   buka(kunci) { const r = S.riw && S.riw[kunci]; if (r) Tren.rinci(r, this.th, true); },
 };
