@@ -11,16 +11,20 @@ from wilayah import AKAR, Wilayah
 WIB = dt.timedelta(hours=7)
 
 
-def main(sumber=os.path.join(AKAR, "data/raw/firms/viirs.csv")):
+def main(sumber=os.path.join(AKAR, "data/raw/firms/viirs.csv"), keluar="sejarah.json"):
+    modis = "modis" in os.path.basename(sumber)
     w = Wilayah()
     prov, kec, n = {}, {}, 0
     for r in csv.DictReader(open(sumber)):
-        if r.get("confidence") not in ("n", "h"):
+        c = r.get("confidence", "")
+        if (not c.isdigit() or int(c) < 30) if modis else c not in ("n", "h"):  # MODIS: keyakinan >= 30 (sedang/tinggi)
             continue
         jam = r["acq_time"].zfill(4)
         t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}") + WIB
         adm = w.cari(float(r["longitude"]), float(r["latitude"]))
         if not adm:
+            continue
+        if modis and t.year < 2002:  # 2001 hanya Terra (Aqua mulai Juli 2002): tidak sebanding
             continue
         th, bl = str(t.year), t.month - 1
         p = prov.setdefault(adm[0], {}).setdefault(th, [0] * 12)
@@ -31,11 +35,11 @@ def main(sumber=os.path.join(AKAR, "data/raw/firms/viirs.csv")):
         if n % 500000 == 0:
             print(n, file=sys.stderr)
     tahun = sorted({th for p in prov.values() for th in p})
-    out = {"sumber": "NASA FIRMS VIIRS S-NPP arsip standar (SP) + NRT, keyakinan sedang/tinggi", "tahun": tahun,
+    out = {"sumber": ("NASA FIRMS MODIS Terra/Aqua arsip standar + NRT, keyakinan >= 30" if modis else "NASA FIRMS VIIRS S-NPP arsip standar (SP) + NRT, keyakinan sedang/tinggi"), "tahun": tahun,
            "dibuat": dt.date.today().isoformat(), "prov": prov,
            # kecamatan: [jumlah per tahun sesuai urutan 'tahun']; hanya yang pernah >= 10 titik setahun
            "kec": {k: [v.get(th, 0) for th in tahun] for k, v in kec.items() if max(v.values()) >= 10}}
-    with open(os.path.join(AKAR, "public/data/sejarah.json"), "w") as f:
+    with open(os.path.join(AKAR, "public/data", keluar), "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"{n} titik, {len(out['kec'])} kecamatan", file=sys.stderr)
 

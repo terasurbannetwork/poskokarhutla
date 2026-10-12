@@ -57,9 +57,22 @@ def tengah_kecamatan(kode):
     return out
 
 
+_DESA = None
+
+
 def osm(kode):
+    """Lapisan OSM provinsi (desa, air, faskes). Bila belum ada, desa diambil dari titik pusat desa Kemendagri
+    (public/data/osm/desa.json: [lat, lon, kode, nama]) tanpa air/faskes."""
+    global _DESA
     p = os.path.join(DATA, "osm", f"{kode}.json")
-    return json.load(open(p)) if os.path.exists(p) else None
+    if os.path.exists(p):
+        return json.load(open(p))
+    if _DESA is None:
+        q = os.path.join(DATA, "osm", "desa.json")
+        _DESA = json.load(open(q)) if os.path.exists(q) else {}
+    if kode not in _DESA:
+        return None
+    return {"desa": [[d[0], d[1], "Desa " + d[3].title(), "village"] for d in _DESA[kode]], "air": [], "faskes": []}
 
 
 def terdekat(lat, lon, titik):
@@ -111,7 +124,11 @@ def posko_permanen(target=0.8):
             if kena >= target * total:
                 break
             kena += sum(k["w"] for k in ikut)
-            hasil.append({"prov": prov, "kab": c["kab"], "nama": "Kec. " + c["kec"], "lat": round(c["lat"], 4), "lon": round(c["lon"], 4),
+            # geser ke desa terdekat (nama tempat nyata) bila data desa ada
+            ds = (osm(prov) or {}).get("desa") or []
+            dd = min(ds, key=lambda d: km(c["lat"], c["lon"], d[0], d[1])) if ds else None
+            la, lo, nm = (dd[0], dd[1], f"{dd[2]}, Kec. {c['kec']}") if dd and km(c["lat"], c["lon"], dd[0], dd[1]) <= 15 else (c["lat"], c["lon"], "Kec. " + c["kec"])
+            hasil.append({"prov": prov, "kab": c["kab"], "nama": nm, "lat": round(la, 4), "lon": round(lo, 4),
                           "kecamatan": len(ikut), "tahun_maks": max(k["tahun"] for k in ikut), "titik": sum(k["total"] for k in ikut),
                           "cakupan": round(kena / total * 100)})
     hasil.sort(key=lambda x: -x["titik"])

@@ -39,6 +39,12 @@ jobs:
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py
 
+      - name: Data keputusan & InaRISK/BPBD (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/data/keputusan.py
+          python3 scripts/data/bnpb_gis.py
+
       - name: Rekomendasi pangkalan udara
         run: python3 scripts/data/udara_rekom.py
 
