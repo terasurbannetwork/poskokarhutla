@@ -1,8 +1,8 @@
 """Data dasar modul keputusan per provinsi prioritas -> public/data/keputusan.json
 
-Luas terbakar musim ini (perkiraan) = k_prov x titik panas VIIRS S-NPP (sedang/tinggi) tahun ini, diproyeksikan ke
-akhir musim dengan pola bulanan riwayat; k_prov = jumlah luas resmi SiPongi 2018-2023 / jumlah titik tahun yang sama.
-Luas tahun normal / tahun El Nino diperkirakan dari k x titik tiap tahun 2015-2025 (median / rata-rata 2015, 2019, 2023).
+Luas terbakar dari titik panas lewat regresi log-log: log(luas) = a_prov + b log(titik), b nasional (termasuk 2015),
+a per provinsi dari luas resmi SiPongi 2018-2023 (lihat kalibrasi()). Luas tahun normal = median tahun non-El Nino,
+tahun El Nino = rata-rata 2015, 2019, 2023, 2026 = proyeksi tahun berjalan; sigma_log = sebaran sisa regresi.
 Porsi gambut = bobot piksel aktif kompleks di gambut hari ini. Luas gambut provinsi TIDAK dipakai: peta gambut global
 (CIFOR/Gumbricht) melebihkan luas ~2,5x dari angka BBSDLP, jadi hanya dipakai untuk tanda "di gambut atau tidak".
 Parameter ekonomi & efektivitas (dengan sumber, rendah/tengah/tinggi) ikut disimpan; perhitungan skenario di peramban.

@@ -22,7 +22,8 @@ HARI = 7
 # per hari kalender WIB, tanpa dedup. NOAA-21 tetap ditampilkan di peta.
 SENSOR_UTAMA = {"M", "N", "N20"}
 # Kejadian api (FEDS, Chen dkk. 2022; Indradjad dkk. 2024): VIIRS 3 satelit, keyakinan nominal+tinggi,
-# DBSCAN Haversine eps 1 km, minPts 1 (titik tunggal tetap kejadian), jendela 5 hari, aktif bila terdeteksi <= 72 jam.
+# DBSCAN Haversine eps adaptif hingga 1,5 km, minPts 1 (titik tunggal tetap kejadian), jendela 7 hari,
+# aktif bila terdeteksi <= 72 jam (168 jam di gambut kering).
 EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
 R_BUMI = 6371.0088
 PIKSEL_HA = 0.375 * 0.375 * 100  # 14,0625 ha per piksel VIIRS 375 m

@@ -19,6 +19,8 @@ def main(sumber=os.path.join(AKAR, "data/raw/firms/viirs.csv"), keluar="sejarah.
         c = r.get("confidence", "")
         if (not c.isdigit() or int(c) < 30) if modis else c not in ("n", "h"):  # MODIS: keyakinan >= 30 (sedang/tinggi)
             continue
+        if r.get("type", "0") not in ("0", ""):  # 1 gunung api, 2 sumber panas tetap (smelter, kilang), 3 lepas pantai
+            continue
         jam = r["acq_time"].zfill(4)
         t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}") + WIB
         adm = w.cari(float(r["longitude"]), float(r["latitude"]))

@@ -58,7 +58,7 @@ jobs:
       - name: Data pelengkap (boleh gagal, data lama tetap dipakai)
         continue-on-error: true
         run: |
-          for s in scripts/scrape/metar.py scripts/scrape/sipalaga.py scripts/scrape/ispu.py; do
+          for s in scripts/scrape/metar.py; do
             [ -f "$s" ] && timeout 300 python3 "$s" || echo "lewati $s"
           done
 

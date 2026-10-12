@@ -38,6 +38,8 @@ def main(sumber=os.path.join(AKAR, "data/raw/firms/modis.csv")):
         c = r.get("confidence", "")
         if not c.isdigit() or int(c) < 30:
             continue
+        if r.get("type", "0") not in ("0", ""):  # tanpa gunung api, panas industri, lepas pantai
+            continue
         jam = r["acq_time"].zfill(4)
         t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}") + WIB
         if not AWAL <= t.year <= AKHIR:
@@ -58,7 +60,7 @@ def main(sumber=os.path.join(AKAR, "data/raw/firms/modis.csv")):
         pe, pb = p(en), p(bi)
         out[kode] = {"nama": PROVINSI.get(kode, kode), "ambang": ambang, "rata": rata, "p_el_nino": pe, "p_biasa": pb, "p_semua": p(tahun),
                      "musim_el_nino": ringkas(pe), "musim_biasa": ringkas(pb), "puncak": rata.index(max(rata))}
-    json.dump({"sumber": f"NASA FIRMS MODIS {AWAL}-{AKHIR}, keyakinan >= 30", "tahun_el_nino": sorted(EL_NINO), "prov": out},
+    json.dump({"sumber": f"NASA FIRMS MODIS {AWAL}-{AKHIR}, keyakinan >= 30, type = 0", "tahun_el_nino": sorted(EL_NINO), "prov": out},
               open(os.path.join(AKAR, "public/data/musim.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     nm = lambda d: None if d is None else f"{['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'][d // 3]} {['awal','tengah','akhir'][d % 3]}"
     for k in ["62", "16", "61", "14", "15", "63", "64", "53", "93"]:
