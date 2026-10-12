@@ -77,13 +77,21 @@ jobs:
 
       # Ada token Cloudflare: terbit langsung. Tidak ada: commit data ke main, build Cloudflare yang terhubung ke repo
       # menerbitkannya. ponytail: commit harian menambah ± beberapa MB per hari ke riwayat git; pasang token untuk menghentikannya.
+      # satu situs dengan banjir: pulihkan data banjir terakhir supaya ikut terbit utuh
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/banjir/data
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
       - name: Terbitkan ke Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
-          git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data'
+          git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
           if [ -n "$CLOUDFLARE_API_TOKEN" ]; then npx --yes wrangler@3 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"

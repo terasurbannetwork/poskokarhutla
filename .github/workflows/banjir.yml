@@ -1,0 +1,95 @@
+name: Perbarui data banjir
+
+# Sekali sehari pukul 07.20 WIB: prakiraan hujan Open-Meteo dan GloFAS sudah memuat jalan model 00 UTC.
+# Satu situs dengan karhutla: data karhutla dipulihkan dari cache supaya ikut terbit utuh.
+on:
+  schedule:
+    - cron: "20 0 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  perbarui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan data banjir sebelumnya
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - name: Uji aturan
+        run: for s in hujan sungai bahaya kejadian status rob posko; do python3 scripts/banjir/$s.py uji; done
+
+      - name: Prakiraan hujan
+        run: python3 scripts/banjir/hujan.py
+
+      # ambang 29 tahun dilanjut 6 titik per hari (kuota Open-Meteo 10.000/hari dibagi dengan hujan & rob)
+      - name: Debit sungai GloFAS
+        env:
+          SUNGAI_B_TITIK: "6"
+        run: python3 scripts/banjir/sungai.py
+
+      - name: Banjir rob
+        continue-on-error: true
+        env:
+          ROB_ARSIP_LOKASI: "15"
+        run: |
+          command -v pdftotext >/dev/null || sudo apt-get install -y -qq poppler-utils >/dev/null || true
+          python3 scripts/banjir/rob.py
+
+      - name: InaRISK dan riwayat BNPB (bila belum ada)
+        continue-on-error: true
+        run: |
+          [ -f public/banjir/data/bahaya.json ] || python3 scripts/banjir/bahaya.py
+          [ -f public/banjir/data/kejadian.json ] || python3 scripts/banjir/kejadian.py
+
+      - name: Status kecamatan dan posko
+        run: |
+          python3 scripts/banjir/status.py
+          python3 scripts/banjir/posko.py
+
+      - name: Simpan data banjir untuk jalan berikutnya
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+
+      - name: Terbitkan ke Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then npx --yes wrangler@3 deploy; exit; fi
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/banjir/data data/raw/banjir/sungai_ambang.json data/raw/banjir/rob/ambang.json data/raw/banjir/rob/titik.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: banjir harian $(TZ=Asia/Jakarta date +%F)"
+          git pull -q --rebase && git push -q

@@ -5,7 +5,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR
 
 KELUAR = os.path.join(AKAR, "public/banjir/data")
-MENTAH = os.path.join(AKAR, "data/raw/banjir/banjir")
+MENTAH = os.path.join(AKAR, "data/raw/banjir")
 WIB = dt.timezone(dt.timedelta(hours=7))
 
 
