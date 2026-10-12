@@ -289,10 +289,10 @@ def kawasan(tol=0.002, min_luas=2e-5):
     from wilayah import PRIORITAS, Wilayah
     w, fitur = Wilayah(), []
     # 9 provinsi pantauan saja (nasional = 9,4 MB). Data 2017 belum kenal Papua Selatan (93):
-    # poligon berkode lama Papua (94) diperiksa titik pertamanya.
+    # poligon berkode Papua lama (9x) diperiksa titik pertamanya.
     sumber = ((p, c) for p, c in baca_shp(os.path.join(MENTAH, "idn_forest_area.zip"))
               if fungsi(p["fungsikawa"]) not in ("APL", "AIR")  # di luar semua poligon = APL/perairan
-              and (p["kodeprov"] in PRIORITAS or p["kodeprov"] == "94" and c
+              and (p["kodeprov"] in PRIORITAS or p["kodeprov"][:1] == "9" and c
                    and (w.cari(*c[0][0]) or ("",))[0] == "93"))
     for p, g in kumpul(sumber, tol, min_luas):
         f = fungsi(p["fungsikawa"])
