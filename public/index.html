@@ -2,21 +2,991 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Posko Karhutla Indonesia</title>
+<meta name="description" content="Pemantauan titik panas, bahaya cuaca kebakaran, kompleks kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi Indonesia.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
 <style>
-  :root { --bg:#f7f8fa; --ink:#14213d; --muted:#5b6575; }
-  @media (prefers-color-scheme: dark) { :root { --bg:#0f1420; --ink:#e8ecf3; --muted:#9aa4b5; } }
-  body { margin:0; min-height:100vh; display:grid; place-items:center; background:var(--bg); color:var(--ink);
-         font:16px/1.5 system-ui, -apple-system, "Segoe UI", sans-serif; padding:16px; box-sizing:border-box; }
-  h1 { font-size:1.6rem; margin:0 0 .4rem; }
-  p { margin:0; color:var(--muted); max-width:36rem; }
+:root{
+  --paper:oklch(97.6% .006 255); --card:oklch(100% 0 0); --surface:oklch(95.5% .012 255);
+  --ink:oklch(25.5% .075 256); --ink2:oklch(50% .045 258); --line:oklch(90% .015 255);
+  --brand:oklch(25.5% .075 256); --brand2:oklch(42% .11 255); --accent:oklch(68% .09 252);
+  --ok:oklch(62% .16 150); --warn:oklch(76% .16 75); --bad:oklch(57% .21 27); --info:oklch(66% .13 235);
+  --f0:oklch(72% .15 150); --f1:oklch(86% .16 98); --f2:oklch(73% .17 58); --f3:oklch(57% .21 27);
+  --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
+  --r:16px; --r-sm:10px; --top:58px;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- top bar ---------- */
+header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.mark svg{flex:none}
+.mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
+.mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
+nav.tabs{display:flex;gap:2px;margin:0 auto;overflow-x:auto;scrollbar-width:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button{border:0;background:transparent;color:#fff;opacity:.72;padding:8px 12px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
+nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
+.stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
+.stat .jam{font-family:var(--display);font-weight:700;font-size:14px}
+.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{background:oklch(100% 0 0 / .22)}
+@media (max-width:900px){.stat .upd,.mark small{display:none}}
+@media (max-width:1100px){.mark > div{display:none}}
+@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
+
+/* ---------- pages ---------- */
+main{position:fixed;inset:var(--top) 0 0 0}
+.page{position:absolute;inset:0;display:none}
+.page.on{display:block}
+.scroll{overflow-y:auto;padding:22px 18px 60px}
+.wrap{max-width:1240px;margin:0 auto}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.pad{padding:18px}
+.grid{display:grid;gap:14px}
+@media (min-width:900px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
+.head p{margin:4px 0 0;color:var(--ink2);max-width:70ch}
+
+/* ---------- map page ---------- */
+#peta,#simPeta{position:absolute;inset:0}
+.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:370px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.panel > *{pointer-events:auto}
+.tujuan{padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff;box-shadow:var(--shadow-lg)}
+.tujuan p{margin:4px 0 0;font-size:13px;opacity:.9}
+.tujuan h1{font-size:16px;line-height:1.3}
+.kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
+.kpi .lbl{display:block;background:var(--brand);color:#fff;padding:4px 6px;font-size:9.5px}
+:root[data-theme="dark"] .kpi .lbl{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kpi .lbl{color:oklch(18% .035 256)}}
+.kpi b{display:block;font-family:var(--display);font-size:22px;font-weight:800;padding:6px 4px 0;font-variant-numeric:tabular-nums}
+.kpi small{display:block;color:var(--ink2);font-size:11px;padding:0 6px 7px}
+.list{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
+.list .top{padding:12px 14px 8px;border-bottom:1px solid var(--line)}
+.crumb{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px;margin-bottom:8px}
+.crumb button{border:0;background:none;padding:2px 4px;border-radius:6px;color:var(--brand2);font-weight:600;cursor:pointer}
+.crumb button:hover{background:var(--surface)}
+.crumb span{color:var(--ink2)}
+.cari{position:relative}
+.cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:13px}
+.cari svg{position:absolute;left:12px;top:10px;color:var(--ink2)}
+.hasil{position:absolute;left:0;right:0;top:40px;z-index:10;max-height:280px;overflow:auto;padding:4px}
+.hasil button{display:block;width:100%;text-align:left;border:0;background:none;padding:8px 10px;border-radius:8px;cursor:pointer;font-size:13px}
+.hasil button:hover,.hasil button:focus{background:var(--surface)}
+.hasil small{color:var(--ink2)}
+.rows{overflow-y:auto;flex:1;padding:4px 6px 8px}
+.row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
+.row:hover{background:var(--surface)}
+.row .rk{font-size:11px;color:var(--ink2);font-weight:700;text-align:right}
+.row .nm{font-weight:600;font-size:13px;line-height:1.25;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.row .bar{height:4px;border-radius:4px;background:var(--surface);margin-top:5px;overflow:hidden}
+.row .bar i{display:block;height:100%;background:linear-gradient(90deg,var(--f2),var(--f3));border-radius:4px}
+.row .vl{text-align:right;font-variant-numeric:tabular-nums;font-weight:700;font-size:13px}
+.row .vl small{display:block;font-weight:500;color:var(--ink2);font-size:10.5px}
+.prio{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--bad);margin-left:5px;vertical-align:middle}
+.pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
+.l0{background:oklch(62% .16 150 / .14);color:oklch(45% .13 150)}
+.l1{background:oklch(66% .13 235 / .14);color:oklch(46% .12 240)}
+.l2{background:oklch(76% .16 75 / .2);color:oklch(48% .12 65)}
+.l3{background:oklch(57% .21 27 / .14);color:oklch(50% .2 27)}
+:root[data-theme="dark"] .l0{color:oklch(80% .14 150)} :root[data-theme="dark"] .l1{color:oklch(80% .1 235)}
+:root[data-theme="dark"] .l2{color:oklch(84% .13 75)} :root[data-theme="dark"] .l3{color:oklch(76% .15 27)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .l0{color:oklch(80% .14 150)}:root:not([data-theme="light"]) .l1{color:oklch(80% .1 235)}:root:not([data-theme="light"]) .l2{color:oklch(84% .13 75)}:root:not([data-theme="light"]) .l3{color:oklch(76% .15 27)}}
+
+.tools{position:absolute;z-index:5;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:250px}
+.seg{display:inline-flex;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
+.seg button{border:0;background:none;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);white-space:nowrap}
+.seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px;width:100%}
+.lapis label{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0;cursor:pointer}
+.lapis input{accent-color:var(--brand2);width:15px;height:15px}
+.leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
+.leg .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
+.leg .dot{border-radius:50%}
+.legscale{display:flex;height:8px;border-radius:4px;overflow:hidden;margin:4px 0 2px}
+.legscale i{flex:1}
+.legnum{display:flex;justify-content:space-between;font-size:10px;color:var(--ink2)}
+
+.laci{position:absolute;z-index:8;top:12px;right:12px;bottom:12px;width:390px;display:none;flex-direction:column;overflow:hidden}
+.laci.on{display:flex}
+.laci .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
+.laci .hd h2{font-size:17px}
+.laci .bd{overflow-y:auto;padding:14px 16px 18px}
+.tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
+.kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.kv div{background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
+.kv b{display:block;font-family:var(--display);font-size:16px;font-variant-numeric:tabular-nums}
+.kv span{font-size:10px;color:var(--ink2);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:13px}
+.sop ul{margin:6px 0 0;padding-left:18px}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:13.5px}
+.btn.pri{background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.btn.sec{background:var(--surface);color:var(--ink);border:1px solid var(--line)}
+.btn:disabled{opacity:.5;cursor:default}
+.muat{position:absolute;inset:0;display:grid;place-items:center;z-index:20;background:var(--paper);transition:opacity .3s}
+.muat.hilang{opacity:0;pointer-events:none}
+.muat div{text-align:center;color:var(--ink2)}
+.spin{width:34px;height:34px;border-radius:50%;border:3px solid var(--line);border-top-color:var(--brand2);margin:0 auto 10px;animation:putar 1s linear infinite}
+@keyframes putar{to{transform:rotate(360deg)}}
+.handle{display:none}
+.maplibregl-popup-content{background:var(--card);color:var(--ink);border-radius:12px;box-shadow:var(--shadow-lg);padding:10px 12px;font:13px/1.45 var(--font)}
+.maplibregl-popup-tip{border-top-color:var(--card)!important;border-bottom-color:var(--card)!important}
+.maplibregl-ctrl-attrib{font-size:10px}
+
+@media (max-width:900px){
+  .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:46%;gap:0;transition:height .25s}
+  .panel.min{height:96px}
+  .panel .tujuan{display:none}
+  .panel .kpis{display:none}
+  .panel .list{border-radius:18px 18px 0 0}
+  .handle{display:block;width:44px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 0;border:0;cursor:pointer}
+  .tools{width:auto;right:8px;top:8px}
+  .tools .box{display:none}
+  .tools .box.buka{display:block;width:230px}
+  .laci{inset:auto 0 0 0;width:auto;height:72%;border-radius:18px 18px 0 0}
+}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* ---------- tables ---------- */
+.tbar{display:flex;gap:8px;align-items:center;flex-wrap:wrap;margin-bottom:10px}
+.tbar input{height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;min-width:220px}
+.tbar .sp{flex:1}
+.tw{overflow:auto;border-radius:var(--r);border:1px solid var(--line);background:var(--card);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;font-size:12.5px}
+thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:left;white-space:nowrap;border-bottom:2px solid var(--accent)}
+:root[data-theme="dark"] thead th{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) thead th{color:oklch(18% .035 256)}}
+thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
+thead th.n,td.n{text-align:right}
+tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
+tbody tr:hover{background:oklch(42% .11 255 / .06)}
+tfoot td{padding:9px 10px;background:var(--brand);color:#fff;font-weight:800}
+:root[data-theme="dark"] tfoot td{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) tfoot td{color:oklch(18% .035 256)}}
+td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0;cursor:pointer;padding:0}
+.pager{display:flex;gap:6px;align-items:center;justify-content:flex-end;margin-top:10px;font-size:12.5px;color:var(--ink2)}
+.kosong{padding:28px;text-align:center;color:var(--ink2)}
+
+/* ---------- sim ---------- */
+.simpanel{position:absolute;z-index:5;top:12px;left:12px;width:360px;max-height:calc(100% - 24px);overflow:auto;padding:16px}
+.simpanel h2{font-size:17px}
+.fld{display:flex;flex-direction:column;gap:4px;margin:10px 0}
+.fld select,.fld input[type=number]{height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px}
+.waktu{position:absolute;z-index:5;left:50%;transform:translateX(-50%);bottom:18px;width:min(620px,calc(100% - 24px));padding:12px 16px;display:flex;gap:12px;align-items:center}
+.waktu input[type=range]{flex:1;accent-color:var(--bad)}
+.waktu b{font-family:var(--display);min-width:64px;text-align:right}
+@media (max-width:900px){.simpanel{top:auto;bottom:86px;left:8px;right:8px;width:auto;max-height:42%}}
+
+/* ---------- bars / charts ---------- */
+.hbar{display:grid;grid-template-columns:150px 1fr 70px;gap:8px;align-items:center;font-size:12.5px;padding:3px 0}
+.hbar div{height:12px;border-radius:6px;background:var(--surface);overflow:hidden}
+.hbar i{display:block;height:100%;border-radius:6px;background:linear-gradient(90deg,var(--f2),var(--f3))}
+.chk{display:grid;grid-template-columns:1fr 88px 70px 64px;gap:8px;align-items:center;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.chk input{height:32px;border-radius:8px;border:1px solid var(--line);background:var(--surface);padding:0 8px;width:100%;text-align:right}
+.fold{border:1px solid var(--line);border-radius:14px;background:var(--card);margin-bottom:10px;box-shadow:var(--shadow)}
+.fold > button{all:unset;box-sizing:border-box;display:flex;width:100%;padding:12px 16px;cursor:pointer;font-weight:700;gap:10px;align-items:center}
+.fold > button .chev{margin-left:auto;transition:transform .2s}
+.fold > button[aria-expanded="true"] .chev{transform:rotate(180deg)}
+.fold > div{padding:0 16px 12px}
+.rumus{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;white-space:pre}
+.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
+.toast.on{display:block}
 </style>
 </head>
 <body>
+<header class="top">
+  <div class="mark">
+    <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z" fill="oklch(76% .16 58)"/><path d="M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z" fill="oklch(90% .12 95)"/></svg>
+    <div><b>Posko Karhutla Indonesia</b><small>Pantau, peringatan dini, simulasi penjalaran</small></div>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <span class="jam num" id="jam" aria-label="Jam WIB">--.--.--</span>
+    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
 <main>
-  <h1>Posko Karhutla Indonesia</h1>
-  <p>Platform pemantauan, peringatan dini, dan simulasi penjalaran kebakaran hutan dan lahan untuk seluruh provinsi Indonesia sedang dibangun.</p>
+  <!-- ================= PETA ================= -->
+  <section class="page on" id="p-peta" aria-label="Peta pemantauan">
+    <div id="peta"></div>
+    <div class="muat" id="muat"><div><div class="spin"></div>Memuat titik panas seluruh Indonesia…</div></div>
+    <div class="panel" id="panel">
+      <div class="tujuan">
+        <h1>Di mana api muncul hari ini, ke mana ia menjalar 72 jam ke depan, dan siapa yang harus bergerak.</h1>
+        <p id="tujuanSub">Satelit VIIRS & MODIS, bahaya cuaca FWI, dan kompleks kebakaran diperbarui tiap hari.</p>
+      </div>
+      <div class="kpis" id="kpis"></div>
+      <div class="card list">
+        <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
+        <div class="top">
+          <div class="crumb" id="crumb"></div>
+          <div class="cari">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, kecamatan, atau K001" autocomplete="off" aria-label="Cari wilayah">
+            <div class="hasil card" id="hasil" hidden></div>
+          </div>
+        </div>
+        <div class="rows" id="rows" role="list"></div>
+      </div>
+    </div>
+    <div class="tools" id="tools">
+      <div class="seg" role="group" aria-label="Rentang waktu" id="rentang"></div>
+      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:none" aria-label="Lapisan peta">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+      </button>
+      <div class="box lapis" id="lapis">
+        <div class="lbl" style="margin-bottom:4px">Lapisan</div>
+        <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
+        <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
+        <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
+        <label><input type="checkbox" data-l="fwi"> Bahaya cuaca (FWI)</label>
+        <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+        <div id="fwiHari" style="display:none;margin-top:6px"></div>
+      </div>
+      <div class="box" id="legenda"></div>
+    </div>
+    <aside class="card laci" id="laci" aria-label="Rincian kompleks kebakaran"></aside>
+  </section>
+
+  <!-- ================= SIMULASI ================= -->
+  <section class="page" id="p-sim" aria-label="Simulasi penjalaran api">
+    <div id="simPeta"></div>
+    <div class="card simpanel" id="simPanel"></div>
+    <div class="card waktu" id="simWaktu" hidden>
+      <button class="btn sec" id="simPlay" aria-label="Putar animasi">Putar</button>
+      <input type="range" id="simT" min="0" max="72" step="0.5" value="72" aria-label="Jam setelah sekarang">
+      <b class="num" id="simTL">72 jam</b>
+    </div>
+  </section>
+
+  <!-- ================= KOMPLEKS ================= -->
+  <section class="page scroll" id="p-kompleks" aria-label="Daftar kompleks kebakaran"><div class="wrap" id="kompleks"></div></section>
+  <!-- ================= PRIORITAS ================= -->
+  <section class="page scroll" id="p-prioritas" aria-label="Sembilan provinsi prioritas"><div class="wrap" id="prioritas"></div></section>
+  <!-- ================= SARANA ================= -->
+  <section class="page scroll" id="p-sarana" aria-label="Kesiapan sarana pemadam"><div class="wrap" id="sarana"></div></section>
+  <!-- ================= METODE ================= -->
+  <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
 </main>
+<div class="toast" id="toast" role="status"></div>
+
+<script>
+"use strict";
+/* ================================================================ util */
+const $ = s => document.querySelector(s);
+const fmt = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const WIB = {timeZone: "Asia/Jakarta"};
+const jamWIB = d => new Date(d).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
+/* INP: chrome dicat dulu, isi berat menyusul sesudah satu frame tercat */
+const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } };
+  requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
+const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600); };
+const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
+const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
+const unduh = (nama, isi, tipe = "text/csv") => { const a = document.createElement("a");
+  a.href = URL.createObjectURL(new Blob([isi], {type: tipe})); a.download = nama; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 2000); };
+const csv = rows => rows.map(r => r.map(v => { const s = String(v ?? ""); return /[",;\n]/.test(s) ? '"' + s.replace(/"/g, '""') + '"' : s; }).join(",")).join("\n");
+
+/* ================================================================ state */
+const S = {
+  meta: null, titik: [], acuan: null, kluster: null, fwi: null, bnpb: null, wilayah: null,
+  rentang: bacaLokal("pk-rentang2", "hari"), jalur: [], fwiHari: 0, wilKunci: [],
+  geo: {prov: null, kab: {}, kec: {}}, pilihK: null,
+};
+/* Tindakan per status: disusun dari insight SOP & regulasi (lihat Metode & data), bukan salinan SOP */
+const STATUS_AKSI = [
+  ["Patroli pencegahan sesuai jadwal rutin", "Uji pompa 3 menit tiap 3 hari, uji 10 menit tiap minggu", "Inventarisasi sumber air dan akses jalan"],
+  ["Ground-check maksimal 1x24 jam oleh tim 2 orang bermotor dengan alat tangan", "Patroli terpadu harian (Manggala Agni, TNI, Polri, MPA)", "Laporkan hasil: api ditemukan, tidak ditemukan, atau tertutup awan"],
+  ["Olah data titik maksimal 15 menit sejak diterima", "Kirim regu terdekat untuk pemadaman awal dengan pompa jinjing", "Isi tangki dan pasang jalur selang dari sumber air terdekat", "Laporan kejadian maksimal 1x24 jam"],
+  ["Gabungkan regu dan tunjuk komandan lapangan; regu yang datang melapor personel dan alat", "Ajukan water bombing bila akses darat sulit", "Di gambut: pisahkan regu sekat bakar, api permukaan, dan injeksi gambut", "Mop-up sampai 30 m dari sayap api terluar", "Bila beberapa kompleks prioritas di satu kabupaten: usulkan penetapan status siaga darurat ke bupati"],
+];
+const FWI_KELAS = [["Rendah", "0–1"], ["Sedang", "2–6"], ["Tinggi", "7–13"], ["Sangat tinggi", "> 13"]];
+const kelasFWI = v => v < 2 ? 0 : v < 7 ? 1 : v < 14 ? 2 : 3;
+const namaProv = k => S.meta?.provinsi?.[k] ?? k;
+
+/* ================================================================ tabs (chrome urgent, isi deferred) */
+const TABS = [["peta", "Peta"], ["kompleks", "Kompleks api"], ["sim", "Simulasi"], ["prioritas", "9 Provinsi prioritas"], ["sarana", "Sarana pemadam"], ["metode", "Metode & data"]];
+const sudah = {};
+function bukaTab(id, dorong = true) {
+  document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
+  document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
+  if (dorong) history.replaceState(null, "", "#" + id + (id === "sim" && S.pilihK ? "/" + S.pilihK : ""));
+  nanti(() => {
+    if (id === "peta" && peta) peta.resize();
+    if (id === "sim") Sim.buka();
+    if (id === "kompleks") Tabel.render();
+    if (id === "prioritas" && !sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); }
+    if (id === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); }
+    if (id === "metode" && !sudah.metode) { sudah.metode = 1; renderMetode(); }
+  });
+}
+$("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}">${n}</button>`).join("");
+$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
+
+/* jam & tema */
+setInterval(() => $("#jam").textContent = new Date().toLocaleTimeString("id-ID", {...WIB, hour12: false}).replace(/:/g, ".") + " WIB", 1000);
+const temaAwal = bacaLokal("pk-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
+const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
+$("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pk-tema", t); nanti(() => Peta.gantiDasar()); };
+
+/* ================================================================ data */
+async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
+async function muatData() {
+  const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
+    muatJSON("data/meta.json"), muatJSON("data/hotspot.json"), muatJSON("data/kluster.json"),
+    muatJSON("data/fwi.json"), muatJSON("data/bnpb.json").catch(() => null), muatJSON("data/wilayah.json"), muatJSON("geo/provinsi.json")]);
+  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
+  S.utama = new Set(hs.sensor_utama);
+  S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
+  const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
+  S.fwiHari = Math.max(0, fw.grid[0].hari.findIndex(h => h.tgl === fw.hari_ini));
+  $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  $("#tujuanSub").textContent = `Satelit terakhir lewat ${jamWIB(meta.data_terakhir)}. ${fmt(meta.jumlah_kluster)} kompleks api aktif dalam 72 jam terakhir.`;
+}
+
+/* titik masuk rentang? hari/kemarin = hari kalender WIB (setara SiPongi/BNPB); 72 jam/7 hari = mundur dari lintasan terakhir */
+const masuk = b => S.rentang === "hari" ? b[7] === S.hariIni : S.rentang === "kemarin" ? b[7] === S.kemarin : b[2] >= -S.rentang;
+/* hitungan utama: MODIS + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan */
+function hitung() {
+  const per = {}, tinggi = {};
+  for (const b of S.titik) {
+    if (!S.utama.has(b[3]) || !masuk(b)) continue;
+    for (const k of S.wilKunci[b[6]]) { per[k] = (per[k] || 0) + 1; if (b[5] === 2) tinggi[k] = (tinggi[k] || 0) + 1; }
+  }
+  S.hit = per; S.tinggi = tinggi;
+}
+function klusterDi(prefix) {
+  const out = []; for (const f of S.kluster.features) { const p = f.properties;
+    const k = [p.prov, p.kab, p.kec].slice(0, prefix.split("|").length).join("|"); if (!prefix || k === prefix) out.push(f); } return out;
+}
+
+/* ================================================================ peta */
+let peta = null;
+const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
+const Peta = {
+  async init() {
+    peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15,
+      attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
+    peta.touchZoomRotate.disableRotation();
+    peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
+    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
+    peta.on("style.load", () => this.pasang());
+    await new Promise(r => peta.once("load", r));
+  },
+  gantiDasar() { if (peta) peta.setStyle(DASAR()); if (Sim.peta) Sim.peta.setStyle(DASAR()); },
+  lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
+  pasang() {
+    const bawahLabel = this.lapisAwal();
+    peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
+      tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
+    peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: {visibility: this.lihat("satelit") ? "visible" : "none"}}, bawahLabel);
+    peta.addSource("fwi", {type: "geojson", data: this.geoFWI()});
+    peta.addLayer({id: "fwi", type: "fill", source: "fwi", layout: {visibility: this.lihat("fwi") ? "visible" : "none"},
+      paint: {"fill-color": ["match", ["get", "k"], 0, "#5fb978", 1, "#f0d45a", 2, "#f29a3c", "#d6453a"], "fill-opacity": .42}}, bawahLabel);
+    peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});
+    peta.addLayer({id: "wil-fill", type: "fill", source: "wil", layout: {visibility: this.lihat("wilayah") ? "visible" : "none"},
+      paint: {"fill-color": ["step", ["get", "v"], "rgba(0,0,0,0)", 1, "#fde7c8", 10, "#f9c48b", 50, "#f39a53", 200, "#e0612f", 1000, "#b8321f", 4000, "#7c1d16"],
+        "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], .78, .55]}}, bawahLabel);
+    peta.addLayer({id: "wil-line", type: "line", source: "wil",
+      paint: {"line-color": gelap() ? "#9fb3d1" : "#1d4e89", "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.6, .7], "line-opacity": .75}});
+    peta.addSource("prov", {type: "geojson", data: S.geo.prov});
+    peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
+    peta.addSource("titik", {type: "geojson", data: this.geoTitik()});
+    peta.addLayer({id: "titik", type: "circle", source: "titik", layout: {visibility: this.lihat("titik") ? "visible" : "none"},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 1.1, 7, 2.2, 12, 6],
+        "circle-color": ["step", ["get", "u"], "#fff4a8", 6, "#ffb02e", 24, "#f0582a", 72, "#a3261b"],
+        "circle-stroke-color": "#4a1209", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 4, 0, 9, .6], "circle-opacity": ["interpolate", ["linear"], ["zoom"], 4, .7, 8, .95]}});
+    peta.addSource("kluster", {type: "geojson", data: S.kluster});
+    const warnaLv = ["match", ["get", "level"], 3, "#d6453a", 2, "#f29a3c", 1, "#4f9bd9", "#4caf73"];
+    peta.addLayer({id: "kl-fill", type: "fill", source: "kluster", minzoom: 6, layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
+      paint: {"fill-color": warnaLv, "fill-opacity": .18}});
+    peta.addLayer({id: "kl-line", type: "line", source: "kluster", minzoom: 6, layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
+      paint: {"line-color": warnaLv, "line-width": ["case", ["==", ["get", "id"], S.pilihK || ""], 3.4, 1.8]}});
+    peta.addSource("klpt", {type: "geojson", data: this.geoPusat()});
+    /* skala nasional: hanya kompleks prioritas; kompleks lain muncul mulai zoom 7 */
+    peta.addLayer({id: "kl-pt", type: "circle", source: "klpt", minzoom: 7, maxzoom: 10, filter: ["<", ["get", "level"], 3], layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 4, 100, 8, 1000, 13], "circle-color": "rgba(0,0,0,0)",
+        "circle-stroke-color": warnaLv, "circle-stroke-width": 1.8}});
+    peta.addLayer({id: "kl-pt3", type: "circle", source: "klpt", maxzoom: 10, filter: ["==", ["get", "level"], 3], layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4.5, 8, 9], "circle-color": "rgba(214,69,58,.25)",
+        "circle-stroke-color": "#ffffff", "circle-stroke-width": 1.4}});
+    this.aturWilayah(false);
+    this.interaksi();
+  },
+  lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : true; },
+  geoTitik() {
+    return {type: "FeatureCollection", features: S.titik.filter(masuk).map(b => ({type: "Feature",
+      geometry: {type: "Point", coordinates: [b[1], b[0]]}, properties: {u: -b[2], s: b[3], f: b[4], c: b[5]}}))};
+  },
+  geoPusat() {
+    return {type: "FeatureCollection", features: S.kluster.features.map(f => ({type: "Feature",
+      geometry: {type: "Point", coordinates: [f.properties.lon, f.properties.lat]}, properties: {id: f.properties.id, n: f.properties.n, level: f.properties.level}}))};
+  },
+  geoFWI() {
+    const h = S.fwi.sel / 2, i = S.fwiHari;
+    return {type: "FeatureCollection", features: S.fwi.grid.filter(g => g.hari[i]).map(g => ({type: "Feature",
+      geometry: {type: "Polygon", coordinates: [[[g.lon - h, g.lat - h], [g.lon + h, g.lat - h], [g.lon + h, g.lat + h], [g.lon - h, g.lat + h], [g.lon - h, g.lat - h]]]},
+      properties: {k: kelasFWI(g.hari[i].fwi), v: g.hari[i].fwi, dc: g.hari[i].dc}}))};
+  },
+  /* tingkat wilayah: nasional -> provinsi -> kabupaten */
+  async aturWilayah(terbang = true) {
+    const j = S.jalur; let fc;
+    if (j.length === 0) fc = S.geo.prov;
+    else if (j.length === 1) fc = S.geo.kab[j[0]] ||= await muatJSON(`geo/kabupaten/${j[0]}.json`);
+    else { const kec = S.geo.kec[j[0]] ||= await muatJSON(`geo/kecamatan/${j[0]}.json`);
+      fc = {type: "FeatureCollection", features: kec.features.filter(f => f.properties.kab === j[1])}; }
+    let id = 0;
+    const fitur = fc.features.map(f => { const p = f.properties;
+      const kunci = j.length === 0 ? p.kode : j.length === 1 ? j[0] + "|" + p.kab : j[0] + "|" + j[1] + "|" + p.kec;
+      return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : (j.length === 1 ? p.kab : p.kec),
+        v: S.hit[kunci] || 0}}; });
+    S.fiturWil = fitur;
+    if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: fitur});
+    if (terbang && fitur.length) { const bb = kotak(fitur); peta.fitBounds(bb, {padding: kiriPad(), duration: 700, maxZoom: 11}); }
+    else if (terbang) peta.flyTo({center: [118, -2.4], zoom: 4.1});
+    renderDaftar(); renderCrumb(); renderKPI();
+  },
+  interaksi() {
+    let hov = null;
+    peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer";
+      if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
+      hov = e.features[0].id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); });
+    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; });
+    peta.on("click", e => {
+      const k = peta.queryRenderedFeatures(e.point, {layers: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"].filter(l => peta.getLayer(l))});
+      if (k.length) return Laci.buka(k[0].properties.id);
+      const t = peta.queryRenderedFeatures(e.point, {layers: ["titik"]});
+      const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
+      if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
+        return new maplibregl.Popup({closeButton: false}).setLngLat(e.lngLat).setHTML(`<b>Titik panas</b><br>${p.u < 1 ? "< 1" : fmt(p.u)} jam sebelum lintasan terakhir<br>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21 (tidak dihitung)", M: "MODIS"}[p.s]} · keyakinan ${["rendah", "sedang", "tinggi"][p.c]}<br>FRP ${fmt(p.f)} MW`).addTo(peta); }
+      if (w.length && S.jalur.length < 2) turun(w[0].properties.kunci);
+    });
+  },
+};
+const kiriPad = () => innerWidth > 900 ? {top: 40, bottom: 40, left: 400, right: 280} : {top: 40, bottom: innerHeight * .48, left: 20, right: 20};
+function kotak(fitur) { let a = [180, 90, -180, -90];
+  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
+  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+
+function turun(kunci) { S.jalur = kunci.split("|"); renderCrumb(); nanti(() => Peta.aturWilayah()); }
+function naik(n) { S.jalur = S.jalur.slice(0, n); renderCrumb(); nanti(() => Peta.aturWilayah()); }
+
+/* ---------- panel ---------- */
+function renderCrumb() {
+  const j = S.jalur, b = [`<button data-n="0">Indonesia</button>`];
+  if (j[0]) b.push(`<span>›</span><button data-n="1">${esc(namaProv(j[0]))}</button>`);
+  if (j[1]) b.push(`<span>›</span><button data-n="2">${esc(j[1])}</button>`);
+  $("#crumb").innerHTML = b.join("");
+}
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
+function renderKPI() {
+  const pre = S.jalur.join("|"), kl = klusterDi(pre);
+  const jml = o => pre ? (o[pre] || 0) : Object.entries(o).filter(([k]) => !k.includes("|")).reduce((a, [, v]) => a + v, 0);
+  const prior = kl.filter(f => f.properties.level === 3).length, siaga = kl.filter(f => f.properties.level === 2).length;
+  const fw = S.jalur[0] ? S.wilayah[S.jalur[0]]?.fwi_maks : Math.max(...Object.keys(S.meta.provinsi).map(k => S.wilayah[k]?.fwi_maks || 0));
+  const nmR = {hari: "hari ini (WIB)", kemarin: "kemarin (WIB)", 72: "72 jam", 168: "7 hari"}[S.rentang];
+  const kart = [
+    ["Titik panas", fmt(jml(S.hit)), `${nmR} · ${fmt(jml(S.tinggi))} keyakinan tinggi`],
+    ["Kompleks api", fmt(kl.length), "aktif 72 jam"],
+    ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain siaga pemadaman`],
+    ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],
+  ];
+  $("#kpis").innerHTML = kart.map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("");
+}
+function renderDaftar() {
+  const j = S.jalur;
+  let item = (S.fiturWil || []).map(f => ({kunci: f.properties.kunci, nama: f.properties.nama, v: S.hit[f.properties.kunci] || 0}));
+  const gabung = new Map(); item.forEach(i => { const g = gabung.get(i.kunci); if (g) g.v = Math.max(g.v, i.v); else gabung.set(i.kunci, i); });
+  item = [...gabung.values()].sort((a, b) => b.v - a.v || a.nama.localeCompare(b.nama));
+  const maks = Math.max(1, ...item.map(i => i.v));
+  const prio = new Set(S.meta.prioritas);
+  $("#rows").innerHTML = item.length ? item.map((i, n) => {
+    const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
+    const fw = j.length === 0 ? S.wilayah[i.kunci]?.fwi_maks : null;
+    return `<button class="row" role="listitem" data-k="${esc(i.kunci)}" ${j.length >= 2 ? "data-daun=1" : ""}>
+      <span class="rk">${n + 1}</span>
+      <span style="min-width:0"><span class="nm">${esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi prioritas"></i>' : ""}</span>
+        <span class="bar"><i style="width:${(i.v / maks * 100).toFixed(1)}%"></i></span></span>
+      <span class="vl">${fmt(i.v)}<small>${kl.length ? kl.length + " kompleks" : fw != null ? "FWI " + fmt(fw) : "titik"}</small>${lv >= 2 ? `<span class="pill l${lv}" style="margin-top:3px">${["", "", "Siaga", "Prioritas"][lv]}</span>` : ""}</span></button>`;
+  }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`;
+}
+$("#rows").addEventListener("click", e => { const b = e.target.closest(".row"); if (!b) return;
+  if (b.dataset.daun) { const f = S.fiturWil.find(f => f.properties.kunci === b.dataset.k); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), maxZoom: 12}); }
+  else turun(b.dataset.k); });
+$("#handle").onclick = () => $("#panel").classList.toggle("min");
+
+/* rentang & mode */
+const RENTANG = [["hari", "Hari ini"], ["kemarin", "Kemarin"], [72, "72 jam"], [168, "7 hari"]];
+function renderSeg() {
+  $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${String(S.rentang) === String(v)}">${n}</button>`).join("");
+}
+$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
+  S.rentang = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; simpanLokal("pk-rentang2", S.rentang);
+  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); }); });
+
+/* lapisan */
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
+  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"]}[i.dataset.l];
+  map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
+  if (i.dataset.l === "fwi") { $("#fwiHari").style.display = i.checked ? "block" : "none"; renderLegenda(); } });
+$("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
+function renderFwiHari() {
+  const hari = S.fwi.grid[0].hari, i0 = hari.findIndex(h => h.tgl === S.fwi.hari_ini);
+  $("#fwiHari").innerHTML = `<div class="seg" style="box-shadow:none">${hari.slice(i0, i0 + 4).map((h, n) =>
+    `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${n === 0 ? "Hari ini" : "+" + n}</button>`).join("")}</div>`;
+}
+$("#fwiHari").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.fwiHari = +b.dataset.i;
+  $("#fwiHari").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  nanti(() => peta.getSource("fwi").setData(Peta.geoFWI())); });
+function renderLegenda() {
+  const fwiOn = Peta.lihat("fwi");
+  $("#legenda").innerHTML = `<div class="lbl">Umur titik panas</div>
+    <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
+    <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>
+    <div style="font-size:10.5px;color:var(--ink2);margin-bottom:6px">Angka dihitung dari MODIS, S-NPP, NOAA-20 (setara SiPongi). NOAA-21 tampil, tidak dihitung.</div>
+    <div class="lbl">Jumlah titik per wilayah</div>
+    <div class="legscale">${["#fde7c8", "#f9c48b", "#f39a53", "#e0612f", "#b8321f", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
+    <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>
+    <div class="lbl" style="margin-top:8px">Status kompleks</div>
+    <div class="leg" style="margin-top:4px">${S.meta.status.map((s, i) => `<span><i class="sw" style="background:${["#4caf73", "#4f9bd9", "#f29a3c", "#d6453a"][i]}"></i>${s}${i === 3 ? " (tampil di semua skala)" : ""}</span>`).slice(1).join("")}</div>
+    ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI BMKG)</div><div class="leg" style="margin-top:4px">${FWI_KELAS.map((k, i) =>
+      `<span><i class="sw" style="background:${["#5fb978", "#f0d45a", "#f29a3c", "#d6453a"][i]}"></i>${k[0]} (${k[1]})</span>`).join("")}</div>` : ""}`;
+}
+
+/* ---------- cari ---------- */
+let indeksCari = null;
+function bangunIndeks() {
+  const s = new Map();
+  for (const k of Object.keys(S.meta.provinsi)) s.set(k, {kunci: k, nama: namaProv(k), jenis: "Provinsi"});
+  for (const [, k2, k3] of S.wilKunci) { const p = k3.split("|"); s.set(k2, {kunci: k2, nama: p[1], jenis: "Kab/Kota · " + namaProv(p[0])});
+    s.set(k3, {kunci: k3, nama: p[2], jenis: "Kec. · " + p[1]}); }
+  for (const f of S.kluster.features) s.set("K" + f.properties.id, {kunci: f.properties.id, nama: f.properties.id, jenis: `Kompleks · ${f.properties.kec}, ${f.properties.kab}`, kl: 1});
+  indeksCari = [...s.values()];
+}
+$("#cari").addEventListener("input", e => {
+  const q = e.target.value.trim().toLowerCase(), h = $("#hasil");
+  if (q.length < 2) { h.hidden = true; return; }
+  const hasil = indeksCari.filter(i => i.nama.toLowerCase().includes(q)).sort((a, b) => a.nama.toLowerCase().indexOf(q) - b.nama.toLowerCase().indexOf(q)).slice(0, 12);
+  h.innerHTML = hasil.length ? hasil.map(i => `<button data-k="${esc(i.kunci)}" ${i.kl ? "data-kl=1" : ""}>${esc(i.nama)}<br><small>${esc(i.jenis)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`;
+  h.hidden = false;
+});
+$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = "";
+  if (b.dataset.kl) return Laci.buka(b.dataset.k);
+  const p = b.dataset.k.split("|"); turun(p.slice(0, 2).join("|"));
+  if (p.length === 3) setTimeout(async () => { const kec = S.geo.kec[p[0]] ||= await muatJSON(`geo/kecamatan/${p[0]}.json`);
+    const f = kec.features.find(f => f.properties.kab === p[1] && f.properties.kec === p[2]); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), maxZoom: 12}); }, 800); });
+document.addEventListener("click", e => { if (!e.target.closest(".cari")) $("#hasil").hidden = true; });
+
+/* ---------- laci kompleks ---------- */
+const Laci = {
+  buka(id) {
+    const f = S.kluster.features.find(f => f.properties.id === id); if (!f) return;
+    const p = f.properties; S.pilihK = id;
+    if (!document.querySelector("#p-peta.on")) bukaTab("peta");
+    const el = $("#laci"); el.classList.add("on");
+    el.innerHTML = `<div class="hd"><div><div class="lbl">Kompleks kebakaran ${esc(p.id)}</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
+      <div style="color:var(--ink2);font-size:12.5px">${esc(namaProv(p.prov))}</div></div><button class="tutup" aria-label="Tutup">✕</button></div>
+      <div class="bd"><span class="pill l${p.level}">${esc(p.status)}</span>
+      <div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 j</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${p.kmrn ? (p.ini >= p.kmrn ? "+" : "") + Math.round((p.ini / p.kmrn - 1) * 100) + "%" : p.ini ? "baru" : "–"}</b><span>vs kemarin</span></div>
+      <div><b>${fmt(p.fwi)}</b><span>FWI · ${FWI_KELAS[kelasFWI(p.fwi)][0]}</span></div><div><b>${fmt(p.ffmc)}</b><span>FFMC${p.ffmc > 82 ? " · mudah sulut" : ""}</span></div><div><b>${fmt(p.dc)}</b><span>DC · ${["basah", "lembap", "kering", "sangat kering"][p.dc <= 140 ? 0 : p.dc <= 260 ? 1 : p.dc <= 350 ? 2 : 3]}</span></div></div>
+      <div style="font-size:12.5px;color:var(--ink2)">${fmt(p.n)} deteksi VIIRS · luas indikatif ${fmt(Math.round(p.luas * .3))}–${fmt(p.luas)} ha · FRP ${fmt(p.frp)} MW<br>
+      Pertama terdeteksi ${jamWIB(p.awal)} · terakhir ${jamWIB(p.akhir)} (${fmt((Date.now() - new Date(p.akhir)) / 36e5)} jam lalu)<br>
+      Cuaca siang ini: ${fmt(p.t)}°C, RH ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam dari ${arah(p.wd)}</div>
+      <div class="lbl" style="margin-top:10px">Kenapa status ini</div>
+      <div style="font-size:12.5px">Bahaya cuaca kelas <b>${FWI_KELAS[p.fdrs][0].toLowerCase()}</b>${p.fdrs > kelasFWI(p.fwi) ? " (naik satu kelas karena FFMC > 82 atau ISI > 5)" : ""} × keparahan <b>S${p.sev}</b> (${["", "kecil, 1 hari", "sedang", "front ≥ 140 ha, bertahan ≥ 3 hari, atau tumbuh ≥ 50%"][p.sev]}).</div>
+      <div class="sop"><b>Tindakan menurut SOP</b><ul>${STATUS_AKSI[p.level].map(a => `<li>${esc(a)}</li>`).join("")}</ul></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="keSim">Simulasikan 72 jam</button>
+      <a class="btn sec" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}">Buka di Google Maps</a>
+      <button class="btn sec" id="bagi">Salin tautan</button></div>
+      <p style="font-size:11.5px;color:var(--ink2);margin-top:12px">Koordinat pusat ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}. Luas = luas lambung cembung titik (indikasi, bukan luas terbakar terverifikasi).</p></div>`;
+    el.querySelector(".tutup").onclick = () => { el.classList.remove("on"); S.pilihK = null; peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], ""], 3.4, 1.8]); };
+    el.querySelector("#keSim").onclick = () => bukaTab("sim");
+    el.querySelector("#bagi").onclick = () => { navigator.clipboard?.writeText(location.origin + location.pathname + "#k/" + p.id); toast("Tautan kompleks disalin"); };
+    nanti(() => { peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], id], 3.4, 1.8]);
+      peta.fitBounds(kotak([f]), {padding: innerWidth > 900 ? {top: 60, bottom: 60, left: 400, right: 420} : {top: 40, bottom: innerHeight * .74, left: 20, right: 20}, maxZoom: 12.5, duration: 700}); });
+  },
+};
+const arah = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(((d || 0) % 360) / 45) % 8];
+
+/* ================================================================ tabel kompleks */
+const Tabel = {
+  urut: "level", turun: true, q: "", hal: 0, per: 50,
+  baris() {
+    const q = this.q.toLowerCase();
+    let r = S.kluster.features.map(f => f.properties).filter(p => !q || `${p.id} ${p.kec} ${p.kab} ${namaProv(p.prov)}`.toLowerCase().includes(q));
+    const k = this.urut, s = this.turun ? -1 : 1;
+    r.sort((a, b) => (a[k] > b[k] ? 1 : a[k] < b[k] ? -1 : 0) * s || b.n - a.n);
+    return r;
+  },
+  render() {
+    const el = $("#kompleks"); if (!S.kluster) return;
+    const r = this.baris(), hal = r.slice(this.hal * this.per, (this.hal + 1) * this.per), jml = Math.ceil(r.length / this.per);
+    const kol = [["id", "Kode"], ["status", "Status", "level"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel aktif 24 j", 0, 1], ["hari", "Hari menyala", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas maks (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
+    if (!el.dataset.ok) {
+      el.dataset.ok = 1;
+      el.innerHTML = `<div class="head"><div><h2>Kompleks kebakaran aktif</h2><p>Deteksi VIIRS (3 satelit, keyakinan sedang dan tinggi) ${S.meta.dbscan.jendela_hari} hari terakhir dikelompokkan dengan DBSCAN Haversine radius ${S.meta.dbscan.eps_km} km. Kompleks dianggap aktif bila masih terdeteksi dalam ${S.meta.dbscan.aktif_jam} jam. Status = bahaya cuaca di lokasi × keparahan kompleks.</p></div></div>
+        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span>
+        <button class="btn sec" id="tcsv">Unduh CSV</button></div><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div class="pager" id="pg"></div>`;
+      $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
+      $("#th").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
+        this.turun = this.urut === k ? !this.turun : true; this.urut = k; this.hal = 0;
+        $("#th").querySelectorAll("button").forEach(x => x.querySelector("i").textContent = x === b ? (this.turun ? "↓" : "↑") : "");
+        nanti(() => this.render()); });
+      $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) Laci.buka(b.dataset.id); });
+      $("#pg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
+      $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
+        ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : p[k]).concat([p.lat, p.lon]))]));
+    }
+    $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
+    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}">${esc(p.status)}</span></td>
+      <td>${esc(namaProv(p.prov))}</td><td>${esc(p.kab)}</td><td>${esc(p.kec)}</td>${["px24", "hari", "n", "luas", "fwi", "dc"].map(k => `<td class="n num">${fmt(p[k])}</td>`).join("")}</tr>`).join("")
+      : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
+    const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
+    $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} kompleks</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td></tr>`;
+    $("#pg").innerHTML = jml > 1 ? `Halaman ${this.hal + 1} dari ${jml} ${this.hal > 0 ? `<button class="btn sec" data-h="${this.hal - 1}">‹</button>` : ""}${this.hal < jml - 1 ? `<button class="btn sec" data-h="${this.hal + 1}">›</button>` : ""}` : "";
+  },
+};
+
+/* ================================================================ prioritas */
+function renderPrioritas() {
+  const b = new Map((S.bnpb?.rows || []).map(r => [r.Provinsi, r]));
+  const kartu = S.meta.prioritas.map(k => {
+    const w = S.wilayah[k] || {}, kl = klusterDi(k), bn = S.meta.bnpb[k] ? b.get(S.meta.bnpb[k]) : null;
+    const lv = Math.max(0, ...kl.map(f => f.properties.level));
+    const harian = Object.entries(w.harian || {}).sort().slice(-7), mh = Math.max(1, ...harian.map(h => h[1]));
+    const hIni = (w.harian || {})[S.meta.hari_wib] || 0, kmr = Object.entries(w.harian || {}).sort().slice(-2)[0];
+    return `<article class="card pad">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div><h3 style="font-size:16px">${esc(namaProv(k))}</h3>
+      <div style="font-size:12px;color:var(--ink2)">${bn ? "Pantauan harian BNPB" : "Di luar pantauan harian BNPB"}</div></div><span class="pill l${lv}">${esc(S.meta.status[lv])}</span></div>
+      <div class="kv"><div><b>${fmt(kmr && kmr[0] !== S.meta.hari_wib ? kmr[1] : 0)}</b><span>titik kemarin</span></div><div><b>${fmt(kl.length)}</b><span>kompleks</span></div><div><b>${fmt(w.fwi_maks)}</b><span>FWI maks</span></div></div>
+      <div class="lbl">Titik panas per hari WIB (MODIS, S-NPP, NOAA-20)</div>
+      <svg viewBox="0 0 280 54" width="100%" height="54" role="img" aria-label="Grafik titik panas harian">${harian.map(([t, v], i) => {
+        const h = v / mh * 40; return `<rect x="${i * 40 + 6}" y="${44 - h}" width="28" height="${h}" rx="4" fill="#f0582a"><title>${t}: ${v}</title></rect><text x="${i * 40 + 20}" y="53" font-size="8" text-anchor="middle" fill="currentColor" opacity=".6">${t.slice(8)}</text>`; }).join("")}</svg>
+      ${bn ? `<div class="lbl" style="margin-top:8px">Laporan BNPB</div><table style="font-size:12px;margin-top:4px"><tbody>
+        <tr><td>Titik panas versi BNPB</td><td class="n num">${fmt(bn["Total Hotspot"])}</td></tr>
+        <tr><td>Kualitas udara</td><td class="n">${esc(bn["Kualitas Udara (PM 25)"])}</td></tr>
+        <tr><td>Jarak pandang bandara</td><td class="n">${esc(bn["Jarak Pandang Bandara (Km)"])} km</td></tr>
+        <tr><td>Lahan terbakar indikatif</td><td class="n num">${fmt(String(bn["Lahan Terbakar Indikatif (Ha)"]).replace(/\./g, "").replace(",", "."))} ha</td></tr>
+        <tr><td>Total personel</td><td class="n num">${fmt(bn["Total Personel"])}</td></tr>
+        <tr><td>Water bombing</td><td class="n">${esc(bn["WB unit"] ?? "–")} unit · ${esc(bn["WB sortie"] ?? "–")} sorti</td></tr></tbody></table>
+        ${bn.rekomendasi ? `<p style="font-size:12px;color:var(--ink2);margin:8px 0 0"><b>Rekomendasi BNPB:</b> ${esc(bn.rekomendasi)}</p>` : ""}` :
+        `<p style="font-size:12.5px;margin:10px 0 0;color:var(--ink2)">Provinsi ini tidak masuk dashboard harian BNPB, padahal titik panas musimnya lebih besar dari sebagian provinsi yang dipantau. Usulkan masuk pantauan.</p>`}
+      <button class="btn sec" style="margin-top:12px;width:100%" data-k="${k}">Lihat di peta</button></article>`;
+  }).join("");
+  $("#prioritas").innerHTML = `<div class="head"><div><h2>9 provinsi prioritas</h2><p>Enam provinsi pantauan harian BNPB ditambah Papua Selatan, Kalimantan Timur, dan NTT, yang titik panas musim kebakarannya (Agustus–Oktober 2015, 2019, 2023, 2026) lebih besar dari Kalsel, Jambi, atau Riau.</p></div>
+    <div style="font-size:12px;color:var(--ink2)">BNPB diperbarui ${S.bnpb?.updatedAt ? jamWIB(S.bnpb.updatedAt) : "–"}</div></div><div class="grid g3">${kartu}</div>`;
+  $("#prioritas").onclick = e => { const b = e.target.closest("[data-k]"); if (b) { bukaTab("peta"); turun(b.dataset.k); } };
+}
+
+/* ================================================================ sarana pemadam */
+const Sarana = {
+  /* Minimal per 1 regu inti (15 orang). P = Permen LHK P.32/2016 Pasal 54-60; T = Permentan 5/2018 Lampiran IV;
+     L = daftar inventaris rumah pemadam PKS (Lampiran 1b). Angka "per regu" dikali jumlah regu. */
+  daftar: [
+    ["Peralatan tangan", [["Kapak dua fungsi (pulaski / kapak-cangkul)", "unit", 4, "T"], ["Kepyok api (flapper)", "unit", 8, "T"], ["Garu tajam (fine rake)", "unit", 6, "T"], ["Garu cangkul (McLeod)", "unit", 3, "T"], ["Sekop", "unit", 6, "T"], ["Pompa punggung", "unit", 10, "T"], ["Obor tetes (drip torch)", "unit", 1, "T"], ["Gergaji mesin", "unit", 1, "T"]]],
+    ["Pompa & selang", [["Pompa bertekanan tinggi ≥ 25 HP", "unit", 1, "T"], ["Selang isap pompa induk (≥ 4 m)", "roll", 1, "T"], ["Selang keluar pompa induk 2,5\" (≥ 20 m)", "roll", 5, "T*"], ["Nozzle pompa induk", "unit", 2, "T"], ["Injektor gambut (bila di gambut)", "unit", 1, "T"], ["Tangki air lipat / portabel", "unit", 1, "T"], ["Cabang Y 2,5 – 1,5 × 1,5\"", "unit", 1, "T"], ["Pompa jinjing ≥ 5 HP", "unit", 2, "T"], ["Selang isap pompa jinjing", "roll", 2, "T"], ["Selang keluar pompa jinjing", "roll", 6, "T"], ["Nozzle pompa jinjing", "unit", 2, "T"], ["Pompa apung", "unit", 2, "P"]]],
+    ["Komunikasi & navigasi", [["GPS", "unit", 2, "T"], ["Radio genggam (HT)", "unit", 4, "PT"], ["Megafon", "unit", 2, "T"], ["Radio rig kendaraan", "unit", 1, "P"]]],
+    ["Transportasi", [["Angkutan personel (15 orang)", "unit", 1, "T"], ["Angkutan peralatan", "unit", 1, "T"], ["Kendaraan patroli", "unit", 1, "T"], ["Sepeda motor", "unit", 2, "P"], ["Mobil pemadam / tangki air 4x4", "unit", 1, "P"]]],
+    ["Kelengkapan perorangan", [["Helm", "unit", 15, "P"], ["Lampu kepala", "unit", 15, "P"], ["Kacamata pelindung", "unit", 15, "P"], ["Masker", "unit", 15, "P"], ["Sarung tangan kulit", "unit", 15, "P"], ["Sabuk / kopel rim", "unit", 15, "P"], ["Tempat air minum", "unit", 15, "P"], ["Peluit", "unit", 15, "P"], ["Ransel", "unit", 15, "P"], ["Sepatu lapangan", "unit", 15, "P"], ["Baju tahan api / wear pack", "unit", 15, "P"], ["Kantong tidur", "unit", 15, "P"]]],
+    ["Perlengkapan regu", [["Tenda", "unit", 2, "P"], ["Peralatan bengkel", "set", 1, "P"], ["Kotak P3K", "unit", 2, "P"], ["Peralatan penerangan", "set", 1, "P"], ["Peralatan masak", "set", 1, "P"], ["Peralatan SAR", "set", 1, "P"], ["Peta wilayah kerja pengendalian kebakaran", "lembar", 1, "L"], ["Daftar nomor penting (Manggala Agni, Polsek, perusahaan tetangga, Puskesmas)", "berkas", 1, "L"]]],
+  ],
+  /* Permentan 5/2018: jumlah regu inti menurut luas kebun; embung & menara 1 per 500 ha */
+  reguDariLuas: ha => ha <= 0 ? 1 : ha < 1000 ? 1 : ha <= 5000 ? 2 : ha <= 10000 ? 3 : ha <= 20000 ? 4 : 4 + Math.ceil((ha - 20000) / 10000),
+  isi: bacaLokal("pk-sarana", {}),
+  render() {
+    const el = $("#sarana");
+    const jenis = this.isi._jenis || "regu", luas = +this.isi._luas || 0, regu = jenis === "kebun" ? this.reguDariLuas(luas) : Math.max(1, +this.isi._regu || 1);
+    this.regu = regu;
+    el.innerHTML = `<div class="head"><div><h2>Kesiapan sarana pemadam</h2><p>Isi jumlah alat yang tersedia. Kebutuhan minimal dihitung per regu inti (15 orang) dari Permen LHK P.32/2016 dan Permentan 5/2018, lalu dikali jumlah regu. Data tersimpan di perangkat ini; unduh CSV untuk dikirim ke posko.</p></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><input id="sUnit" placeholder="Nama unit / regu" value="${esc(this.isi._unit || "")}" style="height:38px;border-radius:12px;border:1px solid var(--line);background:var(--card);padding:0 12px">
+      <button class="btn sec" id="sCsv">Unduh CSV</button><label class="btn sec" style="cursor:pointer">Muat CSV<input type="file" accept=".csv" id="sImp" hidden></label></div></div>
+      <div class="card pad" style="margin-bottom:14px;display:flex;gap:14px;flex-wrap:wrap;align-items:flex-end">
+        <label class="fld" style="margin:0"><span class="lbl">Jenis unit</span><select id="sJenis"><option value="regu" ${jenis === "regu" ? "selected" : ""}>Brigdalkarhutla / Daops / MPA</option><option value="kebun" ${jenis === "kebun" ? "selected" : ""}>Perusahaan perkebunan</option></select></label>
+        ${jenis === "kebun" ? `<label class="fld" style="margin:0"><span class="lbl">Luas kebun (ha)</span><input type="number" min="0" id="sLuas" value="${luas || ""}"></label>`
+          : `<label class="fld" style="margin:0"><span class="lbl">Jumlah regu</span><input type="number" min="1" id="sRegu" value="${regu}"></label>`}
+        <div style="font-size:13px"><b>${regu} regu inti</b> (${regu * 15} orang)${jenis === "kebun" ? ` · embung minimal <b>${Math.ceil(luas / 500)}</b> (≥ 20 × 20 × 2 m) · menara pengawas minimal <b>${Math.ceil(luas / 500)}</b> (≥ 15 m)` : ""}</div></div>
+      <div class="grid g4" id="sKpi" style="margin-bottom:14px"></div>
+      ${this.daftar.map(([g, it], gi) => `<div class="fold"><button aria-expanded="${gi < 2}" data-g="${gi}">${esc(g)} <span class="pill l1" id="sg${gi}"></span>
+        <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div ${gi < 2 ? "" : "hidden"}><div class="chk lbl" style="border:0"><span>Sarana</span><span style="text-align:right">Tersedia</span><span style="text-align:right">Minimal</span><span style="text-align:right">Status</span></div>
+        ${it.map(([n, s, m, src], ii) => `<div class="chk"><span>${esc(n)} <small style="color:var(--ink2)">(${s}) · ${src.replace("PT", "P.32 & Permentan").replace("T*", "Permentan, angka lampiran kurang terbaca").replace("T", "Permentan 5/2018").replace("P", "P.32/2016").replace("L", "Lampiran 1b PKS")}</small></span>
+          <input type="number" min="0" inputmode="numeric" data-k="${gi}.${ii}" value="${this.isi[gi + "." + ii] ?? ""}" aria-label="Jumlah ${esc(n)}">
+          <span class="num" style="text-align:right">${m * regu}</span><span id="ss${gi}_${ii}" style="text-align:right"></span></div>`).join("")}</div></div>`).join("")}`;
+    el.querySelectorAll(".fold > button").forEach(b => b.onclick = () => { const buka = b.getAttribute("aria-expanded") !== "true";
+      b.setAttribute("aria-expanded", buka); nanti(() => b.nextElementSibling.hidden = !buka); });
+    el.addEventListener("input", e => { const i = e.target;
+      if (i.id === "sUnit") { this.isi._unit = i.value; simpanLokal("pk-sarana", this.isi); return; }
+      if (i.id === "sLuas" || i.id === "sRegu") { this.isi[i.id === "sLuas" ? "_luas" : "_regu"] = +i.value; simpanLokal("pk-sarana", this.isi); clearTimeout(this._t); this._t = setTimeout(() => { this.render(); const x = $("#" + i.id); x.focus(); x.setSelectionRange?.(99, 99); }, 500); return; }
+      if (!i.dataset.k) return; if (i.value === "") delete this.isi[i.dataset.k]; else this.isi[i.dataset.k] = Math.max(0, +i.value);
+      simpanLokal("pk-sarana", this.isi); this.skor(); });
+    $("#sJenis").onchange = e => { this.isi._jenis = e.target.value; simpanLokal("pk-sarana", this.isi); nanti(() => this.render()); };
+    $("#sCsv").onclick = () => unduh(`sarana-pemadam-${(this.isi._unit || "unit").replace(/\W+/g, "-")}.csv`, csv([["Kelompok", "Sarana", "Satuan", "Tersedia", "Minimal"],
+      ...this.daftar.flatMap(([g, it], gi) => it.map(([n, s, m], ii) => [g, n, s, this.isi[gi + "." + ii] ?? "", m * this.regu]))]));
+    $("#sImp").onchange = async e => { const f = e.target.files[0]; if (!f) return; const baris = (await f.text()).split(/\r?\n/).slice(1);
+      baris.forEach(b => { const c = b.match(/("([^"]|"")*"|[^,]*)/g).filter((_, i) => i % 2 === 0).map(x => x.replace(/^"|"$/g, "").replace(/""/g, '"'));
+        this.daftar.forEach(([g, it], gi) => it.forEach(([n], ii) => { if (c[0] === g && c[1] === n && c[3] !== "") this.isi[gi + "." + ii] = +c[3]; })); });
+      simpanLokal("pk-sarana", this.isi); this.render(); toast("Data sarana dimuat"); };
+    this.skor();
+  },
+  skor() {
+    let ada = 0, total = 0, kurang = 0, kosong = 0;
+    this.daftar.forEach(([g, it], gi) => { let ga = 0;
+      it.forEach(([n, s, m0], ii) => { const m = m0 * this.regu, v = this.isi[gi + "." + ii], el = $(`#ss${gi}_${ii}`);
+        const r = v == null ? null : Math.min(1, v / m); total++; if (r != null) { ada += r; ga += r; } if (v == null) kosong++; else if (v < m) kurang++;
+        el.innerHTML = v == null ? `<span style="color:var(--ink2);font-size:12px">belum diisi</span>` : v >= m ? `<span class="pill l0">Cukup</span>` : `<span class="pill l3">Kurang ${m - v}</span>`; });
+      $(`#sg${gi}`).textContent = Math.round(ga / it.length * 100) + "%"; });
+    const pct = Math.round(ada / total * 100);
+    $("#sKpi").innerHTML = [["Kelengkapan", pct + "%", `terhadap minimal ${this.regu} regu`], ["Item cukup", total - kurang - kosong, "dari " + total + " item"],
+      ["Item kurang", kurang, "perlu pengadaan"], ["Belum diisi", kosong, "item"]].map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("");
+  },
+};
+
+/* ================================================================ metode */
+function renderMetode() {
+  const d = S.meta.dbscan;
+  const blok = (j, isi, buka) => `<div class="fold"><button aria-expanded="${!!buka}">${j}<svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button><div ${buka ? "" : "hidden"}>${isi}</div></div>`;
+  $("#metode").innerHTML = `<div class="head"><div><h2>Metode & data</h2><p>Semua angka di platform ini bisa ditelusuri ke rumus dan sumber di halaman ini.</p></div></div>
+  ${blok("1. Titik panas (hotspot)", `<p>Sumber: NASA FIRMS NRT. <b>Angka resmi platform</b> memakai sensor yang sama dengan SiPongi/BNPB: MODIS Terra/Aqua, VIIRS S-NPP, dan VIIRS NOAA-20, semua tingkat keyakinan, per hari kalender WIB (00.00–23.59), tanpa penghapusan duplikat. VIIRS NOAA-21 ditampilkan di peta tetapi tidak dihitung.</p>
+    <p>Kelas keyakinan (BRIN): MODIS rendah 0–29, sedang 30–79, tinggi 80–100; VIIRS rendah (l), sedang (n), tinggi (h). Titik di laut dan negara tetangga dibuang dengan uji titik-dalam-poligon kecamatan.</p>
+    <p><b>Uji silang 11 Oktober 2026</b> terhadap dashboard BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>`, true)}
+  ${blok("2. Bahaya cuaca: Fire Weather Index (FWI)", `<p>Sistem FWI Kanada (Van Wagner 1987), kerangka yang dipakai SPARTAN BMKG. Dihitung harian per sel 0,5° dari cuaca Open-Meteo jam 12.00 waktu setempat (suhu, RH, angin 10 m, hujan 24 jam pukul 13.00 kemarin sampai 12.00), dengan pemanasan 92 hari. Faktor panjang hari memakai nilai khatulistiwa (Le = 9, Lf = 1,39).</p>
+    <div class="rumus">FFMC  kadar air serasah halus  ->  potensi penyulutan
+DMC   humus dangkal              ->  api bertahan
+DC    gambut / organik dalam     ->  api bawah permukaan
+ISI = 0,208 · f(W) · f(F)        f(W) = e^(0,05039·W)
+BUI = 0,8·DMC·DC / (DMC + 0,4·DC)   (bila DMC ≤ 0,4·DC)
+FWI = e^(2,72·(0,434·ln B)^0,647),  B = 0,1·ISI·f(BUI)</div>
+    <p>Diuji terhadap contoh baku Van Wagner & Pickett (1985): FFMC 87,7 · DMC 8,5 · DC 19,0 · ISI 10,9 · BUI 8,5 · FWI 10,1 (cocok).</p>
+    <div class="tw"><table><thead><tr><th>Indeks</th><th>Rendah</th><th>Sedang</th><th>Tinggi</th><th>Sangat tinggi</th></tr></thead><tbody>
+    <tr><td>FWI</td><td>0–1</td><td>2–6</td><td>7–13</td><td>&gt; 13</td></tr><tr><td>FFMC</td><td>0–72</td><td>73–77</td><td>78–82</td><td>&gt; 82</td></tr>
+    <tr><td>DC</td><td>0–140 basah</td><td>141–260 lembap</td><td>261–350 kering</td><td>&gt; 350 sangat kering</td></tr><tr><td>ISI</td><td>0–1</td><td>2–3</td><td>4–5</td><td>&gt; 5</td></tr></tbody></table></div>
+    <p>Sumber kelas: BMKG (bmkg.go.id/cuaca/karhutla). Ambang FFMC 82 (penyulutan) dari de Groot dkk. 2005/2007; DC > 350 (asap pekat di gambut) dari Field dkk. 2004 dan BMKG.</p>`)}
+  ${blok("3. Kompleks kebakaran: DBSCAN Haversine", `<p>Deteksi VIIRS dari 3 satelit dengan keyakinan sedang dan tinggi selama ${d.jendela_hari} hari dikelompokkan dengan DBSCAN, radius ε = ${d.eps_km} km, minimal ${d.min_pts} titik (titik tunggal tetap dihitung sebagai kejadian). Kompleks dianggap aktif bila masih terdeteksi dalam ${d.aktif_jam} jam. Parameter mengikuti FEDS (Chen dkk. 2022) dan uji akurasi VIIRS di Indonesia (Indradjad dkk. 2024, puncak 1–1,5 km). MODIS tidak dipakai karena pikselnya 1 km.</p>
+    <div class="rumus">d = 2R · asin( √( sin²(Δφ/2) + cos φ1 · cos φ2 · sin²(Δλ/2) ) ),  R = 6.371 km</div>
+    <p><b>Luas indikatif</b> = jumlah piksel VIIRS 375 m unik × 14,06 ha, ditampilkan sebagai rentang 0,3–1,0 kali nilai itu. FIRMS tidak menganjurkan titik panas untuk luas terbakar; angka resmi tetap dari KLHK/BNPB (Landsat dan lapangan).</p>`)}
+  ${blok("4. Status taktis kompleks", `<p><b>Bahaya cuaca (kelas FDRS)</b> = kelas FWI BMKG, naik satu kelas bila FFMC > 82 atau ISI > 5.</p>
+    <p><b>Keparahan</b>: S1 bila < 3 deteksi dan hanya 1 hari. S3 bila front aktif 24 jam ≥ 10 piksel (≈ 140 ha), atau bertahan ≥ 3 dari 5 hari dengan front ≥ 3 piksel, atau naik ≥ 50% dari kemarin dengan ≥ 5 deteksi. Selain itu S2.</p>
+    <div class="tw"><table><thead><tr><th>Bahaya cuaca</th><th>S1</th><th>S2</th><th>S3</th></tr></thead><tbody>
+    <tr><td>Rendah / sedang</td><td><span class="pill l0">Pencegahan rutin</span></td><td><span class="pill l1">Patroli terpadu</span></td><td><span class="pill l1">Patroli terpadu</span></td></tr>
+    <tr><td>Tinggi</td><td><span class="pill l1">Patroli terpadu</span></td><td><span class="pill l2">Siaga pemadaman awal</span></td><td><span class="pill l2">Siaga pemadaman awal</span></td></tr>
+    <tr><td>Sangat tinggi</td><td><span class="pill l2">Siaga pemadaman awal</span></td><td><span class="pill l2">Siaga pemadaman awal</span></td><td><span class="pill l3">Prioritas pemadaman</span></td></tr></tbody></table></div>
+    <p>"Siaga darurat" dan "tanggap darurat" adalah status hukum wilayah yang ditetapkan bupati, gubernur, atau menteri (Permen LHK P.9/2018), jadi tidak diberikan oleh model. Tindakan tiap status disusun dari regulasi dan praktik lapangan:</p>
+    <table><thead><tr><th>Status</th><th>Tindakan</th></tr></thead><tbody>${S.meta.status.map((s, i) => `<tr><td><span class="pill l${i}">${s}</span></td><td style="white-space:normal">${STATUS_AKSI[i].join("; ")}</td></tr>`).join("")}</tbody></table>
+    <p>Kalibrasi berikutnya: uji balik pada musim 2019 dan 2023.</p>`)}
+  ${blok("5. Simulasi penjalaran api", `<p>Model waktu tempuh minimum di atas kisi 120 m dengan 16 arah. Laju kepala per jam: ROS = a·(1 − e^(−b·ISI))^c · CF (FBP Kanada). ISI per jam memakai angin prakiraan Open-Meteo dan f(F) siang ini. Laju belakang dari ISI dengan angin negatif, bentuk elips dari rasio panjang-lebar FBP (rumput: 1,1·W^0,464; lainnya: 1 + 8,729·(1 − e^(−0,030·W))^2,155).</p>
+    <div class="tw"><table><thead><tr><th>Bahan bakar</th><th>a</th><th>b</th><th>c</th><th>Catatan</th></tr></thead><tbody>${Object.values(BAHAN).map(b => `<tr><td>${b.n}</td><td class="n">${b.a}</td><td class="n">${b.b}</td><td class="n">${b.c}</td><td style="white-space:normal">${b.cat}</td></tr>`).join("")}</tbody></table></div>
+    <p>Gambut: api bara bawah permukaan menjalar 2,7 cm/jam mendatar dan 0,8 cm/jam ke bawah (Graham dkk. 2022), jadi tidak berpindah antarsel dalam 72 jam tetapi bertahan berminggu-minggu bila DC > 350. Keterbatasan: lereng dan peta bahan bakar belum dimasukkan, tidak ada efek sekat bakar atau pemadaman.</p>`)}
+  ${blok("6. Sumber data", `<div class="tw"><table><thead><tr><th>Data</th><th>Sumber</th><th>Status</th></tr></thead><tbody>
+    ${[["Titik panas NRT", "NASA FIRMS (VIIRS, MODIS)", "l0", "Harian otomatis"], ["Cuaca & prakiraan", "Open-Meteo", "l0", "Harian otomatis"],
+      ["Laporan harian 6 provinsi", "BNPB gis.bnpb.go.id/karhutla2026", "l0", "Harian otomatis"], ["Batas provinsi, kab/kota, kecamatan", "Kode Kemendagri (dari pangantara)", "l0", "Ada"],
+      ["Arsip titik panas 2015–2026", "NASA FIRMS arsip standar", "l2", "Sedang diunduh"], ["FWI resmi & radar SRI/PAC 24H", "BMKG SPARTAN", "l3", "Perlu surat permintaan"],
+      ["Peta gambut (KHG)", "KLHK", "l2", "Antre"], ["Tutupan lahan / bahan bakar", "ESA WorldCover / KLHK", "l2", "Antre"],
+      ["Markas Daops & desa MPA", "KLHK Dit. PKHL / SiPongi", "l3", "Perlu surat permintaan"], ["Luas terbakar", "MODIS/VIIRS Burned Area (Earthdata)", "l2", "Antre"]]
+      .map(([a, b, c, d]) => `<tr><td>${a}</td><td>${b}</td><td><span class="pill ${c}">${d}</span></td></tr>`).join("")}</tbody></table></div>`)}`;
+  $("#metode").querySelectorAll(".fold > button").forEach(b => b.onclick = () => { const buka = b.getAttribute("aria-expanded") !== "true";
+    b.setAttribute("aria-expanded", buka); nanti(() => b.nextElementSibling.hidden = !buka); });
+}
+
+/* ================================================================ simulasi */
+/* Kurva laju FBP Kanada (FCFDG 1992, cffdrs): ROS = a·(1 − e^(−b·ISI))^c · CF  (m/menit).
+   Indonesia hanya punya adaptasi tipe rumput O-1 (dasar indikator ISI BMKG). Tipe lain = proksi, ditandai. */
+const CURING = cc => cc < 58.8 ? .005 * (Math.exp(.061 * cc) - 1) : .176 + .02 * (cc - 58.8);
+const BAHAN = {
+  gambut: {n: "Gambut terbuka / bekas terbakar (pakis, rumput)", a: 190, b: .031, c: 1.4, cf: CURING(80), rumput: true, membara: true, cat: "O-1a, curing 80%; bara bawah permukaan 2,7 cm/jam"},
+  rumput: {n: "Alang-alang, rumput", a: 190, b: .031, c: 1.4, cf: CURING(90), rumput: true, cat: "O-1a, curing 90%"},
+  sabana: {n: "Sabana (NTT, Papua Selatan)", a: 250, b: .035, c: 1.7, cf: CURING(95), rumput: true, cat: "O-1b, curing 95%"},
+  semak: {n: "Semak belukar, hutan sekunder terdegradasi", a: 30, b: .0232, c: 1.6, cf: 1, bui: true, cat: "proksi D-1 (belum ada tipe Indonesia)"},
+};
+const Sim = {
+  peta: null, k: null, hasil: null,
+  async buka() {
+    if (!this.peta) {
+      this.peta = new maplibregl.Map({container: "simPeta", style: DASAR(), center: [113.9, -2.2], zoom: 9, attributionControl: {compact: true}, dragRotate: false});
+      this.peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
+      this.peta.on("style.load", () => this.pasangLapis());
+      await new Promise(r => this.peta.once("load", r));
+    } else this.peta.resize();
+    const id = S.pilihK || S.kluster.features[0]?.properties.id;
+    if (id !== this.k) this.pilih(id); else this.panel();
+  },
+  pilih(id) {
+    this.k = id; this.hasil = null; S.pilihK = id;
+    const f = S.kluster.features.find(f => f.properties.id === id); if (!f) return;
+    this.f = f; const p = f.properties;
+    this.bahan = ["93", "53", "52", "81"].includes(p.prov) ? "sabana" : p.dc > 350 ? "gambut" : "rumput";
+    this.peta.jumpTo({center: [p.lon, p.lat], zoom: 10.5});
+    this.pasangLapis(); this.panel();
+  },
+  pasangLapis() {
+    const m = this.peta; if (!m.isStyleLoaded() || !this.f) return;
+    ["sim-img", "sim-k"].forEach(l => m.getLayer(l) && m.removeLayer(l)); ["sim-img", "sim-k"].forEach(s => m.getSource(s) && m.removeSource(s));
+    m.addSource("sim-k", {type: "geojson", data: this.f});
+    m.addLayer({id: "sim-k", type: "line", source: "sim-k", paint: {"line-color": "#d6453a", "line-width": 2.2, "line-dasharray": [2, 1]}});
+    if (this.hasil) this.gambar();
+  },
+  panel() {
+    const p = this.f?.properties; if (!p) { $("#simPanel").innerHTML = `<div class="kosong">Belum ada kompleks aktif.</div>`; return; }
+    const opsi = S.kluster.features.slice(0, 300).map(f => `<option value="${f.properties.id}" ${f.properties.id === this.k ? "selected" : ""}>${f.properties.id} · ${esc(f.properties.kec)} (${f.properties.n} titik)</option>`).join("");
+    $("#simPanel").innerHTML = `<div class="lbl">Simulasi penjalaran 72 jam</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
+      <div style="font-size:12.5px;color:var(--ink2)">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(p.status)}</span></div>
+      <label class="fld"><span class="lbl">Kompleks</span><select id="simK">${opsi}</select></label>
+      <label class="fld"><span class="lbl">Bahan bakar dominan</span><select id="simB">${Object.entries(BAHAN).map(([k, b]) => `<option value="${k}" ${k === this.bahan ? "selected" : ""}>${b.n}</option>`).join("")}</select></label>
+      <div class="kv"><div><b>${fmt(p.isi)}</b><span>ISI</span></div><div><b>${fmt(p.bui)}</b><span>BUI</span></div><div><b>${fmt(p.dc)}</b><span>DC</span></div></div>
+      <button class="btn pri" id="simJalan" style="width:100%">Jalankan simulasi</button>
+      <div id="simHasil" style="margin-top:12px"></div>
+      <p style="font-size:11.5px;color:var(--ink2);margin:10px 0 0">Kurva laju: ${esc(BAHAN[this.bahan].cat)}. Angin per jam dari prakiraan Open-Meteo di pusat kompleks. Model belum memasukkan lereng, sekat bakar, dan pemadaman. Lihat Metode & data.</p>`;
+    $("#simK").onchange = e => { this.pilih(e.target.value); };
+    $("#simB").onchange = e => { this.bahan = e.target.value; };
+    $("#simJalan").onclick = () => { $("#simJalan").disabled = true; $("#simJalan").textContent = "Menghitung…"; nanti(() => this.jalan()); };
+    if (this.hasil) this.ringkas();
+  },
+  async jalan() {
+    const p = this.f.properties;
+    try {
+      const u = `https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=wind_speed_10m,wind_direction_10m,relative_humidity_2m,temperature_2m,precipitation&forecast_days=4&timezone=UTC`;
+      const c = await muatJSON(u), h = c.hourly, mulai = Date.now();
+      const i0 = Math.max(0, h.time.findIndex(t => new Date(t + "Z").getTime() >= mulai - 3600e3));
+      this.cuaca = h.time.slice(i0, i0 + 73).map((t, i) => ({ws: h.wind_speed_10m[i0 + i], wd: h.wind_direction_10m[i0 + i], rh: h.relative_humidity_2m[i0 + i], hujan: h.precipitation[i0 + i]}));
+    } catch (e) { this.cuaca = Array.from({length: 73}, () => ({ws: p.ws, wd: p.wd, rh: p.rh, hujan: 0})); toast("Prakiraan angin gagal dimuat, memakai angin siang ini"); }
+    this.hasil = hitungSebaran(this.f, this.cuaca, BAHAN[this.bahan], p);
+    this.gambar(); this.ringkas();
+    $("#simJalan").disabled = false; $("#simJalan").textContent = "Jalankan ulang";
+  },
+  gambar(tMaks = +$("#simT").value) {
+    const r = this.hasil, m = this.peta; if (!r) return;
+    const cv = document.createElement("canvas"); cv.width = r.n; cv.height = r.n; const ctx = cv.getContext("2d"), img = ctx.createImageData(r.n, r.n);
+    const warna = t => t <= 12 ? [214, 69, 58] : t <= 24 ? [242, 128, 52] : t <= 48 ? [244, 180, 60] : [247, 222, 110];
+    for (let i = 0; i < r.t.length; i++) { const t = r.t[i]; if (t > tMaks) continue;
+      const x = i % r.n, y = r.n - 1 - Math.floor(i / r.n), o = (y * r.n + x) * 4, w = warna(t);
+      img.data[o] = w[0]; img.data[o + 1] = w[1]; img.data[o + 2] = w[2]; img.data[o + 3] = r.awal[i] ? 255 : 200; }
+    ctx.putImageData(img, 0, 0);
+    const src = m.getSource("sim-img"), kor = [[r.x0, r.y1], [r.x1, r.y1], [r.x1, r.y0], [r.x0, r.y0]];
+    if (src) src.updateImage({url: cv.toDataURL(), coordinates: kor});
+    else { m.addSource("sim-img", {type: "image", url: cv.toDataURL(), coordinates: kor});
+      m.addLayer({id: "sim-img", type: "raster", source: "sim-img", paint: {"raster-opacity": .78, "raster-resampling": "nearest", "raster-fade-duration": 0}}, "sim-k"); }
+    $("#simWaktu").hidden = false;
+  },
+  ringkas() {
+    const r = this.hasil, sel = r.d * r.d / 1e4, luas = t => r.t.reduce((a, v) => a + (v <= t ? 1 : 0), 0) * sel;
+    const tepi = r.tepi ? `<p style="font-size:12px;color:var(--bad);margin:6px 0 0">Api mencapai tepi area simulasi (${(r.n * r.d / 1000).toFixed(0)} km). Luas sebenarnya bisa lebih besar.</p>` : "";
+    $("#simHasil").innerHTML = `<div class="lbl">Perkiraan luas terdampak</div><table style="font-size:12.5px;margin-top:4px"><tbody>
+      ${[[0, "Saat ini (lambung titik)"], [12, "12 jam"], [24, "24 jam"], [48, "48 jam"], [72, "72 jam"]].map(([t, n]) => `<tr><td>${n}</td><td class="n num"><b>${fmt(luas(t))}</b> ha</td></tr>`).join("")}</tbody></table>
+      <div class="leg" style="margin-top:8px;flex-direction:row;flex-wrap:wrap;gap:8px">${[["#d6453a", "≤ 12 j"], ["#f28034", "12–24 j"], ["#f4b43c", "24–48 j"], ["#f7de6e", "48–72 j"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>
+      <p style="font-size:12px;margin:8px 0 0">Laju kepala maks ${fmt(r.rosMaks)} m/menit, angin dominan dari ${arah(r.wdRata)}.</p>${r.membara ? `<p style="font-size:12px;margin:4px 0 0">DC ${fmt(this.f.properties.dc)}: lapisan gambut cukup kering untuk api membara bawah permukaan. Area terbakar perlu pembasahan, bukan hanya pemadaman api permukaan.</p>` : ""}${tepi}`;
+  },
+};
+$("#simT").addEventListener("input", e => { $("#simTL").textContent = e.target.value + " jam"; Sim.gambar(+e.target.value); });
+$("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInterval(Sim._putar); Sim._putar = null; $("#simPlay").textContent = "Putar"; return; }
+  s.value = 0; $("#simPlay").textContent = "Jeda";
+  Sim._putar = setInterval(() => { s.value = Math.min(72, +s.value + 1); s.dispatchEvent(new Event("input"));
+    if (+s.value >= 72) { clearInterval(Sim._putar); Sim._putar = null; $("#simPlay").textContent = "Putar"; } }, 90); };
+
+/* model waktu tempuh minimum (Dijkstra) dengan elips FBP; laju dihitung pada jam keberangkatan */
+function hitungSebaran(f, cuaca, bb, p) {
+  const n = 220, d = 120, lat0 = p.lat, kx = 111320 * Math.cos(lat0 * Math.PI / 180), ky = 110574;
+  const sx = n * d / 2 / kx, sy = n * d / 2 / ky;
+  const r = {n, d, x0: p.lon - sx, x1: p.lon + sx, y0: lat0 - sy, y1: lat0 + sy, t: new Float32Array(n * n).fill(Infinity), awal: new Uint8Array(n * n)};
+  const ke = (lon, lat) => [Math.floor((lon - r.x0) / (2 * sx) * n), Math.floor((lat - r.y0) / (2 * sy) * n)];
+  /* sel awal: di dalam lambung kompleks */
+  const ring = f.geometry.type === "Polygon" ? f.geometry.coordinates[0] : null;
+  const dalam = (x, y) => { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
+  const heap = new Heap();
+  for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) {
+    const lon = r.x0 + (i + .5) / n * 2 * sx, lat = r.y0 + (j + .5) / n * 2 * sy;
+    if (ring && dalam(lon, lat)) { const k = j * n + i; r.t[k] = 0; r.awal[k] = 1; heap.push(0, k); } }
+  if (!heap.size) { const [i, j] = ke(p.lon, lat0); const k = j * n + i; r.t[k] = 0; r.awal[k] = 1; heap.push(0, k); }
+  /* FFMC dari ISI siang ini dan angin siang ini (balik rumus ISI) supaya ISI per jam konsisten */
+  const fW = w => Math.exp(.05039 * w);
+  const sfSiang = p.isi / (.208 * fW(p.ws || 0));
+  const fBUI = b => b <= 0 ? 1 : Math.exp(50 * Math.log(.92) * (1 / b - 1 / 50)); /* efek BUI FBP, q=0.92, BUIo=50 */
+  const rosIsi = isi => bb.a * Math.pow(1 - Math.exp(-bb.b * isi), bb.c) * bb.cf * (bb.bui ? fBUI(p.bui) : 1);
+  const LB = w => bb.rumput ? (w < 1 ? 1 : 1.1 * Math.pow(w, .464)) : 1 + 8.729 * Math.pow(1 - Math.exp(-.030 * w), 2.155);
+  const ARAH = []; for (const [di, dj] of [[1,0],[1,1],[0,1],[-1,1],[-1,0],[-1,-1],[0,-1],[1,-1],[2,1],[1,2],[-1,2],[-2,1],[-2,-1],[-1,-2],[1,-2],[2,-1]])
+    ARAH.push([di, dj, Math.hypot(di, dj) * d, Math.atan2(dj, di)]);
+  let rosMaks = 0, tepi = false, wdS = 0, wdC = 0;
+  const pakai = cuaca.map(c => { const rhFak = Math.max(.35, Math.min(1.4, 1 + (p.rh - c.rh) / 60)) * (c.hujan > 1 ? .2 : 1);
+    /* ISI per jam: f(F) dari siang ini, dikoreksi RH jam itu; BISI pakai angin negatif (FBP) */
+    const head = rosIsi(.208 * fW(c.ws) * sfSiang * rhFak), back = rosIsi(.208 * fW(-c.ws) * sfSiang * rhFak), lb = LB(c.ws);
+    rosMaks = Math.max(rosMaks, head); wdS += Math.sin(c.wd * Math.PI / 180); wdC += Math.cos(c.wd * Math.PI / 180);
+    const ke = (c.wd + 180) * Math.PI / 180; /* arah penjalaran: kebalikan arah datang angin, sudut kompas */
+    return {head, back: Math.min(back, head), lb, ke}; });
+  /* laju pada arah theta (radian, sistem kisi: 0 = timur, berlawanan jarum jam) */
+  const laju = (c, th) => { const a = (c.head + c.back) / 2, b = a / c.lb, x0 = c.back - a;
+    const kompas = Math.PI / 2 - th, rel = kompas - c.ke, co = Math.cos(rel), si = Math.sin(rel);
+    const A = co * co / (a * a) + si * si / (b * b), B = 2 * x0 * co / (a * a), C = x0 * x0 / (a * a) - 1;
+    return (-B + Math.sqrt(Math.max(0, B * B - 4 * A * C))) / (2 * A); };
+  while (heap.size) {
+    const [t, k] = heap.pop(); if (t > r.t[k] || t > 72) continue;
+    const i = k % n, j = (k / n) | 0, c = pakai[Math.min(pakai.length - 1, Math.floor(t))];
+    if (i < 2 || j < 2 || i > n - 3 || j > n - 3) tepi = true;
+    for (const [di, dj, jarak, th] of ARAH) { const ii = i + di, jj = j + dj; if (ii < 0 || jj < 0 || ii >= n || jj >= n) continue;
+      const v = laju(c, th); if (v <= .01) continue; const tb = t + jarak / v / 60, kk = jj * n + ii;
+      if (tb < r.t[kk]) { r.t[kk] = tb; heap.push(tb, kk); } }
+  }
+  r.rosMaks = rosMaks; r.tepi = tepi; r.wdRata = (Math.atan2(wdS, wdC) * 180 / Math.PI + 360) % 360; r.membara = bb.membara && p.dc > 350;
+  return r;
+}
+class Heap { constructor() { this.a = []; } get size() { return this.a.length; }
+  push(p, v) { const a = this.a; a.push([p, v]); let i = a.length - 1; while (i) { const q = (i - 1) >> 1; if (a[q][0] <= a[i][0]) break; [a[q], a[i]] = [a[i], a[q]]; i = q; } }
+  pop() { const a = this.a, top = a[0], last = a.pop(); if (a.length) { a[0] = last; let i = 0; for (;;) { const l = 2 * i + 1, r = l + 1; let m = i;
+    if (l < a.length && a[l][0] < a[m][0]) m = l; if (r < a.length && a[r][0] < a[m][0]) m = r; if (m === i) break; [a[m], a[i]] = [a[i], a[m]]; i = m; } } return top; } }
+
+/* ================================================================ mulai */
+(async () => {
+  renderSeg();
+  try { await muatData(); } catch (e) {
+    $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  hitung(); bangunIndeks();
+  await Peta.init();
+  renderLegenda(); renderFwiHari();
+  if (innerWidth <= 900) { $("#lapisBtn").style.display = "grid"; $("#lapis").classList.remove("buka"); }
+  $("#muat").classList.add("hilang");
+  const h = location.hash.slice(1);
+  if (h.startsWith("k/")) Laci.buka(h.slice(2));
+  else if (h.startsWith("sim")) { S.pilihK = h.split("/")[1] || null; bukaTab("sim", false); }
+  else if (TABS.some(t => t[0] === h)) bukaTab(h, false);
+})();
+</script>
 </body>
 </html>
