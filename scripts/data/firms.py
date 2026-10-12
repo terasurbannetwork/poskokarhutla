@@ -40,16 +40,17 @@ def main(mulai, akhir):
     batas = {}
     for b in csv.DictReader(io.StringIO(ambil(f"{API}/data_availability/csv/{k}/all"))):
         batas[b["data_id"]] = (dt.date.fromisoformat(b["min_date"]), dt.date.fromisoformat(b["max_date"]))
-    sp_akhir = batas["VIIRS_SNPP_SP"][1]
+    sensor = os.environ.get("SENSOR", "VIIRS_SNPP")  # VIIRS_SNPP (2012-) atau MODIS (2000-)
+    sp_akhir = batas[f"{sensor}_SP"][1]
 
     tugas, d, akhir = [], dt.date.fromisoformat(mulai), dt.date.fromisoformat(akhir)
     while d <= akhir:
         n = min(5, (akhir - d).days + 1)
         if d <= sp_akhir:
             n = min(n, (sp_akhir - d).days + 1)  # jendela tidak boleh melewati batas SP/NRT
-            sumber = "VIIRS_SNPP_SP"
+            sumber = f"{sensor}_SP"
         else:
-            sumber = "VIIRS_SNPP_NRT"
+            sumber = f"{sensor}_NRT"
         for kotak in BBOX:
             tugas.append(f"{API}/area/csv/{k}/{sumber}/{kotak}/{n}/{d.isoformat()}")
         d += dt.timedelta(days=n)

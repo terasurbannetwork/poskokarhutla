@@ -211,33 +211,71 @@ def grid_darat(w, sel=0.5):
     return titik
 
 
+def siang(h):
+    """Nilai jam 12 waktu setempat + hujan 24 jam (13.00 kemarin s.d. 12.00). Hari kosong tetap ada (None)."""
+    out = []
+    for i, waktu in enumerate(h["time"]):
+        if not waktu.endswith("T12:00") or i < 23:
+            continue
+        hj = h["precipitation"][i - 23:i + 1]
+        hujan = None if any(x is None for x in hj) else sum(hj)
+        out.append((waktu[:10], h["temperature_2m"][i], h["relative_humidity_2m"][i], h["wind_speed_10m"][i], hujan, h["wind_direction_10m"][i]))
+    return out
+
+
+VAR = "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&timezone=auto"
+
+
 def cuaca_fwi(grid):
-    """FWI harian per sel. Spin-up 92 hari lalu + 3 hari prakiraan; nilai jam 12 waktu setempat."""
+    """FWI harian per sel dengan keadaan bersambung (peer review M1).
+    - Keadaan FFMC/DMC/DC per sel disimpan di fwi_state.json dan dilanjutkan tiap hari, bukan dimulai ulang.
+    - Sel tanpa keadaan dipanaskan dari reanalisis ERA5 (Open-Meteo archive) 300 hari ke belakang,
+      sampai 8 hari lalu; sisanya dari forecast API (past_days 8) + prakiraan 3 hari.
+    - Keadaan disimpan pada H-2 supaya revisi data beberapa hari terakhir ikut terbawa besok."""
+    jalur = os.path.join(KELUAR, "fwi_state.json")
+    keadaan = json.load(open(jalur)) if os.path.exists(jalur) else {}
+    hari_ini = dt.datetime.now(WIB).date()
+    tgl_simpan = (hari_ini - dt.timedelta(days=2)).isoformat()
+    batas_lama = (hari_ini - dt.timedelta(days=8)).isoformat()
+    kunci_ = lambda g: f"{g[0]},{g[1]}"
+
+    # 1. panaskan sel yang belum punya keadaan (atau keadaannya terlalu lama)
+    baru = [g for g in grid if kunci_(g) not in keadaan or keadaan[kunci_(g)]["tgl"] < batas_lama]
+    akhir_arsip = hari_ini - dt.timedelta(days=8)
+    for a in range(0, len(baru), 25):
+        bagian = baru[a:a + 25]
+        url = ("https://archive-api.open-meteo.com/v1/archive?latitude=" + ",".join(str(g[0]) for g in bagian)
+               + "&longitude=" + ",".join(str(g[1]) for g in bagian)
+               + f"&start_date={hari_ini - dt.timedelta(days=300)}&end_date={akhir_arsip}&" + VAR)
+        data = ambil(url, json_=True)
+        for g, d in zip(bagian, data if isinstance(data, list) else [data]):
+            hari = siang(d["hourly"])
+            seri = F.deret([x[1:5] for x in hari])
+            if seri:
+                keadaan[kunci_(g)] = {"tgl": hari[-1][0], "kode": [seri[-1]["ffmc"], seri[-1]["dmc"], seri[-1]["dc"]], "sumber": "ERA5"}
+        time.sleep(2)
+
+    # 2. lanjutkan dengan data 8 hari terakhir + prakiraan
     hasil = []
     for a in range(0, len(grid), 80):
         bagian = grid[a:a + 80]
         url = ("https://api.open-meteo.com/v1/forecast?latitude=" + ",".join(str(g[0]) for g in bagian)
-               + "&longitude=" + ",".join(str(g[1]) for g in bagian)
-               + "&hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation"
-               + "&past_days=92&forecast_days=4&timezone=auto")
+               + "&longitude=" + ",".join(str(g[1]) for g in bagian) + "&past_days=8&forecast_days=4&" + VAR)
         data = ambil(url, json_=True)
-        data = data if isinstance(data, list) else [data]
-        for g, d in zip(bagian, data):
-            h = d["hourly"]
-            hari = []
-            for i, waktu in enumerate(h["time"]):
-                if not waktu.endswith("T12:00") or i < 23:
-                    continue
-                hujan = sum(x or 0 for x in h["precipitation"][i - 23:i + 1])
-                hari.append((waktu[:10], h["temperature_2m"][i], h["relative_humidity_2m"][i],
-                             h["wind_speed_10m"][i], hujan, h["wind_direction_10m"][i]))
-            hari = [x for x in hari if None not in x]
-            seri = F.deret([(t, rh, ws, r) for _, t, rh, ws, r, _ in hari])
+        for g, d in zip(bagian, data if isinstance(data, list) else [data]):
+            k = keadaan.get(kunci_(g), {"tgl": "0000", "kode": list(F.AWAL), "sumber": "awal standar"})
+            hari = [x for x in siang(d["hourly"]) if x[0] > k["tgl"]]
+            seri = F.deret([x[1:5] for x in hari], awal=tuple(k["kode"]))
+            for x, sr in zip(hari, seri):
+                if x[0] == tgl_simpan:
+                    keadaan[kunci_(g)] = {"tgl": x[0], "kode": [sr["ffmc"], sr["dmc"], sr["dc"]], "sumber": k.get("sumber", "")}
             hasil.append({"lat": g[0], "lon": g[1], "prov": g[2], "hari": [
-                {"tgl": x[0], "t": x[1], "rh": x[2], "ws": x[3], "wd": x[5], "hujan": round(x[4], 1),
-                 **{k: round(v, 1) for k, v in s.items()}}
-                for x, s in zip(hari, seri)]})
+                {"tgl": x[0], "t": x[1], "rh": x[2], "ws": x[3], "wd": x[5], "hujan": None if x[4] is None else round(x[4], 1),
+                 **{kk: round(v, 1) for kk, v in sr.items()}}
+                for x, sr in zip(hari, seri)]})
         time.sleep(1)
+    with open(jalur, "w") as f:
+        json.dump(keadaan, f, separators=(",", ":"))
     return hasil
 
 
@@ -263,14 +301,15 @@ def main():
         print("FWI...", file=sys.stderr)
         grid = cuaca_fwi(grid_darat(w))
 
-    def fwi_hari(g, tgl):
-        return next((h for h in g["hari"] if h["tgl"] == tgl), g["hari"][-1] if g["hari"] else None)
+    def fwi_hari(g, tgl):  # tidak ada data hari ini = None (bukan prakiraan hari lain)
+        return next((h for h in g["hari"] if h["tgl"] == tgl), None)
 
     print("kejadian api...", file=sys.stderr)
-    akhir = max((p["t"] for p in titik), default=dt.datetime.now(dt.timezone.utc))
+    kini = dt.datetime.now(dt.timezone.utc)
+    akhir = max((p["t"] for p in titik), default=kini)
     tgl = lambda t: t.astimezone(WIB).date()
-    hari_akhir = tgl(akhir)
-    viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= akhir - dt.timedelta(days=JENDELA_HARI)]
+    hari_akhir = tgl(kini)
+    viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)]
     label, inti = dbscan(viirs)
     kluster = {}
     for p, l in zip(viirs, label):
@@ -279,27 +318,39 @@ def main():
     def pix(p):  # sel kisi ~375 m tempat titik jatuh
         return (round(p["lat"] / 0.003375), round(p["lon"] * math.cos(math.radians(p["lat"])) / 0.003375))
 
+    daops = json.load(open(os.path.join(KELUAR, "daops.json"))) if os.path.exists(os.path.join(KELUAR, "daops.json")) else []
+
+    def km(a1, o1, a2, o2):
+        return haversine({"lat": a1, "lon": o1}, {"lat": a2, "lon": o2})
+
     fitur, s1 = [], 0
+    t24 = kini - dt.timedelta(hours=24)
     for l, pts in kluster.items():
-        if max(p["t"] for p in pts) < akhir - dt.timedelta(hours=AKTIF_JAM):
-            continue  # padam / tidak terdeteksi lagi
-        hari = {tgl(p["t"]) for p in pts}
-        n_ini = sum(1 for p in pts if tgl(p["t"]) == hari_akhir)
-        n_kmrn = sum(1 for p in pts if tgl(p["t"]) == hari_akhir - dt.timedelta(days=1))
-        t24 = akhir - dt.timedelta(hours=24)
-        px24 = len({pix(p) for p in pts if p["t"] >= t24})
-        sev = A.keparahan(len(pts), len(hari), n_ini, n_kmrn, px24)
+        terakhir = max(p["t"] for p in pts)
         lat0 = sum(p["lat"] for p in pts) / len(pts)
         lon0 = sum(p["lon"] for p in pts) / len(pts)
         g = terdekat(grid, lat0, lon0)
-        h = fwi_hari(g, hari_ini) or {}
-        fdrs = A.kelas_fdrs(h.get("fwi", 0), h.get("ffmc", 0), h.get("isi", 0))
-        lv = A.status(fdrs, sev)
-        if len(pts) < 3 and lv == 0:
-            s1 += 1  # titik tunggal/ganda di cuaca tidak berbahaya: dihitung, tidak digambar
+        h = fwi_hari(g, hari_ini)
+        kering = bool(h and h["dc"] > 350)
+        # umur diukur dari jam sekarang; gambut sangat kering (DC > 350) dipertahankan 7 hari karena bara
+        # bisa tak terdeteksi di bawah awan/asap (peer review C4)
+        if terakhir < kini - dt.timedelta(hours=AKTIF_GAMBUT_JAM if kering else AKTIF_JAM):
             continue
+        jam_sejak = (kini - terakhir).total_seconds() / 3600
+        hari = {tgl(p["t"]) for p in pts}
+        n_ini = sum(1 for p in pts if tgl(p["t"]) == hari_akhir)
+        n_kmrn = sum(1 for p in pts if tgl(p["t"]) == hari_akhir - dt.timedelta(days=1))
+        p24 = [p for p in pts if p["t"] >= t24]
+        px24 = len({pix(p) for p in p24})
+        sev = A.keparahan(len(pts), len(hari), n_ini, n_kmrn, px24)
+        fdrs = A.kelas_fwi(h["fwi"]) if h else None
+        lv = A.status(fdrs, sev)
+        if len(pts) < 3 and lv == 0 and jam_sejak <= 24:
+            s1 += 1  # titik tunggal/ganda, cuaca tidak berbahaya: dihitung, belum dinilai, tidak digambar
+            continue
+        d0 = min(daops, key=lambda d: km(lat0, lon0, d["lat"], d["lon"])) if daops else None
+        jd = round(km(lat0, lon0, d0["lat"], d0["lon"])) if d0 else None
         ring = lambung([(p["lon"], p["lat"]) for p in pts])
-        # luas indikatif: gabungan piksel VIIRS unik (kisi 375 m) x 14,06 ha
         piksel = {pix(p) for p in pts}
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
@@ -307,16 +358,36 @@ def main():
             "geometry": {"type": "Polygon", "coordinates": [[[round(v, 3) for v in x] for x in ring + ring[:1]]]}
             if len(ring) >= 3 else {"type": "Point", "coordinates": [round(lon0, 4), round(lat0, 4)]},
             "properties": {
-                "id": "", "lat": round(lat0, 4), "lon": round(lon0, 4), "n": len(pts), "n24": sum(1 for p in pts if p["t"] >= t24),
+                "id": "", "lat": round(lat0, 4), "lon": round(lon0, 4), "n": len(pts), "n24": len(p24),
                 "hari": len(hari), "px24": px24, "ini": n_ini, "kmrn": n_kmrn, "sev": sev, "fdrs": fdrs,
-                "frp": round(sum(p["frp"] for p in pts), 1),
-                "awal": min(p["t"] for p in pts).isoformat(), "akhir": max(p["t"] for p in pts).isoformat(),
+                "frp": round(sum(p["frp"] for p in pts), 1), "frp24": round(sum(p["frp"] for p in p24), 1),
+                "awal": min(p["t"] for p in pts).isoformat(), "akhir": terakhir.isoformat(), "jam_sejak": round(jam_sejak, 1),
+                "teramati": jam_sejak <= 24,  # False = tidak terdeteksi 24 jam: bisa padam, bisa tertutup awan/asap
                 "luas": round(len(piksel) * PIKSEL_HA, 1),
                 "prov": adm[0], "kab": adm[1], "kec": adm[2],
-                **{k: h.get(k, 0) for k in ("fwi", "ffmc", "dmc", "dc", "isi", "bui", "ws", "wd", "rh", "t")},
+                "cuaca": bool(h),
+                **{k: (h or {}).get(k) for k in ("fwi", "ffmc", "dmc", "dc", "isi", "bui", "ws", "wd", "rh", "t")},
+                "daops": d0 and d0["kode"], "jarak_daops": jd,
+                # benih simulasi: titik 24 jam terakhir (maks 80), bukan lambung 7 hari
+                "api24": [[round(p["lon"], 4), round(p["lat"], 4)] for p in sorted(p24, key=lambda p: -p["frp"])[:80]],
+                "skor": A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"), (h or {}).get("dc"), jd),
                 "level": lv, "status": STATUS[lv],
             }})
-    fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["sev"], -f["properties"]["n"]))
+
+    # Prioritas = peringkat, dibatasi kapasitas: per wilayah kerja Daops (<= 150 km) k = regu/2,
+    # di luar jangkauan Daops per kabupaten k = 2 (peer review C2)
+    kelompok = {}
+    for f in fitur:
+        q = f["properties"]
+        if q["level"] == 2 and q["teramati"]:
+            g = q["daops"] if q["jarak_daops"] is not None and q["jarak_daops"] <= 150 else f"{q['prov']}|{q['kab']}"
+            kelompok.setdefault(g, []).append(q)
+    kap = {d["kode"]: max(1, (d.get("regu") or 2) // 2) for d in daops}
+    for g, qs in kelompok.items():
+        qs.sort(key=lambda q: -q["skor"])
+        for i, q in enumerate(qs[:kap.get(g, 2)]):
+            q["level"], q["status"], q["peringkat"] = 3, STATUS[3], i + 1
+    fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["skor"]))
     for i, f in enumerate(fitur):
         f["properties"]["id"] = f"K{i + 1:04d}"
 
@@ -371,10 +442,12 @@ def main():
     simpan("bnpb.json", bnpb)
     simpan("meta.json", {
         "dibuat": sekarang.isoformat(timespec="minutes"), "data_terakhir": akhir.isoformat(), "hari_wib": hari_akhir.isoformat(),
-        "jumlah_titik": len(titik), "jumlah_kluster": len(fitur), "titik_tunggal_aman": s1,
+        "jumlah_titik": len(titik), "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
-        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM}})
-    print(f"{len(titik)} titik, {len(fitur)} kompleks (+{s1} titik tunggal aman), {len(grid)} sel FWI", file=sys.stderr)
+        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48}})
+    from collections import Counter
+    print(f"{len(titik)} titik, {len(fitur)} kompleks (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
+          "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)
 
 
 if __name__ == "__main__":

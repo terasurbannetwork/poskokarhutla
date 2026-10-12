@@ -8,9 +8,10 @@ atau sisa kompleks tidak terjangkau kandidat mana pun.
 import json, math, os, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
-from wilayah import AKAR
+from wilayah import AKAR, PRIORITAS, Wilayah
 
 RADIUS_KM = 30.0  # kira-kira 1 jam perjalanan darat/sungai di lahan gambut
+RADIUS_MENENGAH_KM = 75.0  # posko kabupaten ke posko lapangan: kira-kira 2-3 jam, batas koordinasi harian
 
 # Ibu kota provinsi = lokasi posko pusat (Satgas provinsi)
 IBUKOTA = {
@@ -34,12 +35,24 @@ def km(a1, o1, a2, o2):
     return 12742 * math.asin(math.sqrt(h))
 
 
+def sentroid(ring):
+    """Titik berat luas poligon (rumus shoelace); rata-rata simpul bisa jatuh di danau/rawa."""
+    a = cx = cy = 0.0
+    for (x1, y1), (x2, y2) in zip(ring, ring[1:] + ring[:1]):
+        c = x1 * y2 - x2 * y1
+        a += c; cx += (x1 + x2) * c; cy += (y1 + y2) * c
+    if abs(a) < 1e-12:
+        return sum(p[1] for p in ring) / len(ring), sum(p[0] for p in ring) / len(ring)
+    return cy / (3 * a), cx / (3 * a)
+
+
 def tengah_kecamatan(kode):
     out = []
     for f in json.load(open(os.path.join(AKAR, "public/geo/kecamatan", f"{kode}.json")))["features"]:
         g = f["geometry"]
         ring = max((p[0] for p in (g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]])), key=len)
-        out.append({"lat": sum(c[1] for c in ring) / len(ring), "lon": sum(c[0] for c in ring) / len(ring),
+        la, lo = sentroid(ring)
+        out.append({"lat": la, "lon": lo,
                     "nama": "Kec. " + (f["properties"]["kec"] or "?"), "kab": f["properties"]["kab"], "jenis": "kecamatan"})
     return out
 
@@ -83,6 +96,8 @@ def posko_permanen(target=0.8):
     per_prov = {}
     for k, v in sj["kec"].items():
         prov, kab, kec = k.split("|")
+        if prov not in PRIORITAS:  # posko hanya di 9 provinsi prioritas (keputusan pemilik 12 Okt 2026)
+            continue
         tahun = sum(1 for x in v if x >= 10)
         if tahun >= 3:  # langganan: terbakar berarti di >= 3 tahun
             per_prov.setdefault(prov, []).append({"kab": kab, "kec": kec, "tahun": tahun, "total": sum(v), "w": tahun * math.log1p(sum(v))})
@@ -106,62 +121,113 @@ def posko_permanen(target=0.8):
     return hasil
 
 
+WIL = None
+
+
 def main():
+    global WIL
+    WIL = Wilayah()
     fitur = json.load(open(os.path.join(DATA, "kluster.json")))["features"]
     daops = json.load(open(os.path.join(DATA, "daops.json"))) if os.path.exists(os.path.join(DATA, "daops.json")) else []
-    per_kab = {}
+    # 1. posko permanen (sekali per musim, dari riwayat) + markas Daops = pangkalan tetap
+    permanen = posko_permanen()
+    pangkalan = [{"id": t["id"], "lat": t["lat"], "lon": t["lon"]} for t in permanen] + [{"id": d["kode"], "lat": d["lat"], "lon": d["lon"]} for d in daops]
+    lapangan = {t["id"]: dict(t, jenis_posko="permanen", jenis="kecamatan", kompleks=[], prioritas=0, bobot=0, _jarak=[]) for t in permanen}
+    # 2. tiap kompleks siaga/prioritas ditugaskan ke pangkalan tetap terdekat dalam radius; sisanya butuh posko aju
+    per_kab, ke_daops = {}, 0
     for f in fitur:
         p = f["properties"]
-        if p["level"] >= 2:
-            per_kab.setdefault((p["prov"], p["kab"]), []).append(
-                {"id": p["id"], "lat": p["lat"], "lon": p["lon"], "lv": p["level"], "w": (3 if p["level"] == 3 else 1) * max(1, p["px24"])})
-    cache, posko, lepas = {}, [], 0
+        if p["level"] < 2 or p["prov"] not in PRIORITAS:
+            continue
+        k = {"id": p["id"], "lat": p["lat"], "lon": p["lon"], "lv": p["level"], "w": (3 if p["level"] == 3 else 1) * max(1, p["px24"])}
+        b = min(pangkalan, key=lambda b: km(k["lat"], k["lon"], b["lat"], b["lon"])) if pangkalan else None
+        jb = km(k["lat"], k["lon"], b["lat"], b["lon"]) if b else 1e9
+        if jb <= RADIUS_KM:
+            if b["id"] in lapangan:
+                x = lapangan[b["id"]]
+                x["kompleks"].append(k["id"]); x["prioritas"] += k["lv"] == 3; x["bobot"] += k["w"]; x["_jarak"].append(jb)
+            else:
+                ke_daops += 1
+            continue
+        per_kab.setdefault((p["prov"], p["kab"]), []).append(k)
+    cache, aju, lepas = {}, [], 0
     for (prov, kab), kom in per_kab.items():
         if prov not in cache:
             o = osm(prov)
             cache[prov] = (o, [{"lat": d[0], "lon": d[1], "nama": d[2], "jenis": d[3]} for d in o["desa"]] if o else tengah_kecamatan(prov))
         o, kand = cache[prov]
-        # kandidat: dalam kotak kabupaten + 0,3 derajat (posko boleh di kabupaten tetangga yang lebih dekat)
         a0, a1 = min(k["lat"] for k in kom) - .3, max(k["lat"] for k in kom) + .3
         b0, b1 = min(k["lon"] for k in kom) - .3, max(k["lon"] for k in kom) + .3
         kd = [c for c in kand if a0 <= c["lat"] <= a1 and b0 <= c["lon"] <= b1] or [{"lat": k["lat"], "lon": k["lon"], "nama": "dekat " + k["id"], "jenis": "kompleks"} for k in kom]
         hasil, sisa = pilih(kom, kd)
         lepas += len(sisa)
         for c, kena in hasil:
-            d = min(daops, key=lambda d: km(c["lat"], c["lon"], d["lat"], d["lon"])) if daops else None
-            air = terdekat(c["lat"], c["lon"], o["air"]) if o else None
-            fk = terdekat(c["lat"], c["lon"], o["faskes"]) if o else None
-            posko.append({
-                "prov": prov, "kab": kab, "nama": c["nama"], "jenis": c["jenis"], "lat": round(c["lat"], 4), "lon": round(c["lon"], 4),
-                "kompleks": [k["id"] for k in kena], "prioritas": sum(1 for k in kena if k["lv"] == 3), "bobot": sum(k["w"] for k in kena),
-                "jarak_rata": round(sum(km(c["lat"], c["lon"], k["lat"], k["lon"]) for k in kena) / len(kena), 1),
-                "jarak_maks": round(max(km(c["lat"], c["lon"], k["lat"], k["lon"]) for k in kena), 1),
-                "daops": d and {"nama": d["nama"], "km": round(km(c["lat"], c["lon"], d["lat"], d["lon"]))},
-                "air": air and {"jenis": air[0][2], "nama": air[0][3] if len(air[0]) > 3 else "", "km": round(air[1], 1)},
-                "faskes": fk and {"nama": fk[0][2], "jenis": fk[0][3] if len(fk[0]) > 3 else "", "km": round(fk[1], 1)},
-            })
-    posko.sort(key=lambda x: -x["bobot"])
-    for i, x in enumerate(posko):
-        x["id"] = f"P{i + 1:03d}"
+            aju.append({"prov": prov, "kab": kab, "nama": c["nama"], "jenis": c["jenis"], "lat": round(c["lat"], 4), "lon": round(c["lon"], 4), "jenis_posko": "aju",
+                        "kompleks": [k["id"] for k in kena], "prioritas": sum(1 for k in kena if k["lv"] == 3), "bobot": sum(k["w"] for k in kena),
+                        "_jarak": [km(c["lat"], c["lon"], k["lat"], k["lon"]) for k in kena]})
+    aju.sort(key=lambda x: -x["bobot"])
+    for i, x in enumerate(aju):
+        x["id"] = f"A{i + 1:03d}"
+    posko = list(lapangan.values()) + aju
+    for x in posko:
+        j = x.pop("_jarak")
+        x["jarak_rata"] = round(sum(j) / len(j), 1) if j else 0
+        x["jarak_maks"] = round(max(j), 1) if j else 0
+        o = cache.get(x["prov"], (None,))[0] or osm(x["prov"])
+        d = min(daops, key=lambda d: km(x["lat"], x["lon"], d["lat"], d["lon"])) if daops else None
+        air = terdekat(x["lat"], x["lon"], o["air"]) if o else None
+        fk = terdekat(x["lat"], x["lon"], o["faskes"]) if o else None
+        x["daops"] = d and {"nama": d["nama"], "km": round(km(x["lat"], x["lon"], d["lat"], d["lon"]))}
+        x["air"] = air and {"jenis": air[0][2], "nama": air[0][3] if len(air[0]) > 3 else "", "km": round(air[1], 1)}
+        x["faskes"] = fk and {"nama": fk[0][2], "jenis": fk[0][3] if len(fk[0]) > 3 else "", "km": round(fk[1], 1)}
+    print(f"{len(permanen)} permanen, {len(aju)} aju; {ke_daops} kompleks ditangani markas Daops; {lepas} tak terjangkau kandidat", file=sys.stderr)
 
-    # tingkat menengah: satu per kabupaten yang punya posko lapangan; lokasi = kota/kecamatan terdekat ke pusat bobot
-    kab_geo = {}
-    menengah = []
-    for (prov, kab) in sorted({(x["prov"], x["kab"]) for x in posko}):
-        anak = [x for x in posko if x["prov"] == prov and x["kab"] == kab]
-        if prov not in kab_geo:
-            kab_geo[prov] = tengah_kecamatan(prov)
-        o = cache.get(prov, (None,))[0]
-        kota = [{"lat": d[0], "lon": d[1], "nama": d[2]} for d in o["desa"] if d[3] in ("town", "city")] if o else []
-        bw = sum(x["bobot"] for x in anak)
-        la, lo = sum(x["lat"] * x["bobot"] for x in anak) / bw, sum(x["lon"] * x["bobot"] for x in anak) / bw
-        kand = kota or [k for k in kab_geo[prov] if k["kab"] == kab] or [{"lat": la, "lon": lo, "nama": kab}]
-        c = min(kand, key=lambda k: km(la, lo, k["lat"], k["lon"]))
-        menengah.append({"id": f"M{len(menengah) + 1:03d}", "prov": prov, "kab": kab, "nama": c["nama"], "lat": round(c["lat"], 4), "lon": round(c["lon"], 4),
-                         "lapangan": [x["id"] for x in anak], "kompleks": sum(len(x["kompleks"]) for x in anak),
-                         "prioritas": sum(x["prioritas"] for x in anak), "bobot": bw})
-        for x in anak:
-            x["induk"] = menengah[-1]["id"]
+    # tingkat menengah: TIDAK tiap kabupaten. Per provinsi, kandidat = satu kota per kabupaten yang punya posko lapangan
+    # (kota terdekat ke pusat bobot api kabupaten itu). Dipilih greedy: kandidat yang menjangkau bobot posko lapangan
+    # terbesar dalam RADIUS_MENENGAH_KM, diulang sampai semua posko lapangan terlayani. Satu posko kabupaten boleh
+    # melayani kabupaten tetangga. Bobot posko lapangan = bobot api aktif + log(1 + titik riwayat) untuk posko permanen.
+    kab_geo, menengah = {}, []
+    for x in posko:
+        x["_w"] = x["bobot"] + (math.log1p(x.get("titik", 0)) if x["jenis_posko"] == "permanen" else 0)
+    for prov in sorted({x["prov"] for x in posko}):
+        anak_prov = [x for x in posko if x["prov"] == prov]
+        kab_geo.setdefault(prov, tengah_kecamatan(prov))
+        o = cache.get(prov, (None,))[0] or osm(prov)
+        kand = []
+        for kab in sorted({x["kab"] for x in anak_prov}):
+            anak = [x for x in anak_prov if x["kab"] == kab]
+            bw = sum(x["_w"] for x in anak) or 1
+            la, lo = sum(x["lat"] * x["_w"] for x in anak) / bw, sum(x["lon"] * x["_w"] for x in anak) / bw
+            # kota di kabupaten itu sendiri (peer review: jangan jatuh di kabupaten tetangga)
+            kota = [{"lat": d[0], "lon": d[1], "nama": d[2]} for d in o["desa"] if d[3] in ("town", "city") and (WIL.cari(d[1], d[0]) or ("", ""))[1] == kab] if o else []
+            pil = kota or [k for k in kab_geo[prov] if k["kab"] == kab] or [{"lat": la, "lon": lo, "nama": kab}]
+            c = min(pil, key=lambda k: km(la, lo, k["lat"], k["lon"]))
+            kand.append({"lat": c["lat"], "lon": c["lon"], "nama": c["nama"], "kab": kab})
+        lap = [{"id": x["id"], "lat": x["lat"], "lon": x["lon"], "w": x["_w"], "x": x} for x in anak_prov]
+        pilihan, sisa = pilih(lap, kand, RADIUS_MENENGAH_KM)
+        hub = [c for c, _ in pilihan] or kand[:1]
+        for l in sisa:  # tak terjangkau 75 km: jadikan kabupatennya sendiri hub
+            c = next(k for k in kand if k["kab"] == l["x"]["kab"])
+            if c not in hub:
+                hub.append(c)
+        for c in hub:
+            menengah.append({"id": f"M{len(menengah) + 1:03d}", "prov": prov, "kab": c["kab"], "nama": c["nama"], "lat": round(c["lat"], 4), "lon": round(c["lon"], 4),
+                             "lapangan": [], "melayani": [], "kompleks": 0, "prioritas": 0, "bobot": 0})
+        hub_prov = menengah[-len(hub):]
+        for l in lap:  # tiap posko lapangan melapor ke posko kabupaten terpilih terdekat
+            m = min(hub_prov, key=lambda m: km(l["lat"], l["lon"], m["lat"], m["lon"]))
+            x = l["x"]; x["induk"] = m["id"]
+            m["lapangan"].append(x["id"]); m["kompleks"] += len(x["kompleks"]); m["prioritas"] += x["prioritas"]; m["bobot"] += x["bobot"]
+            if x["kab"] not in m["melayani"]:
+                m["melayani"].append(x["kab"])
+        menengah[:] = [m for m in menengah if m["lapangan"]]
+    for x in posko:
+        x.pop("_w", None)
+    ganti = {}
+    for i, m in enumerate(menengah):  # nomor ulang sekali jalan lewat peta lama -> baru (hindari tertukar)
+        ganti[m["id"]] = f"M{i + 1:03d}"; m["id"] = ganti[m["id"]]
+    for x in posko:
+        x["induk"] = ganti.get(x.get("induk"), x.get("induk"))
     pusat = []
     for prov in sorted({m["prov"] for m in menengah}):
         anak = [m for m in menengah if m["prov"] == prov]
@@ -172,11 +238,9 @@ def main():
         for m in anak:
             m["induk"] = pusat[-1]["id"]
             m["jarak_induk"] = round(km(m["lat"], m["lon"], la, lo))
-    permanen = posko_permanen()
     with open(os.path.join(DATA, "posko.json"), "w") as f:
         json.dump({"radius_km": RADIUS_KM, "posko": posko, "menengah": menengah, "pusat": pusat, "permanen": permanen}, f, ensure_ascii=False, separators=(",", ":"))
     print(f"{len(pusat)} pusat, {len(menengah)} menengah, {len(posko)} lapangan", file=sys.stderr)
-    print(f"{len(posko)} posko untuk {sum(len(v) for v in per_kab.values())} kompleks siaga/prioritas, {lepas} tak terjangkau", file=sys.stderr)
 
 
 if __name__ == "__main__":

@@ -9,8 +9,9 @@ Hasil   -> public/data/lahan/{gambut,konsesi,kawasan}.geojson
 Sumber (semua publik tanpa login):
 - Gambut: GFW "Global peatland extent" v20230315 (CC BY 4.0), ubin raster z8 ~600 m.
   Indonesia = Miettinen dkk. 2016 + Gumbricht dkk. 2017 (CIFOR).
-- Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya).
-  Data Indonesia berasal dari KLHK; GFW mengecualikan Indonesia dari CC BY 4.0.
+- Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya): sawit
+  (v20191031, data KLHK ~2014) dan HPH/PBPH-HA. Data Indonesia berasal dari KLHK; GFW
+  mengecualikan Indonesia dari CC BY 4.0. HTI belum ada (lihat konsesi()).
 - Kawasan hutan: shapefile "Kawasan hutan Indonesia" dari akun GFW di ArcGIS Online
   (KLHK, versi 2017).
 """
@@ -28,7 +29,6 @@ GFW = "https://data-api.globalforestwatch.org/dataset/{}/download/shp?x-api-key=
 UNDUH = {
     # v2025 menolak unduh shp (501); data Indonesianya sama (KLHK, source_yr 2012)
     "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
-    "gfw_wood_fiber_downloadable.zip": GFW.format("gfw_wood_fiber_downloadable/latest"),
     "gfw_logging_download.zip": GFW.format("gfw_logging_download/latest"),
     "idn_forest_area.zip": "https://www.arcgis.com/sharing/rest/content/items/1dd7ef31c3924d7cbcf918bd97a7f985/data",
 }
@@ -264,10 +264,10 @@ def konsesi(tol=0.002, min_luas=1e-5):
     fitur = []
     def tambah(jenis, nama, pemegang, g):
         fitur.append({"type": "Feature", "properties": {"jenis": jenis, "nama": nama, "pemegang": pemegang}, "geometry": g})
-    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_oil_palm.zip")) if p.get("iso3", p.get("country")) == "IDN"), tol, min_luas):
-        tambah("sawit", p.get("conc_name") or p.get("name"), p.get("company") or p.get("comp_group") or "", g)
-    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_wood_fiber_downloadable.zip")) if p.get("iso3", p.get("country")) == "IDN"), tol, min_luas):
-        tambah("hti", p.get("conc_name") or p.get("name"), p.get("company") or p.get("comp_group") or p.get("conc_name") or "", g)
+    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_oil_palm.zip")) if p["country"] == "IDN"), tol, min_luas):
+        tambah("sawit", p["name"], p["company"] or p["name"], g)
+    # HTI/PBPH sengaja belum ada: GFW menandai data HTI Indonesia "View Only, Not Downloadable",
+    # dan alias gfw_wood_fiber_downloadable kini malah menunjuk ke peta PIPPIB.
     for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_logging_download.zip")) if p.get("country", p.get("iso3")) == "IDN"), tol, min_luas):
         tambah("hph", p.get("name"), p.get("company") or p.get("name"), g)
     return fitur
@@ -285,7 +285,7 @@ def fungsi(kode):
     return "AIR" if kode.startswith("500") else "?"
 
 
-def kawasan(tol=0.002, min_luas=2e-5):
+def kawasan(tol=0.001, min_luas=2e-5):
     from wilayah import PRIORITAS, Wilayah
     w, fitur = Wilayah(), []
     # 9 provinsi pantauan saja (nasional = 9,4 MB). Data 2017 belum kenal Papua Selatan (93):
@@ -299,7 +299,7 @@ def kawasan(tol=0.002, min_luas=2e-5):
         nama = p["namobj"].strip(" -")
         if f in ("HK", "THR"):  # "Taman Nasional Sebangau", "Taman Hutan Raya Ir. H. Juanda"
             nama = f"{p['desc_in']} {nama}".strip()
-        fitur.append({"type": "Feature", "properties": {"fungsi": f, "nama": nama, "prov": p["kodeprov"]}, "geometry": g})
+        fitur.append({"type": "Feature", "properties": {"fungsi": f, "nama": nama, "prov": "93" if p["kodeprov"][:1] == "9" else p["kodeprov"]}, "geometry": g})
     return fitur
 
 
@@ -339,7 +339,7 @@ def uji():
     # Puncak Jaya Wijaya (Papua Tengah) bukan gambut
     assert not kena("gambut.geojson", 137.16, -4.08)
     jenis = {f["properties"]["jenis"] for f in json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]}
-    assert jenis == {"sawit", "hti", "hph"}, jenis
+    assert jenis == {"sawit", "hph"}, jenis
     print("ok")
 
 
