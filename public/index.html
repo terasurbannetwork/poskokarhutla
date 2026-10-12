@@ -86,7 +86,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .garis-waktu.on{display:flex}
 .garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
 @media (max-width:900px){.garis-waktu{bottom:auto;top:112px;width:calc(100% - 24px);min-width:0}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
-.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:370px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .panel > *{pointer-events:auto}
 .tujuan{padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff;box-shadow:var(--shadow-lg)}
 .tujuan p{margin:4px 0 0;font-size:13px;opacity:.9}
@@ -113,7 +113,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .hasil small{color:var(--ink2)}
 .rows{overflow-y:auto;flex:1;padding:4px 6px 8px}
 .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
-.tb{display:grid;grid-template-columns:20px minmax(0,1fr) 54px 54px 74px;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
+.tb{display:grid;grid-template-columns:20px minmax(0,1fr) 56px 50px 70px;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
 .tb:hover{background:var(--surface)}
 .tb.kepala{position:sticky;top:0;z-index:1;background:var(--card);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:6px 8px}
 .tb > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -159,7 +159,14 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 :root[data-theme="dark"] .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}}
 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px;width:100%}
-.lapis label{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0;cursor:pointer}
+.lapis label{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0 3px 4px;cursor:pointer}
+.lapis details{border-top:1px solid var(--line);padding:4px 0}
+.lapis summary{cursor:pointer;font-size:12px;font-weight:700;padding:3px 0;list-style:none;display:flex;justify-content:space-between}
+.lapis summary::-webkit-details-marker{display:none}
+.lapis summary::after{content:"▾";color:var(--ink2);transition:transform .15s}
+.lapis details:not([open]) summary::after{transform:rotate(-90deg)}
+.tools{max-height:calc(100% - 24px);overflow-y:auto;scrollbar-width:thin}
+#legenda summary{cursor:pointer;list-style:none}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}
 .leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
 .leg .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
@@ -303,23 +310,30 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
       <div class="box lapis" id="lapis">
-        <div class="lbl" style="margin-bottom:4px">Lapisan</div>
-        <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
-        <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
-        <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
-        <label><input type="checkbox" data-l="posko" checked> Rekomendasi posko</label>
-        <label><input type="checkbox" data-l="daops" checked> Markas Daops Manggala Agni</label>
-        <label><input type="checkbox" data-l="fwi"> Bahaya cuaca (FWI)</label>
-        <label><input type="checkbox" data-l="angin"> Angin (bergerak)</label>
-        <label><input type="checkbox" data-l="asap"> Asap PM2.5, prakiraan CAMS</label>
-        <label><input type="checkbox" data-l="hujan"> Hujan 24 jam</label>
-        <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
-        <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
-        <label><input type="checkbox" data-l="konsesi"> Konsesi sawit & HPH</label>
-        <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
-        <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
-        <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
-
+        <div class="lbl" style="margin-bottom:2px">Lapisan</div>
+        <details open><summary>Api & respons</summary>
+          <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
+          <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
+          <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
+          <label><input type="checkbox" data-l="posko" checked> Rekomendasi posko</label>
+          <label><input type="checkbox" data-l="daops" checked> Markas Daops Manggala Agni</label>
+          <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
+        </details>
+        <details><summary>Cuaca & asap</summary>
+          <label><input type="checkbox" data-l="fwi"> Bahaya cuaca (FWI)</label>
+          <label><input type="checkbox" data-l="angin"> Angin (bergerak)</label>
+          <label><input type="checkbox" data-l="asap"> Asap PM2.5, prakiraan CAMS</label>
+          <label><input type="checkbox" data-l="hujan"> Hujan 24 jam</label>
+          <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
+        </details>
+        <details><summary>Lahan</summary>
+          <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
+          <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
+          <label><input type="checkbox" data-l="konsesi"> Konsesi sawit & HPH</label>
+        </details>
+        <details><summary>Peta dasar</summary>
+          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+        </details>
       </div>
       <div class="box" id="legenda"></div>
     </div>
@@ -422,7 +436,7 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
-    muatJSON("data/meta.json"), muatJSON("data/hotspot.json"), muatJSON("data/kluster.json"),
+    muatJSON("data/meta.json"), muatJSON(S.rentang === 168 ? "data/hotspot.json" : "data/hotspot72.json").catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster.json"),
     muatJSON("data/fwi.json"), muatJSON("data/bnpb.json").catch(() => null), muatJSON("data/wilayah.json"), muatJSON("geo/provinsi.json")]);
   S.daops = await muatJSON("data/daops.json").catch(() => []);
   S.sejarah = await muatJSON("data/sejarah.json").catch(() => null); if (S.sejarah) Tren.data = S.sejarah;
@@ -432,7 +446,7 @@ async function muatData() {
   S.posko = pk.posko; S.menengah = pk.menengah || []; S.pusat = pk.pusat || []; S.permanen = pk.permanen || [];
   S.semuaPosko = new Map([...S.pusat.map(x => [x.id, {...x, tingkat: 0}]), ...S.menengah.map(x => [x.id, {...x, tingkat: 1}]), ...S.posko.map(x => [x.id, {...x, tingkat: 2}])]);
   S.poskoDari = new Map(); S.posko.forEach(x => x.kompleks.forEach(k => S.poskoDari.set(k, x)));
-  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
+  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
   S.utama = new Set(hs.sensor_utama);
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
   const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
@@ -739,7 +753,7 @@ const Angin = {
   },
 };
 
-const kiriPad = () => innerWidth > 900 ? {top: 40, bottom: 40, left: 400, right: 280} : {top: 40, bottom: innerHeight * .48, left: 20, right: 20};
+const kiriPad = () => innerWidth > 900 ? {top: 40, bottom: 40, left: 430, right: 280} : {top: 40, bottom: innerHeight * .48, left: 20, right: 20};
 function kotak(fitur) { let a = [180, 90, -180, -90];
   const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
@@ -780,7 +794,7 @@ function renderDaftar() {
   item = [...gabung.values()].sort((a, b) => b.v - a.v || a.nama.localeCompare(b.nama));
   const maks = Math.max(1, ...item.map(i => i.v));
   const prio = new Set(S.meta.prioritas);
-  const kepala = `<div class="tb kepala"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Titik</span><span class="n">Kompleks</span><span style="text-align:right">Status</span></div>`;
+  const kepala = `<div class="tb kepala"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Titik</span><span class="n">Komp.</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
     const t = j.length === 0 ? trenProv(i.kunci) : null;
@@ -848,6 +862,7 @@ function renderSeg() {
 }
 $("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
   S.rentang = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; simpanLokal("pk-rentang2", S.rentang);
+  if (S.rentang === 168 && !S.titikPenuh) toast("Memuat titik 7 hari…");
   $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); }); });
 
@@ -876,7 +891,8 @@ $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("butto
     if (peta.getSource("hujan")) { const h = gambarHujan(); peta.getSource("hujan").updateImage({url: h.url, coordinates: h.kor}); } if (peta.getLayer("angin")) { peta.removeLayer("angin"); peta.removeSource("angin"); Lapis.pasang("panah"); } }); });
 function renderLegenda() {
   const fwiOn = Peta.lihat("fwi");
-  $("#legenda").innerHTML = `<div class="lbl">Umur titik panas</div>
+  $("#legenda").innerHTML = `<details ${S.legBuka === false ? "" : "open"} id="legDet"><summary class="lbl" style="display:flex;justify-content:space-between">Legenda <span>▾</span></summary><div style="margin-top:6px">
+    <div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>
     <div class="lbl">Jumlah titik per wilayah</div>
@@ -898,7 +914,8 @@ function renderLegenda() {
     ${Peta.lihat("asap") ? `<div class="lbl" style="margin-top:8px">Asap PM2.5 maks. harian (µg/m³)</div><div class="legscale">${[8, 35, 100, 200, 400].map(v => `<i style="background:rgb(${gradasi(ST_PM, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>baik</span><span>sedang</span><span>tdk sehat</span><span>sgt tdk sehat</span><span>bahaya</span></div>` : ""}
     ${Peta.lihat("hujan") ? `<div class="lbl" style="margin-top:8px">Hujan 24 jam (mm)</div><div class="legscale">${[1, 5, 15, 40, 80].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>5</span><span>15</span><span>40</span><span>80+</span></div>` : ""}
     ${Peta.lihat("angin") ? `<div class="leg" style="margin-top:8px"><span>Garis bergerak = arah angin siang; makin terang makin kencang</span></div>` : ""}
-    ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI)</div><div class="legscale">${[0, 2, 7, 14, 25, 40].map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>0</span><span>2</span><span>7</span><span>14</span><span>25</span><span>40+</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div>` : ""}`;
+    ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI)</div><div class="legscale">${[0, 2, 7, 14, 25, 40].map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>0</span><span>2</span><span>7</span><span>14</span><span>25</span><span>40+</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div>` : ""}</div></details>`;
+  $("#legDet").ontoggle = e => S.legBuka = e.target.open;
 }
 
 /* ---------- cari ---------- */
@@ -934,7 +951,7 @@ const Laci = {
     const el = $("#laci"); el.classList.add("on");
     el.innerHTML = `<div class="hd"><div><div class="lbl">Kompleks kebakaran ${esc(p.id)}</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
       <div style="color:var(--ink2);font-size:12.5px">${esc(namaProv(p.prov))}</div></div><button class="tutup" aria-label="Tutup">✕</button></div>
-      <div class="bd"><span class="pill l${p.level}">${esc(p.status)}</span>
+      <div class="bd"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span>
       <div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 j</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${p.kmrn ? (p.ini >= p.kmrn ? "+" : "") + Math.round((p.ini / p.kmrn - 1) * 100) + "%" : p.ini ? "baru" : "–"}</b><span>vs kemarin</span></div>
       <div><b>${fmt(p.fwi)}</b><span>FWI · ${FWI_KELAS[kelasFWI(p.fwi)][0]}</span></div><div><b>${fmt(p.ffmc)}</b><span>FFMC${p.ffmc > 82 ? " · mudah sulut" : ""}</span></div><div><b>${fmt(p.dc)}</b><span>DC · ${["basah", "lembap", "kering", "sangat kering"][p.dc <= 140 ? 0 : p.dc <= 260 ? 1 : p.dc <= 350 ? 2 : 3]}</span></div></div>
       <div style="font-size:12.5px;color:var(--ink2)">${fmt(p.n)} deteksi VIIRS · luas indikatif ${fmt(Math.round(p.luas * .3))}–${fmt(p.luas)} ha · FRP ${fmt(p.frp)} MW<br>
@@ -985,7 +1002,7 @@ const Tabel = {
   render() {
     const el = $("#kompleks"); if (!S.kluster) return;
     const r = this.baris(), hal = r.slice(this.hal * this.per, (this.hal + 1) * this.per), jml = Math.ceil(r.length / this.per);
-    const kol = [["id", "Kode"], ["status", "Status", "level"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel aktif 24 j", 0, 1], ["hari", "Hari menyala", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas maks (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
+    const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel aktif 24 j", 0, 1], ["hari", "Hari menyala", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas maks (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
       el.innerHTML = `<div class="head"><div><h2>Kompleks kebakaran aktif</h2><p>Diurutkan dari yang paling mendesak.</p></div></div>
@@ -999,10 +1016,10 @@ const Tabel = {
       $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) Laci.buka(b.dataset.id); });
       $("#pg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
       $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
-        ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : p[k]).concat([p.lat, p.lon]))]));
+        ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
-    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}">${esc(p.status)}</span></td>
+    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></td>
       <td>${esc(namaProv(p.prov))}</td><td>${esc(p.kab)}</td><td>${esc(p.kec)}</td>${["px24", "hari", "n", "luas", "fwi", "dc"].map(k => `<td class="n num">${fmt(p[k])}</td>`).join("")}</tr>`).join("")
       : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
@@ -1521,7 +1538,7 @@ const Sim = {
     const p = this.f?.properties; if (!p) { $("#simPanel").innerHTML = `<div class="kosong">Belum ada kompleks aktif.</div>`; return; }
     const opsi = S.kluster.features.slice(0, 300).map(f => `<option value="${f.properties.id}" ${f.properties.id === this.k ? "selected" : ""}>${f.properties.id} · ${esc(f.properties.kec)} (${fmt(f.properties.n)} titik)</option>`).join("");
     $("#simPanel").innerHTML = `<div class="lbl">Simulasi penjalaran 72 jam</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
-      <div style="font-size:12.5px;color:var(--ink2)">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(p.status)}</span></div>
+      <div style="font-size:12.5px;color:var(--ink2)">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></div>
       <label class="fld"><span class="lbl">Kompleks</span><select id="simK">${opsi}</select></label>
       <label class="fld"><span class="lbl">Bahan bakar dominan</span><select id="simB">${Object.entries(BAHAN).map(([k, b]) => `<option value="${k}" ${k === this.bahan ? "selected" : ""}>${b.n}</option>`).join("")}</select></label>
       <div class="kv"><div><b>${fmt(p.isi)}</b><span>ISI</span></div><div><b>${fmt(p.bui)}</b><span>BUI</span></div><div><b>${fmt(p.dc)}</b><span>DC</span></div></div>
@@ -1640,6 +1657,8 @@ class Heap { constructor() { this.a = []; } get size() { return this.a.length; }
   renderLegenda(); renderFwiHari(); garisWaktu();
   if (innerWidth <= 900) { $("#lapisBtn").style.display = "grid"; $("#lapis").classList.remove("buka"); }
   $("#muat").classList.add("hilang");
+  if (!S.titikPenuh) muatJSON("data/hotspot.json").then(hs => { S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
+    S.titikPenuh = true; if (S.rentang === 168) { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); } }).catch(() => {});
   const h = location.hash.slice(1);
   if (h.startsWith("k/")) Laci.buka(h.slice(2));
   else if (h.startsWith("sim")) { S.pilihK = h.split("/")[1] || null; bukaTab("sim", false); }

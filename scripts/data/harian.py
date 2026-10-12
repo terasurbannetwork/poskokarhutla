@@ -399,7 +399,7 @@ def main():
         fitur.append({
             "type": "Feature",
             "geometry": {"type": "Polygon", "coordinates": [[[round(v, 3) for v in x] for x in ring + ring[:1]]]}
-            if len(ring) >= 3 else {"type": "Point", "coordinates": [round(lon0, 4), round(lat0, 4)]},
+            if len(ring) >= 3 and lv >= 2 else {"type": "Point", "coordinates": [round(lon0, 4), round(lat0, 4)]},
             "properties": {
                 "id": "", "lat": round(lat0, 4), "lon": round(lon0, 4), "n": len(pts), "n24": len(p24),
                 "hari": len(hari), "px24": px24, "ini": n_ini, "kmrn": n_kmrn, "sev": sev, "fdrs": fdrs,
@@ -437,6 +437,14 @@ def main():
     fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["skor"]))
     for i, f in enumerate(fitur):
         f["properties"]["id"] = f"K{i + 1:04d}"
+    # berkas ringan: kompleks rendah (level 0-1) cukup atribut inti; teks status diambil dari level di peramban
+    INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev"}
+    for f in fitur:
+        q = f["properties"]
+        q.pop("status", None)
+        if q["level"] < 2:
+            for k in [k for k in q if k not in INTI]:
+                q.pop(k)
 
     # ringkasan per provinsi: hitungan utama per hari WIB (setara SiPongi/BNPB) + FWI
     rek = {}
@@ -482,6 +490,11 @@ def main():
         "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA),
         "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
                    idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik]})
+    simpan("hotspot72.json", {
+        "kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"],
+        "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA), "jam_maks": 72,
+        "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
+                   idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik if p["t"] >= akhir - dt.timedelta(hours=72)]})
     simpan("kluster.json", {"type": "FeatureCollection", "features": fitur})
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:]} for g in grid]})
