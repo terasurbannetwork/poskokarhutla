@@ -85,11 +85,16 @@ def fwi(i, b):
     return bb if bb <= 1 else math.exp(2.72 * (0.434 * math.log(bb)) ** 0.647)
 
 
-def deret(hari):
-    """hari = [(t, h, w, hujan), ...] berurutan. Kembalikan daftar dict indeks harian."""
-    f, d, c = AWAL
+def deret(hari, awal=AWAL):
+    """hari = [(t, h, w, hujan), ...] berurutan tanpa lompatan tanggal. Hari dengan data kosong (None)
+    tidak menghapus urutan: kode FFMC/DMC/DC dibawa dari kemarin dan hari itu ditandai 'celah'."""
+    f, d, c = awal
     hasil = []
     for t, h, w, r in hari:
+        if None in (t, h, w, r):
+            i, b = isi(f, 0), bui(d, c)
+            hasil.append({"ffmc": f, "dmc": d, "dc": c, "isi": i, "bui": b, "fwi": fwi(i, b), "celah": 1})
+            continue
         h = min(max(h, 0), 100)
         f, d, c = ffmc(f, t, h, w, r), dmc(d, t, h, r), dc(c, t, r)
         i, b = isi(f, w), bui(d, c)
@@ -111,4 +116,11 @@ if __name__ == "__main__":
     hasil = (round(f, 1), round(d, 1), round(c, 1), round(i, 1), round(b, 1), round(fwi(i, b), 1))
     assert hasil == (87.7, 8.5, 19.0, 10.9, 8.5, 10.1), hasil
     assert [kelas(x) for x in (0.5, 4, 10, 20)] == [0, 1, 2, 3]
+    # hari kosong: kode dibawa, tidak bergeser
+    dua = deret([(30, 50, 10, 0), (None, None, None, None), (30, 50, 10, 0)])
+    assert dua[1]["celah"] and dua[1]["dc"] == dua[0]["dc"] and dua[2]["dc"] > dua[1]["dc"]
+    # lanjut dari keadaan kemarin = sama dengan menghitung sambung
+    satu = deret([(30, 50, 10, 0)] * 3)
+    lanjut = deret([(30, 50, 10, 0)], awal=(satu[1]["ffmc"], satu[1]["dmc"], satu[1]["dc"]))
+    assert abs(lanjut[0]["dc"] - satu[2]["dc"]) < 1e-9
     print("ok", hasil)
