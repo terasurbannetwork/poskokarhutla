@@ -88,9 +88,6 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 @media (max-width:900px){.garis-waktu{bottom:auto;top:112px;width:calc(100% - 24px);min-width:0}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
 .panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .panel > *{pointer-events:auto}
-.tujuan{padding:14px 16px;border-radius:var(--r);background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff;box-shadow:var(--shadow-lg)}
-.tujuan p{margin:4px 0 0;font-size:13px;opacity:.9}
-.tujuan h1{font-size:16px;line-height:1.3}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
 .kpi .lbl{display:block;background:var(--brand);color:#fff;padding:4px 6px;font-size:9.5px}
@@ -121,7 +118,10 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tb .rk{color:var(--ink2);font-size:11px;font-weight:700;text-align:right}
 .tb .pill{height:19px;padding:0 7px;font-size:10.5px;justify-self:end}
 .kartu{margin:-10px -12px;min-width:270px;overflow:hidden;border-radius:12px}
-.kartu .kp{padding:8px 30px 8px 12px;color:#fff}
+.kartu .kp{padding:8px 30px 8px 12px;color:#fff;display:flex;align-items:center;gap:10px}
+.kartu .kp>div{min-width:0}
+.lambang{flex:none;width:30px;height:36px;object-fit:contain;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .35))}
+.dlg .dh .lambang{width:40px;height:48px}
 .kartu .kp small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
 .kartu .kp b{display:block;font-family:var(--display);font-size:14px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kartu .kg{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;padding:4px 12px 2px}
@@ -204,7 +204,6 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 @media (max-width:900px){
   .panel{top:auto;left:0;right:0;bottom:0;width:auto;height:46%;gap:0;transition:height .25s}
   .panel.min{height:96px}
-  .panel .tujuan{display:none}
   .panel .kpis{display:none}
   .panel .list{border-radius:18px 18px 0 0}
   .handle{display:block;width:44px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 0;border:0;cursor:pointer}
@@ -261,9 +260,30 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
 .rumus{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;white-space:pre}
 .toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
 .toast.on{display:block}
+tr.klik{cursor:pointer}
+tr.klik:hover td{background:var(--surface)}
+dialog.dlg{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);padding:0;width:min(640px,calc(100vw - 32px));max-height:calc(100dvh - 48px);box-shadow:var(--shadow-lg)}
+dialog.dlg::backdrop{background:oklch(15% .03 256 / .55)}
+.dlg .dh{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
+.dlg .dh h3{font-size:18px}
+.dlg .dh p{margin:2px 0 0;color:var(--ink2);font-size:13px}
+.dlg .dh button{margin-left:auto;border:0;background:var(--surface);width:32px;height:32px;border-radius:50%;cursor:pointer;flex:none;font-size:18px;line-height:1}
+.dlg .db{padding:14px 18px 18px;display:grid;gap:14px}
+.dlg .baris{display:grid;grid-template-columns:110px 1fr 54px;gap:10px;align-items:center;font-size:13px}
+.dlg .baris i{display:block;height:8px;border-radius:4px;background:var(--surface);overflow:hidden}
+.dlg .baris i b{display:block;height:100%;background:linear-gradient(90deg,#f29a3c,#d6453a)}
+.kal{display:grid;grid-template-columns:150px repeat(36,minmax(14px,1fr)) 160px;min-width:900px;font-size:12px}
+.kal>div{padding:0;height:26px;display:flex;align-items:center}
+.kal .bl{grid-column:span 3;justify-content:center;font-size:10.5px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;height:22px}
+.kal .nm{padding:0 10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
+.kal .nm[aria-current="true"]{color:var(--brand)}
+.kal .c{margin:1px;border-radius:3px;height:24px}
+.kal .c.kini{outline:2px solid var(--ink);outline-offset:-1px}
+.kal .sg{padding:0 10px;color:var(--ink2);white-space:nowrap}
 </style>
 </head>
 <body>
+<dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
 <header class="top">
   <div class="mark">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z" fill="oklch(76% .16 58)"/><path d="M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z" fill="oklch(90% .12 95)"/></svg>
@@ -285,15 +305,11 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
     <div id="peta"></div>
     <div class="muat" id="muat"><div><div class="spin"></div>Memuat titik panas seluruh Indonesia…</div></div>
     <div class="panel" id="panel">
-      <div class="tujuan">
-        <h1 id="tujuanJudul">Karhutla hari ini</h1>
-        <p id="tujuanSub">Memuat data…</p>
-      </div>
       <div class="kpis" id="kpis"></div>
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true">Wilayah</button><button data-m="posko" aria-pressed="false">Posko</button><button data-m="kom" aria-pressed="false">Kompleks</button></div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true">Wilayah</button><button data-m="riw" aria-pressed="false">Riwayat</button><button data-m="posko" aria-pressed="false">Posko</button><button data-m="kom" aria-pressed="false">Kompleks</button></div>
           <div class="crumb" id="crumb"></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
@@ -436,6 +452,10 @@ const gelap = () => document.documentElement.dataset.theme ? document.documentEl
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pk-tema", t); nanti(() => Peta.gantiDasar()); };
 
 /* ================================================================ data */
+/* lambang daerah (disalin dari pangantara): provinsi per kode, kab/kota per "kode|nama" */
+let LAMBANG = {}; muatJSON("lambang/kabkota.json").then(d => LAMBANG = d).catch(() => {});
+const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `lambang/provinsi/${prov}.png`;
+  return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
@@ -458,8 +478,6 @@ async function muatData() {
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
   const umur = (Date.now() - new Date(meta.dibuat)) / 36e5; S.basi = umur > 24;
   if (umur > 12) { $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status kompleks tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
-  $("#tujuanJudul").textContent = "Karhutla " + new Date().toLocaleDateString("id-ID", {...WIB, weekday: "long", day: "numeric", month: "long", year: "numeric"});
-  $("#tujuanSub").textContent = `Satelit terakhir lewat ${jamWIB(meta.data_terakhir)} · ${fmt(meta.jumlah_kluster)} kompleks api aktif`;
 }
 
 /* titik masuk rentang? hari/kemarin = hari kalender WIB (setara SiPongi/BNPB); 72 jam/7 hari = mundur dari lintasan terakhir */
@@ -562,6 +580,13 @@ const Peta = {
     this.aturWilayah(false);
     this.interaksi();
   },
+  /* warna wilayah: jumlah titik sekarang, atau kelas risiko riwayat saat panel Riwayat aktif */
+  warnaWil() {
+    if (!peta.getLayer("wil-fill")) return;
+    const riw = S.panel === "riw";
+    peta.setPaintProperty("wil-fill", "fill-color", riw ? ["match", ["get", "lv"], 3, "#7c1d16", 2, "#d6453a", 1, "#f39a53", 0, "#fde7c8", "rgba(0,0,0,0)"]
+      : ["step", ["get", "v"], "rgba(0,0,0,0)", 1, "#fde7c8", 10, "#f9c48b", 50, "#f39a53", 200, "#e0612f", 1000, "#b8321f", 4000, "#7c1d16"]);
+    peta.setLayoutProperty("wil-fill", "visibility", riw || this.lihat("wilayah") ? "visible" : "none"); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : true; },
   geoTitik() {
     return {type: "FeatureCollection", features: S.titik.filter(masuk).map(b => ({type: "Feature",
@@ -598,7 +623,7 @@ const Peta = {
     const fitur = fc.features.map(f => { const p = f.properties;
       const kunci = j.length === 0 ? p.kode : j.length === 1 ? j[0] + "|" + p.kab : j[0] + "|" + j[1] + "|" + p.kec;
       return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : (j.length === 1 ? p.kab : p.kec),
-        v: S.hit[kunci] || 0}}; });
+        v: S.hit[kunci] || 0, lv: S.riw && S.riw[kunci] ? S.riw[kunci].lv : -1}}; });
     S.fiturWil = fitur;
     if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: fitur});
     if (terbang && fitur.length) { const bb = kotak(fitur); peta.fitBounds(bb, {padding: kiriPad(), duration: 700, maxZoom: 11}); }
@@ -620,6 +645,7 @@ const Peta = {
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         return new maplibregl.Popup({closeButton: false}).setLngLat(e.lngLat).setHTML(`<b>Titik panas</b><br>${p.u < 1 ? "< 1" : fmt(p.u)} jam sebelum lintasan terakhir<br>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21 (tidak dihitung)", M: "MODIS"}[p.s]} · keyakinan ${["rendah", "sedang", "tinggi"][p.c]}<br>FRP ${fmt(p.f)} MW`).addTo(peta); }
+      if (w.length && S.panel === "riw") return Riwayat.buka(w[0].properties.kunci);
       if (w.length && S.jalur.length < 2) turun(w[0].properties.kunci);
     });
   },
@@ -791,6 +817,7 @@ function renderKPI() {
 }
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
+  if (S.panel === "riw") return renderDaftarRiw();
   if (S.panel === "kom") return renderDaftarKom();
   const j = S.jalur;
   let item = (S.fiturWil || []).map(f => ({kunci: f.properties.kunci, nama: f.properties.nama, v: S.hit[f.properties.kunci] || 0}));
@@ -811,10 +838,13 @@ function renderDaftar() {
 }
 S.panel = "wil";
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.panel = b.dataset.m;
-  $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(renderDaftar); });
+  $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
+  nanti(async () => { if (S.panel === "riw" && !S.riw) { $("#rows").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat arsip 2002–2026…</div>`; await Riwayat.muat(); await Peta.aturWilayah(false); }
+    Peta.warnaWil(); renderDaftar(); renderLegenda(); }); });
 $("#rows").addEventListener("click", e => { if (e.target.closest(".kepala")) return; const pb = e.target.closest("[data-pk]"); if (pb) { const x = S.semuaPosko.get(pb.dataset.pk);
     peta.flyTo({center: [x.lon, x.lat], zoom: [6.5, 8.5, 10][x.tingkat], padding: kiriPad()}); setTimeout(() => Posko.popup(x.id, [x.lon, x.lat]), 900); return; }
   const kb = e.target.closest("[data-kom]"); if (kb) return Laci.buka(kb.dataset.kom);
+  const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw);
   const b = e.target.closest(".row, .tb"); if (!b) return;
   if (b.dataset.daun) { const f = S.fiturWil.find(f => f.properties.kunci === b.dataset.k); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), maxZoom: 12}); }
   else turun(b.dataset.k); });
@@ -834,6 +864,20 @@ function trenMini(k) { const t = trenProv(k); if (!t) return "";
     <svg viewBox="0 0 100 34" width="100%" height="58" preserveAspectRatio="none" role="img" aria-label="Tren tahunan">${t.v.map((x, i) => { const h = x / m * 28;
       return `<rect x="${i * w + .6}" y="${30 - h}" width="${w - 1.2}" height="${h}" rx=".8" fill="${i === t.v.length - 1 ? "#d6453a" : "#f29a3c"}" opacity="${i === t.v.length - 1 ? 1 : .6}"><title>${t.th[i]}: ${fmt(x)}</title></rect>`; }).join("")}</svg>
     <div style="display:flex;justify-content:space-between;font-size:10px;color:var(--ink2)"><span>${t.th[0]}</span><span>${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, peringkat ${t.rank} dari ${t.v.length} tahun</span></div></div>`; }
+/* daftar Riwayat: wilayah di tingkat ini diurutkan menurut skor risiko 2002-2026; klik = popup analisa */
+function renderDaftarRiw() {
+  if (!S.riw) return;
+  const j = S.jalur, th = Riwayat.th, g = "grid-template-columns:20px minmax(0,1fr) 40px 52px 96px", o = j[0] && Tren.musim && Tren.musim.prov[j[0]];
+  const item = [...new Set((S.fiturWil || []).map(f => f.properties.kunci))].map(k => S.riw[k] || {kunci: k, nama: (S.fiturWil.find(f => f.properties.kunci === k) || {}).properties?.nama || k, skor: -1})
+    .sort((a, b) => b.skor - a.skor);
+  const musim = o ? `<div style="padding:10px 10px 4px;font-size:12.5px"><div class="lbl">Periode berbahaya ${esc(namaProv(j[0]))}</div>
+    <div>Tahun El Niño <b>${Tren.siaga(o.p_el_nino)}</b> · tahun biasa <b>${Tren.siaga(o.p_biasa)}</b> · puncak <b>${DAS(o.puncak)}</b></div></div>` : "";
+  $("#rows").innerHTML = musim + `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Skor</span><span class="n">Tahun</span><span style="text-align:right">Risiko</span></div>`
+    + (item.map((r, n) => `<button class="tb" data-riw="${esc(r.kunci)}" style="${g}" title="${r.skor >= 0 ? `Terbakar ${r.tahun} dari ${th.length} tahun, ${fmt(r.total)} titik ${th[0]}–${th[th.length - 1]}` : "Tidak pernah ≥ 10 titik setahun"}">
+      <span class="rk">${n + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span class="n" style="font-weight:700">${r.skor >= 0 ? r.skor : "–"}</span>
+      <span class="n">${r.skor >= 0 ? r.tahun + "/" + th.length : "–"}</span><span style="text-align:right">${r.skor >= 0 ? `<span class="pill l${r.lv}">${r.kelas}</span>` : ""}</span></button>`).join("")
+      || `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
+}
 function renderDaftarPosko() {
   const [pv, kb] = S.jalur, baris = [], g = "grid-template-columns:20px minmax(0,1fr) 58px 54px";
   const tanda = x => `<i style="display:inline-block;width:${[12, 10, 9][x.tingkat]}px;height:${[12, 10, 9][x.tingkat]}px;border-radius:50%;background:${x.tingkat === 2 ? (x.jenis_posko === "aju" ? "#fff" : "#1a9e8f") : ["#0b2545", "#7b5cd6"][x.tingkat]};border:2px solid ${x.tingkat === 2 && x.jenis_posko === "aju" ? "#7b5cd6" : "#fff"};box-shadow:0 0 0 1px ${["#0b2545", "#7b5cd6", "#1a9e8f"][x.tingkat]}"></i>`;
@@ -899,9 +943,11 @@ function renderLegenda() {
     <div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
     <span><i class="sw dot" style="background:#ffb02e"></i>6–24 jam</span><span><i class="sw dot" style="background:#f0582a"></i>1–3 hari</span><span><i class="sw dot" style="background:#a3261b"></i>3–7 hari</span></div>
-    <div class="lbl">Jumlah titik per wilayah</div>
+    ${S.panel === "riw" ? `<div class="lbl">Risiko riwayat 2002–2026 (klik wilayah)</div>
+    <div class="legscale">${["#fde7c8", "#f39a53", "#d6453a", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
+    <div class="legnum"><span>Rendah</span><span>Sedang</span><span>Tinggi</span><span>Sgt tinggi</span></div>` : `<div class="lbl">Jumlah titik per wilayah</div>
     <div class="legscale">${["#fde7c8", "#f9c48b", "#f39a53", "#e0612f", "#b8321f", "#7c1d16"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
-    <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>
+    <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>`}
     <div class="lbl" style="margin-top:8px">Posko & regu</div>
     <div class="leg" style="margin:4px 0 0"><span><i class="sw dot" style="background:#0b2545;border:2px solid #fff;box-shadow:0 0 0 1px #0b2545"></i>Posko pusat (provinsi)</span>
       <span><i class="sw dot" style="background:#7b5cd6;border:2px solid #fff"></i>Posko menengah (kabupaten), zoom 6+</span>
@@ -1070,49 +1116,65 @@ function renderPrioritas() {
 }
 
 /* ================================================================ keputusan */
-/* Model musim satu provinsi. Semua parameter [tengah, rendah, tinggi] dari keputusan.json (bersumber; yang lemah ditandai).
-   Luas dicegah:
-     B (pencegahan): L x [1 - (1 - cakupan_posko x ef_serangan_awal) x (1 - porsi_langganan x cakupan_MPA x ef_mpa)]
-     C (B + sekat kanal): B + min(sisa luas gambut, sekat x ha_per_sekat x p_bakar_dibasahi x ef_sekat)
-     D (B + udara): B + sisa x [1 - (1 - ef_water_bombing) x (1 - ef_omc x min(1, hari_OMC / 12))]
-   Manfaat per ha = rugi ekonomi + rugi kesehatan + harga karbon x (porsi_gambut x emisi_gambut + (1 - porsi_gambut) x emisi_mineral)
-   Biaya: B = anggaran posko permanen provinsi (model anggaran) + MPA; C = B + sekat x biaya / umur; D = B + helikopter + OMC.
-   A (respons seperti biasa) = pembanding: biaya tambahan 0, luas dicegah 0. */
+/* Model musim satu provinsi. Parameter [tengah, rendah, tinggi] dari keputusan.json (bersumber; yang lemah ditandai).
+   Luas terbakar L: tahun rata-rata = p x L_ElNino + (1 - p) x L_normal; di simulasi tahun El Nino diundi dengan peluang p lalu
+   L ~ lognormal(median tahun itu, sigma kalibrasi provinsi).
+   B: MPA mencegah L x porsi_langganan x cakupan_MPA x ef_mpa. Sisanya pecah jadi api berukuran ukuran_api; regu posko permanen
+      menyerang min(api di jangkauan posko, regu x hari x api_per_regu_hari) api, masing-masing tertahan dengan peluang
+      p_padam_awal dan menyelamatkan porsi_tumbuh_dicegah dari ukuran akhirnya.
+   C: B + sekat x ha_per_sekat x p_bakar_dibasahi x (L / L_ElNino) x ef_sekat, maksimal sisa luas gambut.
+   D: B + (jam heli / jam_heli_per_api) api x p_padam_heli x ukuran x porsi, lalu OMC pada sisa.
+   Manfaat per ha = faktor_marginal x (rugi ekonomi + rugi kesehatan x paparan asap) + harga karbon x emisi.
+   Biaya per tahun: operasional + alat x faktor anuitas (bunga, umur); sekat x biaya x (anuitas + perawatan). */
 const OPSI = [["A", "Respons seperti biasa", "Pemadaman setelah api terdeteksi, tanpa tambahan", 1],
   ["B", "Pencegahan & serangan awal", "Posko permanen, patroli terpadu, MPA di kecamatan langganan, ground-check < 24 jam", .35],
   ["C", "B + pembasahan gambut", "B ditambah sekat kanal di gambut langganan api", .7],
   ["D", "B + dukungan udara", "B ditambah helikopter water bombing dan modifikasi cuaca", .3]];
+const anuitas = (i, n) => i / (1 - (1 + i) ** -n);
+function gamma(a) { if (a < 1) return gamma(a + 1) * Math.random() ** (1 / a);
+  const d = a - 1 / 3, c = 1 / Math.sqrt(9 * d);
+  for (;;) { let x, v; do { x = normal(); v = 1 + c * x; } while (v <= 0); v = v * v * v; const u = Math.random();
+    if (Math.log(u) < .5 * x * x + d - d * v + d * Math.log(v)) return d * v; } }
+const normal = () => Math.sqrt(-2 * Math.log(1 - Math.random())) * Math.cos(2 * Math.PI * Math.random());
 const Kp = {
-  d: null, prov: "62", tahun: "ini", mpa: .3, sekat: 500, karbon: "tengah", n: 2000,
-  bobot: {bersih: 30, ha: 20, ispa: 20, emisi: 10, biaya: 10, bukti: 10},
-  par(k, mode, acak) { const [t, r, ti] = this.d.param[k];
+  d: null, prov: "62", tahun: "harapan", pEN: .3, mpa: .3, sekat: 500, karbon: "tengah", n: 2000,
+  bobot: {bersih: 50, ispa: 20, bukti: 30},
+  par(k, mode, acak) {
+    if (k === "L") { const P = this.d.prov[this.prov], sg = P.sigma_log;
+      if (acak) { const en = this.tahun === "elnino" || (this.tahun === "harapan" && Math.random() < this.pEN);
+        const med = this.tahun === "2026" ? P.luas_2026 : en ? P.luas_el_nino : P.luas_normal; return med * Math.exp(sg * normal()); }
+      const t = this.luas(P); return mode === "rendah" ? t * Math.exp(-1.28 * sg) : mode === "tinggi" ? t * Math.exp(1.28 * sg) : t; }
+    const [t, r, ti] = this.d.param[k];
     if (k === "harga_karbon") return this.karbon === "global" ? ti : this.karbon === "rendah" ? r : t; /* pilihan kebijakan, bukan ketidakpastian */
     if (!acak) return mode === "rendah" ? r : mode === "tinggi" ? ti : t;
     /* sebaran segitiga (rendah, tengah, tinggi) */
     const u = Math.random(), c = (t - r) / ((ti - r) || 1);
     return ti === r ? t : u < c ? r + Math.sqrt(u * (ti - r) * (t - r)) : ti - Math.sqrt((1 - u) * (ti - r) * (ti - t)); },
-  luas(P) { return this.tahun === "ini" ? P.luas_musim_ini : this.tahun === "normal" ? P.luas_normal : P.luas_el_nino; },
-  biayaPosko(kode) { return S.posko.filter(x => x.prov === kode && x.jenis_posko !== "aju").reduce((a, x) => a + anggaran(S.semuaPosko.get(x.id)).total, 0); },
+  luas(P) { return {harapan: this.pEN * P.luas_el_nino + (1 - this.pEN) * P.luas_normal, normal: P.luas_normal, elnino: P.luas_el_nino, 2026: P.luas_2026}[this.tahun]; },
+  /* biaya posko per tahun: posko permanen (per regu) + posko kabupaten & provinsi di provinsi itu; alat dianuitaskan */
+  biayaPosko(kode, rpp, crf) {
+    const pk = [...S.semuaPosko.values()].filter(x => x.prov === kode && x.jenis_posko !== "aju");
+    return pk.reduce((a, x) => { const g = anggaran(x), f = x.tingkat === 2 ? rpp / Math.max(1, g.regu) : 1; return a + f * (g.op + crf * g.alat.t); }, 0); },
   hitung(kode, ambil) {
-    const P = this.d.prov[kode], L = this.luas(P), g = P.porsi_gambut, q = k => ambil(k);
-    const perHa = q("rugi_ekonomi_ha") + q("rugi_kesehatan_ha") + q("harga_karbon") * (g * q("emisi_gambut_ha") + (1 - g) * q("emisi_mineral_ha"));
-    const desa = P.kecamatan_langganan * q("desa_per_kecamatan") * this.mpa;
-    const bB = this.biayaPosko(kode) + desa * q("biaya_mpa_desa");
-    /* MPA mencegah penyulutan; serangan awal memadamkan sisanya tetapi dibatasi kapasitas regu posko permanen */
-    const regu = S.posko.filter(x => x.prov === kode && x.jenis_posko !== "aju").reduce((a, x) => a + anggaran(S.semuaPosko.get(x.id)).regu, 0);
-    const dM = L * P.porsi_langganan * this.mpa * q("ef_mpa");
-    const dIA = Math.min((L - dM) * P.cakupan_posko * q("ef_serangan_awal"), regu * ASUMSI.hari * q("ha_regu_hari"));
-    const dB = dM + dIA, sisa = L - dB;
-    const dC = dB + Math.min(sisa * g, this.sekat * q("ha_per_sekat") * q("p_bakar_dibasahi") * q("ef_sekat"));
-    const bC = bB + this.sekat * q("biaya_sekat") / q("umur_sekat");
-    /* water bombing dibatasi kapasitas siraman; modifikasi cuaca pada sisa */
-    const jamHeli = ASUMSI.heliUnit * ASUMSI.heliJamHari * ASUMSI.hariDarurat;
-    const dWB = Math.min(sisa * q("ef_water_bombing"), jamHeli * q("siraman_per_jam") * q("ha_per_siraman"));
-    const dD = dB + dWB + (sisa - dWB) * q("ef_omc") * Math.min(1, ASUMSI.omcHari / 12);
-    const bD = bB + ASUMSI.heliUnit * ASUMSI.heliJamHari * ASUMSI.hariDarurat * q("biaya_heli_jam") + ASUMSI.omcHari * q("biaya_omc_hari");
+    const P = this.d.prov[kode], L = ambil("L"), g = P.porsi_gambut, q = k => ambil(k);
     const emisiHa = g * q("emisi_gambut_ha") + (1 - g) * q("emisi_mineral_ha");
-    this._regu = regu;
-    return [[0, 0], [bB, dB], [bC, dC], [bD, dD]].map(([b, h]) => ({biaya: b, ha: h, manfaat: h * perHa, bersih: h * perHa - b, ispa: h * q("ispa_ha"), emisi: h * emisiHa}));
+    const perHa = q("faktor_marginal") * (q("rugi_ekonomi_ha") + q("rugi_kesehatan_ha") * P.paparan_asap) + q("harga_karbon") * emisiHa;
+    const crf = anuitas(q("bunga"), q("umur_alat")), rpp = q("regu_per_posko"), regu = P.posko_permanen * rpp, uk = q("ukuran_api"), porsi = q("porsi_tumbuh_dicegah");
+    const desa = P.kecamatan_langganan * q("desa_per_kecamatan") * this.mpa;
+    const bB = this.biayaPosko(kode, rpp, crf) + desa * q("biaya_mpa_desa");
+    const dM = L * P.porsi_langganan * this.mpa * q("ef_mpa"), api = (L - dM) / uk;
+    const serang = Math.min(api * P.cakupan_posko, regu * ASUMSI.hari * q("api_per_regu_hari"));
+    const dIA = Math.min((L - dM) * P.cakupan_posko, serang * q("p_padam_awal") * uk * porsi);
+    const dB = dM + dIA, sisa = L - dB;
+    const pBakar = q("p_bakar_dibasahi") * Math.min(1, L / P.luas_el_nino);
+    const dC = dB + Math.min(sisa * g, this.sekat * q("ha_per_sekat") * pBakar * q("ef_sekat"));
+    const bC = bB + this.sekat * q("biaya_sekat") * (anuitas(q("bunga"), q("umur_sekat")) + q("om_sekat"));
+    const jamHeli = ASUMSI.heliUnit * ASUMSI.heliJamHari * ASUMSI.hariDarurat;
+    const dWB = Math.min(sisa, jamHeli / q("jam_heli_per_api") * q("p_padam_heli") * uk * porsi);
+    const dD = dB + dWB + (sisa - dWB) * q("ef_omc") * Math.min(1, ASUMSI.omcHari / 12);
+    const bD = bB + jamHeli * q("biaya_heli_jam") + ASUMSI.omcHari * q("biaya_omc_hari");
+    this._regu = regu; this._L = L;
+    return [[0, 0], [bB, dB], [bC, dC], [bD, dD]].map(([b, h]) => ({biaya: b, ha: h, manfaat: h * perHa, bersih: h * perHa - b, ispa: h * q("ispa_ha") * P.paparan_asap, emisi: h * emisiHa}));
   },
   simulasi(kode) {
     const hasil = OPSI.map(() => []), menang = OPSI.map(() => 0), rank = OPSI.map(() => OPSI.map(() => 0)), inkr = [[], [], [], []];
@@ -1121,8 +1183,8 @@ const Kp = {
       r.forEach((x, j) => hasil[j].push(x.bersih));
       inkr[1].push(r[1].bersih); inkr[2].push(r[2].bersih - r[1].bersih); inkr[3].push(r[3].bersih - r[1].bersih);
       menang[r.reduce((b, x, j) => x.bersih > r[b].bersih ? j : b, 0)]++;
-      /* SMAA: bobot acak di sekitar bobot pilihan (Dirichlet sederhana lewat eksponensial) */
-      const w = Object.fromEntries(Object.entries(this.bobot).map(([k, v]) => [k, -Math.log(Math.random()) * (v + .5)]));
+      /* SMAA: bobot ~ Dirichlet(20 x bobot pilihan), lewat sampel Gamma */
+      const w = Object.fromEntries(Object.entries(this.bobot).map(([k, v]) => [k, gamma(Math.max(.05, 20 * v / 100))]));
       const sk = this.skor(r, w); [...sk.keys()].sort((a, b) => sk[b] - sk[a]).forEach((j, pos) => rank[j][pos]++);
     }
     const pc = (a, p) => { const s = [...a].sort((x, y) => x - y); return s[Math.floor(p * (s.length - 1))]; };
@@ -1130,8 +1192,9 @@ const Kp = {
       positif: hasil.map(a => a.filter(x => x > 0).length / this.n), menang: menang.map(x => x / this.n), rank: rank.map(r => r.map(x => x / this.n)),
       inkrPos: inkr.map(a => a.length ? a.filter(x => x > 0).length / this.n : 0), inkrP10: inkr.map(a => a.length ? pc(a, .1) : 0), inkrP90: inkr.map(a => a.length ? pc(a, .9) : 0)};
   },
+  /* tiga kriteria yang tidak saling turunan: manfaat bersih (uang), kasus ISPA dicegah (kesehatan), kekuatan bukti */
   skor(r, w = this.bobot) {
-    const kr = {bersih: r.map(x => x.bersih), ha: r.map(x => x.ha), ispa: r.map(x => x.ispa), emisi: r.map(x => x.emisi), biaya: r.map(x => -x.biaya), bukti: OPSI.map(o => o[3])};
+    const kr = {bersih: r.map(x => x.bersih), ispa: r.map(x => x.ispa), bukti: OPSI.map(o => o[3])};
     const tot = Object.values(w).reduce((a, b) => a + b, 0) || 1;
     return OPSI.map((_, j) => Object.entries(kr).reduce((a, [k, v]) => { const mn = Math.min(...v), mx = Math.max(...v); return a + (w[k] || 0) / tot * (mx > mn ? (v[j] - mn) / (mx - mn) : 1); }, 0));
   },
@@ -1147,20 +1210,22 @@ const Kp = {
     const pagu = this.pagu ?? Math.round(tengah[1].biaya * 1.2 / 1e9) * 1e9;
     const muat = OPSI.map((_, j) => j).filter(j => tengah[j].biaya <= pagu).sort((a, b) => sk[b] - sk[a])[0];
     /* sensitivitas: parameter mana yang paling menggeser manfaat bersih opsi terbaik */
-    const sens = Object.keys(this.d.param).map(k => { const f = m => this.hitung(kode, kk => this.par(kk, kk === k ? m : "tengah"))[terbaik].bersih;
+    const sens = ["L", ...Object.keys(this.d.param)].map(k => { const f = m => this.hitung(kode, kk => this.par(kk, kk === k ? m : "tengah"))[terbaik].bersih;
       return [k, f("rendah"), f("tinggi")]; }).filter(x => Math.abs(x[2] - x[1]) > 0).sort((a, b) => Math.abs(b[2] - b[1]) - Math.abs(a[2] - a[1])).slice(0, 7);
     const sMax = Math.max(1, ...sens.map(x => Math.max(Math.abs(x[1] - tengah[terbaik].bersih), Math.abs(x[2] - tengah[terbaik].bersih))));
-    const lemah = k => (this.d.param[k][5] || "").startsWith("lemah") || this.d.param[k][4] === "ASUMSI";
-    const nmPar = {rugi_ekonomi_ha: "Kerugian ekonomi per ha", rugi_kesehatan_ha: "Kerugian kesehatan per ha", ispa_ha: "Kasus ISPA per ha", emisi_gambut_ha: "Emisi gambut per ha", emisi_mineral_ha: "Emisi tanah mineral per ha",
+    const lemah = k => k !== "L" && ((this.d.param[k][5] || "").startsWith("lemah") || this.d.param[k][4] === "ASUMSI");
+    const nmPar = {L: "Luas terbakar tahun ini", faktor_marginal: "Nilai api kecil vs rata-rata", ukuran_api: "Ukuran akhir satu api", api_per_regu_hari: "Api diserang per regu per hari",
+      p_padam_awal: "Peluang tertahan bila diserang dini", porsi_tumbuh_dicegah: "Porsi luas yang tak sempat terbakar", regu_per_posko: "Regu per posko permanen", jam_heli_per_api: "Jam heli per api",
+      p_padam_heli: "Peluang tertahan oleh water bombing", om_sekat: "Perawatan sekat per tahun", bunga: "Tingkat diskonto", umur_alat: "Umur alat", rugi_ekonomi_ha: "Kerugian ekonomi per ha", rugi_kesehatan_ha: "Kerugian kesehatan per ha", ispa_ha: "Kasus ISPA per ha", emisi_gambut_ha: "Emisi gambut per ha", emisi_mineral_ha: "Emisi tanah mineral per ha",
       harga_karbon: "Harga karbon", ef_serangan_awal: "Efektivitas serangan awal", ef_mpa: "Efektivitas MPA", ef_sekat: "Efektivitas sekat kanal", ha_per_sekat: "Luas basah per sekat", umur_sekat: "Umur sekat",
       ef_water_bombing: "Efektivitas water bombing", ef_omc: "Efektivitas modifikasi cuaca", biaya_sekat: "Biaya sekat", p_bakar_dibasahi: "Peluang lahan basah terbakar", biaya_mpa_desa: "Biaya MPA per desa",
       desa_per_kecamatan: "Desa per kecamatan", biaya_heli_jam: "Biaya helikopter per jam", biaya_omc_hari: "Biaya OMC per hari",
-      ha_regu_hari: "Ha dipadamkan per regu per hari", ha_per_siraman: "Ha per siraman helikopter", siraman_per_jam: "Siraman per jam"};
+};
     const provs = Object.keys(this.d.prov);
     const tb = tengah[terbaik];
     el.innerHTML = `<div class="head"><div><h2>Keputusan musim kebakaran · ${esc(P.nama)}</h2><p>Bandingkan empat pilihan strategi untuk satu musim.</p></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select id="kpProv" class="btn sec" aria-label="Provinsi">${provs.map(k => `<option value="${k}" ${k === kode ? "selected" : ""}>${esc(this.d.prov[k].nama)}</option>`).join("")}</select>
-      <div class="seg" id="kpTahun">${[["ini", "Musim ini"], ["normal", "Tahun normal"], ["elnino", "Tahun El Niño"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.tahun === v}">${n}</button>`).join("")}</div></div></div>
+      <div class="seg" id="kpTahun">${[["harapan", "Tahun rata-rata"], ["normal", "Tahun normal"], ["elnino", "Tahun El Niño"], ["2026", "Kilas balik 2026"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.tahun === v}">${n}</button>`).join("")}</div></div></div>
     <div class="card pad" style="margin-bottom:14px;border-left:4px solid var(--brand2)"><div class="lbl">Keputusan yang diminta</div>
       <h3 style="font-size:18px;margin:4px 0 8px">${pakaiB ? "Setujui B: pencegahan & serangan awal" : "Tetap A: belum ada bukti cukup untuk tambahan"}</h3>
       <table style="font-size:13px"><tbody>
@@ -1168,8 +1233,8 @@ const Kp = {
           const db = j === 1 ? tengah[1].biaya : tengah[j].biaya - tengah[1].biaya, dh = j === 1 ? tengah[1].ha : tengah[j].ha - tengah[1].ha, dn = j === 1 ? tengah[1].bersih : tengah[j].bersih - tengah[1].bersih;
           return `<tr><td><span class="pill ${ok ? "l0" : "l3"}">${ok ? "Setujui" : "Tunda"}</span></td><td style="white-space:normal"><b>${n}</b><br><small style="color:var(--ink2)">${b}: biaya +${rp(db)}, mencegah +${fmt(Math.round(dh))} ha, manfaat bersih ${dn >= 0 ? "+" : ""}${rp(dn)} (rentang 80% ${rp(mc.inkrP10[j])} sampai ${rp(mc.inkrP90[j])})</small></td>
             <td class="n num"><b>${Math.round(mc.inkrPos[j] * 100)}%</b><br><small style="color:var(--ink2)">peluang positif</small></td></tr>`; }).join("")}</tbody></table>
-      <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink2)">Perkiraan luas terbakar ${fmt(this.luas(P))} ha. Suatu langkah disetujui bila manfaat bersihnya positif di ≥ 70% dari ${fmt(this.n)} simulasi. Efektivitas serangan awal, MPA, dan water bombing belum punya bukti terukur di Indonesia: tetapkan pengukurannya sejak musim pertama.</p></div>
-    <div class="grid g4" style="margin-bottom:14px">${[["Perkiraan luas terbakar", fmt(this.luas(P)) + " ha", {ini: `musim ini (${fmt(P.titik_ini)} titik, ${P.k_ha_per_titik} ha/titik)`, normal: "median 2015–2025", elnino: "rata-rata 2015, 2019, 2023"}[this.tahun]],
+      <p style="margin:8px 0 0;font-size:12.5px;color:var(--ink2)">Perkiraan luas terbakar ${fmt(Math.round(this.luas(P)))} ha. Suatu langkah disetujui bila manfaat bersihnya positif di ≥ 70% dari ${fmt(this.n)} simulasi. Efektivitas serangan awal, MPA, dan water bombing belum punya bukti terukur di Indonesia: tetapkan pengukurannya sejak musim pertama.</p></div>
+    <div class="grid g4" style="margin-bottom:14px">${[["Perkiraan luas terbakar", fmt(Math.round(this.luas(P))) + " ha", {harapan: `${Math.round(this.pEN * 100)}% El Niño, ${Math.round(100 - this.pEN * 100)}% normal`, normal: "median tahun non-El Niño", elnino: "tahun El Niño 2015, 2019, 2023", 2026: `${fmt(P.titik_ini)} titik 2026, bila program sudah jalan sejak awal`}[this.tahun]],
       ["Porsi gambut", Math.round(P.porsi_gambut * 100) + "%", "dari kompleks api hari ini"], ["Cakupan posko permanen", Math.round(P.cakupan_posko * 100) + "%", `titik panas riwayat ≤ 30 km dari ${P.posko_permanen} posko`],
       ["Kecamatan langganan api", fmt(P.kecamatan_langganan), "terbakar di ≥ 3 tahun"]].map(([l, v, sm]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${sm}</small></div>`).join("")}</div>
     <div class="tw" style="margin-bottom:8px"><table><thead><tr><th>Pilihan</th><th class="n">Biaya tambahan</th><th class="n">Ha dicegah</th><th class="n">Manfaat</th><th class="n">Manfaat bersih</th><th class="n">Rentang 80%</th><th class="n">Peluang positif</th><th class="n">Peringkat 1 (multikriteria)</th><th class="n">ISPA dicegah</th><th class="n">Emisi dicegah (tCO2e)</th><th>Bukti</th></tr></thead><tbody>
@@ -1177,16 +1242,16 @@ const Kp = {
         <td class="n num">${rpc(x.biaya)}</td><td class="n num">${fmt(Math.round(x.ha))}</td><td class="n num">${rpc(x.manfaat)}</td><td class="n num"><b>${j ? rpc(x.bersih) : "–"}</b></td>
         <td class="n num" style="white-space:nowrap">${j ? rp(mc.p10[j]) + " – " + rp(mc.p90[j]) : "–"}</td><td class="n num">${j ? Math.round(mc.positif[j] * 100) + "%" : "–"}</td><td class="n num">${Math.round(mc.rank[j][0] * 100)}%</td>
         <td class="n num">${fmt(Math.round(x.ispa))}</td><td class="n num">${fmt(Math.round(x.emisi))}</td><td><span class="pill ${o[3] >= .7 ? "l0" : o[3] >= .35 ? "l2" : "l3"}">${o[3] >= 1 ? "pembanding" : o[3] >= .7 ? "terukur" : o[3] >= .35 ? "lemah" : "sangat lemah"}</span></td></tr>`; }).join("")}</tbody></table></div>
-    <p style="font-size:12px;color:var(--ink2);margin:0 0 18px">Biaya B memakai anggaran posko permanen di halaman Posko (${fmt(ASUMSI.hari)} hari, ${fmt(this._regu)} regu) ditambah MPA. Serangan awal dibatasi kapasitas regu; water bombing dibatasi kapasitas siraman. Manfaat = kerugian ekonomi, kesehatan, dan karbon yang dicegah.</p>
+    <p style="font-size:12px;color:var(--ink2);margin:0 0 18px">Biaya per tahun: operasional ${fmt(ASUMSI.hari)} hari untuk ${fmt(P.posko_permanen)} posko permanen (${fmt(this._regu)} regu), ${fmt(P.posko_kab)} posko kabupaten dan posko provinsi, alat dicicil sepanjang umurnya, ditambah MPA. Ha dicegah dihitung per kejadian api dan dibatasi kapasitas regu dan jam terbang.</p>
     <div class="grid g2" style="margin-bottom:18px">
       <div class="card pad"><h3 style="font-size:15px">Atur skenario</h3>
-        ${[["mpa", "Cakupan MPA di kecamatan langganan (0–1)", this.mpa, .05], ["sekat", "Jumlah sekat kanal (opsi C)", this.sekat, 50]].map(([k, n, v, st]) => `<label class="fld"><span class="lbl">${n}</span><input type="number" min="0" step="${st}" data-kp="${k}" value="${v}"></label>`).join("")}
+        ${[["pEN", "Peluang tahun El Niño (0–1; 7 dari 25 tahun terakhir)", this.pEN, .05], ["mpa", "Cakupan MPA di kecamatan langganan (0–1)", this.mpa, .05], ["sekat", "Jumlah sekat kanal (opsi C)", this.sekat, 50]].map(([k, n, v, st]) => `<label class="fld"><span class="lbl">${n}</span><input type="number" min="0" step="${st}" data-kp="${k}" value="${v}"></label>`).join("")}
         <label class="fld"><span class="lbl">Harga karbon</span><select data-kp="karbon">${[["tengah", "Pasar domestik (Rp50.000/t)"], ["rendah", "Pajak karbon (Rp30.000/t)"], ["global", "Biaya sosial global (US$50/t)"]].map(([v, n]) => `<option value="${v}" ${this.karbon === v ? "selected" : ""}>${n}</option>`).join("")}</select></label>
         <label class="fld"><span class="lbl">Pagu anggaran tambahan (Rp)</span><input type="number" min="0" step="1000000000" data-kp="pagu" value="${pagu}"></label>
         <p style="font-size:13px;margin:6px 0 0">Dalam pagu ${rp(pagu)}: <b>${muat != null ? OPSI[muat][0] + " " + OPSI[muat][1] : "tidak ada pilihan selain A"}</b>.</p>
         <p style="font-size:12px;color:var(--ink2);margin:6px 0 0">Helikopter dan modifikasi cuaca mengikuti asumsi di halaman Posko: ${ASUMSI.heliUnit} heli × ${ASUMSI.heliJamHari} jam × ${ASUMSI.hariDarurat} hari, OMC ${ASUMSI.omcHari} hari.</p></div>
       <div class="card pad"><h3 style="font-size:15px">Bobot kriteria dan ketahanan peringkat</h3>
-        ${[["bersih", "Manfaat bersih"], ["ha", "Luas dicegah"], ["ispa", "Kesehatan (ISPA)"], ["emisi", "Emisi"], ["biaya", "Biaya rendah"], ["bukti", "Kekuatan bukti"]].map(([k, n]) =>
+        ${[["bersih", "Manfaat bersih"], ["ispa", "Kesehatan (ISPA)"], ["bukti", "Kekuatan bukti"]].map(([k, n]) =>
           `<div style="display:grid;grid-template-columns:130px 1fr 36px;gap:8px;align-items:center;font-size:12.5px"><span>${n}</span><input type="range" min="0" max="50" value="${this.bobot[k]}" data-bobot="${k}" aria-label="Bobot ${n}"><span class="num">${this.bobot[k]}</span></div>`).join("")}
         <div class="lbl" style="margin-top:10px">Peluang tiap pilihan di peringkat 1 bila bobot dan parameter diacak</div>
         <p style="font-size:11.5px;color:var(--ink2);margin:2px 0 4px">Pembanding saja; keputusan di atas memakai analisis tambahan biaya-manfaat.</p>
@@ -1224,45 +1289,120 @@ const Kp = {
 
 /* ================================================================ tren & riwayat */
 const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+/* 9 provinsi prioritas (6 BNPB + Kaltim, NTT, Papua Selatan). Di luar ini titik panas banyak berasal dari smelter/industri
+   (mis. Morosi, Bahodopi), jadi peringkat risiko dan kalender musim dibatasi ke sini. */
+const PRIO = ["14", "15", "16", "61", "62", "63", "64", "53", "93"];
+const DAS = i => BULAN[Math.floor(i / 3)] + " " + ["awal", "tengah", "akhir"][i % 3];
+/* Indeks risiko historis 0-100 (dipakai tab Tren dan mode Riwayat di peta), dinilai terhadap semua wilayah setingkat se-Indonesia:
+   50% kekerapan = tahun terbakar / jumlah tahun, "terbakar" = >= 10 titik setahun (kecamatan), >= 100 (kabupaten), >= 500 (provinsi); 30% besaran = log(1 + total) / log(1 + total terbesar);
+   20% tren = rata-rata 2023+ dibanding sebelumnya (0 = turun separuh atau lebih, 1 = naik dua kali atau lebih).
+   Kelas: 10% teratas sangat tinggi, 10-30% tinggi, 30-60% sedang, sisanya rendah. */
+const AMBANG_TAHUN = {kec: 10, kab: 100, prov: 500};
+function skorRiwayat(daf, th) {
+  if (!daf.length) return daf;
+  const iB = th.indexOf("2023"), jum = a => a.reduce((x, y) => x + y, 0);
+  for (const r of daf) r.total = jum(r.v);
+  const maks = Math.max(...daf.map(r => r.total));
+  for (const r of daf) { const amb = AMBANG_TAHUN[r.jenis] || 10; r.tahun = r.v.filter(x => x >= amb).length; r.puncak = th[r.v.indexOf(Math.max(...r.v))];
+    const rasio = (jum(r.v.slice(iB)) / (th.length - iB) + 1) / (jum(r.v.slice(0, iB)) / iB + 1); r.tren = Math.round(rasio * 100) / 100;
+    r.fK = r.tahun / th.length; r.fB = Math.log1p(r.total) / Math.log1p(maks); r.fT = Math.min(1, Math.max(0, (Math.log2(rasio) + 1) / 2));
+    r.skor = Math.round(100 * (.5 * r.fK + .3 * r.fB + .2 * r.fT)); }
+  daf.sort((a, b) => b.skor - a.skor || b.total - a.total);
+  daf.forEach((r, i) => { const q = i / daf.length; r.kelas = q < .1 ? "Sangat tinggi" : q < .3 ? "Tinggi" : q < .6 ? "Sedang" : "Rendah"; r.lv = q < .1 ? 3 : q < .3 ? 2 : q < .6 ? 1 : 0; });
+  return daf; }
+/* mode Riwayat di peta: skor per provinsi, kabupaten, kecamatan dari arsip MODIS */
+const Riwayat = {
+  th: null,
+  async muat() {
+    if (S.riw) return;
+    const D = Tren.cache["data/sejarah_modis.json"] ||= await muatJSON("data/sejarah_modis.json");
+    if (!Tren.musim) try { Tren.musim = await muatJSON("data/musim.json"); } catch (e) {}
+    const th = this.th = D.tahun, tk = [{}, {}, {}];
+    for (const [k, v] of Object.entries(D.kec)) { const [pv, kb, kc] = k.split("|");
+      [[pv, "prov", namaProv(pv)], [pv + "|" + kb, "kab", kb], [k, "kec", kc]].forEach(([kk, jenis, nama], i) => {
+        const r = tk[i][kk] ||= {kunci: kk, jenis, prov: pv, kab: kb, nama, v: th.map(() => 0)}; v.forEach((x, j) => r.v[j] += x); }); }
+    S.riw = {}; tk.forEach(o => skorRiwayat(Object.values(o), th).forEach(r => S.riw[r.kunci] = r)); },
+  /* popup analisa satu wilayah */
+  buka(kunci) { const r = S.riw && S.riw[kunci]; if (r) Tren.rinci(r, this.th, true); },
+};
 const Tren = {
-  prov: "62", data: null, urutKec: "tahun", rt: "kec", rh: 0, rprov: "", sumber: "modis", cache: {},
+  prov: "62", data: null, musim: null, mMode: "semua", urutKec: "tahun", rt: "kec", rh: 0, rprov: "", sumber: "modis", cache: {},
   /* Indeks risiko historis (0-100), dapat diaudit:
      50% kekerapan  = tahun dengan >= 10 titik / jumlah tahun
      30% besaran    = log(1 + total titik) / log(1 + total terbesar)
      20% tren       = rata-rata 2023-2026 dibanding 2015-2022 (0 = turun separuh atau lebih, 1 = naik dua kali atau lebih)
      Kelas: 10% teratas sangat tinggi, 10-30% tinggi, 30-60% sedang, sisanya rendah. */
   peringkat() {
-    const D = this.data, th = D.tahun, iBaru = th.indexOf("2023"), kel = {};
-    for (const [k, v] of Object.entries(D.kec)) { const [pv, kb, kc] = k.split("|");
-      if (this.rprov && pv !== this.rprov) continue;
-      const kk = this.rt === "kec" ? k : pv + "|" + kb;
-      const r = kel[kk] ||= {prov: pv, kab: kb, nama: this.rt === "kec" ? kc : kb, v: th.map(() => 0)}; v.forEach((x, i) => r.v[i] += x); }
-    const daf = Object.values(kel); if (!daf.length) return [];
-    const maks = Math.max(...daf.map(r => r.v.reduce((a, b) => a + b, 0)));
-    for (const r of daf) { r.total = r.v.reduce((a, b) => a + b, 0); r.tahun = r.v.filter(x => x >= 10).length; r.puncak = th[r.v.indexOf(Math.max(...r.v))];
-      const lama = r.v.slice(0, iBaru).reduce((a, b) => a + b, 0) / iBaru, baru = r.v.slice(iBaru).reduce((a, b) => a + b, 0) / (th.length - iBaru);
-      const rasio = (baru + 1) / (lama + 1); r.tren = Math.round(rasio * 100) / 100;
-      const fTren = Math.min(1, Math.max(0, (Math.log2(rasio) + 1) / 2));
-      r.skor = Math.round(100 * (.5 * r.tahun / th.length + .3 * Math.log1p(r.total) / Math.log1p(maks) + .2 * fTren)); }
-    daf.sort((a, b) => b.skor - a.skor || b.total - a.total);
-    daf.forEach((r, i) => { const q = i / daf.length; r.kelas = q < .1 ? "Sangat tinggi" : q < .3 ? "Tinggi" : q < .6 ? "Sedang" : "Rendah"; });
-    return daf; },
+    const D = this.data, kel = {};
+    for (const [k, v] of Object.entries(D.kec)) { const [pv, kb, kc] = k.split("|"), kk = this.rt === "kec" ? k : pv + "|" + kb;
+      const r = kel[kk] ||= {kunci: kk, jenis: this.rt, prov: pv, kab: kb, nama: this.rt === "kec" ? kc : kb, v: D.tahun.map(() => 0)}; v.forEach((x, i) => r.v[i] += x); }
+    return skorRiwayat(Object.values(kel), D.tahun).filter(r => this.rprov ? r.prov === this.rprov : PRIO.includes(r.prov)); },
   peringkatHTML() {
-    const daf = this.peringkat(), per = 50, hal = daf.slice(this.rh * per, (this.rh + 1) * per), jml = Math.ceil(daf.length / per), th = this.data.tahun;
+    const daf = this._daf = this.peringkat(), per = 50, hal = daf.slice(this.rh * per, (this.rh + 1) * per), jml = Math.ceil(daf.length / per), th = this.data.tahun;
     const lv = {"Sangat tinggi": 3, "Tinggi": 2, "Sedang": 1, "Rendah": 0};
-    return `<div class="head" style="margin-top:22px"><div><h2>Peringkat risiko ${this.rt === "kec" ? "kecamatan" : "kabupaten/kota"} ${this.rprov ? "· " + esc(namaProv(this.rprov)) : "· seluruh Indonesia"}</h2>
-      <p>Diurutkan dari skor risiko tertinggi.</p></div>
+    return `<div class="head" style="margin-top:22px"><div><h2>Peringkat risiko ${this.rt === "kec" ? "kecamatan" : "kabupaten/kota"} ${this.rprov ? "· " + esc(namaProv(this.rprov)) : "· 9 provinsi prioritas"}</h2>
+      <p>Diurutkan dari skor risiko tertinggi. Klik baris untuk rincian.</p></div>
       <div id="rkCtl" style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg"><button data-rt="kec" aria-pressed="${this.rt === "kec"}">Kecamatan</button><button data-rt="kab" aria-pressed="${this.rt === "kab"}">Kab/Kota</button></div>
-      <div class="seg"><button data-rp="semua" aria-pressed="${!this.rprov}">Nasional</button><button data-rp="prov" aria-pressed="${!!this.rprov}">${esc(namaProv(this.prov))}</button></div>
+      <div class="seg"><button data-rp="semua" aria-pressed="${!this.rprov}">9 provinsi</button><button data-rp="prov" aria-pressed="${!!this.rprov}">${esc(namaProv(this.prov))}</button></div>
       <button class="btn sec" data-rcsv="1">Unduh CSV (${fmt(daf.length)})</button>
       <div class="pager" style="margin:0">${jml > 1 ? `${this.rh + 1}/${jml} ${this.rh > 0 ? `<button class="btn sec" data-rh="${this.rh - 1}">‹</button>` : ""}${this.rh < jml - 1 ? `<button class="btn sec" data-rh="${this.rh + 1}">›</button>` : ""}` : ""}</div></div></div>
       <div class="tw"><table><thead><tr><th class="n">#</th><th>${this.rt === "kec" ? "Kecamatan" : "Kab/Kota"}</th>${this.rt === "kec" ? "<th>Kab/Kota</th>" : ""}<th>Provinsi</th><th class="n">Skor</th><th>Kelas</th><th class="n">Tahun terbakar</th><th class="n">Total titik</th><th class="n">Tahun puncak</th><th class="n">Tren</th><th>Pola ${th[0]}–${th[th.length - 1]}</th></tr></thead><tbody>
-      ${hal.map((r, i) => { const m = Math.max(...r.v, 1); return `<tr><td class="n num">${this.rh * per + i + 1}</td><td><b>${esc(r.nama)}</b></td>${this.rt === "kec" ? `<td>${esc(r.kab)}</td>` : ""}<td>${esc(namaProv(r.prov))}</td>
+      ${hal.map((r, i) => { const m = Math.max(...r.v, 1); return `<tr class="klik" data-ri="${this.rh * per + i}" tabindex="0"><td class="n num">${this.rh * per + i + 1}</td><td><b>${esc(r.nama)}</b></td>${this.rt === "kec" ? `<td>${esc(r.kab)}</td>` : ""}<td>${esc(namaProv(r.prov))}</td>
         <td class="n num"><b>${r.skor}</b></td><td><span class="pill l${lv[r.kelas]}">${r.kelas}</span></td><td class="n num">${fmt(r.tahun)} / ${fmt(th.length)}</td><td class="n num">${fmt(r.total)}</td><td class="n num">${r.puncak}</td>
         <td class="n num" style="color:${r.tren >= 1.5 ? "var(--bad)" : r.tren <= .67 ? "var(--ok)" : "inherit"}">${r.tren >= 1 ? "↑" : "↓"} ${fmt(r.tren)}×</td>
         <td><svg viewBox="0 0 ${th.length * 6} 16" width="${th.length * 6}" height="16" aria-hidden="true">${r.v.map((x, j) => `<rect x="${j * 6}" y="${16 - x / m * 15}" width="4.5" height="${Math.max(.5, x / m * 15)}" fill="${j === r.v.length - 1 ? "#d6453a" : "#f29a3c"}"/>`).join("")}</svg></td></tr>`; }).join("")}</tbody></table></div>`; },
+  /* kalender periode berbahaya: peluang tiap dasarian masuk 10% dasarian tersibuk provinsinya (scripts/data/musim.py) */
+  siaga(p) { const i = p.map((v, j) => v >= .3 ? j : -1).filter(j => j >= 0); return i.length ? DAS(i[0]) + " – " + DAS(i[i.length - 1]) : "tidak ada"; },
+  musimHTML() {
+    const M = this.musim; if (!M) return "";
+    const kunci = {semua: "p_semua", el_nino: "p_el_nino", biasa: "p_biasa"}[this.mMode];
+    const t = new Date(Date.now() + 7 * 36e5), kini = t.getUTCMonth() * 3 + Math.min(2, Math.floor((t.getUTCDate() - 1) / 10));
+    const warna = v => v < .05 ? "var(--surface)" : `color-mix(in oklch, #d6453a ${Math.round(25 + v * 75)}%, #f2c94c)`;
+    const baris = PRIO.filter(k => M.prov[k]).map(k => { const o = M.prov[k], pp = o[kunci];
+      return `<div class="nm" data-mp="${k}" aria-current="${k === this.prov}" title="Tampilkan ${esc(o.nama)}">${esc(namaProv(k))}</div>`
+        + pp.map((v, j) => `<div class="c${j === kini ? " kini" : ""}" style="background:${warna(v)}" title="${esc(namaProv(k))} · ${DAS(j)}: peluang ${Math.round(v * 100)}% · rata-rata ${fmt(o.rata[j])} titik"></div>`).join("")
+        + `<div class="sg num">${this.siaga(pp)}</div>`; }).join("");
+    return `<div class="head" style="margin-top:22px"><div><h2>Periode berbahaya tiap tahun</h2><p>Peluang tiap 10 hari menjadi periode api besar, MODIS ${M.tahun_el_nino ? "2002–2025" : ""}. Kotak bergaris = hari ini.</p></div>
+      <div class="seg" id="mMode"><button data-m="semua" aria-pressed="${this.mMode === "semua"}">Semua tahun</button><button data-m="el_nino" aria-pressed="${this.mMode === "el_nino"}">Tahun El Niño</button><button data-m="biasa" aria-pressed="${this.mMode === "biasa"}">Tahun biasa</button></div></div>
+      <div class="card pad"><div class="tw" style="border:0;box-shadow:none"><div class="kal"><div></div>${BULAN.map(b => `<div class="bl">${b}</div>`).join("")}<div class="bl" style="grid-column:auto;justify-content:flex-start;padding-left:10px">Siaga (≥ 30%)</div>${baris}</div></div>
+      <p style="font-size:12px;color:var(--ink2);margin:10px 0 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">Peluang
+        ${[0, .1, .3, .5, .7, .9].map(v => `<span style="display:inline-block;width:22px;height:12px;border-radius:3px;background:${warna(v)}"></span>${Math.round(v * 100)}%`).join(" ")}
+        · El Niño: ${M.tahun_el_nino.join(", ")}</p></div>`; },
+  rinci(r, th = this.data.tahun, dariPeta = false) {
+    const m = Math.max(...r.v, 1), o = this.musim && this.musim.prov[r.prov];
+    const kl = klusterDi(r.kunci), prior = kl.filter(f => f.properties.level === 3).length, siaga = kl.filter(f => f.properties.level === 2).length;
+    const t = new Date(Date.now() + 7 * 36e5), das = t.getUTCMonth() * 3 + Math.min(2, Math.floor((t.getUTCDate() - 1) / 10));
+    const lv = {"Sangat tinggi": 3, "Tinggi": 2, "Sedang": 1, "Rendah": 0};
+    const d = $("#dlg");
+    d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div><h3 id="dlgJudul">${esc(r.nama)}</h3><p>${{kec: "Kecamatan · " + esc(r.kab) + " · " + esc(namaProv(r.prov)), kab: "Kabupaten/kota · " + esc(namaProv(r.prov)), prov: "Provinsi"}[r.jenis]}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
+      <div class="db">
+        <div class="grid g4">${[["Skor", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`], ["Tahun terbakar", fmt(r.tahun) + " / " + fmt(th.length), "≥ " + fmt(AMBANG_TAHUN[r.jenis]) + " titik setahun"],
+          ["Total titik", fmt(r.total), th[0] + "–" + th[th.length - 1]], ["Tren", (r.tren >= 1 ? "↑ " : "↓ ") + fmt(r.tren) + "×", "2023+ vs sebelumnya"]]
+          .map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
+        <div><div class="lbl" style="margin-bottom:6px">Kondisi saat ini</div>
+          <div class="baris" style="grid-template-columns:150px 1fr"><span>Titik panas (${{hari: "hari ini", kemarin: "kemarin", 72: "72 jam", 168: "7 hari"}[S.rentang]})</span><b class="num">${fmt(S.hit[r.kunci] || 0)}</b></div>
+          <div class="baris" style="grid-template-columns:150px 1fr"><span>Kompleks api aktif</span><b class="num">${fmt(kl.length)}${prior ? ` · <span style="color:var(--bad)">${fmt(prior)} prioritas</span>` : ""}${siaga ? ` · ${fmt(siaga)} siaga` : ""}</b></div>
+          ${o ? `<div class="baris" style="grid-template-columns:150px 1fr"><span>Peluang periode ini</span><b>${DAS(das)}: ${Math.round(o.p_semua[das] * 100)}% (El Niño ${Math.round(o.p_el_nino[das] * 100)}%, biasa ${Math.round(o.p_biasa[das] * 100)}%)</b></div>` : ""}</div>
+        <div><div class="lbl" style="margin-bottom:6px">Komponen skor</div>
+          ${[["Kekerapan", r.fK, 50], ["Besaran", r.fB, 30], ["Tren", r.fT, 20]].map(([n, f, w]) => `<div class="baris"><span>${n} <small style="color:var(--ink2)">${w}%</small></span><i><b style="width:${f * 100}%"></b></i><span class="num" style="text-align:right">${fmt(Math.round(f * w))}</span></div>`).join("")}</div>
+        <div><div class="lbl" style="margin-bottom:6px">Titik panas per tahun · puncak ${r.puncak}</div>
+          <svg viewBox="0 0 ${th.length * 40} 150" width="100%" role="img" aria-label="Titik panas per tahun">${r.v.map((x, j) => { const h = x / m * 105;
+            return `<rect x="${j * 40 + 5}" y="${125 - h}" width="30" height="${Math.max(1, h)}" rx="4" fill="${j === r.v.length - 1 ? "#d6453a" : "#f29a3c"}"><title>${th[j]}: ${fmt(x)}</title></rect>
+            <text x="${j * 40 + 20}" y="${119 - h}" font-size="10" text-anchor="middle" fill="currentColor" opacity=".8">${x >= 1000 ? fmt(Math.round(x / 100) / 10) + "rb" : x}</text>
+            <text x="${j * 40 + 20}" y="142" font-size="10.5" text-anchor="middle" fill="currentColor" opacity=".7">${th.length > 14 && j % 2 ? "" : th[j].slice(2)}</text>`; }).join("")}</svg></div>
+        ${o ? `<div><div class="lbl" style="margin-bottom:6px">Periode berbahaya ${esc(namaProv(r.prov))}</div>
+          <div class="baris" style="grid-template-columns:110px 1fr"><span>Tahun El Niño</span><b>${this.siaga(o.p_el_nino)}</b></div>
+          <div class="baris" style="grid-template-columns:110px 1fr"><span>Tahun biasa</span><b>${this.siaga(o.p_biasa)}</b></div>
+          <div class="baris" style="grid-template-columns:110px 1fr"><span>Puncak</span><b>${DAS(o.puncak)}</b></div></div>` : ""}
+        ${dariPeta && r.jenis !== "kec" ? `<button class="btn" data-masuk style="justify-self:start">Lihat ${r.jenis === "prov" ? "kabupaten" : "kecamatan"} di dalamnya</button>` : ""}
+      </div>`;
+    const mk = d.querySelector("[data-masuk]"); if (mk) mk.onclick = () => { d.close(); turun(r.kunci); };
+    d.querySelector("[data-tutup]").onclick = () => d.close();
+    d.onclick = e => { if (e.target === d) d.close(); };
+    d.showModal(); },
   async render() {
     const el = $("#tren");
+    if (!this.musim) try { this.musim = await muatJSON("data/musim.json"); } catch (e) { this.musim = null; }
     const berkas = this.sumber === "modis" ? "data/sejarah_modis.json" : "data/sejarah.json";
     if (!this.cache[berkas]) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat arsip…</div>`;
       try { this.cache[berkas] = await muatJSON(berkas); } catch (e) { if (this.sumber === "modis") { this.sumber = "viirs"; return this.render(); } el.innerHTML = `<div class="kosong">Arsip belum tersedia.</div>`; return; } }
@@ -1273,7 +1413,7 @@ const Tren = {
     /* bulan berjalan: bandingkan sampai bulan yang sama */
     const bln = new Date().getMonth(), sdBulan = t => (P[t] || []).slice(0, bln + 1).reduce((a, b) => a + b, 0);
     const iniSd = sdBulan(ini), rataSd = th.slice(0, -1).reduce((a, t) => a + sdBulan(t), 0) / (th.length - 1);
-    const provs = Object.keys(D.prov).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    const provs = PRIO.filter(k => D.prov[k]).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     /* bulan puncak rata-rata */
     const iklim = BULAN.map((_, m) => th.slice(0, -1).reduce((a, t) => a + ((P[t] || [])[m] || 0), 0) / (th.length - 1)), mi = Math.max(1, ...iklim);
     const kec = Object.entries(D.kec).filter(([k]) => k.startsWith(this.prov + "|")).map(([k, v]) => { const [, kb, kc] = k.split("|");
@@ -1281,7 +1421,7 @@ const Tren = {
       .sort((a, b) => b[this.urutKec] - a[this.urutKec] || b.total - a.total).slice(0, 25);
     const perm = S.permanen.filter(x => x.prov === this.prov);
     el.innerHTML = `<div class="head"><div><h2>Tren & riwayat titik panas ${th[0]}–${ini}</h2><p>Titik panas per tahun dan per bulan.</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" id="tSumber"><button data-s="modis" aria-pressed="${this.sumber === "modis"}">MODIS 2001–${ini}</button><button data-s="viirs" aria-pressed="${this.sumber === "viirs"}">VIIRS 2015–${ini}</button></div>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><div class="seg" id="tSumber"><button data-s="modis" aria-pressed="${this.sumber === "modis"}">MODIS 2002–${ini}</button><button data-s="viirs" aria-pressed="${this.sumber === "viirs"}">VIIRS 2015–${ini}</button></div>
       <select id="tProv" class="btn sec" aria-label="Pilih provinsi">${provs.map(k => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select></div></div>
       <div class="grid g4" style="margin-bottom:14px">${[["Titik panas " + ini, fmt(nil[nil.length - 1]), `peringkat ${rank} dari ${th.length} tahun`],
         ["Sampai " + BULAN[bln] + " " + ini, rataSd ? (iniSd >= rataSd ? "+" : "") + fmt(Math.round((iniSd / rataSd - 1) * 100)) + "%" : "–", "dibanding rata-rata periode sama"],
@@ -1300,6 +1440,7 @@ const Tren = {
           <rect x="${m * 46 + 24}" y="${160 - h2}" width="16" height="${h2}" rx="3" fill="#d6453a"><title>${BULAN[m]} ${ini}: ${fmt((P[ini] || [])[m] || 0)}</title></rect>
           <text x="${m * 46 + 23}" y="176" font-size="10" text-anchor="middle" fill="currentColor" opacity=".7">${BULAN[m]}</text>`; }).join("")}</svg>
         <p style="font-size:12px;color:var(--ink2);margin:4px 0 0"><span style="color:#7b5cd6">■</span> rata-rata ${th[0]}–${th[th.length - 2]} · <span style="color:#d6453a">■</span> ${ini}. Posko permanen didirikan paling lambat satu bulan sebelum bulan puncak.</p></div></div>
+      ${this.musimHTML()}
       ${this.peringkatHTML()}
       <div class="head" style="margin-top:22px"><div><h2>Kecamatan langganan api</h2><p>Kecamatan yang terbakar hampir setiap tahun.</p></div>
         <div class="seg" id="tUrut"><button data-u="tahun" aria-pressed="${this.urutKec === "tahun"}">Paling sering</button><button data-u="total" aria-pressed="${this.urutKec === "total"}">Paling banyak titik</button></div></div>
@@ -1317,6 +1458,11 @@ const Tren = {
       if (b.dataset.rcsv) return unduh(`peringkat-risiko-karhutla-${this.rt}.csv`, csv([["Peringkat", "Wilayah", "Kab/Kota", "Provinsi", "Skor", "Kelas", "Tahun terbakar", "Total titik", "Tahun puncak", "Tren 2023-2026 vs 2015-2022"],
         ...this.peringkat().map((r, i) => [i + 1, r.nama, r.kab, namaProv(r.prov), r.skor, r.kelas, r.tahun, r.total, r.puncak, r.tren])]));
       nanti(() => this.render()); };
+    const mm = el.querySelector("#mMode"); if (mm) mm.onclick = e => { const b = e.target.closest("button"); if (!b) return; this.mMode = b.dataset.m;
+      mm.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => this.render()); };
+    el.querySelectorAll("[data-mp]").forEach(b => b.onclick = () => { this.prov = b.dataset.mp; nanti(() => this.render()); });
+    el.querySelectorAll("tr[data-ri]").forEach(tr => { const buka = () => this.rinci(this._daf[+tr.dataset.ri]);
+      tr.onclick = buka; tr.onkeydown = e => { if (e.key === "Enter") buka(); }; });
     $("#tUrut").onclick = e => { const b = e.target.closest("button"); if (!b) return; this.urutKec = b.dataset.u; $("#tUrut").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => this.render()); };
     el.querySelectorAll("[data-lp]").forEach(b => b.onclick = () => { const x = S.permanen.find(x => x.id === b.dataset.lp); bukaTab("peta");
       nanti(() => { peta.flyTo({center: [x.lon, x.lat], zoom: 9}); setTimeout(() => Posko.popup(x.id, [x.lon, x.lat]), 900); }); });
@@ -1411,7 +1557,7 @@ const Posko = {
     const bp = bpbdDekat(x.lat, x.lon); if (bp) sel.push(kb("BPBD terdekat", `${esc(bp.nama)} · ${fmt(Math.round(bp.jarak))} km${bp.pusdalops ? " · " + esc(bp.pusdalops) : ""}`, 1));
     const jalur = [ind2, ind].filter(Boolean).map(y => y.tingkat === 1 ? "Kab. " + y.kab : "Prov. " + y.nama).join(" → ");
     new maplibregl.Popup({closeButton: true, maxWidth: "340px"}).setLngLat(ll).setHTML(`<div class="kartu">
-      <div class="kp" style="background:linear-gradient(135deg,${warna},rgba(11,37,69,.95))"><small>${jenis}</small><b title="${esc(nama)}">${esc(nama)}</b></div>
+      <div class="kp" style="background:linear-gradient(135deg,${warna},rgba(11,37,69,.95))">${x.tingkat === 0 ? lambang(x.prov) : lambang(x.prov, x.kab)}<div><small>${jenis}</small><b title="${esc(nama)}">${esc(nama)}</b></div></div>
       <div class="kg">${sel.join("")}</div>
       <div class="kk">${jalur ? "Melapor ke " + esc(jalur) : "Melapor ke BNPB dan KLHK"}<button class="btn sec" style="height:30px;font-size:12px" onclick="Posko.rinci('${x.id}')">Rincian alat, personel & anggaran</button></div></div>`).addTo(peta); },
   rinci(id) { this.pilih = id; bukaTab("posko"); nanti(() => { this.render(); $("#rinciPosko")?.scrollIntoView({behavior: "smooth", block: "start"}); }); },
