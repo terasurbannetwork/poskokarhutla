@@ -697,7 +697,7 @@ const Peta = {
     /* mode riwayat: permukaan halus jadi warna utama, poligon cukup tipis supaya tetap bisa diklik */
     peta.setPaintProperty("wil-fill", "fill-opacity", riw ? .06 : ["interpolate", ["linear"], ["zoom"], 5, ["case", ["boolean", ["feature-state", "hover"], false], .78, .55], 8.5, ["case", ["boolean", ["feature-state", "hover"], false], .35, .12]]);
     if (riw) Riwayat.raster().then(() => { peta.setLayoutProperty("riwayat", "visibility", "visible"); Riwayat.label(); }).catch(() => {});
-    else { if (peta.getLayer("riwayat")) peta.setLayoutProperty("riwayat", "visibility", "none"); if (peta.getLayer("riw-lbl")) peta.setLayoutProperty("riw-lbl", "visibility", "none"); } },
+    else { if (peta.getLayer("riwayat")) peta.setLayoutProperty("riwayat", "visibility", "none"); if (peta.getLayer("riw-bubble")) Riwayat.tampilLabel(false); } },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : true; },
   geoTitik() {
     return {type: "FeatureCollection", features: S.titik.filter(masuk).map(b => ({type: "Feature",
@@ -744,7 +744,7 @@ const Peta = {
   interaksi() {
     let hov = null;
     const tip = $("#tip");
-    peta.on("mousemove", e => { if (S.panel !== "riw" || !Riwayat.grid) return; const d = Riwayat.baca(e.lngLat.lng, e.lngLat.lat), G = Riwayat.grid;
+    peta.on("mousemove", e => { if (S.panel !== "riw" || !Riwayat.grid || Riwayat._diGelembung) return; const d = Riwayat.baca(e.lngLat.lng, e.lngLat.lat), G = Riwayat.grid;
       tip.innerHTML = d[2] ? `<b>Terbakar ${d[2]} dari ${G.tahun} tahun</b><br>rata-rata ${fmt(d[3])} titik panas per tahun<br><small>sel ± 11 km · MODIS 2002–2025</small>` : `Tidak pernah terbakar berarti (≥ ${G.ambang} titik setahun)`;
       tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
     peta.on("mouseout", () => tip.classList.remove("on"));
@@ -1102,7 +1102,7 @@ function renderLegenda() {
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
-    <div class="leg" style="margin:4px 0 6px"><span>Label: <b>skor risiko · tahun terbakar</b> per wilayah. Arahkan kursor untuk angka tiap sel; klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `${Kini.on ? `<div class="lbl">Kepadatan titik panas (per sel ± 11 km)</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") ? `<div class="lbl">Jumlah titik per wilayah</div>
+    <div class="leg" style="margin:4px 0 6px"><span>Lingkaran = <b>skor risiko</b> wilayah (warna = kelas); arahkan kursor untuk rincian. Arahkan kursor untuk angka tiap sel; klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `${Kini.on ? `<div class="lbl">Kepadatan titik panas (per sel ± 11 km)</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") ? `<div class="lbl">Jumlah titik per wilayah</div>
     <div class="legscale">${["#fde7c8", "#f9c48b", "#e58a45", "#d4643c", "#a9402f", "#7a2b2b"].map(c => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
     ${S.panel === "riw" || !(Peta.lihat("posko") || Peta.lihat("daops")) ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
@@ -1544,19 +1544,33 @@ const Riwayat = {
       this.gambar = {url: cv2.toDataURL(), kor: [[G.x0, G.y1], [G.x0 + G.w * G.sel, G.y1], [G.x0 + G.w * G.sel, G.y1 - G.h * G.sel], [G.x0, G.y1 - G.h * G.sel]]}; }
     if (!peta.getSource("riwayat")) { peta.addSource("riwayat", {type: "image", url: this.gambar.url, coordinates: this.gambar.kor});
       peta.addLayer({id: "riwayat", type: "raster", source: "riwayat", paint: {"raster-opacity": .78, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); } },
-  /* label nilai di peta: skor & tahun terbakar tiap wilayah di tingkat aktif (titik tengah kotak batasnya) */
+  /* gelembung skor (gaya Windy): lingkaran berwarna kelas berisi skor; nama di bawah saat diperbesar; rincian saat hover */
   label() {
     if (!peta || !S.riw || !S.fiturWil) return;
     const th = this.th.length, f = [...new Map(S.fiturWil.map(x => [x.properties.kunci, x])).values()].map(x => { const r = S.riw[x.properties.kunci]; if (!r) return null;
       const b = kotak([x]); return {type: "Feature", geometry: {type: "Point", coordinates: [(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2]},
-        properties: {t: `${x.properties.nama}\n${r.skor} · ${r.tahun}/${th} thn`, s: r.skor}}; }).filter(Boolean);
-    const data = {type: "FeatureCollection", features: f};
+        properties: {kunci: r.kunci, nama: x.properties.nama, s: r.skor, lv: r.lv, tahun: r.tahun, th, total: r.total, kelas: r.kelas, puncak: r.puncak}}; }).filter(Boolean);
+    const data = {type: "FeatureCollection", features: f}, W = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"];
     if (!peta.getSource("riw-lbl")) { peta.addSource("riw-lbl", {type: "geojson", data});
-      peta.addLayer({id: "riw-lbl", type: "symbol", source: "riw-lbl", layout: {"text-field": ["get", "t"], "text-size": ["interpolate", ["linear"], ["get", "s"], 20, 10, 90, 13], "text-font": ["Noto Sans Bold"],
-        "symbol-sort-key": ["-", 100, ["get", "s"]], "text-padding": 4},
-        paint: {"text-color": gelap() ? "#ffffff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.8}}); }
+      peta.addLayer({id: "riw-bubble", type: "circle", source: "riw-lbl", layout: {"circle-sort-key": ["get", "s"]},
+        paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["interpolate", ["linear"], ["get", "s"], 0, 9, 100, 15], 8, ["interpolate", ["linear"], ["get", "s"], 0, 13, 100, 20]],
+          "circle-color": ["match", ["get", "lv"], 3, W[3], 2, W[2], 1, W[1], W[0]], "circle-stroke-color": "#fff", "circle-stroke-width": 2, "circle-opacity": .95}});
+      peta.addLayer({id: "riw-angka", type: "symbol", source: "riw-lbl", layout: {"text-field": ["to-string", ["get", "s"]], "text-size": ["interpolate", ["linear"], ["zoom"], 4, 10.5, 8, 13], "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "symbol-sort-key": ["-", 100, ["get", "s"]]},
+        paint: {"text-color": "#fff"}});
+      peta.addLayer({id: "riw-nama", type: "symbol", source: "riw-lbl", minzoom: 5.2, layout: {"text-field": ["get", "nama"], "text-size": 11, "text-offset": [0, 1.7], "text-anchor": "top", "text-font": ["Noto Sans Bold"], "text-optional": true},
+        paint: {"text-color": gelap() ? "#ffffff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.6}});
+      const tip = $("#tip");
+      peta.on("mousemove", "riw-bubble", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "pointer"; this._diGelembung = true;
+        tip.innerHTML = `<b>${esc(p.nama)}</b><br>Skor risiko <b>${p.s}</b> · ${esc(p.kelas)}<br>Terbakar ${p.tahun} dari ${p.th} tahun<br>${fmt(p.total)} titik panas · puncak ${p.puncak}<br><small>klik untuk analisa</small>`;
+        tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
+      peta.on("mouseleave", "riw-bubble", () => { this._diGelembung = false; peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
+      peta.on("click", "riw-bubble", e => { e.originalEvent.stopPropagation(); this.buka(e.features[0].properties.kunci); }); }
     else peta.getSource("riw-lbl").setData(data);
-    peta.setLayoutProperty("riw-lbl", "visibility", S.panel === "riw" ? "visible" : "none"); },
+    this.tampilLabel(S.panel === "riw"); },
+  tampilLabel(on) { ["riw-bubble", "riw-angka", "riw-nama"].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"));
+    /* mode riwayat: sembunyikan posko, daops, kompleks supaya gelembung terbaca; pulihkan sesuai kotak lapisan saat keluar */
+    [["posko", ["posko", "posko-lbl"]], ["daops", ["daops", "daops-lbl"]], ["kluster", ["kl-fill", "kl-line", "kl-pt", "kl-pt3"]]].forEach(([k, ls]) =>
+      ls.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", !on && Peta.lihat(k) ? "visible" : "none"))); },
   /* angka sel di bawah kursor */
   baca(lng, lat) { const G = this.grid; if (!G) return null; const ix = Math.floor((lng - G.x0) / G.sel), iy = Math.floor((G.y1 - lat) / G.sel);
     this._idx ||= new Map(G.sel_data.map(d => [d[0] + "," + d[1], d])); return this._idx.get(ix + "," + iy) || [ix, iy, 0, 0]; },
