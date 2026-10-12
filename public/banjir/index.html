@@ -379,6 +379,10 @@ figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px
 .panel .tarik{right:-9px}
 .tools .tarik{left:-9px}
 @media (max-width:900px){.tarik{display:none}}
+ol.rek{margin:0;padding:0;list-style:none;display:grid;gap:6px;counter-reset:r}
+ol.rek li{counter-increment:r;display:grid;grid-template-columns:22px 1fr;gap:2px 8px;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--surface);border-left:3px solid var(--w)}
+ol.rek li::before{content:counter(r);grid-row:span 2;width:20px;height:20px;border-radius:50%;background:var(--w);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
+ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px}
 </style>
 </head>
 <body>
@@ -1024,24 +1028,55 @@ const Daftar = {
     $("#daftar").querySelector("tbody").onclick = e => { const tr = e.target.closest("[data-k]"); if (!tr) return; const p = tr.dataset.k.split("|"); S.jalur = p.slice(0, 2); bukaTab("peta"); Peta.aturWilayah().then(() => Analisa.wilayah(tr.dataset.k)); }; },
 };
 
-/* ================================================================ provinsi (setara Prioritas) */
+/* ================================================================ provinsi (setara Prioritas karhutla) */
+/* rekomendasi otomatis per provinsi; tiap butir punya tingkat (3 segera … 0 info) dan dasar datanya */
+function rekomendasiBanjir(k, d) {
+  const R = [], tambah = (lv, teks, dasar) => R.push({lv, teks, dasar}), daftar = a => a.slice(0, 3).map(x => `<b>${esc(x.split("|")[2])}</b> (${esc(x.split("|")[1])})`).join(", ");
+  if (d.awas.length) tambah(3, `Evakuasi warga bantaran dan dataran banjir di ${fmt(d.awas.length)} kecamatan awas banjir, mulai ${daftar(d.awas)}; aktifkan posko komando kabupaten`, "status awas: sungai di atas banjir 20 tahunan, atau hujan 3 hari ≥ 150 mm di wilayah bahaya tinggi");
+  if (d.siaga.length) tambah(2, `Siagakan tim evakuasi, perahu, dan pompa di ${fmt(d.siaga.length)} kecamatan siaga banjir, mulai ${daftar(d.siaga)}`, "status siaga 4 hari ke depan");
+  if (d.longsor.length) tambah(2, `Periksa lereng dan tutup ruas jalan rawan di ${fmt(d.longsor.length)} kecamatan siaga longsor, mulai ${daftar(d.longsor)}`, "hujan lebat di atas tanah jenuh pada wilayah bahaya longsor tinggi");
+  if (d.sungai.length) tambah(2, `Pantau tinggi muka air di ${fmt(d.sungai.length)} titik sungai yang diperkirakan melewati debit banjir 2 tahunan: ${d.sungai.slice(0, 3).map(t => `<b>${esc(t.kec)}</b>`).join(", ")}`, "prakiraan debit GloFAS 7 hari dibanding ambang periode ulang");
+  if (d.h3 >= 100) tambah(2, `Hujan sangat lebat ${fmt(Math.round(d.h3))} mm dalam 3 hari di sebagian wilayah: bersihkan saluran dan siapkan jalur evakuasi`, "sel hujan 0,25° terbasah di provinsi ini");
+  else if (d.h3 >= 50) tambah(1, `Hujan lebat hingga ${fmt(Math.round(d.h3))} mm dalam 3 hari: periksa drainase dan pintu air`, "sel hujan 0,25° terbasah di provinsi ini");
+  if (d.bmkg.length) tambah(2, `BMKG memperingatkan rob di ${fmt(d.bmkg.length)} lokasi pesisir (${esc(d.bmkg.slice(0, 2).map(w => w.lokasi || w.wilayah).join("; "))}): siapkan pompa dan karung pasir di tanggul rendah`, "peringatan dini rob BMKG Maritim");
+  if (d.rob) tambah(1, `${fmt(d.rob)} titik pantai diperkirakan melewati ambang pasang dalam 10 hari: informasikan jam pasang tertinggi ke warga pesisir`, "prakiraan muka laut Open-Meteo Marine dibanding persentil 95/99");
+  if (d.kabLanggan.length) tambah(1, `Pra-posisikan logistik pengungsi di kabupaten paling sering banjir: ${d.kabLanggan.slice(0, 3).map(x => `<b>${esc(x.kab)}</b> (${fmt(x.n)})`).join(", ")}`, "jumlah kejadian banjir tercatat BNPB/DIBI");
+  if (d.bulanPersen != null) tambah(0, `Bulan ini ${fmt(d.bulanPersen)}% dari bulan puncak kejadian banjir (${BLN[d.bulanPuncak]}) di provinsi ini`, "kalender kejadian DIBI 3 tahun terakhir");
+  if (d.posko) tambah(0, `${fmt(d.posko)} posko permanen pra-musim direkomendasikan di provinsi ini`, "tab Posko");
+  return R.sort((a, b) => b.lv - a.lv); }
 const Provinsi = {
+  urut: "status",
   render() {
-    const K = S.kejadian, ag = S.st.hari.map((_, h) => agregat("b", h)), agL = agregat("l", 0);
-    const pv = Object.keys(S.meta.provinsi).map(k => { const sel = S.hujan.grid.filter(g => g.prov === k), sg = S.sungai.titik.filter(t => t.prov === k), rob = S.rob?.titik.filter(t => t.prov === k) || [];
-      const ev = K?.prov?.[k]; const thn = ev ? Object.keys(ev.semua || ev.banjir || {}).sort() : [];
-      return {k, lv: ag.map(a => a[k]?.lv || 0), n: ag[0][k]?.n || [0, 0, 0, 0], l: agL[k]?.n || [0, 0, 0, 0], h3: Math.max(0, ...sel.map(g => g.h3 || 0)), sg: sg.filter(t => t.kelas).length, sgN: sg.length,
-        rob: rob.filter(t => Math.max(...t.lv) > 0).length, banjir: ev?.banjir, semua: ev?.semua, thn}; })
-      .sort((a, b) => Math.max(...b.lv) - Math.max(...a.lv) || b.n[3] - a.n[3] || b.n[2] - a.n[2] || b.h3 - a.h3);
-    const kartu = pv.map(r => { const v = r.thn.map(t => r.semua?.[t]?.kejadian ?? r.semua?.[t] ?? 0), m = Math.max(1, ...v), lb = r.banjir ? Object.entries(r.banjir).sort().at(-1) : null;
-      return `<article class="card pad" style="display:grid;gap:8px"><div style="display:flex;gap:10px;align-items:center">${lambang(r.k)}<div style="min-width:0"><h3 style="font-size:16px">${esc(namaProv(r.k))}</h3>
-        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${r.lv.map((l, h) => `<span title="${S.st.hari[h]}">${l ? pill(l) : `<span class="pill" style="background:var(--surface);color:var(--ink2)">Normal</span>`}</span>`).join("")}</div></div></div>
-        <div class="kv"><div><b style="color:${WARNA_LV[3]}">${fmt(r.n[3])}</b><span>kec. awas banjir</span></div><div><b style="color:${WARNA_LV[2]}">${fmt(r.n[2])}</b><span>kec. siaga banjir</span></div><div><b>${fmt(r.l[2] + r.l[3])}</b><span>kec. siaga+ longsor</span></div></div>
-        <table class="tb2"><tbody><tr><td>Hujan 3 hari terlebat</td><td class="n">${fmt(Math.round(r.h3))} mm</td></tr><tr><td>Sungai di atas Q2</td><td class="n">${fmt(r.sg)} dari ${fmt(r.sgN)} titik</td></tr>${S.rob ? `<tr><td>Titik pantai berstatus rob</td><td class="n">${fmt(r.rob)}</td></tr>` : ""}
-          ${lb ? `<tr><td>Banjir ${lb[0]} (BNPB)</td><td class="n">${fmt(lb[1].kejadian ?? lb[1])} kejadian${lb[1].meninggal != null ? " · " + fmt(lb[1].meninggal) + " meninggal" : ""}</td></tr>` : ""}</tbody></table>
-        ${v.length ? `<div><div class="lbl">Semua bencana tercatat ${r.thn[0]}–${r.thn.at(-1)}</div><svg viewBox="0 0 ${v.length * 10} 30" width="100%" height="34" preserveAspectRatio="none" aria-hidden="true">${v.map((x, j) => `<rect x="${j * 10 + 1}" y="${30 - x / m * 28}" width="8" height="${Math.max(.5, x / m * 28)}" fill="#3f7fb8" data-tip="${r.thn[j]}: ${fmt(x)} kejadian"/>`).join("")}</svg></div>` : ""}
+    const K = S.kejadian, ag = S.st.hari.map((_, h) => agregat("b", h)), agL = agregat("l", 0), bulanIni = new Date().getMonth(), warnaRek = ["#4f8fc4", "#e3b94e", "#e58a45", "#c9503a"];
+    const lipat = (j, isi, buka = true) => `<details class="lipat" ${buka ? "open" : ""}><summary>${j}</summary><div class="isi">${isi}</div></details>`;
+    const iH = S.rob ? Math.max(0, S.rob.hari.indexOf(S.hujan.hari_ini)) : 0;
+    const pv = Object.keys(S.meta.provinsi).map(k => {
+      const kecK = Object.entries(S.st.kec).filter(([kk]) => kk.startsWith(k + "|"));
+      const awas = kecK.filter(([, v]) => Math.max(...(v.b || [0])) === 3).map(([kk]) => kk), siaga = kecK.filter(([, v]) => Math.max(...(v.b || [0])) === 2).map(([kk]) => kk), longsor = kecK.filter(([, v]) => Math.max(...(v.l || [0])) >= 2).map(([kk]) => kk);
+      const sel = S.hujan.grid.filter(g => g.prov === k), sg = S.sungai.titik.filter(t => t.prov === k && t.kelas >= 1), rob = S.rob?.titik.filter(t => t.prov === k && Math.max(...t.lv.slice(iH)) > 0).length || 0;
+      const bmkg = (S.rob?.bmkg?.rob || []).filter(w => (w.kp || w.prov) === k || (w.provinsi || "").toLowerCase().includes(namaProv(k).toLowerCase()));
+      const kabLanggan = Object.entries(K?.kab || {}).filter(([kk]) => kk.startsWith(k + "|")).map(([kk, v]) => ({kab: kk.split("|")[1], n: Object.values(v.banjir || {}).reduce((a, b) => a + b, 0)})).filter(x => x.n).sort((a, b) => b.n - a.n);
+      const bln = Array(12).fill(0); (K?.kejadian_dibi || []).forEach(e => { if (e.prov === k && /banjir/.test(e.jenis) && e.jenis !== "banjir_rob") bln[+e.tanggal.slice(5, 7) - 1]++; });
+      const pk = Math.max(...bln), ev = K?.prov?.[k] || {}, thB = Object.keys(ev.banjir || {}).sort(), thS = Object.keys(ev.semua || {}).sort();
+      const d = {awas, siaga, longsor, sungai: sg, h3: Math.max(0, ...sel.map(g => g.h3 || 0)), rob, bmkg, kabLanggan, bulanPersen: pk ? Math.round(bln[bulanIni] / pk * 100) : null, bulanPuncak: bln.indexOf(pk), posko: (S.posko?.permanen || []).filter(x => x.prov === k).length};
+      return {k, d, lv: ag.map(a => a[k]?.lv || 0), n: ag[0][k]?.n || [0, 0, 0, 0], l: agL[k]?.n || [0, 0, 0, 0], ev, thB, thS, bln, rek: rekomendasiBanjir(k, d),
+        skor: Math.max(...ag.map(a => a[k]?.lv || 0)) * 1e6 + awas.length * 1e3 + siaga.length + longsor.length * .5 + (bmkg.length ? 1 : 0)}; });
+    pv.sort(this.urut === "riwayat" ? (a, b) => (b.d.kabLanggan.reduce((s, x) => s + x.n, 0)) - (a.d.kabLanggan.reduce((s, x) => s + x.n, 0)) : (a, b) => b.skor - a.skor || b.d.h3 - a.d.h3);
+    const kartu = pv.map(r => { const v = r.thS.map(t => r.ev.semua?.[t]?.kejadian ?? 0), m = Math.max(1, ...v), lb = r.thB.at(-1) ? r.ev.banjir[r.thB.at(-1)] : null, mb = Math.max(1, ...r.bln);
+      return `<article class="card pad" style="display:grid;gap:10px"><div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start"><div style="display:flex;gap:10px;align-items:center">${lambang(r.k)}<div><h3 style="font-size:16px">${esc(namaProv(r.k))}</h3>
+        <div style="display:flex;gap:4px;flex-wrap:wrap;margin-top:4px">${r.lv.map((l, h) => `<span title="${S.st.hari[h]}">${l ? pill(l) : `<span class="pill" style="background:var(--surface);color:var(--ink2)">Normal</span>`}</span>`).join("")}</div></div></div></div>
+        <div class="kv"><div><b style="color:${WARNA_LV[3]}">${fmt(r.d.awas.length)}</b><span>kec. awas banjir</span></div><div><b style="color:${WARNA_LV[2]}">${fmt(r.d.siaga.length)}</b><span>kec. siaga banjir</span></div><div><b>${fmt(r.d.longsor.length)}</b><span>kec. siaga+ longsor</span></div></div>
+        ${lipat(`Rekomendasi · ${r.rek.length} langkah`, `<ol class="rek">${r.rek.map(x => `<li style="--w:${warnaRek[x.lv]}"><span>${x.teks}</span><small>Dasar: ${esc(x.dasar)}</small></li>`).join("") || `<li style="--w:${warnaRek[0]}"><span>Kesiapsiagaan rutin; belum ada kecamatan siaga.</span></li>`}</ol>`)}
+        ${lipat("Situasi 4 hari", `<table class="tb2"><tbody><tr><td>Kecamatan waspada banjir hari ini</td><td class="n">${fmt(r.n[1])}</td></tr><tr><td>Hujan 3 hari terlebat</td><td class="n">${fmt(Math.round(r.d.h3))} mm</td></tr>
+          <tr><td>Sungai di atas banjir 2 tahunan</td><td class="n">${fmt(r.d.sungai.length)}</td></tr>${S.rob ? `<tr><td>Titik pantai berstatus rob (10 hari)</td><td class="n">${fmt(r.d.rob)}</td></tr><tr><td>Peringatan rob BMKG</td><td class="n">${fmt(r.d.bmkg.length)}</td></tr>` : ""}</tbody></table>`, false)}
+        ${lipat("Riwayat & musim", `${lb ? `<table class="tb2"><tbody><tr><td>Banjir ${r.thB.at(-1)}</td><td class="n">${fmt(lb.kejadian ?? lb)} kejadian${lb.meninggal != null ? " · " + fmt(lb.meninggal) + " meninggal" : ""}</td></tr>${lb.mengungsi != null ? `<tr><td>Mengungsi</td><td class="n">${fmt(lb.mengungsi)}</td></tr>` : ""}</tbody></table>` : ""}
+          ${v.length ? `<div class="lbl">Semua bencana tercatat ${r.thS[0]}–${r.thS.at(-1)}</div><svg viewBox="0 0 ${v.length * 10} 30" width="100%" height="34" preserveAspectRatio="none" aria-hidden="true">${v.map((x, j) => `<rect x="${j * 10 + 1}" y="${30 - x / m * 28}" width="8" height="${Math.max(.5, x / m * 28)}" fill="#3f7fb8" data-tip="${r.thS[j]}: ${fmt(x)} kejadian"/>`).join("")}</svg>` : ""}
+          <div class="lbl">Kejadian banjir per bulan (DIBI 3 tahun)</div><svg viewBox="0 0 360 26" width="100%" aria-hidden="true">${r.bln.map((n, b) => `<rect x="${b * 30 + 1}" y="0" width="28" height="16" rx="3" style="fill:${n ? `color-mix(in oklch, #3f7fb8 ${Math.round(15 + n / mb * 80)}%, var(--surface))` : "var(--surface)"}" ${b === bulanIni ? 'stroke="currentColor" stroke-width="1.5"' : ""} data-tip="${BLN[b]}: ${fmt(n)} kejadian"/><text x="${b * 30 + 15}" y="25" text-anchor="middle" font-size="7.5" opacity=".6">${BLN[b]}</text>`).join("")}</svg>
+          ${r.d.kabLanggan.length ? `<p class="fnd">Kabupaten paling sering banjir: ${r.d.kabLanggan.slice(0, 3).map(x => `${esc(x.kab)} (${fmt(x.n)})`).join(", ")}.</p>` : ""}`, false)}
         <button class="btn sec" data-k="${r.k}">Lihat di peta</button></article>`; }).join("");
-    $("#provinsiTab").innerHTML = `<div class="head"><div><h2>38 provinsi</h2><p>Diurutkan dari status banjir tertinggi 4 hari ke depan.</p></div></div><div class="grid g3">${kartu}</div>`;
+    $("#provinsiTab").innerHTML = `<div class="head"><div><h2>38 provinsi</h2><p>Status, rekomendasi, dan riwayat banjir, longsor, dan rob tiap provinsi.</p></div>
+      <div class="seg" id="pvU"><button data-u="status" aria-pressed="${this.urut === "status"}">Urut: status</button><button data-u="riwayat" aria-pressed="${this.urut === "riwayat"}">Urut: riwayat</button></div></div><div class="grid g3">${kartu}</div>`;
+    $("#pvU").onclick = e => { const b = e.target.closest("button"); if (b) { this.urut = b.dataset.u; nanti(() => this.render()); } };
     $("#provinsiTab").onclick = e => { const b = e.target.closest("button[data-k]"); if (b) { bukaTab("peta"); turun(b.dataset.k); } }; },
 };
 
