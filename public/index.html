@@ -508,7 +508,8 @@ const Peta = {
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
-    await new Promise(r => peta.once("load", r));
+    /* cukup tunggu gaya siap (lapisan data sudah dipasang), bukan semua ubin peta dasar: "load" bisa tertahan lama oleh ubin lambat */
+    await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
   },
   /* diff:false wajib: tanpa itu MapLibre "mendiff" gaya baru dan membuang semua lapisan data tanpa memicu style.load */
   gantiDasar() { if (peta) peta.setStyle(DASAR(), {diff: false}); if (Sim.peta) Sim.peta.setStyle(DASAR(), {diff: false}); },
@@ -558,15 +559,11 @@ const Peta = {
     peta.addLayer({id: "daops-lbl", type: "symbol", source: "daops", minzoom: 6, layout: {visibility: this.lihat("daops") ? "visible" : "none", "text-field": ["concat", "Daops ", ["get", "nama"]],
       "text-size": 11.5, "text-offset": [0, 1.1], "text-anchor": "top", "text-font": ["Noto Sans Bold"]},
       paint: {"text-color": gelap() ? "#cfe0ff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.6}});
-    /* posko 3 tingkat + garis komando lapangan -> kabupaten -> provinsi */
+    /* posko 3 tingkat (jalur komando ada di popup, tidak digambar) */
     const ptk = [...S.semuaPosko.values()];
     peta.addSource("posko", {type: "geojson", data: {type: "FeatureCollection", features: ptk.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]},
       properties: {id: x.id, t: x.tingkat, aju: x.jenis_posko === "aju" ? 1 : 0, lbl: ["Posko provinsi ", "Posko kab. ", x.jenis_posko === "aju" ? "Posko aju " : "Posko permanen "][x.tingkat] + (x.tingkat === 2 ? x.id : x.tingkat === 1 ? x.kab : x.nama), p: x.prioritas}}))}});
-    peta.addSource("komando", {type: "geojson", data: {type: "FeatureCollection", features: ptk.filter(x => x.induk && S.semuaPosko.get(x.induk)).map(x => { const i = S.semuaPosko.get(x.induk);
-      return {type: "Feature", geometry: {type: "LineString", coordinates: [[x.lon, x.lat], [i.lon, i.lat]]}, properties: {t: x.tingkat}}; })}});
     const vis = this.lihat("posko") ? "visible" : "none";
-    peta.addLayer({id: "komando", type: "line", source: "komando", layout: {visibility: vis}, filter: ["any", ["all", ["==", ["get", "t"], 1], [">=", ["zoom"], 5.8]], [">=", ["zoom"], 7.5]],
-      paint: {"line-color": ["match", ["get", "t"], 1, gelap() ? "#9fc2ff" : "#0b2545", "#7b5cd6"], "line-width": ["match", ["get", "t"], 1, 1.6, 1], "line-dasharray": [3, 2], "line-opacity": .75}});
     peta.addLayer({id: "posko", type: "circle", source: "posko", layout: {visibility: vis, "circle-sort-key": ["-", 3, ["get", "t"]]},
       filter: ["any", ["==", ["get", "t"], 0], ["all", ["==", ["get", "t"], 1], [">=", ["zoom"], 5.8]], [">=", ["zoom"], 7.5]],
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "t"], 0, 7, 1, 4, 3], 10, ["match", ["get", "t"], 0, 13, 1, 9, 7]],
@@ -916,7 +913,7 @@ $("#rentang").addEventListener("click", e => { const b = e.target.closest("butto
 
 /* lapisan */
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
-  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl", "komando"],
+  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
     angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
