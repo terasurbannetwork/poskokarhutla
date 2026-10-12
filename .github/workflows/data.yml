@@ -1,10 +1,11 @@
 name: Perbarui data
 
-# Tiap jam: titik panas FIRMS, kompleks api, posko, BNPB, lalu terbitkan ke Cloudflare.
-# FWI dihitung ulang sekali sehari (cuaca jam 12 waktu setempat); jam lain memakai hasil hari itu.
+# Sekali sehari pukul 21.20 WIB: titik panas FIRMS, kompleks api, posko, BNPB, lalu terbitkan ke Cloudflare.
+# Jamnya dipilih setelah lintasan siang VIIRS/MODIS (± 13.30 waktu setempat) masuk NRT (latensi ± 3 jam),
+# jadi hitungan "hari ini" sudah memuat lintasan utama hari itu.
 on:
   schedule:
-    - cron: "20 * * * *"
+    - cron: "20 14 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -33,7 +34,6 @@ jobs:
       - name: Titik panas, kompleks, FWI, BNPB
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
-          FWI: "0"
         run: python3 scripts/data/harian.py
 
       - name: Rekomendasi posko
