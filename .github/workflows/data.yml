@@ -39,6 +39,9 @@ jobs:
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py
 
+      - name: Rekomendasi pangkalan udara
+        run: python3 scripts/data/udara_rekom.py
+
       - name: Prakiraan asap CAMS (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/asap.py
@@ -55,6 +58,7 @@ jobs:
           python3 scripts/data/fwi.py
           python3 scripts/data/aturan.py
           python3 scripts/data/posko.py uji
+          python3 scripts/data/udara_rekom.py uji
 
       - name: Simpan data untuk jalan berikutnya
         uses: actions/cache/save@v4

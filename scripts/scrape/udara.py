@@ -139,6 +139,9 @@ def susun():
     for x in gabung:
         r = w.cari(x["lon"], x["lat"])
         x["prov"], x["kab"] = (r[0], r[1]) if r else (None, None)
+    # OSM ditarik per kotak batas -> ikut Malaysia/Singapura/Timor Leste; OurAirports ID tanpa prov
+    # (pulau kecil/lepas pantai di luar poligon) tetap disimpan
+    gabung = [x for x in gabung if x["prov"] or x["sumber"] == "OurAirports"]
     return [{k: x[k] for k in ("id", "nama", "icao", "iata", "jenis", "lat", "lon", "prov", "kab",
                                 "landasan_m", "permukaan", "sumber")} for x in gabung]
 

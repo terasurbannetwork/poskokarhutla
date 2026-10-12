@@ -316,6 +316,7 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
         <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
         <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
         <label><input type="checkbox" data-l="konsesi"> Konsesi sawit & HPH</label>
+        <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
         <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
         <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
 
@@ -478,7 +479,7 @@ const Peta = {
   lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("titik")) return;
-    setTimeout(() => ["angin", "asap", "hujan", "gambut", "kawasan", "konsesi", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
+    setTimeout(() => ["angin", "asap", "hujan", "gambut", "kawasan", "konsesi", "udara", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
     const bawahLabel = this.lapisAwal();
     peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
@@ -616,6 +617,29 @@ const Lapis = {
         const w = ["match", ["get", "fungsi"], "HK", "#1f7a3a", "THR", "#1f7a3a", "HL", "#4caf50", "HP", "#9ccc65", "HPT", "#c5e1a5", "HPK", "#e6ee9c", "#cccccc"];
         peta.addSource("kawasan", {type: "geojson", data: d}); peta.addLayer({id: "kawasan", type: "fill", source: "kawasan", paint: {"fill-color": w, "fill-opacity": .35}}, "wil-line");
         peta.addLayer({id: "kawasan-line", type: "line", source: "kawasan", minzoom: 7, paint: {"line-color": w, "line-width": .8}}, "wil-line"); },
+      udara: async () => { const d = this.cache.udara ||= await muatJSON("data/udara_rekom.json");
+        const lingkar = (lo, la, r) => ({type: "Polygon", coordinates: [Array.from({length: 65}, (_, k) => { const t = k / 64 * 2 * Math.PI;
+          return [lo + r / (111.32 * Math.cos(la * Math.PI / 180)) * Math.cos(t), la + r / 110.57 * Math.sin(t)]; })]});
+        const f = [...d.heli.map(h => ({type: "Feature", geometry: {type: "Point", coordinates: [h.lon, h.lat]}, properties: {j: "heli", lbl: "Heli " + (h.icao || h.nama), id: "h:" + h.nama + h.prov}})),
+          ...d.aju.map(a => ({type: "Feature", geometry: {type: "Point", coordinates: [a.lon, a.lat]}, properties: {j: "aju", lbl: "Heli aju " + a.nama, id: "a:" + a.nama}})),
+          ...d.omc.map(o => ({type: "Feature", geometry: {type: "Point", coordinates: [o.lon, o.lat]}, properties: {j: "omc", lbl: "OMC " + (o.icao || o.nama), id: "o:" + o.nama}}))];
+        peta.addSource("udara-r", {type: "geojson", data: {type: "FeatureCollection", features: d.heli.map(h => ({type: "Feature", geometry: lingkar(h.lon, h.lat, d.radius_heli_km), properties: {}}))}});
+        peta.addLayer({id: "udara-r", type: "line", source: "udara-r", paint: {"line-color": "#e8590c", "line-width": 1.2, "line-dasharray": [4, 3], "line-opacity": .7}});
+        peta.addSource("udara", {type: "geojson", data: {type: "FeatureCollection", features: f}});
+        peta.addLayer({id: "udara", type: "circle", source: "udara", paint: {"circle-radius": ["match", ["get", "j"], "heli", 8, "omc", 7, 5.5],
+          "circle-color": ["match", ["get", "j"], "heli", "#e8590c", "omc", "#0e7490", "#ffffff"], "circle-stroke-color": ["match", ["get", "j"], "aju", "#e8590c", "#ffffff"], "circle-stroke-width": 2.4}});
+        peta.addLayer({id: "udara-lbl", type: "symbol", source: "udara", minzoom: 5, layout: {"text-field": ["get", "lbl"], "text-size": 11, "text-offset": [0, 1.2], "text-anchor": "top", "text-font": ["Noto Sans Bold"]},
+          paint: {"text-color": gelap() ? "#ffd8c2" : "#a3400a", "text-halo-color": gelap() ? "#0b1424" : "#fff", "text-halo-width": 1.6}});
+        if (!Lapis._klikUdara) Lapis._klikUdara = peta.on("click", "udara", e => { const id = e.features[0].properties.id, [jn] = id.split(":");
+          const x = jn === "h" ? d.heli.find(h => "h:" + h.nama + h.prov === id) : jn === "a" ? d.aju.find(a => "a:" + a.nama === id) : d.omc.find(o => "o:" + o.nama === id);
+          const kb = (k, v, pn) => `<div class="kb${pn ? " penuh" : ""}"><span>${k}</span><b>${v}</b></div>`;
+          const sel = jn === "h" ? [kb("Melayani", esc(namaProv(x.prov))), kb("Kompleks", fmt(x.kompleks)), kb("Prioritas", fmt(x.prioritas)), kb("Terbang rata-rata", fmt(x.terbang_menit_rata) + " menit"),
+              kb("Siklus siram", "± " + fmt(x.siklus_menit) + " menit"), kb("Siram per jam", "± " + fmt(x.siram_per_jam)), kb("Landasan", fmt(x.landasan_m) + " m"), kb("Cakupan kumulatif", x.cakupan + "%")]
+            : jn === "a" ? [kb("Kompleks prioritas", fmt(x.kompleks.length)), kb("Jarak ke api", fmt(x.jarak_api) + " km"), kb("Ke pangkalan utama", x.ke_utama_km ? fmt(x.ke_utama_km) + " km" : "–"), kb("Avtur", "dikirim lewat darat", 1)]
+            : [kb("Landasan", fmt(x.landasan_m) + " m"), kb("Ke pusat api", fmt(x.jarak_ke_pusat_api) + " km"), kb("Pesawat", "CN-295 / CASA 212", 1)];
+          new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${jn === "o" ? "#0e7490" : "#e8590c"},rgba(11,37,69,.95))">
+            <small>${jn === "h" ? "Pangkalan helikopter water bombing" : jn === "a" ? "Pangkalan aju helikopter" : "Pangkalan modifikasi cuaca"}</small><b>${esc(x.nama)}${x.icao ? " · " + x.icao : ""}</b></div>
+            <div class="kg">${sel.join("")}</div><div class="kk">Siklus siram memakai asumsi sumber air 5 km dari api. Helikopter dan modifikasi cuaca diminta lewat BNPB.</div></div>`).addTo(peta); }); },
       asap: async () => { const d = this.cache.asap ||= await muatJSON("data/asap.json"); const g = gambarAsap(d);
         peta.addSource("asap", {type: "image", url: g.url, coordinates: g.kor});
         peta.addLayer({id: "asap", type: "raster", source: "asap", paint: {"raster-opacity": .6, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
@@ -830,7 +854,7 @@ $("#rentang").addEventListener("click", e => { const b = e.target.closest("butto
 /* lapisan */
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl", "komando"],
-    angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], hujan: ["hujan"]}[i.dataset.l];
+    angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
@@ -869,6 +893,7 @@ function renderLegenda() {
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
     ${Peta.lihat("kawasan") ? `<div class="lbl" style="margin-top:8px">Kawasan hutan</div><div class="leg" style="margin-top:4px">${[["#1f7a3a", "Konservasi / Tahura (BKSDA, Taman Nasional)"], ["#4caf50", "Hutan lindung (pemda)"], ["#9ccc65", "Hutan produksi (pemegang PBPH)"], ["#c5e1a5", "Produksi terbatas"], ["#e6ee9c", "Produksi dapat dikonversi"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data ± 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#d97706"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#0e7490"></i>HPH (hutan alam)</span></div>` : ""}
+    ${Peta.lihat("udara") ? `<div class="lbl" style="margin-top:8px">Dukungan udara</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:#e8590c;border:2px solid #fff"></i>Pangkalan helikopter (lingkar 100 km)</span><span><i class="sw dot" style="background:#fff;border:2px solid #e8590c"></i>Pangkalan aju helikopter</span><span><i class="sw dot" style="background:#0e7490;border:2px solid #fff"></i>Pangkalan modifikasi cuaca</span></div>` : ""}
     ${Peta.lihat("metar") ? `<div class="lbl" style="margin-top:8px">Jarak pandang bandara</div><div class="leg" style="margin-top:4px">${[["#d6453a", "< 1 km"], ["#f29a3c", "1–5 km"], ["#f0d45a", "5–8 km"], ["#4caf73", "≥ 8 km"]].map(([c, n]) => `<span><i class="sw dot" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("asap") ? `<div class="lbl" style="margin-top:8px">Asap PM2.5 maks. harian (µg/m³)</div><div class="legscale">${[8, 35, 100, 200, 400].map(v => `<i style="background:rgb(${gradasi(ST_PM, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>baik</span><span>sedang</span><span>tdk sehat</span><span>sgt tdk sehat</span><span>bahaya</span></div>` : ""}
     ${Peta.lihat("hujan") ? `<div class="lbl" style="margin-top:8px">Hujan 24 jam (mm)</div><div class="legscale">${[1, 5, 15, 40, 80].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>5</span><span>15</span><span>40</span><span>80+</span></div>` : ""}
