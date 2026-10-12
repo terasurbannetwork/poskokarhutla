@@ -8,8 +8,8 @@
   "vis_m": 8000,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WAAA 121130Z 03004KT 8000 FEW020 29/19 Q1011 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WAAA 121500Z 11003KT 8000 FEW020 23/19 Q1013 NOSIG"
  },
  {
   "icao": "WAJJ",
@@ -17,11 +17,11 @@
   "lat": -2.573,
   "lon": 140.514,
   "prov": "91",
-  "vis_m": 7000,
+  "vis_m": 8000,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WAJJ 121130Z 09011KT 7000 FEW012 29/25 Q1012 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WAJJ 121500Z VRB04KT 8000 FEW012 27/25 Q1013 NOSIG"
  },
  {
   "icao": "WALL",
@@ -32,8 +32,8 @@
   "vis_m": 6000,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WALL 121130Z VRB02KT 6000 FEW020 28/25 Q1011 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WALL 121500Z VRB01KT 6000 SCT018 28/26 Q1013"
  },
  {
   "icao": "WAMM",
@@ -41,11 +41,11 @@
   "lat": 1.541,
   "lon": 124.926,
   "prov": "71",
-  "vis_m": 4000,
+  "vis_m": 3000,
   "wx": "FU",
   "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WAMM 121130Z 14006KT 4000 FU FEW020 27/23 Q1014 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WAMM 121500Z VRB02KT 3000 FU FEW020 24/22 Q1015 NOSIG"
  },
  {
   "icao": "WAOO",
@@ -56,8 +56,8 @@
   "vis_m": 6000,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WAOO 121130Z 19005KT 6000 FEW020 30/23 Q1010 NOSIG RMK FU IN APCH"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WAOO 121500Z 19002KT 6000 NSC 28/22 Q1012 NOSIG RMK FU IN APCH"
  },
  {
   "icao": "WATT",
@@ -65,11 +65,11 @@
   "lat": -10.172,
   "lon": 123.671,
   "prov": "53",
-  "vis_m": 5000,
-  "wx": "HZ",
-  "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WATT 121130Z 12010KT 5000 HZ FEW018 26/21 Q1014 NOSIG"
+  "vis_m": 9999,
+  "wx": null,
+  "asap": false,
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WATT 121500Z AUTO 10007KT 9999 NCD 26/22 Q1015"
  },
  {
   "icao": "WIBB",
@@ -77,11 +77,11 @@
   "lat": 0.461,
   "lon": 101.445,
   "prov": "14",
-  "vis_m": 5000,
+  "vis_m": 3500,
   "wx": "FU",
   "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIBB 121130Z 36005KT 5000 FU NSC 27/25 Q1010 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIBB 121500Z 00000KT 3500 FU NSC 26/25 Q1012 NOSIG"
  },
  {
   "icao": "WIDD",
@@ -89,11 +89,11 @@
   "lat": 1.121,
   "lon": 104.119,
   "prov": "21",
-  "vis_m": 3200,
+  "vis_m": 2000,
   "wx": "FU",
   "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIDD 121130Z VRB02KT 3200 FU FEW014 28/26 Q1011 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIDD 121500Z 00000KT 2000 FU FEW014 27/26 Q1013 NOSIG"
  },
  {
   "icao": "WIDN",
@@ -101,11 +101,11 @@
   "lat": 0.923,
   "lon": 104.532,
   "prov": "21",
-  "vis_m": 4000,
+  "vis_m": 3200,
   "wx": "FU",
   "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIDN 121130Z 11002KT 4000 FU FEW017 29/27 Q1011 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIDN 121500Z VRB01KT 3200 FU FEW018 28/27 Q1014 NOSIG"
  },
  {
   "icao": "WIEE",
@@ -114,10 +114,10 @@
   "lon": 100.283,
   "prov": "13",
   "vis_m": 5000,
-  "wx": "BR",
+  "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIEE 121130Z 07002KT 5000 BR FEW020 26/26 Q1010 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIEE 121500Z 16002KT 5000 SCT020 25/25 Q1012 NOSIG"
  },
  {
   "icao": "WIMM",
@@ -125,11 +125,11 @@
   "lat": 3.636,
   "lon": 98.874,
   "prov": "12",
-  "vis_m": 9000,
+  "vis_m": 8000,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIMM 121130Z 06004KT 9000 SCT017 28/25 Q1010 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIMM 121500Z 25002KT 8000 SCT017 27/26 Q1012 NOSIG"
  },
  {
   "icao": "WIOO",
@@ -137,11 +137,11 @@
   "lat": -0.151,
   "lon": 109.404,
   "prov": "61",
-  "vis_m": 3300,
-  "wx": "FU",
-  "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIOO 121130Z 00000KT 3300 FU SCT010 29/26 Q1011 NOSIG"
+  "vis_m": 5000,
+  "wx": null,
+  "asap": false,
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIOO 121500Z AUTO 16004KT 5000 NCD 26/24 Q1013"
  },
  {
   "icao": "WIPP",
@@ -149,11 +149,11 @@
   "lat": -2.898,
   "lon": 104.7,
   "prov": "16",
-  "vis_m": 5000,
+  "vis_m": 1100,
   "wx": "FU",
   "asap": true,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WIPP 121130Z 11010KT 5000 FU SCT014 31/22 Q1010 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WIPP 121500Z 10005KT 1100 R11/1200 R29/1200 FU SCT015 27/23 Q1013 NOSIG"
  },
  {
   "icao": "WITT",
@@ -164,7 +164,7 @@
   "vis_m": 9999,
   "wx": null,
   "asap": false,
-  "waktu": "2026-10-12T11:30:00Z",
-  "raw": "METAR WITT 121130Z 04005KT 9999 FEW033 BKN055 OVC160 29/24 Q1010 NOSIG"
+  "waktu": "2026-10-12T15:00:00Z",
+  "raw": "METAR WITT 121500Z 11003KT 9999 SCT018 26/24 Q1012 NOSIG"
  }
 ]
