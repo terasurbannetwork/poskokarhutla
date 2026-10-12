@@ -1,12 +1,13 @@
 """Lapisan OSM per provinsi prioritas: permukiman, sumber air, faskes -> public/data/osm/<kode>.json
 
-Pakai:  python3 scripts/scrape/osm.py [kode ...]
+Pakai:  python3 scripts/scrape/osm.py [kode ...]     # lapisan OSM
+        python3 scripts/scrape/osm.py desa           # titik pusat desa ber-kode Kemendagri (MIT)
 Sumber: OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap).
 Respons mentah disimpan di data/raw/osm/; yang sudah ada dipakai ulang (hapus untuk menarik ulang).
 Cakupan = kotak batas provinsi (+0,1 derajat), jadi fitur provinsi/negara tetangga di tepi ikut;
 itu disengaja: sumber air/faskes terdekat tidak berhenti di garis batas.
 """
-import json, math, os, sys, time, urllib.parse, urllib.request
+import json, math, os, re, sys, time, urllib.parse, urllib.request
 
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
@@ -15,7 +16,7 @@ from wilayah import PRIORITAS
 MENTAH = os.path.join(AKAR, "data/raw/osm")
 KELUAR = os.path.join(AKAR, "public/data/osm")
 SERVER = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
-UBIN = 2.0  # derajat; sungai/kanal ditarik per ubin supaya respons out geom tidak raksasa
+UBIN = 2.0  # derajat; ditarik per ubin supaya kueri tidak kena 504 dan respons out geom tidak raksasa
 JARAK_SUNGAI_KM = 1.0
 
 
@@ -61,10 +62,10 @@ def q_titik(b):
   node[place~"^(village|hamlet|town|city|suburb)$"]({s});
   nwr[amenity~"^(hospital|clinic|doctors)$"]({s});
   nwr[healthcare=centre]({s});
-  nwr[name~"puskesmas",i]({s});
+  nwr[amenity][name~"puskesmas",i]({s});
+  nwr[building][name~"puskesmas",i]({s});
   nwr[natural=water]({s});
-  nwr[landuse=reservoir]({s});
-  nwr[name~"embung",i]({s});
+  nwr[landuse~"^(reservoir|basin)$"]({s});
 );
 out center tags;"""
 
@@ -105,33 +106,34 @@ def r4(x):
 def susun(kode):
     s, w, n, e = bbox(kode)
     desa, air, faskes = [], [], []
-    for el in overpass(q_titik((s, w, n, e)), os.path.join(MENTAH, f"{kode}-titik.json"))["elements"]:
-        t = el.get("tags", {})
-        lat, lon = (el["lat"], el["lon"]) if "lat" in el else (el["center"]["lat"], el["center"]["lon"])
-        nama = t.get("name", "")
-        nl = nama.lower()
-        if el["type"] == "node" and t.get("place") in ("village", "hamlet", "town", "city", "suburb"):
-            desa.append([r4(lat), r4(lon), nama, t["place"]])
-        if t.get("amenity") in ("hospital", "clinic", "doctors") or t.get("healthcare") == "centre" or "puskesmas" in nl:
-            jenis = "puskesmas" if "puskesmas" in nl else t.get("amenity") or t.get("healthcare") or "faskes"
-            faskes.append([r4(lat), r4(lon), nama, jenis])
-        if "embung" in nl:
-            air.append([r4(lat), r4(lon), "embung", nama])
-        elif t.get("natural") == "water" or t.get("landuse") == "reservoir":
-            jenis = t.get("water") or ("reservoir" if t.get("landuse") == "reservoir" else "water")
-            if jenis in ("river", "canal", "ditch", "drain", "stream"):  # poligon sungai: garisnya sudah diambil
-                continue
-            air.append([r4(lat), r4(lon), jenis, nama])
     ys = [s + i * UBIN for i in range(math.ceil((n - s) / UBIN))]
     xs = [w + i * UBIN for i in range(math.ceil((e - w) / UBIN))]
-    seen = set()
+    seen = set()  # fitur lintas ubin muncul dua kali
     for y in ys:
         for x in xs:
             b = (y, x, min(y + UBIN, n), min(x + UBIN, e))
-            for el in overpass(q_sungai(b), os.path.join(MENTAH, f"{kode}-sungai-{y:.1f}_{x:.1f}.json"))["elements"]:
-                if el["id"] in seen or not el.get("geometry"):  # jalur lintas ubin muncul dua kali
+            for el in overpass(q_titik(b), os.path.join(MENTAH, f"{kode}-titik-{y:.1f}_{x:.1f}.json"))["elements"]:
+                if (el["type"], el["id"]) in seen or not ("lat" in el or "center" in el):
                     continue
-                seen.add(el["id"])
+                seen.add((el["type"], el["id"]))
+                t = el.get("tags", {})
+                lat, lon = (el["lat"], el["lon"]) if "lat" in el else (el["center"]["lat"], el["center"]["lon"])
+                nama = t.get("name", "")
+                nl = nama.lower()
+                if el["type"] == "node" and t.get("place") in ("village", "hamlet", "town", "city", "suburb"):
+                    desa.append([r4(lat), r4(lon), nama, t["place"]])
+                if t.get("amenity") in ("hospital", "clinic", "doctors") or t.get("healthcare") == "centre" or "puskesmas" in nl:
+                    jenis = "puskesmas" if "puskesmas" in nl else t.get("amenity") or t.get("healthcare")
+                    faskes.append([r4(lat), r4(lon), nama, jenis])
+                if t.get("natural") == "water" or t.get("landuse") in ("reservoir", "basin"):
+                    jenis = "embung" if "embung" in nl else t.get("water") or t.get("landuse") or "water"
+                    if jenis in ("river", "canal", "ditch", "drain", "stream", "stream_pool"):  # poligon sungai: garisnya diambil di bawah
+                        continue
+                    air.append([r4(lat), r4(lon), jenis, nama])
+            for el in overpass(q_sungai(b), os.path.join(MENTAH, f"{kode}-sungai-{y:.1f}_{x:.1f}.json"))["elements"]:
+                if (el["type"], el["id"]) in seen or not el.get("geometry"):
+                    continue
+                seen.add((el["type"], el["id"]))
                 t = el.get("tags", {})
                 for lat, lon in sampel(el["geometry"]):
                     air.append([r4(lat), r4(lon), t["waterway"], t.get("name", "")])
@@ -143,7 +145,38 @@ def susun(kode):
     print(kode, {k: len(v) for k, v in out.items()}, f"{os.path.getsize(p) / 1e6:.1f} MB", flush=True)
 
 
+DESA_REPO = "cahyadsn/wilayah_boundaries"  # MIT; kode & nama per Kepmendagri 300.2.2-2430/2025
+BARIS = re.compile(r"\('(\d\d\.\d\d\.\d\d\.\d{4})','((?:[^']|'')*)',(-?[\d.]+),(-?[\d.]+),")
+
+
+def desa_kemendagri(kodes):
+    """Titik pusat desa/kelurahan ber-kode Kemendagri -> public/data/osm/desa.json {prov: [[lat,lon,kode,nama]]}"""
+    pohon = json.load(urllib.request.urlopen(f"https://api.github.com/repos/{DESA_REPO}/git/trees/main?recursive=1"))
+    out = {}
+    for kode in kodes:
+        baris = []
+        for f in pohon["tree"]:
+            if not (f["path"].startswith(f"db/kel/{kode}/") and f["path"].endswith(".sql")):
+                continue
+            berkas = os.path.join(AKAR, "data/raw/desa", os.path.basename(f["path"]))
+            if not os.path.exists(berkas):
+                os.makedirs(os.path.dirname(berkas), exist_ok=True)
+                url = f"https://raw.githubusercontent.com/{DESA_REPO}/main/{f['path']}"
+                open(berkas, "wb").write(urllib.request.urlopen(url, timeout=120).read())
+            for m in BARIS.finditer(open(berkas, encoding="utf-8").read()):
+                baris.append([r4(float(m[3])), r4(float(m[4])), m[1], m[2].replace("''", "'")])
+        out[kode] = baris
+        print("desa", kode, len(baris), flush=True)
+    p = os.path.join(KELUAR, "desa.json")
+    os.makedirs(KELUAR, exist_ok=True)
+    json.dump(out, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
+    print("desa.json", f"{os.path.getsize(p) / 1e6:.1f} MB")
+
+
 if __name__ == "__main__":
+    if sys.argv[1:] == ["desa"]:
+        desa_kemendagri(PRIORITAS)
+        raise SystemExit
     # cek kecil sampel(): garis 3 km lurus ke utara -> 4 titik (0,1,2,3 km)
     g = [{"lat": 0, "lon": 0}, {"lat": 3 / 111.32, "lon": 0}]
     assert len(sampel(g)) == 4, sampel(g)

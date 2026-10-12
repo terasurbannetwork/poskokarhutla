@@ -244,8 +244,13 @@ def main():
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w)
 
-    print("FWI...", file=sys.stderr)
-    grid = cuaca_fwi(grid_darat(w))
+    lama = os.path.join(KELUAR, "fwi.json")
+    if os.environ.get("FWI") == "0" and os.path.exists(lama) and json.load(open(lama)).get("hari_ini") == hari_ini:
+        print("FWI: pakai hitungan hari ini yang sudah ada", file=sys.stderr)  # FWI berbasis cuaca jam 12, cukup dihitung sekali sehari
+        grid = json.load(open(lama))["grid"]
+    else:
+        print("FWI...", file=sys.stderr)
+        grid = cuaca_fwi(grid_darat(w))
 
     def fwi_hari(g, tgl):
         return next((h for h in g["hari"] if h["tgl"] == tgl), g["hari"][-1] if g["hari"] else None)

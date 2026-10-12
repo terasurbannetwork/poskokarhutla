@@ -16,7 +16,9 @@ simpan_env() { # $1 nama, $2 nilai: ganti baris lama atau tambah baris baru
 }
 
 n=0
-for pasangan in "FIRMS_MAP_KEY|Tempel NASA FIRMS MAP_KEY" "EARTHDATA_TOKEN|Tempel token NASA Earthdata (boleh dilewati)"; do
+for pasangan in "FIRMS_MAP_KEY|Tempel NASA FIRMS MAP_KEY" "EARTHDATA_TOKEN|Tempel token NASA Earthdata (boleh dilewati)" \
+  "CLOUDFLARE_API_TOKEN|Tempel Cloudflare API token (template Edit Cloudflare Workers)" "CLOUDFLARE_ACCOUNT_ID|Tempel Cloudflare Account ID" \
+  "OPENAQ_API_KEY|Tempel OpenAQ API key (boleh dilewati)"; do
   nama=${pasangan%%|*}; judul=${pasangan#*|}
   nilai=$(grep -E "^${nama}=" .env | head -1 | cut -d= -f2- | tr -d '[:space:]"' || true)
   lama=$nilai

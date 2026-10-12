@@ -1,0 +1,354 @@
+"""Lapisan lahan untuk merutekan karhutla: gambut, konsesi, kawasan hutan.
+
+Pakai:  python3 scripts/scrape/lahan.py            # unduh (kalau belum ada) + bangun
+        python3 scripts/scrape/lahan.py --uji      # cek cepat hasil di public/data/lahan
+
+Mentah  -> data/raw/lahan/   (zip shapefile + ubin PNG gambut; tidak di-commit)
+Hasil   -> public/data/lahan/{gambut,konsesi,kawasan}.geojson
+
+Sumber (semua publik tanpa login):
+- Gambut: GFW "Global peatland extent" v20230315 (CC BY 4.0), ubin raster z8 ~600 m.
+  Indonesia = Miettinen dkk. 2016 + Gumbricht dkk. 2017 (CIFOR).
+- Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya).
+  Data Indonesia berasal dari KLHK; GFW mengecualikan Indonesia dari CC BY 4.0.
+- Kawasan hutan: shapefile "Kawasan hutan Indonesia" dari akun GFW di ArcGIS Online
+  (KLHK, versi 2017).
+"""
+import io, json, math, os, struct, sys, time, urllib.request, zipfile, zlib
+from concurrent.futures import ThreadPoolExecutor
+
+AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
+MENTAH = os.path.join(AKAR, "data/raw/lahan")
+KELUAR = os.path.join(AKAR, "public/data/lahan")
+sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
+
+# Kunci publik yang GFW sendiri tempel di tautan unduh katalognya (item ArcGIS Online
+# 5581330f..., 5920a4a5..., 221fee51...), bukan kunci akun kita.
+GFW = "https://data-api.globalforestwatch.org/dataset/{}/download/shp?x-api-key=2d60cd88-8348-4c0f-a6d5-bd9adb585a8c"
+UNDUH = {
+    # v2025 menolak unduh shp (501); data Indonesianya sama (KLHK, source_yr 2012)
+    "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
+    "gfw_wood_fiber_downloadable.zip": GFW.format("gfw_wood_fiber_downloadable/latest"),
+    "gfw_logging_download.zip": GFW.format("gfw_logging_download/latest"),
+    "idn_forest_area.zip": "https://www.arcgis.com/sharing/rest/content/items/1dd7ef31c3924d7cbcf918bd97a7f985/data",
+}
+UBIN = "https://tiles.globalforestwatch.org/gfw_peatlands/v20230315/is/8/{x}/{y}.png"
+Z = 8
+X0, X1, Y0, Y1 = 195, 228, 123, 136  # ubin z8 yang menutup 94..141.5 BT, 6.5 LU..11.5 LS
+
+
+def ambil(url, tujuan, coba=4):
+    if os.path.exists(tujuan) and os.path.getsize(tujuan) > 0:
+        return
+    for i in range(coba):
+        try:
+            with urllib.request.urlopen(url, timeout=1800) as r, open(tujuan + ".part", "wb") as f:
+                while blok := r.read(1 << 20):
+                    f.write(blok)
+            os.replace(tujuan + ".part", tujuan)
+            return
+        except Exception:
+            if i == coba - 1:
+                raise
+            time.sleep(10 * (i + 1))
+
+
+def unduh():
+    os.makedirs(os.path.join(MENTAH, "gambut"), exist_ok=True)
+    tugas = [(u, os.path.join(MENTAH, n)) for n, u in UNDUH.items()]
+    tugas += [(UBIN.format(x=x, y=y), os.path.join(MENTAH, "gambut", f"{x}_{y}.png"))
+              for x in range(X0, X1 + 1) for y in range(Y0, Y1 + 1)]
+    with ThreadPoolExecutor(8) as ex:
+        list(ex.map(lambda t: ambil(*t), tugas))
+
+
+# ---------- PNG (RGBA 8-bit, tanpa interlace: format ubin GFW) ----------
+def png_alfa(data):
+    """Kanal alfa sebagai list baris bytes; piksel gambut = alfa > 0."""
+    assert data[:8] == b"\x89PNG\r\n\x1a\n"
+    i, idat = 8, b""
+    while i < len(data):
+        n, jenis = struct.unpack(">I4s", data[i:i + 8])
+        isi = data[i + 8:i + 8 + n]
+        if jenis == b"IHDR":
+            w, h, kedalaman, warna = struct.unpack(">IIBB", isi[:10])
+            assert (kedalaman, warna) == (8, 6), "ubin bukan RGBA 8-bit"
+        elif jenis == b"IDAT":
+            idat += isi
+        i += 12 + n
+    mentah, bpp, stride = zlib.decompress(idat), 4, w * 4
+    sebelum, baris = bytearray(stride), []
+    for r in range(h):
+        f, s = mentah[r * (stride + 1)], bytearray(mentah[r * (stride + 1) + 1:(r + 1) * (stride + 1)])
+        for c in range(stride):
+            a = s[c - bpp] if c >= bpp else 0
+            b = sebelum[c]
+            if f == 1: s[c] = (s[c] + a) & 255
+            elif f == 2: s[c] = (s[c] + b) & 255
+            elif f == 3: s[c] = (s[c] + (a + b) // 2) & 255
+            elif f == 4:
+                cc = sebelum[c - bpp] if c >= bpp else 0
+                p = a + b - cc
+                pa, pb, pc = abs(p - a), abs(p - b), abs(p - cc)
+                s[c] = (s[c] + (a if pa <= pb and pa <= pc else b if pb <= pc else cc)) & 255
+        baris.append(bytes(s[3::4]))
+        sebelum = s
+    return baris
+
+
+def lon(px):  # px global pada z8 (256 px/ubin)
+    return px / (256 << Z) * 360 - 180
+
+
+def lat(py):
+    return math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * py / (256 << Z)))))
+
+
+def gambut():
+    """Sel 2x2 piksel z8 (~1,2 km) jadi gambut kalau >=2 dari 4 piksel gambut.
+    Sel dalam satu baris digabung jadi persegi; persegi identik di baris bawahnya ikut digabung."""
+    from wilayah import PRIORITAS, Wilayah
+    w = Wilayah()
+    lebar, tinggi = (X1 - X0 + 1) * 128, (Y1 - Y0 + 1) * 128
+    grid = [bytearray(lebar) for _ in range(tinggi)]
+    for x in range(X0, X1 + 1):
+        for y in range(Y0, Y1 + 1):
+            a = png_alfa(open(os.path.join(MENTAH, "gambut", f"{x}_{y}.png"), "rb").read())
+            for r in range(128):
+                b0, b1, g = a[2 * r], a[2 * r + 1], grid[(y - Y0) * 128 + r]
+                for c in range(128):
+                    if (b0[2 * c] > 0) + (b0[2 * c + 1] > 0) + (b1[2 * c] > 0) + (b1[2 * c + 1] > 0) >= 2:
+                        g[(x - X0) * 128 + c] = 1
+    # Buang sel di luar 9 provinsi pantauan (juga Malaysia/PNG/laut) dan sel yang
+    # 8 tetangganya kosong (bintik Gumbricht). ponytail: nasional penuh = ~12 MB; buka
+    # PRIORITAS kalau perlu, tapi pecah per provinsi supaya tiap berkas tetap kecil.
+    prov = {}
+    for r in range(tinggi):
+        la = lat((Y0 * 256) + 2 * r + 1)
+        for c in range(lebar):
+            if not grid[r][c]:
+                continue
+            tetangga = sum(grid[rr][cc] for rr in (r - 1, r, r + 1) for cc in (c - 1, c, c + 1)
+                           if 0 <= rr < tinggi and 0 <= cc < lebar) - 1
+            hit = w.cari(lon(X0 * 256 + 2 * c + 1), la) if tetangga else None
+            if hit and hit[0] in PRIORITAS:
+                prov[r, c] = hit[0]
+    for r in range(tinggi):
+        for c in range(lebar):
+            if (r, c) not in prov:
+                grid[r][c] = 0
+    terbuka, fitur = {}, []  # (c0, c1, prov) -> [r0, r1]
+    def tutup(k, v):
+        c0, c1, p = k
+        x0, x1 = round(lon(X0 * 256 + 2 * c0), 4), round(lon(X0 * 256 + 2 * c1), 4)
+        y0, y1 = round(lat(Y0 * 256 + 2 * v[0]), 4), round(lat(Y0 * 256 + 2 * v[1]), 4)
+        fitur.append({"type": "Feature", "properties": {"prov": p},
+                      "geometry": {"type": "Polygon", "coordinates": [[[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]]}})
+    for r in range(tinggi + 1):
+        jalan = set()
+        if r < tinggi:
+            c = 0
+            while c < lebar:
+                if grid[r][c]:
+                    p, c0 = prov[r, c], c
+                    while c < lebar and grid[r][c] and prov[r, c] == p:
+                        c += 1
+                    jalan.add((c0, c, p))
+                else:
+                    c += 1
+        for k in list(terbuka):
+            if k in jalan:
+                terbuka[k][1] = r + 1
+            else:
+                tutup(k, terbuka.pop(k))
+        for k in jalan - terbuka.keys():
+            terbuka[k] = [r, r + 1]
+    return fitur
+
+
+# ---------- shapefile dari zip (Polygon, EPSG:4326) ----------
+def baca_shp(zp, cocok=""):
+    z = zipfile.ZipFile(zp)
+    berkas = {n.lower(): n for n in z.namelist() if not n.startswith("__MACOSX")}
+    nama = [n for n in berkas if n.endswith(".shp") and cocok in n]
+    assert len(nama) == 1, nama
+    dasar = nama[0][:-4]
+    baca = lambda ext: z.read(berkas[dasar + ext]).decode(errors="ignore").strip() if dasar + ext in berkas else ""
+    prj = baca(".prj")
+    assert "GEOGCS" in prj and "PROJCS" not in prj, f"proyeksi tak terduga: {prj[:80]}"
+    cpg = baca(".cpg") or "latin-1"
+    dbf, shp = z.open(berkas[dasar + ".dbf"]), z.open(berkas[dasar + ".shp"])
+    n, hlen, rlen = struct.unpack("<xxxxIHH20x", dbf.read(32))
+    kepala, kolom = dbf.read(hlen - 32), []
+    for i in range(0, len(kepala) - 31, 32):
+        if kepala[i] == 0x0D:
+            break
+        kolom.append((kepala[i:i + 11].split(b"\0")[0].decode(), kepala[i + 16]))
+    shp.read(100)
+    for _ in range(n):
+        rec = dbf.read(rlen)
+        props, i = {}, 1
+        for nm, ln in kolom:
+            props[nm.lower()] = rec[i:i + ln].decode(cpg, errors="replace").strip()
+            i += ln
+        _, panjang = struct.unpack(">II", shp.read(8))
+        isi = shp.read(panjang * 2)
+        tipe = struct.unpack("<i", isi[:4])[0]
+        if tipe not in (5, 15, 25):
+            yield props, []
+            continue
+        nb, npt = struct.unpack("<ii", isi[36:44])
+        bagian = list(struct.unpack(f"<{nb}i", isi[44:44 + 4 * nb])) + [npt]
+        xy = struct.unpack(f"<{2 * npt}d", isi[44 + 4 * nb:44 + 4 * nb + 16 * npt])
+        yield props, [[(xy[2 * j], xy[2 * j + 1]) for j in range(bagian[k], bagian[k + 1])] for k in range(nb)]
+
+
+def dp(titik, tol):
+    """Douglas-Peucker iteratif."""
+    if len(titik) < 5:
+        return titik
+    simpan = [False] * len(titik)
+    simpan[0] = simpan[-1] = True
+    tumpuk = [(0, len(titik) - 1)]
+    t2 = tol * tol
+    while tumpuk:
+        a, b = tumpuk.pop()
+        (ax, ay), (bx, by) = titik[a], titik[b]
+        dx, dy = bx - ax, by - ay
+        d2 = dx * dx + dy * dy
+        jauh, idx = -1, -1
+        for i in range(a + 1, b):
+            px, py = titik[i]
+            if d2:
+                t = max(0, min(1, ((px - ax) * dx + (py - ay) * dy) / d2))
+                ex, ey = ax + t * dx - px, ay + t * dy - py
+            else:
+                ex, ey = px - ax, py - ay
+            e = ex * ex + ey * ey
+            if e > jauh:
+                jauh, idx = e, i
+        if jauh > t2:
+            simpan[idx] = True
+            tumpuk += [(a, idx), (idx, b)]
+    return [p for p, s in zip(titik, simpan) if s]
+
+
+def luas(c):
+    return abs(sum(c[i][0] * c[i - 1][1] - c[i - 1][0] * c[i][1] for i in range(len(c)))) / 2
+
+
+def sederhana(cincin, tol, min_luas):
+    """Cincin -> MultiPolygon GeoJSON. Tiap cincin luar membawa lubang yang mengikutinya (urutan shapefile)."""
+    poli = []
+    for c in cincin:
+        s = dp(c, tol)
+        if len(s) < 4 or luas(s) < min_luas:
+            continue
+        s = [[round(x, 4), round(y, 4)] for x, y in s]
+        cw = sum((s[i][0] - s[i - 1][0]) * (s[i][1] + s[i - 1][1]) for i in range(len(s))) > 0
+        if cw or not poli:  # shapefile: cincin luar searah jarum jam
+            poli.append([s[::-1] if cw else s])
+        else:
+            poli[-1].append(s[::-1])
+    return {"type": "MultiPolygon", "coordinates": poli} if poli else None
+
+
+def kumpul(sumber, tol, min_luas):
+    for props, cincin in sumber:
+        g = sederhana(cincin, tol, min_luas)
+        if g:
+            yield props, g
+
+
+def konsesi(tol=0.002, min_luas=1e-5):
+    fitur = []
+    def tambah(jenis, nama, pemegang, g):
+        fitur.append({"type": "Feature", "properties": {"jenis": jenis, "nama": nama, "pemegang": pemegang}, "geometry": g})
+    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_oil_palm.zip")) if p.get("iso3", p.get("country")) == "IDN"), tol, min_luas):
+        tambah("sawit", p.get("conc_name") or p.get("name"), p.get("company") or p.get("comp_group") or "", g)
+    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_wood_fiber_downloadable.zip")) if p.get("iso3", p.get("country")) == "IDN"), tol, min_luas):
+        tambah("hti", p.get("conc_name") or p.get("name"), p.get("company") or p.get("comp_group") or p.get("conc_name") or "", g)
+    for p, g in kumpul(((p, c) for p, c in baca_shp(os.path.join(MENTAH, "gfw_logging_download.zip")) if p.get("country", p.get("iso3")) == "IDN"), tol, min_luas):
+        tambah("hph", p.get("name"), p.get("company") or p.get("name"), g)
+    return fitur
+
+
+# Kode `fungsikawa` KLHK -> fungsi. Tahura dipisah (pengelola Pemda/SKPD, bukan BKSDA/BTN).
+FUNGSI = {"1001": "HL", "1003": "HP", "1004": "HPT", "1005": "HPK", "1007": "APL", "10026": "THR"}
+
+
+def fungsi(kode):
+    if kode in FUNGSI:
+        return FUNGSI[kode]
+    if kode == "1" or kode.startswith("100"):  # 1002, 10021-10025, 1002xx laut: KSA/KPA/Taman Buru
+        return "HK"
+    return "AIR" if kode.startswith("500") else "?"
+
+
+def kawasan(tol=0.002, min_luas=2e-5):
+    from wilayah import PRIORITAS, Wilayah
+    w, fitur = Wilayah(), []
+    # 9 provinsi pantauan saja (nasional = 9,4 MB). Data 2017 belum kenal Papua Selatan (93):
+    # poligon berkode lama Papua (94) diperiksa titik pertamanya.
+    sumber = ((p, c) for p, c in baca_shp(os.path.join(MENTAH, "idn_forest_area.zip"))
+              if fungsi(p["fungsikawa"]) not in ("APL", "AIR")  # di luar semua poligon = APL/perairan
+              and (p["kodeprov"] in PRIORITAS or p["kodeprov"] == "94" and c
+                   and (w.cari(*c[0][0]) or ("",))[0] == "93"))
+    for p, g in kumpul(sumber, tol, min_luas):
+        f = fungsi(p["fungsikawa"])
+        nama = p["namobj"].strip(" -")
+        if f in ("HK", "THR"):  # "Taman Nasional Sebangau", "Taman Hutan Raya Ir. H. Juanda"
+            nama = f"{p['desc_in']} {nama}".strip()
+        fitur.append({"type": "Feature", "properties": {"fungsi": f, "nama": nama, "prov": p["kodeprov"]}, "geometry": g})
+    return fitur
+
+
+def tulis(nama, fitur):
+    os.makedirs(KELUAR, exist_ok=True)
+    p = os.path.join(KELUAR, nama)
+    with open(p, "w") as f:
+        json.dump({"type": "FeatureCollection", "features": fitur}, f, separators=(",", ":"), ensure_ascii=False)
+    print(f"{nama}: {len(fitur)} fitur, {os.path.getsize(p) / 1e6:.1f} MB", file=sys.stderr)
+
+
+def di_dalam(lo, la, geom):
+    """Ray casting per poligon; lubang membalik hasil."""
+    polis = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+    for poli in polis:
+        dalam = False
+        for r in poli:
+            c, j = False, len(r) - 1
+            for i in range(len(r)):
+                if (r[i][1] > la) != (r[j][1] > la) and lo < (r[j][0] - r[i][0]) * (la - r[i][1]) / (r[j][1] - r[i][1]) + r[i][0]:
+                    c = not c
+                j = i
+            dalam ^= c
+        if dalam:
+            return True
+    return False
+
+
+def uji():
+    def kena(nama, lo, la):
+        return [f["properties"] for f in json.load(open(os.path.join(KELUAR, nama)))["features"] if di_dalam(lo, la, f["geometry"])]
+    # Taman Nasional Sebangau (Kalteng): gambut dalam + kawasan konservasi
+    assert kena("gambut.geojson", 113.75, -2.55), "Sebangau mestinya gambut"
+    assert any(p["fungsi"] == "HK" for p in kena("kawasan.geojson", 113.75, -2.55)), kena("kawasan.geojson", 113.75, -2.55)
+    # Kota Palangka Raya: bukan gambut tebal, tapi pusat kota APL -> tidak ada kawasan hutan
+    assert not kena("kawasan.geojson", 113.92, -2.21)
+    # Puncak Jaya Wijaya (Papua Tengah) bukan gambut
+    assert not kena("gambut.geojson", 137.16, -4.08)
+    jenis = {f["properties"]["jenis"] for f in json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]}
+    assert jenis == {"sawit", "hti", "hph"}, jenis
+    print("ok")
+
+
+if __name__ == "__main__":
+    if "--uji" in sys.argv:
+        uji()
+    else:
+        unduh()
+        tulis("gambut.geojson", gambut())
+        tulis("konsesi.geojson", konsesi())
+        tulis("kawasan.geojson", kawasan())
+        uji()
