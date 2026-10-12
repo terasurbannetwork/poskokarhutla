@@ -12,6 +12,23 @@ import csv, json, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR
 
+def bukan_vegetasi(sumber):
+    """Sel 0,01 derajat yang di arsip standar FIRMS bertipe 1 (gunung api), 2 (sumber panas tetap: smelter, kilang)
+    atau 3 (lepas pantai). Data NRT tidak punya kolom type, jadi titik NRT di sel ini juga dibuang."""
+    sel = set()
+    for r in csv.DictReader(open(sumber)):
+        if r.get("type") in ("1", "2", "3"):
+            sel.add((round(float(r["latitude"]), 2), round(float(r["longitude"]), 2)))
+    return sel
+
+
+def vegetasi(r, sel):
+    t = r.get("type")
+    if t:
+        return t == "0"
+    return (round(float(r["latitude"]), 2), round(float(r["longitude"]), 2)) not in sel
+
+
 X0, X1, Y0, Y1, SEL = 94.5, 141.5, -11.5, 6.5, 0.1
 AWAL, AKHIR, AMBANG = 2002, 2025, 3
 
@@ -22,9 +39,10 @@ def sel(lon, lat):
 
 def main(sumber=os.path.join(AKAR, "data/raw/firms/modis.csv")):
     hit = {}  # (ix, iy) -> {tahun: n}
+    nonveg = bukan_vegetasi(sumber)
     for r in csv.DictReader(open(sumber)):
         c = r.get("confidence", "")
-        if not c.isdigit() or int(c) < 30 or r.get("type", "0") not in ("0", ""):
+        if not c.isdigit() or int(c) < 30 or not vegetasi(r, nonveg):
             continue
         th = int(r["acq_date"][:4])
         if not AWAL <= th <= AKHIR:

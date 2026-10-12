@@ -8,6 +8,23 @@ import csv, datetime as dt, json, os, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, Wilayah
 
+def bukan_vegetasi(sumber):
+    """Sel 0,01 derajat yang di arsip standar FIRMS bertipe 1 (gunung api), 2 (sumber panas tetap: smelter, kilang)
+    atau 3 (lepas pantai). Data NRT tidak punya kolom type, jadi titik NRT di sel ini juga dibuang."""
+    sel = set()
+    for r in csv.DictReader(open(sumber)):
+        if r.get("type") in ("1", "2", "3"):
+            sel.add((round(float(r["latitude"]), 2), round(float(r["longitude"]), 2)))
+    return sel
+
+
+def vegetasi(r, sel):
+    t = r.get("type")
+    if t:
+        return t == "0"
+    return (round(float(r["latitude"]), 2), round(float(r["longitude"]), 2)) not in sel
+
+
 WIB = dt.timedelta(hours=7)
 
 
@@ -15,11 +32,12 @@ def main(sumber=os.path.join(AKAR, "data/raw/firms/viirs.csv"), keluar="sejarah.
     modis = "modis" in os.path.basename(sumber)
     w = Wilayah()
     prov, kec, n = {}, {}, 0
+    nonveg = bukan_vegetasi(sumber)
     for r in csv.DictReader(open(sumber)):
         c = r.get("confidence", "")
         if (not c.isdigit() or int(c) < 30) if modis else c not in ("n", "h"):  # MODIS: keyakinan >= 30 (sedang/tinggi)
             continue
-        if r.get("type", "0") not in ("0", ""):  # 1 gunung api, 2 sumber panas tetap (smelter, kilang), 3 lepas pantai
+        if not vegetasi(r, nonveg):  # tanpa gunung api, panas industri, lepas pantai (lihat bukan_vegetasi)
             continue
         jam = r["acq_time"].zfill(4)
         t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}") + WIB

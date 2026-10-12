@@ -432,7 +432,7 @@ figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px
         </details>
         <details open><summary>Cuaca</summary>
           <label><input type="checkbox" data-l="hujan"> Hujan harian</label>
-          <label><input type="checkbox" data-l="h3"> Hujan 3 hari (puncak)</label>
+          <label><input type="checkbox" data-l="h3" checked> Hujan 3 hari (puncak)</label>
         </details>
         <details><summary>Peta dasar</summary>
           <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
@@ -567,13 +567,14 @@ const Peta = {
     peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});
     peta.addLayer({id: "wil-fill", type: "fill", source: "wil", layout: {visibility: this.lihat("wilayah") ? "visible" : "none"},
       paint: {"fill-color": ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "rgba(0,0,0,0)"],
-        "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], .8, .55]}}, bl);
+        "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], .75, .45]}}, bl);
     peta.addLayer({id: "wil-line", type: "line", source: "wil", paint: {"line-color": gelap() ? "#9fb3d1" : "#1d4e89", "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.4, .6], "line-opacity": .7}});
     peta.addSource("prov", {type: "geojson", data: S.geo.prov});
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
     peta.addSource("sungai", {type: "geojson", data: this.geoSungai()});
     peta.addLayer({id: "sungai", type: "circle", source: "sungai", layout: {visibility: this.lihat("sungai") ? "visible" : "none", "circle-sort-key": ["get", "k"]},
-      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 2.5, 5], 9, ["match", ["get", "k"], 0, 6, 11]],
+      filter: [">=", ["get", "k"], 0],
+      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 2.5, -1, 2, 5], 9, ["match", ["get", "k"], 0, 6, -1, 5, 11]],
         "circle-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], -1, "#9aa8b8", "#3f7fb8"], "circle-stroke-color": "#fff", "circle-stroke-width": ["match", ["get", "k"], 0, .8, 1.8],
         "circle-opacity": ["match", ["get", "k"], 0, .65, 1]}});
     if (S.rob) { peta.addSource("rob", {type: "geojson", data: this.geoRob()});
@@ -675,7 +676,8 @@ $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("butto
 const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
 $("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.mp;
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", false); setLapis("sungai", S.mode === "sungai" || S.mode === "status"); setLapis("rob", S.mode === "rob" || S.mode === "status");
+  if (peta.getLayer("sungai")) peta.setFilter("sungai", S.mode === "sungai" ? null : [">=", ["get", "k"], 0]);
+  setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", S.mode === "status"); setLapis("sungai", S.mode === "sungai" || S.mode === "status"); setLapis("rob", S.mode === "rob" || S.mode === "status");
   if (S.mode === "riwayat") Riwayat.pasang(); else Riwayat.lepas();
   renderLegenda(); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
@@ -724,8 +726,14 @@ function grafikHujan(c) {
   return `<svg viewBox="0 -12 ${W} ${B + 22}" width="100%" role="img" aria-label="Hujan harian">${g}</svg>`; }
 /* hidrograf sungai: debit ansambel rata-rata dan maksimum vs Q2/Q5/Q20 */
 function grafikSungai(t) {
-  const hr = S.sungai.hari, W = 660, B = 140, m = Math.max(t.q20 * 1.1, ...t.qmax.map(x => x || 0), ...t.q), X = j => j / (hr.length - 1) * (W - 40) + 20, Y = v => B - v / m * 120;
-  let g = [[t.q2, 1], [t.q5, 2], [t.q20, 3]].map(([q, l]) => `<line x1="20" x2="${W - 20}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${W - 20}" y="${Y(q) - 4}" text-anchor="end" font-size="10" style="fill:${WARNA_LV[l]}">banjir ${[0, 2, 5, 20][l]} tahunan · ${fmt(Math.round(q))} m³/s</text>`).join("");
+  const hr = S.sungai.hari, W = 660, B = 140, ada = t.q2 != null, qMax = Math.max(...t.qmax.map(x => x || 0), ...t.q.map(x => x || 0)) || 1,
+    /* skala mengikuti debit; ambang yang jauh di atas cukup disebut, supaya kurva tidak gepeng di dasar */
+    m = ada && t.q2 <= qMax * 2.5 ? Math.max(qMax, t.q20 <= qMax * 2.5 ? t.q20 : t.q5 <= qMax * 2.5 ? t.q5 : t.q2) * 1.12 : qMax * 1.25, X = j => j / (hr.length - 1) * (W - 40) + 20, Y = v => B - v / m * 120;
+  /* label ambang di kiri-kanan bergantian supaya tidak bertumpuk */
+  let g = ada ? [[t.q2, 1], [t.q5, 2], [t.q20, 3]].filter(([q]) => q <= m).map(([q, l], i) => `<line x1="20" x2="${W - 20}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${i % 2 ? 24 : W - 20}" y="${Y(q) - 4}" text-anchor="${i % 2 ? "start" : "end"}" font-size="10.5" font-weight="700" style="fill:${WARNA_LV[l]}">banjir ${[0, 2, 5, 20][l]} tahunan · ${fmt(Math.round(q))} m³/s</text>`).join("")
+    : `<text x="${W / 2}" y="14" text-anchor="middle" font-size="11" opacity=".7">Ambang banjir titik ini belum dihitung (diisi bertahap tiap hari)</text>`;
+  if (ada && t.q2 > m) g += `<text x="${W / 2}" y="2" text-anchor="middle" font-size="11" font-weight="700" style="fill:${WARNA_LV[1]}">Ambang banjir 2 tahunan ${fmt(Math.round(t.q2))} m³/s jauh di atas debit saat ini (${Math.round(qMax / t.q2 * 100)}%)</text>`;
+  g += [0, .5, 1].map(f => `<text x="16" y="${Y(m * f) + 4}" text-anchor="end" font-size="9.5" opacity=".55">${rb(m * f)}</text>`).join("");
   g += `<path d="${t.qmax.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")} ${t.q.map((v, j) => "L" + X(hr.length - 1 - j) + "," + Y(t.q[hr.length - 1 - j] || 0)).join("")}Z" fill="#3f7fb8" opacity=".15"/>`;
   g += `<path d="${t.q.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")}" fill="none" stroke="#3f7fb8" stroke-width="2.5"/>`;
   g += t.q.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v || 0)}" r="3.5" fill="#3f7fb8" data-tip="<b>${tglPendek(hr[j])}</b><br>debit ${fmt(Math.round(v))} m³/s (maks ansambel ${fmt(Math.round(t.qmax[j]))})"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity=".65">${hr[j].slice(8)}/${hr[j].slice(5, 7)}</text>`).join("");
@@ -749,7 +757,7 @@ const Analisa = {
       ${jenis !== "kec" && ag[kunci] ? `<p class="fnd">Hari ini: ${[3, 2, 1].map(l => `${fmt(ag[kunci].n[l])} kecamatan ${LEVEL[l].toLowerCase()}`).join(" · ")}.</p>` : ""}
       ${c ? lipat("Hujan 10 hari · 3 hari teramati + 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
         <p class="fnd">Sel 0,25° terdekat (${c.lat.toFixed(2)}, ${c.lon.toFixed(2)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
-      ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1984–2025.</p>`) : ""}
+      ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1997–2025.</p>`) : ""}
       ${bh ? lipat("Indeks bahaya InaRISK (0–1)", `<table class="tb2"><tbody>${[["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => `<tr><td>${n}</td><td class="n">${fmt(Math.round(bh[k] * 100) / 100)} · ${bh[k] >= .66 ? "tinggi" : bh[k] >= .33 ? "sedang" : "rendah"}</td></tr>`).join("")}</tbody></table><p class="fnd">Sampel raster InaRISK BNPB di titik tengah kecamatan.</p>`) : ""}
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
           return `<rect x="${j * 26 + 3}" y="${72 - h}" width="20" height="${Math.max(1, h)}" rx="3" fill="#3f7fb8" data-tip="<b>${t}</b><br>${fmt(n)} kejadian${riw[t].meninggal != null ? `<br>${fmt(riw[t].meninggal)} meninggal · ${rb(riw[t].terdampak || 0)} terdampak` : ""}"/><text x="${j * 26 + 13}" y="${68 - h}" text-anchor="middle" font-size="9.5">${n || ""}</text><text x="${j * 26 + 13}" y="86" text-anchor="middle" font-size="9" opacity=".6">${t.slice(2)}</text>`; }).join("")}</svg>
@@ -759,8 +767,8 @@ const Analisa = {
     this.buka(isi, kepala); },
   sungai(i) {
     const t = S.sungai.titik[i]; if (!t) return;
-    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", fmt(Math.round(t.q2)), "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", fmt(Math.round(t.puncak / t.q2 * 100) / 100) + "×", t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
-      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari maksimum tahunan 1984–2025 (Gumbel).</p>`)}
+    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) : "–", "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? (t.puncak / t.q2).toFixed(2).replace(".", ",") + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
+      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Angka kiri = m³/s.</p>`)}
       <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${t.lat.toFixed(3)}, ${t.lon.toFixed(3)}.</p>`;
     this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)} · ${esc(namaProv(t.prov))}</p></div>`); },
 };
@@ -792,7 +800,7 @@ const Sungai = {
       <div class="tw"><table><thead><tr><th>Lokasi</th><th>Provinsi</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Q5</th><th class="n">Q20</th><th class="n">Puncak ÷ Q2</th><th>Status</th></tr></thead><tbody>
       ${T.map(t => `<tr data-i="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b> · ${esc(t.kab)}</td><td>${esc(namaProv(t.prov))}</td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.q5))}</td><td class="n num">${fmt(Math.round(t.q20))}</td>
         <td class="n num"><b>${fmt(Math.round(t.r * 100) / 100)}×</b></td><td>${pill(t.kelas)}</td></tr>`).join("")}</tbody></table></div>
-      <p class="fnd" style="margin-top:8px">Klik baris untuk hidrograf. Ambang dari maksimum tahunan 1984–2025, distribusi Gumbel. Sumber: Copernicus GloFAS lewat Open-Meteo.</p>`;
+      <p class="fnd" style="margin-top:8px">Klik baris untuk hidrograf. Ambang dari debit maksimum tiap tahun 1997–2025, distribusi Gumbel. Sumber: Copernicus GloFAS lewat Open-Meteo.</p>`;
     $("#sgU").onclick = e => { const b = e.target.closest("button"); if (b) { this.urut = b.dataset.u; nanti(() => this.render()); } };
     $("#sungaiTab").querySelector("tbody").onclick = e => { const tr = e.target.closest("[data-i]"); if (tr) Analisa.sungai(+tr.dataset.i); }; },
 };
