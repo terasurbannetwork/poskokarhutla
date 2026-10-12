@@ -85,8 +85,7 @@ def q_udara(b):
     return f"""[out:json][timeout:180];
 (
   nwr[aeroway~"^(aerodrome|airstrip|helipad|heliport)$"]({s});
-  nwr[military~"^(airfield|base)$"][aeroway]({s});
-  nwr[landuse=military][name~"(lanud|air force|pangkalan udara)",i]({s});
+  nwr[military=airfield]({s});
   way[aeroway=runway]({s});
 );
 out center tags;"""

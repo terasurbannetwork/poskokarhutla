@@ -412,7 +412,7 @@ def main():
                 **{k: (h or {}).get(k) for k in ("fwi", "ffmc", "dmc", "dc", "isi", "bui", "ws", "wd", "rh", "t")},
                 "daops": d0 and d0["kode"], "jarak_daops": jd,
                 # benih simulasi: titik 24 jam terakhir (maks 80), bukan lambung 7 hari
-                "api24": [[round(p["lon"], 4), round(p["lat"], 4)] for p in sorted(p24, key=lambda p: -p["frp"])[:80]],
+                "api24": [[round(p["lon"], 4), round(p["lat"], 4)] for p in sorted(p24, key=lambda p: -p["frp"])[:80]] if lv >= 2 else [],
                 "risiko": RISIKO.get("|".join(adm), 0),  # indeks risiko riwayat kecamatan 0-100
                 "gambut": di_gambut, "tanggung": penanggung(lon0, lat0),
                 "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
