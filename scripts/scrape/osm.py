@@ -37,8 +37,8 @@ def overpass(q, berkas):
     if os.path.exists(berkas):
         return json.load(open(berkas))
     data = urllib.parse.urlencode({"data": q}).encode()
-    for coba in range(6):
-        url = SERVER[coba % 2]
+    for coba in range(30):  # 504 publik sering; cache per berkas membuat jalan ulang murah
+        url = SERVER[0] if coba % 3 else SERVER[1]
         try:
             req = urllib.request.Request(url, data, headers={"User-Agent": "poskokarhutla/1.0 (karhutla public layer)"})
             raw = urllib.request.urlopen(req, timeout=300).read()
@@ -50,8 +50,9 @@ def overpass(q, berkas):
             time.sleep(5)  # sopan: satu kueri sekali jalan, jeda antar kueri
             return j
         except Exception as e:
-            print(f"  gagal {url}: {e}; tunggu {30 * (coba + 1)} s", file=sys.stderr)
-            time.sleep(30 * (coba + 1))
+            jeda = min(30 * (coba + 1), 180)
+            print(f"  gagal {url}: {e}; tunggu {jeda} s", file=sys.stderr)
+            time.sleep(jeda)
     raise SystemExit(f"Overpass menyerah: {berkas}")
 
 

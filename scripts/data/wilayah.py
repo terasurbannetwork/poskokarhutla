@@ -62,6 +62,29 @@ class Wilayah:
         return None
 
 
+class Poligon:
+    """Indeks titik-dalam-poligon generik untuk lapisan GeoJSON (gambut, kawasan, konsesi)."""
+    SEL = 0.5
+
+    def __init__(self, jalur):
+        self.indeks = {}
+        if not os.path.exists(jalur):
+            return
+        for f in json.load(open(jalur))["features"]:
+            for r in _cincin(f["geometry"]):
+                xs, ys = [c[0] for c in r], [c[1] for c in r]
+                kotak = (min(xs), min(ys), max(xs), max(ys))
+                for gx in range(math.floor(kotak[0] / self.SEL), math.floor(kotak[2] / self.SEL) + 1):
+                    for gy in range(math.floor(kotak[1] / self.SEL), math.floor(kotak[3] / self.SEL) + 1):
+                        self.indeks.setdefault((gx, gy), []).append((kotak, r, f["properties"]))
+
+    def cari(self, lon, lat):
+        for kotak, r, prop in self.indeks.get((math.floor(lon / self.SEL), math.floor(lat / self.SEL)), ()):
+            if kotak[0] <= lon <= kotak[2] and kotak[1] <= lat <= kotak[3] and _di_dalam(lon, lat, r):
+                return prop
+        return None
+
+
 if __name__ == "__main__":
     w = Wilayah()
     assert w.cari(113.92, -2.21)[0] == "62", w.cari(113.92, -2.21)  # Palangka Raya

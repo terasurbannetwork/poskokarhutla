@@ -9,7 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
 import fwi as F
-from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Wilayah
+from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Poligon, Wilayah
 from aturan import STATUS
 
 KELUAR = os.path.join(AKAR, "public/data")
@@ -64,7 +64,8 @@ def _ambil(url, coba=4, json_=False):
         except Exception as e:
             if i == coba - 1:
                 raise RuntimeError(f"{url.split('?')[0]}: {e}")
-            time.sleep(10 * (i + 1))
+            # kuota FIRMS (5000/10 menit) atau Open-Meteo habis: tunggu lebih lama
+            time.sleep(90 if "429" in str(e) or "400" in str(e) else 10 * (i + 1))
 
 
 ambil.__wrapped__ = _ambil
@@ -247,7 +248,11 @@ def cuaca_fwi(grid):
         url = ("https://archive-api.open-meteo.com/v1/archive?latitude=" + ",".join(str(g[0]) for g in bagian)
                + "&longitude=" + ",".join(str(g[1]) for g in bagian)
                + f"&start_date={hari_ini - dt.timedelta(days=300)}&end_date={akhir_arsip}&" + VAR)
-        data = ambil(url, json_=True)
+        try:
+            data = ambil(url, json_=True, coba=2)
+        except Exception as e:  # kuota Open-Meteo habis: sel ini dipanaskan dari 92 hari forecast (lihat langkah 2)
+            print("ERA5 dilewati:", e, file=sys.stderr)
+            break
         for g, d in zip(bagian, data if isinstance(data, list) else [data]):
             hari = siang(d["hourly"])
             seri = F.deret([x[1:5] for x in hari])
@@ -260,7 +265,8 @@ def cuaca_fwi(grid):
     for a in range(0, len(grid), 80):
         bagian = grid[a:a + 80]
         url = ("https://api.open-meteo.com/v1/forecast?latitude=" + ",".join(str(g[0]) for g in bagian)
-               + "&longitude=" + ",".join(str(g[1]) for g in bagian) + "&past_days=8&forecast_days=4&" + VAR)
+               + "&longitude=" + ",".join(str(g[1]) for g in bagian)
+               + f"&past_days={8 if all(kunci_(g) in keadaan for g in bagian) else 92}&forecast_days=4&" + VAR)
         data = ambil(url, json_=True)
         for g, d in zip(bagian, data if isinstance(data, list) else [data]):
             k = keadaan.get(kunci_(g), {"tgl": "0000", "kode": list(F.AWAL), "sumber": "awal standar"})
@@ -299,7 +305,13 @@ def main():
         grid = json.load(open(lama))["grid"]
     else:
         print("FWI...", file=sys.stderr)
-        grid = cuaca_fwi(grid_darat(w))
+        try:
+            grid = cuaca_fwi(grid_darat(w))
+        except Exception as e:
+            if not os.path.exists(lama):
+                raise
+            print("FWI gagal, pakai hitungan terakhir:", e, file=sys.stderr)
+            grid = json.load(open(lama))["grid"]
 
     def fwi_hari(g, tgl):  # tidak ada data hari ini = None (bukan prakiraan hari lain)
         return next((h for h in g["hari"] if h["tgl"] == tgl), None)
@@ -323,6 +335,35 @@ def main():
     def km(a1, o1, a2, o2):
         return haversine({"lat": a1, "lon": o1}, {"lat": a2, "lon": o2})
 
+    # riwayat 2015-sekarang per kecamatan (public/data/sejarah.json) -> indeks risiko untuk peringkat prioritas
+    RISIKO = {}
+    jalur_sj = os.path.join(KELUAR, "sejarah.json")
+    if os.path.exists(jalur_sj):
+        sj = json.load(open(jalur_sj))
+        maks = max((sum(v) for v in sj["kec"].values()), default=1)
+        RISIKO = {k: A.risiko_riwayat(v, sj["tahun"], maks) for k, v in sj["kec"].items()}
+
+    # lahan: gambut (peta, bukan tebakan DC), fungsi kawasan hutan, konsesi -> penanggung jawab lahan
+    GAMBUT = Poligon(os.path.join(KELUAR, "lahan/gambut.geojson"))
+    KAWASAN = Poligon(os.path.join(KELUAR, "lahan/kawasan.geojson"))
+    KONSESI = Poligon(os.path.join(KELUAR, "lahan/konsesi.geojson"))
+    ada_gambut = bool(GAMBUT.indeks)
+
+    def penanggung(lon, lat):
+        """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
+        k = KONSESI.cari(lon, lat)
+        if k:
+            return {"sawit": "Perusahaan perkebunan", "hph": "Pemegang PBPH (hutan alam)"}.get(k.get("jenis"), "Pemegang konsesi"), k.get("pemegang") or k.get("nama")
+        kw = KAWASAN.cari(lon, lat)
+        if kw:
+            f = kw.get("fungsi")
+            if f in ("HK",):
+                return "BKSDA / Balai Taman Nasional", kw.get("nama") or "Kawasan konservasi"
+            if f in ("HL", "THR"):
+                return "Pemerintah daerah (KPH/dinas kehutanan)", "Hutan lindung" if f == "HL" else "Tahura"
+            return "KPH / pemegang PBPH", {"HP": "Hutan produksi", "HPT": "Hutan produksi terbatas", "HPK": "Hutan produksi dapat dikonversi"}.get(f, f)
+        return "Desa / camat / bupati", "Area penggunaan lain (lahan masyarakat)"
+
     fitur, s1 = [], 0
     t24 = kini - dt.timedelta(hours=24)
     for l, pts in kluster.items():
@@ -331,7 +372,9 @@ def main():
         lon0 = sum(p["lon"] for p in pts) / len(pts)
         g = terdekat(grid, lat0, lon0)
         h = fwi_hari(g, hari_ini)
-        kering = bool(h and h["dc"] > 350)
+        di_gambut = GAMBUT.cari(lon0, lat0) is not None or any(GAMBUT.cari(p["lon"], p["lat"]) for p in pts[:20])
+        # bara gambut: dipertahankan 7 hari bila di gambut DAN kering (DC > 350); tanpa peta gambut pakai DC saja
+        kering = bool(h and h["dc"] > 350) and (di_gambut or not ada_gambut)
         # umur diukur dari jam sekarang; gambut sangat kering (DC > 350) dipertahankan 7 hari karena bara
         # bisa tak terdeteksi di bawah awan/asap (peer review C4)
         if terakhir < kini - dt.timedelta(hours=AKTIF_GAMBUT_JAM if kering else AKTIF_JAM):
@@ -370,23 +413,27 @@ def main():
                 "daops": d0 and d0["kode"], "jarak_daops": jd,
                 # benih simulasi: titik 24 jam terakhir (maks 80), bukan lambung 7 hari
                 "api24": [[round(p["lon"], 4), round(p["lat"], 4)] for p in sorted(p24, key=lambda p: -p["frp"])[:80]],
-                "skor": A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"), (h or {}).get("dc"), jd),
+                "risiko": RISIKO.get("|".join(adm), 0),  # indeks risiko riwayat kecamatan 0-100
+                "gambut": di_gambut, "tanggung": penanggung(lon0, lat0),
+                "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
+                                                     (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
                 "level": lv, "status": STATUS[lv],
             }})
 
-    # Prioritas = peringkat, dibatasi kapasitas: per wilayah kerja Daops (<= 150 km) k = regu/2,
-    # di luar jangkauan Daops per kabupaten k = 2 (peer review C2)
+    # Prioritas = ambang hasil uji balik (lihat aturan.py); skor hanya untuk urutan di dalam wilayah kerja Daops
+    for f in fitur:
+        q = f["properties"]
+        if q["level"] == 2 and q["teramati"] and A.prioritas(q["px24"], q["fwi"]):
+            q["level"], q["status"] = 3, STATUS[3]
     kelompok = {}
     for f in fitur:
         q = f["properties"]
-        if q["level"] == 2 and q["teramati"]:
+        if q["level"] == 3:
             g = q["daops"] if q["jarak_daops"] is not None and q["jarak_daops"] <= 150 else f"{q['prov']}|{q['kab']}"
             kelompok.setdefault(g, []).append(q)
-    kap = {d["kode"]: max(1, (d.get("regu") or 2) // 2) for d in daops}
-    for g, qs in kelompok.items():
-        qs.sort(key=lambda q: -q["skor"])
-        for i, q in enumerate(qs[:kap.get(g, 2)]):
-            q["level"], q["status"], q["peringkat"] = 3, STATUS[3], i + 1
+    for qs in kelompok.values():
+        for i, q in enumerate(sorted(qs, key=lambda q: -q["skor"])):
+            q["peringkat"] = i + 1
     fitur.sort(key=lambda f: (-f["properties"]["level"], -f["properties"]["skor"]))
     for i, f in enumerate(fitur):
         f["properties"]["id"] = f"K{i + 1:04d}"

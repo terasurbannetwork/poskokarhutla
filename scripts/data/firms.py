@@ -55,9 +55,13 @@ def main(mulai, akhir):
             tugas.append(f"{API}/area/csv/{k}/{sumber}/{kotak}/{n}/{d.isoformat()}")
         d += dt.timedelta(days=n)
 
-    # ponytail: 4 thread cukup di bawah limit 5000 transaksi/10 menit
-    with ThreadPoolExecutor(4) as ex:
-        hasil = list(ex.map(ambil, tugas))
+    # batas FIRMS 5000 transaksi / 10 menit dipakai bersama pembaruan harian: 2 thread + jeda, maks ~3 permintaan/detik
+    def pelan(u):
+        time.sleep(0.6)
+        return ambil(u)
+
+    with ThreadPoolExecutor(2) as ex:
+        hasil = list(ex.map(pelan, tugas))
 
     tulis, kepala = csv.writer(sys.stdout), None
     jumlah = 0
