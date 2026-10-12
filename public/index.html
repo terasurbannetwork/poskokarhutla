@@ -277,6 +277,7 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
         <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
         <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
         <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
+        <label><input type="checkbox" data-l="daops" checked> Markas Daops Manggala Agni</label>
         <label><input type="checkbox" data-l="fwi"> Bahaya cuaca (FWI)</label>
         <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         <div id="fwiHari" style="display:none;margin-top:6px"></div>
@@ -374,6 +375,7 @@ async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
     muatJSON("data/meta.json"), muatJSON("data/hotspot.json"), muatJSON("data/kluster.json"),
     muatJSON("data/fwi.json"), muatJSON("data/bnpb.json").catch(() => null), muatJSON("data/wilayah.json"), muatJSON("geo/provinsi.json")]);
+  S.daops = await muatJSON("data/daops.json").catch(() => []);
   S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
   S.utama = new Set(hs.sensor_utama);
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
@@ -449,6 +451,12 @@ const Peta = {
     peta.addLayer({id: "kl-pt3", type: "circle", source: "klpt", maxzoom: 10, filter: ["==", ["get", "level"], 3], layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4.5, 8, 9], "circle-color": "rgba(214,69,58,.25)",
         "circle-stroke-color": "#ffffff", "circle-stroke-width": 1.4}});
+    peta.addSource("daops", {type: "geojson", data: {type: "FeatureCollection", features: S.daops.map(d => ({type: "Feature", geometry: {type: "Point", coordinates: [d.lon, d.lat]}, properties: {nama: d.nama.replace("Daops ", ""), regu: d.regu}}))}});
+    peta.addLayer({id: "daops", type: "circle", source: "daops", layout: {visibility: this.lihat("daops") ? "visible" : "none"},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 4, 9, 8], "circle-color": "#1d4e89", "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
+    peta.addLayer({id: "daops-lbl", type: "symbol", source: "daops", minzoom: 6, layout: {visibility: this.lihat("daops") ? "visible" : "none", "text-field": ["concat", "Daops ", ["get", "nama"]],
+      "text-size": 11.5, "text-offset": [0, 1.1], "text-anchor": "top", "text-font": ["Noto Sans Bold"]},
+      paint: {"text-color": gelap() ? "#cfe0ff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.6}});
     this.aturWilayah(false);
     this.interaksi();
   },
@@ -566,7 +574,7 @@ $("#rentang").addEventListener("click", e => { const b = e.target.closest("butto
 
 /* lapisan */
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
-  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"]}[i.dataset.l];
+  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"]}[i.dataset.l];
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
   if (i.dataset.l === "fwi") { $("#fwiHari").style.display = i.checked ? "block" : "none"; renderLegenda(); } });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
@@ -634,7 +642,10 @@ const Laci = {
       Cuaca siang ini: ${fmt(p.t)}°C, RH ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam dari ${arah(p.wd)}</div>
       <div class="lbl" style="margin-top:10px">Kenapa status ini</div>
       <div style="font-size:12.5px">Bahaya cuaca kelas <b>${FWI_KELAS[p.fdrs][0].toLowerCase()}</b>${p.fdrs > kelasFWI(p.fwi) ? " (naik satu kelas karena FFMC > 82 atau ISI > 5)" : ""} × keparahan <b>S${p.sev}</b> (${["", "kecil, 1 hari", "sedang", "front ≥ 140 ha, bertahan ≥ 3 hari, atau tumbuh ≥ 50%"][p.sev]}).</div>
-      <div class="sop"><b>Tindakan menurut SOP</b><ul>${STATUS_AKSI[p.level].map(a => `<li>${esc(a)}</li>`).join("")}</ul></div>
+      <div class="lbl" style="margin-top:12px">Regu Manggala Agni terdekat (garis lurus)</div>
+      <table style="font-size:12.5px;margin-top:4px"><tbody>${daopsDekat(p.lat, p.lon).map(d => `<tr><td>${esc(d.nama)}<br><small style="color:var(--ink2)">${esc(d.kab)} · ${d.regu ?? "?"} regu, ${d.anggota ?? "?"} orang${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td></tr>`).join("") || `<tr><td>Data Daops belum tersedia.</td></tr>`}</tbody></table>
+      ${daopsDekat(p.lat, p.lon, 1)[0]?.jarak > 150 ? `<p style="font-size:12px;color:var(--bad);margin:6px 0 0">Daops terdekat lebih dari 150 km. Andalkan MPA, BPBD, dan regu perusahaan setempat.</p>` : ""}
+      <div class="sop"><b>Tindakan yang disarankan</b><ul>${STATUS_AKSI[p.level].map(a => `<li>${esc(a)}</li>`).join("")}</ul></div>
       <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="keSim">Simulasikan 72 jam</button>
       <a class="btn sec" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}">Buka di Google Maps</a>
       <button class="btn sec" id="bagi">Salin tautan</button></div>
@@ -646,6 +657,8 @@ const Laci = {
       peta.fitBounds(kotak([f]), {padding: innerWidth > 900 ? {top: 60, bottom: 60, left: 400, right: 420} : {top: 40, bottom: innerHeight * .74, left: 20, right: 20}, maxZoom: 12.5, duration: 700}); });
   },
 };
+const km = (a1, o1, a2, o2) => { const r = Math.PI / 180, h = Math.sin((a2 - a1) * r / 2) ** 2 + Math.cos(a1 * r) * Math.cos(a2 * r) * Math.sin((o2 - o1) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(h)); };
+const daopsDekat = (lat, lon, n = 3) => S.daops.map(d => ({...d, jarak: km(lat, lon, d.lat, d.lon)})).sort((a, b) => a.jarak - b.jarak).slice(0, n);
 const arah = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(((d || 0) % 360) / 45) % 8];
 
 /* ================================================================ tabel kompleks */
@@ -714,8 +727,22 @@ function renderPrioritas() {
       <button class="btn sec" style="margin-top:12px;width:100%" data-k="${k}">Lihat di peta</button></article>`;
   }).join("");
   $("#prioritas").innerHTML = `<div class="head"><div><h2>9 provinsi prioritas</h2><p>Enam provinsi pantauan harian BNPB ditambah Papua Selatan, Kalimantan Timur, dan NTT, yang titik panas musim kebakarannya (Agustus–Oktober 2015, 2019, 2023, 2026) lebih besar dari Kalsel, Jambi, atau Riau.</p></div>
-    <div style="font-size:12px;color:var(--ink2)">BNPB diperbarui ${S.bnpb?.updatedAt ? jamWIB(S.bnpb.updatedAt) : "–"}</div></div><div class="grid g3">${kartu}</div>`;
+    <div style="font-size:12px;color:var(--ink2)">BNPB diperbarui ${S.bnpb?.updatedAt ? jamWIB(S.bnpb.updatedAt) : "–"}</div></div><div class="grid g3">${kartu}</div>${bebanDaops()}`;
   $("#prioritas").onclick = e => { const b = e.target.closest("[data-k]"); if (b) { bukaTab("peta"); turun(b.dataset.k); } };
+}
+
+/* beban tiap Daops: kompleks siaga + prioritas yang paling dekat ke Daops itu (dalam 150 km) */
+function bebanDaops() {
+  if (!S.daops.length) return "";
+  const b = new Map(S.daops.map(d => [d.kode, {d, s: 0, p: 0}])); let jauh = 0;
+  for (const f of S.kluster.features) { const p = f.properties; if (p.level < 2) continue;
+    const d = daopsDekat(p.lat, p.lon, 1)[0]; if (d.jarak > 150) { jauh++; continue; } const x = b.get(d.kode); p.level === 3 ? x.p++ : x.s++; }
+  const r = [...b.values()].sort((a, c) => (c.p * 3 + c.s) / (c.d.regu || 1) - (a.p * 3 + a.s) / (a.d.regu || 1));
+  return `<div class="head" style="margin-top:26px"><div><h2>Beban regu Manggala Agni</h2><p>Setiap kompleks siaga dan prioritas dibebankan ke Daops terdekat (maksimal 150 km). Rasio tinggi berarti Daops itu perlu bantuan regu dari Daops lain, BPBD, MPA, atau perusahaan. ${fmt(jauh)} kompleks siaga/prioritas berada lebih dari 150 km dari Daops mana pun.</p></div></div>
+    <div class="tw"><table><thead><tr><th>Daops</th><th>Provinsi</th><th class="n">Regu</th><th class="n">Prioritas</th><th class="n">Siaga</th><th class="n">Kompleks per regu</th></tr></thead><tbody>
+    ${r.map(({d, s, p}) => `<tr><td>${esc(d.nama)}</td><td>${esc(namaProv(d.prov))}</td><td class="n num">${d.regu ?? "–"}</td><td class="n num">${fmt(p)}</td><td class="n num">${fmt(s)}</td><td class="n num"><b>${fmt(Math.round((p + s) / (d.regu || 1) * 10) / 10)}</b></td></tr>`).join("")}</tbody>
+    <tfoot><tr><td colspan="2">Total ${S.daops.length} Daops</td><td class="n num">${fmt(S.daops.reduce((a, d) => a + (d.regu || 0), 0))}</td><td class="n num">${fmt(r.reduce((a, x) => a + x.p, 0))}</td><td class="n num">${fmt(r.reduce((a, x) => a + x.s, 0))}</td><td></td></tr></tfoot></table></div>
+    <p style="font-size:12px;color:var(--ink2)">Sumber: API publik SiPongi (opsroom.sipongidata.my.id). 27 dari 29 lokasi markas diperkirakan dari ibu kota kabupaten. Daops belum ada di Jawa, Bali, Nusa Tenggara, Maluku, dan Papua, termasuk NTT dan Papua Selatan.</p>`;
 }
 
 /* ================================================================ sarana pemadam */
@@ -821,7 +848,7 @@ FWI = e^(2,72·(0,434·ln B)^0,647),  B = 0,1·ISI·f(BUI)</div>
       ["Laporan harian 6 provinsi", "BNPB gis.bnpb.go.id/karhutla2026", "l0", "Harian otomatis"], ["Batas provinsi, kab/kota, kecamatan", "Kode Kemendagri (dari pangantara)", "l0", "Ada"],
       ["Arsip titik panas 2015–2026", "NASA FIRMS arsip standar", "l2", "Sedang diunduh"], ["FWI resmi & radar SRI/PAC 24H", "BMKG SPARTAN", "l3", "Perlu surat permintaan"],
       ["Peta gambut (KHG)", "KLHK", "l2", "Antre"], ["Tutupan lahan / bahan bakar", "ESA WorldCover / KLHK", "l2", "Antre"],
-      ["Markas Daops & desa MPA", "KLHK Dit. PKHL / SiPongi", "l3", "Perlu surat permintaan"], ["Luas terbakar", "MODIS/VIIRS Burned Area (Earthdata)", "l2", "Antre"]]
+      ["Markas Daops (29) & jumlah regu", "API publik SiPongi + geokode OSM", "l0", "Ada (27 lokasi perkiraan)"], ["Desa MPA", "KLHK Dit. PKHL", "l3", "Perlu surat permintaan"], ["Luas terbakar", "MODIS/VIIRS Burned Area (Earthdata)", "l2", "Antre"]]
       .map(([a, b, c, d]) => `<tr><td>${a}</td><td>${b}</td><td><span class="pill ${c}">${d}</span></td></tr>`).join("")}</tbody></table></div>`)}`;
   $("#metode").querySelectorAll(".fold > button").forEach(b => b.onclick = () => { const buka = b.getAttribute("aria-expanded") !== "true";
     b.setAttribute("aria-expanded", buka); nanti(() => b.nextElementSibling.hidden = !buka); });

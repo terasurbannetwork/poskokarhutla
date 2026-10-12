@@ -73,7 +73,7 @@ def main():
             if pt and seat and km(pt, seat) <= 40: presisi = "alamat"
             else: pt, presisi = seat, "kota"
             out.append({"nama": "Daops " + nama, "kode": kode, "balai": balai, "brigdal": grp["daerah"],
-                        "prov": prov, "kab": kab, "alamat": alamat,
+                        "prov": prov, "kab": kab, "alamat": alamat, "regu": k.get("jumlah_regu"), "anggota": k.get("jumlah_anggota"),
                         "lat": round(pt[0], 5), "lon": round(pt[1], 5), "sumber": SRC, "presisi": presisi})
     (ROOT / "public/data/daops.json").write_text(json.dumps(out, ensure_ascii=False, indent=1))
     print(len(out), sum(o["presisi"] == "alamat" for o in out), "alamat")
