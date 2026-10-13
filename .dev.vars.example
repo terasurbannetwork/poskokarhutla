@@ -1,0 +1,3 @@
+# salin ke .dev.vars untuk `wrangler dev --local` (jangan di-commit)
+IP_SALT=ganti-dengan-acak-panjang
+ADMIN_TOKEN=ganti-token-admin-lokal

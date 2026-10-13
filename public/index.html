@@ -594,6 +594,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item b{font-size:14px;line-height:1.35}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
+<link href="dampak.css" rel="stylesheet">
 <link href="citra.css" rel="stylesheet">
 <link href="sim_perlakuan.css" rel="stylesheet">
 <link href="databaru.css" rel="stylesheet">
@@ -689,6 +690,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   <!-- ================= KEPUTUSAN ================= -->
   <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
+  <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
   <section class="page scroll" id="p-keputusan" aria-label="Keputusan musim kebakaran"><div class="wrap"><figure class="banner" data-foto="sekat" hidden></figure><div id="keputusan"></div></div></section>
   <!-- ================= POSKO ================= -->
   <section class="page scroll" id="p-posko" aria-label="Rekomendasi lokasi posko"><div class="wrap"><figure class="banner" data-foto="pemadam" hidden></figure><div id="posko"></div></div></section>
@@ -744,7 +746,7 @@ const kelasFWI = v => v < 2 ? 0 : v < 7 ? 1 : v < 14 ? 2 : 3;
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
 const sudah = {};
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -758,6 +760,7 @@ function bukaTab(id, dorong = true) {
     if (id === "keputusan") Kp.render();
     if (id === "insight") Insight.render();
     if (id === "berita") Berita.render();
+    if (id === "dampak") Dampak.render();
     if (id === "tren") Tren.render();
     if (id === "prioritas" && !sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); }
     if (id === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); }
@@ -4242,6 +4245,7 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 <script src="lapisan5.js"></script>
+<script src="dampak.js"></script>
 <script src="sim_perlakuan.js"></script>
 <script src="databaru.js" data-halaman="karhutla"></script>
 <script src="citra.js"></script>

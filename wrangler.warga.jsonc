@@ -1,0 +1,13 @@
+// Usulan pengganti wrangler.jsonc untuk Lapor Warga (lihat WARGA.md). Ganti database_id setelah `wrangler d1 create poskowarga`,
+// lalu salin isi berkas ini ke wrangler.jsonc. Aset statis tetap dilayani lebih dulu; worker hanya menerima jalur tanpa aset (/api/warga*).
+{
+  "name": "poskokarhutla",
+  "main": "src/worker.js",
+  "compatibility_date": "2026-10-01",
+  "assets": { "directory": "./public", "binding": "ASSETS" },
+  "d1_databases": [
+    { "binding": "DB", "database_name": "poskowarga", "database_id": "GANTI-DENGAN-ID-DARI-wrangler-d1-create", "migrations_dir": "migrations" }
+  ],
+  "triggers": { "crons": ["17 * * * *", "15 */3 * * *"] },
+  "vars": { "TURNSTILE_SITEKEY": "" }
+}

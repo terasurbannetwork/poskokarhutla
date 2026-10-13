@@ -1,0 +1,12 @@
+{
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "uji:warga": "node --test tests/warga/gerbang.test.mjs && node --test tests/warga/skema.test.mjs && node --test tests/warga/api.test.mjs",
+    "dev:warga": "wrangler dev --local -c wrangler.warga.jsonc --port 8787"
+  },
+  "devDependencies": {
+    "miniflare": "3.20250718.3",
+    "wrangler": "3.114.17"
+  }
+}

@@ -52,28 +52,28 @@ RADIUS_SUNGAI_KM = 25
 SM_JENUH = 0.45  # m3/m3, lihat docstring
 
 
-def level_banjir(h3, bahaya, rk, imax=None, cape=None, p3=None):
-    """imax/cape/p3 None = jalur itu tidak dipakai (aturan lama)."""
+def level_banjir(h3, bahaya, rk, imax=None, cape=None, p3=None, *, k=1.0):
+    """imax/cape/p3 None = jalur itu tidak dipakai (aturan lama). k = pengali ambang H3 50/100/150 (hanya uji_balik.py)."""
     imax, cape, p3 = imax or 0, cape or 0, p3 or 0
-    if rk == 3 or (h3 >= 150 and bahaya >= 0.66):
+    if rk == 3 or (h3 >= 150 * k and bahaya >= 0.66):
         return 3
-    if rk == 2 or (bahaya >= 0.33 and (h3 >= 100 or imax >= 30 or p3 >= 0.5)):
+    if rk == 2 or (bahaya >= 0.33 and (h3 >= 100 * k or imax >= 30 or p3 >= 0.5)):
         return 2
-    if rk == 1 or h3 >= 50 or imax >= 20 or (cape >= 2500 and h3 >= 50):
+    if rk == 1 or h3 >= 50 * k or imax >= 20 or (cape >= 2500 and h3 >= 50 * k):
         return 1
     return 0
 
 
-def level_longsor(h3, a7, bahaya, sm=None, imax=None):
-    """sm None -> jenuh = A7 >= 150 (aturan lama)."""
+def level_longsor(h3, a7, bahaya, sm=None, imax=None, *, k=1.0, sm_jenuh=SM_JENUH, a7_basah=50):
+    """sm None -> jenuh = A7 >= 150 (aturan lama). k, sm_jenuh, a7_basah: kenop uji_balik.py, bawaan = aturan berlaku."""
     # sm saja berperilaku seperti penanda jenis tanah (tanah liat/organik basah sepanjang tahun), jadi wajib ada hujan nyata
     # 7 hari terakhir juga (>= 50 mm). Uji 13 Okt 2026: sm >= 0,45 saja menandai 154 kecamatan bahaya tinggi di musim kemarau.
-    jenuh = (sm >= SM_JENUH and a7 >= 50) if sm is not None else a7 >= 150
-    if h3 >= 150 and jenuh and bahaya >= 0.66:
+    jenuh = (sm >= sm_jenuh and a7 >= a7_basah) if sm is not None else a7 >= 150
+    if h3 >= 150 * k and jenuh and bahaya >= 0.66:
         return 3
-    if (h3 >= 100 and jenuh and bahaya >= 0.66) or (h3 >= 150 and bahaya >= 0.33) or ((imax or 0) >= 20 and bahaya >= 0.66):
+    if (h3 >= 100 * k and jenuh and bahaya >= 0.66) or (h3 >= 150 * k and bahaya >= 0.33) or ((imax or 0) >= 20 and bahaya >= 0.66):
         return 2
-    if h3 >= 50 and bahaya >= 0.33:
+    if h3 >= 50 * k and bahaya >= 0.33:
         return 1
     return 0
 

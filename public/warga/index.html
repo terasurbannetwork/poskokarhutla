@@ -1,0 +1,37 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Lapor Warga — Warga Bantu Warga</title>
+<meta name="description" content="Peta laporan warga saat bencana: listrik, sinyal, BBM/LPG, kebutuhan dan tawaran bantuan, kondisi karhutla, banjir, longsor, dan rob.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<style>
+:root{--paper:oklch(97.6% .006 255);--card:oklch(100% 0 0);--surface:oklch(95.5% .012 255);--ink:oklch(25.5% .075 256);--ink2:oklch(50% .045 258);--line:oklch(90% .015 255);
+  --brand2:oklch(42% .11 255);--top:52px;--font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif;--display:"Plus Jakarta Sans",var(--font);color-scheme:light}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:oklch(18% .035 256);--card:oklch(22.5% .045 256);--surface:oklch(26% .05 256);--ink:oklch(94% .012 255);--ink2:oklch(76% .035 255);--line:oklch(33% .05 256);--brand2:oklch(70% .11 250);color-scheme:dark}}
+:root[data-theme="dark"]{--paper:oklch(18% .035 256);--card:oklch(22.5% .045 256);--surface:oklch(26% .05 256);--ink:oklch(94% .012 255);--ink2:oklch(76% .035 255);--line:oklch(33% .05 256);--brand2:oklch(70% .11 250);color-scheme:dark}
+*{box-sizing:border-box}html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);-webkit-font-smoothing:antialiased}
+header{position:fixed;inset:0 0 auto 0;height:var(--top);display:flex;align-items:center;gap:10px;padding:0 12px;background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff;z-index:20}
+header b{font-family:var(--display);font-weight:800;font-size:15px;white-space:nowrap}
+header nav{margin-left:auto;display:flex;gap:4px;overflow-x:auto;scrollbar-width:none}
+header a{color:#fff;opacity:.85;text-decoration:none;font-weight:600;font-size:13px;padding:7px 10px;border-radius:999px;white-space:nowrap}
+header a:hover{opacity:1;background:oklch(100% 0 0 / .1)}
+main{position:fixed;inset:var(--top) 0 0 0}
+.page{position:absolute;inset:0;display:none}.page.on{display:block}
+@media (max-width:520px){header .lengkap{display:none}}
+</style>
+<link href="../informasi.css" rel="stylesheet">
+</head>
+<body>
+<header><b>Lapor Warga<span class="lengkap"> · Warga Bantu Warga</span></b>
+  <nav aria-label="Halaman lain"><a href="../">Posko Karhutla</a><a href="../banjir/">Posko Banjir</a></nav></header>
+<main><section class="page on" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section></main>
+<script src="../informasi.js" data-halaman="warga"></script>
+</body>
+</html>
