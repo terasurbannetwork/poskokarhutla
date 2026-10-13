@@ -127,6 +127,12 @@ jobs:
       - name: Rekomendasi pangkalan udara
         run: python3 scripts/data/udara_rekom.py
 
+      # Sentinel-2 (Earth Search/AWS Open Data) + VIIRS GIBS, tanpa kunci; batas kerja 360 dtk, sisanya besok lewat cache
+      - name: Citra satelit kompleks prioritas (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 9
+        run: python3 scripts/data/citra.py
+
       - name: Prakiraan asap CAMS (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/asap.py
@@ -138,6 +144,27 @@ jobs:
             [ -f "$s" ] && timeout 300 python3 "$s" || echo "lewati $s"
           done
 
+      - name: Pulihkan arsip penerbangan
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/penerbangan/arsip.json
+          key: penerbangan-${{ github.run_id }}
+          restore-keys: penerbangan-
+
+      - name: Gangguan penerbangan akibat asap (boleh gagal)
+        continue-on-error: true
+        run: timeout 600 python3 scripts/data/penerbangan.py
+
+      - name: Simpan arsip penerbangan
+        if: hashFiles('data/raw/penerbangan/arsip.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/penerbangan/arsip.json
+          key: penerbangan-${{ github.run_id }}
+
+      - name: Dampak kebakaran musim berjalan
+        run: python3 scripts/data/dampak.py
+
       - name: Uji aturan
         run: |
           python3 scripts/data/fwi.py
@@ -145,6 +172,9 @@ jobs:
           python3 scripts/data/posko.py uji
           python3 scripts/data/udara_rekom.py uji
           python3 scripts/data/berita.py uji
+          python3 scripts/data/citra.py uji
+          python3 scripts/data/dampak.py uji
+          python3 scripts/data/penerbangan.py uji
           python3 scripts/data/ansambel.py uji
           python3 scripts/data/tanah.py uji
           python3 scripts/data/penduduk.py paparan > /dev/null
