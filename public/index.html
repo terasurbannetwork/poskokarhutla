@@ -681,7 +681,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-isi small,.br-item small{color:var(--ink2);font-size:11.5px}
 .br-chip{display:flex;flex-wrap:wrap;gap:4px}
 .br-chip i{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 16%, var(--card));color:color-mix(in oklch, var(--w) 75%, var(--ink));border:1px solid color-mix(in oklch, var(--w) 35%, transparent)}
-.br-list{display:grid;gap:2px}
+.br-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
 .br-sent{display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:center}
 .br-donat{display:grid;justify-items:center;gap:8px}
 .br-donat svg{width:160px}
@@ -707,7 +707,9 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-pop{display:grid;gap:6px;font-size:12.5px}
 .br-pop>small{color:var(--ink2)}
 .br-pop-l{display:grid;gap:2px;max-height:260px;overflow:auto;margin:2px -4px}
-.br-pop-l a{display:grid;gap:2px;padding:6px 4px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.br-pop-l a{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:2px;padding:7px 4px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.br-pop-l a > span,.br-pop-l a > small{grid-column:1}
+.br-pt{grid-column:2;grid-row:1/span 2;width:64px;height:48px;border-radius:8px;object-fit:cover;background:var(--surface)}
 .br-pop-l a:hover span{text-decoration:underline}
 .br-pop-l span{font-weight:600;line-height:1.3}
 .br-pop-l small{color:var(--ink2);font-size:11px}
@@ -715,7 +717,8 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 #berita .grid>*{min-width:0}
 #berita .tb3 td{overflow-wrap:anywhere;white-space:normal}
 .br-kartu,.br-sorot>*{min-width:0}
-.br-item{display:grid;gap:4px;padding:10px 2px;border-bottom:1px solid var(--line)}
+.br-item{display:grid;gap:5px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);align-content:start;transition:border-color .15s}
+.br-item:hover{border-color:var(--brand2)}
 .br-item a{color:inherit;text-decoration:none}
 .br-item a:hover b{text-decoration:underline}
 .br-item b{font-size:14px;line-height:1.35}
@@ -738,17 +741,19 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <link href="informasi.css" rel="stylesheet">
 <style id="pantau-media-css">
 /* ================================================================ berita: pantauan media */
-#brPantau .pm-alert{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 8px;margin:0 0 14px;scrollbar-width:thin}
-.pm-al{flex:0 0 auto;width:min(260px,78vw);display:grid;gap:3px;text-align:left;padding:9px 11px;border-radius:12px;cursor:pointer;color:var(--ink);font:inherit;
+#brPantau .pm-alert{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:8px;padding:2px;margin:0 0 14px}
+.pm-al{min-width:0;display:grid;gap:3px;text-align:left;padding:9px 11px;border-radius:12px;cursor:pointer;color:var(--ink);font:inherit;
   background:color-mix(in oklch, var(--w) 10%, var(--card));border:1px solid color-mix(in oklch, var(--w) 45%, transparent);border-left:4px solid var(--w)}
 .pm-al b{font-size:13px;line-height:1.3}
 .pm-al small{font-size:11px;color:var(--ink2)}
 .pm-lv{font-size:9.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:color-mix(in oklch, var(--w) 80%, var(--ink))}
 .pm-al:hover,.pm-al:focus-visible{background:color-mix(in oklch, var(--w) 18%, var(--card))}
 .pm-ok{display:block;font-size:12.5px;color:var(--ink2);padding:8px 10px;border:1px dashed var(--line);border-radius:10px}
-.pm-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:18px 22px}
+.pm-grid{columns:2;column-gap:22px}
+.pm-grid > .pm-p{break-inside:avoid;margin-bottom:18px;display:block}
+@media (max-width:900px){.pm-grid{columns:1}}
 .pm-p{min-width:0}
-.pm-lebar{grid-column:1/-1}
+.pm-lebar{grid-column:1/-1;column-span:all}
 .pm-h{display:flex;flex-wrap:wrap;align-items:baseline;gap:4px 10px;margin:0 0 6px}
 .pm-h h4{margin:0;font-size:14px;font-weight:800}
 .pm-th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);padding:4px 4px;border-bottom:1px solid var(--line)}
@@ -769,12 +774,18 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .pm-dot{display:inline-block;width:7px;height:7px;border-radius:50%;margin-right:5px;vertical-align:1px}
 #pmLembaga svg{margin:4px 0 2px}
 #pmLembaga svg g{cursor:pointer}
-.pm-kom{display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:12px}
-.pm-kartu{border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:12px 14px;display:grid;gap:8px;align-content:start}
-.pm-kartu header b{display:block;font-size:14px}
-.pm-kartu header small{display:block;color:var(--ink2);font-size:11px}
-.pm-kartu ol{margin:0;padding:0;list-style:none;display:grid;gap:7px;font-size:12.5px;line-height:1.45}
-.pm-kartu li .lbl{display:block;margin-bottom:1px}
+.pm-kom{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:14px}
+.pm-kartu{border:1px solid var(--line);border-radius:16px;background:var(--card);box-shadow:var(--shadow);padding:0;display:flex;flex-direction:column;overflow:hidden}
+.pm-kartu header{padding:14px 16px 10px;border-bottom:1px solid var(--line)}
+.pm-kartu header b{display:block;font-family:var(--display);font-size:15px;line-height:1.3}
+.pm-kartu header small{display:inline-block;margin-top:6px;color:var(--ink2);font-size:11px;background:var(--surface);border-radius:999px;padding:2px 9px}
+.pm-kartu .pm-aksi{display:flex;gap:6px;padding:10px 16px;border-top:1px solid var(--line);background:var(--surface)}
+.pm-kartu .pm-aksi .btn{height:30px;font-size:12px;padding:0 12px}
+.pm-kartu ol{margin:0;padding:10px 16px;list-style:none;display:grid;gap:10px;font-size:12.5px;line-height:1.5;flex:1}
+.pm-kartu li{position:relative;padding-left:14px}
+.pm-kartu li::before{content:"";position:absolute;left:0;top:4px;bottom:4px;width:3px;border-radius:3px;background:var(--brand2);opacity:.35}
+.pm-kartu li:nth-child(1)::before{background:#2b8c86;opacity:1}.pm-kartu li:nth-child(2)::before{background:#e3b94e;opacity:1}.pm-kartu li:nth-child(3)::before{background:#4f8fc4;opacity:1}.pm-kartu li:nth-child(4)::before{background:#c9503a;opacity:1}
+.pm-kartu li .lbl{display:block;margin-bottom:2px;font-size:9.5px;letter-spacing:.08em}
 .pm-aksi{display:flex;flex-wrap:wrap;gap:8px}
 .pm-aksi .btn{height:32px;padding:0 12px;font-size:12.5px}
 .pm-bukti{display:grid;gap:2px}
@@ -2824,7 +2835,7 @@ const Berita = {
       m.on("click", "kab", e => { const p = e.features[0].properties, A = D.artikel.filter(a => a.kab?.[0] === p.k && a.tgl.slice(0, 10) >= t0).sort((a, b) => b.tgl.localeCompare(a.tgl));
         tip.classList.remove("on");
         const html = `<div class="br-pop"><b>${esc(p.nama)}</b><small>${fmt(A.length)} berita 7 hari · nada ${this.lbl(p.s)[0]}</small><div class="br-pop-l">${A.slice(0, 12).map(a => { const [sl, sw] = this.lbl(a.situasi);
-          return `<a href="${esc(a.url)}" target="_blank" rel="noopener"><span>${esc(a.judul)}</span><small>${esc(a.sumber)} · ${a.tgl.slice(8, 10)}/${a.tgl.slice(5, 7)} <i style="color:${sw}">● ${sl}</i></small></a>`; }).join("")}</div>
+          return `<a href="${esc(a.url)}" target="_blank" rel="noopener">${a.gambar ? `<img class="br-pt" src="${esc(a.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span>${esc(a.judul)}</span><small>${esc(a.sumber)} · ${a.tgl.slice(8, 10)}/${a.tgl.slice(5, 7)} <i style="color:${sw}">● ${sl}</i></small></a>`; }).join("")}</div>
           ${A.length > 12 ? `<small>+${fmt(A.length - 12)} berita lain</small>` : ""}<button class="btn sec" data-saring="${esc(p.nama)}">Tampilkan di daftar berita</button></div>`;
         const pop = new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(html).addTo(m);
         pop.getElement().querySelector("[data-saring]").onclick = ev => { this.f.q = ev.target.dataset.saring; this.f.hal = 0; this.ulangDaftar(); pop.remove(); $("#brDaftar")?.scrollIntoView({behavior: "smooth"}); }; });
@@ -2918,7 +2929,7 @@ const Berita = {
         return `<div class="br-item"><a href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a>
           <small>${esc(a.sumber)} · ${a.tgl.slice(0, 16).replace("T", " ")} WIB${a.kab?.length ? " · " + esc(a.kab[0].split("|")[1]) : a.prov?.length ? " · " + esc(namaProv(a.prov[0])) : ""}${a.n_kompleks ? ` · <button class="link" data-kom="${a.kompleks[0]}">${fmt(a.n_kompleks)} kompleks api terkait</button>` : ""}</small>
           <span class="br-chip">${(a.topik || []).map(t => `<i style="--w:${WARNA_T[t]}">${TOPIK_B[t]}</i>`).join("")}<i style="--w:${sw}" data-tip="${a.alasan?.situasi?.length ? "kata pemicu: " + esc(a.alasan.situasi.join(", ")) : "tidak ada kata pemicu"}">situasi ${sl}</i>${rl !== "netral" ? `<i style="--w:${rw}" data-tip="kata pemicu: ${esc((a.alasan?.respons || []).join(", "))}">respons ${rl}</i>` : ""}</span></div>`; }).join("") || `<p class="kosong">Tidak ada berita yang cocok.</p>`}</div>
-      ${this.d.validasi?.situasi ? `<p class="fnd">Akurasi bot terhadap ${fmt(this.d.validasi.situasi.uji?.n || 0)} judul berlabel tangan yang tidak dipakai menyetel: nada situasi ${fmt(Math.round((this.d.validasi.situasi.uji?.akurasi || 0) * 100))}%, nada respons ${fmt(Math.round((this.d.validasi.respons?.uji?.akurasi || 0) * 100))}%. Nada situasi belum lebih baik dari menebak label terbanyak; pakai sebagai petunjuk, bukan kesimpulan.</p>` : ""}`; },
+      `; },
   ikat() {
     const el = $("#berita");
     el.onclick = e => {
@@ -3180,7 +3191,7 @@ const Berita = {
     return `<article class="ex" id="brPantau"><h3>Pantauan media: <span class="hl">${fmt(P.length)} peringatan</span>${tinggi ? `, ${fmt(tinggi)} perlu ditanggapi dalam 6 jam` : ""}</h3>
       <p class="sub">Isu teratas 7 hari: ${esc(top?.nama || "–")}${top ? ` (${fmt(top.n7)} berita, ${persen(top.momentum7)})` : ""}</p>
       <p class="unit">untuk ruang krisis: apa yang naik, siapa yang disorot, apa yang dituntut publik, klaim mana yang bertentangan dengan satelit, dan apa yang perlu dikomunikasikan. Klik baris untuk judul buktinya.</p>
-      ${this.pmPeringatan()}<div class="pm-grid">${this.pmIsu()}${this.pmLembaga()}${this.pmTuntutan()}${this.pmTokoh()}${this.pmKontradiksi()}${this.pmKomunikasi()}</div>${this.pmCatatan()}</article>`;
+      ${this.pmPeringatan()}<div class="pm-grid">${this.pmIsu()}${this.pmLembaga()}${this.pmTuntutan()}${this.pmTokoh()}${this.pmKontradiksi()}${this.pmKomunikasi()}</div></article>`;
   };
 
   /* ---- dialog bukti */

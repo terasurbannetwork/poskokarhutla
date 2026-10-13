@@ -546,6 +546,8 @@ RESPONS_EN = {
 NEGASI = {"tidak", "tak", "belum", "bukan", "tanpa", "jangan", "gak", "nggak", "enggak", "tiada",
           "not", "never", "without", "isn", "doesn", "didn", "won", "cannot", "nor"}
 # kata pencegahan menetralkan (bukan membalik) kata sesudahnya: "cegah karhutla meluas" bukan berita meluas
+# "padam" setelah kata kelistrikan berarti listrik mati (memburuk), bukan api padam: jangan dihitung membaik
+BUKAN_API = {"listrik", "lampu", "pln", "aliran", "daya", "jaringan"}
 PENETRAL = {"cegah", "mencegah", "antisipasi", "mengantisipasi", "hadapi", "menghadapi", "prevent", "preventing", "prevention", "avert", "curb", "despite"}
 PENGUAT = {"sangat": 1.5, "makin": 1.5, "semakin": 1.5, "kian": 1.5, "amat": 1.5, "terus": 1.3, "paling": 1.5, "kembali": 1.2,
            "very": 1.5, "increasingly": 1.5, "extremely": 1.5, "further": 1.3}
@@ -574,6 +576,8 @@ def skor(judul, ringkas, lex):
             if not w:
                 continue
             if any(t in PENETRAL for t in tok[max(0, i - 3):i]):
+                continue
+            if f.startswith("padam") and any(t in BUKAN_API for t in tok[max(0, i - 2):i]):
                 continue
             neg = any(t in NEGASI for t in tok[max(0, i - 3):i]) and not any(t in NEGASI for t in f.split())
             kuat = max([PENGUAT.get(t, 1.0) for t in tok[max(0, i - 2):i]] + [1.0])
@@ -1800,6 +1804,7 @@ def uji():
     # negasi & penguat
     assert skor("Api belum padam", "", SITUASI)[0] < 0, skor("Api belum padam", "", SITUASI)
     assert skor("Api berhasil dipadamkan", "", SITUASI)[0] > 0
+    assert skor("Batam Dikepung Masalah: Air Mati, Listrik Padam, Sinyal Hilang, Kabut Asap Tebal", "", SITUASI)[0] <= 0
     assert skor("Kebakaran tidak meluas", "", SITUASI)[0] > 0
     assert skor("Tidak ada korban jiwa", "", SITUASI)[0] > 0
     assert skor("Asap makin pekat", "", SITUASI)[0] < skor("Asap pekat", "", SITUASI)[0] < 0

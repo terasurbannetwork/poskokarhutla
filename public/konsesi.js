@@ -116,9 +116,9 @@
     ex.innerHTML = `<div class="ks-hd"><div><h3>Kebakaran di konsesi: perusahaan dengan titik panas terbanyak</h3>
         <p class="sub">${F.mode === "7" ? `7 hari terakhir · ${fmt(tot)} titik panas VIIRS berada di dalam areal ${fmt(KK.perusahaan.filter(a => a.n).length)} konsesi` : `musim ${(KK.acuan || "").slice(0, 4)}, tercatat sejak ${esc(KK.musim_sejak || "–")}`}. Klik baris untuk melihat kompleksnya di peta.</p></div>
         <div class="ks-mode">${[["7", "7 hari"], ["musim", "Musim"]].map(([m, n]) => `<button class="btn ${F.mode === m ? "" : "sec"}" data-mode="${m}">${n}</button>`).join("")}</div></div>
-      <div class="tw"><table class="tb3"><thead><tr><th>#</th><th>Pemegang izin</th><th>Jenis</th><th class="n">Titik panas</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th></tr></thead><tbody>
+      <div class="tw"><table class="tb3"><thead><tr><th>#</th><th>Pemegang izin</th><th>Jenis</th><th class="n">Peta</th><th class="n">Titik panas</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th></tr></thead><tbody>
       ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}${a.grup ? `<small>grup ${esc(a.grup)}</small>` : ""}</td>
-        <td>${jenis(a.jenis)}<small>peta ${a.tahun_data}</small></td><td class="n num"><b>${fmt(a[k])}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="6">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
+        <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a[k])}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="7">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
       <p class="fnd">Titik panas berada di dalam areal konsesi X ≠ X yang membakar. Luas = piksel VIIRS 375 m yang terdeteksi 7 hari (indikatif, bukan luas terbakar resmi). ${batas()}</p>`;
   }
   function tunjuk(nama) {
