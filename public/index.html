@@ -136,6 +136,20 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
 .tb{display:grid;grid-template-columns:20px minmax(0,1fr) 56px 50px 70px;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
 .tb:hover{background:var(--surface)}
+.kd{display:inline-flex;align-items:center;flex:none;height:18px;padding:0 7px;border-radius:999px;background:oklch(25.5% .075 256);color:#fff;font:700 10.5px/1 ui-monospace,SFMono-Regular,Menlo,monospace;letter-spacing:.02em}
+.tb .kom{display:flex;align-items:center;gap:8px;min-width:0}
+.tb .kom>span:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.kgp,.kgk{border-bottom:1px solid var(--line)}
+.kgp>summary,.kgk>summary{display:flex;align-items:center;gap:8px;list-style:none;cursor:pointer;padding:7px 8px;font-size:12.5px;font-weight:800}
+.kgp>summary::-webkit-details-marker,.kgk>summary::-webkit-details-marker{display:none}
+.kgp>summary::before,.kgk>summary::before{content:"▸";flex:none;width:10px;color:var(--ink2);transition:transform .15s}
+.kgp[open]>summary::before,.kgk[open]>summary::before{transform:rotate(90deg)}
+.kgp>summary .lambang{width:20px;height:24px;filter:none}
+.kgk{margin-left:14px;border-bottom:0;border-top:1px solid var(--line)}
+.kgk>summary{font-weight:700;font-size:12px;padding:6px 8px}
+.kgk .tb:last-child{border-bottom:0}
+.kgp summary .jml{margin-left:auto;display:flex;gap:6px;align-items:center;font-weight:600;font-size:11px;color:var(--ink2);white-space:nowrap}
+.kgp summary .jml .pill{height:18px;padding:0 7px;font-size:10px}
 .tb.kepala{position:sticky;top:0;z-index:1;background:oklch(25.5% .075 256);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:7px 8px;border-radius:8px;border-bottom:0;margin-bottom:2px}
 .tb.kepala:hover{background:oklch(25.5% .075 256)}
 .tb.kepala span[data-s]{cursor:pointer;user-select:none}
@@ -152,6 +166,10 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .kartu .kp>div{min-width:0}
 .lambang{flex:none;width:30px;height:36px;object-fit:contain;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .35))}
 .dlg .dh .lambang{width:40px;height:48px}
+.kartu .kp.putih{background:var(--card);color:var(--ink);border-bottom:1px solid var(--line);border-left:4px solid var(--aksen,var(--ink))}
+.kartu .kp.putih .lambang{filter:none}
+.maplibregl-popup:has(.kp.putih) .maplibregl-popup-close-button{color:var(--ink2)}
+.kartu .kp.putih small{color:var(--aksen,var(--ink2));opacity:1}
 .kartu .kp small{display:block;font-size:9.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;opacity:.8}
 .kartu .kp b{display:block;font-family:var(--display);font-size:14px;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .kartu .kg{display:grid;grid-template-columns:1fr 1fr;column-gap:12px;padding:4px 12px 2px}
@@ -1468,9 +1486,13 @@ function terapkanUrut() {
   const nilai = b => { const c = b.children[u.i]; if (!c) return -1e15; if (c.dataset.sort != null) return +c.dataset.sort; const p = c.querySelector(".pill"); if (p) return +(p.className.match(/\bl(\d)/) || [0, 0])[1];
     const t = c.textContent.trim(), n = t.replace(/\/.*/, "").replace(/\./g, "").replace(",", ".");
     return t === "" || t === "–" ? -1e15 : u.i === 1 || isNaN(+n) ? t : +n; };
-  const rows = [...box.querySelectorAll("button.tb")];
-  rows.sort((a, b) => { const x = nilai(a), y = nilai(b); return u.d * (typeof x === "string" || typeof y === "string" ? String(x).localeCompare(String(y), "id") : x - y); });
-  rows.forEach((b, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; box.appendChild(b); });
+  /* daftar bertingkat (kompleks per kab/kota): urut di dalam grupnya masing-masing */
+  const grup = new Map();
+  for (const b of box.querySelectorAll("button.tb")) { if (!grup.has(b.parentElement)) grup.set(b.parentElement, []); grup.get(b.parentElement).push(b); }
+  for (const [ind, rows] of grup) {
+    rows.sort((a, b) => { const x = nilai(a), y = nilai(b); return u.d * (typeof x === "string" || typeof y === "string" ? String(x).localeCompare(String(y), "id") : x - y); });
+    rows.forEach((b, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; ind.appendChild(b); });
+  }
 }
 S.panel = "wil";
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.panel = b.dataset.m;
@@ -1548,11 +1570,27 @@ function renderDaftarPosko() {
   $("#rows").innerHTML = (baris.join("") || `<div class="kosong">Belum ada posko di wilayah ini.</div>`);
 }
 function renderDaftarKom() {
+  /* Bertingkat: provinsi > kab/kota > kompleks, tiap tingkat bisa dibuka-tutup.
+     Kode kompleks jadi pil terpisah dari nama (gaya kode pangantara). Grup diurut
+     dari yang paling genting (level tertinggi, lalu piksel 24 jam). Kalau cuma satu
+     provinsi / satu kab/kota (wilayah sudah disaring), grupnya langsung terbuka. */
   const kl = klusterDi(S.jalur.join("|")).slice(0, 200);
-  $("#rows").innerHTML = `<div class="tb kepala" style="grid-template-columns:20px minmax(0,1fr) 54px 44px 74px"><span></span><span>Kompleks</span><span class="n">Piksel 24j</span><span class="n">Hari</span><span style="text-align:right">Status</span></div>`
-    + (kl.map((f, n) => { const p = f.properties; return `<button class="tb${p.level >= 2 ? " hl" + p.level : ""}" data-kom="${p.id}" style="grid-template-columns:20px minmax(0,1fr) 54px 44px 74px" title="${esc(p.kab)}${p.teramati ? "" : " · tidak teramati " + Math.round(p.jam_sejak) + " jam"}">
-      <span class="rk">${n + 1}</span><span><b>${p.id}</b> ${esc(p.kec)}${p.teramati ? "" : ' <span style="color:var(--ink2)">· tak teramati</span>'}</span>
-      <span class="n">${fmt(p.px24)}</span><span class="n">${p.hari}</span><span style="text-align:right"><span class="pill l${p.level}">${["Rutin", "Patroli", "Siaga", "Prioritas"][p.level]}</span></span></button>`; }).join("") || `<div class="kosong">Tidak ada kompleks aktif di wilayah ini.</div>`);
+  const KOL = "20px minmax(0,1fr) 54px 44px 74px", LV = ["Rutin", "Patroli", "Siaga", "Prioritas"];
+  const baris = (p, n) => `<button class="tb${p.level >= 2 ? " hl" + p.level : ""}" data-kom="${p.id}" style="grid-template-columns:${KOL}" title="${esc(p.kab)}${p.teramati ? "" : " · tidak teramati " + Math.round(p.jam_sejak) + " jam"}">
+      <span class="rk">${n + 1}</span><span class="kom"><span class="kd">${p.id}</span><span>${esc(p.kec)}${p.teramati ? "" : ' <span style="color:var(--ink2)">· tak teramati</span>'}</span></span>
+      <span class="n">${fmt(p.px24)}</span><span class="n">${p.hari}</span><span style="text-align:right"><span class="pill l${p.level}">${LV[p.level]}</span></span></button>`;
+  const kelompok = (xs, k) => { const m = new Map(); for (const f of xs) { const v = f.properties[k] || "–"; if (!m.has(v)) m.set(v, []); m.get(v).push(f); } return m; };
+  const bobot = xs => Math.max(...xs.map(f => f.properties.level)) * 1e7 + xs.reduce((s, f) => s + (f.properties.px24 || 0), 0);
+  const urut = m => [...m.entries()].sort((a, b) => bobot(b[1]) - bobot(a[1]));
+  const ringkas = xs => { const pr = xs.filter(f => f.properties.level === 3).length;
+    return `<span class="jml">${fmt(xs.length)} kompleks${pr ? `<span class="pill l3">${fmt(pr)} prioritas</span>` : ""}</span>`; };
+  const provs = urut(kelompok(kl, "prov"));
+  const html = provs.map(([pv, xs]) => { const kabs = urut(kelompok(xs, "kab"));
+    return `<details class="kgp"${provs.length === 1 ? " open" : ""}><summary>${lambang(pv)}<span>${esc(namaProv(pv))}</span>${ringkas(xs)}</summary>`
+      + kabs.map(([kb, ys]) => `<details class="kgk"${kabs.length === 1 ? " open" : ""}><summary><span>${esc(kb)}</span>${ringkas(ys)}</summary><div class="kgi">${ys.map((f, n) => baris(f.properties, n)).join("")}</div></details>`).join("")
+      + `</details>`; }).join("");
+  $("#rows").innerHTML = `<div class="tb kepala" style="grid-template-columns:${KOL}"><span></span><span>Kompleks</span><span class="n">Piksel 24j</span><span class="n">Hari</span><span style="text-align:right">Status</span></div>`
+    + (html || `<div class="kosong">Tidak ada kompleks aktif di wilayah ini.</div>`);
   terapkanUrut();
 }
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
@@ -3196,7 +3234,7 @@ const Posko = {
     const bp = bpbdDekat(x.lat, x.lon); if (bp) sel.push(kb("BPBD terdekat", `${esc(bp.nama)} · ${fmt(Math.round(bp.jarak))} km${bp.pusdalops ? " · " + esc(bp.pusdalops) : ""}`, 1));
     const jalur = [ind2, ind].filter(Boolean).map(y => y.tingkat === 1 ? "Kab. " + y.kab : "Prov. " + y.nama).join(" → ");
     new maplibregl.Popup({closeButton: true, maxWidth: "340px"}).setLngLat(ll).setHTML(`<div class="kartu">
-      <div class="kp" style="background:linear-gradient(135deg,${warna},rgba(11,37,69,.95))">${x.tingkat === 0 ? lambang(x.prov) : lambang(x.prov, x.kab)}<div><small>${jenis}</small><b title="${esc(nama)}">${esc(nama)}</b></div></div>
+      <div class="kp putih" style="--aksen:${warna}">${x.tingkat === 0 ? lambang(x.prov) : lambang(x.prov, x.kab)}<div><small>${jenis}</small><b title="${esc(nama)}">${esc(nama)}</b></div></div>
       <div class="kg">${sel.join("")}</div>
       <div class="kk">${jalur ? "Melapor ke " + esc(jalur) : "Melapor ke BNPB dan KLHK"}<button class="btn sec" style="height:30px;font-size:12px" onclick="Posko.rinci('${x.id}')">Rincian alat, personel & anggaran</button></div></div>`).addTo(peta); },
   rinci(id) { this.pilih = id; bukaTab("posko"); nanti(() => { this.render(); $("#rinciPosko")?.scrollIntoView({behavior: "smooth", block: "start"}); }); },
