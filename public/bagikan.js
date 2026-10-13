@@ -18,10 +18,10 @@ const Bagikan = {
   },
   get K() {
     return this.hal === "banjir"
-      ? {nama: "Posko Banjir, Longsor & Rob", pendek: "Posko Banjir", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
-        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PoskoBanjir"}
-      : {nama: "Posko Karhutla", pendek: "Posko Karhutla", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
-        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#PoskoKarhutla"};
+      ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
+        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PantauBencana"}
+      : {nama: "Pantau Bencana · Karhutla", pendek: "Pantau Bencana", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
+        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#PantauBencana"};
   },
 
   /* ---------------------------------------------------------------- pasang */
@@ -155,7 +155,9 @@ const Bagikan = {
   namaBerkas(ext) { return `${this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tpl === "provinsi" ? this.slug(namaProv(this.prov)) + "-" : ""}${this.tanggal()}${ext === "png" ? "-" + this.uk : ""}.${ext}`; },
   slug: s => String(s).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   tglPanjang() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}); },
-  situs() { return (location.host + location.pathname).replace(/[^/]*\.html$/, ""); },
+  /* alamat yang dicetak di gambar: domain publik, bukan localhost/pratinjau */
+  situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "pantau.terasurban.com" : location.host;
+    return (h + location.pathname).replace(/[^/]*\.html$/, "").replace(/\/(peta|insight|berita|kompleks|posko|tren|dampak|sim|metode|informasi)\/?$/, "/$1"); },
   tautan() {
     const u = new URL(location.href); u.search = "";
     if (S.jalur?.length) u.searchParams.set("wil", S.jalur.join("|"));
@@ -384,16 +386,14 @@ const Bagikan = {
     while (l.at(-1)?.t === " ") l.pop(); if (l.length) out.push(l); return out;
   },
   kartu(x, a, b, w, h, r = 26) { x.save(); x.shadowColor = "rgba(11,37,69,.11)"; x.shadowBlur = 34; x.shadowOffsetY = 10; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(a, b, w, h, r); x.fill(); x.restore(); },
+  /* logo Pantau Bencana (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
   logo(x, a, b, s, polos) {
-    x.save(); x.translate(a, b); x.scale(s / 32, s / 32);
-    if (!polos) { x.fillStyle = "rgba(255,255,255,.14)"; x.beginPath(); x.roundRect(0, 0, 32, 32, 9); x.fill(); }
-    if (this.hal === "banjir") {
-      x.fillStyle = polos ? "#fff" : "#4fb0e6"; x.fill(new Path2D("M16 5c3 4.4 7 8.6 7 13a7 7 0 0 1-14 0c0-4.4 4-8.6 7-13Z"));
-      x.strokeStyle = polos ? "#fff" : "#d3e8f6"; x.lineWidth = 2; x.lineCap = "round"; x.stroke(new Path2D("M6 25c2.5 0 2.5-1.6 5-1.6s2.5 1.6 5 1.6 2.5-1.6 5-1.6 2.5 1.6 5 1.6"));
-    } else {
-      x.fillStyle = polos ? "#fff" : "#f39a4a"; x.fill(new Path2D("M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z"));
-      x.fillStyle = polos ? "#fff" : "#f2dc80"; x.fill(new Path2D("M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z"));
-    }
+    x.save(); x.translate(a, b); x.scale(s / 64, s / 64);
+    if (!polos) { const g = x.createLinearGradient(0, 0, 64, 64); g.addColorStop(0, "#ff9a3d"); g.addColorStop(1, "#d63c2a"); x.fillStyle = g; x.beginPath(); x.roundRect(0, 0, 64, 64, 16); x.fill(); }
+    x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 4; x.beginPath(); x.arc(32, 32, 19, 0, Math.PI * 2); x.stroke();
+    x.globalAlpha = .75; x.lineWidth = 3.5; x.beginPath(); x.arc(32, 32, 9, 0, Math.PI * 2); x.stroke(); x.globalAlpha = .9;
+    x.beginPath(); x.moveTo(32, 32); x.lineTo(32, 11); x.arc(32, 32, 21, -Math.PI / 2, -Math.PI / 2 + 1.18); x.closePath(); x.fill(); x.globalAlpha = 1;
+    x.beginPath(); x.arc(32, 32, 4, 0, Math.PI * 2); x.fill();
     x.restore();
   },
   async font() {
