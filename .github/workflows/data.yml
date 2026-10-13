@@ -131,6 +131,11 @@ jobs:
         continue-on-error: true
         run: python3 scripts/scrape/akses.py
 
+      - name: Rencana operasi & kebutuhan sumber daya
+        run: |
+          python3 scripts/data/operasi.py uji
+          python3 scripts/data/operasi.py
+
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
       - name: Indeks iklim ENSO/IOD (boleh gagal)
         continue-on-error: true
