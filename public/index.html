@@ -555,6 +555,13 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-chip{display:flex;flex-wrap:wrap;gap:4px}
 .br-chip i{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 16%, var(--card));color:color-mix(in oklch, var(--w) 75%, var(--ink));border:1px solid color-mix(in oklch, var(--w) 35%, transparent)}
 .br-list{display:grid;gap:2px}
+.br-sent{display:grid;grid-template-columns:1fr 220px;gap:18px;align-items:center}
+.br-donat{display:grid;justify-items:center;gap:8px}
+.br-donat svg{width:160px}
+.br-donat .leg{justify-content:center}
+.br-tgl{display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.br-tgl input{height:30px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font:inherit}
+@media (max-width:760px){.br-sent{grid-template-columns:1fr}}
 .br-rows{display:grid;gap:2px;margin-top:6px}
 .br-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(110px,1.1fr) 2fr auto 90px 54px;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:13.5px}
 .br-row-m{grid-template-columns:minmax(110px,1.1fr) 2fr auto}
@@ -2272,7 +2279,7 @@ const Berita = {
         ["Cerita 7 hari", fmt(h7.reduce((a, t) => a + D.harian[t].cerita, 0)), "satu kejadian = satu cerita"], ["Nada situasi 7 hari", `<span style="color:${this.lbl(sit7)[1]}">${this.lbl(sit7)[0]}</span>`, `skor ${fmt(Math.round(sit7 * 100) / 100)} (−1 s.d. 1)`],
         ["Api tanpa berita", fmt(D.celah.length), "kabupaten dengan kompleks prioritas"]].map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
       <div id="brEx"></div>`;
-    $("#brEx").innerHTML = [this.exHarian(), this.exPeta(), this.exSorotan(), this.exCelah(lonj), this.exTopik(), this.exDaftar()].join("");
+    $("#brEx").innerHTML = [this.exHarian(), `<div id="brSent">${this.exSentimen()}</div>`, this.exPeta(), this.exSorotan(), this.exCelah(lonj), this.exTopik(), this.exDaftar()].join("");
     this.pasangPeta(); this.ikat(); },
   /* 1. volume harian berwarna nada situasi + titik panas nasional 8 hari terakhir */
   exHarian() {
@@ -2289,6 +2296,57 @@ const Berita = {
       <p class="unit">batang = jumlah berita (warna = nada situasi: merah memburuk, hijau membaik); garis putus = titik panas nasional (8 hari terakhir)</p>
       <div class="ctl"><div class="seg">${[[14, "14 hari"], [30, "30 hari"], [120, "120 hari"]].map(([v, n]) => `<button data-br="rentang" data-v="${v}" aria-pressed="${this.rentang === v}">${n}</button>`).join("")}</div></div>
       <svg viewBox="0 0 ${W} ${B + 20}" role="img" aria-label="Berita per hari">${g}</svg><p class="fn">Google News membatasi 100 judul per kueri, jadi hari tersibuk cenderung terhitung kurang.</p></article>`; },
+  /* 1b. sentimen dari waktu ke waktu (gaya Google Trends): rentang & satuan waktu bisa dipilih; nada situasi, nada respons, atau emosi.
+     Emosi = kamus kata di judul (marah, cemas, sedih, harapan); belum divalidasi, jadi petunjuk saja. */
+  EMOSI: [["marah", "Marah", "#c9503a", /\b(kecam|mengecam|geram|marah|murka|kesal|protes|tuntut|menuntut|desak|mendesak|salahkan|menyalahkan|gugat|menggugat|somasi|demo|unjuk rasa|sesalkan|menyesalkan|lamban|abai|lalai)/],
+    ["cemas", "Cemas & takut", "#e58a45", /\b(ancam|mengancam|ancaman|waspada|khawatir|cemas|bahaya|berbahaya|darurat|takut|panik|siaga|was-was|kepung|dikepung|mengepung|meluas)/],
+    ["sedih", "Sedih & duka", "#5f6fb0", /\b(korban|tewas|meninggal|duka|menderita|kehilangan|mengungsi|pengungsi|sakit|ispa|sesak|balita|hangus|musnah|rugi|kerugian)/],
+    ["harapan", "Harapan & lega", "#5a9e74", /\b(padam|dipadamkan|berhasil|turun|menurun|membaik|hujan|reda|mereda|terkendali|lega|pulih|apresiasi|syukur|bantuan|tuntas|bersih|cerah)/]],
+  sn: {rentang: 30, dari: "", sampai: "", unit: "hari", seri: "situasi", prov: ""},
+  emosi(a) { if (a._em) return a._em; const t = a.judul.toLowerCase(); return a._em = this.EMOSI.filter(e => e[3].test(t)).map(e => e[0]); },
+  exSentimen() {
+    const D = this.d, o = this.sn, semua = Object.keys(D.harian).sort(), akhir = o.sampai || semua.at(-1), awal = o.dari || semua[Math.max(0, semua.length - o.rentang)];
+    const kunci = t => { if (o.unit === "hari") return t; const d = new Date(t + "T00:00:00Z"), w = (d.getUTCDay() + 6) % 7; return new Date(d - w * 864e5).toISOString().slice(0, 10); };
+    const B = new Map(); for (const t of semua) if (t >= awal && t <= akhir) B.set(kunci(t), {n: 0, c: {}});
+    const SERI = o.seri === "situasi" ? [["negatif", "Memburuk", "#c9503a"], ["netral", "Netral", "#8a96a8"], ["positif", "Membaik", "#5a9e74"]]
+      : o.seri === "respons" ? [["negatif", "Kritik", "#c9503a"], ["netral", "Netral", "#8a96a8"], ["positif", "Apresiasi", "#5a9e74"]] : this.EMOSI.map(([k, n, w]) => [k, n, w]);
+    const tot = {}; let N = 0;
+    /* agregat harian dari pipeline (seluruh arsip) bila ada; kalau belum, hitung dari daftar artikel yang diekspor */
+    const agr = o.prov ? D.prov_harian?.[o.prov] : D.harian, pakaiAgr = !!(o.prov ? D.prov_harian : Object.values(D.harian)[0]?.situasi_n);
+    if (pakaiAgr) for (const t of semua) { if (t < awal || t > akhir) continue; const x = agr?.[t], b = B.get(kunci(t)); if (!x || !b) continue;
+      b.n += x.n; N += x.n; const v = o.seri === "emosi" ? x.emosi || {} : Object.fromEntries(["negatif", "netral", "positif"].map((l, i) => [l, (o.seri === "situasi" ? x.situasi_n : x.respons_n)?.[i] || 0]));
+      for (const [l, c] of Object.entries(v)) { b.c[l] = (b.c[l] || 0) + c; tot[l] = (tot[l] || 0) + c; } }
+    else for (const a of D.artikel) { const t = a.tgl.slice(0, 10); if (t < awal || t > akhir || (o.prov && !a.prov?.includes(o.prov))) continue; const b = B.get(kunci(t)); if (!b) continue;
+      b.n++; N++; const ls = o.seri === "emosi" ? this.emosi(a) : [o.seri === "situasi" ? a.label_situasi : a.label_respons]; for (const l of ls) { b.c[l] = (b.c[l] || 0) + 1; tot[l] = (tot[l] || 0) + 1; } }
+    const xs = [...B.keys()], W = 700, H = 230, L = 40, T = 12, Bt = 200, dx = (W - L - 10) / Math.max(1, xs.length - 1), X = i => L + i * dx;
+    const pct = (b, k) => b.n ? (b.c[k] || 0) / b.n * 100 : null, mx = Math.max(10, ...xs.flatMap(x => SERI.map(([k]) => pct(B.get(x), k) || 0)));
+    const Y = v => Bt - v / mx * (Bt - T);
+    let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 10}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="10" opacity=".6">${Math.round(mx * f)}%</text>`).join("");
+    g += SERI.map(([k, , w]) => { let d = "", up = false; xs.forEach((x, i) => { const v = pct(B.get(x), k); if (v == null) { up = false; return; } d += (up ? "L" : "M") + X(i).toFixed(1) + "," + Y(v).toFixed(1); up = true; });
+      return `<path d="${d}" fill="none" stroke="${w}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`; }).join("");
+    const lbl = x => o.unit === "hari" ? `${x.slice(8)}/${x.slice(5, 7)}` : `mg ${x.slice(8)}/${x.slice(5, 7)}`, step = Math.ceil(xs.length / 8);
+    g += xs.map((x, i) => { const b = B.get(x);
+      return `<rect x="${X(i) - dx / 2}" y="${T}" width="${Math.max(2, dx)}" height="${Bt - T}" fill="transparent" class="hov" data-tip="<b>${o.unit === "hari" ? x : "minggu mulai " + x}</b> · ${fmt(b.n)} berita<br>${SERI.map(([k, n, w]) => `<span style='color:${w}'>●</span> ${n}: ${b.n ? Math.round(pct(b, k)) + "%" : "–"}`).join("<br>")}"/>`
+        + (i % step === 0 || i === xs.length - 1 ? `<text x="${X(i)}" y="${Bt + 16}" text-anchor="middle" font-size="10" opacity=".65">${lbl(x)}</text>` : ""); }).join("");
+    /* donat porsi seluruh rentang */
+    const S2 = SERI.map(([k, n, w]) => [n, w, tot[k] || 0]), jum = S2.reduce((a, x) => a + x[2], 0) || 1; let sud = -Math.PI / 2;
+    const busur = S2.map(([n, w, v]) => { const a = v / jum * Math.PI * 2; if (!v) return ""; const x1 = 80 + 62 * Math.cos(sud), y1 = 80 + 62 * Math.sin(sud); sud += a; const x2 = 80 + 62 * Math.cos(sud), y2 = 80 + 62 * Math.sin(sud);
+      return v === jum ? `<circle cx="80" cy="80" r="62" fill="none" stroke="${w}" stroke-width="26"/>` : `<path d="M${x1},${y1}A62,62 0 ${a > Math.PI ? 1 : 0} 1 ${x2},${y2}" fill="none" stroke="${w}" stroke-width="26" data-tip="${n}: ${fmt(v)} (${Math.round(v / jum * 100)}%)"/>`; }).join("");
+    const top = [...S2].sort((a, b) => b[2] - a[2])[0];
+    const pv = [...new Set(D.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    const nmSeri = {situasi: "nada situasi", respons: "nada terhadap penanganan", emosi: "emosi di judul"}[o.seri];
+    return `<article class="ex"><h3>${o.seri === "emosi" ? "Emosi yang paling sering muncul" : "Nada yang dominan"}: <span class="hl">${top[0]}</span> (${Math.round(top[2] / jum * 100)}%) dalam ${fmt(N)} berita</h3>
+      <p class="sub">Sentimen berita dari waktu ke waktu</p><p class="unit">garis = porsi berita per ${o.unit} dengan ${nmSeri} tersebut; donat = porsi seluruh rentang. Arahkan kursor ke grafik untuk angkanya.</p>
+      <div class="ctl" style="flex-wrap:wrap">${`<div class="seg">${[["situasi", "Nada situasi"], ["respons", "Nada penanganan"], ["emosi", "Emosi"]].map(([v, n]) => `<button data-sn="seri" data-v="${v}" aria-pressed="${o.seri === v}">${n}</button>`).join("")}</div>`}
+        <div class="seg">${[[7, "7 hari"], [30, "30 hari"], [90, "90 hari"], [120, "Semua"]].map(([v, n]) => `<button data-sn="rentang" data-v="${v}" aria-pressed="${!o.dari && o.rentang === v}">${n}</button>`).join("")}</div>
+        <div class="seg">${[["hari", "Harian"], ["minggu", "Mingguan"]].map(([v, n]) => `<button data-sn="unit" data-v="${v}" aria-pressed="${o.unit === v}">${n}</button>`).join("")}</div>
+        <label class="br-tgl">dari <input type="date" data-snf="dari" value="${awal}" min="${semua[0]}" max="${semua.at(-1)}"></label><label class="br-tgl">sampai <input type="date" data-snf="sampai" value="${akhir}" min="${semua[0]}" max="${semua.at(-1)}"></label>
+        <select data-snf="prov" aria-label="Provinsi"><option value="">Semua provinsi</option>${pv.map(k => `<option value="${k}" ${k === o.prov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select></div>
+      <div class="br-sent"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Sentimen dari waktu ke waktu">${g}</svg>
+        <div class="br-donat"><svg viewBox="0 0 160 160" role="img" aria-label="Porsi sentimen">${busur}<text x="80" y="78" text-anchor="middle" font-size="22" font-weight="800">${Math.round(top[2] / jum * 100)}%</text><text x="80" y="96" text-anchor="middle" font-size="11" opacity=".7">${esc(top[0].toLowerCase())}</text></svg>
+          <div class="leg">${S2.map(([n, w, v]) => `<span><i class="sw dot" style="background:${w}"></i>${n} <b>${Math.round(v / jum * 100)}%</b></span>`).join("")}</div></div></div>
+      <p class="fn">${o.seri === "emosi" ? "Emosi dibaca dari kata di judul (mis. kecam, desak = marah; ancam, waspada = cemas; korban, ISPA = sedih; padam, hujan = harapan). Satu berita bisa membawa lebih dari satu emosi, dan banyak berita tidak membawa emosi apa pun. Kamus ini belum diuji terhadap label tangan." : "Nada dinilai bot dari kata di judul; akurasinya tertera di bawah daftar berita."} Google News membatasi 100 judul per kueri, jadi hari tersibuk cenderung terhitung kurang.</p></article>`; },
+
   /* 2. peta gelembung per kabupaten + api tanpa berita */
   exPeta() {
     return `<article class="ex"><h3>Sebaran berita 7 hari dan <span class="hl">${fmt(this.d.celah.length)} kabupaten</span> dengan api prioritas yang tidak diberitakan</h3><p class="sub">Peta berita per kabupaten</p>
@@ -2417,6 +2475,7 @@ const Berita = {
     const el = $("#berita");
     el.onclick = e => {
       const r = e.target.closest("[data-br]"); if (r) { this[r.dataset.br] = +r.dataset.v; return nanti(() => this.render()); }
+      const sn = e.target.closest("[data-sn]"); if (sn) { const k = sn.dataset.sn; this.sn[k] = k === "rentang" ? +sn.dataset.v : sn.dataset.v; if (k === "rentang") this.sn.dari = this.sn.sampai = ""; return nanti(() => $("#brSent").innerHTML = this.exSentimen()); }
       const tr = e.target.closest("[data-topikr]"); if (tr) { const k = tr.dataset.topikr; return this.rinciKumpulan(`Topik: ${TOPIK_B[k] || k}`, this.d.artikel.filter(a => a.topik?.includes(k))); }
       const md = e.target.closest("[data-media]"); if (md) { const m = md.dataset.media; return this.rinciKumpulan(`Media: ${esc(m)}`, this.d.artikel.filter(a => a.sumber === m)); }
       const h = e.target.closest("[data-h]"); if (h) { this.f.hal = +h.dataset.h; return this.ulangDaftar(); }
@@ -2424,6 +2483,7 @@ const Berita = {
       const ce = e.target.closest("[data-celah]"); if (ce) return this.rinciCelah(+ce.dataset.celah);
       const lj = e.target.closest("[data-lonj]"); if (lj) return this.rinciLonj(+lj.dataset.lonj); };
     el.onkeydown = e => { if (e.key === "Enter" && e.target.matches("[data-celah],[data-lonj]")) e.target.click(); };
+    el.onchange = e => { const x = e.target.closest("[data-snf]"); if (!x) return; this.sn[x.dataset.snf] = x.value; nanti(() => $("#brSent").innerHTML = this.exSentimen()); };
     el.oninput = e => { const x = e.target.closest("[data-f]"); if (!x) return; this.f[x.dataset.f] = x.value; this.f.hal = 0; clearTimeout(this._t); this._t = setTimeout(() => this.ulangDaftar(), x.tagName === "INPUT" ? 250 : 0); };
     this.ulangDaftar(); },
 };
