@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Posko Karhutla Indonesia</title>
+<title>Karhutla Indonesia</title>
 <meta name="description" content="Pemantauan titik panas, bahaya cuaca kebakaran, kompleks kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi Indonesia.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -670,13 +670,11 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
 <header class="top">
   <div class="mark">
-    <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z" fill="oklch(76% .16 58)"/><path d="M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z" fill="oklch(90% .12 95)"/></svg>
-    <details class="bencana"><summary>Posko Karhutla</summary><div class="menu"><a href="./" aria-current="page">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a><a href="./warga/">Lapor Warga<small>Laporan warga: listrik, sinyal, BBM, bantuan</small></a></div></details>
+    <details class="bencana"><summary>Karhutla</summary><div class="menu"><a href="./" aria-current="page">Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a><a href="./warga/">Lapor Warga<small>Laporan warga: listrik, sinyal, BBM, bantuan</small></a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
-    <span class="jam num" id="jam" aria-label="Jam WIB">--.--.--</span>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </button>
@@ -842,7 +840,6 @@ $("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current=
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
 
 /* jam & tema */
-setInterval(() => $("#jam").textContent = new Date().toLocaleTimeString("id-ID", {...WIB, hour12: false}).replace(/:/g, ".") + " WIB", 1000);
 const temaAwal = bacaLokal("pk-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pk-tema", t); nanti(() => Peta.gantiDasar()); };
