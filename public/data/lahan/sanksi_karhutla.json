@@ -1,0 +1,710 @@
+{
+ "diperbarui": "2026-10-13",
+ "catatan": "Hanya kasus dengan sumber publik yang bisa diperiksa; status per tanggal sumber dan bisa sudah berubah. Penyegelan = tindakan penyelidikan, belum putusan. Gugatan yang putusannya belum terverifikasi ditandai di status. Nilai = nilai putusan menurut KLHK; bila hanya nilai gugatan yang diketahui, ditulis 'gugatan'. Nama di peta konsesi yang ejaannya berbeda (mis. Kalista/Kallista Alam) dicocokkan manual lewat provinsi dan kabupaten.",
+ "jenis": {
+  "perdata": "gugatan ganti rugi/pemulihan lingkungan (KLHK/Kemenhut/KLH sebagai penggugat)",
+  "pidana": "putusan pidana korporasi",
+  "administratif": "sanksi administratif kementerian (paksaan pemerintah, pembekuan, pencabutan)",
+  "penyegelan": "penyegelan areal untuk penyelidikan, belum ada putusan"
+ },
+ "kasus": [
+  {
+   "id": "waj-perdata",
+   "nama": "PT Waringin Agro Jaya",
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; proses eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Pengadilan Tinggi Putuskan Waringin Agro Bakar Lahan",
+     "penerbit": "Mongabay Indonesia",
+     "tanggal": "2017-12-06",
+     "url": "https://www.mongabay.co.id/2017/12/06/pengadilan-tinggi-putuskan-waringin-agro-bakar-lahan-pakar-pemerintah-perlu-proaktif-eksekusi/"
+    }
+   ],
+   "tahun_putusan": 2017,
+   "nilai_rp": 466460000000.0,
+   "perkara": "PN Jakarta Selatan (Feb 2017), dikuatkan PT Jakarta (Nov 2017)"
+  },
+  {
+   "id": "rkk-perdata",
+   "nama": "PT Ricky Kurniawan Kertapersada",
+   "prov": "15",
+   "kab": "Muaro Jambi",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; proses eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Perusahaan Kebun PT RKK Divonis Rp191 Miliar",
+     "penerbit": "Agro Indonesia",
+     "tanggal": "2017-12-21",
+     "url": "https://agroindonesia.co.id/perusahaan-kebun-pt-rkk-divonis-rp191-miliar/"
+    }
+   ],
+   "tahun_putusan": 2017,
+   "nilai_rp": 191800000000.0
+  },
+  {
+   "id": "pu-perdata",
+   "nama": "PT Palmina Utama",
+   "prov": "63",
+   "kab": "Banjar",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; proses eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Gugat 20 Korporasi Terkait Kebakaran Hutan dan Lahan",
+     "penerbit": "Republika",
+     "tanggal": "2021-08-31",
+     "url": "https://news.republika.co.id/berita/qyod3g428/klhk-gugat-20-korporasi-terkait-kebakaran-hutan-dan-lahan"
+    }
+   ],
+   "nilai_rp": 22290000000.0
+  },
+  {
+   "id": "jjp-perdata",
+   "nama": "PT Jatim Jaya Perkasa",
+   "prov": "14",
+   "kab": "Rokan Hilir",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; proses eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2013,
+   "tahun_putusan": 2018,
+   "nilai_rp": 491020000000.0,
+   "perkara": "MA 1095 K/PDT/2018"
+  },
+  {
+   "id": "ka-perdata",
+   "nama": "PT Kallista Alam",
+   "prov": "11",
+   "kab": "Nagan Raya",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; KLHK Jul 2024: ganti rugi materiil Rp114 miliar dibayar, pemulihan belum tuntas",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Tagih Ganti Rugi Kebakaran Hutan Rp 6,1 Triliun ke 18 Perusahaan",
+     "penerbit": "Katadata",
+     "tanggal": "2024-07-12",
+     "url": "https://katadata.co.id/ekonomi-hijau/ekonomi-sirkular/6690fc9a510b7/klhk-tagih-ganti-rugi-kebakaran-hutan-rp-6-1-triliun-ke-18-perusahaan"
+    }
+   ],
+   "nilai_rp": 366060000000.0,
+   "alias": [
+    "PT Kalista Alam"
+   ]
+  },
+  {
+   "id": "sps-perdata",
+   "nama": "PT Surya Panen Subur",
+   "prov": "11",
+   "kab": "Nagan Raya",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; KLHK Jul 2024: Rp68 miliar telah dibayar",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Tagih Ganti Rugi Kebakaran Hutan Rp 6,1 Triliun ke 18 Perusahaan",
+     "penerbit": "Katadata",
+     "tanggal": "2024-07-12",
+     "url": "https://katadata.co.id/ekonomi-hijau/ekonomi-sirkular/6690fc9a510b7/klhk-tagih-ganti-rugi-kebakaran-hutan-rp-6-1-triliun-ke-18-perusahaan"
+    }
+   ],
+   "nilai_rp": 439010000000.0
+  },
+  {
+   "id": "nsp-perdata",
+   "nama": "PT National Sago Prima",
+   "prov": "14",
+   "kab": "Kepulauan Meranti",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; KLHK Jul 2024: Rp160 miliar dari kewajiban ganti rugi Rp319 miliar dibayar",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Tagih Ganti Rugi Kebakaran Hutan Rp 6,1 Triliun ke 18 Perusahaan",
+     "penerbit": "Katadata",
+     "tanggal": "2024-07-12",
+     "url": "https://katadata.co.id/ekonomi-hijau/ekonomi-sirkular/6690fc9a510b7/klhk-tagih-ganti-rugi-kebakaran-hutan-rp-6-1-triliun-ke-18-perusahaan"
+    }
+   ],
+   "nilai_rp": 1070000000000.0,
+   "perkara": "MA 3067 K/Pdt/2018 jo. 808 PK/Pdt/2020"
+  },
+  {
+   "id": "atga-perdata",
+   "nama": "PT Agro Tumbuh Gemilang Abadi",
+   "prov": "15",
+   "kab": "Tanjung Jabung Timur",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; persiapan eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    }
+   ],
+   "tahun_kebakaran": 2015,
+   "nilai_rp": 590540000000.0
+  },
+  {
+   "id": "raj-perdata",
+   "nama": "PT Rambang Agro Jaya",
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; persiapan eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Ministry of Environment and Forestry v. PT Rambang Agro Jaya",
+     "penerbit": "Climate Case Chart (Sabin Center)",
+     "tanggal": "2021-01-11",
+     "url": "https://www.climatecasechart.com/document/ministry-of-environment-and-forestry-v-pt-rambang-agro-jaya_3b6d"
+    },
+    {
+     "judul": "Indonesia's highest court fines M'sian company RM60m over forest fires",
+     "penerbit": "Malaysiakini",
+     "tanggal": "2022-08-28",
+     "url": "https://m8.malaysiakini.com/en/news/633746"
+    }
+   ],
+   "grup": "Kulim (Malaysia) Berhad",
+   "tahun_putusan": 2021,
+   "nilai_rp": 199560000000.0,
+   "perkara": "445/Pdt.G/2019/PN.Jkt.Pst"
+  },
+  {
+   "id": "aus-perdata",
+   "nama": "PT Arjuna Utama Sawit",
+   "prov": "62",
+   "kab": "Katingan",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; PK ditolak MA, persiapan eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "MA Denda Perusahaan Pembakar Hutan Kalteng Rp 342 Miliar",
+     "penerbit": "detikNews",
+     "tanggal": "2022-08-04",
+     "url": "https://news.detik.com/berita/d-6214735/ma-denda-perusahaan-pembakar-hutan-kalteng-rp-342-miliar"
+    }
+   ],
+   "tahun_kebakaran": 2015,
+   "nilai_rp": 342980000000.0
+  },
+  {
+   "id": "klm-perdata",
+   "nama": "PT Kalimantan Lestari Mandiri",
+   "prov": "62",
+   "kab": "Kapuas",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; persiapan eksekusi (Agu 2023)",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Gugat 20 Korporasi Terkait Kebakaran Hutan dan Lahan",
+     "penerbit": "Republika",
+     "tanggal": "2021-08-31",
+     "url": "https://news.republika.co.id/berita/qyod3g428/klhk-gugat-20-korporasi-terkait-kebakaran-hutan-dan-lahan"
+    }
+   ],
+   "nilai_rp": 299950000000.0
+  },
+  {
+   "id": "ku-perdata",
+   "nama": "PT Kaswari Unggul",
+   "prov": "15",
+   "kab": "Tanjung Jabung Timur",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; PK ditolak MA 30 Okt 2023",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "KLHK Segera Eksekusi Putusan PK Karhutla PT KU Sebesar Rp 25 M",
+     "penerbit": "detikNews",
+     "tanggal": "2023-11-01",
+     "url": "https://news.detik.com/berita/d-7014492/klhk-segera-eksekusi-putusan-pk-karhutla-pt-ku-sebesar-rp-25-m"
+    }
+   ],
+   "tahun_kebakaran": 2015,
+   "tahun_putusan": 2023,
+   "nilai_rp": 25530000000.0,
+   "perkara": "MA 888 PK/PDT/2023"
+  },
+  {
+   "id": "ks-perdata",
+   "nama": "PT Kumai Sentosa",
+   "prov": "62",
+   "kab": "Kotawaringin Barat",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; MA mengabulkan PK KLHK 18 Jul 2023",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Buntut Kasus Karhutla, MA Tuntut PT KS Ganti Rugi 175 M",
+     "penerbit": "Betahita",
+     "tanggal": "2023-08-20",
+     "url": "https://www.betahita.id/berita/9132/buntut-kasus-karhutla-ma-tuntut-pt-ks-ganti-rugi-175-m"
+    }
+   ],
+   "tahun_putusan": 2023,
+   "nilai_rp": 175180000000.0,
+   "perkara": "MA 527 PK/Pdt/2023"
+  },
+  {
+   "id": "rka-perdata",
+   "nama": "PT Rafi Kamajaya Abadi",
+   "prov": "61",
+   "kab": "Melawi",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; kasasi ditolak MA 3 Jul 2023",
+   "sumber": [
+    {
+     "judul": "KLHK gugat 22 perusahaan penyebab kebakaran hutan dan lahan",
+     "penerbit": "ANTARA (mengutip Dirjen Gakkum KLHK)",
+     "tanggal": "2023-08-18",
+     "url": "https://www.antaranews.com/berita/3687174/klhk-gugat-22-perusahaan-penyebab-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "MA Jatuhkan Denda Rp 920 M ke Pemilik Konsesi Sawit Terbakar di Kalbar",
+     "penerbit": "Katadata",
+     "tanggal": "2023-07-27",
+     "url": "https://katadata.co.id/berita/nasional/64c2366236ef4/ma-jatuhkan-denda-rp-920-m-ke-pemilik-konsesi-sawit-terbakar-di-kalbar"
+    }
+   ],
+   "tahun_kebakaran": 2019,
+   "tahun_putusan": 2023,
+   "nilai_rp": 920010000000.0
+  },
+  {
+   "id": "bmh-perdata",
+   "nama": "PT Bumi Mekar Hijau",
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; dieksekusi, Rp78,5 miliar disetor ke kas negara",
+   "sumber": [
+    {
+     "judul": "KLHK Gugat 20 Korporasi Terkait Kebakaran Hutan dan Lahan",
+     "penerbit": "Republika",
+     "tanggal": "2021-08-31",
+     "url": "https://news.republika.co.id/berita/qyod3g428/klhk-gugat-20-korporasi-terkait-kebakaran-hutan-dan-lahan"
+    },
+    {
+     "judul": "Baru BMH Bayar Gugatan Rp 78 Miliar, Tiga Triliun Menyusul",
+     "penerbit": "Kompas.id",
+     "tanggal": "2019-10-07",
+     "url": "https://www.kompas.id/baca/utama/2019/10/07/baru-bmh-bayar-bayar-gugatan-rp-78-miliar-tiga-triliun-menyusul"
+    }
+   ],
+   "tahun_kebakaran": 2014,
+   "nilai_rp": 78500000000.0
+  },
+  {
+   "id": "wa-perdata",
+   "nama": "PT Waimusi Agroindah",
+   "prov": "16",
+   "kab": "",
+   "jenis": "perdata",
+   "status": "berkekuatan hukum tetap; dibayar bertahap (Okt 2019)",
+   "sumber": [
+    {
+     "judul": "Baru BMH Bayar Gugatan Rp 78 Miliar, Tiga Triliun Menyusul",
+     "penerbit": "Kompas.id",
+     "tanggal": "2019-10-07",
+     "url": "https://www.kompas.id/baca/utama/2019/10/07/baru-bmh-bayar-bayar-gugatan-rp-78-miliar-tiga-triliun-menyusul"
+    }
+   ]
+  },
+  {
+   "id": "kosindo-perdata",
+   "nama": "PT Kosindo Supratama",
+   "prov": "16",
+   "kab": "Ogan Komering Ilir",
+   "jenis": "perdata",
+   "status": "putusan tingkat pertama PN Palembang (31 Okt 2024); status banding tidak terverifikasi",
+   "sumber": [
+    {
+     "judul": "Gugatan Karhutla KLHK Dikabulkan, Perusahan di OKI Harus Ganti Rugi Rp 602 M",
+     "penerbit": "detikSumbagsel",
+     "tanggal": "2024-11-01",
+     "url": "https://www.detik.com/sumbagsel/berita/d-7616279/gugatan-karhutla-klhk-dikabulkan-perusahan-di-oki-harus-ganti-rugi-rp-602-m"
+    }
+   ],
+   "tahun_kebakaran": 2023,
+   "tahun_putusan": 2024,
+   "nilai_rp": 602400000000.0,
+   "perkara": "5/Pdt.G/LH/2024/PN Plg"
+  },
+  {
+   "id": "sari-perdata",
+   "nama": "PT Sari Asri Rejeki Indonesia",
+   "prov": "74",
+   "kab": "Kolaka Timur",
+   "jenis": "perdata",
+   "status": "MA mengabulkan PK KLHK (27 Mar 2024); nilai akhir putusan belum terverifikasi, gugatan Rp405,6 miliar",
+   "sumber": [
+    {
+     "judul": "Siaran Pers Putusan PK PT SARI",
+     "penerbit": "Ditjen Gakkum KLHK",
+     "tanggal": "2024-04-02",
+     "url": "https://gakkum.menlhk.go.id/assets/info-publik/SIARAN_PERS_PUTUSAN_PK_PT_SARI_Rev_3_April_2024_2_edit.pdf"
+    },
+    {
+     "judul": "KLHK gugat PT SA terkait karhutla atas kerugian Rp405 miliar",
+     "penerbit": "Tirto",
+     "tanggal": "2019-09-24",
+     "url": "https://tirto.id/klhk-gugat-pt-sa-terkait-karhutla-atas-kerugian-rp405-miliar-eldl"
+    }
+   ],
+   "tahun_kebakaran": 2018,
+   "tahun_putusan": 2024,
+   "nilai_gugatan_rp": 405600000000.0,
+   "perkara": "MA 169 PK/PDT/2024"
+  },
+  {
+   "id": "pg-perdata",
+   "nama": "PT Pranaindah Gemilang",
+   "prov": "61",
+   "kab": "",
+   "jenis": "perdata",
+   "status": "gugatan KLHK didaftarkan 2019 (Rp238,6 miliar); putusan belum terverifikasi",
+   "sumber": [
+    {
+     "judul": "Baru BMH Bayar Gugatan Rp 78 Miliar, Tiga Triliun Menyusul",
+     "penerbit": "Kompas.id",
+     "tanggal": "2019-10-07",
+     "url": "https://www.kompas.id/baca/utama/2019/10/07/baru-bmh-bayar-bayar-gugatan-rp-78-miliar-tiga-triliun-menyusul"
+    }
+   ],
+   "nilai_gugatan_rp": 238600000000.0
+  },
+  {
+   "id": "apl-perdata",
+   "nama": "PT Asia Palm Lestari",
+   "prov": "61",
+   "kab": "",
+   "jenis": "perdata",
+   "status": "gugatan KLHK didaftarkan 2019 (Rp273 miliar); putusan belum terverifikasi",
+   "sumber": [
+    {
+     "judul": "Baru BMH Bayar Gugatan Rp 78 Miliar, Tiga Triliun Menyusul",
+     "penerbit": "Kompas.id",
+     "tanggal": "2019-10-07",
+     "url": "https://www.kompas.id/baca/utama/2019/10/07/baru-bmh-bayar-bayar-gugatan-rp-78-miliar-tiga-triliun-menyusul"
+    }
+   ],
+   "nilai_gugatan_rp": 273000000000.0
+  },
+  {
+   "id": "adei-pidana-2016",
+   "nama": "PT Adei Plantation and Industry",
+   "prov": "14",
+   "kab": "Pelalawan",
+   "jenis": "pidana",
+   "status": "berkekuatan hukum tetap; denda Rp1,5 miliar + pemulihan Rp15,1 miliar disetor Agu 2020",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    },
+    {
+     "judul": "Hakim Hukum PT Adei Pidana Denda Rp 1 Miliar dan Tambahan Pemulihan Lingkungan Rp 2,9 Miliar",
+     "penerbit": "Senarai",
+     "tanggal": "2020-11",
+     "url": "https://senarai.or.id/karhutla/hakim-hukum-pt-adei-pidana-denda-rp-1-miliar-dan-tambahan-pemulihan-lingkungan-rp-29-miliar/"
+    }
+   ],
+   "tahun_kebakaran": 2013,
+   "tahun_putusan": 2016,
+   "nilai_rp": 16600000000.0,
+   "perkara": "MA 2042 K/Pid.Sus/2015"
+  },
+  {
+   "id": "adei-pidana-2020",
+   "nama": "PT Adei Plantation and Industry",
+   "prov": "14",
+   "kab": "Pelalawan",
+   "jenis": "pidana",
+   "status": "putusan PN Pelalawan 2020: denda Rp1 miliar + pemulihan Rp2,9 miliar (kebakaran 4,16 ha)",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    },
+    {
+     "judul": "Hakim Hukum PT Adei Pidana Denda Rp 1 Miliar dan Tambahan Pemulihan Lingkungan Rp 2,9 Miliar",
+     "penerbit": "Senarai",
+     "tanggal": "2020-11",
+     "url": "https://senarai.or.id/karhutla/hakim-hukum-pt-adei-pidana-denda-rp-1-miliar-dan-tambahan-pemulihan-lingkungan-rp-29-miliar/"
+    }
+   ],
+   "tahun_putusan": 2020,
+   "nilai_rp": 3900000000.0,
+   "perkara": "190/Pid.B/LH/2020/PN Plw"
+  },
+  {
+   "id": "adei-segel-2025",
+   "nama": "PT Adei Plantation and Industry",
+   "prov": "14",
+   "kab": "",
+   "jenis": "penyegelan",
+   "status": "areal terbakar disegel KLH (Jul 2025) untuk penyelidikan; bukan putusan",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2025
+  },
+  {
+   "id": "multi-segel-2025",
+   "nama": "PT Multi Gambut Industri",
+   "prov": "14",
+   "kab": "",
+   "jenis": "penyegelan",
+   "status": "areal terbakar disegel KLH (Jul 2025) untuk penyelidikan; bukan putusan",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2025
+  },
+  {
+   "id": "tunggal-segel-2025",
+   "nama": "PT Tunggal Mitra Plantation",
+   "prov": "14",
+   "kab": "",
+   "jenis": "penyegelan",
+   "status": "areal terbakar disegel KLH (Jul 2025) untuk penyelidikan; bukan putusan",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2025
+  },
+  {
+   "id": "sumatera-segel-2025",
+   "nama": "PT Sumatera Riang Lestari",
+   "prov": "14",
+   "kab": "",
+   "jenis": "penyegelan",
+   "status": "areal terbakar disegel KLH (Jul 2025) untuk penyelidikan; bukan putusan; perusahaan menyatakan lokasi segel bukan arealnya sejak 2022",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2025
+  },
+  {
+   "id": "jatim-segel-2025",
+   "nama": "PT Jatim Jaya Perkasa",
+   "prov": "14",
+   "kab": "",
+   "jenis": "penyegelan",
+   "status": "areal terbakar disegel KLH (Jul 2025) untuk penyelidikan; bukan putusan",
+   "sumber": [
+    {
+     "judul": "Sering Disebut-sebut Kebal Hukum, Ini Daftar Perusahaan Kasus Karhutla yang Disegel KLH",
+     "penerbit": "Liputanoke",
+     "tanggal": "2025-07-31",
+     "url": "https://liputanoke.com/read-63669-2025-07-31-sering-disebutsebut-kebal-hukum-ini-daftar-perusahaan-kasus-karhutla-yang-disegel-klh.html"
+    }
+   ],
+   "tahun_kebakaran": 2025
+  },
+  {
+   "id": "mahkota-adm-2026",
+   "nama": "PT Mahkota Rimba Utama",
+   "prov": "61",
+   "kab": "Ketapang",
+   "jenis": "administratif",
+   "status": "Kemenhut Sep 2026: pembekuan perizinan berusaha + paksaan pemulihan lingkungan; areal terbakar 1275,87 ha",
+   "sumber": [
+    {
+     "judul": "Lima Perusahaan di Kalbar Kena Sanksi Imbas Karhutla, Izin Dibekukan dan Wajib Pulihkan Lingkungan",
+     "penerbit": "Suara Kalbar",
+     "tanggal": "2026-09-05",
+     "url": "https://lawangkuari.suarakalbar.co.id/2026/09/lima-perusahaan-di-kalbar-kena-sanksi.html"
+    }
+   ],
+   "tahun_kebakaran": 2026,
+   "tahun_putusan": 2026,
+   "luas_terbakar_ha": 1275.87
+  },
+  {
+   "id": "hutan-adm-2026",
+   "nama": "PT Hutan Ketapang Industri",
+   "prov": "61",
+   "kab": "Ketapang",
+   "jenis": "administratif",
+   "status": "Kemenhut Sep 2026: pembekuan perizinan berusaha + paksaan pemulihan lingkungan; areal terbakar 670,75 ha",
+   "sumber": [
+    {
+     "judul": "Lima Perusahaan di Kalbar Kena Sanksi Imbas Karhutla, Izin Dibekukan dan Wajib Pulihkan Lingkungan",
+     "penerbit": "Suara Kalbar",
+     "tanggal": "2026-09-05",
+     "url": "https://lawangkuari.suarakalbar.co.id/2026/09/lima-perusahaan-di-kalbar-kena-sanksi.html"
+    }
+   ],
+   "tahun_kebakaran": 2026,
+   "tahun_putusan": 2026,
+   "luas_terbakar_ha": 670.75
+  },
+  {
+   "id": "mayawana-adm-2026",
+   "nama": "PT Mayawana Persada Mas",
+   "prov": "61",
+   "kab": "Ketapang",
+   "jenis": "administratif",
+   "status": "Kemenhut Sep 2026: pembekuan perizinan berusaha + paksaan pemulihan lingkungan; areal terbakar 326,92 ha",
+   "sumber": [
+    {
+     "judul": "Lima Perusahaan di Kalbar Kena Sanksi Imbas Karhutla, Izin Dibekukan dan Wajib Pulihkan Lingkungan",
+     "penerbit": "Suara Kalbar",
+     "tanggal": "2026-09-05",
+     "url": "https://lawangkuari.suarakalbar.co.id/2026/09/lima-perusahaan-di-kalbar-kena-sanksi.html"
+    }
+   ],
+   "tahun_kebakaran": 2026,
+   "tahun_putusan": 2026,
+   "luas_terbakar_ha": 326.92,
+   "alias": [
+    "PT Mayawana Persada"
+   ]
+  },
+  {
+   "id": "duta-adm-2026",
+   "nama": "PT Duta Andalan Sukses",
+   "prov": "61",
+   "kab": "Sanggau",
+   "jenis": "administratif",
+   "status": "Kemenhut Sep 2026: pembekuan perizinan berusaha + paksaan pemulihan lingkungan; areal terbakar 297,3 ha",
+   "sumber": [
+    {
+     "judul": "Lima Perusahaan di Kalbar Kena Sanksi Imbas Karhutla, Izin Dibekukan dan Wajib Pulihkan Lingkungan",
+     "penerbit": "Suara Kalbar",
+     "tanggal": "2026-09-05",
+     "url": "https://lawangkuari.suarakalbar.co.id/2026/09/lima-perusahaan-di-kalbar-kena-sanksi.html"
+    }
+   ],
+   "tahun_kebakaran": 2026,
+   "tahun_putusan": 2026,
+   "luas_terbakar_ha": 297.3
+  },
+  {
+   "id": "wana-adm-2026",
+   "nama": "PT Wana Lestari Jaya",
+   "prov": "61",
+   "kab": "Sanggau",
+   "jenis": "administratif",
+   "status": "Kemenhut Sep 2026: pembekuan perizinan berusaha + paksaan pemulihan lingkungan; areal terbakar 47,84 ha",
+   "sumber": [
+    {
+     "judul": "Lima Perusahaan di Kalbar Kena Sanksi Imbas Karhutla, Izin Dibekukan dan Wajib Pulihkan Lingkungan",
+     "penerbit": "Suara Kalbar",
+     "tanggal": "2026-09-05",
+     "url": "https://lawangkuari.suarakalbar.co.id/2026/09/lima-perusahaan-di-kalbar-kena-sanksi.html"
+    }
+   ],
+   "tahun_kebakaran": 2026,
+   "tahun_putusan": 2026,
+   "luas_terbakar_ha": 47.84
+  }
+ ]
+}

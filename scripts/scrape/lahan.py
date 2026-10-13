@@ -339,7 +339,7 @@ def uji():
     # Puncak Jaya Wijaya (Papua Tengah) bukan gambut
     assert not kena("gambut.geojson", 137.16, -4.08)
     jenis = {f["properties"]["jenis"] for f in json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]}
-    assert jenis == {"sawit", "hph"}, jenis
+    assert {"sawit", "hph"} <= jenis, jenis  # konsesi.geojson kini dibangun scripts/scrape/konsesi.py (+ hti, tambang)
     print("ok")
 
 
@@ -349,6 +349,6 @@ if __name__ == "__main__":
     else:
         unduh()
         tulis("gambut.geojson", gambut())
-        tulis("konsesi.geojson", konsesi())
+        # konsesi.geojson dibangun scripts/scrape/konsesi.py (nama, grup, izin, HTI, tambang); konsesi() di sini tinggal cadangan
         tulis("kawasan.geojson", kawasan())
         uji()

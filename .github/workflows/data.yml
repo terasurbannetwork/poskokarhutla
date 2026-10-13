@@ -52,6 +52,9 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python3 scripts/data/harian.py
 
+      - name: Kompleks x konsesi (perusahaan)
+        run: python3 scripts/data/konsesi_kompleks.py
+
       # titik panas 24 jam untuk lencana "terkonfirmasi satelit" di laporan warga (tab Informasi)
       - name: Titik 24 jam untuk laporan warga
         run: python3 scripts/warga/titik24.py
@@ -197,6 +200,7 @@ jobs:
           python3 scripts/data/udara_rekom.py uji
           python3 scripts/data/berita.py uji
           python3 scripts/data/citra.py uji
+          python3 scripts/data/konsesi_kompleks.py uji
           python3 scripts/data/dampak.py uji
           python3 scripts/data/penerbangan.py uji
           python3 scripts/data/ansambel.py uji
