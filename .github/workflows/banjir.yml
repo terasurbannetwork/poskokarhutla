@@ -40,11 +40,23 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # sama dengan data.yml: berkas karhutla yang di-commit tapi tidak dibuat ulang di CI jangan digantikan versi cache
+      - name: Pakai lapisan statis dari repo, bukan dari cache
+        run: |
+          f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
+            public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
+            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
+            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/lahan public/data/osm)
+          [ -z "$f" ] || git checkout HEAD -- $f
+
       - name: Uji aturan
         run: for s in hujan ansambel_hujan sungai bahaya kejadian status rob posko peringatan riwayat; do python3 scripts/banjir/$s.py uji; done
 
+      # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
+      # Satu ulangan setelah 10 menit sebelum menyerah.
       - name: Prakiraan hujan
-        run: python3 scripts/banjir/hujan.py
+        run: python3 scripts/banjir/hujan.py || { echo "ulang 10 menit lagi"; sleep 600; python3 scripts/banjir/hujan.py; }
 
       # ~1.780 panggilan kuota (349 titik x 51 anggota / 10); sebelum isi-ulang arsip sungai yang menghabiskan sisa kuota.
       # Gagal: status.py jalan tanpa jalur P3 (hujan_ansambel.json lama yang basi diabaikan karena tanggalnya).

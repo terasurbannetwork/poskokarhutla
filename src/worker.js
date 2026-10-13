@@ -91,7 +91,15 @@ async function cekLaju(env, ip, aksi, kini) {
   await env.DB.prepare("INSERT INTO jejak (ip_hash, aksi, waktu) VALUES (?, ?, ?)").bind(ip, aksi, kini).run();
   return null;
 }
-const ipHash = (env, req) => sha(env.IP_SALT + "|" + (req.headers.get("cf-connecting-ip") || "lokal"));
+/* IPv6: satu pelanggan biasanya memegang satu /64 utuh, jadi batas laju per alamat penuh bisa diakali dengan memutar
+   alamat (panen nomor WA di /kontak, banjir laporan). Kunci laju = prefiks /64. IPv4 apa adanya.
+   ponytail: CGNAT IPv4 seluler membuat banyak warga berbagi satu IP; naikkan batas atau pakai Turnstile bila keluhan muncul. */
+export function kunciIP(ip) {
+  if (!ip.includes(":") || ip.includes(".")) return ip;
+  const [a, b] = ip.split("::"), h = a ? a.split(":") : [], t = b ? b.split(":") : [];
+  return [...h, ...Array(Math.max(0, 8 - h.length - t.length)).fill("0"), ...t].slice(0, 4).map(x => parseInt(x || "0", 16).toString(16)).join(":") + "::/64";
+}
+const ipHash = (env, req) => sha(env.IP_SALT + "|" + kunciIP(req.headers.get("cf-connecting-ip") || "lokal"));
 
 async function bacaBody(req) {
   const t = await req.text();

@@ -18,7 +18,8 @@ permissions:
 jobs:
   perbarui:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # jalan dengan cache kosong: harian.py sendiri ± 45 menit (pemanasan FWI ERA5), ditambah berita/citra/penerbangan
+    timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
 
@@ -34,9 +35,17 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
-      # cache public/data lama tidak boleh menimpa lapisan statis yang di-commit jalan bulanan (statis.yml)
+      # cache public/data lama tidak boleh menimpa berkas yang di-commit tapi TIDAK dibuat ulang di sini: lapisan statis
+      # (statis.yml) dan keluaran skrip lokal (sebaran/*, sejarah.py, riwayat_grid.py, lahan.py, osm.py, udara.py, daops.py,
+      # musim.py, luas_satelit.py). ls-files membuang path yang tidak ada, jadi satu path hilang tidak menggagalkan semuanya.
       - name: Pakai lapisan statis dari repo, bukan dari cache
-        run: git checkout HEAD -- public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson public/data/lapisan_tambahan.json 2>/dev/null || true
+        run: |
+          f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
+            public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
+            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
+            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/lahan public/data/osm)
+          [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Titik panas, kompleks, FWI, BNPB
         env:
