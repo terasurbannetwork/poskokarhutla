@@ -73,6 +73,13 @@ jobs:
           key: berita-${{ github.run_id }}
           restore-keys: berita-
 
+      - name: Pulihkan cache gambar berita
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/berita/gambar.json
+          key: berita-gambar-${{ github.run_id }}
+          restore-keys: berita-gambar-
+
       - name: Bot berita (boleh gagal)
         continue-on-error: true
         timeout-minutes: 20
@@ -83,6 +90,13 @@ jobs:
         with:
           path: data/raw/berita/arsip.json
           key: berita-${{ github.run_id }}
+
+      - name: Simpan cache gambar berita
+        if: hashFiles('data/raw/berita/gambar.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/berita/gambar.json
+          key: berita-gambar-${{ github.run_id }}
 
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py

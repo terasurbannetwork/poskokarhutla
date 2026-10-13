@@ -13,6 +13,11 @@ data/raw/banjir/rob/*
 !data/raw/berita/
 data/raw/berita/*
 !data/raw/berita/label_uji.json
+!data/raw/berita/label_uji_en.json
 __pycache__/
 .DS_Store
 data/graf_jalan.json.gz
+
+# Lapor Warga
+node_modules/
+.dev.vars

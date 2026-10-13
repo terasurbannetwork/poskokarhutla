@@ -30,6 +30,16 @@ KUERI_UMUM = ["kebakaran hutan", "karhutla", "kebakaran lahan", "kabut asap", "t
               "water bombing karhutla", "pembakar lahan ditangkap", "status siaga darurat karhutla", "ISPA asap"]
 
 
+# Liputan internasional: edisi Google News berbahasa Inggris/Melayu, kueri dipilih agar condong ke api/asap di Indonesia.
+EDISI = {"id": ("id", "ID", "ID:id"), "en-US": ("en-US", "US", "US:en"), "en-SG": ("en-SG", "SG", "SG:en"), "en-MY": ("en-MY", "MY", "MY:en"),
+         "en-AU": ("en-AU", "AU", "AU:en"), "en-GB": ("en-GB", "GB", "GB:en"), "ms-MY": ("ms", "MY", "MY:ms")}
+KUERI_INT = ([("en-US", q) for q in ("Indonesia forest fires", "Indonesia haze", "Kalimantan fires", "Sumatra fires", "Riau haze",
+                                     "peatland fires Indonesia", "Indonesia wildfire")]
+             + [("en-SG", "transboundary haze Indonesia"), ("en-SG", "Indonesia haze Singapore"), ("en-MY", "haze Malaysia Indonesia fires"),
+                ("en-AU", "Indonesia fires"), ("en-GB", "Indonesia wildfires haze"), ("ms-MY", "jerebu Indonesia"),
+                ("ms-MY", "kebakaran hutan Indonesia")])
+
+
 def kueri():
     return ([(q, "umum") for q in KUERI_UMUM] + [(f"karhutla {PROVINSI[p]}", p) for p in PRIORITAS]
             + [(f"kebakaran hutan {PROVINSI[p].replace('Kep. ', 'Kepulauan ')}", p) for p in PROVINSI])
@@ -74,8 +84,14 @@ def ambil(url, coba=4):
             time.sleep(60 if "429" in str(e) or "503" in str(e) else 5 * (i + 1))
 
 
-def rss(q):
-    return "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": q, "hl": "id", "gl": "ID", "ceid": "ID:id"})
+def rss(q, ed="id"):
+    hl, gl, ceid = EDISI[ed]
+    return "https://news.google.com/rss/search?" + urllib.parse.urlencode({"q": q, "hl": hl, "gl": gl, "ceid": ceid})
+
+
+def domain(u):
+    d = urllib.parse.urlparse(u or "").netloc.lower()
+    return d[4:] if d.startswith("www.") else d
 
 
 def urai(xml):
@@ -83,7 +99,7 @@ def urai(xml):
     out = []
     for it in ET.fromstring(xml).iter("item"):
         url, judul = (it.findtext("link") or "").strip(), (it.findtext("title") or "").strip()
-        sumber = (it.findtext("source") or "").strip()
+        sumber, src = (it.findtext("source") or "").strip(), it.find("source")
         if not url or not judul:
             continue
         if sumber and judul.endswith(" - " + sumber):
@@ -103,14 +119,21 @@ def urai(xml):
         d = re.sub(r"\s+", " ", d).strip(" - ")
         out.append({"id": hashlib.sha1(url.encode()).hexdigest()[:10], "judul": html.unescape(judul), "sumber": sumber,
                     "url": url, "tgl": tgl.isoformat(timespec="minutes"), "ringkas": d[:300] if len(d) > 20 else ""})
+        if src is not None and domain(src.get("url")):
+            out[-1]["domain"] = domain(src.get("url"))
     return out
 
 
 def panen(daftar):
     hasil, gagal = [], 0
     for i, q in enumerate(daftar):
+        ed, q = q if isinstance(q, tuple) else ("id", q)
         try:
-            hasil += urai(ambil(rss(q)))
+            xs = urai(ambil(rss(q, ed)))
+            for x in xs:
+                if ed != "id":
+                    x["ed"] = ed
+            hasil += xs
         except Exception as e:
             gagal += 1
             print("gagal", e, file=sys.stderr)
@@ -162,7 +185,78 @@ def relevan(teks, geo=None):
     return True, kuat.group(0) if kuat else "api + lanskap"
 
 
+# ---- bahasa & asal (liputan internasional)
+STOP_EN = set("the of in to and as for on is are with after over from by its amid has have be was were at it this that into "
+              "says say will than more could can why how what who not no".split())
+STOP_ID = set("yang di ke dari dan ini itu untuk dengan pada akan oleh karena juga dalam atau sudah masih bisa tak belum".split())
+# media Indonesia yang menulis dalam bahasa Inggris tetap "nasional"
+R_MEDIA_RI = re.compile(r"\b(antara|tempo|jakarta (post|globe)|kompas|detik|cnn indonesia|liputan6|okezone|tribun|republika|"
+                        r"independent observer|batam news|aktualita|journalarta|dompet dhuafa|bisnis|insider stories|"
+                        r"indonesia business post|voi|jawa pos|media indonesia|metro tv|kumparan|idn|suara|sindonews|katadata|"
+                        r"mongabay indonesia|inilah|viva|beritasatu|rri|tvri|kontan|merdeka)\b")
+R_SOSMED = re.compile(r"^(facebook|instagram|youtube|tiktok|x|twitter|threads|linkedin)$")
+
+
+def bahasa(a):
+    """'en' / 'ms' / 'id' dari kata fungsi judul; edisi RSS hanya penentu bila kata fungsinya seimbang."""
+    tok = token(a["judul"])
+    en, idn = sum(t in STOP_EN for t in tok), sum(t in STOP_ID for t in tok)
+    ed = a.get("ed", "id")
+    if ed.startswith("en"):
+        return "id" if idn > en else "en"
+    if en >= 2 and en > idn:
+        return "en"
+    return "ms" if ed == "ms-MY" else "id"
+
+
+def asal(a, bhs):
+    return "internasional" if bhs != "id" and not R_MEDIA_RI.search(norm(a["sumber"])) else "nasional"
+
+
+# relevansi untuk judul Inggris/Melayu: harus soal api/asap DAN tertaut ke Indonesia
+R_KUAT_EN = re.compile(r"\b(wild ?fires?|forest (and land )?(fires?|blazes?)|land fires?|peat ?(land)? fires?|bush ?fires?|haze|hazy|hotspots?|"
+                       r"slash and burn|water bombing|karhutla|jerebu|kebakaran (hutan|gambut|tanah|lahan)|"
+                       r"titik panas|kawasan panas)\b")
+R_API_EN = re.compile(r"\b(fires?|blazes?|burn\w*|smoke|smog|flames?|ablaze|firefight\w*|fire ?fight\w*|arson\w*|kebakaran|asap)\b")
+R_ASAP_EN = re.compile(r"\b(smoke|smog|fog|smoky)\b")
+R_ALAM_EN = re.compile(r"\b(forests?|peat\w*|land|hectares?|ha|plantations?|concessions?|national parks?|orangutans?|wildlife|palm oil|"
+                       r"savanna|grassland|mount|mt|volcano|kalimantan|sumatra\w*|borneo|hutan|gambut)\b")
+R_BANGUNAN_EN = re.compile(r"\b(house fire|buildings?|apartments?|factory|market fire|cars?|vehicles?|ships?|vessels?|refinery|"
+                           r"warehouses?|hotel|prison|restaurant|plane|kilang|rumah|kedai)\b")
+R_INDO_EN = re.compile(r"\b(indonesia\w*|indon|prabowo|borneo|sumatra\w*|sumatera|kalimantan|transboundary|rentas sempadan|"
+                       r"cross border haze)\b")
+R_ASING_EN = re.compile(r"\b(california|los angeles|canada|canadian|australia\w*|greece|greek|turkey|spain|portugal|france|chile|"
+                        r"brazil|amazon|korea|japan|hawaii|israel|russia\w*|siberia|bolivia|mexico|europe\w*|africa\w*|india|"
+                        r"china|chinese|thailand|thai|myanmar|laos|vietnam|philippines|manila|cebu|argentina|britain|uk|"
+                        r"scotland|german\w*|italy|oregon|colorado|texas|arizona|washington state|us|u s|america\w*|sabah|sarawak|belgium|"
+                        r"netherlands|dutch|switzerland|austria|poland|sweden|norway|finland|ukraine|egypt|lebanon|syria|iran|"
+                        r"iraq|bangkok|taiwan|hong kong|nepal|pakistan|bangladesh|sri lanka|peru|colombia|venezuela|ecuador)\b")
+
+
+def relevan_int(teks, geo=None, media=""):
+    """(bool, alasan) untuk teks Inggris/Melayu. Asap Malaysia/Singapura hanya diterima bila Indonesia/lintas batas disebut."""
+    t = norm(teks)
+    kuat = R_KUAT_EN.search(t)
+    if not kuat:
+        if not (R_API_EN.search(t) and (R_ALAM_EN.search(t) or R_ASAP_EN.search(t))):
+            return False, "tanpa kata karhutla"
+        if R_BANGUNAN_EN.search(t):
+            return False, "kebakaran bangunan/kendaraan"
+    indo = R_INDO_EN.search(t) or (media and R_MEDIA_RI.search(norm(media)))  # media Indonesia: konteksnya Indonesia
+    if not (indo or (geo and geo["prov"])):
+        return False, "tidak menyebut Indonesia"
+    if R_ASING_EN.search(t) and not R_INDO_EN.search(t):
+        return False, "luar negeri"
+    return True, kuat.group(0) if kuat else "api + lanskap"
+
+
 # ---------------------------------------------------------------- geocoder
+PROV_EN = {"north sumatra": "12", "west sumatra": "13", "south sumatra": "16", "riau islands": "21", "bangka belitung islands": "19",
+           "west java": "32", "central java": "33", "east java": "35", "west nusa tenggara": "52", "east nusa tenggara": "53",
+           "west kalimantan": "61", "central kalimantan": "62", "south kalimantan": "63", "east kalimantan": "64",
+           "north kalimantan": "65", "north sulawesi": "71", "central sulawesi": "72", "south sulawesi": "73",
+           "southeast sulawesi": "74", "west sulawesi": "76", "north maluku": "82", "west papua": "92", "south papua": "93",
+           "central papua": "94", "highland papua": "95", "southwest papua": "96"}
 PROV_SINGKAT = {"kalteng": "62", "kalbar": "61", "kalsel": "63", "kaltim": "64", "kaltara": "65", "sumsel": "16", "sumut": "12",
                 "sumbar": "13", "sulsel": "73", "sulteng": "72", "sultra": "74", "sulut": "71", "sulbar": "76", "jabar": "32",
                 "jateng": "33", "jatim": "35", "ntt": "53", "ntb": "52", "babel": "19", "kepri": "21", "diy": "34",
@@ -211,6 +305,11 @@ class Geo:
                 self.tambah(norm(v), ("prov", kode, True))
         for v, kode in PROV_SINGKAT.items():
             self.tambah(v, ("prov", kode, True))
+        for v, kode in PROV_EN.items():  # judul Inggris: "South Sumatra", "W Kalimantan"
+            self.tambah(v, ("prov", kode, True))
+            arah, sisa = v.split(" ", 1)
+            if arah in ("north", "south", "east", "west", "central"):
+                self.tambah(arah[0] + " " + sisa, ("prov", kode, True))
         nama_kab = {norm(n) for n in kab_nama}
         nama_prov = {norm(p) for p in PROVINSI.values()}
         for nama, ks in kab_nama.items():
@@ -219,6 +318,7 @@ class Geo:
                 self.tambah(n, ("kab", k, n not in KAB_LEMAH))
                 bare = n[5:] if n.startswith("kota ") else n
                 self.tambah("kabupaten " + bare, ("kab", k, True)); self.tambah("kab " + bare, ("kab", k, True))
+                self.tambah(bare + " regency", ("kab", k, True))
                 if n.startswith("kota ") and bare not in nama_prov and bare not in nama_kab:
                     self.tambah(bare, ("kab", k, bare not in KAB_LEMAH))
         for v, nama in KAB_SINGKAT.items():
@@ -322,12 +422,25 @@ TOPIK = {
     "cuaca_iklim": r"\bel nino|\bla nina|\bkemarau|\bhujan|\bbmkg|\bcuaca|\biklim|\bkekeringan|\bkering\b|\bsuhu\b|\bmusim\b",
     "pencegahan_restorasi": r"sekat kanal|\bkanal\b|\bmpa\b|masyarakat peduli api|\bpatroli|\bedukasi|\bsosialisasi|\brestorasi|\bpembasahan|\bembung|sumur bor|\bpencegahan|\bcegah|\bmencegah|deteksi dini|\bbrgm?\b|\bpenanaman|\breboisasi|\bantisipasi",
 }
+TOPIK["asap_kesehatan"] += r"|\bjerebu|\bipu\b"  # Melayu
+TOPIK["hukum"] += r"|\bdisaman|\bsaman\b|\bcuai|\bkecuaian"
+TOPIK_EN = {
+    "kejadian": r"\bfires?\b|\bwildfires?|\bblazes?|\bburn\w*|\bablaze|\bflames?|\bhotspots?|\bspread\w*|\braging|\bscorch",
+    "asap_kesehatan": r"\bhaze|\bhazy|\bsmoke|\bsmog|air quality|\bpsi\b|\bapi\b|\bpm ?2 ?5\b|\bpollut\w*|\brespiratory|\bbreath\w*|\bmasks?\b|\bschools?\b|\btoxic|\bunhealthy|\bhazardous",
+    "penanganan": r"\bfirefight\w*|fire ?fight\w*|\bextinguish\w*|\bput out|water bombing|\bhelicopters?|\bwater bomb\w*|\btask force|\bdeploy\w*|\bsoldiers|\bmilitary|\bpersonnel|\bcloud seeding|weather modification|\bsuppress\w*|\bcontain\w*",
+    "hukum": r"\barrest\w*|\bsuspects?|\bpolice|\bcourt|\blawsuit|\bsue[sd]?\b|\bnegligence|\bsanction\w*|\bprosecut\w*|\binvestigat\w*|\bcompan(y|ies)|\bfirms?\b|\bcorporat\w*|\bconcessions?|\blicen[cs]es?|\bcrackdown|\bperpetrators|\blegal",
+    "kebijakan_anggaran": r"\bpresident|\bprabowo|\bminist\w*|\bgovernment|\bgovt|\bpolicy|\bbudget|\bemergency status|\bnational disaster|\basean|\bdiplomat\w*|\btalks|\bcooperation|\bagreement|\blaw\b|\bparliament|\bdpr\b|\banwar|\bofficials?",
+    "dampak": r"\bdead\b|\bdeaths?|\bkill\w*|\bdie[sd]?\b|\binjur\w*|\bflights?|\bairports?|\beconom\w*|\blosses|\bcost|\borangutans?|\bwildlife|\btigers?|\belephants?|\bevacuat\w*|\bdisplaced|\bhouses|\bschools?\b|\bmalaysia\w*|\bsingapore\w*|\bf1\b|\bgrand prix|\btourism",
+    "cuaca_iklim": r"\bel nino|\bla nina|\bdrought|\bdry (season|weather|spell)|\brain\w*|\bweather|\bclimate|\bmonsoon|\bheat\b|\bbmkg|\bmetmalaysia",
+    "pencegahan_restorasi": r"\bprevent\w*|\brewet\w*|\brestor\w*|\bcanal|\bpatrol\w*|\bpeatland agency|\bbrg\b|\bearly warning|\breforest\w*|\bcommunit(y|ies) fire",
+}
 TOPIK_RE = {k: re.compile(v) for k, v in TOPIK.items()}
+TOPIK_RE_EN = {k: re.compile(v) for k, v in TOPIK_EN.items()}
 
 
-def topik(teks):
+def topik(teks, bhs="id"):
     t = norm(teks)
-    return [k for k, r in TOPIK_RE.items() if r.search(t)]
+    return [k for k, r in (TOPIK_RE_EN if bhs == "en" else TOPIK_RE).items() if r.search(t)]
 
 
 # ---------------------------------------------------------------- sentimen
@@ -379,10 +492,61 @@ RESPONS = {
     "hambat": -1.5, "menghambat": -1.5, "terhambat": -1.5, "kendala": -1.5, "terkendala": -1.5, "kehabisan": -1.5,
     "sulit dijangkau": -1, "rapat terbatas": 0, "percepat": 1, "mempercepat": 1,
 }
-NEGASI = {"tidak", "tak", "belum", "bukan", "tanpa", "jangan", "gak", "nggak", "enggak", "tiada"}
+# Melayu (judul edisi ms-MY memakai leksikon Indonesia + kata ini)
+SITUASI.update({"jerebu": -0.5, "merosot": -1.5, "terjejas": -1.5, "bertambah baik": 2, "pulih": 1.5, "beransur pulih": 2, "susut": 1.5,
+                "tidak sihat": -2, "sihat": 1, "berterusan": -1, "melarat": -1.5, "tutup": -1, "teruk": -2, "dibuka semula": 1.5})
+RESPONS.update({"cuai": -2, "kecuaian": -2, "disaman": -1.5, "saman": -1.5, "gesa": -1, "dalang": -1.5, "mohon maaf": -1,
+                "maklum balas": 0.5, "respons": 0.5, "boikot": -1.5})
+# Inggris. Situasi: memburuk (-) vs membaik (+). Respons: kritik (-) vs apresiasi/tindakan tegas (+). Entri 0 = penghalang.
+SITUASI_EN = {
+    "spread": -1.5, "spreads": -1.5, "spreading": -1.5, "spread into": -2, "worsen": -2, "worsens": -2, "worsening": -2, "worsened": -2,
+    "worst": -2, "rage": -2, "rages": -2, "raging": -2, "choke": -1.5, "chokes": -1.5, "choking": -1.5, "choked": -1.5,
+    "suffocating": -2, "shroud": -1.5, "shrouds": -1.5, "shrouding": -1.5, "blanket": -1.5, "blankets": -1.5, "toxic": -1.5,
+    "hazardous": -2, "unhealthy": -1.5, "very unhealthy": -2.5, "dangerous": -2, "record": -1.5, "high": -1, "remain high": -1.5,
+    "persist": -1, "persists": -1, "persisting": -1, "persistent": -1, "prolonged": -1, "surge": -2, "surges": -2, "spike": -2,
+    "spikes": -2, "soar": -2, "soars": -2, "rise": -1.5, "rises": -1.5, "rising": -1.5, "increase": -1.5, "increases": -1.5,
+    "jump": -1.5, "jumps": -1.5, "grows": -1.5, "escalate": -2, "escalates": -2, "escalating": -2, "devastate": -2,
+    "devastates": -2, "devastating": -2, "devastated": -2, "destroy": -2, "destroys": -2, "destroying": -2, "destroyed": -2,
+    "ravage": -2, "ravages": -2, "burned": -1, "burnt": -1, "scorch": -1.5, "scorched": -1.5, "threaten": -1.5, "threatens": -1.5,
+    "threat": -1, "threatening": -1.5, "endanger": -1.5, "killed": -2.5, "dead": -2.5, "deaths": -2.5, "deadly": -2.5,
+    "injured": -2, "evacuate": -2, "evacuated": -2, "evacuation": -2, "displaced": -2, "flee": -1.5, "disrupt": -1.5,
+    "disrupts": -1.5, "disrupted": -1.5, "disruption": -1.5, "delayed": -1, "cancelled": -1, "diverted": -1, "close": -1,
+    "closes": -1.5, "closed": -1.5, "closure": -1.5, "closures": -1.5, "shut": -1.5, "shuts": -1.5, "crisis": -1.5,
+    "emergency": -1.5, "disaster": -1, "overwhelm": -2, "overwhelms": -2, "ablaze": -1.5, "burning": -1, "burn": -1,
+    "out of control": -2.5, "drought": -1, "el nino": -1, "respiratory": -1.5, "breathing": -1, "smog": -1, "polluted": -1.5,
+    "most polluted": -2, "pollution": -1, "haze": 0, "hazy": 0, "chaos": -2, "hard to put out": -2, "struggle": -1,
+    "battle": -0.5, "battles": -0.5, "battling": -0.5, "risk": -1, "risks": -1, "at risk": -1.5, "deteriorate": -2,
+    "deteriorates": -2, "deteriorating": -2, "plague": -1.5, "toll": -1.5,
+    "extinguished": 2, "put out": 1.5, "contained": 2, "under control": 2, "controlled": 1.5, "subside": 2, "subsides": 2,
+    "subsided": 2, "ease": 1.5, "eases": 2, "easing": 2, "improve": 2, "improves": 2, "improved": 2, "improving": 2,
+    "drop": 1.5, "drops": 1.5, "dropped": 1.5, "decline": 1.5, "declines": 1.5, "falls": 1.5, "fell": 1.5, "plunge": 2,
+    "plunges": 2, "decrease": 1.5, "rain": 1, "rains": 1.5, "rainfall": 1, "clear": 1, "clears": 1.5, "reopen": 1.5,
+    "reopens": 1.5, "reopened": 1.5, "resume": 1, "resumes": 1, "normal": 1.5, "safe": 1, "safety": 1, "released": 1,
+    "freed": 1, "rescued": 0.5, "no active": 2, "fire season": 0, "national disaster status": 0, "air support": 0,
+}
+RESPONS_EN = {
+    "welcome": 1, "welcomes": 1, "praise": 2, "praised": 2, "commend": 2, "commends": 2, "success": 1.5, "successful": 1.5,
+    "effective": 1.5, "swift": 1.5, "deploy": 1, "deploys": 1, "deployed": 1, "rescue": 1, "rescued": 1, "rescues": 1,
+    "arrest": 1.5, "arrested": 1.5, "arrests": 1.5, "suspects": 1, "sanction": 1.5, "sanctions": 1.5, "revoke": 1.5,
+    "revoked": 1.5, "revokes": 1.5, "crackdown": 1.5, "tougher action": 1.5, "tougher": 1, "stricter": 1, "prosecute": 1.5,
+    "investigate": 1, "investigation": 1, "under investigation": 1, "stands ready": 1, "ready to assist": 1, "assist": 1,
+    "cooperation": 1, "help": 0.5, "offers": 0.5, "aid": 0.5, "vows": 0.5, "moves": 0, "releases": 0.5, "acceleration": 1,
+    "criticise": -2, "criticises": -2, "criticised": -2, "criticize": -2, "criticizes": -2, "criticized": -2, "criticism": -2,
+    "accused": -2, "accuse": -2, "accuses": -2, "negligence": -2.5, "gross negligence": -3, "lawsuit": -1.5, "sue": -1.5,
+    "sued": -1.5, "sues": -1.5, "court": -1, "failure": -2, "fail": -2, "failed": -2, "fails": -2, "slow": -2, "blame": -1.5,
+    "blames": -1.5, "mock": -2, "mocks": -2, "roasted": -2, "frustration": -2, "anger": -2, "angry": -2, "outrage": -2,
+    "excuses": -2, "apologise": -1.5, "apologize": -1.5, "no show": -2, "brushes off": -2, "pressure": -1.5, "urge": -1,
+    "urges": -1, "urged": -1, "demand": -1.5, "demands": -1.5, "grievances": -1.5, "recourse": -1, "yet to": -1.5,
+    "no response": -1.5, "lack": -1.5, "lacks": -1.5, "gaps": -1.5, "budget cuts": -1.5, "boycott": -1.5, "do more": -1.5,
+    "must": -0.5, "spin": -1.5, "dont pass the buck": -2, "pass the buck": -2, "hard questions": -1, "not discussed": -1,
+    "tests": -0.5, "complaint": -1.5, "beyond human error": -1, "silent": -2, "swipe": -1.5,
+}
+NEGASI = {"tidak", "tak", "belum", "bukan", "tanpa", "jangan", "gak", "nggak", "enggak", "tiada",
+          "not", "never", "without", "isn", "doesn", "didn", "won", "cannot", "nor"}
 # kata pencegahan menetralkan (bukan membalik) kata sesudahnya: "cegah karhutla meluas" bukan berita meluas
-PENETRAL = {"cegah", "mencegah", "antisipasi", "mengantisipasi", "hadapi", "menghadapi"}
-PENGUAT = {"sangat": 1.5, "makin": 1.5, "semakin": 1.5, "kian": 1.5, "amat": 1.5, "terus": 1.3, "paling": 1.5, "kembali": 1.2}
+PENETRAL = {"cegah", "mencegah", "antisipasi", "mengantisipasi", "hadapi", "menghadapi", "prevent", "preventing", "prevention", "avert", "curb", "despite"}
+PENGUAT = {"sangat": 1.5, "makin": 1.5, "semakin": 1.5, "kian": 1.5, "amat": 1.5, "terus": 1.3, "paling": 1.5, "kembali": 1.2,
+           "very": 1.5, "increasingly": 1.5, "extremely": 1.5, "further": 1.3}
 
 
 def _cocok_leksikon(tok, lex, maks=3):
@@ -420,6 +584,29 @@ def skor(judul, ringkas, lex):
 
 def label(s, ambang=0.25):
     return "positif" if s >= ambang else "negatif" if s <= -ambang else "netral"
+
+
+# ---------------------------------------------------------------- emosi
+# Kata pemicu di judul, dicocokkan di AWAL kata (\bkata). Satu judul boleh membawa beberapa emosi, masing-masing dihitung sekali.
+EMOSI = {
+    "marah": "kecam|mengecam|geram|marah|murka|kesal|protes|tuntut|menuntut|desak|mendesak|salahkan|menyalahkan|gugat|menggugat|somasi|demo|unjuk rasa|sesalkan|menyesalkan|lamban|abai|lalai",
+    "cemas": "ancam|mengancam|ancaman|waspada|khawatir|cemas|bahaya|berbahaya|darurat|takut|panik|siaga|was-was|kepung|dikepung|mengepung|meluas",
+    "sedih": "korban|tewas|meninggal|duka|menderita|kehilangan|mengungsi|pengungsi|sakit|ispa|sesak|balita|hangus|musnah|rugi|kerugian",
+    "harapan": "padam|dipadamkan|berhasil|turun|menurun|membaik|hujan|reda|mereda|terkendali|lega|pulih|apresiasi|syukur|bantuan|tuntas|bersih|cerah",
+}
+EMOSI_EN = {
+    "marah": "condemn|criticis|criticiz|anger|angry|outrage|furious|fury|protest|demand|blame|sue[sd]?\\b|lawsuit|accus|negligen|mock|slam|frustrat|slow|excuses|grievance",
+    "cemas": "threat|warn|alert|fear|worr|concern|danger|hazardous|emergency|panic|risk|spread|chok|toxic|alarm",
+    "sedih": "dead|death|kill|die[sd]?\\b|victim|injur|suffer|loss|displac|evacuat|sick|respiratory|devastat|destroy|grief|mourn",
+    "harapan": "extinguish|put out|contain|improv|eases?\\b|easing|drop|declin|rain|rescu|releas|relie|hope|recover|welcome|help|assist|reopen",
+}
+EMOSI_RE = {k: re.compile(r"\b(" + v.replace("-", " ") + ")") for k, v in EMOSI.items()}
+EMOSI_RE_EN = {k: re.compile(r"\b(" + v + ")") for k, v in EMOSI_EN.items()}
+
+
+def emosi(judul, bhs="id"):
+    t = norm(judul)
+    return [k for k, r in (EMOSI_RE_EN if bhs == "en" else EMOSI_RE).items() if r.search(t)]
 
 
 # ---------------------------------------------------------------- pengelompokan cerita
@@ -493,7 +680,9 @@ def metrik(benar, tebak, kelas=("negatif", "netral", "positif")):
             "f1_makro": round(sum(f1) / max(1, len(f1)), 3), "konfusi": cm}
 
 
-def validasi(jalur=os.path.join(RAW, "label_uji.json"), geo=None):
+def validasi(jalur=os.path.join(RAW, "label_uji.json"), geo=None, en=False):
+    """Relevansi + sentimen pada label tangan. en=True: label_uji_en.json, aturan & leksikon Inggris."""
+    lex_s, lex_r = (SITUASI_EN, RESPONS_EN) if en else (SITUASI, RESPONS)
     if not os.path.exists(jalur):
         return {}
     lab = json.load(open(jalur))
@@ -501,20 +690,119 @@ def validasi(jalur=os.path.join(RAW, "label_uji.json"), geo=None):
            "situasi": {}, "respons": {}}
     rel = [x for x in lab if "relevan" in x]
     if rel:
-        tebak = [relevan(x["judul"] + " " + x.get("ringkas", ""), geo and geo.cari(x["judul"]))[0] for x in rel]
+        tebak = [(relevan_int(x["judul"], geo and geo.cari(x["judul"]), x.get("sumber", "")) if en else
+                  relevan(x["judul"] + " " + x.get("ringkas", ""), geo and geo.cari(x["judul"])))[0] for x in rel]
         tp = sum(1 for x, t in zip(rel, tebak) if t and x["relevan"]); fp = sum(1 for x, t in zip(rel, tebak) if t and not x["relevan"])
         fn = sum(1 for x, t in zip(rel, tebak) if not t and x["relevan"])
         out["relevansi"] = {"n": len(rel), "presisi": round(tp / max(1, tp + fp), 3), "recall": round(tp / max(1, tp + fn), 3),
                             "salah_lolos": [x["judul"] for x, t in zip(rel, tebak) if t and not x["relevan"]][:10],
                             "salah_buang": [x["judul"] for x, t in zip(rel, tebak) if not t and x["relevan"]][:10]}
     sen = [x for x in lab if x.get("situasi")]
-    for dim, lex in (("situasi", SITUASI), ("respons", RESPONS)):
+    for dim, lex in (("situasi", lex_s), ("respons", lex_r)):
         for bag in ("latih", "uji", "semua"):
             xs = [x for x in sen if bag == "semua" or x["bagian"] == bag]
             out[dim][bag] = metrik([x[dim] for x in xs], [label(skor(x["judul"], x.get("ringkas", ""), lex)[0]) for x in xs])
         out[dim]["mayoritas_uji"] = round(Counter(x[dim] for x in sen if x["bagian"] == "uji").most_common(1)[0][1]
                                           / max(1, sum(1 for x in sen if x["bagian"] == "uji")), 3)
     return out
+
+
+# ---------------------------------------------------------------- gambar (thumbnail ala Google News)
+UA_PERAMBAN = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36"
+R_OG = re.compile(r"<meta\b[^>]*?(?:property|name)\s*=\s*[\"'](?:og:image(?::secure_url)?|twitter:image(?::src)?)[\"'][^>]*>", re.I)
+R_CONTENT = re.compile(r"content\s*=\s*[\"']([^\"']+)", re.I)
+
+
+def _get(url, data=None, h=None, maks=400_000):
+    q = urllib.request.Request(url, data=data, headers={"User-Agent": UA_PERAMBAN, "Accept-Language": "en,id;q=0.8", **(h or {})})
+    with urllib.request.urlopen(q, timeout=8) as f:
+        return f.geturl(), f.read(maks).decode("utf-8", "ignore")
+
+
+def url_asli(gurl, jeda):
+    """news.google.com/rss/articles/<id> -> URL penerbit lewat endpoint publik batchexecute (tanpa login)."""
+    gid = urllib.parse.urlparse(gurl).path.rsplit("/", 1)[-1]
+    _, hal = _get(f"https://news.google.com/rss/articles/{gid}", maks=4_000_000); jeda()
+    sg, ts = re.search(r'data-n-a-sg="([^"]+)"', hal), re.search(r'data-n-a-ts="([^"]+)"', hal)
+    if not (sg and ts):
+        return None
+    dalam = json.dumps(["garturlreq", [["X", "X", ["X", "X"], None, None, 1, 1, "US:en", None, 1, None, None, None, None, None, 0, 1],
+                                       "X", "X", 1, [1, 1, 1], 1, 1, None, 0, 0, None, 0], gid, int(ts.group(1)), sg.group(1)])
+    badan = urllib.parse.urlencode({"f.req": json.dumps([[["Fbv4je", dalam, None, "generic"]]])}).encode()
+    _, j = _get("https://news.google.com/_/DotsSplashUi/data/batchexecute", badan,
+                {"Content-Type": "application/x-www-form-urlencoded;charset=UTF-8"}); jeda()
+    u = json.loads(json.loads(j.split("\n\n")[1])[0][2])[1]
+    return u if u.startswith("http") else None
+
+
+def og_gambar(hal, dasar):
+    for m in R_OG.finditer(hal):
+        c = R_CONTENT.search(m.group(0))
+        if c:
+            u = urllib.parse.urljoin(dasar, html.unescape(c.group(1).strip()))
+            if u.startswith("http://"):
+                u = "https://" + u[7:]
+            if u.startswith("https://"):
+                return u
+    return None
+
+
+def perkaya_gambar(out, batas_detik=150, maks_cerita=40, ambil=True):
+    """Pasang `url_asli` + `gambar` (og:image) pada artikel pemimpin cerita yang ditampilkan. Tiap tautan Google News hanya
+    diambil sekali (cache data/raw/berita/gambar.json, termasuk yang gagal). Maks 2 permintaan/detik, batas waktu per jalan,
+    galat apa pun tidak menggagalkan jalan."""
+    p = os.path.join(RAW, "gambar.json")
+    try:
+        cache = json.load(open(p))
+    except Exception:
+        cache = {}
+    t0, n_baru = time.time(), 0
+    jeda = lambda: time.sleep(0.5)
+    per_cerita = defaultdict(list)
+    for a in sorted(out["artikel"], key=lambda a: a["tgl"]):
+        per_cerita[a["cerita"]].append(a)
+    urut = [c["id"] for c in out["sorotan"] + out.get("sorotan_nas", []) + out["internasional"]["sorotan"]]
+    urut += [c["id"] for c in sorted(out["cerita"], key=lambda c: (-c["n_media"], -c["n"]))]
+    urut = list(dict.fromkeys(urut))[:maks_cerita]
+    for cid in urut if ambil else []:
+        for a in per_cerita[cid][:3]:  # pemimpin dulu, lalu dua artikel berikutnya bila gagal
+            if a["url"] in cache:
+                if cache[a["url"]].get("gambar"):
+                    break
+                continue
+            if time.time() - t0 > batas_detik:
+                break
+            e = {"t": dt.datetime.now(WIB).isoformat(timespec="minutes")}
+            try:
+                e["asli"] = url_asli(a["url"], jeda)
+                if e["asli"]:
+                    akhir, hal = _get(e["asli"]); jeda()
+                    e["gambar"] = og_gambar(hal, akhir)
+            except Exception as ex:
+                e["galat"] = str(ex)[:80]
+            cache[a["url"]], n_baru = e, n_baru + 1
+            if e.get("gambar"):
+                break
+    batas = (dt.datetime.now(WIB) - dt.timedelta(days=JENDELA_HARI + 10)).isoformat()
+    cache = {k: v for k, v in cache.items() if v.get("t", "") >= batas}
+    gambar_c = {}
+    for a in out["artikel"]:
+        e = cache.get(a["url"]) or {}
+        if e.get("asli"):
+            a["url_asli"] = e["asli"]
+            a.setdefault("domain", domain(e["asli"]))
+        if e.get("gambar"):
+            a["gambar"] = e["gambar"]
+            gambar_c.setdefault(a["cerita"], e["gambar"])
+    for c in out["cerita"] + out["sorotan"] + out.get("sorotan_nas", []) + out["internasional"]["sorotan"]:
+        if c["id"] in gambar_c:
+            c["gambar"] = gambar_c[c["id"]]
+    if ambil:
+        try:
+            json.dump(cache, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
+        except Exception as ex:
+            print("cache gambar gagal disimpan", ex, file=sys.stderr)
+    return {"baru": n_baru, "cache": len(cache), "dengan_gambar": sum(1 for a in out["artikel"] if a.get("gambar")), "detik": round(time.time() - t0)}
 
 
 # ---------------------------------------------------------------- utama
@@ -550,15 +838,21 @@ def olah(arsip, sekarang, geo):
 
     art = []
     for a in arsip:
-        teks = a["judul"] + " " + a.get("ringkas", "")
-        g = geo.cari(teks)
-        ok, _ = relevan(teks, g)
+        teks, bhs = a["judul"] + " " + a.get("ringkas", ""), bahasa(a)
+        if bhs == "id":
+            g = geo.cari(teks)
+            ok, _ = relevan(teks, g)
+        else:  # "Jakarta" di judul asing = pemerintah pusat, bukan Provinsi DKI
+            g = geo.cari(re.sub(r"(?i)\bjakarta\b", " ", teks))
+            ok = relevan_int(teks, g, a["sumber"])[0] and not R_SOSMED.search(norm(a["sumber"]))
         if not ok:
             continue
-        s1, al1 = skor(a["judul"], a.get("ringkas", ""), SITUASI)
-        s2, al2 = skor(a["judul"], a.get("ringkas", ""), RESPONS)
+        lex_s, lex_r = (SITUASI_EN, RESPONS_EN) if bhs == "en" else (SITUASI, RESPONS)
+        s1, al1 = skor(a["judul"], a.get("ringkas", ""), lex_s)
+        s2, al2 = skor(a["judul"], a.get("ringkas", ""), lex_r)
         t = dt.datetime.fromisoformat(a["tgl"])
-        x = dict(a, prov=g["prov"], kab=g["kab"], kec=g["kec"], lat=g["lat"], lon=g["lon"], presisi=g["presisi"], topik=topik(teks),
+        x = dict({k: v for k, v in a.items() if k != "ed"}, prov=g["prov"], kab=g["kab"], kec=g["kec"], lat=g["lat"], lon=g["lon"], presisi=g["presisi"], topik=topik(teks, bhs),
+                 emosi=emosi(a["judul"], bhs), bahasa=bhs, asal=asal(a, bhs),
                  situasi=s1, respons=s2, label_situasi=label(s1), label_respons=label(s2), alasan={"situasi": al1, "respons": al2},
                  kompleks=None, n_kompleks=None, jarak_prioritas_km=None, _t=t, _k=kunci_judul(a["judul"]), _e=set(g["kec"] or g["kab"]))
         if t >= cakupan and fitur:  # hanya artikel di dalam jendela data api yang bisa ditautkan
@@ -590,6 +884,9 @@ def olah(arsip, sekarang, geo):
                        "kab": list(dict.fromkeys(k for x in g for k in x["kab"]))[:10],
                        "topik": [t for t, _ in Counter(t for x in g for t in x["topik"]).most_common(3)],
                        "situasi": round(sum(x["situasi"] for x in g) / len(g), 2), "respons": round(sum(x["respons"] for x in g) / len(g), 2)}
+        gi = [x for x in g if x["asal"] == "internasional"]
+        cerita[cid].update(n_int=len(gi), media_int=list(dict.fromkeys(x["sumber"] for x in gi))[:30],
+                           asal="internasional" if 2 * len(gi) >= len(g) else "nasional")
         for x in g:
             x["cerita"] = cid
 
@@ -600,9 +897,23 @@ def olah(arsip, sekarang, geo):
     per_hari = defaultdict(list)
     for x in art:
         per_hari[hari(x)].append(x)
-    harian = {d: {"n": len(xs), "cerita": len({x["cerita"] for x in xs}), "situasi_rata": rata(xs, "situasi"),
-                  "respons_rata": rata(xs, "respons"), "per_topik": dict(Counter(t for x in xs for t in x["topik"]))}
-              for d, xs in sorted(per_hari.items())}
+    LBL = ("negatif", "netral", "positif")
+    ring = lambda xs: {"n": len(xs), "situasi_n": [sum(x["label_situasi"] == l for x in xs) for l in LBL],
+                       "respons_n": [sum(x["label_respons"] == l for x in xs) for l in LBL],
+                       "emosi": dict(Counter(e for x in xs for e in x["emosi"]))}
+    harian = {}
+    for d, xs in sorted(per_hari.items()):
+        xi = [x for x in xs if x["asal"] == "internasional"]
+        harian[d] = {**ring(xs), "cerita": len({x["cerita"] for x in xs}), "situasi_rata": rata(xs, "situasi"),
+                     "respons_rata": rata(xs, "respons"), "per_topik": dict(Counter(t for x in xs for t in x["topik"])),
+                     "n_nas": len(xs) - len(xi), "n_int": len(xi)}
+        if xi:
+            harian[d]["intl"] = {**ring(xi), "cerita": len({x["cerita"] for x in xi}), "situasi_rata": rata(xi, "situasi"),
+                                 "respons_rata": rata(xi, "respons"), "per_topik": dict(Counter(t for x in xi for t in x["topik"]))}
+    prov_harian = defaultdict(dict)
+    for d, xs in per_hari.items():
+        for kode in {p for x in xs for p in x["prov"]}:
+            prov_harian[kode][d] = ring([x for x in xs if kode in x["prov"]])
 
     prov = {}
     for kode in PROVINSI:
@@ -617,6 +928,14 @@ def olah(arsip, sekarang, geo):
         for k in x["kab"]:
             kab[k][0] += 1; kab[k][1] += x["_t"] >= t7
     media = [{"sumber": s, "n": n} for s, n in Counter(x["sumber"] for x in art).most_common(30)]
+    dom = {}
+    for x in art:
+        if x.get("domain"):
+            dom.setdefault(x["sumber"], x["domain"])
+    def daftar_media(xs, k=30):
+        n7 = Counter(x["sumber"] for x in xs if x["_t"] >= t7)
+        return [{"sumber": s, "n": n, "n7": n7[s], "domain": dom.get(s)} for s, n in Counter(x["sumber"] for x in xs).most_common(k)]
+    a_int = [x for x in art if x["asal"] == "internasional"]
 
     # lonjakan: hari dengan jumlah > rata-rata + 2 sd dari 14 hari sebelumnya (minimal 5 artikel), per provinsi + nasional
     lonjakan = []
@@ -635,6 +954,20 @@ def olah(arsip, sekarang, geo):
                 lonjakan.append({"prov": kode, "tgl": d, "n": c[d], "rata14": round(m, 1), "sd14": round(sd, 1)})
 
     sorotan = sorted((c for c in cerita.values() if dt.datetime.fromisoformat(c["akhir"]) >= t72), key=lambda c: (-c["n_media"], -c["n"]))[:10]
+    sorotan_nas = sorted((c for c in cerita.values() if c["asal"] == "nasional" and dt.datetime.fromisoformat(c["akhir"]) >= t72),
+                         key=lambda c: (-c["n_media"], -c["n"]))[:10]
+    sorotan_int = sorted((c for c in cerita.values() if c["n_int"] and dt.datetime.fromisoformat(c["akhir"]) >= t7),
+                         key=lambda c: (-len(c["media_int"]), -c["n_int"]))[:10]
+    prov_int = {}
+    for kode in PROVINSI:
+        xs = [x for x in a_int if kode in x["prov"]]
+        if xs:
+            prov_int[kode] = {"n": len(xs), "n7": sum(x["_t"] >= t7 for x in xs), "situasi": rata(xs, "situasi"),
+                              "media": [s for s, _ in Counter(x["sumber"] for x in xs).most_common(5)]}
+    internasional = {"n": len(a_int), "n7": sum(x["_t"] >= t7 for x in a_int), "n_media": len({x["sumber"] for x in a_int}),
+                     "bahasa": dict(Counter(x["bahasa"] for x in a_int)), "media": daftar_media(a_int, 20),
+                     "sorotan": sorotan_int, "prov": prov_int,
+                     "tanpa_lokasi": sum(not x["prov"] for x in a_int)}
 
     kab7 = {k for k, v in kab.items() if v[1]}
     celah_kab = defaultdict(list)
@@ -653,14 +986,25 @@ def olah(arsip, sekarang, geo):
             tanpa.append({"id": x["id"], "judul": x["judul"], "sumber": x["sumber"], "url": x["url"], "tgl": x["tgl"], "kab": x["kab"], "cerita": x["cerita"]})
 
     art.sort(key=lambda x: x["_t"], reverse=True)
-    keluar = art[:MAKS_ARTIKEL]
+    # keluar: 1.500 terbaru + 400 internasional terbaru + artikel di balik tiap lonjakan (maks 15) dan tiap cerita sorotan (maks 30)
+    pilih = {x["id"] for x in art[:MAKS_ARTIKEL]} | {x["id"] for x in a_int[:400]}
+    for l in lonjakan:
+        pilih |= {x["id"] for x in [x for x in art if hari(x) == l["tgl"] and (l["prov"] == "ID" or l["prov"] in x["prov"])][:15]}
+    sorot, anggota = {c["id"] for c in sorotan + sorotan_nas + sorotan_int}, defaultdict(list)
+    for x in art:
+        if x["cerita"] in sorot and len(anggota[x["cerita"]]) < 30:
+            anggota[x["cerita"]].append(x["id"])
+    pilih |= {i for v in anggota.values() for i in v}
+    media_nas = daftar_media([x for x in art if x["asal"] == "nasional"])
+    keluar = [x for x in art if x["id"] in pilih]
     for x in art:
         for k in ("_t", "_k", "_e"):
             x.pop(k, None)
-    dipakai = {x["cerita"] for x in keluar} | {c["id"] for c in sorotan}
+    dipakai = {x["cerita"] for x in keluar} | sorot
     return {"artikel": keluar, "cerita": [c for c in cerita.values() if c["id"] in dipakai], "harian": harian, "prov": prov,
-            "kab": dict(kab), "media": media, "lonjakan": lonjakan, "sorotan": sorotan, "celah": celah, "tanpa_api": tanpa[:100],
-            "_semua": art, "_n_cerita": len(cerita), "_cakupan": cakupan.isoformat()}
+            "prov_harian": dict(prov_harian), "kab": dict(kab), "media": media, "media_nas": media_nas,
+            "lonjakan": lonjakan, "sorotan": sorotan, "sorotan_nas": sorotan_nas, "internasional": internasional,
+            "celah": celah, "tanpa_api": tanpa[:100], "_semua": art, "_n_cerita": len(cerita), "_cakupan": cakupan.isoformat()}
 
 
 METODE = {
@@ -675,6 +1019,10 @@ METODE = {
     "lonjakan": "Hari ketika jumlah artikel suatu provinsi (atau nasional, 'ID') > rata-rata + 2 simpangan baku 14 hari sebelumnya, minimal 5 artikel.",
     "celah": "Kompleks prioritas (level 3) di kabupaten yang tidak muncul di berita mana pun 7 hari terakhir: api tanpa berita.",
     "tanpa_api": "Artikel kejadian 4 hari terakhir dengan lokasi kabupaten tetapi tanpa kompleks aktif +-3 hari di kabupaten itu: kemungkinan api kecil/tak terdeteksi satelit, berita lama, atau salah lokasi.",
+    "internasional": "Kueri tambahan di edisi Google News Inggris (AS, Singapura, Malaysia, Australia, Inggris) dan Melayu (Malaysia): 'Indonesia forest fires', 'Indonesia haze', 'Kalimantan/Sumatra fires', 'Riau haze', 'peatland fires Indonesia', 'transboundary haze Indonesia', 'jerebu Indonesia' dll. Bahasa ditebak dari kata fungsi judul (the/of/in vs yang/di/dan). Asal 'internasional' = judul Inggris/Melayu dari media di luar Indonesia; media Indonesia berbahasa Inggris (Antara, Tempo English, Jakarta Post/Globe, Kompas) tetap 'nasional'. Relevansi judul asing: harus memuat kata api/asap (wildfire, forest fire, haze, hotspot, jerebu...) DAN menyebut Indonesia/Borneo/Sumatra/Kalimantan/lintas batas atau provinsi Indonesia; kebakaran negara lain dan berita kualitas udara Singapura/Malaysia tanpa kaitan Indonesia dibuang. Nama provinsi Inggris (South Sumatra, Central Kalimantan, W Kalimantan...) dan '<kabupaten> regency' ikut dipetakan. Sentimen dan topik memakai leksikon Inggris tersendiri dengan aturan negasi yang sama; judul Melayu memakai leksikon Indonesia + kata Melayu (jerebu, cuai, disaman, merosot, pulih...).",
+    "emosi": {"cara": "Kata pemicu di judul dicocokkan di awal kata; satu judul bisa membawa beberapa emosi, masing-masing dihitung sekali. Judul Inggris memakai padanan Inggris.",
+              "id": EMOSI, "en": EMOSI_EN},
+    "gambar": "Untuk cerita yang ditampilkan (maks. 40 per jalan) tautan Google News diurai ke URL penerbit lewat endpoint publik news.google.com, lalu og:image/twitter:image halaman itu dibaca. Hasil disimpan sekali di cache; maks. 2 permintaan/detik, batas 150 detik per jalan. Ikon media dari domain sumber RSS.",
     "batas": "Google News RSS maksimal 100 item per kueri dan bukan arsip lengkap; cuplikan biasanya hanya judul, jadi sentimen praktis dari judul saja; leksikon bias ke bahasa berita arus utama dan tidak memahami sarkasme atau konteks panjang.",
 }
 
@@ -694,12 +1042,12 @@ def main(isi_hari=0, ambil_rss=True):
     daftar = [q for q, _ in kueri()]
     if not arsip and not isi_hari:
         isi_hari = JENDELA_HARI  # cache hilang: bangun ulang arsip sekali
-    baru = panen([q + " when:7d" for q in daftar]) if ambil_rss else []
+    baru = panen([q + " when:7d" for q in daftar] + [(ed, q + " when:7d") for ed, q in KUERI_INT]) if ambil_rss else []
     if isi_hari:
         umum = KUERI_UMUM + [f"karhutla {PROVINSI[p]}" for p in PRIORITAS]
         for mulai in range(isi_hari, 7, -7):
             a, b = (sekarang - dt.timedelta(days=mulai)).date(), (sekarang - dt.timedelta(days=max(mulai - 7, 6))).date()
-            baru += panen([f"{q} after:{a} before:{b}" for q in umum])
+            baru += panen([f"{q} after:{a} before:{b}" for q in umum] + [(ed, f"{q} after:{a} before:{b}") for ed, q in KUERI_INT[:4]])
             print(f"isi {a}..{b}: {len(baru)} item", file=sys.stderr)
     n_ambil = len(baru)
     # arsip menyimpan SEMUA item (relevansi dihitung ulang tiap jalan, jadi perbaikan aturan berlaku mundur)
@@ -708,11 +1056,20 @@ def main(isi_hari=0, ambil_rss=True):
         json.dump({"diperbarui": sekarang.isoformat(timespec="minutes"), "artikel": arsip}, f, ensure_ascii=False, separators=(",", ":"))
     h = olah(arsip, sekarang, geo)
     semua = h.pop("_semua"); n_cerita = h.pop("_n_cerita"); cakupan = h.pop("_cakupan")
-    out = {"dibuat": sekarang.isoformat(timespec="minutes"), "jendela_hari": JENDELA_HARI, "kueri": daftar, **h,
-           "validasi": validasi(geo=geo), "metode": METODE,
+    try:
+        gb = perkaya_gambar(h, ambil=ambil_rss)
+    except Exception as e:  # thumbnail hanya hiasan: jangan gagalkan jalan
+        gb = {"galat": str(e)[:120]}
+    print("gambar", gb, file=sys.stderr)
+    v = validasi(geo=geo)
+    if v:
+        v["inggris"] = validasi(os.path.join(RAW, "label_uji_en.json"), geo=geo, en=True)
+    out = {"dibuat": sekarang.isoformat(timespec="minutes"), "jendela_hari": JENDELA_HARI, "kueri": daftar,
+           "kueri_int": [f"{q} [{ed}]" for ed, q in KUERI_INT], **h, "validasi": v, "metode": METODE,
            "ringkasan": {"diambil": n_ambil, "arsip": len(arsip), "artikel": len(semua), "cerita": n_cerita,
                          "berlokasi": round(sum(1 for x in semua if x["prov"]) / max(1, len(semua)), 3),
                          "berlokasi_kab": round(sum(1 for x in semua if x["kab"]) / max(1, len(semua)), 3),
+                         "internasional": sum(x["asal"] == "internasional" for x in semua), "gambar": gb,
                          "cakupan_api_sejak": cakupan, "detik": round(time.time() - t0)}}
     with open(os.path.join(DATA, "berita.json"), "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
@@ -768,6 +1125,30 @@ def uji():
     assert r["kec"] and r["kec"][0].startswith("14|Pelalawan"), r
     assert g.cari("Polisi Inhil tangkap pembakar lahan")["kab"] == ["14|Indragiri Hilir"]
     assert g.cari("Karhutla di Indonesia")["presisi"] is None
+    # internasional: bahasa, asal, relevansi, geocoder & sentimen Inggris
+    assert bahasa({"judul": "Haze from Indonesia chokes Singapore as fires rage", "ed": "en-US"}) == "en"
+    assert bahasa({"judul": "Jerebu: Indonesia belum beri maklum balas", "ed": "ms-MY"}) == "ms"
+    assert bahasa({"judul": "Karhutla di Riau meluas"}) == "id"
+    assert asal({"sumber": "Reuters"}, "en") == "internasional" and asal({"sumber": "ANTARA News"}, "en") == "nasional"
+    assert relevan_int("Malaysia closes schools due to haze from Indonesia forest fires")[0]
+    assert not relevan_int("Canadian wildfires force thousands to flee")[0]
+    assert not relevan_int("Malaysia closes schools in capital due to haze")[0]  # tanpa kaitan Indonesia: tidak
+    assert not relevan_int("Hundreds Flee as Belgium Battles Wildfire at German Border", None, "Tempo.co English")[0]
+    assert not relevan_int("Fire destroys factory warehouse in Kalimantan")[0]
+    assert relevan_int("Govt accelerates firefighting across 107,000 ha of land", None, "ANTARA News")[0]
+    assert g.cari("Fires spread in South Sumatra and W Kalimantan")["prov"] == ["16", "61"]
+    assert g.cari("Fires in Ogan Komering Ilir regency")["kab"] == ["16|Ogan Komering Ilir"]
+    assert label(skor("Haze worsens as fires rage in Indonesia", "", SITUASI_EN)[0]) == "negatif"
+    assert label(skor("Fires extinguished, air quality improves", "", SITUASI_EN)[0]) == "positif"
+    assert skor("Fires not contained", "", SITUASI_EN)[0] < 0
+    assert label(skor("Indonesia accused of gross negligence in wildfires lawsuit", "", RESPONS_EN)[0]) == "negatif"
+    assert label(skor("Police arrest 72 suspects over forest fires", "", RESPONS_EN)[0]) == "positif"
+    # emosi: judul tanpa kata pemicu ditolak; judul beremosi ganda dihitung sekali per emosi
+    assert emosi("Harga cabai naik di pasar") == []
+    assert emosi("Warga kecam pemerintah, korban ISPA bertambah, korban tewas") == ["marah", "sedih"]
+    assert emosi("Api berhasil dipadamkan, hujan turun") == ["harapan"]
+    assert set(emosi("Residents sue government as toxic haze threatens", "en")) == {"marah", "cemas"}
+    assert emosi("Indonesia moves east", "en") == []  # "east" bukan "eases"
     # pengelompokan
     T = dt.datetime(2026, 10, 1, tzinfo=WIB)
     mk = lambda j, h, e=(): {"_t": T + dt.timedelta(hours=h), "_k": kunci_judul(j), "_e": set(e)}
@@ -788,6 +1169,14 @@ def uji():
         print("relevansi", {k: v["relevansi"][k] for k in ("n", "presisi", "recall")})
         assert v["situasi"]["uji"]["akurasi"] >= 0.6 and v["respons"]["uji"]["akurasi"] >= 0.6, "akurasi sentimen turun"
         assert v["relevansi"]["presisi"] >= 0.85, "presisi relevansi turun"
+    ve = validasi(os.path.join(RAW, "label_uji_en.json"), geo=g, en=True)
+    if ve:
+        for dim in ("situasi", "respons"):
+            print("en", dim, {k: (ve[dim][k]["n"], ve[dim][k]["akurasi"], ve[dim][k]["f1_makro"]) for k in ("latih", "uji")}, "mayoritas", ve[dim]["mayoritas_uji"])
+        print("en relevansi", {k: ve["relevansi"][k] for k in ("n", "presisi", "recall")})
+        for dim in ("situasi", "respons"):
+            assert ve[dim]["uji"]["akurasi"] > ve[dim]["mayoritas_uji"], f"sentimen Inggris {dim} tidak lebih baik dari menebak label terbanyak"
+        assert ve["relevansi"]["presisi"] >= 0.9, "presisi relevansi Inggris turun"
     print("ok")
 
 

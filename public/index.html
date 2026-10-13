@@ -2490,6 +2490,132 @@ const Berita = {
     this.ulangDaftar(); },
 };
 
+/* ================================================================ berita: nasional / internasional + thumbnail */
+/* Tambalan di atas objek Berita. Saringan asal mengganti this.d dengan turunan data (artikel, harian, media, sorotan disaring),
+   jadi semua eksibit lama ikut tersaring tanpa diubah satu per satu. Data asli disimpan di this.d0. */
+(() => {
+  const B = Berita, WARNA_INT = "#5f6fb0", BHS = {en: "Inggris", ms: "Melayu"};
+  const css = document.createElement("style");
+  css.textContent = `
+.br-asal{margin-left:auto}
+.br-thumb{flex:none;width:96px;height:72px;border-radius:10px;object-fit:cover;background:var(--surface);border:1px solid var(--line)}
+.br-thumb.fb{object-fit:contain;padding:18px;background:var(--card)}
+.br-fav{width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.br-item.br-tb{grid-template-columns:minmax(0,1fr) 96px;column-gap:12px}
+.br-item.br-tb>*{grid-column:1}
+.br-item.br-tb>.br-thumb{grid-column:2;grid-row:1/span 4;align-self:start}
+.br-kartu .br-thumb{margin-left:auto}
+.br-dunia{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:22px}
+.br-dunia .br-kartu{align-items:flex-start}
+.br-pv{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
+.br-mi{display:grid;grid-template-columns:minmax(0,1fr) 90px auto;align-items:center;gap:10px;padding:6px 4px;font-size:13px;border-bottom:1px solid var(--line)}
+.br-mi span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+@media (max-width:900px){.br-dunia{grid-template-columns:1fr}}
+@media (max-width:520px){.br-thumb{width:72px;height:54px;border-radius:8px}.br-item.br-tb{grid-template-columns:minmax(0,1fr) 72px}.br-asal{margin-left:0}}`;
+  document.head.appendChild(css);
+
+  B.asal = "semua";
+  const fav = d => d ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64` : "";
+  const dom = a => a?.domain || (a?.url_asli ? new URL(a.url_asli).hostname.replace(/^www\./, "") : "");
+  /* gambar: gagal muat -> ikon media; tanpa ikon -> sembunyikan */
+  B.thumb = (src, d) => src ? `<img class="br-thumb" src="${esc(src)}" alt="" loading="lazy" decoding="async" referrerpolicy="no-referrer" data-fav="${esc(fav(d))}" onerror="if(this.dataset.fav){this.src=this.dataset.fav;this.dataset.fav='';this.classList.add('fb')}else this.remove()">` : "";
+  B.ikon = d => d ? `<img class="br-fav" src="${esc(fav(d))}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+
+  /* turunan data untuk satu asal */
+  B.turunan = function () {
+    const D0 = this.d0, a = this.asal;
+    if (a === "semua" || !D0.internasional) return D0;
+    const intl = a === "internasional", kurang = (x, y) => Object.fromEntries(Object.entries(x || {}).map(([k, v]) => [k, v - ((y || {})[k] || 0)]));
+    const harian = {};
+    for (const [t, x] of Object.entries(D0.harian)) {
+      const i = x.intl || {n: 0, cerita: 0, situasi_n: [0, 0, 0], respons_n: [0, 0, 0], emosi: {}, per_topik: {}, situasi_rata: 0, respons_rata: 0};
+      if (intl) { harian[t] = {...i, situasi_rata: i.situasi_rata ?? 0, respons_rata: i.respons_rata ?? 0}; continue; }
+      const n = x.n - i.n, rr = k => n ? ((x[k] ?? 0) * x.n - (i[k] ?? 0) * i.n) / n : 0;
+      harian[t] = {...x, n, cerita: Math.max(0, x.cerita - (i.cerita || 0)), situasi_rata: rr("situasi_rata"), respons_rata: rr("respons_rata"),
+        situasi_n: (x.situasi_n || [0, 0, 0]).map((v, j) => v - (i.situasi_n?.[j] || 0)), respons_n: (x.respons_n || [0, 0, 0]).map((v, j) => v - (i.respons_n?.[j] || 0)),
+        emosi: kurang(x.emosi, i.emosi), per_topik: kurang(x.per_topik, i.per_topik)};
+    }
+    const I = D0.internasional;
+    return {...D0, harian, prov_harian: undefined, artikel: D0.artikel.filter(x => (x.asal || "nasional") === a),
+      media: intl ? I.media : D0.media_nas || D0.media, sorotan: intl ? I.sorotan : D0.sorotan_nas || D0.sorotan,
+      lonjakan: intl ? [] : D0.lonjakan};
+  };
+
+  const render0 = B.render;
+  B.render = async function () {
+    if (!this.d0) {
+      if (!this.d) { $("#berita").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat berita…</div>`; try { this.d = await muatJSON("data/berita.json"); } catch (e) { return render0.call(this); } }
+      this.d0 = this.d;
+    }
+    this.d = this.turunan();
+    await render0.call(this);
+    this.tempel();
+  };
+
+  B.tempel = function () {
+    const el = $("#berita"), D0 = this.d0, I = D0.internasional; if (!el || !I) return;
+    const head = el.querySelector(".head");
+    if (head && !head.querySelector(".br-asal")) head.insertAdjacentHTML("beforeend", `<div class="seg br-asal" role="group" aria-label="Asal berita">${[["nasional", "Nasional"], ["internasional", "Internasional"], ["semua", "Semua"]].map(([v, n]) => `<button data-asal="${v}" aria-pressed="${this.asal === v}">${n}</button>`).join("")}</div>`);
+    /* KPI internasional 7 hari */
+    const kpi = el.querySelector(".grid.g4");
+    if (kpi && !kpi.querySelector("[data-kpi-int]")) {
+      const h7 = Object.keys(D0.harian).sort().slice(-7), n = h7.reduce((s, t) => s + (D0.harian[t].n_int || 0), 0), N = h7.reduce((s, t) => s + D0.harian[t].n, 0);
+      kpi.style.gridTemplateColumns = "repeat(auto-fit,minmax(160px,1fr))";
+      kpi.insertAdjacentHTML("beforeend", `<div class="kpi" data-kpi-int><span class="lbl">Berita internasional 7 hari</span><b style="color:${WARNA_INT}">${fmt(n)}</b><small>${fmt(new Set(D0.artikel.filter(a => a.asal === "internasional" && a.tgl.slice(0, 10) >= h7[0]).map(a => a.sumber)).size)} media asing · ${N ? Math.round(n / N * 100) : 0}% dari semua berita</small></div>`);
+    }
+    /* eksibit "Sorotan dunia" setelah sorotan 72 jam */
+    const sorot = el.querySelector(".br-sorot")?.closest("article");
+    if (sorot && this.asal !== "nasional" && !el.querySelector("#brDunia")) sorot.insertAdjacentHTML("afterend", this.exDunia());
+    this.hiasSorotan();
+  };
+
+  /* sorotan dunia: cerita internasional 7 hari + media asing + provinsi yang disebut */
+  B.exDunia = function () {
+    const D0 = this.d0, I = D0.internasional, C = I.sorotan || [], V = D0.validasi?.inggris;
+    const wakil = new Map(); for (const a of D0.artikel) if (a.asal === "internasional" && !wakil.has(a.cerita)) wakil.set(a.cerita, a);
+    const M = I.media.slice(0, 10), mm = Math.max(1, ...M.map(m => m.n));
+    const PV = Object.entries(I.prov || {}).sort((a, b) => b[1].n - a[1].n).slice(0, 8), pm = Math.max(1, ...PV.map(([, v]) => v.n));
+    const kartu = C.map((c, i) => { const a = wakil.get(c.id) || D0.artikel.find(x => x.cerita === c.id) || {}, [sl, sw] = this.lbl(c.situasi ?? 0);
+      return `<a class="br-kartu" href="${esc(a.url_asli || a.url || "#")}" target="_blank" rel="noopener"><span class="br-no" style="background:${WARNA_INT}">${i + 1}</span><span class="br-isi"><b>${esc(c.judul)}</b>
+        <small>${this.ikon(dom(a))}${fmt((c.media_int || []).length)} media asing · ${esc((c.media_int || []).slice(0, 3).join(", "))}${(c.media_int || []).length > 3 ? " …" : ""}</small>
+        <span class="br-chip">${(c.prov || []).slice(0, 4).map(p => `<i style="--w:#2b8c86">${esc(namaProv(p))}</i>`).join("")}${a.bahasa && a.bahasa !== "id" ? `<i style="--w:${WARNA_INT}">${BHS[a.bahasa] || a.bahasa}</i>` : ""}<i style="--w:${sw}">situasi ${sl}</i></span></span>${this.thumb(c.gambar || a.gambar, dom(a))}</a>`; }).join("");
+    return `<article class="ex" id="brDunia"><h3>Sorotan dunia: <span class="hl">${fmt(I.n7)} berita</span> dari media luar negeri dalam 7 hari</h3><p class="sub">Liputan internasional tentang karhutla dan asap Indonesia</p>
+      <p class="unit">judul berbahasa Inggris dan Melayu dari Google News edisi AS, Singapura, Malaysia, Australia, dan Inggris; ditampilkan apa adanya tanpa terjemahan</p>
+      <div class="br-dunia"><div><div class="lbl">Cerita yang paling banyak diliput media asing · 7 hari</div><div class="br-sorot" style="grid-template-columns:1fr;margin-top:6px">${kartu || `<p class="kosong">Belum ada liputan internasional 7 hari ini.</p>`}</div></div>
+        <div><div class="lbl">Media asing · 120 hari</div>${M.map(m => `<div class="br-mi"><span>${this.ikon(m.domain)}${esc(m.sumber)}</span><span class="br-bar"><i style="width:${m.n / mm * 100}%;background:${WARNA_INT}"></i></span><b class="num">${fmt(m.n)}</b></div>`).join("")}
+          <div class="lbl" style="margin-top:16px">Provinsi yang disebut media asing · 120 hari</div>${PV.map(([k, v]) => `<div class="br-mi"><span>${esc(namaProv(k))}<small style="display:block;color:var(--ink2);font-size:11px">${esc(v.media.slice(0, 2).join(", "))}</small></span><span class="br-bar"><i style="width:${v.n / pm * 100}%;background:#2b8c86"></i></span><b class="num">${fmt(v.n)}</b></div>`).join("") || `<p class="fnd">Belum ada.</p>`}
+          <p class="fnd">${fmt(Math.round(I.tanpa_lokasi / Math.max(1, I.n) * 100))}% judul asing hanya menyebut "Indonesia", "Borneo", atau "Sumatra" tanpa provinsi.</p></div></div>
+      <p class="fn">Media Indonesia berbahasa Inggris (Antara, Tempo English, Jakarta Post) dihitung nasional. Asap di Malaysia/Singapura hanya dihitung bila judulnya menyebut Indonesia atau asap lintas batas.${V?.situasi?.uji ? ` Uji pada ${fmt(V.situasi.uji.n)} judul Inggris berlabel tangan: nada situasi ${fmt(Math.round(V.situasi.uji.akurasi * 100))}% (menebak label terbanyak ${fmt(Math.round(V.situasi.mayoritas_uji * 100))}%), nada respons ${fmt(Math.round(V.respons.uji.akurasi * 100))}% (${fmt(Math.round(V.respons.mayoritas_uji * 100))}%), presisi relevansi ${fmt(Math.round(V.relevansi.presisi * 100))}%.` : ""}</p></article>`;
+  };
+
+  /* thumbnail + ikon media + label bahasa di kartu sorotan 72 jam */
+  B.hiasSorotan = function () {
+    const C = this.d.sorotan || [], per = new Map(); for (const a of this.d.artikel) if (!per.has(a.cerita) || (!per.get(a.cerita).gambar && a.gambar)) per.set(a.cerita, a);
+    $("#berita").querySelector(".br-sorot")?.querySelectorAll(":scope > .br-kartu").forEach((k, i) => { const c = C[i]; if (!c || k.dataset.hias) return; k.dataset.hias = 1;
+      const a = per.get(c.id) || {}; k.querySelector("small")?.insertAdjacentHTML("afterbegin", this.ikon(dom(a)));
+      if (a.bahasa && a.bahasa !== "id") k.querySelector(".br-chip")?.insertAdjacentHTML("afterbegin", `<i style="--w:${WARNA_INT}">${BHS[a.bahasa] || a.bahasa}</i>`);
+      k.insertAdjacentHTML("beforeend", this.thumb(c.gambar || a.gambar, dom(a))); });
+  };
+
+  /* daftar berita: thumbnail, ikon media, label bahasa. Urutan item sama dengan saring() + halaman, seperti ulangDaftar asli. */
+  const daftar0 = B.ulangDaftar;
+  B.ulangDaftar = function () {
+    daftar0.call(this);
+    const R = this.saring(), hal = R.slice(this.f.hal * 30, (this.f.hal + 1) * 30);
+    $("#brList")?.querySelectorAll(".br-list > .br-item").forEach((it, i) => { const a = hal[i]; if (!a) return;
+      it.querySelector("small")?.insertAdjacentHTML("afterbegin", this.ikon(dom(a)));
+      if (a.bahasa && a.bahasa !== "id") it.querySelector(".br-chip")?.insertAdjacentHTML("afterbegin", `<i style="--w:${WARNA_INT}" title="${a.asal === "internasional" ? "media luar negeri" : "media Indonesia berbahasa asing"}">${BHS[a.bahasa] || a.bahasa}${a.asal === "internasional" ? " · internasional" : ""}</i>`);
+      if (a.gambar) { it.classList.add("br-tb"); it.insertAdjacentHTML("beforeend", this.thumb(a.gambar, dom(a))); } });
+  };
+
+  /* klik saringan asal: berlaku untuk seluruh tab */
+  document.addEventListener("click", e => {
+    const b = e.target.closest("#berita [data-asal]"); if (!b || b.dataset.asal === B.asal) return;
+    B.asal = b.dataset.asal; B.f.hal = 0; B.sn && (B.sn.prov = "");
+    nanti(() => B.render());
+  });
+})();
+
 /* ================================================================ anggaran */
 /* Harga satuan 2026. s = sumber; e = estimasi (belum ada harga resmi, cek e-Katalog / SSH daerah sebelum dipakai) */
 const HARGA = {
