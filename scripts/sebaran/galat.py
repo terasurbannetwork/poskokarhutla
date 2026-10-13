@@ -81,9 +81,11 @@ def pecah(rows, f):
     return out
 
 
-def main():
+def main(sumber="val"):
     V = pickle.load(open(os.path.join(MENTAH, "val_model.pkl"), "rb"))
     hv, K = V["hv"], V.get("kal_lepas")
+    if sumber == "uji":  # hanya untuk laporan (pola kesalahan di uji); tidak dipakai menyetel apa pun
+        hv = pickle.load(open(os.path.join(MENTAH, "uji_awal.pkl"), "rb"))["uji"]
     ids = {r["id"] for r in hv}
     evs = {}
     for l in open(os.path.join(MENTAH, "peristiwa.jsonl")):
@@ -102,7 +104,7 @@ def main():
         rows.append({"id": r["id"], "ji": r["ji"], "pertama": r["ji"] == 0, "kov": kovariat(r, e, k), "bias": math.log((1 + pred72) / (1 + obs72)),
                      "f1": g[0]["f1"], "tp": g[0]["tp"], "np": g[0]["np"], "no": g[0]["no"], "arah": g[0]["arah"], "obs72": obs72, "pred72": pred72,
                      "p": LJ.p_kal(K, r["p_lepas"]) if "p_lepas" in r else 0, "y": 1 if r["akhir72"] >= L.LEPAS else 0})
-    H = {"n": len(rows), "tahun": 2023, "pecah": {f: pecah(rows, f) for f in ["gambut", "kebun", "hti", "hph", "konsesi", "apl", "prov", "bulan", "malam", *BIN]}}
+    H = {"n": len(rows), "sumber": sumber, "tahun": "2023" if sumber == "val" else "2024-2026", "pecah": {f: pecah(rows, f) for f in ["gambut", "kebun", "hti", "hph", "konsesi", "apl", "prov", "bulan", "malam", *BIN]}}
     # kalibrasi per kelompok (peluang lolos vs teramati)
     # 15 terburuk: |bias| terbesar
     buruk = sorted(rows, key=lambda x: -abs(x["bias"]))[:15]
@@ -124,7 +126,13 @@ def main():
     H["ringkas"] = {"porsi_lompat_20": round(sum(1 for r in rows if r["kov"]["lompat"] >= .2) / len(rows), 3),
                     "porsi_celah_2": round(sum(1 for r in rows if r["kov"]["celah"] >= 2) / len(rows), 3),
                     "bias_rata": round(statistics.mean(r["bias"] for r in rows), 3)}
-    json.dump(H, open(os.path.join(MENTAH, "galat.json"), "w"), ensure_ascii=False, indent=1, default=str)
+    json.dump(H, open(os.path.join(MENTAH, f"galat_{sumber}.json"), "w"), ensure_ascii=False, indent=1, default=str)
+    from umum import PUBLIK
+    P = os.path.join(PUBLIK, "sebaran_galat.json")
+    out = json.load(open(P)) if os.path.exists(P) else {}
+    out[sumber] = {"n": H["n"], "tahun": H["tahun"], "ringkas": H["ringkas"], "pecah": H["pecah"],
+                   "terburuk": [{k_: b[k_] for k_ in ("id", "ji", "bias", "obs72", "pred72", "sebab")} | {"prov": b["kov"]["prov"], "gambut": b["kov"]["gambut"]} for b in H["terburuk"]]}
+    json.dump(out, open(P, "w"), ensure_ascii=False, separators=(",", ":"), default=str)
     print(json.dumps(H["ringkas"]), file=sys.stderr)
 
 
@@ -137,4 +145,4 @@ if __name__ == "__main__":
         assert celah(e, 0, 72) == 5  # 6 lintasan diharap, hanya 1 terisi dalam 72 jam, api masih ada sesudahnya
         print("ok")
     else:
-        main()
+        main(sys.argv[1] if len(sys.argv) > 1 else "val")

@@ -155,7 +155,9 @@ function Lahan(L, lon, lat, rDeg = .6) {
 
 /* ---------------- model ---------------- */
 function nilaiPohon(s, x) { let k = 0; while (s[k].length > 1) { const [f, a, l, r] = s[k]; k = x[f] <= a ? l : r; } return s[k][0]; }
-function prediksi(M, x) { let z = M.bias; for (const s of M.pohon) z += nilaiPohon(s, x); return 1 / (1 + Math.exp(-z)); }
+function prediksi(M, x, geser = 0) { let z = M.bias + geser; for (const s of M.pohon) z += nilaiPohon(s, x); return 1 / (1 + Math.exp(-z)); }
+/* strata kalibrasi ulang (sama dengan latih.strata): sabana = NTT/Papua Selatan di tanah mineral (kotak kasar provinsi) */
+const strataTitik = (lon, lat, gambut) => gambut ? "gambut" : ((lon > 118.5 && lon < 125.6 && lat < -8) || (lon > 137 && lat < -5.5)) ? "sabana" : "mineral";
 function indeksIklim(tabel, d) { let th = d.getUTCFullYear(), bl = d.getUTCMonth() + 1;
   for (let q = 0; q <= 6; q++) { const v = tabel?.[`${th}-${String(bl).padStart(2, "0")}`]; if (v != null) return v; if (--bl < 1) { bl = 12; th--; } } return 0; }
 /* acak berbiji (mulberry32) supaya hasil bisa diulang */
@@ -194,6 +196,7 @@ function ramal(o) {
   if (!W.cukup(t0, hari * 24)) throw new Error("seri cuaca harus mencakup 31 hari sebelum dan " + hari * 24 + " jam sesudah waktu titik");
   const lh = Lahan(o.lahan || {}, lon, lat), R = M.R || 5;
   const sel0 = o.sel0?.length ? o.sel0 : [sel(lon, lat)], tahunApi = new Date(t0).getUTCFullYear();
+  const strata = o.strata || strataTitik(lon, lat, lh.sel(sel0[0]).gambut), geser = M.geser_logit?.[strata] || 0;
   const tb0 = new Set(sel0), ak0 = new Map(sel0.map(k => [k, t0]));
   const iklim = {oni: indeksIklim(M.iklim?.oni, new Date(t0)), dmi: indeksIklim(M.iklim?.dmi, new Date(t0))};
   /* FRP maks (MW) titik awal; tidak diketahui -> median deteksi pertama di data latih */
@@ -206,7 +209,7 @@ function ramal(o) {
       const t = t0 + d * 864e5, w = jendela[d], jl = ((t / 6e4 + lon * 4) / 60 % 24 + 24) % 24;
       const ev = {log_luas: Math.log(tb.size + baru.size), log_baru24: Math.log1p(b24), umur_jam: (t - t0) / 36e5, log_frp: Math.log1p(frp), ...iklim, malam: jl >= 6 && jl < 18 ? 0 : 1};
       const semua = new Set([...tb, ...baru]), c = calon(semua, ak, R), nb = [];
-      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh, tahunApi)); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= M.tau) nb.push(k); }
+      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh, tahunApi), geser); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= M.tau) nb.push(k); }
       for (const k of nb) baru.add(k);
       if (nb.length) ak = new Map(nb.map(k => [k, t + 864e5]));
       b24 = nb.length; luas.push(baru.size);
@@ -235,7 +238,7 @@ function ramal(o) {
     let c = 0; for (let h = 0; h < 24; h++) { c += seg[h]; perJam.push(a + (b - a) * c / tot); } }
   /* apa yang terkena (peluang hari terakhir >= 0,1) */
   const kena = dampak(sel_, lh, hari, lon, lat);
-  return {waktu: new Date(t0).toISOString(), sel0, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
+  return {waktu: new Date(t0).toISOString(), sel0, strata, geser, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
     p_lepas: nmc ? kalLepas(M, runs.filter(r => r[hari - 1] >= (M.lepas_sel || 10)).length / nmc) : null, luas, luasJam: perJam, arah: arahUtama, sel: sel_,
     p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim};
 }

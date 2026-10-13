@@ -3,7 +3,7 @@
 Keluaran: data/raw/sebaran/hasil.json (semua angka), public/data/model_sebaran.json (model peramban),
           data/raw/sebaran/uji_awal.pkl (hasil per titik awal uji, dipakai kasus.py & RISET-SEBARAN.md).
 """
-import json, math, multiprocessing as mp, os, pickle, random, sys, time
+import json, math, multiprocessing as mp, os, pickle, random, statistics, sys, time
 
 import gbdt as G
 import latih as L
@@ -376,6 +376,31 @@ def main():
                 "lepas_kalibrasi": lepas_ringkas(hv, K),
                 "n_awal": len(hv)}
     json.dump(H, open(L.HASIL, "w"), ensure_ascii=False, indent=1)
+    # 5b. kalibrasi ulang luas per strata (temuan analisis kesalahan galat.py: ramalan luas 72 jam terlalu besar, terutama di
+    #     gambut): pergeseran logit per strata yang membuat bias log-luas 72 jam rata-rata ~ 0 pada titik awal VALIDASI.
+    if not os.environ.get("SEBARAN_TANPA_GESER"):
+        kand = [0.0, -.25, -.5, -.75, -1.0]
+        bias = {}
+        with CTX.Pool(5) as pool:
+            for dg in kand:
+                g2 = {**gb, "geser": {"gambut": dg, "mineral": dg, "sabana": dg}}
+                hh = L.jalankan_eval(awal_val, {"gbdt": g2}, {"gbdt": tau_v["gbdt"]}, None, 20, pool)
+                for st in ("gambut", "mineral", "sabana"):
+                    b = [math.log((1 + r["mc"][2][1]) / (1 + r["skor"]["persistensi"][2]["no"])) for r in hh if r["strata"] == st and r.get("mc")]
+                    bias.setdefault(st, {})[dg] = (statistics.mean(b) if b else 0.0, len(b))
+                log("geser", dg, {st: round(bias[st][dg][0], 3) for st in bias})
+        geser = {st: min(kand, key=lambda d: abs(bias[st][d][0])) for st in bias}
+        H["geser_logit"] = {"pilihan": geser, "bias_log_luas72": {st: {str(d): round(v[0], 3) for d, v in b.items()} for st, b in bias.items()}}
+        gb["geser"] = geser
+        modes["gbdt"] = gb
+        with CTX.Pool(5) as pool:
+            hv2 = L.jalankan_eval(awal_val, {**modes, "sim": None}, tau_v, fisika, 20, pool)
+        gabung(hv2, pilihan)
+        H["val_sesudah_geser"] = {"model": ringkas_semua(hv2, ["persistensi", "gbdt"]), "lepas": lepas_ringkas(hv2), "strata": ringkas_strata(hv2, ["gbdt"])}
+        K = H["kal_lepas"] = kal_lepas(hv2)
+        H["val_sesudah_geser"]["lepas_kalibrasi"] = lepas_ringkas(hv2, K)
+        log("geser terpilih", geser, "F1 mikro 24 sebelum", H["val"]["model"]["gbdt"]["24"]["semua"]["f1_mikro"], "sesudah", H["val_sesudah_geser"]["model"]["gbdt"]["24"]["semua"]["f1_mikro"])
+        json.dump(H, open(L.HASIL, "w"), ensure_ascii=False, indent=1)
     with open(os.path.join(MENTAH, "val_model.pkl"), "wb") as f:  # untuk analisis kesalahan (galat.py) tanpa menyentuh uji
         pickle.dump({"lr": lr, "gbdt": gb, "tau": tau_v, "fisika": fisika, "hv": hv, "fitur_akhir": fitur_akhir, "kal_lepas": K}, f)
     log("validasi selesai")
@@ -404,7 +429,7 @@ def main():
     profil = profil_harian()
     json.dump({"versi": 1, "dibuat": time.strftime("%Y-%m-%d"), "jenis": "gbdt-logistik", "fitur": fitur_akhir, "bias": round(gb_all["bias"], 6),
                "pohon": gb_all["pohon"], "tau": tau_v["gbdt"], "R": L.R, "sel_m": 375, "ha_sel": 14.0625, "lepas_sel": L.LEPAS,
-               "profil_lintasan": profil, "iklim": iklim_terakhir(), "frp_bawaan": frp_bawaan(), "kal_lepas": K,
+               "profil_lintasan": profil, "iklim": iklim_terakhir(), "frp_bawaan": frp_bawaan(), "kal_lepas": K, "geser_logit": gb.get("geser"), "pilihan_strata": pilihan,
                "kinerja_uji": {"f1_24": H["uji"]["model"]["gbdt"]["24"]["semua"]["f1"], "iou_24": H["uji"]["model"]["gbdt"]["24"]["semua"]["iou"],
                                "arah_24": H["uji"]["arah"]["gbdt"], "lepas_auc": H["uji"]["lepas"]["auc"]},
                "catatan": "Dilatih pada sampel sel calon VIIRS S-NPP 2015-2026 (9 provinsi, Jul-Nov) dengan konfigurasi yang dipilih di validasi 2023; "

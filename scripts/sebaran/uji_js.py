@@ -23,7 +23,7 @@ const lahan = {gambut: P("lahan/gambut.geojson"), kawasan: P("lahan/kawasan.geoj
   jalan: P("jalan.geojson"), desa: P("osm/desa.json"), riwayat: P("riwayat_grid.json")};
 let maks = 0, n = 0;
 for (const c of fx.kasus) {
-  const r = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, mc: 0});
+  const r = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0});
   const js = new Map(r.p1.map(x => [x.k, x.p]));
   for (const [k, p] of c.p1) { const q = js.get(k); if (q === undefined) throw new Error("sel hilang " + k); maks = Math.max(maks, Math.abs(p - q)); n++; }
   if (js.size !== c.p1.length) throw new Error("jumlah calon beda " + js.size + " vs " + c.p1.length);
@@ -48,7 +48,6 @@ def main(n_kasus=6):
     if "iklim" not in model:
         e = json.load(open(os.path.join(MENTAH, "enso.json")))
         model["iklim"] = {k: e[k] for k in ("oni", "dmi")}
-    f = L.fungsi_model({**model, "jenis": "gbdt"}, L.KOLOM)
     k = L.ktx()
     kasus = []
     for e in L.peristiwa():
@@ -58,10 +57,12 @@ def main(n_kasus=6):
         p, tb, ak, *_ = L.jangkar(e)[0]
         if not S or not S.cukup(p, 72 + 24):
             continue
+        st = L.strata(e, k, tb)
+        f = L.fungsi_model({**model, "jenis": "gbdt"}, L.KOLOM, (model.get("geser_logit") or {}).get(st, 0.0))
         r = L.ramal_sel(f, e, p, tb, ak, S, k, model["tau"], hari=1)
         d = json.load(open(cuaca.nama(int(e["t0"][:4]), *cuaca.sel05(e["lat0"], e["lon0"]))))
         m0 = (T0.timestamp() + S.m0 * 60) * 1000
-        kasus.append({"lat": e["lat0"], "lon": e["lon0"], "waktu": (T0.timestamp() + p * 60) * 1000, "sel0": sorted(tb), "frp": L.frp_terakhir(e, p),
+        kasus.append({"lat": e["lat0"], "lon": e["lon0"], "waktu": (T0.timestamp() + p * 60) * 1000, "sel0": sorted(tb), "frp": L.frp_terakhir(e, p), "strata": st,
                       "cuaca": {"m0": m0, **{x: d[x] for x in cuaca.KOLOM}}, "p1": [[kk, q] for kk, q in r["p1"].items()]})
         if len(kasus) >= n_kasus:
             break

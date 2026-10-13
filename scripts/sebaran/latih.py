@@ -162,12 +162,19 @@ def bangun():
 
 
 # ---------------- peramalan ----------------
-def fungsi_model(mdl, kolom):
-    """-> f(vektor KOLOM) -> p. mdl {jenis, fitur, ...}."""
+def fungsi_model(mdl, kolom, geser=0.0):
+    """-> f(vektor KOLOM) -> p. mdl {jenis, fitur, ...}. geser = pergeseran logit (kalibrasi ulang per strata, disetel di validasi)."""
     idx = [kolom.index(f) for f in mdl["fitur"]]
     if mdl["jenis"] == "gbdt":
+        if geser:
+            return lambda x: G.sigmoid(mdl["bias"] + geser + sum(G.nilai_pohon(t, [x[i] for i in idx]) for t in mdl["pohon"]))
         return lambda x: G.prediksi_gbdt(mdl, [x[i] for i in idx])
     return lambda x: G.prediksi_lr(mdl, [x[i] for i in idx])
+
+
+def strata(e, k, tb):
+    g0 = k.sel(next(iter(tb)), e["prov"])["gambut"]
+    return "sabana" if e["prov"] in ("53", "93") and not g0 else "gambut" if g0 else "mineral"
 
 
 def ramal_sel(f, e, p, terbakar, aktif, S, k, tau, hari=3, mc=0, seed=0):
@@ -294,10 +301,11 @@ def evaluasi_awal(arg):
         sblm = {kk for t, kk, _ in e["det"] if t <= p - 1440}
         if sblm and lalu - sblm:
             hasil["arah_kemarin_err"] = selisih_sudut(ao, arah(*pusat_set(sblm), *pusat_set(lalu - sblm)))
+    st = hasil["strata"]
     for nm, mdl in modes.items():
         if mdl is None:
             continue
-        f = fungsi_model(mdl, KOLOM)
+        f = fungsi_model(mdl, KOLOM, (mdl.get("geser") or {}).get(st, 0.0))
         r = ramal_sel(f, e, p, tb, ak, S, k, tau[nm], mc=mc if nm == "gbdt" else 0, seed=zlib.crc32(e["id"].encode()) & 0xffff)
         hasil["skor"][nm] = [skor(tb, P, o) for P, o in zip(r["det"], obs)]
         hasil.setdefault("harap", {})[nm] = [round(x, 2) for x in r["harap"]]

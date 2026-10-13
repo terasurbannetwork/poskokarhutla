@@ -109,6 +109,9 @@ def _satu(arg):
 def main():
     H = json.load(open(L.HASIL))
     M = latih_lipat(H)
+    geser = (H.get("geser_logit") or {}).get("pilihan")
+    for m_ in M.values():
+        m_["geser"] = geser  # kalibrasi ulang per strata yang sama dengan model utama (disetel di validasi)
     tau = H["tau"]["gbdt"]["tau"]
     fisika = {**{k: tuple(v) if isinstance(v, list) else v for k, v in H["fisika"].items()}, **{f"{m}_mentah": 1.0 for m in L.PEMBANDING}}
     evs = [e for e in L.peristiwa(semua_kecil=True)]

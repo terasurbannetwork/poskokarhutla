@@ -9,14 +9,14 @@
 if (typeof Insight === "undefined" || !Array.isArray(Insight.EX)) return;
 const SEB = {d: null, janji: null};
 const ambil = u => fetch(u).then(r => r.ok ? r.json() : null).catch(() => null);
-SEB.muat = () => SEB.janji ||= Promise.all(["data/musim_awal.json", "data/sebaran_pendorong.json", "data/sebaran_kasus.json", "data/model_sebaran.json"].map(ambil))
-  .then(([musim, dorong, kasus, model]) => { SEB.d = {musim, dorong, kasus, model}; document.querySelectorAll('[data-ex^="seb"]').forEach(b => { b.innerHTML = Insight.gambar(b.dataset.ex); }); });
+SEB.muat = () => SEB.janji ||= Promise.all(["data/musim_awal.json", "data/sebaran_pendorong.json", "data/sebaran_kasus.json", "data/model_sebaran.json", "data/sebaran_galat.json"].map(ambil))
+  .then(([musim, dorong, kasus, model, galat]) => { SEB.d = {musim, dorong, kasus, model, galat}; document.querySelectorAll('[data-ex^="seb"]').forEach(b => { b.innerHTML = Insight.gambar(b.dataset.ex); }); });
 const tunggu = judul => { SEB.muat(); return `<article class="ex"><h3>${esc(judul)}</h3><p class="unit">Memuat data…</p></article>`; };
 const pc = (v, d = 0) => v == null ? "–" : fmt(Math.round(v * 100 * 10 ** d) / 10 ** d) + "%";
 const kali = v => v == null ? "–" : fmt(Math.round(v * 100) / 100) + "×";
 const ci = r => r ? `${kali(r[0])} (95%: ${kali(r[1])}–${kali(r[2])})` : "–";
 const hari = d => new Date(Date.UTC(2026, 0, 1) + d * 864e5).toLocaleDateString("id-ID", {day: "numeric", month: "short"});
-Object.assign(Insight.st, {sebDorong: "lahan", sebUjiKelas: ""});
+Object.assign(Insight.st, {sebDorong: "lahan", sebUjiKelas: "", sebGalat: "prov"});
 
 /* ---------- Musim 2026 ---------- */
 Insight.exSebMusim = function () {
@@ -106,6 +106,27 @@ function dialogKasus(i) {
   d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => { if (e.target === d) d.close(); }; d.showModal();
 }
 
+/* ---------- Di mana model masih keliru ---------- */
+Insight.exSebGalat = function () {
+  const G = SEB.d?.galat; if (!SEB.d) return tunggu("Di mana model masih keliru"); if (!G?.val) return "";
+  const v = this.st.sebGalat, NAMA = {prov: "Provinsi", gambut: "Gambut (1) / mineral (0)", celah: "Lintasan tanpa deteksi (awan/asap)", lompat: "Porsi sel baru > 1,9 km (loncat)",
+    awal: "Sel saat pertama terlihat", dc: "DC", ws: "Angin (km/jam)", hujan24: "Hujan 24 jam (mm)", konsesi: "Di konsesi (1)", bulan: "Bulan"};
+  const tab = (src) => (src?.pecah?.[v] || []).map(r => `<tr><td>${esc(String(r.kelas))}</td><td class="n num">${fmt(r.n)}</td>
+      <td class="n num" style="color:${r.bias_log_luas72 > .3 ? "var(--bad)" : r.bias_log_luas72 < -.3 ? "var(--info)" : "inherit"}">${r.bias_log_luas72 > 0 ? "+" : ""}${fmt(Math.round((Math.exp(r.bias_log_luas72) - 1) * 100))}%</td>
+      <td class="n num">${fmt(Math.round(r.f1_mikro_24 * 100) / 100)}</td><td class="n num">${r.lolos_terlewat}</td><td class="n num">${r.lolos_palsu}</td></tr>`).join("");
+  const th = `<thead><tr><th>${esc(NAMA[v] || v)}</th><th class="n">Titik awal</th><th class="n">Luas 72 j ramalan vs teramati</th><th class="n">F1 24 j</th><th class="n">Lolos terlewat</th><th class="n">Lolos palsu</th></tr></thead>`;
+  const isi = `<div class="ex2"><div><p class="sub">Validasi 2023 (dipakai memperbaiki)</p><div class="tw"><table>${th}<tbody>${tab(G.val)}</tbody></table></div></div>
+    ${G.uji ? `<div><p class="sub">Uji 2024–2026 (hanya dilaporkan)</p><div class="tw"><table>${th}<tbody>${tab(G.uji)}</tbody></table></div></div>` : ""}</div>
+    <p class="sub" style="margin-top:12px">Kasus terburuk dan dugaan penyebabnya (validasi)</p><ul class="fnd" style="margin:4px 0;padding-left:18px">${G.val.terburuk.slice(0, 8).map(b => `<li>${esc(PROV_N(b.prov))}${b.gambut ? " (gambut)" : ""}: teramati ${fmt(b.obs72)} sel baru, ramalan ${fmt(b.pred72)} — ${esc(b.sebab.join("; "))}</li>`).join("")}</ul>`;
+  const r = G.val.ringkas;
+  return this.ex(`Model ${r.bias_rata > 0 ? "cenderung melebihkan" : "cenderung mengurangi"} luas 72 jam; titik yang tertutup awan/asap dan api yang 'meloncat' paling sering terlewat`,
+    `${fmt(G.val.n)} titik awal validasi; ${pc(r.porsi_celah_2, 1)} kehilangan ≥ 2 lintasan VIIRS, ${pc(r.porsi_lompat_20, 1)} tumbuh lewat loncatan > 1,9 km`,
+    "merah = ramalan terlalu besar, biru = terlalu kecil · pilih variabel", isi,
+    "Perbaikan yang diterapkan dari analisis ini: pergeseran logit per strata (gambut/mineral/sabana) agar bias luas validasi ≈ 0, dan pemilihan model per strata (sabana memakai McArthur bila lebih baik di validasi). Yang belum bisa diperbaiki dengan data ini: pemadaman (tidak ada data operasi), awan/asap (butuh Himawari), api yang dinyalakan baru di dekatnya. Sumber: scripts/sebaran/galat.py.",
+    this.seg("sebGalat", [["prov", "Provinsi"], ["gambut", "Gambut"], ["konsesi", "Konsesi"], ["celah", "Awan/asap"], ["lompat", "Loncat"], ["awal", "Ukuran awal"], ["dc", "DC"], ["ws", "Angin"], ["hujan24", "Hujan"]]));
+};
+const PROV_N = n => typeof n === "string" && /^\d+$/.test(n) ? namaProv(n) : n;
+
 /* ---------- Kalau ada titik di X ---------- */
 Insight.exSebModel = function () {
   const M = SEB.d?.model; if (!SEB.d) return tunggu("Kalau ada titik di X"); if (!M) return "";
@@ -117,7 +138,7 @@ Insight.exSebModel = function () {
     `${M.pohon.length} pohon keputusan, ${M.fitur.length} variabel (cuaca per jam, FWI, lahan, konsesi, kanal, jalan, desa). Peluang per jam = pembagian luas harian menurut ISI per jam (VIIRS hanya melihat ±2 kali sehari).`);
 };
 
-Insight.EX.splice(1, 0, "sebMusim", "sebDorong", "sebUji", "sebModel");
+Insight.EX.splice(1, 0, "sebMusim", "sebDorong", "sebUji", "sebGalat", "sebModel");
 /* klik: provinsi musim -> dialog kompleks pertama; baris kasus -> dialog; tombol ke Simulasi/cerita */
 document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);
