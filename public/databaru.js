@@ -27,8 +27,15 @@
   /* ================================================================ peringatan BMKG (dua halaman) */
   const SEV = {Extreme: [W.tua, "Ekstrem"], Severe: [W.merah, "Parah"], Moderate: [W.oranye, "Sedang"], Minor: [W.kuning, "Ringan"]};
   const aktif = x => !!x.selesai && new Date(x.selesai) > Date.now();
+  /* halaman karhutla: hanya peringatan yang mengubah perilaku api/asap; hujan hanya bila jatuh di provinsi yang punya kompleks prioritas
+     (kabar baik untuk pemadaman); gelombang tinggi tidak relevan */
+  const R_API = /angin|asap|kabut|kebakaran|kering|panas|debu|jarak pandang/i;
+  const provApi = () => new Set((S.kluster?.features || []).filter(f => f.properties.level === 3).map(f => f.properties.prov));
+  const diProvApi = x => { const t = (x.headline || "") + " " + (x.wilayah || ""), P = provApi(); return [...P].some(k => t.includes(namaProv(k))); };
+  const relevan = x => HAL !== "karhutla" || R_API.test(x.event + " " + (x.headline || "")) || (/hujan/i.test(x.event) && diProvApi(x));
+  const hujanBaik = x => HAL === "karhutla" && /hujan/i.test(x.event) && !R_API.test(x.event);
   const GEL = [["ekstrem", "ekstrem (> 6 m)", W.tua], ["sangat_tinggi", "sangat tinggi (4–6 m)", W.merah], ["tinggi", "tinggi (2,5–4 m)", W.oranye]];
-  const geoBMKG = d => ({type: "FeatureCollection", features: d.nowcast.filter(x => x.polygon).flatMap(x => x.polygon.map(r => ({type: "Feature",
+  const geoBMKG = d => ({type: "FeatureCollection", features: d.nowcast.filter(x => x.polygon && relevan(x)).flatMap(x => x.polygon.map(r => ({type: "Feature",
     geometry: {type: "Polygon", coordinates: [r]}, properties: {id: x.id, a: aktif(x) ? 1 : 0, w: (SEV[x.severity] || SEV.Minor)[0]}})))});
   async function pasangBMKG() {
     const d = await PER(); if (peta.getSource("db-bmkg")) return;
@@ -46,11 +53,11 @@
   /* pita kecil di kolom alat peta: hanya muncul bila ada yang berlaku */
   async function pitaBMKG() {
     const d = await PER().catch(() => null); if (!d || $(".db-bmkg")) return;
-    const now = d.nowcast.filter(aktif), gel = d.gelombang.flatMap(g => GEL.filter(([k]) => g[k]?.length && new Date(g.sampai + ({WITA: "+08:00", WIT: "+09:00"}[g.zona] || "+07:00")) > Date.now() - 864e5).map(([k, n, w]) => ({g, n, w, xs: g[k]})));
+    const now = d.nowcast.filter(x => aktif(x) && relevan(x)), gel = HAL === "karhutla" ? [] : d.gelombang.flatMap(g => GEL.filter(([k]) => g[k]?.length && new Date(g.sampai + ({WITA: "+08:00", WIT: "+09:00"}[g.zona] || "+07:00")) > Date.now() - 864e5).map(([k, n, w]) => ({g, n, w, xs: g[k]})));
     if (!now.length && !gel.length) return;
     const el = document.createElement("details"); el.className = "db-bmkg";
-    el.innerHTML = `<summary><i></i>BMKG: ${[now.length && `${now.length} peringatan cuaca`, gel.length && `${gel.length} gelombang tinggi`].filter(Boolean).join(" · ")}</summary>
-      <div>${now.map(x => `<p><b style="color:${(SEV[x.severity] || SEV.Minor)[0]}">${esc(x.event)}</b> ${esc((x.headline || "").replace(x.event, "").trim())}<br>${esc(x.wilayah)}<br><small>sampai ${jam(x.selesai)}${x.web ? ` · <a href="${esc(x.web)}" target="_blank" rel="noopener">BMKG</a>` : ""}</small></p>`).join("")}
+    el.innerHTML = `<summary><i></i>BMKG: ${[now.length && `${now.length} peringatan ${HAL === "karhutla" ? "terkait api" : "cuaca"}`, gel.length && `${gel.length} gelombang tinggi`].filter(Boolean).join(" · ")}</summary>
+      <div>${now.map(x => `<p><b style="color:${hujanBaik(x) ? W.biru : (SEV[x.severity] || SEV.Minor)[0]}">${esc(x.event)}${hujanBaik(x) ? " (membantu pemadaman)" : ""}</b> ${esc((x.headline || "").replace(x.event, "").trim())}<br>${esc(x.wilayah)}<br><small>sampai ${jam(x.selesai)}${x.web ? ` · <a href="${esc(x.web)}" target="_blank" rel="noopener">BMKG</a>` : ""}</small></p>`).join("")}
       ${gel.map(({g, n, w, xs}) => `<p><b style="color:${w}">Gelombang ${n}</b> ${esc(g.wilayah)}<br><small>${esc(xs.slice(0, 4).join(", "))}${xs.length > 4 ? ` +${xs.length - 4} lagi` : ""}</small></p>`).join("")}
       <small class="db-cat">Peringatan dini cuaca BMKG biasanya berlaku 2–3 jam. Data ${jam(d.dibuat)}; cek <a href="https://www.bmkg.go.id/peringatan-dini/nowcast" target="_blank" rel="noopener">bmkg.go.id</a> untuk yang terbaru.</small></div>`;
     $("#lapisBtn")?.after(el);
