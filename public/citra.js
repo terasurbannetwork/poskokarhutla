@@ -88,8 +88,10 @@
       Insight.EX.splice(Math.max(1, Insight.EX.indexOf("harian") + 1), 0, "citra");
       Object.assign(Insight.st, {citraMode: "swir", citraN: 12});
       Insight.exCitra = function () {
-        if (!D) { muat().then(() => { const box = document.querySelector('#insight [data-ex="citra"]'); if (box) box.innerHTML = this.gambar("citra"); }).catch(() => {});
-          return `<article class="ex"><h3>Kondisi terbaru dari satelit</h3><p class="unit">Memuat citra…</p></article>`; }
+        /* citra.json belum terbit: kartu disembunyikan, jangan menunggu selamanya */
+        if (!D) { if (Citra.gagal) return ""; muat().then(() => { const box = document.querySelector('#insight [data-ex="citra"]'); if (box) box.innerHTML = this.gambar("citra"); })
+            .catch(() => { Citra.gagal = true; document.querySelector('#insight [data-ex="citra"]')?.remove(); });
+          return ""; }
         const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), m = this.st.citraMode;
         const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
         const kartu = ks.slice(0, +this.st.citraN).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
