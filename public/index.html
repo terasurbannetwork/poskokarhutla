@@ -2234,7 +2234,7 @@ const Insight = {
       `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "9 provinsi prioritas"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. Klik baris untuk analisa rinci.`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:760px" role="img" aria-label="Kecamatan langganan api">${g}</svg></div>`,
       `Tahun terbakar = ≥ 10 titik setahun. Peringkat lengkap dan CSV ada di tab Tren. Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,
-      this.selProv("kecProv") + this.seg("kecN", [[12, "12 teratas"], [25, "25 teratas"]])); },
+      this.selProv("kecProv") + this.seg("kecN", [[12, "12"], [25, "25"], [50, "50"], [100, "100 teratas"]])); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; try { return f.call(this); } catch (e) { console.error(e); return ""; } },
   async render() {
