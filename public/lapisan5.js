@@ -26,9 +26,9 @@
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan");
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
     const dasar = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Peta dasar");
-    const html = GRUP.map(([j, xs]) => `<details><summary>${j}</summary>${xs.map(kotak).join("")}</details>`).join("");
+    const html = GRUP.map(([j, xs]) => `<details open><summary>${j}</summary>${xs.map(kotak).join("")}</details>`).join("");
     dasar ? dasar.insertAdjacentHTML("beforebegin", html) : L.insertAdjacentHTML("beforeend", html);
-    if (!lahan) L.insertAdjacentHTML("beforeend", `<details><summary>Lahan</summary>${LAHAN.map(kotak).join("")}</details>`);
+    if (!lahan) L.insertAdjacentHTML("beforeend", `<details open><summary>Lahan</summary>${LAHAN.map(kotak).join("")}</details>`);
   }
   const nyala = k => !!document.querySelector(`#lapis input[data-l="${k}"]:checked`);
   const LAYER = {penduduk: ["l5-penduduk"], fasilitas: ["l5-fasilitas"], jalan: ["l5-jalan", "l5-sungai"],
@@ -178,10 +178,9 @@
     const ik = await muat("iklim", "data/iklim.json").catch(() => null); if (!ik) return;
     const o = ik.oni_terakhir.nilai, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "";
     const teks = ik.status === "El Niño" ? "El Niño" + kuat : ik.status === "La Niña" ? "La Niña" : "ENSO netral";
-    const iod = ik.iod_status === "IOD positif" ? " · IOD positif" : ik.iod_status === "IOD negatif" ? " · IOD negatif" : "";
     const kering = ik.status === "El Niño" || ik.iod_status === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : "");
-    el.textContent = teks + iod; el.title = `ONI ${ik.oni_terakhir.musim} ${ik.oni_terakhir.tahun}: ${o > 0 ? "+" : ""}${o.toFixed(2)} °C · DMI 8 minggu ${ik.dmi_8_minggu > 0 ? "+" : ""}${ik.dmi_8_minggu} °C\n${ik.cpc_status || ""}${kering ? "\nKemarau lebih kering dari biasa: kalender musim memakai pola tahun El Niño." : ""}\nSumber: NOAA CPC & OSMC`;
+    el.textContent = teks; el.title = `ONI ${ik.oni_terakhir.musim} ${ik.oni_terakhir.tahun}: ${o > 0 ? "+" : ""}${o.toFixed(2)} °C · DMI 8 minggu ${ik.dmi_8_minggu > 0 ? "+" : ""}${ik.dmi_8_minggu} °C\n${ik.cpc_status || ""}${kering ? "\nKemarau lebih kering dari biasa: kalender musim memakai pola tahun El Niño." : ""}\nSumber: NOAA CPC & OSMC`;
     const upd = $("#upd"); upd ? upd.before(el) : null;
   }
 
