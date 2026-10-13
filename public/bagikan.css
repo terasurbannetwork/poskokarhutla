@@ -37,8 +37,8 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-eks b{font-family:var(--display);font-size:15px}
 .bg-eks span{font-size:12.5px;color:var(--ink2)}
 /* tombol bagikan per grafik Insight */
-.ex .bg-ex{float:right;margin:-4px -6px 8px 12px;width:34px;height:34px;padding:0;display:grid;place-items:center;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:50%;cursor:pointer}
-.ex .bg-ex:hover{border-color:var(--brand2)}
+.ex .bg-ex{float:right;margin:-4px -6px 8px 12px;width:30px;height:30px;padding:0;display:grid;place-items:center;border:0;background:transparent;color:var(--ink2);border-radius:8px;cursor:pointer}
+.ex .bg-ex:hover{background:var(--surface);color:var(--ink)}
 /* wadah luar layar untuk merender grafik insight */
 #bgOff{position:fixed;left:-12000px;top:0;width:980px;pointer-events:none;color:var(--ink)}
 #bgOff *{animation:none!important;transition:none!important}
