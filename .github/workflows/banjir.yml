@@ -51,7 +51,7 @@ jobs:
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status rob posko peringatan riwayat; do python3 scripts/banjir/$s.py uji; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat; do python3 scripts/banjir/$s.py uji; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah.

@@ -1552,7 +1552,7 @@ async function mtMasukan(k) {
 /* nilai harian masukan untuk hari d (0 = hari ini); sk = skenario Simulasi {x} */
 function mtHari(m, d, x = 1) {
   const kali = xs => x !== 1 && xs ? xs.map((v, i) => i >= m.i0 && v != null ? v * x : v) : xs, h = kali(m.g.h), im = kali(m.g.imax), sm = m.g.sm || [];
-  return {h, h3: jendela3(h, m.i0 + d), im: puncak3(im, m.i0 + d), cape: puncak3(m.g.cape, m.i0 + d),
+  return {h, h3: jendela3(h, m.i0 + d + GESER), im: puncak3(im, m.i0 + d + GESER), cape: puncak3(m.g.cape, m.i0 + d + GESER),
     p3: m.p3 && m.e0 >= 0 && m.e0 + d < m.p3.length ? m.p3[m.e0 + d] : null, sm: m.i0 + d < sm.length ? sm[m.i0 + d] : null,
     rk: m.t ? kelasSungai(m.t.q, m.j0 + d, m.t) : null}; }
 const mtRk = (m, rk) => !m.t ? "tidak ada titik sungai besar ≤ 25 km" : rk == null ? `titik ${esc(m.t.kec)} (${mtA(m.jr)} km) belum punya ambang` : `titik ${esc(m.t.kec)} (${mtA(m.jr)} km): ${LEVEL[rk]}`;
@@ -1652,73 +1652,73 @@ function renderMetode() {
         ["hasil", "Kelas bahaya banjir", "dipakai di bagian 4", kl(b.banjir || 0)]]);
     },
     teknis: `<p><code>scripts/banjir/bahaya.py</code>. Layanan ImageServer <code>gis.bnpb.go.id/server/rest/services/inarisk/layer_bahaya_*</code>, operasi getSamples. Raster hanya bernilai di zona bahaya; di luar zona dicatat 0. Titik cuplik per kecamatan: titik berat luas cincin terbesar (rumus shoelace) ditambah titik kisi 3 × 3 di kotak batasnya yang jatuh di dalam poligon. Yang disimpan nilai <b>tertinggi</b>.</p>
-    ${tb(["Ambang", "Dipakai di"], [["≥ 0,33", "Siaga banjir (hujan 3 hari ≥ 100 mm, hujan per jam ≥ 30 mm, P3 ≥ 0,5); Waspada & Siaga longsor"], ["≥ 0,66", "Awas banjir dari hujan; Awas & Siaga longsor"], ["rata-rata kecamatan", "20 poin skor risiko riwayat (bagian 15)"]])}`,
+    ${tb(["Ambang", "Dipakai di"], [["≥ 0,33", "Siaga banjir (hujan 3 hari ≥ 80 mm, hujan per jam ≥ 30 mm, P3 ≥ 0,5); Waspada & Siaga longsor"], ["≥ 0,66", "Awas banjir dari hujan; Awas & Siaga longsor"], ["rata-rata kecamatan", "20 poin skor risiko riwayat (bagian 15)"]])}`,
     batas: ["Maksimal 10 titik per kecamatan, bukan statistik seluruh luas: kecamatan besar (Papua, Kalimantan) bisa terlewat zona rawannya.", "Peta InaRISK bersifat tetap; perubahan tutupan lahan dan tanggul baru tidak tercermin.",
       "Lapisan gelombang & abrasi bernilai 0 di banyak kota pantai, karena itu tidak dipakai untuk skor rob."]});
 
   /* ---------------------------------------------------------------- 4 */
   B.push({ik: "centang", j: "Status banjir per kecamatan", sub: "Normal, Waspada, Siaga, Awas: hari ini sampai 3 hari ke depan",
     singkat: `Status dibaca dari atas ke bawah seperti daftar periksa: kalau syarat Awas terpenuhi berhenti di Awas; kalau tidak, cek Siaga; lalu Waspada; sisanya Normal. Syaratnya memadukan lima hal: hujan 3 hari, kerawanan tempat (InaRISK), sungai besar terdekat, hujan terderas per jam, dan peluang hujan lebat dari 51 skenario cuaca. Dihitung untuk tiap kecamatan dan tiap hari; kabupaten dan provinsi mengambil status tertinggi kecamatannya.`,
-    alur: [["d", "hujan", "Hujan 3 hari", "mulai hari itu"], ["d", "perisai", "Kerawanan InaRISK", "bagian 3"], ["d", "sungai", "Sungai terdekat", "≤ 25 km, bagian 7"],
+    alur: [["d", "hujan", "Hujan 3 hari", "kemarin s.d. besok"], ["d", "perisai", "Kerawanan InaRISK", "bagian 3"], ["d", "sungai", "Sungai terdekat", "≤ 25 km, bagian 7"],
       ["u", "centang", "Cek Awas → Siaga → Waspada", "berhenti di syarat pertama yang cocok"], ["h", "pin", "Status 4 hari", "kab/prov = tertinggi"]],
     contoh: async () => {
       const k = mtKec("b"); if (!k) throw new Error("status.json kosong");
       const m = await mtMasukan(k), st = S.st.kec[k], d = st.b.indexOf(Math.max(...st.b)), x = mtHari(m, d), bh = m.b.banjir || 0;
-      const awas = x.rk === 3 || (x.h3 >= 150 && bh >= .66), siaga = x.rk === 2 || (bh >= .33 && (x.h3 >= 100 || (x.im || 0) >= 30 || (x.p3 || 0) >= .5)),
-        wsp = x.rk === 1 || x.h3 >= 50 || (x.im || 0) >= 20 || ((x.cape || 0) >= 2500 && x.h3 >= 50), lv = levelBanjir(x.h3, bh, x.rk, x.im, x.cape, x.p3);
+      const awas = x.rk === 3 || (x.h3 >= AMBANG_B[2] && bh >= .66), siaga = x.rk === 2 || (bh >= .33 && (x.h3 >= AMBANG_B[1] || (x.im || 0) >= 30 || (x.p3 || 0) >= .5)),
+        wsp = x.rk === 1 || x.h3 >= AMBANG_B[0] || (x.im || 0) >= 20 || ((x.cape || 0) >= 2500 && x.h3 >= AMBANG_B[0]), lv = levelBanjir(x.h3, bh, x.rk, x.im, x.cape, x.p3);
       return mtTangga(`${mtNamaKec(k)} · ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus banjir tertinggi minggu ini, pada hari puncaknya. Semua angka diambil ulang dari berkas data, lalu aturan dijalankan di peramban ini.", [
-        ["in", "Hujan 3 hari mulai hari itu", `${[0, 1, 2].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
+        ["in", "Hujan 3 hari: sehari sebelum, hari itu, sehari sesudah", `${[-1, 0, 1].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
         ["in", "Kerawanan banjir InaRISK", "0 aman … 1 paling rawan", mtA(bh, 2)],
         ["in", "Sungai besar terdekat", mtRk(m, x.rk), x.rk == null ? "–" : MT_RK[x.rk]],
         ["in", "Hujan terderas per jam", "puncak dalam 3 hari yang sama", mtA(x.im) + " mm/jam"],
         ["in", "Energi awan badai (CAPE)", "≥ 2.500 J/kg = udara sangat labil", mtA(x.cape, 0) + " J/kg"],
         ["in", "Peluang hujan ≥ 100 mm dalam 3 hari", "porsi dari 51 skenario cuaca ECMWF (bagian 6)", x.p3 == null ? "tidak ada" : mtP(x.p3)],
-        mtCek(awas, "Syarat Awas?", "sungai di atas banjir 20 tahunan, ATAU hujan 3 hari ≥ 150 mm di tempat berbahaya tinggi (≥ 0,66)"),
-        !awas && mtCek(siaga, "Syarat Siaga?", "sungai di atas banjir 5 tahunan, ATAU di tempat berbahaya ≥ 0,33: hujan 3 hari ≥ 100 mm, hujan per jam ≥ 30 mm (bandang), atau peluang ansambel ≥ 50%"),
-        !awas && !siaga && mtCek(wsp, "Syarat Waspada?", "sungai di atas banjir 2 tahunan, ATAU hujan 3 hari ≥ 50 mm, ATAU hujan per jam ≥ 20 mm"),
+        mtCek(awas, "Syarat Awas?", "sungai di atas banjir 20 tahunan, ATAU hujan 3 hari ≥ 120 mm di tempat berbahaya tinggi (≥ 0,66)"),
+        !awas && mtCek(siaga, "Syarat Siaga?", "sungai di atas banjir 5 tahunan, ATAU di tempat berbahaya ≥ 0,33: hujan 3 hari ≥ 80 mm, hujan per jam ≥ 30 mm (bandang), atau peluang ansambel ≥ 50%"),
+        !awas && !siaga && mtCek(wsp, "Syarat Waspada?", "sungai di atas banjir 2 tahunan, ATAU hujan 3 hari ≥ 40 mm, ATAU hujan per jam ≥ 20 mm"),
         mtCek(lv === st.b[d], "Sama dengan status di peta?", `status.json mencatat ${LEVEL[st.b[d]]}`, "sama", "berbeda"),
         ["hasil", "Status banjir", `empat hari: ${st.b.map(l => LEVEL[l]).join(", ")}`, pill(lv)]]);
     },
     teknis: `<p><code>scripts/banjir/status.py</code>, fungsi <code>level_banjir</code>; salinannya di halaman ini (<code>levelBanjir</code>) dipakai tab Simulasi dan contoh di atas. Untuk hari d (0 = hari ini, sampai 3):</p>
-    ${tb(["Masukan", "Arti"], [["H3", "jumlah prakiraan hujan hari d, d+1, d+2 di sel kecamatan, dibulatkan 0,1 mm"], ["B", "indeks bahaya banjir InaRISK kecamatan"], ["RK", "kelas debit kendali tertinggi di jendela yang sama terhadap Q2/Q5/Q20 titik sungai terdekat ≤ 25 km (kosong bila belum berambang)"],
-      ["I", "hujan per jam terbesar di jendela (imax)"], ["C", "CAPE terbesar di jendela"], ["P3", "peluang ansambel ECMWF jumlah 3 hari mulai hari d ≥ 100 mm (titik ansambel terdekat ≤ 1°)"]])}
-    ${rumus(`Awas     RK = 3  atau  (H3 ≥ 150 dan B ≥ 0,66)
-Siaga    RK = 2  atau  B ≥ 0,33 dan (H3 ≥ 100 atau I ≥ 30 atau P3 ≥ 0,5)
-Waspada  RK = 1  atau  H3 ≥ 50  atau  I ≥ 20  atau  (C ≥ 2.500 dan H3 ≥ 50)
+    ${tb(["Masukan", "Arti"], [["H3", "jumlah hujan hari d-1, d, d+1 di sel kecamatan (untuk hari ini, d-1 = hujan kemarin), dibulatkan 0,1 mm"], ["B", "indeks bahaya banjir InaRISK kecamatan"], ["RK", "kelas debit kendali tertinggi hari d..d+2 terhadap Q2/Q5/Q20 titik sungai terdekat ≤ 25 km (kosong bila belum berambang)"],
+      ["I", "hujan per jam terbesar di jendela H3 (imax)"], ["C", "CAPE terbesar di jendela H3"], ["P3", "peluang ansambel ECMWF jumlah 3 hari mulai hari d ≥ 100 mm (titik ansambel terdekat ≤ 1°)"]])}
+    ${rumus(`Awas     RK = 3  atau  (H3 ≥ 120 dan B ≥ 0,66)
+Siaga    RK = 2  atau  B ≥ 0,33 dan (H3 ≥ 80 atau I ≥ 30 atau P3 ≥ 0,5)
+Waspada  RK = 1  atau  H3 ≥ 40  atau  I ≥ 20  atau  (C ≥ 2.500 dan H3 ≥ 40)
 Normal   selain itu`)}
-    <p>Medan yang tidak ada di berkas (imax, cape, ansambel) mematikan jalurnya, bukan dianggap nol. Syarat CAPE tidak menambah apa pun di atas H3 ≥ 50 dan dipertahankan sebagai penanda. Ambang hujan memakai kelas BMKG harian (sangat lebat ≥ 100, ekstrem ≥ 150 mm/hari) yang di sini diterapkan pada jumlah 3 hari: konservatif untuk hujan yang menyebar, longgar untuk satu hari yang sangat lebat. Kabupaten dan provinsi = status tertinggi kecamatannya. status.json hanya memuat kecamatan dengan status di atas Normal.</p>`,
-    batas: ["Ambang belum diuji balik terhadap kejadian banjir BNPB; uji balik adalah langkah berikutnya.", "Banjir karena drainase kota, sungai kecil, dan tanggul jebol tidak terlihat oleh data ini.",
+    <p>Medan yang tidak ada di berkas (imax, cape, ansambel) mematikan jalurnya, bukan dianggap nol. Syarat CAPE tidak menambah apa pun di atas H3 ≥ 40 dan dipertahankan sebagai penanda. Ambang awal 50/100/150 mm (kelas BMKG harian pada jumlah 3 hari) diturunkan ke 40/80/120 dan jendelanya digeser sehari ke belakang setelah uji balik terhadap kejadian banjir DIBI 2016-2025 (<code>scripts/banjir/uji_balik.py</code>, RISET-UJI-BALIK.md): dipilih di 2016-2021, lalu di 2022-2025 Siaga mengenai 13% hari banjir (dulu 6%), selisih skill di atas derau bootstrap. Kabupaten dan provinsi = status tertinggi kecamatannya. status.json hanya memuat kecamatan dengan status di atas Normal.</p>`,
+    batas: ["Uji balik memakai hujan ERA5 sebagai prakiraan sempurna; prakiraan nyata lebih meleset. Skill tetap rendah: 94% hari Siaga tidak punya kejadian tercatat di DIBI (sebagian karena banjir kecil tidak tercatat).", "Banjir karena drainase kota, sungai kecil, dan tanggul jebol tidak terlihat oleh data ini.",
       "Satu titik tengah per kecamatan: hujan di hulu yang jauh tidak ikut, kecuali lewat sungai besar."]});
 
   /* ---------------------------------------------------------------- 5 */
   B.push({ik: "lereng", j: "Status tanah longsor", sub: "Hujan lebat di atas tanah yang sudah basah, di lereng rawan",
-    singkat: `Longsor biasanya terjadi bila hujan lebat turun di atas tanah yang sudah jenuh air, di lereng yang memang rawan. Platform menilai tanah "jenuh" bila model mencatat kebasahan tanah ≥ 0,45 <b>dan</b> sudah turun hujan ≥ 50 mm dalam 7 hari terakhir. Bila data kebasahan tanah tidak ada, dipakai syarat lama: hujan 7 hari ≥ 150 mm. Syarat hujan 7 hari wajib ada karena tanah liat basah sepanjang tahun, termasuk di musim kemarau.`,
-    alur: [["d", "hujan", "Hujan 3 hari", "mulai hari itu"], ["d", "kisi", "Tanah jenuh?", "kebasahan ≥ 0,45 dan hujan 7 hari ≥ 50 mm"], ["d", "perisai", "Lereng rawan?", "InaRISK longsor"],
+    singkat: `Longsor biasanya terjadi bila hujan lebat turun di atas tanah yang sudah jenuh air, di lereng yang memang rawan. Platform menilai tanah "jenuh" bila model mencatat kebasahan tanah ≥ 0,45 <b>dan</b> sudah turun hujan ≥ 25 mm dalam 7 hari terakhir. Bila data kebasahan tanah tidak ada, dipakai syarat lama: hujan 7 hari ≥ 150 mm. Syarat hujan 7 hari wajib ada karena tanah liat basah sepanjang tahun, termasuk di musim kemarau.`,
+    alur: [["d", "hujan", "Hujan 3 hari", "kemarin s.d. besok"], ["d", "kisi", "Tanah jenuh?", "kebasahan ≥ 0,45 dan hujan 7 hari ≥ 25 mm"], ["d", "perisai", "Lereng rawan?", "InaRISK longsor"],
       ["u", "centang", "Cek Awas → Siaga → Waspada", ""], ["h", "lereng", "Status 4 hari", ""]],
     contoh: async () => {
       const k = mtKec("l"); if (!k) throw new Error("status.json kosong");
       const m = await mtMasukan(k), st = S.st.kec[k], d = st.l.indexOf(Math.max(...st.l)), x = mtHari(m, d), bl = m.b.longsor || 0, a7 = m.g.a7 || 0;
-      const jenuh = x.sm != null ? x.sm >= .45 && a7 >= 50 : a7 >= 150, lv = levelLongsor(x.h3, a7, bl, x.sm, x.im);
-      const awas = x.h3 >= 150 && jenuh && bl >= .66, siaga = (x.h3 >= 100 && jenuh && bl >= .66) || (x.h3 >= 150 && bl >= .33) || ((x.im || 0) >= 20 && bl >= .66);
+      const jenuh = x.sm != null ? x.sm >= .45 && a7 >= A7_BASAH : a7 >= 150, lv = levelLongsor(x.h3, a7, bl, x.sm, x.im), [lw, ls, la] = AMBANG_L;
+      const awas = x.h3 >= la && jenuh && bl >= .66, siaga = (x.h3 >= ls && jenuh && bl >= .66) || (x.h3 >= la && bl >= .33) || ((x.im || 0) >= 20 && bl >= .66);
       return mtTangga(`${mtNamaKec(k)} · ${tglPendek(S.st.hari[d])}`, "Kecamatan berstatus longsor tertinggi minggu ini, pada hari puncaknya.", [
-        ["in", "Hujan 3 hari mulai hari itu", `${[0, 1, 2].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
+        ["in", "Hujan 3 hari: sehari sebelum, hari itu, sehari sesudah", `${[-1, 0, 1].map(i => mtA(x.h[m.i0 + d + i])).join(" + ")} mm`, mtA(x.h3) + " mm"],
         ["in", "Hujan 7 hari terakhir", "teramati model", mtA(a7) + " mm"],
-        ["in", "Kebasahan tanah 3–27 cm", "awal jendela 3 hari", x.sm == null ? "tidak ada" : mtA(x.sm, 3) + " m³/m³"],
+        ["in", "Kebasahan tanah 3–27 cm", "hari itu", x.sm == null ? "tidak ada" : mtA(x.sm, 3) + " m³/m³"],
         ["in", "Kerawanan longsor InaRISK", "0 aman … 1 paling rawan", mtA(bl, 2)],
-        mtCek(jenuh, "Tanah dianggap jenuh?", x.sm != null ? `perlu kebasahan ≥ 0,45 (di sini ${mtA(x.sm, 3)}) dan hujan 7 hari ≥ 50 mm (di sini ${mtA(a7)} mm)` : `data kebasahan tidak ada: perlu hujan 7 hari ≥ 150 mm (di sini ${mtA(a7)} mm)`),
-        mtCek(awas, "Syarat Awas?", "hujan 3 hari ≥ 150 mm, tanah jenuh, dan lereng berbahaya tinggi (≥ 0,66)"),
-        !awas && mtCek(siaga, "Syarat Siaga?", "hujan 3 hari ≥ 100 mm + tanah jenuh + bahaya ≥ 0,66; ATAU hujan 3 hari ≥ 150 mm + bahaya ≥ 0,33; ATAU hujan per jam ≥ 20 mm + bahaya ≥ 0,66"),
-        !awas && !siaga && mtCek(x.h3 >= 50 && bl >= .33, "Syarat Waspada?", "hujan 3 hari ≥ 50 mm di lereng berbahaya ≥ 0,33"),
+        mtCek(jenuh, "Tanah dianggap jenuh?", x.sm != null ? `perlu kebasahan ≥ 0,45 (di sini ${mtA(x.sm, 3)}) dan hujan 7 hari ≥ 25 mm (di sini ${mtA(a7)} mm)` : `data kebasahan tidak ada: perlu hujan 7 hari ≥ 150 mm (di sini ${mtA(a7)} mm)`),
+        mtCek(awas, "Syarat Awas?", "hujan 3 hari ≥ 90 mm, tanah jenuh, dan lereng berbahaya tinggi (≥ 0,66)"),
+        !awas && mtCek(siaga, "Syarat Siaga?", "hujan 3 hari ≥ 60 mm + tanah jenuh + bahaya ≥ 0,66; ATAU hujan 3 hari ≥ 90 mm + bahaya ≥ 0,33; ATAU hujan per jam ≥ 20 mm + bahaya ≥ 0,66"),
+        !awas && !siaga && mtCek(x.h3 >= lw && bl >= .33, "Syarat Waspada?", "hujan 3 hari ≥ 30 mm di lereng berbahaya ≥ 0,33"),
         mtCek(lv === st.l[d], "Sama dengan status di peta?", `status.json mencatat ${LEVEL[st.l[d]]}`, "sama", "berbeda"),
         ["hasil", "Status longsor", `empat hari: ${st.l.map(l => LEVEL[l]).join(", ")}`, pill(lv)]]);
     },
     teknis: `<p><code>status.py</code>, fungsi <code>level_longsor</code> (B = indeks bahaya longsor InaRISK):</p>
-    ${rumus(`JENUH    sm ≥ 0,45 m³/m³ dan A7 ≥ 50 mm;   bila sm tidak ada: A7 ≥ 150 mm
-Awas     H3 ≥ 150 dan JENUH dan B ≥ 0,66
-Siaga    (H3 ≥ 100 dan JENUH dan B ≥ 0,66)  atau  (H3 ≥ 150 dan B ≥ 0,33)  atau  (I ≥ 20 dan B ≥ 0,66)
-Waspada  H3 ≥ 50 dan B ≥ 0,33`)}
+    ${rumus(`JENUH    sm ≥ 0,45 m³/m³ dan A7 ≥ 25 mm;   bila sm tidak ada: A7 ≥ 150 mm
+Awas     H3 ≥ 90 dan JENUH dan B ≥ 0,66
+Siaga    (H3 ≥ 60 dan JENUH dan B ≥ 0,66)  atau  (H3 ≥ 90 dan B ≥ 0,33)  atau  (I ≥ 20 dan B ≥ 0,66)
+Waspada  H3 ≥ 30 dan B ≥ 0,33`)}
     <p><b>Mengapa 0,45.</b> Kebasahan tanah di hujan.json berasal dari ECMWF IFS (best match Open-Meteo untuk Indonesia; dicek 13 Okt 2026 sama persis dengan model IFS). Model tanah IFS (HTESSEL; Balsamo dkk. 2009, ECMWF Tech. Memo 563 Tabel 2) memakai kadar air jenuh 0,403 (kasar), 0,439 (sedang), 0,430 (sedang-halus), 0,520 (halus), 0,614 (sangat halus), 0,766 (organik) dan kapasitas lapang 0,244 / 0,347 / 0,383 / 0,448 / 0,541 / 0,663. Jadi 0,45 = jenuh untuk tekstur kasar-sedang dan ≥ kapasitas lapang untuk lempung tropis.</p>
-    <p><b>Mengapa wajib hujan 7 hari ≥ 50 mm.</b> Uji 13 Okt 2026: kebasahan ≥ 0,45 saja menandai 154 kecamatan berbahaya tinggi di musim kemarau, karena tanah liat dan organik basah sepanjang tahun.</p>
+    <p><b>Mengapa wajib hujan 7 hari ≥ 25 mm.</b> Uji 13 Okt 2026: kebasahan ≥ 0,45 saja menandai 154 kecamatan berbahaya tinggi di musim kemarau, karena tanah liat dan organik basah sepanjang tahun. Batas 25 mm (dulu 50) dan ambang H3 30/60/90 mm (dulu 50/100/150, jendela digeser sehari ke belakang) berasal dari uji balik terhadap kejadian longsor DIBI 2016-2025 (RISET-UJI-BALIK.md): di 2022-2025 Siaga mengenai 15% hari longsor (dulu 4%).</p>
     <p>A7 tetap untuk keempat hari (hujan 7 hari sebelum hari ini). Pembanding luar: ambang operasional ILEWS Balai Sabo 64 mm/3 hari (Jawa) dan 91 mm/3 hari (Sumatra) belum dipakai karena belum diverifikasi ke naskah aslinya (RISET-PARAMETER.md butir 8).</p>`,
     batas: ["Kebasahan tanah adalah nilai model 28 km, bukan pengukuran lapangan; untuk tanah sangat halus ambang 0,45 terlalu longgar.", "Lereng, retakan, dan pemotongan tebing tidak diketahui; kerawanan hanya dari peta InaRISK.",
       "Longsor sangat lokal; status kecamatan berarti \"ada bagian kecamatan yang perlu diperiksa\", bukan lokasi longsor."]});
@@ -2070,7 +2070,7 @@ periode siaga = busur terpendek di lingkaran 36 dasarian yang memuat semua dasar
     teknis: `${h("Uji otomatis sebelum tiap jalan")}<p>Tiap skrip punya <code>uji()</code> berbasis assert yang dijalankan workflow sebelum data diambil, misalnya: hujan 3 hari 150 mm di bahaya 0,66 = Awas; 150 mm di bahaya 0,5 = Siaga; tanah basah tanpa hujan 7 hari tidak dianggap jenuh; ambang Gumbel dan kelas sungai; persentil, level, dan validasi rob.</p>
     ${h("Yang belum ada")}${ul(["Uji balik status banjir dan longsor terhadap kejadian BNPB per kecamatan/kabupaten.", "Hujan pengamatan (penakar BMKG, satelit IMERG/GSMaP); sekarang hujan 7 hari lalu adalah hujan model.",
       "Datum pasang lokal (BIG) dan penurunan tanah untuk rob.", "Waktu tempuh lewat jaringan jalan untuk posko.", "Harga resmi e-Katalog/SSH untuk alat bertanda estimasi."])}`,
-    batas: ["Status adalah hitungan otomatis dari model global, bukan peringatan resmi; ikuti BMKG dan BPBD setempat.", "Ambang status banjir dan longsor belum diuji balik terhadap kejadian.",
+    batas: ["Status adalah hitungan otomatis dari model global, bukan peringatan resmi; ikuti BMKG dan BPBD setempat.", "Ambang status banjir dan longsor sudah diuji balik terhadap kejadian DIBI 2016-2025 (data/validasi.json), tetapi dengan hujan ERA5 sebagai prakiraan sempurna dan kejadian yang kurang tercatat; skill tetap rendah.",
       "Model 28 km tidak melihat banjir drainase kota, sungai kecil, tanggul jebol, atau longsor sangat lokal.", "Riwayat BNPB/DIBI tidak lengkap dan lebih baik di Jawa; skor risiko dan pilihan posko mewarisi bias itu.",
       "Parameter keputusan (efek peringatan dini, lama mengungsi, harga alat) sebagian besar asumsi bertanda lemah."]});
 
@@ -2495,10 +2495,13 @@ const Keputusan = {
                           (hujan tak bisa dibuang ke laut saat pasang). Pesisir = indeks gelombang/abrasi InaRISK > 0
                           atau <= 15 km dari titik pantai rob.json. */
 /* imax/cape/p3/sm null = jalur itu tidak dipakai (aturan lama), sama dengan status.py */
-const levelBanjir = (h3, bh, rk, im, cape, p3) => { im ||= 0; cape ||= 0; p3 ||= 0;
-  return rk === 3 || (h3 >= 150 && bh >= .66) ? 3 : rk === 2 || (bh >= .33 && (h3 >= 100 || im >= 30 || p3 >= .5)) ? 2 : rk === 1 || h3 >= 50 || im >= 20 || (cape >= 2500 && h3 >= 50) ? 1 : 0; };
-const levelLongsor = (h3, a7, bh, sm, im) => { const j = sm != null ? sm >= .45 && a7 >= 50 : a7 >= 150;
-  return h3 >= 150 && j && bh >= .66 ? 3 : (h3 >= 100 && j && bh >= .66) || (h3 >= 150 && bh >= .33) || ((im || 0) >= 20 && bh >= .66) ? 2 : h3 >= 50 && bh >= .33 ? 1 : 0; };
+/* hasil uji balik 13 Okt 2026 (status.py GESER, K_BANJIR, K_LONGSOR, A7_BASAH; scripts/banjir/RISET-UJI-BALIK.md):
+   jendela H3/I/C hari d = d-1..d+1; ambang H3 banjir 40/80/120, longsor 30/60/90 mm; jenuh = sm >= 0,45 dan A7 >= 25 mm */
+const GESER = -1, AMBANG_B = [40, 80, 120], AMBANG_L = [30, 60, 90], A7_BASAH = 25;
+const levelBanjir = (h3, bh, rk, im, cape, p3) => { im ||= 0; cape ||= 0; p3 ||= 0; const [w, s, a] = AMBANG_B;
+  return rk === 3 || (h3 >= a && bh >= .66) ? 3 : rk === 2 || (bh >= .33 && (h3 >= s || im >= 30 || p3 >= .5)) ? 2 : rk === 1 || h3 >= w || im >= 20 || (cape >= 2500 && h3 >= w) ? 1 : 0; };
+const levelLongsor = (h3, a7, bh, sm, im) => { const j = sm != null ? sm >= .45 && a7 >= A7_BASAH : a7 >= 150, [w, s, a] = AMBANG_L;
+  return h3 >= a && j && bh >= .66 ? 3 : (h3 >= s && j && bh >= .66) || (h3 >= a && bh >= .33) || ((im || 0) >= 20 && bh >= .66) ? 2 : h3 >= w && bh >= .33 ? 1 : 0; };
 const puncak3 = (xs, m) => { const a = (xs || []).slice(m, m + 3).filter(x => x != null); return a.length ? Math.max(...a) : null; };
 /* round(sum, 1) Python: toFixed membulatkan nilai biner persis, sama dengan round() kecuali tepat di x,x5 yang tak pernah jatuh di ambang */
 const jendela3 = (xs, m) => +xs.slice(m, m + 3).reduce((a, x) => a + (x || 0), 0).toFixed(1);
@@ -2545,10 +2548,10 @@ const Simulasi = {
       const h = kali(c.g.h), im = kali(c.g.imax), sm = c.g.sm || [];
       const smD = d => { const v = i0 + d < sm.length ? sm[i0 + d] : null; return v != null && u?.jenuh ? Math.max(v, .45) : v; };
       const p3D = d => c.p3 && c.p3.length && e0 >= 0 && e0 + d < c.p3.length ? c.p3[e0 + d] : null;
-      const h3s = [0, 1, 2, 3].map(d => Math.max(jendela3(h, i0 + d), u?.ekstrem || 0)), a7 = Math.max(c.g.a7 || 0, u?.jenuh ? this.JENUH : 0);
+      const h3s = [0, 1, 2, 3].map(d => Math.max(jendela3(h, i0 + d + GESER), u?.ekstrem || 0)), a7 = Math.max(c.g.a7 || 0, u?.jenuh ? this.JENUH : 0);
       const rk = h3s.map((_, d) => { const r = c.sg != null ? kelasSungai(titik[c.sg].q, j0 + d, titik[c.sg]) : null; return c.sg != null && u?.sungai ? Math.max(r ?? 0, u.sungai) : r; });
-      out[k] = {b: h3s.map((x, d) => { const l = levelBanjir(x, c.bb, rk[d], puncak3(im, i0 + d), puncak3(c.g.cape, i0 + d), p3D(d)); return u?.pasang && c.pantai ? Math.max(l, x >= 50 ? 2 : 1) : l; }),
-        l: h3s.map((x, d) => levelLongsor(x, a7, c.bl, smD(d), puncak3(im, i0 + d))), h3: Math.max(...h3s), a7, rk: Math.max(-1, ...rk.map(r => r ?? -1))}; }
+      out[k] = {b: h3s.map((x, d) => { const l = levelBanjir(x, c.bb, rk[d], puncak3(im, i0 + d + GESER), puncak3(c.g.cape, i0 + d + GESER), p3D(d)); return u?.pasang && c.pantai ? Math.max(l, x >= 50 ? 2 : 1) : l; }),
+        l: h3s.map((x, d) => levelLongsor(x, a7, c.bl, smD(d), puncak3(im, i0 + d + GESER))), h3: Math.max(...h3s), a7, rk: Math.max(-1, ...rk.map(r => r ?? -1))}; }
     return out; },
   /* uji: perhitungan ulang tanpa skenario harus sama dengan status.json (yang tak tercantum = Normal 4 hari) */
   uji() { const beda = [], nol = [0, 0, 0, 0];
@@ -2649,9 +2652,9 @@ const Simulasi = {
           <tr><td>Perkiraan mengungsi, skenario</td><td class="n">${rb(orang(kb1)[0])}–${rb(orang(kb1)[2])}</td></tr>
           <tr><td>Perkiraan terdampak, skenario</td><td class="n">${rb(kb1 * pk.terdampak[0])}–${rb(kb1 * pk.terdampak[2])}</td></tr></tbody></table>
         <p class="fnd" style="margin-top:8px">Tidak ada data penduduk per kecamatan di halaman ini. Asumsinya: tiap kabupaten dengan kecamatan Siaga/Awas mengalami satu kejadian ${nm}, dan dampaknya seperti rata-rata kejadian ${nm} di ${esc(namaProv(this.kode))} 2008–2025 (DIBI mencatat kejadian per kabupaten). Angka ini untuk menyiapkan skala logistik, bukan ramalan korban.</p></div></div>
-      ${lipat("Cara hitung dan uji", `<p style="margin:0;font-size:13px">Status dihitung ulang di peramban dengan aturan yang sama dengan pembuat status harian (scripts/banjir/status.py): banjir Awas bila sungai ≥ Q20 atau H3 ≥ 150 mm dan bahaya ≥ 0,66; Siaga bila sungai ≥ Q5, atau bahaya ≥ 0,33 dan (H3 ≥ 100 mm, hujan per jam ≥ 30 mm, atau peluang ansambel 3 hari ≥ 100 mm ≥ 50%); Waspada bila sungai ≥ Q2, H3 ≥ 50 mm, atau hujan per jam ≥ 20 mm. Longsor memakai H3, kejenuhan tanah (kelembapan 3–27 cm ≥ 0,45, atau hujan 7 hari ≥ 150 mm bila kelembapan tidak ada), hujan per jam, dan bahaya longsor InaRISK. Jalur yang datanya belum ada di berkas hari ini tidak dipakai.</p>
+      ${lipat("Cara hitung dan uji", `<p style="margin:0;font-size:13px">Status dihitung ulang di peramban dengan aturan yang sama dengan pembuat status harian (scripts/banjir/status.py): banjir Awas bila sungai ≥ Q20 atau H3 ≥ 120 mm dan bahaya ≥ 0,66; Siaga bila sungai ≥ Q5, atau bahaya ≥ 0,33 dan (H3 ≥ 80 mm, hujan per jam ≥ 30 mm, atau peluang ansambel 3 hari ≥ 100 mm ≥ 50%); Waspada bila sungai ≥ Q2, H3 ≥ 40 mm, atau hujan per jam ≥ 20 mm (H3 = hujan sehari sebelum s.d. sehari sesudah). Longsor memakai H3 (ambang 30/60/90 mm), kejenuhan tanah (kelembapan 3–27 cm ≥ 0,45 dan hujan 7 hari ≥ 25 mm, atau hujan 7 hari ≥ 150 mm bila kelembapan tidak ada), hujan per jam, dan bahaya longsor InaRISK. Jalur yang datanya belum ada di berkas hari ini tidak dipakai.</p>
         <p style="margin:0;font-size:13px"><b>Uji:</b> tanpa skenario, ${fmt(this.cek.n - this.cek.beda.length)} dari ${fmt(this.cek.n)} kecamatan ${esc(namaProv(this.kode))} sama persis dengan status.json${this.cek.beda.length ? ` (berbeda: ${esc(this.cek.beda.slice(0, 5).map(k => k.split("|")[2]).join(", "))}${this.cek.beda.length > 5 ? ", …" : ""})` : ""}${this.cek.hilang.length ? `; ${this.cek.hilang.length} kecamatan di status.json tidak ditemukan di peta` : ""}.</p>
-        <p style="margin:0;font-size:13px">Pasang tinggi adalah aturan tambahan simulasi (bukan bagian status harian) dan belum diuji terhadap kejadian. Ambang hujan diterapkan pada jumlah 3 hari dan belum diuji balik terhadap kejadian BNPB.</p>`, false)}`;
+        <p style="margin:0;font-size:13px">Pasang tinggi adalah aturan tambahan simulasi (bukan bagian status harian) dan belum diuji terhadap kejadian. Ambang hujan diterapkan pada jumlah 3 hari dan sudah diuji balik terhadap kejadian DIBI 2016-2025 (RISET-UJI-BALIK.md); skenario simulasi sendiri tidak diuji.</p>`, false)}`;
     this.peta2(terbang);
     if (this.aktif) this.lukisPeta(); },
   /* peta kecil di tab: kecamatan provinsi/kabupaten terpilih, warna = level skenario, garis tebal = berubah */
