@@ -1570,7 +1570,7 @@ const Tabel = {
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
-    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></td>
+    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>
       <td>${esc(namaProv(p.prov))}</td><td>${esc(p.kab)}</td><td>${esc(p.kec)}</td>${["px24", "hari", "n", "luas", "fwi", "dc"].map(k => `<td class="n num">${fmt(p[k])}</td>`).join("")}</tr>`).join("")
       : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
