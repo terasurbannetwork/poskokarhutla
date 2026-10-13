@@ -18,7 +18,7 @@ import gzip, heapq, json, math, os, sys
 
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
-from wilayah import PRIORITAS
+from wilayah import PRIORITAS, PROVINSI
 
 MENTAH = os.path.join(AKAR, "data/raw/osm")
 GRAF = os.path.join(AKAR, "data/graf_jalan.json.gz")
@@ -177,7 +177,7 @@ def sederhana(pts, tol):
 
 def graf():
     ruas, fitur = [], {}
-    for kode in PRIORITAS:
+    for kode in sorted(PROVINSI, key=lambda k: (k not in PRIORITAS, k)):  # semua provinsi yang mentahnya sudah ditarik
         p = os.path.join(MENTAH, f"prov-jalan-{kode}.json")
         if not os.path.exists(p):
             print("lewati", kode, "(belum ditarik: python3 scripts/scrape/tarik_osm.py jalan)", file=sys.stderr)
@@ -192,7 +192,12 @@ def graf():
             # 3 desimal (~110 m), digabung per kelas. Jalan desa & jalan tanah tetap di graf waktu tempuh.
             if KELAS[kl] in (4, 5):
                 continue
-            s = sederhana(pts, 0.002 if KELAS[kl] <= 3 else 0.003)
+            # di luar 9 provinsi prioritas peta cukup jalan nasional/provinsi (kelas 1-2) + sungai yang lebih disederhanakan,
+            # supaya jalan.geojson untuk seluruh Indonesia tetap ringan; graf waktu tempuh tetap memakai semua ruas
+            luar = kode not in PRIORITAS
+            if luar and KELAS[kl] == 3:
+                continue
+            s = sederhana(pts, (0.004 if luar else 0.002) if KELAS[kl] <= 3 else (0.006 if luar else 0.003))
             garis = [[round(x, 3), round(y, 3)] for y, x in s]
             garis = [c for i, c in enumerate(garis) if i == 0 or c != garis[i - 1]]
             if len(garis) > 1:

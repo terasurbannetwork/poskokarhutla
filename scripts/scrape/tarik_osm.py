@@ -21,7 +21,11 @@ osm.SERVER[:] = ["https://overpass-api.de/api/interpreter", "https://maps.mail.r
 JALAN = "trunk|primary|secondary|tertiary|trunk_link|primary_link|secondary_link|tertiary_link|unclassified|track"
 
 
-ISO = {"14": "RI", "15": "JA", "16": "SS", "61": "KB", "62": "KT", "63": "KS", "64": "KI", "53": "NT", "93": "PS"}
+# ISO 3166-2:ID semua 38 provinsi (lapisan jalan & sungai untuk seluruh Indonesia)
+ISO = {"11": "AC", "12": "SU", "13": "SB", "14": "RI", "15": "JA", "16": "SS", "17": "BE", "18": "LA", "19": "BB", "21": "KR",
+       "31": "JK", "32": "JB", "33": "JT", "34": "YO", "35": "JI", "36": "BT", "51": "BA", "52": "NB", "53": "NT",
+       "61": "KB", "62": "KT", "63": "KS", "64": "KI", "65": "KU", "71": "SA", "72": "ST", "73": "SN", "74": "SG", "75": "GO", "76": "SR",
+       "81": "MA", "82": "MU", "91": "PA", "92": "PB", "93": "PS", "94": "PT", "95": "PE", "96": "PD"}
 
 
 def q_jalan(kode):
@@ -73,8 +77,12 @@ def semua(kode, jenis):
 
 if __name__ == "__main__":
     jenis = [a for a in sys.argv[1:] if a in JENIS] or list(JENIS)
-    kodes = [a for a in sys.argv[1:] if a not in JENIS] or PRIORITAS
-    for kode in kodes:
-        for j in jenis:
+    kodes = [a for a in sys.argv[1:] if a not in JENIS]
+    # cakupan bawaan (tanpa kode): fasilitas 9 provinsi prioritas, jalan 38 provinsi, sungai/kanal prioritas + bergambut
+    from wilayah import PROVINSI
+    from kanal import GAMBUT_LAIN
+    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN}
+    for j in jenis:
+        for kode in kodes or bawaan[j]:
             n = sum(1 for _ in semua(kode, j))
             print(kode, j, n, flush=True)

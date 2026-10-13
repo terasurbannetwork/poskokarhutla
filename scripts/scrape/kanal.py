@@ -1,4 +1,4 @@
-"""Kepadatan kanal & parit (OSM waterway=canal|ditch|drain) per sel 0,02 derajat -> public/data/kanal.json
+"""Kepadatan kanal & parit (OSM waterway=canal|ditch|drain) per sel 0,02 derajat, provinsi prioritas + bergambut -> public/data/kanal.json
 
 Pakai:  python3 scripts/scrape/kanal.py
 Mentah: data/raw/osm/<kode>-sungai-*.json (scripts/scrape/tarik_osm.py sungai, dipakai bersama osm.py).
@@ -11,6 +11,9 @@ import json, math, os, sys
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
 from wilayah import PRIORITAS
+# provinsi bergambut di luar 9 prioritas (Sumatra, Kalimantan, Papua); provinsi tanpa gambut tidak ditarik karena
+# "drain" di sana kebanyakan selokan kota, bukan kanal gambut
+GAMBUT_LAIN = ["11", "12", "13", "17", "18", "19", "21", "65", "91", "92", "94", "95", "96"]
 sys.path.insert(0, os.path.dirname(__file__))
 from tarik_osm import berkas, ubin
 
@@ -32,7 +35,7 @@ def tambah(grid, geom):
 
 def bangun():
     grid, seen, prov = {}, set(), []
-    for kode in PRIORITAS:
+    for kode in PRIORITAS + GAMBUT_LAIN:
         fs = [berkas(kode, "sungai", y, x) for y, x, _ in ubin(kode)]
         if not all(map(os.path.exists, fs)):  # provinsi setengah jadi tidak boleh tampil "0 km kanal"
             print("lewati", kode, f"({sum(map(os.path.exists, fs))}/{len(fs)} ubin)", file=sys.stderr)
