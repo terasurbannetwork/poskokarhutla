@@ -839,9 +839,10 @@ const Peta = {
       paint: {"line-color": warnaLv, "line-width": ["case", ["==", ["get", "id"], S.pilihK || ""], 3.4, 1.8]}});
     peta.addSource("klpt", {type: "geojson", data: this.geoPusat()});
     /* skala nasional: hanya kompleks prioritas; kompleks lain muncul mulai zoom 7 */
-    peta.addLayer({id: "kl-pt", type: "circle", source: "klpt", minzoom: 7, maxzoom: 10, filter: ["<", ["get", "level"], 3], layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
-      paint: {"circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 4, 100, 8, 1000, 13], "circle-color": "rgba(0,0,0,0)",
-        "circle-stroke-color": warnaLv, "circle-stroke-width": 1.8}});
+    peta.addLayer({id: "kl-pt", type: "circle", source: "klpt", minzoom: 7, maxzoom: 10, filter: ["all", ["<", ["get", "level"], 3], [">=", ["get", "level"], 1]], layout: {visibility: this.lihat("kluster") ? "visible" : "none"},
+      paint: {"circle-radius": ["interpolate", ["linear"], ["get", "n"], 1, 4, 100, 8, 1000, 13], "circle-color": ["match", ["get", "level"], 2, "rgba(229,138,69,.25)", "rgba(255,255,255,.18)"],
+        "circle-stroke-color": ["match", ["get", "level"], 2, "#e58a45", "#f3ead8"], "circle-stroke-width": ["match", ["get", "level"], 2, 1.8, 1.2],
+        "circle-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 7.6, 1], "circle-stroke-opacity": ["interpolate", ["linear"], ["zoom"], 7, 0, 7.6, .9]}});
     /* kompleks prioritas: yang berdekatan digabung jadi gelembung bernomor di skala kecil, pecah saat diperbesar (gaya Windy) */
     peta.addSource("prio", {type: "geojson", data: this.geoPrio(), cluster: true, clusterRadius: 38, clusterMaxZoom: 7});
     const visK = this.lihat("kluster") ? "visible" : "none";
@@ -943,13 +944,24 @@ const Peta = {
       tip.innerHTML = d[2] ? `<b>Terbakar ${d[2]} dari ${G.tahun} tahun</b><br>rata-rata ${fmt(d[3])} titik panas per tahun<br><small>sel ± 11 km · MODIS 2002–2025</small>` : `Tidak pernah terbakar berarti (≥ ${G.ambang} titik setahun)`;
       tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
     peta.on("mouseout", () => tip.classList.remove("on"));
+    /* gelembung angka: kursor tangan + daftar kompleks di dalamnya; roda/trackpad diperlambat supaya zoom halus */
+    peta.scrollZoom.setWheelZoomRate(1 / 650); peta.scrollZoom.setZoomRate(1 / 160);
+    peta.on("mouseenter", "prio-klaster", () => peta.getCanvas().style.cursor = "pointer");
+    peta.on("mouseleave", "prio-klaster", () => { peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
+    peta.on("mousemove", "prio-klaster", e => { const f = e.features[0], id = f.properties.cluster_id, ev = e.originalEvent;
+      if (tip._kl !== id) { tip._kl = id; peta.getSource("prio").getClusterLeaves(id, 8, 0).then(fs => { if (tip._kl !== id) return;
+        tip.innerHTML = `<b>${fmt(f.properties.point_count)} kompleks prioritas</b><br>${fs.map(x => `${x.properties.id}${x.properties.kab ? " · " + esc(x.properties.kab) : ""}`).join("<br>")}${f.properties.point_count > 8 ? "<br>…" : ""}<br><small>klik untuk memperbesar</small>`; tip.classList.add("on"); }); }
+      tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, ev.clientX + 14) + "px"; tip.style.top = Math.max(8, ev.clientY - tip.offsetHeight - 12) + "px"; });
+    peta.on("mouseleave", "prio-klaster", () => tip._kl = null);
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer";
       if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
       hov = e.features[0].id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); });
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; });
     peta.on("click", e => {
       const kc = peta.getLayer("prio-klaster") && peta.queryRenderedFeatures(e.point, {layers: ["prio-klaster"]});
-      if (kc && kc.length) { const id = kc[0].properties.cluster_id; peta.getSource("prio").getClusterExpansionZoom(id).then(z => peta.easeTo({center: kc[0].geometry.coordinates, zoom: z + .3})); return; }
+      if (kc && kc.length) { const id = kc[0].properties.cluster_id, src = peta.getSource("prio");
+        src.getClusterLeaves(id, 100, 0).then(fs => { const b = new maplibregl.LngLatBounds(); fs.forEach(f => b.extend(f.geometry.coordinates));
+          peta.fitBounds(b, {padding: 90, maxZoom: 9.5, duration: 1100, essential: true}); }); return; }
       const k = peta.queryRenderedFeatures(e.point, {layers: ["kl-fill", "kl-line", "kl-pt", "kl-pt3"].filter(l => peta.getLayer(l))});
       if (k.length) return Laci.buka(k[0].properties.id);
       const pk = peta.getLayer("posko") && peta.queryRenderedFeatures(e.point, {layers: ["posko"]});
@@ -1126,7 +1138,7 @@ const Kini = {
     return {url: cv2.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
   tampil(on) { this.on = on; if (!peta) return;
     if (on && !peta.getSource("kini")) { const g = this.gambar(); peta.addSource("kini", {type: "image", url: g.url, coordinates: g.kor});
-      peta.addLayer({id: "kini", type: "raster", source: "kini", paint: {"raster-opacity": .85, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); }
+      peta.addLayer({id: "kini", type: "raster", source: "kini", paint: {"raster-opacity": ["interpolate", ["linear"], ["zoom"], 5, .85, 6.5, .55, 8, .25, 10, .12], "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-line"); }
     if (peta.getLayer("kini")) peta.setLayoutProperty("kini", "visibility", on ? "visible" : "none");
     /* titik: tetap ada tapi baru menonjol saat diperbesar, supaya permukaan terbaca di skala nasional */
     if (peta.getLayer("titik")) peta.setPaintProperty("titik", "circle-opacity", on ? ["interpolate", ["linear"], ["zoom"], 6, 0, 7.5, .9] : ["interpolate", ["linear"], ["zoom"], 4, gelap() ? .7 : .85, 8, .95]); },
@@ -1958,8 +1970,8 @@ const rb = v => v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " jt" : v >= 1e4 ? fm
 const pendek = k => namaProv(k).replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.").replace("Nusa Tenggara Timur", "NTT");
 const Insight = {
   data: {},
-  st: {harian: "harian", ytd: "rasio", musim: "p_semua", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 12},
-  EX: ["harian", "ytd", "musim", "cuaca", "bnpb", "tahun", "luas", "kec"],
+  st: {harian: "harian", ytd: "rasio", musim: "p_semua", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 12, papHari: 0},
+  EX: ["harian", "ytd", "musim", "cuaca", "paparan", "akses", "bnpb", "tahun", "luas", "kec"],
   ex(judul, sub, unit, isi, catatan, ctl = "") {
     return `<article class="ex"><h3>${judul}</h3><p class="sub">${sub}</p><p class="unit">${unit}</p>${ctl ? `<div class="ctl">${ctl}</div>` : ""}${isi}<p class="fn">${catatan}</p></article>`; },
   hl: t => `<span class="hl">${t}</span>`,
@@ -1970,7 +1982,9 @@ const Insight = {
     const [mo, mu, sat, res, asap, kr] = await Promise.all([Tren.cache["data/sejarah_modis.json"] || muatJSON("data/sejarah_modis.json"), Tren.musim || muatJSON("data/musim.json"),
       muatJSON("data/luas_satelit.json").catch(() => null), muatJSON("data/luas_resmi.json").catch(() => null), Lapis.cache.asap || muatJSON("data/asap.json").catch(() => null), muatJSON("img/kredit.json").catch(() => [])]);
     Tren.cache["data/sejarah_modis.json"] = mo; Tren.musim = mu; Lapis.cache.asap = asap;
-    Object.assign(D, {mo, mu, sat, res, asap, kr}); await Riwayat.muat(); },
+    Object.assign(D, {mo, mu, sat, res, asap, kr}); await Riwayat.muat();
+    /* lapisan5.js: paparan(prov) = jiwa per kelas ISPU per hari; akses.json = waktu tempuh regu per kompleks */
+    [D.pap, D.akses] = await Promise.all([typeof paparan === "function" ? Promise.all(PRIO.map(k => paparan(k).catch(() => null))) : null, muatJSON("data/akses.json").catch(() => null)]); },
   foto(topik) { return (this.data.kr || []).find(x => x.topik === topik); },
   kredit: f => `${esc(f.penulis)} · ${esc(f.lisensi)} · Wikimedia Commons`,
   galeri(topik) { const fs = topik.map(t => this.foto(t)).filter(Boolean); if (!fs.length) return "";
@@ -2059,6 +2073,43 @@ const Insight = {
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Prakiraan cuaca kebakaran">${g}</svg></div>`,
       `Data yang sama dengan mode Cuaca di Peta. Sumber: Open-Meteo (ECMWF/ICON), CAMS; FWI dihitung dengan rumus Kanada (Van Wagner 1987).`,
       this.seg("cuaca", [["fwi", "Bahaya cuaca (FWI)"], ["hujan", "Hujan"], ["pm", "Asap PM2.5"]])); },
+
+  /* 4b. penduduk di udara tidak sehat: WorldPop × PM2.5 CAMS per kelas ISPU */
+  exPaparan() {
+    const P = (this.data.pap || []).filter(Boolean); if (!P.length) return "";
+    const j = Math.min(+this.st.papHari, P[0].hari.length - 1), WK = ["#5a9e74", "#4f8fc4", "#e3b94e", "#c9503a", "#7a2b2b"], kls = P[0].kelas;
+    const row = P.map(p => ({k: p.prov, v: p.jiwa[j], ts: p.tidak_sehat[j], tot: p.jiwa[j].reduce((a, b) => a + b, 0)})).filter(r => r.tot).sort((a, b) => b.ts - a.ts);
+    const W = 940, L = 190, rh = 34, H = row.length * rh + 34, mx = Math.max(1, ...row.map(r => r.tot)), X = v => v / mx * (W - L - 110);
+    let g = row.map((r, i) => { const y = i * rh; let x = L;
+      return `<g data-peta="${r.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(r.k))}</text>` + r.v.map((n, c) => { const w = X(n), o = `<rect class="gx" style="--i:${i}" x="${x}" y="${y + 7}" width="${Math.max(0, w)}" height="${rh - 14}" fill="${WK[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${kls[c]}: ${rb(n)} jiwa (${Math.round(n / r.tot * 100)}%)<br>klik untuk buka di peta"/>`; x += w; return o; }).join("")
+        + `<text x="${x + 8}" y="${y + 21}" font-size="12.5" font-weight="800">${rb(r.ts)}<tspan font-weight="400" opacity=".65"> tidak sehat</tspan></text></g>`; }).join("");
+    g += `<g transform="translate(${L},${H - 10})" font-size="11">${kls.map((n, c) => `<rect x="${c * 120}" y="-9" width="10" height="10" rx="2" fill="${WK[c]}"/><text x="${c * 120 + 14}" y="0">${n}</text>`).join("")}</g>`;
+    const tot = row.reduce((a, r) => a + r.ts, 0), tgl = new Date(P[0].hari[j] + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "short"});
+    return this.ex(`${this.hl(rb(tot) + " jiwa")} di 9 provinsi prioritas menghirup udara tidak sehat ${j ? "pada " + tgl : "hari ini"}${row[0]?.ts ? `; terbanyak di ${esc(namaProv(row[0].k))}` : ""}`,
+      `Penduduk menurut kualitas udara, 4 hari ke depan`, `jumlah jiwa per kelas ISPU (PM2.5). Klik provinsi untuk membukanya di peta.`,
+      `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Penduduk terpapar asap">${g}</svg></div>`,
+      `PM2.5 yang dipakai adalah puncak per jam dalam sehari, sedangkan ambang ISPU untuk rata-rata 24 jam, jadi angka "tidak sehat" cenderung terlalu tinggi; di kota besar sebagian asap berasal dari polusi kota, bukan kebakaran. Sumber: WorldPop 2026 (CC BY 4.0), CAMS via Open-Meteo.`,
+      this.seg("papHari", P[0].hari.slice(0, 4).map((t, i) => [i, i ? new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}) : "Hari ini"]))); },
+
+  /* 4c. waktu tempuh regu tercepat ke kompleks prioritas (akses.json, jaringan jalan & sungai OSM) */
+  exAkses() {
+    const A = this.data.akses; if (!A) return "";
+    const ks = (S.kluster?.features || []).map(f => f.properties).filter(p => p.sev >= 3 && PRIO.includes(p.prov) && A[p.id]);
+    const cepat = p => { const d = (A[p.id].dari || []).map(x => x.jam).filter(x => x != null); return d.length ? Math.min(...d) : null; };
+    const R = ks.map(p => ({p, j: cepat(p)})), B = [[0, 1, "< 1 jam"], [1, 3, "1–3 jam"], [3, 6, "3–6 jam"], [6, 12, "6–12 jam"], [12, 99, "> 12 jam"]], WB = ["#5a9e74", "#a8ba66", "#e3b94e", "#e58a45", "#c9503a"];
+    const n = B.map(([a, b]) => R.filter(r => r.j != null && r.j >= a && r.j < b).length), tak = R.filter(r => r.j == null);
+    const W = 940, H = 210, L = 30, bw = (W - L) / (B.length + 1) - 14, mx = Math.max(1, ...n, tak.length);
+    let g = [...B.map(x => x[2]), "Tanpa rute darat"].map((nm, i) => { const v = i < B.length ? n[i] : tak.length, h = v / mx * 140, x = L + i * (bw + 14);
+      return `<rect class="gy" style="--i:${i}" x="${x}" y="${170 - h}" width="${bw}" height="${Math.max(1, h)}" rx="4" fill="${i < B.length ? WB[i] : "#7a2b2b"}" data-tip="<b>${nm}</b><br>${fmt(v)} kompleks prioritas"/>
+        <text x="${x + bw / 2}" y="${164 - h}" text-anchor="middle" font-size="14" font-weight="800">${fmt(v)}</text><text x="${x + bw / 2}" y="190" text-anchor="middle" font-size="12">${nm}</text>`; }).join("");
+    const lama = R.filter(r => r.j == null || r.j >= 6).sort((a, b) => (b.j ?? 99) - (a.j ?? 99)).slice(0, 8);
+    const tb = lama.length ? `<table class="tb3" style="margin-top:10px"><thead><tr><th>Kompleks</th><th>Regu tercepat</th><th class="n">Waktu</th></tr></thead><tbody>${lama.map(({p, j}) => { const d = (A[p.id].dari || []).filter(x => x.jam != null).sort((a, b) => a.jam - b.jam)[0];
+      return `<tr data-kl="${p.id}" style="cursor:pointer"><td><b>${p.id}</b> ${esc(p.kec || "")}<small>${esc(p.kab)}, ${esc(namaProv(p.prov))}</small></td><td>${d ? esc(d.dari) : "–"}<small>${d ? fmt(d.km_jalan) + " km jalan" : "tidak tersambung jalan; pertimbangkan perahu/udara"}</small></td><td class="n num">${j == null ? "–" : fmtJam(j)}</td></tr>`; }).join("")}</tbody></table>` : "";
+    const jauh = n[3] + n[4] + tak.length;
+    return this.ex(`${this.hl(fmt(jauh) + " dari " + fmt(R.length))} kompleks prioritas butuh lebih dari 6 jam bagi regu terdekat untuk tiba`,
+      `Waktu tempuh regu tercepat (posko atau Daops) ke kompleks api prioritas`, `jam perjalanan lewat jalan dan sungai, ditambah jalan kaki dari ujung jalan. Klik baris untuk membuka kompleks.`,
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Waktu tempuh regu">${g}</svg>${tb}`,
+      `Perkiraan perencanaan dengan laju tetap per kelas jalan; kondisi jalan, banjir, portal kebun, dan izin lewat tidak dihitung. Sumber: © kontributor OpenStreetMap (ODbL).`); },
 
   /* 5. laporan BNPB; klik judul kolom = urutkan */
   exBnpb() {
@@ -2162,6 +2213,7 @@ const Insight = {
     el.onclick = e => {
       const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return ulang(s); }
       const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw);
+      const kl = e.target.closest("[data-kl]"); if (kl && el.contains(kl)) { bukaTab("peta"); return Laci.buka(kl.dataset.kl); }
       const pt = e.target.closest("[data-peta]"); if (pt) { bukaTab("peta"); return turun(pt.dataset.peta); }
       const tr = e.target.closest("[data-tren]"); if (tr) { Tren.prov = tr.dataset.tren; return bukaTab("tren"); }
       const pr = e.target.closest("[data-prio]"); if (pr) return bukaTab("prioritas");
