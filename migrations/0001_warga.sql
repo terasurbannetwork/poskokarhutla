@@ -1,5 +1,5 @@
 -- Lapor Warga (warga bantu warga). Waktu = milidetik epoch UTC.
--- Daftar jenis:sub dan jenis:bahaya di bawah HARUS sama dengan public/warga/jenis.js;
+-- Daftar jenis:sub dan jenis:bahaya di bawah HARUS sama dengan public/informasi_jenis.js;
 -- tests/warga/skema.test.mjs mencoba tiap pasangan katalog (harus diterima) dan tiap pasangan silang (harus ditolak).
 
 CREATE TABLE laporan (

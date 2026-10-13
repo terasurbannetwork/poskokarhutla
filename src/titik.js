@@ -100,6 +100,6 @@ export async function perbaruiTitik(env, kini = Date.now()) {
 
 export async function titikTerbaru(env) {
   const r = await env.DB.prepare("SELECT dibuat, isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first();
-  if (!r) return new Response(JSON.stringify({galat: "belum ada putaran titik panas"}), {status: 404, headers: {"content-type": "application/json; charset=utf-8", "cache-control": "max-age=60"}});
+  if (!r) return new Response(JSON.stringify({galat: "belum ada putaran titik panas"}), {status: 404, headers: {"content-type": "application/json; charset=utf-8", "cache-control": "no-store"}});
   return new Response(r.isi, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "public, max-age=600", "last-modified": new Date(r.dibuat).toUTCString()}});
 }

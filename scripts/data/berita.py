@@ -747,7 +747,7 @@ def og_gambar(hal, dasar):
     return None
 
 
-def perkaya_gambar(out, batas_detik=150, maks_cerita=40, ambil=True):
+def perkaya_gambar(out, batas_detik=420, maks_cerita=40, ambil=True):
     """Pasang `url_asli` + `gambar` (og:image) pada artikel pemimpin cerita yang ditampilkan. Tiap tautan Google News hanya
     diambil sekali (cache data/raw/berita/gambar.json, termasuk yang gagal). Maks 2 permintaan/detik, batas waktu per jalan,
     galat apa pun tidak menggagalkan jalan."""
@@ -764,6 +764,9 @@ def perkaya_gambar(out, batas_detik=150, maks_cerita=40, ambil=True):
     urut = [c["id"] for c in out["sorotan"] + out.get("sorotan_nas", []) + out["internasional"]["sorotan"]]
     urut += [c["id"] for c in sorted(out["cerita"], key=lambda c: (-c["n_media"], -c["n"]))]
     urut = list(dict.fromkeys(urut))[:maks_cerita]
+    # setelah cerita sorotan: artikel satu per satu, terbaru dulu, sampai batas waktu (cache membuat daftar terisi bertahap tiap hari)
+    sendiri = [a["cerita"] for a in sorted(out["artikel"], key=lambda a: a["tgl"], reverse=True)]
+    urut += [c for c in dict.fromkeys(sendiri) if c not in set(urut)]
     for cid in urut if ambil else []:
         for a in per_cerita[cid][:3]:  # pemimpin dulu, lalu dua artikel berikutnya bila gagal
             if a["url"] in cache:

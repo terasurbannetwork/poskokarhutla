@@ -1,7 +1,7 @@
 /* informasi.js — tab "Informasi": Lapor Warga (warga bantu warga). Satu berkas untuk tiga tempat (data-halaman):
    karhutla (public/index.html), banjir (public/banjir/index.html), warga (public/warga/index.html, layar penuh).
    Skrip klasik, dimuat SETELAH skrip utama halaman. Hanya butuh maplibregl global; katalog jenis diambil dengan import()
-   dari warga/jenis.js (sumber yang sama dengan worker). API: /api/warga (src/worker.js). Tidak mengubah index.html selain
+   dari informasi_jenis.js (sumber yang sama dengan worker). API: /api/warga (src/worker.js). Tidak mengubah index.html selain
    tag + kait yang dipasang scripts/warga/splice_informasi.py. */
 (() => {
   const SKRIP = document.currentScript, HAL = SKRIP?.dataset.halaman || "karhutla";
@@ -134,7 +134,7 @@
     peta.on("click", "lw-titik", e => pilih(e.features[0].properties.id));
     peta.on("click", e => { if (!peta.queryRenderedFeatures(e.point, {layers: ["lw-titik", "lw-klaster"]}).length) tutupKartu(); });
     for (const l of ["lw-titik", "lw-klaster"]) { peta.on("mouseenter", l, () => peta.getCanvas().style.cursor = "pointer"); peta.on("mouseleave", l, () => peta.getCanvas().style.cursor = ""); }
-    new MutationObserver(() => { const g = GAYA(); if (peta.__gaya !== g) { peta.__gaya = g; peta.setStyle(g); } }).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
+    new MutationObserver(() => { const g = GAYA(); if (peta.__gaya !== g) { peta.__gaya = g; siap = false; peta.setStyle(g, {diff: false}); } }).observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]});
     peta.__gaya = GAYA();
   }
   function lapisan() {
@@ -385,18 +385,18 @@
 
   /* ---------------- masuk ---------------- */
   async function mulai() {
-    K = (await import(AKAR + "warga/jenis.js")).default;
+    K = (await import(AKAR + "informasi_jenis.js")).default;
     akar = document.getElementById("informasi"); akar.classList.add("lw");
     kerangka(); buatPeta();
     fetch(API + "/konfig").then(r => r.ok ? r.json() : null).then(k => { if (k) konfig = k; }).catch(() => {});
-    peta.once("load", async () => {
+    peta.once("style.load", () => {   // tidak menunggu semua ubin dasar: data warga lebih penting
       const id = new URLSearchParams(location.search).get("laporan");
       if (id && /^[0-9a-f]{16}$/.test(id)) rincian(id); else muat(true);
     });
     setInterval(() => { if (!document.hidden && akar.offsetParent) muat(true); }, 120e3);
   }
   let mulaiP = null;
-  window.Informasi = {render() { if (!mulaiP) mulaiP = mulai().catch(e => { console.error(e); const el = document.getElementById("informasi"); if (el) el.innerHTML = `<p class="lw-galat" style="padding:20px">Lapor Warga gagal dimuat: ${esc(e.message)}</p>`; });
+  window.Informasi = {get peta() { return peta; }, render() { if (!mulaiP) mulaiP = mulai().catch(e => { console.error(e); const el = document.getElementById("informasi"); if (el) el.innerHTML = `<p class="lw-galat" style="padding:20px">Lapor Warga gagal dimuat: ${esc(e.message)}</p>`; });
     else mulaiP.then(() => peta?.resize()); }};
   if (document.getElementById("p-informasi")?.classList.contains("on")) window.Informasi.render();
 })();

@@ -81,8 +81,8 @@ let geser = 0;
 const titikBaru = () => ({lat: -3 + (++geser % 90) * 0.05, lon: 110 + Math.floor(geser / 90) * 0.05});   // >= 5 km antar titik
 
 uji("situs statis tetap dilayani lewat ASSETS", async () => {
-  const r = await panggil("GET", "/warga/jenis.js");
-  assert.equal(r.status, 200, `GET /warga/jenis.js = ${r.status}`);
+  const r = await panggil("GET", "/informasi_jenis.js");
+  assert.equal(r.status, 200, `GET /informasi_jenis.js = ${r.status}`);
   assert.match(r.teks, /export const JENIS/);
 });
 

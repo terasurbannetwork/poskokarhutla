@@ -1082,6 +1082,9 @@ function gradasi(st, v) { for (let k = 1; k < st.length; k++) if (v <= st[k][0])
 const ST_PM = [[0, [70, 150, 220, 0]], [15.5, [90, 180, 120, 90]], [55.4, [240, 210, 80, 200]], [150.4, [240, 120, 50, 230]], [250.4, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 200, 240, 120]], [10, [70, 140, 220, 200]], [30, [40, 80, 200, 230]], [80, [90, 40, 170, 240]]];
 /* grid ke gambar: 1 piksel per sel, MapLibre menghaluskan */
+/* label hari relatif terhadap tanggal WIB saat ini (bukan tanggal data dibuat): data malam kemarin tampil "Kemarin" */
+function labelHari(tgl) { const kini = Date.now() + 7 * 36e5, d = t => new Date(kini + t * 864e5).toISOString().slice(0, 10);
+  return tgl === d(0) ? "Hari ini" : tgl === d(-1) ? "Kemarin" : tgl === d(1) ? "Besok" : new Date(tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}); }
 function gambarGrid(sel, x0, x1, y0, y1, isi) {
   const w = Math.round((x1 - x0) / sel), h = Math.round((y1 - y0) / sel), cv = document.createElement("canvas"); cv.width = w; cv.height = h;
   const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
@@ -1331,7 +1334,7 @@ $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderFwiHari() {
   const hari = S.fwi.grid[0].hari, i0 = hari.findIndex(h => h.tgl === S.fwi.hari_ini);
   $("#fwiHari").innerHTML = `<div class="seg penuh" style="box-shadow:none">${hari.slice(i0, i0 + 4).map((h, n) =>
-    `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${n === 0 ? "Hari ini" : new Date(h.tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"})}</button>`).join("")}</div>`;
+    `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${labelHari(h.tgl)}</button>`).join("")}</div>`;
   document.querySelector("#garisWaktu .skala").innerHTML = [0, 2, 7, 14, 25, 40].map(v => `<i style="flex:1;background:rgb(${warnaFWI(v).join(",")})"></i>`).join("");
 }
 const garisWaktu = () => $("#garisWaktu").classList.toggle("on", ["fwi", "angin", "asap", "hujan"].some(k => Peta.lihat(k)));
@@ -2094,7 +2097,7 @@ const Insight = {
     const warna = a => m === "fwi" ? warnaFWI(a.fwi) : m === "hujan" ? gradasi(ST_HUJAN, a.hujan).slice(0, 3) : a.pm == null ? [200, 200, 200] : gradasi(ST_PM, a.pm).slice(0, 3);
     const gelapSel = a => m === "fwi" ? a.fwi >= 14 : m === "hujan" ? a.hujan >= 10 : a.pm > 150;
     const W = 940, L = 190, cw = (W - L) / hr.length, rh = 40, T = 30, H = T + pv.length * rh;
-    let g = hr.map((t, j) => `<text x="${L + j * cw + cw / 2}" y="16" text-anchor="middle" font-size="12" font-weight="${j ? 400 : 800}">${j ? new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"}) : "Hari ini"}</text>`).join("");
+    let g = hr.map((t, j) => `<text x="${L + j * cw + cw / 2}" y="16" text-anchor="middle" font-size="12" font-weight="${j ? 400 : 800}">${labelHari(t)}</text>`).join("");
     let hit = 0;
     pv.forEach((k, i) => { const y = T + i * rh; g += `<text x="${L - 10}" y="${y + 24}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
       hr.forEach((t, j) => { const a = agg(k, t), v = nilai(a), c = warna(a);
@@ -2125,7 +2128,7 @@ const Insight = {
       `Penduduk menurut kualitas udara, 4 hari ke depan`, `jumlah jiwa per kelas ISPU (PM2.5). Klik provinsi untuk membukanya di peta.`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Penduduk terpapar asap">${g}</svg></div>`,
       `PM2.5 yang dipakai adalah puncak per jam dalam sehari, sedangkan ambang ISPU untuk rata-rata 24 jam, jadi angka "tidak sehat" cenderung terlalu tinggi; di kota besar sebagian asap berasal dari polusi kota, bukan kebakaran. Sumber: WorldPop 2026 (CC BY 4.0), CAMS via Open-Meteo.`,
-      this.seg("papHari", P[0].hari.slice(0, 4).map((t, i) => [i, i ? new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}) : "Hari ini"]))); },
+      this.seg("papHari", P[0].hari.slice(0, 4).map((t, i) => [i, labelHari(t)]))); },
 
   /* 4c. waktu tempuh regu tercepat ke kompleks prioritas (akses.json, jaringan jalan & sungai OSM) */
   exAkses() {
@@ -2609,7 +2612,9 @@ const Berita = {
     $("#brList")?.querySelectorAll(".br-list > .br-item").forEach((it, i) => { const a = hal[i]; if (!a) return;
       it.querySelector("small")?.insertAdjacentHTML("afterbegin", this.ikon(dom(a)));
       if (a.bahasa && a.bahasa !== "id") it.querySelector(".br-chip")?.insertAdjacentHTML("afterbegin", `<i style="--w:${WARNA_INT}" title="${a.asal === "internasional" ? "media luar negeri" : "media Indonesia berbahasa asing"}">${BHS[a.bahasa] || a.bahasa}${a.asal === "internasional" ? " · internasional" : ""}</i>`);
-      if (a.gambar) { it.classList.add("br-tb"); it.insertAdjacentHTML("beforeend", this.thumb(a.gambar, dom(a))); } });
+      /* tiap berita punya ubin: gambar sampul bila sudah diambil, kalau belum ikon medianya */
+      const fv = fav(dom(a)); it.classList.add("br-tb");
+      it.insertAdjacentHTML("beforeend", a.gambar ? this.thumb(a.gambar, dom(a)) : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""); });
   };
 
   /* klik saringan asal: berlaku untuk seluruh tab */

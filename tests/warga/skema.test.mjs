@@ -5,7 +5,7 @@ import {test} from "node:test";
 import assert from "node:assert/strict";
 import {DatabaseSync} from "node:sqlite";
 import {migrasi} from "./_bantu.mjs";
-import {JENIS, BAHAYA} from "../../public/warga/jenis.js";
+import {JENIS, BAHAYA} from "../../public/informasi_jenis.js";
 
 const db = new DatabaseSync(":memory:");
 db.exec("PRAGMA foreign_keys = ON;");
@@ -35,7 +35,7 @@ uji("tiap pasangan jenis:sub di katalog diterima CHECK", () => {
   let ok = 0;
   for (const [j, d] of Object.entries(JENIS)) for (const s of Object.keys(d.sub)) {
     try { lapor({jenis: j, sub: s, bahaya: bahayaSah(j), detail: isianSah(j), lat: -2.5, lon: 113.9}); ok++; }
-    catch (e) { assert.fail(`${j}:${s} ada di public/warga/jenis.js tapi ditolak migrasi (${e.message}); perbarui CHECK di migrations/0001_warga.sql`); }
+    catch (e) { assert.fail(`${j}:${s} ada di public/informasi_jenis.js tapi ditolak migrasi (${e.message}); perbarui CHECK di migrations/0001_warga.sql`); }
   }
   assert.ok(ok >= 70, `hanya ${ok} pasangan diuji, katalog terlalu kecil?`);
 });
@@ -46,7 +46,7 @@ uji("tiap pasangan silang jenis:sub yang tidak ada di katalog ditolak", () => {
   for (const [j, d] of Object.entries(JENIS)) for (const s of semuaSub) {
     if (s in d.sub) continue;
     assert.throws(() => lapor({jenis: j, sub: s, bahaya: bahayaSah(j), detail: isianSah(j)}), /CHECK constraint/,
-      `${j}:${s} tidak ada di katalog tapi DITERIMA migrasi; CHECK jenis||':'||sub lebih longgar dari public/warga/jenis.js`);
+      `${j}:${s} tidak ada di katalog tapi DITERIMA migrasi; CHECK jenis||':'||sub lebih longgar dari public/informasi_jenis.js`);
     ditolakN++;
   }
   assert.ok(ditolakN > 500, `cuma ${ditolakN} pasangan silang diuji`);

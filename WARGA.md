@@ -1,0 +1,141 @@
+# Lapor Warga (warga bantu warga) + titik panas 3 jam
+
+Peta laporan warga di tab **Informasi** pada halaman karhutla dan banjir: listrik, sinyal, BBM, LPG, minta/tawar
+bantuan, pesan, plus jenis khusus per bencana (karhutla: api/asap, kualitas udara, kesehatan, ruang udara bersih,
+sumber air pemadaman, bantuan pemadaman, sekolah libur, satwa; banjir: tinggi air; longsor; rob; umum: akses jalan,
+evakuasi). Tanpa akun. Foto **tidak** didukung di v1 (risiko moderasi: wajah, data pribadi, konten tak pantas).
+
+Worker yang sama juga mengambil titik panas FIRMS NRT tiap 3 jam (`/api/titik`) dan halaman karhutla menggabungkannya
+ke data harian.
+
+## Berkas
+
+| Berkas | Isi |
+| --- | --- |
+| `src/worker.js` | API `/api/warga*`, `/api/titik`, cron; selain itu diteruskan ke aset statis (`ASSETS`) |
+| `src/titik.js` | ambil + urai CSV FIRMS, wilayah, simpan ke D1 |
+| `migrations/0001_warga.sql`, `0002_titik.sql` | skema D1 dengan CHECK enum/rentang, trigger hitungan suara & sembunyi otomatis |
+| `public/informasi_jenis.js` | katalog jenis/sub/isian/ikon — **satu sumber** untuk worker, halaman, dan uji |
+| `public/informasi.js`, `public/informasi.css` | modul tab Informasi (skrip klasik, `data-halaman`) |
+| `public/titik_live.js` | penggabung titik 3 jam di halaman karhutla |
+| `public/warga/index.html` | tampilan layar penuh yang bisa dibagikan (saat ini dikecualikan `.assetsignore`, lihat bawah) |
+| `scripts/warga/splice_informasi.py` | memasang tab + tag skrip ke kedua `index.html` (tiap jangkar harus cocok tepat sekali) |
+| `scripts/warga/titik24.py` | `public/data/titik24.json`: titik panas 24 jam ringkas untuk lencana "terkonfirmasi satelit" |
+| `wrangler.warga.jsonc` | usulan konfigurasi Worker + D1 + cron (database_id masih placeholder) |
+| `tests/warga/` | gerbang cakupan, uji skema (node:sqlite), uji rute (Miniflare + D1 lokal) |
+
+## Memasang tab di kedua halaman
+
+```bash
+python3 scripts/warga/splice_informasi.py --cek   # periksa jangkar dulu
+python3 scripts/warga/splice_informasi.py         # tulis public/index.html dan public/banjir/index.html
+```
+
+Yang dipasang: entri `["informasi", "Informasi"]` di `TABS` (setelah Peta), `<section class="page" id="p-informasi">`,
+kait `if (id === "informasi") window.Informasi?.render();` (pakai `window.…?.` supaya tab yang dibuka sebelum skrip
+termuat tidak melempar galat; modul juga merender dirinya sendiri bila tab sudah aktif), `<link informasi.css>`,
+`<script informasi.js data-halaman>`, `titik_live.js` (karhutla saja), dan tautan "Lapor Warga" di menu bencana.
+Kalau salah satu jangkar cocok 0 atau >1 kali, tidak ada berkas yang ditulis.
+
+Tab memakai pemilih bencana bawaan halaman (karhutla → Karhutla, banjir → Banjir; bisa diganti ke Longsor/Rob/Umum).
+URL bisa dibagikan: `?jam=6|24|72|168` dan `?laporan=<id>`.
+
+## Jalankan lokal
+
+```bash
+npm install                                   # wrangler 3.114.17 + miniflare (dev saja)
+cp .dev.vars.example .dev.vars                # isi IP_SALT dan ADMIN_TOKEN acak
+npx wrangler d1 migrations apply poskowarga --local -c wrangler.warga.jsonc
+npm run dev:warga                             # http://localhost:8787  (aset + API + D1 lokal)
+curl "localhost:8787/__scheduled?cron=15+*/3+*+*+*"   # butuh --test-scheduled dan FIRMS_MAP_KEY di .dev.vars
+```
+
+## Uji (standar pemilik: integrasi sungguhan, berhenti di galat pertama)
+
+```bash
+npm run uji:warga
+```
+
+1. `gerbang.test.mjs` (tanpa DB): tiap rute di `src/worker.js` dan tiap tabel/trigger di `migrations/` wajib ada di
+   `tests/warga/cakupan.json` sebagai `diuji` (menunjuk nama uji yang benar-benar ada) atau `dikecualikan` (dengan
+   alasan). `antre` hanya boleh menyusut.
+2. `skema.test.mjs` (npm-free, `node:sqlite`): migrasi dijalankan apa adanya; runner membungkus tiap uji dengan
+   `BEGIN … ROLLBACK`. Mencoba **semua** pasangan jenis:sub katalog (harus diterima) dan semua pasangan silang (harus
+   ditolak), koordinat/teks/detail/jumlah/kedaluwarsa salah, kontak hanya untuk bantuan, trigger suara & 3 aduan.
+   Uji ini sudah menemukan dua celah NULL di CHECK (`json_extract` kosong lolos) yang kini ditutup dengan `coalesce`.
+3. `api.test.mjs` (Miniflare, D1 lokal sungguhan): masukan salah ditolak tanpa menulis apa pun, batas laju 10/jam,
+   tautan & nomor HP dibuang, kontak tidak pernah bocor di GET, endpoint kontak 5/jam dan kedaluwarsa 72 jam, 3 aduan
+   menyembunyikan, laporan lanjutan + durasi padam dari timestamp tersimpan (≈108 jam), induk tidak ada/tersembunyi
+   ditolak, token selesai, cron kedaluwarsa/kontak/jejak, lencana titik panas, admin, origin lain, tanpa IP_SALT → 503,
+   dan cron FIRMS dengan CSV fixture (baris rusak dibuang, ambang keyakinan BRIN, kembar dihapus, laut dibuang, 8
+   putaran disimpan).
+
+Tidak dijalankan di tiap push. Bila ingin CI: jalankan saat `src/`, `migrations/`, `public/informasi*` atau
+`tests/warga/` berubah, atau `workflow_dispatch`.
+
+## Deploy (yang harus dilakukan pemilik)
+
+Token Cloudflare kini punya D1:Edit. Langkah:
+
+```bash
+npx wrangler@3 d1 create poskowarga                     # salin database_id yang keluar
+# tempel database_id ke wrangler.warga.jsonc, lalu salin isinya ke wrangler.jsonc
+npx wrangler@3 d1 migrations apply poskowarga --remote
+openssl rand -hex 32 | npx wrangler@3 secret put IP_SALT     # WAJIB: tanpa ini semua POST dijawab 503
+openssl rand -hex 24 | npx wrangler@3 secret put ADMIN_TOKEN # simpan nilainya untuk moderasi
+npx wrangler@3 secret put FIRMS_MAP_KEY                      # kunci yang sama dengan pipeline harian
+# opsional Turnstile: buat widget di dasbor, lalu
+npx wrangler@3 secret put TURNSTILE_SECRET                   # dan isi vars.TURNSTILE_SITEKEY di wrangler.jsonc
+python3 scripts/warga/splice_informasi.py
+npx wrangler@3 deploy
+```
+
+- Token butuh juga **Workers Scripts:Edit** (deploy skrip, cron) — sudah dipakai untuk deploy aset.
+- Urutan penting: migrasi sebelum deploy pertama; kalau terbalik, `/api/warga` menjawab 500 sampai migrasi jalan
+  (situs statis tidak terpengaruh).
+- Workflow `data.yml`/`banjir.yml` men-deploy dengan `wrangler.jsonc` — setelah langkah di atas, deploy otomatis ikut
+  membawa Worker. Tambahkan langkah ini ke `data.yml` setelah `harian.py` agar lencana satelit segar:
+  `python3 scripts/warga/titik24.py`.
+- `public/.assetsignore` saat ini mengecualikan `warga/` (halaman layar penuh). Tab tidak bergantung padanya
+  (katalog ada di `public/informasi_jenis.js`). Hapus baris `warga/` bila halaman `/warga/` mau dibuka.
+- Cron FIRMS mengurai ~20 rb baris + poligon provinsi per putaran: di paket **Workers Free** (10 ms CPU) ini bisa
+  melewati batas; di paket berbayar aman. Bila gagal, `/api/titik` tetap menyajikan putaran terakhir.
+
+## Moderasi
+
+```bash
+H="x-admin-token: $ADMIN_TOKEN"; U=https://<domain>/api/warga
+curl -H "$H" "$U/admin?tersembunyi=1"                       # yang disembunyikan / pernah diadukan (tanpa nomor WA)
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"sembunyikan"}'
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"tampilkan"}'       # hapus aduan + tampilkan lagi
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus"}'
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus_pengirim"}'  # semua laporan dari hash IP yang sama
+```
+
+Otomatis: 3 aduan dari 3 IP berbeda → disembunyikan (trigger DB). "Sudah tidak" ≥ 3 dan lebih banyak dari "masih
+benar" → keluar dari peta. Kata kasar ditolak; tautan dan nomor HP di teks publik diganti `[tautan dihapus]` /
+`[nomor dihapus]`; tagar dibiarkan.
+
+## Privasi
+
+- IP mentah tidak pernah disimpan: `SHA-256(IP_SALT | ip)`; jejak laju dihapus setelah 2 hari.
+- Nomor WA hanya untuk jenis bantuan (minta, tawar, kesehatan, pemadaman, evakuasi), di tabel terpisah, tidak pernah
+  ikut di daftar/rincian/admin; dibuka lewat `POST /api/warga/:id/kontak` (5/jam, 15/hari per IP), dihapus cron setelah
+  72 jam atau saat laporan selesai/disembunyikan. Formulir menjelaskan bahwa nomor terlihat oleh penolong.
+- Lokasi satwa dibulatkan 0,01° (~1 km) dan dijaga CHECK di DB.
+- "Tandai selesai" memakai token acak yang disimpan di perangkat pelapor (hash-nya di DB).
+
+## Batas
+
+| Hal | Nilai |
+| --- | --- |
+| Laporan | 10/jam, 30/hari per IP; 600/jam global; kembar ≤200 m dalam 30 menit ditolak |
+| Konfirmasi / aduan | 60/jam / 20/jam per IP; satu suara per IP per laporan (bisa diganti) |
+| Teks | 280 karakter; body 4 KB |
+| Masa berlaku | status 24 jam (pudar setelah 12 jam), api/asap 12 jam, sumber air 7 hari, bantuan s.d. selesai/7 hari |
+| Laporan lanjutan | listrik/sinyal/BBM/LPG ≤150 m tersambung otomatis; peta menampilkan status terbaru; buruk→baik menghitung durasi |
+| GET daftar | maks 1000 fitur per bbox (`terpotong: true` bila lebih) |
+| Penyimpanan | laporan dihapus 7 hari setelah kedaluwarsa; tersembunyi 30 hari |
+
+Batas yang disengaja (ponytail): wilayah ringkasan = pusat kecamatan terdekat (perkiraan, bukan poligon);
+`/api/titik` ~1 MB JSON (gzip ~200 KB) dikirim utuh — tambahkan `?sejak=` bila terasa berat.

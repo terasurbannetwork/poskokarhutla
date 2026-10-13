@@ -138,7 +138,7 @@ def main():
     rec = {}  # sel 0,1 -> {tahun: n}
     def modis_rec():
         for lo, la, tg in modis():
-            if tg.year <= 2025:
+            if 2002 <= tg.year <= 2025:
                 k = (math.floor(lo * 10), math.floor(la * 10))
                 d = rec.setdefault(k, {})
                 d[tg.year] = d.get(tg.year, 0) + 1
@@ -262,11 +262,15 @@ def main():
     nasional = [sum(tren[p]["titik"][i] for p in tren) for i in range(len(tahun))]
     porsi = {y: {p: round(tren[p]["titik"][i] / max(1, nasional[i]), 3) for p in tren if tren[p]["titik"][i] / max(1, nasional[i]) >= .03} for i, y in enumerate(tahun)}
     besar_th = sorted(tahun[:-1], key=lambda y: -nasional[tahun.index(y)])[:5]
-    sel_rec = sorted(((sum(1 for n in d.values() if n >= 3), sum(d.values()) / 24, k) for k, d in rec.items()), reverse=True)[:40]
+    sel_rec = sorted(((sum(1 for n in d.values() if n >= 3), sum(d.values()) / 24, k) for k, d in rec.items()), reverse=True)
     hot = []
     for f_, r_, (gx, gy) in sel_rec:
         lo, la = (gx + .5) / 10, (gy + .5) / 10
         w = prov.lengkap(lo, la)
+        if not w:  # Australia, Timor Leste, Malaysia, laut
+            continue
+        if len(hot) >= 40:
+            break
         hot.append({"lon": lo, "lat": la, "tahun_terbakar": f_, "rata_titik": round(r_, 1), "prov": w[0] if w else None, "kab": w[1] if w else None})
     json.dump({"dibuat": dt.date.today().isoformat(), "sumber": "NASA FIRMS MODIS C6.1 2002-2026 (keyakinan >= 30, vegetasi); VIIRS S-NPP 2015-2026; ONI/DMI NOAA",
                "catatan": "2026 belum lengkap (data s.d. 12 Okt, celah 8 Mei-1 Jun) dan tidak ikut perhitungan tren.",

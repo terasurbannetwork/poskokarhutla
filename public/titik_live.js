@@ -25,11 +25,12 @@
     }
     untuk = S.titik;
     if (!tambah.length) return;
-    const acuan = Math.max(...tambah.map(x => x[2])), geser = (acuan - a0) / 36e5;
+    const acuan = tambah.reduce((m, x) => Math.max(m, x[2]), a0), geser = (acuan - a0) / 36e5;
     for (const b of S.titik) b[2] = Math.round((b[2] - geser) * 100) / 100;
     for (const x of tambah) { x[2] = Math.round((x[2] - acuan) / 36e5 * 100) / 100; S.titik.push(x); }
     S.acuan = new Date(acuan); terakhir = S.titik;
-    try { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini?.segarkan?.(); } catch (e) { console.warn("titik_live", e); }
+    clearTimeout(gabung._t);   // satu penyegaran saja bila dua penggabungan beruntun (72 jam lalu 7 hari): updateImage Kini tidak saling membatalkan
+    gabung._t = setTimeout(() => { try { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini?.segarkan?.(); } catch (e) { console.warn("titik_live", e); } }, 1500);
     const el = document.getElementById("upd");
     if (el) { el.dataset.harian ??= el.textContent; el.textContent = `${el.dataset.harian} · Titik panas diperbarui ${jamWIB(live.dibuat).replace(/^\d+ \S+ /, "")} (tiap 3 jam)`;
       el.title = `${tambah.length} titik baru dari FIRMS NRT sejak data harian`; }

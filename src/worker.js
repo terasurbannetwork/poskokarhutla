@@ -2,7 +2,7 @@
    jadi situs tetap jalan seperti sebelumnya. Rahasia: IP_SALT (wajib untuk menulis), ADMIN_TOKEN, TURNSTILE_SECRET (opsional).
    Aturan privasi: IP mentah tidak pernah disimpan (SHA-256 bergaram), kontak WA tidak pernah ikut di daftar/rincian,
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
-import {JENIS, BAHAYA} from "../public/warga/jenis.js";
+import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
 import {perbaruiTitik, titikTerbaru} from "./titik.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *";
@@ -75,10 +75,11 @@ async function dekatApi(env, asal, lat, lon, kini) {
   const T = await titikPanas(env, asal);
   if (!T.acuan || kini - T.acuan > 30 * JAM) return {dekat: 0, laci: null};   // data basi: jangan memberi lencana
   const i = Math.floor(lat / .02), j = Math.floor(lon / .02);
-  let best = null, bd = RADIUS_API;
+  let dekat = 0, laci = null, bl = RADIUS_API;   // kompleks: titik berlaci terdekat dalam radius, walau titik tanpa laci lebih dekat
   for (let a = -1; a <= 1; a++) for (let b = -1; b <= 1; b++)
-    for (const t of T.sel.get(i + a + "," + (j + b)) || []) { const m = jarak(lat, lon, t[0], t[1]); if (m <= bd) { bd = m; best = t; } }
-  return best ? {dekat: 1, laci: best[2] >= 0 ? T.laci[best[2]] ?? null : null} : {dekat: 0, laci: null};
+    for (const t of T.sel.get(i + a + "," + (j + b)) || []) { const m = jarak(lat, lon, t[0], t[1]); if (m > RADIUS_API) continue; dekat = 1;
+      if (t[2] >= 0 && m <= bl) { bl = m; laci = T.laci[t[2]] ?? null; } }
+  return {dekat, laci};
 }
 
 /* ---------------- batas laju ---------------- */

@@ -93,29 +93,42 @@ def main():
     print(f"ONI {len(e['oni'])} bulan, DMI {len(e['dmi'])} bulan", file=sys.stderr)
     batas_arsip = dt.date.today() - dt.timedelta(days=6)
     kuota = float(os.environ.get("SEBARAN_KUOTA", "6500"))
-    pakai_b = 0.0
-    daf = pasangan()
-    for no, ((th, la, lo), a, b, n) in enumerate(daf):
-        f = nama(th, la, lo)
-        if os.path.exists(f):
+    daf = [x for x in pasangan()[:int(os.environ.get("SEBARAN_PASANGAN", "1500"))] if not os.path.exists(nama(*x[0]))]
+    # kelompok <= 10 lokasi per panggilan: tahun sama, rentang mirip (urut tanggal mulai); rentang = gabungan
+    daf.sort(key=lambda x: (x[0][0], x[1]))
+    grup, pakai_b = [], 0.0
+    for x in daf:
+        if grup and grup[-1][0][0][0] == x[0][0] and len(grup[-1]) < 10 and abs((grup[-1][0][1] - x[1]).days) <= 20:
+            grup[-1].append(x)
+        else:
+            grup.append([x])
+    if os.environ.get("SEBARAN_BALIK"):  # proses kedua dari ujung lain daftar
+        grup.reverse()
+    for no, g in enumerate(grup):
+        g = [x for x in g if not os.path.exists(nama(*x[0]))]
+        if not g:
             continue
-        b = min(b, batas_arsip)
-        w = bobot((b - a).days + 1)
+        a = min(x[1] for x in g)
+        b = min(max(x[2] for x in g), batas_arsip)
+        w = len(g) * bobot((b - a).days + 1)
         if pakai_b + w > kuota:
-            print(f"kuota sesi {kuota} tercapai di pasangan {no}/{len(daf)}", file=sys.stderr)
+            print(f"kuota sesi {kuota} tercapai di grup {no}/{len(grup)}", file=sys.stderr)
             break
-        q = {"latitude": la, "longitude": lo, "hourly": ",".join(VAR), "start_date": a.isoformat(), "end_date": b.isoformat(), "timezone": "GMT", "wind_speed_unit": "kmh"}
+        q = {"latitude": ",".join(str(x[0][1]) for x in g), "longitude": ",".join(str(x[0][2]) for x in g), "hourly": ",".join(VAR),
+             "start_date": a.isoformat(), "end_date": b.isoformat(), "timezone": "GMT", "wind_speed_unit": "kmh"}
+        t_mulai = time.time()
         try:
-            d = ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=120)
-        except KuotaHabis as x:
-            print(f"kuota Open-Meteo habis ({x}); lanjutkan besok", file=sys.stderr)
+            data = ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=300)
+        except KuotaHabis as e:
+            print(f"kuota Open-Meteo habis ({e}); lanjutkan besok", file=sys.stderr)
             break
-        h = d["hourly"]
-        json.dump({"lat": la, "lon": lo, "mulai": h["time"][0], **{k: h[v] for k, v in zip(KOLOM, VAR)}}, open(f, "w"), separators=(",", ":"))
+        for x, d in zip(g, data if isinstance(data, list) else [data]):
+            h = d["hourly"]
+            json.dump({"lat": x[0][1], "lon": x[0][2], "mulai": h["time"][0], **{k: h[v] for k, v in zip(KOLOM, VAR)}},
+                      open(nama(*x[0]), "w"), separators=(",", ":"))
         pakai_b += w
-        if no % 50 == 0:
-            print(f"  {no}/{len(daf)} bobot {pakai_b:.0f}", file=sys.stderr)
-        time.sleep(w * .8)
+        print(f"  grup {no + 1}/{len(grup)} bobot {pakai_b:.0f}", file=sys.stderr)
+        time.sleep(max(0, w * .75 - (time.time() - t_mulai)))
     print(f"selesai, bobot sesi {pakai_b:.0f}; berkas {len(os.listdir(CUACA))}", file=sys.stderr)
 
 

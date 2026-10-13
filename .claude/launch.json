@@ -4,8 +4,28 @@
     {
       "name": "poskokarhutla",
       "runtimeExecutable": "python3",
-      "runtimeArgs": ["-m", "http.server", "8791", "--directory", "public"],
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8791",
+        "--directory",
+        "public"
+      ],
       "port": 8791
+    },
+    {
+      "name": "lapor-warga",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "-c",
+        "wrangler.warga.jsonc",
+        "--port",
+        "8787"
+      ],
+      "port": 8787
     }
   ]
 }
