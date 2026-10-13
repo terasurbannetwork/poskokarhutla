@@ -107,7 +107,8 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tarik-v:hover::after,.tarik-v.aktif::after{background:var(--brand2)}
 .lg-g .lbl{margin:0 0 3px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg-g .leg{flex-direction:row;flex-wrap:wrap;gap:3px 10px;margin:0!important}
-.lg-g .legscale{width:100%;max-width:220px}
+/* skala warna dan deret angkanya selalu sama lebar supaya angka tepat di bawah warnanya */
+.lg-g .legscale,.lg-g .legnum{width:100%;max-width:280px}
 @media (max-width:900px){.dok{left:12px;bottom:auto;top:112px}.lg-isi{max-height:40vh}}
 .garis-waktu.on{display:flex}
 .garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
