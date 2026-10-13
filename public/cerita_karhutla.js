@@ -26,7 +26,7 @@ const tglP = s => tgD(s).toLocaleDateString("id-ID", {day: "numeric", month: "sh
 const hariKe = d => new Date(Date.UTC(2026, 0, 1) + d * 864e5).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"});
 const doy = s => Math.floor((Date.parse(s.slice(0, 10)) - Date.UTC(2026, 0, 1)) / 864e5);   /* hari ke-n sejak 1 Jan 2026 */
 const TL0 = 151;   /* 1 Jun */
-const KEC = [1, 2, 4];
+const KEC = [.5, 1, 2], kc = v => String(v).replace(".", ",");
 const bd = s => s < 0 ? `${-s} hari lebih awal` : s > 0 ? `${s} hari lebih lambat` : "sama dengan median";
 const API = `<svg viewBox="0 0 12 16" width="11" height="15" aria-hidden="true"><path d="M6 0C6 4 11 6 11 11a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3 1-6 1-10z" fill="#e0663a" stroke="#fff" stroke-width=".8"/></svg>`;
 const PUTAR = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 5v14l11-7z" fill="currentColor"/></svg>`, JEDA = `<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 5h4v14H7zM13 5h4v14h-4z" fill="currentColor"/></svg>`;
@@ -71,7 +71,7 @@ function setSumber(m, id, data, lapis) {
 
 /* ================================================================ */
 const Cerita = {
-  D: {}, peta: {}, st: {mode: "nas", replay: 0, kasus: 0, hariRe: 1, hariMusim: 284}, ki: 0, tf: 0, raf: 0,
+  D: {}, peta: {}, st: {mode: "nas", replay: 0, kasus: 0, hariRe: 1, hariMusim: 284}, ki: 1, tf: 0, raf: 0, kam: true, tahan: 0, dJeda: -1, zoom: false, nTampil: 0, penuh: [],
   async muat() {
     const D = this.D;
     if (D.siap) return;
@@ -114,20 +114,20 @@ const Cerita = {
     /* sel terbakar diurut menurut hari, jadi tiap bingkai cukup mengiris */
     this.f26 = C.musim26.filter(s => s[2] >= 150 && s[3] >= 3).sort((a, b) => a[2] - b[2]).map(([ix, iy, h, n]) => ({type: "Feature", geometry: {type: "Point", coordinates: [g.x0 + (ix + .5) * g.sel, g.y1 - (iy + .5) * g.sel]}, properties: {h, n}}));
     this.h26 = this.f26.map(f => f.properties.h);
+    this.harian = []; this.f26.forEach(f => { const i = Math.max(0, f.properties.h - TL0); this.harian[i] = (this.harian[i] || 0) + 1; });
+    this.hmax = Math.max(1, ...this.harian.filter(Boolean));
     const kompleks = ur.flatMap(o => (o.pertama || []).slice(0, 1).map(e => ({...e, prov: o.nama, pk: o.k}))), kmp = Object.fromEntries(kompleks.map(e => [e.pk, e]));
     this.ev = [...ur.filter(o => o.awal_2026_iso && CEN[o.k]).map(o => ({d: doy(o.awal_2026_iso), jenis: "awal", prov: o.nama, pk: o.k, iso: o.awal_2026_iso, selisih: o.selisih_hari, lon: CEN[o.k][0], lat: CEN[o.k][1]})),
       ...kompleks.filter(e => e.lon0 != null).map(e => ({d: doy(e.t0), jenis: "besar", prov: e.prov, pk: e.pk, kab: e.kab, ha: e.ha, t0: e.t0, lon: e.lon0, lat: e.lat0}))].sort((a, b) => a.d - b.d);
     this.DMAX = Math.max(...C.musim26.map(s => s[2])); this.st.hariMusim = this.tf = this.DMAX;
     const f = d => this.px((d - TL0) / (this.DMAX - TL0));
     /* kartu samping: provinsi berurutan menurut awal musim (gantinya grafik dumbbell dan tabel kompleks pertama) */
-    const sisi = ur.map(o => { const k = kmp[o.k], s = o.selisih_hari;
-      return `<div class="ct-sd" data-a="${o.awal_2026_iso ? doy(o.awal_2026_iso) : 9999}" data-b="${k ? doy(k.t0) : 9999}"><i style="background:${WP[o.k] || "#c9503a"}"></i><b>${es(o.nama)}</b><span class="dt">${o.awal_2026_iso ? tglP(o.awal_2026_iso) : "belum mulai"}</span>
-        ${s == null ? "" : `<span class="ct-pl ${s < 0 ? "awal" : "lambat"}">${bd(s)}</span>`}${k ? `<small class="kp">Kompleks besar: ${es(k.kab)} · ${tglP(k.t0)} · ${nf(k.ha)} ha</small>` : ""}</div>`; }).join("");
+    const sisi = ur.map(o => { const k = kmp[o.k], s = o.selisih_hari, kt = k ? `Kompleks: ${k.kab} · ${tglP(k.t0)} · ${nf(k.ha)} ha` : "";
+      return `<div class="ct-sd" data-pk="${o.k}" data-a="${o.awal_2026_iso ? doy(o.awal_2026_iso) : 9999}" data-b="${k ? doy(k.t0) : 9999}"><i style="background:${WP[o.k] || "#c9503a"}"></i><b>${es(o.nama)}</b><span class="dt">${o.awal_2026_iso ? tglP(o.awal_2026_iso) : "belum mulai"}</span>
+        ${s == null ? "" : `<span class="ct-pl ${s < 0 ? "awal" : "lambat"}">${bd(s)}</span>`}${k ? `<small class="kp" title="${es(kt)}">${es(kt)}</small>` : ""}</div>`; }).join("");
     /* penggeser: tanda bulan + penanda bab (awal musim = titik, kompleks besar pertama = api) */
     const tick = [151, 181, 212, 243, 273].filter(d => d <= this.DMAX).map(d => `<i class="ct-scr-t" style="left:${f(d)}"></i><span class="ct-scr-b" style="left:${f(d)}">${hariKe(d)}</span>`).join("");
-    const marks = this.ev.map(x => `<i class="ct-mk ${x.jenis}" style="left:${f(x.d)};--c:${WP[x.pk] || "#c9503a"}" data-hari="${x.d}" data-tip="${es(x.jenis === "awal"
-      ? `<b>${x.prov}</b> · awal musim 2026<br>${tglP(x.iso)}${x.selisih != null ? ` · ${bd(x.selisih)} dari median` : ""}`
-      : `<b>Kompleks besar pertama</b> · ${x.prov}<br>${x.kab || ""} · ${tglP(x.t0)}<br>Luas: ${nf(x.ha)} ha`)}">${x.jenis === "besar" ? API : ""}</i>`).join("");
+    const marks = this.ev.map(x => `<i class="ct-mk ${x.jenis}" style="left:${f(x.d)};--c:${WP[x.pk] || "#c9503a"}" data-hari="${x.d}" data-t="${es(x.jenis === "awal" ? `${hariKe(x.d)} · awal musim ${x.prov}` : `${hariKe(x.d)} · kompleks besar ${x.kab || x.prov} (${nf(x.ha)} ha)`)}">${x.jenis === "besar" ? API : ""}</i>`).join("");
     this.urutRe = R.map((r, i) => i).sort((a, b) => R[b].ha - R[a].ha);
     const pilih = `<select data-ubah="peristiwa" aria-label="Lihat peristiwa terbesar"><option value="-1">Lihat peristiwa terbesar</option>${this.urutRe.map(i => `<option value="${i}">${es(R[i].kab || nmP(R[i].prov))} · ${tglID(R[i].t0)} · ${nf(R[i].ha)} ha</option>`).join("")}</select>`;
     return this.bab("Musim 2026", "musim", "Video sebaran api wilayah Indonesia di 2026",
@@ -137,7 +137,7 @@ const Cerita = {
         <div class="ct-ft"><div class="ct-cap" id="ct-cap"></div>
           <div class="ct-bar"><button type="button" class="ct-ib" id="ct-btnP" data-aksi="putar"></button><button type="button" class="ct-kec" id="ct-kec" data-aksi="kec" aria-label="Kecepatan putar">1×</button>
             <div class="ct-scr" id="ct-scr" role="slider" tabindex="0" aria-label="Tanggal"><div class="ct-scr-tr"><i class="ct-scr-fill" id="ct-fill"></i></div><div class="ct-nasx">${tick}${marks}</div><i class="ct-scr-head" id="ct-kepala"></i></div>
-            <span id="ct-nas">${pilih}</span><span id="ct-re" hidden><button type="button" class="ct-kec lbl" data-aksi="kembali">← Kembali ke Indonesia</button></span></div></div></div>
+            <button type="button" class="ct-kec on" id="ct-kam" data-aksi="kam" aria-pressed="true">Kamera otomatis</button><span id="ct-nas">${pilih}</span><span id="ct-re" hidden><button type="button" class="ct-kec lbl" data-aksi="kembali">← Kembali ke Indonesia</button></span></div></div></div>
       <div id="ct-reBawah" hidden><div id="ct-sebarInfo" class="ct-chips satu"></div></div>`,
       {leg: [["background:#1d4e89;border-radius:50%", "label awal musim provinsi"], ["background:#e0663a;clip-path:polygon(50% 0,90% 45%,100% 70%,80% 100%,20% 100%,0 70%,15% 40%)", "label kompleks besar pertama"], ["background:linear-gradient(90deg,#fde7a7,#ef9a4a,#c63b2f,#5c0f1f)", "sel terbakar: makin tua makin baru"]], sumber: "NASA FIRMS VIIRS 2015–2026"});
   },
@@ -172,9 +172,8 @@ const Cerita = {
     return this.bab("Pendorong", "dorong", `Api yang sejak awal sudah besar ${hl(nf(rn0, 0) + " kali")} lebih mungkin membesar${daftar ? `; ${daftar} juga menaikkan peluang` : ""}`,
       `<div class="ct-sub">Berapa kali lebih mungkin api membesar, dibanding kelompok pembanding (${nf(P.n_lolos)} dari ${nf(P.n_peristiwa)} titik membesar, ${pc(P.laju_dasar, 1)})</div>
       ${hbatang(data, {label: "rasio peluang membesar", garis: 1, garisT: "1× = sama", ml: 400})}
-      <div class="ct-dua"><div><div class="ct-sub">Kontribusi tiap faktor ke model</div>${hbatang(imp, {w: 480, ml: 215, label: "kontribusi faktor"})}</div>
-      <div><div class="ct-sub">Arah angin</div><div class="ct-chips">${chip("pergeseran searah angin · acak 25%", pc(A.semua.bawah_angin_45))}${A.bersih ? chip("pergeseran ≥ 2 km, angin ≥ 10 km/jam", pc(A.bersih.bawah_angin_45)) : ""}</div></div></div>`,
-      {leg: [["#c9503a", "menaikkan peluang membesar"], ["#2b8c86", "menurunkan"], [NAVY, "kontribusi ke model"]], sumber: "NASA FIRMS VIIRS 2015–2026, ERA5, SRTM"});
+      `,
+      {leg: [["#c9503a", "menaikkan peluang membesar"], ["#2b8c86", "menurunkan"]], sumber: "NASA FIRMS VIIRS 2015–2026, ERA5, SRTM"});
   },
 
   /* ---------- model sebaran: belum dibuka ---------- */
@@ -234,17 +233,39 @@ const Cerita = {
     if (id === "musim") { const m = this.peta.musim = peta(box, [113, -2], 3.6); if (!m) return; m.siap.then(() => { m.sedia = true; this.fit(0); this.labelPeta(m); this.gambarPeta(true); }); }
     if (id === "uji-obs" || id === "uji-pred") { this.peta[id] = peta(box, [113, -2], 11); this.gambarKasus(); }
   },
+  pad() { const w = innerWidth > 760; return {top: w ? 24 : 96, left: w ? 96 : 40, bottom: w ? 130 : 190, right: w ? 280 : 24}; },
   fit(ms) { /* seluruh Indonesia; ruang kosong untuk kartu samping (kanan) dan kontrol (bawah) */
-    const m = this.peta.musim, w = innerWidth > 760; if (!m) return;
-    m.fitBounds([[94.5, -11.5], [141.5, 6.7]], {padding: {top: w ? 24 : 96, left: w ? 96 : 40, bottom: w ? 130 : 190, right: w ? 280 : 24}, duration: ms});
+    const m = this.peta.musim; if (!m) return; this.zoom = false;
+    m.fitBounds([[94.5, -11.5], [141.5, 6.7]], {padding: this.pad(), duration: ms});
   },
-  labelPeta(m) { /* penanda bernama; muncul (membesar + pudar masuk) saat video mencapai tanggalnya, lalu tetap redup */
+  kamera(x) { const m = this.peta.musim; if (!this.kam || !m?.sedia || this.st.mode !== "nas") return; this.zoom = true; const q = this.pad(); m.easeTo({center: [x.lon, x.lat], zoom: x.jenis === "besar" ? 6.2 : 5.2, offset: [(q.left - q.right) / 2, (q.top - q.bottom) / 2], duration: 1500}); },
+  labelPeta(m) { /* penanda bernama: titik kecil selalu ada; kartu nama hanya untuk 3 peristiwa terbaru, ditata agar tidak bertumpuk */
     this.lb = this.ev.map(x => {
-      const kiri = x.jenis === "awal" || x.lon > 130, el = document.createElement("div"); el.className = "ct-lbw";
-      el.innerHTML = `<div class="ct-lb ${x.jenis}${kiri ? " kiri" : ""}" style="--c:${WP[x.pk] || "#c9503a"}"><span class="pin">${x.jenis === "besar" ? API : ""}</span><span class="tx"><b>${es(x.jenis === "awal" ? x.prov : x.kab || x.prov)}</b><small>${x.jenis === "awal" ? "Awal musim · " + tglP(x.iso) : es(x.prov) + " · " + nf(x.ha) + " ha"}</small></span></div>`;
-      new maplibregl.Marker({element: el, anchor: kiri ? "right" : "left", offset: [kiri ? 7 : -7, x.jenis === "awal" ? -12 : 12]}).setLngLat([x.lon, x.lat]).addTo(m);
+      const el = document.createElement("div"), judul = x.jenis === "awal" ? x.prov + " · awal musim " + tglP(x.iso) : (x.kab || x.prov) + ", " + x.prov + " · " + nf(x.ha) + " ha";
+      el.className = "ct-lbw"; x.l1 = x.jenis === "awal" ? x.prov : x.kab || x.prov; x.l2 = x.jenis === "awal" ? "Awal musim · " + tglP(x.iso) : x.prov + " · " + nf(x.ha) + " ha";
+      el.innerHTML = `<div class="ct-lb ${x.jenis}" style="--c:${WP[x.pk] || "#c9503a"}"><i class="ln"></i><span class="pin" title="${es(judul)}">${x.jenis === "besar" ? API : ""}</span><span class="tx"><b>${es(x.l1)}</b><small>${es(x.l2)}</small></span></div>`;
+      new maplibregl.Marker({element: el, anchor: "center"}).setLngLat([x.lon, x.lat]).addTo(m);
       return el.firstChild; });
+    m.on("moveend", () => this.susun());
     this.infoMusim();
+  },
+  susun() { /* tata letak kartu nama: coba 8 arah x 3 jarak, ambil yang tidak menabrak kartu lain / kartu samping / kontrol; garis penunjuk ke titiknya */
+    const m = this.peta.musim; if (!m?.sedia || !this.lb) return;
+    const c = m.getContainer(), W = c.clientWidth, H = c.clientHeight, wide = innerWidth > 760;
+    const pakai = [[0, 0, 210, 130], [0, H - 112, W, H], ...(wide ? [[W - 272, 0, W, H]] : [])], ada = [];
+    const tabrak = (a, b) => a[0] < b[2] && a[2] > b[0] && a[1] < b[3] && a[3] > b[1];
+    this.lb.forEach((l, i) => { if (!this.penuh.includes(i)) l.classList.remove("full"); });
+    [...this.penuh].reverse().forEach(i => {
+      const x = this.ev[i], l = this.lb[i], p = m.project([x.lon, x.lat]), w = Math.max(x.l1.length * 7.4, x.l2.length * 6.1) + 22, h = 38; let pilih = null;
+      loop: for (const dist of [24, 56, 92]) for (const [dx, dy] of [[1, -1], [-1, -1], [1, 1], [-1, 1], [1, 0], [-1, 0], [0, -1], [0, 1]]) {
+        const rx = dx > 0 ? dist : dx < 0 ? -dist - w : -w / 2, ry = dy > 0 ? dist : dy < 0 ? -dist - h : -h / 2, b = [p.x + rx, p.y + ry, p.x + rx + w, p.y + ry + h];
+        if (!pilih) pilih = [rx, ry];
+        if (b[0] < 4 || b[1] < 4 || b[2] > W - 4 || b[3] > H - 4 || pakai.some(q => tabrak(b, q)) || ada.some(q => tabrak(b, q))) continue;
+        pilih = [rx, ry]; ada.push(b); break loop; }
+      const [rx, ry] = pilih, tx = Math.max(rx, Math.min(0, rx + w)), ty = Math.max(ry, Math.min(0, ry + h)), len = Math.hypot(tx, ty), t = $q(".tx", l), ln = $q(".ln", l);
+      t.style.left = rx + "px"; t.style.top = ry + "px"; ln.style.width = len + "px"; ln.style.transform = `rotate(${Math.atan2(ty, tx)}rad)`;
+      l.classList.add("full"); l.parentNode.style.zIndex = 3; });
+    this.lb.forEach((l, i) => { if (!this.penuh.includes(i)) l.parentNode.style.zIndex = 1; });
   },
   gambarPeta(pusat) { this.st.mode === "re" ? this.gambarSebar(pusat) : this.gambarMusim(); },
   vis(m, ids, v) { for (const id of ids) if (m.getLayer(id)) m.setLayoutProperty(id, "visibility", v); },
@@ -253,23 +274,45 @@ const Cerita = {
     const m = this.peta.musim, d = this.st.hariMusim;
     this.infoMusim();
     if (!m?.sedia) return;
-    setSumber(m, "musim", fc(this.f26.slice(0, this.nSel(d))), [{id: "musim", type: "circle", paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, ["interpolate", ["linear"], ["get", "n"], 3, .7, 300, 2.6], 8, 7],
-      "circle-color": ["interpolate", ["linear"], ["get", "h"], 150, "#fde7a7", 200, "#ef9a4a", 240, "#c63b2f", 285, "#5c0f1f"], "circle-opacity": .8}}]);
+    const dt = fc(this.f26.slice(0, this.nSel(d))), umur = ["-", d, ["get", "h"]];
+    const warna = ["interpolate", ["linear"], umur, 0, "#fff6c2", 4, "#ffc233", 14, "#f0701f", 35, "#b92a1c", 80, "#5a1712"];
+    const r = (a, b, c) => ["interpolate", ["linear"], ["zoom"], 3, ["interpolate", ["linear"], ["get", "n"], 3, a, 300, a * 3.4], 6, ["interpolate", ["linear"], ["get", "n"], 3, b, 300, b * 2.4], 9, c];
+    if (!m.getSource("gelap")) { /* basemap digelapkan sedikit supaya api menonjol, seperti citra satelit malam */
+      m.addSource("gelap", {type: "geojson", data: {type: "Feature", geometry: {type: "Polygon", coordinates: [[[-180, -85], [180, -85], [180, 85], [-180, 85], [-180, -85]]]}}});
+      m.addLayer({id: "gelap", type: "fill", source: "gelap", paint: {"fill-color": "#0a1226", "fill-opacity": .42}}); }
+    setSumber(m, "musim", dt, [{id: "musim-glow", type: "circle", paint: {"circle-radius": r(1.6, 4, 16), "circle-blur": 1, "circle-opacity": .4, "circle-color": warna}},
+      {id: "musim", type: "circle", paint: {"circle-radius": r(.8, 2.5, 8), "circle-color": warna, "circle-opacity": .92}}]);
+    m.setPaintProperty("musim", "circle-color", warna); m.setPaintProperty("musim-glow", "circle-color", warna);
   },
   px: f => `calc(8px + (100% - 16px) * ${f})`,
+  hitung(el, n) { /* angka berjalan naik/turun ke nilai baru */
+    cancelAnimationFrame(this.rc); const a = this.nTampil, t0 = performance.now();
+    const f = now => { const k = Math.min(1, (now - t0) / 450), e = 1 - Math.pow(1 - k, 3); this.nTampil = a + (n - a) * e; el.textContent = nf(Math.round(this.nTampil)); if (k < 1) this.rc = requestAnimationFrame(f); }; f(t0);
+  },
+  spark(d) { /* sel baru per hari sampai hari ini (bayangan = seluruh musim) */
+    const N = this.DMAX - TL0 + 1, H = 30, y = i => (H - 1 - (H - 4) * Math.sqrt((this.harian[i] || 0) / this.hmax)).toFixed(1), n = Math.max(0, Math.min(N - 1, Math.floor(d) - TL0));
+    const all = Array.from({length: N}, (_, i) => `${i},${y(i)}`), sd = all.slice(0, n + 1);
+    return `<svg class="ct-sp" viewBox="0 0 ${N - 1} ${H}" preserveAspectRatio="none" aria-hidden="true"><polyline points="${all.join(" ")}" fill="none" stroke="currentColor" stroke-opacity=".18" stroke-width="1.2" vector-effect="non-scaling-stroke"/><polygon points="0,${H} ${sd.join(" ")} ${n},${H}" fill="#e58a45" fill-opacity=".35"/><polyline points="${sd.join(" ")}" fill="none" stroke="#e0663a" stroke-width="1.6" vector-effect="non-scaling-stroke"/></svg>`;
+  },
   infoMusim() { /* kartu tanggal, label peta, daftar samping, keterangan; dipanggil tiap ganti hari */
     if (this.st.mode !== "nas") return;
     const d = this.st.hariMusim, e = this.el, o = $q("#ct-ovl", e);
-    if (o) o.innerHTML = this.ovl("Sebaran titik api", `${hariKe(d)} <small>2026</small>`, `<b>${nf(this.nSel(d))}</b> sel terbakar sejak ${hariKe(TL0)}`);
-    (this.lb || []).forEach((l, i) => { const a = d - this.ev[i].d; l.classList.toggle("on", a >= 0); l.classList.toggle("baru", a >= 0 && a < 10); });
-    e.querySelectorAll(".ct-sd").forEach(r => { const a = d - r.dataset.a; r.classList.toggle("on", a >= 0); r.classList.toggle("baru", a >= 0 && a < 10); r.classList.toggle("kmp", d >= +r.dataset.b); });
+    if (o) { o.innerHTML = this.ovl("Sebaran titik api", `${hariKe(d)} <small>2026</small>`, `<b id="ct-cnt"></b> sel terbakar sejak ${hariKe(TL0)}`) + this.spark(d); this.hitung($q("#ct-cnt", e), this.nSel(d)); }
+    const on = [];
+    this.ev.forEach((x, i) => { const a = d - x.d, l = this.lb?.[i]; if (a >= 0 && (x.jenis === "besar" || a < 10)) on.push(i);
+      if (l) { l.classList.toggle("on", a >= 0); l.classList.toggle("baru", a >= 0 && a < 10); } });
+    this.penuh = on.slice(-3); this.susun();
+    const lalu = this.ev.filter(x => x.d <= d).at(-1);
+    e.querySelectorAll(".ct-sd").forEach(r => { const a = d - r.dataset.a; r.classList.toggle("on", a >= 0); r.classList.toggle("baru", a >= 0 && a < 10); r.classList.toggle("kmp", d >= +r.dataset.b); r.classList.toggle("kini", !!lalu && r.dataset.pk === lalu.pk); });
+    const kini = $q(".ct-sd.kini", e), sd = $q("#ct-side", e);
+    if (kini !== this.rowKini) { this.rowKini = kini; if (kini && sd) sd.scrollTo({top: Math.max(0, kini.offsetTop - 44), behavior: "smooth"}); }
     this.setCap(this.caption(d));
   },
   caption(d) { /* kalimat peristiwa terakhir yang sudah dilewati */
     const sudah = this.ev.filter(x => x.d <= d);
-    if (!sudah.length) return `<b>${hariKe(d)} 2026</b> · Belum ada provinsi yang memulai musim`;
+    if (!sudah.length) return `<b>${hariKe(d)} 2026</b><span>Belum ada provinsi yang memulai musim</span>`;
     const dd = sudah.at(-1).d, tx = x => x.jenis === "awal" ? `Awal musim di ${es(x.prov)}${x.selisih != null ? ` (${bd(x.selisih)} dari median)` : ""}` : `Kompleks besar pertama di ${es(x.kab)}, ${es(x.prov)} (${nf(x.ha)} ha)`;
-    return `<b>${hariKe(dd)} 2026</b> · ${sudah.filter(x => x.d === dd).map(tx).join("; ")}`;
+    return `<b>${hariKe(dd)} 2026</b><span>${sudah.filter(x => x.d === dd).map(tx).join("; ")}</span>`;
   },
   setCap(h) { const c = $q("#ct-cap", this.el); if (!c || h === this.capTxt) return; this.capTxt = h; c.innerHTML = h; c.classList.remove("ganti"); void c.offsetWidth; c.classList.add("ganti"); },
   gambarSebar(pusatkan) {
@@ -282,7 +325,7 @@ const Cerita = {
           const km = Math.max(.4, (h.jauh || 500) / 1000); ar.push({type: "Feature", geometry: {type: "LineString", coordinates: panah(c0[0], c0[1], h.arah, km)}, properties: {}}); } lama = lama.concat(h.sel); }
       setSumber(m, "sebar-arah", fc(ar.slice(-6)), [{id: "sebar-arah-l", type: "line", paint: {"line-color": "#111", "line-width": 4.5}}, {id: "sebar-arah", type: "line", paint: {"line-color": "#fff", "line-width": 2}}]);
       setSumber(m, "sebar-awal", fc([{type: "Feature", geometry: {type: "Point", coordinates: [r.lon0, r.lat0]}, properties: {}}]), [{id: "sebar-awal", type: "circle", paint: {"circle-radius": 7, "circle-color": "#fff", "circle-stroke-color": "#1d1d1d", "circle-stroke-width": 3}}]);
-      if (pusatkan) { this.vis(m, ["sebar", "sebar-arah-l", "sebar-arah", "sebar-awal"], "visible"); this.vis(m, ["musim"], "none");
+      if (pusatkan) { this.vis(m, ["sebar", "sebar-arah-l", "sebar-arah", "sebar-awal"], "visible"); this.vis(m, ["musim", "musim-glow"], "none");
         const xs = r.hari.flatMap(h => h.sel.map(pusatSel)); const b = xs.reduce((a, p) => [Math.min(a[0], p[0]), Math.min(a[1], p[1]), Math.max(a[2], p[0]), Math.max(a[3], p[1])], [180, 90, -180, -90]);
         m.fitBounds([[b[0], b[1]], [b[2], b[3]]], {padding: {top: 100, left: 40, right: 40, bottom: 150}, duration: 900, maxZoom: 12}); }
     }
@@ -308,20 +351,27 @@ const Cerita = {
   kepala() { const [lo, hi] = this.rentang(), f = hi > lo ? (this.tf - lo) / (hi - lo) : 0, h = $q("#ct-kepala", this.el), l = $q("#ct-fill", this.el);
     if (h) h.style.left = this.px(f); if (l) l.style.width = f * 100 + "%";
     $q("#ct-scr", this.el)?.setAttribute("aria-valuetext", this.st.mode === "re" ? `hari ${this.st.hariRe}` : hariKe(this.st.hariMusim) + " 2026"); },
-  putar() { /* putar / jeda; di ujung, putar ulang dari awal */
+  putar() { /* putar / jeda; di ujung, putar ulang dari awal. Di mode nasional berhenti ~1,5 dtk tiap ada peristiwa */
     if (this.raf) return this.henti();
     const [lo, hi] = this.rentang(); if (hi <= lo) return;
     if (this.tf >= hi - 1e-6) this.set(lo);
+    const nas = this.st.mode === "nas"; this.tahan = 0;
+    if (nas) { this.dJeda = Math.floor(this.tf); if (this.zoom) this.fit(600); }
     let t0 = performance.now();
     const f = now => {
       if (!this.el.isConnected || !$q("#ct-vid", this.el)?.offsetParent) return this.henti();
-      this.set(this.tf + Math.min(.1, (now - t0) / 1000) * (this.st.mode === "re" ? 2.2 : 6) * KEC[this.ki]); t0 = now;
-      if (this.tf >= hi - 1e-6) return this.henti();
+      if (now < this.tahan) { t0 = now; this.raf = requestAnimationFrame(f); return; }
+      if (this.tahan) { this.tahan = 0; $q("#ct-cap", this.el)?.classList.remove("sorot"); if (this.zoom) this.fit(1200); }
+      this.set(this.tf + Math.min(.1, (now - t0) / 1000) * (nas ? 1.4 : 2.2) * KEC[this.ki]); t0 = now;
+      if (nas) { const d = Math.floor(this.tf), e = d !== this.dJeda ? this.ev.filter(x => x.d === d) : [];
+        if (d !== this.dJeda) this.dJeda = d;
+        if (e.length) { this.tahan = now + 1500; $q("#ct-cap", this.el)?.classList.add("sorot"); this.kamera(e.at(-1)); } }
+      if (this.tf >= hi - 1e-6 && !this.tahan) return this.henti();
       this.raf = requestAnimationFrame(f);
     };
     this.raf = requestAnimationFrame(f); this.tombol();
   },
-  henti() { cancelAnimationFrame(this.raf); this.raf = 0; this.tombol(); },
+  henti() { cancelAnimationFrame(this.raf); this.raf = 0; this.tahan = 0; $q("#ct-cap", this.el)?.classList.remove("sorot"); this.tombol(); },
   tombol() { const b = $q("#ct-btnP", this.el); if (b) { b.innerHTML = this.raf ? JEDA : PUTAR; b.setAttribute("aria-label", this.raf ? "Jeda" : "Putar"); } },
   pasangScr() { /* penggeser buatan sendiri: seret, klik penanda, panah kiri/kanan, spasi */
     const s = $q("#ct-scr", this.el); if (!s) return;
@@ -344,7 +394,7 @@ const Cerita = {
   kembali() {
     this.henti(); this.st.mode = "nas"; const s = $q('select[data-ubah="peristiwa"]', this.el); if (s) s.value = -1; this.tampilMode();
     const m = this.peta.musim; this.tf = this.st.hariMusim; this.capTxt = null;
-    if (m?.sedia) { this.vis(m, ["sebar", "sebar-arah-l", "sebar-arah", "sebar-awal"], "none"); this.vis(m, ["musim"], "visible"); this.fit(900); }
+    if (m?.sedia) { this.vis(m, ["sebar", "sebar-arah-l", "sebar-arah", "sebar-awal"], "none"); this.vis(m, ["musim", "musim-glow"], "visible"); this.fit(900); }
     this.gambarMusim(); this.kepala();
   },
   klik(e) {
@@ -353,7 +403,8 @@ const Cerita = {
     if (!a) return;
     const z = a.dataset.aksi;
     if (z === "putar") this.putar();
-    if (z === "kec") { this.ki = (this.ki + 1) % KEC.length; a.textContent = KEC[this.ki] + "×"; }
+    if (z === "kec") { this.ki = (this.ki + 1) % KEC.length; a.textContent = kc(KEC[this.ki]) + "×"; }
+    if (z === "kam") { this.kam = !this.kam; a.classList.toggle("on", this.kam); a.setAttribute("aria-pressed", this.kam); if (!this.kam && this.zoom) this.fit(900); }
     if (z === "kembali") this.kembali();
   },
 };
