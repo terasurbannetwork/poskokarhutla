@@ -431,23 +431,23 @@ table.tb3 tr:last-child td{border-bottom:0}
 #insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1120px;margin:0 auto}
 #insight > *{min-width:0}
 #insight > [data-ex]:empty{display:none}
-#insight .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
-#insight .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
-#insight .ex-bd{padding:16px 22px 10px}
-#insight .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
-#insight .ex-ft em{font-style:italic;opacity:.9}
+#insight .ex,#dampak .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+#insight .ex-hd,#dampak .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#insight .ex-bd,#dampak .ex-bd{padding:16px 22px 10px}
+#insight .ex-ft,#dampak .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#insight .ex-ft em,#dampak .ex-ft em{font-style:italic;opacity:.9}
 .ex-leg{display:flex;flex-wrap:wrap;gap:4px 14px}
 .ex-leg span{display:inline-flex;align-items:center;gap:6px}
 .ex-leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
-#insight .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
-#insight .ex-ey:empty{display:none}
-#insight .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
-#insight .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
-#insight .ex .unit{font-size:12px;margin:2px 0 0;color:var(--ink2)}
-#insight .ex .ctl{margin:12px 0 0}
-#insight .ex .ctl .seg{display:flex;width:100%}
-#insight .ex .ctl .seg button{flex:1;text-align:center}
-#insight .ex .bg-ex{margin:14px 16px 0 0}
+#insight .ex-ey,#dampak .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#insight .ex-ey:empty,#dampak .ex-ey:empty{display:none}
+#insight .ex h3,#dampak .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#insight .ex .sub,#dampak .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
+#insight .ex .unit,#dampak .ex .unit{font-size:12px;margin:2px 0 0;color:var(--ink2)}
+#insight .ex .ctl,#dampak .ex .ctl{margin:12px 0 0}
+#insight .ex .ctl .seg,#dampak .ex .ctl .seg{display:flex;width:100%}
+#insight .ex .ctl .seg button,#dampak .ex .ctl .seg button{flex:1;text-align:center}
+#insight .ex .bg-ex,#dampak .ex .bg-ex{margin:14px 16px 0 0}
 .ex2{display:grid;grid-template-columns:1fr;gap:18px}
 @media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
@@ -612,12 +612,14 @@ button.mt-li b{color:var(--brand2)}
 @media (max-width:900px){.mt-peta{grid-template-columns:minmax(0,1fr)}.mt-panah{height:22px}.mt-panah svg{transform:rotate(90deg)}}
 
 /* kartu bagian */
-details.mt-sek{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);margin-bottom:12px;min-width:0}
+details.mt-sek{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);margin-bottom:14px;min-width:0;overflow:hidden}
+details.mt-sek>summary{background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)))}
+details.mt-sek[open]>summary{border-bottom:1px solid var(--line);margin-bottom:14px}
 details.mt-sek>summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:12px;padding:14px 16px}
 details.mt-sek>summary::-webkit-details-marker{display:none}
 details.mt-sek>summary::after{content:"";margin-left:auto;flex:none;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s}
 details.mt-sek[open]>summary::after{transform:rotate(-135deg)}
-details.mt-sek>summary:hover{background:var(--surface);border-radius:var(--r)}
+details.mt-sek>summary:hover{background:var(--surface)}
 .mt-nom{display:grid;place-items:center;flex:none;width:34px;height:34px;border-radius:10px;background:color-mix(in oklab,var(--brand2) 14%,transparent);color:var(--brand2)}
 .mt-nom .mt-ikon{width:19px;height:19px}
 .mt-jd{min-width:0}
@@ -2481,9 +2483,9 @@ const Insight = {
   EX: ["harian", "ytd", "musim", "cuaca", "paparan", "akses", "bnpb", "tahun", "luas", "kec"],
   ex(judul, sub, unit, isi, catatan, ctl = "") {
     /* catatan "...Sumber: X" dipecah: legenda (warna dari daftar leg) + sumber bercetak miring */
-    const [ket, sumber] = String(catatan).split(/\s*Sumber:\s*/);
+    const [ket, sumber] = String(catatan).split(/\s*Sumber:\s*/), leg = this._leg; this._leg = null;
     return `<article class="ex"><header class="ex-hd"><span class="ex-ey"></span><h3>${judul}</h3><p class="sub">${sub}</p>${unit ? `<p class="unit">${unit}</p>` : ""}${ctl ? `<div class="ctl">${ctl}</div>` : ""}</header>
-      <div class="ex-bd">${isi}</div><footer class="ex-ft">${this._leg ? `<span class="ex-leg">${this._leg.map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</span>` : ket ? `<span>${ket}</span>` : ""}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></article>`; },
+      <div class="ex-bd">${isi}</div><footer class="ex-ft">${leg ? `<span class="ex-leg">${leg.map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</span>` : ket ? `<span>${ket}</span>` : ""}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></article>`; },
   leg(daftar) { this._leg = daftar; return ""; },
   /* label kategori di pojok kartu; kartu lebar (banyak panel / tabel) memakai dua kolom */
   LABEL: {harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", kec: "Kecamatan langganan"},
