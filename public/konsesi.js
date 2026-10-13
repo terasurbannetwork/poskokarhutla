@@ -87,7 +87,7 @@
   pasangPeta();
 
   /* --- tab Kompleks api: kolom Perusahaan, saringan, peraga --- */
-  const F = {per: "", hanya: false, mode: "7"};
+  const F = {per: "", hanya: false, u: "n", d: -1};
   const _baris = Tabel.baris.bind(Tabel), _render = Tabel.render.bind(Tabel);
   Tabel.baris = function () {
     const q = this.q; this.q = ""; let r = _baris(); this.q = q;
@@ -100,33 +100,38 @@
   Tabel.render = function () {
     if (!KK) { muat().then(() => Tabel.render()); return _render(); }
     _render(); const el = $("#kompleks"); if (!el || !S.kluster) return;
-    if (!$("#ks-saring")) { $("#tq")?.insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-saring"><input type="checkbox"> hanya di areal konsesi</label>`);
+    if (!$("#ks-saring")) { $("#tq")?.insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-saring"><input type="checkbox"><span class="ks-sw">hanya di areal konsesi</span></label>`);
       $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.per = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
     $("#ks-chip")?.remove();
-    if (F.per) { $("#ks-saring").insertAdjacentHTML("afterend", `<button class="ks-chip" id="ks-chip" aria-label="Hapus saringan perusahaan">${esc(F.per)} ✕</button>`);
+    if (F.per) { $("#ks-saring").insertAdjacentHTML("afterend", `<button class="ks-chip" id="ks-chip" aria-label="Hapus saringan perusahaan"><span>${esc(F.per)}</span><i aria-hidden="true">✕</i></button>`);
       $("#ks-chip").onclick = () => { F.per = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
-    const th = $("#th tr"); if (th && !th.querySelector(".ks-th")) th.insertAdjacentHTML("beforeend", `<th class="ks-th">Perusahaan (areal konsesi)</th>`);
+    const th = $("#th tr"); if (th && !th.querySelector(".ks-th")) th.insertAdjacentHTML("beforeend", `<th class="ks-th">Perusahaan</th><th class="ks-th2">Jenis · porsi</th>`);
     $("#tb").querySelectorAll("tr").forEach(tr => { const id = tr.querySelector("[data-id]")?.dataset.id; if (!id || tr.querySelector(".ks-td")) return;
       const per = perDi(id);
-      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${per.length ? per.slice(0, 2).map(r => `${esc(r.nama)} <small>${(JN[r.jenis] || [r.jenis])[0]} · ${pct(r.porsi)}</small>`).join("") + (per.length > 2 ? `<small>+${per.length - 2} lainnya</small>` : "") : `<span style="color:var(--ink2)">–</span>`}</td>`); });
-    $("#tf tr")?.insertAdjacentHTML("beforeend", "<td></td>");
-    const kos = $("#tb .kosong"); if (kos) kos.colSpan = 12;
+      const p0 = per[0];
+      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${p0 ? `${esc(p0.nama)}${per.length > 1 ? `<span class="ks-plus" title="${esc(per.slice(1).map(x => x.nama).join(", "))}">+${per.length - 1}</span>` : ""}` : `<span class="ks-mt">–</span>`}</td><td class="ks-td2">${p0 ? `${(JN[p0.jenis] || [p0.jenis])[0]} · ${pct(p0.porsi)}` : `<span class="ks-mt">–</span>`}</td>`); });
+    $("#tf tr")?.insertAdjacentHTML("beforeend", "<td></td><td></td>");
+    const kos = $("#tb .kosong"); if (kos) kos.colSpan = 13;
     peraga();
   };
   function peraga() {
     let ex = $("#ks-ex");
     if (!ex) { $("#kompleks").insertAdjacentHTML("beforebegin", `<article class="ex ks-ex" id="ks-ex"></article>`); ex = $("#ks-ex");
-      ex.addEventListener("click", e => { const m = e.target.closest("[data-mode]"); if (m) { F.mode = m.dataset.mode; return peraga(); }
+      ex.addEventListener("click", e => { const u = e.target.closest("[data-u]"); if (u) { F.d = F.u === u.dataset.u ? -F.d : (u.dataset.u === "nama" || u.dataset.u === "grup" || u.dataset.u === "jenis" ? 1 : -1); F.u = u.dataset.u; return peraga(); }
         const b = e.target.closest("[data-per]"); if (b && !e.target.closest(".ks-sk")) tunjuk(b.dataset.per); }); }
     if (KK.gagal) { ex.innerHTML = `<p class="fnd">Data perusahaan konsesi belum tersedia.</p>`; return; }
-    const k = F.mode === "7" ? "n" : "musim", daf = KK.perusahaan.filter(a => a[k] > 0).sort((a, b) => b[k] - a[k]).slice(0, 15);
+    const grupDari = a => a.grup || GRUP?.[a.nama]?.grup || "";
+    const dasar = KK.perusahaan.filter(a => a.n > 0).sort((a, b) => b.n - a.n).slice(0, 15);
     const tot = KK.perusahaan.reduce((s, a) => s + a.n, 0);
+    const nilai = {nama: a => a.nama, grup: grupDari, jenis: a => (JN[a.jenis] || [a.jenis])[0], tahun_data: a => a.tahun_data || 0, n: a => a.n, luas_ha: a => a.luas_ha || 0, kompleks: a => a.kompleks.length}[F.u];
+    const daf = dasar.slice().sort((a, b) => { const x = nilai(a), y = nilai(b); return (typeof x === "string" ? x.localeCompare(y, "id") : x - y) * F.d || b.n - a.n; });
+    const th = (u, t, n) => `<th${n ? ' class="n"' : ""} data-u="${u}" tabindex="0" role="columnheader" aria-sort="${F.u === u ? (F.d > 0 ? "ascending" : "descending") : "none"}" style="cursor:pointer">${t}<i class="ks-ar">${F.u === u ? (F.d > 0 ? "▲" : "▼") : ""}</i></th>`;
     ex.innerHTML = `<div class="ks-hd"><div><h3>Kebakaran di konsesi: perusahaan dengan titik panas terbanyak</h3>
-        <p class="sub">${F.mode === "7" ? `7 hari terakhir · ${fmt(tot)} titik panas VIIRS berada di dalam areal ${fmt(KK.perusahaan.filter(a => a.n).length)} konsesi` : `musim ${(KK.acuan || "").slice(0, 4)}, tercatat sejak ${esc(KK.musim_sejak || "–")}`}. Klik baris untuk melihat kompleksnya di peta.</p></div>
-        <div class="ks-mode">${[["7", "7 hari"], ["musim", "Musim"]].map(([m, n]) => `<button class="btn ${F.mode === m ? "" : "sec"}" data-mode="${m}">${n}</button>`).join("")}</div></div>
-      <div class="tw"><table class="tb3"><thead><tr><th>#</th><th>Pemegang izin</th><th>Jenis</th><th class="n">Peta</th><th class="n">Titik panas</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th></tr></thead><tbody>
-      ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}${(() => { const g = a.grup || GRUP?.[a.nama]?.grup, ng = GRUP?.[a.nama]?.negara_induk; return `<small class="ks-grup">${g ? `Grup ${esc(g)}${ng ? ` · induk ${esc(ng)}` : ""}` : "Grup tidak tercatat di data publik"}</small>`; })()}</td>
-        <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a[k])}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="7">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
+        <p class="sub">7 hari terakhir · ${fmt(tot)} titik panas VIIRS berada di dalam areal ${fmt(KK.perusahaan.filter(a => a.n).length)} konsesi. Klik baris untuk melihat kompleksnya di peta; klik judul kolom untuk mengurutkan.</p></div></div>
+      <div class="tw"><table class="tb3 ks-tb"><thead><tr><th>#</th>${th("nama", "Pemegang izin")}${th("grup", "Grup")}${th("jenis", "Jenis")}${th("tahun_data", "Peta", 1)}${th("n", "Titik panas", 1)}${th("luas_ha", "Luas indikatif", 1)}${th("kompleks", "Kompleks aktif", 1)}</tr></thead><tbody>
+      ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}</td>
+        <td class="ks-grup">${grupDari(a) ? esc(grupDari(a)) : `<span class="ks-mt">–</span>`}</td>
+        <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a.n)}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="8">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
       <p class="fnd">Titik panas berada di dalam areal konsesi X ≠ X yang membakar. Luas = piksel VIIRS 375 m yang terdeteksi 7 hari (indikatif, bukan luas terbakar resmi). ${batas()}</p>`;
   }
   function tunjuk(nama) {

@@ -16,12 +16,12 @@
 .dk-leg{display:flex;flex-wrap:wrap;gap:6px 14px;font-size:11.5px;color:var(--ink2);margin:6px 0 0}
 .dk-leg span{display:inline-flex;align-items:center;gap:5px}
 .dk-leg i{width:10px;height:10px;border-radius:3px;display:inline-block}
-.dk-tw{margin-top:4px;max-height:420px}
+.dk-tw{margin-top:4px}
 .dk-tw tr[data-dk]{cursor:pointer}
 .dk-tw tr[data-dk]:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .dk-tw td small.dk-s,.dk-s{display:block;color:var(--ink2);font-size:11px;font-weight:400;white-space:normal}
 .dk-wrap{white-space:normal!important;min-width:220px;line-height:1.35}
-.dk-jn{display:inline-flex;align-items:center;gap:5px;font-weight:600}
+.dk-jn{display:inline-flex;align-items:center;gap:6px;font-weight:600;font-size:11.5px;padding:3px 10px 3px 8px;border-radius:999px;white-space:nowrap;background:color-mix(in oklch, var(--w) 16%, var(--card))}
 .dk-jn::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--w)}
 .dk-lagi{margin-top:8px}
 .dk-sel{display:inline-block;min-width:40px;text-align:center;border-radius:6px;padding:2px 6px;font-weight:700;font-variant-numeric:tabular-nums}
@@ -40,3 +40,17 @@
 .dk-nav button{border-color:color-mix(in oklch, var(--w) 30%, var(--line));background:color-mix(in oklch, var(--w) 6%, var(--card))}
 .dk-nav button svg{background:var(--w)!important;color:#fff!important}
 .dk-nav button:hover{border-color:var(--w);background:color-mix(in oklch, var(--w) 14%, var(--card))}
+/* tabel Dampak: teks rata kiri, angka tengah, satu baris per sel, zebra + hover */
+.dk-tw.dk-tw thead th,.dk-tw.dk-tw tbody td{text-align:left}
+.dk-tw.dk-tw thead th.n,.dk-tw.dk-tw tbody td.n{text-align:center}
+.dk-tw tbody td{padding:11px 12px;vertical-align:middle;white-space:nowrap}
+.dk-tw thead th{padding:10px 12px}
+.dk-tw tbody tr:nth-child(even){background:color-mix(in oklch, var(--surface) 55%, var(--card))}
+.dk-tw tbody tr:hover{background:color-mix(in oklch, var(--brand2) 9%, var(--card))}
+.dk-tw td .dk-s{display:inline;font-size:11px;color:var(--ink2)}
+.dk-el{display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.dk-tw td.dk-wrap{white-space:normal!important}
+.dk-tw td.dk-wrap a{color:var(--ink);font-weight:600;text-decoration:none}
+.dk-tw td.dk-wrap a:hover{color:var(--brand2);text-decoration:underline}
+#dampak .ex-ft a{color:var(--brand2);text-decoration:underline;text-underline-offset:2px}
+#dampak .pgn{margin-top:10px}

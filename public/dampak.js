@@ -22,7 +22,8 @@ const Dampak = (() => {
     transportasi: "Transportasi", pemadaman: "Biaya pemadaman", kesehatan: "Kesehatan (biaya langsung)", pendidikan: "Pendidikan (sekolah tutup)"};
   const WJ = {divert: W.merah, batal: W.tua, rtb: W.oranye, tutup: W.ungu, tunda: W.kuning, jarak_pandang: W.biru, lain: "#8a96a8"};
   let D = null, F = null, M = [], pap = null, gagal = "";
-  const st = {hari: 0, rentF: 60, semuaF: false, semuaD: false, semuaS: false};
+  const st = {hari: 0, rentF: 60, hal: {F: 0, S: 0, D: 0}};
+  const PER = 10;
 
   /* ---------- pembantu ---------- */
   const hl = t => `<span class="hl">${t}</span>`;
@@ -50,6 +51,16 @@ const Dampak = (() => {
   const baris = (dk, isi) => `<tr data-dk="${dk}" tabindex="0">${isi}</tr>`;
   const tabel = (kepala, rows) => `<div class="tw dk-tw"><table><thead><tr>${kepala.map(h => `<th${h[0] === ">" ? ' class="n"' : ""}>${h.replace(/^>/, "")}</th>`).join("")}</tr></thead><tbody>${rows.join("") || `<tr><td colspan="${kepala.length}">Belum ada.</td></tr>`}</tbody></table></div>`;
   const tautan = (u, t) => `<a href="${escUrl(u)}" target="_blank" rel="noopener">${esc(t)}</a>`;
+  /* tautan sumber di footer kartu */
+  const SM = {wb16: "https://documents1.worldbank.org/curated/en/776101467990969768/pdf/103668-BRI-Cost-of-Fires-Knowledge-Note-PUBLIC-ADD-NEW-SERIES-Indonesia-Sustainable-Landscapes-Knowledge-Note.pdf",
+    wb19: "https://openknowledge.worldbank.org/entities/publication/0ea3af9f-ed88-5de7-9cb2-ef39e1752b85", gwis: "https://gwis.jrc.ec.europa.eu/", bps: "https://www.bps.go.id/",
+    ipcc: "https://www.ipcc-nggip.iges.or.jp/public/wetlands/", wang: "https://doi.org/10.1016/j.envres.2025.121221", sipongi: "https://sipongi.menlhk.go.id/",
+    cams: "https://open-meteo.com/en/docs/cams-air-quality-api", wpop: "https://www.worldpop.org/", osm: "https://www.openstreetmap.org/", firms: "https://firms.modaps.eosdis.nasa.gov/",
+    iem: "https://mesonet.agron.iastate.edu/ASOS/", andreae: "https://doi.org/10.1029/2000GB001382", bnpb: "https://bnpb.go.id/", who: "https://www.who.int/publications/i/item/9789240034228"};
+  const sm = (k, t) => tautan(SM[k], t);
+  /* paginasi 10 per halaman: pembungkus [data-pg] menampung tabel + pager (global paginasi di index.html) */
+  const hal = (k, arr) => { const m = Math.max(0, Math.ceil(arr.length / PER) - 1); st.hal[k] = Math.min(st.hal[k], m); return arr.slice(st.hal[k] * PER, st.hal[k] * PER + PER); };
+  const pg = (k, tbl, total, satuan) => `<div data-pg="${k}">${tbl}${typeof paginasi === "function" && total > PER ? paginasi(st.hal[k], total, PER, satuan) : ""}</div>`;
   const kotak = (k, v) => `<div class="dk-kv"><span>${k}</span><b>${v}</b></div>`;
   function dlg(judul, sub, isi) { const d = $("#dlg");
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${judul}</h3><p>${sub}</p></div><button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
@@ -105,7 +116,7 @@ const Dampak = (() => {
     return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi rawan karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
       svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]}),
-      `Sumber: prakiraan CAMS (Copernicus) lewat Open-Meteo, dibuat ${jamWIB(U.dibuat)}; penduduk WorldPop 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
+      `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus) lewat Open-Meteo")}, dibuat ${jamWIB(U.dibuat)}; penduduk ${sm("wpop", "WorldPop")} 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
       seg("hari", U.hari.map((t, j) => [j, j ? hariN(t) : "Hari ini"])));
   }
   function popProv(k) {
@@ -141,31 +152,32 @@ const Dampak = (() => {
     let peta = "";
     for (const f of S.geo?.prov?.features || []) { const g = f.geometry, polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
       peta += polys.map(p => { const r = p[0], step = Math.max(1, Math.floor(r.length / 60)); return r.length < 8 ? "" : `<path d="M${r.filter((_, j) => j % step === 0).map(([lo, la]) => PX(lo).toFixed(1) + "," + PY(la).toFixed(1)).join("L")}Z" class="dk-darat"/>`; }).join(""); }
-    const mxE = Math.max(1, ...Object.values(hit).map(x => x.length));
-    const gel = Object.entries(hit).sort((a, b) => b[1].length - a[1].length).map(([k, xs]) => { const b = B[k]; if (!b?.lat) return "";
-      const r = (3 + Math.sqrt(xs.length / mxE) * 15) * Wd / 640 + 1, fl = xs.reduce((a, e) => a + e.terdampak, 0);
-      return `<g data-dk="bandara|${k}" style="cursor:pointer"><circle class="gf" cx="${PX(b.lon)}" cy="${PY(b.lat)}" r="${r}" fill="${W.merah}" fill-opacity=".55" stroke="${W.merah}" data-tip="<b>${esc(k)} · ${esc(b.nama)}</b><br>${xs.length} kejadian · min. ${fmt(fl)} penerbangan<br>klik untuk rincian & METAR"/>
-        ${xs.length >= mxE / 4 ? `<text x="${PX(b.lon)}" y="${PY(b.lat) - r - 3}" text-anchor="middle" font-size="10" font-weight="700">${k}</text>` : ""}</g>`; }).join("");
+    const mxE = Math.max(1, ...Object.values(hit).map(x => x.length)), sk = Wd / 640;
+    const gx = Object.entries(hit).filter(([k]) => B[k]?.lat).map(([k, xs]) => ({k, b: B[k], xs, n: xs.length, fl: xs.reduce((a, e) => a + e.terdampak, 0), r: (3 + Math.sqrt(xs.length / mxE) * 9) * sk + 1}))
+      .sort((a, b) => b.n - a.n);
+    /* gelembung besar digambar dulu supaya yang kecil di atasnya; label pil hanya untuk 6 teratas */
+    const gel = [...gx].map(g => `<g data-dk="bandara|${g.k}" style="cursor:pointer"><circle class="gf" cx="${PX(g.b.lon)}" cy="${PY(g.b.lat)}" r="${g.r}" fill="${W.merah}" fill-opacity=".8" stroke="#fff" stroke-width="1.2" data-tip="<b>${esc(g.k)} · ${esc(g.b.nama)}</b><br>Kejadian: ${g.n}<br>Penerbangan terdampak: min. ${fmt(g.fl)}<br>Terakhir: ${tgl(g.xs.map(e => e.tgl).sort().at(-1))}"/></g>`).join("")
+      + gx.slice(0, 6).map(g => { const w = g.k.length * 6.2 + 10, x = PX(g.b.lon), y = PY(g.b.lat) - g.r - 5;
+        return `<g style="pointer-events:none"><rect x="${x - w / 2}" y="${y - 13}" width="${w}" height="14" rx="7" style="fill:var(--card);stroke:var(--line)"/><text x="${x}" y="${y - 3}" text-anchor="middle" font-size="9.5" font-weight="700">${g.k}</text></g>`; }).join("");
     const akhir = kini(), semua = hariSejak(F.mulai_musim, akhir), hari = st.rentF === "semua" ? semua : semua.slice(-st.rentF);
     const seri = Object.keys(WJ).map(j => ({k: j, w: WJ[j], v: ev.reduce((a, e) => { if (e.jenis[0] === j) a[e.tgl] = (a[e.tgl] || 0) + 1; return a; }, {})}));
-    const daf = st.semuaF ? ev : ev.slice(0, 12);
-    const rows = daf.map(e => baris(`kej|${ev.indexOf(e)}`, `<td>${tgl(e.tgl)}</td><td><b>${esc(e.bandara || e.disebut || "Beberapa/nasional")}</b><small class="dk-s">${esc(B[e.bandara]?.nama || (e.disebut ? "rekap wilayah" : ""))}</small></td>
-      <td>${esc(e.maskapai.join(", ") || "–")}${e.nomor.length ? `<small class="dk-s">${esc(e.nomor.join(", "))}</small>` : ""}</td><td><span class="dk-jn" style="--w:${WJ[e.jenis[0]] || WJ.lain}">${esc(NJ(e.jenis[0]))}</span>${e.alternatif ? `<small class="dk-s">→ ${esc(e.alternatif)}</small>` : ""}</td>
-      <td class="n">${e.jumlah ? fmt(e.jumlah) : "–"}</td><td class="n">${e.sumber.length}</td>`));
+    const daf = hal("F", ev);
+    const rows = daf.map(e => baris(`kej|${ev.indexOf(e)}`, `<td>${tgl(e.tgl)}</td><td><b>${esc(e.bandara || "–")}</b></td><td><span class="dk-el">${esc(B[e.bandara]?.nama || (e.disebut ? "Rekap " + e.disebut : "Beberapa / nasional"))}</span></td>
+      <td><span class="dk-el">${esc(e.maskapai.join(", ") || "–")}</span></td><td><span class="dk-el dk-s">${esc(e.nomor.join(", ") || "–")}</span></td><td><span class="dk-jn" style="--w:${WJ[e.jenis[0]] || WJ.lain}">${esc(NJ(e.jenis[0]))}</span></td>
+      <td>${e.alternatif ? `<b>${esc(e.alternatif)}</b>` : "–"}</td><td class="n">${e.jumlah ? fmt(e.jumlah) : "–"}</td><td class="n">${e.sumber.length}</td>`));
     /* jarak pandang terkini: METAR + BNPB */
     const metar = [...M].sort((a, b) => (a.vis_m ?? 9e9) - (b.vis_m ?? 9e9)), kodeICAO = Object.fromEntries(Object.entries(B).map(([k, v]) => [v.icao, k]));
     const bnpb = (S.bnpb?.rows || []).map(r => [r.Provinsi, r["Jarak Pandang Bandara (Km)"]]).filter(r => r[1] != null && r[1] !== "-");
-    const vis = metar.map(m => baris(kodeICAO[m.icao] ? `bandara|${kodeICAO[m.icao]}` : "", `<td><b>${esc(m.icao)}</b><small class="dk-s">${esc(m.nama)}</small></td><td class="n" style="color:${(m.vis_m ?? 9999) < 1500 ? W.merah : (m.vis_m ?? 9999) < 5000 ? W.oranye : "inherit"};font-weight:700">${m.vis_m == null ? "–" : m.vis_m >= 9999 ? "≥ 10 km" : satu(m.vis_m / 1000) + " km"}</td><td>${m.asap ? "asap/kabut (FU/HZ)" : esc(m.wx || "–")}</td><td>${jamWIB(m.waktu)}</td>`));
+    const vis = metar.map(m => baris(kodeICAO[m.icao] ? `bandara|${kodeICAO[m.icao]}` : "", `<td><b>${esc(m.icao)}</b></td><td><span class="dk-el">${esc(m.nama)}</span></td><td class="n" style="color:${(m.vis_m ?? 9999) < 1500 ? W.merah : (m.vis_m ?? 9999) < 5000 ? W.oranye : "inherit"};font-weight:700">${m.vis_m == null ? "–" : m.vis_m >= 9999 ? "≥ 10 km" : satu(m.vis_m / 1000) + " km"}</td><td>${m.asap ? "asap/kabut (FU/HZ)" : esc(m.wx || "–")}</td><td>${jamWIB(m.waktu)}</td>`));
     return ex(2, `Asap mengganggu penerbangan di ${hl(nB + " bandara")} sejak ${tgl(F.mulai_musim)}; ${rekMax.jumlah ? `rekap yang dikutip media mencatat ${hl(fmt(rekMax.jumlah) + " penerbangan")} terdampak` : `minimal ${hl(fmt(sumB) + " penerbangan")} terdampak`}`,
       "Kejadian gangguan penerbangan dari berita, diperiksa dengan jarak pandang METAR", "Gelembung = jumlah kejadian per bandara. Klik gelembung, batang, atau baris untuk rincian, tautan berita, dan grafik jarak pandang.",
       `<svg class="dk-svg dk-peta" viewBox="0 0 ${Wd} ${Hd}" role="img" aria-label="Peta bandara terdampak">${peta}${gel}</svg>`
       + `<div class="ctl" style="margin-top:12px">${seg("rentF", [[30, "30 hari"], [60, "60 hari"], ["semua", "Sejak awal musim"]])}</div>`
       + kolom(hari, seri, {tip: (t, n) => `<b>${tgl(t)}</b><br>${n} kejadian`, dk: t => "harif|" + t}) + LG(Object.keys(WJ).map(j => [NJ(j), WJ[j]]))
-      + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + tabel(["Tanggal", "Bandara", "Maskapai", "Yang terjadi", ">Jumlah", ">Berita"], rows)
-      + (ev.length > 12 ? `<button class="btn sec dk-lagi" data-dks="semuaF" data-v="${!st.semuaF}">${st.semuaF ? "Tampilkan 12 terbaru" : `Tampilkan semua ${ev.length} kejadian`}</button>` : "")
-      + `<details class="lipat" style="margin-top:12px"><summary>Jarak pandang bandara saat ini</summary><div class="isi">${tabel(["Bandara", ">Jarak pandang", "Cuaca", "Waktu"], vis)}
+      + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + pg("F", tabel(["Tanggal", "Kode", "Nama bandara", "Maskapai", "No. penerbangan", "Yang terjadi", "Dialihkan ke", ">Jumlah", ">Berita"], rows), ev.length, "kejadian")
+      + `<details class="lipat" style="margin-top:12px"><summary>Jarak pandang bandara saat ini</summary><div class="isi">${tabel(["Kode ICAO", "Bandara", ">Jarak pandang", "Cuaca", "Waktu"], vis)}
         ${bnpb.length ? `<p class="fnd" style="margin-top:8px">Laporan BNPB (jarak pandang bandara, km): ${bnpb.map(([p, v]) => `${esc(p)} ${esc(v)}`).join(" · ")}</p>` : ""}</div></details>`,
-      `Sumber: berita media, diperiksa dengan METAR (Iowa Environmental Mesonet); ${F.laporan} judul berita, diperbarui ${jamWIB(F.dibuat)}`);
+      `Sumber: berita media, diperiksa dengan METAR (${sm("iem", "Iowa Environmental Mesonet")}); ${F.laporan} judul berita, diperbarui ${jamWIB(F.dibuat)}`);
   }
   function grafikVis(icao, a, b, tanda) {
     const v = F.metar?.[icao]; if (!v) return `<p class="fnd">Tidak ada arsip METAR untuk bandara ini.</p>`;
@@ -209,8 +221,8 @@ const Dampak = (() => {
       "Perkiraan tambahan kunjungan infeksi saluran pernapasan akut (ISPA) karena PM2.5", "Batang = perkiraan tengah; garis = rentang rendah–tinggi. Ini PERKIRAAN MODEL, bukan hitungan puskesmas. Klik provinsi untuk rincian.",
       hbar(rows.map(r => ({n: nmP(r.k), v: r.v[1], lo: r.v[0], hi: r.v[2], w: W.oranye, dk: "prov|" + r.k, txt: fmt(r.v[1]), tip: `<b>${esc(namaProv(r.k))}</b><br>tengah ${fmt(r.v[1])} · rentang ${fmt(r.v[0])}–${fmt(r.v[2])} kunjungan/hari`})))
       + `<div class="lbl" style="margin:14px 0 4px">Kasus ISPA yang disebut berita</div>`
-      + tabel(["Tanggal", ">Kasus", "Judul"], IB.slice(0, 12).map((x, j) => baris("ispa|" + j, `<td>${tgl(x.tgl)}</td><td class="n"><b>${fmt(x.jumlah)}</b></td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `Sumber: WorldPop, Riskesdas 2018, meta-analisis Wang dkk. 2025 (Environ Res 273:121221), pedoman WHO; perkiraan model, bukan hitungan puskesmas`);
+      + tabel(["Tanggal", ">Kasus", "Judul", "Media"], IB.slice(0, 12).map((x, j) => baris("ispa|" + j, `<td>${tgl(x.tgl)}</td><td class="n"><b>${fmt(x.jumlah)}</b></td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
+      `Sumber: ${sm("wpop", "WorldPop")}, Riskesdas 2018, meta-analisis ${sm("wang", "Wang dkk. 2025 (Environ Res 273:121221)")}, ${sm("who", "pedoman WHO")}; perkiraan model, bukan hitungan puskesmas`);
   }
   function popIspa(j) { const x = D.ispa_berita[j], p = (x.prov || [])[0], is = p && D.udara.prov[p]?.ispa?.[0];
     dlg(`${fmt(x.jumlah)} kasus ISPA disebut berita`, `${esc(x.media || "")} · ${tgl(x.tgl)}`,
@@ -221,16 +233,15 @@ const Dampak = (() => {
   const sumP = (f, i) => PRIO.map(k => D.dekat.prov[k]).filter(Boolean).reduce((a, d) => a + (i == null ? d[f] : d[f][i]), 0);
   function b4() {
     const P = D.dekat.prov, R = D.dekat.radius_km, ks = PRIO.filter(k => P[k]).sort((a, b) => P[b].sekolah[1] - P[a].sekolah[1]);
-    const SB = D.sekolah_berita, ds = st.semuaS ? D.dekat.sekolah : D.dekat.sekolah.slice(0, 10);
+    const SB = D.sekolah_berita, ds = hal("S", D.dekat.sekolah);
     const rows = ks.map(k => ({n: nmP(k), v: P[k].sekolah[1], w: W.kuning, dk: "dekat|" + k, txt: `${fmt(P[k].sekolah[1])} (≤ 1 km: ${fmt(P[k].sekolah[0])})`,
       tip: `<b>${esc(namaProv(k))}</b><br>≤ 1 km: ${fmt(P[k].sekolah[0])}<br>≤ 5 km: ${fmt(P[k].sekolah[1])}<br>≤ 10 km: ${fmt(P[k].sekolah[2])}<br>di udara tidak sehat hari ini: ${fmt(P[k].sekolah_tidak_sehat)}`}));
     return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
       "Sekolah yang terpeta di OpenStreetMap, dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
       hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
-      + tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)} <span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`)))
-      + (D.dekat.sekolah.length > 10 ? `<button class="btn sec dk-lagi" data-dks="semuaS" data-v="${!st.semuaS}">${st.semuaS ? "Tampilkan 10" : `Tampilkan ${D.dekat.sekolah.length}`}</button>` : "")
-      + `<div class="lbl" style="margin:14px 0 4px">Berita penutupan sekolah</div>` + tabel(["Tanggal", "Judul"], SB.slice(0, 10).map((x, j) => baris("sekb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `Sumber: OpenStreetMap (minimal, banyak sekolah belum terpeta), prakiraan CAMS, berita media; pembanding Oktober 2015: 24.773 sekolah (World Bank 2016)`);
+      + pg("S", tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks", "Status"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)}</td><td><span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`))), D.dekat.sekolah.length, "sekolah")
+      + `<div class="lbl" style="margin:14px 0 4px">Berita penutupan sekolah</div>` + tabel(["Tanggal", "Judul", "Media"], SB.slice(0, 10).map((x, j) => baris("sekb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
+      `Sumber: ${sm("osm", "OpenStreetMap")} (minimal, banyak sekolah belum terpeta), prakiraan ${sm("cams", "CAMS")}, berita media; pembanding Oktober 2015: 24.773 sekolah (${sm("wb16", "World Bank 2016")})`);
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
     dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
@@ -242,7 +253,7 @@ const Dampak = (() => {
   /* ================= 5. permukiman ================= */
   function b5() {
     const P = D.dekat.prov, R = D.dekat.radius_km, ks = PRIO.filter(k => P[k] && (P[k].jiwa[2] || P[k].desa[2])).sort((a, b) => P[b].jiwa[1] - P[a].jiwa[1]).slice(0, 12);
-    const WB = [W.merah, W.oranye, W.kuning], dd = st.semuaD ? D.dekat.desa : D.dekat.desa.slice(0, 10), mx = Math.max(1, ...ks.map(k => P[k].jiwa[2]));
+    const WB = [W.merah, W.oranye, W.kuning], dd = hal("D", D.dekat.desa), mx = Math.max(1, ...ks.map(k => P[k].jiwa[2]));
     const Wd = lw(), L = LL(150), rh = 26, X = v => v / mx * (Wd - L - 80);
     const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${ks.length * rh}" role="img">${ks.map((k, n) => { const y = n * rh, j = P[k].jiwa;
       return `<g data-dk="dekat|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(k))}</text>`
@@ -251,9 +262,8 @@ const Dampak = (() => {
     return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan`,
       "Penduduk dan desa menurut jarak ke tepi kompleks yang perlu dipadamkan", `Batang bertingkat: merah ≤ ${R[0]} km, oranye ≤ ${R[1]} km, kuning ≤ ${R[2]} km. Klik provinsi atau desa untuk rinciannya.`,
       svg + LG(R.map((r, i) => [`≤ ${r} km`, WB[i]])) + `<div class="lbl" style="margin:14px 0 4px">Desa terdekat ke api</div>`
-      + tabel(["Desa", "Provinsi", ">Jarak", "Kompleks"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b><small class="dk-s">${esc(x.kode)}</small></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)} <span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`)))
-      + (D.dekat.desa.length > 10 ? `<button class="btn sec dk-lagi" data-dks="semuaD" data-v="${!st.semuaD}">${st.semuaD ? "Tampilkan 10" : `Tampilkan ${D.dekat.desa.length}`}</button>` : ""),
-      `Sumber: OpenStreetMap, WorldPop 2026, kompleks api siaga & prioritas dari peta ini`);
+      + pg("D", tabel(["Desa", "Kode desa", "Provinsi", ">Jarak", "Kompleks", "Status"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b></td><td><span class="dk-s">${esc(x.kode)}</span></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)}</td><td><span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`))), D.dekat.desa.length, "desa"),
+      `Sumber: ${sm("osm", "OpenStreetMap")}, ${sm("wpop", "WorldPop")} 2026, kompleks api siaga & prioritas dari peta ini`);
   }
   function popDekat(k) { const d = D.dekat.prov[k], R = D.dekat.radius_km;
     dlg(esc(namaProv(k)), "Penduduk, desa, sekolah, dan faskes dekat kompleks berstatus siaga & prioritas",
@@ -279,8 +289,8 @@ const Dampak = (() => {
       "Luas terbakar musim berjalan per provinsi, dan status lahan kompleks yang sedang aktif", "Batang = perkiraan tengah, garis = rentang. Pita warna = status lahan kompleks aktif. Klik untuk rincian.",
       hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Status lahan kompleks aktif</div>` + strip + LG(kats.map(([c]) => [KAT[c]?.[0] || c, KAT[c]?.[1] || "#8a96a8"]))
       + `<div class="lbl" style="margin:14px 0 4px">Kompleks terluas di kawasan konservasi & hutan lindung</div>`
-      + tabel(["Kompleks", "Kawasan", "Lokasi", ">Luas"], L6.lindung.slice(0, 10).map((r, j) => baris("lind|" + j, `<td><b>${esc(r.id)}</b> <span class="pill l${r.level}">${esc(S.meta?.status?.[r.level] || "")}</span></td><td>${esc(r.nama)}${r.gambut ? " · gambut" : ""}</td><td>${esc(r.kab || "")}<small class="dk-s">${esc(namaProv(r.prov))}</small></td><td class="n">${rb(r.luas)} ha</td>`))),
-      `Sumber: NASA FIRMS MODIS, kalibrasi GWIS MCD64A1, peta gambut, fungsi kawasan hutan dan konsesi${Ms.bnpb_waktu ? "; BNPB " + jamWIB(Ms.bnpb_waktu) : ""}`);
+      + tabel(["Kompleks", "Status", "Kawasan", "Gambut", "Kabupaten", "Provinsi", ">Luas"], L6.lindung.slice(0, 10).map((r, j) => baris("lind|" + j, `<td><b>${esc(r.id)}</b></td><td><span class="pill l${r.level}">${esc(S.meta?.status?.[r.level] || "")}</span></td><td>${esc(r.nama)}</td><td>${r.gambut ? "ya" : "–"}</td><td>${esc(r.kab || "")}</td><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td>`))),
+      `Sumber: ${sm("firms", "NASA FIRMS MODIS")}, kalibrasi ${sm("gwis", "GWIS MCD64A1")}, peta gambut, fungsi kawasan hutan dan konsesi${Ms.bnpb_waktu ? "; " + sm("bnpb", "BNPB") + " " + jamWIB(Ms.bnpb_waktu) : ""}`);
   }
   function popMusim(k) { const v = D.musim.prov[k], kp = D.lahan.kategori_prov[k] || {}, t = Object.values(kp).reduce((a, b) => a + b, 0) || 1;
     dlg(`${esc(namaProv(k))}: luas terbakar musim ini`, `sejak ${tgl(D.musim.mulai)}`,
@@ -304,7 +314,7 @@ const Dampak = (() => {
     return ex(7, `Kebakaran musim ini diperkirakan melepas ${hl("± " + fmt(Math.round(m[1])) + " juta ton CO₂e")}, setara ${hl(fmt(Math.round(E.hari_setara[1])) + " hari")} emisi seluruh Indonesia`,
       "Emisi gas rumah kaca dari luas terbakar musim ini", "Batang = juta ton CO₂-ekuivalen; garis = rentang rendah–tinggi. Klik batang musim ini untuk cara hitung.",
       hbar(rows, {L: 170}),
-      `Sumber: luas terbakar bagian 6; IPCC 2013 Wetlands Supplement, Andreae & Merlet 2001, World Bank 2016 dan 2019`);
+      `Sumber: luas terbakar bagian 6; ${sm("ipcc", "IPCC 2013 Wetlands Supplement")}, ${sm("andreae", "Andreae & Merlet 2001")}, ${sm("wb16", "World Bank 2016")} dan ${sm("wb19", "2019")}`);
   }
   function popEmisi() { const E = D.emisi;
     dlg("Cara menghitung emisi", "Luas × bahan bakar terbakar × faktor emisi",
@@ -320,7 +330,7 @@ const Dampak = (() => {
       hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
       + `<div class="lbl" style="margin:14px 0 4px">Konsesi dengan kompleks api aktif terluas</div>`
       + tabel(["Pemegang izin", "Jenis", ">Luas kompleks", ">Kompleks"], D.lahan.perusahaan.slice(0, 12).map((p, j) => baris("pt|" + j, `<td><b>${esc(p.nama)}</b></td><td>${esc(KAT[p.jenis]?.[0] || p.jenis)}</td><td class="n">${rb(p.luas)} ha</td><td class="n">${fmt(p.kompleks.length)}</td>`))),
-      `Sumber: World Bank 2016 (The Cost of Fire), BPS inflasi, peta konsesi; api di konsesi tidak otomatis berarti perusahaan pelakunya`);
+      `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi; api di konsesi tidak otomatis berarti perusahaan pelakunya`);
   }
   function popEko(c) { const v = D.ekonomi[c];
     dlg(esc(KAT[c]?.[0] || c), "Nilai kerusakan & kerugian lahan terbakar", tabel(["Skenario", ">Luas", ">Nilai (Rp 2026)"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rb(v.ha[i])} ha</td><td class="n">${rp(v.rp[i])}</td></tr>`))
@@ -333,14 +343,14 @@ const Dampak = (() => {
   function b9() {
     const T = D.udara.tetangga, H = D.udara.hari, I = D.internasional, hr = hariSejak(geser(kini(), -59), kini());
     const buruk = T.filter(t => Math.max(...t.pm) > 55.4), nI = Object.values(I.harian).reduce((a, b) => a + b, 0), n7 = hr.slice(-7).reduce((a, t) => a + (I.harian[t] || 0), 0);
-    const grid = `<div class="tw dk-tw"><table class="dk-grid"><thead><tr><th>Kota</th>${H.map((t, i) => `<th class="n">${i ? hariN(t) : "Hari ini"}</th>`).join("")}</tr></thead><tbody>${T.map(t => baris("kota|" + t.nama,
-      `<td><b>${esc(t.nama)}</b><small class="dk-s">${esc(t.negara)}</small></td>${t.pm.map(v => `<td class="n"><span class="dk-sel" style="background:${W5[kelas(v)]};color:${kelas(v) >= 2 ? "#fff" : "#13213a"}">${fmt(v)}</span></td>`).join("")}`)).join("")}</tbody></table></div>`;
+    const grid = `<div class="tw dk-tw"><table class="dk-grid"><thead><tr><th>Kota</th><th>Negara</th>${H.map((t, i) => `<th class="n">${i ? hariN(t) : "Hari ini"}</th>`).join("")}</tr></thead><tbody>${T.map(t => baris("kota|" + t.nama,
+      `<td><b>${esc(t.nama)}</b></td><td><span class="dk-s">${esc(t.negara)}</span></td>${t.pm.map(v => `<td class="n"><span class="dk-sel" style="background:${W5[kelas(v)]};color:${kelas(v) >= 2 ? "#fff" : "#13213a"}">${fmt(v)}</span></td>`).join("")}`)).join("")}</tbody></table></div>`;
     return ex(9, buruk.length ? `Udara tidak sehat diperkirakan menjangkau ${hl(buruk.length + " kota")} di negara tetangga dalam 4 hari ke depan, termasuk ${esc(buruk.slice(0, 3).map(t => t.nama).join(", "))}` : "Asap belum diperkirakan membuat udara tidak sehat di kota-kota negara tetangga",
       "PM2.5 di kota negara tetangga dan liputan media internasional", "Angka = PM2.5 maksimum harian (µg/m³), warna = kelas ISPU. Klik kota untuk grafik, klik batang untuk berita hari itu.",
       grid + `<div class="lbl" style="margin:14px 0 4px">Berita internasional per hari, 60 hari terakhir</div>`
       + kolom(hr, [{k: "i", w: W.ungu, v: I.harian}], {H: 110, tip: (t, n) => `<b>${tgl(t)}</b><br>${n} berita`, dk: t => "intl|" + t})
-      + tabel(["Tanggal", "Judul"], I.contoh.slice(0, 8).map((x, j) => baris("intlb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `Sumber: prakiraan CAMS (Copernicus), liputan media internasional`);
+      + tabel(["Tanggal", "Judul", "Media"], I.contoh.slice(0, 8).map((x, j) => baris("intlb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
+      `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus)")}, liputan media internasional`);
   }
   function popIntlHari(t) { const xs = D.internasional.contoh.filter(x => x.tgl === t);
     dlg(`Berita internasional ${tgl(t)}`, `${D.internasional.harian[t] || 0} berita`, xs.length ? `<ul class="dk-ul">${xs.map(x => `<li>${tautan(x.url, x.judul)}<small class="dk-s">${esc(x.media || "")}</small></li>`).join("")}</ul>` : `<p class="fnd">Judulnya tidak termasuk 40 contoh terbaru yang disimpan.</p>`); }
@@ -355,17 +365,10 @@ const Dampak = (() => {
         <text x="${x + Math.max(1.5, X(v[1])) + 5}" y="${y + 16}" font-size="10">${rp(v[1])}</text></g>`; }).join("")}
       <g transform="translate(0,${sk.length * rh + 4})"><text x="${L - 8}" y="16" text-anchor="end" font-size="12" font-weight="800">Total</text><rect x="${L}" y="3" width="${X(T[1])}" height="${rh - 6}" rx="3" fill="currentColor" opacity=".8" data-tip="<b>Total</b><br>${rp(T[1])}<br>rentang ${rp(T[0])}–${rp(T[2])}"/>
         <line x1="${L + X(T[0])}" x2="${L + X(T[2])}" y1="${rh / 2}" y2="${rh / 2}" stroke="${W.merah}" stroke-width="2"/><line x1="${L + X(T[0])}" x2="${L + X(T[0])}" y1="4" y2="${rh - 4}" stroke="${W.merah}" stroke-width="2"/><line x1="${L + X(T[2])}" x2="${L + X(T[2])}" y1="4" y2="${rh - 4}" stroke="${W.merah}" stroke-width="2"/></g></svg>`;
-    const SUMBER = [["World Bank (2016). The Cost of Fire: An Economic Analysis of Indonesia's 2015 Fire Crisis. Indonesia Sustainable Landscapes Knowledge Note 1", "https://documents1.worldbank.org/curated/en/776101467990969768/pdf/103668-BRI-Cost-of-Fires-Knowledge-Note-PUBLIC-ADD-NEW-SERIES-Indonesia-Sustainable-Landscapes-Knowledge-Note.pdf", "US$16,1 miliar untuk 2,6 juta ha (Jun–Okt 2015); tabel sektor 8 provinsi, 2,43 juta ha"],
-      ["World Bank (2019). Indonesia Economic Quarterly Desember 2019: Investing in People, Box A.1", "https://openknowledge.worldbank.org/entities/publication/0ea3af9f-ed88-5de7-9cb2-ef39e1752b85", "US$5,2 miliar, 8 provinsi, Jun–Okt 2019; luas resmi 620.201 ha (Jan–Sep)"],
-      ["KLHK SiPongi, luas indikatif kebakaran 2019 (public/data/luas_resmi.json)", "", "1.649.258 ha setahun penuh, dasar batas bawah biaya per ha"],
-      ["GWIS / MODIS MCD64A1 & NASA FIRMS MODIS", "https://gwis.jrc.ec.europa.eu/", "kalibrasi ha per titik panas, luas musim berjalan"],
-      ["BPS: inflasi tahunan (Des–Des) 2016–2025; kurs dasar World Bank (2015: Rp221 T ÷ US$16,124 miliar; 2019: Rp14.160, IEQ Des 2019 Tabel A.4)", "https://www.bps.go.id/", "USD → Rupiah tahun dasar → inflasi Indonesia sampai 2026"],
-      ["IPCC 2013 Wetlands Supplement; Andreae & Merlet 2001", "https://www.ipcc-nggip.iges.or.jp/public/wetlands/", "faktor emisi (bagian 7)"],
-      ["Wang dkk. 2025, Environ Res 273:121221 (meta-analisis); Riskesdas 2018 Tabel 5.1.1", "https://doi.org/10.1016/j.envres.2025.121221", "risiko ISPA (bagian 3)"]];
     return ex(10, `Kerugian akibat kebakaran sejak ${tgl(D.musim.mulai)} diperkirakan ${hl(rp(T[1]))}, dengan rentang ${rp(T[0])} sampai ${rp(T[2])}`,
       "Kerusakan dan kerugian per sektor, Rupiah 2026, metode World Bank", "Air terjun: tiap sektor menumpuk ke total. Garis merah = rentang total. Klik sektor untuk angka rendah–tinggi.",
-      svg + `<details class="lipat" style="margin-top:12px"><summary>Sumber dan asumsi</summary><div class="isi">${tabel(["Sumber", "Dipakai untuk"], SUMBER.map(([n, u, f]) => `<tr><td class="dk-wrap">${u ? tautan(u, n) : esc(n)}</td><td class="dk-wrap">${esc(f)}</td></tr>`))}</div></details>`,
-      `Sumber: World Bank 2016 dan 2019, BPS, GWIS; perkiraan orde besaran, bukan penilaian resmi BNPB/Bappenas`);
+      svg,
+      `Sumber: ${sm("wb16", "World Bank 2016")} dan ${sm("wb19", "2019")}, ${sm("bps", "BPS")} (inflasi), ${sm("gwis", "GWIS/MODIS")}, ${sm("sipongi", "KLHK SiPongi")}, ${sm("ipcc", "IPCC")}, ${sm("wang", "Wang dkk. 2025")}; perkiraan orde besaran, bukan penilaian resmi BNPB/Bappenas`);
   }
   function popSek10(k) { const v = D.kerugian.sektor[k];
     dlg(esc(SEKTOR[k] || k), "Kerusakan & kerugian sektor ini, Rupiah 2026", tabel(["Skenario", ">Nilai"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rp(v[i])}</td></tr>`))
@@ -379,10 +382,11 @@ const Dampak = (() => {
       intl: () => popIntlHari(a), intlb: () => popBerita(D.internasional.contoh, +a, "Berita internasional"), sek10: () => popSek10(a)}[t] || (() => {}))(); }
   const BAG = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10];
   const gambar = n => { try { return BAG[n - 1](); } catch (e) { console.warn("dampak", n, e); return `<section class="dk-bag" id="dk-${n}" data-bag="${n}"><div class="ex"><h3>${JUDUL[n - 1]}</h3><p class="fnd">Bagian ini gagal digambar: ${esc(e.message)}</p></div></section>`; } };
-  const BAG_ST = {hari: [1, 3], rentF: [2], semuaF: [2], semuaS: [4], semuaD: [5]};
+  const BAG_ST = {hari: [1, 3], rentF: [2]};
   function ikat(el) {
     if (el._dk) return; el._dk = 1;
     el.addEventListener("click", e => {
+      const h = e.target.closest("[data-pg] [data-h]"); if (h) { if (!h.disabled) { const w = h.closest("[data-pg]"), b = h.closest("[data-bag]"); st.hal[w.dataset.pg] = +h.dataset.h; b.outerHTML = gambar(+b.dataset.bag); } return; }
       const s = e.target.closest("[data-dks]"); if (s) { const k = s.dataset.dks, v = s.dataset.v; st[k] = v === "true" ? true : v === "false" ? false : isNaN(+v) ? v : +v;
         (BAG_ST[k] || []).forEach(n => { const b = el.querySelector(`#dk-${n}`); if (b) b.outerHTML = gambar(n); }); return; }
       const nav = e.target.closest("[data-ke]"); if (nav) { el.querySelector("#dk-" + nav.dataset.ke)?.scrollIntoView({behavior: "smooth", block: "start"}); return; }
