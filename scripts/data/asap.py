@@ -2,7 +2,8 @@
 
 Grid 1 derajat seluruh kotak Indonesia (darat dan laut, karena asap melintas laut), 4 hari, nilai harian:
 PM2.5 maksimum per jam (ug/m3), CO rata-rata (ug/m3), lalu (ditambah, kolom lama tidak berubah) CO maksimum per jam
-(ug/m3) dan AOD 550 nm maksimum per jam (tanpa satuan; > 1 = asap/kabut asap tebal). Tidak butuh kunci.
+(ug/m3) dan AOD 550 nm maksimum per jam (tanpa satuan; > 1 = asap/kabut asap tebal), lalu PM2.5 rata-rata 24 jam kalender WIB
+(ug/m3; dasar kelas ISPU dan fungsi risiko kesehatan di dampak.py). Tidak butuh kunci.
 Kuota Open-Meteo: 3 variabel x 4 hari = bobot 1 per lokasi -> 799 panggilan/hari.
 """
 import datetime as dt, json, os, sys, time, urllib.request
@@ -35,21 +36,22 @@ def main():
             h = x["hourly"]
             tgl = sorted({t[:10] for t in h["time"]})
             hari = hari or tgl
-            pm, co, com, aod = [], [], [], []
+            pm, co, com, aod, pm24 = [], [], [], [], []
             for t in tgl:
                 i = [k for k, w in enumerate(h["time"]) if w.startswith(t)]
                 p = [h["pm2_5"][k] for k in i if h["pm2_5"][k] is not None]
                 c = [h["carbon_monoxide"][k] for k in i if h["carbon_monoxide"][k] is not None]
                 pm.append(round(max(p)) if p else None)
+                pm24.append(round(sum(p) / len(p)) if len(p) >= 18 else None)  # rata-rata 24 jam (ISPU, WHO, fungsi risiko); >= 75% jam
                 a = [h["aerosol_optical_depth"][k] for k in i if h["aerosol_optical_depth"][k] is not None]
                 co.append(round(sum(c) / len(c)) if c else None)
                 com.append(round(max(c)) if c else None)
                 aod.append(round(max(a), 2) if a else None)
-            hasil.append([la, lo, pm, co, com, aod])
+            hasil.append([la, lo, pm, co, com, aod, pm24])
         time.sleep(1)
     with open(os.path.join(AKAR, "public/data/asap.json"), "w") as f:
         json.dump({"sumber": "CAMS (Copernicus) via Open-Meteo", "dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
-                   "sel": 1, "hari": hari, "kolom": ["lat", "lon", "pm25_maks", "co_rata", "co_maks", "aod_maks"], "grid": hasil}, f, separators=(",", ":"))
+                   "sel": 1, "hari": hari, "kolom": ["lat", "lon", "pm25_maks", "co_rata", "co_maks", "aod_maks", "pm25_rata"], "grid": hasil}, f, separators=(",", ":"))
     print(f"{len(hasil)} sel, hari {hari}", file=sys.stderr)
 
 

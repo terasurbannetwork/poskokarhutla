@@ -29,9 +29,18 @@ WB2015_SUB = {"perkebunan": 3112, "pangan": 1727}  # baris Estate crops & Food c
 # World Bank (2019) Indonesia Economic Quarterly Des 2019, Box A.1: USD 5,2 miliar, 8 provinsi, Juni-Okt 2019.
 # Basis luasnya tidak tunggal: 620.201 ha (resmi Jan-Sep, dikutip box) atau luas resmi KLHK setahun penuh (luas_resmi.json).
 WB2019_USD, WB2019_HA_SEP = 5.2e9, 620_201
-# ke Rupiah 2026: CPI-U AS (BLS) 2015 = 237,0; 2019 = 255,7; 2024 = 313,7; 2025-2026 diasumsikan +2,7%/th -> 2026 = 330,8
+# ke Rupiah 2026. Kerugian ini terjadi di ekonomi Indonesia (ECLAC DaLA, nilai Rupiah yang dilaporkan dalam USD), jadi
+# dikembalikan ke Rupiah dengan kurs tahun dasar yang dipakai Bank Dunia lalu dinaikkan dengan inflasi INDONESIA (BPS),
+# bukan inflasi AS x kurs 2026 (cara lama melebihkan ~25%: depresiasi Rupiah 2015-2026 bukan kenaikan nilai kerugian).
+# Kurs dasar: 2015 = IDR 221 triliun / USD 16.124 juta (WB 2016 hlm. 1) = 13.706; 2019 = 14.160 (IEQ Des 2019 Tabel A.4).
+# Inflasi BPS Des-ke-Des 2016-2025: 3,02 3,61 3,13 2,72 1,68 1,87 5,51 2,61 1,57 2,92; 2026 = 9 bulan pada laju 2025.
+KURS_DASAR = {"2015": 221e12 / 16_124e6, "2019": 14_160}
+INFLASI_ID = {2016: 3.02, 2017: 3.61, 2018: 3.13, 2019: 2.72, 2020: 1.68, 2021: 1.87, 2022: 5.51, 2023: 2.61, 2024: 1.57, 2025: 2.92}
+IHK_2026 = {t: math.prod(1 + v / 100 for y, v in INFLASI_ID.items() if y > int(t)) * (1 + INFLASI_ID[2025] / 100) ** 0.75
+            for t in KURS_DASAR}
+# CPI AS & kurs 2026 disimpan hanya sebagai pembanding (dampak.js lama menampilkannya)
 CPI = {"2015": 237.0, "2019": 255.7, "2026": 330.8}
-KURS = 16_500  # Rp per USD, asumsi 2026
+KURS = 16_500  # Rp per USD 2026 (pembanding saja)
 # emisi: gambut = IPCC 2013 Wetlands Supplement Bab 2 (tanah organik tropis, kebakaran liar): konsumsi bahan bakar 353 (170-536)
 # t bahan kering/ha; faktor emisi CO2 1.703 g/kg, CH4 21,0 g/kg. Tanah mineral = vegetasi: faktor emisi hutan tropis
 # Andreae & Merlet (2001): CO2 1.580 g/kg, CH4 6,8 g/kg; konsumsi bahan bakar 10/30/80 t/ha = ASUMSI kami (semak..hutan sekunder).
@@ -42,10 +51,17 @@ MINERAL_TDM = (10, 30, 80)
 EF_GAMBUT = 1.703 + 0.021 * GWP_CH4   # t CO2e per t bahan kering
 EF_MINERAL = 1.580 + 0.0068 * GWP_CH4
 EMISI_NASIONAL_MT = 1800  # Mt CO2e/th, Komunikasi Nasional ke-2 RI (dikutip WB 2016)
-# kesehatan: Aguilera dkk. (2021) Nat Commun 12:1493: tiap +10 ug/m3 PM2.5 asap kebakaran -> rawat inap pernapasan +1,3% s.d. +10%.
-# Titik tengah 5% = pilihan kami. Dasar: prevalensi ISPA terdiagnosis nakes 4,4% per bulan (Riskesdas 2018) -> per hari / 30.
-RR10 = (1.013, 1.05, 1.10)
+# kesehatan: meta-analisis Wang dkk. (2025) Environ Res 273:121221 (45 studi): PM2.5 asap kebakaran per +10 ug/m3 ->
+# kunjungan IGD pernapasan RR 1,04 (CI 95% 1,02-1,06). Menggantikan Aguilera dkk. (2021) Nat Commun 12:1493 (satu wilayah,
+# California; rawat inap +1,3% s.d. +10% antar-definisi paparan, bukan selang kepercayaan; titik tengah 5% dulu pilihan kami).
+# Dasar: prevalensi ISPA terdiagnosis nakes 1 bulan terakhir per provinsi (Riskesdas 2018 Tabel 5.1.1, kolom D; nasional 4,4%)
+# -> per hari / 30. Provinsi pemekaran 2022 memakai induknya (Papua 10,5, Papua Barat 7,5).
+RR10 = (1.02, 1.04, 1.06)
 ISPA_HARIAN = 0.044 / 30
+ISPA_PROV = {"11": 4.3, "12": 2.8, "13": 4.1, "14": 2.2, "15": 3.2, "16": 3.5, "17": 8.9, "18": 4.2, "19": 1.5, "21": 3.8,
+             "31": 2.7, "32": 4.7, "33": 4.6, "34": 2.8, "35": 6.0, "36": 5.3, "51": 4.6, "52": 2.7, "53": 7.3, "61": 3.2,
+             "62": 6.2, "63": 2.3, "64": 3.8, "65": 2.1, "71": 2.1, "72": 2.6, "73": 1.9, "74": 2.8, "75": 2.0, "76": 1.8,
+             "81": 5.6, "82": 2.4, "91": 10.5, "92": 7.5, "93": 10.5, "94": 10.5, "95": 10.5, "96": 7.5}
 PM_ACUAN, PM_BATAS = 15.0, 100.0  # pedoman WHO 24 jam; selisih dibatasi 100 ug/m3 (hubungan log-linear tidak diuji di atasnya)
 ISPU = [15.5, 55.4, 150.4, 250.4]
 RADIUS = (1, 5, 10)
@@ -75,8 +91,8 @@ def mulai_musim(hari):
 
 
 def rp(usd, tahun):
-    """USD tahun dasar -> Rupiah 2026 (inflasi CPI AS lalu kurs asumsi)."""
-    return usd * CPI["2026"] / CPI[tahun] * KURS
+    """USD tahun dasar -> Rupiah 2026: kurs tahun dasar (yang dipakai Bank Dunia) x inflasi Indonesia sampai 2026."""
+    return usd * KURS_DASAR[tahun] * IHK_2026[tahun]
 
 
 def per_ha(ha_resmi_2019):
@@ -84,10 +100,11 @@ def per_ha(ha_resmi_2019):
     return [(WB2019_USD / ha_resmi_2019, "2019"), (WB2015_TOTAL * 1e6 / WB2015_HA, "2015"), (WB2019_USD / WB2019_HA_SEP, "2019")]
 
 
-def tambah_ispa(n, pm, rr10):
-    """Kunjungan ISPA tambahan per hari untuk n jiwa pada PM2.5 pm (ug/m3), log-linear, selisih dibatasi PM_BATAS."""
+def tambah_ispa(n, pm, rr10, dasar=ISPA_HARIAN):
+    """Kunjungan ISPA tambahan per hari untuk n jiwa pada PM2.5 rata-rata 24 jam pm (ug/m3), log-linear, selisih dibatasi
+    PM_BATAS. dasar = peluang kunjungan ISPA per orang per hari (ISPA_PROV/100/30)."""
     d = min(max(0.0, pm - PM_ACUAN), PM_BATAS)
-    return n * ISPA_HARIAN * (math.exp(math.log(rr10) * d / 10) - 1)
+    return n * dasar * (math.exp(math.log(rr10) * d / 10) - 1)
 
 
 def kelas_pm(v):
@@ -233,6 +250,9 @@ def main():
     pm_sel = {(r[0], r[1]): r[2] for r in asap["grid"]} if asap else {}
     sel = asap["sel"] if asap else 1
     pm_di = lambda la, lo: pm_sel.get((math.floor(la / sel) * sel + sel / 2, math.floor(lo / sel) * sel + sel / 2))
+    # kelas ISPU dan fungsi risiko berbasis rata-rata 24 jam: pakai kolom pm25_rata (asap.py) bila ada; berkas lama -> maks/jam
+    pm24_sel = {(r[0], r[1]): r[6] for r in asap["grid"] if len(r) > 6} if asap else {}
+    pm24_di = (lambda la, lo: pm24_sel.get((math.floor(la / sel) * sel + sel / 2, math.floor(lo / sel) * sel + sel / 2))) if pm24_sel else pm_di
     semua_k = [{"lat": p["lat"], "lon": p["lon"], "n24": p.get("n24") or 0, "wd": p.get("wd")} for p in kl]
     api_sel = {}
     def kena_api(la, lo):
@@ -242,18 +262,19 @@ def main():
         return api_sel[c]
     kes = defaultdict(lambda: {"jiwa": [[0] * 5 for _ in hari], "ispa": [[0.0] * 3 for _ in hari]})
     for la, lo, n, p in pen["grid"]:
-        pm = pm_di(la, lo)
+        pm = pm24_di(la, lo)
         if not pm or not p or not kena_api(la, lo):  # hanya penduduk yang udaranya dipengaruhi asap kebakaran
             continue
+        dasar = ISPA_PROV.get(p[:2], ISPA_HARIAN * 3000) / 100 / 30
         for i, v in enumerate(pm):
             if v is None:
                 continue
             kes[p]["jiwa"][i][kelas_pm(v)] += n
             for j, rr in enumerate(RR10):
-                kes[p]["ispa"][i][j] += tambah_ispa(n, v, rr)
+                kes[p]["ispa"][i][j] += tambah_ispa(n, v, rr, dasar)
     for p in kes:
         kes[p]["ispa"] = [[round(x) for x in d] for d in kes[p]["ispa"]]
-    out["udara"] = {"hari": hari, "dibuat": asap and asap["dibuat"], "prov": dict(kes),
+    out["udara"] = {"hari": hari, "dibuat": asap and asap["dibuat"], "prov": dict(kes), "pm_basis": "rata24" if pm24_sel else "maks",
                     "kota": [{"nama": n, "lat": la, "lon": lo, "prov": p, "pm": pm_di(la, lo), "skor_api": a[0], "api_km": a[1], "karhutla": a[0] >= AMBANG_ASAP}
                              for n, la, lo, p in KOTA if pm_di(la, lo) for a in [asap_api(la, lo, semua_k)]],
                     "aturan_asap": f"titik panas 24 jam kompleks <= {RADIUS_ASAP:.0f} km, dibobot jarak dan arah angin; >= {AMBANG_ASAP:.0f} = asap karhutla",
@@ -402,9 +423,11 @@ def main():
         f = v / WB2015_TOTAL
         sektor[k] = [round(rp(H[i] * ph[i][0] * f, ph[i][1])) for i in range(3)]
     out["kerugian"] = {"sektor": sektor, "total": [sum(v[i] for v in sektor.values()) for i in range(3)], "usd_ha": [round(x) for x, _ in ph],
-                       "dasar": [t for _, t in ph], "kurs": KURS, "cpi": CPI, "ha": H}
+                       "dasar": [t for _, t in ph], "kurs": KURS, "cpi": CPI, "ha": H,
+                       "kurs_dasar": {t: round(v) for t, v in KURS_DASAR.items()}, "ihk_2026": {t: round(v, 4) for t, v in IHK_2026.items()},
+                       "rp_per_usd": {t: round(rp(1, t)) for t in KURS_DASAR}}
 
-    out["asumsi"] = {"rr10": RR10, "ispa_harian": ISPA_HARIAN, "pm_acuan": PM_ACUAN, "pm_batas": PM_BATAS, "gambut_tdm": GAMBUT_TDM, "mineral_tdm": MINERAL_TDM,
+    out["asumsi"] = {"rr10": RR10, "ispa_harian": ISPA_HARIAN, "ispa_prov": ISPA_PROV, "pm_acuan": PM_ACUAN, "pm_batas": PM_BATAS, "gambut_tdm": GAMBUT_TDM, "mineral_tdm": MINERAL_TDM,
                      "ef_gambut": round(EF_GAMBUT, 3), "ef_mineral": round(EF_MINERAL, 3), "gwp_ch4": GWP_CH4, "nilai_usd_ha": {k: round(v) for k, v in nilai.items()},
                      "wb2015": WB2015, "wb2015_ha": WB2015_HA, "wb2019_usd": WB2019_USD, "wb2019_ha_sep": WB2019_HA_SEP}
     cek(out)
@@ -438,6 +461,10 @@ def uji():
     assert lo[0] < c[0] < hi[0], f"per ha harus rendah<tengah<tinggi: {lo[0]:.0f} {c[0]:.0f} {hi[0]:.0f}"
     assert 6000 < c[0] < 7000, f"WB 2015: 16.124 juta / 2,425 juta ha = 6.649 USD/ha, dapat {c[0]:.0f}"
     assert rp(1, "2015") > rp(1, "2019") > KURS, "USD lama harus lebih mahal dalam Rupiah 2026"
+    # 1 USD 2015 = Rp13.706 (kurs WB) x IHK Des 2015->2026 (1,3255 x 1,0292^0,75 = 1,3545) = Rp18.565, bukan Rp23.030 (CPI AS x kurs 2026)
+    assert abs(rp(1, "2015") - 18565) < 15 and abs(rp(1, "2019") - 16962) < 15, (rp(1, "2015"), rp(1, "2019"))
+    assert abs(tambah_ispa(1e6, 25, 1.04, 0.022 / 30) - 1e6 * 0.022 / 30 * 0.04) < 1e-6, "dasar ISPA per provinsi harus dipakai"
+    assert set(ISPA_PROV) >= {"14", "15", "16", "61", "62", "63", "64", "93"}, "provinsi prioritas wajib punya dasar ISPA"
     assert tambah_ispa(1e6, 10, 1.1) == 0 and tambah_ispa(1e6, PM_ACUAN, 1.1) == 0, "PM di bawah acuan WHO tidak boleh menambah ISPA"
     a, b = tambah_ispa(1e6, 60, 1.05), tambah_ispa(1e6, 120, 1.05)
     assert 0 < a < b, "ISPA tambahan harus naik dengan PM2.5"

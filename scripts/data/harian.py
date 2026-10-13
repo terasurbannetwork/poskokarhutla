@@ -322,7 +322,9 @@ def main():
     akhir = max((p["t"] for p in titik), default=kini)
     tgl = lambda t: t.astimezone(WIB).date()
     hari_akhir = tgl(kini)
-    viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)]
+    # gunung api aktif (aturan.GUNUNG_API) tidak dijadikan kompleks karhutla; titiknya tetap ada di hotspot.json (setara SiPongi)
+    viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)
+             and not A.gunung_api(p["lat"], p["lon"])]
     label, inti = dbscan(viirs)
     kluster = {}
     for p, l in zip(viirs, label):

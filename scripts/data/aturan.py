@@ -20,6 +20,40 @@ import math
 STATUS = ["Pencegahan rutin", "Patroli terpadu", "Siaga pemadaman awal", "Prioritas pemadaman"]
 
 
+# Gunung api Indonesia yang meletus sejak 2000 (Smithsonian GVP, Volcanoes of the World, layanan WFS
+# webservices.volcano.si.edu, diambil 13 Okt 2026; 40 gunung). Titik panas VIIRS dalam RADIUS_GUNUNG_API km dari puncak
+# hampir pasti lava/kubah/kawah, bukan kebakaran vegetasi; FIRMS menandainya "type 1 = active volcano" di arsip standar,
+# tetapi data NRT tidak membawa kolom type. Tanpa saringan ini Semeru, Ibu, Karangetang, Krakatau, Merapi muncul sebagai
+# kompleks karhutla "Siaga pemadaman awal" (diperiksa pada kluster.json 13 Okt 2026: 13 kompleks dalam 3 km, 8 berlevel >= 2).
+# 3 km: kawah/kubah dan aliran lava pendek masuk, sabana lereng (mis. Tengger, ~4-6 km dari Bromo) tetap dihitung.
+# ponytail: daftar statis; perbarui dari GVP bila ada gunung baru meletus, atau ganti dengan masker anomali termal statis FIRMS.
+RADIUS_GUNUNG_API = 3.0
+GUNUNG_API = [
+    ("Agung", -8.343, 115.508), ("Ambang", 0.750, 124.420), ("Awu", 3.689, 125.447), ("Batur", -8.240, 115.377),
+    ("Dempo", -4.016, 103.121), ("Dieng Volcanic Complex", -7.200, 109.879), ("Dukono", 1.699, 127.878),
+    ("Egon", -8.676, 122.455), ("Gamalama", 0.810, 127.332), ("Gamkonora", 1.380, 127.530), ("Ibu", 1.494, 127.632),
+    ("Iliwerung", -8.532, 123.573), ("Inielika", -8.730, 120.980), ("Kaba", -3.516, 102.626),
+    ("Karangetang", 2.781, 125.407), ("Kelud", -7.935, 112.314), ("Kerinci", -1.697, 101.264),
+    ("Krakatau", -6.101, 105.423), ("Lewotobi", -8.542, 122.775), ("Lewotolok", -8.274, 123.508),
+    ("Lokon-Empung", 1.364, 124.799), ("Marapi", -0.380, 100.474), ("Merapi", -7.540, 110.446),
+    ("Paluweh", -8.320, 121.708), ("Papandayan", -7.317, 107.731), ("Peuet Sague", 4.903, 96.289),
+    ("Raung", -8.119, 114.056), ("Rinjani", -8.420, 116.470), ("Ruang", 2.306, 125.367),
+    ("Sangeang Api", -8.200, 119.070), ("Semeru", -8.108, 112.922), ("Sinabung", 3.170, 98.392),
+    ("Sirung", -8.497, 124.131), ("Slamet", -7.242, 109.208), ("Soputan", 1.112, 124.737), ("Suoh", -5.250, 104.270),
+    ("Talang", -0.979, 100.681), ("Tangkuban Parahu", -6.770, 107.600), ("Tara, Batu", -7.791, 123.585),
+    ("Tengger Caldera", -7.942, 112.950),
+]
+
+
+def gunung_api(lat, lon, radius=RADIUS_GUNUNG_API):
+    """Nama gunung api aktif dalam radius km dari titik, atau None."""
+    for n, la, lo in GUNUNG_API:
+        if abs(la - lat) < 0.1 and abs(lo - lon) < 0.1 and \
+                math.hypot(la - lat, (lo - lon) * math.cos(math.radians(lat))) * 111.2 <= radius:
+            return n
+    return None
+
+
 def kelas_fwi(fwi):
     return 0 if fwi < 2 else 1 if fwi < 7 else 2 if fwi < 14 else 3
 
@@ -107,4 +141,6 @@ if __name__ == "__main__":
     assert status(0, 1) == 0 and status(2, 2) == 2 and status(3, 1) == 1 and status(None, 1) == 1
     assert all(status(f, s) <= 2 for f in (None, 0, 1, 2, 3) for s in (1, 2, 3))  # level 3 hanya lewat peringkat
     assert skor(20, 500, 3, 8, 400, 120) > skor(20, 500, 3, 8, 400, 10) > skor(5, 500, 3, 8, 400, 10)
+    assert gunung_api(-8.108, 112.922) == "Semeru" and gunung_api(-8.108, 112.922 + 0.02) == "Semeru"  # ~2,2 km
+    assert gunung_api(-8.108, 112.922 + 0.05) is None and gunung_api(-2.2, 113.9) is None          # ~5,5 km; Palangka Raya
     print("ok")
