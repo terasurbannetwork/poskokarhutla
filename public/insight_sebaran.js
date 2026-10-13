@@ -39,7 +39,7 @@ Insight.exSebMusim = function () {
 /* ---------- Pendorong ---------- */
 Insight.exSebDorong = function () {
   const P = SEB.d?.dorong; if (!SEB.d) return tunggu("Apa yang membuat api membesar"); if (!P) return "";
-  const mode = this.st.sebDorong;
+  const mode = this.st.sebDorong === "lahan" && !(P.banding_lahan || []).length ? "cuaca" : this.st.sebDorong; /* data lahan belum ada: tampilkan cuaca */
   let baris;
   if (mode === "lahan") baris = (P.banding_lahan || []).filter(b => b.rasio_lolos).map(b => ({l: b.banding, v: b.rasio_lolos[0], ci: b.rasio_lolos,
     tip: `${esc(b.banding)}<br>Peluang membesar ${pc(b.lolos, 1)} vs ${pc(b.lolos_acuan, 1)} (n ${fmt(b.n)} / ${fmt(b.n_acuan)})<br>Rasio ${ci(b.rasio_lolos)}<br>Luas baru per hari ${fmt(b.ha_hari)} vs ${fmt(b.ha_hari_acuan)} ha${b.rasio_ha_hari ? ` (${ci(b.rasio_ha_hari)})` : ""}<br>Pergeseran median ${fmt(b.geser_km)} vs ${fmt(b.geser_km_acuan)} km/hari`}));
