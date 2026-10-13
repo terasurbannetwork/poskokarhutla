@@ -43,6 +43,10 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python3 scripts/data/harian.py
 
+      # titik panas 24 jam untuk lencana "terkonfirmasi satelit" di laporan warga (tab Informasi)
+      - name: Titik 24 jam untuk laporan warga
+        run: python3 scripts/warga/titik24.py
+
       # arsip berita bergulir 120 hari dibawa lewat cache tersendiri (bukan commit: berubah tiap hari).
       # Cache hilang -> berita.py membangun ulang arsip 120 hari sendiri (± 8 menit).
       - name: Pulihkan iklim tanah

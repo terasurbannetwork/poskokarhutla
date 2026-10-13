@@ -554,6 +554,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .mt-tekisi code,.mt-tl,.mt-cat{overflow-wrap:anywhere}
 </style>
 <link href="../databaru.css" rel="stylesheet">
+<link href="../informasi.css" rel="stylesheet">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -561,7 +562,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <header class="top">
   <div class="mark">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c3 4.4 7 8.6 7 13a7 7 0 0 1-14 0c0-4.4 4-8.6 7-13Z" fill="oklch(74% .13 235)"/><path d="M6 25c2.5 0 2.5-1.6 5-1.6s2.5 1.6 5 1.6 2.5-1.6 5-1.6 2.5 1.6 5 1.6" stroke="oklch(92% .05 235)" stroke-width="2" fill="none" stroke-linecap="round"/></svg>
-    <details class="bencana"><summary>Posko Banjir, Longsor & Rob</summary><div class="menu"><a href="../">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="../banjir/" aria-current="page">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a></div></details>
+    <details class="bencana"><summary>Posko Banjir, Longsor & Rob</summary><div class="menu"><a href="../">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="../banjir/" aria-current="page">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a><a href="../warga/">Lapor Warga<small>Laporan warga: listrik, sinyal, BBM, bantuan</small></a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
@@ -620,6 +621,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   </section>
 
   <section class="page scroll" id="p-insight" aria-label="Insight banjir"><div class="wrap" id="insight"></div></section>
+  <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-prakiraan" aria-label="Prakiraan per wilayah"><div class="wrap" id="prakiraan"></div></section>
   <section class="page scroll" id="p-daftar" aria-label="Wilayah siaga"><div class="wrap" id="daftar"></div></section>
   <section class="page scroll" id="p-provinsi" aria-label="Provinsi"><div class="wrap" id="provinsiTab"></div></section>
@@ -677,12 +679,12 @@ const S = {meta: null, st: null, hujan: null, sungai: null, bahaya: {}, kejadian
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["prakiraan", "Prakiraan"], ["posko", "Posko"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["tren", "Tren"], ["keputusan", "Keputusan"], ["simulasi", "Simulasi"], ["sarana", "Sarana"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["informasi", "Informasi"], ["insight", "Insight"], ["prakiraan", "Prakiraan"], ["posko", "Posko"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["tren", "Tren"], ["keputusan", "Keputusan"], ["simulasi", "Simulasi"], ["sarana", "Sarana"], ["metode", "Metode"]];
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "#" + id);
-  nanti(() => { if (id === "peta" && peta) peta.resize(); const f = {insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, simulasi: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
+  nanti(() => { if (id === "peta" && peta) peta.resize(); if (id === "informasi") window.Informasi?.render(); const f = {insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, simulasi: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
 }
 $("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}">${n}</button>`).join("");
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
@@ -3066,5 +3068,6 @@ const Sarana = {
 };
 </script>
 <script src="../databaru.js" data-halaman="banjir"></script>
+<script src="../informasi.js" data-halaman="banjir"></script>
 </body>
 </html>

@@ -598,6 +598,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <link href="citra.css" rel="stylesheet">
 <link href="sim_perlakuan.css" rel="stylesheet">
 <link href="databaru.css" rel="stylesheet">
+<link href="informasi.css" rel="stylesheet">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -605,7 +606,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <header class="top">
   <div class="mark">
     <svg width="30" height="30" viewBox="0 0 32 32" aria-hidden="true"><rect width="32" height="32" rx="9" fill="oklch(100% 0 0 / .14)"/><path d="M16 5c1.8 4 6 6.4 6 11.5A6 6 0 0 1 10 16.5c0-2.4 1.1-4.2 2.6-5.6.3 2 1.4 3.2 2.6 3.6C14.4 11.2 15 8 16 5Z" fill="oklch(76% .16 58)"/><path d="M16 27a4 4 0 0 1-4-4c0-2.2 2-3.5 4-6.5 2 3 4 4.3 4 6.5a4 4 0 0 1-4 4Z" fill="oklch(90% .12 95)"/></svg>
-    <details class="bencana"><summary>Posko Karhutla</summary><div class="menu"><a href="./" aria-current="page">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a></div></details>
+    <details class="bencana"><summary>Posko Karhutla</summary><div class="menu"><a href="./" aria-current="page">Posko Karhutla<small>Titik panas, kompleks api, FWI, posko</small></a><a href="./banjir/">Posko Banjir, Longsor & Rob (uji coba)<small>Hujan, sungai, pasang laut, status kecamatan</small></a><a href="./warga/">Lapor Warga<small>Laporan warga: listrik, sinyal, BBM, bantuan</small></a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
@@ -690,6 +691,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   <!-- ================= KEPUTUSAN ================= -->
   <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
+  <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
   <section class="page scroll" id="p-keputusan" aria-label="Keputusan musim kebakaran"><div class="wrap"><figure class="banner" data-foto="sekat" hidden></figure><div id="keputusan"></div></div></section>
   <!-- ================= POSKO ================= -->
@@ -746,7 +748,7 @@ const kelasFWI = v => v < 2 ? 0 : v < 7 ? 1 : v < 14 ? 2 : 3;
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["informasi", "Informasi"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
 const sudah = {};
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -760,6 +762,7 @@ function bukaTab(id, dorong = true) {
     if (id === "keputusan") Kp.render();
     if (id === "insight") Insight.render();
     if (id === "berita") Berita.render();
+    if (id === "informasi") window.Informasi?.render();
     if (id === "dampak") Dampak.render();
     if (id === "tren") Tren.render();
     if (id === "prioritas" && !sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); }
@@ -4271,6 +4274,8 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="dampak.js"></script>
 <script src="sim_perlakuan.js"></script>
 <script src="databaru.js" data-halaman="karhutla"></script>
+<script src="informasi.js" data-halaman="karhutla"></script>
+<script src="titik_live.js"></script>
 <script src="citra.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 </body>
