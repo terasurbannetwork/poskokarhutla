@@ -105,7 +105,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tarik-v{position:absolute;top:-6px;left:50%;width:56px;height:12px;margin-left:-28px;cursor:row-resize;touch-action:none}
 .tarik-v::after{content:"";position:absolute;left:12px;right:12px;top:4px;height:4px;border-radius:4px;background:var(--line)}
 .tarik-v:hover::after,.tarik-v.aktif::after{background:var(--brand2)}
-.lg-g .lbl{margin:0 0 3px!important}
+.lg-g .lbl{margin:0 0 3px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg-g .leg{flex-direction:row;flex-wrap:wrap;gap:3px 10px;margin:0!important}
 .lg-g .legscale{width:100%;max-width:220px}
 @media (max-width:900px){.dok{left:12px;bottom:auto;top:112px}.lg-isi{max-height:40vh}}
@@ -162,7 +162,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tb.kepala span.urut[data-arah="1"]::after{content:" ▴"}
 .tb > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tb > span:last-child{overflow:visible}
-.tb > span:not(:nth-child(2)){text-align:center!important;justify-self:center}
+.tb > span{text-align:center!important;justify-self:center}
 .tb .rk{justify-self:end!important;text-align:right!important}
 .tb .pill{justify-self:center}
 .tb .n{text-align:right;font-variant-numeric:tabular-nums}
@@ -241,6 +241,10 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .laci .hd h2{font-size:17px}
 .laci .bd{overflow-y:auto;padding:14px 16px 18px;grid-auto-rows:max-content;align-content:start;flex:1;min-height:0}
 .tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
+.hd-aksi{margin-left:auto;display:flex;gap:4px;flex:none}
+.ik-btn{width:30px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;margin:0}
+.ik-btn:hover{background:var(--surface);border-color:var(--brand2)}
+.ik-btn svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 .kv div{background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
 .kv b{display:block;font-family:var(--display);font-size:16px;font-variant-numeric:tabular-nums}
@@ -473,20 +477,21 @@ table.tb3 tr:last-child td{border-bottom:0}
 #tip .tk-d.turun{color:#2f8a5a}
 #tip .tk-d span{font-weight:500;color:var(--ink2)}
 #tip .tk-f{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);font-size:11px;color:var(--ink2)}
-#tip.kartu{padding:0;min-width:210px;max-width:260px;border-radius:12px;overflow:hidden}
-.tp-hd{display:flex;align-items:center;gap:8px;padding:9px 12px 7px}
+#tip.kartu{padding:0;min-width:240px;max-width:330px;border-radius:14px;overflow:hidden}
+.tp-hd{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px 8px;border-bottom:1px solid var(--line)}
 .tp-hd img{height:22px;width:22px;object-fit:contain;flex:none}
 .tp-hd .tp-ik{width:20px;height:20px}
-.tp-nm{display:flex;flex-direction:column;gap:1px;min-width:0}
-.tp-nm b{font-family:var(--display);font-weight:800;font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tp-nm .tp-pl{align-self:flex-start}
-.tp-bd{padding:0 12px 9px;display:grid;gap:8px}
-.tp-gr{display:grid;grid-template-columns:1fr 1fr;gap:6px}
-.tp-st{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:var(--surface);border-left:3px solid var(--w)}
-.tp-st b{font-size:15px;line-height:1.15;font-variant-numeric:tabular-nums}
-.tp-st small{font-size:9.5px;color:var(--ink2);font-weight:600}
-.tp-ik{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--brand2);color:#fff}
-.tp-ik svg{width:10px;height:10px}
+.tp-nm{display:flex;align-items:center;gap:6px;min-width:0}
+.tp-nm b{font-family:var(--display);font-weight:800;font-size:13.5px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-rk{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--w);color:#fff}
+.tp-rk svg{width:11px;height:11px}
+.tp-bd{padding:8px 10px 9px;display:grid;gap:8px}
+.tp-gr{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:4px}
+.tp-st{display:flex;flex-direction:column;align-items:center;gap:2px;text-align:center;min-width:0}
+.tp-st b{font-size:13.5px;line-height:1.1;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tp-st small{font-size:8.5px;color:var(--ink2);font-weight:700;text-transform:uppercase;letter-spacing:.03em;white-space:nowrap}
+.tp-ik{flex:none;width:20px;height:20px;border-radius:50%;display:grid;place-items:center;background:var(--brand2);color:#fff}
+.tp-ik svg{width:11px;height:11px}
 .tp-ls{display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
 .tp-ls span{display:flex;align-items:baseline;gap:5px;padding:3px 0;border-bottom:1px solid var(--line);min-width:0}
 .tp-ls span:nth-last-child(-n+2){border-bottom:0}
@@ -938,10 +943,10 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
-  <section class="page scroll" id="p-keputusan" aria-label="Keputusan musim kebakaran"><div class="wrap"><div id="keputusan"></div></div></section>
+  
   <!-- ================= POSKO ================= -->
-  <section class="page scroll" id="p-posko" aria-label="Posko, sarana, dan operasi"><div class="wrap"><div class="seg" id="poskoSub" role="group" aria-label="Bagian" style="margin-bottom:14px"><button data-s="posko" aria-pressed="true">Posko</button><button data-s="sarana" aria-pressed="false">Sarana & alat</button><button data-s="operasi" aria-pressed="false">Operasi & kebutuhan</button></div>
-    <div id="posko"></div><div id="sarana" hidden></div><div id="operasi" hidden></div></div></section>
+  <section class="page scroll" id="p-posko" aria-label="Posko, sarana, dan operasi"><div class="wrap"><div class="seg" id="poskoSub" role="group" aria-label="Bagian" style="margin-bottom:14px"><button data-s="posko" aria-pressed="true">Posko</button><button data-s="sarana" aria-pressed="false">Sarana & alat</button><button data-s="operasi" aria-pressed="false">Operasi & kebutuhan</button><button data-s="keputusan" aria-pressed="false">Keputusan</button></div>
+    <div id="posko"></div><div id="sarana" hidden></div><div id="operasi" hidden></div><div id="keputusan" hidden></div></div></section>
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
@@ -974,7 +979,7 @@ const IKON = {api: '<path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5
 const ikon = (k, w) => `<i class="tp-ik"${w ? ` style="background:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IKON[k]}</svg></i>`;
 const ringkas = n => typeof n !== "number" ? n : n >= 1e6 ? fmt(Math.round(n / 1e5) / 10) + " jt" : n >= 1e4 ? fmt(Math.round(n / 100) / 10) + " rb" : fmt(n);
 const kartuTip = ({judul, kepala = "", sub = "", stat = [], daftar = [], tren = "", kaki = ""}) => `<div class="tp-hd">${kepala}<span class="tp-nm"><b>${judul}</b>${sub}</span></div>
-  ${stat.length || daftar.length ? `<div class="tp-bd">${stat.length ? `<div class="tp-gr">${stat.map(([k, v, l, w]) => `<div class="tp-st" style="--w:${w || "var(--ink)"}"><b>${ringkas(v)}</b><small>${l}</small></div>`).join("")}</div>` : ""}
+  ${stat.length || daftar.length ? `<div class="tp-bd">${stat.length ? `<div class="tp-gr">${stat.map(([k, v, l, w]) => `<div class="tp-st">${ikon(k, w)}<b>${ringkas(v)}</b><small>${l}</small></div>`).join("")}</div>` : ""}
   ${daftar.length ? `<div class="tp-ls">${daftar.map(([b, sm]) => `<span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`).join("")}</div>` : ""}${tren}</div>` : ""}${kaki ? `<div class="tp-ft">${kaki}</div>` : ""}`;
 /* dialog modal ada di lapisan teratas: tooltip harus ikut masuk ke dialog yang sedang terbuka supaya terlihat */
 const wadahTip = () => { const t = $("#tip"), w = document.querySelector("dialog[open]") || document.body; if (t.parentNode !== w) w.appendChild(t); return t; };
@@ -1014,14 +1019,14 @@ const WARNA_WIL = () => ["step", ["get", "v"], "rgba(0,0,0,0)", ...SKALA_WIL.fla
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["kompleks", "Kompleks api"], ["posko", "Posko"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["metode", "Metode"], ["informasi", "Informasi"], ["keputusan", "Keputusan"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["kompleks", "Kompleks api"], ["posko", "Posko"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["metode", "Metode"], ["informasi", "Informasi"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
-const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"]};
+const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
 function bukaSub(sub) { S.poskoSub = sub;
   $("#poskoSub").querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b.dataset.s === sub));
-  ["posko", "sarana", "operasi"].forEach(k => $("#" + k).hidden = k !== sub);
-  nanti(() => { if (sub === "posko") Posko.render(); if (sub === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); } if (sub === "operasi") window.Operasi?.render(); }); }
+  ["posko", "sarana", "operasi", "keputusan"].forEach(k => $("#" + k).hidden = k !== sub);
+  nanti(() => { if (sub === "posko") Posko.render(); if (sub === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); } if (sub === "operasi") window.Operasi?.render(); if (sub === "keputusan") Kp.render(); }); }
 const sudah = {};
 /* kluster_awal.json tidak memuat poligon & api24 (± 28 % lebih kecil); kluster_geo.json melengkapinya di tempat (objek fitur
    yang sama, urutan sama) saat pertama keluar dari Ringkasan atau membuka kompleks. Selalu resolve; gagal = boleh dicoba lagi. */
@@ -1045,7 +1050,6 @@ function bukaTab(id, dorong = true) {
     if (id === "sim") lengkapiKluster().then(() => Sim.buka());
     if (id === "kompleks") { Tabel.render(); if (!sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); } }
     if (id === "posko") bukaSub(S.poskoSub);
-    if (id === "keputusan") Kp.render();
     if (id === "insight") Insight.render();
     if (id === "berita") Berita.render();
     if (id === "informasi") window.Informasi?.render();
@@ -1057,9 +1061,9 @@ function bukaTab(id, dorong = true) {
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "ringkasan" ? "page" : "false"}">${n}</button>`;
-  $("#tabs").innerHTML = TABS.slice(0, 10).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TABS.slice(10).map(tb).join("")}</div></details>`;
+  $("#tabs").innerHTML = (TABS.length <= 11 ? TABS.map(tb).join("") : TABS.slice(0, 10).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TABS.slice(10).map(tb).join("")}</div></details>`);
   /* menu Lainnya menempel tepat di bawah tombolnya (posisi fixed supaya tidak terpotong nav yang bisa digulir) */
-  $("#tabs .lainnya").addEventListener("toggle", e => { if (!e.target.open) return; const r = e.target.querySelector("summary").getBoundingClientRect(), m = e.target.querySelector(".menu");
+  $("#tabs .lainnya")?.addEventListener("toggle", e => { if (!e.target.open) return; const r = e.target.querySelector("summary").getBoundingClientRect(), m = e.target.querySelector(".menu");
     m.style.left = Math.min(r.left, innerWidth - 200) + "px"; m.style.top = r.bottom + 6 + "px"; }); }
 $("#dlgLaci").addEventListener("close", () => { const el = $("#laci"); $("#p-peta").appendChild(el); el.classList.remove("on"); S.pilihK = null; });
 $("#dlgLaci").addEventListener("click", e => { if (e.target.id === "dlgLaci") e.target.close(); });
@@ -1770,7 +1774,7 @@ function renderLegenda() {
     ${S.panel === "riw" ? `<div class="lbl">Tahun terbakar 2002–2025 (per sel ± 11 km)</div>
     <div class="legscale">${[.1, .25, .4, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Riwayat.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
     <div class="legnum"><span>2</span><span>6</span><span>10</span><span>13</span><span>18</span><span>24</span></div>
-    <div class="leg" style="margin:4px 0 6px"><span>Lingkaran = <b>skor risiko</b> wilayah (warna = kelas); arahkan kursor untuk rincian. Arahkan kursor untuk angka tiap sel; klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas (per sel ± 11 km)</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && z < 8.5 ? `<div class="lbl">Jumlah titik per wilayah</div>
+    <div class="leg" style="margin:4px 0 6px"><span>Lingkaran = <b>skor risiko</b> wilayah (warna = kelas); arahkan kursor untuk rincian. Arahkan kursor untuk angka tiap sel; klik wilayah untuk analisa. Api industri dan gunung api tidak dihitung.</span></div>` : `${Kini.on && z < 9 ? `<div class="lbl">Kepadatan titik panas</div><div class="legscale">${[.15, .35, .55, .75, 1].map(v => `<i style="background:rgb(${gradasi(Kini.ST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>jarang</span><span></span><span>sedang</span><span></span><span>padat</span></div>` : ""}${Peta.lihat("wilayah") && z < 8.5 ? `<div class="lbl">Jumlah titik per wilayah</div>
     <div class="legscale">${SKALA_WIL.map(([, c]) => `<i style="background:${c}"></i>`).join("")}</div>
     <div class="legnum"><span>1</span><span>10</span><span>50</span><span>200</span><span>1rb</span><span>4rb+</span></div>` : ""}`}
     ${S.panel === "riw" || !(Peta.lihat("posko") || Peta.lihat("daops")) ? "" : `    <div class="lbl" style="margin-top:8px">Posko & regu</div>
@@ -1849,7 +1853,11 @@ const Laci = {
         ${rw ? `<button class="btn sec" data-analisa style="justify-self:start">Analisa lengkap kecamatan</button>` : ""}`; })();
     const ps = S.poskoDari.get(p.id), bp = bpbdDekat(p.lat, p.lon), dk = daopsDekat(p.lat, p.lon);
     el.innerHTML = `<div class="hd"><div><div class="lbl">Kompleks kebakaran ${esc(p.id)}</div><h2>${esc(p.kec)}, ${esc(p.kab)}</h2>
-      <div style="color:var(--ink2);font-size:12.5px">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></div></div><button class="tutup" aria-label="Tutup">✕</button></div>
+      <div style="color:var(--ink2);font-size:12.5px">${esc(namaProv(p.prov))} · <span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></div></div>
+      <div class="hd-aksi"><button class="ik-btn" id="keSim" title="Simulasikan 72 jam" aria-label="Simulasikan 72 jam"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg></button>
+        <a class="ik-btn" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}" title="Buka di Google Maps" aria-label="Buka di Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></a>
+        <button class="ik-btn" id="bagi" title="Salin tautan" aria-label="Salin tautan"><svg viewBox="0 0 24 24"><path d="M10 14a4 4 0 0 0 5.7 0l3-3a4 4 0 0 0-5.7-5.7l-1 1"/><path d="M14 10a4 4 0 0 0-5.7 0l-3 3a4 4 0 0 0 5.7 5.7l1-1"/></svg></button>
+        <button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah padam, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap padam."}</div>`}
       ${lipat("Api saat ini", `<div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>
@@ -1869,9 +1877,6 @@ const Laci = {
         ${dk[0]?.jarak > 150 ? `<p class="fnd" style="color:var(--bad)">Daops terdekat lebih dari 150 km. Andalkan MPA, BPBD, dan regu perusahaan setempat.</p>` : ""}`)}
       ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${STATUS_AKSI[p.level].map(a => `<li>${esc(a)}</li>`).join("")}</ul>`)}
       ${lipat("Riwayat lokasi", riwayat, false)}
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><button class="btn pri" id="keSim">Simulasikan 72 jam</button>
-      <a class="btn sec" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}">Google Maps</a>
-      <button class="btn sec" id="bagi">Salin tautan</button></div>
       <p class="fnd">Koordinat ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)} · data ${jamWIB(S.meta.dibuat)}</p></div>`;
     if (el._tarik) el.appendChild(el._tarik);
     el.querySelector("[data-analisa]")?.addEventListener("click", () => Riwayat.buka(kunciKec));
@@ -2273,7 +2278,7 @@ const Riwayat = {
       peta.on("mousemove", "riw-bubble", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "pointer"; this._diGelembung = true;
         const kp = p.kunci.split("|"), w = W[p.lv] || W[0];
         tampilTip(kartuTip({judul: esc(p.nama), kepala: lambang(kp[0], kp.length > 1 ? kp[1] : null),
-          sub: `<span class="tp-pl" style="background:${w}">Risiko ${esc(p.kelas).toLowerCase()}</span>`,
+          sub: `<i class="tp-rk" style="--w:${w}" title="Risiko ${esc(p.kelas).toLowerCase()}" aria-label="Risiko ${esc(p.kelas).toLowerCase()}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"><path d="M12 9v5M12 17.2v.3"/></svg></i>`,
           stat: [["skor", p.s, "skor", w], ["kal", `${p.tahun}/${p.th}`, "thn terbakar", "#5f6fb0"], ["titik", p.total, "titik", "#e58a45"], ["puncak", String(p.puncak), "puncak", "#a9402f"]],
 }), e.originalEvent); });
       peta.on("mouseleave", "riw-bubble", () => { this._diGelembung = false; peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
@@ -2441,10 +2446,7 @@ const Tren = {
         <div class="seg" id="tUrut"><button data-u="tahun" aria-pressed="${this.urutKec === "tahun"}">Paling sering</button><button data-u="total" aria-pressed="${this.urutKec === "total"}">Paling banyak titik</button></div></div>
       <div class="tw"><table><thead><tr><th>Kecamatan</th><th>Kab/Kota</th><th class="n">Tahun terbakar</th><th>Kekerapan</th><th class="n">Total titik ${th[0]}–${ini}</th><th class="n">${ini}</th></tr></thead><tbody>
       ${kec.map(k => `<tr class="klik" data-kl="${esc(this.prov + "|" + k.kab + "|" + k.kec)}" tabindex="0"><td>${esc(k.kec)}</td><td>${esc(k.kab)}</td><td class="n num"><b>${fmt(k.tahun)}</b> / ${fmt(th.length)}</td><td><span class="bar" style="display:block;width:120px;height:6px;border-radius:4px;background:var(--surface)"><i style="display:block;height:100%;width:${k.tahun / th.length * 100}%;background:linear-gradient(90deg,#e58a45,#c9503a);border-radius:4px"></i></span></td>
-        <td class="n num">${fmt(k.total)}</td><td class="n num">${fmt(k.ini)}</td></tr>`).join("") || `<tr><td colspan="6" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>
-      <div class="head" style="margin-top:22px"><div><h2>Rekomendasi posko permanen · ${esc(namaProv(this.prov))}</h2><p>Lokasi posko yang berdiri sepanjang musim.</p></div></div>
-      <div class="tw"><table><thead><tr><th>Kode</th><th>Desa</th><th>Kecamatan</th><th>Kab/Kota</th><th class="n">Kecamatan rawan dijangkau</th><th class="n">Titik ${th[0]}–${ini}</th><th class="n">Cakupan kumulatif</th><th></th></tr></thead><tbody>
-      ${perm.map(x => { const [desa, kec] = (x.nama || "").split(/,\s*Kec\.\s*/); return `<tr class="klik" data-pp="${x.id}" tabindex="0"><td><b>${x.id}</b></td><td>${esc(desa.replace(/^Desa\s+/, ""))}</td><td>${esc(kec || "–")}</td><td>${esc(x.kab)}</td><td class="n num">${fmt(x.kecamatan)}</td><td class="n num">${fmt(x.titik)}</td><td class="n num">${x.cakupan}%</td><td><button class="link" data-lp="${x.id}">Peta</button></td></tr>`; }).join("") || `<tr><td colspan="8" class="kosong">Tidak ada kecamatan langganan api di provinsi ini.</td></tr>`}</tbody></table></div>`;
+        <td class="n num">${fmt(k.total)}</td><td class="n num">${fmt(k.ini)}</td></tr>`).join("") || `<tr><td colspan="6" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>`;
     $("#tProv").onchange = e => { this.prov = e.target.value; nanti(() => this.render()); };
     tipDariTitle(el);
     $("#tSumber").onclick = e => { const b = e.target.closest("button"); if (!b) return; this.sumber = b.dataset.s; this.rh = 0;
