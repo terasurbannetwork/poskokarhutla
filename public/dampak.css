@@ -54,3 +54,13 @@
 .dk-tw td.dk-wrap a:hover{color:var(--brand2);text-decoration:underline}
 #dampak .ex-ft a{color:var(--brand2);text-decoration:underline;text-underline-offset:2px}
 #dampak .pgn{margin-top:10px}
+/* footer kartu: legenda di tengah, Sumber di kanan (layar lebar) / di tengah bawah (sempit) */
+#dampak .ex-ft{display:grid;grid-template-columns:1fr auto 1fr;gap:6px 18px;align-items:center}
+#dampak .ex-ft>.ex-leg,#dampak .ex-ft>span{grid-column:2;justify-content:center;text-align:center}
+#dampak .ex-ft>em{grid-column:3;grid-row:1;justify-self:end;text-align:right}
+#dampak .ex-ft>.ex-leg:only-child,#dampak .ex-ft>em:only-child{grid-column:1/-1;justify-self:center}
+.dk-leg{justify-content:center}
+@media (max-width:700px){
+  #dampak .ex-ft{grid-template-columns:1fr}
+  #dampak .ex-ft>.ex-leg,#dampak .ex-ft>span,#dampak .ex-ft>em{grid-column:1;grid-row:auto;justify-self:center;text-align:center}
+}

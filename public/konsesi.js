@@ -17,7 +17,6 @@
   const rp = v => v >= 1e12 ? `Rp${(v / 1e12).toFixed(2).replace(".", ",")} triliun` : `Rp${fmt(Math.round(v / 1e8) / 10)} miliar`;
   const jenis = j => `<span class="ks-j" style="--w:${(JN[j] || ["", "#888"])[1]}">${esc((JN[j] || [j])[0])}</span>`;
   const lencana = ids => ids?.length ? `<button class="ks-sk${ids.some(i => /perdata|pidana/.test(SK[i]?.jenis) && /tetap|putusan/.test(SK[i]?.status)) ? " berat" : ""}" data-sk="${esc(ids.join(","))}" aria-label="Riwayat kasus karhutla">${ids.length} kasus</button>` : "";
-  const batas = () => `Batas konsesi: sawit Kemenhut 2012/2014 (via GFW), HTI Trase 2020–2022, HPH Kemenhut 2014 (via GFW), tambang PPKH Kemenhut Jan 2026; bisa sudah berubah. Titik panas di dalam areal konsesi tidak berarti pemegang izin yang membakar, tetapi pemegang izin wajib mencegah dan memadamkan api di arealnya (Permen LHK P.32/2016 untuk PBPH, Permentan 5/2018 untuk kebun). Pastikan ke KPH/Dinas/ATR sebelum tindakan hukum.`;
   const perDi = id => KK?.kompleks[id]?.perusahaan || [];
   const namaPer = id => perDi(id).map(r => r.nama + " " + (r.grup || "")).join(" ");
 
@@ -109,7 +108,8 @@
     $("#tb").querySelectorAll("tr").forEach(tr => { const id = tr.querySelector("[data-id]")?.dataset.id; if (!id || tr.querySelector(".ks-td")) return;
       const per = perDi(id);
       const p0 = per[0];
-      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${p0 ? `${esc(p0.nama)}${per.length > 1 ? `<span class="ks-plus" title="${esc(per.slice(1).map(x => x.nama).join(", "))}">+${per.length - 1}</span>` : ""}` : `<span class="ks-mt">–</span>`}</td><td class="ks-td2">${p0 ? `${(JN[p0.jenis] || [p0.jenis])[0]} · ${pct(p0.porsi)}` : `<span class="ks-mt">–</span>`}</td>`); });
+      const jl = p0 ? `${(JN[p0.jenis] || [p0.jenis])[0]} · ${pct(p0.porsi)}` : "";
+      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${p0 ? `<span class="ks-ell" title="${esc(p0.nama)}">${esc(p0.nama)}</span>${per.length > 1 ? `<span class="ks-plus" title="${esc(per.slice(1).map(x => x.nama).join(", "))}">+${per.length - 1}</span>` : ""}` : `<span class="ks-mt">–</span>`}</td><td class="ks-td2">${p0 ? `<span class="ks-ell" title="${esc(jl)}">${esc(jl)}</span>` : `<span class="ks-mt">–</span>`}</td>`); });
     $("#tf tr")?.insertAdjacentHTML("beforeend", "<td></td><td></td>");
     const kos = $("#tb .kosong"); if (kos) kos.colSpan = 13;
     peraga();
@@ -132,7 +132,7 @@
       ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}</td>
         <td class="ks-grup">${grupDari(a) ? esc(grupDari(a)) : `<span class="ks-mt">–</span>`}</td>
         <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a.n)}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="8">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
-      <p class="fnd">Titik panas berada di dalam areal konsesi X ≠ X yang membakar. Luas = piksel VIIRS 375 m yang terdeteksi 7 hari (indikatif, bukan luas terbakar resmi). ${batas()}</p>`;
+      <p class="fnd">Sumber: VIIRS 375 m, 7 hari; batas konsesi Kemenhut, GFW, Trase.</p>`;
   }
   function tunjuk(nama) {
     const ids = (KK.perusahaan.find(a => a.nama === nama)?.kompleks || []).filter(id => S.kluster.features.some(f => f.properties.id === id));

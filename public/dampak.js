@@ -69,14 +69,18 @@ const Dampak = (() => {
   const tombolK = id => id ? `<button class="btn sec" data-kom="${esc(id)}">Buka kompleks ${esc(id)} di peta</button>` : "";
   /* batang horizontal sederhana: rows = [{n, v, w, tip, dk, lo, hi, txt}] */
   function hbar(rows, {L = 150, W2 = lw(), rh = 26, maks, garis = []} = {}) {
-    L = LL(L); const R = Math.max(50, ...rows.map(r => pw(r.txt ?? fmt(r.v)) + 10)), m = maks || Math.max(1, ...rows.map(r => r.hi ?? r.v)), X = v => L + Math.max(0, v) / m * (W2 - L - R);
-    return `<svg class="dk-svg" viewBox="0 0 ${W2} ${rows.length * rh + 6}" role="img">${garis.map(([v, t]) => v < m ? `<line x1="${X(v)}" x2="${X(v)}" y1="0" y2="${rows.length * rh}" stroke="currentColor" stroke-dasharray="3 3" opacity=".35"/><text x="${X(v) + 3}" y="${rows.length * rh + 4}" font-size="9" opacity=".6">${t}</text>` : "").join("")}
-      ${rows.map((r, i) => { const y = i * rh;
+    L = LL(L); const ct = r => r.cat ? r.cat.length * 9.5 * .55 + 6 : 0, R = Math.max(50, ...rows.map(r => pw(r.txt ?? fmt(r.v)) + ct(r) + 16)), m = maks || Math.max(1, ...rows.map(r => r.hi ?? r.v)), X = v => L + Math.max(0, v) / m * (W2 - L - R);
+    /* ambang: garis putus berwarna + pil nama di ATAS grafik; bila bertabrakan, turun satu baris */
+    const gs = garis.filter(([v]) => v < m).sort((a, b) => a[0] - b[0]), ends = []; 
+    const lab = gs.map(([v, t, w]) => { const pwid = t.length * 10 * .6 + 14, x0 = Math.min(Math.max(0, X(v) - pwid / 2), W2 - pwid); let lv = ends.findIndex(e => x0 > e + 4); if (lv < 0) lv = ends.length; ends[lv] = x0 + pwid; return {v, t, w: w || W5[kelas(v)], x0, pwid, lv}; });
+    const T = lab.length ? (Math.max(...lab.map(l => l.lv)) + 1) * 17 + 3 : 0, H = rows.length * rh;
+    return `<svg class="dk-svg" viewBox="0 0 ${W2} ${H + T + 6}" role="img">${lab.map(l => `<line x1="${X(l.v)}" x2="${X(l.v)}" y1="${l.lv * 17 + 15}" y2="${T + H}" stroke="${l.w}" stroke-width="1.6" stroke-dasharray="4 3"/><rect x="${l.x0}" y="${l.lv * 17 + 1}" width="${l.pwid}" height="15" rx="7.5" fill="${l.w}"/><text x="${l.x0 + l.pwid / 2}" y="${l.lv * 17 + 12}" text-anchor="middle" font-size="10" font-weight="700" style="fill:${l.w === W.kuning ? "#13213a" : "#fff"}">${l.t}</text>`).join("")}
+      ${rows.map((r, i) => { const y = T + i * rh, px = Math.max(X(r.v), r.hi != null ? X(r.hi) : 0) + 5, tx = r.txt ?? fmt(r.v);
         return `<g data-dk="${r.dk || ""}" style="cursor:${r.dk ? "pointer" : "default"}"><rect class="hov" x="0" y="${y}" width="${W2}" height="${rh}" fill="transparent"/>
-        <text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(r.n)}</text>
+        <text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600"><title>${esc(r.n)}</title>${esc(r.n.length * 6.6 > L - 10 ? r.n.slice(0, Math.max(4, Math.floor((L - 10) / 6.6) - 1)) + "…" : r.n)}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(1.5, X(r.v) - L)}" height="${rh - 10}" rx="3" fill="${r.w || W.oranye}" data-tip="${r.tip || ""}"/>
         ${r.lo != null ? `<line x1="${X(r.lo)}" x2="${X(r.hi)}" y1="${y + rh / 2}" y2="${y + rh / 2}" stroke="currentColor" stroke-width="1.5" opacity=".7"/><line x1="${X(r.lo)}" x2="${X(r.lo)}" y1="${y + 8}" y2="${y + rh - 8}" stroke="currentColor" opacity=".7"/><line x1="${X(r.hi)}" x2="${X(r.hi)}" y1="${y + 8}" y2="${y + rh - 8}" stroke="currentColor" opacity=".7"/>` : ""}
-        ${pilV(Math.max(X(r.v), r.hi != null ? X(r.hi) : 0) + 5, y + 3, r.txt ?? fmt(r.v), r.w || W.oranye)}</g>`; }).join("")}</svg>`; }
+        ${pilV(px, y + 3, tx, r.w || W.oranye)}${r.cat ? `<text x="${px + pw(tx) + 5}" y="${y + rh / 2 + 3.5}" font-size="9.5" opacity=".75">${r.cat}</text>` : ""}</g>`; }).join("")}</svg>`; }
   /* kolom harian: hari = [t], seri = [{k, w, v: {t: n}}], dk(t) */
   function kolom(hari, seri, {H = 150, W2 = lw(), tip, dk} = {}) {
     const tot = hari.map(t => seri.reduce((a, s) => a + (s.v[t] || 0), 0)), m = Math.max(1, ...tot), g = (W2 - 30) / Math.max(1, hari.length), bw = Math.max(1.5, g * .75);
@@ -111,11 +115,11 @@ const Dampak = (() => {
       return `<g data-dk="prov|${r.k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(r.k))}</text>`
         + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect class="gx" style="--i:${n}" x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("")
         + `${pilV(x + 5, y + 3, rb(r.ts), NAVY)}</g>`; }).join("")}</svg>`;
-    const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: `${fmt(c.pm[i])} · ${KELAS[kelas(c.pm[i])]}`,
+    const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: fmt(c.pm[i]), cat: KELAS[kelas(c.pm[i])],
       tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
     return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi rawan karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
-      svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]}),
+      svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"], [250.4, "berbahaya"]]}),
       `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus) lewat Open-Meteo")}, dibuat ${jamWIB(U.dibuat)}; penduduk ${sm("wpop", "WorldPop")} 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
       seg("hari", U.hari.map((t, j) => [j, j ? hariN(t) : "Hari ini"])));
   }
@@ -136,7 +140,7 @@ const Dampak = (() => {
       "Hindari kegiatan luar ruang; sekolah layak belajar dari rumah; siapkan ruang bersih udara.", "Tetap di dalam ruangan dengan jendela tertutup; evakuasi kelompok rentan bila berlangsung lama."];
     const k = kelas(Math.max(...c.pm));
     dlg(esc(n), `${c.negara ? esc(c.negara) : esc(namaProv(c.prov))} · PM2.5 maksimum harian, prakiraan CAMS`,
-      hbar(c.pm.map((v, j) => ({n: j ? hariN(D.udara.hari[j]) : "Hari ini", v, w: W5[kelas(v)], txt: `${fmt(v)} µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: mx, garis: [[55.4, "tidak sehat"], [150.4, "sangat"]]})
+      hbar(c.pm.map((v, j) => ({n: j ? hariN(D.udara.hari[j]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: mx, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
       + `<p style="margin:0"><b>Saran untuk kelas terburuk (${KELAS[k]}):</b> ${saran[k]}</p><p class="fnd">Satu sel CAMS ± 110 km; kota yang berdekatan bisa mendapat angka sama. Bandingkan dengan alat ukur ISPU KLHK bila tersedia.</p>`);
   }
 
@@ -245,7 +249,7 @@ const Dampak = (() => {
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
     dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
-      (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: `${fmt(v)} µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
+      (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
       + `<p style="margin:0">${s.pm && Math.max(...s.pm) > 55.4 ? "<b>Udara tidak sehat dalam 4 hari ke depan: pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang.</b>" : "Pantau kualitas udara; api dekat bisa membawa asap mendadak bila angin berbalik."}</p>${tombolK(s.kompleks)}`); }
   function popBerita(arr, j, jenis) { const x = arr[j];
     dlg(jenis, `${esc(x.media || "")} · ${tgl(x.tgl)}`, `<p style="margin:0">${tautan(x.url, x.judul)}</p>${(x.prov || []).length ? `<p class="fnd">Provinsi disebut: ${x.prov.map(p => esc(namaProv(p))).join(", ")}</p>` : ""}<p class="fnd">Hanya judul yang dibaca; buka berita untuk isi lengkap.</p>`); }

@@ -37,7 +37,7 @@
 .ct-tw table{border-collapse:collapse;width:100%;font-size:12px}
 .ct-tw th,.ct-tw td{padding:5px 8px;border-bottom:1px solid var(--line,#e3e7ef);text-align:right;white-space:nowrap}
 .ct-tw th:first-child,.ct-tw td:first-child,.ct-tw td:nth-child(2),.ct-tw th:nth-child(2){text-align:left}
-.ct-tw thead th{position:sticky;top:0;background:var(--surface,#eef1f6);color:var(--ink,#1d2a44)}
+.ct-tw thead th{position:sticky;top:0;background:var(--brand,#1d2a5c);color:#fff;border-bottom:2px solid var(--accent,#e58a45)}
 .ct-tw tr[data-kasus]{cursor:pointer}
 .ct-tw tr.on td{background:oklch(85% .08 60 / .35)}
 .ct-ol{margin:4px 0;padding-left:20px;font-size:13px;line-height:1.5}
@@ -85,3 +85,32 @@
 .ct-tw thead th{font-size:11px;font-weight:800;letter-spacing:.03em}
 .cerita .ex-leg i[style*="border"]{box-sizing:border-box}
 .ct-bab > .ex-hd h3 .hl{color:var(--bad,#c9503a)}
+
+/* kartu musim 2026: tabel, garis waktu, peta bertumpuk, coming soon (13 Okt 2026) */
+.cerita [hidden]{display:none!important}
+.ct-tw.kiri th,.ct-tw.kiri td{text-align:left}
+.ct-tw.kiri .r{text-align:right}
+.ct-grp{display:flex;flex:1;min-width:220px;gap:10px;align-items:center;flex-wrap:wrap}
+.ct-grp input[type=range]{flex:1;min-width:120px}
+.ct-grp output{font-size:12px;color:var(--ink2,#5b6782);white-space:nowrap}
+.ct-btn.lawan{background:var(--surface,#eef1f6);color:var(--ink,#1d2a44);border:1px solid var(--line,#e3e7ef)}
+.ct-pw{position:relative;margin:10px 0}
+.ct-pw .ct-peta{margin:0}
+.ct-ovl{position:absolute;top:10px;left:10px;z-index:2;pointer-events:none;padding:4px 12px;border-radius:999px;background:var(--card,#fff);border:1px solid var(--line,#e3e7ef);box-shadow:0 2px 8px oklch(25% .05 256 / .15);font-size:12px;font-weight:700}
+.ct-tl{position:relative;height:74px;margin:6px 0 0}
+.ct-tl-tr{position:absolute;inset:0;cursor:pointer}
+.ct-tl-tr::before{content:"";position:absolute;left:8px;right:8px;top:36px;height:2px;border-radius:2px;background:var(--line,#e3e7ef)}
+.ct-tl-t{position:absolute;top:0;height:54px;width:1px;background:var(--line,#e3e7ef)}
+.ct-tl-b{position:absolute;top:57px;transform:translateX(-50%);font-size:11px;color:var(--ink2,#5b6782);white-space:nowrap}
+.ct-tl-kepala{position:absolute;top:0;height:54px;width:2px;margin-left:-1px;background:var(--brand,#1d2a5c);border-radius:2px;pointer-events:none;z-index:1}
+.ct-mk{position:absolute;transform:translate(-50%,-50%);padding:0;border:0;cursor:pointer;z-index:2}
+.ct-mk.awal{top:18px;width:13px;height:13px;border-radius:50%;border:2px solid var(--card,#fff);box-shadow:0 0 0 1px oklch(25% .05 256 / .3)}
+.ct-mk.besar{top:44px;background:none;line-height:0}
+.ct-mk:hover,.ct-mk:focus-visible{transform:translate(-50%,-50%) scale(1.35)}
+.ct-cap{font-size:13px;line-height:1.5;margin:6px 0 4px;color:var(--ink,#1d2a44)}
+.ct-cap b{font-weight:800}
+.ct-chips.satu{flex-wrap:nowrap;overflow-x:auto}
+.ct-chips.satu .ct-chip{white-space:nowrap;flex:none}
+.ct-soon{display:grid;justify-items:center;gap:10px;padding:26px 10px 20px;text-align:center}
+.ct-soon p{margin:0;max-width:52ch;font-size:13.5px;line-height:1.5;color:var(--ink2,#5b6782)}
+.ct-badge{padding:6px 18px;border-radius:999px;background:var(--brand,#1d2a5c);color:#fff;font-size:12.5px;font-weight:800;letter-spacing:.04em}
