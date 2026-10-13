@@ -27,42 +27,48 @@ const panah = (lon, lat, deg, km) => { const r = deg * Math.PI / 180, dx = Math.
   const x2 = lon + dx, y2 = lat + dy, a1 = r + 2.6, a2 = r - 2.6, h = km * .3;
   return [[lon, lat], [x2, y2], [x2 + Math.sin(a1) * h / (111.32 * Math.cos(lat * Math.PI / 180)), y2 + Math.cos(a1) * h / 110.57], [x2, y2], [x2 + Math.sin(a2) * h / (111.32 * Math.cos(lat * Math.PI / 180)), y2 + Math.cos(a2) * h / 110.57]]; };
 
-/* ---------------- grafik SVG kecil ---------------- */
-function batang(data, o = {}) { /* data [{l, v, w (warna), tip}] */
-  const W = o.w || 640, H = o.h || 220, m = {l: 44, r: 8, t: 10, b: 34}, n = data.length, maks = o.maks || Math.max(...data.map(d => d.v), 1);
-  const bw = (W - m.l - m.r) / n, y = v => H - m.b - (H - m.t - m.b) * v / maks;
-  const tk = [0, .25, .5, .75, 1].map(f => f * maks);
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "grafik batang")}">
-    ${tk.map(t => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(t)}" y2="${y(t)}" stroke="currentColor" stroke-opacity=".12"/><text x="${m.l - 6}" y="${y(t) + 4}" font-size="10" text-anchor="end" opacity=".7">${o.fy ? o.fy(t) : nf(t)}</text>`).join("")}
-    ${data.map((d, i) => `<rect x="${m.l + i * bw + bw * .12}" y="${y(d.v)}" width="${bw * .76}" height="${Math.max(0, H - m.b - y(d.v))}" fill="${d.w || "var(--brand2,#3f5fa0)"}" data-tip="${es(d.tip || d.l + ": " + nf(d.v))}"/>
-      ${n <= 30 || i % 2 === 0 ? `<text x="${m.l + i * bw + bw / 2}" y="${H - m.b + 13}" font-size="${n > 16 ? 9 : 10.5}" text-anchor="middle" opacity=".8">${es(d.l)}</text>` : ""}`).join("")}
-  </svg>`;
+/* ---------------- grafik SVG gaya Insight ---------------- */
+const NAVY = "oklch(25.5% .075 256)";
+const hl = t => `<span class="hl">${t}</span>`;
+const rbk = v => v >= 1e6 ? nf(Math.round(v / 1e5) / 10, 1) + " jt" : v >= 1e4 ? nf(Math.round(v / 1e3)) + " rb" : v >= 1e3 ? nf(Math.round(v / 100) / 10, 1) + " rb" : nf(Math.round(v));
+/* label pil SVG (salinan Insight.pil: lebar ditaksir dari jumlah huruf) */
+const pil = (x, y, t, bg, fg, fs = 12) => { const w = String(t).length * fs * .6 + 16;
+  return [`<rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${bg}"/><text x="${x + w / 2}" y="${y + 14}" text-anchor="middle" font-size="${fs}" font-weight="700" style="fill:${fg}">${es(t)}</text>`, w]; };
+function batang(data, o = {}) { /* data [{l, v, w (warna), tip, ci:[lo,hi]}]; o.rata = garis rata-rata */
+  const W = 940, H = o.h || 300, m = {l: 46, r: 8, t: 36, b: 28}, n = data.length, maks = o.maks || Math.max(...data.map(d => d.ci ? d.ci[1] : d.v), 1) * 1.05;
+  const bw = (W - m.l - m.r) / n, y = v => H - m.b - (H - m.t - m.b) * v / maks, fy = o.fy || rbk;
+  let g = [0, .25, .5, .75, 1].map(f => `<line x1="${m.l}" x2="${W - m.r}" y1="${y(f * maks)}" y2="${y(f * maks)}" stroke="currentColor" opacity=".08"/><text x="${m.l - 6}" y="${y(f * maks) + 4}" font-size="11" text-anchor="end" opacity=".6">${fy(f * maks)}</text>`).join("");
+  data.forEach((d, i) => { const x = m.l + i * bw + bw * .15, w = bw * .7, top = y(d.ci ? d.ci[1] : d.v);
+    g += `<rect x="${x}" y="${y(d.v)}" width="${w}" height="${Math.max(2, H - m.b - y(d.v))}" rx="4" fill="${d.w || "#1d4e89"}" data-tip="${es(d.tip || `<b>${d.l}</b><br>Nilai: ${nf(d.v)}`)}"/>`;
+    if (d.ci) g += `<line x1="${x + w / 2}" x2="${x + w / 2}" y1="${y(d.ci[0])}" y2="${top}" stroke="currentColor" stroke-width="1.6" opacity=".7"/><line x1="${x + w * .3}" x2="${x + w * .7}" y1="${top}" y2="${top}" stroke="currentColor" stroke-width="1.6" opacity=".7"/>`;
+    g += `<text x="${x + w / 2}" y="${top - 6}" text-anchor="middle" font-size="${n > 16 ? 10 : 12}" font-weight="800" opacity=".85" pointer-events="none">${es(d.t ?? rbk(d.v)).replace(" ", " ")}</text>
+      <text x="${x + w / 2}" y="${H - m.b + 16}" font-size="${n > 16 ? 11 : 12.5}" text-anchor="middle" opacity=".75">${es(d.l)}</text>`; });
+  if (o.rata != null) g += `<line x1="${m.l}" x2="${W - m.r}" y1="${y(o.rata)}" y2="${y(o.rata)}" stroke="${NAVY}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(m.l + 2, y(o.rata) - 24, o.rataT || "rata-rata " + rbk(o.rata), NAVY, "#fff", 11)[0]}`;
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "grafik batang")}">${g}</svg>`;
 }
-function hbatang(data, o = {}) { /* horizontal, nilai bisa negatif/rasio */
-  const W = o.w || 640, rh = 22, H = data.length * rh + 26, m = {l: o.ml || 210, r: 50}, maks = o.maks || Math.max(...data.map(d => Math.abs(d.v)), 1e-9), x0 = o.nol ?? 0;
-  const x = v => m.l + (W - m.l - m.r) * (v - Math.min(0, x0)) / (maks - Math.min(0, x0));
-  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "grafik")}">
-    ${o.garis != null ? `<line x1="${x(o.garis)}" x2="${x(o.garis)}" y1="0" y2="${H - 20}" stroke="currentColor" stroke-dasharray="3 3" opacity=".5"/>` : ""}
-    ${data.map((d, i) => { const a = x(Math.min(d.v, o.garis ?? 0)), b = x(Math.max(d.v, o.garis ?? 0));
-      return `<text x="${m.l - 8}" y="${i * rh + 15}" font-size="11" text-anchor="end">${es(d.l)}</text>
-      <rect x="${a}" y="${i * rh + 4}" width="${Math.max(1, b - a)}" height="${rh - 8}" fill="${d.w || "var(--brand2,#3f5fa0)"}" data-tip="${es(d.tip || "")}"/>
-      ${d.ci ? `<line x1="${x(d.ci[0])}" x2="${x(d.ci[1])}" y1="${i * rh + 11}" y2="${i * rh + 11}" stroke="currentColor" stroke-width="1.4"/>` : ""}
-      <text x="${b + 4}" y="${i * rh + 15}" font-size="10.5" opacity=".85">${es(d.t ?? nf(d.v, 2))}</text>`; }).join("")}
-  </svg>`;
+function hbatang(data, o = {}) { /* horizontal; data [{l, v, w, t, tip}]; o.garis = acuan (garis putus + pil) */
+  const W = 940, rh = 34, L = o.ml || 260, T = o.garis != null ? 30 : 0, H = T + data.length * rh + 6, g0 = o.garis ?? 0, maks = o.maks || Math.max(...data.map(d => d.v), g0, 1e-9), X = v => L + (W - L - 150) * v / maks;
+  let g = o.garis != null ? `<line x1="${X(g0)}" x2="${X(g0)}" y1="${T - 6}" y2="${H}" stroke="${NAVY}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(X(g0) - 30, 0, o.garisT || "acuan", NAVY, "#fff", 11)[0]}` : "";
+  data.forEach((d, i) => { const y = T + i * rh, a = X(Math.min(d.v, g0)), b = X(Math.max(d.v, g0)), w = d.w || "#1d4e89";
+    g += `<text x="${L - 10}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${es(d.l)}</text>
+      <rect x="${a}" y="${y + 7}" width="${Math.max(2, b - a)}" height="${rh - 14}" rx="4" fill="${w}" data-tip="${es(d.tip || `<b>${d.l}</b><br>Nilai: ${d.t ?? nf(d.v, 2)}`)}"/>
+      ${pil(b + 8, y + 7, d.t ?? nf(d.v, 2), w, "#fff", 12.5)[0]}`; });
+  return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "grafik")}">${g}</svg>`;
 }
-function garisK(series, o = {}) { /* series [{n, xy:[[x,y]], w}] */
+function garisK(series, o = {}) { /* series [{xy:[[x,y]], w}] */
   const W = o.w || 300, H = o.h || 150, m = {l: 38, r: 8, t: 8, b: 26};
   const xs = series.flatMap(s => s.xy.map(p => p[0])), ys = series.flatMap(s => s.xy.map(p => p[1]));
   const x0 = Math.min(...xs), x1 = Math.max(...xs), y0 = o.y0 ?? Math.min(...ys), y1 = Math.max(...ys);
   const X = v => m.l + (W - m.l - m.r) * (v - x0) / ((x1 - x0) || 1), Y = v => H - m.b - (H - m.t - m.b) * (v - y0) / ((y1 - y0) || 1);
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "kurva")}">
-    <line x1="${m.l}" x2="${W - m.r}" y1="${H - m.b}" y2="${H - m.b}" stroke="currentColor" opacity=".3"/>
+    ${[y0, (y0 + y1) / 2, y1].map(v => `<line x1="${m.l}" x2="${W - m.r}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".08"/>`).join("")}
     <text x="${m.l - 4}" y="${Y(y1) + 4}" font-size="9.5" text-anchor="end" opacity=".7">${o.fy ? o.fy(y1) : nf(y1, 2)}</text><text x="${m.l - 4}" y="${Y(y0) + 4}" font-size="9.5" text-anchor="end" opacity=".7">${o.fy ? o.fy(y0) : nf(y0, 2)}</text>
     <text x="${m.l}" y="${H - 8}" font-size="9.5" opacity=".7">${nf(x0, 1)}</text><text x="${W - m.r}" y="${H - 8}" font-size="9.5" text-anchor="end" opacity=".7">${nf(x1, 1)}</text>
     <text x="${(W + m.l) / 2}" y="${H - 8}" font-size="10" text-anchor="middle">${es(o.xl || "")}</text>
-    ${series.map(s => `<polyline fill="none" stroke="${s.w || "var(--bad,#c9503a)"}" stroke-width="2" points="${s.xy.map(p => X(p[0]) + "," + Y(p[1])).join(" ")}"/>`).join("")}
+    ${series.map(s => `<polyline fill="none" stroke="${s.w || "#c9503a"}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" points="${s.xy.map(p => X(p[0]) + "," + Y(p[1])).join(" ")}"/>`).join("")}
   </svg>`;
 }
+const chip = (k, v) => `<span class="ct-chip">${v == null ? "" : `<b>${v}</b>`}${k}</span>`;
 
 /* ---------------- peta ---------------- */
 function peta(el, pusat, zoom) {
@@ -90,8 +96,10 @@ const Cerita = {
       opsional("data/sebaran_kasus.json"), opsional("data/model_sebaran.json")]);
     D.siap = true;
   },
-  bab(no, id, judul, isi, catatan) {
-    return `<section class="ct-bab" id="ct-${id}"><div class="ct-no">Bab ${no}</div><h2>${judul}</h2>${isi}${catatan ? `<p class="ct-cat">${catatan}</p>` : ""}</section>`;
+  bab(no, id, judul, isi, {leg, sumber} = {}) {
+    /* format kartu Insight: pita bab + judul satu kalimat, badan, kaki berisi legenda (tengah) dan sumber (miring) */
+    const lg = (leg || []).map(([w, n]) => `<span><i style="${/[:;]/.test(w) ? w : "background:" + w}"></i>${n}</span>`).join("");
+    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><span class="ex-ey">Bab ${no}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
   },
   async buka(el) {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;
@@ -112,75 +120,69 @@ const Cerita = {
     const lebih = T.tahun.filter((y, i) => y < 2026 && T.nasional[i] > n26);
     const awal = M.urutan.map(p => M.prov[p]).filter(o => o.selisih_hari != null);
     const lebihAwal = awal.filter(o => o.selisih_hari < 0).length;
-    return `<header class="ct-hero"><div><p class="ct-kicker">Cerita data · NASA FIRMS 2002–2026, ERA5, 12 musim VIIRS</p>
-      <h1>Dari mana mulai, ke mana menyebar</h1>
-      <p>Dua puluh lima tahun titik panas, musim 2026 hari demi hari, dan model yang dilatih dari ribuan kebakaran lalu untuk menjawab satu pertanyaan: kalau besok ada titik api di sini, ke mana ia akan pergi?</p></div>
-      <div class="ct-angka">
-        <div><b>${nf(n26)}</b><span>titik MODIS 2026 s.d. ${es(this.D.c.dibuat)}${lebih.length ? `; hanya ${lebih.length} tahun sejak 2002 yang lebih banyak` : "; terbanyak sejak 2002"}</span></div>
-        <div><b>${lebihAwal} dari ${awal.length}</b><span>provinsi prioritas memulai musim 2026 lebih awal dari median 2015–2025</span></div>
-        <div><b>${pc(T.ulang_2026.sel_pernah)}</b><span>titik VIIRS 2026 jatuh di sel 375 m yang pernah terbakar 2015–2025</span></div>
-      </div></header>`;
+    /* pembuka bergaya kartu Insight: angka-angka utama masuk ke judul, tanpa kotak angka */
+    const hl = t => `<span class="hl">${t}</span>`;
+    return `<section class="ct-bab ex ct-buka"><header class="ex-hd"><span class="ex-ey">Cerita data</span><div class="ex-jd"><h3>Dari mana mulai, ke mana menyebar: ${hl(nf(n26) + " titik")} MODIS di 2026${lebih.length ? `, hanya ${lebih.length} tahun sejak 2002 yang lebih banyak` : ", terbanyak sejak 2002"}; ${hl(lebihAwal + " dari " + awal.length)} provinsi memulai musim lebih awal, dan ${hl(pc(T.ulang_2026.sel_pernah))} titik jatuh di tempat yang pernah terbakar</h3></div></header>
+      <footer class="ex-ft"><span></span><em>Sumber: NASA FIRMS 2002–2026, ERA5, 12 musim VIIRS</em></footer></section>`;
   },
 
   /* ---------- bab 1: 20 tahun ---------- */
   bab1() {
-    const T = this.D.tren, en = new Set(T.el_nino);
-    const data = T.tahun.map((y, i) => ({l: String(y).slice(2), v: T.nasional[i], w: y === 2026 ? "var(--bad,#c9503a)" : en.has(y) ? "#e58a45" : "var(--brand2,#3f5fa0)",
-      tip: `${y}: ${nf(T.nasional[i])} titik${en.has(y) ? " · El Niño" : ""}${y === 2026 ? " · belum selesai" : ""}`}));
+    const T = this.D.tren, en = new Set(T.el_nino), AVG = "#a9402f", BIASA = "#e58a45", INI = "#c9503a";
+    const lalu = T.tahun.map((y, i) => [y, T.nasional[i]]).filter(([y]) => y < 2026), rata = lalu.reduce((a, [, v]) => a + v, 0) / lalu.length;
+    const data = T.tahun.map((y, i) => ({l: String(y).slice(2), v: T.nasional[i], w: y === 2026 ? INI : en.has(y) ? AVG : BIASA,
+      tip: `<b>${y}</b>${en.has(y) ? " · tahun El Niño" : ""}${y === 2026 ? " · belum selesai" : ""}<br>Titik MODIS: ${nf(T.nasional[i])}`}));
     const pr = Object.entries(T.prov).filter(([k, o]) => o.prioritas);
     const rasio = pr.map(([k, o]) => o.rasio_el_nino).filter(Boolean).sort((a, b) => a - b), rmed = rasio[Math.floor(rasio.length / 2)];
     const top = [...pr].sort((a, b) => (b[1].rasio_el_nino || 0) - (a[1].rasio_el_nino || 0))[0];
-    const geser = pr.filter(([, o]) => o.geser_awal_hari_per_dekade != null);
-    const tabel = `<div class="ct-tw"><table><thead><tr><th>Provinsi</th><th>Tren titik/th</th><th>El Niño ÷ biasa</th><th>Awal musim bergeser</th><th>Akhir musim bergeser</th></tr></thead><tbody>
+    const sg = (v, p) => v == null ? "–" : `${v > 0 ? "+" : ""}${nf(v, 1)}${p != null && p < .05 ? "*" : ""}`;
+    const tabel = `<div class="ct-tw"><table><thead><tr><th>Provinsi</th><th>Tren titik/th</th><th>El Niño ÷ biasa</th><th>Awal musim (hari/dekade)</th><th>Akhir musim (hari/dekade)</th></tr></thead><tbody>
       ${pr.map(([k, o]) => `<tr><td>${es(o.nama)}</td><td>${o.tren_persen_per_tahun == null ? "–" : nf(o.tren_persen_per_tahun, 1) + "%"}${o.mk_p < .05 ? "*" : ""}</td><td>${o.rasio_el_nino == null ? "–" : nf(o.rasio_el_nino, 1) + "×"}</td>
-        <td>${o.geser_awal_hari_per_dekade == null ? "–" : (o.geser_awal_hari_per_dekade > 0 ? "+" : "") + nf(o.geser_awal_hari_per_dekade, 1) + " hari/dekade"}${o.geser_awal_p != null && o.geser_awal_p < .05 ? "*" : ""}</td>
-        <td>${o.geser_akhir_hari_per_dekade == null ? "–" : (o.geser_akhir_hari_per_dekade > 0 ? "+" : "") + nf(o.geser_akhir_hari_per_dekade, 1) + " hari/dekade"}${o.geser_akhir_p != null && o.geser_akhir_p < .05 ? "*" : ""}</td></tr>`).join("")}</tbody></table></div>`;
-    const porsiBesar = T.tahun_terbesar.map(y => { const p = Object.entries(T.porsi_prov[y] || {}).sort((a, b) => b[1] - a[1]).slice(0, 2); return `${y}: ${p.map(([k, v]) => `${nmP(k)} ${pc(v)}`).join(", ")}`; }).join(" · ");
+        <td>${sg(o.geser_awal_hari_per_dekade, o.geser_awal_p)}</td><td>${sg(o.geser_akhir_hari_per_dekade, o.geser_akhir_p)}</td></tr>`).join("")}</tbody></table></div><div class="ct-kecil">* signifikan (p &lt; 0,05)</div>`;
     const g = T.gambut_porsi_viirs, gEN = ["2015", "2019", "2023"].map(y => g[y]).filter(Boolean), gBi = ["2016", "2017", "2020", "2021", "2022", "2024", "2025"].map(y => g[y]).filter(Boolean);
-    const rata = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
-    return this.bab(1, "tren", `Tahun El Niño membakar ${nf(rmed, 1)} kali lipat tahun biasa, dan 2026 sudah masuk golongan itu`,
-      `<p class="ct-lead">Jumlah titik MODIS per tahun, 9 provinsi prioritas dan provinsi lain. Oranye = tahun El Niño (ONI Sep–Nov ≥ 0,5), merah = 2026 (belum selesai).</p>
-      ${batang(data, {label: "titik MODIS per tahun", h: 230})}
-      <div class="ct-dua"><div><h3>Lahan gambut menentukan tahun besar</h3><p>Di tahun El Niño (2015, 2019, 2023) rata-rata ${pc(rata(gEN))} titik VIIRS jatuh di gambut, di tahun biasa ${pc(rata(gBi))}; 2026: ${pc(g["2026"])}. Rasio El Niño terbesar: ${es(top[1].nama)} (${nf(top[1].rasio_el_nino, 1)}×).</p>
-        <h3>Siapa yang menyumbang tahun besar</h3><p class="ct-kecil">${es(porsiBesar)}</p></div>
-      <div><h3>Tempat yang terbakar hampir tiap tahun</h3><ol class="ct-ol">${T.keberulangan.slice(0, 8).map(h => `<li>${es(h.kab)} (${es(nmP(h.prov))}): ${h.tahun_terbakar} dari 24 tahun, rata-rata ${nf(h.rata_titik)} titik/th</li>`).join("")}</ol></div></div>
+    const rt = xs => xs.reduce((a, b) => a + b, 0) / xs.length;
+    const besar = T.tahun_terbesar.map(y => { const p = Object.entries(T.porsi_prov[y] || {}).sort((a, b) => b[1] - a[1]).slice(0, 2); return chip(p.map(([k, v]) => `${es(nmP(k))} ${pc(v)}`).join(" · "), y); }).join("");
+    return this.bab(1, "tren", `Tahun El Niño membakar ${hl(nf(rmed, 1) + " kali lipat")} tahun biasa, dan 2026 sudah masuk golongan itu`,
+      `${batang(data, {label: "titik MODIS per tahun", rata})}
+      <div class="ct-dua"><div><div class="ct-sub">Titik VIIRS di lahan gambut</div><div class="ct-chips">${chip("tahun El Niño", pc(rt(gEN)))}${chip("tahun biasa", pc(rt(gBi)))}${chip("2026", pc(g["2026"]))}${chip("rasio El Niño terbesar: " + es(top[1].nama), nf(top[1].rasio_el_nino, 1) + "×")}</div>
+        <div class="ct-sub">Penyumbang terbesar tahun-tahun besar</div><div class="ct-chips">${besar}</div></div>
+      <div><div class="ct-sub">Terbakar hampir tiap tahun</div><ol class="ct-rank">${T.keberulangan.slice(0, 8).map((h, i) => `<li><i>${i + 1}</i><span>${es(h.kab)} <small>${es(nmP(h.prov))}</small></span><b data-tip="${es(`<b>${h.kab}</b> · ${nmP(h.prov)}<br>Tahun terbakar: ${h.tahun_terbakar} dari 24<br>Rata-rata: ${nf(h.rata_titik)} titik/th`)}">${h.tahun_terbakar}/24 th</b></li>`).join("")}</ol></div></div>
       ${tabel}`,
-      `Tren = kemiringan Theil–Sen jumlah titik 2002–2025 (log); * = Mann–Kendall p < 0,05. Pergeseran awal/akhir musim memakai definisi yang sama dengan bab 2 pada MODIS. Sebagian penurunan titik MODIS setelah ~2020 bisa berasal dari orbit Terra/Aqua yang bergeser (jam lintas berubah), bukan api yang berkurang; VIIRS 2015–2025 menunjukkan arah yang sama tetapi lebih pendek. ${es(T.catatan)}`);
+      {leg: [[AVG, "tahun El Niño"], [BIASA, "tahun biasa"], [INI, "2026 (belum selesai)"]], sumber: "NASA FIRMS MODIS 2002–2026, VIIRS 2015–2026"});
   },
 
   /* ---------- bab 2: musim 2026 ---------- */
   bab2() {
     const M = this.D.musim, ur = M.urutan.map(p => M.prov[p]);
     const pertama = ur[0], cepat = ur.filter(o => o.selisih_hari != null).sort((a, b) => a.selisih_hari - b.selisih_hari)[0];
-    const W = 640, H = 26 * ur.length + 30, x0 = 150, x1 = 630, d0 = 150, d1 = 290, X = d => x0 + (x1 - x0) * (d - d0) / (d1 - d0);
-    const doy = s => s ? Math.round((Date.parse("2026 " + s.replace("Aug", "Aug").replace("Agu", "Aug")) - Date.UTC(2026, 0, 1)) / 864e5) : null;
+    const W = 940, rh = 34, H = rh * ur.length + 40, x0 = 200, x1 = W - 250, d0 = 150, d1 = 290, X = d => x0 + (x1 - x0) * (d - d0) / (d1 - d0);
     const isoDoy = s => s ? Math.round((Date.parse(s) - Date.UTC(2026, 0, 1)) / 864e5) : null;
-    const med = o => { const ys = Object.values(o.per_tahun || {}).map(v => v.awal).filter(Boolean); return o.selisih_hari != null ? isoDoy(o.awal_2026_iso) - o.selisih_hari : null; };
-    const svg = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Awal musim 2026 dibanding median">
-      ${[160, 182, 213, 244, 274].map(d => `<line x1="${X(d)}" x2="${X(d)}" y1="0" y2="${H - 22}" stroke="currentColor" opacity=".1"/><text x="${X(d)}" y="${H - 6}" font-size="10" text-anchor="middle" opacity=".7">${hariKe(d)}</text>`).join("")}
-      ${ur.map((o, i) => { const a = isoDoy(o.awal_2026_iso), m = med(o), y = 18 + i * 26;
-        return `<text x="${x0 - 8}" y="${y + 4}" font-size="11.5" text-anchor="end">${es(o.nama)}</text>
-          ${m != null ? `<line x1="${X(m)}" x2="${X(a)}" y1="${y}" y2="${y}" stroke="currentColor" opacity=".35"/><circle cx="${X(m)}" cy="${y}" r="4.5" fill="none" stroke="currentColor" opacity=".6" data-tip="median 2015–2025: ${hariKe(m)}"/>` : ""}
-          <circle cx="${X(a)}" cy="${y}" r="6" fill="${WP[M.urutan[i]] || "var(--bad)"}" data-tip="${es(o.nama)} 2026: ${es(o.awal_2026)}${o.selisih_hari != null ? ` (${Math.abs(o.selisih_hari)} hari ${o.selisih_hari < 0 ? "lebih awal" : "lebih lambat"})` : ""}"/>`; }).join("")}</svg>`;
+    const med = o => o.selisih_hari != null ? isoDoy(o.awal_2026_iso) - o.selisih_hari : null;
+    let g = [160, 182, 213, 244, 274].map(d => `<line x1="${X(d)}" x2="${X(d)}" y1="0" y2="${H - 28}" stroke="currentColor" opacity=".08"/><text x="${X(d)}" y="${H - 10}" font-size="11" text-anchor="middle" opacity=".6">${hariKe(d)}</text>`).join("");
+    ur.forEach((o, i) => { const a = isoDoy(o.awal_2026_iso), m = med(o), y = 6 + i * rh + rh / 2, awal = o.selisih_hari != null && o.selisih_hari < 0, w = o.selisih_hari == null ? "#8a94a6" : awal ? "#c9503a" : "#2b8c86";
+      const tx = o.selisih_hari == null ? o.awal_2026 : `${Math.abs(o.selisih_hari)} hr ${awal ? "lebih awal" : "lebih lambat"}`;
+      g += `<text x="${x0 - 12}" y="${y + 4}" font-size="13" font-weight="600" text-anchor="end">${es(o.nama)}</text>
+        ${m != null ? `<line x1="${X(m)}" x2="${X(a)}" y1="${y}" y2="${y}" stroke="${w}" stroke-width="3" stroke-linecap="round" opacity=".45"/><circle cx="${X(m)}" cy="${y}" r="5.5" fill="var(--card,#fff)" stroke="currentColor" stroke-width="2" opacity=".7" data-tip="${es(`<b>${o.nama}</b> · median 2015–2025<br>Awal musim: ${hariKe(m)}`)}"/>` : ""}
+        <circle cx="${X(a)}" cy="${y}" r="7" fill="${WP[M.urutan[i]] || "#c9503a"}" data-tip="${es(`<b>${o.nama}</b> · musim 2026<br>Awal musim: ${o.awal_2026}${o.selisih_hari != null ? `<br>Selisih: ${Math.abs(o.selisih_hari)} hari ${awal ? "lebih awal" : "lebih lambat"}` : ""}`)}"/>
+        ${pil(Math.max(X(a), m != null ? X(m) : 0) + 14, y - 10, o.awal_2026 + (o.selisih_hari != null ? " · " + tx : ""), w, "#fff", 11.5)[0]}`; });
     const kompleks = ur.flatMap(o => (o.pertama || []).slice(0, 1).map(e => ({...e, prov: o.nama}))).sort((a, b) => a.t0 < b.t0 ? -1 : 1);
-    return this.bab(2, "musim", `Musim 2026 dimulai di ${es(pertama.nama)} pada ${es(pertama.awal_2026)}; ${es(cepat.nama)} paling maju, ${Math.abs(cepat.selisih_hari)} hari lebih awal dari biasanya`,
-      `<p class="ct-lead">Titik bulat = hari pertama jumlah titik VIIRS 7 hari bertahan di atas 2× median 2015–2025 selama ≥ 14 hari; lingkaran kosong = median tahun 2015–2025.</p>${svg}
+    return this.bab(2, "musim", `Musim 2026 dimulai di ${es(pertama.nama)} pada ${hl(es(pertama.awal_2026))}; ${es(cepat.nama)} paling maju, ${hl(Math.abs(cepat.selisih_hari) + " hari")} lebih awal dari biasanya`,
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Awal musim 2026 dibanding median">${g}</svg>
+      <div class="ct-sub">Kompleks besar pertama tiap provinsi</div><div class="ct-chips">${kompleks.map(e => chip(`${es(e.prov)} · ${es(e.kab || "")} · ${tglID(e.t0)}`, nf(e.ha) + " ha")).join("")}</div>
       <div class="ct-peta" data-peta="musim"></div>
-      <div class="ct-kontrol"><button class="ct-btn" data-aksi="putar-musim">▶ Putar musim</button><input type="range" min="150" max="290" value="290" data-ubah="hariMusim" aria-label="Hari"><output id="ct-hariMusim">${hariKe(290)}</output></div>
-      <p class="ct-kecil">Sel 5 km (≥ 3 titik) yang pertama terbakar sejak Juni, diwarnai menurut hari pertamanya: kuning = awal musim, merah tua = baru menyala. Pembakaran sebelum Juni tidak ditampilkan. Kompleks besar pertama tiap provinsi: ${kompleks.map(e => `${es(e.prov)} — ${es(e.kab || "")} ${tglID(e.t0)} (${nf(e.ha)} ha)`).join("; ")}.</p>`,
-      `${es(M.catatan)} Celah data FIRMS 8 Mei–1 Jun 2026: rangkaian 14 hari tidak boleh melewatinya. ${es(M.narasi)}`);
+      <div class="ct-kontrol"><button class="ct-btn" data-aksi="putar-musim">▶ Putar musim</button><input type="range" min="150" max="290" value="290" data-ubah="hariMusim" aria-label="Hari"><output id="ct-hariMusim">${hariKe(290)}</output></div>`,
+      {leg: [["background:#c9503a;border-radius:50%", "awal musim 2026"], ["background:none;border:2px solid currentColor;border-radius:50%", "median 2015–2025"], ["#fde7a7", "sel awal musim"], ["#5c0f1f", "sel baru menyala"]], sumber: "NASA FIRMS VIIRS 2015–2026"});
   },
 
   /* ---------- bab 3: cara menyebar ---------- */
   bab3() {
     const R = this.D.c.replay, r = R[this.st.replay];
     const hariMed = [...R].map(x => x.hari.length).sort((a, b) => a - b)[Math.floor(R.length / 2)];
-    return this.bab(3, "sebar", `Peristiwa terbesar terus bertambah luas selama ${hariMed} hari (median) dan tumbuh dari tepi ke tepi, bukan satu garis api yang melaju`,
-      `<p class="ct-lead">Ulang tayang peristiwa terbesar 2026 (dan pembanding 2015/2019/2023). Warna = hari terdeteksi; bintang = deteksi pertama; panah = pergeseran pusat sel baru hari itu.</p>
-      <div class="ct-kontrol"><select data-ubah="replay" aria-label="Peristiwa">${R.map((x, i) => `<option value="${i}" ${i === this.st.replay ? "selected" : ""}>${es(x.kab || nmP(x.prov))} · ${tglID(x.t0)} · ${nf(x.ha)} ha</option>`).join("")}</select>
+    return this.bab(3, "sebar", `Peristiwa terbesar terus bertambah luas selama ${hl(hariMed + " hari")} (median) dan tumbuh dari tepi ke tepi, bukan satu garis api yang melaju`,
+      `<div class="ct-kontrol"><select data-ubah="replay" aria-label="Peristiwa">${R.map((x, i) => `<option value="${i}" ${i === this.st.replay ? "selected" : ""}>${es(x.kab || nmP(x.prov))} · ${tglID(x.t0)} · ${nf(x.ha)} ha</option>`).join("")}</select>
         <button class="ct-btn" data-aksi="putar-sebar">▶ Putar</button><input type="range" min="1" max="${r.hari.length}" value="${r.hari.length}" data-ubah="hariRe" aria-label="Hari ke"><output id="ct-hariRe"></output></div>
-      <div class="ct-peta" data-peta="sebar"></div><div id="ct-sebarInfo" class="ct-kecil"></div>`,
-      "Perimeter = sel 375 m yang pernah memuat titik VIIRS S-NPP (≈ 2 lintasan sehari). Awan dan asap tebal menyembunyikan api, jadi hari tanpa titik belum tentu hari tanpa api; sel yang terbakar tanpa terdeteksi tidak muncul.");
+      <div class="ct-peta" data-peta="sebar"></div><div id="ct-sebarInfo" class="ct-chips"></div>`,
+      {leg: [[HARI[0], "hari-hari awal"], [HARI[3], "pertengahan"], [HARI[5], "hari-hari akhir"], ["background:#fff;border:3px solid #1d1d1d;border-radius:50%", "deteksi pertama"]], sumber: "NASA FIRMS VIIRS S-NPP (sel 375 m)"});
   },
   infoSebar() {
     const r = this.D.c.replay[this.st.replay], n = Math.min(this.st.hariRe, r.hari.length), h = r.hari.slice(0, n);
@@ -188,48 +190,44 @@ const Cerita = {
     const mata = ["U", "TL", "T", "Tg", "S", "BD", "B", "BL"], ke = d => mata[Math.round(d / 45) % 8];
     const out = $q("#ct-sebarInfo", this.el); if (!out) return;
     $q("#ct-hariRe", this.el).textContent = `hari ${n} · ${tglID(h[n - 1].tgl)}`;
-    out.innerHTML = `${es(r.kab || "")}, ${es(nmP(r.prov))}. Dimulai ${tglID(r.t0)} dari ${r.hari[0].sel.length} sel; sampai hari ke-${n}: ${nf(sel * 14.06)} ha (${sel} sel). Arah pergeseran harian: ${arah.slice(-8).map(x => ke(x.arah)).join(" → ") || "–"}.`;
+    out.innerHTML = chip(`${es(r.kab || "")}, ${es(nmP(r.prov))}`, tglID(r.t0)) + chip(`luas sampai hari ke-${n} (${sel} sel)`, nf(sel * 14.06) + " ha") + chip("sel awal", r.hari[0].sel.length) + chip("arah pergeseran harian", arah.slice(-6).map(x => ke(x.arah)).join(" → ") || "–");
   },
 
   /* ---------- bab 4: pendorong ---------- */
   bab4() {
     const P = this.D.c.angka.pendorong;
-    if (!P) return this.bab(4, "dorong", "Pendorong penjalaran", `<p class="ct-lead">Analisis pendorong belum dijalankan.</p>`);
+    if (!P) return "";
     const K = P.kelas, r = (f, i) => K[f]?.tabel?.[i];
     const pick = [["gambut", 1, "Di gambut (vs mineral)"], ["malam", 1, "Pertama terlihat malam"], ["n0", 3, "≥ 5 sel di lintasan pertama (vs 1)"], ["frp0", 4, "FRP awal ≥ 50 MW (vs < 5)"],
       ["dc", K.dc?.tabel?.length - 1, "DC tertinggi (vs < 100)"], ["hujan24", 2, "Hujan 5–20 mm 24 jam ke depan (vs 0)"], ["rh_min", 3, "RH minimum ≥ 60% (vs < 40%)"], ["ws", 2, "Angin 15–20 km/jam (vs < 10)"],
       ["jalan_km", 3, "≥ 10 km dari jalan (vs < 1)"], ["desa_km", 3, "≥ 6 km dari desa (vs < 1)"], ["kanal_km", 3, "Kanal ≥ 3 km per sel (vs tanpa)"], ["bekas", 1, "Bekas terbakar 1–3 th (vs belum)"],
       ["lereng", 3, "Lereng ≥ 8% (vs < 1%)"], ["oni", 3, "El Niño ≥ 1 (vs La Niña)"]].filter(([f, i]) => r(f, i)?.rasio != null);
-    const data = pick.map(([f, i, l]) => ({l, v: r(f, i).rasio, w: r(f, i).rasio >= 1 ? "var(--bad,#c9503a)" : "var(--ok,#5a9e74)", t: nf(r(f, i).rasio, 1) + "×",
-      tip: `${l}: ${pc(r(f, i).laju, 1)} lolos (n = ${nf(r(f, i).n)}); acuan ${pc(K[f].tabel[0].laju, 1)}`})).sort((a, b) => b.v - a.v);
-    const imp = P.gbdt.permutasi.slice(0, 10).map(x => ({l: x.nama, v: Math.max(0, x.turun_auc), t: nf(x.turun_auc, 3)}));
+    const data = pick.map(([f, i, l]) => ({l, v: r(f, i).rasio, w: r(f, i).rasio >= 1 ? "#c9503a" : "#2b8c86", t: nf(r(f, i).rasio, 1) + "×",
+      tip: `<b>${l}</b><br>Lolos: ${pc(r(f, i).laju, 1)} (n = ${nf(r(f, i).n)})<br>Acuan: ${pc(K[f].tabel[0].laju, 1)}`})).sort((a, b) => b.v - a.v);
+    const imp = P.gbdt.permutasi.slice(0, 10).map(x => ({l: x.nama, v: Math.max(0, x.turun_auc), t: nf(x.turun_auc, 3), w: "#1d4e89", tip: `<b>${x.nama}</b><br>Penurunan AUC: ${nf(x.turun_auc, 3)}`}));
     const pd = Object.entries(P.ketergantungan_parsial || {}).slice(0, 6).map(([f, xy]) => `<figure>${garisK([{xy}], {xl: P.gbdt.permutasi.find(x => x.fitur === f)?.nama || f, fy: v => pc(v, 1), w: 260, h: 140})}</figure>`).join("");
     const A = P.arah, angin = A.angin || [], kuat = angin.at(-1), lemah = angin[0];
-    const besar = data[0];
     const top3 = P.gbdt.permutasi.slice(0, 3).map(x => x.nama).join(", "), arahLemah = (A.semua?.bawah_angin_45 ?? 0) < .35;
-    return this.bab(4, "dorong", `Yang paling menentukan titik api membesar: ${es(top3)}. ${arahLemah ? `Arah angin hanya sedikit menjelaskan ke mana api bergeser (${pc(A.semua?.bawah_angin_45)} searah ±45°, acak 25%)` : `Api cenderung bergeser searah angin (${pc(A.semua?.bawah_angin_45)} dalam ±45°)`}`,
-      `<p class="ct-lead">Dari ${nf(P.n_peristiwa)} titik api baru di 9 provinsi (Jul–Nov, 2015–2026), ${nf(P.n_lolos)} (${pc(P.laju_dasar, 1)}) lolos menjadi ${es(P.definisi_lolos)}. Batang = berapa kali peluang lolos dibanding kelas acuan.</p>
-      ${hbatang(data, {label: "rasio peluang lolos", garis: 1, ml: 250, maks: Math.max(...data.map(d => d.v)) * 1.1})}
-      <div class="ct-dua"><div><h3>Seberapa penting tiap variabel (model boosting, uji 2023–2026)</h3>${hbatang(imp, {ml: 200, label: "penurunan AUC"})}
-        <p class="ct-kecil">Penurunan AUC bila nilai variabel diacak; AUC model ${nf(P.gbdt.auc_uji, 3)} (regresi logistik ${nf(P.logistik.auc_uji, 3)}).</p></div>
-      <div><h3>Arah dan jarak</h3><p>Pada hari api bergeser ≥ 750 m, ${pc(A.semua.bawah_angin_45)} pergeseran jatuh dalam ±45° arah angin bertiup (acak = 25%); pada pergeseran ≥ 2 km dengan angin ≥ 10 km/jam: ${pc(A.bersih?.bawah_angin_45)}.
-        ${kuat && lemah ? `Pada angin ${es(kuat.kelas)} km/jam api bertambah rata-rata ${nf(kuat.ha_rata)} ha/hari, ${nf(kuat.rasio_ha, 1)}× angin ${es(lemah.kelas)} km/jam.` : ""}</p>
-        ${angin.length ? batang(angin.map(a => ({l: a.kelas, v: a.ha_rata, tip: `angin ${a.kelas} km/jam: ${nf(a.ha_rata)} ha/hari rata-rata, ${pc(a.bawah_angin_45)} searah angin ±45° (n = ${nf(a.n)})`})), {h: 170, label: "ha per hari per kelas angin"}) : ""}
-        <p class="ct-kecil">Luas baru per hari (ha) per kelas kecepatan angin rata-rata 24 jam.</p></div></div>
-      <h3>Kurva ketergantungan parsial (peluang lolos, model boosting)</h3><div class="ct-pd">${pd}</div>`,
-      `Rasio dari tabel silang sederhana: variabel saling terkait (gambut terpencil juga jauh dari jalan), jadi baca bersama urutan kepentingan model. Kemiringan dari SRTM 90 m (OpenTopoData) pada sampel peristiwa. Ini hubungan, bukan sebab-akibat yang dibuktikan. Variabel terkuat, ${es(besar?.l || "")}, sebagian adalah ukuran api itu sendiri saat pertama terlihat.`);
+    return this.bab(4, "dorong", `Yang paling menentukan titik api membesar: ${es(top3)}. ${arahLemah ? `Arah angin hanya sedikit menjelaskan ke mana api bergeser (${hl(pc(A.semua?.bawah_angin_45))} searah ±45°, acak 25%)` : `Api cenderung bergeser searah angin (${hl(pc(A.semua?.bawah_angin_45))} dalam ±45°)`}`,
+      `<div class="ct-sub">Peluang titik baru lolos, dibanding kelas acuan (${nf(P.n_lolos)} dari ${nf(P.n_peristiwa)} titik, ${pc(P.laju_dasar, 1)})</div>
+      ${hbatang(data, {label: "rasio peluang lolos", garis: 1, garisT: "acuan 1×", ml: 300})}
+      <div class="ct-sub">Seberapa penting tiap variabel (penurunan AUC; AUC model ${nf(P.gbdt.auc_uji, 3)})</div>
+      ${hbatang(imp, {ml: 300, label: "penurunan AUC"})}
+      <div class="ct-sub">Arah dan jarak pergeseran</div><div class="ct-chips">${chip("searah angin ±45° (acak 25%), pergeseran ≥ 750 m", pc(A.semua.bawah_angin_45))}${A.bersih ? chip("pergeseran ≥ 2 km, angin ≥ 10 km/jam", pc(A.bersih.bawah_angin_45)) : ""}</div>
+      ${angin.length ? `<div class="ct-sub">Persentase pergeseran searah angin (±45°) per kelas kecepatan angin, km/jam</div>` + batang(angin.map(a => ({l: a.kelas, v: a.bawah_angin_45, w: "#e58a45", t: pc(a.bawah_angin_45), tip: `<b>Angin ${a.kelas} km/jam</b><br>Searah angin: ${pc(a.bawah_angin_45, 1)}<br>Pergeseran median: ${nf(a.median_m)} m<br>Sampel: ${nf(a.n)}`})), {h: 230, label: "searah angin per kelas angin", rata: .25, rataT: "acak 25%", fy: v => pc(v), maks: .4}) : ""}
+      <div class="ct-sub">Kurva ketergantungan parsial (peluang lolos)</div><div class="ct-pd">${pd}</div>`,
+      {leg: [["#c9503a", "menaikkan peluang"], ["#2b8c86", "menurunkan"], ["#1d4e89", "kepentingan model"], ["#e58a45", "searah angin"]], sumber: "NASA FIRMS VIIRS 2015–2026, ERA5, SRTM"});
   },
 
   /* ---------- bab 5: kalau besok ---------- */
   bab5() {
-    const M = this.D.model, K = M?.kinerja_uji;
+    const M = this.D.model;
     const hari = new Date().toISOString().slice(0, 10);
     return this.bab(5, "model", "Kalau besok ada titik di sini: ke mana ia menyebar, seberapa besar, apa yang terkena",
-      `<p class="ct-lead">Klik peta untuk menaruh titik api, pilih tanggal, lalu jalankan. Model memakai cuaca per jam Open-Meteo (30 hari lalu + 3 hari ke depan), peta gambut, kawasan, konsesi, kanal, jalan, desa, dan riwayat terbakar, lalu menjalankan 60 kemungkinan.</p>
-      <div class="ct-kontrol"><label>Tanggal <input type="date" value="${hari}" max="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}" id="ct-tgl"></label>
-        <label>Jam lokal <input type="number" min="0" max="23" value="14" id="ct-jam" style="width:60px"></label><button class="ct-btn" data-aksi="ramal" disabled id="ct-ramalBtn">Jalankan model</button><span id="ct-ramalSt" class="ct-kecil">Klik peta dulu.</span></div>
+      `<div class="ct-kontrol"><label>Tanggal <input type="date" value="${hari}" max="${new Date(Date.now() + 2 * 864e5).toISOString().slice(0, 10)}" id="ct-tgl"></label>
+        <label>Jam lokal <input type="number" min="0" max="23" value="14" id="ct-jam"></label><button class="ct-btn" data-aksi="ramal" disabled id="ct-ramalBtn">Jalankan model</button><span id="ct-ramalSt" class="ct-kecil">Klik peta dulu untuk menaruh titik api.</span></div>
       <div class="ct-peta tinggi" data-peta="model"></div><div id="ct-ramalHasil"></div>`,
-      M ? `Model data (gradient boosting ${M.pohon.length} pohon) dilatih pada 2015–2026; pada uji 2024–2026 (model 2015–2022) F1 sel baru 24 jam ${nf(K?.f1_24?.[0], 2)} (95%: ${nf(K?.f1_24?.[1], 2)}–${nf(K?.f1_24?.[2], 2)}), salah arah ${nf(K?.arah_24?.[0])}°, AUC lolos ${nf(K?.lepas_auc, 2)}. Peluang per jam = luas harian dibagi menurut ISI per jam, bukan pengamatan. Penduduk terpapar dihitung dari kepadatan rata-rata sel 0,25° (kasar).` : "Model belum tersedia.");
+      {leg: [["#fde7a7", "peluang rendah"], ["#ef9a4a", "sedang"], ["#6e1323", "tinggi"]], sumber: M ? "Open-Meteo, model sebaran data 2015–2026" : "model belum tersedia"});
   },
   async ramal() {
     const st = $q("#ct-ramalSt", this.el), out = $q("#ct-ramalHasil", this.el), b = $q("#ct-ramalBtn", this.el), [lon, lat] = this.titik;
@@ -247,13 +245,13 @@ const Cerita = {
       st.textContent = `Selesai dalam ${nf((performance.now() - t0) / 1000, 1)} detik.`;
       this.gambarRamal(r);
       const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"], ke = d => mata[Math.round(d / 45) % 8];
-      const lu = r.luas, k = r.kena;
-      out.innerHTML = `<div class="ct-kartu3">${lu.map((x, i) => `<div><span>${24 * (i + 1)} jam</span><b>${nf(x.p50)} ha</b><small>80% kemungkinan ${nf(x.p10)}–${nf(x.p90)} ha · rata-rata ${nf(x.rata)}</small></div>`).join("")}
-        <div><span>Peluang lolos (≥ ${nf((this.D.model.lepas_sel || 10) * 14)} ha dalam 72 jam)</span><b>${pc(r.p_lepas)}</b><small>${r.arah ? `arah utama ${ke(r.arah.deg)} (${r.arah.deg}°), pusat bergeser ${nf(r.arah.km, 1)} km` : "tidak ada arah dominan"}</small></div></div>
-        <p>Cuaca 24 jam pertama: angin ${nf(r.cuaca[0].ws, 1)} km/jam ke ${ke(r.cuaca[0].ke)}, RH minimum ${r.cuaca[0].rh_min}%, hujan ${nf(r.cuaca[0].hujan24, 1)} mm, FFMC ${nf(r.cuaca[0].ffmc, 1)}, DC ${nf(r.cuaca[0].dc)}, FWI ${nf(r.cuaca[0].fwi, 1)}.</p>
-        <h3>Yang terkena dalam 72 jam (harapan)</h3><ul class="ct-ol"><li>Gambut ${nf(k.gambut_ha)} ha, kawasan lindung/konservasi ${nf(k.lindung_ha)} ha, dari ${nf(k.ha_harapan)} ha harapan terbakar.</li>
-        <li>Sel bersinggungan dengan jalan: ${nf(k.sel_jalan)}; penduduk di area terbakar (kasar): ${k.jiwa == null ? "–" : nf(k.jiwa)} jiwa.</li>
-        <li>Desa dalam ±750 m dari sel berpeluang ≥ 10%: ${k.desa.length ? k.desa.slice(0, 10).map(d => `${es(d.nama)} (${pc(d.p)}, hari ke-${d.hari}, ${nf(d.km, 1)} km)`).join("; ") : "tidak ada"}.</li></ul>`;
+      const lu = r.luas, k = r.kena, c0 = r.cuaca[0];
+      const bar = lu.map((x, i) => ({l: `${24 * (i + 1)} jam`, v: x.p50, ci: [x.p10, x.p90], w: "#c9503a", t: nf(x.p50) + " ha", tip: `<b>${24 * (i + 1)} jam ke depan</b><br>Median: ${nf(x.p50)} ha<br>Rentang 80%: ${nf(x.p10)}–${nf(x.p90)} ha<br>Rata-rata: ${nf(x.rata)} ha`}));
+      out.innerHTML = `<div class="ct-sub">Luas terbakar (median dan rentang 80% dari 60 kemungkinan)</div>${batang(bar, {h: 240, label: "luas terbakar", fy: v => rbk(v) + " ha"})}
+        <div class="ct-chips">${chip(`peluang lolos (≥ ${nf((this.D.model.lepas_sel || 10) * 14)} ha dalam 72 jam)`, pc(r.p_lepas))}${chip(r.arah ? `arah utama ${ke(r.arah.deg)}, pusat bergeser ${nf(r.arah.km, 1)} km` : "tidak ada arah dominan")}</div>
+        <div class="ct-sub">Cuaca 24 jam pertama</div><div class="ct-chips">${chip("angin ke " + ke(c0.ke), nf(c0.ws, 1) + " km/jam")}${chip("RH minimum", c0.rh_min + "%")}${chip("hujan", nf(c0.hujan24, 1) + " mm")}${chip("FFMC", nf(c0.ffmc, 1))}${chip("DC", nf(c0.dc))}${chip("FWI", nf(c0.fwi, 1))}</div>
+        <div class="ct-sub">Yang terkena dalam 72 jam (harapan ${nf(k.ha_harapan)} ha)</div><div class="ct-chips">${chip("gambut", nf(k.gambut_ha) + " ha")}${chip("kawasan lindung/konservasi", nf(k.lindung_ha) + " ha")}${chip("sel bersinggungan dengan jalan", nf(k.sel_jalan))}${chip("penduduk di area terbakar (kasar)", k.jiwa == null ? "–" : nf(k.jiwa) + " jiwa")}</div>
+        ${k.desa.length ? `<div class="ct-sub">Desa dalam ±750 m dari sel berpeluang ≥ 10%</div><div class="ct-chips">${k.desa.slice(0, 10).map(d => chip(`${es(d.nama)} · hari ke-${d.hari} · ${nf(d.km, 1)} km`, pc(d.p))).join("")}</div>` : ""}`;
     } catch (e) { st.textContent = "Gagal: " + e.message; }
     b.disabled = false;
   },
@@ -265,23 +263,21 @@ const Cerita = {
     setSumber(m, "ramal-arah", fc(ar), [{id: "ramal-arah-l", type: "line", paint: {"line-color": "#111", "line-width": 5}}, {id: "ramal-arah", type: "line", paint: {"line-color": "#fff", "line-width": 2.5}}]);
   },
 
-  /* ---------- bab 6: uji pada kejadian lalu ---------- */
+  /* ---------- bab 6: uji pada kejadian lalu (disembunyikan bila berkas ujinya belum ada) ---------- */
   bab6() {
     const K = this.D.kasus;
-    if (!K) return this.bab(6, "uji", "Uji model pada kejadian lalu", `<p class="ct-lead">Pustaka uji-balik belum dibuat.</p>`);
-    const R = K.ringkasan, c = K.kasus[this.st.kasus];
-    const ci = x => x ? `${nf(x[0], 2)} (95%: ${nf(x[1], 2)}–${nf(x[2], 2)})` : "–";
-    return this.bab(6, "uji", `Diuji pada ${R.n} kejadian lalu: model menebak benar ${pc(R.lepas_akurasi?.[0])} titik yang akan lolos atau padam, tetapi bentuk perimeternya masih kasar`,
-      `<p class="ct-lead">Tiap kasus dimulai dari deteksi pertama saja, dengan cuaca hari itu dan model yang tidak pernah melihat tahun kasus. Kiri: yang dilihat satelit 72 jam kemudian; kanan: peluang ramalan.</p>
-      <div class="ct-kontrol"><select data-ubah="kasus" aria-label="Kasus">${K.kasus.map((x, i) => `<option value="${i}" ${i === this.st.kasus ? "selected" : ""}>${x.th} · ${es(x.nama_prov)} · ${x.kelas} · ${nf(x.ha_akhir)} ha</option>`).join("")}</select></div>
-      <div class="ct-dua rapat"><div><div class="ct-label">Teramati (VIIRS)</div><div class="ct-peta" data-peta="uji-obs"></div></div><div><div class="ct-label">Ramalan model (peluang 72 jam)</div><div class="ct-peta" data-peta="uji-pred"></div></div></div>
-      <div id="ct-ujiInfo" class="ct-kecil"></div>
-      <div class="ct-kartu3"><div><span>IoU 24 jam</span><b>${ci(R.iou_24)}</b><small>persistensi ${nf(R.iou_persistensi_24?.[0], 2)}</small></div><div><span>F1 sel baru 24 jam</span><b>${ci(R.f1_24)}</b><small>Sim hibrida ${nf(R.f1_hibrida_24?.[0], 2)}</small></div>
-        <div><span>Salah arah</span><b>${nf(R.arah_err?.[0])}°</b><small>bawah angin saja ${nf(R.arah_angin_err?.[0])}°</small></div><div><span>Luas 72 jam dalam rentang P10–P90</span><b>${pc(R.cakupan_72)}</b><small>ideal 80%</small></div></div>
+    if (!K) return "";
+    const R = K.ringkasan;
+    const ci = x => x ? `${nf(x[0], 2)} (${nf(x[1], 2)}–${nf(x[2], 2)})` : "–";
+    return this.bab(6, "uji", `Diuji pada ${hl(R.n + " kejadian")} lalu: model menebak benar ${hl(pc(R.lepas_akurasi?.[0]))} titik yang akan lolos atau padam, tetapi bentuk perimeternya masih kasar`,
+      `<div class="ct-kontrol"><select data-ubah="kasus" aria-label="Kasus">${K.kasus.map((x, i) => `<option value="${i}" ${i === this.st.kasus ? "selected" : ""}>${x.th} · ${es(x.nama_prov)} · ${x.kelas} · ${nf(x.ha_akhir)} ha</option>`).join("")}</select></div>
+      <div class="ct-dua rapat"><div><div class="ct-sub">Teramati (VIIRS)</div><div class="ct-peta" data-peta="uji-obs"></div></div><div><div class="ct-sub">Ramalan model (peluang 72 jam)</div><div class="ct-peta" data-peta="uji-pred"></div></div></div>
+      <div id="ct-ujiInfo" class="ct-chips"></div>
+      <div class="ct-chips">${chip("IoU 24 jam (95%)", ci(R.iou_24))}${chip("F1 sel baru 24 jam", ci(R.f1_24))}${chip("salah arah", nf(R.arah_err?.[0]) + "°")}${chip("luas 72 jam dalam P10–P90 (ideal 80%)", pc(R.cakupan_72))}</div>
       <div class="ct-tw tinggi"><table><thead><tr><th>Th</th><th>Provinsi</th><th>Kelas</th><th>Gambut</th><th>ha awal</th><th>Teramati 72 j</th><th>Ramalan 72 j (P10–P90)</th><th>IoU 24/72</th><th>Arah</th><th>P(lolos)</th><th>Benar?</th></tr></thead><tbody>
         ${K.kasus.map((x, i) => `<tr data-kasus="${i}" class="${i === this.st.kasus ? "on" : ""}"><td>${x.th}</td><td>${es(x.nama_prov)}</td><td>${x.kelas}</td><td>${x.gambut ? "ya" : "–"}</td><td>${nf(x.ha_awal)}</td><td>${nf(x.obs_ha[2])}</td>
           <td>${nf(x.pred_ha[2][1])} (${nf(x.pred_ha[2][0])}–${nf(x.pred_ha[2][2])})</td><td>${nf(x.iou[0], 2)} / ${nf(x.iou[2], 2)}</td><td>${x.arah_err == null ? "–" : nf(x.arah_err) + "°"}</td><td>${pc(x.p_lepas)}</td><td>${x.lepas_benar ? "✓" : "✗"}</td></tr>`).join("")}</tbody></table></div>`,
-      `${es(K.aturan)} Kasus 2023 dinilai dengan model yang hiperparameternya disetel di 2023 (bukan uji murni).`);
+      {leg: [["#1d1d1d", "deteksi awal"], [HARI[1], "hari 1"], [HARI[5], "hari 3"]], sumber: "NASA FIRMS VIIRS, Open-Meteo, model sebaran data"});
   },
   gambarKasus() {
     const K = this.D.kasus; if (!K) return; const c = K.kasus[this.st.kasus], s = c.sel;
@@ -292,27 +288,27 @@ const Cerita = {
     for (const [id, data, paint] of [["uji-obs", obs, isiO], ["uji-pred", pred, isiP]]) { const m = this.peta[id]; if (!m) continue;
       m.siap.then(() => { setSumber(m, "k", fc(data), [{id: "k", type: "fill", paint}]); m.jumpTo({center: [c.lon0, c.lat0], zoom: c.kelas === "besar" ? 10.5 : 12}); }); }
     const info = $q("#ct-ujiInfo", this.el);
-    if (info) info.innerHTML = `${c.th} ${es(c.nama_prov)}, mulai ${tglID(c.t0)} (${c.gambut ? "gambut" : "tanah mineral"}). Cuaca: angin ${nf(c.cuaca.ws, 1)} km/jam, RH min ${c.cuaca.rh_min}%, FFMC ${nf(c.cuaca.ffmc, 1)}, DC ${nf(c.cuaca.dc)}, ${c.cuaca.hari_kering} hari tanpa hujan.
-      Teramati 24/48/72 jam: ${c.obs_ha.map(v => nf(v)).join(" / ")} ha; ramalan median ${c.pred_ha.map(v => nf(v[1])).join(" / ")} ha. IoU ${c.iou.map(v => nf(v, 2)).join(" / ")}, F1 ${c.f1.map(v => nf(v, 2)).join(" / ")}${c.arah_err != null ? `, salah arah ${nf(c.arah_err)}°` : ""}. P(lolos) ${pc(c.p_lepas)} → ${c.lepas ? "memang lolos" : "memang tetap kecil"} ${c.lepas_benar ? "(benar)" : "(salah)"}. Model: ${c.model === "lipat" ? "tidak melihat tahun ini (lipatan)" : "2015–2022"}.`;
+    if (info) info.innerHTML = chip(`${es(c.nama_prov)}, mulai ${tglID(c.t0)} (${c.gambut ? "gambut" : "mineral"})`, c.th) + chip(`angin ${nf(c.cuaca.ws, 1)} km/jam · RH min ${c.cuaca.rh_min}% · FFMC ${nf(c.cuaca.ffmc, 1)} · DC ${nf(c.cuaca.dc)} · ${c.cuaca.hari_kering} hari kering`)
+      + chip("teramati 24/48/72 jam", c.obs_ha.map(v => nf(v)).join(" / ") + " ha") + chip("ramalan median", c.pred_ha.map(v => nf(v[1])).join(" / ") + " ha") + chip(`P(lolos) → ${c.lepas ? "memang lolos" : "tetap kecil"} ${c.lepas_benar ? "(benar)" : "(salah)"}`, pc(c.p_lepas));
   },
 
   /* ---------- bab 7: kesimpulan ---------- */
   bab7() {
     const A = this.D.c.angka, P = A.pendorong, U = A.uji, K = this.D.kasus?.ringkasan, T = this.D.tren, kab = this.D.c.kab;
-    const g = U?.gbdt?.["24"], s = U?.sim?.["24"], h = U?.hibrida?.["24"], pers = U?.persistensi?.["24"];
+    const g = U?.gbdt?.["24"], s = U?.sim?.["24"], pers = U?.persistensi?.["24"];
     const poin = [];
-    if (P) { const gb = P.kelas.gambut.tabel; poin.push(`Titik di gambut ${nf(gb[1].rasio, 1)}× lebih mungkin lolos daripada di tanah mineral (${pc(gb[1].laju, 1)} vs ${pc(gb[0].laju, 1)}). Patroli dan pemadaman awal di gambut membayar paling besar.`);
-      const hu = P.kelas.hujan24.tabel; poin.push(`Hujan ≥ 5 mm dalam 24 jam memangkas peluang lolos menjadi ${nf(hu[2].rasio, 2)}× — jendela kering tanpa hujan adalah saat siaga tertinggi.`); }
-    if (g && s) poin.push(`Untuk 24 jam ke depan, model data mengenai sel baru dengan F1 ${nf(g.f1_mikro, 2)} (mikro) dibanding mesin fisika tanpa kalibrasi ${nf(s.f1_mikro, 2)}${h ? ` dan hibrida ${nf(h.f1_mikro, 2)}` : ""}; persistensi (tidak tumbuh) F1 ${nf(pers?.f1_mikro, 2)}. Peta peluang lebih tepat dipakai untuk "di mana bersiap" daripada garis api yang pasti.`);
-    if (K) poin.push(`Pada ${K.n} kejadian lalu, ramalan "akan lolos/tetap kecil" benar ${pc(K.lepas_akurasi?.[0])}; luas 72 jam jatuh dalam rentang P10–P90 pada ${pc(K.cakupan_72)} kasus.`);
-    poin.push(`${pc(T.ulang_2026.sel_pernah)} titik 2026 berada di lahan yang pernah terbakar; kabupaten dengan kebakaran besar (≥ 1.000 ha) terbanyak sejak 2015: ${kab.slice(0, 5).map(k => `${es(k.kab)} (${k.n})`).join(", ")}. Di sinilah regu, sekat kanal, dan stok air layak ditaruh sebelum musim.`);
-    return this.bab(7, "simpul", "Kesimpulan: siapkan diri di gambut yang pernah terbakar, sebelum hujan berhenti",
-      `<ol class="ct-simpul">${poin.map(p => `<li>${p}</li>`).join("")}</ol>
-      <h3>Di mana menempatkan regu (kabupaten dengan peristiwa ≥ 1.000 ha terbanyak 2015–2026)</h3>
-      ${hbatang(kab.slice(0, 12).map(k => ({l: `${k.kab} (${nmP(k.prov).replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.")})`, v: k.n, t: `${k.n} peristiwa · ${nf(k.ha)} ha`, w: WP[k.prov]})), {ml: 230, label: "peristiwa besar per kabupaten"})}
-      <h3>Batas yang perlu diingat</h3><ul class="ct-ol"><li>VIIRS S-NPP melihat ~2 kali sehari; ramalan per jam adalah pembagian, bukan pengamatan. Data geostasioner Himawari (10 menit) dibutuhkan untuk per jam sungguhan.</li>
-        <li>Titik panas ≠ perimeter: piksel 375 m melebihkan api kecil dan awan/asap menyembunyikan api besar.</li><li>Uji memakai cuaca reanalisis (seolah prakiraan sempurna); prakiraan sungguhan menurunkan ketepatan.</li>
-        <li>Sel yang dibakar sengaja untuk membuka lahan tidak bisa diramal oleh cuaca; model menangkapnya hanya lewat pola tempat & waktu.</li></ul>`);
+    if (P) { const gb = P.kelas.gambut.tabel; poin.push([nf(gb[1].rasio, 1) + "×", `Titik di gambut lebih mungkin lolos daripada di tanah mineral (${pc(gb[1].laju, 1)} vs ${pc(gb[0].laju, 1)}): patroli dan pemadaman awal di gambut paling berarti.`]);
+      const hu = P.kelas.hujan24.tabel; poin.push([nf(hu[2].rasio, 2) + "×", "Hujan ≥ 5 mm dalam 24 jam memangkas peluang lolos; jendela kering adalah saat siaga tertinggi."]); }
+    if (g && s) poin.push(["F1 " + nf(g.f1_mikro, 2), `Model data untuk sel baru 24 jam, dibanding mesin fisika tanpa kalibrasi (${nf(s.f1_mikro, 2)}) dan persistensi (${nf(pers?.f1_mikro, 2)}). Pakai peta peluang untuk "di mana bersiap", bukan garis api pasti.`]);
+    if (K) poin.push([pc(K.lepas_akurasi?.[0]), `Ramalan "lolos/tetap kecil" benar pada ${K.n} kejadian lalu; luas 72 jam masuk rentang P10–P90 pada ${pc(K.cakupan_72)} kasus.`]);
+    poin.push([pc(T.ulang_2026.sel_pernah), `Titik 2026 jatuh di lahan yang pernah terbakar. Taruh regu, sekat kanal, dan stok air di kabupaten dengan kebakaran besar terbanyak sejak 2015: ${kab.slice(0, 5).map(k => `${es(k.kab)} (${k.n})`).join(", ")}.`]);
+    const batas = ["Satelit melihat ~2 kali sehari: ramalan per jam adalah pembagian, bukan pengamatan", "Titik panas bukan perimeter: piksel 375 m melebihkan api kecil, awan dan asap menyembunyikan api besar", "Uji memakai cuaca reanalisis; prakiraan sungguhan menurunkan ketepatan", "Pembakaran sengaja untuk membuka lahan tidak bisa diramal cuaca"];
+    return this.bab(7, "simpul", `Kesimpulan: siapkan diri di ${hl("gambut yang pernah terbakar")}, sebelum hujan berhenti`,
+      `<ol class="ct-sim">${poin.map(([k, t]) => `<li><b>${es(k)}</b><span>${t}</span></li>`).join("")}</ol>
+      <div class="ct-sub">Di mana menempatkan regu: kabupaten dengan peristiwa ≥ 1.000 ha terbanyak, 2015–2026</div>
+      ${hbatang(kab.slice(0, 12).map(k => ({l: `${k.kab} (${nmP(k.prov).replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.")})`, v: k.n, t: `${k.n} peristiwa`, w: WP[k.prov], tip: `<b>${k.kab}</b> · ${nmP(k.prov)}<br>Peristiwa besar: ${k.n}<br>Luas: ${nf(k.ha)} ha`})), {ml: 300, label: "peristiwa besar per kabupaten"})}
+      <div class="ct-sub">Batas yang perlu diingat</div><div class="ct-chips">${batas.map(b => chip(b)).join("")}</div>`,
+      {leg: [["#c9503a", "Kalimantan Tengah"], ["#e58a45", "Sumatera Selatan"], ["#5f6fb0", "Kalimantan Barat"], ["#1d4e89", "Riau"]], sumber: "NASA FIRMS VIIRS, Open-Meteo, model sebaran data"});
   },
 
   /* ---------- peta per bab ---------- */
@@ -372,11 +368,12 @@ window.Cerita = Cerita;
 
 /* sambungan ke Insight (bila ada): kartu pembuka "Baca cerita" paling atas; cerita terbuka di tempat */
 if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.includes("cerita")) {
-  Insight.EX.unshift("cerita");
+  /* cerita di bawah kartu-kartu Insight, selebar penuh */
+  Insight.EX.push("cerita"); Insight.PENUH?.add("cerita");
+  /* langsung tampil semua (tanpa tombol "Baca cerita"): wadah dibuka begitu Insight selesai digambar */
   Insight.exCerita = function () {
-    return `<article class="ex ct-masuk"><h3>Dari mana mulai, ke mana menyebar: cerita 25 tahun karhutla dan model penjalaran api</h3>
-      <p class="sub">Tujuh bab: tren, musim 2026, ulang tayang, pendorong, model "kalau besok ada titik di X", uji pada kejadian lalu, kesimpulan.</p>
-      <button class="ct-btn" onclick="Cerita.buka(this.closest('[data-ex]'))">Baca cerita</button></article>`;
+    setTimeout(() => { const el = document.querySelector('#insight [data-ex="cerita"]'); if (el && !el.querySelector(".cerita")) Cerita.buka(el); }, 0);
+    return `<div class="ct-muat">Menyiapkan cerita…</div>`;
   };
 }
 })();

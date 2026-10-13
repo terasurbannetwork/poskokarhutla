@@ -24,6 +24,16 @@
         "8787"
       ],
       "port": 8787
+    },
+    {
+      "name": "publik",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-I",
+        "-c",
+        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/d36b1b34-f512-4677-a94f-bfae9874af70/scratchpad/web');sys.argv=['s','8793'];runpy.run_module('http.server',run_name='__main__')"
+      ],
+      "port": 8793
     }
   ]
 }

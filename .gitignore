@@ -31,3 +31,4 @@ public/data/citra.json
 
 # state lokal wrangler (D1 miniflare dll.)
 .wrangler/
+scripts/data/.cache/

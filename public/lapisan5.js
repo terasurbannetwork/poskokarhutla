@@ -25,9 +25,10 @@
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan");
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
-    const dasar = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Peta dasar");
-    const html = GRUP.map(([j, xs]) => `<details open><summary>${j}</summary>${xs.map(kotak).join("")}</details>`).join("");
-    dasar ? dasar.insertAdjacentHTML("beforebegin", html) : L.insertAdjacentHTML("beforeend", html);
+    /* grup "Akses" digabung ke "Infrastruktur" (permintaan pemilik 13 Okt 2026); grup lain tetap jadi grup sendiri */
+    const infra = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Infrastruktur");
+    GRUP.forEach(([j, xs]) => { const isi = xs.map(kotak).join("");
+      if (j === "Akses" && infra) infra.insertAdjacentHTML("beforeend", isi); else L.insertAdjacentHTML("beforeend", `<details open><summary>${j}</summary>${isi}</details>`); });
     if (!lahan) L.insertAdjacentHTML("beforeend", `<details open><summary>Lahan</summary>${LAHAN.map(kotak).join("")}</details>`);
   }
   const nyala = k => !!document.querySelector(`#lapis input[data-l="${k}"]:checked`);
@@ -143,10 +144,12 @@
     if (nyala("jalan")) h += `<div class="lbl" style="margin-top:8px">Jalan & sungai</div><div class="leg" style="margin-top:4px">${[[WARNA.merah, "Jalan nasional/primer"], [WARNA.oranye, "Sekunder"], [WARNA.kuning, "Tersier"], [WARNA.biru, "Sungai, rute perahu"]].map(([c, n]) => `<span><i class="sw" style="background:${c};height:3px"></i>${n}</span>`).join("")}<span>Jalan desa & jalan tanah tidak digambar, tetap dihitung di waktu tempuh regu</span></div>`;
     if (nyala("hilang")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#dc6c9c"></i>Hutan hilang 2021–2025 (makin pekat makin baru)</span></div>`;
     if (nyala("hilang_api")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:${WARNA.oranye}"></i>Hutan hilang akibat kebakaran 2015–2025</span></div>`;
-    if (nyala("satelit")) h += `<div class="leg" style="margin-top:8px"><span>Citra VIIRS NOAA-20 warna asli kemarin (NASA GIBS); asap tampak kelabu-cokelat, awan putih</span></div>`;
+    if (nyala("satelit")) h += `<div class="leg-cat"><i style="--w:#13324d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M3 3l5 5M16 16l5 5M9 12H3M21 12h-6M12 9V3M12 21v-6"/></svg></i><span><b>Citra satelit</b>Esri World Imagery (mosaik, bukan citra hari ini)</span></div>`;
     if (nyala("peringatan")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#dc6c9c"></i>Peringatan gangguan hutan 90 hari terakhir (GFW)</span></div>`;
     if (nyala("kanal") && C5.kanalST) h += `<div class="lbl" style="margin-top:8px">Kanal & parit (km per sel ± 2 km)</div><div class="legscale">${[1, 3, 8, 20, 40].map(v => `<i style="background:rgb(${gradasi(C5.kanalST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>3</span><span>8</span><span>20</span><span>40+</span></div>`;
-    if (h) box.insertAdjacentHTML("beforeend", h); };
+    if (h) box.insertAdjacentHTML("beforeend", h);
+    /* catatan berikon (angin, satelit) dikumpulkan jadi satu baris di bawah supaya tidak meninggalkan ruang kosong di kisi legenda */
+    const cats = [...box.querySelectorAll(".leg-cat")].filter(c => !c.closest(".leg-cats")); if (cats.length) { const w = box.querySelector(":scope > .leg-cats") || document.createElement("div"); w.className = "leg-cats"; cats.forEach(c => w.append(c)); box.append(w); } };
 
   /* ---------- laci kompleks: waktu tempuh regu + kanal & fasilitas sekitar ---------- */
   const _buka = Laci.buka.bind(Laci);

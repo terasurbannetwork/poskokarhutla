@@ -1,5 +1,5 @@
 /* cerita_karhutla.css — cerita bergulir di Insight. Memakai token warna index.html (--card, --ink, --line, ...) */
-.cerita{max-width:980px;margin:0 auto;color:var(--ink,#1d2a44)}
+.cerita{max-width:none;margin:0;color:var(--ink,#1d2a44)}
 .ct-muat{padding:40px;text-align:center;color:var(--ink2,#5b6782)}
 .ct-hero{display:grid;gap:18px;padding:30px 28px;border-radius:var(--r,16px);background:var(--brand,#1d2a5c);color:#fff;margin-bottom:22px}
 .ct-hero h1{font-family:var(--display,inherit);font-size:clamp(26px,4vw,40px);line-height:1.1;margin:4px 0 10px}
@@ -27,7 +27,7 @@
 .ct-dua .ct-peta{height:320px}
 .ct-label{font-size:12px;font-weight:700;margin-top:6px}
 .ct-kontrol{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
-.ct-kontrol select,.ct-kontrol input[type=date],.ct-kontrol input[type=number]{height:32px;border-radius:999px;border:1px solid var(--line,#e3e7ef);background:var(--surface,#eef1f6);color:inherit;padding:0 12px;font:inherit;font-size:12.5px;max-width:100%}
+.ct-kontrol select,.ct-kontrol input[type=date],.ct-kontrol input[type=number]{height:32px;border-radius:999px;border:1px solid var(--line,#e3e7ef);background:var(--card,#fff);color:inherit;padding:0 12px;font:inherit;font-size:12.5px;max-width:100%}
 .ct-kontrol input[type=range]{flex:1;min-width:140px}
 .ct-kontrol label{font-size:12.5px;display:flex;gap:6px;align-items:center}
 .ct-btn{height:32px;border-radius:999px;border:0;background:var(--brand2,#3f5fa0);color:#fff;padding:0 14px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
@@ -51,3 +51,37 @@
 .ct-pd{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
 .ct-pd figure{margin:0}
 .ct-masuk .ct-btn{margin-top:10px}
+/* bab bergaya kartu Insight (13 Okt 2026): kepala berpita, tanpa paragraf pengantar */
+.ct-bab.ex{padding:0;border-radius:18px;overflow:hidden;margin-bottom:20px}
+.ct-bab.ex > .ex-bd{padding:16px 22px 12px}
+.ct-bab .ct-lead{display:none}
+.ct-hero{border-radius:18px}
+/* jarak antarkartu bab dan judul kepala tanpa margin bawaan .ct-bab h3 */
+.cerita{display:grid;gap:18px}
+#insight .ct-bab.ex{margin:0}
+.ct-bab > .ex-hd h3{margin:0}
+.ct-bab > .ex-hd .ex-ey{margin-bottom:10px}
+
+/* penyelarasan dengan kartu Insight (13 Okt 2026) */
+.ct-bab.ex > .ex-bd{padding:16px 22px 10px}
+.ct-bab.ex > .ex-bd > :first-child{margin-top:0}
+.ct-kontrol input[type=number]{width:64px}
+.ct-kontrol select:focus-visible,.ct-kontrol input:focus-visible{outline:2px solid var(--brand,#1d2a5c);outline-offset:1px}
+.ct-sub{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2,#5b6782);margin:18px 0 8px}
+.ct-chips{display:flex;flex-wrap:wrap;gap:6px;margin:8px 0}
+.ct-sub + .ct-chips{margin-top:0}
+.ct-chip{display:inline-flex;align-items:center;gap:7px;padding:4px 12px;border-radius:999px;background:var(--surface,#eef1f6);font-size:12px;line-height:1.35;color:var(--ink2,#5b6782)}
+.ct-chip b{color:var(--ink,#1d2a44);font-weight:800}
+.ct-rank{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.ct-rank li{display:grid;grid-template-columns:24px 1fr auto;align-items:center;gap:10px;font-size:13px}
+.ct-rank i{font-style:normal;font-size:11px;font-weight:800;width:24px;height:20px;border-radius:999px;display:grid;place-items:center;background:var(--bad,#c9503a);color:#fff}
+.ct-rank small{color:var(--ink2,#5b6782);font-size:11.5px}
+.ct-rank b{font-size:11.5px;padding:2px 10px;border-radius:999px;background:var(--surface,#eef1f6)}
+.ct-sim{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ct-sim li{display:grid;grid-template-columns:96px 1fr;gap:14px;align-items:center;padding:10px 14px;border-radius:14px;background:var(--surface,#eef1f6);font-size:13.5px;line-height:1.45}
+.ct-sim b{justify-self:start;min-width:70px;text-align:center;padding:3px 12px;border-radius:999px;background:var(--bad,#c9503a);color:#fff;font-size:13px;font-weight:800}
+@media (max-width:600px){.ct-sim li{grid-template-columns:1fr;gap:6px}}
+.ct-tw table{font-size:12.5px}
+.ct-tw thead th{font-size:11px;font-weight:800;letter-spacing:.03em}
+.cerita .ex-leg i[style*="border"]{box-sizing:border-box}
+.ct-bab > .ex-hd h3 .hl{color:var(--bad,#c9503a)}

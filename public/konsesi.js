@@ -46,24 +46,32 @@
     let h = "";
     if (KK.gagal) h = `<p class="fnd">Data perusahaan konsesi belum tersedia.</p>`;
     else if (!per.length) h = `<p style="margin:0;font-size:12.5px">Semua titik panas kompleks ini berada <b>di luar areal konsesi</b> yang tercatat.</p>`;
-    else h = `<div class="lbl">Titik panas berada di dalam areal konsesi</div>
-      <table class="tb3 ks-tb"><thead><tr><th>Pemegang izin</th><th>Jenis</th><th class="n">Titik</th></tr></thead><tbody>${per.map(r => `<tr>
-        <td><b>${esc(r.nama)}</b>${lencana(r.sanksi)}<small>${r.grup ? "grup " + esc(r.grup) + " · " : ""}${r.izin ? esc(r.izin) + (r.tgl_izin ? ` (${esc(r.tgl_izin)})` : "") : "nomor izin tidak tercatat"}</small>${r.status ? `<small>${esc(r.status)}</small>` : ""}</td>
-        <td>${jenis(r.jenis)}<small>peta ${r.tahun_data}</small></td>
-        <td class="n num"><b>${pct(r.porsi)}</b><small>${fmt(r.n)} titik · ± ${fmt(r.luas_ha)} ha</small></td></tr>`).join("")}
-        <tr><td colspan="2">Di luar areal konsesi</td><td class="n num">${pct(k.luar)}</td></tr></tbody></table>`;
+    /* daftar berlabel (bukan tabel lebar yang terpotong di laci); nomor izin tidak ditampilkan */
+    else { const lb = (t, w) => `<span class="ks-lb"${w ? ` style="--w:${w}"` : ""}>${t}</span>`;
+      h = `<div class="lbl">Titik panas berada di dalam areal konsesi</div><div class="ks-tp ks-laci-l">${per.map(r => { const g = r.grup || GRUP?.[r.nama]?.grup, ng = GRUP?.[r.nama]?.negara_induk, jn = JN[r.jenis] || [r.jenis, "#888"];
+        return `<div class="ks-tp-r"><b>${esc(r.nama)}</b>${lencana(r.sanksi)}<div class="ks-tp-l">${lb(esc(jn[0]), jn[1])}${lb(pct(r.porsi) + " titik panas", "#c9503a")}${lb(fmt(r.n) + " titik · ± " + fmt(r.luas_ha) + " ha", "#5b6782")}${g ? lb("Grup " + esc(g), "#1d4e89") : lb("Grup tidak tercatat")}${ng ? lb("Induk " + esc(ng), "#5f6fb0") : ""}</div></div>`; }).join("")}
+        <div class="ks-tp-r"><b>Di luar areal konsesi</b><div class="ks-tp-l">${lb(pct(k.luar) + " titik panas", "#2b8c86")}</div></div></div>`; }
     if (k && (k.gambut || Object.keys(k.kawasan).length)) h += `<p style="margin:4px 0 0;font-size:12px;color:var(--ink2)">${[k.gambut ? `${pct(k.gambut)} titik di gambut` : "", ...Object.entries(k.kawasan).sort((a, b) => b[1] - a[1]).map(([f, v]) => `${pct(v)} di ${KW[f] || f}`)].filter(Boolean).join(" · ")}</p>`;
-    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ks-laci">${h}<p class="fnd">${per.length ? "Persen = bagian titik panas VIIRS 7 hari kompleks ini yang jatuh di dalam areal itu; luas = piksel 375 m. " : ""}${batas()}</p></div>`);
+    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ks-laci">${h}</div>`);
   }
 
   /* --- tooltip: kompleks (nama perusahaan) dan poligon konsesi --- */
+  /* profil grup perusahaan (data/grup_perusahaan.json, opsional): nama pemegang izin -> {grup, negara_induk, sektor} */
+  let GRUP = null; fetch("data/grup_perusahaan.json").then(r => r.ok ? r.json() : null).then(d => { GRUP = d?.perusahaan || null; }).catch(() => {});
   function pasangPeta() {
     if (typeof peta === "undefined" || !peta?.getLayer || !peta.getLayer("kl-fill")) return setTimeout(pasangPeta, 1500);
     const tip = $("#tip");
     const taruh = ev => { tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, ev.clientX + 14) + "px"; tip.style.top = Math.max(8, ev.clientY - tip.offsetHeight - 12) + "px"; };
     const kom = e => { const p = e.features[0].properties; muat().then(() => { const per = perDi(p.id);
-      tip.innerHTML = `<b>${esc(p.id)}</b>${p.kec ? " · " + esc(p.kec) : ""}<br>${per.length ? `Titik panas di areal konsesi:<br>${per.slice(0, 3).map(r => `${esc(r.nama)} <small>(${(JN[r.jenis] || [r.jenis])[0]}) ${pct(r.porsi)}</small>`).join("<br>")}${per.length > 3 ? "<br>…" : ""}` : KK.gagal ? "" : "di luar areal konsesi"}<br><small>klik untuk rincian</small>`;
-      tip.classList.add("on"); taruh(e.originalEvent); }); };
+      /* kartu seragam dengan tooltip peta lain: kepala ikon api + kompleks, daftar pemegang izin (jenis · porsi titik) */
+      /* tiap pemegang izin: nama, lalu label jenis (warna jenis), porsi titik, grup & negara induk (data/grup_perusahaan.json) */
+      const lbl = (t, w) => `<span class="ks-lb"${w ? ` style="--w:${w}"` : ""}>${t}</span>`;
+      const baris = per.slice(0, 3).map(r => { const g = GRUP?.[r.nama], jn = JN[r.jenis] || [r.jenis, "#888"];
+        return `<div class="ks-tp-r"><b>${esc(r.nama)}</b><div class="ks-tp-l">${lbl(esc(jn[0]), jn[1])}${lbl(pct(r.porsi) + " titik panas", "#c9503a")}${g?.grup ? lbl("Grup " + esc(g.grup), "#1d4e89") : lbl("Grup tidak tercatat")}${g?.negara_induk ? lbl("Induk " + esc(g.negara_induk), "#5f6fb0") : ""}</div></div>`; }).join("");
+      tip.innerHTML = kartuTip({judul: esc(p.id), kepala: ikon("api", "#c9503a"), sub: p.kec ? `<small class="tp-sub">${esc(p.kec)}</small>` : "",
+        kaki: per.length ? (per.length > 3 ? `+${per.length - 3} pemegang izin lain` : "Titik panas di areal konsesi") : KK.gagal ? "" : "Di luar areal konsesi"})
+        .replace('<div class="tp-ft">', `${baris ? `<div class="tp-bd ks-tp">${baris}</div>` : ""}<div class="tp-ft">`);
+      tip.classList.add("on", "kartu"); taruh(e.originalEvent); }); };
     ["kl-fill", "kl-pt", "kl-pt3"].forEach(l => { peta.on("mousemove", l, kom); peta.on("mouseleave", l, () => tip.classList.remove("on")); });
     /* lapisan konsesi: warna untuk jenis baru + nama pemegang saat disorot */
     const warnai = () => { if (!peta.getLayer("konsesi")) return;
@@ -117,7 +125,7 @@
         <p class="sub">${F.mode === "7" ? `7 hari terakhir · ${fmt(tot)} titik panas VIIRS berada di dalam areal ${fmt(KK.perusahaan.filter(a => a.n).length)} konsesi` : `musim ${(KK.acuan || "").slice(0, 4)}, tercatat sejak ${esc(KK.musim_sejak || "–")}`}. Klik baris untuk melihat kompleksnya di peta.</p></div>
         <div class="ks-mode">${[["7", "7 hari"], ["musim", "Musim"]].map(([m, n]) => `<button class="btn ${F.mode === m ? "" : "sec"}" data-mode="${m}">${n}</button>`).join("")}</div></div>
       <div class="tw"><table class="tb3"><thead><tr><th>#</th><th>Pemegang izin</th><th>Jenis</th><th class="n">Peta</th><th class="n">Titik panas</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th></tr></thead><tbody>
-      ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}${a.grup ? `<small>grup ${esc(a.grup)}</small>` : ""}</td>
+      ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}${(() => { const g = a.grup || GRUP?.[a.nama]?.grup, ng = GRUP?.[a.nama]?.negara_induk; return `<small class="ks-grup">${g ? `Grup ${esc(g)}${ng ? ` · induk ${esc(ng)}` : ""}` : "Grup tidak tercatat di data publik"}</small>`; })()}</td>
         <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a[k])}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="7">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
       <p class="fnd">Titik panas berada di dalam areal konsesi X ≠ X yang membakar. Luas = piksel VIIRS 375 m yang terdeteksi 7 hari (indikatif, bukan luas terbakar resmi). ${batas()}</p>`;
   }

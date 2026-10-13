@@ -6,6 +6,14 @@ const Dampak = (() => {
   const W = {merah: "#c9503a", oranye: "#e58a45", kuning: "#e3b94e", hijau: "#5a9e74", biru: "#4f8fc4", ungu: "#5f6fb0", biru2: "#3f7fb8", teal: "#2b8c86", tua: "#7a2b2b"};
   const W5 = [W.hijau, W.kuning, W.oranye, W.merah, W.tua], KELAS = ["Baik", "Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"], AMB = [15.5, 55.4, 150.4, 250.4];
   const kelas = v => AMB.filter(a => v > a).length;
+  /* ikon tab bagian, urut sama dengan JUDUL */
+  const IKON = ["M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2",
+    "M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2Z",
+    "M19 14c1.5-1.5 3-3.2 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.8 0-3 .5-4.5 2-1.5-1.5-2.7-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4 3 5.5l7 7 7-7ZM3.5 12h5l1.5-3 2 6 1.5-3h7",
+    "M22 10 12 5 2 10l10 5 10-5ZM6 12v5c3 3 9 3 12 0v-5", "M3 10.5 12 3l9 7.5M5 9v12h14V9M10 21v-6h4v6",
+    "M12 22v-5M12 2 5 12h4l-3 5h12l-3-5h4L12 2Z", "M17.5 19H8a6 6 0 1 1 5.7-7.9A4.5 4.5 0 1 1 17.5 19Z",
+    "M3 6h18v12H3zM12 15a3 3 0 1 0 0-6 3 3 0 0 0 0 6ZM6 12h0M18 12h0",
+    "M12 22a10 10 0 1 0 0-20 10 10 0 0 0 0 20ZM2 12h20M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20", "M18 7V4H6l6 8-6 8h12v-3"];
   const JUDUL = ["Kualitas udara", "Penerbangan", "Kesehatan", "Pendidikan", "Permukiman", "Hutan & gambut", "Emisi karbon", "Ekonomi lahan", "Lintas batas", "Total kerugian"];
   const KAT = {konsesi_sawit: ["Konsesi sawit", W.oranye], konsesi_hph: ["Konsesi hutan alam (PBPH/HPH)", W.kuning], konsesi_lain: ["Konsesi lain", "#b8902c"],
     hutan_produksi: ["Hutan produksi tanpa konsesi", W.biru], konservasi: ["Kawasan konservasi (taman nasional, suaka)", W.hijau], lindung: ["Hutan lindung & Tahura", W.teal], apl: ["Lahan masyarakat (APL)", W.ungu]};
@@ -25,13 +33,19 @@ const Dampak = (() => {
     pertanian: "Pertanian", lingkungan_karbon: "Karbon", lingkungan_hayati: "Hayati", kehutanan: "Kehutanan", perdagangan: "Perdagangan", industri_tambang: "Industri",
     pariwisata: "Pariwisata", transportasi: "Transportasi", pemadaman: "Pemadaman", kesehatan: "Kesehatan", pendidikan: "Pendidikan"};
   const nmK = c => sempit() ? PENDEK[c] || c : KAT[c]?.[0] || c, nmS = k => sempit() ? PENDEK[k] || k : SEKTOR[k] || k;
-  const ex = (n, judul, sub, unit, isi, fn, ctl = "") => `<section class="dk-bag" id="dk-${n}" data-bag="${n}"><div class="dk-no">${n}. ${JUDUL[n - 1]}</div>${Insight.ex(judul, sub, unit, isi, fn, ctl)}</section>`;
-  const kpi = xs => `<div class="grid g4 dk-kpi">${xs.map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>`;
+  /* kartu bergaya Insight: eyebrow = nama bagian, tanpa sub/unit; legenda (L) dan "Sumber:" masuk footer */
+  let pend = null;
+  const LG = xs => { pend = xs; return ""; };
+  const ex = (n, judul, sub, unit, isi, fn, ctl = "") => { Insight.leg(pend ? pend.map(([nm, w]) => [w, nm]) : null); pend = null;
+    return `<section class="dk-bag" id="dk-${n}" data-bag="${n}">${Insight.ex(judul, "", "", isi, fn, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${JUDUL[n - 1]}</span>`)}</section>`; };
+  const NAVY = "oklch(25.5% .075 256)";
+  /* label nilai di ujung batang: pil berwarna, teks putih tebal */
+  const pw = t => String(t).length * 11 * .6 + 16;
+  const pilV = (x, y, t, w) => Insight.pil(x, y, t, w || NAVY, w === W.kuning || w === "#b8902c" ? "#13213a" : "#fff", 11)[0];
   const tgl = t => new Date(t.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
   const hariN = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"});
   const satu = v => fmt(Math.round(v * 10) / 10);
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
-  const rentang = (a, f) => `${f(a[1])}<small class="dk-r">${f(a[0])} – ${f(a[2])}</small>`;
   const seg = (k, opsi) => `<div class="seg" role="group">${opsi.map(([v, n]) => `<button data-dks="${k}" data-v="${v}" aria-pressed="${String(st[k]) === String(v)}">${n}</button>`).join("")}</div>`;
   const baris = (dk, isi) => `<tr data-dk="${dk}" tabindex="0">${isi}</tr>`;
   const tabel = (kepala, rows) => `<div class="tw dk-tw"><table><thead><tr>${kepala.map(h => `<th${h[0] === ">" ? ' class="n"' : ""}>${h.replace(/^>/, "")}</th>`).join("")}</tr></thead><tbody>${rows.join("") || `<tr><td colspan="${kepala.length}">Belum ada.</td></tr>`}</tbody></table></div>`;
@@ -44,14 +58,14 @@ const Dampak = (() => {
   const tombolK = id => id ? `<button class="btn sec" data-kom="${esc(id)}">Buka kompleks ${esc(id)} di peta</button>` : "";
   /* batang horizontal sederhana: rows = [{n, v, w, tip, dk, lo, hi, txt}] */
   function hbar(rows, {L = 150, W2 = lw(), rh = 26, maks, garis = []} = {}) {
-    L = LL(L); const R = Math.max(50, ...rows.map(r => String(r.txt ?? fmt(r.v)).length * 6.2 + 10)), m = maks || Math.max(1, ...rows.map(r => r.hi ?? r.v)), X = v => L + Math.max(0, v) / m * (W2 - L - R);
+    L = LL(L); const R = Math.max(50, ...rows.map(r => pw(r.txt ?? fmt(r.v)) + 10)), m = maks || Math.max(1, ...rows.map(r => r.hi ?? r.v)), X = v => L + Math.max(0, v) / m * (W2 - L - R);
     return `<svg class="dk-svg" viewBox="0 0 ${W2} ${rows.length * rh + 6}" role="img">${garis.map(([v, t]) => v < m ? `<line x1="${X(v)}" x2="${X(v)}" y1="0" y2="${rows.length * rh}" stroke="currentColor" stroke-dasharray="3 3" opacity=".35"/><text x="${X(v) + 3}" y="${rows.length * rh + 4}" font-size="9" opacity=".6">${t}</text>` : "").join("")}
       ${rows.map((r, i) => { const y = i * rh;
         return `<g data-dk="${r.dk || ""}" style="cursor:${r.dk ? "pointer" : "default"}"><rect class="hov" x="0" y="${y}" width="${W2}" height="${rh}" fill="transparent"/>
         <text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(r.n)}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(1.5, X(r.v) - L)}" height="${rh - 10}" rx="3" fill="${r.w || W.oranye}" data-tip="${r.tip || ""}"/>
         ${r.lo != null ? `<line x1="${X(r.lo)}" x2="${X(r.hi)}" y1="${y + rh / 2}" y2="${y + rh / 2}" stroke="currentColor" stroke-width="1.5" opacity=".7"/><line x1="${X(r.lo)}" x2="${X(r.lo)}" y1="${y + 8}" y2="${y + rh - 8}" stroke="currentColor" opacity=".7"/><line x1="${X(r.hi)}" x2="${X(r.hi)}" y1="${y + 8}" y2="${y + rh - 8}" stroke="currentColor" opacity=".7"/>` : ""}
-        <text x="${Math.max(X(r.v), r.hi != null ? X(r.hi) : 0) + 5}" y="${y + rh / 2 + 4}" font-size="10.5">${r.txt ?? fmt(r.v)}</text></g>`; }).join("")}</svg>`; }
+        ${pilV(Math.max(X(r.v), r.hi != null ? X(r.hi) : 0) + 5, y + 3, r.txt ?? fmt(r.v), r.w || W.oranye)}</g>`; }).join("")}</svg>`; }
   /* kolom harian: hari = [t], seri = [{k, w, v: {t: n}}], dk(t) */
   function kolom(hari, seri, {H = 150, W2 = lw(), tip, dk} = {}) {
     const tot = hari.map(t => seri.reduce((a, s) => a + (s.v[t] || 0), 0)), m = Math.max(1, ...tot), g = (W2 - 30) / Math.max(1, hari.length), bw = Math.max(1.5, g * .75);
@@ -81,20 +95,17 @@ const Dampak = (() => {
     const ts = rows.reduce((a, r) => a + r.ts, 0), stb = rows.reduce((a, r) => a + r.j[3] + r.j[4], 0), mx = Math.max(1, ...rows.map(r => r.tot));
     /* hanya kota yang udaranya dipengaruhi asap kebakaran (kompleks api searah angin, lihat dampak.py asap_api) */
     const kotaAll = [...U.kota].sort((a, b) => b.pm[i] - a.pm[i]), kota = kotaAll.filter(c => c.karhutla !== false), lain = kotaAll.filter(c => c.karhutla === false && c.pm[i] > 55.4), terburuk = U.hari.map((t, j) => [t, PRIO.reduce((a, k) => a + jiwaProv(k, j).slice(2).reduce((x, y) => x + y, 0), 0)]).sort((a, b) => b[1] - a[1])[0];
-    const L = LL(150), Wd = lw(), rh = 26, X = v => v / mx * (Wd - L - 80);
+    const L = LL(150), Wd = lw(), rh = 26, X = v => v / mx * (Wd - L - 90);
     const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${rows.length * rh}" role="img" aria-label="Penduduk per kelas udara">${rows.map((r, n) => { let x = L; const y = n * rh;
       return `<g data-dk="prov|${r.k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(r.k))}</text>`
         + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect class="gx" style="--i:${n}" x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("")
-        + `<text x="${x + 5}" y="${y + 17}" font-size="10.5">${rb(r.ts)}</text></g>`; }).join("")}</svg>`;
+        + `${pilV(x + 5, y + 3, rb(r.ts), NAVY)}</g>`; }).join("")}</svg>`;
     const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: `${fmt(c.pm[i])} · ${KELAS[kelas(c.pm[i])]}`,
       tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
-    return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi prioritas menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
+    return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi rawan karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
-      kpi([["Udara tidak sehat", jt(ts), "jiwa di 9 provinsi prioritas"], ["Sangat tidak sehat+", jt(stb), "jiwa, termasuk kelas berbahaya"],
-        ["Kota terburuk", esc(kota[0]?.nama || "–"), `PM2.5 maks. ${fmt(kota[0]?.pm[i])} µg/m³`], ["Hari terburuk", terburuk ? hariN(terburuk[0]) : "–", `${jt(terburuk?.[1] || 0)} jiwa terpapar tidak sehat`]])
-      + svg + legenda(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
-        + (lain.length ? `<p class="fnd" style="margin-top:8px">Tidak dihitung karena tidak ada kompleks api searah angin dalam 300 km, jadi udaranya buruk bukan karena karhutla (polusi kota, industri, kendaraan): ${lain.map(c => `${esc(c.nama)} ${fmt(c.pm[i])}`).join(", ")} µg/m³.</p>` : ""),
-      `Sumber: prakiraan CAMS (Copernicus) lewat Open-Meteo, sel ± 110 km, dibuat ${jamWIB(U.dibuat)}; penduduk WorldPop 2026. ${U.pm_basis === "rata24" ? "Jumlah jiwa per kelas ISPU dan ISPA tambahan memakai PM2.5 <b>rata-rata 24 jam</b>, sama dengan dasar ISPU; angka per kota adalah <b>maksimum per jam</b> (puncak harian, biasanya 1,5–3 kali rata-rata 24 jam di dekat api)." : "Angka PM2.5 adalah <b>maksimum per jam</b> dalam sehari, sedangkan ambang ISPU memakai rata-rata 24 jam, jadi kelasnya cenderung lebih buruk dari ukuran resmi."} CAMS menghitung semua sumber polusi, jadi data ini disilangkan dengan kompleks api: penduduk dan kota hanya dihitung bila ada titik panas 24 jam dalam 300 km yang asapnya terbawa angin ke arahnya.`,
+      svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]}),
+      `Sumber: prakiraan CAMS (Copernicus) lewat Open-Meteo, dibuat ${jamWIB(U.dibuat)}; penduduk WorldPop 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
       seg("hari", U.hari.map((t, j) => [j, j ? hariN(t) : "Hari ini"])));
   }
   function popProv(k) {
@@ -147,17 +158,14 @@ const Dampak = (() => {
     const vis = metar.map(m => baris(kodeICAO[m.icao] ? `bandara|${kodeICAO[m.icao]}` : "", `<td><b>${esc(m.icao)}</b><small class="dk-s">${esc(m.nama)}</small></td><td class="n" style="color:${(m.vis_m ?? 9999) < 1500 ? W.merah : (m.vis_m ?? 9999) < 5000 ? W.oranye : "inherit"};font-weight:700">${m.vis_m == null ? "–" : m.vis_m >= 9999 ? "≥ 10 km" : satu(m.vis_m / 1000) + " km"}</td><td>${m.asap ? "asap/kabut (FU/HZ)" : esc(m.wx || "–")}</td><td>${jamWIB(m.waktu)}</td>`));
     return ex(2, `Asap mengganggu penerbangan di ${hl(nB + " bandara")} sejak ${tgl(F.mulai_musim)}; ${rekMax.jumlah ? `rekap yang dikutip media mencatat ${hl(fmt(rekMax.jumlah) + " penerbangan")} terdampak` : `minimal ${hl(fmt(sumB) + " penerbangan")} terdampak`}`,
       "Kejadian gangguan penerbangan dari berita, diperiksa dengan jarak pandang METAR", "Gelembung = jumlah kejadian per bandara. Klik gelembung, batang, atau baris untuk rincian, tautan berita, dan grafik jarak pandang.",
-      kpi([["Penerbangan terdampak", fmt(Math.max(rekMax.jumlah, sumB)), rekMax.jumlah ? `rekap terbesar di berita; jumlah per bandara min. ${fmt(sumB)}` : "batas bawah dari berita"],
-        ["Bandara terdampak", fmt(nB), "disebut di berita gangguan asap"], ["Hari ada gangguan", fmt(hariG), `sejak ${tgl(F.mulai_musim)}`],
-        ["Pengalihan pendaratan", fmt(ev.filter(e => e.jenis.includes("divert")).length), "kejadian divert / gagal mendarat"]])
-      + `<svg class="dk-svg dk-peta" viewBox="0 0 ${Wd} ${Hd}" role="img" aria-label="Peta bandara terdampak">${peta}${gel}</svg>`
+      `<svg class="dk-svg dk-peta" viewBox="0 0 ${Wd} ${Hd}" role="img" aria-label="Peta bandara terdampak">${peta}${gel}</svg>`
       + `<div class="ctl" style="margin-top:12px">${seg("rentF", [[30, "30 hari"], [60, "60 hari"], ["semua", "Sejak awal musim"]])}</div>`
-      + kolom(hari, seri, {tip: (t, n) => `<b>${tgl(t)}</b><br>${n} kejadian`, dk: t => "harif|" + t}) + legenda(Object.keys(WJ).map(j => [NJ(j), WJ[j]]))
+      + kolom(hari, seri, {tip: (t, n) => `<b>${tgl(t)}</b><br>${n} kejadian`, dk: t => "harif|" + t}) + LG(Object.keys(WJ).map(j => [NJ(j), WJ[j]]))
       + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + tabel(["Tanggal", "Bandara", "Maskapai", "Yang terjadi", ">Jumlah", ">Berita"], rows)
       + (ev.length > 12 ? `<button class="btn sec dk-lagi" data-dks="semuaF" data-v="${!st.semuaF}">${st.semuaF ? "Tampilkan 12 terbaru" : `Tampilkan semua ${ev.length} kejadian`}</button>` : "")
       + `<details class="lipat" style="margin-top:12px"><summary>Jarak pandang bandara saat ini</summary><div class="isi">${tabel(["Bandara", ">Jarak pandang", "Cuaca", "Waktu"], vis)}
         ${bnpb.length ? `<p class="fnd" style="margin-top:8px">Laporan BNPB (jarak pandang bandara, km): ${bnpb.map(([p, v]) => `${esc(p)} ${esc(v)}`).join(" · ")}</p>` : ""}</div></details>`,
-      `${esc(F.catatan)} Tidak ada data delay/pembatalan terbuka dari bandara atau maskapai, jadi angka di sini <b>batas bawah</b>; satu kejadian yang diberitakan berhari-hari bisa terhitung lebih dari sekali. Batas terbang visual (VFR) ± 5 km; di bawah ± 1,5 km sebagian besar bandara daerah tanpa ILS praktis tidak bisa didarati. ${F.laporan} judul berita dipakai, diperbarui ${jamWIB(F.dibuat)}.`);
+      `Sumber: berita media, diperiksa dengan METAR (Iowa Environmental Mesonet); ${F.laporan} judul berita, diperbarui ${jamWIB(F.dibuat)}`);
   }
   function grafikVis(icao, a, b, tanda) {
     const v = F.metar?.[icao]; if (!v) return `<p class="fnd">Tidak ada arsip METAR untuk bandara ini.</p>`;
@@ -197,14 +205,12 @@ const Dampak = (() => {
     const rows = PRIO.map(k => ({k, v: is(k)})).sort((a, b) => b.v[1] - a.v[1]), tot = [0, 1, 2].map(j => rows.reduce((a, r) => a + r.v[j], 0));
     const empat = [0, 1, 2].map(j => PRIO.reduce((a, k) => a + (U.prov[k]?.ispa || []).reduce((x, d) => x + d[j], 0), 0));
     const IB = D.ispa_berita, maks = IB.reduce((a, x) => x.jumlah > (a?.jumlah || 0) ? x : a, null);
-    return ex(3, `Asap diperkirakan menambah ${hl(fmt(tot[1]) + " kunjungan ISPA per hari")} di 9 provinsi prioritas (rentang ${fmt(tot[0])}–${fmt(tot[2])})`,
+    return ex(3, `Asap diperkirakan menambah ${hl(fmt(tot[1]) + " kunjungan ISPA per hari")} di 9 provinsi rawan karhutla (rentang ${fmt(tot[0])}–${fmt(tot[2])})`,
       "Perkiraan tambahan kunjungan infeksi saluran pernapasan akut (ISPA) karena PM2.5", "Batang = perkiraan tengah; garis = rentang rendah–tinggi. Ini PERKIRAAN MODEL, bukan hitungan puskesmas. Klik provinsi untuk rincian.",
-      kpi([["Tambahan ISPA/hari", rentang(tot, fmt), i ? hariN(U.hari[i]) : "hari ini, perkiraan"], ["4 hari ke depan", rentang(empat, fmt), "total tambahan kunjungan"],
-        ["Berita kasus ISPA", fmt(IB.length), `judul dengan angka kasus sejak ${tgl(D.mulai_musim)}`], ["Angka terbesar di berita", maks ? fmt(maks.jumlah) : "–", maks ? esc((maks.prov || []).map(namaProv).join(", ") || "lihat daftar") : ""]])
-      + hbar(rows.map(r => ({n: nmP(r.k), v: r.v[1], lo: r.v[0], hi: r.v[2], w: W.oranye, dk: "prov|" + r.k, txt: fmt(r.v[1]), tip: `<b>${esc(namaProv(r.k))}</b><br>tengah ${fmt(r.v[1])} · rentang ${fmt(r.v[0])}–${fmt(r.v[2])} kunjungan/hari`})))
+      hbar(rows.map(r => ({n: nmP(r.k), v: r.v[1], lo: r.v[0], hi: r.v[2], w: W.oranye, dk: "prov|" + r.k, txt: fmt(r.v[1]), tip: `<b>${esc(namaProv(r.k))}</b><br>tengah ${fmt(r.v[1])} · rentang ${fmt(r.v[0])}–${fmt(r.v[2])} kunjungan/hari`})))
       + `<div class="lbl" style="margin:14px 0 4px">Kasus ISPA yang disebut berita</div>`
       + tabel(["Tanggal", ">Kasus", "Judul"], IB.slice(0, 12).map((x, j) => baris("ispa|" + j, `<td>${tgl(x.tgl)}</td><td class="n"><b>${fmt(x.jumlah)}</b></td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `Cara hitung: tiap sel penduduk WorldPop × peluang dasar kunjungan ISPA per provinsi (Riskesdas 2018 Tabel 5.1.1, ISPA terdiagnosis tenaga kesehatan dalam 1 bulan; nasional ${satu(A.ispa_harian * 30 * 100)}%, mis. Riau ${satu(A.ispa_prov?.["14"] ?? 2.2)}%, Kalteng ${satu(A.ispa_prov?.["62"] ?? 6.2)}%) ÷ 30 × kenaikan risiko. Kenaikan risiko tiap +10 µg/m³ PM2.5 di atas ${A.pm_acuan} µg/m³ (pedoman WHO 24 jam): rendah ${satu((A.rr10[0] - 1) * 100)}%, tengah ${satu((A.rr10[1] - 1) * 100)}%, tinggi ${satu((A.rr10[2] - 1) * 100)}% (meta-analisis Wang dkk. 2025, Environmental Research 273:121221, 45 studi: kunjungan IGD pernapasan RR 1,04, CI 95% 1,02–1,06 per 10 µg/m³ PM2.5 asap kebakaran; rendah–tinggi = selang kepercayaan itu). Selisih PM dibatasi ${A.pm_batas} µg/m³. ${D.udara.pm_basis === "rata24" ? "PM2.5 yang dipakai adalah rata-rata 24 jam; CAMS menghitung semua sumber polusi, jadi angka ini tetap sedikit condong ke <b>atas</b>." : "Karena PM2.5 yang dipakai adalah maksimum per jam dan CAMS menghitung semua sumber polusi, angka ini lebih condong ke <b>atas</b>."} Angka di berita adalah kasus kumulatif yang dilaporkan dinas, jadi tidak setara langsung.`);
+      `Sumber: WorldPop, Riskesdas 2018, meta-analisis Wang dkk. 2025 (Environ Res 273:121221), pedoman WHO; perkiraan model, bukan hitungan puskesmas`);
   }
   function popIspa(j) { const x = D.ispa_berita[j], p = (x.prov || [])[0], is = p && D.udara.prov[p]?.ispa?.[0];
     dlg(`${fmt(x.jumlah)} kasus ISPA disebut berita`, `${esc(x.media || "")} · ${tgl(x.tgl)}`,
@@ -218,15 +224,13 @@ const Dampak = (() => {
     const SB = D.sekolah_berita, ds = st.semuaS ? D.dekat.sekolah : D.dekat.sekolah.slice(0, 10);
     const rows = ks.map(k => ({n: nmP(k), v: P[k].sekolah[1], w: W.kuning, dk: "dekat|" + k, txt: `${fmt(P[k].sekolah[1])} (≤ 1 km: ${fmt(P[k].sekolah[0])})`,
       tip: `<b>${esc(namaProv(k))}</b><br>≤ 1 km: ${fmt(P[k].sekolah[0])}<br>≤ 5 km: ${fmt(P[k].sekolah[1])}<br>≤ 10 km: ${fmt(P[k].sekolah[2])}<br>di udara tidak sehat hari ini: ${fmt(P[k].sekolah_tidak_sehat)}`}));
-    return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi prioritas berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
+    return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
       "Sekolah yang terpeta di OpenStreetMap, dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
-      kpi([["Sekolah ≤ 5 km dari api", fmt(sumP("sekolah", 1)), `≤ 1 km: ${fmt(sumP("sekolah", 0))}`], ["Sekolah di udara tidak sehat", fmt(sumP("sekolah_tidak_sehat")), "PM2.5 > 55,4 µg/m³ hari ini"],
-        ["Berita sekolah tutup/daring", fmt(SB.length), `sejak ${tgl(D.mulai_musim)}`], ["Faskes ≤ 5 km dari api", fmt(sumP("faskes", 1)), "puskesmas, klinik, RS (OSM)"]])
-      + hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
+      hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
       + tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)} <span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`)))
       + (D.dekat.sekolah.length > 10 ? `<button class="btn sec dk-lagi" data-dks="semuaS" data-v="${!st.semuaS}">${st.semuaS ? "Tampilkan 10" : `Tampilkan ${D.dekat.sekolah.length}`}</button>` : "")
       + `<div class="lbl" style="margin:14px 0 4px">Berita penutupan sekolah</div>` + tabel(["Tanggal", "Judul"], SB.slice(0, 10).map((x, j) => baris("sekb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `Sekolah dan fasilitas kesehatan dari OpenStreetMap: banyak sekolah belum terpeta, jadi angka ini <b>jauh di bawah</b> jumlah sebenarnya. Jarak diukur ke tepi lingkaran seluas kompleks di titik beratnya. Sebagai pembanding, pada Oktober 2015 asap berdampak pada 24.773 sekolah dan 4,69 juta siswa (World Bank 2016).`);
+      `Sumber: OpenStreetMap (minimal, banyak sekolah belum terpeta), prakiraan CAMS, berita media; pembanding Oktober 2015: 24.773 sekolah (World Bank 2016)`);
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
     dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
@@ -244,18 +248,17 @@ const Dampak = (() => {
       return `<g data-dk="dekat|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(k))}</text>`
         + [2, 1, 0].map(c => `<rect class="gx" style="--i:${n}" x="${L}" y="${y + 5}" width="${Math.max(1, X(j[c]))}" height="${rh - 10}" fill="${WB[c]}" data-tip="<b>${esc(namaProv(k))}</b><br>≤ ${R[c]} km: ${rb(j[c])} jiwa, ${fmt(P[k].desa[c])} desa"/>`).join("")
         + `<text x="${L + X(j[2]) + 5}" y="${y + 17}" font-size="10.5">${rb(j[1])} ≤ 5 km</text></g>`; }).join("")}</svg>`;
-    return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi prioritas berada dalam 5 km dari api yang perlu dipadamkan`,
+    return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan`,
       "Penduduk dan desa menurut jarak ke tepi kompleks yang perlu dipadamkan", `Batang bertingkat: merah ≤ ${R[0]} km, oranye ≤ ${R[1]} km, kuning ≤ ${R[2]} km. Klik provinsi atau desa untuk rinciannya.`,
-      kpi(R.map((r, i) => [`≤ ${r} km dari api`, jt(sumP("jiwa", i)), `jiwa · ${fmt(sumP("desa", i))} desa`]).concat([["Kompleks diukur", fmt(D.dekat.kompleks_aktif), "status siaga & prioritas, seluruh Indonesia"]]))
-      + svg + legenda(R.map((r, i) => [`≤ ${r} km`, WB[i]])) + `<div class="lbl" style="margin:14px 0 4px">Desa terdekat ke api</div>`
+      svg + LG(R.map((r, i) => [`≤ ${r} km`, WB[i]])) + `<div class="lbl" style="margin:14px 0 4px">Desa terdekat ke api</div>`
       + tabel(["Desa", "Provinsi", ">Jarak", "Kompleks"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b><small class="dk-s">${esc(x.kode)}</small></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)} <span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`)))
       + (D.dekat.desa.length > 10 ? `<button class="btn sec dk-lagi" data-dks="semuaD" data-v="${!st.semuaD}">${st.semuaD ? "Tampilkan 10" : `Tampilkan ${D.dekat.desa.length}`}</button>` : ""),
-      `Desa = titik pusat desa OpenStreetMap di 9 provinsi prioritas. Penduduk = kepadatan WorldPop 2026 (sel ± 28 km) disebar rata ke kisi ± 2 km, jadi permukiman padat di tepi kompleks bisa terhitung kurang atau lebih. Jarak diukur ke tepi lingkaran seluas kompleks, bukan ke garis api yang sebenarnya. Kompleks yang diukur = status "Siaga pemadaman awal" dan "Prioritas pemadaman". Angka hanya untuk 9 provinsi prioritas.`);
+      `Sumber: OpenStreetMap, WorldPop 2026, kompleks api siaga & prioritas dari peta ini`);
   }
   function popDekat(k) { const d = D.dekat.prov[k], R = D.dekat.radius_km;
     dlg(esc(namaProv(k)), "Penduduk, desa, sekolah, dan faskes dekat kompleks berstatus siaga & prioritas",
       tabel(["Jarak", ">Jiwa", ">Desa", ">Sekolah", ">Faskes"], R.map((r, i) => `<tr><td>≤ ${r} km</td><td class="n">${rb(d.jiwa[i])}</td><td class="n">${fmt(d.desa[i])}</td><td class="n">${fmt(d.sekolah[i])}</td><td class="n">${fmt(d.faskes[i])}</td></tr>`))
-      + `<div class="dk-kvs">${kotak("Sekolah di udara tidak sehat hari ini", fmt(d.sekolah_tidak_sehat))}</div><p class="fnd">Desa hanya tersedia untuk 9 provinsi prioritas; sekolah & faskes hanya yang terpeta di OpenStreetMap.</p>`); }
+      + `<div class="dk-kvs">${kotak("Sekolah di udara tidak sehat hari ini", fmt(d.sekolah_tidak_sehat))}</div><p class="fnd">Desa hanya tersedia untuk 9 provinsi rawan karhutla; sekolah & faskes hanya yang terpeta di OpenStreetMap.</p>`); }
   function popDesa(j) { const x = D.dekat.desa[j], k = S.kluster?.features.find(f => f.properties.id === x.kompleks)?.properties;
     dlg(`Desa ${esc(x.nama)}`, `${esc(namaProv(x.prov))} · kode ${esc(x.kode)}`,
       `<div class="dk-kvs">${kotak("Jarak ke tepi kompleks", x.km ? satu(x.km) + " km" : "di dalam area kompleks")}${kotak("Kompleks", esc(x.kompleks) + " · " + esc(S.meta?.status?.[x.level] || ""))}
@@ -274,12 +277,10 @@ const Dampak = (() => {
     const SW = lw(), strip = `<svg class="dk-svg" viewBox="0 0 ${SW} 46" role="img">${kats.map(([c, v]) => { const w = v / tot * SW, o = `<rect class="gx" x="${x}" y="0" width="${w}" height="28" fill="${KAT[c]?.[1] || "#8a96a8"}" data-dk="kat|${c}" style="cursor:pointer" data-tip="<b>${esc(KAT[c]?.[0] || c)}</b><br>${rb(v)} ha (${Math.round(v / tot * 100)}%) di kompleks aktif<br>klik untuk per provinsi"/>${w > 40 ? `<text x="${x + w / 2}" y="42" text-anchor="middle" font-size="10">${Math.round(v / tot * 100)}%</text>` : ""}`; x += w; return o; }).join("")}</svg>`;
     return ex(6, `Sejak ${tgl(Ms.mulai)}, satelit memperkirakan ${hl("± " + jt(H[1]) + " ha")} terbakar; ${hl(Math.round(gam / tot * 100) + "%")} luas kompleks aktif berada di gambut dan ${hl(rb(lind) + " ha")} di kawasan lindung/konservasi`,
       "Luas terbakar musim berjalan per provinsi, dan status lahan kompleks yang sedang aktif", "Batang = perkiraan tengah, garis = rentang. Pita warna = status lahan kompleks aktif. Klik untuk rincian.",
-      kpi([["Terbakar sejak " + tgl(Ms.mulai), rentang(H, v => rb(v)), "ha, perkiraan dari titik panas MODIS"], ["Kompleks aktif saat ini", rb(L6.kompleks_ha) + " ha", "luas piksel VIIRS, 7 hari"],
-        ["Di lahan gambut", Math.round(gam / tot * 100) + "%", `${rb(gam)} ha luas kompleks aktif`], ["Konservasi & lindung", rb(lind) + " ha", `${fmt(L6.lindung.length)}+ kompleks di kawasan ini`]])
-      + hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Status lahan kompleks aktif</div>` + strip + legenda(kats.map(([c]) => [KAT[c]?.[0] || c, KAT[c]?.[1] || "#8a96a8"]))
+      hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Status lahan kompleks aktif</div>` + strip + LG(kats.map(([c]) => [KAT[c]?.[0] || c, KAT[c]?.[1] || "#8a96a8"]))
       + `<div class="lbl" style="margin:14px 0 4px">Kompleks terluas di kawasan konservasi & hutan lindung</div>`
       + tabel(["Kompleks", "Kawasan", "Lokasi", ">Luas"], L6.lindung.slice(0, 10).map((r, j) => baris("lind|" + j, `<td><b>${esc(r.id)}</b> <span class="pill l${r.level}">${esc(S.meta?.status?.[r.level] || "")}</span></td><td>${esc(r.nama)}${r.gambut ? " · gambut" : ""}</td><td>${esc(r.kab || "")}<small class="dk-s">${esc(namaProv(r.prov))}</small></td><td class="n">${rb(r.luas)} ha</td>`))),
-      `Luas musim = jumlah titik panas MODIS (keyakinan ≥ 30) sejak ${tgl(Ms.mulai)} × rasio hektare terbakar per titik tiap provinsi, dikalibrasi dari luas terbakar satelit MCD64A1 (GWIS) dan titik MODIS 2002 s.d. dua tahun lalu; rentang = kuartil rasio tahunan. Rasio nasional ${satu(Ms.rasio_nasional)} ha/titik. Status lahan dari peta gambut, fungsi kawasan hutan, dan konsesi di titik berat kompleks; porsi ini diterapkan ke luas musim pada bagian 7, 8, dan 10. Angka "Lahan terbakar indikatif" BNPB${Ms.bnpb_waktu ? " (" + jamWIB(Ms.bnpb_waktu) + ")" : ""} jauh lebih kecil karena hanya mencatat yang sudah diverifikasi di lapangan.`);
+      `Sumber: NASA FIRMS MODIS, kalibrasi GWIS MCD64A1, peta gambut, fungsi kawasan hutan dan konsesi${Ms.bnpb_waktu ? "; BNPB " + jamWIB(Ms.bnpb_waktu) : ""}`);
   }
   function popMusim(k) { const v = D.musim.prov[k], kp = D.lahan.kategori_prov[k] || {}, t = Object.values(kp).reduce((a, b) => a + b, 0) || 1;
     dlg(`${esc(namaProv(k))}: luas terbakar musim ini`, `sejak ${tgl(D.musim.mulai)}`,
@@ -302,10 +303,8 @@ const Dampak = (() => {
       {n: "Emisi nasional setahun", v: E.nasional_mt_th, w: W.biru, txt: fmt(E.nasional_mt_th) + " Mt", tip: "Komunikasi Nasional ke-2, dikutip World Bank 2016"}];
     return ex(7, `Kebakaran musim ini diperkirakan melepas ${hl("± " + fmt(Math.round(m[1])) + " juta ton CO₂e")}, setara ${hl(fmt(Math.round(E.hari_setara[1])) + " hari")} emisi seluruh Indonesia`,
       "Emisi gas rumah kaca dari luas terbakar musim ini", "Batang = juta ton CO₂-ekuivalen; garis = rentang rendah–tinggi. Klik batang musim ini untuk cara hitung.",
-      kpi([["Emisi musim ini", rentang(m, v => fmt(Math.round(v))), "juta ton CO₂e"], ["Setara emisi nasional", fmt(Math.round(E.hari_setara[1])) + " hari", `rentang ${fmt(Math.round(E.hari_setara[0]))}–${fmt(Math.round(E.hari_setara[2]))} hari`],
-        ["Dari gambut", Math.round(E.gambut_mt / (E.gambut_mt + E.mineral_mt) * 100) + "%", `porsi luas gambut dipakai ${Math.round(E.porsi_gambut[1] * 100)}%`], ["Per ha gambut", fmt(Math.round(A.gambut_tdm[1] * A.ef_gambut)) + " t", "CO₂e, perkiraan tengah"]])
-      + hbar(rows, {L: 170}),
-      `Emisi = luas musim (bagian 6) × [porsi gambut × ${A.gambut_tdm[1]} t bahan kering/ha (rentang ${A.gambut_tdm[0]}–${A.gambut_tdm[2]}) × ${A.ef_gambut} t CO₂e/t + porsi tanah mineral × ${A.mineral_tdm[1]} t/ha (rentang ${A.mineral_tdm[0]}–${A.mineral_tdm[2]}, asumsi kami) × ${A.ef_mineral} t CO₂e/t]. Faktor gambut: IPCC 2013 Wetlands Supplement Bab 2; faktor vegetasi: Andreae & Merlet 2001; CH₄ dikali GWP100 = ${A.gwp_ch4}. Porsi gambut rendah–tinggi ${E.porsi_gambut.map(v => Math.round(v * 100) + "%").join(" / ")}: batas bawah porsi 2015 (33%, World Bank), batas atas porsi kompleks aktif di peta gambut. Ketidakpastian terbesar ada pada kedalaman gambut yang terbakar. CO₂ dari vegetasi sebagian diserap kembali saat tumbuh lagi; dari gambut tidak.`);
+      hbar(rows, {L: 170}),
+      `Sumber: luas terbakar bagian 6; IPCC 2013 Wetlands Supplement, Andreae & Merlet 2001, World Bank 2016 dan 2019`);
   }
   function popEmisi() { const E = D.emisi;
     dlg("Cara menghitung emisi", "Luas × bahan bakar terbakar × faktor emisi",
@@ -318,12 +317,10 @@ const Dampak = (() => {
     const kons = ["konsesi_sawit", "konsesi_hph", "konsesi_lain"].reduce((a, c) => a + (Ek[c]?.ha[1] || 0), 0);
     return ex(8, `Kerusakan & kerugian lahan diperkirakan ${hl(rp(tot[1]))}; ${hl(rb(kons) + " ha")} terbakar di dalam konsesi perusahaan`,
       "Nilai kerusakan dan kerugian per status lahan, musim berjalan", "Batang = nilai tengah (Rupiah 2026); garis = rentang. Klik untuk rincian atau daftar perusahaan.",
-      kpi([["Nilai lahan terbakar", rentang(tot, rp), "kerusakan + kerugian produksi"], ["Di konsesi perusahaan", rb(kons) + " ha", "sawit, PBPH/HPH, lain"],
-        ["Lahan masyarakat (APL)", rb(Ek.apl?.ha[1] || 0) + " ha", "kebun & ladang rakyat, semak"], ["Perusahaan dengan api aktif", fmt(D.lahan.perusahaan.length), "konsesi berisi kompleks aktif"]])
-      + hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
+      hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
       + `<div class="lbl" style="margin:14px 0 4px">Konsesi dengan kompleks api aktif terluas</div>`
       + tabel(["Pemegang izin", "Jenis", ">Luas kompleks", ">Kompleks"], D.lahan.perusahaan.slice(0, 12).map((p, j) => baris("pt|" + j, `<td><b>${esc(p.nama)}</b></td><td>${esc(KAT[p.jenis]?.[0] || p.jenis)}</td><td class="n">${rb(p.luas)} ha</td><td class="n">${fmt(p.kompleks.length)}</td>`))),
-      `Nilai per ha diturunkan dari tabel World Bank 2016 (The Cost of Fire) untuk 2015: perkebunan US$${fmt(D.asumsi.nilai_usd_ha.konsesi_sawit)}/ha (kerugian perkebunan ÷ luas sawit & kebun terbakar), pangan/APL US$${fmt(D.asumsi.nilai_usd_ha.apl)}/ha, kehutanan US$${fmt(D.asumsi.nilai_usd_ha.kehutanan)}/ha (kerugian kehutanan ÷ lahan "lainnya"). Dikonversi ke Rupiah 2026 (inflasi AS × kurs Rp${fmt(D.kerugian.kurs)}). Porsi status lahan dari kompleks aktif saat ini. APL tidak selalu kebun produktif, jadi nilainya condong ke atas. Nama perusahaan dari peta konsesi; api di konsesi tidak otomatis berarti perusahaan pelakunya.`);
+      `Sumber: World Bank 2016 (The Cost of Fire), BPS inflasi, peta konsesi; api di konsesi tidak otomatis berarti perusahaan pelakunya`);
   }
   function popEko(c) { const v = D.ekonomi[c];
     dlg(esc(KAT[c]?.[0] || c), "Nilai kerusakan & kerugian lahan terbakar", tabel(["Skenario", ">Luas", ">Nilai (Rp 2026)"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rb(v.ha[i])} ha</td><td class="n">${rp(v.rp[i])}</td></tr>`))
@@ -340,12 +337,10 @@ const Dampak = (() => {
       `<td><b>${esc(t.nama)}</b><small class="dk-s">${esc(t.negara)}</small></td>${t.pm.map(v => `<td class="n"><span class="dk-sel" style="background:${W5[kelas(v)]};color:${kelas(v) >= 2 ? "#fff" : "#13213a"}">${fmt(v)}</span></td>`).join("")}`)).join("")}</tbody></table></div>`;
     return ex(9, buruk.length ? `Udara tidak sehat diperkirakan menjangkau ${hl(buruk.length + " kota")} di negara tetangga dalam 4 hari ke depan, termasuk ${esc(buruk.slice(0, 3).map(t => t.nama).join(", "))}` : "Asap belum diperkirakan membuat udara tidak sehat di kota-kota negara tetangga",
       "PM2.5 di kota negara tetangga dan liputan media internasional", "Angka = PM2.5 maksimum harian (µg/m³), warna = kelas ISPU. Klik kota untuk grafik, klik batang untuk berita hari itu.",
-      kpi([["Kota tetangga tidak sehat", fmt(buruk.length) + " dari " + T.length, "dalam 4 hari prakiraan"], ["Terburuk", esc([...T].sort((a, b) => Math.max(...b.pm) - Math.max(...a.pm))[0]?.nama || "–"), `PM2.5 maks. ${fmt(Math.max(...([...T].sort((a, b) => Math.max(...b.pm) - Math.max(...a.pm))[0]?.pm || [0])))} µg/m³`],
-        ["Berita internasional", fmt(nI), `${I.metode === "asal" ? "dari media luar negeri" : "judul menyebut negara tetangga"}, 120 hari`], ["7 hari terakhir", fmt(n7), "berita internasional"]])
-      + grid + `<div class="lbl" style="margin:14px 0 4px">Berita internasional per hari, 60 hari terakhir</div>`
+      grid + `<div class="lbl" style="margin:14px 0 4px">Berita internasional per hari, 60 hari terakhir</div>`
       + kolom(hr, [{k: "i", w: W.ungu, v: I.harian}], {H: 110, tip: (t, n) => `<b>${tgl(t)}</b><br>${n} berita`, dk: t => "intl|" + t})
       + tabel(["Tanggal", "Judul"], I.contoh.slice(0, 8).map((x, j) => baris("intlb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${esc(x.judul)}<small class="dk-s">${esc(x.media || "")}</small></td>`))),
-      `PM2.5 dari prakiraan CAMS di sel ± 110 km yang memuat kota itu; sumbernya bisa juga polusi lokal, jadi bandingkan dengan pengukuran badan lingkungan setempat (NEA Singapura, APIMS Malaysia). ${I.metode === "asal" ? "Berita internasional = media yang ditandai bot berita sebagai luar negeri." : "Penanda asal media belum tersedia; dipakai judul yang menyebut Malaysia/Singapura/Brunei."}`);
+      `Sumber: prakiraan CAMS (Copernicus), liputan media internasional`);
   }
   function popIntlHari(t) { const xs = D.internasional.contoh.filter(x => x.tgl === t);
     dlg(`Berita internasional ${tgl(t)}`, `${D.internasional.harian[t] || 0} berita`, xs.length ? `<ul class="dk-ul">${xs.map(x => `<li>${tautan(x.url, x.judul)}<small class="dk-s">${esc(x.media || "")}</small></li>`).join("")}</ul>` : `<p class="fnd">Judulnya tidak termasuk 40 contoh terbaru yang disimpan.</p>`); }
@@ -369,10 +364,8 @@ const Dampak = (() => {
       ["Wang dkk. 2025, Environ Res 273:121221 (meta-analisis); Riskesdas 2018 Tabel 5.1.1", "https://doi.org/10.1016/j.envres.2025.121221", "risiko ISPA (bagian 3)"]];
     return ex(10, `Kerugian akibat kebakaran sejak ${tgl(D.musim.mulai)} diperkirakan ${hl(rp(T[1]))}, dengan rentang ${rp(T[0])} sampai ${rp(T[2])}`,
       "Kerusakan dan kerugian per sektor, Rupiah 2026, metode World Bank", "Air terjun: tiap sektor menumpuk ke total. Garis merah = rentang total. Klik sektor untuk angka rendah–tinggi.",
-      kpi([["Total kerugian", rentang(T, rp), "Rupiah 2026"], ["Luas dasar", rentang(K.ha, v => rb(v)), `ha sejak ${tgl(D.musim.mulai)}`],
-        ["Biaya per ha", `US$${fmt(K.usd_ha[1])}`, `rendah US$${fmt(K.usd_ha[0])} · tinggi US$${fmt(K.usd_ha[2])}`], ["Terbesar", esc(SEKTOR[sk[0][0]] || sk[0][0]), Math.round(sk[0][1][1] / T[1] * 100) + "% dari total"]])
-      + svg + `<details class="lipat" style="margin-top:12px"><summary>Sumber dan asumsi</summary><div class="isi">${tabel(["Sumber", "Dipakai untuk"], SUMBER.map(([n, u, f]) => `<tr><td class="dk-wrap">${u ? tautan(u, n) : esc(n)}</td><td class="dk-wrap">${esc(f)}</td></tr>`))}</div></details>`,
-      `Cara hitung: luas musim (bagian 6) × biaya per ha × porsi tiap sektor dari tabel World Bank 2015. Tengah = US$16.124 juta ÷ 2,425 juta ha = US$${fmt(K.usd_ha[1])}/ha (dolar 2015). Rendah = US$5,2 miliar 2019 ÷ luas resmi 2019 setahun = US$${fmt(K.usd_ha[0])}/ha; tinggi = US$5,2 miliar ÷ 620.201 ha (Jan–Sep 2019) = US$${fmt(K.usd_ha[2])}/ha; keduanya dolar 2019, dan memakai luas rendah/tinggi bagian 6. ${K.rp_per_usd ? `Ke Rupiah 2026: kerugian terjadi di ekonomi Indonesia, jadi dolar dikembalikan ke Rupiah dengan kurs yang dipakai World Bank lalu dinaikkan dengan inflasi Indonesia (BPS): US$1 2015 = Rp${fmt(K.rp_per_usd["2015"])}, US$1 2019 = Rp${fmt(K.rp_per_usd["2019"])} (Rupiah 2026).` : `Ke Rupiah 2026: dolar × inflasi AS (CPI 2026 ≈ ${K.cpi["2026"]}) × kurs asumsi Rp${fmt(K.kurs)}/US$.`} Karbon dinilai World Bank hanya US$5/ton; dengan harga karbon sosial internasional nilainya jauh lebih besar. Tidak termasuk: dampak kesehatan jangka panjang, kematian, kerugian negara tetangga, dan hilangnya jasa ekosistem lain. Ini perkiraan orde besaran untuk perencanaan, bukan penilaian kerugian resmi (yang disusun BNPB/Bappenas dengan metode PDNA).`);
+      svg + `<details class="lipat" style="margin-top:12px"><summary>Sumber dan asumsi</summary><div class="isi">${tabel(["Sumber", "Dipakai untuk"], SUMBER.map(([n, u, f]) => `<tr><td class="dk-wrap">${u ? tautan(u, n) : esc(n)}</td><td class="dk-wrap">${esc(f)}</td></tr>`))}</div></details>`,
+      `Sumber: World Bank 2016 dan 2019, BPS, GWIS; perkiraan orde besaran, bukan penilaian resmi BNPB/Bappenas`);
   }
   function popSek10(k) { const v = D.kerugian.sektor[k];
     dlg(esc(SEKTOR[k] || k), "Kerusakan & kerugian sektor ini, Rupiah 2026", tabel(["Skenario", ">Nilai"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rp(v[i])}</td></tr>`))
@@ -401,12 +394,9 @@ const Dampak = (() => {
     const el = $("#dampak"); if (!el) return; ikat(el);
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak kebakaran…</div>`;
       try { await muat(); } catch (e) { gagal = e.message; el.innerHTML = `<div class="kosong">Data dampak belum tersedia (${esc(gagal)}). Jalankan scripts/data/dampak.py.</div>`; return; } }
-    const T = D.kerugian.total, ts = PRIO.reduce((a, k) => a + jiwaProv(k, 0).slice(2).reduce((x, y) => x + y, 0), 0);
-    const fl = F ? Math.max(F.kejadian.filter(e => e.bandara).reduce((a, e) => a + e.terdampak, 0), ...F.kejadian.filter(e => !e.bandara && e.jumlah).map(e => e.jumlah), 0) : null;
-    el.innerHTML = `<div class="head"><div><h2>Dampak kebakaran</h2><p>Apa yang sudah dan sedang ditanggung warga, ekonomi, dan lingkungan sejak ${tgl(D.mulai_musim)}. Semua angka perkiraan dengan rentang; cara hitung ada di bawah tiap grafik. Diperbarui ${jamWIB(D.dibuat)}.</p></div></div>
-      ${kpi([["Kerugian sejak " + tgl(D.mulai_musim), rp(T[1]), `rentang ${rp(T[0])}–${rp(T[2])}`], ["Luas terbakar", "± " + rb(D.musim.ha[1]) + " ha", "perkiraan satelit"],
-        ["Udara tidak sehat hari ini", jt(ts), "jiwa di 9 provinsi prioritas"], ["Penerbangan terdampak", fl == null ? "–" : fmt(fl), "minimal, dari berita"]])}
-      <nav class="dk-nav" aria-label="Bagian dampak">${JUDUL.map((j, i) => `<button data-ke="${i + 1}">${i + 1}. ${j}</button>`).join("")}</nav>
+    /* judul halaman dihapus (pemilik); tiap pintasan bagian berikon dengan warna sendiri */
+    const WK = ["#5f6fb0", "#1d4e89", "#c9503a", "#e58a45", "#8a6a3f", "#2b8c86", "#5b6782", "#b8932f", "#4f8fc4", "#7a2b3f"];
+    el.innerHTML = `<nav class="dk-nav" aria-label="Bagian dampak">${JUDUL.map((j, i) => `<button data-ke="${i + 1}" style="--w:${WK[i]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[i]}"/></svg>${j}</button>`).join("")}</nav>
       <div id="dkIsi"></div>`;
     const isi = $("#dkIsi"); isi.innerHTML = gambar(1) + gambar(2);
     nanti(() => { isi.insertAdjacentHTML("beforeend", [3, 4, 5, 6, 7, 8, 9, 10].map(gambar).join("")); }); /* INP: dua bagian pertama dulu */

@@ -126,6 +126,12 @@ const Bagikan = {
     d.querySelectorAll("[role=tab]").forEach(t => { const on = t.dataset.tab === id; t.setAttribute("aria-selected", on); t.tabIndex = on ? 0 : -1; });
     d.querySelectorAll("[role=tabpanel]").forEach(p => p.hidden = p.id !== "bgP-" + id);
   },
+  /* bagikan satu kompleks dari lacinya: dialog dibuka di tab Tautan dengan alamat kompleks itu */
+  bukaKompleks(id) {
+    this._urlKhusus = location.origin + "/k/" + encodeURIComponent(id);
+    const d = this.dialog(); if (!d._resetK) { d._resetK = 1; d.addEventListener("close", () => { this._urlKhusus = null; }); }
+    this.buka().then(() => this.pilihTab("tautan"));
+  },
   async buka(tpl, exId) {
     if (typeof S === "undefined" || !S.meta) return this.kabar("Data belum termuat, coba lagi sebentar.");
     this._hari = null; this._snap = undefined; this._ex = null; this._th = {}; this._d = {};
@@ -159,6 +165,7 @@ const Bagikan = {
   situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "pantau.terasurban.com" : location.host;
     return (h + location.pathname).replace(/[^/]*\.html$/, "").replace(/\/(peta|insight|berita|kompleks|posko|tren|dampak|sim|metode|informasi)\/?$/, "/$1"); },
   tautan() {
+    if (this._urlKhusus) return this._urlKhusus; /* dibuka dari laci kompleks: tautan langsung /k/K0001 */
     const u = new URL(location.href); u.search = "";
     if (S.jalur?.length) u.searchParams.set("wil", S.jalur.join("|"));
     return u.toString();
@@ -167,7 +174,13 @@ const Bagikan = {
     const u = encodeURIComponent(this.tautan()), t = encodeURIComponent(this.teksPendek());
     const L = [["WhatsApp", `https://wa.me/?text=${t}%20${u}`], ["Telegram", `https://t.me/share/url?url=${u}&text=${t}`], ["X", `https://x.com/intent/tweet?text=${t}&url=${u}`],
       ["Facebook", `https://www.facebook.com/sharer/sharer.php?u=${u}`], ["LinkedIn", `https://www.linkedin.com/sharing/share-offsite/?url=${u}`]];
-    this.dialog().querySelector("#bgSos").innerHTML = L.map(([n, h]) => `<a class="btn sec" href="${h}" target="_blank" rel="noopener noreferrer">${n}</a>`).join("");
+    /* logo aplikasi (path 24×24, isi penuh) dan warna merek untuk lingkaran ikon */
+    const IK = {WhatsApp: ["#25D366", "M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2Zm5.3 14.1c-.2.6-1.3 1.2-1.8 1.3-.5 0-1 .2-3.3-.7-2.8-1.1-4.5-4-4.7-4.2-.1-.2-1.1-1.5-1.1-2.9s.7-2 1-2.3c.2-.3.5-.3.7-.3h.5c.2 0 .4 0 .6.5l.8 2c.1.2.1.4 0 .5l-.3.5-.4.4c-.1.1-.3.3-.1.6.2.3.8 1.3 1.7 2.1 1.2 1 2.1 1.4 2.4 1.5.3.1.5.1.6-.1l.9-1c.2-.3.4-.2.6-.1l1.9.9c.3.1.5.2.5.3.1.2.1.7-.1 1.3Z"],
+      Telegram: ["#229ED9", "M21.9 4.3 18.7 19c-.2 1-.9 1.3-1.8.8l-4.8-3.6-2.3 2.2c-.3.3-.5.5-1 .5l.3-4.9 8.9-8c.4-.3-.1-.5-.6-.2l-11 6.9-4.7-1.5c-1-.3-1-1 .2-1.5l18.5-7.1c.9-.3 1.6.2 1.5 1.7Z"],
+      X: ["#000000", "M17.8 3h3.1l-6.8 7.7L22 21h-6.2l-4.9-6.4L5.3 21H2.2l7.2-8.3L1.8 3h6.4l4.4 5.9L17.8 3Zm-1.1 16.2h1.7L7.4 4.7H5.6l11.1 14.5Z"],
+      Facebook: ["#1877F2", "M14 22v-8h2.7l.4-3.2H14v-2c0-.9.3-1.6 1.6-1.6h1.7V4.3c-.3 0-1.3-.1-2.5-.1-2.5 0-4.2 1.5-4.2 4.3v2.3H7.8V14h2.8v8H14Z"],
+      LinkedIn: ["#0A66C2", "M20.4 20.5h-3.6v-5.6c0-1.3 0-3-1.8-3s-2.1 1.4-2.1 2.9v5.7H9.3V9h3.4v1.6c.5-.9 1.6-1.8 3.4-1.8 3.6 0 4.3 2.4 4.3 5.5v6.2ZM5.3 7.4a2.1 2.1 0 1 1 0-4.2 2.1 2.1 0 0 1 0 4.2Zm1.8 13.1H3.5V9h3.6v11.5Z"]};
+    this.dialog().querySelector("#bgSos").innerHTML = L.map(([n, h]) => `<a class="bg-app" href="${h}" target="_blank" rel="noopener noreferrer" style="--w:${IK[n][0]}"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${IK[n][1]}"/></svg></i><span>${n}</span></a>`).join("");
   },
   teksPendek() {
     const d = this.data("");
@@ -518,7 +531,12 @@ const Bagikan = {
     x.restore();
   },
   exBlok(x, a, b, w, h, d) {
-    this.kartu(x, a, b, w, h); const pd = 36, lw = w - 2 * pd;
+    const pd = 36, lw = w - 2 * pd;
+    /* grafik lebar (mis. kalender musim) jangan dikotak-hitamkan di kartu tinggi: kartu dipendekkan ke tinggi isi, lalu ditaruh di tengah ruangnya */
+    if (!d.kosong && d.img) { this.f(x, 500, 17); const nf = d.fn ? Math.min(3, this.baris(x, d.fn, lw).length) : 0, nu = d.unit ? 2 * 27 : 0;
+      const ih = d.img.height * Math.min(lw / d.img.width, 1e9), perlu = pd + nu + 14 + ih + 14 + nf * 24 + pd;
+      if (perlu < h) { b += (h - perlu) / 2; h = perlu; } }
+    this.kartu(x, a, b, w, h);
     if (d.kosong) { this.f(x, 500, 24); x.fillStyle = this.C.tinta2; x.fillText("Buka tab Insight sekali, lalu coba lagi.", a + pd, b + pd + 30); return; }
     let y = b + pd;
     this.f(x, 500, 19); x.fillStyle = this.C.tinta2;

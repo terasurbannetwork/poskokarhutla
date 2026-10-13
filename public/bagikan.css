@@ -28,7 +28,12 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-url{display:flex;gap:8px}
 .bg-url input{flex:1;min-width:0;height:38px;border:1px solid var(--line);border-radius:12px;background:var(--surface);padding:0 12px;font-size:13px}
 .bg-cat{margin:0;font-size:12px;color:var(--ink2)}
-.bg-sos{display:flex;flex-wrap:wrap;gap:8px}
+.bg-sos{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px}
+.bg-app{display:flex;flex-direction:column;align-items:center;gap:6px;padding:12px 6px 10px;border:1px solid var(--line);border-radius:14px;background:var(--card);color:var(--ink);font-size:12px;font-weight:700;transition:border-color .15s,transform .15s,box-shadow .15s}
+.bg-app:hover{border-color:var(--w);transform:translateY(-1px);box-shadow:0 6px 16px oklch(25% .05 256 / .12)}
+.bg-app i{width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:var(--w);color:#fff}
+.bg-app svg{width:20px;height:20px}
+@media (max-width:520px){.bg-sos{grid-template-columns:repeat(3,minmax(0,1fr))}}
 .bg-sos a{text-decoration:none}
 .bg-eks{display:grid;gap:10px}
 .bg-eks button{display:grid;gap:3px;text-align:left;padding:14px 16px;border:1px solid var(--line);border-radius:var(--r-sm);background:var(--surface);color:var(--ink);cursor:pointer}

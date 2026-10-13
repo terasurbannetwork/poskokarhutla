@@ -1,13 +1,12 @@
 /* dampak.css — tab "Dampak" (dampak.js). Hanya warna token halaman + palet redup. */
-#dampak .dk-kpi{margin:0 0 14px;grid-template-columns:1fr 1fr}
-@media (min-width:900px){#dampak .dk-kpi{grid-template-columns:repeat(4,1fr)}}
-#dampak .kpi b{font-size:clamp(17px,2.4vw,22px);overflow-wrap:anywhere}
 .dk-r{display:block;font-size:11px;font-weight:600;color:var(--ink2);font-family:inherit}
 .dk-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 16px;padding:2px}
-.dk-nav button{flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:6px 12px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:var(--shadow)}
+.dk-nav button{flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 13px 4px 4px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,background .15s,color .15s}
+.dk-nav button svg{flex:none;width:26px;height:26px;padding:5px;border-radius:50%;background:var(--surface);color:var(--brand2);transition:background .15s,color .15s}
 .dk-nav button:hover{border-color:var(--brand2)}
-.dk-bag{scroll-margin-top:12px}
-.dk-no{font-size:11px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);margin:0 0 6px 4px}
+.dk-nav button:hover svg,.dk-nav button:focus-visible svg{background:var(--brand2);color:#fff}
+.dk-nav button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.dk-bag{scroll-margin-top:12px;margin:0 0 16px}
 .dk-svg{display:block;width:100%;height:auto;overflow:visible}
 .dk-svg text{fill:currentColor}
 .dk-svg g[data-dk]:hover>.hov{fill:var(--surface)}
@@ -37,3 +36,7 @@
   #dampak .ex{padding:16px 14px 12px}
   .dk-wrap{min-width:180px}
 }
+/* pintasan bagian berwarna (13 Okt 2026) */
+.dk-nav button{border-color:color-mix(in oklch, var(--w) 30%, var(--line));background:color-mix(in oklch, var(--w) 6%, var(--card))}
+.dk-nav button svg{background:var(--w)!important;color:#fff!important}
+.dk-nav button:hover{border-color:var(--w);background:color-mix(in oklch, var(--w) 14%, var(--card))}
