@@ -696,6 +696,12 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item a{color:inherit;text-decoration:none}
 .br-item a:hover b{text-decoration:underline}
 .br-item b{font-size:14px;line-height:1.35}
+
+/* panel Overlay: judul grup bergaya kepala tabel (pita navy, huruf kapital), isi selalu terbuka */
+.lapis details{border-top:0;padding:0;margin-top:8px}
+.lapis summary{background:#0b2545;color:#fff;border-radius:8px;padding:6px 10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:default;pointer-events:none}
+.lapis summary::after{content:none}
+.lapis details>label{padding-left:8px}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
@@ -812,11 +818,11 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
     <div class="tools" id="tools">
       <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta"><button data-mp="kini" aria-pressed="true">Sekarang</button><button data-mp="cuaca" aria-pressed="false" title="FWI dan angin bergerak">Cuaca</button></div>
       <div class="seg penuh" role="group" aria-label="Rentang waktu" id="rentang"></div>
-      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Lapisan peta" title="Lapisan peta">
+      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
       <div class="box lapis" id="lapis">
-        <div class="lbl" style="margin-bottom:2px">Lapisan</div>
+        <div class="lbl" style="margin-bottom:2px">Overlay</div>
         <details open><summary>Api & respons</summary>
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
@@ -832,12 +838,12 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="hujan"> Hujan 24 jam</label>
           <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
         </details>
-        <details><summary>Lahan</summary>
+        <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
           <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
-          <label><input type="checkbox" data-l="konsesi"> Konsesi sawit & HPH</label>
+          <label><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label>
         </details>
-        <details><summary>Peta dasar</summary>
+        <details open><summary>Peta dasar</summary>
           <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         </details>
       </div>
@@ -1000,7 +1006,7 @@ async function muatData() {
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
   const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
   S.fwiHari = Math.max(0, fw.grid[0].hari.findIndex(h => h.tgl === fw.hari_ini));
-  $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  $("#upd").textContent = "Data " + jamWIB(S.acuan || meta.dibuat); $("#upd").title = "Lintasan satelit terakhir; diolah " + jamWIB(meta.dibuat);
   const umur = (Date.now() - new Date(meta.dibuat)) / 36e5; S.basi = umur > 36;
   if (umur > 26) { $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status kompleks tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
 }
@@ -1752,7 +1758,7 @@ const Laci = {
         ${p.cuaca ? `<table class="tb2"><tbody>${baris("Suhu siang", fmt(p.t) + " °C")}${baris("Kelembapan", fmt(p.rh) + "%")}${baris("Angin", `${fmt(p.ws)} km/jam dari ${arah(p.wd)}`)}</tbody></table>` : `<p class="fnd">Cuaca hari ini tidak tersedia untuk sel ini.</p>`}`)}
       ${lipat("Lahan & penanggung jawab", `${p.tanggung ? `<p style="margin:0;font-size:12.5px"><b>Teruskan ke: ${esc(p.tanggung[0])}</b><br>${esc(p.tanggung[1] || "")}${p.gambut ? " · <b>lahan gambut</b>" : ""}</p>` : ""}
         <table class="tb2"><tbody>${baris("Bahaya InaRISK", S.inarisk?.[p.id] != null ? fmt(S.inarisk[p.id]) + " (" + kelasInarisk(S.inarisk[p.id]) + ")" : "tidak ada data")}${baris("Lahan gambut", p.gambut ? "ya" : p.gambut === false ? "tidak" : "–")}</tbody></table>
-        <p class="fnd">Status lahan dari peta kawasan hutan 2017 dan konsesi ± 2014; pastikan ke KPH/ATR.</p>`)}
+        <p class="fnd">Status lahan dari peta kawasan hutan 2017 dan konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026); pastikan ke KPH/ATR.</p>`)}
       ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id} · ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km · menjangkau ${fmt(ps.kompleks.length)} kompleks (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
         <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Via darat</th></tr></thead><tbody>
           ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">± ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
@@ -1815,7 +1821,7 @@ const Tabel = {
     $("#tjudul").innerHTML = this.prov ? `Kompleks di ${esc(namaProv(this.prov))} <button class="btn sec" data-semua style="height:28px;padding:0 10px;font-size:12px;margin-left:6px">Semua provinsi ✕</button>` : "Semua kompleks aktif";
     $("#tjudul").onclick = e => { if (e.target.closest("[data-semua]")) { Tabel.prov = null; Tabel.hal = 0; document.querySelectorAll("#prioritas details[data-pr][open]").forEach(x => x.open = false); nanti(() => Tabel.render()); } };
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
-    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span></td>
+    $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>
       <td>${esc(namaProv(p.prov))}</td><td>${esc(p.kab)}</td><td>${esc(p.kec)}</td>${["px24", "hari", "n", "luas", "fwi", "dc"].map(k => `<td class="n num">${fmt(p[k])}</td>`).join("")}</tr>`).join("")
       : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
@@ -4177,7 +4183,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Bandara, landasan, helipad", "OurAirports + OpenStreetMap", "domain publik; ODbL", "titik", "manual", "udara.json"],
       ["METAR", "aviationweather.gov (NOAA)", "tidak dicantumkan", "25 bandara", "harian", "metar.json"],
       ["Gambut", "GFW Global peatland extent v20230315 (Miettinen dkk. 2016 + Gumbricht dkk. 2017)", "CC BY 4.0", "ubin z8 ± 600 m, sel 2 × 2 piksel ± 1,2 km (gambut bila ≥ 2 dari 4 piksel)", "manual", "lahan/gambut.geojson"],
-      ["Konsesi sawit dan HPH", "GFW (data KLHK; sawit v20191031, data ± 2014). HTI belum ada", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
+      ["Konsesi sawit, HTI, HPH, tambang", "GFW (data KLHK; sawit & HPH ± 2014), Trase (HTI 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
       ["Kawasan hutan", "KLHK versi 2017 lewat akun GFW di ArcGIS Online", "tidak dicantumkan", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
       ["Luas terbakar resmi 2018–2023", "KLHK SiPongi, dikutip Tulisan Hukum JDIH BPK 2024", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
       ["Luas terbakar satelit 2002–2025", "GWIS (EU JRC/Copernicus), MODIS MCD64A1 C6.1 per GADM 3.6", "CC BY 4.0", "per provinsi lama (Kaltim termasuk Kaltara; Papua lama)", "manual", "luas_satelit.json"],
@@ -4186,7 +4192,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Harga satuan dan uang harian", "Tokopedia, Indotrading, INAPROC, Auto2000, Carmudi, SSH daerah; SBM 2026", "–", "per item", "tetap (di kode)", "index.html"],
       ["Parameter ekonomi dan efektivitas", "lihat tabel parameter bagian 10", "–", "–", "tetap (di kode)", "keputusan.json"]])}`,
     batas: ["Belum tersedia: FWI resmi dan radar SRI/PAC 24H BMKG SPARTAN (perlu surat permintaan), daftar desa MPA KLHK Dit. PKHL (perlu surat permintaan), peta bahan bakar/tutupan lahan, burned area MODIS/VIIRS dari Earthdata, hujan satelit IMERG/GSMaP.",
-      "Lapisan lahan berumur: kawasan hutan 2017, konsesi ± 2014, HTI belum ada; status lahan wajib dipastikan ke KPH/ATR.", "Banyak lisensi data tidak dicantumkan di sumbernya."]});
+      "Lapisan lahan berumur: kawasan hutan 2017, konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026); status lahan wajib dipastikan ke KPH/ATR.", "Banyak lisensi data tidak dicantumkan di sumbernya."]});
 
   B.push({ik: "cari", j: "Peer review 12 Oktober 2026", sub: "Temuan peninjau, yang sudah diperbaiki, dan yang masih antre",
     singkat: `Pada 12 Oktober 2026 metode dan kode platform ditinjau oleh peninjau metode dan peninjau kode. Sebagian besar temuan sudah diperbaiki; sisanya masih antre. Contoh di bawah menghitung berapa kompleks hari ini yang statusnya bergantung pada perbaikan tersebut.`,
@@ -4221,7 +4227,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
     batas: ["Titik panas tidak melihat api di bawah awan atau asap tebal; status 'tidak teramati' bukan bukti padam.", "Angka titik panas platform belum cocok dengan BNPB untuk Kalbar dan Riau.",
       "Cuaca dari model 0,5° dengan hujan model; belum dibandingkan dengan FWI resmi BMKG.", "Ambang prioritas 15 piksel adalah penyesuaian dari uji balik S-NPP, belum diuji ulang dengan 3 satelit.",
       "Indeks risiko riwayat belum diuji terhadap luas terbakar resmi.", "Lokasi posko dan pangkalan memakai jarak garis lurus; lapisan sumber air dan faskes baru lengkap di satu provinsi.",
-      "Lapisan lahan berumur: kawasan hutan 2017, konsesi ± 2014, HTI belum ada; status lahan wajib dipastikan ke KPH/ATR.",
+      "Lapisan lahan berumur: kawasan hutan 2017, konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026); status lahan wajib dipastikan ke KPH/ATR.",
       "Model keputusan bertumpu pada parameter efektivitas yang sebagian besar asumsi; hasilnya untuk membandingkan pilihan, bukan meramal luas.",
       "Simulasi penjalaran belum divalidasi dan tidak memakai peta bahan bakar, lereng, atau pemadaman.", "Harga satuan bertanda estimasi belum diverifikasi ke e-Katalog atau SSH."]});
 
@@ -4451,7 +4457,7 @@ const Sim = {
     K.gb = this.raster(K, gb?.features, () => true);
     K.hutan = this.raster(K, kw?.features, q => ["HK", "THR", "HL", "KSA", "KPA"].includes(q.fungsi));
     K.semak = this.raster(K, [...(kw?.features || []).filter(f => ["HP", "HPT", "HPK"].includes(f.properties.fungsi)), ...(ks?.features || []).filter(f => f.properties.jenis === "hph")], () => true);
-    K.kebun = this.raster(K, ks?.features, q => q.jenis === "sawit");
+    K.kebun = this.raster(K, ks?.features, q => q.jenis === "sawit" || q.jenis === "hti");
     K.air = this.rasterAir(K, osm?.air);
     K.desa = [];
     if (ds) for (const daf of Object.values(ds)) for (const [la, lo, , nama] of daf) { const k = ke(lo, la); if (k >= 0) K.desa.push({nama, lat: la, lon: lo, k}); }
@@ -4702,7 +4708,7 @@ const Sim = {
         <label class="simcek"><input type="checkbox" id="simKal" ${o.kalibrasi ? "checked" : ""}> Kalibrasi laju ke pertumbuhan teramati 7 hari</label>
         <label class="simcek"><input type="checkbox" id="simLT" ${o.lahanTampil ? "checked" : ""}> Tampilkan peta bahan bakar</label>
         <div class="leg" style="margin-top:6px">${FUEL.map(k => `<span><i class="sw" style="background:${BAHAN[k].warna}"></i>${esc(BAHAN[k].n)}</span>`).join("")}<span><i class="sw" style="background:#4f8fc4"></i>Air / sekat (tidak terbakar)</span></div>
-        <p class="fnd">Gambut, kawasan hutan 2017, konsesi ± 2014, sungai OSM (bila ada untuk provinsi ini). Status lahan bukan tutupan lahan nyata.</p></details></details>
+        <p class="fnd">Gambut, kawasan hutan 2017, konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026), sungai OSM (bila ada untuk provinsi ini). Status lahan bukan tutupan lahan nyata.</p></details></details>
       <button class="btn pri" id="simJalan" style="width:100%;margin-top:10px">${this.hasil ? "Jalankan ulang" : `Jalankan ${1 + SKEN.filter(s => s.id !== "dasar" && o.on.has(s.id)).length} skenario`}</button>
       <div class="simprog" id="simProg" hidden><i></i></div><p class="fnd" id="simStatus" aria-live="polite"></p>
       <div id="simHasil"></div>`;
@@ -4814,5 +4820,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="operasi.js"></script>
 <script src="ringkasan.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
+<script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
+document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
 </body>
 </html>

@@ -4,13 +4,13 @@ Satuan pengambilan = (tahun, sel 0,5 derajat): rentang = deteksi pertama - 30 ha
 peristiwa tumbuh (>= 3 sel, 9 provinsi prioritas, mulai Jul-Nov) di sel itu. 30 hari = masa panas FWI, sama dengan yang
 dipakai di peramban (forecast past_days=30), jadi fitur latih dan fitur saat dipakai dihitung dengan cara yang sama.
 
-Kuota (bobot = lokasi x max(1, var/10 x hari/14), pola scripts/data/tanah.py): 5 variabel; pasangan diurut menurut jumlah
+Kuota (bobot = lokasi x max(1, var/10) x max(1, hari/14)): 5 variabel; pasangan diurut menurut jumlah
 peristiwa, berhenti di SEBARAN_KUOTA (bawaan 6500). Tiap pasangan satu berkas: jalan ulang tidak membayar dua kali.
-Tempo: tidur bobot x 0,8 dtk (~4.500/jam, di bawah batas 5.000/jam).
+Tempo: tidur bobot x 0,8 dtk (~4.500/jam, di bawah batas 5.000/jam); batas per jam -> tunggu 10 menit.
 
 ENSO: ONI (NOAA CPC oni.ascii.txt). IOD: DMI HadISST (NOAA PSL dmi.had.long.data). Disimpan sekali.
 
-Pakai:  python3 scripts/sebaran/cuaca.py      |  python3 scripts/sebaran/cuaca.py uji
+Pakai:  python3 scripts/sebaran/cuaca.py  |  ... ekstra [blok]  (variabel tambahan, sampel)  |  ... uji
 """
 import datetime as dt, importlib.util, json, math, os, sys, time, urllib.parse, urllib.request
 
@@ -46,7 +46,9 @@ def pakai(e):
 
 
 def bobot(hari, n_var=len(VAR)):
-    return max(1.0, n_var / 10 * hari / 14)
+    """Bobot Open-Meteo per lokasi: max(1, var/10) x max(1, hari/14). (Terukur 13 Okt 2026: 5 variabel tetap dihitung 1,
+    bukan 0,5; batas per jam 5.000 tercapai di ~2.300 menurut rumus var x hari/14 yang lama.)"""
+    return max(1.0, n_var / 10) * max(1.0, hari / 14)
 
 
 def pasangan(jalur=os.path.join(MENTAH, "peristiwa.jsonl")):
@@ -94,6 +96,21 @@ def main():
     batas_arsip = dt.date.today() - dt.timedelta(days=6)
     kuota = float(os.environ.get("SEBARAN_KUOTA", "6500"))
     daf = [x for x in pasangan()[:int(os.environ.get("SEBARAN_PASANGAN", "1500"))] if not os.path.exists(nama(*x[0]))]
+    # SEBARAN_TAHUN="2023:1000,2019:900": anggaran per tahun, pasangan terpadat dulu (validasi & tahun El Nino didahulukan)
+    if os.environ.get("SEBARAN_TAHUN"):
+        pilih = []
+        for bag in os.environ["SEBARAN_TAHUN"].split(","):
+            th, bud = int(bag.split(":")[0]), float(bag.split(":")[1])
+            w = 0
+            for x in pasangan():
+                if x[0][0] != th or os.path.exists(nama(*x[0])):
+                    continue
+                ww = bobot((x[2] - x[1]).days + 1)
+                if w + ww > bud:
+                    break
+                w += ww
+                pilih.append(x)
+        daf = pilih
     # kelompok <= 10 lokasi per panggilan: tahun sama, rentang mirip (urut tanggal mulai); rentang = gabungan
     daf.sort(key=lambda x: (x[0][0], x[1]))
     grup, pakai_b = [], 0.0
@@ -120,6 +137,10 @@ def main():
         try:
             data = ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=300)
         except KuotaHabis as e:
+            if "Hourly" in str(e):
+                print("batas per jam; tunggu 10 menit", file=sys.stderr)
+                time.sleep(600)
+                continue  # grup ini terlewat; jalan ulang mengambilnya
             print(f"kuota Open-Meteo habis ({e}); lanjutkan besok", file=sys.stderr)
             break
         for x, d in zip(g, data if isinstance(data, list) else [data]):
@@ -128,8 +149,67 @@ def main():
                       open(nama(*x[0]), "w"), separators=(",", ":"))
         pakai_b += w
         print(f"  grup {no + 1}/{len(grup)} bobot {pakai_b:.0f}", file=sys.stderr)
-        time.sleep(max(0, w * .75 - (time.time() - t_mulai)))
+        time.sleep(max(0, w * .8 - (time.time() - t_mulai)))
     print(f"selesai, bobot sesi {pakai_b:.0f}; berkas {len(os.listdir(CUACA))}", file=sys.stderr)
+
+
+# ---------------- variabel tambahan (riset pendorong, sampel) ----------------
+# ERA5 di arsip Open-Meteo TIDAK menyediakan CAPE maupun suhu/titik embun 850/700 hPa (diperiksa 13 Okt 2026: semua null),
+# jadi indeks Haines tidak bisa dihitung untuk 2015-2026; tinggi lapisan batas dipakai sebagai proksi potensi kepulan.
+EKSTRA = ["soil_moisture_0_to_7cm", "soil_moisture_7_to_28cm", "boundary_layer_height", "cloud_cover", "shortwave_radiation"]
+KOL_EKSTRA = ["sm0", "sm1", "blh", "awan", "radiasi"]
+DIR_EKSTRA = os.path.join(MENTAH, "cuaca_ekstra")
+BLOK0 = dt.date(2015, 1, 1)
+
+
+def blok(tgl):
+    """Blok 14 hari global (bobot Open-Meteo = 1 per lokasi) -> tanggal awal blok."""
+    return BLOK0 + dt.timedelta(days=(tgl - BLOK0).days // 14 * 14)
+
+
+def nama_ekstra(b, la, lo):
+    return os.path.join(DIR_EKSTRA, f"{b.isoformat()}_{la:.2f}_{lo:.2f}.json")
+
+
+def ekstra(kuota):
+    """Ambil variabel tambahan untuk blok (sel 0,5, 14 hari) yang memuat deteksi pertama peristiwa terbanyak."""
+    os.makedirs(DIR_EKSTRA, exist_ok=True)
+    n = {}
+    for l in open(os.path.join(MENTAH, "peristiwa.jsonl")):
+        if '"prov":"' not in l:
+            continue
+        e = json.loads(l)
+        if e["prov"] not in PRIORITAS or e["t0"][5:7] not in BULAN:
+            continue
+        k = (blok(dt.date.fromisoformat(e["t0"][:10])), *sel05(e["lat0"], e["lon0"]))
+        n[k] = n.get(k, 0) + 1
+    daf = [k for k in sorted(n, key=lambda k: -n[k]) if not os.path.exists(nama_ekstra(*k))][:int(kuota)]
+    print(f"ekstra: {len(daf)} blok, {sum(n[k] for k in daf)} peristiwa dari {sum(n.values())}", file=sys.stderr)
+    per_b = {}
+    for k in daf:
+        per_b.setdefault(k[0], []).append(k)
+    pakai_b = 0
+    for b, ks in sorted(per_b.items()):
+        for a in range(0, len(ks), 10):
+            g = ks[a:a + 10]
+            q = {"latitude": ",".join(str(x[1]) for x in g), "longitude": ",".join(str(x[2]) for x in g), "hourly": ",".join(EKSTRA),
+                 "start_date": b.isoformat(), "end_date": (b + dt.timedelta(days=13)).isoformat(), "timezone": "GMT"}
+            try:
+                data = ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=120)
+            except KuotaHabis as x:
+                print(f"kuota: {x}", file=sys.stderr)
+                return
+            for x, d in zip(g, data if isinstance(data, list) else [data]):
+                h = d["hourly"]
+                json.dump({"mulai": h["time"][0], **{c: h[v] for c, v in zip(KOL_EKSTRA, EKSTRA)}}, open(nama_ekstra(*x), "w"), separators=(",", ":"))
+            pakai_b += len(g)
+            time.sleep(len(g) * .8)
+    print(f"ekstra selesai, bobot {pakai_b}", file=sys.stderr)
+
+
+def seri_ekstra(tgl, lat, lon):
+    f = nama_ekstra(blok(tgl), *sel05(lat, lon))
+    return json.load(open(f)) if os.path.exists(f) else None
 
 
 def seri(th, lat, lon):
@@ -141,9 +221,12 @@ def seri(th, lat, lon):
 if __name__ == "__main__":
     if sys.argv[1:] == ["uji"]:
         assert sel05(-2.21, 113.92) == (-2.25, 113.75)
-        assert bobot(14) == 1.0 and abs(bobot(140) - 5.0) < 1e-9
+        assert blok(dt.date(2015, 1, 14)) == dt.date(2015, 1, 1) and blok(dt.date(2015, 1, 15)) == dt.date(2015, 1, 15)
+        assert bobot(14) == 1.0 and abs(bobot(140) - 10.0) < 1e-9 and bobot(140, 20) == 20.0
         assert pakai({"prov": "62", "sel": 3, "t0": "2019-09-01T05:00"}) and not pakai({"prov": "62", "sel": 2, "t0": "2019-09-01T05:00"})
         assert not pakai({"prov": "11", "sel": 30, "t0": "2019-09-01T05:00"}) and not pakai({"prov": "62", "sel": 30, "t0": "2019-03-01T05:00"})
         print("ok")
+    elif sys.argv[1:2] == ["ekstra"]:
+        ekstra(float(sys.argv[2]) if len(sys.argv) > 2 else 400)
     else:
         main()
