@@ -358,6 +358,10 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
 tr.klik{cursor:pointer}
 tr.klik:hover td{background:var(--surface)}
 dialog.dlg{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);padding:0;width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 48px);box-shadow:var(--shadow-lg)}
+.dlg [data-tip]{cursor:pointer}.dlg rect[data-tip]:hover{filter:brightness(1.12) saturate(1.1)}
+#dlgLaci{width:min(600px,calc(100vw - 24px))}
+#dlgLaci .laci{position:static;display:flex;width:auto!important;height:calc(100dvh - 64px);max-height:860px;box-shadow:none;border:0;border-radius:0}
+#dlgLaci .tarik{display:none}
 dialog.dlg::backdrop{background:oklch(15% .03 256 / .55)}
 .dlg .dh{display:flex;align-items:flex-start;gap:12px;padding:16px 18px 12px;border-bottom:1px solid var(--line)}
 .dlg .dh h3{font-size:18px}
@@ -799,6 +803,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <body>
 <div id="tip" role="tooltip"></div>
 <dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
+<dialog class="dlg dlg-laci" id="dlgLaci" aria-label="Rincian kompleks kebakaran"></dialog>
 <header class="top">
   <div class="mark">
     <a class="logo" href="./" title="Pantau Bencana"><img src="./img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary><div class="menu"><a href="./" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a href="./banjir/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</a></div></details>
@@ -928,7 +933,9 @@ const ringkas = n => typeof n !== "number" ? n : n >= 1e6 ? fmt(Math.round(n / 1
 const kartuTip = ({judul, kepala = "", sub = "", stat = [], daftar = [], tren = "", kaki = ""}) => `<div class="tp-hd">${kepala}<span class="tp-nm"><b>${judul}</b>${sub}</span></div>
   ${stat.length || daftar.length ? `<div class="tp-bd">${stat.length ? `<div class="tp-gr">${stat.map(([k, v, l, w]) => `<div class="tp-st" style="--w:${w || "var(--ink)"}"><b>${ringkas(v)}</b><small>${l}</small></div>`).join("")}</div>` : ""}
   ${daftar.length ? `<div class="tp-ls">${daftar.map(([b, sm]) => `<span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`).join("")}</div>` : ""}${tren}</div>` : ""}${kaki ? `<div class="tp-ft">${kaki}</div>` : ""}`;
-const tampilTip = (html, ev) => { const t = $("#tip"); t.innerHTML = html; t.classList.add("kartu", "on");
+/* dialog modal ada di lapisan teratas: tooltip harus ikut masuk ke dialog yang sedang terbuka supaya terlihat */
+const wadahTip = () => { const t = $("#tip"), w = document.querySelector("dialog[open]") || document.body; if (t.parentNode !== w) w.appendChild(t); return t; };
+const tampilTip = (html, ev) => { const t = wadahTip(); t.innerHTML = html; t.classList.add("kartu", "on");
   t.style.left = Math.min(innerWidth - t.offsetWidth - 8, ev.clientX + 14) + "px"; t.style.top = Math.max(8, ev.clientY - t.offsetHeight - 12) + "px"; };
 const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
@@ -969,6 +976,7 @@ function bukaSub(sub) { S.poskoSub = sub;
   nanti(() => { if (sub === "posko") Posko.render(); if (sub === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); } if (sub === "operasi") window.Operasi?.render(); }); }
 const sudah = {};
 function bukaTab(id, dorong = true) {
+  const dl = document.querySelector("#dlgLaci"); if (dl?.open) dl.close();
   if (ALIAS[id]) { const [t, sub] = ALIAS[id]; if (sub) S.poskoSub = sub; id = t; }
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
@@ -995,6 +1003,8 @@ function bukaTab(id, dorong = true) {
   /* menu Lainnya menempel tepat di bawah tombolnya (posisi fixed supaya tidak terpotong nav yang bisa digulir) */
   $("#tabs .lainnya").addEventListener("toggle", e => { if (!e.target.open) return; const r = e.target.querySelector("summary").getBoundingClientRect(), m = e.target.querySelector(".menu");
     m.style.left = Math.min(r.left, innerWidth - 200) + "px"; m.style.top = r.bottom + 6 + "px"; }); }
+$("#dlgLaci").addEventListener("close", () => { const el = $("#laci"); $("#p-peta").appendChild(el); el.classList.remove("on"); S.pilihK = null; });
+$("#dlgLaci").addEventListener("click", e => { if (e.target.id === "dlgLaci") e.target.close(); });
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); const d = $("#tabs .lainnya"); if (d) d.open = false; });
 document.addEventListener("click", e => { const d = $("#tabs .lainnya"); if (d?.open && !e.target.closest(".lainnya")) d.open = false; });
 $("#poskoSub").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaSub(b.dataset.s); });
@@ -1764,8 +1774,8 @@ document.addEventListener("click", e => { if (!e.target.closest(".cari")) $("#ha
 const Laci = {
   buka(id) {
     const f = S.kluster.features.find(f => f.properties.id === id); if (!f) return;
-    const p = f.properties; S.pilihK = id;
-    if (!document.querySelector("#p-peta.on")) bukaTab("peta");
+    const p = f.properties; S.pilihK = id; const pop = this._popup; this._popup = false;
+    if (!pop && !document.querySelector("#p-peta.on")) bukaTab("peta");
     if (S.jalur[0] !== p.prov) { S.jalur = [p.prov]; nanti(() => Peta.aturWilayah(false)); }
     const el = $("#laci"); el.classList.add("on");
     const lipat = (judul, isi, buka = true) => `<details class="lipat" ${buka ? "open" : ""}><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
@@ -1807,7 +1817,8 @@ const Laci = {
       <p class="fnd">Koordinat ${p.lat.toFixed(4)}, ${p.lon.toFixed(4)} · data ${jamWIB(S.meta.dibuat)}</p></div>`;
     if (el._tarik) el.appendChild(el._tarik);
     el.querySelector("[data-analisa]")?.addEventListener("click", () => Riwayat.buka(kunciKec));
-    el.querySelector(".tutup").onclick = () => { el.classList.remove("on"); S.pilihK = null; peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], ""], 3.4, 1.8]); };
+    const dl = $("#dlgLaci"); if (pop) { if (el.parentNode !== dl) dl.appendChild(el); if (!dl.open) dl.showModal(); }
+    el.querySelector(".tutup").onclick = () => { if (dl.open) return dl.close(); el.classList.remove("on"); S.pilihK = null; peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], ""], 3.4, 1.8]); };
     el.querySelector("#keSim").onclick = () => bukaTab("sim");
     el.querySelector("#bagi").onclick = () => { navigator.clipboard?.writeText(location.origin + "/k/" + p.id); toast("Tautan kompleks disalin"); };
     nanti(() => { peta.setPaintProperty("kl-line", "line-width", ["case", ["==", ["get", "id"], id], 3.4, 1.8]);
@@ -1848,7 +1859,7 @@ const Tabel = {
         this.turun = this.urut === k ? !this.turun : true; this.urut = k; this.hal = 0;
         $("#th").querySelectorAll("button").forEach(x => x.querySelector("i").textContent = x === b ? (this.turun ? "↓" : "↑") : "");
         nanti(() => this.render()); });
-      $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) Laci.buka(b.dataset.id); });
+      $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) { Laci._popup = true; Laci.buka(b.dataset.id); } });
       $("#pg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
       $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
@@ -2287,8 +2298,15 @@ const Tren = {
         ${x === m || ini ? `<text x="${j * gap + gap / 2}" y="${B - h - 5}" text-anchor="middle" font-size="10.5" font-weight="700">${rb(x)}</text>` : ""}
         <text x="${j * gap + gap / 2}" y="${B + 14}" text-anchor="middle" font-size="10" opacity="${en ? 1 : .6}" font-weight="${en ? 800 : 400}" style="${en ? "fill:#c9503a" : ""}">${th.length > 14 && j % 2 && !en ? "" : th[j].slice(2)}</text>`; });
     grafik += `<text x="${W}" y="${B - rata / m * 112 - 5}" text-anchor="end" font-size="10.5" opacity=".7">rata-rata ${rb(rata)}</text>`;
-    const musim = o ? `<svg viewBox="0 0 ${W} 44" width="100%" role="img" aria-label="Kalender musim">${o.p_semua.map((v, j) => `<rect x="${j * W / 36 + 1}" y="0" width="${W / 36 - 2}" height="22" rx="3" style="fill:${v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`}" ${j === das ? 'stroke="currentColor" stroke-width="2"' : ""} data-tip="<b>${DAS(j)}</b><br>peluang ${Math.round(v * 100)}% (El Niño ${Math.round(o.p_el_nino[j] * 100)}%, biasa ${Math.round(o.p_biasa[j] * 100)}%)"/>`).join("")}
-      ${BULAN.map((b, i) => `<text x="${(i * 3 + 1.5) * W / 36}" y="38" text-anchor="middle" font-size="10.5" opacity=".7">${b}</text>`).join("")}</svg>` : "";
+    /* kalender musim: baris atas = peluang per 10 hari; di bawahnya titik panas per bulan tiap tahun (arsip MODIS provinsi) */
+    const MD = this.cache?.["data/sejarah_modis.json"], PB = MD?.prov?.[r.prov], thM = PB ? MD.tahun : [], mM = Math.max(1, ...thM.flatMap(t => PB[t] || [])), GT = 38, CW = (W - GT) / 36, RH = 11;
+    const musim = o ? `<svg viewBox="0 0 ${W} ${40 + thM.length * RH + 18}" width="100%" role="img" aria-label="Kalender musim dan riwayat bulanan" class="kal-musim">
+      <text x="0" y="15" font-size="9.5" font-weight="700" opacity=".7">Peluang</text>
+      ${o.p_semua.map((v, j) => `<rect x="${GT + j * CW + 1}" y="0" width="${CW - 2}" height="22" rx="3" style="fill:${v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`}" ${j === das ? 'stroke="var(--ink)" stroke-width="2"' : ""} data-tip="<b>${DAS(j)}</b><br>peluang siaga ${Math.round(v * 100)}% · El Niño ${Math.round(o.p_el_nino[j] * 100)}%"/>`).join("")}
+      ${thM.map((t, y) => { const yy = 30 + y * RH, en = EN.has(t);
+        return `<text x="${GT - 6}" y="${yy + 8.5}" text-anchor="end" font-size="8.5" font-weight="${en ? 800 : 500}" style="${en ? "fill:#c9503a" : "opacity:.65"}">${t}</text>`
+          + (PB[t] || []).map((v, mm) => `<rect x="${GT + mm * 3 * CW + 1}" y="${yy}" width="${3 * CW - 2}" height="${RH - 2}" rx="2" style="fill:${v < 1 ? "var(--surface)" : `color-mix(in oklch, #7a2b2b ${Math.round(12 + Math.sqrt(v / mM) * 88)}%, #fde7c8)`}" data-tip="<b>${BULAN[mm]} ${t}</b>${en ? " · El Niño" : ""}<br>${fmt(v)} titik panas"/>`).join(""); }).join("")}
+      ${BULAN.map((b, i) => `<text x="${GT + (i * 3 + 1.5) * CW}" y="${40 + thM.length * RH + 12}" text-anchor="middle" font-size="10" opacity=".7">${b}</text>`).join("")}</svg>` : "";
     d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div><h3 id="dlgJudul">${esc(r.nama)}</h3><p>${{kec: "Kecamatan · " + esc(r.kab) + " · " + esc(namaProv(r.prov)), kab: "Kabupaten/kota · " + esc(namaProv(r.prov)), prov: "Provinsi"}[r.jenis]}</p></div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">
         <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, `nasional · ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
@@ -2307,7 +2325,7 @@ const Tren = {
             <tr><td>Tren</td><td>rasio ${fmt(r.tren)}× → ${r.tren >= 2 ? "batas atas (≥ 2×)" : r.tren <= .5 ? "batas bawah (≤ ½×)" : "skala log antara ½× dan 2×"}</td><td class="n num">${fmt(Math.round(r.fT * 100) / 100)} × 20</td><td class="n num"><b>${fmt(Math.round(r.fT * 20))}</b></td></tr>
             <tr><td colspan="3"><b>Skor</b> · kelas dari urutan nasional: 10% teratas sangat tinggi, 10–30% tinggi, 30–60% sedang</td><td class="n num"><b>${r.skor}</b></td></tr></tbody></table></div></details>
         ${o ? `<details class="lipat" open><summary>Musim berbahaya ${esc(namaProv(r.prov))} · per 10 hari, kotak bergaris = sekarang</summary><div class="isi">${musim}
-          <p class="fnd">Siaga (peluang ≥ 30%): tahun El Niño <b>${this.siaga(o.p_el_nino)}</b>, tahun biasa <b>${this.siaga(o.p_biasa)}</b>; puncak ${DAS(o.puncak)}.</p></div></details>` : ""}
+          <p class="fnd">Baris tahun = titik panas per bulan (MODIS, provinsi); tahun merah = El Niño. Siaga (peluang ≥ 30%): tahun El Niño <b>${this.siaga(o.p_el_nino)}</b>, tahun biasa <b>${this.siaga(o.p_biasa)}</b>; puncak ${DAS(o.puncak)}.</p></div></details>` : ""}
         ${pk.length ? `<details class="lipat"><summary>Posko di wilayah ini</summary><div class="isi"><div class="dlist">${pk.slice(0, 5).map(x => `<button data-pk="${x.id}"><b>${x.id}</b> ${esc(x.nama)} <span>${x.jenis_posko === "aju" ? "posko aju" : "posko permanen"}</span></button>`).join("")}</div></div></details>` : ""}
         <p class="fnd">Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)} (keyakinan ≥ 30), titik panas & kompleks dari pembaruan ${jamWIB(S.meta.dibuat)}. Metode lengkap di tab Metode.</p>
         ${dariPeta && r.jenis !== "kec" ? `<button class="btn" data-masuk style="justify-self:start">Lihat ${r.jenis === "prov" ? "kabupaten" : "kecamatan"} di dalamnya</button>` : ""}
@@ -2663,7 +2681,7 @@ const Insight = {
 };
 /* tooltip bersama untuk semua grafik [data-tip] */
 (() => { const t = $("#tip");
-  document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); t.innerHTML = x.dataset.tip; t.classList.remove("kartu"); t.classList.add("on"); });
+  document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); wadahTip(); t.innerHTML = x.dataset.tip; t.classList.remove("kartu"); t.classList.add("on"); });
   document.addEventListener("pointermove", e => { if (!t.classList.contains("on")) return; const w = t.offsetWidth, hh = t.offsetHeight;
     t.style.left = Math.min(innerWidth - w - 8, e.clientX + 14) + "px"; t.style.top = Math.max(8, e.clientY - hh - 12) + "px"; });
   document.addEventListener("scroll", () => t.classList.remove("on"), true); })();
