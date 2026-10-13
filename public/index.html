@@ -288,7 +288,16 @@ thead th{position:sticky;top:0;background:var(--brand);color:#fff;font-size:10.5
 :root[data-theme="dark"] thead th{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) thead th{color:oklch(18% .035 256)}}
 thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}
-thead th.n,td.n{text-align:right}
+thead th.n,td.n{text-align:center}
+/* semua tabel rata tengah (permintaan pemilik); kolom perusahaan boleh dua baris supaya tabel tidak terpotong */
+thead th,tbody td,tfoot td{text-align:center}
+thead th button{justify-content:center}
+td.ks-td{white-space:normal;min-width:170px;max-width:240px;text-align:left;line-height:1.35}
+td.ks-td small{display:block;color:var(--ink2);font-size:10.5px}
+.ks-saring{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.ks-saring input{width:15px;height:15px;margin:0;accent-color:var(--brand2)}
+#kompleks tbody td,#kompleks thead th{padding-left:8px;padding-right:8px}
+#kompleks thead th{white-space:normal;line-height:1.25;vertical-align:middle}
 tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
 tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
 tbody tr:hover{background:oklch(42% .11 255 / .06)}
@@ -386,9 +395,9 @@ table.tb2 td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:to
 table.tb2 td.n{text-align:right;padding-left:10px;font-weight:600}
 table.tb2 tr:last-child td{border-bottom:0}
 table.tb3{width:100%;font-size:12px;border-collapse:collapse}
-table.tb3 th{font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
-table.tb3 td{padding:6px 3px;border-bottom:1px solid var(--line);vertical-align:top}
-table.tb3 .n{text-align:right;white-space:nowrap}
+table.tb3 th{text-align:center!important;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;color:var(--ink2);text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
+table.tb3 td{text-align:center;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
+table.tb3 .n{text-align:center;white-space:nowrap}
 table.tb3 td small{display:block;color:var(--ink2);font-size:11px}
 table.tb3 tr:last-child td{border-bottom:0}
 .dlg .kpi b{font-size:20px}
