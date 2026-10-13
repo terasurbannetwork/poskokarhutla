@@ -739,8 +739,9 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 
 /* panel Overlay: judul grup bergaya kepala tabel (pita navy, huruf kapital), isi selalu terbuka */
 .lapis details{border-top:1px solid var(--line);padding:4px 0 2px;margin-top:6px}
-.lapis summary{font-size:12px;font-weight:800;padding:2px 0;color:var(--ink);cursor:default;pointer-events:none}
-.lapis summary::after{content:none}
+.lapis summary{font-size:12px;font-weight:800;padding:3px 0;color:var(--ink);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.lapis summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;margin-right:4px}
+.lapis details:not([open]) > summary::after{transform:rotate(-45deg)}
 .lapis details>label{padding-left:8px}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
@@ -881,19 +882,19 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="posko" checked> Posko</label>
           <label><input type="checkbox" data-l="daops" checked> Markas Manggala Agni</label>
         </details>
-        <details open><summary>Cuaca & asap</summary>
+        <details><summary>Cuaca & asap</summary>
           <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
           <label><input type="checkbox" data-l="angin"> Angin</label>
           <label><input type="checkbox" data-l="asap"> PM2.5</label>
           <label><input type="checkbox" data-l="hujan"> Hujan</label>
           <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
-        <details open><summary>Lahan</summary>
+        <details><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
           <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
           <label><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label>
         </details>
-        <details open><summary>Peta dasar</summary>
+        <details><summary>Peta dasar</summary>
           <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         </details>
       </div>
