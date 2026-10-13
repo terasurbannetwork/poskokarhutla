@@ -65,7 +65,7 @@ nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
 .lainnya summary:hover,.lainnya[open] summary{opacity:1;background:oklch(100% 0 0 / .08)}
 .lainnya:has(button[aria-current="page"]) summary{opacity:1;background:oklch(100% 0 0 / .16)}
-.lainnya .menu{position:fixed;top:calc(var(--top, 56px) - 4px);right:12px;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
+.lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
 nav.tabs .lainnya .menu button{color:var(--ink);opacity:1;text-align:left;border-radius:10px;padding:8px 12px}
 nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current="page"]{background:var(--surface)}
 .stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
@@ -95,7 +95,7 @@ main{position:fixed;inset:var(--top) 0 0 0}
 /* ---------- map page ---------- */
 #peta,#simPeta{position:absolute;inset:0}
 canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:none}
-.dok{position:absolute;z-index:4;left:calc(var(--lp, 400px) + 24px);right:12px;bottom:12px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
+.dok{position:absolute;z-index:4;left:calc(var(--lp, 400px) + 24px);right:calc(var(--tw, 250px) + 24px);bottom:12px;display:flex;flex-direction:column;align-items:center;gap:8px;pointer-events:none}
 .dok > *{pointer-events:auto}
 .garis-waktu{width:min(620px,100%);padding:8px 10px;display:none;align-items:center;gap:10px}
 #legenda{width:100%;max-width:100%;padding:6px 14px 8px;position:relative}
@@ -162,6 +162,9 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tb.kepala span.urut[data-arah="1"]::after{content:" ▴"}
 .tb > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .tb > span:last-child{overflow:visible}
+.tb > span:not(:nth-child(2)){text-align:center!important;justify-self:center}
+.tb .rk{justify-self:end!important;text-align:right!important}
+.tb .pill{justify-self:center}
 .tb .n{text-align:right;font-variant-numeric:tabular-nums}
 .tb .rk{color:var(--ink2);font-size:11px;font-weight:700;text-align:right}
 .tb .pill{height:19px;padding:0 7px;font-size:10.5px;justify-self:end}
@@ -196,6 +199,8 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .pill{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 9px;border-radius:999px;font-size:11px;font-weight:700;white-space:nowrap}
 .pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor}
 .l0{background:oklch(62% .16 150 / .14);color:oklch(45% .13 150)}
+.pill.nt{background:var(--surface);color:var(--ink2);border:1px solid var(--line)}
+.pill.nt::before{display:none}
 .l1{background:oklch(66% .13 235 / .14);color:oklch(46% .12 240)}
 .l2{background:oklch(76% .16 75 / .2);color:oklch(48% .12 65)}
 .l3{background:oklch(57% .21 27 / .14);color:oklch(50% .2 27)}
@@ -438,27 +443,27 @@ table.tb3 tr:last-child td{border-bottom:0}
 #tip .tk-d.turun{color:#2f8a5a}
 #tip .tk-d span{font-weight:500;color:var(--ink2)}
 #tip .tk-f{margin-top:8px;padding-top:7px;border-top:1px solid var(--line);font-size:11px;color:var(--ink2)}
-#tip.kartu{padding:0;min-width:200px;max-width:250px;border-radius:12px}
-.tp-hd{display:flex;align-items:center;justify-content:center;gap:6px;padding:7px 10px;border-bottom:1px solid var(--line);flex-wrap:wrap}
-.tp-hd .tp-nm{display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:12.5px}
-.tp-hd img{height:17px;width:auto}
-.tp-hd .tp-ik{width:18px;height:18px}
-.tp-bd{padding:2px 10px 6px;display:grid;gap:4px}
-.tp-gr{display:grid;grid-template-columns:1fr 1fr;column-gap:10px}
-.tp-st{display:flex;align-items:center;gap:6px;padding:4px 0;border-bottom:1px solid var(--line)}
-.tp-gr .tp-st:nth-last-child(-n+2){border-bottom:0}
+#tip.kartu{padding:0;min-width:210px;max-width:260px;border-radius:12px;overflow:hidden}
+.tp-hd{display:flex;align-items:center;gap:8px;padding:9px 12px 7px}
+.tp-hd img{height:22px;width:22px;object-fit:contain;flex:none}
+.tp-hd .tp-ik{width:20px;height:20px}
+.tp-nm{display:flex;flex-direction:column;gap:1px;min-width:0}
+.tp-nm b{font-family:var(--display);font-weight:800;font-size:13px;line-height:1.2;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.tp-nm .tp-pl{align-self:flex-start}
+.tp-bd{padding:0 12px 9px;display:grid;gap:8px}
+.tp-gr{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.tp-st{display:flex;flex-direction:column;padding:6px 8px;border-radius:8px;background:var(--surface);border-left:3px solid var(--w)}
+.tp-st b{font-size:15px;line-height:1.15;font-variant-numeric:tabular-nums}
+.tp-st small{font-size:9.5px;color:var(--ink2);font-weight:600}
 .tp-ik{flex:none;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--brand2);color:#fff}
 .tp-ik svg{width:10px;height:10px}
-.tp-st span{display:flex;align-items:baseline;gap:3px;min-width:0;white-space:nowrap}
-.tp-st b{font-size:12.5px;line-height:1.1;font-variant-numeric:tabular-nums}
-.tp-st small{font-size:8.5px;font-weight:700;letter-spacing:.03em;text-transform:uppercase;color:var(--ink2)}
 .tp-ls{display:grid;grid-template-columns:1fr 1fr;column-gap:12px}
 .tp-ls span{display:flex;align-items:baseline;gap:5px;padding:3px 0;border-bottom:1px solid var(--line);min-width:0}
 .tp-ls span:nth-last-child(-n+2){border-bottom:0}
 .tp-ls span::before{content:"";flex:none;width:6px;height:6px;border-radius:50%;background:#c9503a;align-self:center}
 .tp-ls b{font-size:11px;font-variant-numeric:tabular-nums}
 .tp-ls small{font-size:10px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.tp-ft{padding:4px 8px;border-top:1px solid var(--line);font-size:9.5px;color:var(--ink2);text-align:center}
+.tp-ft{padding:5px 12px;border-top:1px solid var(--line);font-size:10px;color:var(--ink2)}
 .tp-pl{display:inline-block;padding:0 6px;border-radius:999px;font-size:9px;font-weight:700;color:#fff}
 #tip.on{opacity:1}
 .ex [data-tip]{cursor:pointer}
@@ -503,8 +508,8 @@ ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px}
 .cuaca4 b{font-size:18px;font-family:var(--display)}
 .cuaca4 small{font-size:10.5px;opacity:.85}
 .tm{padding:10px 10px 6px}
-.tr-sw{display:flex;align-items:center;justify-content:space-between;gap:8px;padding:4px 8px 6px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.tr-sw .seg{box-shadow:none;padding:2px}.tr-sw .seg button:disabled{opacity:.4;cursor:not-allowed}.tr-sw .seg button{padding:3px 9px;font-size:11px;text-transform:none;letter-spacing:0}
+.tr-sw{display:flex;align-items:center;gap:8px;padding:4px 2px 6px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.tr-sw .seg{box-shadow:none;padding:2px;width:100%}.tr-sw .seg button:disabled{opacity:.4;cursor:not-allowed}.tr-sw .seg button{padding:3px 9px;font-size:11px;text-transform:none;letter-spacing:0}
 .tr-c{display:flex;align-items:center;gap:4px;color:var(--ink2);overflow:visible!important}
 .tr-c svg{flex:none;color:var(--ink2)}
 .tr-c b{font-size:10.5px;font-variant-numeric:tabular-nums}
@@ -712,8 +717,8 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item b{font-size:14px;line-height:1.35}
 
 /* panel Overlay: judul grup bergaya kepala tabel (pita navy, huruf kapital), isi selalu terbuka */
-.lapis details{border-top:0;padding:0;margin-top:8px}
-.lapis summary{background:#0b2545;color:#fff;border-radius:8px;padding:6px 10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:default;pointer-events:none}
+.lapis details{border-top:1px solid var(--line);padding:4px 0 2px;margin-top:6px}
+.lapis summary{font-size:12px;font-weight:800;padding:2px 0;color:var(--ink);cursor:default;pointer-events:none}
 .lapis summary::after{content:none}
 .lapis details>label{padding-left:8px}
 </style>
@@ -830,7 +835,6 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
       </div>
     </div>
     <div class="tools" id="tools">
-      <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta"><button data-mp="kini" aria-pressed="true">Sekarang</button><button data-mp="cuaca" aria-pressed="false" title="FWI dan angin bergerak">Cuaca</button></div>
       <div class="seg penuh" role="group" aria-label="Rentang waktu" id="rentang"></div>
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
@@ -841,16 +845,18 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
-          <label><input type="checkbox" data-l="posko" checked> Rekomendasi posko</label>
-          <label><input type="checkbox" data-l="daops" checked> Markas Daops Manggala Agni</label>
           <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
         </details>
-        <details><summary>Cuaca & asap</summary>
-          <label><input type="checkbox" data-l="fwi"> Bahaya cuaca (FWI)</label>
-          <label><input type="checkbox" data-l="angin"> Angin (bergerak)</label>
-          <label><input type="checkbox" data-l="asap"> Asap PM2.5, prakiraan CAMS</label>
-          <label><input type="checkbox" data-l="hujan"> Hujan 24 jam</label>
-          <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
+        <details open><summary>Rekomendasi</summary>
+          <label><input type="checkbox" data-l="posko" checked> Posko</label>
+          <label><input type="checkbox" data-l="daops" checked> Markas Manggala Agni</label>
+        </details>
+        <details open><summary>Cuaca & asap</summary>
+          <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
+          <label><input type="checkbox" data-l="angin"> Angin</label>
+          <label><input type="checkbox" data-l="asap"> PM2.5</label>
+          <label><input type="checkbox" data-l="hujan"> Hujan</label>
+          <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
@@ -919,8 +925,8 @@ const IKON = {api: '<path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5
   puncak: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', fwi: '<path d="M12 3v11M8 14a4 4 0 1 0 8 0"/><circle cx="12" cy="16" r="2"/>', posko: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>'};
 const ikon = (k, w) => `<i class="tp-ik"${w ? ` style="background:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IKON[k]}</svg></i>`;
 const ringkas = n => typeof n !== "number" ? n : n >= 1e6 ? fmt(Math.round(n / 1e5) / 10) + " jt" : n >= 1e4 ? fmt(Math.round(n / 100) / 10) + " rb" : fmt(n);
-const kartuTip = ({judul, kepala = "", sub = "", stat = [], daftar = [], tren = "", kaki = ""}) => `<div class="tp-hd"><span class="tp-nm">${kepala}<span>${judul}</span></span>${sub}</div>
-  ${stat.length || daftar.length ? `<div class="tp-bd">${stat.length ? `<div class="tp-gr">${stat.map(([k, v, l, w]) => `<div class="tp-st">${ikon(k, w)}<span><b>${ringkas(v)}</b><small>${l}</small></span></div>`).join("")}</div>` : ""}
+const kartuTip = ({judul, kepala = "", sub = "", stat = [], daftar = [], tren = "", kaki = ""}) => `<div class="tp-hd">${kepala}<span class="tp-nm"><b>${judul}</b>${sub}</span></div>
+  ${stat.length || daftar.length ? `<div class="tp-bd">${stat.length ? `<div class="tp-gr">${stat.map(([k, v, l, w]) => `<div class="tp-st" style="--w:${w || "var(--ink)"}"><b>${ringkas(v)}</b><small>${l}</small></div>`).join("")}</div>` : ""}
   ${daftar.length ? `<div class="tp-ls">${daftar.map(([b, sm]) => `<span><b>${b}</b>${sm ? `<small>${sm}</small>` : ""}</span>`).join("")}</div>` : ""}${tren}</div>` : ""}${kaki ? `<div class="tp-ft">${kaki}</div>` : ""}`;
 const tampilTip = (html, ev) => { const t = $("#tip"); t.innerHTML = html; t.classList.add("kartu", "on");
   t.style.left = Math.min(innerWidth - t.offsetWidth - 8, ev.clientX + 14) + "px"; t.style.top = Math.max(8, ev.clientY - t.offsetHeight - 12) + "px"; };
@@ -953,7 +959,7 @@ const WARNA_WIL = () => ["step", ["get", "v"], "rgba(0,0,0,0)", ...SKALA_WIL.fla
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["kompleks", "Kompleks api"], ["posko", "Posko"], ["informasi", "Informasi"], ["keputusan", "Keputusan"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["metode", "Metode"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["kompleks", "Kompleks api"], ["posko", "Posko"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["metode", "Metode"], ["informasi", "Informasi"], ["keputusan", "Keputusan"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"]};
 S.poskoSub = "posko";
@@ -985,7 +991,10 @@ function bukaTab(id, dorong = true) {
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "ringkasan" ? "page" : "false"}">${n}</button>`;
-  $("#tabs").innerHTML = TABS.slice(0, 6).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TABS.slice(6).map(tb).join("")}</div></details>`; }
+  $("#tabs").innerHTML = TABS.slice(0, 10).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TABS.slice(10).map(tb).join("")}</div></details>`;
+  /* menu Lainnya menempel tepat di bawah tombolnya (posisi fixed supaya tidak terpotong nav yang bisa digulir) */
+  $("#tabs .lainnya").addEventListener("toggle", e => { if (!e.target.open) return; const r = e.target.querySelector("summary").getBoundingClientRect(), m = e.target.querySelector(".menu");
+    m.style.left = Math.min(r.left, innerWidth - 200) + "px"; m.style.top = r.bottom + 6 + "px"; }); }
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); const d = $("#tabs .lainnya"); if (d) d.open = false; });
 document.addEventListener("click", e => { const d = $("#tabs .lainnya"); if (d?.open && !e.target.closest(".lainnya")) d.open = false; });
 $("#poskoSub").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaSub(b.dataset.s); });
@@ -1213,7 +1222,7 @@ const Peta = {
       if (tip._kl !== id) { tip._kl = id; peta.getSource("prio").getClusterLeaves(id, 8, 0).then(fs => { if (tip._kl !== id) return;
         tampilTip(kartuTip({judul: `${fmt(f.properties.point_count)} kompleks prioritas`, kepala: ikon("api", "#c9503a"),
           daftar: fs.map(x => [x.properties.id, esc(x.properties.kab || "")]),
-          kaki: `${f.properties.point_count > 8 ? `+${fmt(f.properties.point_count - 8)} lainnya · ` : ""}klik untuk memperbesar`}), ev); }); }
+          kaki: f.properties.point_count > 8 ? `+${fmt(f.properties.point_count - 8)} lainnya` : ""}), ev); }); }
       tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, ev.clientX + 14) + "px"; tip.style.top = Math.max(8, ev.clientY - tip.offsetHeight - 12) + "px"; });
     peta.on("mouseleave", "prio-klaster", () => tip._kl = null);
     let kartuWil = "";
@@ -1225,7 +1234,7 @@ const Peta = {
         kartuWil = kartuTip({judul: esc(f.properties.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "",
           stat: [["titik", S.hit[k] || 0, "titik", "#e58a45"], ["api", kl.length, "kompleks", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a"],
             fw != null ? ["fwi", fw, "FWI maks", "#a9402f"] : ["posko", [...S.semuaPosko.values()].filter(x => x.tingkat === 2 && x.prov === kp[0] && (!kp[1] || x.kab === kp[1])).length, "posko", "#2b8c86"]],
-          tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : "", kaki: S.jalur.length < 2 ? "klik untuk membuka" : ""}); }
+          tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || Riwayat._diGelembung) return;
       tampilTip(kartuWil, e.originalEvent); });
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (S.panel !== "riw") tip.classList.remove("on"); });
@@ -1463,7 +1472,10 @@ function seriHarian(kunci, n) {
     S._hk = {src: S.titik, m}; }
   const o = S._hk.m.get(kunci) || {}; return {hari, v: hari.map(t => o[t.slice(5)] || 0)}; }
 /* membaik/memburuk: 3 hari terakhir vs 3 hari sebelumnya (mode 7 hari) atau 7 vs 7 (mode 30 hari); terlalu sedikit titik = tidak dinilai */
-function nilaiTren(sr) { const w = sr.v.length >= 14 ? 7 : 3, a = sr.v.slice(-w).reduce((x, y) => x + y, 0), b = sr.v.slice(-2 * w, -w).reduce((x, y) => x + y, 0);
+/* jendela banding mengikuti rentang: 3 hari = 1 vs 1, 1 minggu = 3 vs 3, 2 minggu = 5 vs 5, 3 minggu = 7 vs 7, 1 bulan = 10 vs 10, 3 bulan = 30 vs 30 */
+const RENTANG_TREN = [[3, "3 hari"], [7, "1 minggu"], [14, "2 minggu"], [21, "3 minggu"], [30, "1 bulan"], [90, "3 bulan"]];
+const hariTersedia = () => S.h30 ? S.h30.hari.filter(t => t < S.meta.hari_wib).length : 7;
+function nilaiTren(sr) { const L = sr.v.length, w = L <= 3 ? 1 : L <= 7 ? 3 : L <= 14 ? 5 : L <= 21 ? 7 : L <= 30 ? 10 : 30, a = sr.v.slice(-w).reduce((x, y) => x + y, 0), b = sr.v.slice(-2 * w, -w).reduce((x, y) => x + y, 0);
   if (a + b < 6 || sr.v.length < 2 * w) return {d: null, arah: 0, w, a, b};
   const d = b ? a / b - 1 : 1; return {d, arah: d <= -.15 ? -1 : d >= .15 ? 1 : 0, w, a, b}; }
 const WARNA_TREN = {"-1": "#2b8c86", "0": "#8a94a6", "1": "#c9503a"};
@@ -1473,13 +1485,19 @@ function selTren(kunci) { const sr = seriHarian(kunci, S.trenN), t = nilaiTren(s
   return `<span class="tr-c" data-sort="${t.d == null ? -9 : t.d}" title="${t.d == null ? "titik terlalu sedikit untuk dinilai" : `${t.w} hari terakhir ${fmt(t.a)} titik vs ${t.w} hari sebelumnya ${fmt(t.b)}: ${["membaik", "stabil", "memburuk"][t.arah + 1]}`}">
     <svg viewBox="0 0 40 16" width="30" height="14" aria-hidden="true">${bar}</svg><b style="color:${WARNA_TREN[t.arah]}">${lbl}</b></span>`; }
 /* grafik tren untuk kartu hover: batang harian + garis rata-rata 7 hari + vonis */
-function grafikTren(kunci) { const sr = seriHarian(kunci, 30), t = nilaiTren(sr), n = sr.v.length; if (!n || sr.v.reduce((x, y) => x + y, 0) < 6) return "";
-  const W = 260, H = 30, m = Math.max(1, ...sr.v), bw = W / n, rr = sr.v.map((_, i) => { const a = sr.v.slice(Math.max(0, i - 6), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; });
+/* titik hari ini (belum lengkap): ditampilkan pudar di ujung grafik, tidak ikut vonis */
+function hariIniWil(k) { const hi = S.meta.hari_wib, l = k.split("|").length;
+  if (S.h30) { const i = S.h30.hari.indexOf(hi); if (i >= 0) return ((l === 1 ? S.h30.prov : S.h30.kab)[k] || [])[i] || 0; }
+  if (l === 1) return S.wilayah[k]?.harian?.[hi] ?? null; const o = S._hk?.m.get(k); return o ? o[hi.slice(5)] || 0 : null; }
+function grafikTren(kunci) { const sr = seriHarian(kunci, Math.max(7, S.trenN)), t = nilaiTren(sr), n = sr.v.length; if (!n || sr.v.reduce((x, y) => x + y, 0) < 6) return "";
+  const kini = hariIniWil(kunci), N = n + (kini == null ? 0 : 1), W = 260, H = 34, m = Math.max(1, ...sr.v, kini || 0), bw = W / N,
+    rr = sr.v.map((_, i) => { const a = sr.v.slice(Math.max(0, i - 6), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; }), tg = d => new Date(d + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
   const vonis = t.d == null ? ["Titik sedikit", "#8a94a6"] : [["Membaik", "Stabil", "Memburuk"][t.arah + 1] + ` ${t.d > 0 ? "+" : ""}${Math.round(t.d * 100)}%`, WARNA_TREN[t.arah]];
-  return `<div class="tp-tr"><div class="tp-tr-h"><span>${n} hari terakhir</span><span class="tp-pl" style="background:${vonis[1]}">${vonis[0]}</span></div>
-    <svg viewBox="0 0 ${W} ${H}" width="100%" aria-hidden="true">${sr.v.map((x, i) => `<rect x="${i * bw + .5}" y="${H - x / m * (H - 4)}" width="${Math.max(1, bw - 1)}" height="${Math.max(.8, x / m * (H - 4))}" rx="1" fill="${i >= n - t.w ? vonis[1] : "#e58a45"}" opacity="${i >= n - t.w ? 1 : .45}"/>`).join("")}
-    <polyline points="${rr.map((v, i) => `${(i + .5) * bw},${H - v / m * (H - 4)}`).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="1.4" opacity=".7"/></svg>
-    <div class="tp-tr-x"><span>${new Date(sr.hari[0] + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</span><span>${t.w} hari terakhir vs ${t.w} sebelumnya</span><span>${new Date(sr.hari[n - 1] + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</span></div></div>`; }
+  const bar = (x, i, warna, op) => `<rect x="${i * bw + .5}" y="${H - x / m * (H - 4)}" width="${Math.max(1, bw - 1.5)}" height="${Math.max(.8, x / m * (H - 4))}" rx="1.5" fill="${warna}" opacity="${op}"/>`;
+  return `<div class="tp-tr"><div class="tp-tr-h"><span>${n} hari penuh terakhir</span><span class="tp-pl" style="background:${vonis[1]}">${vonis[0]}</span></div>
+    <svg viewBox="0 0 ${W} ${H}" width="100%" aria-hidden="true">${sr.v.map((x, i) => bar(x, i, i >= n - t.w ? vonis[1] : "#e58a45", i >= n - t.w ? 1 : .4)).join("")}${kini == null ? "" : bar(kini, n, "#8a94a6", .35)}
+    <polyline points="${rr.map((v, i) => `${(i + .5) * bw},${H - v / m * (H - 4)}`).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="1.3" opacity=".6"/></svg>
+    <div class="tp-tr-x"><span>${tg(sr.hari[0])}</span><span>${t.w} hari terakhir vs ${t.w} sebelumnya</span><span>${kini == null ? tg(sr.hari[n - 1]) : "hari ini*"}</span></div></div>`; }
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.panel === "riw") return renderDaftarRiw();
@@ -1492,8 +1510,8 @@ function renderDaftar() {
   const maks = Math.max(1, ...item.map(i => i.v));
   const prio = new Set(S.meta.prioritas);
   const G = "grid-template-columns:18px minmax(0,2.6fr) minmax(44px,.8fr) minmax(36px,.6fr) minmax(86px,1.2fr) minmax(74px,1fr)";
-  const ada30 = (S.h30?.hari || []).filter(t => t < S.meta.hari_wib).length >= 14; if (!ada30) S.trenN = 7;
-  const sakelar = `<div class="tr-sw"><span>Tren titik panas</span><div class="seg" role="group" aria-label="Rentang tren">${[7, 30].map(x => `<button data-tn="${x}" aria-pressed="${S.trenN === x}"${x === 30 && !ada30 ? ' disabled title="Riwayat 30 hari tersedia setelah pembaruan data berikutnya"' : ""}>${x} hari</button>`).join("")}</div></div>`;
+  const ada = hariTersedia(); if (S.trenN > ada) S.trenN = 7;
+  const sakelar = `<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Rentang tren">${RENTANG_TREN.map(([x, n]) => `<button data-tn="${x}" aria-pressed="${S.trenN === x}"${x > ada ? ` disabled title="Riwayat ${n} tersedia setelah pembaruan data berikutnya"` : ""}>${n}</button>`).join("")}</div></div>`;
   const kepala = `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Titik</span><span class="n">Komp.</span><span title="Turun hijau = membaik, naik merah = memburuk">Tren</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
@@ -1529,7 +1547,9 @@ $("#panelMode").addEventListener("click", e => { const b = e.target.closest("but
   $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(async () => { if (S.panel === "riw" && !S.riw) { $("#rows").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat arsip 2002–2026…</div>`; await Riwayat.muat(); await Peta.aturWilayah(false); }
     Peta.warnaWil(); renderDaftar(); renderLegenda(); }); });
-$("#rows").addEventListener("click", e => { const tn = e.target.closest("[data-tn]");
+$("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-rn]");
+  if (rn) { Riwayat.n = +rn.dataset.rn; simpanLokal("pk-riw-n", Riwayat.n); Riwayat.hitung(); nanti(() => Peta.aturWilayah(false)); return; }
+  const tn = e.target.closest("[data-tn]");
   if (tn) { S.trenN = +tn.dataset.tn; simpanLokal("pk-tren-n", S.trenN); return renderDaftar(); }
   const kol = e.target.closest(".kepala span[data-s]");
   if (kol) { const i = +kol.dataset.s, u = S.urut[S.panel]; S.urut[S.panel] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; return terapkanUrut(); }
@@ -1572,7 +1592,8 @@ function renderDaftarRiw() {
     .sort((a, b) => b.skor - a.skor);
   const musim = o ? `<div style="padding:10px 10px 4px;font-size:12.5px"><div class="lbl">Periode berbahaya ${esc(namaProv(j[0]))}</div>
     <div>Tahun El Niño <b>${Tren.siaga(o.p_el_nino)}</b> · tahun biasa <b>${Tren.siaga(o.p_biasa)}</b> · puncak <b>${DAS(o.puncak)}</b></div></div>` : "";
-  $("#rows").innerHTML = musim + `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Skor</span><span class="n">Tahun</span><span style="text-align:right">Risiko</span></div>`
+  const pilihTh = `<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Rentang riwayat">${[5, 10, 15, 25].map(x => `<button data-rn="${x}" aria-pressed="${Riwayat.n === x}">${x} tahun</button>`).join("")}</div></div>`;
+  $("#rows").innerHTML = pilihTh + musim + `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Skor</span><span class="n">Tahun</span><span style="text-align:right">Risiko</span></div>`
     + (item.map((r, n) => `<button class="tb${r.lv >= 2 ? " hl" + r.lv : ""}" data-riw="${esc(r.kunci)}" style="${g}" title="${r.skor >= 0 ? `Terbakar ${r.tahun} dari ${th.length} tahun, ${fmt(r.total)} titik ${th[0]}–${th[th.length - 1]}` : "Tidak pernah ≥ 10 titik setahun"}">
       <span class="rk">${n + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span class="n" style="font-weight:700">${r.skor >= 0 ? r.skor : "–"}</span>
       <span class="n">${r.skor >= 0 ? r.tahun + "/" + th.length : "–"}</span><span style="text-align:right">${r.skor >= 0 ? `<span class="pill l${r.lv}">${r.kelas}</span>` : ""}</span></button>`).join("")
@@ -1613,7 +1634,7 @@ function renderDaftarKom() {
   const bobot = xs => Math.max(...xs.map(f => f.properties.level)) * 1e7 + xs.reduce((s, f) => s + (f.properties.px24 || 0), 0);
   const urut = m => [...m.entries()].sort((a, b) => bobot(b[1]) - bobot(a[1]));
   const ringkas = xs => { const pr = xs.filter(f => f.properties.level === 3).length;
-    return `<span class="jml">${fmt(xs.length)} kompleks${pr ? `<span class="pill l3">${fmt(pr)} prioritas</span>` : ""}</span>`; };
+    return `<span class="jml"><span class="pill nt">${fmt(xs.length)} kompleks</span>${pr ? `<span class="pill l3">${fmt(pr)} prioritas</span>` : ""}</span>`; };
   const provs = urut(kelompok(kl, "prov"));
   const html = provs.map(([pv, xs]) => { const kabs = urut(kelompok(xs, "kab"));
     return `<details class="kgp"${provs.length === 1 ? " open" : ""}><summary>${lambang(pv)}<span>${esc(namaProv(pv))}</span>${ringkas(xs)}</summary>`
@@ -1648,7 +1669,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   garisWaktu();
   renderLegenda(); });
 /* mode peta: pintasan ke tampilan sekarang, riwayat (panel + warna wilayah), atau cuaca gaya Windy (FWI, angin, asap) */
-$("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const m = b.dataset.mp;
+$("#modePeta")?.addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const m = b.dataset.mp;
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   const set = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
   ["fwi", "angin"].forEach(k => set(k, m === "cuaca"));
@@ -2127,6 +2148,12 @@ function skorRiwayat(daf, th) {
   /* kelas dari posisi skor, bukan posisi baris: skor sama selalu kelas sama */
   daf.forEach(r => { const q = daf.findIndex(x => x.skor === r.skor) / daf.length; r.kelas = q < .1 ? "Sangat tinggi" : q < .3 ? "Tinggi" : q < .6 ? "Sedang" : "Rendah"; r.lv = q < .1 ? 3 : q < .3 ? 2 : q < .6 ? 1 : 0; });
   return daf; }
+/* gelembung provinsi di ibu kota (titik tengah kotak batas jatuh di laut untuk provinsi kepulauan seperti Kepri) */
+const IBUKOTA = {"11": [95.32, 5.55], "12": [98.67, 3.59], "13": [100.35, -.95], "14": [101.45, .51], "15": [103.61, -1.61], "16": [104.76, -2.98], "17": [102.26, -3.8], "18": [105.26, -5.43],
+  "19": [106.11, -2.13], "21": [104.45, .92], "31": [106.85, -6.21], "32": [107.61, -6.91], "33": [110.42, -6.99], "34": [110.37, -7.8], "35": [112.75, -7.25], "36": [106.15, -6.12],
+  "51": [115.22, -8.65], "52": [116.11, -8.58], "53": [123.6, -10.17], "61": [109.33, -.03], "62": [113.92, -2.21], "63": [114.84, -3.44], "64": [117.15, -.5], "65": [117.37, 2.84],
+  "71": [124.84, 1.47], "72": [119.87, -.9], "73": [119.43, -5.15], "74": [122.51, -3.99], "75": [123.06, .54], "76": [118.89, -2.68], "81": [128.18, -3.7], "82": [127.57, .74],
+  "91": [140.72, -2.53], "92": [134.06, -.86], "93": [140.4, -8.49], "94": [135.5, -3.37], "95": [138.95, -4.1], "96": [131.25, -.88]};
 /* mode Riwayat di peta: skor per provinsi, kabupaten, kecamatan dari arsip MODIS */
 const Riwayat = {
   th: null,
@@ -2138,7 +2165,11 @@ const Riwayat = {
     for (const [k, v] of Object.entries(D.kec)) { const [pv, kb, kc] = k.split("|");
       [[pv, "prov", namaProv(pv)], [pv + "|" + kb, "kab", kb], [k, "kec", kc]].forEach(([kk, jenis, nama], i) => {
         const r = tk[i][kk] ||= {kunci: kk, jenis, prov: pv, kab: kb, nama, v: th.map(() => 0)}; v.forEach((x, j) => r.v[j] += x); }); }
-    S.riw = {}; tk.forEach(o => skorRiwayat(Object.values(o), th).forEach(r => S.riw[r.kunci] = r)); },
+    this.thSemua = th; this.tk = tk; this.hitung(); },
+  /* rentang riwayat 5/10/15/25 tahun terakhir: skor dihitung ulang dari tahun-tahun itu saja */
+  n: bacaLokal("pk-riw-n", 25),
+  hitung() { const n = Math.min(this.n, this.thSemua.length), th = this.th = this.thSemua.slice(-n);
+    S.riw = {}; this.tk.forEach(o => skorRiwayat(Object.values(o).map(r => ({...r, v: r.v.slice(-n)})), th).forEach(r => S.riw[r.kunci] = r)); },
   /* permukaan kekerapan terbakar per sel 0,1 derajat (gaya Windy): hijau = jarang, merah = hampir tiap tahun */
   ST: [[0, [90, 158, 116, 0]], [.08, [90, 158, 116, 140]], [.25, [168, 186, 102, 185]], [.4, [227, 185, 78, 205]], [.55, [226, 128, 63, 220]], [.75, [201, 80, 58, 232]], [1, [122, 43, 43, 242]]],
   async raster() {
@@ -2155,7 +2186,7 @@ const Riwayat = {
   label() {
     if (!peta || !S.riw || !S.fiturWil) return;
     const th = this.th.length, f = [...new Map(S.fiturWil.map(x => [x.properties.kunci, x])).values()].map(x => { const r = S.riw[x.properties.kunci]; if (!r) return null;
-      const b = kotak([x]); return {type: "Feature", geometry: {type: "Point", coordinates: [(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2]},
+      const b = kotak([x]); return {type: "Feature", geometry: {type: "Point", coordinates: IBUKOTA[r.kunci] || [(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2]},
         properties: {kunci: r.kunci, nama: x.properties.nama, s: r.skor, lv: r.lv, tahun: r.tahun, th, total: r.total, kelas: r.kelas, puncak: r.puncak}}; }).filter(Boolean);
     const data = {type: "FeatureCollection", features: f}, W = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"];
     /* gelembung = simbol dengan deteksi tabrakan: yang bertumpuk disembunyikan, skor tertinggi didahulukan, angka tidak pernah saling timpa */
@@ -2175,7 +2206,7 @@ const Riwayat = {
         tampilTip(kartuTip({judul: esc(p.nama), kepala: lambang(kp[0], kp.length > 1 ? kp[1] : null),
           sub: `<span class="tp-pl" style="background:${w}">Risiko ${esc(p.kelas).toLowerCase()}</span>`,
           stat: [["skor", p.s, "skor", w], ["kal", `${p.tahun}/${p.th}`, "thn terbakar", "#5f6fb0"], ["titik", p.total, "titik", "#e58a45"], ["puncak", String(p.puncak), "puncak", "#a9402f"]],
-          kaki: "klik untuk analisa"}), e.originalEvent); });
+}), e.originalEvent); });
       peta.on("mouseleave", "riw-bubble", () => { this._diGelembung = false; peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
       peta.on("click", "riw-bubble", e => { e.originalEvent.stopPropagation(); this.buka(e.features[0].properties.kunci); }); }
     else peta.getSource("riw-lbl").setData(data);
@@ -4811,11 +4842,12 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
   else if (TABS.some(t => t[0] === h) || ALIAS[h]) bukaTab(h, false);
 })();
 /* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
-function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingClientRect().width; if (w) $("#p-peta").style.setProperty("--lp", w + "px"); }
+function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingClientRect().width, t = document.querySelector(".tools")?.getBoundingClientRect().width;
+  if (w) $("#p-peta").style.setProperty("--lp", w + "px"); if (t) $("#p-peta").style.setProperty("--tw", t + "px"); }
 (() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
   const h = document.createElement("div"); h.className = "tarik"; h.title = "Tarik untuk mengubah lebar"; h.setAttribute("role", "separator"); h.setAttribute("aria-orientation", "vertical"); el.appendChild(h); el._tarik = h;
   h.addEventListener("pointerdown", e => { e.preventDefault(); h.setPointerCapture(e.pointerId); h.classList.add("aktif"); const x0 = e.clientX, w = el.getBoundingClientRect().width;
-    const gerak = ev => { const lebar = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))); el.style.width = lebar + "px"; if (kunci === "lebar-panel") lebarPanel(); };
+    const gerak = ev => { const lebar = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))); el.style.width = lebar + "px"; if (kunci !== "lebar-laci") lebarPanel(); };
     const lepas = () => { h.classList.remove("aktif"); h.removeEventListener("pointermove", gerak); h.removeEventListener("pointerup", lepas); simpanLokal(kunci, Math.round(el.getBoundingClientRect().width)); if (typeof peta !== "undefined" && peta) peta.resize(); };
     h.addEventListener("pointermove", gerak); h.addEventListener("pointerup", lepas); });
   h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };

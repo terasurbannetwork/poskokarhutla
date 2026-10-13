@@ -89,7 +89,7 @@
 
   /* ================================================================ karhutla */
   function karhutla() {
-    kotakLapis("Cuaca & asap", [["bmkg", "Peringatan dini cuaca BMKG"]]);
+    /* karhutla: peringatan dini BMKG tidak ditampilkan sebagai lapisan (permintaan pemilik) */
     pitaBMKG();
     const ANS = () => muat("ans", "data/fwi_ansambel.json"), TNH = () => muat("tanah", "data/tanah.json");
     const ASAP = () => Lapis.cache.asap ? Promise.resolve(Lapis.cache.asap) : muat("asap", "data/asap.json").then(d => Lapis.cache.asap ||= d);
