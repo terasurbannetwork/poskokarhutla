@@ -21,3 +21,7 @@ data/graf_jalan.json.gz
 # Lapor Warga
 node_modules/
 .dev.vars
+
+# citra satelit: dibuat ulang tiap hari di Actions (cache data-), tidak di-commit
+public/data/citra/
+public/data/citra.json

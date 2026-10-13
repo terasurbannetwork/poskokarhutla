@@ -1,0 +1,35 @@
+/* citra.css — gambar satelit di laci kompleks, dialog pembanding, dan galeri Insight (citra.js). Warna dari token halaman. */
+.ct-tgl{margin-bottom:8px}
+.ct-tgl button{display:inline-flex;flex-direction:column;align-items:center;line-height:1.1;padding:4px 10px}
+.ct-tgl small{font-size:9.5px;font-weight:600;opacity:.75}
+.ct-dua{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.ct-dua figure{margin:0;min-width:0}
+.ct-dua figcaption{font-size:11px;color:var(--ink2);margin-top:3px;text-align:center}
+.ct-img{display:block;width:100%;padding:0;border:1px solid var(--line);border-radius:8px;overflow:hidden;background:var(--surface);cursor:zoom-in}
+.ct-img img,.ct-kartu img{display:block;width:100%;height:auto;aspect-ratio:1}
+.ct-img:focus-visible,.ct-kartu:focus-visible{outline:2px solid #4f8fc4;outline-offset:2px}
+.ct-meta{margin:6px 0 0;font-size:12px;color:var(--ink)}
+.ct-kr{font-size:10.5px}
+/* dialog */
+.ct-dlg{display:grid;grid-template-columns:minmax(0,1fr);gap:10px}
+.ct-ctl{display:flex;flex-wrap:wrap;gap:8px;align-items:center;font-size:12.5px}
+.ct-ctl select{height:30px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;font-size:12px;min-width:0;flex:1;max-width:100%}
+.ct-ctl label{display:inline-flex;gap:6px;align-items:center;max-width:100%;min-width:0}
+.ct-banding{position:relative;width:min(100%,560px);aspect-ratio:1;margin:0 auto;border-radius:10px;overflow:hidden;background:var(--surface);touch-action:pan-y}
+.ct-banding img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ct-banding img.atas{clip-path:inset(0 0 0 var(--x))}
+.ct-banding svg{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+.ct-banding circle{fill:none;stroke:#e3b94e;stroke-width:.45}
+.ct-garis{position:absolute;top:0;bottom:0;left:var(--x);width:2px;margin-left:-1px;background:#fff;box-shadow:0 0 3px rgb(0 0 0 / .6);pointer-events:none}
+.ct-garis::after{content:"⟷";position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:28px;height:28px;border-radius:50%;background:#fff;color:#2a2a2a;font-size:15px;display:grid;place-items:center;box-shadow:0 1px 4px rgb(0 0 0 / .4)}
+.ct-banding input[type=range]{position:absolute;inset:0;width:100%;height:100%;margin:0;opacity:0;cursor:ew-resize}
+.ct-tag{position:absolute;top:8px;padding:2px 8px;border-radius:999px;background:rgb(0 0 0 / .55);color:#fff;font-size:11px;font-weight:700;pointer-events:none}
+.ct-tag.kiri{left:8px}.ct-tag.kanan{right:8px}
+/* galeri Insight */
+.ct-galeri{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:10px}
+.ct-kartu{display:block;padding:0;text-align:left;border:1px solid var(--line);border-radius:10px;overflow:hidden;background:var(--card);color:var(--ink);cursor:pointer;font:inherit}
+.ct-kartu:hover{border-color:#e58a45}
+.ct-kartu span{display:block;padding:6px 8px 8px;font-size:12px;line-height:1.3}
+.ct-kartu b{display:block}
+.ct-kartu small{display:block;color:var(--ink2);font-size:10.5px;margin-top:2px}
+@media (max-width:420px){.ct-galeri{grid-template-columns:1fr 1fr;gap:8px}.ct-ctl{gap:6px}}

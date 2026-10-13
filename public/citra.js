@@ -1,0 +1,107 @@
+/* citra.js — citra satelit terbaru per kompleks prioritas (data/citra.json dari scripts/data/citra.py).
+   1. Laci kompleks: bagian "Citra satelit terbaru" setelah "Api saat ini": warna asli + SWIR berdampingan, pilih tanggal,
+      klik gambar -> #dlg besar dengan pembanding sebelum/sesudah (geser) dan titik panas 24 jam opsional.
+   2. Insight: exhibit "Kondisi terbaru dari satelit" (Citra.pasangInsight, dipanggil otomatis saat muat).
+   Skrip klasik dimuat SETELAH skrip utama, lapisan5.js dan databaru.js. Memakai global halaman: S, Laci, Insight, $, esc, fmt,
+   muatJSON, bukaTab. Tidak mengubah index.html selain tag (lihat CITRA.md). */
+(() => {
+  let D = null, janji = null;
+  const muat = () => janji ||= muatJSON("data/citra.json").then(d => (D = d)).catch(e => { janji = null; throw e; });
+  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tg = t => { const [y, m, d] = t.split("-").map(Number); return `${d} ${BLN[m - 1]}${y !== new Date().getFullYear() ? " " + y : ""}`; };
+  const lalu = t => { const n = Math.round((Date.now() - new Date(t + "T12:00:00+07:00")) / 864e5); return n <= 0 ? "hari ini" : n === 1 ? "kemarin" : n + " hari lalu"; };
+  const wib = h => /^\d\d:\d\d$/.test(h.jam || "") ? String((+h.jam.slice(0, 2) + 7) % 24).padStart(2, "0") + "." + h.jam.slice(3) + " WIB" : h.jam || "";
+  const src = (h, m) => "data/" + h[m];   /* jalur di citra.json relatif ke data/ */
+  const viirs = h => h.satelit.startsWith("VIIRS");
+  const kredit = h => esc(viirs(h) ? D.atribusi.VIIRS : D.atribusi.Sentinel);
+  const awan = h => h.awan_pct == null ? "awan tidak dihitung" : `awan/asap ${h.awan_pct}%`;
+  const MODE = {tc: "Warna asli", swir: "SWIR: api & bekas bakar"};
+  const KET = `<b>Cara membaca SWIR:</b> merah atau jingga menyala = api aktif / bara; cokelat gelap = bekas terbakar; hijau = vegetasi hidup;
+    jingga pucat = tanah terbuka; biru muda pucat = asap tebal; putih = awan. SWIR menembus asap tipis, jadi api sering terlihat walau di warna asli tertutup.`;
+  /* gambar terbaik untuk ringkasan: Sentinel terbaru yang cukup bersih, lalu Sentinel terbaru, lalu VIIRS */
+  const terbaik = xs => xs.find(h => !viirs(h) && h.awan_pct <= 50) || xs.find(h => !viirs(h)) || xs[0];
+  const sub = h => `${esc(h.satelit)} · ${tg(h.tgl)} (${lalu(h.tgl)})${wib(h) ? " · " + wib(h) : ""} · ${awan(h)} · kotak ${h.km} km`;
+
+  /* ================================================================ laci */
+  const _buka = Laci.buka.bind(Laci);
+  Laci.buka = function (id) { _buka(id); tambahLaci(id); };
+  async function tambahLaci(id) {
+    try { await muat(); } catch { return; }
+    const xs = D.kompleks[id], awal = xs?.length ? xs.indexOf(terbaik(xs)) : 0;
+    if (S.pilihK !== id || $("#laci .ct-laci")) return;
+    const isi = xs?.length ? `<div class="seg ct-tgl" role="group" aria-label="Tanggal citra">${xs.map((h, i) => `<button data-i="${i}" aria-pressed="${i === awal}">${tg(h.tgl)}<small>${viirs(h) ? "VIIRS" : "S2"}</small></button>`).join("")}</div>
+      <div class="ct-dua">${["tc", "swir"].map(m => `<figure><button class="ct-img" data-m="${m}" aria-label="Perbesar ${MODE[m]}"><img alt="" width="400" height="400"></button><figcaption>${MODE[m]}</figcaption></figure>`).join("")}</div>
+      <p class="ct-meta"></p><p class="fnd">${KET}</p><p class="fnd ct-kr"></p>`
+      : `<p class="fnd">Belum ada citra untuk kompleks ini: hanya ${Object.keys(D.kompleks).length} kompleks prioritas teratas yang dipotretkan tiap hari, atau belum ada lintasan satelit dalam ${D.hari} hari.</p>`;
+    const html = `<details class="lipat ct-laci" open><summary>Citra satelit terbaru</summary><div class="isi">${isi}</div></details>`;
+    const api = [...document.querySelectorAll("#laci details.lipat")].find(d => d.querySelector("summary")?.textContent.startsWith("Api saat ini"));
+    api ? api.insertAdjacentHTML("afterend", html) : $("#laci .bd")?.insertAdjacentHTML("afterbegin", html);
+    const el = $("#laci .ct-laci"); if (!xs?.length) return;
+    let i = awal;
+    const isiGambar = () => { const h = xs[i];
+      el.querySelectorAll(".ct-img").forEach(b => { const img = b.firstChild; img.src = src(h, b.dataset.m); img.alt = `${MODE[b.dataset.m]} ${h.satelit} ${tg(h.tgl)}, kotak ${h.km} km berpusat di kompleks ${id}`; });
+      el.querySelectorAll(".ct-tgl button").forEach(b => b.setAttribute("aria-pressed", String(+b.dataset.i === i)));
+      el.querySelector(".ct-meta").innerHTML = sub(h); el.querySelector(".ct-kr").innerHTML = kredit(h); };
+    isiGambar();
+    el.addEventListener("click", e => { const t = e.target.closest(".ct-tgl button"); if (t) { i = +t.dataset.i; return isiGambar(); }
+      const b = e.target.closest(".ct-img"); if (b) bandingkan(id, i, b.dataset.m); });
+  }
+
+  /* ================================================================ dialog banding sebelum/sesudah */
+  function bandingkan(id, i, mode) {
+    const xs = D.kompleks[id], p = S.kluster.features.find(f => f.properties.id === id)?.properties || {}, d = $("#dlg");
+    const st = {m: mode, ses: i, seb: null, api: false};
+    const pasangan = () => xs.map((h, j) => j).filter(j => j !== st.ses && xs[j].km === xs[st.ses].km && xs[j].tgl < xs[st.ses].tgl);
+    const opsi = (js, v) => js.map(j => `<option value="${j}" ${j === v ? "selected" : ""}>${tg(xs[j].tgl)} · ${esc(xs[j].satelit)} · ${awan(xs[j])}</option>`).join("");
+    const titik = h => { const [w, s, e, n] = h.bbox; return (p.api24 || []).filter(([x, y]) => x > w && x < e && y > s && y < n)
+      .map(([x, y]) => `<circle cx="${((x - w) / (e - w) * 100).toFixed(2)}" cy="${((n - y) / (n - s) * 100).toFixed(2)}" r="${h.km > 20 ? .6 : 1.4}"/>`).join(""); };
+    const gambar = () => {
+      const h = xs[st.ses], ps = pasangan(); if (!ps.includes(st.seb)) st.seb = ps.at(-1) ?? null; const b = st.seb == null ? null : xs[st.seb];
+      d.querySelector(".ct-ctl").innerHTML = `<div class="seg" role="group" aria-label="Jenis citra">${Object.entries(MODE).map(([k, n]) => `<button data-mode="${k}" aria-pressed="${st.m === k}">${n}</button>`).join("")}</div>
+        <label>Sesudah <select data-c="ses">${opsi(xs.map((_, j) => j), st.ses)}</select></label>
+        ${ps.length ? `<label>Sebelum <select data-c="seb">${opsi(ps, st.seb)}</select></label>` : ""}
+        ${p.api24?.length ? `<label class="ct-cek"><input type="checkbox" data-c="api" ${st.api ? "checked" : ""}> titik panas 24 jam</label>` : ""}`;
+      d.querySelector(".ct-banding").innerHTML = `${b ? `<img src="${src(b, st.m)}" alt="Sebelum: ${MODE[st.m]} ${esc(b.satelit)} ${tg(b.tgl)}"><span class="ct-tag kiri">${tg(b.tgl)}</span>` : ""}
+        <img class="${b ? "atas" : ""}" src="${src(h, st.m)}" alt="${b ? "Sesudah: " : ""}${MODE[st.m]} ${esc(h.satelit)} ${tg(h.tgl)}" style="--x:50%"><span class="ct-tag kanan">${tg(h.tgl)}</span>
+        ${st.api ? `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${titik(h)}</svg>` : ""}
+        ${b ? `<i class="ct-garis" style="--x:50%"></i><input type="range" min="0" max="100" value="50" aria-label="Geser pembanding sebelum dan sesudah">` : ""}`;
+      d.querySelector(".ct-sub").innerHTML = `${b ? `Sebelum: ${sub(b)}<br>Sesudah: ` : ""}${sub(h)}`;
+      d.querySelector(".ct-kr").innerHTML = [...new Set([h, b].filter(Boolean).map(kredit))].join(" · ");
+    };
+    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Citra satelit · ${esc(p.kec || id)}${p.kab ? ", " + esc(p.kab) : ""}</h3><p>Kompleks ${esc(id)} · ${xs.length} citra dalam ${D.hari} hari terakhir</p></div><button aria-label="Tutup" data-tutup>×</button></div>
+      <div class="db ct-dlg"><div class="ct-ctl"></div><div class="ct-banding"></div><p class="ct-meta ct-sub"></p>
+      <p class="fnd">Geser garis untuk membandingkan dua tanggal pada tempat yang sama. ${KET} Persen awan dihitung dari peta kelas Sentinel (SCL) di dalam kotak; asap tebal ikut terhitung sebagai awan.</p><p class="fnd ct-kr"></p></div>`;
+    d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); };
+    d.oninput = e => { if (e.target.type !== "range") return; d.querySelectorAll(".ct-banding .atas, .ct-garis").forEach(x => x.style.setProperty("--x", e.target.value + "%")); };
+    d.onchange = e => { const c = e.target.dataset.c; if (!c) return; if (c === "api") st.api = e.target.checked; else st[c] = +e.target.value; gambar(); };
+    d.querySelector(".ct-ctl").onclick = e => { const b = e.target.closest("[data-mode]"); if (b) { st.m = b.dataset.mode; gambar(); } };
+    /* yang diklik paling lama: jadikan "sebelum", bandingkan dengan citra terbaru berskala sama */
+    if (!pasangan().length) { const j = xs.findIndex(h => h.km === xs[i].km && h.tgl > xs[i].tgl); if (j >= 0) Object.assign(st, {ses: j, seb: i}); }
+    gambar(); d.showModal();
+  }
+
+  /* ================================================================ insight */
+  const Citra = window.Citra = {
+    muat, bandingkan,
+    pasangInsight() {
+      if (typeof Insight === "undefined" || Insight.EX.includes("citra")) return;
+      Insight.EX.splice(Math.max(1, Insight.EX.indexOf("harian") + 1), 0, "citra");
+      Object.assign(Insight.st, {citraMode: "swir", citraN: 12});
+      Insight.exCitra = function () {
+        if (!D) { muat().then(() => { const box = document.querySelector('#insight [data-ex="citra"]'); if (box) box.innerHTML = this.gambar("citra"); }).catch(() => {});
+          return `<article class="ex"><h3>Kondisi terbaru dari satelit</h3><p class="unit">Memuat citra…</p></article>`; }
+        const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), m = this.st.citraMode;
+        const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
+        const kartu = ks.slice(0, +this.st.citraN).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
+          return `<button class="ct-kartu" data-kl="${esc(id)}"><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400">
+            <span><b>${esc(p.kec || id)}</b>${esc(p.kab || "")}<small>${esc(h.satelit.replace("Sentinel-", "S-"))} · ${tg(h.tgl)} · ${h.awan_pct == null ? "harian 375 m" : "awan " + h.awan_pct + "%"}</small></span></button>`; }).join("");
+        return this.ex(`${this.hl(fmt(bersih) + " dari " + fmt(ks.length))} kompleks prioritas terpotret cukup jernih oleh Sentinel-2 dalam ${D.hari} hari terakhir`,
+          "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
+          `<div class="ct-galeri">${kartu}</div>`,
+          `${KET} "Cukup jernih" = awan/asap ≤ 30% di dalam kotak. Bila Sentinel berawan atau sudah lebih dari 2 hari, ditambah citra harian VIIRS NOAA-20 (375 m, kotak 60 km). ${esc(D.atribusi.Sentinel)}. ${esc(D.atribusi.VIIRS)}. Diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB.`,
+          this.seg("citraMode", Object.entries(MODE)) + (ks.length > 12 ? this.seg("citraN", [[12, "12 teratas"], [ks.length, `semua ${ks.length}`]]) : "")); };
+      if (document.querySelector("#p-insight.on")) Insight.render();
+    },
+  };
+  Citra.pasangInsight();
+})();
