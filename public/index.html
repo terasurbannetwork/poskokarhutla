@@ -595,6 +595,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
+<link href="ringkasan.css" rel="stylesheet">
 <link href="citra.css" rel="stylesheet">
 <link href="sim_perlakuan.css" rel="stylesheet">
 <link href="preventif.css" rel="stylesheet">
@@ -684,7 +685,9 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 
 <main>
   <!-- ================= PETA ================= -->
-  <section class="page on" id="p-peta" aria-label="Peta pemantauan">
+  <!-- ================= RINGKASAN (halaman pertama) ================= -->
+  <section class="page scroll on" id="p-ringkasan" aria-label="Ringkasan untuk pimpinan"><div class="wrap rk-wrap" id="ringkasan"></div></section>
+  <section class="page" id="p-peta" aria-label="Peta pemantauan">
     <div id="peta"></div>
     <div class="muat" id="muat"><div><div class="spin"></div>Memuat titik panas seluruh Indonesia…</div></div>
     <div class="panel" id="panel">
@@ -812,7 +815,7 @@ const kelasFWI = v => v < 2 ? 0 : v < 7 ? 1 : v < 14 ? 2 : 3;
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["peta", "Peta"], ["informasi", "Informasi"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
+const TABS = [["ringkasan", "Ringkasan"], ["peta", "Peta"], ["informasi", "Informasi"], ["insight", "Insight"], ["keputusan", "Keputusan"], ["posko", "Posko"], ["kompleks", "Kompleks api"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["prioritas", "Prioritas"], ["sarana", "Sarana"], ["metode", "Metode"]];
 const sudah = {};
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -828,13 +831,14 @@ function bukaTab(id, dorong = true) {
     if (id === "berita") Berita.render();
     if (id === "informasi") window.Informasi?.render();
     if (id === "dampak") Dampak.render();
+    if (id === "ringkasan") Ringkasan.render();
     if (id === "tren") Tren.render();
     if (id === "prioritas" && !sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); }
     if (id === "sarana" && !sudah.sarana) { sudah.sarana = 1; Sarana.render(); }
     if (id === "metode" && !sudah.metode) { sudah.metode = 1; renderMetode(); }
   });
 }
-$("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}">${n}</button>`).join("");
+$("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "ringkasan" ? "page" : "false"}">${n}</button>`).join("");
 $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
 
 /* jam & tema */
@@ -4523,6 +4527,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="informasi.js" data-halaman="karhutla"></script>
 <script src="titik_live.js"></script>
 <script src="citra.js"></script>
+<script src="ringkasan.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 </body>
 </html>
