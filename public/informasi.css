@@ -19,7 +19,9 @@
 .lw-bahaya select{border:1px solid var(--lw-line);background:var(--lw-surface);border-radius:999px;padding:4px 8px;font:inherit;font-size:12.5px;color:inherit}
 
 /* kolom kiri: saring jenis */
-.lw-kiri{position:absolute;left:12px;top:64px;bottom:96px;z-index:4;display:flex;flex-direction:column;gap:8px;overflow-y:auto;scrollbar-width:none;padding:2px}
+/* tombol tidak boleh terpotong: bila kolom penuh, lanjut ke kolom kedua (bukan digulir tersembunyi) */
+.lw-kiri{position:absolute;left:12px;top:64px;bottom:24px;z-index:4;display:flex;flex-direction:column;flex-wrap:wrap;align-content:flex-start;gap:8px;padding:2px;pointer-events:none}
+.lw-kiri > *{pointer-events:auto}
 .lw-kiri::-webkit-scrollbar{display:none}
 .lw-kotak{width:44px;height:44px;flex:none;border:0;border-radius:12px;background:var(--lw-card);box-shadow:var(--lw-shadow);display:grid;place-items:center;padding:0}
 .lw-kotak[aria-pressed="false"] .lw-chip{opacity:.35;filter:grayscale(1)}

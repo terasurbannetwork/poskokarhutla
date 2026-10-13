@@ -302,10 +302,14 @@ export async function bersihkan(env, kini = Date.now()) {
   return {kontak: r[0].meta.changes, laporan: r[1].meta.changes, jejak: r[2].meta.changes};
 }
 
+const HALAMAN = /^\/(ringkasan|peta|insight|berita|kompleks|posko|informasi|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
+
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === "/api/titik" && req.method === "GET") return titikTerbaru(env);
+    /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
+    if (req.method === "GET" && HALAMAN.test(url.pathname)) return env.ASSETS.fetch(new Request(new URL("/", url), req));
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {

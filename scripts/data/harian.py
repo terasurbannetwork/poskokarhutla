@@ -299,6 +299,11 @@ def main():
 
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w)
+    try:  # riwayat harian 35 hari per provinsi & kab/kota (tren 7/30 hari); gagal di sini tidak menghentikan pembaruan
+        import harian30
+        harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
+    except Exception as e:
+        print("harian30 gagal:", e, file=sys.stderr)
 
     lama = os.path.join(KELUAR, "fwi.json")
     if os.environ.get("FWI") == "0" and os.path.exists(lama) and json.load(open(lama)).get("hari_ini") == hari_ini:

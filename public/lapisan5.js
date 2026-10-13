@@ -16,14 +16,13 @@
 
   /* ---------- kotak centang: disisipkan ke #lapis bila belum ada (boleh juga ditulis statis, lihat LAPISAN5.md) ---------- */
   const GRUP = [
-    ["Dampak & paparan", [["penduduk", "Penduduk terpapar asap"], ["fasilitas", "Sekolah & faskes"]]],
     ["Akses", [["jalan", "Jalan & sungai (OSM)"]]],
   ];
-  const LAHAN = [["hilang", "Kehilangan tutupan hutan 2021–2025"], ["hilang_api", "Hutan hilang akibat kebakaran"], ["peringatan", "Peringatan gangguan hutan 90 hari"], ["kanal", "Kepadatan kanal & parit"], ["satelit", "Citra satelit warna asli (kemarin)"]];
+  const LAHAN = [["hilang", "Kehilangan tutupan hutan 2021–2025"], ["hilang_api", "Hutan hilang akibat kebakaran"], ["peringatan", "Peringatan gangguan hutan 90 hari"], ["kanal", "Kepadatan kanal & parit"]];
   const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0])]);
   const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>`;
   function sisipKotak() {
-    const L = $("#lapis"); if (!L || L.querySelector('[data-l="penduduk"]')) return;
+    const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan");
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
     const dasar = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Peta dasar");

@@ -86,6 +86,16 @@ uji("situs statis tetap dilayani lewat ASSETS", async () => {
   assert.match(r.teks, /export const JENIS/);
 });
 
+uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
+  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8");
+  for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
+    const r = await panggil("GET", j);
+    assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
+    assert.equal(r.teks, idx, `GET ${j} bukan index.html`);
+  }
+  for (const j of ["/petaku", "/k/abc", "/api/wargaX", "/peta/x"]) assert.notEqual((await panggil("GET", j)).teks, idx, `GET ${j} tidak boleh jadi index.html`);
+});
+
 uji("laporan sah tersimpan dan muncul di daftar tanpa kontak, hash, atau token", async () => {
   const r = await kirim({jenis: "minta", sub: "makanan", jumlah: 40, teks: "Butuh nasi untuk 40 orang #wargabantuwarga", kontak: "0812-3456-7890", ...titikBaru()});
   assert.equal(r.status, 201, `POST minta = ${r.status}: ${r.teks}`);
