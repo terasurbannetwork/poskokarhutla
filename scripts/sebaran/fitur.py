@@ -103,7 +103,7 @@ class Seri:
             rows = []
             for h in range(hari - 30, hari):
                 j = h * 24 + siang
-                hj = sum(self.hujan[max(0, j - 23):j + 1])
+                hj = round(sum(self.hujan[max(0, j - 23):j + 1]) * 10) / 10  # 0,1 mm: sum() Python (Neumaier) != penjumlahan JS di ambang 1,5/2,8 mm
                 rows.append((self.tc[j], self.rh[j], self.ws[j], hj))
             r = F.deret(rows)[-1]
             # FFMC per jam dari siang kemarin sampai awal hari ini
@@ -130,7 +130,7 @@ class Seri:
             isimax = max(isimax, isih(F2, self.ws[j]))
         kering = 0
         for h in range(1, 31):
-            if sum(self.hujan[max(0, i - 24 * h):i - 24 * (h - 1)]) >= 1:
+            if round(sum(self.hujan[max(0, i - 24 * h):i - 24 * (h - 1)]) * 10) / 10 >= 1:
                 break
             kering = h
         vpd = max(.6108 * math.exp(17.27 * t / (t + 237.3)) * (1 - min(max(h, 0), 100) / 100) for t, h in zip(self.tc[i:i + 24], self.rh[i:i + 24]))

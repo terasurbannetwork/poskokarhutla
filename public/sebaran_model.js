@@ -67,6 +67,7 @@ function Cuaca(C, lon) {
       /* jam siang setempat dari pusat sel 0,5 derajat (sama dengan data latih: seri cuaca per sel 0,5 derajat) */
       const lo5 = Math.floor(lon / .5) * .5 + .25, siang = ((Math.round(12 - lo5 / 15)) % 24 + 24) % 24; let f = 85, d = 6, c = 15, r;
       for (let h = hari - 30; h < hari; h++) { const j = h * 24 + siang; let hj = 0; for (let q = Math.max(0, j - 23); q <= j; q++) hj += W.hujan[q];
+        hj = Math.round(hj * 10) / 10; /* 0,1 mm, sama dengan fitur.py */
         const t = W.tc[j], rh = Math.min(Math.max(W.rh[j], 0), 100), w = W.ws[j];
         f = ffmcH(f, t, rh, w, hj); d = dmcH(d, t, rh, hj); c = dcH(c, t, hj); const ii = isiD(f, w), bb = buiD(d, c); r = {f, d, c, b: bb, fw: fwiD(ii, bb)}; }
       let Fh = r.f; for (let j = (hari - 1) * 24 + siang + 1; j < hari * 24; j++) Fh = hffmc(Fh, W.tc[j], W.rh[j], W.ws[j], W.hujan[j]);
@@ -83,7 +84,7 @@ function Cuaca(C, lon) {
       vpd = Math.max(vpd, .6108 * Math.exp(17.27 * W.tc[j] / (W.tc[j] + 237.3)) * (1 - Math.min(Math.max(W.rh[j], 0), 100) / 100)); F2 = hffmc(F2, W.tc[j], W.rh[j], W.ws[j], W.hujan[j]); isimax = Math.max(isimax, isih(F2, W.ws[j])); }
     for (let j = Math.max(0, i - 72); j < i; j++) h72 += W.hujan[j];
     let kering = 0;
-    for (let h = 1; h <= 30; h++) { let s = 0; for (let j = Math.max(0, i - 24 * h); j < i - 24 * (h - 1); j++) s += W.hujan[j]; if (s >= 1) break; kering = h; }
+    for (let h = 1; h <= 30; h++) { let s = 0; for (let j = Math.max(0, i - 24 * h); j < i - 24 * (h - 1); j++) s += W.hujan[j]; if (Math.round(s * 10) / 10 >= 1) break; kering = h; }
     const dari = (Math.atan2(u / 24, v / 24) / rad + 360) % 360;
     return {ws: wsum / 24, ws_maks: wmax, ke: (dari + 180) % 360, rh_min: rhmin, t_maks: tmax, vpd_maks: vpd, hujan24: h24, hujan72: h72, hari_kering: kering,
       ffmc: Fh, dmc, dc, bui, isi_maks: isimax, fwi: fw};

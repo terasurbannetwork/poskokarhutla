@@ -9,71 +9,32 @@ Berkas baru (tidak menyentuh index.html):
 | `public/cerita_karhutla.js` / `.css` | cerita bergulir 7 bab (`window.Cerita`), otomatis menambah kartu "Baca cerita" di atas Insight |
 | `public/data/sebaran_cerita.json`, `sebaran_kasus.json`, `musim_awal.json`, `tren_karhutla.json`, `sebaran_pendorong.json` | data cerita |
 
-## 1. Muat berkas (3 baris)
+## 1. Pasang (sudah dijalankan 13 Okt 2026)
 
-Di `<head>`, setelah `<link href="databaru.css" rel="stylesheet">` (± baris 600):
+`python3 scripts/sebaran/splice_sebaran.py` (jangkar harus cocok tepat sekali; `--cek` untuk memeriksa saja) menambah
+1 baris CSS (`cerita_karhutla.css`) dan 4 skrip sesudah `sim_perlakuan.js`: `sebaran_model.js`, `cerita_karhutla.js`,
+`insight_sebaran.js`, `sim_data.js`. Semua modul menambal objek yang sudah ada:
 
-```html
-<link href="cerita_karhutla.css" rel="stylesheet">
-```
+- `insight_sebaran.js`: exhibit Insight "Apa yang membuat api membesar" (lahan/konsesi & cuaca, rasio dengan selang 95%),
+  "Uji model pada kejadian lalu" (123 kasus; baris → dialog ramalan vs teramati), "Di mana model masih keliru",
+  "Kalau ada titik di X", serta "Musim 2026" (disembunyikan atas permintaan pemilik).
+- `cerita_karhutla.js`: kartu "Baca cerita" di Insight → cerita 7 bab di tempat.
+- `sim_data.js`: kotak centang "Model data (dilatih) di samping model fisika" di Simulasi. Setelah skenario fisika selesai,
+  `SebaranModel.ramal()` dijalankan dari titik api 24 jam kompleks (cuaca Open-Meteo 40 hari lalu + 4 hari ke depan),
+  garis biru di peta = sel berpeluang ≥ 5% untuk jam yang dipilih di penggeser waktu, kartu ringkasan berisi luas
+  24/48/72 jam (P10–P90), peluang membesar, arah utama, gambut/kawasan lindung/desa yang terkena.
 
-Di akhir, SETELAH `<script src="sim_perlakuan.js"></script>` (± baris 4249; harus sesudah skrip utama karena
-`cerita_karhutla.js` menambah dirinya ke `Insight.EX`):
+## 2. API evaluator (`window.SebaranModel`)
 
-```html
-<script src="sebaran_model.js"></script>
-<script src="cerita_karhutla.js"></script>
-```
+`ramal({model, lat, lon, waktu, cuaca, lahan, sel0?, frp?, mc = 40, seed, hari = 3})` → `{luas[3] {p10,p50,p90,rata},
+luasJam[73], p_lepas, arah {deg, km}, sel [{k, lon, lat, p[3]}], kena {ha_harapan, gambut_ha, lindung_ha, sel_jalan, desa[],
+jiwa}, cuaca[3], strata, geser}`. `lahan` = {gambut, kawasan, konsesi, sanksi, kanal, jalan, desa, riwayat, penduduk}
+(berkas di public/data). Menolak koordinat di luar Indonesia, waktu rusak, model rusak, FRP negatif, dan seri cuaca yang
+tidak mencakup 31 hari sebelum dan 72 jam sesudah titik. `cuaca(lat, lon)` (forecast) dan `cuacaTanggal(lat, lon, waktu)`
+(forecast ≤ 8 hari lalu, arsip ERA5 untuk tanggal lebih lama).
 
-Hasilnya: tab Insight punya kartu pertama "Dari mana mulai, ke mana menyebar" dengan tombol **Baca cerita**; ceritanya
-terbuka di tempat kartu itu. Usulan: cerita di dalam Insight (bukan tab baru) karena tab sudah 12 dan cerita ini adalah
-"kesimpulan dalam grafik" yang sama dengan Insight. Kalau mau tab sendiri: tambah `["cerita", "Cerita"]` ke `TABS`, sebuah
-`<section class="page scroll" id="p-cerita"><div class="wrap" id="cerita"></div></section>`, dan di `bukaTab`:
-`if (id === "cerita") Cerita.buka($("#cerita"));`.
-
-## 2. Pilihan "Model data (dilatih)" di Simulasi
-
-Di panel Sim (fungsi yang menulis `<details class="simatur">`, ± baris 4140) tambahkan pemilih mesin:
-
-```js
-<label class="simcek"><input type="checkbox" id="simData" ${o.data ? "checked" : ""}> Model data (dilatih) di samping model fisika</label>
-```
-dan `$("#simData").onchange = e => { o.data = e.target.checked; this.tandaiBasi(); };`
-
-Di akhir `Sim.jalan()` (setelah `this.hasil = H;`), jalankan model data bila dicentang:
-
-```js
-if (this.op.data && typeof SebaranModel !== "undefined") {
-  const p = this.f.properties, M = Sim._model ||= await SebaranModel.muat();
-  const sel0 = [...new Set((p.api24 || []).map(([lo, la]) => SebaranModel.sel(lo, la)))];
-  const L = Sim._lahanData ||= {gambut: Lapis.cache.gambut, kawasan: Lapis.cache.kawasan, konsesi: Lapis.cache.konsesi, sanksi: await muatJSON("data/lahan/sanksi_karhutla.json").catch(() => null),
-    kanal: await muatJSON("data/kanal.json"), jalan: await muatJSON("data/jalan.geojson"), desa: Sim._desa,
-    riwayat: await muatJSON("data/riwayat_grid.json"), penduduk: await muatJSON("data/penduduk.json").catch(() => null)};
-  this.data = SebaranModel.ramal({model: M, lat: p.lat, lon: p.lon, waktu: Date.now(), sel0,
-    cuaca: await SebaranModel.cuaca(p.lat, p.lon), lahan: L, mc: 60});
-}
-```
-
-Gambar di `pasangLapis()` (lapisan isi, warna = peluang 72 jam):
-
-```js
-if (this.data) { const fs = this.data.sel.filter(s => s.p[2] >= .05).map(s => { const x = SebaranModel.pusat(s.k), h = .003375 / 2;
-  return {type: "Feature", properties: {p: s.p[Math.min(2, Math.floor(+$("#simT").value / 24.01))]}, geometry: {type: "Polygon",
-    coordinates: [[[x[0]-h, x[1]-h], [x[0]+h, x[1]-h], [x[0]+h, x[1]+h], [x[0]-h, x[1]+h], [x[0]-h, x[1]-h]]]}}; });
-  m.addSource("sim-data", {type: "geojson", data: {type: "FeatureCollection", features: fs}});
-  m.addLayer({id: "sim-data", type: "fill", source: "sim-data", paint: {"fill-color": ["interpolate", ["linear"], ["get", "p"],
-    .05, "#fde7a7", .3, "#ef9a4a", .6, "#c63b2f", 1, "#6e1323"], "fill-opacity": .6}}); }
-```
-(tambahkan `"sim-data"` ke dua daftar hapus di awal `pasangLapis`). Ringkasan hasil di panel:
-`this.data.luas[i].p10/p50/p90` (ha 24/48/72 jam), `this.data.p_lepas`, `this.data.arah` (`deg`, `km`),
-`this.data.kena` (`desa`, `gambut_ha`, `lindung_ha`, `jiwa`), `this.data.luasJam` (73 titik, ha harapan per jam).
-
-Catatan: `Sim.cuacaJam()` hanya mengambil 1 hari lalu; model data butuh 31 hari (masa panas DC/DMC), jadi pakai
-`SebaranModel.cuaca()` (forecast `past_days=40`). Untuk tanggal lampau: `SebaranModel.cuacaTanggal(lat, lon, waktu)`.
-
-Mesin fisika (`tabelLaju`) masih memakai efek BUI `exp(32·ln 0,9·(1/BUI − 1/32))`; FBP (pers. 54) memakai 50, bukan 32.
-Port Python `scripts/sebaran/simfisika.py` sudah memakai 50 (`efek_bui`). Bila index.html diperbaiki, ganti 32 pertama
-di baris `fBUI` (± 3523 dan 3796) menjadi 50.
+Mesin fisika situs (`tabelLaju`) memakai efek BUI `exp(32·ln 0,9·(1/BUI − 1/32))`; FBP (pers. 54) memakai 50, bukan 32.
+Port Python `simfisika.py` sudah memakai 50 (`efek_bui`). Bila index.html diperbaiki, ganti 32 pertama di baris `fBUI`.
 
 ## 3. Uji
 
@@ -88,8 +49,13 @@ python3 scripts/sebaran/lacak.py          # peristiwa dari viirs.csv (~1 menit)
 python3 scripts/sebaran/cuaca.py          # cuaca per jam (kuota Open-Meteo, berkas di-cache)
 python3 scripts/sebaran/latih.py bangun   # sampel
 python3 scripts/sebaran/latih.py latih    # setel di 2023, uji 2024-2026, ekspor model_sebaran.json
+python3 scripts/sebaran/lacak.py panjang  # S-NPP 2012-2026 (peristiwa_panjang.jsonl)
+python3 scripts/sebaran/cuaca.py ekstra   # lengas tanah, lapisan batas, awan, radiasi (sampel)
+SEBARAN_TANPA_UJI=1 python3 scripts/sebaran/latih.py latih   # putaran penyetelan (validasi saja)
+python3 scripts/sebaran/galat.py          # analisis kesalahan validasi (himpunan-uji: laporan saja)
 python3 scripts/sebaran/kasus.py          # pustaka uji-balik >= 100 kasus
-python3 scripts/sebaran/pendorong.py      # analisis pendorong
+python3 scripts/sebaran/pendorong.py elevasi  # analisis pendorong (+ ketinggian OpenTopoData)
+python3 scripts/sebaran/pendorong.py panjang  # lahan saja, 2012-2026
 python3 scripts/sebaran/musim_awal.py     # awal musim & tren
 python3 scripts/sebaran/cerita_data.py    # data cerita
 ```

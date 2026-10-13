@@ -20,12 +20,12 @@ vm.createContext(ctx); vm.runInContext(fs.readFileSync(process.argv[2], "utf8"),
 const M = ctx.SebaranModel, fx = JSON.parse(fs.readFileSync(process.argv[3]));
 const P = f => JSON.parse(fs.readFileSync(process.argv[4] + "/" + f));
 const lahan = {gambut: P("lahan/gambut.geojson"), kawasan: P("lahan/kawasan.geojson"), konsesi: P("lahan/konsesi.geojson"), sanksi: P("lahan/sanksi_karhutla.json"), kanal: P("kanal.json"),
-  jalan: P("jalan.geojson"), desa: P("osm/desa.json"), riwayat: P("riwayat_grid.json")};
+  jalan: P("jalan.geojson"), desa: P("osm/desa.json"), riwayat: P("riwayat_grid.json"), penduduk: P("penduduk.json")};
 let maks = 0, n = 0;
 for (const c of fx.kasus) {
   const r = M.ramal({model: fx.model, lat: c.lat, lon: c.lon, waktu: c.waktu, cuaca: c.cuaca, lahan, sel0: c.sel0, frp: c.frp, strata: c.strata, mc: 0});
   const js = new Map(r.p1.map(x => [x.k, x.p]));
-  for (const [k, p] of c.p1) { const q = js.get(k); if (q === undefined) throw new Error("sel hilang " + k); maks = Math.max(maks, Math.abs(p - q)); n++; }
+  for (const [k, p] of c.p1) { const q = js.get(k); if (q === undefined) throw new Error("sel hilang " + k); if (Math.abs(p - q) > 1e-4) console.error("beda", k, p, q, JSON.stringify(c.ev), JSON.stringify(r.iklim), c.strata, r.strata, r.geser); maks = Math.max(maks, Math.abs(p - q)); n++; }
   if (js.size !== c.p1.length) throw new Error("jumlah calon beda " + js.size + " vs " + c.p1.length);
 }
 const tolak = o => { try { M.ramal(o); return false; } catch (e) { return true; } };
@@ -45,9 +45,9 @@ console.log(JSON.stringify({sel: n, selisih_maks: maks}));
 
 def main(n_kasus=6):
     model = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
-    if "iklim" not in model:
-        e = json.load(open(os.path.join(MENTAH, "enso.json")))
-        model["iklim"] = {k: e[k] for k in ("oni", "dmi")}
+    # model peramban hanya membawa ONI/DMI 36 bulan terakhir; kasus uji bisa lebih lama -> tabel lengkap untuk uji ini
+    e = json.load(open(os.path.join(MENTAH, "enso.json")))
+    model["iklim"] = {k: e[k] for k in ("oni", "dmi")}
     k = L.ktx()
     kasus = []
     for e in L.peristiwa():
@@ -63,6 +63,7 @@ def main(n_kasus=6):
         d = json.load(open(cuaca.nama(int(e["t0"][:4]), *cuaca.sel05(e["lat0"], e["lon0"]))))
         m0 = (T0.timestamp() + S.m0 * 60) * 1000
         kasus.append({"lat": e["lat0"], "lon": e["lon0"], "waktu": (T0.timestamp() + p * 60) * 1000, "sel0": sorted(tb), "frp": L.frp_terakhir(e, p), "strata": st,
+                      "ev": L.keadaan(e, p, tb, ak, L.baru_terakhir(e, p), S, k)[1],
                       "cuaca": {"m0": m0, **{x: d[x] for x in cuaca.KOLOM}}, "p1": [[kk, q] for kk, q in r["p1"].items()]})
         if len(kasus) >= n_kasus:
             break
@@ -77,7 +78,7 @@ def main(n_kasus=6):
     if out.returncode:
         sys.exit("GAGAL: " + out.stderr[-2000:])
     r = json.loads(out.stdout)
-    assert r["selisih_maks"] < 1e-4, r
+    assert r["selisih_maks"] < 1e-4, (r, out.stderr[:1500])
     print("ok", r)
 
 

@@ -119,7 +119,8 @@ Insight.exSebGalat = function () {
     ${G.uji ? `<div><p class="sub">Uji 2024–2026 (hanya dilaporkan)</p><div class="tw"><table>${th}<tbody>${tab(G.uji)}</tbody></table></div></div>` : ""}</div>
     <p class="sub" style="margin-top:12px">Kasus terburuk dan dugaan penyebabnya (validasi)</p><ul class="fnd" style="margin:4px 0;padding-left:18px">${G.val.terburuk.slice(0, 8).map(b => `<li>${esc(PROV_N(b.prov))}${b.gambut ? " (gambut)" : ""}: teramati ${fmt(b.obs72)} sel baru, ramalan ${fmt(b.pred72)} — ${esc(b.sebab.join("; "))}</li>`).join("")}</ul>`;
   const r = G.val.ringkas;
-  return this.ex(`Model ${r.bias_rata > 0 ? "cenderung melebihkan" : "cenderung mengurangi"} luas 72 jam; titik yang tertutup awan/asap dan api yang 'meloncat' paling sering terlewat`,
+  const u = G.uji?.ringkas, persen = b => (b > 0 ? "+" : "") + fmt(Math.round((Math.exp(b) - 1) * 100)) + "%";
+  return this.ex(`Sebelum diperbaiki model melebihkan luas 72 jam ${this.hl(persen(r.bias_rata))} (validasi 2023)${u ? `; sesudah kalibrasi ulang per strata, di uji 2024–2026 ${this.hl(persen(u.bias_rata))}` : ""}. Yang masih terlewat: api tertutup awan/asap dan api yang 'meloncat'`,
     `${fmt(G.val.n)} titik awal validasi; ${pc(r.porsi_celah_2, 1)} kehilangan ≥ 2 lintasan VIIRS, ${pc(r.porsi_lompat_20, 1)} tumbuh lewat loncatan > 1,9 km`,
     "merah = ramalan terlalu besar, biru = terlalu kecil · pilih variabel", isi,
     "Perbaikan yang diterapkan dari analisis ini: pergeseran logit per strata (gambut/mineral/sabana) agar bias luas validasi ≈ 0, dan pemilihan model per strata (sabana memakai McArthur bila lebih baik di validasi). Yang belum bisa diperbaiki dengan data ini: pemadaman (tidak ada data operasi), awan/asap (butuh Himawari), api yang dinyalakan baru di dekatnya. Sumber: scripts/sebaran/galat.py.",
