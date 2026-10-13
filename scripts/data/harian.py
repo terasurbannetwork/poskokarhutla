@@ -356,7 +356,7 @@ def main():
         """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
         k = KONSESI.cari(lon, lat)
         if k:
-            return {"sawit": "Perusahaan perkebunan", "hph": "Pemegang PBPH (hutan alam)"}.get(k.get("jenis"), "Pemegang konsesi"), k.get("pemegang") or k.get("nama")
+            return {"sawit": "Perusahaan perkebunan", "hph": "Pemegang PBPH (hutan alam)", "hti": "Pemegang PBPH (hutan tanaman)", "tambang": "Pemegang PPKH (tambang)"}.get(k.get("jenis"), "Pemegang konsesi"), k.get("pemegang") or k.get("nama")
         kw = KAWASAN.cari(lon, lat)
         if kw:
             f = kw.get("fungsi")
