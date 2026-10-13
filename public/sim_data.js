@@ -36,20 +36,21 @@ const SimData = window.SimData = {
   kartu() {
     const r = this.hasil; if (!r) return "";
     const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
-    return `<div class="sop" style="margin-top:10px"><b>Model data (dilatih dari 12 musim VIIRS).</b> Luas 24/48/72 jam: ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.
-      Peluang membesar ≥ ${fmt((this.model.lepas_sel || 10) * 14)} ha: ${fmt(Math.round(r.p_lepas * 100))}%. ${r.arah ? `Arah utama ${mata[Math.round(r.arah.deg / 45) % 8]}.` : ""}
+    return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada 2024–2026 dan 123 kejadian lalu).</b> Luas 24/48/72 jam (rentang cenderung terlalu sempit; pada uji hanya ± separuh kasus jatuh di dalamnya): ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.
+      Peluang membesar ≥ ${fmt((this.model.lepas_sel || 10) * 14)} ha: ${fmt(Math.round(r.p_lepas * 100))}%. ${r.arah ? `Arah utama ${mata[Math.round(r.arah.deg / 45) % 8]} (keyakinan rendah: pada uji, arah sebar tidak bisa diramal model mana pun).` : ""}
       Terkena (harapan 72 jam): gambut ${fmt(r.kena.gambut_ha)} ha, kawasan lindung ${fmt(r.kena.lindung_ha)} ha${r.kena.desa.length ? `, desa: ${r.kena.desa.slice(0, 6).map(x => esc(x.nama)).join(", ")}` : ""}.
-      Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji 2024–2026: lihat Insight → "Uji model pada kejadian lalu".</div>`;
+      Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji 2024–2026: lihat Insight → "Uji model pada kejadian lalu".
+      ${Sim.kal?.alasan ? `<br><span style="color:var(--bad)">Model fisika di bawah belum terkalibrasi untuk kompleks ini (${esc(Sim.kal.alasan)}) dan pada uji cenderung melebih-lebihkan luas hingga puluhan kali; pakai hanya sebagai pembanding.</span>` : "Model fisika di bawah (terkalibrasi ke pertumbuhan teramati) ditampilkan sebagai pembanding."}</div>`;
   },
 };
-Sim.op.data = Sim.op.data ?? false;
+Sim.op.data = Sim.op.data ?? true; /* model data jadi perkiraan utama (uji 2024-2026: F1 0,136 vs fisika tak terkalibrasi 0,011) */
 const panel = Sim.panel, jalan = Sim.jalan, lapis = Sim.pasangLapis, waktu = Sim.waktu;
 Sim.panel = function (...a) {
   const r = panel.apply(this, a);
   const kal = $("#simKal")?.closest("label");
-  if (kal && !$("#simData")) { kal.insertAdjacentHTML("afterend", `<label class="simcek"><input type="checkbox" id="simData" ${this.op.data ? "checked" : ""}> Model data (dilatih) di samping model fisika</label>`);
+  if (kal && !$("#simData")) { kal.insertAdjacentHTML("afterend", `<label class="simcek"><input type="checkbox" id="simData" ${this.op.data ? "checked" : ""}> Model data (dilatih) sebagai perkiraan utama</label>`);
     $("#simData").onchange = e => { this.op.data = e.target.checked; this.tandaiBasi(); }; }
-  if (this.op.data && SimData.hasil && SimData.k === this.k) $("#simHasil")?.insertAdjacentHTML("beforeend", SimData.kartu());
+  if (this.op.data && SimData.hasil && SimData.k === this.k) $("#simHasil")?.insertAdjacentHTML("afterbegin", SimData.kartu());
   return r;
 };
 Sim.jalan = async function (...a) { const r = await jalan.apply(this, a); if (this.op.data && this.hasil) { await SimData.jalan(this); this.panel(); this.pasangLapis(); } return r; };
