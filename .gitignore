@@ -25,3 +25,6 @@ node_modules/
 # citra satelit: dibuat ulang tiap hari di Actions (cache data-), tidak di-commit
 public/data/citra/
 public/data/citra.json
+
+# state lokal wrangler (D1 miniflare dll.)
+.wrangler/
