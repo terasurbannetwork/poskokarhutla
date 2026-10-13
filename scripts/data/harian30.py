@@ -1,4 +1,4 @@
-"""Riwayat titik panas harian bergulir 35 hari per provinsi dan kab/kota -> public/data/harian30.json
+"""Riwayat titik panas harian bergulir 100 hari (pilihan tren 3 hari s.d. 3 bulan) per provinsi dan kab/kota -> public/data/harian30.json
 
 Dipanggil dari harian.py sesudah hotspot 7 hari diunduh. Hitungan sama dengan angka utama (setara SiPongi/BNPB):
 MODIS + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan, per hari kalender WIB.
@@ -10,8 +10,11 @@ Uji tanpa jaringan:  python3 scripts/data/harian30.py uji
 """
 import csv, datetime as dt, io, json, os
 
-SIMPAN = 35
+SIMPAN = 100
 UTAMA = {"VIIRS_SNPP_NRT": "N", "VIIRS_NOAA20_NRT": "N20", "MODIS_NRT": "M"}
+# FIRMS menyimpan NRT sekitar 2 bulan; tanggal yang lebih tua diambil dari arsip standar (SP), sensornya sama
+SP = {"VIIRS_SNPP_SP": "N", "VIIRS_NOAA20_SP": "N20", "MODIS_SP": "M"}
+BATAS_NRT = 55
 WIB = dt.timezone(dt.timedelta(hours=7))
 
 
@@ -69,10 +72,11 @@ def isi_mundur(kosong, k, w, ambil, bbox):
         return {}
     awal = dt.date.fromisoformat(min(kosong)) - dt.timedelta(days=1)
     akhir = dt.date.fromisoformat(max(kosong))
-    tugas, d = [], awal
+    tugas, d, kini = [], awal, dt.datetime.now(dt.timezone.utc).date()
     while d <= akhir:
         n = min(5, (akhir - d).days + 1)
-        tugas += [(s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{bbox}/{n}/{d}") for s in UTAMA]
+        sumber = UTAMA if (kini - d).days <= BATAS_NRT else SP
+        tugas += [(s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{bbox}/{n}/{d}") for s in sumber]
         d += dt.timedelta(days=n)
     titik, lihat = [], set()
     for s, url in tugas:
@@ -90,7 +94,7 @@ def isi_mundur(kosong, k, w, ambil, bbox):
             lihat.add((lat, lon, t, s))
             adm = w.cari(lon, lat)
             if adm:
-                titik.append({"t": t, "s": UTAMA[s], "adm": adm})
+                titik.append({"t": t, "s": {**UTAMA, **SP}[s], "adm": adm})
     hasil = per_hari(titik)
     return {t: hasil.get(t, {"p": {}, "k": {}}) for t in kosong}
 
