@@ -3,7 +3,7 @@
 Awal musim (definisi pemilik): hari pertama d sehingga jumlah titik 7 hari terakhir > ambang untuk SEMUA hari d..d+13,
 ambang(hari-dalam-tahun) = max(2 x median tahun dasar (dihaluskan +-7 hari), LANTAI). Dicari mulai 8 Juni (musim utama; jendela 7 hari pertama
 tidak menyentuh celah data 2026-05-08..06-01). Puncak = hari 7-harian tertinggi; akhir = hari terakhir di atas ambang.
-  VIIRS S-NPP n/h, dasar 2015-2025, lantai 10 titik/7 hari  -> musim 2026 dan 2015-2025 (skala halus)
+  VIIRS S-NPP n/h, dasar 2012-2025 (arsip 19 Jan 2012 bila sudah diunduh), lantai 10 titik/7 hari -> musim 2026 & per tahun
   MODIS keyakinan >= 30, dasar 2002-2025, lantai 3            -> 2002-2026 (tren onset/puncak/akhir 25 tahun)
 Musim awal (Feb-Apr, Riau) dicatat terpisah: awal pertama sejak 1 Jan.
 Tahun El Nino = ONI musim SON >= 0,5 (enso.json, scripts/sebaran/cuaca.py); IOD positif = DMI rata-rata Agu-Okt >= 0,4.
@@ -16,7 +16,7 @@ Pakai:  python3 scripts/sebaran/musim_awal.py     |  ... uji
 import csv, datetime as dt, json, math, os, statistics, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from umum import (AKAR, HA_SEL, MENTAH, PUBLIK, PROVINSI, PRIORITAS, Lahan, Prov, bukan_vegetasi, muat_viirs, pusat, sel, tgl_hari)
+from umum import (AKAR, HA_SEL, MENTAH, PUBLIK, PROVINSI, PRIORITAS, Lahan, Prov, bukan_vegetasi, muat_viirs_panjang, pusat, sel, tgl_hari)
 from umum import T0 as _T0  # noqa
 
 MULAI_UTAMA = 159  # 8 Juni (hari-dalam-tahun, 0 = 1 Jan; tahun kabisat bergeser 1 hari, diabaikan)
@@ -113,11 +113,13 @@ def main():
     oni_son = {y: enso["oni"].get(f"{y}-10") for y in range(2002, 2027)}
 
     # ---------- VIIRS ----------
-    v = muat_viirs()
+    v = muat_viirs_panjang()  # S-NPP 2012-2026 bila arsip awal ada
     tl = lambda m, lo: (_T0 + dt.timedelta(minutes=m + lo * 4)).date()  # tanggal waktu matahari setempat
-    per_v = harian_prov(((v["lon"][i], v["lat"][i], tl(v["t"][i], v["lon"][i])) for i in range(len(v["t"]))), prov, set(range(2015, 2027)))
+    th_awal = (_T0 + dt.timedelta(minutes=v["t"][0])).year + (1 if (_T0 + dt.timedelta(minutes=v["t"][0])).month > 1 else 0)
+    DASAR = range(th_awal, 2026)
+    per_v = harian_prov(((v["lon"][i], v["lat"][i], tl(v["t"][i], v["lon"][i])) for i in range(len(v["t"]))), prov, set(range(th_awal, 2027)))
     celah = {2026: (dt.date(2026, 5, 8).timetuple().tm_yday - 1, dt.date(2026, 6, 1).timetuple().tm_yday - 1)}
-    mv, amb_v = musim_semua(per_v, range(2015, 2026), 10, celah)
+    mv, amb_v = musim_semua(per_v, DASAR, 10, celah)
 
     # ---------- MODIS ----------
     jalur = os.path.join(AKAR, "data/raw/firms/modis.csv")
@@ -204,14 +206,14 @@ def main():
         if p not in PROVINSI:
             continue
         r = mv[p]
-        hist = [r[y]["awal"] for y in range(2015, 2026) if r.get(y, {}).get("awal") is not None]
+        hist = [r[y]["awal"] for y in DASAR if r.get(y, {}).get("awal") is not None]
         r26 = r.get(2026, {})
         out_p[p] = {"nama": PROVINSI[p], "prioritas": p in PRIORITAS,
                     "awal_2026": hari_ke(r26["awal"]) if r26.get("awal") is not None else None,
                     "awal_2026_iso": (dt.date(2026, 1, 1) + dt.timedelta(days=r26["awal"])).isoformat() if r26.get("awal") is not None else None,
                     "awal_dini_2026": hari_ke(r26["awal_dini"]) if r26.get("awal_dini") is not None else None,
                     "puncak_2026": hari_ke(r26["puncak"]) if r26 else None, "titik_2026": r26.get("total"),
-                    "awal_median_2015_2025": hari_ke(round(statistics.median(hist))) if hist else None,
+                    "awal_median": hari_ke(round(statistics.median(hist))) if hist else None,
                     "selisih_hari": (r26["awal"] - round(statistics.median(hist))) if hist and r26.get("awal") is not None else None,
                     "tahun_bermusim": len(hist),
                     "per_tahun": {y: {k: (hari_ke(x) if k in ("awal", "puncak", "akhir", "awal_dini") and x is not None else x) for k, x in r[y].items()} for y in sorted(r)},
@@ -223,12 +225,12 @@ def main():
     for p in pr:
         o = out_p[p]
         s = o["selisih_hari"]
-        kal.append(f"{o['nama']} {o['awal_2026']}" + (f" ({abs(s)} hari {'lebih awal' if s < 0 else 'lebih lambat'} dari median 2015-2025)" if s else ""))
+        kal.append(f"{o['nama']} {o['awal_2026']}" + (f" ({abs(s)} hari {'lebih awal' if s < 0 else 'lebih lambat'} dari median {DASAR[0]}-{DASAR[-1]})" if s else ""))
     tanpa = [out_p[p]["nama"] for p in PRIORITAS if p in out_p and not out_p[p]["awal_2026_iso"]]
-    narasi = ("Musim 2026 (definisi: jumlah titik VIIRS 7 hari > 2x median 2015-2025 selama >= 14 hari berturut-turut) "
+    narasi = (f"Musim 2026 (definisi: jumlah titik VIIRS 7 hari > 2x median {DASAR[0]}-{DASAR[-1]} selama >= 14 hari berturut-turut) "
               f"mulai berurutan: {'; '.join(kal)}." + (f" Belum memenuhi definisi: {', '.join(tanpa)}." if tanpa else "")
-              + f" {round(100 * pernah / max(1, len(ini)))}% titik 2026 jatuh di sel 375 m yang pernah terbakar 2015-2025.")
-    json.dump({"dibuat": dt.date.today().isoformat(), "definisi": __doc__.split("\n\n")[1].strip(), "celah_data": ["2026-05-08", "2026-06-01"],
+              + f" {round(100 * pernah / max(1, len(ini)))}% titik 2026 jatuh di sel 375 m yang pernah terbakar {DASAR[0]}-2025.")
+    json.dump({"dibuat": dt.date.today().isoformat(), "dasar": [DASAR[0], DASAR[-1]], "definisi": __doc__.split("\n\n")[1].strip(), "celah_data": ["2026-05-08", "2026-06-01"],
                "catatan": "Data Juli-Oktober 2026 = FIRMS NRT (deteksi sedikit berbeda dari arsip standar); ambang memakai arsip standar.",
                "narasi": narasi, "urutan": pr, "prov": out_p},
               open(os.path.join(PUBLIK, "musim_awal.json"), "w"), ensure_ascii=False, separators=(",", ":"))
@@ -279,7 +281,7 @@ def main():
                "mk_p_nasional": mann_kendall(nasional[:-1])[1], "tahun_terbesar": besar_th, "porsi_prov": porsi,
                "gambut_porsi_viirs": {y: round(a / max(1, b), 3) for y, (a, b) in sorted(gb.items())},
                "titik_viirs": {y: b for y, (a, b) in sorted(gb.items())},
-               "ulang_2026": {"titik": len(ini), "sel_pernah": round(pernah / max(1, len(ini)), 3), "sel_2th": round(dua / max(1, len(ini)), 3), "sel_3th": round(tiga / max(1, len(ini)), 3)},
+               "viirs_dasar": [DASAR[0], DASAR[-1]], "ulang_2026": {"titik": len(ini), "sel_pernah": round(pernah / max(1, len(ini)), 3), "sel_2th": round(dua / max(1, len(ini)), 3), "sel_3th": round(tiga / max(1, len(ini)), 3)},
                "keberulangan": hot, "prov": tren},
               open(os.path.join(PUBLIK, "tren_karhutla.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     print(narasi, file=sys.stderr)

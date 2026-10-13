@@ -20,7 +20,7 @@ import json, math, os, sys
 from array import array
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from umum import (MENTAH, HA_SEL, Prov, arah, hari_lokal, jarak_m, muat_viirs, pusat, sel, waktu)
+from umum import (MENTAH, HA_SEL, Prov, arah, hari_lokal, jarak_m, muat_viirs, muat_viirs_panjang, pusat, sel, waktu)
 
 JARAK = 750.0
 JEDA = 24 * 60  # menit
@@ -115,8 +115,9 @@ def harian(det, lon0):
     return out
 
 
-def main():
-    v = muat_viirs()
+def main(panjang=False):
+    """panjang=True: S-NPP 2012-2026 -> peristiwa_panjang.jsonl (riset pendorong lahan & musim; tanpa cuaca 2012-2014)."""
+    v = muat_viirs_panjang() if panjang else muat_viirs()
     t, lat, lon, frp = v["t"], v["lat"], v["lon"], v["frp"]
     print(f"{len(t)} deteksi vegetasi n/h", file=sys.stderr)
     akar, sambung, jeda_maks = hubungkan(t, lat, lon)
@@ -127,7 +128,7 @@ def main():
     print(f"{len(grup)} peristiwa, {sambung} sambungan, jeda sambungan maks {jeda_maks} menit", file=sys.stderr)
     prov = Prov()
     n_tulis = 0
-    with open(os.path.join(MENTAH, "peristiwa.jsonl"), "w") as f:
+    with open(os.path.join(MENTAH, "peristiwa_panjang.jsonl" if panjang else "peristiwa.jsonl"), "w") as f:
         for no, (r, idx) in enumerate(sorted(grup.items(), key=lambda g: t[g[0]])):
             m0 = t[idx[0]]
             pertama = [a for a in idx if t[a] - m0 <= 30]
@@ -170,4 +171,4 @@ def uji():
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    uji() if sys.argv[1:] == ["uji"] else main(panjang=sys.argv[1:] == ["panjang"])

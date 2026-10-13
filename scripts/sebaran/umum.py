@@ -18,7 +18,7 @@ os.makedirs(MENTAH, exist_ok=True)
 D = 0.003375
 X0, Y0 = 94.0, -12.0
 NX = 14300
-T0 = dt.datetime(2015, 1, 1, tzinfo=dt.timezone.utc)
+T0 = dt.datetime(2015, 1, 1, tzinfo=dt.timezone.utc)  # menit sebelum 2015 bernilai negatif (arsip 2012-2014)
 HA_SEL = 375 * 375 / 1e4  # 14,06 ha
 CELAH_2026 = ("2026-05-08", "2026-06-01")  # tidak ada berkas FIRMS di rentang ini
 
@@ -80,36 +80,48 @@ def bukan_vegetasi(jalur):
     return s
 
 
-def muat_viirs(jalur=os.path.join(AKAR, "data/raw/firms/viirs.csv")):
-    """Deteksi VIIRS S-NPP keyakinan nominal/tinggi, api vegetasi, urut waktu.
+VIIRS = os.path.join(AKAR, "data/raw/firms/viirs.csv")
+VIIRS_AWAL = os.path.join(AKAR, "data/raw/firms/viirs_2012_2014.csv")  # S-NPP 19 Jan 2012 - 2014 (scripts/data/firms.py)
+
+
+def muat_viirs(jalur=VIIRS, nama="viirs_veg"):
+    """Deteksi VIIRS S-NPP keyakinan nominal/tinggi, api vegetasi, urut waktu. jalur: satu CSV atau daftar CSV.
     -> dict array: t (menit), lat, lon, frp, dn (1 = siang). Disimpan sebagai pickle (kunci = ukuran + mtime CSV)."""
-    st = os.stat(jalur)
-    cache = os.path.join(MENTAH, "viirs_veg.pkl")
-    kunci = (st.st_size, int(st.st_mtime))
+    daf = [jalur] if isinstance(jalur, str) else list(jalur)
+    kunci = tuple((os.stat(j).st_size, int(os.stat(j).st_mtime)) for j in daf)
+    if len(daf) == 1:
+        kunci = kunci[0]
+    cache = os.path.join(MENTAH, f"{nama}.pkl")
     if os.path.exists(cache):
         with open(cache, "rb") as f:
             v = pickle.load(f)
         if v["kunci"] == kunci:
             return v
-    nonveg = bukan_vegetasi(jalur)
     baris = []
-    for r in csv.DictReader(open(jalur)):
-        if r["confidence"] not in ("n", "h"):
-            continue
-        t = r.get("type")
-        la, lo = float(r["latitude"]), float(r["longitude"])
-        if t:
-            if t != "0":
+    for j in daf:
+        nonveg = bukan_vegetasi(j)
+        for r in csv.DictReader(open(j)):
+            if r["confidence"] not in ("n", "h"):
                 continue
-        elif (round(la, 2), round(lo, 2)) in nonveg:
-            continue
-        baris.append((menit(r["acq_date"], r["acq_time"]), la, lo, float(r["frp"] or 0), r["daynight"] == "D"))
+            t = r.get("type")
+            la, lo = float(r["latitude"]), float(r["longitude"])
+            if t:
+                if t != "0":
+                    continue
+            elif (round(la, 2), round(lo, 2)) in nonveg:
+                continue
+            baris.append((menit(r["acq_date"], r["acq_time"]), la, lo, float(r["frp"] or 0), r["daynight"] == "D"))
     baris.sort()
     v = {"kunci": kunci, "t": array("l", (b[0] for b in baris)), "lat": array("d", (b[1] for b in baris)),
          "lon": array("d", (b[2] for b in baris)), "frp": array("f", (b[3] for b in baris)), "dn": array("b", (b[4] for b in baris))}
     with open(cache, "wb") as f:
         pickle.dump(v, f, protocol=pickle.HIGHEST_PROTOCOL)
     return v
+
+
+def muat_viirs_panjang():
+    """S-NPP 2012-2026 (gabungan arsip awal + viirs.csv) bila arsip awal sudah diunduh; kalau belum, viirs.csv saja."""
+    return muat_viirs([VIIRS_AWAL, VIIRS], "viirs_veg_panjang") if os.path.exists(VIIRS_AWAL) else muat_viirs()
 
 
 class Prov:

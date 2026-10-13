@@ -214,14 +214,22 @@ def fuel_fn(k, prov):
     return (lambda kk: idx[k.sel(kk, prov)["kelas"]]), (lambda kk: k.sel(kk, prov)["gambut"])
 
 
-def ramal_sim(e, p, terbakar, aktif, S, k, par=None, kal=False, det=None):
-    """Sim fisika dari sel aktif. par = (k_angin, m_gambut, m). kal = pakai kalibrasi() Sim asli.
-    -> ([set baru kumulatif 24/48/72], info)"""
+PEMBANDING = ["rothermel", "mcarthur", "csiro_vesta", "elips_angin"]  # model negara lain + garis dasar angin saja
+
+
+def ramal_sim(e, p, terbakar, aktif, S, k, par=None, kal=False, det=None, model="fbp"):
+    """Mesin waktu-tempuh-minimum (Huygens/MTT, seperti FlamMap/FARSITE) dari sel aktif, dengan laju:
+    model 'fbp' = Sim situs (FBP Kanada), par = (k_angin, m_gambut, m); model lain (simfisika.tabel_model), par = (1, 1, m).
+    kal = pakai kalibrasi() Sim asli. -> ([set baru kumulatif 24/48/72], info)"""
     i0 = S.jam(p)
     Fh, dmc, dc, bui, fw = S.kode(i0)
     W = SF.cuaca_sim(S, i0, Fh)
     k_angin, m_gambut, m = par or (1.0, 1.0, 1.0)
-    tab = SF.tabel_laju(W, bui, k_angin, m_gambut)
+    if model == "fbp":
+        tab = SF.tabel_laju(W, bui, k_angin, m_gambut)
+    else:
+        w = S.jendela(p)
+        tab = SF.tabel_model(model, W, {"dc": dc, "hari_kering": w["hari_kering"], "hujan72": w["hujan72"]})
     fuel, gb = fuel_fn(k, e["prov"])
     benih = list(aktif)
     info = {"m": m}
@@ -262,7 +270,7 @@ def skor(S0, P, O):
 
 def evaluasi_awal(arg):
     """Satu titik awal (peristiwa, indeks jangkar) -> skor semua model pada 24/48/72 jam."""
-    e, ji, modes, tau, par_hibrida, mc = arg
+    e, ji, modes, tau, fisika, mc = arg  # fisika: {"hibrida": (k_angin, m_gambut, m), "rothermel": m, ...} atau None
     k = ktx()
     S = seri_untuk(e)
     js = jangkar(e)
@@ -270,8 +278,9 @@ def evaluasi_awal(arg):
     if not S or not S.cukup(p, 72 + 24):
         return None
     obs = [b24, b48, b72]
+    g0 = k.sel(next(iter(tb)), e["prov"])["gambut"]
     hasil = {"id": e["id"], "th": int(e["t0"][:4]), "prov": e["prov"], "ji": ji, "awal": len(tb), "akhir72": len(tb | b72),
-             "gambut": k.sel(next(iter(tb)), e["prov"])["gambut"], "skor": {}}
+             "gambut": g0, "strata": "sabana" if e["prov"] in ("53", "93") and not g0 else "gambut" if g0 else "mineral", "skor": {}}
     w = S.jendela(p)
     hasil["angin_ke"], hasil["ws"] = round(w["ke"]), round(w["ws"], 1)
     hasil["skor"]["persistensi"] = [skor(tb, set(), o) for o in obs]
@@ -300,15 +309,21 @@ def evaluasi_awal(arg):
         if nm == "gbdt":
             hasil["frek"] = {kk: v for kk, v in r["frek"].items()}
             hasil["det_pred"] = [sorted(x) for x in r["det"]]
-    if "sim" in modes or par_hibrida is not None:
+    if "sim" in modes or fisika:
         P, _ = ramal_sim(e, p, tb, ak, S, k)
         hasil["skor"]["sim"] = [skor(tb, x, o) for x, o in zip(P, obs)]
         P, info = ramal_sim(e, p, tb, ak, S, k, kal=True, det=e["det"])
         if not info.get("tanpa"):
             hasil["skor"]["sim_kal"] = [skor(tb, x, o) for x, o in zip(P, obs)]
-        if par_hibrida:
-            P, _ = ramal_sim(e, p, tb, ak, S, k, par=par_hibrida)
-            hasil["skor"]["hibrida"] = [skor(tb, x, o) for x, o in zip(P, obs)]
+        for nm, par in (fisika or {}).items():
+            if nm == "hibrida":
+                P, _ = ramal_sim(e, p, tb, ak, S, k, par=par)
+            else:
+                mdl, mentah = (nm[:-7], True) if nm.endswith("_mentah") else (nm, False)
+                P, _ = ramal_sim(e, p, tb, ak, S, k, par=(1, 1, 1.0 if mentah else par), model=mdl)
+            hasil["skor"][nm] = [skor(tb, x, o) for x, o in zip(P, obs)]
+            if nm == "hibrida":
+                hasil["pred_hibrida"] = [sorted(x) for x in P]
     return hasil
 
 

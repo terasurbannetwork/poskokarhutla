@@ -251,8 +251,8 @@ def banding_lahan(A, B):
     out = []
     for lbl, f, g in BANDING:
         a, b = [r for r in A if f(r)], [r for r in A if g(r)]
-        ba = [r for r in B if f({**r, "gambut": r["gambut0"]})]
-        bb = [r for r in B if g({**r, "gambut": r["gambut0"]})]
+        ba = [r for r in B if f({**r, "gambut": r["gambut0"]})] if B else []
+        bb = [r for r in B if g({**r, "gambut": r["gambut0"]})] if B else []
         o = {"banding": lbl, "n": len(a), "n_acuan": len(b), "lolos": round(statistics.mean(r["lepas"] for r in a), 4) if a else None,
              "lolos_acuan": round(statistics.mean(r["lepas"] for r in b), 4) if b else None, "rasio_lolos": rasio_ci(a, b),
              "n_hari": len(ba), "ha_hari": round(statistics.mean(r["ha_baru"] for r in ba)) if ba else None,
@@ -417,6 +417,35 @@ def main(elevasi=False):
     log("selesai")
 
 
+def panjang():
+    """Lahan saja, rekaman terpanjang: semua peristiwa S-NPP 2012-2026, 9 provinsi, semua bulan (tanpa cuaca).
+    -> data/raw/sebaran/pendorong_panjang.json (digabung ke sebaran_pendorong.json sebagai 'banding_lahan_panjang')."""
+    from umum import Lahan
+    lh, A = Lahan(), []
+    for l in open(os.path.join(MENTAH, "peristiwa_panjang.jsonl")):
+        e = json.loads(l)
+        if e["prov"] not in L.PRIORITAS:
+            continue
+        p0 = e["det"][0][0]
+        k0 = e["det"][0][1]
+        s = lh(k0, e["prov"])
+        th = int(e["t0"][:4])
+        n72 = len({d[1] for d in e["det"] if d[0] <= p0 + 72 * 60})
+        A.append({"th": th, "lepas": 1 if n72 >= L.LEPAS else 0, **{x: s[x] for x in ("gambut", "hutan", "produksi", "apl", "kebun", "hti", "hph", "tambang", "konsesi")},
+                  "sanksi": 1 if s["sanksi_th"] <= th else 0, "bulan": int(e["t0"][5:7])})
+    out = {"n": len(A), "tahun": [min(r["th"] for r in A), max(r["th"] for r in A)], "laju_dasar": round(statistics.mean(r["lepas"] for r in A), 4),
+           "banding": [b for b in banding_lahan(A, []) if b["rasio_lolos"]],
+           "per_tahun_gambut": {th: [round(statistics.mean([r["lepas"] for r in A if r["th"] == th and r["gambut"]] or [0]), 4),
+                                     round(statistics.mean([r["lepas"] for r in A if r["th"] == th and not r["gambut"]] or [0]), 4)] for th in sorted({r["th"] for r in A})}}
+    json.dump(out, open(os.path.join(MENTAH, "pendorong_panjang.json"), "w"), ensure_ascii=False, indent=1)
+    P = os.path.join(PUBLIK, "sebaran_pendorong.json")
+    if os.path.exists(P):
+        H = json.load(open(P))
+        H["banding_lahan_panjang"] = out
+        json.dump(H, open(P, "w"), ensure_ascii=False, separators=(",", ":"))
+    log(f"panjang: {len(A)} peristiwa {out['tahun']}")
+
+
 if __name__ == "__main__":
     if sys.argv[1:] == ["uji"]:
         rs = [{"x": i, "lepas": 1 if i >= 5 else 0} for i in range(10)]
@@ -425,5 +454,7 @@ if __name__ == "__main__":
         b, se = ols([[i] for i in range(50)], [2 * i + 1 for i in range(50)])
         assert abs(b[0] - 1) < 1e-6 and abs(b[1] - 2) < 1e-6 and se[1] < 1e-6
         print("ok")
+    elif sys.argv[1:] == ["panjang"]:
+        panjang()
     else:
         main(elevasi="elevasi" in sys.argv[1:])

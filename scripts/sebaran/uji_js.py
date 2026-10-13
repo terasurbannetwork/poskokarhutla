@@ -19,7 +19,7 @@ const fs = require("fs"), vm = require("vm"), ctx = {console, Math, Date, Map, S
 vm.createContext(ctx); vm.runInContext(fs.readFileSync(process.argv[2], "utf8"), ctx);  /* paket repo bertipe "module": muat sebagai skrip peramban */
 const M = ctx.SebaranModel, fx = JSON.parse(fs.readFileSync(process.argv[3]));
 const P = f => JSON.parse(fs.readFileSync(process.argv[4] + "/" + f));
-const lahan = {gambut: P("lahan/gambut.geojson"), kawasan: P("lahan/kawasan.geojson"), konsesi: P("lahan/konsesi.geojson"), kanal: P("kanal.json"),
+const lahan = {gambut: P("lahan/gambut.geojson"), kawasan: P("lahan/kawasan.geojson"), konsesi: P("lahan/konsesi.geojson"), sanksi: P("lahan/sanksi_karhutla.json"), kanal: P("kanal.json"),
   jalan: P("jalan.geojson"), desa: P("osm/desa.json"), riwayat: P("riwayat_grid.json")};
 let maks = 0, n = 0;
 for (const c of fx.kasus) {

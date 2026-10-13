@@ -86,16 +86,15 @@ def latih_lipat(H):
 
 
 def _satu(arg):
-    e, mdl, tau, par = arg
-    r = L.evaluasi_awal((e, 0, {"gbdt": mdl}, {"gbdt": tau}, par, 40))
+    e, mdl, tau, fisika = arg
+    r = L.evaluasi_awal((e, 0, {"gbdt": mdl}, {"gbdt": tau}, fisika, 40))
     if not r:
         return None
     p, tb, ak, b24, b48, b72 = L.jangkar(e)[0]
     S = L.seri_untuk(e)
     w = S.jendela(p)
     k = L.ktx()
-    # ramalan Sim hibrida untuk tampilan
-    P, _ = L.ramal_sim(e, p, tb, ak, S, k, par=par)
+    P = [set(x) for x in r.pop("pred_hibrida")]
     r["kasus"] = {"t0": e["t0"], "lon0": e["lon0"], "lat0": e["lat0"], "ha_akhir": e["ha"], "hari_aktif": len(e["hari"]),
                   "awal": sorted(tb), "obs": [sorted(b24), sorted(b48 - b24), sorted(b72 - b48)],
                   "frek": {kk: v for kk, v in r.pop("frek", {}).items() if max(v) >= 4},  # >= 10% dari 40 run
@@ -111,12 +110,11 @@ def main():
     H = json.load(open(L.HASIL))
     M = latih_lipat(H)
     tau = H["tau"]["gbdt"]["tau"]
-    hg = H["hibrida_grid"][0]
-    par = (hg["k_angin"], hg["m_gambut"], hg["m"])
+    fisika = {**{k: tuple(v) if isinstance(v, list) else v for k, v in H["fisika"].items()}, **{f"{m}_mentah": 1.0 for m in L.PEMBANDING}}
     evs = [e for e in L.peristiwa(semua_kecil=True)]
     kasus = pilih_kasus(evs)
     L.log(f"{len(kasus)} kasus dipilih")
-    args = [(e, M[LIPAT[int(e["t0"][:4])]] if int(e["t0"][:4]) in LIPAT else M["utama"], tau, par) for e in kasus]
+    args = [(e, M[LIPAT[int(e["t0"][:4])]] if int(e["t0"][:4]) in LIPAT else M["utama"], tau, fisika) for e in kasus]
     with mp.get_context("fork").Pool(5) as pool:
         hasil = [r for r in pool.imap(_satu, args, chunksize=1) if r]
     L.log(f"{len(hasil)} kasus berhasil dihitung")
@@ -136,6 +134,9 @@ def main():
                       "pred_ha": [[round(x * HA_SEL + r["awal"] * HA_SEL) for x in m] for m in r["mc"]],
                       "iou": [round(s["iou"], 3) for s in g], "f1": [round(s["f1"], 3) for s in g],
                       "f1_hibrida": [round(s["f1"], 3) for s in r["skor"]["hibrida"]], "iou_hibrida": [round(s["iou"], 3) for s in r["skor"]["hibrida"]],
+                      "strata": r["strata"],
+                      "model_lain": {nm: {"f1": [round(x["f1"], 3) for x in v], "iou": [round(x["iou"], 3) for x in v], "ha72": round((r["awal"] + v[2]["np"]) * HA_SEL),
+                                          "arah": v[0]["arah"]} for nm, v in r["skor"].items() if nm not in ("gbdt", "persistensi")},
                       "arah_err": g[0]["arah"], "arah_angin_err": r.get("arah_angin_err"), "p_lepas": r["p_lepas"], "lepas": y,
                       "lepas_benar": (r["p_lepas"] >= .5) == bool(y), "dalam_p10_p90": [m[0] <= s["no"] <= m[2] for m, s in zip(r["mc"], r["skor"]["persistensi"])],
                       "cuaca": ka["cuaca"], "sel": {"awal": ka["awal"], "obs": ka["obs"], "frek": ka["frek"], "hibrida": ka["hibrida"]}})
@@ -149,6 +150,17 @@ def main():
         R[f"iou_persistensi_{lbl}"] = bootstrap([r["skor"]["persistensi"][h]["iou"] for r in hasil])
         R[f"cakupan_{lbl}"] = round(sum(b["dalam_p10_p90"][h] for b in baris) / len(baris), 3)
         R[f"abs_log_luas_{lbl}"] = bootstrap([abs(math.log((1 + b["pred_ha"][h][1]) / (1 + b["obs_ha"][h]))) for b in baris])
+    nms = sorted({nm for b in baris for nm in b["model_lain"]})
+    R["model_lain"] = {}
+    for nm in nms:
+        bb = [b for b in baris if nm in b["model_lain"]]
+        R["model_lain"][nm] = {"n": len(bb), **{f"f1_{l}": bootstrap([b["model_lain"][nm]["f1"][h] for b in bb]) for h, l in enumerate(("24", "48", "72"))},
+                               **{f"iou_{l}": bootstrap([b["model_lain"][nm]["iou"][h] for b in bb]) for h, l in enumerate(("24", "48", "72"))},
+                               "arah": bootstrap([b["model_lain"][nm]["arah"] for b in bb]),
+                               "abs_log_luas_72": bootstrap([abs(math.log((1 + b["model_lain"][nm]["ha72"]) / (1 + b["obs_ha"][2]))) for b in bb]),
+                               "per_strata": {st: {"f1_24": bootstrap([b["model_lain"][nm]["f1"][0] for b in bb if b["strata"] == st])} for st in ("gambut", "mineral", "sabana")}}
+    R["gbdt_per_strata"] = {st: {"f1_24": bootstrap([b["f1"][0] for b in baris if b["strata"] == st]), "n": sum(1 for b in baris if b["strata"] == st)}
+                            for st in ("gambut", "mineral", "sabana")}
     R["arah_err"] = bootstrap([b["arah_err"] for b in baris])
     R["arah_angin_err"] = bootstrap([b["arah_angin_err"] for b in baris])
     R["lepas_akurasi"] = bootstrap([1.0 if b["lepas_benar"] else 0.0 for b in baris])

@@ -21,10 +21,10 @@ body{margin:0;background:var(--paper);font-family:system-ui,sans-serif;padding:1
     let tolak = false; try { SebaranModel.ramal({model: M, lat: 30, lon: 113, waktu: Date.now(), cuaca: {ws: []}}); } catch (e) { tolak = true; } ok(tolak, "menolak lintang 30");
     tolak = false; try { SebaranModel.ramal({model: M, lat: -2, lon: 113, waktu: "x", cuaca: {ws: []}}); } catch (e) { tolak = true; } ok(tolak, "menolak waktu rusak");
     const lat = -2.85, lon = 113.95, waktu = Date.now() - 2 * 864e5;
-    const [cuaca, ...L] = await Promise.all([SebaranModel.cuacaTanggal(lat, lon, waktu), ...["lahan/gambut.geojson", "lahan/kawasan.geojson", "lahan/konsesi.geojson", "kanal.json", "jalan.geojson", "osm/desa.json", "riwayat_grid.json", "penduduk.json"].map(u => fetch("data/" + u).then(r => r.json()))]);
-    const [gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk] = L;
+    const [cuaca, ...L] = await Promise.all([SebaranModel.cuacaTanggal(lat, lon, waktu), ...["lahan/gambut.geojson", "lahan/kawasan.geojson", "lahan/konsesi.geojson", "kanal.json", "jalan.geojson", "osm/desa.json", "riwayat_grid.json", "penduduk.json", "lahan/sanksi_karhutla.json"].map(u => fetch("data/" + u).then(r => r.json()))]);
+    const [gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk, sanksi] = L;
     const t0 = performance.now();
-    const r = SebaranModel.ramal({model: M, lat, lon, waktu, cuaca, lahan: {gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk}, mc: 40});
+    const r = SebaranModel.ramal({model: M, lat, lon, waktu, cuaca, lahan: {gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk, sanksi}, mc: 40});
     log(`ramal ${((performance.now() - t0) / 1000).toFixed(2)} dtk; luas p50 ${r.luas.map(x => Math.round(x.p50)).join("/")} ha; p_lepas ${r.p_lepas}; arah ${JSON.stringify(r.arah)}; desa ${r.kena.desa.length}; jiwa ${r.kena.jiwa}`);
     ok(r.sel.every(s => s.p.every(p => p >= 0 && p <= 1)), "peluang dalam [0,1]");
     ok(r.luas[0].p50 <= r.luas[2].p50, "luas kumulatif tidak turun");

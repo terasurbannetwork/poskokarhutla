@@ -77,14 +77,15 @@ function Cuaca(C, lon) {
   };
   W.jendela = t => {
     const i = W.jam(t), [Fh, dmc, dc, bui, fw] = W.kode(i);
-    let u = 0, v = 0, wsum = 0, wmax = 0, rhmin = 1e9, tmax = -1e9, h24 = 0, h72 = 0, F2 = Fh, isimax = 0;
+    let u = 0, v = 0, wsum = 0, wmax = 0, rhmin = 1e9, tmax = -1e9, h24 = 0, h72 = 0, F2 = Fh, isimax = 0, vpd = 0;
     for (let j = i; j < i + 24; j++) { const w = W.ws[j]; u += w * Math.sin(W.wd[j] * rad); v += w * Math.cos(W.wd[j] * rad); wsum += w; wmax = Math.max(wmax, w);
-      rhmin = Math.min(rhmin, W.rh[j]); tmax = Math.max(tmax, W.tc[j]); h24 += W.hujan[j]; F2 = hffmc(F2, W.tc[j], W.rh[j], W.ws[j], W.hujan[j]); isimax = Math.max(isimax, isih(F2, W.ws[j])); }
+      rhmin = Math.min(rhmin, W.rh[j]); tmax = Math.max(tmax, W.tc[j]); h24 += W.hujan[j];
+      vpd = Math.max(vpd, .6108 * Math.exp(17.27 * W.tc[j] / (W.tc[j] + 237.3)) * (1 - Math.min(Math.max(W.rh[j], 0), 100) / 100)); F2 = hffmc(F2, W.tc[j], W.rh[j], W.ws[j], W.hujan[j]); isimax = Math.max(isimax, isih(F2, W.ws[j])); }
     for (let j = Math.max(0, i - 72); j < i; j++) h72 += W.hujan[j];
     let kering = 0;
     for (let h = 1; h <= 30; h++) { let s = 0; for (let j = Math.max(0, i - 24 * h); j < i - 24 * (h - 1); j++) s += W.hujan[j]; if (s >= 1) break; kering = h; }
     const dari = (Math.atan2(u / 24, v / 24) / rad + 360) % 360;
-    return {ws: wsum / 24, ws_maks: wmax, ke: (dari + 180) % 360, rh_min: rhmin, t_maks: tmax, hujan24: h24, hujan72: h72, hari_kering: kering,
+    return {ws: wsum / 24, ws_maks: wmax, ke: (dari + 180) % 360, rh_min: rhmin, t_maks: tmax, vpd_maks: vpd, hujan24: h24, hujan72: h72, hari_kering: kering,
       ffmc: Fh, dmc, dc, bui, isi_maks: isimax, fwi: fw};
   };
   /* ISI per jam (untuk membagi luas harian ke jam) */
@@ -100,11 +101,17 @@ function indeksPoligon(fc, box) {
     const P = g.type === "Polygon" ? [g.coordinates] : g.type === "MultiPolygon" ? g.coordinates : [];
     for (const poly of P) { const r = poly[0]; let a = 1e9, b = 1e9, c = -1e9, d = -1e9; for (const [x, y] of r) { if (x < a) a = x; if (y < b) b = y; if (x > c) c = x; if (y > d) d = y; }
       if (c < box[0] || a > box[2] || d < box[1] || b > box[3]) continue; idx.push([a, b, c, d, r, f.properties || {}]); } }
-  return (x, y) => { for (const [a, b, c, d, r, p] of idx) { if (x < a || x > c || y < b || y > d) continue; let ins = false;
+  const dalam = (x, y, r) => { let ins = false;
     for (let i = 0, j = r.length - 1; i < r.length; j = i++) { const [xi, yi] = r[i], [xj, yj] = r[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ins = !ins; }
-    if (ins) return p; } return null; };
+    return ins; };
+  const f = (x, y) => { for (const [a, b, c, d, r, p] of idx) if (x >= a && x <= c && y >= b && y <= d && dalam(x, y, r)) return p; return null; };
+  f.semua = (x, y) => idx.filter(([a, b, c, d, r]) => x >= a && x <= c && y >= b && y <= d && dalam(x, y, r)).map(v => v[5]);
+  return f;
 }
-/* L = {gambut, kawasan, konsesi (GeoJSON), kanal (kanal.json), jalan (jalan.geojson), desa (osm/desa.json), riwayat (riwayat_grid.json), penduduk (penduduk.json)} */
+/* nama perusahaan baku (sama dengan nama_baku di scripts/sebaran/umum.py) */
+const namaBaku = n => (n || "").toLowerCase().replace(/\b(pt|tbk|cv|persero)\b/g, " ").replace(/[^a-z0-9]/g, "").replace(/(.)\1+/g, "$1");
+/* L = {gambut, kawasan, konsesi (GeoJSON), sanksi (lahan/sanksi_karhutla.json), kanal (kanal.json), jalan (jalan.geojson), desa (osm/desa.json),
+       riwayat (riwayat_grid.json), penduduk (penduduk.json)} */
 function Lahan(L, lon, lat, rDeg = .6) {
   const box = [lon - rDeg, lat - rDeg, lon + rDeg, lat + rDeg];
   const gb = indeksPoligon(L.gambut, box), kw = indeksPoligon(L.kawasan, box), ks = indeksPoligon(L.konsesi, box);
@@ -118,6 +125,11 @@ function Lahan(L, lon, lat, rDeg = .6) {
   for (const daf of Object.values(L.desa || {})) for (const [la, lo, kode, nama] of daf) { if (Math.abs(la - lat) > rDeg + .2 || Math.abs(lo - lon) > rDeg + .2) continue;
     const k = Math.floor(lo / J) + "," + Math.floor(la / J); (desa.get(k) || desa.set(k, []).get(k)).push([lo, la]); daftarDesa.push({nama, kode, lon: lo, lat: la}); }
   const rg = new Map(); if (L.riwayat) for (const [a, b, f] of L.riwayat.sel_data) rg.set(a + "," + b, f);
+  const sanksi = new Map(); for (const c of L.sanksi?.kasus || []) { const th = c.tahun_putusan || Math.min(9999, ...(c.sumber || []).filter(x => x.tanggal).map(x => +x.tanggal.slice(0, 4)));
+    const k = namaBaku(c.nama); sanksi.set(k, Math.min(sanksi.get(k) ?? 9999, th)); }
+  const pend = new Map(), ps = L.penduduk?.sel || .25; for (const [la, lo, n] of L.penduduk?.grid || []) { const k = Math.floor(la / ps) + "," + Math.floor(lo / ps); pend.set(k, (pend.get(k) || 0) + n); }
+  const kepadatan = (x, y) => { if (!pend.size) return 0; const gy = Math.floor(y / ps), n = pend.get(gy + "," + Math.floor(x / ps)) || 0;
+    return n / ((ps * 110.57) * (ps * 111.32 * Math.cos((gy + .5) * ps * rad))); };
   const cache = new Map();
   const jarakJalan = (x, y) => { const gx = Math.floor(x / J), gy = Math.floor(y / J); let best = 1e4;
     for (let dx = -1; dx <= 1; dx++) for (let dy = -1; dy <= 1; dy++) for (const [a, b] of jalan.get((gx + dx) + "," + (gy + dy)) || []) best = Math.min(best, jarakM(x, y, a, b));
@@ -129,8 +141,11 @@ function Lahan(L, lon, lat, rDeg = .6) {
   return {
     daftarDesa, penduduk: L.penduduk,
     sel(k) { let r = cache.get(k); if (r) return r; const [x, y] = pusat(k);
-      const kwp = kw(x, y) || {}, ksp = ks(x, y) || {};
-      r = {gambut: gb(x, y) ? 1 : 0, hutan: HUTAN.has(kwp.fungsi) ? 1 : 0, semak: PRODUKSI.has(kwp.fungsi) || ksp.jenis === "hph" ? 1 : 0, kebun: ksp.jenis === "sawit" ? 1 : 0,
+      const kwp0 = kw(x, y), kwp = kwp0 || {}, kss = ks.semua(x, y), jenis = new Set(kss.map(p => p.jenis));
+      const sth = Math.min(9999, ...kss.flatMap(p => [sanksi.get(namaBaku(p.pemegang || p.nama)) ?? 9999, sanksi.get(namaBaku(p.nama)) ?? 9999]));
+      r = {gambut: gb(x, y) ? 1 : 0, hutan: HUTAN.has(kwp.fungsi) ? 1 : 0, produksi: PRODUKSI.has(kwp.fungsi) ? 1 : 0, apl: kwp0 ? 0 : 1,
+        kebun: jenis.has("sawit") ? 1 : 0, hti: jenis.has("hti") ? 1 : 0, hph: jenis.has("hph") ? 1 : 0, tambang: jenis.has("tambang") ? 1 : 0, sanksi_th: sth,
+        penduduk_km2: kepadatan(x, y),
         kanal_km: L.kanal ? kanal.get(Math.floor(y / L.kanal.sel) + "," + Math.floor(x / L.kanal.sel)) || 0 : 0, jalan_km: jarakJalan(x, y) / 1000, desa_km: jarakDesa(x, y),
         riwayat_f: L.riwayat ? rg.get(Math.trunc((x - L.riwayat.x0) / .1) + "," + Math.trunc((L.riwayat.y1 - y) / .1)) || 0 : 0,
         lindung: kwp.fungsi && (HUTAN.has(kwp.fungsi)) ? 1 : 0};
@@ -153,13 +168,13 @@ function calon(terbakar, aktif, R) {
       const d = Math.hypot(di, dj), o = out.get(k); if (!o || d < o[0] || (d === o[0] && a < o[1])) out.set(k, [d, a]); } }
   return out;
 }
-function vektor(M, k, [d, a], terbakar, aktif, w, ev, lh) {
+function vektor(M, k, [d, a], terbakar, aktif, w, ev, lh, tahun = 9999) {
   const [ki, kj] = ij(k), [ai, aj] = ij(a);
   let b8 = 0, a24 = 0;
   for (let dj = -1; dj <= 1; dj++) for (let di = -1; di <= 1; di++) if (terbakar.has((kj + dj) * NX + ki + di)) b8++;
   for (let dj = -2; dj <= 2; dj++) for (let di = -2; di <= 2; di++) if (aktif.has((kj + dj) * NX + ki + di)) a24++;
   const br = Math.atan2(ki - ai, kj - aj), se = d > 0 ? Math.cos(br - w.ke * rad) : 0, s = lh.sel(k);
-  const v = {jarak_m: d * 375, tetangga8: b8, aktif24: a24, searah: se, angin_searah: se * w.ws, ...w, ...ev, ...s};
+  const v = {jarak_m: d * 375, tetangga8: b8, aktif24: a24, searah: se, angin_searah: se * w.ws, ...w, ...ev, ...s, sanksi: s.sanksi_th <= tahun ? 1 : 0};
   return M.fitur.map(f => v[f]);
 }
 
@@ -178,7 +193,7 @@ function ramal(o) {
   const W = Cuaca(o.cuaca, lon);
   if (!W.cukup(t0, hari * 24)) throw new Error("seri cuaca harus mencakup 31 hari sebelum dan " + hari * 24 + " jam sesudah waktu titik");
   const lh = Lahan(o.lahan || {}, lon, lat), R = M.R || 5;
-  const sel0 = o.sel0?.length ? o.sel0 : [sel(lon, lat)];
+  const sel0 = o.sel0?.length ? o.sel0 : [sel(lon, lat)], tahunApi = new Date(t0).getUTCFullYear();
   const tb0 = new Set(sel0), ak0 = new Map(sel0.map(k => [k, t0]));
   const iklim = {oni: indeksIklim(M.iklim?.oni, new Date(t0)), dmi: indeksIklim(M.iklim?.dmi, new Date(t0))};
   /* FRP maks (MW) titik awal; tidak diketahui -> median deteksi pertama di data latih */
@@ -191,7 +206,7 @@ function ramal(o) {
       const t = t0 + d * 864e5, w = jendela[d], jl = ((t / 6e4 + lon * 4) / 60 % 24 + 24) % 24;
       const ev = {log_luas: Math.log(tb.size + baru.size), log_baru24: Math.log1p(b24), umur_jam: (t - t0) / 36e5, log_frp: Math.log1p(frp), ...iklim, malam: jl >= 6 && jl < 18 ? 0 : 1};
       const semua = new Set([...tb, ...baru]), c = calon(semua, ak, R), nb = [];
-      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh)); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= M.tau) nb.push(k); }
+      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh, tahunApi)); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= M.tau) nb.push(k); }
       for (const k of nb) baru.add(k);
       if (nb.length) ak = new Map(nb.map(k => [k, t + 864e5]));
       b24 = nb.length; luas.push(baru.size);

@@ -239,8 +239,8 @@ const Cerita = {
       const tz = Math.round(lon / 15), tgl = $q("#ct-tgl", this.el).value, jam = +$q("#ct-jam", this.el).value;
       const waktu = Date.parse(tgl + "T00:00:00Z") + (jam - tz) * 36e5;
       const L = this.lahan ||= await (async () => { const o = u => ambil(u).catch(() => null);
-        const [gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk] = await Promise.all(["data/lahan/gambut.geojson", "data/lahan/kawasan.geojson", "data/lahan/konsesi.geojson", "data/kanal.json", "data/jalan.geojson", "data/osm/desa.json", "data/riwayat_grid.json", "data/penduduk.json"].map(o));
-        return {gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk}; })();
+        const [gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk, sanksi] = await Promise.all(["data/lahan/gambut.geojson", "data/lahan/kawasan.geojson", "data/lahan/konsesi.geojson", "data/kanal.json", "data/jalan.geojson", "data/osm/desa.json", "data/riwayat_grid.json", "data/penduduk.json", "data/lahan/sanksi_karhutla.json"].map(o));
+        return {gambut, kawasan, konsesi, kanal, jalan, desa, riwayat, penduduk, sanksi}; })();
       const cuaca = await SebaranModel.cuacaTanggal(lat, lon, waktu);
       st.textContent = "Menjalankan 60 kemungkinan…"; await new Promise(r => setTimeout(r, 30));
       const t0 = performance.now(), r = SebaranModel.ramal({model: this.D.model, lat, lon, waktu, cuaca, lahan: L, mc: 60, seed: 7});

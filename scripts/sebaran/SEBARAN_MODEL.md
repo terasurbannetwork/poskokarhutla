@@ -46,7 +46,7 @@ Di akhir `Sim.jalan()` (setelah `this.hasil = H;`), jalankan model data bila dic
 if (this.op.data && typeof SebaranModel !== "undefined") {
   const p = this.f.properties, M = Sim._model ||= await SebaranModel.muat();
   const sel0 = [...new Set((p.api24 || []).map(([lo, la]) => SebaranModel.sel(lo, la)))];
-  const L = Sim._lahanData ||= {gambut: Lapis.cache.gambut, kawasan: Lapis.cache.kawasan, konsesi: Lapis.cache.konsesi,
+  const L = Sim._lahanData ||= {gambut: Lapis.cache.gambut, kawasan: Lapis.cache.kawasan, konsesi: Lapis.cache.konsesi, sanksi: await muatJSON("data/lahan/sanksi_karhutla.json").catch(() => null),
     kanal: await muatJSON("data/kanal.json"), jalan: await muatJSON("data/jalan.geojson"), desa: Sim._desa,
     riwayat: await muatJSON("data/riwayat_grid.json"), penduduk: await muatJSON("data/penduduk.json").catch(() => null)};
   this.data = SebaranModel.ramal({model: M, lat: p.lat, lon: p.lon, waktu: Date.now(), sel0,

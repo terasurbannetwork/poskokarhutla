@@ -89,8 +89,8 @@ def _sim_par(arg):
     if not S or not S.cukup(p, 96):
         return None
     out = []
-    for par in pars:
-        P, _ = L.ramal_sim(e, p, tb, ak, S, k, par=par)
+    for mdl, par in pars:
+        P, _ = L.ramal_sim(e, p, tb, ak, S, k, par=par, model=mdl)
         out.append((len(P[0] & b24), len(P[0]), len(b24)))
     return out
 
@@ -105,10 +105,53 @@ def ringkas_semua(hasil, modes):
     return R
 
 
+def pilih_per_strata(hasil, model):
+    """Model dengan F1 mikro 24 jam tertinggi per strata (gambut / mineral / sabana) di VALIDASI."""
+    out = {}
+    for st in ("gambut", "mineral", "sabana"):
+        best = None
+        for nm in model:
+            if nm in ("persistensi", "sim_kal"):
+                continue
+            r = L.ringkas(hasil, nm, 0, lambda r, st=st: r["strata"] == st)
+            if r and (best is None or r["f1_mikro"] > best[1]):
+                best = (nm, r["f1_mikro"])
+        out[st] = best[0] if best else "gbdt"
+    return out
+
+
+def gabung(hasil, pilihan):
+    for r in hasil:
+        nm = pilihan.get(r["strata"], "gbdt")
+        if nm in r["skor"]:
+            r["skor"]["gabungan"] = r["skor"][nm]
+
+
+def ringkas_strata(hasil, model):
+    return {st: {nm: {h: L.ringkas(hasil, nm, i, lambda r, st=st: r["strata"] == st) for i, h in ((0, "24"), (2, "72"))} for nm in model}
+            for st in ("gambut", "mineral", "sabana")}
+
+
+def lepas_model(hasil, model):
+    """AUC 'akan lolos' (>= 10 sel dalam 72 jam) dari deteksi pertama; skor = luas ramalan 72 jam (GBDT: peluang MC)."""
+    rs = [r for r in hasil if r["ji"] == 0]
+    y = [1 if r["akhir72"] >= L.LEPAS else 0 for r in rs]
+    out = {}
+    for nm in model:
+        if nm == "persistensi":
+            continue
+        sk = [(r.get("p_lepas", 0) if nm == "gbdt" else r["skor"][nm][2]["np"]) if nm in r["skor"] else None for r in rs]
+        pas = [(a, b) for a, b in zip(sk, y) if a is not None]
+        if len(pas) > 20:
+            a = G.auc([x for x, _ in pas], [b for _, b in pas])
+            out[nm] = round(a, 4) if a is not None else None
+    return out
+
+
 def arah_ringkas(hasil):
     out = {"angin_bawah": bootstrap([r.get("arah_angin_err") for r in hasil if "arah_angin_err" in r]),
            "arah_kemarin": bootstrap([r.get("arah_kemarin_err") for r in hasil if "arah_kemarin_err" in r])}
-    for nm in ("lr", "gbdt", "sim", "sim_kal", "hibrida"):
+    for nm in ("lr", "gbdt", "sim", "sim_kal", "hibrida", *L.PEMBANDING):
         out[nm] = bootstrap([r["skor"][nm][0]["arah"] for r in hasil if nm in r["skor"] and r["skor"][nm][0]["arah"] is not None])
     # perbandingan berpasangan pada kasus yang sama
     sama = [r for r in hasil if "arah_angin_err" in r and r["skor"].get("gbdt", [{}])[0].get("arah") is not None]
@@ -184,20 +227,41 @@ def main():
     peramban = [f for f in FITUR_SEL]
 
     # 1. regresi logistik & GBDT: penyetelan di validasi
-    lr = latih_model("lr", peramban, sub(tr, 80000))
-    H["lr_val"] = nilai(lr, D["va"])[0]
-    log("LR val", H["lr_val"])
-    H["gbdt_grid"] = []
-    best = None
-    for dalam in ((3,) if CEPAT else (3, 4, 5)):
-        m = latih_model("gbdt", peramban, tr, pohon=40 if CEPAT else 200, dalam=dalam, lr=.1, log=log)
-        for n in ((20, 40) if CEPAT else (50, 100, 150, 200)):
-            v = nilai(m, D["va"], n)[0]
-            H["gbdt_grid"].append({"dalam": dalam, "pohon": n, **v})
-            log("GBDT", dalam, n, v)
-            if best is None or v["logloss"] < best[0]["logloss"]:
-                best = (v, dalam, n)
-    H["gbdt_terpilih"] = {"dalam": best[1], "pohon": best[2], **best[0]}
+    G0 = os.path.join(MENTAH, "grid_kurva.json")
+    if os.environ.get("SEBARAN_PAKAI_GRID") and os.path.exists(G0):  # hasil kisi & kurva belajar dari putaran sebelumnya (sampel sama)
+        g0 = json.load(open(G0))
+        H["lr_val"], H["gbdt_grid"], H["kurva_belajar"] = g0["lr_val"], g0["gbdt_grid"], g0["kurva_belajar"]
+        b = min(H["gbdt_grid"], key=lambda g: g["logloss"])
+        best = ({k: b[k] for k in ("logloss", "auc", "brier")}, b["dalam"], b["pohon"])
+        H["gbdt_terpilih"] = {"dalam": best[1], "pohon": best[2], **best[0]}
+        log("kisi & kurva belajar dipakai ulang:", H["gbdt_terpilih"])
+    else:
+        lr = latih_model("lr", peramban, sub(tr, 80000))
+        H["lr_val"] = nilai(lr, D["va"])[0]
+        log("LR val", H["lr_val"])
+        H["gbdt_grid"] = []
+        best = None
+        for dalam in ((3,) if CEPAT else (3, 4, 5)):
+            m = latih_model("gbdt", peramban, tr, pohon=40 if CEPAT else 200, dalam=dalam, lr=.1, log=log)
+            for n in ((20, 40) if CEPAT else (50, 100, 150, 200)):
+                v = nilai(m, D["va"], n)[0]
+                H["gbdt_grid"].append({"dalam": dalam, "pohon": n, **v})
+                log("GBDT", dalam, n, v)
+                if best is None or v["logloss"] < best[0]["logloss"]:
+                    best = (v, dalam, n)
+        H["gbdt_terpilih"] = {"dalam": best[1], "pohon": best[2], **best[0]}
+
+        # 1b. kurva belajar: panjang data latih vs skill validasi (2012-2014 belum punya cuaca, MODIS beda piksel)
+        H["kurva_belajar"] = []
+        for th0, th1 in ((2021, 2022), (2019, 2022), (2017, 2022), (2016, 2022), (2015, 2022)):
+            ix = [i for i in idx["latih"] if th0 <= s["th"][i] <= th1]
+            if len(ix) < 2000:
+                continue
+            m = latih_model("gbdt", peramban, sub(ix, 160000), pohon=best[2], dalam=best[1], lr=.1)
+            v = nilai(m, D["va"])[0]
+            H["kurva_belajar"].append({"tahun": f"{th0}-{th1}", "baris": len(ix), **v})
+            log("kurva belajar", th0, th1, len(ix), v)
+
 
     # 2. ablasi: buang satu fitur / satu kelompok; tambah 'bekas' (riset saja)
     tugas = [("(semua)", peramban)] + [(f, [x for x in peramban if x != f]) for f in peramban] + \
@@ -205,8 +269,15 @@ def main():
             [("+ bekas terbakar 1-3 th (375 m)", peramban + ["bekas"]), ("+ terbakar tahun lalu (375 m)", peramban + ["bekas1"]),
              ("+ tahun sejak terakhir terbakar", peramban + ["tahun_sejak"]), ("+ jarak sungai OSM", peramban + ["sungai_km"]),
              ("+ semua riset", peramban + L.RISET)]
-    with CTX.Pool(5) as pool:
-        ab = dict(pool.map(_ablasi, tugas))
+    AB = os.path.join(MENTAH, "ablasi.json")
+    ab0 = json.load(open(AB)) if os.path.exists(AB) else {}
+    if os.environ.get("SEBARAN_PAKAI_ABLASI") and ab0.get("tugas") == [t[0] for t in tugas]:
+        ab = ab0["hasil"]
+        log("ablasi dipakai ulang")
+    else:
+        with CTX.Pool(3) as pool:  # 3 proses: tiap anak menyalin sampel (~1 GB) karena hitungan referensi Python; mesin 8 GB
+            ab = dict(pool.map(_ablasi, tugas))
+        json.dump({"tugas": [t[0] for t in tugas], "hasil": ab}, open(AB, "w"))
     dasar = ab["(semua)"]
     H["ablasi"] = [{"tanpa": k, **v, "d_logloss": round(v["logloss"] - dasar["logloss"], 5), "d_auc": round(v["auc"] - dasar["auc"], 4)} for k, v in ab.items()]
     H["ablasi"].sort(key=lambda r: -r["d_logloss"])
@@ -245,9 +316,21 @@ def main():
     log("GBDT akhir val", H["gbdt_val"])
 
     # 3. evaluasi simulasi di validasi: ambang tau
-    evs = {"latih": [], "val": [], "uji": []}
+    # sampel peristiwa evaluasi dialirkan (reservoir) supaya tidak memuat ~400 rb peristiwa ke memori
+    kap = {"latih": (130, 45), "val": (320, 160), "uji": (420, 210)} if not CEPAT else {"latih": (6, 2), "val": (10, 5), "uji": (10, 5)}
+    res, n_lihat, rnd_r = {}, {}, random.Random(77)
     for e in L.peristiwa(semua_kecil=True):
-        evs[L.bagian(int(e["t0"][:4]))].append(e)
+        kk = (L.bagian(int(e["t0"][:4])), e["sel"] >= 3)
+        cap = kap[kk[0]][0 if kk[1] else 1]
+        n_lihat[kk] = n_lihat.get(kk, 0) + 1
+        r_ = res.setdefault(kk, [])
+        if len(r_) < cap:
+            r_.append(e)
+        else:
+            j = rnd_r.randrange(n_lihat[kk])
+            if j < cap:
+                r_[j] = e
+    evs = {b: res.get((b, True), []) + res.get((b, False), []) for b in ("latih", "val", "uji")}
     log("peristiwa eval:", {k: len(v) for k, v in evs.items()})
     modes = {"lr": lr, "gbdt": gb}
     awal_val = L.awal_eval(evs["val"], 10 if CEPAT else 300, 5 if CEPAT else 150, seed=21)
@@ -259,29 +342,42 @@ def main():
 
     # 4. Sim hibrida: kisi parameter pada titik awal LATIH (bukan validasi/uji)
     awal_tr = L.awal_eval(evs["latih"], 6 if CEPAT else 120, 2 if CEPAT else 40, seed=31)
-    pars = [(ka, mg, m) for ka in (.25, .5, 1.0) for mg in (1.0, 2.0, 4.0, 8.0) for m in (.01, .02, .03, .05, .1, .2)]
+    pars = [("fbp", (ka, mg, m)) for ka in (.25, .5, 1.0) for mg in (1.0, 2.0, 4.0, 8.0) for m in (.01, .02, .03, .05, .1, .2)] + \
+           [(mdl, (1, 1, m)) for mdl in L.PEMBANDING for m in (.001, .003, .01, .03, .1, .3, 1.0)]
     with CTX.Pool(5) as pool:
         rs = [r for r in pool.imap(_sim_par, [(e, ji, pars) for e, ji in awal_tr], chunksize=2) if r]
     grid = []
-    for i, par in enumerate(pars):
+    for i, (mdl, par) in enumerate(pars):
         tp = sum(r[i][0] for r in rs)
         np_ = sum(r[i][1] for r in rs)
         no = sum(r[i][2] for r in rs)
-        grid.append({"k_angin": par[0], "m_gambut": par[1], "m": par[2], "f1_mikro": round(2 * tp / max(1, np_ + no), 4), "rasio_luas": round(np_ / max(1, no), 2)})
+        grid.append({"model": mdl, "k_angin": par[0], "m_gambut": par[1], "m": par[2], "f1_mikro": round(2 * tp / max(1, np_ + no), 4), "rasio_luas": round(np_ / max(1, no), 2)})
     grid.sort(key=lambda g: -g["f1_mikro"])
-    H["hibrida_grid"] = grid
-    par_h = (grid[0]["k_angin"], grid[0]["m_gambut"], grid[0]["m"])
-    log("hibrida", grid[0])
+    H["hibrida_grid"] = [g for g in grid if g["model"] == "fbp"]
+    H["pembanding_grid"] = [g for g in grid if g["model"] != "fbp"]
+    hg = H["hibrida_grid"][0]
+    par_h = (hg["k_angin"], hg["m_gambut"], hg["m"])
+    fisika = {"hibrida": par_h, **{mdl: next(g["m"] for g in grid if g["model"] == mdl) for mdl in L.PEMBANDING}}
+    H["fisika"] = fisika
+    log("fisika terkalibrasi (latih)", fisika)
+    MODEL = ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"] + L.PEMBANDING
 
     # 5. validasi lengkap (dengan tau terpilih, Sim, hibrida)
     tau_v = {nm: t for nm, (t, _) in tau.items()}
     with CTX.Pool(5) as pool:
-        hv = L.jalankan_eval(awal_val, {**modes, "sim": None}, tau_v, par_h, 20, pool)
+        hv = L.jalankan_eval(awal_val, {**modes, "sim": None}, tau_v, fisika, 20, pool)
     K = H["kal_lepas"] = kal_lepas(hv)
-    H["val"] = {"model": ringkas_semua(hv, ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"]), "arah": arah_ringkas(hv), "lepas": lepas_ringkas(hv),
+    pilihan = pilih_per_strata(hv, MODEL)
+    H["pilihan_strata"] = pilihan
+    log("model terbaik per strata (validasi):", pilihan)
+    gabung(hv, pilihan)
+    H["val"] = {"model": ringkas_semua(hv, MODEL + ["gabungan"]), "strata": ringkas_strata(hv, MODEL + ["gabungan"]), "arah": arah_ringkas(hv), "lepas": lepas_ringkas(hv),
+                "lepas_model": lepas_model(hv, MODEL),
                 "lepas_kalibrasi": lepas_ringkas(hv, K),
                 "n_awal": len(hv)}
     json.dump(H, open(L.HASIL, "w"), ensure_ascii=False, indent=1)
+    with open(os.path.join(MENTAH, "val_model.pkl"), "wb") as f:  # untuk analisis kesalahan (galat.py) tanpa menyentuh uji
+        pickle.dump({"lr": lr, "gbdt": gb, "tau": tau_v, "fisika": fisika, "hv": hv, "fitur_akhir": fitur_akhir, "kal_lepas": K}, f)
     log("validasi selesai")
 
     if os.environ.get("SEBARAN_TANPA_UJI"):  # putaran penyetelan: berhenti sebelum uji dibuka
@@ -290,8 +386,10 @@ def main():
     # 6. UJI: dibuka sekali
     awal_uji = L.awal_eval(evs["uji"], 10 if CEPAT else 400, 5 if CEPAT else 200, seed=41)
     with CTX.Pool(5) as pool:
-        hu = L.jalankan_eval(awal_uji, {**modes, "sim": None}, tau_v, par_h, 20, pool)
-    H["uji"] = {"model": ringkas_semua(hu, ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"]), "arah": arah_ringkas(hu), "lepas_mentah": lepas_ringkas(hu), "lepas": lepas_ringkas(hu, K),
+        hu = L.jalankan_eval(awal_uji, {**modes, "sim": None}, tau_v, fisika, 20, pool)
+    gabung(hu, pilihan)
+    H["uji"] = {"model": ringkas_semua(hu, MODEL + ["gabungan"]), "strata": ringkas_strata(hu, MODEL + ["gabungan"]), "lepas_model": lepas_model(hu, MODEL),
+                "arah": arah_ringkas(hu), "lepas_mentah": lepas_ringkas(hu), "lepas": lepas_ringkas(hu, K),
                 "reliabilitas": {nm: reliabilitas_p1(hu, nm) for nm in modes}, "n_awal": len(hu),
                 "per_tahun": {th: L.ringkas([r for r in hu if r["th"] == th], "gbdt", 0) for th in (2024, 2025, 2026)}}
     H["uji_auc_baris"] = {nm: nilai(m, idx["uji"])[0] for nm, m in modes.items()}
