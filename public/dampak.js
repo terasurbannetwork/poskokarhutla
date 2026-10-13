@@ -6,6 +6,12 @@ const Dampak = (() => {
   const W = {merah: "#c9503a", oranye: "#e58a45", kuning: "#e3b94e", hijau: "#5a9e74", biru: "#4f8fc4", ungu: "#5f6fb0", biru2: "#3f7fb8", teal: "#2b8c86", tua: "#7a2b2b"};
   const W5 = [W.hijau, W.kuning, W.oranye, W.merah, W.tua], KELAS = ["Baik", "Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"], AMB = [15.5, 55.4, 150.4, 250.4];
   const kelas = v => AMB.filter(a => v > a).length;
+  /* ISPU dari PM2.5 (PermenLHK 14/2020), interpolasi linear per pita; maks 500 */
+  const BP = [[0, 15.5, 0, 50], [15.5, 55.4, 51, 100], [55.4, 150.4, 101, 200], [150.4, 250.4, 201, 300], [250.4, 500, 301, 500]];
+  const aqiISPU = pm => { if (!(pm > 0)) return 0; if (pm >= 500) return 500; const b = BP.find(q => pm <= q[1]); return Math.round(b[2] + (pm - b[0]) / (b[1] - b[0]) * (b[3] - b[2])); };
+  const aqiT = pm => pm > 500 ? "> 500" : String(aqiISPU(pm));
+  window.aqiISPU = aqiISPU; window.aqiTeks = aqiT;
+  const WK = ["#5f6fb0", "#1d4e89", "#c9503a", "#e58a45", "#8a6a3f", "#2b8c86", "#5b6782", "#b8932f", "#4f8fc4", "#7a2b3f"];
   /* ikon tab bagian, urut sama dengan JUDUL */
   const IKON = ["M17.7 7.7a2.5 2.5 0 1 1 1.8 4.3H2M9.6 4.6A2 2 0 1 1 11 8H2M12.6 19.4A2 2 0 1 0 14 16H2",
     "M17.8 19.2 16 11l3.5-3.5C21 6 21.5 4 21 3c-1-.5-3 0-4.5 1.5L13 8 4.8 6.2c-.5-.1-.9.1-1.1.5l-.3.5c-.2.5-.1 1 .3 1.3L9 12l-2 3H4l-1 1 3 2 2 3 1-1v-3l3-2 3.5 5.3c.3.4.8.5 1.3.3l.5-.2c.4-.3.6-.7.5-1.2Z",
@@ -28,7 +34,7 @@ const Dampak = (() => {
   /* ---------- pembantu ---------- */
   const hl = t => `<span class="hl">${t}</span>`;
   /* lebar viewBox mengikuti layar supaya teks grafik tetap terbaca di 375 px */
-  const lw = () => Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44)), sempit = () => lw() < 500, LL = l => sempit() ? Math.round(l * .7) : l;
+  const lw = () => Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), sempit = () => lw() < 500, LL = l => sempit() ? Math.round(l * .7) : l;
   const nmP = k => sempit() ? pendek(k) : namaProv(k);
   const PENDEK = {konsesi_sawit: "Sawit", konsesi_hph: "PBPH/HPH", konsesi_lain: "Konsesi lain", hutan_produksi: "Hutan produksi", konservasi: "Konservasi", lindung: "Lindung", apl: "APL (masyarakat)",
     pertanian: "Pertanian", lingkungan_karbon: "Karbon", lingkungan_hayati: "Hayati", kehutanan: "Kehutanan", perdagangan: "Perdagangan", industri_tambang: "Industri",
@@ -38,7 +44,7 @@ const Dampak = (() => {
   let pend = null;
   const LG = xs => { pend = xs; return ""; };
   const ex = (n, judul, sub, unit, isi, fn, ctl = "") => { Insight.leg(pend ? pend.map(([nm, w]) => [w, nm]) : null); pend = null;
-    return `<section class="dk-bag" id="dk-${n}" data-bag="${n}">${Insight.ex(judul, "", "", isi, fn, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${JUDUL[n - 1]}</span>`)}</section>`; };
+    return `<section class="dk-bag" id="dk-${n}" data-bag="${n}"><header class="dk-sh" style="--w:${WK[n - 1]}"><span class="dk-sn">${n}</span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[n - 1]}"/></svg><h2>${JUDUL[n - 1]}</h2></header>${Insight.ex(judul, "", "", isi, fn, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${JUDUL[n - 1]}</span>`)}</section>`; };
   const NAVY = "oklch(25.5% .075 256)";
   /* label nilai di ujung batang: pil berwarna, teks putih tebal */
   const pw = t => String(t).length * 11 * .6 + 16;
@@ -118,8 +124,8 @@ const Dampak = (() => {
       return `<g data-dk="prov|${r.k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(r.k))}</text>`
         + `<g class="gx" style="--i:${n}">` + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("") + "</g>"
         + `${pilV(x + 5, y + 3, rb(r.ts), NAVY)}</g>`; }).join("")}</svg>`;
-    const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: fmt(c.pm[i]), cat: KELAS[kelas(c.pm[i])],
-      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
+    const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: fmt(c.pm[i]), cat: `AQI ${aqiT(c.pm[i])} · ${KELAS[kelas(c.pm[i])]}`,
+      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>AQI (ISPU): ${aqiT(c.pm[i])}<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
     return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi yang sering mengalami karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
       svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"], [250.4, "berbahaya"]]}),
@@ -143,7 +149,7 @@ const Dampak = (() => {
       "Hindari kegiatan luar ruang; sekolah layak belajar dari rumah; siapkan ruang bersih udara.", "Tetap di dalam ruangan dengan jendela tertutup; evakuasi kelompok rentan bila berlangsung lama."];
     const k = kelas(Math.max(...c.pm));
     dlg(esc(n), `${c.negara ? esc(c.negara) : esc(namaProv(c.prov))} · PM2.5 maksimum harian, prakiraan CAMS`,
-      hbar(c.pm.map((v, j) => ({n: j ? hariN(D.udara.hari[j]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: mx, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
+      hbar(c.pm.map((v, j) => ({n: j ? hariN(D.udara.hari[j]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · AQI ${aqiT(v)} · ${KELAS[kelas(v)]}`, tip: `<b>PM2.5 ${fmt(v)} µg/m³</b><br>AQI (ISPU): ${aqiT(v)}<br>${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: mx, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
       + `<p style="margin:0"><b>Saran untuk kelas terburuk (${KELAS[k]}):</b> ${saran[k]}</p><p class="fnd">Satu sel CAMS ± 110 km; kota yang berdekatan bisa mendapat angka sama. Bandingkan dengan alat ukur ISPU KLHK bila tersedia.</p>`);
   }
 
@@ -282,7 +288,7 @@ const Dampak = (() => {
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
     dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
-      (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · ${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
+      (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · AQI ${aqiT(v)} · ${KELAS[kelas(v)]}`, tip: `<b>PM2.5 ${fmt(v)} µg/m³</b><br>AQI (ISPU): ${aqiT(v)}<br>${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
       + `<p style="margin:0">${s.pm && Math.max(...s.pm) > 55.4 ? "<b>Udara tidak sehat dalam 4 hari ke depan: pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang.</b>" : "Pantau kualitas udara; api dekat bisa membawa asap mendadak bila angin berbalik."}</p>${tombolK(s.kompleks)}`); }
   function popBerita(arr, j, jenis) { const x = arr[j];
     dlg(jenis, `${esc(x.media || "")} · ${tgl(x.tgl)}`, `<p style="margin:0">${tautan(x.url, x.judul)}</p>${(x.prov || []).length ? `<p class="fnd">Provinsi disebut: ${x.prov.map(p => esc(namaProv(p))).join(", ")}</p>` : ""}<p class="fnd">Hanya judul yang dibaca; buka berita untuk isi lengkap.</p>`); }
@@ -394,17 +400,25 @@ const Dampak = (() => {
 
   /* ================= 10. total kerugian ================= */
   function b10() {
-    const K = D.kerugian, sk = Object.entries(K.sektor).sort((a, b) => b[1][1] - a[1][1]), T = K.total, Wd = lw(), rh = 24, L = sempit() ? 92 : 210, mx = T[2], X = v => v / mx * (Wd - L - 70);
-    let acc = 0;
-    const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${(sk.length + 1) * rh + 8}" role="img" aria-label="Kerugian per sektor">${sk.map(([k, v], i) => { const y = i * rh, x = L + X(acc); acc += v[1];
-      return `<g data-dk="sek10|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 16}" text-anchor="end" font-size="11" font-weight="600">${esc(nmS(k))}</text>
-        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 4}" width="${Math.max(1.5, X(v[1]))}" height="${rh - 8}" rx="2" fill="${[W.merah, W.oranye, W.kuning, W.hijau, W.biru, W.ungu, W.biru2, W.teal, W.tua, "#9a7448", "#8a96a8"][i % 11]}" data-tip="<b>${esc(SEKTOR[k] || k)}</b><br>${rp(v[1])} (${rp(v[0])}–${rp(v[2])})<br>${Math.round(v[1] / T[1] * 100)}% dari total"/>
-        <text x="${x + Math.max(1.5, X(v[1])) + 5}" y="${y + 16}" font-size="10">${rp(v[1])}</text></g>`; }).join("")}
-      <g transform="translate(0,${sk.length * rh + 4})"><text x="${L - 8}" y="16" text-anchor="end" font-size="12" font-weight="800">Total</text><rect x="${L}" y="3" width="${X(T[1])}" height="${rh - 6}" rx="3" fill="currentColor" opacity=".8" data-tip="<b>Total</b><br>${rp(T[1])}<br>rentang ${rp(T[0])}–${rp(T[2])}"/>
-        <line x1="${L + X(T[0])}" x2="${L + X(T[2])}" y1="${rh / 2}" y2="${rh / 2}" stroke="${W.merah}" stroke-width="2"/><line x1="${L + X(T[0])}" x2="${L + X(T[0])}" y1="4" y2="${rh - 4}" stroke="${W.merah}" stroke-width="2"/><line x1="${L + X(T[2])}" x2="${L + X(T[2])}" y1="4" y2="${rh - 4}" stroke="${W.merah}" stroke-width="2"/></g></svg>`;
+    const K = D.kerugian, sk = Object.entries(K.sektor).sort((a, b) => b[1][1] - a[1][1]), T = K.total, Wd = lw(), rh = 30, L = sempit() ? 92 : 210, R = 96, mx = T[2], X = v => v / mx * (Wd - L - R);
+    const WC = [W.merah, W.oranye, W.kuning, W.hijau, W.biru, W.ungu, W.biru2, W.teal, W.tua, "#9a7448", "#8a96a8"], n = sk.length, yT = n * rh + 6, yW = yT + rh + 4, yA = yW + 2 * rh + 6, Ht = yA + 16;
+    const stp = [1, 2, 5, 10, 20, 50, 100, 200, 500].find(q => mx / 1e12 / q <= 6) || 1000, tk = []; for (let v = 0; v * 1e12 <= mx; v += stp) tk.push(v);
+    const pc = (x, y, t, w) => { const wd = pw(t); return pilV(Math.min(Math.max(L, x - wd / 2), Wd - wd), y, t, w); };
+    let acc = 0, xs = [];
+    const bar = sk.map(([k, v], i) => { const y = i * rh, x = L + X(acc), wd = Math.max(1.5, X(v[1])); acc += v[1]; xs.push(x + wd); const w = WC[i % 11];
+      return `<g data-dk="sek10|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmS(k))}</text>
+        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 6}" width="${wd}" height="${rh - 12}" rx="3" fill="${w}" data-tip="<b>${esc(SEKTOR[k] || k)}</b><br>${rp(v[1])} (${rp(v[0])}–${rp(v[2])})<br>${Math.round(v[1] / T[1] * 100)}% dari total"/>
+        ${pilV(x + wd + 5, y + 5, rp(v[1]), w)}</g>`; }).join("");
+    const con = xs.map((x, i) => `<line x1="${x}" x2="${x}" y1="${i * rh + rh - 6}" y2="${(i + 1) * rh + 6}" stroke="currentColor" stroke-dasharray="3 3" opacity=".4"/>`).join("");
+    const grid = tk.map(v => `<line x1="${L + X(v * 1e12)}" x2="${L + X(v * 1e12)}" y1="0" y2="${yA}" stroke="currentColor" opacity=".08"/><text x="${L + X(v * 1e12)}" y="${Ht - 2}" text-anchor="middle" font-size="9.5" opacity=".65">${rp(v * 1e12)}</text>`).join("");
+    const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Kerugian per sektor">${grid}<line x1="${L}" x2="${L}" y1="0" y2="${yA}" stroke="currentColor" opacity=".25"/>${con}${bar}
+      <g data-dk="" ><text x="${L - 8}" y="${yT + rh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="800">Total</text><rect x="${L}" y="${yT + 4}" width="${X(T[1])}" height="${rh - 8}" rx="3" fill="${NAVY}" data-tip="<b>Total</b><br>${rp(T[1])}<br>rentang ${rp(T[0])}–${rp(T[2])}"/>${pilV(L + X(T[1]) + 5, yT + 5, rp(T[1]), NAVY)}</g>
+      <g><text x="${L - 8}" y="${yW + 14}" text-anchor="end" font-size="11.5" font-weight="600" opacity=".8">Rentang</text>
+        <line x1="${L + X(T[0])}" x2="${L + X(T[2])}" y1="${yW + 10}" y2="${yW + 10}" stroke="${NAVY}" stroke-width="2"/><line x1="${L + X(T[0])}" x2="${L + X(T[0])}" y1="${yW + 3}" y2="${yW + 17}" stroke="${NAVY}" stroke-width="2"/><line x1="${L + X(T[2])}" x2="${L + X(T[2])}" y1="${yW + 3}" y2="${yW + 17}" stroke="${NAVY}" stroke-width="2"/>
+        ${pc(L + X(T[0]), yW + 22, "min " + rp(T[0]), "#5a6b85")}${pc(L + X(T[2]), yW + 22, "maks " + rp(T[2]), "#5a6b85")}</g></svg>`;
     return ex(10, `Kerugian akibat kebakaran sejak ${tgl(D.musim.mulai)} diperkirakan ${hl(rp(T[1]))}, dengan rentang ${rp(T[0])} sampai ${rp(T[2])}`,
-      "Kerusakan dan kerugian per sektor, Rupiah 2026, metode World Bank", "Air terjun: tiap sektor menumpuk ke total. Garis merah = rentang total. Klik sektor untuk angka rendah–tinggi.",
-      svg,
+      "Kerusakan dan kerugian per sektor, Rupiah 2026, metode World Bank", "Air terjun: tiap sektor menumpuk ke total. Garis dengan label min/maks = rentang total. Klik sektor untuk angka rendah–tinggi.",
+      svg + LG([["Kerusakan & kerugian per sektor (skenario tengah)", W.oranye], ["Total", NAVY], ["Rentang rendah–tinggi", "#5a6b85"]]),
       `Sumber: ${sm("wb16", "World Bank 2016")} dan ${sm("wb19", "2019")}, ${sm("bps", "BPS")} (inflasi), ${sm("gwis", "GWIS/MODIS")}, ${sm("sipongi", "KLHK SiPongi")}, ${sm("ipcc", "IPCC")}, ${sm("wang", "Wang dkk. 2025")}; perkiraan orde besaran, bukan penilaian resmi BNPB/Bappenas`);
   }
   function popSek10(k) { const v = D.kerugian.sektor[k];
@@ -436,9 +450,9 @@ const Dampak = (() => {
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak kebakaran…</div>`;
       try { await muat(); } catch (e) { gagal = e.message; el.innerHTML = `<div class="kosong">Data dampak belum tersedia (${esc(gagal)}). Jalankan scripts/data/dampak.py.</div>`; return; } }
     /* judul halaman dihapus (pemilik); tiap pintasan bagian berikon dengan warna sendiri */
-    const WK = ["#5f6fb0", "#1d4e89", "#c9503a", "#e58a45", "#8a6a3f", "#2b8c86", "#5b6782", "#b8932f", "#4f8fc4", "#7a2b3f"];
-    el.innerHTML = `<nav class="dk-nav" aria-label="Bagian dampak">${JUDUL.map((j, i) => `<button data-ke="${i + 1}" style="--w:${WK[i]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[i]}"/></svg>${j}</button>`).join("")}</nav>
-      <div id="dkIsi"></div>`;
+    el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${JUDUL.map((j, i) => `<button data-ke="${i + 1}" style="--w:${WK[i]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[i]}"/></svg>${j}</button>`).join("")}</nav>
+      <div id="dkIsi"></div></div>`;
+    if (!el._sc) { el._sc = 1; let tk = 0; document.addEventListener("scroll", () => { if (tk) return; tk = requestAnimationFrame(() => { tk = 0; let a = 1; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = +b.dataset.bag; }); el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", +b.dataset.ke === a)); }); }, true); }
     const isi = $("#dkIsi"); isi.innerHTML = gambar(1) + gambar(2);
     nanti(() => { isi.insertAdjacentHTML("beforeend", [3, 4, 5, 6, 7, 8, 9, 10].map(gambar).join("")); }); /* INP: dua bagian pertama dulu */
   }

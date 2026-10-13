@@ -86,3 +86,16 @@
 .dk-kd{color:oklch(25.5% .075 256)}
 .dk-pm-ls button{box-shadow:inset 3px 0 0 transparent}
 .dk-pm-ls button.on{background:var(--surface);box-shadow:inset 3px 0 0 var(--brand2)}
+/* sidebar kiri sticky (>=1100px) + band judul bagian */
+.dk-bag{scroll-margin-top:70px}
+.dk-sh{display:flex;align-items:center;gap:10px;margin:26px 0 12px;padding:0 2px 8px;border-bottom:2px solid color-mix(in oklch, var(--w) 40%, var(--line))}
+.dk-sh h2{margin:0;font-size:20px;line-height:1.2;color:var(--ink)}
+.dk-sn{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--w);color:#fff;font-weight:800;font-size:13px}
+.dk-sh svg{flex:none;width:22px;height:22px;color:var(--w)}
+#dkIsi>.dk-bag:first-child .dk-sh{margin-top:4px}
+.dk-nav button.on{background:color-mix(in oklch, var(--w) 16%, var(--card));border-color:var(--w)}
+@media (min-width:1100px){
+  .dk-lay{display:grid;grid-template-columns:200px minmax(0,1fr);gap:24px;align-items:start}
+  .dk-nav{position:sticky;top:70px;flex-direction:column;overflow:visible;margin:0;gap:4px}
+  .dk-nav button{width:100%;justify-content:flex-start;border-radius:12px;white-space:nowrap}
+}
