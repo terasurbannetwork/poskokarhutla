@@ -1,0 +1,26 @@
+/* sim_perlakuan.css — mode Perlakuan di panel Simulasi (warna data: palet redup proyek; teks & latar lewat variabel tema) */
+.pk{margin-top:16px;padding-top:12px;border-top:1px solid var(--line)}
+.pk-kepala h3{font-size:15px;margin:2px 0 4px}
+.pk input[type=text],.pk input:not([type]),.pk #pkCari{height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);padding:0 10px;min-width:0;max-width:100%;font:inherit;font-size:13px}
+.pk-rek{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface);border-left:4px solid #5a9e74;font-size:13px;line-height:1.5}
+.pk-rek p{margin:0 0 6px}.pk-rek p:last-child{margin:0}
+.pk-bar{width:100%;height:auto;display:block;margin-top:4px}
+.pk-bar text{font-size:9.5px;fill:var(--ink);font-family:var(--font)}
+.pk-bar text.v{font-weight:700}.pk-bar text.ax{fill:var(--ink2);font-size:9px}
+.pk-bar g{cursor:pointer}.pk-bar g.on text{font-weight:800}
+.pk-tb tbody tr{cursor:pointer}
+.pk-tb td,.pk-tb td small{white-space:normal;overflow-wrap:anywhere}.pk-tb td.n,.pk-tb td.n small{white-space:nowrap;overflow-wrap:normal}
+.pk-tb tbody tr:hover,.pk-tb tbody tr:focus-visible{background:var(--surface);outline:none}
+.pk-tb tbody tr.on{background:var(--surface);box-shadow:inset 3px 0 0 #3f7fb8}
+.pk-tb td b{font-size:12px}
+.pk-sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
+.pk-rinci{margin-top:10px;padding:8px 10px;border:1px solid var(--line);border-left:4px solid var(--w);border-radius:12px;background:var(--card);font-size:12.5px}
+.pk-rinci .simangka td{text-align:right}.pk-rinci .simangka td small{display:block;color:var(--ink2);font-size:10.5px}
+.pk-rinci .fnd{margin-top:4px}
+.pk-baris{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:end;margin:6px 0;font-size:12px}
+.pk-baris>b{flex-basis:100%;font-size:12px}
+.pk-in{display:flex;flex-direction:column;gap:2px;font-size:11px;color:var(--ink2)}
+.pk-in input{width:92px;height:30px;border-radius:8px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 8px;font:inherit;font-size:12.5px}
+.pk-alasan{margin:4px 0 0;padding-left:18px;font-size:12px;line-height:1.45;color:var(--ink)}
+.pk-alasan li{margin:3px 0}
+@media (max-width:420px){.pk-tb td small{font-size:10.5px}.pk-in input{width:80px}}

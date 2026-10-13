@@ -594,6 +594,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item b{font-size:14px;line-height:1.35}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
+<link href="sim_perlakuan.css" rel="stylesheet">
 <link href="databaru.css" rel="stylesheet">
 </head>
 <body>
@@ -3668,7 +3669,7 @@ function sebar(K, tab, fuel, hujan, o) {
     if (t > (o.tMax || 72)) break;
     const i = k % n, j = (k / n) | 0;
     let fac = o.mult;
-    if (o.P && t > o.T0) { kunci = Math.min(1, o.P * (t - o.T0) / Math.max(1, E * d * Math.PI / 4)); if (kunci >= 1) { tahan = t; break; } fac *= 1 - kunci; }
+    if (o.P && t > o.T0) { kunci = Math.min(1, (o.garis ? o.garis(t) : o.P * (t - o.T0)) / Math.max(1, E * d * Math.PI / 4)); if (kunci >= 1) { tahan = t; break; } fac *= 1 - kunci; }
     done[k] = 1;
     E += 4 - 2 * ((i > 0 && done[k - 1]) + (i < n - 1 && done[k + 1]) + (j > 0 && done[k - n]) + (j < n - 1 && done[k + n]));
     if (i < 2 || j < 2 || i > n - 3 || j > n - 3) tepi = true;
@@ -4114,6 +4115,7 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 <script src="lapisan5.js"></script>
+<script src="sim_perlakuan.js"></script>
 <script src="databaru.js" data-halaman="karhutla"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 </body>
