@@ -555,6 +555,29 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-chip{display:flex;flex-wrap:wrap;gap:4px}
 .br-chip i{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 16%, var(--card));color:color-mix(in oklch, var(--w) 75%, var(--ink));border:1px solid color-mix(in oklch, var(--w) 35%, transparent)}
 .br-list{display:grid;gap:2px}
+.br-rows{display:grid;gap:2px;margin-top:6px}
+.br-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(110px,1.1fr) 2fr auto 90px 54px;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:13.5px}
+.br-row-m{grid-template-columns:minmax(110px,1.1fr) 2fr auto}
+.br-row:hover,.br-row:focus-visible{background:var(--surface)}
+.br-row:focus-visible{outline:2px solid var(--brand2)}
+.br-nm{display:flex;align-items:center;gap:8px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-nm i{flex:none;width:10px;height:10px;border-radius:3px}
+.br-bar{height:10px;border-radius:5px;background:color-mix(in oklch, var(--line) 60%, transparent);overflow:hidden}
+.br-bar i{display:block;height:100%;border-radius:5px}
+.br-n{display:grid;justify-items:end;line-height:1.1}
+.br-n small{color:var(--ink2);font-size:11px}
+.br-spark{width:90px;height:24px}
+.br-d{font-size:12px;font-weight:800;text-align:right}
+.br-stack{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:6px}
+@media (max-width:640px){.br-row{grid-template-columns:1fr 1fr auto;gap:8px}.br-spark,.br-d{display:none}}
+.br-pop{display:grid;gap:6px;font-size:12.5px}
+.br-pop>small{color:var(--ink2)}
+.br-pop-l{display:grid;gap:2px;max-height:260px;overflow:auto;margin:2px -4px}
+.br-pop-l a{display:grid;gap:2px;padding:6px 4px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.br-pop-l a:hover span{text-decoration:underline}
+.br-pop-l span{font-weight:600;line-height:1.3}
+.br-pop-l small{color:var(--ink2);font-size:11px}
+.br-pop-l i{font-style:normal;font-weight:700}
 #berita .grid>*{min-width:0}
 #berita .tb3 td{overflow-wrap:anywhere;white-space:normal}
 .br-kartu,.br-sorot>*{min-width:0}
@@ -2269,7 +2292,7 @@ const Berita = {
   /* 2. peta gelembung per kabupaten + api tanpa berita */
   exPeta() {
     return `<article class="ex"><h3>Sebaran berita 7 hari dan <span class="hl">${fmt(this.d.celah.length)} kabupaten</span> dengan api prioritas yang tidak diberitakan</h3><p class="sub">Peta berita per kabupaten</p>
-      <p class="unit">gelembung = jumlah berita 7 hari (warna = nada situasi); tanda merah bergaris = kompleks prioritas tanpa berita. Klik gelembung untuk menyaring daftar.</p>
+      <p class="unit">gelembung = jumlah berita 7 hari (warna = nada situasi); tanda merah bergaris = kompleks prioritas tanpa berita. Klik gelembung untuk melihat daftar beritanya.</p>
       <div id="brPeta" style="height:420px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
       <p class="fn">Lokasi diambil dari nama wilayah di judul; ${fmt(Math.round(this.d.ringkasan.berlokasi_kab * 100))}% berita bisa dipetakan sampai kabupaten.</p></article>`; },
   pasangPeta() {
@@ -2286,12 +2309,19 @@ const Berita = {
       m.addSource("celah", {type: "geojson", data: {type: "FeatureCollection", features: celah}});
       m.addLayer({id: "celah", type: "circle", source: "celah", paint: {"circle-radius": 6, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#c9503a", "circle-stroke-width": 2.5}});
       const tip = $("#tip");
-      m.on("mousemove", "kab", e => { const p = e.features[0].properties; tip.innerHTML = `<b>${esc(p.nama)}</b><br>${fmt(p.n)} berita 7 hari · nada ${this.lbl(p.s)[0]}<br><small>klik untuk menyaring</small>`; tip.classList.add("on");
+      m.on("mousemove", "kab", e => { const p = e.features[0].properties; tip.innerHTML = `<b>${esc(p.nama)}</b><br>${fmt(p.n)} berita 7 hari · nada ${this.lbl(p.s)[0]}<br><small>klik untuk melihat beritanya</small>`; tip.classList.add("on");
         tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; m.getCanvas().style.cursor = "pointer"; });
       m.on("mousemove", "celah", e => { const p = e.features[0].properties; tip.innerHTML = `<b>${esc(p.id)}</b> · ${esc(p.kab)}<br>kompleks prioritas, tidak ada berita 7 hari`; tip.classList.add("on");
         tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
       ["kab", "celah"].forEach(l => m.on("mouseleave", l, () => { tip.classList.remove("on"); m.getCanvas().style.cursor = ""; }));
-      m.on("click", "kab", e => { this.f.q = e.features[0].properties.nama; this.f.hal = 0; this.ulangDaftar(); $("#brDaftar")?.scrollIntoView({behavior: "smooth"}); });
+      /* klik gelembung: popup daftar berita 7 hari di kabupaten itu; tombol bawah menyaring daftar utama */
+      m.on("click", "kab", e => { const p = e.features[0].properties, A = D.artikel.filter(a => a.kab?.[0] === p.k && a.tgl.slice(0, 10) >= t0).sort((a, b) => b.tgl.localeCompare(a.tgl));
+        tip.classList.remove("on");
+        const html = `<div class="br-pop"><b>${esc(p.nama)}</b><small>${fmt(A.length)} berita 7 hari · nada ${this.lbl(p.s)[0]}</small><div class="br-pop-l">${A.slice(0, 12).map(a => { const [sl, sw] = this.lbl(a.situasi);
+          return `<a href="${esc(a.url)}" target="_blank" rel="noopener"><span>${esc(a.judul)}</span><small>${esc(a.sumber)} · ${a.tgl.slice(8, 10)}/${a.tgl.slice(5, 7)} <i style="color:${sw}">● ${sl}</i></small></a>`; }).join("")}</div>
+          ${A.length > 12 ? `<small>+${fmt(A.length - 12)} berita lain</small>` : ""}<button class="btn sec" data-saring="${esc(p.nama)}">Tampilkan di daftar berita</button></div>`;
+        const pop = new maplibregl.Popup({maxWidth: "340px"}).setLngLat(e.lngLat).setHTML(html).addTo(m);
+        pop.getElement().querySelector("[data-saring]").onclick = ev => { this.f.q = ev.target.dataset.saring; this.f.hal = 0; this.ulangDaftar(); pop.remove(); $("#brDaftar")?.scrollIntoView({behavior: "smooth"}); }; });
       m.on("click", "celah", e => Laci.buka(e.features[0].properties.id)); }); },
   /* 3. sorotan 72 jam */
   exSorotan() {
@@ -2304,23 +2334,64 @@ const Berita = {
   /* 4. celah: api tanpa berita, berita tanpa titik panas, lonjakan */
   exCelah(lonj) {
     const D = this.d;
-    return `<article class="ex"><h3>Yang luput dan yang melonjak</h3><p class="sub">Membandingkan berita dengan data satelit</p><p class="unit">untuk memeriksa: api yang belum jadi perhatian publik, dan kebakaran yang diberitakan tetapi tidak tertangkap satelit</p>
+    return `<article class="ex"><h3>Yang luput dan yang melonjak</h3><p class="sub">Membandingkan berita dengan data satelit</p><p class="unit">untuk memeriksa: api yang belum jadi perhatian publik, dan kebakaran yang diberitakan tetapi tidak tertangkap satelit. Klik baris untuk rinciannya.</p>
       <div class="grid g3">
-        <div><div class="lbl">Api prioritas tanpa berita 7 hari</div><table class="tb3"><tbody>${D.celah.map(c => `<tr><td><b>${esc(c.kab.split("|")[1])}</b><small>${esc(namaProv(c.prov))}</small></td><td class="n">${fmt(c.n_prioritas)} kompleks<small>± ${rb(c.luas_ha)} ha</small></td></tr>`).join("") || `<tr><td>Tidak ada.</td></tr>`}</tbody></table></div>
+        <div><div class="lbl">Api prioritas tanpa berita 7 hari</div><table class="tb3"><tbody>${D.celah.map((c, i) => `<tr data-celah="${i}" tabindex="0" style="cursor:pointer"><td><b>${esc(c.kab.split("|")[1])}</b><small>${esc(namaProv(c.prov))}</small></td><td class="n">${fmt(c.n_prioritas)} kompleks<small>± ${rb(c.luas_ha)} ha</small></td></tr>`).join("") || `<tr><td>Tidak ada.</td></tr>`}</tbody></table></div>
         <div><div class="lbl">Berita kebakaran tanpa titik panas</div><table class="tb3"><tbody>${D.tanpa_api.slice(0, 8).map(a => `<tr><td><a href="${esc(a.url)}" target="_blank" rel="noopener">${esc(a.judul)}</a><small>${esc(a.sumber)} · ${a.tgl.slice(0, 10)}</small></td></tr>`).join("")}</tbody></table>
           <p class="fnd">Bisa api kecil yang tidak tertangkap satelit, tertutup awan, atau berita lama.</p></div>
-        <div><div class="lbl">Lonjakan berita 7 hari</div><table class="tb3"><tbody>${lonj.slice(0, 8).map(x => `<tr><td><b>${esc(namaProv(x.prov))}</b><small>${x.tgl}</small></td><td class="n">${fmt(x.n)} berita<small>biasanya ${fmt(Math.round(x.rata14))}</small></td></tr>`).join("") || `<tr><td>Tidak ada lonjakan.</td></tr>`}</tbody></table></div>
+        <div><div class="lbl">Lonjakan berita 7 hari</div><table class="tb3"><tbody>${(this._lonj = lonj.slice(0, 8)).map((x, i) => `<tr data-lonj="${i}" tabindex="0" style="cursor:pointer"><td><b>${esc(namaProv(x.prov))}</b><small>${x.tgl}</small></td><td class="n">${fmt(x.n)} berita<small>biasanya ${fmt(Math.round(x.rata14))}</small></td></tr>`).join("") || `<tr><td>Tidak ada lonjakan.</td></tr>`}</tbody></table></div>
       </div></article>`; },
-  /* 5. topik dan media */
+  dlg(judul, sub, isi) { const d = $("#dlg");
+    d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${judul}</h3><p>${sub}</p></div><button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
+    d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); };
+    d.querySelectorAll("[data-kom]").forEach(b => b.onclick = () => { d.close(); bukaTab("peta"); Laci.buka(b.dataset.kom); }); d.showModal(); },
+  /* api prioritas tanpa berita: kompleks di kabupaten itu */
+  rinciCelah(i) { const c = this.d.celah[i], ks = c.kompleks.map(id => S.kluster?.features.find(f => f.properties.id === id)?.properties).filter(Boolean);
+    this.dlg(`${esc(c.kab.split("|")[1])}: api prioritas tanpa berita`, `${esc(namaProv(c.prov))} · ${fmt(c.n_prioritas)} kompleks prioritas · ± ${rb(c.luas_ha)} ha · tidak ada berita 7 hari terakhir`,
+      `<p style="margin:0 0 10px">Kompleks ini aktif menurut satelit, tetapi belum muncul di berita. Bisa berarti api jauh dari permukiman, belum dilaporkan, atau luput dari perhatian. Layak dicek lapangan dan disampaikan ke publik.</p>
+      <div class="tw"><table><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Luas</th><th class="n">Titik 24 jam</th><th class="n">FWI</th><th class="n">Hari aktif</th><th></th></tr></thead><tbody>
+      ${ks.map(p => `<tr><td><b>${p.id}</b></td><td>${esc(p.kec || "–")}</td><td class="n num">${rb(p.luas || 0)} ha</td><td class="n num">${fmt(p.n24 || 0)}</td><td class="n num">${p.fwi == null ? "–" : fmt(Math.round(p.fwi))}</td><td class="n num">${fmt(p.hari || 0)}</td><td><button class="btn sec" data-kom="${p.id}">Buka di peta</button></td></tr>`).join("") || `<tr><td colspan="7">Data kompleks tidak ditemukan.</td></tr>`}</tbody></table></div>`); },
+  /* lonjakan: berita provinsi itu pada hari lonjakan + 21 hari volume */
+  rinciLonj(i) { const x = this._lonj[i], D = this.d, A = D.artikel.filter(a => a.prov?.includes(x.prov)), hari = Object.keys(D.harian).sort().slice(-21);
+    const per = Object.fromEntries(hari.map(t => [t, 0])); A.forEach(a => { const t = a.tgl.slice(0, 10); if (t in per) per[t]++; });
+    const mx = Math.max(1, ...Object.values(per)), W = 620, bw = W / hari.length;
+    const g = hari.map((t, j) => { const h = per[t] / mx * 90; return `<rect x="${j * bw + 2}" y="${100 - h}" width="${bw - 4}" height="${Math.max(1, h)}" rx="2" fill="${t === x.tgl ? "#c9503a" : "#4f8fc4"}" opacity="${t === x.tgl ? 1 : .7}" data-tip="${t}: ${fmt(per[t])} berita"/>`; }).join("")
+      + `<text x="0" y="116" font-size="10" opacity=".6">${hari[0].slice(8)}/${hari[0].slice(5, 7)}</text><text x="${W}" y="116" font-size="10" text-anchor="end" opacity=".6">${hari.at(-1).slice(8)}/${hari.at(-1).slice(5, 7)}</text>`;
+    const hr = A.filter(a => a.tgl.slice(0, 10) === x.tgl).sort((a, b) => b.tgl.localeCompare(a.tgl));
+    this.dlg(`Lonjakan berita ${esc(namaProv(x.prov))}`, `${x.tgl} · ${fmt(x.n)} berita, biasanya ${fmt(Math.round(x.rata14))} per hari (rata-rata 14 hari sebelumnya)`,
+      `<svg viewBox="0 0 ${W} 120" style="width:100%;margin-bottom:10px" role="img" aria-label="Berita per hari">${g}</svg>
+      <div class="br-list">${hr.map(a => { const [sl, sw] = this.lbl(a.situasi); return `<div class="br-item"><a href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a><small>${esc(a.sumber)} · ${a.tgl.slice(11, 16)} WIB${a.kab?.length ? " · " + esc(a.kab[0].split("|")[1]) : ""} · <span style="color:${sw}">situasi ${sl}</span></small></div>`; }).join("") || `<p class="kosong">Berita hari itu tidak ada di arsip.</p>`}</div>`); },
+  /* 5. topik dan media: baris dengan garis tren 30 hari; klik = popup rincian */
   exTopik() {
-    const D = this.d, t0 = Object.keys(D.harian).sort().slice(-30)[0], tp = {};
-    for (const [t, x] of Object.entries(D.harian)) if (t >= t0) for (const [k, n] of Object.entries(x.per_topik || {})) tp[k] = (tp[k] || 0) + n;
-    const T = Object.entries(tp).sort((a, b) => b[1] - a[1]), mx = Math.max(1, ...T.map(x => x[1])), M = D.media.slice(0, 10), mm = Math.max(1, ...M.map(x => x.n));
-    const bar = (n, m, w) => `<i style="display:block;height:10px;border-radius:5px;width:${n / m * 100}%;background:${w}"></i>`;
-    return `<article class="ex"><h3>Topik terbanyak 30 hari: <span class="hl">${TOPIK_B[T[0]?.[0]] || "–"}</span></h3><p class="sub">Topik berita dan media yang paling sering memberitakan</p><p class="unit">satu berita bisa punya lebih dari satu topik</p>
-      <div class="grid g2"><table class="tb3"><thead><tr><th>Topik (30 hari)</th><th class="n">Berita</th><th style="width:40%"></th></tr></thead><tbody>${T.map(([k, n]) => `<tr data-topik="${k}" style="cursor:pointer"><td>${TOPIK_B[k] || k}</td><td class="n num">${fmt(n)}</td><td>${bar(n, mx, WARNA_T[k])}</td></tr>`).join("")}</tbody></table>
-        <table class="tb3"><thead><tr><th>Media (120 hari)</th><th class="n">Berita</th><th style="width:40%"></th></tr></thead><tbody>${M.map(x => `<tr><td>${esc(x.sumber)}</td><td class="n num">${fmt(x.n)}</td><td>${bar(x.n, mm, "#4f8fc4")}</td></tr>`).join("")}</tbody></table></div>
-      <p class="fn">Klik topik untuk menyaring daftar berita.</p></article>`; },
+    const D = this.d, hari = Object.keys(D.harian).sort().slice(-30), tp = {};
+    for (const t of hari) for (const [k, n] of Object.entries(D.harian[t].per_topik || {})) tp[k] = (tp[k] || 0) + n;
+    const T = Object.entries(tp).sort((a, b) => b[1] - a[1]), tot = T.reduce((a, x) => a + x[1], 0) || 1, mx = Math.max(1, ...T.map(x => x[1])), M = D.media.slice(0, 10), mm = Math.max(1, ...M.map(x => x.n));
+    const garis = (v, w) => { const m = Math.max(1, ...v), W = 90, H = 24; return `<svg viewBox="0 0 ${W} ${H}" class="br-spark" aria-hidden="true"><path d="${v.map((x, i) => (i ? "L" : "M") + (i / (v.length - 1) * W).toFixed(1) + "," + (H - 2 - x / m * (H - 4)).toFixed(1)).join("")}" fill="none" stroke="${w}" stroke-width="1.8" stroke-linejoin="round"/></svg>`; };
+    const tren = k => { const v = hari.map(t => D.harian[t].per_topik?.[k] || 0), a = v.slice(-7).reduce((x, y) => x + y, 0), b = v.slice(-14, -7).reduce((x, y) => x + y, 0); return {v, d: b ? a / b - 1 : 0}; };
+    const baris = T.map(([k, n]) => { const t = tren(k), w = WARNA_T[k];
+      return `<button class="br-row" data-topikr="${k}"><span class="br-nm"><i style="background:${w}"></i>${TOPIK_B[k] || k}</span><span class="br-bar"><i style="width:${n / mx * 100}%;background:${w}"></i></span>
+        <span class="br-n"><b>${fmt(n)}</b><small>${Math.round(n / tot * 100)}%</small></span>${garis(t.v, w)}<span class="br-d" style="color:${t.d > .1 ? "#c9503a" : t.d < -.1 ? "#2b8c86" : "var(--ink2)"}">${t.d > 0 ? "▲" : "▼"} ${fmt(Math.abs(Math.round(t.d * 100)))}%</span></button>`; }).join("");
+    const media = M.map(x => `<button class="br-row br-row-m" data-media="${esc(x.sumber)}"><span class="br-nm">${esc(x.sumber)}</span><span class="br-bar"><i style="width:${x.n / mm * 100}%;background:#4f8fc4"></i></span><span class="br-n"><b>${fmt(x.n)}</b></span></button>`).join("");
+    return `<article class="ex"><h3>Topik terbanyak 30 hari: <span class="hl">${TOPIK_B[T[0]?.[0]] || "–"}</span></h3><p class="sub">Topik berita dan media yang paling sering memberitakan</p><p class="unit">satu berita bisa punya lebih dari satu topik; garis = tren harian, ▲▼ = 7 hari terakhir dibanding 7 hari sebelumnya. Klik baris untuk rinciannya.</p>
+      <div class="grid g2" style="gap:22px"><div><div class="lbl">Topik · 30 hari</div><div class="br-rows">${baris}</div></div><div><div class="lbl">Media · 120 hari</div><div class="br-rows">${media}</div></div></div></article>`; },
+  /* rincian satu kelompok berita (topik atau media) */
+  rinciKumpulan(judul, A) {
+    const D = this.d, hari = Object.keys(D.harian).sort().slice(-30), per = Object.fromEntries(hari.map(t => [t, 0]));
+    A.forEach(a => { const t = a.tgl.slice(0, 10); if (t in per) per[t]++; });
+    const mx = Math.max(1, ...Object.values(per)), W = 620, bw = W / hari.length;
+    const g = hari.map((t, j) => { const h = per[t] / mx * 90; return `<rect x="${j * bw + 1.5}" y="${100 - h}" width="${bw - 3}" height="${Math.max(1, h)}" rx="2" fill="#4f8fc4" data-tip="${t}: ${fmt(per[t])} berita"/>`; }).join("")
+      + `<text x="0" y="116" font-size="10" opacity=".6">${hari[0].slice(8)}/${hari[0].slice(5, 7)}</text><text x="${W}" y="116" font-size="10" text-anchor="end" opacity=".6">${hari.at(-1).slice(8)}/${hari.at(-1).slice(5, 7)}</text>`;
+    const n = A.length || 1, nada = ["negatif", "netral", "positif"].map(l => A.filter(a => a.label_situasi === l).length), WN = ["#c9503a", "#8a96a8", "#5a9e74"];
+    const pv = {}; A.forEach(a => (a.prov || []).forEach(k => pv[k] = (pv[k] || 0) + 1)); const PV = Object.entries(pv).sort((a, b) => b[1] - a[1]).slice(0, 6);
+    const tp = {}; A.forEach(a => (a.topik || []).forEach(k => tp[k] = (tp[k] || 0) + 1)); const TP = Object.entries(tp).sort((a, b) => b[1] - a[1]).slice(0, 5);
+    const terbaru = [...A].sort((a, b) => b.tgl.localeCompare(a.tgl)).slice(0, 10);
+    this.dlg(judul, `${fmt(A.length)} berita dalam arsip 120 hari`,
+      `<div class="lbl">Berita per hari · 30 hari</div><svg viewBox="0 0 ${W} 120" style="width:100%;margin:4px 0 12px" role="img" aria-label="Berita per hari">${g}</svg>
+      <div class="lbl">Nada situasi</div><div class="br-stack">${nada.map((v, i) => v ? `<i style="width:${v / n * 100}%;background:${WN[i]}" data-tip="${["memburuk", "netral", "membaik"][i]}: ${fmt(v)} berita"></i>` : "").join("")}</div>
+      <p class="fnd" style="margin:4px 0 12px">${["memburuk", "netral", "membaik"].map((l, i) => `${l} ${Math.round(nada[i] / n * 100)}%`).join(" · ")}</p>
+      <div class="grid g2" style="gap:16px;margin-bottom:12px"><div><div class="lbl">Provinsi paling sering disebut</div><table class="tb3"><tbody>${PV.map(([k, v]) => `<tr><td>${esc(namaProv(k))}</td><td class="n num">${fmt(v)}</td></tr>`).join("") || `<tr><td>Tidak ada lokasi.</td></tr>`}</tbody></table></div>
+        <div><div class="lbl">Topik</div><table class="tb3"><tbody>${TP.map(([k, v]) => `<tr><td><span class="br-chip"><i style="--w:${WARNA_T[k]}">${TOPIK_B[k]}</i></span></td><td class="n num">${fmt(v)}</td></tr>`).join("")}</tbody></table></div></div>
+      <div class="lbl">Berita terbaru</div><div class="br-list">${terbaru.map(a => `<div class="br-item"><a href="${esc(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a><small>${esc(a.sumber)} · ${a.tgl.slice(0, 16).replace("T", " ")} WIB</small></div>`).join("")}</div>`); },
   /* 6. daftar berita dengan saringan */
   saring() { const f = this.f, q = f.q.toLowerCase();
     return this.d.artikel.filter(a => (!f.prov || a.prov?.includes(f.prov)) && (!f.topik || a.topik?.includes(f.topik)) && (!f.sent || a.label_situasi === f.sent) && (!q || (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase().includes(q))); },
@@ -2346,9 +2417,13 @@ const Berita = {
     const el = $("#berita");
     el.onclick = e => {
       const r = e.target.closest("[data-br]"); if (r) { this[r.dataset.br] = +r.dataset.v; return nanti(() => this.render()); }
-      const tp = e.target.closest("[data-topik]"); if (tp) { this.f.topik = tp.dataset.topik; this.f.hal = 0; this.ulangDaftar(); return $("#brDaftar").scrollIntoView({behavior: "smooth"}); }
+      const tr = e.target.closest("[data-topikr]"); if (tr) { const k = tr.dataset.topikr; return this.rinciKumpulan(`Topik: ${TOPIK_B[k] || k}`, this.d.artikel.filter(a => a.topik?.includes(k))); }
+      const md = e.target.closest("[data-media]"); if (md) { const m = md.dataset.media; return this.rinciKumpulan(`Media: ${esc(m)}`, this.d.artikel.filter(a => a.sumber === m)); }
       const h = e.target.closest("[data-h]"); if (h) { this.f.hal = +h.dataset.h; return this.ulangDaftar(); }
-      const k = e.target.closest("[data-kom]"); if (k) { e.preventDefault(); return Laci.buka(k.dataset.kom); } };
+      const k = e.target.closest("[data-kom]"); if (k) { e.preventDefault(); return Laci.buka(k.dataset.kom); }
+      const ce = e.target.closest("[data-celah]"); if (ce) return this.rinciCelah(+ce.dataset.celah);
+      const lj = e.target.closest("[data-lonj]"); if (lj) return this.rinciLonj(+lj.dataset.lonj); };
+    el.onkeydown = e => { if (e.key === "Enter" && e.target.matches("[data-celah],[data-lonj]")) e.target.click(); };
     el.oninput = e => { const x = e.target.closest("[data-f]"); if (!x) return; this.f[x.dataset.f] = x.value; this.f.hal = 0; clearTimeout(this._t); this._t = setTimeout(() => this.ulangDaftar(), x.tagName === "INPUT" ? 250 : 0); };
     this.ulangDaftar(); },
 };
