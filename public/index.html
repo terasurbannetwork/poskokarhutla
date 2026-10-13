@@ -424,6 +424,20 @@ table.tb3 tr:last-child td{border-bottom:0}
 .ex .ctl select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
 .ex .ctl .seg{height:34px;align-items:center}
 .ex .ctl .seg button{padding:5px 13px}
+/* Insight: satu kolom terpusat (grafik SVG dirancang selebar 940 px; dua kolom membuat teksnya terlalu kecil), kartu ringkas */
+#insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1120px;margin:0 auto}
+#insight > *{min-width:0}
+#insight .ex{margin:0;padding:18px 20px 12px;border-radius:18px;height:100%}
+#insight .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 10%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#insight .ex-ey:empty{display:none}
+#insight .ex h3{font-size:16.5px;line-height:1.35;max-width:none}
+#insight .ex .sub{margin:6px 0 0;font-weight:600;font-size:12.5px}
+#insight .ex .unit{font-size:11.5px;margin:2px 0 12px}
+.ex-fn{margin-top:12px;border-top:1px solid var(--line);padding-top:6px}
+.ex-fn summary{font-size:11px;font-weight:600;color:var(--ink2);cursor:pointer;list-style:none}
+.ex-fn summary::-webkit-details-marker{display:none}
+.ex-fn summary::before{content:"ⓘ ";}
+.ex-fn .fn{border:0;padding:4px 0 0;margin:0}
 .ex2{display:grid;grid-template-columns:1fr;gap:18px}
 @media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
@@ -2434,7 +2448,10 @@ const Insight = {
   st: {harian: "harian", ytd: "rasio", musim: "p_semua", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 12, kecAksi: "", papHari: 0},
   EX: ["harian", "ytd", "musim", "cuaca", "paparan", "akses", "bnpb", "tahun", "luas", "kec"],
   ex(judul, sub, unit, isi, catatan, ctl = "") {
-    return `<article class="ex"><h3>${judul}</h3><p class="sub">${sub}</p><p class="unit">${unit}</p>${ctl ? `<div class="ctl">${ctl}</div>` : ""}${isi}<p class="fn">${catatan}</p></article>`; },
+    return `<article class="ex"><span class="ex-ey"></span><h3>${judul}</h3><p class="sub">${sub}</p><p class="unit">${unit}</p>${ctl ? `<div class="ctl">${ctl}</div>` : ""}${isi}<details class="ex-fn"><summary>Sumber & catatan</summary><p class="fn">${catatan}</p></details></article>`; },
+  /* label kategori di pojok kartu; kartu lebar (banyak panel / tabel) memakai dua kolom */
+  LABEL: {harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", kec: "Kecamatan langganan"},
+  PENUH: new Set(["harian", "tahun", "kec"]),
   hl: t => `<span class="hl">${t}</span>`,
   seg(key, opsi) { return `<div class="seg" role="group">${opsi.map(([v, n]) => `<button data-set="${key}" data-v="${v}" aria-pressed="${String(this.st[key]) === String(v)}">${n}</button>`).join("")}</div>`; },
   selProv(key, semua = "9 provinsi prioritas") { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${PRIO.map(k => `<option value="${k}" ${k === this.st[key] ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`; },
@@ -2466,10 +2483,12 @@ const Insight = {
       g += `<g data-peta="${k}" style="cursor:pointer"><rect x="${x0 - 6}" y="${y0 - 2}" width="${cw - 8}" height="${ch + 8}" rx="10" fill="transparent" class="hov"/>
         <text x="${x0}" y="${y0 + 14}" font-size="13" font-weight="700">${esc(namaProv(k))}</text><text x="${x0 + cw - 20}" y="${y0 + 14}" text-anchor="end" font-size="12" font-weight="800" style="fill:${d > .1 ? "#c9503a" : d < -.1 ? "#2b8c86" : "currentColor"}">${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(Math.round(d * 100)))}%</text>`;
       v.forEach((x, j) => { const h = x / m * (ch - 44);
-        g += `<rect class="gy" style="--i:${j}" x="${x0 + j * bw}" y="${y0 + ch - 14 - h}" width="${bw - 3}" height="${Math.max(1, h)}" rx="2" fill="${j === v.length - 1 ? "#c9503a" : "#e58a45"}" opacity="${j === v.length - 1 ? .55 : 1}" data-tip="<b>${esc(namaProv(k))} · ${new Date(hari[j] + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "short"})}</b><br>${fmt(x)} titik${j === v.length - 1 ? " (hari berjalan)" : ""}<br>klik untuk buka di peta"/>`; });
+        /* 3 hari penuh terakhir berwarna arah tren, 3 hari pembanding jingga muda, sisanya abu, hari ini pudar */
+        const L = v.length, w = j === L - 1 ? "#b8c0cc" : j >= L - 4 ? (d > .1 ? "#c9503a" : d < -.1 ? "#2b8c86" : "#8a94a6") : j >= L - 7 ? "#f2b98a" : "#d9dee6";
+        g += `<rect class="gy" style="--i:${j}" x="${x0 + j * bw + bw * .18}" y="${y0 + ch - 14 - h}" width="${bw * .64}" height="${Math.max(1.5, h)}" rx="3" fill="${w}" opacity="${j === L - 1 ? .6 : 1}" data-tip="<b>${esc(namaProv(k))} · ${new Date(hari[j] + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "short"})}</b><br>${fmt(x)} titik${j === v.length - 1 ? " (hari berjalan)" : ""}<br>klik untuk buka di peta"/>`; });
       g += `<text x="${x0}" y="${y0 + ch}" font-size="10" opacity=".6">${hari[0].slice(8)}/${hari[0].slice(5, 7)}</text><text x="${x0 + cw - 20}" y="${y0 + ch}" text-anchor="end" font-size="10" opacity=".6">${hari.at(-1).slice(8)}/${hari.at(-1).slice(5, 7)}</text></g>`; });
     return this.ex(`Titik panas naik di ${this.hl(naik + " dari " + pv.length)} provinsi dalam 3 hari penuh terakhir`, `Titik panas harian, 8 hari terakhir`, `▲▼ = 3 hari penuh terakhir dibanding 3 hari sebelumnya (hari ini tidak dihitung). Klik provinsi untuk membukanya di peta.`,
-      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, `Batang pudar = hari ini, belum lengkap. Sumber: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20; NOAA-21 tidak dihitung), hitungan setara SiPongi.`,
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, `Warna: hijau/merah = 3 hari penuh terakhir (turun/naik), jingga muda = 3 hari pembanding, abu pudar = hari ini (belum lengkap). Sumber: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20; NOAA-21 tidak dihitung), hitungan setara SiPongi.`,
       this.seg("harian", [["harian", "Semua titik"], ["tinggi", "Keyakinan tinggi"]])); },
 
   /* 2. sampai bulan ini dibanding rata-rata periode sama; klik = tab Tren provinsi itu */
@@ -2670,13 +2689,13 @@ const Insight = {
       `Tahun terbakar = ≥ 10 titik setahun. Peringkat lengkap dan CSV ada di tab Tren. Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,
       this.selProv("kecProv") + this.seg("kecN", [[12, "12"], [25, "25"], [50, "50"], [100, "100"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
 
-  gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; try { return f.call(this); } catch (e) { console.error(e); return ""; } },
+  gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
   async render() {
     const el = $("#insight");
     if (!this.data.mo) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan insight…</div>`;
       try { await this.muat(); } catch (e) { el.innerHTML = `<div class="kosong">Data insight belum tersedia.</div>`; return; } }
     el.innerHTML = `
-      ${this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("")}`;
+      ${this.EX.map(id => `<div data-ex="${id}"${this.PENUH.has(id) ? ' class="penuh"' : ""}>${this.gambar(id)}</div>`).join("")}`;
     const ulang = el => { const box = el.closest("[data-ex]"); if (box) nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); };
     el.onchange = e => { const s = e.target.closest("select[data-set]"); if (!s) return; this.st[s.dataset.set] = s.value; ulang(s); };
     el.onclick = e => {
