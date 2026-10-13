@@ -1,0 +1,18 @@
+/* databaru.css — pelengkap databaru.js; memakai token warna halaman (--card, --line, --ink2, --surface, --shadow) */
+.db-pita{display:grid;grid-template-columns:minmax(64px,auto) repeat(var(--n),minmax(0,1fr));gap:3px;align-items:center;margin:4px 0 6px;font-size:10.5px}
+.db-pita>b{font-weight:600;color:var(--ink2);text-align:center;white-space:nowrap;overflow:hidden;text-overflow:clip}
+.db-nm{color:var(--ink2);white-space:nowrap;cursor:help;padding-right:4px}
+.db-p{display:block;text-align:center;padding:3px 0;border-radius:5px;font-weight:700;font-variant-numeric:tabular-nums;cursor:help}
+.db-p.nol{background:var(--surface);color:var(--ink2);font-weight:500}
+.db-bmkg{background:var(--card);border:1px solid var(--line);border-left:3px solid #e58a45;border-radius:12px;box-shadow:var(--shadow);font-size:12px;width:100%;max-width:250px}
+.db-bmkg summary{list-style:none;cursor:pointer;padding:7px 10px;font-weight:700;display:flex;align-items:center;gap:7px}
+.db-bmkg summary::-webkit-details-marker{display:none}
+.db-bmkg summary i{flex:none;width:8px;height:8px;border-radius:50%;background:#e58a45;box-shadow:0 0 0 3px rgb(229 138 69 / .3)}
+.db-bmkg>div{padding:0 10px 8px;max-height:45vh;overflow-y:auto}
+.db-bmkg p{margin:0 0 6px;line-height:1.35}
+.db-bmkg small{color:var(--ink2)}
+.db-bmkg .db-cat{display:block;font-size:11px}
+canvas.db-angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:none}
+/* <= 900 px: garis waktu pindah ke atas (top 112 px), pita turun di bawahnya */
+@media (max-width:900px){.tools .db-bmkg{margin-top:62px}}
+@media (max-width:640px){.db-bmkg{max-width:230px}.db-pita{font-size:10px;gap:2px}}

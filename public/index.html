@@ -184,7 +184,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .laci.on{display:flex}
 .laci .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
 .laci .hd h2{font-size:17px}
-.laci .bd{overflow-y:auto;padding:14px 16px 18px}
+.laci .bd{overflow-y:auto;padding:14px 16px 18px;grid-auto-rows:max-content;align-content:start;flex:1;min-height:0}
 .tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 .kv div{background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
@@ -594,6 +594,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item b{font-size:14px;line-height:1.35}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
+<link href="databaru.css" rel="stylesheet">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -4113,6 +4114,7 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 <script src="lapisan5.js"></script>
+<script src="databaru.js" data-halaman="karhutla"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 </body>
 </html>
