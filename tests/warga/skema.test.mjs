@@ -137,3 +137,17 @@ uji("jejak dan titik_terbaru: enum dan JSON dijaga", () => {
   ditolak(() => db.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").run(T0, "{}"), "titik_terbaru tanpa baris[]");
   db.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").run(T0, '{"baris":[]}');
 });
+
+uji("audit moderasi hanya bisa ditambah: enum/format dijaga, ubah & hapus ditolak", () => {
+  const ins = (o = {}) => { const r = {waktu: T0, moderator: "0123456789ab", aksi: "hapus", laporan_id: "id00000001", jumlah: 1, alasan: "", ...o};
+    db.prepare("INSERT INTO audit_moderasi (waktu, moderator, aksi, laporan_id, jumlah, alasan) VALUES (?, ?, ?, ?, ?, ?)").run(r.waktu, r.moderator, r.aksi, r.laporan_id, r.jumlah, r.alasan); };
+  ins(); ins({aksi: "hapus_pengirim", jumlah: 4});
+  ditolak(() => ins({aksi: "musnahkan"}), "aksi audit di luar enum");
+  ditolak(() => ins({moderator: "rahasia-admin"}), "moderator bukan 12 hex (token mentah)");
+  ditolak(() => ins({moderator: "0123456789AB"}), "moderator huruf besar");
+  ditolak(() => ins({jumlah: -1}), "jumlah negatif");
+  ditolak(() => ins({alasan: "x".repeat(201)}), "alasan > 200 karakter");
+  assert.throws(() => db.prepare("UPDATE audit_moderasi SET aksi = 'tampilkan'").run(), /tidak boleh diubah/, "audit harus tidak bisa diubah");
+  assert.throws(() => db.prepare("DELETE FROM audit_moderasi").run(), /tidak boleh dihapus/, "audit harus tidak bisa dihapus");
+  assert.equal(db.prepare("SELECT count(*) n FROM audit_moderasi").get().n, 2);
+});

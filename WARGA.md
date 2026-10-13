@@ -14,7 +14,7 @@ ke data harian.
 | --- | --- |
 | `src/worker.js` | API `/api/warga*`, `/api/titik`, cron; selain itu diteruskan ke aset statis (`ASSETS`) |
 | `src/titik.js` | ambil + urai CSV FIRMS, wilayah, simpan ke D1 |
-| `migrations/0001_warga.sql`, `0002_titik.sql` | skema D1 dengan CHECK enum/rentang, trigger hitungan suara & sembunyi otomatis |
+| `migrations/0001_warga.sql`, `0002_titik.sql`, `0003_moderasi.sql` | skema D1 dengan CHECK enum/rentang, trigger hitungan suara & sembunyi otomatis, jejak audit moderasi (hanya tambah) |
 | `public/informasi_jenis.js` | katalog jenis/sub/isian/ikon — **satu sumber** untuk worker, halaman, dan uji |
 | `public/informasi.js`, `public/informasi.css` | modul tab Informasi (skrip klasik, `data-halaman`) |
 | `public/titik_live.js` | penggabung titik 3 jam di halaman karhutla |
@@ -108,8 +108,12 @@ H="x-admin-token: $ADMIN_TOKEN"; U=https://<domain>/api/warga
 curl -H "$H" "$U/admin?tersembunyi=1"                       # yang disembunyikan / pernah diadukan (tanpa nomor WA)
 curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"sembunyikan"}'
 curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"tampilkan"}'       # hapus aduan + tampilkan lagi
-curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus"}'
-curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus_pengirim"}'  # semua laporan dari hash IP yang sama
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus","alasan":"spam"}'  # soft-delete: tersembunyi + kontak dibuang; pulihkan = tampilkan
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus_pengirim"}'  # 409: jumlah + contoh laporan dari hash IP yang sama, TIDAK mengubah apa pun
+curl -H "$H" -X POST "$U/<id>/admin" -d '{"aksi":"hapus_pengirim","konfirmasi":<jumlah dari 409>}'  # baru dijalankan
+curl -H "$H" "$U/admin?audit=1"                                     # jejak audit: waktu, moderator (12 hex hash token), aksi, id
+# ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator) supaya kolom moderator di audit berarti.
+# Hash IP bisa milik banyak warga di balik CGNAT seluler: periksa contoh di jawaban 409 sebelum hapus_pengirim.
 ```
 
 Otomatis: 3 aduan dari 3 IP berbeda → disembunyikan (trigger DB). "Sudah tidak" ≥ 3 dan lebih banyak dari "masih

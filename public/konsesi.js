@@ -28,7 +28,7 @@
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Riwayat kasus karhutla: ${esc(ks[0].nama)}</h3><p>Hanya kasus dengan sumber publik. Status per tanggal sumber.</p></div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db"><table class="tb3"><thead><tr><th>Kasus</th><th>Status</th><th class="n">Nilai</th></tr></thead><tbody>${ks.map(k => `<tr>
         <td><b>${esc(JK[k.jenis] || k.jenis)}</b><small>${[k.kab, namaProv(k.prov)].filter(Boolean).map(esc).join(", ")}${k.tahun_kebakaran ? ` · kebakaran ${k.tahun_kebakaran}` : ""}${k.perkara ? ` · ${esc(k.perkara)}` : ""}</small></td>
-        <td style="white-space:normal">${esc(k.status)}<small>${k.sumber.map(s => `<a href="${esc(s.url)}" target="_blank" rel="noopener">${esc(s.penerbit)}${s.tanggal ? ", " + esc(s.tanggal) : ""}</a>`).join(" · ")}</small></td>
+        <td style="white-space:normal">${esc(k.status)}<small>${k.sumber.map(s => `<a href="${escUrl(s.url)}" target="_blank" rel="noopener">${esc(s.penerbit)}${s.tanggal ? ", " + esc(s.tanggal) : ""}</a>`).join(" · ")}</small></td>
         <td class="n num">${k.nilai_rp ? rp(k.nilai_rp) : k.nilai_gugatan_rp ? `<small>gugatan</small>${rp(k.nilai_gugatan_rp)}` : "–"}</td></tr>`).join("")}</tbody></table>
         <p class="fnd">${esc(SKM?.catatan || "")}</p></div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); }; d.showModal();

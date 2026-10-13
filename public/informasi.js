@@ -305,7 +305,8 @@
       <div id="lwTs"></div>
       <p class="lw-galat" id="lwGalat" role="alert"></p>
       <div class="lw-pil lw-kirim"><button type="button" class="lw-btn" id="lwBatal">Batal</button><button type="submit" class="lw-btn lw-utama">Kirim laporan</button></div>
-      <p class="lw-kecil">Tanpa akun. Laporan tampil untuk publik; status hilang otomatis setelah ${J.umur < 168 ? J.umur + " jam" : "7 hari atau saat ditandai selesai"}. Jangan unggah data pribadi orang lain.</p></form>`);
+      <p class="lw-kecil">Tanpa akun. Laporan tampil untuk publik; status hilang otomatis setelah ${J.umur < 168 ? J.umur + " jam" : "7 hari atau saat ditandai selesai"}. Jangan unggah data pribadi orang lain.</p>
+      <p class="lw-kecil">Pemberitahuan privasi (UU PDP No. 27/2022): lokasi, isi laporan, dan nomor WhatsApp (bila diisi) diproses hanya untuk menghubungkan warga yang butuh dan yang bisa membantu. Nomor dihapus otomatis setelah 72 jam atau saat laporan ditandai selesai; alamat IP tidak disimpan, hanya sidik acaknya (hash bergaram, paling lama 14 hari) untuk mencegah spam. <a href="${AKAR}privasi.html" target="_blank" rel="noopener">Rincian & permintaan hapus</a></p></form>`);
     const F = $("#lwForm");
     const tulisLok = () => { const w = wilayahDari(lok.lat, lok.lon), el = $("#lwLok"); if (el) el.textContent = `${lok.lat.toFixed(5)}, ${lok.lon.toFixed(5)}${w ? ` · Kec. ${w.kec}, ${w.kab}` : ""}`; };
     tulisLok();
@@ -380,7 +381,8 @@
       <h4>Aturan</h4><ul><li>Tanpa akun. Satu perangkat paling banyak 10 laporan per jam.</li><li>Status memudar setelah separuh masa berlakunya lalu hilang otomatis.</li>
       <li>Tautan dan nomor HP di keterangan dihapus otomatis. Nomor WhatsApp hanya untuk permintaan/tawaran bantuan, ditampilkan bila diminta, dihapus setelah 72 jam.</li>
       <li>Laporan yang diadukan 3 orang disembunyikan untuk ditinjau.</li><li>Foto belum didukung (risiko moderasi).</li>
-      <li>Keadaan darurat jiwa: hubungi 112. Laporan warga tidak menggantikan laporan resmi ke BPBD/posko.</li></ul>`);
+      <li>Keadaan darurat jiwa: hubungi 112. Laporan warga tidak menggantikan laporan resmi ke BPBD/posko.</li>
+      <li>Data pribadi diproses sesuai UU PDP No. 27/2022: <a href="${AKAR}privasi.html" target="_blank" rel="noopener">pemberitahuan privasi</a>.</li></ul>`);
   }
 
   /* ---------------- masuk ---------------- */

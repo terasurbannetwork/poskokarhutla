@@ -37,9 +37,11 @@ const CSV = {
 };
 
 let mf, DB;
+const ASET_UJI = {};   // jalur -> isi (null = 404); menimpa berkas repo untuk uji /api/status
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname);
   if (p === "/data/titik24.json") return Response.json(TITIK24);
+  if (p in ASET_UJI) return ASET_UJI[p] == null ? new Response("tidak ada", {status: 404}) : new Response(ASET_UJI[p]);
   const f = path.join(AKAR, "public", p.endsWith("/") ? p + "index.html" : p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
@@ -50,7 +52,7 @@ const firms = async req => {
   return new Response(CSV[s] ?? "", {status: s in CSV ? 200 : 400});
 };
 const opsi = (ikat = {}) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}], compatibilityDate: "2024-09-23",
-  d1Databases: {DB: "uji-warga"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", FIRMS_MAP_KEY: "kunci-uji", ...ikat},
+  d1Databases: {DB: "uji-warga"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, token-moderator-2", FIRMS_MAP_KEY: "kunci-uji", ...ikat},
   serviceBindings: {ASSETS: aset}, outboundService: firms});
 
 before(async () => {
@@ -287,17 +289,71 @@ uji("api dekat titik panas 24 jam diberi lencana + id kompleks; jauh tidak; satw
   assert.deepEqual([row.lat, row.lon], [-2.35, 113.99], "koordinat satwa harus dibulatkan 0,01°");
 });
 
-uji("admin: tanpa token ditolak; dengan token bisa melihat tersembunyi dan menghapus", async () => {
-  const r = await kirim({jenis: "info", sub: "umum", teks: "untuk diuji admin", ...titikBaru()});
+const ADM = {"x-admin-token": "rahasia-admin"}, ADM2 = {"x-admin-token": "token-moderator-2"};
+const audit = async id => (await DB.prepare("SELECT moderator, aksi, jumlah, alasan FROM audit_moderasi WHERE laporan_id = ? ORDER BY id").bind(id).all()).results;
+uji("admin: tanpa token ditolak; hapus = soft-delete tercatat di audit, bisa dipulihkan", async () => {
+  const r = await kirim({jenis: "minta", sub: "air", teks: "untuk diuji admin", kontak: "081277776666", ...titikBaru()});
   assert.equal((await panggil("GET", "/api/warga/admin")).status, 403);
   assert.equal((await panggil("GET", "/api/warga/admin", undefined, "1.1.1.1", {"x-admin-token": "salah"})).status, 403);
   assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "hapus"}, "1.1.1.1", {"x-admin-token": "salah"})).status, 403);
-  const L = await panggil("GET", "/api/warga/admin?tersembunyi=1", undefined, "1.1.1.1", {"x-admin-token": "rahasia-admin"});
+  assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "hapus"}, "1.1.1.1", {"x-admin-token": "rahasia-admin,token-moderator-2"})).status, 403, "daftar token utuh bukan token sah");
+  assert.equal((await audit(r.j.id)).length, 0, "aksi yang ditolak tidak boleh tercatat");
+  const L = await panggil("GET", "/api/warga/admin?tersembunyi=1", undefined, "1.1.1.1", ADM);
   assert.equal(L.status, 200); assert.ok(L.j.some(x => x.disembunyikan === 1), "daftar admin harus memuat laporan tersembunyi");
   assert.ok(!L.teks.includes("6281"), "daftar admin pun tidak memuat nomor WA");
-  assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "terbangkan"}, "1.1.1.1", {"x-admin-token": "rahasia-admin"})).status, 400);
-  assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "hapus"}, "1.1.1.1", {"x-admin-token": "rahasia-admin"})).status, 200);
-  assert.equal((await DB.prepare("SELECT count(*) n FROM laporan WHERE id = ?").bind(r.j.id).first()).n, 0);
+  assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "terbangkan"}, "1.1.1.1", ADM)).status, 400);
+  const h = await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "hapus", alasan: "uji"}, "1.1.1.1", ADM2);
+  assert.equal(h.status, 200, h.teks);
+  const row = await DB.prepare("SELECT disembunyikan FROM laporan WHERE id = ?").bind(r.j.id).first();
+  assert.equal(row?.disembunyikan, 1, `hapus harus soft-delete (baris tetap, disembunyikan=1), diterima ${JSON.stringify(row)}`);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM kontak WHERE laporan_id = ?").bind(r.j.id).first()).n, 0, "hapus harus langsung membuang kontak WA");
+  assert.equal((await panggil("GET", `/api/warga/${r.j.id}`)).status, 404, "laporan terhapus masih tampil di rincian");
+  assert.equal((await panggil("POST", `/api/warga/${r.j.id}/admin`, {aksi: "tampilkan"}, "1.1.1.1", ADM)).status, 200);
+  assert.equal((await panggil("GET", `/api/warga/${r.j.id}`)).status, 200, "tampilkan harus memulihkan laporan yang dihapus");
+  const A = await audit(r.j.id), sha12 = async t => Buffer.from(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(t))).toString("hex").slice(0, 12);
+  assert.deepEqual(A.map(x => [x.aksi, x.moderator, x.alasan]), [["hapus", await sha12("token-moderator-2"), "uji"], ["tampilkan", await sha12("rahasia-admin"), ""]],
+    `audit harus mencatat aksi + 12 karakter hash token moderator masing-masing: ${JSON.stringify(A)}`);
+  assert.ok(!JSON.stringify(A).includes("rahasia-admin"), "token mentah tidak boleh tersimpan di audit");
+  const G = await panggil("GET", "/api/warga/admin?audit=1", undefined, "1.1.1.1", ADM);
+  assert.equal(G.status, 200); assert.ok(G.j.some(x => x.laporan_id === r.j.id && x.aksi === "hapus"), "GET admin?audit=1 harus memuat jejak");
+});
+
+uji("hapus_pengirim wajib konfirmasi jumlah; tanpa itu tidak mengubah apa pun", async () => {
+  const ip = ipBaru(), a = await kirim({jenis: "info", sub: "umum", teks: "spam satu", ...titikBaru()}, ip), b = await kirim({jenis: "info", sub: "umum", teks: "spam dua", ...titikBaru()}, ip);
+  const lain = await kirim({jenis: "info", sub: "umum", teks: "warga lain", ...titikBaru()});
+  const tanpa = await panggil("POST", `/api/warga/${a.j.id}/admin`, {aksi: "hapus_pengirim"}, "1.1.1.1", ADM);
+  assert.equal(tanpa.status, 409, `tanpa konfirmasi harus 409, diterima ${tanpa.status}: ${tanpa.teks}`);
+  assert.equal(tanpa.j.perlu_konfirmasi, 2, "409 harus menyebut jumlah laporan yang akan kena");
+  assert.deepEqual(tanpa.j.contoh.map(x => x.id).sort(), [a.j.id, b.j.id].sort());
+  const salah = await panggil("POST", `/api/warga/${a.j.id}/admin`, {aksi: "hapus_pengirim", konfirmasi: 5}, "1.1.1.1", ADM);
+  assert.equal(salah.status, 409, "konfirmasi dengan jumlah yang tidak cocok harus ditolak");
+  assert.equal((await DB.prepare("SELECT count(*) n FROM laporan WHERE id IN (?, ?) AND disembunyikan = 1").bind(a.j.id, b.j.id).first()).n, 0, "tanpa konfirmasi sah tidak boleh ada yang disembunyikan");
+  assert.equal((await audit(a.j.id)).length, 0, "percobaan tanpa konfirmasi tidak boleh tercatat sebagai aksi");
+  const ok = await panggil("POST", `/api/warga/${a.j.id}/admin`, {aksi: "hapus_pengirim", konfirmasi: 2}, "1.1.1.1", ADM);
+  assert.equal(ok.status, 200, ok.teks); assert.equal(ok.j.terhapus, 2);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM laporan WHERE id IN (?, ?) AND disembunyikan = 1").bind(a.j.id, b.j.id).first()).n, 2, "kedua laporan pengirim harus tersembunyi (soft-delete)");
+  assert.equal((await panggil("GET", `/api/warga/${lain.j.id}`)).status, 200, "laporan pengirim lain ikut terhapus");
+  assert.deepEqual((await audit(a.j.id)).map(x => [x.aksi, x.jumlah]), [["hapus_pengirim", 2]]);
+});
+
+const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
+uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
+  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+  try {
+    let r = await panggil("GET", "/api/status");
+    assert.equal(r.status, 200, `semua segar (dampak tidak punya ambang) harus 200: ${r.teks}`);
+    assert.equal(r.j.ok, true); assert.equal(r.j.sumber.titik.umur_jam, 2); assert.equal(r.j.sumber.dampak.umur_jam, 100);
+    assert.equal(r.h.get("cache-control"), "no-store");
+    ASET_UJI["/data/meta.json"] = metaUji(9);
+    r = await panggil("GET", "/api/status");
+    assert.equal(r.status, 503, `titik 9 jam (> 8) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, ["titik"]);
+    ASET_UJI["/data/meta.json"] = metaUji(7.9); ASET_UJI["/banjir/data/meta.json"] = metaUji(31); ASET_UJI["/data/berita.json"] = null;
+    r = await panggil("GET", "/api/status");
+    assert.equal(r.status, 503); assert.deepEqual(r.j.basi, ["banjir", "berita"], `banjir 31 jam & berita hilang harus basi: ${r.teks}`);
+    assert.equal(r.j.sumber.berita.umur_jam, null);
+    ASET_UJI["/data/berita.json"] = '{"judul":"tanpa dibuat"}';
+    assert.ok((await panggil("GET", "/api/status")).j.basi.includes("berita"), "berkas tanpa 'dibuat' harus dianggap basi");
+  } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; }
 });
 
 uji("POST dari origin lain ditolak", async () => {

@@ -504,6 +504,9 @@ def main():
         "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
                    idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik if p["t"] >= akhir - dt.timedelta(hours=72)]})
     simpan("kluster.json", {"type": "FeatureCollection", "features": fitur})
+    awal, geo = pecah_kluster(fitur)
+    simpan("kluster_awal.json", awal)
+    simpan("kluster_geo.json", geo)
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:]} for g in grid]})
     simpan("wilayah.json", rek)
@@ -518,5 +521,41 @@ def main():
           "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)
 
 
+def pecah_kluster(fitur):
+    """kluster.json (lengkap, dibaca skrip Python) dipecah untuk muatan pertama halaman: kluster_awal.json = semua kompleks
+    dengan semua properti KECUALI api24, geometri diganti titik pusat; kluster_geo.json = {id: [poligon atau null, api24]}
+    dimuat halaman saat dibutuhkan (keluar dari tab Ringkasan, buka kompleks). Poligon + api24 ± 40 % ukuran gzip."""
+    awal, geo = [], {}
+    for f in fitur:
+        p = f["properties"]
+        q = {k: v for k, v in p.items() if k != "api24"}
+        awal.append({"type": "Feature", "geometry": {"type": "Point", "coordinates": [p["lon"], p["lat"]]}, "properties": q})
+        poli = f["geometry"] if f["geometry"]["type"] != "Point" else None
+        if poli or p.get("api24"):
+            geo[p["id"]] = [poli, p.get("api24") or []]
+    return {"type": "FeatureCollection", "features": awal}, geo
+
+
+def uji():
+    sq = {"type": "Polygon", "coordinates": [[[1, 1], [2, 1], [2, 2], [1, 1]]]}
+    F = [{"type": "Feature", "geometry": sq, "properties": {"id": "K1", "lat": 1.5, "lon": 1.6, "level": 3, "api24": [[1.5, 1.5]]}},
+         {"type": "Feature", "geometry": {"type": "Point", "coordinates": [3, 3]}, "properties": {"id": "K2", "lat": 3, "lon": 3, "level": 0}}]
+    awal, geo = pecah_kluster(F)
+    assert [f["properties"]["id"] for f in awal["features"]] == ["K1", "K2"], "urutan kompleks harus sama dengan kluster.json"
+    assert all(f["geometry"]["type"] == "Point" and "api24" not in f["properties"] for f in awal["features"])
+    assert awal["features"][0]["geometry"]["coordinates"] == [1.6, 1.5] and awal["features"][0]["properties"]["level"] == 3
+    assert geo == {"K1": [sq, [[1.5, 1.5]]]}, f"geo hanya untuk kompleks berpoligon/api24: {geo}"
+    assert F[0]["properties"]["api24"] == [[1.5, 1.5]], "kluster.json lengkap tidak boleh ikut berubah"
+    print("harian uji: pecah_kluster OK")
+
+
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["uji"]:
+        uji()
+    elif sys.argv[1:] == ["pecah"]:   # buat ulang kluster_awal/geo dari kluster.json yang ada (tanpa FIRMS)
+        a, g = pecah_kluster(json.load(open(os.path.join(KELUAR, "kluster.json")))["features"])
+        for n, isi in (("kluster_awal.json", a), ("kluster_geo.json", g)):
+            with open(os.path.join(KELUAR, n), "w") as f:
+                json.dump(isi, f, ensure_ascii=False, separators=(",", ":"))
+    else:
+        main()

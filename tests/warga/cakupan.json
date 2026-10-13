@@ -10,6 +10,11 @@
     "POST /:id/kontak": "kontak hanya lewat endpoint terpisah",
     "POST /:id/selesai": "tandai selesai butuh token",
     "POST /:id/admin": "admin: tanpa token ditolak",
+    "admin hapus_pengirim": "hapus_pengirim wajib konfirmasi",
+    "GET /api/status": "status: 200 bila semua sumber segar",
+    "table audit_moderasi": "audit moderasi hanya bisa ditambah",
+    "trigger audit_tetap_ubah": "audit moderasi hanya bisa ditambah",
+    "trigger audit_tetap_hapus": "audit moderasi hanya bisa ditambah",
     "GET /api/titik": "titik panas 3 jam",
     "cron bersihkan": "kedaluwarsa: hilang dari daftar",
     "cron titik": "titik panas 3 jam",
@@ -29,7 +34,6 @@
   },
   "antre": {
     "verifikasi Turnstile (TURNSTILE_SECRET diset)": "butuh fixture challenges.cloudflare.com lewat outboundService",
-    "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung",
-    "admin aksi tampilkan & hapus_pengirim": "baru 'hapus' dan penolakan token yang diuji"
+    "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"
   }
 }

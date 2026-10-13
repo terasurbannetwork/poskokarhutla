@@ -269,28 +269,72 @@ async function selesai(env, req, id, kini) {
   return json({selesai: true});
 }
 
+/* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator */
 async function adminOK(env, req) {
-  if (!env.ADMIN_TOKEN) return false;
-  const [a, b] = await Promise.all([sha(req.headers.get("x-admin-token") || ""), sha(env.ADMIN_TOKEN)]);
-  return a === b;
+  if (!env.ADMIN_TOKEN) return null;
+  const a = await sha(req.headers.get("x-admin-token") || "");
+  for (const t of env.ADMIN_TOKEN.split(",").map(x => x.trim()).filter(Boolean)) if (await sha(t) === a) return a.slice(0, 12);
+  return null;
 }
+const AKSI_ADMIN = ["sembunyikan", "tampilkan", "hapus", "hapus_pengirim"];
 async function admin(env, req, url, id, kini) {
-  if (!(await adminOK(env, req))) return gagal(403, "token admin salah atau ADMIN_TOKEN belum diset");
+  const mod = await adminOK(env, req);
+  if (!mod) return gagal(403, "token admin salah atau ADMIN_TOKEN belum diset");
   if (req.method === "GET") {
+    if (url.searchParams.get("audit") === "1")
+      return json((await env.DB.prepare("SELECT waktu, moderator, aksi, laporan_id, jumlah, alasan FROM audit_moderasi ORDER BY id DESC LIMIT 300").all()).results);
     const tersembunyi = url.searchParams.get("tersembunyi") === "1";
     const r = await env.DB.prepare(`SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`).all();
     return json(r.results.map(x => ({...x, detail: JSON.parse(x.detail)})));
   }
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
-  const aksi = b.o.aksi;
+  const aksi = b.o.aksi, alasan = String(b.o.alasan ?? "").slice(0, 200);
+  if (!AKSI_ADMIN.includes(aksi)) return gagal(400, `aksi harus ${AKSI_ADMIN.join("/")}`);
   const p = await env.DB.prepare("SELECT ip_hash FROM laporan WHERE id = ?").bind(id).first();
   if (!p) return gagal(404, "laporan tidak ada");
-  if (aksi === "sembunyikan") await env.DB.prepare("UPDATE laporan SET disembunyikan = 1 WHERE id = ?").bind(id).run();
-  else if (aksi === "tampilkan") await env.DB.batch([env.DB.prepare("DELETE FROM suara WHERE laporan_id = ? AND kelompok = 'aduan'").bind(id), env.DB.prepare("UPDATE laporan SET disembunyikan = 0 WHERE id = ?").bind(id)]);
-  else if (aksi === "hapus") await env.DB.prepare("DELETE FROM laporan WHERE id = ?").bind(id).run();
-  else if (aksi === "hapus_pengirim") { const r = await env.DB.prepare("DELETE FROM laporan WHERE ip_hash = ?").bind(p.ip_hash).run(); return json({ok: true, terhapus: r.meta.changes}); }
-  else return gagal(400, "aksi harus sembunyikan/tampilkan/hapus/hapus_pengirim");
+  const catat = (n = 1) => env.DB.prepare("INSERT INTO audit_moderasi (waktu, moderator, aksi, laporan_id, jumlah, alasan) VALUES (?, ?, ?, ?, ?, ?)").bind(kini, mod, aksi, id, n, alasan);
+  /* hapus = soft-delete: tersembunyi (bisa dipulihkan lewat 'tampilkan' sampai cron membuangnya 30 hari kemudian), kontak WA langsung dibuang */
+  const sembunyi = (kolom, nilai) => [env.DB.prepare(`UPDATE laporan SET disembunyikan = 1 WHERE ${kolom} = ?`).bind(nilai),
+    env.DB.prepare(`DELETE FROM kontak WHERE laporan_id IN (SELECT id FROM laporan WHERE ${kolom} = ?)`).bind(nilai)];
+  if (aksi === "sembunyikan") await env.DB.batch([env.DB.prepare("UPDATE laporan SET disembunyikan = 1 WHERE id = ?").bind(id), catat()]);
+  else if (aksi === "tampilkan") await env.DB.batch([env.DB.prepare("DELETE FROM suara WHERE laporan_id = ? AND kelompok = 'aduan'").bind(id), env.DB.prepare("UPDATE laporan SET disembunyikan = 0 WHERE id = ?").bind(id), catat()]);
+  else if (aksi === "hapus") await env.DB.batch([...sembunyi("id", id), catat()]);
+  else {
+    /* satu hash IP bisa milik banyak warga (CGNAT seluler): wajib konfirmasi = jumlah laporan yang akan kena, dilihat dulu tanpa konfirmasi */
+    const n = (await env.DB.prepare("SELECT count(*) n FROM laporan WHERE ip_hash = ? AND disembunyikan = 0").bind(p.ip_hash).first()).n;
+    if (b.o.konfirmasi !== n) {
+      const contoh = (await env.DB.prepare("SELECT id, jenis, sub, teks, dibuat FROM laporan WHERE ip_hash = ? AND disembunyikan = 0 ORDER BY dibuat DESC LIMIT 20").bind(p.ip_hash).all()).results;
+      return json({galat: `hapus_pengirim akan menyembunyikan ${n} laporan dari pengirim yang sama (bisa banyak warga di balik satu IP seluler). Periksa contoh lalu kirim ulang dengan "konfirmasi": ${n}.`, perlu_konfirmasi: n, contoh}, 409);
+    }
+    await env.DB.batch([...sembunyi("ip_hash", p.ip_hash), catat(n)]);
+    return json({ok: true, terhapus: n});
+  }
   return json({ok: true});
+}
+
+/* ---------------- /api/status: umur data per sumber, 503 bila sumber kunci basi (untuk monitor uptime & langkah akhir CI) ---------------- */
+/* [nama, berkas aset, ambang jam (null = hanya dilaporkan)]. data/meta.json ditulis harian.py tiap 3 jam (titik.yml). */
+export const SUMBER_STATUS = [["titik", "/data/meta.json", 8], ["banjir", "/banjir/data/meta.json", 30], ["berita", "/data/berita.json", 30], ["dampak", "/data/dampak.json", null]];
+/* "dibuat" selalu kunci pertama berkas: baca 1 KB awal saja, jangan urai berita.json 5 MB (batas CPU Workers) */
+async function dibuatAset(env, asal, jalur) {
+  try {
+    const r = await env.ASSETS.fetch(new Request(new URL(jalur, asal)));
+    if (!r.ok) { r.body?.cancel(); return null; }
+    const rd = r.body.getReader(), dec = new TextDecoder(); let t = "";
+    while (t.length < 1024) { const {value, done} = await rd.read(); if (done) break; t += dec.decode(value, {stream: true}); }
+    rd.cancel().catch(() => {});
+    const m = t.match(/"dibuat"\s*:\s*"([^"]+)"/), w = m ? Date.parse(m[1]) : NaN;
+    return Number.isNaN(w) ? null : w;
+  } catch (e) { return null; }
+}
+async function status(env, url, kini) {
+  const sumber = {}, basi = [];
+  await Promise.all(SUMBER_STATUS.map(async ([nama, jalur, ambang]) => {
+    const w = await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
+    sumber[nama] = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang};
+    if (ambang != null && (jam == null || jam > ambang)) basi.push(nama);
+  }));
+  return json({ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber}, basi.length ? 503 : 200);
 }
 
 export async function bersihkan(env, kini = Date.now()) {
@@ -308,6 +352,7 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === "/api/titik" && req.method === "GET") return titikTerbaru(env);
+    if (url.pathname === "/api/status" && req.method === "GET") return status(env, url, Date.now());
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (req.method === "GET" && HALAMAN.test(url.pathname)) return env.ASSETS.fetch(new Request(new URL("/", url), req));
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);

@@ -651,6 +651,8 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 const $ = s => document.querySelector(s);
 const fmt = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+/* href dari data pihak ketiga: hanya http(s), selain itu (javascript:, data:, …) jadi "#" */
+const escUrl = u => { const s = String(u ?? "").trim(); return /^https?:\/\//i.test(s) ? esc(s) : "#"; };
 const WIB = {timeZone: "Asia/Jakarta"};
 const jamWIB = d => new Date(d).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
 const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
@@ -2233,7 +2235,7 @@ const Rob = {
     el.innerHTML = `<div class="head"><div><h2>Banjir rob · prakiraan pasang 10 hari</h2><p>${fmt(T.length)} titik pantai; ${fmt(n[2])} awas, ${fmt(n[1])} siaga, ${fmt(n[0])} waspada dalam 10 hari ke depan.</p></div></div>
       ${bm.length ? `<article class="ex"><h3>Peringatan dini rob resmi BMKG: <span class="hl">${fmt(bm.length)} wilayah</span></h3><p class="sub">Dibaca otomatis dari dokumen BMKG Maritim</p><p class="unit">diambil ${S.rob.bmkg.diambil ? jamWIB(S.rob.bmkg.diambil) : "–"}</p>
         <div class="tw" style="border:0;box-shadow:none"><table><thead><tr><th>Lokasi</th><th>Periode</th><th>Keterangan</th></tr></thead><tbody>${bm.map(w => `<tr><td>${esc(w.lokasi || w.wilayah)}</td><td>${esc(w.tanggal_mulai || "")}${w.tanggal_selesai ? " – " + esc(w.tanggal_selesai) : ""}</td><td>${esc(w.keterangan || "")}</td></tr>`).join("")}</tbody></table></div>
-        <p class="fn">Pembacaan dokumen bisa meleset bila format BMKG berubah; dokumen asli: <a href="${esc(S.rob.bmkg.sumber)}" target="_blank" rel="noopener">${esc(S.rob.bmkg.sumber)}</a>.</p></article>` : ""}
+        <p class="fn">Pembacaan dokumen bisa meleset bila format BMKG berubah; dokumen asli: <a href="${escUrl(S.rob.bmkg.sumber)}" target="_blank" rel="noopener">${esc(S.rob.bmkg.sumber)}</a>.</p></article>` : ""}
       <div class="tw"><table><thead><tr><th>Titik pantai</th><th>Provinsi</th>${S.rob.hari.slice(Math.max(0, iH), Math.max(0, iH) + 7).map((d, j) => `<th class="n">${j ? tglPendek(d) : "Hari ini"}</th>`).join("")}<th class="n">Maks 10 hari</th><th class="n">Ambang p99</th></tr></thead><tbody>
       ${T.map(t => `<tr data-i="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec || t.kab)}</b><small style="display:block;color:var(--ink2)">${esc(t.kab)}</small></td><td>${esc(namaProv(t.prov))}</td>
         ${t.lv.slice(Math.max(0, iH), Math.max(0, iH) + 7).map(l => `<td class="n">${l ? pill(l) : `<span style="color:var(--ink2);font-size:11.5px">–</span>`}</td>`).join("")}<td class="n num"><b>${fmt(Math.round(t.hm * 100) / 100)} m</b></td><td class="n num">${fmt(Math.round(t.p99 * 100) / 100)} m</td></tr>`).join("")}</tbody></table></div>
@@ -3041,7 +3043,7 @@ const Sarana = {
         <svg class="chev" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m6 9 6 6 6-6"/></svg></button>
         <div ${gi < 2 ? "" : "hidden"}><div class="chk srn lbl" style="border:0"><span>Sarana · dasar jumlah</span><span class="n">Kebutuhan</span><span style="text-align:center">Sudah ada</span><span class="n">Harga satuan</span><span class="n">Kekurangan</span></div>
         ${it.map(([n, s, m, src, kali], ii) => { const q = jumlahItem(m, kali, regu, ungsi), h = HARGA[n], k = this.kunci(gi, ii), u = this.url(src);
-          return `<div class="chk srn"><span>${esc(n)}<small style="display:block;color:var(--ink2)" title="${esc(src)}">(${esc(s)}) · ${esc(this.sumberPendek(src))}${u ? ` · <a href="${esc(u)}" target="_blank" rel="noopener">naskah</a>` : ""}</small></span>
+          return `<div class="chk srn"><span>${esc(n)}<small style="display:block;color:var(--ink2)" title="${esc(src)}">(${esc(s)}) · ${esc(this.sumberPendek(src))}${u ? ` · <a href="${escUrl(u)}" target="_blank" rel="noopener">naskah</a>` : ""}</small></span>
             <span class="n num"><small class="m">Kebutuhan </small>${m ? fmt(q) + " " + esc(s) : "sesuai survei"}</span>
             <label style="text-align:center"><small class="m">Sudah ada </small><input type="checkbox" data-k="${esc(k)}" ${I[k] ? "checked" : ""} aria-label="${esc(n)} sudah ada"></label>
             <span class="n num"><small class="m">Harga </small>${SEWA.has(n) ? "sewa" : LOGISTIK(s) ? "logistik" : h ? rp(h[0]) + (h[2] ? ` <span class="pill l2" title="${esc(h[1])}">estimasi</span>` : "") : "–"}</span>

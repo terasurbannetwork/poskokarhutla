@@ -119,3 +119,20 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -q -m "data: banjir harian $(TZ=Asia/Jakarta date +%F)"
           git pull -q --rebase && git push -q
+
+      # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
+      # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.
+      - name: Periksa kesegaran data yang tayang
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
+          for i in 1 2 3; do
+            kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
+            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null; echo
+            [ "$kode" = 200 ] && exit 0
+            sleep 30
+          done
+          echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
+          exit 1

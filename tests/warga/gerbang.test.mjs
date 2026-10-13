@@ -7,7 +7,7 @@ import path from "node:path";
 import {AKAR, migrasi} from "./_bantu.mjs";
 
 const C = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/cakupan.json"), "utf8"));
-const BATAS_ANTRE = 3;   // hanya boleh diturunkan
+const BATAS_ANTRE = 2;   // hanya boleh diturunkan
 
 function temukan() {
   const w = readFileSync(path.join(AKAR, "src/worker.js"), "utf8"), out = new Set(["GET /api/warga", "POST /api/warga", "GET /api/warga/:id", "aset statis"]);

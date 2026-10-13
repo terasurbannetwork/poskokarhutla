@@ -35,7 +35,7 @@ const Dampak = (() => {
   const seg = (k, opsi) => `<div class="seg" role="group">${opsi.map(([v, n]) => `<button data-dks="${k}" data-v="${v}" aria-pressed="${String(st[k]) === String(v)}">${n}</button>`).join("")}</div>`;
   const baris = (dk, isi) => `<tr data-dk="${dk}" tabindex="0">${isi}</tr>`;
   const tabel = (kepala, rows) => `<div class="tw dk-tw"><table><thead><tr>${kepala.map(h => `<th${h[0] === ">" ? ' class="n"' : ""}>${h.replace(/^>/, "")}</th>`).join("")}</tr></thead><tbody>${rows.join("") || `<tr><td colspan="${kepala.length}">Belum ada.</td></tr>`}</tbody></table></div>`;
-  const tautan = (u, t) => `<a href="${esc(u)}" target="_blank" rel="noopener">${esc(t)}</a>`;
+  const tautan = (u, t) => `<a href="${escUrl(u)}" target="_blank" rel="noopener">${esc(t)}</a>`;
   const kotak = (k, v) => `<div class="dk-kv"><span>${k}</span><b>${v}</b></div>`;
   function dlg(judul, sub, isi) { const d = $("#dlg");
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${judul}</h3><p>${sub}</p></div><button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
