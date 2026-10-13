@@ -9,7 +9,7 @@ Diagnosis otomatis 15 kasus terburuk:
   hujan    hujan >= 5 mm dalam 24 jam namun api tetap tumbuh (gambut membara)
 Uji TIDAK disentuh di sini; perbaikan disetel pada validasi lalu uji dibuka sekali di latih_jalan.py.
 
-Pakai:  python3 scripts/sebaran/galat.py   |  ... uji
+Pakai:  python3 scripts/sebaran/galat.py  (validasi)  |  ... himpunan-uji  (laporan saja)  |  ... uji  (swauji)
 """
 import json, math, os, pickle, statistics, sys
 
@@ -145,4 +145,4 @@ if __name__ == "__main__":
         assert celah(e, 0, 72) == 5  # 6 lintasan diharap, hanya 1 terisi dalam 72 jam, api masih ada sesudahnya
         print("ok")
     else:
-        main(sys.argv[1] if len(sys.argv) > 1 else "val")
+        main("uji" if sys.argv[1:] == ["himpunan-uji"] else "val")

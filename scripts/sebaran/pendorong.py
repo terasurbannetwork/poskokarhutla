@@ -291,7 +291,7 @@ def main(elevasi=False):
         sampel = rnd.sample(evs, min(24000, len(evs)))
         ambil_elevasi(sampel)
     ctx = mp.get_context("fork")
-    with ctx.Pool(5) as pool:
+    with ctx.Pool(3) as pool:  # 8 GB RAM: tiap proses memuat Konteks (~1 GB)
         A = [r for r in pool.imap_unordered(baris_lolos, evs, chunksize=200) if r]
         B = [r for rs in pool.imap_unordered(baris_arah, [e for e in evs if e["sel"] >= 3], chunksize=50) for r in rs]
     log(f"lolos: {len(A)} peristiwa ({sum(r['lepas'] for r in A)} lolos); arah: {len(B)} hari-menjalar")

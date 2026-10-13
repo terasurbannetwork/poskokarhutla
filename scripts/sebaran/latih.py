@@ -305,8 +305,11 @@ def evaluasi_awal(arg):
     for nm, mdl in modes.items():
         if mdl is None:
             continue
-        f = fungsi_model(mdl, KOLOM, (mdl.get("geser") or {}).get(st, 0.0))
-        r = ramal_sel(f, e, p, tb, ak, S, k, tau[nm], mc=mc if nm == "gbdt" else 0, seed=zlib.crc32(e["id"].encode()) & 0xffff)
+        dg = (mdl.get("geser") or {}).get(st, 0.0)
+        f = fungsi_model(mdl, KOLOM, dg)
+        # ambang peta deterministik ikut digeser, jadi peta ambang tidak berubah; yang dikalibrasi ulang = peluang & luas Monte Carlo
+        t_ = G.sigmoid(math.log(tau[nm] / (1 - tau[nm])) + dg) if dg else tau[nm]
+        r = ramal_sel(f, e, p, tb, ak, S, k, t_, mc=mc if nm == "gbdt" else 0, seed=zlib.crc32(e["id"].encode()) & 0xffff)
         hasil["skor"][nm] = [skor(tb, P, o) for P, o in zip(r["det"], obs)]
         hasil.setdefault("harap", {})[nm] = [round(x, 2) for x in r["harap"]]
         if nm == "gbdt" and mc:

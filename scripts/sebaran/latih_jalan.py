@@ -381,6 +381,10 @@ def main():
     if not os.environ.get("SEBARAN_TANPA_GESER"):
         kand = [0.0, -.25, -.5, -.75, -1.0]
         bias = {}
+        g_env = os.environ.get("SEBARAN_GESER_JSON")  # hasil pencarian putaran sebelumnya (validasi yang sama)
+        if g_env and os.path.exists(g_env):
+            bias = {st: {float(d): (v, 0) for d, v in b.items()} for st, b in json.load(open(g_env)).items()}
+            kand = []
         with CTX.Pool(5) as pool:
             for dg in kand:
                 g2 = {**gb, "geser": {"gambut": dg, "mineral": dg, "sabana": dg}}
@@ -389,7 +393,7 @@ def main():
                     b = [math.log((1 + r["mc"][2][1]) / (1 + r["skor"]["persistensi"][2]["no"])) for r in hh if r["strata"] == st and r.get("mc")]
                     bias.setdefault(st, {})[dg] = (statistics.mean(b) if b else 0.0, len(b))
                 log("geser", dg, {st: round(bias[st][dg][0], 3) for st in bias})
-        geser = {st: min(kand, key=lambda d: abs(bias[st][d][0])) for st in bias}
+        geser = {st: min(bias[st], key=lambda d: abs(bias[st][d][0])) for st in bias}
         H["geser_logit"] = {"pilihan": geser, "bias_log_luas72": {st: {str(d): round(v[0], 3) for d, v in b.items()} for st, b in bias.items()}}
         gb["geser"] = geser
         modes["gbdt"] = gb

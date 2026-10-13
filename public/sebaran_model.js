@@ -197,6 +197,7 @@ function ramal(o) {
   const lh = Lahan(o.lahan || {}, lon, lat), R = M.R || 5;
   const sel0 = o.sel0?.length ? o.sel0 : [sel(lon, lat)], tahunApi = new Date(t0).getUTCFullYear();
   const strata = o.strata || strataTitik(lon, lat, lh.sel(sel0[0]).gambut), geser = M.geser_logit?.[strata] || 0;
+  const tauEff = geser ? 1 / (1 + Math.exp(-(Math.log(M.tau / (1 - M.tau)) + geser))) : M.tau; /* peta ambang tidak berubah oleh kalibrasi ulang */
   const tb0 = new Set(sel0), ak0 = new Map(sel0.map(k => [k, t0]));
   const iklim = {oni: indeksIklim(M.iklim?.oni, new Date(t0)), dmi: indeksIklim(M.iklim?.dmi, new Date(t0))};
   /* FRP maks (MW) titik awal; tidak diketahui -> median deteksi pertama di data latih */
@@ -209,7 +210,7 @@ function ramal(o) {
       const t = t0 + d * 864e5, w = jendela[d], jl = ((t / 6e4 + lon * 4) / 60 % 24 + 24) % 24;
       const ev = {log_luas: Math.log(tb.size + baru.size), log_baru24: Math.log1p(b24), umur_jam: (t - t0) / 36e5, log_frp: Math.log1p(frp), ...iklim, malam: jl >= 6 && jl < 18 ? 0 : 1};
       const semua = new Set([...tb, ...baru]), c = calon(semua, ak, R), nb = [];
-      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh, tahunApi), geser); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= M.tau) nb.push(k); }
+      for (const [k, info] of c) { const p = prediksi(M, vektor(M, k, info, semua, ak, w, ev, lh, tahunApi), geser); if (catat) catat(d, k, p); if (rnd ? rnd() < p : p >= tauEff) nb.push(k); }
       for (const k of nb) baru.add(k);
       if (nb.length) ak = new Map(nb.map(k => [k, t + 864e5]));
       b24 = nb.length; luas.push(baru.size);
