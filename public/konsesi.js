@@ -109,7 +109,8 @@
       const per = perDi(id);
       const p0 = per[0];
       const jl = p0 ? `${(JN[p0.jenis] || [p0.jenis])[0]} · ${pct(p0.porsi)}` : "";
-      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${p0 ? `<span class="ks-ell" title="${esc(p0.nama)}">${esc(p0.nama)}</span>${per.length > 1 ? `<span class="ks-plus" title="${esc(per.slice(1).map(x => x.nama).join(", "))}">+${per.length - 1}</span>` : ""}` : `<span class="ks-mt">–</span>`}</td><td class="ks-td2">${p0 ? `<span class="ks-ell" title="${esc(jl)}">${esc(jl)}</span>` : `<span class="ks-mt">–</span>`}</td>`); });
+      /* semua pemegang izin ditampilkan, satu per baris di sel yang sama (nama | jenis · porsi sejajar) */
+      tr.insertAdjacentHTML("beforeend", `<td class="ks-td">${per.length ? per.map(x => `<span class="ks-ell" title="${esc(x.nama)}">${esc(x.nama)}</span>`).join("") : `<span class="ks-mt">–</span>`}</td><td class="ks-td2">${per.length ? per.map(x => `<span class="ks-ell">${esc((JN[x.jenis] || [x.jenis])[0])} · ${pct(x.porsi)}</span>`).join("") : `<span class="ks-mt">–</span>`}</td>`); });
     $("#tf tr")?.insertAdjacentHTML("beforeend", "<td></td><td></td>");
     const kos = $("#tb .kosong"); if (kos) kos.colSpan = 13;
     peraga();
@@ -132,7 +133,7 @@
       ${daf.map((a, i) => `<tr data-per="${esc(a.nama)}" tabindex="0" style="cursor:pointer"><td class="num">${i + 1}</td><td><b>${esc(a.nama)}</b>${lencana(a.sanksi)}</td>
         <td class="ks-grup">${grupDari(a) ? esc(grupDari(a)) : `<span class="ks-mt">–</span>`}</td>
         <td>${jenis(a.jenis)}</td><td class="n num">${a.tahun_data || "–"}</td><td class="n num"><b>${fmt(a.n)}</b></td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td><td class="n num">${fmt(a.kompleks.length)}</td></tr>`).join("") || `<tr><td colspan="8">Tidak ada titik panas di areal konsesi.</td></tr>`}</tbody></table></div>
-      <p class="fnd">Sumber: VIIRS 375 m, 7 hari; batas konsesi Kemenhut, GFW, Trase.</p>`;
+      <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); batas konsesi Kemenhut, Global Forest Watch, Trase</em></footer>`;
   }
   function tunjuk(nama) {
     const ids = (KK.perusahaan.find(a => a.nama === nama)?.kompleks || []).filter(id => S.kluster.features.some(f => f.properties.id === id));

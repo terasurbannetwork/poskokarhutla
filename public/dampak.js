@@ -83,9 +83,12 @@ const Dampak = (() => {
         ${pilV(px, y + 3, tx, r.w || W.oranye)}${r.cat ? `<text x="${px + pw(tx) + 5}" y="${y + rh / 2 + 3.5}" font-size="9.5" opacity=".75">${r.cat}</text>` : ""}</g>`; }).join("")}</svg>`; }
   /* kolom harian: hari = [t], seri = [{k, w, v: {t: n}}], dk(t) */
   function kolom(hari, seri, {H = 150, W2 = lw(), tip, dk} = {}) {
-    const tot = hari.map(t => seri.reduce((a, s) => a + (s.v[t] || 0), 0)), m = Math.max(1, ...tot), g = (W2 - 30) / Math.max(1, hari.length), bw = Math.max(1.5, g * .75);
-    let o = `<text x="0" y="10" font-size="9" opacity=".6">${fmt(m)}</text><line x1="26" x2="${W2}" y1="${H}" y2="${H}" stroke="currentColor" opacity=".2"/>`;
-    hari.forEach((t, i) => { let y = H; const x = 30 + i * g;
+    const tot = hari.map(t => seri.reduce((a, s) => a + (s.v[t] || 0), 0)), m0 = Math.max(1, ...tot), st0 = [1, 2, 5, 10, 20, 50, 100, 200, 500].find(q => m0 / q <= 4) || 1000;
+    let m = Math.ceil(m0 / st0) * st0; if (m % 2) m++;
+    const g = (W2 - 34) / Math.max(1, hari.length), bw = Math.max(1.5, g * .75), Y = v => H - v / m * (H - 14);
+    if (tot.filter(n => n > 0).length < 3) return "";
+    let o = [0, m / 2, m].map(v => `<line x1="30" x2="${W2}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity="${v ? .12 : .25}"${v ? ' stroke-dasharray="3 3"' : ""}/><text x="25" y="${Y(v) + 3}" text-anchor="end" font-size="9.5" opacity=".65">${fmt(v)}</text>`).join("");
+    hari.forEach((t, i) => { let y = H; const x = 34 + i * g;
       seri.forEach(s => { const h = (s.v[t] || 0) / m * (H - 14); if (h > 0) { y -= h; o += `<rect class="gy" style="--i:${i}" x="${x}" y="${y}" width="${bw}" height="${h}" fill="${s.w}"/>`; } });
       o += `<rect x="${x - (g - bw) / 2}" y="0" width="${g}" height="${H}" fill="transparent" data-tip="${tip ? tip(t, tot[i]) : t + ": " + fmt(tot[i])}" ${dk && tot[i] ? `data-dk="${dk(t)}" style="cursor:pointer"` : ""}/>`;
       if (i % Math.ceil(hari.length / 8) === 0) o += `<text x="${x + bw / 2}" y="${H + 13}" text-anchor="middle" font-size="9.5" opacity=".65">${tgl(t)}</text>`; });
@@ -113,11 +116,11 @@ const Dampak = (() => {
     const L = LL(150), Wd = lw(), rh = 26, X = v => v / mx * (Wd - L - 90);
     const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${rows.length * rh}" role="img" aria-label="Penduduk per kelas udara">${rows.map((r, n) => { let x = L; const y = n * rh;
       return `<g data-dk="prov|${r.k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(r.k))}</text>`
-        + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect class="gx" style="--i:${n}" x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("")
+        + `<g class="gx" style="--i:${n}">` + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("") + "</g>"
         + `${pilV(x + 5, y + 3, rb(r.ts), NAVY)}</g>`; }).join("")}</svg>`;
     const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: fmt(c.pm[i]), cat: KELAS[kelas(c.pm[i])],
       tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
-    return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi rawan karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
+    return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi yang sering mengalami karhutla menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
       svg + LG(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"], [250.4, "berbahaya"]]}),
       `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus) lewat Open-Meteo")}, dibuat ${jamWIB(U.dibuat)}; penduduk ${sm("wpop", "WorldPop")} 2026; hanya asap dari kompleks api searah angin dalam 300 km`,
@@ -146,26 +149,56 @@ const Dampak = (() => {
 
   /* ================= 2. penerbangan ================= */
   const NJ = j => F?.nama_jenis?.[j] || j;
+  const PJ = [["", "Semua"], ["batal", "Dibatalkan"], ["tunda", "Tertunda"], ["divert", "Dialihkan"], ["jarak_pandang", "Jarak pandang"]];
+  let pm = null;
+  /* peta MapLibre bandara + panel kanan; dipasang setelah kartu masuk DOM */
+  function pasangPeta(tries = 0) {
+    const el = document.getElementById("dkPeta"); if (!el) { if (tries < 60) setTimeout(() => pasangPeta(tries + 1), 50); return; }
+    if (el._pm || !F || typeof maplibregl === "undefined") return; el._pm = 1; try { pm?.remove(); } catch (e) {}
+    const B = F.bandara, rt = el.parentElement, side = rt.querySelector(".dk-pm-ls"), fb = rt.querySelector(".dk-pm-f"), hn = rt.querySelector(".dk-hn");
+    let jenis = "", pop = null, sel = null;
+    const agr = () => { const hit = {}; F.kejadian.filter(e => e.bandara && B[e.bandara]?.lat && (!jenis || e.jenis.includes(jenis))).forEach(e => (hit[e.bandara] ||= []).push(e));
+      return Object.entries(hit).map(([k, xs]) => { const c = {}; xs.forEach(e => c[e.jenis[0]] = (c[e.jenis[0]] || 0) + 1);
+        return {k, b: B[k], n: xs.length, fl: xs.reduce((a, e) => a + e.terdampak, 0), last: xs.map(e => e.tgl).sort().at(-1), w: WJ[Object.entries(c).sort((a, b) => b[1] - a[1])[0][0]] || W.merah}; }).sort((a, b) => b.n - a.n || a.k.localeCompare(b.k)); };
+    const fc = g => ({type: "FeatureCollection", features: g.map(x => ({type: "Feature", properties: {k: x.k, n: x.n, nama: x.b.nama, fl: x.fl, last: x.last}, geometry: {type: "Point", coordinates: [x.b.lon, x.b.lat]}}))});
+    const isi = x => `<b>${esc(x.k)} · ${esc(x.b.nama)}</b><br>Kejadian: ${x.n}<br>Penerbangan terdampak: min. ${fmt(x.fl)}<br>Terakhir: ${tgl(x.last)}`;
+    const buka = x => { pop?.remove(); sel = x.k; tandai(); pop = new maplibregl.Popup({offset: 14, closeButton: true, maxWidth: "260px"}).setLngLat([x.b.lon, x.b.lat])
+      .setHTML(`<div style="font-size:12.5px;line-height:1.5">${isi(x)}<br><button class="btn sec" style="margin-top:6px" data-dk="bandara|${esc(x.k)}">Rincian &amp; grafik</button></div>`).addTo(m); pop.on("close", () => { if (sel === x.k) { sel = null; tandai(); } }); };
+    const tandai = () => side.querySelectorAll("button[data-i]").forEach(b => b.classList.toggle("on", g[+b.dataset.i]?.k === sel));
+    let g = agr(), mx = 1;
+    const m = pm = new maplibregl.Map({container: el, style: typeof DASAR === "function" ? DASAR() : "https://tiles.openfreemap.org/styles/positron", bounds: [[94.5, -11.5], [141.8, 6.3]], fitBoundsOptions: {padding: {top: 20, bottom: 20, left: 20, right: 44}}, minZoom: 3, maxZoom: 12, attributionControl: {compact: true}, dragRotate: false});
+    m.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-left");
+    const daftar = () => { g = agr(); mx = Math.max(1, ...g.map(x => x.n)); m.getSource("bd")?.setData(fc(g));
+      if (m.getLayer("bd-c")) m.setPaintProperty("bd-c", "circle-radius", ["+", 8, ["*", 8, ["sqrt", ["/", ["get", "n"], mx]]]]);
+      hn.textContent = g.length;
+      side.innerHTML = g.map((x, i) => `<li><button data-i="${i}"><span class="dk-kd">${esc(x.k)}</span><span class="dk-nm">${esc(x.b.nama.replace(/ (International )?Airport$/, ""))}</span><span class="dk-ct" style="background:${x.w};color:${x.w === W.kuning ? "#13213a" : "#fff"}">${x.n}</span></button></li>`).join("") || `<li class="fnd" style="padding:12px">Belum ada kejadian jenis ini.</li>`; tandai(); };
+    m.on("load", () => { m.addSource("bd", {type: "geojson", data: fc([]), cluster: true, clusterRadius: 40, clusterMaxZoom: 7, clusterProperties: {sum: ["+", ["get", "n"]]}});
+      const f = {"text-font": ["Noto Sans Bold"], "text-allow-overlap": true};
+      m.addLayer({id: "bd-cl", type: "circle", source: "bd", filter: ["has", "point_count"], paint: {"circle-color": W.tua, "circle-opacity": .9, "circle-stroke-color": "#fff", "circle-stroke-width": 3, "circle-radius": ["step", ["get", "point_count"], 16, 3, 19, 6, 22]}});
+      m.addLayer({id: "bd-cn", type: "symbol", source: "bd", filter: ["has", "point_count"], layout: {...f, "text-field": ["to-string", ["get", "sum"]], "text-size": 12}, paint: {"text-color": "#fff"}});
+      m.addLayer({id: "bd-c", type: "circle", source: "bd", filter: ["!", ["has", "point_count"]], paint: {"circle-color": W.merah, "circle-opacity": .9, "circle-stroke-color": "#fff", "circle-stroke-width": 3, "circle-radius": 8}});
+      m.addLayer({id: "bd-n", type: "symbol", source: "bd", filter: ["!", ["has", "point_count"]], layout: {...f, "text-field": ["to-string", ["get", "n"]], "text-size": 10.5}, paint: {"text-color": "#fff"}});
+      m.addLayer({id: "bd-k", type: "symbol", source: "bd", minzoom: 5, filter: ["all", ["!", ["has", "point_count"]], [">=", ["get", "n"], 5]], layout: {...f, "text-field": ["get", "k"], "text-size": 10.5, "text-anchor": "bottom", "text-offset": [0, -1.5]}, paint: {"text-color": "#13213a", "text-halo-color": "#fff", "text-halo-width": 1.6}});
+      daftar();
+      m.on("mousemove", "bd-c", ev => { m.getCanvas().style.cursor = "pointer"; const p = ev.features[0].properties, h = `<b>${esc(p.k)} · ${esc(p.nama)}</b><br>Kejadian: ${p.n}<br>Penerbangan terdampak: min. ${fmt(p.fl)}<br>Terakhir: ${tgl(p.last)}`;
+        typeof tampilTip === "function" ? tampilTip(h, ev.originalEvent) : (el.title = h.replace(/<[^>]+>/g, " ")); });
+      m.on("mouseleave", "bd-c", () => { m.getCanvas().style.cursor = ""; document.getElementById("tip")?.classList.remove("on"); });
+      m.on("mouseenter", "bd-cl", () => m.getCanvas().style.cursor = "pointer"); m.on("mouseleave", "bd-cl", () => m.getCanvas().style.cursor = "");
+      m.on("click", "bd-c", ev => { const x = g.find(q => q.k === ev.features[0].properties.k); if (x) buka(x); });
+      m.on("click", "bd-cl", ev => { const c = ev.features[0]; m.getSource("bd").getClusterExpansionZoom(c.properties.cluster_id).then(z => m.easeTo({center: c.geometry.coordinates, zoom: z + .2})); }); });
+    side.onclick = ev => { const b = ev.target.closest("button[data-i]"); if (!b) return; const x = g[+b.dataset.i]; m.flyTo({center: [x.b.lon, x.b.lat], zoom: Math.max(m.getZoom(), 8), speed: 1.4}); m.once("moveend", () => buka(x)); };
+    fb.onclick = ev => { const b = ev.target.closest("button[data-pj]"); if (!b) return; jenis = b.dataset.pj; sel = null; fb.querySelectorAll("button").forEach(q => q.setAttribute("aria-pressed", q === b)); pop?.remove(); if (m.isStyleLoaded()) daftar(); };
+  }
   function b2() {
     if (!F) return ex(2, "Data gangguan penerbangan belum tersedia", "", "", `<p>Berkas penerbangan.json belum dibuat (scripts/data/penerbangan.py).</p>`, "");
     const ev = F.kejadian, bd = ev.filter(e => e.bandara), rek = ev.filter(e => !e.bandara && e.jumlah), B = F.bandara;
     const sumB = bd.reduce((a, e) => a + e.terdampak, 0), rekMax = rek.reduce((a, e) => e.jumlah > a.jumlah ? e : a, {jumlah: 0}), nB = new Set(bd.map(e => e.bandara)).size, hariG = new Set(ev.map(e => e.tgl)).size;
     const hit = {}; bd.forEach(e => (hit[e.bandara] ||= []).push(e));
-    /* peta gelembung: provinsi dari S.geo.prov, gelembung per bandara */
-    const Wd = lw(), Hd = Math.round(lw() * .39), x0 = 94.5, x1 = 141.5, y0 = -11.2, y1 = 6.4, PX = lo => (lo - x0) / (x1 - x0) * Wd, PY = la => (y1 - la) / (y1 - y0) * Hd;
-    let peta = "";
-    for (const f of S.geo?.prov?.features || []) { const g = f.geometry, polys = g.type === "Polygon" ? [g.coordinates] : g.coordinates;
-      peta += polys.map(p => { const r = p[0], step = Math.max(1, Math.floor(r.length / 60)); return r.length < 8 ? "" : `<path d="M${r.filter((_, j) => j % step === 0).map(([lo, la]) => PX(lo).toFixed(1) + "," + PY(la).toFixed(1)).join("L")}Z" class="dk-darat"/>`; }).join(""); }
-    const mxE = Math.max(1, ...Object.values(hit).map(x => x.length)), sk = Wd / 640;
-    const gx = Object.entries(hit).filter(([k]) => B[k]?.lat).map(([k, xs]) => ({k, b: B[k], xs, n: xs.length, fl: xs.reduce((a, e) => a + e.terdampak, 0), r: (3 + Math.sqrt(xs.length / mxE) * 9) * sk + 1}))
-      .sort((a, b) => b.n - a.n);
-    /* gelembung besar digambar dulu supaya yang kecil di atasnya; label pil hanya untuk 6 teratas */
-    const gel = [...gx].map(g => `<g data-dk="bandara|${g.k}" style="cursor:pointer"><circle class="gf" cx="${PX(g.b.lon)}" cy="${PY(g.b.lat)}" r="${g.r}" fill="${W.merah}" fill-opacity=".8" stroke="#fff" stroke-width="1.2" data-tip="<b>${esc(g.k)} · ${esc(g.b.nama)}</b><br>Kejadian: ${g.n}<br>Penerbangan terdampak: min. ${fmt(g.fl)}<br>Terakhir: ${tgl(g.xs.map(e => e.tgl).sort().at(-1))}"/></g>`).join("")
-      + gx.slice(0, 6).map(g => { const w = g.k.length * 6.2 + 10, x = PX(g.b.lon), y = PY(g.b.lat) - g.r - 5;
-        return `<g style="pointer-events:none"><rect x="${x - w / 2}" y="${y - 13}" width="${w}" height="14" rx="7" style="fill:var(--card);stroke:var(--line)"/><text x="${x}" y="${y - 3}" text-anchor="middle" font-size="9.5" font-weight="700">${g.k}</text></g>`; }).join("");
+    const peta = `<div class="dk-pm"><div class="dk-pm-map" id="dkPeta" aria-label="Peta bandara terdampak"></div><aside class="dk-pm-side"><header><span>Bandara terdampak</span><b class="dk-hn"></b></header>
+      <div class="dk-pm-f" role="group" aria-label="Jenis kejadian">${PJ.map(([v, n], i) => `<button data-pj="${v}" aria-pressed="${!i}">${n}</button>`).join("")}</div><ol class="dk-pm-ls"></ol></aside></div>`;
     const akhir = kini(), semua = hariSejak(F.mulai_musim, akhir), hari = st.rentF === "semua" ? semua : semua.slice(-st.rentF);
     const seri = Object.keys(WJ).map(j => ({k: j, w: WJ[j], v: ev.reduce((a, e) => { if (e.jenis[0] === j) a[e.tgl] = (a[e.tgl] || 0) + 1; return a; }, {})}));
-    const daf = hal("F", ev);
+    const daf = hal("F", ev); pasangPeta();
     const rows = daf.map(e => baris(`kej|${ev.indexOf(e)}`, `<td>${tgl(e.tgl)}</td><td><b>${esc(e.bandara || "–")}</b></td><td><span class="dk-el">${esc(B[e.bandara]?.nama || (e.disebut ? "Rekap " + e.disebut : "Beberapa / nasional"))}</span></td>
       <td><span class="dk-el">${esc(e.maskapai.join(", ") || "–")}</span></td><td><span class="dk-el dk-s">${esc(e.nomor.join(", ") || "–")}</span></td><td><span class="dk-jn" style="--w:${WJ[e.jenis[0]] || WJ.lain}">${esc(NJ(e.jenis[0]))}</span></td>
       <td>${e.alternatif ? `<b>${esc(e.alternatif)}</b>` : "–"}</td><td class="n">${e.jumlah ? fmt(e.jumlah) : "–"}</td><td class="n">${e.sumber.length}</td>`));
@@ -175,7 +208,7 @@ const Dampak = (() => {
     const vis = metar.map(m => baris(kodeICAO[m.icao] ? `bandara|${kodeICAO[m.icao]}` : "", `<td><b>${esc(m.icao)}</b></td><td><span class="dk-el">${esc(m.nama)}</span></td><td class="n" style="color:${(m.vis_m ?? 9999) < 1500 ? W.merah : (m.vis_m ?? 9999) < 5000 ? W.oranye : "inherit"};font-weight:700">${m.vis_m == null ? "–" : m.vis_m >= 9999 ? "≥ 10 km" : satu(m.vis_m / 1000) + " km"}</td><td>${m.asap ? "asap/kabut (FU/HZ)" : esc(m.wx || "–")}</td><td>${jamWIB(m.waktu)}</td>`));
     return ex(2, `Asap mengganggu penerbangan di ${hl(nB + " bandara")} sejak ${tgl(F.mulai_musim)}; ${rekMax.jumlah ? `rekap yang dikutip media mencatat ${hl(fmt(rekMax.jumlah) + " penerbangan")} terdampak` : `minimal ${hl(fmt(sumB) + " penerbangan")} terdampak`}`,
       "Kejadian gangguan penerbangan dari berita, diperiksa dengan jarak pandang METAR", "Gelembung = jumlah kejadian per bandara. Klik gelembung, batang, atau baris untuk rincian, tautan berita, dan grafik jarak pandang.",
-      `<svg class="dk-svg dk-peta" viewBox="0 0 ${Wd} ${Hd}" role="img" aria-label="Peta bandara terdampak">${peta}${gel}</svg>`
+      peta
       + `<div class="ctl" style="margin-top:12px">${seg("rentF", [[30, "30 hari"], [60, "60 hari"], ["semua", "Sejak awal musim"]])}</div>`
       + kolom(hari, seri, {tip: (t, n) => `<b>${tgl(t)}</b><br>${n} kejadian`, dk: t => "harif|" + t}) + LG(Object.keys(WJ).map(j => [NJ(j), WJ[j]]))
       + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + pg("F", tabel(["Tanggal", "Kode", "Nama bandara", "Maskapai", "No. penerbangan", "Yang terjadi", "Dialihkan ke", ">Jumlah", ">Berita"], rows), ev.length, "kejadian")
@@ -221,7 +254,7 @@ const Dampak = (() => {
     const rows = PRIO.map(k => ({k, v: is(k)})).sort((a, b) => b.v[1] - a.v[1]), tot = [0, 1, 2].map(j => rows.reduce((a, r) => a + r.v[j], 0));
     const empat = [0, 1, 2].map(j => PRIO.reduce((a, k) => a + (U.prov[k]?.ispa || []).reduce((x, d) => x + d[j], 0), 0));
     const IB = D.ispa_berita, maks = IB.reduce((a, x) => x.jumlah > (a?.jumlah || 0) ? x : a, null);
-    return ex(3, `Asap diperkirakan menambah ${hl(fmt(tot[1]) + " kunjungan ISPA per hari")} di 9 provinsi rawan karhutla (rentang ${fmt(tot[0])}–${fmt(tot[2])})`,
+    return ex(3, `Asap diperkirakan menambah ${hl(fmt(tot[1]) + " kunjungan ISPA per hari")} di 9 provinsi yang sering mengalami karhutla (rentang ${fmt(tot[0])}–${fmt(tot[2])})`,
       "Perkiraan tambahan kunjungan infeksi saluran pernapasan akut (ISPA) karena PM2.5", "Batang = perkiraan tengah; garis = rentang rendah–tinggi. Ini PERKIRAAN MODEL, bukan hitungan puskesmas. Klik provinsi untuk rincian.",
       hbar(rows.map(r => ({n: nmP(r.k), v: r.v[1], lo: r.v[0], hi: r.v[2], w: W.oranye, dk: "prov|" + r.k, txt: fmt(r.v[1]), tip: `<b>${esc(namaProv(r.k))}</b><br>tengah ${fmt(r.v[1])} · rentang ${fmt(r.v[0])}–${fmt(r.v[2])} kunjungan/hari`})))
       + `<div class="lbl" style="margin:14px 0 4px">Kasus ISPA yang disebut berita</div>`
@@ -240,7 +273,7 @@ const Dampak = (() => {
     const SB = D.sekolah_berita, ds = hal("S", D.dekat.sekolah);
     const rows = ks.map(k => ({n: nmP(k), v: P[k].sekolah[1], w: W.kuning, dk: "dekat|" + k, txt: `${fmt(P[k].sekolah[1])} (≤ 1 km: ${fmt(P[k].sekolah[0])})`,
       tip: `<b>${esc(namaProv(k))}</b><br>≤ 1 km: ${fmt(P[k].sekolah[0])}<br>≤ 5 km: ${fmt(P[k].sekolah[1])}<br>≤ 10 km: ${fmt(P[k].sekolah[2])}<br>di udara tidak sehat hari ini: ${fmt(P[k].sekolah_tidak_sehat)}`}));
-    return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
+    return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi yang sering mengalami karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
       "Sekolah yang terpeta di OpenStreetMap, dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
       hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
       + pg("S", tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks", "Status"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)}</td><td><span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`))), D.dekat.sekolah.length, "sekolah")
@@ -263,7 +296,7 @@ const Dampak = (() => {
       return `<g data-dk="dekat|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(k))}</text>`
         + [2, 1, 0].map(c => `<rect class="gx" style="--i:${n}" x="${L}" y="${y + 5}" width="${Math.max(1, X(j[c]))}" height="${rh - 10}" fill="${WB[c]}" data-tip="<b>${esc(namaProv(k))}</b><br>≤ ${R[c]} km: ${rb(j[c])} jiwa, ${fmt(P[k].desa[c])} desa"/>`).join("")
         + `<text x="${L + X(j[2]) + 5}" y="${y + 17}" font-size="10.5">${rb(j[1])} ≤ 5 km</text></g>`; }).join("")}</svg>`;
-    return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi rawan karhutla berada dalam 5 km dari api yang perlu dipadamkan`,
+    return ex(5, `${hl(jt(sumP("jiwa", 1)) + " jiwa")} dan ${hl(fmt(sumP("desa", 1)) + " desa")} di 9 provinsi yang sering mengalami karhutla berada dalam 5 km dari api yang perlu dipadamkan`,
       "Penduduk dan desa menurut jarak ke tepi kompleks yang perlu dipadamkan", `Batang bertingkat: merah ≤ ${R[0]} km, oranye ≤ ${R[1]} km, kuning ≤ ${R[2]} km. Klik provinsi atau desa untuk rinciannya.`,
       svg + LG(R.map((r, i) => [`≤ ${r} km`, WB[i]])) + `<div class="lbl" style="margin:14px 0 4px">Desa terdekat ke api</div>`
       + pg("D", tabel(["Desa", "Kode desa", "Provinsi", ">Jarak", "Kompleks", "Status"], dd.map(x => baris("desa|" + D.dekat.desa.indexOf(x), `<td><b>${esc(x.nama)}</b></td><td><span class="dk-s">${esc(x.kode)}</span></td><td>${esc(namaProv(x.prov))}</td><td class="n">${x.km ? satu(x.km) + " km" : "di dalam"}</td><td>${esc(x.kompleks)}</td><td><span class="pill l${x.level}">${esc(S.meta?.status?.[x.level] || "")}</span></td>`))), D.dekat.desa.length, "desa"),
@@ -272,7 +305,7 @@ const Dampak = (() => {
   function popDekat(k) { const d = D.dekat.prov[k], R = D.dekat.radius_km;
     dlg(esc(namaProv(k)), "Penduduk, desa, sekolah, dan faskes dekat kompleks berstatus siaga & prioritas",
       tabel(["Jarak", ">Jiwa", ">Desa", ">Sekolah", ">Faskes"], R.map((r, i) => `<tr><td>≤ ${r} km</td><td class="n">${rb(d.jiwa[i])}</td><td class="n">${fmt(d.desa[i])}</td><td class="n">${fmt(d.sekolah[i])}</td><td class="n">${fmt(d.faskes[i])}</td></tr>`))
-      + `<div class="dk-kvs">${kotak("Sekolah di udara tidak sehat hari ini", fmt(d.sekolah_tidak_sehat))}</div><p class="fnd">Desa hanya tersedia untuk 9 provinsi rawan karhutla; sekolah & faskes hanya yang terpeta di OpenStreetMap.</p>`); }
+      + `<div class="dk-kvs">${kotak("Sekolah di udara tidak sehat hari ini", fmt(d.sekolah_tidak_sehat))}</div><p class="fnd">Desa hanya tersedia untuk 9 provinsi yang sering mengalami karhutla; sekolah & faskes hanya yang terpeta di OpenStreetMap.</p>`); }
   function popDesa(j) { const x = D.dekat.desa[j], k = S.kluster?.features.find(f => f.properties.id === x.kompleks)?.properties;
     dlg(`Desa ${esc(x.nama)}`, `${esc(namaProv(x.prov))} · kode ${esc(x.kode)}`,
       `<div class="dk-kvs">${kotak("Jarak ke tepi kompleks", x.km ? satu(x.km) + " km" : "di dalam area kompleks")}${kotak("Kompleks", esc(x.kompleks) + " · " + esc(S.meta?.status?.[x.level] || ""))}

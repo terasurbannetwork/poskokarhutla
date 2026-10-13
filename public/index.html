@@ -59,6 +59,7 @@ nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3v
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg{width:16px;height:16px;flex:none;opacity:.9}
+@media (max-width:1280px){nav.tabs button svg{display:none}nav.tabs button{padding:8px 11px;font-size:13.5px!important}}
 nav.tabs button{display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
@@ -131,10 +132,13 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .crumb button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
 .crumb button:hover{border-color:var(--brand2)}
 .crumb button[data-n]:last-child,.crumb button[data-n]:has(+ .cr-rinci){background:var(--brand);border-color:var(--brand);color:#fff}
+.pw-buka #tip{opacity:0!important;visibility:hidden}
+.pw-pop{z-index:65}
 .pw-pop .maplibregl-popup-content{padding:0;border-radius:14px;overflow:hidden;box-shadow:0 12px 30px oklch(25% .05 256 / .22)}
 .pw-h{display:flex;align-items:center;gap:8px;padding:9px 12px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line);font-family:var(--display);font-size:13.5px}
 .pw-h .lambang{width:20px;height:24px}
-.pw-a{display:flex;gap:6px;padding:9px 10px}
+.pw-a{display:flex;justify-content:center;gap:6px;padding:9px 10px}
+.pw-h{justify-content:center}
 .pw-a button{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 12px var(--font);cursor:pointer;white-space:nowrap}
 .pw-a button svg{width:14px;height:14px}
 .pw-a button:hover{border-color:var(--brand2)}
@@ -273,7 +277,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .laci .hd h2{font-size:19px;line-height:1.2;margin:6px 0 7px;letter-spacing:-.01em}
 .laci .hd-isi{min-width:0}
 .laci .hd-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
-.laci .hd-meta{display:flex;flex-wrap:nowrap;white-space:nowrap;overflow:hidden;align-items:center;gap:6px 8px;font-size:12px;color:var(--ink2)}
+.laci .hd-meta{display:flex;flex-wrap:wrap;white-space:nowrap;align-items:center;gap:6px 8px;font-size:12px;color:var(--ink2)}
 .laci .hd-ko{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:11.5px}
 .laci .hd-ko svg{width:12px;height:12px}
 .laci .bd{overflow-y:auto;padding:14px 16px 18px;grid-auto-rows:max-content;align-content:start;flex:1;min-height:0}
@@ -352,6 +356,14 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
 
 /* ---------- sim ---------- */
 .simpanel{position:absolute;z-index:5;top:12px;left:12px;width:380px;max-height:calc(100% - 24px);overflow:auto;padding:16px}
+/* panel simulasi bergaya kartu Insight: kepala pita, bagian berlabel, kartu angka beraksen, kotak pengaturan putih bergaris */
+.simpanel{border-radius:18px!important;background:linear-gradient(180deg,var(--surface) 0,var(--card) 96px)!important}
+.simpanel .lbl{margin-top:12px;font-size:10px;letter-spacing:.07em}
+.simpanel .simchips button{height:28px;padding:0 11px;font-size:11.5px;font-weight:700}
+.simpanel .simchips button[aria-pressed="true"]{background:color-mix(in oklch, var(--w,var(--brand2)) 12%, var(--card));border-color:var(--w,var(--brand2));color:var(--ink)}
+.simpanel .simatur{background:var(--card);border:1px solid var(--line);border-left:3px solid var(--w,var(--brand2));padding:10px 12px}
+.simpanel .simatur .lbl{margin-top:0}
+.simpanel input[type=range]{accent-color:oklch(25.5% .075 256)}
 .simpanel h2{font-size:17px}
 .fld{max-width:100%;display:flex;flex-direction:column;gap:4px;margin:10px 0}
 .fld select,.fld input[type=number]{max-width:100%;min-width:0;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px}
@@ -490,6 +502,7 @@ table.tb3 tr:last-child td{border-bottom:0}
 .ex .fn{margin:10px 0 0;color:var(--ink2);font-size:11.5px;border-top:1px solid var(--line);padding-top:8px}
 .ex svg{display:block;width:100%;height:auto;overflow:visible}
 .ex svg text{fill:currentColor}
+.ex button svg,.head button svg{display:inline-block;width:14px!important;height:14px;flex:none}
 .ex svg.mt-ikon{display:inline-block;width:20px;height:20px;overflow:hidden}
 .ex .mt-nom svg.mt-ikon{width:19px;height:19px}
 .ex .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-4px 0 12px}
@@ -522,7 +535,9 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pr-isi .kv span{color:var(--ink2)}
 .rk-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .rk-ctl .pc{min-width:220px}
-.rk-ctl .btn-gelap{margin-left:auto;display:inline-flex;align-items:center}
+.rk-ctl .btn-gelap{margin-left:auto;display:inline-flex;align-items:center;white-space:nowrap;flex:none}
+.rk-ctl .seg{flex:none}
+.rk-ctl .pc{flex:1;max-width:none}
 /* rincian provinsi (Kompleks) */
 .pr-isi{color:var(--ink)}
 .pv{display:grid;gap:14px;padding:4px 2px 2px}
@@ -563,8 +578,14 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pr-st small{font-size:9.5px;font-weight:600;color:var(--ink2)}
 .pr-st.bahaya b{color:#b8392b}
 .pr-row summary .pr-a{display:none}
-.tren-ex{margin-bottom:14px;align-items:start;grid-template-columns:1fr!important;gap:16px}
-.tren-ex svg{max-height:300px}
+.tren-ex{margin-bottom:18px;align-items:start;display:grid;grid-template-columns:1fr!important;gap:18px}
+#tren > .ex,#tren > article{margin:0 0 18px!important}
+.tren-ex svg{max-height:320px}
+.kl-tb td{vertical-align:middle}
+.kl-tb td:nth-child(2),.kl-tb td:nth-child(3),.kl-tb td:nth-child(4),.kl-tb th:nth-child(2),.kl-tb th:nth-child(3),.kl-tb th:nth-child(4),.kl-tb th:nth-child(5),.kl-tb td:nth-child(5){text-align:left!important}
+.kl-no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface);font-size:10.5px;font-weight:800;color:var(--ink2)}
+.kl-bar{display:inline-block;vertical-align:middle;width:90px;height:7px;border-radius:4px;background:var(--surface);overflow:hidden;margin-right:8px}
+.kl-bar i{display:block;height:100%;border-radius:4px}
 /* tabel kecamatan Tren: nama kecamatan & kab/kota rata kiri */
 #tren table td:nth-child(-n+2):not(.n),#tren table th:nth-child(-n+2):not(.n){text-align:left!important}
 /* kartu hasil konversi .head: jarak antarkartu, kartu di dalam isi tidak bertumpuk bingkai */
@@ -602,7 +623,14 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #tip .tp2-kv b.naik{color:#b8392b}
 .ks-tp{display:grid;gap:8px}.ks-laci-l .ks-tp-r{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card)}.ks-tp-r b{display:block;font-size:12px;line-height:1.25}.ks-tp-l{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .ks-lb{font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w, #8a94a6) 14%, transparent);color:var(--w, var(--ink2));white-space:nowrap}
-.leg-cats{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:8px}
+/* legenda melebar sampai dekat tombol zoom; catatan berikon jadi kolom sendiri (bukan baris baru) */
+@media (min-width:901px){.dok{right:64px!important}.dok > #legenda{align-self:stretch;width:auto}}
+/* isi legenda dibagi rata selebar kotak: tiap kelompok satu kolom, catatan berikon kolom terakhir (tanpa ruang kosong di tengah) */
+#legenda .lg-isi{display:flex!important;flex-wrap:wrap;gap:12px 28px;align-items:flex-start}
+#legenda .lg-isi > *{flex:1 1 170px;min-width:0}
+#legenda .lg-isi > .leg-cats{flex:2 1 280px;align-self:center}
+.leg-cats{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px}
+.leg-cats .leg-cat{flex:1 1 220px}
 .leg-cats .leg-cat{margin-top:0}
 .leg-cat{display:flex;align-items:center;gap:8px;margin-top:8px;padding:6px 10px 6px 6px;border-radius:10px;background:var(--surface);font-size:11px;line-height:1.3;color:var(--ink2)}
 .leg-cat i{flex:none;width:24px;height:24px;border-radius:7px;display:grid;place-items:center;background:var(--w);color:#fff}
@@ -696,6 +724,8 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .bencana .menu a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;text-decoration:none;color:inherit;font-weight:700;font-size:13.5px}
 .bencana .menu a small{font-weight:400;color:var(--ink2);font-size:11.5px}
 .bencana .menu a.segera{cursor:default;opacity:.75}
+.bencana .menu{min-width:330px!important}
+.bencana .menu a{white-space:nowrap}
 .bencana .menu a.segera:hover{background:none}
 .bc-segera{margin-left:auto;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, #4f9be0 16%, transparent);color:#2f6fb0;white-space:nowrap}
 .bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
@@ -981,6 +1011,41 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-grp > .br-dlg-l{padding:8px}
 .br-mi3{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 90px auto!important}
 .br-mi-m{font-size:11px;color:var(--ink2)}
+/* Peta berita: peta + panel samping */
+/* peta penuh di belakang, panel kiri & kanan mengambang di atasnya (seperti peta utama) */
+.bp-wrap{position:relative;height:580px;border-radius:14px;overflow:hidden;border:1px solid var(--line)}
+.bp-wrap #brPeta{position:absolute;inset:0;border:0!important;border-radius:0!important}
+.bp-wrap > .bp-side{position:absolute;top:12px;bottom:12px;z-index:2;box-shadow:0 10px 28px oklch(25% .05 256 / .18)}
+.bp-wrap > .bp-side:not(.bp-news){left:12px;width:250px}
+.bp-wrap > .bp-news{right:12px;width:310px}
+.bp-news h4{text-align:left;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-news .bp-pop{display:flex;flex-direction:column;gap:8px;padding:10px;min-height:0;flex:1}
+.bp-news .br-pop-h b{display:none}
+.bp-news .br-pop-l{max-height:none;flex:1;overflow:auto;margin:0}
+.bp-back{border:0;background:oklch(100% 0 0 / .18);color:#fff;width:22px;height:22px;border-radius:50%;margin-right:8px;cursor:pointer;font-weight:800}
+.bp-ls button.on{background:color-mix(in oklch, var(--brand2) 12%, var(--card));box-shadow:inset 3px 0 0 var(--brand2)}
+.bp-wrap #brPeta{border-radius:12px;overflow:hidden;border:1px solid var(--line);min-height:0}
+.bp-side{display:flex;flex-direction:column;border:1px solid var(--line);border-radius:12px;background:var(--card);overflow:hidden;min-height:0}
+.bp-side h4{margin:0;padding:10px 12px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:#fff;background:oklch(25.5% .075 256);text-align:center}
+.bp-seg{display:grid;grid-template-columns:repeat(4,1fr);gap:2px;margin:8px;padding:3px;border:1px solid var(--line);border-radius:999px}
+.bp-seg button{border:0;background:none;border-radius:999px;font:700 10.5px var(--font);padding:5px 2px;color:var(--ink2);cursor:pointer}
+.bp-seg button[aria-pressed="true"]{background:oklch(25.5% .075 256);color:#fff}
+.bp-ls{list-style:none;margin:0;padding:0 6px 8px;overflow:auto;flex:1}
+.bp-ls button{all:unset;box-sizing:border-box;display:grid;grid-template-columns:22px minmax(0,1fr) 10px auto;gap:8px;align-items:center;width:100%;padding:6px 8px;border-radius:9px;cursor:pointer}
+.bp-ls button:hover{background:var(--surface)}
+.bp-no{width:20px;height:20px;border-radius:50%;display:grid;place-items:center;font-size:10px;font-weight:800;background:var(--surface);color:var(--ink2)}
+.bp-nm{min-width:0}.bp-nm b{display:block;font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}.bp-nm small{display:block;font-size:10px;color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.bp-ls i{width:9px;height:9px;border-radius:50%}
+.bp-ls em{font-style:normal;font-size:11px;font-weight:800;padding:1px 8px;border-radius:999px;background:color-mix(in oklch, #c9503a 14%, transparent);color:#b8392b}
+@media (max-width:1100px){.bp-wrap{height:auto;overflow:visible;border:0;display:grid;gap:10px}.bp-wrap #brPeta{position:relative;height:380px;border:1px solid var(--line)!important;border-radius:12px!important;order:-1}.bp-wrap > .bp-side{position:static;width:auto!important;max-height:360px}}
+/* kartu berita: label negara asal di pojok kanan atas; meta jadi label */
+.br-kartu,.br-item{position:relative}
+.br-ng{position:absolute;top:-9px;right:10px;z-index:1;font-size:10px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);white-space:nowrap}
+.br-meta{display:flex;align-items:center;gap:5px;color:var(--ink2);font-size:11.5px}
+.br-meta .br-fav{width:14px;height:14px}
+.br-meta2{display:flex;flex-wrap:wrap;gap:4px}
+.br-item .br-chip{margin-top:2px}
+.br-item b{font-size:13.5px!important;line-height:1.35}
 .br-klik{cursor:pointer;border-radius:8px;transition:background .12s}
 .br-klik:hover,.br-klik:focus-visible{background:var(--surface);outline:none}
 .br-dlg-l{max-height:none;margin:0}
@@ -1014,13 +1079,17 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .lapis-hd button.tutup svg{transform:rotate(180deg)}
 .lapis .ub-gr{display:flex;gap:4px;padding:2px 0 4px}
 .lapis .ub-gr > .ubin{flex:0 0 40px;min-width:0}
-.lapis label.ubin{display:flex;flex-direction:column;align-items:center;gap:3px;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
+.lapis label.ubin{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
 .lapis label.ubin input{position:absolute;opacity:0;pointer-events:none}
 .lapis .ub-th{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;box-shadow:inset 0 0 0 1px oklch(0% 0 0 / .08);transition:box-shadow .15s,transform .15s}
 .lapis .ub-th svg{width:16px;height:16px;filter:drop-shadow(0 1px 1px oklch(0% 0 0 / .35))}
 .lapis label.ubin span{font-size:9px;font-weight:600;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
 .lapis label.ubin:hover .ub-th{transform:translateY(-1px);box-shadow:inset 0 0 0 1px oklch(0% 0 0 / .08),0 4px 10px oklch(25% .05 256 / .2)}
-.lapis label.ubin:has(input:checked) .ub-th{box-shadow:0 0 0 2px var(--card),0 0 0 3.5px var(--brand2)}
+/* terpilih: ubin penuh warna + lencana centang; tidak terpilih: diredupkan. Tanpa cincin yang menempel ke tulisan */
+.lapis label.ubin .ub-th{position:relative;filter:saturate(.35) brightness(1.08);opacity:.7}
+.lapis label.ubin:hover .ub-th{opacity:.95;filter:none}
+.lapis label.ubin:has(input:checked) .ub-th{filter:none;opacity:1;box-shadow:0 4px 10px color-mix(in oklch, var(--a) 40%, transparent)}
+.lapis label.ubin:has(input:checked) .ub-th::after{content:"✓";position:absolute;top:-5px;right:-5px;width:15px;height:15px;border-radius:50%;background:#2b8c86;color:#fff;font-size:9px;font-weight:900;display:grid;place-items:center;box-shadow:0 0 0 2px var(--card)}
 .lapis label.ubin:has(input:checked) span{color:var(--ink);font-weight:800}
 .lapis label.ubin:has(input:focus-visible) .ub-th{outline:2px solid var(--brand2);outline-offset:3px}
 .tools .garis-waktu{width:100%;flex-direction:column;align-items:stretch;gap:5px;padding:7px 8px}
@@ -1172,7 +1241,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true">Real Time</button><button data-m="riw" aria-pressed="false">Riwayat</button><button data-m="kom" aria-pressed="false">Kompleks</button><button data-m="posko" aria-pressed="false">Posko</button></div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px"><button data-m="wil" aria-pressed="true">Real Time</button><button data-m="riw" aria-pressed="false">Riwayat</button><button data-m="kom" aria-pressed="false">Kompleks</button><button data-m="posko" aria-pressed="false">Posko (Ajuan)</button></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, kecamatan, atau K001" autocomplete="off" aria-label="Cari wilayah">
@@ -1624,8 +1693,17 @@ const Peta = {
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         return new maplibregl.Popup({closeButton: false}).setLngLat(e.lngLat).setHTML(`<b>Titik panas</b><br>${p.u < 1 ? "< 1" : fmt(p.u)} jam sebelum lintasan terakhir<br>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21 (tidak dihitung)", M: "MODIS"}[p.s]} · keyakinan ${["rendah", "sedang", "tinggi"][p.c]}<br>FRP ${fmt(p.f)} MW`).addTo(peta); }
+      const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
+    /* hover pangkalan udara & METAR: kartu info seperti titik lain */
+    peta.on("mousemove", e => { const ls = ["udara", "metar"].filter(l => peta.getLayer(l) && peta.getLayoutProperty(l, "visibility") !== "none"); if (!ls.length) return;
+      const f = peta.queryRenderedFeatures([[e.point.x - 5, e.point.y - 5], [e.point.x + 5, e.point.y + 5]], {layers: ls})[0];
+      if (!f) { if (peta._tipUdara) { peta._tipUdara = 0; $("#tip").classList.remove("on"); peta.getCanvas().style.cursor = ""; } return; }
+      const p = f.properties; peta._tipUdara = 1; peta.getCanvas().style.cursor = "pointer";
+      if (f.layer.id === "metar") { const v = p.v, w = v < 1000 ? "#c9503a" : v < 5000 ? "#e58a45" : v < 8000 ? "#e3b94e" : "#5a9e74";
+        tampilTip(kartuTip({judul: esc(String(p.lbl).split(" ")[0]), sub: `<small class="tp-sub">Bandara · METAR</small>`, stat: [["fwi", v >= 9999 ? "≥ 10 km" : fmt(Math.round(v / 100) / 10) + " km", "jarak pandang", w, v < 1000]], kaki: /asap/.test(p.lbl) ? "Asap/kabut tercatat" : "Klik untuk rincian"}), e.originalEvent); }
+      else { const jn = String(p.id).split(":")[0]; tampilTip(kartuTip({judul: esc(p.lbl), sub: `<small class="tp-sub">${jn === "h" ? "Pangkalan helikopter" : jn === "a" ? "Pangkalan heli aju" : "Pangkalan OMC"}</small>`, kaki: "Klik untuk rincian"}), e.originalEvent); } });
   },
 };
 /* lapisan tambahan: data dimuat saat pertama kali dinyalakan supaya halaman awal tetap ringan */
@@ -1700,10 +1778,10 @@ const ST_PM = [[0, [70, 150, 220, 0]], [15.5, [90, 180, 120, 90]], [55.4, [240, 
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 200, 240, 120]], [10, [70, 140, 220, 200]], [30, [40, 80, 200, 230]], [80, [90, 40, 170, 240]]];
 /* grid ke gambar: 1 piksel per sel, MapLibre menghaluskan */
 const hariSebelum = t => new Date(new Date(t + "T12:00:00+07:00") - 864e5).toISOString().slice(0, 10);
-const tglPendek = t => { const l = labelHari(t); return /^(Hari ini|Kemarin|Besok)$/.test(l) ? l.toLowerCase() + " (" + new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"}) + ")" : l; };
+const tglPendek = t => { const l = labelHari(t); return /^(Hari ini|Kemarin|Besok|Lusa)$/.test(l) ? l.toLowerCase() + " (" + new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"}) + ")" : l; };
 /* label hari relatif terhadap tanggal WIB saat ini (bukan tanggal data dibuat): data malam kemarin tampil "Kemarin" */
 function labelHari(tgl) { const kini = Date.now() + 7 * 36e5, d = t => new Date(kini + t * 864e5).toISOString().slice(0, 10);
-  return tgl === d(0) ? "Hari ini" : tgl === d(-1) ? "Kemarin" : tgl === d(1) ? "Besok" : new Date(tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}); }
+  return tgl === d(0) ? "Hari ini" : tgl === d(-1) ? "Kemarin" : tgl === d(1) ? "Besok" : tgl === d(2) ? "Lusa" : new Date(tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}); }
 function gambarGrid(sel, x0, x1, y0, y1, isi) {
   const w = Math.round((x1 - x0) / sel), h = Math.round((y1 - y0) / sel), cv = document.createElement("canvas"); cv.width = w; cv.height = h;
   const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
@@ -1775,11 +1853,13 @@ const petaIndonesia = (anim = true) => peta?.fitBounds(BB_ID, {padding: padRuang
 /* klik wilayah di peta: pilihan "Masuk ke wilayah" (turun level) atau "Rincian" (popup analisa) */
 let _popWil = null;
 function pilihWilayah(kunci, lngLat) {
-  _popWil?.remove(); const kp = kunci.split("|"), nama = kp.length > 1 ? kp.at(-1) : namaProv(kp[0]), bisaMasuk = kp.length < 3 && S.jalur.length < 2;
+  _popWil?.remove(); $("#tip")?.classList.remove("on"); const kp = kunci.split("|"), nama = kp.length > 1 ? kp.at(-1) : namaProv(kp[0]), bisaMasuk = kp.length < 3 && S.jalur.length < 2;
   const html = `<div class="pw"><div class="pw-h">${lambang(kp[0], kp[1])}<b>${esc(nama)}</b></div><div class="pw-a">
-    ${bisaMasuk ? `<button type="button" data-pw="masuk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg>Masuk ke wilayah</button>` : ""}
+    ${bisaMasuk ? `<button type="button" data-pw="masuk"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/></svg>Zoom</button>` : ""}
     <button type="button" data-pw="rinci" class="gelap"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button></div></div>`;
   _popWil = new maplibregl.Popup({closeButton: false, className: "pw-pop", offset: 8, maxWidth: "none"}).setLngLat(lngLat).setHTML(html).addTo(peta);
+  /* selama pilihan terbuka, kartu hover disembunyikan supaya tidak menutupinya */
+  document.documentElement.classList.add("pw-buka"); _popWil.on("close", () => document.documentElement.classList.remove("pw-buka"));
   _popWil.getElement().addEventListener("click", async ev => { const b = ev.target.closest("[data-pw]"); if (!b) return; _popWil.remove();
     if (b.dataset.pw === "masuk") return turun(kunci);
     await Riwayat.muat(); S.riw?.[kunci] ? Riwayat.buka(kunci) : toast("Rincian wilayah ini belum tersedia"); });
@@ -2110,7 +2190,7 @@ function renderFwiHari() {
     `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${labelHari(h.tgl)}</button>`).join("")}</div>`;
 }
 /* satu pemilih waktu saja: hari prakiraan (lapisan cuaca) menggantikan rentang titik panas selama tampil */
-const garisWaktu = () => { const on = ["fwi", "angin", "asap", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); $("#rentang").hidden = on; };
+const garisWaktu = () => { const on = ["fwi", "angin", "asap", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); /* rentang titik panas tetap tampil walau lapisan cuaca menyala */ };
 $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.fwiHari = +b.dataset.i;
   $("#fwiHari").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => { const g = Peta.fwiGambar(); peta.getSource("fwi").updateImage({url: g.url, coordinates: g.kor});
@@ -2281,7 +2361,7 @@ const Tabel = {
         $("#th").querySelectorAll("button").forEach(x => x.querySelector("i").textContent = x === b ? (this.turun ? "↓" : "↑") : "");
         nanti(() => this.render()); });
       $("#tb").addEventListener("click", e => { const b = e.target.closest("[data-id]"); if (b) { Laci._popup = true; Laci.buka(b.dataset.id); } });
-      $("#pg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
+      $("#pg").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; this.hal = +b.dataset.h; nanti(() => this.render()); });
       $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
@@ -2293,7 +2373,7 @@ const Tabel = {
       : `<tr><td colspan="11" class="kosong">Tidak ada kompleks yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
     $("#tf").innerHTML = `<tr><td colspan="5">Total ${fmt(r.length)} kompleks</td><td class="n num">${fmt(sum("px24"))}</td><td></td><td class="n num">${fmt(sum("n"))}</td><td class="n num">${fmt(sum("luas"))}</td><td></td><td></td></tr>`;
-    $("#pg").innerHTML = jml > 1 ? `Halaman ${this.hal + 1} dari ${jml} ${this.hal > 0 ? `<button class="btn sec" data-h="${this.hal - 1}">‹</button>` : ""}${this.hal < jml - 1 ? `<button class="btn sec" data-h="${this.hal + 1}">›</button>` : ""}` : "";
+    $("#pg").innerHTML = paginasi(this.hal, r.length, this.per, "kompleks");
   },
 };
 
@@ -2350,7 +2430,11 @@ async function renderPrioritas() {
         ${bnb.length ? `<div class="lbl" style="margin-top:4px">Rekomendasi BNPB</div><ol class="rek bnpb">${bnb.map(x => `<li style="--w:var(--brand2)"><span>${esc(x)}</span></li>`).join("")}</ol>` : ""}`)}
       <div class="pv-g">
       ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length))}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha")}</div>
-        <div class="pv-sub">Titik panas 7 hari terakhir</div>${chart}`, "pv-lebar")}
+        <div class="pv-sub">Titik panas 7 hari terakhir</div>${(() => { const W = 640, H = 150, B = 120, T = 26, gp = W / harian.length, bw = gp * .6, Y = v => B - v / mh * (B - T);
+          return `<svg viewBox="0 0 ${W} ${H}" class="pr-hr" role="img" aria-label="Titik panas harian">` + harian.map(([tg, v], i) => { const ak = i === harian.length - 1, x = i * gp + (gp - bw) / 2, w = ak ? "#c9503a" : "#e58a45", tt = new Date(tg + "T12:00:00+07:00");
+            return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="5" fill="${w}" opacity="${ak ? .55 : .9}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
+              + Insight.pil(x + bw / 2 - (rb(v).length * 6.6 + 16) / 2, Y(v) - 23, rb(v), w, "#fff", 11)[0]
+              + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 800 : 500}" opacity="${ak ? 1 : .65}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
         ${pm ? `<div class="pv-ket"><em class="br-lb" style="--w:${pm > 150.4 ? "#7a2b3f" : pm > 55.4 ? "#c9503a" : "#e3b94e"}">PM2.5 hingga ${fmt(Math.round(pm))} µg/m³ · ${pm > 250.4 ? "berbahaya" : pm > 150.4 ? "sangat tidak sehat" : pm > 55.4 ? "tidak sehat" : "sedang"}</em><em class="br-lb" style="--w:#8a6a3f">DC maks ${fmt(w.dc_maks)}</em></div>` : ""}`)}
       ${o ? sek("Kalender musim", `<div class="pv-kal">${o.p_semua.map((v, j) => `<i class="${j === das ? "kini" : ""}" style="--v:${v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e8c86a)`}" data-tip="<b>${DAS(j)}</b><br>Peluang periode api besar: ${Math.round(v * 100)}%"></i>`).join("")}</div>
@@ -2684,8 +2768,8 @@ const Tren = {
     const warna = v => v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`;
     const baris = PRIO.filter(k => M.prov[k]).map(k => { const o = M.prov[k], pp = o[kunci];
       return `<div class="nm" data-mp="${k}" aria-current="${k === this.prov}" title="Tampilkan ${esc(o.nama)}">${esc(namaProv(k))}</div>`
-        + pp.map((v, j) => `<div class="c${j === kini ? " kini" : ""}" style="background:${warna(v)}" title="${esc(namaProv(k))} · ${DAS(j)}: peluang ${Math.round(v * 100)}% · rata-rata ${fmt(o.rata[j])} titik"></div>`).join("")
-        + `<div class="sg num">${this.siaga(pp)}</div>`; }).join("");
+        + pp.map((v, j) => `<div class="c${j === kini ? " kini" : ""}" style="background:${warna(v)}" data-tip="<b>${esc(namaProv(k))}</b> · ${DAS(j)}<br>Peluang periode api besar: ${Math.round(v * 100)}%<br>Rata-rata titik: ${fmt(Math.round(o.rata[j]))}"></div>`).join("")
+        + `<div class="sg num">${this.siaga(pp) === "tidak ada" ? `<em class="br-lb" style="--w:#8a96a8">tidak ada</em>` : `<em class="br-lb" style="--w:#c9503a">${this.siaga(pp).replace(" – ", " → ")}</em>`}</div>`; }).join("");
     return `<div class="head" style="margin-top:22px"><div><h2>Periode berbahaya tiap tahun</h2><p>Peluang tiap 10 hari menjadi periode api besar, MODIS ${M.tahun_el_nino ? "2002–2025" : ""}. Kotak bergaris = hari ini.</p></div>
       <div class="seg" id="mMode"><button data-m="el_nino" aria-pressed="${this.mMode === "el_nino"}">Tahun El Niño</button><button data-m="biasa" aria-pressed="${this.mMode === "biasa"}">Tahun biasa</button></div></div>
       <div class="card pad"><div class="tw" style="border:0;box-shadow:none"><div class="kal"><div></div>${BULAN.map(b => `<div class="bl">${b}</div>`).join("")}<div class="bl" style="grid-column:auto;justify-content:flex-start;padding-left:10px">Siaga (≥ 30%)</div>${baris}</div></div>
@@ -2792,16 +2876,16 @@ const Tren = {
         const a = Insight.ex(`${nmP}: ${Insight.hl(fmt(nil[nil.length - 1]) + " titik")} di ${ini}, peringkat ${Insight.hl(rank)} dari ${th.length} tahun; terburuk ${burukTh} (${fmt(mxN)} titik)`, "", "",
           `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per tahun">${g}</svg>`, sumber, kontrol + segSumber).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Per tahun</span>');
         /* per bulan: rata-rata vs tahun berjalan berdampingan, label angka, sumbu, sorot bulan puncak */
-        const PI = P[ini] || [], mxB = Math.max(1, ...iklim, ...PI), H2 = 280, B2 = 240, T2 = 30, gp2 = (W - L - 20) / 12, bw2 = gp2 * .34, Yb = v => B2 - v / mxB * (B2 - T2);
+        const PI = P[ini] || [], mxB = Math.max(1, ...iklim, ...PI), H2 = 300, B2 = 260, T2 = 52, gp2 = (W - L - 20) / 12, bw2 = gp2 * .34, Yb = v => B2 - v / mxB * (B2 - T2);
         let g2 = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 20}" y1="${Yb(mxB * f)}" y2="${Yb(mxB * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Yb(mxB * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(mxB * f)}</text>`).join("");
         BULAN.forEach((bn, m) => { const x0 = L + m * gp2, v1 = iklim[m], v2 = PI[m] || 0, lewat = m <= bln, puncak = bn === pBln;
-          if (puncak) g2 += `<rect x="${x0 + 2}" y="${T2 - 18}" width="${gp2 - 4}" height="${B2 - T2 + 18}" rx="8" fill="#c9503a" opacity=".06"/>`;
+          if (puncak) g2 += `<rect x="${x0 + 2}" y="${T2 - 24}" width="${gp2 - 4}" height="${B2 - T2 + 24}" rx="8" fill="#c9503a" opacity=".06"/>`;
           g2 += `<rect class="gy" style="--i:${m}" x="${x0 + gp2 / 2 - bw2 - 1}" y="${Yb(v1)}" width="${bw2}" height="${B2 - Yb(v1)}" rx="3" fill="#5f6fb0" opacity=".75" data-tip="<b>${bn}</b><br>Rata-rata ${th[0]}–${th[th.length - 2]}: ${fmt(Math.round(v1))}<br>${ini}: ${lewat ? fmt(v2) : "belum"}"/>`
             + (lewat ? `<rect class="gy" style="--i:${m}" x="${x0 + gp2 / 2 + 1}" y="${Yb(v2)}" width="${bw2}" height="${B2 - Yb(v2)}" rx="3" fill="#c9503a" data-tip="<b>${bn} ${ini}</b><br>Titik panas: ${fmt(v2)}<br>Rata-rata: ${fmt(Math.round(v1))}"/>` : "")
             + (v1 >= mxB * .04 ? `<text x="${x0 + gp2 / 2 - bw2 / 2 - 1}" y="${Yb(v1) - 4}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".7">${rb(v1).replace(" ", " ")}</text>` : "")
             + (lewat && v2 >= mxB * .04 ? `<text x="${x0 + gp2 / 2 + bw2 / 2 + 1}" y="${Yb(v2) - 4}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:#b8392b">${rb(v2).replace(" ", " ")}</text>` : "")
             + `<text x="${x0 + gp2 / 2}" y="${B2 + 17}" text-anchor="middle" font-size="11.5" font-weight="${puncak ? 800 : 500}" opacity="${puncak ? 1 : .7}">${bn}</text>`; });
-        if (pBln) { const mp = BULAN.indexOf(pBln); g2 += pil(L + mp * gp2 + gp2 / 2 - 24, 2, "puncak", "#c9503a", "#fff", 10.5)[0]; }
+        if (pBln) { const mp = BULAN.indexOf(pBln); g2 += pil(L + mp * gp2 + gp2 / 2 - 24, 4, "puncak", "#c9503a", "#fff", 10.5)[0]; }
         Insight._leg = [["#5f6fb0", "rata-rata " + th[0] + "–" + th[th.length - 2]], ["#c9503a", String(ini)]];
         const b = Insight.ex(`Sampai ${BULAN[bln]} ${ini} titik panas ${beda == null ? "–" : Insight.hl((beda >= 0 ? "+" : "") + fmt(beda) + "%")} dibanding rata-rata periode sama; puncak biasanya ${Insight.hl(pBln)}`, "", "",
           `<svg viewBox="0 0 ${W} ${H2}" role="img" aria-label="Pola bulanan">${g2}</svg>`, sumber).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Per bulan</span>');
@@ -2810,9 +2894,10 @@ const Tren = {
       ${this.peringkatHTML()}
       <div class="head" style="margin-top:22px"><div><h2>Kecamatan langganan karhutla</h2></div>
         <div class="seg" id="tUrut"><button data-u="tahun" aria-pressed="${this.urutKec === "tahun"}">Paling sering</button><button data-u="total" aria-pressed="${this.urutKec === "total"}">Paling banyak titik</button></div></div>
-      <div class="tw"><table><thead><tr><th>Kecamatan</th><th>Kab/Kota</th><th class="n">Tahun terbakar</th><th class="n">Total titik ${th[0]}–${ini}</th><th class="n">${ini}</th></tr></thead><tbody>
-      ${kec.map(k => `<tr class="klik" data-kl="${esc(k.pk + "|" + k.kab + "|" + k.kec)}" tabindex="0"><td>${esc(k.kec)}</td><td>${esc(k.kab)}</td><td class="n num"><b>${fmt(k.tahun)}</b> / ${fmt(th.length)}</td>
-        <td class="n num">${fmt(k.total)}</td><td class="n num">${fmt(k.ini)}</td></tr>`).join("") || `<tr><td colspan="6" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>`;
+      <div class="tw"><table class="kl-tb"><thead><tr><th class="n">#</th><th>Kecamatan</th><th>Kab/Kota</th>${gab ? "<th>Provinsi</th>" : ""}<th>Tahun terbakar</th><th class="n">Total titik ${th[0]}–${ini}</th><th class="n">${ini}</th></tr></thead><tbody>
+      ${kec.map((k, i) => { const f = k.tahun / th.length, w = f >= .85 ? "#c9503a" : f >= .6 ? "#e58a45" : "#e3b94e";
+        return `<tr class="klik" data-kl="${esc(k.pk + "|" + k.kab + "|" + k.kec)}" tabindex="0"><td class="n num"><span class="kl-no">${i + 1}</span></td><td><b>${esc(k.kec)}</b></td><td>${esc(k.kab)}</td>${gab ? `<td>${esc(namaProv(k.pk))}</td>` : ""}
+          <td><span class="kl-bar"><i style="width:${f * 100}%;background:${w}"></i></span><em class="br-lb" style="--w:${w}">${k.tahun} / ${th.length} tahun</em></td><td class="n num">${fmt(k.total)}</td><td class="n"><em class="br-lb" style="--w:${k.ini >= 100 ? "#c9503a" : "#5b6782"}">${fmt(k.ini)}</em></td></tr>`; }).join("") || `<tr><td colspan="7" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>`;
     $("#tProv").onchange = e => { this.prov = e.target.value; nanti(() => this.render()); };
     headKeKartu(el, "Tren", false);
     tipDariTitle(el);
@@ -3164,7 +3249,7 @@ function paginasi(hal, total, per, satuan = "baris") {
    Menu posisi fixed supaya tidak terpotong kartu ber-overflow:hidden. */
 const PilihCantik = {
   buka: null,
-  hias(sel) { if (sel.dataset.cantik || sel.multiple || sel.closest(".pc, .simpanel, #simPanel, dialog")) return; sel.dataset.cantik = 1;
+  hias(sel) { if (sel.dataset.cantik || sel.multiple || sel.closest(".pc, dialog")) return; sel.dataset.cantik = 1;
     const w = document.createElement("div"); w.className = "pc"; sel.before(w); w.append(sel);
     w.insertAdjacentHTML("afterbegin", `<button type="button" class="pc-btn" aria-haspopup="listbox" aria-label="${esc(sel.getAttribute("aria-label") || "Pilih")}"><span></span><i></i></button>`);
     this.label(sel); },
@@ -3225,8 +3310,8 @@ function rapikanTip(h) {
 
 /* kartu .ex lama (Berita, cerita Insight) diseragamkan ke format Insight:
    kepala (label kategori + judul + kontrol) | badan | kaki sumber; subjudul, keterangan unit, dan catatan kaki dibuang */
-const LABEL_EX = [[/^Perhatian|berita karhutla dalam/i, "Volume berita"], [/^Emosi|^Nada/i, "Nada berita"], [/^Sebaran berita/i, "Peta berita"], [/^Cerita paling ramai/i, "Sorotan"],
-  [/^Yang luput/i, "Celah liputan"], [/^Topik/i, "Topik"], [/^Daftar berita/i, "Daftar"], [/^Sorotan dunia/i, "Internasional"], [/^Pantauan media/i, "Pantauan media"], [/^Dari mana mulai/i, "Cerita"]];
+const LABEL_EX = [[/^Perhatian|berita karhutla dalam/i, "Volume berita"], [/^Emosi|^Nada/i, "Nada berita"], [/^Sebaran berita|paling banyak diberitakan/i, "Peta berita"], [/^Cerita paling ramai/i, "Sorotan"],
+  [/^Yang luput/i, "Celah liputan"], [/^Topik/i, "Topik"], [/^Daftar berita/i, "Daftar"], [/^Sorotan dunia/i, "Internasional"], [/^Pantauan media|^Isu paling ramai|^Isu yang sedang/i, "Pantauan media"], [/^Dari mana mulai/i, "Cerita"]];
 function seragamEx(root) {
   root?.querySelectorAll("article.ex").forEach(a => { if (a.querySelector(":scope > .ex-hd")) return;
     const h = a.querySelector(":scope > h3"); if (!h) return;
@@ -3271,7 +3356,7 @@ const MEDIA_NEGARA = {"thestar.com.my": "Malaysia", "astroawani.com": "Malaysia"
 const TLD_NEGARA = {my: "Malaysia", sg: "Singapura", au: "Australia", uk: "Inggris", in: "India", ph: "Filipina", th: "Thailand", vn: "Vietnam", jp: "Jepang", cn: "Tiongkok", hk: "Hong Kong", tr: "Turki",
   de: "Jerman", fr: "Prancis", nz: "Selandia Baru", bn: "Brunei", kr: "Korea Selatan", tw: "Taiwan", ca: "Kanada", qa: "Qatar"};
 /* bendera per negara (kolom Negara di daftar media asing): nama negara di depan kurung, mis. "Inggris (kantor berita global)" */
-const BENDERA = {Malaysia: "🇲🇾", Singapura: "🇸🇬", "Hong Kong": "🇭🇰", Inggris: "🇬🇧", "Amerika Serikat": "🇺🇸", Qatar: "🇶🇦", Prancis: "🇫🇷", Jerman: "🇩🇪", Australia: "🇦🇺",
+const BENDERA = {Indonesia: "🇮🇩", Malaysia: "🇲🇾", Singapura: "🇸🇬", "Hong Kong": "🇭🇰", Inggris: "🇬🇧", "Amerika Serikat": "🇺🇸", Qatar: "🇶🇦", Prancis: "🇫🇷", Jerman: "🇩🇪", Australia: "🇦🇺",
   Thailand: "🇹🇭", Jepang: "🇯🇵", Tiongkok: "🇨🇳", India: "🇮🇳", Turki: "🇹🇷", Filipina: "🇵🇭", Swiss: "🇨🇭", Vietnam: "🇻🇳", "Selandia Baru": "🇳🇿", Brunei: "🇧🇳",
   "Korea Selatan": "🇰🇷", Taiwan: "🇹🇼", Kanada: "🇨🇦"};
 const bendera = n => { const k = (n || "").split(" (")[0]; return BENDERA[k] ? `<span class="bdr" title="${esc(n)}" aria-label="${esc(k)}">${BENDERA[k]}</span>` : `<span class="bdr kosong" title="Negara belum diketahui">–</span>`; };
@@ -3300,10 +3385,10 @@ const Berita = {
   exHarian() {
     /* volume berita harian (warna = nada situasi) + garis titik panas; judul ikut rentang yang dipilih */
     const D = this.d, semua = Object.keys(D.harian).sort(), hari = semua.slice(-this.rentang), n = hari.length;
-    /* saring nada (0 semua, 1 memburuk, 2 netral, 3 membaik): batang = jumlah berita bernada itu per hari, dihitung dari artikel */
-    const nf = this.nadaVol || 0, LB = [null, "negatif", "netral", "positif"][nf], WN = [null, "#c9503a", "#8a96a8", "#5a9e74"][nf];
-    const perN = {}; if (LB) for (const a of D.artikel) if (a.label_situasi === LB) { const t = a.tgl.slice(0, 10); perN[t] = (perN[t] || 0) + 1; }
-    const jml = t => LB ? perN[t] || 0 : D.harian[t].n;
+    /* batang bertumpuk per nada situasi (memburuk · netral · membaik) dari agregat harian pipeline */
+    const WN3 = ["#c9503a", "#8a96a8", "#5a9e74"], NL3 = ["Memburuk", "Netral", "Membaik"];
+    const sn = t => { const x = D.harian[t], v = x.situasi_n || [0, 0, 0], tot = v[0] + v[1] + v[2]; return tot ? v.map(c => c * x.n / tot) : [x.n, 0, 0]; };
+    const jml = t => D.harian[t].n;
     const W = 940, L = 44, R = 50, T = 26, B = 228, gap = (W - L - R) / n, bw = gap * .7, mx = Math.max(1, ...hari.map(jml));
     const titik = {}; for (const k of Object.keys(S.wilayah || {})) for (const [t, v] of Object.entries(S.wilayah[k].harian || {})) if (!k.includes("|")) titik[t] = (titik[t] || 0) + v;
     const mt = Math.max(1, ...hari.map(t => titik[t] || 0)), ada = hari.filter(t => titik[t] != null);
@@ -3312,19 +3397,21 @@ const Berita = {
     let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="10.5" opacity=".6">${rb(mx * f)}</text>`
       + (ada.length > 1 ? `<text x="${W - R + 6}" y="${YT(mt * f) + 4}" font-size="10.5" opacity=".6" style="fill:#0b2545">${rb(mt * f)}</text>` : "")).join("");
     const puncak = hari.reduce((a, t) => jml(t) > jml(a) ? t : a, hari[0]);
-    g += hari.map((t, i) => { const x = D.harian[t], [nl, w0] = this.lbl(x.situasi_rata), w = WN || w0, y = Y(jml(t));
-      return `<rect class="gy" style="--i:${i}" x="${X(i) - bw / 2}" y="${y}" width="${bw}" height="${B - y}" rx="${Math.min(4, bw / 3)}" fill="${w}" opacity=".88" data-tip="<b>${tglP(t)}</b><br>Berita: ${fmt(x.n)}<br>Cerita: ${fmt(x.cerita)}<br>Nada situasi: ${nl} (${fmt(Math.round(x.situasi_rata * 100) / 100)})${titik[t] != null ? `<br>Titik panas: ${fmt(titik[t])}` : ""}"/>`
-        + (t === puncak ? Insight.pil(X(i) - 26, y - 24, fmt(jml(t)), w, "#fff", 11)[0] : n <= 30 ? `<text x="${X(i)}" y="${y - 5}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".7">${fmt(jml(t))}</text>` : "")
+    g += hari.map((t, i) => { const x = D.harian[t], y = Y(jml(t)), seg = sn(t), raw = x.situasi_n || [x.n, 0, 0];
+      const tip = `<b>${tglP(t)}</b><br>Berita: ${fmt(x.n)}<br>${NL3.map((l, k) => `<span style='color:${WN3[k]}'>●</span> ${l}: ${fmt(raw[k] || 0)}`).join("<br>")}${titik[t] != null ? `<br>Titik panas: ${fmt(titik[t])}` : ""}`;
+      let yy = B, bat = ""; seg.forEach((c, k) => { if (c <= 0) return; const h = c / mx * (B - T); yy -= h; bat += `<rect x="${X(i) - bw / 2}" y="${yy}" width="${bw}" height="${h}" fill="${WN3[k]}" opacity=".92"/>`; });
+      const lbl = fmt(jml(t)), pw = lbl.length * 11 * .6 + 16;
+      return `<g class="gy" style="--i:${i}" data-tip="${tip}"><clipPath id="vb${i}"><rect x="${X(i) - bw / 2}" y="${y}" width="${bw}" height="${B - y}" rx="${Math.min(4, bw / 3)}"/></clipPath><g clip-path="url(#vb${i})">${bat}</g><rect x="${X(i) - bw / 2}" y="${T}" width="${bw}" height="${B - T}" fill="transparent"/></g>`
+        + (t === puncak ? Insight.pil(X(i) - pw / 2, y - 24, lbl, "#c9503a", "#fff", 11)[0] : n <= 30 ? `<text x="${X(i)}" y="${y - 5}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".7">${lbl}</text>` : "")
         + (i % Math.ceil(n / 10) === 0 ? `<text x="${X(i)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity=".65">${new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>` : ""); }).join("");
     if (ada.length > 1) g += `<path d="${ada.map((t, j) => (j ? "L" : "M") + X(hari.indexOf(t)) + "," + YT(titik[t])).join("")}" fill="none" stroke="#0b2545" stroke-width="2" stroke-dasharray="5 3" opacity=".75"/>`
       + ada.map(t => `<circle cx="${X(hari.indexOf(t))}" cy="${YT(titik[t])}" r="3.5" fill="#fff" stroke="#0b2545" stroke-width="2" data-tip="<b>${tglP(t)}</b><br>Titik panas: ${fmt(titik[t])}"/>`).join("");
     /* judul: rentang terpilih vs rentang sama sebelumnya */
     const ini = hari.reduce((a, t) => a + jml(t), 0), lalu = semua.slice(-2 * n, -n).reduce((a, t) => a + jml(t), 0), d = lalu ? Math.round((ini / lalu - 1) * 100) : null;
-    const judul = `${Insight.hl(fmt(ini) + " berita")} karhutla${LB ? " bernada " + ["", "memburuk", "netral", "membaik"][nf] : ""} dalam ${n} hari terakhir${d != null && semua.length >= 2 * n ? `, ${Insight.hl((d >= 0 ? "naik " : "turun ") + Math.abs(d) + "%")} dari ${n} hari sebelumnya` : ""}. Perhatian media memuncak pada ${Insight.hl(new Date(puncak + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"}))} dengan ${fmt(jml(puncak))} berita`;
+    const judul = `${Insight.hl(fmt(ini) + " berita")} karhutla dalam ${n} hari terakhir${d != null && semua.length >= 2 * n ? `, ${Insight.hl((d >= 0 ? "naik " : "turun ") + Math.abs(d) + "%")} dari ${n} hari sebelumnya` : ""}. Perhatian media memuncak pada ${Insight.hl(new Date(puncak + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"}))} dengan ${fmt(jml(puncak))} berita`;
     const leg = [["#c9503a", "nada memburuk"], ["#8a96a8", "netral"], ["#5a9e74", "membaik"]].map(([w, t]) => `<span><i style="background:${w}"></i>${t}</span>`).join("") + (ada.length > 1 ? `<span><i style="background:none;border-top:2px dashed #0b2545;border-radius:0;height:0;width:14px"></i>titik panas nasional (sumbu kanan)</span>` : "");
     return `<article class="ex"><header class="ex-hd"><span class="ex-ey">Volume berita</span><div class="ex-jd"><h3>${judul}</h3></div>
-      <div class="ctl ctl-baris"><div class="seg">${[[14, "14 hari"], [30, "30 hari"], [120, "120 hari"]].map(([v, nm]) => `<button data-br="rentang" data-v="${v}" aria-pressed="${this.rentang === v}">${nm}</button>`).join("")}</div>
-        <div class="seg">${[[0, "Semua nada"], [1, "Memburuk"], [2, "Netral"], [3, "Membaik"]].map(([v, nm]) => `<button data-br="nadaVol" data-v="${v}" aria-pressed="${nf === v}">${nm}</button>`).join("")}</div></div></header>
+      <div class="ctl ctl-baris"><div class="seg">${[[14, "14 hari"], [30, "30 hari"], [120, "120 hari"]].map(([v, nm]) => `<button data-br="rentang" data-v="${v}" aria-pressed="${this.rentang === v}">${nm}</button>`).join("")}</div></div></header>
       <div class="ex-bd"><svg viewBox="0 0 ${W} ${B + 22}" role="img" aria-label="Berita per hari">${g}</svg></div>
       <footer class="ex-ft"><span class="ex-leg">${leg}</span><em>Sumber: Google News RSS; NASA FIRMS</em></footer></article>`; },
   /* 1b. sentimen dari waktu ke waktu (gaya Google Trends): rentang & satuan waktu bisa dipilih; nada situasi, nada respons, atau emosi.
@@ -3349,17 +3436,21 @@ const Berita = {
       for (const [l, c] of Object.entries(v)) { b.c[l] = (b.c[l] || 0) + c; tot[l] = (tot[l] || 0) + c; } }
     else for (const a of D.artikel) { const t = a.tgl.slice(0, 10); if (t < awal || t > akhir || (o.prov && !a.prov?.includes(o.prov))) continue; const b = B.get(kunci(t)); if (!b) continue;
       b.n++; N++; const ls = o.seri === "emosi" ? this.emosi(a) : [o.seri === "situasi" ? a.label_situasi : a.label_respons]; for (const l of ls) { b.c[l] = (b.c[l] || 0) + 1; tot[l] = (tot[l] || 0) + 1; } }
-    const xs = [...B.keys()], W = 700, H = 230, L = 40, T = 12, Bt = 200, dx = (W - L - 10) / Math.max(1, xs.length - 1), X = i => L + i * dx;
+    const xs = [...B.keys()], W = 700, H = 230, L = 40, T = 12, Bt = 200, dx = (W - L - 74) / Math.max(1, xs.length - 1), X = i => L + i * dx;
     const pct = (b, k) => b.n ? (b.c[k] || 0) / b.n * 100 : null, mx = Math.max(10, ...xs.flatMap(x => SERI.map(([k]) => pct(B.get(x), k) || 0)));
     const Y = v => Bt - v / mx * (Bt - T);
-    let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 10}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="10" opacity=".6">${Math.round(mx * f)}%</text>`).join("");
+    let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 74}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="10" opacity=".6">${Math.round(mx * f)}%</text>`).join("");
     g += SERI.map(([k, , w]) => { let d = "", up = false; xs.forEach((x, i) => { const v = pct(B.get(x), k); if (v == null) { up = false; return; } d += (up ? "L" : "M") + X(i).toFixed(1) + "," + Y(v).toFixed(1); up = true; });
       return `<path d="${d}" fill="none" stroke="${w}" stroke-width="2.2" stroke-linejoin="round" stroke-linecap="round"/>`; }).join("");
+    /* nilai terakhir tiap seri sebagai pil di ujung kanan (digeser supaya tidak bertumpuk) */
+    { let akhir = SERI.map(([k, , w]) => { let i = xs.length - 1; while (i >= 0 && pct(B.get(xs[i]), k) == null) i--; return i < 0 ? null : {i, v: pct(B.get(xs[i]), k), w}; }).filter(Boolean).sort((a, b) => Y(a.v) - Y(b.v)), yPrev = -99;
+      akhir.forEach(o => { let y = Y(o.v) - 9; if (y < yPrev + 20) y = yPrev + 20; yPrev = y;
+        g += `<circle cx="${X(o.i)}" cy="${Y(o.v)}" r="3.5" fill="${o.w}" stroke="#fff" stroke-width="1.5"/>` + Insight.pil(X(o.i) + 8, y, Math.round(o.v) + "%", o.w, "#fff", 10.5)[0]; }); }
     const tgP = (x, f) => new Date(x + "T12:00:00+07:00").toLocaleDateString("id-ID", f), lbl = x => tgP(x, {day: "numeric", month: "short"}), step = Math.ceil(xs.length / 8);
     const judulTip = x => o.unit === "hari" ? tgP(x, {weekday: "long", day: "numeric", month: "long"}) : `Pekan ${tgP(x, {day: "numeric", month: "short"})} – ${tgP(new Date(new Date(x + "T12:00:00Z").getTime() + 6 * 864e5).toISOString().slice(0, 10), {day: "numeric", month: "short"})}`;
     g += xs.map((x, i) => { const b = B.get(x);
       return `<rect x="${X(i) - dx / 2}" y="${T}" width="${Math.max(2, dx)}" height="${Bt - T}" fill="transparent" class="hov" data-tip="<b>${judulTip(x)}</b><br>Berita: ${fmt(b.n)}<br>${SERI.map(([k, n, w]) => `<span style='color:${w}'>●</span> ${n}: ${b.n ? Math.round(pct(b, k)) + "%" : "–"}`).join("<br>")}"/>`
-        + (i % step === 0 || i === xs.length - 1 ? `<text x="${X(i)}" y="${Bt + 16}" text-anchor="middle" font-size="10" opacity=".65">${lbl(x)}</text>` : ""); }).join("");
+        + ((i % step === 0 && xs.length - 1 - i >= step * .6) || i === xs.length - 1 ? `<text x="${X(i)}" y="${Bt + 16}" text-anchor="middle" font-size="10" opacity=".65">${lbl(x)}</text>` : ""); }).join("");
     /* donat porsi seluruh rentang */
     const S2 = SERI.map(([k, n, w]) => [n, w, tot[k] || 0]), jum = S2.reduce((a, x) => a + x[2], 0) || 1; let sud = -Math.PI / 2;
     const busur = S2.map(([n, w, v]) => { const a = v / jum * Math.PI * 2; if (!v) return ""; const x1 = 80 + 62 * Math.cos(sud), y1 = 80 + 62 * Math.sin(sud); sud += a; const x2 = 80 + 62 * Math.cos(sud), y2 = 80 + 62 * Math.sin(sud);
@@ -3383,18 +3474,31 @@ const Berita = {
   exPeta() {
     const t0 = Object.keys(this.d.harian).sort().slice(-7)[0], pp = {}; for (const a of this.d.artikel) if (a.tgl.slice(0, 10) >= t0 && a.prov?.length) pp[a.prov[0]] = (pp[a.prov[0]] || 0) + 1;
     const [pk, pn] = Object.entries(pp).sort((a, b) => b[1] - a[1])[0] || ["", 0], tot = Object.values(pp).reduce((a, b) => a + b, 0);
-    return `<article class="ex"><h3>${pk ? `${Insight.hl(esc(namaProv(pk)))} paling banyak diberitakan 7 hari terakhir: ${Insight.hl(fmt(pn) + " berita")}, ${Math.round(pn / Math.max(1, tot) * 100)}% dari berita berlokasi` : "Sebaran berita 7 hari terakhir"}</h3>
+    /* panel samping: kabupaten paling diberitakan + saring nada (seperti panel kanan peta utama) */
+    const kb = {}; for (const a of this.d.artikel) { if (a.tgl.slice(0, 10) < t0 || !a.kab?.length) continue; const o = kb[a.kab[0]] ||= {k: a.kab[0], n: 0, s: 0}; o.n++; o.s += a.situasi; }
+    const topK = Object.values(kb).sort((a, b) => b.n - a.n).slice(0, 12), nf = this.nadaPeta || 0;
+    const side = `<aside class="bp-side"><h4>Kabupaten paling diberitakan</h4><div class="bp-seg">${[[0, "Semua"], [1, "Memburuk"], [2, "Netral"], [3, "Membaik"]].map(([v, n]) => `<button data-bpn="${v}" aria-pressed="${nf === v}">${n}</button>`).join("")}</div>
+      <ol class="bp-ls">${topK.map((o, i) => { const [nl, nw] = this.lbl(o.s / o.n), kp = o.k.split("|"); return `<li><button data-bpk="${esc(o.k)}"><span class="bp-no">${i + 1}</span><span class="bp-nm"><b>${esc(kp[1])}</b><small>${esc(namaProv(kp[0]))}</small></span><i style="background:${nw}" title="nada ${nl}"></i><em>${fmt(o.n)}</em></button></li>`; }).join("")}</ol></aside>`;
+    return `<article class="ex"><h3>${pk ? `${Insight.hl(esc(namaProv(pk)))} paling banyak diberitakan 7 hari terakhir: ${Insight.hl(fmt(pn) + " berita")} dari ${fmt(tot)} berita yang menyebut lokasi di Indonesia` : "Sebaran berita 7 hari terakhir"}</h3>
       <p class="unit">gelembung = jumlah berita 7 hari (warna = nada situasi); tanda merah bergaris = kompleks prioritas tanpa berita. Klik gelembung untuk melihat daftar beritanya.</p>
-      <div id="brPeta" style="height:420px;border-radius:12px;overflow:hidden;border:1px solid var(--line)"></div>
+      <div class="bp-wrap">${side}<div id="brPeta"></div><aside class="bp-side bp-news"></aside></div>
       <p class="fn">Lokasi diambil dari nama wilayah di judul; ${fmt(Math.round(this.d.ringkasan.berlokasi_kab * 100))}% berita bisa dipetakan sampai kabupaten.</p></article>`; },
   pasangPeta() {
     const D = this.d, el = $("#brPeta"); if (!el || typeof maplibregl === "undefined") return;
+    const side = el.parentElement.querySelector(".bp-side");
+    if (side && !side._ok) { side._ok = 1; side.addEventListener("click", e => {
+      const n = e.target.closest("[data-bpn]"); if (n) { this.nadaPeta = +n.dataset.bpn; side.querySelectorAll("[data-bpn]").forEach(b => b.setAttribute("aria-pressed", b === n)); return this.pasangPeta(); }
+      if (e.target.closest("[data-bpall]")) return this.pilihProvPeta("");
+      const k = e.target.closest("[data-bpk]"); if (k) { this.panelBerita(k.dataset.bpk); const o = this._bpKab?.[k.dataset.bpk]; if (o && this.peta) this.peta.easeTo({center: [o.lon, o.lat], zoom: Math.min(5.2, Math.max(this.peta.getZoom(), 4.4)), duration: 700}); } }); }
     const t0 = Object.keys(D.harian).sort().slice(-7)[0], kab = {};
     for (const a of D.artikel) { if (a.tgl.slice(0, 10) < t0 || a.lat == null || !a.kab?.length) continue; const k = a.kab[0], o = kab[k] ||= {k, lat: a.lat, lon: a.lon, n: 0, s: 0}; o.n++; o.s += a.situasi; }
-    const f = Object.values(kab).map(o => ({type: "Feature", geometry: {type: "Point", coordinates: [o.lon, o.lat]}, properties: {k: o.k, nama: o.k.split("|")[1], n: o.n, s: o.s / o.n}}));
+    const nfP = this.nadaPeta || 0, okN = s => !nfP || (nfP === 1 ? s <= -.15 : nfP === 3 ? s >= .15 : s > -.15 && s < .15);
+    const f = Object.values(kab).filter(o => okN(o.s / o.n)).map(o => ({type: "Feature", geometry: {type: "Point", coordinates: [o.lon, o.lat]}, properties: {k: o.k, nama: o.k.split("|")[1], n: o.n, s: o.s / o.n}}));
+    this._bpKab = kab;
     const celah = D.celah.flatMap(c => c.kompleks.map(id => S.kluster?.features.find(x => x.properties.id === id)).filter(Boolean).map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.properties.lon, x.properties.lat]}, properties: {id: x.properties.id, kab: c.kab.split("|")[1]}})));
     if (this.peta) this.peta.remove();
     const m = this.peta = new maplibregl.Map({container: el, style: DASAR(), center: [116, -2.5], zoom: 3.9, attributionControl: {compact: true}, dragRotate: false});
+    const lebar = innerWidth > 1100; m.once("load", () => m.fitBounds([[95, -11], [141, 6]], {padding: lebar ? {left: 280, right: 340, top: 30, bottom: 30} : 20, duration: 0}));
     m.on("load", () => {
       /* gaya peta utama: provinsi diwarnai jumlah berita 7 hari, gelembung bercincin putih berisi angka */
       const perProv = {}; for (const a of D.artikel) if (a.tgl.slice(0, 10) >= t0 && a.prov?.length) perProv[a.prov[0]] = (perProv[a.prov[0]] || 0) + 1;
@@ -3410,7 +3514,9 @@ const Berita = {
         "circle-color": ["step", rata, "#c9503a", -.15, "#8a96a8", .15, "#5a9e74"], "circle-opacity": .9, "circle-stroke-color": "#fff", "circle-stroke-width": 3}});
       m.addLayer({id: "kab", type: "circle", source: "kab", filter: ["!", ["has", "point_count"]], paint: {"circle-radius": ["interpolate", ["linear"], ["sqrt", ["get", "n"]], 1, 6, 4, 11, 8, 17], "circle-color": ["step", ["get", "s"], "#c9503a", -.15, "#8a96a8", .15, "#5a9e74"], "circle-opacity": .92, "circle-stroke-color": "#fff", "circle-stroke-width": 2.2}});
       m.addLayer({id: "kab-n", type: "symbol", source: "kab", filter: [">=", ["get", "n"], 2], layout: {"text-field": ["to-string", ["get", "n"]], "text-size": ["interpolate", ["linear"], ["sqrt", ["get", "n"]], 1, 10, 12, 14], "text-font": ["Noto Sans Bold"], "text-allow-overlap": true}, paint: {"text-color": "#fff"}});
-      m.on("click", "kab-cl", e => { const ft = e.features[0]; m.getSource("kab").getClusterExpansionZoom(ft.properties.cluster_id).then(z => m.easeTo({center: ft.geometry.coordinates, zoom: z + .3})); });
+      m.on("click", "kab-cl", e => { const ft = e.features[0], src = m.getSource("kab");
+        src.getClusterLeaves(ft.properties.cluster_id, 50, 0).then(ls => { const pvs = [...new Set(ls.map(l => l.properties.k.split("|")[0]))]; if (pvs.length === 1) this.pilihProvPeta(pvs[0]); });
+        src.getClusterExpansionZoom(ft.properties.cluster_id).then(z => m.easeTo({center: ft.geometry.coordinates, zoom: z + .3})); });
       m.on("mouseenter", "kab-cl", () => m.getCanvas().style.cursor = "pointer"); m.on("mouseleave", "kab-cl", () => m.getCanvas().style.cursor = "");
       m.addSource("celah", {type: "geojson", data: {type: "FeatureCollection", features: celah}});
       m.addLayer({id: "celah", type: "circle", source: "celah", minzoom: 5.5, paint: {"circle-radius": 5, "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#c9503a", "circle-stroke-width": 2}}, "kab-cl");
@@ -3421,23 +3527,43 @@ const Berita = {
         tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; });
       ["kab", "celah"].forEach(l => m.on("mouseleave", l, () => { tip.classList.remove("on"); m.getCanvas().style.cursor = ""; }));
       /* klik gelembung: popup daftar berita 7 hari di kabupaten itu; tombol bawah menyaring daftar utama */
-      m.on("click", "kab", e => { const p = e.features[0].properties, A = D.artikel.filter(a => a.kab?.[0] === p.k && a.tgl.slice(0, 10) >= t0).sort((a, b) => b.tgl.localeCompare(a.tgl));
-        tip.classList.remove("on");
+      m.on("click", "kab", e => { tip.classList.remove("on"); const k = e.features[0].properties.k; this.provPeta = k.split("|")[0]; this.isiKiri(); this.panelBerita(k); });
+      /* klik provinsi (bukan gelembung): kedua panel berganti ke provinsi itu */
+      m.on("click", e => { if (m.queryRenderedFeatures(e.point, {layers: ["kab", "kab-cl"].filter(l => m.getLayer(l))}).length) return;
+        const pf = m.getLayer("bp-fill") && m.queryRenderedFeatures(e.point, {layers: ["bp-fill"]})[0]; if (pf) this.pilihProvPeta(pf.properties.kode); });
+      if (m.getLayer("bp-fill")) { m.on("mouseenter", "bp-fill", () => m.getCanvas().style.cursor = "pointer"); m.on("mouseleave", "bp-fill", () => m.getCanvas().style.cursor = ""); }
+      /* panel kanan langsung berisi berita kabupaten teratas */
+      const top1 = Object.values(kab).sort((a, b) => b.n - a.n)[0]; if (top1 && !this._bpPilih) this.panelBerita(top1.k); else if (this._bpPilih) this.panelBerita(this._bpPilih);
+      m.on("click", "celah", e => Laci.buka(e.features[0].properties.id)); }); },
+  /* panel kiri: kabupaten paling diberitakan, bisa disaring ke satu provinsi (klik provinsi/kumpulan di peta) */
+  isiKiri() {
+    const D = this.d, side = $("#brPeta")?.parentElement.querySelector(".bp-side:not(.bp-news)"); if (!side) return;
+    const t0 = Object.keys(D.harian).sort().slice(-7)[0], pv = this.provPeta || "", kb = {};
+    for (const a of D.artikel) { if (a.tgl.slice(0, 10) < t0 || !a.kab?.length || (pv && !a.kab[0].startsWith(pv + "|"))) continue; const o = kb[a.kab[0]] ||= {k: a.kab[0], n: 0, s: 0}; o.n++; o.s += a.situasi; }
+    side.querySelector("h4").innerHTML = pv ? `<button class="bp-back" data-bpall title="Semua provinsi">‹</button>${esc(namaProv(pv))}` : "Kabupaten paling diberitakan";
+    side.querySelector(".bp-ls").innerHTML = Object.values(kb).sort((a, b) => b.n - a.n).slice(0, 30).map((o, i) => { const [nl, nw] = this.lbl(o.s / o.n), kp = o.k.split("|");
+      return `<li><button data-bpk="${esc(o.k)}" class="${o.k === this._bpPilih ? "on" : ""}"><span class="bp-no">${i + 1}</span><span class="bp-nm"><b>${esc(kp[1])}</b><small>${esc(namaProv(kp[0]))}</small></span><i style="background:${nw}" title="nada ${nl}"></i><em>${fmt(o.n)}</em></button></li>`; }).join("") || `<li class="kosong" style="padding:12px">Belum ada berita.</li>`;
+  },
+  pilihProvPeta(pv) { this.provPeta = pv; this.isiKiri(); this.panelBerita(pv || null); },
+  /* daftar berita satu kabupaten di panel kanan Peta berita (dulu popup di atas peta) */
+  panelBerita(k) {
+    const D = this.d, box = $("#brPeta")?.parentElement.querySelector(".bp-news"); if (!box) return; this._bpPilih = k;
+    const t0 = Object.keys(D.harian).sort().slice(-7)[0], kab = k && k.includes("|");
+    const A = D.artikel.filter(a => a.tgl.slice(0, 10) >= t0 && (!k ? a.prov?.length : kab ? a.kab?.[0] === k : a.prov?.includes(k))).sort((a, b) => b.tgl.localeCompare(a.tgl));
+    const p = {nama: !k ? "Semua wilayah" : kab ? k.split("|")[1] : namaProv(k), s: A.reduce((x, a) => x + a.situasi, 0) / Math.max(1, A.length)};
+    $("#brPeta").parentElement.querySelectorAll("[data-bpk]").forEach(b => b.classList.toggle("on", b.dataset.bpk === k));
+    {
         /* kepala & tiap berita berlabel; selalu ada gambar: sampul berita, ikon media, atau ubin kosong berikon koran */
         const [nl, nw] = this.lbl(p.s), pl = (t, w) => `<em class="br-lb" style="--w:${w}">${t}</em>`;
         const domA = a => a.domain || (() => { try { return new URL(a.url_asli || a.url).hostname.replace(/^www\./, ""); } catch { return ""; } })();
         const gbr = a => { const d = domA(a), fv = d ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64` : "";
           return a.gambar ? `<img class="br-pt" src="${esc(a.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fav="${esc(fv)}" onerror="if(this.dataset.fav){this.src=this.dataset.fav;this.dataset.fav='';this.classList.add('fb')}else this.replaceWith(Object.assign(document.createElement('i'),{className:'br-pt kosong'}))">`
             : fv ? `<img class="br-pt fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('i'),{className:'br-pt kosong'}))">` : `<i class="br-pt kosong"></i>`; };
-        const html = `<div class="br-pop"><div class="br-pop-h"><b>${esc(p.nama)}</b><span>${pl(fmt(A.length) + " berita 7 hari", "#1d4e89")}${pl("nada " + nl, nw)}</span></div><div class="br-pop-l">${A.slice(0, 12).map(a => { const [sl, sw] = this.lbl(a.situasi);
+        const html = `<div class="br-pop"><div class="br-pop-h"><b>${esc(p.nama)}</b><span>${pl(fmt(A.length) + " berita 7 hari", "#1d4e89")}${pl("nada " + nl, nw)}</span></div><div class="br-pop-l">${A.slice(0, 30).map(a => { const [sl, sw] = this.lbl(a.situasi);
           return `<a href="${escUrl(a.url)}" target="_blank" rel="noopener">${gbr(a)}<span>${esc(a.judul)}</span><small>${esc(a.sumber)}</small><small class="br-pop-lb">${pl(new Date(a.tgl.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"}), "#5b6782")}${pl(sl, sw)}</small></a>`; }).join("")}</div>
-          ${A.length > 12 ? `<small>+${fmt(A.length - 12)} berita lain</small>` : ""}<button class="btn sec" data-saring="${esc(p.nama)}">Tampilkan di daftar berita</button></div>`;
-        /* popup tinggi: geser peta supaya titik di bawah dan popup terbuka ke atas, utuh di dalam peta */
-        const tg = m.getContainer().clientHeight; m.easeTo({center: e.lngLat, offset: [0, Math.max(0, tg / 2 - 24)], duration: 350});
-        const pop = new maplibregl.Popup({maxWidth: "340px", anchor: "bottom"}).setLngLat(e.lngLat).setHTML(html).addTo(m);
-        pop.getElement().style.setProperty("--tg", tg + "px");
-        pop.getElement().querySelector("[data-saring]").onclick = ev => { this.f.q = ev.target.dataset.saring; this.f.hal = 0; this.ulangDaftar(); pop.remove(); $("#brDaftar")?.scrollIntoView({behavior: "smooth"}); }; });
-      m.on("click", "celah", e => Laci.buka(e.features[0].properties.id)); }); },
+          ${A.length > 30 ? `<small>+${fmt(A.length - 30)} berita lain</small>` : ""}<button class="btn-gelap" data-saring="${esc(p.nama)}">Tampilkan di daftar berita</button></div>`;
+        box.innerHTML = `<h4>${esc(p.nama)}</h4>` + html.replace('<div class="br-pop">', '<div class="br-pop bp-pop">');
+        box.querySelector("[data-saring]").onclick = ev => { this.f.q = ev.target.dataset.saring; this.f.hal = 0; this.ulangDaftar(); $("#brDaftar")?.scrollIntoView({behavior: "smooth"}); }; } },
   /* 3. sorotan 72 jam */
   exSorotan() {
     /* 12 cerita dengan media terbanyak pada rentang terpilih (hari ini / 3 / 7 / 30 hari), dihitung dari daftar cerita */
@@ -3543,7 +3669,8 @@ const Berita = {
     $("#brList").innerHTML = `
       <div class="br-list">${hal.map(a => { const [sl, sw] = this.lbl(a.situasi), [rl, rw] = this.lblR(a.respons);
         return `<div class="br-item"><a href="${escUrl(a.url)}" target="_blank" rel="noopener"><b>${esc(a.judul)}</b></a>
-          <small>${esc(a.sumber)} · ${new Date(a.tgl.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})} ${a.tgl.slice(11, 16).replace(":", ".")} WIB${a.kab?.length ? " · " + esc(a.kab[0].split("|")[1]) : a.prov?.length ? " · " + esc(namaProv(a.prov[0])) : ""}${a.n_kompleks ? ` · <button class="link" data-kom="${a.kompleks[0]}">${fmt(a.n_kompleks)} kompleks api terkait</button>` : ""}</small>
+          <small class="br-meta"><span class="br-src">${esc(a.sumber)}</span></small>
+          <span class="br-meta2"><em class="br-lb" style="--w:#5b6782">${new Date(a.tgl.slice(0, 10) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})} · ${a.tgl.slice(11, 16).replace(":", ".")} WIB</em>${a.kab?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(a.kab[0].split("|")[1])}</em>` : a.prov?.length ? `<em class="br-lb" style="--w:#2b8c86">${esc(namaProv(a.prov[0]))}</em>` : ""}${a.n_kompleks ? `<button class="br-lb br-lb-k" style="--w:#c9503a" data-kom="${a.kompleks[0]}">🔥 ${fmt(a.n_kompleks)} kompleks api</button>` : ""}</span>
           <span class="br-chip">${(a.topik || []).map(t => `<i style="--w:${WARNA_T[t]}">${TOPIK_B[t]}</i>`).join("")}<i style="--w:${sw}" data-tip="${a.alasan?.situasi?.length ? "kata pemicu: " + esc(a.alasan.situasi.join(", ")) : "tidak ada kata pemicu"}">situasi ${sl}</i>${rl !== "netral" ? `<i style="--w:${rw}" data-tip="kata pemicu: ${esc((a.alasan?.respons || []).join(", "))}">respons ${rl}</i>` : ""}</span></div>`; }).join("") || `<p class="kosong">Tidak ada berita yang cocok.</p>`}</div>${paginasi(this.f.hal, R.length, per, "berita")}
       `; },
   ikat() {
@@ -3689,7 +3816,8 @@ const Berita = {
     $("#berita").querySelector(".br-sorot")?.querySelectorAll(":scope > .br-kartu").forEach((k, i) => { const c = C[i]; if (!c || k.dataset.hias) return; k.dataset.hias = 1;
       const a = per.get(c.id) || {}; k.querySelector("small")?.insertAdjacentHTML("afterbegin", this.ikon(dom(a)));
       if (a.bahasa && a.bahasa !== "id") k.querySelector(".br-chip")?.insertAdjacentHTML("afterbegin", `<i style="--w:${WARNA_INT}">${BHS[a.bahasa] || a.bahasa}</i>`);
-      k.insertAdjacentHTML("beforeend", this.thumb(c.gambar || a.gambar, dom(a))); });
+      k.insertAdjacentHTML("beforeend", this.thumb(c.gambar || a.gambar, dom(a)));
+      const ng = a.asal === "internasional" ? negaraMedia(dom(a), a.sumber) : "Indonesia"; k.insertAdjacentHTML("afterbegin", `<span class="br-ng" title="Media ${esc(ng || "luar negeri")}">${BENDERA[ng] || "🌐"} ${esc(ng || "Luar negeri")}</span>`); });
   };
 
   /* daftar berita: thumbnail, ikon media, label bahasa. Urutan item sama dengan saring() + halaman, seperti ulangDaftar asli. */
@@ -3702,7 +3830,8 @@ const Berita = {
       if (a.bahasa && a.bahasa !== "id") it.querySelector(".br-chip")?.insertAdjacentHTML("afterbegin", `<i style="--w:${WARNA_INT}" title="${a.asal === "internasional" ? "media luar negeri" : "media Indonesia berbahasa asing"}">${BHS[a.bahasa] || a.bahasa}${a.asal === "internasional" ? " · internasional" : ""}</i>`);
       /* tiap berita punya ubin: gambar sampul bila sudah diambil, kalau belum ikon medianya */
       const fv = fav(dom(a)); it.classList.add("br-tb");
-      it.insertAdjacentHTML("beforeend", a.gambar ? this.thumb(a.gambar, dom(a)) : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""); });
+      it.insertAdjacentHTML("beforeend", a.gambar ? this.thumb(a.gambar, dom(a)) : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : "");
+      const ng = a.asal === "internasional" ? negaraMedia(dom(a), a.sumber) : "Indonesia"; it.insertAdjacentHTML("afterbegin", `<span class="br-ng" title="Media ${esc(ng || "luar negeri")}">${BENDERA[ng] || "🌐"} ${esc(ng || "Luar negeri")}</span>`); });
   };
 
   /* klik saringan asal: berlaku untuk seluruh tab */
@@ -3755,7 +3884,9 @@ const Berita = {
     [/Kemenkeu/i, "Kementerian Keuangan", "kemenkeu.go.id"], [/Pemda|Dinas/i, "Pemerintah daerah", "kemendagri.go.id"], [/KSP/i, "Kantor Staf Presiden", "ksp.go.id"], [/Setkab|Humas pemerintah/i, "Sekretariat Kabinet", "setkab.go.id"],
     [/Polkam/i, "Kemenko Polkam", "polkam.go.id"], [/Kemenhub/i, "Kementerian Perhubungan", "dephub.go.id"], [/AirNav/i, "AirNav Indonesia", "airnavindonesia.co.id"], [/BRGM/i, "BRGM", "brgm.go.id"],
     [/KLH|Gakkum/i, "Kementerian Lingkungan Hidup", "kemenlh.go.id"], [/Kemenlu/i, "Kementerian Luar Negeri", "kemlu.go.id"], [/Komdigi/i, "Komdigi", "komdigi.go.id"], [/Polri/i, "Polri", "polri.go.id"], [/Pendidikan/i, "Kemendikdasmen", "kemendikdasmen.go.id"]];
-  const logoLembaga = teks => LOGO_LB.filter(([re]) => re.test(teks || "")).map(([, n, d]) => `<img class="pm-logo" src="https://www.google.com/s2/favicons?domain=${d}&sz=64" alt="${n}" data-tip="<b>${n}</b>" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'pm-logo pm-logo-t',textContent:'${n.split(" ").map(w => w[0]).join("").slice(0, 3)}'}))">`).join("");
+  /* logo lokal (img/lembaga, diambil dari situs resmi) bila ada; sisanya favicon Google */
+  const LOKAL = {"bmkg.go.id": "bmkg.png", "brgm.go.id": "brgm.png", "dephub.go.id": "dephub.ico", "kehutanan.go.id": "kehutanan.ico", "kemendikdasmen.go.id": "kemendikdasmen.ico", "kemlu.go.id": "kemlu.ico", "kemenlh.go.id": "klh.png", "ksp.go.id": "ksp.png", "polri.go.id": "polri.png", "setkab.go.id": "setkab.ico"};
+  const logoLembaga = teks => LOGO_LB.filter(([re]) => re.test(teks || "")).map(([, n, d]) => `<img class="pm-logo" src="${LOKAL[d] ? "img/lembaga/" + LOKAL[d] : `https://www.google.com/s2/favicons?domain=${d}&sz=64`}" alt="${n}" data-tip="<b>${n}</b>" loading="lazy" referrerpolicy="no-referrer" onerror="this.replaceWith(Object.assign(document.createElement('span'),{className:'pm-logo pm-logo-t',textContent:'${n.split(" ").map(w => w[0]).join("").slice(0, 3)}'}))">`).join("");
   B.logoLembaga = logoLembaga;
   B.pmIsu = function () {
     const I = (D0().isu || []).slice(0, 10);
@@ -3828,7 +3959,7 @@ const Berita = {
   B.exPantau = function () {
     const D = D0(), P = D.peringatan || [], I = D.isu || [], top = I[0];
     const tinggi = P.filter(p => p.level === "tinggi").length;
-    return `<article class="ex" id="brPantau"><h3>Pantauan media: <span class="hl">${fmt(P.length)} peringatan</span>${tinggi ? `, ${fmt(tinggi)} perlu ditanggapi dalam 6 jam` : ""}</h3>
+    return `<article class="ex" id="brPantau"><h3>${top ? `Isu paling ramai 7 hari terakhir: <span class="hl">${esc(top.nama)}</span>, ${fmt(top.n7)} berita (${persen(top.momentum7)} dari pekan sebelumnya)` : "Isu yang sedang ramai di media"}</h3>
       <p class="sub">Isu teratas 7 hari: ${esc(top?.nama || "–")}${top ? ` (${fmt(top.n7)} berita, ${persen(top.momentum7)})` : ""}</p>
       <p class="unit">untuk ruang krisis: apa yang naik, siapa yang disorot, apa yang dituntut publik, klaim mana yang bertentangan dengan satelit, dan apa yang perlu dikomunikasikan. Klik baris untuk judul buktinya.</p>
       <div class="pm-grid">${this.pmIsu()}${this.pmLembaga()}${this.pmTuntutan()}${this.pmTokoh()}${this.pmKontradiksi()}${this.pmKomunikasi()}</div></article>`;

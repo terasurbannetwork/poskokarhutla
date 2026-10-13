@@ -53,3 +53,11 @@
 .ks-chip span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ks-chip i{font-style:normal;font-size:11px;color:var(--ink2)}
 .ks-chip:hover i{color:#c9503a}
+/* tabel kompleks: semua tulisan lebih kecil supaya muat; beberapa perusahaan ditumpuk sejajar */
+#kompleks table{font-size:11.5px}
+#kompleks thead th{font-size:9.5px!important;padding:8px 6px!important}
+#kompleks tbody td{padding:6px 6px!important}
+#kompleks .ks-td .ks-ell,#kompleks .ks-td2 .ks-ell{display:block;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
+#kompleks .ks-td2 .ks-ell{color:var(--ink2);font-size:10.5px}
+.ks-ft{display:flex;justify-content:flex-end;padding:10px 4px 0;border-top:1px solid var(--line);margin-top:8px;font-size:11px;color:var(--ink2)}
+.ks-ft em{font-style:italic}
