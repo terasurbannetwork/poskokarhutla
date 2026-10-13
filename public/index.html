@@ -2023,7 +2023,10 @@ const Insight = {
     Tren.cache["data/sejarah_modis.json"] = mo; Tren.musim = mu; Lapis.cache.asap = asap;
     Object.assign(D, {mo, mu, sat, res, asap, kr}); await Riwayat.muat();
     /* lapisan5.js: paparan(prov) = jiwa per kelas ISPU per hari; akses.json = waktu tempuh regu per kompleks */
-    [D.pap, D.akses] = await Promise.all([typeof paparan === "function" ? Promise.all(PRIO.map(k => paparan(k).catch(() => null))) : null, muatJSON("data/akses.json").catch(() => null)]); },
+    [D.pap, D.akses] = await Promise.all([typeof paparan === "function" ? Promise.all(PRIO.map(k => paparan(k).catch(() => null))) : null, muatJSON("data/akses.json").catch(() => null)]);
+    /* paparan yang sudah disilangkan dengan asap kebakaran (dampak.json) menggantikan hitungan semua polusi */
+    const dp = await muatJSON("data/dampak.json").catch(() => null);
+    if (dp?.udara?.prov && D.pap) D.pap = D.pap.map(p => { const x = p && dp.udara.prov[p.prov]; return x ? {...p, hari: dp.udara.hari, jiwa: x.jiwa, tidak_sehat: x.jiwa.map(j => j[2] + j[3] + j[4])} : p; }); },
   foto(topik) { return (this.data.kr || []).find(x => x.topik === topik); },
   kredit: f => `${esc(f.penulis)} · ${esc(f.lisensi)} · Wikimedia Commons`,
   galeri(topik) { const fs = topik.map(t => this.foto(t)).filter(Boolean); if (!fs.length) return "";

@@ -99,6 +99,36 @@ def jarak_kompleks(lat, lon, k):
     return max(0.0, km(lat, lon, k["lat"], k["lon"]) - k["r"])
 
 
+RADIUS_ASAP, AMBANG_ASAP = 300.0, 25.0
+
+
+def arah(la1, lo1, la2, lo2):
+    """arah kompas (derajat) dari titik 1 ke titik 2."""
+    y = math.sin(math.radians(lo2 - lo1)) * math.cos(math.radians(la2))
+    x = math.cos(math.radians(la1)) * math.sin(math.radians(la2)) - math.sin(math.radians(la1)) * math.cos(math.radians(la2)) * math.cos(math.radians(lo2 - lo1))
+    return (math.degrees(math.atan2(y, x)) + 360) % 360
+
+
+def asap_api(lat, lon, kompleks, radius=RADIUS_ASAP):
+    """Seberapa besar asap kebakaran bisa mencapai titik ini: jumlah titik panas 24 jam kompleks dalam RADIUS_ASAP km, dibobot
+    jarak (1 - d/R) dan arah angin di kompleks (asap bergerak ke wd + 180; selisih <= 60 derajat bobot penuh, 60-120 setengah,
+    selebihnya 0; dalam 50 km dihitung penuh apa pun arahnya). Di atas AMBANG_ASAP = asap karhutla; di bawahnya PM2.5 tinggi
+    kemungkinan dari polusi kota/industri, bukan kebakaran. ponytail: tanpa model transpor; ganti dengan CAMS GFAS bila tersedia."""
+    tot, dekat = 0.0, None
+    for k in kompleks:
+        d = km(lat, lon, k["lat"], k["lon"])
+        if d > radius:
+            continue
+        dekat = d if dekat is None else min(dekat, d)
+        w = 1.0
+        if d > 50 and k.get("wd") is not None:
+            beda = abs((arah(k["lat"], k["lon"], lat, lon) - (k["wd"] + 180)) % 360)
+            beda = min(beda, 360 - beda)
+            w = 1.0 if beda <= 60 else 0.5 if beda <= 120 else 0.0
+        tot += (k.get("n24") or 0) * w * (1 - d / radius)
+    return round(tot, 1), dekat and round(dekat)
+
+
 def angka_id(s, ribu=False):
     v = float(s.replace(".", "").replace(",", "."))
     return int(v * 1000) if ribu else int(v)
@@ -203,10 +233,17 @@ def main():
     pm_sel = {(r[0], r[1]): r[2] for r in asap["grid"]} if asap else {}
     sel = asap["sel"] if asap else 1
     pm_di = lambda la, lo: pm_sel.get((math.floor(la / sel) * sel + sel / 2, math.floor(lo / sel) * sel + sel / 2))
+    semua_k = [{"lat": p["lat"], "lon": p["lon"], "n24": p.get("n24") or 0, "wd": p.get("wd")} for p in kl]
+    api_sel = {}
+    def kena_api(la, lo):
+        c = (round(la, 1), round(lo, 1))
+        if c not in api_sel:
+            api_sel[c] = asap_api(la, lo, semua_k)[0] >= AMBANG_ASAP
+        return api_sel[c]
     kes = defaultdict(lambda: {"jiwa": [[0] * 5 for _ in hari], "ispa": [[0.0] * 3 for _ in hari]})
     for la, lo, n, p in pen["grid"]:
         pm = pm_di(la, lo)
-        if not pm or not p:
+        if not pm or not p or not kena_api(la, lo):  # hanya penduduk yang udaranya dipengaruhi asap kebakaran
             continue
         for i, v in enumerate(pm):
             if v is None:
@@ -217,8 +254,11 @@ def main():
     for p in kes:
         kes[p]["ispa"] = [[round(x) for x in d] for d in kes[p]["ispa"]]
     out["udara"] = {"hari": hari, "dibuat": asap and asap["dibuat"], "prov": dict(kes),
-                    "kota": [{"nama": n, "lat": la, "lon": lo, "prov": p, "pm": pm_di(la, lo)} for n, la, lo, p in KOTA if pm_di(la, lo)],
-                    "tetangga": [{"nama": n, "negara": ng, "lat": la, "lon": lo, "pm": pm_di(la, lo)} for n, la, lo, ng in TETANGGA if pm_di(la, lo)]}
+                    "kota": [{"nama": n, "lat": la, "lon": lo, "prov": p, "pm": pm_di(la, lo), "skor_api": a[0], "api_km": a[1], "karhutla": a[0] >= AMBANG_ASAP}
+                             for n, la, lo, p in KOTA if pm_di(la, lo) for a in [asap_api(la, lo, semua_k)]],
+                    "aturan_asap": f"titik panas 24 jam kompleks <= {RADIUS_ASAP:.0f} km, dibobot jarak dan arah angin; >= {AMBANG_ASAP:.0f} = asap karhutla",
+                    "tetangga": [{"nama": n, "negara": ng, "lat": la, "lon": lo, "pm": pm_di(la, lo), "skor_api": a[0], "karhutla": a[0] >= AMBANG_ASAP}
+                                 for n, la, lo, ng in TETANGGA if pm_di(la, lo) for a in [asap_api(la, lo, semua_k, 900)]]}  # asap lintas batas menempuh ratusan km
     art = berita.get("artikel", [])
     ispa = [{"tgl": a["tgl"][:10], "jumlah": ispa_berita(a["judul"]), "judul": a["judul"], "url": a["url"], "media": a.get("sumber"), "prov": a.get("prov") or []}
             for a in art if a["tgl"][:10] >= m0.isoformat() and ispa_berita(a["judul"])]
@@ -388,6 +428,11 @@ def cek(o):
 
 
 def uji():
+    k = [{"lat": 0.0, "lon": 0.0, "n24": 100, "wd": 270}]  # angin dari barat: asap ke timur
+    assert asap_api(0, 1.0, k)[0] > AMBANG_ASAP, "kota 111 km searah angin harus kena asap"
+    assert asap_api(0, -1.0, k)[0] == 0, "kota 111 km melawan arah angin tidak boleh dihitung kena asap"
+    assert asap_api(0, 4.0, k)[0] == 0, "kota > 300 km tidak dihitung"
+    assert asap_api(0, -0.3, k)[0] > 0, "dalam 50 km dihitung apa pun arah angin"
     assert sum(WB2015.values()) == WB2015_TOTAL, f"tabel WB 2015 harus berjumlah {WB2015_TOTAL}, dapat {sum(WB2015.values())}"
     lo, c, hi = per_ha(1_649_258)
     assert lo[0] < c[0] < hi[0], f"per ha harus rendah<tengah<tinggi: {lo[0]:.0f} {c[0]:.0f} {hi[0]:.0f}"

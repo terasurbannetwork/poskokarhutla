@@ -78,20 +78,22 @@ const Dampak = (() => {
     const U = D.udara, i = Math.min(st.hari, U.hari.length - 1), hr = U.hari[i];
     const rows = PRIO.map(k => ({k, j: jiwaProv(k, i)})).map(r => ({...r, ts: r.j[2] + r.j[3] + r.j[4], tot: r.j.reduce((a, b) => a + b, 0)})).sort((a, b) => b.ts - a.ts);
     const ts = rows.reduce((a, r) => a + r.ts, 0), stb = rows.reduce((a, r) => a + r.j[3] + r.j[4], 0), mx = Math.max(1, ...rows.map(r => r.tot));
-    const kota = [...U.kota].sort((a, b) => b.pm[i] - a.pm[i]), terburuk = U.hari.map((t, j) => [t, PRIO.reduce((a, k) => a + jiwaProv(k, j).slice(2).reduce((x, y) => x + y, 0), 0)]).sort((a, b) => b[1] - a[1])[0];
+    /* hanya kota yang udaranya dipengaruhi asap kebakaran (kompleks api searah angin, lihat dampak.py asap_api) */
+    const kotaAll = [...U.kota].sort((a, b) => b.pm[i] - a.pm[i]), kota = kotaAll.filter(c => c.karhutla !== false), lain = kotaAll.filter(c => c.karhutla === false && c.pm[i] > 55.4), terburuk = U.hari.map((t, j) => [t, PRIO.reduce((a, k) => a + jiwaProv(k, j).slice(2).reduce((x, y) => x + y, 0), 0)]).sort((a, b) => b[1] - a[1])[0];
     const L = LL(150), Wd = lw(), rh = 26, X = v => v / mx * (Wd - L - 80);
     const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${rows.length * rh}" role="img" aria-label="Penduduk per kelas udara">${rows.map((r, n) => { let x = L; const y = n * rh;
       return `<g data-dk="prov|${r.k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 17}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmP(r.k))}</text>`
         + r.j.map((v, c) => { const w = X(v), o = w > 0 ? `<rect class="gx" style="--i:${n}" x="${x}" y="${y + 5}" width="${w}" height="${rh - 10}" fill="${W5[c]}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${KELAS[c]}: ${rb(v)} jiwa<br>klik untuk rincian"/>` : ""; x += w; return o; }).join("")
         + `<text x="${x + 5}" y="${y + 17}" font-size="10.5">${rb(r.ts)}</text></g>`; }).join("")}</svg>`;
     const kb = kota.slice(0, 12).map(c => ({n: c.nama, v: c.pm[i], w: W5[kelas(c.pm[i])], dk: "kota|" + c.nama, txt: `${fmt(c.pm[i])} · ${KELAS[kelas(c.pm[i])]}`,
-      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>klik untuk 4 hari`}));
+      tip: `<b>${esc(c.nama)}</b><br>PM2.5 maks. ${fmt(c.pm[i])} µg/m³<br>${KELAS[kelas(c.pm[i])]}<br>asap dari kompleks api terdekat ${c.api_km != null ? "± " + fmt(c.api_km) + " km" : ""}<br>klik untuk 4 hari`}));
     return ex(1, `${hl(jt(ts) + " jiwa")} di 9 provinsi prioritas menghirup udara tidak sehat ${i ? "pada " + hariN(hr) : "hari ini"}`,
       "Penduduk menurut kelas udara (ISPU PM2.5), prakiraan 4 hari", "Batang = jumlah jiwa per provinsi, diwarnai menurut kelas udara. Klik provinsi atau kota untuk rinciannya.",
       kpi([["Udara tidak sehat", jt(ts), "jiwa di 9 provinsi prioritas"], ["Sangat tidak sehat+", jt(stb), "jiwa, termasuk kelas berbahaya"],
         ["Kota terburuk", esc(kota[0]?.nama || "–"), `PM2.5 maks. ${fmt(kota[0]?.pm[i])} µg/m³`], ["Hari terburuk", terburuk ? hariN(terburuk[0]) : "–", `${jt(terburuk?.[1] || 0)} jiwa terpapar tidak sehat`]])
-      + svg + legenda(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota dengan PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]}),
-      `Sumber: prakiraan CAMS (Copernicus) lewat Open-Meteo, sel ± 110 km, dibuat ${jamWIB(U.dibuat)}; penduduk WorldPop 2026. Angka PM2.5 adalah <b>maksimum per jam</b> dalam sehari, sedangkan ambang ISPU memakai rata-rata 24 jam, jadi kelasnya cenderung lebih buruk dari ukuran resmi. CAMS menghitung semua sumber polusi, bukan hanya asap kebakaran (itu sebabnya Jakarta bisa ikut tinggi).`,
+      + svg + legenda(KELAS.map((k, c) => [k, W5[c]])) + `<div class="lbl" style="margin:14px 0 4px">Kota yang terpapar asap karhutla, PM2.5 tertinggi <span style="text-transform:none">(µg/m³)</span></div>` + hbar(kb, {L: 120, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
+        + (lain.length ? `<p class="fnd" style="margin-top:8px">Tidak dihitung karena tidak ada kompleks api searah angin dalam 300 km, jadi udaranya buruk bukan karena karhutla (polusi kota, industri, kendaraan): ${lain.map(c => `${esc(c.nama)} ${fmt(c.pm[i])}`).join(", ")} µg/m³.</p>` : ""),
+      `Sumber: prakiraan CAMS (Copernicus) lewat Open-Meteo, sel ± 110 km, dibuat ${jamWIB(U.dibuat)}; penduduk WorldPop 2026. Angka PM2.5 adalah <b>maksimum per jam</b> dalam sehari, sedangkan ambang ISPU memakai rata-rata 24 jam, jadi kelasnya cenderung lebih buruk dari ukuran resmi. CAMS menghitung semua sumber polusi, jadi data ini disilangkan dengan kompleks api: penduduk dan kota hanya dihitung bila ada titik panas 24 jam dalam 300 km yang asapnya terbawa angin ke arahnya.`,
       seg("hari", U.hari.map((t, j) => [j, j ? hariN(t) : "Hari ini"])));
   }
   function popProv(k) {
