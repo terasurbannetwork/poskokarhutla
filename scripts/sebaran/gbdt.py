@@ -76,11 +76,17 @@ def prediksi_lr(mdl, x):
 def tepi_bin(X, nb=32, sampel=50000, seed=1):
     rnd = random.Random(seed)
     idx = range(len(X)) if len(X) <= sampel else rnd.sample(range(len(X)), sampel)
+    import bisect
     tepi = []
     for j in range(len(X[0])):
         v = sorted(X[i][j] for i in idx)
-        e = sorted({v[int(len(v) * q / nb)] for q in range(1, nb)})
-        tepi.append(e[:nb - 1])
+        e = set()
+        for q in range(1, nb):
+            a = v[int(len(v) * q / nb)]
+            k = bisect.bisect_right(v, a)
+            if k < len(v):
+                e.add((a + v[k]) / 2)  # titik tengah ke nilai berikutnya: tahan galat pembulatan float32/JS
+        tepi.append(sorted(e)[:nb - 1])
     return tepi
 
 

@@ -29,10 +29,11 @@ FITUR_SEL = [
     "aktif24",        # sel aktif di 5x5
     "searah",         # cos sudut (sel aktif terdekat -> calon) vs arah angin bertiup (ke mana)
     "angin_searah",   # searah x kecepatan angin rata-rata 24 jam (km/jam)
-    "ws", "ws_maks", "rh_min", "t_maks", "hujan24", "hujan72", "hari_kering",
+    "ws", "ws_maks", "rh_min", "t_maks", "vpd_maks", "hujan24", "hujan72", "hari_kering",
     "ffmc", "dmc", "dc", "bui", "isi_maks", "fwi",
-    "log_luas", "log_baru24", "umur_jam",
-    "gambut", "hutan", "semak", "kebun", "kanal_km", "jalan_km", "desa_km",
+    "log_luas", "log_baru24", "umur_jam", "log_frp",  # log(1 + FRP maks MW deteksi 24 jam terakhir); peramban: masukan / bawaan
+    "gambut", "hutan", "produksi", "apl", "kebun", "hti", "hph", "tambang", "sanksi",  # kawasan & konsesi (lahan/*.geojson)
+    "kanal_km", "jalan_km", "desa_km", "penduduk_km2",
     "riwayat_f", "oni", "dmi",
     "malam",          # jangkar = lintasan malam
 ]
@@ -132,8 +133,9 @@ class Seri:
             if sum(self.hujan[max(0, i - 24 * h):i - 24 * (h - 1)]) >= 1:
                 break
             kering = h
+        vpd = max(.6108 * math.exp(17.27 * t / (t + 237.3)) * (1 - min(max(h, 0), 100) / 100) for t, h in zip(self.tc[i:i + 24], self.rh[i:i + 24]))
         return {"ws": sum(ws) / 24, "ws_maks": max(ws), "ke": (dari + 180) % 360, "kuat_vektor": math.hypot(u, v),
-                "rh_min": min(self.rh[i:i + 24]), "t_maks": max(self.tc[i:i + 24]), "hujan24": sum(self.hujan[i:i + 24]),
+                "rh_min": min(self.rh[i:i + 24]), "t_maks": max(self.tc[i:i + 24]), "vpd_maks": vpd, "hujan24": sum(self.hujan[i:i + 24]),
                 "hujan72": sum(self.hujan[max(0, i - 72):i]), "hari_kering": kering,
                 "ffmc": Fh, "dmc": dmc, "dc": dc, "bui": bui, "isi_maks": isimax, "fwi": fw}
 
@@ -160,6 +162,7 @@ class Konteks:
                 k = int((la + 12) / .003375) * NX + int((lo - 94) / .003375)
                 self.bekas.setdefault(k, set()).add(y)
         self.c = {}
+        self.sungai = None
 
     def desa_km(self, lon, lat):
         gx, gy, best = math.floor(lon / .05), math.floor(lat / .05), 15.0
@@ -173,18 +176,45 @@ class Konteks:
         if k in self.c:
             return self.c[k]
         lon, lat = pusat(k)
-        g, h, s, kb, kanal, jalan, kelas = self.lahan(k, prov)
-        rf = self.rg.get((int((lon - self.rg_x0) / .1), int((self.rg_y1 - lat) / .1)), 0)
-        r = self.c[k] = {"gambut": g, "hutan": h, "semak": s, "kebun": kb, "kanal_km": kanal, "jalan_km": jalan,
-                         "desa_km": self.desa_km(lon, lat), "riwayat_f": rf, "kelas": kelas}
+        r = dict(self.lahan(k, prov))
+        r["desa_km"] = self.desa_km(lon, lat)
+        r["riwayat_f"] = self.rg.get((int((lon - self.rg_x0) / .1), int((self.rg_y1 - lat) / .1)), 0)
+        self.c[k] = r
         return r
+
+    def sungai_km(self, k):
+        """Jarak ke sungai OSM (waterway=river, data/raw/osm, 9 provinsi; riset saja: peramban hanya punya Kalsel)."""
+        if self.sungai is None:
+            import glob
+            self.sungai = {}
+            for f in glob.glob(os.path.join(MENTAH, "..", "osm", "*-sungai-*.json")):
+                for el in json.load(open(f))["elements"]:
+                    if el.get("tags", {}).get("waterway") == "river":
+                        for g in el.get("geometry", [])[::3]:
+                            self.sungai.setdefault((math.floor(g["lon"] / .05), math.floor(g["lat"] / .05)), []).append((g["lon"], g["lat"]))
+        lon, lat = pusat(k)
+        gx, gy, best = math.floor(lon / .05), math.floor(lat / .05), 10.0
+        for dx in range(-2, 3):
+            for dy in range(-2, 3):
+                for x, y in self.sungai.get((gx + dx, gy + dy), ()):
+                    best = min(best, math.hypot((x - lon) * 111.32 * math.cos(math.radians(lat)), (y - lat) * 110.57))
+        return best
 
     def iklim(self, m):
         t = T0.timestamp() + m * 60
         import datetime as dt
-        d = dt.datetime.utcfromtimestamp(t)
-        kunci = f"{d.year}-{d.month:02d}"
-        return self.oni.get(kunci, 0.0), self.dmi.get(kunci, 0.0)
+        d = dt.datetime.fromtimestamp(t, dt.timezone.utc)
+        return terakhir(self.oni, d.year, d.month), terakhir(self.dmi, d.year, d.month)
+
+    def riwayat_sel(self, k, tahun):
+        """(bekas1, tahun_sejak): terdeteksi tahun lalu (sel atau 8 tetangga); tahun sejak deteksi terakhir sebelum tahun ini
+        (VIIRS mulai 2015, jadi 'belum pernah' = tahun - 2014, tersensor)."""
+        i, j = ij(k)
+        ys = set()
+        for dj in (-1, 0, 1):
+            for di in (-1, 0, 1):
+                ys |= {y for y in self.bekas.get((j + dj) * NX + i + di, ()) if y < tahun}
+        return (1 if tahun - 1 in ys else 0), (tahun - max(ys) if ys else tahun - 2014)
 
     def bekas_lalu(self, k, tahun):
         """1 bila sel (atau 8 tetangganya) terdeteksi di 1-3 tahun sebelumnya (fitur riset)."""
@@ -195,6 +225,16 @@ class Konteks:
                 if ys and any(tahun - 3 <= y < tahun for y in ys):
                     return 1
         return 0
+
+
+def terakhir(tabel, th, bl, mundur=6):
+    """Nilai indeks bulan itu, atau bulan terakhir yang sudah terbit (ONI/DMI terbit terlambat 1-2 bulan)."""
+    for _ in range(mundur + 1):
+        v = tabel.get(f"{th}-{bl:02d}")
+        if v is not None:
+            return v
+        th, bl = (th, bl - 1) if bl > 1 else (th - 1, 12)
+    return 0.0
 
 
 def jangkar(e):
@@ -233,12 +273,12 @@ def calon(terbakar, aktif, r=R):
                     continue
                 d = math.hypot(di, dj)
                 o = out.get(k)
-                if o is None or d < o[0]:
+                if o is None or d < o[0] or (d == o[0] and a < o[1]):  # seri -> sel aktif berkunci terkecil (sama dgn JS)
                     out[k] = (d, a)
     return out
 
 
-def baris_sel(k, info, terbakar, aktif, w, ev, ktx, prov):
+def baris_sel(k, info, terbakar, aktif, w, ev, ktx, prov, tahun=9999):
     """Vektor fitur (dict) satu sel calon."""
     d, a = info
     ki, kj = ij(k)
@@ -249,12 +289,15 @@ def baris_sel(k, info, terbakar, aktif, w, ev, ktx, prov):
     se = math.cos(br - math.radians(w["ke"])) if d > 0 else 0.0
     s = ktx.sel(k, prov)
     return {"jarak_m": d * 375, "tetangga8": b8, "aktif24": a24, "searah": se, "angin_searah": se * w["ws"],
-            **{x: w[x] for x in ("ws", "ws_maks", "rh_min", "t_maks", "hujan24", "hujan72", "hari_kering", "ffmc", "dmc", "dc", "bui", "isi_maks", "fwi")},
-            **ev, **{x: s[x] for x in ("gambut", "hutan", "semak", "kebun", "kanal_km", "jalan_km", "desa_km", "riwayat_f")}}
+            **{x: w[x] for x in ("ws", "ws_maks", "rh_min", "t_maks", "vpd_maks", "hujan24", "hujan72", "hari_kering", "ffmc", "dmc", "dc", "bui", "isi_maks", "fwi")},
+            **ev, **{x: s[x] for x in ("gambut", "hutan", "produksi", "apl", "kebun", "hti", "hph", "tambang", "kanal_km", "jalan_km", "desa_km",
+                                       "penduduk_km2", "riwayat_f")},
+            "sanksi": 1 if s["sanksi_th"] <= tahun else 0}  # sanksi yang SUDAH dijatuhkan pada tahun api (tanpa bocoran)
 
 
-def fitur_peristiwa(terbakar, aktif, umur_jam, baru24n, oni, dmi, malam):
-    return {"log_luas": math.log(len(terbakar)), "log_baru24": math.log1p(baru24n), "umur_jam": umur_jam, "oni": oni, "dmi": dmi, "malam": malam}
+def fitur_peristiwa(terbakar, aktif, umur_jam, baru24n, oni, dmi, malam, frp=0.0):
+    return {"log_luas": math.log(len(terbakar)), "log_baru24": math.log1p(baru24n), "umur_jam": umur_jam, "log_frp": math.log1p(frp),
+            "oni": oni, "dmi": dmi, "malam": malam}
 
 
 if __name__ == "__main__" and sys.argv[1:] == ["uji"]:
@@ -271,4 +314,5 @@ if __name__ == "__main__" and sys.argv[1:] == ["uji"]:
     assert js[0][3] == {S(110.004, 0), S(110.008, 0)}
     c = calon({S(110, 0)}, {S(110, 0): 0})
     assert S(110, 0) not in c and len(c) == (2 * R + 1) ** 2 - 1 and max(v[0] for v in c.values()) <= R * math.sqrt(2) + 1e-9
+    assert terakhir({"2026-08": 1.2}, 2026, 10) == 1.2 and terakhir({}, 2026, 10) == 0.0
     print("ok")

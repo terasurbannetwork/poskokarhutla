@@ -32,9 +32,15 @@ NF = len(FUEL) + 1
 ARAH16 = [(1, 0), (1, 1), (0, 1), (-1, 1), (-1, 0), (-1, -1), (0, -1), (1, -1), (2, 1), (1, 2), (-1, 2), (-2, 1), (-2, -1), (-1, -2), (1, -2), (2, -1)]
 
 
+def efek_bui(bui, q=.90, bui0=32):
+    """Efek BUI FBP pers. 54 (FCFDG 1992; cffdrs buildup_effect): exp(50 ln q (1/BUI - 1/BUI0)); D-1: q 0,90, BUI0 32.
+    Dulu tertulis 32 di tempat 50 (bingung dengan BUI0), efeknya terlalu lemah: BUI 100 -> 1,074 bukan 1,118."""
+    return 1 if bui <= 0 else math.exp(50 * math.log(q) * (1 / bui - 1 / bui0))
+
+
 def tabel_laju(W, bui, k_angin=1.0, m_gambut=1.0, jam=73):
     """W: {ws, wd, F} per jam. -> tab[h][f][q] m/menit."""
-    fBUI = 1 if bui <= 0 else math.exp(32 * math.log(.90) * (1 / bui - 1 / 32))
+    fBUI = efek_bui(bui)
     tab = []
     for h in range(jam):
         ws = W["ws"][h] * k_angin
@@ -159,6 +165,8 @@ def cuaca_sim(S, i0, F0):
 
 
 if __name__ == "__main__" and sys.argv[1:] == ["uji"]:
+    # efek BUI D-1 dihitung tangan dari rumus cffdrs buildup_effect(): BUI 32 -> 1, 100 -> 1,1184, 10 -> 0,6962
+    assert efek_bui(32) == 1 and abs(efek_bui(100) - 1.1184) < 1e-3 and abs(efek_bui(10) - 0.6962) < 1e-3, efek_bui(100)
     W = {"ws": [20] * 73, "wd": [270] * 73, "F": [90] * 73}  # angin dari barat -> api ke timur
     tab = tabel_laju(W, 60)
     rumput = FUEL.index("rumput") + 1

@@ -14,10 +14,12 @@ CTX = mp.get_context("fork")  # data latih dibagi ke proses anak tanpa salin (co
 D = {}
 GRUP = {
     "angin": ["searah", "angin_searah", "ws", "ws_maks"],
-    "kekeringan & FWI": ["rh_min", "t_maks", "hujan24", "hujan72", "hari_kering", "ffmc", "dmc", "dc", "bui", "isi_maks", "fwi"],
-    "keadaan api": ["log_luas", "log_baru24", "umur_jam", "aktif24", "tetangga8"],
-    "lahan & gambut": ["gambut", "hutan", "semak", "kebun"],
-    "akses manusia": ["kanal_km", "jalan_km", "desa_km"],
+    "kekeringan & FWI": ["rh_min", "t_maks", "vpd_maks", "hujan24", "hujan72", "hari_kering", "ffmc", "dmc", "dc", "bui", "isi_maks", "fwi"],
+    "keadaan api": ["log_luas", "log_baru24", "umur_jam", "aktif24", "tetangga8", "log_frp"],
+    "gambut": ["gambut"],
+    "kawasan hutan": ["hutan", "produksi", "apl"],
+    "konsesi (sawit/HTI/HPH/tambang/sanksi)": ["kebun", "hti", "hph", "tambang", "sanksi"],
+    "akses manusia": ["kanal_km", "jalan_km", "desa_km", "penduduk_km2"],
     "iklim (ENSO/IOD)": ["oni", "dmi"],
     "riwayat terbakar": ["riwayat_f"],
 }
@@ -50,6 +52,8 @@ def latih_model(jenis, fitur, idx, **kw):
     X = [pick(s["X"][i]) for i in idx]
     y = [s["y"][i] for i in idx]
     w = [s["w"][i] for i in idx]
+    mw = sum(w) / len(w)
+    w = [x / mw for x in w]  # bobot dinormalkan (rata-rata 1) supaya min_h & L2 bermakna sama di tiap sampel
     if jenis == "lr":
         m = G.latih_lr(X, y, w)
         m.pop("H", None)
@@ -73,7 +77,7 @@ def nilai(m, idx, n_pohon=None):
 
 def _ablasi(arg):
     nama, fitur = arg
-    m = latih_model("gbdt", fitur, D["tr_kecil"], pohon=60, dalam=3, lr=.15)
+    m = latih_model("gbdt", fitur, D["tr_kecil"], pohon=100, dalam=3, lr=.12)
     return nama, nilai(m, D["va"])[0]
 
 
@@ -112,10 +116,26 @@ def arah_ringkas(hasil):
     return out
 
 
-def lepas_ringkas(hasil):
+def logit(p):
+    p = min(max(p, .01), .99)
+    return math.log(p / (1 - p))
+
+
+def kal_lepas(hasil):
+    """Kalibrasi Platt peluang lolos Monte Carlo pada titik awal VALIDASI (deteksi pertama)."""
+    rs = [r for r in hasil if r["ji"] == 0 and "p_lepas" in r]
+    m = G.latih_lr([[logit(r["p_lepas"])] for r in rs], [1 if r["akhir72"] >= L.LEPAS else 0 for r in rs], [1.0] * len(rs), l2=.1)
+    return {"mu": m["mu"], "sd": m["sd"], "b": m["b"]}
+
+
+def p_kal(K, p):
+    return G.sigmoid(K["b"][0] + K["b"][1] * (logit(p) - K["mu"][0]) / K["sd"][0]) if K else p
+
+
+def lepas_ringkas(hasil, K=None):
     rs = [r for r in hasil if r["ji"] == 0 and "p_lepas" in r]
     y = [1 if r["akhir72"] >= L.LEPAS else 0 for r in rs]
-    p = [r["p_lepas"] for r in rs]
+    p = [p_kal(K, r["p_lepas"]) for r in rs]
     det = [1 if r["awal"] + r["skor"]["gbdt"][2]["np"] >= L.LEPAS else 0 for r in rs]
     tp = sum(1 for a, b in zip(det, y) if a and b)
     out = {"n": len(rs), "lepas": sum(y), "auc": G.auc(p, y), "brier": round(G.brier(p, y), 4) if rs else None,
@@ -142,7 +162,7 @@ def tau_terbaik(hasil, nm):
     """Ambang deterministik yang memaksimalkan F1 mikro hari-1 pada titik awal validasi."""
     obs_total = sum(r["skor"]["persistensi"][0]["no"] for r in hasil)
     best = None
-    for tau in [x / 100 for x in range(10, 80, 5)]:
+    for tau in [.01, .02, .03, .04, .05, .06, .08, .1, .12, .15, .2, .25, .3, .4, .5]:
         tp = sum(1 for r in hasil for _, q, yv in r["p1"][nm] if q >= tau and yv)
         np_ = sum(1 for r in hasil for _, q, yv in r["p1"][nm] if q >= tau)
         f = 2 * tp / max(1, np_ + obs_total)
@@ -157,7 +177,7 @@ def main():
     idx = s["idx"]
     log(f"baris: latih {len(idx['latih'])}, val {len(idx['val'])}, uji {len(idx['uji'])}")
     tr = sub(idx["latih"], 8000 if CEPAT else 160000)
-    D["tr_kecil"] = sub(idx["latih"], 4000 if CEPAT else 70000, seed=5)
+    D["tr_kecil"] = sub(idx["latih"], 4000 if CEPAT else 150000, seed=5)
     D["va"] = sub(idx["val"], 5000) if CEPAT else idx["val"]
     H = {"dibuat": time.strftime("%Y-%m-%d"), "baris": {k: len(v) for k, v in idx.items()},
          "positif": {k: sum(s["y"][i] for i in v) for k, v in idx.items()}}
@@ -181,25 +201,43 @@ def main():
 
     # 2. ablasi: buang satu fitur / satu kelompok; tambah 'bekas' (riset saja)
     tugas = [("(semua)", peramban)] + [(f, [x for x in peramban if x != f]) for f in peramban] + \
-            [(f"kelompok: {g}", [x for x in peramban if x not in fs]) for g, fs in GRUP.items()] + [("+ bekas terbakar 1-3 th (375 m)", peramban + ["bekas"])]
+            [(f"kelompok: {g}", [x for x in peramban if x not in fs]) for g, fs in GRUP.items()] + \
+            [("+ bekas terbakar 1-3 th (375 m)", peramban + ["bekas"]), ("+ terbakar tahun lalu (375 m)", peramban + ["bekas1"]),
+             ("+ tahun sejak terakhir terbakar", peramban + ["tahun_sejak"]), ("+ jarak sungai OSM", peramban + ["sungai_km"]),
+             ("+ semua riset", peramban + L.RISET)]
     with CTX.Pool(5) as pool:
         ab = dict(pool.map(_ablasi, tugas))
     dasar = ab["(semua)"]
     H["ablasi"] = [{"tanpa": k, **v, "d_logloss": round(v["logloss"] - dasar["logloss"], 5), "d_auc": round(v["auc"] - dasar["auc"], 4)} for k, v in ab.items()]
     H["ablasi"].sort(key=lambda r: -r["d_logloss"])
-    tak_bantu = [r["tanpa"] for r in H["ablasi"] if r["tanpa"] in peramban and r["d_logloss"] <= 0.0001]
-    log("tak membantu di validasi:", tak_bantu)
+    # pangkas: kelompok yang bila dibuang tidak memperburuk validasi, dan fitur tunggal yang bila dibuang jelas memperbaiki.
+    # (buang-satu saja menyesatkan: fitur yang saling berkorelasi saling menggantikan.)
+    tak_bantu = []
+    for r in H["ablasi"]:
+        if r["tanpa"].startswith("kelompok: ") and r["d_logloss"] <= 0.00002:
+            tak_bantu += GRUP[r["tanpa"][10:]]
+        elif r["tanpa"] in peramban and r["d_logloss"] <= -0.00005:
+            tak_bantu.append(r["tanpa"])
+    tak_bantu = sorted(set(tak_bantu))
+    log("kandidat buang:", tak_bantu)
     fitur_akhir = [f for f in peramban if f not in tak_bantu]
-    m_pangkas = latih_model("gbdt", fitur_akhir, D["tr_kecil"], pohon=60, dalam=3, lr=.15)
-    v_pangkas = nilai(m_pangkas, D["va"])[0]
-    H["pangkas"] = {"dibuang": tak_bantu, "val": v_pangkas, "val_semua": dasar}
-    if v_pangkas["logloss"] > dasar["logloss"] + 0.0002:
-        fitur_akhir = peramban
-        H["pangkas"]["keputusan"] = "dibatalkan: gabungan pembuangan memperburuk validasi"
+    cfg = dict(pohon=best[2], dalam=best[1], lr=.1)
+    gb_semua = latih_model("gbdt", peramban, tr, **cfg)
+    v_semua = nilai(gb_semua, D["va"])[0]
+    if tak_bantu:
+        gb_pangkas = latih_model("gbdt", fitur_akhir, tr, **cfg)
+        v_pangkas = nilai(gb_pangkas, D["va"])[0]
     else:
+        gb_pangkas, v_pangkas = gb_semua, v_semua
+    H["pangkas"] = {"dibuang": tak_bantu, "val": v_pangkas, "val_semua": v_semua}
+    if v_pangkas["logloss"] > v_semua["logloss"]:
+        fitur_akhir, gb = peramban, gb_semua
+        H["pangkas"]["keputusan"] = "dibatalkan: model terpangkas lebih buruk di validasi"
+    else:
+        gb = gb_pangkas
         H["pangkas"]["keputusan"] = "diterapkan"
+    log("pangkas", H["pangkas"])
     H["fitur_akhir"] = fitur_akhir
-    gb = latih_model("gbdt", fitur_akhir, tr, pohon=best[2], dalam=best[1], lr=.1, log=log)
     H["gbdt_val"] = nilai(gb, D["va"])[0]
     lr = latih_model("lr", fitur_akhir, sub(tr, 80000))
     H["lr_val_akhir"] = nilai(lr, D["va"])[0]
@@ -221,7 +259,7 @@ def main():
 
     # 4. Sim hibrida: kisi parameter pada titik awal LATIH (bukan validasi/uji)
     awal_tr = L.awal_eval(evs["latih"], 6 if CEPAT else 120, 2 if CEPAT else 40, seed=31)
-    pars = [(ka, mg, m) for ka in (.5, 1.0) for mg in (.5, 1.0, 2.0) for m in (.01, .02, .05, .1, .2, .5, 1.0)]
+    pars = [(ka, mg, m) for ka in (.25, .5, 1.0) for mg in (1.0, 2.0, 4.0, 8.0) for m in (.01, .02, .03, .05, .1, .2)]
     with CTX.Pool(5) as pool:
         rs = [r for r in pool.imap(_sim_par, [(e, ji, pars) for e, ji in awal_tr], chunksize=2) if r]
     grid = []
@@ -239,16 +277,21 @@ def main():
     tau_v = {nm: t for nm, (t, _) in tau.items()}
     with CTX.Pool(5) as pool:
         hv = L.jalankan_eval(awal_val, {**modes, "sim": None}, tau_v, par_h, 20, pool)
+    K = H["kal_lepas"] = kal_lepas(hv)
     H["val"] = {"model": ringkas_semua(hv, ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"]), "arah": arah_ringkas(hv), "lepas": lepas_ringkas(hv),
+                "lepas_kalibrasi": lepas_ringkas(hv, K),
                 "n_awal": len(hv)}
     json.dump(H, open(L.HASIL, "w"), ensure_ascii=False, indent=1)
     log("validasi selesai")
 
+    if os.environ.get("SEBARAN_TANPA_UJI"):  # putaran penyetelan: berhenti sebelum uji dibuka
+        log("berhenti sebelum uji (SEBARAN_TANPA_UJI)")
+        return
     # 6. UJI: dibuka sekali
     awal_uji = L.awal_eval(evs["uji"], 10 if CEPAT else 400, 5 if CEPAT else 200, seed=41)
     with CTX.Pool(5) as pool:
         hu = L.jalankan_eval(awal_uji, {**modes, "sim": None}, tau_v, par_h, 20, pool)
-    H["uji"] = {"model": ringkas_semua(hu, ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"]), "arah": arah_ringkas(hu), "lepas": lepas_ringkas(hu),
+    H["uji"] = {"model": ringkas_semua(hu, ["persistensi", "lr", "gbdt", "sim", "sim_kal", "hibrida"]), "arah": arah_ringkas(hu), "lepas_mentah": lepas_ringkas(hu), "lepas": lepas_ringkas(hu, K),
                 "reliabilitas": {nm: reliabilitas_p1(hu, nm) for nm in modes}, "n_awal": len(hu),
                 "per_tahun": {th: L.ringkas([r for r in hu if r["th"] == th], "gbdt", 0) for th in (2024, 2025, 2026)}}
     H["uji_auc_baris"] = {nm: nilai(m, idx["uji"])[0] for nm, m in modes.items()}
@@ -263,7 +306,7 @@ def main():
     profil = profil_harian()
     json.dump({"versi": 1, "dibuat": time.strftime("%Y-%m-%d"), "jenis": "gbdt-logistik", "fitur": fitur_akhir, "bias": round(gb_all["bias"], 6),
                "pohon": gb_all["pohon"], "tau": tau_v["gbdt"], "R": L.R, "sel_m": 375, "ha_sel": 14.0625, "lepas_sel": L.LEPAS,
-               "profil_lintasan": profil,
+               "profil_lintasan": profil, "iklim": iklim_terakhir(), "frp_bawaan": frp_bawaan(), "kal_lepas": K,
                "kinerja_uji": {"f1_24": H["uji"]["model"]["gbdt"]["24"]["semua"]["f1"], "iou_24": H["uji"]["model"]["gbdt"]["24"]["semua"]["iou"],
                                "arah_24": H["uji"]["arah"]["gbdt"], "lepas_auc": H["uji"]["lepas"]["auc"]},
                "catatan": "Dilatih pada sampel sel calon VIIRS S-NPP 2015-2026 (9 provinsi, Jul-Nov) dengan konfigurasi yang dipilih di validasi 2023; "
@@ -272,6 +315,19 @@ def main():
     H["waktu_menit"] = round((time.time() - t0) / 60, 1)
     json.dump(H, open(L.HASIL, "w"), ensure_ascii=False, indent=1)
     log("selesai", H["waktu_menit"], "menit")
+
+
+def frp_bawaan():
+    """Median FRP maks lintasan pertama peristiwa 9 provinsi (dipakai peramban bila FRP titik tidak diketahui)."""
+    import statistics
+    xs = [max(f for t, _, f in e["det"] if t == e["det"][0][0]) for e in L.peristiwa()]
+    return round(statistics.median(xs), 2) if xs else 8.0
+
+
+def iklim_terakhir(bulan=36):
+    """ONI/DMI 36 bulan terakhir untuk peramban (fitur oni/dmi; bulan yang belum terbit memakai bulan terakhir)."""
+    e = json.load(open(os.path.join(MENTAH, "enso.json")))
+    return {k: dict(sorted(e[k].items())[-bulan:]) for k in ("oni", "dmi")}
 
 
 def profil_harian():

@@ -1,0 +1,53 @@
+/* cerita_karhutla.css — cerita bergulir di Insight. Memakai token warna index.html (--card, --ink, --line, ...) */
+.cerita{max-width:980px;margin:0 auto;color:var(--ink,#1d2a44)}
+.ct-muat{padding:40px;text-align:center;color:var(--ink2,#5b6782)}
+.ct-hero{display:grid;gap:18px;padding:30px 28px;border-radius:var(--r,16px);background:var(--brand,#1d2a5c);color:#fff;margin-bottom:22px}
+.ct-hero h1{font-family:var(--display,inherit);font-size:clamp(26px,4vw,40px);line-height:1.1;margin:4px 0 10px}
+.ct-hero p{margin:0;max-width:62ch;opacity:.92;line-height:1.5}
+.ct-kicker{font-size:12px;letter-spacing:.04em;text-transform:uppercase;opacity:.75!important}
+.ct-angka{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px}
+.ct-angka div{background:oklch(100% 0 0 / .1);border-radius:12px;padding:12px 14px}
+.ct-angka b{display:block;font-size:26px;font-family:var(--display,inherit)}
+.ct-angka span{font-size:12.5px;opacity:.9;line-height:1.35}
+.ct-bab{background:var(--card,#fff);border:1px solid var(--line,#e3e7ef);border-radius:var(--r,16px);box-shadow:var(--shadow,none);padding:24px 26px 18px;margin-bottom:20px}
+.ct-bab h2{font-family:var(--display,inherit);font-size:clamp(19px,2.4vw,24px);line-height:1.25;margin:2px 0 10px;max-width:60ch}
+.ct-bab h3{font-size:14.5px;margin:16px 0 6px}
+.ct-no{font-size:11.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--bad,#c9503a)}
+.ct-lead{color:var(--ink2,#5b6782);font-size:13.5px;margin:0 0 10px;max-width:75ch}
+.ct-cat{margin:14px 0 0;color:var(--ink2,#5b6782);font-size:11.5px;border-top:1px solid var(--line,#e3e7ef);padding-top:8px;line-height:1.45}
+.ct-kecil{font-size:12.5px;color:var(--ink2,#5b6782);line-height:1.45}
+.cerita svg{display:block;width:100%;height:auto;overflow:visible}
+.cerita svg text{fill:currentColor}
+.ct-dua{display:grid;grid-template-columns:1fr;gap:18px;margin-top:10px}
+@media (min-width:860px){.ct-dua{grid-template-columns:1fr 1fr}}
+.ct-dua.rapat{gap:10px}
+.ct-peta{height:380px;border-radius:12px;overflow:hidden;border:1px solid var(--line,#e3e7ef);margin:10px 0;background:var(--surface,#eef1f6)}
+.ct-peta.tinggi{height:460px}
+@media (max-width:600px){.ct-peta{height:300px}.ct-peta.tinggi{height:360px}}
+.ct-dua .ct-peta{height:320px}
+.ct-label{font-size:12px;font-weight:700;margin-top:6px}
+.ct-kontrol{display:flex;flex-wrap:wrap;gap:10px;align-items:center;margin:8px 0}
+.ct-kontrol select,.ct-kontrol input[type=date],.ct-kontrol input[type=number]{height:32px;border-radius:999px;border:1px solid var(--line,#e3e7ef);background:var(--surface,#eef1f6);color:inherit;padding:0 12px;font:inherit;font-size:12.5px;max-width:100%}
+.ct-kontrol input[type=range]{flex:1;min-width:140px}
+.ct-kontrol label{font-size:12.5px;display:flex;gap:6px;align-items:center}
+.ct-btn{height:32px;border-radius:999px;border:0;background:var(--brand2,#3f5fa0);color:#fff;padding:0 14px;font:inherit;font-size:12.5px;font-weight:600;cursor:pointer}
+.ct-btn:disabled{opacity:.45;cursor:default}
+.ct-tw{overflow-x:auto;margin-top:12px}
+.ct-tw.tinggi{max-height:420px;overflow-y:auto}
+.ct-tw table{border-collapse:collapse;width:100%;font-size:12px}
+.ct-tw th,.ct-tw td{padding:5px 8px;border-bottom:1px solid var(--line,#e3e7ef);text-align:right;white-space:nowrap}
+.ct-tw th:first-child,.ct-tw td:first-child,.ct-tw td:nth-child(2),.ct-tw th:nth-child(2){text-align:left}
+.ct-tw thead th{position:sticky;top:0;background:var(--surface,#eef1f6);color:var(--ink,#1d2a44)}
+.ct-tw tr[data-kasus]{cursor:pointer}
+.ct-tw tr.on td{background:oklch(85% .08 60 / .35)}
+.ct-ol{margin:4px 0;padding-left:20px;font-size:13px;line-height:1.5}
+.ct-simpul{padding-left:20px;font-size:14px;line-height:1.55}
+.ct-simpul li{margin-bottom:8px}
+.ct-kartu3{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:10px;margin:12px 0}
+.ct-kartu3 div{background:var(--surface,#eef1f6);border-radius:12px;padding:10px 12px}
+.ct-kartu3 span{display:block;font-size:11.5px;color:var(--ink2,#5b6782)}
+.ct-kartu3 b{display:block;font-size:19px;font-family:var(--display,inherit);margin:2px 0}
+.ct-kartu3 small{font-size:11px;color:var(--ink2,#5b6782)}
+.ct-pd{display:grid;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));gap:8px}
+.ct-pd figure{margin:0}
+.ct-masuk .ct-btn{margin-top:10px}

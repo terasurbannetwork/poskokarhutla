@@ -134,14 +134,51 @@ PRODUKSI = {"HP", "HPT", "HPK"}
 BAHAN = ["gambut", "rumput", "sabana", "semak", "hutan", "kebun"]
 
 
+def nama_baku(n):
+    """Nama perusahaan untuk dicocokkan (sama dengan normNama di sebaran_model.js): huruf kecil, tanpa PT/Tbk/CV/tanda baca,
+    huruf kembar dirapatkan (Kallista = Kalista)."""
+    import re
+    n = re.sub(r"\b(pt|tbk|cv|persero)\b", " ", (n or "").lower())
+    n = re.sub(r"[^a-z0-9]", "", n)
+    return re.sub(r"(.)\1+", r"\1", n)
+
+
+class PoligonSemua:
+    """Semua poligon yang memuat titik (konsesi bisa tumpang tindih: sawit di atas HPH, dll.)."""
+    def __init__(self, jalur):
+        from wilayah import _cincin
+        self.indeks = {}
+        for f in json.load(open(jalur))["features"]:
+            for r in _cincin(f["geometry"]):
+                xs, ys = [c[0] for c in r], [c[1] for c in r]
+                kotak = (min(xs), min(ys), max(xs), max(ys))
+                for gx in range(math.floor(kotak[0] / .5), math.floor(kotak[2] / .5) + 1):
+                    for gy in range(math.floor(kotak[1] / .5), math.floor(kotak[3] / .5) + 1):
+                        self.indeks.setdefault((gx, gy), []).append((kotak, r, f["properties"]))
+
+    def cari(self, lon, lat):
+        from wilayah import _di_dalam
+        return [p for kotak, r, p in self.indeks.get((math.floor(lon / .5), math.floor(lat / .5)), ())
+                if kotak[0] <= lon <= kotak[2] and kotak[1] <= lat <= kotak[3] and _di_dalam(lon, lat, r)]
+
+
 class Lahan:
-    """Atribut lahan per titik dari public/data/lahan/*.geojson + kanal.json + jalan.geojson. Di-cache per sel 375 m."""
+    """Atribut lahan per sel 375 m dari public/data: lahan/{gambut,kawasan,konsesi}.geojson, lahan/sanksi_karhutla.json,
+    kanal.json, jalan.geojson, penduduk.json. Di-cache per sel. Sama persis dengan Lahan() di public/sebaran_model.js."""
     def __init__(self):
         lh = os.path.join(PUBLIK, "lahan")
-        self.gb, self.kw, self.ks = Poligon(os.path.join(lh, "gambut.geojson")), Poligon(os.path.join(lh, "kawasan.geojson")), Poligon(os.path.join(lh, "konsesi.geojson"))
+        self.gb, self.kw = Poligon(os.path.join(lh, "gambut.geojson")), Poligon(os.path.join(lh, "kawasan.geojson"))
+        self.ks = PoligonSemua(os.path.join(lh, "konsesi.geojson"))
+        self.sanksi = {}
+        jl = os.path.join(lh, "sanksi_karhutla.json")
+        if os.path.exists(jl):
+            for c in json.load(open(jl))["kasus"]:
+                th = c.get("tahun_putusan") or min([int(x["tanggal"][:4]) for x in c.get("sumber", []) if x.get("tanggal")] or [9999])
+                k = nama_baku(c["nama"])
+                self.sanksi[k] = min(self.sanksi.get(k, 9999), int(th))
         k = json.load(open(os.path.join(PUBLIK, "kanal.json")))
         self.kanal_sel = k["sel"]
-        self.kanal = {(round(a / k["sel"]), round(b / k["sel"])): km for a, b, km in k["grid"]}
+        self.kanal = {(math.floor(a / k["sel"]), math.floor(b / k["sel"])): km for a, b, km in k["grid"]}  # pusat sel -> floor
         self.jalan = {}  # (gx, gy) 0,05 derajat -> [(lon, lat)] titik jalan tiap <= 300 m
         for f in json.load(open(os.path.join(PUBLIK, "jalan.geojson")))["features"]:
             for ln in f["geometry"]["coordinates"]:
@@ -150,6 +187,14 @@ class Lahan:
                     for q in range(n + 1):
                         x, y = x1 + (x2 - x1) * q / n, y1 + (y2 - y1) * q / n
                         self.jalan.setdefault((math.floor(x / .05), math.floor(y / .05)), []).append((x, y))
+        self.pend = {}
+        pj = os.path.join(PUBLIK, "penduduk.json")
+        if os.path.exists(pj):
+            P = json.load(open(pj))
+            self.pend_sel = P["sel"]
+            for la, lo, n, _ in P["grid"]:
+                kk = (math.floor(la / P["sel"]), math.floor(lo / P["sel"]))
+                self.pend[kk] = self.pend.get(kk, 0) + n
         self.c = {}
 
     def jarak_jalan(self, lon, lat, maks=10000):
@@ -169,22 +214,39 @@ class Lahan:
         return best
 
     def kanal_km(self, lon, lat):
-        return self.kanal.get((round(lat / self.kanal_sel), round(lon / self.kanal_sel)), 0.0)
+        return self.kanal.get((math.floor(lat / self.kanal_sel), math.floor(lon / self.kanal_sel)), 0.0)
+
+    def penduduk_km2(self, lon, lat):
+        if not self.pend:
+            return 0.0
+        s = self.pend_sel
+        n = self.pend.get((math.floor(lat / s), math.floor(lon / s)), 0)
+        luas = (s * 110.57) * (s * 111.32 * math.cos(math.radians((math.floor(lat / s) + .5) * s)))
+        return n / luas
 
     def __call__(self, k, prov=None):
-        """-> (gambut, hutan, semak, kebun, kanal_km, jalan_km, kelas_bahan)"""
+        """-> dict: gambut, hutan (HK/HL/konservasi), produksi (HP/HPT/HPK), apl (di luar kawasan hutan), kebun (sawit),
+        hti, hph, tambang, konsesi (salah satu), sanksi_th (tahun sanksi karhutla pertama pemegang konsesi, 9999 = tidak ada),
+        kanal_km, jalan_km, penduduk_km2, kelas (bahan bakar Sim), semak (= produksi atau HPH; bahan bakar Sim)"""
         if k in self.c:
             return self.c[k]
         lon, lat = pusat(k)
         g = 1 if self.gb.cari(lon, lat) else 0
         kw = self.kw.cari(lon, lat) or {}
-        ks = self.ks.cari(lon, lat) or {}
+        ks = self.ks.cari(lon, lat)
+        jenis = {p.get("jenis") for p in ks}
         h = 1 if kw.get("fungsi") in HUTAN else 0
-        s = 1 if kw.get("fungsi") in PRODUKSI or ks.get("jenis") == "hph" else 0
-        kb = 1 if ks.get("jenis") == "sawit" else 0
+        pr = 1 if kw.get("fungsi") in PRODUKSI else 0
+        sanksi = min([self.sanksi.get(nama_baku(p.get("pemegang") or p.get("nama")), 9999) for p in ks] +
+                     [self.sanksi.get(nama_baku(p.get("nama")), 9999) for p in ks] + [9999])
+        kb = 1 if "sawit" in jenis else 0
+        s = 1 if pr or "hph" in jenis else 0
         apl = "sabana" if prov in ("93", "53", "52", "81") else "rumput"
         kelas = "gambut" if g else "hutan" if h else "semak" if s else "kebun" if kb else apl
-        r = (g, h, s, kb, self.kanal_km(lon, lat), self.jarak_jalan(lon, lat) / 1000, kelas)
+        r = {"gambut": g, "hutan": h, "produksi": pr, "apl": 0 if kw else 1, "kebun": kb, "hti": 1 if "hti" in jenis else 0,
+             "hph": 1 if "hph" in jenis else 0, "tambang": 1 if "tambang" in jenis else 0, "konsesi": 1 if ks else 0, "sanksi_th": sanksi,
+             "kanal_km": self.kanal_km(lon, lat), "jalan_km": self.jarak_jalan(lon, lat) / 1000, "penduduk_km2": self.penduduk_km2(lon, lat),
+             "kelas": kelas, "semak": s}
         self.c[k] = r
         return r
 
@@ -215,6 +277,7 @@ if __name__ == "__main__" and sys.argv[1:] == ["uji"]:
     assert hari_lokal(m_siang, 105) == hari_lokal(m_malam, 105)
     assert abs(arah(110, 0, 110, 1) - 0) < 1e-9 and abs(arah(110, 0, 111, 0) - 90) < 1e-9
     assert selisih_sudut(350, 10) == 20 and selisih_sudut(90, 270) == 180
+    assert nama_baku("PT. Kallista Alam") == nama_baku("Kalista Alam") == "kalistalam"
     b = bootstrap([1, 1, 1, 1])
     assert b[0] == b[1] == b[2] == 1
     print("ok")

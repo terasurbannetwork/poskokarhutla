@@ -8,7 +8,7 @@ Model akhir untuk peramban dilatih ulang dengan konfigurasi terpilih pada 2015-2
 
 Pakai:  python3 scripts/sebaran/latih.py bangun | latih | uji
 """
-import json, math, multiprocessing as mp, os, pickle, random, sys, time
+import json, math, multiprocessing as mp, os, pickle, random, sys, time, zlib
 from array import array
 
 DIR = os.path.dirname(os.path.abspath(__file__))
@@ -19,11 +19,12 @@ import simfisika as SF  # noqa: E402
 from fitur import (FITUR_SEL, R, Konteks, Seri, baris_sel, calon, fitur_peristiwa, jangkar)  # noqa: E402
 from umum import (HA_SEL, MENTAH, PUBLIK, PRIORITAS, arah, bootstrap, ij, pusat, selisih_sudut)  # noqa: E402
 
-KOLOM = FITUR_SEL + ["bekas"]  # 'bekas' = riset saja (tidak tersedia di peramban)
+RISET = ["bekas", "bekas1", "tahun_sejak", "sungai_km"]  # riset saja: tidak tersedia di peramban
+KOLOM = FITUR_SEL + RISET
 SAMPEL = os.path.join(MENTAH, "sampel.pkl")
 HASIL = os.path.join(MENTAH, "hasil.json")
 LEPAS = 10  # sel (~140 ha) dalam 72 jam = "lolos/membesar"
-P_BESAR, P_KECIL = .22, .04  # peluang ikut sampel latih: peristiwa >= 3 sel / 1-2 sel
+P_BESAR, P_KECIL = .15, .04  # peluang ikut sampel latih: peristiwa >= 3 sel / 1-2 sel
 JANGKAR_MAKS = 3
 POS_MAKS, NEG_MAKS = 20, 20
 
@@ -78,19 +79,27 @@ def peristiwa(semua_kecil=False):
 
 
 # ---------------- keadaan & vektor fitur ----------------
-def keadaan(e, p, terbakar, aktif, baru24n, S, k):
+def frp_terakhir(e, p):
+    """FRP maks (MW) deteksi di (p - 24 jam, p]: hanya yang sudah terlihat pada jangkar."""
+    return max([f for t, _, f in e["det"] if p - 1440 < t <= p] or [0.0])
+
+
+def keadaan(e, p, terbakar, aktif, baru24n, S, k, frp=None):
     lon = e["lon0"]
     w = S.jendela(p)
     oni, dmi = k.iklim(p)
     jam_lokal = ((p + lon * 4) / 60) % 24
-    ev = fitur_peristiwa(terbakar, aktif, (p - e["det"][0][0]) / 60, baru24n, oni, dmi, 0 if 6 <= jam_lokal < 18 else 1)
+    ev = fitur_peristiwa(terbakar, aktif, (p - e["det"][0][0]) / 60, baru24n, oni, dmi, 0 if 6 <= jam_lokal < 18 else 1,
+                         frp_terakhir(e, p) if frp is None else frp)
     return w, ev, calon(terbakar, aktif)
 
 
 def vektor(kk, info, terbakar, aktif, w, ev, k, prov, tahun):
-    d = baris_sel(kk, info, terbakar, aktif, w, ev, k, prov)
+    d = baris_sel(kk, info, terbakar, aktif, w, ev, k, prov, tahun)
     d["bekas"] = k.bekas_lalu(kk, tahun)
-    return array("f", (d[x] for x in KOLOM))
+    d["bekas1"], d["tahun_sejak"] = k.riwayat_sel(kk, tahun)
+    d["sungai_km"] = k.sungai_km(kk)
+    return array("d", (d[x] for x in KOLOM))
 
 
 def baru_terakhir(e, p):
@@ -109,7 +118,7 @@ def baris_peristiwa(e):
     S = seri_untuk(e)
     if S is None:
         return []
-    rnd = random.Random(hash(e["id"]) & 0xffffffff)
+    rnd = random.Random(zlib.crc32(e["id"].encode()))
     besar = e["sel"] >= 3
     if rnd.random() > (P_BESAR if besar else P_KECIL / .25):
         return []
@@ -171,9 +180,10 @@ def ramal_sel(f, e, p, terbakar, aktif, S, k, tau, hari=3, mc=0, seed=0):
     def jalan(acak):
         tb, ak, baru, hasil, harap = set(terbakar), dict(aktif), set(), [], []
         b24 = baru_terakhir(e, p)
+        frp0 = frp_terakhir(e, p)  # dibekukan pada jangkar: deteksi sesudah p tidak boleh dipakai
         for d in range(hari):
             t = p + d * 1440
-            w, ev, c = keadaan(e, t, tb | baru, ak, b24, S, k)
+            w, ev, c = keadaan(e, t, tb | baru, ak, b24, S, k, frp=frp0)
             keys = list(c)
             ps = [f(vektor(kk, c[kk], tb | baru, ak, w, ev, k, e["prov"], th)) for kk in keys]
             if d == 0 and not acak:
@@ -279,7 +289,7 @@ def evaluasi_awal(arg):
         if mdl is None:
             continue
         f = fungsi_model(mdl, KOLOM)
-        r = ramal_sel(f, e, p, tb, ak, S, k, tau[nm], mc=mc if nm == "gbdt" else 0, seed=hash(e["id"]) & 0xffff)
+        r = ramal_sel(f, e, p, tb, ak, S, k, tau[nm], mc=mc if nm == "gbdt" else 0, seed=zlib.crc32(e["id"].encode()) & 0xffff)
         hasil["skor"][nm] = [skor(tb, P, o) for P, o in zip(r["det"], obs)]
         hasil.setdefault("harap", {})[nm] = [round(x, 2) for x in r["harap"]]
         if nm == "gbdt" and mc:
