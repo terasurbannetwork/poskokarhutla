@@ -408,8 +408,13 @@ table.tb3 tr:last-child td{border-bottom:0}
 .ex .fn{margin:10px 0 0;color:var(--ink2);font-size:11.5px;border-top:1px solid var(--line);padding-top:8px}
 .ex svg{display:block;width:100%;height:auto;overflow:visible}
 .ex svg text{fill:currentColor}
-.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 10px}
-.ex .ctl select{height:32px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 12px;font-size:12.5px}
+.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-4px 0 12px}
+/* kontrol exhibit: pilihan & segmen satu tinggi, satu bingkai, panah sendiri (bukan panah bawaan browser) */
+.ex .ctl select{appearance:none;-webkit-appearance:none;height:34px;border-radius:999px;border:1px solid var(--line);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/13px;padding:0 34px 0 14px;font-size:12.5px;font-weight:600;color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
+.ex .ctl select:hover{border-color:color-mix(in oklch,var(--ink2) 40%,var(--line))}
+.ex .ctl select:focus-visible{outline:2px solid var(--brand);outline-offset:1px}
+.ex .ctl .seg{height:34px;align-items:center}
+.ex .ctl .seg button{padding:5px 13px}
 .ex2{display:grid;grid-template-columns:1fr;gap:18px}
 @media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
@@ -2560,8 +2565,12 @@ const Insight = {
 
   /* 8. kecamatan langganan api: jalur panas tahunan per kecamatan */
   exKec() {
-    const th = Riwayat.th, pp = this.st.kecProv, top = Object.values(S.riw).filter(r => r.jenis === "kec" && (pp ? r.prov === pp : PRIO.includes(r.prov))).sort((a, b) => b.skor - a.skor).filter(r => !window.Preventif || Preventif.lolos(r.kunci, this.st.kecAksi)).slice(0, +this.st.kecN);
-    const PV = window.Preventif?.lebar() || 0, W = 940 + PV, L = 250, R = 150 + PV, T = 26, rh = 34, cw = (W - L - R) / th.length, H = T + top.length * rh + 30;
+    /* Kolom "Pencegahan utama · anggaran" (preventif.js) disembunyikan dulu atas
+       permintaan pemilik 13 Okt 2026, bersama saringan tindakannya. Hidupkan lagi
+       dengan PAKAI_PV = true. */
+    const PAKAI_PV = false;
+    const th = Riwayat.th, pp = this.st.kecProv, top = Object.values(S.riw).filter(r => r.jenis === "kec" && (pp ? r.prov === pp : PRIO.includes(r.prov))).sort((a, b) => b.skor - a.skor).filter(r => !PAKAI_PV || !window.Preventif || Preventif.lolos(r.kunci, this.st.kecAksi)).slice(0, +this.st.kecN);
+    const PV = PAKAI_PV && window.Preventif?.lebar() || 0, W = 940 + PV, L = 250, R = 150 + PV, T = 26, rh = 34, cw = (W - L - R) / th.length, H = T + top.length * rh + 30;
     const isi = t => t <= 0 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(15 + t * 85)}%, #fbe3b4)`;
     let g = th.map((t, j) => j % 5 === 0 || j === th.length - 1 ? `<text x="${L + j * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" opacity=".65">${t}</text>` : "").join("")
       + `<text x="${W - R + 14}" y="14" font-size="11" font-weight="700" opacity=".75">Tahun terbakar</text>` + (PV ? Preventif.judulKolom(W - PV + 14) : "");
@@ -2577,7 +2586,7 @@ const Insight = {
       `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "9 provinsi prioritas"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. ${PV ? "Klik baris untuk rencana pencegahan." : "Klik baris untuk analisa rinci."}`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:${760 + PV}px" role="img" aria-label="Kecamatan langganan api">${g}</svg></div>${PV ? Preventif.ringkasProv(pp) : ""}`,
       `Tahun terbakar = ≥ 10 titik setahun. Peringkat lengkap dan CSV ada di tab Tren. Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,
-      this.selProv("kecProv") + this.seg("kecN", [[12, "12"], [25, "25"], [50, "50"], [100, "100 teratas"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
+      this.selProv("kecProv") + this.seg("kecN", [[12, "12"], [25, "25"], [50, "50"], [100, "100"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; try { return f.call(this); } catch (e) { console.error(e); return ""; } },
   async render() {
@@ -2621,6 +2630,11 @@ const MEDIA_NEGARA = {"thestar.com.my": "Malaysia", "astroawani.com": "Malaysia"
   "devdiscourse.com": "India", "aa.com.tr": "Turki", "gmanetwork.com": "Filipina", "inquirer.net": "Filipina", "iqair.com": "Swiss", "bangkokpost.com": "Thailand", "vnexpress.net": "Vietnam"};
 const TLD_NEGARA = {my: "Malaysia", sg: "Singapura", au: "Australia", uk: "Inggris", in: "India", ph: "Filipina", th: "Thailand", vn: "Vietnam", jp: "Jepang", cn: "Tiongkok", hk: "Hong Kong", tr: "Turki",
   de: "Jerman", fr: "Prancis", nz: "Selandia Baru", bn: "Brunei", kr: "Korea Selatan", tw: "Taiwan", ca: "Kanada", qa: "Qatar"};
+/* bendera per negara (kolom Negara di daftar media asing): nama negara di depan kurung, mis. "Inggris (kantor berita global)" */
+const BENDERA = {Malaysia: "🇲🇾", Singapura: "🇸🇬", "Hong Kong": "🇭🇰", Inggris: "🇬🇧", "Amerika Serikat": "🇺🇸", Qatar: "🇶🇦", Prancis: "🇫🇷", Jerman: "🇩🇪", Australia: "🇦🇺",
+  Thailand: "🇹🇭", Jepang: "🇯🇵", Tiongkok: "🇨🇳", India: "🇮🇳", Turki: "🇹🇷", Filipina: "🇵🇭", Swiss: "🇨🇭", Vietnam: "🇻🇳", "Selandia Baru": "🇳🇿", Brunei: "🇧🇳",
+  "Korea Selatan": "🇰🇷", Taiwan: "🇹🇼", Kanada: "🇨🇦"};
+const bendera = n => { const k = (n || "").split(" (")[0]; return BENDERA[k] ? `<span class="bdr" title="${esc(n)}" aria-label="${esc(k)}">${BENDERA[k]}</span>` : `<span class="bdr kosong" title="Negara belum diketahui">–</span>`; };
 function negaraMedia(d, nama = "") { d = (d || "").replace(/^www\./, "");
   for (let x = d; x.includes("."); x = x.slice(x.indexOf(".") + 1)) if (MEDIA_NEGARA[x]) return MEDIA_NEGARA[x];
   const t = d.split(".").pop(); if (TLD_NEGARA[t]) return TLD_NEGARA[t];
@@ -2871,6 +2885,12 @@ const Berita = {
 .br-pv{display:flex;flex-wrap:wrap;gap:4px;margin-top:2px}
 .br-mi{display:grid;grid-template-columns:minmax(0,1fr) 90px auto;align-items:center;gap:10px;padding:6px 4px;font-size:13px;border-bottom:1px solid var(--line)}
 .br-mi span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-mn{grid-template-columns:58px minmax(0,1fr) 90px 48px}
+.br-mn.kepala span{overflow:visible}
+.br-mn.kepala{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding-top:2px}
+.br-mn .n,.br-mn .num{text-align:right}
+.bdr{font-size:19px;line-height:1;text-align:center}
+.bdr.kosong{font-size:13px;color:var(--ink2)}
 @media (max-width:900px){.br-dunia{grid-template-columns:1fr}}
 @media (max-width:520px){.br-thumb{width:72px;height:54px;border-radius:8px}.br-item.br-tb{grid-template-columns:minmax(0,1fr) 72px}.br-asal{margin-left:0}}`;
   document.head.appendChild(css);
@@ -2943,7 +2963,7 @@ const Berita = {
     return `<article class="ex" id="brDunia"><h3>Sorotan dunia: <span class="hl">${fmt(I.n7)} berita</span> dari media luar negeri dalam 7 hari</h3><p class="sub">Liputan internasional tentang karhutla dan asap Indonesia</p>
       <p class="unit">judul berbahasa Inggris dan Melayu dari Google News edisi AS, Singapura, Malaysia, Australia, dan Inggris; ditampilkan apa adanya tanpa terjemahan</p>
       <div class="br-dunia"><div><div class="lbl">Cerita yang paling banyak diliput media asing · 7 hari</div><div class="br-sorot" style="grid-template-columns:1fr;margin-top:6px">${kartu || `<p class="kosong">Belum ada liputan internasional 7 hari ini.</p>`}</div></div>
-        <div><div class="lbl">Media asing · 120 hari</div>${M.map(m => `<div class="br-mi"><span>${this.ikon(m.domain)}${esc(m.sumber)}${negaraMedia(m.domain, m.sumber) ? `<small style="display:block;color:var(--ink2);font-size:11px;padding-left:22px">${negaraMedia(m.domain, m.sumber)}</small>` : ""}</span><span class="br-bar"><i style="width:${m.n / mm * 100}%;background:${WARNA_INT}"></i></span><b class="num">${fmt(m.n)}</b></div>`).join("")}
+        <div><div class="lbl">Media asing · 120 hari</div><div class="br-mi br-mn kepala"><span>Negara</span><span>Media</span><span></span><span class="n">Berita</span></div>${M.map(m => `<div class="br-mi br-mn">${bendera(negaraMedia(m.domain, m.sumber))}<span>${this.ikon(m.domain)}${esc(m.sumber)}</span><span class="br-bar"><i style="width:${m.n / mm * 100}%;background:${WARNA_INT}"></i></span><b class="num">${fmt(m.n)}</b></div>`).join("")}
           <div class="lbl" style="margin-top:16px">Provinsi yang disebut media asing · 120 hari</div>${PV.map(([k, v]) => `<div class="br-mi"><span>${esc(namaProv(k))}<small style="display:block;color:var(--ink2);font-size:11px">${esc(v.media.slice(0, 2).join(", "))}</small></span><span class="br-bar"><i style="width:${v.n / pm * 100}%;background:#2b8c86"></i></span><b class="num">${fmt(v.n)}</b></div>`).join("") || `<p class="fnd">Belum ada.</p>`}
           <p class="fnd">${fmt(Math.round(I.tanpa_lokasi / Math.max(1, I.n) * 100))}% judul asing hanya menyebut "Indonesia", "Borneo", atau "Sumatra" tanpa provinsi.</p></div></div>
       <p class="fn">Media Indonesia berbahasa Inggris (Antara, Tempo English, Jakarta Post) dihitung nasional. Asap di Malaysia/Singapura hanya dihitung bila judulnya menyebut Indonesia atau asap lintas batas.${V?.situasi?.uji ? ` Uji pada ${fmt(V.situasi.uji.n)} judul Inggris berlabel tangan: nada situasi ${fmt(Math.round(V.situasi.uji.akurasi * 100))}% (menebak label terbanyak ${fmt(Math.round(V.situasi.mayoritas_uji * 100))}%), nada respons ${fmt(Math.round(V.respons.uji.akurasi * 100))}% (${fmt(Math.round(V.respons.mayoritas_uji * 100))}%), presisi relevansi ${fmt(Math.round(V.relevansi.presisi * 100))}%.` : ""}</p></article>`;
