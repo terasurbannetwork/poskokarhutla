@@ -1,0 +1,14 @@
+{
+  "per": "2026-10-12",
+  "sumber": "Rekap BNPB operasi karhutla 2026 s.d. 12 Oktober dan rapat kabinet 12 Oktober 2026, sebagaimana diteruskan pemilik platform (belum diverifikasi ke dokumen BNPB)",
+  "dipadamkan_ha": {"61": 51108, "62": 22780, "63": 22034, "14": 20689, "16": 8402, "15": 4245, "lainnya": 696},
+  "dipadamkan_total_ha": 129956,
+  "lainnya_wilayah": ["Kalimantan Timur", "IKN", "Lingga", "Minahasa Utara", "TPA Sumompo-Manado", "Nabire", "Merauke"],
+  "belum_padam_ha": {"prioritas_6_prov": 639, "lainnya": 546},
+  "personel_darat": 60177,
+  "armada_udara": {"total": 48, "water_bombing": 33, "patroli_omc": 15},
+  "omc_pesawat": {"62": 4, "16": 2},
+  "padam_hari_sama_pct": 80,
+  "sorotan": [{"lokasi": "Taman Nasional Tanjung Puting, Kalimantan Tengah", "prov": "62", "luas_ha": 513.89, "catatan": "kebakaran baru; rawa, sulit dijangkau kendaraan"}],
+  "kebijakan": ["Optimalkan seluruh sumber daya untuk mempercepat pemadaman", "Tambah pompa dan titik bor air", "Perkuat polisi hutan bertahap menuju 70.000 personel; Polri membantu pendidikan", "Polisi hutan dibekali pompa dan bor air"]
+}
