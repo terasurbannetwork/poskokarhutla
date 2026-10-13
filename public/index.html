@@ -592,6 +592,12 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .br-item a{color:inherit;text-decoration:none}
 .br-item a:hover b{text-decoration:underline}
 .br-item b{font-size:14px;line-height:1.35}
+
+/* panel Overlay: judul grup bergaya kepala tabel (pita navy, huruf kapital), isi selalu terbuka */
+.lapis details{border-top:0;padding:0;margin-top:8px}
+.lapis summary{background:#0b2545;color:#fff;border-radius:8px;padding:6px 10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:default;pointer-events:none}
+.lapis summary::after{content:none}
+.lapis details>label{padding-left:8px}
 </style>
 <link href="lapisan5.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
@@ -709,11 +715,11 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
     <div class="tools" id="tools">
       <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta"><button data-mp="kini" aria-pressed="true">Sekarang</button><button data-mp="riw" aria-pressed="false" title="Risiko riwayat 2002–2026">Riwayat</button><button data-mp="cuaca" aria-pressed="false" title="FWI dan angin bergerak">Cuaca</button></div>
       <div class="seg penuh" role="group" aria-label="Rentang waktu" id="rentang"></div>
-      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Lapisan peta" title="Lapisan peta">
+      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
       <div class="box lapis" id="lapis">
-        <div class="lbl" style="margin-bottom:2px">Lapisan</div>
+        <div class="lbl" style="margin-bottom:2px">Overlay</div>
         <details open><summary>Api & respons</summary>
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
@@ -729,12 +735,12 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="hujan"> Hujan 24 jam</label>
           <label><input type="checkbox" data-l="metar"> Jarak pandang bandara (METAR)</label>
         </details>
-        <details><summary>Lahan</summary>
+        <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
           <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
           <label><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label>
         </details>
-        <details><summary>Peta dasar</summary>
+        <details open><summary>Peta dasar</summary>
           <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         </details>
       </div>
@@ -4532,5 +4538,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="operasi.js"></script>
 <script src="ringkasan.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
+<script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
+document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
 </body>
 </html>
