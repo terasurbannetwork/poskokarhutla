@@ -1,6 +1,6 @@
 /* dampak.css — tab "Dampak" (dampak.js). Hanya warna token halaman + palet redup. */
 .dk-r{display:block;font-size:11px;font-weight:600;color:var(--ink2);font-family:inherit}
-.dk-nav{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;margin:0 0 16px;padding:2px}
+.dk-nav{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0 0 16px;padding:2px}
 .dk-nav button{flex:none;display:inline-flex;align-items:center;gap:7px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:999px;padding:4px 13px 4px 4px;font-size:12px;font-weight:600;cursor:pointer;box-shadow:var(--shadow);transition:border-color .15s,background .15s,color .15s}
 .dk-nav button svg{flex:none;width:26px;height:26px;padding:5px;border-radius:50%;background:var(--surface);color:var(--brand2);transition:background .15s,color .15s}
 .dk-nav button:hover{border-color:var(--brand2)}

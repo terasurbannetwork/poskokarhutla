@@ -32,8 +32,8 @@
     clearTimeout(gabung._t);   // satu penyegaran saja bila dua penggabungan beruntun (72 jam lalu 7 hari): updateImage Kini tidak saling membatalkan
     gabung._t = setTimeout(() => { try { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini?.segarkan?.(); } catch (e) { console.warn("titik_live", e); } }, 1500);
     const el = document.getElementById("upd");
-    if (el) { el.dataset.harian ??= el.textContent; el.textContent = `${el.dataset.harian} · Titik panas diperbarui ${jamWIB(live.dibuat).replace(/^\d+ \S+ /, "")} (tiap 3 jam)`;
-      el.title = `${tambah.length} titik baru dari FIRMS NRT sejak data harian`; }
+    if (el) { el.dataset.harian ??= el.textContent; el.textContent = el.dataset.harian; /* label cukup "Data …"; jam pembaruan titik ada di tooltip */
+      el.title = `Titik panas diperbarui ${jamWIB(live.dibuat)} (tiap 3 jam) · ${tambah.length} titik baru dari FIRMS NRT`; }
   }
   async function ambil() {
     try { const r = await fetch("/api/titik"); if (!r.ok) return; const d = await r.json();

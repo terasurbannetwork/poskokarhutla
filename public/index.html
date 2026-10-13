@@ -534,7 +534,7 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pr-isi .ex svg.pr-hr,.pr-isi svg.pr-hr{width:100%;height:auto;max-height:170px;display:block;margin-top:4px}
 .pr-isi table.tb2 td{color:var(--ink)}
 .pr-isi .kv span{color:var(--ink2)}
-.rk-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.rk-ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;width:100%;flex:1 1 100%}
 .rk-ctl .pc{min-width:220px}
 .rk-ctl .btn-gelap{margin-left:auto;display:inline-flex;align-items:center;white-space:nowrap;flex:none}
 .rk-ctl .seg{flex:none}
@@ -597,6 +597,13 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #tren .ex,#prioritas .ex{background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
 /* tabel kompleks: kartu dengan kepala bergaya Insight */
 #kompleks{margin-top:16px}
+#kompleks .kp-ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#kompleks .kp-ex > .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#kompleks .kp-ex .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#kompleks .kp-ex h3{font-size:21px;line-height:1.3}
+#kompleks .kp-ex .tbar{margin-top:12px!important}
+#kompleks .kp-ex > .ex-bd{padding:0 0 14px}
+#kompleks .kp-ex #pg{padding:0 18px}
 #kompleks .tw,#kompleks table{border-radius:0!important;box-shadow:none!important}
 #kompleks thead th:first-child,#kompleks thead th:last-child{border-radius:0!important}
 #kompleks .tbar{margin:0 0 10px;padding:0}
@@ -627,11 +634,14 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .ks-tp{display:grid;gap:8px}.ks-laci-l .ks-tp-r{padding:8px 10px;border:1px solid var(--line);border-radius:10px;background:var(--card)}.ks-tp-r b{display:block;font-size:12px;line-height:1.25}.ks-tp-l{display:flex;flex-wrap:wrap;gap:4px;margin-top:4px}
 .ks-lb{font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w, #8a94a6) 14%, transparent);color:var(--w, var(--ink2));white-space:nowrap}
 /* legenda melebar sampai dekat tombol zoom; catatan berikon jadi kolom sendiri (bukan baris baru) */
-@media (min-width:901px){.dok{right:64px!important}.dok > #legenda{align-self:stretch;width:auto}}
+/* kotak legenda selebar isinya (tanpa ruang kosong), tetap di tengah, maksimal selebar ruang peta */
+@media (min-width:901px){.dok{right:64px!important}.dok > #legenda{align-self:center;width:fit-content!important;max-width:100%}
+#legenda .lg-isi{width:fit-content;max-width:100%}}
 /* isi legenda dibagi rata selebar kotak: tiap kelompok satu kolom, catatan berikon kolom terakhir (tanpa ruang kosong di tengah) */
 #legenda .lg-isi{display:flex!important;flex-wrap:wrap;gap:12px 28px;align-items:flex-start}
-#legenda .lg-isi > *{flex:1 1 170px;min-width:0}
-#legenda .lg-isi > .leg-cats{flex:2 1 280px;align-self:center}
+#legenda .lg-isi > *{flex:0 1 auto;min-width:150px}
+#legenda .lg-isi > .leg-cats{flex:0 1 auto;align-self:center}
+#legenda .leg-cats .leg-cat{flex:0 1 auto}
 .leg-cats{display:flex;flex-direction:row;flex-wrap:wrap;gap:6px}
 .leg-cats .leg-cat{flex:1 1 220px}
 .leg-cats .leg-cat{margin-top:0}
@@ -2358,8 +2368,10 @@ const Tabel = {
     const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel aktif 24 j", 0, 1], ["hari", "Hari menyala", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas maks (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
-      el.innerHTML = `<div class="tbar"><b id="tjudul" style="font-size:15px"></b><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span>
-        <button class="btn sec" id="tcsv">Unduh CSV</button></div><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div class="pager" id="pg"></div>`;
+      /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
+      el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar kompleks</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
+        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span><button class="btn-gelap" id="tcsv">Unduh CSV</button></div></header>
+        <div class="ex-bd"><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
       $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
       $("#th").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
         this.turun = this.urut === k ? !this.turun : true; this.urut = k; this.hal = 0;
@@ -2370,7 +2382,7 @@ const Tabel = {
       $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
-    $("#tjudul").innerHTML = this.prov ? `Kompleks di ${esc(namaProv(this.prov))} <button class="btn sec" data-semua style="height:28px;padding:0 10px;font-size:12px;margin-left:6px">Semua provinsi ✕</button>` : "Semua kompleks aktif";
+    $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " kompleks")} aktif di ${esc(namaProv(this.prov))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " kompleks")} kebakaran aktif di seluruh Indonesia`;
     $("#tjudul").onclick = e => { if (e.target.closest("[data-semua]")) { Tabel.prov = null; Tabel.hal = 0; document.querySelectorAll("#prioritas details[data-pr][open]").forEach(x => x.open = false); nanti(() => Tabel.render()); } };
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
     $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>

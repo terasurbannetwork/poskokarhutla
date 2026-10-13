@@ -129,6 +129,11 @@ const PROV_N = n => typeof n === "string" && /^\d+$/.test(n) ? namaProv(n) : n;
 
 /* ---------- Kalau ada titik di X ---------- */
 Insight.exSebModel = function () {
+  return `<article class="ex"><header class="ex-hd"><span class="ex-ey">Model sebaran</span><div class="ex-jd"><h3>Simulasi sebaran dari titik api pilihan Anda</h3></div></header>
+    <div class="ex-bd" style="display:grid;justify-items:center;gap:10px;padding:28px 22px"><span style="padding:6px 16px;border-radius:999px;background:oklch(25.5% .075 256);color:#fff;font-weight:800;font-size:12.5px">Coming soon</span>
+    <p style="margin:0;color:var(--ink2);font-size:13px;text-align:center;max-width:52ch">Peta peluang 72 jam, luas, dan desa/gambut yang terkena untuk titik api mana pun sedang disiapkan.</p></div></article>`;
+};
+Insight.exSebModelLama = function () {
   const M = SEB.d?.model; if (!SEB.d) return tunggu("Kalau ada titik di X"); if (!M) return "";
   const K = M.kinerja_uji || {};
   const isi = `<div style="display:flex;gap:10px;flex-wrap:wrap"><button class="btn" data-sebke="sim">Buka Simulasi</button>${typeof Cerita !== "undefined" ? `<button class="btn" data-sebke="cerita">Coba di peta (cerita bab 5)</button>` : ""}</div>`;
@@ -138,7 +143,8 @@ Insight.exSebModel = function () {
     `${M.pohon.length} pohon keputusan, ${M.fitur.length} variabel (cuaca per jam, FWI, lahan, konsesi, kanal, jalan, desa). Peluang per jam = pembagian luas harian menurut ISI per jam (VIIRS hanya melihat ±2 kali sehari).`);
 };
 
-Insight.EX.splice(1, 0, "sebMusim", "sebDorong", "sebUji", "sebGalat", "sebModel");
+/* sebMusim disembunyikan (sudah ada di video Musim 2026); sebModel paling bawah sebagai "Coming soon" (pemilik, 13 Okt 2026) */
+Insight.EX.splice(1, 0, "sebDorong", "sebUji", "sebGalat"); Insight.EX.push("sebModel");
 /* klik: provinsi musim -> dialog kompleks pertama; baris kasus -> dialog; tombol ke Simulasi/cerita */
 document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);
