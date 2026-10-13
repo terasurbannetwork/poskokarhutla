@@ -1,0 +1,75 @@
+name: Titik panas tiap 3 jam
+
+# Lintasan VIIRS/MODIS masuk FIRMS NRT sepanjang hari; tiap 3 jam titik panas, kompleks, posko, dan kebutuhan operasi
+# dihitung ulang lalu diterbitkan. FWI tidak dihitung ulang (FWI=0: cuaca siang cukup sekali sehari, hemat kuota Open-Meteo).
+on:
+  schedule:
+    - cron: "40 */3 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+jobs:
+  titik:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - name: Pakai lapisan statis dari repo, bukan dari cache
+        run: |
+          f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
+            public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
+            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
+            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/lahan public/data/osm)
+          [ -z "$f" ] || git checkout HEAD -- $f
+
+      - name: Titik panas, kompleks (FWI dipakai ulang)
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          FWI: "0"
+        run: python3 scripts/data/harian.py
+
+      - name: Turunan kompleks (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/data/konsesi_kompleks.py
+          python3 scripts/warga/titik24.py
+          python3 scripts/data/posko.py
+          python3 scripts/data/operasi.py
+
+      - name: Simpan data untuk jalan berikutnya
+        uses: actions/cache/save@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/banjir/data
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
+      - name: Salin peringatan BMKG terbaru
+        run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
+
+      - name: Terbitkan ke Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: npx --yes wrangler@3 deploy
