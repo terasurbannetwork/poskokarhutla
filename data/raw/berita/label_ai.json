@@ -1,0 +1,9548 @@
+{
+"pelabel": "asisten AI (Claude), 13 Okt 2026, belum diperiksa manusia; pedoman scripts/data/PEDOMAN-LABEL.md",
+"sampel": "680 judul Indonesia lolos relevansi dari arsip 120 hari, bertingkat bulan x provinsi x topik (seed 20261013), tidak tumpang tindih dengan label_uji.json",
+"label": [
+{
+"id": "f94005586e",
+"judul": "Polda Sumsel Bongkar Kasus Karhutla, 43 Orang Ditahan hingga 16 Korporasi Disidik",
+"sumber": "VIVA.co.id",
+"tgl": "2026-09-26",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif",
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "3ed1f2a4b6",
+"judul": "Karhutla Masih Terjadi di Maluku hingga Jawa Tengah, BNPB Ingatkan Warga Waspada",
+"sumber": "Aktual.com",
+"tgl": "2026-10-02",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c792fdbeda",
+"judul": "Kasus Karhutla Capai 305, Polres Belitung Ingatkan Sanksi Pi",
+"sumber": "Tribrata News",
+"tgl": "2026-09-09",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "20dec97a2e",
+"judul": "Pemadaman Karhutla Terus Berlangsung di Kubu Raya Saat Status Siaga",
+"sumber": "detikNews",
+"tgl": "2026-07-30",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "11af839703",
+"judul": "Prof. Rokhmin Dahuri: Food Estate Papua dan Karhutla",
+"sumber": "gesuri.id",
+"tgl": "2026-09-13",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d69b7069d5",
+"judul": "Karhutla Landa Bandung dan Ciamis, Pemukiman Warga Sempat Terancam",
+"sumber": "Media Indonesia",
+"tgl": "2026-10-06",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b737a45efe",
+"judul": "Anomali Cuaca Landa RI: Wilayah Timur Dikepung Karhutla, Sumatra Utara Terendam Banjir",
+"sumber": "Kabar24",
+"tgl": "2026-10-13",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "db9688971c",
+"judul": "Pemprov Papua Barat Lambat Tangani Karhutla, Rakyat Telan Asap Berhari-hari",
+"sumber": "Tribun-papua.com",
+"tgl": "2026-10-08",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "73753a96b8",
+"judul": "Karhutla Belum Padam, Gubernur Kalsel Siapkan Bonus bagi Warga yang Bantu Ungkap Pelaku",
+"sumber": "Kompas.com",
+"tgl": "2026-09-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fad5e029c2",
+"judul": "1.000 Sumur Bor Disiapkan untuk Perang Lawan Karhutla di Kalteng",
+"sumber": "detikcom",
+"tgl": "2026-08-23",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "50e27d9cc8",
+"judul": "Dua Lokasi Karhutla di Rengat Riau Makin Terkendali, Pendinginan Dilanjutkan Besok",
+"sumber": "Media Center Riau",
+"tgl": "2026-06-30",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c641362d9b",
+"judul": "Bandara Sepinggan Balikpapan catat dua penerbangan tertunda akibat kabut asap",
+"sumber": "ANTARA News",
+"tgl": "2026-08-28",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d6c82159db",
+"judul": "Nafsiah Minta Tindak Tegas Perusahaan Penyebab Karhutla",
+"sumber": "Berita Seputar Borneo",
+"tgl": "2026-07-16",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PERUSAHAAN": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "93d1b26f13",
+"judul": "Karhutla di Papsel Ganggu Penerbangan di Mimika",
+"sumber": "CenderawasihPos",
+"tgl": "2026-09-30",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "b91c0bfdef",
+"judul": "Kekeringan masih melanda Sulawesi Utara, karhutla, krisis air bersih dan gagal tanam masih terus terjadi",
+"sumber": "Zonautara.com",
+"tgl": "2026-10-12",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0bb685a20f",
+"judul": "Lima Titik Panas di Gunung Cendono, Pemadaman Terkendala Medan Berat",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-16",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "319c6fd131",
+"judul": "Kebakaran Lahan di Desa Tewil Dipadamkan Brimob Malut",
+"sumber": "Headline.co.id",
+"tgl": "2026-10-07",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7747a1f984",
+"judul": "Karhutla Samarinda Capai 608 Hektare, Helikopter Water Bombing Tak Lagi Tersedia - nomorsatukaltim.disway.id",
+"sumber": "Nomor Satu Kaltim",
+"tgl": "2026-10-08",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "cc3b46e399",
+"judul": "WOOK Group Salurkan Bantuan Ratusan Juta Rupiah untuk Korban Karhutla Kalimantan dan Gempa NTT",
+"sumber": "JPNN.com",
+"tgl": "2026-09-25",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4e8e2ed07d",
+"judul": "PM2.5 Masih Tinggi, Warga Pekanbaru Diimbau Pakai Masker Saat Kabut Asap",
+"sumber": "Sijori Today",
+"tgl": "2026-09-09",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6360768571",
+"judul": "Kabut Asap Memburuk, Pemkab Batanghari Perpanjang Status Siaga Darurat Karhutla Hingga 13 Oktober 2026 - Alonesia",
+"sumber": "Alonesia",
+"tgl": "2026-10-09",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3e24b99681",
+"judul": "BMKG: Cuaca Lampung 30 Juni-1 Juli 2026 Berpotensi Hujan, Kabut Asap, dan Udara Kabur",
+"sumber": "Kompas.com",
+"tgl": "2026-06-30",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d77804d540",
+"judul": "Karhutla di Kotim mulai mengancam keselamatan penerbangan",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-07-03",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0f5d7dbdc5",
+"judul": "Udara Makassar Memburuk Akibat Asap Karhutla Kalimantan-Papua",
+"sumber": "detikcom",
+"tgl": "2026-10-03",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "3aa6dcbf1d",
+"judul": "Bhabinkamtibmas Polsubsektor Mesuji Pusat Imbau Warga Cegah Karhutla di Desa Wiralaga I",
+"sumber": "Tribratanews Polda Lampung",
+"tgl": "2026-10-12",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "af65e1b94a",
+"judul": "Kemenhut dan BMKG Perkuat Hujan Buatan Atasi Karhutla Kalimantan dan Jawa Timur",
+"sumber": "Media Indonesia",
+"tgl": "2026-09-05",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c9f498dc86",
+"judul": "Asap Karhutla Bikin Kualitas Udara Palu Memburuk, PM2.5 Tembus 206 µg/m³",
+"sumber": "Tribunpalu.com",
+"tgl": "2026-10-06",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0cb069119e",
+"judul": "Karhutla Berulang, MIH UGM Kampus Jakarta Bedah Krisis Tata Kelola dan Ancaman Keamanan Manusia",
+"sumber": "Hukumonline",
+"tgl": "2026-09-28",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0b7aecd7c9",
+"judul": "Pemkab Natuna Gelar Apel Kesiapsiagaan Hadapi Ancaman Karhutla dan Kekeringan",
+"sumber": "pemkab natuna",
+"tgl": "2026-08-28",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d44a54ad09",
+"judul": "Tekan Karhutla, Lampung Padukan OMC dan Water Bombing",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-27",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "63bd46709f",
+"judul": "Main di Bogor, Luna Maya Ajak 30 Selebritis Galang Donasi untuk Korban Karhutla",
+"sumber": "Radar Bogor",
+"tgl": "2026-10-08",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5a387dd662",
+"judul": "Presiden Prabowo & Gubernur Kalbar Digugat Karena Karhutla Tak Kunjung Padam",
+"sumber": "kontan.co.id",
+"tgl": "2026-10-12",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif",
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "9c4f8e38ed",
+"judul": "Ganasnya Karhutla Sumsel: Trenggiling Mati Terpanggang, Gajah dan Harimau Kian Terancam",
+"sumber": "Kompas.id",
+"tgl": "2026-09-14",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "41e13fbffd",
+"judul": "Puluhan Hektar Lahan Terbakar di Pegunungan Batu Hitam, Polresta Banggai dan Tim Gabungan Turun TKP",
+"sumber": "Website Resmi Polri",
+"tgl": "2026-07-19",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bdd8639378",
+"judul": "Riau Bhayangkara RUN 2026!!Lari Kencang Lawan Karhutla, Selamat Gajah Dan Harimau Sumatera Kapolda Riau Irjen Herry: Setiap Derap Bawahkan Misi Penjaga Alam!!",
+"sumber": "MitraRiau.com",
+"tgl": "2026-06-21",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b460b22659",
+"judul": "Kabut Asap Karhutla, Sekolah di Tiga Kabupaten Papua Selatan Terapkan Belajar Daring",
+"sumber": "kabarpublik",
+"tgl": "2026-10-12",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "81187ea40d",
+"judul": "Sempat Merembet ke Pemukiman Warga, Karhutla di Merauke Berhasil Dipadamkan",
+"sumber": "Kompas.com",
+"tgl": "2026-09-13",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "74b2e4564c",
+"judul": "Karhutla Kalbar Makin Menantang, Dukungan Jepang Dinilai Tambah Kekuatan Pemadaman",
+"sumber": "Pontianak Post",
+"tgl": "2026-09-14",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7261bc4f74",
+"judul": "Apel Siaga dan Teknologi AI Perkuat Pencegahan Karhutla di Ketapang",
+"sumber": "Sawit Indonesia",
+"tgl": "2026-06-17",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b7d16af406",
+"judul": "Perkuat Mitigasi Karhutla, Polda Sumsel Masifkan Patroli & Sosialisasi",
+"sumber": "detikNews",
+"tgl": "2026-09-21",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ad8c36445e",
+"judul": "Kebakaran Hutan di Sulsel dan Jateng Akibat Musim Kemarau",
+"sumber": "Tirto.id",
+"tgl": "2026-08-02",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "439bb903c9",
+"judul": "Wilayah Sumbar Diselimuti Kabut Asap Kiriman",
+"sumber": "Bisnis.com",
+"tgl": "2026-08-13",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d7b1785e40",
+"judul": "Bak Lautan Api, 20 Hektare Lahan di Minahasa Utara Terbakar",
+"sumber": "detikcom",
+"tgl": "2026-09-18",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "26c9261e22",
+"judul": "Presiden Prabowo Dijadwalkan Tinjau Karhutla Sumsel Siang Ini",
+"sumber": "rmolsumsel.id",
+"tgl": "2026-08-24",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e5648960a1",
+"judul": "BMKG Prediksi Kabut Asap Sedang Melanda 17 Wilayah di Sultra pada 13-14 Oktober 2026",
+"sumber": "Media Indonesia",
+"tgl": "2026-10-12",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "64c242a220",
+"judul": "Berita BPBA Catat 50 Kejadian Bencana di Aceh Selama Agustus 2026, Karhutla Mendominasi",
+"sumber": "BADAN PENANGGULANGAN BENCANA ACEH",
+"tgl": "2026-09-01",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "41ced8bcef",
+"judul": "Kalsel kemarin dari pelaku usaha hingga cegah karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-07-14",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c22a0756b5",
+"judul": "Prakiraan Cuaca 6 Provinsi Prioritas Karhutla 10 Oktober 2026, Simak untuk Sumsel sampai Riau",
+"sumber": "Kompas.tv",
+"tgl": "2026-10-10",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "a8fa29ccd6",
+"judul": "Karhutla Lagi di Kobar, Asap Tebal Sempat Kepung Jl Ahmad Yani Km 10",
+"sumber": "detikcom",
+"tgl": "2026-06-20",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e9698ba420",
+"judul": "Penegakan Hukum Kasus Karhutla dalam Konsesi Perusahaan Lemah di Riau?",
+"sumber": "Mongabay.co.id",
+"tgl": "2026-07-19",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ad74293dd4",
+"judul": "2 Helikopter Jepang Mulai Water Bombing Kebakaran Hutan Kalbar",
+"sumber": "Liputan6.com",
+"tgl": "2026-09-17",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d0dd2fc6d9",
+"judul": "Karhutla Ancam Fasilitas Umum di Sulsel, Gereja di Tana Toraja Nyaris Terbakar",
+"sumber": "SulawesiPos",
+"tgl": "2026-10-12",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "125e726135",
+"judul": "Karhutla Kalsel Berdampak pada Pendidikan dan Ekonomi",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-26",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3219212d49",
+"judul": "Perhutani Sinergi dengan Kodim 0710/Pekalongan Tingkatkan Kesiapsiagaan Cegah Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-09-07",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a170a2f919",
+"judul": "Kapolda Kalteng minta permukiman siapkan langkah cepat hadapi karhutla",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-08-28",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "49a9f3a512",
+"judul": "Gubernur Jambi Tegaskan Kesiapan Hadapi Potensi Karhutla",
+"sumber": "IMCNEWS",
+"tgl": "2026-07-15",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "b8622fbb42",
+"judul": "Puncak Kemarau Bergeser ke September, Kabut Asap Mulai Selimuti Sampit tapi Penerbangan Masih Normal",
+"sumber": "Kompas.com",
+"tgl": "2026-07-22",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "1fbfa8a000",
+"judul": "5.500 Mendadak Sakit, Kepungan Asap Karhutla Nyaris Melipatgandakan Pasien Puskesmas di Pekanbaru - Sinergi Jatim",
+"sumber": "Sinergi Jatim",
+"tgl": "2026-09-21",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a97890bccd",
+"judul": "BMKG ke Warga Kalteng: Cuaca Terlihat Aman, Karhutla-Hujan Lokal Mengintai",
+"sumber": "detikcom",
+"tgl": "2026-08-15",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "44d882e09f",
+"judul": "Karhutla Landa Empat Lokasi di Riau, Modifikasi Cuaca Dilakukan",
+"sumber": "Media Indonesia",
+"tgl": "2026-08-03",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d10d8ee9c5",
+"judul": "Program Sarling BPB-PK Kalteng Perkuat Pencegahan Karhutla",
+"sumber": "Hai Kalteng",
+"tgl": "2026-10-11",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e32870dbb5",
+"judul": "Titik Panas Kaltim Mendekati Jambi, Rudy Mas’ud Minta Warga Hentikan Pembakaran Lahan",
+"sumber": "Korankaltim.com",
+"tgl": "2026-09-21",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5a03ec41bc",
+"judul": "Bhabinkamtibmas Polsek Cibeber Sambangi Warga, Sampaikan Pesan Kamtibmas dan Cegah Karhutla",
+"sumber": "https://www.bhayangkarapos.com/",
+"tgl": "2026-10-12",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "65d89a0a95",
+"judul": "Polda Kaltim Tambah 2 Tersangka Baru Kasus Karhutla di Berau dan Kutim",
+"sumber": "Kompas.com",
+"tgl": "2026-08-26",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "984931fb96",
+"judul": "Waspada! Asap Mengepung Sumut, Kualitas Udara Mengkhawatirkan",
+"sumber": "detikcom",
+"tgl": "2026-09-16",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "bec1c02311",
+"judul": "Wali Kota Pekanbaru Ajak Ulama dan Santri Doakan Indonesia Terbebas dari Karhutla",
+"sumber": "Pekanbaru.go.id",
+"tgl": "2026-09-05",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bd8a2c17ae",
+"judul": "Karhutla di Lahan PT Mitra Ogan Mendekati Pemukiman Warga",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-03",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f569ac4f31",
+"judul": "Karhutla di 4 Wilayah Sumbar Ancam Warga, Siswa Terpaksa Belajar di Rumah",
+"sumber": "infotren.id",
+"tgl": "2026-10-08",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "abef29651e",
+"judul": "BPBD DIY: Waspada Kebakaran Lahan dan Gunung Merapi Siaga",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-06",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "72a3c57246",
+"judul": "Api Ancam Permukiman di Bone Pantai, Satgas Karhutla Gorontalo Tembus Medan Sulit",
+"sumber": "Go-Pena",
+"tgl": "2026-10-08",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9c58d778ef",
+"judul": "Satgas Karhutla Natuna siapkan ambulans di lokasi kebakaran",
+"sumber": "ANTARA News Kepri",
+"tgl": "2026-09-05",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2cec184318",
+"judul": "BPBD Catat Ada 157 Kejadian Karhutla di Sumsel, PALI Masuk Zona Merah",
+"sumber": "detikcom",
+"tgl": "2026-06-16",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "333f698b25",
+"judul": "Prabowo Upayakan Penanganan Karhutla Segera Selesai - Hallo Sulsel",
+"sumber": "Hallo Sulsel",
+"tgl": "2026-08-27",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "42991f695b",
+"judul": "Pemkab Kaimana Minta Bantuan Provinsi Papua Barat untuk Pemadaman Karhutla",
+"sumber": "Papua Kini",
+"tgl": "2026-10-10",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ed3d85335a",
+"judul": "4 Karhutla Terjadi di Sumedang Selama Juni 2026",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-06-29",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "19330a3b4a",
+"judul": "Medan Sulit Tak Jadi Halangan, BPBD Gorontalo Perkuat Penanganan Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-08",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"BPBD": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "8b07863dc2",
+"judul": "DPRD Jabar Minta Pemda Bentuk Satgas Terpadu Karhutla di Tiap Daerah",
+"sumber": "ANTARA News Jawa Barat",
+"tgl": "2026-10-02",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "d6509609b1",
+"judul": "Karhutla di Wonogiri Tembus 150 Kejadian Selama Kemarau, BPBD Ungkap Kondisinya",
+"sumber": "Tribunsolo.com",
+"tgl": "2026-10-06",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e47e83ff90",
+"judul": "Warga Kobar Diminta Waspada, Asap Karhutla Buat Udara Masuk Level Berbahaya",
+"sumber": "detikcom",
+"tgl": "2026-10-05",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c40556abba",
+"judul": "BMKG Juanda Petakan Lima Daerah Rawan Karhutla di Jatim",
+"sumber": "ChatNews.id",
+"tgl": "2026-10-12",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "509cdee62d",
+"judul": "Pasca Kemarau Kebakaran Lahan dan Hutan di Garut Capai 1447 Persen",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-02",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2a12ae7f56",
+"judul": "Pemprov Kalteng Resmi Aktifkan Posko PDB, Siap Antisipasi Karhutla 2026",
+"sumber": "mmckalteng",
+"tgl": "2026-06-22",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f643ec020c",
+"judul": "Satgas Karhutla Berjibaku Amankan Ekosistem Gajah di Sumatera Selatan",
+"sumber": "Kompas.id",
+"tgl": "2026-09-11",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9938910e8c",
+"judul": "Luas Karhutla Tembus 202 Ribu Hektare, Pemerintah Belum Tetapkan Bencana Nasional",
+"sumber": "Serayu News",
+"tgl": "2026-10-13",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "85eb541e9f",
+"judul": "Video: Karhutla TN Babul Sulsel Masuk Hari Keempat, Medan Terjal Jadi Tantangan",
+"sumber": "20detik",
+"tgl": "2026-10-03",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ac053b3191",
+"judul": "BMKG: Cuaca Kaltim Selasa-Rabu 23-24 Juni 2026 Berpotensi Hujan dan Kabut Asap",
+"sumber": "Kompas.com",
+"tgl": "2026-06-23",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7238cf2567",
+"judul": "Nasib Nahas Belasan Bekantan di Kalsel Mati Terpanggang Karhutla Kalimantan, Satwa Endemik Terancam Punah",
+"sumber": "AFU.id",
+"tgl": "2026-09-16",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6cb4276f45",
+"judul": "Cegah Polusi Asap Karhutla Riau, Dokter Paru Sarankan Pakai Masker.",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-26",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e0e5f53304",
+"judul": "Kapolres Mesuji Turun Langsung Pimpin Penyisiran dan Pemadaman Kebakaran Lahan Perkebunan Tebu PT. Silva Inhutani",
+"sumber": "Tribratanews Polda Lampung",
+"tgl": "2026-08-27",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "a556acf0af",
+"judul": "Pencari Kayu Meninggal di Lahan Bekas Karhutla Banjarbaru, Korban Seperti Menahan Dada",
+"sumber": "Kompas.com",
+"tgl": "2026-10-02",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a694695a5b",
+"judul": "Riau Nihil Karhutla Aktif, Patroli Tetap Diperkuat",
+"sumber": "Medcom.id",
+"tgl": "2026-09-28",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2d188167a6",
+"judul": "Papua Barat Daya minta helikopter water bombing pada BNPB atasi karhutla",
+"sumber": "ANTARA News Papua Tengah",
+"tgl": "2026-10-09",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bc40f14b63",
+"judul": "Dampak El Nino Menguat, BMKG Sebut PPU dan Balikpapan Paling Rawan Karhutla",
+"sumber": "EKSPOSKALTIM",
+"tgl": "2026-07-11",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c307f65a7d",
+"judul": "Polda Kalteng Tetapkan 8 Tersangka Kasus Karhutla di Pulang Pisau, Lahan Disegel",
+"sumber": "Kompas.com",
+"tgl": "2026-07-23",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "e555400822",
+"judul": "Karhutla Dekati Pusat Rehabilitasi Orangutan di Ketapang",
+"sumber": "detikcom",
+"tgl": "2026-07-23",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "55d6849047",
+"judul": "Polda Kaltara Tangani Titik Api Baru di Lahan 11,5 Hektare",
+"sumber": "Tribrata News",
+"tgl": "2026-08-13",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2c9fad4f98",
+"judul": "Gubernur Jambi apresiasi prajurit TNI bantu penanganan karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-10-05",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"TNI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "b57b684db9",
+"judul": "Tinjau lapangan, Gubernur Kalteng pastikan penanganan karhutla cepat dan responsif",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-07-24",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PEMDA": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "971131bd54",
+"judul": "Pimpin Apel Kesiapsiagaan Karhutla, Bupati Bangka Tengah Ajak Antisipasi Dampak Musim Kemarau",
+"sumber": "Kabupaten Bangka Tengah",
+"tgl": "2026-08-13",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "969a0e2b2f",
+"judul": "Cuaca Malang Raya 14 Juli Dominan Cerah hingga Berawan, Pesisir dan Kota Batu Kabut/Asap Pagi - malang.disway.id",
+"sumber": "Disway Malang",
+"tgl": "2026-07-14",
+"prov": [
+"35"
+],
+"relevan": false
+},
+{
+"id": "4e992b74da",
+"judul": "Presiden Prabowo Bertolak ke Riau, Pastikan Penanganan Karhutla Berjalan hingga Tuntas",
+"sumber": "Gerindra",
+"tgl": "2026-08-24",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f50fa903d4",
+"judul": "BNPB Catat Karhutla dan Banjir, 222 KK Mengungsi di Aceh Tamiang – Kalimantan Kita",
+"sumber": "Kaki News",
+"tgl": "2026-10-12",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9fd2dd7ab6",
+"judul": "Kalbar siaga darurat karhutla hingga November",
+"sumber": "ANTARA Foto",
+"tgl": "2026-07-29",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "378bc2befd",
+"judul": "BPBD: Lampung Timur, Tulang Bawang, dan Mesuji Lokasi Paling Rawan Karhutla",
+"sumber": "Kupas Tuntas",
+"tgl": "2026-07-06",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "08e2cf824e",
+"judul": "Lama Kering, Hujan Deras Guyur Manokwari, Warga Lega Ancaman Karhutla Mereda",
+"sumber": "Ketik",
+"tgl": "2026-10-07",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "91ae568931",
+"judul": "Karhutla di Kalsel Sulit Diatasi, Sekat Kanal dan Sumur Bor akan Dibangun di Lahan Gambut",
+"sumber": "Mediaindonesia.com",
+"tgl": "2026-09-20",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "461120d078",
+"judul": "BPBD Kaltim Waspada Karhutla, Puncak Kemarau Diprediksi Akhir Juli-Agustus",
+"sumber": "IniBalikpapan.Com",
+"tgl": "2026-07-24",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "44916ac461",
+"judul": "40 Titik Panas Terdeteksi di Aceh, Terbanyak di Aceh Besar",
+"sumber": "Waspada Aceh",
+"tgl": "2026-08-12",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "46e36fd24c",
+"judul": "Polisi padamkan karhutla luas dua hektare lahan milik PT Samora OKI",
+"sumber": "ANTARA News Sumsel",
+"tgl": "2026-08-24",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c844a85500",
+"judul": "Manfaatkan Awan Konvektif, OMC di Kalteng Sasar Daerah Rawan Karhutla",
+"sumber": "Media Center Kota Palangka Raya",
+"tgl": "2026-08-01",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f3c5581e25",
+"judul": "Bupati Siak Tetap Kendalikan Karhutla dari Jakarta, Seluruh Kecamatan Dilaporkan Terpapar Asap",
+"sumber": "Pemkab Siak",
+"tgl": "2026-09-05",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "a48ae63a66",
+"judul": "Guru di Banjarmasin Meninggal Terdampak Kabut Asap, Walhi Kalsel: Bukan Sekadar Persoalan Lingkungan",
+"sumber": "Tribunnews.com",
+"tgl": "2026-10-07",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "54ab4168cb",
+"judul": "Hadapi Kemarau, BPBD Gorontalo Ingatkan Warga Hindari Pembakaran Lahan",
+"sumber": "Pemerintah Provinsi Gorontalo",
+"tgl": "2026-07-17",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d623b75754",
+"judul": "Musim Mas Perkuat Respons Penanganan dan Pencegahan Karhutla di Kalimantan Tengah",
+"sumber": "republika.co.id",
+"tgl": "2026-10-05",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "dcbd666e13",
+"judul": "Medan Terjal 45 Derajat, Polsek Ende dan Damkar Berjibaku Padamkan Karhutla di KM 17",
+"sumber": "Tribunflores.com",
+"tgl": "2026-10-08",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ffb30f1c2c",
+"judul": "Asap Karhutla Kalimantan Menyebar ke Bangka Belitung, Sudah Tiga Hari Udara Berkabut",
+"sumber": "Posbelitung.co",
+"tgl": "2026-09-28",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8100f28939",
+"judul": "GAPKI Kalsel perkuat langkah cegah karhutla di luar konsesi perkebunan",
+"sumber": "ANTARA News",
+"tgl": "2026-08-25",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "8c3cb648cc",
+"judul": "Pemprov Sulsel Kerahkan Satgas Gabungan Tangani Karhutla",
+"sumber": "Rakyat Sulsel",
+"tgl": "2026-10-06",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "ee98d72b07",
+"judul": "Polda Riau Terjunkan X-Fire dan Drone untuk Atasi Karhutla",
+"sumber": "Spatial Highlights",
+"tgl": "2026-09-16",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "12eb434516",
+"judul": "Perhutani Ngawi Himbau Pramuka Peduli Kelestarian Hutan Guna Mitigasi Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-08-13",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e5064fdde8",
+"judul": "Viral Video Surabaya Diselimuti Kabut, BPBD Bantah Imbas Asap Karhutla Kalimantan",
+"sumber": "Kompas.com",
+"tgl": "2026-10-01",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0f9497b4c8",
+"judul": "Atasi Karhutla di Merauke, TEP UGM dan Warga Bupul Indah Selamatkan Permukiman",
+"sumber": "Tribunnews.com",
+"tgl": "2026-09-20",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ffb8abebb5",
+"judul": "Kabut Asap Selimuti Bangka Belitung, BMKG Ungkap Asal Kiriman dari Kalimantan dan Sumsel ​ - Wow Babel",
+"sumber": "Wow Babel",
+"tgl": "2026-10-12",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "978debc340",
+"judul": "Menteri LH: Kolaborasi masyarakat-korporasi cegah karhutla di Riau",
+"sumber": "ANTARA News",
+"tgl": "2026-06-20",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "afed6356c4",
+"judul": "UPRC Dit Samapta Polda NTB Padamkan Karhutla di Bypass Mandalika",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-10",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fd1c9e9e3c",
+"judul": "Perhutani Probolinggo Perkuat Pencegahan Karhutla Bersama TNI dan Masyarakat",
+"sumber": "Perhutani",
+"tgl": "2026-10-05",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6205d9613c",
+"judul": "Wamendagri dorong sinergi daerah hadapi ancaman karhutla dan El Nino",
+"sumber": "ANTARA News",
+"tgl": "2026-06-18",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9bf6ce4a43",
+"judul": "Mahasiswa Berau Demo di Kantor Gubernur Kaltim, Desak Penetapan Darurat Bencana Karhutla",
+"sumber": "Kompas.com",
+"tgl": "2026-09-07",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "a8eb651427",
+"judul": "Karhutla di Jateng Capai 232 Kejadian, Warga Diimbau Waspada",
+"sumber": "Pemerintah Provinsi Jawa Tengah",
+"tgl": "2026-08-24",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "27168cbdbe",
+"judul": "Kemarau dan Karhutla Melonjak, 14.951 Warga Tasikmalaya Terserang ISPA",
+"sumber": "Media Indonesia",
+"tgl": "2026-09-24",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2444ee90b9",
+"judul": "Hujan Guyur Kota Sorong, Warga Berharap Karhutla Segera Berakhir",
+"sumber": "Ketik",
+"tgl": "2026-10-12",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3700c9d010",
+"judul": "Kaltim Tetapkan Status Siaga Hadapi Ancaman Karhutla Musim Kemarau",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-22",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "625871334e",
+"judul": "Polda Kalsel Naikkan Tujuh Kasus Karhutla ke Penyidikan, Satu Korporasi Dikaji",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-06",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "f44d8e5a31",
+"judul": "Hari Kedua Penanganan Karhutla di Tommo, TRC BPBD Sulbar dan Tim Gabungan Terus ki Lakukan Pengendalian",
+"sumber": "BugisPos.com",
+"tgl": "2026-10-11",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "96cef992ca",
+"judul": "Hasil Rapat Forkopimda Aceh, Tangani Karhutla Hidupkan Hukum Adat",
+"sumber": "biro administrasi pimpinan setda aceh",
+"tgl": "2026-07-23",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "be250ef65c",
+"judul": "Hadapi Puncak Kemarau 2026, Kalsel Matangkan Strategi Lawan Karhutla",
+"sumber": "Bakabar.com",
+"tgl": "2026-06-19",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4ea2aa3634",
+"judul": "Pantau Karhutla, Satbrimob Polda Jambi Bersama Instansi Terkait Patroli Kawasan Konservasi Gajah di Tebo",
+"sumber": "Website Resmi Polri",
+"tgl": "2026-09-06",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e07f0412e3",
+"judul": "Al Haris Perkuat Penanganan Karhutla di Jambi, ASN Ikut Dikerahkan ke Lapangan » Umum dan Segalanya",
+"sumber": "Sekato",
+"tgl": "2026-10-08",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b798193f87",
+"judul": "Kemenko Polkam Ungkap Alasan Hidupkan Lagi Desk Karhutla",
+"sumber": "Kompas.com",
+"tgl": "2026-06-19",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "3f6af733fa",
+"judul": "Kabut Asap Karhutla di Sumbar Makin Parah, 4 Daerah Terapkan Belajar dari Rumah",
+"sumber": "Kompas.com",
+"tgl": "2026-10-08",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7f4188d706",
+"judul": "Tim Hukum Nafas Kalbar Bersiap Ikuti Sidang Perdana Gugatan Class Action Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-23",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "28bad86645",
+"judul": "Pemkot Palembang Tetapkan Status Siaga Darurat Karhutla 2026",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-29",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "27859504e9",
+"judul": "Sebanyak 15 Titik Panas Terdeteksi, Warga Bengkulu Diminta Waspadai Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-13",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "eab8c0461c",
+"judul": "HUT ke-81 TNI di Riau Digelar di Tengah Kepungan Asap Karhutla",
+"sumber": "RiauAktual.com",
+"tgl": "2026-10-05",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "caf893f5e0",
+"judul": "Perkuat Sinergi Lintas Sektor, Pemkab Bengkalis dan Kodim 0303/Bengkalis Sepakat Perketat Pencegahan Karhutla",
+"sumber": "Prokopim Pemerintah Kabupaten Bengkalis",
+"tgl": "2026-08-28",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "15de445b05",
+"judul": "Shadiq Pasadigoe Minta Perkuat Penanganan Karhutla di Sumbar",
+"sumber": "Partai NasDem",
+"tgl": "2026-09-17",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d7b643463a",
+"judul": "BMKG NTT Imbau Warga Waspadai Angin Kering, Bisa Picu Karhutla",
+"sumber": "Pos-kupang.com",
+"tgl": "2026-10-07",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "71aba6a4b0",
+"judul": "Batang Hari Jadi Daerah Terparah Karhutla di Jambi, Bupati Diminta Berperan Aktif",
+"sumber": "detikcom",
+"tgl": "2026-09-23",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "c2e52d333a",
+"judul": "Kabut Asap Mulai Selimuti Batam, Dinkes Imbau Warga Waspadai ISPA",
+"sumber": "Kabar24",
+"tgl": "2026-09-01",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "de3ff4d477",
+"judul": "KARHUTLA DI KATINGAN-Terkendala Sumber Air, Tim Darkarhutla Tidak Menyerah",
+"sumber": "Tabengan Online",
+"tgl": "2026-08-05",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d31aa032aa",
+"judul": "Kaltim Peroleh Dukungan Peralatan untuk Percepat Penanganan Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-29",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9243246388",
+"judul": "Penanggulangan Karhutla di Bone Bolango Terus Dilakukan, Tim Gabungan Diterjunkan",
+"sumber": "60dtk.com -",
+"tgl": "2026-10-08",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "b42ca4d0cb",
+"judul": "218 Titik Panas Terpantau di Singkawang Sejak Februari 2026",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-07-28",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5a161e6b4e",
+"judul": "Dishut Maluku optimalkan peran MPA perkuat pencegahan Karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-10-11",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "cfb1e56d1c",
+"judul": "Kemhan dan TNI Perkuat Respons Bencana, dari Erupsi, Gempa NTT Hingga Karhutla",
+"sumber": "Kabarpolitik.com",
+"tgl": "2026-09-08",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bf81232830",
+"judul": "Pemkab Ponorogo Tetapkan Siaga Darurat Kekeringan dan Karhutla Selama 90 Hari",
+"sumber": "Kompas.com",
+"tgl": "2026-07-30",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "adc1e4fd22",
+"judul": "Foto : Titik Panas di Nabire Melonjak, dari 12 Jadi 268 Titik dalam 3 Hari",
+"sumber": "Kompas.com",
+"tgl": "2026-09-14",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c980151835",
+"judul": "2 Warga Pekalongan Tewas Tertimbun Longsor, Karhutla Landa Tiga Daerah",
+"sumber": "VOI.ID",
+"tgl": "2026-10-07",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "93443b49a1",
+"judul": "Kualitas Udara Bengkulu Pagi Hari Memburuk, Kabut Asap Kiriman \"Luar\" Jadi Pemicu",
+"sumber": "Radar Informasi News",
+"tgl": "2026-10-12",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "afa4c766b0",
+"judul": "Perhutani Perketat Pencegahan Karhutla, BPBD Temanggung Tingkatkan Kewaspadaan",
+"sumber": "Pemerintah Provinsi Jawa Tengah",
+"tgl": "2026-08-04",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ce08d4ded7",
+"judul": "Perhutani dan BPBD Purwakarta Perkuat Sinergi Hadapi Ancaman Kekeringan dan Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-08-03",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f62b983d3d",
+"judul": "Kubu Raya Dipercaya Jadi Daerah Operasional Pengendalian Kebakaran Lahan",
+"sumber": "Pemerintah Kabupaten Kubu Raya",
+"tgl": "2026-06-26",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "3472f808a3",
+"judul": "Kemarau Picu Kebakaran Dua Hektare Lahan Gambut di Sumedang",
+"sumber": "Harapan Rakyat",
+"tgl": "2026-06-27",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "37e44a0f2d",
+"judul": "Cegah Karhutla Sejak Dini, PT Farinda Bersaudara Raih Penghargaan dari Dinas Kehutanan Kaltim",
+"sumber": "Tribunkaltim.co",
+"tgl": "2026-07-22",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "1a94c52cba",
+"judul": "Populer kemarin, tenda sekolah korban gempa NTT - kabut asap karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-08-21",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a469633aca",
+"judul": "Pemkab Bangka Tengah tingkatkan kesiapsiagaan hadapi karhutla dan kekeringan",
+"sumber": "ANTARA News Bangka Belitung",
+"tgl": "2026-10-09",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "db44c9eaf3",
+"judul": "Satpol PP dan Damkar Kalsel Perkuat Patroli dan Pengamanan Ring 1 Bandara Hadapi Karhutla",
+"sumber": "Media Center Provinsi Kalimantan Selatan",
+"tgl": "2026-10-03",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "3a07a3472a",
+"judul": "4 Orangutan Terjebak Karhutla di Kalteng Berhasil Dievakuasi",
+"sumber": "Media Indonesia",
+"tgl": "2026-10-06",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "461c9e2587",
+"judul": "PT SAM perkuat kolaborasi kesiapsiagaan bencana karhutla di HSS",
+"sumber": "ANTARA News",
+"tgl": "2026-07-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f33692b3e3",
+"judul": "Pra-Konferwil Ke-21 NU Jakarta Bahas Aset Kripto, Karhutla hingga Tata Kelola Air",
+"sumber": "NU Online Jakarta",
+"tgl": "2026-10-12",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "021c4e424d",
+"judul": "Artikel • BBKSDA Jawa Timur Ambil Bagian dalam Gladi Kesiapsiagaan Karhutla Mojokerto",
+"sumber": "Direktorat Jenderal KSDAE",
+"tgl": "2026-07-14",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "b0b8a8bb5c",
+"judul": "Pemprov Papua Pegunungan imbau warga waspadai polusi udara akibat asap",
+"sumber": "ANTARA News Papua",
+"tgl": "2026-10-12",
+"prov": [
+"95"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a0e2db895a",
+"judul": "Tabrakan Beruntun 10 Mobil di Lampung Akibat Asap Tebal, 2 Orang Meninggal",
+"sumber": "riaupos.co",
+"tgl": "2026-10-09",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3c6b5bb23c",
+"judul": "Pemprov Papua Barat Dinilai Belum Maksimal Tangani Karhutla",
+"sumber": "Jubi Papua",
+"tgl": "2026-09-30",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "50edd6da66",
+"judul": "Karhutla Meluas di Jayawijaya, Ritual Memanggil Hujan Diduga Picu Kebakaran Lahan",
+"sumber": "Kompas.id",
+"tgl": "2026-08-23",
+"prov": [
+"95"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "732e78e24b",
+"judul": "Berita Video - Satpol PP Kalbar dan Manggala Agni Padamkan Karhutla di 3 Kabupaten",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-13",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f0e802ee49",
+"judul": "BMKG: Kabut Asap di Timika Kiriman dari Merauke",
+"sumber": "Papua60Detik",
+"tgl": "2026-08-24",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "68b38a47fb",
+"judul": "Gara-Gara Bakar Sampah, 20 Hektare Lahan di NTT Terbakar",
+"sumber": "Media Indonesia",
+"tgl": "2026-06-15",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d71ea32556",
+"judul": "2 Terdakwa Korupsi Pengadaan Pompa Karhutla Muratara Divonis 3 Tahun Penjara",
+"sumber": "detikcom",
+"tgl": "2026-07-04",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "19f3682c88",
+"judul": "Rudy Mas'ud Liburkan Sekolah di Kaltim Imbas Karhutla, MBG Tetap Jalan",
+"sumber": "CNN Indonesia",
+"tgl": "2026-09-15",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "90b3a7dbcf",
+"judul": "Pembentukan Kelompok Masyarakat Peduli Api Bali Utara IV di Desa Pengulon",
+"sumber": "Pengulon",
+"tgl": "2026-09-25",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9c4dcbd816",
+"judul": "Kabut Asap Selimuti Sumbar, Hotspot di Sumatera Capai 4.806 Titik - Laman 2 dari 2",
+"sumber": "Sumbarkita.id",
+"tgl": "2026-10-07",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "39d8664123",
+"judul": "Gubernur Sulbar Beberkan Ada 3.045 Titik Hotspot Karhutla di Sulbar",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-27",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7b65fc2a13",
+"judul": "Kabut Asap Karhutla Belum Berdampak di Kalimantan Timur",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-30",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "218062b390",
+"judul": "Hujan Diprediksi Sebulan Lagi, Menhut Minta Penanganan Karhutla Kalsel Tak Kendur",
+"sumber": "Klikkalsel.com",
+"tgl": "2026-10-12",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cb97f4717c",
+"judul": "13 Tersangka Karhutla Ditangkap Polda Kalteng, 4 Korporasi-51 Kasus Diselidiki",
+"sumber": "detikcom",
+"tgl": "2026-08-24",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif",
+"PERUSAHAAN": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "e8a25ae3d0",
+"judul": "Prakiraan Cuaca Sumbar Kamis 23 Juli 2026: Enam Kota Diselimuti Kabut Asap, Pariaman Berawan",
+"sumber": "Padang Ekspres",
+"tgl": "2026-07-23",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b8581335ae",
+"judul": "Ikhtiar Hadapi Kemarau & Ancaman Karhutla, Polda Sumsel Gelar Salat Istisqa",
+"sumber": "detikNews",
+"tgl": "2026-08-27",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c07ec2af5c",
+"judul": "Sepekan, Tujuh Kebakaran Lahan Terjadi di Tulang Bawang Lampung",
+"sumber": "Kompas.com",
+"tgl": "2026-07-30",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "47ae77ef0e",
+"judul": "Walhi Serahkan Data 262 Perusahaan Terkait Karhutla, Tindakan Presiden Dinanti",
+"sumber": "Kompas.id",
+"tgl": "2026-09-12",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif",
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "bfa9f071ba",
+"judul": "Hadapi Kemarau, Wilmar Tingkatkan Kesiapsiagaan Cegah Karhutla di Kalteng",
+"sumber": "indoposco",
+"tgl": "2026-07-10",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "a66981f0f1",
+"judul": "30 Hektare Lahan di Gunung Inerie Ngada NTT Terbakar",
+"sumber": "detikcom",
+"tgl": "2026-10-01",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "41f7b19c12",
+"judul": "Helikopter Water Bombing Dikerahkan Guna Perkuat Penanganan Karhutla di Teluk Bintuni",
+"sumber": "news.okezone.com",
+"tgl": "2026-08-29",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "33422abe26",
+"judul": "Majalengka Tetapkan Siaga Karhutla dan Kekeringan",
+"sumber": "Epaper Media Indonesia",
+"tgl": "2026-06-23",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b58e836bc8",
+"judul": "Penanganan Kebakaran Hutan dan Lahan di Majene",
+"sumber": "Koran Jakarta ®",
+"tgl": "2026-10-10",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3897589cb8",
+"judul": "28 Ribu Hektare Lahan di Kalbar Terbakar di 2026, Ketapang-Mempawah Terluas",
+"sumber": "detikcom",
+"tgl": "2026-08-14",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e28e6d27ba",
+"judul": "Relawan TN Tanjung Puting Kewalahan Padamkan Karhutla, Desak Pemerintah Kirim Water Bombing - Poros Jakarta",
+"sumber": "Poros Jakarta",
+"tgl": "2026-10-12",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "e231224a76",
+"judul": "Formapas Malut Minta Penanganan Karhutla di Taliabu Secara Terpadu dan Berbasis Mitigasi",
+"sumber": "cermat",
+"tgl": "2026-10-08",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9f24c83a50",
+"judul": "Pemkab Kubar perkuat kolaborasi guna cegah dan tangani karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-08-24",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "35668ff11a",
+"judul": "Kasus ISPA di Aceh Barat meningkat akibat terpapar asap kebakaran hutan dan lahan",
+"sumber": "ANTARA News",
+"tgl": "2026-09-01",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "db191b84d3",
+"judul": "Perusahaan HTI Jambi tingkatkan kapasitas personel pemadam karhutla",
+"sumber": "ANTARA News Jambi",
+"tgl": "2026-07-27",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "12b8989914",
+"judul": "Purwakarta Tetapkan Status Siaga Darurat Kekeringan dan Karhutla hingga September 2026",
+"sumber": "NU Online Jabar",
+"tgl": "2026-07-29",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "6fd4f9b9d1",
+"judul": "Penerbangan Jakarta-Pontianak, Palembang-Jambi Terganggu Karhutla",
+"sumber": "CNN Indonesia",
+"tgl": "2026-08-29",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f393d82480",
+"judul": "Pemprov Kalbar siapkan data hadapi sidang gugatan Karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-10-06",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c8f8a37261",
+"judul": "BMKG Catat 60 Titik Panas di Babel, Belitung Terbanyak",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-10",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e349205d4e",
+"judul": "Pemkab Kapuas Ikuti Rakor Penanggulangan Puncak Karhutla Tahun 2026",
+"sumber": "KIP Kapuas",
+"tgl": "2026-09-07",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9f75a23c19",
+"judul": "Asap Karhutla Kepung Palangka Raya, Bank Kalteng Turun Tangan",
+"sumber": "Infobanknews",
+"tgl": "2026-08-31",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b81f3771d3",
+"judul": "4 Helikopter Padamkan Karhutla di 3 Daerah Sumsel, Belasan Hektare Terbakar",
+"sumber": "detikcom",
+"tgl": "2026-06-29",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1128f8405b",
+"judul": "Karhutla di Lahan Gambut OKI 6 Hektare Belum Padam, Asap Pekat",
+"sumber": "detikcom",
+"tgl": "2026-07-03",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1cd361d664",
+"judul": "Pemprov Kaltim Siapkan Skenario Dana Tak Terduga Hadapi Eskalasi Karhutla",
+"sumber": "Seputar Fakta",
+"tgl": "2026-08-24",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b27e5d5a5e",
+"judul": "Darurat Karhutla dan Air Bersih di Zona Merah, Begini Imbauan Kritis BMKG untuk Warga Jateng - Ayo Semarang",
+"sumber": "Ayo Semarang",
+"tgl": "2026-10-11",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5497412041",
+"judul": "POLSEK DAIK LINGGA BERSAMA TIM GABUNGAN LAKUKAN PEMADAMAN KEBAKARAN HUTAN DAN LAHAN SELUAS ±5 HEKTARE DI DESA PEKAKA",
+"sumber": "TRIBRATA NEWS POLDA KEPRI",
+"tgl": "2026-10-07",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "14bd4c2d0b",
+"judul": "Respons Cepat Polres Pagar Alam, Personel Bantu Pemadaman Kebakaran Lahan di Kawasan Bandara Atung Bungsu",
+"sumber": "Media Hub | POLRI",
+"tgl": "2026-08-09",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "8067db3dea",
+"judul": "PT Maju Aneka Sawit buka dua Posko Kesehatan untuk warga terdampak karhutla di Kotawaringin Timur",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-10-06",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "491d276087",
+"judul": "Gelar Pasukan Karhutla 2026 di Mapolda, Pemprov dan Polda Babel Perkuat Komando Terpadu serta Luncurkan Platform \"Babel Siaga\"",
+"sumber": "Pemerintah Provinsi Kepulauan Bangka Belitung",
+"tgl": "2026-08-10",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fdb6573134",
+"judul": "Menhut: Hotspot Karhutla di Kalsel Terendah di Kalimantan",
+"sumber": "IDN Times",
+"tgl": "2026-10-12",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9ecbb15792",
+"judul": "Karhutla Sumsel Mulai Mengkhawatirkan, 493 Hotspot Muncul dalam 10 Hari",
+"sumber": "rmolsumsel.id",
+"tgl": "2026-07-13",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4b04af584e",
+"judul": "Siaga Darurat Kekeringan dan Karhutla Ditetapkan di Seluruh Jawa Barat",
+"sumber": "Pikiran Rakyat Koran",
+"tgl": "2026-06-25",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "18118aabea",
+"judul": "Pemkab OKU Siagakan 300 Personel Antisipasi Karhutla",
+"sumber": "detikcom",
+"tgl": "2026-06-20",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d81413a17e",
+"judul": "Posubsektor Mesuji Pusat Tangani Hotspot Karhutla di Desa Wiralaga 2",
+"sumber": "Tribratanews Polda Lampung",
+"tgl": "2026-10-07",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "79eca1dfe3",
+"judul": "BPBD Malang berlakukan siaga darurat kekeringan dan karhutla",
+"sumber": "Antara News jatim",
+"tgl": "2026-07-27",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "5e4f933fca",
+"judul": "Karhutla di Palangkaraya Hanguskan 11,5 Hektare Lahan",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-07-20",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "91e77e98ce",
+"judul": "KLH/BPLH Dorong Kolaborasi Tata Kelola dan Berbagi Air Pencegahan Karhutla di Lahan Gambut Riau",
+"sumber": "METRORIAU.COM",
+"tgl": "2026-06-22",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "128e78410f",
+"judul": "TEGAS, 20 Tersangka Karhutla Ditahan Polda Sumsel, 16 Kasus Terungkap di 10 Wilayah - sumeks.disway.id",
+"sumber": "Sumeks",
+"tgl": "2026-08-24",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "a5512222d0",
+"judul": "Api Bekas Cari Tawon Picu Kebakaran Lahan di Jembrana",
+"sumber": "BALIPOST.com",
+"tgl": "2026-07-16",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ffcb7b31d2",
+"judul": "Aksi Karhutla Berlanjut di Kantor Gubernur Jambi, Massa Menunggu Al Haris - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-10-12",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "c92a874922",
+"judul": "Cegah Karhutla, Personel Polsek Jajaran Polres Rejang Lebong Gencar Sosialisasikan Larangan Membakar Lahan",
+"sumber": "Bengkulutoday",
+"tgl": "2026-10-11",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bb90a4a362",
+"judul": "Kebakaran Lahan 5 Hektare, Pulau Kenawa Tetap Dibuka untuk Wisatawan",
+"sumber": "Kompas.com",
+"tgl": "2026-10-07",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4d572af9a3",
+"judul": "Gubernur Kalsel: Haji Isam bantu 100 pompa tangani karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-08-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f01eebcddd",
+"judul": "Pemkab Kolaka Tingkatkan Kewaspadaan Karhutla di Musim Kemarau",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-12",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dd690613df",
+"judul": "Kapolri perkuat kesiapsiagaan karhutla di Riau jelang puncak kemarau",
+"sumber": "ANTARA News Jambi",
+"tgl": "2026-07-08",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7a57ff3eda",
+"judul": "BPBD Kaimana Tunggu SK Tanggap Darurat untuk Tangani Kekeringan dan Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-21",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "b8d2b563d2",
+"judul": "Waspada Ancaman El Nino, Pemkot Pekanbaru Siaga Darurat Karhutla hingga November 2026",
+"sumber": "JPNN.com",
+"tgl": "2026-07-06",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "94d2238228",
+"judul": "Angin Monsun Timur Picu Risiko Karhutla di NTT",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-07-29",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0f7e66ca28",
+"judul": "Bagaimana Nasib Satwa Liar Terkungkung Karhutla di Jambi",
+"sumber": "Teras.id",
+"tgl": "2026-10-06",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2ea4fd5414",
+"judul": "BPBD Sulteng tangani 33 karhutla selama Januari-Agustus 2026",
+"sumber": "ANTARA News Sulteng",
+"tgl": "2026-08-11",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "71ae54cbc8",
+"judul": "GM Bandara Tjilik Riwut: Penerbangan masih aman saat terjadi karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-07-27",
+"prov": [],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "71403f3ce8",
+"judul": "El Nino Sangat Kuat, BMKG: 43 Titik Panas Terpantau di Papua",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-28",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "49f427a62a",
+"judul": "419 Kejadian Karhutla di Jateng, Heri Pudyatmoko Ajak Warga Jadi Garda Terdepan Pencegahan",
+"sumber": "Jatengnews.id",
+"tgl": "2026-10-10",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a6c5c4ba23",
+"judul": "Angin Kencang Warnai Cuaca NTT, BMKG Imbau Waspada Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-03",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "02afe93f16",
+"judul": "BPBD: Kebakaran hutan lindung Gunung Soputan Sulut capai 50 hektare",
+"sumber": "ANTARA News Manado",
+"tgl": "2026-08-03",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bba052cd6e",
+"judul": "Karhutla Jambi Membakar 4267 Hektare Lahan",
+"sumber": "Lensa Hukum",
+"tgl": "2026-10-08",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0cd6802d77",
+"judul": "BMKG Imbau Masyarakat Waspadai Kemarau Ekstrem dan Risiko Karhutla",
+"sumber": "news.schoolmedia.id",
+"tgl": "2026-09-17",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2d22878352",
+"judul": "Provinsi yang Paling Rentan Karhutla Menurut BMKG, Ini Daftanya",
+"sumber": "Rmol.id",
+"tgl": "2026-08-12",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7a0bb0838d",
+"judul": "Provinsi Lampung Perkuat Mitigasi Karhutla, Pemetaan Sumber Air dan Peralatan Jadi Prioritas",
+"sumber": "Pemerintah Provinsi Lampung",
+"tgl": "2026-08-26",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e5aff27a34",
+"judul": "Kemarau Melanda Jawa Tengah, 37 Karhutla Terjadi di 16 Kabupaten dan Kota",
+"sumber": "Kompas.com",
+"tgl": "2026-07-16",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a6f050ef55",
+"judul": "Drone Thermal Ungkap Bara Api Tersembunyi di TPA Jatibarang Semarang, 10 Hektare Masih Membara",
+"sumber": "Jatengnews.id",
+"tgl": "2026-10-03",
+"prov": [
+"33"
+],
+"relevan": false
+},
+{
+"id": "3bc5c6f9ce",
+"judul": "Gubernur Al Haris di Rakor Penanganan Karhutla Jambi : Udara Kita Sudah Mulai Tidak Sehat",
+"sumber": "jamberita.com",
+"tgl": "2026-08-31",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6c4cee714f",
+"judul": "Karhutla 28 Hektare di Trumon Timur Aceh Selatan Tersisa Asap Tipis",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-07-14",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ee7a330e69",
+"judul": "Karhutla Jambi Capai 222 Hektare, Pesawat Cessna Disiagakan",
+"sumber": "detikcom",
+"tgl": "2026-08-04",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "384cbc8a40",
+"judul": "Gubernur Gorontalo Terbitkan Surat Edaran Siaga Kemarau 2026, BPBD Minta Daerah Perkuat Antisipasi Kekeringan dan Karhutla",
+"sumber": "Pemerintah Provinsi Gorontalo",
+"tgl": "2026-07-20",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b6b4522e9d",
+"judul": "Kodaeral XI Bersinergi dengan Pemda, Perkuat Penanganan Karhutla di Papua Selatan",
+"sumber": "harianradar.com",
+"tgl": "2026-10-10",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "8d42438f72",
+"judul": "Kabut Asap Mengancam, Dinkes Sambas Catat 905 Kasus ISPA",
+"sumber": "Media Kalbar News",
+"tgl": "2026-08-24",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9c04622866",
+"judul": "Banjarbaru Status Siaga Karhutla dan Kekeringan",
+"sumber": "Kanal Kalimantan",
+"tgl": "2026-07-16",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "03ea48ff58",
+"judul": "Anak Muda Kalbar Presentasikan Inovasi Cegah Karhutla",
+"sumber": "Berkatnews TV",
+"tgl": "2026-10-09",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6b1fdf02cd",
+"judul": "Disdamkartan Bontang Bergerak Cepat Padamkan Kebakaran Lahan Satu Hektare di Suka Rahmat",
+"sumber": "Bontang Post",
+"tgl": "2026-07-05",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "positif",
+"sasaran": {
+"PEMDA": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "1bb418588c",
+"judul": "Puncak Musim Kemarau, BMKG Ingatkan 10 Wilayah Ini di Manggarai Waspada Karhutla",
+"sumber": "Tribunflores.com",
+"tgl": "2026-10-05",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7fbf20de38",
+"judul": "Waspada! Kualitas Udara di Samarinda Masuk Kategori Sangat Buruk Imbas Karhutla",
+"sumber": "VIVA.co.id",
+"tgl": "2026-09-17",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "2359881132",
+"judul": "Karhutla di Rokan Hilir Padam, Asap Masih Muncul dari Lahan Gambut",
+"sumber": "RiauAktual.com",
+"tgl": "2026-07-11",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "913f5ccf5e",
+"judul": "Cegah Karhutla, Bhabinkamtibmas Polsek Tebing Tinggi Gencarkan Sosialisasi Maklumat Kapolda kepada Warga",
+"sumber": "Tribratanews Polda Sumsel",
+"tgl": "2026-08-24",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c635819a2b",
+"judul": "NTT Tetap Dilanda Kemarau, BMKG Ingatkan Ancaman Kekeringan dan Kebakaran Lahan",
+"sumber": "Waingapu.Com",
+"tgl": "2026-09-12",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "35500f5990",
+"judul": "Antisipasi Dampak Karhutla, Kemenkes Kerahkan Nakes dan Logistik ke 7 Provinsi",
+"sumber": "Kemenkes",
+"tgl": "2026-08-21",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f3170e0872",
+"judul": "Benhur Watubun Minta Pemantauan Karhutla di Maluku Diperketat",
+"sumber": "Kilas Berita",
+"tgl": "2026-10-10",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ed48122243",
+"judul": "BNPB: Tidak ada korban jiwa akibat karhutla di Aceh, Jabar, dan Jateng",
+"sumber": "ANTARA News",
+"tgl": "2026-06-30",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a497d80440",
+"judul": "Asian Agri Perkuat Pencegahan dan Respons Karhutla Bersama Masyarakat di Jambi",
+"sumber": "Infojambi.com",
+"tgl": "2026-10-03",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "03dd252736",
+"judul": "Perhutani KPH Sukabumi dan TNGHS Perkuat Sinergi Kesiapsiagaan Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-09-19",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9cc171f802",
+"judul": "1,5 Bulan Berlangsung, Area Karhutla Kalimantan Nyaris Seluas Kota Surabaya",
+"sumber": "Kompas.id",
+"tgl": "2026-09-14",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "31e2f83bcf",
+"judul": "Sosialisasi Maklumat Kapolda Kaltim, Polsek Muara Wahau Perkuat Pencegahan Karhutla di Desa Karya Bhakti",
+"sumber": "Tribrata Kutai Timur",
+"tgl": "2026-09-29",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6b2218a4eb",
+"judul": "Karhutla Kaltara Terendah di Kalimantan, Pemprov Perketat Kewaspadaan",
+"sumber": "Fokus Borneo",
+"tgl": "2026-09-05",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "12db26b70d",
+"judul": "Karhutla Menelan Korban Jiwa",
+"sumber": "KaltengOnline.com",
+"tgl": "2026-08-07",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f3fa2bdb54",
+"judul": "Hujan Akhirnya Guyur Merangin Jambi, Warga Lega Ancaman Karhutla Berkurang",
+"sumber": "Kompas.com",
+"tgl": "2026-09-22",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "a7e0bcb019",
+"judul": "Karhutla di Gunung Botak Trans Papua Barat, Polisi Pastikan Api Tak Kembali Meluas",
+"sumber": "Kompas.com",
+"tgl": "2026-08-21",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1fb6d4a621",
+"judul": "Hampir 1.000 Hektare Lahan Terbakar di Kalsel, 12.000 Liter Air Disiagakan",
+"sumber": "VOI.ID",
+"tgl": "2026-07-31",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d83249f0d3",
+"judul": "Karhutla Marak di Bali Utara, Singgih Januratmoko Kawal Kebutuhan Penanganan Bencana",
+"sumber": "Golkarpedia",
+"tgl": "2026-10-11",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8951b81cdf",
+"judul": "Viral Video Makan Seruit di Lampung Saat Sumsel Dikepung Karhutla, Herman Deru Klarifikasi",
+"sumber": "Kompas.com",
+"tgl": "2026-10-05",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "ca7a86f67c",
+"judul": "19 Hotspot Terdeteksi di Sumbar, Ribuan Titik Karhutla Tetangga Picu Kabut Asap",
+"sumber": "Padang Ekspres",
+"tgl": "2026-09-04",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "95401a93f1",
+"judul": "Antisipasi Karhutla dan Krisis Air, Gubernur Maluku Segera Surati Bupati-Wali Kota",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-09",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b0b7488d6d",
+"judul": "Potensi Karhutla Meningkat di Bantul dan Kulonprogo, Kewaspadan Ditingkatkan",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-27",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d8fef17769",
+"judul": "Polres Biak Numfor Gelar Apel Kesiapsiagaan Penanggulangan Karhutla",
+"sumber": "Teraspapua.com",
+"tgl": "2026-09-07",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "1d7d69c72c",
+"judul": "Kabut Asap Picu Kenaikan Kasus ISPA di Mimika, Dinkes Catat Lebih dari 63 Ribu Penderita",
+"sumber": "Galeripapua.com",
+"tgl": "2026-09-30",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9dae4f82fa",
+"judul": "Perhutani KPH Kedu Selatan Dukung Persiapan Apel Siaga Karhutla Tingkat Kabupaten Purworejo",
+"sumber": "Perhutani",
+"tgl": "2026-07-03",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b3bc599e2b",
+"judul": "Potensi Hujan Indonesia Sepekan ke Depan Periode 31 Juli–6 Agustus 2026: Memasuki Fase El Niño Kuat, Bahaya Kekeringan dan Karhutla Mengintai",
+"sumber": "BMKG",
+"tgl": "2026-07-30",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "919cb13405",
+"judul": "Pangdam XII/Tpr Bekali 88 Personel Cegah Karhutla Kalbar",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-26",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "579ed5b02d",
+"judul": "Riau Zero Karhutla, Titik Terakhir di Inhil Padam Total, Satgas Tetap Siaga",
+"sumber": "Tribunpekanbaru.com",
+"tgl": "2026-10-02",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ae04c63055",
+"judul": "Pangdam XIX/Tuanku Tambusai Instruksikan Personel Perkuat Kesiapsiagaan Karhutla",
+"sumber": "Media Center Riau",
+"tgl": "2026-06-22",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3bc9691fc7",
+"judul": "Karhutla Sumsel Meningkat, Penerbangan Terganggu",
+"sumber": "Kompas.id",
+"tgl": "2026-08-23",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a6e0b303be",
+"judul": "Langit Kalimantan Tengah Mendadak Merah Pekat akibat Karhutla, Bak Dunia Berbeda",
+"sumber": "VIVA.co.id",
+"tgl": "2026-09-21",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "94ddc66f3b",
+"judul": "ISPA Melonjak, Warga Manokwari Diminta Waspadai Asap dan Panas",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-05",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "45a5216f7d",
+"judul": "Polres Kubu Raya Perkuat Patroli dan Deteksi Dini Karhutla Hadapi Puncak Kemarau 2026, Warga Diingatkan Ancaman Pidana",
+"sumber": "Pontianak Post",
+"tgl": "2026-07-18",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "646b5b6550",
+"judul": "KARHUTLA MELUAS DI MALUKU TENGAH, RIDWAN KARIM DESAK BUPATI PERINTAHKAN OPD BERTINDAK !",
+"sumber": "Mapikor-News.com",
+"tgl": "2026-10-12",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "a4435dfc44",
+"judul": "Perhutani KPH Semarang Hadiri Apel Kesiapsiagaan Pengendalian Karhutla Tingkat Provinsi Jawa Tengah",
+"sumber": "Perhutani",
+"tgl": "2026-06-24",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "95cd7c3090",
+"judul": "Ombudsman Kunjungi DLHK Gorontalo, Perkuat Koordinasi Antisipasi Karhutla",
+"sumber": "Ombudsman Republik Indonesia",
+"tgl": "2026-09-17",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "28c6bd9d40",
+"judul": "Jangan Cuma Salahkan El Nino, Ini Jejak yang Bikin Karhutla 2026 Terus Berulang dari Kalimantan hingga Papua Selatan",
+"sumber": "Hukama News",
+"tgl": "2026-09-07",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2030e602f3",
+"judul": "Pemadaman Karhutla di Katingan Berlangsung hingga Tengah Malam, Tim Gabungan Tetap Siaga",
+"sumber": "Liputan Sbm",
+"tgl": "2026-08-03",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "677fc04f09",
+"judul": "Karhutla di Jateng Timbulkan Kerugian Ratusan Juta dan Renggut Korban Jiwa",
+"sumber": "Kompas.id",
+"tgl": "2026-07-14",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "86caa18dac",
+"judul": "Upaya pemadaman kebakaran lahan yang mengandung batu bara",
+"sumber": "ANTARA Foto",
+"tgl": "2026-09-25",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "85b4f1df21",
+"judul": "Kualitas Udara di Manado Menurun akibat Kemarau dan El Nino, Asap Pekat disertai Polutan Debu Tinggi",
+"sumber": "Tribunmanado.co.id",
+"tgl": "2026-10-06",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ef23add8cb",
+"judul": "Rapat di Hambalang, Presiden Prabowo Evaluasi Penanganan Karhutla Kalimantan dan Gempa NTT",
+"sumber": "Gerindra",
+"tgl": "2026-08-23",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4a19b14085",
+"judul": "Karhutla Mengintai, Polres Bengkulu Utara Perkuat Patroli dan Deteksi Titik Api",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-25",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "5982671938",
+"judul": "Padang Lawas di selimuti kabut asap, pemerintah di dorong lakukan penanganan antisipasi gangguan kesehatan masyarakat",
+"sumber": "ANTARA News Sumatera Utara",
+"tgl": "2026-10-07",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7dbf960d2b",
+"judul": "Kabut Asap di Manggarai, RSL Ruteng Belum Pastikan Dampaknya terhadap Pasien ISPA",
+"sumber": "Voxntt.com",
+"tgl": "2026-10-13",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "30cf77c725",
+"judul": "Karhutla Terbesar di Sorong Selatan, Ratusan hingga Ribuan Hektare Hutan Terbakar",
+"sumber": "Kompas.com",
+"tgl": "2026-09-04",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a7afc92161",
+"judul": "Gubri SF Hariyanto: Penanganan Karhutla Riau Adalah Kerja Bersama",
+"sumber": "HALLORIAU.COM",
+"tgl": "2026-08-28",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "84cecdf67f",
+"judul": "Polda Jambi Dalami Dua Kasus Karhutla 55 Hektare di Areal Korporasi, 16 Laporan Masuk Penyidikan",
+"sumber": "MakalamNews",
+"tgl": "2026-09-21",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif",
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "a83fea21c4",
+"judul": "BMKG: Prakiraan Cuaca Lampung 20-21 Juli 2026, Ada Potensi Hujan dan Kabut Asap",
+"sumber": "Kompas.com",
+"tgl": "2026-07-20",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7110dae12b",
+"judul": "Perhutani KPH Purwakarta Tingkatkan Patroli Pencegahan Karhutla Bersama LMDH",
+"sumber": "Perhutani",
+"tgl": "2026-10-02",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "fe086dcb50",
+"judul": "Karhutla Kalteng Terus Ditangani, 137,18 Hektare Berhasil Dipadamkan",
+"sumber": "mmckalteng",
+"tgl": "2026-10-05",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "13a89ec4b1",
+"judul": "BMKG: Kualitas Udara di Gorontalo Tidak Sehat Akibat Asap Karhutla",
+"sumber": "gopos.id",
+"tgl": "2026-10-12",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "23622212b6",
+"judul": "Cegah Dampak El Nino, PT PAL Sosialisasi Mitigasi Kebakaran Hutan di Kampung Rawa Kasat Merauke",
+"sumber": "Tribunpapuatengah.com",
+"tgl": "2026-07-08",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "92963971eb",
+"judul": "Manggala Agni Kementerian Kehutanan Berjibaku Padamkan Karhutla Gambut Nagan Raya Aceh Selama 9 Hari",
+"sumber": "Kementerian Kehutanan",
+"tgl": "2026-07-25",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3ede29fb64",
+"judul": "Batik Air Jakarta-Jambi Gagal Landing gegara Kabut Asap, Dialihkan ke Batam",
+"sumber": "detikcom",
+"tgl": "2026-08-23",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b11b062ffe",
+"judul": "Waspadai Karhutla di Musim Kemarau, Wagub Jateng Ajak Masyarakat Perkuat Antisipasi",
+"sumber": "Humas Provinsi Jawa Tengah",
+"tgl": "2026-08-24",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c74e0891d7",
+"judul": "Ivan Wirata Minta Seluruh Perusahaan di Jambi Siaga Hadapi Ancaman Karhutla dan Kekeringan saat Puncak Kemarau 2026",
+"sumber": "MakalamNews",
+"tgl": "2026-07-19",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "533a20d52d",
+"judul": "Sumsel Gelar Salat Istisqa, Ikhtiar Hadapi Kemarau dan Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-03",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d222f565ab",
+"judul": "Pencegahan Jadi Kunci Atasi Karhutla di Sumsel, Perdes di Ogan Komering Ilir Dapat Jadi Contoh",
+"sumber": "SumselPost",
+"tgl": "2026-10-10",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9a0dbe8899",
+"judul": "Luas karhutla di Riau Januari-Mei capai 15.318 hektare, naik berpuluh kali lipat dari 2025",
+"sumber": "ANTARA News Riau",
+"tgl": "2026-06-17",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3a5da48ddc",
+"judul": "Polres Nunukan Patroli Cegah Karhutla, Warga Dihimbau Jaga Lingkungan",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-08",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e53bffef3c",
+"judul": "Kapolda NTT Ingatkan Warga: Stop Karhutla, Jaga Alam dan Keselamatan Bersama",
+"sumber": "Tribrata News Polda NTT",
+"tgl": "2026-09-02",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "021ff3480a",
+"judul": "Krisis Ganda Papua Selatan Pemkab Merauke Perkuat Koordinasi Penanganan Karhutla Dan Kekeringan 2026 2027",
+"sumber": "Suara Merauke",
+"tgl": "2026-10-09",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6180e6af30",
+"judul": "Kapolda Jambi Pantau Langsung Pemadaman Karhutla, Perkuat Sinergi dengan Stakeholder",
+"sumber": "detikNews",
+"tgl": "2026-08-13",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e33f43c460",
+"judul": "27 Tersangka Ditetapkan Terkait Karhutla Kalteng, 7 Korporasi Naik ke Tahap Penyidikan",
+"sumber": "Media Hub | POLRI",
+"tgl": "2026-09-13",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif",
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "43b485f25d",
+"judul": "Kapolda Jambi Pastikan Penanganan Karhutla di Sungai Gelam Terus Dilakukan",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-10",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "48da0034fe",
+"judul": "Teknologi Drone dan X-Fire Dikerahkan, Polda Sumsel Percepat Penanganan Karhutla di Lahan Gambut OKI",
+"sumber": "Tribratanews Polda Sumsel",
+"tgl": "2026-09-28",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e351b6b5d4",
+"judul": "Kebakaran Hutan Meluas di 6 Provinsi, BNPB Tekankan Daerah Perkuat Kesiapsiagaan",
+"sumber": "NU Online",
+"tgl": "2026-07-21",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ada1b39535",
+"judul": "36 Kali Karhutla Landa Magetan Selama September, 52 Hektare Lahan dan Hutan Terdampak",
+"sumber": "Suarajatim.id",
+"tgl": "2026-10-12",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3f21d3b0f4",
+"judul": "Pemprov Jatim Tambah Helikopter Water Bombing Padamkan Kebakaran Gunung Bromo",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-08-10",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "25b55c43e3",
+"judul": "Asap Karhutla Kepung Aceh Barat, Pasien ISPA Terus Bertambah",
+"sumber": "detikHealth",
+"tgl": "2026-09-01",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f6a87f7799",
+"judul": "Lahan Terbakar di Sulbar Melonjak 5 Kali Lipat, Tembus 167 Hektare",
+"sumber": "Editorial9.com",
+"tgl": "2026-09-29",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "844de5ca4a",
+"judul": "Polda Riau Luncurkan Dashboard Green Policing, Perkuat Deteksi Dini Karhutla",
+"sumber": "Media Hub | POLRI",
+"tgl": "2026-10-11",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "18c0fd896f",
+"judul": "Kemenhut Siapkan 50 Penyuluh untuk Cegah Karhutla di Sulawesi Utara",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-10",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9a4339430a",
+"judul": "Hotspot Karhutla Kalteng Melonjak, Tiga Helikopter Chinook Jepang Dikerahkan ke Kalimantan",
+"sumber": "IniBalikpapan.Com",
+"tgl": "2026-09-12",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7e65ed11a1",
+"judul": "Kemarau 2026 Diprediksi Lebih Ekstrem, Lisa Halaby Amankan Komando Mitigasi Karhutla Banjarbaru",
+"sumber": "Redaksi 8",
+"tgl": "2026-07-07",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e74dbcdf9b",
+"judul": "Kemarau Panjang Melanda Kalsel, Puluhan Desa Kekeringan dan Karhutla Capai 1.000 Hektare",
+"sumber": "Media Indonesia",
+"tgl": "2026-08-05",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bde9627dcd",
+"judul": "Perhutani KPH Ciamis Laksanakan Apel Siaga Pengendalian Kebakaran Hutan dan Lahan",
+"sumber": "Perhutani",
+"tgl": "2026-08-26",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4562a14331",
+"judul": "Karhutla di Palembang Terpantau di Sukarami dan Kertapati, Ini Rincian Lokasinya",
+"sumber": "Akurat Sumsel",
+"tgl": "2026-10-09",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d13c0f8824",
+"judul": "Siap Hadapi Karhutla, BPBD, Polresta Sleman Bersama TNI dan Stakeholder Gelar Apel Kesiapan",
+"sumber": "Polda DIY",
+"tgl": "2026-08-11",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "46e58236af",
+"judul": "Atasi Karhutla di Lahan Gambut, Kapolda Kalteng Gunakan X-Fire untuk Percepat Pemadaman",
+"sumber": "investigasi bhayangkara indonesia",
+"tgl": "2026-09-19",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a6bc956b5a",
+"judul": "Waspadai Potensi Asap Kiriman, Walau Banjarmasin Bebas Hotspot",
+"sumber": "Radar Banjarmasin",
+"tgl": "2026-06-26",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7d04eb8092",
+"judul": "Kebakaran Lahan 3 Hektar di Bone Bolango, Api Dipadamkan Hampir 10 Jam | BERUT",
+"sumber": "Kompas.tv",
+"tgl": "2026-09-18",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f23c0562b3",
+"judul": "Titik Panas Terdeteksi di Pringapus, Polres Semarang Pastikan Tak Ada Kebakaran",
+"sumber": "Espos.id",
+"tgl": "2026-07-31",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "0389e4e64d",
+"judul": "Optimalkan Peluang Hujan Atasi Karhutla di Langit Kalbar",
+"sumber": "BNPB",
+"tgl": "2026-08-26",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cbbf165ad0",
+"judul": "OJK dan BI Kalteng perkuat penanganan karhutla di Palangka Raya",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-10-09",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a4fd32ea45",
+"judul": "Polisi - relawan Wonosobo berhasil padamkan kebakaran hutan pinus",
+"sumber": "ANTARA News Jateng",
+"tgl": "2026-09-07",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cfc9f23fdd",
+"judul": "Usung Green Policing, Belasan Ribu Pelari Meriahkan Bhayangkara Run 2026 di Pekanbaru, Kapolda Riau Gaungkan Pencegahan Karhutla",
+"sumber": "Aktual.com",
+"tgl": "2026-07-19",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2413f96d74",
+"judul": "Karhutla Sulit Dijangkau, BPBD Kotim Ajukan Bantuan Helikopter Water Bombing",
+"sumber": "Berita Sampit",
+"tgl": "2026-07-07",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "ce6efd8e81",
+"judul": "Presiden Prabowo Tegaskan Percepat Penanganan Karhutla dan Kerahkan Seluruh Sumber Daya, Kondisi Riau dan Jambi Lebih Baik",
+"sumber": "AmiraRiau",
+"tgl": "2026-10-12",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "111824fc95",
+"judul": "Karhutla di Halmahera Barat, Pemda Minta Bantuan Helikopter Water Bombing",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-04",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "56ec5b188d",
+"judul": "1.917 Titik Panas Terdeteksi di Sumsel, OKI Catat 1.271 Hotspot",
+"sumber": "rmollampung.id",
+"tgl": "2026-10-12",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3fb335b433",
+"judul": "Delapan Tahun Deklarasi Manokwari, Tanah Papua Dilanda Karhutla dan Kekeringan: YLBHI dan LBH se-Papua Desak Penetapan Status Darurat Bencana dan Penghentian PSN Merauke – YLBHI",
+"sumber": "YLBHI",
+"tgl": "2026-10-11",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "47d525b576",
+"judul": "Muba Tetapkan Status Siaga Darurat, Targetkan Karhutla Turun 50 Persen",
+"sumber": "rmolsumsel.id",
+"tgl": "2026-06-19",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6ee78d00c0",
+"judul": "3 Berita Populer Sulawesi Utara: Kebakaran Lahan di Minahasa, Prediksi Musim Hujan di Awal November",
+"sumber": "Tribunmanado.co.id",
+"tgl": "2026-10-06",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "da782a6d29",
+"judul": "Kasus ISPA di Nunukan Meningkat, Kabut Asap dan Kualitas Udara Jadi Perhatian",
+"sumber": "Berita Nunukan",
+"tgl": "2026-09-02",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1b883c8b3a",
+"judul": "Karhutla Papua Barat Capai 223,5 Hektare, Titik Api Mendekati Permukiman",
+"sumber": "TVRI News",
+"tgl": "2026-09-03",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "bff3836c65",
+"judul": "Cuaca Kering dan Ancaman Karhutla Masih Bayangi Sejumlah Wilayah Indonesia",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-07",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "825b371ecf",
+"judul": "Karhutla di Bulungan Berkobar Lagi, BNPB: Masih dalam Penanganan",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-09-02",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "06d7fdec50",
+"judul": "Hipmi Haltim-Jakarta Kritik Respons Pemda Hadapi Kebakaran Hutan",
+"sumber": "Kalesang",
+"tgl": "2026-10-09",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "2f11d2b7b6",
+"judul": "Sinergi Tanpa Batas, PT Sawit Kaltim Lestari dan Tim Gabungan Padamkan Tiga Titik Karhutla di Muara Kaman",
+"sumber": "Korankaltim.com",
+"tgl": "2026-09-11",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "366c98e2ff",
+"judul": "Personel Brimob Sulut Laksanakan Pemadaman Karhutla di Kelurahan Pangian Pandu",
+"sumber": "jurnalpolisi.co.id",
+"tgl": "2026-10-08",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "bcfb054be0",
+"judul": "Pemkab Banjar berlakukan siaga darurat karhutla hingga September",
+"sumber": "ANTARA News",
+"tgl": "2026-07-21",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b3f7e70185",
+"judul": "Karhutla di Papua Ganggu Penerbangan, Sekolah di Biak Diliburkan",
+"sumber": "Kompas.id",
+"tgl": "2026-08-24",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2b5a121873",
+"judul": "Wamenko matangkan strategi baru atasi karhutla di Kalsel",
+"sumber": "ANTARA News",
+"tgl": "2026-10-09",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "369d9b8c61",
+"judul": "Udara Samarinda Mulai Memburuk, 5.334 Personel Dikerahkan Padamkan Karhutla",
+"sumber": "Pontianak Post",
+"tgl": "2026-08-26",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e0cd43f05c",
+"judul": "Menhut tegaskan penegakan hukum bagi pelaku karhutla di Kalsel",
+"sumber": "ANTARA News",
+"tgl": "2026-08-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e6cd0fd96a",
+"judul": "Perhutani KPH Banyuwangi Selatan Perkuat Pencegahan Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-08-10",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e3052ef421",
+"judul": "Karhutla di Sumatra Berpotensi Meningkat Sepekan ke Depan",
+"sumber": "Tirto.id",
+"tgl": "2026-07-11",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c23f1d28e8",
+"judul": "PT Palmina Utama dan PT Solusi Indo Borneo Gelar Apel Siaga Karhutla 2026, Serahkan Bantuan Fire Pump untuk KTPA Binaan",
+"sumber": "Jurnal Banua",
+"tgl": "2026-06-18",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6af8f411a5",
+"judul": "Karhutla Mengancam Kepri, Karimun Catat 23 Titik Panas",
+"sumber": "Batamnews.co.id",
+"tgl": "2026-08-24",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f25d199694",
+"judul": "Dua Karhutla Terjadi di Kobar, Pemadaman Satu Titik Butuh Waktu 4 Hari",
+"sumber": "detikcom",
+"tgl": "2026-06-19",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "0877dda575",
+"judul": "Seskab Teddy: Presiden Prabowo Bahas Situasi Nasional dan Penanganan Karhutla",
+"sumber": "Presiden RI",
+"tgl": "2026-09-01",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8dfed8358c",
+"judul": "Parigi Moutong Minta Bantuan BNPB Atasi Karhutla dan Kekeringan",
+"sumber": "Media Indonesia",
+"tgl": "2026-09-26",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "17673d8fad",
+"judul": "Polres Kubu Raya Gencarkan Penanganan Karhutla di Dua Kecamatan",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-12",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "dc0f04beae",
+"judul": "ISPA dan Pneumonia Masih Mengancam, RSD Idaman Banjarbaru Ingatkan Warga Dampak Kabut Asap",
+"sumber": "Rilis Kalimantan",
+"tgl": "2026-07-24",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fdf314ad6e",
+"judul": "Kabut Asap Mengancam, 30 Titik Karhutla di Kembang Janggut Sudah Ditangani, Polisi Buru Pelaku Pembakaran",
+"sumber": "Korankaltim.com",
+"tgl": "2026-09-14",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7e1f96b2f6",
+"judul": "Prabowo Bahas Kebakaran Hutan dan Gempa NTT di Hambalang",
+"sumber": "Tempo.co",
+"tgl": "2026-08-24",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "98daac5d9b",
+"judul": "Suhu Panas di Cirebon Capai 37,2 Derajat, Waspada Karhutla dan Krisis Air",
+"sumber": "Media Indonesia",
+"tgl": "2026-10-05",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2824c4f44b",
+"judul": "Papua Tengah Dikepung Asap, 774 Hotspot Terdeteksi dalam Enam Hari",
+"sumber": "Nabire.Net",
+"tgl": "2026-10-07",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "eada8a09c4",
+"judul": "Menko Polkam tinjau kebakaran lahan di Palembang",
+"sumber": "ANTARA Foto",
+"tgl": "2026-09-18",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4308d786e9",
+"judul": "Karhutla di Sejumlah Wilayah Kaltara Berhasil Dipadamkan, Dishut Perkuat Kesiapsiagaan",
+"sumber": "Kaltaraprov.go.id",
+"tgl": "2026-08-15",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cc3a8ad332",
+"judul": "Kabut Masih Menyelimuti Palu, BMKG Ingatkan Risiko Karhutla di Tengah Cuaca Kering",
+"sumber": "Butol Post",
+"tgl": "2026-10-10",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1d4cd61f2c",
+"judul": "Dukung Program Nasional, Polres OKU Timur Gencarkan Sosialisasi Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-08",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "898fb900e8",
+"judul": "Karhutla Jambi mulai terkendali, Prabowo minta pencegahan dijaga",
+"sumber": "ANTARA News Jambi",
+"tgl": "2026-08-24",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b179b8cee4",
+"judul": "BNPB Guyur Langit Jateng Pakai Kalsium Klorida, Usir Abu dan Karhutla",
+"sumber": "OWRITE",
+"tgl": "2026-09-08",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "db33a40d26",
+"judul": "UPBU Nabire prioritaskan keselamatan penerbangan saat kabut asap",
+"sumber": "ANTARA News",
+"tgl": "2026-10-07",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "901d71789e",
+"judul": "Di Malaysia, Kapolda Riau Bicara soal Karhutla dan Penanganan Gotong Royong",
+"sumber": "detikNews",
+"tgl": "2026-09-08",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "31e828045a",
+"judul": "Cegah Karhutla, Ombudsman Kepri Desak Kepala Daerah Tindak Lanjuti Inpres Nomor 11 Tahun 2026",
+"sumber": "Ombudsman Republik Indonesia",
+"tgl": "2026-09-08",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "22241f088d",
+"judul": "Dari Jakarta ke Kalbar, Semangat Generasi Muda Bantu Korban Karhutla",
+"sumber": "republika.co.id",
+"tgl": "2026-10-10",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b3afcff68f",
+"judul": "Terjebak Karhutla di Ketapang, Induk Orangutan dan Bayinya Dievakuasi",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-09-20",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1346a4ee22",
+"judul": "Lamban Tangani Karhutla, Gubernur Sumsel Diganjar Kartu Merah dari BEM Unsri",
+"sumber": "iNews.ID",
+"tgl": "2026-10-05",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "0e908c9fa5",
+"judul": "BPBD Buol ingatkan masyarakat tingkatkan kewaspadaan terhadap karhutla",
+"sumber": "ANTARA News Sulteng",
+"tgl": "2026-10-07",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f8e46a6427",
+"judul": "Tak Kunjung Hujan, Karhutla di Kalsel Masih Mengganas",
+"sumber": "Bakabar.com",
+"tgl": "2026-09-06",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "6ea3a03db0",
+"judul": "Lanskap Bujang Raba Jambi Disebut Oase Cegah Karhutla",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-09-28",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "24920db876",
+"judul": "Langkah Prabowo Bentuk Badan Pengelola Gambut untuk Cegah Karhutla",
+"sumber": "detikNews",
+"tgl": "2026-09-27",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "589973624f",
+"judul": "Polisi Tangkap Pelaku Pembakaran Lahan untuk Kebun Sawit di Pelalawan Riau yang Diduga Picu Karhutla",
+"sumber": "Kompas.com",
+"tgl": "2026-08-10",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "75129ca772",
+"judul": "37 Kasus Karhutla Ditangani di Kaltim, Polisi Tetapkan 12 Tersangka",
+"sumber": "KutaiRaya.com",
+"tgl": "2026-09-05",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "99f9fa7f24",
+"judul": "Pangkogabwilhan I Tekankan Sinergi dan Penanganan Cepat Karhutla Tahura Batanghari",
+"sumber": "Sinar Jambi",
+"tgl": "2026-09-23",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bf2246d1e2",
+"judul": "Kabut Asap Selimuti Aceh Barat, Masker Dibagikan untuk Cegah ISPA",
+"sumber": "detikHealth",
+"tgl": "2026-08-04",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c5c9658cbf",
+"judul": "Tersangka penyebab karhutla 71 hektare di Kumai ditangkap",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-08-14",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3590a64898",
+"judul": "Kabupaten Fakfak Jadi Wilayah dengan Hotspot Tertinggi di Papua Barat",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-01",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c758eae17a",
+"judul": "Pemkab Barito Selatan kucurkan Rp3,958 miliar tangani karhutla dan kekeringan",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-09-05",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0f270bf93e",
+"judul": "Hadapi El Nino, Pemprov Riau Perkuat Kesiapan Hadapi Karhutla",
+"sumber": "RiauAktual.com",
+"tgl": "2026-08-10",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1406e6bc83",
+"judul": "Kondisi Terkini Karhutla 16 September 2026 di Sejumlah Wilayah Indonesia",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-17",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c56e195c50",
+"judul": "Bank Kalsel Ingatkan Bahaya Asap Karhutla, Masyarakat Diminta Jaga Kesehatan",
+"sumber": "Radar Banjarmasin",
+"tgl": "2026-09-30",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "182f6dfb09",
+"judul": "Karhutla Juga Berdampak Pada Sawit, Rusak 1.052 Tanaman Muda di Nabire",
+"sumber": "sawitsetara.co",
+"tgl": "2026-09-14",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "54226fae07",
+"judul": "Kajati Jatim Hadiri Rakor Nasional Karhutla, Pengendalian Kawasan Rawan Jadi Perhatian Utama",
+"sumber": "Kejaksaan Tinggi Jawa Timur",
+"tgl": "2026-08-10",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "472e7fdcbb",
+"judul": "Polisi Gerak Cepat Tindaklanjuti Laporan Kebakaran Lahan di Jempong Mataram",
+"sumber": "Tribrata News NTB",
+"tgl": "2026-09-10",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "ddd5c3ca4a",
+"judul": "Beri Penghargaan, Kapolres Pelalawan Apresiasi Kontribusi PT THIP dalam Penanganan Karhutla",
+"sumber": "Riau Pos",
+"tgl": "2026-10-04",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "527c17101b",
+"judul": "Karhutla Ogan Ilir Makin Mengkhawatirkan, Petugas Fokus Lindungi Permukiman",
+"sumber": "rmolsumsel.id",
+"tgl": "2026-06-28",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "15836d12dd",
+"judul": "Jarak Pandang di Sumsel Memburuk Efek Karhutla, Dudung Mengaku Penerbangannya Sempat Tertunda",
+"sumber": "Kabar24",
+"tgl": "2026-10-12",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ad1e65ae00",
+"judul": "Lahan 3 Hektare Terbakar di Jaluko, Polisi Buru Pemilik Lahan dan Dalami Penyebab Karhutla - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-07-27",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9316da434f",
+"judul": "Cuaca Kalteng Didominasi Panas Terik-32 Titik Hotspot Terpantau, Masih Pontensi Hujan Lokal",
+"sumber": "Tabengan Online",
+"tgl": "2026-06-26",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3631c5411d",
+"judul": "Waspadai Karhutla di Tarakan saat Musim Kering, 24 Hektar Lahan Sudah Terbakar",
+"sumber": "Radar Tarakan",
+"tgl": "2026-06-30",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4d97801423",
+"judul": "BPBD Kota Batu Siapkan Langkah Antisipasi Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-12",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ed6073d67b",
+"judul": "Perhutani Madura Sosialisasi Antisipasi Karhutla Kepada LMDH di Pamekasan",
+"sumber": "Perhutani",
+"tgl": "2026-07-07",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6d8703e3f3",
+"judul": "Tim Gabungan: 4 Ha Lahan Kebakaran di Banjar, Kalimantan Selatan",
+"sumber": "Bloomberg Technoz",
+"tgl": "2026-08-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1f52f03a8a",
+"judul": "Peluang Mengendalikan Karhutla dengan Api: Peran Pembakaran Terkendali dalam Mitigasi Kebakaran",
+"sumber": "KutaiRaya.com",
+"tgl": "2026-06-15",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "79f8410970",
+"judul": "Hampir 980 Ribu Hektare Wilayah Bengkulu Rawan Karhutla, Gubernur Helmi Hasan Minta Pencegahan Diperkuat - Bengkulu Network",
+"sumber": "Bengkulu Network",
+"tgl": "2026-10-12",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e3349625de",
+"judul": "Enam Helikopter Dikerahkan, BNPB Tambah Armada Water Bombing untuk Siaga Karhutla",
+"sumber": "RiauPagi.com",
+"tgl": "2026-06-22",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "131206ae57",
+"judul": "Tanjung Leban Jadi Contoh Restorasi, Raja Juli Soroti Penurunan Hotspot Riau",
+"sumber": "HALLORIAU.COM",
+"tgl": "2026-10-01",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c15cfae964",
+"judul": "Yayasan Desabumi galang Rp100 juta untuk korban karhutla di Kalbar",
+"sumber": "ANTARA News",
+"tgl": "2026-10-10",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4dcaae57c7",
+"judul": "Sayembara Polres Sarolangun! Warga yang Lapor Pelaku Karhutla Dapat Imbalan - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-07-25",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "caca42b657",
+"judul": "Polda Papua Barat Gelar Apel Serentak, Pastikan Kesiapan Personel dan Peralatan Hadapi Karhutla",
+"sumber": "Jagat Papua",
+"tgl": "2026-08-11",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "02af619aa5",
+"judul": "Respon Cepat Polres Lamongan Tangani Kebakaran Lahan, Diduga Akibat Puntung Rokok",
+"sumber": "DIVISI HUMAS POLRI",
+"tgl": "2026-07-16",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "e5bef6a942",
+"judul": "Dramatis! F1 Singapura Tetap Digelar, Sempat Khawatirkan Kabut Asap dan Kualitas Udara - Suara Merdeka Jakarta",
+"sumber": "Suara Merdeka Jakarta",
+"tgl": "2026-10-10",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "18258ab90b",
+"judul": "Kebakaran Lahan di Mamuju Dekati Permukiman, Petugas Gabungan Disiagakan di Lokasi",
+"sumber": "Kompas.com",
+"tgl": "2026-07-08",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a355db3bb8",
+"judul": "Medan Sulit, Helikopter Water Bombing 9 Kali Jatuhkan Bom Air di Kobar",
+"sumber": "detikcom",
+"tgl": "2026-08-28",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a911c4d45f",
+"judul": "Bengkulu Diselimuti Kabut Asap, Diduga Kiriman Provinsi Tetangga",
+"sumber": "detikcom",
+"tgl": "2026-09-05",
+"prov": [
+"17"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9b9ee04a6f",
+"judul": "Asap Karhutla Menurunkan Kualitas Udara Sulawesi Barat",
+"sumber": "SuaraGarut.ID",
+"tgl": "2026-10-13",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9d636d7aea",
+"judul": "Menlu Bicara soal PM Malaysia Telepon Prabowo Terkait Karhutla",
+"sumber": "detikNews",
+"tgl": "2026-10-10",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "fec4faa45b",
+"judul": "Lahan 3,8 Hektar di Cikundul Sukabumi Terbakar, Petugas Damkar Kesulitan Sumber Air",
+"sumber": "Sukabumisatu.com",
+"tgl": "2026-09-25",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "25bfb3922f",
+"judul": "Satgas Darat dan Udara optimal tanggulangi karhutla di Kalsel",
+"sumber": "ANTARA News",
+"tgl": "2026-08-25",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "00ac482252",
+"judul": "Cegah Lahan Eks Karhutla Beralih Jadi Kebun Sawit, Bupati Afni Tanam Pohon di Tanjung Buton",
+"sumber": "BeritaRiau.com",
+"tgl": "2026-10-09",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7b07c9fdcc",
+"judul": "Prakiraan Cuaca BMKG Kota Malang Jumat 19 Juni 2026, Didominasi Udara Kabur dan Kabut Asap",
+"sumber": "Radar Malang",
+"tgl": "2026-06-19",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "85288fea2f",
+"judul": "Waspada Potensi Kekeringan dan Kebakaran Lahan di Kabupaten Buleleng Memasuki Puncak Musim Kemarau Juni 2026 | Badan Penanggulangan Bencana Daerah",
+"sumber": "BPBD Buleleng",
+"tgl": "2026-06-30",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "8c013d622e",
+"judul": "Danrem 042/Gapu Terbang Sisir Langit Jambi, Pastikan Titik Karhutla Padam! Ini Temuan dari Patroli Udara - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-07-19",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "89da2bf733",
+"judul": "Manggala Agni Masih Berjibaku Padamkan Karhutla di 10 Lokasi Riau",
+"sumber": "Media Center Riau",
+"tgl": "2026-09-07",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7d95aabe0c",
+"judul": "Dharmasraya Siaga Satu Karhutla Mulai 10 September, Sekolah Diliburkan",
+"sumber": "Padang Ekspres",
+"tgl": "2026-09-10",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "378500d915",
+"judul": "SINERGI POLRES SIGI DAN TIM GABUNGAN, PENANGANAN KARHUTLA DI TIGA KAWASAN PEGUNUNGAN TERUS DILAKUKAN",
+"sumber": "Website Resmi Polri",
+"tgl": "2026-10-11",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c8636792dd",
+"judul": "Medan Terjal-Angin Kencang Jadi Kendala Utama Pemadaman Karhutla Kawi",
+"sumber": "detikcom",
+"tgl": "2026-09-21",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "3422681797",
+"judul": "Status Siaga Darurat, Barito Utara Hadapi 182 Kejadian Karhutla hingga Agustus",
+"sumber": "1tulah News",
+"tgl": "2026-09-04",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b6069004b6",
+"judul": "BMKG Peringatkan Angin Kencang dan Karhutla di Maluku Utara 14-18 Oktober 2026",
+"sumber": "Kompas.com",
+"tgl": "2026-10-12",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6620d484d5",
+"judul": "Bandung Barat Siaga Kekeringan dan Karhutla di Musim Kemarau",
+"sumber": "detikcom",
+"tgl": "2026-07-03",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4c5c894136",
+"judul": "Gulkarmat: Cuaca panas picu kebakaran lahan di Jakarta Utara",
+"sumber": "ANTARA News",
+"tgl": "2026-09-12",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2958bf76f1",
+"judul": "Kabut Asap Memburuk, Sekolah di Pontianak Kembali Belajar dari Rumah",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-10-07",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "cc8a1f28ba",
+"judul": "Jemaat GKE Bartim diminta terlibat aktif bantu pemkab sosialisasikan bahaya karhutla",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-09-07",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7e0d0835d4",
+"judul": "Kabinet Bayangan: Pemerintah Gagap Tanggulangi Gempa NTT hingga Karhutla",
+"sumber": "IDN Times",
+"tgl": "2026-10-11",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "2b423cd165",
+"judul": "Gerak Cepat Prabowo Dini Hari: Kirim 6 Pesawat TNI AU Angkut Logistik ke NTT dan Pompa Karhutla ke Kalimantan",
+"sumber": "Inilah.com",
+"tgl": "2026-08-24",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PUSAT": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "6217ceff73",
+"judul": "Karhutla di Kalsel Jadi Perhatian Belanda, Ingin Bantu Pencegahan Jangka Panjang",
+"sumber": "Tribunnews.com",
+"tgl": "2026-10-05",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "10941f8284",
+"judul": "Sederet Bantuan Haji Isam dalam Penanganan Karhutla Kalsel",
+"sumber": "detikcom",
+"tgl": "2026-08-23",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "510298bb0a",
+"judul": "BPBD Jatim Kerahkan Helikopter PK-DAP Padamkan Karhutla Gunung Bromo - harian.disway.id",
+"sumber": "HARIAN DISWAY",
+"tgl": "2026-09-11",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5683c0634d",
+"judul": "Kronologi Kebakaran Lahan Tebu 5 Hektar di Malang, 1 Petani Tewas Saat Buat Sekat Api",
+"sumber": "Kompas.com",
+"tgl": "2026-09-11",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "718fdf0d3e",
+"judul": "perangi karhutla kejati sulsel komitmen kawal penegakan huku ...",
+"sumber": "Kejaksaan Agung",
+"tgl": "2026-06-18",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "210f20086b",
+"judul": "Kabut Asap TPA Jatiwaringin Sasar Pemukiman, 52 Warga Tangerang Dievakuasi",
+"sumber": "Suarabanten.id",
+"tgl": "2026-07-01",
+"prov": [
+"36"
+],
+"relevan": false
+},
+{
+"id": "fb5313d932",
+"judul": "Analisis Administrasi Publik: Tata Kelola Krisis dan Intervensi Kebijakan Karhutla di Kabupaten Merauke",
+"sumber": "Suara Merauke",
+"tgl": "2026-10-12",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7193a1dd16",
+"judul": "Rakor Kesiapsiagaan Karhutla, Pemkab Kolaka Perkuat Antisipasi Kemarau 2026 dan Potensi El Nino 2027.",
+"sumber": "PPID KABUPATEN KOLAKA",
+"tgl": "2026-07-10",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "6346648ffe",
+"judul": "Karhutla Papua Capai 2.496 Hektare, BNPB Kerahkan Helikopter Water Bombing",
+"sumber": "TVRI News",
+"tgl": "2026-08-30",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "43c9a867c6",
+"judul": "Delapan Tahun Deklarasi Manokwari, YLBHI dan LBH se-Papua Desak Status Darurat Karhutla dan Penghentian PSN Merauke",
+"sumber": "Suara Papua",
+"tgl": "2026-10-12",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "ac55cc67a2",
+"judul": "Pemprov NTB memperkuat kesigapan untuk antisipasi karhutla",
+"sumber": "ANTARA News Mataram",
+"tgl": "2026-08-14",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d150a33e95",
+"judul": "Titik Panas Terpantau di Sumbar Melalui Aplikasi, BPBD: Belum Ada Laporan Kebakaran",
+"sumber": "Langgam.id",
+"tgl": "2026-08-13",
+"prov": [
+"13"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b5aa9d8b71",
+"judul": "Polda Jambi Tangani 90 Kasus Karhutla, Penegakan Hukum Terus Berjalan - jambitv.disway.id",
+"sumber": "Jambitv.co",
+"tgl": "2026-10-12",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "d23c386e4b",
+"judul": "13 Kabupaten/Kota di Kalsel Rentan Karhutla",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-06-15",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dea9d30ff8",
+"judul": "Hingga Juli 2026, Karhutla di Palangka Raya Capai 11,5 Hektare",
+"sumber": "Media Center Kota Palangka Raya",
+"tgl": "2026-07-19",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8faa494f52",
+"judul": "Info Terkini 2 Oktober: El Nino +2,72 Sangat Kuat, 11 Titik Panas Terpantau di Papua",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-02",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "87dfbb5714",
+"judul": "Kabupaten Mimika siagakan 275 personel gabungan antisipasi karhutla",
+"sumber": "ANTARA News Papua Tengah",
+"tgl": "2026-08-28",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a4b4999f02",
+"judul": "Karhutla Muncul di 3 Titik Ogan Ilir, Tim Gabungan Lakukan Pemadaman",
+"sumber": "detikcom",
+"tgl": "2026-07-17",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ff79aeb869",
+"judul": "DPN HKTI optimalkan petani bantu pemerintah daerah tangani karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-09-20",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4a47ba1a0f",
+"judul": "BPBD Sulteng perkuat kesiapsiagaan hadapi ancaman kebakaran hutan dan lahan",
+"sumber": "ANTARA News Sulteng",
+"tgl": "2026-08-11",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "213116f427",
+"judul": "Ketapang dan Kayong Utara Masih Berisiko Karhutla Meski Hujan Berpeluang Turun di Kalbar",
+"sumber": "faktakalbar",
+"tgl": "2026-10-06",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "512cb2396f",
+"judul": "Karhutla di Banjarbaru Capai 60 Hektar, Wilayah Sungai Ulin Jadi yang Terparah",
+"sumber": "Kompas.com",
+"tgl": "2026-07-14",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "355709d073",
+"judul": "HADAPI PUNCAK KEMARAU 2026, KEMENHUT DAN PEMPROV JAWA TENGAH SIAGAKAN 500 PERSONEL CEGAH KARHUTLA",
+"sumber": "Gakkum Kehutanan",
+"tgl": "2026-06-24",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "fe30f5f3ff",
+"judul": "Karhutla Sumsel Belum Reda, BNPB Kerahkan Operasi Modifikasi Cuaca Sebulan",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-12",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9f2959fcd0",
+"judul": "Ini Jenis Masker yang Bisa DIpakai Pemotor Saat Kabut Asap Karhutla",
+"sumber": "Kompas.com",
+"tgl": "2026-08-24",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9a5eea004e",
+"judul": "BMKG prediksi kemarau di Papua Selatan berdampak kebakaran hutan",
+"sumber": "ANTARA News Papua",
+"tgl": "2026-06-18",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cfb49148be",
+"judul": "Antisipasi \"El Nino Godzilla\", Pemkab Minahasa Utara Tetapkan Status Siaga Darurat Bencana Kekeringan dan Karhutla",
+"sumber": "totabuan.news",
+"tgl": "2026-08-19",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b1ea3866a2",
+"judul": "Karhutla di Air Hitam Pekanbaru Berhasil Dipadamkan",
+"sumber": "Media Center Riau",
+"tgl": "2026-07-09",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "695788d6ac",
+"judul": "Bupati Poso Tinjau Kebakaran Hutan di Pamona Selatan, Pastikan Penanganan dan Kebutuhan Petugas Terpenuhi",
+"sumber": "Tempo.co",
+"tgl": "2026-09-24",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "40200ffd7b",
+"judul": "Karhutla Serang Guntung Manggis Banjarbaru, Api Sempat Sambar Atap Rumah Warga",
+"sumber": "Radar Banjarmasin",
+"tgl": "2026-08-05",
+"prov": [
+"36"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "84a66a0f90",
+"judul": "Perhutani KPH Parengan dan Polsek Malo Perkuat Patroli Cegah Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-07-27",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "076776b0fb",
+"judul": "Pemko Sibolga Ikuti Rakor Nasional Pengendalian Karhutla Hadapi El Nino 2026–2027",
+"sumber": "https://sibolgakota.go.id/",
+"tgl": "2026-06-18",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "aaaf9739c7",
+"judul": "Hujan Datang, Karhutla Samarinda Belum Usai: Bara Bawah Tanah Jadi Ancaman",
+"sumber": "EKSPOSKALTIM",
+"tgl": "2026-10-05",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "67409d7939",
+"judul": "Bupati Siak Tetap Kawal Karhutla dari Jakarta, Instruksi Siang Malam Tak Putus",
+"sumber": "Media Center Riau",
+"tgl": "2026-09-09",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "29a61c827d",
+"judul": "Polda Bali kirim personel Brimob bantu tangani karhutla Kalbar",
+"sumber": "ANTARA News",
+"tgl": "2026-08-24",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4b1e06ee06",
+"judul": "Daftar 7 Kabupaten di Sumsel yang Menetapkan Siaga Karhutla Jelang Puncak Musim Kemarau",
+"sumber": "Tribunsumsel.com",
+"tgl": "2026-06-30",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c9845942d2",
+"judul": "Antisipasi Kemarau Panjang 2026, BPBD Cilacap Imbau Warga Waspada Kekeringan dan Karhutla",
+"sumber": "Pemerintah Daerah Kabupaten Cilacap",
+"tgl": "2026-06-17",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1d0bf1e13e",
+"judul": "Kabut Asap Ganggu Pelayaran di Maluku Utara, KSOP Ternate Keluarkan Peringatan Keselamatan",
+"sumber": "porostimur.com",
+"tgl": "2026-10-12",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "51499b0096",
+"judul": "Damkar Belitung berhasil padamkan kebakaran lahan satu hektare",
+"sumber": "ANTARA News",
+"tgl": "2026-07-11",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7d039065ab",
+"judul": "Viral Foto Gubernur Kaltim di Singapura saat Karhutla, Ini Penjelasan Pemprov",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-10-13",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "6728b272b6",
+"judul": "Pemkab Banjar siapkan langkah cepat antisipasi Karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-06-25",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5804008e52",
+"judul": "BMKG : Titik Api di Papua Selatan Capai 307",
+"sumber": "Media Indonesia",
+"tgl": "2026-08-27",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1315312e85",
+"judul": "Sejumlah Daerah di Kaltim Naikkan Status Penanganan Karhutla-Kekeringan",
+"sumber": "detikcom",
+"tgl": "2026-08-31",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "93a4129bfa",
+"judul": "Pemkot Palangka Raya Evaluasi Status Siaga Darurat Karhutla",
+"sumber": "Headline.co.id",
+"tgl": "2026-10-12",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "0015d22ff3",
+"judul": "Perhutani KPH Tuban Siaga Karhutla, Tujuh Titik Rawan Jadi Perhatian",
+"sumber": "Ronggo.id",
+"tgl": "2026-06-25",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e044257f2a",
+"judul": "Gubernur Kalsel Minta Maaf kepada \"Netizen\", Belum Bisa Bantu Tangani Karhutla di Semua Daerah",
+"sumber": "Kompas.com",
+"tgl": "2026-10-12",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PEMDA": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "5a81b8d4ec",
+"judul": "Karhutla 394,83 Hektare di Kalbar, PT MPK Jadi Satu-satunya Perusahaan Kena Dua Sanksi",
+"sumber": "Pontianak Post",
+"tgl": "2026-08-27",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "19400914b9",
+"judul": "Karhutla Kembali Terjadi di Lereng Bromo, Petugas Terkendala Medan Terjal",
+"sumber": "Suara Surabaya",
+"tgl": "2026-10-06",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1cabceee83",
+"judul": "Kebakaran TPA Jatiwaringin Meluas 15 Ha, 154 Warga Tangerang Terjangkit ISPA",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-02",
+"prov": [
+"36"
+],
+"relevan": false
+},
+{
+"id": "6cf27d2a03",
+"judul": "Dinkes Sumsel antisipasi lonjakan ISPA akibat kabut asap",
+"sumber": "ANTARA News Sumsel",
+"tgl": "2026-10-06",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7d3996bfe3",
+"judul": "Kebakaran Hutan dan Lahan di NTT Masuk Kategori Sangat Tinggi",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-27",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4d7e274492",
+"judul": "Perhutani Mojokerto Perkuat Pencegahan Karhutla dan Gangguan Keamanan Hutan",
+"sumber": "Perhutani",
+"tgl": "2026-09-04",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5ca7912964",
+"judul": "Kasus ISPA di Kota Sorong Capai 23.482, Naik Saat Karhutla dan Kabut Asap",
+"sumber": "Kompas.com",
+"tgl": "2026-10-06",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "f713402d25",
+"judul": "Kabut Asap Memburuk, Siswa PAUD-SD Palangka Raya Diimbau Belajar di Rumah",
+"sumber": "detikcom",
+"tgl": "2026-07-31",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "951954771a",
+"judul": "Jumlah Titik Panas di Kalimantan Utara Hari Ini Kembali Alami Kenaikan",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-07",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6d7d827e23",
+"judul": "Karhutla dan Kekeringan Jadi Sorotan, Banjir di Aceh Tamiang Paksa 222 KK Mengungsi",
+"sumber": "Vibizmedia.com",
+"tgl": "2026-10-12",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5e145e60e6",
+"judul": "Asap Karhutla Papua Selatan Meluas ke Mimika, Rettob Minta BNPB Turun Tangan",
+"sumber": "Koreri",
+"tgl": "2026-10-13",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"BNPB": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "95682855c6",
+"judul": "Dishut Maluku perkuat peran masyarakat sekitar hutan cegah Karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-09-14",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a9ec529779",
+"judul": "Doa PAN untuk Korban Gempa di NTT dan Bencana Karhutla Kalimantan",
+"sumber": "VIVA.co.id",
+"tgl": "2026-08-22",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "51a43717ca",
+"judul": "Hadapi Ancaman Siklus Cuaca Ekstrem, Kapolda Riau Jadikan RBR 2026 Kampanye Lawan Karhutla",
+"sumber": "CAKAPLAH.com",
+"tgl": "2026-06-21",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "aeb9f3cf53",
+"judul": "BMKG Pantau 93 Titik Panas, Ini Potensi Prakiraan Cuaca di Banda Aceh dan Sabang",
+"sumber": "https://www.rakyatpos.id/",
+"tgl": "2026-07-20",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "70f50b6348",
+"judul": "Karhutla Sumsel Melonjak 1.261 Hektare dalam Sebulan, OKU Jadi Daerah Terparah",
+"sumber": "Kompas.com",
+"tgl": "2026-08-14",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4282140186",
+"judul": "Asap Kebakaran Hutan yang Membunuh Orang Utan",
+"sumber": "Tempo.co",
+"tgl": "2026-09-09",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9cdf5a512f",
+"judul": "Kementan Perkuat Mitigasi Karhutla, 251 Hektare Demplot PLTB Dibangun",
+"sumber": "Journalist Independent",
+"tgl": "2026-10-03",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4db3a92f1e",
+"judul": "Kebakaran Hutan di Maluku Tengah Meluas, Tanaman Umur Panjang Warga Ikut Terbakar",
+"sumber": "Kompas.com",
+"tgl": "2026-08-29",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "124807917c",
+"judul": "Ribuan Hektar Hutan hingga Kebun di Sulsel Hangus, Ancaman Kebakaran Meluas",
+"sumber": "Kompas.id",
+"tgl": "2026-09-09",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b7a7f47ba6",
+"judul": "September Diprediksi Puncak Karhutla, OMC-Water Bombing Dimaksimalkan",
+"sumber": "CNN Indonesia",
+"tgl": "2026-08-31",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dd62fd586c",
+"judul": "BMKG Balikpapan perkuat peringatan kewaspadaan karhutla di Kaltim",
+"sumber": "ANTARA News",
+"tgl": "2026-09-03",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "38d138c35d",
+"judul": "Efek Domino Karhutla Riau, Industri Pariwisata hingga UMKM Terancam",
+"sumber": "Bisnis.com - Ekonomi",
+"tgl": "2026-08-26",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "82a0629b15",
+"judul": "Papua Selatan Jadi Episentrum Baru Karhutla",
+"sumber": "Betahita",
+"tgl": "2026-08-07",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d4a7498288",
+"judul": "Kebut Penanganan Karhutla di Sumsel, Prabowo Minta Tambahkan 500 Sumur Bor",
+"sumber": "Inilah.com",
+"tgl": "2026-08-24",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2b01dbc244",
+"judul": "Prabowo Klaim Bencana Aceh, NTT hingga Karhutla Kalimantan Beres, Faktanya?",
+"sumber": "OWRITE",
+"tgl": "2026-08-31",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "465a720e82",
+"judul": "Cuaca Kota Banda Aceh, Asap Karhutla Pemicu Jarak Pandang Terbatas",
+"sumber": "Serambinews.com",
+"tgl": "2026-10-07",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1501b125e8",
+"judul": "Sukabumi Siaga Darurat Kekeringan dan Karhutla",
+"sumber": "Liputan6.com",
+"tgl": "2026-08-04",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "11a69078db",
+"judul": "BNPB Andalkan OMC hingga Water Bombing Hadapi Karhutla di Puncak El Nino",
+"sumber": "suara surabaya net",
+"tgl": "2026-09-12",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a77c8872b7",
+"judul": "Penerbangan Bandara Singkawang satu bulan terhenti akibat kabut asap",
+"sumber": "ANTARA News",
+"tgl": "2026-09-18",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c327c5712a",
+"judul": "Cuaca Pegunungan Arfak Hari Ini, 08 Agustus 2026: Kabut/Asap dengan Suhu 12-25 °C",
+"sumber": "Databoks",
+"tgl": "2026-08-08",
+"prov": [
+"92"
+],
+"relevan": false
+},
+{
+"id": "131bd031f6",
+"judul": "Pemkab Kupang menyusun Renkon Karhutla hadapi ancaman musim kering",
+"sumber": "ANTARA News",
+"tgl": "2026-09-19",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c2ef09d09a",
+"judul": "Presiden Prabowo Subianto tinjau lokasi karhutla di Kalbar",
+"sumber": "ANTARA News Bali",
+"tgl": "2026-08-22",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "fe7f80b87b",
+"judul": "Karhutla Meluas di Puncak Kemarau, BNPB Minta Daerah Tingkatkan Kewaspadaan",
+"sumber": "Media Indonesia",
+"tgl": "2026-07-13",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7c25f06708",
+"judul": "Polda NTT Perkuat Kesiapan Hadapi Karhutla, Utamakan Deteksi Dini",
+"sumber": "afb tv kupang",
+"tgl": "2026-08-13",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "764d57432f",
+"judul": "Dampak Karhutla Makin Parah,Ketua Asosiasi Bupati se-Papua Pegunungan Desak Status Bencana Nasional",
+"sumber": "Tribunpapuatengah.com",
+"tgl": "2026-10-10",
+"prov": [
+"95"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "90597abd9e",
+"judul": "Usai Padamkan Karhutla dan Gempa, Polda Bali Kirim Tim Khusus dan Pemburu Drone ke Moto GP Mandalika",
+"sumber": "Tribun-bali.com",
+"tgl": "2026-10-06",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "781a139ec5",
+"judul": "Polda Riau Proses 60 Perkara Karhutla, 63 Orang Jadi Tersangka",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-09-21",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "f19b69fdda",
+"judul": "Diduga Akibat Pembakaran Sengaja, Kebakaran Lahan Terjadi di Dua Lokasi Kota Jambi - jambitv.disway.id",
+"sumber": "Jambitv.co",
+"tgl": "2026-08-04",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7c65b0d747",
+"judul": "Super El Nino Picu Ancaman Kabut Asap Asia Tenggara Menguat, RI Masuk Daftar Waspada",
+"sumber": "detikHealth",
+"tgl": "2026-06-26",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a66985a410",
+"judul": "Polisi dan Warga Berhasil Memadamkan Karhutla di Merauke",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-04",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c53146b007",
+"judul": "Komitmen Pemerintah Kalimantan Barat Lakukan Kesiapsiagaan Hadapi Bencana pasca Karhutla! - Dio Tv",
+"sumber": "Dio TV",
+"tgl": "2026-10-11",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "500d4bc24d",
+"judul": "Menteri LH Tinjau Pembangunan Sekat Kanal di Pelalawan Riau",
+"sumber": "https://www.publika.id/",
+"tgl": "2026-06-18",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "03bc2e55f5",
+"judul": "BNPB Klaim Karhutla Alami Penurunan, Kalsel Sebesar 17,74 Hektare",
+"sumber": "Tribunnews.com",
+"tgl": "2026-09-30",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "6900953de2",
+"judul": "Lima Kecamatan di Muaro Jambi Jadi Prioritas Pengawasan Karhutla, Warga Diminta Waspada - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-06-24",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a0b2a8cf3e",
+"judul": "Deteksi 10 Titik Hotspot, Polres Ketapang Bersama Tim Gabungan Lakukan Pemadaman Karhutla di Kendawangan",
+"sumber": "Mitra Mabes News",
+"tgl": "2026-10-10",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "67380fc7dc",
+"judul": "Karhutla Terjadi di Perbukitan Dekat Perumahan Gisela 5 Minahasa, Warga Sempat Panik",
+"sumber": "Tribunmanado.co.id",
+"tgl": "2026-10-06",
+"prov": [
+"71"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9c7c62a251",
+"judul": "Hadapi Karhutla, Pemprov Kalteng Aktifkan Posko Darurat Selama 158 Hari",
+"sumber": "detikcom",
+"tgl": "2026-06-23",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "720aba5781",
+"judul": "Respons Cepat Polres Pesisir Barat, Bersama Tim Gabungan Berhasil Padamkan Kebakaran Hutan",
+"sumber": "Tribratanews Polda Lampung",
+"tgl": "2026-09-13",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "340899bd66",
+"judul": "BPBD Kalsel Catat Ratusan Kejadian Karhutla, Operasi Darat dan Udara Diperkuat",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-22",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c900b1876f",
+"judul": "Kabut Asap Tebal Tutupi Jalan Utama Weleri Kendal, Pengendara yang Melintas Terganggu - Suara Merdeka Kendal",
+"sumber": "Suara Merdeka Kendal",
+"tgl": "2026-06-20",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fc1f848727",
+"judul": "Karhutla Berulang di Lingga, Lahan Gambut Persulit Pemadaman",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-11",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "de28948e89",
+"judul": "HADAPI PUNCAK MUSIM KEMARAU 2026, KEMENHUT DAN PEMPROV NTB GELAR APEL SIAGA KARHUTLA",
+"sumber": "Gakkum Kehutanan",
+"tgl": "2026-08-13",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fca0e71280",
+"judul": "BMKG Jayapura ungkap titik api terdeteksi di 22 distrik di Merauke",
+"sumber": "ANTARA News Papua",
+"tgl": "2026-09-08",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "078517c244",
+"judul": "183 Hotspot Terdeteksi di 15 Wilayah Sultra",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-04",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4ca00b486b",
+"judul": "Kabut Asap Karhutla Mulai Selimuti Kubu Raya, Aktivitas Belajar Mengajar di Sekolah Masih Normal",
+"sumber": "Tribunpontianak.co.id",
+"tgl": "2026-07-27",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "256f69393d",
+"judul": "Kapolda Papua Barat Tinjau Langsung Lokasi Karhutla di Gunung Botak Manokwari Selatan",
+"sumber": "klikpapua",
+"tgl": "2026-08-25",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4581a8e7f6",
+"judul": "Sarang Tawon Besar di Balai Banjar Dievakuasi, 20 Are Kebun Warga Jembrana Bali Ludes Terbakar",
+"sumber": "Tribun-bali.com",
+"tgl": "2026-10-07",
+"prov": [
+"51"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8118fbb478",
+"judul": "Pemprov bersama Lembaga Riset Singapura BahasTata Kelola Lingkungan dan Karhutla di Riau",
+"sumber": "riaueksis.com",
+"tgl": "2026-07-17",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fbf1938f75",
+"judul": "369 Hektare Lahan di Kukar Terbakar, Kebanyakan Milik Perusahaan",
+"sumber": "detikcom",
+"tgl": "2026-08-24",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {
+"PERUSAHAAN": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "df4970fdff",
+"judul": "214 Hektar Terdampak Karhutla di Jatim Selama Kemarau 2026",
+"sumber": "Kompas.id",
+"tgl": "2026-07-28",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7a7fc8243a",
+"judul": "Menko Polkam Tekankan Strategi Terukur Atasi Karhutla, Sumsel Jadi Atensi",
+"sumber": "Radar Malioboro",
+"tgl": "2026-09-18",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6e6cb7fbc4",
+"judul": "Memasuki Puncak Musim Kemarau, BMKG Ingatkan Potensi Kebakaran Lahan di Labuan Bajo",
+"sumber": "Kompas.com",
+"tgl": "2026-06-24",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "52c63135ad",
+"judul": "Perhutani Ikuti Apel Gelar Pasukan Antisipasi Karhutla di Wonosobo",
+"sumber": "Perhutani",
+"tgl": "2026-08-06",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f798d82347",
+"judul": "Kalimantan Tengah Siaga Karhutla 2026, Antisipasi Dampak El Nino hingga 2027 | SAPA PAGI",
+"sumber": "Kompas.tv",
+"tgl": "2026-06-20",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "5735e5f4bf",
+"judul": "Ibu Kota Kaltara Diselimuti Kabut Asap, Kualitas Udara Kembali Tidak Sehat",
+"sumber": "Radar Tarakan",
+"tgl": "2026-10-05",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "1de0aba2bd",
+"judul": "Banjir Landa Aceh dan Padang, Karhutla di Merauke",
+"sumber": "sumutcyber.com",
+"tgl": "2026-10-11",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "742280e0a2",
+"judul": "Puncak Kemarau BPBD Tetapkan Ponorogo Siaga Darurat Kekeringan dan Karhutla",
+"sumber": "Gema Surya FM",
+"tgl": "2026-07-29",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "85be7655f9",
+"judul": "Geografis Sulit Hambat Penanganan Karhutla di Bengkayang saat Kemarau",
+"sumber": "RRI.co.id",
+"tgl": "2026-06-26",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dd713e188d",
+"judul": "Penegakan Hukum Karhutla di Kaltim Berlanjut, 7 Korporasi dan 18 Warga jadi Tersangka",
+"sumber": "Tribunkaltim.co",
+"tgl": "2026-10-07",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "746dc8e85e",
+"judul": "Pemkab Wonogiri Tetapkan Status Tanggap Darurat, Gelontor BTT untuk Kekeringan dan Karhutla",
+"sumber": "Radar Solo",
+"tgl": "2026-09-29",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b78261db57",
+"judul": "Titik Api Di Provinsi Papua Tengah Bertambah",
+"sumber": "Jubi Papua",
+"tgl": "2026-08-23",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a3216e16c2",
+"judul": "BMKG Catat 17 Hotspot di Riau Sore ini, Inhu Jadi Wilayah Paling Rawan",
+"sumber": "HALLORIAU.COM",
+"tgl": "2026-07-01",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "094eb142e9",
+"judul": "Kasus Karhutla Hantam Bangka Barat, BPBD Wanti-Wanti Kelalaian Warga",
+"sumber": "iNews.ID",
+"tgl": "2026-10-08",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6ef6734974",
+"judul": "RI-Singapura Kerja Sama Mitigasi El Nino, Karhutla hingga Kelola Sampah",
+"sumber": "detikNews",
+"tgl": "2026-06-29",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bdb512aff1",
+"judul": "Dua pembakar hutan di Jambi ditetapkan jadi tersangka",
+"sumber": "ANTARA News Sumsel",
+"tgl": "2026-09-07",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2e3c561216",
+"judul": "Bantuan Helikopter Untuk Penanganan Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-08",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "bdb3eeff4c",
+"judul": "Karhutla di Way Kambas, BPBD Lampung Jajaki Operasi Modifikasi Cuaca",
+"sumber": "detikcom",
+"tgl": "2026-09-28",
+"prov": [
+"18"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "934f1caa11",
+"judul": "Karhutla di Berau Dipastikan Tidak Mengancam Habitat Orangutan",
+"sumber": "detikTravel",
+"tgl": "2026-08-26",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "be7e6d580b",
+"judul": "Class Action Karhutla Kalbar: Presiden Digugat, Warga Minta Ditetapkan Bencana Nasional",
+"sumber": "Pontianak Post",
+"tgl": "2026-09-17",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "54f72a89c7",
+"judul": "226 Ribu Liter Air Bersih Disalurkan untuk Atasi Kekeringan dan Karhutla di Kalbar",
+"sumber": "TopBusiness.id",
+"tgl": "2026-09-04",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "45f75f8705",
+"judul": "Dampak Karhutla terhadap Penerbangan di Balikpapan Mulai Menurun",
+"sumber": "Tribunkaltim.co",
+"tgl": "2026-10-06",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "9ba40e57c6",
+"judul": "Tim Penanggulangan Kebakaran Kodaeral XIV Padamkan Karhutla di Lahan Gambut Warmon Kab Sorong Papua Barat Daya",
+"sumber": "Koran Megapolitan",
+"tgl": "2026-10-10",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "55785d48c4",
+"judul": "BHABINKAMTIBMAS POLSEK DAIK LINGGA GENCARKAN PATROLI DAN IMBAUAN CEGAH KARHUTLA",
+"sumber": "TRIBRATA NEWS POLDA KEPRI",
+"tgl": "2026-10-06",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "56d9f6c94c",
+"judul": "Akses dan Sumber Air Terbatas, Satgas Karhutla Batang Hari Perkuat Mobilisasi Petugas",
+"sumber": "Pontianak Post",
+"tgl": "2026-09-21",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "1535bde956",
+"judul": "Kebun Rumput Gajah Terbakar di Terara Lombok Timur, Polisi dan Damkar Cegah Api Meluas",
+"sumber": "Tribrata News NTB",
+"tgl": "2026-10-04",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "81f0dee7cd",
+"judul": "Kemarau Memuncak, 49 Karhutla di Gunungkidul Telan Dua Korban Jiwa",
+"sumber": "Kompas.id",
+"tgl": "2026-08-26",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d70ebef03b",
+"judul": "Cegah Karhutla, Kapolda Sultra Keluarkan Maklumat Larangan Pembakaran Hutan dan Lahan",
+"sumber": "bidhumas polda sultra",
+"tgl": "2026-09-07",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d0d7f84b70",
+"judul": "14.815 Personel Dikerahkan Tangani Karhutla Kalbar, 105 Sumur Bor Dibangun",
+"sumber": "Jurnal Borneo",
+"tgl": "2026-09-11",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "eb1e3ef49e",
+"judul": "Kapolda mengingatkan warga NTT cegah karhutla",
+"sumber": "ANTARA News",
+"tgl": "2026-09-02",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f6ede5ad39",
+"judul": "Pimpin Apel HKN, Kalaksa BPBD Sekadau Ajak ASN Tetap Semangat dan Waspada Kabut Asap",
+"sumber": "sekadaukab.go.id",
+"tgl": "2026-09-17",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "35eb462d70",
+"judul": "Cuaca Panas, BPBD Catat 8 Titik Karhutla di Tarakan",
+"sumber": "Benuanta",
+"tgl": "2026-06-22",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f4cccafd58",
+"judul": "Prabowo Minta Kapolri dan BIN Periksa 3 Tersangka Karhutla Riau",
+"sumber": "Bloomberg Technoz",
+"tgl": "2026-08-24",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "0c93e39728",
+"judul": "Karhutla Mulai Mengancam, BPB-PK Kalteng Intensifkan Patroli Udara dan Darat - Multimedia Center",
+"sumber": "mmckalteng",
+"tgl": "2026-07-22",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d323cefe68",
+"judul": "Dua Pelajar di Belitung Timur Ditangkap Setelah Video Pembakaran Lahan Viral",
+"sumber": "detikcom",
+"tgl": "2026-08-23",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "766f9e49dd",
+"judul": "Kalbar Hadapi Ancaman Banjir dan Karhutla Bersamaan, BPBD Tingkatkan Kewaspadaan",
+"sumber": "Pontianak Post",
+"tgl": "2026-06-25",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "185da7f74c",
+"judul": "Karhutla Belum Padam, BPBD Aceh Barat Ajukan Water Bombing",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-08-01",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cfb99ee453",
+"judul": "80 Ton Garam Telah Disebar untuk Hujan Buatan di Riau, Karhutla Capai 20 Ribu Hektare",
+"sumber": "RiauAktual.com",
+"tgl": "2026-10-12",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0211d175db",
+"judul": "Rakor Penanganan Karhutla, Pemprov Malut Bentuk Satgas dan Ajukan Bantuan ke Pusat",
+"sumber": "Pemprov Maluku Utara",
+"tgl": "2026-08-26",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "8b8d7b4270",
+"judul": "Mimika Berpotensi Terpapar Kabut Asap Kiriman dari Sejumlah Wilayah di Tanah Papua",
+"sumber": "seputarpapua.com",
+"tgl": "2026-07-06",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fb5ca187f4",
+"judul": "Pantau karhutla real-time, Gubernur Kalteng terhubung 32 titik live",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-08-11",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "286bca5b9c",
+"judul": "Hadapi Musim Kemarau, Pencegahan Karhutla di Jambi Perlu Diperkuat",
+"sumber": "Media Indonesia",
+"tgl": "2026-08-03",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4e0d2d9f62",
+"judul": "Medan Sulit, Kebakaran Lahan di Girimulyo Kulon Progo Baru Padam 9 Jam",
+"sumber": "Kompas.com",
+"tgl": "2026-10-07",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "5fcc65da33",
+"judul": "Asap Karhutla Disorot Malaysia dan Singapura, Pemerintah Ingatkan Pentingnya Peran Hutan Indonesia untuk Dunia - Suara Merdeka Kendal",
+"sumber": "Suara Merdeka Kendal",
+"tgl": "2026-10-12",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5d708249ea",
+"judul": "Staf Khusus Menteri Kehutanan Apresiasi Kesiapsiagaan Kampar Menangani Karhutla.",
+"sumber": "mediacenter.kamparkab.go.id",
+"tgl": "2026-08-28",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PEMDA": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "d289fa4dfc",
+"judul": "Bupati Mimika berharap pusat segera tangani karhutla di Papua",
+"sumber": "ANTARA News Papua Tengah",
+"tgl": "2026-10-13",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "uji"
+},
+{
+"id": "4cac3ac746",
+"judul": "Kota Ambon Dikepung Kabut Asap, Wali Kota Berlakukan WFH dan PJJ Bagi Pelajar",
+"sumber": "BeritaBeta",
+"tgl": "2026-10-13",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4a72d00868",
+"judul": "BNPB: Penyebab karhutla di Padang Lawas Utara dalam penyelidikan",
+"sumber": "ANTARA News",
+"tgl": "2026-07-09",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "17980af542",
+"judul": "Luas Kebakaran Hutan di Kaltim Tembus 7.593 Hektare, Kemenkum Langsung Turun Tangan Bawa Instruksi P",
+"sumber": "Pontianak Post",
+"tgl": "2026-10-03",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "fc1c3d3bec",
+"judul": "Ancaman Karhutla NTB: BMKG Deteksi 139 Titik Panas di Puncak Musim Kemarau",
+"sumber": "TIMES Indonesia",
+"tgl": "2026-08-13",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "970544a96c",
+"judul": "Prakiraan Cuaca Sulteng, Jumat 26 Juni 2026: Palu, Banggai hingga Sigi Diselimuti Kabut Asap",
+"sumber": "Tribunpalu.com",
+"tgl": "2026-06-26",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f3db177d24",
+"judul": "Dua Sukarelawan Karhutla Kalteng Meninggal Saat Bertugas",
+"sumber": "Kompas.id",
+"tgl": "2026-09-04",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "637dbc6a83",
+"judul": "BMKG Kalbar Imbau Waspada Hujan Lebat dan Potensi Karhutla Hingga 25 Juli 2026",
+"sumber": "suarakalbar.co.id",
+"tgl": "2026-07-25",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "6bb137660f",
+"judul": "Hadapi Puncak Musim Kemarau 2026, Kemenhut, Pemprov NTB Siaga Karhutla",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-15",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dfaf35c899",
+"judul": "Dampak Kabut Asap, Enam Penerbangan di Bandara Syamsudin Noor Sempat Tertunda",
+"sumber": "Radar Banjarmasin",
+"tgl": "2026-07-20",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1748a178ec",
+"judul": "Cuaca Panas Meningkat, BMKG: Waspadai Karhutla di Aceh",
+"sumber": "Serambinews.com",
+"tgl": "2026-07-21",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c84af42820",
+"judul": "Dinkes Kobar Salurkan 2.000 Masker ke BAZNAS untuk Masyarakat Terdampak Kabut Asap",
+"sumber": "MMC Kotawaringin Barat",
+"tgl": "2026-09-03",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "8b57152a87",
+"judul": "Luas karhutla di Banjarbaru 1.263 hektare meski titik api menurun",
+"sumber": "ANTARA News",
+"tgl": "2026-09-02",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "e58c9aa072",
+"judul": "Ketua Koordinator APB Banten Selatan Soroti Banyaknya Kebakaran Hutan di Wilayah Selatan, Minta Masyarakat Waspada",
+"sumber": "bungas banten",
+"tgl": "2026-10-08",
+"prov": [
+"36"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "49ee8d7adf",
+"judul": "Luas Karhutla Kalbar Capai 38.310 Hektare, Ketapang Terparah",
+"sumber": "Media Indonesia",
+"tgl": "2026-08-21",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a168201ee1",
+"judul": "Masuki Puncak Musim Kemarau, Pangdam XII/Tanjungpura Ingatkan Ancaman Karhutla di Lahan Gambut Kubu Raya",
+"sumber": "Pontianak Post",
+"tgl": "2026-07-16",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d4aff5ba0c",
+"judul": "Karhutla di Sulbar Melonjak 358 Kasus, Pemprov Dorong Status Tanggap Darurat",
+"sumber": "Media Indonesia",
+"tgl": "2026-09-29",
+"prov": [
+"76"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1edb9487f2",
+"judul": "BMKG Imbau Warga Sulawesi Tenggara Waspadai Potensi Titik Panas Selama Musim Kemarau",
+"sumber": "TVRI News",
+"tgl": "2026-08-04",
+"prov": [
+"74"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d68b973757",
+"judul": "Kementerian PU Salurkan 136 Ribu Liter Air untuk Warga dan Penanganan Karhutla di Sorong",
+"sumber": "Kementerian PUPR",
+"tgl": "2026-10-08",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0d655fb1e3",
+"judul": "BMKG Catat 64 Titik Panas di Sumut, Warga Diimbau Tak Bakar Lahan",
+"sumber": "RRI.co.id",
+"tgl": "2026-08-24",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9694d4a1d7",
+"judul": "Pemprov Ingatkan Masyarakat Babel Tidak Lengah Terhadap Karhutla",
+"sumber": "Pemerintah Provinsi Kepulauan Bangka Belitung",
+"tgl": "2026-07-24",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "db11f77b4f",
+"judul": "Status Siaga Darurat Karhutla Tebo Diperpanjang, Puncak Musim Kemarau Sepanjang Agustus - https://jambiindependent.disway.id/",
+"sumber": "Jambi Independent",
+"tgl": "2026-08-10",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "15dac90745",
+"judul": "Tindaklanjut Arahan Presiden, Kementerian PU Dukung Penanganan Karhutla di Kaltara, Kaltim dan Malut",
+"sumber": "Kementerian PUPR",
+"tgl": "2026-09-20",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "41b780dec7",
+"judul": "Ratusan Titik Panas Kepung Bangka Belitung, Karhutla Meluas di Sejumlah Wilayah",
+"sumber": "Media Indonesia",
+"tgl": "2026-09-10",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "c5db80c012",
+"judul": "BPBD Kaltara Gelar Simulasi Penanganan Karhutla dan Banjir",
+"sumber": "Kaltaraprov.go.id",
+"tgl": "2026-10-08",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d98ff2ce9b",
+"judul": "Turjagwali Satlantas Polresta Sleman Amankan Penanganan Kebakaran Lahan di Jombor",
+"sumber": "Polda DIY",
+"tgl": "2026-08-30",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "03401972f6",
+"judul": "Gunungkidul Siaga Darurat Kekeringan hingga Agustus, BPBD Antisipasi Ancaman Krisis Air Bersih dan Karhutla",
+"sumber": "Radar Jogja",
+"tgl": "2026-06-16",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "942bf0fa3d",
+"judul": "Karhutla Riau Tembus 15.477 Hektare pada 2026, Didominasi Lahan Gambut",
+"sumber": "MetroTVNews.com",
+"tgl": "2026-07-17",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "44bbf7338f",
+"judul": "Berita Foto - Update, Sebaran Titik Panas di Wilayah Papua Selatan",
+"sumber": "RRI.co.id",
+"tgl": "2026-09-28",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "e67d41aaf9",
+"judul": "Hotspot Sumatera Menyusut, Riau Catat Tiga Titik Panas di Dua Kabupaten Pagi ini",
+"sumber": "HALLORIAU.COM",
+"tgl": "2026-06-21",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "af6cbe7486",
+"judul": "Pemkot Jambi Terapkan Sistem Belajar Campuran Imbas Kabut Asap Karhutla",
+"sumber": "Kompas.com",
+"tgl": "2026-09-10",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "170708a47f",
+"judul": "Bhabinkamtibmas di Merauke \"door to door\" ajak warga cegah karhutla",
+"sumber": "ANTARA News Papua",
+"tgl": "2026-10-12",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "40018b11a3",
+"judul": "Politik kemarin, bencana nasional karhutla hingga Bupati Klaten dilantik",
+"sumber": "ANTARA News",
+"tgl": "2026-10-13",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "dd26cc4d01",
+"judul": "Karhutla Papua Barat Belum Teratasi, Pemprov Perpanjang Status Tanggap Darurat",
+"sumber": "Kompas.com",
+"tgl": "2026-10-07",
+"prov": [
+"92"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "976bf39cd0",
+"judul": "Asap Karhutla Sebabkan Ribuan Kasus ISPA di Kalimantan dan Papua",
+"sumber": "Hukumonline",
+"tgl": "2026-09-15",
+"prov": [
+"91"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "9de06499dc",
+"judul": "Sosialisasikan Maklumat Kapolda Kaltim, Polsek Muara Wahau Cegah Dini Karhutla di Desa Juk Ayaq",
+"sumber": "Tribrata Kutai Timur",
+"tgl": "2026-10-06",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "f93042ed7e",
+"judul": "Papua Selatan Ajak Jajaran Dinas Kehutanan Se-Papua Cegah Karhutla",
+"sumber": "Pemerintah Provinsi Papua Selatan",
+"tgl": "2026-08-24",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "c238e0f331",
+"judul": "Dinkes P2KB Nunukan Ingatkan Warga, Kabut Asap Bisa Ganggu Kesehatan",
+"sumber": "Berita Nunukan",
+"tgl": "2026-08-31",
+"prov": [
+"65"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "6e9fe8c7f3",
+"judul": "Enam unit Disdamkar Bandung berhasil padamkan kebakaran lahan",
+"sumber": "ANTARA News",
+"tgl": "2026-07-27",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "51bab2cbb6",
+"judul": "Antisipasi Kekeringan dan Karhutla, Pemkab Malang Dorong Sistem Peringatan Dini.",
+"sumber": "Malangkab",
+"tgl": "2026-08-13",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "d143689e67",
+"judul": "Izin Korporasi yang Terlibat Karhutla Sumsel Terancam Dicabut",
+"sumber": "Tirto.id",
+"tgl": "2026-10-05",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"PERUSAHAAN": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "3b7fc5a18a",
+"judul": "Waspada Karhutla! Polda Malut Ajak Masyarakat Bersama Cegah Kebakaran Hutan dan Lahan",
+"sumber": "https://polresternate.com/",
+"tgl": "2026-09-04",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "10206dede4",
+"judul": "Video Kepala BNPB: Ada 639 Hektare Karhutla di 6 Provinsi",
+"sumber": "20detik",
+"tgl": "2026-10-13",
+"prov": [],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "1ca37d51af",
+"judul": "Enam Unit Pesawat Diberangkatkan Dari Jakarta Untuk Kebakaran Hutan Kalimantan Dan Bantuan Warga Terdampak Gempa NTT",
+"sumber": "jatimupdate.id",
+"tgl": "2026-08-24",
+"prov": [
+"31"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0ab25bee19",
+"judul": "Pemprov Sulsel Perkuat Kesiapsiagaan Hadapi Karhutla di Tengah Kemarau",
+"sumber": "Pemerintah Provinsi Sulawesi Selatan",
+"tgl": "2026-08-20",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "642f370668",
+"judul": "Prabowo Evaluasi Penanganan Karhutla Kalimantan dan Pemulihan Gempa NTT",
+"sumber": "Kosadata",
+"tgl": "2026-08-24",
+"prov": [
+"53"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "caed98d964",
+"judul": "TNI Berjibaku Padamkan Api di Cagar Alam Tanjung Api, Medan Sulit dan Angin Kencang Tak Jadi Hambatan - Metro Sulteng",
+"sumber": "Metro Sulteng",
+"tgl": "2026-10-11",
+"prov": [
+"72"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "positif",
+"sasaran": {
+"TNI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "5f93407318",
+"judul": "Karhutla Aceh Barat: Antara Bencana & Tanggung Jawab Menjaga Alam",
+"sumber": "ANTARA News Aceh",
+"tgl": "2026-06-19",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "50a36009e7",
+"judul": "13 Ribu Kasus ISPA Muncul di Tengah Puncak Karhutla Kaltim, Penanganan Dikebut Lewat Puskesmas",
+"sumber": "Kaltimetam.id",
+"tgl": "2026-10-08",
+"prov": [
+"64"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "029ba79ee7",
+"judul": "Polda Babel: Segera Lapor Jika Ada Potensi Karhutla",
+"sumber": "Tribunnews.com",
+"tgl": "2026-10-12",
+"prov": [
+"19"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "2ae9731150",
+"judul": "Pemprov Maluku Perkuat Kesiapsiagaan Hadapi Karhutla dan Kekeringan",
+"sumber": "RRI.co.id",
+"tgl": "2026-10-09",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "b1045b6f5e",
+"judul": "Emisi Karbon dari Karhutla di Indonesia pada 2025, Sumut Terbesar",
+"sumber": "Databoks",
+"tgl": "2026-08-24",
+"prov": [
+"12"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5841f8ae05",
+"judul": "BMKG: Waspada Karhutla di Papua Selatan akibat Kemarau Panjang El Nino",
+"sumber": "Media Indonesia",
+"tgl": "2026-06-18",
+"prov": [
+"93"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d681373c1f",
+"judul": "Ikhtiar Langit Cegah Karhutla: Sinar Mas Sumsel dan Ponpes Aulia Cendekia Gelar Doa Bersama Hingga Hujan Turun - palpres.disway.id",
+"sumber": "PALPRES.COM",
+"tgl": "2026-07-23",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "98a6d2aaf1",
+"judul": "Kualitas Udara Makassar Kembali Tidak Sehat, BMKG Sebut Dipicu Karhutla",
+"sumber": "Rakyat Sulsel",
+"tgl": "2026-10-11",
+"prov": [
+"73"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "4c0c113951",
+"judul": "Karhutla Labanan Belum Padam, Skenario Evakuasi Orangutan Ambon Disiapkan",
+"sumber": "EKSPOSKALTIM",
+"tgl": "2026-08-16",
+"prov": [
+"81"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "1d50c0be15",
+"judul": "Bupati Muaro Jambi Siapkan Skema Liburkan Sekolah Jika Asap Karhutla Pekat",
+"sumber": "detikcom",
+"tgl": "2026-08-24",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "58d1c00c82",
+"judul": "BNPB: Pemadaman karhutla di Kota Sorong masih berlangsung",
+"sumber": "ANTARA News Papua Tengah",
+"tgl": "2026-07-24",
+"prov": [
+"96"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "5f84149de7",
+"judul": "Musim Kemarau Menguat, Luas Karhutla di Jambi Capai 222 Hektare",
+"sumber": "RRI.co.id",
+"tgl": "2026-07-31",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4857912711",
+"judul": "Relawan TN Tanjung Puting Kewalahan Padamkan Karhutla, Desak Pemerintah Kerahkan Water Bombing - Varta DIY",
+"sumber": "Varta DIY",
+"tgl": "2026-10-12",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {
+"PUSAT": "negatif"
+},
+"bagian": "latih"
+},
+{
+"id": "207b91c31c",
+"judul": "Karhutla bukan Agenda Tahunan di Riau, Kritik untuk Penguasa",
+"sumber": "Kompasiana.com",
+"tgl": "2026-10-13",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "7e0e3ef568",
+"judul": "Karhutla Masih Selimuti Kota Nabire",
+"sumber": "Papuapos Nabire",
+"tgl": "2026-10-02",
+"prov": [
+"94"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "07e39c89e8",
+"judul": "Hujan Merata, Karhutla Besar di Riau Padam",
+"sumber": "Kabar Melayu",
+"tgl": "2026-09-12",
+"prov": [
+"14"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "a039893c5d",
+"judul": "Cek Fakta: Benarkah Pesawat Malaysia Ini Padamkan Karhutla?",
+"sumber": "DW.com",
+"tgl": "2026-09-03",
+"prov": [],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "7cca428053",
+"judul": "Antisipasi Karhutla saat Kemarau, Dinsos Gorontalo Libatkan Warga dalam Mitigasi",
+"sumber": "the OPINI",
+"tgl": "2026-10-10",
+"prov": [
+"75"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cdff0d931a",
+"judul": "Satu komando menghadapi karhutla di Natuna",
+"sumber": "ANTARA News",
+"tgl": "2026-10-03",
+"prov": [
+"21"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cd2ea18d37",
+"judul": "LAWAN KARHUTLA TOTAL! 350 Perusahaan Dikerahkan di Kalsel - Wamenko Pangan: Pemerintah Tak Bisa Sendiri!",
+"sumber": "jejakrekam.com",
+"tgl": "2026-10-11",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "141838b22f",
+"judul": "Dinkes Palembang imbau masyarakat waspada dampak kabut asap",
+"sumber": "ANTARA News Sumsel",
+"tgl": "2026-08-15",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "4bc7669c1d",
+"judul": "Kabut Asap Makin Pekat, Siswa PAUD hingga SMP di Muba PJJ",
+"sumber": "rmolsumsel.id",
+"tgl": "2026-09-17",
+"prov": [
+"16"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "837dc8f411",
+"judul": "Pemkot Ternate Tetapkan Status Tanggap Darurat Penanganan Karhutla Hingga 16 Oktober",
+"sumber": "Terbitmalut.com",
+"tgl": "2026-10-07",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "d260d8a48e",
+"judul": "GP Ansor Kalteng siapkan kemandirian ekonomi hingga bantu penanggulangan karhutla",
+"sumber": "ANTARA News Kalteng",
+"tgl": "2026-08-06",
+"prov": [
+"62"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "931a38ad42",
+"judul": "Kasus ISPA di Banjarmasin Capai 47.991 hingga Juli, Dinkes Soroti Dampak Kemarau dan Karhutla",
+"sumber": "Radar Banjarmasin",
+"tgl": "2026-08-14",
+"prov": [
+"63"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "3fd85d7b95",
+"judul": "Perhutani KPH Balapulang Perkuat Sinergi dengan Kodim 0712/Tegal untuk Pengamanan Hutan dan Antisipasi Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-07-07",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "a1c4b4e82a",
+"judul": "Karhutla di Jawa Timur Hanguskan 9.540 Hektar Lahan di 25 Daerah",
+"sumber": "Media Indonesia",
+"tgl": "2026-10-07",
+"prov": [
+"35"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "102a3d6ece",
+"judul": "Perhutani KPH Indramayu dan Astra Infra Tol Cipali Perkuat Patroli Bersama Antisipasi Karhutla",
+"sumber": "Perhutani",
+"tgl": "2026-07-10",
+"prov": [
+"32"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "0c74095e7b",
+"judul": "Pesta Hilirisasi, Karhutla, dan Tangis Petani Maluku Utara",
+"sumber": "halmaheranesia.com",
+"tgl": "2026-10-12",
+"prov": [
+"82"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "negatif",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "8d11ff98a6",
+"judul": "Polda Jambi Tangani 4 Kasus Karhutla, 5 Pelaku Ditangkap",
+"sumber": "detikcom",
+"tgl": "2026-08-10",
+"prov": [
+"15"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "positif",
+"sasaran": {
+"POLRI": "positif"
+},
+"bagian": "latih"
+},
+{
+"id": "348c729485",
+"judul": "Dandim Boyolali Hadiri Apel Siaga Karhutla, Perkuat Sinergi Cegah Kebakaran Hutan",
+"sumber": "RRI.co.id",
+"tgl": "2026-06-25",
+"prov": [
+"33"
+],
+"relevan": true,
+"situasi": "netral",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "ab4755ba0b",
+"judul": "BNPB Perkuat OMC dan Tambah Armada Tangani Karhutla Kalbar, 30 Helikopter Water Bombing Disiagakan",
+"sumber": "Pontianak Post",
+"tgl": "2026-08-23",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "uji"
+},
+{
+"id": "631de66ec0",
+"judul": "Bandara Sultan Thaha Diselimuti Kabut Asap, Super Air Jet Yogyakarta-Jambi Delay",
+"sumber": "detikcom",
+"tgl": "2026-10-04",
+"prov": [
+"34"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "32c88aecf0",
+"judul": "Sigap! Damkar Lhokseumawe Padamkan Kebakaran Lahan di Panggoi dalam 15 Menit",
+"sumber": "Serambinews.com",
+"tgl": "2026-06-22",
+"prov": [
+"11"
+],
+"relevan": true,
+"situasi": "positif",
+"respons": "positif",
+"sasaran": {
+"PEMDA": "positif"
+},
+"bagian": "uji"
+},
+{
+"id": "450e81bd45",
+"judul": "Habitat Satwa Terdampak Imbas Karhutla di Kalbar, 3 Orang Utan Dievakuasi",
+"sumber": "detikNews",
+"tgl": "2026-08-24",
+"prov": [
+"61"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+},
+{
+"id": "cd099edb47",
+"judul": "Karhutla Melanda Jawa hingga NTB, BNPB Catat Sejumlah Titik",
+"sumber": "Aktual.com",
+"tgl": "2026-08-09",
+"prov": [
+"52"
+],
+"relevan": true,
+"situasi": "negatif",
+"respons": "netral",
+"sasaran": {},
+"bagian": "latih"
+}
+]
+}

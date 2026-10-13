@@ -14,6 +14,9 @@ data/raw/banjir/rob/*
 data/raw/berita/*
 !data/raw/berita/label_uji.json
 !data/raw/berita/label_uji_en.json
+# label AI (pedoman scripts/data/PEDOMAN-LABEL.md) + sampel periksa manusia
+!data/raw/berita/label_ai.json
+!data/raw/berita/periksa_manusia.json
 __pycache__/
 .DS_Store
 data/graf_jalan.json.gz

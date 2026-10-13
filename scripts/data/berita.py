@@ -5,6 +5,7 @@ Pakai:  python3 scripts/data/berita.py          ambil 7 hari terakhir, gabung ke
         python3 scripts/data/berita.py uji      uji fungsi murni + akurasi sentimen pada label_uji.json
         python3 scripts/data/berita.py ulang    olah ulang arsip tanpa mengambil RSS
         python3 scripts/data/berita.py sampel   cetak judul acak untuk dilabeli tangan
+        python3 scripts/data/berita.py periksa  kesepakatan label manusia (periksa_manusia.json) vs label AI
 
 Hanya judul + cuplikan RSS yang dibaca; halaman artikel TIDAK diambil (tautan ke sumber asli tetap disimpan).
 Semua aturan (relevansi, geocoding, topik, sentimen) dihitung ulang dari arsip mentah tiap jalan, jadi
@@ -491,6 +492,7 @@ RESPONS = {
     "tagih": -1, "menagih": -1, "tidak transparan": -2, "kecewa": -2, "kekecewaan": -2, "dilaporkan": -0.5,
     "hambat": -1.5, "menghambat": -1.5, "terhambat": -1.5, "kendala": -1.5, "terkendala": -1.5, "kehabisan": -1.5,
     "sulit dijangkau": -1, "rapat terbatas": 0, "percepat": 1, "mempercepat": 1,
+    "gagap": -2, "kartu merah": -2, "dinanti": -1, "minta maaf": -1,
 }
 # Melayu (judul edisi ms-MY memakai leksikon Indonesia + kata ini)
 SITUASI.update({"jerebu": -0.5, "merosot": -1.5, "terjejas": -1.5, "bertambah baik": 2, "pulih": 1.5, "beransur pulih": 2, "susut": 1.5,
@@ -707,6 +709,674 @@ def validasi(jalur=os.path.join(RAW, "label_uji.json"), geo=None, en=False):
     return out
 
 
+# ---------------------------------------------------------------- model nada (judul Indonesia)
+# Leksikon saja tidak lebih baik dari menebak label terbanyak untuk 'situasi' (uji 0,745 = mayoritas 0,745, Okt 2026).
+# Di sini: Naive Bayes dan regresi logistik (stdlib, deterministik) pada kata + bigram + akar kata kasar + penanda negasi +
+# fitur leksikon, dilatih ulang tiap jalan dari label tangan (label_uji.json, manusia) + label_ai.json (asisten AI, lihat
+# PEDOMAN-LABEL.md). Model dipilih dengan validasi silang 5 lipat pada bagian 'latih' (F1 makro), lalu diuji sekali pada
+# bagian 'uji' dengan selang bootstrap. Bahasa Inggris/Melayu tetap memakai leksikon.
+KELAS = ("negatif", "netral", "positif")
+R_AKAR = re.compile(r"^(meng|meny|mem|men|me|di|ter|ber|pe|per|ke|se)?(.{3,}?)(kan|an|nya|i|lah)?$")
+
+
+def fitur_nada(judul):
+    tok, f, sisa_neg, sisa_cg = token(judul), set(), 0, 0
+    for i, t in enumerate(tok):
+        if t in NEGASI:
+            sisa_neg = 3; f.add("NEG"); continue
+        if t in PENETRAL:
+            sisa_cg = 3; f.add("CEGAH"); continue
+        awal = "n_" if sisa_neg else "c_" if sisa_cg else ""
+        sisa_neg, sisa_cg = max(0, sisa_neg - 1), max(0, sisa_cg - 1)
+        if t.isdigit():
+            t = "#"
+        f.add(awal + t)
+        f.add(awal + "~" + R_AKAR.match(t).group(2) if len(t) > 4 else awal + t)
+        if i:
+            f.add(tok[i - 1] + "_" + t)
+    for nama, lex in (("S", SITUASI), ("R", RESPONS)):
+        s, al = skor(judul, "", lex)
+        f.add(f"L{nama}{max(-2, min(2, round(s * 2.5)))}")
+        f.update(f"A{nama}{a}" for a in al)
+    return f
+
+
+class NB:
+    """Naive Bayes multinomial atas fitur biner (binarized MNB)."""
+    def __init__(self, alfa=0.5):
+        self.alfa = alfa
+
+    def latih(self, X, y):
+        self.n = Counter(y); self.c = {k: Counter() for k in KELAS}
+        for f, k in zip(X, y):
+            self.c[k].update(f)
+        self.v = {t for k in KELAS for t in self.c[k]}
+        self.tot = {k: sum(self.c[k].values()) for k in KELAS}
+        return self
+
+    def proba(self, f):
+        N, V = sum(self.n.values()), len(self.v) + 1
+        lp = {k: math.log((self.n[k] + 1) / (N + 3)) + sum(math.log((self.c[k][t] + self.alfa) / (self.tot[k] + self.alfa * V))
+                                                              for t in f if t in self.v) for k in KELAS}
+        m = max(lp.values()); e = {k: math.exp(v - m) for k, v in lp.items()}; z = sum(e.values())
+        return {k: e[k] / z for k in KELAS}
+
+
+class LR:
+    """Regresi logistik multinomial, SGD dengan L2, urutan acak berbenih (deterministik)."""
+    def __init__(self, l2=1e-3, seimbang=False, epoch=25, lr=0.3):
+        self.l2, self.seimbang, self.epoch, self.lr = l2, seimbang, epoch, lr
+
+    def latih(self, X, y):
+        self.w = {k: defaultdict(float) for k in KELAS}; self.b = {k: 0.0 for k in KELAS}
+        n = Counter(y); bobot = {k: (len(y) / (3 * n[k]) if self.seimbang and n[k] else 1.0) for k in KELAS}
+        idx, r = list(range(len(X))), random.Random(13)
+        for ep in range(self.epoch):
+            r.shuffle(idx); eta = self.lr / (1 + ep * 0.2)
+            for i in idx:
+                p = self.proba(X[i])
+                for k in KELAS:
+                    g = (p[k] - (y[i] == k)) * bobot[y[i]]
+                    self.b[k] -= eta * g
+                    for t in X[i]:
+                        self.w[k][t] -= eta * (g + self.l2 * self.w[k][t])
+        return self
+
+    def proba(self, f):
+        z = {k: self.b[k] + sum(self.w[k].get(t, 0.0) for t in f) for k in KELAS}
+        m = max(z.values()); e = {k: math.exp(v - m) for k, v in z.items()}; s = sum(e.values())
+        return {k: e[k] / s for k in KELAS}
+
+
+class Leksikon:
+    """Pembanding: leksikon lama, ambang 0,25."""
+    def __init__(self, lex):
+        self.lex = lex
+
+    def latih(self, X, y):
+        return self
+
+    def tebak_judul(self, judul):
+        return label(skor(judul, "", self.lex)[0])
+
+
+def tebak(model, judul):
+    if isinstance(model, Leksikon):
+        return model.tebak_judul(judul)
+    p = model.proba(fitur_nada(judul))
+    return max(KELAS, key=lambda k: p[k])
+
+
+def baca_label():
+    """Gabungan label manusia (label_uji.json) dan label AI (label_ai.json). -> [{judul, situasi, respons, bagian, sumber_label, sasaran}]"""
+    out = []
+    p = os.path.join(RAW, "label_uji.json")
+    if os.path.exists(p):
+        out += [dict(x, sumber_label="manusia") for x in json.load(open(p)) if x.get("situasi")]
+    p = os.path.join(RAW, "label_ai.json")
+    if os.path.exists(p):
+        out += [dict(x, sumber_label="ai") for x in json.load(open(p))["label"] if x.get("situasi")]
+    return out
+
+
+def bootstrap(benar, tebak_, n=2000, seed=11):
+    """Selang 95% (persentil) untuk akurasi, F1 makro, recall per kelas."""
+    r, idx, hasil = random.Random(seed), list(range(len(benar))), defaultdict(list)
+    for _ in range(n):
+        s = [r.choice(idx) for _ in idx]
+        m = metrik([benar[i] for i in s], [tebak_[i] for i in s])
+        hasil["akurasi"].append(m["akurasi"]); hasil["f1_makro"].append(m["f1_makro"])
+        for k in KELAS:
+            tot = sum(m["konfusi"][k].values())
+            if tot:
+                hasil["recall_" + k].append(m["konfusi"][k][k] / tot)
+    ci = lambda v: [round(sorted(v)[int(len(v) * .025)], 3), round(sorted(v)[int(len(v) * .975) - 1], 3)]
+    return {k: ci(v) for k, v in hasil.items()}
+
+
+def ringkas_metrik(benar, tebak_):
+    m = metrik(benar, tebak_)
+    m["recall"] = {k: round(m["konfusi"][k][k] / max(1, sum(m["konfusi"][k].values())), 3) for k in KELAS}
+    m["ci95"] = bootstrap(benar, tebak_)
+    return m
+
+
+KANDIDAT = {"leksikon": None, "nb_a0.3": lambda: NB(0.3), "nb_a1": lambda: NB(1.0),
+            "lr_l2_1e-3": lambda: LR(1e-3), "lr_l2_1e-3_seimbang": lambda: LR(1e-3, True),
+            "lr_l2_1e-2_seimbang": lambda: LR(1e-2, True)}
+
+
+def latih_nada(lab=None, lipat=5, kandidat=KANDIDAT):
+    """-> ({dim: model terpilih}, laporan). Validasi silang pada 'latih', uji sekali pada 'uji'."""
+    lab = baca_label() if lab is None else lab
+    model, lap = {}, {"n_latih": sum(x["bagian"] == "latih" for x in lab), "n_uji": sum(x["bagian"] == "uji" for x in lab),
+                      "n_label_ai": sum(x["sumber_label"] == "ai" for x in lab), "n_label_manusia": sum(x["sumber_label"] == "manusia" for x in lab)}
+    if not lab:
+        return model, lap
+    latih = [x for x in lab if x["bagian"] == "latih"]; uji_ = [x for x in lab if x["bagian"] == "uji"]
+    urut = list(range(len(latih))); random.Random(5).shuffle(urut)
+    lipatan = [set(urut[i::lipat]) for i in range(lipat)]
+    Xl = [fitur_nada(x["judul"]) for x in latih]
+    for dim, lex in (("situasi", SITUASI), ("respons", RESPONS)):
+        yl = [x[dim] for x in latih]
+        cv = {}
+        for nama, buat in kandidat.items():
+            benar, tb = [], []
+            for L in lipatan:
+                tr = [i for i in range(len(latih)) if i not in L]
+                m = Leksikon(lex) if buat is None else buat().latih([Xl[i] for i in tr], [yl[i] for i in tr])
+                benar += [yl[i] for i in sorted(L)]; tb += [tebak(m, latih[i]["judul"]) for i in sorted(L)]
+            mm = metrik(benar, tb); cv[nama] = {"akurasi": mm["akurasi"], "f1_makro": mm["f1_makro"]}
+        pilih = max(cv, key=lambda k: (cv[k]["f1_makro"], cv[k]["akurasi"]))
+        m = Leksikon(lex) if kandidat[pilih] is None else kandidat[pilih]().latih(Xl, yl)
+        model[dim] = m
+        yu = [x[dim] for x in uji_]
+        mayor = Counter(yl).most_common(1)[0][0]
+        lk = [Leksikon(lex).tebak_judul(x["judul"]) for x in uji_]
+        tb = [tebak(m, x["judul"]) for x in uji_]
+        # selisih berpasangan model - mayoritas (bootstrap pada judul yang sama)
+        r, idx, d_acc, d_f1 = random.Random(3), list(range(len(yu))), [], []
+        for _ in range(1000):
+            s = [r.choice(idx) for _ in idx]
+            b_ = [yu[i] for i in s]
+            a1, a0 = metrik(b_, [tb[i] for i in s]), metrik(b_, [mayor] * len(s))
+            d_acc.append(a1["akurasi"] - a0["akurasi"]); d_f1.append(a1["f1_makro"] - a0["f1_makro"])
+        q = lambda v: [round(sorted(v)[25], 3), round(sorted(v)[974], 3)]
+        lap[dim] = {"cv": cv, "terpilih": pilih, "uji": ringkas_metrik(yu, tb), "leksikon_uji": ringkas_metrik(yu, lk),
+                    "mayoritas": {"label": mayor, **{k: v for k, v in ringkas_metrik(yu, [mayor] * len(yu)).items() if k != "konfusi"}},
+                    "selisih_vs_mayoritas_ci95": {"akurasi": q(d_acc), "f1_makro": q(d_f1)},
+                    "uji_manusia": metrik([x[dim] for x in uji_ if x["sumber_label"] == "manusia"],
+                                          [t for x, t in zip(uji_, tb) if x["sumber_label"] == "manusia"])}
+    return model, lap
+
+
+# ---------------------------------------------------------------- pantauan media (keluaran untuk ruang krisis)
+# Semua aturan di bawah memakai judul saja dan bisa diaudit: tiap butir membawa judul bukti + tautan.
+LEMBAGA = {  # kode -> (nama tampilan, pola pada teks ternormalisasi)
+    "PUSAT": ("Presiden & pemerintah pusat", r"\bpresiden\b|\bprabowo\b|\bistana\b|\bmenko\w*|\bkemenko\w*|\bwamenko\b|\bseskab\b|\bmensesneg\b|kepala staf kepresidenan|\bksp\b|pemerintah pusat|\bwapres\b|\bgibran\b|\bmenlu\b|\bkemenlu\b|\b(wa)?mendagri\b|\bkemendagri\b|\bmenhub\b|\bkemenhub\b|\bmenkes\b|\bkemenkes\b|\bbrin\b|\bmenkeu\b|\bkemenkeu\b|\bmentan\b|\bkementan\b|\bkemenkum\b|\bkemhan\b|\bkomdigi\b|\bbakom\b|\bpemerintah\b(?! (provinsi|kabupaten|kota|daerah|desa))"),
+    "BNPB": ("BNPB", r"\bbnpb\b"),
+    "BPBD": ("BPBD", r"\bbpbd\b|\bbpba\b|\bbpb pk\b"),
+    "KEMENHUT": ("Kemenhut / Manggala Agni", r"\bkemenhut\b|kementerian kehutanan|\bmenhut\b|menteri kehutanan|raja juli|\bklhk\b|kementerian lhk|manggala agni|\bb?bksda\b|balai taman nasional"),
+    "KLH": ("KLH / BPLH", r"\bklh\b|\bbplh\b|kementerian lingkungan hidup|menteri lh\b|\bmenlh\b|wamen lh|hanif faisol|\bgakkum\b"),
+    "BMKG": ("BMKG", r"\bbmkg\b"),
+    "TNI": ("TNI", r"\btni\b|\bkodim\b|\bkorem\b|\bdanrem\b|\bdandim\b|\bkodam\b|\bpangdam\b|\bbabinsa\b|\bkoramil\b|\blanud\b|\bkodaeral\b|\blantamal\b|pangkogabwilhan|\bprajurit\b"),
+    "POLRI": ("Polri", r"\bpolri\b|\bpolda\b|\bpolres\w*|\bpolsek\b|\bkapolda\b|\bkapolres\w*|\bkapolri\b|\bwakapolri\b|\bbrimob\b|\bsatbrimob\b|bhabinkamtibmas|\bpolisi\b|kepolisian|\bposubsektor\b|bareskrim"),
+    "PEMDA": ("Pemerintah daerah", r"\bpemprov\b|\bpemkab\b|\bpemkot\b|\bpemko\b|\bgubernur\b|\bwagub\b|\bgubri\b|\bbupati\b|wali ?kota|\bpemda\b|pemerintah (provinsi|kabupaten|kota|daerah)|kepala daerah|\bdinkes\b|\bdishut\b|\bdamkar\b|\bdisdamkar\w*|satpol pp|\bsatgas\b|\bal haris\b|herman deru|rudy mas ud|sf hariyanto|ria norsan|agustiar sabran"),
+    "DPR": ("DPR / DPRD", r"\bdpr\b|\bdprd\b|\bdpd\b|anggota dewan|\blegislator\b|komisi iv"),
+    "PERUSAHAAN": ("Perusahaan / korporasi", r"\bpt\b|\bperusahaan\b|\bkorporasi\b|\bkonsesi\b|\bhti\b|\bgapki\b|sinar mas|\bwilmar\b|asian agri|musim mas"),
+    "MALAYSIA_SG": ("Malaysia / Singapura", r"\bmalaysia\b|\bsingapura\b|\bsingapore\b"),
+}
+LEMBAGA_RE = {k: re.compile(v) for k, (_, v) in LEMBAGA.items()}
+PEMERINTAH = {"PUSAT", "BNPB", "BPBD", "KEMENHUT", "KLH", "BMKG", "TNI", "POLRI", "PEMDA"}
+R_DITINDAK = re.compile(r"\b(disegel|segel|disidik|diselidiki|penyidikan|tersangka|digugat|gugatan|sanksi|dicabut|dijerat|dituding|diduga|dipidana|didenda|terlibat|penyebab)\b")
+R_BAIK_P = re.compile(r"\b(penghargaan|apresiasi|diapresiasi|bantu|bantuan|padamkan|serahkan|salurkan|sinergi)\b")
+R_TUNTUT = re.compile(r"\b(minta|meminta|diminta|desak|mendesak|didesak|tuntut|menuntut|dituntut|usul\w*|serukan|ajukan|mengajukan|tagih|menagih)\b")
+
+
+R_PENILAI = re.compile(r"\b(apresiasi|mengapresiasi|kritik|mengkritik|kecam|mengecam|soroti|menyoroti|desak|mendesak|minta|meminta|tuntut|menuntut|gugat|menggugat|"
+                       r"puji|memuji|keluhkan|mengeluhkan|pertanyakan|mempertanyakan|ingatkan|mengingatkan|imbau|mengimbau|tegaskan|menegaskan)\b")
+
+
+R_DINILAI = re.compile(r"\s+(\w+\s+){0,3}?(diminta|didesak|dikritik|disorot|dituntut|digugat|dikecam|diganjar|dinilai lamban|dinilai belum)\b")
+# untuk sikap per lembaga hanya kata bernilai kuat (|bobot| >= 1,5) + hasil penegakan hukum; kata rutin (sinergi, siap, percepat) tidak dihitung
+RESPONS_SIKAP = {k: v for k, v in RESPONS.items() if abs(v) >= 1.5 or k in ("tersangka", "ditahan", "diamankan", "divonis", "dihukum", "sanksi")}
+
+
+def klausa(judul):
+    return [k for k in re.split(r"\s*(?:[,;:!?|]| - | – | — )\s*", judul) if k.strip()]
+
+
+def lembaga_di(teks):
+    t = norm(teks)
+    return [k for k, r in LEMBAGA_RE.items() if r.search(t)]
+
+
+def sikap_lembaga(judul, respons_judul=None):
+    """{kode: 'negatif'|'netral'|'positif'} untuk tiap lembaga yang disebut judul. Aturan: klausa yang memuat lembaga dinilai
+    dengan leksikon respons; perusahaan yang ditindak/digugat = negatif; lembaga yang disebut SESUDAH kata desak/minta di
+    klausanya = negatif (sasaran tuntutan); klausa netral pada lembaga di klausa pertama mewarisi nada respons judul."""
+    out = {}
+    ks = klausa(judul)
+    nj = norm(judul)
+    pertama = min(((r.search(nj).start(), k) for k, r in LEMBAGA_RE.items() if r.search(nj)), default=(0, None))[1]
+    for i, k in enumerate(ks):
+        t = norm(k)
+        for kode, r in LEMBAGA_RE.items():
+            m = r.search(t)
+            if not m:
+                continue
+            s = skor(k, "", RESPONS_SIKAP)[0]
+            v = label(s)
+            if kode == "PERUSAHAAN":
+                v = "negatif" if R_DITINDAK.search(t) or s <= -0.25 else "positif" if R_BAIK_P.search(t) or s >= 0.25 else "netral"
+            else:
+                tt = R_TUNTUT.search(t)
+                ucap = R_PENILAI.search(t, m.end())
+                if (tt and tt.start() < m.start()) or R_DINILAI.match(t, m.end()):
+                    v = "negatif"
+                elif ucap:  # "Gubernur apresiasi TNI", "DPRD kritik Pemprov": lembaga ini yang menilai, bukan yang dinilai
+                    v = "netral"
+                elif v == "netral" and kode == pertama and respons_judul in ("negatif", "positif") and not (tt and tt.start() > m.start()):
+                    v = respons_judul
+            if out.get(kode, "netral") == "netral":
+                out[kode] = v
+    return out
+
+
+ISU = {  # kode -> (judul isu, pola, pemilik saran)
+    "korban": ("Korban jiwa & keselamatan", r"\btewas|\bmeninggal|korban jiwa|\bterjebak\b|\btabrakan", "BNPB + Kemenkes + Pemda"),
+    "asap_kesehatan": ("Kabut asap & kesehatan warga", r"\bispa\b|kualitas udara|\bispu\b|\bpm ?2 ?5\b|\bmasker|\bsesak|pneumonia|tidak sehat|\bberbahaya\b", "Kemenkes / Dinkes + KLH (ISPU)"),
+    "sekolah": ("Sekolah diliburkan / belajar dari rumah", r"\bsekolah\b|belajar dari rumah|belajar di rumah|\bdaring\b|\bpjj\b|diliburkan|\bliburkan|\bwfh\b|\bsiswa\b|\bpelajar\b", "Pemda (Dinas Pendidikan)"),
+    "transportasi": ("Gangguan penerbangan & transportasi", r"penerbangan|\bbandara\b|\bpesawat\b|\bdelay\b|tertunda|\bpelayaran\b|jarak pandang|gagal landing", "Kemenhub + AirNav + Pemda"),
+    "lintas_batas": ("Asap lintas batas & hubungan ASEAN", r"\bmalaysia\b|\bsingapura\b|\bsingapore\b|asap kiriman|lintas batas|\bjerebu\b|\basean\b|\bbrunei\b", "Kemenlu + KLH"),
+    "hukum": ("Penegakan hukum & tanggung jawab korporasi", r"tersangka|ditangkap|\btangkap|disegel|\bsegel|korporasi|\bperusahaan\b|\bsanksi|cabut izin|izin dicabut|penyidikan|divonis|\bpelaku\b|pembakar", "Polri + Gakkum KLH/Kemenhut"),
+    "kritik": ("Kritik, gugatan & desakan publik", r"\bgugat|class action|\bkritik|\bkecam|\blamban|\bdemo\b|unjuk rasa|\bdesak|\bmendesak|\btuntut|\bsorot|\bmundur\b|kartu merah|\bgagap\b", "KSP / Humas pemerintah + lembaga yang disorot"),
+    "status": ("Status darurat & bencana nasional", r"status (siaga|tanggap)|siaga darurat|tanggap darurat|bencana nasional|siaga satu", "BNPB + Pemda"),
+    "udara": ("Pemadaman udara & modifikasi cuaca", r"water ?bombing|\bhelikopter|\bheli\b|bom air|modifikasi cuaca|\bomc\b|\btmc\b|hujan buatan|\bchinook\b|\bpesawat\b", "BNPB + BMKG"),
+    "satwa": ("Satwa & kawasan konservasi", r"orangutan|orang utan|\bsatwa|\bgajah\b|\bharimau\b|\bbekantan\b|taman nasional|\btn\b|cagar alam|\btahura\b|hutan lindung", "Kemenhut (BKSDA / Balai TN)"),
+    "sebaran": ("Sebaran api & luas terbakar", r"\bhektare|\bhektar\b|\bha\b|\bmeluas|titik panas|\bhotspot|titik api", "BNPB + Kemenhut (Manggala Agni)"),
+    "cuaca": ("Cuaca, kemarau & El Nino", r"el nino|kemarau|\bbmkg\b|\bhujan\b|kekeringan|\bcuaca\b", "BMKG"),
+    "pencegahan": ("Pencegahan, gambut & kesiapsiagaan", r"\bgambut\b|sekat kanal|restorasi|sumur bor|pencegahan|\bcegah|\bmpa\b|patroli|sosialisasi|\bapel\b|kesiapsiagaan", "Kemenhut + BRGM + Pemda"),
+    "sumber_daya": ("Sumber daya: anggaran, personel, alat", r"\banggaran|\bdana\b|\bbtt\b|\bpompa\b|\bpersonel\b|\bhonor\b|logistik|\bmiliar\b|\bjuta\b|kekurangan|\bair bersih\b", "BNPB + Kemenkeu + Pemda"),
+    "hoaks": ("Hoaks, viral & klarifikasi", r"\bhoaks|\bhoax|cek fakta|\bviral\b|\bklarifikasi|\bbantah|disinformasi|\bbenarkah\b|\bfaktanya\b", "Komdigi + Humas lembaga terkait"),
+    "pusat": ("Arahan Presiden & koordinasi pusat", r"\bpresiden\b|\bprabowo\b|\bistana\b|\bratas\b|rapat terbatas|\bmenko\b|kemenko|\bseskab\b|desk karhutla", "KSP / Setkab + Kemenko Polkam"),
+}
+ISU_RE = {k: re.compile(v[1]) for k, v in ISU.items()}
+TUNTUTAN = {  # kategori tuntutan -> (judul, pola pada isi tuntutan, pemilik); dicocokkan berurutan, yang pertama menang
+    "udara": ("Kirim water bombing / helikopter", r"water ?bombing|helikopter|heli|bom air|pesawat", "BNPB"),
+    "status": ("Tetapkan status darurat / bencana nasional", r"status|darurat|bencana nasional", "BNPB + Presiden / Pemda"),
+    "lintas_batas": ("Asap lintas batas: tuntutan / usulan negara tetangga", r"malaysia|singapura|asean|lintas batas|jiran", "Kemenlu + KLH"),
+    "tata_kelola": ("Evaluasi izin, tata kelola, pencopotan pejabat", r"evaluasi|tata kelola|izin|dicopot|copot|mundur|audit", "KSP + Kemenhut + KLH"),
+    "hukum": ("Usut & tindak pelaku / perusahaan", r"usut|tindak tegas|hukum|cabut|perusahaan|korporasi|pelaku|tangkap|sanksi|periksa|tanggung jawab|nama perusahaan|pembakar", "Polri + Gakkum KLH/Kemenhut"),
+    "kesehatan": ("Layanan kesehatan & masker", r"masker|ispa|kesehatan|layanan|oksigen|posko|gratis|korban", "Kemenkes / Dinkes"),
+    "sekolah": ("Liburkan sekolah / belajar dari rumah", r"sekolah|libur|daring|belajar", "Pemda (Dinas Pendidikan)"),
+    "pencegahan": ("Pencegahan & pemulihan gambut", r"gambut|restorasi|cegah|pencegahan|sekat|kanal|mangrove|moratorium|pengawasan", "Kemenhut + BRGM"),
+    "proyek": ("Hentikan / tinjau proyek (PSN, food estate)", r"psn|food estate|proyek|sawit|tambang", "KSP + kementerian sektor"),
+    "data": ("Keterbukaan data & koordinasi", r"data|transparan|koordinasi|kolaborasi|terpadu|satgas|solid|dibuka", "BNPB + KSP"),
+    "sumber_daya": ("Percepat penanganan: personel, alat, anggaran", r"personel|alat|anggaran|dana|pompa|sumur bor|honor|logistik|bantuan|turun tangan|tangani|bertindak|bergerak|gerak cepat|perkuat|penanganan|serius|segera|prioritas|lindungi|hentikan", "BNPB + Pemda"),
+}
+TUNTUTAN_RE = {k: re.compile(r"\b(" + v[1] + r")\b") for k, v in TUNTUTAN.items()}
+R_BANTUAN = re.compile(r"bantuan|water ?bombing|helikopter|\bheli\b|personel|pompa|logistik|turun tangan")
+R_UCAP = re.compile(r"\b(sebut|menyebut|ungkap|mengungkap|ungkapkan|tegaskan|menegaskan|minta|meminta|desak|mendesak|imbau|mengimbau|ingatkan|mengingatkan|"
+                    r"klaim|mengklaim|pastikan|memastikan|akui|mengakui|bantah|membantah|nilai|menilai|soroti|menyoroti|kritik|mengkritik|dorong|mendorong|"
+                    r"usul|mengusulkan|janji|berjanji|beberkan|membeberkan|jelaskan|menjelaskan|lapor|melaporkan|catat|mencatat|prediksi|memprediksi|"
+                    r"tuntut|menuntut|kecam|mengecam|optimistis|yakin|harap|berharap|perintahkan|instruksikan|bicara|angkat bicara)\b")
+R_BUKAN_TOKOH = re.compile(r"^(video|foto|berita|breaking news|opini|editorial|update|data|terpopuler|sorotan|cek fakta|info|karhutla|kebakaran|kabut|asap|cuaca|"
+                           r"prakiraan|hari|kasus|luas|titik|hotspot|warga|ini|begini|simak|daftar|lihat|kronologi|wow|waspada|viral|populer|di balik|"
+                           r"surat terbuka|artikel|news|ispa|status|polusi|jumlah|ribuan|ratusan|puluhan|sebanyak)\b")
+GOL_SIPIL = re.compile(r"\b(walhi|greenpeace|warsi|ylbhi|lbh|celios|icel|auriga|pantau gambut|jikalahari|relawan|mahasiswa|bem|aliansi|lsm|pakar|akademisi|"
+                       r"peneliti|guru besar|prof|dosen|warga|masyarakat|aktivis|hmi|pmii|gmni|kammi|ormas|nu\b|muhammadiyah|ansor|ombudsman|kontras)\b")
+SARAN_WARGA = {
+    "asap_kesehatan": "Saat ISPU/PM2.5 tidak sehat: kurangi aktivitas di luar ruang, pakai masker N95/KN95 bila harus keluar, utamakan perlindungan balita, ibu hamil, lansia, dan penderita penyakit paru/jantung; periksakan diri ke puskesmas bila sesak.",
+    "sekolah": "Ikuti pengumuman resmi dinas pendidikan setempat soal jam belajar dan pembelajaran jarak jauh.",
+    "transportasi": "Cek status penerbangan/pelayaran langsung ke maskapai atau operator sebelum berangkat; kurangi kecepatan saat jarak pandang turun.",
+    "lintas_batas": "Rujuk data resmi kualitas udara dan titik panas; hindari menyebarkan klaim asal asap tanpa data.",
+    "hukum": "Jangan membuka lahan dengan membakar; laporkan pembakaran ke Polsek, BPBD, atau Manggala Agni setempat.",
+    "korban": "Jauhi lokasi api dan asap tebal; ikuti arahan petugas dan jalur evakuasi; hubungi layanan darurat setempat.",
+    "default": "Jangan membakar lahan atau sampah; laporkan api dan asap ke BPBD, Manggala Agni, atau Polsek setempat; pantau informasi resmi BMKG dan BNPB.",
+}
+BELUM_TAHU = {
+    "asap_kesehatan": "Berita tidak mengukur dampak kesehatan; angka ISPA dan ISPU per kabupaten perlu dari Dinkes dan KLH.",
+    "transportasi": "Jumlah penerbangan terdampak menurut berita bukan data resmi; perlu konfirmasi AirNav/Kemenhub.",
+    "hukum": "Status perkara dari judul berita belum tentu mutakhir; perlu konfirmasi penyidik.",
+    "sebaran": "Luas terbakar dari berita berbeda-beda sumbernya; titik panas satelit bukan berarti setiap titik adalah api.",
+    "default": "Judul berita belum tentu memuat angka resmi terbaru; konfirmasi ke lembaga pemilik data sebelum dikutip.",
+}
+
+
+def _bukti(x):
+    e = {k: x[k] for k in ("id", "judul", "sumber", "tgl", "url") if x.get(k)}
+    for k in ("url_asli", "gambar", "cerita"):
+        if x.get(k):
+            e[k] = x[k]
+    if x.get("kab"):
+        e["kab"] = x["kab"][0]
+    elif x.get("prov"):
+        e["prov"] = x["prov"][0]
+    return e
+
+
+def tokoh_dari(judul):
+    """[(pembicara, kata_ucap)] dari pola judul: 'X: ...', '..., X sebut/minta/desak ...', 'kata/ujar/menurut X'."""
+    out = []
+    m = re.match(r"^\s*([^:]{2,60}):\s+\S", judul)
+    if m and len(m.group(1).split()) <= 7 and not R_BUKAN_TOKOH.match(norm(m.group(1))):
+        out.append((m.group(1).strip(), "pernyataan"))
+    for k in klausa(judul):
+        t = k.strip()
+        m = re.search(r"\b(?:kata|ujar|tutur|menurut)\s+(.{2,50})$", t, re.I)
+        if m and len(m.group(1).split()) <= 6:
+            out.append((m.group(1).strip(), "pernyataan"))
+            continue
+        tok = t.split()
+        for i, w in enumerate(tok[:8]):
+            if i and R_UCAP.fullmatch(norm(w) or "-"):
+                pem = " ".join(tok[:i])
+                if 1 <= i <= 6 and not R_BUKAN_TOKOH.match(norm(pem)) and not re.search(r"\d{2,}", pem):
+                    out.append((pem, norm(w)))
+                break
+    lihat, hasil = set(), []
+    for p, v in out:
+        p = re.sub(r"^(video|foto)\s*[:|-]?\s*", "", p, flags=re.I).strip(" '\"“”‘’")
+        if p and norm(p) not in lihat and len(norm(p)) > 2:
+            lihat.add(norm(p)); hasil.append((p, v))
+    return hasil
+
+
+JABATAN = re.compile(r"^(gubernur|wagub|wakil gubernur|bupati|wabup|wakil bupati|wali ?kota|wawali|menteri|menhut|menlu|mendagri|menko\w*|wamen\w*|presiden|wapres|"
+                     r"kapolda|kapolres\w*|kapolri|pangdam|danrem|dandim|kepala bnpb|kepala bpbd|kepala|ketua|anggota|seskab|mensesneg|plt|pj)\s+")
+R_WILAYAH_AWAL = re.compile(r"(kalimantan|sumatera|sumatra|jawa|sulawesi|papua|nusa|kepulauan|bangka|maluku|riau|jambi|aceh|bali|banten|kal\w+|sum\w+|sul\w+|ntt|ntb)\b")
+
+
+def kunci_tokoh(p):
+    """'Gubernur Anwar Hafid' dan 'Anwar Hafid' satu tokoh; 'Kapolda Riau Irjen Herry' -> 'herry ...'; jabatan tanpa nama tetap utuh."""
+    n = norm(p); m = JABATAN.match(n)
+    if not m:
+        return n
+    sisa = n[m.end():].split()
+    for k in (2, 1, 0):
+        r = sisa[k:]
+        if len(r) >= 2 and not lembaga_di(" ".join(r)) and not R_WILAYAH_AWAL.match(r[0]) and r[0] not in ("irjen", "brigjen", "kombes", "mayjen", "laksda", "marsda"):
+            return " ".join(r)
+    return n
+
+
+def tuntutan_dari(judul):
+    """[(penuntut, isi, jenis)] jenis 'publik' (warga, relawan, LSM, DPR, Malaysia...) atau 'daerah' (pemda/BPBD minta bantuan)."""
+    out = []
+    for k in klausa(judul):
+        t = k.strip(); tn = norm(t); m = R_TUNTUT.search(tn)
+        if not m or m.group(1) in ("diminta", "didesak", "didorong", "dituntut"):
+            continue
+        penuntut, isi = tn[:m.start()].strip(), tn[m.end():].strip()
+        if not isi or len(isi.split()) < 2:
+            continue
+        lb = lembaga_di(penuntut)
+        if lb and set(lb) <= PEMERINTAH:
+            if "PEMDA" in lb or "BPBD" in lb:
+                if R_BANTUAN.search(isi):
+                    out.append((penuntut, isi, "daerah"))
+            continue  # pejabat meminta warga / jajaran: imbauan, bukan tuntutan
+        if (not penuntut or len(penuntut.split()) > 5 or any(w.endswith("kan") or w in ("bentuk", "ispa", "petugas") for w in penuntut.split())
+                or m.group(1) in ("ajukan", "mengajukan")) or re.match(r"(warga|masyarakat|semua pihak|seluruh pihak|personel|jajaran)\b", isi):
+            continue
+        out.append((penuntut, isi, "publik"))
+    return out
+
+
+def pantau(art, cerita, sekarang, fitur, lonjakan, a_int, geo=None):
+    """Keluaran ruang krisis: isu, tokoh, lembaga, tuntutan, kontradiksi, peringatan, rekomendasi_komunikasi.
+    art: artikel internal (dengan _t), sudah punya 'cerita', 'label_*', 'lembaga'."""
+    t24, t48, t72 = sekarang - dt.timedelta(hours=24), sekarang - dt.timedelta(hours=48), sekarang - dt.timedelta(hours=72)
+    t7, t14, t30 = sekarang - dt.timedelta(days=7), sekarang - dt.timedelta(days=14), sekarang - dt.timedelta(days=30)
+    hari = [(sekarang - dt.timedelta(days=i)).date().isoformat() for i in range(29, -1, -1)]
+    nas = [x for x in art if x["asal"] == "nasional"]
+    ukur = lambda xs: {"n24": sum(x["_t"] >= t24 for x in xs), "n24_lalu": sum(t48 <= x["_t"] < t24 for x in xs),
+                       "n7": sum(x["_t"] >= t7 for x in xs), "n7_lalu": sum(t14 <= x["_t"] < t7 for x in xs)}
+    momen = lambda a, b: round((a - b) / max(b, 1), 2)
+    # outlet: tier 1 = 15 media nasional dengan artikel terbanyak (120 hari), tier 2 = 16-60, tier 3 = sisanya
+    urut_media = [s for s, _ in Counter(x["sumber"] for x in nas).most_common()]
+    tier = {s: 1 if i < 15 else 2 if i < 60 else 3 for i, s in enumerate(urut_media)}
+    wakil = lambda xs, k=5: [_bukti(x) for x in sorted({x["cerita"]: x for x in sorted(xs, key=lambda x: x["_t"])}.values(),
+                                                    key=lambda x: (-cerita[x["cerita"]]["n_media"], -x["_t"].timestamp()))[:k]]
+
+    # --- isu (gugus narasi lintas cerita) + momentum
+    isu = []
+    for kode, (nama, _, pemilik) in ISU.items():
+        xs = [x for x in art if kode in x["isu"]]
+        if not xs:
+            continue
+        u = ukur(xs); x7 = [x for x in xs if x["_t"] >= t7]
+        sit = Counter(x["label_situasi"] for x in x7); res = Counter(x["label_respons"] for x in x7)
+        per_hari = Counter(x["tgl"][:10] for x in xs if x["_t"] >= t30)
+        tiers = Counter(tier.get(x["sumber"], 3) for x in x7 if x["asal"] == "nasional")
+        isu.append({"kode": kode, "nama": nama, "pemilik": pemilik, **u, "n_dasar": sum(t24 - dt.timedelta(days=7) <= x["_t"] < t24 for x in xs), "momentum24": momen(u["n24"], u["n24_lalu"]), "momentum7": momen(u["n7"], u["n7_lalu"]),
+                    "cerita7": len({x["cerita"] for x in x7}), "media7": len({x["sumber"] for x in x7}),
+                    "media_utama": [s for s, _ in Counter(x["sumber"] for x in x7).most_common(5)],
+                    "tier7": [tiers[1], tiers[2], tiers[3]], "n_int7": sum(x["asal"] == "internasional" for x in x7),
+                    "prov": [p for p, _ in Counter(p for x in x7 for p in x["prov"]).most_common(5)],
+                    "kab": [k for k, _ in Counter(k for x in x7 for k in x["kab"]).most_common(5)],
+                    "situasi_n": [sit[k] for k in KELAS], "respons_n": [res[k] for k in KELAS],
+                    "harian": [per_hari.get(d, 0) for d in hari], "contoh": wakil(x7 or xs)})
+    isu.sort(key=lambda i: -(i["n7"] * (1 + max(-0.5, min(1.5, i["momentum7"])))))
+
+    # --- lembaga: sebutan & sikap per hari (120 hari) + 7 hari vs 7 hari sebelumnya
+    lembaga = {}
+    for kode, (nama, _) in LEMBAGA.items():
+        xs = [x for x in nas if kode in x["lembaga"]]
+        if not xs:
+            continue
+        harian = defaultdict(lambda: [0, 0, 0])
+        for x in xs:
+            harian[x["tgl"][:10]][KELAS.index(x["lembaga"][kode])] += 1
+        x7 = [x for x in xs if x["_t"] >= t7]; xl = [x for x in xs if t14 <= x["_t"] < t7]
+        c7, cl = Counter(x["lembaga"][kode] for x in x7), Counter(x["lembaga"][kode] for x in xl)
+        lembaga[kode] = {"nama": nama, "n": len(xs), "n7": len(x7), "n7_lalu": len(xl), "sikap7": [c7[k] for k in KELAS], "sikap7_lalu": [cl[k] for k in KELAS],
+                         "harian": dict(sorted(harian.items())),
+                         "negatif": wakil([x for x in x7 if x["lembaga"][kode] == "negatif"], 6),
+                         "positif": wakil([x for x in x7 if x["lembaga"][kode] == "positif"], 6)}
+
+    # --- tokoh: siapa bicara apa
+    tk = defaultdict(list)
+    for x in nas:
+        if x["_t"] < t30:
+            continue
+        for p, v in x["tokoh"]:
+            tk[kunci_tokoh(p)].append((p, v, x))
+    tokoh = []
+    for kunci, xs in tk.items():
+        nama = max(Counter(p for p, _, _ in xs).most_common(3), key=lambda e: (e[1], len(e[0])))[0]
+        lb = list(dict.fromkeys(k for p in {p for p, _, _ in xs} for k in lembaga_di(p))); xx = [x for _, _, x in xs]
+        golongan = ("pemerintah" if set(lb) & PEMERINTAH else "legislatif" if "DPR" in lb else "korporasi" if "PERUSAHAAN" in lb
+                    else "luar negeri" if "MALAYSIA_SG" in lb else "masyarakat sipil" if GOL_SIPIL.search(kunci) else "lainnya")
+        res = Counter(x["label_respons"] for x in xx)
+        kut = sorted(xs, key=lambda e: e[2]["_t"], reverse=True)
+        tokoh.append({"nama": nama, "lembaga": lb[:2], "golongan": golongan, "n": len(xx), "n7": sum(x["_t"] >= t7 for x in xx),
+                      "terakhir": kut[0][2]["tgl"], "kata": [v for v, _ in Counter(v for _, v, _ in xs).most_common(3)],
+                      "respons_n": [res[k] for k in KELAS], "prov": [p for p, _ in Counter(p for x in xx for p in x["prov"]).most_common(3)],
+                      # jangkauan: berapa media memuat cerita yang membawa ucapan ini (apakah pesannya tersebar)
+                      "jangkauan": max(cerita[x["cerita"]]["n_media"] for x in xx),
+                      "kutipan": [dict(_bukti(x), kata=v, media_cerita=cerita[x["cerita"]]["n_media"]) for _, v, x in kut[:6]]})
+    tokoh = [t for t in tokoh if t["n"] >= 2 or t["n7"]]
+    tokoh.sort(key=lambda t: (-t["n7"], -t["n"]))
+
+    # --- tuntutan publik + permintaan bantuan daerah
+    tt = defaultdict(list)
+    for x in nas:
+        for penuntut, isi, jenis in x["tuntutan"]:
+            if jenis == "publik" and geo and len(penuntut.split()) <= 3 and geo.cari(penuntut)["prov"] and not GOL_SIPIL.search(penuntut) and not lembaga_di(penuntut):
+                if not R_BANTUAN.search(isi):
+                    continue
+                jenis = "daerah"  # "Sumsel minta water bombing": permintaan pemerintah daerah
+            kat = next((k for k, r in TUNTUTAN_RE.items() if r.search(isi)), "lain")
+            tt[(jenis, kat)].append((penuntut, isi, x))
+    tuntutan = []
+    for (jenis, kat), xs in tt.items():
+        xx = [x for _, _, x in xs]; x7 = [x for x in xx if x["_t"] >= t7]
+        if not x7 and not any(x["_t"] >= t30 for x in xx):
+            continue
+        nama, _, pemilik = TUNTUTAN.get(kat, ("Lainnya", "", "Humas pemerintah"))
+        terbaru = sorted(xs, key=lambda e: e[2]["_t"], reverse=True)
+        tuntutan.append({"kategori": kat, "jenis": jenis, "nama": ("Permintaan bantuan daerah: " + nama.lower()) if jenis == "daerah" else nama, "pemilik": pemilik,
+                         "n": len(xx), "n7": len(x7), "n7_lalu": sum(t14 <= x["_t"] < t7 for x in xx),
+                         "penuntut": [p for p, _ in Counter(p for p, _, _ in xs if p).most_common(6)],
+                         "prov": [p for p, _ in Counter(p for x in x7 for p in x["prov"]).most_common(4)],
+                         "contoh": [dict(_bukti(x), penuntut=p, isi=i) for p, i, x in terbaru[:8]]})
+    tuntutan.sort(key=lambda t: (-t["n7"], -t["n"]))
+
+    # --- kontradiksi: klaim padam/nihil/tidak ada api vs satelit (kompleks aktif sesudah klaim di wilayah yang sama)
+    kom_kab, kom_prov = defaultdict(list), defaultdict(list)
+    for f in fitur:
+        p = f["properties"]
+        if p.get("akhir"):
+            kom_prov[p["prov"]].append(p)
+            if p.get("kab"):
+                kom_kab[f"{p['prov']}|{p['kab']}"].append(p)
+    kontradiksi, lihat = [], set()
+    batas_api = min((dt.datetime.fromisoformat(f["properties"]["awal"]) for f in fitur if f["properties"].get("awal")), default=sekarang)
+    for x in sorted(art, key=lambda x: x["_t"], reverse=True):
+        if x["_t"] < max(t7, batas_api) or x["cerita"] in lihat or x["asal"] != "nasional":
+            continue
+        m = R_KLAIM.search(norm(x["judul"]))
+        if not m:
+            continue
+        kuat = not re.match(r"(sudah|telah) padam|bantah|bukan", m.group(0))
+        if geo:  # lokasi harus dari klausa yang memuat klaim: "Titik api nihil, asap dari Sumsel" bukan klaim tentang Sumsel
+            kl = [k for k in klausa(x["judul"]) if R_KLAIM.search(norm(k))]
+            gk = geo.cari(kl[0]) if kl else {"prov": [], "kab": []}
+            lain = [k for k in klausa(x["judul"]) if k not in kl and (geo.cari(k)["prov"])]
+            if gk["prov"]:
+                x = dict(x, prov=gk["prov"], kab=gk["kab"])
+            elif lain:
+                continue
+        if x["kab"]:
+            wil, ks, ambang = x["kab"][0], kom_kab.get(x["kab"][0], []), 1
+        elif x["prov"] and kuat:
+            wil, ks, ambang = x["prov"][0], kom_prov.get(x["prov"][0], []), 5
+        else:
+            continue
+        sesudah = [p for p in ks if dt.datetime.fromisoformat(p["akhir"]) >= x["_t"] + dt.timedelta(hours=6)]
+        if not kuat:  # "api X sudah padam" hanya membantah api di dekatnya: kompleks <= 10 km dari lokasi setingkat kecamatan
+            sesudah = [p for p in sesudah if x["presisi"] == "kec" and km(x["lat"], x["lon"], p["lat"], p["lon"]) <= 10]
+        if len(sesudah) < ambang:
+            continue
+        lihat.add(x["cerita"])
+        sesudah.sort(key=lambda p: (-p["level"], -p.get("n24", 0)))
+        kontradiksi.append({**_bukti(x), "klaim": m.group(0), "wilayah": wil, "tingkat": "kab" if "|" in wil else "prov",
+                            "jenis": "bantahan api" if re.search(r"tidak ada|tak ada|bukan|bantah", m.group(0)) else "klaim padam / nihil",
+                            "kompleks_aktif": len(sesudah), "titik24": sum(p.get("n24", 0) for p in sesudah),
+                            "prioritas": sum(p["level"] == 3 for p in sesudah), "kompleks": [p["id"] for p in sesudah[:8]],
+                            "deteksi_terakhir": max(p["akhir"] for p in sesudah)})
+    kontradiksi.sort(key=lambda k: (-k["prioritas"], -k["kompleks_aktif"]))
+
+    # --- peringatan dini: aturan ambang yang bisa diaudit
+    per = []
+    lj = {}
+    for l in sorted(lonjakan, key=lambda l: l["tgl"]):  # per provinsi ambil hari terakhir dalam 48 jam
+        if l["prov"] != "ID" and l["tgl"] >= (sekarang - dt.timedelta(days=2)).date().isoformat():
+            lj[l["prov"]] = l
+    if lj:
+        urut = sorted(lj.values(), key=lambda l: -l["n"] / max(l["rata14"], 0.5))
+        per.append({"kode": "lonjakan", "level": "tinggi" if any(l["n"] >= 10 and l["n"] >= 3 * max(l["rata14"], 1) for l in urut) else "sedang",
+                    "judul": f"Lonjakan berita di {len(urut)} provinsi",
+                    "isi": "; ".join(f"{PROVINSI.get(l['prov'], l['prov'])} {l['n']} berita (biasanya {fmt_id(round(l['rata14']))})" for l in urut[:6]) + ("; …" if len(urut) > 6 else "") + ".",
+                    "aturan": "berita harian provinsi > rata-rata + 2 SD 14 hari sebelumnya, minimal 5, dalam 48 jam terakhir (tinggi bila ada provinsi >= 10 berita dan >= 3x biasanya)",
+                    "pemilik": "BPBD provinsi + Humas BNPB", "provinsi": [{"prov": l["prov"], "tgl": l["tgl"], "n": l["n"], "rata14": l["rata14"]} for l in urut]})
+    semua24 = max(1, sum(x["_t"] >= t24 for x in art)); semua_l = max(1, sum(t24 - dt.timedelta(days=7) <= x["_t"] < t24 for x in art))
+    for i in isu:
+        rata = i["n_dasar"] / 7; porsi, porsi_l = i["n24"] / semua24, i["n_dasar"] / semua_l
+        if i["n24"] >= 10 and i["n24"] >= 2 * max(rata, 1) and porsi >= 1.3 * porsi_l:
+            per.append({"kode": "isu_" + i["kode"], "level": "tinggi" if i["n24"] >= 3 * max(rata, 1) and porsi >= 2 * porsi_l else "sedang", "judul": f"Isu naik: {i['nama']}",
+                        "isi": f"{i['n24']} berita 24 jam terakhir, biasanya {fmt_id(round(rata))}/hari; porsinya {round(porsi * 100)}% dari semua berita (sebelumnya {round(porsi_l * 100)}%).",
+                        "aturan": "24 jam >= 10 berita, >= 2x rata-rata harian 7 hari sebelumnya, dan porsi isu di semua berita naik >= 1,3x (tinggi bila >= 3x rata-rata dan porsi >= 2x)",
+                        "pemilik": i["pemilik"], "isu": i["kode"], "prov": (i["prov"] or [None])[0]})
+    for kode, l in lembaga.items():
+        if kode in PEMERINTAH and l["n7"] >= 10:
+            s, sl = l["sikap7"][0] / l["n7"], l["sikap7_lalu"][0] / max(1, l["n7_lalu"])
+            if l["sikap7"][0] >= 5 and s >= 0.25 and s - sl >= 0.1:
+                per.append({"kode": "sikap_" + kode, "level": "tinggi" if s >= 0.4 else "sedang", "judul": f"Sorotan negatif ke {l['nama']} naik",
+                            "isi": f"{l['sikap7'][0]} dari {l['n7']} judul 7 hari bernada negatif ({round(s * 100)}%, sebelumnya {round(sl * 100)}%).",
+                            "aturan": "lembaga disebut >= 10 judul/7 hari, >= 5 negatif, porsi negatif >= 25% dan naik >= 10 poin", "pemilik": "Humas " + l["nama"], "lembaga": kode})
+    korban = [x for x in art if "korban" in x["isu"] and x["_t"] >= t72 and x["asal"] == "nasional" and re.search(r"tewas|meninggal|korban jiwa", norm(x["judul"]))
+              and not re.search(r"(tidak|tak|tanpa|nihil|belum|bukan) (ada )?(\w+ )?(korban|tewas|meninggal)", norm(x["judul"]))]
+    if korban:
+        per.append({"kode": "korban", "level": "tinggi", "judul": "Berita korban jiwa 72 jam terakhir", "isi": f"{len({x['cerita'] for x in korban})} cerita menyebut korban jiwa.",
+                    "aturan": "ada judul nasional 72 jam terakhir dengan kata tewas/meninggal/korban jiwa", "pemilik": "BNPB + Kemenkes + Pemda", "bukti": [_bukti(x) for x in korban[:5]]})
+    i7 = sum(x["_t"] >= t7 for x in a_int); il = sum(t14 <= x["_t"] < t7 for x in a_int)
+    if i7 >= 20 and i7 >= 1.5 * max(il, 1):
+        per.append({"kode": "internasional", "level": "sedang", "judul": "Liputan media asing naik", "isi": f"{i7} berita asing 7 hari (sebelumnya {il}).",
+                    "aturan": "berita internasional 7 hari >= 20 dan >= 1,5x 7 hari sebelumnya", "pemilik": "Kemenlu + KLH"})
+    if kontradiksi:
+        per.append({"kode": "kontradiksi", "level": "tinggi" if any(k["prioritas"] for k in kontradiksi) else "sedang", "judul": "Klaim di berita bertentangan dengan satelit",
+                    "isi": f"{len(kontradiksi)} judul mengklaim api padam/nihil padahal satelit masih mendeteksi kompleks aktif sesudahnya.",
+                    "aturan": "klaim padam/nihil/tidak ada api; kompleks aktif >= 6 jam sesudah terbit di kabupaten itu (>= 5 bila hanya provinsi)",
+                    "pemilik": "Humas BNPB/BPBD + Manggala Agni (cek lapangan)"})
+    for t in tuntutan:
+        if t["jenis"] == "publik" and t["n7"] >= 5 and t["n7"] >= 2 * max(t["n7_lalu"], 1):
+            per.append({"kode": "tuntutan_" + t["kategori"], "level": "sedang", "judul": f"Tuntutan naik: {t['nama']}", "isi": f"{t['n7']} judul 7 hari (sebelumnya {t['n7_lalu']}).",
+                        "aturan": "tuntutan publik satu kategori >= 5 judul/7 hari dan >= 2x 7 hari sebelumnya", "pemilik": t["pemilik"]})
+    for p in per:
+        p["tanggapi_dalam"] = "6 jam" if p["level"] == "tinggi" else "24 jam"
+    per.sort(key=lambda p: (p["level"] != "tinggi", p["kode"]))
+
+    # --- rekomendasi komunikasi gaya CERC untuk isu teratas (fakta saja; tiap angka dari data di atas)
+    api_prov = defaultdict(lambda: [0, 0])
+    for f in fitur:
+        p = f["properties"]
+        if p.get("akhir") and dt.datetime.fromisoformat(p["akhir"]) >= sekarang - dt.timedelta(hours=24):
+            api_prov[p["prov"]][0] += 1; api_prov[p["prov"]][1] += p.get("n24", 0)
+    berikut = sekarang.replace(hour=21, minute=20, second=0, microsecond=0)
+    berikut += dt.timedelta(days=1) if berikut <= sekarang else dt.timedelta(0)
+    rekom = []
+    for i in [i for i in isu if i["n7"] >= 5][:5]:
+        xs = [x for x in nas if i["kode"] in x["isu"] and x["_t"] >= t7]
+        prov_s = ", ".join(PROVINSI.get(p, p) for p in i["prov"][:3])
+        tahu = [f"{i['n7']} berita nasional dalam 7 hari ({'+' if i['n7'] >= i['n7_lalu'] else ''}{round(i['momentum7'] * 100)}% dibanding 7 hari sebelumnya)"
+                + (f", terbanyak menyebut {prov_s}" if prov_s else "") + "."]
+        sat = [f"{PROVINSI.get(p, p)} {api_prov[p][0]} kompleks api aktif ({fmt_id(api_prov[p][1])} titik panas 24 jam)" for p in i["prov"][:3] if p in api_prov]
+        if sat:
+            tahu.append("Satelit 24 jam terakhir: " + "; ".join(sat) + ".")
+        tangan = sorted([x for x in xs if set(x["lembaga"]) & PEMERINTAH and ("penanganan" in x["topik"] or "hukum" in x["topik"])
+                         and x["label_respons"] != "negatif" and not x["tuntutan"] and not any(x["lembaga"][k] == "negatif" for k in x["lembaga"])],
+                        key=lambda x: (-(set(x["prov"]) & set(i["prov"][:3]) != set()), -cerita[x["cerita"]]["n_media"]))
+        tangan = list({x["cerita"]: x for x in reversed(tangan)}.values())[::-1][:2]
+        rekom.append({"isu": i["kode"], "judul": i["nama"], "pemilik": i["pemilik"], "batas": "sebelum " + berikut.strftime("%d/%m %H:%M") + " WIB",
+                      "poin": [{"jenis": "Yang kami ketahui", "teks": " ".join(tahu)},
+                               {"jenis": "Yang belum kami ketahui", "teks": BELUM_TAHU.get(i["kode"], BELUM_TAHU["default"])},
+                               {"jenis": "Yang sedang dilakukan", "teks": ("Diberitakan: " + "; ".join(f"“{x['judul']}” ({x['sumber']})" for x in tangan) + ".") if tangan
+                                else "Belum ada berita penanganan untuk isu ini dalam 7 hari; konfirmasi langkah yang berjalan ke pemilik isu."},
+                               {"jenis": "Yang perlu dilakukan warga", "teks": SARAN_WARGA.get(i["kode"], SARAN_WARGA["default"])},
+                               {"jenis": "Pembaruan berikutnya", "teks": f"Pantauan berita diperbarui {berikut.strftime('%d/%m %H:%M')} WIB; titik panas satelit tiap 3 jam."}],
+                      "bukti": i["contoh"][:3]})
+    return {"isu": isu, "tokoh": tokoh[:40], "lembaga": lembaga, "tuntutan": tuntutan, "kontradiksi": kontradiksi[:30],
+            "peringatan": per, "rekomendasi_komunikasi": rekom, "tier_media": {"1": urut_media[:15], "2": urut_media[15:60]}}
+
+
+def validasi_lembaga(bagian="uji"):
+    """Sikap per lembaga (aturan) vs label 'sasaran' pada label_ai.json bagian uji. Lembaga yang disebut tanpa label sasaran = netral."""
+    p = os.path.join(RAW, "label_ai.json")
+    if not os.path.exists(p):
+        return {}
+    lab = [x for x in json.load(open(p))["label"] if x.get("situasi") and x["bagian"] == bagian]
+    benar, tebak_, deteksi = [], [], [0, 0]
+    model = None
+    for x in lab:
+        s = sikap_lembaga(x["judul"], label(skor(x["judul"], "", RESPONS)[0]))
+        emas = x.get("sasaran") or {}
+        deteksi[0] += sum(k in s for k in emas); deteksi[1] += len(emas)
+        for k in set(s) | set(emas):
+            benar.append(emas.get(k, "netral")); tebak_.append(s.get(k, "netral"))
+    m = ringkas_metrik(benar, tebak_) if benar else {}
+    m.pop("konfusi", None)
+    return {"n_pasangan": len(benar), "recall_deteksi_sasaran": round(deteksi[0] / max(1, deteksi[1]), 3), **m,
+            "mayoritas_akurasi": round(Counter(benar).most_common(1)[0][1] / max(1, len(benar)), 3) if benar else None}
+
+
+def _semua_bukti(pm):
+    for i in pm["isu"]:
+        yield from i["contoh"]
+    for l in pm["lembaga"].values():
+        yield from l["negatif"] + l["positif"]
+    for t in pm["tokoh"]:
+        yield from t["kutipan"]
+    for t in pm["tuntutan"]:
+        yield from t["contoh"]
+    yield from pm["kontradiksi"]
+    for p in pm["peringatan"]:
+        yield from p.get("bukti", [])
+    for r in pm["rekomendasi_komunikasi"]:
+        yield from r["bukti"]
+
+
+R_KLAIM = re.compile(r"\b(nihil|zero (karhutla|hotspot|api)|bebas (hotspot|titik api|titik panas|asap|api|karhutla)|"
+                     r"(tidak|tak) ada (lagi )?(titik api|titik panas|hotspot|kebakaran|api)|padam total|seluruh(nya)? (titik )?(api )?(sudah |telah )?padam|"
+                     r"(sudah|telah) padam|berhasil dipadamkan seluruhnya|bukan (dari )?(karhutla|kebakaran)|bantah)\b")
+
+
+def fmt_id(n):
+    return f"{n:,}".replace(",", ".")
+
+
 # ---------------------------------------------------------------- gambar (thumbnail ala Google News)
 UA_PERAMBAN = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126 Safari/537.36"
 R_OG = re.compile(r"<meta\b[^>]*?(?:property|name)\s*=\s*[\"'](?:og:image(?::secure_url)?|twitter:image(?::src)?)[\"'][^>]*>", re.I)
@@ -826,7 +1496,7 @@ def gabung(lama, baru, sekarang):
     return out
 
 
-def olah(arsip, sekarang, geo):
+def olah(arsip, sekarang, geo, model=None):
     fitur = json.load(open(os.path.join(DATA, "kluster.json")))["features"] if os.path.exists(os.path.join(DATA, "kluster.json")) else []
     meta = json.load(open(os.path.join(DATA, "meta.json"))) if os.path.exists(os.path.join(DATA, "meta.json")) else {}
     akhir_data = dt.datetime.fromisoformat(meta.get("data_terakhir", sekarang.isoformat()))
@@ -853,10 +1523,26 @@ def olah(arsip, sekarang, geo):
         lex_s, lex_r = (SITUASI_EN, RESPONS_EN) if bhs == "en" else (SITUASI, RESPONS)
         s1, al1 = skor(a["judul"], a.get("ringkas", ""), lex_s)
         s2, al2 = skor(a["judul"], a.get("ringkas", ""), lex_r)
+        l1, l2 = label(s1), label(s2)
+        if bhs == "id" and model:  # judul Indonesia: model terlatih; skor = P(positif) - P(negatif)
+            f = fitur_nada(a["judul"])
+            for dim, nilai in (("situasi", 0), ("respons", 1)):
+                m_ = model.get(dim)
+                if m_ is None or isinstance(m_, Leksikon):
+                    continue
+                p = m_.proba(f); lb = max(KELAS, key=lambda k: p[k])
+                if dim == "situasi":
+                    s1, l1 = round(p["positif"] - p["negatif"], 2), lb
+                else:
+                    s2, l2 = round(p["positif"] - p["negatif"], 2), lb
         t = dt.datetime.fromisoformat(a["tgl"])
+        nt = norm(a["judul"])
         x = dict({k: v for k, v in a.items() if k != "ed"}, prov=g["prov"], kab=g["kab"], kec=g["kec"], lat=g["lat"], lon=g["lon"], presisi=g["presisi"], topik=topik(teks, bhs),
                  emosi=emosi(a["judul"], bhs), bahasa=bhs, asal=asal(a, bhs),
-                 situasi=s1, respons=s2, label_situasi=label(s1), label_respons=label(s2), alasan={"situasi": al1, "respons": al2},
+                 situasi=s1, respons=s2, label_situasi=l1, label_respons=l2, alasan={"situasi": al1, "respons": al2},
+                 isu=[k for k, r in ISU_RE.items() if r.search(nt)] if bhs == "id" else [k for k in ("lintas_batas",) if ISU_RE[k].search(nt)] + (["asap_kesehatan"] if re.search(r"\bhaze|smoke|air quality|psi\b", nt) else []),
+                 lembaga=sikap_lembaga(a["judul"], l2) if bhs == "id" else {},
+                 tokoh=tokoh_dari(a["judul"]) if bhs == "id" else [], tuntutan=tuntutan_dari(a["judul"]) if bhs == "id" else [],
                  kompleks=None, n_kompleks=None, jarak_prioritas_km=None, _t=t, _k=kunci_judul(a["judul"]), _e=set(g["kec"] or g["kab"]))
         if t >= cakupan and fitur:  # hanya artikel di dalam jendela data api yang bisa ditautkan
             ks = []
@@ -988,6 +1674,7 @@ def olah(arsip, sekarang, geo):
             lihat.add(x["cerita"])
             tanpa.append({"id": x["id"], "judul": x["judul"], "sumber": x["sumber"], "url": x["url"], "tgl": x["tgl"], "kab": x["kab"], "cerita": x["cerita"]})
 
+    pm = pantau(art, cerita, sekarang, fitur, lonjakan, a_int, geo)
     art.sort(key=lambda x: x["_t"], reverse=True)
     # keluar: 1.500 terbaru + 400 internasional terbaru + artikel di balik tiap lonjakan (maks 15) dan tiap cerita sorotan (maks 30)
     pilih = {x["id"] for x in art[:MAKS_ARTIKEL]} | {x["id"] for x in a_int[:400]}
@@ -999,15 +1686,23 @@ def olah(arsip, sekarang, geo):
             anggota[x["cerita"]].append(x["id"])
     pilih |= {i for v in anggota.values() for i in v}
     media_nas = daftar_media([x for x in art if x["asal"] == "nasional"])
+    # bukti pantauan media ikut dikeluarkan agar popup bisa menampilkan artikel lengkapnya
+    pilih |= {b["id"] for b in _semua_bukti(pm)}
     keluar = [x for x in art if x["id"] in pilih]
     for x in art:
-        for k in ("_t", "_k", "_e"):
+        for k in ("_t", "_k", "_e", "tuntutan"):
             x.pop(k, None)
+        if not x["lembaga"]:
+            x.pop("lembaga")
+        if not x["tokoh"]:
+            x.pop("tokoh")
+        else:
+            x["tokoh"] = [p for p, _ in x["tokoh"]]
     dipakai = {x["cerita"] for x in keluar} | sorot
     return {"artikel": keluar, "cerita": [c for c in cerita.values() if c["id"] in dipakai], "harian": harian, "prov": prov,
             "prov_harian": dict(prov_harian), "kab": dict(kab), "media": media, "media_nas": media_nas,
             "lonjakan": lonjakan, "sorotan": sorotan, "sorotan_nas": sorotan_nas, "internasional": internasional,
-            "celah": celah, "tanpa_api": tanpa[:100], "_semua": art, "_n_cerita": len(cerita), "_cakupan": cakupan.isoformat()}
+            "celah": celah, "tanpa_api": tanpa[:100], **pm, "_semua": art, "_n_cerita": len(cerita), "_cakupan": cakupan.isoformat()}
 
 
 METODE = {
@@ -1026,6 +1721,14 @@ METODE = {
     "emosi": {"cara": "Kata pemicu di judul dicocokkan di awal kata; satu judul bisa membawa beberapa emosi, masing-masing dihitung sekali. Judul Inggris memakai padanan Inggris.",
               "id": EMOSI, "en": EMOSI_EN},
     "gambar": "Untuk cerita yang ditampilkan (maks. 40 per jalan) tautan Google News diurai ke URL penerbit lewat endpoint publik news.google.com, lalu og:image/twitter:image halaman itu dibaca. Hasil disimpan sekali di cache; maks. 2 permintaan/detik, batas 150 detik per jalan. Ikon media dari domain sumber RSS.",
+    "model_nada": "Judul Indonesia: nada situasi dan respons ditebak model yang dipilih lewat validasi silang 5 lipat (F1 makro) di antara leksikon lama, Naive Bayes, dan regresi logistik (kata, bigram, akar kata kasar, penanda negasi/pencegahan, fitur leksikon). Dilatih tiap jalan dari label manusia (label_uji.json) + label asisten AI (label_ai.json, pedoman scripts/data/PEDOMAN-LABEL.md, belum diperiksa manusia). Skor = P(positif) - P(negatif). Hasil uji (bagian 'uji', tak dipakai melatih) dengan selang bootstrap 95% ada di validasi.model.",
+    "isu": "Gugus narasi lintas cerita dengan pola kata pada judul (16 isu: korban, asap & kesehatan, sekolah, transportasi, lintas batas, hukum, kritik, status darurat, pemadaman udara, satwa, sebaran api, cuaca, pencegahan, sumber daya, hoaks, arahan pusat). Satu judul boleh masuk beberapa isu. Momentum = (jumlah periode ini - periode sebelumnya) / periode sebelumnya, untuk 24 jam dan 7 hari. Tier media: 15 media nasional terbanyak = tier 1, 16-60 = tier 2, sisanya tier 3 (proksi jangkauan; data pembaca tidak tersedia).",
+    "lembaga": "Sebutan lembaga (pola nama/jabatan) dan sikap judul terhadapnya: klausa yang memuat lembaga dinilai dengan kata respons berbobot kuat; perusahaan yang ditindak/digugat = negatif; lembaga sesudah kata desak/minta, atau diikuti 'diminta/didesak/dikritik', = negatif; lembaga yang memuji/mengkritik pihak lain dianggap penilai (netral). Diuji pada label 'sasaran' (validasi.lembaga).",
+    "tokoh": "Pembicara dari pola judul 'X: ...', 'X sebut/minta/desak/tegaskan ...', 'kata/ujar/menurut X'. Jabatan + nama disatukan bila namanya sama. Jangkauan = media terbanyak yang memuat cerita berisi ucapan itu (apakah pesannya tersebar).",
+    "tuntutan": "Klausa dengan minta/desak/tuntut/usul/serukan/tagih: penuntut = kata sebelum kata kerja, isi = sesudahnya, kategori dari kata kunci isi. Pejabat yang meminta warga/jajaran tidak dihitung (itu imbauan). Pemda/BPBD yang meminta bantuan (water bombing, personel, logistik) dicatat terpisah sebagai permintaan bantuan daerah.",
+    "kontradiksi": "Judul nasional 7 hari terakhir yang mengklaim nihil/zero/bebas/tidak ada titik api/padam total di suatu kabupaten (atau provinsi), padahal satelit mendeteksi kompleks aktif >= 6 jam sesudah terbit di wilayah itu (>= 1 kompleks di kabupaten, >= 5 di provinsi). Klaim lemah ('api X sudah padam', 'bantah') hanya dihitung bila ada kompleks <= 10 km dari lokasi setingkat kecamatan. Lokasi diambil dari klausa yang memuat klaim.",
+    "peringatan": "Aturan ambang tetap (tertulis di tiap butir): lonjakan berita provinsi, isu naik dibanding rata-rata harian 7 hari sebelumnya dan porsinya, sorotan negatif lembaga naik, korban jiwa 72 jam, liputan asing naik, kontradiksi, tuntutan naik. Level tinggi = tanggapi dalam 6 jam, sedang = 24 jam (prinsip CERC: cepat, benar, kredibel).",
+    "rekomendasi_komunikasi": "Untuk 5 isu teratas: poin gaya CERC (yang kami ketahui, yang belum, yang sedang dilakukan, yang perlu dilakukan warga, pembaruan berikutnya). Angka diambil dari berita dan satelit di berkas ini; judul penanganan dikutip apa adanya dengan nama media. Bukan pernyataan resmi: wajib diperiksa pemilik isu sebelum dipakai.",
     "batas": "Google News RSS maksimal 100 item per kueri dan bukan arsip lengkap; cuplikan biasanya hanya judul, jadi sentimen praktis dari judul saja; leksikon bias ke bahasa berita arus utama dan tidak memahami sarkasme atau konteks panjang.",
 }
 
@@ -1057,7 +1760,8 @@ def main(isi_hari=0, ambil_rss=True):
     arsip = gabung(arsip, baru, sekarang)
     with open(os.path.join(RAW, "arsip.json"), "w") as f:
         json.dump({"diperbarui": sekarang.isoformat(timespec="minutes"), "artikel": arsip}, f, ensure_ascii=False, separators=(",", ":"))
-    h = olah(arsip, sekarang, geo)
+    model, lap_model = latih_nada()
+    h = olah(arsip, sekarang, geo, model)
     semua = h.pop("_semua"); n_cerita = h.pop("_n_cerita"); cakupan = h.pop("_cakupan")
     try:
         gb = perkaya_gambar(h, ambil=ambil_rss)
@@ -1067,6 +1771,8 @@ def main(isi_hari=0, ambil_rss=True):
     v = validasi(geo=geo)
     if v:
         v["inggris"] = validasi(os.path.join(RAW, "label_uji_en.json"), geo=geo, en=True)
+    v["model"] = lap_model
+    v["lembaga"] = validasi_lembaga()
     out = {"dibuat": sekarang.isoformat(timespec="minutes"), "jendela_hari": JENDELA_HARI, "kueri": daftar,
            "kueri_int": [f"{q} [{ed}]" for ed, q in KUERI_INT], **h, "validasi": v, "metode": METODE,
            "ringkasan": {"diambil": n_ambil, "arsip": len(arsip), "artikel": len(semua), "cerita": n_cerita,
@@ -1180,7 +1886,77 @@ def uji():
         for dim in ("situasi", "respons"):
             assert ve[dim]["uji"]["akurasi"] > ve[dim]["mayoritas_uji"], f"sentimen Inggris {dim} tidak lebih baik dari menebak label terbanyak"
         assert ve["relevansi"]["presisi"] >= 0.9, "presisi relevansi Inggris turun"
+    # model nada: fitur negasi/pencegahan
+    f = fitur_nada("Api belum padam")
+    assert "n_padam" in f and "NEG" in f and "padam" not in f, f
+    assert "c_meluas" in fitur_nada("Cegah karhutla meluas")
+    # sikap per lembaga
+    sk = lambda j: sikap_lembaga(j, label(skor(j, "", RESPONS)[0]))
+    assert sk("Polda Sumsel Bongkar Kasus Karhutla, 43 Orang Ditahan hingga 16 Korporasi Disidik") == {"POLRI": "positif", "PERUSAHAAN": "negatif"}
+    assert sk("Asap Meluas ke Mimika, Rettob Minta BNPB Turun Tangan") == {"BNPB": "negatif"}  # sasaran tuntutan
+    assert sk("Gubernur Jambi apresiasi prajurit TNI bantu penanganan karhutla") == {"PEMDA": "netral", "TNI": "positif"}  # pemuji bukan yang dipuji
+    assert sk("Batang Hari Terparah, Bupati Diminta Berperan Aktif")["PEMDA"] == "negatif"
+    assert sk("Pemkab Natuna Gelar Apel Kesiapsiagaan Hadapi Ancaman Karhutla") == {"PEMDA": "netral"}
+    assert lembaga_di("Kapolres Siak dan Dandim tinjau lahan PT ABC") == ["TNI", "POLRI", "PERUSAHAAN"]
+    # tokoh & tuntutan
+    assert tokoh_dari("BMKG: 120 Titik Panas di Kalbar") == [("BMKG", "pernyataan")]
+    assert tokoh_dari("Karhutla Meluas, Teras Narang Minta Pemda Solid") == [("Teras Narang", "minta")]
+    assert tokoh_dari("Video: Asap Pekat di Palangka Raya") == []
+    assert kunci_tokoh("Gubernur Anwar Hafid") == kunci_tokoh("Anwar Hafid") == "anwar hafid" and kunci_tokoh("Gubernur Kalsel") == "gubernur kalsel"
+    assert tuntutan_dari("Relawan Tanjung Puting Desak Pemerintah Kerahkan Water Bombing") == [("relawan tanjung puting", "pemerintah kerahkan water bombing", "publik")]
+    assert tuntutan_dari("Kapolda Kalteng minta warga siapkan langkah cepat hadapi karhutla") == []  # imbauan pejabat, bukan tuntutan
+    assert tuntutan_dari("Pemkab Ngawi minta water bombing untuk tangani karhutla") == [("pemkab ngawi", "water bombing untuk tangani karhutla", "daerah")]
+    assert next(k for k, r in TUNTUTAN_RE.items() if r.search("pemerintah kerahkan water bombing")) == "udara"
+    assert next(k for k, r in TUNTUTAN_RE.items() if r.search("dinas terkait segera bertindak")) == "sumber_daya"  # 'bertindak' bukan 'tindak tegas'
+    # isu & klaim
+    assert {k for k, r in ISU_RE.items() if r.search(norm("Kabut Asap Pekat, Sekolah di Pekanbaru Diliburkan"))} >= {"sekolah"}
+    assert R_KLAIM.search(norm("BPBD Pekanbaru Pastikan Nihil Titik Api Baru")) and not R_KLAIM.search(norm("Karhutla Jambi Mulai Terkendali"))
+    # pantau(): kontradiksi + peringatan pada data buatan
+    T = dt.datetime(2026, 10, 10, 12, tzinfo=WIB)
+    def a(i, j, jam, kab=(), prov=("62",), **k):
+        x = {"id": f"a{i}", "judul": j, "sumber": f"M{i % 3}", "tgl": (T + dt.timedelta(hours=jam)).isoformat(timespec="minutes"), "url": f"u{i}",
+             "_t": T + dt.timedelta(hours=jam), "asal": "nasional", "prov": list(prov), "kab": list(kab), "presisi": "kab" if kab else "prov",
+             "lat": None, "lon": None, "topik": ["kejadian"], "label_situasi": "negatif", "label_respons": "netral", "cerita": f"C{i}",
+             "isu": [k for k, r in ISU_RE.items() if r.search(norm(j))], "lembaga": sikap_lembaga(j, "netral"), "tokoh": tokoh_dari(j), "tuntutan": tuntutan_dari(j)}
+        x.update(k); return x
+    art = [a(1, "Seruyan Nihil Titik Api", -30, kab=["62|Seruyan"]), a(2, "Kotim Nihil Titik Api", -30, kab=["62|Kotawaringin Timur"])]
+    art += [a(10 + i, f"Warga tewas terjebak api nomor {i}", -5) for i in range(1)]
+    art += [a(20 + i, f"Asap pekat, sekolah diliburkan hari {i}", -2) for i in range(12)]
+    cer = {x["cerita"]: {"n_media": 1} for x in art}
+    fit = [{"properties": {"id": "K1", "prov": "62", "kab": "Seruyan", "awal": "2026-10-08T00:00:00+00:00", "akhir": "2026-10-10T03:00:00+00:00", "level": 3, "n24": 40, "lat": -3, "lon": 112}}]
+    pm = pantau(art, cer, T, fit, [], [])
+    assert [k["wilayah"] for k in pm["kontradiksi"]] == ["62|Seruyan"], pm["kontradiksi"]  # Kotim tanpa kompleks: bukan kontradiksi
+    kode = {p["kode"] for p in pm["peringatan"]}
+    assert {"kontradiksi", "korban", "isu_sekolah"} <= kode, kode
+    assert all(p["tanggapi_dalam"] in ("6 jam", "24 jam") and p["aturan"] and p["pemilik"] for p in pm["peringatan"])
+    assert pm["rekomendasi_komunikasi"] and [q["jenis"] for q in pm["rekomendasi_komunikasi"][0]["poin"]][0] == "Yang kami ketahui"
+    # model nada harus mengalahkan menebak label terbanyak (F1 makro, selang bootstrap berpasangan di atas 0)
+    _, lap = latih_nada()
+    if lap.get("situasi"):
+        for dim in ("situasi", "respons"):
+            L = lap[dim]
+            print("model", dim, L["terpilih"], "uji", (L["uji"]["n"], L["uji"]["akurasi"], L["uji"]["f1_makro"]), "ci", L["uji"]["ci95"]["akurasi"],
+                  "mayoritas", (L["mayoritas"]["akurasi"], L["mayoritas"]["f1_makro"]), "selisih ci", L["selisih_vs_mayoritas_ci95"])
+        assert lap["situasi"]["selisih_vs_mayoritas_ci95"]["akurasi"][0] > 0, "model situasi tidak lebih akurat dari menebak label terbanyak"
+        for dim in ("situasi", "respons"):
+            assert lap[dim]["selisih_vs_mayoritas_ci95"]["f1_makro"][0] > 0, f"F1 makro {dim} tidak lebih baik dari menebak label terbanyak"
+        vl = validasi_lembaga()
+        print("sikap lembaga", {k: vl[k] for k in ("n", "akurasi", "f1_makro", "mayoritas_akurasi")})
     print("ok")
+
+
+def periksa():
+    """Kesepakatan label manusia (periksa_manusia.json) vs label AI (label_ai.json)."""
+    pm = [x for x in json.load(open(os.path.join(RAW, "periksa_manusia.json")))["label"] if x.get("situasi")]
+    ai = {x["id"]: x for x in json.load(open(os.path.join(RAW, "label_ai.json")))["label"]}
+    if not pm:
+        print("periksa_manusia.json belum diisi"); return
+    for dim in ("situasi", "respons"):
+        b = [x[dim] for x in pm if x.get(dim)]; t = [ai[x["id"]][dim] for x in pm if x.get(dim)]
+        m = metrik(b, t)
+        print(dim, "n", m["n"], "kesepakatan", m["akurasi"], "F1 makro", m["f1_makro"], "(label manusia = benar)")
+        if m["akurasi"] < 0.8:
+            print("  di bawah 80%: label AI jangan dipakai sebagai acuan; labeli ulang")
 
 
 if __name__ == "__main__":
@@ -1190,6 +1966,8 @@ if __name__ == "__main__":
         main(ambil_rss=False)
     elif sys.argv[1:2] == ["sampel"]:
         sampel()
+    elif sys.argv[1:2] == ["periksa"]:
+        periksa()
     elif sys.argv[1:2] == ["isi"]:
         main(int(sys.argv[2]) if len(sys.argv) > 2 else JENDELA_HARI)
     else:

@@ -146,6 +146,23 @@ def asap_api(lat, lon, kompleks, radius=RADIUS_ASAP):
     return round(tot, 1), dekat and round(dekat)
 
 
+def selaraskan_luas(musim, kp):
+    """Satu angka luas terbakar di seluruh situs: untuk provinsi yang punya kalibrasi SiPongi (keputusan.py: regresi log-log
+    luas resmi ~ titik panas), luas sampai hari ini = proyeksi musim x (1 - sisa_musim)^b, rentang = x exp(-+sigma_log).
+    Provinsi lain tetap memakai perkiraan satelit (luas_musim). Ditandai di kolom `metode`."""
+    if not kp or "prov" not in kp:
+        return musim
+    b = kp.get("b_loglog", 1.0)
+    out = dict(musim)
+    for k, v in kp["prov"].items():
+        if not v.get("luas_2026"):
+            continue
+        x = v["luas_2026"] * max(0.05, 1 - v.get("sisa_musim", 0)) ** b
+        sd = v.get("sigma_log", 0.5)
+        out[k] = {**musim.get(k, {}), "lo": round(x * math.exp(-sd)), "ha": round(x), "hi": round(x * math.exp(sd)), "metode": "regresi SiPongi"}
+    return out
+
+
 def angka_id(s, ribu=False):
     v = float(s.replace(".", "").replace(",", "."))
     return int(v * 1000) if ribu else int(v)
@@ -387,6 +404,7 @@ def main():
     bagi = {k: v / tot for k, v in kat.items()}
     bagi_gambut = gambut["gambut"] / (sum(gambut.values()) or 1)
     musim, r_nas = luas_musim(baca("sejarah_modis.json"), baca("luas_satelit.json"), m0.month, str(m0.year))
+    musim = selaraskan_luas(musim, baca("keputusan.json"))
     H = [sum(v[k] for v in musim.values()) for k in ("lo", "ha", "hi")]
     bn = baca("bnpb.json", {"rows": []})
     out["lahan"] = {"kompleks_ha": round(tot), "kategori_ha": {k: round(v) for k, v in kat.items()}, "gambut_ha": {k: round(v) for k, v in gambut.items()},
@@ -451,6 +469,11 @@ def cek(o):
 
 
 def uji():
+    m = selaraskan_luas({"62": {"lo": 1, "ha": 2, "hi": 3}, "11": {"lo": 5, "ha": 6, "hi": 7}},
+                        {"b_loglog": 1.0, "prov": {"62": {"luas_2026": 1000, "sisa_musim": 0.5, "sigma_log": 0.0}}})
+    assert m["62"]["ha"] == 500 and m["62"]["metode"] == "regresi SiPongi", f"luas terselaraskan salah: {m['62']}"
+    assert m["11"]["ha"] == 6, "provinsi tanpa kalibrasi harus tetap perkiraan satelit"
+    assert selaraskan_luas({"62": {"ha": 2}}, None) == {"62": {"ha": 2}}, "tanpa keputusan.json tidak boleh berubah"
     k = [{"lat": 0.0, "lon": 0.0, "n24": 100, "wd": 270}]  # angin dari barat: asap ke timur
     assert asap_api(0, 1.0, k)[0] > AMBANG_ASAP, "kota 111 km searah angin harus kena asap"
     assert asap_api(0, -1.0, k)[0] == 0, "kota 111 km melawan arah angin tidak boleh dihitung kena asap"
