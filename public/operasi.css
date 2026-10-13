@@ -1,7 +1,7 @@
 /* operasi.css — tab "Operasi" (rencana operasi & kebutuhan sumber daya) */
-#p-operasi{--op-res:#0b2545;--op-res-t:#fff;--op-sat:oklch(52% .09 190);--op-mod:oklch(50% .1 280)}
-:root[data-theme="dark"] #p-operasi{--op-res:#c9d6ea;--op-res-t:#0b2545;--op-sat:oklch(78% .09 190);--op-mod:oklch(78% .08 280)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #p-operasi{--op-res:#c9d6ea;--op-res-t:#0b2545;--op-sat:oklch(78% .09 190);--op-mod:oklch(78% .08 280)}}
+#operasi{--op-res:#0b2545;--op-res-t:#fff;--op-sat:oklch(52% .09 190);--op-mod:oklch(50% .1 280)}
+:root[data-theme="dark"] #operasi{--op-res:#c9d6ea;--op-res-t:#0b2545;--op-sat:oklch(78% .09 190);--op-mod:oklch(78% .08 280)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #operasi{--op-res:#c9d6ea;--op-res-t:#0b2545;--op-sat:oklch(78% .09 190);--op-mod:oklch(78% .08 280)}}
 #operasi{display:grid;grid-template-columns:minmax(0,1fr);gap:14px;max-width:1840px}
 #operasi>*,#operasi .grid>*{min-width:0}
 #operasi .head{margin-bottom:0}
