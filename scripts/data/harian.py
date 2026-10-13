@@ -355,7 +355,7 @@ def main():
     def penanggung(lon, lat):
         """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
         k = KONSESI.cari(lon, lat)
-        if k:
+        if k and k.get("aktif") is not False:  # izin berakhir: bukan penanggung jawab lagi
             return {"sawit": "Perusahaan perkebunan", "hph": "Pemegang PBPH (hutan alam)", "hti": "Pemegang PBPH (hutan tanaman)", "tambang": "Pemegang PPKH (tambang)"}.get(k.get("jenis"), "Pemegang konsesi"), k.get("pemegang") or k.get("nama")
         kw = KAWASAN.cari(lon, lat)
         if kw:
