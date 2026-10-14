@@ -69,3 +69,4 @@
 .ks-tb td.n,.ks-tb th{text-align:center!important}
 .ks-pv{display:inline-flex;align-items:center;gap:8px}.ks-pv img,.ks-pv svg{width:20px;height:20px;object-fit:contain;flex:none}
 .ks-sub2{margin:22px 0 6px;padding-top:16px;border-top:1px dashed var(--line);font-size:14px;font-weight:800;color:var(--ink)}
+#ks-ex svg text.ks-tl{fill:#fff!important}#ks-ex svg text.ks-td{fill:#4a3426!important}
