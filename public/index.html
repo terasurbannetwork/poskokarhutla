@@ -638,7 +638,8 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 /* Kompleks di bawah Insight: lebar & jarak sama dengan kartu Insight; toolbar cari selebar kartu, tanpa CSV */
 #insightKompleks{max-width:1120px;margin:16px auto 0;display:grid;gap:16px}
 #insightKompleks .tbar{display:flex;gap:10px;align-items:center}
-#insightKompleks .tbar #tq{flex:1 1 auto;min-width:0;height:40px}
+#insightKompleks .tbar #tq{flex:1 1 auto!important;width:auto!important;max-width:none!important;min-width:0;height:40px}
+#insightKompleks .tbar{width:100%}
 #insightKompleks .tbar #tprov{flex:none;height:40px;min-width:200px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-weight:600;font-size:13px;color:var(--ink)}
 #insightKompleks .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);overflow:auto}
 #insightKompleks tbody td{padding-top:11px!important;padding-bottom:11px!important}
