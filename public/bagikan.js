@@ -597,7 +597,7 @@ const Bagikan = {
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
     if (ln.length > maksBaris) { ln = ln.slice(0, maksBaris); ln.at(-1).push({t: "…"}); }
-    const lh = Math.round(u * 1.12), yJ = atas + 76 + 22, ySub = yJ + ln.length * lh + 4, bawah = ySub + (d.sub ? 34 : 0) + 64;
+    const adaSub = d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi", lh = Math.round(u * 1.12), yJ = atas + 76 + 22, ySub = yJ + ln.length * lh + 4, bawah = ySub + (adaSub ? 34 : 0) + 64;
     const g = x.createLinearGradient(0, 0, W * .6, bawah * 1.2); g.addColorStop(0, this.C.navy2); g.addColorStop(1, this.C.navy);
     x.fillStyle = g; x.fillRect(0, 0, W, bawah);
     this.logo(x, P, atas, 76);
@@ -605,7 +605,7 @@ const Bagikan = {
     this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + " · " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
     this.f(x, 800, u, true);
     ln.forEach((l, i) => { let px = P; for (const k of l) { x.fillStyle = k.hl ? this.C.hl : "#fff"; x.fillText(k.t, px, yJ + i * lh + u * .82); px += x.measureText(k.t).width; } });
-    if (d.sub) { this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
+    if (d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi") { this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
     return bawah - 56;
   },
   kaki(x, W, H, P, bawah) {
@@ -631,8 +631,9 @@ const Bagikan = {
     else if (k === "ex") this.exBlok(x, a, b, w, h, d);
   },
   kpi(x, a, b, w, h, q, pendek) {
+    /* ubin KPI: garis warna tipis di atas, label kecil, angka besar, keterangan berpil (pemilik, 14 Okt 2026) */
     this.kartu(x, a, b, w, h, 24);
-    x.fillStyle = q.w; x.beginPath(); x.roundRect(a, b + 26, 7, h - 52, 4); x.fill();
+    x.save(); x.beginPath(); x.roundRect(a, b, w, h, 24); x.clip(); x.fillStyle = q.w; x.fillRect(a, b, w, 8); x.restore();
     const pd = pendek ? 26 : 34, lw = w - 2 * pd;
     this.f(x, 700, pendek ? 17 : 19); x.fillStyle = this.C.tinta2; if ("letterSpacing" in x) x.letterSpacing = "1.5px";
     x.fillText(this.potong(x, (pendek ? q.s : q.l).toUpperCase(), lw), a + pd, b + 46); if ("letterSpacing" in x) x.letterSpacing = "0px";
