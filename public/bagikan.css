@@ -79,9 +79,11 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .iconbtn.bg-hdr{width:34px!important;padding:0!important;justify-content:center}
 .iconbtn.bg-hdr span{display:none}
 /* satu gaya tombol share di semua kartu: bulat, bergaris, ikon tiga titik seperti di header (pemilik, 14 Okt 2026) */
-.ex .bg-ex,.head .bg-ex,.dh-bagi,.ct-bab .ct-bagi{width:36px!important;height:36px!important;border-radius:50%!important;border:1px solid var(--line)!important;background:var(--card)!important;color:var(--ink)!important}
-.ex .bg-ex:hover,.head .bg-ex:hover,.dh-bagi:hover,.ct-bab .ct-bagi:hover{border-color:var(--brand2)!important;background:var(--surface)!important}
-.ex .bg-ex svg,.head .bg-ex svg,.dh-bagi svg,.ct-bab .ct-bagi svg{width:17px!important;height:17px!important}
+/* oranye seperti tombol "Bagikan video"; tombol video ikut bulat ikon saja (pemilik, 14 Okt 2026) */
+.ex .bg-ex,.head .bg-ex,.dh-bagi,.ct-bab .ct-bagi,.ct-bab .ct-vid-btn{width:36px!important;height:36px!important;padding:0!important;display:grid!important;place-items:center;border-radius:50%!important;border:0!important;background:linear-gradient(135deg,#f08a3c,#d9532b)!important;color:#fff!important;box-shadow:0 2px 6px rgb(217 83 43 / .3);transition:transform .15s,box-shadow .15s}
+.ex .bg-ex:hover,.head .bg-ex:hover,.dh-bagi:hover,.ct-bab .ct-bagi:hover,.ct-bab .ct-vid-btn:hover{transform:translateY(-1px);box-shadow:0 4px 12px rgb(217 83 43 / .4)!important;background:linear-gradient(135deg,#f39650,#e05d33)!important}
+.ex .bg-ex svg,.head .bg-ex svg,.dh-bagi svg,.ct-bab .ct-bagi svg,.ct-bab .ct-vid-btn svg{width:17px!important;height:17px!important}
+.ct-bab .ct-vid-btn{font-size:0!important;gap:0!important}
 /* picker & tombol aksi dialog bagikan selebar dialog (pemilik, 14 Okt 2026) */
 .bg-opsi select{flex:1 1 100%!important;height:42px!important;border-radius:12px!important;padding:0 40px 0 14px!important;font-size:14px!important;font-weight:600;background:var(--card)!important;border:1.5px solid var(--line)!important;appearance:none;-webkit-appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%235b6b82' stroke-width='2' fill='none'/%3E%3C/svg%3E")!important;background-repeat:no-repeat!important;background-position:right 14px center!important}
 .bg-opsi select:focus{outline:none;border-color:var(--brand2)!important;box-shadow:0 0 0 3px oklch(68% .09 252 / .25)}

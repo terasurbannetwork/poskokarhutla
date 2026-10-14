@@ -47,6 +47,18 @@
         "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public"
       ],
       "port": 8795
+    },
+    {
+      "name": "lokal",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8788"
+      ],
+      "port": 8788
     }
   ]
 }

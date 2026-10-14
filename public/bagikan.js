@@ -42,7 +42,7 @@ const Bagikan = {
     const ins = document.getElementById("insight");
     if (ins) { new MutationObserver(() => this.tombolEx()).observe(ins, {childList: true, subtree: true}); this.tombolEx(); }
     /* Tren & Dampak: tombol yang sama di tiap kartu grafik/tabel */
-    ["tren", "dampak", "berita"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
+    ["tren", "dampak", "berita", "insightKompleks"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
     document.addEventListener("click", e => { const t = e.target.closest?.(".bg-ex"); if (!t) return; e.stopPropagation();
       const box = t.closest("[data-ex]"), art = t.closest("article.ex");
       if (!t.closest("#insight") || t.closest(".ct-bab")) { this._exLuar = this.ambilLuar(t); return this.buka("ex", "luar"); }
@@ -52,7 +52,7 @@ const Bagikan = {
     if (w && /^\d{2}(\|[^|<>"]{1,80}){0,2}$/.test(w)) this.tungguWil(w);
   },
   tombolEx() {
-    document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
+    document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #insightKompleks article.ex, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
       const isi = a.classList.contains("head") ? this.isiHead(a) : [a];
       /* hanya kartu yang punya grafik lebar (viewBox ≥ 300) atau tabel; ikon kecil tidak dihitung */
       const ada = isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
