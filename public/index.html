@@ -81,7 +81,7 @@ nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3v
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg{width:16px;height:16px;flex:none;opacity:.9}
-@media (max-width:1280px){nav.tabs button svg,nav.tabs a.tab-ln svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
+@media (max-width:1280px){nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
 nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
@@ -132,7 +132,8 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tarik-v::after{content:"";position:absolute;left:12px;right:12px;top:4px;height:4px;border-radius:4px;background:var(--line)}
 .tarik-v:hover::after,.tarik-v.aktif::after{background:var(--brand2)}
 .lg-g .lbl{margin:0 0 3px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.lg-g .leg{flex-direction:row;flex-wrap:wrap;gap:3px 10px;margin:0!important}
+.lg-g .leg{flex-direction:column;flex-wrap:nowrap;gap:3px;margin:0!important}
+@media (min-width:901px){#legenda .lg-isi{display:grid!important;gap:12px 28px;align-items:start}#legenda .lg-isi > .leg-cats{grid-column:1/-1}}
 /* skala warna dan deret angkanya selalu sama lebar supaya angka tepat di bawah warnanya */
 .lg-g .legscale,.lg-g .legnum{width:100%;max-width:280px}
 @media (max-width:900px){.dok{left:12px;bottom:auto;top:112px}.lg-isi{max-height:40vh}}
@@ -1561,7 +1562,7 @@ const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`, TB = TABS.filter(t => !TAB_SEMBUNYI.has(t[0]));
   $("#tabs").innerHTML = (TB.length <= 11 ? TB.map(tb).join("") : TB.slice(0, 10).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TB.slice(10).map(tb).join("")}</div></details>`);
   /* "Tentang kami" juga di menu atas (halaman terpisah /tentang) */
-  $("#tabs").insertAdjacentHTML("beforeend", `<a class="tab-ln" href="/tentang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a>`);
+  $("#tabs").insertAdjacentHTML("beforeend", `<a class="tab-ln" href="/tentang"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang</a>`);
   /* menu Lainnya menempel tepat di bawah tombolnya (posisi fixed supaya tidak terpotong nav yang bisa digulir) */
   $("#tabs .lainnya")?.addEventListener("toggle", e => { if (!e.target.open) return; const r = e.target.querySelector("summary").getBoundingClientRect(), m = e.target.querySelector(".menu");
     m.style.left = Math.min(r.left, innerWidth - 200) + "px"; m.style.top = r.bottom + 6 + "px"; }); }

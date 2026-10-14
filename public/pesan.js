@@ -10,7 +10,9 @@
 :root[data-theme="dark"] .ps-dlg{--ps-bg:#172036;--ps-ink:#eef1f7;--ps-ink2:#aab4c8;--ps-line:#2a3550;--ps-in:#10172a}
 .ps-dlg::backdrop{background:rgb(11 37 69 / .45)}
 .ps-dlg form{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
-.ps-dlg .ps-hd{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--ps-line);background:linear-gradient(180deg,var(--ps-in),var(--ps-bg))}
+.ps-dlg .ps-hd{display:flex;align-items:center;gap:12px;padding:16px 20px;background:linear-gradient(135deg,#1d4e89,#0b2545);color:#fff}
+.ps-dlg .ps-hd p{color:rgb(255 255 255 / .8)!important}
+.ps-dlg .ps-hd .ps-x{background:rgb(255 255 255 / .12);border-color:rgb(255 255 255 / .3);color:#fff}
 .ps-dlg .ps-ik{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff}
 .ps-dlg .ps-hp2{margin-top:3px;font-size:12.5px}
 .ps-dlg .ps-l{display:flex;align-items:baseline;justify-content:space-between;font-weight:700;font-size:12.5px}

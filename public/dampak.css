@@ -84,10 +84,10 @@
 .dk-pm-ls button.on{background:var(--surface);box-shadow:inset 3px 0 0 var(--brand2)}
 /* sidebar kiri sticky (>=1100px) + band judul bagian */
 .dk-bag{scroll-margin-top:70px}
-.dk-sh{display:flex;align-items:center;gap:10px;margin:26px 0 12px;padding:0 2px 8px;border-bottom:2px solid color-mix(in oklch, var(--w) 40%, var(--line))}
-.dk-sh h2{margin:0;font-size:20px;line-height:1.2;color:var(--ink)}
-.dk-sn{flex:none;display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:var(--w);color:#fff;font-weight:800;font-size:13px}
-.dk-sh svg{flex:none;width:22px;height:22px;color:var(--w)}
+.dk-sh{display:flex;align-items:center;gap:12px;margin:30px 0 14px;padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,color-mix(in oklch, var(--w) 14%, var(--card)),var(--card));border:1px solid color-mix(in oklch, var(--w) 25%, var(--line));box-shadow:var(--shadow)}
+.dk-sh h2{margin:0;font-size:19px;line-height:1.2;color:var(--ink);letter-spacing:-.01em}
+.dk-sn{display:none} /* nomor bagian disembunyikan; ikon berlingkar sudah jadi penanda */
+.dk-sh > svg{flex:none;width:38px;height:38px;padding:9px;border-radius:50%;background:var(--w);color:#fff;box-sizing:border-box}
 #dkIsi>.dk-bag:first-child .dk-sh{margin-top:4px}
 .dk-nav button.on{background:color-mix(in oklch, var(--w) 16%, var(--card));border-color:var(--w)}
 @media (min-width:1100px){

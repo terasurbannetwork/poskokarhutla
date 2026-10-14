@@ -151,6 +151,9 @@
     /* catatan berikon (angin, satelit) dikumpulkan jadi satu baris di bawah supaya tidak meninggalkan ruang kosong di kisi legenda */
     const cats = [...box.querySelectorAll(".leg-cat")].filter(c => !c.closest(".leg-cats")); if (cats.length) { const w = box.querySelector(":scope > .leg-cats") || document.createElement("div"); w.className = "leg-cats"; cats.forEach(c => w.append(c)); box.append(w); }
     /* baris yang membungkus membuat fit-content melebar penuh: kunci lebar ke tepi kanan isi terjauh supaya tak ada ruang kosong di kanan */
+    /* kisi kolom seragam: maksimal 4 kolom; kartu berikon (angin, satelit) satu baris penuh di bawah */
+    const nG = [...box.children].filter(c => !c.classList.contains("leg-cats")).length;
+    box.style.gridTemplateColumns = matchMedia("(min-width:901px)").matches ? `repeat(${Math.max(1, Math.min(4, nG))}, minmax(170px, 230px))` : "";
     box.style.width = ""; if (!matchMedia("(min-width:901px)").matches || !document.querySelector("#legDet")?.open) return;
     const kiri = box.getBoundingClientRect().left, kanan = Math.max(...[...box.children].map(c => c.getBoundingClientRect().right));
     if (kanan > kiri) box.style.width = Math.ceil(kanan - kiri) + "px"; };
