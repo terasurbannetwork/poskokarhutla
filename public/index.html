@@ -2975,14 +2975,14 @@ const Tren = {
     const D = this.data, kel = {};
     for (const [k, v] of Object.entries(D.kec)) { const [pv, kb, kc] = k.split("|"), kk = this.rt === "kec" ? k : pv + "|" + kb;
       const r = kel[kk] ||= {kunci: kk, jenis: this.rt, prov: pv, kab: kb, nama: this.rt === "kec" ? kc : kb, v: D.tahun.map(() => 0)}; v.forEach((x, i) => r.v[i] += x); }
-    return skorRiwayat(Object.values(kel), D.tahun).filter(r => this.rprov ? r.prov === this.rprov : PRIO.includes(r.prov)); },
+    return skorRiwayat(Object.values(kel), D.tahun).filter(r => { const P = String(this.rprov || "").split(",").filter(Boolean); return P.length ? P.includes(r.prov) : PRIO.includes(r.prov); }); },
   peringkatHTML() {
     const daf = this._daf = this.peringkat(), per = 50, hal = daf.slice(this.rh * per, (this.rh + 1) * per), jml = Math.ceil(daf.length / per), th = this.data.tahun;
     const lv = {"Sangat tinggi": 3, "Tinggi": 2, "Sedang": 1, "Rendah": 0};
     const sangat = daf.filter(r => r.kelas === "Sangat tinggi").length, jenis = this.rt === "kec" ? "kecamatan" : "kabupaten/kota";
-    return `<div class="head" style="margin-top:22px"><div><h2>${Insight.hl(fmt(sangat) + " " + jenis)} berisiko sangat tinggi di ${this.rprov ? esc(namaProv(this.rprov)) : "9 provinsi yang sering mengalami karhutla"}</h2></div>
+    return `<div class="head" style="margin-top:22px"><div><h2>${Insight.hl(fmt(sangat) + " " + jenis)} berisiko sangat tinggi di ${this.rprov ? esc(String(this.rprov).split(",").map(namaProv).join(", ")) : "9 provinsi yang sering mengalami karhutla"}</h2></div>
       <div id="rkCtl" class="rk-ctl"><div class="seg"><button data-rt="kec" aria-pressed="${this.rt === "kec"}">Kecamatan</button><button data-rt="kab" aria-pressed="${this.rt === "kab"}">Kab/Kota</button></div>
-      <select id="rkProv" aria-label="Provinsi"><option value="">Semua provinsi (9)</option>${PRIO.filter(k => S.meta.provinsi[k]).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}" ${k === this.rprov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>
+      ${(Insight.st.rkProv = this.rprov, Insight.selProvMulti("rkProv"))}
       </div></div>
       <div class="tw"><table><thead><tr><th class="n">#</th><th>${this.rt === "kec" ? "Kecamatan" : "Kab/Kota"}</th>${this.rt === "kec" ? "<th>Kab/Kota</th>" : ""}<th>Provinsi</th><th class="n">Skor</th><th>Kelas</th><th class="n">Tahun terbakar</th><th class="n">Total titik</th><th class="n">Tahun puncak</th><th class="n">Tren</th><th>Pola ${th[0]}–${th[th.length - 1]}</th></tr></thead><tbody>
       ${hal.map((r, i) => { const m = Math.max(...r.v, 1); return `<tr class="klik" data-ri="${this.rh * per + i}" tabindex="0"><td class="n num">${this.rh * per + i + 1}</td><td><b>${esc(r.nama)}</b></td>${this.rt === "kec" ? `<td>${esc(r.kab)}</td>` : ""}<td>${esc(namaProv(r.prov))}</td>
@@ -3156,7 +3156,10 @@ const Tren = {
     tipDariTitle(el);
     $("#tSumber").onclick = e => { const b = e.target.closest("button"); if (!b) return; this.sumber = b.dataset.s; this.rh = 0;
       $("#tSumber").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => this.render()); };
-    el.querySelector("#rkProv")?.addEventListener("change", e => { this.rprov = e.target.value; this.rh = 0; nanti(() => this.render()); });
+    /* pilih beberapa provinsi (centang) untuk tabel risiko */
+    el.querySelector("#rkCtl")?.addEventListener("change", e => { const m = e.target.closest("input[data-multi]"); if (!m) return; const box = m.closest(".pm-menu");
+      if (!m.value) box.querySelectorAll("input:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
+      this.rprov = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); Insight._bukaMulti = "rkProv"; this.rh = 0; nanti(() => this.render()); });
     el.querySelector("#rkPg")?.addEventListener("click", e => { const b = e.target.closest("[data-h]"); if (!b || b.disabled) return; this.rh = +b.dataset.h; nanti(() => this.render()); });
     el.querySelector("#rkCtl").onclick = e => { const b = e.target.closest("[data-rt],[data-rh],[data-rcsv],[data-rp]"); if (!b) return;
       if (b.dataset.rt) { this.rt = b.dataset.rt; this.rh = 0; } if (b.dataset.rh) this.rh = +b.dataset.rh; if (b.dataset.rp) { this.rprov = b.dataset.rp === "semua" ? "" : this.prov; this.rh = 0; }
