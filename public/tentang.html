@@ -664,6 +664,22 @@ img.ft,.eksek img.ft{padding:18px 10px 0!important;filter:grayscale(1);transitio
 /* hero tampil langsung saat halaman dimuat (bukan menunggu gulir) */
 @media (prefers-reduced-motion:no-preference){.hero-foto .masuk{animation:masuk 1s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--d,0) * 90ms + 80ms)}}
 @keyframes masuk{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
+
+/* --- pembuka bagian v2: judul kiri, paragraf kanan rata kiri-kanan, foto bergerak perlahan + butiran (pemilik, 14 Okt 2026) --- */
+.band{min-height:clamp(460px,78vh,760px)}
+.band .kepala{max-width:none;width:100%;display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,.95fr);grid-template-areas:"ey ey" "jd ld";column-gap:clamp(32px,6vw,96px);row-gap:22px;align-items:end}
+.band .eyebrow{grid-area:ey}
+.band .h2{grid-area:jd;max-width:none;font-size:clamp(38px,5.6vw,84px);line-height:.98;letter-spacing:-.035em}
+.band .lead{grid-area:ld;max-width:none;margin:0;padding:22px 0 4px 24px;border-left:2px solid #f5a06b;font-size:clamp(15.5px,1.15vw,17.5px);line-height:1.7;color:rgb(255 255 255 / .86);text-align:justify;hyphens:auto;-webkit-hyphens:auto;text-wrap:wrap;background:linear-gradient(90deg,rgb(6 16 31 / .35),transparent);backdrop-filter:blur(2px)}
+.band .lead::first-line{color:#fff;font-weight:600}
+.band::before{animation:kenburns 26s ease-in-out infinite alternate}
+@keyframes kenburns{from{transform:scale(1.04) translate(0,0)}to{transform:scale(1.14) translate(-2%,-1.5%)}}
+@media (prefers-reduced-motion:reduce){.band::before{animation:none}}
+.band .wrap{position:relative}
+.band::after{background:linear-gradient(180deg,rgb(6 16 31 / .15),rgb(6 16 31 / .2) 35%,rgb(6 16 31 / .92)),linear-gradient(90deg,rgb(6 16 31 / .55),transparent 75%),url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='.9' numOctaves='2' stitchTiles='stitch'/%3E%3CfeColorMatrix values='0 0 0 0 1 0 0 0 0 1 0 0 0 0 1 0 0 0 .06 0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E")}
+@media (max-width:860px){.band .kepala{grid-template-columns:1fr;grid-template-areas:"ey" "jd" "ld"}}
+/* semua paragraf isi rata kiri-kanan */
+.lead,.masalah small,.pilar p,.teks-f p,.fitur p,.org p,.orang p,.rj-k figcaption span,.kolab p,.faq .isi{text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
