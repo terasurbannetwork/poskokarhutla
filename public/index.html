@@ -497,6 +497,13 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .sg-r span{display:block;font-size:10.5px;font-weight:800;letter-spacing:.05em;text-transform:uppercase;color:var(--ink2)}
 .sg-r b{display:block;font-size:13.5px;margin-top:2px}
 @media (max-width:600px){.sg-r{grid-template-columns:1fr}}
+.sg-ket{display:flex;align-items:center;justify-content:center;gap:8px;width:fit-content;margin:12px auto 0;padding:7px 14px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--ink2)}
+.sg-ket svg{width:16px;height:16px;flex:none;color:var(--brand2)}
+.sg-ket b{color:var(--ink)}
+.tm-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:2px 12px;font-size:10.5px;color:var(--ink2);margin:2px 0 4px}
+.tm-leg span{display:inline-flex;align-items:center;gap:5px}
+.tm-leg i{width:14px;border-top:2px dashed;height:0}
+.tm-leg b{color:var(--ink)}
 .kal-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:8px;font-size:11px;color:var(--ink2)}
 .kal-leg span{display:inline-flex;align-items:center;gap:3px}
 .kal-leg b{margin-right:4px;font-weight:700}
@@ -2150,17 +2157,21 @@ function trenProv(k) { const D = S.sejarah; if (!D || !D.prov[k]) return null;
   return {th, v, ini, rank: [...v].sort((a, b) => b - a).indexOf(ini) + 1, rata: v.slice(0, -1).reduce((a, b) => a + b, 0) / (v.length - 1)}; }
 function trenMini(k) { const t = trenProv(k); if (!t) return "";
   /* batang per tahun + garis rata-rata tahun lengkap; angka di atas batang; arahkan kursor/ketuk untuk rincian */
-  const n = t.v.length, W = 360, H = 92, B = 74, m = Math.max(...t.v, t.rata), bw = W / n, yr = B - t.rata / m * 58;
+  /* dua garis: rata-rata tahun El Niño dan tahun biasa (tahun lengkap saja) */
+  const EN = new Set(["2002", "2004", "2006", "2009", "2015", "2019", "2023"]), lalu = t.v.slice(0, -1).map((x, i) => [x, EN.has(String(t.th[i]))]);
+  const rr = f => { const a = lalu.filter(([, e]) => e === f); return a.length ? a.reduce((s, [x]) => s + x, 0) / a.length : null; }, rEN = rr(true), rB = rr(false);
+  const n = t.v.length, W = 360, H = 92, B = 74, m = Math.max(...t.v, t.rata, rEN || 0), bw = W / n, Y = v => B - v / m * 58;
   const pendek = v => v >= 1e6 ? (v / 1e6).toFixed(1).replace(".", ",") + "jt" : v >= 1e3 ? Math.round(v / 1e3) + "rb" : String(v);
   const g = t.v.map((x, i) => { const h = Math.max(1, x / m * 58), ini = i === n - 1, atas = x > t.rata;
     const tip = `<b>${t.th[i]}</b>${ini ? " (berjalan)" : ""}<br>${fmt(x)} titik panas<br>${t.rata ? (x / t.rata).toFixed(1) + "× rata-rata" : ""}`;
     return `<g class="tm-b" data-tip="${esc(tip)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
       <rect x="${i * bw + 2}" y="${B - h}" width="${bw - 4}" height="${h}" rx="2.5" fill="${ini ? "#c9503a" : atas ? "#e58a45" : "#f3c79a"}"/>
-      ${ini || atas ? `<text x="${i * bw + bw / 2}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${pendek(x)}</text>` : ""}
+      ${ini || atas || EN.has(String(t.th[i])) ? `<text x="${i * bw + bw / 2}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${pendek(x)}</text>` : ""}
       <text x="${i * bw + bw / 2}" y="${H - 6}" text-anchor="middle" font-size="8" fill="currentColor" opacity=".55">'${String(t.th[i]).slice(2)}</text></g>`; }).join("");
   return `<div class="tm"><div class="lbl" style="display:flex;justify-content:space-between"><span>Titik panas per tahun ${t.th[0]}–${t.th[n - 1]}</span><span class="br-lb" style="--w:${t.ini >= t.rata ? "#c9503a" : "#2b8c86"};font-size:10.5px">${fmt(Math.round(t.ini / t.rata * 10) / 10)}× rata-rata</span></div>
     <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Tren tahunan">${g}
-      <line x1="0" x2="${W}" y1="${yr}" y2="${yr}" stroke="currentColor" stroke-dasharray="4 3" opacity=".55"/>${(() => { const tx = "rata-rata " + pendek(Math.round(t.rata)), w = tx.length * 8.5 * .62 + 12; return `<rect x="${bw + 2}" y="${yr - 15}" width="${w}" height="14" rx="7" fill="oklch(25.5% .075 256)"/><text x="${bw + 2 + w / 2}" y="${yr - 5}" text-anchor="middle" font-size="8.5" font-weight="800" style="fill:#fff;pointer-events:none">${tx}</text>`; })()}</svg>
+      ${[[rEN, "#a9402f"], [rB, "#d9692f"]].filter(([v]) => v != null).map(([v, w]) => `<line x1="0" x2="${W}" y1="${Y(v)}" y2="${Y(v)}" stroke="${w}" stroke-width="1.3" stroke-dasharray="4 3" opacity=".85"/>`).join("")}</svg>
+    <div class="tm-leg">${rEN != null ? `<span><i style="border-color:#a9402f"></i>rata-rata El Niño <b>${pendek(Math.round(rEN))}</b></span>` : ""}${rB != null ? `<span><i style="border-color:#d9692f"></i>rata-rata tahun biasa <b>${pendek(Math.round(rB))}</b></span>` : ""}</div>
     <div style="font-size:10.5px;color:var(--ink2)">${t.th[n - 1]}: <b style="color:var(--ink)">${fmt(t.ini)}</b> titik, peringkat ${t.rank} dari ${n} tahun · rata-rata ${t.th[0]}–${t.th[n - 2]}: ${fmt(Math.round(t.rata))}</div></div>`; }
 /* daftar Riwayat: wilayah di tingkat ini diurutkan menurut skor risiko 2002-2026; klik = popup analisa */
 function renderDaftarRiw() {
@@ -2884,7 +2895,7 @@ const Tren = {
     return `<div class="head" style="margin-top:22px"><div><h2>${Insight.hl(fmt(sangat) + " " + jenis)} berisiko sangat tinggi di ${this.rprov ? esc(namaProv(this.rprov)) : "9 provinsi yang sering mengalami karhutla"}</h2></div>
       <div id="rkCtl" class="rk-ctl"><div class="seg"><button data-rt="kec" aria-pressed="${this.rt === "kec"}">Kecamatan</button><button data-rt="kab" aria-pressed="${this.rt === "kab"}">Kab/Kota</button></div>
       <select id="rkProv" aria-label="Provinsi"><option value="">Semua provinsi (9)</option>${PRIO.filter(k => S.meta.provinsi[k]).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}" ${k === this.rprov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>
-      <button class="btn-gelap" data-rcsv="1"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" style="vertical-align:-2px;margin-right:6px"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Unduh CSV · ${fmt(daf.length)}</button></div></div>
+      </div></div>
       <div class="tw"><table><thead><tr><th class="n">#</th><th>${this.rt === "kec" ? "Kecamatan" : "Kab/Kota"}</th>${this.rt === "kec" ? "<th>Kab/Kota</th>" : ""}<th>Provinsi</th><th class="n">Skor</th><th>Kelas</th><th class="n">Tahun terbakar</th><th class="n">Total titik</th><th class="n">Tahun puncak</th><th class="n">Tren</th><th>Pola ${th[0]}–${th[th.length - 1]}</th></tr></thead><tbody>
       ${hal.map((r, i) => { const m = Math.max(...r.v, 1); return `<tr class="klik" data-ri="${this.rh * per + i}" tabindex="0"><td class="n num">${this.rh * per + i + 1}</td><td><b>${esc(r.nama)}</b></td>${this.rt === "kec" ? `<td>${esc(r.kab)}</td>` : ""}<td>${esc(namaProv(r.prov))}</td>
         <td class="n num"><b>${r.skor}</b></td><td><span class="pill l${lv[r.kelas]}">${r.kelas}</span></td><td class="n num">${fmt(r.tahun)} / ${fmt(th.length)}</td><td class="n num">${fmt(r.total)}</td><td class="n num">${r.puncak}</td>
@@ -2905,9 +2916,9 @@ const Tren = {
     return `<div class="head" style="margin-top:22px"><div><h2>Periode berbahaya tiap tahun</h2><p>Peluang tiap 10 hari menjadi periode api besar, MODIS ${M.tahun_el_nino ? "2002–2025" : ""}. Kotak bergaris = hari ini.</p></div>
       <div class="seg" id="mMode"><button data-m="el_nino" aria-pressed="${this.mMode === "el_nino"}">Tahun El Niño</button><button data-m="biasa" aria-pressed="${this.mMode === "biasa"}">Tahun biasa</button></div></div>
       <div class="card pad"><div class="tw" style="border:0;box-shadow:none"><div class="kal"><div></div>${BULAN.map(b => `<div class="bl">${b}</div>`).join("")}<div class="bl" style="grid-column:auto;justify-content:flex-start;padding-left:10px">Siaga (≥ 30%)</div>${baris}</div></div>
-      <p style="font-size:12px;color:var(--ink2);margin:10px 0 0;display:flex;gap:6px;align-items:center;flex-wrap:wrap">Peluang
-        ${[0, .1, .3, .5, .7, .9].map(v => `<span style="display:inline-block;width:22px;height:12px;border-radius:3px;background:${warna(v)}"></span>${Math.round(v * 100)}%`).join(" ")}
-        · El Niño: ${M.tahun_el_nino.join(", ")}</p></div>`; },
+      <div class="kal-leg" style="margin-top:12px"><span><b>Peluang periode api besar</b>${[0, .1, .3, .5, .7, .9].map(v => `<i style="background:${warna(v)};border:1px solid var(--line)"></i>`).join("")}<em>0%</em><em>→ 90%</em></span>
+        <span><i style="background:none;border:2px solid var(--ink)"></i>hari ini</span></div>
+      <div class="sg-ket" style="margin-top:8px"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span>Tahun El Niño: <b>${M.tahun_el_nino.join(", ")}</b></span></div></div>`; },
   /* popup analisa satu wilayah: kondisi sekarang, posisi dalam peringkat, rincian skor beserta angkanya, riwayat tahunan
      (El Niño ditandai), musim provinsi per 10 hari, kompleks aktif dan posko terdekat */
   rinci(r, th = this.data.tahun, dariPeta = false) {
@@ -2939,8 +2950,8 @@ const Tren = {
     /* dua baris peluang (tahun El Niño, tahun biasa), angka persen tertulis di tiap kotak */
     const wPel = v => v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`, Y0 = 56;
     const musim = o ? `<svg viewBox="0 0 ${W} ${Y0 + 10 + thM.length * RH + 18}" width="100%" role="img" aria-label="Kalender musim dan riwayat bulanan" class="kal-musim">
-      ${[["El Niño", o.p_el_nino, 0], ["Biasa", o.p_biasa, 25]].map(([n, ps, y]) => `<text x="${GT - 6}" y="${y + 15}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".75">${n}</text>`
-        + ps.map((v, j) => `<rect x="${GT + j * CW + 1}" y="${y}" width="${CW - 2}" height="22" rx="3" style="fill:${wPel(v)}" ${j === das ? 'stroke="var(--ink)" stroke-width="2"' : ""} data-tip="<b>${DAS(j)}</b><br>peluang periode api besar, tahun ${n === "Biasa" ? "biasa" : "El Niño"}: ${Math.round(v * 100)}%"/>${v >= .05 ? `<text x="${GT + j * CW + CW / 2}" y="${y + 14.5}" text-anchor="middle" font-size="8" font-weight="700" fill="${v >= .45 ? "#fff" : "var(--ink)"}" pointer-events="none">${Math.round(v * 100)}</text>` : ""}`).join("")).join("")}
+      ${[["El Niño", o.p_el_nino, 0], ["Biasa", o.p_biasa, 25]].map(([n, ps, y]) => `<text x="${GT - 6}" y="${y + 9}" text-anchor="end" font-size="8" font-weight="600" opacity=".6">Peluang</text><text x="${GT - 6}" y="${y + 19}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".8">${n}</text>`
+        + ps.map((v, j) => `<rect x="${GT + j * CW + 1}" y="${y}" width="${CW - 2}" height="22" rx="3" style="fill:${wPel(v)}" ${j === das ? 'stroke="var(--ink)" stroke-width="2"' : ""} data-tip="<b>${DAS(j)}</b><br>peluang periode api besar, tahun ${n === "Biasa" ? "biasa" : "El Niño"}: ${Math.round(v * 100)}%"/>${v >= .05 ? `<text x="${GT + j * CW + CW / 2}" y="${y + 14.5}" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" pointer-events="none">${Math.round(v * 100)}</text>` : ""}`).join("")).join("")}
       ${thM.map((t, y) => { const yy = Y0 + y * RH, en = EN.has(t);
         return `<text x="${GT - 6}" y="${yy + 14}" text-anchor="end" font-size="10" font-weight="${en ? 800 : 500}" style="${en ? "fill:#c9503a" : "opacity:.65"}">${t}</text>`
           + (PB[t] || []).map((v, mm) => `<rect x="${GT + mm * 3 * CW + 1}" y="${yy}" width="${3 * CW - 2}" height="${RH - 3}" rx="3" style="fill:${v < 1 ? "var(--surface)" : `color-mix(in oklch, #7a2b2b ${Math.round(12 + Math.sqrt(v / mM) * 88)}%, #fde7c8)`}" data-tip="<b>${BULAN[mm]} ${t}</b>${en ? " · El Niño" : ""}<br>${fmt(v)} titik panas"/>${v >= 1 ? `<text x="${GT + mm * 3 * CW + 1.5 * CW}" y="${yy + 13}" text-anchor="middle" font-size="9" font-weight="600" fill="${Math.sqrt(v / mM) >= .45 ? "#fff" : "var(--ink)"}" pointer-events="none">${v >= 1000 ? (Math.round(v / 100) / 10 + "rb").replace(".", ",") : fmt(v)}</text>` : ""}`).join(""); }).join("")}
@@ -2948,21 +2959,21 @@ const Tren = {
       <div class="kal-leg"><span><b>Peluang (%)</b>${[.1, .3, .5, .7, .9].map(v => `<i style="background:${wPel(v)}"></i>`).join("")}<em>10</em><em>90</em></span>
         <span><b>Titik panas per bulan</b>${[.02, .1, .3, .6, 1].map(v => `<i style="background:color-mix(in oklch, #7a2b2b ${Math.round(12 + Math.sqrt(v) * 88)}%, #fde7c8)"></i>`).join("")}<em>sedikit</em><em>${fmt(mM)}</em></span>
         <span><i style="background:none;border:2px solid var(--ink)"></i>sekarang</span><span><b style="color:#c9503a">2015</b> = tahun El Niño</span></div>` : "";
-    d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div class="dh-sebaris"><h3 id="dlgJudul">${esc(r.nama)}</h3>${(r.jenis === "kec" ? [r.kab, namaProv(r.prov)] : r.jenis === "kab" ? [namaProv(r.prov)] : []).map(x => `<p>${esc(x)}</p>`).join("")}</div><button aria-label="Tutup" data-tutup>×</button></div>
+    d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div class="dh-sebaris"><h3 id="dlgJudul">${esc(r.jenis === "prov" ? namaProv(r.prov) : r.nama)}</h3>${(r.jenis === "kec" ? [r.kab, namaProv(r.prov)] : r.jenis === "kab" ? [namaProv(r.prov)] : []).map(x => `<p>${esc(x)}</p>`).join("")}</div><button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">
-        <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, `nasional<br>ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
+        <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, r.jenis === "prov" ? "nasional" : `nasional<br>ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
           ${kot("Tahun terbakar", `${r.tahun}<span style="font-size:13px;opacity:.6"> / ${th.length}</span>`, `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tahun / th.length >= .6 ? ["Langganan api", 3] : r.tahun / th.length >= .3 ? ["Sering", 2] : ["Jarang", 0])}<br>${beruntun ? beruntun + " tahun beruntun" : "terakhir " + terakhir}<br>≥ ${fmt(amb)} titik`)}${kot("Tren", (r.tren >= 1 ? "↑ " : "↓ ") + fmt(r.tren) + "×", `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tren >= 1.1 ? ["Naik", 3] : r.tren <= .9 ? ["Turun", 0] : ["Stabil", 1])}<br>rata-rata 2023+ vs sebelumnya`)}</div>
         <details class="lipat" open><summary>Saat ini</summary><div class="isi">
           <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), {hari: "hari ini", kemarin: "kemarin", 72: "72 jam", 168: "7 hari"}[S.rentang])}${kot("Kompleks aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span> · ${siaga} siaga` : siaga + " siaga")}
             ${(en => kot("Peluang periode ini", o ? Math.round((en ? o.p_el_nino : o.p_semua)[das] * 100) + "%" : "–", o ? `${DAS(das)} · ${en ? "tahun El Niño seperti sekarang" : "semua tahun"}` : ""))(window.ENSO_STATUS === "El Niño")}</div>
-          ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div class="rk-hal" id="rkHal"></div>` : ""}` : ""}</div></details>
+          ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div id="rkHal"></div>` : ""}` : ""}</div></details>
         <details class="lipat" open><summary>Titik panas per tahun ${th[0]}–${th.at(-1)}</summary><div class="isi">
           <svg viewBox="0 -14 ${W} ${Hc}" width="100%" role="img" aria-label="Titik panas per tahun">${grafik}</svg>
           <span class="ex-leg" style="font-size:11.5px;color:var(--ink2);justify-content:center"><span><i style="background:#a9402f"></i>tahun El Niño</span><span><i style="background:#e58a45"></i>tahun biasa</span><span><i style="background:#c9503a"></i>${th.at(-1)} (berjalan)</span><span><i style="background:none;border-top:2px dashed #a9402f;height:0;border-radius:0"></i>rata-rata El Niño ${rb(rEN)}</span><span><i style="background:none;border-top:2px dashed #c46a2a;height:0;border-radius:0"></i>rata-rata biasa ${rb(rB)}</span></span></div></details>
         ${""/* Rincian skor disembunyikan atas permintaan pemilik 13 Okt 2026 */}
         ${o ? `<details class="lipat" open><summary>Musim berbahaya ${esc(namaProv(r.prov))} · per 10 hari, kotak bergaris = sekarang</summary><div class="isi">${musim}
           <div class="sg-r">${[["Siaga tahun El Niño", this.siaga(o.p_el_nino), "#c9503a"], ["Siaga tahun biasa", this.siaga(o.p_biasa), "#e58a45"], ["Puncak", DAS(o.puncak), "oklch(25.5% .075 256)"]].map(([l, v, w]) => `<div style="--w:${w}"><span>${l}</span><b>${v.replace(" – ", " → ")}</b></div>`).join("")}</div>
-          <p class="fnd" style="text-align:center;margin-top:6px">Siaga = periode dengan peluang api besar ≥ 30%.</p></div></details>` : ""}
+          <div class="sg-ket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>Siaga</b> artinya peluang terjadi api besar di periode itu <b>≥ 30%</b></span></div></div></details>` : ""}
         ${anak.length ? `<details class="lipat" open><summary>${r.jenis === "prov" ? "Kabupaten/kota" : "Kecamatan"} di dalamnya</summary><div class="isi"><table class="tb3 rk-tb"><thead><tr><th>${r.jenis === "prov" ? "Kabupaten/kota" : "Kecamatan"}</th><th class="n">Skor</th><th class="n">Tahun terbakar</th><th class="n">Titik ${th[0]}–${th.at(-1)}</th><th>Risiko</th></tr></thead><tbody>
           ${anak.map(x => `<tr data-anak="${esc(x.kunci)}"><td><b>${esc(x.nama)}</b></td><td class="n">${x.skor}</td><td class="n">${x.tahun}/${th.length}</td><td class="n">${fmt(x.total)}</td><td><span class="pill l${x.lv}">${x.kelas}</span></td></tr>`).join("")}</tbody></table></div></details>` : ""}
         <p class="fnd sumber"><em>Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)} (keyakinan ≥ 30); titik panas & kompleks pembaruan ${jamWIB(S.meta.dibuat)}</em></p>
@@ -2972,11 +2983,11 @@ const Tren = {
       const k = e.target.closest("[data-kom]"); if (k) { d.close(); bukaTab("peta"); return Laci.buka(k.dataset.kom); }
       const p = e.target.closest("[data-pk]"); if (p) { const x = S.semuaPosko.get(p.dataset.pk); d.close(); bukaTab("peta"); peta.flyTo({center: [x.lon, x.lat], zoom: 10}); return setTimeout(() => Posko.popup(x.id, [x.lon, x.lat]), 900); }
       const an = e.target.closest("[data-anak]"); if (an && S.riw?.[an.dataset.anak]) return this.rinci(S.riw[an.dataset.anak], th, dariPeta);
-      const hl = e.target.closest("[data-hal]"); if (hl) isiKl(+hl.dataset.hal); };
+      const hl = e.target.closest("#rkHal [data-h]"); if (hl && !hl.disabled) isiKl(+hl.dataset.h); };
     /* tabel kompleks berhalaman, 8 baris per halaman */
     const isiKl = h => { const tb = d.querySelector("#rkKl"); if (!tb) return; const n = Math.ceil(kl.length / 8);
       tb.innerHTML = kl.slice(h * 8, h * 8 + 8).map(f => { const p = f.properties; return `<tr data-kom="${p.id}"><td><span class="kd">${p.id}</span></td><td>${esc(p.kec)}</td><td class="n">${fmt(p.px24)}</td><td class="n">${p.hari}</td><td><span class="pill l${p.level}">${["Rutin", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td></tr>`; }).join("");
-      const pg = d.querySelector("#rkHal"); if (pg) pg.innerHTML = `<button data-hal="${h - 1}" ${h ? "" : "disabled"} aria-label="Sebelumnya">‹</button><span>${h * 8 + 1}–${Math.min(kl.length, h * 8 + 8)} dari ${fmt(kl.length)}</span><button data-hal="${h + 1}" ${h < n - 1 ? "" : "disabled"} aria-label="Berikutnya">›</button>`; };
+      const pg = d.querySelector("#rkHal"); if (pg) pg.innerHTML = paginasi(h, kl.length, 8, "kompleks"); };
     isiKl(0);
     d.showModal(); },
 
@@ -2998,6 +3009,10 @@ const Tren = {
     const provs = PRIO.filter(k => D.prov[k]).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     /* bulan puncak rata-rata */
     const iklim = BULAN.map((_, m) => th.slice(0, -1).reduce((a, t) => a + ((P[t] || [])[m] || 0), 0) / (th.length - 1)), mi = Math.max(1, ...iklim);
+    const EN = new Set((this.musim?.tahun_el_nino || [2002, 2004, 2006, 2009, 2015, 2019, 2023]).map(String)), thL = th.slice(0, -1);
+    const rataBln = f => { const ts = thL.filter(t => EN.has(String(t)) === f); return BULAN.map((_, m) => ts.reduce((a, t) => a + ((P[t] || [])[m] || 0), 0) / Math.max(1, ts.length)); };
+    const iklimEN = rataBln(true), iklimB = rataBln(false), rataTh = f => { const ts = thL.filter(t => EN.has(String(t)) === f); return ts.reduce((a, t) => a + tot(t), 0) / Math.max(1, ts.length); };
+    const rEN = rataTh(true), rB = rataTh(false);
     const kec = Object.entries(D.kec).filter(([k]) => gab ? PRIO.some(p => k.startsWith(p + "|")) : k.startsWith(this.prov + "|")).map(([k, v]) => { const [pk, kb, kc] = k.split("|");
       return {pk, kab: kb, kec: kc, tahun: v.filter(x => x >= 10).length, total: v.reduce((a, b) => a + b, 0), ini: v[v.length - 1]}; })
       .sort((a, b) => b[this.urutKec] - a[this.urutKec] || b.total - a.total).slice(0, 25);
@@ -3009,28 +3024,32 @@ const Tren = {
         const mxN = Math.max(...nil), burukTh = th[nil.indexOf(mxN)], pBln = BULAN[iklim.indexOf(Math.max(...iklim))], beda = rataSd ? Math.round((iniSd / rataSd - 1) * 100) : null, nmP = gab ? "9 provinsi yang sering mengalami karhutla" : esc(namaProv(this.prov));
         const pil = Insight.pil.bind(Insight), sumber = `Sumber: NASA FIRMS ${this.sumber === "viirs" ? "VIIRS" : "MODIS"}`;
         /* per tahun: semua batang berlabel, sumbu ringkas, garis rata-rata berpil di luar area batang */
-        const W = 940, H = 300, L = 46, RM = 110, B = 262, T = 30, gp = (W - L - RM) / th.length, bw = gp * .68, Yt = v => B - v / maks * (B - T);
+        const W = 940, H = 300, L = 46, RM = 130, B = 262, T = 30, gp = (W - L - RM) / th.length, bw = gp * .68, Yt = v => B - v / maks * (B - T);
         let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - RM + 4}" y1="${Yt(maks * f)}" y2="${Yt(maks * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Yt(maks * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(maks * f)}</text>`).join("");
-        nil.forEach((v, i) => { const x = L + i * gp + (gp - bw) / 2, ak = i === nil.length - 1, w = ak ? "#c9503a" : "#e58a45";
+        nil.forEach((v, i) => { const x = L + i * gp + (gp - bw) / 2, ak = i === nil.length - 1, w = ak ? "#c9503a" : EN.has(String(th[i])) ? "#a9402f" : "#e58a45";
           g += `<rect class="gy" style="--i:${i}" x="${x}" y="${Yt(v)}" width="${bw}" height="${B - Yt(v)}" rx="4" fill="${w}" opacity="${ak ? 1 : .85}" data-tip="<b>${th[i]}</b>${ak ? " · berjalan" : ""}<br>Titik panas: ${fmt(v)}<br>Dibanding rata-rata: ${fmt(Math.round(v / (rata || 1) * 10) / 10)}×"/>
             <text class="gf" style="--i:${i}" x="${x + bw / 2}" y="${Yt(v) - 5}" text-anchor="middle" font-size="10" font-weight="800" opacity=".85">${rb(v).replace(" ", " ")}</text>
             <text x="${x + bw / 2}" y="${B + 16}" text-anchor="middle" font-size="11" opacity=".7">${th[i].slice(2)}</text>`; });
-        g += `<line x1="${L}" x2="${W - RM + 4}" y1="${Yt(rata)}" y2="${Yt(rata)}" stroke="oklch(25.5% .075 256)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(W - RM + 8, Yt(rata) - 10, "rata-rata " + rb(rata), "oklch(25.5% .075 256)", "#fff", 11)[0]}`;
-        Insight._leg = [["#e58a45", "tahun sebelumnya"], ["#c9503a", ini + " (berjalan)"]];
+        /* dua garis rata-rata: tahun El Niño dan tahun biasa (tahun lengkap); label digeser bila berdekatan */
+        { const yE = Yt(rEN), yB = Yt(rB), sel = Math.abs(yE - yB) < 24 ? (24 - Math.abs(yE - yB)) / 2 : 0, atasE = yE <= yB;
+          [[yE, atasE ? -sel : sel, `El Niño ${rb(rEN)}`, "#a9402f"], [yB, atasE ? sel : -sel, `biasa ${rb(rB)}`, "#d9692f"]].forEach(([y, dy, tx, w]) => {
+            g += `<line x1="${L}" x2="${W - RM + 4}" y1="${y}" y2="${y}" stroke="${w}" stroke-width="1.5" stroke-dasharray="5 4" opacity=".8"/>${pil(W - RM + 8, y + dy - 10, tx, w, "#fff", 11)[0]}`; }); }
+        Insight._leg = [["#a9402f", "tahun El Niño"], ["#e58a45", "tahun biasa"], ["#c9503a", ini + " (berjalan)"]];
         const a = Insight.ex(`${nmP}: ${Insight.hl(fmt(nil[nil.length - 1]) + " titik")} di ${ini}, peringkat ${Insight.hl(rank)} dari ${th.length} tahun; terburuk ${burukTh} (${fmt(mxN)} titik)`, "", "",
           `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per tahun">${g}</svg>`, sumber, kontrol + segSumber).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Per tahun</span>');
         /* per bulan: rata-rata vs tahun berjalan berdampingan, label angka, sumbu, sorot bulan puncak */
-        const PI = P[ini] || [], mxB = Math.max(1, ...iklim, ...PI), H2 = 300, B2 = 260, T2 = 52, gp2 = (W - L - 20) / 12, bw2 = gp2 * .34, Yb = v => B2 - v / mxB * (B2 - T2);
+        const PI = P[ini] || [], mxB = Math.max(1, ...iklimEN, ...iklimB, ...PI), H2 = 300, B2 = 260, T2 = 52, gp2 = (W - L - 20) / 12, bw2 = gp2 * .26, Yb = v => B2 - v / mxB * (B2 - T2);
         let g2 = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 20}" y1="${Yb(mxB * f)}" y2="${Yb(mxB * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Yb(mxB * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(mxB * f)}</text>`).join("");
-        BULAN.forEach((bn, m) => { const x0 = L + m * gp2, v1 = iklim[m], v2 = PI[m] || 0, lewat = m <= bln, puncak = bn === pBln;
+        BULAN.forEach((bn, m) => { const x0 = L + m * gp2, vE = iklimEN[m], vB = iklimB[m], v2 = PI[m] || 0, lewat = m <= bln, puncak = bn === pBln, c = x0 + gp2 / 2;
           if (puncak) g2 += `<rect x="${x0 + 2}" y="${T2 - 24}" width="${gp2 - 4}" height="${B2 - T2 + 24}" rx="8" fill="#c9503a" opacity=".06"/>`;
-          g2 += `<rect class="gy" style="--i:${m}" x="${x0 + gp2 / 2 - bw2 - 1}" y="${Yb(v1)}" width="${bw2}" height="${B2 - Yb(v1)}" rx="3" fill="#5f6fb0" opacity=".75" data-tip="<b>${bn}</b><br>Rata-rata ${th[0]}–${th[th.length - 2]}: ${fmt(Math.round(v1))}<br>${ini}: ${lewat ? fmt(v2) : "belum"}"/>`
-            + (lewat ? `<rect class="gy" style="--i:${m}" x="${x0 + gp2 / 2 + 1}" y="${Yb(v2)}" width="${bw2}" height="${B2 - Yb(v2)}" rx="3" fill="#c9503a" data-tip="<b>${bn} ${ini}</b><br>Titik panas: ${fmt(v2)}<br>Rata-rata: ${fmt(Math.round(v1))}"/>` : "")
-            + (v1 >= mxB * .04 ? `<text x="${x0 + gp2 / 2 - bw2 / 2 - 1}" y="${Yb(v1) - 4}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".7">${rb(v1).replace(" ", " ")}</text>` : "")
-            + (lewat && v2 >= mxB * .04 ? `<text x="${x0 + gp2 / 2 + bw2 / 2 + 1}" y="${Yb(v2) - 4}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:#b8392b">${rb(v2).replace(" ", " ")}</text>` : "")
+          const tip = `<b>${bn}</b><br>Rata-rata tahun El Niño: ${fmt(Math.round(vE))}<br>Rata-rata tahun biasa: ${fmt(Math.round(vB))}<br>${ini}: ${lewat ? fmt(v2) : "belum"}`;
+          [[vE, "#a9402f", c - bw2 * 1.5 - 2, 1], [vB, "#e58a45", c - bw2 / 2, 1], [v2, "#c9503a", c + bw2 / 2 + 2, lewat]].forEach(([v, w, x, ada]) => { if (!ada) return;
+            g2 += `<rect class="gy" style="--i:${m}" x="${x}" y="${Yb(v)}" width="${bw2}" height="${B2 - Yb(v)}" rx="3" fill="${w}" opacity="${w === "#c9503a" ? 1 : .85}" data-tip="${esc(tip)}"/>`
+              + (v >= mxB * .04 ? `<text x="${x + bw2 / 2}" y="${Yb(v) - 4}" text-anchor="middle" font-size="9" font-weight="800" style="fill:${w}">${rb(v)}</text>` : ""); });
+          g2 += ""
             + `<text x="${x0 + gp2 / 2}" y="${B2 + 17}" text-anchor="middle" font-size="11.5" font-weight="${puncak ? 800 : 500}" opacity="${puncak ? 1 : .7}">${bn}</text>`; });
         if (pBln) { const mp = BULAN.indexOf(pBln); g2 += pil(L + mp * gp2 + gp2 / 2 - 24, 4, "puncak", "#c9503a", "#fff", 10.5)[0]; }
-        Insight._leg = [["#5f6fb0", "rata-rata " + th[0] + "–" + th[th.length - 2]], ["#c9503a", String(ini)]];
+        Insight._leg = [["#a9402f", "rata-rata tahun El Niño"], ["#e58a45", "rata-rata tahun biasa"], ["#c9503a", String(ini)]];
         const b = Insight.ex(`Sampai ${BULAN[bln]} ${ini} titik panas ${beda == null ? "–" : Insight.hl((beda >= 0 ? "+" : "") + fmt(beda) + "%")} dibanding rata-rata periode sama; puncak biasanya ${Insight.hl(pBln)}`, "", "",
           `<svg viewBox="0 0 ${W} ${H2}" role="img" aria-label="Pola bulanan">${g2}</svg>`, sumber).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Per bulan</span>');
         return a + b; })()}</div>

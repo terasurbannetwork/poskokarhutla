@@ -17,7 +17,7 @@
   const awan = h => h.awan_pct == null ? "awan tidak dihitung" : `awan/asap ${h.awan_pct}%`;
   const MODE = {tc: "Warna asli", swir: "SWIR: api & bekas bakar"};
   /* kunci warna SWIR sebagai legenda (swatch), bukan paragraf */
-  const LEG = `<div class="lbl" style="margin-top:8px">Cara membaca SWIR</div><div class="leg ct-leg">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"],
+  const LEG = `<div class="leg ct-leg" style="margin-top:8px">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"],
     ["#e8b98a", "Tanah terbuka"], ["#b9d3e6", "Asap tebal"], ["#fff", "Awan"]].map(([w, n]) => `<span><i class="sw" style="background:${w};border:1px solid var(--line)"></i>${n}</span>`).join("")}</div>`;
   const KET = `SWIR menembus asap tipis, jadi api sering terlihat walau di warna asli tertutup.`;
   /* gambar terbaik untuk ringkasan: Sentinel terbaru yang cukup bersih, lalu Sentinel terbaru, lalu VIIRS */
@@ -105,15 +105,14 @@
         const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), PER = 6, nH = Math.ceil(ks.length / PER), hal = Math.min(this.st.citraHal || 0, nH - 1);
         const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
         const kartu = ks.slice(hal * PER, hal * PER + PER).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
-          return `<div class="ct-kartu2"><button class="ct-pasang" data-kl="${esc(id)}" aria-label="Buka kompleks ${esc(p.kec || id)}">${["tc", "swir"].map(m => `<figure><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400"><figcaption>${m === "tc" ? "Warna asli" : "SWIR"}</figcaption></figure>`).join("")}</button>
-            <div class="ct-isi"><div class="ct-nm"><b>${esc(p.kec || id)}</b><span>${esc(p.kab || "")}</span>${p.level != null ? `<span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span>` : ""}</div>
-            <div class="ct-meta">${sub(h)}</div><p class="ct-tf">${tafsir(h, p)}</p></div></div>`; }).join("");
-        const pg = nH > 1 ? `<div class="rk-hal ct-hal"><button data-cthal="${hal - 1}" ${hal ? "" : "disabled"} aria-label="Sebelumnya">‹</button><span>${hal * PER + 1}–${Math.min(ks.length, hal * PER + PER)} dari ${fmt(ks.length)} kompleks</span><button data-cthal="${hal + 1}" ${hal < nH - 1 ? "" : "disabled"} aria-label="Berikutnya">›</button></div>` : "";
+          return `<div class="ct-kartu2"><div class="ct-nm"><b>${esc(p.kec || id)}</b><span>${esc(p.kab || "")}</span></div><button class="ct-pasang" data-kl="${esc(id)}" aria-label="Buka kompleks ${esc(p.kec || id)}">${["tc", "swir"].map(m => `<figure><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400"><figcaption>${m === "tc" ? "Warna asli" : "SWIR"}</figcaption></figure>`).join("")}</button>
+            <div class="ct-isi"><div class="ct-meta">${sub(h)}</div><p class="ct-tf">${tafsir(h, p)}</p></div></div>`; }).join("");
+        const pg = nH > 1 ? `<div class="ct-hal">${paginasi(hal, ks.length, PER, "kompleks")}</div>` : "";
         return this.ex(`${this.hl(fmt(bersih) + " dari " + fmt(ks.length))} kompleks prioritas terpotret cukup jernih oleh Sentinel-2 dalam ${D.hari} hari terakhir`,
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
-          `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}<p class="fnd" style="margin-top:6px">${KET} "Cukup jernih" = awan/asap ≤ 30%. Bila Sentinel berawan atau lebih dari 2 hari, dipakai citra harian VIIRS.</p>`,
+          `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}<div class="ct-info">${[["Menembus asap tipis", "api sering terlihat di SWIR walau tertutup di warna asli"], ["Cukup jernih", "awan/asap ≤ 30% di dalam kotak"], ["Cadangan VIIRS", "dipakai bila Sentinel berawan atau lebih dari 2 hari"]].map(([b, t]) => `<span><b>${b}</b>${t}</span>`).join("")}</div>`,
           `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`); };
-      document.addEventListener("click", e => { const b = e.target.closest("[data-cthal]"); if (!b || b.disabled) return; Insight.st.citraHal = +b.dataset.cthal;
+      document.addEventListener("click", e => { const b = e.target.closest(".ct-hal [data-h]"); if (!b || b.disabled) return; Insight.st.citraHal = +b.dataset.h;
         const box = document.querySelector('#insight [data-ex="citra"]'); if (box) { box.innerHTML = Insight.gambar("citra"); box.scrollIntoView({block: "nearest"}); } });
       if (document.querySelector("#p-insight.on")) Insight.render();
     },

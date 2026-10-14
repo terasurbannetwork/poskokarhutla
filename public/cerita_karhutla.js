@@ -89,7 +89,7 @@ const Cerita = {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;
     try { await this.muat(); } catch (e) { el.innerHTML = `<div class="ct-muat">Data cerita belum tersedia (${es(e.message)}).</div>`; return; }
     this.el = el;
-    el.innerHTML = `<article class="cerita">${this.regu()}${this.musim()}${this.bab4()}${this.model()}${this.bab6()}</article>`;
+    el.innerHTML = `<article class="cerita">${this.regu()}${this.musim()}${this.bab4()}${this.bab6()}</article>`;
     el.onclick = e => this.klik(e);
     el.oninput = e => this.ubah(e);
     el.onchange = e => this.ubah(e);
