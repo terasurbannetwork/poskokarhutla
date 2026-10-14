@@ -501,7 +501,7 @@ img.ft{box-sizing:border-box;padding:12px 7px 0!important;object-fit:contain!imp
 .faq .isi p+p{margin-top:8px}
 /* rekam jejak Teras Urban (gambar dari masterdeck, pemilik 14 Okt 2026) */
 .rj-jd{margin-top:clamp(36px,5vw,56px)}
-.rj{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:18px}
+.rj{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px;margin-top:18px}
 .rj-k{margin:0;display:flex;flex-direction:column;border-radius:var(--r2);overflow:hidden;background:var(--card);border:1px solid var(--line);transition:transform .4s var(--kurva),box-shadow .4s}
 .rj-k:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgb(11 27 51 / .5)}
 .rj-g{aspect-ratio:4/3;overflow:hidden;background:var(--paper)}
@@ -774,6 +774,21 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
 
 /* rata kiri-kanan hanya di layar lebar; di ponsel menimbulkan celah antarkata */
 @media (max-width:700px){.lead,.band .lead,.masalah small,.pilar p,.teks-f p,.fitur p,.org p,.orang p,.rj-k figcaption span,.kolab p,.faq .isi,#cara-kerja ol.alur p,#cara-kerja .prinsip span{text-align:left!important}}
+
+/* --- latar belakang v3: tiga paragraf, tantangan jadi ubin foto (pemilik, 14 Okt 2026) --- */
+.band .lead p+p{margin-top:12px}
+.band .lead p:first-child{color:#fff;font-weight:600}
+.band .lead::first-line{font-weight:inherit}
+.masalah{border-top:0;gap:clamp(12px,1.4vw,18px)!important}
+.masalah .mk{isolation:isolate;overflow:hidden;min-height:clamp(380px,34vw,460px);margin:0!important;padding:clamp(24px,2.6vw,34px)!important;border:0!important;border-radius:8px!important;display:flex;flex-direction:column;justify-content:flex-end;gap:10px;color:#fff;background:#0b1b33!important}
+.masalah .mk::after{content:"";display:block!important;position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgb(6 16 31 / .72),rgb(6 16 31 / .1) 30%,rgb(6 16 31 / .2) 50%,rgb(6 16 31 / .94)),var(--foto) 50% 50%/cover;filter:grayscale(1) contrast(1.05);transform:scale(1.02);transition:filter .7s,transform 1.4s cubic-bezier(.16,1,.3,1);font-size:0;right:0;bottom:0}
+.masalah .mk:hover::after{filter:grayscale(0);transform:scale(1.07)}
+.masalah .mk::before{top:auto!important;bottom:0;height:3px!important;z-index:2}
+.masalah .mk .mk-tg{position:absolute;top:clamp(22px,2.4vw,30px);left:clamp(24px,2.6vw,34px);color:#f5a06b}
+.masalah .mk .ik{position:absolute;top:clamp(18px,2.2vw,26px);right:clamp(22px,2.4vw,30px);color:#fff;opacity:.85}
+.masalah .mk b{color:#fff;font-size:clamp(21px,1.9vw,26px)}
+.masalah .mk small{color:rgb(255 255 255 / .8);font-size:14.5px}
+@media (max-width:760px){.masalah .mk{min-height:300px;border-bottom:0!important}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -822,7 +837,7 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
   <div class="wrap">
     <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
     <p class="hero-ey masuk" style="--d:1">Pemantauan bencana Indonesia</p>
-    <h1 id="judul" class="masuk" style="--d:3">Pantau bencana Indonesia dari <em>data terbuka</em></h1>
+    <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana di Indonesia secara <em>real time</em></h1>
     <p class="misi masuk" style="--d:2">Agregasi dan pengolahan data untuk memberikan <i>insight</i> terkait kondisi terkini dan riwayat bencana di Indonesia.</p>
     <div class="aksi masuk" style="--d:3">
       <a class="tbl utama" href="/peta">Buka peta</a>
@@ -854,12 +869,12 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
 
 <!-- ============ 3. MENGAPA + TIGA PILAR ============ -->
 <section class="seksi kertas berband" id="mengapa" aria-labelledby="h-mengapa">
-  <div class="band" style="--foto:url(/img/foto-gambut.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>01</i>Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><p class="lead">Indonesia termasuk negara dengan tingkat kerawanan bencana yang tinggi. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan. Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi tersebar di banyak sumber. Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>01</i>Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><div class="lead"><p>Indonesia termasuk negara dengan tingkat kerawanan bencana yang tinggi. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi tersebar di banyak sumber.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik.</p></div></header></div></div>
   <div class="wrap">
     <ul class="masalah">
-      <li class="kartu mk" data-n="01" data-muncul><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
-      <li class="kartu mk" data-n="02" data-muncul><span class="mk-tg">Tantangan 02</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
-      <li class="kartu mk" data-n="03" data-muncul><span class="mk-tg">Tantangan 03</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
+      <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
+      <li class="kartu mk" data-n="02" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 02</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
+      <li class="kartu mk" data-n="03" data-muncul style="--foto:url(/img/foto-pasca.jpg)"><span class="mk-tg">Tantangan 03</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
     </ul>
     <div class="alur" data-muncul>
     <div class="alur-hd"><span class="eyebrow">Jawaban kami</span><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
@@ -994,7 +1009,7 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
   <div class="wrap">
     <div class="org" id="org" style="--paper:var(--card)"></div>
     <h3 class="subjudul rj-jd">Rekam jejak Teras Urban</h3>
-    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Penghargaan · 2025</span><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/eth-zurich.jpg" alt="ETH Zürich × Teras Urban" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kolaborasi internasional · 2026</span><b>ETH Zürich × Teras Urban</b><span>Kerangka kelayakan dan desain jaringan angkutan darat-air yang setara untuk Jakarta dan Kepulauan Seribu.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kajian kebijakan · 2026</span><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi hingga kabupaten/kota; kajian dibahas bersama Tenaga Ahli Menteri ESDM.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Keterlibatan · 2025–2026</span><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
+    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Penghargaan · 2025</span><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kajian kebijakan · 2026</span><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi untuk perencanaan energi hingga tingkat kabupaten/kota.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Keterlibatan · 2025–2026</span><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
     <div id="anggota" hidden></div>
   </div>
 </section>
@@ -1009,7 +1024,7 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
 </section>
 
 <!-- ============ 9. KONTAK ============ -->
-<section class="seksi gelap berfoto" id="kontak" aria-labelledby="h-kontak" style="--foto:url(/img/foto-pemadam.jpg)">
+<section class="seksi gelap berfoto" id="kontak" aria-labelledby="h-kontak" style="--foto:url(/img/foto-gambut.jpg)">
   <div class="wrap kontak">
     <div>
       <span class="eyebrow">Hubungi kami</span>
