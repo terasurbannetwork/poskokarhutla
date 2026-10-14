@@ -943,6 +943,23 @@ img.ft,.eksek img.ft{object-fit:cover!important;object-position:50% 100%!importa
 img.ft,.eksek img.ft{padding:5% 0 0!important;transform:scale(1.1);transform-origin:50% 100%}
 .orang:hover img.ft{transform:scale(1.13)!important}
 .pita-j{animation-duration:52s}
+
+/* paragraf pembuka sejajar tengah terhadap label+judul (pemilik, 14 Okt 2026) */
+.band .kepala{grid-template-rows:auto auto!important;grid-template-areas:"ey ld" "jd ld"!important;align-content:center}
+.band .lead{align-self:center!important}
+.band .h2{align-self:start!important}
+@media (max-width:860px){.band .kepala{grid-template-rows:none!important;grid-template-areas:"ey" "jd" "ld"!important}}
+
+/* tantangan: semua judul mulai di garis yang sama */
+.masalah .mk{justify-content:flex-start!important}
+.masalah .mk b{margin-top:clamp(150px,13vw,200px)!important}
+/* keterangan di bawah judul Jawaban kami dihapus (pemilik, 14 Okt 2026) */
+.alur-hd::after{content:none!important;display:none!important}
+
+/* FAQ: judul satu kolom (tidak ikut grid dua kolom pembuka) */
+.faq-band .kepala{grid-template-columns:1fr!important;grid-template-rows:auto auto!important;grid-template-areas:"ey" "jd"!important;padding-bottom:0!important;align-content:start}
+.faq-band .h2{font-size:clamp(36px,4.4vw,64px)}
+.faq-band{align-items:start!important}.faq-band .kepala{align-self:start!important;row-gap:20px!important}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
