@@ -30,7 +30,12 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<script>/* tautan internal dalam mode tertanam: buka tab di aplikasi induk */ document.addEventListener("click", e => { if (!document.documentElement.classList.contains("tertanam")) return; const a = e.target.closest?.("a[href^='/']"); if (!a || a.target) return; const t = a.getAttribute("href").replace(/^\//, "").split(/[?#]/)[0]; if (parent.bukaTab && /^(peta|insight|berita|tren|dampak|sim|metode|kompleks)?$/.test(t)) { e.preventDefault(); parent.bukaTab(t || "peta"); } });</script>
+<script>/* dimuat sebagai tab di aplikasi: sembunyikan header & footer sendiri, warisi tema */ if (/[?&]tertanam=1/.test(location.search)) { document.documentElement.classList.add("tertanam"); try { const t = parent.document.documentElement.dataset.theme; if (t) document.documentElement.dataset.theme = t; } catch (e) {} }</script>
 <style>
+html.tertanam header.top,html.tertanam .kaki-situs,html.tertanam .ps-fab,html.tertanam .bhs.lepas{display:none!important}
+html.tertanam body{padding-top:0}
+
 /* Bahasa visual = index.html (token oklch, header gradien navy) + kartu Insight: kartu putih, radius 16, hairline + bayangan halus, pita kepala berpil, badan berpadding. */
 :root{
   --paper:oklch(97.6% .006 255); --card:oklch(100% 0 0); --surface:oklch(95.5% .012 255);

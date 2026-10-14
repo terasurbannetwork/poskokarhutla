@@ -388,7 +388,7 @@ async function rute(env, req, url, ctx) {
   catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
 }
 
-const HALAMAN = /^\/(ringkasan|peta|insight|berita|kompleks|posko|informasi|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
+const HALAMAN = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
 
 /* ================= HTML lewat Worker (statistik publik) — dipisah supaya mudah digabung dengan perubahan routing lain =================
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
@@ -398,7 +398,7 @@ export const HTML_RUTE = [
   [/^\/(index\.html)?$/, "/index.html", "/"],
   [/^\/banjir(\/|\/index\.html)?$/, "/banjir/index.html", "/banjir/"],
   [HALAMAN, "/index.html", null],
-  [/^\/tentang\/?$/, "/tentang.html", "/tentang"],   // html_handling "none" mematikan /tentang -> tentang.html otomatis
+  [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (HALAMAN) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
 ];
 function catatHTML(env, req, jalur, ctx) {

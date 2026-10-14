@@ -1,0 +1,39 @@
+/* kaki.js — footer situs untuk halaman Insight, Berita, Tren, Dampak (pemilik, 14 Okt 2026).
+   Merek + ringkasan di kiri, tiga kolom tautan, ikon sosial dari data/kontak.json, lalu baris hak cipta. */
+(() => {
+  const D = document, HAL = ["insight", "berita", "tren", "dampak"];
+  const IK = {x: "M4 4l16 16M20 4 4 20", linkedin: "M6 9v10M6 5v.5M10 19v-6a3 3 0 0 1 6 0v6M10 13v6", facebook: "M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8z",
+    instagram: "M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5v.01", youtube: "M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z", tiktok: "M14 3v11a3 3 0 1 1-3-3M14 3a5 5 0 0 0 5 5"};
+  D.head.insertAdjacentHTML("beforeend", `<style>
+.kaki-situs{margin:40px -16px 0;padding:44px 16px 24px;background:#0b1b33;color:#cfd8e6;font-size:13.5px}
+.kaki-situs .kk{max-width:1120px;margin:0 auto}
+.kaki-situs .kk-g{display:grid;grid-template-columns:1.4fr repeat(3,1fr);gap:28px}
+.kaki-situs .kk-m{display:flex;align-items:center;gap:10px;font:800 17px var(--display,Inter),sans-serif;color:#fff}
+.kaki-situs .kk-m img{width:30px;height:30px}
+.kaki-situs p{margin:10px 0 0;line-height:1.55;color:#a9b5c8;max-width:34ch}
+.kaki-situs h4{margin:4px 0 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7f8ca3}
+.kaki-situs ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.kaki-situs a{color:#e6ecf5;text-decoration:none}.kaki-situs a:hover{color:#fff;text-decoration:underline}
+.kaki-situs .kk-s{display:flex;gap:8px;margin-top:16px}
+.kaki-situs .kk-s a{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .08)}
+.kaki-situs .kk-s a:hover{background:rgb(255 255 255 / .18);text-decoration:none}
+.kaki-situs .kk-s svg{width:16px;height:16px}
+.kaki-situs .kk-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:32px;padding-top:16px;border-top:1px solid rgb(255 255 255 / .1);font-size:12px;color:#7f8ca3}
+@media (max-width:760px){.kaki-situs .kk-g{grid-template-columns:1fr 1fr}.kaki-situs .kk-g > :first-child{grid-column:1/-1}}
+</style>`);
+  let sos = "";
+  fetch("data/kontak.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => {
+    sos = Object.entries(k.sosial || {}).filter(([, u]) => /^https:\/\//.test(u || "")).map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener" aria-label="${n}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IK[n] ? `<path d="${IK[n]}"/>` : ""}</svg></a>`).join("");
+    D.querySelectorAll(".kaki-situs .kk-s").forEach(el => el.innerHTML = sos);
+  });
+  const html = () => `<footer class="kaki-situs"><div class="kk"><div class="kk-g">
+    <div><div class="kk-m"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</div>
+      <p>Pemantauan bencana Indonesia dari data terbuka. Sebuah inisiatif <a href="https://www.terasurban.com" target="_blank" rel="noopener">Teras Urban</a>.</p><div class="kk-s">${sos}</div></div>
+    <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li></ul></div>
+    <div><h4>Alat</h4><ul><li><a href="/sim">Simulasi</a></li><li><a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a></li></ul></div>
+    <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li><li><a href="/privasi.html">Kebijakan privasi</a></li></ul></div>
+  </div><div class="kk-b"><span>© ${new Date().getFullYear()} Teras Urban (Teras Urban Network). Bukan situs resmi pemerintah.</span><span>Data milik penyedianya masing-masing.</span></div></div></footer>`;
+  const pasang = () => HAL.forEach(id => { const p = D.getElementById("p-" + id); if (p && !p.querySelector(":scope > .kaki-situs")) p.insertAdjacentHTML("beforeend", html()); });
+  D.addEventListener("click", e => { if (e.target.closest?.("[data-pesan]")) { e.preventDefault(); D.getElementById("kirimPesan")?.click(); } });
+  D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", pasang) : pasang();
+})();

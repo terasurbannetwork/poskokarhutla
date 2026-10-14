@@ -12,6 +12,11 @@
   /* janji di C5 (dua klik cepat tidak memuat dua kali); data jadi di Lapis.cache, dipakai bersama skrip utama (asap) */
   const C5 = {};
   const muat = (k, u) => C5[k] ||= (Lapis.cache[k] ? Promise.resolve(Lapis.cache[k]) : muatJSON(u).then(d => Lapis.cache[k] ||= d)).catch(e => { delete C5[k]; throw e; });
+  /* sekolah dari data sekolah nasional (sekolah.json, 9 provinsi) + RS & faskes OSM; digabung jadi satu daftar bertanda t */
+  const W_JENJANG = {dini: WARNA.kuning, sd: WARNA.oranye, smp: WARNA.hijau, sma: WARNA.merah, lain: "#8a94a6"};
+  const grupJenjang = j => /^(TK|KB|SPS|TPA|PAUD|RA|BA|KOBER)/i.test(j) ? "dini" : /^(SD|MI)$/i.test(j) ? "sd" : /^(SMP|MTS)$/i.test(j) ? "smp" : /^(SMA|SMK|MA|MAK)$/i.test(j) ? "sma" : "lain";
+  const FAS = () => C5.fas ||= Promise.all([muat("fasilitas_osm", "data/fasilitas.json"), muat("sekolah", "data/sekolah.json")]).then(([f, s]) =>
+    Lapis.cache.fasilitas = f.filter(x => x.t !== "sekolah").concat(s.baris.map(([nama, j, st, , sw, prov, kab, kec, desa, lat, lon]) => ({t: "sekolah", nama, j, g: grupJenjang(j), st, sw, prov, kab, kec, desa, lat, lon})))).catch(e => { delete C5.fas; throw e; });
   const GFW = () => muat("lapisan_tambahan", "data/lapisan_tambahan.json");
 
   /* ---------- kotak centang: disisipkan ke #lapis bila belum ada (boleh juga ditulis statis, lihat LAPISAN5.md) ---------- */
@@ -75,17 +80,17 @@
         "circle-stroke-color": gelap() ? "#0b1424" : "#fff", "circle-stroke-width": .8}}, Peta.lapisAwal());
       klikSekali("l5-penduduk", e => { const p = e.features[0].properties;
         return `<b>± ${fmt(Math.round(p.n / 1000) * 1000)} jiwa</b> di sel ± 28 km ini<br>PM2.5 maks. ${fmt(p.pm)} µg/m³ · <b>${KELAS[p.c]}</b><br><small>Prakiraan CAMS; penduduk WorldPop 2026</small>`; }); },
-    async fasilitas() { const d = await muat("fasilitas", "data/fasilitas.json");
-      peta.addSource("l5-fasilitas", {type: "geojson", data: {type: "FeatureCollection", features: d.map((x, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {i, t: x.t}}))}});
-      const w = ["match", ["get", "t"], "rs", WARNA.ungu, "faskes", WARNA.biru, WARNA.kuning];
+    async fasilitas() { const d = await FAS();
+      peta.addSource("l5-fasilitas", {type: "geojson", data: {type: "FeatureCollection", features: d.map((x, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {i, t: x.t, g: x.g || ""}}))}});
+      const w = ["match", ["get", "t"], "rs", WARNA.ungu, "faskes", WARNA.biru, ["match", ["get", "g"], "dini", W_JENJANG.dini, "sd", W_JENJANG.sd, "smp", W_JENJANG.smp, "sma", W_JENJANG.sma, W_JENJANG.lain]];
       peta.addLayer({id: "l5-fasilitas", type: "circle", source: "l5-fasilitas", paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 5, ["match", ["get", "t"], "rs", 3.5, 2], 10, ["match", ["get", "t"], "rs", 8, 5.5]],
         "circle-color": w, "circle-stroke-color": "#fff", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 5, .5, 10, 1.5]}});
       klikSekali("l5-fasilitas", async e => { const x = d[e.features[0].properties.i], a = await muat("asap", "data/asap.json").catch(() => null), k = kompleksDekat(x.lat, x.lon);
         const pm = a && pmDi(a, x.lat, x.lon), kb = (k, v, pn) => `<div class="kb${pn ? " penuh" : ""}"><span>${k}</span><b>${v}</b></div>`;
         const hari = pm ? a.hari.map((t, i) => pm[i] == null ? "" : `<span class="l5-pm" style="background:${W_KELAS[kelasPM(pm[i])]}" title="${KELAS[kelasPM(pm[i])]}">${new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short"})} ${Math.round(pm[i])}</span>`).join("") : "–";
         return `<div class="kartu"><div class="kp" style="background:linear-gradient(135deg,${x.t === "rs" ? WARNA.ungu : x.t === "faskes" ? WARNA.biru : "#b8902c"},rgba(11,37,69,.95))"><div>
-          <small>${{rs: "Rumah sakit", faskes: "Fasilitas kesehatan", sekolah: "Sekolah"}[x.t]}</small><b>${esc(x.nama)}</b></div></div>
-          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${kb("Kompleks terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
+          <small>${{rs: "Rumah sakit", faskes: "Fasilitas kesehatan", sekolah: "Sekolah " + esc(x.j)}[x.t]}</small><b>${esc(x.nama)}</b></div></div>
+          <div class="kg">${kb("Provinsi", esc(namaProv(x.prov)))}${x.t === "sekolah" ? kb("Status", x.st === "N" ? "Negeri" : "Swasta") + kb("Siswa", x.sw == null ? "–" : fmt(x.sw)) + kb("Desa / kecamatan", esc([x.desa, x.kec].filter(Boolean).join(", ") || "–"), 1) : ""}${kb("Kompleks terdekat", k ? `${fmt(Math.round(k.d))} km` : "–")}
           ${k ? kb("Status kompleks", `${esc(k.p.id)} · ${esc(S.meta.status[k.p.level])}`, 1) : ""}</div>
           <div class="kk">PM2.5 maks. harian (µg/m³), prakiraan CAMS:<div class="l5-hari">${hari}</div>
           ${pm && pm.some(v => v > 55.4) ? `<b>${x.t === "sekolah" ? "Pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang." : "Siapkan layanan ISPA, masker, dan ruang bersih udara."}</b>` : ""}
@@ -140,7 +145,7 @@
   const _leg = renderLegenda;
   renderLegenda = function () { _leg(); const box = document.querySelector("#legDet > div"); if (!box) return; let h = "";
     if (nyala("penduduk")) h += `<div class="lbl" style="margin-top:8px">Penduduk terpapar asap (hari terpilih)</div><div class="leg" style="margin-top:4px">${[1, 2, 3, 4].map(c => `<span><i class="sw dot" style="background:${W_KELAS[c]}"></i>${KELAS[c]}</span>`).join("")}<span>Lingkaran makin besar = makin banyak jiwa</span></div>`;
-    if (nyala("fasilitas")) h += `<div class="lbl" style="margin-top:8px">Sekolah & faskes (OSM)</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:${WARNA.ungu};border:1px solid #fff"></i>Rumah sakit</span><span><i class="sw dot" style="background:${WARNA.biru};border:1px solid #fff"></i>Puskesmas, klinik</span><span><i class="sw dot" style="background:${WARNA.kuning};border:1px solid #fff"></i>Sekolah, PAUD</span><span>Hanya yang terpeta di OSM; banyak sekolah belum ada</span></div>`;
+    if (nyala("fasilitas")) h += `<div class="lbl" style="margin-top:8px">Sekolah (Dapodik/Kemendikbud) & faskes (OSM)</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:${WARNA.ungu};border:1px solid #fff"></i>Rumah sakit</span><span><i class="sw dot" style="background:${WARNA.biru};border:1px solid #fff"></i>Puskesmas, klinik</span>${[["dini", "PAUD, TK"], ["sd", "SD, MI"], ["smp", "SMP, MTs"], ["sma", "SMA, SMK, MA"], ["lain", "SLB, lainnya"]].map(([k, n]) => `<span><i class="sw dot" style="background:${W_JENJANG[k]};border:1px solid #fff"></i>${n}</span>`).join("")}<span>Faskes hanya yang terpeta di OSM</span></div>`;
     if (nyala("jalan")) h += `<div class="lbl" style="margin-top:8px">Jalan & sungai</div><div class="leg" style="margin-top:4px">${[[WARNA.merah, "Jalan nasional/primer"], [WARNA.oranye, "Sekunder"], [WARNA.kuning, "Tersier"], [WARNA.biru, "Sungai, rute perahu"]].map(([c, n]) => `<span><i class="sw" style="background:${c};height:3px"></i>${n}</span>`).join("")}<span>Jalan desa & jalan tanah tidak digambar, tetap dihitung di waktu tempuh regu</span></div>`;
     if (nyala("hilang")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#dc6c9c"></i>Hutan hilang 2021–2025 (makin pekat makin baru)</span></div>`;
     if (nyala("hilang_api")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:${WARNA.oranye}"></i>Hutan hilang akibat kebakaran 2015–2025</span></div>`;
@@ -178,7 +183,7 @@
     if (kn?.provinsi?.includes(p.prov)) { const r = 5; let t = 0; for (const [la, lo, v] of kn.grid) if (Math.abs(la - p.lat) < .06 && Math.abs(lo - p.lon) < .06 && km(p.lat, p.lon, la, lo) <= r) t += v;
       sekitar += `<tr><td>Kanal & parit dalam 5 km</td><td class="n num">${fmt(Math.round(t))} km</td></tr>`; }
     if (fs) { const n = {sekolah: 0, faskes: 0, rs: 0}; for (const x of fs) if (Math.abs(x.lat - p.lat) < .2 && Math.abs(x.lon - p.lon) < .2 && km(p.lat, p.lon, x.lat, x.lon) <= 15) n[x.t]++;
-      sekitar += `<tr><td>Sekolah dalam 15 km (OSM)</td><td class="n num">${fmt(n.sekolah)}</td></tr><tr><td>Faskes & RS dalam 15 km</td><td class="n num">${fmt(n.faskes + n.rs)}</td></tr>`; }
+      sekitar += `<tr><td>Sekolah dalam 15 km</td><td class="n num">${fmt(n.sekolah)}</td></tr><tr><td>Faskes & RS dalam 15 km</td><td class="n num">${fmt(n.faskes + n.rs)}</td></tr>`; }
     sesudah.insertAdjacentHTML("afterend", `<details class="lipat l5-akses" open><summary>Waktu tempuh regu</summary><div class="isi">${tabel}
       ${sekitar ? `<table class="tb2"><tbody>${sekitar}</tbody></table>` : ""}</div></details>`);
   }
