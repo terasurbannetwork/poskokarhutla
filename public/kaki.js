@@ -11,19 +11,19 @@
 .kaki-situs .kk-tum{display:inline-flex;align-items:center;gap:10px;text-decoration:none!important;}
 .kaki-situs .kk-tum img{width:46px;height:auto}
 .kaki-situs .kk-tum span{display:inline-block;font:900 20px/0.95 var(--display,Inter),sans-serif;letter-spacing:.02em;color:#fff}
-.kaki-situs .kk-sl{color:#9fc0ff!important;font-weight:600}
-.kaki-situs .kk-al{display:flex;gap:8px;font-size:12.5px;color:inherit;text-decoration:none;transition:color .2s}
+.kaki-situs .kk-sl{color:#f5a06b!important;font-weight:600}
+.kaki-situs .kk-al{display:flex;gap:10px;margin-top:18px;padding-top:16px;border-top:1px solid rgb(255 255 255 / .1);line-height:1.6;font-size:12.5px;color:inherit;text-decoration:none;transition:color .2s}
 .kaki-situs .kk-al:hover span{text-decoration:underline;text-underline-offset:3px}
-.kaki-situs .kk-al svg{flex:none;width:16px;height:16px;margin-top:2px;color:#4f8fc4}
+.kaki-situs .kk-al svg{flex:none;width:16px;height:16px;margin-top:2px;color:#f5a06b}
 .kaki-situs .kk-m{display:flex;align-items:center;gap:10px;font:800 17px var(--display,Inter),sans-serif;color:#fff}
 .kaki-situs .kk-m img{width:30px;height:30px}
 .kaki-situs p{margin:10px 0 0;line-height:1.55;color:#a9b5c8;max-width:34ch}
 .kaki-situs h4{margin:4px 0 10px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#7f8ca3}
 .kaki-situs ul{list-style:none;margin:0;padding:0;display:grid;gap:8px}
 .kaki-situs a{color:#e6ecf5;text-decoration:none}.kaki-situs a:hover{color:#fff;text-decoration:underline}
-.kaki-situs .kk-s{display:flex;gap:8px;margin-top:16px}
-.kaki-situs .kk-s a{width:36px;height:36px;border-radius:50%;display:grid;place-items:center;background:rgb(255 255 255 / .08)}
-.kaki-situs .kk-s a:hover{background:rgb(255 255 255 / .18);text-decoration:none}
+.kaki-situs .kk-s{display:flex;gap:10px;margin-top:20px}
+.kaki-situs .kk-s a{width:40px;height:40px;border-radius:50%;display:grid;place-items:center;background:transparent;border:1px solid rgb(255 255 255 / .22);color:#fff;transition:background .3s,border-color .3s,transform .3s}
+.kaki-situs .kk-s a:hover{background:#e8742e;border-color:#e8742e;transform:translateY(-2px);text-decoration:none}
 .kaki-situs .kk-s svg{width:16px;height:16px}
 .kaki-situs .kk-b{display:flex;flex-wrap:wrap;justify-content:space-between;gap:8px;margin-top:32px;padding-top:16px;border-top:1px solid rgb(255 255 255 / .1);font-size:12px;color:#7f8ca3}
 @media (max-width:760px){.kaki-situs .kk-g{grid-template-columns:1fr 1fr}.kaki-situs .kk-g > :first-child{grid-column:1/-1}}
