@@ -24,6 +24,8 @@
   let sos = "";
   fetch("data/kontak.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(k => {
     sos = Object.entries(k.sosial || {}).filter(([, u]) => /^https:\/\//.test(u || "")).map(([n, u]) => `<a href="${u}" target="_blank" rel="noopener" aria-label="${n}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IK[n] ? `<path d="${IK[n]}"/>` : ""}</svg></a>`).join("");
+    /* situs Teras Urban selalu ada sebagai ikon pertama */
+    sos = `<a href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Situs Teras Urban" title="terasurban.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></a>` + sos;
     D.querySelectorAll(".kaki-situs .kk-s").forEach(el => el.innerHTML = sos);
   });
   const html = () => `<footer class="kaki-situs"><div class="kk"><div class="kk-g">
