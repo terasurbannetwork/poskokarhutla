@@ -108,6 +108,9 @@
     /* per provinsi: hanya provinsi dengan titik di areal konsesi, terbanyak dulu */
     const pv = {}; for (const j of daf) for (const [k, n] of Object.entries(R[j].prov || {})) (pv[k] ||= {})[j] = n;
     const pvs = Object.entries(pv).map(([k, o]) => [k, o, Object.values(o).reduce((a, b) => a + b, 0)]).sort((a, b) => b[2] - a[2]).slice(0, 10);
+    /* porsi per provinsi: titik VIIRS 7 hari di kompleks api provinsi itu = penyebut (sama dengan T.n di tingkat nasional) */
+    const nPv = {}; S.kluster.features.forEach(f => nPv[f.properties.prov] = (nPv[f.properties.prov] || 0) + (f.properties.n || 0));
+    const por = (v, n) => v && n ? `<td class="n num">${pct(v / n)} <small style="color:var(--ink2)">${fmt(v)}</small></td>` : `<td class="n num">–</td>`;
     ex.innerHTML = `<div class="ks-hd"><div><h3>Kebakaran di konsesi: titik panas menurut status lahan</h3>
         <p class="sub">7 hari terakhir · ${fmt(T.konsesi)} dari ${fmt(T.n)} titik panas VIIRS di kompleks api (${pct(T.n ? T.konsesi / T.n : 0)}) berada di dalam areal konsesi.</p></div></div>
       <div class="tw"><table class="tb3 ks-tb"><thead><tr><th>Status lahan</th><th class="n">Peta batas</th><th class="n">Titik panas</th><th class="n">Porsi</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th><th class="n">Musim ini</th></tr></thead><tbody>
@@ -115,8 +118,8 @@
         <td class="n num">${jn(j)[3]}</td>${sel(a.n, 1)}<td class="n num">${T.n ? pct(a.n / T.n) : "–"}</td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td>${sel(a.kompleks)}${sel(a.musim)}</tr>`; }).join("")}
       <tr><td><span class="ks-j" style="--w:#2b8c86">Di luar areal konsesi</span></td><td class="n num">–</td>${sel(T.n - T.konsesi, 1)}<td class="n num">${T.n ? pct((T.n - T.konsesi) / T.n) : "–"}</td><td class="n num">–</td><td class="n num">–</td><td class="n num">–</td></tr>
       </tbody></table></div>
-      ${pvs.length ? `<div class="tw"><div class="lbl" style="margin:8px 0 4px">Titik panas di areal konsesi per provinsi</div><table class="tb3 ks-tb"><thead><tr><th>Provinsi</th>${daf.map(j => `<th class="n">${esc(jn(j)[0])}</th>`).join("")}<th class="n">Jumlah</th></tr></thead><tbody>
-        ${pvs.map(([k, o, n]) => `<tr><td>${esc(namaProv(k))}</td>${daf.map(j => sel(o[j] || 0)).join("")}${sel(n, 1)}</tr>`).join("")}</tbody></table></div>` : ""}
+      ${pvs.length ? `<div class="tw"><div class="lbl" style="margin:8px 0 4px">Porsi titik panas di dalam dan di luar areal konsesi per provinsi</div><table class="tb3 ks-tb"><thead><tr><th>Provinsi</th><th class="n">Titik panas</th>${daf.map(j => `<th class="n">${esc(jn(j)[0])}</th>`).join("")}<th class="n">Di dalam konsesi</th><th class="n">Di luar konsesi</th></tr></thead><tbody>
+        ${pvs.map(([k, o, n]) => { const t = Math.max(nPv[k] || 0, n); return `<tr><td>${esc(namaProv(k))}</td>${sel(t)}${daf.map(j => por(o[j] || 0, t)).join("")}${por(n, t).replace("<td", "<td style=\"font-weight:700\"")}${por(t - n, t)}</tr>`; }).join("")}</tbody></table></div>` : ""}
       <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai kompleksnya.</em></footer>`;
   }
   function tunjuk(j) {

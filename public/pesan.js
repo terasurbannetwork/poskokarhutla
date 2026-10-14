@@ -11,7 +11,18 @@
 .ps-dlg::backdrop{background:rgb(11 37 69 / .45)}
 .ps-dlg form{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
 .ps-dlg .ps-hd{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--ps-line);background:linear-gradient(180deg,var(--ps-in),var(--ps-bg))}
-.ps-dlg .ps-ik{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#0b2545;color:#fff}
+.ps-dlg .ps-ik{flex:none;width:42px;height:42px;border-radius:50%;display:grid;place-items:center;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff}
+.ps-dlg .ps-hp2{margin-top:3px;font-size:12.5px}
+.ps-dlg .ps-l{display:flex;align-items:baseline;justify-content:space-between;font-weight:700;font-size:12.5px}
+.ps-dlg .ps-l small{font-weight:500;color:var(--ps-ink2);font-size:11px}
+.ps-dlg .ps-kat{display:grid;gap:6px}
+.ps-dlg .ps-kat > div{display:flex;flex-wrap:wrap;gap:6px}
+.ps-dlg .ps-chip{display:inline-flex;cursor:pointer;font-weight:600}
+.ps-dlg .ps-chip input{position:absolute;opacity:0;width:1px;height:1px}
+.ps-dlg .ps-chip span{padding:7px 12px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-bg);font-size:12.5px}
+.ps-dlg .ps-chip input:checked + span{background:#0b2545;border-color:#0b2545;color:#fff}
+.ps-dlg .ps-chip input:focus-visible + span{outline:2px solid #1d4e89;outline-offset:2px}
+:root[data-theme="dark"] .ps-dlg .ps-chip input:checked + span{background:#4f8fc4;border-color:#4f8fc4}
 .ps-dlg .ps-ik svg{width:20px;height:20px}
 .ps-dlg .ps-hd > div{flex:1;min-width:0}
 .ps-dlg h2{font:800 19px/1.25 "Plus Jakarta Sans",Inter,sans-serif;margin:0}
@@ -34,14 +45,16 @@
 .ps-dlg .ps-cek input{width:auto;margin-top:3px}
 .ps-dlg .ps-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px 18px;border-top:1px solid var(--ps-line)}
 .ps-dlg .ps-aksi button{min-height:44px}
-.ps-dlg .ps-galat{color:#c9503a;font-weight:600;font-size:13px;min-height:1em}
+.ps-dlg .ps-galat{color:#c9503a;font-weight:600;font-size:13px}
+.ps-dlg .ps-galat:empty{display:none}
 .ps-dlg button{font:600 14px Inter,sans-serif;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--ps-line);background:transparent;color:inherit}
-.ps-dlg button.ps-kirim{background:#0b2545;color:#fff;border-color:#0b2545}
+.ps-dlg button.ps-kirim{background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;border-color:transparent;font-weight:800}
 :root[data-theme="dark"] .ps-dlg button.ps-kirim{background:#4f8fc4;border-color:#4f8fc4}
-.ps-fab{position:fixed;right:16px;bottom:16px;z-index:40;width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;background:#0b2545;color:#fff;box-shadow:0 6px 18px rgb(11 37 69 / .3);cursor:pointer}
-.ps-fab:hover{background:#1d4e89}
+.ps-fab{position:fixed;right:16px;bottom:16px;z-index:40;height:48px;padding:0 18px 0 14px;border-radius:999px;border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;font:800 14px Inter,system-ui,sans-serif;box-shadow:0 8px 22px rgb(217 83 43 / .45);cursor:pointer}
+.ps-fab:hover{filter:brightness(1.06);transform:translateY(-1px)}
 .ps-fab svg{width:20px;height:20px}
-body:has(#p-peta.on) .ps-fab{right:12px;bottom:112px} /* di atas tombol zoom peta */
+@media (max-width:640px){.ps-fab span{display:none}.ps-fab{width:48px;padding:0;justify-content:center}}
+body:has(#p-peta.on) .ps-fab{right:62px;bottom:44px} /* kiri tombol zoom peta (pemilik, 14 Okt 2026) */
 .ps-kaki{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:18px 16px 28px}
 .ps-kaki button{font:600 14px Inter,sans-serif;display:inline-flex;gap:8px;align-items:center;border-radius:999px;padding:9px 18px;min-height:44px;cursor:pointer;border:1px solid currentColor;background:transparent;color:inherit;opacity:.85}
 .ps-kaki button:hover{opacity:1}
@@ -51,13 +64,13 @@ body:has(#p-peta.on) .ps-fab{right:12px;bottom:112px} /* di atas tombol zoom pet
   function buka() {
     if (!dlg) {
       D.body.insertAdjacentHTML("beforeend", `<dialog class="ps-dlg" aria-labelledby="psJudul"><form method="dialog" novalidate>
-        <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Kirim pesan ke tim</h2><span class="ps-sub">Masukan, koreksi data, kerja sama</span></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
+        <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Chat Admin</h2><p class="ps-hp2">Tim Pantau Bencana membaca setiap pesan dan membalas lewat email.</p></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="ps-bd">
-        <div class="ps-2"><label>Nama <small>(opsional)</small><input name="nama" maxlength="100" autocomplete="name"></label>
-        <label>Instansi / organisasi <small>(opsional)</small><input name="instansi" maxlength="150" autocomplete="organization"></label></div>
-        <div class="ps-2"><label>Email<input name="email" type="email" maxlength="254" required autocomplete="email" inputmode="email"></label>
-        <label>Kategori<select name="kategori">${KAT.map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select></label></div>
-        <label>Pesan <small>(10–2000 karakter)</small><textarea name="pesan" minlength="10" maxlength="2000" required></textarea></label>
+        <div class="ps-kat" role="radiogroup" aria-label="Topik pesan"><span class="ps-l">Topik</span><div>${KAT.map(([k, n], i) => `<label class="ps-chip"><input type="radio" name="kategori" value="${k}" ${i ? "" : "checked"}><span>${n}</span></label>`).join("")}</div></div>
+        <div class="ps-2"><label><span class="ps-l">Nama <small>opsional</small></span><input name="nama" maxlength="100" autocomplete="name" placeholder="Nama Anda"></label>
+        <label><span class="ps-l">Instansi <small>opsional</small></span><input name="instansi" maxlength="150" autocomplete="organization" placeholder="Organisasi / media"></label></div>
+        <label><span class="ps-l">Email</span><input name="email" type="email" maxlength="254" required autocomplete="email" inputmode="email" placeholder="nama@contoh.com"></label>
+        <label><span class="ps-l">Pesan <small>10–2000 karakter</small></span><textarea name="pesan" minlength="10" maxlength="2000" required placeholder="Tulis pesan, koreksi data, atau pertanyaan Anda…"></textarea></label>
         <label class="ps-cek"><input type="checkbox" name="sertakan" checked> <span>Sertakan tautan tampilan yang sedang saya buka</span></label>
         <label class="ps-hp" aria-hidden="true">Situs<input name="situs" tabindex="-1" autocomplete="off"></label>
         <div id="psTs"></div>
@@ -96,7 +109,7 @@ body:has(#p-peta.on) .ps-fab{right:12px;bottom:112px} /* di atas tombol zoom pet
   /* pemasangan: ikon header (sebelum tombol tema) + tombol di kaki Ringkasan & Metode */
   const tema = D.getElementById("tema");
   /* tombol pesan mengambang di kanan bawah (pemilik, 14 Okt 2026), bukan di header */
-  if (tema) D.body.insertAdjacentHTML("beforeend", `<button class="ps-fab" id="kirimPesan" aria-label="Kirim pesan ke tim" title="Kirim pesan ke tim">${IKON}</button>`);
+  if (tema) D.body.insertAdjacentHTML("beforeend", `<button class="ps-fab" id="kirimPesan" aria-label="Chat admin" title="Kirim pesan ke tim">${IKON}<span>Chat Admin</span></button>`);
   D.getElementById("kirimPesan")?.addEventListener("click", buka);
   for (const id of ["p-ringkasan", "p-metode"]) {
     const s = D.getElementById(id); if (!s) continue;

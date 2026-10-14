@@ -125,9 +125,12 @@
 
   /* ---------- tombol EN / ID */
   const gaya = document.createElement("style");
-  gaya.textContent = `.bhs{display:inline-flex;align-items:center;gap:3px;font:600 12.5px/1 Inter,system-ui,sans-serif;color:inherit;margin-right:6px;white-space:nowrap}
-.bhs span{opacity:.5}.bhs button{all:unset;cursor:pointer;padding:6px 2px;font-weight:500;letter-spacing:.02em;opacity:.65}.bhs button:hover{opacity:1}
-.bhs button[aria-pressed=true]{font-weight:800;opacity:1;text-decoration:underline;text-underline-offset:4px;text-decoration-thickness:2px}
+  /* toggle pil berbendera (pemilik, 14 Okt 2026) */
+  gaya.textContent = `.bhs{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgb(255 255 255 / .14);box-shadow:inset 0 0 0 1px rgb(255 255 255 / .28);font:700 12px/1 Inter,system-ui,sans-serif;color:inherit;margin-right:6px;white-space:nowrap}
+.bhs button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;opacity:.75;transition:background .15s,opacity .15s}
+.bhs button:hover{opacity:1}
+.bhs button svg{width:16px;height:11px;border-radius:2px;box-shadow:0 0 0 1px rgb(0 0 0 / .15);flex:none}
+.bhs button[aria-pressed=true]{background:#fff;color:#0b2545;opacity:1}
 .bhs button:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:3px}
 .bhs.lepas{position:fixed;top:10px;right:12px;z-index:60;background:var(--card,#fff);color:var(--ink,#14213d);padding:4px 10px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
 @media (max-width:640px){.bhs{font-size:11.5px;gap:2px;margin-right:0}}
@@ -136,7 +139,9 @@ html[data-i18n-muat] body>header,html[data-i18n-muat] main{opacity:0}`;
   function pasangTombol() {
     if (document.querySelector(".bhs")) return segarTombol();
     const el = document.createElement("div"); el.className = "bhs"; el.setAttribute("role", "group"); el.setAttribute("aria-label", "Language / Bahasa"); el.translate = false;
-    el.innerHTML = `<button type="button" data-b="en" lang="en" title="English">EN</button><span aria-hidden="true">/</span><button type="button" data-b="id" lang="id" title="Bahasa Indonesia">ID</button>`;
+    const ID = '<svg viewBox="0 0 16 11" aria-hidden="true"><rect width="16" height="5.5" fill="#d7262b"/><rect y="5.5" width="16" height="5.5" fill="#fff"/></svg>';
+    const EN = '<svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0 0l60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#c8102e" stroke-width="7"/></svg>';
+    el.innerHTML = `<button type="button" data-b="id" lang="id" title="Bahasa Indonesia">${ID}ID</button><button type="button" data-b="en" lang="en" title="English">${EN}EN</button>`;
     const wadah = document.querySelector("header .stat") || document.querySelector("header.top, body > header");
     if (wadah) wadah.prepend(el); else { el.classList.add("lepas"); document.body.appendChild(el); }
     el.addEventListener("click", e => { const b = e.target.closest("button"); if (b) ganti(b.dataset.b); });

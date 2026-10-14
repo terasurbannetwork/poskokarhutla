@@ -427,7 +427,7 @@ const Dampak = (() => {
     let acc = 0, xs = [];
     const bar = sk.map(([k, v], i) => { const y = i * rh, x = L + X(acc), wd = Math.max(1.5, X(v[1])); acc += v[1]; xs.push(x + wd); const w = WC[i % 11];
       return `<g data-dk="sek10|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmS(k))}</text>
-        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 6}" width="${wd}" height="${rh - 12}" rx="3" fill="${w}" data-tip="<b>${esc(SEKTOR[k] || k)}</b><br>${rp(v[1])} (${rp(v[0])}–${rp(v[2])})<br>${Math.round(v[1] / T[1] * 100)}% dari total"/>
+        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 6}" width="${wd}" height="${rh - 12}" rx="3" fill="${w}" data-tip="<div class='tk'><div class='tk-h'><b>${esc(SEKTOR[k] || k)}</b></div><div class='tk-n'><b>${rp(v[1])}</b><span class='tk-s on'>${Math.round(v[1] / T[1] * 100)}% dari total</span></div><div class='tk-f'>Rentang ${rp(v[0])} – ${rp(v[2])} (skenario rendah–tinggi)</div></div>"/>
         ${pilV(x + wd + 5, y + 5, rp(v[1]), w)}</g>`; }).join("");
     const con = xs.map((x, i) => `<line x1="${x}" x2="${x}" y1="${i * rh + rh - 6}" y2="${(i + 1) * rh + 6}" stroke="currentColor" stroke-dasharray="3 3" opacity=".4"/>`).join("");
     const grid = tk.map(v => `<line x1="${L + X(v * 1e12)}" x2="${L + X(v * 1e12)}" y1="0" y2="${yA}" stroke="currentColor" opacity=".08"/><text x="${L + X(v * 1e12)}" y="${Ht - 2}" text-anchor="middle" font-size="9.5" opacity=".65">${rp(v * 1e12)}</text>`).join("");

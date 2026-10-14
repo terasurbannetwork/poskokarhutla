@@ -64,9 +64,22 @@ const Bagikan = {
   ambilLuar(t) {
     const art = t.closest("article.ex"), head = art ? null : t.closest(".head"), jd = art ? art.querySelector("h3") : head.querySelector("h2");
     const isi = art ? [art] : this.isiHead(head), cari = q => isi.map(x => x.matches?.(q) ? x : x.querySelector?.(q)).find(Boolean);
-    const svg = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).find(v => (v.viewBox.baseVal?.width || 0) >= 300);
+    /* sampai dua grafik + tabel kartu itu, ditumpuk, supaya gambar tidak kosong di atas-bawah */
+    const svgs = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).filter(v => (v.viewBox.baseVal?.width || 0) >= 300).slice(0, 2), svg = svgs[0];
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, tabel: svg ? null : cari("table"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+  },
+  /* grafik tanpa tabel: susun tabel dari tooltip batang ("<b>Nama</b><br>Label: nilai<br>…"), satu baris per nama */
+  tabelDariTip(svgs) {
+    const baris = new Map(), kol = new Set();
+    for (const v of svgs || []) for (const el of v.querySelectorAll("[data-tip]")) {
+      const d = document.createElement("div"); d.innerHTML = el.getAttribute("data-tip"); const nm = d.querySelector("b")?.textContent.trim(); if (!nm) continue;
+      const r = baris.get(nm) || {}; d.innerHTML.split(/<br\s*\/?>/i).slice(1).forEach(p => { const t = p.replace(/<[^>]+>/g, "").trim(), i = t.indexOf(":"); if (i > 0) { const k = t.slice(0, i).trim(); kol.add(k); r[k] ??= t.slice(i + 1).trim(); } });
+      baris.set(nm, r); }
+    if (baris.size < 2 || !kol.size) return null;
+    const K = [...kol].slice(0, 4), t = document.createElement("table");
+    t.innerHTML = `<thead><tr><th></th>${K.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${[...baris].map(([n, r]) => `<tr><td>${esc(n)}</td>${K.map(k => `<td>${esc(r[k] ?? "–")}</td>`).join("")}</tr>`).join("")}</tbody>`;
+    return t;
   },
   /* tabel -> kanvas: hanya 10 baris teratas, sisanya di situs */
   tabelKanvas(tb, n = 10) {
@@ -450,7 +463,10 @@ const Bagikan = {
   },
   async dataEx(id = this.exId) {
     if (id === "luar" && this._exLuar) { const L = this._exLuar;
-      L.img ||= L.svg ? await this.svgKanvas(L.svg) : L.tabel ? this.tabelKanvas(L.tabel) : null;
+      if (!L.img) { const cs = [...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))), ...(L.tabel ? [this.tabelKanvas(L.tabel, L.svgs?.length ? 6 : 10)] : [])];
+        /* tumpuk: semua selebar yang paling lebar, jarak 40 px */
+        const W = Math.max(...cs.map(c => c.width)), H = cs.reduce((a, c) => a + c.height * W / c.width, 0) + 40 * (cs.length - 1), cv = this.kanvas(W, H), x = cv.getContext("2d"); let y = 0;
+        x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); cs.forEach(c => { const h = c.height * W / c.width; x.drawImage(c, 0, y, W, h); y += h + 40; }); L.img = cs.length ? cv : null; }
       const lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 10;
       return {tpl: "ex", id: "luar", label: L.label, judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.img,
         fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(" · ")}; }
@@ -550,8 +566,8 @@ const Bagikan = {
   /* tata letak per templat & ukuran: [blok atau [blok kiri, blok kanan], porsi sisa tinggi] */
   TATA: {
     ringkas: {kotak: [["kpi4"], [["peta", "bar"], 1]], feed: [["kpi4"], ["peta", .55], ["bar", .45]], story: [["kpi22"], ["peta", .46], ["bar", .54]]},
-    provinsi: {kotak: [["kpi4"], [["bar", "rek"], 1]], feed: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]], story: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]]},
-    kompleks: {kotak: [["kpi4"], [["bar", "rek"], 1]], feed: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]], story: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]]},
+    provinsi: {kotak: [["kpi4"], ["bar", 1]], feed: [["kpi4"], ["peta", .45], ["bar", .55]], story: [["kpi4"], ["peta", .45], ["bar", .55]]}, /* blok Rekomendasi dihapus (pemilik, 14 Okt 2026) */
+    kompleks: {kotak: [["kpi4"], ["bar", 1]], feed: [["kpi4"], ["peta", .45], ["bar", .55]], story: [["kpi4"], ["peta", .45], ["bar", .55]]}, /* blok Rekomendasi dihapus (pemilik, 14 Okt 2026) */
     ex: {kotak: [["ex", 1]], feed: [["ex", 1]], story: [["ex", 1]]},
   },
   async render(tpl = this.tpl, uk = this.uk) {
