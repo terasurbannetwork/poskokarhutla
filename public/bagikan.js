@@ -613,7 +613,7 @@ const Bagikan = {
     const y = bawah - 70;
     x.strokeStyle = this.C.garis; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
     this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, this.K.sumber, W - 2 * P), P, y + 34);
-    this.f(x, 500, 21); x.textAlign = "right"; const dt = "Data " + jamWIB(S.meta.dibuat); x.fillText(dt, W - P, y + 64); const dw = x.measureText(dt).width; x.textAlign = "left";
+    this.f(x, 500, 21); x.textAlign = "right"; const dt = "Data " + jamWIB(S.acuan || S.meta.dibuat); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 64); const dw = x.measureText(dt).width; x.textAlign = "left";
     /* ikon media sosial (Instagram, LinkedIn, X, Facebook, TikTok) di depan alamat situs */
     const s = 30, gp = 8; [["#d62976", "ig"], ["#0a66c2", "in"], ["#111", "X"], ["#1877f2", "f"], ["#111", "♪"]].forEach(([w, t], i) => { const a = P + i * (s + gp), b = y + 64 - 22;
       x.fillStyle = w; x.beginPath(); x.roundRect(a, b, s, s, 8); x.fill(); x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 2.4;

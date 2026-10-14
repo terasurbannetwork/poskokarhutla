@@ -8,7 +8,9 @@
 .kaki-situs{margin:40px -16px 0;padding:44px 16px 24px;background:#0b1b33;color:#cfd8e6;font-size:13.5px}
 .kaki-situs .kk{max-width:1120px;margin:0 auto}
 .kaki-situs .kk-g{display:grid;grid-template-columns:1.3fr 1.5fr repeat(3,1fr);gap:28px}
-.kaki-situs .kk-tum{display:inline-block;font:900 20px/0.95 var(--display,Inter),sans-serif;letter-spacing:.02em;color:#fff}
+.kaki-situs .kk-tum{display:inline-flex;align-items:center;gap:10px;text-decoration:none!important;}
+.kaki-situs .kk-tum img{width:46px;height:auto}
+.kaki-situs .kk-tum span{display:inline-block;font:900 20px/0.95 var(--display,Inter),sans-serif;letter-spacing:.02em;color:#fff}
 .kaki-situs .kk-sl{color:#9fc0ff!important;font-weight:600}
 .kaki-situs .kk-al{display:flex;gap:8px;font-size:12.5px}
 .kaki-situs .kk-al svg{flex:none;width:16px;height:16px;margin-top:2px;color:#4f8fc4}
@@ -35,7 +37,7 @@
   const html = () => `<footer class="kaki-situs"><div class="kk"><div class="kk-g">
     <div><div class="kk-m"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</div>
       <p>Pemantauan bencana Indonesia dari data terbuka. Sebuah inisiatif <a href="https://www.terasurban.com" target="_blank" rel="noopener">Teras Urban</a>.</p><div class="kk-s">${sos}</div></div>
-    <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban">TERAS<br>URBAN</a>
+    <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>
       <p class="kk-al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></p></div>
     <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li></ul></div>
