@@ -119,8 +119,18 @@
         ${sel(a.n, 1)}<td class="n num">${T.n ? pct(a.n / T.n) : "–"}</td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td>${sel(a.kompleks)}${sel(a.musim)}</tr>`; }).join("")}
       <tr><td><span class="ks-j" style="--w:#2b8c86">Di luar areal konsesi</span></td>${sel(T.n - T.konsesi, 1)}<td class="n num">${T.n ? pct((T.n - T.konsesi) / T.n) : "–"}</td><td class="n num">–</td><td class="n num">–</td><td class="n num">–</td></tr>
       </tbody></table></div>
-      ${pvs.length ? `<div class="tw"><div class="lbl" style="margin:8px 0 4px">Porsi titik panas di dalam dan di luar areal konsesi per provinsi</div><table class="tb3 ks-tb"><thead><tr><th>Provinsi</th><th class="n">Titik panas</th>${daf.map(j => `<th class="n">${esc(jn(j)[0])}</th>`).join("")}<th class="n">Di dalam konsesi</th><th class="n">Di luar konsesi</th></tr></thead><tbody>
-        ${pvs.map(([k, o, n]) => { const t = Math.max(nPv[k] || 0, n); return `<tr><td><span class="ks-pv">${typeof lambang === "function" ? lambang(k) : ""}${esc(namaProv(k))}</span></td>${sel(t)}${daf.map(j => por(o[j] || 0, t)).join("")}${por(n, t).replace("<td", "<td style=\"font-weight:700\"")}${por(t - n, t)}</tr>`; }).join("")}</tbody></table></div>` : ""}
+      ${pvs.length ? (() => { /* grafik batang 100% per provinsi: sawit, HTI, HPH, tambang, di luar konsesi (pemilik, 14 Okt 2026) */
+        const segs = [...daf.map(j => [jn(j)[0], jn(j)[1], o => o[j] || 0]), ["Di luar konsesi", "#cfd8e3", (o, n, t) => t - n]];
+        const W = 940, L = 210, R = 70, rh = 34, T = 8, H = T + pvs.length * rh + 6, bw = W - L - R;
+        let g = "";
+        pvs.forEach(([k, o, n], i) => { const t = Math.max(nPv[k] || 0, n), y = T + i * rh; let x0 = L;
+          g += `<text x="${L - 12}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
+          segs.forEach(([nm, w, f]) => { const v = f(o, n, t), lw = t ? v / t * bw : 0; if (lw <= 0) return;
+            g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v / t)} (${fmt(v)} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${w === "#cfd8e3" ? "#4a5a72" : "#fff"}" pointer-events="none">${pct(v / t)}</text>` : ""}`; x0 += lw; });
+          g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(n / (t || 1))}</text>`; });
+        return `<div class="lbl" style="margin:14px 0 6px">Porsi titik panas di dalam dan di luar areal konsesi per provinsi</div>
+          <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di areal konsesi per provinsi">${g}<text x="${W - R + 10}" y="6" font-size="10" opacity=".6">di konsesi</text></svg>
+          <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px">${segs.map(([nm, w]) => `<span><i style="background:${w}"></i>${nm}</span>`).join("")}</div>`; })() : ""}
       <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai kompleksnya.</em></footer>`;
   }
   function tunjuk(j) {
