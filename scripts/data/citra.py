@@ -27,7 +27,7 @@ STAC = "https://earth-search.aws.element84.com/v1/search"
 GIBS = "https://gibs.earthdata.nasa.gov/wms/epsg4326/best/wms.cgi"
 UA = {"User-Agent": "poskokarhutla/1.0 (+github.com/pangantara/poskokarhutla)"}
 
-MAKS_KOMPLEKS = 40     # kompleks prioritas teratas per skor
+MAKS_KOMPLEKS = 60     # kompleks prioritas teratas per skor (dinaikkan dari 40, pemilik 14 Okt 2026)
 MAKS_DETIK = int(os.environ.get("CITRA_DETIK", 360))  # batas kerja per jalan; sisanya diteruskan besok (cache)
 HARI = 10              # jendela cari adegan
 KM = 12                # sisi kotak potongan Sentinel
