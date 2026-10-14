@@ -60,3 +60,4 @@
 .ct-tgl{display:flex;width:100%}
 .ct-tgl button{flex:1}
 .ct-ket{width:auto;border-radius:10px;justify-content:flex-start;text-align:left}
+.ct-tglp{position:absolute;right:6px;bottom:6px;padding:1px 7px;border-radius:999px;background:rgb(255 255 255 / .9);color:#0b2545;font-size:10.5px;font-weight:800}

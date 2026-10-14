@@ -43,8 +43,9 @@
 /* tabel Dampak: teks rata kiri, angka tengah, satu baris per sel, zebra + hover */
 .dk-tw.dk-tw thead th,.dk-tw.dk-tw tbody td{text-align:left}
 .dk-tw.dk-tw thead th.n,.dk-tw.dk-tw tbody td.n{text-align:center}
-.dk-tw tbody td{padding:11px 12px;vertical-align:middle;white-space:nowrap}
-.dk-tw thead th{padding:10px 12px}
+.dk-tw tbody td{padding:11px 10px;vertical-align:middle;white-space:normal} /* boleh turun baris supaya tabel muat tanpa geser (pemilik, 14 Okt 2026) */
+.dk-tw tbody td .pill,.dk-tw tbody td em{white-space:nowrap}
+.dk-tw thead th{padding:10px 10px;white-space:normal}
 .dk-tw tbody tr:nth-child(even){background:color-mix(in oklch, var(--surface) 55%, var(--card))}
 .dk-tw tbody tr:hover{background:color-mix(in oklch, var(--brand2) 9%, var(--card))}
 .dk-tw td .dk-s{display:inline;font-size:11px;color:var(--ink2)}
@@ -84,10 +85,12 @@
 .dk-pm-ls button.on{background:var(--surface);box-shadow:inset 3px 0 0 var(--brand2)}
 /* sidebar kiri sticky (>=1100px) + band judul bagian */
 .dk-bag{scroll-margin-top:70px}
-.dk-sh{display:flex;align-items:center;gap:12px;margin:30px 0 14px;padding:12px 16px;border-radius:14px;background:linear-gradient(90deg,color-mix(in oklch, var(--w) 14%, var(--card)),var(--card));border:1px solid color-mix(in oklch, var(--w) 25%, var(--line));box-shadow:var(--shadow)}
-.dk-sh h2{margin:0;font-size:19px;line-height:1.2;color:var(--ink);letter-spacing:-.01em}
-.dk-sn{display:none} /* nomor bagian disembunyikan; ikon berlingkar sudah jadi penanda */
-.dk-sh > svg{flex:none;width:38px;height:38px;padding:9px;border-radius:50%;background:var(--w);color:#fff;box-sizing:border-box}
+/* kepala bagian: pita penuh berwarna bagian, teks & ikon putih (pemilik, 14 Okt 2026) */
+.dk-sh{display:flex;align-items:center;gap:12px;margin:34px 0 14px;padding:14px 18px;border-radius:14px;background:linear-gradient(120deg,var(--w),color-mix(in oklch, var(--w) 70%, #0b2545));color:#fff;box-shadow:0 6px 18px color-mix(in oklch, var(--w) 30%, transparent)}
+.dk-sh h2{margin:0;font-size:20px;line-height:1.2;color:#fff;letter-spacing:-.01em}
+.dk-sn{display:none}
+.dk-sh > svg{flex:none;width:40px;height:40px;padding:9px;border-radius:12px;background:rgb(255 255 255 / .18);color:#fff;box-sizing:border-box}
+.dk-sh .bs-sel,.dk-sh button{color:#fff}
 #dkIsi>.dk-bag:first-child .dk-sh{margin-top:4px}
 .dk-nav button.on{background:color-mix(in oklch, var(--w) 16%, var(--card));border-color:var(--w)}
 @media (min-width:1100px){

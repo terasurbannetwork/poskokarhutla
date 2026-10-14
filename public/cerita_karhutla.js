@@ -47,7 +47,10 @@ function hbatang(data, o = {}) { /* horizontal; data [{l, ket, v, w, t, tip}]; k
   const W = o.w || 940, ket = data.some(d => d.ket), rh = ket ? 50 : 34, L = o.ml || 260, T = o.garis != null ? 30 : 0, H = T + data.length * rh + 6, g0 = o.garis ?? 0, maks = o.maks || Math.max(...data.map(d => d.v), g0, 1e-9), X = v => L + (W - L - 90) * v / maks;
   let g = o.garis != null ? `<line x1="${X(g0)}" x2="${X(g0)}" y1="${T - 6}" y2="${H}" stroke="${NAVY}" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(X(g0) - 30, 0, o.garisT || "acuan", NAVY, "#fff", 11)[0]}` : "";
   data.forEach((d, i) => { const y = T + i * rh, w = d.w || "#1d4e89", b = X(d.v), a = X(g0), x0 = Math.min(a, b), x1 = Math.max(a, b);
-    g += `<text x="0" y="${d.ket ? y + rh / 2 - 3 : y + 21}" font-size="13" font-weight="700">${es(d.l)}</text>${d.ket ? `<text x="0" y="${y + rh / 2 + 12}" font-size="11" opacity=".6">${es(d.ket)}</text>` : ""}
+    /* ikon berlingkar opsional (d.ik = path SVG 24×24) di kiri label */
+    const ix = d.ik ? 38 : 0;
+    if (d.ik) g += `<circle cx="15" cy="${y + rh / 2}" r="15" fill="${w}" opacity=".14"/><g transform="translate(6,${y + rh / 2 - 9}) scale(.75)" fill="none" stroke="${w}" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${d.ik}</g>`;
+    g += `<text x="${ix}" y="${d.ket ? y + rh / 2 - 3 : y + 21}" font-size="13" font-weight="700">${es(d.l)}</text>${d.ket ? `<text x="${ix}" y="${y + rh / 2 + 12}" font-size="11" opacity=".6">${es(d.ket)}</text>` : ""}
       <rect x="${x0}" y="${y + 10}" width="${Math.max(2, x1 - x0)}" height="${rh - 20}" rx="4" fill="${w}" data-tip="${es(d.tip || `<b>${d.l}</b><br>${d.t ?? nf(d.v, 2)}`)}"/>
       ${pil(x1 + 8, y + (rh - 20) / 2, d.t ?? nf(d.v, 2), w, "#fff", 12.5)[0]}`; });
   return `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${es(o.label || "grafik")}">${g}</svg>`;
@@ -83,7 +86,7 @@ const Cerita = {
   bab(ey, id, judul, isi, {leg, sumber} = {}) {
     /* format kartu Insight: pita bab + judul satu kalimat, badan, kaki berisi legenda (tengah) dan sumber (miring) */
     const lg = (leg || []).map(([w, n]) => `<span>${w ? `<i style="${/[:;]/.test(w) ? w : "background:" + w}"></i>` : ""}${n}</span>`).join("");
-    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
+    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><button type="button" class="ct-bagi" data-ctbagi="${id}" aria-label="Bagikan bagian ini" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
   },
   async buka(el) {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;
@@ -163,15 +166,19 @@ const Cerita = {
       ["jalan_km", 3, "≥ 10 km dari jalan (vs < 1)", "lokasi jauh dari jalan, dibanding dekat jalan"], ["desa_km", 3, "≥ 6 km dari desa (vs < 1)", "lokasi jauh dari desa, dibanding dekat desa"],
       ["kanal_km", 3, "Kanal ≥ 3 km per sel (vs tanpa)", "banyak kanal/parit di sekitar, dibanding tanpa kanal"], ["bekas", 1, "Bekas terbakar 1–3 th (vs belum)", "lahan terbakar 1–3 tahun sebelumnya, dibanding belum"],
       ["lereng", 3, "Lereng ≥ 8% (vs < 1%)", "lereng curam, dibanding lahan datar"], ["oni", 3, "El Niño ≥ 1 (vs La Niña)", "tahun El Niño kuat, dibanding tahun La Niña"]].filter(([f, i]) => r(f, i)?.rasio != null);
-    const data = pick.map(([f, i, l, ket]) => ({l, ket, v: r(f, i).rasio, w: r(f, i).rasio >= 1 ? "#c9503a" : "#2b8c86", t: nf(r(f, i).rasio, 1) + "×",
+    const IK = {gambut: '<path d="M5 19c8 0 14-6 14-14C11 5 5 11 5 19zM5 19l7-7"/>', malam: '<path d="M20 14.5A8 8 0 1 1 9.5 4a6.5 6.5 0 0 0 10.5 10.5z"/>', n0: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+      frp0: '<path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3z"/>', dc: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/><path d="M4 4l16 16"/>', hujan24: '<path d="M7 15a5 5 0 1 1 1-9.9A6 6 0 0 1 19 8a4 4 0 0 1-1 7.9"/><path d="M9 18l-1 3M13 18l-1 3M17 18l-1 3"/>',
+      rh_min: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', ws: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>', jalan_km: '<path d="M8 3 5 21M16 3l3 18M12 4v3M12 11v3M12 18v2"/>', desa_km: '<path d="M3 11 12 4l9 7M5 10v10h14V10"/>',
+      kanal_km: '<path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>', bekas: '<path d="M4 20h16M7 20l2-7 3 3 3-6 2 10"/>', lereng: '<path d="M3 20 10 8l4 6 3-4 4 10z"/>', oni: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M5 19l1.5-1.5M17.5 6.5 19 5"/>'};
+    const data = pick.map(([f, i, l, ket]) => ({l, ket, ik: IK[f], v: r(f, i).rasio, w: r(f, i).rasio >= 1 ? "#c9503a" : "#2b8c86", t: nf(r(f, i).rasio, 1) + "×",
       tip: `<b>${l}</b><br>Lolos: ${pc(r(f, i).laju, 1)} (n = ${nf(r(f, i).n)})<br>Acuan: ${pc(K[f].tabel[0].laju, 1)}`})).sort((a, b) => b.v - a.v);
     const imp = P.gbdt.permutasi.slice(0, 8).map(x => ({l: x.nama, v: Math.max(0, x.turun_auc), t: nf(x.turun_auc, 3), w: NAVY, tip: `<b>${x.nama}</b><br>Kontribusi ke model: ${nf(x.turun_auc, 3)}`}));
     const A = P.arah, rn0 = r("n0", 3)?.rasio ?? data[0]?.v;
     const lain = [["gambut", 1, "gambut"], ["oni", 3, "El Niño"], ["malam", 1, "terdeteksi malam hari"]].filter(([f, i]) => r(f, i)?.rasio > 1).map(([f, i, n]) => `${n} (${hl(nf(r(f, i).rasio, 1) + "×")})`);
     const daftar = lain.length > 1 ? lain.slice(0, -1).join(", ") + " dan " + lain.at(-1) : lain[0];
     return this.bab("Pendorong", "dorong", `Api yang sejak awal sudah besar ${hl(nf(rn0, 0) + " kali")} lebih mungkin membesar${daftar ? `; ${daftar} juga menaikkan peluang` : ""}`,
-      `<div class="ct-sub">Berapa kali lebih mungkin api membesar, dibanding kelompok pembanding (${nf(P.n_lolos)} dari ${nf(P.n_peristiwa)} titik membesar, ${pc(P.laju_dasar, 1)})</div>
-      ${hbatang(data, {label: "rasio peluang membesar", garis: 1, garisT: "1× = sama", ml: 400})}
+      `<div class="ct-sub2"><span>Berapa kali lebih mungkin api membesar dibanding kelompok pembandingnya (teks di dalam kurung)</span><em>${nf(P.n_lolos)} dari ${nf(P.n_peristiwa)} titik api membesar · ${pc(P.laju_dasar, 1)}</em></div>
+      ${hbatang(data, {label: "rasio peluang membesar", garis: 1, garisT: "1× = sama", ml: 440})}
       `,
       {leg: [["#c9503a", "menaikkan peluang membesar"], ["#2b8c86", "menurunkan"]], sumber: "NASA FIRMS VIIRS 2015–2026, ERA5, SRTM"});
   },
@@ -421,3 +428,10 @@ if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.i
   };
 }
 })();
+
+/* bagikan bab cerita (peta bergerak tidak bisa jadi gambar): lembar bagikan tautan ke bab itu */
+document.addEventListener("click", e => { const b = e.target.closest?.("[data-ctbagi]"); if (!b) return;
+  const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || "Pantau Bencana";
+  const url = location.origin + "/insight#ct-" + b.dataset.ctbagi;
+  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". Lihat di Pantau Bencana:", url, kampanye: "cerita"});
+  else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });

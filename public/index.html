@@ -795,6 +795,11 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #tip .tk-d.naik{color:#b8432f}
 #tip .tk-d.turun{color:#2f8a5a}
 #tip .tk-d span{font-weight:500;color:var(--ink2)}
+#tip .tk-rg{position:relative;height:6px;margin:10px 0 4px;border-radius:3px;background:linear-gradient(90deg,#f3c79a,#c9503a)}
+#tip .tk-rg i{position:absolute;top:-4px;width:3px;height:14px;margin-left:-1.5px;border-radius:2px;background:var(--ink)}
+#tip .tk-rgn{display:flex;justify-content:space-between;font-size:11px;font-weight:700}
+#tip .tk-rgn small{display:block;font-weight:500;color:var(--ink2);font-size:10px}
+#tip .tk-rgn span:last-child{text-align:right}
 #tip .tk-f{margin-top:6px;padding-top:6px;border-top:1px solid var(--line);font-size:11px;color:var(--ink2)}
 #tip.kartu{padding:0;min-width:220px;max-width:280px;border-radius:12px;overflow:hidden}
 .tp-hd{display:flex;align-items:center;gap:7px;padding:8px 11px 7px;border-bottom:1px solid var(--line)}
@@ -1397,11 +1402,10 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
         </details>
         <details open><summary>Cuaca & asap</summary>
           <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
-          <label><input type="checkbox" data-l="angin" checked> Angin</label>
+          <label><input type="checkbox" data-l="angin"> Angin</label>
           <label><input type="checkbox" data-l="asap"> PM2.5</label>
           <label><input type="checkbox" data-l="aqi"> AQI (ISPU)</label>
           <label><input type="checkbox" data-l="hujan"> Hujan</label>
-          <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
@@ -1411,6 +1415,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
         <details open><summary>Infrastruktur</summary>
           <label style="display:none"><input type="checkbox" data-l="posko"> Posko</label>
           <label><input type="checkbox" data-l="daops"> Markas Manggala Agni</label>
+          <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
       </div>
     </div>
@@ -1433,7 +1438,9 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   </section>
 
   <!-- ================= KEPUTUSAN ================= -->
-  <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div>
+    <!-- tab Kompleks digabung ke Insight (pemilik, 14 Okt 2026): tabel kompleks & prioritas di bawah kartu Insight -->
+    <div class="wrap" id="insightKompleks"><div id="prioritas"></div><div id="kompleks"></div></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
@@ -1444,7 +1451,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
-  <section class="page scroll" id="p-kompleks" aria-label="Kompleks api dan provinsi prioritas"><div class="wrap"><div id="prioritas"></div><div id="kompleks"></div></div></section>
+  <section class="page scroll" id="p-kompleks" aria-label="Kompleks api (pindah ke Insight)"></section>
   <!-- ================= METODE ================= -->
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
 </main>
@@ -1535,6 +1542,8 @@ function bukaTab(id, dorong = true) {
   if (id !== "ringkasan") lengkapiKluster();
   const dl = document.querySelector("#dlgLaci"); if (dl?.open) dl.close();
   if (ALIAS[id]) { const [t, sub] = ALIAS[id]; if (sub) S.poskoSub = sub; id = t; }
+  /* /kompleks sekarang bagian bawah Insight */
+  if (id === "kompleks") { bukaTab("insight", dorong); return setTimeout(() => $("#insightKompleks")?.scrollIntoView({behavior: "smooth"}), 400); }
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   /* tautan bersih tanpa tagar: /peta, /kompleks, /sim/K0001 (worker mengarahkan path ini ke index.html) */
@@ -1542,7 +1551,7 @@ function bukaTab(id, dorong = true) {
   nanti(() => {
     if (id === "peta" && peta) { peta.resize(); lebarPanel(); }
     if (id === "sim") lengkapiKluster().then(() => Sim.buka());
-    if (id === "kompleks") { Tabel.render(); if (!sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); } }
+    if (id === "insight") { Tabel.render(); if (!sudah.prioritas) { sudah.prioritas = 1; renderPrioritas(); } }
     if (id === "posko") bukaSub(S.poskoSub);
     if (id === "insight") Insight.render();
     if (id === "berita") Berita.render();
@@ -1555,7 +1564,7 @@ function bukaTab(id, dorong = true) {
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 /* disembunyikan sementara dari menu atas (permintaan pemilik 13 Okt 2026); halamannya tetap bisa dibuka lewat tautan langsung */
-const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi"]);
+const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode"]); /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
   tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
   posko: IKON.posko, informasi: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ringkasan: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'};
@@ -1880,7 +1889,7 @@ const Lapis = {
         /* kota tidak sehat ke atas lebih besar & di atas; nama kota muncul mulai zoom 5, tidak saling tumpuk */
         peta.addLayer({id: "aqi", type: "circle", source: "aqi", layout: {"circle-sort-key": ["get", "v"]}, paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["case", [">", ["get", "v"], 100], 12, 8], 8, ["case", [">", ["get", "v"], 100], 18, 13]],
           "circle-color": ["get", "w"], "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
-        peta.addLayer({id: "aqi-lbl", type: "symbol", source: "aqi", layout: {"symbol-sort-key": ["-", 0, ["get", "v"]], "text-field": ["case", [">=", ["get", "v"], 500], "500+", ["to-string", ["get", "v"]]], "text-size": ["interpolate", ["linear"], ["zoom"], 4, 9, 8, 12.5], "text-font": ["Noto Sans Bold"], "text-allow-overlap": false}, paint: {"text-color": "#fff"}});
+        peta.addLayer({id: "aqi-lbl", type: "symbol", source: "aqi", layout: {"text-allow-overlap": true, "text-ignore-placement": true, "symbol-sort-key": ["-", 0, ["get", "v"]], "text-field": ["case", [">=", ["get", "v"], 500], "500+", ["to-string", ["get", "v"]]], "text-size": ["interpolate", ["linear"], ["zoom"], 4, 9, 8, 12.5], "text-font": ["Noto Sans Bold"], "text-allow-overlap": false}, paint: {"text-color": "#fff"}});
         peta.addLayer({id: "aqi-nama", type: "symbol", source: "aqi", minzoom: 5, layout: {"symbol-sort-key": ["-", 0, ["get", "v"]], "text-field": ["get", "nama"], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-offset": [0, 1.7], "text-anchor": "top"}, paint: {"text-color": "#0b2545", "text-halo-color": "#fff", "text-halo-width": 1.6}});
         peta.on("mousemove", "aqi", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "pointer";
           tampilTip(kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`, stat: [["skor", p.v >= 500 ? "500+" : fmt(p.v), `AQI (ISPU) <span class="tp-pl" style="background:${p.w}">${esc(p.k)}</span>`, p.w, p.v > 100], ["fwi", fmt(p.pm) + " µg/m³", "PM2.5", p.w]]}), e.originalEvent); });
