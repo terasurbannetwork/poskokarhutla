@@ -1402,7 +1402,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
         </details>
         <details open><summary>Cuaca & asap</summary>
           <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
-          <label><input type="checkbox" data-l="angin"> Angin</label>
+          <label><input type="checkbox" data-l="angin" checked> Angin</label>
           <label><input type="checkbox" data-l="asap"> PM2.5</label>
           <label><input type="checkbox" data-l="aqi"> AQI (ISPU)</label>
           <label><input type="checkbox" data-l="hujan"> Hujan</label>
@@ -3006,7 +3006,7 @@ const Tren = {
     const wPel = v => v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`, Y0 = 56;
     const musim = o ? `<svg viewBox="0 0 ${W} ${Y0 + 10 + thM.length * RH + 18}" width="100%" role="img" aria-label="Kalender musim dan riwayat bulanan" class="kal-musim">
       ${[["El Niño", o.p_el_nino, 0], ["Biasa", o.p_biasa, 25]].map(([n, ps, y]) => `<text x="${GT - 6}" y="${y + 9}" text-anchor="end" font-size="8" font-weight="600" opacity=".6">Peluang</text><text x="${GT - 6}" y="${y + 19}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".8">${n}</text>`
-        + ps.map((v, j) => `<rect x="${GT + j * CW + 1}" y="${y}" width="${CW - 2}" height="22" rx="3" style="fill:${wPel(v)}" ${j === das ? 'stroke="var(--ink)" stroke-width="2"' : ""} data-tip="<b>${DAS(j)}</b><br>peluang periode api besar, tahun ${n === "Biasa" ? "biasa" : "El Niño"}: ${Math.round(v * 100)}%"/>${v >= .05 ? `<text x="${GT + j * CW + CW / 2}" y="${y + 14.5}" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" pointer-events="none">${Math.round(v * 100)}</text>` : ""}`).join("")).join("")}
+        + ps.map((v, j) => `<rect x="${GT + j * CW + 1}" y="${y}" width="${CW - 2}" height="22" rx="3" style="fill:${wPel(v)}" ${j === das ? 'stroke="var(--ink)" stroke-width="2"' : ""} data-tip="<div class='tk'><div class='tk-h'><b>${DAS(j)}</b><small>tahun ${n === "Biasa" ? "biasa" : "El Niño"}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>"/>${v >= .05 ? `<text x="${GT + j * CW + CW / 2}" y="${y + 14.5}" text-anchor="middle" font-size="8" font-weight="700" fill="#fff" pointer-events="none">${Math.round(v * 100)}</text>` : ""}`).join("")).join("")}
       ${thM.map((t, y) => { const yy = Y0 + y * RH, en = EN.has(t);
         return `<text x="${GT - 6}" y="${yy + 14}" text-anchor="end" font-size="10" font-weight="${en ? 800 : 500}" style="${en ? "fill:#c9503a" : "opacity:.65"}">${t}</text>`
           + (PB[t] || []).map((v, mm) => `<rect x="${GT + mm * 3 * CW + 1}" y="${yy}" width="${3 * CW - 2}" height="${RH - 3}" rx="3" style="fill:${v < 1 ? "var(--surface)" : `color-mix(in oklch, #7a2b2b ${Math.round(12 + Math.sqrt(v / mM) * 88)}%, #fde7c8)`}" data-tip="<b>${BULAN[mm]} ${t}</b>${en ? " · El Niño" : ""}<br>${fmt(v)} titik panas"/>${v >= 1 ? `<text x="${GT + mm * 3 * CW + 1.5 * CW}" y="${yy + 13}" text-anchor="middle" font-size="9" font-weight="600" fill="${Math.sqrt(v / mM) >= .45 ? "#fff" : "var(--ink)"}" pointer-events="none">${v >= 1000 ? (Math.round(v / 100) / 10 + "rb").replace(".", ",") : fmt(v)}</text>` : ""}`).join(""); }).join("")}

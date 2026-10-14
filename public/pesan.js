@@ -3,6 +3,9 @@
 (() => {
   const D = document, sc = D.currentScript, API = new URL("api/pesan", sc?.src || location.href).href, KONFIG = new URL("api/warga/konfig", sc?.src || location.href).href;
   const KAT = [["masukan", "Masukan"], ["koreksi", "Koreksi data"], ["kerja_sama", "Kerja sama"], ["media", "Media"], ["lainnya", "Lainnya"]];
+  /* ikon tiap topik (path 24×24) */
+  const IK_KAT = {masukan: '<path d="M12 3l2.6 5.4 5.9.8-4.3 4.1 1 5.8L12 16.4 6.8 19.1l1-5.8L3.5 9.2l5.9-.8z"/>', koreksi: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13 7l4 4"/>',
+    kerja_sama: '<path d="M8 12l3 3 5-5"/><path d="M3 12l4-4 5 2 5-2 4 4-9 9z"/>', media: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', lainnya: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'};
   const IKON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>';
   D.head.insertAdjacentHTML("beforeend", `<style>
 .ps-dlg{--ps-bg:#fff;--ps-ink:#0b2545;--ps-ink2:#56607a;--ps-line:#dfe3ec;--ps-in:#f6f7fa;border:0;border-radius:16px;padding:0;width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);background:var(--ps-bg);color:var(--ps-ink);font:14.5px/1.5 Inter,system-ui,sans-serif;box-shadow:0 20px 60px rgb(11 37 69 / .3)}
@@ -21,7 +24,8 @@
 .ps-dlg .ps-kat > div{display:flex;flex-wrap:wrap;gap:6px}
 .ps-dlg .ps-chip{display:inline-flex;cursor:pointer;font-weight:600}
 .ps-dlg .ps-chip input{position:absolute;opacity:0;width:1px;height:1px}
-.ps-dlg .ps-chip span{padding:7px 12px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-bg);font-size:12.5px}
+.ps-dlg .ps-chip span svg{width:14px;height:14px;flex:none}
+.ps-dlg .ps-chip span{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-bg);font-size:12.5px}
 .ps-dlg .ps-chip input:checked + span{background:#0b2545;border-color:#0b2545;color:#fff}
 .ps-dlg .ps-chip input:focus-visible + span{outline:2px solid #1d4e89;outline-offset:2px}
 :root[data-theme="dark"] .ps-dlg .ps-chip input:checked + span{background:#4f8fc4;border-color:#4f8fc4}
@@ -68,7 +72,7 @@ body:has(#p-peta.on) .ps-fab{right:62px;bottom:44px} /* kiri tombol zoom peta (p
       D.body.insertAdjacentHTML("beforeend", `<dialog class="ps-dlg" aria-labelledby="psJudul"><form method="dialog" novalidate>
         <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Chat Admin</h2><p class="ps-hp2">Tim Pantau Bencana membaca setiap pesan dan membalas lewat email.</p></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="ps-bd">
-        <div class="ps-kat" role="radiogroup" aria-label="Topik pesan"><span class="ps-l">Topik</span><div>${KAT.map(([k, n], i) => `<label class="ps-chip"><input type="radio" name="kategori" value="${k}" ${i ? "" : "checked"}><span>${n}</span></label>`).join("")}</div></div>
+        <div class="ps-kat" role="radiogroup" aria-label="Topik pesan"><span class="ps-l">Topik</span><div>${KAT.map(([k, n], i) => `<label class="ps-chip"><input type="radio" name="kategori" value="${k}" ${i ? "" : "checked"}><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_KAT[k]}</svg>${n}</span></label>`).join("")}</div></div>
         <div class="ps-2"><label><span class="ps-l">Nama <small>opsional</small></span><input name="nama" maxlength="100" autocomplete="name" placeholder="Nama Anda"></label>
         <label><span class="ps-l">Instansi <small>opsional</small></span><input name="instansi" maxlength="150" autocomplete="organization" placeholder="Organisasi / media"></label></div>
         <label><span class="ps-l">Email</span><input name="email" type="email" maxlength="254" required autocomplete="email" inputmode="email" placeholder="nama@contoh.com"></label>
