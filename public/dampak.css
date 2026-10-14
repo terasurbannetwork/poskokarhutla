@@ -54,16 +54,12 @@
 .dk-tw td.dk-wrap a:hover{color:var(--brand2);text-decoration:underline}
 #dampak .ex-ft a{color:var(--brand2);text-decoration:underline;text-underline-offset:2px}
 #dampak .pgn{margin-top:10px}
-/* footer kartu: legenda di tengah, Sumber di kanan (layar lebar) / di tengah bawah (sempit) */
-#dampak .ex-ft{display:grid;grid-template-columns:1fr auto 1fr;gap:6px 18px;align-items:center}
-#dampak .ex-ft>.ex-leg,#dampak .ex-ft>span{grid-column:2;justify-content:center;text-align:center}
-#dampak .ex-ft>em{grid-column:3;grid-row:1;justify-self:end;text-align:right}
-#dampak .ex-ft>.ex-leg:only-child,#dampak .ex-ft>em:only-child{grid-column:1/-1;justify-self:center}
+/* footer kartu: legenda satu baris sendiri (tengah), Sumber di bawahnya selebar kartu, rata kiri, kecil & redup */
+#dampak .ex-ft{display:flex;flex-direction:column;align-items:stretch;gap:6px}
+#dampak .ex-ft>.ex-leg,#dampak .ex-ft>span{justify-content:center;text-align:center}
+#dampak .ex-ft>span:empty{display:none}
+#dampak .ex-ft>em{display:block;width:100%;text-align:left;font-size:10.5px;line-height:1.5;color:var(--ink2);opacity:.85}
 .dk-leg{justify-content:center}
-@media (max-width:700px){
-  #dampak .ex-ft{grid-template-columns:1fr}
-  #dampak .ex-ft>.ex-leg,#dampak .ex-ft>span,#dampak .ex-ft>em{grid-column:1;grid-row:auto;justify-self:center;text-align:center}
-}
 /* peta bandara MapLibre + panel kanan */
 #dampak .ex .gy{animation-delay:min(calc(var(--i,0) * 18ms),450ms)}
 .dk-pm{display:grid;grid-template-columns:minmax(0,1fr) 280px;gap:12px;margin-top:4px}
@@ -99,3 +95,10 @@
   .dk-nav{position:sticky;top:70px;flex-direction:column;overflow:visible;margin:0;gap:4px}
   .dk-nav button{width:100%;justify-content:flex-start;border-radius:12px;white-space:nowrap}
 }
+/* bagian 9: bendera negara & berita internasional bergambar */
+.dk-thumb{display:block;width:72px;height:48px;border-radius:6px;object-fit:cover;background:var(--surface)}
+.dk-thumb.ikon{object-fit:contain;padding:12px;box-sizing:border-box}
+.dk-media{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.dk-media img{width:16px;height:16px;border-radius:3px}
+.dk-media small{display:block;color:var(--ink2);font-size:10.5px}
+@media (max-width:640px){.dk-thumb{width:56px;height:40px}}

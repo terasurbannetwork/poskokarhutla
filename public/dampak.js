@@ -26,6 +26,21 @@ const Dampak = (() => {
   const SEKTOR = {pertanian: "Pertanian & perkebunan", lingkungan_karbon: "Lingkungan: karbon", lingkungan_hayati: "Lingkungan: keanekaragaman hayati",
     kehutanan: "Kehutanan (kayu & reboisasi)", perdagangan: "Perdagangan", industri_tambang: "Industri & tambang", pariwisata: "Pariwisata",
     transportasi: "Transportasi", pemadaman: "Biaya pemadaman", kesehatan: "Kesehatan (biaya langsung)", pendidikan: "Pendidikan (sekolah tutup)"};
+  const JNK = {sawit: "Konsesi sawit", hti: "Konsesi HTI (kayu pulp)", hph: "Konsesi HPH (hutan alam)", tambang: "Izin tambang (PPKH)", lain: "Konsesi lain"};
+  /* bendera negara tetangga (emoji; Windows menampilkan kode huruf, nama negara tetap tertulis di sebelahnya) */
+  const BDR = {Singapura: "🇸🇬", Malaysia: "🇲🇾", Brunei: "🇧🇳", Thailand: "🇹🇭", "Timor-Leste": "🇹🇱", Filipina: "🇵🇭", Indonesia: "🇮🇩"};
+  const bdr = n => { const k = (n || "").split(" (")[0], e = BDR[k] || (typeof BENDERA !== "undefined" && BENDERA[k]); return e ? `<span class="bdr" role="img" aria-label="${esc(k)}" title="${esc(n)}">${e}</span> ` : ""; };
+  /* berita internasional: tautan asli, thumbnail (fallback favicon media), media + negaranya */
+  const urlB = x => x.url_asli || x.url;
+  const domB = x => x.domain || (() => { try { return new URL(urlB(x)).hostname.replace(/^www\./, ""); } catch { return ""; } })();
+  const favB = d => d ? `https://www.google.com/s2/favicons?domain=${encodeURIComponent(d)}&sz=64` : "";
+  const ngB = x => typeof negaraMedia === "function" ? negaraMedia(domB(x), x.media || "") : "";
+  const thumbB = x => { const fv = favB(domB(x));
+    const img = x.gambar ? `<img class="dk-thumb" src="${escUrl(x.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer" data-fav="${esc(fv)}" onerror="if(this.dataset.fav){this.src=this.dataset.fav;this.dataset.fav='';this.classList.add('ikon')}else this.remove()">`
+      : fv ? `<img class="dk-thumb ikon" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : "";
+    return img ? `<a href="${escUrl(urlB(x))}" target="_blank" rel="noopener" tabindex="-1" aria-hidden="true">${img}</a>` : ""; };
+  const mediaB = x => { const fv = favB(domB(x)), ng = ngB(x);
+    return `<span class="dk-media">${fv ? `<img src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span>${esc(x.media || domB(x) || "–")}${ng ? `<small>${bdr(ng)}${esc(ng)}</small>` : ""}</span></span>`; };
   const WJ = {divert: W.merah, batal: W.tua, rtb: W.oranye, tutup: W.ungu, tunda: W.kuning, jarak_pandang: W.biru, lain: "#8a96a8"};
   let D = null, F = null, M = [], pap = null, gagal = "";
   const st = {hari: 0, rentF: 60, hal: {F: 0, S: 0, D: 0}};
@@ -148,7 +163,7 @@ const Dampak = (() => {
     const mx = Math.max(60, ...c.pm), saran = ["Aktivitas luar ruang aman.", "Kelompok sensitif kurangi aktivitas berat di luar.", "Kurangi kegiatan luar ruang; pakai masker N95/KN95 bila keluar.",
       "Hindari kegiatan luar ruang; sekolah layak belajar dari rumah; siapkan ruang bersih udara.", "Tetap di dalam ruangan dengan jendela tertutup; evakuasi kelompok rentan bila berlangsung lama."];
     const k = kelas(Math.max(...c.pm));
-    dlg(esc(n), `${c.negara ? esc(c.negara) : esc(namaProv(c.prov))} · PM2.5 maksimum harian, prakiraan CAMS`,
+    dlg(esc(n), `${c.negara ? bdr(c.negara) + esc(c.negara) : esc(namaProv(c.prov))} · PM2.5 maksimum harian, prakiraan CAMS`,
       hbar(c.pm.map((v, j) => ({n: j ? hariN(D.udara.hari[j]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · AQI ${aqiT(v)} · ${KELAS[kelas(v)]}`, tip: `<b>PM2.5 ${fmt(v)} µg/m³</b><br>AQI (ISPU): ${aqiT(v)}<br>${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: mx, garis: [[55.4, "tidak sehat"], [150.4, "sangat tidak sehat"]]})
       + `<p style="margin:0"><b>Saran untuk kelas terburuk (${KELAS[k]}):</b> ${saran[k]}</p><p class="fnd">Satu sel CAMS ± 110 km; kota yang berdekatan bisa mendapat angka sama. Bandingkan dengan alat ukur ISPU KLHK bila tersedia.</p>`);
   }
@@ -291,7 +306,7 @@ const Dampak = (() => {
       (s.pm ? hbar(s.pm.map((v, i) => ({n: i ? hariN(D.udara.hari[i]) : "Hari ini", v, w: W5[kelas(v)], txt: fmt(v), cat: `µg/m³ · AQI ${aqiT(v)} · ${KELAS[kelas(v)]}`, tip: `<b>PM2.5 ${fmt(v)} µg/m³</b><br>AQI (ISPU): ${aqiT(v)}<br>${KELAS[kelas(v)]}`})), {L: 80, W2: 480, maks: Math.max(60, ...s.pm), garis: [[55.4, "tidak sehat"]]}) : "")
       + `<p style="margin:0">${s.pm && Math.max(...s.pm) > 55.4 ? "<b>Udara tidak sehat dalam 4 hari ke depan: pertimbangkan belajar dari rumah atau kurangi kegiatan luar ruang.</b>" : "Pantau kualitas udara; api dekat bisa membawa asap mendadak bila angin berbalik."}</p>${tombolK(s.kompleks)}`); }
   function popBerita(arr, j, jenis) { const x = arr[j];
-    dlg(jenis, `${esc(x.media || "")} · ${tgl(x.tgl)}`, `<p style="margin:0">${tautan(x.url, x.judul)}</p>${(x.prov || []).length ? `<p class="fnd">Provinsi disebut: ${x.prov.map(p => esc(namaProv(p))).join(", ")}</p>` : ""}<p class="fnd">Hanya judul yang dibaca; buka berita untuk isi lengkap.</p>`); }
+    dlg(jenis, `${esc(x.media || "")} · ${tgl(x.tgl)}`, `<p style="margin:0">${tautan(urlB(x), x.judul)}</p>${(x.prov || []).length ? `<p class="fnd">Provinsi disebut: ${x.prov.map(p => esc(namaProv(p))).join(", ")}</p>` : ""}<p class="fnd">Hanya judul yang dibaca; buka berita untuk isi lengkap.</p>`); }
 
   /* ================= 5. permukiman ================= */
   function b5() {
@@ -368,35 +383,40 @@ const Dampak = (() => {
   function b8() {
     const Ek = D.ekonomi, ks = Object.entries(Ek).sort((a, b) => b[1].rp[1] - a[1].rp[1]), tot = [0, 1, 2].map(i => ks.reduce((a, [, v]) => a + v.rp[i], 0));
     const kons = ["konsesi_sawit", "konsesi_hph", "konsesi_lain"].reduce((a, c) => a + (Ek[c]?.ha[1] || 0), 0);
-    return ex(8, `Kerusakan & kerugian lahan diperkirakan ${hl(rp(tot[1]))}; ${hl(rb(kons) + " ha")} terbakar di dalam konsesi perusahaan`,
-      "Nilai kerusakan dan kerugian per status lahan, musim berjalan", "Batang = nilai tengah (Rupiah 2026); garis = rentang. Klik untuk rincian atau daftar perusahaan.",
+    /* konsesi per jenis areal (agregat jenis x provinsi dari dampak.py; tanpa nama pemegang, keputusan pemilik 14 Okt 2026) */
+    const KS = D.lahan.konsesi || [], kj = {};
+    for (const r of KS) { const a = kj[r.jenis] ||= {luas: 0, n: 0, prov: {}}; a.luas += r.luas; a.n += r.n_kompleks; a.prov[r.prov] = (a.prov[r.prov] || 0) + r.luas; }
+    const kjs = Object.entries(kj).sort((a, b) => b[1].luas - a[1].luas);
+    return ex(8, `Kerusakan & kerugian lahan diperkirakan ${hl(rp(tot[1]))}; ${hl(rb(kons) + " ha")} terbakar di dalam areal konsesi`,
+      "Nilai kerusakan dan kerugian per status lahan, musim berjalan", "Batang = nilai tengah (Rupiah 2026); garis = rentang. Klik untuk rincian per jenis areal.",
       hbar(ks.map(([c, v]) => ({n: nmK(c), v: v.rp[1], lo: v.rp[0], hi: v.rp[2], w: KAT[c]?.[1], dk: "eko|" + c, txt: rp(v.rp[1]), tip: `<b>${esc(KAT[c]?.[0] || c)}</b><br>± ${rb(v.ha[1])} ha × US$${fmt(v.usd_ha)}/ha (2015)<br>${rp(v.rp[1])} (${rp(v.rp[0])}–${rp(v.rp[2])})`})), {L: sempit() ? 140 : 230})
-      + `<div class="lbl" style="margin:14px 0 4px">Konsesi dengan kompleks api aktif terluas</div>`
-      + tabel(["Pemegang izin", "Jenis", ">Luas kompleks", ">Kompleks"], D.lahan.perusahaan.slice(0, 12).map((p, j) => baris("pt|" + j, `<td><b>${esc(p.nama)}</b></td><td>${esc(KAT[p.jenis]?.[0] || p.jenis)}</td><td class="n">${rb(p.luas)} ha</td><td class="n">${fmt(p.kompleks.length)}</td>`))),
-      `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi; api di konsesi tidak otomatis berarti perusahaan pelakunya`);
+      + `<div class="lbl" style="margin:14px 0 4px">Kompleks api aktif menurut jenis areal konsesi</div>`
+      + tabel(["Jenis areal", ">Luas kompleks", ">Kompleks", "Provinsi terluas"], kjs.map(([j, a]) => baris("ksj|" + j, `<td><b>${esc(JNK[j] || j)}</b></td><td class="n">${rb(a.luas)} ha</td><td class="n">${fmt(a.n)}</td><td>${Object.entries(a.prov).sort((x, y) => y[1] - x[1]).slice(0, 3).map(([k]) => esc(namaProv(k))).join(", ")}</td>`))),
+      `Sumber: ${sm("wb16", "World Bank 2016 (The Cost of Fire)")}, ${sm("bps", "BPS")} inflasi, peta konsesi (sawit/HPH ± 2014, HTI 2020–2022, tambang 2026); api di areal konsesi tidak otomatis berarti pemegang izinnya pelaku`);
   }
   function popEko(c) { const v = D.ekonomi[c];
     dlg(esc(KAT[c]?.[0] || c), "Nilai kerusakan & kerugian lahan terbakar", tabel(["Skenario", ">Luas", ">Nilai (Rp 2026)"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rb(v.ha[i])} ha</td><td class="n">${rp(v.rp[i])}</td></tr>`))
       + `<p class="fnd">Porsi ${Math.round(v.porsi * 100)}% dari luas musim × US$${fmt(v.usd_ha)}/ha (2015).</p>`); }
-  function popPT(j) { const p = D.lahan.perusahaan[j];
-    dlg(esc(p.nama), `${esc(KAT[p.jenis]?.[0] || p.jenis)} · ${rb(p.luas)} ha kompleks aktif`,
-      `<div class="dk-kvs">${p.kompleks.map(id => `<button class="btn sec" data-kom="${esc(id)}">${esc(id)}</button>`).join("")}</div><p class="fnd">Klik kompleks untuk membukanya di peta. Penegakan hukum butuh pembuktian lapangan; data ini hanya penunjuk lokasi.</p>`); }
+  function popKsj(j) { const rs = (D.lahan.konsesi || []).filter(r => r.jenis === j); if (!rs.length) return;
+    dlg(esc(JNK[j] || j), `${rb(rs.reduce((a, r) => a + r.luas, 0))} ha kompleks aktif di ${rs.length} provinsi`,
+      tabel(["Provinsi", ">Luas kompleks", ">Kompleks"], rs.map(r => `<tr><td>${esc(namaProv(r.prov))}</td><td class="n">${rb(r.luas)} ha</td><td class="n">${fmt(r.n_kompleks)}</td></tr>`))
+      + `<div class="dk-kvs">${rs.flatMap(r => r.kompleks).slice(0, 40).map(id => `<button class="btn sec" data-kom="${esc(id)}">${esc(id)}</button>`).join("")}</div><p class="fnd">Klik kompleks untuk membukanya di peta. Data ini hanya penunjuk status lahan, bukan penetapan siapa yang membakar.</p>`); }
 
   /* ================= 9. lintas batas ================= */
   function b9() {
     const T = D.udara.tetangga, H = D.udara.hari, I = D.internasional, hr = hariSejak(geser(kini(), -59), kini());
     const buruk = T.filter(t => Math.max(...t.pm) > 55.4), nI = Object.values(I.harian).reduce((a, b) => a + b, 0), n7 = hr.slice(-7).reduce((a, t) => a + (I.harian[t] || 0), 0);
     const grid = `<div class="tw dk-tw"><table class="dk-grid"><thead><tr><th>Kota</th><th>Negara</th>${H.map((t, i) => `<th class="n">${i ? hariN(t) : "Hari ini"}</th>`).join("")}</tr></thead><tbody>${T.map(t => baris("kota|" + t.nama,
-      `<td><b>${esc(t.nama)}</b></td><td><span class="dk-s">${esc(t.negara)}</span></td>${t.pm.map(v => `<td class="n"><span class="dk-sel" style="background:${W5[kelas(v)]};color:${kelas(v) >= 2 ? "#fff" : "#13213a"}">${fmt(v)}</span></td>`).join("")}`)).join("")}</tbody></table></div>`;
+      `<td><b>${esc(t.nama)}</b></td><td><span class="dk-s">${bdr(t.negara)}${esc(t.negara)}</span></td>${t.pm.map(v => `<td class="n"><span class="dk-sel" style="background:${W5[kelas(v)]};color:${kelas(v) >= 2 ? "#fff" : "#13213a"}">${fmt(v)}</span></td>`).join("")}`)).join("")}</tbody></table></div>`;
     return ex(9, buruk.length ? `Udara tidak sehat diperkirakan menjangkau ${hl(buruk.length + " kota")} di negara tetangga dalam 4 hari ke depan, termasuk ${esc(buruk.slice(0, 3).map(t => t.nama).join(", "))}` : "Asap belum diperkirakan membuat udara tidak sehat di kota-kota negara tetangga",
       "PM2.5 di kota negara tetangga dan liputan media internasional", "Angka = PM2.5 maksimum harian (µg/m³), warna = kelas ISPU. Klik kota untuk grafik, klik batang untuk berita hari itu.",
       grid + `<div class="lbl" style="margin:14px 0 4px">Berita internasional per hari, 60 hari terakhir</div>`
       + kolom(hr, [{k: "i", w: W.ungu, v: I.harian}], {H: 110, tip: (t, n) => `<b>${tgl(t)}</b><br>${n} berita`, dk: t => "intl|" + t})
-      + tabel(["Tanggal", "Judul", "Media"], I.contoh.slice(0, 8).map((x, j) => baris("intlb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
+      + tabel(["", "Tanggal", "Judul", "Media"], I.contoh.slice(0, 8).map(x => `<tr><td>${thumbB(x)}</td><td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(urlB(x), x.judul)}</td><td>${mediaB(x)}</td></tr>`)),
       `Sumber: prakiraan ${sm("cams", "CAMS (Copernicus)")}, liputan media internasional`);
   }
   function popIntlHari(t) { const xs = D.internasional.contoh.filter(x => x.tgl === t);
-    dlg(`Berita internasional ${tgl(t)}`, `${D.internasional.harian[t] || 0} berita`, xs.length ? `<ul class="dk-ul">${xs.map(x => `<li>${tautan(x.url, x.judul)}<small class="dk-s">${esc(x.media || "")}</small></li>`).join("")}</ul>` : `<p class="fnd">Judulnya tidak termasuk 40 contoh terbaru yang disimpan.</p>`); }
+    dlg(`Berita internasional ${tgl(t)}`, `${D.internasional.harian[t] || 0} berita`, xs.length ? `<ul class="dk-ul">${xs.map(x => `<li>${tautan(urlB(x), x.judul)}<small class="dk-s">${esc(x.media || "")}${ngB(x) ? " · " + bdr(ngB(x)) + esc(ngB(x)) : ""}</small></li>`).join("")}</ul>` : `<p class="fnd">Judulnya tidak termasuk 40 contoh terbaru yang disimpan.</p>`); }
 
   /* ================= 10. total kerugian ================= */
   function b10() {
@@ -429,7 +449,7 @@ const Dampak = (() => {
   function aksi(s) { const [t, a] = s.split("|");
     ({prov: () => popProv(a), kota: () => popKota(a), kej: () => popKej(+a), bandara: () => popBandara(a), harif: () => popHariF(a), ispa: () => popIspa(+a),
       sek: () => popSek(+a), sekb: () => popBerita(D.sekolah_berita, +a, "Berita penutupan sekolah"), dekat: () => popDekat(a), desa: () => popDesa(+a),
-      musim: () => popMusim(a), kat: () => popKat(a), lind: () => popLind(+a), emisi: () => popEmisi(), eko: () => popEko(a), pt: () => popPT(+a),
+      musim: () => popMusim(a), kat: () => popKat(a), lind: () => popLind(+a), emisi: () => popEmisi(), eko: () => popEko(a), ksj: () => popKsj(a),
       intl: () => popIntlHari(a), intlb: () => popBerita(D.internasional.contoh, +a, "Berita internasional"), sek10: () => popSek10(a)}[t] || (() => {}))(); }
   const BAG = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10];
   const gambar = n => { try { return BAG[n - 1](); } catch (e) { console.warn("dampak", n, e); return `<section class="dk-bag" id="dk-${n}" data-bag="${n}"><div class="ex"><h3>${JUDUL[n - 1]}</h3><p class="fnd">Bagian ini gagal digambar: ${esc(e.message)}</p></div></section>`; } };

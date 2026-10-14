@@ -169,9 +169,9 @@ def hav(lat1, lon1, lat2, lon2):
 
 
 def keliling(geom, luas_ha):
-    if geom and geom["type"] == "Polygon":
-        r = geom["coordinates"][0]
-        return sum(hav(r[i][1], r[i][0], r[i + 1][1], r[i + 1][0]) for i in range(len(r) - 1))
+    if geom and geom["type"] in ("Polygon", "MultiPolygon"):  # garis luar kompleks bisa terpecah (harian.py/garis_api.py)
+        P = [geom["coordinates"]] if geom["type"] == "Polygon" else geom["coordinates"]
+        return sum(hav(r[i][1], r[i][0], r[i + 1][1], r[i + 1][0]) for p in P for r in p[:1] for i in range(len(r) - 1))
     return 2 * math.sqrt(math.pi * luas_ha / 100)  # titik: lingkaran seluas kompleks
 
 
@@ -205,7 +205,7 @@ def kawasan(tg):
     a = (tg or [""])[0]
     if a.startswith("BKSDA"):
         return "konservasi"
-    if a in ("Perusahaan perkebunan", "Pemegang PBPH (hutan alam)", "Pemegang PBPH (hutan tanaman)") or a.startswith("Pemegang PBPH"):
+    if a == "Perusahaan perkebunan" or a.startswith(("Pemegang PBPH", "Pemegang izin konsesi")):
         return "konsesi"
     return "lain"
 
@@ -303,11 +303,11 @@ def main():
             prov.setdefault(kd, {})["polhut"] = {"rawan_ha": ha, "butuh": [round(ha / (k("polhut_ha_hari", s) * k("polhut_siklus", s)) * k("polhut_regu", s) * k("polhut_kerja", s)) for s in range(3)]}
     for c in out:  # konsesi: regu yang wajib diturunkan perusahaan sendiri
         if c["kaw"] == "konsesi":
-            x = prov.setdefault(c["prov"], {}).setdefault("konsesi", {"kompleks": 0, "nama": {}})
-            x["kompleks"] += 1; x["nama"][c["pj"]] = x["nama"].get(c["pj"], 0) + 1
+            x = prov.setdefault(c["prov"], {}).setdefault("konsesi", {"kompleks": 0, "jenis": {}})  # per jenis areal, tanpa nama pemegang
+            x["kompleks"] += 1; x["jenis"][c["pj"]] = x["jenis"].get(c["pj"], 0) + 1
     for x in prov.values():
         if "konsesi" in x:
-            x["konsesi"]["nama"] = sorted(x["konsesi"]["nama"].items(), key=lambda a: -a[1])[:8]
+            x["konsesi"]["jenis"] = sorted(x["konsesi"]["jenis"].items(), key=lambda a: -a[1])
 
     px_tot = sum(c["px"] for c in out)
     px_gb = sum(c["px"] for c in out if c["ps"] >= 0.5)

@@ -1,0 +1,89 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Pratinjau tautan</title>
+<!-- Templat gambar pratinjau tautan (Open Graph 1200×630). Dirender headless oleh scripts/og/buat.py:
+     /og/template.html?k=ringkasan|peta|banjir|prov-62 -> public/data/og/<k>.png. Angka dari /data/og/meta.json (ditulis buat.py). -->
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=block" rel="stylesheet">
+<style>
+*{box-sizing:border-box;margin:0}
+html,body{width:1200px;height:630px;overflow:hidden;background:#f3f6fa}
+body{font-family:Inter,system-ui,sans-serif;color:#0b2545;display:grid;grid-template-columns:600px 600px}
+.kiri{padding:52px 48px 40px 56px;display:flex;flex-direction:column;gap:22px}
+.merek{display:flex;align-items:center;gap:12px;font:800 22px "Plus Jakarta Sans",sans-serif}
+.merek small{display:block;font:600 14px Inter,sans-serif;color:#5b6b82}
+.eb{display:inline-flex;align-items:center;gap:8px;font:700 15px Inter,sans-serif;color:#5b6b82;text-transform:uppercase;letter-spacing:.06em}
+.eb i{width:12px;height:12px;border-radius:50%;background:var(--lv)}
+h1{font:800 46px/1.08 "Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;text-wrap:balance}
+.angka{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:auto}
+.angka div{background:#fff;border-radius:16px;padding:16px 16px 14px;box-shadow:0 4px 18px rgba(11,37,69,.08);border-top:5px solid var(--w)}
+.angka b{display:block;font:800 34px/1.05 "Plus Jakarta Sans",sans-serif;letter-spacing:-.02em;white-space:nowrap}
+.angka span{display:block;margin-top:6px;font:600 14px/1.25 Inter,sans-serif;color:#5b6b82}
+.kaki{display:flex;justify-content:space-between;font:600 15px Inter,sans-serif;color:#5b6b82}
+.kaki b{color:#1d4e89}
+.kanan{position:relative;background:#dfe8f2;overflow:hidden}
+.kanan svg{position:absolute;left:0;top:0;width:600px;height:630px}
+.kanan.ada-daftar svg{top:24px;height:330px}
+.daftar{position:absolute;left:28px;right:28px;top:372px;display:grid;gap:9px;list-style:none;padding:0}
+.daftar li{display:grid;grid-template-columns:170px 1fr 92px;align-items:center;gap:10px;font:600 15px Inter,sans-serif}
+.daftar li i{height:12px;border-radius:6px;background:var(--w)}
+.daftar li b{text-align:right;font:800 16px "Plus Jakarta Sans",sans-serif}
+.daftar li span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.dj{position:absolute;left:28px;top:344px;font:700 13px Inter,sans-serif;color:#5b6b82;text-transform:uppercase;letter-spacing:.06em}
+.leg{position:absolute;left:20px;bottom:20px;display:flex;gap:14px;padding:9px 14px;border-radius:999px;background:rgba(11,37,69,.84);color:#fff;font:600 14px Inter,sans-serif}
+.leg i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;background:var(--w)}
+</style>
+</head>
+<body>
+<section class="kiri">
+  <div class="merek"><svg width="48" height="48" viewBox="0 0 64 64" aria-hidden="true"><defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#ff9a3d"/><stop offset="1" stop-color="#d63c2a"/></linearGradient></defs><rect width="64" height="64" rx="16" fill="url(#g)"/><circle cx="32" cy="32" r="19" fill="none" stroke="#fff" stroke-width="4"/><circle cx="32" cy="32" r="9" fill="none" stroke="#fff" stroke-width="3.5" opacity=".75"/><path d="M32 32 32 11A21 21 0 0 1 51.4 24Z" fill="#fff" opacity=".9"/><circle cx="32" cy="32" r="4" fill="#fff"/></svg>
+    <div>Pantau Bencana<small id="sub"></small></div></div>
+  <p class="eb" id="eb"><i></i><span></span></p>
+  <h1 id="judul"></h1>
+  <div class="angka" id="angka"></div>
+  <p class="kaki"><span id="tgl"></span><b id="situs"></b></p>
+</section>
+<section class="kanan"><svg id="peta" viewBox="0 0 600 630" aria-hidden="true"></svg><p class="dj" id="dj"></p><ol class="daftar" id="daftar"></ol><p class="leg" id="leg"></p></section>
+<script>
+/* sinkron (XHR sinkron) dengan sengaja: Chrome --screenshot memotret saat event load, jadi gambar harus selesai sebelum itu */
+try {
+  const ambil = u => { const x = new XMLHttpRequest(); x.open("GET", u, false); x.send(); if (x.status !== 200) throw new Error(u + " " + x.status); return JSON.parse(x.responseText); };
+  const LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"], $ = s => document.querySelector(s);
+  const k = new URLSearchParams(location.search).get("k") || "ringkasan";
+  const M = ambil("/data/og/meta.json?" + Date.now()), E = M.gambar[k];
+  document.body.style.setProperty("--lv", LV[E.lv || 0]);
+  $("#sub").textContent = E.sub; $("#eb span").textContent = E.eyebrow; $("#judul").textContent = E.judul;
+  $("#angka").innerHTML = E.angka.map(([v, l, w]) => `<div style="--w:${w}"><b>${v}</b><span>${l}</span></div>`).join("");
+  $("#tgl").textContent = E.tgl || M.tgl_panjang; $("#situs").textContent = M.situs.replace(/^https?:\/\//, "");
+  $("#leg").innerHTML = E.legenda.map(([w, n]) => `<span><i style="--w:${w}"></i>${n}</span>`).join("");
+  /* peta: batas provinsi (geo/provinsi.json) + titik kompleks api; proyeksi ekuirektangular dikoreksi cos(lintang) */
+  const G = ambil("/geo/provinsi.json"), fp = E.prov && G.features.find(f => f.properties.kode === E.prov);
+  let bb = [94.6, -11.2, 141.2, 6.3];
+  if (fp) { bb = [180, 90, -180, -90]; const jalan = c => typeof c[0] === "number" ? (bb = [Math.min(bb[0], c[0]), Math.min(bb[1], c[1]), Math.max(bb[2], c[0]), Math.max(bb[3], c[1])]) : c.forEach(jalan); jalan(fp.geometry.coordinates);
+    const dx = (bb[2] - bb[0]) * .12 + .15, dy = (bb[3] - bb[1]) * .12 + .15; bb = [bb[0] - dx, bb[1] - dy, bb[2] + dx, bb[3] + dy]; }
+  if (E.daftar) { $(".kanan").classList.add("ada-daftar"); $("#peta").setAttribute("viewBox", "0 0 600 330"); $("#dj").textContent = E.daftarJudul;
+    const mx0 = Math.max(...E.daftar.map(x => x[1]), 1);
+    $("#daftar").innerHTML = E.daftar.map(([n, v, t, lv]) => `<li style="--w:${LV[lv]}"><span>${n}</span><i style="width:${Math.max(4, v / mx0 * 100)}%"></i><b>${t}</b></li>`).join(""); }
+  const W = 600, H = E.daftar ? 360 : 630, kx = Math.cos((bb[1] + bb[3]) / 2 * Math.PI / 180), s = Math.min(W / ((bb[2] - bb[0]) * kx), (H - 60) / (bb[3] - bb[1]), (W - 48) / ((bb[2] - bb[0]) * kx)), mx = (bb[0] + bb[2]) / 2, my = (bb[1] + bb[3]) / 2;
+  const P = (lo, la) => [(W / 2 + (lo - mx) * kx * s).toFixed(1), (H / 2 - (E.daftar ? 30 : 20) - (la - my) * s).toFixed(1)];
+  let out = "";
+  for (const f of G.features) {
+    const g = f.geometry, poli = g.type === "Polygon" ? [g.coordinates] : g.coordinates, kode = f.properties.kode, lv = E.lvProv?.[kode] || 0;
+    const d = poli.map(p => p.map(r => "M" + r.map(([lo, la]) => P(lo, la).join(",")).join("L") + "Z").join("")).join("");
+    const isi = E.prov && kode !== E.prov ? "#cfd9e5" : lv ? LV[lv] : "#ffffff", op = E.prov && kode !== E.prov ? 1 : lv ? .3 : 1;
+    out += `<path d="${d}" fill="#fff" stroke="none"/><path d="${d}" fill="${isi}" fill-opacity="${op}" stroke="#a9b8ca" stroke-width="${fp ? 1.4 : .8}" fill-rule="evenodd"/>`;
+  }
+  if (E.titik) {
+    const K = ambil("/data/kluster_awal.json").features.map(f => f.properties)
+      .filter(p => p.level >= (E.prov ? 1 : 2) && (!E.prov || p.prov === E.prov)).sort((a, b) => a.level - b.level);
+    const z = fp ? 1.5 : 1;
+    for (const p of K) { const [x, y] = P(p.lon, p.lat); out += `<circle cx="${x}" cy="${y}" r="${[2, 2.6, 3.4, 5][p.level] * z}" fill="${LV[p.level]}" stroke="#fff" stroke-width="${.9 * z}"/>`; }
+  }
+  $("#peta").innerHTML = out;
+  document.title = "siap";
+} catch (e) { document.title = "galat"; document.body.insertAdjacentHTML("beforeend", `<pre style="position:fixed;top:0;left:0;background:#fff;color:#c00">${e}</pre>`); }
+</script>
+</body>
+</html>

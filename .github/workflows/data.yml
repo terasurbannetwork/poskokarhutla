@@ -192,10 +192,23 @@ jobs:
       - name: Dampak kebakaran musim berjalan
         run: python3 scripts/data/dampak.py
 
+      # cuaca per jam Simulasi per sel 0,5 derajat (kompleks Siaga/Prioritas): peramban tidak lagi memanggil Open-Meteo sendiri.
+      # <= 400 sel x bobot 3,3 = <= 1.320 panggilan kuota. Gagal: peramban jatuh ke Open-Meteo langsung.
+      - name: Cuaca per jam Simulasi (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/data/cuaca_jam.py
+
+      # muatan ringan tab Ringkasan (potongan berita/penerbangan/musim_awal + titik per hari); gagal -> berkas asli dipakai
+      - name: Ringkasan ringan (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/ringkasan.py
+
       - name: Uji aturan
         run: |
           python3 scripts/data/fwi.py
           python3 scripts/data/aturan.py
+          python3 scripts/data/harian.py uji
           python3 scripts/data/posko.py uji
           python3 scripts/data/udara_rekom.py uji
           python3 scripts/data/berita.py uji
@@ -207,6 +220,9 @@ jobs:
           python3 scripts/data/tanah.py uji
           python3 scripts/data/penduduk.py paparan > /dev/null
           python3 scripts/scrape/akses.py uji
+          python3 scripts/data/cuaca_jam.py uji
+          python3 scripts/data/ringkasan.py uji
+          python3 scripts/terbit/versi.py uji
 
       - name: Simpan data untuk jalan berikutnya
         uses: actions/cache/save@v4
@@ -234,7 +250,7 @@ jobs:
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then npx --yes wrangler@3 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@3 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/data

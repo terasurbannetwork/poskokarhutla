@@ -17,6 +17,12 @@ data/raw/berita/*
 # label AI (pedoman scripts/data/PEDOMAN-LABEL.md) + sampel periksa manusia
 !data/raw/berita/label_ai.json
 !data/raw/berita/periksa_manusia.json
+# konsesi: data bernama (pemegang izin, grup) hanya di sini, TIDAK diterbitkan di situs (keputusan pemilik 14 Okt 2026).
+# Yang di-commit: daftar sanksi (kurasi tangan, bersumber) dan profil grup; batas & cache unduhan dibuat ulang.
+!data/raw/konsesi/
+data/raw/konsesi/*
+!data/raw/konsesi/sanksi_karhutla.json
+!data/raw/konsesi/grup_perusahaan.json
 __pycache__/
 .DS_Store
 data/graf_jalan.json.gz
@@ -28,7 +34,12 @@ node_modules/
 # citra satelit: dibuat ulang tiap hari di Actions (cache data-), tidak di-commit
 public/data/citra/
 public/data/citra.json
+# cuaca per jam per sel (scripts/data/cuaca_jam.py): dibuat ulang di Actions, lewat cache data-
+public/data/cuaca/
 
 # state lokal wrangler (D1 miniflare dll.)
 .wrangler/
 scripts/data/.cache/
+
+# gambar pratinjau tautan dibuat di Actions
+public/data/og/

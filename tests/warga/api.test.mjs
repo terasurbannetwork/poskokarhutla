@@ -53,7 +53,7 @@ const firms = async req => {
 };
 const opsi = (ikat = {}) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}], compatibilityDate: "2024-09-23",
   d1Databases: {DB: "uji-warga"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, token-moderator-2", FIRMS_MAP_KEY: "kunci-uji", ...ikat},
-  serviceBindings: {ASSETS: aset}, outboundService: firms});
+  serviceBindings: {ASSETS: aset}, outboundService: firms, cache: false});   // cache tepi diuji terpisah di tepi.test.mjs
 
 before(async () => {
   mf = new Miniflare(opsi());
@@ -343,7 +343,7 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
     let r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `semua segar (dampak tidak punya ambang) harus 200: ${r.teks}`);
     assert.equal(r.j.ok, true); assert.equal(r.j.sumber.titik.umur_jam, 2); assert.equal(r.j.sumber.dampak.umur_jam, 100);
-    assert.equal(r.h.get("cache-control"), "no-store");
+    assert.equal(r.h.get("cache-control"), "public, max-age=60", "status 200 boleh disimpan cache tepi 60 dtk");
     ASET_UJI["/data/meta.json"] = metaUji(9);
     r = await panggil("GET", "/api/status");
     assert.equal(r.status, 503, `titik 9 jam (> 8) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, ["titik"]);

@@ -30,12 +30,14 @@ const Bagikan = {
     const st = document.querySelector("header.top .stat");
     if (!st || document.getElementById("bgBuka")) return;
     if (!document.querySelector("link[data-bagikan]")) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = this.dasar + "bagikan.css"; l.dataset.bagikan = ""; document.head.appendChild(l); }
-    const b = document.createElement("button");
-    b.className = "iconbtn"; b.id = "bgBuka"; b.type = "button"; b.title = "Bagikan & ekspor";
-    b.setAttribute("aria-label", "Bagikan & ekspor"); b.setAttribute("aria-haspopup", "dialog");
-    b.innerHTML = `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`;
+    if (!window.Bagi && !document.querySelector("script[data-bagi]")) { const s = document.createElement("script"); s.src = this.dasar + "bagi.js"; s.dataset.bagi = ""; document.head.appendChild(s); }
+    const b = document.createElement("button"), lbl = this.en() ? "Share" : "Bagikan";
+    b.className = "iconbtn bg-hdr"; b.id = "bgBuka"; b.type = "button"; b.title = lbl;
+    b.setAttribute("aria-haspopup", "dialog");
+    b.innerHTML = `${this.IKON}<span>${lbl}</span>`;
     st.insertBefore(b, document.getElementById("tema"));
-    b.onclick = () => this.buka();
+    b.onclick = () => this.cepat();
+    this.pasangCepat();
     /* tombol bagikan di tiap grafik Insight (tab dirender ulang sendiri, jadi diamati) */
     const ins = document.getElementById("insight");
     if (ins) { new MutationObserver(() => this.tombolEx()).observe(ins, {childList: true, subtree: true}); this.tombolEx(); }
@@ -128,6 +130,11 @@ const Bagikan = {
   },
   /* bagikan satu kompleks dari lacinya: dialog dibuka di tab Tautan dengan alamat kompleks itu */
   bukaKompleks(id) {
+    if (window.Bagi && typeof S !== "undefined" && S.meta) { const p = S.kluster?.features.find(f => f.properties.id === id)?.properties;
+      return this.bagi({...this.konteks("kompleks", id), gambar: () => this.gambarCepat(p?.prov || ""), lainnya: () => this.bukaKompleksDlg(id)}); }
+    this.bukaKompleksDlg(id);
+  },
+  bukaKompleksDlg(id) {
     this._urlKhusus = location.origin + "/k/" + encodeURIComponent(id);
     const d = this.dialog(); if (!d._resetK) { d._resetK = 1; d.addEventListener("close", () => { this._urlKhusus = null; }); }
     this.buka().then(() => this.pilihTab("tautan"));
@@ -185,6 +192,78 @@ const Bagikan = {
   teksPendek() {
     const d = this.data("");
     return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} kompleks prioritas pemadaman hari ini. Pantau ${this.K.nama}:`;
+  },
+
+  /* ---------------------------------------------------------------- bagikan sekali ketuk (bagi.js)
+     Ponsel: lembar bawaan perangkat; desktop: lembar ringkas. Teks pendek dengan angka halaman, dalam bahasa window.BAHASA. */
+  IKON: `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>`,
+  en() { return /^en/i.test(String(window.BAHASA || document.documentElement.lang || "")); },
+  bagi(c) { if (window.Bagi) Bagi.buka(c); else this.buka(); },
+  /* tombol header: selalu lembar (berisi tombol aplikasi, gambar, dan ekspor) */
+  cepat() {
+    if (typeof S === "undefined" || !S.meta) return this.kabar(this.en() ? "Data is still loading, try again shortly." : "Data belum termuat, coba lagi sebentar.");
+    const k = S.jalur?.[0] || "";
+    this.bagi({...this.konteks(k ? "prov" : "nasional", k), url: this.tautan(), lembar: true, gambar: () => this.gambarCepat(k), lainnya: () => this.buka()});
+  },
+  async gambarCepat(k) {
+    this._hari = null; this._snap = undefined; this._d = {};
+    const p0 = this.prov; if (k) this.prov = k;
+    try { await this.font(); const cv = await this.render(k ? "provinsi" : "ringkas", "feed"); return await new Promise(r => cv.toBlob(r, "image/png")); }
+    finally { this.prov = p0; }
+  },
+  tglPendek() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString(this.en() ? "en-GB" : "id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"}); },
+  n(v) { return Number(v || 0).toLocaleString(this.en() ? "en-US" : "id-ID"); },
+  jiwa(v) { return this.en() ? (v >= 1e6 ? Math.round(v / 1e5) / 10 + " M" : v >= 1e3 ? Math.round(v / 1e3) + "k" : String(Math.round(v))) : typeof rb === "function" ? rb(v) : fmt(v); },
+  /* ponytail: jiwa terpapar asap hanya bila tab Ringkasan sudah menghitung (Ringkasan.D); selain itu titik panas hari ini */
+  ringkasanD() { try { return typeof Ringkasan !== "undefined" && Ringkasan.D?.adaAsap ? Ringkasan.D : null; } catch (e) { return null; } },
+  teksWil(k) {
+    const E = this.en(), tg = this.tglPendek(), nm = k ? namaProv(k) : "Indonesia";
+    if (this.hal === "banjir") { const d = this.data(k);
+      return E ? `${nm}: ${d.kpi[0].v} sub-districts on flood alert, 3-day rain up to ${d.kpi[1].v} (${tg}).` : `${nm}: ${d.kpi[0].v} kecamatan berstatus banjir, hujan 3 hari hingga ${d.kpi[1].v} (${tg}).`; }
+    const kl = k ? klusterDi(k) : S.kluster.features, n3 = kl.filter(f => f.properties.level === 3).length, h = this.hariIni(), R = this.ringkasanD();
+    const jw = R ? (k ? R.P?.[k]?.jiwa : R.kpi?.jiwaNas) : 0;
+    const dua = jw ? (E ? `${this.jiwa(jw)} people exposed to smoke` : `${this.jiwa(jw)} jiwa terpapar asap`) : (E ? `${this.n(k ? h.per[k] : h.tot)} hotspots today` : `${this.n(k ? h.per[k] : h.tot)} titik panas hari ini`);
+    return E ? `${nm}: ${this.n(n3)} priority fire complexes, ${dua} (${tg}).` : `${nm}: ${this.n(n3)} kompleks api prioritas, ${dua} (${tg}).`;
+  },
+  konteks(jenis, a) {
+    const E = this.en(), tg = this.tglPendek(), o = location.origin, L = E ? "Live map:" : "Pantau langsung:";
+    if (jenis === "kompleks") {
+      const p = S.kluster?.features.find(f => f.properties.id === a)?.properties, J = (E ? "Fire complex " : "Kompleks api ") + a;
+      const st = p && (E ? ["routine prevention", "patrol", "suppression standby", "priority suppression"][p.level] : S.meta.status[p.level].toLowerCase());
+      const teks = p ? (E ? `${J} (${p.kab}, ${namaProv(p.prov)}): ${st}, ${this.n(p.n24)} hotspots in 24 h (${tg}). See it on the map:` : `${J} (${p.kab}, ${namaProv(p.prov)}): ${st}, ${this.n(p.n24)} titik panas 24 jam (${tg}). Lihat di peta:`)
+        : `${J}. ${E ? "See it on the map:" : "Lihat di peta:"}`;
+      return {judul: J, teks, url: o + "/k/" + encodeURIComponent(a), kampanye: "kompleks"};
+    }
+    if (jenis === "artikel") { const [j, url, kamp] = a; return {judul: j, teks: `${Bagi.potong(j, 180)} (${tg}). ${E ? "More:" : "Selengkapnya:"}`, url, kampanye: kamp}; }
+    const k = jenis === "prov" ? a : "";
+    return {judul: k ? namaProv(k) + " · " + this.K.pendek : document.title, teks: this.teksWil(k) + " " + L, url: o + location.pathname + (k ? "?wil=" + k : ""), kampanye: k ? "provinsi" : "ringkasan"};
+  },
+  /* tombol bagikan di bagian halaman yang dirender ulang sendiri: diamati, dipasang sekali per elemen */
+  pasangCepat() {
+    const E = this.en(), o = location.origin;
+    const tombol = (lbl, f) => { const b = document.createElement("button"); b.type = "button"; b.className = "bs-sel"; b.title = lbl; b.setAttribute("aria-label", lbl); b.innerHTML = this.IKON;
+      b.onclick = ev => { ev.stopPropagation(); if (typeof S === "undefined" || !S.meta) return; this.bagi(f()); }; return b; };
+    const amati = (id, f) => { const el = document.getElementById(id); if (!el) return; let r = 0;
+      const jalan = () => { r = 0; try { f(el); } catch (e) { console.warn("bagikan", id, e); } };
+      new MutationObserver(() => { r ||= requestAnimationFrame(jalan); }).observe(el, {childList: true, subtree: true}); jalan(); };
+    const judul = el => el?.textContent.replace(/\s+/g, " ").trim() || "";
+    amati("ringkasan", el => { const a = el.querySelector(".rk-hero .rk-aksi"); if (!a || a.querySelector(".bg-rk")) return;
+      const b = document.createElement("button"); b.type = "button"; b.className = "btn sec bg-rk"; b.innerHTML = `${this.IKON}<span>${E ? "Share" : "Bagikan"}</span>`;
+      b.onclick = () => this.bagi({...this.konteks("nasional"), gambar: () => this.gambarCepat(""), lainnya: () => this.buka()}); a.prepend(b); });
+    amati("berita", el => {
+      el.querySelectorAll("article.ex:not(#brDaftar)").forEach(a => { const h = a.querySelector("h3"); if (!h || a.querySelector(":scope > .bs-sel")) return;
+        a.prepend(tombol(E ? "Share this chart" : "Bagikan bagian ini", () => this.konteks("artikel", [judul(h), o + "/berita", "berita"]))); });
+      el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
+        it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
+          teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik api karhutla di Pantau Bencana:"}`}))); });
+    });
+    amati("dampak", el => el.querySelectorAll(".dk-bag").forEach(s => { const hd = s.querySelector(".dk-sh"); if (!hd || hd.querySelector(".bs-sel")) return;
+      hd.append(tombol(E ? "Share this section" : "Bagikan bagian ini", () => this.konteks("artikel", [judul(s.querySelector("article h3")) || judul(hd.querySelector("h2")), o + "/dampak", "dampak"]))); }));
+    /* dialog provinsi tab Operasi (#dlg dipakai bersama; hanya yang berisi .op-db) */
+    amati("dlg", d => { const hd = d.querySelector(".dh"), j = judul(d.querySelector("#dlgJudul")); if (!d.querySelector(".op-db") || !hd || hd.querySelector(".bs-sel") || !/:/.test(j)) return;
+      const k = Object.keys(S.meta?.provinsi || {}).find(x => namaProv(x) === j.split(":")[0].trim()); if (!k) return;
+      hd.querySelector("[data-tutup]")?.before(tombol(E ? "Share this province" : "Bagikan provinsi ini", () => ({judul: j, kampanye: "operasi", url: o + "/operasi?wil=" + k,
+        teks: `${this.teksWil(k)} ${E ? "Operations needs:" : "Kebutuhan operasi:"}`}))); });
   },
 
   /* ---------------------------------------------------------------- data */
@@ -387,8 +466,8 @@ const Bagikan = {
   kanvas(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; },
   f(x, w, s, d) { x.font = `${w} ${s}px ${d ? '"Plus Jakarta Sans", "Inter"' : '"Inter"'}, system-ui, -apple-system, "Segoe UI", sans-serif`; },
   pas(x, t, maks, w, s, d, min = 20) { let u = s; this.f(x, w, u, d); while (u > min && x.measureText(t).width > maks) this.f(x, w, u -= 2, d); return u; },
-  potong(x, t, maks) { t = String(t); if (x.measureText(t).width <= maks) return t; while (t.length > 1 && x.measureText(t + "…").width > maks) t = t.slice(0, -1); return t.trimEnd() + "…"; },
-  baris(x, t, maks) { const out = []; let l = ""; for (const k of String(t).split(/\s+/).filter(Boolean)) { const c = l ? l + " " + k : k; if (l && x.measureText(c).width > maks) { out.push(l); l = k; } else l = c; } if (l) out.push(l); return out; },
+  potong(x, t, maks) { t = String(window.T ? window.T(String(t)) : t); if (x.measureText(t).width <= maks) return t; while (t.length > 1 && x.measureText(t + "…").width > maks) t = t.slice(0, -1); return t.trimEnd() + "…"; },
+  baris(x, t, maks) { const out = []; let l = ""; for (const k of String(window.T ? window.T(String(t)) : t).split(/\s+/).filter(Boolean)) { const c = l ? l + " " + k : k; if (l && x.measureText(c).width > maks) { out.push(l); l = k; } else l = c; } if (l) out.push(l); return out; },
   barisKaya(x, seg, maks) {
     const tok = seg.flatMap(s => s.t.split(/(\s+)/).filter(Boolean).map(t => ({t: /^\s+$/.test(t) ? " " : t, hl: s.hl}))), out = [];
     let l = [], lw = 0;
@@ -437,7 +516,7 @@ const Bagikan = {
     cv.d = d; return cv;
   },
   kepala(x, W, P, atas, d, uk) {
-    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? (uk === "story" ? 5 : 4) : 2, seg = d.judulSeg || [{t: d.judul}];
+    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? (uk === "story" ? 5 : 4) : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
     let u = d.tpl === "ex" ? 50 : uk === "kotak" ? 58 : 66; this.f(x, 800, u, true);
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
@@ -740,7 +819,7 @@ const Bagikan = {
 
   async kePdf() {
     const {jsPDF} = window.jspdf, doc = new jsPDF({unit: "mm", format: "a4", compress: true}), W = 210, M = 15, LW = W - 2 * M;
-    const T = s => String(s ?? "").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[–—−]/g, "-").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, "...").replace(/→/g, "->").replace(/[^\x00-\xFF]/g, "");
+    const T = s => String(window.T ? window.T(String(s ?? "")) : s ?? "").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[–—−]/g, "-").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, "...").replace(/→/g, "->").replace(/[^\x00-\xFF]/g, "");
     const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), NAVY = rgb(this.C.navy), NAVY2 = rgb(this.C.navy2), ABU = rgb(this.C.tinta2);
     const d = this.data(""), tg = this.tglPanjang(), judulLap = this.hal === "banjir" ? "Banjir, longsor & rob" : "Kebakaran hutan dan lahan";
     const kepala = j => { doc.setFillColor(...NAVY); doc.rect(0, 0, W, 17, "F"); doc.setFillColor(229, 138, 69); doc.rect(0, 17, W, .8, "F");
@@ -755,7 +834,7 @@ const Bagikan = {
     doc.addImage(this.logoUrl(), "PNG", M, 16, 14, 14);
     doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.text(T(this.K.nama), M + 18, 22);
     doc.setFont("helvetica", "normal"); doc.setFontSize(9); doc.setTextColor(210, 222, 238); doc.text(T("Laporan harian · " + tg), M + 18, 27.5);
-    doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(26); doc.text("Laporan harian", M, 52); doc.setFontSize(18); doc.text(T(judulLap), M, 62);
+    doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(26); doc.text(T("Laporan harian"), M, 52); doc.setFontSize(18); doc.text(T(judulLap), M, 62);
     doc.setFont("helvetica", "normal"); doc.setFontSize(9.5); doc.setTextColor(210, 222, 238); doc.text(T(`Data diperbarui ${jamWIB(S.meta.dibuat)} · ${this.situs()}`), M, 71);
     const kw = (LW - 3 * 4) / 4;
     d.kpi.forEach((q, i) => { const x = M + i * (kw + 4), y = 80; doc.setFillColor(255); doc.setDrawColor(221, 228, 238); doc.roundedRect(x, y, kw, 30, 2.5, 2.5, "FD");
@@ -774,7 +853,7 @@ const Bagikan = {
     const tp = this.tabelProv(); tabel("Ringkasan per provinsi", {...tp, baris: tp.baris.slice(0, Math.max(10, tp.aktif))}, y);
     doc.addPage(); y = kepala(this.tabelUtama(0).judul); const tu = this.tabelUtama(this.hal === "banjir" ? 60 : 40);
     if (tu.baris.length) tabel(tu.judul, tu, y, {styles: {font: "helvetica", fontSize: 7.4, cellPadding: 1.4, textColor: NAVY, lineColor: [221, 228, 238], lineWidth: .1}});
-    else { doc.setFontSize(10); doc.text("Tidak ada baris berstatus hari ini.", M, y + 4); }
+    else { doc.setFontSize(10); doc.text(T("Tidak ada baris berstatus hari ini."), M, y + 4); }
     /* grafik insight */
     const gr = await this.grafikDok();
     if (gr.length) { doc.addPage(); y = kepala("Grafik insight");

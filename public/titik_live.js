@@ -35,7 +35,12 @@
     if (el) { el.dataset.harian ??= el.textContent; el.textContent = el.dataset.harian; /* label cukup "Data …"; jam pembaruan titik ada di tooltip */
       el.title = `Titik panas diperbarui ${jamWIB(live.dibuat)} (tiap 3 jam) · ${tambah.length} titik baru dari FIRMS NRT`; }
   }
+  /* Worker cron (:15 tiap 3 jam) dan titik.yml (:40 tiap 3 jam, terbit statis) mengambil FIRMS yang sama: selama data statis
+     < 3,5 jam, /api/titik hampir tidak menambah titik tapi memakan satu pemanggilan Worker per kunjungan. Baru dipanggil bila
+     terbit statis terlambat/gagal (cek ulang tiap 30 menit). */
+  const STATIS_SEGAR = 3.5 * 36e5;
   async function ambil() {
+    if (S.meta?.dibuat && Date.now() - Date.parse(S.meta.dibuat) < STATIS_SEGAR) return;
     try { const r = await fetch("/api/titik"); if (!r.ok) return; const d = await r.json();
       if (!Array.isArray(d.baris) || !Array.isArray(d.wilayah)) return;
       if (!live || d.dibuat !== live.dibuat) { live = d; untuk = null; } gabung();

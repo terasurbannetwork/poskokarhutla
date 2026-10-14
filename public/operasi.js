@@ -286,7 +286,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
       ${Object.keys(dari).length ? `<li><b>Posko/Daops terdekat dengan rute ≤ 12 jam</b>: ${Object.entries(dari).sort((a, c) => c[1] - a[1]).slice(0, 4).map(([n, v]) => `${esc(n)} (${v} kompleks)`).join(", ")}</li>` : ""}
       <li><b>TNI/Polri (BKO)</b>: ${esc(KOREM[k] || "Korem setempat")} dan Polda ${esc(nP(k))}</li>
       <li><b>MPA</b>: desa di sekitar kompleks; honor dan pompa dari APBD/Dana Desa</li>
-      ${ks ? `<li><b>Perusahaan pemegang konsesi</b> (wajib punya regu & sarana, Permentan 5/2018 dan P.32/2016): ${fmt(ks.kompleks)} kompleks di areal konsesi butuh ± ${fmt(reguKons)} regu bekerja; terbanyak ${ks.nama.slice(0, 4).map(([n, v]) => `${esc(n)} (${v})`).join(", ")}</li>` : ""}
+      ${ks ? `<li><b>Perusahaan pemegang konsesi</b> (wajib punya regu & sarana, Permentan 5/2018 dan P.32/2016): ${fmt(ks.kompleks)} kompleks di areal konsesi butuh ± ${fmt(reguKons)} regu bekerja; menurut areal: ${(ks.jenis || []).map(([n, v]) => `${esc(n)} (${v})`).join(", ")}</li>` : ""}
     </ol>`;
   }
 

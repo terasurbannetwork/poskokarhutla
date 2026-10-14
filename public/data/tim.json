@@ -1,0 +1,132 @@
+{
+ "organisasi": {
+  "nama": "Teras Urban",
+  "nama_lengkap": "Teras Urban Network",
+  "jenis": "Inisiatif urban intelligence independen (NGO)",
+  "slogan": "Connecting people and spaces",
+  "deskripsi": "Teras Urban adalah inisiatif urban intelligence independen (NGO) yang berfokus pada dukungan keputusan perkotaan berbasis bukti. Kami memadukan analisis spasial, kebijakan, dan pasar untuk menilai di mana intervensi dibutuhkan, kendala apa yang penting, dan tindakan apa yang layak dijalankan.",
+  "visi": "Kami memanfaatkan data dan teknologi untuk menghubungkan masyarakat dengan peluang ekonomi, layanan publik, dan infrastruktur perkotaan.",
+  "fokus": [
+   {
+    "nama": "Connectivity",
+    "isi": "Aksesibilitas transportasi dan akses ke peluang"
+   },
+   {
+    "nama": "Livability",
+    "isi": "Hunian, fasilitas kota, dan ruang publik"
+   },
+   {
+    "nama": "Resilience",
+    "isi": "Ketahanan pangan, energi, dan sistem lingkungan",
+    "pantau": true
+   }
+  ],
+  "kapabilitas": [
+   "Spatial Intelligence",
+   "Policy Intelligence",
+   "Market Intelligence"
+  ],
+  "peran": "Membangun dan mengelola Pantau Bencana sebagai bagian dari fokus Resilience",
+  "situs": "https://www.terasurban.com"
+ },
+ "anggota": [
+  {
+   "nama": "Taufiq Pangestu, S.T.",
+   "peran": "Managing Director",
+   "grup": "Dewan Manajemen",
+   "bio": "Alumnus ITB dan alumnus YSEALI 2025 dari U.S. Department of State, berpengalaman sebagai konsultan proyek infrastruktur nasional seperti PSN, kawasan industri, KEK, dan aset nasional.",
+   "foto": "/img/tim/taufiq-pangestu.webp"
+  },
+  {
+   "nama": "Faiz Nabawi, S.PWK.",
+   "peran": "Deputy Director",
+   "grup": "Dewan Manajemen",
+   "bio": "Alumnus PWK Universitas Trisakti dan kandidat insinyur PPI BINUS University, berpengalaman dalam behavioral mapping serta pengembangan infrastruktur publik.",
+   "foto": "/img/tim/faiz-nabawi.webp"
+  },
+  {
+   "nama": "M. Faiz Amali, S.Ars., M.B.A.",
+   "peran": "Director of Business Development",
+   "grup": "Dewan Manajemen",
+   "bio": "Lulusan Arsitektur Universitas Trisakti (2024) dan M.B.A. SBM ITB (2026).",
+   "foto": "/img/tim/m-faiz-amali.webp"
+  },
+  {
+   "nama": "Hilal Syahbana, S.Geo.",
+   "peran": "Director of Operations (Data, GIS & Technology)",
+   "grup": "Dewan Manajemen",
+   "bio": "Alumnus UPI dengan latar belakang Sains Informasi Geografi, berpengalaman dalam riset, geospasial, serta pembangunan kawasan industri.",
+   "foto": "/img/tim/hilal-syahbana.webp"
+  },
+  {
+   "nama": "Alfatehan Septianta, S.T.",
+   "peran": "Advisor & System Expert",
+   "grup": "Dewan Manajemen",
+   "bio": "Alumnus ITB dengan keahlian sustainability, audit K3, sistem, dan ISO; berpengalaman dalam proyek strategis nasional dan sistem digital (e-government, ERP, dan e-commerce).",
+   "foto": "/img/tim/alfatehan-septianta.webp"
+  },
+  {
+   "nama": "Aco Hasran Wali, S.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Research & Project Development",
+   "foto": "/img/tim/aco-hasran-wali.webp"
+  },
+  {
+   "nama": "Tri Anggita, S.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Research & Project Development",
+   "foto": "/img/tim/tri-anggita.webp"
+  },
+  {
+   "nama": "Ahmad Tasywiq, S.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Research & Project Development",
+   "foto": "/img/tim/ahmad-tasywiq.webp"
+  },
+  {
+   "nama": "Monica Adellia, M.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Research & Project Development",
+   "foto": "/img/tim/monica-adellia.webp"
+  },
+  {
+   "nama": "Afif Mudzaky, S.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Research & Project Development",
+   "foto": "/img/tim/afif-mudzaky.webp"
+  },
+  {
+   "nama": "Tunjung Nazhir, S.Pt.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Event & Strategic Engagement",
+   "foto": "/img/tim/tunjung-nazhir.webp"
+  },
+  {
+   "nama": "Fauzan Nashrullah, S.Pt.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Event & Strategic Engagement",
+   "foto": "/img/tim/fauzan-nashrullah.webp"
+  },
+  {
+   "nama": "Devito Putra, S.PWK.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Event & Strategic Engagement",
+   "foto": "/img/tim/devito-putra.webp"
+  },
+  {
+   "nama": "Ataulah Fadhiil, S.Pt.",
+   "peran": "Eksekutif",
+   "grup": "Eksekutif",
+   "unit": "Event & Strategic Engagement",
+   "foto": "/img/tim/ataulah-fadhiil.webp"
+  }
+ ]
+}

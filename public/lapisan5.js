@@ -23,10 +23,10 @@
   const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>`;
   function sisipKotak() {
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
-    const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan");
+    const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan" || d.querySelector("summary")?.textContent.trim() === window.T?.("Lahan"));
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
     /* grup "Akses" digabung ke "Infrastruktur" (permintaan pemilik 13 Okt 2026); grup lain tetap jadi grup sendiri */
-    const infra = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Infrastruktur");
+    const infra = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Infrastruktur" || d.querySelector("summary")?.textContent.trim() === window.T?.("Infrastruktur"));
     GRUP.forEach(([j, xs]) => { const isi = xs.map(kotak).join("");
       if (j === "Akses" && infra) infra.insertAdjacentHTML("beforeend", isi); else L.insertAdjacentHTML("beforeend", `<details open><summary>${j}</summary>${isi}</details>`); });
     if (!lahan) L.insertAdjacentHTML("beforeend", `<details open><summary>Lahan</summary>${LAHAN.map(kotak).join("")}</details>`);

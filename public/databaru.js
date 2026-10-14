@@ -73,7 +73,7 @@
     LAYER[k].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none")); renderLegenda(); }
   function kotakLapis(grup, kunci) {
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="bmkg"]')) return;
-    const d = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === grup);
+    const d = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === grup || d.querySelector("summary")?.textContent.trim() === window.T?.(grup));
     const h = kunci.map(([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>`).join("");
     d ? d.insertAdjacentHTML("beforeend", h) : L.insertAdjacentHTML("beforeend", `<details open><summary>${grup}</summary>${h}</details>`);
     const K = new Set(kunci.map(x => x[0]));

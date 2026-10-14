@@ -51,12 +51,37 @@ jobs:
           python3 scripts/warga/titik24.py
           python3 scripts/data/posko.py
           python3 scripts/data/operasi.py
+          python3 scripts/data/ringkasan.py
 
-      - name: Simpan data untuk jalan berikutnya
+      # Uji prospektif model "akan membesar": catat ramalan titik api baru, nilai 72 jam kemudian (stdlib; data dari hotspot.json,
+      # cuaca Open-Meteo <= 400 bobot/jalan). Catatan bergulir lewat cache Actions, ringkasan -> public/data/prospektif.json.
+      - name: Pulihkan catatan uji prospektif
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/sebaran/prospektif
+          key: prospektif-${{ github.run_id }}
+          restore-keys: prospektif-
+
+      # hanya sel kompleks Siaga/Prioritas BARU (berkas sel < 20 jam dilewati), maks 60 sel = ± 200 panggilan kuota
+      - name: Cuaca per jam sel baru (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          CUACA_SEL_MAKS: "60"
+        run: python3 scripts/data/cuaca_jam.py
+
+      - name: Uji prospektif model membesar (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python3 scripts/sebaran/prospektif.py
+
+      - name: Simpan catatan uji prospektif
+        if: always()
+        continue-on-error: true
         uses: actions/cache/save@v4
         with:
-          path: public/data
-          key: data-${{ github.run_id }}
+          path: data/raw/sebaran/prospektif
+          key: prospektif-${{ github.run_id }}
 
       - name: Pulihkan data banjir terakhir
         uses: actions/cache/restore@v4
@@ -65,6 +90,17 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      - name: Gambar pratinjau tautan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 8
+        run: python3 scripts/og/buat.py
+
+      - name: Simpan data untuk jalan berikutnya
+        uses: actions/cache/save@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+
       - name: Salin peringatan BMKG terbaru
         run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
 
@@ -72,7 +108,9 @@ jobs:
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-        run: npx --yes wrangler@3 deploy
+        run: |
+          python3 scripts/terbit/versi.py
+          npx --yes wrangler@3 deploy
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
       # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.

@@ -1,9 +1,6 @@
 /* konsesi.css — pelengkap konsesi.js; memakai token warna halaman (--card, --line, --ink2, --surface) */
 .ks-j{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
 .ks-j::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--w);flex:none}
-.ks-sk{margin-left:6px;padding:1px 7px;border-radius:99px;border:1px solid #c9503a;background:transparent;color:#c9503a;font:600 10.5px/1.5 var(--font);cursor:pointer;vertical-align:1px}
-.ks-sk.berat{background:#c9503a;color:#fff}
-.ks-sk:focus-visible{outline:2px solid #c9503a;outline-offset:2px}
 .ks-tb td small,.ks-td small{display:block;color:var(--ink2);font-size:11px;line-height:1.3}
 .ks-laci{display:grid;gap:4px;margin-top:6px}
 .ks-td{font-size:11px;white-space:nowrap;text-align:left}
@@ -16,7 +13,6 @@
 .ks-tb th[data-u]{user-select:none;white-space:nowrap}
 .ks-ar{display:inline-block;width:12px;margin-left:3px;font-style:normal;font-size:9px}
 .ks-tb td,.ks-tb th{text-align:left}.ks-tb td.n,.ks-tb th.n{text-align:right}
-.ks-grup{font-size:11px;color:var(--ink2)}
 .ks-ex{margin-bottom:14px}
 .ks-hd{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
 .ks-hd h3{margin:0}
@@ -61,3 +57,11 @@
 #kompleks .ks-td2 .ks-ell{color:var(--ink2);font-size:10.5px}
 .ks-ft{display:flex;justify-content:flex-end;flex-wrap:wrap;text-align:right;padding:10px 22px 4px;border-top:1px solid var(--line);margin-top:8px;font-size:11px;color:var(--ink2)}
 .ks-ft em{font-style:italic}
+/* laci: status lahan titik panas (porsi per jenis areal, tanpa nama pemegang) */
+.ks-bar{display:grid;grid-template-columns:minmax(0,1.5fr) 1fr 40px;gap:8px;align-items:center;font-size:11.5px;margin:3px 0}
+.ks-bar span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ks-bar i{display:block;height:7px;border-radius:4px;background:var(--surface);overflow:hidden}
+.ks-bar i b{display:block;height:100%}
+.ks-bar em{font-style:normal;text-align:right;font-weight:700}
+.ks-bar-sep{height:1px;background:var(--line);margin:4px 0}
+.ks-ft em{text-align:left}

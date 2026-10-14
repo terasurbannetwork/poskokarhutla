@@ -151,7 +151,8 @@ class Konteks:
         for daf in json.load(open(os.path.join(PUBLIK, "osm/desa.json"))).values():
             for la, lo, _, _ in daf:
                 self.desa.setdefault((math.floor(lo / .05), math.floor(la / .05)), []).append((lo, la))
-        e = json.load(open(os.path.join(MENTAH, "enso.json")))
+        j = os.path.join(MENTAH, "enso.json")  # tidak ada di CI (data/raw tidak di-commit): prospektif.py memakai tabel di model_sebaran.json
+        e = json.load(open(j)) if os.path.exists(j) else {"oni": {}, "dmi": {}}
         self.oni, self.dmi = e["oni"], e["dmi"]
         self.bekas = {}
         if bekas:

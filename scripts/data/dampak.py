@@ -81,8 +81,17 @@ TETANGGA = [("Singapura", 1.35, 103.82, "Singapura"), ("Johor Bahru", 1.49, 103.
             ("Bandar Seri Begawan", 4.89, 114.94, "Brunei"), ("Hat Yai", 7.01, 100.47, "Thailand"), ("Dili", -8.56, 125.57, "Timor-Leste")]
 
 KAT = {"Perusahaan perkebunan": "konsesi_sawit", "Pemegang PBPH (hutan alam)": "konsesi_hph", "Pemegang konsesi": "konsesi_lain",
+       # label generik sejak 14 Okt 2026 (tanpa nama pemegang); HTI & tambang tetap tak dipetakan (= apl) seperti label lamanya
+       "Pemegang izin konsesi sawit (perusahaan perkebunan)": "konsesi_sawit", "Pemegang izin konsesi HPH (PBPH hutan alam)": "konsesi_hph",
+       "Pemegang izin konsesi": "konsesi_lain",
        "BKSDA / Balai Taman Nasional": "konservasi", "Pemerintah daerah (KPH/dinas kehutanan)": "lindung",
        "KPH / pemegang PBPH": "hutan_produksi", "Desa / camat / bupati": "apl"}
+
+# label penanggung jawab -> jenis konsesi (agregat per jenis x provinsi; tanpa nama pemegang)
+JENIS_PJ = {"Perusahaan perkebunan": "sawit", "Pemegang PBPH (hutan alam)": "hph", "Pemegang PBPH (hutan tanaman)": "hti",
+            "Pemegang PPKH (tambang)": "tambang", "Pemegang konsesi": "lain",
+            "Pemegang izin konsesi sawit (perusahaan perkebunan)": "sawit", "Pemegang izin konsesi HPH (PBPH hutan alam)": "hph",
+            "Pemegang izin konsesi HTI (PBPH hutan tanaman)": "hti", "Pemegang izin tambang (PPKH)": "tambang", "Pemegang izin konsesi": "lain"}
 
 
 # ------------------------------------------------------------------ fungsi murni
@@ -310,7 +319,8 @@ def main():
     for a in intl:
         per_hari[a["tgl"][:10]] += 1
     out["internasional"] = {"metode": "asal" if ada_asal else "kata kunci", "harian": dict(sorted(per_hari.items())),
-                            "contoh": [{"tgl": a["tgl"][:10], "judul": a["judul"], "url": a["url"], "media": a.get("sumber")}
+                            "contoh": [{"tgl": a["tgl"][:10], "judul": a["judul"], "url": a["url"], "media": a.get("sumber"),
+                                        **{k: a[k] for k in ("url_asli", "gambar", "domain") if a.get(k)}}  # thumbnail & tautan asli (bagian 9)
                                        for a in sorted(intl, key=lambda a: a["tgl"], reverse=True)[:40]]}
 
     # --- 4 & 5: kedekatan desa, penduduk, sekolah, faskes ke kompleks aktif
@@ -383,7 +393,7 @@ def main():
 
     # --- 6: lahan terbakar (kompleks aktif) & luas musim berjalan
     kat, gambut, kat_prov = defaultdict(float), defaultdict(float), defaultdict(lambda: defaultdict(float))
-    lindung, perusahaan = [], defaultdict(lambda: {"luas": 0.0, "kompleks": [], "jenis": ""})
+    lindung, konsesi = [], defaultdict(lambda: {"luas": 0.0, "kompleks": []})
     for p in kl:
         if p.get("level", 0) < 1:
             continue
@@ -395,11 +405,10 @@ def main():
         gambut["gambut" if p.get("gambut") else "mineral"] += L
         if c in ("konservasi", "lindung"):
             lindung.append({"id": p["id"], "nama": t[1], "prov": p["prov"], "kab": p.get("kab"), "luas": L, "level": p["level"], "gambut": p.get("gambut")})
-        if c.startswith("konsesi") and t[1]:
-            q = perusahaan[t[1]]
+        if t[0] in JENIS_PJ:  # konsesi: per jenis x provinsi, tanpa nama pemegang (keputusan pemilik 14 Okt 2026)
+            q = konsesi[JENIS_PJ[t[0]], p["prov"]]
             q["luas"] += L
             q["kompleks"].append(p["id"])
-            q["jenis"] = c
     tot = sum(kat.values()) or 1
     bagi = {k: v / tot for k, v in kat.items()}
     bagi_gambut = gambut["gambut"] / (sum(gambut.values()) or 1)
@@ -410,7 +419,8 @@ def main():
     out["lahan"] = {"kompleks_ha": round(tot), "kategori_ha": {k: round(v) for k, v in kat.items()}, "gambut_ha": {k: round(v) for k, v in gambut.items()},
                     "kategori_prov": {p: {k: round(v) for k, v in d.items()} for p, d in kat_prov.items()},
                     "lindung": sorted(lindung, key=lambda x: -x["luas"])[:40],
-                    "perusahaan": sorted([{"nama": k, **v, "luas": round(v["luas"]), "kompleks": v["kompleks"][:12]} for k, v in perusahaan.items()], key=lambda x: -x["luas"])[:40]}
+                    "konsesi": sorted([{"jenis": j, "prov": pv, "luas": round(v["luas"]), "n_kompleks": len(v["kompleks"]), "kompleks": v["kompleks"]}
+                                       for (j, pv), v in konsesi.items()], key=lambda x: -x["luas"])}
     out["musim"] = {"mulai": m0.isoformat(), "ha": H, "prov": musim, "rasio_nasional": r_nas,
                     "bnpb": {r["Provinsi"]: angka(r.get("Lahan Terbakar Indikatif (Ha)")) for r in bn["rows"]}, "bnpb_waktu": bn.get("updatedAt")}
 
@@ -456,6 +466,9 @@ def main():
 
 def cek(o):
     """Invarian keluaran: gagal = tidak menulis berkas."""
+    lh = o.get("lahan") or {}
+    assert "perusahaan" not in lh and all(set(r) <= {"jenis", "prov", "luas", "n_kompleks", "kompleks"} for r in lh.get("konsesi", [])), \
+        "bagian lahan tidak boleh memuat nama pemegang konsesi (keputusan pemilik 14 Okt 2026)"
     for k in (o["musim"]["ha"], o["emisi"]["mt_co2e"], o["kerugian"]["total"]):
         assert k[0] <= k[1] <= k[2], f"rentang rendah<=tengah<=tinggi dilanggar: {k}"
     for p, d in o["dekat"]["prov"].items():
@@ -524,6 +537,12 @@ def uji():
         raise SystemExit("cek() harus menolak rentang terbalik")
     except AssertionError:
         pass
+    try:
+        cek({**buruk, "musim": {"ha": [1, 2, 3]}, "kerugian": {"total": [1, 2, 3], "sektor": {}}, "lahan": {"perusahaan": [{"nama": "PT X"}]}})
+        raise SystemExit("cek() harus menolak daftar perusahaan di bagian lahan")
+    except AssertionError as e:
+        assert "nama pemegang" in str(e), e
+    assert JENIS_PJ["Pemegang izin konsesi HTI (PBPH hutan tanaman)"] == "hti" and KAT.get("Pemegang izin konsesi sawit (perusahaan perkebunan)") == "konsesi_sawit"
     print("uji dampak: lolos")
 
 

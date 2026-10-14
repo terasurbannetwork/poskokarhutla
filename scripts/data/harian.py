@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
 import fwi as F
 from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Poligon, Wilayah
+from garis_api import garis as garis_api
 from aturan import STATUS
 
 KELUAR = os.path.join(AKAR, "public/data")
@@ -26,7 +27,6 @@ SENSOR_UTAMA = {"M", "N", "N20"}
 # aktif bila terdeteksi <= 72 jam (168 jam di gambut kering).
 EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
 R_BUMI = 6371.0088
-PIKSEL_HA = 0.375 * 0.375 * 100  # 14,0625 ha per piksel VIIRS 375 m
 
 # Status taktis per kompleks. "Tanggap darurat" adalah status hukum wilayah (P.9/2018) yang ditetapkan
 # bupati/gubernur, jadi tidak diberikan oleh model.
@@ -106,6 +106,7 @@ def hotspot(k, w):
                                                       "VIIRS_NOAA21_NRT": "N21", "MODIS_NRT": "M"}[sensor],
                 "frp": round(float(r.get("frp") or 0), 1), "c": kc, "adm": adm,
                 "px": max(float(r.get("scan") or .4), float(r.get("track") or .4)),  # ukuran piksel sebenarnya (km)
+                "scan": float(r.get("scan") or 0), "track": float(r.get("track") or 0),  # jejak piksel untuk garis luar kompleks
             })
     titik.sort(key=lambda p: p["t"])
     return titik
@@ -165,37 +166,6 @@ def dbscan(pts, eps=EPS_KM, min_pts=MIN_PTS, jam=48):
                 inti[j] = True
                 antre.extend(nb2)
     return label, inti
-
-
-def lambung(xy):
-    """Convex hull monotone chain."""
-    xy = sorted(set(xy))
-    if len(xy) < 3:
-        return xy
-
-    def silang(o, a, b):
-        return (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0])
-
-    bawah, atas = [], []
-    for p in xy:
-        while len(bawah) >= 2 and silang(bawah[-2], bawah[-1], p) <= 0:
-            bawah.pop()
-        bawah.append(p)
-    for p in reversed(xy):
-        while len(atas) >= 2 and silang(atas[-2], atas[-1], p) <= 0:
-            atas.pop()
-        atas.append(p)
-    return bawah[:-1] + atas[:-1]
-
-
-def luas_km2(ring, lat0):
-    kx, ky = 111.32 * math.cos(math.radians(lat0)), 110.57
-    s = 0.0
-    for i in range(len(ring)):
-        x1, y1 = ring[i]
-        x2, y2 = ring[(i + 1) % len(ring)]
-        s += (x1 * kx) * (y2 * ky) - (x2 * kx) * (y1 * ky)
-    return abs(s) / 2
 
 
 # ---------------------------------------------------------------- FWI grid
@@ -357,11 +327,17 @@ def main():
     KONSESI = Poligon(os.path.join(KELUAR, "lahan/konsesi.geojson"))
     ada_gambut = bool(GAMBUT.indeks)
 
+    PJ_KONSESI = {"sawit": ("Pemegang izin konsesi sawit (perusahaan perkebunan)", "Areal konsesi sawit"),
+                  "hph": ("Pemegang izin konsesi HPH (PBPH hutan alam)", "Areal konsesi HPH (hutan alam)"),
+                  "hti": ("Pemegang izin konsesi HTI (PBPH hutan tanaman)", "Areal konsesi HTI (kayu pulp)"),
+                  "tambang": ("Pemegang izin tambang (PPKH)", "Areal izin tambang")}
+
     def penanggung(lon, lat):
         """Rute penerusan titik panas menurut status lahan (P.32/2016 dan praktik KLHK)."""
         k = KONSESI.cari(lon, lat)
         if k and k.get("aktif") is not False:  # izin berakhir: bukan penanggung jawab lagi
-            return {"sawit": "Perusahaan perkebunan", "hph": "Pemegang PBPH (hutan alam)", "hti": "Pemegang PBPH (hutan tanaman)", "tambang": "Pemegang PPKH (tambang)"}.get(k.get("jenis"), "Pemegang konsesi"), k.get("pemegang") or k.get("nama")
+            # generik, tanpa nama pemegang (keputusan pemilik 14 Okt 2026); konsesi.geojson publik memang tak bernama
+            return PJ_KONSESI.get(k.get("jenis"), ("Pemegang izin konsesi", "Areal konsesi"))
         kw = KAWASAN.cari(lon, lat)
         if kw:
             f = kw.get("fungsi")
@@ -401,20 +377,21 @@ def main():
             continue
         d0 = min(daops, key=lambda d: km(lat0, lon0, d["lat"], d["lon"])) if daops else None
         jd = round(km(lat0, lon0, d0["lat"], d0["lon"])) if d0 else None
-        ring = lambung([(p["lon"], p["lat"]) for p in pts])
-        piksel = {pix(p) for p in pts}
+        # garis luar organik (raster jejak piksel 375 m, closing, kontur, Chaikin; lihat garis_api.py), bukan lambung cembung.
+        # luas = luas garis luar itu (dulu: jumlah sel pusat deteksi x 14,06 ha); bisa Polygon atau MultiPolygon.
+        bentuk, luas_ha = garis_api(pts)
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",
-            "geometry": {"type": "Polygon", "coordinates": [[[round(v, 3) for v in x] for x in ring + ring[:1]]]}
-            if len(ring) >= 3 and lv >= 2 else {"type": "Point", "coordinates": [round(lon0, 4), round(lat0, 4)]},
+            "geometry": bentuk if bentuk and lv >= 2 and len({(p["lon"], p["lat"]) for p in pts}) >= 3
+            else {"type": "Point", "coordinates": [round(lon0, 4), round(lat0, 4)]},
             "properties": {
                 "id": "", "lat": round(lat0, 4), "lon": round(lon0, 4), "n": len(pts), "n24": len(p24),
                 "hari": len(hari), "px24": px24, "ini": n_ini, "kmrn": n_kmrn, "sev": sev, "fdrs": fdrs,
                 "frp": round(sum(p["frp"] for p in pts), 1), "frp24": round(sum(p["frp"] for p in p24), 1),
                 "awal": min(p["t"] for p in pts).isoformat(), "akhir": terakhir.isoformat(), "jam_sejak": round(jam_sejak, 1),
                 "teramati": jam_sejak <= 24,  # False = tidak terdeteksi 24 jam: bisa padam, bisa tertutup awan/asap
-                "luas": round(len(piksel) * PIKSEL_HA, 1),
+                "luas": luas_ha,
                 "prov": adm[0], "kab": adm[1], "kec": adm[2],
                 "cuaca": bool(h),
                 **{k: (h or {}).get(k) for k in ("fwi", "ffmc", "dmc", "dc", "isi", "bui", "ws", "wd", "rh", "t")},
@@ -493,16 +470,16 @@ def main():
 
     tabel = sorted({"|".join(p["adm"]) for p in titik})
     idx = {k: i for i, k in enumerate(tabel)}
-    simpan("hotspot.json", {
-        "kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"],
-        "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA),
-        "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
-                   idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik]})
-    simpan("hotspot72.json", {
-        "kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"],
-        "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA), "jam_maks": 72,
-        "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
-                   idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik if p["t"] >= akhir - dt.timedelta(hours=72)]})
+    def titik_json(pilih, **tambah):
+        return {"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"],
+                "acuan": akhir.isoformat(), "wilayah": tabel, "sensor_utama": sorted(SENSOR_UTAMA), **tambah,
+                "baris": [[p["lat"], p["lon"], round((p["t"] - akhir).total_seconds() / 3600, 2), p["s"], p["frp"], p["c"],
+                           idx["|".join(p["adm"])], tgl(p["t"]).isoformat()[5:]] for p in titik if pilih(p)]}
+    simpan("hotspot.json", titik_json(lambda p: True))
+    simpan("hotspot72.json", titik_json(lambda p: p["t"] >= akhir - dt.timedelta(hours=72), jam_maks=72))
+    # muatan awal (rentang bawaan "hari ini", juga "kemarin", dan jendela 48 jam Ringkasan): tanggal WIB hari ini & kemarin
+    # ditambah 48 jam terakhir dari acuan. jam_maks=48 -> peramban memuat hotspot72/hotspot.json hanya bila rentang lebih panjang.
+    simpan("hotspot24.json", titik_json(lambda p: tgl(p["t"]) >= hari_akhir - dt.timedelta(days=1) or p["t"] >= akhir - dt.timedelta(hours=48), jam_maks=48))
     simpan("kluster.json", {"type": "FeatureCollection", "features": fitur})
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
@@ -547,6 +524,8 @@ def uji():
     assert geo == {"K1": [sq, [[1.5, 1.5]]]}, f"geo hanya untuk kompleks berpoligon/api24: {geo}"
     assert F[0]["properties"]["api24"] == [[1.5, 1.5]], "kluster.json lengkap tidak boleh ikut berubah"
     print("harian uji: pecah_kluster OK")
+    import garis_api
+    garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat
 
 
 if __name__ == "__main__":
