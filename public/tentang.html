@@ -965,6 +965,14 @@ section[hidden],[hidden]{display:none!important}
 #cara-kerja .batas[hidden]{display:none!important}
 
 .band .lead .sorot{color:#f5a06b;font-weight:600}
+
+/* label pembuka di tengah atas (pemilik, 14 Okt 2026) */
+.band .kepala{grid-template-rows:auto auto!important;grid-template-areas:"ey ey" "jd ld"!important;align-items:center!important}
+.band .eyebrow{justify-self:center!important;align-self:start!important;margin-bottom:clamp(16px,2.4vw,32px)}
+.band .h2{align-self:center!important}
+.faq-band .kepala{grid-template-areas:"ey" "jd"!important}
+.faq-band .eyebrow{justify-self:start!important;margin-bottom:0}
+@media (max-width:860px){.band .kepala{grid-template-areas:"ey" "jd" "ld"!important}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
