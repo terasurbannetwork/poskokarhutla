@@ -90,3 +90,6 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-aksi{display:grid!important;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px}
 .bg-aksi > button{width:100%;min-height:44px;justify-content:center}
 .bg-aksi > [hidden]{display:none!important}
+
+/* tombol "Bagikan video" disembunyikan; cukup tombol share (pemilik, 14 Okt 2026). Catatan: Cerita.rekamVideo memakai $q di luar IIFE, perlu diperbaiki bila dipulihkan */
+.ct-bab .ct-vid-btn{display:none!important}
