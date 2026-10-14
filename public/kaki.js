@@ -32,7 +32,7 @@
     <div><div class="kk-m"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</div>
       <p>Pemantauan bencana Indonesia dari data terbuka. Sebuah inisiatif <a href="https://www.terasurban.com" target="_blank" rel="noopener">Teras Urban</a>.</p><div class="kk-s">${sos}</div></div>
     <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li></ul></div>
-    <div><h4>Alat</h4><ul><li><a href="/sim">Simulasi</a></li><li><a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a></li></ul></div>
+    <div><h4>Alat</h4><ul><li><a href="/sim">Simulasi</a></li></ul></div>
     <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li><li><a href="/privasi.html">Kebijakan privasi</a></li></ul></div>
   </div><div class="kk-b"><span>© ${new Date().getFullYear()} Teras Urban (Teras Urban Network). Bukan situs resmi pemerintah.</span><span>Data milik penyedianya masing-masing.</span></div></div></footer>`;
   const pasang = () => HAL.forEach(id => { const p = D.getElementById("p-" + id); if (p && !p.querySelector(":scope > .kaki-situs")) p.insertAdjacentHTML("beforeend", html()); });
