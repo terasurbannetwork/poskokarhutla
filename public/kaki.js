@@ -12,7 +12,8 @@
 .kaki-situs .kk-tum img{width:46px;height:auto}
 .kaki-situs .kk-tum span{display:inline-block;font:900 20px/0.95 var(--display,Inter),sans-serif;letter-spacing:.02em;color:#fff}
 .kaki-situs .kk-sl{color:#9fc0ff!important;font-weight:600}
-.kaki-situs .kk-al{display:flex;gap:8px;font-size:12.5px}
+.kaki-situs .kk-al{display:flex;gap:8px;font-size:12.5px;color:inherit;text-decoration:none;transition:color .2s}
+.kaki-situs .kk-al:hover span{text-decoration:underline;text-underline-offset:3px}
 .kaki-situs .kk-al svg{flex:none;width:16px;height:16px;margin-top:2px;color:#4f8fc4}
 .kaki-situs .kk-m{display:flex;align-items:center;gap:10px;font:800 17px var(--display,Inter),sans-serif;color:#fff}
 .kaki-situs .kk-m img{width:30px;height:30px}
@@ -37,7 +38,7 @@
   const html = () => `<footer class="kaki-situs"><div class="kk"><div class="kk-g">
     <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>
-      <div class="kk-s">${sos}</div><p class="kk-al"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></p></div>
+      <div class="kk-s">${sos}</div><a class="kk-al" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Plumpang%20Semper%20Raya%20No.%2022%2C%20Tugu%20Selatan%2C%20Koja%2C%20Jakarta%20Utara%2014260" target="_blank" rel="noopener" title="Buka di Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></a></div>
     <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li></ul></div>
     <div><h4>Alat</h4><ul><li><a href="/sim">Simulasi</a></li></ul></div>
     <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li></ul></div>

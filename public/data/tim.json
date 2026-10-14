@@ -2,31 +2,33 @@
  "organisasi": {
   "nama": "Teras Urban",
   "nama_lengkap": "Teras Urban Network",
-  "jenis": "Inisiatif urban intelligence independen (NGO)",
-  "slogan": "Connecting people and spaces",
-  "deskripsi": "Teras Urban adalah inisiatif urban intelligence independen (NGO) yang berfokus pada dukungan keputusan perkotaan berbasis bukti. Kami memadukan analisis spasial, kebijakan, dan pasar untuk menilai di mana intervensi dibutuhkan, kendala apa yang penting, dan tindakan apa yang layak dijalankan.",
-  "visi": "Kami memanfaatkan data dan teknologi untuk menghubungkan masyarakat dengan peluang ekonomi, layanan publik, dan infrastruktur perkotaan.",
+  "jenis": "Socio-urban intelligence & geospatial advisory",
+  "slogan": "Di antara ruang dan manusia",
+  "deskripsi": "Teras Urban adalah unit socio-urban intelligence dan geospatial advisory. Kami mengubah data ruang, pasar, dan sosial menjadi rekomendasi yang terukur, mulai dari Jakarta dan dirancang untuk seluruh Indonesia.",
+  "visi": "Independen, netral, dan metodenya dapat ditelusuri, bekerja bersama pemerintah, akademisi, komunitas, dunia usaha, dan media.",
   "fokus": [
    {
-    "nama": "Connectivity",
-    "isi": "Aksesibilitas transportasi dan akses ke peluang"
-   },
-   {
-    "nama": "Livability",
-    "isi": "Hunian, fasilitas kota, dan ruang publik"
-   },
-   {
-    "nama": "Resilience",
-    "isi": "Ketahanan pangan, energi, dan sistem lingkungan",
+    "nama": "Geospasial",
+    "isi": "Menilai kelayakan ruang melalui pembobotan lokasi, area tangkapan, dan aksesibilitas",
     "pantau": true
+   },
+   {
+    "nama": "Pasar & Tata Ruang",
+    "isi": "Membaca zonasi, daya dukung infrastruktur, serta permintaan dan serapan pasar"
+   },
+   {
+    "nama": "Sosial & Perilaku",
+    "isi": "Memahami penduduk lewat profil demografi, segmentasi, dan survei lapangan"
    }
   ],
   "kapabilitas": [
-   "Spatial Intelligence",
-   "Policy Intelligence",
-   "Market Intelligence"
+   "Location intelligence",
+   "Kelayakan kawasan",
+   "Intelijen wilayah & dashboard",
+   "Riset kebijakan & policy brief",
+   "Analisis sosial & perilaku"
   ],
-  "peran": "Membangun dan mengelola Pantau Bencana sebagai bagian dari fokus Resilience",
+  "peran": "Membangun dan mengelola Pantau Bencana sebagai bagian dari layanan intelijen wilayah: integrasi data BPS, Satu Data, administratif, geospasial, dan citra satelit menjadi dashboard Web GIS yang diperbarui berkala",
   "situs": "https://www.terasurban.com"
  },
  "anggota": [

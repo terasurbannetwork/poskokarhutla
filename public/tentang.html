@@ -28,7 +28,7 @@
 <link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
 <script>/* tautan internal dalam mode tertanam: buka tab di aplikasi induk */ document.addEventListener("click", e => { if (!document.documentElement.classList.contains("tertanam")) return; const a = e.target.closest?.("a[href^='/']"); if (!a || a.target) return; const t = a.getAttribute("href").replace(/^\//, "").split(/[?#]/)[0]; if (parent.bukaTab && /^(peta|insight|berita|tren|dampak|sim|metode|kompleks)?$/.test(t)) { e.preventDefault(); parent.bukaTab(t || "peta"); } });</script>
 <script>/* dimuat sebagai tab di aplikasi: sembunyikan header & footer sendiri, warisi tema */ if (/[?&]tertanam=1/.test(location.search)) { document.documentElement.classList.add("tertanam"); try { const t = parent.document.documentElement.dataset.theme; if (t) document.documentElement.dataset.theme = t; } catch (e) {} }</script>
@@ -46,7 +46,7 @@ html.tertanam body{padding-top:0}
   --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
   --merah:#c9503a; --oranye:#e58a45; --kuning:#e3b94e; --hijau:#5a9e74; --biru:#4f8fc4; --nila:#5f6fb0; --teal:#2b8c86; --tua:#7a2b2b; --navy:#0b2545;
   --r:16px; --top:58px; --jarak:20px;
-  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Montserrat","Plus Jakarta Sans",var(--font);
   color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
@@ -127,8 +127,11 @@ main{padding:0}
 :root[data-theme="dark"] .seksi.gelap{background:oklch(14% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seksi.gelap{background:oklch(14% .035 256)}}
 .seksi[id]{scroll-margin-top:calc(var(--top) + 8px)}
-.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--aksen)}
-.eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+/* label bagian: pil bertitik berdenyut (pemilik, 14 Okt 2026) */
+.eyebrow{display:inline-flex;align-items:center;gap:9px;padding:7px 14px 7px 12px;border-radius:999px;font-size:12px;font-weight:800;letter-spacing:.12em;text-transform:uppercase;color:var(--aksen);background:color-mix(in oklab,var(--aksen) 10%,transparent);border:1px solid color-mix(in oklab,var(--aksen) 22%,transparent)}
+.eyebrow::before{content:"";width:7px;height:7px;border-radius:50%;background:currentColor;box-shadow:0 0 0 0 color-mix(in oklab,var(--aksen) 55%,transparent)}
+@media (prefers-reduced-motion:no-preference){.eyebrow::before{animation:eb-denyut 2.4s ease-out infinite}}
+@keyframes eb-denyut{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--aksen) 55%,transparent)}80%,100%{box-shadow:0 0 0 7px transparent}}
 .kepala{max-width:820px;margin:0 auto clamp(40px,6vw,88px);text-align:center;display:grid;gap:18px;justify-items:center}
 .kepala.kiri{text-align:left;margin-left:0;justify-items:start}
 .h2{font:700 clamp(32px,5.4vw,64px)/1.03 var(--display);letter-spacing:-.042em;text-wrap:balance}
@@ -165,6 +168,67 @@ html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
 .hero .aksi{justify-content:center;margin-top:34px}
 .hero .oleh{color:var(--ink2);margin-top:22px;font-size:13.5px;max-width:52ch}
 .hero .oleh b{color:var(--ink)}
+/* logo Teras Urban di hero: navy di tema terang, putih di tema gelap */
+/* merek Pantau Bencana di puncak hero: ikon dengan gema radar + nama (pemilik, 14 Okt 2026) */
+.pb-merek{display:inline-flex;align-items:center;gap:14px;text-decoration:none;color:var(--ink);margin-bottom:26px}
+.pb-ik{position:relative;display:grid;place-items:center;width:52px;height:52px}
+.pb-ik img{position:relative;z-index:1;width:52px;height:52px;border-radius:15px;box-shadow:0 10px 28px -8px rgb(214 60 42 / .55);transition:transform .5s var(--kurva)}
+.pb-merek:hover .pb-ik img{transform:rotate(-6deg) scale(1.05)}
+.pb-ik::before,.pb-ik::after{content:"";position:absolute;inset:0;border-radius:18px;border:2px solid color-mix(in oklab,var(--aksen) 55%,transparent);opacity:0}
+@media (prefers-reduced-motion:no-preference){.pb-ik::before{animation:pb-gema 3s cubic-bezier(.16,1,.3,1) infinite}.pb-ik::after{animation:pb-gema 3s cubic-bezier(.16,1,.3,1) 1.5s infinite}}
+@keyframes pb-gema{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
+.pb-nm{font:700 24px/1 var(--display);letter-spacing:-.03em;display:flex;gap:6px}.pb-nm b{color:var(--aksen);font-weight:800}
+/* blok "Sebuah inisiatif Teras Urban": garis tipis pemisah, label kecil, logo, keterangan */
+.oleh-blok{display:grid;justify-items:center;gap:10px;margin-top:40px;padding-top:26px;position:relative}
+.oleh-blok::before{content:"";position:absolute;top:0;left:50%;width:56px;height:2px;border-radius:2px;translate:-50% 0;background:color-mix(in oklab,var(--aksen) 45%,transparent)}
+.oleh-lbl{font-size:11.5px;font-weight:700;letter-spacing:.14em;text-transform:uppercase;color:var(--ink2)}
+.hero .oleh-blok .oleh{margin-top:2px}
+.tu-logo{display:inline-block;opacity:.92;transition:opacity .2s,transform .3s var(--kurva)}.tu-logo:hover{opacity:1;transform:translateY(-2px)}.tu-logo img{display:block;height:32px;width:auto}.tu-logo .putih{display:none}
+/* latar hero: kisi titik halus yang memudar ke bawah, seperti peta */
+.hero{position:relative}.hero::before{content:"";position:absolute;inset:0;pointer-events:none;background-image:radial-gradient(color-mix(in oklab,var(--ink) 14%,transparent) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:radial-gradient(70% 55% at 50% 30%,#000 10%,transparent 75%);mask-image:radial-gradient(70% 55% at 50% 30%,#000 10%,transparent 75%);opacity:.55}
+.hero .wrap{position:relative}
+/* grid lima bencana: kolom tegak berdampingan, kolom yang disorot melebar (pemilik, 14 Okt 2026) */
+.lb-grid{display:flex;gap:10px;height:clamp(380px,48vw,560px);margin-top:clamp(28px,4vw,48px)}
+.lb-kol{position:relative;flex:1 1 0;min-width:0;border-radius:var(--r2);overflow:hidden;color:#fff;text-decoration:none;background:#0b1b33;isolation:isolate;transition:flex-grow .7s cubic-bezier(.16,1,.3,1)}
+.lb-kol img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;transition:transform 1.2s cubic-bezier(.16,1,.3,1),filter .6s}
+.lb-kol:not(.aktif) img{filter:saturate(.75)}
+.lb-kol::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,transparent 40%,rgb(6 14 28 / .88));z-index:0}
+.lb-isi{position:absolute;left:0;right:0;bottom:0;z-index:1;padding:18px 16px;display:grid;gap:4px}
+.lb-isi b{font:700 clamp(15px,1.5vw,19px)/1.15 var(--display);letter-spacing:-.02em;text-wrap:balance}
+.lb-isi small{font-size:12px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-st{justify-self:start;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgb(255 255 255 / .18);backdrop-filter:blur(6px)}
+.lb-kol.aktif .lb-st{background:var(--aksen);color:#fff;text-decoration:none;pointer-events:auto;position:relative;z-index:2}
+@media (hover:hover) and (min-width:761px){.lb-grid:hover .lb-kol{flex-grow:.8}.lb-grid .lb-kol:hover{flex-grow:2.4}.lb-kol:hover img{transform:scale(1.06);filter:none}}
+.lb-kol:focus-visible{outline:3px solid var(--aksen);outline-offset:3px}
+@media (max-width:760px){.lb-grid{flex-direction:column;height:auto}.lb-kol{flex:none;height:150px}.lb-kol:first-child{height:220px}}
+.lb-kredit{margin-top:14px;font-size:11.5px;color:var(--ink2);line-height:1.6}.lb-kredit a{color:inherit}
+/* hero berlatar lima foto bencana selebar layar: hitam-putih, berwarna saat kolomnya disorot (pemilik, 14 Okt 2026) */
+.hero-foto{position:relative;isolation:isolate;min-height:min(100svh,980px);display:grid;align-items:center;background:#06101f;color:#fff;padding-bottom:clamp(150px,16vw,190px)}
+.hero-foto::before{display:none}
+.hero-foto .lb-grid{position:absolute;inset:0;height:auto;margin:0;gap:3px;z-index:0}
+.hero-foto .lb-kol{border-radius:0;background:#06101f}
+.hero-foto .lb-kol img{filter:grayscale(1) brightness(.5) contrast(1.08);transition:transform 1.2s cubic-bezier(.16,1,.3,1),filter .7s ease}
+.hero-foto .lb-kol::after{background:linear-gradient(180deg,rgb(6 16 31 / .35),transparent 30%,transparent 62%,rgb(6 16 31 / .92))}
+@media (hover:hover){.hero-foto .lb-kol:hover img{filter:grayscale(0) brightness(.78) contrast(1.02);transform:scale(1.05)}}
+/* sorotan gelap di tengah supaya judul tetap terbaca di atas foto */
+.hero-foto .wrap{position:relative;z-index:2;pointer-events:none}
+.hero-foto .wrap::before{content:"";position:absolute;inset:-12% -20%;z-index:-1;background:radial-gradient(closest-side,rgb(6 16 31 / .72),rgb(6 16 31 / .38) 60%,transparent);pointer-events:none}
+.hero-foto .wrap a,.hero-foto .wrap button{pointer-events:auto}
+.hero-foto h1{color:#fff;text-shadow:0 2px 30px rgb(0 0 0 / .35)}
+.hero-foto .misi{color:rgb(255 255 255 / .82)}
+.hero-foto .pb-merek,.hero-foto .pb-nm{color:#fff}
+.hero-foto .eyebrow{color:#f5a06b;background:rgb(245 160 107 / .14);border-color:rgb(245 160 107 / .35)}
+.hero-foto .tbl.utama,:root[data-theme="dark"] .hero-foto .tbl.utama{background:var(--aksen);color:#fff}
+.hero-foto .tbl:not(.utama){background:rgb(255 255 255 / .14);color:#fff;backdrop-filter:blur(8px)}
+.hero-foto .oleh-lbl,.hero-foto .oleh{color:rgb(255 255 255 / .72)}
+.hero-foto .tu-logo .terang{display:none!important}.hero-foto .tu-logo .putih{display:block!important}
+.lb-foto{position:relative;z-index:2;font-size:10.5px;font-style:italic;color:rgb(255 255 255 / .55);text-decoration:none;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;pointer-events:auto}.lb-foto:hover{color:#fff;text-decoration:underline}
+.hero-foto .lb-isi{text-align:left;padding:22px clamp(14px,1.6vw,22px)}
+@media (max-width:760px){.hero-foto .lb-grid{flex-direction:row}.hero-foto .lb-kol,.hero-foto .lb-kol:first-child{height:auto;flex:1 1 0}.hero-foto .lb-isi{display:none}.hero-foto{padding-bottom:64px}}
+
+:root[data-theme="dark"] .tu-logo .terang{display:none}:root[data-theme="dark"] .tu-logo .putih{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tu-logo .terang{display:none}:root:not([data-theme="light"]) .tu-logo .putih{display:block}}
+
 .panggung{position:relative;width:100%;max-width:640px;margin-top:clamp(40px,6vw,72px)}
 .jendela{width:100%;background:var(--card);border-radius:28px;box-shadow:0 2px 4px oklch(25% .07 256 / .06),0 40px 80px -24px oklch(25% .07 256 / .32),0 0 0 1px var(--line);overflow:hidden;text-align:left}
 .jendela .bar{display:flex;align-items:center;gap:6px;padding:12px 18px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ink2)}
@@ -189,8 +253,20 @@ html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
 .ik svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
 /* ---------- 2. pita sumber + bukti hidup ---------- */
-.kredit{padding:56px 0 8px;background:var(--card);text-align:center}
+.kredit{padding:clamp(36px,4vw,52px) 0;background:var(--card);text-align:center}
 .kredit p{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.kredit p.lb-kredit{margin:20px auto 0;max-width:900px;font-size:11.5px;font-weight:400;letter-spacing:0;text-transform:none;opacity:.85}
+/* pita logo penyedia data, bergulir kiri ke kanan; berhenti saat disorot (pemilik, 14 Okt 2026) */
+.pita{display:flex;overflow:hidden;margin-top:18px;-webkit-mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent);mask-image:linear-gradient(90deg,transparent,#000 12%,#000 88%,transparent)}
+.pita-j{display:flex;flex:none;gap:14px;padding:6px 7px;margin:0;list-style:none;animation:pita 38s linear infinite}
+.pita:hover .pita-j{animation-play-state:paused}
+@keyframes pita{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+@media (prefers-reduced-motion:reduce){.pita-j{animation:none}}
+.pita-j{gap:clamp(40px,5vw,72px);padding:8px clamp(20px,2.5vw,36px)}
+.pita-j li{display:flex;align-items:center;height:64px}
+.pita-j img{height:52px;width:auto;max-width:150px;object-fit:contain;opacity:.85;transition:opacity .3s,transform .3s var(--kurva)}
+.pita-j img[src*="openmeteo"]{border-radius:12px}
+.pita-j li:hover img{opacity:1;transform:scale(1.08)}
 .pil-s{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;list-style:none;margin:18px auto 0;padding:0;max-width:880px}
 .pil-s li{padding:7px 16px;border-radius:999px;background:var(--paper);font-size:14px;font-weight:600;color:var(--ink)}
 .bukti-sek{background:var(--card);padding:clamp(40px,6vw,72px) 0 var(--seksi)}
@@ -219,6 +295,33 @@ html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
 .pilar{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(48px,7vw,96px)}
 .pilar h3{font:700 clamp(22px,2.2vw,28px)/1.15 var(--display);letter-spacing:-.025em;margin-top:6px}
 .pilar .no{font:700 13px var(--display);color:var(--aksen);letter-spacing:.06em}
+/* Latar belakang dirombak (pemilik, 14 Okt 2026): kartu tantangan bernomor besar + panel alur gelap tiga langkah */
+.masalah{margin-top:clamp(36px,5vw,56px)}
+.masalah .mk{position:relative;overflow:hidden;background:var(--card);border:1px solid var(--line);padding:clamp(26px,3vw,36px);gap:12px;transition:transform .45s var(--kurva),box-shadow .45s,border-color .3s}
+.masalah .mk::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:linear-gradient(90deg,var(--merah),var(--aksen))}
+.masalah .mk::after{content:attr(data-n);position:absolute;right:-6px;bottom:-34px;font:800 150px/1 var(--display);letter-spacing:-.06em;color:color-mix(in oklab,var(--aksen) 9%,transparent);pointer-events:none;transition:transform .6s var(--kurva)}
+.masalah .mk:hover{transform:translateY(-6px);box-shadow:0 24px 48px -28px rgb(11 27 51 / .5);border-color:color-mix(in oklab,var(--aksen) 35%,var(--line))}
+.masalah .mk:hover::after{transform:translateY(-8px)}
+.mk-tg{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--merah)}
+.masalah .mk .ik{width:52px;height:52px;border-radius:16px;margin:4px 0 6px}
+.masalah .mk .ik svg{width:24px;height:24px}
+.masalah .mk b,.masalah .mk small{position:relative;z-index:1}
+.alur{margin-top:clamp(40px,6vw,72px);padding:clamp(32px,5vw,64px);border-radius:var(--r);background:radial-gradient(120% 140% at 0 0,#16335c,#0b1b33 60%);color:#fff;position:relative;overflow:hidden}
+.alur::before{content:"";position:absolute;inset:0;background-image:radial-gradient(rgb(255 255 255 / .08) 1px,transparent 1.2px);background-size:22px 22px;-webkit-mask-image:linear-gradient(180deg,#000,transparent 80%);mask-image:linear-gradient(180deg,#000,transparent 80%);pointer-events:none}
+.alur-hd{position:relative;display:grid;justify-items:start;gap:14px;max-width:640px}
+.alur-hd h3{font:700 clamp(26px,3.2vw,40px)/1.1 var(--display);letter-spacing:-.035em;color:#fff}
+.alur-hd h3 em{font-style:normal;color:#f5a06b}
+.alur .eyebrow{color:#f5a06b;background:rgb(245 160 107 / .12);border-color:rgb(245 160 107 / .3)}
+.alur .pilar{position:relative;margin-top:clamp(32px,4vw,48px);gap:clamp(16px,2vw,28px)}
+.alur .pilar::before{content:"";position:absolute;left:8%;right:8%;top:34px;height:2px;background:linear-gradient(90deg,transparent,rgb(245 160 107 / .55),transparent)}
+.alur .pilar li{position:relative;padding:0;background:none;gap:12px}
+.alur .pilar .no{position:relative;display:grid;place-items:center;width:68px;height:68px;border-radius:22px;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;box-shadow:0 12px 30px -10px rgb(217 83 43 / .7);transition:transform .45s var(--kurva)}
+.alur .pilar li:hover .no{transform:translateY(-4px) rotate(-4deg)}
+.alur .pilar .no svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.alur .pilar .no i{position:absolute;top:-8px;right:-8px;display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#fff;color:#0b1b33;font:800 11px/1 var(--display);font-style:normal}
+.alur .pilar h3{color:#fff;margin-top:8px}
+.alur .pilar p{color:rgb(255 255 255 / .72)}
+@media (max-width:760px){.masalah,.alur .pilar{grid-template-columns:1fr}.alur .pilar::before{display:none}}
 @media (max-width:860px){.masalah,.pilar{grid-template-columns:minmax(0,1fr)}}
 .hukum,.lipat{margin-top:clamp(32px,5vw,56px);border-radius:var(--r);background:var(--paper);overflow:hidden}
 .putih .hukum,.putih .lipat{background:var(--paper)}.kertas .lipat,.kertas .hukum{background:var(--card)}
@@ -317,6 +420,9 @@ td small{color:var(--ink2)}
 .org .lg{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:var(--navy);color:#fff;font:800 21px/1 var(--display);letter-spacing:-.03em;flex:none}
 :root[data-theme="dark"] .org .lg{background:#e6edf7;color:var(--navy)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .org .lg{background:#e6edf7;color:var(--navy)}}
+.org .lg img{width:40px;height:auto}.org .lg .m-navy{display:none}
+:root[data-theme="dark"] .org .lg .m-putih{display:none}:root[data-theme="dark"] .org .lg .m-navy{display:block}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .org .lg .m-putih{display:none}:root:not([data-theme="light"]) .org .lg .m-navy{display:block}}
 .org h3{font:700 clamp(24px,2.6vw,32px)/1.1 var(--display);letter-spacing:-.03em}
 .org .slogan{color:var(--aksen);font-weight:600;font-size:14.5px}
 .org p{color:var(--ink2);font-size:15.5px}
@@ -340,12 +446,15 @@ td small{color:var(--ink2)}
 .orang{padding:26px 16px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;height:100%;border-radius:var(--r2);background:var(--paper)}
 .putih .orang{background:var(--paper)}.kertas .orang{background:var(--card)}
 .orang .ft{margin-bottom:10px}
+/* foto berlatar transparan: diperkecil & didudukkan ke bawah supaya kepala tidak terpotong lingkaran (pemilik, 14 Okt 2026) */
+img.ft{box-sizing:border-box;padding:12px 7px 0!important;object-fit:contain!important;object-position:50% 100%!important}
 .ft{width:104px;height:104px;aspect-ratio:1;border-radius:50%;object-fit:cover;object-position:center 20%;background:color-mix(in oklab,var(--brand2) 12%,var(--surface));display:grid;place-items:center;font:800 26px/1 var(--display);color:var(--brand2);flex:none}
 .orang b{font:700 16px/1.3 var(--display);display:block;text-wrap:balance}
 .orang .peran{color:var(--aksen);font-weight:600;font-size:13px;line-height:1.35;display:block}
 .orang p{color:var(--ink2);font-size:13.5px;line-height:1.5;margin-top:6px}
 .eksek .orang{padding:20px 10px 18px}
 .eksek .ft{width:84px;height:84px;font-size:21px}
+.eksek img.ft{padding:10px 6px 0!important}
 .eksek .orang b{font-size:14px}
 .eksek .peran{color:var(--ink2);font-weight:500;font-size:12px}
 
@@ -371,7 +480,7 @@ td small{color:var(--ink2)}
 .kontak ul a{color:#fff}
 .kontak .aksi{display:grid;gap:12px}
 .kontak .aksi .tbl{width:100%}
-.seksi.gelap .eyebrow{color:#f5a06b}
+.seksi.gelap .eyebrow{color:#f5a06b;background:rgb(245 160 107 / .12);border-color:rgb(245 160 107 / .3)}
 
 /* ---------- 9. FAQ ---------- */
 .faq{display:grid;gap:12px;max-width:860px;margin:0 auto}
@@ -379,15 +488,182 @@ td small{color:var(--ink2)}
 .faq summary{list-style:none;cursor:pointer;display:flex;gap:16px;align-items:center;padding:20px 24px;font:700 clamp(16px,1.6vw,18px)/1.3 var(--display);letter-spacing:-.01em;min-height:60px}
 .faq summary::after{content:"+";margin-left:auto;flex:none;font:400 26px/1 var(--font);color:var(--ink2);transition:transform .3s var(--kurva)}
 .faq details[open] summary::after{transform:rotate(45deg)}
+/* FAQ: kartu bergaris halus, yang terbuka diberi aksen oranye & bayangan; ikon + dalam lingkaran; buka-tutup memanjang halus (pemilik, 14 Okt 2026) */
+:root{interpolate-size:allow-keywords}
+.faq details{border:1px solid var(--line);transition:border-color .3s,box-shadow .3s}
+.faq details[open]{border-color:color-mix(in oklab,var(--aksen) 40%,var(--line));box-shadow:0 14px 34px -22px rgb(11 27 51 / .45)}
+.faq summary::after{width:30px;height:30px;display:grid;place-items:center;border-radius:50%;background:color-mix(in oklab,var(--aksen) 10%,transparent);color:var(--aksen);font-size:20px}
+.faq details[open] summary::after{background:var(--aksen);color:#fff}
+.faq details::details-content{block-size:0;overflow:hidden;transition:block-size .45s cubic-bezier(.16,1,.3,1),content-visibility .45s allow-discrete}
+.faq details[open]::details-content{block-size:auto}
 .faq summary:hover{background:color-mix(in oklab,var(--brand2) 5%,var(--card))}
-.faq .isi{padding:0 24px 22px;color:var(--ink2);font-size:15.5px;line-height:1.6;max-width:72ch}
+.faq .isi{padding:0 24px 22px;color:var(--ink2);font-size:15.5px;line-height:1.65;text-align:justify;hyphens:auto;-webkit-hyphens:auto}
 .faq .isi p+p{margin-top:8px}
+/* rekam jejak Teras Urban (gambar dari masterdeck, pemilik 14 Okt 2026) */
+.rj-jd{margin-top:clamp(36px,5vw,56px)}
+.rj{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;margin-top:18px}
+.rj-k{margin:0;display:flex;flex-direction:column;border-radius:var(--r2);overflow:hidden;background:var(--card);border:1px solid var(--line);transition:transform .4s var(--kurva),box-shadow .4s}
+.rj-k:hover{transform:translateY(-4px);box-shadow:0 18px 40px -24px rgb(11 27 51 / .5)}
+.rj-g{aspect-ratio:4/3;overflow:hidden;background:var(--paper)}
+.rj-g img{width:100%;height:100%;object-fit:cover;transition:transform 1s cubic-bezier(.16,1,.3,1)}
+.rj-k:hover .rj-g img{transform:scale(1.05)}
+.rj-k figcaption{display:grid;gap:6px;padding:16px 18px 20px;font-size:13.5px;line-height:1.5;color:var(--ink2)}
+.rj-k figcaption b{font:700 16px/1.25 var(--display);color:var(--ink);letter-spacing:-.01em}
+.rj-t{font-size:11px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;color:var(--aksen)}
+@media (max-width:980px){.rj{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:520px){.rj{grid-template-columns:1fr}}
+.lbl-pil{display:inline-flex;align-items:center;padding:2px 11px;border-radius:999px;font-size:.88em;font-weight:700;color:var(--ink);background:color-mix(in oklab,var(--brand2) 10%,var(--card));border:1px solid var(--line);text-decoration:none;white-space:nowrap}
+.lbl-pil.tautan{color:#fff;background:var(--aksen);border-color:transparent;transition:filter .2s}.lbl-pil.tautan:hover{filter:brightness(1.08)}
+[hidden]{display:none!important}
 .kutip{max-width:860px;margin:24px auto 0;padding:24px;display:grid;gap:12px;border-radius:var(--r2);background:var(--card)}
 .kutip blockquote{margin:0;padding:14px 18px;background:var(--paper);border-left:3px solid var(--aksen);border-radius:0 14px 14px 0;font-size:14px;line-height:1.55;word-break:break-word}
 .kutip .baris{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
 .kutip .tbl{height:44px;padding:0 18px;font-size:14.5px}
 .kutip small{color:var(--ink2);font-size:13px}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html.lp-js [data-muncul]:not([data-terlihat]){opacity:1;translate:none}}
+
+/* ================= REDESIGN EDITORIAL (pemilik, 14 Okt 2026) =================
+   rujukan terasurban.com: judul Montserrat besar rata kiri, label kecil berhuruf renggang tanpa pil,
+   garis tipis alih-alih kartu berwarna, foto besar hitam-putih membuka tiap bagian. */
+.eyebrow{padding:0;border:0;background:none;border-radius:0;gap:12px;font-size:11.5px;letter-spacing:.22em;color:var(--aksen)}
+.eyebrow::before{width:32px;height:1.5px;border-radius:0;box-shadow:none;animation:none!important;background:currentColor}
+.eyebrow i{font-style:normal;font-weight:800;margin-right:-2px}
+.ik{background:transparent;border:1px solid var(--line);color:var(--ink)}
+.tbl{border-radius:10px;height:50px;font-weight:700}
+/* --- hero --- */
+.hero-foto{text-align:left;align-items:end;min-height:min(100svh,1000px);padding-top:calc(var(--top) + 60px)}
+.hero-foto .wrap{justify-items:start;max-width:1240px}
+.hero-foto .wrap::before{inset:-30% -60% -30% -40%;background:linear-gradient(90deg,rgb(6 16 31 / .88),rgb(6 16 31 / .55) 55%,transparent 85%)}
+.hero-foto .pb-merek{margin-bottom:34px}
+.hero-ey{font-size:12px;font-weight:700;letter-spacing:.28em;text-transform:uppercase;color:rgb(255 255 255 / .8)}
+.hero-foto h1{margin-top:18px;max-width:19ch;font:800 clamp(40px,6.6vw,96px)/.98 var(--display);letter-spacing:-.02em;text-transform:uppercase;text-wrap:balance}
+.hero-foto h1 em{color:#f5a06b}
+@media (min-width:1100px){.hero-foto .misi{white-space:nowrap;max-width:none!important}}
+.hero-foto .misi{margin-top:26px;max-width:52ch;font-size:clamp(17px,1.6vw,20px);color:rgb(255 255 255 / .85)}
+.hero-foto .aksi{justify-content:flex-start;margin-top:34px;gap:12px}
+.hero-foto .tbl.utama,:root[data-theme="dark"] .hero-foto .tbl.utama{background:#fff;color:#0b1b33}
+.hero-foto .tbl.utama:hover{background:#f5a06b;color:#0b1b33}
+.hero-foto .tbl.garis{background:transparent;color:#fff;border:1.5px solid rgb(255 255 255 / .55);backdrop-filter:none}
+.hero-foto .tbl.garis:hover{border-color:#fff;background:rgb(255 255 255 / .08)}
+.hero-angka{display:flex;flex-wrap:wrap;gap:clamp(24px,4vw,56px);margin:40px 0 0}
+.hero-angka dt{font:700 17px/1.2 var(--display);color:#fff}
+.hero-angka dd{margin:6px 0 0;font-size:13px;color:rgb(255 255 255 / .62)}
+.hero-oleh{display:flex;align-items:center;gap:14px;margin-top:38px;padding-top:22px;border-top:1px solid rgb(255 255 255 / .18);font-size:11px;font-weight:700;letter-spacing:.2em;text-transform:uppercase;color:rgb(255 255 255 / .6)}
+.hero-oleh .tu-logo img{height:46px}
+.telusuri{position:absolute;z-index:3;right:clamp(24px,4vw,64px);bottom:clamp(160px,17vw,200px);display:grid;justify-items:center;gap:10px;font-size:11px;font-weight:700;letter-spacing:.24em;text-transform:uppercase;color:rgb(255 255 255 / .75);text-decoration:none}
+.telusuri svg{width:40px;height:40px;padding:9px;border-radius:50%;border:1.5px solid rgb(255 255 255 / .5);fill:none;stroke:currentColor;stroke-width:2}
+@media (prefers-reduced-motion:no-preference){.telusuri svg{animation:turun 2.2s ease-in-out infinite}}
+@keyframes turun{50%{transform:translateY(6px)}}
+.lb-ik{width:18px;height:18px;vertical-align:-3px;margin-right:8px;filter:grayscale(1) brightness(2.2);transition:filter .5s}
+.lb-kol:hover .lb-ik{filter:none}
+@media (max-width:1100px){.telusuri{display:none}}
+@media (max-width:760px){.hero-foto .wrap::before{inset:-20%;background:rgb(6 16 31 / .7)}.hero-oleh{flex-wrap:wrap}}
+/* --- pembuka foto tiap bagian --- */
+.seksi.berband{padding-top:0}
+.band{position:relative;isolation:isolate;display:flex;align-items:flex-end;min-height:clamp(400px,62vh,640px);margin-bottom:clamp(48px,7vw,96px);background:#0b1b33;color:#fff;overflow:hidden}
+.band::before{content:"";position:absolute;inset:-4%;z-index:-2;background:var(--foto) var(--pos,50% 50%)/cover no-repeat;filter:grayscale(1) contrast(1.08) brightness(.62);transform:scale(1.04);transition:transform 2.4s cubic-bezier(.16,1,.3,1),filter 1.2s}
+.band:hover::before{transform:scale(1.08);filter:grayscale(.15) contrast(1.04) brightness(.7)}
+.band::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(180deg,rgb(6 16 31 / .1),rgb(6 16 31 / .25) 40%,rgb(6 16 31 / .88)),linear-gradient(90deg,rgb(6 16 31 / .6),transparent 70%)}
+.band .wrap{width:100%}
+.band .kepala{max-width:900px;margin:0;padding:0 0 clamp(40px,6vw,80px);text-align:left;justify-items:start}
+.band .h2{color:#fff;font-weight:800;letter-spacing:-.03em;max-width:18ch}
+.band .lead{color:rgb(255 255 255 / .82);max-width:62ch}
+.band .lead a{color:#fff}
+.band .eyebrow{color:#f5a06b}
+/* --- tantangan & alur: garis tipis, tanpa kartu --- */
+.masalah{gap:0;border-top:1px solid var(--line)}
+.masalah .mk{background:none;border:0;border-right:1px solid var(--line);border-radius:0;padding:clamp(26px,3vw,40px) clamp(20px,3vw,40px) 8px 0;margin-right:clamp(20px,3vw,40px)}
+.masalah .mk:last-child{border-right:0;margin-right:0}
+.masalah .mk::before,.masalah .mk::after{display:none}
+.masalah .mk:hover{transform:none;box-shadow:none}
+.masalah .mk .ik{display:none}
+.mk-tg{color:var(--aksen);letter-spacing:.2em}
+.masalah .mk b{font:700 clamp(19px,1.8vw,23px)/1.25 var(--display);letter-spacing:-.015em}
+.alur{background:none;color:var(--ink);padding:0;border-radius:0;overflow:visible;margin-top:clamp(56px,8vw,112px)}
+.alur::before{display:none}
+.alur-hd h3{color:var(--ink);font-weight:800;letter-spacing:-.03em}
+.alur-hd h3 em{color:var(--aksen)}
+.alur .eyebrow{color:var(--aksen);background:none}
+.alur .pilar{gap:0;border-top:1px solid var(--line)}
+.alur .pilar::before{display:none}
+.alur .pilar li{padding:clamp(26px,3vw,40px) clamp(20px,3vw,40px) 0 0;border-right:1px solid var(--line);margin-right:clamp(20px,3vw,40px)}
+.alur .pilar li:last-child{border-right:0;margin-right:0}
+.alur .pilar .no{width:auto;height:auto;border-radius:0;background:none;box-shadow:none;color:var(--aksen);justify-items:start;place-items:start}
+.alur .pilar .no svg{display:none}
+.alur .pilar .no i{position:static;width:auto;height:auto;background:none;color:var(--aksen);font:800 clamp(40px,4vw,56px)/1 var(--display);letter-spacing:-.04em}
+.alur .pilar h3{color:var(--ink)}
+.alur .pilar p{color:var(--ink2)}
+@media (max-width:760px){.masalah .mk,.alur .pilar li{border-right:0;margin-right:0;border-bottom:1px solid var(--line);padding-bottom:24px}}
+/* --- kontak berlatar foto --- */
+.seksi.berfoto{position:relative;isolation:isolate;overflow:hidden}
+.seksi.berfoto::before{content:"";position:absolute;inset:0;z-index:-2;background:var(--foto) 50% 50%/cover;filter:grayscale(1) brightness(.4)}
+.seksi.berfoto::after{content:"";position:absolute;inset:0;z-index:-1;background:linear-gradient(90deg,rgb(6 16 31 / .92),rgb(6 16 31 / .6))}
+/* --- judul bagian tanpa pembuka foto ikut rata kiri --- */
+.kepala{text-align:left;justify-items:start;margin-left:0}
+.h2{font-weight:800;letter-spacing:-.03em}
+
+/* --- Tim, rekam jejak, kolaborasi, riset: editorial tanpa kotak (pemilik, 14 Okt 2026) --- */
+.org{background:none;border-radius:0;border-top:1px solid var(--line);border-bottom:1px solid var(--line);gap:clamp(24px,5vw,72px)}
+.org>div{padding:clamp(28px,4vw,48px) 0}
+.org .kanan{background:none}
+.org blockquote{background:none;border-radius:0;padding:4px 0 4px 18px;border-left:2px solid var(--aksen);font:600 clamp(17px,1.6vw,20px)/1.45 var(--display);color:var(--ink);letter-spacing:-.01em}
+.org .kap{gap:0 18px}
+.org .kap span{padding:0;background:none;border-radius:0;font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.org .kap span+span::before{content:"/";margin-right:18px;color:var(--line)}
+.fokus{gap:0;counter-reset:lensa;border-top:1px solid var(--line)}
+.fokus li{counter-increment:lensa;padding:18px 0 18px 46px;border-radius:0;background:none;border-bottom:1px solid var(--line);position:relative;box-shadow:none!important}
+.fokus li::before{content:"0" counter(lensa);position:absolute;left:0;top:18px;font:800 15px/1.4 var(--display);color:var(--ink2)}
+.fokus li.ini::before{color:var(--aksen)}
+.fokus li.ini em{background:none;color:var(--aksen);padding:0;border-radius:0;letter-spacing:.12em;text-transform:uppercase;font-size:10.5px}
+/* rekam jejak: gambar besar, keterangan polos */
+.rj{gap:clamp(20px,2.4vw,32px)}
+.rj-k{background:none;border:0;border-radius:0}
+.rj-k:hover{transform:none;box-shadow:none}
+.rj-g{aspect-ratio:4/5;border-radius:6px}
+.rj-g img{filter:grayscale(1);transition:transform 1s cubic-bezier(.16,1,.3,1),filter .6s}
+.rj-k:hover .rj-g img{filter:none}
+.rj-k figcaption{padding:16px 0 0}
+/* tim: foto besar persegi berlatar abu, tanpa kartu */
+.dewan,.eksek{gap:clamp(20px,2.4vw,32px) clamp(16px,2vw,28px)}
+.orang{padding:0!important;background:none!important;border-radius:0;align-items:flex-start;text-align:left;gap:3px}
+.orang .ft,.eksek .ft{width:100%!important;height:auto!important;aspect-ratio:4/5;border-radius:6px;margin-bottom:14px;background:linear-gradient(180deg,#e9edf3,#d5dce6)}
+img.ft,.eksek img.ft{padding:18px 10px 0!important;filter:grayscale(1);transition:filter .5s}
+.orang:hover img.ft{filter:none}
+.orang .peran{font-size:11.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--aksen)}
+.eksek .peran{color:var(--ink2);font-size:11px}
+.orang p{font-size:14px}
+/* kolaborasi: linimasa bergaris */
+.kolab{grid-template-columns:1fr;gap:0;border-top:1px solid var(--line)}
+.kolab li{grid-template-columns:150px minmax(0,1fr);column-gap:clamp(20px,4vw,56px);padding:24px 0;border-radius:0;background:none;border-top:0;border-bottom:1px solid var(--line)}
+.kolab .meta{grid-row:span 2;flex-direction:column;align-items:flex-start;gap:6px;font:800 22px/1 var(--display);color:var(--ink)}
+.kolab .meta span{order:2;padding:0;background:none;border-radius:0;font:700 10.5px/1.3 var(--font);letter-spacing:.14em;text-transform:uppercase;color:var(--aksen)}
+.kolab b{font-size:clamp(18px,1.7vw,21px)}
+@media (max-width:640px){.kolab li{grid-template-columns:1fr}.kolab .meta{grid-row:auto;flex-direction:row}}
+/* tabel riset polos */
+.riset{background:none;border-radius:0;border-top:1px solid var(--ink)}
+.riset table{background:none}
+.riset th{background:none!important;color:var(--ink2)}
+.riset tr{background:none!important}
+.riset td{border-bottom:1px solid var(--line)}
+.subjudul{font-weight:800;letter-spacing:-.025em}
+
+/* --- Layanan: foto hitam-putih menggantikan ilustrasi tiruan; kartu kecil jadi kolom bergaris --- */
+.vis-foto{margin:0;position:relative;overflow:hidden;border-radius:6px;aspect-ratio:5/4;background:#0b1b33}
+.vis-foto img{width:100%;height:100%;object-fit:cover;filter:grayscale(1) contrast(1.05);transform:scale(1.02);transition:filter .7s,transform 1.4s cubic-bezier(.16,1,.3,1)}
+.baris-f:hover .vis-foto img{filter:none;transform:scale(1.06)}
+.vis-foto figcaption{position:absolute;left:0;right:0;bottom:0;padding:28px 16px 12px;font-size:10.5px;font-style:italic;color:rgb(255 255 255 / .75);background:linear-gradient(transparent,rgb(6 16 31 / .7))}
+.grid3{gap:0!important;border-top:1px solid var(--line)}
+.grid3 .fitur{background:none!important;border-radius:0!important;border:0;border-right:1px solid var(--line);padding:clamp(24px,3vw,36px) clamp(20px,3vw,36px) 8px 0!important;margin-right:clamp(20px,3vw,36px);box-shadow:none!important;transform:none!important}
+.grid3 .fitur:last-child{border-right:0;margin-right:0}
+.grid3 .fitur .ik{display:none}
+.grid3 .fitur h3{font-weight:800;letter-spacing:-.02em}
+.grid3 .fitur:hover h3{color:var(--aksen)}
+.teks-f .ik{display:none}
+@media (max-width:760px){.grid3 .fitur{border-right:0;margin-right:0;border-bottom:1px solid var(--line)}}
+
+/* hero tampil langsung saat halaman dimuat (bukan menunggu gulir) */
+@media (prefers-reduced-motion:no-preference){.hero-foto .masuk{animation:masuk 1s cubic-bezier(.16,1,.3,1) both;animation-delay:calc(var(--d,0) * 90ms + 80ms)}}
+@keyframes masuk{from{opacity:0;translate:0 24px}to{opacity:1;translate:0 0}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -409,47 +685,51 @@ td small{color:var(--ink2)}
 <main id="isi">
 
 <!-- ============ 1. HERO ============ -->
-<section class="hero" aria-labelledby="judul">
+<section class="hero hero-foto" aria-labelledby="judul">
+  <!-- latar: lima bencana berdampingan, hitam-putih, berwarna saat disorot (foto Wikimedia Commons, kredit di bawah hero & img/kredit.json) -->
+  <div class="lb-grid" aria-label="Lima jenis bencana yang dipantau">
+    <div class="lb-kol aktif">
+      <img src="/img/bencana-karhutla.jpg?v=4" alt="Kabut asap karhutla menutupi Tugu Talawang, Palangka Raya, Kalimantan Tengah, 2026" decoding="async" style="object-position:62% 50%">
+      <span class="lb-isi"><a class="lb-st" href="/peta">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Karhutla</b><small>Palangka Raya, Kalimantan Tengah, 2026</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Talawang_Monumen_Palangka_Raya_Haze.jpg" target="_blank" rel="noopener">Foto: ParadoxP P · CC BY 4.0</a></span>
+    </div>
+    <div class="lb-kol">
+      <img src="/img/bencana-banjir.jpg?v=4" alt="Rumah yang tenggelam oleh rob dan abrasi di Desa Bedono, Demak, Jawa Tengah" decoding="async" style="object-position:42% 60%">
+      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Banjir, Longsor & Rob</b><small>Demak, Jawa Tengah</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg" target="_blank" rel="noopener">Foto: Tim LindungiHutan · CC BY 4.0</a></span>
+    </div>
+    <div class="lb-kol">
+      <img src="/img/bencana-gempa.jpg?v=3" alt="Puing bangunan setelah gempa dan tsunami Palu, Palu, Sulawesi Tengah, Oktober 2018" decoding="async" style="object-position:35% 50%">
+      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Gempa & Tsunami</b><small>Palu, Sulawesi Tengah, Oktober 2018</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg" target="_blank" rel="noopener">Foto: Ungkeito · CC BY-SA 4.0</a></span>
+    </div>
+    <div class="lb-kol">
+      <img src="/img/bencana-cuaca.jpg?v=3" alt="Siklon Tropis Seroja dari satelit Aqua, Nusa Tenggara Timur, 5 April 2021" decoding="async" style="object-position:40% 30%">
+      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/></svg>Cuaca Ekstrem</b><small>Nusa Tenggara Timur, 5 April 2021</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Seroja_2021-04-05_0545Z.jpg" target="_blank" rel="noopener">Foto: NASA, LANCE / MODIS on Aqua · Public domain</a></span>
+    </div>
+    <div class="lb-kol">
+      <img src="/img/bencana-gunungapi.jpg?v=3" alt="Gunung Raung menyemburkan abu, dilihat dari Selat Bali, Banyuwangi, Jawa Timur, 2015" decoding="async" style="object-position:47% 40%">
+      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Letusan Gunung Api</b><small>Banyuwangi, Jawa Timur, 2015</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg" target="_blank" rel="noopener">Foto: consigliere ivan from Bontang, Indonesia · CC BY 2.0</a></span>
+    </div>
+  </div>
   <div class="wrap">
-    <span class="eyebrow" data-muncul>Tentang kami</span>
-    <h1 id="judul" data-muncul>Pantau bencana Indonesia dari <em>data terbuka</em></h1>
-    <p class="misi" data-muncul>Titik api, cuaca, asap, banjir: semuanya dari data terbuka, agar keputusan lebih cepat dan tepat.</p>
-    <div class="aksi" data-muncul>
-      <a class="tbl utama" href="/peta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Buka peta</a>
-      <a class="tbl" href="#kontak">Hubungi kami</a>
+    <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
+    <p class="hero-ey masuk" style="--d:1">Pemantauan bencana Indonesia</p>
+    <h1 id="judul" class="masuk" style="--d:3">Pantau bencana Indonesia dari <em>data terbuka</em></h1>
+    <p class="misi masuk" style="--d:2">Agregasi dan pengolahan data untuk memberikan <i>insight</i> terkait kondisi terkini dan riwayat bencana di Indonesia.</p>
+    <div class="aksi masuk" style="--d:3">
+      <a class="tbl utama" href="/peta">Buka peta</a>
+      <a class="tbl garis" href="#kontak">Hubungi kami</a>
     </div>
-    <p class="oleh" data-muncul>Inisiatif <b>Teras Urban</b>, lembaga urban intelligence independen. Bukan situs resmi pemerintah.</p>
-    <div class="panggung" data-muncul aria-hidden="true">
-      <div class="jendela">
-        <div class="bar"><i></i><i></i><i></i><span>Peta · titik panas satelit</span></div>
-      <svg viewBox="0 0 440 280" role="presentation">
-        <g class="kisi"><path d="M0 70H440M0 140H440M0 210H440M110 0V280M220 0V280M330 0V280"/></g>
-        <path class="pulau" d="M28 38 62 34 118 78 168 130 176 168 148 172 98 128 48 84Z"/>
-        <path class="pulau" d="M196 66 250 52 290 70 300 112 276 150 226 152 202 118Z"/>
-        <path class="pulau" d="M150 202 214 188 292 194 330 206 296 216 214 214 160 220Z"/>
-        <path class="pulau" d="M322 78 354 62 384 82 372 112 346 124 330 108Z"/>
-        <path class="pulau" d="M338 150 392 140 420 166 396 190 352 184Z"/>
-        <circle class="cincin" cx="136" cy="122" r="7"/><circle class="cincin b" cx="236" cy="104" r="7"/><circle class="cincin c" cx="262" cy="130" r="7"/>
-        <circle class="tt" cx="136" cy="122" r="4.5"/><circle class="tt" cx="122" cy="108" r="3.2"/><circle class="to" cx="148" cy="138" r="3.6"/><circle class="tk" cx="108" cy="96" r="3"/><circle class="tk" cx="160" cy="150" r="2.8"/>
-        <circle class="tt" cx="236" cy="104" r="4.5"/><circle class="to" cx="252" cy="92" r="3.4"/><circle class="tt" cx="262" cy="130" r="4"/><circle class="tk" cx="224" cy="128" r="3"/><circle class="to" cx="246" cy="142" r="3"/>
-        <circle class="to" cx="262" cy="204" r="3"/><circle class="tk" cx="180" cy="203" r="2.8"/><circle class="tt" cx="358" cy="162" r="3.6"/><circle class="tk" cx="372" cy="98" r="2.8"/>
-      </svg>
-        <div class="kaki-j"><span><i style="background:var(--merah)"></i>titik panas</span><span><i style="background:var(--oranye)"></i>kompleks api</span><span><i style="background:var(--kuning)"></i>deteksi baru</span></div>
-      </div>
-      <div class="chip-m a mengapung"><span class="ik" style="--c:var(--hijau)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>Diperbarui tiap 3 jam<small>mengikuti lintasan satelit</small></span></div>
-      <div class="chip-m b mengapung"><span class="ik" style="--c:var(--biru)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span>Data terbuka<small>sumber dan metode bisa diperiksa</small></span></div>
-    </div>
+    <div class="hero-oleh masuk" style="--d:4"><span>Sebuah inisiatif</span><a class="tu-logo" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img class="terang" src="/img/teras-urban.png" alt="Teras Urban" width="130" height="32"><img class="putih" src="/img/teras-urban-putih.png" alt="Teras Urban" width="130" height="32"></a></div>
   </div>
 </section>
 
 <!-- ============ 2. SUMBER (pita kredibilitas) + ANGKA HIDUP ============ -->
 <section class="kredit" aria-label="Sumber data">
   <div class="wrap" data-muncul>
-    <p>Dibangun dari data terbuka</p>
-    <ul class="pil-s"><li>NASA FIRMS</li><li>Copernicus · CAMS</li><li>BMKG</li><li>BNPB</li><li>KLHK / Kemenhut</li><li>Open-Meteo</li><li>OpenStreetMap</li><li>WorldPop</li></ul>
+    <p>Data Didukung Oleh</p>
+    <div class="pita" aria-label="Penyedia data"><ul class="pita-j"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li></ul><ul class="pita-j" aria-hidden="true"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li></ul></div>
   </div>
 </section>
-<section class="bukti-sek" aria-label="Angka hidup dari data situs">
+<section class="bukti-sek" aria-label="Angka hidup dari data situs" hidden><!-- disembunyikan (pemilik, 14 Okt 2026); hapus atribut hidden untuk memulihkan -->
   <div class="wrap" data-muncul>
     <div class="bukti" id="bukti" aria-live="polite" aria-busy="true">
       <div class="tunggu" data-k="titik"><span class="lbl"><i class="titik" style="background:var(--merah)"></i>Titik panas</span><b class="num">—</b><small>lokasi terdeteksi satelit, 24 jam terakhir</small></div>
@@ -463,20 +743,23 @@ td small{color:var(--ink2)}
 </section>
 
 <!-- ============ 3. MENGAPA + TIGA PILAR ============ -->
-<section class="seksi kertas" id="mengapa" aria-labelledby="h-mengapa">
+<section class="seksi kertas berband" id="mengapa" aria-labelledby="h-mengapa">
+  <div class="band" style="--foto:url(/img/foto-gambut.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>01</i>Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><p class="lead">Indonesia termasuk negara dengan tingkat kerawanan bencana yang tinggi. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan. Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi tersebar di banyak sumber. Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><p class="lead">Saat musim kebakaran atau banjir datang, petugas posko, pemerintah daerah, jurnalis, dan warga membuka banyak situs untuk menjawab pertanyaan sederhana: di mana apinya, seberapa berbahaya cuacanya, siapa yang terdampak?</p></header>
     <ul class="masalah">
-      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
-      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
-      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
+      <li class="kartu mk" data-n="01" data-muncul><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
+      <li class="kartu mk" data-n="02" data-muncul><span class="mk-tg">Tantangan 02</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
+      <li class="kartu mk" data-n="03" data-muncul><span class="mk-tg">Tantangan 03</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
     </ul>
+    <div class="alur" data-muncul>
+    <div class="alur-hd"><span class="eyebrow">Jawaban kami</span><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
     <ul class="pilar">
-      <li data-muncul><span class="no">01</span><h3>Satukan</h3><p>Titik panas, cuaca, asap, laporan kejadian, dan berita dari banyak lembaga dikumpulkan di satu tempat.</p></li>
-      <li data-muncul><span class="no">02</span><h3>Olah otomatis</h3><p>Diolah setiap hari oleh skrip terbuka. Tidak ada angka yang diketik tangan.</p></li>
-      <li data-muncul><span class="no">03</span><h3>Terjemahkan</h3><p>Menjadi peta, ringkasan, dan perkiraan kebutuhan yang langsung bisa dipakai di lapangan.</p></li>
+      <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><i>01</i></span><h3>Satukan</h3><p>Titik panas, cuaca, asap, laporan kejadian, dan berita dari banyak lembaga dikumpulkan di satu tempat.</p></li>
+      <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><i>02</i></span><h3>Olah otomatis</h3><p>Diolah setiap hari oleh skrip terbuka. Tidak ada angka yang diketik tangan.</p></li>
+      <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg><i>03</i></span><h3>Terjemahkan</h3><p>Menjadi peta, ringkasan, dan perkiraan kebutuhan yang langsung bisa dipakai di lapangan.</p></li>
     </ul>
-    <details class="hukum">
+    </div>
+    <details class="hukum" hidden><!-- disembunyikan (pemilik, 14 Okt 2026) -->
       <summary>Landasan hukum peran masyarakat</summary>
       <div class="isi">
         <ol class="uu">
@@ -502,27 +785,23 @@ td small{color:var(--ink2)}
 </section>
 
 <!-- ============ 4. APA YANG KAMI LAKUKAN ============ -->
-<section class="seksi putih" id="fitur" aria-labelledby="h-fitur">
+<section class="seksi putih berband" id="fitur" aria-labelledby="h-fitur">
+  <div class="band" style="--foto:url(/img/foto-asap.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>02</i>Layanan</span><h2 class="h2" id="h-fitur">Apa yang kami lakukan</h2><p class="lead">Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Layanan</span><h2 class="h2" id="h-fitur">Apa yang kami lakukan</h2><p class="lead">Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></header>
 
     <div class="baris-f" data-muncul>
       <div class="teks-f"><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></span><h3 class="h3">Peta &amp; titik panas tiap 3 jam</h3><p>Titik panas satelit, kompleks api, bahaya cuaca kebakaran, asap, gambut, dan konsesi dalam satu peta interaktif.</p><a class="ke" href="/peta">Buka peta</a></div>
-      <div class="vis" aria-hidden="true"><svg class="peta-k" viewBox="0 0 440 240" role="presentation"><path class="pulau" stroke-width="1.2" d="M28 38 62 34 118 78 168 130 176 168 148 172 98 128 48 84Z"/><path class="pulau" stroke-width="1.2" d="M196 56 250 42 290 60 300 102 276 140 226 142 202 108Z"/><path class="pulau" stroke-width="1.2" d="M322 78 354 62 384 82 372 112 346 124 330 108Z"/><circle cx="136" cy="122" r="5" fill="var(--merah)"/><circle cx="122" cy="108" r="3.2" fill="var(--merah)"/><circle cx="148" cy="138" r="3.6" fill="var(--oranye)"/><circle cx="236" cy="94" r="5" fill="var(--merah)"/><circle cx="252" cy="82" r="3.4" fill="var(--oranye)"/><circle cx="262" cy="120" r="4" fill="var(--kuning)"/><circle cx="358" cy="92" r="3.4" fill="var(--kuning)"/></svg></div>
+      <figure class="vis-foto"><img src="/img/foto-satelit.jpg" alt="Citra satelit asap kebakaran di atas Kalimantan" loading="lazy" decoding="async" style="object-position:50% 50%"><figcaption>Citra satelit asap kebakaran di atas Kalimantan · Foto: NASA Earth Observatory, Joshua Stevens (LANCE MODIS Rapid Response) (Public domain)</figcaption></figure>
     </div>
 
     <div class="baris-f balik" data-muncul>
       <div class="teks-f"><span class="ik" style="--c:var(--navy)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><h3 class="h3">Ringkasan &amp; brief harian</h3><p>Satu halaman untuk pimpinan: situasi hari ini, wilayah prioritas, dan brief A4 yang siap dicetak untuk rapat pagi.</p><a class="ke" href="/ringkasan">Buka ringkasan</a></div>
-      <div class="vis" aria-hidden="true">
-        <div class="baris"><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4"/></svg></span><span>Situasi hari ini<small>titik panas dan kompleks api</small></span></div>
-        <div class="baris"><span class="ik" style="--c:var(--oranye)"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/></svg></span><span>Wilayah prioritas<small>provinsi yang perlu perhatian</small></span></div>
-        <div class="baris"><span class="ik" style="--c:var(--biru)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></span><span>Brief A4<small>siap cetak untuk rapat pagi</small></span></div>
-      </div>
+      <figure class="vis-foto"><img src="/img/foto-pemadam.jpg" alt="Petugas menyemprot bara di lahan gambut" loading="lazy" decoding="async" style="object-position:50% 40%"><figcaption>Petugas menyemprot bara di lahan gambut · Foto: DenY Krisbiyantoro (CC BY-SA 4.0)</figcaption></figure>
     </div>
 
     <div class="baris-f" data-muncul>
       <div class="teks-f"><span class="ik" style="--c:var(--oranye)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3 class="h3">Insight &amp; model penyebaran</h3><p>Grafik kesimpulan penting dan model penjalaran api 72 jam yang dilatih dari kejadian 2015–2026.</p><p class="kecil" id="akurasi">Akurasi model dimuat dari data uji…</p><a class="ke" href="/insight">Buka insight</a></div>
-      <div class="vis" aria-hidden="true"><div class="bar-g"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:84%"></i><i style="height:56%"></i><i style="height:100%"></i><i style="height:70%"></i></div></div>
+      <figure class="vis-foto"><img src="/img/foto-pasca.jpg" alt="Hutan rawa gambut setelah terbakar" loading="lazy" decoding="async" style="object-position:50% 50%"><figcaption>Hutan rawa gambut setelah terbakar · Foto: DenY Krisbiyantoro (CC BY-SA 4.0)</figcaption></figure>
     </div>
 
     <div class="grid3">
@@ -534,9 +813,9 @@ td small{color:var(--ink2)}
 </section>
 
 <!-- ============ 5. CARA KERJA DATA ============ -->
-<section class="seksi kertas" id="cara-kerja" aria-labelledby="h-cara">
+<section class="seksi kertas berband" id="cara-kerja" aria-labelledby="h-cara">
+  <div class="band" style="--foto:url(/img/foto-heli.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>03</i>Data &amp; metode</span><h2 class="h2" id="h-cara">Cara kerja data</h2><p class="lead">Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Data &amp; metode</span><h2 class="h2" id="h-cara">Cara kerja data</h2><p class="lead">Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></header>
     <ol class="alur">
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--oranye)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg></i><em>Tahap 2</em></div><h3>Olah otomatis</h3><p>Skrip terbuka di GitHub Actions menggabungkan titik jadi kompleks api, menghitung bahaya cuaca, dampak, dan kebutuhan.</p></li>
@@ -555,7 +834,7 @@ td small{color:var(--ink2)}
     </div>
     <ul class="prinsip">
       <li class="kartu" style="--c:var(--biru)"><b>Data terbuka</b><span>Hanya memakai data yang bisa diakses dan ditelusuri publik.</span></li>
-      <li class="kartu" style="--c:var(--nila)"><b>Metode terbuka</b><span>Rumus dan kode bisa diperiksa di <a href="/metode">tab Metode</a> dan <a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>.</span></li>
+      <li class="kartu" style="--c:var(--nila)"><b>Metode terbuka</b><span>Rumus dan kode bisa diperiksa di <a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>.</span></li>
       <li class="kartu" style="--c:var(--hijau)"><b>Privasi</b><span>Tanpa cookie pelacak; data laporan warga dibatasi dan dihapus otomatis. <a href="/privasi.html">Pemberitahuan privasi</a>.</span></li>
     </ul>
     <details class="lipat">
@@ -578,9 +857,9 @@ td small{color:var(--ink2)}
 </section>
 
 <!-- ============ 6. SUMBER DATA ============ -->
-<section class="seksi putih" id="sumber" aria-labelledby="h-sumber">
+<section class="seksi putih berband" id="sumber" aria-labelledby="h-sumber">
+  <div class="band" style="--foto:url(/img/foto-sekat.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>04</i>Sumber</span><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Sumber</span><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header>
     <ul class="chips" style="--card:var(--paper)">
     <li><b>NASA FIRMS</b><span>Titik panas satelit VIIRS &amp; MODIS, arsip 2002–kini</span><em class="lis">Data terbuka NASA</em></li>
     <li><b>Copernicus · ECMWF · CAMS</b><span>Asap PM2.5/CO, reanalisis ERA5, GloFAS, luas terbakar GWIS</span><em class="lis">Lisensi Copernicus / CC BY 4.0</em></li>
@@ -595,35 +874,37 @@ td small{color:var(--ink2)}
     <li><b>Trase</b><span>Konsesi HTI dan rantai pasok</span><em class="lis">CC BY 4.0</em></li>
     <li><b>Google News</b><span>Judul dan tautan berita media (RSS)</span><em class="lis">Hak cipta tetap milik media</em></li>
     </ul>
-    <p class="catatan">Logo pihak ketiga sengaja tidak dipakai. Rincian per berkas (resolusi, umur data, lisensi seperti tercatat) ada di <a href="/metode">tab Metode, bagian Sumber data</a>.</p>
+    <p class="catatan">Logo di pita atas hanya menandai sumber data (Wikimedia Commons), bukan tanda kemitraan.</p>
   </div>
 </section>
 
 <!-- ============ 7. TIM ============ -->
-<section class="seksi kertas" id="tim" aria-labelledby="h-tim">
+<section class="seksi kertas berband" id="tim" aria-labelledby="h-tim">
+  <div class="band" style="--foto:url(/img/tu/kegiatan-2.jpg);--pos:50% 40%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>05</i>Siapa kami</span><h2 class="h2" id="h-tim">Tim</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin yang memadukan ekonomi spasial, perencanaan kota, geosains, kesehatan lingkungan, dan kebijakan publik.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Siapa kami</span><h2 class="h2" id="h-tim">Tim</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin: perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan.</p></header>
     <div class="org" id="org" style="--paper:var(--card)"></div>
+    <h3 class="subjudul rj-jd">Rekam jejak Teras Urban</h3>
+    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Penghargaan · 2025</span><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/eth-zurich.jpg" alt="ETH Zürich × Teras Urban" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kolaborasi internasional · 2026</span><b>ETH Zürich × Teras Urban</b><span>Kerangka kelayakan dan desain jaringan angkutan darat-air yang setara untuk Jakarta dan Kepulauan Seribu.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kajian kebijakan · 2026</span><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi hingga kabupaten/kota; kajian dibahas bersama Tenaga Ahli Menteri ESDM.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Keterlibatan · 2025–2026</span><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
     <div id="anggota" hidden></div>
   </div>
 </section>
 
 <!-- ============ 8. KOLABORASI & PENGAKUAN (data/mitra.json; tersembunyi bila kosong) ============ -->
-<section class="seksi putih" id="kolaborasi" aria-labelledby="h-kolab" hidden>
+<section class="seksi putih berband" id="kolaborasi" aria-labelledby="h-kolab" hidden>
+  <div class="band" style="--foto:url(/img/tu/kegiatan.jpg?v=2);--pos:50% 35%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>06</i>Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header>
     <ul class="kolab" id="kolabDaftar" style="--card:var(--paper)"></ul>
     <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><div class="riset" style="--card:var(--paper)"><table aria-labelledby="h-riset"><thead><tr><th scope="col">Judul</th><th scope="col">Bidang</th><th scope="col">Tahun</th></tr></thead><tbody id="risetDaftar"></tbody></table></div></div>
   </div>
 </section>
 
 <!-- ============ 9. KONTAK ============ -->
-<section class="seksi gelap" id="kontak" aria-labelledby="h-kontak">
+<section class="seksi gelap berfoto" id="kontak" aria-labelledby="h-kontak" style="--foto:url(/img/foto-pemadam.jpg)">
   <div class="wrap kontak">
     <div>
       <span class="eyebrow">Hubungi kami</span>
       <h2 id="h-kontak">Ada data yang keliru, atau ingin bekerja sama?</h2>
-      <p>Kirim pesan langsung ke tim. Koreksi data kami prioritaskan. Dalam keadaan darurat, hubungi <b>112</b> atau BPBD setempat.</p>
+      <p>Kirim pesan langsung ke tim.</p>
       <ul id="kontakDaftar"></ul>
     </div>
     <div class="aksi" id="kontakAksi"></div>
@@ -631,19 +912,19 @@ td small{color:var(--ink2)}
 </section>
 
 <!-- ============ 10. FAQ ============ -->
-<section class="seksi kertas" id="faq" aria-labelledby="h-faq">
+<section class="seksi kertas berband" id="faq" aria-labelledby="h-faq">
+  <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>07</i>Bantuan</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header></div></div>
   <div class="wrap">
-    <header class="kepala" data-muncul><span class="eyebrow">Bantuan</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>
     <div class="faq">
-    <details><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
-    <details><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>. Setiap metode, ambang, dan keterbatasannya ditulis di <a href="/metode">tab Metode</a>.</p></div></details>
-    <details><summary>Seberapa sering diperbarui?</summary><div class="isi"><p>Titik panas diperbarui tiap 3 jam mengikuti lintasan satelit. Analisis lengkap (kompleks api, cuaca, asap, operasi) berjalan setiap hari pukul 21.20 WIB, berita setiap hari, dan lapisan tetap seperti gambut atau konsesi saat sumbernya merilis versi baru. Lihat tabel di bagian <a href="#cara-kerja">Cara kerja data</a>.</p></div></details>
-    <details><summary>Bisakah saya memakai datanya?</summary><div class="isi"><p>Silakan untuk kepentingan publik, penelitian, dan jurnalisme, dengan menyebut sumber aslinya (misalnya NASA FIRMS, Copernicus, BNPB) dan situs ini. Data mentah tunduk pada lisensi penyedianya, misalnya OpenStreetMap (ODbL) dan WorldPop (CC BY 4.0). Berkas olahan bisa diunduh langsung dari folder <code>/data/</code> situs ini atau dari repositori GitHub.</p></div></details>
-    <details><summary>Bagaimana cara melapor kejadian di lapangan?</summary><div class="isi"><p>Gunakan <a href="/informasi">Lapor Warga</a>: pilih lokasi, jenis kejadian, dan keterangan singkat. Laporan api dicocokkan dengan titik satelit terdekat. Laporan ini bukan pengganti saluran darurat: untuk keadaan darurat jiwa, hubungi <b>112</b>.</p></div></details>
-    <details><summary>Bagaimana cara bekerja sama?</summary><div class="isi"><p>Kami terbuka untuk kerja sama dengan pemerintah daerah, BPBD, perguruan tinggi, organisasi masyarakat sipil, dan media, misalnya berbagi data lapangan, uji model, atau pelatihan. Kirim pesan dengan kategori <b>Kerja sama</b> lewat <a href="#kontak">formulir kontak</a>.</p></div></details>
-    <details><summary>Apakah situs ini mengumpulkan data pribadi saya?</summary><div class="isi"><p>Tidak ada akun dan tidak ada cookie pelacak. Statistik kunjungan dihitung anonim, dan nomor kontak di laporan warga dihapus otomatis. Rinciannya di <a href="/privasi.html">pemberitahuan privasi</a>.</p></div></details>
+    <details name="faq"><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
+    <details name="faq"><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>.</p></div></details>
+    <details name="faq"><summary>Seberapa sering diperbarui?</summary><div class="isi"><p>Titik panas diperbarui tiap 3 jam mengikuti lintasan satelit. Analisis lengkap (kompleks api, cuaca, asap, operasi) berjalan setiap hari pukul 21.20 WIB, berita setiap hari, dan lapisan tetap seperti gambut atau konsesi saat sumbernya merilis versi baru.</p></div></details>
+    <!-- FAQ "Bisakah saya memakai datanya?" disembunyikan (pemilik, 14 Okt 2026) -->
+    <!-- FAQ "Bagaimana cara melapor kejadian di lapangan?" disembunyikan (pemilik, 14 Okt 2026) -->
+    <details name="faq"><summary>Bagaimana cara bekerja sama?</summary><div class="isi"><p>Kami terbuka untuk kerja sama dengan pemerintah daerah, BPBD, perguruan tinggi, organisasi masyarakat sipil, dan media, misalnya berbagi data lapangan, uji model, atau pelatihan. Kirim pesan dengan kategori <span class="lbl-pil">Kerja sama</span> lewat <a class="lbl-pil tautan" href="#kontak">Formulir kontak →</a>.</p></div></details>
+    <!-- FAQ "Apakah situs ini mengumpulkan data pribadi saya?" disembunyikan (pemilik, 14 Okt 2026) -->
     </div>
-    <div class="kartu kutip" id="cara-mengutip">
+    <div class="kartu kutip" id="cara-mengutip" hidden><!-- disembunyikan (pemilik, 14 Okt 2026) -->
       <span class="lbl">Cara mengutip</span>
       <blockquote id="kutipan"></blockquote>
       <div class="baris"><button class="tbl" type="button" id="salin">Salin kutipan</button><small id="salinKet" role="status"></small></div>
@@ -656,10 +937,10 @@ td small{color:var(--ink2)}
 <footer class="kaki">
   <div class="wrap">
     <div class="merek"><img src="/img/logo.svg?v=2" alt="" width="32" height="32">Pantau Bencana</div>
-    <p class="moto">Pemantauan bencana Indonesia dari data terbuka. Sebuah inisiatif <a href="https://www.terasurban.com" target="_blank" rel="noopener" style="color:#fff">Teras Urban</a>, connecting people and spaces.</p>
+    <p class="moto">Pemantauan bencana Indonesia dari data terbuka. Sebuah inisiatif <a href="https://www.terasurban.com" target="_blank" rel="noopener" style="color:#fff">Teras Urban</a>: di antara ruang dan manusia.</p>
     <ul class="sosial" id="sosial" aria-label="Media sosial Teras Urban"></ul>
     <nav class="tautan" aria-label="Tautan kaki">
-      <a href="/peta">Beranda / Peta</a><a href="/tentang" aria-current="page">Tentang</a><a href="/metode">Metode</a><a href="/privasi.html">Privasi</a><a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>
+      <a href="/peta">Beranda / Peta</a><a href="/tentang" aria-current="page">Tentang</a><a href="/privasi.html">Privasi</a><a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>
     </nav>
     <p class="hak">© <span id="tahun">2026</span> Teras Urban (Teras Urban Network). Bukan situs resmi pemerintah. Data milik penyedianya masing-masing.</p>
   </div>
@@ -723,11 +1004,11 @@ td small{color:var(--ink2)}
   const foto = a => a.foto ? `<img class="ft" src="${esc(a.foto)}" alt="" width="104" height="104" decoding="async">` : `<span class="ft" aria-hidden="true">${esc(ini(a.nama))}</span>`;
   j("/data/tim.json").then(t => {
     const o = t.organisasi || {};
-    $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true">TU</span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
-      ${o.deskripsi ? `<p>${esc(o.deskripsi)}</p>` : ""}${o.visi ? `<blockquote><span class="lbl" style="margin-bottom:4px">Visi</span>${esc(o.visi)}</blockquote>` : ""}
+    $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
+      ${o.deskripsi ? `<p>${esc(o.deskripsi)}</p>` : ""}${o.visi ? `<blockquote><span class="lbl" style="margin-bottom:4px">Prinsip</span>${esc(o.visi)}</blockquote>` : ""}
       ${(o.kapabilitas || []).length ? `<div class="kap" aria-label="Kapabilitas">${o.kapabilitas.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
       ${aman(o.situs) ? `<p><a href="${esc(o.situs)}" target="_blank" rel="noopener">${esc(o.situs.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</a></p>` : ""}</div>
-      ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga fokus Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
+      ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga lensa analitik Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
         ${o.peran ? `<p style="font-size:13.5px">${esc(o.peran)}.</p>` : ""}</div>` : ""}`;
     const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
@@ -735,7 +1016,7 @@ td small{color:var(--ink2)}
     if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
     if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></article>`).join("")}</div>`;
     $("#anggota").innerHTML = h; $("#anggota").hidden = false;
-  }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true">TU</span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
+  }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
 
   /* ---------- 7. kolaborasi & pengakuan: public/data/mitra.json ----------
      {"kolaborasi": [{"jenis": "Penghargaan|Kebijakan|Kolaborasi riset|Dialog|Peristiwa|Pertukaran internasional|Kemitraan", "tahun", "judul", "isi"}],
@@ -763,14 +1044,14 @@ td small{color:var(--ink2)}
     $("#sosial").innerHTML = SOS.map(([id, nm, p]) => { const u = aman(s[id]), ik = `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
       return `<li>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener" aria-label="Teras Urban di ${nm}" title="${nm}">${ik}</a>` : `<span role="img" aria-label="Teras Urban di ${nm} (segera)" title="${nm}: segera">${ik}</span>`}</li>`; }).join("");
     const wa = String(k.whatsapp || "").replace(/\D/g, "");
-    $("#kontakDaftar").innerHTML = aman(k.situs) ? `<li>Situs: <a href="${esc(k.situs)}" target="_blank" rel="noopener">${esc(k.situs.replace(/^https?:\/\/(www\.)?/, ""))}</a></li>` : "";
+    $("#kontakDaftar").innerHTML = false && aman(k.situs) ? /* baris "Situs" disembunyikan (pemilik, 14 Okt 2026) */ `<li>Situs: <a href="${esc(k.situs)}" target="_blank" rel="noopener">${esc(k.situs.replace(/^https?:\/\/(www\.)?/, ""))}</a></li>` : "";
     const ak = $("#kontakAksi"), IK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>';
     const IM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
     const IW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.6z"/></svg>';
     /* pesan.js (dialog "Kirim pesan ke tim") memasang window.Pesan; tanpa itu jatuh ke mailto bila email terisi */
     ak.innerHTML = "";
     if (window.Pesan?.buka) { ak.insertAdjacentHTML("beforeend", `<button class="tbl utama" type="button">${IK}Kirim lewat formulir</button>`); ak.firstChild.onclick = () => window.Pesan.buka(); }
-    if (wa) ak.insertAdjacentHTML("beforeend", `<a class="tbl" href="https://wa.me/${wa}" target="_blank" rel="noopener">${IW}WhatsApp ${("+" + wa).replace(/^\+62(\d{3})(\d{4})(\d+)$/, "+62 $1-$2-$3")}</a>`);
+    if (false && wa) ak.insertAdjacentHTML("beforeend", `<a class="tbl" href="https://wa.me/${wa}" target="_blank" rel="noopener">${IW}WhatsApp ${("+" + wa).replace(/^\+62(\d{3})(\d{4})(\d+)$/, "+62 $1-$2-$3")}</a>`);
     if (k.email) ak.insertAdjacentHTML("beforeend", `<a class="tbl${ak.children.length ? "" : " utama"}" href="mailto:${esc(k.email)}">${IM}${esc(k.email)}</a>`);
   };
   const kontak = j("/data/kontak.json").catch(() => ({}));
