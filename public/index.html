@@ -3965,12 +3965,12 @@ const Berita = {
       el.querySelector(".vd-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(v => `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer"><i aria-hidden="true">▶</i></span>
         <b>${esc(v.judul)}</b><small>${esc(v.kanal)} · ${new Date(v.tgl).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})}</small></a>`).join("") || `<p class="kosong">Tidak ada video yang cocok.</p>`;
       el.querySelector(".vd-pg").innerHTML = paginasi(h, xs.length, PER, "video"); };
-    if (!this.vid && !this._vidMuat) this._vidMuat = muatJSON("data/video.json").then(d => { this.vid = d; isi(); }).catch(() => $("#brVideo")?.remove());
+    if (!this.vid && !this._vidMuat) this._vidMuat = muatJSON("data/video.json").then(d => { if (!d?.video?.length) throw 0; this.vid = d; const el = $("#brVideo"); if (el) el.hidden = false; isi(); }).catch(() => $("#brVideo")?.remove());
     setTimeout(() => { const el = $("#brVideo"); if (!el || el._ikat) return; el._ikat = 1; isi();
       el.querySelector("input").oninput = e => { this.vq = e.target.value; this.vh = 0; isi(); };
       el.addEventListener("click", e => { const b = e.target.closest(".vd-pg [data-h]"); if (b && !b.disabled) { this.vh = +b.dataset.h; isi(); el.scrollIntoView({block: "start", behavior: "smooth"}); } }); });
-    return `<article class="ex" id="brVideo"><h3>Daftar video</h3><p class="sub">Video terkait karhutla di YouTube, 30 hari terakhir; diputar di YouTube</p>
-      <div class="ctl"><input type="search" placeholder="Cari judul atau kanal" aria-label="Cari video" class="br-cari"></div>
+    return `<article class="ex" id="brVideo" ${this.vid ? "" : "hidden"}><h3>Daftar video</h3><p class="sub">Video terkait karhutla di YouTube, 30 hari terakhir; diputar di YouTube</p>
+      <div class="ctl"><input type="search" placeholder="Cari judul atau kanal" aria-label="Cari video" class="br-cari" style="width:100%;height:40px;border-radius:999px;border:1px solid var(--line);padding:0 16px;background:var(--card)"></div>
       <div class="vd-grid"><p class="kosong">Memuat video…</p></div><div class="vd-pg"></div><p class="fn">Sumber: YouTube Data API</p></article>`; },
   exDaftar() {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
@@ -4124,7 +4124,7 @@ const Berita = {
       <div class="br-dunia"><div><div class="lbl">Cerita yang paling banyak diliput media asing · 7 hari</div><div class="br-sorot" style="grid-template-columns:1fr;margin-top:6px">${kartu || `<p class="kosong">Belum ada liputan internasional 7 hari ini.</p>`}</div></div>
         <div><div class="lbl">Media asing · 120 hari</div><div class="br-mi br-mn kepala"><span>Negara</span><span>Media</span><span></span><span class="n">Berita</span></div>${M.map(m => `<div class="br-mi br-mn br-klik" data-intmedia="${esc(m.domain)}" data-nama="${esc(m.sumber)}" tabindex="0" role="button">${bendera(negaraMedia(m.domain, m.sumber))}<span>${this.ikon(m.domain)}${esc(m.sumber)}</span><span class="br-bar"><i style="width:${m.n / mm * 100}%;background:${WARNA_INT}"></i></span><b class="num">${fmt(m.n)}</b></div>`).join("")}
           <div class="lbl" style="margin-top:16px">Provinsi yang disebut media asing · 120 hari</div>${PV.map(([k, v]) => `<div class="br-mi br-mi3 br-klik" data-intprov="${k}" tabindex="0" role="button"><span><b>${esc(namaProv(k))}</b></span><span class="br-mi-m">${esc(v.media.slice(0, 2).join(", "))}</span><span class="br-bar"><i style="width:${v.n / pm * 100}%;background:#2b8c86"></i></span><b class="num">${fmt(v.n)}</b></div>`).join("") || `<p class="fnd">Belum ada.</p>`}
-          <p class="fnd">${fmt(Math.round(I.tanpa_lokasi / Math.max(1, I.n) * 100))}% judul asing hanya menyebut "Indonesia", "Borneo", atau "Sumatra" tanpa provinsi.</p></div></div>
+          </div></div>
       <p class="fn">Media Indonesia berbahasa Inggris (Antara, Tempo English, Jakarta Post) dihitung nasional. Asap di Malaysia/Singapura hanya dihitung bila judulnya menyebut Indonesia atau asap lintas batas.${V?.situasi?.uji ? ` Uji pada ${fmt(V.situasi.uji.n)} judul Inggris berlabel tangan: nada situasi ${fmt(Math.round(V.situasi.uji.akurasi * 100))}% (menebak label terbanyak ${fmt(Math.round(V.situasi.mayoritas_uji * 100))}%), nada respons ${fmt(Math.round(V.respons.uji.akurasi * 100))}% (${fmt(Math.round(V.respons.mayoritas_uji * 100))}%), presisi relevansi ${fmt(Math.round(V.relevansi.presisi * 100))}%.` : ""}</p></article>`;
   };
 

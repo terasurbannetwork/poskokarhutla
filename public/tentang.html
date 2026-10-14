@@ -112,261 +112,279 @@ nav.tabs a.tab-ln[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16
 @media (max-width:1100px){.mark>div{display:none}}
 @media (max-width:640px){header.top{gap:6px;padding:0 8px}.l5-iklim{display:none}nav.tabs{margin:0;flex:1}nav.tabs a.tab-ln{padding:8px 10px;font-size:13px}.bencana summary{font-size:14px}}
 
-/* ---------- tata letak & sistem kartu ---------- */
-main{padding-top:calc(var(--top) + 24px)}
-.wrap{max-width:1120px;margin:0 auto;padding:0 16px}
+/* ---------- bahasa visual Oyenza (token dari worth-it/app/landing.css): pita penuh berselang-seling, h1 ~84px/-.044em, kartu radius 32 tanpa bayangan, pil CTA 52px, eyebrow kecil beraksen oranye ---------- */
+:root{--aksen:#e8742e;--kurva:cubic-bezier(.2,.8,.2,1);--r:32px;--r2:20px;--seksi:clamp(64px,10vw,136px)}
+:root[data-theme="dark"]{--aksen:#f08a4b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--aksen:#f08a4b}}
+main{padding:0}
+.wrap{max-width:1200px;margin:0 auto;padding:0 16px}
 @media (min-width:700px){.wrap{padding:0 28px}}
-.susun{display:grid;gap:var(--jarak);padding-bottom:8px}
 .lbl{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
-.kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
-.pill{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--brand2);background:color-mix(in oklab,var(--brand2) 12%,transparent);padding:4px 11px;border-radius:999px}
-/* panel = satu bagian halaman: pita kepala (pil + judul) dan badan berpadding */
-.panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
-.panel[hidden]{display:none}
-.ph{padding:clamp(16px,2.4vw,22px) clamp(18px,3vw,32px);background:color-mix(in oklab,var(--brand2) 5%,var(--card));border-bottom:1px solid var(--line);display:grid;gap:8px}
-.ph h2{font-size:clamp(22px,2.8vw,30px);line-height:1.15;font-weight:800}
-.ph p{color:var(--ink2);max-width:65ch;font-size:15.5px}
-.pb{padding:clamp(18px,3vw,32px)}
-.panel .kartu{background:var(--paper);box-shadow:none}
-.panel.alt .pb{background:color-mix(in oklab,var(--brand2) 3%,var(--card))}
-.panel.alt .kartu{background:var(--card)}
+.seksi{padding:var(--seksi) 0}
+.seksi.putih{background:var(--card)}
+.seksi.kertas{background:var(--paper)}
+.seksi.gelap{background:var(--navy);color:#fff;--ink:#fff;--ink2:rgb(255 255 255 / .74);--line:rgb(255 255 255 / .16)}
+:root[data-theme="dark"] .seksi.gelap{background:oklch(14% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seksi.gelap{background:oklch(14% .035 256)}}
+.seksi[id]{scroll-margin-top:calc(var(--top) + 8px)}
+.eyebrow{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--aksen)}
+.eyebrow::before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+.kepala{max-width:820px;margin:0 auto clamp(40px,6vw,88px);text-align:center;display:grid;gap:18px;justify-items:center}
+.kepala.kiri{text-align:left;margin-left:0;justify-items:start}
+.h2{font:700 clamp(32px,5.4vw,64px)/1.03 var(--display);letter-spacing:-.042em;text-wrap:balance}
+.h3{font:700 clamp(20px,2vw,26px)/1.18 var(--display);letter-spacing:-.022em}
+.lead{font-size:clamp(17px,1.6vw,20px);line-height:1.5;color:var(--ink2);max-width:60ch;text-wrap:pretty}
 .teks{max-width:65ch}
-.sub{display:block;margin:0 0 12px;font:800 16px/1.3 var(--display)}
-.tbl{display:inline-flex;align-items:center;justify-content:center;gap:8px;padding:11px 20px;border-radius:999px;font-weight:700;font-size:14.5px;text-decoration:none;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer;min-height:44px}
-.tbl:hover{border-color:var(--ink2)}
-.tbl.utama{background:var(--navy);border-color:var(--navy);color:#fff}
-.tbl.utama:hover{background:oklch(33% .09 256)}
-:root[data-theme="dark"] .tbl.utama{background:#e8edf4;border-color:#e8edf4;color:var(--navy)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tbl.utama{background:#e8edf4;border-color:#e8edf4;color:var(--navy)}}
-.tbl svg{width:17px;height:17px;flex:none}
-.aksi{display:flex;gap:10px;flex-wrap:wrap;margin-top:24px}
+.tbl{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:52px;padding:0 24px;border-radius:999px;font-weight:600;font-size:16px;text-decoration:none;border:0;background:color-mix(in oklab,var(--brand2) 9%,var(--card));color:var(--ink);cursor:pointer;white-space:nowrap;transition:transform .25s var(--kurva),background-color .2s}
+.tbl:hover{background:color-mix(in oklab,var(--brand2) 16%,var(--card))}
+.tbl:active{transform:scale(.97)}
+.tbl.utama{background:var(--navy);color:#fff}
+.tbl.utama:hover{background:#13315c}
+:root[data-theme="dark"] .tbl.utama{background:#e6edf7;color:var(--navy)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .tbl.utama{background:#e6edf7;color:var(--navy)}}
+.seksi.gelap .tbl.utama{background:#fff;color:var(--navy)}
+.seksi.gelap .tbl.utama:hover{background:#e6edf7}
+.seksi.gelap .tbl{background:rgb(255 255 255 / .12);color:#fff}
+.seksi.gelap .tbl:hover{background:rgb(255 255 255 / .2)}
+.tbl svg{width:18px;height:18px;flex:none}
+.aksi{display:flex;gap:12px;flex-wrap:wrap}
+.kartu{background:var(--surface);border-radius:var(--r2);border:0}
+.putih .kartu{background:var(--paper)}
+@media (prefers-reduced-motion:no-preference){html.lp-js [data-muncul]:not([data-terlihat]){opacity:0;translate:0 28px}[data-muncul]{transition:opacity .9s var(--kurva),translate .9s var(--kurva)}}
 
-/* ---------- 1. hero (kartu besar: teks kiri, visual kanan) ---------- */
-.hero{display:grid;grid-template-columns:minmax(0,1.05fr) minmax(0,1fr);overflow:hidden;background:linear-gradient(135deg,color-mix(in oklab,var(--brand2) 10%,var(--card)),var(--card) 62%)}
-.hero .kiri{padding:clamp(24px,4.5vw,56px);display:flex;flex-direction:column;justify-content:center;align-items:flex-start;min-width:0}
-.hero h1{font-size:clamp(30px,4.4vw,50px);line-height:1.08;font-weight:800;margin-top:16px}
-.hero h1 em{font-style:normal;background:linear-gradient(90deg,var(--merah),var(--oranye));-webkit-background-clip:text;background-clip:text;color:transparent}
-.hero .misi{font-size:clamp(16.5px,1.6vw,19px);line-height:1.55;max-width:46ch;margin-top:16px;color:var(--ink2)}
-.hero .oleh{color:var(--ink2);margin-top:14px;font-size:13.5px;max-width:52ch}
+/* ---------- 1. hero ---------- */
+.hero{padding:calc(var(--top) + clamp(40px,7vw,96px)) 0 clamp(48px,8vw,104px);background:radial-gradient(120% 60% at 50% 0,color-mix(in oklab,var(--aksen) 9%,var(--card)),var(--card) 70%);text-align:center;overflow:hidden}
+html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
+.hero .wrap{display:grid;justify-items:center;gap:0}
+.hero h1{font:700 clamp(38px,7.2vw,92px)/1 var(--display);letter-spacing:-.044em;margin-top:22px;max-width:15ch;text-wrap:balance}
+.hero h1 em{font-style:normal;color:var(--aksen)}
+.hero .misi{font-size:clamp(17px,1.9vw,21px);line-height:1.45;max-width:46ch;margin-top:24px;color:var(--ink2)}
+.hero .aksi{justify-content:center;margin-top:34px}
+.hero .oleh{color:var(--ink2);margin-top:22px;font-size:13.5px;max-width:52ch}
 .hero .oleh b{color:var(--ink)}
-.hero .peta{padding:clamp(16px,3vw,32px);display:grid;place-items:center;border-left:1px solid var(--line);background:color-mix(in oklab,var(--brand2) 6%,var(--surface));min-width:0}
-.jendela{width:100%;max-width:460px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);overflow:hidden}
-.jendela .bar{display:flex;align-items:center;gap:6px;padding:10px 14px;border-bottom:1px solid var(--line);font-size:11.5px;font-weight:700;color:var(--ink2)}
-.jendela .bar i{width:9px;height:9px;border-radius:50%;background:var(--line)}
+.panggung{position:relative;width:100%;max-width:640px;margin-top:clamp(40px,6vw,72px)}
+.jendela{width:100%;background:var(--card);border-radius:28px;box-shadow:0 2px 4px oklch(25% .07 256 / .06),0 40px 80px -24px oklch(25% .07 256 / .32),0 0 0 1px var(--line);overflow:hidden;text-align:left}
+.jendela .bar{display:flex;align-items:center;gap:6px;padding:12px 18px;border-bottom:1px solid var(--line);font-size:12px;font-weight:700;color:var(--ink2)}
+.jendela .bar i{width:10px;height:10px;border-radius:50%;background:var(--line)}
 .jendela .bar span{margin-left:8px}
-.jendela svg{display:block;width:100%;height:auto}
+.jendela svg{display:block;width:100%;height:auto;background:color-mix(in oklab,var(--brand2) 5%,var(--surface))}
 .jendela .pulau{fill:color-mix(in oklab,var(--brand2) 16%,var(--surface));stroke:color-mix(in oklab,var(--brand2) 30%,var(--line));stroke-width:1.2}
 .jendela .kisi{stroke:var(--line);stroke-width:1;opacity:.7}
 .jendela .tt{fill:var(--merah)}.jendela .to{fill:var(--oranye)}.jendela .tk{fill:var(--kuning)}
 .jendela .cincin{fill:none;stroke:var(--merah);stroke-width:1.5;transform-box:fill-box;transform-origin:center}
-@media (prefers-reduced-motion:no-preference){.jendela .cincin{animation:gema 2.6s ease-out infinite}.jendela .cincin.b{animation-delay:.9s}.jendela .cincin.c{animation-delay:1.7s}}
+@media (prefers-reduced-motion:no-preference){.jendela .cincin{animation:gema 2.6s ease-out infinite}.jendela .cincin.b{animation-delay:.9s}.jendela .cincin.c{animation-delay:1.7s}.mengapung{animation:apung 4.5s ease-in-out infinite}}
 @keyframes gema{0%{transform:scale(.5);opacity:.9}100%{transform:scale(2.4);opacity:0}}
-.jendela .kaki-j{display:flex;gap:14px;flex-wrap:wrap;padding:10px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
-.jendela .kaki-j i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px}
-@media (max-width:860px){.hero{grid-template-columns:minmax(0,1fr)}.hero .peta{border-left:0;border-top:1px solid var(--line)}}
+@keyframes apung{50%{translate:0 -8px}}
+.jendela .kaki-j{display:flex;gap:16px;flex-wrap:wrap;padding:12px 18px;border-top:1px solid var(--line);font-size:12px;color:var(--ink2)}
+.jendela .kaki-j i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px}
+.chip-m{position:absolute;display:flex;align-items:center;gap:10px;background:var(--card);border-radius:18px;padding:10px 14px;font-size:13px;font-weight:700;text-align:left;box-shadow:0 16px 40px -16px oklch(25% .07 256 / .35),0 0 0 1px var(--line)}
+.chip-m small{display:block;font-weight:500;color:var(--ink2);font-size:12px}
+.chip-m .ik{width:34px;height:34px;border-radius:11px}
+.chip-m.a{left:12px;bottom:-22px}.chip-m.b{right:12px;top:48px;animation-delay:-1.5s}
+@media (max-width:560px){.chip-m.b{display:none}.chip-m.a{left:8px;right:8px;bottom:-26px}}
+.ik{display:grid;place-items:center;width:46px;height:46px;border-radius:14px;background:color-mix(in oklab,var(--c,var(--aksen)) 15%,transparent);color:var(--c,var(--aksen));flex:none}
+.ik svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
 
-/* ---------- 2. pita bukti (angka hidup) ---------- */
-.band{overflow:hidden}
-.bukti{display:grid;grid-template-columns:repeat(5,minmax(0,1fr))}
-.bukti>div{padding:18px 20px;border-left:1px solid var(--line);min-width:0}
+/* ---------- 2. pita sumber + bukti hidup ---------- */
+.kredit{padding:56px 0 8px;background:var(--card);text-align:center}
+.kredit p{font-size:13px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.pil-s{display:flex;flex-wrap:wrap;justify-content:center;gap:8px;list-style:none;margin:18px auto 0;padding:0;max-width:880px}
+.pil-s li{padding:7px 16px;border-radius:999px;background:var(--paper);font-size:14px;font-weight:600;color:var(--ink)}
+.bukti-sek{background:var(--card);padding:clamp(40px,6vw,72px) 0 var(--seksi)}
+.bukti{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));background:var(--paper);border-radius:var(--r);overflow:hidden}
+.bukti>div{padding:clamp(20px,2.4vw,32px);border-left:1px solid var(--line);min-width:0}
 .bukti>div:first-child{border-left:0}
-.bukti b{display:block;font:800 clamp(24px,2.6vw,32px)/1.1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em;margin-top:6px}
-.bukti small{display:block;color:var(--ink2);font-size:12.5px;line-height:1.4;margin-top:4px}
+.bukti b{display:block;font:700 clamp(30px,3.4vw,48px)/1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.05em;margin-top:10px}
+.bukti small{display:block;color:var(--ink2);font-size:13px;line-height:1.4;margin-top:8px}
 .bukti .titik{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:6px;vertical-align:1px}
 .bukti .tunggu b{color:var(--line)}
-.bukti-ket{color:var(--ink2);font-size:12.5px;padding:10px 20px;border-top:1px solid var(--line);background:var(--surface);display:flex;gap:8px;align-items:center}
-.hidup{width:8px;height:8px;border-radius:50%;background:var(--hijau);box-shadow:0 0 0 0 color-mix(in oklab,var(--hijau) 60%,transparent);flex:none}
+.bukti-ket{color:var(--ink2);font-size:13px;margin-top:14px;display:flex;gap:8px;align-items:center;justify-content:center;text-align:center}
+.hidup{width:8px;height:8px;border-radius:50%;background:var(--hijau);flex:none}
 @media (prefers-reduced-motion:no-preference){.hidup{animation:denyut 2.4s infinite}}
-@keyframes denyut{70%{box-shadow:0 0 0 7px transparent}100%{box-shadow:0 0 0 0 transparent}}
+@keyframes denyut{0%{box-shadow:0 0 0 0 color-mix(in oklab,var(--hijau) 60%,transparent)}70%,100%{box-shadow:0 0 0 7px transparent}}
 @media (max-width:980px){.bukti{grid-template-columns:repeat(3,minmax(0,1fr))}.bukti>div:nth-child(4){border-left:0}.bukti>div:nth-child(n+4){border-top:1px solid var(--line)}}
 @media (max-width:560px){.bukti{grid-template-columns:repeat(2,minmax(0,1fr))}.bukti>div{border-left:1px solid var(--line)!important;border-top:1px solid var(--line)}
   .bukti>div:nth-child(odd){border-left:0!important}.bukti>div:nth-child(-n+2){border-top:0}.bukti>div:last-child{grid-column:1/-1;border-left:0!important}}
 
-/* ---------- 3. mengapa + tiga pilar ---------- */
-.dua{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:clamp(18px,3vw,32px);align-items:start}
-@media (max-width:860px){.dua{grid-template-columns:minmax(0,1fr)}}
-.masalah{display:grid;gap:10px;margin:0;padding:0;list-style:none}
-.masalah li{display:flex;gap:12px;align-items:flex-start;padding:12px 14px;border-radius:12px}
-.masalah li svg{width:20px;height:20px;flex:none;margin-top:2px;color:var(--merah)}
-.masalah b{display:block}
-.masalah small{color:var(--ink2);font-size:13.5px;line-height:1.5}
-.pilar{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;margin:0;padding:0;list-style:none}
-@media (max-width:760px){.pilar{grid-template-columns:minmax(0,1fr)}}
-.pilar li{padding:20px;display:grid;gap:8px;align-content:start}
-.ik{display:grid;place-items:center;width:42px;height:42px;border-radius:12px;background:color-mix(in oklab,var(--c) 15%,transparent);color:var(--c)}
-.ik svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.pilar h3{font-size:17px;margin-top:4px}
-.pilar p{color:var(--ink2);font-size:14px;line-height:1.55}
-.hukum{margin-top:16px}
-.hukum summary,.lipat summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:14px 18px;font-weight:700;min-height:44px}
-.hukum summary::-webkit-details-marker,.lipat summary::-webkit-details-marker{display:none}
-.hukum summary::after,.lipat summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s;flex:none}
+/* ---------- 3. mengapa + pilar ---------- */
+.masalah,.pilar,.prinsip{display:grid;gap:16px;margin:0;padding:0;list-style:none}
+.masalah{grid-template-columns:repeat(3,minmax(0,1fr))}
+.masalah li,.pilar li{padding:clamp(22px,3vw,36px);border-radius:var(--r);display:grid;gap:10px;align-content:start}
+.masalah .ik{--c:var(--merah)}
+.masalah b{font:700 19px/1.25 var(--display);letter-spacing:-.02em}
+.masalah small,.pilar p{color:var(--ink2);font-size:15.5px;line-height:1.5}
+.pilar{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:clamp(48px,7vw,96px)}
+.pilar h3{font:700 clamp(22px,2.2vw,28px)/1.15 var(--display);letter-spacing:-.025em;margin-top:6px}
+.pilar .no{font:700 13px var(--display);color:var(--aksen);letter-spacing:.06em}
+@media (max-width:860px){.masalah,.pilar{grid-template-columns:minmax(0,1fr)}}
+.hukum,.lipat{margin-top:clamp(32px,5vw,56px);border-radius:var(--r);background:var(--paper);overflow:hidden}
+.putih .hukum,.putih .lipat{background:var(--paper)}.kertas .lipat,.kertas .hukum{background:var(--card)}
+.hukum summary,.lipat summary{cursor:pointer;list-style:none;display:flex;align-items:center;gap:10px;padding:18px 24px;font-weight:700;font-size:16px;min-height:56px}
+.hukum summary::-webkit-details-marker,.lipat summary::-webkit-details-marker,.faq summary::-webkit-details-marker{display:none}
+.hukum summary::after,.lipat summary::after{content:"";margin-left:auto;width:9px;height:9px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .25s;flex:none}
 .hukum[open] summary::after,.lipat[open] summary::after{transform:rotate(-135deg)}
-.hukum .isi{padding:0 18px 18px}
+.hukum .isi{padding:0 24px 24px}
 .hukum ol.uu{list-style:none;margin:0;padding:0;display:grid}
-.hukum ol.uu li{padding:12px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:auto minmax(0,1fr);gap:12px}
-.hukum .jn{font:800 11px/1 var(--display);padding:5px 7px;border-radius:7px;background:color-mix(in oklab,var(--nila) 15%,transparent);color:var(--nila);height:fit-content;white-space:nowrap;min-width:58px;text-align:center}
+.hukum ol.uu li{padding:14px 0;border-top:1px solid var(--line);display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px}
+.hukum .jn{font:800 11px/1 var(--display);padding:5px 7px;border-radius:7px;background:color-mix(in oklab,var(--nila) 15%,transparent);color:var(--nila);height:fit-content;min-width:58px;text-align:center}
 :root[data-theme="dark"] .hukum .jn{color:#aab3f0}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hukum .jn{color:#aab3f0}}
-.hukum li b{display:block;font-size:14.5px;line-height:1.35;overflow-wrap:anywhere}
-.hukum li small{display:block;color:var(--ink2);font-size:13.5px;line-height:1.45;margin-top:3px}
+.hukum li b{display:block;font-size:15px;line-height:1.35;overflow-wrap:anywhere}
+.hukum li small{display:block;color:var(--ink2);font-size:14px;line-height:1.45;margin-top:3px}
 sup a{text-decoration:none;font-weight:700;font-size:11px;padding:0 2px}
-.rujukan{margin-top:14px;font-size:12.5px;color:var(--ink2)}
+.rujukan{margin-top:14px;font-size:13px;color:var(--ink2)}
 .rujukan ol{margin:6px 0 0;padding-left:22px;display:grid;gap:3px}
 .rujukan a{word-break:break-word}
 
-/* ---------- 4. layanan ---------- */
-.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
-@media (max-width:980px){.grid3{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:600px){.grid3{grid-template-columns:minmax(0,1fr)}}
-a.fitur{display:flex;flex-direction:column;gap:8px;padding:20px;text-decoration:none;color:inherit;transition:transform .15s,box-shadow .15s,border-color .15s}
-a.fitur:hover{transform:translateY(-2px);box-shadow:var(--shadow-lg);border-color:color-mix(in oklab,var(--c) 45%,var(--line))}
-.fitur h3{font-size:17px;line-height:1.3;margin-top:4px}
-.fitur p{color:var(--ink2);font-size:14px;line-height:1.5}
-.fitur .kecil{font-size:12.5px;border-top:1px dashed var(--line);padding-top:8px}
-.fitur .ke{margin-top:auto;padding-top:4px;font-weight:700;font-size:13.5px;color:var(--brand2);display:inline-flex;gap:6px;align-items:center}
-.fitur .ke::after{content:"→";transition:transform .15s}
-a.fitur:hover .ke::after{transform:translateX(3px)}
+/* ---------- 4. fitur: baris berselang-seling + kartu ---------- */
+.baris-f{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:clamp(28px,6vw,96px);align-items:center;margin-bottom:clamp(56px,9vw,128px)}
+.baris-f.balik .teks-f{order:2}
+.teks-f{display:grid;gap:16px;justify-items:start}
+.teks-f p{color:var(--ink2);font-size:clamp(16px,1.5vw,18px);line-height:1.5;max-width:46ch}
+.teks-f .kecil{font-size:14px;max-width:46ch}
+.ke{font-weight:700;font-size:16px;color:var(--ink);text-decoration:none;display:inline-flex;gap:6px;align-items:center;min-height:44px}
+.ke::after{content:"→";transition:transform .2s}
+.ke:hover{text-decoration:underline}.ke:hover::after{transform:translateX(4px)}
+.vis{border-radius:var(--r);background:var(--paper);padding:clamp(20px,3vw,40px);display:grid;gap:12px;min-width:0;align-content:center;min-height:300px}
+.kertas .vis{background:var(--card)}
+.vis .baris{background:var(--card);border-radius:18px;padding:14px 16px;display:flex;align-items:center;gap:12px;font-size:14px;font-weight:600;box-shadow:0 0 0 1px var(--line)}
+.kertas .vis .baris{background:var(--paper);box-shadow:none}
+.vis .baris .ik{width:36px;height:36px;border-radius:11px}
+.vis .baris .ik svg{width:18px;height:18px}
+.vis .baris small{display:block;color:var(--ink2);font-weight:500;font-size:12.5px}
+.vis .bar-g{display:flex;align-items:flex-end;gap:10px;height:150px;padding:6px 8px 0}
+.vis .bar-g i{flex:1;border-radius:10px 10px 4px 4px;background:color-mix(in oklab,var(--aksen) 80%,var(--card));min-height:12px}
+.vis .bar-g i:nth-child(2n){background:color-mix(in oklab,var(--brand2) 70%,var(--card))}
+.vis svg.peta-k{width:100%;height:auto;border-radius:18px;background:var(--card)}
+.vis svg.peta-k .pulau{fill:color-mix(in oklab,var(--brand2) 14%,var(--surface));stroke:color-mix(in oklab,var(--brand2) 30%,var(--line))}
+@media (max-width:860px){.baris-f{grid-template-columns:minmax(0,1fr)}.baris-f.balik .teks-f{order:0}.vis{min-height:0}}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+@media (max-width:900px){.grid3{grid-template-columns:minmax(0,1fr)}}
+.fitur{display:flex;flex-direction:column;gap:10px;padding:clamp(24px,3vw,36px);border-radius:var(--r);background:var(--paper)}
+.fitur h3{font:700 clamp(20px,2vw,24px)/1.18 var(--display);letter-spacing:-.022em;margin-top:10px}
+.fitur p{color:var(--ink2);font-size:15.5px;line-height:1.5}
+.fitur .ke{margin-top:auto;padding-top:8px}
 
 /* ---------- 5. cara kerja ---------- */
-ol.alur{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px;counter-reset:l}
-ol.alur>li{padding:18px;position:relative;min-width:0}
-ol.alur>li:not(:last-child)::after{content:"→";position:absolute;right:-12px;top:50%;transform:translateY(-50%);z-index:1;width:22px;height:22px;border-radius:50%;background:var(--card);border:1px solid var(--line);display:grid;place-items:center;font-size:12px;color:var(--ink2);line-height:1}
-.alur .tahap{display:flex;align-items:center;gap:10px;margin-bottom:10px}
-.alur .tahap i{font-style:normal;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in oklab,var(--c) 16%,transparent);color:var(--c);flex:none}
-.alur .tahap i svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.alur .tahap em{font-style:normal;font-size:11px;font-weight:800;color:var(--ink2);letter-spacing:.06em;text-transform:uppercase}
-.alur h3{font-size:16px}
-.alur p{color:var(--ink2);font-size:13.5px;line-height:1.5;margin-top:4px}
-@media (max-width:900px){ol.alur{grid-template-columns:minmax(0,1fr)}ol.alur>li:not(:last-child)::after{content:"↓";right:auto;left:34px;top:auto;bottom:-14px;transform:none}}
-.lipat{margin-top:16px;overflow:hidden}
+ol.alur{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:16px}
+ol.alur>li{padding:clamp(22px,2.6vw,32px);border-radius:var(--r);min-width:0;display:grid;gap:8px;align-content:start}
+.alur .tahap{display:flex;align-items:center;gap:12px;margin-bottom:14px}
+.alur .tahap i{font-style:normal;display:grid;place-items:center;width:44px;height:44px;border-radius:50%;background:color-mix(in oklab,var(--c) 16%,transparent);color:var(--c);flex:none}
+.alur .tahap i svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.alur .tahap em{font-style:normal;font-size:12px;font-weight:800;color:var(--ink2);letter-spacing:.08em;text-transform:uppercase}
+.alur h3{font:700 21px/1.2 var(--display);letter-spacing:-.02em}
+.alur p{color:var(--ink2);font-size:15px;line-height:1.5}
+@media (max-width:980px){ol.alur{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){ol.alur{grid-template-columns:minmax(0,1fr)}}
 .lipat .isi{overflow-x:auto;border-top:1px solid var(--line)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{text-align:left;padding:10px 16px;border-top:1px solid var(--line);vertical-align:top}
-thead th{border-top:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);background:var(--surface)}
+table{width:100%;border-collapse:collapse;font-size:14.5px}
+th,td{text-align:left;padding:12px 24px;border-top:1px solid var(--line);vertical-align:top}
+thead th{border-top:0;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2)}
 td:first-child{font-weight:600}
 td small{color:var(--ink2)}
-@media (max-width:600px){.lipat thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.lipat tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:12px 16px;border-top:1px solid var(--line)}
+@media (max-width:600px){.lipat thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.lipat tr{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:2px 12px;padding:14px 20px;border-top:1px solid var(--line)}
   .lipat tr:first-child{border-top:0}.lipat td{border:0;padding:0}.lipat td:nth-child(2){grid-column:1;grid-row:2;color:var(--ink2);font-size:13px}.lipat td:nth-child(3){grid-column:2;grid-row:1/3;text-align:right;font-size:13px;max-width:13ch}}
-.batas{margin-top:16px;padding:clamp(16px,2.6vw,24px);border-radius:var(--r);border:1px solid color-mix(in oklab,var(--oranye) 40%,var(--line));background:color-mix(in oklab,var(--oranye) 9%,var(--card));display:grid;grid-template-columns:auto minmax(0,1fr);gap:16px}
-.panel .batas{background:color-mix(in oklab,var(--oranye) 9%,var(--card))}
-.batas .ik{--c:var(--oranye)}
-.batas h3{font-size:17px}
-.batas ul{margin:10px 0 0;padding-left:20px;display:grid;gap:6px;color:var(--ink2);font-size:14.5px;max-width:65ch}
+.batas{margin-top:clamp(32px,5vw,56px);padding:clamp(24px,3.4vw,44px);border-radius:var(--r);background:color-mix(in oklab,var(--aksen) 10%,var(--card));display:grid;grid-template-columns:auto minmax(0,1fr);gap:clamp(16px,3vw,28px)}
+.batas .ik{--c:var(--aksen)}
+.batas h3{font:700 clamp(21px,2.2vw,26px)/1.2 var(--display);letter-spacing:-.022em}
+.batas ul{margin:12px 0 0;padding-left:20px;display:grid;gap:8px;color:var(--ink2);font-size:15.5px;max-width:70ch}
 .batas ul b{color:var(--ink)}
 @media (max-width:520px){.batas{grid-template-columns:minmax(0,1fr)}}
-.prinsip{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;margin:16px 0 0;padding:0;list-style:none}
+.prinsip{grid-template-columns:repeat(3,minmax(0,1fr));margin-top:16px}
 @media (max-width:760px){.prinsip{grid-template-columns:minmax(0,1fr)}}
-.prinsip li{padding:16px;border-top:3px solid var(--c)}
-.prinsip li>b{display:block;font-family:var(--display);font-size:15px}
-.prinsip li>span{display:block;color:var(--ink2);font-size:13.5px;line-height:1.5;margin-top:4px}
+.kertas .prinsip li{background:var(--card)}
+.prinsip li{padding:24px 26px;border-radius:var(--r2);border-top:3px solid var(--c)}
+.prinsip li>b{display:block;font:700 17px var(--display)}
+.prinsip li>span{display:block;color:var(--ink2);font-size:14.5px;line-height:1.5;margin-top:6px}
 
 /* ---------- 6. sumber ---------- */
-.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px;padding:0;margin:0;list-style:none}
-.chips li{display:flex;flex-direction:column;gap:2px;padding:12px 14px;border-radius:12px;min-width:0}
-.chips b{font-size:14px}
-.chips span{font-size:12.5px;color:var(--ink2);line-height:1.4}
-.chips .lis{font-style:normal;display:inline-block;margin-top:6px;font-size:11px;font-weight:700;padding:2px 8px;border-radius:999px;background:var(--surface);color:var(--ink2);width:fit-content}
-.panel .chips .lis{background:color-mix(in oklab,var(--brand2) 9%,transparent)}
-.catatan{color:var(--ink2);font-size:13px;margin-top:16px;max-width:80ch}
+.chips{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,260px),1fr));gap:12px;padding:0;margin:0;list-style:none}
+.chips li{display:flex;flex-direction:column;gap:4px;padding:20px 22px;border-radius:var(--r2);min-width:0;background:var(--card)}
+.chips b{font-size:15.5px}
+.chips span{font-size:13.5px;color:var(--ink2);line-height:1.45}
+.chips .lis{font-style:normal;display:inline-block;margin-top:8px;font-size:11.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:var(--paper);color:var(--ink2);width:fit-content}
+.catatan{color:var(--ink2);font-size:13.5px;margin-top:24px;max-width:80ch}
 
-/* ---------- 7. tim & kolaborasi ---------- */
-.org{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);overflow:hidden}
+/* ---------- 7. tim (markup dari JS) ---------- */
+.org{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);overflow:hidden;border-radius:var(--r);background:var(--paper)}
+.org>div{padding:clamp(24px,3.4vw,44px);min-width:0}
 @media (max-width:860px){.org{grid-template-columns:minmax(0,1fr)}}
-.org>div{padding:clamp(18px,2.4vw,28px);min-width:0}
-.org .kiri{display:grid;gap:12px;align-content:start}
-.org .kepala-org{display:flex;gap:14px;align-items:center}
-.org .lg{width:56px;height:56px;border-radius:16px;display:grid;place-items:center;background:var(--navy);color:#fff;font:800 20px/1 var(--display);letter-spacing:-.03em;flex:none}
-.org h3{font-size:21px}
-.org .slogan{color:var(--brand2);font-weight:600;font-size:14px}
-.org p{color:var(--ink2);font-size:14.5px}
-.org blockquote{margin:0;padding:12px 14px;border-left:4px solid var(--teal);background:var(--surface);border-radius:0 10px 10px 0;font-size:14.5px;line-height:1.55}
+.org .kiri{display:grid;gap:16px;align-content:start}
+.org .kepala-org{display:flex;gap:16px;align-items:center}
+.org .lg{width:60px;height:60px;border-radius:18px;display:grid;place-items:center;background:var(--navy);color:#fff;font:800 21px/1 var(--display);letter-spacing:-.03em;flex:none}
+:root[data-theme="dark"] .org .lg{background:#e6edf7;color:var(--navy)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .org .lg{background:#e6edf7;color:var(--navy)}}
+.org h3{font:700 clamp(24px,2.6vw,32px)/1.1 var(--display);letter-spacing:-.03em}
+.org .slogan{color:var(--aksen);font-weight:600;font-size:14.5px}
+.org p{color:var(--ink2);font-size:15.5px}
+.org blockquote{margin:0;padding:14px 18px;border-left:3px solid var(--aksen);background:var(--card);border-radius:0 14px 14px 0;font-size:15.5px;line-height:1.55}
 .org .kap{display:flex;flex-wrap:wrap;gap:6px}
-.org .kap span{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;border:1px solid var(--line);color:var(--ink2)}
-.org .kanan{background:var(--surface);border-left:1px solid var(--line);display:grid;gap:10px;align-content:start}
-@media (max-width:860px){.org .kanan{border-left:0;border-top:1px solid var(--line)}}
-.fokus{display:grid;gap:8px;list-style:none;margin:0;padding:0}
-.fokus li{padding:12px 14px;border-radius:12px;background:var(--card);border:1px solid var(--line)}
-.fokus li b{display:flex;align-items:center;gap:8px;font-family:var(--display);font-size:15px}
-.fokus li span{display:block;color:var(--ink2);font-size:13px;margin-top:2px}
-.fokus li.ini{border-color:var(--teal);box-shadow:0 0 0 1px var(--teal) inset}
-.fokus li.ini em{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--teal);color:#fff;margin-left:auto}
-.subjudul{display:flex;align-items:baseline;gap:10px;margin:28px 0 14px;font:700 16px/1.3 var(--display)}
-.subjudul small{font:500 13px var(--font);color:var(--ink2)}
-.dewan,.eksek{display:grid;gap:14px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.org .kap span{font-size:12.5px;font-weight:700;padding:5px 12px;border-radius:999px;background:var(--card);color:var(--ink2)}
+.org .kanan{background:color-mix(in oklab,var(--brand2) 6%,var(--surface));display:grid;gap:12px;align-content:start}
+.fokus{display:grid;gap:10px;list-style:none;margin:0;padding:0}
+.fokus li{padding:14px 18px;border-radius:16px;background:var(--card)}
+.fokus li b{display:flex;align-items:center;gap:8px;font:700 16px var(--display)}
+.fokus li span{display:block;color:var(--ink2);font-size:14px;margin-top:3px}
+.fokus li.ini{box-shadow:0 0 0 2px var(--aksen) inset}
+.fokus li.ini em{font-style:normal;font-size:11px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--aksen);color:#fff;margin-left:auto}
+.subjudul{display:flex;align-items:baseline;gap:10px;margin:clamp(36px,5vw,64px) 0 18px;font:700 clamp(20px,2vw,24px)/1.2 var(--display);letter-spacing:-.022em}
+.subjudul small{font:500 14px var(--font);color:var(--ink2)}
+.dewan,.eksek{display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr))}
 .eksek{grid-template-columns:repeat(5,minmax(0,1fr))}
 @media (max-width:1000px){.dewan{grid-template-columns:repeat(2,minmax(0,1fr))}.eksek{grid-template-columns:repeat(4,minmax(0,1fr))}}
 @media (max-width:700px){.eksek{grid-template-columns:repeat(3,minmax(0,1fr))}}
 @media (max-width:520px){.dewan{grid-template-columns:minmax(0,1fr)}.eksek{grid-template-columns:repeat(2,minmax(0,1fr))}}
-.orang{padding:22px 16px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;height:100%}
-.panel .kartu.orang{background:var(--card)}
+.orang{padding:26px 16px 22px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;height:100%;border-radius:var(--r2);background:var(--paper)}
+.putih .orang{background:var(--paper)}.kertas .orang{background:var(--card)}
 .orang .ft{margin-bottom:10px}
-.ft{width:104px;height:104px;aspect-ratio:1;border-radius:50%;object-fit:cover;object-position:center 20%;background:color-mix(in oklab,var(--brand2) 12%,var(--surface));display:grid;place-items:center;font:800 26px/1 var(--display);color:var(--brand2);flex:none;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line)}
-.orang b{font-family:var(--display);font-size:15.5px;display:block;line-height:1.3;text-wrap:balance}
-.orang .peran{color:var(--brand2);font-weight:600;font-size:13px;line-height:1.35;display:block}
-.orang p{color:var(--ink2);font-size:13px;line-height:1.5;margin-top:6px}
-.eksek .orang{padding:18px 10px 16px}
+.ft{width:104px;height:104px;aspect-ratio:1;border-radius:50%;object-fit:cover;object-position:center 20%;background:color-mix(in oklab,var(--brand2) 12%,var(--surface));display:grid;place-items:center;font:800 26px/1 var(--display);color:var(--brand2);flex:none}
+.orang b{font:700 16px/1.3 var(--display);display:block;text-wrap:balance}
+.orang .peran{color:var(--aksen);font-weight:600;font-size:13px;line-height:1.35;display:block}
+.orang p{color:var(--ink2);font-size:13.5px;line-height:1.5;margin-top:6px}
+.eksek .orang{padding:20px 10px 18px}
 .eksek .ft{width:84px;height:84px;font-size:21px}
 .eksek .orang b{font-size:14px}
 .eksek .peran{color:var(--ink2);font-weight:500;font-size:12px}
-.kolab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;list-style:none;margin:0;padding:0}
-.kolab li{padding:18px;display:grid;gap:6px;align-content:start;border-top:3px solid var(--c,var(--brand2))}
-.kolab .meta{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700;color:var(--ink2)}
-.kolab .meta span{padding:2px 8px;border-radius:999px;background:color-mix(in oklab,var(--c,var(--brand2)) 14%,transparent);color:var(--ink)}
-.kolab b{font-family:var(--display);font-size:16px;line-height:1.3}
-.kolab p{color:var(--ink2);font-size:13.5px;line-height:1.5}
-.riset{margin-top:6px;overflow-x:auto}
-.riset td:first-child{font-weight:500}
-.riset td:nth-child(2),.riset td:nth-child(3){white-space:nowrap;color:var(--ink2);font-size:13px}
-@media (max-width:640px){.riset thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.riset tr{display:grid;gap:2px;padding:12px 14px;border-top:1px solid var(--line)}.riset td{border:0;padding:0;white-space:normal!important}.riset tr:first-child{border-top:0}}
 
-/* ---------- 8. kontak ---------- */
-.kontak{padding:clamp(20px,3.4vw,36px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center}
-.panel .kartu.kontak{background:linear-gradient(135deg,color-mix(in oklab,var(--biru) 10%,var(--card)),var(--card) 70%)}
+/* ---------- kolaborasi ---------- */
+.kolab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:16px;list-style:none;margin:0;padding:0}
+.kolab li{padding:24px;display:grid;gap:8px;align-content:start;border-radius:var(--r2);background:var(--card);border-top:3px solid var(--c,var(--brand2))}
+.kolab .meta{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700;color:var(--ink2)}
+.kolab .meta span{padding:3px 10px;border-radius:999px;background:color-mix(in oklab,var(--c,var(--brand2)) 14%,transparent);color:var(--ink)}
+.kolab b{font:700 17px/1.3 var(--display)}
+.kolab p{color:var(--ink2);font-size:14.5px;line-height:1.5}
+.riset{margin-top:6px;overflow-x:auto;border-radius:var(--r2);background:var(--card)}
+.riset td:first-child{font-weight:500}
+.riset td:nth-child(2),.riset td:nth-child(3){white-space:nowrap;color:var(--ink2);font-size:13.5px}
+@media (max-width:640px){.riset thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.riset tr{display:grid;gap:2px;padding:14px 16px;border-top:1px solid var(--line)}.riset td{border:0;padding:0;white-space:normal!important}.riset tr:first-child{border-top:0}}
+
+/* ---------- 8. kontak (pita navy) ---------- */
+.kontak{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(28px,6vw,80px);align-items:center}
 @media (max-width:820px){.kontak{grid-template-columns:minmax(0,1fr)}}
-.kontak h3{font-size:clamp(20px,2.4vw,24px);line-height:1.25}
-.kontak p{color:var(--ink2);margin-top:8px;max-width:60ch}
-.kontak ul{list-style:none;margin:14px 0 0;padding:0;font-size:14px;color:var(--ink2)}
-.kontak .aksi{margin:0;display:grid;gap:10px}
-.kontak .aksi .tbl{width:100%;min-height:48px}
+.kontak h2{font:700 clamp(30px,4.6vw,56px)/1.04 var(--display);letter-spacing:-.04em;text-wrap:balance;margin-top:16px}
+.kontak p{color:var(--ink2);margin-top:18px;max-width:52ch;font-size:clamp(16px,1.5vw,18px);line-height:1.5}
+.kontak p b{color:#fff}
+.kontak ul{list-style:none;margin:16px 0 0;padding:0;font-size:14.5px;color:var(--ink2)}
+.kontak ul a{color:#fff}
+.kontak .aksi{display:grid;gap:12px}
+.kontak .aksi .tbl{width:100%}
+.seksi.gelap .eyebrow{color:#f5a06b}
 
 /* ---------- 9. FAQ ---------- */
-.faq{display:grid;gap:10px}
-.faq details{background:var(--card);border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.panel .faq details{background:var(--paper)}
-.faq details[open]{border-color:color-mix(in oklab,var(--brand2) 35%,var(--line))}
-.faq summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:14px 18px;font-weight:700;font-size:15.5px;min-height:48px}
-.faq summary::-webkit-details-marker{display:none}
-.faq summary::after{content:"";margin-left:auto;flex:none;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s}
-.faq details[open] summary::after{transform:rotate(-135deg)}
-.faq summary:hover{background:var(--surface)}
-.faq .isi{padding:0 18px 16px;color:var(--ink2);font-size:14.5px;max-width:72ch}
+.faq{display:grid;gap:12px;max-width:860px;margin:0 auto}
+.faq details{background:var(--card);border-radius:var(--r2);overflow:hidden}
+.faq summary{list-style:none;cursor:pointer;display:flex;gap:16px;align-items:center;padding:20px 24px;font:700 clamp(16px,1.6vw,18px)/1.3 var(--display);letter-spacing:-.01em;min-height:60px}
+.faq summary::after{content:"+";margin-left:auto;flex:none;font:400 26px/1 var(--font);color:var(--ink2);transition:transform .3s var(--kurva)}
+.faq details[open] summary::after{transform:rotate(45deg)}
+.faq summary:hover{background:color-mix(in oklab,var(--brand2) 5%,var(--card))}
+.faq .isi{padding:0 24px 22px;color:var(--ink2);font-size:15.5px;line-height:1.6;max-width:72ch}
 .faq .isi p+p{margin-top:8px}
-.kutip{margin-top:16px;padding:18px 20px;display:grid;gap:10px}
-.kutip blockquote{margin:0;padding:12px 14px;background:var(--surface);border-left:4px solid var(--brand2);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55;word-break:break-word}
-.panel .kutip blockquote{background:var(--card)}
-.kutip .baris{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
-.kutip small{color:var(--ink2);font-size:12.5px}
-
-/* ---------- 10. kaki ---------- */
-footer.kaki{margin-top:48px;background:var(--navy);color:#fff}
-footer.kaki .wrap{padding-top:44px;padding-bottom:28px;display:grid;gap:26px;justify-items:center;text-align:center}
-.kaki .merek{display:flex;gap:10px;align-items:center;font:800 18px/1 var(--display)}
-.kaki .moto{opacity:.78;font-size:14px;max-width:52ch;margin-top:-14px}
-.sosial{display:flex;flex-wrap:wrap;justify-content:center;gap:16px;list-style:none;margin:0;padding:0}
-.sosial a,.sosial span{display:grid;place-items:center;width:56px;height:56px;border-radius:50%;background:oklch(100% 0 0 / .1);color:#fff;transition:transform .15s,background .15s}
-.sosial svg{width:22px;height:22px}
-.sosial a:hover{background:oklch(100% 0 0 / .2);transform:translateY(-3px)}
-.sosial a:focus-visible{outline:2px solid #fff;outline-offset:3px;border-radius:50%}
-.sosial span{opacity:.5;cursor:default}
-@media (max-width:420px){.sosial{gap:10px}.sosial a,.sosial span{width:48px;height:48px}.sosial svg{width:20px;height:20px}}
-nav.tautan{display:flex;flex-wrap:wrap;justify-content:center;gap:4px 6px}
-nav.tautan a{color:#fff;opacity:.85;text-decoration:none;padding:8px 12px;border-radius:999px;font-size:14px;font-weight:600}
-nav.tautan a:hover{opacity:1;background:oklch(100% 0 0 / .1)}
-nav.tautan a:focus-visible{outline-color:#fff}
-.kaki .hak{font-size:12.5px;opacity:.72;border-top:1px solid oklch(100% 0 0 / .14);padding-top:18px;width:100%;line-height:1.6}
-.kaki .hak a{color:#fff}
-@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+.kutip{max-width:860px;margin:24px auto 0;padding:24px;display:grid;gap:12px;border-radius:var(--r2);background:var(--card)}
+.kutip blockquote{margin:0;padding:14px 18px;background:var(--paper);border-left:3px solid var(--aksen);border-radius:0 14px 14px 0;font-size:14px;line-height:1.55;word-break:break-word}
+.kutip .baris{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.kutip .tbl{height:44px;padding:0 18px;font-size:14.5px}
+.kutip small{color:var(--ink2);font-size:13px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}html.lp-js [data-muncul]:not([data-terlihat]){opacity:1;translate:none}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -384,24 +402,23 @@ nav.tautan a:focus-visible{outline-color:#fff}
   </div>
 </header>
 
-<main id="isi">
-<div class="wrap susun">
 
-<!-- ============ 1. HERO: kartu besar, teks kiri, visual kanan ============ -->
-<section class="panel hero" aria-labelledby="judul">
-  <div class="kiri">
-    <span class="pill">Tentang kami</span>
-    <h1 id="judul">Pantau bencana Indonesia dari <em>data terbuka</em></h1>
-    <p class="misi">Titik api, cuaca, asap, banjir: semuanya dari data terbuka, agar keputusan lebih cepat dan tepat.</p>
-    <p class="oleh">Inisiatif <b>Teras Urban</b>, lembaga urban intelligence independen. Bukan situs resmi pemerintah.</p>
-    <div class="aksi">
+<main id="isi">
+
+<!-- ============ 1. HERO ============ -->
+<section class="hero" aria-labelledby="judul">
+  <div class="wrap">
+    <span class="eyebrow" data-muncul>Tentang kami</span>
+    <h1 id="judul" data-muncul>Pantau bencana Indonesia dari <em>data terbuka</em></h1>
+    <p class="misi" data-muncul>Titik api, cuaca, asap, banjir: semuanya dari data terbuka, agar keputusan lebih cepat dan tepat.</p>
+    <div class="aksi" data-muncul>
       <a class="tbl utama" href="/peta"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Buka peta</a>
       <a class="tbl" href="#kontak">Hubungi kami</a>
     </div>
-  </div>
-  <div class="peta" aria-hidden="true">
-    <div class="jendela">
-      <div class="bar"><i></i><i></i><i></i><span>Peta · titik panas satelit</span></div>
+    <p class="oleh" data-muncul>Inisiatif <b>Teras Urban</b>, lembaga urban intelligence independen. Bukan situs resmi pemerintah.</p>
+    <div class="panggung" data-muncul aria-hidden="true">
+      <div class="jendela">
+        <div class="bar"><i></i><i></i><i></i><span>Peta · titik panas satelit</span></div>
       <svg viewBox="0 0 440 280" role="presentation">
         <g class="kisi"><path d="M0 70H440M0 140H440M0 210H440M110 0V280M220 0V280M330 0V280"/></g>
         <path class="pulau" d="M28 38 62 34 118 78 168 130 176 168 148 172 98 128 48 84Z"/>
@@ -414,42 +431,49 @@ nav.tautan a:focus-visible{outline-color:#fff}
         <circle class="tt" cx="236" cy="104" r="4.5"/><circle class="to" cx="252" cy="92" r="3.4"/><circle class="tt" cx="262" cy="130" r="4"/><circle class="tk" cx="224" cy="128" r="3"/><circle class="to" cx="246" cy="142" r="3"/>
         <circle class="to" cx="262" cy="204" r="3"/><circle class="tk" cx="180" cy="203" r="2.8"/><circle class="tt" cx="358" cy="162" r="3.6"/><circle class="tk" cx="372" cy="98" r="2.8"/>
       </svg>
-      <div class="kaki-j"><span><i style="background:var(--merah)"></i>titik panas</span><span><i style="background:var(--oranye)"></i>kompleks api</span><span><i style="background:var(--kuning)"></i>deteksi baru</span></div>
+        <div class="kaki-j"><span><i style="background:var(--merah)"></i>titik panas</span><span><i style="background:var(--oranye)"></i>kompleks api</span><span><i style="background:var(--kuning)"></i>deteksi baru</span></div>
+      </div>
+      <div class="chip-m a mengapung"><span class="ik" style="--c:var(--hijau)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><span>Diperbarui tiap 3 jam<small>mengikuti lintasan satelit</small></span></div>
+      <div class="chip-m b mengapung"><span class="ik" style="--c:var(--biru)"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><span>Data terbuka<small>sumber dan metode bisa diperiksa</small></span></div>
     </div>
   </div>
 </section>
 
-<!-- ============ 2. PITA BUKTI (angka hidup dari berkas data) ============ -->
-<section class="kartu band" aria-label="Angka hidup dari data situs">
-  <div class="bukti" id="bukti" aria-live="polite" aria-busy="true">
-    <div class="tunggu" data-k="titik"><span class="lbl"><i class="titik" style="background:var(--merah)"></i>Titik panas</span><b class="num">—</b><small>lokasi terdeteksi satelit, 24 jam terakhir</small></div>
-    <div class="tunggu" data-k="kompleks"><span class="lbl"><i class="titik" style="background:var(--oranye)"></i>Kompleks api</span><b class="num">—</b><small>dengan titik baru dalam 24 jam</small></div>
-    <div class="tunggu" data-k="prov"><span class="lbl"><i class="titik" style="background:var(--biru)"></i>Wilayah</span><b class="num">—</b><small>provinsi dipantau setiap hari</small></div>
-    <div class="tunggu" data-k="berita"><span class="lbl"><i class="titik" style="background:var(--nila)"></i>Berita</span><b class="num">—</b><small>artikel media dipantau</small></div>
-    <div class="tunggu" data-k="jam"><span class="lbl"><i class="titik" style="background:var(--hijau)"></i>Data satelit</span><b class="num">—</b><small>&nbsp;</small></div>
+<!-- ============ 2. SUMBER (pita kredibilitas) + ANGKA HIDUP ============ -->
+<section class="kredit" aria-label="Sumber data">
+  <div class="wrap" data-muncul>
+    <p>Dibangun dari data terbuka</p>
+    <ul class="pil-s"><li>NASA FIRMS</li><li>Copernicus · CAMS</li><li>BMKG</li><li>BNPB</li><li>KLHK / Kemenhut</li><li>Open-Meteo</li><li>OpenStreetMap</li><li>WorldPop</li></ul>
   </div>
-  <p class="bukti-ket"><i class="hidup" aria-hidden="true"></i><span id="buktiKet">Angka dihitung langsung dari berkas data situs ini saat halaman dibuka.</span></p>
+</section>
+<section class="bukti-sek" aria-label="Angka hidup dari data situs">
+  <div class="wrap" data-muncul>
+    <div class="bukti" id="bukti" aria-live="polite" aria-busy="true">
+      <div class="tunggu" data-k="titik"><span class="lbl"><i class="titik" style="background:var(--merah)"></i>Titik panas</span><b class="num">—</b><small>lokasi terdeteksi satelit, 24 jam terakhir</small></div>
+      <div class="tunggu" data-k="kompleks"><span class="lbl"><i class="titik" style="background:var(--oranye)"></i>Kompleks api</span><b class="num">—</b><small>dengan titik baru dalam 24 jam</small></div>
+      <div class="tunggu" data-k="prov"><span class="lbl"><i class="titik" style="background:var(--biru)"></i>Wilayah</span><b class="num">—</b><small>provinsi dipantau setiap hari</small></div>
+      <div class="tunggu" data-k="berita"><span class="lbl"><i class="titik" style="background:var(--nila)"></i>Berita</span><b class="num">—</b><small>artikel media dipantau</small></div>
+      <div class="tunggu" data-k="jam"><span class="lbl"><i class="titik" style="background:var(--hijau)"></i>Data satelit</span><b class="num">—</b><small>&nbsp;</small></div>
+    </div>
+    <p class="bukti-ket"><i class="hidup" aria-hidden="true"></i><span id="buktiKet">Angka dihitung langsung dari berkas data situs ini saat halaman dibuka.</span></p>
+  </div>
 </section>
 
 <!-- ============ 3. MENGAPA + TIGA PILAR ============ -->
-<section class="panel" id="mengapa" aria-labelledby="h-mengapa">
-  <div class="ph"><span class="pill">Latar belakang</span><h2 id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2></div>
-  <div class="pb">
-    <div class="dua">
-      <p class="teks">Saat musim kebakaran atau banjir datang, petugas posko, pemerintah daerah, jurnalis, dan warga membuka banyak situs untuk menjawab pertanyaan sederhana: <i>di mana apinya, seberapa berbahaya cuacanya, siapa yang terdampak?</i></p>
-      <ul class="masalah">
-        <li class="kartu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg><span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></span></li>
-        <li class="kartu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg><span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></span></li>
-        <li class="kartu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg><span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></span></li>
-      </ul>
-    </div>
-    <span class="sub" style="margin-top:28px">Cara kami menjawabnya</span>
-    <ul class="pilar">
-      <li class="kartu" style="--c:var(--biru)"><span class="ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><h3>Satukan</h3><p>Titik panas, cuaca, asap, laporan kejadian, dan berita dari banyak lembaga dikumpulkan di satu tempat.</p></li>
-      <li class="kartu" style="--c:var(--oranye)"><span class="ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><h3>Olah otomatis</h3><p>Diolah setiap hari oleh skrip terbuka. Tidak ada angka yang diketik tangan.</p></li>
-      <li class="kartu" style="--c:var(--hijau)"><span class="ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3>Terjemahkan</h3><p>Menjadi peta, ringkasan, dan perkiraan kebutuhan yang langsung bisa dipakai di lapangan.</p></li>
+<section class="seksi kertas" id="mengapa" aria-labelledby="h-mengapa">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><p class="lead">Saat musim kebakaran atau banjir datang, petugas posko, pemerintah daerah, jurnalis, dan warga membuka banyak situs untuk menjawab pertanyaan sederhana: di mana apinya, seberapa berbahaya cuacanya, siapa yang terdampak?</p></header>
+    <ul class="masalah">
+      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
+      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
+      <li class="kartu" style="background:var(--card)" data-muncul><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
     </ul>
-    <details class="kartu hukum">
+    <ul class="pilar">
+      <li data-muncul><span class="no">01</span><h3>Satukan</h3><p>Titik panas, cuaca, asap, laporan kejadian, dan berita dari banyak lembaga dikumpulkan di satu tempat.</p></li>
+      <li data-muncul><span class="no">02</span><h3>Olah otomatis</h3><p>Diolah setiap hari oleh skrip terbuka. Tidak ada angka yang diketik tangan.</p></li>
+      <li data-muncul><span class="no">03</span><h3>Terjemahkan</h3><p>Menjadi peta, ringkasan, dan perkiraan kebutuhan yang langsung bisa dipakai di lapangan.</p></li>
+    </ul>
+    <details class="hukum">
       <summary>Landasan hukum peran masyarakat</summary>
       <div class="isi">
         <ol class="uu">
@@ -474,34 +498,47 @@ nav.tautan a:focus-visible{outline-color:#fff}
   </div>
 </section>
 
-<!-- ============ 4. LAYANAN ============ -->
-<section class="panel alt" id="fitur" aria-labelledby="h-fitur">
-  <div class="ph"><span class="pill">Layanan</span><h2 id="h-fitur">Apa yang kami lakukan</h2><p>Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></div>
-  <div class="pb"><div class="grid3">
-    <a class="kartu fitur" href="/ringkasan" style="--c:var(--navy)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
-      <h3>Ringkasan &amp; brief harian</h3><p>Satu halaman untuk pimpinan: situasi hari ini, wilayah prioritas, dan brief A4 yang siap dicetak untuk rapat pagi.</p><span class="ke">Buka ringkasan</span></a>
-    <a class="kartu fitur" href="/peta" style="--c:var(--merah)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></span>
-      <h3>Peta &amp; titik panas tiap 3 jam</h3><p>Titik panas satelit, kompleks api, bahaya cuaca kebakaran, asap, gambut, dan konsesi dalam satu peta interaktif.</p><span class="ke">Buka peta</span></a>
-    <a class="kartu fitur" href="/operasi" style="--c:var(--teal)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg></span>
-      <h3>Operasi &amp; kebutuhan sumber daya</h3><p>Perkiraan regu, personel, pompa, selang, heli, dan logistik per kompleks api, plus lokasi posko dan pangkalan udara.</p><span class="ke">Buka operasi</span></a>
-    <a class="kartu fitur" href="/insight" style="--c:var(--oranye)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span>
-      <h3>Insight &amp; model penyebaran</h3><p>Grafik kesimpulan penting dan model penjalaran api 72 jam yang dilatih dari kejadian 2015–2026.</p><p class="kecil" id="akurasi">Akurasi model dimuat dari data uji…</p><span class="ke">Buka insight</span></a>
-    <a class="kartu fitur" href="/berita" style="--c:var(--nila)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/></svg></span>
-      <h3>Berita &amp; pantauan media</h3><p>Ribuan artikel dikelompokkan per wilayah dan isu, dibandingkan dengan titik api: mana yang ramai diberitakan, mana yang luput.</p><span class="ke">Buka berita</span></a>
-    <a class="kartu fitur" href="/informasi" style="--c:var(--hijau)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span>
-      <h3>Informasi &amp; Lapor Warga</h3><p>Warga melapor api, asap, atau kebutuhan bantuan dari lokasinya; laporan api dicocokkan otomatis dengan titik satelit terdekat.</p><span class="ke">Buka informasi</span></a>
-  </div></div>
+<!-- ============ 4. APA YANG KAMI LAKUKAN ============ -->
+<section class="seksi putih" id="fitur" aria-labelledby="h-fitur">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Layanan</span><h2 class="h2" id="h-fitur">Apa yang kami lakukan</h2><p class="lead">Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></header>
+
+    <div class="baris-f" data-muncul>
+      <div class="teks-f"><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg></span><h3 class="h3">Peta &amp; titik panas tiap 3 jam</h3><p>Titik panas satelit, kompleks api, bahaya cuaca kebakaran, asap, gambut, dan konsesi dalam satu peta interaktif.</p><a class="ke" href="/peta">Buka peta</a></div>
+      <div class="vis" aria-hidden="true"><svg class="peta-k" viewBox="0 0 440 240" role="presentation"><path class="pulau" stroke-width="1.2" d="M28 38 62 34 118 78 168 130 176 168 148 172 98 128 48 84Z"/><path class="pulau" stroke-width="1.2" d="M196 56 250 42 290 60 300 102 276 140 226 142 202 108Z"/><path class="pulau" stroke-width="1.2" d="M322 78 354 62 384 82 372 112 346 124 330 108Z"/><circle cx="136" cy="122" r="5" fill="var(--merah)"/><circle cx="122" cy="108" r="3.2" fill="var(--merah)"/><circle cx="148" cy="138" r="3.6" fill="var(--oranye)"/><circle cx="236" cy="94" r="5" fill="var(--merah)"/><circle cx="252" cy="82" r="3.4" fill="var(--oranye)"/><circle cx="262" cy="120" r="4" fill="var(--kuning)"/><circle cx="358" cy="92" r="3.4" fill="var(--kuning)"/></svg></div>
+    </div>
+
+    <div class="baris-f balik" data-muncul>
+      <div class="teks-f"><span class="ik" style="--c:var(--navy)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span><h3 class="h3">Ringkasan &amp; brief harian</h3><p>Satu halaman untuk pimpinan: situasi hari ini, wilayah prioritas, dan brief A4 yang siap dicetak untuk rapat pagi.</p><a class="ke" href="/ringkasan">Buka ringkasan</a></div>
+      <div class="vis" aria-hidden="true">
+        <div class="baris"><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24"><path d="M12 3 2 20h20z"/><path d="M12 10v4"/></svg></span><span>Situasi hari ini<small>titik panas dan kompleks api</small></span></div>
+        <div class="baris"><span class="ik" style="--c:var(--oranye)"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/></svg></span><span>Wilayah prioritas<small>provinsi yang perlu perhatian</small></span></div>
+        <div class="baris"><span class="ik" style="--c:var(--biru)"><svg viewBox="0 0 24 24"><path d="M6 3h9l4 4v14H6z"/><path d="M9 12h7M9 16h7"/></svg></span><span>Brief A4<small>siap cetak untuk rapat pagi</small></span></div>
+      </div>
+    </div>
+
+    <div class="baris-f" data-muncul>
+      <div class="teks-f"><span class="ik" style="--c:var(--oranye)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg></span><h3 class="h3">Insight &amp; model penyebaran</h3><p>Grafik kesimpulan penting dan model penjalaran api 72 jam yang dilatih dari kejadian 2015–2026.</p><p class="kecil" id="akurasi">Akurasi model dimuat dari data uji…</p><a class="ke" href="/insight">Buka insight</a></div>
+      <div class="vis" aria-hidden="true"><div class="bar-g"><i style="height:38%"></i><i style="height:62%"></i><i style="height:48%"></i><i style="height:84%"></i><i style="height:56%"></i><i style="height:100%"></i><i style="height:70%"></i></div></div>
+    </div>
+
+    <div class="grid3">
+      <a class="fitur" href="/operasi" data-muncul style="text-decoration:none;color:inherit"><span class="ik" style="--c:var(--teal)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V9l7-5 7 5v11"/><path d="M9 20v-6h6v6"/></svg></span><h3>Operasi &amp; kebutuhan sumber daya</h3><p>Perkiraan regu, personel, pompa, selang, heli, dan logistik per kompleks api, plus lokasi posko dan pangkalan udara.</p><span class="ke">Buka operasi</span></a>
+      <a class="fitur" href="/berita" data-muncul style="text-decoration:none;color:inherit"><span class="ik" style="--c:var(--nila)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/></svg></span><h3>Berita &amp; pantauan media</h3><p>Ribuan artikel dikelompokkan per wilayah dan isu, dibandingkan dengan titik api: mana yang ramai diberitakan, mana yang luput.</p><span class="ke">Buka berita</span></a>
+      <a class="fitur" href="/informasi" data-muncul style="text-decoration:none;color:inherit"><span class="ik" style="--c:var(--hijau)"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></span><h3>Informasi &amp; Lapor Warga</h3><p>Warga melapor api, asap, atau kebutuhan bantuan dari lokasinya; laporan api dicocokkan otomatis dengan titik satelit terdekat.</p><span class="ke">Buka informasi</span></a>
+    </div>
+  </div>
 </section>
 
 <!-- ============ 5. CARA KERJA DATA ============ -->
-<section class="panel" id="cara-kerja" aria-labelledby="h-cara">
-  <div class="ph"><span class="pill">Data &amp; metode</span><h2 id="h-cara">Cara kerja data</h2><p>Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></div>
-  <div class="pb">
+<section class="seksi kertas" id="cara-kerja" aria-labelledby="h-cara">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Data &amp; metode</span><h2 class="h2" id="h-cara">Cara kerja data</h2><p class="lead">Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></header>
     <ol class="alur">
-    <li class="kartu" style="--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
-    <li class="kartu" style="--c:var(--oranye)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg></i><em>Tahap 2</em></div><h3>Olah otomatis</h3><p>Skrip terbuka di GitHub Actions menggabungkan titik jadi kompleks api, menghitung bahaya cuaca, dampak, dan kebutuhan.</p></li>
-    <li class="kartu" style="--c:var(--nila)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><em>Tahap 3</em></div><h3>Uji &amp; validasi</h3><p>Uji otomatis memeriksa kelengkapan dan kewajaran angka; model diuji pada kejadian yang tidak dipakai melatihnya.</p></li>
-    <li class="kartu" style="--c:var(--hijau)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></i><em>Tahap 4</em></div><h3>Terbit</h3><p>Data lolos uji langsung terbit di situs. Umur tiap sumber dipantau; sumber yang basi ditandai.</p></li>
+    <li class="kartu" data-muncul style="background:var(--card);--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
+    <li class="kartu" data-muncul style="background:var(--card);--c:var(--oranye)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg></i><em>Tahap 2</em></div><h3>Olah otomatis</h3><p>Skrip terbuka di GitHub Actions menggabungkan titik jadi kompleks api, menghitung bahaya cuaca, dampak, dan kebutuhan.</p></li>
+    <li class="kartu" data-muncul style="background:var(--card);--c:var(--nila)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><em>Tahap 3</em></div><h3>Uji &amp; validasi</h3><p>Uji otomatis memeriksa kelengkapan dan kewajaran angka; model diuji pada kejadian yang tidak dipakai melatihnya.</p></li>
+    <li class="kartu" data-muncul style="background:var(--card);--c:var(--hijau)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></i><em>Tahap 4</em></div><h3>Terbit</h3><p>Data lolos uji langsung terbit di situs. Umur tiap sumber dipantau; sumber yang basi ditandai.</p></li>
     </ol>
     <div class="batas">
       <span class="ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span>
@@ -518,7 +555,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
       <li class="kartu" style="--c:var(--nila)"><b>Metode terbuka</b><span>Rumus dan kode bisa diperiksa di <a href="/metode">tab Metode</a> dan <a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>.</span></li>
       <li class="kartu" style="--c:var(--hijau)"><b>Privasi</b><span>Tanpa cookie pelacak; data laporan warga dibatasi dan dihapus otomatis. <a href="/privasi.html">Pemberitahuan privasi</a>.</span></li>
     </ul>
-    <details class="kartu lipat">
+    <details class="lipat">
       <summary>Jadwal pembaruan per sumber data</summary>
       <div class="isi"><table>
         <caption class="sr">Jadwal pembaruan per sumber data</caption>
@@ -538,64 +575,62 @@ nav.tautan a:focus-visible{outline-color:#fff}
 </section>
 
 <!-- ============ 6. SUMBER DATA ============ -->
-<section class="panel alt" id="sumber" aria-labelledby="h-sumber">
-  <div class="ph"><span class="pill">Sumber</span><h2 id="h-sumber">Sumber data</h2><p>Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></div>
-  <div class="pb">
-    <ul class="chips">
-    <li class="kartu"><b>NASA FIRMS</b><span>Titik panas satelit VIIRS &amp; MODIS, arsip 2002–kini</span><em class="lis">Data terbuka NASA</em></li>
-    <li class="kartu"><b>Copernicus · ECMWF · CAMS</b><span>Asap PM2.5/CO, reanalisis ERA5, GloFAS, luas terbakar GWIS</span><em class="lis">Lisensi Copernicus / CC BY 4.0</em></li>
-    <li class="kartu"><b>Open-Meteo</b><span>Cuaca per jam, prakiraan, dan arsip untuk FWI</span><em class="lis">CC BY 4.0</em></li>
-    <li class="kartu"><b>BMKG</b><span>Peringatan dini cuaca dan pasang air laut (rob)</span><em class="lis">Data publik pemerintah</em></li>
-    <li class="kartu"><b>BNPB</b><span>DIBI, InaRISK, laporan harian karhutla, kantor BPBD</span><em class="lis">Data publik pemerintah</em></li>
-    <li class="kartu"><b>KLHK / Kemenhut</b><span>SiPongi, kawasan hutan, luas terbakar resmi, izin tambang</span><em class="lis">Data publik pemerintah</em></li>
-    <li class="kartu"><b>BRGM</b><span>Wilayah restorasi gambut dan mangrove</span><em class="lis">Data publik pemerintah</em></li>
-    <li class="kartu"><b>WorldPop</b><span>Sebaran penduduk terdampak</span><em class="lis">CC BY 4.0</em></li>
-    <li class="kartu"><b>OpenStreetMap</b><span>Permukiman, jalan, sungai, fasilitas kesehatan</span><em class="lis">© kontributor OSM · ODbL</em></li>
-    <li class="kartu"><b>Global Forest Watch</b><span>Sebaran gambut, data konsesi</span><em class="lis">CC BY 4.0 (sebagian dikecualikan)</em></li>
-    <li class="kartu"><b>Trase</b><span>Konsesi HTI dan rantai pasok</span><em class="lis">CC BY 4.0</em></li>
-    <li class="kartu"><b>Google News</b><span>Judul dan tautan berita media (RSS)</span><em class="lis">Hak cipta tetap milik media</em></li>
+<section class="seksi putih" id="sumber" aria-labelledby="h-sumber">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Sumber</span><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header>
+    <ul class="chips" style="--card:var(--paper)">
+    <li><b>NASA FIRMS</b><span>Titik panas satelit VIIRS &amp; MODIS, arsip 2002–kini</span><em class="lis">Data terbuka NASA</em></li>
+    <li><b>Copernicus · ECMWF · CAMS</b><span>Asap PM2.5/CO, reanalisis ERA5, GloFAS, luas terbakar GWIS</span><em class="lis">Lisensi Copernicus / CC BY 4.0</em></li>
+    <li><b>Open-Meteo</b><span>Cuaca per jam, prakiraan, dan arsip untuk FWI</span><em class="lis">CC BY 4.0</em></li>
+    <li><b>BMKG</b><span>Peringatan dini cuaca dan pasang air laut (rob)</span><em class="lis">Data publik pemerintah</em></li>
+    <li><b>BNPB</b><span>DIBI, InaRISK, laporan harian karhutla, kantor BPBD</span><em class="lis">Data publik pemerintah</em></li>
+    <li><b>KLHK / Kemenhut</b><span>SiPongi, kawasan hutan, luas terbakar resmi, izin tambang</span><em class="lis">Data publik pemerintah</em></li>
+    <li><b>BRGM</b><span>Wilayah restorasi gambut dan mangrove</span><em class="lis">Data publik pemerintah</em></li>
+    <li><b>WorldPop</b><span>Sebaran penduduk terdampak</span><em class="lis">CC BY 4.0</em></li>
+    <li><b>OpenStreetMap</b><span>Permukiman, jalan, sungai, fasilitas kesehatan</span><em class="lis">© kontributor OSM · ODbL</em></li>
+    <li><b>Global Forest Watch</b><span>Sebaran gambut, data konsesi</span><em class="lis">CC BY 4.0 (sebagian dikecualikan)</em></li>
+    <li><b>Trase</b><span>Konsesi HTI dan rantai pasok</span><em class="lis">CC BY 4.0</em></li>
+    <li><b>Google News</b><span>Judul dan tautan berita media (RSS)</span><em class="lis">Hak cipta tetap milik media</em></li>
     </ul>
     <p class="catatan">Logo pihak ketiga sengaja tidak dipakai. Rincian per berkas (resolusi, umur data, lisensi seperti tercatat) ada di <a href="/metode">tab Metode, bagian Sumber data</a>.</p>
   </div>
 </section>
 
 <!-- ============ 7. TIM ============ -->
-<section class="panel" id="tim" aria-labelledby="h-tim">
-  <div class="ph"><span class="pill">Siapa kami</span><h2 id="h-tim">Tim</h2><p>Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin: perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan.</p></div>
-  <div class="pb">
-    <div class="kartu org" id="org"></div>
+<section class="seksi kertas" id="tim" aria-labelledby="h-tim">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Siapa kami</span><h2 class="h2" id="h-tim">Tim</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin: perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan.</p></header>
+    <div class="org" id="org" style="--paper:var(--card)"></div>
     <div id="anggota" hidden></div>
   </div>
 </section>
 
 <!-- ============ 8. KOLABORASI & PENGAKUAN (data/mitra.json; tersembunyi bila kosong) ============ -->
-<section class="panel alt" id="kolaborasi" aria-labelledby="h-kolab" hidden>
-  <div class="ph"><span class="pill">Rekam jejak</span><h2 id="h-kolab">Kolaborasi &amp; pengakuan</h2><p>Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></div>
-  <div class="pb">
-    <ul class="kolab" id="kolabDaftar"></ul>
-    <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><div class="kartu riset"><table aria-labelledby="h-riset"><thead><tr><th scope="col">Judul</th><th scope="col">Bidang</th><th scope="col">Tahun</th></tr></thead><tbody id="risetDaftar"></tbody></table></div></div>
+<section class="seksi putih" id="kolaborasi" aria-labelledby="h-kolab" hidden>
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header>
+    <ul class="kolab" id="kolabDaftar" style="--card:var(--paper)"></ul>
+    <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><div class="riset" style="--card:var(--paper)"><table aria-labelledby="h-riset"><thead><tr><th scope="col">Judul</th><th scope="col">Bidang</th><th scope="col">Tahun</th></tr></thead><tbody id="risetDaftar"></tbody></table></div></div>
   </div>
 </section>
 
 <!-- ============ 9. KONTAK ============ -->
-<section class="panel" id="kontak" aria-labelledby="h-kontak">
-  <div class="ph"><span class="pill">Hubungi kami</span><h2 id="h-kontak">Kontak</h2></div>
-  <div class="pb">
-    <div class="kartu kontak">
-      <div>
-        <h3>Ada data yang keliru, atau ingin bekerja sama?</h3>
-        <p>Kirim pesan langsung ke tim. Koreksi data kami prioritaskan. Dalam keadaan darurat, hubungi <b>112</b> atau BPBD setempat.</p>
-        <ul id="kontakDaftar"></ul>
-      </div>
-      <div class="aksi" id="kontakAksi"></div>
+<section class="seksi gelap" id="kontak" aria-labelledby="h-kontak">
+  <div class="wrap kontak">
+    <div>
+      <span class="eyebrow">Hubungi kami</span>
+      <h2 id="h-kontak">Ada data yang keliru, atau ingin bekerja sama?</h2>
+      <p>Kirim pesan langsung ke tim. Koreksi data kami prioritaskan. Dalam keadaan darurat, hubungi <b>112</b> atau BPBD setempat.</p>
+      <ul id="kontakDaftar"></ul>
     </div>
+    <div class="aksi" id="kontakAksi"></div>
   </div>
 </section>
 
 <!-- ============ 10. FAQ ============ -->
-<section class="panel alt" id="faq" aria-labelledby="h-faq">
-  <div class="ph"><span class="pill">Bantuan</span><h2 id="h-faq">Pertanyaan yang sering diajukan</h2></div>
-  <div class="pb">
+<section class="seksi kertas" id="faq" aria-labelledby="h-faq">
+  <div class="wrap">
+    <header class="kepala" data-muncul><span class="eyebrow">Bantuan</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>
     <div class="faq">
     <details><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
     <details><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>. Setiap metode, ambang, dan keterbatasannya ditulis di <a href="/metode">tab Metode</a>.</p></div></details>
@@ -612,7 +647,6 @@ nav.tautan a:focus-visible{outline-color:#fff}
     </div>
   </div>
 </section>
-</div>
 </main>
 
 <!-- ============ 10. KAKI ============ -->
@@ -639,6 +673,13 @@ nav.tautan a:focus-visible{outline-color:#fff}
   $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {} };
   document.addEventListener("click", e => { const d = $(".bencana"); if (d?.open && !e.target.closest(".bencana")) d.open = false; });
   document.addEventListener("keydown", e => { if (e.key === "Escape") { const d = $(".bencana"); if (d?.open) { d.open = false; d.querySelector("summary").focus(); } } });
+  /* muncul saat digulir (hanya bila JS hidup; gerak dihormati lewat CSS) */
+  if ("IntersectionObserver" in window && !matchMedia("(prefers-reduced-motion: reduce)").matches) {
+    document.documentElement.classList.add("lp-js");
+    const io = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { e.target.setAttribute("data-terlihat", ""); io.unobserve(e.target); } }), {rootMargin: "0px 0px -8% 0px"});
+    document.querySelectorAll("[data-muncul]").forEach(el => io.observe(el));
+    setTimeout(() => document.documentElement.classList.remove("lp-js"), 4000); /* jaring pengaman: tampilkan semua */
+  }
   $("#tahun").textContent = new Date().getFullYear();
   /* lencana iklim (salinan lencanaIklim di lapisan5.js): ENSO dari data/iklim.json */
   j("/data/iklim.json").then(ik => { const o = ik.oni_terakhir.nilai, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "";
