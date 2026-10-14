@@ -67,3 +67,4 @@
 .ks-ft em{text-align:left}
 .ks-tb td:first-child{text-align:left!important}
 .ks-tb td.n,.ks-tb th{text-align:center!important}
+.ks-pv{display:inline-flex;align-items:center;gap:8px}.ks-pv img,.ks-pv svg{width:20px;height:20px;object-fit:contain;flex:none}

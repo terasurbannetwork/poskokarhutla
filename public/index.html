@@ -543,6 +543,15 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .kl-w{display:inline-flex;gap:3px}
 .kl-n{display:flex;justify-content:space-between;font-size:10px}
 .kl-n em{margin:0!important}
+.pmulti{position:relative}
+.pmulti > summary{list-style:none;cursor:pointer;height:34px;display:flex;align-items:center;gap:8px;padding:0 34px 0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:700;white-space:nowrap;position:relative}
+.pmulti > summary::-webkit-details-marker{display:none}
+.pmulti > summary::after{content:"";position:absolute;right:14px;top:12px;width:7px;height:7px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg)}
+.pmulti .pm-menu{position:absolute;right:0;top:40px;z-index:30;min-width:240px;max-height:320px;overflow:auto;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow-lg,0 8px 28px rgb(0 0 0 / .16))}
+.pmulti .pm-menu label{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:13px;cursor:pointer}
+.pmulti .pm-menu label:hover{background:var(--surface)}
+.pmulti .pm-menu input{width:16px;height:16px;accent-color:#0b2545;flex:none}
+.pmulti .pm-menu img,.pmulti .pm-menu svg{width:18px;height:18px;flex:none}
 .kal-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:8px;font-size:11px;color:var(--ink2)}
 .kal-leg span{display:inline-flex;align-items:center;gap:3px}
 .kal-leg b{margin-right:4px;font-weight:700}
@@ -3201,6 +3210,13 @@ const Insight = {
   PENUH: new Set(["harian", "tahun", "kec"]),
   hl: t => `<span class="hl">${t}</span>`,
   seg(key, opsi) { return `<div class="seg" role="group">${opsi.map(([v, n]) => `<button data-set="${key}" data-v="${v}" aria-pressed="${String(this.st[key]) === String(v)}">${n}</button>`).join("")}</div>`; },
+  /* klik di luar menu provinsi = tutup */
+  _pmTutup: document.addEventListener("click", e => document.querySelectorAll(".pmulti[open]").forEach(d => { if (!d.contains(e.target)) d.open = false; })),
+  /* pilih beberapa provinsi untuk dibandingkan (pemilik, 14 Okt 2026): st[key] = kode dipisah koma, "" = semua */
+  provDipilih(key) { return String(this.st[key] || "").split(",").filter(Boolean); },
+  selProvMulti(key) { const P = this.provDipilih(key), lb = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi";
+    const buka = this._bukaMulti === key; this._bukaMulti = null;
+    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${PRIO.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}>${typeof lambang === "function" ? lambang(k) : ""}<span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
   selProv(key, semua = "Semua provinsi") { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${PRIO.map(k => `<option value="${k}" ${k === this.st[key] ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`; },
   async muat() {
     const D = this.data;
@@ -3386,7 +3402,7 @@ const Insight = {
 
   /* 6. tahun demi tahun; klik legenda = pilih provinsi */
   exTahun() {
-    const {mo, mu} = this.data, th = mo.tahun, pp = this.st.tahunProv, porsi = this.st.tahun === "porsi" && !pp, pv = pp ? [pp] : PRIO.filter(k => mo.prov[k]), EN = new Set(mu.tahun_el_nino.map(String));
+    const {mo, mu} = this.data, th = mo.tahun, PP = this.provDipilih("tahunProv"), pp = PP.length === 1 ? PP[0] : "", porsi = this.st.tahun === "porsi" && PP.length !== 1, pv = PP.length ? PP.filter(k => mo.prov[k]) : PRIO.filter(k => mo.prov[k]), EN = new Set(mu.tahun_el_nino.map(String));
     const nil = k => th.map(t => (mo.prov[k]?.[t] || []).reduce((a, b) => a + b, 0)), seri = pv.map(k => [k, nil(k)]);
     const tot = th.map((_, i) => seri.reduce((a, [, v]) => a + v[i], 0)), mx = porsi ? 1 : Math.max(...tot), ini = tot.at(-1), lalu = tot.slice(0, -1);
     const rank = [...tot].sort((a, b) => b - a).indexOf(ini) + 1, rata = lalu.reduce((a, b) => a + b, 0) / lalu.length;
@@ -3407,16 +3423,16 @@ const Insight = {
         /* legenda di kaki kartu (membungkus sendiri, tidak terpotong) */
     this._leg = [...(pv.length > 1 ? pv.map(k => [WARNA_PROV[k], pendek(k)]) : []), ...(porsi ? [] : [["#c9503a", "☀ tahun El Niño"]])]; const leg = "";
     const nm = pp ? namaProv(pp) : "provinsi yang sering mengalami karhutla";
-    return this.ex(`Tahun ${th.at(-1)} sudah menjadi tahun dengan titik panas terbanyak ${this.hl("ke-" + rank)} dalam ${th.length} tahun terakhir. Di ${pp ? esc(nm) : "9 provinsi yang sering mengalami karhutla"} tercatat ${this.hl(fmt(ini) + " titik")}, ${this.hl(fmt(Math.round(ini / rata * 10) / 10) + " kali")} lebih banyak dari rata-rata`,
+    return this.ex(`Tahun ${th.at(-1)} sudah menjadi tahun dengan titik panas terbanyak ${this.hl("ke-" + rank)} dalam ${th.length} tahun terakhir. Di ${PP.length ? esc(PP.map(namaProv).join(", ")) : "9 provinsi yang sering mengalami karhutla"} tercatat ${this.hl(fmt(ini) + " titik")}, ${this.hl(fmt(Math.round(ini / rata * 10) / 10) + " kali")} lebih banyak dari rata-rata`,
       `Titik panas per tahun, ${th[0]}–${th.at(-1)}`, `${porsi ? "porsi tiap provinsi per tahun" : "jumlah titik MODIS (keyakinan ≥ 30) per tahun; EN = tahun El Niño"}. Klik legenda untuk satu provinsi.`,
       `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per tahun">${g}${leg}</svg>`,
       `Sumber: NASA FIRMS MODIS arsip standar + NRT.`,
-      this.selProv("tahunProv") + (pp ? "" : this.seg("tahun", [["jumlah", "Jumlah"], ["porsi", "Porsi provinsi"]]))); },
+      this.selProvMulti("tahunProv") + (pp ? "" : this.seg("tahun", [["jumlah", "Jumlah"], ["porsi", "Porsi provinsi"]]))); },
 
   /* 7. luas terbakar satelit vs resmi */
   exLuas() {
     const {sat, res, mu} = this.data; if (!sat) return "";
-    const kSat = {"93": "91+93+94+95"}, pp = this.st.luasProv, kunci = pp ? [kSat[pp] || pp] : ["14", "15", "16", "61", "62", "63", "64", "53", "91+93+94+95"], kRes = pp ? [pp] : PRIO;
+    const kSat = {"93": "91+93+94+95"}, PP = this.provDipilih("luasProv"), pp = PP.length, kunci = pp ? PP.map(k => kSat[k] || k) : ["14", "15", "16", "61", "62", "63", "64", "53", "91+93+94+95"], kRes = pp ? PP : PRIO;
     const th = sat.tahun, EN = new Set(mu.tahun_el_nino.map(String));
     const tot = th.map((_, i) => kunci.reduce((a, k) => a + (sat.ha[k]?.[i] || 0), 0));
     const resmi = res ? th.map(t => { const j = res.tahun.indexOf(t); return j < 0 ? null : kRes.reduce((a, k) => a + (res.ha[k]?.[j] || 0), 0); }) : [];
@@ -3433,12 +3449,12 @@ const Insight = {
     [[rE, "#c9503a", "El Niño " + rb(rE), -geser / 2], [rB, "#d9733f", "biasa " + rb(rB), geser / 2]].forEach(([v, w, t, dy]) => { const lw = t.length * 11 * .6 + 16;
       g += `<line x1="${L}" x2="${W - RM + 4}" y1="${Y(v)}" y2="${Y(v)}" stroke="${w}" stroke-width="1.5" stroke-dasharray="5 4" opacity=".8"/>${this.pil(W - RM + 8, Y(v) - 10 + dy, t, w, "#fff", 11)[0]}`; });
     this._leg = [["#c9503a", "tahun El Niño"], ["#e58a45", "tahun biasa"]];
-    const nm = pp ? namaProv(pp) : "provinsi yang sering mengalami karhutla";
+    const nm = pp ? PP.map(namaProv).join(", ") : "provinsi yang sering mengalami karhutla";
     return this.ex(`Tahun El Niño menghanguskan ${this.hl(fmt(Math.round(rE / (rB || 1) * 10) / 10) + " kali")} luas tahun biasa di ${pp ? "" : "9 "}${esc(nm)}: rata-rata ${fmt(Math.round(rE))} ha lawan ${fmt(Math.round(rB))} ha`,
       `Luas terbakar menurut satelit, ${th[0]}–${th.at(-1)}`, `hektare per tahun; titik = angka resmi KLHK yang tersedia`,
       `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Luas terbakar per tahun">${g}</svg>`,
       `Sumber: GWIS/JRC (MODIS MCD64A1, CC BY 4.0).`,
-      this.selProv("luasProv")); },
+      this.selProvMulti("luasProv")); },
 
   /* 8. kecamatan langganan api: jalur panas tahunan per kecamatan */
   exKec() {
@@ -3446,7 +3462,7 @@ const Insight = {
        permintaan pemilik 13 Okt 2026, bersama saringan tindakannya. Hidupkan lagi
        dengan PAKAI_PV = true. */
     const PAKAI_PV = false;
-    const th = Riwayat.th, pp = this.st.kecProv, top = Object.values(S.riw).filter(r => r.jenis === "kec" && (pp ? r.prov === pp : PRIO.includes(r.prov))).sort((a, b) => b.skor - a.skor).filter(r => !PAKAI_PV || !window.Preventif || Preventif.lolos(r.kunci, this.st.kecAksi)).slice(0, +this.st.kecN);
+    const th = Riwayat.th, PP = this.provDipilih("kecProv"), pp = PP.length === 1 ? PP[0] : "", top = Object.values(S.riw).filter(r => r.jenis === "kec" && (PP.length ? PP.includes(r.prov) : PRIO.includes(r.prov))).sort((a, b) => b.skor - a.skor).filter(r => !PAKAI_PV || !window.Preventif || Preventif.lolos(r.kunci, this.st.kecAksi)).slice(0, +this.st.kecN);
     const PV = PAKAI_PV && window.Preventif?.lebar() || 0, W = 940 + PV, L = 250, R = 150 + PV, T = 26, rh = 34, cw = (W - L - R) / th.length, H = T + top.length * rh + 30;
     const isi = t => t <= 0 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(15 + t * 85)}%, #fbe3b4)`;
     let g = th.map((t, j) => j % 5 === 0 || j === th.length - 1 ? `<text x="${L + j * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" opacity=".65">${t}</text>` : "").join("")
@@ -3466,7 +3482,7 @@ const Insight = {
       `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "9 provinsi prioritas"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. ${PV ? "Klik baris untuk rencana pencegahan." : "Klik baris untuk analisa rinci."}`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:${760 + PV}px" role="img" aria-label="Kecamatan langganan api">${g}</svg></div>${PV ? Preventif.ringkasProv(pp) : ""}`,
       `Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,
-      this.selProv("kecProv") + this.seg("kecN", [[10, "Top 10"], [25, "Top 25"], [50, "Top 50"], [100, "Top 100"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
+      this.selProvMulti("kecProv") + this.seg("kecN", [[10, "Top 10"], [25, "Top 25"], [50, "Top 50"], [100, "Top 100"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; this._leg = null; try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
   async render() {
@@ -3476,7 +3492,10 @@ const Insight = {
     el.innerHTML = `
       ${this.EX.map(id => `<div data-ex="${id}"${this.PENUH.has(id) ? ' class="penuh"' : ""}>${this.gambar(id)}</div>`).join("")}`;
     const ulang = el => { const box = el.closest("[data-ex]"); if (box) nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); };
-    el.onchange = e => { const s = e.target.closest("select[data-set]"); if (!s) return; this.st[s.dataset.set] = s.value; ulang(s); };
+    el.onchange = e => { const m = e.target.closest("input[data-multi]");
+      if (m) { const k = m.dataset.multi, box = m.closest(".pm-menu"); if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
+        this.st[k] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); this._bukaMulti = k; return ulang(m); }
+      const s = e.target.closest("select[data-set]"); if (!s) return; this.st[s.dataset.set] = s.value; ulang(s); };
     el.onclick = e => {
       const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return ulang(s); }
       const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw);
@@ -5962,7 +5981,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="persetujuan.js" defer></script>
 <script src="kaki.js" defer></script>
 <script src="jejak.js" data-halaman="karhutla" defer></script>
-<script src="pesan.js" defer></script>
+<script src="pesan.js?v=1014c" defer></script>
 <script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
 document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
 </body>

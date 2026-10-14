@@ -33,7 +33,9 @@
 <script>/* tautan internal dalam mode tertanam: buka tab di aplikasi induk */ document.addEventListener("click", e => { if (!document.documentElement.classList.contains("tertanam")) return; const a = e.target.closest?.("a[href^='/']"); if (!a || a.target) return; const t = a.getAttribute("href").replace(/^\//, "").split(/[?#]/)[0]; if (parent.bukaTab && /^(peta|insight|berita|tren|dampak|sim|metode|kompleks)?$/.test(t)) { e.preventDefault(); parent.bukaTab(t || "peta"); } });</script>
 <script>/* dimuat sebagai tab di aplikasi: sembunyikan header & footer sendiri, warisi tema */ if (/[?&]tertanam=1/.test(location.search)) { document.documentElement.classList.add("tertanam"); try { const t = parent.document.documentElement.dataset.theme; if (t) document.documentElement.dataset.theme = t; } catch (e) {} }</script>
 <style>
-html.tertanam header.top,html.tertanam .kaki-situs,html.tertanam .ps-fab,html.tertanam .bhs.lepas{display:none!important}
+footer.kaki{display:none!important} /* diganti footer bersama kaki.js */
+.kaki-situs{margin:40px 0 0!important}
+html.tertanam header.top,html.tertanam .ps-fab,html.tertanam .bhs.lepas{display:none!important}
 html.tertanam body{padding-top:0}
 
 /* Bahasa visual = index.html (token oklch, header gradien navy) + kartu Insight: kartu putih, radius 16, hairline + bayangan halus, pita kepala berpil, badan berpadding. */
@@ -742,5 +744,6 @@ nav.tautan a:focus-visible{outline-color:#fff}
 <script src="/persetujuan.js" defer></script>
 <script src="/jejak.js" data-halaman="tentang" defer></script>
 <script src="/pesan.js" defer></script>
+<script src="/kaki.js" defer></script>
 </body>
 </html>

@@ -592,9 +592,9 @@ const Bagikan = {
     cv.d = d; return cv;
   },
   kepala(x, W, P, atas, d, uk) {
-    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? (uk === "story" ? 5 : 4) : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
+    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? 3 : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
     /* kepala lebih rendah & huruf lebih kecil supaya isi dapat ruang lebih (pemilik, 14 Okt 2026) */
-    let u = d.tpl === "ex" ? 40 : uk === "kotak" ? 46 : 52; this.f(x, 800, u, true);
+    let u = d.tpl === "ex" ? 36 : uk === "kotak" ? 44 : 50; this.f(x, 800, u, true);
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
     if (ln.length > maksBaris) { ln = ln.slice(0, maksBaris); ln.at(-1).push({t: "…"}); }
