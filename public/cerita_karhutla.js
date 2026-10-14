@@ -87,7 +87,7 @@ const Cerita = {
   bab(ey, id, judul, isi, {leg, sumber} = {}) {
     /* format kartu Insight: pita bab + judul satu kalimat, badan, kaki berisi legenda (tengah) dan sumber (miring) */
     const lg = (leg || []).map(([w, n]) => `<span>${w ? `<i style="${/[:;]/.test(w) ? w : "background:" + w}"></i>` : ""}${n}</span>`).join("");
-    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><button type="button" class="ct-bagi" data-ctbagi="${id}" aria-label="Bagikan bagian ini" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
+    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd">${id === "musim" ? `<button type="button" class="ct-vid-btn" data-ctvideo="1" title="Rekam dan unduh video sebaran"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="6" width="13" height="12" rx="2"/><path d="m16 10 5-3v10l-5-3z"/></svg>Bagikan video</button>` : ""}<button type="button" class="ct-bagi" data-ctbagi="${id}" aria-label="Bagikan bagian ini" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
   },
   async buka(el) {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;
@@ -436,3 +436,45 @@ document.addEventListener("click", e => { const b = e.target.closest?.("[data-ct
   const url = location.origin + "/insight#ct-" + b.dataset.ctbagi;
   if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". Lihat di Pantau Bencana:", url, kampanye: "cerita"});
   else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });
+
+/* rekam bab peta bergerak (Musim 2026) jadi video 1080×1350: kanvas peta + tanggal, angka, judul, merek; diputar dari awal sampai selesai */
+Cerita.rekamVideo = async function (onProg) {
+  const m = this.peta.musim, src = m?.getCanvas?.(); if (!src || !window.MediaRecorder) throw new Error("Perekaman video tidak didukung peramban ini");
+  const W = 1080, H = 1350, cv = Object.assign(document.createElement("canvas"), {width: W, height: H}), x = cv.getContext("2d");
+  const tipe = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t));
+  const rek = new MediaRecorder(cv.captureStream(30), {mimeType: tipe, videoBitsPerSecond: 6e6}), bag = [];
+  rek.ondataavailable = e => e.data.size && bag.push(e.data);
+  const judul = $q("#ct-musim h3", this.el)?.textContent.trim() || "Sebaran api 2026", tx = s => (s || "").replace(/\s+/g, " ").trim();
+  const logo = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = "/img/logo.svg?v=2"; });
+  const bungkus = (t, maks) => { const k = t.split(" "), out = []; let l = ""; for (const w of k) { if (x.measureText(l + w).width > maks && l) { out.push(l.trim()); l = ""; } l += w + " "; } out.push(l.trim()); return out.slice(0, 3); };
+  const gambar = () => {
+    const g = x.createLinearGradient(0, 0, W, 300); g.addColorStop(0, "#1d4e89"); g.addColorStop(1, "#0b2545");
+    x.fillStyle = "#eef2f7"; x.fillRect(0, 0, W, H); x.fillStyle = g; x.fillRect(0, 0, W, 300);
+    if (logo) x.drawImage(logo, 60, 50, 64, 64);
+    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText("Pantau Bencana · Karhutla", 140, 84);
+    x.font = "800 46px Inter, sans-serif"; bungkus(judul, W - 120).forEach((l, i) => x.fillText(l, 60, 175 + i * 54));
+    /* peta, dipotong cover ke kotak 960×860 */
+    const bx = 60, by = 330, bw = 960, bh = 860, s = Math.max(bw / src.width, bh / src.height), sw = bw / s, sh = bh / s;
+    x.save(); x.beginPath(); x.roundRect(bx, by, bw, bh, 24); x.clip();
+    x.drawImage(src, (src.width - sw) / 2, (src.height - sh) / 2, sw, sh, bx, by, bw, bh); x.restore();
+    /* kartu tanggal & angka dari overlay halaman */
+    const ov = $q("#ct-ovl", this.el), d = tx(ov?.querySelector(".ct-ov-d")?.textContent), n = tx(ov?.querySelector(".ct-ov-n")?.textContent);
+    x.fillStyle = "rgba(255,255,255,.94)"; x.beginPath(); x.roundRect(bx + 24, by + 24, 360, 150, 18); x.fill();
+    x.fillStyle = "#0b2545"; x.font = "800 56px Inter, sans-serif"; x.fillText(d, bx + 48, by + 98); x.font = "600 24px Inter, sans-serif"; x.fillStyle = "#4a5a72"; x.fillText(n, bx + 48, by + 144);
+    x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("pantau.terasurban.com", 60, H - 70);
+    x.fillStyle = "#4a5a72"; x.font = "500 22px Inter, sans-serif"; x.textAlign = "right"; x.fillText("Sumber: NASA FIRMS VIIRS", W - 60, H - 70); x.textAlign = "left";
+  };
+  const [lo] = this.rentang(); this.henti(); this.set(lo); await new Promise(r => setTimeout(r, 600));
+  rek.start(500); let jalan = true;
+  const loop = () => { if (!jalan) return; gambar(); onProg?.(); requestAnimationFrame(loop); }; loop();
+  await new Promise(r => setTimeout(r, 400)); this.putar();
+  await new Promise(r => { const t = setInterval(() => { if (!this.raf) { clearInterval(t); setTimeout(r, 1200); } }, 300); });
+  jalan = false; rek.stop(); await new Promise(r => rek.onstop = r);
+  return new File([new Blob(bag, {type: tipe})], `sebaran-api-2026.${tipe.startsWith("video/mp4") ? "mp4" : "webm"}`, {type: tipe.split(";")[0]});
+};
+document.addEventListener("click", async e => { const b = e.target.closest?.("[data-ctvideo]"); if (!b || b.disabled) return;
+  const t0 = b.innerHTML; b.disabled = true; b.innerHTML = "Merekam video…";
+  try { const f = await Cerita.rekamVideo();
+    if (navigator.canShare?.({files: [f]})) await navigator.share({files: [f], title: f.name}).catch(() => {});
+    else { const a = Object.assign(document.createElement("a"), {href: URL.createObjectURL(f), download: f.name}); a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); }
+  } catch (err) { alert(err.message); } finally { b.disabled = false; b.innerHTML = t0; } });

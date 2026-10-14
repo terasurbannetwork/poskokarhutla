@@ -195,3 +195,6 @@
 .ct-bab .ct-bagi:hover{background:var(--surface);color:var(--ink)}
 /* bab cerita bergrafik memakai tombol gambar; tombol tautan hanya untuk bab peta */
 .ct-bab:has(> .bg-ex) .ct-bagi{display:none}
+.ct-bab .ct-vid-btn{float:right;margin-left:8px;height:36px;padding:0 14px;display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;font:700 13px var(--font,Inter),sans-serif;cursor:pointer}
+.ct-bab .ct-vid-btn:disabled{opacity:.7;cursor:progress}
+#ct-musim > .bg-ex, #ct-musim .ex-hd > .bg-ex{display:none!important}
