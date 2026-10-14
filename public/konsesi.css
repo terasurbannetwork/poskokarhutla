@@ -66,3 +66,4 @@
 .ks-bar-sep{height:1px;background:var(--line);margin:4px 0}
 .ks-ft em{text-align:left}
 .ks-tb td:first-child{text-align:left!important}
+.ks-tb td.n,.ks-tb th{text-align:center!important}

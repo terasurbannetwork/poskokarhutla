@@ -141,7 +141,7 @@
           let h = ""; const gs = a?.grid.filter(g => g.prov === k) || [];
           if (gs.length) { const maks = a.hari.map((_, j) => Math.max(...gs.map(g => g.ps[j] ?? 0)));
             h += pita(a.hari, [["sangat tinggi", "Peluang tertinggi FWI ≥ 14 di sel mana pun di provinsi ini", maks.map((p, j) => sel(p, SK_API, `${hr(a.hari[j])}: di sel terburuk, ${pct(p)} skenario FWI ≥ 14`)).join("")]])
-              + `<p class="fnd">Peluang tertinggi di provinsi dari ${a.anggota} skenario ECMWF; bukan kepastian.</p>`; }
+              + `<p class="fnd">Peluang tertinggi di provinsi dari ${a.anggota} skenario ECMWF.</p>`; }
           const ts = t?.grid.filter(g => g.prov === k && g.pct1 != null) || [];
           if (ts.length) { const n = ts.filter(g => g.pct1 <= 10).length; h += `<p style="margin:0;font-size:12.5px"><b>${fmt(n)} dari ${fmt(ts.length)}</b> sel tanah (7–28 cm) jauh lebih kering dari biasa untuk ${das(t.dasarian)}.</p>`; }
           const w = b?.nowcast.filter(x => aktif(x) && x.prov.includes(k)) || [];

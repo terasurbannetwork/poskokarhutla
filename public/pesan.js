@@ -8,7 +8,7 @@
     kerja_sama: '<path d="M8 12l3 3 5-5"/><path d="M3 12l4-4 5 2 5-2 4 4-9 9z"/>', media: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', lainnya: '<circle cx="5" cy="12" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="19" cy="12" r="1.5"/>'};
   const IKON = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>';
   D.head.insertAdjacentHTML("beforeend", `<style>
-.ps-dlg{--ps-bg:#fff;--ps-ink:#0b2545;--ps-ink2:#56607a;--ps-line:#dfe3ec;--ps-in:#f6f7fa;border:0;border-radius:16px;padding:0;width:min(520px,calc(100vw - 24px));max-height:calc(100dvh - 24px);background:var(--ps-bg);color:var(--ps-ink);font:14.5px/1.5 Inter,system-ui,sans-serif;box-shadow:0 20px 60px rgb(11 37 69 / .3)}
+.ps-dlg{--ps-bg:#fff;--ps-ink:#0b2545;--ps-ink2:#56607a;--ps-line:#dfe3ec;--ps-in:#f6f7fa;border:0;border-radius:16px;padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px);background:var(--ps-bg);color:var(--ps-ink);font:14.5px/1.5 Inter,system-ui,sans-serif;box-shadow:0 20px 60px rgb(11 37 69 / .3)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ps-dlg{--ps-bg:#172036;--ps-ink:#eef1f7;--ps-ink2:#aab4c8;--ps-line:#2a3550;--ps-in:#10172a}}
 :root[data-theme="dark"] .ps-dlg{--ps-bg:#172036;--ps-ink:#eef1f7;--ps-ink2:#aab4c8;--ps-line:#2a3550;--ps-in:#10172a}
 .ps-dlg::backdrop{background:rgb(11 37 69 / .45)}
@@ -21,7 +21,8 @@
 .ps-dlg .ps-l{display:flex;align-items:baseline;justify-content:space-between;font-weight:700;font-size:12.5px}
 .ps-dlg .ps-l small{font-weight:500;color:var(--ps-ink2);font-size:11px}
 .ps-dlg .ps-kat{display:grid;gap:6px}
-.ps-dlg .ps-kat > div{display:flex;flex-wrap:wrap;gap:6px}
+.ps-dlg .ps-kat > div{display:flex;flex-wrap:nowrap;gap:6px}
+@media (max-width:620px){.ps-dlg .ps-kat > div{flex-wrap:wrap}}
 .ps-dlg .ps-chip{display:inline-flex;cursor:pointer;font-weight:600}
 .ps-dlg .ps-chip input{position:absolute;opacity:0;width:1px;height:1px}
 .ps-dlg .ps-chip span svg{width:14px;height:14px;flex:none}

@@ -629,7 +629,12 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 /* Kompleks di bawah Insight: lebar & jarak sama dengan kartu Insight; toolbar cari selebar kartu, tanpa CSV */
 #insightKompleks{max-width:1120px;margin:16px auto 0;display:grid;gap:16px}
 #insightKompleks .tbar{display:flex;gap:10px;align-items:center}
-#insightKompleks .tbar #tq{flex:1 1 auto;min-width:0}
+#insightKompleks .tbar #tq{flex:1 1 auto;min-width:0;height:40px}
+#insightKompleks .tbar #tprov{flex:none;height:40px;min-width:200px;border-radius:999px;border:1px solid var(--line);background:var(--card);padding:0 14px;font-weight:600;font-size:13px;color:var(--ink)}
+#insightKompleks .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);overflow:auto}
+#insightKompleks tbody td{padding-top:11px!important;padding-bottom:11px!important}
+#insightKompleks tbody td:first-child,#insightKompleks thead th:first-child{padding-left:16px!important}
+#insightKompleks tbody td:last-child,#insightKompleks thead th:last-child{padding-right:16px!important}
 #insightKompleks .tbar .sp{display:none}
 #insightKompleks .tbar > *:not(#tq):not(.sp):not([hidden]){flex:none}
 #insight > *{min-width:0}
@@ -666,11 +671,17 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pv-p.pv-lebar{grid-column:1/-1}
 .pv-p > h4{margin:0;padding:10px 14px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:var(--card);border-bottom:1px solid var(--line)}
 .pv-b{padding:12px 14px;display:grid;gap:10px}
+.pv-k2{display:grid;grid-template-columns:auto repeat(12,minmax(0,1fr));gap:3px;align-items:center}
+.pv-k2n{font-size:11px;font-weight:700;padding-right:6px;white-space:nowrap}
+.pv-k2 i{height:24px;border-radius:5px;display:grid;place-items:center;font:700 10px/1 var(--font);font-style:normal}
+.pv-k2 i.kini{outline:2px solid var(--ink);outline-offset:-1px}
+.pv-k2 small{text-align:center;font-size:10px;color:var(--ink2)}
 .pv-us{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.pv-u{position:relative;padding:10px 12px 9px;border-radius:12px;background:var(--card);border:1px solid color-mix(in oklch, var(--w) 20%, var(--line));overflow:hidden}
+.pv-u{position:relative;padding:14px 16px 13px;border-radius:14px;background:linear-gradient(160deg,color-mix(in oklch, var(--w) 9%, var(--card)),var(--card) 70%);border:1px solid color-mix(in oklch, var(--w) 22%, var(--line));overflow:hidden;box-shadow:var(--shadow)}
+.pv-u::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--w)}
 .pv-u::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--w)}
-.pv-u b{display:block;font-family:var(--display);font-size:20px;font-weight:800;line-height:1.1;color:color-mix(in oklch, var(--w) 75%, var(--ink));font-variant-numeric:tabular-nums}
-.pv-u span{display:block;font-size:11px;color:var(--ink2);font-weight:600;margin-top:2px}
+.pv-u b{display:block;font-family:var(--display);font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.01em;color:color-mix(in oklch, var(--w) 75%, var(--ink));font-variant-numeric:tabular-nums}
+.pv-u span{display:block;font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:4px}
 .pv-u em{display:inline-block;margin-top:5px;font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 12%, transparent);color:color-mix(in oklch, var(--w) 80%, var(--ink))}
 .pv-sub{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
 .pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
@@ -2559,9 +2570,10 @@ const Tabel = {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
       el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar kompleks</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
-        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
+        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><select id="tprov" aria-label="Provinsi"><option value="">Semua provinsi</option>${Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join("")}</select><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
         <div class="ex-bd"><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
       $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
+      $("#tprov").addEventListener("change", e => { this.prov = e.target.value || null; this.hal = 0; nanti(() => this.render()); });
       $("#th").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
         this.turun = this.urut === k ? !this.turun : true; this.urut = k; this.hal = 0;
         $("#th").querySelectorAll("button").forEach(x => x.querySelector("i").textContent = x === b ? (this.turun ? "↓" : "↑") : "");
@@ -2586,7 +2598,8 @@ const Tabel = {
 /* ================================================================ prioritas */
 /* rekomendasi otomatis per provinsi: tiap butir punya tingkat (3 = segera ... 0 = info) dan dasar datanya */
 function rekomendasi(k, d) {
-  const R = [], tambah = (lv, teks, dasar) => R.push({lv, teks, dasar});
+  /* rekomendasi soal regu, posko, dan Daops disembunyikan (pemilik, 14 Okt 2026) */
+  const R = [], tambah = (lv, teks, dasar) => { if (!/regu|posko|Daops|MPA/i.test(teks + " " + dasar)) R.push({lv, teks, dasar}); };
   const prio = d.kl.filter(f => f.properties.level === 3).sort((a, b) => a.properties.peringkat - b.properties.peringkat);
   if (prio.length) { const top = prio.slice(0, 3).map(f => f.properties);
     tambah(3, `Kerahkan regu ke ${prio.length} kompleks prioritas, mulai ${top.map(p => `<b>${p.id}</b> ${esc(p.kec)}`).join(", ")}`,
@@ -2643,14 +2656,16 @@ async function renderPrioritas() {
               + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 800 : 500}" opacity="${ak ? 1 : .65}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
         ${pm ? `<div class="pv-ket"><em class="br-lb" style="--w:${pm > 150.4 ? "#7a2b3f" : pm > 55.4 ? "#c9503a" : "#e3b94e"}">PM2.5 hingga ${fmt(Math.round(pm))} µg/m³ · ${pm > 250.4 ? "berbahaya" : pm > 150.4 ? "sangat tidak sehat" : pm > 55.4 ? "tidak sehat" : "sedang"}</em><em class="br-lb" style="--w:#8a6a3f">DC maks ${fmt(w.dc_maks)}</em></div>` : ""}`)}
-      ${o ? sek("Kalender musim", `<div class="pv-kal">${o.p_semua.map((v, j) => `<i class="${j === das ? "kini" : ""}" style="--v:${v < .05 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e8c86a)`}" data-tip="<b>${DAS(j)}</b><br>Peluang periode api besar: ${Math.round(v * 100)}%"></i>`).join("")}</div>
-        <div class="pv-bln">${BULAN.map(bl => `<span>${bl}</span>`).join("")}</div>
-        <div class="pv-ket"><em class="br-lb" style="--w:#c9503a">Siaga tahun El Niño: ${Tren.siaga(o.p_el_nino)}</em><em class="br-lb" style="--w:#e58a45">Tahun biasa: ${Tren.siaga(o.p_biasa)}</em><em class="br-lb" style="--w:#1d4e89">▢ = sekarang</em></div>`) : ""}
+      ${o ? sek("Kalender musim", (() => { /* dua baris (El Niño & tahun biasa), 12 kotak bulan berangka (pemilik, 14 Okt 2026) */
+        const bln = ps => BULAN.map((_, m) => Math.max(ps[m * 3], ps[m * 3 + 1], ps[m * 3 + 2])), kini = Math.floor(das / 3), wv = (v, w) => v < .05 ? "var(--surface)" : `color-mix(in oklch, ${w} ${Math.round(30 + v * 70)}%, #fbe3c4)`;
+        return `<div class="pv-k2">${[["El Niño", o.p_el_nino, "#c9503a"], ["Tahun biasa", o.p_biasa, "#e58a45"]].map(([n, ps, w]) => `<span class="pv-k2n">${n}</span>${bln(ps).map((v, m) => `<i class="${m === kini ? "kini" : ""}" style="background:${wv(v, w)};color:${v >= .45 ? "#fff" : "var(--ink2)"}" data-tip="<div class='tk'><div class='tk-h'><b>${BULAN[m]}</b><small>tahun ${n.toLowerCase()}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>">${v >= .05 ? Math.round(v * 100) : ""}</i>`).join("")}`).join("")}
+          <span></span>${BULAN.map(b => `<small>${b}</small>`).join("")}</div>
+          <div class="pv-ket"><em class="br-lb" style="--w:#c9503a">Siaga El Niño: ${Tren.siaga(o.p_el_nino)}</em><em class="br-lb" style="--w:#e58a45">Siaga tahun biasa: ${Tren.siaga(o.p_biasa)}</em></div>`; })()) : ""}
       ${sek("Tren tahunan", trenKartu(k))}
       ${bn ? sek("Laporan BNPB", `<div class="pv-us">${ubin(fmt(angkaID(bn["Total Hotspot"])), "titik panas versi BNPB", "#e58a45")}${ubin(fmt(Math.round(angkaID(bn["Lahan Terbakar Indikatif (Ha)"]) || 0)), "ha lahan terbakar", "#c9503a")}${ubin(esc(bn["Jarak Pandang Bandara (Km)"]) + " km", "jarak pandang bandara", "#5f6fb0")}${ubin(esc(bn["Kabkot Terdampak"] ?? "–"), "kab/kota terdampak", "#1d4e89")}</div>
         <div class="pv-ket"><em class="br-lb" style="--w:#7a2b3f">Kualitas udara: ${esc(bn["Kualitas Udara (PM 25)"])}</em></div>`) : ""}
       </div>
-      <button class="btn-gelap pv-peta" data-k="${k}">Lihat ${esc(namaProv(k))} di peta ›</button></div>`};
+      </div>`};
   });
   /* halaman Kompleks api: strip 9 provinsi prioritas di atas tabel; klik provinsi = saring tabel + kartu rinciannya */
   const pil = Tabel.prov, kp = kartu.find(x => x.k === pil);
@@ -4462,12 +4477,13 @@ function trenKartu(k) {
   const akhir = (() => { for (let m = 11; m > bln; m--) if (iklim[m] / tahunan >= .05) return BULAN[m]; return null; })();
   const r = rataSd ? iniSd / rataSd : 0, mirip = lalu.map(t => [t, Math.abs(sd(t) - iniSd)]).sort((a, b) => a[1] - b[1])[0][0];
   const warna = r >= 2 ? "var(--bad)" : r >= 1.2 ? "var(--warn)" : "var(--ok)";
-  return `<div class="lbl" style="margin-top:4px">Pertimbangan tren ${th[0]}–${ini}</div>
-    <table style="font-size:12px;margin:4px 0 8px;width:100%;table-layout:fixed"><tbody>
-    <tr><td>${ini} s.d. ${BULAN[bln]} vs rata-rata periode sama</td><td class="n num" style="color:${warna}"><b>${r ? r.toFixed(1) + "×" : "–"}</b></td></tr>
-    <tr><td>Peringkat ${ini} (periode sama) dari ${th.length} tahun</td><td class="n num">${rank}</td></tr>
-    <tr><td>Tahun paling mirip</td><td class="n num">${mirip}</td></tr>
-    <tr><td>Sisa beban musim (pola bulanan)</td><td class="n num">${Math.round(sisa * 100)}%${akhir ? " · s.d. " + akhir : ""}</td></tr></tbody></table>
+  /* empat kotak angka bergaya ubin panel (pemilik, 14 Okt 2026) */
+  const u = (v, l, w, ket = "") => `<div class="pv-u" style="--w:${w}"><b>${v}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
+  return `<div class="pv-us" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:8px">
+    ${u(r ? r.toFixed(1).replace(".", ",") + "×" : "–", `${ini} s.d. ${BULAN[bln]} vs rata-rata`, r >= 2 ? "#c9503a" : r >= 1.2 ? "#e58a45" : "#2b8c86", r >= 2 ? "jauh di atas normal" : r >= 1.2 ? "di atas normal" : "sekitar normal")}
+    ${u(rank + "<small style='font-size:13px;opacity:.6'> / " + th.length + "</small>", "peringkat periode sama", "#5f6fb0")}
+    ${u(mirip, "tahun paling mirip", "#1d4e89")}
+    ${u(Math.round(sisa * 100) + "%", "sisa beban musim", "#8a6a3f", akhir ? "s.d. " + akhir : "")}</div>
     <p style="font-size:11.5px;color:var(--ink2);margin:0 0 8px">${r >= 2 ? `Tahun ini jauh di atas normal, mirip ${mirip}. ` : r >= 1.2 ? "Tahun ini di atas normal. " : "Tahun ini di bawah atau sekitar normal. "}${sisa >= .1 ? `Biasanya ${Math.round(sisa * 100)}% titik tahunan masih muncul setelah ${BULAN[bln]}. Posko dan regu jangan ditarik dulu.` : "Musim biasanya hampir selesai. Fokus ke pemantauan bara gambut dan pemulihan."}</p>`;
 }
 

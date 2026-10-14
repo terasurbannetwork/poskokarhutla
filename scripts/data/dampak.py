@@ -268,6 +268,9 @@ def main():
     aktif = [{"id": p["id"], "lat": p["lat"], "lon": p["lon"], "prov": p["prov"], "level": p["level"], "luas": p.get("luas") or 0,
               "r": math.sqrt((p.get("luas") or 0) / 100 / math.pi), "kab": p.get("kab")} for p in kl if p.get("level", 0) >= LEVEL_DEKAT]
     asap, pen, desa, fas = baca("asap.json"), baca("penduduk.json"), baca("osm/desa.json", {}), baca("fasilitas.json", [])
+    # sekolah dari data sekolah nasional (sekolah.py); fasilitas.json OSM tinggal rumah sakit & puskesmas
+    sek = baca("sekolah.json", {"kolom": [], "baris": []})
+    fas = [x for x in fas if x["t"] != "sekolah"] if sek["baris"] else fas
     berita = baca("berita.json", {"artikel": []})
     out = {"dibuat": kini.isoformat(timespec="minutes"), "mulai_musim": m0.isoformat()}
 
@@ -338,7 +341,7 @@ def main():
                         b = (d, k)
         return b
 
-    dekat = defaultdict(lambda: {"desa": [0, 0, 0], "jiwa": [0, 0, 0], "sekolah": [0, 0, 0], "faskes": [0, 0, 0], "sekolah_tidak_sehat": 0})
+    dekat = defaultdict(lambda: {"desa": [0, 0, 0], "jiwa": [0, 0, 0], "sekolah": [0, 0, 0], "siswa": [0, 0, 0], "faskes": [0, 0, 0], "sekolah_tidak_sehat": 0})
     daftar_desa, daftar_sek = [], []
     for p, rows in desa.items():
         for la, lo, kode, nama in rows:
@@ -347,18 +350,24 @@ def main():
                 for i, r in enumerate(RADIUS):
                     dekat[p]["desa"][i] += t[0] <= r
                 daftar_desa.append({"nama": nama, "kode": kode, "prov": p, "lat": la, "lon": lo, "km": round(t[0], 1), "kompleks": t[1]["id"], "level": t[1]["level"]})
+    for nama, jenjang, status, _npsn, siswa, prov, _kab, _kec, _desa, lat, lon in sek["baris"]:
+        pm = pm_di(lat, lon)
+        if pm and pm[0] is not None and pm[0] > ISPU[1]:
+            dekat[prov]["sekolah_tidak_sehat"] += 1
+        t = terdekat(lat, lon)
+        if t and t[0] <= RADIUS[-1]:
+            for i, r in enumerate(RADIUS):
+                dekat[prov]["sekolah"][i] += t[0] <= r
+                dekat[prov]["siswa"][i] += (siswa or 0) * (t[0] <= r)
+            if t[0] <= 5:
+                daftar_sek.append({"nama": nama, "jenjang": jenjang, "status": status, "siswa": siswa, "prov": prov, "lat": lat, "lon": lon,
+                                   "km": round(t[0], 1), "kompleks": t[1]["id"], "level": t[1]["level"], "pm": pm})
     for x in fas:
-        jenis = "sekolah" if x["t"] == "sekolah" else "faskes"
         pm = pm_di(x["lat"], x["lon"])
-        if jenis == "sekolah" and pm and pm[0] is not None and pm[0] > ISPU[1]:
-            dekat[x["prov"]]["sekolah_tidak_sehat"] += 1
         t = terdekat(x["lat"], x["lon"])
         if t and t[0] <= RADIUS[-1]:
             for i, r in enumerate(RADIUS):
-                dekat[x["prov"]][jenis][i] += t[0] <= r
-            if jenis == "sekolah" and t[0] <= 5:
-                daftar_sek.append({"nama": x["nama"], "prov": x["prov"], "lat": x["lat"], "lon": x["lon"], "km": round(t[0], 1), "kompleks": t[1]["id"],
-                                   "level": t[1]["level"], "pm": pm})
+                dekat[x["prov"]]["faskes"][i] += t[0] <= r
     # penduduk: sel 0,02 derajat (~2,2 km) diberi kepadatan sel WorldPop 0,25 derajat induknya
     pad, prov_sel = defaultdict(float), {}
     for la, lo, n, p in pen["grid"]:
@@ -472,7 +481,7 @@ def cek(o):
     for k in (o["musim"]["ha"], o["emisi"]["mt_co2e"], o["kerugian"]["total"]):
         assert k[0] <= k[1] <= k[2], f"rentang rendah<=tengah<=tinggi dilanggar: {k}"
     for p, d in o["dekat"]["prov"].items():
-        for f in ("desa", "jiwa", "sekolah", "faskes"):
+        for f in ("desa", "jiwa", "sekolah", "siswa", "faskes"):
             assert d[f] == sorted(d[f]), f"{p} {f}: radius lebih besar harus >= radius kecil, dapat {d[f]}"
     for p, d in o["udara"]["prov"].items():
         for x in d["ispa"]:
