@@ -21,12 +21,13 @@ import lolos as LL  # noqa: E402
 from lacak import hubungkan  # noqa: E402
 from umum import MENTAH, PUBLIK, PRIORITAS, T0, pusat, sel  # noqa: E402
 
-FOLDER = os.path.join(MENTAH, "prospektif")
+RIWAYAT_HARI = float(os.environ.get("PROSPEKTIF_RIWAYAT_HARI", "7"))  # < 7 hanya uji alur (fitur 7 hari terpotong): folder & ringkasan terpisah
+FOLDER = os.path.join(MENTAH, "prospektif" if RIWAYAT_HARI >= 7 else "prospektif_uji_alur")
 GUDANG = os.path.join(FOLDER, "titik.json.gz")
 RAMALAN = os.path.join(FOLDER, "ramalan.jsonl")
 NILAI = os.path.join(FOLDER, "nilai.jsonl")
 CUACA = os.path.join(FOLDER, "cuaca")
-RINGKAS = os.path.join(PUBLIK, "prospektif.json")
+RINGKAS = os.path.join(PUBLIK, "prospektif.json") if RIWAYAT_HARI >= 7 else os.path.join(FOLDER, "ringkasan.json")
 SIMPAN_HARI = 12
 UMUR_MIN, UMUR_MAKS = 6 * 60, 24 * 60  # menit sesudah deteksi pertama: jendela NOAA-20 +-3 jam tertutup & sudah masuk NRT
 JEDA_NILAI = 72 * 60 + 6 * 60  # 72 jam + keterlambatan NRT
@@ -183,7 +184,7 @@ def main():
         lo0 = sum(snpp[i][2] for i in pertama) / len(pertama)
         la0 = sum(snpp[i][1] for i in pertama) / len(pertama)
         prov = snpp[idx[0]][5]
-        if prov not in PRIORITAS or t0 < t_awal + 7 * 1440:
+        if prov not in PRIORITAS or t0 < t_awal + RIWAYAT_HARI * 1440:
             continue
         umur = a0 - t0
         kunci = f"{t0:.0f}_{la0:.4f}_{lo0:.4f}"

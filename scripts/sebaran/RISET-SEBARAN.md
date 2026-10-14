@@ -10,9 +10,9 @@ jadi regresi logistik dan gradient boosting ditulis sendiri di `gbdt.py`). Berka
 | Data | Isi | Catatan |
 | --- | --- | --- |
 | VIIRS S-NPP 375 m | `viirs.csv` 2015–12 Okt 2026 (3,33 jt baris; 2,92 jt vegetasi n/h) + `viirs_2012_2014.csv` (diunduh hari ini, 1,29 jt) | arsip hanya **S-NPP**: ±2 lintasan/hari (13:30 & 01:30 lokal). Celah FIRMS 8 Mei–1 Jun 2026. Jul–Okt 2026 = NRT |
-| VIIRS NOAA-20 | `viirs_noaa20.csv` 2018–2026 (2,13 jt baris, diunduh hari ini) | belum dipakai model (mengubah definisi peristiwa); lihat §9 |
+| VIIRS NOAA-20 | `viirs_noaa20.csv` Apr 2018–2026 (2,13 jt baris) | dipakai sebagai fitur model "akan membesar" (§12), bukan untuk definisi peristiwa |
 | MODIS | 2002–2026, 1,9 jt baris | tren 25 tahun |
-| Cuaca per jam | ERA5 (Open-Meteo archive) untuk 942 pasangan (tahun, sel 0,5°) = 81% peristiwa tumbuh 9 provinsi Jul–Nov | kuota habis: 2017, 2018, 2020–2022, 2024 hanya sebagian (lihat `cuaca.py`) |
+| Cuaca per jam | ERA5 (Open-Meteo archive) untuk 1.623 pasangan (tahun, sel 0,5°) = 90% peristiwa tumbuh 9 provinsi Jul–Nov (14 Okt: +681 pasangan 2017/2018/2019/2023, bobot 6.373) | 2020–2022, 2024–2025 masih sebagian; uji 2024–2026 sengaja tidak ditambah supaya himpunan uji sama |
 | Variabel tambahan | lengas tanah 0–7/7–28 cm, tinggi lapisan batas, awan, radiasi: 448 blok (sel 0,5° × 14 hari) yang memuat 110 rb peristiwa | **CAPE dan suhu/titik embun 850/700 hPa tidak tersedia di arsip ERA5 Open-Meteo** (diperiksa: null) → indeks Haines tidak bisa dihitung |
 | Elevasi/kemiringan | OpenTopoData SRTM 90 m, 24 rb titik awal (72 rb titik) | hanya analisis pendorong |
 | Lahan | gambut, kawasan hutan (HK/HL/HP/HPT/HPK/APL), konsesi (sawit 1.823, HTI 306, HPH 508, tambang 852), sanksi karhutla (32 kasus), kanal OSM, jalan, desa, sungai OSM, penduduk WorldPop 0,25° | sanksi dihitung hanya bila **sudah** dijatuhkan pada tahun api |
@@ -245,12 +245,13 @@ pemadaman (tak ada data operasi), awan/asap (butuh Himawari), titik api baru yan
 
 ## 9. Batas yang jujur
 
-1. VIIRS S-NPP saja: 2 lintasan/hari, jadi "per jam" di peramban adalah pembagian luas harian menurut ISI per jam, bukan
-   pengamatan. NOAA-20 2018–2026 sudah diunduh (2,13 jt baris) dan akan menambah 2 lintasan/hari, tetapi mengubah
-   definisi peristiwa dan target; belum dilatih ulang.
+1. VIIRS S-NPP saja untuk peristiwa & model sel: 2 lintasan/hari, jadi "per jam" di peramban adalah pembagian luas harian
+   menurut ISI per jam, bukan pengamatan. NOAA-20 hanya masuk model "akan membesar" (§12) dan tidak menambah skill pada
+   deteksi pertama: lintasannya ± 50 menit dari S-NPP, jadi tidak memberi pandangan kedua yang lebih awal.
 2. Titik panas ≠ perimeter: piksel 375 m melebihkan api kecil, awan/asap menyembunyikan api besar.
 3. Uji memakai ERA5 (seolah prakiraan sempurna); prakiraan sungguhan menurunkan skill.
-4. Cuaca hanya untuk 81% peristiwa tumbuh (kuota); tahun 2017, 2018, 2020–22, 2024 kurang terwakili.
+4. Cuaca untuk 90% peristiwa tumbuh (kuota); 2020–22 dan 2024–25 kurang terwakili. Model sel (§6) masih dilatih dengan
+   cakupan lama 81%; model "akan membesar" (§12) memakai cakupan 90%.
 5. 2015 (El Niño) mendominasi data latih; 2024 (tahun kecil) F1 0 di uji (n = 57).
 6. Kemiringan dan lengas tanah hanya di analisis pendorong (sampel), bukan di model sel.
 
@@ -261,9 +262,83 @@ Lihat SEBARAN_MODEL.md §5 (JAXA P-Tree Himawari-9 WLF 10 menit, pendaftaran ole
 
 ## 11. Berkas
 
-`scripts/sebaran/`: umum.py, lacak.py, musim_awal.py, cuaca.py, fitur.py, gbdt.py, simfisika.py, latih.py,
-latih_jalan.py, kasus.py, pendorong.py, galat.py, cerita_data.py, uji_js.py, splice_sebaran.py, SEBARAN_MODEL.md.
+`scripts/sebaran/`: umum.py, lacak.py, musim_awal.py, cuaca.py, fitur.py, gbdt.py (+ kendala monoton & fokal), simfisika.py,
+latih.py, latih_jalan.py, kasus.py, pendorong.py, galat.py, lolos.py, prospektif.py, cerita_data.py, uji_js.py,
+splice_sebaran.py, SEBARAN_MODEL.md. Angka §12: `data/raw/sebaran/lolos_cv.json`, `lolos_hasil.json`.
 Semua punya `uji` (invarian) kecuali latih_jalan.py (tahap berat; diuji lewat `SEBARAN_CEPAT=1`).
-`public/`: sebaran_model.js, cerita_karhutla.js/.css, insight_sebaran.js, sim_data.js; data: model_sebaran.json,
+`public/`: sebaran_model.js, cerita_karhutla.js/.css, insight_sebaran.js, sim_data.js; data: model_sebaran.json (+ lolos, lolos_ulang, selang), prospektif.json,
 musim_awal.json, tren_karhutla.json, sebaran_cerita.json, sebaran_kasus.json, sebaran_pendorong.json, sebaran_galat.json.
-Kesetaraan Python ↔ JS: `uji_js.py` → selisih peluang maks 1,5e-16 pada 850 sel dari 6 titik awal nyata.
+Kesetaraan Python ↔ JS: `uji_js.py` → selisih peluang maks 1,5e-16 pada 850 sel dari 6 titik awal nyata; peluang membesar
+(awal & ulang) 1,9e-16, fitur membesar sama < 1e-6.
+
+## 12. Model khusus "akan membesar" (`lolos.py`, 14 Okt 2026)
+
+Masalah: peluang lolos lama = porsi run Monte Carlo model sel yang mencapai 10 sel. Uji 2024–2026 AUC 0,70; di 123 kasus
+pada ambang 50% hanya 18 dari 58 api yang membesar tertangkap (31%; kelas "besar" benar 34%). Penggantinya satu
+pengklasifikasi GBDT per titik api baru (438.217 titik api baru 9 provinsi Jul–Nov dengan cuaca, 12.436 lolos = 2,8%).
+Semua positif + 5% negatif (bobot 20) per lipatan (mesin 8 GB, stdlib). Penyetelan HANYA dengan validasi silang
+tinggal-satu-tahun 2015–2023 (9 lipatan; El Niño 2015, 2019, 2023 masing-masing pernah jadi tahun uji).
+
+**Ablasi (luar-lipatan 2015–2023, n 340.468, 9.514 lolos; ambang = recall 70%):**
+
+| Konfigurasi | AUC | AP (acak 0,028) | Presisi @ recall 70% | Alarm palsu per api kecil |
+| --- | --- | --- | --- | --- |
+| A: cuaca + lahan + ukuran & FRP awal (setara pendorong.py) | 0,902 | 0,469 | 17,9% | 9,2% |
+| **B: A + konteks titik sekitar** (titik S-NPP 5/10 km 3 hari, jarak titik aktif 24 j, hari aktif 7 hari) | **0,909** | **0,484** | 19,1% | 8,5% |
+| C: B + NOAA-20 ±3 jam di 750 m | 0,909 | 0,479 | 19,3% | 8,4% |
+| D: C + bobot kelas lolos 5× | 0,909 | 0,478 | 19,2% | 8,5% |
+| E: C + kendala monoton (lebih kering/lebih besar → tidak turun) | 0,910 | 0,483 | 19,4% | 8,3% |
+| F: C + bobot fokal γ = 2 | 0,905 | 0,418 | 18,5% | 8,8% |
+| **U: C + ramal ulang 14 jam** (sel S-NPP s.d. lintasan berikutnya, terlihat lagi?, FRP, sel N20) | **0,952** | **0,676** | **43,6%** | **2,6%** |
+
+Bacaan: yang berarti hanya (1) konteks titik sekitar (+0,007 AUC, alarm palsu −8%) dan (2) menunggu satu lintasan
+(ramal ulang). NOAA-20 pada deteksi pertama, bobot kelas, monoton, dan fokal tidak menambah (selisih di bawah derau
+antar-lipatan); bobot kelas & fokal hanya menggeser peluang, dan ambang sudah memilih titik operasi. Monoton setara
+(dipertahankan sebagai opsi; tidak dipakai karena aturan pilih = AP tertinggi). Kisi: kedalaman 5 / 150 pohon / lr 0,06
+(AP 0,486) > 4/150 (0,484) > 3/300 (0,479). Terpilih B (38 fitur) dan U (B + 4 fitur ulang + NOAA-20).
+
+**Ambang WASPADA** (dipilih di luar-lipatan, peluang terkalibrasi Platt): 4,84% = recall 70%, presisi 19%, 10 dari tiap
+100 titik baru ditandai. Ambang biaya (anggapan: api besar terlewat 10× lebih mahal dari alarm palsu, p ≥ 1/11):
+recall 58%, presisi 30%. Ramal ulang: ambang 10,1%. Per tahun (luar-lipatan) recall 45–74% (tahun sepi seperti 2020/2022
+lebih rendah, n lolos kecil); per lahan recall gambut 76%, mineral 52%, sabana 47% (ambang tunggal; lahan mineral/sabana
+jarang lolos sehingga ambang global tidak menjangkaunya).
+
+**Sebelum → sesudah** (uji 2024–2026 = LIHAT KEDUA, sedikit optimistis; kasus 2015–2023 memakai prediksi luar-lipatan):
+
+| Himpunan | Model | AUC | Api besar tertangkap | Tanda yang benar | Alarm palsu per api kecil |
+| --- | --- | --- | --- | --- | --- |
+| 500 deteksi pertama uji (42 lolos) | lama, MC ≥ 50% | 0,70 | 21% | 90% | 0,2% |
+| 〃 | lama, MC ≥ 20% | 0,70 | 31% | 43% | 3,7% |
+| 〃 | **baru** | **0,81** | **64%** | 22% | 20,5% |
+| 〃 | baru, ramal ulang 14 j | 0,84 | 62% | 32% | 12,0% |
+| Semua titik baru uji (97.749; 2.922 lolos) | baru | 0,908 | 67% | 22% | 7,5% |
+| 〃 | baru, ramal ulang 14 j | 0,955 | 76% | 37% | 4,0% |
+| 123 kasus (58 lolos) | lama, MC ≥ 50% | 0,72 | 31% | 86% | 4,6% |
+| 〃 | **baru** | **0,83** | **64%** | 76% | 18,5% |
+| 〃 | baru, ramal ulang 14 j | 0,90 | 72% | 79% | 16,9% |
+
+Kelas "besar" (≥ 1.000 ha) di 123 kasus: benar 34% → 72% (ramal ulang 75%); "sedang" 53% → 49% (ulang 60%); "tetap kecil"
+100% → 100%. Akurasi seluruhnya 65% → 73%. Uji per lahan (semua titik baru): gambut AUC 0,88, recall 73%, presisi 22%,
+alarm palsu 14%; mineral 0,92 / 52% / 21% / 2,9%; sabana 0,92 / 57% / 24% / 2,8%. Per tahun uji: 2024 recall 63%,
+2025 54%, 2026 68%. Harga yang dibayar jelas: 500 titik uji yang diperkaya api ≥ 3 sel (dan 46% gambut) membuat 1 dari 5
+api kecil ikut ditandai; pada populasi titik baru sebenarnya 1 dari 13. Pada ramal ulang, titik yang sudah ≥ 10 sel pada
+14 jam dikeluarkan pun AUC masih 0,93 (recall 64%, presisi 24%).
+
+**Selang luas terkalibrasi (konformal, `lolos.py selang`).** CQR di ruang log(1 + sel baru): P10/P90 Monte Carlo dilebarkan
+q per lahan × tanda WASPADA × hari, dikalibrasi pada 540 titik awal deteksi pertama 2015–2023 dengan model sel yang tidak
+melihat tahunnya. q = 0 untuk titik non-WASPADA (sudah ≥ 80% tercakup), gambut-WASPADA 0,41/0,69/0,69, gabungan-WASPADA
+0/0,69/0,69. Cakupan 24/48/72 j: uji 2024–2026 76/72/70% → **78/75/73%** (deteksi pertama 80/76/74%; gambut 73/64/61%
+→ 77/69/67%); 123 kasus 52/48/42% → 55/57/55%; kelas "besar" 3% → 22% pada 72 jam. **Belum tercapai untuk api yang benar-benar
+besar**: selang 80% pada populasi memang meleset untuk ~10% teratas, dan pustaka kasus diperkaya api terbesar tiap tahun.
+Cakupan pada populasi mendekati 80%; untuk api besar selang tetap terlalu sempit dan tanda WASPADA-lah yang memberi
+peringatan, bukan rentangnya.
+
+**Uji prospektif (`prospektif.py`, CI tiap 3 jam di titik.yml).** Tiap titik api baru S-NPP (6–24 jam sesudah deteksi
+pertama, 9 provinsi) diramal sekali dengan cuaca PRAKIRAAN Open-Meteo dan dicatat append-only (`data/raw/sebaran/
+prospektif/ramalan.jsonl`, cache Actions); ramal ulang dicatat 15–26 jam sesudahnya; dinilai 78 jam sesudah deteksi pertama
+dengan FIRMS NRT (`nilai.jsonl`); ringkasan `public/data/prospektif.json` (recall, presisi, AUC, Brier, per bulan & lahan)
+tampil di Insight. Gudang bergulir 12 hari (titik.json.gz) mulai dari hotspot.json 7 hari, jadi ramalan pertama ± 1 hari
+sesudah jalan CI pertama dan nilai pertama ± 4 hari sesudahnya (belum ada angka saat ditulis). Hilangnya cache Actions (tak dipakai > 7 hari) = riwayat prospektif hilang.
+
+Yang tidak dikerjakan: kedalaman gambut (poligon gambut hanya punya kode provinsi), kanal per konsesi, prakiraan hujan
+sebagai fitur terpisah (hujan24 di latih = ERA5, di prospektif = prakiraan: itulah yang diuji prospektif).
