@@ -73,3 +73,5 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .head .bg-ex{width:38px;height:38px;padding:0;display:grid;place-items:center;border:0;background:transparent;color:var(--ink2);border-radius:10px;cursor:pointer;flex:none}
 .head .bg-ex:hover{background:var(--surface);color:var(--ink)}
 .head .bg-ex svg{width:21px;height:21px}
+/* satu gaya share: kartu yang punya tombol gambar (bg-ex) tidak memakai tombol tautan bs-sel */
+.ex:has(> .bg-ex) > .bs-sel{display:none}

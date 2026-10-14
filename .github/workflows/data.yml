@@ -101,6 +101,14 @@ jobs:
         timeout-minutes: 20
         run: python3 scripts/data/berita.py
 
+      # Daftar video YouTube (API resmi). Tanpa secret YOUTUBE_API_KEY langkah ini dilewati diam-diam.
+      - name: Bot video YouTube (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        env:
+          YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
+        run: python3 scripts/data/video.py
+
       - name: Simpan arsip berita
         uses: actions/cache/save@v4
         with:

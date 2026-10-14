@@ -100,14 +100,13 @@ nav.atas a[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 main{padding-top:var(--top)}
 .wrap{max-width:1160px;margin:0 auto;padding:0 16px}
 @media (min-width:700px){.wrap{padding:0 28px}}
-.sek{padding:56px 0 8px;counter-increment:bag}
-body{counter-reset:bag}
+.sek{padding:clamp(48px,7vw,84px) 0 0}
 .sek[hidden]{display:none}
-.kepala{display:flex;gap:14px;align-items:flex-start;margin-bottom:22px}
-.kepala::before{content:counter(bag,decimal-leading-zero);flex:none;display:grid;place-items:center;width:40px;height:40px;border-radius:12px;font:800 14px/1 var(--display);
-  background:color-mix(in oklab,var(--brand2) 14%,transparent);color:var(--brand2);font-variant-numeric:tabular-nums}
-.kepala h2{font-size:clamp(22px,2.6vw,28px);line-height:1.2}
-.kepala p{color:var(--ink2);margin-top:4px;max-width:68ch}
+.kepala{margin-bottom:clamp(22px,3vw,32px);max-width:72ch}
+.eb{display:inline-flex;align-items:center;gap:8px;font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:var(--brand2);margin-bottom:10px}
+.eb::before{content:"";width:18px;height:2px;border-radius:2px;background:currentColor}
+.kepala h2{font-size:clamp(25px,3.2vw,34px);line-height:1.15;font-weight:800}
+.kepala p{color:var(--ink2);margin-top:10px;font-size:16px;line-height:1.6}
 .lbl{display:block;font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
 .kartu{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 
@@ -240,20 +239,22 @@ td small{color:var(--ink2)}
 .fokus li.ini em{font-style:normal;font-size:11px;font-weight:800;padding:2px 8px;border-radius:999px;background:var(--teal);color:#fff;margin-left:auto}
 .subjudul{display:flex;align-items:baseline;gap:10px;margin:28px 0 12px;font:700 16px/1.3 var(--display)}
 .subjudul small{font:500 13px var(--font);color:var(--ink2)}
-.dewan{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,200px),1fr));gap:14px}
-.orang{padding:18px;display:grid;gap:10px;align-content:start;justify-items:start}
-.ft{width:88px;height:88px;border-radius:50%;object-fit:cover;background:color-mix(in oklab,var(--brand2) 12%,var(--surface));display:grid;place-items:center;font:800 22px/1 var(--display);color:var(--brand2)}
-.orang b{font-family:var(--display);font-size:15.5px;display:block;line-height:1.3}
-.orang .peran{color:var(--brand2);font-weight:600;font-size:13px;display:block;margin-top:2px}
-.orang p{color:var(--ink2);font-size:13.5px;line-height:1.5}
-@media (max-width:600px){.orang{grid-template-columns:64px minmax(0,1fr);gap:4px 14px;align-items:center;padding:14px}.orang .ft{width:64px;height:64px;grid-row:span 2;align-self:start}.orang p{grid-column:2}}
-.unit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-@media (max-width:860px){.unit{grid-template-columns:minmax(0,1fr)}}
-.unit>div{padding:16px 18px}
-.unit h4{margin:0 0 12px;font:700 14px/1.3 var(--display);color:var(--ink2)}
-.unit ul{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(98px,1fr));gap:14px 8px}
-.unit li{display:grid;justify-items:center;text-align:center;gap:6px;font-size:13px;font-weight:600;line-height:1.3}
-.unit .ft{width:72px;height:72px;font-size:18px}
+.dewan,.eksek{display:grid;gap:16px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.eksek{grid-template-columns:repeat(5,minmax(0,1fr))}
+@media (max-width:1000px){.dewan{grid-template-columns:repeat(2,minmax(0,1fr))}.eksek{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:700px){.eksek{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:520px){.dewan{grid-template-columns:minmax(0,1fr)}.eksek{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.orang{padding:22px 18px 20px;display:flex;flex-direction:column;align-items:center;text-align:center;gap:4px;height:100%}
+.orang .ft{margin-bottom:10px}
+.ft{width:104px;height:104px;aspect-ratio:1;border-radius:50%;object-fit:cover;object-position:center 20%;background:color-mix(in oklab,var(--brand2) 12%,var(--surface));display:grid;place-items:center;font:800 26px/1 var(--display);color:var(--brand2);flex:none;border:3px solid var(--card);box-shadow:0 0 0 1px var(--line)}
+.orang b{font-family:var(--display);font-size:15.5px;display:block;line-height:1.3;text-wrap:balance}
+.orang .peran{color:var(--brand2);font-weight:600;font-size:13px;line-height:1.35;display:block}
+.orang p{color:var(--ink2);font-size:13px;line-height:1.5;margin-top:6px}
+.eksek .orang{padding:18px 12px 16px}
+.eksek .ft{width:84px;height:84px;font-size:21px}
+.eksek .orang b{font-size:14px}
+.eksek .peran{color:var(--ink2);font-weight:500;font-size:12px}
+.subjudul+.dewan,.subjudul+.eksek{margin-top:0}
 .kolab{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,300px),1fr));gap:14px;list-style:none;margin:0;padding:0}
 .kolab li{padding:18px;display:grid;gap:6px;align-content:start;border-top:3px solid var(--c,var(--brand2))}
 .kolab .meta{display:flex;gap:8px;align-items:center;font-size:12px;font-weight:700;color:var(--ink2)}
@@ -266,18 +267,20 @@ td small{color:var(--ink2)}
 @media (max-width:640px){.riset thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}.riset tr{display:grid;gap:2px;padding:12px 14px;border-top:1px solid var(--line)}.riset td{border:0;padding:0;white-space:normal!important}.riset tr:first-child{border-top:0}}
 
 /* ---------- 8. kontak ---------- */
-.kontak{padding:clamp(20px,3vw,32px);display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr);gap:24px;align-items:center;
-  background:linear-gradient(135deg,color-mix(in oklab,var(--biru) 10%,var(--card)),var(--card))}
+.kontak{padding:clamp(22px,3.4vw,40px);display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:clamp(20px,4vw,48px);align-items:center;
+  background:linear-gradient(135deg,color-mix(in oklab,var(--biru) 9%,var(--card)),var(--card) 70%)}
 @media (max-width:820px){.kontak{grid-template-columns:minmax(0,1fr)}}
-.kontak h3{font-size:22px}
-.kontak p{color:var(--ink2);margin-top:6px}
-.kontak ul{list-style:none;margin:12px 0 0;padding:0;display:grid;gap:4px;font-size:14px;color:var(--ink2)}
-.kontak .aksi{margin:0;justify-content:flex-end}
-@media (max-width:820px){.kontak .aksi{justify-content:flex-start}}
+.kontak h3{font-size:clamp(20px,2.4vw,24px);line-height:1.25}
+.kontak p{color:var(--ink2);margin-top:8px}
+.kontak ul{list-style:none;margin:14px 0 0;padding:0;font-size:14px;color:var(--ink2)}
+.kontak .aksi{margin:0;display:grid;gap:10px}
+.kontak .aksi .tbl{width:100%;justify-content:center;min-height:48px}
+@media (max-width:820px){.kontak .aksi{justify-content:stretch}}
 
 /* ---------- 9. FAQ ---------- */
-.faq{display:grid;gap:10px}
-.faq details{background:var(--card);border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.faq{display:grid;gap:10px;max-width:860px}
+.faq details{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);overflow:hidden}
+.faq details[open]{border-color:color-mix(in oklab,var(--brand2) 35%,var(--line))}
 .faq summary{list-style:none;cursor:pointer;display:flex;gap:12px;align-items:center;padding:16px 18px;font-weight:700;font-size:15.5px;min-height:44px}
 .faq summary::-webkit-details-marker{display:none}
 .faq summary::after{content:"";margin-left:auto;flex:none;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .2s}
@@ -285,7 +288,7 @@ td small{color:var(--ink2)}
 .faq summary:hover{background:var(--surface)}
 .faq .isi{padding:0 18px 16px;color:var(--ink2);font-size:14.5px;max-width:78ch}
 .faq .isi p+p{margin-top:8px}
-.kutip{margin-top:18px;padding:18px 20px;display:grid;gap:10px}
+.kutip{margin-top:18px;max-width:860px;padding:18px 20px;display:grid;gap:10px}
 .kutip blockquote{margin:0;padding:12px 14px;background:var(--surface);border-left:4px solid var(--brand2);border-radius:0 10px 10px 0;font-size:14px;line-height:1.55;word-break:break-word}
 .kutip .baris{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
 .kutip small{color:var(--ink2);font-size:12.5px}
@@ -358,7 +361,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
 <div class="wrap">
 <!-- ============ 2. MENGAPA ============ -->
 <section class="sek" id="mengapa" aria-labelledby="h-mengapa">
-  <div class="kepala"><div><h2 id="h-mengapa">Mengapa kami membangun ini</h2><p>Informasi bencana di Indonesia sebenarnya banyak, tetapi tercecer dan sulit dibaca dengan cepat oleh yang paling membutuhkannya.</p></div></div>
+  <div class="kepala"><span class="eb">Latar belakang</span><h2 id="h-mengapa">Mengapa kami membangun ini</h2><p>Informasi bencana di Indonesia sebenarnya banyak, tetapi tercecer dan sulit dibaca dengan cepat oleh yang paling membutuhkannya.</p></div>
   <div class="dua">
     <div class="prosa">
       <p>Saat musim kebakaran atau banjir datang, petugas posko, pemerintah daerah, jurnalis, dan warga harus membuka banyak situs berbeda untuk menjawab pertanyaan sederhana: <i>di mana apinya, seberapa berbahaya cuacanya, siapa yang terdampak, dan apa yang perlu disiapkan hari ini?</i></p>
@@ -394,7 +397,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
 
 <!-- ============ 3. APA YANG KAMI LAKUKAN ============ -->
 <section class="sek" id="fitur" aria-labelledby="h-fitur">
-  <div class="kepala"><div><h2 id="h-fitur">Apa yang kami lakukan</h2><p>Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></div></div>
+  <div class="kepala"><span class="eb">Layanan</span><h2 id="h-fitur">Apa yang kami lakukan</h2><p>Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></div>
   <div class="grid3">
     <a class="kartu fitur" href="/ringkasan" style="--c:var(--navy)"><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/></svg></span>
       <h3>Ringkasan &amp; brief harian</h3><p>Satu halaman untuk pimpinan: situasi hari ini, wilayah prioritas, dan brief A4 yang siap dicetak untuk rapat pagi.</p><span class="ke">Buka ringkasan</span></a>
@@ -413,7 +416,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
 
 <!-- ============ 4. CARA KERJA DATA ============ -->
 <section class="sek" id="cara-kerja" aria-labelledby="h-cara">
-  <div class="kepala"><div><h2 id="h-cara">Cara kerja data</h2><p>Tidak ada angka yang diketik tangan. Data diambil, diolah, dan diuji oleh mesin; kalau uji gagal, data hari itu tidak terbit.</p></div></div>
+  <div class="kepala"><span class="eb">Data &amp; metode</span><h2 id="h-cara">Cara kerja data</h2><p>Tidak ada angka yang diketik tangan. Data diambil, diolah, dan diuji oleh mesin; kalau uji gagal, data hari itu tidak terbit.</p></div>
   <ol class="alur kartu">
     <li style="--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
     <li style="--c:var(--oranye)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg></i><em>Tahap 2</em></div><h3>Olah otomatis</h3><p>Skrip terbuka di GitHub Actions menggabungkan titik jadi kompleks api, menghitung bahaya cuaca, dampak, dan kebutuhan.</p></li>
@@ -446,7 +449,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
 
 <!-- ============ 5. SUMBER DATA ============ -->
 <section class="sek" id="sumber" aria-labelledby="h-sumber">
-  <div class="kepala"><div><h2 id="h-sumber">Sumber data</h2><p>Lembaga-lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></div></div>
+  <div class="kepala"><span class="eb">Sumber</span><h2 id="h-sumber">Sumber data</h2><p>Lembaga-lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></div>
   <ul class="chips">
     <li><b>NASA FIRMS</b><span>Titik panas satelit VIIRS &amp; MODIS, arsip 2002–kini</span><em class="lis">Data terbuka NASA</em></li>
     <li><b>Copernicus · ECMWF · CAMS</b><span>Asap PM2.5/CO, reanalisis ERA5, GloFAS, luas terbakar GWIS</span><em class="lis">Lisensi Copernicus / CC BY 4.0</em></li>
@@ -466,21 +469,21 @@ nav.tautan a:focus-visible{outline-color:#fff}
 
 <!-- ============ 6. TIM ============ -->
 <section class="sek" id="tim" aria-labelledby="h-tim">
-  <div class="kepala"><div><h2 id="h-tim">Tim</h2><p>Pantau Bencana adalah inisiatif Teras Urban, dikerjakan oleh tim multidisiplin: perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan.</p></div></div>
+  <div class="kepala"><span class="eb">Siapa kami</span><h2 id="h-tim">Tim</h2><p>Pantau Bencana adalah inisiatif Teras Urban, dikerjakan oleh tim multidisiplin: perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan.</p></div>
   <div class="kartu org" id="org"></div>
   <div id="anggota" hidden></div>
 </section>
 
 <!-- ============ 7. KOLABORASI & PENGAKUAN (data/mitra.json; tersembunyi bila kosong) ============ -->
 <section class="sek" id="kolaborasi" aria-labelledby="h-kolab" hidden>
-  <div class="kepala"><div><h2 id="h-kolab">Kolaborasi &amp; pengakuan</h2><p>Rekam jejak Teras Urban di luar Pantau Bencana: penghargaan, masukan kebijakan, kolaborasi riset, dan forum publik. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></div></div>
+  <div class="kepala"><span class="eb">Rekam jejak</span><h2 id="h-kolab">Kolaborasi &amp; pengakuan</h2><p>Rekam jejak Teras Urban di luar Pantau Bencana: penghargaan, masukan kebijakan, kolaborasi riset, dan forum publik. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></div>
   <ul class="kolab" id="kolabDaftar"></ul>
   <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><div class="kartu riset"><table aria-labelledby="h-riset"><thead><tr><th scope="col">Judul</th><th scope="col">Bidang</th><th scope="col">Tahun</th></tr></thead><tbody id="risetDaftar"></tbody></table></div></div>
 </section>
 
 <!-- ============ 8. KONTAK ============ -->
 <section class="sek" id="kontak" aria-labelledby="h-kontak">
-  <div class="kepala"><div><h2 id="h-kontak">Kontak</h2><p>Untuk masukan, koreksi data, liputan media, atau kerja sama.</p></div></div>
+  <div class="kepala"><span class="eb">Hubungi kami</span><h2 id="h-kontak">Kontak</h2><p>Untuk masukan, koreksi data, liputan media, atau kerja sama.</p></div>
   <div class="kartu kontak">
     <div>
       <h3>Ada data yang keliru, atau ingin bekerja sama?</h3>
@@ -493,7 +496,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
 
 <!-- ============ 9. FAQ ============ -->
 <section class="sek" id="faq" aria-labelledby="h-faq">
-  <div class="kepala"><div><h2 id="h-faq">Pertanyaan yang sering diajukan</h2></div></div>
+  <div class="kepala"><span class="eb">Bantuan</span><h2 id="h-faq">Pertanyaan yang sering diajukan</h2></div>
   <div class="faq">
     <details><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
     <details><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>. Setiap metode, ambang, dan keterbatasannya ditulis di <a href="/metode">tab Metode</a>.</p></div></details>
@@ -567,7 +570,7 @@ nav.tautan a:focus-visible{outline-color:#fff}
                    "foto": "/img/tim/<slug>.webp" (opsional, persegi ≤ 400 px)}]}
      Isi hanya dengan nama yang disetujui orangnya. Grup tanpa anggota tidak ditampilkan; tanpa foto dipakai inisial. */
   const ini = n => n.replace(/^M\.\s*/, "").split(/[\s,]+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
-  const foto = a => a.foto ? `<img class="ft" src="${esc(a.foto)}" alt="" width="88" height="88" decoding="async">` : `<span class="ft" aria-hidden="true">${esc(ini(a.nama))}</span>`;
+  const foto = a => a.foto ? `<img class="ft" src="${esc(a.foto)}" alt="" width="104" height="104" decoding="async">` : `<span class="ft" aria-hidden="true">${esc(ini(a.nama))}</span>`;
   j("/data/tim.json").then(t => {
     const o = t.organisasi || {};
     $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true">TU</span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
@@ -576,11 +579,11 @@ nav.tautan a:focus-visible{outline-color:#fff}
       ${aman(o.situs) ? `<p><a href="${esc(o.situs)}" target="_blank" rel="noopener">${esc(o.situs.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</a></p>` : ""}</div>
       ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga fokus Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
         ${o.peran ? `<p style="font-size:13.5px">${esc(o.peran)}.</p>` : ""}</div>` : ""}`;
-    const A = (t.anggota || []).filter(a => a && a.nama); if (!A.length) return;
-    const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif"), unit = [...new Set(eks.map(a => a.unit || ""))];
+    const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
+    const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
     let h = "";
-    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang">${foto(a)}<div><b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span></div>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
-    if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="unit">${unit.map(u => `<div class="kartu">${u ? `<h4>${esc(u)}</h4>` : ""}<ul>${eks.filter(a => (a.unit || "") === u).map(a => `<li>${foto(a)}<span>${esc(a.nama)}</span></li>`).join("")}</ul></div>`).join("")}</div>`;
+    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
+    if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></article>`).join("")}</div>`;
     $("#anggota").innerHTML = h; $("#anggota").hidden = false;
   }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true">TU</span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
 
@@ -609,17 +612,16 @@ nav.tautan a:focus-visible{outline-color:#fff}
     const s = k.sosial || {};
     $("#sosial").innerHTML = SOS.map(([id, nm, p]) => { const u = aman(s[id]), ik = `<svg viewBox="0 0 24 24" aria-hidden="true">${p}</svg>`;
       return `<li>${u ? `<a href="${esc(u)}" target="_blank" rel="noopener" aria-label="Teras Urban di ${nm}" title="${nm}">${ik}</a>` : `<span role="img" aria-label="Teras Urban di ${nm} (segera)" title="${nm}: segera">${ik}</span>`}</li>`; }).join("");
-    const L = [];
-    if (k.email) L.push(`Email: <a href="mailto:${esc(k.email)}">${esc(k.email)}</a>`);
-    if (aman(k.situs)) L.push(`Situs: <a href="${esc(k.situs)}" target="_blank" rel="noopener">${esc(k.situs.replace(/^https?:\/\/(www\.)?/, ""))}</a>`);
     const wa = String(k.whatsapp || "").replace(/\D/g, "");
-    if (wa) L.push(`WhatsApp: <a href="https://wa.me/${wa}" target="_blank" rel="noopener">${("+" + wa).replace(/^\+62(\d{3})(\d{4})(\d+)$/, "+62 $1-$2-$3")}</a>`);
-    $("#kontakDaftar").innerHTML = L.map(x => `<li>${x}</li>`).join("");
+    $("#kontakDaftar").innerHTML = aman(k.situs) ? `<li>Situs: <a href="${esc(k.situs)}" target="_blank" rel="noopener">${esc(k.situs.replace(/^https?:\/\/(www\.)?/, ""))}</a></li>` : "";
     const ak = $("#kontakAksi"), IK = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5h16v11H8l-4 4z"/><path d="M8 9h8M8 12h5"/></svg>';
+    const IM = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/></svg>';
+    const IW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.6z"/></svg>';
     /* pesan.js (dialog "Kirim pesan ke tim") memasang window.Pesan; tanpa itu jatuh ke mailto bila email terisi */
-    if (window.Pesan?.buka) { ak.innerHTML = `<button class="tbl utama" type="button">${IK}Kirim lewat formulir</button>`; ak.firstChild.onclick = () => window.Pesan.buka(); }
-    else if (k.email) ak.innerHTML = `<a class="tbl utama" href="mailto:${esc(k.email)}">${IK}Kirim email</a>`;
-    if (wa) ak.insertAdjacentHTML("beforeend", `<a class="tbl" href="https://wa.me/${wa}" target="_blank" rel="noopener">WhatsApp</a>`);
+    ak.innerHTML = "";
+    if (window.Pesan?.buka) { ak.insertAdjacentHTML("beforeend", `<button class="tbl utama" type="button">${IK}Kirim lewat formulir</button>`); ak.firstChild.onclick = () => window.Pesan.buka(); }
+    if (wa) ak.insertAdjacentHTML("beforeend", `<a class="tbl" href="https://wa.me/${wa}" target="_blank" rel="noopener">${IW}WhatsApp ${("+" + wa).replace(/^\+62(\d{3})(\d{4})(\d+)$/, "+62 $1-$2-$3")}</a>`);
+    if (k.email) ak.insertAdjacentHTML("beforeend", `<a class="tbl${ak.children.length ? "" : " utama"}" href="mailto:${esc(k.email)}">${IM}${esc(k.email)}</a>`);
   };
   const kontak = j("/data/kontak.json").catch(() => ({}));
   /* pesan.js dimuat defer: tunggu DOMContentLoaded supaya window.Pesan sudah ada */

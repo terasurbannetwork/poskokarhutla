@@ -165,7 +165,8 @@ Insight.exSebModelLama = function () {
 };
 
 /* sebMusim disembunyikan (sudah ada di video Musim 2026); kartu "Coming soon" sebModel juga disembunyikan (pemilik, 14 Okt 2026) */
-Insight.EX.splice(1, 0, "sebDorong", "sebUji", "sebLolos", "sebGalat");
+/* sebDorong digabung ke sebLolos (data sama); sebUji & sebGalat disembunyikan dulu (pemilik, 14 Okt 2026) */
+Insight.EX.splice(1, 0, "sebLolos");
 /* klik: provinsi musim -> dialog kompleks pertama; baris kasus -> dialog; tombol ke Simulasi/cerita */
 document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);

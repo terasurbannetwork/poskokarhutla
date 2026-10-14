@@ -77,7 +77,7 @@
   /* pil header (angka dari Worker; tanpa panggilan API) */
   function pil() {
     const a = D.documentElement.dataset, tema = D.getElementById("tema");
-    if (!tema || a.pbOnline == null || D.querySelector(".pb-pil")) return;
+    if (true || !tema || a.pbOnline == null || D.querySelector(".pb-pil")) return; /* pil statistik disembunyikan dulu (pemilik, 14 Okt 2026) */
     const f = n => Number(n || 0).toLocaleString("id-ID");
     tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online<span class="pb-pil-l"> · ${f(a.pbTampil)} tampilan · Statistik →</span></a>`);
   }

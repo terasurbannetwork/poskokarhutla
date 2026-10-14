@@ -908,7 +908,7 @@ LEMBAGA = {  # kode -> (nama tampilan, pola pada teks ternormalisasi)
     "KLH": ("KLH / BPLH", r"\bklh\b|\bbplh\b|kementerian lingkungan hidup|menteri lh\b|\bmenlh\b|wamen lh|hanif faisol|\bgakkum\b"),
     "BMKG": ("BMKG", r"\bbmkg\b"),
     "TNI": ("TNI", r"\btni\b|\bkodim\b|\bkorem\b|\bdanrem\b|\bdandim\b|\bkodam\b|\bpangdam\b|\bbabinsa\b|\bkoramil\b|\blanud\b|\bkodaeral\b|\blantamal\b|pangkogabwilhan|\bprajurit\b"),
-    "POLRI": ("Polri", r"\bpolri\b|\bpolda\b|\bpolres\w*|\bpolsek\b|\bkapolda\b|\bkapolres\w*|\bkapolri\b|\bwakapolri\b|\bbrimob\b|\bsatbrimob\b|bhabinkamtibmas|\bpolisi\b|kepolisian|\bposubsektor\b|bareskrim"),
+    "POLRI": ("Polri", r"\bpolri\b|\bpolda\b|\bpolres\w*|\bpolsek\b|\bkapolda\b|\bkapolres\w*|\bkapolri\b|\bwakapolri\b|\bbrimob\b|\bsatbrimob\b|bhabinkamtibmas|\bpolisi\b(?! hutan)|kepolisian|\bposubsektor\b|bareskrim"),
     "PEMDA": ("Pemerintah daerah", r"\bpemprov\b|\bpemkab\b|\bpemkot\b|\bpemko\b|\bgubernur\b|\bwagub\b|\bgubri\b|\bbupati\b|wali ?kota|\bpemda\b|pemerintah (provinsi|kabupaten|kota|daerah)|kepala daerah|\bdinkes\b|\bdishut\b|\bdamkar\b|\bdisdamkar\w*|satpol pp|\bsatgas\b|\bal haris\b|herman deru|rudy mas ud|sf hariyanto|ria norsan|agustiar sabran"),
     "DPR": ("DPR / DPRD", r"\bdpr\b|\bdprd\b|\bdpd\b|anggota dewan|\blegislator\b|komisi iv"),
     "PERUSAHAAN": ("Perusahaan / korporasi", r"\bpt\b|\bperusahaan\b|\bkorporasi\b|\bkonsesi\b|\bhti\b|\bgapki\b|sinar mas|\bwilmar\b|asian agri|musim mas"),

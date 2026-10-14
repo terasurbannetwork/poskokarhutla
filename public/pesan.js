@@ -9,19 +9,31 @@
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ps-dlg{--ps-bg:#172036;--ps-ink:#eef1f7;--ps-ink2:#aab4c8;--ps-line:#2a3550;--ps-in:#10172a}}
 :root[data-theme="dark"] .ps-dlg{--ps-bg:#172036;--ps-ink:#eef1f7;--ps-ink2:#aab4c8;--ps-line:#2a3550;--ps-in:#10172a}
 .ps-dlg::backdrop{background:rgb(11 37 69 / .45)}
-.ps-dlg form{display:grid;gap:10px;padding:20px}
+.ps-dlg form{display:flex;flex-direction:column;max-height:calc(100dvh - 24px)}
+.ps-dlg .ps-hd{display:flex;align-items:flex-start;gap:12px;padding:18px 20px 14px;border-bottom:1px solid var(--ps-line);background:linear-gradient(180deg,var(--ps-in),var(--ps-bg))}
+.ps-dlg .ps-ik{flex:none;width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#0b2545;color:#fff}
+.ps-dlg .ps-ik svg{width:20px;height:20px}
+.ps-dlg .ps-hd > div{flex:1;min-width:0}
 .ps-dlg h2{font:800 19px/1.25 "Plus Jakarta Sans",Inter,sans-serif;margin:0}
+.ps-dlg .ps-sub{display:inline-block;max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;margin-top:6px;padding:2px 9px;border-radius:999px;background:color-mix(in oklch,#1d4e89 12%,transparent);color:#1d4e89;font-size:11px;font-weight:700}
+.ps-dlg .ps-x{flex:none;width:36px;height:36px;padding:0;border-radius:50%;display:grid;place-items:center;font-size:20px;line-height:1}
+.ps-dlg .ps-bd{display:grid;gap:12px;padding:16px 20px;overflow:auto}
 .ps-dlg p{margin:0;color:var(--ps-ink2);font-size:13px}
+.ps-dlg .ps-ket{display:flex;gap:8px;align-items:flex-start;padding:9px 12px;border-radius:10px;background:var(--ps-in);border:1px solid var(--ps-line);font-size:12.5px}
+.ps-dlg .ps-ket a{color:#1d4e89;font-weight:700;text-decoration:none}
+.ps-dlg .ps-ket a:hover{text-decoration:underline}
 .ps-dlg label{display:grid;gap:4px;font-weight:600;font-size:13px}
 .ps-dlg label small{font-weight:400;color:var(--ps-ink2)}
-.ps-dlg input,.ps-dlg select,.ps-dlg textarea{font:inherit;color:inherit;background:var(--ps-in);border:1px solid var(--ps-line);border-radius:10px;padding:9px 11px;width:100%}
+.ps-dlg input,.ps-dlg select,.ps-dlg textarea{font:inherit;color:inherit;background:var(--ps-bg);border:1px solid var(--ps-line);border-radius:10px;padding:10px 12px;width:100%;transition:border-color .15s,box-shadow .15s}
+.ps-dlg input:focus,.ps-dlg select:focus,.ps-dlg textarea:focus{outline:none;border-color:#1d4e89;box-shadow:0 0 0 3px color-mix(in oklch,#1d4e89 18%,transparent)}
 .ps-dlg textarea{min-height:120px;resize:vertical}
 .ps-dlg .ps-2{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-@media (max-width:480px){.ps-dlg .ps-2{grid-template-columns:1fr}}
+@media (max-width:480px){.ps-dlg .ps-2{grid-template-columns:1fr}.ps-dlg .ps-ik{display:none}}
 .ps-dlg .ps-hp{position:absolute;left:-9999px;width:1px;height:1px;overflow:hidden}
 .ps-dlg .ps-cek{display:flex;gap:8px;align-items:flex-start;font-weight:400}
 .ps-dlg .ps-cek input{width:auto;margin-top:3px}
-.ps-dlg .ps-aksi{display:flex;gap:8px;justify-content:flex-end;align-items:center}
+.ps-dlg .ps-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px;padding:14px 20px 18px;border-top:1px solid var(--ps-line)}
+.ps-dlg .ps-aksi button{min-height:44px}
 .ps-dlg .ps-galat{color:#c9503a;font-weight:600;font-size:13px;min-height:1em}
 .ps-dlg button{font:600 14px Inter,sans-serif;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--ps-line);background:transparent;color:inherit}
 .ps-dlg button.ps-kirim{background:#0b2545;color:#fff;border-color:#0b2545}
@@ -35,8 +47,8 @@
   function buka() {
     if (!dlg) {
       D.body.insertAdjacentHTML("beforeend", `<dialog class="ps-dlg" aria-labelledby="psJudul"><form method="dialog" novalidate>
-        <h2 id="psJudul">Kirim pesan ke tim</h2>
-        <p>Untuk masukan, koreksi data, kerja sama, atau pertanyaan media. Email Anda hanya dipakai untuk membalas. <a href="/privasi.html#pesan" target="_blank" rel="noopener">Privasi</a></p>
+        <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Kirim pesan ke tim</h2><span class="ps-sub">Masukan, koreksi data, kerja sama</span></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
+        <div class="ps-bd">
         <div class="ps-2"><label>Nama <small>(opsional)</small><input name="nama" maxlength="100" autocomplete="name"></label>
         <label>Instansi / organisasi <small>(opsional)</small><input name="instansi" maxlength="150" autocomplete="organization"></label></div>
         <div class="ps-2"><label>Email<input name="email" type="email" maxlength="254" required autocomplete="email" inputmode="email"></label>
@@ -46,10 +58,11 @@
         <label class="ps-hp" aria-hidden="true">Situs<input name="situs" tabindex="-1" autocomplete="off"></label>
         <div id="psTs"></div>
         <p class="ps-galat" role="alert"></p>
+        </div>
         <div class="ps-aksi"><button type="button" data-tutup>Batal</button><button class="ps-kirim" type="submit">Kirim</button></div>
       </form></dialog>`);
       dlg = D.body.lastElementChild;
-      dlg.querySelector("[data-tutup]").onclick = () => dlg.close();
+      dlg.querySelectorAll("[data-tutup]").forEach(b => b.onclick = () => dlg.close());
       dlg.querySelector("form").addEventListener("submit", kirim);
     }
     const f = dlg.querySelector("form"); f.querySelector(".ps-galat").textContent = "";

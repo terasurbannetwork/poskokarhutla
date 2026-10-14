@@ -42,7 +42,7 @@ const Bagikan = {
     const ins = document.getElementById("insight");
     if (ins) { new MutationObserver(() => this.tombolEx()).observe(ins, {childList: true, subtree: true}); this.tombolEx(); }
     /* Tren & Dampak: tombol yang sama di tiap kartu grafik/tabel */
-    ["tren", "dampak"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
+    ["tren", "dampak", "berita"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
     document.addEventListener("click", e => { const t = e.target.closest?.(".bg-ex"); if (!t) return; e.stopPropagation();
       const box = t.closest("[data-ex]"), art = t.closest("article.ex");
       if (!t.closest("#insight")) { this._exLuar = this.ambilLuar(t); return this.buka("ex", "luar"); }
@@ -52,7 +52,7 @@ const Bagikan = {
     if (w && /^\d{2}(\|[^|<>"]{1,80}){0,2}$/.test(w)) this.tungguWil(w);
   },
   tombolEx() {
-    document.querySelectorAll("#insight article.ex, #tren article.ex, #dampak article.ex, #tren .head").forEach(a => {
+    document.querySelectorAll("#insight article.ex, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
       const isi = a.classList.contains("head") ? this.isiHead(a) : [a];
       if (a.querySelector(".bg-ex") || !isi.some(x => x.querySelector?.("svg[viewBox], table"))) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "bg-ex"; b.setAttribute("aria-label", "Bagikan grafik ini"); b.title = "Bagikan";
@@ -66,7 +66,7 @@ const Bagikan = {
     const isi = art ? [art] : this.isiHead(head), cari = q => isi.map(x => x.matches?.(q) ? x : x.querySelector?.(q)).find(Boolean);
     const svg = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).find(v => (v.viewBox.baseVal?.width || 0) >= 300);
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, tabel: svg ? null : cari("table"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : "Tren karhutla"};
+      svg, tabel: svg ? null : cari("table"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
   },
   /* tabel -> kanvas: hanya 10 baris teratas, sisanya di situs */
   tabelKanvas(tb, n = 10) {
@@ -168,6 +168,8 @@ const Bagikan = {
     try { await this.font(); const cv = await this.render("kompleks", "feed"); return await new Promise(r => cv.toBlob(r, "image/png")); }
     finally { this._kom = k0; }
   },
+  /* dari dialog analisa wilayah: gambar provinsi wilayah itu */
+  bukaProv(k) { this._provPaksa = k; return this.buka("provinsi"); },
   dataKom(id) {
     const p = S.kluster.features.find(f => f.properties.id === id)?.properties; if (!p) return this.data("");
     const kf = p.cuaca ? p.fdrs : 0, dk = typeof daopsDekat === "function" ? daopsDekat(p.lat, p.lon) : [], bp = typeof bpbdDekat === "function" ? bpbdDekat(p.lat, p.lon) : null;
@@ -190,8 +192,8 @@ const Bagikan = {
     this._hari = null; this._snap = undefined; this._ex = null; this._th = {}; this._d = {};
     if (tpl) this.tpl = tpl; if (exId != null) this.exId = exId; if (!this._kom && this.tpl === "kompleks") this.tpl = "ringkas";
     /* tombol share di kepala halaman: ikut wilayah yang sedang dibuka (provinsi), nasional bila belum memilih */
-    if (!tpl && this.tpl !== "ex") this.tpl = S.jalur?.[0] ? "provinsi" : "ringkas";
-    this.prov = S.jalur?.[0] || (S.meta.provinsi[this.prov] ? this.prov : this.provAwal());
+    if (!tpl && this.tpl !== "ex") this.tpl = document.querySelector("#p-peta.on") && S.jalur?.[0] ? "provinsi" : "ringkas";
+    this.prov = this._provPaksa || S.jalur?.[0] || (S.meta.provinsi[this.prov] ? this.prov : this.provAwal()); this._provPaksa = null;
     const d = this.dialog(), q = s => d.querySelector(s);
     q("#bgProv").innerHTML = this.daftarProv().map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join(""); q("#bgProv").value = this.prov;
     q("#bgPeta").checked = this.pakaiPeta; q('[data-tpl="kompleks"]').hidden = !this._kom;
@@ -250,8 +252,9 @@ const Bagikan = {
   /* tombol header: selalu lembar (berisi tombol aplikasi, gambar, dan ekspor) */
   cepat() {
     if (typeof S === "undefined" || !S.meta) return this.kabar(this.en() ? "Data is still loading, try again shortly." : "Data belum termuat, coba lagi sebentar.");
-    const k = S.jalur?.[0] || "";
-    this.bagi({...this.konteks(k ? "prov" : "nasional", k), url: this.tautan(), lembar: true, gambar: () => this.gambarCepat(k), lainnya: () => this.buka()});
+    /* model Insight: dialog gambar. Provinsi hanya bila sedang di Peta dengan provinsi terpilih; halaman lain = Indonesia */
+    const diPeta = !!document.querySelector("#p-peta.on"), k = diPeta ? S.jalur?.[0] || "" : "";
+    this.buka(k ? "provinsi" : "ringkas");
   },
   async gambarCepat(k) {
     this._hari = null; this._snap = undefined; this._d = {};
@@ -299,14 +302,14 @@ const Bagikan = {
       const b = document.createElement("button"); b.type = "button"; b.className = "btn sec bg-rk"; b.innerHTML = `${this.IKON}<span>${E ? "Share" : "Bagikan"}</span>`;
       b.onclick = () => this.bagi({...this.konteks("nasional"), gambar: () => this.gambarCepat(""), lainnya: () => this.buka()}); a.prepend(b); });
     amati("berita", el => {
-      el.querySelectorAll("article.ex:not(#brDaftar)").forEach(a => { const h = a.querySelector("h3"); if (!h || a.querySelector(":scope > .bs-sel")) return;
+      /* kartu grafik Berita memakai tombol gambar ala Insight (tombolEx); tombol tautan hanya untuk kartu tanpa grafik/tabel */
+      el.querySelectorAll("article.ex:not(#brDaftar)").forEach(a => { const h = a.querySelector("h3"); if (!h || a.querySelector(":scope > .bs-sel, :scope > .bg-ex") || a.querySelector("svg[viewBox], table")) return;
         a.prepend(tombol(E ? "Share this chart" : "Bagikan bagian ini", () => this.konteks("artikel", [judul(h), o + "/berita", "berita"]))); });
       el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
         it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
           teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik api karhutla di Pantau Bencana:"}`}))); });
     });
-    amati("dampak", el => el.querySelectorAll(".dk-bag").forEach(s => { const hd = s.querySelector(".dk-sh"); if (!hd || hd.querySelector(".bs-sel")) return;
-      hd.append(tombol(E ? "Share this section" : "Bagikan bagian ini", () => this.konteks("artikel", [judul(s.querySelector("article h3")) || judul(hd.querySelector("h2")), o + "/dampak", "dampak"]))); }));
+    /* Dampak: tiap kartu grafik memakai tombol gambar ala Insight (tombolEx); tombol tautan per bagian tidak dipakai lagi */
     /* dialog provinsi tab Operasi (#dlg dipakai bersama; hanya yang berisi .op-db) */
     amati("dlg", d => { const hd = d.querySelector(".dh"), j = judul(d.querySelector("#dlgJudul")); if (!d.querySelector(".op-db") || !hd || hd.querySelector(".bs-sel") || !/:/.test(j)) return;
       const k = Object.keys(S.meta?.provinsi || {}).find(x => namaProv(x) === j.split(":")[0].trim()); if (!k) return;
