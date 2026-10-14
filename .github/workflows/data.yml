@@ -163,10 +163,29 @@ jobs:
         run: python3 scripts/data/udara_rekom.py
 
       # Sentinel-2 (Earth Search/AWS Open Data) + VIIRS GIBS, tanpa kunci; batas kerja 360 dtk, sisanya besok lewat cache
+      # citra satelit punya cache sendiri (PNG besar, tidak ikut cache data-); jalur harus sama persis dengan simpanannya
+      - name: Pulihkan citra satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
+          restore-keys: citra-
+
       - name: Citra satelit kompleks prioritas (boleh gagal)
         continue-on-error: true
         timeout-minutes: 9
         run: python3 scripts/data/citra.py
+
+      - name: Simpan citra satelit
+        if: always() && hashFiles('public/data/citra.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
 
       - name: Prakiraan asap CAMS (boleh gagal)
         continue-on-error: true
