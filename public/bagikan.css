@@ -75,3 +75,6 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .head .bg-ex svg{width:21px;height:21px}
 /* satu gaya share: kartu yang punya tombol gambar (bg-ex) tidak memakai tombol tautan bs-sel */
 .ex:has(> .bg-ex) > .bs-sel{display:none}
+/* tombol Bagikan di header: ikon saja (pemilik, 14 Okt 2026) */
+.iconbtn.bg-hdr{width:34px!important;padding:0!important;justify-content:center}
+.iconbtn.bg-hdr span{display:none}

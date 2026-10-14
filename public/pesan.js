@@ -38,6 +38,10 @@
 .ps-dlg button{font:600 14px Inter,sans-serif;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--ps-line);background:transparent;color:inherit}
 .ps-dlg button.ps-kirim{background:#0b2545;color:#fff;border-color:#0b2545}
 :root[data-theme="dark"] .ps-dlg button.ps-kirim{background:#4f8fc4;border-color:#4f8fc4}
+.ps-fab{position:fixed;right:16px;bottom:16px;z-index:40;width:44px;height:44px;border-radius:50%;border:0;display:grid;place-items:center;background:#0b2545;color:#fff;box-shadow:0 6px 18px rgb(11 37 69 / .3);cursor:pointer}
+.ps-fab:hover{background:#1d4e89}
+.ps-fab svg{width:20px;height:20px}
+body:has(#p-peta.on) .ps-fab{right:12px;bottom:112px} /* di atas tombol zoom peta */
 .ps-kaki{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:18px 16px 28px}
 .ps-kaki button{font:600 14px Inter,sans-serif;display:inline-flex;gap:8px;align-items:center;border-radius:999px;padding:9px 18px;min-height:44px;cursor:pointer;border:1px solid currentColor;background:transparent;color:inherit;opacity:.85}
 .ps-kaki button:hover{opacity:1}
@@ -91,7 +95,8 @@
   }
   /* pemasangan: ikon header (sebelum tombol tema) + tombol di kaki Ringkasan & Metode */
   const tema = D.getElementById("tema");
-  if (tema) tema.insertAdjacentHTML("beforebegin", `<button class="iconbtn" id="kirimPesan" aria-label="Kirim pesan ke tim" title="Kirim pesan">${IKON}</button>`);
+  /* tombol pesan mengambang di kanan bawah (pemilik, 14 Okt 2026), bukan di header */
+  if (tema) D.body.insertAdjacentHTML("beforeend", `<button class="ps-fab" id="kirimPesan" aria-label="Kirim pesan ke tim" title="Kirim pesan ke tim">${IKON}</button>`);
   D.getElementById("kirimPesan")?.addEventListener("click", buka);
   for (const id of ["p-ringkasan", "p-metode"]) {
     const s = D.getElementById(id); if (!s) continue;
