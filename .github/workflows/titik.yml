@@ -93,6 +93,14 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      # citra satelit ikut tiap 3 jam supaya galeri Insight & laci kompleks tidak pernah kosong (cache gambar dipakai ulang, jadi cepat)
+      - name: Citra satelit kompleks prioritas (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          CITRA_DETIK: "300"
+        run: python3 scripts/data/citra.py
+
       - name: Gambar pratinjau tautan (boleh gagal)
         continue-on-error: true
         timeout-minutes: 8
