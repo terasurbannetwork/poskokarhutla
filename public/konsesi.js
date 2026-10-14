@@ -62,7 +62,7 @@
       peta.setPaintProperty("konsesi", "fill-color", w); peta.setPaintProperty("konsesi-line", "line-color", w);
       if (peta._ksTip) return; peta._ksTip = 1;
       peta.on("mousemove", "konsesi", e => { if (peta.queryRenderedFeatures(e.point, {layers: ["kl-fill", "kl-pt", "kl-pt3"].filter(l => peta.getLayer(l))}).length) return;
-        const p = e.features[0].properties; tip.innerHTML = `<b>Areal ${esc(jn(p.jenis)[2].replace(/^Konsesi/, "konsesi"))}</b>${p.kab ? `<br>${esc(p.kab)}` : ""}<br><small>peta batas ${esc(p.tahun_data || "")}</small>`;
+        const p = e.features[0].properties; tip.innerHTML = `<div class="tp2-h tp2-only"><div class="tp2-hr"><b><i class="ks-tip-sw" style="background:${jn(p.jenis)[1]}"></i>Areal ${esc(jn(p.jenis)[2].replace(/^Konsesi/, "konsesi"))}</b></div><small>${p.kab ? esc(p.kab) + " · " : ""}peta batas ${esc(p.tahun_data || "–")}</small></div>`;
         tip.classList.add("on"); taruh(e.originalEvent); });
       peta.on("mouseleave", "konsesi", () => tip.classList.remove("on")); };
     warnai(); peta.on("styledata", () => nanti(warnai));
