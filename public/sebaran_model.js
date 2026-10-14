@@ -257,7 +257,9 @@ function ramal(o) {
     runs.push(res.luas.map(n => n + sel0.length));
   }
   const q = (xs, a) => { const s = [...xs].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(a * s.length))]; };
-  const qs = M.selang?.q?.[strata], n0 = sel0.length;
+  const n0 = sel0.length, pl = n0 < (M.lepas_sel || 10) ? lolos(M, o, jendela[0], lh.sel(sel0[0]), sel0, t0, lon, lat, frp, iklim) : null;
+  /* q per lahan x WASPADA (lolos.q_selang): kelompok kecil memakai gabungan semua lahan; tanpa model membesar = bukan WASPADA */
+  const Q = M.selang?.q, wsp = pl?.waspada || n0 >= (M.lepas_sel || 10) ? 1 : 0, qs = Q ? Q[`${strata}|${wsp}`] || Q[`*|${wsp}`] : null;
   const luas = [...Array(hari)].map((_, d) => { if (!nmc) return null; const xs = runs.map(r => r[d] * HA), o_ = {p10: q(xs, .1), p50: q(xs, .5), p90: q(xs, .9), rata: xs.reduce((a, b) => a + b, 0) / xs.length};
     if (qs) { const [a, b] = lebarkan(o_.p10 / HA - n0, o_.p90 / HA - n0, qs[d]); o_.p10_mc = o_.p10; o_.p90_mc = o_.p90; o_.p10 = Math.min(o_.p50, (n0 + a) * HA); o_.p90 = Math.max(o_.p50, (n0 + b) * HA); }
     return o_; });
@@ -272,7 +274,6 @@ function ramal(o) {
     let c = 0; for (let h = 0; h < 24; h++) { c += seg[h]; perJam.push(a + (b - a) * c / tot); } }
   /* apa yang terkena (peluang hari terakhir >= 0,1) */
   const kena = dampak(sel_, lh, hari, lon, lat);
-  const pl = sel0.length < (M.lepas_sel || 10) ? lolos(M, o, jendela[0], lh.sel(sel0[0]), sel0, t0, lon, lat, frp, iklim) : null;
   const pmc = nmc ? kalLepas(M, runs.filter(r => r[hari - 1] >= (M.lepas_sel || 10)).length / nmc) : null;
   return {waktu: new Date(t0).toISOString(), sel0, strata, geser, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
     p_lepas: pl ? pl.p : sel0.length >= (M.lepas_sel || 10) ? 1 : pmc, p_lepas_mc: pmc, lolos: pl, sudah_besar: sel0.length >= (M.lepas_sel || 10), luas, luasJam: perJam, arah: arahUtama, sel: sel_,
