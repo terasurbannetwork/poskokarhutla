@@ -70,7 +70,7 @@
   pasangPeta();
 
   /* --- tab Kompleks api: kolom Areal konsesi, saringan, peraga --- */
-  const F = window.KonsesiF = {jenis: "", hanya: false};
+  const F = window.KonsesiF = {jenis: "", hanya: false, gambut: false};
   const _baris = Tabel.baris.bind(Tabel), _render = Tabel.render.bind(Tabel);
   Tabel.baris = function () {
     const q = this.q; this.q = ""; let r = _baris(); this.q = q;
@@ -78,13 +78,16 @@
     if (ql) r = r.filter(p => `${p.id} ${p.kec} ${p.kab} ${namaProv(p.prov)} ${Object.keys(jenisDi(p.id)).map(j => jn(j)[2]).join(" ")}`.toLowerCase().includes(ql));
     if (F.jenis) r = r.filter(p => jenisDi(p.id)[F.jenis]);
     else if (F.hanya) r = r.filter(p => Object.keys(jenisDi(p.id)).length);
+    if (F.gambut) r = r.filter(p => p.gambut || (KK?.kompleks?.[p.id]?.gambut || 0) >= .5); /* kompleks di lahan gambut */
     return r;
   };
   Tabel.render = function () {
     if (!KK) { muat().then(() => Tabel.render()); return _render(); }
     _render(); const el = $("#kompleks"); if (!el || !S.kluster) return;
     if (!$("#ks-saring")) { $("#tq")?.insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-saring"><input type="checkbox"><span class="ks-sw">hanya di areal konsesi</span></label>`);
-      $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
+      $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); };
+      $("#ks-saring").insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-gambut"><input type="checkbox"><span class="ks-sw">hanya di gambut</span></label>`);
+      $("#ks-gambut input").onchange = e => { F.gambut = e.target.checked; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
     $("#ks-chip")?.remove();
     if (F.jenis) { $("#ks-saring").insertAdjacentHTML("afterend", `<button class="ks-chip" id="ks-chip" aria-label="Hapus saringan areal konsesi"><span>Areal ${esc(jn(F.jenis)[2].toLowerCase())}</span><i aria-hidden="true">✕</i></button>`);
       $("#ks-chip").onclick = () => { F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }

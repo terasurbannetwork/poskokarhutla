@@ -546,7 +546,7 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .pmulti{position:relative}
 .pmulti > summary{list-style:none;cursor:pointer;height:34px;display:flex;align-items:center;gap:8px;padding:0 34px 0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:700;white-space:nowrap;position:relative}
 .pmulti > summary::-webkit-details-marker{display:none}
-.pmulti > summary::after{content:"";position:absolute;right:14px;top:12px;width:7px;height:7px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg)}
+.pmulti > summary::after{content:"";position:absolute;right:14px;top:11px;width:7px;height:7px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg)}
 .pmulti .pm-menu{position:absolute;right:0;top:40px;z-index:30;min-width:240px;max-height:320px;overflow:auto;padding:6px;border-radius:14px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow-lg,0 8px 28px rgb(0 0 0 / .16))}
 .pmulti .pm-menu label{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:9px;font-size:13px;cursor:pointer}
 .pmulti .pm-menu label:hover{background:var(--surface)}
@@ -2611,7 +2611,7 @@ const Tabel = {
       $("#tcsv").onclick = () => unduh(`kompleks-karhutla-${S.fwi.hari_ini}.csv`, csv([kol.map(k => k[1]).concat(["Lintang", "Bujur"]),
         ...this.baris().map(p => kol.map(([k]) => k === "prov" ? namaProv(p.prov) : k === "level" ? S.meta.status[p.level] : p[k]).concat([p.lat, p.lon]))]));
     }
-    $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " kompleks")} aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi " : ""}di ${esc(namaProv(this.prov))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " kompleks")} kebakaran aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi" : "di seluruh Indonesia"}`;
+    $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " kompleks")} aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi " : ""}di ${esc(namaProv(this.prov))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " kompleks")} kebakaran aktif ${[window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi" : "", window.KonsesiF?.gambut ? "di lahan gambut" : ""].filter(Boolean).join(" dan ") || "di seluruh Indonesia"}`;
     $("#tjudul").onclick = e => { if (e.target.closest("[data-semua]")) { Tabel.prov = null; Tabel.hal = 0; document.querySelectorAll("#prioritas details[data-pr][open]").forEach(x => x.open = false); nanti(() => Tabel.render()); } };
     $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
     $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>
@@ -3221,6 +3221,7 @@ const Insight = {
     const [ket, sumber] = String(catatan).split(/\s*Sumber:\s*/), leg = this._leg; this._leg = null;
     /* pemilih provinsi (select di awal ctl) pindah ke kanan judul, sebaris */
     let kanan = ""; if (ctl.startsWith("<select")) { const i = ctl.indexOf("</select>") + 9; kanan = ctl.slice(0, i); ctl = ctl.slice(i); }
+    else if (ctl.startsWith('<details class="pmulti"')) { const i = ctl.indexOf("</details>") + 10; kanan = ctl.slice(0, i); ctl = ctl.slice(i); }
     return `<article class="ex"><header class="ex-hd"><span class="ex-ey"></span><div class="ex-jd"><h3>${judul}</h3>${kanan}</div>${ctl ? `<div class="ctl">${ctl}</div>` : ""}</header>
       <div class="ex-bd">${isi}</div><footer class="ex-ft">${leg ? `<span class="ex-leg">${leg.map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</span>` : ket ? `<span>${ket}</span>` : ""}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></article>`; },
   leg(daftar) { this._leg = daftar; return ""; },
