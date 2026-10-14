@@ -54,8 +54,10 @@ const Ringkasan = (() => {
     async siap() { for (let i = 0; i < 400 && !(S.meta && S.kluster && S.wilayah && S.titik?.length && S.posko); i++) await new Promise(r => setTimeout(r, 150)); return !!S.meta; },
     async muat() {
       const j = u => muatJSON(u).catch(() => null);
+      /* ringkasan.json (scripts/data/ringkasan.py): potongan berita/penerbangan/musim_awal yang dibaca di sini saja; kunci hilang -> berkas asli */
+      const rk = this.rk = await j("data/ringkasan.json") || {};
       const [dp, ans, kp, ak, ud, pn, ma, ls] = await Promise.all([j("data/dampak.json"), j("data/fwi_ansambel.json"), Kp.d || j("data/keputusan.json"), j("data/akses.json"),
-        Lapis.cache?.udara || j("data/udara_rekom.json"), j("data/penerbangan.json"), j("data/musim_awal.json"), j("data/luas_satelit.json")]);
+        Lapis.cache?.udara || j("data/udara_rekom.json"), rk.penerbangan || j("data/penerbangan.json"), rk.musim_awal || j("data/musim_awal.json"), j("data/luas_satelit.json")]);
       this.ops = typeof Operasi !== "undefined" && await Operasi.siap().catch(() => false);
       if (kp) Kp.d ||= kp; if (ud && Lapis.cache) Lapis.cache.udara = ud;
       this.raw = {dp, ans, kp, ak, ud, pn, ma, ls};
@@ -152,6 +154,7 @@ const Ringkasan = (() => {
 
     /* titik panas per 24 jam ke belakang (garis kecil KPI): hanya jendela yang tercakup penuh oleh berkas yang sudah dimuat (48 jam dulu, 7 hari menyusul) */
     hariTitik() {
+      if (!S.titikPenuh && this.rk?.titik_hari?.v.length >= 3) return this.rk.titik_hari.v;   // dihitung di Actions dari hotspot.json 7 hari
       const per = []; let jMin = 0;
       for (const b of S.titik) { if (b[2] < jMin) jMin = b[2]; const w = S.wilKunci[b[6]]; if (!w || !S.meta.provinsi[w[0]] || !S.utama.has(b[3])) continue; const i = Math.max(0, Math.ceil(-b[2] / 24) - 1); per[i] = (per[i] || 0) + 1; }
       const nH = Math.min(14, Math.floor(-jMin / 24)); return Array.from({length: nH}, (_, i) => per[nH - 1 - i] || 0);
@@ -162,7 +165,7 @@ const Ringkasan = (() => {
       return `<svg viewBox="0 0 200 32" preserveAspectRatio="none" aria-hidden="true"><polyline points="${th.map((v, i) => x(i) + "," + y(v)).join(" ")}" vector-effect="non-scaling-stroke"/><circle cx="${x(th.length - 1)}" cy="${y(th.at(-1))}" r="3"/></svg><span>${fmt(th.length)} hari terakhir</span>`;
     },
     tungguTitik() {
-      if (S.titikPenuh || this._tt) return;
+      if (S.titikPenuh || this._tt || this.rk?.titik_hari) return;
       this._tt = setInterval(() => { if (!S.titikPenuh) return; clearInterval(this._tt); this._tt = null; if (!this.D) return;
         this.D.kpi.titikHari = this.hariTitik(); const v = $("#ringkasan .rk-k .rk-viz"); if (v) v.innerHTML = this.spark(this.D.kpi.titikHari); }, 1000);
     },
@@ -233,14 +236,15 @@ const Ringkasan = (() => {
                 : [`Tambahan kunjungan ISPA ± ${n(fmt(x.ispa) + "/hari", "Riskesdas 2018 × risiko relatif PM2.5 asap (dampak.json)", "model")}`, "model"]],
             biaya: `Rendah: masker N95 ± ${rp(15e3)}/buah; posko memakai puskesmas`, waktu: "Mulai besok, selama PM2.5 > 150", yakin: ["Sedang", "prakiraan CAMS dan atribusi arah angin; belum diukur stasiun di semua kota"],
             bukti: {judul: `${namaProv(x.k)}: paparan asap`, isi: () => this.buktiAsap(D, x), prov: x.k}}); } }
-      /* G. Kapolri & Menteri LH: konsesi dengan >= 3 kompleks prioritas */
+      /* G. Kapolri & Menteri LH: areal konsesi (jenis x provinsi, tanpa nama pemegang) dengan >= 3 kompleks prioritas */
       { const id3 = new Set(D.L.flatMap(x => x.kom3.map(p => p.id)));
-        const pt = (D.dp?.lahan?.perusahaan || []).map(c => ({...c, k3: c.kompleks.filter(id => id3.has(id))})).filter(c => c.k3.length >= 3).sort((a, b) => b.k3.length - a.k3.length);
-        if (pt.length) C.push({skor: 40 + pt.length, jenis: "hukum", siapa: "Kapolri & Menteri LH", apa: `Periksa dan segel sementara ${fmt(pt.length)} areal konsesi yang memuat ≥ 3 kompleks api prioritas`,
-          kenapa: [[`Terbanyak: ${pt.slice(0, 2).map(c => `${esc(c.nama)} ${n(fmt(c.k3.length) + " kompleks", SUMBER.kompleks + "; batas konsesi peta GFW ± 2014", "satelit")}`).join("; ")}`, "satelit"],
+        const JK = {sawit: "Konsesi sawit", hti: "Konsesi HTI (kayu pulp)", hph: "Konsesi HPH (hutan alam)", tambang: "Izin tambang", lain: "Konsesi lain"};
+        const pt = (D.dp?.lahan?.konsesi || []).map(c => ({...c, nama: `${JK[c.jenis] || c.jenis} di ${namaProv(c.prov)}`, k3: c.kompleks.filter(id => id3.has(id))})).filter(c => c.k3.length >= 3).sort((a, b) => b.k3.length - a.k3.length);
+        if (pt.length) C.push({skor: 40 + pt.length, jenis: "hukum", siapa: "Kapolri & Menteri LH", apa: `Periksa kepatuhan pemegang izin dan segel sementara lahan terbakar di areal konsesi yang memuat ≥ 3 kompleks api prioritas (${fmt(pt.length)} jenis areal × provinsi)`,
+          kenapa: [[`Terbanyak: ${pt.slice(0, 2).map(c => `${esc(c.nama)} ${n(fmt(c.k3.length) + " kompleks", SUMBER.kompleks + "; batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026", "satelit")}`).join("; ")}`, "satelit"],
             [`Membuka lahan dengan membakar dilarang UU 32/2009 Pasal 69 dan UU 39/2014 Pasal 56`, "resmi"]],
           biaya: "Dalam anggaran rutin Polri & KLH", waktu: "Mulai minggu ini", yakin: ["Rendah", "batas konsesi dari peta ± 2014; wajib dicek ke ATR/BPN dan KLH sebelum tindakan"],
-          bukti: {judul: "Konsesi dengan api prioritas", isi: () => `<table class="tb3"><thead><tr><th>Pemegang</th><th>Jenis</th><th class="n">Kompleks prioritas</th></tr></thead><tbody>${pt.slice(0, 15).map(c => `<tr><td><b>${esc(c.nama)}</b></td><td>${esc(c.jenis.replace("konsesi_", "").toUpperCase())}</td><td class="n">${c.k3.map(id => `<button class="link" data-kom="${esc(id)}">${esc(id)}</button>`).join(" ")}</td></tr>`).join("")}</tbody></table>`}}); }
+          bukti: {judul: "Konsesi dengan api prioritas", isi: () => `<table class="tb3"><thead><tr><th>Jenis areal</th><th>Provinsi</th><th class="n">Kompleks prioritas</th></tr></thead><tbody>${pt.slice(0, 15).map(c => `<tr><td><b>${esc(JK[c.jenis] || c.jenis)}</b></td><td>${esc(namaProv(c.prov))}</td><td class="n">${c.k3.map(id => `<button class="link" data-kom="${esc(id)}">${esc(id)}</button>`).join(" ")}</td></tr>`).join("")}</tbody></table>`}}); }
       /* paling sedikit tiga kartu: lengkapi dengan langkah baku */
       if (C.length < 3) C.push({skor: 10, jenis: "status", siapa: "Kepala BNPB", apa: "Pertahankan patroli terpadu dan pencegahan di provinsi berstatus waspada", kenapa: [[`${n(fmt(D.nW) + " provinsi", "Aturan tingkat (lihat Aturan)", "model")} berstatus waspada`, "model"]], biaya: "Anggaran rutin", waktu: "Berjalan", yakin: ["Tinggi", "langkah baku SOP"], bukti: {judul: "Tingkat provinsi", isi: () => this.tabelTingkat(D, 1)}});
       /* bukti tambahan dari tab Operasi: kekurangan sumber daya provinsi kartu itu (model) */
@@ -448,7 +452,8 @@ const Ringkasan = (() => {
     /* ================= sentimen publik (berita.json dimuat terpisah: ± 4,5 MB) ================= */
     muatBerita() { return this._pb ||= this._muatBerita(); },
     async _muatBerita() {
-      try { this.B = Berita.d || await muatJSON("data/berita.json"); Berita.d ||= this.B; this.S = this.olahBerita(); } catch (e) { this.B = false; }
+      /* berita.json utuh (± 1,7 MB gzip) hanya bila tab Berita sudah memuatnya atau ringkasan.json tidak memuat potongannya */
+      try { this.B = Berita.d || this.rk?.berita || await muatJSON("data/berita.json"); if (!this.rk?.berita) Berita.d ||= this.B; this.S = this.olahBerita(); } catch (e) { this.B = false; }
       const el = $("#rkSent"); if (el) el.innerHTML = sek(5, "teks", this.hSentimen());
       const s = this.D?.segar; if (s && this.B && !s.some(x => x[0] === "Berita")) { s.push(["Berita", this.B.dibuat, 26]); const st = $("#ringkasan .rk-hero"); if (st) st.outerHTML = this.hHero(this.D); }
     },

@@ -3,8 +3,27 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<script src="/i18n.js"></script>
 <title>Pemberitahuan Privasi — Posko Karhutla</title>
 <meta name="description" content="Data apa yang diproses Lapor Warga, untuk apa, berapa lama, dan cara meminta penghapusan (UU PDP No. 27/2022).">
+<!-- og -->
+<link rel="canonical" href="https://pantau.terasurban.com/privasi">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
+<meta property="og:description" content="Data apa yang diproses Lapor Warga, untuk apa, berapa lama, dan cara meminta penghapusan (UU PDP No. 27/2022).">
+<meta property="og:url" content="https://pantau.terasurban.com/privasi">
+<meta property="og:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Data apa yang diproses Lapor Warga, untuk apa, berapa lama, dan cara meminta penghapusan (UU PDP No. 27/2022).">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
+<meta name="twitter:description" content="Data apa yang diproses Lapor Warga, untuk apa, berapa lama, dan cara meminta penghapusan (UU PDP No. 27/2022).">
+<meta name="twitter:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
+<!-- /og -->
 <style>
 :root{--paper:#f6f7fa;--card:#fff;--ink:#14213d;--ink2:#56607a;--line:#e1e5ee;--brand:#1d4e89;color-scheme:light}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--paper:#10172a;--card:#172036;--ink:#eef1f7;--ink2:#aab4c8;--line:#2a3550;--brand:#8db4ea;color-scheme:dark}}
@@ -25,7 +44,7 @@ tr:last-child td{border-bottom:0}
 <main>
 <p class="kecil"><a href="./">Posko Karhutla</a> · <a href="banjir/">Posko Banjir</a> · <a href="warga/">Lapor Warga</a></p>
 <h1>Pemberitahuan privasi</h1>
-<p class="kecil">Berlaku untuk fitur Lapor Warga (tab Informasi) di situs ini. Disusun mengacu pada UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p>
+<p class="kecil">Berlaku untuk seluruh situs: Lapor Warga (tab Informasi), statistik pengunjung, dan formulir Kirim pesan. Disusun mengacu pada UU No. 27 Tahun 2022 tentang Pelindungan Data Pribadi.</p>
 
 <h2>Siapa pengendali data</h2>
 <p>Pengelola situs Posko Karhutla. Situs ini bukan kanal resmi BNPB, KLHK, BMKG, atau BPBD. Dalam keadaan darurat jiwa, hubungi 112.</p>
@@ -40,6 +59,34 @@ tr:last-child td{border-bottom:0}
 </table></div>
 <p class="kecil">Tanpa akun, tanpa cookie pelacak, tanpa iklan. Tindakan moderator dicatat (waktu, jenis tindakan, nomor laporan, kode moderator) tanpa isi laporan, IP, atau nomor.</p>
 
+<h2 id="penyimpanan">Penyimpanan di peramban dan pilihan Anda</h2>
+<p>Saat pertama datang Anda diminta memilih. Pilihan, versi kebijakan, dan tanggalnya disimpan di <code>localStorage</code> peramban Anda (kunci <code>pb_persetujuan</code>) dan ditanyakan lagi setelah 12 bulan atau bila kebijakan ini berubah.</p>
+<div class="tabel"><table>
+<tr><th>Kategori</th><th>Isi</th><th>Status</th></tr>
+<tr><td>Esensial</td><td>Tema terang/gelap dan preferensi tampilan, token pelapor Lapor Warga (untuk menandai laporan Anda selesai), pilihan persetujuan ini, dan cookie sesi admin (hanya untuk pengelola, HttpOnly, 12 jam).</td><td>Selalu aktif</td></tr>
+<tr><td>Analitik</td><td>Id acak di <code>localStorage</code> dan statistik penggunaan anonim (rincian di bawah). Tidak ada yang dikirim sebelum Anda menyetujui.</td><td>Mati sampai Anda memilih "Terima semua" atau menyalakannya di "Atur"</td></tr>
+</table></div>
+<p>Ubah pilihan kapan saja: <button type="button" data-pv-buka>Pengaturan privasi</button> (juga ada di kaki halaman Ringkasan dan Metode). Menarik persetujuan langsung menghapus id analitik dari peramban Anda. Bila peramban mengirim <b>Do Not Track</b> atau <b>Global Privacy Control</b>, analitik selalu mati. Bila Anda menolak, tidak ada apa pun yang dikirim tentang pilihan itu; bila menerima, satu hitungan "persetujuan diterima" ikut dijumlahkan.</p>
+
+<h2 id="statistik">Statistik pengunjung (analitik, hanya dengan persetujuan)</h2>
+<p>Untuk mengetahui bagian situs yang berguna. Tanpa cookie, tanpa alamat IP, tanpa sidik perangkat, tanpa iklan, dan tidak dibagikan ke pihak lain. Peramban mengirim paling banyak beberapa ringkasan per kunjungan (saat halaman ditutup atau disembunyikan). Server hanya menyimpan <b>jumlah per hari</b>; tidak ada baris per orang, dan id acak Anda tidak disimpan di server (hanya dipakai untuk memilih sampel bila lalu lintas sangat ramai).</p>
+<div class="tabel"><table>
+<tr><th>Yang dihitung</th><th>Contoh</th></tr>
+<tr><td>Kunjungan</td><td>orang pertama kali hari ini, pernah datang sebelumnya atau tidak, kunjungan baru setelah 30 menit pergi, jumlah tampilan dan klik, waktu halaman terlihat, slot 10 menit saat aktif</td></tr>
+<tr><td>Yang dibuka</td><td>tab, provinsi/kabupaten/kompleks, eksibit yang terlihat, simulasi, unduhan, bagikan/ekspor, lapisan peta, kontrol grafik, slider Operasi, tingkat zoom dan kotak 0,5° pusat peta, laporan warga dibuka/dikirim (jenisnya saja), formulir pesan dibuka/dikirim (kategorinya saja), tema, layar besar</td></tr>
+<tr><td>Pencarian</td><td>hanya nama wilayah yang Anda pilih dari daftar atau kode kompleks (K0001); teks bebas tidak pernah dikirim</td></tr>
+<tr><td>Perangkat dan asal</td><td>jenis perangkat, kelompok lebar layar/jendela, bahasa peramban, jenis koneksi (4g/3g), tema, dipasang sebagai aplikasi atau tidak, domain perujuk (misalnya WhatsApp, Google), parameter UTM, jenis tautan langsung</td></tr>
+<tr><td>Dari jaringan (Cloudflare)</td><td>negara, provinsi/region, kota dan koordinatnya dibulatkan 0,1° (lokasi jaringan, bukan GPS), zona waktu, pusat data Cloudflare, nama organisasi jaringan dan nomor ASN, peramban dan sistem operasi kasar</td></tr>
+<tr><td>Kualitas</td><td>kecepatan muat (TTFB, FCP, LCP, CLS, INP), pesan galat JavaScript beserta berkas:baris (tanpa data Anda), berkas data yang gagal dimuat, umur data yang Anda lihat</td></tr>
+</table></div>
+<p class="kecil">Disimpan 90 hari. Tiap jenis hitungan menyimpan paling banyak 100 nilai per hari; sisanya digabung sebagai "lainnya".</p>
+
+<h2 id="publik">Statistik publik (tanpa penyimpanan di perangkat)</h2>
+<p>Halaman <a href="/statistik">/statistik</a> menghitung tayangan halaman dari sisi server: apakah permintaan datang dari peramban orang, asisten AI, perayap AI, atau mesin pencari (dari agen pengguna, dan untuk perayap dicocokkan dengan daftar IP resmi operatornya). Pengunjung unik per hari dihitung dari sidik 16 karakter atas garam harian + IP + peramban; garam diganti tiap tengah malam WIB dan garam lama dihapus, sehingga sidik kemarin tidak bisa dicocokkan lagi. Alamat IP tidak pernah disimpan. Ini tidak menyimpan apa pun di perangkat Anda dan tetap berlaku bila Anda menolak analitik; tayangan dari jaringan hosting/cloud dan perayap palsu tidak dihitung.</p>
+
+<h2 id="pesan">Formulir Kirim pesan</h2>
+<p>Nama dan instansi (opsional), email (wajib), kategori, isi pesan, dan tautan tampilan yang sedang dibuka bila Anda mencentangnya. Email hanya dipakai untuk membalas pesan Anda. Sidik IP bergaram dipakai untuk membatasi spam. Bila notifikasi email aktif, isi pesan diteruskan ke kotak masuk pengelola lewat penyedia email (Resend). Pesan dihapus otomatis <b>180 hari</b> setelah dikirim; minta penghapusan lebih cepat lewat halaman isu dengan menyebut tanggal kirim.</p>
+
 <h2>Dasar pemrosesan</h2>
 <p>Persetujuan Anda saat mengirim laporan, dan pelindungan kepentingan vital warga terdampak bencana. Laporan bersifat publik; jangan menulis data pribadi orang lain.</p>
 
@@ -52,5 +99,7 @@ tr:last-child td{border-bottom:0}
 <li>Untuk meminta akses, koreksi, atau penghapusan lainnya, hubungi pengelola lewat <a href="https://github.com/terasurbannetwork/poskokarhutla/issues" rel="noopener">halaman isu proyek</a> dengan menyebut <b>nomor laporan</b> saja. Jangan menulis nomor telepon di sana karena halaman itu publik.</li>
 </ul>
 </main>
+<script src="/persetujuan.js" defer></script>
+<script src="/jejak.js" data-halaman="privasi" defer></script>
 </body>
 </html>

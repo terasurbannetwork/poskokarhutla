@@ -34,6 +34,19 @@
         "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/d36b1b34-f512-4677-a94f-bfae9874af70/scratchpad/web');sys.argv=['s','8793'];runpy.run_module('http.server',run_name='__main__')"
       ],
       "port": 8793
+    },
+    {
+      "name": "publik-konsesi",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-I",
+        "-m",
+        "http.server",
+        "8795",
+        "-d",
+        "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public"
+      ],
+      "port": 8795
     }
   ]
 }

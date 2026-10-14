@@ -4,22 +4,28 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
 import {perbaruiTitik, titikTerbaru} from "./titik.js";
+import * as St from "./statistik.js";
+import * as Pub from "./publik.js";
+import {terapkanOg} from "./og_meta.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik} from "./admin_halaman.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *";
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
 /* aksi -> [[jendela ms, maks], ...] per hash IP */
-export const BATAS = {lapor: [[JAM, 10], [HARI, 30]], konfirmasi: [[JAM, 60]], aduan: [[JAM, 20]], kontak: [[JAM, 5], [HARI, 15]], selesai: [[JAM, 30]]};
+export const BATAS = {lapor: [[JAM, 10], [HARI, 30]], konfirmasi: [[JAM, 60]], aduan: [[JAM, 20]], kontak: [[JAM, 5], [HARI, 15]], selesai: [[JAM, 30]],
+  masuk: [[JAM / 4, 8], [HARI, 40]], pesan: [[JAM, 5], [HARI, 20]]};
+const LAJU_BARU = ["masuk", "pesan"];   // dicatat di tabel laju (CHECK tabel jejak tidak bisa diubah)
 const BATAS_GLOBAL_LAPOR = 600;          // laporan baru per jam dari semua orang; di atasnya API menolak (banjir spam)
 const MAKS_DAFTAR = 1000, MAKS_TEKS = 280, MAKS_BODY = 4096;
 const KONTAK_UMUR = 72 * JAM, RADIUS_LANJUT = 150, RADIUS_KEMBAR = 200, RADIUS_API = 2000;
 const KASAR = ["anjing lu", "bangsat", "kontol", "memek", "ngentot", "jancok", "jancuk", "bajingan", "goblok", "tolol", "kampret", "pelacur", "lonte"];
 
-const json = (data, status = 200, h = {}) => new Response(JSON.stringify(data), {status,
+export const json = (data, status = 200, h = {}) => new Response(JSON.stringify(data), {status,
   headers: {"content-type": "application/json; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff", ...h}});
-const gagal = (status, pesan, h) => json({galat: pesan}, status, h);
-const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
-const sha = async s => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
-const acak = n => hex(crypto.getRandomValues(new Uint8Array(n)));
+export const gagal = (status, pesan, h) => json({galat: pesan}, status, h);
+export const hex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, "0")).join("");
+export const sha = async s => hex(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)));
+export const acak = n => hex(crypto.getRandomValues(new Uint8Array(n)));
 const jarak = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371e3; };
 const kelas = (j, s) => JENIS[j]?.sub[s]?.[1];
 
@@ -83,12 +89,13 @@ async function dekatApi(env, asal, lat, lon, kini) {
 }
 
 /* ---------------- batas laju ---------------- */
-async function cekLaju(env, ip, aksi, kini) {
+export async function cekLaju(env, ip, aksi, kini) {
+  const tabel = LAJU_BARU.includes(aksi) ? "laju" : "jejak";
   for (const [jendela, maks] of BATAS[aksi]) {
-    const r = await env.DB.prepare("SELECT count(*) n FROM jejak WHERE ip_hash = ? AND aksi = ? AND waktu > ?").bind(ip, aksi, kini - jendela).first();
+    const r = await env.DB.prepare(`SELECT count(*) n FROM ${tabel} WHERE ip_hash = ? AND aksi = ? AND waktu > ?`).bind(ip, aksi, kini - jendela).first();
     if (r.n >= maks) return gagal(429, `batas ${aksi}: ${maks} per ${jendela / JAM} jam sudah tercapai (${r.n})`, {"retry-after": String(Math.ceil(jendela / 1000))});
   }
-  await env.DB.prepare("INSERT INTO jejak (ip_hash, aksi, waktu) VALUES (?, ?, ?)").bind(ip, aksi, kini).run();
+  await env.DB.prepare(`INSERT INTO ${tabel} (ip_hash, aksi, waktu) VALUES (?, ?, ?)`).bind(ip, aksi, kini).run();
   return null;
 }
 /* IPv6: satu pelanggan biasanya memegang satu /64 utuh, jadi batas laju per alamat penuh bisa diakali dengan memutar
@@ -99,17 +106,19 @@ export function kunciIP(ip) {
   const [a, b] = ip.split("::"), h = a ? a.split(":") : [], t = b ? b.split(":") : [];
   return [...h, ...Array(Math.max(0, 8 - h.length - t.length)).fill("0"), ...t].slice(0, 4).map(x => parseInt(x || "0", 16).toString(16)).join(":") + "::/64";
 }
-const ipHash = (env, req) => sha(env.IP_SALT + "|" + kunciIP(req.headers.get("cf-connecting-ip") || "lokal"));
+export const ipHash = (env, req) => sha(env.IP_SALT + "|" + kunciIP(req.headers.get("cf-connecting-ip") || "lokal"));
 
-async function bacaBody(req) {
+export async function bacaBody(req) {
   const t = await req.text();
   if (t.length > MAKS_BODY) return {galat: `body ${t.length} byte, maksimal ${MAKS_BODY}`};
   try { const o = JSON.parse(t || "{}"); return o && typeof o === "object" && !Array.isArray(o) ? {o} : {galat: "body harus objek JSON"}; }
   catch (e) { return {galat: "body bukan JSON"}; }
 }
 
-async function turnstileOK(env, token, req) {
-  if (!env.TURNSTILE_SECRET) return true;
+/* Turnstile aktif hanya bila KEDUANYA diset: TURNSTILE_SITEKEY (vars, dipantulkan /api/warga/konfig ke peramban) dan
+   TURNSTILE_SECRET (secret). Rahasia tanpa sitekey = peramban tak pernah merender widget -> semua kiriman ditolak; jadi dilewati. */
+export async function turnstileOK(env, token, req) {
+  if (!env.TURNSTILE_SECRET || !env.TURNSTILE_SITEKEY) return true;
   if (typeof token !== "string" || !token) return false;
   const f = new FormData(); f.append("secret", env.TURNSTILE_SECRET); f.append("response", token);
   const ip = req.headers.get("cf-connecting-ip"); if (ip) f.append("remoteip", ip);
@@ -269,12 +278,14 @@ async function selesai(env, req, id, kini) {
   return json({selesai: true});
 }
 
-/* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator */
-async function adminOK(env, req) {
+/* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator.
+   Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
+export async function adminOK(env, req, kini = Date.now()) {
   if (!env.ADMIN_TOKEN) return null;
-  const a = await sha(req.headers.get("x-admin-token") || "");
-  for (const t of env.ADMIN_TOKEN.split(",").map(x => x.trim()).filter(Boolean)) if (await sha(t) === a) return a.slice(0, 12);
-  return null;
+  const sah = await Promise.all(env.ADMIN_TOKEN.split(",").map(x => x.trim()).filter(Boolean).map(sha));
+  const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
+  if (t != null) { const a = await sha(t.trim()); return sah.includes(a) ? a.slice(0, 12) : null; }
+  return St.sesiOK(env, req, kini, sah.map(a => a.slice(0, 12)));
 }
 const AKSI_ADMIN = ["sembunyikan", "tampilkan", "hapus", "hapus_pengirim"];
 async function admin(env, req, url, id, kini) {
@@ -327,34 +338,110 @@ async function dibuatAset(env, asal, jalur) {
     return Number.isNaN(w) ? null : w;
   } catch (e) { return null; }
 }
-async function status(env, url, kini) {
+async function periksaStatus(env, url, kini) {
   const sumber = {}, basi = [];
   await Promise.all(SUMBER_STATUS.map(async ([nama, jalur, ambang]) => {
     const w = await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
     sumber[nama] = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang};
     if (ambang != null && (jam == null || jam > ambang)) basi.push(nama);
   }));
-  return json({ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber}, basi.length ? 503 : 200);
+  return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber};
 }
+const status = async (env, url, kini) => { const h = await periksaStatus(env, url, kini); return json(h, h.ok ? 200 : 503); };
 
 export async function bersihkan(env, kini = Date.now()) {
   const r = await env.DB.batch([
     env.DB.prepare(`DELETE FROM kontak WHERE dibuat <= ? OR laporan_id IN (SELECT id FROM laporan WHERE selesai = 1 OR disembunyikan = 1 OR kedaluwarsa <= ?)`).bind(kini - KONTAK_UMUR, kini),
     env.DB.prepare("DELETE FROM laporan WHERE kedaluwarsa <= ? OR (disembunyikan = 1 AND dibuat <= ?)").bind(kini - 7 * HARI, kini - 30 * HARI),
     env.DB.prepare("DELETE FROM jejak WHERE waktu <= ?").bind(kini - 2 * HARI),
+    ...St.bersihkanStatistik(env, kini),
   ]);
   return {kontak: r[0].meta.changes, laporan: r[1].meta.changes, jejak: r[2].meta.changes};
 }
 
+/* rute statistik, sesi admin, dan kotak pesan: "METODE /jalur" (":id" = 16 hex). Gerbang uji membaca kunci tabel ini. */
+const RUTE = {
+  "POST /api/jejak": (env, req, url, kini) => St.jejak(env, req, kini),
+  "GET /api/statistik": (env, req, url, kini) => St.statistik(env, req, url, kini),
+  "POST /api/pesan": (env, req, url, kini, ctx) => St.kirimPesan(env, req, ctx, kini),
+  "GET /api/pesan": (env, req, url, kini) => St.daftarPesan(env, req, url, kini),
+  "POST /api/pesan/:id": (env, req, url, kini, ctx, id) => St.ubahPesan(env, req, id, kini),
+  "GET /admin": () => new Response(null, {status: 303, headers: {location: "/admin/statistik"}}),
+  "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
+  "POST /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
+  "POST /admin/keluar": () => St.keluar(),
+  "GET /admin/statistik": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanStatistik()),
+  "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
+  "GET /statistik": (env, req, url, kini, ctx) => { catatHTML(env, req, "/statistik", ctx); return halamanPublik(); },
+  "GET /api/publik": (env, req, url, kini, ctx) => Pub.publik(env, req, url, ctx, kini),
+};
+async function rute(env, req, url, ctx) {
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", id = jalur.match(/\/([0-9a-f]{16})$/)?.[1];
+  const f = RUTE[req.method + " " + (id ? jalur.slice(0, -16) + ":id" : jalur)];
+  if (!f) return null;
+  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi juga SameSite=Strict)
+    const o = req.headers.get("origin");
+    if (o && o !== "null" && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
+    if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
+  }
+  try { return await f(env, req, url, Date.now(), ctx, id); }
+  catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
+}
+
 const HALAMAN = /^\/(ringkasan|peta|insight|berita|kompleks|posko|informasi|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
+
+/* ================= HTML lewat Worker (statistik publik) — dipisah supaya mudah digabung dengan perubahan routing lain =================
+   Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
+   Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
+   [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
+export const HTML_RUTE = [
+  [/^\/(index\.html)?$/, "/index.html", "/"],
+  [/^\/banjir(\/|\/index\.html)?$/, "/banjir/index.html", "/banjir/"],
+  [HALAMAN, "/index.html", null],
+  [/^\/tentang\/?$/, "/tentang.html", "/tentang"],   // html_handling "none" mematikan /tentang -> tentang.html otomatis
+  [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
+];
+function catatHTML(env, req, jalur, ctx) {
+  if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
+}
+async function layaniHTML(req, env, ctx, url) {
+  if (req.method !== "GET" && req.method !== "HEAD") return null;
+  const cocok = HTML_RUTE.find(([re]) => re.test(url.pathname)); if (!cocok) return null;
+  const jalur = cocok[2] || url.pathname.replace(/\/+$/, "");
+  // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
+  const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
+  if (!aset.ok || req.method === "HEAD") return aset;
+  catatHTML(env, req, jalur, ctx);
+  /* pil header "N online · N tampilan": angka ditaruh di atribut <html>, digambar public/persetujuan.js (tanpa panggilan API tambahan) */
+  let a = null; try { a = await Pub.angkaPil(env); } catch (e) {}
+  if (!a || (!a.online && !a.tampilan)) return aset;
+  return new HTMLRewriter().on("html", {element: el => { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }}).transform(aset);
+}
+
+/* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================
+   Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
+   bercookie tidak pernah lewat sini. Kunci = URL dengan parameter diurutkan. Hanya 200 yang disimpan. Pemanggilan Worker tetap
+   terhitung; yang dihemat bacaan D1 dan CPU. Respons keluar dengan Cache-Control public max-age=detik (peramban ikut menyimpan). */
+export async function cacheTepi(req, ctx, detik, buat) {
+  const u = new URL(req.url); u.searchParams.sort();
+  const kunci = new Request(u.toString(), {method: "GET"}), c = globalThis.caches?.default;
+  if (c) { const ada = await c.match(kunci); if (ada) return ada; }
+  const r = await buat();
+  if (r.status !== 200) return r;
+  const h = new Headers(r.headers); h.set("cache-control", `public, max-age=${detik}`);
+  const out = new Response(r.body, {status: 200, headers: h});
+  if (c) ctx?.waitUntil?.(c.put(kunci, out.clone()).catch(() => {}));
+  return out;
+}
 
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    if (url.pathname === "/api/titik" && req.method === "GET") return titikTerbaru(env);
-    if (url.pathname === "/api/status" && req.method === "GET") return status(env, url, Date.now());
+    if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
+    if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
-    if (req.method === "GET" && HALAMAN.test(url.pathname)) return env.ASSETS.fetch(new Request(new URL("/", url), req));
+    const r = await rute(env, req, url, ctx); if (r) return r;
+    const h = await layaniHTML(req, env, ctx, url); if (h) return h;
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {
@@ -363,9 +450,9 @@ export default {
         if (o && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
         if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
       }
-      if (p.length === 0 && req.method === "GET") return daftar(env, url, kini);
+      if (p.length === 0 && req.method === "GET") return cacheTepi(req, ctx, 30, () => daftar(env, url, kini));
       if (p.length === 0 && req.method === "POST") return buat(env, req, url, kini);
-      if (p[0] === "konfig" && req.method === "GET") return json({turnstile: env.TURNSTILE_SITEKEY || null, batas: BATAS});
+      if (p[0] === "konfig" && req.method === "GET") return cacheTepi(req, ctx, 300, () => json({turnstile: env.TURNSTILE_SITEKEY || null, batas: BATAS}));
       if (p[0] === "admin" && p.length === 1 && req.method === "GET") return admin(env, req, url, null, kini);
       const id = p[0];
       if (!/^[0-9a-f]{16}$/.test(id || "")) return gagal(404, "rute tidak ada");
@@ -384,5 +471,13 @@ export default {
     }
   },
   // cron CRON_TITIK = titik panas FIRMS; "17 * * * *" = bersih-bersih Lapor Warga
-  async scheduled(ev, env) { if (ev.cron === CRON_TITIK) console.log("titik", JSON.stringify(await perbaruiTitik(env))); else await bersihkan(env); },
+  async scheduled(ev, env) {
+    if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
+    await bersihkan(env);
+    const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
+    await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
+    await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
+    const ip = await env.DB.prepare("SELECT min(diambil) t, count(*) n FROM stat_ip").first();   // daftar IP perayap: sehari sekali
+    if (!ip.n || kini - ip.t > 24 * JAM) console.log("rentang ip", JSON.stringify(await Pub.perbaruiRentang(env, kini)));
+  },
 };

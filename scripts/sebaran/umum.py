@@ -175,19 +175,12 @@ class PoligonSemua:
 
 
 class Lahan:
-    """Atribut lahan per sel 375 m dari public/data: lahan/{gambut,kawasan,konsesi}.geojson, lahan/sanksi_karhutla.json,
+    """Atribut lahan per sel 375 m dari public/data: lahan/{gambut,kawasan,konsesi}.geojson (sanksi_th per poligon, tanpa nama),
     kanal.json, jalan.geojson, penduduk.json. Di-cache per sel. Sama persis dengan Lahan() di public/sebaran_model.js."""
     def __init__(self):
         lh = os.path.join(PUBLIK, "lahan")
         self.gb, self.kw = Poligon(os.path.join(lh, "gambut.geojson")), Poligon(os.path.join(lh, "kawasan.geojson"))
         self.ks = PoligonSemua(os.path.join(lh, "konsesi.geojson"))
-        self.sanksi = {}
-        jl = os.path.join(lh, "sanksi_karhutla.json")
-        if os.path.exists(jl):
-            for c in json.load(open(jl))["kasus"]:
-                th = c.get("tahun_putusan") or min([int(x["tanggal"][:4]) for x in c.get("sumber", []) if x.get("tanggal")] or [9999])
-                k = nama_baku(c["nama"])
-                self.sanksi[k] = min(self.sanksi.get(k, 9999), int(th))
         k = json.load(open(os.path.join(PUBLIK, "kanal.json")))
         self.kanal_sel = k["sel"]
         self.kanal = {(math.floor(a / k["sel"]), math.floor(b / k["sel"])): km for a, b, km in k["grid"]}  # pusat sel -> floor
@@ -249,8 +242,8 @@ class Lahan:
         jenis = {p.get("jenis") for p in ks}
         h = 1 if kw.get("fungsi") in HUTAN else 0
         pr = 1 if kw.get("fungsi") in PRODUKSI else 0
-        sanksi = min([self.sanksi.get(nama_baku(p.get("pemegang") or p.get("nama")), 9999) for p in ks] +
-                     [self.sanksi.get(nama_baku(p.get("nama")), 9999) for p in ks] + [9999])
+        # sanksi_th per poligon dihitung scripts/scrape/konsesi.py dari daftar sanksi (data/raw/konsesi, tidak diterbitkan)
+        sanksi = min([p.get("sanksi_th", 9999) for p in ks] + [9999])
         kb = 1 if "sawit" in jenis else 0
         s = 1 if pr or "hph" in jenis else 0
         apl = "sabana" if prov in ("93", "53", "52", "81") else "rumput"

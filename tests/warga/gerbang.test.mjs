@@ -16,6 +16,9 @@ function temukan() {
   for (const [, x] of w.matchAll(/url\.pathname === "(\/api\/\w+)"/g)) out.add("GET " + x);
   if (/bersihkan\(env\)/.test(w)) out.add("cron bersihkan");
   if (/perbaruiTitik\(env\)/.test(w)) out.add("cron titik");
+  for (const [, x] of w.matchAll(/^\s*"((?:GET|POST) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan)
+  if (/HTML_RUTE/.test(w)) out.add("hit HTML (HTML_RUTE)");
+  for (const [, x] of w.matchAll(/(catatGangguan|musnahkanGaram|perbaruiRentang)\(/g)) out.add("cron " + x);
   for (const [, j, n] of migrasi().matchAll(/CREATE (TABLE|TRIGGER) (\w+)/g)) out.add(j.toLowerCase() + " " + n);
   return [...out];
 }

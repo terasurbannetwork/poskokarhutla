@@ -1,7 +1,13 @@
-"""Konsesi (sawit, HTI, HPH, tambang) dengan nama perusahaan, grup, nomor izin -> public/data/lahan/konsesi.geojson.
+"""Konsesi (sawit, HTI, HPH, tambang) -> data/raw/konsesi/konsesi_lengkap.geojson (nama, grup, izin; TIDAK diterbitkan)
+dan public/data/lahan/konsesi.geojson (tanpa nama: jenis, tahun peta, wilayah, luas peta, sanksi_th).
+
+Keputusan pemilik 14 Okt 2026: situs tidak menampilkan nama perusahaan, grup, nomor izin, atau kasus per perusahaan;
+hanya status lahan (areal konsesi sawit / HTI / HPH / tambang). Fitur model sebaran "pemegang pernah disanksi" ikut
+diterbitkan sebagai satu angka per poligon (sanksi_th: tahun sanksi karhutla pertama pemegangnya), tanpa nama.
 
 Pakai:  python3 scripts/scrape/konsesi.py           # unduh (kalau belum ada di cache) + bangun + uji
         python3 scripts/scrape/konsesi.py uji       # invarian berkas hasil (tanpa jaringan)
+        python3 scripts/scrape/konsesi.py publik    # tulis ulang berkas publik dari salinan lengkap (tanpa jaringan)
         python3 scripts/scrape/konsesi.py periksa   # cek silang ke layanan resmi Kemenhut (jaringan): 20 poligon acak + total
 
 Mentah -> data/raw/konsesi/ (tidak di-commit). Sumber batas dan lisensinya lihat KONSESI.md; ringkas:
@@ -20,6 +26,9 @@ import json, math, os, random, re, sys, time, urllib.parse, urllib.request
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 MENTAH = os.path.join(AKAR, "data/raw/konsesi")
 KELUAR = os.path.join(AKAR, "public/data/lahan")
+LENGKAP = os.path.join(MENTAH, "konsesi_lengkap.geojson")  # bernama, tidak diterbitkan
+SANKSI = os.path.join(MENTAH, "sanksi_karhutla.json")  # kurasi tangan, bersumber; di-commit (lihat .gitignore), tidak diterbitkan
+PUBLIK_KOLOM = ("jenis", "tahun_data", "aktif", "prov", "kab", "luas_peta_ha")
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
 from lahan import UNDUH, ambil, baca_shp, dp, di_dalam  # noqa: E402
@@ -286,11 +295,52 @@ def bangun(tol=0.0015):
 
 
 def tulis(fitur):
+    os.makedirs(MENTAH, exist_ok=True)
+    with open(LENGKAP, "w") as f:
+        json.dump({"type": "FeatureCollection", "sumber": SUMBER, "features": fitur}, f, separators=(",", ":"), ensure_ascii=False)
+    publik()
+
+
+def nama_baku(n):
+    """Sama dengan nama_baku di scripts/sebaran/umum.py (pencocokan nama ke daftar sanksi)."""
+    n = re.sub(r"\b(pt|tbk|cv|persero)\b", " ", (n or "").lower())
+    n = re.sub(r"[^a-z0-9]", "", n)
+    return re.sub(r"(.)\1+", r"\1", n)
+
+
+def tahun_sanksi(kasus):
+    """nama_baku pemegang -> tahun sanksi karhutla pertama (putusan, atau tanggal sumber tertua)."""
+    th = {}
+    for c in kasus:
+        t = c.get("tahun_putusan") or min([int(x["tanggal"][:4]) for x in c.get("sumber", []) if x.get("tanggal")] or [9999])
+        k = nama_baku(c["nama"])
+        th[k] = min(th.get(k, 9999), int(t))
+    return th
+
+
+def tanpa_nama(fitur, sanksi):
+    """Fitur bernama -> fitur publik: hanya PUBLIK_KOLOM + sanksi_th (ada hanya bila pemegangnya pernah disanksi)."""
+    out = []
+    for f in fitur:
+        p = f["properties"]
+        q = {k: p.get(k) for k in PUBLIK_KOLOM}
+        t = min(sanksi.get(nama_baku(p.get("pemegang") or p.get("nama")), 9999), sanksi.get(nama_baku(p.get("nama")), 9999))
+        if t < 9999:
+            q["sanksi_th"] = t
+        out.append({"type": "Feature", "properties": q, "geometry": f["geometry"]})
+    return out
+
+
+def publik():
     os.makedirs(KELUAR, exist_ok=True)
+    d = json.load(open(LENGKAP))
+    fitur = tanpa_nama(d["features"], tahun_sanksi(json.load(open(SANKSI))["kasus"]))
     p = os.path.join(KELUAR, "konsesi.geojson")
     with open(p, "w") as f:
-        json.dump({"type": "FeatureCollection", "sumber": SUMBER, "features": fitur}, f, separators=(",", ":"), ensure_ascii=False)
-    print(f"konsesi.geojson: {len(fitur)} fitur, {os.path.getsize(p) / 1e6:.1f} MB", file=sys.stderr)
+        json.dump({"type": "FeatureCollection", "sumber": {k: v for k, v in SUMBER.items() if k != "izin"}, "features": fitur},
+                  f, separators=(",", ":"), ensure_ascii=False)
+    print(f"konsesi.geojson (publik, tanpa nama): {len(fitur)} fitur, {sum('sanksi_th' in x['properties'] for x in fitur)} "
+          f"poligon pemegang pernah disanksi, {os.path.getsize(p) / 1e6:.1f} MB", file=sys.stderr)
 
 
 SUMBER = {
@@ -304,7 +354,7 @@ SUMBER = {
 
 # ---------- uji (tanpa jaringan) ----------
 def uji(jalur=None):
-    d = json.load(open(jalur or os.path.join(KELUAR, "konsesi.geojson")))
+    d = json.load(open(jalur or LENGKAP))
     fs = d["features"]
     assert len(fs) > 1000, f"hanya {len(fs)} fitur"
     ids = [f["properties"]["id"] for f in fs]
@@ -334,19 +384,42 @@ def uji(jalur=None):
     hit = lambda lo, la: [f["properties"] for f in fs if di_dalam(lo, la, f["geometry"])]
     assert any(p["jenis"] == "hti" for p in hit(101.5, 1.0)), hit(101.5, 1.0)  # PT Arara Abadi (Siak/Bengkalis, Riau)
     assert not hit(106.83, -6.18), "Monas tidak mungkin konsesi"
-    s = json.load(open(os.path.join(KELUAR, "sanksi_karhutla.json")))
+    s = json.load(open(SANKSI))
     assert s["kasus"], "sanksi kosong"
     for k in s["kasus"]:
         assert k["nama"] and k["jenis"] in ("perdata", "pidana", "administratif", "penyegelan"), k
         assert k["sumber"] and all(u["url"].startswith("http") for u in k["sumber"]), k["nama"]
         assert k["status"], k["nama"]
-    print("ok", len(fs), "fitur;", {j: sum(f["properties"]["jenis"] == j for f in fs) for j in sorted(JENIS)})
+    uji_publik(fs, s["kasus"])
+
+
+def uji_publik(fs_lengkap, kasus):
+    """Berkas publik: tidak ada nama/grup/izin, fitur & geometri sama dengan salinan lengkap, sanksi_th = hitungan dari nama."""
+    # tanpa_nama sendiri: nama yang disanksi -> tahun; nama lain -> tidak ada kunci
+    contoh = [{"properties": {"nama": "PT. Api Jaya", "pemegang": "PT. Api Jaya", "grup": "G", "izin": "SK.1", "jenis": "sawit"}, "geometry": None},
+              {"properties": {"nama": "PT Lain", "jenis": "hti"}, "geometry": None}]
+    t = tanpa_nama(contoh, tahun_sanksi([{"nama": "PT Api Jaya", "tahun_putusan": 2016, "sumber": []}]))
+    assert t[0]["properties"]["sanksi_th"] == 2016 and "sanksi_th" not in t[1]["properties"], t
+    assert not {"nama", "pemegang", "grup", "izin"} & set(t[0]["properties"]), t
+    jalur = os.path.join(KELUAR, "konsesi.geojson")
+    teks = open(jalur, encoding="utf-8").read()
+    d = json.loads(teks)
+    for f in d["features"]:
+        lebih = set(f["properties"]) - set(PUBLIK_KOLOM) - {"sanksi_th"}
+        assert not lebih, f"kolom bernama/berizin bocor ke berkas publik: {lebih}"
+    assert len(d["features"]) == len(fs_lengkap), f"publik {len(d['features'])} fitur != lengkap {len(fs_lengkap)}: jalankan konsesi.py publik"
+    assert not re.search(r"\bPT\.? ?[A-Z]|\bTbk\b", teks), "nama perusahaan (PT/Tbk) di berkas publik"
+    th = tahun_sanksi(kasus)
+    n_s = sum(1 for f in fs_lengkap if min(th.get(nama_baku(f["properties"].get("pemegang") or f["properties"]["nama"]), 9999),
+                                            th.get(nama_baku(f["properties"]["nama"]), 9999)) < 9999)
+    assert n_s == sum("sanksi_th" in f["properties"] for f in d["features"]), "sanksi_th publik tidak sama dengan hitungan dari nama"
+    print("ok", len(fs_lengkap), "fitur;", {j: sum(f["properties"]["jenis"] == j for f in fs_lengkap) for j in sorted(JENIS)})
 
 
 # ---------- periksa (jaringan): silang ke Kemenhut ----------
 def periksa(n=20, benih=7):
     """20 poligon HTI/HPH + 20 tambang acak: titik wakilnya ditanya ke layanan resmi (atribut saja, tanpa geometri)."""
-    fs = json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]
+    fs = json.load(open(LENGKAP))["features"]
     rnd = random.Random(benih)
 
     for jenis, layanan, kolom in ((("hti", "hph"), PBPH, "NAMOBJ"), (("tambang",), PPKH, "NAMA_PPKH")):
@@ -365,7 +438,7 @@ def periksa(n=20, benih=7):
 
 def rekap():
     """Jumlah dan luas per jenis x provinsi (dicetak; dipakai di KONSESI.md)."""
-    fs = json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]
+    fs = json.load(open(LENGKAP))["features"]
     from collections import defaultdict
     t = defaultdict(lambda: [0, 0, 0])
     for f in fs:
@@ -381,6 +454,9 @@ def rekap():
 if __name__ == "__main__":
     perintah = sys.argv[1] if len(sys.argv) > 1 else ""
     if perintah == "uji":
+        uji()
+    elif perintah == "publik":
+        publik()
         uji()
     elif perintah == "periksa":
         periksa()

@@ -98,8 +98,12 @@ def binkan(X, tepi):
     return kol
 
 
-def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, seed=1, fitur_aktif=None, log=None):
+def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, seed=1, fitur_aktif=None, log=None, mono=None, fokal=0.0):
+    """mono = {indeks fitur: +1 (naik) / -1 (turun)}: kendala monoton (cara 'basic' LightGBM: belahan pada fitur monoton harus
+    searah, batas nilai daun diwariskan ke anak). fokal = gamma: bobot tiap baris dikali (1 - p_benar)^gamma tiap iterasi
+    (pendekatan focal loss: baris yang sudah mudah ditebak makin ringan)."""
     n, m = len(X), len(X[0])
+    mono = mono or {}
     aktif = list(range(m)) if fitur_aktif is None else list(fitur_aktif)
     tepi = tepi_bin(X)
     kol = binkan(X, tepi)
@@ -114,8 +118,9 @@ def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, 
         h = [0.0] * n
         for i in range(n):
             p = sigmoid(F[i])
-            g[i] = w[i] * (p - y[i])
-            h[i] = w[i] * p * (1 - p)
+            wi = w[i] * ((1 - p if y[i] else p) ** fokal) if fokal else w[i]
+            g[i] = wi * (p - y[i])
+            h[i] = wi * p * (1 - p)
         idx = [i for i in range(n) if rnd.random() < sub]
         simpul = []
 
@@ -132,7 +137,7 @@ def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, 
                 H[j] = (hg, hh)
             return H
 
-        def bangun(ix, d, H):
+        def bangun(ix, d, H, lo=-math.inf, hi=math.inf):
             G = sum(g[i] for i in ix)
             Hs = sum(h[i] for i in ix)
             no = len(simpul)
@@ -142,6 +147,7 @@ def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, 
                 dasar = G * G / (Hs + l2)
                 for j in aktif:
                     hg, hh = H[j]
+                    arah_m = mono.get(j, 0)
                     gl = hl = 0.0
                     for b in range(len(hg) - 1):
                         gl += hg[b]
@@ -149,13 +155,23 @@ def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, 
                         gr, hr = G - gl, Hs - hl
                         if hl < min_h or hr < min_h:
                             continue
+                        if arah_m and arah_m * (min(max(-gr / (hr + l2), lo), hi) - min(max(-gl / (hl + l2), lo), hi)) < 0:
+                            continue
                         gain = gl * gl / (hl + l2) + gr * gr / (hr + l2) - dasar
                         if best is None or gain > best[0]:
-                            best = (gain, j, b)
+                            best = (gain, j, b, gl, hl)
             if best is None or best[0] <= 1e-9:
-                simpul[no] = [round(-G / (Hs + l2) * lr, 6)]
+                simpul[no] = [round(min(max(-G / (Hs + l2), lo), hi) * lr, 6)]
                 return no
-            _, j, b = best
+            _, j, b, gl, hl = best
+            lo_l = lo_r = lo
+            hi_l = hi_r = hi
+            if mono.get(j):
+                tengah = min(max((min(max(-gl / (hl + l2), lo), hi) + min(max(-(G - gl) / (Hs - hl + l2), lo), hi)) / 2, lo), hi)
+                if mono[j] > 0:
+                    hi_l, lo_r = tengah, tengah
+                else:
+                    lo_l, hi_r = tengah, tengah
             c = kol[j]
             ki = [i for i in ix if c[i] <= b]
             ka = [i for i in ix if c[i] > b]
@@ -165,8 +181,8 @@ def latih_gbdt(X, y, w, pohon=120, dalam=4, lr=0.1, l2=1.0, min_h=5.0, sub=0.5, 
             Hb = {jj: ([a - bb for a, bb in zip(H[jj][0], Hk[jj][0])], [a - bb for a, bb in zip(H[jj][1], Hk[jj][1])]) for jj in aktif} if Hk else None
             Hl, Hr = (Hk, Hb) if kecil is ki else (Hb, Hk)
             simpul[no] = [j, tepi[j][b], None, None]
-            simpul[no][2] = bangun(ki, d + 1, Hl)
-            simpul[no][3] = bangun(ka, d + 1, Hr)
+            simpul[no][2] = bangun(ki, d + 1, Hl, lo_l, hi_l)
+            simpul[no][3] = bangun(ka, d + 1, Hr, lo_r, hi_r)
             return no
 
         bangun(idx, 0, histo(idx))
@@ -256,4 +272,15 @@ if __name__ == "__main__":
         y2 = [1 if (a > 0) != (b > 0) else 0 for a, b in X2]
         g2 = latih_gbdt(X2, y2, [1.0] * 3000, pohon=30, dalam=3)
         assert auc([prediksi_gbdt(g2, x) for x in X2], y2) > .9
+        # kendala monoton: y naik dengan x0 tetapi berderau; model monoton tidak boleh turun sepanjang x0 untuk x1 mana pun
+        X3 = [[rnd.uniform(0, 1), rnd.uniform(0, 1)] for _ in range(3000)]
+        y3 = [1 if rnd.random() < sigmoid(3 * a - 1.5 + 1.5 * math.sin(12 * a) * (b > .5)) else 0 for a, b in X3]
+        g3 = latih_gbdt(X3, y3, [1.0] * 3000, pohon=40, dalam=3, mono={0: 1})
+        for b in (.1, .9):
+            ps = [prediksi_gbdt(g3, [a / 50, b]) for a in range(51)]
+            assert all(q2 >= q1 - 1e-12 for q1, q2 in zip(ps, ps[1:])), "monoton dilanggar"
+        g4 = latih_gbdt(X3, y3, [1.0] * 3000, pohon=40, dalam=3)
+        assert any(q2 < q1 for b in (.1, .9) for q1, q2 in zip(*[[prediksi_gbdt(g4, [a / 50, b]) for a in range(k, 51 - 1 + k)] for k in (0, 1)])), "data uji tidak menantang"
+        g5 = latih_gbdt(X, y, w, pohon=30, dalam=3, fokal=2.0)
+        assert auc([prediksi_gbdt(g5, x) for x in X], y) > .75
         print("ok")

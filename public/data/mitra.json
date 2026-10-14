@@ -1,0 +1,78 @@
+{
+ "kolaborasi": [
+  {
+   "jenis": "Penghargaan",
+   "tahun": 2025,
+   "judul": "Juara 1 West Java Research Summit 2025",
+   "isi": "Riset spasial-ekonomi tentang aglomerasi perkotaan, pemilihan lokasi, dan ketahanan usaha mikro."
+  },
+  {
+   "jenis": "Kebijakan",
+   "tahun": 2026,
+   "judul": "Indeks Ketahanan Energi Wilayah (IKEW)",
+   "isi": "Policy brief indeks ketahanan energi lima dimensi hingga tingkat kabupaten/kota, diserahkan kepada Kementerian ESDM dan dibahas dalam audiensi bersama Tenaga Ahli Menteri ESDM."
+  },
+  {
+   "jenis": "Kolaborasi riset",
+   "tahun": 2026,
+   "judul": "ETH Zürich × Teras Urban",
+   "isi": "Kerangka kelayakan dan desain jaringan transportasi umum darat-air yang setara untuk Jakarta daratan dan Kepulauan Seribu."
+  },
+  {
+   "jenis": "Dialog",
+   "tahun": 2026,
+   "judul": "Transjakarta × Teras Urban: Urban Mobility Dialogue",
+   "isi": "Forum bersama Transjakarta dan pemangku kepentingan mobilitas Jakarta tentang integrasi layanan BRT dan non-BRT."
+  },
+  {
+   "jenis": "Peristiwa",
+   "tahun": 2026,
+   "judul": "Grand launching & diskusi publik mobilitas perkotaan",
+   "isi": "Peluncuran Teras Urban bersama Dirgayuza Setiawan, Asisten Khusus Presiden, dan pemangku kepentingan mobilitas Jakarta."
+  },
+  {
+   "jenis": "Pertukaran internasional",
+   "tahun": 2025,
+   "judul": "YSEALI 2025, U.S. Department of State",
+   "isi": "Perwakilan Indonesia dalam FGD pembangunan kota bersama pemangku kepentingan di Harrisonburg, Virginia."
+  },
+  {
+   "jenis": "Kemitraan",
+   "tahun": 2026,
+   "judul": "Teras Urban × Karsa City Lab",
+   "isi": "Inisiatif bersama di bidang perencanaan kota, riset, dan inovasi spasial di ekosistem perkotaan Jakarta."
+  }
+ ],
+ "riset": [
+  {
+   "judul": "Agglomeration Economics, Site Selection, and the Survival of Micro and Small Enterprises in Indonesian Cities",
+   "tahun": 2025,
+   "bidang": "Spatial Economics"
+  },
+  {
+   "judul": "Supply–Absorption Imbalance in the Jakarta Apartment Market, 2024–2025",
+   "tahun": 2025,
+   "bidang": "Urban Planning & Real Estate"
+  },
+  {
+   "judul": "Land Subsidence in the Jakarta Basin: A Geospatial Synthesis and Groundwater-Governance Implications",
+   "tahun": 2026,
+   "bidang": "Geoscience & Urban Climate Risk"
+  },
+  {
+   "judul": "Public-Transport Deficit and Modal Transition in Jakarta: Ridership and Policy Implications",
+   "tahun": 2025,
+   "bidang": "Transport & Urban Mobility"
+  },
+  {
+   "judul": "PM2.5 Air Pollution and the Health Burden in Jakarta: Monitoring, Synthesis and Policy Implications",
+   "tahun": 2025,
+   "bidang": "Public Health & Environment"
+  },
+  {
+   "judul": "Green Open Space Deficit in DKI Jakarta against the Mandate of Law No. 26/2007",
+   "tahun": 2025,
+   "bidang": "Urban Ecology & Spatial Planning"
+  }
+ ]
+}

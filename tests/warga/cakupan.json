@@ -27,13 +27,40 @@
     "trigger suara_ubah": "suara: hitungan dijaga trigger",
     "trigger suara_hapus": "suara: hitungan dijaga trigger",
     "table jejak": "jejak dan titik_terbaru",
-    "table titik_terbaru": "jejak dan titik_terbaru"
+    "table titik_terbaru": "jejak dan titik_terbaru",
+    "verifikasi Turnstile (TURNSTILE_SECRET diset)": "Turnstile diset: tanpa token atau token salah DITOLAK",
+    "cache tepi GET publik (cacheTepi)": "cache tepi: daftar GET disimpan 30 dtk",
+    "POST /api/jejak": "jejak: masukan salah DITOLAK",
+    "GET /api/statistik": "statistik: total hari yang disemai",
+    "POST /api/pesan": "pesan: masukan salah DITOLAK",
+    "GET /api/pesan": "pesan: admin wajib masuk",
+    "POST /api/pesan/:id": "pesan: admin wajib masuk",
+    "GET /admin": "masuk: token salah ditolak",
+    "GET /admin/masuk": "masuk: token salah ditolak",
+    "POST /admin/masuk": "masuk: percobaan dibatasi",
+    "POST /admin/keluar": "keluar: cookie dihapus",
+    "GET /admin/statistik": "masuk: token salah ditolak",
+    "GET /admin/pesan": "masuk: token salah ditolak",
+    "GET /statistik": "hit HTML: rute HTML dilayani dari aset",
+    "GET /api/publik": "hit HTML: manusia, jawaban AI",
+    "hit HTML (HTML_RUTE)": "hit HTML: manusia, jawaban AI",
+    "cron catatGangguan": "cron: retensi statistik 90 hari",
+    "cron musnahkanGaram": "hit HTML: IP tidak pernah tersimpan",
+    "cron perbaruiRentang": "cron: daftar IP operator diambil",
+    "table stat_hari": "statistik: stat_hari, laju",
+    "table laju": "statistik: stat_hari, laju",
+    "table stat_tamu": "statistik: stat_hari, laju",
+    "table stat_garam": "statistik: stat_hari, laju",
+    "table stat_ip": "statistik: stat_hari, laju",
+    "table pesan": "pesan: email, kategori, panjang",
+    "klien persetujuan (DNT/GPC, tolak, terima)": "persetujuan: menolak tidak mengirim",
+    "klien jejak (30 menit, kembali, slot, muatan)": "jejak: aturan 30 menit",
+    "table stat_hari_baru": "migrasi 0006: stat_hari dibangun ulang"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika"
   },
   "antre": {
-    "verifikasi Turnstile (TURNSTILE_SECRET diset)": "butuh fixture challenges.cloudflare.com lewat outboundService",
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"
   }
 }

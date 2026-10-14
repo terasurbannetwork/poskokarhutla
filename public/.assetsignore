@@ -2,3 +2,6 @@ _uji_*
 **/_uji_*
 warga/
 data/citra/cache.json
+# data bernama perusahaan tidak pernah diterbitkan (bila tertinggal dari cache Actions lama)
+data/lahan/sanksi_karhutla.json
+data/grup_perusahaan.json

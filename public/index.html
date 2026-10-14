@@ -5,8 +5,30 @@
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pantau Bencana</title>
 <base href="/">
+<script src="i18n.js"></script>
+<link rel="alternate" hreflang="id" href="https://pantau.terasurban.com/">
+<link rel="alternate" hreflang="en" href="https://pantau.terasurban.com/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://pantau.terasurban.com/">
 <link rel="icon" href="./img/logo.svg?v=2" type="image/svg+xml">
 <meta name="description" content="Pemantauan titik panas, bahaya cuaca kebakaran, kompleks kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi Indonesia.">
+<!-- og -->
+<link rel="canonical" href="https://pantau.terasurban.com/">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
+<meta property="og:description" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta property="og:url" content="https://pantau.terasurban.com/">
+<meta property="og:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pantau Bencana · Karhutla: titik panas, kompleks api &amp; asap hari ini">
+<meta name="twitter:description" content="12 Okt: 19.901 titik panas, 194 kompleks api prioritas, 43,1 jt jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi.">
+<meta name="twitter:image" content="https://pantau.terasurban.com/data/og/ringkasan.png?v=2026-10-14">
+<!-- /og -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -1279,7 +1301,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 <dialog class="dlg dlg-laci" id="dlgLaci" aria-label="Rincian kompleks kebakaran"></dialog>
 <header class="top">
   <div class="mark">
-    <a class="logo" href="./" title="Pantau Bencana"><img src="./img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary><div class="menu"><a href="./" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Gempa & Tsunami<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Cuaca Ekstrem<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/></svg>Letusan Gunung Api<em class="bc-segera">Coming Soon</em></a></div></details>
+    <a class="logo" href="./" title="Pantau Bencana"><img src="./img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary><div class="menu"><a href="./" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Gempa & Tsunami<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Cuaca Ekstrem<em class="bc-segera">Coming Soon</em></a><a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/></svg>Letusan Gunung Api<em class="bc-segera">Coming Soon</em></a><!--tentang--><hr style="border:0;border-top:1px solid var(--line);margin:4px 6px"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
@@ -1515,7 +1537,7 @@ const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `l
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
-    muatJSON("data/meta.json"), muatJSON(S.rentang === 168 ? "data/hotspot.json" : "data/hotspot72.json").catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster_awal.json").then(d => (d.awal = true, d)).catch(() => muatJSON("data/kluster.json")),
+    muatJSON("data/meta.json"), muatJSON(S.rentang === 168 ? "data/hotspot.json" : S.rentang === 72 ? "data/hotspot72.json" : "data/hotspot24.json").catch(() => muatJSON("data/hotspot72.json")).catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster_awal.json").then(d => (d.awal = true, d)).catch(() => muatJSON("data/kluster.json")),
     muatJSON("data/fwi.json"), muatJSON("data/bnpb.json").catch(() => null), muatJSON("data/wilayah.json"), muatJSON("geo/provinsi.json")]);
   S.daops = await muatJSON("data/daops.json").catch(() => []);
   [S.inarisk, S.bpbd] = await Promise.all([muatJSON("data/inarisk.json").then(d => d.nilai).catch(() => ({})), muatJSON("data/bpbd.json").then(d => d.kantor).catch(() => [])]);
@@ -1527,7 +1549,7 @@ async function muatData() {
   S.posko = pk.posko; S.menengah = pk.menengah || []; S.pusat = pk.pusat || []; S.permanen = pk.permanen || [];
   S.semuaPosko = new Map([...S.pusat.map(x => [x.id, {...x, tingkat: 0}]), ...S.menengah.map(x => [x.id, {...x, tingkat: 1}]), ...S.posko.map(x => [x.id, {...x, tingkat: 2}])]);
   S.poskoDari = new Map(); S.posko.forEach(x => x.kompleks.forEach(k => S.poskoDari.set(k, x)));
-  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
+  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
   S.utama = new Set(hs.sensor_utama);
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
   const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
@@ -2020,6 +2042,7 @@ function seriHarian(kunci, n) {
     return {hari: idx.map(x => x[0]), v: idx.map(([, i]) => arr[i] || 0)}; }
   const hari = [...Array(Math.min(n, 7))].map((_, i) => { const d = new Date(new Date(hi + "T12:00:00+07:00") - (Math.min(n, 7) - i) * 864e5); return d.toISOString().slice(0, 10); });
   if (lvl === 1) return {hari, v: hari.map(t => S.wilayah[kunci]?.harian?.[t] || 0)};
+  if (!S.titikPenuh) muatTitik(168);   /* tren kab/kec butuh 7 hari: muat di belakang, wilayah digambar ulang setelahnya */
   if (!S._hk || S._hk.src !== S.titik) { const m = new Map(); /* kab & kec -> {MM-DD: n} dari titik 7 hari */
     for (const b of S.titik) { if (!S.utama.has(b[3])) continue; const [, k2, k3] = S.wilKunci[b[6]];
       for (const k of [k2, k3]) { const o = m.get(k) || (m.set(k, {}), m.get(k)); o[b[7]] = (o[b[7]] || 0) + 1; } }
@@ -2204,6 +2227,21 @@ function renderDaftarKom() {
 }
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
+/* titik panas bertahap: awal hotspot24.json (hari ini + kemarin + 48 jam, jam_maks 48); hotspot72.json / hotspot.json (7 hari)
+   baru dimuat saat rentang lebih panjang dipilih atau tren kecamatan butuh 7 hari (muatTitik(168)). acuan tidak disentuh:
+   titik_live.js menggeser kolom jam saat S.titik berganti. */
+function muatTitik(jam = typeof S.rentang === "number" ? S.rentang : 48) {
+  if (S.titikPenuh || jam <= (S.jamTitik || 0)) return muatTitik._p || Promise.resolve();
+  const penuh = jam > 72;
+  if (muatTitik._p && muatTitik._jam >= jam) return muatTitik._p;
+  muatTitik._jam = jam;
+  return muatTitik._p = muatJSON(penuh ? "data/hotspot.json" : "data/hotspot72.json").then(hs => {
+    if (S.titikPenuh || (hs.jam_maks || 168) <= S.jamTitik) return;
+    S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
+    S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168;
+    hitung(); peta?.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan?.();
+  }).catch(e => { muatTitik._p = null; muatTitik._jam = 0; console.warn("titik", e); });
+}
 /* rentang & mode */
 const RENTANG = [["hari", "Hari ini"], ["kemarin", "Kemarin"], [72, "72 jam"], [168, "7 hari"]];
 function renderSeg() {
@@ -2214,6 +2252,7 @@ function renderSeg() {
 $("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
   S.rentang = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; simpanLokal("pk-rentang2", S.rentang);
   if (S.rentang === 168 && !S.titikPenuh) toast("Memuat titik 7 hari…");
+  muatTitik();
   $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); }); });
 
@@ -4717,8 +4756,8 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
       ["Pusat", "rata-rata lintang dan bujur semua deteksi"], ["Wilayah", "kecamatan tempat pusat jatuh; bila pusat di luar poligon, kecamatan yang paling sering muncul di antara deteksinya"],
       ["px24 (front aktif 24 jam)", "jumlah sel ± 375 m berbeda yang berisi deteksi 24 jam terakhir. Sel = (round(lintang/0,003375), round(bujur·cos lintang/0,003375))"],
       ["Hari menyala", "jumlah tanggal WIB berbeda"], ["Deteksi hari ini / kemarin", "per tanggal WIB jam jalan"], ["FRP, FRP 24 jam", "jumlah FRP (MW)"],
-      ["Luas indikatif", "jumlah sel ± 375 m berbeda selama 7 hari × 14,0625 ha (0,375 km × 0,375 km). Laci kompleks menampilkannya sebagai rentang 0,3–1,0 kali nilai itu"],
-      ["Bentuk", "lambung cembung (monotone chain) bila ≥ 3 simpul dan status ≥ siaga; selain itu titik"],
+      ["Luas indikatif", "luas garis luar kompleks (di bawah), lubang dikurangi. Sejak 14 Okt 2026; sebelumnya jumlah sel ± 375 m berbeda × 14,0625 ha. Deteksi di tepi sapuan kini dihitung selebar pikselnya (bisa ± 0,8 km), deteksi tunggal ± 0,84 sel. Laci kompleks menampilkannya sebagai rentang 0,3–1,0 kali nilai itu"],
+      ["Bentuk", "garis luar mengikuti deteksi (bila ≥ 3 titik berbeda dan status ≥ siaga; selain itu titik): tiap deteksi VIIRS diraster ke kisi 375 m selebar jejak pikselnya (scan × track FIRMS), celah satu sel ditutup (dilatasi lalu erosi satu sel), tiap komponen terhubung dikontur (marching squares), dihaluskan Chaikin dan disederhanakan 56 m. Api yang terpisah jadi beberapa bagian (MultiPolygon); lahan tak terbakar yang dikelilingi api jadi lubang"],
       ["Cuaca", "FWI, FFMC, DMC, DC, ISI, BUI, angin, RH, suhu hari ini dari sel FWI terdekat; tidak ada = 'cuaca tidak tersedia'"],
       ["Gambut", "pusat atau salah satu dari 20 deteksi pertama jatuh di poligon gambut"], ["Daops", "markas Daops terdekat (Haversine) dan jaraknya"],
       ["Benih simulasi", "≤ 80 deteksi 24 jam terakhir dengan FRP terbesar (hanya status ≥ siaga)"],
@@ -4726,7 +4765,7 @@ Indeks sel = eps / (111,195 · cos 12°) derajat; tetangga dicari di 3 × 3 sel
     ${h("Kapan kompleks dianggap aktif")}<p>Kompleks ditampilkan bila deteksi terakhirnya ≤ ${d.aktif_jam} jam dari jam jalan. Di gambut sangat kering (DC &gt; 350 dan berada di peta gambut; tanpa peta gambut cukup DC) batasnya ${d.aktif_gambut_jam || 168} jam, karena bara bisa tertutup awan atau asap (deteksi VIIRS di gambut ± 71%). Kompleks yang tidak terdeteksi 24 jam diberi tanda <i>tidak teramati</i>; tidak teramati tidak sama dengan padam.</p>
     <p>Kompleks dengan &lt; 3 deteksi, status pencegahan rutin, dan terdeteksi dalam 24 jam terakhir hanya dihitung, tidak digambar (${fmt(M.titik_tunggal_belum_dinilai)} pada jalan terakhir). Jalan terakhir menghasilkan ${fmt(M.jumlah_kluster)} kompleks.</p>
     ${h("Yang mengubah hasil")}<p>eps, jendela waktu 48 jam, jendela 7 hari, dan batas aktif 72/168 jam (semua di <code>harian.py</code>, terbaca di <code>meta.json</code>).</p>`,
-    batas: ["Dua api terpisah yang berjarak kurang dari 1,5 km digabung; satu api besar dengan celah deteksi lebih dari 1,5 km atau 48 jam terpecah.", "Lambung cembung memuat lahan yang tidak terbakar; luas indikatif bukan luas terbakar. FIRMS tidak menganjurkan titik panas untuk luas; angka resmi tetap KLHK/BNPB (Landsat dan lapangan).",
+    batas: ["Dua api terpisah yang berjarak kurang dari 1,5 km digabung; satu api besar dengan celah deteksi lebih dari 1,5 km atau 48 jam terpecah.", "Garis luar adalah jejak piksel deteksi, bukan batas bekas terbakar: piksel 375 m memuat lahan yang tidak terbakar dan api kecil di bawah ambang tidak terdeteksi; luas indikatif bukan luas terbakar. FIRMS tidak menganjurkan titik panas untuk luas; angka resmi tetap KLHK/BNPB (Landsat dan lapangan).",
       "Pusat kompleks adalah rata-rata, bisa jatuh di luar area api.", "Peta gambut global melebihkan luas gambut ± 2,5 kali angka BBSDLP, jadi hanya dipakai sebagai tanda ya/tidak."]});
 
   B.push({ik: "centang", j: "Status taktis dan prioritas", sub: "Empat status tindakan dan siapa yang dipadamkan dulu",
@@ -5413,8 +5452,9 @@ const Sim = {
     const ke = (lo, la) => { const i = Math.floor((lo - K.x0) / (K.x1 - K.x0) * n), j = Math.floor((la - K.y0) / (K.y1 - K.y0) * n); return i >= 0 && j >= 0 && i < n && j < n ? j * n + i : -1; };
     K.ke = ke;
     const awal = new Set(benihLL.map(([lo, la]) => ke(lo, la)).filter(k => k >= 0));
-    if (!awal.size && this.f.geometry?.type === "Polygon") { const ring = this.f.geometry.coordinates[0];
-      const dalam = (x, y) => { let c = false; for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j];
+    const gK = this.f.geometry, cincinK = !gK ? [] : gK.type === "Polygon" ? gK.coordinates : gK.type === "MultiPolygon" ? gK.coordinates.flat() : [];
+    if (!awal.size && cincinK.length) { /* genap-ganjil atas semua cincin: bagian terpisah dan lubang ikut benar */
+      const dalam = (x, y) => { let c = false; for (const ring of cincinK) for (let i = 0, j = ring.length - 1; i < ring.length; j = i++) { const [xi, yi] = ring[i], [xj, yj] = ring[j];
         if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) c = !c; } return c; };
       for (let j = 0; j < n; j++) for (let i = 0; i < n; i++) if (dalam(K.x0 + (i + .5) / n * (K.x1 - K.x0), K.y0 + (j + .5) / n * (K.y1 - K.y0))) awal.add(j * n + i); }
     if (!awal.size) awal.add(ke(p.lon, p.lat));
@@ -5473,12 +5513,13 @@ const Sim = {
     if (this.cuaca && Date.now() - this.cuaca.diambil < 36e5) return this.cuaca;
     try {
       const u = `https://api.open-meteo.com/v1/forecast?latitude=${p.lat}&longitude=${p.lon}&hourly=wind_speed_10m,wind_direction_10m,wind_gusts_10m,relative_humidity_2m,temperature_2m,precipitation&past_days=1&forecast_days=4&timezone=UTC`;
-      const h = (await muatJSON(u)).hourly, now = Date.now();
+      /* sel 0,5 derajat yang sudah dihitung di Actions (data/cuaca/); tidak ada/basi -> Open-Meteo langsung */
+      const st = await window.SebaranModel?.cuacaSel(p.lat, p.lon), h = st || (await muatJSON(u)).hourly, now = Date.now();
       const i0 = Math.max(0, h.time.findIndex(t => new Date(t + "Z").getTime() >= now - 3600e3));
       /* FFMC dimulai dari FFMC siang (jam 13 waktu matahari setempat) terakhir, lalu diperbarui per jam sampai sekarang */
       const jamSiang = ((Math.round(13 - p.lon / 15)) % 24 + 24) % 24;
       let s = i0; while (s > 0 && new Date(h.time[s] + "Z").getUTCHours() !== jamSiang) s--;
-      const am = (a, i) => a?.[i] ?? null, n = i0 + 73 - s, C = {s: i0 - s, mulai: new Date(h.time[i0] + "Z"), sumber: "Open-Meteo", diambil: now, ws: [], wd: [], rh: [], tc: [], hujan: [], gust: []};
+      const am = (a, i) => a?.[i] ?? null, n = i0 + 73 - s, C = {s: i0 - s, mulai: new Date(h.time[i0] + "Z"), sumber: st ? "Open-Meteo (sel 0,5°, diperbarui harian)" : "Open-Meteo", diambil: now, ws: [], wd: [], rh: [], tc: [], hujan: [], gust: []};
       if (h.time.length < i0 + 73) throw new Error("prakiraan pendek");
       for (let q = 0; q < n; q++) { const i = s + q;
         C.ws.push(am(h.wind_speed_10m, i) ?? p.ws); C.wd.push(am(h.wind_direction_10m, i) ?? p.wd); C.rh.push(am(h.relative_humidity_2m, i) ?? p.rh);
@@ -5757,8 +5798,7 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
   $("#lapis").classList.remove("buka");
   Kini.tampil(true); renderLegenda();
   $("#muat").classList.add("hilang");
-  if (!S.titikPenuh) muatJSON("data/hotspot.json").then(hs => { S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
-    S.titikPenuh = true; if (S.rentang === 168) { hitung(); peta.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); } }).catch(() => {});
+  muatTitik();
   const h = location.pathname.replace(/^\/+|\/+$/g, "").replace(/^index\.html$/, "") || location.hash.slice(1);
   if (h.startsWith("k/")) Laci.buka(h.slice(2));
   else if (h.startsWith("sim")) { S.pilihK = h.split("/")[1] || null; bukaTab("sim", false); }
@@ -5798,6 +5838,9 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="operasi.js"></script>
 <script src="ringkasan.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
+<script src="persetujuan.js" defer></script>
+<script src="jejak.js" data-halaman="karhutla" defer></script>
+<script src="pesan.js" defer></script>
 <script>/* Overlay: semua grup (termasuk yang ditambah modul) selalu terbuka; judul grup hanya kepala */
 document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
 </body>

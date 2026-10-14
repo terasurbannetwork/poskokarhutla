@@ -13,15 +13,28 @@ const SimData = window.SimData = {
       this.model ||= await SebaranModel.muat();
       const o = u => muatJSON(u).catch(() => null);
       this.lahan ||= {gambut: Lapis.cache.gambut || await o("data/lahan/gambut.geojson"), kawasan: Lapis.cache.kawasan || await o("data/lahan/kawasan.geojson"),
-        konsesi: Lapis.cache.konsesi || await o("data/lahan/konsesi.geojson"), sanksi: await o("data/lahan/sanksi_karhutla.json"), kanal: await o("data/kanal.json"),
+        konsesi: Lapis.cache.konsesi || await o("data/lahan/konsesi.geojson"), kanal: await o("data/kanal.json"),
         jalan: await o("data/jalan.geojson"), desa: Sim._desa || await o("data/osm/desa.json"), riwayat: await o("data/riwayat_grid.json"), penduduk: await o("data/penduduk.json")};
       const sel0 = [...new Set((p.api24 || []).filter(([lo, la]) => isFinite(lo) && isFinite(la)).map(([lo, la]) => SebaranModel.sel(lo, la)))];
       const cuaca = await SebaranModel.cuaca(p.lat, p.lon);
       const frp = p.frp24 && p.px24 ? p.frp24 / Math.max(1, p.px24) * 3 : undefined; /* FRP maks tak tersedia: kira-kira 3x rata-rata per piksel */
-      this.hasil = SebaranModel.ramal({model: this.model, lat: p.lat, lon: p.lon, waktu: Date.now(), cuaca, lahan: this.lahan, sel0, frp, mc: 60, seed: 3});
+      const titik = await this.titik(sel0);
+      this.hasil = SebaranModel.ramal({model: this.model, lat: p.lat, lon: p.lon, waktu: Date.now(), cuaca, lahan: this.lahan, sel0, frp, frpJumlah: p.frp24, titik, mc: 60, seed: 3});
       this.k = S.k;
       if (st) st.textContent = st.textContent.replace(" · model data: memuat…", " · model data selesai");
     } catch (e) { console.error(e); this.hasil = null; if (st) st.textContent += " · model data gagal: " + e.message; }
+  },
+  /* deteksi S-NPP/NOAA-20 7 hari (hotspot.json) untuk model "akan membesar"; titik kompleks ini sendiri (<= 750 m dari sel awal)
+     dibuang karena model dilatih pada titik api BARU yang belum punya riwayat di tempatnya */
+  async titik(sel0) {
+    try {
+      let rows = typeof S !== "undefined" && S.titikPenuh ? S.titik : null, acuan = typeof S !== "undefined" ? S.acuan : null;
+      if (!rows) { const hs = await muatJSON("data/hotspot.json"); rows = hs.baris; acuan = new Date(hs.acuan); }
+      if (!rows || !acuan) return undefined;
+      const a = +acuan, pus = sel0.map(k => SebaranModel.pusat(k)), km = (x, y, u, v) => Math.hypot((u - x) * 111.32 * Math.cos(y * Math.PI / 180), (v - y) * 110.57);
+      return rows.filter(r => (r[3] === "N" || r[3] === "N20") && r[5] >= 1).map(r => ({t: a + r[2] * 36e5, lat: r[0], lon: r[1], s: r[3]}))
+        .filter(p => !pus.some(([x, y]) => km(x, y, p.lon, p.lat) <= .75));
+    } catch (e) { return undefined; }
   },
   gambar(S) {
     const m = S.peta; if (!m?.isStyleLoaded()) return;
@@ -36,8 +49,13 @@ const SimData = window.SimData = {
   kartu() {
     const r = this.hasil; if (!r) return "";
     const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
-    return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada 2024–2026 dan 123 kejadian lalu).</b> Luas 24/48/72 jam (rentang cenderung terlalu sempit; pada uji hanya ± separuh kasus jatuh di dalamnya): ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.
-      Peluang membesar ≥ ${fmt((this.model.lepas_sel || 10) * 14)} ha: ${fmt(Math.round(r.p_lepas * 100))}%. ${r.arah ? `Arah utama ${mata[Math.round(r.arah.deg / 45) % 8]} (keyakinan rendah: pada uji, arah sebar tidak bisa diramal model mana pun).` : ""}
+    const ha = fmt((this.model.lepas_sel || 10) * 14), L = this.model.lolos, K = L?.kinerja || {};
+    const membesar = r.sudah_besar ? `Sudah ≥ ${ha} ha (≥ ${this.model.lepas_sel || 10} sel aktif 24 jam): perlakukan sebagai kebakaran besar.`
+      : r.lolos ? `${r.lolos.waspada ? `<b style="display:inline-block;padding:1px 8px;border-radius:6px;background:var(--bad);color:#fff">WASPADA: berpotensi membesar</b> ` : ""}Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik api baru, terkalibrasi).
+        Tanda WASPADA dipasang mulai ${fmt(Math.round(r.lolos.ambang * 1000) / 10)}% agar sedikitnya 7 dari 10 api yang benar-benar membesar tertangkap${K.uji2_presisi != null ? `; akibatnya hanya ± ${fmt(Math.round(K.uji2_presisi * 100))}% tanda yang benar-benar membesar (uji 2024–2026: ${fmt(Math.round(K.uji2_recall * 100))}% api besar tertangkap)` : ""}. Model ini untuk api yang baru muncul; kompleks yang sudah lama menyala bisa dinilai terlalu rendah.`
+      : `Peluang membesar ≥ ${ha} ha: ${fmt(Math.round(r.p_lepas * 100))}% (dari Monte Carlo; data titik sekitar tidak termuat, model khusus tidak dijalankan).`;
+    return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada 2024–2026 dan 123 kejadian lalu).</b> Luas 24/48/72 jam, median (rentang 80%${this.model.selang ? ", dikalibrasi pada 2015–2023" : ""}): ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.
+      ${membesar} ${r.arah ? `Arah utama ${mata[Math.round(r.arah.deg / 45) % 8]} (keyakinan rendah: pada uji, arah sebar tidak bisa diramal model mana pun).` : ""}
       Terkena (harapan 72 jam): gambut ${fmt(r.kena.gambut_ha)} ha, kawasan lindung ${fmt(r.kena.lindung_ha)} ha${r.kena.desa.length ? `, desa: ${r.kena.desa.slice(0, 6).map(x => esc(x.nama)).join(", ")}` : ""}.
       Garis biru di peta = sel berpeluang ≥ 5% (makin gelap makin mungkin). Uji 2024–2026: lihat Insight → "Uji model pada kejadian lalu".
       ${Sim.kal?.alasan ? `<br><span style="color:var(--bad)">Model fisika di bawah belum terkalibrasi untuk kompleks ini (${esc(Sim.kal.alasan)}) dan pada uji cenderung melebih-lebihkan luas hingga puluhan kali; pakai hanya sebagai pembanding.</span>` : "Model fisika di bawah (terkalibrasi ke pertumbuhan teramati) ditampilkan sebagai pembanding."}</div>`;

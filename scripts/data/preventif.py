@@ -76,6 +76,9 @@ def profil(pil):
     # indeks hanya poligon kecamatan terpilih: titik di luar semuanya -> None (titik-dalam-poligon tetap persis)
     w.indeks = {s: [e for e in daf if "|".join(x or "" for x in e[2]) in pil] for s, daf in w.indeks.items()}
     gam, kon, kaw = (Poligon(os.path.join(DATA, "lahan", f)) for f in ("gambut.geojson", "konsesi.geojson", "kawasan.geojson"))
+    lengkap = os.path.join(AKAR, "data/raw/konsesi/konsesi_lengkap.geojson")  # bernama (lokal, tidak diterbitkan): n_pemegang tepat
+    if os.path.exists(lengkap):
+        kon = Poligon(lengkap)
     P = {k: {"n": 0, "bulan": [0] * 12, "th": {}, "gambut": 0, "konsesi": {}, "pemegang": {}, "kawasan": {}, "sel": {}, "lat": 0., "lon": 0.} for k in pil}
     nonveg = bukan_vegetasi(MODIS)
     for r in csv.DictReader(open(MODIS)):
@@ -98,7 +101,7 @@ def profil(pil):
         k = kon.cari(lon, lat)
         if k:
             p["konsesi"][k["jenis"]] = p["konsesi"].get(k["jenis"], 0) + 1
-            nm = k.get("pemegang") or k.get("nama") or "?"
+            nm = k.get("pemegang") or k.get("nama") or k.get("id") or id(k)  # hanya untuk HITUNG pemegang; nama tidak diterbitkan
             p["pemegang"][nm] = p["pemegang"].get(nm, 0) + 1
         a = kaw.cari(lon, lat)
         if a:
@@ -153,7 +156,6 @@ def profil(pil):
             "n": n, "bulan": p["bulan"], "pusat": [round(p["lat"] / n, 4), round(p["lon"] / n, 4)],
             "gambut": round(p["gambut"] / n, 3),
             "konsesi": {j: round(v / n, 3) for j, v in p["konsesi"].items()},
-            "pemegang": [[nm, v] for nm, v in sorted(p["pemegang"].items(), key=lambda x: -x[1])[:5]],
             "n_pemegang": len(p["pemegang"]),
             "kawasan": {j: round(v / n, 3) for j, v in p["kawasan"].items()},
             "ulang": round(ulang / basis, 3) if basis else 0,
@@ -375,7 +377,7 @@ def main(paksa_ringan=False):
         prof = profil(pilih(sk))
     elif os.path.exists(KELUAR):
         lama = json.load(open(KELUAR))
-        prof = {k: {x: v[x] for x in ("n", "bulan", "pusat", "gambut", "konsesi", "pemegang", "n_pemegang", "kawasan", "ulang", "petak",
+        prof = {k: {x: v[x] for x in ("n", "bulan", "pusat", "gambut", "konsesi", "n_pemegang", "kawasan", "ulang", "petak",
                                      "luas", "kanal_km", "desa", "desa_sasaran", "penduduk")} for k, v in lama["kec"].items()}
         print("arsip MODIS tidak ada: profil dari preventif.json lama, jarak dan aturan dihitung ulang", file=sys.stderr)
     else:
@@ -392,7 +394,7 @@ def main(paksa_ringan=False):
 
 # ---------------------------------------------------------------- uji invarian
 def uji():
-    dasar = {"n": 500, "bulan": [5, 5, 5, 5, 10, 20, 60, 120, 200, 150, 20, 5], "pusat": [-2.0, 114.0], "gambut": 0, "konsesi": {}, "pemegang": [],
+    dasar = {"n": 500, "bulan": [5, 5, 5, 5, 10, 20, 60, 120, 200, 150, 20, 5], "pusat": [-2.0, 114.0], "gambut": 0, "konsesi": {},
              "n_pemegang": 0, "kawasan": {}, "ulang": 0, "petak": 10, "luas": 500, "kanal_km": 0, "desa": 10, "desa_sasaran": 8, "penduduk": 20000}
     kode = lambda r: [t["kode"] for t in r["tindakan"]]
     # musim: puncak Sep, awal mundur selama >= 15% puncak -> Jul (60 >= 30, Jun 20 < 30); tenggat = Mei

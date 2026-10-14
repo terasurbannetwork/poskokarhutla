@@ -109,9 +109,7 @@ function indeksPoligon(fc, box) {
   f.semua = (x, y) => idx.filter(([a, b, c, d, r]) => x >= a && x <= c && y >= b && y <= d && dalam(x, y, r)).map(v => v[5]);
   return f;
 }
-/* nama perusahaan baku (sama dengan nama_baku di scripts/sebaran/umum.py) */
-const namaBaku = n => (n || "").toLowerCase().replace(/\b(pt|tbk|cv|persero)\b/g, " ").replace(/[^a-z0-9]/g, "").replace(/(.)\1+/g, "$1");
-/* L = {gambut, kawasan, konsesi (GeoJSON), sanksi (lahan/sanksi_karhutla.json), kanal (kanal.json), jalan (jalan.geojson), desa (osm/desa.json),
+/* L = {gambut, kawasan, konsesi (GeoJSON; sanksi_th per poligon = tahun sanksi karhutla pertama pemegangnya, tanpa nama), kanal (kanal.json), jalan (jalan.geojson), desa (osm/desa.json),
        riwayat (riwayat_grid.json), penduduk (penduduk.json)} */
 function Lahan(L, lon, lat, rDeg = .6) {
   const box = [lon - rDeg, lat - rDeg, lon + rDeg, lat + rDeg];
@@ -126,8 +124,6 @@ function Lahan(L, lon, lat, rDeg = .6) {
   for (const daf of Object.values(L.desa || {})) for (const [la, lo, kode, nama] of daf) { if (Math.abs(la - lat) > rDeg + .2 || Math.abs(lo - lon) > rDeg + .2) continue;
     const k = Math.floor(lo / J) + "," + Math.floor(la / J); (desa.get(k) || desa.set(k, []).get(k)).push([lo, la]); daftarDesa.push({nama, kode, lon: lo, lat: la}); }
   const rg = new Map(); if (L.riwayat) for (const [a, b, f] of L.riwayat.sel_data) rg.set(a + "," + b, f);
-  const sanksi = new Map(); for (const c of L.sanksi?.kasus || []) { const th = c.tahun_putusan || Math.min(9999, ...(c.sumber || []).filter(x => x.tanggal).map(x => +x.tanggal.slice(0, 4)));
-    const k = namaBaku(c.nama); sanksi.set(k, Math.min(sanksi.get(k) ?? 9999, th)); }
   const pend = new Map(), ps = L.penduduk?.sel || .25; for (const [la, lo, n] of L.penduduk?.grid || []) { const k = Math.floor(la / ps) + "," + Math.floor(lo / ps); pend.set(k, (pend.get(k) || 0) + n); }
   const kepadatan = (x, y) => { if (!pend.size) return 0; const gy = Math.floor(y / ps), n = pend.get(gy + "," + Math.floor(x / ps)) || 0;
     return n / ((ps * 110.57) * (ps * 111.32 * Math.cos((gy + .5) * ps * rad))); };
@@ -143,7 +139,7 @@ function Lahan(L, lon, lat, rDeg = .6) {
     daftarDesa, penduduk: L.penduduk,
     sel(k) { let r = cache.get(k); if (r) return r; const [x, y] = pusat(k);
       const kwp0 = kw(x, y), kwp = kwp0 || {}, kss = ks.semua(x, y), jenis = new Set(kss.map(p => p.jenis));
-      const sth = Math.min(9999, ...kss.flatMap(p => [sanksi.get(namaBaku(p.pemegang || p.nama)) ?? 9999, sanksi.get(namaBaku(p.nama)) ?? 9999]));
+      const sth = Math.min(9999, ...kss.map(p => p.sanksi_th ?? 9999));
       r = {gambut: gb(x, y) ? 1 : 0, hutan: HUTAN.has(kwp.fungsi) ? 1 : 0, produksi: PRODUKSI.has(kwp.fungsi) ? 1 : 0, apl: kwp0 ? 0 : 1,
         kebun: jenis.has("sawit") ? 1 : 0, hti: jenis.has("hti") ? 1 : 0, hph: jenis.has("hph") ? 1 : 0, tambang: jenis.has("tambang") ? 1 : 0, sanksi_th: sth,
         penduduk_km2: kepadatan(x, y),
@@ -181,9 +177,41 @@ function vektor(M, k, [d, a], terbakar, aktif, w, ev, lh, tahun = 9999) {
   return M.fitur.map(f => v[f]);
 }
 
+/* ---------------- peluang membesar: model khusus (scripts/sebaran/lolos.py) ---------------- */
+/* Fitur sama persis dengan lolos.fitur_lolos. titik = deteksi sekitar [{t: ms, lat, lon, s: "N" (S-NPP) | "N20"}], keyakinan >= nominal. */
+const kmTitik = (lon, lat, x, y) => Math.hypot((x - lon) * 111.32 * Math.cos(lat * rad), (y - lat) * 110.57);
+function konteksTitik(titik, t0, lon, lat) {
+  let t5 = 0, t10 = 0, jarak = 10; const hari = new Set();
+  for (const p of titik) { if (p.s !== "N") continue; const dt = (t0 - p.t) / 6e4; if (!(dt > 0 && dt <= 7 * 1440)) continue;
+    const d = kmTitik(lon, lat, p.lon, p.lat); if (d > 10) continue;
+    hari.add(Math.min(6, Math.floor(dt / 1440))); if (dt <= 3 * 1440) { t10++; if (d <= 5) t5++; } if (dt <= 1440 && d < jarak) jarak = d; }
+  return {titik5_3h: t5, titik10_3h: t10, jarak_aktif_km: jarak, hari_aktif10: hari.size};
+}
+function n20Sekitar(titik, sels, ta, tb) { /* ta, tb ms: ta <= t < tb */
+  const out = new Set();
+  for (const k of sels) { const [x, y] = pusat(k);
+    for (const p of titik) if (p.s === "N20" && p.t >= ta && p.t < tb && kmTitik(x, y, p.lon, p.lat) <= .75) out.add(sel(p.lon, p.lat)); }
+  return out.size;
+}
+function peluangLolos(L, v) { const x = L.fitur.map(f => v[f]); let z = L.bias; for (const s of L.pohon) z += nilaiPohon(s, x); return 1 / (1 + Math.exp(-(L.platt[0] + L.platt[1] * z))); }
+/* -> {p, waspada, ambang, mode, fitur} atau null bila model/titik tidak ada */
+function lolos(M, o, w, s0, sel0, t0, lon, lat, frp, iklim) {
+  const ulang = o.ulang, L = ulang ? M.lolos_ulang : M.lolos;
+  if (!L || !Array.isArray(o.titik)) return null;
+  const n0 = sel0.length, jl = ((t0 / 6e4 + lon * 4) / 60 % 24 + 24) % 24, tahun = new Date(t0).getUTCFullYear();
+  const n20 = n20Sekitar(o.titik, sel0, t0 - 180 * 6e4, t0 + 181 * 6e4);
+  const v = {...w, ...s0, sanksi: s0.sanksi_th <= tahun ? 1 : 0, n0, frp0: frp, frp_jml0: o.frpJumlah != null ? +o.frpJumlah : frp * n0, malam: jl >= 6 && jl < 18 ? 0 : 1,
+    oni: iklim.oni, dmi: iklim.dmi, ...konteksTitik(o.titik, t0, lon, lat), n20_0: n20, ...(ulang || {n14: n0, frp14: 0, lagi14: 0, n20_14: n20})};
+  const p = peluangLolos(L, v);
+  return {p, waspada: p >= L.ambang, ambang: L.ambang, mode: ulang ? "ulang" : "awal", fitur: v};
+}
+/* selang luas terkalibrasi (konformal, lolos.selang): [P10, P90] sel baru dilebarkan q (log 1 + sel) per lahan & hari */
+const lebarkan = (lo, hi, q) => [Math.max(0, (1 + lo) * Math.exp(-q) - 1), (1 + hi) * Math.exp(q) - 1];
+
 /* ---------------- ramalan ---------------- */
 /* o = {model, lat, lon, waktu (Date/ms, saat titik terlihat), cuaca (Cuaca mentah), lahan (objek L), sel0 (opsional: kunci sel awal), frp (MW, opsional),
-        mc = 40, seed = 1, hari = 3}  -> hasil (lihat akhir fungsi) */
+        mc = 40, seed = 1, hari = 3, titik (opsional: deteksi sekitar untuk model membesar), frpJumlah (MW, opsional), ulang (opsional)}
+   -> hasil (lihat akhir fungsi) */
 function ramal(o) {
   const M = o.model;
   if (!M || !Array.isArray(M.pohon) || !Array.isArray(M.fitur)) throw new Error("model tidak sah");
@@ -229,7 +257,11 @@ function ramal(o) {
     runs.push(res.luas.map(n => n + sel0.length));
   }
   const q = (xs, a) => { const s = [...xs].sort((x, y) => x - y); return s[Math.min(s.length - 1, Math.floor(a * s.length))]; };
-  const luas = [...Array(hari)].map((_, d) => { const xs = runs.map(r => r[d] * HA); return nmc ? {p10: q(xs, .1), p50: q(xs, .5), p90: q(xs, .9), rata: xs.reduce((a, b) => a + b, 0) / xs.length} : null; });
+  const qs = M.selang?.q?.[strata], n0 = sel0.length;
+  const luas = [...Array(hari)].map((_, d) => { if (!nmc) return null; const xs = runs.map(r => r[d] * HA), o_ = {p10: q(xs, .1), p50: q(xs, .5), p90: q(xs, .9), rata: xs.reduce((a, b) => a + b, 0) / xs.length};
+    if (qs) { const [a, b] = lebarkan(o_.p10 / HA - n0, o_.p90 / HA - n0, qs[d]); o_.p10_mc = o_.p10; o_.p90_mc = o_.p90; o_.p10 = Math.min(o_.p50, (n0 + a) * HA); o_.p90 = Math.max(o_.p50, (n0 + b) * HA); }
+    return o_; });
+  for (let d = 1; d < luas.length; d++) if (luas[d] && luas[d - 1]) { luas[d].p10 = Math.max(luas[d].p10, luas[d - 1].p10); luas[d].p90 = Math.max(luas[d].p90, luas[d - 1].p90); }
   const sel_ = [...frek].map(([k, f]) => { const [x, y] = pusat(k); return {k, lon: x, lat: y, p: f.map(v => v / nmc)}; });
   /* arah utama = pusat berbobot peluang hari terakhir relatif titik awal */
   let sx = 0, sy = 0, sw = 0; for (const s of sel_) { const w = s.p[hari - 1]; sx += w * (s.lon - lon); sy += w * (s.lat - lat); sw += w; }
@@ -240,8 +272,10 @@ function ramal(o) {
     let c = 0; for (let h = 0; h < 24; h++) { c += seg[h]; perJam.push(a + (b - a) * c / tot); } }
   /* apa yang terkena (peluang hari terakhir >= 0,1) */
   const kena = dampak(sel_, lh, hari, lon, lat);
+  const pl = sel0.length < (M.lepas_sel || 10) ? lolos(M, o, jendela[0], lh.sel(sel0[0]), sel0, t0, lon, lat, frp, iklim) : null;
+  const pmc = nmc ? kalLepas(M, runs.filter(r => r[hari - 1] >= (M.lepas_sel || 10)).length / nmc) : null;
   return {waktu: new Date(t0).toISOString(), sel0, strata, geser, cuaca: jendela.map(w => ({ws: +w.ws.toFixed(1), ke: Math.round(w.ke), rh_min: Math.round(w.rh_min), hujan24: +w.hujan24.toFixed(1), ffmc: +w.ffmc.toFixed(1), dc: Math.round(w.dc), fwi: +w.fwi.toFixed(1)})),
-    p_lepas: nmc ? kalLepas(M, runs.filter(r => r[hari - 1] >= (M.lepas_sel || 10)).length / nmc) : null, luas, luasJam: perJam, arah: arahUtama, sel: sel_,
+    p_lepas: pl ? pl.p : sel0.length >= (M.lepas_sel || 10) ? 1 : pmc, p_lepas_mc: pmc, lolos: pl, sudah_besar: sel0.length >= (M.lepas_sel || 10), luas, luasJam: perJam, arah: arahUtama, sel: sel_,
     p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim};
 }
 
@@ -269,8 +303,22 @@ function dampak(sel_, lh, hari, lon, lat) {
 
 /* ---------------- pembantu ---------------- */
 async function muat(url = "data/model_sebaran.json") { const r = await fetch(url); if (!r.ok) throw new Error("model tidak termuat: " + r.status); return r.json(); }
+/* cuaca per jam yang sudah dihitung di Actions (scripts/data/cuaca_jam.py): satu berkas per sel 0,5 derajat (pusat sel, sama dengan
+   data latih), 40 hari lalu + 6 hari ke depan. Bentuknya sama dengan "hourly" Open-Meteo (timezone GMT). null bila berkas tidak ada
+   atau prakiraannya tidak mencapai 72 jam dari sekarang -> pemanggil jatuh ke Open-Meteo langsung. */
+const _cs = {};
+function cuacaSel(lat, lon) {
+  const la = Math.floor(lat / .5) * .5 + .25, lo = Math.floor(lon / .5) * .5 + .25, k = la.toFixed(2) + "_" + lo.toFixed(2);
+  return _cs[k] ||= fetch("data/cuaca/" + k + ".json").then(r => r.ok ? r.json() : null).then(d => {
+    if (!d || d.m0 + (d.tc.length - 1) * 36e5 < Date.now() + 73 * 36e5) return null;
+    const time = d.tc.map((_, i) => new Date(d.m0 + i * 36e5).toISOString().slice(0, 16));
+    return {time, temperature_2m: d.tc, relative_humidity_2m: d.rh, precipitation: d.hujan, wind_speed_10m: d.ws, wind_direction_10m: d.wd, wind_gusts_10m: d.gust};
+  }).catch(() => null);
+}
 /* Open-Meteo forecast: 40 hari lalu + 4 hari ke depan per jam, UTC (masa panas FWI butuh 31 hari sebelum waktu titik) */
 async function cuaca(lat, lon) {
+  const s = await cuacaSel(lat, lon);
+  if (s) return {m0: Date.parse(s.time[0] + "Z"), tc: s.temperature_2m, rh: s.relative_humidity_2m, hujan: s.precipitation, ws: s.wind_speed_10m, wd: s.wind_direction_10m};
   const u = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&hourly=temperature_2m,relative_humidity_2m,precipitation,wind_speed_10m,wind_direction_10m&past_days=40&forecast_days=4&timezone=GMT&wind_speed_unit=kmh`;
   const r = await fetch(u); if (!r.ok) throw new Error("cuaca gagal: " + r.status); const h = (await r.json()).hourly;
   return {m0: Date.parse(h.time[0] + "Z"), tc: h.temperature_2m, rh: h.relative_humidity_2m, hujan: h.precipitation, ws: h.wind_speed_10m, wd: h.wind_direction_10m};
@@ -288,6 +336,6 @@ async function cuacaTanggal(lat, lon, waktu) {
   return {m0: Date.parse(h.time[0] + "Z"), tc: h.temperature_2m, rh: h.relative_humidity_2m, hujan: h.precipitation, ws: h.wind_speed_10m, wd: h.wind_direction_10m};
 }
 
-G.SebaranModel = {muat, cuaca, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, versi: 1};
+G.SebaranModel = {muat, cuaca, cuacaSel, cuacaTanggal, ramal, Cuaca, Lahan, prediksi, calon, vektor, sel, pusat, ij, konteksTitik, n20Sekitar, peluangLolos, versi: 2};
 if (typeof module !== "undefined") module.exports = G.SebaranModel;
 })(typeof window !== "undefined" ? window : globalThis);

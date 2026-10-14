@@ -1,4 +1,5 @@
-"""Profil grup korporasi tiap pemegang konsesi di kompleks_konsesi.json -> public/data/grup_perusahaan.json.
+"""Profil grup korporasi tiap pemegang konsesi -> data/raw/konsesi/grup_perusahaan.json (analisis internal; TIDAK diterbitkan
+di situs sejak keputusan pemilik 14 Okt 2026: situs hanya menampilkan status lahan, tanpa nama perusahaan/grup).
 
 Pakai:  python3 -I scripts/data/grup_perusahaan.py        # unduh (cache scripts/data/.cache/) lalu tulis JSON
         python3 -I scripts/data/grup_perusahaan.py uji    # uji kunci pencocokan
@@ -13,8 +14,8 @@ import datetime as dt, json, os, re, struct, sys, urllib.request, zipfile, io
 
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 CACHE = os.path.join(AKAR, "scripts/data/.cache")
-KONSESI = os.path.join(AKAR, "public/data/kompleks_konsesi.json")
-KELUAR = os.path.join(AKAR, "public/data/grup_perusahaan.json")
+KONSESI = os.path.join(AKAR, "data/raw/konsesi/konsesi_lengkap.geojson")  # bernama, dari scripts/scrape/konsesi.py
+KELUAR = os.path.join(AKAR, "data/raw/konsesi/grup_perusahaan.json")
 GFW = "https://data-api.globalforestwatch.org/dataset/gfw_oil_palm/v20191031/download/shp?x-api-key=2d60cd88-8348-4c0f-a6d5-bd9adb585a8c"
 TRASE = "https://resources.trase.earth/data/facilities-data/indonesia_wood_pulp_concessions_2020_2022_v2026_02_20.geo.json"
 SUMBER = [
@@ -109,7 +110,7 @@ def rapi(g):
 
 
 def bangun():
-    kon = json.load(open(KONSESI))
+    kon = {"perusahaan": list({f["properties"]["nama"]: f["properties"] for f in json.load(open(KONSESI))["features"]}.values())}
     gfw, trase = muat_gfw(), muat_trase()
     hasil = {}
     for p in kon["perusahaan"]:

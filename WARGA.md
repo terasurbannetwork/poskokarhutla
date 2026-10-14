@@ -91,6 +91,12 @@ npx wrangler@3 deploy
 ```
 
 - Token butuh juga **Workers Scripts:Edit** (deploy skrip, cron) — sudah dipakai untuk deploy aset.
+- **Turnstile** (Lapor Warga + kotak pesan) aktif hanya bila KEDUANYA diset; satu saja = tidak ada perubahan perilaku.
+  1) Dasbor Cloudflare > Turnstile > Add widget: mode *Managed*, hostname `poskokarhutla.terasurbannetwork.workers.dev`
+  (dan domain sendiri bila ada). 2) `npx wrangler@3 secret put TURNSTILE_SECRET` (secret key). 3) Isi
+  `vars.TURNSTILE_SITEKEY` di wrangler.jsonc dengan site key, commit ke main (terbit.yml men-deploy). Peramban membaca
+  sitekey dari `/api/warga/konfig` lalu merender widget; Worker memverifikasi token ke siteverify. Uji:
+  `tests/warga/tepi.test.mjs`. Mematikan: kosongkan sitekey (rahasia boleh tetap ada).
 - Urutan penting: migrasi sebelum deploy pertama; kalau terbalik, `/api/warga` menjawab 500 sampai migrasi jalan
   (situs statis tidak terpengaruh).
 - Workflow `data.yml`/`banjir.yml` men-deploy dengan `wrangler.jsonc` — setelah langkah di atas, deploy otomatis ikut
@@ -143,3 +149,24 @@ benar" → keluar dari peta. Kata kasar ditolak; tautan dan nomor HP di teks pub
 
 Batas yang disengaja (ponytail): wilayah ringkasan = pusat kecamatan terdekat (perkiraan, bukan poligon);
 `/api/titik` ~1 MB JSON (gzip ~200 KB) dikirim utuh — tambahkan `?sejak=` bila terasa berat.
+
+## Statistik, admin, dan kotak pesan
+
+```bash
+npx wrangler@3 d1 migrations apply poskowarga --remote          # 0004_statistik.sql + 0005_pesan.sql
+openssl rand -hex 32 | npx wrangler@3 secret put SESI_KUNCI      # tanda HMAC cookie sesi admin (12 jam)
+# notifikasi email pesan baru (opsional; tanpa ini pesan tetap tersimpan, admin melihat spanduk):
+npx wrangler@3 secret put EMAIL_API_KEY   # kunci API Resend (resend.com), domain pengirim harus diverifikasi di Resend (SPF/DKIM DNS)
+npx wrangler@3 secret put EMAIL_FROM      # mis. "Pantau Bencana <pesan@domain-anda>" (domain yang sudah diverifikasi)
+npx wrangler@3 secret put EMAIL_TO        # kotak masuk pemilik; boleh beberapa, dipisah koma
+```
+
+- Masuk: `/admin/masuk` (token = salah satu ADMIN_TOKEN). Dasbor `/admin/statistik`, kotak pesan `/admin/pesan`.
+  Skrip tetap bisa memakai `Authorization: Bearer <ADMIN_TOKEN>` atau `x-admin-token`.
+- Statistik publik `/statistik` (manusia vs AI vs perayap) dihitung dari hit HTML. `wrangler.jsonc` memakai
+  `assets.html_handling: "none"` supaya hanya rute di `HTML_RUTE` (src/worker.js) memanggil Worker; JS/CSS/JSON/gambar tetap statis.
+- Anggaran gratis: ±1 pemanggilan Worker per tampilan HTML + ±1 kiriman analitik per kunjungan berpersetujuan (maks 3 per
+  muat halaman). Di atas ±40–50 rb kunjungan/hari kuota 100 rb permintaan/hari Workers Free habis dan permintaan berikutnya
+  ditolak Cloudflare (galat 1027) sampai kuota direset; pindah ke Workers Paid bila itu terjadi. Tulisan D1 sudah disampel
+  otomatis (pSampel/pHit di src/statistik.js), angkanya ditandai "perkiraan (sampel)".
+- Pasang ulang skrip di halaman: `python3 scripts/statistik/splice_jejak.py` (idempoten, jangkar harus cocok tepat sekali).
