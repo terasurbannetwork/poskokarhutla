@@ -1309,9 +1309,9 @@ section[hidden],[hidden]{display:none!important}
     $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
       ${o.deskripsi ? `<p>${esc(o.deskripsi)}</p>` : ""}${o.visi ? `<blockquote><span class="lbl" style="margin-bottom:4px">Prinsip</span>${esc(o.visi)}</blockquote>` : ""}
       ${(o.kapabilitas || []).length ? `<div class="kap" aria-label="Kapabilitas">${o.kapabilitas.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
-      ${aman(o.situs) ? `<p><a href="${esc(o.situs)}" target="_blank" rel="noopener">${esc(o.situs.replace(/^https?:\/\/(www\.)?/, "").replace(/\/$/, ""))}</a></p>` : ""}</div>
+      </div>
       ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga lensa analitik Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
-        ${o.peran ? `<p style="font-size:13.5px">${esc(o.peran)}.</p>` : ""}</div>` : ""}`;
+        </div>` : ""}`;
     const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
     let h = "";
