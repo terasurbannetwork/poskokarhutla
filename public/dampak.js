@@ -153,7 +153,7 @@ const Dampak = (() => {
     dlg(esc(namaProv(k)), "Udara, kesehatan, dan kedekatan dengan api",
       `${svg}${legenda(KELAS.map((x, c) => [x, W5[c]]))}
       <div class="dk-kvs">${kotak("Udara tidak sehat hari ini", jt(js[0].slice(2).reduce((a, b) => a + b, 0)) + " jiwa")}${is[0] ? kotak("Tambahan kunjungan ISPA/hari", `${fmt(is[0][1])} (${fmt(is[0][0])}–${fmt(is[0][2])})`) : ""}
-      ${dk ? kotak("Desa ≤ 5 km dari api", fmt(dk.desa[1])) + kotak("Penduduk ≤ 5 km dari api", jt(dk.jiwa[1])) + kotak("Sekolah ≤ 5 km (OSM)", fmt(dk.sekolah[1])) : ""}</div>
+      ${dk ? kotak("Desa ≤ 5 km dari api", fmt(dk.desa[1])) + kotak("Penduduk ≤ 5 km dari api", jt(dk.jiwa[1])) + kotak("Sekolah ≤ 5 km", fmt(dk.sekolah[1])) + (dk.siswa ? kotak("Siswa ≤ 5 km", fmt(dk.siswa[1])) : "") : ""}</div>
       <p class="fnd">Tambahan kunjungan ISPA adalah perkiraan model (lihat bagian 3), bukan laporan dinas kesehatan.</p>
       <button class="btn sec" data-peta="${k}">Buka provinsi di peta</button>`);
     $("#dlg [data-peta]").onclick = () => { $("#dlg").close(); bukaTab("peta"); nanti(() => turun(k)); };
@@ -295,11 +295,11 @@ const Dampak = (() => {
     const rows = ks.map(k => ({n: nmP(k), v: P[k].sekolah[1], w: W.kuning, dk: "dekat|" + k, txt: `${fmt(P[k].sekolah[1])} (≤ 1 km: ${fmt(P[k].sekolah[0])})`,
       tip: `<b>${esc(namaProv(k))}</b><br>≤ 1 km: ${fmt(P[k].sekolah[0])}<br>≤ 5 km: ${fmt(P[k].sekolah[1])}<br>≤ 10 km: ${fmt(P[k].sekolah[2])}<br>di udara tidak sehat hari ini: ${fmt(P[k].sekolah_tidak_sehat)}`}));
     return ex(4, `${hl(fmt(sumP("sekolah", 1)) + " sekolah")} di 9 provinsi yang sering mengalami karhutla berada dalam 5 km dari api yang perlu dipadamkan; ${hl(fmt(SB.length) + " berita")} melaporkan sekolah libur atau belajar dari rumah karena asap`,
-      "Sekolah yang terpeta di OpenStreetMap, dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
+      "Sekolah dekat api dan di udara tidak sehat", "Batang = sekolah ≤ 5 km dari tepi kompleks berstatus siaga atau prioritas, per provinsi. Klik provinsi, sekolah, atau berita untuk rinciannya.",
       hbar(rows) + `<div class="lbl" style="margin:14px 0 4px">Sekolah terdekat ke api</div>`
       + pg("S", tabel(["Sekolah", "Provinsi", ">Jarak", "Kompleks", "Status"], ds.map((s, j) => baris("sek|" + D.dekat.sekolah.indexOf(s), `<td><b>${esc(s.nama)}</b></td><td>${esc(namaProv(s.prov))}</td><td class="n">${s.km ? satu(s.km) + " km" : "di dalam"}</td><td>${esc(s.kompleks)}</td><td><span class="pill l${s.level}">${esc(S.meta?.status?.[s.level] || "")}</span></td>`))), D.dekat.sekolah.length, "sekolah")
       + `<div class="lbl" style="margin:14px 0 4px">Berita penutupan sekolah</div>` + tabel(["Tanggal", "Judul", "Media"], SB.slice(0, 10).map((x, j) => baris("sekb|" + j, `<td>${tgl(x.tgl)}</td><td class="dk-wrap">${tautan(x.url, x.judul)}</td><td><span class="dk-s">${esc(x.media || "")}</span></td>`))),
-      `Sumber: ${sm("osm", "OpenStreetMap")} (minimal, banyak sekolah belum terpeta), prakiraan ${sm("cams", "CAMS")}, berita media; pembanding Oktober 2015: 24.773 sekolah (${sm("wb16", "World Bank 2016")})`);
+      `Sumber: data sekolah nasional Kemendikbud (NPSN), prakiraan ${sm("cams", "CAMS")}, berita media; pembanding Oktober 2015: 24.773 sekolah (${sm("wb16", "World Bank 2016")})`);
   }
   function popSek(j) { const s = D.dekat.sekolah[j];
     dlg(esc(s.nama), `${esc(namaProv(s.prov))} · ${s.km ? satu(s.km) + " km" : "di dalam area"} dari kompleks ${esc(s.kompleks)}`,
