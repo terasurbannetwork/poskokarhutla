@@ -973,6 +973,11 @@ section[hidden],[hidden]{display:none!important}
 .faq-band .kepala{grid-template-areas:"ey" "jd"!important}
 .faq-band .eyebrow{justify-self:start!important;margin-bottom:0}
 @media (max-width:860px){.band .kepala{grid-template-areas:"ey" "jd" "ld"!important}}
+
+/* label bagian dihapus; judul latar belakang lebih kecil karena berupa kalimat (pemilik, 14 Okt 2026) */
+#h-mengapa{font-size:clamp(28px,3.2vw,46px)!important;line-height:1.12!important;max-width:20ch}
+.org .kap span{display:inline-flex;align-items:center;gap:8px;padding:8px 14px 8px 10px!important;text-transform:none!important;letter-spacing:0!important;font-size:12.5px!important;font-weight:600;background:rgb(255 255 255 / .06)}
+.org .kap svg{width:16px;height:16px;fill:none;stroke:#f5a06b;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -1020,7 +1025,6 @@ section[hidden],[hidden]{display:none!important}
   </div>
   <div class="wrap">
     <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
-    <p class="hero-ey masuk" style="--d:1">Pemantauan bencana Indonesia</p>
     <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana<br class="lebar"> di Indonesia secara<br class="lebar"> <em>real time</em></h1>
     <p class="misi masuk" style="--d:2">Tim Pantau Bencana mengagregasi dan mengolah data untuk memberikan <i>insight</i> terkait kondisi terkini dan riwayat bencana di Indonesia.</p>
     <div class="aksi masuk" style="--d:3">
@@ -1053,7 +1057,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 3. MENGAPA + TIGA PILAR ============ -->
 <section class="seksi kertas berband" id="mengapa" aria-labelledby="h-mengapa">
-  <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>01</i>Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><div class="lead"><p>Indonesia termasuk negara dengan <span class="sorot">tingkat kerawanan bencana yang tinggi</span>. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi <span class="sorot">tersebar di banyak sumber</span>.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <span class="sorot"><i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik</span>.</p></div></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-mengapa">Informasi terkait bencana di Indonesia masih tersebar sehingga sulit untuk mendapatkan konteks utuh.</h2><div class="lead"><p>Indonesia termasuk negara dengan <span class="sorot">tingkat kerawanan bencana yang tinggi</span>. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi <span class="sorot">tersebar di banyak sumber</span>.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <span class="sorot"><i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik</span>.</p></div></header></div></div>
   <div class="wrap">
     <ul class="masalah">
       <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><b>Data tersebar dan belum terintegrasi</b><small>Data bencana tersebar di banyak lembaga. Belum ada platform yang menyatukannya, dan publik tidak tahu cara mengaksesnya satu per satu.</small></li>
@@ -1062,7 +1066,7 @@ section[hidden],[hidden]{display:none!important}
       <li class="kartu mk" data-n="04" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 04</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/></svg></span><b>Penyajian visual sulit dipahami</b><small>Belum ada penyajian visual yang sesuai untuk publik, sehingga data sulit dibaca dan dimaknai.</small></li>
     </ul>
     <div class="alur" data-muncul>
-    <div class="alur-hd"><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
+    <div class="alur-hd"><h3>Cara Pantau Bencana bekerja</h3></div>
     <ul class="pilar">
       <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><i>01</i></span><h3>Satukan</h3><p>Data yang tersebar di banyak sumber dan lembaga disatukan dalam satu platform.</p></li>
       <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><i>02</i></span><h3>Olah otomatis</h3><p>Data diolah secara otomatis menggunakan model dan algoritma.</p></li>
@@ -1096,7 +1100,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 4. APA YANG KAMI LAKUKAN ============ -->
 <section hidden class="seksi putih berband" id="fitur" aria-labelledby="h-fitur">
-  <div class="band" style="--foto:url(/img/foto-asap.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>02</i>Layanan</span><h2 class="h2" id="h-fitur">Apa yang kami lakukan</h2><p class="lead">Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-asap.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-fitur">Apa yang kami lakukan</h2><p class="lead">Enam layanan yang bisa dibuka siapa saja, tanpa akun, dari ponsel maupun layar posko.</p></header></div></div>
   <div class="wrap">
 
     <div class="baris-f" data-muncul>
@@ -1124,7 +1128,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 5. CARA KERJA DATA ============ -->
 <section hidden class="seksi kertas berband" id="cara-kerja" aria-labelledby="h-cara">
-  <div class="band" style="--foto:url(/img/foto-heli.jpg);--pos:50% 75%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>02</i>Data &amp; metode</span><h2 class="h2" id="h-cara">Cara kerja data</h2><p class="lead">Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-heli.jpg);--pos:50% 75%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-cara">Cara kerja data</h2><p class="lead">Data diambil, diolah, dan diuji oleh mesin. Kalau uji gagal, data hari itu tidak terbit.</p></header></div></div>
   <div class="wrap">
     <ol class="alur">
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
@@ -1168,7 +1172,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 6. SUMBER DATA ============ -->
 <section hidden class="seksi putih berband" id="sumber" aria-labelledby="h-sumber">
-  <div class="band" style="--foto:url(/img/foto-sekat.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>03</i>Sumber</span><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-sekat.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header></div></div>
   <div class="wrap">
     <ul class="chips" style="--card:var(--paper)">
     <li><b>NASA FIRMS</b><span>Titik panas satelit VIIRS &amp; MODIS, arsip 2002–kini</span><em class="lis">Data terbuka NASA</em></li>
@@ -1190,18 +1194,18 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 7. TIM ============ -->
 <section class="seksi kertas berband" id="tim" aria-labelledby="h-tim">
-  <div class="band" style="--foto:url(/img/tu/kegiatan-2.jpg);--pos:50% 40%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>02</i>Siapa kami</span><h2 class="h2" id="h-tim">Teras Urban</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin yang memadukan ekonomi spasial, perencanaan kota, geosains, kesehatan lingkungan, dan kebijakan publik.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/tu/kegiatan-2.jpg);--pos:50% 40%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-tim">Teras Urban</h2><p class="lead">Pantau Bencana dikembangkan oleh tim Teras Urban dengan latar belakang perencanaan wilayah dan kota, geospasial, teknik, dan kebijakan publik.</p></header></div></div>
   <div class="wrap">
     <div class="org" id="org" style="--paper:var(--card)"></div>
     <h3 class="subjudul rj-jd">Rekam jejak Teras Urban</h3>
-    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi untuk perencanaan energi hingga tingkat kabupaten/kota.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
+    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi untuk perencanaan energi hingga tingkat kabupaten/kota.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><b>Diskusi publik mobilitas perkotaan</b><span>Forum bersama pemerintah dan pemangku kepentingan mobilitas Jakarta, 2026.</span></figcaption></figure></div>
     <div id="anggota" hidden></div>
   </div>
 </section>
 
 <!-- ============ 8. KOLABORASI & PENGAKUAN (data/mitra.json; tersembunyi bila kosong) ============ -->
 <section class="seksi putih berband" id="kolaborasi" aria-labelledby="h-kolab" hidden>
-  <div class="band" style="--foto:url(/img/tu/kegiatan.jpg?v=2);--pos:50% 35%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>03</i>Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/tu/kegiatan.jpg?v=2);--pos:50% 35%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-kolab">Kolaborasi</h2><p class="lead">Kegiatan, riset, dan kemitraan Teras Urban di luar Pantau Bencana.</p></header></div></div>
   <div class="wrap">
     <ul class="kolab" id="kolabDaftar" style="--card:var(--paper)"></ul>
     <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><ol class="riset-l" id="risetDaftar" aria-labelledby="h-riset"></ol></div>
@@ -1223,7 +1227,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 10. FAQ ============ -->
 <section class="seksi kertas berband faq-sek" id="faq" aria-labelledby="h-faq">
-  <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><div class="faq-band"><header class="kepala" data-muncul><span class="eyebrow"><i>04</i>FAQ</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>    <div class="faq">
+  <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><div class="faq-band"><header class="kepala" data-muncul><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>    <div class="faq">
     <details name="faq"><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
     <details name="faq"><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>.</p></div></details>
     <details name="faq"><summary>Seberapa sering diperbarui?</summary><div class="isi"><p>Titik panas diperbarui tiap 3 jam mengikuti lintasan satelit. Analisis lengkap (kompleks api, cuaca, asap, operasi) berjalan setiap hari pukul 21.20 WIB, berita setiap hari, dan lapisan tetap seperti gambut atau konsesi saat sumbernya merilis versi baru.</p></div></details>
@@ -1312,11 +1316,12 @@ section[hidden],[hidden]{display:none!important}
      Isi hanya dengan nama yang disetujui orangnya. Grup tanpa anggota tidak ditampilkan; tanpa foto dipakai inisial. */
   const ini = n => n.replace(/^M\.\s*/, "").split(/[\s,]+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
   const foto = a => a.foto ? `<img class="ft" src="${esc(a.foto)}" alt="" width="104" height="104" decoding="async">` : `<span class="ft" aria-hidden="true">${esc(ini(a.nama))}</span>`;
+  const KAPIK = {"Location": "<path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/>", "Kelayakan": "<path d=\"M3 21h18M5 21V9l7-5 7 5v12\"/><path d=\"M9 21v-6h6v6\"/>", "Intelijen": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M7 14l3-3 3 2 4-5M8 21h8\"/>", "Riset": "<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>", "Analisis": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6\"/>"};
   j("/data/tim.json").then(t => {
     const o = t.organisasi || {};
     $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
       ${o.deskripsi ? `<p>${esc(o.deskripsi)}</p>` : ""}${o.visi ? `<blockquote><span class="lbl" style="margin-bottom:4px">Prinsip</span>${esc(o.visi)}</blockquote>` : ""}
-      ${(o.kapabilitas || []).length ? `<div class="kap" aria-label="Kapabilitas">${o.kapabilitas.map(k => `<span>${esc(k)}</span>`).join("")}</div>` : ""}
+      ${(o.kapabilitas || []).length ? `<div class="kap" aria-label="Kapabilitas">${o.kapabilitas.map(k => `<span><svg viewBox="0 0 24 24" aria-hidden="true">${KAPIK[Object.keys(KAPIK).find(x => k.startsWith(x))] || ""}</svg>${esc(k)}</span>`).join("")}</div>` : ""}
       </div>
       ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga lensa analitik Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
         </div>` : ""}`;

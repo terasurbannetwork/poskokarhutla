@@ -2,10 +2,10 @@
  "organisasi": {
   "nama": "Teras Urban",
   "nama_lengkap": "Teras Urban Network",
-  "jenis": "Socio-urban intelligence & geospatial advisory",
+  "jenis": "Lembaga riset perkotaan & geospasial",
   "slogan": "Di antara ruang dan manusia",
-  "deskripsi": "Teras Urban adalah unit socio-urban intelligence dan geospatial advisory. Kami mengubah data ruang, pasar, dan sosial menjadi rekomendasi yang terukur, mulai dari Jakarta dan dirancang untuk seluruh Indonesia.",
-  "visi": "Independen, netral, dan metodenya dapat ditelusuri, bekerja bersama pemerintah, akademisi, komunitas, dunia usaha, dan media.",
+  "deskripsi": "Teras Urban adalah lembaga riset independen yang mengolah data spasial, pasar, dan sosial menjadi rekomendasi untuk kebijakan dan perencanaan. Berbasis di Jakarta, bekerja untuk seluruh Indonesia.",
+  "visi": "Bekerja secara independen dengan metode yang dapat ditelusuri, bersama pemerintah, akademisi, komunitas, dunia usaha, dan media.",
   "fokus": [
    {
     "nama": "Geospasial",
@@ -27,9 +27,7 @@
    "Intelijen wilayah & dashboard",
    "Riset kebijakan & policy brief",
    "Analisis sosial & perilaku"
-  ],
-  "peran": "Membangun dan mengelola Pantau Bencana sebagai bagian dari layanan intelijen wilayah: integrasi data BPS, Satu Data, administratif, geospasial, dan citra satelit menjadi dashboard Web GIS yang diperbarui berkala",
-  "situs": "https://www.terasurban.com"
+  ]
  },
  "anggota": [
   {
