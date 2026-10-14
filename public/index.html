@@ -385,7 +385,8 @@ td.ks-td small{display:block;color:var(--ink2);font-size:10.5px}
 #kompleks tbody td,#kompleks thead th{padding-left:8px;padding-right:8px}
 #kompleks thead th{white-space:normal;line-height:1.25;vertical-align:middle}
 tbody td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
-tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
+/* semua baris tabel putih, tanpa selang-seling (pemilik, 14 Okt 2026) */
+tbody tr:nth-child(even){background:transparent}
 /* halaman Berita: semua baris putih, tanpa selang-seling (pemilik, 14 Okt 2026) */
 #berita tbody tr:nth-child(even),#berita .pm-row:nth-of-type(even){background:var(--card)}
 /* semua tabel: sudut atas kepala tabel membulat (pemilik, 14 Okt 2026); separate+spacing 0 supaya radius berlaku */
@@ -625,6 +626,12 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .ex .ctl .seg button{padding:5px 13px}
 /* Insight: satu kolom terpusat (grafik SVG dirancang selebar 940 px; dua kolom membuat teksnya terlalu kecil), kartu ringkas */
 #insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1120px;margin:0 auto}
+/* Kompleks di bawah Insight: lebar & jarak sama dengan kartu Insight; toolbar cari selebar kartu, tanpa CSV */
+#insightKompleks{max-width:1120px;margin:16px auto 0;display:grid;gap:16px}
+#insightKompleks .tbar{display:flex;gap:10px;align-items:center}
+#insightKompleks .tbar #tq{flex:1 1 auto;min-width:0}
+#insightKompleks .tbar .sp{display:none}
+#insightKompleks .tbar > *:not(#tq):not(.sp):not([hidden]){flex:none}
 #insight > *{min-width:0}
 #insight > [data-ex]:empty{display:none}
 #insight .ex,#dampak .ex,#berita .ex,#tren .ex,#prioritas .ex,#metode .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
@@ -892,10 +899,10 @@ ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px;padding-top:4px;b
 .tm svg{display:block;margin:4px 0 2px;color:var(--ink)}
 .tm-b{cursor:pointer}
 .tm-b:hover rect + rect{filter:brightness(.88)}
-.pr-list{display:grid;gap:8px;margin-bottom:14px}
+.pr-list{display:grid;gap:12px;margin-bottom:14px}
 .pr-row{border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
 .pr-row.l3{border-left:4px solid #c9503a}.pr-row.l2{border-left:4px solid #e3b94e}.pr-row.l1{border-left:4px solid #4f8fc4}
-.pr-row > summary{list-style:none;display:flex;align-items:center;gap:14px;padding:10px 14px;cursor:pointer}
+.pr-row > summary{list-style:none;display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer}
 .pr-row > summary::-webkit-details-marker{display:none}
 .pr-row > summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;flex:none;margin-left:4px}
 .pr-row[open] > summary::after{transform:rotate(225deg)}
@@ -2483,7 +2490,7 @@ const Laci = {
       <div class="hd-meta"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><span class="hd-ko" title="Koordinat pusat kompleks"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</span></div></div>
       <div class="hd-aksi"><button class="ik-btn" id="keSim" title="Simulasikan 72 jam" aria-label="Simulasikan 72 jam"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg></button>
         <a class="ik-btn" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}" title="Buka di Google Maps" aria-label="Buka di Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></a>
-        <button class="ik-btn" id="bagiK" title="Bagikan kompleks ini" aria-label="Bagikan kompleks ini"><svg viewBox="0 0 24 24"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button>
+        <button class="ik-btn" id="bagiK" title="Bagikan kompleks ini" aria-label="Bagikan kompleks ini"><svg viewBox="0 0 24 24"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
         <button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah padam, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap padam."}</div>`}
@@ -2551,7 +2558,7 @@ const Tabel = {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
       el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar kompleks</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
-        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span><button class="btn-gelap" id="tcsv">Unduh CSV</button></div></header>
+        <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
         <div class="ex-bd"><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
       $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
       $("#th").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;
@@ -3014,7 +3021,7 @@ const Tren = {
       <div class="kal-leg"><span><b>Peluang</b><span class="kl-sk"><span class="kl-w">${[.1, .3, .5, .7, .9].map(v => `<i style="background:${wPel(v)}"></i>`).join("")}</span><span class="kl-n"><em>10%</em><em>90%</em></span></span></span>
         <span><b>Titik panas per bulan</b><span class="kl-sk"><span class="kl-w">${[.02, .1, .3, .6, 1].map(v => `<i style="background:color-mix(in oklch, #7a2b2b ${Math.round(12 + Math.sqrt(v) * 88)}%, #fde7c8)"></i>`).join("")}</span><span class="kl-n"><em>1</em><em>${fmt(mM)}</em></span></span></span>
         <span><i style="background:none;border:2px solid var(--ink)"></i>sekarang</span><span>Tahun El Niño (angka merah): <b style="color:#c9503a">${[...EN].sort().join(", ")}</b></span></div>` : "";
-    d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div class="dh-sebaris"><h3 id="dlgJudul">${esc(r.jenis === "prov" ? namaProv(r.prov) : r.nama)}</h3>${(r.jenis === "kec" ? [r.kab, namaProv(r.prov)] : r.jenis === "kab" ? [namaProv(r.prov)] : []).map(x => `<p>${esc(x)}</p>`).join("")}</div>${typeof Bagikan !== "undefined" ? `<button type="button" class="dh-bagi" data-bagiprov="${r.prov}" aria-label="Bagikan sebagai gambar" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button>` : ""}<button aria-label="Tutup" data-tutup>×</button></div>
+    d.innerHTML = `<div class="dh">${r.jenis === "prov" ? lambang(r.prov) : lambang(r.prov, r.kab)}<div class="dh-sebaris"><h3 id="dlgJudul">${esc(r.jenis === "prov" ? namaProv(r.prov) : r.nama)}</h3>${(r.jenis === "kec" ? [r.kab, namaProv(r.prov)] : r.jenis === "kab" ? [namaProv(r.prov)] : []).map(x => `<p>${esc(x)}</p>`).join("")}</div>${typeof Bagikan !== "undefined" ? `<button type="button" class="dh-bagi" data-bagiprov="${r.prov}" aria-label="Bagikan sebagai gambar" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>` : ""}<button aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">
         <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, r.jenis === "prov" ? "nasional" : `nasional<br>ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
           ${kot("Tahun terbakar", `${r.tahun}<span style="font-size:13px;opacity:.6"> / ${th.length}</span>`, `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tahun / th.length >= .6 ? ["Langganan api", 3] : r.tahun / th.length >= .3 ? ["Sering", 2] : ["Jarang", 0])}<br>${beruntun ? beruntun + " tahun beruntun" : "terakhir " + terakhir}<br>≥ ${fmt(amb)} titik`)}${kot("Tren", (r.tren >= 1 ? "↑ " : "↓ ") + fmt(r.tren) + "×", `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tren >= 1.1 ? ["Naik", 3] : r.tren <= .9 ? ["Turun", 0] : ["Stabil", 1])}<br>rata-rata 2023+ vs sebelumnya`)}</div>
@@ -3228,20 +3235,21 @@ const Insight = {
     const sd = (k, t) => (mo.prov[k]?.[t] || []).slice(0, bl + 1).reduce((a, b) => a + b, 0);
     const row = PRIO.filter(k => mo.prov[k]).map(k => { const r = lalu.reduce((a, t) => a + sd(k, t), 0) / lalu.length, v = sd(k, ini); return {k, v, r, x: v / (r || 1)}; });
     row.sort(this.st.ytd === "jumlah" ? (a, b) => b.v - a.v : (a, b) => b.x - a.x);
-    const jml = this.st.ytd === "jumlah", W = 940, rh = 34, L = 190, T = jml ? 0 : 30, H = T + row.length * rh + 8, mx = Math.max(...row.map(r => jml ? Math.max(r.v, r.r) : r.x), 1), X = v => L + v / mx * (W - L - 170);
+    const jml = this.st.ytd === "jumlah", W = 940, rh = 34, L = 190, T = 30, H = T + row.length * rh + 8, mx = Math.max(...row.map(r => jml ? Math.max(r.v, r.r) : r.x), 1), X = v => L + v / mx * (W - L - 170);
     const pil = this.pil;
-    let g = jml ? "" : `<line x1="${X(1)}" x2="${X(1)}" y1="${T - 6}" y2="${H}" stroke="oklch(25.5% .075 256)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(X(1) - 34, 0, "rata-rata", "oklch(25.5% .075 256)", "#fff", 11)[0]}`;
+    /* mode jumlah: penanda rata-rata per baris diberi pil "rata-rata" di atas baris pertama + legenda */
+    let g = jml ? pil(X(row[0].r) - 34, 0, "rata-rata", "oklch(25.5% .075 256)", "#fff", 11)[0] + `<line x1="${X(row[0].r)}" x2="${X(row[0].r)}" y1="20" y2="${T + 4}" stroke="oklch(25.5% .075 256)" stroke-width="1.5" opacity=".6"/>` : `<line x1="${X(1)}" x2="${X(1)}" y1="${T - 6}" y2="${H}" stroke="oklch(25.5% .075 256)" stroke-width="1.5" stroke-dasharray="4 4" opacity=".55"/>${pil(X(1) - 34, 0, "rata-rata", "oklch(25.5% .075 256)", "#fff", 11)[0]}`;
     row.forEach((r, i) => { const y = T + i * rh, val = jml ? r.v : r.x, warna = r.x >= 2 ? "#c9503a" : r.x >= 1 ? "#e58a45" : "#4f8fc4";
       g += `<g data-tren="${r.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(r.k))}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 7}" width="${Math.max(2, X(val) - L)}" height="${rh - 14}" rx="4" fill="${warna}" data-tip="<b>${esc(namaProv(r.k))}</b><br>${ini} s.d. ${BULAN[bl]}: ${fmt(r.v)} titik<br>rata-rata ${lalu[0]}–${lalu.at(-1)}: ${fmt(Math.round(r.r))}"/>
-        ${jml ? `<rect x="${X(r.r) - 1.5}" y="${y + 4}" width="3" height="${rh - 8}" fill="currentColor" opacity=".7" data-tip="rata-rata ${fmt(Math.round(r.r))} titik"/>` : ""}
+        ${jml ? `<rect x="${X(r.r) - 2}" y="${y + 3}" width="4" height="${rh - 6}" rx="2" fill="oklch(25.5% .075 256)" data-tip="<b>${esc(namaProv(r.k))}</b><br>rata-rata ${lalu[0]}–${lalu.at(-1)} s.d. ${BULAN[bl]}: ${fmt(Math.round(r.r))} titik"/>` : ""}
         ${(() => { const x0 = Math.max(X(val), jml ? X(r.r) : 0) + 8, kali = fmt(Math.round(r.x * 10) / 10) + "×",
           [a, w] = pil(x0, y + 7, jml ? fmt(r.v) : kali, warna, "#fff", 12.5), [b] = pil(x0 + w + 6, y + 7, jml ? kali + " rata-rata" : fmt(r.v) + " vs " + fmt(Math.round(r.r)), "var(--surface)", "currentColor", 11.5);
           return `<g class="gf" style="--i:${i}">${a}${b}</g>`; })()}</g>`; });
     const urut = [...row].sort((a, b) => b.x - a.x), atas = row.filter(r => r.x >= 1.5).length;
     return this.ex(`${this.hl(atas + " dari " + row.length)} provinsi yang sering mengalami karhutla sudah memiliki jumlah titik panas 1,5 kali lebih besar dibandingkan kondisi biasanya. Untuk ${esc(namaProv(urut[0].k))} malah ${this.hl(fmt(Math.round(urut[0].x * 10) / 10) + " kali")} lebih besar`,
       "", "",
-      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahun berjalan dibanding normal">${g}</svg>${this.leg([["#c9503a", "≥ 2× rata-rata"], ["#e58a45", "1–2× rata-rata"], ["#4f8fc4", "di bawah rata-rata"]])}`, `Sumber: NASA FIRMS MODIS`,
+      `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tahun berjalan dibanding normal">${g}</svg>${this.leg([["#c9503a", "≥ 2× rata-rata"], ["#e58a45", "1–2× rata-rata"], ["#4f8fc4", "di bawah rata-rata"], ...(jml ? [["oklch(25.5% .075 256)", `garis tegak = rata-rata ${lalu[0]}–${lalu.at(-1)} periode sama`]] : [])])}`, `Sumber: NASA FIRMS MODIS`,
       this.seg("ytd", [["rasio", "Rasio thd normal"], ["jumlah", "Jumlah titik"]])); },
 
   /* 3. peluang 60 hari ke depan per dasarian */

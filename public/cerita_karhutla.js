@@ -60,7 +60,8 @@ const chip = (k, v) => `<span class="ct-chip">${v == null ? "" : `<b>${v}</b>`}$
 /* ---------------- peta ---------------- */
 function peta(el, pusat, zoom) {
   if (typeof maplibregl === "undefined") { el.innerHTML = `<p class="ct-cat">Peta butuh MapLibre.</p>`; return null; }
-  const m = new maplibregl.Map({container: el, style: gaya(), center: pusat, zoom, attributionControl: {compact: true}, dragRotate: false, cooperativeGestures: true});
+  /* preserveDrawingBuffer: kanvas peta bisa difoto untuk gambar bagikan */
+  const m = new maplibregl.Map({container: el, style: gaya(), center: pusat, zoom, attributionControl: {compact: true}, dragRotate: false, cooperativeGestures: true, preserveDrawingBuffer: true});
   m.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
   m.siap = new Promise(r => m.once("load", r));
   m.siap.then(() => el.querySelector(".maplibregl-compact-show")?.classList.remove("maplibregl-compact-show"));  /* atribusi diringkas */
@@ -86,7 +87,7 @@ const Cerita = {
   bab(ey, id, judul, isi, {leg, sumber} = {}) {
     /* format kartu Insight: pita bab + judul satu kalimat, badan, kaki berisi legenda (tengah) dan sumber (miring) */
     const lg = (leg || []).map(([w, n]) => `<span>${w ? `<i style="${/[:;]/.test(w) ? w : "background:" + w}"></i>` : ""}${n}</span>`).join("");
-    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><button type="button" class="ct-bagi" data-ctbagi="${id}" aria-label="Bagikan bagian ini" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg></button><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
+    return `<section class="ct-bab ex" id="ct-${id}"><header class="ex-hd"><button type="button" class="ct-bagi" data-ctbagi="${id}" aria-label="Bagikan bagian ini" title="Bagikan"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button><span class="ex-ey">${ey}</span><div class="ex-jd"><h3>${judul}</h3></div></header><div class="ex-bd">${isi}</div><footer class="ex-ft">${lg ? `<span class="ex-leg">${lg}</span>` : "<span></span>"}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></section>`;
   },
   async buka(el) {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;

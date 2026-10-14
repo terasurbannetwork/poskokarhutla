@@ -7,12 +7,12 @@
 .ks-td2{font-size:11px;color:var(--ink2);white-space:nowrap;text-align:left}
 .ks-ell{display:inline-block;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;vertical-align:bottom}
 .ks-td2 .ks-ell{max-width:110px}
-#ks-ex .ks-tb th:nth-child(n+2):nth-child(-n+4),#ks-ex .ks-tb td:nth-child(n+2):nth-child(-n+4){text-align:left!important}
+#ks-ex .ks-tb td:nth-child(n+2):nth-child(-n+4){text-align:left!important}
 .ks-mt{color:var(--ink2)}
 .ks-plus{margin-left:6px;padding:0 6px;border-radius:99px;background:var(--surface);border:1px solid var(--line);font:700 10.5px/1.6 var(--font);color:var(--ink2)}
 .ks-tb th[data-u]{user-select:none;white-space:nowrap}
 .ks-ar{display:inline-block;width:12px;margin-left:3px;font-style:normal;font-size:9px}
-.ks-tb td,.ks-tb th{text-align:left}.ks-tb td.n,.ks-tb th.n{text-align:right}
+.ks-tb td{text-align:left}.ks-tb td.n{text-align:right}.ks-tb th{text-align:center!important}
 .ks-ex{margin-bottom:14px}
 .ks-hd{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
 .ks-hd h3{margin:0}
@@ -66,4 +66,3 @@
 .ks-bar-sep{height:1px;background:var(--line);margin:4px 0}
 .ks-ft em{text-align:left}
 .ks-tb td:first-child{text-align:left!important}
-.ks-tb thead th:first-child{text-align:left!important}

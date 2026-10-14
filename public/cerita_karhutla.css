@@ -193,3 +193,5 @@
 .ct-sub2 em{font-style:normal;font-weight:700;font-size:12px;padding:3px 10px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--ink)}
 .ct-bab .ct-bagi{float:right;width:38px;height:38px;padding:0;display:grid;place-items:center;border:0;border-radius:10px;background:transparent;color:var(--ink2);cursor:pointer}
 .ct-bab .ct-bagi:hover{background:var(--surface);color:var(--ink)}
+/* bab cerita bergrafik memakai tombol gambar; tombol tautan hanya untuk bab peta */
+.ct-bab:has(> .bg-ex) .ct-bagi{display:none}

@@ -46,7 +46,7 @@
 .dk-tw tbody td{padding:11px 10px;vertical-align:middle;white-space:normal} /* boleh turun baris supaya tabel muat tanpa geser (pemilik, 14 Okt 2026) */
 .dk-tw tbody td .pill,.dk-tw tbody td em{white-space:nowrap}
 .dk-tw thead th{padding:10px 10px;white-space:normal}
-.dk-tw tbody tr:nth-child(even){background:color-mix(in oklch, var(--surface) 55%, var(--card))}
+.dk-tw tbody tr:nth-child(even){background:transparent}
 .dk-tw tbody tr:hover{background:color-mix(in oklch, var(--brand2) 9%, var(--card))}
 .dk-tw td .dk-s{display:inline;font-size:11px;color:var(--ink2)}
 .dk-el{display:block;max-width:220px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
@@ -105,3 +105,8 @@
 .dk-media img{width:16px;height:16px;border-radius:3px}
 .dk-media small{display:block;color:var(--ink2);font-size:10.5px}
 @media (max-width:640px){.dk-thumb{width:56px;height:40px}}
+/* daftar bagian di kiri: putih, aksen warna bagian hanya di ikon + garis kiri; aktif = pita warna bagian seperti kepala bagian (pemilik, 14 Okt 2026) */
+.dk-nav button{background:var(--card)!important;border-color:var(--line)!important;border-left:4px solid var(--w)!important}
+.dk-nav button:hover{background:color-mix(in oklch, var(--w) 8%, var(--card))!important;border-color:color-mix(in oklch, var(--w) 40%, var(--line))!important}
+.dk-nav button.on{background:linear-gradient(120deg,var(--w),color-mix(in oklch, var(--w) 70%, #0b2545))!important;border-color:var(--w)!important;color:#fff!important}
+.dk-nav button.on svg{background:rgb(255 255 255 / .2)!important}

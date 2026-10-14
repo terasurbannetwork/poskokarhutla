@@ -45,29 +45,31 @@ const Bagikan = {
     ["tren", "dampak", "berita"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
     document.addEventListener("click", e => { const t = e.target.closest?.(".bg-ex"); if (!t) return; e.stopPropagation();
       const box = t.closest("[data-ex]"), art = t.closest("article.ex");
-      if (!t.closest("#insight")) { this._exLuar = this.ambilLuar(t); return this.buka("ex", "luar"); }
+      if (!t.closest("#insight") || t.closest(".ct-bab")) { this._exLuar = this.ambilLuar(t); return this.buka("ex", "luar"); }
       this.buka("ex", box ? box.dataset.ex : "b" + [...document.querySelectorAll("#insight article.ex")].indexOf(art)); }, true);
     /* tautan dalam: ?wil=62|Seruyan membuka wilayah itu setelah peta siap */
     const w = new URLSearchParams(location.search).get("wil");
     if (w && /^\d{2}(\|[^|<>"]{1,80}){0,2}$/.test(w)) this.tungguWil(w);
   },
   tombolEx() {
-    document.querySelectorAll("#insight article.ex, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
+    document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
       const isi = a.classList.contains("head") ? this.isiHead(a) : [a];
-      if (a.querySelector(".bg-ex") || !isi.some(x => x.querySelector?.("svg[viewBox], table"))) return;
+      /* hanya kartu yang punya grafik lebar (viewBox ≥ 300) atau tabel; ikon kecil tidak dihitung */
+      const ada = isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
+      if (a.querySelector(":scope > .bg-ex, :scope > header > .bg-ex") || !ada) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "bg-ex"; b.setAttribute("aria-label", "Bagikan grafik ini"); b.title = "Bagikan";
-      b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3v12"/><path d="m7 8 5-5 5 5"/><path d="M5 13v6a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-6"/></svg>`;
+      b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>`;
       b.setAttribute("aria-label", "Bagikan grafik ini sebagai gambar"); a.classList.contains("head") ? a.append(b) : a.prepend(b); });
   },
   /* bagian Tren berbentuk judul .head + elemen sesudahnya sampai .head berikutnya */
   isiHead(h) { const out = []; for (let x = h.nextElementSibling; x && !x.classList.contains("head"); x = x.nextElementSibling) out.push(x); return out; },
   ambilLuar(t) {
-    const art = t.closest("article.ex"), head = art ? null : t.closest(".head"), jd = art ? art.querySelector("h3") : head.querySelector("h2");
+    const art = t.closest("article.ex, section.ct-bab"), head = art ? null : t.closest(".head"), jd = art ? art.querySelector("h3") : head.querySelector("h2");
     const isi = art ? [art] : this.isiHead(head), cari = q => isi.map(x => x.matches?.(q) ? x : x.querySelector?.(q)).find(Boolean);
     /* sampai dua grafik + tabel kartu itu, ditumpuk, supaya gambar tidak kosong di atas-bawah */
     const svgs = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).filter(v => (v.viewBox.baseVal?.width || 0) >= 300).slice(0, 2), svg = svgs[0];
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), peta: svgs.length ? null : cari(".maplibregl-canvas"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
   },
   /* grafik tanpa tabel: susun tabel dari tooltip batang ("<b>Nama</b><br>Label: nilai<br>…"), satu baris per nama */
   tabelDariTip(svgs) {
@@ -463,7 +465,8 @@ const Bagikan = {
   },
   async dataEx(id = this.exId) {
     if (id === "luar" && this._exLuar) { const L = this._exLuar;
-      if (!L.img) { const cs = [...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))), ...(L.tabel ? [this.tabelKanvas(L.tabel, L.svgs?.length ? 6 : 10)] : [])];
+      if (!L.img) { const fotoPeta = c => { const k = this.kanvas(c.width, c.height); k.getContext("2d").drawImage(c, 0, 0); return k; };
+        const cs = [...(L.peta ? [fotoPeta(L.peta)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))), ...(L.tabel ? [this.tabelKanvas(L.tabel, L.svgs?.length ? 6 : 10)] : [])];
         /* tumpuk: semua selebar yang paling lebar, jarak 40 px */
         const W = Math.max(...cs.map(c => c.width)), H = cs.reduce((a, c) => a + c.height * W / c.width, 0) + 40 * (cs.length - 1), cv = this.kanvas(W, H), x = cv.getContext("2d"); let y = 0;
         x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); cs.forEach(c => { const h = c.height * W / c.width; x.drawImage(c, 0, y, W, h); y += h + 40; }); L.img = cs.length ? cv : null; }
@@ -590,11 +593,12 @@ const Bagikan = {
   },
   kepala(x, W, P, atas, d, uk) {
     const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? (uk === "story" ? 5 : 4) : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
-    let u = d.tpl === "ex" ? 50 : uk === "kotak" ? 58 : 66; this.f(x, 800, u, true);
+    /* kepala lebih rendah & huruf lebih kecil supaya isi dapat ruang lebih (pemilik, 14 Okt 2026) */
+    let u = d.tpl === "ex" ? 40 : uk === "kotak" ? 46 : 52; this.f(x, 800, u, true);
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
     if (ln.length > maksBaris) { ln = ln.slice(0, maksBaris); ln.at(-1).push({t: "…"}); }
-    const lh = Math.round(u * 1.14), yJ = atas + 76 + 46, ySub = yJ + ln.length * lh + 6, bawah = ySub + (d.sub ? 40 : 0) + 96;
+    const lh = Math.round(u * 1.12), yJ = atas + 76 + 22, ySub = yJ + ln.length * lh + 4, bawah = ySub + (d.sub ? 34 : 0) + 64;
     const g = x.createLinearGradient(0, 0, W * .6, bawah * 1.2); g.addColorStop(0, this.C.navy2); g.addColorStop(1, this.C.navy);
     x.fillStyle = g; x.fillRect(0, 0, W, bawah);
     this.logo(x, P, atas, 76);
@@ -602,7 +606,7 @@ const Bagikan = {
     this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + " · " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
     this.f(x, 800, u, true);
     ln.forEach((l, i) => { let px = P; for (const k of l) { x.fillStyle = k.hl ? this.C.hl : "#fff"; x.fillText(k.t, px, yJ + i * lh + u * .82); px += x.measureText(k.t).width; } });
-    if (d.sub) { this.f(x, 500, 26); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
+    if (d.sub) { this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
     return bawah - 56;
   },
   kaki(x, W, H, P, bawah) {
@@ -676,7 +680,8 @@ const Bagikan = {
   async petaBlok(x, a, b, w, h, d) {
     this.kartu(x, a, b, w, h);
     x.save(); x.beginPath(); x.roundRect(a, b, w, h, 26); x.clip();
-    const snap = this.pakaiPeta && (!d.prov || S.jalur?.[0] === d.prov) ? await this.tangkap() : null;
+    /* ringkasan nasional selalu peta Indonesia penuh (digambar); tangkapan layar hanya untuk provinsi/kompleks yang sedang dibuka */
+    const snap = this.pakaiPeta && d.prov && S.jalur?.[0] === d.prov ? await this.tangkap() : null;
     if (snap) this.tempel(x, snap, a, b, w, h); else this.gambarPeta(x, a, b, w, h, d.prov);
     x.restore();
     const isi = snap ? [["", "Tampilan peta saat ini · © OpenFreeMap © OpenStreetMap"]] : [["", d.petaKet + ":"], ...d.legenda];
@@ -709,7 +714,7 @@ const Bagikan = {
     const t = this._t = (this._t || 0) + 1, d = this.dialog(), q = s => d.querySelector(s), st = q("#bgStG");
     d.querySelectorAll("[data-tpl]").forEach(b => b.setAttribute("aria-pressed", b.dataset.tpl === this.tpl));
     d.querySelectorAll("[data-uk]").forEach(b => b.setAttribute("aria-pressed", b.dataset.uk === this.uk));
-    q("#bgProv").hidden = this.tpl !== "provinsi"; q("#bgEx").hidden = true; /* grafik dipilih dari kartu yang diklik */ q(".bg-cek").hidden = this.tpl === "ex";
+    q("#bgProv").hidden = this.tpl !== "provinsi"; q("#bgEx").hidden = true; /* grafik dipilih dari kartu yang diklik */ q(".bg-cek").hidden = true; /* tangkapan peta: selalu otomatis (pemilik, 14 Okt 2026) */
     st.textContent = "Menyiapkan gambar…"; q("#bgImg").classList.add("muat");
     try {
       await this.font();
