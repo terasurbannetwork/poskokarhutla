@@ -6,7 +6,7 @@
 const Bagikan = {
   hal: "karhutla", dasar: "", tab: "gambar", tpl: "ringkas", uk: "feed", prov: "", exId: "", pakaiPeta: true,
   UK: {feed: [1080, 1350, "Feed 4:5"], story: [1080, 1920, "Story · TikTok 9:16"], kotak: [1080, 1080, "Kotak 1:1"]},
-  TPL: [["ringkas", "Ringkasan hari ini"], ["provinsi", "Provinsi"], ["ex", "Grafik Insight"]],
+  TPL: [["kompleks", "Kompleks ini"], ["ringkas", "Ringkasan hari ini"], ["provinsi", "Provinsi"], ["ex", "Grafik Insight"]],
   C: {navy: "#0b2545", navy2: "#1d4e89", kertas: "#f3f6fa", tinta: "#0b2545", tinta2: "#5b6b82", garis: "#dde4ee", jalur: "#edf1f6", hl: "#ffb37a"},
   LV: ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"],
   /* SheetJS komunitas tidak bisa menulis gaya sel (header tebal); xlsx-js-style = SheetJS + gaya, API sama */
@@ -65,9 +65,9 @@ const Bagikan = {
     let d = document.getElementById("bgDlg"); if (d) return d;
     d = document.createElement("dialog"); d.className = "dlg bg"; d.id = "bgDlg"; d.setAttribute("aria-labelledby", "bgJudul");
     const tab = (id, n) => `<button role="tab" type="button" id="bgT-${id}" aria-controls="bgP-${id}" aria-selected="false" tabindex="-1" data-tab="${id}">${n}</button>`;
-    d.innerHTML = `<div class="dh"><div><h3 id="bgJudul">Bagikan & ekspor</h3><p>Gambar siap unggah, tautan, dan berkas data</p></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
+    d.innerHTML = `<div class="dh"><div><h3 id="bgJudul">Bagikan</h3></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">
-        <div class="seg penuh bg-tabs" role="tablist" aria-label="Pilihan">${tab("gambar", "Gambar")}${tab("tautan", "Tautan")}${tab("ekspor", "Ekspor")}</div>
+        <div class="seg penuh bg-tabs" role="tablist" aria-label="Pilihan">${tab("gambar", "Gambar")}${tab("tautan", "Tautan")}</div>
         <div role="tabpanel" id="bgP-gambar" aria-labelledby="bgT-gambar" class="bg-panel">
           <div class="lbl">Templat</div>
           <div class="bg-tpl" role="group" aria-label="Templat">${this.TPL.map(([k, n]) => `<button type="button" data-tpl="${k}" aria-pressed="false"><span class="bg-th"><canvas width="90" height="112" aria-hidden="true"></canvas></span><span>${n}</span></button>`).join("")}</div>
@@ -84,9 +84,8 @@ const Bagikan = {
           <div class="bg-aksi"><button type="button" class="btn sec" id="bgSalinTeks">Salin keterangan</button></div>
         </div>
         <div role="tabpanel" id="bgP-tautan" aria-labelledby="bgT-tautan" class="bg-panel" hidden>
-          <label class="lbl" for="bgUrl">Tautan ke tampilan ini</label>
+          <label class="sr-only" for="bgUrl">Tautan ke tampilan ini</label>
           <div class="bg-url"><input id="bgUrl" readonly><button type="button" class="btn sec" id="bgSalinUrl">Salin</button></div>
-          <p class="bg-cat">Membuka tab dan wilayah yang sedang dilihat.</p>
           <button type="button" class="btn pri" id="bgBagiU" hidden>Bagikan lewat aplikasi…</button>
           <div class="bg-sos" id="bgSos"></div>
         </div>
@@ -127,19 +126,39 @@ const Bagikan = {
     d.querySelectorAll("[role=tabpanel]").forEach(p => p.hidden = p.id !== "bgP-" + id);
   },
   /* bagikan satu kompleks dari lacinya: dialog dibuka di tab Tautan dengan alamat kompleks itu */
+  /* gambar pakai templat "Kompleks ini" (data kompleks itu, bukan ringkasan nasional); tautan langsung /k/K0001 */
   bukaKompleks(id) {
-    this._urlKhusus = location.origin + "/k/" + encodeURIComponent(id);
-    const d = this.dialog(); if (!d._resetK) { d._resetK = 1; d.addEventListener("close", () => { this._urlKhusus = null; }); }
-    this.buka().then(() => this.pilihTab("tautan"));
+    this._urlKhusus = location.origin + "/k/" + encodeURIComponent(id); this._kom = id;
+    const d = this.dialog(); if (!d._resetK) { d._resetK = 1; d.addEventListener("close", () => { this._urlKhusus = null; this._kom = null; if (this.tpl === "kompleks") this.tpl = "ringkas"; }); }
+    this.buka("kompleks");
+  },
+  dataKom(id) {
+    const p = S.kluster.features.find(f => f.properties.id === id)?.properties; if (!p) return this.data("");
+    const kf = p.cuaca ? p.fdrs : 0, dk = typeof daopsDekat === "function" ? daopsDekat(p.lat, p.lon) : [], bp = typeof bpbdDekat === "function" ? bpbdDekat(p.lat, p.lon) : null;
+    const kpi = [
+      {l: "Piksel api 24 jam", s: "Piksel 24 j", v: fmt(p.px24), ket: `± ${fmt(Math.round(p.px24 * 14))} ha garis api aktif`, ks: `± ${fmt(Math.round(p.px24 * 14))} ha`, w: this.LV[3]},
+      {l: "Hari menyala", s: "Hari menyala", v: fmt(p.hari), ket: "dalam 7 hari terakhir", ks: "7 hari terakhir", w: this.LV[2]},
+      {l: "Luas indikatif", s: "Luas", v: fmt(Math.round(p.luas)) + " ha", ket: `rentang ${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`, ks: "indikatif", w: this.LV[2]},
+      {l: "Bahaya cuaca (FWI)", s: "FWI", v: p.cuaca ? fmt(p.fwi) : "–", ket: p.cuaca ? "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase() : "tidak tersedia", ks: p.cuaca ? FWI_KELAS[kf][0].toLowerCase() : "–", w: this.LV[kf]},
+    ];
+    const rows = [...dk.slice(0, 4).map(d => ({n: d.nama, v: Math.round(d.jarak), t: fmt(Math.round(d.jarak)) + " km", w: this.LV[1]})), ...(bp ? [{n: bp.nama, v: Math.round(bp.jarak), t: fmt(Math.round(bp.jarak)) + " km", w: this.LV[0]}] : [])];
+    const rek = [{lv: p.level, t: `Status ${S.meta.status[p.level].toLowerCase()}${p.level === 3 && p.peringkat ? `, urutan ${p.peringkat} di wilayah kerjanya` : ""}.`},
+      ...(p.gambut ? [{lv: 2, t: "Berada di lahan gambut: api bisa menyala di bawah permukaan, perlu pembasahan dan ground-check."}] : []),
+      ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : [])];
+    return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Kompleks ${p.id}`, judul: `${p.kec}, ${p.kab}`,
+      sub: `${namaProv(p.prov)} · status ${S.meta.status[p.level].toLowerCase()} · ${fmt(p.n)} deteksi VIIRS 7 hari`,
+      kpi, bar: {judul: "Unit pemadam terdekat (jarak lurus)", pendek: "Unit terdekat", rows}, rek, legenda: [[this.LV[3], "Prioritas"], [this.LV[2], "Siaga"], [this.LV[1], "Patroli"]], petaKet: `Kompleks ${p.id}`};
   },
   async buka(tpl, exId) {
     if (typeof S === "undefined" || !S.meta) return this.kabar("Data belum termuat, coba lagi sebentar.");
     this._hari = null; this._snap = undefined; this._ex = null; this._th = {}; this._d = {};
-    if (tpl) this.tpl = tpl; if (exId != null) this.exId = exId;
+    if (tpl) this.tpl = tpl; if (exId != null) this.exId = exId; if (!this._kom && this.tpl === "kompleks") this.tpl = "ringkas";
+    /* tombol share di kepala halaman: ikut wilayah yang sedang dibuka (provinsi), nasional bila belum memilih */
+    if (!tpl && this.tpl !== "ex") this.tpl = S.jalur?.[0] ? "provinsi" : "ringkas";
     this.prov = S.jalur?.[0] || (S.meta.provinsi[this.prov] ? this.prov : this.provAwal());
     const d = this.dialog(), q = s => d.querySelector(s);
     q("#bgProv").innerHTML = this.daftarProv().map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join(""); q("#bgProv").value = this.prov;
-    q("#bgPeta").checked = this.pakaiPeta;
+    q("#bgPeta").checked = this.pakaiPeta; q('[data-tpl="kompleks"]').hidden = !this._kom;
     q("#bgBagiU").hidden = !navigator.share;
     q("#bgUrl").value = this.tautan(); this.sosial();
     if (!d.open) d.showModal();
@@ -158,12 +177,12 @@ const Bagikan = {
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   },
   tanggal() { return S.meta.hari_wib || new Date().toISOString().slice(0, 10); },
-  namaBerkas(ext) { return `${this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tpl === "provinsi" ? this.slug(namaProv(this.prov)) + "-" : ""}${this.tanggal()}${ext === "png" ? "-" + this.uk : ""}.${ext}`; },
+  namaBerkas(ext) { return `${this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tpl === "provinsi" ? this.slug(namaProv(this.prov)) + "-" : this.tpl === "kompleks" && this._kom ? this._kom + "-" : ""}${this.tanggal()}${ext === "png" ? "-" + this.uk : ""}.${ext}`; },
   slug: s => String(s).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   tglPanjang() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}); },
   /* alamat yang dicetak di gambar: domain publik, bukan localhost/pratinjau */
   situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "pantau.terasurban.com" : location.host;
-    return (h + location.pathname).replace(/[^/]*\.html$/, "").replace(/\/(peta|insight|berita|kompleks|posko|tren|dampak|sim|metode|informasi)\/?$/, "/$1"); },
+    return h; /* cukup domain, tanpa /insight dsb. (pemilik, 14 Okt 2026) */ },
   tautan() {
     if (this._urlKhusus) return this._urlKhusus; /* dibuka dari laci kompleks: tautan langsung /k/K0001 */
     const u = new URL(location.href); u.search = "";
@@ -416,12 +435,13 @@ const Bagikan = {
   TATA: {
     ringkas: {kotak: [["kpi4"], [["peta", "bar"], 1]], feed: [["kpi4"], ["peta", .55], ["bar", .45]], story: [["kpi22"], ["peta", .46], ["bar", .54]]},
     provinsi: {kotak: [["kpi4"], [["bar", "rek"], 1]], feed: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]], story: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]]},
+    kompleks: {kotak: [["kpi4"], [["bar", "rek"], 1]], feed: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]], story: [["kpi4"], ["peta", .4], [["bar", "rek"], .6]]},
     ex: {kotak: [["ex", 1]], feed: [["ex", 1]], story: [["ex", 1]]},
   },
   async render(tpl = this.tpl, uk = this.uk) {
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
     const atas = story ? 250 : 64, bawah = story ? H - 300 : H - 56;
-    const d = tpl === "ex" ? await this.dataEx() : this.data(tpl === "provinsi" ? this.prov : "");
+    const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
     x.fillStyle = this.C.kertas; x.fillRect(0, 0, W, H);
     const y0 = this.kepala(x, W, P, atas, d, uk), y1 = this.kaki(x, W, H, P, bawah, story);
     const G = 24, tata = this.TATA[tpl][uk], tetap = {kpi4: 190, kpi22: 2 * 178 + 20};
@@ -445,7 +465,6 @@ const Bagikan = {
     const lh = Math.round(u * 1.14), yJ = atas + 76 + 46, ySub = yJ + ln.length * lh + 6, bawah = ySub + (d.sub ? 40 : 0) + 96;
     const g = x.createLinearGradient(0, 0, W * .6, bawah * 1.2); g.addColorStop(0, this.C.navy2); g.addColorStop(1, this.C.navy);
     x.fillStyle = g; x.fillRect(0, 0, W, bawah);
-    x.save(); x.globalAlpha = .06; this.logo(x, W - 360, bawah - 400, 460, true); x.restore();
     this.logo(x, P, atas, 76);
     x.textBaseline = "alphabetic"; x.fillStyle = "#fff"; this.f(x, 800, 32, true); x.fillText(this.K.nama, P + 98, atas + 34);
     this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + " · " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
@@ -459,7 +478,13 @@ const Bagikan = {
     x.strokeStyle = this.C.garis; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
     this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, this.K.sumber, W - 2 * P), P, y + 34);
     this.f(x, 500, 21); x.textAlign = "right"; const dt = "Data " + jamWIB(S.meta.dibuat); x.fillText(dt, W - P, y + 64); const dw = x.measureText(dt).width; x.textAlign = "left";
-    this.f(x, 700, 22); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, this.situs(), W - 2 * P - dw - 24), P, y + 64);
+    /* ikon media sosial (Instagram, LinkedIn, X, Facebook, TikTok) di depan alamat situs */
+    const s = 30, gp = 8; [["#d62976", "ig"], ["#0a66c2", "in"], ["#111", "X"], ["#1877f2", "f"], ["#111", "♪"]].forEach(([w, t], i) => { const a = P + i * (s + gp), b = y + 64 - 22;
+      x.fillStyle = w; x.beginPath(); x.roundRect(a, b, s, s, 8); x.fill(); x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 2.4;
+      if (t === "ig") { x.beginPath(); x.roundRect(a + 7, b + 7, 16, 16, 5); x.stroke(); x.beginPath(); x.arc(a + 15, b + 15, 4, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.arc(a + 20, b + 10, 1.4, 0, Math.PI * 2); x.fill(); }
+      else { this.f(x, 800, t === "♪" ? 18 : 17); x.textAlign = "center"; x.fillText(t, a + s / 2, b + 21); x.textAlign = "left"; } });
+    const sx = P + 5 * (s + gp) + 6;
+    this.f(x, 700, 22); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, this.situs(), W - P - sx - dw - 24), sx, y + 64);
     return y - 26;
   },
   async blok(x, k, a, b, w, h, d) {
@@ -552,7 +577,7 @@ const Bagikan = {
     const t = this._t = (this._t || 0) + 1, d = this.dialog(), q = s => d.querySelector(s), st = q("#bgStG");
     d.querySelectorAll("[data-tpl]").forEach(b => b.setAttribute("aria-pressed", b.dataset.tpl === this.tpl));
     d.querySelectorAll("[data-uk]").forEach(b => b.setAttribute("aria-pressed", b.dataset.uk === this.uk));
-    q("#bgProv").hidden = this.tpl !== "provinsi"; q("#bgEx").hidden = this.tpl !== "ex"; q(".bg-cek").hidden = this.tpl === "ex";
+    q("#bgProv").hidden = this.tpl !== "provinsi"; q("#bgEx").hidden = true; /* grafik dipilih dari kartu yang diklik */ q(".bg-cek").hidden = this.tpl === "ex";
     st.textContent = "Menyiapkan gambar…"; q("#bgImg").classList.add("muat");
     try {
       await this.font();
@@ -561,7 +586,7 @@ const Bagikan = {
       const blob = await new Promise(r => cv.toBlob(r, "image/png")); if (t !== this._t) return;
       this.blob = blob; const img = q("#bgImg"); if (img.src) URL.revokeObjectURL(img.src); img.src = URL.createObjectURL(blob);
       img.alt = `Pratinjau ${this.TPL.find(z => z[0] === this.tpl)[1]}, ${this.UK[this.uk][2]}`; img.classList.remove("muat");
-      st.textContent = `${this.UK[this.uk][0]} × ${this.UK[this.uk][1]} px · ${Math.round(blob.size / 1024)} KB`;
+      st.textContent = "";
       q("#bgTeks").value = this.keterangan(cv.d);
       q("#bgBagiG").hidden = !(navigator.canShare && navigator.canShare({files: [new File([blob], "a.png", {type: "image/png"})]}));
       this.thumbs(t);
@@ -573,7 +598,7 @@ const Bagikan = {
     d.querySelector('[data-tpl="ex"]').disabled = !ex.length;
     for (const [k] of this.TPL) {
       if (t !== this._t) { this._th[uk] = 0; return; }
-      if (k === "ex" && !ex.length) continue;
+      if ((k === "ex" && !ex.length) || (k === "kompleks" && !this._kom)) continue;
       const c = d.querySelector(`[data-tpl="${k}"] canvas`), src = k === this.tpl && this.cv?.width === this.UK[uk][0] && this.cv.height === this.UK[uk][1] ? this.cv : await this.render(k, uk), [W, H] = this.UK[uk];
       c.width = 90; c.height = Math.round(90 * H / W);
       const x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(src, 0, 0, c.width, c.height);
@@ -583,13 +608,13 @@ const Bagikan = {
     const tg = this.tglPanjang(), url = this.tautan(), tag = s => "#" + String(s).normalize("NFD").replace(/[^A-Za-z0-9]/g, "");
     const prov = d.tpl === "provinsi" ? [d.judul] : (d.bar?.rows || []).slice(0, 3).map(r => r.n);
     const tagar = [...this.K.tagar, ...prov.map(tag), this.K.akhir].join(" ");
-    if (d.tpl === "ex") return `${d.judul}\n\n${[d.sub, d.fn].filter(Boolean).join(". ")}\n\nSelengkapnya di ${this.K.nama}: ${url}\n\n${tagar}`;
+    if (d.tpl === "ex") return `${d.judul}\n\n${[d.sub, d.fn].filter(Boolean).join(". ")}\n\nSelengkapnya di ${this.K.nama}: https://${this.situs()}\n\n${tagar}`;
     const K = d.kpi.map(q => q.v), top = (d.bar?.rows || []).slice(0, 3).map(r => `${r.n} (${r.t})`).join(", ");
     let isi;
     if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
     else isi = `${d.tpl === "provinsi" ? "Karhutla " + d.judul : "Situasi kebakaran hutan dan lahan"}, ${tg}: ${K[0]} titik panas terdeteksi hari ini (WIB), ${K[1]} kompleks api aktif, ${K[2]} berstatus prioritas pemadaman. FWI tertinggi ${K[3]} (${d.kpi[3].ket}).`;
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
-    return `${isi}${top ? `\n\nTerbanyak: ${top}.` : ""}${rek}\n\nPantau peta langsung: ${url}\n\n${tagar}`;
+    return `${isi}${top ? `\n\nTerbanyak: ${top}.` : ""}${rek}\n\nPantau peta langsung: https://${this.situs()}\n\n${tagar}`;
   },
   async bagiGambar() {
     if (!this.blob) return;

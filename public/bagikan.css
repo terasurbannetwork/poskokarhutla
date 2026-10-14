@@ -7,7 +7,8 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg .db{grid-template-columns:minmax(0,1fr)}
 .bg-panel{display:grid;grid-template-columns:minmax(0,1fr);gap:12px;min-width:0}
 .bg-panel[hidden]{display:none}
-.bg-tpl{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.bg-tpl{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);gap:10px}
+.bg-tpl button[hidden]{display:none}
 .bg-tpl button{display:grid;justify-items:center;gap:6px;padding:10px 6px;border:1.5px solid var(--line);border-radius:var(--r-sm);background:var(--surface);cursor:pointer;font-size:12.5px;font-weight:600;color:var(--ink)}
 .bg-tpl button[aria-pressed="true"]{border-color:var(--brand2);box-shadow:0 0 0 3px oklch(68% .09 252 / .25)}
 .bg-tpl button:disabled{opacity:.45;cursor:not-allowed}
@@ -48,3 +49,8 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 #bgOff{position:fixed;left:-12000px;top:0;width:980px;pointer-events:none;color:var(--ink)}
 #bgOff *{animation:none!important;transition:none!important}
 @media (max-width:520px){.bg-tpl{gap:6px}.bg-tpl button{font-size:11.5px;padding:8px 4px}.bg-th{height:96px}.bg-th canvas{max-height:96px;max-width:72px}.bg .db{padding:12px}}
+.bg-opsi .seg{flex:1 1 100%;display:flex}
+.bg-opsi .seg button{flex:1}
+.ex .bg-ex{width:38px;height:38px;border-radius:10px}
+.ex .bg-ex svg{width:21px;height:21px}
+.sr-only{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}

@@ -149,7 +149,11 @@
     if (nyala("kanal") && C5.kanalST) h += `<div class="lbl" style="margin-top:8px">Kanal & parit (km per sel ± 2 km)</div><div class="legscale">${[1, 3, 8, 20, 40].map(v => `<i style="background:rgb(${gradasi(C5.kanalST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>3</span><span>8</span><span>20</span><span>40+</span></div>`;
     if (h) box.insertAdjacentHTML("beforeend", h);
     /* catatan berikon (angin, satelit) dikumpulkan jadi satu baris di bawah supaya tidak meninggalkan ruang kosong di kisi legenda */
-    const cats = [...box.querySelectorAll(".leg-cat")].filter(c => !c.closest(".leg-cats")); if (cats.length) { const w = box.querySelector(":scope > .leg-cats") || document.createElement("div"); w.className = "leg-cats"; cats.forEach(c => w.append(c)); box.append(w); } };
+    const cats = [...box.querySelectorAll(".leg-cat")].filter(c => !c.closest(".leg-cats")); if (cats.length) { const w = box.querySelector(":scope > .leg-cats") || document.createElement("div"); w.className = "leg-cats"; cats.forEach(c => w.append(c)); box.append(w); }
+    /* baris yang membungkus membuat fit-content melebar penuh: kunci lebar ke tepi kanan isi terjauh supaya tak ada ruang kosong di kanan */
+    box.style.width = ""; if (!matchMedia("(min-width:901px)").matches || !document.querySelector("#legDet")?.open) return;
+    const kiri = box.getBoundingClientRect().left, kanan = Math.max(...[...box.children].map(c => c.getBoundingClientRect().right));
+    if (kanan > kiri) box.style.width = Math.ceil(kanan - kiri) + "px"; };
 
   /* ---------- laci kompleks: waktu tempuh regu + kanal & fasilitas sekitar ---------- */
   const _buka = Laci.buka.bind(Laci);
@@ -180,6 +184,7 @@
   async function lencanaIklim() {
     const ik = await muat("iklim", "data/iklim.json").catch(() => null); if (!ik) return;
     const o = ik.oni_terakhir.nilai, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "";
+    window.ENSO_STATUS = ik.status;
     const teks = ik.status === "El Niño" ? "El Niño" + kuat : ik.status === "La Niña" ? "La Niña" : "ENSO netral";
     const kering = ik.status === "El Niño" || ik.iod_status === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : "");

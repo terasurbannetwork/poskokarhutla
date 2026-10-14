@@ -144,8 +144,8 @@ Insight.exSebModelLama = function () {
     `${M.pohon.length} pohon keputusan, ${M.fitur.length} variabel (cuaca per jam, FWI, lahan, konsesi, kanal, jalan, desa). Peluang per jam = pembagian luas harian menurut ISI per jam (VIIRS hanya melihat ±2 kali sehari).`);
 };
 
-/* sebMusim disembunyikan (sudah ada di video Musim 2026); sebModel paling bawah sebagai "Coming soon" (pemilik, 13 Okt 2026) */
-Insight.EX.splice(1, 0, "sebDorong", "sebUji", "sebGalat"); Insight.EX.push("sebModel");
+/* sebMusim disembunyikan (sudah ada di video Musim 2026); kartu "Coming soon" sebModel juga disembunyikan (pemilik, 14 Okt 2026) */
+Insight.EX.splice(1, 0, "sebDorong", "sebUji", "sebGalat");
 /* klik: provinsi musim -> dialog kompleks pertama; baris kasus -> dialog; tombol ke Simulasi/cerita */
 document.addEventListener("click", e => {
   const k = e.target.closest?.("[data-sebkasus]"); if (k) return dialogKasus(+k.dataset.sebkasus);

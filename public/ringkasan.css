@@ -14,7 +14,7 @@
 @media (max-width:1599px){.rk-kartu,.rk-kanan{grid-column:1/-1}.rk-kanan{grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:32px}}
 @media (max-width:1099px){.rk-kanan{grid-template-columns:minmax(0,1fr);gap:48px}}
 #ringkasan p{margin:0}
-.rk-n{cursor:help;border-radius:3px;font-variant-numeric:tabular-nums}
+.rk-n{border-radius:3px;font-variant-numeric:tabular-nums}
 .rk-n:hover{background:color-mix(in oklch,var(--ink) 7%,transparent)}
 .rk-j{font:600 12px/1 var(--font);font-variant-caps:all-small-caps;letter-spacing:.07em;color:var(--ink2);font-size:13.5px;white-space:nowrap}
 #ringkasan .rk-lnk{all:unset;cursor:pointer;color:var(--brand2);font-weight:600;font-size:14px;text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:color-mix(in oklch,currentColor 40%,transparent)}
@@ -131,7 +131,7 @@
 .rk-fakta{margin:0;padding-left:22px;border-left:1px solid var(--line);display:grid;gap:14px;align-content:start}
 .rk-fakta dt{font:700 12px/1.2 var(--font);text-transform:uppercase;letter-spacing:.09em;color:var(--ink2);margin-bottom:3px}
 .rk-fakta dd{margin:0;font-size:14px;line-height:1.45;color:var(--ink)}
-.rk-yk{cursor:help;font-weight:600}
+.rk-yk{font-weight:600}
 @media (max-width:760px){#ringkasan .mt-isi{padding:4px 14px 16px}#ringkasan details.mt-sek>summary{padding:16px 14px}.rk-kp{grid-template-columns:28px minmax(0,1fr);gap:0 14px;padding:20px 18px}.rk-no{width:28px;height:28px;font-size:13px}
   .rk-fakta{grid-column:2;border-left:0;padding:16px 0 0;margin-top:16px;border-top:1px solid var(--line);grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:12px 20px}
   .rk-apa{font-size:18px}.rk-kp.utama .rk-apa{font-size:20px}}
@@ -173,7 +173,7 @@
 .rk-lv::before{content:"";width:8px;height:8px;border-radius:50%;background:var(--c)}
 .rk-lv.lv3::before{background:var(--rk-dot3)}
 .rk-gap{color:var(--rk-alarm);font-weight:600}
-.rk-akun td:nth-child(2) span{cursor:help;color:var(--ink2)}
+.rk-akun td:nth-child(2) span{color:var(--ink2)}
 .rk-cat{font-size:13px;color:var(--ink2);margin-top:16px!important;line-height:1.55}
 .rk-kaki{font-size:12.5px;color:var(--ink2);border-top:1px solid var(--line);padding-top:18px;margin:-16px 0 0!important}
 

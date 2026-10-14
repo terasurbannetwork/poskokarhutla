@@ -44,14 +44,19 @@
     const k = KK.kompleks[id], per = k?.perusahaan || [];
     let h = "";
     if (KK.gagal) h = `<p class="fnd">Data perusahaan konsesi belum tersedia.</p>`;
-    else if (!per.length) h = `<p style="margin:0;font-size:12.5px">Semua titik panas kompleks ini berada <b>di luar areal konsesi</b> yang tercatat.</p>`;
     /* daftar berlabel (bukan tabel lebar yang terpotong di laci); nomor izin tidak ditampilkan */
-    else { const lb = (t, w) => `<span class="ks-lb"${w ? ` style="--w:${w}"` : ""}>${t}</span>`;
+    else if (per.length) { const lb = (t, w) => `<span class="ks-lb"${w ? ` style="--w:${w}"` : ""}>${t}</span>`;
       h = `<div class="lbl">Titik panas berada di dalam areal konsesi</div><div class="ks-tp ks-laci-l">${per.map(r => { const g = r.grup || GRUP?.[r.nama]?.grup, ng = GRUP?.[r.nama]?.negara_induk, jn = JN[r.jenis] || [r.jenis, "#888"];
         return `<div class="ks-tp-r"><b>${esc(r.nama)}</b>${lencana(r.sanksi)}<div class="ks-tp-l">${lb(esc(jn[0]), jn[1])}${lb(pct(r.porsi) + " titik panas", "#c9503a")}${lb(fmt(r.n) + " titik · ± " + fmt(r.luas_ha) + " ha", "#5b6782")}${g ? lb("Grup " + esc(g), "#1d4e89") : lb("Grup tidak tercatat")}${ng ? lb("Induk " + esc(ng), "#5f6fb0") : ""}</div></div>`; }).join("")}
         <div class="ks-tp-r"><b>Di luar areal konsesi</b><div class="ks-tp-l">${lb(pct(k.luar) + " titik panas", "#2b8c86")}</div></div></div>`; }
-    if (k && (k.gambut || Object.keys(k.kawasan).length)) h += `<p style="margin:4px 0 0;font-size:12px;color:var(--ink2)">${[k.gambut ? `${pct(k.gambut)} titik di gambut` : "", ...Object.entries(k.kawasan).sort((a, b) => b[1] - a[1]).map(([f, v]) => `${pct(v)} di ${KW[f] || f}`)].filter(Boolean).join(" · ")}</p>`;
+    /* sebaran titik (konsesi, gambut, kawasan) jadi baris tabel lahan yang sudah ada, bukan kalimat lepas */
+    const brs = [!KK.gagal && !per.length ? ["Di dalam konsesi", "tidak ada"] : null, k?.gambut ? ["Titik di gambut", pct(k.gambut)] : null,
+      ...Object.entries(k?.kawasan || {}).sort((a, b) => b[1] - a[1]).map(([f, v]) => ["Titik di " + (KW[f] || f), pct(v)])].filter(Boolean)
+      .map(([a, b]) => `<tr><td>${a}</td><td class="n">${b}</td></tr>`).join("");
+    const tb = sek.querySelector(".isi .tb2 tbody");
+    if (tb) tb.insertAdjacentHTML("beforeend", brs); else if (brs) h += `<table class="tb2"><tbody>${brs}</tbody></table>`;
     sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ks-laci">${h}</div>`);
+    const fn = sek.querySelector(".isi > .fnd"); if (fn) sek.querySelector(".isi").append(fn);
   }
 
   /* --- tooltip: kompleks (nama perusahaan) dan poligon konsesi --- */

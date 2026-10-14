@@ -13,14 +13,18 @@
   const wib = h => /^\d\d:\d\d$/.test(h.jam || "") ? String((+h.jam.slice(0, 2) + 7) % 24).padStart(2, "0") + "." + h.jam.slice(3) + " WIB" : h.jam || "";
   const src = (h, m) => "data/" + h[m];   /* jalur di citra.json relatif ke data/ */
   const viirs = h => h.satelit.startsWith("VIIRS");
-  const kredit = h => esc(viirs(h) ? D.atribusi.VIIRS : D.atribusi.Sentinel);
+  const kredit = h => `Sumber: ${esc(viirs(h) ? D.atribusi.VIIRS : D.atribusi.Sentinel)}`;
   const awan = h => h.awan_pct == null ? "awan tidak dihitung" : `awan/asap ${h.awan_pct}%`;
   const MODE = {tc: "Warna asli", swir: "SWIR: api & bekas bakar"};
-  const KET = `<b>Cara membaca SWIR:</b> merah atau jingga menyala = api aktif / bara; cokelat gelap = bekas terbakar; hijau = vegetasi hidup;
-    jingga pucat = tanah terbuka; biru muda pucat = asap tebal; putih = awan. SWIR menembus asap tipis, jadi api sering terlihat walau di warna asli tertutup.`;
+  /* kunci warna SWIR sebagai legenda (swatch), bukan paragraf */
+  const LEG = `<div class="lbl" style="margin-top:8px">Cara membaca SWIR</div><div class="leg ct-leg">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"],
+    ["#e8b98a", "Tanah terbuka"], ["#b9d3e6", "Asap tebal"], ["#fff", "Awan"]].map(([w, n]) => `<span><i class="sw" style="background:${w};border:1px solid var(--line)"></i>${n}</span>`).join("")}</div>`;
+  const KET = `SWIR menembus asap tipis, jadi api sering terlihat walau di warna asli tertutup.`;
   /* gambar terbaik untuk ringkasan: Sentinel terbaru yang cukup bersih, lalu Sentinel terbaru, lalu VIIRS */
   const terbaik = xs => xs.find(h => !viirs(h) && h.awan_pct <= 50) || xs.find(h => !viirs(h)) || xs[0];
-  const sub = h => `${esc(h.satelit)} · ${tg(h.tgl)} (${lalu(h.tgl)})${wib(h) ? " · " + wib(h) : ""} · ${awan(h)} · kotak ${h.km} km`;
+  /* keterangan citra sebagai label-label kecil; awan diberi warna sesuai kejernihan */
+  const sub = h => { const aw = h.awan_pct, w = aw == null ? "" : aw <= 30 ? "ok" : aw <= 70 ? "sedang" : "buruk";
+    return `<span class="ct-lb">${esc(h.satelit)}</span><span class="ct-lb">${tg(h.tgl)} · ${lalu(h.tgl)}</span>${wib(h) ? `<span class="ct-lb">${wib(h)}</span>` : ""}<span class="ct-lb ${w}">${awan(h)}</span><span class="ct-lb">kotak ${h.km} km</span>`; };
 
   /* ================================================================ laci */
   const _buka = Laci.buka.bind(Laci);
@@ -31,7 +35,7 @@
     if (S.pilihK !== id || $("#laci .ct-laci")) return;
     const isi = xs?.length ? `<div class="seg ct-tgl" role="group" aria-label="Tanggal citra">${xs.map((h, i) => `<button data-i="${i}" aria-pressed="${i === awal}">${tg(h.tgl)}<small>${viirs(h) ? "VIIRS" : "S2"}</small></button>`).join("")}</div>
       <div class="ct-dua">${["tc", "swir"].map(m => `<figure><button class="ct-img" data-m="${m}" aria-label="Perbesar ${MODE[m]}"><img alt="" width="400" height="400"></button><figcaption>${MODE[m]}</figcaption></figure>`).join("")}</div>
-      <p class="ct-meta"></p><p class="fnd">${KET}</p><p class="fnd ct-kr"></p>`
+      <p class="ct-meta"></p>${LEG}<p class="fnd">${KET}</p><p class="fnd ct-kr"></p>`
       : `<p class="fnd">Belum ada citra untuk kompleks ini: hanya ${Object.keys(D.kompleks).length} kompleks prioritas teratas yang dipotretkan tiap hari, atau belum ada lintasan satelit dalam ${D.hari} hari.</p>`;
     const html = `<details class="lipat ct-laci" open><summary>Citra satelit terbaru</summary><div class="isi">${isi}</div></details>`;
     const api = [...document.querySelectorAll("#laci details.lipat")].find(d => d.querySelector("summary")?.textContent.startsWith("Api saat ini"));
@@ -65,11 +69,11 @@
         <img class="${b ? "atas" : ""}" src="${src(h, st.m)}" alt="${b ? "Sesudah: " : ""}${MODE[st.m]} ${esc(h.satelit)} ${tg(h.tgl)}" style="--x:50%"><span class="ct-tag kanan">${tg(h.tgl)}</span>
         ${st.api ? `<svg viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">${titik(h)}</svg>` : ""}
         ${b ? `<i class="ct-garis" style="--x:50%"></i><input type="range" min="0" max="100" value="50" aria-label="Geser pembanding sebelum dan sesudah">` : ""}`;
-      d.querySelector(".ct-sub").innerHTML = `${b ? `Sebelum: ${sub(b)}<br>Sesudah: ` : ""}${sub(h)}`;
-      d.querySelector(".ct-kr").innerHTML = [...new Set([h, b].filter(Boolean).map(kredit))].join(" · ");
+      d.querySelector(".ct-sub").innerHTML = b ? `<span class="ct-lb-j">Sebelum</span>${sub(b)}<br><span class="ct-lb-j">Sesudah</span>${sub(h)}` : sub(h);
+      d.querySelector(".ct-kr").innerHTML = "Sumber: " + [...new Set([h, b].filter(Boolean).map(kredit))].map(x => x.replace("Sumber: ", "")).join(" · ");
     };
     d.innerHTML = `<div class="dh"><div><h3 id="dlgJudul">Citra satelit · ${esc(p.kec || id)}${p.kab ? ", " + esc(p.kab) : ""}</h3><p>Kompleks ${esc(id)} · ${xs.length} citra dalam ${D.hari} hari terakhir</p></div><button aria-label="Tutup" data-tutup>×</button></div>
-      <div class="db ct-dlg"><div class="ct-ctl"></div><div class="ct-banding"></div><p class="ct-meta ct-sub"></p>
+      <div class="db ct-dlg"><div class="ct-ctl"></div><div class="ct-banding"></div><p class="ct-meta ct-sub"></p>${LEG}
       <p class="fnd">Geser garis untuk membandingkan dua tanggal pada tempat yang sama. ${KET} Persen awan dihitung dari peta kelas Sentinel (SCL) di dalam kotak; asap tebal ikut terhitung sebagai awan.</p><p class="fnd ct-kr"></p></div>`;
     d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = ev => { if (ev.target === d) d.close(); };
     d.oninput = e => { if (e.target.type !== "range") return; d.querySelectorAll(".ct-banding .atas, .ct-garis").forEach(x => x.style.setProperty("--x", e.target.value + "%")); };
@@ -86,22 +90,31 @@
     pasangInsight() {
       if (typeof Insight === "undefined" || Insight.EX.includes("citra")) return;
       Insight.EX.splice(Math.max(1, Insight.EX.indexOf("harian") + 1), 0, "citra");
-      Object.assign(Insight.st, {citraMode: "swir", citraN: 12});
+      Object.assign(Insight.st, {citraHal: 0});
+      /* keterangan singkat per kartu dari kejernihan citra dan api 24 jam kompleks itu */
+      const tafsir = (h, p) => viirs(h) ? "Citra harian kasar (375 m): cocok untuk melihat arah dan sebaran asap, bukan detail api."
+        : h.awan_pct > 70 ? "Tertutup awan atau asap tebal: api tidak terlihat jelas di citra ini."
+        : h.awan_pct > 30 ? "Sebagian tertutup awan/asap: lihat bagian yang jernih di SWIR."
+        : (p.px24 || 0) > 0 ? `Cukup jernih: merah/jingga di SWIR adalah api aktif (${fmt(p.px24)} piksel api 24 jam), cokelat gelap bekas terbakar.`
+        : "Cukup jernih: cokelat gelap di SWIR menandai bekas terbakar; tidak ada api aktif 24 jam terakhir.";
       Insight.exCitra = function () {
         /* citra.json belum terbit: kartu disembunyikan, jangan menunggu selamanya */
         if (!D) { if (Citra.gagal) return ""; muat().then(() => { const box = document.querySelector('#insight [data-ex="citra"]'); if (box) box.innerHTML = this.gambar("citra"); })
             .catch(() => { Citra.gagal = true; document.querySelector('#insight [data-ex="citra"]')?.remove(); });
           return ""; }
-        const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), m = this.st.citraMode;
+        const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), PER = 6, nH = Math.ceil(ks.length / PER), hal = Math.min(this.st.citraHal || 0, nH - 1);
         const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
-        const kartu = ks.slice(0, +this.st.citraN).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
-          return `<button class="ct-kartu" data-kl="${esc(id)}"><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400">
-            <span><b>${esc(p.kec || id)}</b>${esc(p.kab || "")}<small>${esc(h.satelit.replace("Sentinel-", "S-"))} · ${tg(h.tgl)} · ${h.awan_pct == null ? "harian 375 m" : "awan " + h.awan_pct + "%"}</small></span></button>`; }).join("");
+        const kartu = ks.slice(hal * PER, hal * PER + PER).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
+          return `<div class="ct-kartu2"><button class="ct-pasang" data-kl="${esc(id)}" aria-label="Buka kompleks ${esc(p.kec || id)}">${["tc", "swir"].map(m => `<figure><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400"><figcaption>${m === "tc" ? "Warna asli" : "SWIR"}</figcaption></figure>`).join("")}</button>
+            <div class="ct-isi"><div class="ct-nm"><b>${esc(p.kec || id)}</b><span>${esc(p.kab || "")}</span>${p.level != null ? `<span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span>` : ""}</div>
+            <div class="ct-meta">${sub(h)}</div><p class="ct-tf">${tafsir(h, p)}</p></div></div>`; }).join("");
+        const pg = nH > 1 ? `<div class="rk-hal ct-hal"><button data-cthal="${hal - 1}" ${hal ? "" : "disabled"} aria-label="Sebelumnya">‹</button><span>${hal * PER + 1}–${Math.min(ks.length, hal * PER + PER)} dari ${fmt(ks.length)} kompleks</span><button data-cthal="${hal + 1}" ${hal < nH - 1 ? "" : "disabled"} aria-label="Berikutnya">›</button></div>` : "";
         return this.ex(`${this.hl(fmt(bersih) + " dari " + fmt(ks.length))} kompleks prioritas terpotret cukup jernih oleh Sentinel-2 dalam ${D.hari} hari terakhir`,
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
-          `<div class="ct-galeri">${kartu}</div>`,
-          `${KET} "Cukup jernih" = awan/asap ≤ 30% di dalam kotak. Bila Sentinel berawan atau sudah lebih dari 2 hari, ditambah citra harian VIIRS NOAA-20 (375 m, kotak 60 km). ${esc(D.atribusi.Sentinel)}. ${esc(D.atribusi.VIIRS)}. Diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB.`,
-          this.seg("citraMode", Object.entries(MODE)) + (ks.length > 12 ? this.seg("citraN", [[12, "12 teratas"], [ks.length, `semua ${ks.length}`]]) : "")); };
+          `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}<p class="fnd" style="margin-top:6px">${KET} "Cukup jernih" = awan/asap ≤ 30%. Bila Sentinel berawan atau lebih dari 2 hari, dipakai citra harian VIIRS.</p>`,
+          `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`); };
+      document.addEventListener("click", e => { const b = e.target.closest("[data-cthal]"); if (!b || b.disabled) return; Insight.st.citraHal = +b.dataset.cthal;
+        const box = document.querySelector('#insight [data-ex="citra"]'); if (box) { box.innerHTML = Insight.gambar("citra"); box.scrollIntoView({block: "nearest"}); } });
       if (document.querySelector("#p-insight.on")) Insight.render();
     },
   };

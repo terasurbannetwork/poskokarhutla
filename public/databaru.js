@@ -100,7 +100,11 @@
       ["≥ sangat tinggi", "Peluang FWI ≥ 14: cuaca membuat api sangat mudah menyala dan menjalar cepat", g.ps.map((p, j) => sel(p, SK_API, `${hr(a.hari[j])}: ${pct(p)} skenario FWI ≥ 14 (sangat tinggi). FWI tengah ${fmt(g.med[j])}, rentang wajar ${fmt(g.p10[j])}–${fmt(g.p90[j])}`)).join("")],
       ["≥ tinggi", "Peluang FWI ≥ 7: api mudah menyala", g.pt.map((p, j) => sel(p, SK_API, `${hr(a.hari[j])}: ${pct(p)} skenario FWI ≥ 7 (tinggi)`)).join("")],
       ["hujan ≥ 5 mm", "Peluang hujan 24 jam minimal 5 mm, cukup untuk menurunkan bahaya serasah sementara", (g.ph || []).map((p, j) => sel(p, SK_AIR, `${hr(a.hari[j])}: ${pct(p)} skenario hujan ≥ 5 mm`)).join("")]]);
-    const catatanAns = a => `Tiap kotak = berapa persen dari ${a.anggota} skenario cuaca ${a.model === "ecmwf_ifs025" ? "ECMWF" : "GFS"} yang menghasilkan kondisi itu. 80% artinya ${Math.round(a.anggota * .8)} dari ${a.anggota} skenario: peluang, bukan kepastian. Arahkan kursor untuk FWI tengah dan rentangnya.`;
+    /* cara baca ansambel: satu contoh kotak + skala warna, bukan paragraf */
+    const catatanAns = a => { const n = a.anggota, mdl = a.model === "ecmwf_ifs025" ? "ECMWF" : "GFS", c = (p, w) => `<span class="db-cb" style="background:${w || "var(--surface)"};color:${w ? "#fff" : "var(--ink)"}">${Math.round(p * 100)}%</span>`;
+      return `<div class="db-cara"><div>${c(.8, W.merah)}<span>= <b>${Math.round(n * .8)} dari ${n}</b> skenario cuaca ${mdl} memperkirakan kondisi itu terjadi.</span></div>
+        <div class="db-sk"><span>Peluang api</span>${[[.1, ""], [.3, W.kuning], [.6, W.oranye], [.9, W.merah]].map(([p, w]) => c(p, w)).join("")}</div>
+        <div class="db-sk"><span>Peluang hujan</span>${[[.3, W.biru], [.6, W.biru2], [.9, W.ungu]].map(([p, w]) => c(p, w)).join("")}</div></div>`; };
 
     /* --- laci kompleks: bagian "Peluang & kondisi" setelah "Cuaca di lokasi" --- */
     const _buka = Laci.buka.bind(Laci);
@@ -112,15 +116,17 @@
       const g = a && dekat(a.grid, p.lat, p.lon, .5), tn = t && dekat(t.grid, p.lat, p.lon, .5);
       const as = s?.grid.find(r => r[0] === Math.floor(p.lat) + .5 && r[1] === Math.floor(p.lon) + .5);
       let h = "";
-      h += g ? `<div class="lbl">Peluang bahaya cuaca 7 hari</div>${pitaAns(a, g)}<p class="fnd">${catatanAns(a)}</p>`
+      h += g ? `<div class="lbl">Peluang bahaya cuaca 7 hari</div>${pitaAns(a, g)}${catatanAns(a)}`
         : `<p class="fnd">Peluang ansambel hanya dihitung untuk ${a ? "9 provinsi prioritas" : "data yang sudah tersedia"}; kompleks ini di luar cakupan.</p>`;
-      if (tn && (tn.pct1 != null || tn.sm1 != null)) h += `<div class="lbl" style="margin-top:6px">Kelembapan tanah hari ini</div><table class="tb2"><tbody>
-        ${[0, 1].map(j => `<tr><td>${t.lapisan[j]}</td><td class="n">${tn["pct" + j] != null ? `<b style="color:${warnaTanah(tn["pct" + j])}" data-tip="Persentil ${tn["pct" + j]}: lebih ${tn["pct" + j] < 50 ? "kering" : "basah"} dari ${tn["pct" + j] < 50 ? 100 - tn["pct" + j] : tn["pct" + j]}% hari pada ${das(t.dasarian)} tahun 2015–2025">${kataTanah(tn["pct" + j])}</b> · p${tn["pct" + j]}` : "iklim belum ada"} · ${fmt(Math.round(tn["sm" + j] * 100))}% vol.</td></tr>`).join("")}</tbody></table>
-        <p class="fnd">${tn.pct0 == null && tn.pct1 == null ? "Data normal sel ini belum terunduh (diisi bertahap), jadi belum bisa dibanding biasanya." : `Dibanding hari-hari ${das(t.dasarian)} 2015–2025. p10 = lebih kering dari 90% hari itu.`} % vol. = bagian tanah yang berisi air. Ini model tanah mineral, bukan gambut: pakai sebagai pendukung DC, bukan pengganti tinggi muka air gambut.</p>`;
+      if (tn && (tn.sm0 != null || tn.sm1 != null)) h += `<div class="lbl" style="margin-top:6px">Kelembapan tanah hari ini</div><table class="tb2"><tbody>
+        ${[0, 1].map(j => `<tr><td>${t.lapisan[j]}</td><td class="n">${tn["pct" + j] != null ? `<b style="color:${warnaTanah(tn["pct" + j])}" data-tip="Persentil ${tn["pct" + j]}: lebih ${tn["pct" + j] < 50 ? "kering" : "basah"} dari ${tn["pct" + j] < 50 ? 100 - tn["pct" + j] : tn["pct" + j]}% hari pada ${das(t.dasarian)} tahun 2015–2025">${kataTanah(tn["pct" + j])}</b> · p${tn["pct" + j]} · ` : ""}${fmt(Math.round(tn["sm" + j] * 100))}% vol.</td></tr>`).join("")}</tbody></table>
+        <p class="fnd">${tn.pct0 == null && tn.pct1 == null ? "" : `Dibanding hari-hari ${das(t.dasarian)} 2015–2025. p10 = lebih kering dari 90% hari itu. `}% vol. = bagian tanah yang berisi air. Ini model tanah mineral, bukan gambut: pakai sebagai pendukung DC, bukan pengganti tinggi muka air gambut.</p>`;
       if (as) { const ada = as[4] || as[5], tg = s.hari;
         if (ada) h += `<div class="lbl" style="margin-top:6px">Asap: karbon monoksida & kekeruhan udara (CAMS)</div><table class="tb3"><thead><tr><th>Hari</th><th class="n">CO maks µg/m³</th><th class="n">AOD maks</th></tr></thead><tbody>
           ${tg.map((d, j) => `<tr><td>${hr(d)}</td><td class="n num" style="${(as[4]?.[j] || 0) >= 4000 ? `color:${W.merah};font-weight:800` : ""}">${fmt(as[4]?.[j])}</td><td class="n num" style="${(as[5]?.[j] || 0) > 1 ? `color:${W.merah};font-weight:800` : ""}">${as[5]?.[j] == null ? "–" : String(as[5][j]).replace(".", ",")}</td></tr>`).join("")}</tbody></table>
-          <p class="fnd">CO = gas beracun dari pembakaran; udara bersih ± 100–200 µg/m³, pedoman WHO 24 jam 4.000. AOD = seberapa keruh udara dilihat dari atas: < 0,3 jernih, > 1 asap tebal. Prakiraan per kotak ± 110 km, jadi asap dekat api bisa jauh lebih pekat.</p>`; }
+          ${[["CO (gas beracun dari pembakaran)", [[W.hijau, "± 100–200 bersih"], [W.oranye, "di atas normal"], [W.merah, "≥ 4.000 lewat pedoman WHO 24 jam"]]],
+            ["AOD (kekeruhan udara dilihat dari atas)", [[W.hijau, "< 0,3 jernih"], [W.oranye, "0,3–1 berasap"], [W.merah, "> 1 asap tebal"]]]].map(([j, xs]) => `<div class="lbl" style="margin-top:6px">${j}</div><div class="leg" style="flex-direction:row;flex-wrap:wrap;gap:4px 14px">${xs.map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}</div>`).join("")}
+          <p class="fnd">Prakiraan per kotak ± 110 km, jadi asap dekat api bisa jauh lebih pekat.</p>`; }
       const w = b?.nowcast.filter(x => aktif(x) && x.prov.includes(p.prov)) || [];
       if (w.length) h += `<div class="lbl" style="margin-top:6px">Peringatan BMKG berlaku di provinsi ini</div>${w.map(x => `<p style="margin:0;font-size:12.5px">${kartuBMKG(x)}</p>`).join("")}`;
       const sesudah = [...document.querySelectorAll("#laci details.lipat")].find(d => d.querySelector("summary")?.textContent.startsWith("Cuaca di lokasi"));
