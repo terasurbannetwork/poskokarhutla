@@ -26,10 +26,12 @@ Berkas baru (tidak menyentuh index.html):
 
 ## 2. API evaluator (`window.SebaranModel`)
 
-`ramal({model, lat, lon, waktu, cuaca, lahan, sel0?, frp?, mc = 40, seed, hari = 3})` → `{luas[3] {p10,p50,p90,rata},
+`ramal({model, lat, lon, waktu, cuaca, lahan, sel0?, frp?, frpJumlah?, titik?, ulang?, mc = 40, seed, hari = 3})` → `{luas[3] {p10,p50,p90,rata,p10_mc,p90_mc},
 luasJam[73], p_lepas, arah {deg, km}, sel [{k, lon, lat, p[3]}], kena {ha_harapan, gambut_ha, lindung_ha, sel_jalan, desa[],
 jiwa}, cuaca[3], strata, geser}`. `lahan` = {gambut, kawasan, konsesi, sanksi, kanal, jalan, desa, riwayat, penduduk}
-(berkas di public/data). Menolak koordinat di luar Indonesia, waktu rusak, model rusak, FRP negatif, dan seri cuaca yang
+(berkas di public/data). `titik` = deteksi 7 hari [{t ms, lat, lon, s: "N"|"N20"}] dari hotspot.json: bila ada dan sel awal
+< 10, `lolos` = {p, waspada, ambang, mode} dari model khusus membesar (lolos.py) dan `p_lepas` = p itu (`p_lepas_mc` = cara lama);
+sel awal >= 10 -> `sudah_besar`. P10/P90 dilebarkan per lahan & hari dengan `model.selang.q` (konformal, target 80%). Menolak koordinat di luar Indonesia, waktu rusak, model rusak, FRP negatif, dan seri cuaca yang
 tidak mencakup 31 hari sebelum dan 72 jam sesudah titik. `cuaca(lat, lon)` (forecast) dan `cuacaTanggal(lat, lon, waktu)`
 (forecast ≤ 8 hari lalu, arsip ERA5 untuk tanggal lebih lama).
 
@@ -58,7 +60,13 @@ python3 scripts/sebaran/pendorong.py elevasi  # analisis pendorong (+ ketinggian
 python3 scripts/sebaran/pendorong.py panjang  # lahan saja, 2012-2026
 python3 scripts/sebaran/musim_awal.py     # awal musim & tren
 python3 scripts/sebaran/cerita_data.py    # data cerita
+python3 scripts/sebaran/lolos.py bangun   # baris "akan membesar" per titik api baru (+ konteks titik sekitar, NOAA-20)
+python3 scripts/sebaran/lolos.py cv       # validasi silang tinggal-satu-tahun 2015-2023: ablasi & kisi (lolos_cv.json)
+python3 scripts/sebaran/lolos.py selang   # selang luas konformal (kunci "selang" di model_sebaran.json)
+python3 scripts/sebaran/lolos.py akhir    # lihat-kedua uji 2024-2026, 123 kasus, ekspor "lolos"/"lolos_ulang"
+python3 scripts/sebaran/prospektif.py     # uji prospektif (CI tiap 3 jam, titik.yml) -> public/data/prospektif.json
 ```
+Mesin 8 GB: `lolos.py` berjalan satu proses (LOLOS_PROSES=1) dan memakai 5% negatif (bobot 20); selang memakai 2 proses.
 Tiap skrip punya `uji` (asersi invarian) kecuali tahap berat.
 
 ## 5. Per jam sungguhan: Himawari-9 (JAXA P-Tree) — belum dipasang

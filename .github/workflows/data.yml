@@ -217,6 +217,7 @@ jobs:
           python3 scripts/data/fwi.py
           python3 scripts/data/aturan.py
           python3 scripts/data/harian.py uji
+          python3 scripts/geo/batas.py uji
           python3 scripts/data/posko.py uji
           python3 scripts/data/udara_rekom.py uji
           python3 scripts/data/berita.py uji

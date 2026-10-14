@@ -17,7 +17,7 @@ Alat: mapshaper (npx mapshaper@0.6.121, alat pengembangan saja, tidak dipasang d
 Pakai:
   python3 scripts/geo/batas.py ambil      # unduh BIG -> data/raw/big/NN.json (± 1,8 GB, tidak di-commit)
   python3 scripts/geo/batas.py cocok      # petakan ke kunci lama -> data/raw/big/kunci/NN.json
-  python3 scripts/geo/batas.py bangun     # mapshaper -> public/geo/{provinsi.json,kabupaten/NN.json,kecamatan/NN.json}
+  python3 scripts/geo/batas.py bangun [provinsi]  # mapshaper -> public/geo/{provinsi.json,kabupaten/NN.json,kecamatan/NN.json}
   python3 scripts/geo/batas.py uji        # invarian berkas yang terbit (tanpa jaringan, tanpa mapshaper)
 """
 import collections, difflib, json, math, os, re, subprocess, sys, tempfile, time, urllib.parse, urllib.request
@@ -35,10 +35,12 @@ GUGUS = [["11", "12", "13", "14", "15", "16", "17", "18"], ["19"], ["21"], ["31"
          ["53"], ["61", "62", "63", "64", "65"], ["71", "72", "73", "74", "75", "76"], ["81"], ["82"], ["91", "92", "93", "94", "95", "96"]]
 # Visvalingam berbobot (mapshaper), interval = toleransi setara jarak. Kecamatan & kab/kota dilihat di zoom 8-13,
 # provinsi di zoom 4-9. Pulau < ambang dibuang kecuali bagian terbesar wilayahnya (tidak ada wilayah yang hilang).
-INTERVAL_KEC, INTERVAL_PROV = 150, 700  # meter
-PULAU_KEC_HA, PULAU_PROV_HA = 5, 100
-PRESISI = 0.0001  # ± 11 m
-PAGU = {"provinsi": 450_000, "kabupaten": 600_000, "kecamatan": 1_150_000}  # byte per berkas
+INTERVAL_KEC, INTERVAL_PROV = 170, 1300  # meter
+PULAU_KEC_HA, PULAU_PROV_HA = 5, 300
+# 6 desimal, bukan 4: mapshaper memperbaiki silang segmen pada koordinat penuh, dan pembulatan 0,0001 sesudahnya
+# melahirkan lagi puluhan silang kecil di pulau-pulau delta (diukur: 26 pasang di Kaltim+Kaltara, 0 pada 6 desimal)
+PRESISI = 0.000001
+PAGU = {"provinsi": 500_000, "kabupaten": 600_000, "kecamatan": 1_250_000}  # byte per berkas
 
 
 # ---------------------------------------------------------------- ambil
@@ -114,15 +116,17 @@ def titik_dalam(g):
 
 class Indeks:
     def __init__(self, fitur):
-        self.k = [[(min(c[0] for c in p[0]), min(c[1] for c in p[0]), max(c[0] for c in p[0]), max(c[1] for c in p[0]), p[0])
+        self.k = [[(min(c[0] for c in p[0]), min(c[1] for c in p[0]), max(c[0] for c in p[0]), max(c[1] for c in p[0]), p)
                    for p in bagian(f["geometry"])] for f in fitur]
 
+    def semua(self, x, y):
+        """Indeks fitur yang memuat titik; lubang (enklave: Kota Jambi di dalam Muaro Jambi) dihormati."""
+        return [i for i, ps in enumerate(self.k) if any(x0 <= x <= x1 and y0 <= y <= y1 and di_dalam(x, y, p[0])
+                                                         and not any(di_dalam(x, y, h) for h in p[1:]) for x0, y0, x1, y1, p in ps)]
+
     def cari(self, x, y):
-        for i, ps in enumerate(self.k):
-            for x0, y0, x1, y1, r in ps:
-                if x0 <= x <= x1 and y0 <= y <= y1 and di_dalam(x, y, r):
-                    return i
-        return None
+        s = self.semua(x, y)
+        return s[0] if s else None
 
 
 def cocok():
@@ -217,7 +221,7 @@ def tulis(jalur, fitur):
     return len(s.encode())
 
 
-def bangun():
+def bangun(hanya_provinsi=False):
     lama = {k: json.load(open(os.path.join(GEO, "kecamatan", k + ".json")))["features"] for k in KODE}
     urut_kab = {k: [f["properties"]["kab"] for f in json.load(open(os.path.join(GEO, "kabupaten", k + ".json")))["features"]] for k in KODE}
     urut_prov = [f["properties"]["kode"] for f in json.load(open(os.path.join(GEO, "provinsi.json")))["features"]]
@@ -226,25 +230,27 @@ def bangun():
         for g in GUGUS:
             masuk = [os.path.join(KUNCI, k + ".json") for k in g]
             o1, o2, o3 = (os.path.join(tmp, f"{n}_{g[0]}.json") for n in ("kec", "kab", "prov"))
-            print(g, ms("-i", *masuk, "combine-files", "-merge-layers", "force", "name=kec",
-                        "-dissolve", "kunci", "copy-fields=prov,kab,kec",
-                        "-simplify", "weighted", f"interval={INTERVAL_KEC}", "keep-shapes",
-                        "-dissolve", "prov,kab", "+", "name=kab",
-                        "-o", o1, "target=kec", "format=geojson", f"precision={PRESISI}",
-                        "-o", o2, "target=kab", "format=geojson", f"precision={PRESISI}").strip().replace("\n", " | "), file=sys.stderr)
+            if not hanya_provinsi:
+                print(g, ms("-i", *masuk, "combine-files", "-merge-layers", "force", "name=kec",
+                            "-dissolve", "kunci", "copy-fields=prov,kab,kec",
+                            "-simplify", "weighted", f"interval={INTERVAL_KEC}", "keep-shapes",
+                            "-dissolve", "prov,kab", "+", "name=kab",
+                            "-o", o1, "target=kec", "format=geojson", f"precision={PRESISI}",
+                            "-o", o2, "target=kab", "format=geojson", f"precision={PRESISI}").strip().replace("\n", " | "), file=sys.stderr)
             ms("-i", *masuk, "combine-files", "-merge-layers", "force", "-dissolve", "prov",
                "-simplify", "weighted", f"interval={INTERVAL_PROV}", "keep-shapes", "-o", o3, "format=geojson", f"precision={PRESISI}")
-            for f in json.load(open(o1))["features"]:
-                kec[(f["properties"]["prov"], f["properties"]["kab"], f["properties"]["kec"])] = f
-            for f in json.load(open(o2))["features"]:
-                kab[(f["properties"]["prov"], f["properties"]["kab"])] = f
+            if not hanya_provinsi:
+                for f in json.load(open(o1))["features"]:
+                    kec[(f["properties"]["prov"], f["properties"]["kab"], f["properties"]["kec"])] = f
+                for f in json.load(open(o2))["features"]:
+                    kab[(f["properties"]["prov"], f["properties"]["kab"])] = f
             for f in json.load(open(o3))["features"]:
                 prov[f["properties"]["prov"]] = f
     for d in (kec, kab, prov):  # pulau kecil dibuang per tingkat, satu topologi
         buang_pulau(list(d.values()), PULAU_PROV_HA if d is prov else PULAU_KEC_HA)
     ukuran = collections.defaultdict(dict)
     hilang = []
-    for k in KODE:
+    for k in ([] if hanya_provinsi else KODE):
         F = []
         sudah = set()  # data lama punya kunci ganda (Batu Bara / Lima Puluh dua kali): satu fitur saja
         for f in lama[k]:
@@ -319,7 +325,7 @@ def uji():
         kab = json.load(open(os.path.join(GEO, "kabupaten", k + ".json")))["features"]
         if any(set(f["properties"]) != {"kec", "kab"} for f in kec) or any(set(f["properties"]) != {"kab"} for f in kab):
             salah.append(f"{k}: skema properti berubah")
-        if {f["properties"]["kab"] for f in kec} != {f["properties"]["kab"] for f in kab}:
+        if {f["properties"]["kab"] for f in kec} - {None} != {f["properties"]["kab"] for f in kab}:  # data lama: 1 fitur tanpa nama di 12 & 13
             salah.append(f"{k}: nama kab/kota di kecamatan dan kabupaten tidak sama")
         IK, IB = Indeks(kec), Indeks(kab)
         xs = [c[0] for f in kab for p in bagian(f["geometry"]) for c in p[0]]
@@ -331,12 +337,11 @@ def uji():
             x = min(xs) + langkah / 3.14
             while x < max(xs):
                 di_kab = IB.cari(x, y)
-                isi = [i for i, ps in enumerate(IK.k) for x0, y0, x1, y1, r in ps
-                       if x0 <= x <= x1 and y0 <= y <= y1 and di_dalam(x, y, r)]
-                ganda += len(set(isi)) > 1
+                isi = IK.semua(x, y)
+                ganda += len(isi) > 1
                 if di_kab is not None and not isi:
                     celah += 1
-                elif di_kab is not None and kec[isi[0]]["properties"]["kab"] != kab[di_kab]["properties"]["kab"]:
+                elif di_kab is not None and kec[isi[0]]["properties"]["kab"] not in (None, kab[di_kab]["properties"]["kab"]):
                     beda += 1
                 x += langkah
             y += langkah
@@ -348,4 +353,7 @@ def uji():
 
 
 if __name__ == "__main__":
-    {"ambil": ambil, "cocok": cocok, "bangun": bangun, "uji": uji}[sys.argv[1]]()
+    if sys.argv[1:] == ["bangun", "provinsi"]:  # hanya provinsi.json (menyetel INTERVAL_PROV tanpa 15 menit kecamatan)
+        bangun(True)
+    else:
+        {"ambil": ambil, "cocok": cocok, "bangun": bangun, "uji": uji}[sys.argv[1]]()
