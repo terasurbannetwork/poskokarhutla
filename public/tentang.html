@@ -850,6 +850,14 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 /* pembuka bagian: konten tidak menempel tepi atas foto */
 .band{padding-top:clamp(96px,11vw,160px);box-sizing:border-box}
 .band .kepala{row-gap:clamp(22px,2.6vw,34px)}
+
+/* empat tantangan */
+.masalah{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+.masalah .mk{min-height:clamp(380px,32vw,470px)}
+.masalah .mk b{font-size:clamp(19px,1.6vw,23px)!important}
+.masalah .mk small{font-size:13.5px!important;line-height:1.55;text-align:left!important;hyphens:none}
+@media (max-width:1100px){.masalah{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+@media (max-width:600px){.masalah{grid-template-columns:1fr!important}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -933,9 +941,10 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
   <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>01</i>Latar belakang</span><h2 class="h2" id="h-mengapa">Informasi bencana ada, tetapi tercecer</h2><div class="lead"><p>Indonesia termasuk negara dengan tingkat kerawanan bencana yang tinggi. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi tersebar di banyak sumber.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik.</p></div></header></div></div>
   <div class="wrap">
     <ul class="masalah">
-      <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span><b>Data tersebar di banyak lembaga</b><small>NASA FIRMS, BMKG, Copernicus, BNPB, KLHK/Kemenhut, dan media.</small></li>
-      <li class="kartu mk" data-n="02" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 02</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="4" width="18" height="14" rx="2"/><path d="M8 21h8M12 18v3"/></svg></span><b>Portal yang ada sulit dipakai cepat</b><small>Peta GIS resmi berat di ponsel dan jarang menjelaskan arti angkanya.</small></li>
-      <li class="kartu mk" data-n="03" data-muncul style="--foto:url(/img/foto-pasca.jpg)"><span class="mk-tg">Tantangan 03</span><span class="ik" style="--c:var(--merah)"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg></span><b>Waktu adalah luas yang terbakar</b><small>Api gambut yang terlambat ditangani bisa membara berminggu-minggu.</small></li>
+      <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><b>Data tersebar dan belum terintegrasi</b><small>Data bencana tersebar di banyak lembaga. Belum ada platform yang menyatukannya, dan publik tidak tahu cara mengaksesnya satu per satu.</small></li>
+      <li class="kartu mk" data-n="02" data-muncul style="--foto:url(/img/foto-sekat.jpg)"><span class="mk-tg">Tantangan 02</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><b>Data mentah tanpa insight</b><small>Data yang tersedia masih berupa angka mentah, belum diolah, sehingga tidak menjelaskan apa yang sedang terjadi.</small></li>
+      <li class="kartu mk" data-n="03" data-muncul style="--foto:url(/img/foto-pasca.jpg)"><span class="mk-tg">Tantangan 03</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 7h6M9 11h6"/></svg></span><b>Riset dan riwayat belum sampai ke publik</b><small>Hasil penelitian dan catatan bencana masa lalu belum diolah dan belum dikomunikasikan dengan baik kepada masyarakat.</small></li>
+      <li class="kartu mk" data-n="04" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 04</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/></svg></span><b>Penyajian visual sulit dipahami</b><small>Belum ada penyajian visual yang sesuai untuk publik, sehingga data sulit dibaca dan dimaknai.</small></li>
     </ul>
     <div class="alur" data-muncul>
     <div class="alur-hd"><span class="eyebrow">Jawaban kami</span><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
