@@ -236,7 +236,10 @@ jobs:
       - name: Pulihkan data banjir terakhir
         uses: actions/cache/restore@v4
         with:
-          path: public/banjir/data
+          # jalur HARUS sama persis dengan simpanan banjir.yml (versi cache dihitung dari daftar jalur); beda = cache tidak ditemukan
+          path: |
+            public/banjir/data
+            data/raw/banjir
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
