@@ -1844,7 +1844,7 @@ const Peta = {
         const k = f.properties.kunci, kp = k.split("|"), kl = klusterDi(k), pr = kl.filter(x => x.properties.level === 3).length, fw = kp.length === 1 ? S.wilayah[k]?.fwi_maks : null;
         kartuWil = kartuTip({judul: esc(f.properties.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "",
           stat: [["titik", S.hit[k] || 0, "titik", "#e58a45"], ["api", kl.length, "kompleks", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
-            fw != null ? ["fwi", fw, "FWI maks", "#a9402f", fw >= 14] : ["posko", [...S.semuaPosko.values()].filter(x => x.tingkat === 2 && x.prov === kp[0] && (!kp[1] || x.kab === kp[1])).length, "posko", "#2b8c86"]],
+            ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : [])], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || Riwayat._diGelembung) return;
       tampilTip(kartuWil, e.originalEvent); });
