@@ -124,7 +124,7 @@
           segs.forEach(([nm, w, f]) => { const v = f(o, n, t), lw = t ? v / t * bw : 0; if (lw <= 0) return;
             g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v / t)} (${fmt(v)} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" class="${w === "#cfd8e3" ? "ks-td" : "ks-tl"}" pointer-events="none">${pct(v / t)}</text>` : ""}`; x0 += lw; });
           g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(n / (t || 1))}</text>`; });
-        return `<svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di areal konsesi per provinsi">${g}<text x="${W - R + 10}" y="6" font-size="10" opacity=".6">di konsesi</text></svg>
+        return `<div class="ks-ch"><b>Titik panas di areal konsesi per provinsi</b><span>% di konsesi</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di areal konsesi per provinsi">${g}</svg>
           <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px">${segs.map(([nm, w]) => `<span><i style="background:${w}"></i>${nm}</span>`).join("")}</div>`; })() : ""}
       ${(() => { /* versi gambut: porsi titik panas di lahan gambut vs tanah mineral per provinsi */
         const g0 = {}; S.kluster.features.forEach(f => { const k = KK.kompleks?.[f.properties.id]; if (!k) return; const o = g0[f.properties.prov] ||= {n: 0, g: 0}; o.n += k.n || 0; o.g += (k.gambut || 0) * (k.n || 0); });
@@ -134,7 +134,7 @@
           g += `<text x="${L - 12}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
           segs.forEach(([nm, w, v]) => { const lw = v * bw; if (lw <= 0) return; g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v)} (${fmt(Math.round(v * o.n))} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" class="${w === "#6b4a2b" ? "ks-tl" : "ks-td"}" pointer-events="none">${pct(v)}</text>` : ""}`; x0 += lw; });
           g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(gp)}</text>`; });
-        return `<div class="ks-sub2">Titik panas di lahan gambut per provinsi</div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di lahan gambut per provinsi">${g}<text x="${W - R + 10}" y="6" font-size="10" opacity=".6">di gambut</text></svg>
+        return `<div class="ks-ch ks-ch2"><b>Titik panas di lahan gambut per provinsi</b><span>% di gambut</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di lahan gambut per provinsi">${g}</svg>
           <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px"><span><i style="background:#6b4a2b"></i>Gambut</span><span><i style="background:#d9c7a8"></i>Tanah mineral</span></div>`; })()}
       <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai kompleksnya.</em></footer>`;
   }
