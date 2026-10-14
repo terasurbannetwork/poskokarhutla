@@ -70,7 +70,7 @@
   pasangPeta();
 
   /* --- tab Kompleks api: kolom Areal konsesi, saringan, peraga --- */
-  const F = {jenis: "", hanya: false};
+  const F = window.KonsesiF = {jenis: "", hanya: false, gambut: false};
   const _baris = Tabel.baris.bind(Tabel), _render = Tabel.render.bind(Tabel);
   Tabel.baris = function () {
     const q = this.q; this.q = ""; let r = _baris(); this.q = q;
@@ -78,13 +78,16 @@
     if (ql) r = r.filter(p => `${p.id} ${p.kec} ${p.kab} ${namaProv(p.prov)} ${Object.keys(jenisDi(p.id)).map(j => jn(j)[2]).join(" ")}`.toLowerCase().includes(ql));
     if (F.jenis) r = r.filter(p => jenisDi(p.id)[F.jenis]);
     else if (F.hanya) r = r.filter(p => Object.keys(jenisDi(p.id)).length);
+    if (F.gambut) r = r.filter(p => p.gambut || (KK?.kompleks?.[p.id]?.gambut || 0) >= .5); /* kompleks di lahan gambut */
     return r;
   };
   Tabel.render = function () {
     if (!KK) { muat().then(() => Tabel.render()); return _render(); }
     _render(); const el = $("#kompleks"); if (!el || !S.kluster) return;
     if (!$("#ks-saring")) { $("#tq")?.insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-saring"><input type="checkbox"><span class="ks-sw">hanya di areal konsesi</span></label>`);
-      $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
+      $("#ks-saring input").onchange = e => { F.hanya = e.target.checked; F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); };
+      $("#ks-saring").insertAdjacentHTML("afterend", `<label class="ks-saring" id="ks-gambut"><input type="checkbox"><span class="ks-sw">hanya di gambut</span></label>`);
+      $("#ks-gambut input").onchange = e => { F.gambut = e.target.checked; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
     $("#ks-chip")?.remove();
     if (F.jenis) { $("#ks-saring").insertAdjacentHTML("afterend", `<button class="ks-chip" id="ks-chip" aria-label="Hapus saringan areal konsesi"><span>Areal ${esc(jn(F.jenis)[2].toLowerCase())}</span><i aria-hidden="true">✕</i></button>`);
       $("#ks-chip").onclick = () => { F.jenis = ""; Tabel.hal = 0; nanti(() => Tabel.render()); }; }
@@ -114,11 +117,7 @@
     const por = (v, n) => v && n ? `<td class="n num" data-tip="${fmt(v)} titik">${pct(v / n)}</td>` : `<td class="n num">–</td>`;
     ex.innerHTML = `<div class="ks-hd"><div><h3>Kebakaran di konsesi: titik panas menurut status lahan</h3>
         <p class="sub">7 hari terakhir · ${fmt(T.konsesi)} dari ${fmt(T.n)} titik panas VIIRS di kompleks api (${pct(T.n ? T.konsesi / T.n : 0)}) berada di dalam areal konsesi.</p></div></div>
-      <div class="tw"><table class="tb3 ks-tb"><thead><tr><th>Status lahan</th><th class="n">Titik panas</th><th class="n">Porsi</th><th class="n">Luas indikatif</th><th class="n">Kompleks aktif</th><th class="n">Musim ini</th></tr></thead><tbody>
-      ${daf.map(j => { const a = R[j]; return `<tr data-jn="${j}" tabindex="0" style="cursor:pointer" title="Saring tabel kompleks dan tandai di peta"><td><span class="ks-j" style="--w:${jn(j)[1]}">${esc(jn(j)[2])}</span></td>
-        ${sel(a.n, 1)}<td class="n num">${T.n ? pct(a.n / T.n) : "–"}</td><td class="n num">${a.n ? "± " + fmt(a.luas_ha) + " ha" : "–"}</td>${sel(a.kompleks)}${sel(a.musim)}</tr>`; }).join("")}
-      <tr><td><span class="ks-j" style="--w:#2b8c86">Di luar areal konsesi</span></td>${sel(T.n - T.konsesi, 1)}<td class="n num">${T.n ? pct((T.n - T.konsesi) / T.n) : "–"}</td><td class="n num">–</td><td class="n num">–</td><td class="n num">–</td></tr>
-      </tbody></table></div>
+      ${""/* tabel status lahan disembunyikan (pemilik, 14 Okt 2026) */}
       ${pvs.length ? (() => { /* grafik batang 100% per provinsi: sawit, HTI, HPH, tambang, di luar konsesi (pemilik, 14 Okt 2026) */
         const segs = [...daf.map(j => [jn(j)[0], jn(j)[1], o => o[j] || 0]), ["Di luar konsesi", "#cfd8e3", (o, n, t) => t - n]];
         const W = 940, L = 210, R = 70, rh = 34, T = 8, H = T + pvs.length * rh + 6, bw = W - L - R;
@@ -126,11 +125,20 @@
         pvs.forEach(([k, o, n], i) => { const t = Math.max(nPv[k] || 0, n), y = T + i * rh; let x0 = L;
           g += `<text x="${L - 12}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
           segs.forEach(([nm, w, f]) => { const v = f(o, n, t), lw = t ? v / t * bw : 0; if (lw <= 0) return;
-            g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v / t)} (${fmt(v)} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" fill="${w === "#cfd8e3" ? "#4a5a72" : "#fff"}" pointer-events="none">${pct(v / t)}</text>` : ""}`; x0 += lw; });
+            g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v / t)} (${fmt(v)} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" class="${w === "#cfd8e3" ? "ks-td" : "ks-tl"}" pointer-events="none">${pct(v / t)}</text>` : ""}`; x0 += lw; });
           g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(n / (t || 1))}</text>`; });
-        return `<div class="lbl" style="margin:14px 0 6px">Porsi titik panas di dalam dan di luar areal konsesi per provinsi</div>
-          <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di areal konsesi per provinsi">${g}<text x="${W - R + 10}" y="6" font-size="10" opacity=".6">di konsesi</text></svg>
+        return `<div class="ks-ch"><b>Titik panas di areal konsesi per provinsi</b><span>% di konsesi</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di areal konsesi per provinsi">${g}</svg>
           <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px">${segs.map(([nm, w]) => `<span><i style="background:${w}"></i>${nm}</span>`).join("")}</div>`; })() : ""}
+      ${(() => { /* versi gambut: porsi titik panas di lahan gambut vs tanah mineral per provinsi */
+        const g0 = {}; S.kluster.features.forEach(f => { const k = KK.kompleks?.[f.properties.id]; if (!k) return; const o = g0[f.properties.prov] ||= {n: 0, g: 0}; o.n += k.n || 0; o.g += (k.gambut || 0) * (k.n || 0); });
+        const rows = Object.entries(g0).filter(([, o]) => o.n >= 50).sort((a, b) => b[1].n - a[1].n).slice(0, 10); if (!rows.length) return "";
+        const W = 940, L = 210, R = 70, rh = 34, T = 8, H = T + rows.length * rh + 6, bw = W - L - R; let g = "";
+        rows.forEach(([k, o], i) => { const y = T + i * rh, gp = o.g / o.n, segs = [["Gambut", "#6b4a2b", gp], ["Tanah mineral", "#d9c7a8", 1 - gp]]; let x0 = L;
+          g += `<text x="${L - 12}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
+          segs.forEach(([nm, w, v]) => { const lw = v * bw; if (lw <= 0) return; g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}" data-tip="<b>${esc(namaProv(k))}</b><br>${nm}: ${pct(v)} (${fmt(Math.round(v * o.n))} titik)"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" class="${w === "#6b4a2b" ? "ks-tl" : "ks-td"}" pointer-events="none">${pct(v)}</text>` : ""}`; x0 += lw; });
+          g += `<text x="${W - R + 10}" y="${y + 21}" font-size="12" font-weight="800">${pct(gp)}</text>`; });
+        return `<div class="ks-ch ks-ch2"><b>Titik panas di lahan gambut per provinsi</b><span>% di gambut</span></div><svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="Porsi titik panas di lahan gambut per provinsi">${g}</svg>
+          <div class="ex-leg" style="justify-content:center;font-size:11.5px;margin-top:4px"><span><i style="background:#6b4a2b"></i>Gambut</span><span><i style="background:#d9c7a8"></i>Tanah mineral</span></div>`; })()}
       <footer class="ex-ft ks-ft"><span></span><em>Sumber: NASA FIRMS VIIRS 375 m (7 hari); ${BATAS} (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH). Satu titik bisa jatuh di dua areal yang tumpang tindih. Titik di areal konsesi bukan bukti siapa yang membakar. Klik baris untuk menandai kompleksnya.</em></footer>`;
   }
   function tunjuk(j) {

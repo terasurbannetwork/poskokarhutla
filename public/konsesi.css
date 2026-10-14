@@ -68,3 +68,9 @@
 .ks-tb td:first-child{text-align:left!important}
 .ks-tb td.n,.ks-tb th{text-align:center!important}
 .ks-pv{display:inline-flex;align-items:center;gap:8px}.ks-pv img,.ks-pv svg{width:20px;height:20px;object-fit:contain;flex:none}
+.ks-sub2{margin:22px 0 6px;padding-top:16px;border-top:1px dashed var(--line);font-size:14px;font-weight:800;color:var(--ink)}
+#ks-ex svg text.ks-tl{fill:#fff!important}#ks-ex svg text.ks-td{fill:#4a3426!important}
+.ks-ch{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 8px;padding:0 4px}
+.ks-ch b{font-size:14.5px;font-weight:800;color:var(--ink)}
+.ks-ch span{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
+.ks-ch2{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
