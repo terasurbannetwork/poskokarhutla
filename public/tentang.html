@@ -927,6 +927,22 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 .masalah .mk::after{background:linear-gradient(180deg,rgb(6 16 31 / .72),rgb(6 16 31 / .1) 30%,rgb(6 16 31 / .3) 50%,rgb(6 16 31 / .95)),var(--foto) 50% 50%/cover!important}
 .masalah .mk b{padding-top:0!important;color:#f5a06b!important}
 .masalah .mk b::before{display:none!important}
+
+/* pembuka: tinggi mengikuti isi; label+judul rata atas dengan paragraf (pemilik, 14 Okt 2026) */
+.band{min-height:0!important;padding-top:clamp(88px,9vw,130px)!important}
+.band .kepala{grid-template-rows:auto auto 1fr!important;grid-template-areas:"ey ld" "jd ld" ". ld"!important;align-items:start!important;padding-bottom:clamp(56px,7vw,96px)!important}
+.band .eyebrow{align-self:start!important}
+.band .lead{align-self:start!important}
+@media (max-width:860px){.band .kepala{grid-template-rows:none!important;grid-template-areas:"ey" "jd" "ld"!important}}
+/* foto tim: sosok diperbesar, ruang kosong di atas kepala dikurangi */
+img.ft,.eksek img.ft{object-fit:cover!important;object-position:50% 100%!important;padding:6% 0 0!important}
+
+/* ikon langkah tepat di tengah lingkaran */
+.alur .pilar .no{justify-content:center!important;align-content:center!important;align-items:center!important;justify-items:center!important}
+/* foto tim: sosok diperbesar & dinaikkan */
+img.ft,.eksek img.ft{padding:5% 0 0!important;transform:scale(1.1);transform-origin:50% 100%}
+.orang:hover img.ft{transform:scale(1.13)!important}
+.pita-j{animation-duration:52s}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -989,7 +1005,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 <section class="kredit" aria-label="Sumber data">
   <div class="wrap" data-muncul>
     <p>Data Didukung Oleh</p>
-    <div class="pita" aria-label="Penyedia data"><ul class="pita-j"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li></ul><ul class="pita-j" aria-hidden="true"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li></ul></div>
+    <div class="pita" aria-label="Penyedia data"><ul class="pita-j"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-klh.png" alt="Kementerian Lingkungan Hidup" title="Kementerian Lingkungan Hidup" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-brgm.png" alt="BRGM" title="BRGM" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-gfw.png" alt="Global Forest Watch" title="Global Forest Watch" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-googlenews.png" alt="Google News" title="Google News" height="52" loading="lazy"></li></ul><ul class="pita-j" aria-hidden="true"><li><img src="/img/lembaga/sumber-nasa.png" alt="NASA FIRMS" title="NASA FIRMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-copernicus.png" alt="Copernicus · CAMS" title="Copernicus · CAMS" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bmkg.png" alt="BMKG" title="BMKG" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-bnpb.png" alt="BNPB" title="BNPB" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-kemenhut.png" alt="Kementerian Kehutanan" title="Kementerian Kehutanan" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-klh.png" alt="Kementerian Lingkungan Hidup" title="Kementerian Lingkungan Hidup" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-brgm.png" alt="BRGM" title="BRGM" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-openmeteo.png" alt="Open-Meteo" title="Open-Meteo" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-osm.png" alt="OpenStreetMap" title="OpenStreetMap" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-worldpop.png" alt="WorldPop" title="WorldPop" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-gfw.png" alt="Global Forest Watch" title="Global Forest Watch" height="52" loading="lazy"></li><li><img src="/img/lembaga/sumber-googlenews.png" alt="Google News" title="Google News" height="52" loading="lazy"></li></ul></div>
   </div>
 </section>
 <section class="bukti-sek" aria-label="Angka hidup dari data situs" hidden><!-- disembunyikan (pemilik, 14 Okt 2026); hapus atribut hidden untuk memulihkan -->
@@ -1016,7 +1032,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
       <li class="kartu mk" data-n="04" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 04</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/></svg></span><b>Penyajian visual sulit dipahami</b><small>Belum ada penyajian visual yang sesuai untuk publik, sehingga data sulit dibaca dan dimaknai.</small></li>
     </ul>
     <div class="alur" data-muncul>
-    <div class="alur-hd"><span class="eyebrow">Jawaban kami</span><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
+    <div class="alur-hd"><h3>Dari data tercecer menjadi <em>insight</em> publik</h3></div>
     <ul class="pilar">
       <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg><i>01</i></span><h3>Satukan</h3><p>Titik panas, cuaca, asap, laporan kejadian, dan berita dari banyak lembaga dikumpulkan di satu tempat.</p></li>
       <li data-muncul><span class="no"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M4.2 4.2l2.1 2.1M17.7 17.7l2.1 2.1M2 12h3M19 12h3M4.2 19.8l2.1-2.1M17.7 6.3l2.1-2.1"/></svg><i>02</i></span><h3>Olah otomatis</h3><p>Diolah setiap hari oleh skrip terbuka. Tidak ada angka yang diketik tangan.</p></li>
@@ -1086,7 +1102,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--nila)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><em>Tahap 3</em></div><h3>Uji &amp; validasi</h3><p>Uji otomatis memeriksa kelengkapan dan kewajaran angka; model diuji pada kejadian yang tidak dipakai melatihnya.</p></li>
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--hijau)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></i><em>Tahap 4</em></div><h3>Terbit</h3><p>Data lolos uji langsung terbit di situs. Umur tiap sumber dipantau; sumber yang basi ditandai.</p></li>
     </ol>
-    <div class="batas">
+    <div class="batas" hidden>
       <span class="ik"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg></span>
       <div><h3>Batas dan kejujuran</h3>
         <ul>
@@ -1096,12 +1112,12 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
         </ul>
       </div>
     </div>
-    <ul class="prinsip">
+    <ul class="prinsip" hidden>
       <li class="kartu" style="--c:var(--biru)"><b>Data terbuka</b><span>Hanya memakai data yang bisa diakses dan ditelusuri publik.</span></li>
       <li class="kartu" style="--c:var(--nila)"><b>Metode terbuka</b><span>Rumus dan kode bisa diperiksa di <a href="https://github.com/terasurbannetwork/poskokarhutla" target="_blank" rel="noopener">GitHub</a>.</span></li>
       <li class="kartu" style="--c:var(--hijau)"><b>Privasi</b><span>Tanpa cookie pelacak; data laporan warga dibatasi dan dihapus otomatis. <a href="/privasi.html">Pemberitahuan privasi</a>.</span></li>
     </ul>
-    <details class="lipat">
+    <details class="lipat" hidden>
       <summary>Jadwal pembaruan per sumber data</summary>
       <div class="isi"><table>
         <caption class="sr">Jadwal pembaruan per sumber data</caption>
@@ -1121,7 +1137,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 </section>
 
 <!-- ============ 6. SUMBER DATA ============ -->
-<section class="seksi putih berband" id="sumber" aria-labelledby="h-sumber">
+<section hidden class="seksi putih berband" id="sumber" aria-labelledby="h-sumber">
   <div class="band" style="--foto:url(/img/foto-sekat.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>03</i>Sumber</span><h2 class="h2" id="h-sumber">Sumber data</h2><p class="lead">Lembaga di bawah ini adalah <b>penyedia data</b>, bukan pendukung atau mitra resmi. Penyebutan nama tidak berarti mereka menyetujui isi situs ini.</p></header></div></div>
   <div class="wrap">
     <ul class="chips" style="--card:var(--paper)">
@@ -1144,7 +1160,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 
 <!-- ============ 7. TIM ============ -->
 <section class="seksi kertas berband" id="tim" aria-labelledby="h-tim">
-  <div class="band" style="--foto:url(/img/tu/kegiatan-2.jpg);--pos:50% 40%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>04</i>Siapa kami</span><h2 class="h2" id="h-tim">Tim</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin yang memadukan ekonomi spasial, perencanaan kota, geosains, kesehatan lingkungan, dan kebijakan publik.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/tu/kegiatan-2.jpg);--pos:50% 40%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>03</i>Siapa kami</span><h2 class="h2" id="h-tim">Tim</h2><p class="lead">Pantau Bencana adalah inisiatif Teras Urban, dikerjakan tim multidisiplin yang memadukan ekonomi spasial, perencanaan kota, geosains, kesehatan lingkungan, dan kebijakan publik.</p></header></div></div>
   <div class="wrap">
     <div class="org" id="org" style="--paper:var(--card)"></div>
     <h3 class="subjudul rj-jd">Rekam jejak Teras Urban</h3>
@@ -1155,7 +1171,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 
 <!-- ============ 8. KOLABORASI & PENGAKUAN (data/mitra.json; tersembunyi bila kosong) ============ -->
 <section class="seksi putih berband" id="kolaborasi" aria-labelledby="h-kolab" hidden>
-  <div class="band" style="--foto:url(/img/tu/kegiatan.jpg?v=2);--pos:50% 35%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>05</i>Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header></div></div>
+  <div class="band" style="--foto:url(/img/tu/kegiatan.jpg?v=2);--pos:50% 35%"><div class="wrap"><header class="kepala" data-muncul><span class="eyebrow"><i>04</i>Rekam jejak</span><h2 class="h2" id="h-kolab">Kolaborasi &amp; pengakuan</h2><p class="lead">Rekam jejak Teras Urban di luar Pantau Bencana. Pihak yang disebut adalah mitra kegiatan, bukan pendukung atau penyandang dana Pantau Bencana.</p></header></div></div>
   <div class="wrap">
     <ul class="kolab" id="kolabDaftar" style="--card:var(--paper)"></ul>
     <div id="risetWadah" hidden><h3 class="subjudul" id="h-riset">Publikasi riset <small id="risetN"></small></h3><ol class="riset-l" id="risetDaftar" aria-labelledby="h-riset"></ol></div>
@@ -1177,7 +1193,7 @@ img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
 
 <!-- ============ 10. FAQ ============ -->
 <section class="seksi kertas berband faq-sek" id="faq" aria-labelledby="h-faq">
-  <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><div class="faq-band"><header class="kepala" data-muncul><span class="eyebrow"><i>06</i>FAQ</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>    <div class="faq">
+  <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><div class="faq-band"><header class="kepala" data-muncul><span class="eyebrow"><i>05</i>FAQ</span><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>    <div class="faq">
     <details name="faq"><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
     <details name="faq"><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>.</p></div></details>
     <details name="faq"><summary>Seberapa sering diperbarui?</summary><div class="isi"><p>Titik panas diperbarui tiap 3 jam mengikuti lintasan satelit. Analisis lengkap (kompleks api, cuaca, asap, operasi) berjalan setiap hari pukul 21.20 WIB, berita setiap hari, dan lapisan tetap seperti gambut atau konsesi saat sumbernya merilis versi baru.</p></div></details>
