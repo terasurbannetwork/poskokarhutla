@@ -789,6 +789,34 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
 .masalah .mk b{color:#fff;font-size:clamp(21px,1.9vw,26px)}
 .masalah .mk small{color:rgb(255 255 255 / .8);font-size:14.5px}
 @media (max-width:760px){.masalah .mk{min-height:300px;border-bottom:0!important}}
+
+/* label bagian v3: pil senada label kartu Insight; di atas foto berupa pil kaca (pemilik, 14 Okt 2026) */
+.eyebrow{gap:10px;padding:6px 14px 6px 6px;border-radius:999px;font-size:11.5px;font-weight:800;letter-spacing:.14em;background:color-mix(in oklab,var(--aksen) 10%,transparent);border:1px solid color-mix(in oklab,var(--aksen) 22%,transparent);color:var(--aksen)}
+.eyebrow::before{display:none}
+.eyebrow i{display:grid;place-items:center;min-width:26px;height:26px;padding:0 6px;border-radius:999px;background:var(--aksen);color:#fff;font:800 11px/1 var(--display);letter-spacing:0;margin:0}
+.eyebrow:not(:has(i)){padding-left:14px}
+.band .eyebrow,.faq-band .eyebrow,.hero-foto .eyebrow{background:rgb(255 255 255 / .1);border-color:rgb(255 255 255 / .22);color:#fff;backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px)}
+.alur .eyebrow{background:color-mix(in oklab,var(--aksen) 10%,transparent);border-color:color-mix(in oklab,var(--aksen) 22%,transparent);color:var(--aksen)}
+.seksi.gelap .eyebrow{background:rgb(255 255 255 / .1);border-color:rgb(255 255 255 / .22);color:#fff}
+
+/* judul hero tiga baris di layar lebar */
+.hero-foto h1{max-width:none;font-size:clamp(36px,5.4vw,82px)}
+@media (max-width:900px){br.lebar{display:none}}
+/* tim: nama & jabatan di dalam foto; bio dewan muncul saat disorot (pemilik, 14 Okt 2026) */
+.orang{position:relative;overflow:hidden;border-radius:6px!important;gap:0}
+.orang .ft,.eksek .ft{margin:0!important;border-radius:6px}
+.or-isi{position:absolute;left:0;right:0;bottom:0;padding:48px 16px 16px;display:grid;gap:4px;background:linear-gradient(180deg,transparent,rgb(6 16 31 / .55) 40%,rgb(6 16 31 / .92));color:#fff;text-align:left;transition:padding .5s cubic-bezier(.16,1,.3,1)}
+.or-isi b{color:#fff;font-size:clamp(14.5px,1.25vw,17px);margin:0}
+.or-isi .peran,.eksek .or-isi .peran{color:#f5a06b!important;border:0;padding:0;margin:0;font-size:10.5px}
+.or-isi p{max-height:0;opacity:0;overflow:hidden;margin:0;color:rgb(255 255 255 / .85)!important;font-size:13px!important;line-height:1.5;text-align:left!important;transition:max-height .6s cubic-bezier(.16,1,.3,1),opacity .4s,margin .4s}
+.dewan .orang:hover .or-isi,.dewan .orang:focus-visible .or-isi{padding-top:90px;background:linear-gradient(180deg,transparent,rgb(6 16 31 / .8) 25%,rgb(6 16 31 / .95))}
+.dewan .orang:hover .or-isi p,.dewan .orang:focus-visible .or-isi p{max-height:240px;opacity:1;margin-top:8px}
+.orang:hover{transform:none!important}
+.orang:hover img.ft{filter:none;transform:scale(1.03)}
+img.ft{transition:filter .5s,transform 1s cubic-bezier(.16,1,.3,1)}
+.eksek .or-isi{padding:36px 12px 12px}
+.eksek .or-isi b{font-size:13.5px}
+@media (hover:none){.dewan .or-isi p{max-height:none;opacity:1;margin-top:8px}}
 </style>
 <script src="/bagi.js" defer></script>
 </head>
@@ -837,7 +865,7 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
   <div class="wrap">
     <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
     <p class="hero-ey masuk" style="--d:1">Pemantauan bencana Indonesia</p>
-    <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana di Indonesia secara <em>real time</em></h1>
+    <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana<br class="lebar"> di Indonesia secara<br class="lebar"> <em>real time</em></h1>
     <p class="misi masuk" style="--d:2">Agregasi dan pengolahan data untuk memberikan <i>insight</i> terkait kondisi terkini dan riwayat bencana di Indonesia.</p>
     <div class="aksi masuk" style="--d:3">
       <a class="tbl utama" href="/peta">Buka peta</a>
@@ -1009,7 +1037,7 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
   <div class="wrap">
     <div class="org" id="org" style="--paper:var(--card)"></div>
     <h3 class="subjudul rj-jd">Rekam jejak Teras Urban</h3>
-    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Penghargaan · 2025</span><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Kajian kebijakan · 2026</span><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi untuk perencanaan energi hingga tingkat kabupaten/kota.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><span class="rj-t">Keterlibatan · 2025–2026</span><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
+    <div class="rj"><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/penghargaan-wjrs.jpg" alt="Juara 1 West Java Research Summit 2025" loading="lazy" decoding="async"></div><figcaption><b>Juara 1 West Java Research Summit 2025</b><span>Riset ekonomi spasial tentang aglomerasi, pemilihan lokasi, dan keberlangsungan usaha mikro.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/ikew-esdm.jpg" alt="Indeks Ketahanan Energi Wilayah" loading="lazy" decoding="async"></div><figcaption><b>Indeks Ketahanan Energi Wilayah</b><span>Indeks geospasial lima dimensi untuk perencanaan energi hingga tingkat kabupaten/kota.</span></figcaption></figure><figure class="rj-k" data-muncul><div class="rj-g"><img src="/img/tu/kegiatan.jpg?v=2" alt="Riset, forum, dan pertukaran" loading="lazy" decoding="async"></div><figcaption><b>Riset, forum, dan pertukaran</b><span>Membangun intelijen perkotaan lewat riset, keterlibatan pemangku kepentingan, dan pertukaran internasional.</span></figcaption></figure></div>
     <div id="anggota" hidden></div>
   </div>
 </section>
@@ -1138,8 +1166,8 @@ main:has(> .faq-sek:last-child) + .kaki-situs,.kaki-situs{margin-top:0!important
     const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
     let h = "";
-    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
-    if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></article>`).join("")}</div>`;
+    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang" tabindex="0">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}</div>${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
+    if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></div></article>`).join("")}</div>`;
     $("#anggota").innerHTML = h; $("#anggota").hidden = false;
   }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
 
