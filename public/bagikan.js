@@ -119,7 +119,7 @@ const Bagikan = {
           </div>
           <div class="bg-pra"><img id="bgImg" alt=""><p id="bgStG" role="status" aria-live="polite"></p></div>
           <div class="bg-aksi"><button type="button" class="btn pri" id="bgUnduh">Unduh PNG</button><button type="button" class="btn sec" id="bgBagiG">Bagikan gambar</button></div>
-          <label class="lbl" for="bgTeks">Keterangan & tagar</label>
+          <label class="sr-only" for="bgTeks">Keterangan & tagar</label>
           <textarea id="bgTeks" rows="7" readonly></textarea>
           <div class="bg-aksi"><button type="button" class="btn sec" id="bgSalinTeks">Salin keterangan</button></div>
         </div>
@@ -745,13 +745,17 @@ const Bagikan = {
     const tg = this.tglPanjang(), url = this.tautan(), tag = s => "#" + String(s).normalize("NFD").replace(/[^A-Za-z0-9]/g, "");
     const prov = d.tpl === "provinsi" ? [d.judul] : (d.bar?.rows || []).slice(0, 3).map(r => r.n);
     const tagar = [...this.K.tagar, ...prov.map(tag), this.K.akhir].join(" ");
-    if (d.tpl === "ex") return `${d.judul}\n\n${[d.sub, d.fn].filter(Boolean).join(". ")}\n\nSelengkapnya di ${this.K.nama}: https://${this.situs()}\n\n${tagar}`;
+    /* caption: kalimat utama, konteks dari kartu, sumber + tanggal, lalu ajakan membuka situs. Tanpa emoji dan basa-basi (pemilik, 14 Okt 2026) */
+    const titik = t => { t = String(t || "").replace(/\s+/g, " ").trim(); return t && !/[.!?]$/.test(t) ? t + "." : t; };
+    const sumber = (d.fn || "").match(/Sumber:\s*([^·\n]+)/)?.[1]?.trim(), konteks = [d.sub, (d.fn || "").replace(/Sumber:[^·\n]+/, "").replace(/^[\s·]+|[\s·]+$/g, "")].map(titik).filter(Boolean).join(" ");
+    if (d.tpl === "ex") return `${titik(d.judul)}${konteks ? `\n\n${konteks}` : ""}\n\nData per ${tg}${sumber ? `, diolah dari ${sumber}` : ""}. Peta titik panas dan grafik lengkapnya bisa dibuka di https://${this.situs()}\n\n${tagar}`;
     const K = d.kpi.map(q => q.v), top = (d.bar?.rows || []).slice(0, 3).map(r => `${r.n} (${r.t})`).join(", ");
     let isi;
     if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
-    else isi = `${d.tpl === "provinsi" ? "Karhutla " + d.judul : "Situasi kebakaran hutan dan lahan"}, ${tg}: ${K[0]} titik panas terdeteksi hari ini (WIB), ${K[1]} kompleks api aktif, ${K[2]} berstatus prioritas pemadaman. FWI tertinggi ${K[3]} (${d.kpi[3].ket}).`;
+    else isi = d.tpl === "kompleks" ? `${d.label} di ${d.judul}: ${d.sub}.`
+      : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. Satelit mendeteksi ${K[0]} titik panas hari ini. Dari ${K[1]} kompleks api yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
-    return `${isi}${top ? `\n\nTerbanyak: ${top}.` : ""}${rek}\n\nPantau peta langsung: https://${this.situs()}\n\n${tagar}`;
+    return `${isi}${top ? `\n\nPaling banyak di ${top}.` : ""}${rek}\n\nPeta dan data lengkapnya: https://${this.situs()}\n\n${tagar}`;
   },
   async bagiGambar() {
     if (!this.blob) return;
