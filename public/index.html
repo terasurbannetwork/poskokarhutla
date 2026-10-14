@@ -552,6 +552,22 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .pmulti .pm-menu label:hover{background:var(--surface)}
 .pmulti .pm-menu input{width:16px;height:16px;accent-color:#0b2545;flex:none}
 .pmulti .pm-menu img,.pmulti .pm-menu svg{width:18px;height:18px;flex:none}
+/* ==== panel provinsi bergaya kartu Insight: tenang, datar, satu sistem (pemilik, 14 Okt 2026) ==== */
+.pv-p{border-radius:16px!important;box-shadow:var(--shadow)}
+.pv-p > h4{padding:12px 16px!important;background:linear-gradient(180deg,var(--surface),var(--card))!important}
+.pv-p > h4::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand2);margin-right:8px;vertical-align:1px}
+.pv-b{padding:14px 16px!important}
+/* rekomendasi: daftar bernomor berbaris, tanpa kotak berwarna */
+ol.rek{grid-template-columns:1fr!important;gap:0!important}
+ol.rek li{border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:12px 2px!important;border-bottom:1px solid var(--line)!important;font-size:13px!important}
+ol.rek li:last-child{border-bottom:0!important}
+ol.rek li::after{display:none!important}
+ol.rek li::before{width:24px!important;height:24px!important}
+ol.rek li small{border-top:0!important;padding-top:2px!important}
+/* cuaca 4 hari: ubin datar */
+.pv-c{background:var(--surface)!important;border:0!important;border-radius:12px!important;padding:12px 6px!important}
+.pv-c::before,.pv-c::after{display:none!important}
+.pv-c b{color:var(--ink)!important;filter:none!important;font-size:24px!important}
 .kal-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:8px;font-size:11px;color:var(--ink2)}
 .kal-leg span{display:inline-flex;align-items:center;gap:3px}
 .kal-leg b{margin-right:4px;font-weight:700}
@@ -687,12 +703,14 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pv-k2 i.kini{outline:2px solid var(--ink);outline-offset:-1px}
 .pv-k2 small{text-align:center;font-size:10px;color:var(--ink2)}
 .pv-us{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-.pv-u{position:relative;padding:14px 16px 13px;border-radius:14px;background:linear-gradient(160deg,color-mix(in oklch, var(--w) 9%, var(--card)),var(--card) 70%);border:1px solid color-mix(in oklch, var(--w) 22%, var(--line));overflow:hidden;box-shadow:var(--shadow)}
-.pv-u::before{content:"";position:absolute;left:0;top:0;right:0;height:3px;background:var(--w)}
-.pv-u::before{content:"";position:absolute;inset:0 auto 0 0;width:3px;background:var(--w)}
-.pv-u b{display:block;font-family:var(--display);font-size:26px;font-weight:800;line-height:1.05;letter-spacing:-.01em;color:color-mix(in oklch, var(--w) 75%, var(--ink));font-variant-numeric:tabular-nums}
+/* ubin statistik panel provinsi: datar & tenang — latar abu muda, garis warna tipis di kiri, angka gelap (pemilik, 14 Okt 2026) */
+.pv-us{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
+.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(4,minmax(0,1fr))!important}
+@media (max-width:700px){.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
+.pv-u{position:relative;padding:12px 14px;border-radius:12px;background:var(--surface);border:0;border-left:4px solid var(--w);box-shadow:none;overflow:hidden}
+.pv-u b{display:block;font-family:var(--display);font-size:24px;font-weight:800;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums}
 .pv-u span{display:block;font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:4px}
-.pv-u em{display:inline-block;margin-top:5px;font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 12%, transparent);color:color-mix(in oklch, var(--w) 80%, var(--ink))}
+.pv-u em{display:inline-block;margin-top:6px;font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--w) 14%, var(--card));color:color-mix(in oklch, var(--w) 80%, var(--ink))}
 .pv-sub{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
 .pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
 .pv-c{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}

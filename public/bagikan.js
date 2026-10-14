@@ -168,8 +168,7 @@ const Bagikan = {
   /* bagikan satu kompleks dari lacinya: dialog dibuka di tab Tautan dengan alamat kompleks itu */
   /* gambar pakai templat "Kompleks ini" (data kompleks itu, bukan ringkasan nasional); tautan langsung /k/K0001 */
   bukaKompleks(id) {
-    if (window.Bagi && typeof S !== "undefined" && S.meta) { const p = S.kluster?.features.find(f => f.properties.id === id)?.properties;
-      return this.bagi({...this.konteks("kompleks", id), gambar: () => this.gambarKom(id), lainnya: () => this.bukaKompleksDlg(id)}); }
+    /* model Insight: langsung dialog gambar kompleks (pemilik, 14 Okt 2026) */
     this.bukaKompleksDlg(id);
   },
   /* gambar pakai templat "Kompleks ini" (data kompleks itu, bukan ringkasan nasional); tautan langsung /k/K0001 */
