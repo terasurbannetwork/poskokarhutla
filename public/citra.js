@@ -110,7 +110,7 @@
         const pg = nH > 1 ? `<div class="ct-hal">${paginasi(hal, ks.length, PER, "kompleks")}</div>` : "";
         return this.ex(`Potret perbandingan warna asli dan SWIR di ${this.hl(fmt(ks.length) + " kompleks prioritas")}; ${this.hl(fmt(bersih))} terpotret cukup jernih dalam ${D.hari} hari terakhir`,
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
-          `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}<div class="ct-info">${[["Menembus asap tipis", "api sering terlihat di SWIR walau tertutup di warna asli"], ["Cukup jernih", "awan/asap ≤ 30% di dalam kotak"], ["Cadangan VIIRS", "dipakai bila Sentinel berawan atau lebih dari 2 hari"]].map(([b, t]) => `<span><b>${b}</b>${t}</span>`).join("")}</div>`,
+          `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}`,
           `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`); };
       document.addEventListener("click", e => { const b = e.target.closest(".ct-hal [data-h]"); if (!b || b.disabled) return; Insight.st.citraHal = +b.dataset.h;
         const box = document.querySelector('#insight [data-ex="citra"]'); if (box) { box.innerHTML = Insight.gambar("citra"); box.scrollIntoView({block: "nearest"}); } });
