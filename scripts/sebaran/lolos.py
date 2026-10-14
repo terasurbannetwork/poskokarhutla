@@ -414,6 +414,7 @@ def akhir():
                                        "baru_benar": round(statistics.mean([(x[2] >= a70) == bool(x[1]) for x in kk if x[4]["kelas"] == kel]), 3),
                                        "baru_ulang_benar": round(statistics.mean([(x[3] >= a70u) == bool(x[1]) for x in kk if x[4]["kelas"] == kel]), 3),
                                        "n": sum(1 for x in kk if x[4]["kelas"] == kel)} for kel in ("besar", "sedang", "kecil")}}
+    pickle.dump({R[i][0]: p for i, p in {**p_oof, **p_uji}.items()}, open(PELUANG, "wb"))
     # tulis peluang baru ke pustaka kasus (dialog Insight menampilkan keduanya)
     for b in kas["kasus"]:
         i = pos.get(b["id"])
@@ -482,73 +483,111 @@ def lebarkan(mc, q):
     return [min(mc[1], max(0.0, (1 + mc[0]) * math.exp(-q) - 1)), mc[1], max(mc[1], (1 + mc[2]) * math.exp(q) - 1)]
 
 
+def kunci_selang(strata, waspada):
+    return f"{strata}|{1 if waspada else 0}"
+
+
+def q_selang(q, strata, waspada, h):
+    """q per (lahan, WASPADA); kelompok kecil memakai gabungan semua lahan dengan tanda yang sama."""
+    return (q.get(kunci_selang(strata, waspada)) or q[kunci_selang("*", waspada)])[h]
+
+
+KAL = os.path.join(MENTAH, "lolos_selang_kal.pkl")
+PELUANG = os.path.join(MENTAH, "lolos_peluang.pkl")  # {id peristiwa: peluang membesar (luar-lipatan <= 2023, model 2015-2023 untuk uji)}
+
+
 def selang():
-    """Kalibrasi selang luas: titik awal deteksi pertama 2015-2023, model sel yang tidak melihat tahunnya (lipatan kasus.py untuk
-    2015-2022, model 2015-2022 untuk 2023). Uji cakupan pada uji 2024-2026 (lihat kedua) dan 123 kasus."""
+    """Kalibrasi selang luas (CQR konformal): titik awal deteksi pertama 2015-2023, model sel yang tidak melihat tahunnya
+    (lipatan kasus.py untuk 2015-2022, model 2015-2022 untuk 2023). Bersyarat pada lahan x tanda WASPADA model membesar
+    (luar-lipatan), karena api yang akan membesar adalah yang selangnya paling sering terlalu sempit. Uji cakupan: uji
+    2024-2026 (lihat kedua) dan 123 kasus. Tahap Monte Carlo di-cache (lolos_selang_kal.pkl); butuh lolos_peluang.pkl (akhir)."""
     import latih as L
-    import kasus as KS
-    H = json.load(open(L.HASIL))
-    M = KS.latih_lipat(H)
-    vm = pickle.load(open(os.path.join(MENTAH, "val_model.pkl"), "rb"))
-    geser = (H.get("geser_logit") or {}).get("pilihan")
-    for m_ in M.values():
-        m_["geser"] = geser
-    tau = H["tau"]["gbdt"]["tau"]
-    rnd, res, n_lihat = random.Random(55), {}, {}
-    kap = 40  # per (tahun, besar?) -> ~540 titik awal
-    for e in L.peristiwa(semua_kecil=True):
-        th = int(e["t0"][:4])
-        if th > 2023:
-            continue
-        kk = (th, e["sel"] >= 3)
-        n_lihat[kk] = n_lihat.get(kk, 0) + 1
-        r_ = res.setdefault(kk, [])
-        cap = kap if kk[1] else kap // 2
-        if len(r_) < cap:
-            r_.append(e)
-        else:
-            j = rnd.randrange(n_lihat[kk])
-            if j < cap:
-                r_[j] = e
-    evs = [e for v in res.values() for e in v]
-    args = [(e, vm["gbdt"] if int(e["t0"][:4]) == 2023 else M[KS.LIPAT[int(e["t0"][:4])]], tau) for e in evs]
-    log(f"selang: {len(args)} titik awal kalibrasi")
-    from fitur import Konteks
-    L._ktx = Konteks(bekas=False)  # bekas terbakar 375 m hanya kolom riset; model sel tidak memakainya (hemat ~1 GB per proses)
-    with mp.get_context("fork").Pool(2) as pool:
-        kal = [r for r in pool.imap_unordered(_awal, args, chunksize=2) if r]
+    if os.path.exists(KAL):
+        kal = pickle.load(open(KAL, "rb"))
+    else:
+        import kasus as KS
+        H = json.load(open(L.HASIL))
+        M = KS.latih_lipat(H)
+        vm = pickle.load(open(os.path.join(MENTAH, "val_model.pkl"), "rb"))
+        geser = (H.get("geser_logit") or {}).get("pilihan")
+        for m_ in M.values():
+            m_["geser"] = geser
+        tau = H["tau"]["gbdt"]["tau"]
+        rnd, res, n_lihat = random.Random(55), {}, {}
+        kap = 40  # per (tahun, besar?) -> ~540 titik awal
+        for e in L.peristiwa(semua_kecil=True):
+            th = int(e["t0"][:4])
+            if th > 2023:
+                continue
+            kk = (th, e["sel"] >= 3)
+            n_lihat[kk] = n_lihat.get(kk, 0) + 1
+            r_ = res.setdefault(kk, [])
+            cap = kap if kk[1] else kap // 2
+            if len(r_) < cap:
+                r_.append(e)
+            else:
+                j = rnd.randrange(n_lihat[kk])
+                if j < cap:
+                    r_[j] = e
+        evs = [e for v in res.values() for e in v]
+        args = [(e, vm["gbdt"] if int(e["t0"][:4]) == 2023 else M[KS.LIPAT[int(e["t0"][:4])]], tau) for e in evs]
+        log(f"selang: {len(args)} titik awal kalibrasi")
+        from fitur import Konteks
+        L._ktx = Konteks(bekas=False)  # bekas terbakar 375 m hanya kolom riset; model sel tidak memakainya (hemat ~1 GB per proses)
+        with mp.get_context("fork").Pool(2) as pool:
+            kal = [r for r in pool.imap_unordered(_awal, args, chunksize=2) if r]
+        pickle.dump(kal, open(KAL, "wb"))
+    if not os.path.exists(PELUANG):
+        log("selang: Monte Carlo tersimpan; jalankan 'akhir' lalu 'selang' lagi")
+        return
+    P = pickle.load(open(PELUANG, "rb"))
+    ambang = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))["lolos"]["ambang"]
+    tanda = lambda i: P.get(i, 0.0) >= ambang
+    for r in kal:
+        r["waspada"] = tanda(r["id"])
     q = {}
-    for st in ("gambut", "mineral", "sabana"):
-        rs = [r for r in kal if r["strata"] == st]
-        q[st] = [round(kuantil_konformal([skor_konformal(r["mc"][h], r["obs"][h]) for r in rs]), 4) for h in range(3)]
-    cak = lambda rows, qq: [round(statistics.mean([1 if (lambda iv: iv[0] - 1e-9 <= r["obs"][h] <= iv[2] + 1e-9)(lebarkan(r["mc"][h], qq[r["strata"]][h] if qq else 0)) else 0 for r in rows]), 3) if rows else None for h in range(3)]
-    out = {"q": q, "n_kal": {st: sum(1 for r in kal if r["strata"] == st) for st in q}, "kal_cakupan_mentah": cak(kal, None), "kal_cakupan": cak(kal, q)}
+    for st in ("gambut", "mineral", "sabana", "*"):
+        for w in (False, True):
+            rs = [r for r in kal if (st == "*" or r["strata"] == st) and r["waspada"] == w]
+            if len(rs) >= (20 if st == "*" else 40):
+                q[kunci_selang(st, w)] = [round(kuantil_konformal([skor_konformal(r["mc"][h], r["obs"][h]) for r in rs]), 4) for h in range(3)]
+
+    def cak(rows, qq):
+        out = []
+        for h in range(3):
+            d = [1 if (lambda iv: iv[0] - 1e-9 <= r["obs"][h] <= iv[2] + 1e-9)(lebarkan(r["mc"][h], q_selang(qq, r["strata"], r["waspada"], h) if qq else 0)) else 0 for r in rows]
+            out.append(round(statistics.mean(d), 3) if d else None)
+        return out
+    out = {"q": q, "n_kal": {k: sum(1 for r in kal if (k.startswith("*") or r["strata"] == k.split("|")[0]) and r["waspada"] == (k[-1] == "1")) for k in q},
+           "kal_cakupan_mentah": cak(kal, None), "kal_cakupan": cak(kal, q)}
     ua = pickle.load(open(os.path.join(MENTAH, "uji_awal.pkl"), "rb"))["uji"]
-    uj = [{"strata": r["strata"], "mc": r["mc"], "obs": [s["no"] for s in r["skor"]["persistensi"]], "ji": r["ji"]} for r in ua if r.get("mc")]
+    uj = [{"strata": r["strata"], "mc": r["mc"], "obs": [s["no"] for s in r["skor"]["persistensi"]], "ji": r["ji"], "waspada": tanda(r["id"])} for r in ua if r.get("mc")]
     out["uji2_cakupan_mentah"], out["uji2_cakupan"] = cak(uj, None), cak(uj, q)
     out["uji2_deteksi_pertama"] = cak([r for r in uj if r["ji"] == 0], q)
     out["uji2_per_lahan"] = {st: {"mentah": cak([r for r in uj if r["strata"] == st], None), "kalibrasi": cak([r for r in uj if r["strata"] == st], q),
-                                  "n": sum(1 for r in uj if r["strata"] == st)} for st in q}
+                                  "n": sum(1 for r in uj if r["strata"] == st)} for st in ("gambut", "mineral", "sabana")}
     kas = json.load(open(os.path.join(PUBLIK, "sebaran_kasus.json")))
     kc = []
     for b in kas["kasus"]:
         a = b["ha_awal"] / HA_SEL
-        kc.append({"strata": b["strata"], "mc": [[max(0.0, x / HA_SEL - a) for x in m] for m in b["pred_ha"]], "obs": [max(0.0, x / HA_SEL - a) for x in b["obs_ha"]], "th": b["th"]})
+        kc.append({"strata": b["strata"], "mc": [[max(0.0, x / HA_SEL - a) for x in m] for m in b["pred_ha"]], "obs": [max(0.0, x / HA_SEL - a) for x in b["obs_ha"]],
+                   "th": b["th"], "kelas": b["kelas"], "waspada": tanda(b["id"])})
     out["kasus_cakupan_mentah"], out["kasus_cakupan"] = cak(kc, None), cak(kc, q)
+    out["kasus_per_kelas"] = {k: {"mentah": cak([r for r in kc if r["kelas"] == k], None), "kalibrasi": cak([r for r in kc if r["kelas"] == k], q)} for k in ("besar", "sedang", "kecil")}
     out["kasus_2024_2026"] = cak([r for r in kc if r["th"] >= 2024], q)
     for b, r in zip(kas["kasus"], kc):
-        iv = [lebarkan(r["mc"][h], q[r["strata"]][h]) for h in range(3)]
+        iv = [lebarkan(r["mc"][h], q_selang(q, r["strata"], r["waspada"], h)) for h in range(3)]
         b["selang_ha"] = [[round(x[0] * HA_SEL + b["ha_awal"]), round(x[2] * HA_SEL + b["ha_awal"])] for x in iv]
     kas["ringkasan"]["cakupan_kalibrasi"] = out["kasus_cakupan"]
     json.dump(kas, open(os.path.join(PUBLIK, "sebaran_kasus.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     Mj = json.load(open(os.path.join(PUBLIK, "model_sebaran.json")))
-    Mj["selang"] = {"q": q, "ruang": "log(1 + sel baru)", "target": .8, "catatan": "CQR: P10/P90 Monte Carlo dilebarkan q per lahan & hari, dikalibrasi pada 2015-2023 (luar-sampel)"}
+    Mj["selang"] = {"q": q, "ruang": "log(1 + sel baru)", "target": .8, "kunci": "lahan|WASPADA (1/0); '*' = semua lahan",
+                    "catatan": "CQR: P10/P90 Monte Carlo dilebarkan q per lahan, tanda WASPADA & hari; dikalibrasi pada 2015-2023 (luar-sampel)"}
     json.dump(Mj, open(os.path.join(PUBLIK, "model_sebaran.json"), "w"), separators=(",", ":"))
     Hs = json.load(open(HASIL)) if os.path.exists(HASIL) else {}
     Hs["selang"] = out
     json.dump(Hs, open(HASIL, "w"), ensure_ascii=False, indent=1)
     log("selang", json.dumps(out))
-
 
 if __name__ == "__main__":
     a = sys.argv[1:]
@@ -560,6 +599,8 @@ if __name__ == "__main__":
         assert konteks(I, 0, 110.0, 0.0)["titik10_3h"] == 0 and konteks(I, 0, 110.0, 0.0)["jarak_aktif_km"] == 10.0
         assert n20_sekitar(None, [sel(110, 0)], 0, 10) == -1 and n20_sekitar(I, [sel(110, 0)], -500, 50) == -1
         assert n20_sekitar(I, [sel(110, 0)], 0, 50) == 1 and n20_sekitar(I, [sel(110, 0)], 0, 200) == 1  # 2,2 km di luar 750 m
+        qq = {"gambut|1": [1, 2, 3], "*|1": [4, 5, 6], "*|0": [0, 0, 0]}
+        assert q_selang(qq, "gambut", True, 1) == 2 and q_selang(qq, "mineral", True, 2) == 6 and q_selang(qq, "sabana", False, 0) == 0
         assert kuantil_konformal(list(range(10))) == 8 and lebarkan([0, 1, 3], 0) == [0.0, 1, 3.0]
         assert abs(lebarkan([1, 2, 3], math.log(2))[2] - 7) < 1e-9 and lebarkan([1, 2, 3], math.log(2))[0] == 0.0
         assert skor_konformal([0, 1, 3], 2) < 0 and skor_konformal([0, 1, 3], 7) > 0
