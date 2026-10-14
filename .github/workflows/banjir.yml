@@ -106,6 +106,16 @@ jobs:
             data/raw/banjir
           key: banjir-${{ github.run_id }}
 
+      # citra satelit punya cache sendiri (PNG besar, tidak ikut cache data-); jalur harus sama persis dengan simpanannya
+      - name: Pulihkan citra satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
+          restore-keys: citra-
+
       - name: Terbitkan ke Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
