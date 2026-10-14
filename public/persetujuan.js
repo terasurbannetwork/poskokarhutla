@@ -82,6 +82,8 @@
     tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online<span class="pb-pil-l"> · ${f(a.pbTampil)} tampilan · Statistik →</span></a>`);
   }
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pv-buka]")) { e.preventDefault(); atur(); } });   // tautan "Pengaturan privasi" di mana pun
-  const siap = () => { if (!pilihan) spanduk(); pil(); };
+  /* spanduk persetujuan disembunyikan dulu (pemilik, 14 Okt 2026); tanpa pilihan, analitik tetap mati. Munculkan lagi: SPANDUK = true */
+  const SPANDUK = false;
+  const siap = () => { if (!pilihan && SPANDUK) spanduk(); pil(); };
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", siap); else siap();
 })();

@@ -38,8 +38,7 @@
         ${URUT.map(j => bar(jn(j)[2], k.jenis[j]?.porsi || 0, jn(j)[1])).join("")}
         ${bar("Di luar areal konsesi", k.luar, "#2b8c86")}
         <div class="ks-bar-sep"></div>
-        ${bar("Di lahan gambut", k.gambut, "#4a3426")}${bar("Di kawasan lindung/konservasi", lind, "#1f7a3a")}
-        <p class="fnd">Porsi dari ${fmt(k.n)} titik panas VIIRS 7 hari; satu titik bisa jatuh di dua areal yang tumpang tindih. Batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026. Titik di areal konsesi bukan bukti siapa yang membakar.</p>`;
+        ${bar("Di lahan gambut", k.gambut, "#4a3426")}${bar("Di kawasan lindung/konservasi", lind, "#1f7a3a")}`;
     }
     sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ks-laci">${h}</div>`);
   }

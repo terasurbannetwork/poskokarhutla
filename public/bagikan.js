@@ -422,7 +422,7 @@ const Bagikan = {
     this._ex = out.filter(x => x.art?.querySelector("svg") && x.art.querySelector("h3")).map(x => ({...x, judul: x.art.querySelector("h3").textContent.trim()}));
     const sel = this.dialog().querySelector("#bgEx");
     sel.innerHTML = this._ex.map(e => `<option value="${e.id}">${esc(e.judul.length > 90 ? e.judul.slice(0, 88) + "…" : e.judul)}</option>`).join("");
-    if (!this._ex.some(e => e.id === this.exId)) this.exId = this._ex[0]?.id || "";
+    if (this.exId !== "luar" && !this._ex.some(e => e.id === this.exId)) this.exId = this._ex[0]?.id || "";
     sel.value = this.exId;
     return this._ex;
   },

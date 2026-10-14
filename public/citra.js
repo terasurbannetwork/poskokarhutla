@@ -35,7 +35,7 @@
     if (S.pilihK !== id || $("#laci .ct-laci")) return;
     const isi = xs?.length ? `<div class="seg ct-tgl" role="group" aria-label="Tanggal citra">${xs.map((h, i) => `<button data-i="${i}" aria-pressed="${i === awal}">${tg(h.tgl)}<small>${viirs(h) ? "VIIRS" : "S2"}</small></button>`).join("")}</div>
       <div class="ct-dua">${["tc", "swir"].map(m => `<figure><button class="ct-img" data-m="${m}" aria-label="Perbesar ${MODE[m]}"><img alt="" width="400" height="400"></button><figcaption>${MODE[m]}</figcaption></figure>`).join("")}</div>
-      <p class="ct-meta"></p>${LEG}<p class="fnd">${KET}</p><p class="fnd ct-kr"></p>`
+      <p class="ct-meta"></p>${LEG}<div class="sg-ket ct-ket"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 7.5v.5"/></svg><span><b>SWIR menembus asap tipis</b>: api sering tetap terlihat walau di warna asli tertutup</span></div><p class="fnd ct-kr"></p>`
       : `<p class="fnd">Belum ada citra untuk kompleks ini: hanya ${Object.keys(D.kompleks).length} kompleks prioritas teratas yang dipotretkan tiap hari, atau belum ada lintasan satelit dalam ${D.hari} hari.</p>`;
     const html = `<details class="lipat ct-laci" open><summary>Citra satelit terbaru</summary><div class="isi">${isi}</div></details>`;
     const api = [...document.querySelectorAll("#laci details.lipat")].find(d => d.querySelector("summary")?.textContent.startsWith("Api saat ini"));
