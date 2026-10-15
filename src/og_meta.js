@@ -38,9 +38,9 @@ async function muat(env, asal) {
 }
 
 /* dipanggil dari layaniHTML: res = respons aset HTML */
-export async function terapkanOg(env, url, res) {
+export async function terapkanOg(env, url, res, tetap = null) {
   if (!res.ok || !(res.headers.get("content-type") || "").includes("html")) return res;
-  const m = metaRute(url, await muat(env, url));
+  const m = tetap || metaRute(url, await muat(env, url));
   if (!m) return res;
   const isi = v => ({element: el => el.setAttribute("content", v)});
   return new HTMLRewriter()

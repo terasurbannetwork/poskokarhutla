@@ -8,6 +8,7 @@
   "d1_databases": [
     { "binding": "DB", "database_name": "poskowarga", "database_id": "GANTI-DENGAN-ID-DARI-wrangler-d1-create", "migrations_dir": "migrations" }
   ],
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
   "triggers": { "crons": ["17 * * * *", "15 */3 * * *"] },
   "vars": { "TURNSTILE_SITEKEY": "" }
 }

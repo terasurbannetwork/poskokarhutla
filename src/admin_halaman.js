@@ -15,7 +15,7 @@ const kepala = judul => `<!doctype html>
 </head>`;
 const atas = aktif => `<header class="ad-top">
   <a class="ad-logo" href="/">Posko Karhutla</a><span class="ad-sep">Admin</span>
-  <nav><a href="/admin/statistik" ${aktif === "statistik" ? 'aria-current="page"' : ""}>Statistik</a><a href="/admin/pesan" ${aktif === "pesan" ? 'aria-current="page"' : ""}>Kotak pesan<b class="ad-badge" id="badgePesan" hidden></b></a></nav>
+  <nav><a href="/admin/statistik" ${aktif === "statistik" ? 'aria-current="page"' : ""}>Statistik</a><a href="/admin/pesan" ${aktif === "pesan" ? 'aria-current="page"' : ""}>Kotak pesan<b class="ad-badge" id="badgePesan" hidden></b></a><a href="/admin/foto" ${aktif === "foto" ? 'aria-current="page"' : ""}>Foto lapangan</a></nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 
@@ -46,6 +46,14 @@ export const halamanPesan = () => `${kepala("Kotak pesan · Posko Karhutla")}
 ${atas("pesan")}
 <main class="ad-wrap" id="app"><p class="ad-redup">Memuat pesan…</p></main>
 <script src="/admin/pesan.js?v=1"></script>
+</body></html>`;
+
+export const halamanFoto = () => `${kepala("Foto lapangan · Posko Karhutla")}
+<body>
+${atas("foto")}
+<main class="ad-wrap" id="app"><p class="ad-redup">Memuat antrean foto…</p></main>
+<link href="/admin/foto.css?v=1" rel="stylesheet">
+<script src="/admin/foto.js?v=1"></script>
 </body></html>`;
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";

@@ -40,7 +40,7 @@ export function uraiCSV(teks, sensor, kini, jendelaJam = 24) {
 
 /* ---------------- wilayah: provinsi (poligon) + kecamatan (pusat terdekat) ---------------- */
 let WIL = null;
-async function wilayah(env) {
+export async function wilayah(env) {
   if (WIL) return WIL;
   const ambil = async p => { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); if (!r.ok) throw new Error(`${p}: ${r.status}`); return r.json(); };
   const [prov, kec] = await Promise.all([ambil("/geo/provinsi.json"), ambil("/banjir/data/pusat_kec.json")]);

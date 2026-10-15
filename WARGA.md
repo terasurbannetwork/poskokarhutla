@@ -170,3 +170,27 @@ npx wrangler@3 secret put EMAIL_TO        # kotak masuk pemilik; boleh beberapa,
   ditolak Cloudflare (galat 1027) sampai kuota direset; pindah ke Workers Paid bila itu terjadi. Tulisan D1 sudah disampel
   otomatis (pSampel/pHit di src/statistik.js), angkanya ditandai "perkiraan (sampel)".
 - Pasang ulang skrip di halaman: `python3 scripts/statistik/splice_jejak.py` (idempoten, jangkar harus cocok tepat sekali).
+
+## Foto & video lapangan
+
+Warga mengirim foto/video dari lokasinya (tab **Foto Lapangan** + lapisan "Foto warga" di Peta); admin menyetujui di
+`/admin/foto` sebelum tayang. Server: `src/foto.js` (rute `/api/foto*`, `/f/<id>` untuk tautan bagikan), skema
+`migrations/0007_foto.sql`, klien `public/foto.js` + `foto.css`, admin `public/admin/foto.js` + `foto.css`, uji
+`tests/warga/foto.test.mjs` (D1 + R2 lokal sungguhan).
+
+- Lokasi = GPS perangkat saat unggah (akurasi ≤ 1 km, dibaca ≤ 10 menit lalu); pengguna tidak bisa memilih titik. GPS/waktu
+  EXIF (bila masih ada) wajib ≤ 5 km dan ≤ 48 jam. Durasi video dibaca dari kotak `mvhd` MP4/MOV (maks 60 detik, 30 MB).
+  Foto dikompres di peramban (WebP/JPEG 1600 px) + thumbnail 480 px. Wilayah (prov/kab/kec) dihitung Worker.
+- Komentar langsung tayang (filter kata kasar, tautan & nomor HP dibuang); 3 aduan = komentar disembunyikan, foto kembali ke
+  antrean. Publik tidak pernah melihat email, hash IP, atau data dummy (🧪/🧹 di `/admin/foto`).
+- Tanpa binding R2 `MEDIA` tab & lapisan disembunyikan otomatis dan unggah menjawab 503.
+
+Mengaktifkan (pemilik):
+
+```bash
+# 1) Dasbor Cloudflare > R2 > aktifkan R2 (paket gratis 10 GB; butuh metode pembayaran di akun)
+npx wrangler@3 r2 bucket create poskokarhutla-foto
+npx wrangler@3 d1 migrations apply poskowarga --remote      # 0007_foto.sql
+# 2) tambahkan ke wrangler.jsonc lalu push ke main (terbit.yml men-deploy):
+#    "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
+```

@@ -55,10 +55,41 @@
     "table pesan": "pesan: email, kategori, panjang",
     "klien persetujuan (DNT/GPC, tolak, terima)": "persetujuan: menolak tidak mengirim",
     "klien jejak (30 menit, kembali, slot, muatan)": "jejak: aturan 30 menit",
-    "table stat_hari_baru": "migrasi 0006: stat_hari dibangun ulang"
+    "table stat_hari_baru": "migrasi 0006: stat_hari dibangun ulang",
+    "GET /api/foto": "foto: admin setujui lalu tayang",
+    "POST /api/foto": "foto: masukan salah DITOLAK",
+    "GET /api/foto/konfig": "foto: tanpa R2 unggah dijawab 503",
+    "GET /api/foto/:id": "foto: suka sakelar satu per IP",
+    "GET /api/foto/media/:id": "foto: unggah sah masuk antrean",
+    "GET /api/foto/thumb/:id": "foto: admin setujui lalu tayang",
+    "POST /api/foto/suka/:id": "foto: suka sakelar satu per IP",
+    "POST /api/foto/komentar/:id": "foto: suka sakelar satu per IP",
+    "POST /api/foto/aduan/:id": "foto: 3 aduan dari 3 IP",
+    "GET /api/foto/admin": "foto: admin wajib masuk",
+    "POST /api/foto/admin/:id": "foto: tolak butuh alasan",
+    "POST /api/foto/dummy": "foto dummy: isi semua ember",
+    "GET /f/:id": "foto: pratinjau tautan /f/:id",
+    "cron bersihkanFoto": "foto: cron membuang foto ditolak",
+    "table foto": "foto: audit hanya bisa ditambah; CHECK skema",
+    "table foto_suka": "foto: suka sakelar satu per IP",
+    "trigger foto_suka_tambah": "foto: suka sakelar satu per IP",
+    "trigger foto_suka_hapus": "foto: suka sakelar satu per IP",
+    "trigger foto_suka_tayang": "foto: suka sakelar satu per IP",
+    "table foto_komentar": "foto: suka sakelar satu per IP",
+    "trigger foto_komentar_tayang": "foto: suka sakelar satu per IP",
+    "trigger foto_komentar_hitung": "foto: suka sakelar satu per IP",
+    "trigger foto_komentar_ubah": "foto: 3 aduan dari 3 IP",
+    "trigger foto_komentar_hapus": "foto dummy: isi semua ember",
+    "table foto_aduan": "foto: 3 aduan dari 3 IP",
+    "trigger foto_aduan_tambah": "foto: 3 aduan dari 3 IP",
+    "table audit_foto": "foto: audit hanya bisa ditambah",
+    "trigger audit_foto_ubah": "foto: audit hanya bisa ditambah",
+    "trigger audit_foto_hapus": "foto: audit hanya bisa ditambah",
+    "table foto_laju": "foto: batas laju 5 unggahan"
   },
   "dikecualikan": {
-    "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika"
+    "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
+    "GET /admin/foto": "kerangka HTML statis; gerbang sesinya sama persis dengan /admin/statistik (St.halamanAdmin) yang sudah diuji di statistik.test.mjs"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"

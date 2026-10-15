@@ -7,7 +7,8 @@ import {perbaruiTitik, titikTerbaru} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
+import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *";
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -374,6 +375,11 @@ const RUTE = {
   "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
   "GET /statistik": (env, req, url, kini, ctx) => { catatHTML(env, req, "/statistik", ctx); return halamanPublik(); },
   "GET /api/publik": (env, req, url, kini, ctx) => Pub.publik(env, req, url, ctx, kini),
+  "GET /admin/foto": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanFoto()),
+  /* tautan bagikan foto lapangan: index.html dengan pratinjau foto itu; peramban membuka rinciannya (public/foto.js) */
+  "GET /f/:id": async (env, req, url, kini, ctx, id) => { catatHTML(env, req, "/f", ctx);
+    return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
+  ...RUTE_FOTO,
 };
 async function rute(env, req, url, ctx) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/", id = jalur.match(/\/([0-9a-f]{16})$/)?.[1];
@@ -388,7 +394,7 @@ async function rute(env, req, url, ctx) {
   catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
 }
 
-const HALAMAN = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
+const HALAMAN = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
 
 /* ================= HTML lewat Worker (statistik publik) — dipisah supaya mudah digabung dengan perubahan routing lain =================
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
@@ -474,6 +480,7 @@ export default {
   async scheduled(ev, env) {
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
     await bersihkan(env);
+    try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }   // migrasi 0007 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
     await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
     await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
