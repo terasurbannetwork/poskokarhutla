@@ -18,6 +18,10 @@ const Bagikan = {
     dom: ["https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js", () => window.htmlToImage],
   },
   get K() {
+    const k = this._K();
+    return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
+  },
+  _K() {
     return this.hal === "banjir"
       ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PantauBencana"}
@@ -494,15 +498,16 @@ const Bagikan = {
         L.halaman = [...(L.dom ? (await Promise.all(L.dom.map(e => this.domKanvas(e).catch(er => (console.warn(er), null))))).filter(Boolean) : []), ...(L.peta ? [fotoPeta(L.peta)] : []), ...(L.galeri ? [await this.galeriKanvas(L.galeri)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))),
           ...Array.from({length: nT}, (_, i) => this.tabelKanvas(L.tabel, BARIS, i * BARIS))]; L.hal[this.uk] = L.halaman; }
       const n = L.halaman.length, i = Math.min(this.halEx || 0, Math.max(0, n - 1)), lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 36;
-      L.sorot ||= this.sorotDari(L.svgs?.slice(0, 1));
-      return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? ` · ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: L.svgs?.length && i === (L.peta ? 1 : 0) + (L.galeri ? 1 : 0) ? L.sorot : [],   /* sorotan hanya di halaman grafik pertama */
+      L.sorot ||= this.sorotDari(L.svgs?.slice(0, 1)); L.tabelTip ??= L.tabel ? null : this.tabelDariTip(L.svgs?.slice(0, 1));
+      const grafik1 = L.svgs?.length && i === (L.dom ? L.dom.length : 0) + (L.peta ? 1 : 0) + (L.galeri ? 1 : 0);
+      return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? ` · ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: grafik1 ? L.sorot : [], tabelTip: grafik1 ? L.tabelTip : null,   /* sorotan & tabel isi hanya di halaman grafik pertama */
         fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(" · ")}; }
     const L = await this._exP || await this.daftarEx(), e = L.find(z => z.id === id) || L[0];
     if (!e) return {tpl: "ex", label: "Grafik Insight", judul: "Grafik Insight belum tersedia", kosong: true};
     const h3 = e.art.querySelector("h3"), tx = s => e.art.querySelector(s)?.textContent.replace(/\s+/g, " ").trim() || "";
     e.img ||= await this.svgKanvas(e.art.querySelector("svg"));
     return {tpl: "ex", id: e.id, label: "Grafik Insight", judul: e.judul, judulSeg: [...h3.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      sub: tx(".sub"), unit: tx(".unit"), fn: tx(".fn"), img: e.img, sorot: e.sorot ||= this.sorotDari([e.art.querySelector("svg")])};
+      sub: tx(".sub"), unit: tx(".unit"), fn: tx(".fn"), img: e.img, sorot: e.sorot ||= this.sorotDari([e.art.querySelector("svg")]), tabelTip: e.tabelTip ??= this.tabelDariTip([e.art.querySelector("svg")])};
   },
 
   /* ---------------------------------------------------------------- peta */
@@ -566,14 +571,19 @@ const Bagikan = {
   blokDom(art) {
     const lihat = e => e && e.offsetHeight > 40 && !e.matches(".bg-ex, .bs-sel, .pm-h, header, .ex-hd, .fn, .ex-ft, [hidden]");
     let ks = [...(art.querySelector(":scope > .ex-bd") || art).children].filter(lihat);
-    while (ks.length === 1 && [...ks[0].children].filter(lihat).length > 1 && ks[0].offsetHeight > 500) ks = [...ks[0].children].filter(lihat);
+    /* satu pembungkus: turun bila isinya berdampingan (kolom kiri/kanan) atau terlalu tinggi untuk satu halaman */
+    const dampingan = e => new Set([...e.children].filter(lihat).map(c => c.offsetLeft)).size > 1;
+    while (ks.length === 1 && [...ks[0].children].filter(lihat).length > 1 && (dampingan(ks[0]) || ks[0].offsetHeight > 500)) ks = [...ks[0].children].filter(lihat);
     return ks.slice(0, 6);
   },
   async domKanvas(el) {
     await this.muatLib("dom");
     const R = document.documentElement, tema = R.dataset.theme; R.dataset.theme = "light";
-    try { return await htmlToImage.toCanvas(el, {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
-      filter: n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel")))}); }
+    const tombol = n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel"))), o = {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw="};
+    /* gambar lintas-asal (favikon media, thumbnail berita) bisa menggagalkan tangkapan: ulangi tanpa gambar itu */
+    const luar = n => n.tagName === "IMG" && n.src && !n.src.startsWith(location.origin) && !n.src.startsWith("data:");
+    try { return await htmlToImage.toCanvas(el, {...o, filter: tombol}); }
+    catch (e) { return await htmlToImage.toCanvas(el, {...o, filter: n => tombol(n) && !luar(n)}); }
     finally { if (tema) R.dataset.theme = tema; else delete R.dataset.theme; }
   },
   /* galeri citra satelit (kartu Insight): tiap kompleks = nama + warna asli & SWIR berdampingan, 3 kolom */
@@ -628,7 +638,7 @@ const Bagikan = {
   async render(tpl = this.tpl, uk = this.uk) {
     await this.muatKontak();
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
-    const atas = story ? 250 : 64, bawah = story ? H - 300 : H - 30;   /* kaki dirapatkan ke tepi bawah (pemilik, 15 Okt 2026) */
+    const atas = story ? 110 : 64, bawah = story ? H - 70 : H - 30;   /* kaki dirapatkan ke tepi bawah (pemilik, 15 Okt 2026) */
     const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
     x.fillStyle = this.C.kertas; x.fillRect(0, 0, W, H);
     const y0 = this.kepala(x, W, P, atas, d, uk), y1 = this.kaki(x, W, H, P, bawah, story);
@@ -701,7 +711,7 @@ const Bagikan = {
     else if (k === "peta") await this.petaBlok(x, a, b, w, h, d);
     else if (k === "ex") { const img = f => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = this.dasar + f; });
       /* QR langsung ke https://pantau.terasurban.com (koreksi galat H, jadi logo di tengah tetap terbaca) */
-      this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png")]); this.exBlok(x, a, b, w, h, d, ...await this._qr); }
+      this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png"), img("img/logo.svg?v=2")]); this.exBlok(x, a, b, w, h, d, ...await this._qr); }
   },
   kpi(x, a, b, w, h, q, pendek) {
     /* ubin KPI: garis warna tipis di atas, label kecil, angka besar, keterangan berpil (pemilik, 14 Okt 2026) */
@@ -767,22 +777,22 @@ const Bagikan = {
   },
   /* grafik langsung di kertas (tanpa kartu), selebar mungkin. Urutan: satuan, kotak sorotan (angka utama grafik), grafik,
      lalu ajakan "Cek data lengkap" + QR di dasar (pemilik, 15 Okt 2026) */
-  exBlok(x, a, b, w, h, d, qr, mark) {
+  exBlok(x, a, b, w, h, d, qr, mark, ikon) {
     if (d.kosong || !d.img) { this.f(x, 500, 24); x.fillStyle = this.C.tinta2; x.fillText("Buka tab Insight sekali, lalu coba lagi.", a, b + 30); return; }
     let y = b; this.f(x, 600, 22); x.fillStyle = this.C.tinta2;
     if (d.unit) { this.baris(x, d.unit, w).slice(0, 2).forEach(l => { x.fillText(l, a, y + 24); y += 32; }); y += 10; }
     /* dasar: catatan kaki lalu ajakan + QR */
-    /* ajakan: pita navy senada kepala, teks putih, QR di ubin putih (pemilik, 15 Okt 2026) */
-    const qs = 150, yC = b + h - qs, gC = x.createLinearGradient(a, yC, a + w, yC + qs); gC.addColorStop(0, this.C.navy2); gC.addColorStop(1, this.C.navy);
-    x.fillStyle = gC; x.beginPath(); x.roundRect(a, yC, w, qs, 28); x.fill();
-    if (qr) { const qp = 16, qx = a + w - qs + qp, qy = yC + qp, qw = qs - 2 * qp; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(qx, qy, qw, qw, 18); x.fill();
-      const qi = qw - 20; x.drawImage(qr, qx + 10, qy + 10, qi, qi);
-      if (mark) { const m = qi * .26, mx = qx + 10 + (qi - m) / 2, my = qy + 10 + (qi - m) / 2; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(mx - 3, my - 3, m + 6, m + 6, 5); x.fill();
+    /* ajakan: panel putih berbayang, ikon aplikasi, domain besar, QR berbingkai tipis (pemilik, 15 Okt 2026) */
+    const qs = 156, yC = b + h - qs;
+    x.save(); x.shadowColor = "rgba(11,37,69,.10)"; x.shadowBlur = 30; x.shadowOffsetY = 8; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(a, yC, w, qs, 32); x.fill(); x.restore();
+    const ik = 84, ix = a + 28, iy = yC + (qs - ik) / 2; if (ikon) x.drawImage(ikon, ix, iy, ik, ik);
+    if (qr) { const qw = qs - 36, qx = a + w - qw - 18, qy = yC + 18; x.strokeStyle = "#e3e8ef"; x.lineWidth = 2; x.beginPath(); x.roundRect(qx, qy, qw, qw, 18); x.stroke();
+      const qi = qw - 18; x.drawImage(qr, qx + 9, qy + 9, qi, qi);
+      if (mark) { const m = qi * .26, mx = qx + 9 + (qi - m) / 2, my = qy + 9 + (qi - m) / 2; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(mx - 3, my - 3, m + 6, m + 6, 5); x.fill();
         const r = Math.min(m / mark.width, m / mark.height); x.drawImage(mark, mx + (m - mark.width * r) / 2, my + (m - mark.height * r) / 2, mark.width * r, mark.height * r); } }
-    const tx = a + 40, tw = w - qs - 64;
-    x.fillStyle = this.C.hl; this.f(x, 800, 19); x.fillText("CEK DATA LENGKAP", tx, yC + 50);
-    x.fillStyle = "#fff"; this.pas(x, this.situs(), tw, 800, 42, true, 26); x.fillText(this.situs(), tx, yC + 98);
-    x.fillStyle = "rgba(255,255,255,.72)"; this.f(x, 500, 19); x.fillText("Pindai kode QR atau buka situsnya", tx, yC + 128);
+    const tx = ix + (ikon ? ik + 24 : 0), tw = w - (tx - a) - qs - 20;
+    x.fillStyle = this.C.tinta2; this.f(x, 600, 21); x.fillText(this.potong(x, this.en() ? "Full data & live map" : "Data lengkap & peta langsung", tw), tx, yC + 62);
+    x.fillStyle = this.C.navy2; this.pas(x, this.situs(), tw, 800, 40, true, 24); x.fillText(this.situs(), tx, yC + 108);
     this.f(x, 500, 18); x.fillStyle = this.C.tinta2; const fn = d.fn ? this.baris(x, d.fn.replace(/\s*·?\s*Lihat data lengkap di \S+/, ""), w).slice(0, 2) : [], yF = yC - 20 - fn.length * 26;
     fn.forEach((l, i) => x.fillText(l, a, yF + 18 + i * 26));
     /* sorotan di atas grafik */
@@ -799,6 +809,10 @@ const Bagikan = {
         if (ket.length) { this.f(x, 500, 16); x.fillStyle = this.C.tinta2; x.textAlign = "right"; x.fillText(this.potong(x, ket.join(" · "), cw - 90), xx + cw - 22, y + 46); x.textAlign = "left"; } });
       y += tS + gS; }
     const ruang = yF - 24 - y, s = Math.min(w / d.img.width, ruang / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
+    /* ruang tegak berlebih (story, grafik lebar): isi dengan tabel angka grafik itu sendiri di bawahnya (pemilik, 15 Okt 2026) */
+    const sisa = ruang - ih - 32, nb = d.tabelTip ? Math.min(14, d.tabelTip.querySelectorAll("tbody tr").length, Math.floor((sisa - 54) / 66)) : 0;
+    if (nb >= 3) { x.drawImage(d.img, a + (w - iw) / 2, y, iw, ih); const tc = this.tabelKanvas(d.tabelTip, nb), th = tc.height * w / tc.width;
+      x.drawImage(tc, a, y + ih + 32 + Math.max(0, (sisa - th) / 2), w, th); return; }
     x.drawImage(d.img, a + (w - iw) / 2, y + Math.max(0, (ruang - ih) / 2), iw, ih);
   },
 

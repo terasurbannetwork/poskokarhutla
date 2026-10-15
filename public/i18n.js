@@ -62,7 +62,10 @@
     if (B !== "en" || !KAMUS || typeof s !== "string") return s;
     const t = s.trim().replace(/\s+/g, " "); if (!t || !/\p{L}{2}/u.test(t)) return s;   // spasi/baris baru di dalam teks HTML tidak bermakna
     let r = CACHE.get(t);
-    if (r === undefined) { r = cari(t); CACHE.set(t, r); }
+    if (r === undefined) { r = cari(t);
+      /* nama produk dalam EN: "Disaster Monitoring" (pemilik, 15 Okt 2026), juga di kalimat yang belum ada di kamus */
+      if (r == null && t.includes("Pantau Bencana")) r = t; if (r != null) r = r.replace(/Pantau Bencana/g, "Disaster Monitoring").replace(/#PantauBencana/g, "#DisasterMonitoring");
+      CACHE.set(t, r); }
     if (r == null) { if (catat && !HILANG.has(t)) HILANG.set(t, location.pathname); return s; }
     return s.match(/^\s*/)[0] + r + s.match(/\s*$/)[0];
   }

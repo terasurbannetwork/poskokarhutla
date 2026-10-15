@@ -178,6 +178,7 @@ html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
 @media (prefers-reduced-motion:no-preference){.pb-ik::before{animation:pb-gema 3s cubic-bezier(.16,1,.3,1) infinite}.pb-ik::after{animation:pb-gema 3s cubic-bezier(.16,1,.3,1) 1.5s infinite}}
 @keyframes pb-gema{0%{transform:scale(1);opacity:.7}100%{transform:scale(1.9);opacity:0}}
 .pb-nm{font:700 24px/1 var(--display);letter-spacing:-.03em;display:flex;gap:6px}.pb-nm b{color:var(--aksen);font-weight:800}
+.pb-nm>span{display:flex;gap:6px}.pb-nm .nm-en,html[lang=en] .pb-nm .nm-id{display:none}html[lang=en] .pb-nm .nm-en{display:flex}  /* EN: Disaster Monitoring */
 /* blok "Sebuah inisiatif Teras Urban": garis tipis pemisah, label kecil, logo, keterangan */
 .oleh-blok{display:grid;justify-items:center;gap:10px;margin-top:40px;padding-top:26px;position:relative}
 .oleh-blok::before{content:"";position:absolute;top:0;left:50%;width:56px;height:2px;border-radius:2px;translate:-50% 0;background:color-mix(in oklab,var(--aksen) 45%,transparent)}
@@ -1034,7 +1035,7 @@ section[hidden],[hidden]{display:none!important}
     </div>
   </div>
   <div class="wrap">
-    <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
+    <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm"><span class="nm-id" translate="no">Pantau<b>Bencana</b></span><span class="nm-en" translate="no">Disaster<b>Monitoring</b></span></span></a>
     <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana<br class="lebar"> di Indonesia secara<br class="lebar"> <em>real time</em></h1>
     <p class="misi masuk" style="--d:2">Tim Pantau Bencana mengagregasi dan mengolah data untuk memberikan wawasan tentang kondisi terkini dan riwayat bencana di Indonesia.</p>
     <div class="aksi masuk" style="--d:3">

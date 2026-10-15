@@ -255,6 +255,7 @@ jobs:
           python3 scripts/data/udara_rekom.py uji
           python3 scripts/data/berita.py uji
           python3 scripts/data/citra.py uji
+          python3 scripts/data/asap.py uji
           python3 scripts/data/konsesi_kompleks.py uji
           python3 scripts/data/dampak.py uji
           python3 scripts/data/penerbangan.py uji

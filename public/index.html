@@ -1484,6 +1484,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
           <label><input type="checkbox" data-l="angin" checked> Angin</label>
           <label><input type="checkbox" data-l="asap"> PM2.5</label>
+          <label><input type="checkbox" data-l="pm10"> PM10</label>
           <label><input type="checkbox" data-l="aqi"> AQI (ISPU)</label>
           <label><input type="checkbox" data-l="hujan"> Hujan</label>
         </details>
@@ -1740,7 +1741,7 @@ const Peta = {
   lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("titik")) return;
-    setTimeout(() => ["angin", "asap", "hujan", "gambut", "kawasan", "konsesi", "udara", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
+    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "kawasan", "konsesi", "udara", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
     const bawahLabel = this.lapisAwal();
     peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
@@ -1972,6 +1973,9 @@ const Lapis = {
       asap: async () => { const d = this.cache.asap ||= await muatJSON("data/asap.json"); const g = gambarAsap(d);
         peta.addSource("asap", {type: "image", url: g.url, coordinates: g.kor});
         peta.addLayer({id: "asap", type: "raster", source: "asap", paint: {"raster-opacity": .6, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
+      pm10: async () => { const d = this.cache.asap ||= await muatJSON("data/asap.json"); const g = gambarAsap(d, 7, ST_PM10);
+        peta.addSource("pm10", {type: "image", url: g.url, coordinates: g.kor});
+        peta.addLayer({id: "pm10", type: "raster", source: "pm10", paint: {"raster-opacity": .6, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
       aqi: async () => { const u = (this.cache.dampakU ||= (await muatJSON("data/dampak.json")).udara);
         peta.addSource("aqi", {type: "geojson", data: geoAQI(u)});
         /* kota tidak sehat ke atas lebih besar & di atas; nama kota muncul mulai zoom 5, tidak saling tumpuk */
@@ -2014,6 +2018,8 @@ function gradasi(st, v) { for (let k = 1; k < st.length; k++) if (v <= st[k][0])
     return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); } return st[st.length - 1][1]; }
 /* PM2.5 menurut ambang ISPU: <=15,5 baik, <=55,4 sedang, <=150,4 tidak sehat, <=250,4 sangat tidak sehat, >250 berbahaya */
 const ST_PM = [[0, [70, 150, 220, 0]], [15.5, [90, 180, 120, 90]], [55.4, [240, 210, 80, 200]], [150.4, [240, 120, 50, 230]], [250.4, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
+/* PM10 menurut ambang ISPU: <=50 baik, <=150 sedang, <=350 tidak sehat, <=420 sangat tidak sehat, >420 berbahaya */
+const ST_PM10 = [[0, [70, 150, 220, 0]], [50, [90, 180, 120, 90]], [150, [240, 210, 80, 200]], [350, [240, 120, 50, 230]], [420, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 200, 240, 120]], [10, [70, 140, 220, 200]], [30, [40, 80, 200, 230]], [80, [90, 40, 170, 240]]];
 /* grid ke gambar: 1 piksel per sel, MapLibre menghaluskan */
 const hariSebelum = t => new Date(new Date(t + "T12:00:00+07:00") - 864e5).toISOString().slice(0, 10);
@@ -2036,8 +2042,9 @@ window.aqiISPU ||= aqiISPU;
 function geoAQI(u) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.max(0, u.hari.indexOf(tgl));
   return {type: "FeatureCollection", features: u.kota.filter(c => c.pm?.[i] != null).map(c => { const v = aqiISPU(c.pm[i]), [k, w] = kelasISPU(v);
     return {type: "Feature", geometry: {type: "Point", coordinates: [c.lon, c.lat]}, properties: {v, k, w, pm: Math.round(c.pm[i]), nama: c.nama, prov: c.prov}}; })}; }
-function gambarAsap(d) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.max(0, d.hari.indexOf(tgl));
-  return gambarGrid(1, 94, 141, -11, 6, put => d.grid.forEach(([la, lo, pm]) => pm[i] != null && put(lo, la, gradasi(ST_PM, pm[i])))); }
+/* kol: indeks kolom asap.json (2 = pm25_maks, 7 = pm10_maks) */
+function gambarAsap(d, kol = 2, st = ST_PM) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.max(0, d.hari.indexOf(tgl));
+  return gambarGrid(1, 94, 141, -11, 6, put => d.grid.forEach(r => r[kol]?.[i] != null && put(r[1], r[0], gradasi(st, r[kol][i])))); }
 function gambarHujan() { const i = S.fwiHari;
   return gambarGrid(S.fwi.sel, 94.5, 141.5, -11.5, 6.5, put => S.fwi.grid.forEach(g => { const h = g.hari[i]; h && h.hujan != null && put(g.lon, g.lat, gradasi(ST_HUJAN, h.hujan)); })); }
 
@@ -2419,12 +2426,12 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
   posko: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', perisai: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', orang: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.5-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
   gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>', peringatan: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'};
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
-  fwi: ["#5a9e74", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
+  fwi: ["#5a9e74", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
   gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI",udara: "Pangkalan udara", fwi: "FWI", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
@@ -2441,7 +2448,7 @@ $("#lapisLipat").addEventListener("click", e => { e.stopPropagation(); const ds 
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
@@ -2465,12 +2472,13 @@ function renderFwiHari() {
     `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${labelHari(h.tgl)}</button>`).join("")}</div>`;
 }
 /* satu pemilih waktu saja: hari prakiraan (lapisan cuaca) menggantikan rentang titik panas selama tampil */
-const garisWaktu = () => { const on = ["fwi", "angin", "asap", "aqi", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); /* rentang titik panas tetap tampil walau lapisan cuaca menyala */ };
+const garisWaktu = () => { const on = ["fwi", "angin", "asap", "pm10", "aqi", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); /* rentang titik panas tetap tampil walau lapisan cuaca menyala */ };
 $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.fwiHari = +b.dataset.i;
   $("#fwiHari").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => { const g = Peta.fwiGambar(); peta.getSource("fwi").updateImage({url: g.url, coordinates: g.kor});
     if (Peta.lihat("angin")) Angin.bangun();
     if (peta.getSource("asap") && Lapis.cache.asap) { const a = gambarAsap(Lapis.cache.asap); peta.getSource("asap").updateImage({url: a.url, coordinates: a.kor}); }
+    if (peta.getSource("pm10") && Lapis.cache.asap) { const a = gambarAsap(Lapis.cache.asap, 7, ST_PM10); peta.getSource("pm10").updateImage({url: a.url, coordinates: a.kor}); }
     if (peta.getSource("aqi") && Lapis.cache.dampakU) peta.getSource("aqi").setData(geoAQI(Lapis.cache.dampakU));
     if (peta.getSource("hujan")) { const h = gambarHujan(); peta.getSource("hujan").updateImage({url: h.url, coordinates: h.kor}); } if (peta.getLayer("angin")) { peta.removeLayer("angin"); peta.removeSource("angin"); Lapis.pasang("panah"); } }); });
 function renderLegenda() {
@@ -2501,6 +2509,7 @@ function renderLegenda() {
     ${Peta.lihat("metar") ? `<div class="lbl" style="margin-top:8px">Jarak pandang bandara</div><div class="leg" style="margin-top:4px">${[["#c9503a", "< 1 km"], ["#e58a45", "1–5 km"], ["#e3b94e", "5–8 km"], ["#5a9e74", "≥ 8 km"]].map(([c, n]) => `<span><i class="sw dot" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("aqi") ? `<div class="lg-g"><div class="lbl">AQI (ISPU) dari PM2.5</div><div class="leg">${[["Baik ≤ 50", "#5a9e74"], ["Sedang ≤ 100", "#4f8fc4"], ["Tidak sehat ≤ 200", "#e3b94e"], ["Sangat tidak sehat ≤ 300", "#c9503a"], ["Berbahaya > 300", "#5c1a2b"]].map(([t, w]) => `<span><i class="sw dot" style="background:${w}"></i>${t}</span>`).join("")}</div></div>` : ""}
     ${Peta.lihat("asap") ? `<div class="lbl" style="margin-top:8px">Asap PM2.5 maks. harian (µg/m³)</div><div class="legscale">${[8, 35, 100, 200, 400].map(v => `<i style="background:rgb(${gradasi(ST_PM, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>baik</span><span>sedang</span><span>tdk sehat</span><span>sgt tdk sehat</span><span>bahaya</span></div>` : ""}
+    ${Peta.lihat("pm10") ? `<div class="lbl" style="margin-top:8px">Asap PM10 maks. harian (µg/m³)</div><div class="legscale">${[25, 100, 250, 385, 500].map(v => `<i style="background:rgb(${gradasi(ST_PM10, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>baik</span><span>sedang</span><span>tdk sehat</span><span>sgt tdk sehat</span><span>bahaya</span></div>` : ""}
     ${Peta.lihat("hujan") ? `<div class="lbl" style="margin-top:8px">Hujan 24 jam (mm)</div><div class="legscale">${[1, 5, 15, 40, 80].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>5</span><span>15</span><span>40</span><span>80+</span></div>` : ""}
     ${Peta.lihat("angin") ? `<div class="leg-cat"><i style="--w:#1f5f8b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg></i><span><b>Angin</b>garis = arah siang · terang = kencang</span></div>` : ""}
     ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI)</div><div class="legscale">${[0, 2, 7, 14, 25, 40].map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>0</span><span>2</span><span>7</span><span>14</span><span>25</span><span>40+</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div>` : ""}</div></details>`;
@@ -3534,14 +3543,14 @@ const Insight = {
        dengan PAKAI_PV = true. */
     const PAKAI_PV = false;
     const th = Riwayat.th, PP = this.provDipilih("kecProv"), pp = PP.length === 1 ? PP[0] : "", top = Object.values(S.riw).filter(r => r.jenis === "kec" && (PP.length ? PP.includes(r.prov) : PRIO.includes(r.prov))).sort((a, b) => b.skor - a.skor).filter(r => !PAKAI_PV || !window.Preventif || Preventif.lolos(r.kunci, this.st.kecAksi)).slice(0, +this.st.kecN);
-    const PV = PAKAI_PV && window.Preventif?.lebar() || 0, W = 940 + PV, L = 250, R = 150 + PV, T = 26, rh = 34, cw = (W - L - R) / th.length, H = T + top.length * rh + 30;
+    const PV = PAKAI_PV && window.Preventif?.lebar() || 0, W = 1020 + PV, L = 340, R = 150 + PV, T = 26, rh = 34,   /* kolom Provinsi ditambah, huruf diperkecil (pemilik, 15 Okt 2026) */ cw = (W - L - R) / th.length, H = T + top.length * rh + 30;
     const isi = t => t <= 0 ? "var(--surface)" : `color-mix(in oklch, #c9503a ${Math.round(15 + t * 85)}%, #fbe3b4)`;
     let g = th.map((t, j) => j % 5 === 0 || j === th.length - 1 ? `<text x="${L + j * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" opacity=".65">${t}</text>` : "").join("")
-      + `<text x="22" y="14" font-size="11" font-weight="700" opacity=".75">Kecamatan</text><text x="${L - 100}" y="14" font-size="11" font-weight="700" opacity=".75">Kab/Kota</text><text x="${W - R + 14}" y="14" font-size="11" font-weight="700" opacity=".75">Tahun</text><text x="${W - PV - 80}" y="14" font-size="11" font-weight="700" opacity=".75">Total titik</text>` + (PV ? Preventif.judulKolom(W - PV + 14) : "");
+      + `<text x="22" y="14" font-size="11" font-weight="700" opacity=".75">Kecamatan</text><text x="${L - 210}" y="14" font-size="11" font-weight="700" opacity=".75">Kab/Kota</text><text x="${L - 106}" y="14" font-size="11" font-weight="700" opacity=".75">Provinsi</text><text x="${W - R + 14}" y="14" font-size="11" font-weight="700" opacity=".75">Tahun</text><text x="${W - PV - 80}" y="14" font-size="11" font-weight="700" opacity=".75">Total titik</text>` + (PV ? Preventif.judulKolom(W - PV + 14) : "");
     top.forEach((r, i) => { const y = T + i * rh, m = Math.max(...r.v, 1);
       g += `<g class="gf" style="--i:${i};cursor:pointer" ${PV ? Preventif.attr(r.kunci) : "data-riw"}="${esc(r.kunci)}"><rect x="0" y="${y + 1}" width="${W}" height="${rh - 2}" rx="6" fill="transparent" class="hov"/>
         <circle cx="10" cy="${y + rh / 2}" r="5" fill="${WARNA_PROV[r.prov]}"/>
-        <text x="22" y="${y + rh / 2 + 4}" font-size="13" font-weight="700">${esc(r.nama.length > 17 ? r.nama.slice(0, 16) + "…" : r.nama)}</text><text x="${L - 100}" y="${y + rh / 2 + 4}" font-size="11.5" opacity=".65">${esc(r.kab.length > 15 ? r.kab.slice(0, 14) + "…" : r.kab)}</text>`;
+        <text x="22" y="${y + rh / 2 + 4}" font-size="12" font-weight="700">${esc(r.nama.length > 15 ? r.nama.slice(0, 14) + "…" : r.nama)}</text><text x="${L - 210}" y="${y + rh / 2 + 4}" font-size="11" opacity=".65">${esc(r.kab.length > 14 ? r.kab.slice(0, 13) + "…" : r.kab)}</text><text x="${L - 106}" y="${y + rh / 2 + 4}" font-size="11" opacity=".65">${(n => esc(n.length > 14 ? n.slice(0, 13) + "…" : n))(namaProv(r.prov))}</text>`;
       /* tooltip kotak: nama + kab/tahun, angka besar, status terbakar, puncak kecamatan itu (atribut pakai kutip tunggal karena data-tip berkutip ganda) */
       const pk = r.v.indexOf(m);
       r.v.forEach((x, j) => g += `<rect x="${L + j * cw + 1}" y="${y + 5}" width="${cw - 2}" height="${rh - 10}" rx="3" style="fill:${isi(x / m)}" data-tip="<div class='tk'><div class='tk-h'><b>${esc(r.nama)}</b><small>${esc(r.kab)} · ${th[j]}</small></div><div class='tk-n'><b>${fmt(x)}</b><span>titik panas</span><span class='tk-s${x >= 10 ? " on" : ""}'>${x >= 10 ? "Terbakar" : "Di bawah ambang"}</span></div>${j ? `<div class='tk-d ${x > r.v[j - 1] ? "naik" : x < r.v[j - 1] ? "turun" : ""}'>${x > r.v[j - 1] ? "▲" : x < r.v[j - 1] ? "▼" : "="} ${r.v[j - 1] ? fmt(Math.abs(Math.round((x - r.v[j - 1]) / r.v[j - 1] * 100))) + "%" : x ? "baru muncul" : ""} <span>vs ${th[j - 1]} (${fmt(r.v[j - 1])})</span></div>` : ""}<div class='tk-f'>${j === pk ? "<b>Tahun terparah</b>" : `Terparah ${th[pk]} (${fmt(m)})`} · terbakar ${r.tahun} dari ${th.length} tahun · total ${rb(r.total)} titik</div></div>"/>`);
@@ -3549,7 +3558,10 @@ const Insight = {
         ${(() => { const t = fmt(r.total); return this.pil(W - PV - 80, y + 7, t, "color-mix(in oklch, #c9503a 14%, transparent)", "#b8392b", 12, `<g transform="scale(.5)" stroke-width="3.4">${IKON.api}</g>`)[0]; })()}${PV ? Preventif.sel(r.kunci, W - PV + 14, y, rh) : ""}</g>`; });
     this._leg = [["#fbe3b4", "sedikit titik"], ["color-mix(in oklch, #c9503a 60%, #fbe3b4)", "sedang"], ["#c9503a", "terbanyak (per kecamatan)"]];
     const langganan = top.filter(r => r.tahun >= th.length - 2), nProv = new Set(langganan.map(r => r.prov)).size;
-    return this.ex(`${this.hl(langganan.length + " kecamatan")} ${pp ? "di " + esc(namaProv(pp)) : `di ${this.hl(nProv + " provinsi")}`} mengalami karhutla hampir setiap tahun`,
+    /* provinsi pilihan > 1: judul menyebut pilihannya; bila semua kecamatan teratas di satu provinsi, disebut namanya (pemilik, 15 Okt 2026) */
+    const satu = nProv === 1 ? namaProv(langganan[0].prov) : "", diMana = pp ? "di " + esc(namaProv(pp))
+      : PP.length > 1 ? `di ${this.hl(PP.length + " provinsi pilihan")}${satu ? `, semuanya di ${esc(satu)},` : ""}` : satu ? "di " + esc(satu) : `di ${this.hl(nProv + " provinsi")}`;
+    return this.ex(`${this.hl(langganan.length + " kecamatan")} ${diMana} mengalami karhutla hampir setiap tahun`,
       `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "9 provinsi prioritas"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. ${PV ? "Klik baris untuk rencana pencegahan." : "Klik baris untuk analisa rinci."}`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:${760 + PV}px" role="img" aria-label="Kecamatan langganan api">${g}</svg></div>${PV ? Preventif.ringkasProv(pp) : ""}`,
       `Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,

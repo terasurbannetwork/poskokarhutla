@@ -66,10 +66,16 @@
 .ct-pasang figure.ct-hilang{background:var(--surface)}
 .ct-pasang figure.ct-hilang::after{content:"Citra belum tersedia";position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--ink2)}
 html[lang=en] .ct-pasang figure.ct-hilang::after{content:"Image not yet available"}
-/* pilihan tanggal per kartu galeri (pemilik, 15 Okt 2026) */
-.ct-tg{display:flex;gap:6px;overflow-x:auto;padding:0 10px 8px;scrollbar-width:none}
-.ct-tg::-webkit-scrollbar{display:none}
-.ct-tg button{flex:none;display:inline-flex;align-items:center;gap:4px;min-height:30px;padding:0 11px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink2);font:600 12px var(--font);cursor:pointer}
-.ct-tg button small{font-size:9.5px;font-weight:700;opacity:.7}
-.ct-tg button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
-.ct-tg button:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+/* pilihan tanggal per kartu galeri: segmen selebar kartu, tiap tombol selebar isinya (pemilik, 15 Okt 2026) */
+.ct-tg{display:flex;gap:2px;margin:0 10px 10px;padding:3px;border-radius:999px;background:var(--surface)}
+.ct-tg button{flex:1 1 auto;min-width:0;display:inline-flex;align-items:center;justify-content:center;gap:4px;min-height:32px;padding:0 10px;border:0;border-radius:999px;background:none;color:var(--ink2);font:600 12.5px var(--font);white-space:nowrap;cursor:pointer;transition:background .15s,color .15s}
+.ct-tg button:hover{color:var(--ink)}
+.ct-tg button small{font-size:9.5px;font-weight:800;letter-spacing:.03em;opacity:.65}
+.ct-tg button[aria-pressed="true"]{background:var(--card);color:var(--ink);font-weight:800;box-shadow:0 1px 3px rgb(11 37 69 / .14)}
+.ct-tg button:focus-visible{outline:3px solid #e3b94e;outline-offset:1px}
+/* kepala kartu galeri: kecamatan + label kab/kota + label provinsi, satu baris (pemilik, 15 Okt 2026) */
+.ct-kartu2 > .ct-nm1{flex-wrap:nowrap;gap:6px;min-width:0;overflow:hidden}
+.ct-nm1 b{flex:none;font-size:13px}
+.ct-nm1 .ct-lbl{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11px!important;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch,#e8743b 12%,var(--card));color:#b5552a!important}
+.ct-nm1 .ct-lbl.ab{background:var(--surface);color:var(--ink2)!important;flex:0 1 auto}
+.ct-kosong{grid-column:1/-1;text-align:center;color:var(--ink2);padding:32px 0}
