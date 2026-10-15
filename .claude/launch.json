@@ -59,6 +59,19 @@
         "8788"
       ],
       "port": 8788
+    },
+    {
+      "name": "public-lokal",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-I",
+        "-m",
+        "http.server",
+        "8797",
+        "-d",
+        "/Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla/public"
+      ],
+      "port": 8797
     }
   ]
 }
