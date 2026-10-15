@@ -84,7 +84,7 @@ async function rincian(env, req, id, kini, ctx) {
 
 /* media & thumbnail dari R2; yang belum tayang hanya untuk admin. Dukung Range (video bisa digeser tanpa unduh penuh). */
 /* 100 foto karhutla berbeda dari Wikimedia Commons (lisensi bebas, kredit di /img/dummy/kredit.json); dua digit hex terakhir id dummy = nomor fotonya */
-const ASET_DUMMY = Array.from({length: 100}, (_, i) => `/img/dummy/f${String(i).padStart(3, "0")}.jpg`);
+const ASET_DUMMY = Array.from({length: 100}, (_, i) => `/img/dummy/${String(i).padStart(3, "0")}.jpg`);
 async function media(env, req, url, id, kini, thumb) {
   const r = await env.DB.prepare("SELECT status, mime, dummy FROM foto WHERE id = ?").bind(id).first();
   if (!r) return gagal(404, "foto tidak ada");
@@ -92,6 +92,7 @@ async function media(env, req, url, id, kini, thumb) {
   if (!tayang && !(await adminOK(env, req, kini))) return gagal(404, "foto belum disetujui");
   if (r.dummy) {   // dummy menunjuk foto contoh di aset statis (tidak ada berkas R2)
     const a = await env.ASSETS.fetch(new Request(new URL(ASET_DUMMY[parseInt(id.slice(-2), 16) % ASET_DUMMY.length], url)));
+    if (!a.ok) return gagal(404, "aset contoh tidak ada");   // jangan balas 200 kosong: kartu jadi abu-abu tanpa galat
     return new Response(a.body, {headers: {"content-type": a.headers.get("content-type") || "image/jpeg", "cache-control": "private, max-age=300"}});
   }
   if (!env.MEDIA) return tanpaMedia();
