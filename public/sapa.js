@@ -3,7 +3,7 @@
    Skrip klasik, dimuat SETELAH skrip utama. Global: S, muatJSON, esc, fmt, namaProv, jamWIB, Laci, bukaTab, $.
    Semua angka dari kluster.json (kompleks aktif), peringatan.json (BMKG), asap.json (CAMS), sama dengan tab lain. */
 (() => {
-  const KUNCI = "pb_sapa", JAM = 36e5, ISPU_TS = 55.4;
+  const KUNCI = "pb_sapa", JAM = 36e5, DAOPS_JAUH = 50, TANPA_DAOPS = 300, ISPU_TS = 55.4;   // > 300 km = wilayah tanpa Daops (Papua, NTT, Sulawesi)
   const hariIni = () => new Date().toLocaleDateString("en-CA", {timeZone: "Asia/Jakarta"});
   const sudah = () => { try { return localStorage.getItem(KUNCI) === hariIni(); } catch (e) { return false; } };
   const tandai = () => { try { localStorage.setItem(KUNCI, hariIni()); } catch (e) {} };
@@ -21,9 +21,8 @@
     asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
     awas: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>'};
   const ik = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${IK[k]}</svg>`;
-  const baris = p => `<button class="sp-k" data-k="${esc(p.id)}"><span class="sp-ci" style="--w:${p.gambut ? "#8a5a3c" : "#e8743b"}">${ik(p.gambut ? "daun" : "api")}</span>
-    <span class="sp-kn"><b translate="no">${esc(p.kab)}</b><small><span translate="no">${esc(p.kec || "")}</span> · ${esc(namaProv(p.prov))}${p.gambut ? " · gambut" : ""}</small></span>
-    <em class="sp-p">${p.hari} hari</em></button>`;
+  const baris = (p, i) => `<button class="sp-k" data-k="${esc(p.id)}"><i>${i + 1}</i><b translate="no">${esc(p.kab)}</b><span><span translate="no">${esc(p.kec || "")}</span> · ${esc(namaProv(p.prov))}</span>
+    <em class="sp-p merah">${p.hari} hari</em>${p.gambut ? `<em class="sp-p gambut">${ik("daun")}Gambut</em>` : "<em></em>"}</button>`;
   const kartu = (k, w, label, isi) => `<div class="sp-c" style="--w:${w}"><span class="sp-ci">${ik(k)}</span><div><b class="sp-ey">${label}</b><p>${isi}</p></div></div>`;
   const daftar = xs => `<span translate="no">${xs.map(x => esc(x.kab)).join(", ")}</span>`;
 
@@ -37,36 +36,39 @@
     const lama = nyala.filter(p => p.hari > 2).sort((a, b) => b.hari - a.hari || b.n - a.n);
     const ini = aktif.reduce((s, p) => s + (p.ini || 0), 0), kmrn = aktif.reduce((s, p) => s + (p.kmrn || 0), 0);
     const gambut = nyala.filter(p => p.gambut);
+    const siaga = nyala.filter(p => p.level >= 2), jauh = siaga.filter(p => p.jarak_daops > DAOPS_JAUH && p.jarak_daops <= TANPA_DAOPS), tanpa = siaga.filter(p => p.jarak_daops > TANPA_DAOPS);
     const bmkg = (per?.nowcast || []).filter(x => x.selesai && new Date(x.selesai) > Date.now() && R_API.test(x.event + " " + (x.headline || "")));
     /* asap: PM2.5 maks hari ini di sel 1° tempat kompleks menyala, dikelompokkan per kabupaten */
     const asapKab = new Map();
     if (asap?.grid) { const hi = Math.max(0, asap.hari.indexOf(hariIni())), sel = new Map(asap.grid.map(g => [`${g[0]},${g[1]}`, g[2][hi]]));
       const pusat = v => Math.floor(v) + .5;
       for (const p of nyala) { const pm = sel.get(`${pusat(p.lat)},${pusat(p.lon)}`); if (pm >= ISPU_TS) { const k = `${p.kab}|${p.prov}`; asapKab.set(k, Math.max(asapKab.get(k) || 0, pm)); } } }
-    return {ini, kmrn, baru, lama, gambut, nyala, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
+    return {ini, kmrn, baru, lama, gambut, nyala, jauh, tanpa, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
   }
 
-  /* gaya Oyenza: lembar putih, satu angka besar, panel abu, ikon dalam lingkaran lembut, satu tombol pil hitam (pemilik, 15 Okt 2026) */
   function html(h) {
-    const naik = h.ini - h.kmrn, arah = naik > 0 ? `<span class="sp-d naik">▲ ${fmt(naik)} dari kemarin</span>` : naik < 0 ? `<span class="sp-d turun">▼ ${fmt(-naik)} dari kemarin</span>` : `<span class="sp-d">sama dengan kemarin</span>`;
+    const naik = h.ini - h.kmrn, arah = naik > 0 ? `<b class="naik">▲ ${fmt(naik)}</b> dari kemarin` : naik < 0 ? `<b class="turun">▼ ${fmt(-naik)}</b> dari kemarin` : "sama dengan kemarin";
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const kab = topKab(h.baru, 5), maks = kab[0]?.n || 1;
-    const bar = kab.map((x, i) => `<div class="sp-b"><i>${i + 1}</i><span translate="no">${esc(x.kab)}</span><s><u style="--p:${Math.max(3, x.n / maks * 100)}%"></u></s><b>${fmt(x.n)}</b></div>`).join("");
+    const bar = kab.map(x => `<div class="sp-b"><span translate="no">${esc(x.kab)}</span><i><u style="--p:${Math.max(3, x.n / maks * 100)}%"></u></i><b>${fmt(x.n)}</b></div>`).join("");
     const pm = h.asapKab[0]?.[1];
     const awas = [
       h.gambut.length && kartu("daun", "#8a5a3c", "Lahan gambut", `<b>${fmt(h.gambut.length)}</b> dari ${fmt(h.nyala.length)} kompleks menyala di gambut, paling sulit dipadamkan`),
+      h.jauh.length && kartu("jauh", "#d9822b", `${DAOPS_JAUH}–${TANPA_DAOPS} km dari Daops`, `<b>${fmt(h.jauh.length)}</b> kompleks siaga jauh dari Daops, terbanyak di ${daftar(topKab(h.jauh, 3))}`),
+      h.tanpa.length && kartu("perisai", "#c9503a", "Tanpa Daops", `<b>${fmt(h.tanpa.length)}</b> kompleks siaga tanpa Daops dalam ${TANPA_DAOPS} km, terbanyak di ${daftar(topKab(h.tanpa, 3))}`),
       pm && kartu("asap", "#6d6a66", "Asap tidak sehat", `PM2.5 hingga <b>${fmt(pm)} µg/m³</b> di ${fmt(h.asapKab.length)} kabupaten, antara lain <span translate="no">${h.asapKab.slice(0, 3).map(([k]) => esc(k.split("|")[0])).join(", ")}</span>`),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
-    return `<div class="sp-hd"><span class="sp-eyh">Situasi hari ini · ${jamWIB(S.meta.data_terakhir || S.meta.dibuat)}</span><button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
+    return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("api")}Situasi karhutla hari ini</span>
+        <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik api terdeteksi, ${arah}</h3>
+        <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} kompleks baru · 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span></div>
+        <span class="sp-wkt">Data ${jamWIB(S.meta.data_terakhir || S.meta.dibuat)}</span></div>
+        <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
-        <div class="sp-hero"><h3 id="spJudul"><b>${fmt(h.ini)}</b><span>titik api terdeteksi</span></h3>${arah}</div>
-        <div class="sp-st"><div><span class="sp-ci" style="--w:#e8743b">${ik("api")}</span><b>${fmt(h.baru.length)}</b><small>kompleks baru dalam 24 jam</small></div>
-          <div><span class="sp-ci" style="--w:#7a5c99">${ik("jam")}</span><b>${fmt(h.lama.length)}</b><small>kompleks bertahan lebih dari 2 hari</small></div></div>
-        ${kab.length ? sek("Kompleks baru terbanyak", `<div class="sp-bs sp-panel">${bar}</div>`) : ""}
-        ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel">${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
-        ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel">${awas}</div>`) : ""}
+      ${kab.length ? sek("Kompleks baru terbanyak", `<div class="sp-bs sp-panel">${bar}</div>`) : ""}
+      ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel">${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
+      ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel">${awas}</div>`) : ""}
       </div>
-      <div class="sp-aksi"><button class="sp-pri" data-tutup>Lihat peta</button><span>Sumber: NASA FIRMS, Copernicus CAMS, BMKG</span></div>`;
+      <div class="sp-aksi"><span>Sumber: NASA FIRMS, Copernicus CAMS, BMKG</span><button class="sp-pri" data-tutup>Lihat peta</button></div>`;
   }
 
   async function tampil() {
@@ -82,55 +84,51 @@
   }
 
   document.head.insertAdjacentHTML("beforeend", `<style>
-/* satu kolom: kepala tipis tetap, isi digulir, tombol menempel di bawah (tidak pernah terpotong) */
-dialog.sp{width:min(520px,calc(100vw - 24px));max-height:min(780px,calc(100dvh - 32px));overflow:hidden;padding:0;border:0;border-radius:28px;background:var(--card);color:var(--ink);box-shadow:0 24px 60px rgb(0 0 0 / .22)}
+/* satu kolom: kepala tetap, isi digulir, tombol menempel di bawah (tidak pernah terpotong) */
+dialog.sp{width:min(560px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 32px));overflow:hidden;padding:0;border:0;border-radius:22px}
 dialog.sp[open]{display:flex;flex-direction:column}
-dialog.sp::backdrop{background:rgb(0 0 0 / .38);backdrop-filter:blur(3px)}
-.sp svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.sp-hd{flex:none;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:18px 20px 0 24px}
-.sp-eyh{font-size:13px;font-weight:600;color:var(--ink2)}
-.sp .sp-x{border:0;background:var(--surface);color:var(--ink);width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;flex:none}
-.sp .sp-x:hover{background:color-mix(in oklch,var(--ink) 10%,var(--surface))}
-.sp-isi{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:6px 24px 12px;display:grid;gap:22px;align-content:start}
-.sp-hero h3{margin:0;display:grid;gap:2px}
-.sp-hero h3 b{font:800 52px/1.05 var(--display);letter-spacing:-.03em;font-variant-numeric:tabular-nums}
-.sp-hero h3 span{font:600 16px var(--font);color:var(--ink2)}
-.sp-d{display:inline-block;margin-top:10px;font-size:13px;font-weight:700;padding:5px 11px;border-radius:999px;background:var(--surface);color:var(--ink2)}
-.sp-d.naik{background:color-mix(in oklch,#d64545 11%,var(--card));color:#c03a3a}.sp-d.turun{background:color-mix(in oklch,#2f9e6a 12%,var(--card));color:#23805a}
-.sp-st{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.sp-st>div{background:var(--surface);border-radius:20px;padding:16px;display:grid;gap:2px;align-content:start}
-.sp-st .sp-ci{margin-bottom:10px}
-.sp-st b{font:800 28px/1.1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
-.sp-st small{font-size:12.5px;line-height:1.35;color:var(--ink2)}
-.sp-ci{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:color-mix(in oklch,var(--w) 14%,var(--card));color:var(--w);flex:none}
-.sp-sek h4{font-size:15px;font-weight:700;color:var(--ink);margin:0 0 10px;letter-spacing:-.01em}
-.sp-panel{background:var(--surface);border-radius:20px}
-.sp-bs{display:grid;gap:12px;padding:16px 18px}
-.sp-b{display:grid;grid-template-columns:16px 112px 1fr 44px;align-items:center;gap:12px;font-size:14px}
-.sp-b i{font-style:normal;font-size:12px;font-weight:700;color:var(--ink2)}
+.sp svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sp-hd{flex:none;display:flex;gap:12px;align-items:flex-start;padding:20px 22px 18px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff}
+.sp-eyh{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#f5a06b}
+.sp-hd h3{font:700 20px/1.3 var(--display);letter-spacing:-.01em;margin:8px 0 12px;color:#fff}
+.sp-hd h3>b{color:#ff9a6b}.sp-hd h3 .naik{color:#ff9a6b}.sp-hd h3 .turun{color:#7fd6a4}
+.sp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sp-wkt{display:block;margin-top:10px;font-size:11.5px;color:rgb(255 255 255 / .62)}
+.sp .sp-x{border:0;background:rgb(255 255 255 / .14);color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;flex:none}
+.sp .sp-x:hover{background:rgb(255 255 255 / .24)}
+.sp-p{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;line-height:1.3}
+.sp-p.putih{background:rgb(255 255 255 / .12);color:#fff}
+.sp-p.merah{background:color-mix(in oklch,#c9503a 12%,var(--card));color:#b5412c}
+.sp-p.gambut{background:color-mix(in oklch,#8a5a3c 12%,var(--card));color:#7a4a2c}
+.sp-isi{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:20px 22px 8px;display:grid;gap:20px;align-content:start}
+.sp-sek h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
+.sp-panel{background:var(--surface);border-radius:16px}
+.sp-bs{display:grid;gap:10px;padding:14px 16px}
+.sp-b{display:grid;grid-template-columns:118px 1fr 40px;align-items:center;gap:12px;font-size:13.5px}
 .sp-b span{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sp-b s{display:block;height:6px;border-radius:3px;background:color-mix(in oklch,var(--ink) 7%,transparent);overflow:hidden;text-decoration:none}
-.sp-b u{display:block;height:100%;width:var(--p);border-radius:3px;background:var(--ink)}
-.sp-b:first-child u{background:#e8743b}
+.sp-b i{display:block;height:8px;border-radius:4px;background:color-mix(in oklch,var(--ink) 8%,transparent);overflow:hidden}
+.sp-b u{display:block;height:100%;width:var(--p);border-radius:4px;background:#e8743b}
 .sp-b b{text-align:right;font-variant-numeric:tabular-nums}
-.sp-ks,.sp-cs{display:grid;padding:4px 0}
-.sp-k{display:flex;align-items:center;gap:12px;text-align:left;border:0;background:none;color:var(--ink);padding:10px 16px;cursor:pointer;font:inherit;border-radius:14px}
-.sp-k:hover{background:color-mix(in oklch,var(--ink) 4%,transparent)}
+.sp-ks{display:grid;padding:2px 0}
+.sp-k{display:grid;grid-template-columns:20px auto minmax(0,1fr) auto 84px;align-items:center;gap:10px;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:11px 16px;cursor:pointer;font:inherit;font-size:13.5px}
+.sp-k:first-child{border-top:0}.sp-k:hover{background:color-mix(in oklch,var(--ink) 4%,transparent)}
 .sp-k:focus-visible{outline:3px solid #e3b94e;outline-offset:-3px}
-.sp-kn{flex:1;min-width:0;display:grid}
-.sp-kn b{font-size:14.5px;font-weight:700}
-.sp-kn small{font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sp-p{font-style:normal;font-size:12.5px;font-weight:700;padding:5px 11px;border-radius:999px;white-space:nowrap;background:var(--card);color:var(--ink)}
-.sp-c{display:flex;gap:12px;align-items:flex-start;padding:12px 16px}
-.sp-ey{display:block;font-size:14.5px;font-weight:700;color:var(--ink)}
+.sp-k i{font-style:normal;font-size:11.5px;font-weight:800;color:var(--ink2)}
+.sp-k span{font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-k em:last-child{justify-self:start}
+.sp-cs{display:grid;padding:2px 0}
+.sp-c{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-top:1px solid var(--line)}.sp-c:first-child{border-top:0}
+.sp-ci{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in oklch,var(--w) 15%,var(--card));color:var(--w);flex:none}.sp-ci svg{width:16px;height:16px}
+.sp-ey{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
 .sp-c p{margin:2px 0 0;font-size:13px;line-height:1.45;color:var(--ink2)}.sp-c p b{color:var(--ink)}
-.sp-aksi{flex:none;padding:12px 24px 20px;display:grid;gap:10px;justify-items:center;background:var(--card)}
-.sp-aksi>span{font-size:11.5px;color:var(--ink2)}
-.sp-pri{width:100%;min-height:52px;border:0;border-radius:999px;background:#171717;color:#fff;font:700 15px var(--font);cursor:pointer}
-.sp-pri:hover{background:#000}.sp-pri:focus-visible,.sp .sp-x:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-pri{background:#fff;color:#171717}}
-:root[data-theme="dark"] .sp-pri{background:#fff;color:#171717}
-@media (max-width:560px){.sp-hd{padding:16px 16px 0 18px}.sp-isi{padding:6px 18px 12px}.sp-aksi{padding:10px 18px 16px}.sp-hero h3 b{font-size:44px}.sp-b{grid-template-columns:14px 92px 1fr 36px}}
+.sp-aksi{flex:none;padding:14px 22px 18px;display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);background:var(--card)}
+.sp-aksi>span{flex:1;font-size:11.5px;color:var(--ink2)}
+.sp-pri{min-height:44px;padding:0 28px;border:0;border-radius:999px;background:#0b2545;color:#fff;font:700 14px var(--font);cursor:pointer}
+.sp-pri:hover{background:#163a66}.sp-pri:focus-visible,.sp .sp-x:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-pri{background:#e8743b}}
+:root[data-theme="dark"] .sp-pri{background:#e8743b}
+@media (max-width:560px){.sp-hd{padding:18px 16px 16px}.sp-isi{padding:16px 16px 8px}.sp-aksi{padding:12px 16px 16px}.sp-aksi>span{display:none}.sp-pri{flex:1}
+  .sp-k{grid-template-columns:18px auto minmax(0,1fr) auto}.sp-k span,.sp-k em:last-child:empty{display:none}.sp-b{grid-template-columns:96px 1fr 34px}}
 </style>`);
 
   /* tunggu spanduk persetujuan selesai supaya dua lapisan tidak bertumpuk */
