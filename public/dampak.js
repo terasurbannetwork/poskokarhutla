@@ -43,7 +43,7 @@ const Dampak = (() => {
     return `<span class="dk-media">${fv ? `<img src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""}<span>${esc(x.media || domB(x) || "–")}${ng ? `<small>${bdr(ng)}${esc(ng)}</small>` : ""}</span></span>`; };
   const WJ = {divert: W.merah, batal: W.tua, rtb: W.oranye, tutup: W.ungu, tunda: W.kuning, jarak_pandang: W.biru, lain: "#8a96a8"};
   let D = null, F = null, M = [], pap = null, gagal = "";
-  const st = {hari: 0, rentF: 60, hal: {F: 0, S: 0, D: 0}};
+  const st = {hari: 0, rentF: 60, skn: 1, hal: {F: 0, S: 0, D: 0}};
   const PER = 10;
 
   /* ---------- pembantu ---------- */
@@ -220,9 +220,9 @@ const Dampak = (() => {
     const akhir = kini(), semua = hariSejak(F.mulai_musim, akhir), hari = st.rentF === "semua" ? semua : semua.slice(-st.rentF);
     const seri = Object.keys(WJ).map(j => ({k: j, w: WJ[j], v: ev.reduce((a, e) => { if (e.jenis[0] === j) a[e.tgl] = (a[e.tgl] || 0) + 1; return a; }, {})}));
     const daf = hal("F", ev); pasangPeta();
-    const rows = daf.map(e => baris(`kej|${ev.indexOf(e)}`, `<td>${tgl(e.tgl)}</td><td><b>${esc(e.bandara || "–")}</b></td><td><span class="dk-el">${esc(B[e.bandara]?.nama || (e.disebut ? "Rekap " + e.disebut : "Beberapa / nasional"))}</span></td>
-      <td><span class="dk-el">${esc(e.maskapai.join(", ") || "–")}</span></td><td><span class="dk-el dk-s">${esc(e.nomor.join(", ") || "–")}</span></td><td><span class="dk-jn" style="--w:${WJ[e.jenis[0]] || WJ.lain}">${esc(NJ(e.jenis[0]))}</span></td>
-      <td>${e.alternatif ? `<b>${esc(e.alternatif)}</b>` : "–"}</td><td class="n">${e.jumlah ? fmt(e.jumlah) : "–"}</td><td class="n">${e.sumber.length}</td>`));
+    const rows = daf.map(e => baris(`kej|${ev.indexOf(e)}`, `<td>${tgl(e.tgl)}</td><td><span class="dk-el">${e.bandara ? `<b>${esc(e.bandara)}</b> · ` : ""}${esc(B[e.bandara]?.nama || (e.disebut ? "Rekap " + e.disebut : "Beberapa / nasional"))}</span></td>
+      <td><span class="dk-el">${esc(e.maskapai.join(", ") || "–")}</span></td><td><span class="dk-jn" style="--w:${WJ[e.jenis[0]] || WJ.lain}">${esc(NJ(e.jenis[0]))}</span>${e.alternatif ? `<small class="dk-s">ke ${esc(e.alternatif)}</small>` : ""}</td>
+      <td class="n">${e.jumlah ? fmt(e.jumlah) : "–"}</td><td class="n">${e.sumber.length}</td>`));
     /* jarak pandang terkini: METAR + BNPB */
     const metar = [...M].sort((a, b) => (a.vis_m ?? 9e9) - (b.vis_m ?? 9e9)), kodeICAO = Object.fromEntries(Object.entries(B).map(([k, v]) => [v.icao, k]));
     const bnpb = (S.bnpb?.rows || []).map(r => [r.Provinsi, r["Jarak Pandang Bandara (Km)"]]).filter(r => r[1] != null && r[1] !== "-");
@@ -232,7 +232,7 @@ const Dampak = (() => {
       peta
       + `<div class="ctl" style="margin-top:12px">${seg("rentF", [[30, "30 hari"], [60, "60 hari"], ["semua", "Sejak awal musim"]])}</div>`
       + kolom(hari, seri, {tip: (t, n) => `<b>${tgl(t)}</b><br>${n} kejadian`, dk: t => "harif|" + t}) + LG(Object.keys(WJ).map(j => [NJ(j), WJ[j]]))
-      + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + pg("F", tabel(["Tanggal", "Kode", "Nama bandara", "Maskapai", "No. penerbangan", "Yang terjadi", "Dialihkan ke", ">Jumlah", ">Berita"], rows), ev.length, "kejadian")
+      + `<div class="lbl" style="margin:14px 0 4px">Kejadian terbaru</div>` + pg("F", tabel(["Tanggal", "Bandara", "Maskapai", "Yang terjadi", ">Jumlah", ">Berita"], rows), ev.length, "kejadian")
       + `<details class="lipat" style="margin-top:12px"><summary>Jarak pandang bandara saat ini</summary><div class="isi">${tabel(["Kode ICAO", "Bandara", ">Jarak pandang", "Cuaca", "Waktu"], vis)}
         ${bnpb.length ? `<p class="fnd" style="margin-top:8px">Laporan BNPB (jarak pandang bandara, km): ${bnpb.map(([p, v]) => `${esc(p)} ${esc(v)}`).join(" · ")}</p>` : ""}</div></details>`,
       `Sumber: berita media, diperiksa dengan METAR (${sm("iem", "Iowa Environmental Mesonet")}); ${F.laporan} judul berita, diperbarui ${jamWIB(F.dibuat)}`);
@@ -420,29 +420,29 @@ const Dampak = (() => {
 
   /* ================= 10. total kerugian ================= */
   function b10() {
-    const K = D.kerugian, sk = Object.entries(K.sektor).sort((a, b) => b[1][1] - a[1][1]), T = K.total, Wd = lw(), rh = 30, L = sempit() ? 92 : 210, R = 96, mx = T[2], X = v => v / mx * (Wd - L - R);
+    const K = D.kerugian, si = st.skn, sk = Object.entries(K.sektor).sort((a, b) => b[1][si] - a[1][si]), T = K.total, NS = ["rendah", "menengah", "tinggi"][si], Wd = lw(), rh = 30, L = sempit() ? 92 : 210, R = 96, mx = T[2], X = v => v / mx * (Wd - L - R);
     const WC = [W.merah, W.oranye, W.kuning, W.hijau, W.biru, W.ungu, W.biru2, W.teal, W.tua, "#9a7448", "#8a96a8"], n = sk.length, yT = n * rh + 6, yW = yT + rh + 4, yA = yW + 2 * rh + 6, Ht = yA + 16;
     const stp = [1, 2, 5, 10, 20, 50, 100, 200, 500].find(q => mx / 1e12 / q <= 6) || 1000, tk = []; for (let v = 0; v * 1e12 <= mx; v += stp) tk.push(v);
     const pc = (x, y, t, w) => { const wd = pw(t); return pilV(Math.min(Math.max(L, x - wd / 2), Wd - wd), y, t, w); };
     let acc = 0, xs = [];
-    const bar = sk.map(([k, v], i) => { const y = i * rh, x = L + X(acc), wd = Math.max(1.5, X(v[1])); acc += v[1]; xs.push(x + wd); const w = WC[i % 11];
+    const bar = sk.map(([k, v], i) => { const y = i * rh, x = L + X(acc), wd = Math.max(1.5, X(v[si])); acc += v[si]; xs.push(x + wd); const w = WC[i % 11];
       return `<g data-dk="sek10|${k}" style="cursor:pointer"><rect class="hov" x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(nmS(k))}</text>
-        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 6}" width="${wd}" height="${rh - 12}" rx="3" fill="${w}" data-tip="<div class='tk'><div class='tk-h'><b>${esc(SEKTOR[k] || k)}</b></div><div class='tk-n'><b>${rp(v[1])}</b><span class='tk-s on'>${Math.round(v[1] / T[1] * 100)}% dari total</span></div><div class='tk-rg'><i style='left:${(v[1] - v[0]) / Math.max(1, v[2] - v[0]) * 100}%'></i></div><div class='tk-rgn'><span>${rp(v[0])}<small>rendah</small></span><span>${rp(v[2])}<small>tinggi</small></span></div></div>"/>
-        ${pilV(x + wd + 5, y + 5, rp(v[1]), w)}</g>`; }).join("");
+        <rect class="gx" style="--i:${i}" x="${x}" y="${y + 6}" width="${wd}" height="${rh - 12}" rx="3" fill="${w}" data-tip="<div class='tk'><div class='tk-h'><b>${esc(SEKTOR[k] || k)}</b></div><div class='tk-n'><b>${rp(v[si])}</b><span class='tk-s on'>${Math.round(v[si] / T[si] * 100)}% dari total</span></div><div class='tk-rg'><i style='left:${(v[1] - v[0]) / Math.max(1, v[2] - v[0]) * 100}%'></i></div><div class='tk-rgn'><span>${rp(v[0])}<small>rendah</small></span><span>${rp(v[2])}<small>tinggi</small></span></div></div>"/>
+        ${pilV(x + wd + 5, y + 5, rp(v[si]), w)}</g>`; }).join("");
     const con = xs.map((x, i) => `<line x1="${x}" x2="${x}" y1="${i * rh + rh - 6}" y2="${(i + 1) * rh + 6}" stroke="currentColor" stroke-dasharray="3 3" opacity=".4"/>`).join("");
     const grid = tk.map(v => `<line x1="${L + X(v * 1e12)}" x2="${L + X(v * 1e12)}" y1="0" y2="${yA}" stroke="currentColor" opacity=".08"/><text x="${L + X(v * 1e12)}" y="${Ht - 2}" text-anchor="middle" font-size="9.5" opacity=".65">${rp(v * 1e12)}</text>`).join("");
     const svg = `<svg class="dk-svg" viewBox="0 0 ${Wd} ${Ht}" role="img" aria-label="Kerugian per sektor">${grid}<line x1="${L}" x2="${L}" y1="0" y2="${yA}" stroke="currentColor" opacity=".25"/>${con}${bar}
-      <g data-dk="" ><text x="${L - 8}" y="${yT + rh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="800">Total</text><rect x="${L}" y="${yT + 4}" width="${X(T[1])}" height="${rh - 8}" rx="3" fill="${NAVY}" data-tip="<b>Total</b><br>${rp(T[1])}<br>rentang ${rp(T[0])}–${rp(T[2])}"/>${pilV(L + X(T[1]) + 5, yT + 5, rp(T[1]), NAVY)}</g>
+      <g data-dk="" ><text x="${L - 8}" y="${yT + rh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="800">Total</text><rect x="${L}" y="${yT + 4}" width="${X(T[si])}" height="${rh - 8}" rx="3" fill="${NAVY}" data-tip="<b>Total (skenario ${NS})</b><br>${rp(T[si])}<br>rentang ${rp(T[0])}–${rp(T[2])}"/>${pilV(L + X(T[si]) + 5, yT + 5, rp(T[si]), NAVY)}</g>
       <g><text x="${L - 8}" y="${yW + 14}" text-anchor="end" font-size="11.5" font-weight="600" opacity=".8">Rentang</text>
         <line x1="${L + X(T[0])}" x2="${L + X(T[2])}" y1="${yW + 10}" y2="${yW + 10}" stroke="${NAVY}" stroke-width="2"/><line x1="${L + X(T[0])}" x2="${L + X(T[0])}" y1="${yW + 3}" y2="${yW + 17}" stroke="${NAVY}" stroke-width="2"/><line x1="${L + X(T[2])}" x2="${L + X(T[2])}" y1="${yW + 3}" y2="${yW + 17}" stroke="${NAVY}" stroke-width="2"/>
         ${pc(L + X(T[0]), yW + 22, "min " + rp(T[0]), "#5a6b85")}${pc(L + X(T[2]), yW + 22, "maks " + rp(T[2]), "#5a6b85")}</g></svg>`;
-    return ex(10, `Kerugian akibat kebakaran sejak ${tgl(D.musim.mulai)} diperkirakan ${hl(rp(T[1]))}, dengan rentang ${rp(T[0])} sampai ${rp(T[2])}`,
+    return ex(10, `Kerugian akibat kebakaran sejak ${tgl(D.musim.mulai)} diperkirakan ${hl(rp(T[si]))} pada skenario ${NS}, dengan rentang ${rp(T[0])} sampai ${rp(T[2])}`,
       "Kerusakan dan kerugian per sektor, Rupiah 2026, metode World Bank", "Air terjun: tiap sektor menumpuk ke total. Garis dengan label min/maks = rentang total. Klik sektor untuk angka rendah–tinggi.",
-      svg + LG([["Kerusakan & kerugian per sektor (skenario tengah)", W.oranye], ["Total", NAVY], ["Rentang rendah–tinggi", "#5a6b85"]]),
+      `<div class="ctl" style="margin-bottom:8px">${seg("skn", [[0, "Rendah"], [1, "Menengah"], [2, "Tinggi"]])}</div>` + svg + LG([[`Kerusakan & kerugian per sektor (skenario ${NS})`, W.oranye], ["Total", NAVY], ["Rentang rendah–tinggi", "#5a6b85"]]),
       `Sumber: ${sm("wb16", "World Bank 2016")} dan ${sm("wb19", "2019")}, ${sm("bps", "BPS")} (inflasi), ${sm("gwis", "GWIS/MODIS")}, ${sm("sipongi", "KLHK SiPongi")}, ${sm("ipcc", "IPCC")}, ${sm("wang", "Wang dkk. 2025")}; perkiraan orde besaran, bukan penilaian resmi BNPB/Bappenas`);
   }
   function popSek10(k) { const v = D.kerugian.sektor[k];
-    dlg(esc(SEKTOR[k] || k), "Kerusakan & kerugian sektor ini, Rupiah 2026", tabel(["Skenario", ">Nilai"], ["Rendah", "Tengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rp(v[i])}</td></tr>`))
+    dlg(esc(SEKTOR[k] || k), "Kerusakan & kerugian sektor ini, Rupiah 2026", tabel(["Skenario", ">Nilai"], ["Rendah", "Menengah", "Tinggi"].map((n, i) => `<tr><td>${n}</td><td class="n">${rp(v[i])}</td></tr>`))
       + `<p class="fnd">Porsi sektor ${satu(D.asumsi.wb2015[k] / 16124 * 100)}% dari total 2015 (US$${fmt(D.asumsi.wb2015[k])} juta dari US$16.124 juta; World Bank 2016).</p>`); }
 
   /* ---------- aksi klik ---------- */
@@ -453,7 +453,7 @@ const Dampak = (() => {
       intl: () => popIntlHari(a), intlb: () => popBerita(D.internasional.contoh, +a, "Berita internasional"), sek10: () => popSek10(a)}[t] || (() => {}))(); }
   const BAG = [b1, b2, b3, b4, b5, b6, b7, b8, b9, b10];
   const gambar = n => { try { return BAG[n - 1](); } catch (e) { console.warn("dampak", n, e); return `<section class="dk-bag" id="dk-${n}" data-bag="${n}"><div class="ex"><h3>${JUDUL[n - 1]}</h3><p class="fnd">Bagian ini gagal digambar: ${esc(e.message)}</p></div></section>`; } };
-  const BAG_ST = {hari: [1, 3], rentF: [2]};
+  const BAG_ST = {hari: [1, 3], rentF: [2], skn: [10]};
   function ikat(el) {
     if (el._dk) return; el._dk = 1;
     el.addEventListener("click", e => {

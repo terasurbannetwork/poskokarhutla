@@ -1340,7 +1340,7 @@ section[hidden],[hidden]{display:none!important}
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
     let h = "";
     if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang" tabindex="0">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}</div>${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
-    if (eks.length) h += `<h3 class="subjudul">Eksekutif <small>${fmt(eks.length)} orang</small></h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></div></article>`).join("")}</div>`;
+    if (eks.length) h += `<h3 class="subjudul">Eksekutif</h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></div></article>`).join("")}</div>`;
     $("#anggota").innerHTML = h; $("#anggota").hidden = false;
   }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
 
