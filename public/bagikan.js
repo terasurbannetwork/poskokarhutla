@@ -640,7 +640,7 @@ const Bagikan = {
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
     const atas = story ? 110 : 64, bawah = story ? H - 70 : H - 30;   /* kaki dirapatkan ke tepi bawah (pemilik, 15 Okt 2026) */
     const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
-    x.fillStyle = this.C.kertas; x.fillRect(0, 0, W, H);
+    x.fillStyle = tpl === "ex" ? "#fff" : this.C.kertas; x.fillRect(0, 0, W, H);   /* grafik: kertas putih, panel abu lembut (pemilik, 15 Okt 2026) */
     const y0 = this.kepala(x, W, P, atas, d, uk), y1 = this.kaki(x, W, H, P, bawah, story);
     const G = 24, tata = this.TATA[tpl][uk], tetap = {kpi4: 190, kpi22: 2 * 178 + 20};
     let sisa = y1 - y0 - G * (tata.length - 1);
@@ -784,9 +784,9 @@ const Bagikan = {
     /* dasar: catatan kaki lalu ajakan + QR */
     /* ajakan: panel putih berbayang, ikon aplikasi, domain besar, QR berbingkai tipis (pemilik, 15 Okt 2026) */
     const qs = 156, yC = b + h - qs;
-    x.save(); x.shadowColor = "rgba(11,37,69,.10)"; x.shadowBlur = 30; x.shadowOffsetY = 8; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(a, yC, w, qs, 32); x.fill(); x.restore();
+    x.fillStyle = "#f3f5f8"; x.beginPath(); x.roundRect(a, yC, w, qs, 32); x.fill();
     const ik = 84, ix = a + 28, iy = yC + (qs - ik) / 2; if (ikon) x.drawImage(ikon, ix, iy, ik, ik);
-    if (qr) { const qw = qs - 36, qx = a + w - qw - 18, qy = yC + 18; x.strokeStyle = "#e3e8ef"; x.lineWidth = 2; x.beginPath(); x.roundRect(qx, qy, qw, qw, 18); x.stroke();
+    if (qr) { const qw = qs - 36, qx = a + w - qw - 18, qy = yC + 18; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(qx, qy, qw, qw, 18); x.fill();
       const qi = qw - 18; x.drawImage(qr, qx + 9, qy + 9, qi, qi);
       if (mark) { const m = qi * .26, mx = qx + 9 + (qi - m) / 2, my = qy + 9 + (qi - m) / 2; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(mx - 3, my - 3, m + 6, m + 6, 5); x.fill();
         const r = Math.min(m / mark.width, m / mark.height); x.drawImage(mark, mx + (m - mark.width * r) / 2, my + (m - mark.height * r) / 2, mark.width * r, mark.height * r); } }
@@ -800,8 +800,8 @@ const Bagikan = {
     /* kotak sorotan gaya Oyenza: panel putih tanpa garis, nomor urut dalam lingkaran lembut, angka besar + satuan kecil, nama di bawah */
     if (pakai) { const g = 18, cw = (w - g * (sor.length - 1)) / sor.length;
       sor.forEach((q, i) => { const xx = a + i * (cw + g), m = String(q.v).match(/^([\d.,]+)\s*(.*)$/) || [0, q.v, ""], [nm, ...ket] = String(q.n).split(" · ");
-        x.save(); x.shadowColor = "rgba(11,37,69,.08)"; x.shadowBlur = 24; x.shadowOffsetY = 6; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill(); x.restore();
-        x.fillStyle = i ? "#eef2f8" : "#fde9dc"; x.beginPath(); x.arc(xx + 40, y + 40, 18, 0, 7); x.fill();
+        x.fillStyle = "#f3f5f8"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill();
+        x.fillStyle = i ? "#fff" : "#fde9dc"; x.beginPath(); x.arc(xx + 40, y + 40, 18, 0, 7); x.fill();
         x.fillStyle = i ? this.C.navy2 : "#d4622b"; this.f(x, 800, 18); x.textAlign = "center"; x.fillText(String(i + 1), xx + 40, y + 46); x.textAlign = "left";
         x.fillStyle = this.C.navy2; const u = this.pas(x, m[1], cw - 120, 800, 44, true, 26); x.fillText(m[1], xx + 24, y + 98);
         if (m[2]) { const nw = x.measureText(m[1]).width; this.f(x, 600, 20); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, m[2], cw - 40 - nw), xx + 24 + nw + 8, y + 98); }

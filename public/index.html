@@ -2044,7 +2044,9 @@ function geoAQI(u) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.ma
     return {type: "Feature", geometry: {type: "Point", coordinates: [c.lon, c.lat]}, properties: {v, k, w, pm: Math.round(c.pm[i]), nama: c.nama, prov: c.prov}}; })}; }
 /* kol: indeks kolom asap.json (2 = pm25_maks, 7 = pm10_maks) */
 function gambarAsap(d, kol = 2, st = ST_PM) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.max(0, d.hari.indexOf(tgl));
-  return gambarGrid(1, 94, 141, -11, 6, put => d.grid.forEach(r => r[kol]?.[i] != null && put(r[1], r[0], gradasi(st, r[kol][i])))); }
+  /* tepi kotak data dipudarkan 3 sel supaya lapisan tidak tampak sebagai kotak keras (pemilik, 15 Okt 2026) */
+  const pudar = (lo, la) => Math.min(1, (Math.min(lo - 94, 141 - lo, la + 11, 6 - la) + .5) / 3);
+  return gambarGrid(1, 94, 141, -11, 6, put => d.grid.forEach(r => { if (r[kol]?.[i] == null) return; const c = gradasi(st, r[kol][i]); put(r[1], r[0], [c[0], c[1], c[2], Math.round((c[3] ?? 255) * pudar(r[1], r[0]))]); })); }
 function gambarHujan() { const i = S.fwiHari;
   return gambarGrid(S.fwi.sel, 94.5, 141.5, -11.5, 6.5, put => S.fwi.grid.forEach(g => { const h = g.hari[i]; h && h.hujan != null && put(g.lon, g.lat, gradasi(ST_HUJAN, h.hujan)); })); }
 
@@ -2446,6 +2448,9 @@ $("#lapisLipat").addEventListener("click", e => { e.stopPropagation(); const ds 
 
 /* lapisan */
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
+  /* PM2.5 (asap) dan PM10 saling eksklusif: menyalakan satu mematikan yang lain (pemilik, 15 Okt 2026) */
+  const lawan = {asap: "pm10", pm10: "asap"}[i.dataset.l], li = lawan && i.checked && $(`#lapis input[data-l="${lawan}"]`);
+  if (li?.checked) { li.checked = false; li.dispatchEvent(new Event("change", {bubbles: true})); }
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
     angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
