@@ -31,16 +31,17 @@
     bagi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>',
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/></svg>',
     main: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
+    titik: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
+    jam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
     cek: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m5 12 4.5 4.5L19 7"/></svg>',
   };
 
   /* ------------------------------------------------------------ data */
-  const D = {foto: [], muat: null, konfig: null, no: new Map()};
+  const D = {foto: [], muat: null, konfig: null};
   async function muat(paksa) {
     if (D.muat && !paksa) return D.muat;
     return D.muat = fetch(API + (admin ? "?dummy=1" : ""), {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
       D.foto = j.foto || [];
-      [...D.foto].sort((a, b) => a.dibuat - b.dibuat).forEach((f, i) => D.no.set(f.id, "#" + String(i + 1).padStart(3, "0")));
       return D.foto;
     }).catch(() => (D.foto = []));
   }
@@ -49,9 +50,8 @@
   /* ------------------------------------------------------------ kartu (gaya kartu koleksi: bingkai putih, latar pastel per kategori) */
   const kartu = (f, kecil = false) => { const [k, w] = KAT[f.kategori] || KAT.lainnya;
     return `<button type="button" class="fl-kartu${kecil ? " kecil" : ""}" style="--k:${w}" data-fid="${f.id}" aria-label="${esc(`${k} di ${f.kec}, ${f.kab}`)}">
-      <span class="fl-gbr"><span class="fl-no">${D.no.get(f.id) || ""}</span><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}">
-        ${f.jenis === "video" ? `<span class="fl-vid">${IK.main}${durasi(f.durasi)}</span>` : ""}${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}</span>
-      <b>${esc(f.kec ? "Kec. " + f.kec : f.kab)}</b><span class="fl-tag"><i>${ikat(f.kategori)}${k}</i><i>${lalu(f.diambil)}</i></span></button>`; };
+      <span class="fl-gbr"><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}">${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}
+        <i class="fl-ik" title="${k}">${f.jenis === "video" ? IK.main : ikat(f.kategori)}</i><span class="fl-ovl">${lalu(f.diambil)}</span></span></button>`; };
 
   /* ------------------------------------------------------------ tab galeri
      Galeri rata (bukan dikelompokkan wilayah): urutan Terbaru/Paling disukai/dikomentari/dilihat, saring provinsi (banyak),
@@ -64,18 +64,17 @@
     return `<button type="button" class="fg-k" data-fid="${f.id}" aria-label="${esc(`${k} di ${f.kec}, ${f.kab}`)}"><span class="fg-g"><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}" onerror="this.style.visibility='hidden'">
       ${f.jenis === "video" ? `<span class="fl-vid">${IK.main}${durasi(f.durasi)}</span>` : ""}${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}
       <span class="fg-kat" style="--k:${w}">${ikat(f.kategori)}${k}</span>
-      <span class="fg-st">${stat(IK.naik, f.suka)}${stat(IK.kom, f.komentar)}${stat(IKS.mata, f.dilihat)}</span></span>
-      <span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)} · ${esc(namaProv(f.prov))} · ${lalu(f.diambil || f.dibuat)}</small></span></button>`; };
+      <span class="fg-bawah"><span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)} · ${esc(namaProv(f.prov))} · ${lalu(f.diambil || f.dibuat)}</small></span>
+      <span class="fg-st">${stat(IK.naik, f.suka)}${stat(IK.kom, f.komentar)}${stat(IKS.mata, f.dilihat)}</span></span></span></button>`; };
   async function render() {
     const el = $("#foto"); if (!el) return;
     if (!el.dataset.siap) {
       el.dataset.siap = 1;
-      el.innerHTML = `<div class="fl-wrap"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${n}</button>`).join("")}</div>
-          <div class="fg-kanan"><div class="fl-seg fg-mode" role="group" aria-label="Tampilan"><button data-m="galeri" aria-pressed="true">Galeri</button><button data-m="peta" aria-pressed="false">Peta</button></div>
-          <button class="fl-pri kecil" data-kirim>${IK.kamera}Kirim foto</button></div></div>
+      el.innerHTML = `<div class="fl-wrap"><div class="fg-panel"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${n}</button>`).join("")}</div>
+          <div class="fg-kanan"><button class="fl-pri kecil" data-kirim>${IK.kamera}Kirim foto</button></div></div>
         <div class="fg-saring"><div id="fgProv"></div><div class="fl-chip" role="group" aria-label="Kategori">${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${ikat(k)}${n}</button>`).join("")}</div>
-          <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">Foto</button><button data-j="video" aria-pressed="false">Video</button></div></div>
-        <p class="fg-ring" id="fgRing"></p><div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div><div class="fg-pg" id="fgPg"></div></div>`;
+          <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">Foto</button><button data-j="video" aria-pressed="false">Video</button></div></div></div>
+        <div class="fg-panel fg-isi"><div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div><div class="fg-pg" id="fgPg"></div></div></div>`;
       el.addEventListener("click", e => {
         const u = e.target.closest("[data-u]"); if (u) { G.urut = u.dataset.u; G.h = 0; tulisL("fl-urut", G.urut); el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-pressed", b === u)); return isiGaleri(); }
         const k = e.target.closest("[data-k]"); if (k) { G.kat = G.kat === k.dataset.k ? "" : k.dataset.k; G.h = 0; el.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === G.kat)); return isiGaleri(); }
@@ -99,13 +98,13 @@
   function isiGaleri() {
     const isi = $("#flIsi"); if (!isi) return;
     if (!D.foto.length) { isi.innerHTML = `<button type="button" class="fl-ajak" data-kirim><span class="fl-bingkai"><span class="fl-lensa">${IK.kamera}</span></span>
-      <b>Belum ada foto</b><small>Jadilah yang pertama mengirim foto dari lokasimu.</small><span class="fl-pri">${IK.kamera}Ambil foto</span></button>`; $("#fgRing").textContent = ""; $("#fgPg").innerHTML = ""; return; }
+      <b>Belum ada foto</b><small>Jadilah yang pertama mengirim foto dari lokasimu.</small><span class="fl-pri">${IK.kamera}Ambil foto</span></button>`; $("#fgPg").innerHTML = ""; return; }
     const kunci = {baru: f => f.diambil || f.dibuat, suka: f => f.suka || 0, komentar: f => f.komentar || 0, dilihat: f => f.dilihat || 0}[G.urut] || (f => f.dibuat);
     const xs = tersaring().sort((a, b) => kunci(b) - kunci(a) || b.dibuat - a.dibuat), nH = Math.max(1, Math.ceil(xs.length / PER_HAL)); G.h = Math.min(G.h, nH - 1);
-    const nPv = new Set(xs.map(f => f.prov)).size;
-    $("#fgRing").innerHTML = `<b>${fmt(xs.length)}</b> foto & video dari <b>${fmt(nPv)}</b> provinsi`;
     isi.innerHTML = xs.length ? `<div class="fg-grid">${xs.slice(G.h * PER_HAL, (G.h + 1) * PER_HAL).map(kartuG).join("")}</div>` : `<div class="fl-kosong">${IK.kamera}<b>Tidak ada foto untuk saringan ini</b><p>Coba provinsi, kategori, atau jenis lain.</p></div>`;
-    $("#fgPg").innerHTML = nH > 1 ? Array.from({length: nH}, (_, i) => `<button data-h="${i}" aria-pressed="${i === G.h}">${i + 1}</button>`).join("") : "";
+    const ke = (i, isi, lbl) => `<button data-h="${i}"${i < 0 || i >= nH ? " disabled" : ""} aria-label="${lbl}">${isi}</button>`;
+    $("#fgPg").innerHTML = nH > 1 ? `<span class="fg-pg-info">${fmt(G.h * PER_HAL + 1)}–${fmt(Math.min((G.h + 1) * PER_HAL, xs.length))} dari ${fmt(xs.length)}</span>
+      <nav class="fg-pg-nav" aria-label="Halaman">${ke(G.h - 1, "‹<span> Sebelumnya</span>", "Halaman sebelumnya")}${Array.from({length: nH}, (_, i) => `<button data-h="${i}" aria-pressed="${i === G.h}">${i + 1}</button>`).join("")}${ke(G.h + 1, "<span>Berikutnya </span>›", "Halaman berikutnya")}</nav>` : "";
   }
   /* tampilan Peta: pindah ke tab Peta dengan lapisan foto menyala, dibingkai ke foto hasil saringan */
   function lihatPeta() {
@@ -166,14 +165,14 @@
       const [k, w] = KAT[f.kategori] || KAT.lainnya;
       return `<div class="fl-r" style="--k:${w}">
         <div class="fl-r-media"><div class="fl-mw">${f.jenis === "video" ? `<video controls playsinline preload="metadata" poster="${API}/thumb/${f.id}" src="${API}/media/${f.id}"></video>` : `<img alt="${esc(f.keterangan || k)}" src="${API}/media/${f.id}">`}${cap({kec: f.kec, kab: f.kab, prov: f.prov}, f.lat != null ? {lat: f.lat, lon: f.lon} : null, f.diambil ? jamWIB(f.diambil) : "")}</div>
+          <div class="fl-r-atas"><span class="fl-pil">${ikat(f.kategori)}${k}</span>${f.contoh ? '<span class="fl-pil abu">data contoh</span>' : ""}</div>
           <button class="fl-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="fl-r-isi">
-          <div class="fl-r-atas"><span class="fl-pil">${k}</span><span class="fl-no2">${D.no.get(f.id) || ""}</span>${f.contoh ? '<span class="fl-pil abu">data contoh</span>' : ""}</div>
           ${f.keterangan ? `<p class="fl-ket">${esc(f.keterangan)}</p>` : ""}
-          <dl class="fl-info"><div><dt>Lokasi</dt><dd>Kec. ${esc(f.kec)}, ${esc(f.kab)}, ${esc(namaProv(f.prov))}</dd></div>
-            ${f.lat != null ? `<div><dt>Koordinat GPS</dt><dd class="fl-angka">${koord(f)}</dd></div>` : ""}
-            <div><dt>Diambil</dt><dd>${jamWIB(f.diambil)} <small>(${lalu(f.diambil)})</small></dd></div>
-            <div><dt>Kredit</dt><dd>${f.kredit ? esc(f.kredit) : "Anonim"}</dd></div></dl>
+          <dl class="fl-info"><div><dt>${IK.pin}Lokasi</dt><dd>Kec. ${esc(f.kec)}, ${esc(f.kab)}, ${esc(namaProv(f.prov))}</dd></div>
+            ${f.lat != null ? `<div><dt>${IK.titik}Koordinat GPS</dt><dd class="fl-angka">${koord(f)}</dd></div>` : ""}
+            <div><dt>${IK.jam}Diambil</dt><dd class="fl-nw">${jamWIB(f.diambil)} <small>(${lalu(f.diambil)})</small></dd></div>
+            <div><dt>${IK.orang}Kredit</dt><dd>${f.kredit ? esc(f.kredit) : "Anonim"}</dd></div></dl>
           <div class="fl-aksi"><button data-suka aria-pressed="${!!f.suka_saya}" aria-label="Dukung foto ini" title="Dukung">${IK.naik}<span>${fmt(f.suka)}</span></button>
             <button data-fokus-kom aria-label="Komentar">${IK.kom}<span>${fmt(f.komentar)}</span></button>
             <button data-bagi>${IK.bagi}Bagikan</button><button data-peta>${IK.pin}Peta</button></div>
