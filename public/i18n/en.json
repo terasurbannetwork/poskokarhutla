@@ -1,5 +1,12 @@
 {
 "kamus": {
+"Api": "Fire",
+"contoh": "sample",
+"data contoh": "sample data",
+"Paling banyak dukungan": "Most supported",
+"baru saja": "just now",
+"{0} mnt lalu": "{0} min ago",
+"{0} jam lalu": "{0} h ago",
 "\"Luas belum padam\" BNPB adalah luas yang sudah dicek regu darat dan dilaporkan masih menyala. Piksel satelit adalah kotak {0} × {1} m ({2} ha) yang di dalamnya ada sumber panas, sekecil apa pun; satu piksel tidak sama dengan {3} ha terbakar.": "\"Area not yet extinguished\" (BNPB) is the area checked by ground crews and reported as still burning. A satellite pixel is a {0} × {1} m ({2} ha) square containing a heat source, however small; one pixel does not equal {3} ha burned.",
 "\"Siaga darurat\" dan \"tanggap darurat\" adalah status hukum wilayah (Permen LHK P.{0}/{1}) yang ditetapkan bupati, gubernur, atau menteri. Model tidak memberikannya.": "\"Emergency alert\" and \"emergency response\" are legal area statuses (Permen LHK P.{0}/{1}) set by a regent, governor or minister. The model does not assign them.",
 "\"Terjun\" = total personel harian BNPB (termasuk Satpol PP dan Pemda yang tidak selalu di garis api) untuk enam provinsi pantauan; provinsi lain hanya Manggala Agni di Daops sehingga selisihnya batas atas. Pompa dan titik bor yang sudah ada tidak dilaporkan per provinsi, jadi angkanya kebutuhan penuh.": "\"Deployed\" = BNPB's daily total personnel (including Satpol PP and local government staff who are not always on the fire line) for the six monitored provinces; other provinces count only Manggala Agni at Daops, so the gap is an upper bound. Existing pumps and boreholes are not reported per province, so the figure is the full requirement.",
