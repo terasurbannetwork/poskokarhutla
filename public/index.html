@@ -3317,7 +3317,7 @@ const Insight = {
   provDipilih(key) { return String(this.st[key] || "").split(",").filter(Boolean); },
   selProvMulti(key, daftar = PRIO) { const P = this.provDipilih(key), lb = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi";
     const buka = this._bukaMulti === key; this._bukaMulti = null;
-    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
+    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi (${daftar.length})</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
   selProv(key, semua = "Semua provinsi") { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${PRIO.map(k => `<option value="${k}" ${k === this.st[key] ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`; },
   async muat() {
     const D = this.data;
@@ -4116,7 +4116,7 @@ const Berita = {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     return `<article class="ex" id="brDaftar"><h3>Daftar berita</h3><p class="sub">Disaring dan dicari; tiap berita menautkan ke sumber aslinya</p>
       <p class="unit">nada dinilai otomatis dari kata di judul (arahkan kursor ke label untuk melihat kata pemicunya)</p>
-      <div class="ctl br-saring"><input data-f="q" type="search" placeholder="Cari judul, kabupaten, media" aria-label="Cari berita" class="br-cari"><details class="pmulti br-pv"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fm="prov" value="" checked><span>Semua provinsi</span></label>${pv.map(k => `<label><input type="checkbox" data-fm="prov" value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>
+      <div class="ctl br-saring"><input data-f="q" type="search" placeholder="Cari judul, kabupaten, media" aria-label="Cari berita" class="br-cari"><details class="pmulti br-pv"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fm="prov" value="" checked><span>Semua provinsi (${pv.length})</span></label>${pv.map(k => `<label><input type="checkbox" data-fm="prov" value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>
         <select data-f="topik" aria-label="Topik"><option value="">Semua topik</option>${Object.entries(TOPIK_B).map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select>
         <select data-f="sent" aria-label="Nada"><option value="">Semua nada</option><option value="negatif">Memburuk</option><option value="netral">Netral</option><option value="positif">Membaik</option></select>
 </div>

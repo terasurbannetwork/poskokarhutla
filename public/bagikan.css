@@ -119,14 +119,19 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 /* panel Berita (.pm-p): tombol bagikan di ujung kanan kepala panel */
 .ex .pm-h > .bg-ex,#berita .ex .pm-h > .bg-ex{float:none!important;margin:0 0 0 auto!important;order:99;align-self:center}
 #brVid{display:grid;gap:16px}  /* kartu video berjarak (pemilik, 15 Okt 2026) */
-/* pemilih provinsi: menu selebar tombolnya, huruf rapi, jarak baris rapat (pemilik, 15 Okt 2026) */
+/* pemilih provinsi (banyak pilihan) bergaya sama dengan pemilih tunggal .pc-menu: tanpa kotak centang, terpilih = pil navy + ✓ (pemilik, 15 Okt 2026) */
 .pmulti{min-width:200px}
 .pmulti > summary{width:100%;justify-content:flex-start;font-size:13px}
-.pmulti .pm-menu{left:0!important;right:0!important;min-width:0!important;width:100%;top:40px;padding:5px;border-radius:14px;box-shadow:0 12px 32px rgb(11 37 69 / .16)}
-.pmulti .pm-menu label{gap:10px;padding:6px 10px;border-radius:9px;font:500 13px/1.25 var(--font);color:var(--ink)}
-.pmulti .pm-menu label:has(input:checked){font-weight:700;background:color-mix(in oklch,var(--ink) 5%,transparent)}
-.pmulti .pm-menu label span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.pmulti .pm-menu input{width:15px;height:15px;border-radius:4px}
+.pmulti[open] > summary{border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in oklch,var(--ink) 10%,transparent)}
+.pmulti .pm-menu{left:0!important;right:0!important;min-width:0!important;width:100%;top:42px;padding:6px;display:grid;gap:2px;border-radius:14px;box-shadow:0 14px 34px oklch(25% .05 256 / .2),0 2px 6px oklch(25% .05 256 / .08)}
+.pmulti .pm-menu label{position:relative;display:flex;align-items:center;gap:8px;padding:8px 12px;border-radius:9px;font:600 12.5px/1.25 var(--font);color:var(--ink);cursor:pointer;white-space:nowrap}
+.pmulti .pm-menu label:hover{background:var(--surface)}
+.pmulti .pm-menu input{position:absolute;opacity:0;width:1px;height:1px;pointer-events:none}
+.pmulti .pm-menu label:has(input:checked){background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));color:#fff}
+.pmulti .pm-menu label:has(input:checked)::after{content:"✓";margin-left:auto;font-weight:800}
+.pmulti .pm-menu label:first-child:not(:has(input:checked)){background:var(--surface)}
+.pmulti .pm-menu label:has(input:focus-visible){outline:2px solid #e3b94e;outline-offset:-2px}
+.pmulti .pm-menu label span{min-width:0;overflow:hidden;text-overflow:ellipsis}
 .vd-th{position:relative}
 .vd-tt{position:absolute;left:8px;bottom:8px;font-style:normal;font-size:11.5px;font-weight:800;color:#fff;background:rgb(0 0 0 / .66);padding:3px 8px;border-radius:999px}
 /* label kartu video: tinggi tetap, teks rata tengah tegak (pemilik, 15 Okt 2026) */
