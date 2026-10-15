@@ -65,11 +65,8 @@
       "runtimeExecutable": "python3",
       "runtimeArgs": [
         "-I",
-        "-m",
-        "http.server",
-        "8797",
-        "-d",
-        "/Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla/public"
+        "-c",
+        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/2b756a81-4b5e-466b-93df-34f5533035c7/scratchpad/web');sys.argv=['s','8797'];runpy.run_module('http.server',run_name='__main__')"
       ],
       "port": 8797
     }

@@ -581,6 +581,9 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .vd-th img{width:100%;height:100%;object-fit:cover;display:block}
 .vd-th i{position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:50%;background:rgb(0 0 0 / .65);color:#fff;font-style:normal;font-size:12px;display:grid;place-items:center}
 .vd-k small{color:var(--ink2);font-size:11.5px}
+.vd-sh{position:absolute;right:8px;top:8px;width:30px;height:30px;border:0;border-radius:50%;background:rgb(0 0 0 / .65);color:#fff;display:grid;place-items:center;cursor:pointer;padding:0}
+.vd-sh svg{width:15px;height:15px;fill:currentColor}
+.vd-sh:hover{background:var(--brand2)}
 .vd-lb{display:flex;flex-wrap:wrap;gap:4px}
 .vd-th u{position:absolute;left:8px;bottom:8px;padding:1px 6px;border-radius:5px;background:rgb(0 0 0 / .72);color:#fff;font-size:11px;font-weight:700;text-decoration:none}
 .dh-bagi{flex:none;width:38px;height:38px;margin-left:auto;margin-right:6px;padding:0;display:grid;place-items:center;border:0;border-radius:10px;background:transparent;color:var(--ink2);cursor:pointer}
@@ -3531,7 +3534,7 @@ const Insight = {
 
   /* factsheet Bakom RI (data/factsheet_karhutla.json, disalin manual dari PDF): batang mendatar + pil angka di ujung */
   _batang(rows, W, L, mx, warna, tip) { const rh = 32, pil = this.pil; let g = "";
-    rows.forEach((r, i) => { const y = i * rh, w = Math.max(2, Math.min(r.v, mx) / mx * (W - L - 150)), wr = warna(r, i);
+    rows.forEach((r, i) => { const y = i * rh, w = Math.max(2, Math.min(Math.min(r.v, mx) / mx * (W - L - 150), W - L - 30 - String(r.lbl).length * 7.4)), wr = warna(r, i);   // label panjang tidak boleh lewat tepi kanan
       g += `<text x="${L - 10}" y="${y + 20}" text-anchor="end" font-size="13" font-weight="${r.tebal ? 800 : 600}">${esc(r.n)}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 6}" width="${w}" height="${rh - 12}" rx="4" fill="${wr}" data-tip="${tip(r)}"/>
         ${r.v > mx ? `<path d="M${L + w - 14},${y + 4} l6,${rh - 8} M${L + w - 8},${y + 4} l6,${rh - 8}" stroke="var(--card)" stroke-width="3"/>` : ""}
@@ -4166,7 +4169,7 @@ const Berita = {
     const h = Math.min(o.h, Math.max(0, Math.ceil(xs.length / PER) - 1)), pl = (t, w) => `<em class="br-lb" style="--w:${w}">${esc(t)}</em>`;
     const dur = s => s == null ? "" : `<u>${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</u>`;
     el.querySelector(".vd-jd").innerHTML = `${Insight.hl(fmt(xs.length) + " video")} karhutla di YouTube${o.f ? ` ${o.f.k === "kanal" ? "dari" : o.f.k === "prov" ? "di" : "menyebut"} ${esc(o.f.k === "prov" ? namaProv(o.f.v) : o.f.v)} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-vf="">Hapus saringan ✕</button>` : ""}`;
-    el.querySelector(".vd-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(v => `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer">${dur(v.durasi)}${v.tonton != null ? `<em class="vd-tt">${fmt(v.tonton)} tayangan</em>` : ""}<i aria-hidden="true">▶</i></span>
+    el.querySelector(".vd-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(v => `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer">${dur(v.durasi)}${v.tonton != null ? `<em class="vd-tt">${fmt(v.tonton)} tayangan</em>` : ""}<i aria-hidden="true">▶</i><button type="button" class="vd-sh" data-sh="${esc(v.id)}" aria-label="Bagikan video" title="Bagikan">${window.Bagi?.ikon?.() || "↗"}</button></span>
       <span class="vd-lb">${pl(this.VJ[v.jenis || "kreator"][0], this.VJ[v.jenis || "kreator"][1])}${(v.tokoh || []).slice(0, 2).map(t => pl(t, "#c9503a")).join("")}${(v.prov || []).slice(0, 1).map(p => pl(namaProv(p), "#2b8c86")).join("")}</span>
       <b>${esc(v.judul)}</b><small>${esc(v.kanal)} · ${new Date(v.tgl).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})}${v.tonton != null ? ` · ${fmt(v.tonton)} kali ditonton` : ""}</small></a>`).join("") || `<p class="kosong">Tidak ada video yang cocok.</p>`;
     el.querySelector(".vd-pg").innerHTML = paginasi(h, xs.length, PER, "video"); },
@@ -4175,6 +4178,9 @@ const Berita = {
     el.addEventListener("click", e => {
       const s = e.target.closest("[data-vo]"); if (s) { this.vo[s.dataset.vo] = s.dataset.vo === "jenis" && this.vo.jenis === s.dataset.v ? "" : s.dataset.v;   /* jenis: klik lagi = semua jenis */ this.vo.h = 0; s.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", this.vo[s.dataset.vo] === b.dataset.v)); return nanti(() => this.vidIsi()); }
       const f = e.target.closest("[data-vf]"); if (f) { this.vo.f = f.dataset.vf ? {k: f.dataset.vf, v: f.dataset.v} : null; this.vo.h = 0; nanti(() => this.vidIsi()); if (f.dataset.vf) $("#brVideo").scrollIntoView({block: "start", behavior: "smooth"}); return; }
+      const sh = e.target.closest(".vd-sh"); if (sh) { e.preventDefault(); const v = this.vid.video.find(x => x.id === sh.dataset.sh); if (!v) return;   /* bagikan per video (pemilik, 15 Okt 2026) */
+        const c = {judul: v.judul, teks: v.judul + " (" + v.kanal.trim() + ")", url: v.url, kampanye: "video"};
+        if (window.Bagi) Bagi.buka(c); else if (navigator.share) navigator.share({title: c.judul, url: c.url}).catch(() => {}); else navigator.clipboard?.writeText(c.url); return; }
       const b = e.target.closest(".vd-pg [data-h]"); if (b) { e.stopPropagation(); if (!b.disabled) { this.vo.h = +b.dataset.h; this.vidIsi(); $("#brVideo").scrollIntoView({block: "start", behavior: "smooth"}); } } }); },
   exDaftar() {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
