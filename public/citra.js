@@ -105,13 +105,23 @@
         const ks = Object.entries(D.kompleks).filter(([, xs]) => xs.length), PER = 6, nH = Math.ceil(ks.length / PER), hal = Math.min(this.st.citraHal || 0, nH - 1);
         const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
         const kartu = ks.slice(hal * PER, hal * PER + PER).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
-          return `<div class="ct-kartu2"><div class="ct-nm"><b>${esc(p.kec || id)}</b><span>${esc(p.kab || "")}</span></div><button class="ct-pasang" data-kl="${esc(id)}" aria-label="Buka kompleks ${esc(p.kec || id)}">${["tc", "swir"].map(m => `<figure><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400" onerror="this.closest('figure').classList.add('ct-hilang')"><figcaption>${m === "tc" ? "Warna asli" : "SWIR"}</figcaption><span class="ct-tglp">${tg(h.tgl)}</span></figure>`).join("")}</button>
+          /* pilihan tanggal: citra lain kompleks ini, terbaru dulu (pemilik, 15 Okt 2026) */
+          const urut = xs.map((x, i) => [x, i]).sort((u, v) => v[0].tgl.localeCompare(u[0].tgl)).slice(0, 5);
+          const pil = urut.length > 1 ? `<div class="ct-tg" role="group" aria-label="Tanggal citra">${urut.map(([x, i]) => `<button type="button" data-ci="${esc(id)}" data-i="${i}" aria-pressed="${x === h}">${tg(x.tgl)}${viirs(x) ? "<small>VIIRS</small>" : ""}</button>`).join("")}</div>` : "";
+          return `<div class="ct-kartu2"><div class="ct-nm"><b>${esc(p.kec || id)}</b><span>${esc(p.kab || "")}</span></div>${pil}<button class="ct-pasang" data-kl="${esc(id)}" aria-label="Buka kompleks ${esc(p.kec || id)}">${["tc", "swir"].map(m => `<figure><img src="${src(h, m)}" alt="${MODE[m]} ${esc(p.kec || id)} ${tg(h.tgl)}" loading="lazy" decoding="async" width="400" height="400" onerror="this.closest('figure').classList.add('ct-hilang')"><figcaption>${m === "tc" ? "Warna asli" : "SWIR"}</figcaption><span class="ct-tglp">${tg(h.tgl)}</span></figure>`).join("")}</button>
             <div class="ct-isi"><div class="ct-meta">${sub(h)}</div><p class="ct-tf">${tafsir(h, p)}</p></div></div>`; }).join("");
         const pg = nH > 1 ? `<div class="ct-hal">${paginasi(hal, ks.length, PER, "kompleks")}</div>` : "";
         return this.ex(`Potret perbandingan warna asli dan SWIR di ${this.hl(fmt(ks.length) + " kompleks prioritas")}; ${this.hl(fmt(bersih))} terpotret cukup jernih dalam ${D.hari} hari terakhir`,
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
           `<div class="ct-galeri2">${kartu}</div>${pg}${LEG}`,
           `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`); };
+      document.addEventListener("click", e => { const b = e.target.closest(".ct-tg [data-ci]"); if (!b) return;
+        const id = b.dataset.ci, h = D.kompleks[id]?.[+b.dataset.i], k = b.closest(".ct-kartu2"); if (!h || !k) return;
+        const p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
+        k.querySelectorAll(".ct-tg button").forEach(x => x.setAttribute("aria-pressed", x === b));
+        k.querySelectorAll(".ct-pasang figure").forEach((f, j) => { const m = j ? "swir" : "tc", img = f.querySelector("img"); f.classList.remove("ct-hilang");
+          img.src = src(h, m); img.alt = `${MODE[m]} ${p.kec || id} ${tg(h.tgl)}`; f.querySelector(".ct-tglp").textContent = tg(h.tgl); });
+        k.querySelector(".ct-meta").innerHTML = sub(h); k.querySelector(".ct-tf").textContent = tafsir(h, p); });
       document.addEventListener("click", e => { const b = e.target.closest(".ct-hal [data-h]"); if (!b || b.disabled) return; Insight.st.citraHal = +b.dataset.h;
         const box = document.querySelector('#insight [data-ex="citra"]'); if (box) { box.innerHTML = Insight.gambar("citra"); box.scrollIntoView({block: "nearest"}); } });
       if (document.querySelector("#p-insight.on")) Insight.render();

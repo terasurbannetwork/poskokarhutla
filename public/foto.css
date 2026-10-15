@@ -169,3 +169,27 @@ form:not(.ada) .fl-lanjut{display:none}
 }
 #tabs button[hidden],#lapis label[hidden]{display:none!important}
 .fl-wrap:has(.fl-ajak) .fl-alat,.fl-wrap:has(.fl-ajak) .fl-kepala .fl-pri{display:none}  /* belum ada foto: saringan & tombol ganda tidak berguna */
+/* langkah 1 kirim: izin lokasi -> wilayah terbaca -> kamera (pemilik, 15 Okt 2026) */
+.fl-sheet:not(.tahap-foto) form{display:none}
+.fl-sheet.tahap-foto .fl-lok{display:none}
+.fl-lok{display:grid;justify-items:center;text-align:center;gap:10px;padding:28px 8px 6px}
+.fl-lok-ik{display:grid;place-items:center;width:76px;height:76px;border-radius:50%;background:color-mix(in oklch,#e8743b 13%,var(--card));color:#d4622b;margin-bottom:6px}
+.fl-lok-ik svg{width:34px;height:34px}
+.fl-lok.ok .fl-lok-ik{background:color-mix(in oklch,#2f9e6a 13%,var(--card));color:#23805a}
+.fl-lok.awas .fl-lok-ik{background:var(--surface);color:var(--ink2)}
+.fl-lok.muat .fl-lok-ik{animation:fl-denyut 1.2s ease-in-out infinite}
+@keyframes fl-denyut{50%{transform:scale(.92);opacity:.7}}
+@media (prefers-reduced-motion:reduce){.fl-lok.muat .fl-lok-ik{animation:none}}
+.fl-lok h3{font:800 21px/1.25 var(--display);letter-spacing:-.01em;max-width:30ch}
+.fl-lok-tx{display:grid;gap:4px;justify-items:center;color:var(--ink2);font-size:14.5px;line-height:1.55;max-width:42ch}
+.fl-lok-wil{font:800 30px/1.15 var(--display);color:var(--ink);letter-spacing:-.02em}
+.fl-lok-tx em{font-style:normal;font-size:12.5px;font-weight:700;background:var(--surface);color:var(--ink2);padding:4px 10px;border-radius:999px;margin-top:6px}
+.fl-lok-aksi{display:grid;gap:8px;width:100%;margin-top:14px}
+.fl-lok-aksi .fl-pri.besar{background:#171717;color:#fff}
+.fl-lok-aksi small{color:var(--ink2);font-size:12.5px}
+.fl-teks{border:0;background:none;color:var(--ink2);font:600 14px var(--font);padding:10px;cursor:pointer;text-decoration:underline;text-underline-offset:3px}
+.fl-teks:hover{color:var(--ink)}
+.fl-teks:focus-visible{outline:3px solid #e3b94e;outline-offset:2px;border-radius:8px}
+.fl-kecil{font-size:13px!important;font-style:italic}
+.fl-selesai-aksi{display:grid;gap:4px;width:100%;margin-top:6px}
+.fl-selesai-aksi .fl-pri.besar{background:#171717;color:#fff}

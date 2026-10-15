@@ -241,7 +241,7 @@
         d.addEventListener("click", e => this.klik(e, d)); d.addEventListener("change", e => this.ubah(e, d)); d.addEventListener("submit", e => this.kirim(e, d)); d.addEventListener("close", () => this.reset()); }
       this.d = d; this.reset();
       d.innerHTML = `<div class="fl-pegang"></div><header><h2 id="flKJudul">Kirim foto</h2><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
-        ${k.media === false ? `<div class="fl-kosong"><b>Unggah foto belum dibuka</b><p>Penyimpanan foto sedang disiapkan. Coba lagi nanti.</p></div>` : `<form novalidate>
+        ${k.media === false ? `<div class="fl-kosong"><b>Unggah foto belum dibuka</b><p>Penyimpanan foto sedang disiapkan. Coba lagi nanti.</p></div>` : `<div class="fl-lok" aria-live="polite"></div><form novalidate>
         <div class="fl-bidik" data-bidik><div class="fl-bidik-kosong"><label class="fl-bingkai" aria-label="Ambil foto"><span class="fl-lensa">${IK.kamera}</span><input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div></div>
         <p class="fl-cat">Foto, atau video maks ${k.batas?.durasi || 60} detik (${(k.batas?.video || 31457280) / 1048576} MB), diambil di lokasimu. Lokasi GPS ikut terkirim, dan admin memeriksa sebelum tayang.</p>
         <div class="fl-bawah"><label class="fl-galeri" aria-label="Pilih dari galeri" title="Pilih dari galeri">${IK.galeri}<input type="file" name="galeri" accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm" hidden></label><label class="fl-pri besar">${IK.kamera}Ambil foto<input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div>
@@ -256,7 +256,38 @@
         <div data-ts></div><div class="fl-prog" hidden><i></i></div>
         <button class="fl-pri besar" data-kirim-ok disabled>Kirim</button></div></form>`}`;
       if (!d.open) d.showModal();
-      this.tsId = null; if (k.media !== false) this.gps().catch(() => {});
+      this.tsId = null; d.classList.remove("tahap-foto"); if (k.media !== false) this.tahapLok("minta");
+    },
+    /* langkah 1: minta izin lokasi, lalu tunjukkan wilayah yang terbaca. Kamera baru dibuka setelah warga yakin lokasinya benar. */
+    tahapLok(t, v = {}) {
+      const el = this.d.querySelector(".fl-lok"); if (!el) return;
+      const maks = this.k.batas?.akurasi || 1000, m = n => `±${fmt(Math.round(n))} m`;
+      const isi = {
+        minta: [IK.pin, "", "Fotomu akan muncul tepat di lokasimu",
+          "Izinkan akses lokasi supaya kami tahu kamu ada di kecamatan mana. Lokasi hanya dipakai untuk menandai foto ini, bukan untuk melacakmu.",
+          `<button type="button" class="fl-pri besar" data-lok-cari>Izinkan akses lokasi</button><small>Setiap foto dicek admin dulu sebelum tampil di peta.</small>`],
+        cari: [IK.pin, "muat", "Mencari lokasimu…", "Biasanya cuma beberapa detik. Di luar ruangan lebih cepat.", ""],
+        ketemu: [IK.cek, "ok", "Kamu terdeteksi di", `<b class="fl-lok-wil">Kec. ${esc(v.kec)}</b><span>${esc(v.kab)}, ${esc(namaProv(v.prov))}</span><em>Akurasi ${m(v.akurasi)}</em>`,
+          `<button type="button" class="fl-pri besar" data-lok-lanjut>${IK.kamera}Lanjut ambil foto</button><button type="button" class="fl-teks" data-lok-cari>Bukan di sini? Cari ulang</button>`],
+        lemah: [IK.pin, "awas", "Sinyal GPS masih lemah", `Akurasinya baru ${m(v.akurasi || 0)}, sedangkan yang dibutuhkan paling jauh ${m(maks)}. Coba pindah ke tempat terbuka atau dekat jendela.`,
+          `<button type="button" class="fl-pri besar" data-lok-cari>Cari ulang</button>`],
+        luar: [IK.pin, "awas", "Lokasimu di luar daratan Indonesia", "Foto lapangan hanya bisa dikirim dari wilayah daratan Indonesia.", `<button type="button" class="fl-pri besar" data-lok-cari>Cari ulang</button>`],
+        gagal: [IK.pin, "awas", "Lokasi belum terbaca", esc(v.pesan || ""), `<button type="button" class="fl-pri besar" data-lok-cari>Coba lagi</button>`],
+      }[t];
+      el.className = "fl-lok " + isi[1]; el.innerHTML = `<span class="fl-lok-ik">${isi[0]}</span><h3>${isi[2]}</h3><div class="fl-lok-tx">${isi[3]}</div><div class="fl-lok-aksi">${isi[4]}</div>`;
+    },
+    async cariLok() {
+      this.tahapLok("cari");
+      try { this.loc = await ambilGPS(); }
+      catch (e) { return this.tahapLok("gagal", {pesan: /ditolak/.test(e.message) ? "Akses lokasi ditolak. Buka pengaturan peramban, izinkan lokasi untuk situs ini, lalu coba lagi." : e.message}); }
+      if (this.loc.akurasi > (this.k.batas?.akurasi || 1000)) return this.tahapLok("lemah", this.loc);
+      const w = await fetch(`${API}/lokasi?lat=${this.loc.lat}&lon=${this.loc.lon}`).then(r => r.json()).catch(() => null);
+      if (w && !w.ada) return this.tahapLok("luar");
+      this.wil = w?.ada ? w : null;
+      const lok = this.d.querySelector("[data-lok]"); if (lok) lok.textContent = this.wil ? `Kec. ${this.wil.kec}, ${this.wil.kab}` : `±${Math.round(this.loc.akurasi)} m`;
+      this.siap();
+      if (!this.wil) return this.d.classList.add("tahap-foto");   /* layanan wilayah gagal: jangan menahan warga, server tetap memeriksa saat kirim */
+      this.tahapLok("ketemu", {...this.wil, akurasi: this.loc.akurasi});
     },
     reset() { this.berkas = null; this.exif = null; this.kamera = false; this.loc = null; this.prev && URL.revokeObjectURL(this.prev); this.prev = null; },
     galat(t) { const p = this.d.querySelector(".fl-galat"); if (!p) return; p.hidden = !t; p.textContent = t || ""; },
@@ -297,7 +328,10 @@
     klik(e, d) {
       if (e.target === d || e.target.closest("[data-tutup]")) return d.close();
       if (e.target.closest("[data-ganti]")) { const p = d.querySelector(".fl-pratinjau"); p?.remove(); d.querySelector("[data-bidik]").classList.remove("ada"); d.querySelector("form")?.classList.remove("ada"); this.berkas = null; this.siap(); return; }
-      if (e.target.closest("[data-lok]")) { d.querySelector("[data-lok]").textContent = "Membaca GPS…"; this.gps(); }
+      if (e.target.closest("[data-lok-cari]")) return this.cariLok();
+      if (e.target.closest("[data-lok-lanjut]")) { d.classList.add("tahap-foto"); return; }
+      if (e.target.closest("[data-lok]")) { d.classList.remove("tahap-foto"); return this.cariLok(); }
+      if (e.target.closest("[data-lagi]")) return this.buka();
     },
     turnstile(d) {
       const kunci = this.k.turnstile; if (!kunci) return;
@@ -324,8 +358,10 @@
         q.onload = () => { let j = {}; try { j = JSON.parse(q.responseText); } catch (er) {} ok({s: q.status, j}); }; q.onerror = () => ok({s: 0, j: {galat: "Koneksi terputus. Coba lagi."}}); q.send(x); });
       prog.hidden = true; btn.textContent = "Kirim";
       if (r.s !== 201) { btn.disabled = false; if (this.tsId != null) window.turnstile.reset(this.tsId); return this.galat(r.j.galat || `Gagal mengirim (${r.s})`); }
-      d.innerHTML = `<div class="fl-pegang"></div><div class="fl-selesai">${IK.cek}<h2>Terkirim, terima kasih!</h2><p>Foto dari <b>Kec. ${esc(r.j.wilayah.kec)}, ${esc(r.j.wilayah.kab)}</b> sedang diperiksa admin. Setelah disetujui, foto tampil di peta dan galeri.</p>
-        <button class="fl-pri besar" data-tutup>Selesai</button></div>`;
+      d.innerHTML = `<div class="fl-pegang"></div><div class="fl-selesai">${IK.cek}<h2>Terima kasih, fotomu sudah sampai</h2>
+        <p>Kiriman dari <b>Kec. ${esc(r.j.wilayah.kec)}, ${esc(r.j.wilayah.kab)}</b> sedang dicek admin. Begitu lolos, fotonya tampil di peta dan membantu petugas serta warga lain melihat kondisi terbaru di sekitarmu.</p>
+        <p class="fl-kecil">Satu foto dari lapangan sering lebih jelas dari ratusan titik di satelit.</p>
+        <div class="fl-selesai-aksi"><button class="fl-pri besar" data-tutup>Selesai</button><button class="fl-teks" data-lagi>Kirim foto lain</button></div></div>`;
     },
   };
 

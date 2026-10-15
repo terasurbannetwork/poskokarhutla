@@ -1,7 +1,7 @@
 /* kaki.js — footer situs untuk halaman Insight, Berita, Tren, Dampak (pemilik, 14 Okt 2026).
    Merek + ringkasan di kiri, tiga kolom tautan, ikon sosial dari data/kontak.json, lalu baris hak cipta. */
 (() => {
-  const D = document, HAL = ["insight", "berita", "tren", "dampak"];
+  const D = document, HAL = ["insight", "berita", "tren", "dampak", "foto"];
   const IK = {x: "M4 4l16 16M20 4 4 20", linkedin: "M6 9v10M6 5v.5M10 19v-6a3 3 0 0 1 6 0v6M10 13v6", facebook: "M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8z",
     instagram: "M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5v.01", youtube: "M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z", tiktok: "M14 3v11a3 3 0 1 1-3-3M14 3a5 5 0 0 0 5 5"};
   D.head.insertAdjacentHTML("beforeend", `<style>
@@ -41,7 +41,7 @@
     <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>
       <div class="kk-s">${sos}</div><a class="kk-al" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Plumpang%20Semper%20Raya%20No.%2022%2C%20Tugu%20Selatan%2C%20Koja%2C%20Jakarta%20Utara%2014260" target="_blank" rel="noopener" title="Buka di Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></a></div>
-    <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li></ul></div>
+    <div><h4>Pantau</h4><ul><li><a href="/peta">Peta</a></li><li><a href="/insight">Insight</a></li><li><a href="/berita">Berita</a></li><li><a href="/tren">Tren</a></li><li><a href="/dampak">Dampak</a></li><li><a href="/foto">Foto</a></li></ul></div>
     <div><h4>Alat</h4><ul><li><a href="/sim">Simulasi</a></li></ul></div>
     <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li></ul></div>
   </div></div></footer>`;

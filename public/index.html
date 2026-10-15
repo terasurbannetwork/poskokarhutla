@@ -1524,7 +1524,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
     <div class="wrap" id="insightKompleks"><div id="prioritas"></div><div id="kompleks"></div></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
-  <section class="page" id="p-foto" aria-label="Foto"><div id="foto"></div></section>
+  <section class="page scroll" id="p-foto" aria-label="Foto"><div id="foto"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
   
   <!-- ================= POSKO ================= -->
@@ -2643,7 +2643,7 @@ const Tabel = {
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
       el.innerHTML = `<article class="ex kp-ex"><header class="ex-hd"><span class="ex-ey">Daftar kompleks</span><div class="ex-jd"><h3 id="tjudul"></h3></div>
         <div class="tbar"><input type="search" id="tq" placeholder="Cari kode, kecamatan, kabupaten, provinsi" aria-label="Cari kompleks"><select id="tprov" aria-label="Provinsi"><option value="">Semua provinsi</option>${Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b))).map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join("")}</select><span class="sp"></span><button class="btn-gelap" id="tcsv" hidden>Unduh CSV</button></div></header>
-        <div class="ex-bd"><div class="tw"><table><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
+        <div class="ex-bd"><div class="tw"><table data-bagi-kol="0,3,4,6,7,8"><thead id="th"></thead><tbody id="tb"></tbody><tfoot id="tf"></tfoot></table></div><div id="pg"></div></div></article>`;
       $("#tq").addEventListener("input", e => { this.q = e.target.value; this.hal = 0; nanti(() => this.render()); });
       $("#tprov").addEventListener("change", e => { this.prov = e.target.value || null; this.hal = 0; nanti(() => this.render()); });
       $("#th").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const k = b.dataset.k;

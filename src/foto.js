@@ -320,6 +320,13 @@ export async function ogFoto(env, url, id) {
 export const RUTE_FOTO = {
   "GET /api/foto": (env, req, url, kini, ctx) => daftar(env, req, url, kini, ctx),
   "POST /api/foto": (env, req, url, kini) => unggah(env, req, url, kini),
+  /* wilayah dari koordinat GPS (tanpa simpan, tanpa log): layar "kamu terdeteksi di …" sebelum mengambil foto */
+  "GET /api/foto/lokasi": async (env, req, url) => {
+    const lat = Number(url.searchParams.get("lat")), lon = Number(url.searchParams.get("lon"));
+    if (!Number.isFinite(lat) || !Number.isFinite(lon) || lat < -12 || lat > 8 || lon < 94 || lon > 142) return gagal(400, "koordinat di luar Indonesia");
+    const k = cariWilayah(await wilayah(env), lat, lon); if (!k) return json({ada: false});
+    const [prov, kab, kec] = k.split("|"); return json({ada: true, prov, kab, kec});
+  },
   "GET /api/foto/konfig": (env) => json({turnstile: env.TURNSTILE_SITEKEY || null, media: !!env.MEDIA, batas: {...MAKS, durasi: MAKS_DURASI, akurasi: AKURASI_MAKS}, kategori: KATEGORI}),
   "GET /api/foto/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini),
   "GET /api/foto/media/:id": (env, req, url, kini, ctx, id) => media(env, req, url, id, kini, false),

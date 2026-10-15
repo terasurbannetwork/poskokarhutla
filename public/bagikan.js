@@ -15,6 +15,7 @@ const Bagikan = {
     pdf: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf],
     tabel: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js", () => window.jspdf?.jsPDF?.API?.autoTable],
     pptx: ["https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", () => window.PptxGenJS],
+    dom: ["https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js", () => window.htmlToImage],
   },
   get K() {
     return this.hal === "banjir"
@@ -45,31 +46,32 @@ const Bagikan = {
     ["tren", "dampak", "berita", "insightKompleks"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
     document.addEventListener("click", e => { const t = e.target.closest?.(".bg-ex"); if (!t) return; e.stopPropagation();
       const box = t.closest("[data-ex]"), art = t.closest("article.ex");
-      if (!t.closest("#insight") || t.closest(".ct-bab, [data-ex=citra]")) { this._exLuar = this.ambilLuar(t); this.halEx = 0; return this.buka("ex", "luar"); }
+      if (!t.closest("#insight") || t.closest(".ct-bab, [data-ex=citra]") || !art?.querySelector("svg[viewBox]")) { this._exLuar = this.ambilLuar(t); this.halEx = 0; return this.buka("ex", "luar"); }
       this.buka("ex", box ? box.dataset.ex : "b" + [...document.querySelectorAll("#insight article.ex")].indexOf(art)); }, true);
     /* tautan dalam: ?wil=62|Seruyan membuka wilayah itu setelah peta siap */
     const w = new URLSearchParams(location.search).get("wil");
     if (w && /^\d{2}(\|[^|<>"]{1,80}){0,2}$/.test(w)) this.tungguWil(w);
   },
   tombolEx() {
-    document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #insightKompleks article.ex, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
+    document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #insightKompleks article.ex, #tren article.ex, #dampak article.ex, #berita article.ex, #berita section.pm-p, #tren .head").forEach(a => {
       const isi = a.classList.contains("head") ? this.isiHead(a) : [a];
       /* hanya kartu yang punya grafik lebar (viewBox ≥ 300) atau tabel; ikon kecil tidak dihitung */
-      const ada = isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas, .ct-galeri2 img") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
-      if (a.querySelector(":scope > .bg-ex, :scope > header > .bg-ex") || !ada) return;
+      /* semua kartu berjudul bisa dibagikan sebagai gambar; yang tanpa grafik/tabel ditangkap dari tampilannya (pemilik, 15 Okt 2026) */
+      const ada = !!a.querySelector("h2, h3, h4") || isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas, .ct-galeri2 img") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
+      if (a.querySelector(":scope > .bg-ex, :scope > header > .bg-ex, :scope > .pm-h > .bg-ex") || !ada) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "bg-ex"; b.setAttribute("aria-label", "Bagikan grafik ini"); b.title = "Bagikan";
       b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>`;
-      b.setAttribute("aria-label", "Bagikan grafik ini sebagai gambar"); a.classList.contains("head") ? a.append(b) : a.prepend(b); });
+      b.setAttribute("aria-label", "Bagikan grafik ini sebagai gambar"); a.classList.contains("head") ? a.append(b) : a.matches(".pm-p") ? a.querySelector(".pm-h")?.append(b) : a.prepend(b); });   /* panel Berita: tombol di kepala panel */
   },
   /* bagian Tren berbentuk judul .head + elemen sesudahnya sampai .head berikutnya */
   isiHead(h) { const out = []; for (let x = h.nextElementSibling; x && !x.classList.contains("head"); x = x.nextElementSibling) out.push(x); return out; },
   ambilLuar(t) {
-    const art = t.closest("article.ex, section.ct-bab"), head = art ? null : t.closest(".head"), jd = art ? art.querySelector("h3") : head.querySelector("h2");
+    const art = t.closest("section.pm-p, article.ex, section.ct-bab"), head = art ? null : t.closest(".head"), jd = art ? art.querySelector("h3, h4") : head.querySelector("h2");
     const isi = art ? [art] : this.isiHead(head), cari = q => isi.map(x => x.matches?.(q) ? x : x.querySelector?.(q)).find(Boolean);
     /* sampai dua grafik + tabel kartu itu, ditumpuk, supaya gambar tidak kosong di atas-bawah */
     const svgs = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).filter(v => (v.viewBox.baseVal?.width || 0) >= 300).slice(0, 2), svg = svgs[0];
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), peta: svgs.length ? null : cari(".maplibregl-canvas"), galeri: cari(".ct-galeri2"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#insight") ? "Insight karhutla" : t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), peta: svgs.length ? null : cari(".maplibregl-canvas"), galeri: cari(".ct-galeri2"), dom: !svgs.length && !cari("table") && !cari(".ct-galeri2") && !cari(".maplibregl-canvas") && art ? this.blokDom(art) : null, fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#insight") ? "Insight karhutla" : t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
   },
   /* grafik tanpa tabel: susun tabel dari tooltip batang ("<b>Nama</b><br>Label: nilai<br>…"), satu baris per nama */
   sorotDari(svgs) { const t = this.tabelDariTip(svgs); if (!t) return [];
@@ -90,14 +92,23 @@ const Bagikan = {
     return t;
   },
   /* tabel -> kanvas: hanya 10 baris teratas, sisanya di situs */
+  /* tabel -> kanvas selebar isi gambar (±1:1, jadi huruf terbaca). Kolom: data-bagi-kol="0,3,4" di <table> bila ada,
+     selain itu 6 kolom pertama. Angka rata kanan, lebar kolom mengikuti isi, tanpa kepala navy (pemilik, 15 Okt 2026) */
   tabelKanvas(tb, n = 10, mulai = 0) {
-    const kol = [...tb.querySelectorAll("thead th")].map(x => x.textContent.trim()), rows = [...tb.querySelectorAll("tbody tr")].slice(mulai, mulai + n).map(r => [...r.children].map(c => c.textContent.replace(/\s+/g, " ").trim()));
-    const W = 1800, rh = 64, H = rh * (rows.length + 1), cv = this.kanvas(W, H), x = cv.getContext("2d"), cw = W / Math.max(1, kol.length);
-    x.fillStyle = this.C.navy; x.fillRect(0, 0, W, rh); x.textBaseline = "middle";
-    kol.forEach((k, j) => { x.fillStyle = "#fff"; this.f(x, 800, 24); x.fillText(this.potong(x, k.toUpperCase(), cw - 24), j * cw + 14, rh / 2); });
-    rows.forEach((r, i) => { const y = rh * (i + 1); x.fillStyle = i % 2 ? "#f4f6fa" : "#fff"; x.fillRect(0, y, W, rh);
-      r.forEach((c, j) => { x.fillStyle = this.C.tinta || "#0b1b33"; this.f(x, j < 2 ? 700 : 500, 27); x.fillText(this.potong(x, c, cw - 24), j * cw + 14, y + rh / 2); }); });
-    return cv;
+    const semua = [...tb.querySelectorAll("thead th")].map(x => x.textContent.replace(/[↑↓]/g, "").trim()), pilih = (tb.dataset.bagiKol || "").split(",").filter(Boolean).map(Number);
+    const ki = pilih.length ? pilih : semua.map((_, i) => i).slice(0, 6), kol = ki.map(i => semua[i] || "");
+    const rows = [...tb.querySelectorAll("tbody tr")].slice(mulai, mulai + n).map(r => ki.map(i => r.children[i]?.textContent.replace(/\s+/g, " ").trim() || ""));
+    const W = 940, rh = 66, hh = 54, H = hh + rh * rows.length, cv = this.kanvas(W, H), x = cv.getContext("2d"), pd = 18;
+    const angka = ki.map((_, j) => rows.filter(r => /^[–-]$|^[\d.,]+\s*(%|ha|hari|×|x)?$/.test(r[j])).length >= rows.length * .7);
+    this.f(x, 600, 25); const lebar = kol.map((k, j) => Math.min(320, Math.max(this.f(x, 800, 19) || x.measureText(k.toUpperCase()).width, ...rows.map(r => (this.f(x, j ? 500 : 700, 25), x.measureText(r[j]).width))) + 2 * pd));
+    const k = W / lebar.reduce((a, b) => a + b, 0), cw = lebar.map(v => v * k), cx = cw.map((_, j) => cw.slice(0, j).reduce((a, b) => a + b, 0));
+    x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); x.textBaseline = "middle";
+    kol.forEach((t, j) => { this.f(x, 800, 18); x.fillStyle = this.C.tinta2; x.textAlign = angka[j] ? "right" : "left"; x.fillText(this.potong(x, t.toUpperCase(), cw[j] - 2 * pd), angka[j] ? cx[j] + cw[j] - pd : cx[j] + pd, hh / 2); });
+    x.fillStyle = this.C.navy2; x.fillRect(0, hh - 2, W, 2);
+    rows.forEach((r, i) => { const y = hh + rh * i; if (i) { x.fillStyle = "#e6ebf2"; x.fillRect(0, y, W, 1.5); }
+      r.forEach((c, j) => { this.f(x, j ? 500 : 700, 25); x.fillStyle = j ? (this.C.tinta || "#1c2b40") : this.C.navy2; x.textAlign = angka[j] ? "right" : "left";
+        x.fillText(this.potong(x, c, cw[j] - 2 * pd), angka[j] ? cx[j] + cw[j] - pd : cx[j] + pd, y + rh / 2); }); });
+    x.textAlign = "left"; x.textBaseline = "alphabetic"; return cv;
   },
   tungguWil(w) {
     let n = 0; const t = setInterval(() => {
@@ -330,8 +341,7 @@ const Bagikan = {
       b.onclick = () => this.bagi({...this.konteks("nasional"), gambar: () => this.gambarCepat(""), lainnya: () => this.buka()}); a.prepend(b); });
     amati("berita", el => {
       /* kartu grafik Berita memakai tombol gambar ala Insight (tombolEx); tombol tautan hanya untuk kartu tanpa grafik/tabel */
-      el.querySelectorAll("article.ex:not(#brDaftar)").forEach(a => { const h = a.querySelector("h3"); if (!h || a.querySelector(":scope > .bs-sel, :scope > .bg-ex") || a.querySelector("svg[viewBox], table")) return;
-        a.prepend(tombol(E ? "Share this chart" : "Bagikan bagian ini", () => this.konteks("artikel", [judul(h), o + "/berita", "berita"]))); });
+      /* kartu Berita: semua memakai tombol gambar (tombolEx); tombol tautan hanya per berita di daftar */
       el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
         it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
           teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik api karhutla di Pantau Bencana:"}`}))); });
@@ -478,10 +488,11 @@ const Bagikan = {
   async dataEx(id = this.exId) {
     if (id === "luar" && this._exLuar) { const L = this._exLuar;
       /* tiap grafik, galeri, peta, dan potongan tabel = satu halaman sendiri, supaya isinya tetap terbaca (pemilik, 15 Okt 2026) */
+      L.hal ||= {}; L.halaman = L.hal[this.uk];
       if (!L.halaman) { const fotoPeta = c => { const k = this.kanvas(c.width, c.height); k.getContext("2d").drawImage(c, 0, 0); return k; };
-        const BARIS = 12, nT = L.tabel ? Math.min(3, Math.ceil(L.tabel.querySelectorAll("tbody tr").length / BARIS)) : 0;
-        L.halaman = [...(L.peta ? [fotoPeta(L.peta)] : []), ...(L.galeri ? [await this.galeriKanvas(L.galeri)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))),
-          ...Array.from({length: nT}, (_, i) => this.tabelKanvas(L.tabel, BARIS, i * BARIS))]; }
+        const BARIS = {story: 20, feed: 12, kotak: 9}[this.uk] || 12, nT = L.tabel ? Math.min(3, Math.ceil(L.tabel.querySelectorAll("tbody tr").length / BARIS)) : 0;
+        L.halaman = [...(L.dom ? (await Promise.all(L.dom.map(e => this.domKanvas(e).catch(er => (console.warn(er), null))))).filter(Boolean) : []), ...(L.peta ? [fotoPeta(L.peta)] : []), ...(L.galeri ? [await this.galeriKanvas(L.galeri)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))),
+          ...Array.from({length: nT}, (_, i) => this.tabelKanvas(L.tabel, BARIS, i * BARIS))]; L.hal[this.uk] = L.halaman; }
       const n = L.halaman.length, i = Math.min(this.halEx || 0, Math.max(0, n - 1)), lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 36;
       L.sorot ||= this.sorotDari(L.svgs?.slice(0, 1));
       return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? ` · ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: L.svgs?.length && i === (L.peta ? 1 : 0) + (L.galeri ? 1 : 0) ? L.sorot : [],   /* sorotan hanya di halaman grafik pertama */
@@ -551,6 +562,20 @@ const Bagikan = {
   },
 
   /* ---------------------------------------------------------------- kanvas */
+  /* kartu tanpa grafik/tabel: tiap blok isi (kolom kiri/kanan, daftar) = satu halaman; turun selama isinya cuma satu anak */
+  blokDom(art) {
+    const lihat = e => e && e.offsetHeight > 40 && !e.matches(".bg-ex, .bs-sel, .pm-h, header, .ex-hd, .fn, .ex-ft, [hidden]");
+    let ks = [...(art.querySelector(":scope > .ex-bd") || art).children].filter(lihat);
+    while (ks.length === 1 && [...ks[0].children].filter(lihat).length > 1 && ks[0].offsetHeight > 500) ks = [...ks[0].children].filter(lihat);
+    return ks.slice(0, 6);
+  },
+  async domKanvas(el) {
+    await this.muatLib("dom");
+    const R = document.documentElement, tema = R.dataset.theme; R.dataset.theme = "light";
+    try { return await htmlToImage.toCanvas(el, {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
+      filter: n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel")))}); }
+    finally { if (tema) R.dataset.theme = tema; else delete R.dataset.theme; }
+  },
   /* galeri citra satelit (kartu Insight): tiap kompleks = nama + warna asli & SWIR berdampingan, 3 kolom */
   async galeriKanvas(g) {
     const ks = [...g.querySelectorAll(".ct-kartu2")], K = 2, iw = 300, gp = 24, nm = 44, cw = iw * 2 + 8, ch = nm + iw, bar = Math.ceil(ks.length / K);
@@ -603,7 +628,7 @@ const Bagikan = {
   async render(tpl = this.tpl, uk = this.uk) {
     await this.muatKontak();
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
-    const atas = story ? 250 : 64, bawah = story ? H - 300 : H - 56;
+    const atas = story ? 250 : 64, bawah = story ? H - 300 : H - 30;   /* kaki dirapatkan ke tepi bawah (pemilik, 15 Okt 2026) */
     const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
     x.fillStyle = this.C.kertas; x.fillRect(0, 0, W, H);
     const y0 = this.kepala(x, W, P, atas, d, uk), y1 = this.kaki(x, W, H, P, bawah, story);
@@ -620,9 +645,9 @@ const Bagikan = {
     cv.d = d; return cv;
   },
   kepala(x, W, P, atas, d, uk) {
-    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? 3 : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
+    const lebar = W - 2 * P, maksBaris = d.tpl === "ex" ? (uk === "story" ? 4 : 3) : 2, seg = (d.judulSeg || [{t: d.judul}]).map(g => window.T ? {...g, t: window.T(String(g.t ?? ""))} : g);
     /* kepala lebih rendah & huruf lebih kecil supaya isi dapat ruang lebih (pemilik, 14 Okt 2026) */
-    let u = d.tpl === "ex" ? 36 : uk === "kotak" ? 44 : 50; this.f(x, 800, u, true);
+    let u = d.tpl === "ex" ? (uk === "story" ? 48 : 36) : uk === "kotak" ? 44 : 50; this.f(x, 800, u, true);
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
     if (ln.length > maksBaris) { ln = ln.slice(0, maksBaris); ln.at(-1).push({t: "…"}); }
@@ -747,21 +772,31 @@ const Bagikan = {
     let y = b; this.f(x, 600, 22); x.fillStyle = this.C.tinta2;
     if (d.unit) { this.baris(x, d.unit, w).slice(0, 2).forEach(l => { x.fillText(l, a, y + 24); y += 32; }); y += 10; }
     /* dasar: catatan kaki lalu ajakan + QR */
-    const qs = 116, yC = b + h - qs; x.fillStyle = "#eef2f8"; x.beginPath(); x.roundRect(a, yC, w, qs, 22); x.fill();
-    if (qr) { x.fillStyle = "#fff"; x.beginPath(); x.roundRect(a + w - qs + 8, yC + 8, qs - 16, qs - 16, 14); x.fill(); const qx = a + w - qs + 14, qy = yC + 14, qw = qs - 28; x.drawImage(qr, qx, qy, qw, qw);
-      if (mark) { const m = qw * .26, mx = qx + (qw - m) / 2, my = qy + (qw - m) / 2; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(mx - 3, my - 3, m + 6, m + 6, 5); x.fill();
+    /* ajakan: pita navy senada kepala, teks putih, QR di ubin putih (pemilik, 15 Okt 2026) */
+    const qs = 150, yC = b + h - qs, gC = x.createLinearGradient(a, yC, a + w, yC + qs); gC.addColorStop(0, this.C.navy2); gC.addColorStop(1, this.C.navy);
+    x.fillStyle = gC; x.beginPath(); x.roundRect(a, yC, w, qs, 28); x.fill();
+    if (qr) { const qp = 16, qx = a + w - qs + qp, qy = yC + qp, qw = qs - 2 * qp; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(qx, qy, qw, qw, 18); x.fill();
+      const qi = qw - 20; x.drawImage(qr, qx + 10, qy + 10, qi, qi);
+      if (mark) { const m = qi * .26, mx = qx + 10 + (qi - m) / 2, my = qy + 10 + (qi - m) / 2; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(mx - 3, my - 3, m + 6, m + 6, 5); x.fill();
         const r = Math.min(m / mark.width, m / mark.height); x.drawImage(mark, mx + (m - mark.width * r) / 2, my + (m - mark.height * r) / 2, mark.width * r, mark.height * r); } }
-    x.fillStyle = this.C.tinta2; this.f(x, 600, 22); x.fillText("Cek data lengkap di", a + 30, yC + 48);
-    x.fillStyle = this.C.navy2; this.pas(x, this.situs(), w - qs - 60, 800, 36, true, 24); x.fillText(this.situs(), a + 30, yC + 90);
+    const tx = a + 40, tw = w - qs - 64;
+    x.fillStyle = this.C.hl; this.f(x, 800, 19); x.fillText("CEK DATA LENGKAP", tx, yC + 50);
+    x.fillStyle = "#fff"; this.pas(x, this.situs(), tw, 800, 42, true, 26); x.fillText(this.situs(), tx, yC + 98);
+    x.fillStyle = "rgba(255,255,255,.72)"; this.f(x, 500, 19); x.fillText("Pindai kode QR atau buka situsnya", tx, yC + 128);
     this.f(x, 500, 18); x.fillStyle = this.C.tinta2; const fn = d.fn ? this.baris(x, d.fn.replace(/\s*·?\s*Lihat data lengkap di \S+/, ""), w).slice(0, 2) : [], yF = yC - 20 - fn.length * 26;
     fn.forEach((l, i) => x.fillText(l, a, yF + 18 + i * 26));
     /* sorotan di atas grafik */
-    const sor = (d.sorot || []).slice(0, 3), tS = 140, gS = 28, ruang0 = yF - 24 - y, pakai = sor.length > 1 && ruang0 - tS - gS > d.img.height * Math.min(1, w / d.img.width) * .5;
-    if (pakai) { const g = 20, cw = (w - g * (sor.length - 1)) / sor.length;
-      sor.forEach((q, i) => { const xx = a + i * (cw + g); x.fillStyle = "#eef2f8"; x.beginPath(); x.roundRect(xx, y, cw, tS, 22); x.fill();
-        x.fillStyle = this.C.hl; x.beginPath(); x.roundRect(xx, y + 22, 6, tS - 44, 3); x.fill();
-        x.fillStyle = this.C.navy2; const u = this.pas(x, q.v, cw - 56, 800, 46, true, 26); x.fillText(this.potong(x, q.v, cw - 56), xx + 30, y + 26 + u);
-        this.f(x, 600, 21); x.fillStyle = this.C.tinta2; this.baris(x, q.n, cw - 56).slice(0, 2).forEach((l, k) => x.fillText(l, xx + 30, y + 44 + u + 8 + k * 26)); });
+    const sor = (d.sorot || []).slice(0, 3), tS = 150, gS = 32, ruang0 = yF - 24 - y, pakai = sor.length > 1 && ruang0 - tS - gS > d.img.height * Math.min(1, w / d.img.width) * .5;
+    /* kotak sorotan gaya Oyenza: panel putih tanpa garis, nomor urut dalam lingkaran lembut, angka besar + satuan kecil, nama di bawah */
+    if (pakai) { const g = 18, cw = (w - g * (sor.length - 1)) / sor.length;
+      sor.forEach((q, i) => { const xx = a + i * (cw + g), m = String(q.v).match(/^([\d.,]+)\s*(.*)$/) || [0, q.v, ""], [nm, ...ket] = String(q.n).split(" · ");
+        x.save(); x.shadowColor = "rgba(11,37,69,.08)"; x.shadowBlur = 24; x.shadowOffsetY = 6; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill(); x.restore();
+        x.fillStyle = i ? "#eef2f8" : "#fde9dc"; x.beginPath(); x.arc(xx + 40, y + 40, 18, 0, 7); x.fill();
+        x.fillStyle = i ? this.C.navy2 : "#d4622b"; this.f(x, 800, 18); x.textAlign = "center"; x.fillText(String(i + 1), xx + 40, y + 46); x.textAlign = "left";
+        x.fillStyle = this.C.navy2; const u = this.pas(x, m[1], cw - 120, 800, 44, true, 26); x.fillText(m[1], xx + 24, y + 98);
+        if (m[2]) { const nw = x.measureText(m[1]).width; this.f(x, 600, 20); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, m[2], cw - 40 - nw), xx + 24 + nw + 8, y + 98); }
+        this.f(x, 700, 19); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, nm, cw - 48), xx + 24, y + 126);
+        if (ket.length) { this.f(x, 500, 16); x.fillStyle = this.C.tinta2; x.textAlign = "right"; x.fillText(this.potong(x, ket.join(" · "), cw - 90), xx + cw - 22, y + 46); x.textAlign = "left"; } });
       y += tS + gS; }
     const ruang = yF - 24 - y, s = Math.min(w / d.img.width, ruang / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
     x.drawImage(d.img, a + (w - iw) / 2, y + Math.max(0, (ruang - ih) / 2), iw, ih);
