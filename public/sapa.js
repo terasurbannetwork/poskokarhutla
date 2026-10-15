@@ -7,7 +7,8 @@
   const hariIni = () => new Date().toLocaleDateString("en-CA", {timeZone: "Asia/Jakarta"});
   const sudah = () => { try { return localStorage.getItem(KUNCI) === hariIni(); } catch (e) { return false; } };
   const tandai = () => { try { localStorage.setItem(KUNCI, hariIni()); } catch (e) {} };
-  if (sudah() || location.search || location.pathname.replace(/\/+$/, "") !== "") return;
+  /* muncul di halaman depan dan /peta (pemilik, 15 Okt 2026); tautan khusus (?wil=…, /k/…) tetap dilewati */
+  if (sudah() || /[?&](wil|k|kl|f)=/.test(location.search) || !["", "/peta"].includes(location.pathname.replace(/\/+$/, ""))) return;
 
   const R_API = /angin|asap|kabut|kebakaran|kering|panas|debu|jarak pandang/i;
   const topKab = (xs, n = 4) => { const m = new Map(); for (const p of xs) { const k = `${p.kab}|${p.prov}`; m.set(k, (m.get(k) || 0) + 1); }

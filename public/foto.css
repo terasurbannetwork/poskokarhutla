@@ -110,8 +110,8 @@
 .fl-alasan .batal{text-align:center;background:var(--surface);border:0}
 
 /* sheet kirim (gaya lembar iOS) */
-.fl-sheet{border:0;padding:0 18px 18px;width:min(620px,100vw);max-height:min(92dvh,900px);margin:auto auto 0;border-radius:22px 22px 0 0;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
-@media (min-width:700px){.fl-sheet{margin:auto;border-radius:22px}}
+.fl-sheet{border:0;padding:0 18px 18px;width:min(620px,calc(100vw - 24px));max-height:min(calc(100vh - 32px),900px);min-height:min(440px,calc(100vh - 32px));margin:auto;border-radius:24px;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
+.fl-sheet .fl-pegang{visibility:hidden;height:2px}   /* dialog di tengah layar, juga di ponsel (pemilik, 15 Okt 2026) */
 .fl-sheet::backdrop{background:oklch(15% .03 256 / .5)}
 .fl-pegang{width:38px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
 .fl-sheet header{display:flex;align-items:center;justify-content:space-between;padding:6px 0 12px;position:sticky;top:0;background:var(--card);z-index:2}
@@ -119,7 +119,7 @@
 .fl-sheet header .fl-x{position:static;background:var(--surface);color:var(--ink);width:36px;height:36px;font-size:20px}
 .fl-sheet form{display:grid;gap:14px}
 /* layar pertama = bidikan kamera (pola "scan struk"): panel abu besar, bingkai membulat + lensa di tengah, catatan, lalu galeri + Ambil foto */
-.fl-bidik{position:relative;border-radius:22px;overflow:hidden;background:var(--surface);min-height:min(56dvh,440px);display:grid;place-items:center;color:var(--ink)}
+.fl-bidik{position:relative;border-radius:22px;overflow:hidden;background:var(--surface);min-height:min(56vh,440px);display:grid;place-items:center;color:var(--ink)}
 .fl-bidik-kosong{display:grid;place-items:center;width:100%;height:100%}
 .fl-bingkai{display:grid;place-items:center;width:min(220px,52%);aspect-ratio:1;border:1.5px solid color-mix(in oklch,var(--ink) 35%,transparent);border-radius:30px;cursor:pointer;transition:transform .15s,border-color .15s}
 .fl-bingkai:hover{border-color:var(--ink);transform:scale(1.02)}
@@ -193,3 +193,62 @@ form:not(.ada) .fl-lanjut{display:none}
 .fl-kecil{font-size:13px!important;font-style:italic}
 .fl-selesai-aksi{display:grid;gap:4px;width:100%;margin-top:6px}
 .fl-selesai-aksi .fl-pri.besar{background:#171717;color:#fff}
+/* kepala lembar kirim: pita penuh, menempel di atas, garis bawah (pemilik, 15 Okt 2026) */
+.fl-sheet header{margin:0 -18px 14px;padding:14px 18px;border-bottom:1px solid var(--line);z-index:6}
+.fl-sheet .fl-pegang{display:none}
+/* form dalam wadah */
+.fl-wadah{display:grid;gap:12px;padding:16px;border:1px solid var(--line);border-radius:18px;background:var(--card)}
+.fl-wadah > h4{margin:0;font:700 14px var(--display);color:var(--ink)}
+.fl-wadah .fl-kat legend{display:none}
+/* tombol sekunder "Cari ulang" */
+.fl-lok-aksi .fl-sek.besar{width:100%;min-height:48px;background:var(--surface);color:var(--ink)}
+.fl-lok-aksi .fl-sek svg{width:17px;height:17px}
+/* cap lokasi ala kamera bergeotag di atas pratinjau & foto */
+.fl-cap{position:absolute;left:12px;bottom:12px;z-index:2;display:flex;gap:8px;align-items:flex-start;max-width:calc(100% - 100px);padding:9px 12px 9px 10px;border-radius:14px;background:rgb(0 0 0 / .58);color:#fff;font-size:11.5px;line-height:1.35;backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px);pointer-events:none}
+.fl-cap svg{width:16px;height:16px;flex:none;margin-top:1px;color:#ffb27a}
+.fl-cap span{display:grid;gap:1px;min-width:0}
+.fl-cap b{font-size:13px}
+.fl-cap small{color:rgb(255 255 255 / .82);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl-pratinjau:has(video) .fl-cap,.fl-r-media:has(video) .fl-cap{bottom:56px}   /* jangan menutup kontrol video */
+.fl-r-media{position:relative}
+.fl-sheet .fl-panel{background:var(--card);border:1px solid var(--line);border-radius:18px}
+/* kepala dialog: ikon kamera + judul + subjudul (pemilik, 15 Okt 2026) */
+.fl-sheet header{gap:12px;justify-content:flex-start}
+.fl-sheet header .fl-x{margin-left:auto}
+.fl-hd-ik{display:grid;place-items:center;width:40px;height:40px;border-radius:12px;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;flex:none}
+.fl-hd-ik svg{width:20px;height:20px}
+.fl-hd-tx{display:grid;gap:1px;min-width:0}
+.fl-hd-tx h2{font:800 18px/1.2 var(--display)}
+.fl-hd-tx small{font-size:12.5px;color:var(--ink2)}
+/* wadah form: putih, judul berikon, label "opsional" sebaris, centang jadi sakelar */
+.fl-wadah{background:#fff;gap:14px;padding:18px}
+:root[data-theme="dark"] .fl-wadah{background:var(--card)}
+.fl-wadah > h4{display:flex;align-items:center;gap:10px;font-size:15px}
+.fl-w-ik{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in oklch,var(--w) 14%,var(--card));color:var(--w);flex:none}
+.fl-w-ik svg{width:16px;height:16px}
+.fl-f{grid-template-columns:auto 1fr;align-items:baseline;column-gap:6px}
+.fl-f > input,.fl-f > textarea{grid-column:1/-1}
+.fl-f small{font-size:12px}
+.fl-f input,.fl-f textarea{border-radius:14px;padding:12px 14px;min-height:46px;transition:border-color .15s,box-shadow .15s}
+.fl-f input:focus,.fl-f textarea:focus{outline:0;border-color:var(--ink);box-shadow:0 0 0 3px color-mix(in oklch,var(--ink) 10%,transparent)}
+.fl-tog{align-items:center;gap:14px;padding:4px 0}
+.fl-tog input{appearance:none;-webkit-appearance:none;width:46px;height:28px;margin:0;border-radius:999px;background:color-mix(in oklch,var(--ink) 16%,var(--card));position:relative;cursor:pointer;transition:background .2s;flex:none;order:2;margin-left:auto}
+.fl-tog input::after{content:"";position:absolute;top:3px;left:3px;width:22px;height:22px;border-radius:50%;background:#fff;box-shadow:0 1px 3px rgb(0 0 0 / .25);transition:transform .2s}
+.fl-tog input:checked{background:#2f9e6a}
+.fl-tog input:checked::after{transform:translateX(18px)}
+.fl-tog input:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+@media (prefers-reduced-motion:reduce){.fl-tog input,.fl-tog input::after{transition:none}}
+.fl-kat label:has(input:checked){font-weight:800}
+/* bingkai media mengikuti ukuran gambar/video; cap di dalamnya, latar hitam dihapus (pemilik, 15 Okt 2026) */
+.fl-bidik.ada{background:none;min-height:0}
+.fl-pratinjau{display:grid;justify-items:center;position:relative}
+.fl-mw{position:relative;display:inline-block;max-width:100%;border-radius:18px;overflow:hidden;line-height:0}
+.fl-mw img,.fl-mw video{display:block;max-width:100%;width:auto!important;height:auto;max-height:min(56vh,440px);margin:0}
+.fl-r-media .fl-mw{border-radius:0}
+.fl-r-media .fl-mw img,.fl-r-media .fl-mw video{max-height:calc(100vh - 60px)}
+.fl-mw .fl-cap{left:10px;bottom:10px;line-height:1.35}
+.fl-mw:has(video) .fl-cap{top:10px;bottom:auto}   /* video: cap di atas supaya kontrol pemutar tidak tertutup */
+.fl-pratinjau:has(video) .fl-cap,.fl-r-media:has(video) .fl-cap{bottom:auto}
+.fl-pratinjau .fl-ganti{right:12px;bottom:12px}
+.fl-mw .fl-ganti{position:absolute;right:10px;bottom:10px;line-height:1.2}
+.fl-mw:has(video) .fl-ganti{top:10px;bottom:auto}

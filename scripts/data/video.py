@@ -21,8 +21,8 @@ from berita import R_MEDIA_RI, Geo
 
 KELUAR = os.path.join(AKAR, "public/data/video.json")
 KUERI = ["karhutla", "kebakaran hutan dan lahan", "kabut asap kebakaran", "kebakaran lahan gambut", "water bombing karhutla", "titik panas karhutla"]
-HARI = 30
-MAKS = 500  # ~200 KB; urut tonton menambah video lama yang ramai
+HARI = 90   # pilihan rentang di layar sampai 3 bulan (pemilik, 15 Okt 2026)
+MAKS = 800  # ~200 KB; urut tonton menambah video lama yang ramai
 # judul/deskripsi harus menyebut api/asap hutan-lahan; buang rumah/pasar/kendaraan terbakar dan konten hiburan
 R_RELEVAN = re.compile(r"karhutla|kebakaran (hutan|lahan|gambut)|hutan terbakar|lahan terbakar|kabut asap|asap (kebakaran|karhutla)|water ?bombing|titik panas|hotspot|gambut", re.I)
 R_BUANG = re.compile(r"rumah|pasar|mobil|motor|kapal|gudang|pabrik terbakar|kos|ruko|toko|asrama|game|minecraft|free fire|mobile legends|lirik|karaoke|"
@@ -89,9 +89,11 @@ def ringkas(item):
             "gambar": gb, "desk": html.unescape(s.get("description", ""))[:200], "url": f"https://www.youtube.com/watch?v={i}"}
 
 
-def cari(kunci, q, sejak, urut="date", halaman=1):
+def cari(kunci, q, sejak, urut="date", halaman=1, sampai=None):
     p = {"part": "snippet", "q": q, "type": "video", "order": urut, "maxResults": 50, "regionCode": "ID",
          "relevanceLanguage": "id", "publishedAfter": sejak, "key": kunci}
+    if sampai:
+        p["publishedBefore"] = sampai
     xs = []
     for _ in range(halaman):
         with urllib.request.urlopen("https://www.googleapis.com/youtube/v3/search?" + urllib.parse.urlencode(p), timeout=30) as r:
@@ -107,7 +109,11 @@ def gabung(lama, baru, batas):
     semua = {v["id"]: v for v in lama}
     semua.update({v["id"]: v for v in baru})
     xs = [v for v in semua.values() if v["tgl"] >= batas]
-    return sorted(xs, key=lambda v: v["tgl"], reverse=True)[:MAKS]
+    # separuh kuota untuk yang terbaru, sisanya yang paling ditonton, supaya video lama yang ramai tidak terbuang
+    baru_ = sorted(xs, key=lambda v: v["tgl"], reverse=True)[:MAKS // 2]
+    ada = {v["id"] for v in baru_}
+    ramai = sorted((v for v in xs if v["id"] not in ada), key=lambda v: v.get("tonton") or 0, reverse=True)[:MAKS - len(baru_)]
+    return sorted(baru_ + ramai, key=lambda v: v["tgl"], reverse=True)
 
 
 def uji():
@@ -144,11 +150,16 @@ def main():
         print(f"YOUTUBE_API_KEY kosong: {len(xs)} video lama ditandai ulang")
         return
     kini = dt.datetime.now(dt.timezone.utc)
-    sejak = (kini - dt.timedelta(days=HARI)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    iso = lambda t: t.strftime("%Y-%m-%dT%H:%M:%SZ")
+    sejak = iso(kini - dt.timedelta(days=HARI))
     baru = []
     for q in KUERI:
         try:
-            hasil = cari(kunci, q, sejak, "date", 2) + cari(kunci, q, sejak, "viewCount")
+            # terbaru (2 halaman) + paling ditonton per jendela waktu, supaya 3 hari/seminggu/sebulan/3 bulan sama-sama terisi;
+            # 6 kueri x 6 panggilan x 100 unit = 3.600 unit per jalan (kuota harian 10.000)
+            hasil = cari(kunci, q, sejak, "date", 2)
+            for a, b in ((3, 0), (7, 3), (30, 7), (HARI, 30)):
+                hasil += cari(kunci, q, iso(kini - dt.timedelta(days=a)), "viewCount", 1, iso(kini - dt.timedelta(days=b)) if b else None)
             baru += [ringkas(x) for x in hasil if x.get("id", {}).get("videoId")]
         except Exception as e:  # satu kueri gagal (kuota/jaringan) tidak menggagalkan yang lain
             print("kueri gagal", q, e)

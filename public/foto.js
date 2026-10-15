@@ -13,7 +13,11 @@
   const durasi = d => d ? `${Math.floor(d / 60)}:${String(Math.round(d % 60)).padStart(2, "0")}` : "";
   const namaWil = (f, t) => t === "prov" ? namaProv(f.prov) : t === "kab" ? f.kab : `Kec. ${f.kec}`;
   const kunciWil = (f, t) => t === "prov" ? f.prov : t === "kab" ? `${f.prov}|${f.kab}` : `${f.prov}|${f.kab}|${f.kec}`;
+  /* koordinat & cap lokasi ala kamera bergeotag (pemilik, 15 Okt 2026) */
+  const koord = l => `${Math.abs(l.lat).toFixed(5)}° ${l.lat < 0 ? "LS" : "LU"}, ${Math.abs(l.lon).toFixed(5)}° BT`;
+  const cap = (wil, l, t) => `<div class="fl-cap">${IK.pin}<span><b>${wil ? `Kec. ${esc(wil.kec)}` : "Lokasi"}</b>${wil ? `<small>${esc(wil.kab)}, ${esc(namaProv(wil.prov))}</small>` : ""}<small>${l ? koord(l) : ""}</small><small>${esc(t || "")}</small></span></div>`;
   const IK = {
+    orang: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>',
     galeri: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="m3 17 4.5-4.5 4 4 3-3 4.5 4.5"/><path d="M7 3h12.5A1.5 1.5 0 0 1 21 4.5V15"/></svg>',
     kamera: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>',
     hati: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 20s-7-4.4-7-10a4 4 0 0 1 7-2.6A4 4 0 0 1 19 10c0 5.6-7 10-7 10z"/></svg>',
@@ -131,7 +135,7 @@
       const [k, w] = KAT[f.kategori] || KAT.lainnya, v = f.terverifikasi || {};
       const lencana = [[true, `${IK.pin}Lokasi dari GPS perangkat`], [v.kamera, `${IK.kamera}Diambil langsung dari kamera`], [v.waktu, `${IK.cek}Waktu pengambilan tercatat`], [v.gps, `${IK.cek}GPS foto cocok dengan lokasi`]].filter(x => x[0]);
       return `<div class="fl-r" style="--k:${w}">
-        <div class="fl-r-media">${f.jenis === "video" ? `<video controls playsinline preload="metadata" poster="${API}/thumb/${f.id}" src="${API}/media/${f.id}"></video>` : `<img alt="${esc(f.keterangan || k)}" src="${API}/media/${f.id}">`}
+        <div class="fl-r-media"><div class="fl-mw">${f.jenis === "video" ? `<video controls playsinline preload="metadata" poster="${API}/thumb/${f.id}" src="${API}/media/${f.id}"></video>` : `<img alt="${esc(f.keterangan || k)}" src="${API}/media/${f.id}">`}${cap({kec: f.kec, kab: f.kab, prov: f.prov}, f.lat != null ? {lat: f.lat, lon: f.lon} : null, f.diambil ? jamWIB(f.diambil) : "")}</div>
           <button class="fl-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="fl-r-isi">
           <div class="fl-r-atas"><span class="fl-pil">${k}</span><span class="fl-no2">${D.no.get(f.id) || ""}</span>${f.contoh ? '<span class="fl-pil abu">data contoh</span>' : ""}</div>
@@ -240,19 +244,19 @@
       if (!d) { d = document.createElement("dialog"); d.id = "flKirim"; d.className = "fl-sheet"; d.setAttribute("aria-labelledby", "flKJudul"); document.body.appendChild(d);
         d.addEventListener("click", e => this.klik(e, d)); d.addEventListener("change", e => this.ubah(e, d)); d.addEventListener("submit", e => this.kirim(e, d)); d.addEventListener("close", () => this.reset()); }
       this.d = d; this.reset();
-      d.innerHTML = `<div class="fl-pegang"></div><header><h2 id="flKJudul">Kirim foto</h2><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
+      d.innerHTML = `<div class="fl-pegang"></div><header><span class="fl-hd-ik">${IK.kamera}</span><div class="fl-hd-tx"><h2 id="flKJudul">Kirim foto</h2><small>Foto lapangan untuk peta karhutla</small></div><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
         ${k.media === false ? `<div class="fl-kosong"><b>Unggah foto belum dibuka</b><p>Penyimpanan foto sedang disiapkan. Coba lagi nanti.</p></div>` : `<div class="fl-lok" aria-live="polite"></div><form novalidate>
         <div class="fl-bidik" data-bidik><div class="fl-bidik-kosong"><label class="fl-bingkai" aria-label="Ambil foto"><span class="fl-lensa">${IK.kamera}</span><input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div></div>
         <p class="fl-cat">Foto, atau video maks ${k.batas?.durasi || 60} detik (${(k.batas?.video || 31457280) / 1048576} MB), diambil di lokasimu. Lokasi GPS ikut terkirim, dan admin memeriksa sebelum tayang.</p>
         <div class="fl-bawah"><label class="fl-galeri" aria-label="Pilih dari galeri" title="Pilih dari galeri">${IK.galeri}<input type="file" name="galeri" accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm" hidden></label><label class="fl-pri besar">${IK.kamera}Ambil foto<input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div>
         <p class="fl-galat" role="alert" hidden></p>
-        <div class="fl-lanjut"><div class="fl-panel"><div><span>Lokasi</span><b data-lok>Membaca GPS…</b></div><div><span>Waktu</span><b data-wkt>–</b></div><div><span>Berkas</span><b data-uk>–</b></div></div>
-        <fieldset class="fl-kat"><legend>Kategori</legend>${Object.entries(KAT).map(([kk, [n, w]], i) => `<label style="--k:${w}"><input type="radio" name="kategori" value="${kk}" ${i ? "" : "checked"}>${n}</label>`).join("")}</fieldset>
-        <label class="fl-f">Keterangan <small>(opsional)</small><textarea name="keterangan" maxlength="280" rows="2" placeholder="Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi"></textarea></label>
-        <div class="fl-dua2"><label class="fl-f">Nama <small>(opsional)</small><input name="nama" maxlength="60" autocomplete="name"></label>
+        <div class="fl-lanjut"><div class="fl-panel"><div><span>Lokasi</span><b data-lok>Membaca GPS…</b></div><div><span>Koordinat</span><b data-koord>–</b></div><div><span>Waktu</span><b data-wkt>–</b></div><div><span>Berkas</span><b data-uk>–</b></div></div>
+        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#e8743b">${IK.kamera}</span>Tentang foto ini</h4><fieldset class="fl-kat"><legend>Kategori</legend>${Object.entries(KAT).map(([kk, [n, w]], i) => `<label style="--k:${w}"><input type="radio" name="kategori" value="${kk}" ${i ? "" : "checked"}>${n}</label>`).join("")}</fieldset>
+        <label class="fl-f">Keterangan <small>(opsional)</small><textarea name="keterangan" maxlength="280" rows="2" placeholder="Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi"></textarea></label></section>
+        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#4f8fc4">${IK.orang}</span>Pengirim</h4><div class="fl-dua2"><label class="fl-f">Nama <small>(opsional)</small><input name="nama" maxlength="60" autocomplete="name"></label>
           <label class="fl-f">Email <small>(opsional, tidak ditampilkan)</small><input name="email" type="email" maxlength="254" autocomplete="email"></label></div>
-        <label class="fl-tog"><input type="checkbox" name="tampil_nama" value="1"><span><b>Tampilkan nama saya sebagai kredit</b><small>Bila tidak dicentang, foto tampil sebagai "Warga (anonim)".</small></span></label>
-        <label class="fl-tog"><input type="checkbox" name="setuju" value="1" required><span><b>Saya mengambil foto/video ini sendiri di lokasi ini</b><small>Tidak memuat wajah orang dengan jelas atau data pribadi. Boleh ditampilkan publik setelah diperiksa admin.</small></span></label>
+        <label class="fl-tog"><input type="checkbox" name="tampil_nama" value="1"><span><b>Tampilkan nama saya sebagai kredit</b><small>Bila tidak dicentang, foto tampil sebagai "Warga (anonim)".</small></span></label></section>
+        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#2f9e6a">${IK.cek}</span>Pernyataan</h4><label class="fl-tog"><input type="checkbox" name="setuju" value="1" required><span><b>Saya mengambil foto/video ini sendiri di lokasi ini</b><small>Tidak memuat wajah orang dengan jelas atau data pribadi. Boleh ditampilkan publik setelah diperiksa admin.</small></span></label></section>
         <div data-ts></div><div class="fl-prog" hidden><i></i></div>
         <button class="fl-pri besar" data-kirim-ok disabled>Kirim</button></div></form>`}`;
       if (!d.open) d.showModal();
@@ -264,11 +268,11 @@
       const maks = this.k.batas?.akurasi || 1000, m = n => `±${fmt(Math.round(n))} m`;
       const isi = {
         minta: [IK.pin, "", "Fotomu akan muncul tepat di lokasimu",
-          "Izinkan akses lokasi supaya kami tahu kamu ada di kecamatan mana. Lokasi hanya dipakai untuk menandai foto ini, bukan untuk melacakmu.",
+          "Izinkan akses lokasi supaya kami tahu kamu ada di kecamatan mana. Lokasi hanya dipakai untuk menandai foto ini.",
           `<button type="button" class="fl-pri besar" data-lok-cari>Izinkan akses lokasi</button><small>Setiap foto dicek admin dulu sebelum tampil di peta.</small>`],
         cari: [IK.pin, "muat", "Mencari lokasimu…", "Biasanya cuma beberapa detik. Di luar ruangan lebih cepat.", ""],
-        ketemu: [IK.cek, "ok", "Kamu terdeteksi di", `<b class="fl-lok-wil">Kec. ${esc(v.kec)}</b><span>${esc(v.kab)}, ${esc(namaProv(v.prov))}</span><em>Akurasi ${m(v.akurasi)}</em>`,
-          `<button type="button" class="fl-pri besar" data-lok-lanjut>${IK.kamera}Lanjut ambil foto</button><button type="button" class="fl-teks" data-lok-cari>Bukan di sini? Cari ulang</button>`],
+        ketemu: [IK.cek, "ok", "Kamu terdeteksi di", `<b class="fl-lok-wil">Kec. ${esc(v.kec)}</b><span>${esc(v.kab)}, ${esc(namaProv(v.prov))}</span>`,
+          `<button type="button" class="fl-pri besar" data-lok-lanjut>${IK.kamera}Lanjut ambil foto</button><button type="button" class="fl-sek besar" data-lok-cari>${IK.pin}Bukan di sini? Cari ulang</button>`],
         lemah: [IK.pin, "awas", "Sinyal GPS masih lemah", `Akurasinya baru ${m(v.akurasi || 0)}, sedangkan yang dibutuhkan paling jauh ${m(maks)}. Coba pindah ke tempat terbuka atau dekat jendela.`,
           `<button type="button" class="fl-pri besar" data-lok-cari>Cari ulang</button>`],
         luar: [IK.pin, "awas", "Lokasimu di luar daratan Indonesia", "Foto lapangan hanya bisa dikirim dari wilayah daratan Indonesia.", `<button type="button" class="fl-pri besar" data-lok-cari>Cari ulang</button>`],
@@ -284,7 +288,8 @@
       const w = await fetch(`${API}/lokasi?lat=${this.loc.lat}&lon=${this.loc.lon}`).then(r => r.json()).catch(() => null);
       if (w && !w.ada) return this.tahapLok("luar");
       this.wil = w?.ada ? w : null;
-      const lok = this.d.querySelector("[data-lok]"); if (lok) lok.textContent = this.wil ? `Kec. ${this.wil.kec}, ${this.wil.kab}` : `±${Math.round(this.loc.akurasi)} m`;
+      const lok = this.d.querySelector("[data-lok]"); if (lok) lok.textContent = this.wil ? `Kec. ${this.wil.kec}, ${this.wil.kab}, ${namaProv(this.wil.prov)}` : "–";
+      const ko = this.d.querySelector("[data-koord]"); if (ko) ko.textContent = koord(this.loc);
       this.siap();
       if (!this.wil) return this.d.classList.add("tahap-foto");   /* layanan wilayah gagal: jangan menahan warga, server tetap memeriksa saat kirim */
       this.tahapLok("ketemu", {...this.wil, akurasi: this.loc.akurasi});
@@ -319,7 +324,8 @@
       this.prev && URL.revokeObjectURL(this.prev); this.prev = URL.createObjectURL(video ? f : this.berkas.media);
       bidik.classList.add("ada"); d.querySelector("form")?.classList.add("ada"); bidik.querySelector(".fl-pratinjau")?.remove();
       if (this.tsId == null) this.turnstile(d);   /* Turnstile dipasang setelah ada berkas: layar pertama cukup bidikan kamera */
-      bidik.insertAdjacentHTML("beforeend", `<div class="fl-pratinjau">${video ? `<video src="${this.prev}" muted playsinline controls></video>` : `<img alt="Pratinjau" src="${this.prev}">`}<button type="button" class="fl-ganti" data-ganti>Ganti</button></div>`);
+      /* cap menempel di dalam bingkai media (bukan di bidang hitam di bawahnya) */
+      bidik.insertAdjacentHTML("beforeend", `<div class="fl-pratinjau"><div class="fl-mw">${video ? `<video src="${this.prev}" muted playsinline controls></video>` : `<img alt="Pratinjau" src="${this.prev}">`}${cap(this.wil, this.loc, jamWIB(this.exif?.waktu || Date.now()))}<button type="button" class="fl-ganti" data-ganti>Ganti</button></div></div>`);
       d.querySelector("[data-wkt]").textContent = this.exif?.waktu ? jamWIB(this.exif.waktu) : "Saat dikirim";
       const asli = f.size, jadi = this.berkas.media.size;
       d.querySelector("[data-uk]").textContent = video ? `Video ${durasi(this.berkas.durasi)} · ${(jadi / 1048576).toFixed(1)} MB` : `${Math.round(jadi / 1024)} KB${asli > jadi * 1.2 ? ` (dari ${(asli / 1048576).toFixed(1)} MB)` : ""}`;

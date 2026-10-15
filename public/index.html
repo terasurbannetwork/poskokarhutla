@@ -339,7 +339,8 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .ik-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
 /* ubin angka laci kompleks gaya Oyenza: panel abu tanpa garis & bingkai, angka besar rata kiri, label satu baris, kelas jadi pil (pemilik, 15 Okt 2026) */
-.kv div{--k:#c9503a;background:var(--surface);border:0;border-radius:16px;padding:12px 12px 11px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px;position:relative;min-width:0}
+.kv div{--k:#c9503a;background:none;border:0;border-left:1px solid var(--line);border-radius:0;padding:2px 14px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px;position:relative;min-width:0}
+.kv div:first-child{border-left:0;padding-left:0}   /* tanpa wadah: angka dipisah garis tipis (pemilik, 15 Okt 2026) */
 .kv div:nth-child(2){--k:#e58a45}
 .kv div:nth-child(3){--k:#5f6fb0}
 .kv b{display:block;font-family:var(--display);font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
@@ -3242,10 +3243,10 @@ const Tren = {
       ${this.peringkatHTML()}
       <div class="head" style="margin-top:22px"><div><h2>Kecamatan langganan karhutla</h2></div>
         <div class="seg" id="tUrut"><button data-u="tahun" aria-pressed="${this.urutKec === "tahun"}">Paling sering</button><button data-u="total" aria-pressed="${this.urutKec === "total"}">Paling banyak titik</button></div></div>
-      <div class="tw"><table class="kl-tb"><thead><tr><th class="n">#</th><th>Kecamatan</th><th>Kab/Kota</th>${gab ? "<th>Provinsi</th>" : ""}<th>Tahun terbakar</th><th class="n">Total titik ${th[0]}–${ini}</th><th class="n">${ini}</th></tr></thead><tbody>
+      <div class="tw"><table class="kl-tb"><thead><tr><th class="n">#</th><th>Kecamatan</th><th>Kab/Kota</th><th>Provinsi</th><th>Tahun terbakar</th><th class="n">Total titik ${th[0]}–${ini}</th><th class="n">${ini}</th></tr></thead><tbody>
       ${kec.map((k, i) => { const f = k.tahun / th.length, w = f >= .85 ? "#c9503a" : f >= .6 ? "#e58a45" : "#e3b94e";
-        return `<tr class="klik" data-kl="${esc(k.pk + "|" + k.kab + "|" + k.kec)}" tabindex="0"><td class="n num"><span class="kl-no">${i + 1}</span></td><td><b>${esc(k.kec)}</b></td><td>${esc(k.kab)}</td>${gab ? `<td>${esc(namaProv(k.pk))}</td>` : ""}
-          <td><span class="kl-bar"><i style="width:${f * 100}%;background:${w}"></i></span><em class="br-lb" style="--w:${w}">${k.tahun} / ${th.length} tahun</em></td><td class="n num">${fmt(k.total)}</td><td class="n"><em class="br-lb" style="--w:${k.ini >= 100 ? "#c9503a" : "#5b6782"}">${fmt(k.ini)}</em></td></tr>`; }).join("") || `<tr><td colspan="7" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>`;
+        return `<tr class="klik" data-kl="${esc(k.pk + "|" + k.kab + "|" + k.kec)}" tabindex="0"><td class="n num"><span class="kl-no">${i + 1}</span></td><td><b>${esc(k.kec)}</b></td><td>${esc(k.kab)}</td><td>${esc(namaProv(k.pk))}</td>
+          <td><em class="br-lb" style="--w:${w}">${k.tahun} / ${th.length} tahun</em></td><td class="n num">${fmt(k.total)}</td><td class="n num">${fmt(k.ini)}</td></tr>`;   /* angka polos, bukan label (pemilik, 15 Okt 2026) */ }).join("") || `<tr><td colspan="7" class="kosong">Tidak ada kecamatan dengan ≥ 10 titik setahun.</td></tr>`}</tbody></table></div>`;
     $("#tProv").onchange = e => { this.prov = e.target.value; nanti(() => this.render()); };
     headKeKartu(el, "Tren", false);
     tipDariTitle(el);
@@ -3408,15 +3409,17 @@ const Insight = {
   exCuaca() {
     const G = S.fwi.grid, hari = G[0].hari.map(h => h.tgl), i0 = Math.max(0, hari.indexOf(S.fwi.hari_ini)), hr = hari.slice(i0, i0 + 4), pv = PRIO.filter(k => G.some(g => g.prov === k));
     const asap = this.data.asap, m = this.st.cuaca, sel = c => { let b = null, d = 1e9; for (const g of G) { const x = (g.lat - c[0]) ** 2 + (g.lon - c[1]) ** 2; if (x < d) { d = x; b = g; } } return d <= .6 ? b.prov : null; };
-    const pmProv = this._pm ||= (() => { const o = {}; if (asap) for (const c of asap.grid) { const k = sel(c); if (!k) continue; (o[k] ||= asap.hari.map(() => 0)); c[2].forEach((v, j) => o[k][j] = Math.max(o[k][j], v ?? 0)); } return o; })();
+    /* maks per provinsi dari kolom asap.json: 2 = PM2.5, 7 = PM10 (pemilik, 15 Okt 2026) */
+    const perProv = kol => { const o = {}; if (asap) for (const c of asap.grid) { const k = sel(c); if (!k || !c[kol]) continue; (o[k] ||= asap.hari.map(() => 0)); c[kol].forEach((v, j) => o[k][j] = Math.max(o[k][j], v ?? 0)); } return o; };
+    const pmProv = this._pm ||= perProv(2), pm10Prov = this._pm10 ||= perProv(7);
     const agg = (k, t) => { const cs = G.filter(g => g.prov === k).map(g => g.hari.find(h => h.tgl === t)).filter(Boolean);
-      return {fwi: Math.max(...cs.map(c => c.fwi ?? 0)), hujan: cs.reduce((a, c) => a + (c.hujan || 0), 0) / (cs.length || 1), pm: asap ? pmProv[k]?.[asap.hari.indexOf(t)] ?? null : null}; };
-    const nilai = a => m === "fwi" ? a.fwi : m === "hujan" ? a.hujan : a.pm;
+      return {fwi: Math.max(...cs.map(c => c.fwi ?? 0)), hujan: cs.reduce((a, c) => a + (c.hujan || 0), 0) / (cs.length || 1), pm: asap ? pmProv[k]?.[asap.hari.indexOf(t)] ?? null : null, pm10: asap ? pm10Prov[k]?.[asap.hari.indexOf(t)] ?? null : null}; };
+    const nilai = a => m === "fwi" ? a.fwi : m === "hujan" ? a.hujan : m === "pm10" ? a.pm10 : a.pm;
     /* hari tanpa data (mis. asap CAMS hanya 3 hari) tidak ditampilkan sama sekali */
-    if (m === "pm") { const ada = hr.filter(t => pv.some(k => agg(k, t).pm != null)); hr.length = 0; hr.push(...ada); }
+    if (m === "pm" || m === "pm10") { const ada = hr.filter(t => pv.some(k => agg(k, t)[m] != null)); hr.length = 0; hr.push(...ada); }
     if (!hr.length) return "";
     const iKini = Math.max(0, hr.findIndex(t => labelHari(t) === "Hari ini"));
-    const warna = a => m === "fwi" ? warnaFWI(a.fwi) : m === "hujan" ? gradasi(ST_HUJAN, a.hujan).slice(0, 3) : a.pm == null ? [200, 200, 200] : gradasi(ST_PM, a.pm).slice(0, 3);
+    const warna = a => m === "fwi" ? warnaFWI(a.fwi) : m === "hujan" ? gradasi(ST_HUJAN, a.hujan).slice(0, 3) : m === "pm10" ? (a.pm10 == null ? [200, 200, 200] : gradasi(ST_PM10, a.pm10).slice(0, 3)) : a.pm == null ? [200, 200, 200] : gradasi(ST_PM, a.pm).slice(0, 3);
     const gelapSel = a => m === "fwi" ? a.fwi >= 14 : m === "hujan" ? a.hujan >= 10 : a.pm > 150;
     const W = 940, L = 190, cw = (W - L) / hr.length, rh = 40, T = 30, H = T + pv.length * rh;
     /* judul kolom: semua sama tebal; "Hari ini" jadi pil navy supaya mata langsung ke sana */
@@ -3426,20 +3429,21 @@ const Insight = {
     let hit = 0;
     pv.forEach((k, i) => { const y = T + i * rh; g += `<text x="${L - 10}" y="${y + 24}" text-anchor="end" font-size="13" font-weight="600">${esc(namaProv(k))}</text>`;
       hr.forEach((t, j) => { const a = agg(k, t), v = nilai(a), c = warna(a);
-        if (j === (m === "pm" ? iKini : hr.length - 1) && (m === "fwi" ? a.fwi >= 14 : m === "hujan" ? a.hujan < 1 : a.pm > 55.4)) hit++;
-        g += `<rect class="gf" style="--i:${i + j}" x="${L + j * cw + 3}" y="${y + 4}" width="${cw - 6}" height="${rh - 8}" rx="9" fill="rgb(${c.join(",")})" data-cuaca="${t}" data-tip="<b>${esc(namaProv(k))}</b> · ${labelHari(t)}<br>FWI maks: ${fmt(Math.round(a.fwi * 10) / 10)} (${FWI_KELAS[kelasFWI(a.fwi)][0].toLowerCase()})<br>Hujan rata-rata: ${fmt(Math.round(a.hujan * 10) / 10)} mm${a.pm != null ? `<br>PM2.5 maks: ${fmt(Math.round(a.pm))} µg/m³` : ""}"/>
+        if (j === (m === "pm" || m === "pm10" ? iKini : hr.length - 1) && (m === "fwi" ? a.fwi >= 14 : m === "hujan" ? a.hujan < 1 : m === "pm10" ? a.pm10 > 150 : a.pm > 55.4)) hit++;
+        g += `<rect class="gf" style="--i:${i + j}" x="${L + j * cw + 3}" y="${y + 4}" width="${cw - 6}" height="${rh - 8}" rx="9" fill="rgb(${c.join(",")})" data-cuaca="${t}" data-tip="<b>${esc(namaProv(k))}</b> · ${labelHari(t)}<br>FWI maks: ${fmt(Math.round(a.fwi * 10) / 10)} (${FWI_KELAS[kelasFWI(a.fwi)][0].toLowerCase()})<br>Hujan rata-rata: ${fmt(Math.round(a.hujan * 10) / 10)} mm${a.pm != null ? `<br>PM2.5 maks: ${fmt(Math.round(a.pm))} µg/m³` : ""}${a.pm10 != null ? `<br>PM10 maks: ${fmt(Math.round(a.pm10))} µg/m³` : ""}"/>
           <text x="${L + j * cw + cw / 2}" y="${y + 25}" text-anchor="middle" font-size="13" font-weight="800" pointer-events="none" style="fill:#fff">${v == null ? "–" : m === "hujan" ? fmt(Math.round(v * 10) / 10) + " mm" : fmt(Math.round(v))}</text>`; }); });
     const tgl = new Date(hr.at(-1) + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long"});
     const judul = {fwi: `Fire Weather Index masih sangat tinggi di ${this.hl(hit + " provinsi")} sampai ${tgl}. Artinya ${this.hl(hit + " provinsi")} ini masih perlu terus dipantau karena cuaca kering dapat membuat api mudah menyala dan cepat menyebar`,
-      hujan: `${this.hl(hit + " provinsi")} nyaris tanpa hujan (< 1 mm) pada ${tgl}`, pm: `Asap tidak sehat (PM2.5 > 55) menyelimuti ${this.hl(hit + " provinsi")} hari ini`}[m];
+      hujan: `${this.hl(hit + " provinsi")} nyaris tanpa hujan (< 1 mm) pada ${tgl}`, pm: `Asap tidak sehat (PM2.5 > 55) menyelimuti ${this.hl(hit + " provinsi")} hari ini`, pm10: `Debu & asap tidak sehat (PM10 > 150) menyelimuti ${this.hl(hit + " provinsi")} hari ini`}[m];
     const rgb = c => `rgb(${c.slice(0, 3).join(",")})`;
     this.leg({fwi: [[rgb(warnaFWI(0)), "rendah 0–1"], [rgb(warnaFWI(4)), "sedang 2–6"], [rgb(warnaFWI(10)), "tinggi 7–13"], [rgb(warnaFWI(25)), "sangat tinggi > 13"]],
       hujan: [[rgb(gradasi(ST_HUJAN, 1)), "< 1 mm"], [rgb(gradasi(ST_HUJAN, 10)), "10 mm"], [rgb(gradasi(ST_HUJAN, 30)), "30 mm"], [rgb(gradasi(ST_HUJAN, 80)), "≥ 80 mm"]],
-      pm: [[rgb(gradasi(ST_PM, 15.5)), "baik ≤ 15,5"], [rgb(gradasi(ST_PM, 55.4)), "sedang ≤ 55,4"], [rgb(gradasi(ST_PM, 150.4)), "tidak sehat ≤ 150"], [rgb(gradasi(ST_PM, 250.4)), "sangat tidak sehat ≤ 250"], [rgb(gradasi(ST_PM, 600)), "berbahaya"]]}[m]);
+      pm: [[rgb(gradasi(ST_PM, 15.5)), "baik ≤ 15,5"], [rgb(gradasi(ST_PM, 55.4)), "sedang ≤ 55,4"], [rgb(gradasi(ST_PM, 150.4)), "tidak sehat ≤ 150"], [rgb(gradasi(ST_PM, 250.4)), "sangat tidak sehat ≤ 250"], [rgb(gradasi(ST_PM, 600)), "berbahaya"]],
+      pm10: [[rgb(gradasi(ST_PM10, 50)), "baik ≤ 50"], [rgb(gradasi(ST_PM10, 150)), "sedang ≤ 150"], [rgb(gradasi(ST_PM10, 350)), "tidak sehat ≤ 350"], [rgb(gradasi(ST_PM10, 420)), "sangat tidak sehat ≤ 420"], [rgb(gradasi(ST_PM10, 600)), "berbahaya"]]}[m]);
     return this.ex(judul, "", "",
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Prakiraan cuaca kebakaran">${g}</svg></div>`,
       `Sumber: Open-Meteo (ECMWF/ICON), CAMS; FWI rumus Kanada (Van Wagner 1987)`,
-      this.seg("cuaca", [["fwi", "Bahaya cuaca (FWI)"], ["hujan", "Hujan"], ["pm", "Asap PM2.5"]])); },
+      this.seg("cuaca", [["fwi", "Bahaya cuaca (FWI)"], ["hujan", "Hujan"], ["pm", "Asap PM2.5"], ["pm10", "PM10"]])); },
 
   /* 4b. penduduk di udara tidak sehat: WorldPop × PM2.5 CAMS per kelas ISPU */
   exPaparan() {
@@ -4041,8 +4045,8 @@ const Berita = {
     return this.d.artikel.filter(a => (!PV.length || PV.some(k => a.prov?.includes(k))) && (!f.topik || a.topik?.includes(f.topik)) && (!f.sent || a.label_situasi === f.sent) && (!q || (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase().includes(q))); },
   /* video YouTube (data/video.json dari scripts/data/video.py): tren unggahan, siapa & di mana, lalu daftar yang bisa diurutkan.
      Tiga kartu dibangun setelah berkasnya termuat; seluruhnya dibuang bila berkasnya belum ada. */
-  VJ: {media: ["Media", "#4f8fc4"], resmi: ["Resmi", "#1d4e89"], kreator: ["Kreator", "#e58a45"]},
-  vo: {urut: "baru", jenis: "", f: null, q: "", h: 0},
+  VJ: {media: ["Media", "#4f8fc4"], resmi: ["Pemerintah", "#1d4e89"], kreator: ["Kreator", "#e58a45"]},
+  vo: {mode: "30", jenis: "", f: null, q: "", h: 0},   /* bawaan: paling ditonton sebulan terakhir (pemilik, 15 Okt 2026) */
   exVideo() {
     if (!this.vid && !this._vidMuat) this._vidMuat = muatJSON("data/video.json").then(d => { if (!d?.video?.length) throw 0; this.vid = d; const el = $("#brVid"); if (el) { el.innerHTML = this.vidKartu(); this.vidIkat(el); } }).catch(() => $("#brVid")?.remove());
     setTimeout(() => { const el = $("#brVid"); if (el && this.vid) this.vidIkat(el); });
@@ -4075,26 +4079,37 @@ const Berita = {
       <footer class="ex-ft"><em>Sumber: judul video YouTube Data API</em></footer></article>`;
     const o = this.vo, sg = (k, xs) => `<div class="seg">${xs.map(([v, nm]) => `<button data-vo="${k}" data-v="${v}" aria-pressed="${o[k] === v}">${nm}</button>`).join("")}</div>`;
     const daftar = `<article class="ex" id="brVideo"><header class="ex-hd"><span class="ex-ey">Daftar video</span><div class="ex-jd"><h3 class="vd-jd"></h3></div>
-      <div class="ctl" style="display:flex;flex-wrap:wrap;gap:8px">${sg("urut", [["baru", "Terbaru"], ...(adaT ? [["tonton", "Paling ditonton"], ["ramai", "Lagi ramai"]] : [])])}${sg("jenis", [["", "Semua"], ["media", "Media"], ["resmi", "Resmi"], ["kreator", "Kreator"], ["pendek", "Shorts"]])}</div>
+      <div class="ctl vd-ctl">${sg("mode", [["baru", "Terbaru"], ["3", "3 hari terakhir"], ["7", "Seminggu terakhir"], ["30", "Sebulan terakhir"], ["90", "3 bulan terakhir"]])}${sg("jenis", [["media", "Media"], ["resmi", "Pemerintah"], ["kreator", "Kreator"], ["pendek", "Shorts"]])}</div>
       <div class="ctl"><input type="search" placeholder="Cari judul atau kanal" aria-label="Cari video" value="${esc(o.q)}" style="width:100%;height:40px;border-radius:999px;border:1px solid var(--line);padding:0 16px;background:var(--card)"></div></header>
       <div class="ex-bd"><div class="vd-grid"></div><div class="vd-pg"></div></div><footer class="ex-ft"><em>Sumber: YouTube Data API; diputar di YouTube</em></footer></article>`;
-    return tren + siapa + daftar; },
+    /* kanal: media & kreator terbanyak, plus video paling ditonton (pemilik, 15 Okt 2026) */
+    const KM = hit(v => (v.jenis || "kreator") === "media" ? v.kanal.trim() : null), KR = hit(v => (v.jenis || "kreator") === "kreator" ? v.kanal.trim() : null);
+    const TOP = V.filter(v => v.tonton != null).sort((a, b) => b.tonton - a.tonton).slice(0, 8), mT = Math.max(1, ...TOP.map(v => v.tonton));
+    const tonton = TOP.map(v => `<a class="br-row br-row-m" href="${esc(v.url)}" target="_blank" rel="noopener"><span class="br-nm" title="${esc(v.judul)}">${esc(v.judul)}</span><span class="br-bar"><i style="width:${v.tonton / mT * 100}%;background:#c9503a"></i></span><span class="br-n"><b>${fmt(v.tonton)}</b></span></a>`).join("");
+    const kanal = `<article class="ex"><header class="ex-hd"><span class="ex-ey">Kanal</span><div class="ex-jd"><h3>${KM[0] ? `Media paling aktif ${Insight.hl(KM[0][0])} (${fmt(KM[0][1])} video)` : "Belum ada media"}${KR[0] ? `; kreator paling aktif ${Insight.hl(KR[0][0])} (${fmt(KR[0][1])} video)` : ""}</h3></div></header>
+      <div class="ex-bd"><div class="grid g3" style="gap:22px"><div><div class="lbl">Media terbanyak</div><div class="br-rows">${baris(KM, "kanal", "#4f8fc4")}</div></div>
+      <div><div class="lbl">Kreator terbanyak</div><div class="br-rows">${baris(KR, "kanal", "#e58a45")}</div></div>
+      <div><div class="lbl">Paling ditonton</div><div class="br-rows">${tonton || `<p class="kosong">Jumlah tontonan belum tersedia.</p>`}</div></div></div></div>
+      <footer class="ex-ft"><em>Sumber: YouTube Data API · klik kanal untuk menyaring daftar video</em></footer></article>`;
+    return tren + siapa + kanal + daftar; },
   vidIsi() { const el = $("#brVideo"); if (!el) return; const o = this.vo, q = o.q.toLowerCase(), PER = 15, kini = new Date(this.vid.dibuat);
     const xs = this.vid.video.filter(v => (!q || (v.judul + " " + v.kanal).toLowerCase().includes(q)) && (!o.jenis || (o.jenis === "pendek" ? v.pendek : v.jenis === o.jenis))
-      && (!o.f || (o.f.k === "kanal" ? v.kanal.trim() === o.f.v : (v[o.f.k] || []).includes(o.f.v))));
+      && (!o.f || (o.f.k === "kanal" ? v.kanal.trim() === o.f.v : (v[o.f.k] || []).includes(o.f.v)))
+      && (o.mode === "baru" || Date.now() - new Date(v.tgl) <= +o.mode * 864e5));   /* mode: Terbaru, atau paling ditonton dalam 3 hari … 3 bulan */
     const ramai = v => (v.tonton || 0) / Math.max(1, (kini - new Date(v.tgl)) / 36e5);
+    o.urut = o.mode === "baru" ? "baru" : "tonton";
     if (o.urut === "tonton") xs.sort((a, b) => (b.tonton || 0) - (a.tonton || 0)); else if (o.urut === "ramai") xs.sort((a, b) => ramai(b) - ramai(a)); else xs.sort((a, b) => b.tgl.localeCompare(a.tgl));
     const h = Math.min(o.h, Math.max(0, Math.ceil(xs.length / PER) - 1)), pl = (t, w) => `<em class="br-lb" style="--w:${w}">${esc(t)}</em>`;
     const dur = s => s == null ? "" : `<u>${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</u>`;
     el.querySelector(".vd-jd").innerHTML = `${Insight.hl(fmt(xs.length) + " video")} karhutla di YouTube${o.f ? ` ${o.f.k === "kanal" ? "dari" : o.f.k === "prov" ? "di" : "menyebut"} ${esc(o.f.k === "prov" ? namaProv(o.f.v) : o.f.v)} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-vf="">Hapus saringan ✕</button>` : ""}`;
-    el.querySelector(".vd-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(v => `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer">${dur(v.durasi)}<i aria-hidden="true">▶</i></span>
+    el.querySelector(".vd-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(v => `<a class="vd-k" href="${escUrl(v.url)}" target="_blank" rel="noopener"><span class="vd-th"><img src="${escUrl(v.gambar)}" alt="" loading="lazy" referrerpolicy="no-referrer">${dur(v.durasi)}${v.tonton != null ? `<em class="vd-tt">${fmt(v.tonton)} tayangan</em>` : ""}<i aria-hidden="true">▶</i></span>
       <span class="vd-lb">${pl(this.VJ[v.jenis || "kreator"][0], this.VJ[v.jenis || "kreator"][1])}${(v.tokoh || []).slice(0, 2).map(t => pl(t, "#c9503a")).join("")}${(v.prov || []).slice(0, 1).map(p => pl(namaProv(p), "#2b8c86")).join("")}</span>
       <b>${esc(v.judul)}</b><small>${esc(v.kanal)} · ${new Date(v.tgl).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})}${v.tonton != null ? ` · ${fmt(v.tonton)} kali ditonton` : ""}</small></a>`).join("") || `<p class="kosong">Tidak ada video yang cocok.</p>`;
     el.querySelector(".vd-pg").innerHTML = paginasi(h, xs.length, PER, "video"); },
   vidIkat(el) { if (el._ikat) return; el._ikat = 1; this.vidIsi();
     el.addEventListener("input", e => { if (e.target.type !== "search") return; this.vo.q = e.target.value; this.vo.h = 0; clearTimeout(this._vt); this._vt = setTimeout(() => this.vidIsi(), 200); });
     el.addEventListener("click", e => {
-      const s = e.target.closest("[data-vo]"); if (s) { this.vo[s.dataset.vo] = s.dataset.v; this.vo.h = 0; s.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === s)); return nanti(() => this.vidIsi()); }
+      const s = e.target.closest("[data-vo]"); if (s) { this.vo[s.dataset.vo] = s.dataset.vo === "jenis" && this.vo.jenis === s.dataset.v ? "" : s.dataset.v;   /* jenis: klik lagi = semua jenis */ this.vo.h = 0; s.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", this.vo[s.dataset.vo] === b.dataset.v)); return nanti(() => this.vidIsi()); }
       const f = e.target.closest("[data-vf]"); if (f) { this.vo.f = f.dataset.vf ? {k: f.dataset.vf, v: f.dataset.v} : null; this.vo.h = 0; nanti(() => this.vidIsi()); if (f.dataset.vf) $("#brVideo").scrollIntoView({block: "start", behavior: "smooth"}); return; }
       const b = e.target.closest(".vd-pg [data-h]"); if (b) { e.stopPropagation(); if (!b.disabled) { this.vo.h = +b.dataset.h; this.vidIsi(); $("#brVideo").scrollIntoView({block: "start", behavior: "smooth"}); } } }); },
   exDaftar() {

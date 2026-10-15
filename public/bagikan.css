@@ -111,3 +111,24 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .ex > header > .ex-aksi .pc,.ex > header > .ex-aksi .pmulti,.ex > header > .ex-aksi select{margin:0!important;flex:none}
 .ex > header:has(> .ex-aksi) .ex-jd h3{padding-right:0}
 .pm-menu .lambang{display:none}  /* pemilih provinsi tanpa logo (pemilik, 15 Okt 2026) */
+/* kepala tooltip rata tengah di semua grafik (pemilik, 15 Okt 2026) */
+#tip .tp2-h,#tip .tp2-h b,#tip .tp2-h small,#tip:not(.kartu) > b:first-child{text-align:center}
+#tip .tp2-hr,#tip .tk-h{justify-content:center;text-align:center}
+/* kontrol daftar video: tiga baris segmen berjarak (pemilik, 15 Okt 2026) */
+.vd-ctl{display:grid!important;gap:12px!important;margin-top:14px}
+/* panel Berita (.pm-p): tombol bagikan di ujung kanan kepala panel */
+.ex .pm-h > .bg-ex,#berita .ex .pm-h > .bg-ex{float:none!important;margin:0 0 0 auto!important;order:99;align-self:center}
+#brVid{display:grid;gap:16px}  /* kartu video berjarak (pemilik, 15 Okt 2026) */
+/* pemilih provinsi: menu selebar tombolnya, huruf rapi, jarak baris rapat (pemilik, 15 Okt 2026) */
+.pmulti{min-width:200px}
+.pmulti > summary{width:100%;justify-content:flex-start;font-size:13px}
+.pmulti .pm-menu{left:0!important;right:0!important;min-width:0!important;width:100%;top:40px;padding:5px;border-radius:14px;box-shadow:0 12px 32px rgb(11 37 69 / .16)}
+.pmulti .pm-menu label{gap:10px;padding:6px 10px;border-radius:9px;font:500 13px/1.25 var(--font);color:var(--ink)}
+.pmulti .pm-menu label:has(input:checked){font-weight:700;background:color-mix(in oklch,var(--ink) 5%,transparent)}
+.pmulti .pm-menu label span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pmulti .pm-menu input{width:15px;height:15px;border-radius:4px}
+.vd-th{position:relative}
+.vd-tt{position:absolute;left:8px;bottom:8px;font-style:normal;font-size:11.5px;font-weight:800;color:#fff;background:rgb(0 0 0 / .66);padding:3px 8px;border-radius:999px}
+/* label kartu video: tinggi tetap, teks rata tengah tegak (pemilik, 15 Okt 2026) */
+.vd-lb{gap:6px!important;align-items:center}
+.vd-lb .br-lb{display:inline-flex;align-items:center;height:22px;padding:0 9px;border-radius:999px;font-size:11px;line-height:1;font-weight:700}

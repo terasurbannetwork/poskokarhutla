@@ -92,7 +92,8 @@ const Bagikan = {
     const rs = [...t.querySelectorAll("tbody tr")], nk = rs[0]?.children.length || 1, en = this.en();
     const angka = x => { const v = Number(String(x || "").replace(/[^\d.,-]/g, "").replace(en ? /,/g : /\./g, "").replace(",", ".")); return Number.isFinite(v) ? v : 0; };
     const nilai = j => rs.map(r => angka(r.children[j]?.textContent)), rasio = j => rs.filter(r => /[×x%]\s*$/.test(r.children[j]?.textContent || "")).length;
-    const skor = j => { const v = nilai(j), mx = Math.max(...v), mn = Math.min(...v); return mx <= 0 ? -1 : rasio(j) * 1e3 + (mx - mn) / (Math.abs(mx) || 1); };
+    /* kolom pertama = ukuran utama grafik (yang dipakai judul); rasio/persen didahulukan bila ada. Kolom nol semua dilewati. */
+    const skor = j => { const mx = Math.max(...nilai(j)); return mx <= 0 ? -1 : rasio(j) * 1e3 + (j === 1 ? 10 : 0) - j * .01; };
     let j = 1; for (let k = 2; k < nk; k++) if (skor(k) > skor(j)) j = k;
     if (skor(j) < 0) return [];
     const kep = t.querySelectorAll("thead th")[j]?.textContent || "";
@@ -105,7 +106,7 @@ const Bagikan = {
     const baris = new Map(), kol = new Set();
     for (const v of svgs || []) for (const el of v.querySelectorAll("[data-tip]")) {
       const d = document.createElement("div"); d.innerHTML = el.getAttribute("data-tip"); const nm = d.querySelector("b")?.textContent.trim(); if (!nm) continue;
-      const r = baris.get(nm) || {}; d.innerHTML.split(/<br\s*\/?>/i).slice(1).forEach(p => { const t = p.replace(/<[^>]+>/g, "").trim(), i = t.indexOf(":"); if (i > 0) { const k = t.slice(0, i).trim(); kol.add(k); r[k] ??= t.slice(i + 1).trim(); } });
+      const r = baris.get(nm) || {}; d.innerHTML.split(/<br\s*\/?>/i).slice(1).forEach(p => { const tx = document.createElement("div"); tx.innerHTML = p; const t = tx.textContent.trim(), i = t.indexOf(":"); if (i > 0) { const k = t.slice(0, i).trim(); kol.add(k); r[k] ??= t.slice(i + 1).trim(); } });
       baris.set(nm, r); }
     if (baris.size < 2 || !kol.size) return null;
     const K = [...kol].slice(0, 4), t = document.createElement("table");
@@ -648,7 +649,8 @@ const Bagikan = {
       l.push(k); lw += kw; }
     while (l.at(-1)?.t === " ") l.pop(); if (l.length) out.push(l); return out;
   },
-  kartu(x, a, b, w, h, r = 26) { x.save(); x.shadowColor = "rgba(11,37,69,.11)"; x.shadowBlur = 34; x.shadowOffsetY = 10; x.fillStyle = "#fff"; x.beginPath(); x.roundRect(a, b, w, h, r); x.fill(); x.restore(); },
+  /* panel di kertas putih: abu netral sangat muda, tanpa bayangan (pemilik, 15 Okt 2026) */
+  kartu(x, a, b, w, h, r = 26) { x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(a, b, w, h, r); x.fill(); },
   /* logo Pantau Bencana (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
   logo(x, a, b, s, polos) {
     x.save(); x.translate(a, b); x.scale(s / 64, s / 64);
@@ -674,7 +676,7 @@ const Bagikan = {
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
     const atas = story ? 110 : 64, bawah = story ? H - 70 : H - 30;   /* kaki dirapatkan ke tepi bawah (pemilik, 15 Okt 2026) */
     const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
-    x.fillStyle = tpl === "ex" ? "#fff" : this.C.kertas; x.fillRect(0, 0, W, H);   /* grafik: kertas putih, panel abu lembut (pemilik, 15 Okt 2026) */
+    x.fillStyle = "#fff"; x.fillRect(0, 0, W, H);   /* grafik: kertas putih, panel abu lembut (pemilik, 15 Okt 2026) */
     const y0 = this.kepala(x, W, P, atas, d, uk), y1 = this.kaki(x, W, H, P, bawah, story);
     const G = 24, tata = this.TATA[tpl][uk], tetap = {kpi4: 214, kpi22: 2 * 190 + 20};
     let sisa = y1 - y0 - G * (tata.length - 1);
@@ -702,7 +704,10 @@ const Bagikan = {
     x.textBaseline = "alphabetic"; x.fillStyle = "#fff"; this.f(x, 800, 32, true); x.fillText(this.K.nama, P + 98, atas + 34);
     this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.78)"; x.fillText(this.potong(x, d.label + " · " + this.tglPanjang(), lebar - 98), P + 98, atas + 68);
     this.f(x, 800, u, true);
-    ln.forEach((l, i) => { let px = P; for (const k of l) { x.fillStyle = k.hl ? this.C.hl : "#fff"; x.fillText(k.t, px, yJ + i * lh + u * .82); px += x.measureText(k.t).width; } });
+    /* judul rata kanan-kiri: baris selain yang terakhir dibentang, sisa ruang dibagi ke spasi (pemilik, 15 Okt 2026) */
+    ln.forEach((l, i) => { const akhir = i === ln.length - 1, sp = l.filter(k => k.t === " ").length, isi = l.reduce((a, k) => a + x.measureText(k.t).width, 0);
+      const tambah = !akhir && sp && lebar - isi < lebar * .25 ? (lebar - isi) / sp : 0; let px = P;
+      for (const k of l) { x.fillStyle = k.hl ? this.C.hl : "#fff"; x.fillText(k.t, px, yJ + i * lh + u * .82); px += x.measureText(k.t).width + (k.t === " " ? tambah : 0); } });
     if (d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi") { this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
     /* grafik dibagikan tanpa kartu putih: tidak menumpuk ke pita navy, jadi judul berada di tengah pita (pemilik, 15 Okt 2026) */
     return ex ? bawah + 36 : bawah - 56;
@@ -752,7 +757,7 @@ const Bagikan = {
     cuaca: "M12 3v2M5.6 5.6 7 7M3 12h2M17 7l1.4-1.4M12 8a4 4 0 0 0-3.9 4.9A3.5 3.5 0 0 0 9 20h8a3.5 3.5 0 0 0 .5-7A4 4 0 0 0 12 8z"},
   kpi(x, a, b, w, h, q, pendek) {
     const T = t => window.T ? window.T(String(t)) : String(t);
-    x.fillStyle = "#f3f5f8"; x.beginPath(); x.roundRect(a, b, w, h, 26); x.fill();
+    x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(a, b, w, h, 26); x.fill();
     const pd = pendek ? 24 : 32, lw = w - 2 * pd, ik = pendek ? 44 : 52;
     x.fillStyle = "#fff"; x.beginPath(); x.arc(a + pd + ik / 2, b + pd + ik / 2, ik / 2, 0, 7); x.fill();
     x.save(); x.translate(a + pd + ik / 2 - 12 * ik / 44, b + pd + ik / 2 - 12 * ik / 44); x.scale(ik / 44, ik / 44); x.strokeStyle = q.w; x.lineWidth = 2; x.lineCap = x.lineJoin = "round";
@@ -836,19 +841,18 @@ const Bagikan = {
     this.f(x, 500, 18); x.fillStyle = this.C.tinta2; const fn = d.fn ? this.baris(x, d.fn.replace(/\s*·?\s*Lihat data lengkap di \S+/, ""), w).slice(0, 2) : [], yF = yC - 20 - fn.length * 26;
     fn.forEach((l, i) => x.fillText(l, a, yF + 18 + i * 26));
     /* sorotan di atas grafik */
-    const sor = (d.sorot || []).slice(0, 3), tS = 150, gS = 32, ruang0 = yF - 24 - y, pakai = sor.length > 1 && ruang0 - tS - gS > d.img.height * Math.min(1, w / d.img.width) * .5;
+    const sor = (d.sorot || []).slice(0, 3), tS = 162, gS = 32, ruang0 = yF - 24 - y, pakai = sor.length > 1 && ruang0 - tS - gS > d.img.height * Math.min(1, w / d.img.width) * .5;
     /* kotak sorotan gaya Oyenza: panel putih tanpa garis, nomor urut dalam lingkaran lembut, angka besar + satuan kecil, nama di bawah */
     if (pakai) { const g = 18, cw = (w - g * (sor.length - 1)) / sor.length;
       sor.forEach((q, i) => { const xx = a + i * (cw + g), m = String(q.v).match(/^([\d.,]+)\s*(.*)$/) || [0, q.v, ""], [nm, ...ket] = String(q.n).split(" · ");
-        /* baris 1: nomor + nama; baris 2: angka besar + satuan; baris 3: keterangan abu (pemilik, 15 Okt 2026) */
-        x.fillStyle = "#f3f5f8"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill();
-        x.fillStyle = i ? "#fff" : "#fde9dc"; x.beginPath(); x.arc(xx + 38, y + 38, 15, 0, 7); x.fill();
-        x.fillStyle = i ? this.C.navy2 : "#d4622b"; this.f(x, 800, 16); x.textAlign = "center"; x.fillText(String(i + 1), xx + 38, y + 44); x.textAlign = "left";
-        this.f(x, 700, 19); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, nm, cw - 84), xx + 62, y + 45);
-        x.fillStyle = this.C.navy2; this.pas(x, m[1], cw - 110, 800, 42, true, 24); x.fillText(m[1], xx + 24, y + 98);
-        if (m[2]) { const nw = x.measureText(m[1]).width; this.f(x, 600, 19); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, m[2], cw - 40 - nw), xx + 24 + nw + 8, y + 98); }
-        if (ket.length) { const kt = ket.join(" · ").replace(/^[•●\s]+/, ""); this.f(x, 700, 15); const tw = Math.min(cw - 48, x.measureText(kt).width + 22);
-          x.fillStyle = "#fff"; x.beginPath(); x.roundRect(xx + 24, y + 110, tw, 28, 14); x.fill(); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, kt, tw - 22), xx + 35, y + 129); } });
+        /* kotak sorotan: nomor + nama (besar), angka besar + satuan, keterangan abu polos (pemilik, 15 Okt 2026) */
+        x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(xx, y, cw, tS, 26); x.fill();
+        x.fillStyle = i ? "#e8ebf0" : "#fde3d1"; x.beginPath(); x.arc(xx + 40, y + 40, 16, 0, 7); x.fill();
+        x.fillStyle = i ? this.C.navy2 : "#d4622b"; this.f(x, 800, 17); x.textAlign = "center"; x.fillText(String(i + 1), xx + 40, y + 46); x.textAlign = "left";
+        this.f(x, 700, 21); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, nm, cw - 88), xx + 66, y + 47);
+        x.fillStyle = this.C.navy2; this.pas(x, m[1], cw - 110, 800, 48, true, 26); x.fillText(m[1], xx + 26, y + 104);
+        if (m[2]) { const nw = x.measureText(m[1]).width; this.f(x, 600, 21); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, m[2], cw - 44 - nw), xx + 26 + nw + 8, y + 104); }
+        if (ket.length) { this.f(x, 500, 17); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, ket.join(" · ").replace(/^[•●\s]+/, ""), cw - 52), xx + 26, y + 136); } });
       y += tS + gS; }
     const ruang = yF - 24 - y, s = Math.min(w / d.img.width, ruang / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
     /* ruang tegak berlebih (story, grafik lebar): isi dengan tabel angka grafik itu sendiri di bawahnya (pemilik, 15 Okt 2026) */
