@@ -113,7 +113,7 @@ dialog.fl-dlg{width:min(1160px,calc(100vw - 24px))}
 .fl-alasan .batal{text-align:center;background:var(--surface);border:0}
 
 /* sheet kirim (gaya lembar iOS) */
-.fl-sheet{border:0;padding:0 18px 18px;width:min(620px,calc(100vw - 24px));max-height:min(calc(100vh - 32px),900px);min-height:min(440px,calc(100vh - 32px));margin:auto;border-radius:24px;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
+.fl-sheet{border:0;padding:0 18px 18px;width:min(620px,calc(100vw - 24px));max-height:min(calc(100vh - 32px),900px);min-height:min(440px,calc(100vh - 32px));max-height:min(calc(100dvh - 32px),900px);min-height:min(440px,calc(100dvh - 32px));padding-bottom:max(18px,env(safe-area-inset-bottom));margin:auto;border-radius:24px;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}   /* dvh: 100vh di iOS = layar tanpa toolbar, tombol Kirim jatuh ke bawah toolbar browser */
 .fl-sheet .fl-pegang{visibility:hidden;height:2px}   /* dialog di tengah layar, juga di ponsel (pemilik, 15 Okt 2026) */
 .fl-sheet::backdrop{background:oklch(15% .03 256 / .5)}
 .fl-pegang{width:38px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
