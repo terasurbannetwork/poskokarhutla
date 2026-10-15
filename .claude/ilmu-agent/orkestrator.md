@@ -19,7 +19,8 @@
 
 - Checkout dipakai bersama beberapa sesi Claude (mis. sesi port PFVI menyunting `scripts/data/pfvi.py`
   dan `scripts/sebaran/pfvi_balik.py` saat armada dipasang 15 Okt 2026). Commit dengan path spesifik.
-- Berkas `* 2.*` (termasuk `.env 2` berisi kunci FIRMS) ter-commit dari sinkronisasi; jangan dipakai.
+- Berkas `* 2.*` dari sinkronisasi iCloud/Finder ikut commit b6f645f (termasuk `.env 2` berisi kunci FIRMS),
+  dihapus di 3b90271 dan kini ditolak `.gitignore`. Kuncinya masih ada di riwayat git: rotasi kunci FIRMS.
 
 ## Gerbang yang menghakimi
 

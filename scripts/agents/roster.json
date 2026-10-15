@@ -77,7 +77,7 @@
       "ringkas": "Pengerja Cloudflare Worker & D1: laporan warga, foto, moderasi admin, /api/titik FIRMS 3-jam, statistik, OG meta, migrasi D1.",
       "kapan": "src/**, migrations/**, wrangler*.jsonc, public/warga, public/admin, tests/warga, atau /api/* disentuh atau rusak",
       "fokus": [
-        "Worker = src/worker.js; cron per jam '17 * * * *' menarik FIRMS ke D1 lewat src/titik.js",
+        "Worker = src/worker.js; cron '15 */3 * * *' (CRON_TITIK) menarik FIRMS ke D1 lewat src/titik.js, '17 * * * *' bersih-bersih Lapor Warga/foto; keduanya + R2 MEDIA baru ada di wrangler.warga.jsonc, belum di wrangler.jsonc",
         "Migrasi D1 bernomor urut di migrations/ dan idempoten (IF NOT EXISTS); jangan menyunting migrasi yang sudah jalan",
         "Tiap perilaku di luar JS (skema D1, constraint, route) diuji lewat tests/warga/*.test.mjs yang menjalankan miniflare sungguhan (npm run uji:warga)",
         "Route publik: validasi input, batas laju, tanpa membocorkan data pribadi pelapor",

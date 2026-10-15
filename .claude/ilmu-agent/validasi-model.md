@@ -6,18 +6,49 @@
 
 ## Peta berkas & tabel
 
-(belum diisi)
+Pemeriksa read-only. Satu model/indeks = satu butir: sumber angka -> JSON hasil uji -> tempat tampil.
+- FWI: `scripts/data/fwi.py` (Van Wagner 1987, Le=9,0 Lf=1,39 khatulistiwa; self-check `__main__` vs data uji cffdrs `fwi_01.csv`: DMC/DC selisih < 0,006; FFMC <=0,12, ISI <=0,25, FWI <=0,24 karena koefisien 147,2 vs 147,27723) -> `public/data/fwi.json`. Port JS: `public/sebaran_model.js` (`ffmcH`, `buiD`, `fwiD`) dan `public/index.html` (hffmc, FBP/Dijkstra). Belum dibandingkan dengan FWI resmi BMKG (`public/index.html:5429`).
+- Ansambel: `scripts/data/ansambel.py` (ECMWF IFS 51 anggota, peluang = pecahan anggota; `pt` P(FWI>=7), `ps` P(FWI>=14)) -> `fwi_ansambel.json`; tampil di `ringkasan.js`, `databaru.js`. Gerbang hanya `ansambel.py uji`. Tidak ada uji balik/reliabilitas peluang ansambel.
+- Aturan status: `scripts/data/aturan.py` (`PRIOR_PX=15`, `keparahan`, `status`, `prioritas`). Angka uji balik (90% & 95% tertangkap, presisi 53% & 35%, 1,9% & 0,8% kompleks-hari; Agu-Okt 2019 & 2023, ambang 10 px) hanya teks di docstring `aturan.py:11` dan `public/index.html:5009`; tidak ada skrip/JSON penghasilnya di repo.
+- Sebaran: lihat `.claude/ilmu-agent/model-sebaran.md`. Hasil: `public/data/model_sebaran.json` (`kinerja_uji`, `lolos.kinerja/laporan/per_lahan_uji`, `selang`), `sebaran_kasus.json` (`ringkasan`), `prospektif.json`, `sebaran_galat.json`; mentah `data/raw/sebaran/hasil.json`, `lolos_hasil.json`, `lolos_cv.json`. Tampil di `public/insight_sebaran.js`, `sim_data.js`, `cerita_karhutla.js`.
+- Banjir/longsor: `scripts/banjir/uji_balik.py` -> `public/banjir/data/validasi.json` (banjir/longsor x waspada/siaga/awas: pod, far, csi, pss, ets, ci 95% bootstrap blok, n{a,b,c,d}, laju; periode_latih 2016-2021, periode_uji 2022-2025), dibaca `public/banjir/index.html`. Aturan: `scripts/banjir/status.py` (`GESER=-1`, `K_BANJIR=0.8`, `K_LONGSOR=0.6`, `A7_BASAH=25`, `SM_JENUH=0.45`); narasi `scripts/banjir/RISET-UJI-BALIK.md`. Rob: `rob.py` fungsi `validasi` -> `rob.json`.
+- Keputusan: `scripts/data/keputusan.py` `kalibrasi()` (regresi log-log; b nasional dari 2015 + 2018-2023, a per provinsi, `sigma_log`, `tahun_kalibrasi`) -> `keputusan.json`; dipakai `public/index.html` (~2773, ~5491), `ringkasan.js`, `sim_perlakuan.js`.
+- PFVI (sesi lain sedang menambah; jangan disunting): `scripts/data/pfvi.py` (port peatfr), `scripts/sebaran/pfvi_balik.py` (uji balik vs FWI di sel gambut); angka dijanjikan di `scripts/sebaran/RISET-PFVI.md` (belum ada saat ilmu ini ditulis).
 
 ## Aturan & invarian
 
-(belum diisi)
+Cek wajib per berkas yang berubah (`node scripts/agents/ilmu.mjs cek validasi-model <berkas>`):
+1. Pembagian waktu sebaran: latih 2015-2022, validasi 2023 (satu-satunya tempat menyetel), uji 2024-2026 dibuka sekali. `latih.py:36 bagian()` tetap 2022/2023/2024. Menyetel dengan angka uji = temuan. Model "membesar" (`lolos.py`): hanya CV tinggal-satu-tahun 2015-2023 (`TAHUN_CV`); uji 2024-26 untuknya adalah LIHAT KEDUA dan wajib berlabel (`uji_lihat_kedua`, kunci `uji2_*`), tidak boleh disebut "uji murni".
+2. Kebocoran fitur: tiap fitur memakai data <= waktu prakiraan; sanksi `sanksi_th <= tahun` (`fitur.py:296`); fitur `RISET` (`bekas`, `bekas1`, `tahun_sejak`, `sungai_km`) tidak masuk model ekspor; kasus uji-balik dilatih tanpa tahunnya (`kasus.py` `LIPAT`). Cuaca ERA5 pada kasus = prakiraan sempurna: wajib ditulis. Hanya `prospektif.py` yang benar-benar tanpa bocoran (append-only, dinilai 78 jam kemudian); `dinilai: 0` = belum ada data, bukan kinerja.
+3. Target melingkar: indeks tidak boleh dikalibrasi ke variabel yang ikut membentuknya. Upstream peatfr (Mahdiyasa dkk. 2025) mengkalibrasi PFVI ke DIobs turunan kelembapan tanah; `pfvi.py` sengaja tidak mem-port itu (DIobs hanya untuk keadaan awal). Setiap kalibrasi PFVI baru harus memakai target independen (kejadian api VIIRS) dengan periode uji terpisah.
+4. Bug upstream `Rf_b <- c(Rf[-length(Rf)], NA)`: "hujan kemarin" jadi hujan hari ini. Benar: `c(NA, Rf[-n])`. Cek `hujan_kemarin()` di `pfvi.py:59`: hari t memakai hujan t-1, hari pertama tanpa kemarin. Uji kecil: hujan 6 mm hari 1 lalu 3 mm hari 2 -> RF hari 2 memakai seluruh 3 mm (kemarin > 5,1 mm).
+5. Proksi berlabel: muka air gambut tidak diukur (SiPALAGA/BRGM 403); `muka_air_proxy()` = ember hujan - ET0. Setiap keluaran/layar PFVI wajib memuat "muka air = perkiraan (proxy), bukan pengukuran"; kelembapan tanah ERA5(-Land) juga proksi. Grep teks itu di `public/` sebelum menyatakan bersih.
+6. Klaim = berkas hasil: angka di layar dibaca dari JSON (`validasi.json`, `model_sebaran.json`, `sebaran_kasus.json`, `prospektif.json`), tidak diketik. Pengecualian yang ada: angka uji balik aturan (`index.html:5009`, `aturan.py:11`). Kalimat "lebih baik/mengalahkan X" wajib menyebut metrik dan himpunan.
+7. Banjir: skor kontingensi dihitung pada semua kabupaten-hari (bukan hari yang dicocokkan), CI bootstrap blok kabupaten x tahun; usul ambang diterima hanya bila CI berpasangan selisih ETS di periode uji seluruhnya > 0. Ubah `status.py` tanpa menjalankan `uji_balik.py` dan memperbarui `validasi.json` = temuan.
+8. Evaluator JS = Python (`uji_js.py`): peluang hari-1 < 1e-4, fitur membesar < 1e-6.
 
 ## Ranjau yang pernah meledak
 
-(belum diisi)
+- Angka back-test `aturan.py` tanpa sumber terlacak: 90%/95% dan presisi 53%/35% dihitung dengan ambang 10 px & S-NPP saja, sedangkan produksi memakai `PRIOR_PX = 15` dan 3 satelit; teksnya sendiri mengaku "perlu diuji ulang". Laporkan bila disebut sebagai kinerja saat ini.
+- Peluang ansambel (`fwi_ansambel.json`) belum diuji (tidak ada Brier/reliabilitas di `ansambel.py`); cuaca diambil per kotak 1 derajat lalu dipakai semua sel 0,5 derajat di kotak itu (docstring `ansambel.py`): resolusi prakiraan lebih kasar dari sel yang digambar.
+- Selisih koefisien FFMC 147,2 (fwi.py) vs 147,27723 (cffdrs kini): batas uji `fwi.py:158-166`; lebih dari itu = rumus rusak. Port JS punya salinan sendiri: ubah satu tanpa yang lain = FWI layar != FWI pipeline.
+- Jangan memberi vonis "akurat" untuk FWI: belum dibandingkan dengan FWI resmi BMKG (`index.html:5429`).
+- Sebaran: uji 2024-26 sudah terbuka (commit `e28967c`, lalu `b18f946` untuk `lolos`), jadi angka berikutnya optimistis. `kinerja_uji.lepas_auc` 0,7012 = cara lama (Monte Carlo); `lolos.kinerja.uji2_auc` 0,9077 = model khusus: jangan dicampur. Di `sebaran_kasus.json` `iou_persistensi_24` 0,6726 > `iou_24` 0,5842: klaim "mengalahkan model negara lain" hanya sah untuk F1 sel baru. `selang.q` bernilai 0 untuk `*|0`, `gambut|0`, `mineral|0`, `sabana|0` = tidak ada pelebaran: jangan klaim "selang 80% terkalibrasi" untuk semua kasus.
+- Banjir: `validasi.json` jujur tetapi lemah: FAR 0,964 dan ETS 0,019 pada Waspada banjir (POD 0,565); hujan ERA5 = prakiraan sempurna ("skill nyata lebih rendah"), DIBI kurang mencatat kejadian kecil, GloFAS dan ansambel tidak diuji, longsor 2024 dibuang. Periksa layar tidak menampilkan POD tanpa FAR/CI.
+- Keputusan: regresi log-log dari <= ~6 tahun per provinsi (`tahun_kalibrasi` >= 4, `sigma_log` min 0,3); kemiringan b dikunci titik 2015 (2.611.411 ha Bank Dunia/KLHK, hard-coded); "luas 2026" proyeksi dan rata-rata El Nino memasukkan tahun berjalan. Periksa label proyeksi/asumsi dan rentang rendah-tinggi (parameter `lemah`).
+- PFVI: target melingkar dan bug `Rf_b` (Aturan 3-4); pencarian kisi upstream `1/par3` memanggil optim 10^8 kali. Bila `pfvi_balik.py` melaporkan PFVI mengalahkan FWI, cek bahwa api VIIRS tidak juga dipakai menyetel parameter, bahwa cuaca ERA5 reanalisis bukan prakiraan, dan bahwa cakupan hanya sel gambut Sumatra-Kalimantan.
+- Salinan ` 2` (`public/insight_sebaran 2.js`, `scripts/sebaran/splice_sebaran 2.py`, `public/data/fwi 2.json`, `scripts/banjir/posko 2.py`) bukan sumber kebenaran; jangan mengutip angka dari sana.
 
 ## Gerbang yang menghakimi
 
-(belum diisi)
+Dari akar repo; semua read-only dan murah:
+- `python3 scripts/data/fwi.py` (rantai 48 hari vs cffdrs; cetak `ok (...)`), `python3 scripts/data/aturan.py` (`ok`), `python3 scripts/data/ansambel.py uji` (`ok ansambel`), `python3 scripts/banjir/uji_balik.py uji` (swauji luring, `ok uji_balik`; jalan penuh butuh kuota Open-Meteo, jangan). Ikut di `.github/workflows/data.yml:236-247` dan `banjir.yml:54`.
+- Sebaran: `python3 scripts/sebaran/uji_js.py` (Python<->JS), `python3 scripts/sebaran/latih.py uji`, `prospektif.py uji`, `gbdt.py uji`, `kasus.py uji`, `lolos.py uji`.
+- Klaim di layar: `grep -rn "recall\|presisi\|AUC\|F1\|POD\|FAR" public/insight_sebaran.js public/sim_data.js public/cerita_karhutla.js public/banjir/index.html`, cocokkan dengan `python3 -c "import json;m=json.load(open('public/data/model_sebaran.json'));print(m['kinerja_uji'],m['lolos']['kinerja'])"`, `public/data/prospektif.json` (`mode.awal`), `public/banjir/data/validasi.json`.
+- Uji tanpa bocoran: `grep -n "bagian(\|TAHUN_CV\|SEBARAN_TANPA_UJI\|sanksi_th" scripts/sebaran/latih.py scripts/sebaran/latih_jalan.py scripts/sebaran/lolos.py scripts/sebaran/fitur.py`.
+- PFVI: `python3 scripts/data/pfvi.py` (self-check) dan baca hasil `pfvi_balik.py`; jangan jalankan subperintah `zenodo`/`api` (unduhan tak tepercaya).
+- Tanpa gerbang otomatis: angka back-test aturan, kalibrasi ansambel, regresi keputusan. Laporkan sebagai celah, jangan dianggap bersih.
 
 ## Kasus
+
+- 2026-10-15 · Ilmu awal diisi dari kode (fwi.py, ansambel.py, aturan.py, scripts/banjir/uji_balik.py, validasi.json, keputusan.py kalibrasi(), model_sebaran.json, sebaran_kasus.json, prospektif.json, docstring pfvi.py) dan grep tampilan layar; gerbang `fwi.py`, `aturan.py`, `ansambel.py uji`, `uji_balik.py uji` dijalankan semua `ok`. Celah terbuka di Ranjau: back-test aturan tanpa sumber, ansambel tanpa uji kalibrasi.

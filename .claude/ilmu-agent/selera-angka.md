@@ -6,18 +6,52 @@
 
 ## Peta berkas & tabel
 
-(belum diisi)
+Kamu read-only; periksa angka yang tampil, bukan kebenaran model. Tempat angka diformat:
+
+- **`public/index.html`**: `fmt` (baris 1536) = `toLocaleString("id-ID", {maximumFractionDigits: 1})`, `"–"` bila kosong/NaN; `jamWIB` (1541) = "14 Okt 21.20 WIB" via `id-ID` zona `Asia/Jakarta`; `rb` (3238) = singkatan ribu/juta (`>=1e6` "jt", `>=1e4` "rb", `>=1e3` desimal + "rb"); `fmtJam` (2601); `angkaID` (1570) untuk teks BNPB campur; `tglPendek`/`labelHari` (2003-2005) = "hari ini/kemarin" + tanggal; pil angka `Insight.pil` (3260-an); tooltip `rapikanTip` (3610) yang mengenali pola `\d rb|jt titik`.
+- **Modul:** `cerita_karhutla.js` `nf` (baris 9) dan `rbk` (42); `operasi.js` `rb0` (157; "M"/"jt"); `dampak.js` `jt` (70) = `rb()` lalu "rb" -> "ribu", "jt" -> "juta"; `statistik_publik.js` `fmt` (5); `bagikan.js` (gambar bagikan, caption, `Sumber:`); `ringkasan.js`, `citra.js`, `databaru.js`, `informasi.js`.
+- **EN:** `public/i18n.js` mengubah locale `id-ID` jadi `en-GB` (1,234.5) dan `angkaEN()` (baris ~33) mengubah "rb/jt/M/T" jadi "thousand/million/bn/tn" (khusus `Rp`), jadi sumber angka tetap ditulis gaya Indonesia di kode.
+- **Sumber & waktu pada kartu:** footer `Insight.ex` memecah catatan pada `Sumber:` lalu mencetak `<em>Sumber: ...</em>` miring di kaki kartu (kaki juga memuat legenda). Header situs `#upd` = "Data " + `jamWIB(S.acuan)` (waktu lintasan satelit terakhir; `title` memuat waktu olah `meta.dibuat`). Gambar bagikan: baris sumber per tema di `bagikan.js` (karhutla: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB"; banjir: Open-Meteo, Copernicus GloFAS, BMKG Maritim, ...); caption memakai "sumber + tanggal".
+- Aturan gaya pemilik (memori `gaya-kartu-insight`) menentukan *bentuk* angka tampil; lihat Aturan.
+
 
 ## Aturan & invarian
 
-(belum diisi)
+1. **Pemisah ribuan titik, desimal koma** (`id-ID`). `toFixed(n)` menghasilkan titik desimal: ia hanya boleh dipakai untuk koordinat SVG/jalur (`ringkasan.js:164`, `dampak.js:248`, `index.html:5933`) atau diikuti `.replace(".", ",")` (contoh benar `index.html:2285`, `4555`, `5790`). `toFixed(1)` mentah pada teks tampil (mis. `index.html:1983` "x.x km", `2161` dan `2225` "x.x× normal/rata-rata", `2287` tooltip) adalah temuan: harus `fmt(...)` atau `.replace(".", ",")`.
+2. **Satuan selalu tertulis** (titik, ha, jiwa, desa, sekolah, km, mm, °C, µg/m³, jam/menit); angka telanjang tanpa satuan di kartu = temuan. Perubahan ditulis ▲ (merah, naik) / ▼ (hijau, turun) dan rasio dengan "×" ("2,3× rata-rata").
+3. **Singkatan "rb"/"jt" hanya untuk label sempit** (ujung batang, pil, sumbu). Dalam kalimat judul dan perbandingan tulis angka penuh atau "ribu"/"juta" (`dampak.js` `jt()`); pemilik menolak "rb" dalam perbandingan (13 Okt 2026).
+4. **Presisi jujur:** prakiraan/probabilitas dibulatkan kasar (persen bulat atau kelas "Sangat tinggi/Tinggi/Sedang/Rendah" seperti `Kp`), bukan 0,4732. Angka kinerja model tampil dari JSON uji, tidak diketik tangan. Pecahan paling banyak 1 desimal (`fmt`), kecuali koordinat.
+5. **Tiap angka punya sumber dan waktu:** kartu Insight wajib punya `Sumber: ...` di kaki (`Insight.ex`); angka "hari ini/kemarin" mengikuti hari kalender WIB data (`labelHari`), bukan jam peramban. Tidak ada tanggal ISO mentah di UI (format "14 Okt", `jamWIB`).
+6. **Data kosong = "–"** (en dash, `fmt`), bukan 0, "NaN", atau "undefined". Hari tanpa data PM2.5 kolomnya dibuang (bukan "belum ada data").
+7. **Judul kartu:** satu kalimat temuan dengan angka berwarna merah (`Insight.hl`), tanpa subjudul/baris satuan. Frasa kelompok wilayah: "provinsi yang sering mengalami karhutla", BUKAN "9 provinsi prioritas".
+8. **Total di atas tiap bar chart**; garis rata-rata berpil navy "rata-rata"; angka di ujung batang/kolom tabel = pil.
+9. Bahasa konsesi netral: "titik panas berada di dalam areal konsesi", bukan penyebab/pembakar.
+
 
 ## Ranjau yang pernah meledak
 
-(belum diisi)
+- **`toFixed` di teks tampil** menulis "2.3×" (titik) di halaman berbahasa Indonesia; ditemukan di `index.html` 2161, 2225, 2287, 1983 saat ilmu ini ditulis (belum dibereskan). Di mode EN `en-GB` malah benar; di ID salah.
+- **BNPB campur format** (`1926.23` number vs `"22.790,83"` teks): memakai `+v` langsung menggeser angka 1000x. Selalu `angkaID()`.
+- **"9 provinsi prioritas"** tersisa di `index.html` ~3535 dan ~4825 serta `title="Provinsi prioritas"` ~2227; pemilik melarang frasa ini. `dampak.js` sudah memakai "9 provinsi yang sering mengalami karhutla".
+- **Singkatan "rb"** dalam perbandingan ditolak pemilik; `rb()` (index.html:3238) dan `rbk` dipakai pada pil/sumbu, bukan kalimat. `rapikanTip` menjadikan "N rb titik" pil sehingga pola teks tooltip harus tetap sesuai regex.
+- **Pencabutan tulisan tanpa sumber:** catatan seperti "Ini peluang, bukan kepastian", "terbakar" di tooltip tahun, "% dari total" saat satu provinsi, subjudul "3 hari terakhir vs sebelumnya" sudah dihapus pemilik (memori fitur-disembunyikan); jangan dimunculkan lagi sebagai "perbaikan".
+- **Tooltip footer "Prakiraan CAMS via Open-Meteo" dan kotak "posko" di kartu wilayah** dihapus pemilik; sumber tetap wajib ada di kaki kartu Insight, bukan di tooltip.
+
 
 ## Gerbang yang menghakimi
 
-(belum diisi)
+Tidak ada uji otomatis format angka; kamu adalah gerbangnya. Perintah bantu (read-only):
+
+```
+grep -nE 'toFixed\([0-9]\)' public/*.js public/index.html | grep -v ' 2\.js'     # teks tampil tanpa replace(".", ",")
+grep -nE 'prioritas' public/index.html public/*.js | grep -iE '9 provinsi|Provinsi prioritas'
+grep -nE '\b(NaN|undefined|null)\b' public/*.js | head                                 # bocor ke teks
+grep -c 'Sumber:' public/index.html public/*.js                                          # kartu tanpa sumber
+```
+
+Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs catat selera-angka <berkas> <vonis> "<ringkas>"`. Mode EN dibuktikan `node scripts/i18n/kumpul.mjs --bahasa en` (angka EN tidak boleh bercampur "rb"/"jt" tanpa padanan). Kebenaran angka model = validasi-model, bukan kamu. Pengerja layar yang memperbaiki temuanmu: `layar-peta`.
+
 
 ## Kasus
+
+- 2026-10-15 · Ilmu awal diisi dari kode `public/index.html` (fmt, jamWIB, rb, angkaID), `cerita_karhutla.js`, `operasi.js`, `dampak.js`, `i18n.js`, dan memori gaya-kartu-insight. Dicatat: `toFixed` mentah di teks tampil memakai titik desimal; sisa "9 provinsi prioritas" di index.html; "rb" ditolak pemilik dalam perbandingan.
