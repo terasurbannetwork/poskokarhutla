@@ -3,7 +3,7 @@
    Skrip klasik, dimuat SETELAH skrip utama. Global: S, muatJSON, esc, fmt, namaProv, jamWIB, Laci, bukaTab, $.
    Semua angka dari kluster.json (kompleks aktif), peringatan.json (BMKG), asap.json (CAMS), sama dengan tab lain. */
 (() => {
-  const KUNCI = "pb_sapa", JAM = 36e5, DAOPS_JAUH = 50, TANPA_DAOPS = 300, ISPU_TS = 55.4, ISPU_PM10 = 150;   // > 300 km = wilayah tanpa Daops (Papua, NTT, Sulawesi)
+  const KUNCI = "pb_sapa", JAM = 36e5, ISPU_TS = 55.4, ISPU_PM10 = 150;
   const hariIni = () => new Date().toLocaleDateString("en-CA", {timeZone: "Asia/Jakarta"});
   const sudah = () => { try { return localStorage.getItem(KUNCI) === hariIni(); } catch (e) { return false; } };
   const tandai = () => { try { localStorage.setItem(KUNCI, hariIni()); } catch (e) {} };
@@ -16,8 +16,6 @@
   const IK = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z"/>',
     jam: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
     daun: '<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/>',
-    perisai: '<path d="M12 3 4.5 6v6c0 4.5 3.2 8 7.5 9 4.3-1 7.5-4.5 7.5-9V6z"/>',
-    jauh: '<circle cx="12" cy="10" r="2.5"/><path d="M12 21s-6.5-5.6-6.5-11a6.5 6.5 0 0 1 13 0c0 5.4-6.5 11-6.5 11z"/>',
     asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
     awas: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>'};
   const ik = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${IK[k]}</svg>`;
@@ -25,7 +23,6 @@
   const baris = (p, i) => `<button class="sp-k" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm"><b translate="no">${esc(p.kab)}</b><span translate="no">${esc(p.kec || "")}</span></span>${lblProv(p.prov)}
     <em class="sp-p merah">${p.hari} hari</em>${p.gambut ? `<em class="sp-p gambut">${ik("daun")}Gambut</em>` : "<em></em>"}</button>`;
   const kartu = (k, w, label, isi) => `<div class="sp-c" style="--w:${w}"><span class="sp-ci">${ik(k)}</span><div><b class="sp-ey">${label}</b><p>${isi}</p></div></div>`;
-  const daftar = xs => `<span translate="no">${xs.map(x => esc(x.kab)).join(", ")}</span>`;
 
   async function siap() { for (let i = 0; i < 400 && !(S.meta && S.kluster); i++) await new Promise(r => setTimeout(r, 150)); return !!S.kluster; }
 
@@ -37,7 +34,6 @@
     const lama = nyala.filter(p => p.hari > 2).sort((a, b) => b.hari - a.hari || b.n - a.n);
     const ini = aktif.reduce((s, p) => s + (p.ini || 0), 0), kmrn = aktif.reduce((s, p) => s + (p.kmrn || 0), 0);
     const gambut = nyala.filter(p => p.gambut);
-    const siaga = nyala.filter(p => p.level >= 2), jauh = siaga.filter(p => p.jarak_daops > DAOPS_JAUH && p.jarak_daops <= TANPA_DAOPS), tanpa = siaga.filter(p => p.jarak_daops > TANPA_DAOPS);
     const bmkg = (per?.nowcast || []).filter(x => x.selesai && new Date(x.selesai) > Date.now() && R_API.test(x.event + " " + (x.headline || "")));
     /* asap: PM2.5 dan PM10 (kolom 2 dan 7) maks hari ini di sel 1° tempat kompleks menyala, dikelompokkan per kabupaten */
     const asapKab = new Map(), pm10Kab = new Map();
@@ -53,7 +49,7 @@
     for (const p of lama) q(p.prov).lama++;
     for (const p of gambut) q(p.prov).gambut++;
     const provAwas = [...prov.values()].filter(o => o.ini > 0).sort((a, b) => b.ini - a.ini).slice(0, 5);
-    return {pm10Kab: [...pm10Kab].sort((a, b) => b[1] - a[1]), ini, kmrn, baru, provAwas, lama, gambut, nyala, jauh, tanpa, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
+    return {pm10Kab: [...pm10Kab].sort((a, b) => b[1] - a[1]), ini, kmrn, baru, provAwas, lama, gambut, nyala, bmkg, asapKab: [...asapKab].sort((a, b) => b[1] - a[1])};
   }
 
   function html(h) {
@@ -65,8 +61,6 @@
     const kabAsap = xs => `<span translate="no">${xs.slice(0, 3).map(([k]) => esc(k.split("|")[0])).join(", ")}</span>`;
     const awas = [
       h.gambut.length && kartu("daun", "#8a5a3c", "Lahan gambut", `<b>${fmt(h.gambut.length)}</b> dari ${fmt(h.nyala.length)} kompleks menyala di gambut, paling sulit dipadamkan`),
-      h.jauh.length && kartu("jauh", "#d9822b", `${DAOPS_JAUH}–${TANPA_DAOPS} km dari Daops`, `<b>${fmt(h.jauh.length)}</b> kompleks siaga jauh dari Daops, terbanyak di ${daftar(topKab(h.jauh, 3))}`),
-      h.tanpa.length && kartu("perisai", "#c9503a", "Tanpa Daops", `<b>${fmt(h.tanpa.length)}</b> kompleks siaga tanpa Daops dalam ${TANPA_DAOPS} km, terbanyak di ${daftar(topKab(h.tanpa, 3))}`),
       (pm || p10) && kartu("asap", "#6d6a66", "Asap tidak sehat", [pm && `PM2.5 hingga <b>${fmt(pm)} µg/m³</b> di ${fmt(h.asapKab.length)} kabupaten, antara lain ${kabAsap(h.asapKab)}`,
         p10 && `PM10 hingga <b>${fmt(p10)} µg/m³</b> di ${fmt(h.pm10Kab.length)} kabupaten, antara lain ${kabAsap(h.pm10Kab)}`].filter(Boolean).join("<br>")),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
