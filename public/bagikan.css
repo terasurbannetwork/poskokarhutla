@@ -93,3 +93,10 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 
 /* tombol "Bagikan video" disembunyikan; cukup tombol share (pemilik, 14 Okt 2026). Catatan: Cerita.rekamVideo memakai $q di luar IIFE, perlu diperbaiki bila dipulihkan */
 .ct-bab .ct-vid-btn{display:none!important}
+/* kartu berisi beberapa grafik/tabel dibagi beberapa halaman: navigasi di bawah pratinjau */
+.bg-hal{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0 2px}
+.bg-hal[hidden]{display:none}
+.bg-hal button{width:40px;height:40px;border-radius:50%;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 20px/1 var(--font);cursor:pointer}
+.bg-hal button:hover{background:var(--surface)}
+.bg-hal button:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+.bg-hal span{font:600 13.5px var(--font);color:var(--ink2);min-width:130px;text-align:center}

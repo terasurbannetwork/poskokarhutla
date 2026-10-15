@@ -45,7 +45,7 @@ const Bagikan = {
     ["tren", "dampak", "berita", "insightKompleks"].forEach(id => { const el = document.getElementById(id); if (el) new MutationObserver(() => this.tombolEx()).observe(el, {childList: true, subtree: true}); });
     document.addEventListener("click", e => { const t = e.target.closest?.(".bg-ex"); if (!t) return; e.stopPropagation();
       const box = t.closest("[data-ex]"), art = t.closest("article.ex");
-      if (!t.closest("#insight") || t.closest(".ct-bab")) { this._exLuar = this.ambilLuar(t); return this.buka("ex", "luar"); }
+      if (!t.closest("#insight") || t.closest(".ct-bab, [data-ex=citra]")) { this._exLuar = this.ambilLuar(t); this.halEx = 0; return this.buka("ex", "luar"); }
       this.buka("ex", box ? box.dataset.ex : "b" + [...document.querySelectorAll("#insight article.ex")].indexOf(art)); }, true);
     /* tautan dalam: ?wil=62|Seruyan membuka wilayah itu setelah peta siap */
     const w = new URLSearchParams(location.search).get("wil");
@@ -55,7 +55,7 @@ const Bagikan = {
     document.querySelectorAll("#insight article.ex, #insight section.ct-bab, #insightKompleks article.ex, #tren article.ex, #dampak article.ex, #berita article.ex:not(#brDaftar), #tren .head").forEach(a => {
       const isi = a.classList.contains("head") ? this.isiHead(a) : [a];
       /* hanya kartu yang punya grafik lebar (viewBox ≥ 300) atau tabel; ikon kecil tidak dihitung */
-      const ada = isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
+      const ada = isi.some(x => x.querySelector?.("table, .ct-bab .maplibregl-canvas, .ct-galeri2 img") || (a.matches(".ct-bab") && x.querySelector?.(".maplibregl-canvas")) || [...(x.querySelectorAll?.("svg[viewBox]") || [])].some(v => (v.viewBox.baseVal?.width || 0) >= 300));
       if (a.querySelector(":scope > .bg-ex, :scope > header > .bg-ex") || !ada) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "bg-ex"; b.setAttribute("aria-label", "Bagikan grafik ini"); b.title = "Bagikan";
       b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>`;
@@ -69,9 +69,15 @@ const Bagikan = {
     /* sampai dua grafik + tabel kartu itu, ditumpuk, supaya gambar tidak kosong di atas-bawah */
     const svgs = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).filter(v => (v.viewBox.baseVal?.width || 0) >= 300).slice(0, 2), svg = svgs[0];
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), peta: svgs.length ? null : cari(".maplibregl-canvas"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+      svg, svgs, tabel: cari("table") || this.tabelDariTip(svgs), peta: svgs.length ? null : cari(".maplibregl-canvas"), galeri: cari(".ct-galeri2"), fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#insight") ? "Insight karhutla" : t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
   },
   /* grafik tanpa tabel: susun tabel dari tooltip batang ("<b>Nama</b><br>Label: nilai<br>…"), satu baris per nama */
+  sorotDari(svgs) { const t = this.tabelDariTip(svgs); if (!t) return [];
+    /* kolom rasio/persen (yang jadi pesan judul) diutamakan dari kolom hitungan mentah */
+    const rs = [...t.querySelectorAll("tbody tr")], nk = rs[0]?.children.length || 1, skor = j => rs.filter(r => /[×x%]\s*$/.test(r.children[j]?.textContent || "")).length;
+    let j = 1; for (let k = 2; k < nk; k++) if (skor(k) > skor(j)) j = k;
+    const kep = t.querySelectorAll("thead th")[j]?.textContent || "";
+    return rs.slice(0, 3).map(r => ({n: r.children[0].textContent + (kep && skor(j) ? "" : kep ? " · " + kep : ""), v: r.children[j]?.textContent || ""})).filter(q => q.v && q.v !== "–"); },
   tabelDariTip(svgs) {
     const baris = new Map(), kol = new Set();
     for (const v of svgs || []) for (const el of v.querySelectorAll("[data-tip]")) {
@@ -84,8 +90,8 @@ const Bagikan = {
     return t;
   },
   /* tabel -> kanvas: hanya 10 baris teratas, sisanya di situs */
-  tabelKanvas(tb, n = 10) {
-    const kol = [...tb.querySelectorAll("thead th")].map(x => x.textContent.trim()), rows = [...tb.querySelectorAll("tbody tr")].slice(0, n).map(r => [...r.children].map(c => c.textContent.replace(/\s+/g, " ").trim()));
+  tabelKanvas(tb, n = 10, mulai = 0) {
+    const kol = [...tb.querySelectorAll("thead th")].map(x => x.textContent.trim()), rows = [...tb.querySelectorAll("tbody tr")].slice(mulai, mulai + n).map(r => [...r.children].map(c => c.textContent.replace(/\s+/g, " ").trim()));
     const W = 1800, rh = 64, H = rh * (rows.length + 1), cv = this.kanvas(W, H), x = cv.getContext("2d"), cw = W / Math.max(1, kol.length);
     x.fillStyle = this.C.navy; x.fillRect(0, 0, W, rh); x.textBaseline = "middle";
     kol.forEach((k, j) => { x.fillStyle = "#fff"; this.f(x, 800, 24); x.fillText(this.potong(x, k.toUpperCase(), cw - 24), j * cw + 14, rh / 2); });
@@ -118,6 +124,7 @@ const Bagikan = {
             <label class="bg-cek"><input type="checkbox" id="bgPeta"> Tangkapan peta langsung</label>
           </div>
           <div class="bg-pra"><img id="bgImg" alt=""><p id="bgStG" role="status" aria-live="polite"></p></div>
+          <div class="bg-hal" id="bgHal" hidden><button type="button" data-hal="-1" aria-label="Halaman sebelumnya">‹</button><span aria-live="polite"></span><button type="button" data-hal="1" aria-label="Halaman berikutnya">›</button></div>
           <div class="bg-aksi"><button type="button" class="btn pri" id="bgUnduh">Unduh PNG</button><button type="button" class="btn sec" id="bgBagiG">Bagikan gambar</button></div>
           <label class="sr-only" for="bgTeks">Keterangan & tagar</label>
           <textarea id="bgTeks" rows="7" readonly></textarea>
@@ -152,7 +159,9 @@ const Bagikan = {
     q("#bgProv").onchange = e => { this.prov = e.target.value; this.perbarui(); };
     q("#bgEx").onchange = e => { this.exId = e.target.value; this.perbarui(); };
     q("#bgPeta").onchange = e => { this.pakaiPeta = e.target.checked; this._th = {}; this.perbarui(); };
-    q("#bgUnduh").onclick = () => this.blob && this.simpan(this.blob, this.namaBerkas("png"));
+    q("#bgHal").addEventListener("click", e => { const b = e.target.closest("[data-hal]"); const n = this.cv?.d?.halaman?.n || 1; if (!b || n < 2) return;
+      this.halEx = ((this.halEx || 0) + +b.dataset.hal + n) % n; this._th = {}; this.perbarui(); });
+    q("#bgUnduh").onclick = () => this.unduhSemua();
     q("#bgBagiG").onclick = () => this.bagiGambar();
     q("#bgSalinTeks").onclick = () => this.salin(q("#bgTeks").value, "Keterangan disalin");
     q("#bgSalinUrl").onclick = () => this.salin(q("#bgUrl").value, "Tautan disalin");
@@ -468,20 +477,21 @@ const Bagikan = {
   },
   async dataEx(id = this.exId) {
     if (id === "luar" && this._exLuar) { const L = this._exLuar;
-      if (!L.img) { const fotoPeta = c => { const k = this.kanvas(c.width, c.height); k.getContext("2d").drawImage(c, 0, 0); return k; };
-        const cs = [...(L.peta ? [fotoPeta(L.peta)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))), ...(L.tabel ? [this.tabelKanvas(L.tabel, L.svgs?.length ? 6 : 10)] : [])];
-        /* tumpuk: semua selebar yang paling lebar, jarak 40 px */
-        const W = Math.max(...cs.map(c => c.width)), H = cs.reduce((a, c) => a + c.height * W / c.width, 0) + 40 * (cs.length - 1), cv = this.kanvas(W, H), x = cv.getContext("2d"); let y = 0;
-        x.fillStyle = "#fff"; x.fillRect(0, 0, W, H); cs.forEach(c => { const h = c.height * W / c.width; x.drawImage(c, 0, y, W, h); y += h + 40; }); L.img = cs.length ? cv : null; }
-      const lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 10;
-      return {tpl: "ex", id: "luar", label: L.label, judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.img,
+      /* tiap grafik, galeri, peta, dan potongan tabel = satu halaman sendiri, supaya isinya tetap terbaca (pemilik, 15 Okt 2026) */
+      if (!L.halaman) { const fotoPeta = c => { const k = this.kanvas(c.width, c.height); k.getContext("2d").drawImage(c, 0, 0); return k; };
+        const BARIS = 12, nT = L.tabel ? Math.min(3, Math.ceil(L.tabel.querySelectorAll("tbody tr").length / BARIS)) : 0;
+        L.halaman = [...(L.peta ? [fotoPeta(L.peta)] : []), ...(L.galeri ? [await this.galeriKanvas(L.galeri)] : []), ...await Promise.all((L.svgs || []).map(v => this.svgKanvas(v))),
+          ...Array.from({length: nT}, (_, i) => this.tabelKanvas(L.tabel, BARIS, i * BARIS))]; }
+      const n = L.halaman.length, i = Math.min(this.halEx || 0, Math.max(0, n - 1)), lebih = L.tabel && L.tabel.querySelectorAll("tbody tr").length > 36;
+      L.sorot ||= this.sorotDari(L.svgs?.slice(0, 1));
+      return {tpl: "ex", id: "luar", label: L.label + (n > 1 ? ` · ${i + 1}/${n}` : ""), judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.halaman[i] || null, halaman: {i, n}, sorot: L.svgs?.length && i === (L.peta ? 1 : 0) + (L.galeri ? 1 : 0) ? L.sorot : [],   /* sorotan hanya di halaman grafik pertama */
         fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(" · ")}; }
     const L = await this._exP || await this.daftarEx(), e = L.find(z => z.id === id) || L[0];
     if (!e) return {tpl: "ex", label: "Grafik Insight", judul: "Grafik Insight belum tersedia", kosong: true};
     const h3 = e.art.querySelector("h3"), tx = s => e.art.querySelector(s)?.textContent.replace(/\s+/g, " ").trim() || "";
     e.img ||= await this.svgKanvas(e.art.querySelector("svg"));
     return {tpl: "ex", id: e.id, label: "Grafik Insight", judul: e.judul, judulSeg: [...h3.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      sub: tx(".sub"), unit: tx(".unit"), fn: tx(".fn"), img: e.img};
+      sub: tx(".sub"), unit: tx(".unit"), fn: tx(".fn"), img: e.img, sorot: e.sorot ||= this.sorotDari([e.art.querySelector("svg")])};
   },
 
   /* ---------------------------------------------------------------- peta */
@@ -541,6 +551,20 @@ const Bagikan = {
   },
 
   /* ---------------------------------------------------------------- kanvas */
+  /* galeri citra satelit (kartu Insight): tiap kompleks = nama + warna asli & SWIR berdampingan, 3 kolom */
+  async galeriKanvas(g) {
+    const ks = [...g.querySelectorAll(".ct-kartu2")], K = 2, iw = 300, gp = 24, nm = 44, cw = iw * 2 + 8, ch = nm + iw, bar = Math.ceil(ks.length / K);
+    const c = this.kanvas(K * cw + (K - 1) * gp, bar * ch + (bar - 1) * gp), x = c.getContext("2d"); x.fillStyle = "#fff"; x.fillRect(0, 0, c.width, c.height);
+    const muat = s => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = s; });
+    await Promise.all(ks.map(async (k, n) => { const a = (n % K) * (cw + gp), b = Math.floor(n / K) * (ch + gp);
+      x.fillStyle = "#0b2545"; x.font = "700 22px Inter, system-ui, sans-serif"; const b1 = k.querySelector(".ct-nm b")?.textContent || ""; x.fillText(b1, a, b + 28);
+      x.fillStyle = "#5b6b7f"; x.font = "500 18px Inter, system-ui, sans-serif"; x.fillText(k.querySelector(".ct-nm span")?.textContent || "", a + x.measureText(b1).width * 22 / 18 + 10, b + 28);
+      const im = await Promise.all([...k.querySelectorAll("img")].slice(0, 2).map(i => muat(i.currentSrc || i.src)));
+      im.forEach((i, j) => { const ix = a + j * (iw + 8), iy = b + nm; x.fillStyle = "#e8edf3"; x.fillRect(ix, iy, iw, iw); if (i) x.drawImage(i, ix, iy, iw, iw);
+        const t = j ? "SWIR" : "Warna asli"; x.font = "700 15px Inter, system-ui, sans-serif"; const tw = x.measureText(t).width + 16;
+        x.fillStyle = "rgba(11,37,69,.72)"; x.fillRect(ix + 8, iy + 8, tw, 24); x.fillStyle = "#fff"; x.fillText(t, ix + 16, iy + 25); }); }));
+    return c;
+  },
   kanvas(w, h) { const c = document.createElement("canvas"); c.width = w; c.height = h; return c; },
   f(x, w, s, d) { x.font = `${w} ${s}px ${d ? '"Plus Jakarta Sans", "Inter"' : '"Inter"'}, system-ui, -apple-system, "Segoe UI", sans-serif`; },
   pas(x, t, maks, w, s, d, min = 20) { let u = s; this.f(x, w, u, d); while (u > min && x.measureText(t).width > maks) this.f(x, w, u -= 2, d); return u; },
@@ -602,7 +626,7 @@ const Bagikan = {
     let ln = this.barisKaya(x, seg, lebar);
     while (ln.length > maksBaris && u > 32) { u -= 3; this.f(x, 800, u, true); ln = this.barisKaya(x, seg, lebar); }
     if (ln.length > maksBaris) { ln = ln.slice(0, maksBaris); ln.at(-1).push({t: "…"}); }
-    const adaSub = d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi", lh = Math.round(u * 1.12), yJ = atas + 76 + 22, ySub = yJ + ln.length * lh + 4, bawah = ySub + (adaSub ? 34 : 0) + 64;
+    const adaSub = d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi", lh = Math.round(u * 1.12), yJ = atas + 76 + 22, ySub = yJ + ln.length * lh + 4, ex = d.tpl === "ex", bawah = ySub + (adaSub ? 34 : 0) + (ex ? atas - 8 : 64);
     const g = x.createLinearGradient(0, 0, W * .6, bawah * 1.2); g.addColorStop(0, this.C.navy2); g.addColorStop(1, this.C.navy);
     x.fillStyle = g; x.fillRect(0, 0, W, bawah);
     this.logo(x, P, atas, 76);
@@ -611,13 +635,15 @@ const Bagikan = {
     this.f(x, 800, u, true);
     ln.forEach((l, i) => { let px = P; for (const k of l) { x.fillStyle = k.hl ? this.C.hl : "#fff"; x.fillText(k.t, px, yJ + i * lh + u * .82); px += x.measureText(k.t).width; } });
     if (d.sub && d.tpl !== "ringkas" && d.tpl !== "provinsi") { this.f(x, 500, 23); x.fillStyle = "rgba(255,255,255,.84)"; x.fillText(this.potong(x, d.sub, lebar), P, ySub + 30); }
-    return bawah - 56;
+    /* grafik dibagikan tanpa kartu putih: tidak menumpuk ke pita navy, jadi judul berada di tengah pita (pemilik, 15 Okt 2026) */
+    return ex ? bawah + 36 : bawah - 56;
   },
   kaki(x, W, H, P, bawah) {
     const y = bawah - 70;
     x.strokeStyle = this.C.garis; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
-    this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, this.K.sumber, W - 2 * P), P, y + 34);
-    this.f(x, 500, 21); x.textAlign = "right"; const dt = "Data " + jamWIB(S.acuan || S.meta.dibuat); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 64); const dw = x.measureText(dt).width; x.textAlign = "left";
+    /* baris 1: sumber (kiri) + "Data …" (kanan) sebaris; baris 2: akun resmi dibentang rata dari tepi ke tepi (pemilik, 15 Okt 2026) */
+    this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.textAlign = "right"; const dt = "Data " + jamWIB(S.acuan || S.meta.dibuat); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 34); const dw = x.measureText(dt).width; x.textAlign = "left";
+    x.fillText(this.potong(x, this.K.sumber, W - 2 * P - dw - 24), P, y + 34);
     /* akun resmi per platform (dari data/kontak.json) lalu alamat situs: tiap ikon diberi nama akunnya sendiri,
        bukan lima ikon yang seolah-olah semuanya menunjuk ke situs */
     const sos = (this.kontak && this.kontak.sosial) || {}, akun = [];
@@ -629,14 +655,16 @@ const Bagikan = {
     if (sos.tiktok) akun.push(["#111", "♪", "@" + nama(sos.tiktok).replace(/^@/, "")]);
     if (sos.youtube) akun.push(["#ff0000", "▶", nama(sos.youtube)]);
     akun.push([this.C.navy2, "web", this.situs()]);
-    const s = 28, gp = 8, by = y + 64 - 21; let a = P; const batas = W - P - dw - 24;
-    for (const [w, t, teks] of akun) {
-      this.f(x, 700, 20); const tw = x.measureText(teks).width; if (a + s + gp + tw > batas) break;
+    const s = 28, gp = 8, by = y + 64 - 21; this.f(x, 700, 20);
+    const lb = [], ruang = W - 2 * P; for (const k of akun) { const tw = s + gp + x.measureText(k[2]).width; if (lb.reduce((p, v) => p + v + 22, tw) > ruang) break; lb.push(tw); }
+    const sela = lb.length > 1 ? (ruang - lb.reduce((p, v) => p + v, 0)) / (lb.length - 1) : 0; let a = lb.length > 1 ? P : (W - lb[0]) / 2;
+    for (const [i, [w, t, teks]] of akun.slice(0, lb.length).entries()) {
+      this.f(x, 700, 20); const tw = x.measureText(teks).width;
       x.fillStyle = w; x.beginPath(); x.roundRect(a, by, s, s, 8); x.fill(); x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 2.2;
       if (t === "ig") { x.beginPath(); x.roundRect(a + 7, by + 7, 14, 14, 4.5); x.stroke(); x.beginPath(); x.arc(a + 14, by + 14, 3.6, 0, Math.PI * 2); x.stroke(); }
       else if (t === "web") { x.beginPath(); x.arc(a + 14, by + 14, 8, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.ellipse(a + 14, by + 14, 3.6, 8, 0, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.moveTo(a + 6, by + 14); x.lineTo(a + 22, by + 14); x.stroke(); }
       else { this.f(x, 800, 16); x.textAlign = "center"; x.fillText(t, a + s / 2, by + 20); x.textAlign = "left"; }
-      this.f(x, 700, 20); x.fillStyle = this.C.navy2; x.fillText(teks, a + s + gp, y + 64); a += s + gp + tw + 22;
+      this.f(x, 700, 20); x.fillStyle = this.C.navy2; x.fillText(teks, a + s + gp, y + 64); a += lb[i] + sela;
     }
     return y - 26;
   },
@@ -710,21 +738,22 @@ const Bagikan = {
     isi.forEach(([c, t]) => { if (c) { x.fillStyle = c; x.beginPath(); x.arc(px + 7, b + h - 36, 7, 0, 7); x.fill(); px += 20; } x.fillStyle = "#fff"; x.fillText(t, px, b + h - 30); px += x.measureText(t).width + 12; });
     x.restore();
   },
+  /* grafik langsung di kertas (tanpa kartu), selebar mungkin; sisa ruang tegak diisi kotak sorotan dari angka grafik itu sendiri */
   exBlok(x, a, b, w, h, d) {
-    const pd = 36, lw = w - 2 * pd;
-    /* grafik lebar (mis. kalender musim) jangan dikotak-hitamkan di kartu tinggi: kartu dipendekkan ke tinggi isi, lalu ditaruh di tengah ruangnya */
-    if (!d.kosong && d.img) { this.f(x, 500, 17); const nf = d.fn ? Math.min(3, this.baris(x, d.fn, lw).length) : 0, nu = d.unit ? 2 * 27 : 0;
-      const ih = d.img.height * Math.min(lw / d.img.width, 1e9), perlu = pd + nu + 14 + ih + 14 + nf * 24 + pd;
-      if (perlu < h) { b += (h - perlu) / 2; h = perlu; } }
-    this.kartu(x, a, b, w, h);
-    if (d.kosong) { this.f(x, 500, 24); x.fillStyle = this.C.tinta2; x.fillText("Buka tab Insight sekali, lalu coba lagi.", a + pd, b + pd + 30); return; }
-    let y = b + pd;
-    this.f(x, 500, 19); x.fillStyle = this.C.tinta2;
-    if (d.unit) { this.baris(x, d.unit, lw).slice(0, 2).forEach(l => { x.fillText(l, a + pd, y + 22); y += 27; }); }
-    this.f(x, 500, 17); const fn = d.fn ? this.baris(x, d.fn, lw).slice(0, 3) : [], yF = b + h - pd - fn.length * 24;
-    fn.forEach((l, i) => x.fillText(l, a + pd, yF + 18 + i * 24));
-    const top = y + 14, ah = yF - 14 - top, s = Math.min(lw / d.img.width, ah / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
-    x.drawImage(d.img, a + pd + (lw - iw) / 2, top + (ah - ih) / 2, iw, ih);
+    if (d.kosong || !d.img) { this.f(x, 500, 24); x.fillStyle = this.C.tinta2; x.fillText("Buka tab Insight sekali, lalu coba lagi.", a, b + 30); return; }
+    let y = b; this.f(x, 600, 22); x.fillStyle = this.C.tinta2;
+    if (d.unit) { this.baris(x, d.unit, w).slice(0, 2).forEach(l => { x.fillText(l, a, y + 24); y += 32; }); y += 10; }
+    this.f(x, 500, 18); const fn = d.fn ? this.baris(x, d.fn, w).slice(0, 3) : [], yF = b + h - fn.length * 26;
+    fn.forEach((l, i) => x.fillText(l, a, yF + 18 + i * 26));
+    const ruang = yF - 24 - y, s = Math.min(w / d.img.width, ruang / d.img.height), iw = d.img.width * s, ih = d.img.height * s;
+    const sor = (d.sorot || []).slice(0, 3), tS = 150, gS = 28, pakai = sor.length > 1 && ruang - ih > tS + gS + 40;
+    const blok = ih + (pakai ? gS + tS : 0), y0 = y + Math.max(0, (ruang - blok) / 2);
+    x.drawImage(d.img, a + (w - iw) / 2, y0, iw, ih);
+    if (pakai) { const g = 20, cw = (w - g * (sor.length - 1)) / sor.length, yy = y0 + ih + gS;
+      sor.forEach((q, i) => { const xx = a + i * (cw + g); x.fillStyle = "#eef2f8"; x.beginPath(); x.roundRect(xx, yy, cw, tS, 22); x.fill();
+        x.fillStyle = this.C.hl; x.beginPath(); x.roundRect(xx, yy + 22, 6, tS - 44, 3); x.fill();
+        x.fillStyle = this.C.navy2; const u = this.pas(x, q.v, cw - 56, 800, 46, true, 26); x.fillText(this.potong(x, q.v, cw - 56), xx + 30, yy + 30 + u);
+        this.f(x, 600, 21); x.fillStyle = this.C.tinta2; this.baris(x, q.n, cw - 56).slice(0, 2).forEach((l, k) => x.fillText(l, xx + 30, yy + 48 + u + 8 + k * 26)); }); }
   },
 
   /* ---------------------------------------------------------------- pratinjau */
@@ -743,6 +772,8 @@ const Bagikan = {
       img.alt = `Pratinjau ${this.TPL.find(z => z[0] === this.tpl)[1]}, ${this.UK[this.uk][2]}`; img.classList.remove("muat");
       st.textContent = "";
       q("#bgTeks").value = this.keterangan(cv.d);
+      const hl = cv.d.halaman, ph = q("#bgHal"); ph.hidden = !(hl?.n > 1); if (hl?.n > 1) ph.querySelector("span").textContent = `Halaman ${hl.i + 1} dari ${hl.n}`;
+      q("#bgUnduh").textContent = hl?.n > 1 ? `Unduh ${hl.n} PNG` : "Unduh PNG";
       q("#bgBagiG").hidden = !(navigator.canShare && navigator.canShare({files: [new File([blob], "a.png", {type: "image/png"})]}));
       this.thumbs(t);
     } catch (e) { console.error(e); if (t === this._t) st.textContent = "Gagal membuat gambar: " + e.message; }
@@ -775,11 +806,20 @@ const Bagikan = {
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
     return `${isi}${top ? `\n\nPaling banyak di ${top}.` : ""}${rek}\n\nPeta dan data lengkapnya: https://${this.situs()}\n\n${tagar}`;
   },
+  /* semua halaman kartu yang dibagi (1 bila kartunya muat satu halaman), urut dari halaman 1 */
+  async semuaBlob() {
+    const n = this.cv?.d?.halaman?.n || 1; if (n < 2) return this.blob ? [this.blob] : [];
+    const asal = this.halEx, out = [];
+    try { for (let i = 0; i < n; i++) { this.halEx = i; const cv = await this.render(); out.push(await new Promise(r => cv.toBlob(r, "image/png"))); } } finally { this.halEx = asal; }
+    return out;
+  },
+  namaHal(i, n) { const b = this.namaBerkas("png"); return n > 1 ? b.replace(/\.png$/, `-${i + 1}.png`) : b; },
+  async unduhSemua() { const bs = await this.semuaBlob(); for (const [i, b] of bs.entries()) { this.simpan(b, this.namaHal(i, bs.length)); if (bs.length > 1) await new Promise(r => setTimeout(r, 350)); } },
   async bagiGambar() {
     if (!this.blob) return;
-    const f = new File([this.blob], this.namaBerkas("png"), {type: "image/png"}), teks = this.dialog().querySelector("#bgTeks").value;
-    try { await navigator.share({files: [f], title: document.title, text: teks}); }
-    catch (e) { if (e.name !== "AbortError") { this.simpan(this.blob, f.name); this.kabar("Berbagi berkas tidak didukung; gambar diunduh."); } }
+    const bs = await this.semuaBlob(), fs = bs.map((b, i) => new File([b], this.namaHal(i, bs.length), {type: "image/png"})), teks = this.dialog().querySelector("#bgTeks").value;
+    try { await navigator.share({files: fs, title: document.title, text: teks}); }
+    catch (e) { if (e.name !== "AbortError") { await this.unduhSemua(); this.kabar("Berbagi berkas tidak didukung; gambar diunduh."); } }
   },
 
   /* ---------------------------------------------------------------- ekspor */

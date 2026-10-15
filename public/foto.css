@@ -62,6 +62,14 @@
 @keyframes fl-kilau{to{background-position:-200% 0}}
 .fl-isi{min-height:200px}.fl-isi>.fl-skel{display:inline-block;width:calc(33% - 10px);margin-right:10px}
 
+/* belum ada foto: ajakan bergaya bidikan kamera, sama dengan layar pertama Kirim foto */
+.fl-ajak{display:grid;justify-items:center;gap:10px;width:100%;margin-top:18px;padding:56px 16px 44px;border:0;border-radius:24px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer;text-align:center}
+.fl-ajak .fl-bingkai{width:min(200px,50vw);margin-bottom:10px}
+.fl-ajak:hover .fl-bingkai{border-color:var(--ink);transform:scale(1.02)}
+.fl-ajak b{font:800 18px var(--display)}.fl-ajak small{color:var(--ink2);font-size:14px}
+.fl-ajak .fl-pri{margin-top:8px;background:#171717;color:#fff;min-width:220px}
+.fl-ajak:focus-visible{outline:3px solid #e3b94e;outline-offset:3px}
+
 /* rincian */
 .fl-dlg{width:min(980px,calc(100vw - 24px))}
 .fl-r{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(300px,1fr)}
@@ -102,7 +110,7 @@
 .fl-alasan .batal{text-align:center;background:var(--surface);border:0}
 
 /* sheet kirim (gaya lembar iOS) */
-.fl-sheet{border:0;padding:0 18px 18px;width:min(520px,100vw);max-height:min(92dvh,900px);margin:auto auto 0;border-radius:22px 22px 0 0;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
+.fl-sheet{border:0;padding:0 18px 18px;width:min(620px,100vw);max-height:min(92dvh,900px);margin:auto auto 0;border-radius:22px 22px 0 0;background:var(--card);color:var(--ink);overflow:auto;box-shadow:0 -10px 40px rgb(0 0 0 / .25)}
 @media (min-width:700px){.fl-sheet{margin:auto;border-radius:22px}}
 .fl-sheet::backdrop{background:oklch(15% .03 256 / .5)}
 .fl-pegang{width:38px;height:5px;border-radius:3px;background:var(--line);margin:8px auto 4px}
@@ -110,20 +118,27 @@
 .fl-sheet header h2{font:800 18px var(--display)}
 .fl-sheet header .fl-x{position:static;background:var(--surface);color:var(--ink);width:36px;height:36px;font-size:20px}
 .fl-sheet form{display:grid;gap:14px}
-.fl-bidik{position:relative;border-radius:18px;overflow:hidden;background:radial-gradient(ellipse at 50% 40%,#4a4a44,#262622 75%);min-height:260px;display:grid;place-items:center;color:#f3f3ee}
-.fl-sudut,.fl-sudut::before,.fl-bidik::before,.fl-bidik::after{content:"";position:absolute;width:24px;height:24px;border:2px solid rgb(255 255 255 / .75);pointer-events:none;z-index:1}
-.fl-bidik::before{left:12px;top:12px;border-right:0;border-bottom:0;border-radius:6px 0 0 0}
-.fl-bidik::after{right:12px;top:12px;border-left:0;border-bottom:0;border-radius:0 6px 0 0}
-.fl-sudut{left:12px;bottom:12px;border-right:0;border-top:0;border-radius:0 0 0 6px}
-.fl-sudut::before{left:auto;right:calc(-100cqw + 48px);bottom:-2px;border-left:0;border-top:0;border-right:2px solid rgb(255 255 255 / .75);border-radius:0 0 6px 0}
-.fl-bidik{container-type:inline-size}
-.fl-bidik-kosong{display:grid;justify-items:center;gap:6px;text-align:center;padding:24px}
-.fl-bidik-kosong svg{width:36px;height:36px}.fl-bidik-kosong small{color:rgb(255 255 255 / .7)}
+/* layar pertama = bidikan kamera (pola "scan struk"): panel abu besar, bingkai membulat + lensa di tengah, catatan, lalu galeri + Ambil foto */
+.fl-bidik{position:relative;border-radius:22px;overflow:hidden;background:var(--surface);min-height:min(56dvh,440px);display:grid;place-items:center;color:var(--ink)}
+.fl-bidik-kosong{display:grid;place-items:center;width:100%;height:100%}
+.fl-bingkai{display:grid;place-items:center;width:min(220px,52%);aspect-ratio:1;border:1.5px solid color-mix(in oklch,var(--ink) 35%,transparent);border-radius:30px;cursor:pointer;transition:transform .15s,border-color .15s}
+.fl-bingkai:hover{border-color:var(--ink);transform:scale(1.02)}
+.fl-bingkai:has(input:focus-visible){outline:3px solid #e3b94e;outline-offset:3px}
+.fl-lensa{display:grid;place-items:center;width:60px;height:60px;border-radius:50%;background:color-mix(in oklch,var(--ink) 9%,var(--card))}
+.fl-lensa svg{width:24px;height:24px}
+.fl-bidik.ada{background:#0d1117}
 .fl-bidik.ada .fl-bidik-kosong{display:none}
-.fl-dua{display:flex;gap:8px;margin-top:8px}
-.fl-bidik .fl-pri{background:#fff;color:#171717}.fl-bidik .fl-sek{background:rgb(255 255 255 / .16);color:#fff}
+.fl-cat{text-align:center;color:var(--ink2);font-size:12.5px;line-height:1.5;margin:0 12px}
+.fl-bawah{display:flex;gap:10px;align-items:center}
+.fl-bawah .fl-pri.besar{flex:1;background:#171717;color:#fff}
+.fl-galeri{flex:none;display:grid;place-items:center;width:52px;height:52px;border-radius:50%;background:var(--surface);color:var(--ink);cursor:pointer}
+.fl-galeri svg{width:24px;height:24px}
+.fl-galeri:has(input:focus-visible),.fl-bawah .fl-pri:has(input:focus-visible){outline:3px solid #e3b94e;outline-offset:2px}
+form.ada .fl-cat,form.ada .fl-bawah{display:none}
+form:not(.ada) .fl-lanjut{display:none}
+.fl-lanjut{display:grid;gap:14px}
 .fl-pratinjau{position:relative;width:100%;height:100%}
-.fl-pratinjau img,.fl-pratinjau video{width:100%;max-height:360px;object-fit:contain;display:block;margin:auto}
+.fl-pratinjau img,.fl-pratinjau video{width:100%;max-height:min(56dvh,440px);object-fit:contain;display:block;margin:auto}
 .fl-ganti{position:absolute;right:12px;bottom:12px;z-index:2;border:0;border-radius:999px;background:rgb(255 255 255 / .92);color:#171717;font:700 13px var(--font);padding:8px 14px;cursor:pointer}
 .fl-panel{background:var(--surface);border-radius:16px;padding:2px 16px}
 .fl-panel div{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:13px 0;border-top:1px solid var(--line)}.fl-panel div:first-child{border-top:0}
@@ -153,3 +168,4 @@
   .fl-kepala .fl-pri{width:100%}
 }
 #tabs button[hidden],#lapis label[hidden]{display:none!important}
+.fl-wrap:has(.fl-ajak) .fl-alat,.fl-wrap:has(.fl-ajak) .fl-kepala .fl-pri{display:none}  /* belum ada foto: saringan & tombol ganda tidak berguna */

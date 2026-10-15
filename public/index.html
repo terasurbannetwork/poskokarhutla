@@ -400,7 +400,6 @@ td.ks-td small{display:block;color:var(--ink2);font-size:10.5px}
 #kompleks .kp-id{font:700 11.5px ui-monospace,SFMono-Regular,Menlo,monospace;padding:3px 8px;border-radius:7px;background:color-mix(in oklch,var(--brand2) 9%,transparent);color:var(--brand2);text-decoration:none}
 #kompleks .kp-kab{font-weight:700;color:var(--ink)}
 #kompleks .kp-ab{color:var(--ink2);font-size:12px}
-#kompleks .kp-px{display:inline-block;min-width:44px;padding:2px 8px;border-radius:6px;font-weight:700;background:linear-gradient(90deg,color-mix(in oklch,#e8743b 30%,transparent) var(--p),transparent var(--p)),color-mix(in oklch,#e8743b 6%,transparent)}
 #kompleks .kp-hr,#kompleks .kp-fwi{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap}
 #kompleks .kp-hr.h3{background:color-mix(in oklch,#c9503a 13%,transparent);color:#b5412c}
 #kompleks .kp-hr.h2{background:color-mix(in oklch,#e8743b 14%,transparent);color:#b5602a}
@@ -680,9 +679,9 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .ex .ctl .seg{height:34px;align-items:center}
 .ex .ctl .seg button{padding:5px 13px}
 /* Insight: satu kolom terpusat (grafik SVG dirancang selebar 940 px; dua kolom membuat teksnya terlalu kecil), kartu ringkas */
-#insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1120px;margin:0 auto}
+#insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
 /* Kompleks di bawah Insight: lebar & jarak sama dengan kartu Insight; toolbar cari selebar kartu, tanpa CSV */
-#insightKompleks{max-width:1120px;margin:16px auto 0;display:grid;gap:16px}
+#insightKompleks{max-width:1180px;margin:16px auto 0;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}  /* kolom tidak melar mengikuti isi: lebar atas = bawah (pemilik, 15 Okt 2026) */
 #insightKompleks .tbar{display:flex;gap:10px;align-items:center}
 #insightKompleks .tbar #tq{flex:1 1 auto!important;width:auto!important;max-width:none!important;min-width:0;height:40px}
 #insightKompleks .tbar{width:100%}
@@ -790,7 +789,7 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #kompleks .kp-ex .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
 #kompleks .kp-ex h3{font-size:21px;line-height:1.3}
 #kompleks .kp-ex .tbar{margin-top:12px!important}
-#kompleks .kp-ex > .ex-bd{padding:0 0 14px}
+#kompleks .kp-ex > .ex-bd{padding:14px 0 14px}
 #kompleks .kp-ex #pg{padding:0 18px}
 /* tabel kompleks seperti tabel lain: masuk dari tepi kartu, kepala membulat di sudut atas (pemilik, 15 Okt 2026) */
 #kompleks .tw{box-shadow:none!important;border:0!important;border-radius:12px!important;margin:0 16px!important}
@@ -1290,8 +1289,8 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .lapis-hd button svg{width:13px;height:13px;transition:transform .2s}
 .lapis-hd button.tutup svg{transform:rotate(180deg)}
 .lapis .ub-gr{display:flex;gap:4px;padding:2px 0 4px}
-.lapis .ub-gr{gap:8px 6px!important;flex-wrap:wrap}  /* ubin yang tidak muat turun ke baris kedua (pemilik, 15 Okt 2026) */
-.lapis .ub-gr > .ubin{flex:0 0 auto;min-width:40px;max-width:58px}  /* label EN lebih panjang ("Complexes"): ubin melebar, tidak saling tindih */
+.lapis .ub-gr{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px 4px!important}  /* kisi 5 kolom tetap: tiap kolom lurus ke bawah antar grup (pemilik, 15 Okt 2026) */
+.lapis .ub-gr > .ubin{min-width:0}
 .lapis label.ubin{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
 .lapis label.ubin input{position:absolute;opacity:0;pointer-events:none}
 .lapis .ub-th{display:grid;place-items:center;width:32px;height:32px;border-radius:9px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;box-shadow:inset 0 0 0 1px oklch(0% 0 0 / .08);transition:box-shadow .15s,transform .15s}
@@ -1478,7 +1477,6 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
           <label><input type="checkbox" data-l="titik" checked> Titik panas</label>
           <label><input type="checkbox" data-l="kluster" checked> Kompleks kebakaran</label>
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
-          <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
           <label><input type="checkbox" data-l="foto" checked> Foto lapangan warga</label>
         </details>
@@ -1497,6 +1495,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
         <details open><summary>Infrastruktur</summary>
           <label style="display:none"><input type="checkbox" data-l="posko"> Posko</label>
           <label><input type="checkbox" data-l="daops"> Markas Manggala Agni</label>
+          <label><input type="checkbox" data-l="udara"> Pangkalan helikopter & pesawat</label>
           <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
       </div>
@@ -1525,7 +1524,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
     <div class="wrap" id="insightKompleks"><div id="prioritas"></div><div id="kompleks"></div></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
-  <section class="page" id="p-foto" aria-label="Foto lapangan"><div id="foto"></div></section>
+  <section class="page" id="p-foto" aria-label="Foto"><div id="foto"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kebakaran"><div class="wrap" id="dampak"></div></section>
   
   <!-- ================= POSKO ================= -->
@@ -1605,7 +1604,7 @@ const WARNA_WIL = () => ["step", ["get", "v"], "rgba(0,0,0,0)", ...SKALA_WIL.fla
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Kompleks"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto Lapangan"], ["tentang", "Tentang"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Kompleks"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["tentang", "Tentang"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
@@ -2421,12 +2420,12 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
   gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>', peringatan: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'};
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
   fwi: ["#5a9e74", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
-  gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"], hilang_api: ["#3a1414", "#d84f2f", "hilang"],
+  gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI",udara: "Pangkalan udara", fwi: "FWI", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang", hilang_api: "Bekas terbakar",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto warga", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
+const UBIN_PENDEK = {aqi: "AQI",udara: "Pangkalan udara", fwi: "FWI", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
+  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
@@ -2637,6 +2636,8 @@ const Tabel = {
     const el = $("#kompleks"); if (!S.kluster) return;
     const r = this.baris(), hal = r.slice(this.hal * this.per, (this.hal + 1) * this.per), jml = Math.ceil(r.length / this.per);
     const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel 24 j", 0, 1], ["hari", "Durasi", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
+    const KOL_TIP = {px24: "Jumlah piksel api VIIRS 375 m dalam 24 jam terakhir", fwi: "Fire Weather Index: potensi api menyala dan menjalar dari cuaca hari ini",
+      dc: "Drought Code: kekeringan lapisan organik dalam/gambut. Makin tinggi makin kering; di atas 300 api cenderung membara lama dan susah padam"};
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
@@ -2656,11 +2657,10 @@ const Tabel = {
     }
     $("#tjudul").innerHTML = this.prov ? `${Insight.hl(fmt(r.length) + " kompleks")} aktif ${window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi " : ""}di ${esc(namaProv(this.prov))} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-semua>Semua provinsi ✕</button>` : `${Insight.hl(fmt(r.length) + " kompleks")} kebakaran aktif ${[window.KonsesiF?.hanya || window.KonsesiF?.jenis ? "di dalam areal konsesi" : "", window.KonsesiF?.gambut ? "di lahan gambut" : ""].filter(Boolean).join(" dan ") || "di seluruh Indonesia"}`;
     $("#tjudul").onclick = e => { if (e.target.closest("[data-semua]")) { Tabel.prov = null; Tabel.hal = 0; document.querySelectorAll("#prioritas details[data-pr][open]").forEach(x => x.open = false); nanti(() => Tabel.render()); } };
-    $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}" aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
-    const pxMaks = Math.max(1, ...hal.map(p => p.px24 || 0));
+    $("#th").innerHTML = `<tr>${kol.map(([k, n, s, num]) => `<th class="${num ? "n" : ""}"${KOL_TIP[k] ? ` title="${KOL_TIP[k]}"` : ""} aria-sort="${this.urut === (s || k) ? (this.turun ? "descending" : "ascending") : "none"}"><button data-k="${s || k}">${n}<i>${this.urut === (s || k) ? (this.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr>`;
     $("#tb").innerHTML = hal.length ? hal.map(p => `<tr><td><button class="link kp-id" data-id="${p.id}">${p.id}</button></td><td><span class="pill l${p.level}" title="${esc(S.meta.status[p.level])}">${["Pencegahan", "Patroli", "Siaga", "Prioritas"][p.level]}</span></td>
       <td class="kp-ab">${esc(namaProv(p.prov))}</td><td class="kp-kab">${esc(p.kab)}</td><td class="kp-ab">${esc(p.kec)}</td>
-      <td class="n num"><span class="kp-px" style="--p:${Math.min(100, p.px24 / pxMaks * 100)}%">${fmt(p.px24)}</span></td>
+      <td class="n num">${fmt(p.px24)}</td>
       <td class="n"><span class="kp-hr h${p.hari >= 7 ? 3 : p.hari >= 3 ? 2 : 1}">${fmt(p.hari)} hari</span></td>
       <td class="n num"><b>${fmt(p.n)}</b></td><td class="n num">${fmt(p.luas)}</td>
       <td class="n"><span class="kp-fwi f${kelasFWI(p.fwi)}" title="${FWI_KELAS[kelasFWI(p.fwi)][0]}">${fmt(p.fwi)}</span></td><td class="n num kp-ab">${fmt(p.dc)}</td></tr>`).join("")
