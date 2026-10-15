@@ -50,7 +50,7 @@ button{-webkit-tap-highlight-color:transparent}
 .ad-isi-masuk{padding:28px 32px 32px}
 .ad-isi-masuk h2{margin:0 0 24px;font:800 18px var(--display)}
 .ad-isi-masuk form{display:grid;gap:16px}
-.ad-isian{position:relative}
+.ad-isian{position:relative}.ad-isian+.ad-isian{margin-top:12px}
 .ad-isian input{width:100%;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);background:var(--card);color:var(--ink);border-radius:12px;padding:24px 44px 8px 14px;font:14px var(--font);transition:border-color .15s}
 .ad-isian input:focus{outline:none;border-color:color-mix(in srgb,var(--ink) 45%,transparent)}
 .ad-isian label{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:14px;color:var(--ink3);transition:top .15s ease-out,font-size .15s ease-out,color .15s ease-out}

@@ -12,6 +12,7 @@ import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 const JAM = 3600e3, HARI = 24 * JAM, WIB = 7 * JAM;
 const tglWIB = t => new Date(t + WIB).toISOString().slice(0, 10), slotWIB = t => Math.floor(((t + WIB) % HARI) / 6e5);
 const SESI_KUNCI = "kunci-sesi-uji-0123456789", TOKEN = "rahasia-admin", UA = "Mozilla/5.0 (Linux; Android 14) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/129.0 Mobile Safari/537.36";
+const SANDI = "sandi uji:7#&", AKUN = `admin@contoh.id:${SANDI}`, MASUK = "email=admin%40contoh.id&sandi=" + encodeURIComponent(SANDI);
 const IP_GPTBOT = "20.171.206.9", IP_PALSU = "203.0.113.50";
 let mf, DB, ASET_404 = new Set(), EMAIL = [];
 const aset = async req => {
@@ -28,7 +29,7 @@ const luar = async req => {
   return new Response("tidak ada", {status: 404});
 };
 const opsi = {modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}], compatibilityDate: "2024-09-23",
-  d1Databases: {DB: "uji-statistik"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: `${TOKEN}, token-moderator-2`, SESI_KUNCI, EMAIL_API_KEY: "re_uji", EMAIL_TO: "pemilik@contoh.id", EMAIL_FROM: "Posko <posko@contoh.id>"},
+  d1Databases: {DB: "uji-statistik"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: `${TOKEN}, token-moderator-2, ${AKUN}`, SESI_KUNCI, EMAIL_API_KEY: "re_uji", EMAIL_TO: "pemilik@contoh.id", EMAIL_FROM: "Posko <posko@contoh.id>"},
   serviceBindings: {ASSETS: aset}, outboundService: luar};
 
 before(async () => { mf = new Miniflare(opsi); DB = await mf.getD1Database("DB"); await DB.batch(pecah(migrasi()).map(s => DB.prepare(s))); });
@@ -178,10 +179,13 @@ uji("statistik: pengunjung kembali dan aturan 30 menit dari bendera klien", asyn
 });
 
 /* ================================================================ sesi admin */
-uji("masuk: token salah ditolak, cookie HttpOnly Secure SameSite=Strict 12 jam", async () => {
-  const salah = await panggil("POST", "/admin/masuk", "token=bukan-token", {ip: ipBaru()});
-  assert.equal(salah.status, 401); assert.equal(salah.h.get("set-cookie"), null, "token salah tidak boleh memberi cookie");
-  const ok = await panggil("POST", "/admin/masuk", "token=" + encodeURIComponent(TOKEN), {ip: ipBaru()});
+uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Strict 12 jam", async () => {
+  for (const b of [MASUK.replace("sandi=", "sandi=x"), "email=lain%40contoh.id&sandi=" + encodeURIComponent(SANDI), "email=&sandi=", "token=" + encodeURIComponent(TOKEN)]) {
+    const salah = await panggil("POST", "/admin/masuk", b, {ip: ipBaru()});
+    assert.equal(salah.status, 401, b); assert.equal(salah.h.get("set-cookie"), null, "masuk gagal tidak boleh memberi cookie: " + b);
+  }
+  assert.equal((await panggil("POST", "/admin/masuk", MASUK.replace("admin@", "ADMIN@"), {ip: ipBaru()})).status, 303, "email tidak peka huruf besar");
+  const ok = await panggil("POST", "/admin/masuk", MASUK, {ip: ipBaru()});
   assert.equal(ok.status, 303); assert.equal(ok.h.get("location"), "/admin/statistik");
   const c = ok.h.get("set-cookie");
   for (const f of ["HttpOnly", "Secure", "SameSite=Strict", "Path=/", "Max-Age=43200"]) assert.ok(c.includes(f), `cookie sesi tanpa ${f}: ${c}`);
@@ -206,11 +210,11 @@ uji("masuk: sesi kedaluwarsa, dipalsukan, atau token dicabut ditolak", async () 
 
 uji("masuk: percobaan dibatasi lajunya per IP", async () => {
   const ip = ipBaru();
-  for (let i = 1; i <= 8; i++) assert.equal((await panggil("POST", "/admin/masuk", "token=tebak" + i, {ip})).status, 401, `percobaan ke-${i}`);
-  const r = await panggil("POST", "/admin/masuk", "token=" + TOKEN, {ip});
+  for (let i = 1; i <= 8; i++) assert.equal((await panggil("POST", "/admin/masuk", MASUK + "tebak" + i, {ip})).status, 401, `percobaan ke-${i}`);
+  const r = await panggil("POST", "/admin/masuk", MASUK, {ip});
   assert.equal(r.status, 429, `percobaan ke-9 dalam 15 menit harus 429 walau token benar, diterima ${r.status}`);
   assert.equal(r.h.get("set-cookie"), null);
-  assert.equal((await panggil("POST", "/admin/masuk", "token=" + TOKEN, {ip: ipBaru()})).status, 303, "IP lain tidak terdampak");
+  assert.equal((await panggil("POST", "/admin/masuk", MASUK, {ip: ipBaru()})).status, 303, "IP lain tidak terdampak");
 });
 
 uji("keluar: cookie dihapus, POST dari origin lain ditolak", async () => {

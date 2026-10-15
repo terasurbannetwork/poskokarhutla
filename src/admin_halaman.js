@@ -11,7 +11,7 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=3" rel="stylesheet">
+<link href="/admin/admin.css?v=4" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"]};
@@ -45,9 +45,13 @@ export const halamanMasuk = galat => `${kepala("Masuk admin · Posko Karhutla")}
     <h2>Login</h2>
     <form method="post" action="/admin/masuk">
       <div class="ad-isian">
-        <input id="token" name="token" type="password" placeholder=" " autocomplete="current-password" required autofocus>
-        <label for="token">Token admin</label>
-        <button class="ad-mata" type="button" tabindex="-1" aria-label="Tampilkan token"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="m2 2 20 20"/></svg></button>
+        <input id="email" name="email" type="email" placeholder=" " autocomplete="username" required autofocus>
+        <label for="email">Email</label>
+      </div>
+      <div class="ad-isian">
+        <input id="sandi" name="sandi" type="password" placeholder=" " autocomplete="current-password" required>
+        <label for="sandi">Kata sandi</label>
+        <button class="ad-mata" type="button" tabindex="-1" aria-label="Tampilkan sandi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12s3-8 10-8 10 8 10 8-3 8-10 8-10-8-10-8Z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="m2 2 20 20"/></svg></button>
       </div>
       ${galat ? `<p class="ad-galat" role="alert">${esc(galat)}</p>` : ""}
       <button class="ad-tombol-masuk" type="submit">Masuk</button>
@@ -55,7 +59,7 @@ export const halamanMasuk = galat => `${kepala("Masuk admin · Posko Karhutla")}
     <p class="ad-catatan">Sesi berlaku 12 jam. Percobaan masuk dibatasi.</p>
   </div>
 </main>
-<script src="/admin/masuk.js?v=1"></script>
+<script src="/admin/masuk.js?v=2"></script>
 </body></html>`;
 
 export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/statistik.js?v=2"></script>`);
@@ -79,7 +83,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=3" rel="stylesheet">
+<link href="/admin/admin.css?v=4" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>

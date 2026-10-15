@@ -280,6 +280,7 @@ async function selesai(env, req, id, kini) {
 }
 
 /* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator.
+   Entri berbentuk "email:sandi" adalah akun untuk form /admin/masuk (sandi tanpa koma, tanpa spasi di ujung).
    Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
 export async function adminOK(env, req, kini = Date.now()) {
   if (!env.ADMIN_TOKEN) return null;

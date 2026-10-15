@@ -229,9 +229,10 @@ export async function masuk(env, req, kini, halamanMasuk) {
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
   if (laju) return html(halamanMasuk("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const t = await req.text();
-  const token = t.length <= 2048 ? new URLSearchParams(t).get("token") || "" : "";
-  const sah = await adminOK(env, new Request("http://x/", {headers: {authorization: "Bearer " + token}}), kini);
-  if (!token || !sah) return html(halamanMasuk("Token admin salah."), 401);
+  /* akun = entri "email:sandi" di ADMIN_TOKEN (email huruf kecil); tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
+  const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
+  const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
+  if (!sah) return html(halamanMasuk("Email atau kata sandi salah."), 401);
   return alihkan("/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
 }
 export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
