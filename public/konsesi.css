@@ -25,6 +25,7 @@
 #ks-ex .ks-hd{margin:0;padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line);align-items:center}
 #ks-ex .ks-hd h3{font-size:21px;line-height:1.3;letter-spacing:-.01em}
 #ks-ex .ks-hd h3::before{content:"Konsesi";display:block;width:max-content;font:800 10px/1 var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:4px 9px;border-radius:999px;margin-bottom:10px}
+html[lang=en] #ks-ex .ks-hd h3::before{content:"Concessions"}
 #ks-ex .ks-hd .sub{display:none}
 #ks-ex > .tw{border:0;box-shadow:none;border-radius:0;margin:0;padding:6px 14px 10px}
 /* tooltip kompleks: pemegang izin berlabel */
@@ -52,7 +53,7 @@
 /* tabel kompleks: semua tulisan lebih kecil supaya muat; beberapa perusahaan ditumpuk sejajar */
 #kompleks table{font-size:11.5px}
 #kompleks thead th{font-size:9.5px!important;padding:8px 6px!important}
-#kompleks tbody td{padding:6px 6px!important}
+#kompleks tbody td{padding:10px 8px!important}
 #kompleks .ks-td .ks-ell,#kompleks .ks-td2 .ks-ell{display:block;max-width:150px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;line-height:1.5}
 #kompleks .ks-td2 .ks-ell{color:var(--ink2);font-size:10.5px}
 .ks-ft{display:flex;justify-content:flex-end;flex-wrap:wrap;text-align:right;padding:10px 22px 4px;border-top:1px solid var(--line);margin-top:8px;font-size:11px;color:var(--ink2)}
@@ -70,7 +71,7 @@
 .ks-pv{display:inline-flex;align-items:center;gap:8px}.ks-pv img,.ks-pv svg{width:20px;height:20px;object-fit:contain;flex:none}
 .ks-sub2{margin:22px 0 6px;padding-top:16px;border-top:1px dashed var(--line);font-size:14px;font-weight:800;color:var(--ink)}
 #ks-ex svg text.ks-tl{fill:#fff!important}#ks-ex svg text.ks-td{fill:#4a3426!important}
-.ks-ch{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 8px;padding:0 4px}
+.ks-ch{display:flex;align-items:baseline;justify-content:space-between;gap:12px;margin:14px 0 8px;padding:0 22px}
 .ks-ch b{font-size:14.5px;font-weight:800;color:var(--ink)}
 .ks-ch span{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
 .ks-ch2{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}

@@ -109,7 +109,7 @@
 
   /* ---------- kamus: hanya diambil saat EN */
   let janji = null;
-  const muatKamus = () => janji ||= fetch(new URL("i18n/en.json?v=1", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
+  const muatKamus = () => janji ||= fetch(new URL("i18n/en.json?v=2", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
     KAMUS = d.kamus || {}; POLA = (d.pola || []).map(([re, g]) => [new RegExp(re, "su"), g]); CACHE = new Map(); TIP.clear();
   }).catch(e => { janji = null; KAMUS = KAMUS || {}; console.warn("i18n/en.json", e); });
 
@@ -125,11 +125,10 @@
 
   /* ---------- tombol EN / ID */
   const gaya = document.createElement("style");
-  /* toggle pil berbendera (pemilik, 14 Okt 2026) */
+  /* toggle pil teks ID / EN tanpa bendera (pemilik, 15 Okt 2026) */
   gaya.textContent = `.bhs{display:inline-flex;align-items:center;gap:2px;padding:3px;border-radius:999px;background:rgb(255 255 255 / .14);box-shadow:inset 0 0 0 1px rgb(255 255 255 / .28);font:700 12px/1 Inter,system-ui,sans-serif;color:inherit;margin-right:6px;white-space:nowrap}
 .bhs button{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:5px 9px;border-radius:999px;opacity:.75;transition:background .15s,opacity .15s}
 .bhs button:hover{opacity:1}
-.bhs button svg{width:16px;height:11px;border-radius:2px;box-shadow:0 0 0 1px rgb(0 0 0 / .15);flex:none}
 .bhs button[aria-pressed=true]{background:#fff;color:#0b2545;opacity:1}
 .bhs button:focus-visible{outline:2px solid currentColor;outline-offset:2px;border-radius:3px}
 .bhs.lepas{position:fixed;top:10px;right:12px;z-index:60;background:var(--card,#fff);color:var(--ink,#14213d);padding:4px 10px;border-radius:10px;box-shadow:0 2px 10px rgba(0,0,0,.12)}
@@ -139,14 +138,14 @@ html[data-i18n-muat] body>header,html[data-i18n-muat] main{opacity:0}`;
   function pasangTombol() {
     if (document.querySelector(".bhs")) return segarTombol();
     const el = document.createElement("div"); el.className = "bhs"; el.setAttribute("role", "group"); el.setAttribute("aria-label", "Language / Bahasa"); el.translate = false;
-    const ID = '<svg viewBox="0 0 16 11" aria-hidden="true"><rect width="16" height="5.5" fill="#d7262b"/><rect y="5.5" width="16" height="5.5" fill="#fff"/></svg>';
-    const EN = '<svg viewBox="0 0 60 40" aria-hidden="true"><rect width="60" height="40" fill="#012169"/><path d="M0 0l60 40M60 0L0 40" stroke="#fff" stroke-width="8"/><path d="M0 0l60 40M60 0L0 40" stroke="#c8102e" stroke-width="3"/><path d="M30 0v40M0 20h60" stroke="#fff" stroke-width="12"/><path d="M30 0v40M0 20h60" stroke="#c8102e" stroke-width="7"/></svg>';
-    el.innerHTML = `<button type="button" data-b="id" lang="id" title="Bahasa Indonesia">${ID}ID</button><button type="button" data-b="en" lang="en" title="English">${EN}EN</button>`;
+    el.innerHTML = `<button type="button" data-b="id" lang="id" title="Bahasa Indonesia">ID</button><button type="button" data-b="en" lang="en" title="English">EN</button>`;
     const wadah = document.querySelector("header .stat") || document.querySelector("header.top, body > header");
     if (wadah) wadah.prepend(el); else { el.classList.add("lepas"); document.body.appendChild(el); }
     el.addEventListener("click", e => { const b = e.target.closest("button"); if (b) ganti(b.dataset.b); });
     segarTombol();
   }
+  /* bahasa diganti di dokumen lain (iframe Tentang, tab lain): ikut tanpa muat ulang */
+  addEventListener("storage", e => { if (e.key === KUNCI) ganti(e.newValue); });
   const segarTombol = () => document.querySelectorAll(".bhs button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.b === B)));
 
   async function ganti(b) {

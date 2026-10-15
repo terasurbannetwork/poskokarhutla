@@ -964,7 +964,8 @@ img.ft,.eksek img.ft{padding:5% 0 0!important;transform:scale(1.1);transform-ori
 section[hidden],[hidden]{display:none!important}
 #cara-kerja .batas[hidden]{display:none!important}
 
-.band .lead .sorot{color:#f5a06b;font-weight:600}
+.band .lead .sorot,.band .h2 em{color:#f5a06b;font-weight:600}
+.band .h2 em{font-style:normal;font-weight:inherit}
 
 /* label pembuka di tengah atas (pemilik, 14 Okt 2026) */
 .band .kepala{grid-template-rows:auto auto!important;grid-template-areas:"ey ey" "jd ld"!important;align-items:center!important}
@@ -972,6 +973,15 @@ section[hidden],[hidden]{display:none!important}
 .band .h2{align-self:center!important}
 .faq-band .kepala{grid-template-areas:"ey" "jd"!important}
 .faq-band .eyebrow{justify-self:start!important;margin-bottom:0}
+/* lensa analitik: ikon menggantikan nomor (pemilik, 15 Okt 2026) */
+.fokus li::before{content:none!important}
+.fokus .lk{position:absolute;left:20px;top:20px;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;background:color-mix(in oklab,var(--aksen) 12%,transparent);color:var(--aksen)}
+.fokus li.ini .lk{background:var(--aksen);color:#fff}
+.fokus .lk svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+/* pembuka tanpa label: isi di tengah tinggi band (pemilik, 15 Okt 2026) */
+.band{align-items:center!important;padding-top:clamp(56px,7vw,96px)!important}
+.band .kepala:not(:has(.eyebrow)){grid-template-rows:auto!important;grid-template-areas:"jd ld"!important}
+@media (max-width:860px){.band .kepala:not(:has(.eyebrow)){grid-template-areas:"jd" "ld"!important}}
 @media (max-width:860px){.band .kepala{grid-template-areas:"ey" "jd" "ld"!important}}
 
 /* label bagian dihapus; judul latar belakang lebih kecil karena berupa kalimat (pemilik, 14 Okt 2026) */
@@ -1057,7 +1067,7 @@ section[hidden],[hidden]{display:none!important}
 
 <!-- ============ 3. MENGAPA + TIGA PILAR ============ -->
 <section class="seksi kertas berband" id="mengapa" aria-labelledby="h-mengapa">
-  <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-mengapa">Informasi terkait bencana di Indonesia masih tersebar sehingga sulit untuk mendapatkan konteks utuh.</h2><div class="lead"><p>Indonesia termasuk negara dengan <span class="sorot">tingkat kerawanan bencana yang tinggi</span>. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi <span class="sorot">tersebar di banyak sumber</span>.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <span class="sorot"><i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik</span>.</p></div></header></div></div>
+  <div class="band" style="--foto:url(/img/foto-pemadam.jpg);--pos:50% 50%"><div class="wrap"><header class="kepala" data-muncul><h2 class="h2" id="h-mengapa">Informasi terkait bencana di Indonesia <em>masih tersebar</em> sehingga sulit untuk mendapatkan <em>konteks utuh</em>.</h2><div class="lead"><p>Indonesia termasuk negara dengan <span class="sorot">tingkat kerawanan bencana yang tinggi</span>. Sepanjang 2026 saja, berbagai bencana besar telah terjadi, mulai dari banjir dan tanah longsor di Sumatera hingga kebakaran hutan dan lahan di Kalimantan Tengah, Sumatera Selatan, dan Papua Selatan.</p><p>Informasi mengenai kejadian tersebut sebenarnya tersedia bagi publik, tetapi <span class="sorot">tersebar di banyak sumber</span>.</p><p>Agar masyarakat memperoleh pemahaman yang utuh tentang kondisi terkini, dan agar data kebencanaan tidak berhenti sebagai angka melainkan menjadi bahan pembelajaran, Teras Urban berinisiatif mengolah data tersebut menjadi <span class="sorot"><i>insight</i> yang mudah diakses dan dimanfaatkan oleh publik</span>.</p></div></header></div></div>
   <div class="wrap">
     <ul class="masalah">
       <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><b>Data tersebar dan belum terintegrasi</b><small>Data bencana tersebar di banyak lembaga. Belum ada platform yang menyatukannya, dan publik tidak tahu cara mengaksesnya satu per satu.</small></li>
@@ -1317,13 +1327,14 @@ section[hidden],[hidden]{display:none!important}
   const ini = n => n.replace(/^M\.\s*/, "").split(/[\s,]+/).filter(Boolean).slice(0, 2).map(s => s[0]).join("").toUpperCase();
   const foto = a => a.foto ? `<img class="ft" src="${esc(a.foto)}" alt="" width="104" height="104" decoding="async">` : `<span class="ft" aria-hidden="true">${esc(ini(a.nama))}</span>`;
   const KAPIK = {"Location": "<path d=\"M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z\"/><circle cx=\"12\" cy=\"9.5\" r=\"2.5\"/>", "Kelayakan": "<path d=\"M3 21h18M5 21V9l7-5 7 5v12\"/><path d=\"M9 21v-6h6v6\"/>", "Intelijen": "<rect x=\"3\" y=\"4\" width=\"18\" height=\"14\" rx=\"2\"/><path d=\"M7 14l3-3 3 2 4-5M8 21h8\"/>", "Riset": "<path d=\"M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z\"/><path d=\"M14 3v5h5M9 13h6M9 17h4\"/>", "Analisis": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20a6 6 0 0 1 12 0M16 4a3 3 0 0 1 0 6M21 20a6 6 0 0 0-4-5.6\"/>"};
+  const LENSIK = {"Geo": "<circle cx=\"12\" cy=\"12\" r=\"9\"/><path d=\"M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18\"/>", "Pasar": "<path d=\"M3 21h18M5 21V10h4v11M10 21V5h4v16M15 21v-8h4v8\"/>", "Sosial": "<circle cx=\"9\" cy=\"8\" r=\"3\"/><path d=\"M3 20a6 6 0 0 1 12 0\"/><circle cx=\"17\" cy=\"9\" r=\"2.5\"/><path d=\"M16 14a5 5 0 0 1 5 5\"/>"};
   j("/data/tim.json").then(t => {
     const o = t.organisasi || {};
     $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><span class="lbl">${esc(o.jenis || "Organisasi")}</span><h3>${esc(o.nama || "Teras Urban")}${o.nama_lengkap ? ` <small style="font-weight:600;color:var(--ink2);font-size:14px">(${esc(o.nama_lengkap)})</small>` : ""}</h3>${o.slogan ? `<span class="slogan">${esc(o.slogan)}</span>` : ""}</div></div>
       ${o.deskripsi ? `<p>${esc(o.deskripsi)}</p>` : ""}${o.visi ? `<blockquote><span class="lbl" style="margin-bottom:4px">Prinsip</span>${esc(o.visi)}</blockquote>` : ""}
       ${(o.kapabilitas || []).length ? `<div class="kap" aria-label="Kapabilitas">${o.kapabilitas.map(k => `<span><svg viewBox="0 0 24 24" aria-hidden="true">${KAPIK[Object.keys(KAPIK).find(x => k.startsWith(x))] || ""}</svg>${esc(k)}</span>`).join("")}</div>` : ""}
       </div>
-      ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga lensa analitik Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
+      ${(o.fokus || []).length ? `<div class="kanan"><span class="lbl">Tiga lensa analitik Teras Urban</span><ul class="fokus">${o.fokus.map(f => `<li${f.pantau ? ` class="ini"` : ""}><i class="lk" aria-hidden="true"><svg viewBox="0 0 24 24">${LENSIK[Object.keys(LENSIK).find(x => f.nama.startsWith(x))] || ""}</svg></i><b>${esc(f.nama)}${f.pantau ? `<em>Pantau Bencana</em>` : ""}</b><span>${esc(f.isi || "")}</span></li>`).join("")}</ul>
         </div>` : ""}`;
     const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");

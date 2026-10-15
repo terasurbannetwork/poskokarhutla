@@ -1,0 +1,287 @@
+{
+  "_catatan": "Manifest SELURUH armada agent Pantau Bencana / poskokarhutla (pola gemah-ripah, 15 Okt 2026). SATU agent = SATU wilayah kerja. Tiap entri WAJIB: nama, kelas (pengerja|platform|pemeriksa|lapangan), model, ringkas, kapan, fokus, larangan, bisa, tidak. Pengerja WAJIB `milik` (glob berkas wilayahnya; paling spesifik menang). Tambah agent = tambah entri lalu `npm run agents:build`, isi .claude/ilmu-agent/<nama>.md dari kode nyata (AGENTS.md §1.5).",
+  "agents": [
+    {
+      "nama": "pipa-data",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja pipeline data karhutla: FIRMS, cuaca Open-Meteo/ERA5, FWI, ensemble, tanah, PFVI, aturan status, musim/iklim, scrape OSM/konsesi, JSON di public/data.",
+      "kapan": "scripts/data/**, scripts/scrape/**, scripts/geo/**, skrip splice di scripts/, atau JSON hasil pipeline di public/data disentuh atau rusak",
+      "fokus": [
+        "Python 3.12 stdlib saja: tidak ada pip install di GitHub Actions; pustaka baru = tulis sendiri",
+        "Keluaran pipeline = JSON yang di-commit ke public/data; skema JSON adalah kontrak dengan layar, ubah bersama pengerja layar",
+        "FWI Van Wagner 1987 di fwi.py punya self-check __main__ terhadap cffdrs; jangan ubah rumus tanpa menjalankannya",
+        "Data cuaca dari Open-Meteo (forecast, ERA5 archive, ERA5-Land, IFS ensemble); BMKG belum ditarik, SiPALAGA/TMAT menolak (403)",
+        "Status dari aturan.py: cuaca hanya boleh MENAIKKAN status, tidak menurunkan"
+      ],
+      "larangan": "Jangan menyentuh model sebaran (scripts/sebaran) atau layar public/*.js; laporkan ke model-sebaran / layar-peta. Jangan menambah dependensi pip.",
+      "bisa": "membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya",
+      "tidak": "model ML sebaran; tampilan layar; worker Cloudflare",
+      "milik": [
+        "scripts/data/**",
+        "scripts/scrape/**",
+        "scripts/geo/**",
+        "scripts/statistik/**",
+        "scripts/*.py",
+        "scripts/pasang-kunci.sh",
+        "data/**"
+      ]
+    },
+    {
+      "nama": "model-sebaran",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja model sebaran & eskalasi api: fitur, GBDT tulisan tangan, simulasi fisika FBP, uji balik, prospektif, evaluator JS di layar.",
+      "kapan": "scripts/sebaran/**, model_sebaran.json, sebaran_model.js, insight_sebaran.js, simulasi perlakuan, atau angka kinerja model disentuh atau rusak",
+      "fokus": [
+        "Pembagian waktu suci: latih 2015-22, validasi 2023, uji 2024-26; tidak ada fitur yang mengintip masa depan",
+        "Evaluator public/sebaran_model.js wajib identik dengan latih.py (uji_js.py membuktikannya)",
+        "Angka kinerja (F1, IoU, AUC, recall/precision) ditulis dari hasil uji, tidak pernah diketik tangan",
+        "prospektif.py menulis prakiraan append-only lalu menilainya 72 jam kemudian; jangan menimpa catatan lama"
+      ],
+      "larangan": "Jangan menyentuh pipeline cuaca/FWI di scripts/data (milik pipa-data). Jangan melaporkan angka model tanpa uji balik.",
+      "bisa": "membangun, melatih ulang, dan menguji model sebaran/eskalasi serta evaluator JS-nya",
+      "tidak": "pipeline data mentah; worker; memverifikasi kejujuran uji baliknya sendiri (itu validasi-model)",
+      "milik": [
+        "scripts/sebaran/**",
+        "public/sebaran_model.js",
+        "public/insight_sebaran*.js",
+        "public/sim_*",
+        "public/cerita_karhutla.*"
+      ]
+    },
+    {
+      "nama": "banjir",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul banjir & rob: hujan, ensemble hujan, sungai, rob, status, posko, uji balik, layar public/banjir.",
+      "kapan": "scripts/banjir/**, public/banjir/**, atau workflow banjir disentuh atau rusak",
+      "fokus": [
+        "Ambang dan parameter dari RISET-PARAMETER.md / RISET-ROB.md; ubah ambang = perbarui uji_balik.py dan validasi.json",
+        "Python stdlib saja, sama seperti pipeline karhutla",
+        "Layar banjir terpisah dari layar karhutla; komponen bersama lewat layar-peta"
+      ],
+      "larangan": "Jangan menyentuh modul karhutla (scripts/data, scripts/sebaran) atau index.html utama.",
+      "bisa": "membangun & membetulkan pipeline dan layar banjir/rob",
+      "tidak": "karhutla; worker warga",
+      "milik": [
+        "scripts/banjir/**",
+        "public/banjir/**",
+        ".github/workflows/banjir.yml"
+      ]
+    },
+    {
+      "nama": "warga-api",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja Cloudflare Worker & D1: laporan warga, foto, moderasi admin, /api/titik FIRMS 3-jam, statistik, OG meta, migrasi D1.",
+      "kapan": "src/**, migrations/**, wrangler*.jsonc, public/warga, public/admin, tests/warga, atau /api/* disentuh atau rusak",
+      "fokus": [
+        "Worker = src/worker.js; cron per jam '17 * * * *' menarik FIRMS ke D1 lewat src/titik.js",
+        "Migrasi D1 bernomor urut di migrations/ dan idempoten (IF NOT EXISTS); jangan menyunting migrasi yang sudah jalan",
+        "Tiap perilaku di luar JS (skema D1, constraint, route) diuji lewat tests/warga/*.test.mjs yang menjalankan miniflare sungguhan (npm run uji:warga)",
+        "Route publik: validasi input, batas laju, tanpa membocorkan data pribadi pelapor",
+        "Kunci (FIRMS_MAP_KEY dll) lewat secret wrangler / .dev.vars, tidak pernah di berkas yang di-commit"
+      ],
+      "larangan": "Jangan menyentuh pipeline Python atau layar peta utama. Jangan deploy produksi (wrangler deploy) sendiri.",
+      "bisa": "membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin",
+      "tidak": "pipeline data; model; deploy",
+      "milik": [
+        "src/**",
+        "migrations/**",
+        "wrangler*.jsonc",
+        "tests/warga/**",
+        "public/warga/**",
+        "public/admin/**",
+        "scripts/warga/**",
+        "public/foto.*",
+        "public/titik_live.js",
+        "public/statistik_publik.js",
+        "WARGA.md",
+        ".dev.vars.example"
+      ]
+    },
+    {
+      "nama": "layar-peta",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja layar publik Pantau Bencana: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.",
+      "kapan": "public/index.html, public/*.js|css|html di luar modul sebaran/warga, i18n, gambar bagikan/OG, atau tampilan kartu disentuh atau rusak",
+      "fokus": [
+        "Vanilla JS tanpa build step; tiap modul layar berkas .js + .css sendiri di public/",
+        "Gaya kartu Insight: label pil, tanpa subjudul/kotak KPI (memori pemilik); fitur yang disembunyikan pemilik dicatat, bukan dihapus",
+        "Klik tidak boleh membekukan layar: chrome kontrol urgent, kerja berat ditunda (requestAnimationFrame/idle)",
+        "Teks lewat i18n.js; kata baru masuk glosarium scripts/i18n",
+        "Membaca JSON public/data apa adanya; jangan menghitung ulang angka pipeline di klien"
+      ],
+      "larangan": "Jangan mengubah skema JSON pipeline sendiri; minta ke pipa-data. Jangan menyentuh evaluator model atau worker.",
+      "bisa": "membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n",
+      "tidak": "pipeline data; model; worker & D1",
+      "milik": [
+        "public/*.html",
+        "public/*.js",
+        "public/*.css",
+        "public/_headers*",
+        "public/.assetsignore",
+        "public/i18n/**",
+        "public/og/**",
+        "scripts/i18n/**",
+        "scripts/og/**",
+        "scripts/situs/**",
+        "scripts/terbit/**"
+      ]
+    },
+    {
+      "nama": "mekanik-mesin",
+      "kelas": "platform",
+      "model": "sonnet",
+      "ringkas": "Pengerja mesin repo: GitHub Actions, package.json, settings Claude, mesin armada agent.",
+      "kapan": "workflow di .github/workflows, package.json, .claude/settings.json, atau scripts/agents disentuh atau rusak",
+      "fokus": [
+        "Workflow data.yml (harian), titik.yml (3-jam), banjir.yml, statis.yml, terbit.yml meng-commit JSON; jaga agar tidak bentrok push",
+        "Python 3.12 stdlib di Actions; tidak ada langkah pip install",
+        "Mesin armada: roster.json satu-satunya pintu; berkas .claude/agents di-generate"
+      ],
+      "larangan": "Jangan melemahkan gerbang atau uji supaya lolos. Jangan menambah secret ke berkas yang di-commit.",
+      "bisa": "merawat workflow, skrip npm, settings, mesin agent",
+      "tidak": "logika domain di skrip yang dipanggil workflow",
+      "milik": [
+        ".github/workflows/**",
+        "package.json",
+        "package-lock.json",
+        "scripts/agents/**",
+        ".gitignore",
+        ".env.example",
+        "AGENTS.md",
+        "CLAUDE.md"
+      ]
+    },
+    {
+      "nama": "penulis-gerbang",
+      "kelas": "platform",
+      "model": "sonnet",
+      "ringkas": "Pengerja gerbang & uji integrasi: mengubah aturan tertulis jadi uji node:test atau self-check Python yang benar-benar jalan.",
+      "kapan": "aturan baru butuh gerbang mekanis, atau perilaku di luar JS (D1, route, skema JSON, rumus) belum punya uji yang menjalankannya",
+      "fokus": [
+        "Uji JS pakai node --test (tanpa vitest); uji Python pakai self-check __main__ berbasis assert",
+        "Uji integrasi menjalankan sistem sungguhan (miniflare, skrip nyata), bukan mock",
+        "Pesan gagal gerbang menyebut sebab, akibat, dan cara memperbaiki"
+      ],
+      "larangan": "Jangan melonggarkan gerbang yang ada. Uji domain yang menyunting kode domain = laporkan ke pengerjanya.",
+      "bisa": "menulis gerbang dan uji integrasi lintas modul",
+      "tidak": "memperbaiki kode domain yang digerbang",
+      "milik": [
+        "tests/agen/**",
+        "tests/beban/**"
+      ]
+    },
+    {
+      "nama": "validasi-model",
+      "kelas": "pemeriksa",
+      "model": "sonnet",
+      "ringkas": "Memeriksa kejujuran model & indeks risiko: kebocoran data, pembagian waktu, kalibrasi, dan klaim angka yang cocok dengan uji.",
+      "kapan": "model, indeks risiko (FWI, PFVI, aturan, sebaran, banjir), uji balik, atau angka kinerja yang tampil di layar berubah",
+      "fokus": [
+        "Kebocoran: fitur atau kalibrasi yang memakai data sesudah waktu prakiraan, atau target yang diturunkan dari input sendiri (kalibrasi melingkar)",
+        "Pembagian latih/validasi/uji dipegang; angka uji tidak dipakai untuk menyetel",
+        "Klaim di layar atau dokumen = angka di berkas hasil uji, bukan diketik tangan",
+        "Proksi (mis. muka air tanah dari hujan) berlabel proksi di keluaran dan di layar"
+      ],
+      "larangan": "Read-only. Tidak melatih ulang atau menyetel model; laporkan ke model-sebaran / pipa-data / banjir.",
+      "bisa": "memeriksa kebocoran, kalibrasi, dan kejujuran klaim kinerja model",
+      "tidak": "menyunting kode; membangun model"
+    },
+    {
+      "nama": "guard-api",
+      "kelas": "pemeriksa",
+      "model": "haiku",
+      "ringkas": "Memastikan tiap route di worker punya gerbang yang benar: metode, admin, validasi input, batas laju.",
+      "kapan": "route di src/worker.js atau src/*.js dibuat atau diubah",
+      "fokus": [
+        "Route admin wajib memeriksa kredensial admin sebelum membaca body atau menyentuh D1",
+        "Route publik yang menulis wajib validasi input dan batas laju",
+        "Metode HTTP yang tidak dikenal dibalas 405, bukan jatuh ke handler lain",
+        "Respons publik tidak membocorkan kolom pribadi pelapor"
+      ],
+      "larangan": "Read-only. Ragu route publik atau admin: tanya, jangan tebak.",
+      "bisa": "memeriksa gerbang tiap route worker",
+      "tidak": "menyunting kode; menilai logika bisnis route"
+    },
+    {
+      "nama": "migrasi-idempoten",
+      "kelas": "pemeriksa",
+      "model": "haiku",
+      "ringkas": "Memeriksa migrasi D1: bernomor urut, idempoten, tidak menyunting migrasi yang sudah jalan.",
+      "kapan": "berkas di migrations/ dibuat atau diubah",
+      "fokus": [
+        "CREATE TABLE/INDEX memakai IF NOT EXISTS; ALTER dijaga",
+        "Nomor urut tanpa celah atau ganda (berkas ' 2.sql' adalah salinan nyasar, bukan migrasi)",
+        "Migrasi lama tidak disunting; perubahan = migrasi baru"
+      ],
+      "larangan": "Read-only.",
+      "bisa": "memeriksa migrasi D1 idempoten dan berurutan",
+      "tidak": "menyunting migrasi; merancang skema"
+    },
+    {
+      "nama": "higiene-repo",
+      "kelas": "pemeriksa",
+      "model": "haiku",
+      "ringkas": "Memeriksa kebersihan repo: salinan ' 2' nyasar, secret ter-commit, berkas besar, berkas tanpa pemilik.",
+      "kapan": "sebelum commit besar, atau saat git status menunjukkan berkas asing",
+      "fokus": [
+        "Berkas bernama '* 2.*' adalah salinan nyasar dari sinkronisasi iCloud/Finder; laporkan, jangan pakai",
+        "Tidak ada .env, kunci, atau token di berkas yang dilacak git (.env.example dan .dev.vars.example boleh, isinya kosong)",
+        "JSON di public/data yang membengkak tanpa sebab"
+      ],
+      "larangan": "Read-only. Tidak menghapus berkas; laporkan daftar ke orkestrator.",
+      "bisa": "memeriksa salinan nyasar, secret ter-commit, berkas besar",
+      "tidak": "menyunting atau menghapus berkas"
+    },
+    {
+      "nama": "selera-angka",
+      "kelas": "pemeriksa",
+      "model": "haiku",
+      "ringkas": "Memeriksa angka yang tampil: format Indonesia, satuan, sumber disebut, tanpa presisi palsu.",
+      "kapan": "kartu, pop-up, gambar bagikan, atau teks yang menampilkan angka berubah",
+      "fokus": [
+        "Pemisah ribuan titik, desimal koma; satuan ditulis (ha, titik, mm, °C)",
+        "Tiap angka punya sumber dan waktu data",
+        "Tidak ada presisi palsu (probabilitas 0,4732 untuk prakiraan kasar)"
+      ],
+      "larangan": "Read-only.",
+      "bisa": "memeriksa format, satuan, dan sumber angka di layar",
+      "tidak": "menyunting layar; memeriksa kebenaran model"
+    },
+    {
+      "nama": "security-reviewer",
+      "kelas": "pemeriksa",
+      "model": "sonnet",
+      "ringkas": "Memeriksa keamanan: secret, input publik, unggah foto, XSS di layar, header, privasi pelapor.",
+      "kapan": "worker, unggah foto, form warga, admin, _headers, atau penyisipan HTML dari data luar berubah",
+      "fokus": [
+        "innerHTML dari data luar (berita, laporan warga, nama wilayah) wajib di-escape",
+        "Unggah foto: batas ukuran, tipe, metadata lokasi pelapor",
+        "Secret hanya di wrangler secret / env Actions",
+        "Header keamanan di public/_headers"
+      ],
+      "larangan": "Read-only.",
+      "bisa": "memeriksa celah keamanan dan privasi",
+      "tidak": "menyunting kode"
+    },
+    {
+      "nama": "inp-reviewer",
+      "kelas": "pemeriksa",
+      "model": "sonnet",
+      "ringkas": "Memeriksa klik, tab, dan geser peta yang membekukan layar di public/*.js.",
+      "kapan": "handler klik/pilih/tab/geser atau render lapisan peta berubah",
+      "fokus": [
+        "Chrome kontrol berubah seketika; kerja berat (render lapisan, parse JSON besar) ditunda",
+        "Tidak ada loop sinkron atas ribuan titik di handler klik",
+        "JSON besar dimuat sekali dan di-cache"
+      ],
+      "larangan": "Read-only.",
+      "bisa": "memeriksa responsivitas interaksi layar",
+      "tidak": "menyunting layar"
+    }
+  ]
+}
