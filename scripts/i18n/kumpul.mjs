@@ -1,20 +1,69 @@
-/* Crawl headless semua tab karhutla & banjir dalam ID dan EN, lalu laporkan teks Indonesia yang masih terlihat di mode EN.
-   Pakai:  node scripts/i18n/kumpul.mjs [--lebar 1440,390] [--hanya karhutla|banjir] [--tab peta,insight] [--keluar berkas.json]
-   (lintasan bisa dijalankan paralel per halaman/lebar dengan --keluar berbeda; satu lintasan ± 10–20 menit karena WebGL peta di headless)
-   Butuh playwright (PW=/jalur/ke/node_modules/playwright, atau terpasang di cache npx). Server statis untuk public/ dibuat sendiri.
-   Keluaran: scripts/i18n/laporan.json (kunci yang hilang, persen per tab, galat konsol) + tabel ringkas di stdout. */
+/* Crawl headless semua tab karhutla & banjir (+ Tentang, Privasi, Statistik) dalam ID dan EN, lalu laporkan kebocoran DUA ARAH:
+     - ID mode: teks yang memuat kata Inggris ("oil palm", "Score", "Today")         -> laporan.id_berisi_en
+     - EN mode: teks yang masih memuat kata Indonesia (belum/setengah diterjemahkan)  -> laporan.en_berisi_id (+ laporan.hilang untuk kamus)
+     - kedua mode: kalimat campur (kata ID dan EN dalam satu simpul teks)            -> laporan.campur
+   Tiap tab juga dijelajahi: tombol/baris yang membuka dialog diklik satu per jenis (popup Insight, Berita, Dampak, Posko, Operasi, Ringkasan…),
+   dialog yang terbuka direkam sebagai "tab/dlg:…", lalu tab direkam ulang sesudah semua klik ("tab/klik": hasil simulasi, rincian terbuka).
+   Pakai:  node scripts/i18n/kumpul.mjs [--lebar 1440,390] [--hanya karhutla|banjir|tentang|privasi|statistik] [--bahasa id|en] [--tab peta,insight]
+                                        [--tanpa-klik] [--keluar berkas.json]       node scripts/i18n/kumpul.mjs --uji   (cek pengelompok kata)
+   (lintasan bisa dijalankan paralel per halaman/lebar/bahasa dengan --keluar berbeda, lalu digabung dengan scripts/i18n/gabung.mjs)
+   Butuh playwright (PW=/jalur/ke/node_modules/playwright, atau terpasang di cache npx). Server statis untuk public/ dibuat sendiri. */
 import http from "node:http";
 import fs from "node:fs";
 import path from "node:path";
 import {createRequire} from "node:module";
-import {fileURLToPath} from "node:url";
+import {fileURLToPath, pathToFileURL} from "node:url";
 
 const T0 = Date.now();
 const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..");
 const PUB = path.join(AKAR, "public");
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i > 0 ? process.argv[i + 1] : d; };
 const LEBAR = arg("lebar", "1440,390").split(",").map(Number);
-const HANYA = arg("hanya", ""), TAB_SAJA = arg("tab", "");
+const HANYA = arg("hanya", ""), TAB_SAJA = arg("tab", ""), BAHASA = arg("bahasa", "id,en").split(","), KLIK = !process.argv.includes("--tanpa-klik");
+
+/* ---------- pengelompok kata: daftar kata fungsi + kosakata UI yang TIDAK sama ejaannya di kedua bahasa.
+   Kata pinjaman yang sah di KBBI (data, status, model, total, area, level, tren, nama satuan) tidak dihitung Inggris. */
+const kata = s => new Set(s.trim().split(/\s+/));
+const KATA_ID = kata(`dan yang di ke dari untuk dengan tidak ini itu atau pada oleh sebagai dalam akan bisa belum sudah adalah juga karena agar jika bila
+  saat tiap setiap seluruh masih lebih kurang tanpa hingga sampai sejak antara selain hanya paling sekitar menurut bukan serta namun tetapi maka telah
+  hari jam minggu pekan bulan tahun titik panas lahan hutan kebakaran wilayah kecamatan kabupaten provinsi desa jumlah luas sumber lihat buka tutup unduh
+  cari semua terbaru kemarin sekarang baru tinggi rendah sedang siaga awas waspada peta berita dampak simulasi metode lapor warga laporan perkiraan orang
+  regu kompleks asap udara gambut sawit kawasan musim hujan kering angin suhu kelembapan risiko bahaya naik turun dibanding rincian ringkasan pembaruan
+  diperbarui terakhir puncak kenaikan penurunan menit detik tanggal tingkat kelas jenis nilai angka terdekat jarak penduduk jiwa terdampak rumah sekolah
+  kasus perusahaan konsesi izin tindakan disarankan lokasi cuaca riwayat peringkat teratas satelit citra lapisan legenda bagikan salin tautan kirim pesan
+  tentang privasi lipat persen banyak sedikit mulai selesai peluang kemungkinan aktif padam sebaran arah kecepatan hektare sumur pompa banjir longsor
+  prakiraan keputusan sarana memuat gagal pilih tampilkan sembunyikan areal luar dalam perkebunan pemadaman patroli pencegahan prioritas personel
+  terbakar bentuk indikatif utama berpotensi membesar peringatan dini kemarau rawan sungai debit
+  januari februari maret mei juni juli agustus oktober desember okt agu agt des senin selasa rabu kamis jumat sabtu`);
+const KATA_EN = kata(`the and of to in for with from by on at is are was were be been this that these those not or as an it its has have had will can could
+  would should more less than which who what when where how all any each today yesterday show hide view open close download share search back next previous
+  loading copy copied send message feedback about privacy settings theme dark light layer layers legend satellite map maps trend trends impact impacts method
+  methods news report reports source sources week weeks day days hour hours month months year years people land fire fires hotspot hotspots risk high low
+  medium update updated last new latest estimate estimated forecast count number chart page link score rate rates oil palm pulp pulpwood wood timber logging
+  mining concession concessions plantation peat peatland burned burnt burn alert warning watch priority patrol prevention district districts regency
+  province provinces village villages smoke quality weather rain rainfall wind humidity temperature danger hazard crew crews command post posts simulation
+  spread complex complexes outside inside none unknown other others click tap here see read full summary details detail average only also just still now
+  since until between after before around over under into if then but yes you your we our they their please online offline insight dashboard
+  january february march april june july august october december aug oct dec monday tuesday wednesday thursday friday saturday sunday`);
+/* nama diri / nama sumber data yang memang berbahasa Inggris (atau Indonesia) dan tidak diterjemahkan: dibuang sebelum dihitung */
+const NAMA_DIRI = /Global Forest Watch|Fire Weather Index|Fire Information for Resource Management System|NASA FIRMS|Open[- ]Meteo|OpenStreetMap|Copernicus|Sentinel-?\d?\w*|Google( Earth)?|World Bank|Nusantara Atlas|Trase|Climate Hazards[\w ]*|Global Flood Awareness System|Fire Danger|Air Quality|Earth Engine|Land ?sat|Pantau Bencana|Posko Karhutla|Manggala Agni|Masyarakat Peduli Api|Teras Urban( Network)?|Claude|ChatGPT|Perplexity|Indonesia wood pulp concessions?( v\d)?|Taman Nasional [\p{Lu}][\p{L} ]+|Sungai [\p{Lu}]\p{L}+|Kota [\p{Lu}]\p{L}+|Desa [\p{Lu}]\p{L}+|Hulu Sungai \p{L}+|Kecamatan [\p{Lu}]\p{L}+|Kabupaten [\p{Lu}]\p{L}+/gu;
+/* label navigasi yang sengaja dipilih pemilik (nama bagian, bukan kalimat) */
+const NAV_SAH = new Set(["Dashboard", "Insight"]);
+function kelas(t) {
+  if (NAV_SAH.has(t.trim())) return {id: 0, en: 0};
+  const w = t.replace(NAMA_DIRI, " ").replace(/https?:\/\/\S+|\S+@\S+|\b[\w-]+\.(?:json|js|csv|md|html|py)\b/g, " ").toLowerCase().match(/\p{L}+(?:-\p{L}+)?/gu) || [];
+  let id = 0, en = 0;
+  for (const x of w) { if (KATA_ID.has(x)) id++; if (KATA_EN.has(x)) en++; }
+  /* kata tunggal yang sama-sama dipakai ("Siaga" tidak, tapi "in"/"on" di tengah singkatan) tidak cukup sendiri: teks satu kata dinilai utuh */
+  return {id, en};
+}
+if (process.argv.includes("--uji")) {
+  const cek = (t, id, en) => { const k = kelas(t); if (!!k.id !== id || !!k.en !== en) throw new Error(`kelas(${JSON.stringify(t)}) = ${JSON.stringify(k)}, harap id=${id} en=${en}`); };
+  cek("Konsesi oil palm", true, true); cek("Konsesi sawit", true, false); cek("Oil palm concession", false, true); cek("Data FIRMS", false, false);
+  cek("Total 1.234 titik panas", true, false); cek("Sumber: Global Forest Watch", true, false); cek("Source: Global Forest Watch", false, true);
+  cek("Kalimantan Tengah", false, false); cek("Dashboard", false, false); cek("Hari ini", true, false); cek("Today", false, true); cek("14 Okt", true, false); cek("14 Oct", false, true);
+  console.log("kelas(): ok"); process.exit(0);
+}
 
 function cariPlaywright() {
   const calon = [process.env.PW, "playwright"];
@@ -26,12 +75,21 @@ function cariPlaywright() {
 }
 const {chromium} = cariPlaywright();
 
-/* ---------- server statis: path tanpa titik -> index.html terdekat (meniru worker) */
+/* ---------- server statis: path tanpa titik -> index.html terdekat (meniru worker); /statistik dirender dari src/admin_halaman.js */
 const TIPE = {".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".json": "application/json", ".svg": "image/svg+xml",
   ".png": "image/png", ".jpg": "image/jpeg", ".webp": "image/webp", ".geojson": "application/json", ".pbf": "application/x-protobuf"};
+const {halamanPublik} = await import(pathToFileURL(path.join(AKAR, "src/admin_halaman.js")));
+const HTML_STAT = await halamanPublik().text();
+/* /api/publik: contoh tetap (bentuk sama dengan produksi) supaya halaman statistik punya isi untuk diuji */
+const PUBLIK = arg("publik", "") && fs.existsSync(arg("publik")) ? fs.readFileSync(arg("publik"), "utf8") : JSON.stringify({kini: Date.now(), rentang: "7h", hari: "2026-10-15", online: 3,
+  buka: [["/", 2], ["/peta", 1]], tujuh: {tampilan: 267, orang: 154, ai_jawab: 5, ai_crawl: 2, mesin_cari: 1, sampel: 1}, sejak: {tampilan: 267, orang: 154, ai_jawab: 5, ai_crawl: 2, mesin_cari: 1, sampel: 1},
+  mulai: "2026-10-14", seri: [{tgl: "2026-10-14", tampilan: 183, orang: 103, ai_jawab: 5, ai_crawl: 0, mesin_cari: 0}, {tgl: "2026-10-15", tampilan: 84, orang: 51, ai_jawab: 0, ai_crawl: 2, mesin_cari: 1}],
+  per_jam: null, dim: {ai_agen: [["ChatGPT|terverifikasi", 3]], perayap: [["ai|GPTBot|terverifikasi", 2]], kanal: [["Langsung", 120], ["Dari jawaban AI", 4]], halaman: [["/", 150], ["/peta", 40]], negara: [["ID", 140]], perangkat: [["Ponsel", 90]]}});
 const server = http.createServer((q, r) => {
   let p = decodeURIComponent(new URL(q.url, "http://x").pathname);
+  if (p === "/api/publik") { r.writeHead(200, {"content-type": "application/json"}); return r.end(PUBLIK); }
   if (p.startsWith("/api/")) { r.writeHead(404, {"content-type": "application/json"}); return r.end("{}"); }
+  if (p === "/statistik") { r.writeHead(200, {"content-type": TIPE[".html"]}); return r.end(HTML_STAT); }
   let f = path.join(PUB, p);
   if (!f.startsWith(PUB)) { r.writeHead(403); return r.end(); }
   if (fs.existsSync(f) && fs.statSync(f).isDirectory()) f = path.join(f, "index.html");
@@ -42,11 +100,14 @@ const server = http.createServer((q, r) => {
 await new Promise(ok => server.listen(0, "127.0.0.1", ok));
 const ASAL = "http://127.0.0.1:" + server.address().port;
 
-/* ---------- di halaman: kumpulkan teks terlihat (sama seperti LEWATI di i18n.js) dan klasifikasikan */
+/* ---------- di halaman: kumpulkan teks terlihat (sama seperti LEWATI di i18n.js) */
 const KUMPUL = () => {
   const LEWATI = "script,style,noscript,code,pre,textarea,[data-no-i18n],[translate=no],.maplibregl-ctrl-attrib,a[href^='http'][target=_blank],.lw-teks,.lw-k-teks";
   const CHROME = "h1,h2,h3,h4,h5,button,th,label,summary,legend,caption,.ex-ey,.lbl,[role=tab],nav a";
-  const akar = [document.querySelector("header"), document.querySelector(".page.on"), ...document.querySelectorAll("dialog[open]")].filter(Boolean);
+  const tab = document.querySelector(".page.on");
+  /* header, tab aktif, dialog terbuka, dan elemen lepas di body (spanduk persetujuan, kaki, lembar bagikan); halaman tanpa tab: seluruh body */
+  const akar = tab ? [document.querySelector("header"), tab, ...document.querySelectorAll("dialog[open]"),
+    ...[...document.body.children].filter(e => !/^(MAIN|HEADER|SCRIPT|DIALOG|STYLE|TEMPLATE)$/.test(e.tagName) && !e.querySelector(".page"))].filter(Boolean) : [document.body];
   akar.forEach(a => a.querySelectorAll("details").forEach(d => { if (!d.closest(".bencana,.lainnya")) d.open = true; }));
   const hasil = [];
   for (const a of akar) {
@@ -63,51 +124,67 @@ const KUMPUL = () => {
   }
   return hasil;
 };
-/* "terlihat Indonesia": ada kata fungsi/kosakata UI Indonesia. Nama tempat (Kalimantan Tengah, Ogan Komering Ilir) tidak terhitung. */
-const KATA = new Set(("dan yang di ke dari untuk dengan tidak ada ini itu atau pada oleh sebagai dalam akan bisa belum sudah per hari jam titik panas lahan hutan " +
-  "tahun bulan minggu kebakaran wilayah kecamatan jumlah luas sumber lihat buka tutup unduh cari semua terbaru kemarin sekarang baru lama tinggi rendah sedang " +
-  "siaga awas waspada peta berita dampak simulasi metode lapor warga laporan perkiraan orang regu kompleks api asap udara gambut sawit kawasan musim hujan kering " +
-  "angin suhu kelembapan risiko bahaya naik turun dibanding sejak sampai hingga lebih kurang tanpa masih juga karena agar supaya jika bila saat tiap setiap seluruh " +
-  "banjir longsor sungai prakiraan keputusan sarana memuat gagal pilih tampilkan sembunyikan rincian ringkasan pembaruan diperbarui terakhir puncak rata kenaikan " +
-  "penurunan dibandingkan menit detik pekan tanggal tingkat kelas jenis nama nilai angka total selama terdekat jarak via darat penduduk jiwa terdampak rumah " +
-  "sekolah kasus penderita perusahaan konsesi izin pemilik grup tanggung jawab tindakan disarankan teramati kenapa status lokasi cuaca riwayat tren peringkat " +
-  "teratas wilayah kerja satelit citra lapisan legenda dasar gelap terang tema bagikan salin tautan disalin kirim pesan masukan tentang privasi menurut kata " +
-  "kali lipat persen sekitar hanya paling banyak sedikit antara selain tetap terus mulai selesai belum ada data model pemodelan peluang kemungkinan prakiraan " +
-  "aktif padam baru-baru sebaran penjalaran arah kecepatan meter hektare ha km jalan kanal parit sumur bor pompa air helikopter pesawat bom water bombing").split(" "));
-const indo = t => { const k = t.toLowerCase().match(/\p{L}+/gu) || []; return k.some(w => KATA.has(w) && !["data", "status", "model", "total", "ha", "km", "per", "via", "water", "bombing", "api"].includes(w)) || k.filter(w => KATA.has(w)).length >= 2; };
+/* kandidat pembuka dialog di tab aktif: satu elemen per "tanda tangan" (tag + kelas + nama data-*) */
+const CALON = maks => {
+  const tab = document.querySelector(".page.on"); if (!tab) return [];
+  const tanda = el => el.tagName + "." + [...el.classList].sort().join(".") + "[" + Object.keys(el.dataset).sort().join(",") + "]";
+  const lihat = new Set(), out = [];
+  for (const el of tab.querySelectorAll("button,[role=button],tr[tabindex],tr[data-kom],tr[data-kl],tr[data-pp],[data-kom],[data-ex],[data-buka],[data-rinci]")) {
+    if (el.closest("a[href],.bhs,[data-no-i18n]") || el.disabled || !el.checkVisibility()) continue;
+    const s = tanda(el); if (lihat.has(s)) continue; lihat.add(s); out.push(el); if (out.length >= maks) break;
+  }
+  window.__calon = out; return out.map(tanda);
+};
 
+const browser = await chromium.launch();
+const laporan = {dibuat: new Date().toISOString(), hilang: {}, semua_hilang: {}, id_berisi_en: {}, en_berisi_id: {}, campur: {}, tab: {}, galat: {}};
 const HALAMAN = [
   {nama: "karhutla", url: "/", ekstra: {posko: ["posko", "sarana", "operasi", "keputusan"]}},
   {nama: "banjir", url: "/banjir/"},
-].filter(h => !HANYA || h.nama === HANYA);
+  {nama: "tentang", url: "/tentang.html", polos: true},
+  {nama: "privasi", url: "/privasi.html", polos: true},
+  {nama: "statistik", url: "/statistik", polos: true},
+].filter(h => !HANYA || HANYA.split(",").includes(h.nama));
 
-const browser = await chromium.launch();
-const laporan = {dibuat: new Date().toISOString(), hilang: {}, semua_hilang: {}, tab: {}, galat: {}};
-for (const h of HALAMAN) for (const lebar of LEBAR) for (const bhs of ["id", "en"]) {
+for (const h of HALAMAN) for (const lebar of LEBAR) for (const bhs of BAHASA) {
   const ctx = await browser.newContext({viewport: {width: lebar, height: lebar > 800 ? 900 : 844}, locale: "en-US"});
   const pg = await ctx.newPage(); const galat = [];
   /* hanya teks yang diuji: ubin peta, citra, dan huruf dari luar ditolak (permintaan menggantung ke luar membuat crawl macet bermenit-menit) */
   await pg.route(u => !u.href.startsWith(ASAL) && !/^https:\/\/(cdnjs\.cloudflare\.com|cdn\.jsdelivr\.net)\//.test(u.href), r => r.abort());
+  /* klik penjelajah tidak boleh membuka jendela, mencetak, atau pindah halaman */
+  await pg.addInitScript(() => { window.open = () => null; window.print = () => {};
+    document.addEventListener("click", e => { const a = e.target.closest?.("a[href]"); if (a && window.__jelajah) e.preventDefault(); }, true);
+    try { navigator.share = undefined; } catch (e) {} });
   pg.on("pageerror", e => galat.push("pageerror: " + e.message));
   pg.on("console", m => { if (m.type() === "error") galat.push(m.text().slice(0, 200)); });
-  await pg.goto(ASAL + h.url + "?lang=" + bhs, {waitUntil: "domcontentloaded", timeout: 60000});
+  pg.on("dialog", d => d.dismiss().catch(() => {}));
+  await pg.goto(ASAL + h.url + (h.url.includes("?") ? "&" : "?") + "lang=" + bhs, {waitUntil: "domcontentloaded", timeout: 60000});
+  console.error(`${h.nama} ${lebar} ${bhs}`);
+  if (h.polos) {
+    await pg.waitForTimeout(3000);
+    await rekam(pg, h, lebar, bhs, "halaman");
+    laporan.galat[`${h.nama} ${lebar} ${bhs}`] = {galat: [...new Set(galat)]};
+    await ctx.close(); tulis(); continue;
+  }
   await pg.waitForFunction(() => typeof bukaTab === "function", null, {timeout: 30000});
   await pg.waitForTimeout(4000);
-  console.error(`${h.nama} ${lebar} ${bhs}`);
+  await rekam(pg, h, lebar, bhs, "awal");   // spanduk persetujuan + tab pertama seperti dilihat pengunjung baru
+  await pg.evaluate(() => document.querySelectorAll("dialog[open]").forEach(d => d.close()));
   const tabs = await pg.evaluate(() => (typeof TABS !== "undefined" ? TABS : []).map(t => t[0]));
   /* peta paling akhir: begitu peta tampil, MapLibre (WebGL perangkat lunak di headless) membuat tiap langkah sesudahnya jauh lebih lambat */
-  for (const tab of tabs.filter(t => !TAB_SAJA || TAB_SAJA.split(",").includes(t)).sort((a, b) => (a === "peta") - (b === "peta"))) {
+  for (const tab of tabs.filter(t => t !== "tentang" && (!TAB_SAJA || TAB_SAJA.split(",").includes(t))).sort((a, b) => (a === "peta") - (b === "peta"))) {
     const subs = h.ekstra?.[tab] || [null];
     for (const sub of subs) {
       console.error("  >", tab, sub || "", ((Date.now() - T0) / 1000).toFixed(1));
       await pg.evaluate(([t, s]) => { if (s) S.poskoSub = s; bukaTab(t); }, [tab, sub]);
-      await pg.waitForTimeout(tab === "sim" || tab === "metode" || tab === "insight" ? 3500 : 1800);
+      await pg.waitForTimeout(tab === "sim" || tab === "simulasi" || tab === "metode" || tab === "insight" ? 3500 : 1800);
       const kunci = sub && sub !== tab ? tab + "/" + sub : tab;
       await rekam(pg, h, lebar, bhs, kunci);
+      if (KLIK && tab !== "peta") await jelajah(pg, h, lebar, bhs, kunci, tab, sub);
     }
   }
-  /* laci kompleks + toggle ID->EN->ID pada tab aktif (hanya karhutla) */
-  if (h.nama === "karhutla") {
+  /* laci kompleks (hanya karhutla) */
+  if (h.nama === "karhutla" && (!TAB_SAJA || TAB_SAJA.includes("peta"))) {
     const ada = await pg.evaluate(async () => { bukaTab("peta"); await new Promise(r => setTimeout(r, 800)); const f = S.kluster?.features?.[0]; if (!f) return false; Laci.buka(f.properties.id); return true; }).catch(e => (galat.push("laci: " + e.message), false));
     if (ada) { await pg.waitForTimeout(1500); await rekam(pg, h, lebar, bhs, "laci"); await pg.evaluate(() => document.querySelector("#dlgLaci")?.open && document.querySelector("#dlgLaci").close()); }
   }
@@ -127,23 +204,52 @@ for (const h of HALAMAN) for (const lebar of LEBAR) for (const bhs of ["id", "en
 function tulis() { fs.writeFileSync(arg("keluar", path.join(AKAR, "scripts/i18n/laporan.json")), JSON.stringify(laporan, (k, v) => v instanceof Set ? [...v] : v, 1)); }
 await browser.close(); server.close();
 
+/* klik tiap jenis tombol/baris di tab; dialog yang terbuka direkam lalu ditutup; tab yang berpindah dikembalikan */
+async function jelajah(pg, h, lebar, bhs, kunci, tab, sub) {
+  const tanda = await pg.evaluate(CALON, 30).catch(() => []);
+  let ada = 0;
+  for (let i = 0; i < tanda.length; i++) {
+    const r = await pg.evaluate(async i => { window.__jelajah = 1; const el = window.__calon[i]; if (!el?.isConnected || !el.checkVisibility()) return null;
+      const tab0 = document.querySelector(".page.on")?.id, d0 = new Set(document.querySelectorAll("dialog[open]"));
+      try { el.click(); } catch (e) { return null; }
+      await new Promise(r => setTimeout(r, 900));
+      const baru = [...document.querySelectorAll("dialog[open]")].filter(d => !d0.has(d));
+      return {dlg: baru.length > 0, pindah: document.querySelector(".page.on")?.id !== tab0}; }, i).catch(() => null);
+    if (!r) continue;
+    if (r.dlg) { await pg.waitForTimeout(700); await rekam(pg, h, lebar, bhs, `${kunci}/dlg:${tanda[i].replace(/\[\]$/, "")}`); ada++; }
+    await pg.evaluate(() => document.querySelectorAll("dialog[open]").forEach(d => d.close())).catch(() => {});
+    if (r.pindah) { await pg.evaluate(([t, s]) => { if (s) S.poskoSub = s; bukaTab(t); }, [tab, sub]); await pg.waitForTimeout(1200); await pg.evaluate(CALON, 30).catch(() => []); }
+  }
+  await pg.waitForTimeout(800);
+  await rekam(pg, h, lebar, bhs, kunci + "/klik");
+  console.error(`    ${tanda.length} jenis klik, ${ada} dialog`);
+}
+
 async function rekam(pg, h, lebar, bhs, tab) {
-  const isi = await pg.evaluate(KUMPUL);
+  const isi = await pg.evaluate(KUMPUL).catch(() => []);
   const k = `${h.nama}/${tab}`, L = laporan.tab[k] ||= {};
-  const unik = new Map(isi.map(([t, c]) => [t, c]));
+  const unik = new Map(isi.map(([t, c]) => [t.replace(/\s+/g, " "), c]));
   const n = unik.size, nc = [...unik.values()].filter(Boolean).length;
-  if (bhs === "id") { L["id_" + lebar] = {teks: n}; return; }
-  /* belum diterjemahkan = penerjemah gagal (ada di T.hilang) DAN terlihat Indonesia; teks Inggris hasil terjemahan tidak ikut terhitung */
-  const gagal = new Set(await pg.evaluate(() => [...(window.T?.hilang?.keys() || [])]));
-  const buruk = [...unik].filter(([t]) => indo(t) && gagal.has(t.replace(/\s+/g, " "))), bc = buruk.filter(([, c]) => c);
-  L["en_" + lebar] = {teks: n, indonesia: buruk.length, persen: n ? +(100 * (1 - buruk.length / n)).toFixed(1) : 100,
-    chrome: nc, chrome_indonesia: bc.length, persen_chrome: nc ? +(100 * (1 - bc.length / nc)).toFixed(1) : 100};
-  const kunci = await pg.evaluate(xs => xs.map(s => window.T?.kunci ? T.kunci(s) : s), buruk.map(x => x[0]));
-  for (const key of kunci) (laporan.hilang[key] ||= new Set()).add(k);
-  console.error(`  ${k} ${lebar}: ${L["en_" + lebar].persen}% / chrome ${L["en_" + lebar].persen_chrome}%`);
+  const kls = [...unik.keys()].map(t => [t, kelas(t)]);
+  const bocor = kls.filter(([, c]) => bhs === "id" ? c.en > 0 : c.id > 0), campur = kls.filter(([, c]) => c.id > 0 && c.en > 0);
+  const rec = {teks: n, chrome: nc, bocor: bocor.length, campur: campur.length, persen_bocor: n ? +(100 * bocor.length / n).toFixed(2) : 0, persen_campur: n ? +(100 * campur.length / n).toFixed(2) : 0};
+  const simpan = (tujuan, xs) => { for (const [t] of xs) (tujuan[t] ||= new Set()).add(k); };
+  simpan(bhs === "id" ? laporan.id_berisi_en : laporan.en_berisi_id, bocor);
+  simpan(laporan.campur, campur.map(([t]) => [`[${bhs}] ${t}`]));
+  if (bhs === "en") {
+    /* kunci kamus: teks Indonesia yang gagal diterjemahkan (ada di T.hilang) */
+    const gagal = new Set(await pg.evaluate(() => [...(window.T?.hilang?.keys() || [])]).catch(() => []));
+    const buruk = bocor.filter(([t]) => gagal.has(t));
+    const kunci = await pg.evaluate(xs => xs.map(s => window.T?.kunci ? T.kunci(s) : s), buruk.map(x => x[0])).catch(() => []);
+    for (const key of kunci) (laporan.hilang[key] ||= new Set()).add(k);
+    rec.hilang = buruk.length;
+  }
+  L[bhs + "_" + lebar] = rec;
+  console.error(`  ${k} ${bhs} ${lebar}: ${n} teks, bocor ${rec.bocor} (${rec.persen_bocor}%), campur ${rec.campur}`);
 }
 tulis();
-console.log("tab".padEnd(26), LEBAR.map(l => `EN ${l}: semua% / chrome%`).join("   "));
-for (const [k, L] of Object.entries(laporan.tab)) console.log(k.padEnd(26), LEBAR.map(l => L["en_" + l] ? `${String(L["en_" + l].persen).padStart(5)} / ${String(L["en_" + l].persen_chrome).padStart(5)}  (${L["en_" + l].indonesia} sisa)` : "-").join("   "));
-console.log("\nkunci hilang:", Object.keys(laporan.hilang).length);
-for (const [k, g] of Object.entries(laporan.galat)) console.log(k.padEnd(22), "galat:", g.galat.length, "toggle:", JSON.stringify(g.toggle), g.galat.slice(0, 4).join(" | "));
+console.log("tab".padEnd(44), LEBAR.flatMap(l => BAHASA.map(b => `${b.toUpperCase()} ${l}: bocor/campur/teks`)).join("   "));
+for (const [k, L] of Object.entries(laporan.tab)) console.log(k.slice(0, 43).padEnd(44), LEBAR.flatMap(l => BAHASA.map(b => { const x = L[b + "_" + l];
+  return x ? `${String(x.bocor).padStart(4)}/${String(x.campur).padStart(3)}/${String(x.teks).padStart(5)} ${x.persen_bocor > 1 ? "!" : " "}`.padEnd(24) : "-".padEnd(24); })).join("   "));
+console.log("\nID berisi EN:", Object.keys(laporan.id_berisi_en).length, " EN berisi ID:", Object.keys(laporan.en_berisi_id).length, " campur:", Object.keys(laporan.campur).length, " kunci hilang:", Object.keys(laporan.hilang).length);
+for (const [k, g] of Object.entries(laporan.galat)) console.log(k.padEnd(22), "galat:", g.galat.length, g.toggle ? "toggle: " + JSON.stringify(g.toggle) : "", g.galat.slice(0, 4).join(" | "));
