@@ -226,6 +226,7 @@ form:not(.ada) .fl-lanjut{display:none}
 /* wadah form: putih, judul berikon, label "opsional" sebaris, centang jadi sakelar */
 .fl-wadah{background:#fff;gap:14px;padding:18px}
 :root[data-theme="dark"] .fl-wadah{background:var(--card)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .fl-wadah{background:var(--card)}}   /* dark mode bawaan HP, bukan cuma sakelar tema */
 .fl-wadah > h4{display:flex;align-items:center;gap:10px;font-size:15px}
 .fl-w-ik{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:color-mix(in oklch,var(--w) 14%,var(--card));color:var(--w);flex:none}
 .fl-w-ik svg{width:16px;height:16px}

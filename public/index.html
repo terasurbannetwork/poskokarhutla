@@ -179,6 +179,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .crumb .cr-rinci{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));border:0;color:#fff}
 .crumb .cr-rinci svg{width:14px;height:14px}
 :root[data-theme="dark"] .crumb button:last-child{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .crumb button:last-child{color:oklch(18% .035 256)}}
 .cari{position:relative}
 .cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:13px}
 .cari svg{position:absolute;left:12px;top:10px;color:var(--ink2)}

@@ -30,6 +30,7 @@
 .ps-dlg .ps-chip input:checked + span{background:#0b2545;border-color:#0b2545;color:#fff}
 .ps-dlg .ps-chip input:focus-visible + span{outline:2px solid #1d4e89;outline-offset:2px}
 :root[data-theme="dark"] .ps-dlg .ps-chip input:checked + span{background:#4f8fc4;border-color:#4f8fc4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ps-dlg .ps-chip input:checked + span{background:#4f8fc4;border-color:#4f8fc4}}
 .ps-dlg .ps-ik svg{width:20px;height:20px}
 .ps-dlg .ps-hd > div{flex:1;min-width:0}
 .ps-dlg h2{font:800 19px/1.25 "Plus Jakarta Sans",Inter,sans-serif;margin:0}
@@ -57,6 +58,7 @@
 .ps-dlg button{font:600 14px Inter,sans-serif;border-radius:10px;padding:9px 16px;cursor:pointer;border:1px solid var(--ps-line);background:transparent;color:inherit}
 .ps-dlg button.ps-kirim{background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;border-color:transparent;font-weight:800}
 :root[data-theme="dark"] .ps-dlg button.ps-kirim{background:#4f8fc4;border-color:#4f8fc4}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ps-dlg button.ps-kirim{background:#4f8fc4;border-color:#4f8fc4}}
 .ps-fab{position:fixed;right:16px;bottom:16px;z-index:40;height:48px;padding:0 18px 0 14px;border-radius:999px;border:2px solid #fff;display:inline-flex;align-items:center;gap:8px;background:linear-gradient(135deg,#f08a3c,#d9532b);color:#fff;font:800 14px Inter,system-ui,sans-serif;box-shadow:0 8px 22px rgb(217 83 43 / .45);cursor:pointer}
 .ps-fab:hover{filter:brightness(1.06);transform:translateY(-1px)}
 .ps-fab svg{width:20px;height:20px}
