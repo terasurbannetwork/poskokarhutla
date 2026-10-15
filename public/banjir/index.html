@@ -3040,7 +3040,8 @@ const Sarana = {
   isi: bacaLokal("pb-sarana", {}),
   /* sumber panjang (dengan URL) -> teks pendek; URL tetap di title/tautan */
   sumberPendek(s) { s = String(s || ""); if (/^R\b/.test(s)) return s.length > 2 ? "rekomendasi platform" + s.slice(1).replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ") : "rekomendasi platform";
-    const t = s.replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim(); return t.length > 90 ? t.slice(0, 87) + "…" : t; },
+    let t = s.replace(/https?:\/\/\S+/g, "").replace(/\s+/g, " ").trim(); if (window.T) t = window.T(t);   /* terjemahkan dulu, baru dipotong */
+    return t.length > 90 ? t.slice(0, 87) + "…" : t; },
   url: s => (String(s || "").match(/https?:\/\/\S+/) || [""])[0],
   kunci(gi, ii) { return this.tingkat + ":" + this.grup[gi][0] + ":" + this.grup[gi][1][ii][0]; },
   async render() {

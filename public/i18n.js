@@ -38,8 +38,7 @@
   const desimal = x => x.replace(/^([−-]?)(\d{1,3}(?:\.\d{3})*|\d+),(\d{1,2})(?!\d)/, (_, sg, bul, pec) => sg + Number(bul.replace(/\./g, "")).toLocaleString("en-GB") + "." + pec);
   /* token bisa membawa koma/titik penutup ("119," dari "di 119, mengecil"); bila terjemahan sudah memuat tanda yang sama, jangan digandakan */
   const isi = (tpl, tok) => tpl.replace(/\{(\d+)\}([.,]?)/g, (_, i, nx) => { if (tok[i] == null) return nx; let v = angkaEN(tok[i]);
-    if (nx && v.endsWith(nx)) v = v.slice(0, -1); else if (!nx && /[.,]$/.test(v)) v = v.slice(0, -1);   // "N95," -> tanda baca kalimat ID tidak dibawa
-    return v + nx; });
+    if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; });
   const kapital = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   function cari(t) {
