@@ -1634,7 +1634,7 @@ function renderMetode() {
       ["8", "<code>riwayat.py</code>", "riwayat.json, riwayat_grid*.json", "boleh gagal"],
       ["9", "<code>status.py</code>, <code>posko.py</code>", "status.json, meta.json, posko.json, pusat_kec.json", "jalan berhenti"]])}
     ${h("Sumber data")}${tb(["Data", "Sumber", "Diperbarui"], [
-      ["Prakiraan dan arsip 7 hari hujan, hujan per jam, CAPE, kelembapan tanah", "Open-Meteo Forecast (best match; untuk Indonesia = ECMWF IFS), kisi 0,25°", "harian"],
+      ["Prakiraan dan arsip 7 hari hujan, hujan per jam, CAPE, kelembapan tanah", "Open-Meteo Forecast (model best_match; untuk Indonesia = ECMWF IFS), kisi 0,25°", "harian"],
       ["Peluang hujan lebat", "ECMWF IFS ENS 51 anggota lewat Open-Meteo Ensemble (cadangan GFS 31 anggota)", "harian"],
       ["Debit sungai besar", "Copernicus GloFAS v4 lewat Open-Meteo Flood API", "harian; ambang 29 tahun bertahap"],
       ["Muka laut dan gelombang", "Open-Meteo Marine (Météo-France SMOC 0,08°), arsip sejak 24 Nov 2022", "harian"],
@@ -1751,7 +1751,7 @@ Normal   selain itu`)}
 Awas     H3 ≥ 90 dan JENUH dan B ≥ 0,66
 Siaga    (H3 ≥ 60 dan JENUH dan B ≥ 0,66)  atau  (H3 ≥ 90 dan B ≥ 0,33)  atau  (I ≥ 20 dan B ≥ 0,66)
 Waspada  H3 ≥ 30 dan B ≥ 0,33`)}
-    <p><b>Mengapa 0,45.</b> Kebasahan tanah di hujan.json berasal dari ECMWF IFS (best match Open-Meteo untuk Indonesia; dicek 13 Okt 2026 sama persis dengan model IFS). Model tanah IFS (HTESSEL; Balsamo dkk. 2009, ECMWF Tech. Memo 563 Tabel 2) memakai kadar air jenuh 0,403 (kasar), 0,439 (sedang), 0,430 (sedang-halus), 0,520 (halus), 0,614 (sangat halus), 0,766 (organik) dan kapasitas lapang 0,244 / 0,347 / 0,383 / 0,448 / 0,541 / 0,663. Jadi 0,45 = jenuh untuk tekstur kasar-sedang dan ≥ kapasitas lapang untuk lempung tropis.</p>
+    <p><b>Mengapa 0,45.</b> Kebasahan tanah di hujan.json berasal dari ECMWF IFS (model best_match Open-Meteo untuk Indonesia; dicek 13 Okt 2026 sama persis dengan model IFS). Model tanah IFS (HTESSEL; Balsamo dkk. 2009, ECMWF Tech. Memo 563 Tabel 2) memakai kadar air jenuh 0,403 (kasar), 0,439 (sedang), 0,430 (sedang-halus), 0,520 (halus), 0,614 (sangat halus), 0,766 (organik) dan kapasitas lapang 0,244 / 0,347 / 0,383 / 0,448 / 0,541 / 0,663. Jadi 0,45 = jenuh untuk tekstur kasar-sedang dan ≥ kapasitas lapang untuk lempung tropis.</p>
     <p><b>Mengapa wajib hujan 7 hari ≥ 25 mm.</b> Uji 13 Okt 2026: kebasahan ≥ 0,45 saja menandai 154 kecamatan berbahaya tinggi di musim kemarau, karena tanah liat dan organik basah sepanjang tahun. Batas 25 mm (dulu 50) dan ambang H3 30/60/90 mm (dulu 50/100/150, jendela digeser sehari ke belakang) berasal dari uji balik terhadap kejadian longsor DIBI 2016-2025 (RISET-UJI-BALIK.md): di 2022-2025 Siaga mengenai 15% hari longsor (dulu 4%).</p>
     <p>A7 tetap untuk keempat hari (hujan 7 hari sebelum hari ini). Pembanding luar: ambang operasional ILEWS Balai Sabo 64 mm/3 hari (Jawa) dan 91 mm/3 hari (Sumatra) belum dipakai karena belum diverifikasi ke naskah aslinya (RISET-PARAMETER.md butir 8).</p>`,
     batas: ["Kebasahan tanah adalah nilai model 28 km, bukan pengukuran lapangan; untuk tanah sangat halus ambang 0,45 terlalu longgar.", "Lereng, retakan, dan pemotongan tebing tidak diketahui; kerawanan hanya dari peta InaRISK.",

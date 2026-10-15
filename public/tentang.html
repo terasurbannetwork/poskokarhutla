@@ -1036,7 +1036,7 @@ section[hidden],[hidden]{display:none!important}
   <div class="wrap">
     <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm">Pantau<b>Bencana</b></span></a>
     <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana<br class="lebar"> di Indonesia secara<br class="lebar"> <em>real time</em></h1>
-    <p class="misi masuk" style="--d:2">Tim Pantau Bencana mengagregasi dan mengolah data untuk memberikan <i>insight</i> terkait kondisi terkini dan riwayat bencana di Indonesia.</p>
+    <p class="misi masuk" style="--d:2">Tim Pantau Bencana mengagregasi dan mengolah data untuk memberikan wawasan tentang kondisi terkini dan riwayat bencana di Indonesia.</p>
     <div class="aksi masuk" style="--d:3">
       <a class="tbl utama" href="/peta">Buka peta</a>
       <a class="tbl garis" href="#kontak">Hubungi kami</a>
@@ -1071,7 +1071,7 @@ section[hidden],[hidden]{display:none!important}
   <div class="wrap">
     <ul class="masalah">
       <li class="kartu mk" data-n="01" data-muncul style="--foto:url(/img/foto-satelit.jpg)"><span class="mk-tg">Tantangan 01</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m12 3 9 5-9 5-9-5z"/><path d="m3 13 9 5 9-5"/></svg></span><b>Data tersebar dan belum terintegrasi</b><small>Data bencana tersebar di banyak lembaga. Belum ada platform yang menyatukannya, dan publik tidak tahu cara mengaksesnya satu per satu.</small></li>
-      <li class="kartu mk" data-n="02" data-muncul style="--foto:url(/img/foto-sekat.jpg)"><span class="mk-tg">Tantangan 02</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><b>Data mentah tanpa insight</b><small>Data yang tersedia masih berupa angka mentah, belum diolah, sehingga tidak menjelaskan apa yang sedang terjadi.</small></li>
+      <li class="kartu mk" data-n="02" data-muncul style="--foto:url(/img/foto-sekat.jpg)"><span class="mk-tg">Tantangan 02</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></span><b>Data mentah tanpa analisis</b><small>Data yang tersedia masih berupa angka mentah, belum diolah, sehingga tidak menjelaskan apa yang sedang terjadi.</small></li>
       <li class="kartu mk" data-n="03" data-muncul style="--foto:url(/img/foto-pasca.jpg)"><span class="mk-tg">Tantangan 03</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5a2 2 0 0 1 2-2h13v16H6a2 2 0 0 0-2 2z"/><path d="M4 21V5M9 7h6M9 11h6"/></svg></span><b>Riset dan riwayat belum sampai ke publik</b><small>Hasil penelitian dan catatan bencana masa lalu belum diolah dan belum dikomunikasikan dengan baik kepada masyarakat.</small></li>
       <li class="kartu mk" data-n="04" data-muncul style="--foto:url(/img/foto-asap.jpg)"><span class="mk-tg">Tantangan 04</span><span class="ik"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3v18h18"/><path d="m7 15 4-4 3 3 6-7"/></svg></span><b>Penyajian visual sulit dipahami</b><small>Belum ada penyajian visual yang sesuai untuk publik, sehingga data sulit dibaca dan dimaknai.</small></li>
     </ul>
@@ -1339,7 +1339,7 @@ section[hidden],[hidden]{display:none!important}
     const A = (t.anggota || []).filter(a => a && a.nama && !a.sembunyi); /* "sembunyi": true = tidak ditampilkan (data tetap) */ if (!A.length) return;
     const dewan = A.filter(a => a.grup !== "Eksekutif"), eks = A.filter(a => a.grup === "Eksekutif");
     let h = "";
-    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang" tabindex="0">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}</div>${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
+    if (dewan.length) h += `<h3 class="subjudul">Dewan Manajemen</h3><div class="dewan">${dewan.map(a => `<article class="kartu orang" tabindex="0">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran" translate="no">${esc(a.peran || "")}</span>${a.bio ? `<p>${esc(a.bio)}</p>` : ""}</div>${aman(a.tautan) ? `<a href="${esc(a.tautan)}" target="_blank" rel="noopener">Profil</a>` : ""}</article>`).join("")}</div>`;
     if (eks.length) h += `<h3 class="subjudul">Eksekutif</h3><div class="eksek">${eks.map(a => `<article class="kartu orang">${foto(a)}<div class="or-isi"><b>${esc(a.nama)}</b><span class="peran">${esc(a.unit || (a.peran !== "Eksekutif" ? a.peran : "") || "")}</span></div></article>`).join("")}</div>`;
     $("#anggota").innerHTML = h; $("#anggota").hidden = false;
   }).catch(() => { $("#org").innerHTML = `<div class="kiri"><div class="kepala-org"><span class="lg" aria-hidden="true"><img class="m-putih" src="/img/teras-urban-mark.png" alt="" width="40" height="30"><img class="m-navy" src="/img/teras-urban-mark-navy.png" alt="" width="40" height="30"></span><div><h3>Teras Urban</h3><span class="slogan">Teras Urban Network</span></div></div></div>`; });
@@ -1352,7 +1352,7 @@ section[hidden],[hidden]{display:none!important}
     const K = (M.kolaborasi || []).filter(k => k && k.judul).sort((a, b) => (b.tahun || 0) - (a.tahun || 0)), Rs = (M.riset || []).filter(r => r && r.judul);
     if (!K.length && !Rs.length) return;
     $("#kolabDaftar").innerHTML = K.map(k => `<li class="kartu" style="--c:${WARNA[k.jenis] || "var(--brand2)"}"><span class="meta"><span>${esc(k.jenis || "")}</span>${esc(k.tahun || "")}</span><b>${esc(k.judul)}</b>${k.isi ? `<p>${esc(k.isi)}</p>` : ""}</li>`).join("");
-    if (Rs.length) { $("#risetDaftar").innerHTML = Rs.map((r, i) => `<li><span class="rl-no">${String(i + 1).padStart(2, "0")}</span><span class="rl-ik" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><span class="rl-isi"><b>${esc(r.judul)}</b><span class="rl-meta"><em>${esc(r.bidang || "")}</em>${esc(r.tahun || "")}</span></span></li>`).join(""); $("#risetN").textContent = `${fmt(Rs.length)} judul`; $("#risetWadah").hidden = false; }
+    if (Rs.length) { $("#risetDaftar").innerHTML = Rs.map((r, i) => `<li><span class="rl-no">${String(i + 1).padStart(2, "0")}</span><span class="rl-ik" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></span><span class="rl-isi"><b translate="no">${esc(r.judul)}</b><span class="rl-meta"><em translate="no">${esc(r.bidang || "")}</em>${esc(r.tahun || "")}</span></span></li>`).join(""); $("#risetN").textContent = `${fmt(Rs.length)} judul`; $("#risetWadah").hidden = false; }
     $("#kolaborasi").hidden = false;
   }).catch(() => {});
 

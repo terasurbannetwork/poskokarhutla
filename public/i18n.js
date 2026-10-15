@@ -33,16 +33,20 @@
   const SKALA = {rb: ["k", " thousand"], jt: ["M", " million"], M: [" bn", " billion"], T: [" tn", " trillion"]};
   const angkaEN = t => { const rp = /^Rp\s?/.test(t), m = t.replace(/^Rp\s?/, "").match(/^(.*?)(?:\s(rb|jt|M|T))?$/), s = m[2];
     if (!rp && (s === "M" || s === "T")) return t;   // "5 M" tanpa Rp bisa berarti meter: biarkan
-    return (rp ? "IDR " : "") + m[1] + (s ? SKALA[s][rp ? 1 : 0] : ""); };
+    return (rp ? "IDR " : "") + desimal(m[1]) + (s ? SKALA[s][rp ? 1 : 0] : ""); };
+  /* angka yang diketik di teks sumber berformat Indonesia ("1,5 km", "1.234,5"): koma + 1–2 angka di ujung tidak pernah dihasilkan en-GB, jadi aman ditukar */
+  const desimal = x => x.replace(/^([−-]?)(\d{1,3}(?:\.\d{3})*|\d+),(\d{1,2})(?!\d)/, (_, sg, bul, pec) => sg + Number(bul.replace(/\./g, "")).toLocaleString("en-GB") + "." + pec);
   /* token bisa membawa koma/titik penutup ("119," dari "di 119, mengecil"); bila terjemahan sudah memuat tanda yang sama, jangan digandakan */
   const isi = (tpl, tok) => tpl.replace(/\{(\d+)\}([.,]?)/g, (_, i, nx) => { if (tok[i] == null) return nx; let v = angkaEN(tok[i]);
-    if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; });
+    if (nx && v.endsWith(nx)) v = v.slice(0, -1); else if (!nx && /[.,]$/.test(v)) v = v.slice(0, -1);   // "N95," -> tanda baca kalimat ID tidak dibawa
+    return v + nx; });
   const kapital = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   function cari(t) {
     let v = KAMUS[t]; if (v != null) return v;
     const tok = []; const kunci = t.replace(ANGKA, m => (tok.push(m), "{" + (tok.length - 1) + "}"));
     if (tok.length && (v = KAMUS[kunci]) != null) return isi(v, tok);
+    if (tok.length && !/\p{L}{2}/u.test(kunci.replace(/\{\d+\}/g, ""))) return isi(kunci, tok);   // hanya angka ("14,6 jt", "Rp3 M"): satuannya saja yang diganti
     for (const [re, ganti] of POLA) { const m = t.match(re); if (!m) continue;
       const r = ganti.replace(/\$(\d)/g, (_, i) => m[i] == null ? "" : terj(m[i], false)); if (r !== t) return r; }
     /* huruf besar/kecil: "Titik panas" vs "titik panas", "TITIK PANAS" */
@@ -121,6 +125,19 @@
   /* ---------- kanvas (gambar bagikan): teks yang digambar ikut diterjemahkan saat EN */
   for (const f of ["fillText", "strokeText", "measureText"]) { const P = CanvasRenderingContext2D.prototype, asli = P[f];
     P[f] = function (t, ...a) { return asli.call(this, B === "en" && KAMUS ? terj(String(t)) : t, ...a); }; }
+
+  /* ---------- MapLibre: kontrol bawaan (Zoom in, Map, "Use ⌘ + scroll…") ditulis dalam bahasa Indonesia seperti UI lain;
+     di mode EN penerjemah DOM mengembalikannya lewat kamus, jadi bolak-balik ID/EN tanpa muat ulang tetap satu bahasa.
+     maplibre-gl dimuat sesudah berkas ini: kelas Map dibungkus saat pustaka memasang window.maplibregl. */
+  const LOK_PETA = {"Map.Title": "Peta", "NavigationControl.ZoomIn": "Perbesar", "NavigationControl.ZoomOut": "Perkecil", "NavigationControl.ResetBearing": "Arahkan ke utara",
+    "FullscreenControl.Enter": "Layar penuh", "FullscreenControl.Exit": "Keluar dari layar penuh", "GeolocateControl.FindMyLocation": "Cari lokasi saya",
+    "GeolocateControl.LocationNotAvailable": "Lokasi tidak tersedia", "AttributionControl.ToggleAttribution": "Buka/tutup atribusi", "AttributionControl.MapFeedback": "Masukan peta",
+    "LogoControl.Title": "Logo MapLibre", "Marker.Title": "Penanda peta", "Popup.Close": "Tutup popup", "CooperativeGesturesHandler.WindowsHelpText": "Gunakan Ctrl + gulir untuk memperbesar peta",
+    "CooperativeGesturesHandler.MacHelpText": "Gunakan ⌘ + gulir untuk memperbesar peta", "CooperativeGesturesHandler.MobileHelpText": "Gunakan dua jari untuk menggeser peta"};
+  let mlg;
+  try { Object.defineProperty(window, "maplibregl", {configurable: true, get: () => mlg, set: v => {
+    if (v?.Map && !v.Map.__bhs) try { const A = v.Map, W = class extends A { constructor(o) { super({...o, locale: {...LOK_PETA, ...o?.locale}}); } }; W.__bhs = 1; v.Map = W; } catch (e) {}
+    mlg = v; }}); } catch (e) {}
 
   /* ---------- URL: ?lang=en ikut di tiap replaceState/pushState (bukaTab menulis ulang path) */
   const urlBahasa = u => { const x = new URL(u ?? location.href, location.href);

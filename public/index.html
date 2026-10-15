@@ -4809,7 +4809,7 @@ function renderMetode() {
     baris.map(r => `<tr>${r.map((c, i) => `<td class="${kanan.includes(i) ? "n num" : ""}" style="white-space:${kanan.includes(i) ? "nowrap" : "normal"}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
   const h = t => `<h4 style="margin:14px 0 4px;font-size:13.5px">${t}</h4>`;
   const ul = a => `<ul style="margin:4px 0 8px;padding-left:18px">${a.map(x => `<li>${x}</li>`).join("")}</ul>`;
-  const rumus = s => `<div class="rumus" style="margin:6px 0 10px">${s}</div>`;
+  const rumus = s => `<div class="rumus" translate="no" style="margin:6px 0 10px">${s}</div>`;   /* rumus = kode (nama variabel Indonesia, spasi bermakna): tidak diterjemahkan */
   const catat = s => `<p style="font-size:12px;color:var(--ink2)">${s}</p>`;
   const nFwi = S.fwi?.grid?.length, nDaops = (S.daops || []).length, nKota = (S.daops || []).filter(x => x.presisi === "kota").length;
   const nPerm = (S.permanen || []).length, nAju = (S.posko || []).filter(x => x.jenis_posko === "aju").length, nKab = (S.menengah || []).length, nPusat = (S.pusat || []).length;
@@ -4882,7 +4882,7 @@ function renderMetode() {
     ${h("Angka platform (bukan angka resmi pemerintah)")}<p>Jumlah deteksi MODIS + VIIRS S-NPP + VIIRS NOAA-20, semua tingkat keyakinan, per hari kalender WIB (00.00–23.59), tanpa penghapusan duplikat antarsatelit. Jalan terakhir memuat ${fmt(M.jumlah_titik)} deteksi 7 hari (semua sensor).</p>
     <p>Pilihan rentang di peta: <b>hari ini</b> dan <b>kemarin</b> = tanggal WIB; <b>72 jam</b> dan <b>7 hari</b> dihitung mundur dari deteksi terakhir yang masuk, bukan dari jam sekarang. Peta memuat <code>hotspot72.json</code> (≤ 72 jam sebelum deteksi terakhir) lebih dulu, lalu <code>hotspot.json</code> 7 hari di belakang.</p>
     <p><b>Kelipatan normal harian</b> (kartu titik panas, rentang "kemarin"): rata-rata titik VIIRS S-NPP keyakinan sedang/tinggi per hari pada bulan yang sama di tahun-tahun lalu (arsip <code>sejarah.json</code>, 2015 s.d. tahun lalu) = jumlah titik bulan itu ÷ jumlah tahun ÷ jumlah hari bulan itu. Pembandingnya hitungan S-NPP sedang/tinggi kemarin saja, supaya sebanding dengan arsip.</p>
-    ${h("Validasi")}<p><b>Uji silang 11 Oktober 2026</b> terhadap dashboard BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>
+    ${h("Validasi")}<p><b>Uji silang 11 Oktober 2026</b> terhadap dasbor BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>
     ${h("Yang mengubah hasil")}<p>Jam jalan: deteksi yang masuk FIRMS setelah 21.20 WIB baru terhitung di jalan berikutnya (sebagai "kemarin"). Perubahan daftar sensor di <code>SENSOR_UTAMA</code> mengubah angka resmi secara langsung.</p>`,
     batas: ["Awan dan asap tebal menutupi api; tidak ada deteksi bukan berarti tidak ada api.", "Titik panas adalah anomali panas, bukan selalu kebakaran lahan. Di luar 9 provinsi prioritas banyak titik berasal dari smelter dan industri, karena itu peringkat risiko dan kalender musim dibatasi ke 9 provinsi.",
       "Data cepat (NRT) bisa berbeda dari arsip standar yang terbit kemudian.", "Batas kecamatan disederhanakan; titik di garis pantai atau perbatasan bisa salah wilayah atau terbuang.", "Selisih dengan BNPB belum bisa direkonsiliasi karena saringan BNPB tidak dipublikasikan (Kalbar dan Riau belum cocok)."]});
@@ -4961,7 +4961,7 @@ FWI
     ${h("Keadaan bersambung dan celah data")}${ul([
       "FFMC, DMC, dan DC per sel disimpan harian di <code>fwi_state.json</code> dan dilanjutkan esok harinya, bukan dihitung ulang dari nol (perbaikan peer review).",
       "Keadaan yang disimpan adalah nilai H−2, supaya revisi cuaca beberapa hari terakhir ikut terbawa.",
-      "Sel tanpa keadaan, atau keadaannya lebih tua dari 8 hari, dipanaskan dari ERA5 300 hari mulai nilai awal standar. Bila kuota Open-Meteo habis, sel itu dipanaskan dari 92 hari data forecast.",
+      "Sel tanpa keadaan, atau keadaannya lebih tua dari 8 hari, dipanaskan dari ERA5 300 hari mulai nilai awal standar. Bila kuota Open-Meteo habis, sel itu dipanaskan dari 92 hari data prakiraan.",
       "Hari dengan data kosong tidak menghapus urutan: FFMC/DMC/DC dibawa dari kemarin, ISI dihitung dengan angin 0, dan hari itu ditandai <i>celah</i>.",
       "Bila seluruh perhitungan FWI gagal, hitungan terakhir dipakai ulang. Berkas <code>fwi.json</code> menyimpan 8 hari per sel (termasuk hari ini dan 3 hari prakiraan)."])}
     ${h("Kelas bahaya")}${tb(["Indeks", "Rendah", "Sedang", "Tinggi", "Sangat tinggi"], [
@@ -5454,7 +5454,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Foto Insight", "Wikimedia Commons", "per foto (CC BY-SA 4.0, CC BY 4.0, domain publik)", "–", "tetap", "img/kredit.json"],
       ["Harga satuan dan uang harian", "Tokopedia, Indotrading, INAPROC, Auto2000, Carmudi, SSH daerah; SBM 2026", "–", "per item", "tetap (di kode)", "index.html"],
       ["Parameter ekonomi dan efektivitas", "lihat tabel parameter bagian 10", "–", "–", "tetap (di kode)", "keputusan.json"]])}`,
-    batas: ["Belum tersedia: FWI resmi dan radar SRI/PAC 24H BMKG SPARTAN (perlu surat permintaan), daftar desa MPA KLHK Dit. PKHL (perlu surat permintaan), peta bahan bakar/tutupan lahan, burned area MODIS/VIIRS dari Earthdata, hujan satelit IMERG/GSMaP.",
+    batas: ["Belum tersedia: FWI resmi dan radar SRI/PAC 24H BMKG SPARTAN (perlu surat permintaan), daftar desa MPA KLHK Dit. PKHL (perlu surat permintaan), peta bahan bakar/tutupan lahan, area terbakar (burned area) MODIS/VIIRS dari Earthdata, hujan satelit IMERG/GSMaP.",
       "Lapisan lahan berumur: kawasan hutan 2017, konsesi (sawit ± 2014, HTI 2020–2022, HPH ± 2014, tambang 2026); status lahan wajib dipastikan ke KPH/ATR.", "Banyak lisensi data tidak dicantumkan di sumbernya."]});
 
   B.push({ik: "cari", j: "Peer review 12 Oktober 2026", sub: "Temuan peninjau, yang sudah diperbaiki, dan yang masih antre",

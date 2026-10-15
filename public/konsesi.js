@@ -1,4 +1,4 @@
-/* konsesi.js — status lahan titik panas di lokasi kompleks api: areal konsesi sawit / HTI (kayu pulp) / HPH (hutan alam) /
+/* konsesi.js — status lahan titik panas di lokasi kompleks api: areal konsesi sawit / HTI (hutan tanaman industri) / HPH (hutan alam) /
    izin tambang, gambut, kawasan lindung. TANPA nama perusahaan, grup, nomor izin, atau kasus sanksi (keputusan pemilik 14 Okt 2026).
    Data: data/kompleks_konsesi.json (scripts/data/konsesi_kompleks.py, harian; porsi titik per jenis konsesi).
    Menambah: bagian "Status lahan titik panas" di laci "Lahan & penanggung jawab"; jenis areal di tooltip kompleks dan lapisan
@@ -11,7 +11,7 @@
   const muat = () => janji ||= muatJSON("data/kompleks_konsesi.json").then(a => { KK = a; })
     .catch(() => { KK = {kompleks: {}, jenis: [], total: {n: 0, konsesi: 0}, gagal: true}; });
   /* [label, warna, label panjang, tahun peta batas] */
-  const JN = {sawit: ["Sawit", "#c98a3c", "Konsesi sawit", "± 2014"], hti: ["HTI", "#6b8e3a", "Konsesi HTI (kayu pulp)", "2020–2022"],
+  const JN = {sawit: ["Sawit", "#c98a3c", "Konsesi sawit", "± 2014"], hti: ["HTI", "#6b8e3a", "Konsesi HTI (hutan tanaman industri)", "2020–2022"],
     hph: ["HPH", "#2f6f8f", "Konsesi HPH (hutan alam)", "± 2014"], tambang: ["Tambang", "#7a5c99", "Izin tambang (PPKH)", "2026"]};
   const URUT = ["sawit", "hti", "hph", "tambang"];
   const LINDUNG = ["HK", "HL", "THR", "KSA", "KPA"];

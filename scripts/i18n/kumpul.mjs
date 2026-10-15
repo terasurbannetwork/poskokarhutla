@@ -5,7 +5,8 @@
    Tiap tab juga dijelajahi: tombol/baris yang membuka dialog diklik satu per jenis (popup Insight, Berita, Dampak, Posko, Operasi, Ringkasan…),
    dialog yang terbuka direkam sebagai "tab/dlg:…", lalu tab direkam ulang sesudah semua klik ("tab/klik": hasil simulasi, rincian terbuka).
    Pakai:  node scripts/i18n/kumpul.mjs [--lebar 1440,390] [--hanya karhutla|banjir|tentang|privasi|statistik] [--bahasa id|en] [--tab peta,insight]
-                                        [--tanpa-klik] [--keluar berkas.json]       node scripts/i18n/kumpul.mjs --uji   (cek pengelompok kata)
+                                        [--tanpa-klik] [--dump] [--keluar berkas.json]
+   Pengelompok kata ada di kelas.mjs (node scripts/i18n/kelas.mjs = cek cepat); skor.mjs menilai ulang keluaran --dump tanpa crawl ulang.
    (lintasan bisa dijalankan paralel per halaman/lebar/bahasa dengan --keluar berbeda, lalu digabung dengan scripts/i18n/gabung.mjs)
    Butuh playwright (PW=/jalur/ke/node_modules/playwright, atau terpasang di cache npx). Server statis untuk public/ dibuat sendiri. */
 import http from "node:http";
@@ -19,51 +20,9 @@ const AKAR = path.resolve(path.dirname(fileURLToPath(import.meta.url)), "../..")
 const PUB = path.join(AKAR, "public");
 const arg = (n, d) => { const i = process.argv.indexOf("--" + n); return i > 0 ? process.argv[i + 1] : d; };
 const LEBAR = arg("lebar", "1440,390").split(",").map(Number);
-const HANYA = arg("hanya", ""), TAB_SAJA = arg("tab", ""), BAHASA = arg("bahasa", "id,en").split(","), KLIK = !process.argv.includes("--tanpa-klik");
+const DUMP = process.argv.includes("--dump"), HANYA = arg("hanya", ""), TAB_SAJA = arg("tab", ""), BAHASA = arg("bahasa", "id,en").split(","), KLIK = !process.argv.includes("--tanpa-klik");
 
-/* ---------- pengelompok kata: daftar kata fungsi + kosakata UI yang TIDAK sama ejaannya di kedua bahasa.
-   Kata pinjaman yang sah di KBBI (data, status, model, total, area, level, tren, nama satuan) tidak dihitung Inggris. */
-const kata = s => new Set(s.trim().split(/\s+/));
-const KATA_ID = kata(`dan yang di ke dari untuk dengan tidak ini itu atau pada oleh sebagai dalam akan bisa belum sudah adalah juga karena agar jika bila
-  saat tiap setiap seluruh masih lebih kurang tanpa hingga sampai sejak antara selain hanya paling sekitar menurut bukan serta namun tetapi maka telah
-  hari jam minggu pekan bulan tahun titik panas lahan hutan kebakaran wilayah kecamatan kabupaten provinsi desa jumlah luas sumber lihat buka tutup unduh
-  cari semua terbaru kemarin sekarang baru tinggi rendah sedang siaga awas waspada peta berita dampak simulasi metode lapor warga laporan perkiraan orang
-  regu kompleks asap udara gambut sawit kawasan musim hujan kering angin suhu kelembapan risiko bahaya naik turun dibanding rincian ringkasan pembaruan
-  diperbarui terakhir puncak kenaikan penurunan menit detik tanggal tingkat kelas jenis nilai angka terdekat jarak penduduk jiwa terdampak rumah sekolah
-  kasus perusahaan konsesi izin tindakan disarankan lokasi cuaca riwayat peringkat teratas satelit citra lapisan legenda bagikan salin tautan kirim pesan
-  tentang privasi lipat persen banyak sedikit mulai selesai peluang kemungkinan aktif padam sebaran arah kecepatan hektare sumur pompa banjir longsor
-  prakiraan keputusan sarana memuat gagal pilih tampilkan sembunyikan areal luar dalam perkebunan pemadaman patroli pencegahan prioritas personel
-  terbakar bentuk indikatif utama berpotensi membesar peringatan dini kemarau rawan sungai debit
-  januari februari maret mei juni juli agustus oktober desember okt agu agt des senin selasa rabu kamis jumat sabtu`);
-const KATA_EN = kata(`the and of to in for with from by on at is are was were be been this that these those not or as an it its has have had will can could
-  would should more less than which who what when where how all any each today yesterday show hide view open close download share search back next previous
-  loading copy copied send message feedback about privacy settings theme dark light layer layers legend satellite map maps trend trends impact impacts method
-  methods news report reports source sources week weeks day days hour hours month months year years people land fire fires hotspot hotspots risk high low
-  medium update updated last new latest estimate estimated forecast count number chart page link score rate rates oil palm pulp pulpwood wood timber logging
-  mining concession concessions plantation peat peatland burned burnt burn alert warning watch priority patrol prevention district districts regency
-  province provinces village villages smoke quality weather rain rainfall wind humidity temperature danger hazard crew crews command post posts simulation
-  spread complex complexes outside inside none unknown other others click tap here see read full summary details detail average only also just still now
-  since until between after before around over under into if then but yes you your we our they their please online offline insight dashboard
-  january february march april june july august october december aug oct dec monday tuesday wednesday thursday friday saturday sunday`);
-/* nama diri / nama sumber data yang memang berbahasa Inggris (atau Indonesia) dan tidak diterjemahkan: dibuang sebelum dihitung */
-const NAMA_DIRI = /Global Forest Watch|Fire Weather Index|Fire Information for Resource Management System|NASA FIRMS|Open[- ]Meteo|OpenStreetMap|Copernicus|Sentinel-?\d?\w*|Google( Earth)?|World Bank|Nusantara Atlas|Trase|Climate Hazards[\w ]*|Global Flood Awareness System|Fire Danger|Air Quality|Earth Engine|Land ?sat|Pantau Bencana|Posko Karhutla|Manggala Agni|Masyarakat Peduli Api|Teras Urban( Network)?|Claude|ChatGPT|Perplexity|Indonesia wood pulp concessions?( v\d)?|Taman Nasional [\p{Lu}][\p{L} ]+|Sungai [\p{Lu}]\p{L}+|Kota [\p{Lu}]\p{L}+|Desa [\p{Lu}]\p{L}+|Hulu Sungai \p{L}+|Kecamatan [\p{Lu}]\p{L}+|Kabupaten [\p{Lu}]\p{L}+/gu;
-/* label navigasi yang sengaja dipilih pemilik (nama bagian, bukan kalimat) */
-const NAV_SAH = new Set(["Dashboard", "Insight"]);
-function kelas(t) {
-  if (NAV_SAH.has(t.trim())) return {id: 0, en: 0};
-  const w = t.replace(NAMA_DIRI, " ").replace(/https?:\/\/\S+|\S+@\S+|\b[\w-]+\.(?:json|js|csv|md|html|py)\b/g, " ").toLowerCase().match(/\p{L}+(?:-\p{L}+)?/gu) || [];
-  let id = 0, en = 0;
-  for (const x of w) { if (KATA_ID.has(x)) id++; if (KATA_EN.has(x)) en++; }
-  /* kata tunggal yang sama-sama dipakai ("Siaga" tidak, tapi "in"/"on" di tengah singkatan) tidak cukup sendiri: teks satu kata dinilai utuh */
-  return {id, en};
-}
-if (process.argv.includes("--uji")) {
-  const cek = (t, id, en) => { const k = kelas(t); if (!!k.id !== id || !!k.en !== en) throw new Error(`kelas(${JSON.stringify(t)}) = ${JSON.stringify(k)}, harap id=${id} en=${en}`); };
-  cek("Konsesi oil palm", true, true); cek("Konsesi sawit", true, false); cek("Oil palm concession", false, true); cek("Data FIRMS", false, false);
-  cek("Total 1.234 titik panas", true, false); cek("Sumber: Global Forest Watch", true, false); cek("Source: Global Forest Watch", false, true);
-  cek("Kalimantan Tengah", false, false); cek("Dashboard", false, false); cek("Hari ini", true, false); cek("Today", false, true); cek("14 Okt", true, false); cek("14 Oct", false, true);
-  console.log("kelas(): ok"); process.exit(0);
-}
+import {kelas} from "./kelas.mjs";
 
 function cariPlaywright() {
   const calon = [process.env.PW, "playwright"];
@@ -114,13 +73,15 @@ const KUMPUL = () => {
     const w = document.createTreeWalker(a, NodeFilter.SHOW_TEXT);
     for (let n = w.nextNode(); n; n = w.nextNode()) {
       const el = n.parentElement, t = n.data.trim();
-      if (!t || !/\p{L}{2}/u.test(t) || el.closest(LEWATI) || !el.checkVisibility()) continue;
+      if (!t || !/\p{L}{2}/u.test(t) || el.closest(LEWATI) || !el.checkVisibility() || (tab && el.closest(".page") && el.closest(".page") !== tab)) continue;
       hasil.push([t, !!el.closest(CHROME)]);
     }
-    a.querySelectorAll("[title],[aria-label],[placeholder],[data-tip]").forEach(el => { if (el.closest(LEWATI)) return;
+    a.querySelectorAll("[title],[aria-label],[placeholder],[data-tip]").forEach(el => { if (el.closest(LEWATI) || (tab && el.closest(".page") && el.closest(".page") !== tab)) return;
       for (const at of ["title", "aria-label", "placeholder", "data-tip"]) { let v = el.getAttribute(at); if (!v) continue;
-        if (at === "data-tip") { const d = document.createElement("div"); d.innerHTML = v; v = d.textContent; }
-        v = v.trim(); if (/\p{L}{2}/u.test(v)) hasil.push([v, false]); } });
+        /* tooltip HTML: tiap simpul teks sendiri-sendiri, sama seperti penerjemah memprosesnya */
+        const xs = at === "data-tip" && /[<&]/.test(v) ? (() => { const tp = document.createElement("template"); tp.innerHTML = v; const o = [], w = document.createTreeWalker(tp.content, NodeFilter.SHOW_TEXT);
+          for (let n = w.nextNode(); n; n = w.nextNode()) o.push(n.data); return o; })() : [v];
+        for (let x of xs) { x = x.trim(); if (/\p{L}{2}/u.test(x)) hasil.push([x, false]); } } });
   }
   return hasil;
 };
@@ -158,7 +119,8 @@ for (const h of HALAMAN) for (const lebar of LEBAR) for (const bhs of BAHASA) {
   pg.on("pageerror", e => galat.push("pageerror: " + e.message));
   pg.on("console", m => { if (m.type() === "error") galat.push(m.text().slice(0, 200)); });
   pg.on("dialog", d => d.dismiss().catch(() => {}));
-  await pg.goto(ASAL + h.url + (h.url.includes("?") ? "&" : "?") + "lang=" + bhs, {waitUntil: "domcontentloaded", timeout: 60000});
+  try { await pg.goto(ASAL + h.url + (h.url.includes("?") ? "&" : "?") + "lang=" + bhs, {waitUntil: "domcontentloaded", timeout: 60000}); }
+  catch (e) { laporan.galat[`${h.nama} ${lebar} ${bhs}`] = {galat: ["goto: " + e.message.slice(0, 120)]}; await ctx.close(); tulis(); continue; }
   console.error(`${h.nama} ${lebar} ${bhs}`);
   if (h.polos) {
     await pg.waitForTimeout(3000);
@@ -180,7 +142,11 @@ for (const h of HALAMAN) for (const lebar of LEBAR) for (const bhs of BAHASA) {
       await pg.waitForTimeout(tab === "sim" || tab === "simulasi" || tab === "metode" || tab === "insight" ? 3500 : 1800);
       const kunci = sub && sub !== tab ? tab + "/" + sub : tab;
       await rekam(pg, h, lebar, bhs, kunci);
-      if (KLIK && tab !== "peta") await jelajah(pg, h, lebar, bhs, kunci, tab, sub);
+      if (KLIK && tab !== "peta") {
+        await jelajah(pg, h, lebar, bhs, kunci, tab, sub);
+        /* klik penjelajah bisa meninggalkan keadaan (exhibit diperbesar, panel terbuka) yang ikut terlihat di tab berikutnya: muat ulang */
+        await pg.reload({waitUntil: "domcontentloaded"}).catch(() => {}); await pg.waitForFunction(() => typeof bukaTab === "function", null, {timeout: 30000}).catch(() => {}); await pg.waitForTimeout(2500);
+      }
     }
   }
   /* laci kompleks (hanya karhutla) */
@@ -245,6 +211,7 @@ async function rekam(pg, h, lebar, bhs, tab) {
     rec.hilang = buruk.length;
   }
   L[bhs + "_" + lebar] = rec;
+  if (DUMP) (laporan.teks ||= {})[`${k} ${bhs} ${lebar}`] = [...unik.keys()];
   console.error(`  ${k} ${bhs} ${lebar}: ${n} teks, bocor ${rec.bocor} (${rec.persen_bocor}%), campur ${rec.campur}`);
 }
 tulis();

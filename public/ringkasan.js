@@ -238,7 +238,7 @@ const Ringkasan = (() => {
             bukti: {judul: `${namaProv(x.k)}: paparan asap`, isi: () => this.buktiAsap(D, x), prov: x.k}}); } }
       /* G. Kapolri & Menteri LH: areal konsesi (jenis x provinsi, tanpa nama pemegang) dengan >= 3 kompleks prioritas */
       { const id3 = new Set(D.L.flatMap(x => x.kom3.map(p => p.id)));
-        const JK = {sawit: "Konsesi sawit", hti: "Konsesi HTI (kayu pulp)", hph: "Konsesi HPH (hutan alam)", tambang: "Izin tambang", lain: "Konsesi lain"};
+        const JK = {sawit: "Konsesi sawit", hti: "Konsesi HTI (hutan tanaman industri)", hph: "Konsesi HPH (hutan alam)", tambang: "Izin tambang", lain: "Konsesi lain"};
         const pt = (D.dp?.lahan?.konsesi || []).map(c => ({...c, nama: `${JK[c.jenis] || c.jenis} di ${namaProv(c.prov)}`, k3: c.kompleks.filter(id => id3.has(id))})).filter(c => c.k3.length >= 3).sort((a, b) => b.k3.length - a.k3.length);
         if (pt.length) C.push({skor: 40 + pt.length, jenis: "hukum", siapa: "Kapolri & Menteri LH", apa: `Periksa kepatuhan pemegang izin dan segel sementara lahan terbakar di areal konsesi yang memuat ≥ 3 kompleks api prioritas (${fmt(pt.length)} jenis areal × provinsi)`,
           kenapa: [[`Terbanyak: ${pt.slice(0, 2).map(c => `${esc(c.nama)} ${n(fmt(c.k3.length) + " kompleks", SUMBER.kompleks + "; batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026", "satelit")}`).join("; ")}`, "satelit"],
