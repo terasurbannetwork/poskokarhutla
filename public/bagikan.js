@@ -241,6 +241,7 @@ const Bagikan = {
     if (S.jalur?.length) u.searchParams.set("wil", S.jalur.join("|"));
     return u.toString();
   },
+  muatKontak() { if (!this._kontak) this._kontak = fetch("/data/kontak.json").then(r => r.ok ? r.json() : null).then(k => (this.kontak = k)).catch(() => null); return this._kontak; },
   sosial() {
     const u = encodeURIComponent(this.tautan()), t = encodeURIComponent(this.teksPendek());
     const L = [["WhatsApp", `https://wa.me/?text=${t}%20${u}`], ["Telegram", `https://t.me/share/url?url=${u}&text=${t}`], ["X", `https://x.com/intent/tweet?text=${t}&url=${u}`],
@@ -573,6 +574,7 @@ const Bagikan = {
     ex: {kotak: [["ex", 1]], feed: [["ex", 1]], story: [["ex", 1]]},
   },
   async render(tpl = this.tpl, uk = this.uk) {
+    await this.muatKontak();
     const [W, H] = this.UK[uk], cv = this.kanvas(W, H), x = cv.getContext("2d"), P = 72, story = uk === "story";
     const atas = story ? 250 : 64, bawah = story ? H - 300 : H - 56;
     const d = tpl === "ex" ? await this.dataEx() : tpl === "kompleks" ? this.dataKom(this._kom) : this.data(tpl === "provinsi" ? this.prov : "");
@@ -613,13 +615,26 @@ const Bagikan = {
     x.strokeStyle = this.C.garis; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
     this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.fillText(this.potong(x, this.K.sumber, W - 2 * P), P, y + 34);
     this.f(x, 500, 21); x.textAlign = "right"; const dt = "Data " + jamWIB(S.acuan || S.meta.dibuat); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 64); const dw = x.measureText(dt).width; x.textAlign = "left";
-    /* ikon media sosial (Instagram, LinkedIn, X, Facebook, TikTok) di depan alamat situs */
-    const s = 30, gp = 8; [["#d62976", "ig"], ["#0a66c2", "in"], ["#111", "X"], ["#1877f2", "f"], ["#111", "♪"]].forEach(([w, t], i) => { const a = P + i * (s + gp), b = y + 64 - 22;
-      x.fillStyle = w; x.beginPath(); x.roundRect(a, b, s, s, 8); x.fill(); x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 2.4;
-      if (t === "ig") { x.beginPath(); x.roundRect(a + 7, b + 7, 16, 16, 5); x.stroke(); x.beginPath(); x.arc(a + 15, b + 15, 4, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.arc(a + 20, b + 10, 1.4, 0, Math.PI * 2); x.fill(); }
-      else { this.f(x, 800, t === "♪" ? 18 : 17); x.textAlign = "center"; x.fillText(t, a + s / 2, b + 21); x.textAlign = "left"; } });
-    const sx = P + 5 * (s + gp) + 6;
-    this.f(x, 700, 22); x.fillStyle = this.C.navy2; x.fillText(this.potong(x, this.situs(), W - P - sx - dw - 24), sx, y + 64);
+    /* akun resmi per platform (dari data/kontak.json) lalu alamat situs: tiap ikon diberi nama akunnya sendiri,
+       bukan lima ikon yang seolah-olah semuanya menunjuk ke situs */
+    const sos = (this.kontak && this.kontak.sosial) || {}, akun = [];
+    const nama = u => { try { const q = new URL(u).pathname.split("/").filter(Boolean); return q[q.length - 1] || ""; } catch (e) { return ""; } };
+    if (sos.instagram) akun.push(["#d62976", "ig", "@" + nama(sos.instagram)]);
+    if (sos.linkedin) akun.push(["#0a66c2", "in", "Teras Urban"]);
+    if (sos.x) akun.push(["#111", "X", "@" + nama(sos.x)]);
+    if (sos.facebook) akun.push(["#1877f2", "f", nama(sos.facebook)]);
+    if (sos.tiktok) akun.push(["#111", "♪", "@" + nama(sos.tiktok).replace(/^@/, "")]);
+    if (sos.youtube) akun.push(["#ff0000", "▶", nama(sos.youtube)]);
+    akun.push([this.C.navy2, "web", this.situs()]);
+    const s = 28, gp = 8, by = y + 64 - 21; let a = P; const batas = W - P - dw - 24;
+    for (const [w, t, teks] of akun) {
+      this.f(x, 700, 20); const tw = x.measureText(teks).width; if (a + s + gp + tw > batas) break;
+      x.fillStyle = w; x.beginPath(); x.roundRect(a, by, s, s, 8); x.fill(); x.strokeStyle = "#fff"; x.fillStyle = "#fff"; x.lineWidth = 2.2;
+      if (t === "ig") { x.beginPath(); x.roundRect(a + 7, by + 7, 14, 14, 4.5); x.stroke(); x.beginPath(); x.arc(a + 14, by + 14, 3.6, 0, Math.PI * 2); x.stroke(); }
+      else if (t === "web") { x.beginPath(); x.arc(a + 14, by + 14, 8, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.ellipse(a + 14, by + 14, 3.6, 8, 0, 0, Math.PI * 2); x.stroke(); x.beginPath(); x.moveTo(a + 6, by + 14); x.lineTo(a + 22, by + 14); x.stroke(); }
+      else { this.f(x, 800, 16); x.textAlign = "center"; x.fillText(t, a + s / 2, by + 20); x.textAlign = "left"; }
+      this.f(x, 700, 20); x.fillStyle = this.C.navy2; x.fillText(teks, a + s + gp, y + 64); a += s + gp + tw + 22;
+    }
     return y - 26;
   },
   async blok(x, k, a, b, w, h, d) {
