@@ -10,12 +10,12 @@
 (() => {
   "use strict";
   const KUNCI = "pb-bahasa", src = document.currentScript?.src || location.href;
-  const baca = () => { try { return localStorage.getItem(KUNCI); } catch (e) { return null; } };
-  const simpan = v => { try { localStorage.setItem(KUNCI, v); } catch (e) {} };
+  const baca = () => { try { return sessionStorage.getItem(KUNCI); } catch (e) { return null; } };
+  const simpan = v => { try { sessionStorage.setItem(KUNCI, v); } catch (e) {} };
   const sah = v => v === "en" || v === "id" ? v : null;
   const prm = sah(new URLSearchParams(location.search).get("lang"));
   if (prm) simpan(prm);
-  let B = prm || sah(baca()) || "id";   /* pertama buka selalu ID, EN hanya bila dipilih (pemilik, 15 Okt 2026) */
+  let B = prm || sah(baca()) || "id";   /* tiap kunjungan baru mulai ID; pilihan EN hanya bertahan di tab ini (sessionStorage) atau lewat ?lang=en (pemilik, 15 Okt 2026) */
   document.documentElement.lang = B;
 
   /* ---------- angka & tanggal: id-ID -> en-GB saat EN (en-GB = 1,234.5 seperti en-US, tetapi jam 24 dan "14 Oct" seperti id) */

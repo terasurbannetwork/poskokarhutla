@@ -249,7 +249,7 @@ form:not(.ada) .fl-lanjut{display:none}
 .fl-mw{position:relative;display:inline-block;max-width:100%;border-radius:18px;overflow:hidden;line-height:0}
 .fl-mw img,.fl-mw video{display:block;max-width:100%;width:auto!important;height:auto;max-height:min(56vh,440px);margin:0}
 .fl-r-media .fl-mw{border-radius:0}
-.fl-r-media .fl-mw img,.fl-r-media .fl-mw video{max-height:calc(100vh - 60px)}
+.fl-r-media .fl-mw img,.fl-r-media .fl-mw video{max-height:calc(100vh - 60px);max-height:calc(100dvh - 60px)}
 .fl-mw .fl-cap{left:10px;bottom:10px;line-height:1.35}
 .fl-mw:has(video) .fl-cap{top:10px;bottom:auto}   /* video: cap di atas supaya kontrol pemutar tidak tertutup */
 .fl-pratinjau:has(video) .fl-cap,.fl-r-media:has(video) .fl-cap{bottom:auto}
@@ -392,3 +392,9 @@ form:not(.ada) .fl-lanjut{display:none}
 .fg-apung{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;min-height:48px;padding:0 22px;box-shadow:0 0 0 2px rgb(255 255 255 / .85),0 10px 28px rgb(11 37 69 / .28)}  /* cincin putih: tetap terbaca di atas kaki navy */
 .fl-wrap:has(.fl-ajak) .fg-apung{display:none}
 .fl-wrap{padding-bottom:88px}
+/* Ponsel: kartu kirim foto memenuhi layar yang terlihat, tombol Kirim menempel di bawah supaya tidak perlu dicari */
+@media (max-width:560px){
+  .fl-sheet{width:calc(100vw - 16px);max-width:none;max-height:calc(100dvh - 16px);padding:0 14px max(14px,env(safe-area-inset-bottom))}
+  .fl-sheet header{margin:0 -14px 12px;padding:12px 14px}
+  .fl-sheet [data-kirim-ok]{position:sticky;bottom:0;z-index:5;box-shadow:0 -14px 18px 4px var(--card)}
+}

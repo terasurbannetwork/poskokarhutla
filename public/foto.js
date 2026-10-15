@@ -109,13 +109,13 @@
   }
   /* tampilan Peta: pindah ke tab Peta dengan lapisan foto menyala, dibingkai ke foto hasil saringan */
   function lihatPeta() {
-    const xs = tersaring(); P.nyala = true; tulisL("fl-lapis", "1"); const i = document.querySelector('#lapis input[data-l="foto"]'); if (i) i.checked = true;
+    const xs = tersaring(); P.nyala = true; const i = document.querySelector('#lapis input[data-l="foto"]'); if (i) i.checked = true;
     bukaTab("peta"); setTimeout(() => { if (typeof peta === "undefined" || !peta) return; gambarPeta();
       if (xs.length) { const lo = xs.map(f => f.lon), la = xs.map(f => f.lat); peta.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], {padding: 90, maxZoom: 11}); } }, 400);
   }
 
   /* ------------------------------------------------------------ lapisan peta: kartu HTML, dikelompokkan menurut zoom */
-  const P = {nyala: bacaL("fl-lapis", "1") === "1", penanda: [], pasang: false};
+  const P = {nyala: false,   /* tiap buka mulai mati, tidak diingat (pemilik, 15 Okt 2026) */ penanda: [], pasang: false};
   const tingkatZoom = z => z < 6.2 ? "prov" : z < 8.6 ? "kab" : z < 11.2 ? "kec" : null;
   function gambarPeta() {
     if (typeof peta === "undefined" || !peta) return;
@@ -146,7 +146,7 @@
     await muat(); peta.on("moveend", nanti2); gambarPeta();
     const i = document.querySelector('#lapis input[data-l="foto"]'); if (i) i.checked = P.nyala;
   }
-  function lapis(on) { P.nyala = on; tulisL("fl-lapis", on ? "1" : "0"); gambarPeta(); }
+  function lapis(on) { P.nyala = on; gambarPeta(); }
 
   /* ------------------------------------------------------------ rincian: media, suka, komentar, bagikan, aduan */
   const Rinci = {
