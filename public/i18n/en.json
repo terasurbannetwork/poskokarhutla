@@ -6555,7 +6555,10 @@
 "Industri": "Industry",
 "Selang keluar pompa induk 2,5\" (≥ 20 m)": "Main pump outlet hose 2.5\" (≥ 20 m)",
 "± {0} ha ({1}–{2})": "± {0} ha ({1}–{2})",
-"± {0} ha × US${1}/ha ({2})": "± {0} ha × US${1}/ha ({2})"
+"± {0} ha × US${1}/ha ({2})": "± {0} ha × US${1}/ha ({2})",
+"Grafik Insight": "Insight chart",
+"Grafik Insight belum tersedia": "Insight chart not available yet",
+"Bagikan gambar": "Share image"
 },
 "pola": [["^Terpapar asap, hari ini → hari ke-(\\d+)$", "Exposed to smoke, today → day $1"], ["^· CAMS \\(Copernicus\\) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ ([\\d.,]+) km \\(dampak\\.json\\); prakiraan hari ke-(\\d+)$", "· CAMS (Copernicus) via Open-Meteo × WorldPop population; only cells with an upwind fire complex ≤ $1 km (dampak.json); forecast day $2"], ["^(.+?) · (.+)$", "$1 · $2"], ["^(.+?) / (.+)$", "$1 / $2"], ["^(.+?) → (.+)$", "$1 → $2"], ["^(.+?) – (.+)$", "$1 – $2"], ["^Min,? (\\d+)$", "Sun $1"], ["^Sen,? (\\d+)$", "Mon $1"], ["^Sel,? (\\d+)$", "Tue $1"], ["^Rab,? (\\d+)$", "Wed $1"], ["^Kam,? (\\d+)$", "Thu $1"], ["^Jum,? (\\d+)$", "Fri $1"], ["^Sab,? (\\d+)$", "Sat $1"], ["^Teras Urban\\. \\((\\d+)\\)\\. Pantau Bencana: pemantauan karhutla dan bencana hidrometeorologi Indonesia dari data terbuka \\[Situs web\\]\\. (\\S+) \\(diakses (.+)\\)\\.$", "Teras Urban. ($1). Pantau Bencana: monitoring forest fires and hydrometeorological disasters in Indonesia from open data [Website]. $2 (accessed $3)."], ["^([^:]{2,40}): (.+)$", "$1: $2"], ["^Buka kompleks (.+)$", "Open fire complex $1"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih awal dari median\\)$", "Season started early in $1 ($2 days earlier than the median)"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih lambat dari median\\)$", "Season started late in $1 ($2 days later than the median)"], ["^aktif di (.+)$", "active in $1"], ["^di wilayah kerja (.+)$", "in the $1 area of operations"], ["^kata pemicu: (.+)$", "trigger words: "], ["^Lihat berita (.+)$", "View $1 story"], ["^Warna asli (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "True colour, $1, $2 $3"], ["^SWIR (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "SWIR, $1, $2 $3"]]
 }

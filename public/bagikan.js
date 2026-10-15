@@ -114,7 +114,7 @@ const Bagikan = {
           <div class="bg-opsi">
             <div class="seg" role="group" aria-label="Ukuran">${Object.entries(this.UK).map(([k, v]) => `<button type="button" data-uk="${k}" aria-pressed="false">${v[2]}</button>`).join("")}</div>
             <select id="bgProv" aria-label="Provinsi"></select>
-            <select id="bgEx" aria-label="Grafik insight"></select>
+            <select id="bgEx" aria-label="Grafik Insight"></select>
             <label class="bg-cek"><input type="checkbox" id="bgPeta"> Tangkapan peta langsung</label>
           </div>
           <div class="bg-pra"><img id="bgImg" alt=""><p id="bgStG" role="status" aria-live="polite"></p></div>
@@ -477,10 +477,10 @@ const Bagikan = {
       return {tpl: "ex", id: "luar", label: L.label, judul: L.judul, judulSeg: L.judulSeg, sub: "", unit: "", img: L.img,
         fn: [L.fn, lebih || L.tabel ? `Lihat data lengkap di https://${this.situs()}` : ""].filter(Boolean).join(" · ")}; }
     const L = await this._exP || await this.daftarEx(), e = L.find(z => z.id === id) || L[0];
-    if (!e) return {tpl: "ex", label: "Grafik insight", judul: "Grafik insight belum tersedia", kosong: true};
+    if (!e) return {tpl: "ex", label: "Grafik Insight", judul: "Grafik Insight belum tersedia", kosong: true};
     const h3 = e.art.querySelector("h3"), tx = s => e.art.querySelector(s)?.textContent.replace(/\s+/g, " ").trim() || "";
     e.img ||= await this.svgKanvas(e.art.querySelector("svg"));
-    return {tpl: "ex", id: e.id, label: "Grafik insight", judul: e.judul, judulSeg: [...h3.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
+    return {tpl: "ex", id: e.id, label: "Grafik Insight", judul: e.judul, judulSeg: [...h3.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
       sub: tx(".sub"), unit: tx(".unit"), fn: tx(".fn"), img: e.img};
   },
 
@@ -961,13 +961,13 @@ const Bagikan = {
     else { doc.setFontSize(10); doc.text(T("Tidak ada baris berstatus hari ini."), M, y + 4); }
     /* grafik insight */
     const gr = await this.grafikDok();
-    if (gr.length) { doc.addPage(); y = kepala("Grafik insight");
+    if (gr.length) { doc.addPage(); y = kepala("Grafik Insight");
       for (const g of gr) {
         doc.setFont("helvetica", "bold"); doc.setFontSize(11); const jl = doc.splitTextToSize(T(g.judul), LW);
         doc.setFont("helvetica", "normal"); doc.setFontSize(8); const fl = doc.splitTextToSize(T(g.fn), LW).slice(0, 3);
         let iw = LW, ih = iw * g.h / g.w; if (ih > 110) { ih = 110; iw = ih * g.w / g.h; }
         const perlu = jl.length * 5 + 6 + ih + fl.length * 3.6 + 10;
-        if (y + perlu > 282) { doc.addPage(); y = kepala("Grafik insight"); }
+        if (y + perlu > 282) { doc.addPage(); y = kepala("Grafik Insight"); }
         doc.setFont("helvetica", "bold"); doc.setFontSize(11); doc.setTextColor(...NAVY); doc.text(jl, M, y + 4); y += jl.length * 5;
         doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.setTextColor(...ABU); doc.text(doc.splitTextToSize(T(g.sub), LW)[0] || "", M, y + 3.5); y += 6;
         doc.addImage(g.url, "PNG", M + (LW - iw) / 2, y, iw, ih); y += ih + 2;
