@@ -11,13 +11,25 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=2" rel="stylesheet">
+<link href="/admin/admin.css?v=3" rel="stylesheet">
 </head>`;
+/* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
+const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"]};
 const atas = aktif => `<header class="ad-top">
-  <a class="ad-logo" href="/">Posko Karhutla</a><span class="ad-sep">Admin</span>
-  <nav><a href="/admin/statistik" ${aktif === "statistik" ? 'aria-current="page"' : ""}>Statistik</a><a href="/admin/pesan" ${aktif === "pesan" ? 'aria-current="page"' : ""}>Kotak pesan<b class="ad-badge" id="badgePesan" hidden></b></a><a href="/admin/foto" ${aktif === "foto" ? 'aria-current="page"' : ""}>Foto lapangan</a></nav>
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Posko Karhutla</a><span class="ad-sep">Admin</span>
+  <nav>${Object.entries(HAL).map(([k, [ik, l]]) => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
+/* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
+const halaman = (k, memuat, ekor) => `${kepala(`${HAL[k][1]} · Posko Karhutla`)}
+<body>
+${atas(k)}
+<main class="ad-wrap">
+  <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
+  <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
+</main>
+${ekor}
+</body></html>`;
 
 export const halamanMasuk = galat => `${kepala("Masuk admin · Posko Karhutla")}
 <body class="ad-masuk">
@@ -46,27 +58,12 @@ export const halamanMasuk = galat => `${kepala("Masuk admin · Posko Karhutla")}
 <script src="/admin/masuk.js?v=1"></script>
 </body></html>`;
 
-export const halamanStatistik = () => `${kepala("Statistik · Posko Karhutla")}
-<body>
-${atas("statistik")}
-<main class="ad-wrap" id="app"><p class="ad-redup">Memuat statistik…</p></main>
-<script src="/admin/statistik.js?v=1"></script>
-</body></html>`;
+export const halamanStatistik = () => halaman("statistik", "Memuat statistik…", `<script src="/admin/statistik.js?v=2"></script>`);
 
-export const halamanPesan = () => `${kepala("Kotak pesan · Posko Karhutla")}
-<body>
-${atas("pesan")}
-<main class="ad-wrap" id="app"><p class="ad-redup">Memuat pesan…</p></main>
-<script src="/admin/pesan.js?v=1"></script>
-</body></html>`;
+export const halamanPesan = () => halaman("pesan", "Memuat pesan…", `<script src="/admin/pesan.js?v=2"></script>`);
 
-export const halamanFoto = () => `${kepala("Foto lapangan · Posko Karhutla")}
-<body>
-${atas("foto")}
-<main class="ad-wrap" id="app"><p class="ad-redup">Memuat antrean foto…</p></main>
-<link href="/admin/foto.css?v=1" rel="stylesheet">
-<script src="/admin/foto.js?v=1"></script>
-</body></html>`;
+export const halamanFoto = () => halaman("foto", "Memuat antrean foto…", `<link href="/admin/foto.css?v=2" rel="stylesheet">
+<script src="/admin/foto.js?v=2"></script>`);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
@@ -82,7 +79,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=2" rel="stylesheet">
+<link href="/admin/admin.css?v=3" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>

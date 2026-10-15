@@ -12,20 +12,22 @@
     const balas = p => `mailto:${encodeURIComponent(p.email)}?subject=${encodeURIComponent("Re: pesan Anda ke Posko Karhutla (" + K[p.kategori] + ")")}&body=${encodeURIComponent(`Halo ${p.nama || ""},\n\n\n\n---\nPesan Anda (${waktu(p.dibuat)}):\n${p.isi}`)}`;
     app.innerHTML = `
     ${d.email_siap ? "" : `<div class="ad-spanduk" role="status"><b>Notifikasi email belum dikonfigurasi.</b> Pesan tetap tersimpan di sini; set EMAIL_API_KEY, EMAIL_FROM, EMAIL_TO agar tiap pesan baru juga dikirim ke email.</div>`}
+    <nav class="ad-tabs" aria-label="Status pesan">
+      ${[["aktif", "📥 Kotak masuk", (h.baru || 0) + (h.dibaca || 0)], ["baru", "✉️ Belum dibaca", h.baru || 0], ["dibaca", "📖 Dibaca", h.dibaca || 0], ["arsip", "🗄️ Arsip", h.arsip || 0], ["semua", "📚 Semua", null]]
+        .map(([k, l, n]) => `<button data-s="${k}" aria-pressed="${st.status === k}">${l}${n != null ? ` <b>${n}</b>` : ""}</button>`).join("")}
+    </nav>
     <div class="ad-kontrol" role="toolbar" aria-label="Saring pesan">
-      ${[["aktif", "Kotak masuk", (h.baru || 0) + (h.dibaca || 0)], ["baru", "Belum dibaca", h.baru || 0], ["dibaca", "Dibaca", h.dibaca || 0], ["arsip", "Arsip", h.arsip || 0], ["semua", "Semua", null]]
-        .map(([k, l, n]) => `<button class="ad-chip" data-s="${k}" aria-pressed="${st.status === k}">${l}${n != null ? ` · ${n}` : ""}</button>`).join("")}
       <select id="kat" aria-label="Kategori"><option value="">Semua kategori</option>${Object.entries(K).map(([k, n]) => `<option value="${k}" ${st.kategori === k ? "selected" : ""}>${n}</option>`).join("")}</select>
-      <input type="search" id="q" placeholder="Cari nama, instansi, email, isi" value="${esc(st.q)}" aria-label="Cari pesan">
+      <input type="search" id="q" placeholder="🔎 Cari nama, instansi, email, isi" value="${esc(st.q)}" aria-label="Cari pesan">
     </div>
     <div class="ad-pesan">${d.pesan.length ? d.pesan.map(p => `<article class="ad-msg" data-status="${p.status}" data-id="${p.id}">
       <header><b>${esc(p.nama || "(tanpa nama)")}</b>${p.instansi ? `<span class="ad-redup">${esc(p.instansi)}</span>` : ""}<span class="ad-pil">${esc(K[p.kategori])}</span>
-        <span class="ad-pil">${p.status}</span><span class="ad-redup kecil">${waktu(p.dibuat)}</span></header>
+        <span class="ad-pil ${p.status}">${p.status}</span><span class="ad-redup kecil">${waktu(p.dibuat)}</span></header>
       <div class="isi">${esc(p.isi)}</div>
       <div class="ad-redup kecil">${esc(p.email)}${p.tautan ? ` · <a href="${esc(p.tautan)}" target="_blank" rel="noopener noreferrer">tampilan yang dibuka</a>` : ""}</div>
-      <div class="aksi"><a class="utama" href="${balas(p)}" data-baca>Balas lewat email</a>
-        ${p.status !== "dibaca" ? `<button data-ke="dibaca">Tandai dibaca</button>` : `<button data-ke="baru">Tandai belum dibaca</button>`}
-        ${p.status !== "arsip" ? `<button data-ke="arsip">Arsipkan</button>` : `<button data-ke="dibaca">Keluarkan dari arsip</button>`}</div>
+      <div class="aksi"><a class="ad-tombol kecil utama" href="${balas(p)}" data-baca>📧 Balas lewat email</a>
+        ${p.status !== "dibaca" ? `<button class="ad-tombol kecil" data-ke="dibaca">📖 Tandai dibaca</button>` : `<button class="ad-tombol kecil" data-ke="baru">✉️ Tandai belum dibaca</button>`}
+        ${p.status !== "arsip" ? `<button class="ad-tombol kecil" data-ke="arsip">🗄️ Arsipkan</button>` : `<button class="ad-tombol kecil" data-ke="dibaca">↩️ Keluarkan dari arsip</button>`}</div>
     </article>`).join("") : `<p class="ad-kosong">Tidak ada pesan.</p>`}</div>
     <p class="ad-catat">Pesan dihapus otomatis 180 hari setelah dikirim. Email pengirim hanya untuk membalas.</p>`;
     app.querySelectorAll("[data-s]").forEach(b => b.onclick = () => { st.status = b.dataset.s; muat(); });

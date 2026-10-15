@@ -100,14 +100,14 @@
       ${[[1, "Hari ini"], [7, "7 hari"], [30, "30 hari"], [90, "90 hari"]].map(([n, l]) => `<button class="ad-chip" data-r="${n}" aria-pressed="${st.rentang === n && st.sampai === hariIni()}">${l}</button>`).join("")}
       <label class="kecil ad-redup">Tanggal <input type="date" id="tgl" value="${st.sampai}" max="${hariIni()}" min="${geser(hariIni(), -89)}"></label>
       <select id="hal" aria-label="Halaman"><option value="">Semua halaman</option>${Object.entries(HALN).map(([k, n]) => `<option value="${k}" ${st.hal === k ? "selected" : ""}>${n}</option>`).join("")}</select>
-      <span class="sp"></span><button class="ad-tombol" id="csv">Ekspor CSV</button>
+      <span class="sp"></span><button class="ad-tombol" id="csv">📥 Ekspor CSV</button>
     </div>
     ${d.email_siap ? "" : `<div class="ad-spanduk" role="status"><b>Notifikasi email belum dikonfigurasi.</b> Pesan baru tetap tersimpan di <a href="/admin/pesan">Kotak pesan</a>; set EMAIL_API_KEY, EMAIL_FROM, EMAIL_TO untuk menerima email.</div>`}
     <div class="ad-hero">
       <section class="ad-kartu"><span class="ad-ey">${esc(d.jendela)}</span>
-        <div class="ad-besar">${d.sampel ? "≈ " : ""}${fmt(R.orang)}</div>
+        <div class="ad-besar" title="Satu orang = satu peramban per hari yang menyetujui analitik (tanpa cookie). Do Not Track / GPC dan yang menolak tidak dihitung.">${d.sampel ? "≈ " : ""}${fmt(R.orang)}</div>
         <div class="ad-besar-l">${hariIniSaja ? "orang membuka peta hari ini" : d.hari > 1 ? `orang membuka peta (jumlah harian, ${d.hari} hari)` : "orang membuka peta pada hari itu"}</div>
-        <p class="ad-catat">Satu orang = satu peramban per hari yang menyetujui analitik (tanda dari localStorage, tanpa cookie). Do Not Track / GPC dan yang menolak tidak dihitung; angka semua tayangan ada di <a href="/statistik">statistik publik</a>.${d.sampel ? " <b>Perkiraan (sampel):</b> lalu lintas melewati batas pencatatan gratis, sebagian kiriman dicatat lalu dikalikan." : ""}</p></section>
+        ${d.sampel ? `<p class="ad-catat"><b>Perkiraan (sampel):</b> lalu lintas melewati batas pencatatan gratis, sebagian kiriman dicatat lalu dikalikan.</p>` : ""}</section>
       <section class="ad-kartu ad-langsung" aria-live="polite" id="langsung"></section>
     </div>
     <div class="ad-kpi">
@@ -184,9 +184,8 @@
   }
   function langsung(L) {
     const el = $("#langsung"); if (!el || !L) return;
-    el.innerHTML = `<span class="ad-ey">Saat ini (perkiraan)</span><div><span class="ad-titik"></span><b>${fmt(L.sekarang)}</b> peta terbuka saat ini</div>
+    el.innerHTML = `<span class="ad-ey">Saat ini (perkiraan)</span><div title="Dari kiriman 5 menit terakhir; peramban mengirim saat halaman ditutup/disembunyikan, jadi angka ini tertinggal."><span class="ad-titik"></span><b>${fmt(L.sekarang)}</b> peta terbuka saat ini</div>
       <div class="ad-redup">${fmt(L.n30)} dalam 30 menit terakhir</div>
-      <p class="ad-catat">Dihitung dari kiriman dalam 5 menit terakhir; peramban mengirim saat halaman ditutup/disembunyikan (tanpa detak), jadi angka ini tertinggal dan mendekati.</p>
       <div class="ad-hal">${Object.entries(L.per_hal || {}).map(([k, v]) => `<span>${HALN[k] || k}: ${v.sekarang} · ${v.n30}</span>`).join("") || "<span>belum ada yang aktif</span>"}</div>
       <p class="ad-catat">Diperbarui tiap 15 detik · ${new Date(L.kini + WIB).toISOString().slice(11, 19)} WIB</p>`;
   }
