@@ -32,7 +32,7 @@ import math, random
 KELAS = ["Rendah", "Sedang", "Tinggi", "Ekstrem"]
 R0_BAKU = 3000.0
 # (aH, bH, n, alpha): bawaan = hasil kalibrasi RISET-PFVI.md (n, alpha dari Zenodo; aH, bH dari api VIIRS 2015 & 2018)
-PAR_BAKU = (0.0, 0.0, 2.0, 100.0)
+PAR_BAKU = (2.2022, 0.04276, 3.0, 150.0)
 
 
 def DF(x, temp, r0=R0_BAKU, dt=1.0):
@@ -82,7 +82,7 @@ def kelas(x):
 # ---------------- muka air tanah: proxy ember ----------------
 # Batas dari Zenodo 17907349 (58.245 sel ~1 km Kalimantan): muka air -188,7 .. +22,8 cm.
 WT_ATAS, WT_BAWAH = 22.8, -188.7
-WT_PAR_BAKU = (0.15, 1.0, 0.0)  # (Sy hasil hasil-jenis, faktor ET, kebocoran cm/hari); disetel di RISET-PFVI.md
+WT_PAR_BAKU = (0.05, 0.505, 0.0)  # (Sy hasil jenis, faktor ET, kebocoran cm/hari); disetel di RISET-PFVI.md (Sy di batas bawah)
 
 
 def muka_air_proxy(hujan, et0, par=WT_PAR_BAKU, wt0=0.0):

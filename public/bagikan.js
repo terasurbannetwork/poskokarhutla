@@ -300,7 +300,9 @@ const Bagikan = {
         : `${J}. ${E ? "See it on the map:" : "Lihat di peta:"}`;
       return {judul: J, teks, url: o + "/k/" + encodeURIComponent(a), kampanye: "kompleks"};
     }
-    if (jenis === "artikel") { const [j, url, kamp] = a; return {judul: j, teks: `${Bagi.potong(j, 180)} (${tg}). ${E ? "More:" : "Selengkapnya:"}`, url, kampanye: kamp}; }
+    /* kartu Berita: tanggal hari ini, bukan tanggal data titik panas (bisa tertinggal beberapa hari) */
+    if (jenis === "artikel") { const [j, url, kamp] = a, hr = new Date().toLocaleDateString(E ? "en-GB" : "id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"});
+      return {judul: j, teks: `${Bagi.potong(j, 180)} (${hr}). ${E ? "More:" : "Selengkapnya:"}`, url, kampanye: kamp}; }
     const k = jenis === "prov" ? a : "";
     return {judul: k ? namaProv(k) + " · " + this.K.pendek : document.title, teks: this.teksWil(k) + " " + L, url: o + location.pathname + (k ? "?wil=" + k : ""), kampanye: k ? "provinsi" : "ringkasan"};
   },
@@ -312,7 +314,8 @@ const Bagikan = {
     const amati = (id, f) => { const el = document.getElementById(id); if (!el) return; let r = 0;
       const jalan = () => { r = 0; try { f(el); } catch (e) { console.warn("bagikan", id, e); } };
       new MutationObserver(() => { r ||= requestAnimationFrame(jalan); }).observe(el, {childList: true, subtree: true}); jalan(); };
-    const judul = el => el?.textContent.replace(/\s+/g, " ").trim() || "";
+    /* teks judul tanpa tombol di dalamnya (mis. "Hapus saringan ✕") */
+    const judul = el => { if (!el) return ""; const c = el.cloneNode(true); c.querySelectorAll("button").forEach(b => b.remove()); return c.textContent.replace(/\s+/g, " ").trim(); };
     amati("ringkasan", el => { const a = el.querySelector(".rk-hero .rk-aksi"); if (!a || a.querySelector(".bg-rk")) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "btn sec bg-rk"; b.innerHTML = `${this.IKON}<span>${E ? "Share" : "Bagikan"}</span>`;
       b.onclick = () => this.bagi({...this.konteks("nasional"), gambar: () => this.gambarCepat(""), lainnya: () => this.buka()}); a.prepend(b); });
