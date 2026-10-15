@@ -96,6 +96,13 @@ jobs:
           key: berita-gambar-${{ github.run_id }}
           restore-keys: berita-gambar-
 
+      - name: Pulihkan cache terjemahan judul berita
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/berita/terjemah.json
+          key: berita-terjemah-${{ github.run_id }}
+          restore-keys: berita-terjemah-
+
       - name: Bot berita (boleh gagal)
         continue-on-error: true
         timeout-minutes: 20
@@ -121,6 +128,13 @@ jobs:
         with:
           path: data/raw/berita/gambar.json
           key: berita-gambar-${{ github.run_id }}
+
+      - name: Simpan cache terjemahan judul berita
+        if: hashFiles('data/raw/berita/terjemah.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/berita/terjemah.json
+          key: berita-terjemah-${{ github.run_id }}
 
       - name: Rekomendasi posko
         run: python3 scripts/data/posko.py

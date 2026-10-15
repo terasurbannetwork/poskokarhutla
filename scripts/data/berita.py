@@ -1486,6 +1486,53 @@ def perkaya_gambar(out, batas_detik=420, maks_cerita=40, ambil=True):
     return {"baru": n_baru, "cache": len(cache), "dengan_gambar": sum(1 for a in out["artikel"] if a.get("gambar")), "detik": round(time.time() - t0)}
 
 
+def terjemah_judul(out, batas_detik=240, ambil=True):
+    """Judul berita + video (bukan bahasa Inggris) -> public/data/berita_en.json {judul: judul Inggris}, dimuat halaman hanya saat
+    mode EN. Mesin: Google Translate endpoint publik (client=gtx), judul digabung per baris ~3.500 karakter per permintaan.
+    Cache data/raw/berita/terjemah.json; judul yang gagal diterjemahkan tampil apa adanya."""
+    p = os.path.join(RAW, "terjemah.json")
+    try:
+        cache = json.load(open(p))
+    except Exception:
+        cache = {}
+    judul = [a["judul"] for a in sorted(out["artikel"], key=lambda a: a["tgl"], reverse=True) if a.get("bahasa") != "en"]  # terbaru dulu
+    judul += [c["judul"] for c in out["cerita"] + out["sorotan"] + out.get("sorotan_nas", []) + out["internasional"]["sorotan"] if c.get("judul")]
+    try:
+        judul += [v["judul"] for v in json.load(open(os.path.join(DATA, "video.json")))["video"]]
+    except Exception:
+        pass
+    judul = [j for j in dict.fromkeys(x.strip() for x in judul) if j and "\n" not in j]
+    t0, n_baru, gagal, sisa = time.time(), 0, 0, [j for j in judul if j not in cache]
+    # ponytail: endpoint tak resmi tanpa kunci; kalau mulai ditolak, ganti ke Cloud Translation / Workers AI m2m100
+    while ambil and sisa and time.time() - t0 < batas_detik:
+        kelompok, n = [], 0
+        while sisa and n + len(sisa[0]) < 3500:
+            n += len(sisa[0]) + 1; kelompok.append(sisa.pop(0))
+        if not kelompok:
+            kelompok.append(sisa.pop(0))
+        try:
+            data = urllib.parse.urlencode({"q": "\n".join(kelompok)}).encode()
+            req = urllib.request.Request("https://translate.googleapis.com/translate_a/single?client=gtx&sl=auto&tl=en&dt=t", data, {"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=30) as r:
+                hasil = "".join(s[0] for s in json.load(r)[0] if s[0]).split("\n")
+        except Exception as ex:  # 429: mundur lalu coba lagi; tiga kali gagal = sisanya menunggu jalan berikutnya
+            print("terjemah gagal", str(ex)[:80], file=sys.stderr)
+            gagal += 1; sisa[:0] = kelompok
+            if gagal >= 3:
+                break
+            time.sleep(30 * gagal); continue
+        if len(hasil) == len(kelompok):
+            for j, e in zip(kelompok, hasil):
+                cache[j] = e.strip(); n_baru += 1
+        time.sleep(3)
+    if ambil:
+        json.dump(cache, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
+    peta = {j: cache[j] for j in judul if cache.get(j) and cache[j] != j}
+    with open(os.path.join(DATA, "berita_en.json"), "w") as f:
+        json.dump(peta, f, ensure_ascii=False, separators=(",", ":"))
+    return {"baru": n_baru, "terjemahan": len(peta), "belum": len(judul) - len(peta), "detik": round(time.time() - t0)}
+
+
 # ---------------------------------------------------------------- utama
 def baca_arsip():
     p = os.path.join(RAW, "arsip.json")
@@ -1776,6 +1823,10 @@ def main(isi_hari=0, ambil_rss=True):
     except Exception as e:  # thumbnail hanya hiasan: jangan gagalkan jalan
         gb = {"galat": str(e)[:120]}
     print("gambar", gb, file=sys.stderr)
+    try:
+        print("terjemah", terjemah_judul(h, ambil=ambil_rss), file=sys.stderr)
+    except Exception as e:  # terjemahan hanya pelengkap mode EN
+        print("terjemah galat", str(e)[:120], file=sys.stderr)
     v = validasi(geo=geo)
     if v:
         v["inggris"] = validasi(os.path.join(RAW, "label_uji_en.json"), geo=geo, en=True)

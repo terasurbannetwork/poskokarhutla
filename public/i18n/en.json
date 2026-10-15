@@ -2224,6 +2224,14 @@
 "Menampilkan {0}–{1} dari {2} kejadian": "Showing {0}–{1} of {2} events",
 "Menampilkan {0}–{1} dari {2} kompleks": "Showing {0}–{1} of {2} fire complexes",
 "Menampilkan {0}–{1} dari {2} sekolah": "Showing {0}–{1} of {2} schools",
+"Menampilkan {0}–{1} dari {2} video": "Showing {0}–{1} of {2} videos",
+"Daftar video": "Video list",
+"Video terkait karhutla di YouTube, {0} hari terakhir; diputar di YouTube": "Forest and land fire videos on YouTube, last {0} days; plays on YouTube",
+"Cari judul atau kanal": "Search title or channel",
+"Cari video": "Search videos",
+"Memuat video…": "Loading videos…",
+"Tidak ada video yang cocok.": "No matching videos.",
+"Sumber: YouTube Data API": "Source: YouTube Data API",
 "Menangkap ≥ {0} kejadian?": "Catches ≥ {0} events?",
 "Menengah (kabupaten)": "Medium (regency)",
 "Mengapa darurat? Lihat hitungannya": "Why an emergency? See the calculation",
@@ -5741,7 +5749,8 @@
 "Di luar gambut": "Outside peat",
 "Piksel 24 j": "Pixels 24 h",
 "Luas (ha)": "Area (ha)",
-"Tanah mineral": "Mineral soil"
+"Tanah mineral": "Mineral soil",
+"Durasi": "Duration"
 },
 "pola": [["^(.+?) · (.+)$", "$1 · $2"], ["^(.+?) / (.+)$", "$1 / $2"], ["^(.+?) → (.+)$", "$1 → $2"], ["^(.+?) – (.+)$", "$1 – $2"], ["^Min,? (\\d+)$", "Sun $1"], ["^Sen,? (\\d+)$", "Mon $1"], ["^Sel,? (\\d+)$", "Tue $1"], ["^Rab,? (\\d+)$", "Wed $1"], ["^Kam,? (\\d+)$", "Thu $1"], ["^Jum,? (\\d+)$", "Fri $1"], ["^Sab,? (\\d+)$", "Sat $1"], ["^Teras Urban\\. \\((\\d+)\\)\\. Pantau Bencana: pemantauan karhutla dan bencana hidrometeorologi Indonesia dari data terbuka \\[Situs web\\]\\. (\\S+) \\(diakses (.+)\\)\\.$", "Teras Urban. ($1). Pantau Bencana: monitoring forest fires and hydrometeorological disasters in Indonesia from open data [Website]. $2 (accessed $3)."]]
 }

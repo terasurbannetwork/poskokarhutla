@@ -6,7 +6,8 @@
   "d1_databases": [
     { "binding": "DB", "database_name": "poskowarga", "database_id": "2357f51f-540c-482c-8bf1-3130ddb7f196", "migrations_dir": "migrations" }
   ],
-  "triggers": { "crons": ["17 * * * *"] },
+  "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
+  "triggers": { "crons": ["17 * * * *", "15 */3 * * *"] },
   "vars": { "TURNSTILE_SITEKEY": "", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Pantau Bencana <onboarding@resend.dev>" },
   "observability": { "enabled": true }
 }

@@ -3,7 +3,8 @@
    - Kamus i18n/en.json dimuat HANYA saat EN aktif: {kamus: {"teks ID": "EN"}, pola: [["^regex$", "ganti $1"], ...]}.
    - Angka di dalam teks diganti {0},{1},… sebelum dicari, jadi "123 titik panas" dan "4.567 titik panas" memakai satu entri.
    - Format angka/tanggal: toLocaleString("id-ID") jadi "en-GB" (1,234.5 dan 14 Oct 21:20) saat EN — semua fmt/jamWIB ikut.
-   - Isi buatan pengguna/pihak ketiga dilewati: [data-no-i18n], [translate=no], tautan eksternal (judul berita), teks Lapor Warga.
+   - Isi buatan pengguna/pihak ketiga dilewati: [data-no-i18n], [translate=no], teks Lapor Warga. Tautan eksternal (judul berita/video)
+     hanya diganti dari data/berita_en.json (terjemahan mesin per judul, dibuat scripts/data/berita.py), tidak lewat kamus.
    Pengamat bekerja di microtask (sebelum cat): tidak ada kilatan teks Indonesia dan tidak ada baca-tata-letak, jadi tidak ada layout thrash.
    Dimuat paling awal di <head> (sinkron) supaya tambalan locale berlaku sebelum modul lain berjalan. */
 (() => {
@@ -25,7 +26,7 @@
     const W = function (l, o) { return new A(lok(l), o); }; W.prototype = A.prototype; W.supportedLocalesOf = A.supportedLocalesOf; Intl[k] = W; }
 
   /* ---------- penerjemah */
-  let KAMUS = null, POLA = [], CACHE = new Map();
+  let KAMUS = null, POLA = [], CACHE = new Map(), JUDUL = {};
   const HILANG = new Map();   // teks yang belum ada padanannya (dibaca scripts/i18n/kumpul.mjs)
   /* token angka: "Rp1,2 T", "12,3 rb", "45%", "2.345" (setelah tambalan locale, angka EN berformat 1,234.5) */
   const ANGKA = /(?:Rp\s?)?[−-]?\d[\d.,]*(?:\s?%)?(?:\s(?:rb|jt|M|T)(?![\w]))?/g;
@@ -64,17 +65,19 @@
   }
 
   /* ---------- DOM: simpul teks + atribut; asli disimpan supaya kembali ke ID tanpa muat ulang */
-  const LEWATI = "script,style,noscript,code,pre,textarea,[data-no-i18n],[translate=no],.maplibregl-ctrl-attrib,a[href^='http'][target=_blank],.lw-teks,.lw-k-teks";
+  const LEWATI = "script,style,noscript,code,pre,textarea,[data-no-i18n],[translate=no],.maplibregl-ctrl-attrib,.lw-teks,.lw-k-teks";
   const ATR = ["title", "aria-label", "placeholder", "alt", "data-tip"];
   const ASLI = new WeakMap(), ASLI_ATR = new WeakMap(), TIP = new Map();
+  const LUAR = "a[href^='http'][target=_blank]";
   const dilewati = el => !el || el.closest?.(LEWATI);
   function teks(n) {
     const v = n.data, r = ASLI.get(n); if (r && v === r[1]) return;
-    const t = terj(v); if (t !== v) { n.data = t; ASLI.set(n, [v, t]); }
+    const t = n.parentElement?.closest(LUAR) ? (B === "en" && JUDUL[v.trim()]) || v : terj(v);
+    if (t !== v) { n.data = t; ASLI.set(n, [v, t]); }
   }
   const tipHTML = h => { let r = TIP.get(h); if (r == null) { const tp = document.createElement("template"); tp.innerHTML = h; jalan(tp.content); r = tp.innerHTML; TIP.set(h, r); } return r; };
   function atribut(el, a) {
-    const v = el.getAttribute(a); if (v == null) return;
+    const v = el.getAttribute(a); if (v == null || el.closest(LUAR)) return;
     let rec = ASLI_ATR.get(el); if (rec?.[a] && rec[a][1] === v) return;
     const t = a === "data-tip" ? (/[<&]/.test(v) ? tipHTML(v) : terj(v)) : terj(v);
     if (t !== v) { el.setAttribute(a, t); if (!rec) ASLI_ATR.set(el, rec = {}); rec[a] = [v, t]; }
@@ -109,7 +112,9 @@
 
   /* ---------- kamus: hanya diambil saat EN */
   let janji = null;
-  const muatKamus = () => janji ||= fetch(new URL("i18n/en.json?v=2", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)).then(d => {
+  /* judul berita terjemahan mesin: gagal = judul tetap bahasa Indonesia */
+  const muatJudul = () => fetch(new URL("data/berita_en.json", src), {cache: "no-cache"}).then(r => r.ok ? r.json() : {}).then(d => { JUDUL = d; }, () => {});
+  const muatKamus = () => janji ||= Promise.all([fetch(new URL("i18n/en.json?v=2", src)).then(r => r.ok ? r.json() : Promise.reject(r.status)), muatJudul()]).then(([d]) => {
     KAMUS = d.kamus || {}; POLA = (d.pola || []).map(([re, g]) => [new RegExp(re, "su"), g]); CACHE = new Map(); TIP.clear();
   }).catch(e => { janji = null; KAMUS = KAMUS || {}; console.warn("i18n/en.json", e); });
 

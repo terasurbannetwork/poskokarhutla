@@ -272,6 +272,24 @@ def recall_anggaran(skor, y, porsi):
     return {"recall": round(tp / max(sum(y), 1), 3), "presisi": round(tp / len(o), 3)}
 
 
+def boot_d_auc(kunci, a, b, y, ulang=300, seed=1):
+    """Selang 95% selisih AUC (b - a), bootstrap berpasangan per seri sel-tahun (hari dalam satu sel saling bergantung)."""
+    import random
+    from gbdt import auc
+    kel = {}
+    for i, k in enumerate(kunci):
+        kel.setdefault(k, []).append(i)
+    ks, rnd, d = list(kel), random.Random(seed), []
+    for _ in range(ulang):
+        ii = [i for k in (rnd.choice(ks) for _ in ks) for i in kel[k]]
+        yy = [y[i] for i in ii]
+        p, q = auc([a[i] for i in ii], yy), auc([b[i] for i in ii], yy)
+        if p is not None and q is not None:
+            d.append(q - p)
+    d.sort()
+    return [round(d[int(.025 * len(d))], 3), round(d[int(.975 * len(d)) - 1], 3)]
+
+
 def balik():
     from gbdt import latih_lr, prediksi_lr
     Z = json.load(open(os.path.join(OUT, "zenodo.json")))
@@ -319,6 +337,8 @@ def balik():
             "muka_air_proxy": metrik([-w for w in wtU], y, [w < -60 for w in wtU]),
             "anggaran_sama_FWI7": {"porsi": round(porsi, 3), "FWI": recall_anggaran(fwU, y, porsi), "PFVI": recall_anggaran(pfU, y, porsi),
                                    "gabungan": recall_anggaran(gab, y, porsi)}}
+        kk = [k for k, t in iu]
+        H[nm]["d_auc_ci95"] = {"gabungan-FWI": boot_d_auc(kk, fwU, gab, y), "PFVI-FWI": boot_d_auc(kk, fwU, pfU, y)}
         for th in UJI:
             ii = [i for i, (k, t) in enumerate(iu) if k[0] == th]
             yy = [y[i] for i in ii]

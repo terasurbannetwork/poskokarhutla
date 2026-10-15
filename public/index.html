@@ -1277,7 +1277,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .lapis-hd button svg{width:13px;height:13px;transition:transform .2s}
 .lapis-hd button.tutup svg{transform:rotate(180deg)}
 .lapis .ub-gr{display:flex;gap:4px;padding:2px 0 4px}
-.lapis .ub-gr{gap:6px!important}
+.lapis .ub-gr{gap:8px 6px!important;flex-wrap:wrap}  /* ubin yang tidak muat turun ke baris kedua (pemilik, 15 Okt 2026) */
 .lapis .ub-gr > .ubin{flex:0 0 auto;min-width:40px;max-width:58px}  /* label EN lebih panjang ("Complexes"): ubin melebar, tidak saling tindih */
 .lapis label.ubin{display:flex;flex-direction:column;align-items:center;gap:5px;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
 .lapis label.ubin input{position:absolute;opacity:0;pointer-events:none}
@@ -2618,7 +2618,7 @@ const Tabel = {
   render() {
     const el = $("#kompleks"); if (!S.kluster) return;
     const r = this.baris(), hal = r.slice(this.hal * this.per, (this.hal + 1) * this.per), jml = Math.ceil(r.length / this.per);
-    const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel 24 j", 0, 1], ["hari", "Hari", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
+    const kol = [["id", "Kode"], ["level", "Status"], ["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"], ["px24", "Piksel 24 j", 0, 1], ["hari", "Durasi", 0, 1], ["n", "Deteksi", 0, 1], ["luas", "Luas (ha)", 0, 1], ["fwi", "FWI", 0, 1], ["dc", "DC", 0, 1]];
     if (!el.dataset.ok) {
       el.dataset.ok = 1;
       /* kartu bergaya Insight: kepala (label, judul, kontrol) | tabel | paginasi */
