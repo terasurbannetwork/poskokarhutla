@@ -1,7 +1,7 @@
 /* foto.css — Foto lapangan (public/foto.js). Token warna dari index.html (--card, --surface, --ink, --ink2, --line, --brand2).
    Latar pastel kartu = warna kategori (--k) dicampur ke --card, jadi mode gelap ikut sendiri. */
 .fl-wrap{max-width:1180px;margin:0 auto;padding:20px 16px 48px}
-.fl-kepala{display:flex;align-items:flex-end;justify-content:space-between;gap:16px;flex-wrap:wrap}
+.fl-kepala{display:flex;align-items:flex-end;justify-content:flex-end;gap:16px;flex-wrap:wrap}
 .fl-kepala h2{font:800 24px/1.2 var(--display);letter-spacing:-.01em}
 .fl-kepala p{color:var(--ink2);font-size:14px;margin-top:4px}
 .fl-pri,.fl-sek{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:44px;padding:0 18px;border-radius:999px;border:0;cursor:pointer;font:700 14px var(--font);background:var(--ink);color:var(--card)}

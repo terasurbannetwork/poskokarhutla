@@ -49,7 +49,7 @@
     const el = $("#foto"); if (!el) return;
     if (!el.dataset.siap) {
       el.dataset.siap = 1;
-      el.innerHTML = `<div class="fl-wrap"><header class="fl-kepala"><div><h2>Foto</h2><p>Foto dan video dari warga di lokasi, diperiksa admin sebelum tayang.</p></div>
+      el.innerHTML = `<div class="fl-wrap"><header class="fl-kepala" aria-label="Foto">
         <button class="fl-pri" data-kirim>${IK.kamera}Kirim foto</button></header>
         <div class="fl-alat"><div class="fl-seg" role="group" aria-label="Kelompokkan per">${TINGKAT.map(([k, n]) => `<button data-t="${k}" aria-pressed="${k === G.tingkat}">${n}</button>`).join("")}</div>
         <div class="fl-chip" role="group" aria-label="Kategori"><button data-k="" aria-pressed="true">Semua</button>${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${n}</button>`).join("")}</div></div>
