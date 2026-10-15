@@ -257,6 +257,7 @@ async function adminAksi(env, req, url, id, kini) {
 const PROV_DUMMY = ["62", "16", "61", "14", "15", "64", "63"];
 const KET_DUMMY = ["Api masih menyala di lahan gambut belakang kebun", "Asap tebal sejak pagi, jarak pandang sekitar 200 m", "Regu Manggala Agni sedang memadamkan",
   "Lahan bekas terbakar kemarin, masih ada bara", "Warga membantu membuat sekat bakar", "Asap mulai menipis setelah hujan semalam", "Sumur bor untuk pemadaman di dekat kanal"];
+const N_DUMMY = 100;
 const NAMA_DUMMY = ["Rina", "Budi S.", "Pak Darto", "", "Siti", "", "Yoga"];
 async function dummy(env, req, kini) {
   const mod = await adminOK(env, req, kini); if (!mod) return gagal(403, "admin wajib masuk");
@@ -273,11 +274,11 @@ async function dummy(env, req, kini) {
   const W = await wilayah(env), kec = [];
   for (const g of W.grid.values()) for (const k of g) if (PROV_DUMMY.includes(k[2].slice(0, 2))) kec.push(k);
   kec.sort((a, b) => a[2] < b[2] ? -1 : 1);
-  const pilih = Array.from({length: 24}, (_, i) => kec[Math.floor((i * 7919) % kec.length)]);
+  const pilih = Array.from({length: N_DUMMY}, (_, i) => kec[Math.floor((i * 7919) % kec.length)]);
   const ipPalsu = i => sha(`dummy-${i}`), KAT = Object.keys(KATEGORI), st = [], ids = [];
   for (let i = 0; i < pilih.length; i++) {
     const [la, lo, kunci] = pilih[i], [prov, kab, kc] = kunci.split("|"), id = acak(8), nama = NAMA_DUMMY[i % NAMA_DUMMY.length];
-    const dibuat = kini - (i * 3.5 + 1) * JAM, exifW = i % 3 !== 2, exifJ = i % 4 === 0 ? 40 + i * 13 : null;
+    const dibuat = kini - (i * 1.5 + 1) * JAM, exifW = i % 3 !== 2, exifJ = i % 4 === 0 ? 40 + i * 13 : null;
     ids.push(id);
     st.push(env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat, exif_waktu, exif_jarak,
       kamera, ukuran, mime, ip_hash, dummy) VALUES (?, 'foto', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'image/webp', ?, 1)`)
@@ -290,7 +291,9 @@ async function dummy(env, req, kini) {
   const KOM = ["Semoga cepat padam 🙏", "Di kampung sebelah juga berasap", "Terima kasih infonya, kami kirim regu", "Masih ada asap jam 5 sore tadi"];
   for (let i = 3; i < ids.length; i++) {
     if (i % 6 === 5) continue;
-    for (let s = 0; s < (i * 5) % 13; s++) st.push(env.DB.prepare("INSERT INTO foto_suka (foto_id, ip_hash, waktu) VALUES (?, ?, ?)").bind(ids[i], await ipPalsu(100 + s), kini - s * MENIT));
+    const ns = (i * 5) % 13, sv = [];   // satu INSERT banyak baris per foto: 100 foto tetap jauh di bawah batas kueri per panggilan D1
+    for (let s = 0; s < ns; s++) sv.push(ids[i], await ipPalsu(100 + s), kini - s * MENIT);
+    if (ns) st.push(env.DB.prepare(`INSERT INTO foto_suka (foto_id, ip_hash, waktu) VALUES ${Array(ns).fill("(?, ?, ?)").join(", ")}`).bind(...sv));
     for (let k = 0; k < i % 4; k++) st.push(env.DB.prepare("INSERT INTO foto_komentar (id, foto_id, nama, teks, dibuat, disembunyikan, ip_hash, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, 1)")
       .bind(acak(8), ids[i], ["", "Andi", "Warga Kapuas"][k % 3], KOM[(i + k) % KOM.length], kini - (k + 1) * 20 * MENIT, i === 7 && k === 0 ? 1 : 0, await ipPalsu(200 + k)));
   }

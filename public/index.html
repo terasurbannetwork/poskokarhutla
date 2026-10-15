@@ -769,15 +769,21 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pv-k2 i[style*="var(--card)"]{background:var(--lp-kosong)!important}
 .pv-k2 i.kini{box-shadow:0 0 0 2px var(--lp-ink)}
 .pv-k2 small{text-align:center;font-size:10.5px;color:var(--lp-ink3);padding-top:2px}
-/* rekomendasi: baris ala daftar iOS, nomor dalam lingkaran lembut */
-ol.rek{margin:0;padding:0;list-style:none;display:grid;counter-reset:r}
-ol.rek li{counter-increment:r;display:grid;grid-template-columns:26px minmax(0,1fr);align-content:start;gap:3px 12px;font-size:13.5px;line-height:1.45;padding:12px 0;border-top:1px solid var(--lp-line)}
-ol.rek li:first-child{border-top:0;padding-top:0}
-ol.rek li:last-child{padding-bottom:0}
-ol.rek li::before{content:counter(r);grid-row:span 2;width:26px;height:26px;border-radius:50%;background:color-mix(in oklch,var(--w) 16%,var(--lp-chip));color:color-mix(in oklch,var(--w) 85%,var(--lp-ink));font-size:12px;font-weight:700;display:grid;place-items:center}
-ol.rek li>span{font-weight:500;color:var(--lp-ink)}
-ol.rek li>span b{font-weight:700}
-ol.rek li small{grid-column:2;color:var(--lp-ink3);font-size:12px}
+/* rekomendasi: kartu lipat putih di atas panel abu, berkolom ke samping; tertutup = 3 baris, dibuka = teks penuh + dasar */
+.lpr-g{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:10px;align-items:start}
+.lpr{background:var(--lp-chip);border-radius:18px;padding:14px 14px 14px 14px;min-width:0}
+.lpr>summary{list-style:none;cursor:pointer;display:grid;grid-template-columns:26px minmax(0,1fr) 10px;gap:10px;align-items:start}
+.lpr>summary::-webkit-details-marker{display:none}
+.lpr>summary::after{content:"";width:6px;height:6px;margin-top:8px;border-right:2px solid var(--lp-ink3);border-bottom:2px solid var(--lp-ink3);transform:rotate(45deg);transition:transform .2s}
+.lpr[open]>summary::after{transform:rotate(-135deg);margin-top:11px}
+.lpr>summary:focus-visible{outline:3px solid #e3b94e;outline-offset:4px;border-radius:12px}
+.lpr i{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;font:700 12px/1 var(--font);font-style:normal;background:color-mix(in oklch,var(--w) 16%,var(--lp-chip));color:color-mix(in oklch,var(--w) 85%,var(--lp-ink))}
+.lpr span{font-size:13.5px;line-height:1.45;font-weight:500;color:var(--lp-ink);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden}
+.lpr span b{font-weight:700}
+.lpr[open] span{display:block}
+.lpr small{display:block;margin:10px 0 0 36px;padding-top:10px;border-top:1px solid var(--lp-line);font-size:12px;line-height:1.45;color:var(--lp-ink2)}
+@media (prefers-reduced-motion:reduce){.lpr>summary::after{transition:none}}
+@media (max-width:560px){.lpr-g{grid-template-columns:none;grid-auto-flow:column;grid-auto-columns:80%;overflow-x:auto;scroll-snap-type:x mandatory;overscroll-behavior-x:contain;margin:0 -14px;padding:0 14px 2px;scroll-padding:0 14px;scrollbar-width:none}.lpr-g::-webkit-scrollbar{display:none}.lpr{scroll-snap-align:start}}   /* HP: kartu digeser ke samping */
 @media (max-width:800px){.pv-g{grid-template-columns:1fr}}
 @media (max-width:700px){.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(2,minmax(0,1fr))}}
 @media (max-width:560px){.pv{gap:10px}.pv-g{gap:10px}.pv-p{padding:16px 14px 18px;border-radius:20px}.pv-c b{font-size:24px}
@@ -2763,6 +2769,8 @@ async function renderPrioritas() {
     /* rincian provinsi: kartu abu ala Oyenza berpasangan dua kolom, angka dulu lalu rekomendasi (pemilik, 15 Okt 2026) */
     const sek = (j, isi, kelas = "") => `<section class="pv-p ${kelas}"><h4>${j}</h4><div class="pv-b">${isi}</div></section>`;
     const ubin = pvUbin;
+    /* rekomendasi = kartu lipat berkolom: tertutup memperlihatkan 3 baris, dibuka memperlihatkan teks penuh + dasarnya (pemilik, 15 Okt 2026) */
+    const kartuRek = (n, teks, w, dasar = "") => `<details class="lpr" style="--w:${w}"><summary><i>${n}</i><span>${teks}</span></summary>${dasar ? `<small>Dasar: ${esc(dasar)}</small>` : ""}</details>`;
     const kelasF = v => FWI_KELAS[kelasFWI(v)][0];
     return {k, lv, nk: kl.length, np: lvN[3], kmr, fw: w.fwi_maks, html: `<div class="pv">
       ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45", "", "api")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli", "prio")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length), "daun")}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha", "luas")}</div>
@@ -2771,10 +2779,8 @@ async function renderPrioritas() {
             return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="${Math.min(8, bw / 4)}" fill="${w}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
               + `<text x="${x + bw / 2}" y="${Y(v) - 8}" text-anchor="middle" font-size="12.5" font-weight="700" style="fill:${ak ? "#e8743b" : "var(--lp-ink)"}">${rb(v)}</text>`
               + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 700 : 500}" style="fill:${ak ? "var(--lp-ink)" : "var(--lp-ink2)"}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
-      <div class="pv-g">
-      ${sek(`Rekomendasi · ${rek.length} langkah`, `<ol class="rek">${rek.map(x => `<li style="--w:${warnaRek[x.lv]}"><span>${x.teks}</span><small>Dasar: ${esc(x.dasar)}</small></li>`).join("") || `<li style="--w:${warnaRek[0]}"><span>Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.</span></li>`}</ol>`)}
-      ${bnb.length ? sek("Rekomendasi BNPB", `<ol class="rek bnpb">${bnb.map(x => `<li style="--w:${warnaRek[0]}"><span>${esc(x)}</span></li>`).join("")}</ol>`) : ""}
-      </div>
+      ${sek(`Rekomendasi · ${rek.length} langkah`, `<div class="lpr-g">${rek.map((x, i) => kartuRek(i + 1, x.teks, warnaRek[x.lv], x.dasar)).join("") || kartuRek(1, "Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.", warnaRek[0])}</div>`, "pv-lebar")}
+      ${bnb.length ? sek("Rekomendasi BNPB", `<div class="lpr-g">${bnb.map((x, i) => kartuRek(i + 1, esc(x), warnaRek[0])).join("")}</div>`, "pv-lebar") : ""}
       <div class="pv-g">
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
         ${pm ? `<div class="pv-ket"><em class="br-lb" style="--w:${pm > 150.4 ? "#7a2b3f" : pm > 55.4 ? "#c9503a" : "#e3b94e"}">PM2.5 hingga ${fmt(Math.round(pm))} µg/m³ · ${pm > 250.4 ? "berbahaya" : pm > 150.4 ? "sangat tidak sehat" : pm > 55.4 ? "tidak sehat" : "sedang"}</em><em class="br-lb" style="--w:#8a6a3f">DC maks ${fmt(w.dc_maks)}</em></div>` : ""}`)}

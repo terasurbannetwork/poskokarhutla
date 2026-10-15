@@ -219,7 +219,7 @@ uji("foto dummy: isi semua ember lewat pintunya, publik tidak melihatnya, admin 
   const m = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + d.id);
   assert.equal(m.status, 200, "thumbnail dummy dari aset contoh"); await m.arrayBuffer();
   const h = await panggil("POST", "/api/foto/dummy", {aksi: "hapus"}, "1.1.1.1", ADMIN);
-  assert.equal(h.j.foto, 24);
+  assert.equal(h.j.foto, 100);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n, 0);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto_komentar WHERE dummy = 1").first()).n, 0);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto_suka s LEFT JOIN foto f ON f.id = s.foto_id WHERE f.id IS NULL").first()).n, 0, "suka dummy ikut terhapus (cascade)");
