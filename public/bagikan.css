@@ -105,5 +105,9 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-ex.bg-pk{float:none!important;margin:0 0 0 8px!important;flex:none;align-self:center;order:99;position:static!important}
 .ex-jd:has(> .bg-pk){align-items:center}
 .ex:has(> header .bg-pk) > .bs-sel{display:none}
-.ex-jd > .pk-naik{margin-left:auto;flex:none;align-self:center}
-.ex-jd > .bg-pk{margin-left:8px!important}
+/* wadah pemilih + bagikan di pojok kanan atas kepala kartu, sebaris label kategori */
+.ex > header:has(> .ex-aksi){position:relative}
+.ex > header > .ex-aksi{position:absolute;top:12px;right:16px;display:flex;align-items:center;gap:8px;z-index:3}
+.ex > header > .ex-aksi .pc,.ex > header > .ex-aksi .pmulti,.ex > header > .ex-aksi select{margin:0!important;flex:none}
+.ex > header:has(> .ex-aksi) .ex-jd h3{padding-right:0}
+.pm-menu .lambang{display:none}  /* pemilih provinsi tanpa logo (pemilik, 15 Okt 2026) */

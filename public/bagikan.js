@@ -65,9 +65,11 @@ const Bagikan = {
       /* pemilih provinsi bisa muncul belakangan (select -> PilihCantik): pindahkan tombol yang sudah ada ke sebelahnya */
       /* baris pemilih: di samping judul (.ex-jd) atau di baris kontrol kepala kartu */
       /* pemilih provinsi naik ke baris judul (kanan atas), lalu tombol bagikan di sebelahnya (pemilik, 15 Okt 2026) */
-      const pemilih = a.querySelector(":scope > header .pc, :scope > header .pmulti, :scope > header select"), jdK = a.querySelector(":scope > header > .ex-jd"), lama = a.querySelector(":scope > .bg-ex");
-      if (pemilih && jdK && pemilih.parentElement !== jdK) { pemilih.classList.add("pk-naik"); jdK.append(pemilih); }
-      if (lama && pemilih && jdK) { jdK.append(lama); lama.classList.add("bg-pk"); }
+      /* pemilih provinsi + tombol bagikan: satu wadah di pojok kanan atas kartu, sebaris label kategori (pemilik, 15 Okt 2026) */
+      const hd = a.querySelector(":scope > header"), pemilih = hd?.querySelector(".pc, .pmulti, select"), lama = a.querySelector(":scope > .bg-ex, :scope > header .ex-jd > .bg-ex");
+      let aksi = hd?.querySelector(":scope > .ex-aksi"), jdK = aksi;
+      if (pemilih && hd) { if (!aksi) { aksi = jdK = document.createElement("div"); aksi.className = "ex-aksi"; hd.prepend(aksi); }
+        if (pemilih.parentElement !== aksi) aksi.prepend(pemilih); if (lama && lama.parentElement !== aksi) { aksi.append(lama); lama.classList.add("bg-pk"); } }
       if (a.querySelector(":scope > .bg-ex, :scope > header > .bg-ex, :scope > .pm-h > .bg-ex, :scope > header .bg-pk") || !ada) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "bg-ex"; b.setAttribute("aria-label", "Bagikan grafik ini"); b.title = "Bagikan";
       b.innerHTML = `<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>`;
@@ -591,7 +593,9 @@ const Bagikan = {
     let ks = [...(art.querySelector(":scope > .ex-bd") || art).children].filter(lihat);
     /* satu pembungkus: turun bila isinya berdampingan (kolom kiri/kanan) atau terlalu tinggi untuk satu halaman */
     const dampingan = e => new Set([...e.children].filter(lihat).map(c => c.offsetLeft)).size > 1;
-    while (ks.length === 1 && [...ks[0].children].filter(lihat).length > 1 && (dampingan(ks[0]) || ks[0].offsetHeight > 500)) ks = [...ks[0].children].filter(lihat);
+    for (let n = 0; n < 6 && ks.length === 1 && [...ks[0].children].filter(lihat).length && (dampingan(ks[0]) || ks[0].offsetHeight > 500); n++) {
+      const anak = [...ks[0].children].filter(lihat); if (anak.length > 6 && ks[0].offsetHeight > 600) break;   /* sudah di tingkat daftar: dipotong di bawah */
+      ks = anak; }
     /* daftar/kisi panjang (mis. Daftar berita): dipotong per kelompok item, dua baris per halaman, paling banyak 4 halaman */
     const out = [];
     for (const k of ks) { const it = [...k.children].filter(lihat), kol = new Set(it.slice(0, 8).map(c => c.offsetLeft)).size || 1;
@@ -608,7 +612,8 @@ const Bagikan = {
       [c, ...c.querySelectorAll("*")].forEach(n => { n.style.animation = "none"; n.style.transition = "none"; });
       try { return await this.domKanvas(c); } finally { c.remove(); } }
     const R = document.documentElement, tema = R.dataset.theme; R.dataset.theme = "light";
-    const tombol = n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel"))), o = {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw="};
+    const tombol = n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel"))), o = {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw=",
+      style: {position: "relative", left: "0", top: "0", margin: "0", transform: "none"}};   /* akar tangkapan: salinan di luar layar tidak ikut tergeser keluar bingkai */
     /* gambar lintas-asal (favikon media, thumbnail berita) bisa menggagalkan tangkapan: ulangi tanpa gambar itu */
     const luar = n => n.tagName === "IMG" && n.src && !n.src.startsWith(location.origin) && !n.src.startsWith("data:");
     try { return await htmlToImage.toCanvas(el, {...o, filter: tombol}); }

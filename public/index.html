@@ -726,7 +726,11 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pv-p{min-width:0;display:grid;gap:10px;align-content:start}
 .pv-p.pv-lebar{grid-column:1/-1}
 .pv-p>h4,.pv>details.lipat>summary,.pv .lbl{margin:0;font:700 15px/1.3 var(--font);letter-spacing:-.005em;text-transform:none;color:var(--ink)}
-.pv-b{background:var(--surface);border-radius:20px;padding:16px;display:grid;gap:14px;min-width:0}
+.pv-b{display:grid;gap:14px;min-width:0}   /* tanpa kompartemen: bagian rata di atas putih (pemilik, 15 Okt 2026) */
+.pv-p + .pv-p,.pv-g + .pv-p,.pv-p.pv-lebar + .pv-g{padding-top:0}
+.pv{gap:28px!important}
+.pv > *:not(:first-child){padding-top:22px;border-top:1px solid var(--line)}
+.pv-g{row-gap:28px!important}
 .pv-us{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
 .pv-p.pv-lebar .pv-us{grid-template-columns:repeat(4,minmax(0,1fr))}
 .pv-u{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:start;align-content:start}
@@ -760,7 +764,7 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .pv>details.lipat>summary::after{width:7px;height:7px;color:var(--ink2)}
 .pv>details.lipat .isi{padding:0;gap:10px}
 .pv .lbl{margin-top:12px!important}
-ol.rek{margin:0;padding:2px 16px;list-style:none;display:grid;background:var(--surface);border-radius:20px;counter-reset:r}
+ol.rek{margin:0;padding:0;list-style:none;display:grid;counter-reset:r}
 ol.rek li{counter-increment:r;display:grid;grid-template-columns:28px minmax(0,1fr);align-content:start;gap:2px 12px;font-size:13.5px;line-height:1.45;padding:13px 0;border-top:1px solid var(--line)}
 ol.rek li:first-child{border-top:0}
 ol.rek li::before{content:counter(r);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:color-mix(in oklch,var(--w) 16%,var(--card));color:color-mix(in oklch,var(--w) 80%,var(--ink));font-size:12px;font-weight:800;display:grid;place-items:center}
@@ -979,15 +983,16 @@ ol.rek li small{grid-column:2;color:var(--ink2);font-size:12px}
 .tm svg{display:block;margin:4px 0 2px;color:var(--ink)}
 .tm-b{cursor:pointer}
 .tm-b:hover rect + rect{filter:brightness(.88)}
-.pr-list{display:grid;gap:12px;margin-bottom:14px}
-.pr-row{border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
-.pr-row.l3{border-left:4px solid #c9503a}.pr-row.l2{border-left:4px solid #e3b94e}.pr-row.l1{border-left:4px solid #4f8fc4}
-.pr-row[open]{border-left:1px solid var(--line)}   /* laci terbuka: tanpa pita kiri tebal, status cukup dari pil */
+.pr-list{display:grid;gap:0;margin-bottom:14px;border-top:1px solid var(--line)}
+.pr-row{border:0;border-bottom:1px solid var(--line);border-radius:0;background:none;box-shadow:none;overflow:visible}   /* daftar polos, bukan kartu (pemilik, 15 Okt 2026) */
+
 .pr-row > summary{list-style:none;display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer}
 .pr-row > summary::-webkit-details-marker{display:none}
 .pr-row > summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;flex:none;margin-left:4px}
 .pr-row[open] > summary::after{transform:rotate(225deg)}
-.pr-row[open] > summary{border-bottom:1px solid var(--line);background:var(--surface)}
+.pr-row[open] > summary{background:none}
+.pr-row > summary:hover{background:color-mix(in oklch,var(--ink) 3%,transparent)}
+.pr-row > .pr-isi{padding:4px 18px 22px}
 .pr-row .lambang{width:30px;height:30px;object-fit:contain}
 .pr-n{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .pr-n b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -3311,7 +3316,7 @@ const Insight = {
   provDipilih(key) { return String(this.st[key] || "").split(",").filter(Boolean); },
   selProvMulti(key, daftar = PRIO) { const P = this.provDipilih(key), lb = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi";
     const buka = this._bukaMulti === key; this._bukaMulti = null;
-    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}>${typeof lambang === "function" ? lambang(k) : ""}<span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
+    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
   selProv(key, semua = "Semua provinsi") { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${PRIO.map(k => `<option value="${k}" ${k === this.st[key] ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`; },
   async muat() {
     const D = this.data;
@@ -4032,7 +4037,8 @@ const Berita = {
       + sek("Berita terbaru", daftar)); },
   /* 6. daftar berita dengan saringan */
   saring() { const f = this.f, q = f.q.toLowerCase();
-    return this.d.artikel.filter(a => (!f.prov || a.prov?.includes(f.prov)) && (!f.topik || a.topik?.includes(f.topik)) && (!f.sent || a.label_situasi === f.sent) && (!q || (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase().includes(q))); },
+    const PV = String(f.prov || "").split(",").filter(Boolean);   /* beberapa provinsi bisa dicentang (pemilik, 15 Okt 2026) */
+    return this.d.artikel.filter(a => (!PV.length || PV.some(k => a.prov?.includes(k))) && (!f.topik || a.topik?.includes(f.topik)) && (!f.sent || a.label_situasi === f.sent) && (!q || (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase().includes(q))); },
   /* video YouTube (data/video.json dari scripts/data/video.py): tren unggahan, siapa & di mana, lalu daftar yang bisa diurutkan.
      Tiga kartu dibangun setelah berkasnya termuat; seluruhnya dibuang bila berkasnya belum ada. */
   VJ: {media: ["Media", "#4f8fc4"], resmi: ["Resmi", "#1d4e89"], kreator: ["Kreator", "#e58a45"]},
@@ -4095,7 +4101,7 @@ const Berita = {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     return `<article class="ex" id="brDaftar"><h3>Daftar berita</h3><p class="sub">Disaring dan dicari; tiap berita menautkan ke sumber aslinya</p>
       <p class="unit">nada dinilai otomatis dari kata di judul (arahkan kursor ke label untuk melihat kata pemicunya)</p>
-      <div class="ctl br-saring"><input data-f="q" type="search" placeholder="Cari judul, kabupaten, media" aria-label="Cari berita" class="br-cari"><select data-f="prov" aria-label="Provinsi"><option value="">Semua provinsi</option>${pv.map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join("")}</select>
+      <div class="ctl br-saring"><input data-f="q" type="search" placeholder="Cari judul, kabupaten, media" aria-label="Cari berita" class="br-cari"><details class="pmulti br-pv"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fm="prov" value="" checked><span>Semua provinsi</span></label>${pv.map(k => `<label><input type="checkbox" data-fm="prov" value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>
         <select data-f="topik" aria-label="Topik"><option value="">Semua topik</option>${Object.entries(TOPIK_B).map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select>
         <select data-f="sent" aria-label="Nada"><option value="">Semua nada</option><option value="negatif">Memburuk</option><option value="netral">Netral</option><option value="positif">Membaik</option></select>
 </div>
@@ -4125,6 +4131,10 @@ const Berita = {
       const lj = e.target.closest("[data-lonj]"); if (lj) return this.rinciLonj(+lj.dataset.lonj); };
     el.onkeydown = e => { if (e.key === "Enter" && e.target.matches("[data-celah],[data-lonj]")) e.target.click(); };
     el.onchange = e => { const x = e.target.closest("[data-snf]"); if (!x) return; this.sn[x.dataset.snf] = x.value; nanti(() => $("#brSent").innerHTML = this.exSentimen()); };
+    el.addEventListener("change", e => { const m = e.target.closest("input[data-fm]"); if (!m) return; const box = m.closest(".pm-menu");
+      if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
+      const P = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean); if (!P.length) box.querySelector("input[value='']").checked = true;
+      this.f.prov = P.join(","); this.f.hal = 0; box.closest("details").querySelector("summary").textContent = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi"; this.ulangDaftar(); });
     el.oninput = e => { const x = e.target.closest("[data-f]"); if (!x) return; this.f[x.dataset.f] = x.value; this.f.hal = 0; clearTimeout(this._t); this._t = setTimeout(() => this.ulangDaftar(), x.tagName === "INPUT" ? 250 : 0); };
     this.ulangDaftar(); },
 };
