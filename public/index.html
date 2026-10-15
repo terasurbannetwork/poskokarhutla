@@ -338,13 +338,14 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .ik-btn:hover{background:var(--surface);border-color:var(--brand2)}
 .ik-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.kv div{--k:#c9503a;background:linear-gradient(180deg,color-mix(in oklch, var(--k) 7%, var(--card)),var(--card));border:1px solid color-mix(in oklch, var(--k) 22%, var(--line));border-radius:12px;padding:11px 8px 10px;text-align:center;display:flex;flex-direction:column;align-items:center;gap:4px;position:relative;overflow:hidden}
-.kv div::before{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--k)}
+/* ubin angka laci kompleks gaya Oyenza: panel abu tanpa garis & bingkai, angka besar rata kiri, label satu baris, kelas jadi pil (pemilik, 15 Okt 2026) */
+.kv div{--k:#c9503a;background:var(--surface);border:0;border-radius:16px;padding:12px 12px 11px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px;position:relative;min-width:0}
 .kv div:nth-child(2){--k:#e58a45}
 .kv div:nth-child(3){--k:#5f6fb0}
-.kv b{display:block;font-family:var(--display);font-size:20px;font-weight:800;line-height:1.1;font-variant-numeric:tabular-nums;color:color-mix(in oklch, var(--k) 70%, var(--ink))}
-.kv span{display:flex;flex-direction:column;align-items:center;gap:3px;font-size:11px;line-height:1.3;color:var(--ink2);font-weight:600}
-.kv span em{font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--k) 14%, transparent);color:color-mix(in oklch, var(--k) 80%, var(--ink));white-space:nowrap}
+.kv b{display:block;font-family:var(--display);font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.kv b small,.kv b sub,.kv b span{display:inline!important;font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:0}
+.kv span{display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:11.5px;line-height:1.3;color:var(--ink2);font-weight:500;max-width:100%}
+.kv span em{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--k) 13%, var(--card));color:color-mix(in oklch, var(--k) 80%, var(--ink));white-space:nowrap}
 .sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:13px}
 .sop ul{margin:6px 0 0;padding-left:18px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:13.5px}
@@ -442,6 +443,21 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
 .simpanel .simatur .lbl{margin-top:0}
 .simpanel input[type=range]{accent-color:oklch(25.5% .075 256)}
 .simpanel h2{font-size:17px}
+/* panel simulasi gaya Oyenza (pemilik, 15 Okt 2026): judul bagian biasa, chip dua kolom, kartu pengaturan abu tanpa garis */
+.simpanel .lbl{text-transform:none!important;letter-spacing:0!important;font-size:13px!important;font-weight:700;color:var(--ink)}
+.simpanel > .lbl:first-child{font-size:12px!important;font-weight:600;color:var(--ink2)}
+.simpanel h2{font-size:20px;letter-spacing:-.02em;margin-top:2px}
+.simpanel .simchips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.simpanel .simchips button{height:38px;justify-content:flex-start;padding:0 12px;border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font-size:12.5px;font-weight:600}
+.simpanel .simchips button i{opacity:.45}
+.simpanel .simchips button[aria-pressed="true"]{background:var(--ink);color:var(--card);border:0}
+.simpanel .simchips button[aria-pressed="true"] i{opacity:1;box-shadow:0 0 0 2px var(--card)}
+.simpanel .simchips button:disabled[aria-pressed="true"]{background:color-mix(in oklch,var(--ink) 80%,var(--card))}
+.simpanel .simatur{background:var(--surface)!important;border:0!important;border-radius:16px;padding:12px 14px}
+.simpanel .simatur > .lbl{display:flex;align-items:center;gap:7px}
+.simpanel .simatur > .lbl::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+.simpanel input[type=range],.simgeser input{accent-color:var(--ink)}
+.simpanel .simgeser b{font-weight:800}
 .fld{max-width:100%;display:flex;flex-direction:column;gap:4px;margin:10px 0}
 .fld select,.fld input[type=number]{max-width:100%;min-width:0;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px}
 .simchips{display:flex;flex-wrap:wrap;gap:6px}
@@ -581,22 +597,6 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .pmulti .pm-menu label:hover{background:var(--surface)}
 .pmulti .pm-menu input{width:16px;height:16px;accent-color:#0b2545;flex:none}
 .pmulti .pm-menu img,.pmulti .pm-menu svg{width:18px;height:18px;flex:none}
-/* ==== panel provinsi bergaya kartu Insight: tenang, datar, satu sistem (pemilik, 14 Okt 2026) ==== */
-.pv-p{border-radius:16px!important;box-shadow:var(--shadow)}
-.pv-p > h4{padding:12px 16px!important;background:linear-gradient(180deg,var(--surface),var(--card))!important}
-.pv-p > h4::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--brand2);margin-right:8px;vertical-align:1px}
-.pv-b{padding:14px 16px!important}
-/* rekomendasi: daftar bernomor berbaris, tanpa kotak berwarna */
-ol.rek{grid-template-columns:1fr!important;gap:0!important}
-ol.rek li{border:0!important;border-radius:0!important;background:none!important;box-shadow:none!important;padding:12px 2px!important;border-bottom:1px solid var(--line)!important;font-size:13px!important}
-ol.rek li:last-child{border-bottom:0!important}
-ol.rek li::after{display:none!important}
-ol.rek li::before{width:24px!important;height:24px!important}
-ol.rek li small{border-top:0!important;padding-top:2px!important}
-/* cuaca 4 hari: ubin datar */
-.pv-c{background:var(--surface)!important;border:0!important;border-radius:12px!important;padding:12px 6px!important}
-.pv-c::before,.pv-c::after{display:none!important}
-.pv-c b{color:var(--ink)!important;filter:none!important;font-size:24px!important}
 .kal-leg{display:flex;flex-wrap:wrap;justify-content:center;gap:6px 18px;margin-top:8px;font-size:11px;color:var(--ink2)}
 .kal-leg span{display:inline-flex;align-items:center;gap:3px}
 .kal-leg b{margin-right:4px;font-weight:700}
@@ -720,41 +720,56 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .rk-ctl .pc{flex:1;max-width:none}
 /* rincian provinsi (Kompleks) */
 .pr-isi{color:var(--ink)}
-.pv{display:grid;gap:14px;padding:4px 2px 2px}
-.pv-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}
-.pv-p{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;min-width:0}
+/* laci provinsi bergaya pop-up situasi (sapa.js): putih, panel abu radius 20, judul polos 15px, satu angka besar per ubin, ikon dalam lingkaran lembut, batang tinta + satu aksen oranye (pemilik, 15 Okt 2026) */
+.pv{display:grid;gap:22px;padding:6px 2px 4px}
+.pv-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}
+.pv-p{min-width:0;display:grid;gap:10px;align-content:start}
 .pv-p.pv-lebar{grid-column:1/-1}
-.pv-p > h4{margin:0;padding:10px 14px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:var(--card);border-bottom:1px solid var(--line)}
-.pv-b{padding:12px 14px;display:grid;gap:10px}
+.pv-p>h4,.pv>details.lipat>summary,.pv .lbl{margin:0;font:700 15px/1.3 var(--font);letter-spacing:-.005em;text-transform:none;color:var(--ink)}
+.pv-b{background:var(--surface);border-radius:20px;padding:16px;display:grid;gap:14px;min-width:0}
+.pv-us{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
+.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(4,minmax(0,1fr))}
+.pv-u{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:start;align-content:start}
+.pv-u .pv-i{grid-row:span 3;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in oklch,var(--w) 18%,var(--card));color:color-mix(in oklch,var(--w) 75%,var(--ink))}
+.pv-u .pv-i svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pv-u b{display:block;font:700 24px/1.05 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-u span,.pv-u em{display:block;font-size:12px;font-style:normal;font-weight:500;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.pv-u em{margin-top:1px;font-size:11.5px;opacity:.85}
+.pv-sub{font-size:12.5px;font-weight:600;color:var(--ink2);padding-top:12px;border-top:1px solid var(--line)}
+.pr-isi svg.pr-hr{color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pr-isi svg.pr-hr{color:var(--ink2)}}
+:root[data-theme="dark"] .pr-isi svg.pr-hr{color:var(--ink2)}
+.pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
+.pv-c{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0;min-width:0}
+.pv-c small{font-size:12px;font-weight:600;color:var(--ink2);white-space:nowrap}
+.pv-c b{font:700 26px/1.1 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
+.pv-c em{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
+.pv-c em::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--w)}
+.pv-c span{font-size:11.5px;color:var(--ink2);white-space:nowrap}
+.pv-ket{display:flex;flex-wrap:wrap;gap:6px;padding-top:12px;border-top:1px solid var(--line)}
+.pv-ket .br-lb{font-size:11.5px;padding:4px 10px;background:color-mix(in oklch,var(--w) 12%,var(--card));color:color-mix(in oklch,var(--w) 75%,var(--ink))}
 .pv-k2{display:grid;grid-template-columns:auto repeat(12,minmax(0,1fr));gap:3px;align-items:center}
-.pv-k2n{font-size:11px;font-weight:700;padding-right:6px;white-space:nowrap}
-.pv-k2 i{height:24px;border-radius:5px;display:grid;place-items:center;font:700 10px/1 var(--font);font-style:normal}
+.pv-k2n{font-size:12px;font-weight:600;color:var(--ink2);padding-right:8px;white-space:nowrap}
+.pv-k2 i{height:26px;border-radius:7px;display:grid;place-items:center;font:700 10px/1 var(--font);font-style:normal}
 .pv-k2 i.kini{outline:2px solid var(--ink);outline-offset:-1px}
-.pv-k2 small{text-align:center;font-size:10px;color:var(--ink2)}
-.pv-us{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:8px}
-/* ubin statistik panel provinsi: datar & tenang — latar abu muda, garis warna tipis di kiri, angka gelap (pemilik, 14 Okt 2026) */
-.pv-us{grid-template-columns:repeat(2,minmax(0,1fr))!important;gap:10px!important}
-.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(4,minmax(0,1fr))!important}
-@media (max-width:700px){.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(2,minmax(0,1fr))!important}}
-.pv-u{position:relative;padding:12px 14px;border-radius:12px;background:var(--surface);border:0;border-left:4px solid var(--w);box-shadow:none;overflow:hidden}
-.pv-u b{display:block;font-family:var(--display);font-size:24px;font-weight:800;line-height:1.05;color:var(--ink);font-variant-numeric:tabular-nums}
-.pv-u span{display:block;font-size:11.5px;color:var(--ink2);font-weight:600;margin-top:4px}
-.pv-u em{display:inline-block;margin-top:6px;font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--w) 14%, var(--card));color:color-mix(in oklch, var(--w) 80%, var(--ink))}
-.pv-sub{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
-.pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
-.pv-c{display:flex;flex-direction:column;align-items:center;gap:3px;padding:10px 6px;border-radius:12px;border:1px solid var(--line);background:var(--card);position:relative;overflow:hidden}
-.pv-c::before{content:"";position:absolute;inset:0 0 auto;height:4px;background:var(--w)}
-.pv-c small{font-size:11px;font-weight:700;color:var(--ink2)}
-.pv-c b{font-family:var(--display);font-size:22px;font-weight:800;color:var(--w);filter:saturate(1.2) brightness(.85)}
-.pv-c em{font-style:normal;font-size:10px;font-weight:800;padding:1px 8px;border-radius:999px;background:var(--w);color:#fff}
-.pv-c span{font-size:10.5px;color:var(--ink2)}
-.pv-ket{display:flex;flex-wrap:wrap;gap:5px}
-.pv-kal{display:grid;grid-template-columns:repeat(36,minmax(0,1fr));gap:2px}
-.pv-kal i{height:22px;border-radius:3px;background:var(--v)}
-.pv-kal i.kini{outline:2px solid oklch(25.5% .075 256);outline-offset:1px}
-.pv-bln{display:grid;grid-template-columns:repeat(12,minmax(0,1fr));font-size:10.5px;color:var(--ink2);text-align:center}
-.pv-peta{justify-self:end}
-@media (max-width:800px){.pv-g{grid-template-columns:1fr}.pv-cu{grid-template-columns:repeat(2,1fr)}}
+.pv-k2 small{text-align:center;font-size:10.5px;color:var(--ink2)}
+.pv-b>p{margin:0!important;font-size:12.5px!important;line-height:1.5}
+/* rekomendasi: judul polos, daftar di panel abu, nomor dalam lingkaran lembut */
+.pv>details.lipat{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
+.pv>details.lipat>summary{border:0;background:none;padding:0 0 10px}
+.pv>details.lipat>summary::after{width:7px;height:7px;color:var(--ink2)}
+.pv>details.lipat .isi{padding:0;gap:10px}
+.pv .lbl{margin-top:12px!important}
+ol.rek{margin:0;padding:2px 16px;list-style:none;display:grid;background:var(--surface);border-radius:20px;counter-reset:r}
+ol.rek li{counter-increment:r;display:grid;grid-template-columns:28px minmax(0,1fr);align-content:start;gap:2px 12px;font-size:13.5px;line-height:1.45;padding:13px 0;border-top:1px solid var(--line)}
+ol.rek li:first-child{border-top:0}
+ol.rek li::before{content:counter(r);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:color-mix(in oklch,var(--w) 16%,var(--card));color:color-mix(in oklch,var(--w) 80%,var(--ink));font-size:12px;font-weight:800;display:grid;place-items:center}
+ol.rek li>span{font-weight:600;color:var(--ink)}
+ol.rek li small{grid-column:2;color:var(--ink2);font-size:12px}
+@media (max-width:800px){.pv-g{grid-template-columns:1fr}}
+@media (max-width:700px){.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:560px){.pv-b{padding:14px;border-radius:18px}ol.rek{padding:2px 14px}.pv-u b{font-size:22px}.pv-c b{font-size:22px}.pv-k2n{font-size:11px;padding-right:4px}.pv-k2 i{height:22px;border-radius:5px;font-size:8px;letter-spacing:-.03em}.pv-k2 small{font-size:0}.pv-k2 small::after{content:attr(data-s);font-size:10px}
+  .pv-cu{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 6px}.pv-u{grid-template-columns:1fr}.pv-u .pv-i{grid-row:auto;width:30px;height:30px;margin-bottom:8px}.pv-u .pv-i svg{width:15px;height:15px}.pv-u span,.pv-u em{white-space:normal}}
 /* daftar provinsi: kolom statistik sejajar di semua baris */
 .pr-row > summary{display:grid!important;grid-template-columns:44px minmax(0,1fr) repeat(4,112px) 104px 18px;gap:10px!important}
 .pr-row > summary .pr-n b{color:var(--ink)!important}
@@ -945,12 +960,6 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .tools .tarik{left:-9px}
 .laci .tarik{left:0}
 @media (max-width:900px){.tarik{display:none}}
-/* rekomendasi: kartu putih berpita warna di atas, dua kolom di layar lebar */
-ol.rek{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:10px;counter-reset:r}
-ol.rek li{counter-increment:r;position:relative;display:grid;grid-template-columns:24px 1fr;align-content:start;gap:4px 10px;font-size:12.5px;line-height:1.45;padding:12px 14px 11px;border-radius:12px;background:var(--card);border:1px solid var(--line);box-shadow:0 1px 3px oklch(25% .05 256 / .06);overflow:hidden}
-ol.rek li::after{content:"";position:absolute;inset:0 0 auto;height:3px;background:var(--w)}
-ol.rek li::before{content:counter(r);grid-row:span 2;width:22px;height:22px;border-radius:50%;background:var(--w);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
-ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px;padding-top:4px;border-top:1px dashed var(--line)}
 .cuaca4{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
 .cuaca4>div{border-radius:10px;padding:6px 4px;text-align:center;display:grid;gap:1px}
 .cuaca4 b{font-size:18px;font-family:var(--display)}
@@ -973,6 +982,7 @@ ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px;padding-top:4px;b
 .pr-list{display:grid;gap:12px;margin-bottom:14px}
 .pr-row{border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);overflow:hidden}
 .pr-row.l3{border-left:4px solid #c9503a}.pr-row.l2{border-left:4px solid #e3b94e}.pr-row.l1{border-left:4px solid #4f8fc4}
+.pr-row[open]{border-left:1px solid var(--line)}   /* laci terbuka: tanpa pita kiri tebal, status cukup dari pil */
 .pr-row > summary{list-style:none;display:flex;align-items:center;gap:14px;padding:14px 18px;cursor:pointer}
 .pr-row > summary::-webkit-details-marker{display:none}
 .pr-row > summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;flex:none;margin-left:4px}
@@ -2017,9 +2027,9 @@ function panah() { const c = document.createElement("canvas"); c.width = c.heigh
 function gradasi(st, v) { for (let k = 1; k < st.length; k++) if (v <= st[k][0]) { const [a, ca] = st[k - 1], [b, cb] = st[k], t = (v - a) / (b - a);
     return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); } return st[st.length - 1][1]; }
 /* PM2.5 menurut ambang ISPU: <=15,5 baik, <=55,4 sedang, <=150,4 tidak sehat, <=250,4 sangat tidak sehat, >250 berbahaya */
-const ST_PM = [[0, [70, 150, 220, 0]], [15.5, [90, 180, 120, 90]], [55.4, [240, 210, 80, 200]], [150.4, [240, 120, 50, 230]], [250.4, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
+const ST_PM = [[0, [70, 150, 220, 0]], [15.5, [90, 180, 120, 40]], [55.4, [240, 210, 80, 150]], [150.4, [240, 120, 50, 230]], [250.4, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
 /* PM10 menurut ambang ISPU: <=50 baik, <=150 sedang, <=350 tidak sehat, <=420 sangat tidak sehat, >420 berbahaya */
-const ST_PM10 = [[0, [70, 150, 220, 0]], [50, [90, 180, 120, 90]], [150, [240, 210, 80, 200]], [350, [240, 120, 50, 230]], [420, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
+const ST_PM10 = [[0, [70, 150, 220, 0]], [50, [90, 180, 120, 40]], [150, [240, 210, 80, 150]], [350, [240, 120, 50, 230]], [420, [200, 40, 50, 240]], [600, [110, 20, 60, 250]]];
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 200, 240, 120]], [10, [70, 140, 220, 200]], [30, [40, 80, 200, 230]], [80, [90, 40, 170, 240]]];
 /* grid ke gambar: 1 piksel per sel, MapLibre menghaluskan */
 const hariSebelum = t => new Date(new Date(t + "T12:00:00+07:00") - 864e5).toISOString().slice(0, 10);
@@ -2045,7 +2055,7 @@ function geoAQI(u) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.ma
 /* kol: indeks kolom asap.json (2 = pm25_maks, 7 = pm10_maks) */
 function gambarAsap(d, kol = 2, st = ST_PM) { const tgl = S.fwi.grid[0].hari[S.fwiHari]?.tgl, i = Math.max(0, d.hari.indexOf(tgl));
   /* tepi kotak data dipudarkan 3 sel supaya lapisan tidak tampak sebagai kotak keras (pemilik, 15 Okt 2026) */
-  const pudar = (lo, la) => Math.min(1, (Math.min(lo - 94, 141 - lo, la + 11, 6 - la) + .5) / 3);
+  const pudar = (lo, la) => { const t = Math.min(1, Math.max(0, (Math.min(lo - 94, 141 - lo, la + 11, 6 - la) + .5) / 6)); return t * t * (3 - 2 * t); };   /* 6 sel, halus */
   return gambarGrid(1, 94, 141, -11, 6, put => d.grid.forEach(r => { if (r[kol]?.[i] == null) return; const c = gradasi(st, r[kol][i]); put(r[1], r[0], [c[0], c[1], c[2], Math.round((c[3] ?? 255) * pudar(r[1], r[0]))]); })); }
 function gambarHujan() { const i = S.fwiHari;
   return gambarGrid(S.fwi.sel, 94.5, 141.5, -11.5, 6.5, put => S.fwi.grid.forEach(g => { const h = g.hari[i]; h && h.hujan != null && put(g.lon, g.lat, gradasi(ST_HUJAN, h.hujan)); })); }
@@ -2732,27 +2742,27 @@ async function renderPrioritas() {
     const warnaRek = ["#4f8fc4", "#e3b94e", "#e58a45", "#c9503a"];
     /* rincian provinsi (dibuat ulang): panel-panel bergaya kartu Insight berkepala pita; angka sebagai ubin statistik */
     const sek = (j, isi, kelas = "") => `<section class="pv-p ${kelas}"><h4>${j}</h4><div class="pv-b">${isi}</div></section>`;
-    const ubin = (v, l, w = "#1d4e89", ket = "") => `<div class="pv-u" style="--w:${w}"><b>${v}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
+    const ubin = pvUbin;
     const kelasF = v => FWI_KELAS[kelasFWI(v)][0];
     return {k, lv, nk: kl.length, np: lvN[3], kmr, fw: w.fwi_maks, html: `<div class="pv">
       ${lipat(`Rekomendasi · ${rek.length} langkah`, `<ol class="rek">${rek.map(x => `<li style="--w:${warnaRek[x.lv]}"><span>${x.teks}</span><small>Dasar: ${esc(x.dasar)}</small></li>`).join("") || `<li style="--w:${warnaRek[0]}"><span>Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.</span></li>`}</ol>
         ${bnb.length ? `<div class="lbl" style="margin-top:4px">Rekomendasi BNPB</div><ol class="rek bnpb">${bnb.map(x => `<li style="--w:var(--brand2)"><span>${esc(x)}</span></li>`).join("")}</ol>` : ""}`)}
       <div class="pv-g">
-      ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length))}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha")}</div>
-        <div class="pv-sub">Titik panas 7 hari terakhir</div>${(() => { const W = 640, H = 150, B = 120, T = 26, gp = W / harian.length, bw = gp * .6, Y = v => B - v / mh * (B - T);
-          return `<svg viewBox="0 0 ${W} ${H}" class="pr-hr" role="img" aria-label="Titik panas harian">` + harian.map(([tg, v], i) => { const ak = i === harian.length - 1, x = i * gp + (gp - bw) / 2, w = ak ? "#c9503a" : "#e58a45", tt = new Date(tg + "T12:00:00+07:00");
-            return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="5" fill="${w}" opacity="${ak ? .55 : .9}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
-              + Insight.pil(x + bw / 2 - (rb(v).length * 6.6 + 16) / 2, Y(v) - 23, rb(v), w, "#fff", 11)[0]
-              + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 800 : 500}" opacity="${ak ? 1 : .65}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
+      ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45", "", "api")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli", "prio")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length), "daun")}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha", "luas")}</div>
+        <div class="pv-sub">Titik panas 7 hari terakhir</div>${(() => { const W = matchMedia("(max-width:560px)").matches ? 360 : 640, H = 150, B = 120, T = 26, gp = W / harian.length, bw = gp * .6, Y = v => B - v / mh * (B - T);
+          return `<svg viewBox="0 0 ${W} ${H}" class="pr-hr" role="img" aria-label="Titik panas harian">` + harian.map(([tg, v], i) => { const ak = i === harian.length - 1, x = i * gp + (gp - bw) / 2, w = ak ? "#e8743b" : "currentColor", tt = new Date(tg + "T12:00:00+07:00");
+            return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="6" fill="${w}" opacity="${ak ? 1 : .85}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
+              + Insight.pil(x + bw / 2 - (rb(v).length * 6.6 + 16) / 2, Y(v) - 23, rb(v), w, ak ? "#fff" : "var(--card)", 11)[0]
+              + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 700 : 500}" style="fill:${ak ? "var(--ink)" : "var(--ink2)"}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
         ${pm ? `<div class="pv-ket"><em class="br-lb" style="--w:${pm > 150.4 ? "#7a2b3f" : pm > 55.4 ? "#c9503a" : "#e3b94e"}">PM2.5 hingga ${fmt(Math.round(pm))} µg/m³ · ${pm > 250.4 ? "berbahaya" : pm > 150.4 ? "sangat tidak sehat" : pm > 55.4 ? "tidak sehat" : "sedang"}</em><em class="br-lb" style="--w:#8a6a3f">DC maks ${fmt(w.dc_maks)}</em></div>` : ""}`)}
       ${o ? sek("Kalender musim", (() => { /* dua baris (El Niño & tahun biasa), 12 kotak bulan berangka (pemilik, 14 Okt 2026) */
-        const bln = ps => BULAN.map((_, m) => Math.max(ps[m * 3], ps[m * 3 + 1], ps[m * 3 + 2])), kini = Math.floor(das / 3), wv = (v, w) => v < .05 ? "var(--surface)" : `color-mix(in oklch, ${w} ${Math.round(30 + v * 70)}%, #fbe3c4)`;
-        return `<div class="pv-k2">${[["El Niño", o.p_el_nino, "#c9503a"], ["Tahun biasa", o.p_biasa, "#e58a45"]].map(([n, ps, w]) => `<span class="pv-k2n">${n}</span>${bln(ps).map((v, m) => `<i class="${m === kini ? "kini" : ""}" style="background:${wv(v, w)};color:${v >= .45 ? "#fff" : "var(--ink2)"}" data-tip="<div class='tk'><div class='tk-h'><b>${BULAN[m]}</b><small>tahun ${n.toLowerCase()}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>">${v >= .05 ? Math.round(v * 100) : ""}</i>`).join("")}`).join("")}
-          <span></span>${BULAN.map(b => `<small>${b}</small>`).join("")}</div>
+        const bln = ps => BULAN.map((_, m) => Math.max(ps[m * 3], ps[m * 3 + 1], ps[m * 3 + 2])), kini = Math.floor(das / 3), wv = (v, w) => v < .05 ? "var(--card)" : `color-mix(in oklch, ${w} ${Math.round(30 + v * 70)}%, #fbe3c4)`;
+        return `<div class="pv-k2">${[["El Niño", o.p_el_nino, "#c9503a"], ["Tahun biasa", o.p_biasa, "#e58a45"]].map(([n, ps, w]) => `<span class="pv-k2n">${n}</span>${bln(ps).map((v, m) => `<i class="${m === kini ? "kini" : ""}" style="background:${wv(v, w)};color:${v >= .45 ? "#fff" : "#7a4a2c"}" data-tip="<div class='tk'><div class='tk-h'><b>${BULAN[m]}</b><small>tahun ${n.toLowerCase()}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>">${v >= .05 ? Math.round(v * 100) : ""}</i>`).join("")}`).join("")}
+          <span></span>${BULAN.map(b => `<small data-s="${b[0]}">${b}</small>`).join("")}</div>
           <div class="pv-ket"><em class="br-lb" style="--w:#c9503a">Siaga El Niño: ${Tren.siaga(o.p_el_nino)}</em><em class="br-lb" style="--w:#e58a45">Siaga tahun biasa: ${Tren.siaga(o.p_biasa)}</em></div>`; })()) : ""}
       ${sek("Tren tahunan", trenKartu(k))}
-      ${bn ? sek("Laporan BNPB", `<div class="pv-us">${ubin(fmt(angkaID(bn["Total Hotspot"])), "titik panas versi BNPB", "#e58a45")}${ubin(fmt(Math.round(angkaID(bn["Lahan Terbakar Indikatif (Ha)"]) || 0)), "ha lahan terbakar", "#c9503a")}${ubin(esc(bn["Jarak Pandang Bandara (Km)"]) + " km", "jarak pandang bandara", "#5f6fb0")}${ubin(esc(bn["Kabkot Terdampak"] ?? "–"), "kab/kota terdampak", "#1d4e89")}</div>
+      ${bn ? sek("Laporan BNPB", `<div class="pv-us">${ubin(fmt(angkaID(bn["Total Hotspot"])), "titik panas versi BNPB", "#e58a45", "", "api")}${ubin(fmt(Math.round(angkaID(bn["Lahan Terbakar Indikatif (Ha)"]) || 0)), "ha lahan terbakar", "#c9503a", "", "luas")}${ubin(esc(String(bn["Jarak Pandang Bandara (Km)"] ?? "–").replace(/(\d)\.(\d)/, "$1,$2")) + " km", "jarak pandang bandara", "#5f6fb0", "", "mata")}${ubin(esc(bn["Kabkot Terdampak"] ?? "–"), "kab/kota terdampak", "#1d4e89", "", "kota")}</div>
         <div class="pv-ket"><em class="br-lb" style="--w:#7a2b3f">Kualitas udara: ${esc(bn["Kualitas Udara (PM 25)"])}</em></div>`) : ""}
       </div>
       </div>`};
@@ -3066,7 +3076,7 @@ const Tren = {
       </div></div>
       <div class="tw"><table><thead><tr><th class="n">#</th><th>${this.rt === "kec" ? "Kecamatan" : "Kab/Kota"}</th>${this.rt === "kec" ? "<th>Kab/Kota</th>" : ""}<th>Provinsi</th><th class="n">Skor</th><th>Kelas</th><th class="n">Tahun terbakar</th><th class="n">Total titik</th><th class="n">Tahun puncak</th><th class="n">Tren</th><th>Pola ${th[0]}–${th[th.length - 1]}</th></tr></thead><tbody>
       ${hal.map((r, i) => { const m = Math.max(...r.v, 1); return `<tr class="klik" data-ri="${this.rh * per + i}" tabindex="0"><td class="n num">${this.rh * per + i + 1}</td><td><b>${esc(r.nama)}</b></td>${this.rt === "kec" ? `<td>${esc(r.kab)}</td>` : ""}<td>${esc(namaProv(r.prov))}</td>
-        <td class="n num"><b>${r.skor}</b></td><td><span class="pill l${lv[r.kelas]}">${r.kelas}</span></td><td class="n num">${fmt(r.tahun)} / ${fmt(th.length)}</td><td class="n num">${fmt(r.total)}</td><td class="n num">${r.puncak}</td>
+        <td class="n num"><b>${r.skor}</b></td><td><span class="pill l${lv[r.kelas]}">${r.kelas}</span></td><td class="n num"><span class="br-lb" style="--w:${r.tahun >= th.length - 2 ? "#c9503a" : "#5f6fb0"}">${fmt(r.tahun)}/${fmt(th.length)} tahun</span></td><td class="n num">${fmt(r.total)}</td><td class="n num">${r.puncak}</td>
         <td class="n num" style="color:${r.tren >= 1.5 ? "var(--bad)" : r.tren <= .67 ? "var(--ok)" : "inherit"}">${r.tren >= 1 ? "↑" : "↓"} ${fmt(r.tren)}×</td>
         <td><svg viewBox="0 0 ${th.length * 6} 16" width="${th.length * 6}" height="16" aria-hidden="true">${r.v.map((x, j) => `<rect x="${j * 6}" y="${16 - x / m * 15}" width="4.5" height="${Math.max(.5, x / m * 15)}" fill="${j === r.v.length - 1 ? "#c9503a" : "#e58a45"}"/>`).join("")}</svg></td></tr>`; }).join("")}</tbody></table></div>
       <div id="rkPg">${paginasi(this.rh, daf.length, per, jenis)}</div>`; },
@@ -3299,9 +3309,9 @@ const Insight = {
   _pmTutup: document.addEventListener("click", e => document.querySelectorAll(".pmulti[open]").forEach(d => { if (!d.contains(e.target)) d.open = false; })),
   /* pilih beberapa provinsi untuk dibandingkan (pemilik, 14 Okt 2026): st[key] = kode dipisah koma, "" = semua */
   provDipilih(key) { return String(this.st[key] || "").split(",").filter(Boolean); },
-  selProvMulti(key) { const P = this.provDipilih(key), lb = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi";
+  selProvMulti(key, daftar = PRIO) { const P = this.provDipilih(key), lb = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi";
     const buka = this._bukaMulti === key; this._bukaMulti = null;
-    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${PRIO.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}>${typeof lambang === "function" ? lambang(k) : ""}<span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
+    return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}>${typeof lambang === "function" ? lambang(k) : ""}<span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`; },
   selProv(key, semua = "Semua provinsi") { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${PRIO.map(k => `<option value="${k}" ${k === this.st[key] ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`; },
   async muat() {
     const D = this.data;
@@ -3860,7 +3870,7 @@ const Berita = {
     this._bpKab = kab;
     const celah = D.celah.flatMap(c => c.kompleks.map(id => S.kluster?.features.find(x => x.properties.id === id)).filter(Boolean).map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x.properties.lon, x.properties.lat]}, properties: {id: x.properties.id, kab: c.kab.split("|")[1]}})));
     if (this.peta) this.peta.remove();
-    const m = this.peta = new maplibregl.Map({container: el, style: DASAR(), center: [116, -2.5], zoom: 3.9, attributionControl: {compact: true}, dragRotate: false});
+    const m = this.peta = new maplibregl.Map({container: el, style: DASAR(), center: [116, -2.5], zoom: 3.9, attributionControl: {compact: true}, dragRotate: false, preserveDrawingBuffer: true});   /* bisa difoto untuk gambar bagikan */
     const lebar = innerWidth > 1100; m.once("load", () => m.fitBounds([[95, -11], [141, 6]], {padding: lebar ? {left: 280, right: 340, top: 30, bottom: 30} : 20, duration: 0}));
     m.on("load", () => {
       /* gaya peta utama: provinsi diwarnai jumlah berita 7 hari, gelembung bercincin putih berisi angka */
@@ -4619,6 +4629,16 @@ const Posko = {
 };
 
 /* pertimbangan tren di kartu provinsi: tahun ini vs riwayat s.d. bulan yang sama, dan sisa musim menurut pola bulanan */
+/* ubin laci provinsi: ikon dalam lingkaran lembut, satu angka besar, label abu kecil (gaya pop-up situasi, 15 Okt 2026) */
+const PV_IK = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z"/>',
+  prio: '<path d="M12 3 4.5 6v6c0 4.5 3.2 8 7.5 9 4.3-1 7.5-4.5 7.5-9V6z"/><path d="M12 8v4.5M12 16h.01"/>',
+  daun: '<path d="M5 19c0-8 5-13 14-14-1 9-6 14-14 14z"/><path d="M5 19l7-7"/>',
+  luas: '<path d="M4 7l5-3 6 3 5-3v13l-5 3-6-3-5 3z"/><path d="M9 4v13M15 7v13"/>',
+  mata: '<path d="M2.5 12S6 5.5 12 5.5 21.5 12 21.5 12 18 18.5 12 18.5 2.5 12 2.5 12z"/><circle cx="12" cy="12" r="2.8"/>',
+  kota: '<path d="M4 20V9l5-3v14M9 20V4l7 3v13M16 20v-8l4 2v6M3 20h18"/>',
+  naik: '<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>', urut: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
+  kal: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>', jam: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'};
+const pvUbin = (v, l, w = "#1d4e89", ket = "", ik = "") => `<div class="pv-u" style="--w:${w}">${ik ? `<i class="pv-i"><svg viewBox="0 0 24 24">${PV_IK[ik]}</svg></i>` : ""}<b>${v}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
 function trenKartu(k) {
   const D = S.sejarah; if (!D || !D.prov[k]) return "";
   const P = D.prov[k], th = D.tahun, ini = th[th.length - 1], lalu = th.slice(0, -1), bln = new Date().getMonth();
@@ -4629,12 +4649,12 @@ function trenKartu(k) {
   const r = rataSd ? iniSd / rataSd : 0, mirip = lalu.map(t => [t, Math.abs(sd(t) - iniSd)]).sort((a, b) => a[1] - b[1])[0][0];
   const warna = r >= 2 ? "var(--bad)" : r >= 1.2 ? "var(--warn)" : "var(--ok)";
   /* empat kotak angka bergaya ubin panel (pemilik, 14 Okt 2026) */
-  const u = (v, l, w, ket = "") => `<div class="pv-u" style="--w:${w}"><b>${v}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
-  return `<div class="pv-us" style="grid-template-columns:repeat(2,minmax(0,1fr));margin-bottom:8px">
-    ${u(r ? r.toFixed(1).replace(".", ",") + "×" : "–", `${ini} s.d. ${BULAN[bln]} vs rata-rata`, r >= 2 ? "#c9503a" : r >= 1.2 ? "#e58a45" : "#2b8c86", r >= 2 ? "jauh di atas normal" : r >= 1.2 ? "di atas normal" : "sekitar normal")}
-    ${u(rank + "<small style='font-size:13px;opacity:.6'> / " + th.length + "</small>", "peringkat periode sama", "#5f6fb0")}
-    ${u(mirip, "tahun paling mirip", "#1d4e89")}
-    ${u(Math.round(sisa * 100) + "%", "sisa beban musim", "#8a6a3f", akhir ? "s.d. " + akhir : "")}</div>
+  const u = pvUbin;
+  return `<div class="pv-us">
+    ${u(r ? r.toFixed(1).replace(".", ",") + "×" : "–", `${ini} s.d. ${BULAN[bln]} vs rata-rata`, r >= 2 ? "#c9503a" : r >= 1.2 ? "#e58a45" : "#2b8c86", r >= 2 ? "jauh di atas normal" : r >= 1.2 ? "di atas normal" : "sekitar normal", "naik")}
+    ${u(rank + "<small style='font-size:13px;opacity:.6'> / " + th.length + "</small>", "peringkat periode sama", "#5f6fb0", "", "urut")}
+    ${u(mirip, "tahun paling mirip", "#1d4e89", "", "kal")}
+    ${u(Math.round(sisa * 100) + "%", "sisa beban musim", "#8a6a3f", akhir ? "s.d. " + akhir : "", "jam")}</div>
     <p style="font-size:11.5px;color:var(--ink2);margin:0 0 8px">${r >= 2 ? `Tahun ini jauh di atas normal, mirip ${mirip}. ` : r >= 1.2 ? "Tahun ini di atas normal. " : "Tahun ini di bawah atau sekitar normal. "}${sisa >= .1 ? `Biasanya ${Math.round(sisa * 100)}% titik tahunan masih muncul setelah ${BULAN[bln]}. Posko dan regu jangan ditarik dulu.` : "Musim biasanya hampir selesai. Fokus ke pemantauan bara gambut dan pemulihan."}</p>`;
 }
 

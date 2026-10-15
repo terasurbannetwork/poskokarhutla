@@ -92,7 +92,8 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-aksi > [hidden]{display:none!important}
 
 /* tombol "Bagikan video" disembunyikan; cukup tombol share (pemilik, 14 Okt 2026). Catatan: Cerita.rekamVideo memakai $q di luar IIFE, perlu diperbaiki bila dipulihkan */
-.ct-bab .ct-vid-btn{display:none!important}
+/* tombol video Musim dipulihkan (bug $q dibetulkan, 15 Okt 2026); tombol gambar di kartu Musim disembunyikan */
+#ct-musim > .bg-ex,#ct-musim .ex-hd > .bg-ex{display:none!important}
 /* kartu berisi beberapa grafik/tabel dibagi beberapa halaman: navigasi di bawah pratinjau */
 .bg-hal{display:flex;align-items:center;justify-content:center;gap:12px;margin:10px 0 2px}
 .bg-hal[hidden]{display:none}
@@ -100,3 +101,9 @@ dialog.bg{width:min(860px,calc(100vw - 24px));overflow:auto;overscroll-behavior:
 .bg-hal button:hover{background:var(--surface)}
 .bg-hal button:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
 .bg-hal span{font:600 13.5px var(--font);color:var(--ink2);min-width:130px;text-align:center}
+/* tombol bagikan sebaris dengan pemilih provinsi di kepala kartu */
+.bg-ex.bg-pk{float:none!important;margin:0 0 0 8px!important;flex:none;align-self:center;order:99;position:static!important}
+.ex-jd:has(> .bg-pk){align-items:center}
+.ex:has(> header .bg-pk) > .bs-sel{display:none}
+.ex-jd > .pk-naik{margin-left:auto;flex:none;align-self:center}
+.ex-jd > .bg-pk{margin-left:8px!important}

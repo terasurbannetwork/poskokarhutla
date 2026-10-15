@@ -187,7 +187,7 @@ const Dampak = (() => {
       .setHTML(`<div style="font-size:12.5px;line-height:1.5">${isi(x)}<br><button class="btn sec" style="margin-top:6px" data-dk="bandara|${esc(x.k)}">Rincian &amp; grafik</button></div>`).addTo(m); pop.on("close", () => { if (sel === x.k) { sel = null; tandai(); } }); };
     const tandai = () => side.querySelectorAll("button[data-i]").forEach(b => b.classList.toggle("on", g[+b.dataset.i]?.k === sel));
     let g = agr(), mx = 1;
-    const m = pm = new maplibregl.Map({container: el, style: typeof DASAR === "function" ? DASAR() : "https://tiles.openfreemap.org/styles/positron", bounds: [[94.5, -11.5], [141.8, 6.3]], fitBoundsOptions: {padding: {top: 20, bottom: 20, left: 20, right: 44}}, minZoom: 3, maxZoom: 12, attributionControl: {compact: true}, dragRotate: false});
+    const m = pm = new maplibregl.Map({container: el, preserveDrawingBuffer: true, style: typeof DASAR === "function" ? DASAR() : "https://tiles.openfreemap.org/styles/positron", bounds: [[94.5, -11.5], [141.8, 6.3]], fitBoundsOptions: {padding: {top: 20, bottom: 20, left: 20, right: 44}}, minZoom: 3, maxZoom: 12, attributionControl: {compact: true}, dragRotate: false});
     m.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-left");
     const daftar = () => { g = agr(); mx = Math.max(1, ...g.map(x => x.n)); m.getSource("bd")?.setData(fc(g));
       if (m.getLayer("bd-c")) m.setPaintProperty("bd-c", "circle-radius", ["+", 8, ["*", 8, ["sqrt", ["/", ["get", "n"], mx]]]]);

@@ -1377,7 +1377,7 @@ section[hidden],[hidden]{display:none!important}
     const IW = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.6z"/></svg>';
     /* pesan.js (dialog "Kirim pesan ke tim") memasang window.Pesan; tanpa itu jatuh ke mailto bila email terisi */
     ak.innerHTML = "";
-    if (window.Pesan?.buka) { ak.insertAdjacentHTML("beforeend", `<button class="tbl utama" type="button">${IK}Kirim lewat formulir</button>`); ak.firstChild.onclick = () => window.Pesan.buka(); }
+    if (window.Pesan?.buka) { ak.insertAdjacentHTML("beforeend", `<button class="tbl utama" type="button">${IK}Chat Admin</button>`); ak.firstChild.onclick = () => window.Pesan.buka(); }
     if (false && wa) ak.insertAdjacentHTML("beforeend", `<a class="tbl" href="https://wa.me/${wa}" target="_blank" rel="noopener">${IW}WhatsApp ${("+" + wa).replace(/^\+62(\d{3})(\d{4})(\d+)$/, "+62 $1-$2-$3")}</a>`);
     if (k.email) ak.insertAdjacentHTML("beforeend", `<a class="tbl${ak.children.length ? "" : " utama"}" href="mailto:${esc(k.email)}">${IM}${esc(k.email)}</a>`);
   };

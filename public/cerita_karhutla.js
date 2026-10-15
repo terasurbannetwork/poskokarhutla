@@ -178,7 +178,7 @@ const Cerita = {
     const lain = [["gambut", 1, "gambut"], ["oni", 3, "El Niño"], ["malam", 1, "terdeteksi malam hari"]].filter(([f, i]) => r(f, i)?.rasio > 1).map(([f, i, n]) => `${n} (${hl(nf(r(f, i).rasio, 1) + "×")})`);
     const daftar = lain.length > 1 ? lain.slice(0, -1).join(", ") + " dan " + lain.at(-1) : lain[0];
     return this.bab("Pendorong", "dorong", `Api yang sejak awal sudah besar ${hl(nf(rn0, 0) + " kali")} lebih mungkin membesar${daftar ? `; ${daftar} juga menaikkan peluang` : ""}`,
-      `<div class="ct-sub2"><span>Berapa kali lebih mungkin api membesar dibanding kelompok pembandingnya (teks di dalam kurung)</span><em>${nf(P.n_lolos)} dari ${nf(P.n_peristiwa)} titik api membesar · ${pc(P.laju_dasar, 1)}</em></div>
+      /* baris keterangan "Berapa kali lebih mungkin…" + pil "N dari M titik api membesar" disembunyikan (pemilik, 15 Okt 2026) */ `
       ${hbatang(data, {label: "rasio peluang membesar", garis: 1, garisT: "1× = sama", ml: 440})}
       `,
       {leg: [["#c9503a", "menaikkan peluang membesar"], ["#2b8c86", "menurunkan"]], sumber: "NASA FIRMS VIIRS 2015–2026, ERA5, SRTM"});
@@ -444,21 +444,21 @@ Cerita.rekamVideo = async function (onProg) {
   const tipe = ["video/mp4;codecs=avc1", "video/mp4", "video/webm;codecs=vp9", "video/webm"].find(t => MediaRecorder.isTypeSupported(t));
   const rek = new MediaRecorder(cv.captureStream(30), {mimeType: tipe, videoBitsPerSecond: 6e6}), bag = [];
   rek.ondataavailable = e => e.data.size && bag.push(e.data);
-  const judul = $q("#ct-musim h3", this.el)?.textContent.trim() || "Sebaran api 2026", tx = s => (s || "").replace(/\s+/g, " ").trim();
+  const q = s => (this.el || document).querySelector(s), judul = q("#ct-musim h3")?.textContent.trim() || "Sebaran api 2026", tx = s => (s || "").replace(/\s+/g, " ").trim();
   const logo = await new Promise(r => { const i = new Image(); i.onload = () => r(i); i.onerror = () => r(null); i.src = "/img/logo.svg?v=2"; });
   const bungkus = (t, maks) => { const k = t.split(" "), out = []; let l = ""; for (const w of k) { if (x.measureText(l + w).width > maks && l) { out.push(l.trim()); l = ""; } l += w + " "; } out.push(l.trim()); return out.slice(0, 3); };
   const gambar = () => {
     const g = x.createLinearGradient(0, 0, W, 300); g.addColorStop(0, "#1d4e89"); g.addColorStop(1, "#0b2545");
     x.fillStyle = "#eef2f7"; x.fillRect(0, 0, W, H); x.fillStyle = g; x.fillRect(0, 0, W, 300);
     if (logo) x.drawImage(logo, 60, 50, 64, 64);
-    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText("Pantau Bencana · Karhutla", 140, 84);
+    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText(window.Bagikan?.K?.nama || "Pantau Bencana · Karhutla", 140, 84);
     x.font = "800 46px Inter, sans-serif"; bungkus(judul, W - 120).forEach((l, i) => x.fillText(l, 60, 175 + i * 54));
     /* peta, dipotong cover ke kotak 960×860 */
     const bx = 60, by = 330, bw = 960, bh = 860, s = Math.max(bw / src.width, bh / src.height), sw = bw / s, sh = bh / s;
     x.save(); x.beginPath(); x.roundRect(bx, by, bw, bh, 24); x.clip();
     x.drawImage(src, (src.width - sw) / 2, (src.height - sh) / 2, sw, sh, bx, by, bw, bh); x.restore();
     /* kartu tanggal & angka dari overlay halaman */
-    const ov = $q("#ct-ovl", this.el), d = tx(ov?.querySelector(".ct-ov-d")?.textContent), n = tx(ov?.querySelector(".ct-ov-n")?.textContent);
+    const ov = q("#ct-ovl"), d = tx(ov?.querySelector(".ct-ov-d")?.textContent), n = tx(ov?.querySelector(".ct-ov-n")?.textContent);
     x.fillStyle = "rgba(255,255,255,.94)"; x.beginPath(); x.roundRect(bx + 24, by + 24, 360, 150, 18); x.fill();
     x.fillStyle = "#0b2545"; x.font = "800 56px Inter, sans-serif"; x.fillText(d, bx + 48, by + 98); x.font = "600 24px Inter, sans-serif"; x.fillStyle = "#4a5a72"; x.fillText(n, bx + 48, by + 144);
     x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("pantau.terasurban.com", 60, H - 70);

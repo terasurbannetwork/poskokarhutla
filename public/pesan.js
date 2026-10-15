@@ -23,10 +23,10 @@
 .ps-dlg .ps-kat{display:grid;gap:6px}
 .ps-dlg .ps-kat > div{display:flex;flex-wrap:nowrap;gap:6px}
 @media (max-width:620px){.ps-dlg .ps-kat > div{flex-wrap:wrap}}
-.ps-dlg .ps-chip{display:inline-flex;cursor:pointer;font-weight:600}
+.ps-dlg .ps-chip{display:inline-flex;flex:1 1 auto;cursor:pointer;font-weight:600}  /* chip topik dibentang dari tepi ke tepi (pemilik, 15 Okt 2026) */
 .ps-dlg .ps-chip input{position:absolute;opacity:0;width:1px;height:1px}
 .ps-dlg .ps-chip span svg{width:14px;height:14px;flex:none}
-.ps-dlg .ps-chip span{display:inline-flex;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-bg);font-size:12.5px}
+.ps-dlg .ps-chip span{display:inline-flex;flex:1;justify-content:center;white-space:nowrap;align-items:center;gap:6px;padding:7px 12px;border-radius:999px;border:1px solid var(--ps-line);background:var(--ps-bg);font-size:12.5px}
 .ps-dlg .ps-chip input:checked + span{background:#0b2545;border-color:#0b2545;color:#fff}
 .ps-dlg .ps-chip input:focus-visible + span{outline:2px solid #1d4e89;outline-offset:2px}
 :root[data-theme="dark"] .ps-dlg .ps-chip input:checked + span{background:#4f8fc4;border-color:#4f8fc4}

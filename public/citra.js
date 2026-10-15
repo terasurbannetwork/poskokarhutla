@@ -103,9 +103,9 @@
             .catch(() => { Citra.gagal = true; document.querySelector('#insight [data-ex="citra"]')?.remove(); });
           return ""; }
         /* pilihan provinsi di kanan judul (pemilik, 15 Okt 2026) */
-        const prov = this.st.citraProv || "", provDari = id => S.kluster?.features.find(f => f.properties.id === id)?.properties.prov;
+        const PP = this.provDipilih("citraProv"), prov = PP.join(","), provDari = id => S.kluster?.features.find(f => f.properties.id === id)?.properties.prov;
         if (prov !== this.st._citraProvLalu) { this.st.citraHal = 0; this.st._citraProvLalu = prov; }
-        const ks = Object.entries(D.kompleks).filter(([id, xs]) => xs.length && (!prov || provDari(id) === prov)), PER = 6, nH = Math.ceil(ks.length / PER), hal = Math.min(this.st.citraHal || 0, nH - 1);
+        const ks = Object.entries(D.kompleks).filter(([id, xs]) => xs.length && (!PP.length || PP.includes(provDari(id)))), PER = 6, nH = Math.ceil(ks.length / PER), hal = Math.min(this.st.citraHal || 0, nH - 1);
         const bersih = ks.filter(([, xs]) => xs.some(h => !viirs(h) && h.awan_pct <= 30)).length;
         const kartu = ks.slice(hal * PER, hal * PER + PER).map(([id, xs]) => { const h = terbaik(xs), p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};
           /* pilihan tanggal: citra lain kompleks ini, terbaru dulu (pemilik, 15 Okt 2026) */
@@ -118,8 +118,8 @@
           "Kondisi terbaru dari satelit", `Potongan ± ${D.kotak_km} × ${D.kotak_km} km berpusat di tiap kompleks, urut prioritas. Klik gambar untuk membuka kompleks dan membandingkan tanggal.`,
           `<div class="ct-galeri2">${kartu || '<p class="ct-kosong">Belum ada citra kompleks prioritas di provinsi ini.</p>'}</div>${pg}${LEG}`,
           `Sumber: ${esc(D.atribusi.Sentinel)} · ${esc(D.atribusi.VIIRS)} · diperbarui ${new Date(D.dibuat).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"})} WIB`,
-          `<select data-set="citraProv" aria-label="Provinsi"><option value="">Semua provinsi</option>${[...new Set(Object.entries(D.kompleks).filter(([, xs]) => xs.length).map(([id]) => provDari(id)).filter(Boolean))]
-            .sort((x, y) => namaProv(x).localeCompare(namaProv(y))).map(k => `<option value="${k}" ${k === prov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`); };
+          this.selProvMulti("citraProv", [...new Set(Object.entries(D.kompleks).filter(([, xs]) => xs.length).map(([id]) => provDari(id)).filter(Boolean))]
+            .sort((x, y) => namaProv(x).localeCompare(namaProv(y))))); };
       document.addEventListener("click", e => { const b = e.target.closest(".ct-tg [data-ci]"); if (!b) return;
         const id = b.dataset.ci, h = D.kompleks[id]?.[+b.dataset.i], k = b.closest(".ct-kartu2"); if (!h || !k) return;
         const p = S.kluster?.features.find(f => f.properties.id === id)?.properties || {};

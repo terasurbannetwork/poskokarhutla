@@ -391,7 +391,7 @@ const Ringkasan = (() => {
     petaMini() {
       const el = $("#rkPeta"); if (!el || typeof maplibregl === "undefined") return;
       const D = this.D, gl = gelap() || !!this.dinding, tip = $("#tip"); if (this.peta) this.peta.remove();
-      const m = this.peta = new maplibregl.Map({container: el, style: this.dinding ? "https://tiles.openfreemap.org/styles/dark" : DASAR(), bounds: [[95, -11], [141.2, 6]], fitBoundsOptions: {padding: 10}, attributionControl: {compact: true},
+      const m = this.peta = new maplibregl.Map({container: el, preserveDrawingBuffer: true, style: this.dinding ? "https://tiles.openfreemap.org/styles/dark" : DASAR(), bounds: [[95, -11], [141.2, 6]], fitBoundsOptions: {padding: 10}, attributionControl: {compact: true},
         dragPan: false, scrollZoom: false, boxZoom: false, dragRotate: false, keyboard: false, doubleClickZoom: false, touchZoomRotate: false, touchPitch: false});
       const fc = features => ({type: "FeatureCollection", features}), pt = (lon, lat, properties) => ({type: "Feature", geometry: {type: "Point", coordinates: [lon, lat]}, properties});
       const ks = D.L.flatMap(x => x.kom3).sort((a, b) => b.px24 - a.px24), top = ks.slice(0, 5);
