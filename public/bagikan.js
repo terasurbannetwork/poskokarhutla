@@ -587,15 +587,26 @@ const Bagikan = {
   /* ---------------------------------------------------------------- kanvas */
   /* kartu tanpa grafik/tabel: tiap blok isi (kolom kiri/kanan, daftar) = satu halaman; turun selama isinya cuma satu anak */
   blokDom(art) {
-    const lihat = e => e && e.offsetHeight > 40 && !e.matches(".bg-ex, .bs-sel, .pm-h, header, .ex-hd, .fn, .ex-ft, [hidden]");
+    const lihat = e => e && e.offsetHeight > 40 && !e.matches(".bg-ex, .bs-sel, .pm-h, header, .ex-hd, .fn, .ex-ft, [hidden], .pgn, .pg, #pg, nav, .ct-hal");
     let ks = [...(art.querySelector(":scope > .ex-bd") || art).children].filter(lihat);
     /* satu pembungkus: turun bila isinya berdampingan (kolom kiri/kanan) atau terlalu tinggi untuk satu halaman */
     const dampingan = e => new Set([...e.children].filter(lihat).map(c => c.offsetLeft)).size > 1;
     while (ks.length === 1 && [...ks[0].children].filter(lihat).length > 1 && (dampingan(ks[0]) || ks[0].offsetHeight > 500)) ks = [...ks[0].children].filter(lihat);
-    return ks.slice(0, 6);
+    /* daftar/kisi panjang (mis. Daftar berita): dipotong per kelompok item, dua baris per halaman, paling banyak 4 halaman */
+    const out = [];
+    for (const k of ks) { const it = [...k.children].filter(lihat), kol = new Set(it.slice(0, 8).map(c => c.offsetLeft)).size || 1;
+      if (it.length > 6 && k.offsetHeight > 600) { const per = kol > 1 ? Math.max(6, kol * 2) : 6; for (let i = 0; i < it.length && out.length < 4; i += per) out.push({induk: k, item: it.slice(i, i + per)}); }
+      else out.push(k); }
+    return out.slice(0, 6);
   },
   async domKanvas(el) {
     await this.muatLib("dom");
+    /* potongan daftar: salinan induk berisi sebagian item, dipasang sementara di tempat yang sama (gaya CSS tetap kena), di luar layar */
+    if (el.induk) { const c = el.induk.cloneNode(false); el.item.forEach(i => c.append(i.cloneNode(true)));
+      Object.assign(c.style, {position: "absolute", left: "-12000px", top: "0", width: el.induk.offsetWidth + "px"}); el.induk.parentElement.append(c);
+      /* salinan memutar ulang animasi muncul (opacity 0): matikan supaya langsung tampil */
+      [c, ...c.querySelectorAll("*")].forEach(n => { n.style.animation = "none"; n.style.transition = "none"; });
+      try { return await this.domKanvas(c); } finally { c.remove(); } }
     const R = document.documentElement, tema = R.dataset.theme; R.dataset.theme = "light";
     const tombol = n => !(n.classList && (n.classList.contains("bg-ex") || n.classList.contains("bs-sel"))), o = {pixelRatio: 2, backgroundColor: "#ffffff", cacheBust: false, imagePlaceholder: "data:image/gif;base64,R0lGODlhAQABAAAAACw="};
     /* gambar lintas-asal (favikon media, thumbnail berita) bisa menggagalkan tangkapan: ulangi tanpa gambar itu */
