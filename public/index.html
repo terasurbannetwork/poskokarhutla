@@ -1939,8 +1939,8 @@ const Peta = {
       if (!d) { if (tip._pf) { tip._pf = false; tip.classList.remove("on"); } return; }
       tip._pf = true; const k = kelasPG(d.pg), w = `rgb(${warnaFWI(PG_FWI[k]).join(",")})`;
       tampilTip(kartuTip({judul: `Bahaya api gambut <span class="tp-pl" style="background:${w}">${PG_KELAS[k]}</span>`,
-        stat: [["api", "±" + fmt(Math.round(d.pg * 20) * 5) + "%", "Peluang api besok", w, k >= 2], ["fwi", fmt(Math.round(d.fwi * 10) / 10), "FWI hari itu", w]],
-        daftar: [[`PFVI ${fmt(Math.round(d.pfvi))}`, `${kelasPFVI(d.pfvi)}; batas 75/150/225`]], kaki: "Muka air tanah perkiraan, bukan pengukuran"}), e.originalEvent); });
+        stat: [["api", "±" + fmt(Math.round(d.pg * 20) * 5) + "%", "Peluang api besok", w, k >= 2], ["fwi", fmt(Math.round(d.fwi * 10) / 10), "FWI hari itu", w], ["skor", fmt(Math.round(d.pfvi)), `PFVI (${kelasPFVI(d.pfvi)}; batas 75/150/225)`, w]],
+        kaki: "Muka air tanah perkiraan, bukan pengukuran"}), e.originalEvent); });
     /* gelembung angka: kursor tangan + daftar kompleks di dalamnya; roda/trackpad diperlambat supaya zoom halus */
     peta.scrollZoom.setWheelZoomRate(1 / 650); peta.scrollZoom.setZoomRate(1 / 160);
     { const AMBANG = [5.8, 6, 6.5, 7.5, 8.5, 9], tingkat = () => AMBANG.filter(a => peta.getZoom() >= a).length; let t0 = tingkat();

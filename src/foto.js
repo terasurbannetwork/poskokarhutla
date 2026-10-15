@@ -8,7 +8,8 @@
    admin menunjukkan apa yang terverifikasi. ponytail: GPS peramban bisa dipalsukan; atestasi perangkat (Play Integrity/App
    Attest) butuh aplikasi asli, bukan web.
 
-   Publik tidak pernah melihat email, hash IP, atau baris dummy (dummy hanya untuk admin bersesi lewat ?dummy=1). */
+   Publik tidak pernah melihat email, hash IP, atau baris dummy (dummy hanya untuk admin bersesi lewat ?dummy=1),
+   kecuali FOTO_DUMMY_PUBLIK = "1" menayangkannya sebagai contoh. */
 import {json, gagal, acak, sha, ipHash, turnstileOK, adminOK, bersihTeks, bacaBody, cacheTepi} from "./worker.js";
 import {wilayah, cariWilayah} from "./titik.js";
 
@@ -59,8 +60,10 @@ const publik = r => ({id: r.id, jenis: r.jenis, kategori: r.kategori, lat: r.lat
 
 async function daftar(env, req, url, kini, ctx) {
   const lihatDummy = url.searchParams.get("dummy") === "1" && await adminOK(env, req, kini);
+  /* FOTO_DUMMY_PUBLIK = "1" (wrangler.jsonc): dummy yang tayang ikut di daftar publik, tetap berlencana "contoh" (pemilik, 15 Okt 2026) */
+  const dummyPublik = env.FOTO_DUMMY_PUBLIK === "1";
   const ambil = async () => {
-    const r = await env.DB.prepare(`SELECT ${KOLOM_PUBLIK}, dummy FROM foto WHERE status = 'tayang' AND dibuat > ? ${lihatDummy ? "" : "AND dummy = 0"} ORDER BY dibuat DESC LIMIT 1000`)
+    const r = await env.DB.prepare(`SELECT ${KOLOM_PUBLIK}, dummy FROM foto WHERE status = 'tayang' AND dibuat > ? ${lihatDummy || dummyPublik ? "" : "AND dummy = 0"} ORDER BY dibuat DESC LIMIT 1000`)
       .bind(kini - UMUR_DAFTAR).all();
     return json({foto: r.results.map(publik), kategori: KATEGORI});
   };

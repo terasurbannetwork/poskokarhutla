@@ -8,6 +8,6 @@
   ],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
   "triggers": { "crons": ["17 * * * *", "15 */3 * * *"] },
-  "vars": { "TURNSTILE_SITEKEY": "", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Pantau Bencana <onboarding@resend.dev>" },
+  "vars": { "TURNSTILE_SITEKEY": "", "FOTO_DUMMY_PUBLIK": "1", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Pantau Bencana <onboarding@resend.dev>" },
   "observability": { "enabled": true }
 }

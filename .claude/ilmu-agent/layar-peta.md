@@ -59,3 +59,4 @@ Semua layar publik = vanilla JS tanpa build step di `public/`, dilayani Workers 
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode `public/index.html`, modul `public/*.js`, `scripts/{og,i18n,situs,terbit}`, git log `public`, dan memori pemilik (gaya-kartu-insight, fitur-disembunyikan). Dicatat: penyembunyian lewat flag/hidden, bukan hapus; salinan " 2" terbit karena seluruh `public/` jadi aset; sisa teks "9 provinsi prioritas" di index.html.
+- 2026-10-15 · Lapisan raster tanpa fitur: hover lewat peta.on('mousemove') + cari sel; tooltip wil-fill menimpa kecuali dijaga flag tip._pf (pola tip._kl).
