@@ -102,7 +102,7 @@
       <b>Belum ada foto</b><small>Jadilah yang pertama mengirim foto dari lokasimu.</small><span class="fl-pri">${IK.kamera}Ambil foto</span></button>`; $("#fgPg").innerHTML = ""; return; }
     const kunci = {baru: f => f.diambil || f.dibuat, suka: f => f.suka || 0, komentar: f => f.komentar || 0, dilihat: f => f.dilihat || 0}[G.urut] || (f => f.dibuat);
     const xs = tersaring().sort((a, b) => kunci(b) - kunci(a) || b.dibuat - a.dibuat), nH = Math.max(1, Math.ceil(xs.length / PER_HAL)); G.h = Math.min(G.h, nH - 1);
-    isi.innerHTML = xs.length ? `<div class="fg-grid">${xs.slice(G.h * PER_HAL, (G.h + 1) * PER_HAL).map(kartuG).join("")}</div>` : `<div class="fl-kosong">${IK.kamera}<b>Tidak ada foto untuk saringan ini</b><p>Coba provinsi, kategori, atau jenis lain.</p></div>`;
+    isi.innerHTML = xs.length ? `<div class="fg-grid">${xs.slice(G.h * PER_HAL, (G.h + 1) * PER_HAL).map(kartuG).join("")}</div>` : `<div class="fl-kosong">${G.jenis === "video" ? IK.video : IK.kamera}<b>Tidak ada ${G.jenis === "video" ? "video" : "foto"} untuk saringan ini</b><p>Coba provinsi, kategori, atau jenis lain.</p></div>`;
     const ke = (i, isi, lbl) => `<button data-h="${i}"${i < 0 || i >= nH ? " disabled" : ""} aria-label="${lbl}">${isi}</button>`;
     $("#fgPg").innerHTML = nH > 1 ? `<span class="fg-pg-info">${fmt(G.h * PER_HAL + 1)}–${fmt(Math.min((G.h + 1) * PER_HAL, xs.length))} dari ${fmt(xs.length)}</span>
       <nav class="fg-pg-nav" aria-label="Halaman">${ke(G.h - 1, "‹<span> Sebelumnya</span>", "Halaman sebelumnya")}${Array.from({length: nH}, (_, i) => `<button data-h="${i}" aria-pressed="${i === G.h}">${i + 1}</button>`).join("")}${ke(G.h + 1, "<span>Berikutnya </span>›", "Halaman berikutnya")}</nav>` : "";
