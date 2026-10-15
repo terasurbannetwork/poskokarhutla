@@ -75,3 +75,6 @@ html[lang=en] #ks-ex .ks-hd h3::before{content:"Concessions"}
 .ks-ch b{font-size:14.5px;font-weight:800;color:var(--ink)}
 .ks-ch span{font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);white-space:nowrap}
 .ks-ch2{margin-top:26px;padding-top:18px;border-top:1px solid var(--line)}
+/* beberapa konsesi dalam satu sel: sebaris, berjarak; turun baris hanya bila tidak muat, tetap berjarak (pemilik, 15 Okt 2026) */
+#kompleks td.ks-td{white-space:normal}
+#kompleks td.ks-td .ks-ell{display:inline-block!important;margin:2px 3px;max-width:none;line-height:1.3}
