@@ -7,7 +7,7 @@
       "runtimeArgs": [
         "-I",
         "-c",
-        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/249fcb4a-4a1d-415a-a37e-da90a93f7ba4/scratchpad/web');sys.argv=['s','8791'];runpy.run_module('http.server',run_name='__main__')"
+        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/3afab187-f327-4290-ae6f-28fb31404476/scratchpad/web');sys.argv=['s','8791'];runpy.run_module('http.server',run_name='__main__')"
       ],
       "port": 8791
     },

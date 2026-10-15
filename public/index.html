@@ -3316,7 +3316,7 @@ const IK_MASKER = `<path d="M2 4.5c2.5-1.2 5.5-1.2 8 0v3c-1 2-3 3-4 3s-3-1-4-3z"
 const Insight = {
   data: {},
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
-  EX: ["harian", "ytd", "musim", "cuaca", "paparan", "bnpb", "penanganan", "tahun", "luas", "nasional", "dunia", "kec"],
+  EX: ["harian", "ytd", "musim", "cuaca", "paparan", "bnpb", "tahun", "luas", "nasional", "dunia", "kec"],
   ex(judul, sub, unit, isi, catatan, ctl = "") {
     /* sub & unit sengaja tidak dicetak: pemilik minta kartu cukup judul + grafik (13 Okt 2026) */
     /* catatan "...Sumber: X" dipecah: legenda (warna dari daftar leg) + sumber bercetak miring */
@@ -3537,6 +3537,7 @@ const Insight = {
         ${r.v > mx ? `<path d="M${L + w - 14},${y + 4} l6,${rh - 8} M${L + w - 8},${y + 4} l6,${rh - 8}" stroke="var(--card)" stroke-width="3"/>` : ""}
         <g class="gf" style="--i:${i}">${pil(L + w + 8, y + 6, r.lbl, wr, "#fff", 12)[0]}</g>`; });
     return [g, rows.length * rh]; },
+  /* disembunyikan atas permintaan pemilik 15 Okt 2026; hidupkan lagi dengan menaruh "penanganan" di EX */
   exPenanganan() {
     const f = this.data.fs; if (!f) return "";
     const pv = Object.entries(f.personel_prov).map(([k, v]) => ({n: namaProv(k), k, v, lbl: fmt(v) + " personel"})).sort((a, b) => b.v - a.v);
@@ -3553,11 +3554,11 @@ const Insight = {
       `Sumber: ${f.sumber}`); },
   exNasional() {
     const f = this.data.fs; if (!f) return "";
-    const rows = f.nasional.map(([n, v, cat]) => ({n, v, cat, tebal: n === "2026", lbl: (v > 2.8e6 ? "±" + fmt(v / 1e6) + " juta ha (estimasi)" : fmt(v) + " ha") + (n === "2026" ? " (sementara)" : "")}));
-    const ini = rows.at(-1), dulu = rows.find(r => r.n === "2015"), seri = rows.filter(r => r.n >= "2015" && r !== ini), mn = Math.min(...seri.map(r => r.v));
+    const rows = f.nasional.map(([n, v, cat]) => ({n, v, cat, tebal: n === "2026", lbl: (v > 2.8e6 ? "±" + fmt(v / 1e6) + " juta ha" : fmt(v) + " ha") + (n === "2026" ? " (sementara)" : "")}));
+    const ini = rows.at(-1);
     const MERAH = "#c9503a", JINGGA = "#e58a45", [g, H] = this._batang(rows, 940, 110, 2.8e6, r => r === ini ? "#f2a05c" : r.v >= 1e6 ? MERAH : JINGGA, r => `<b>${r.n}</b><br>${fmt(r.v)} ha${r.cat ? "<br>" + esc(r.cat) : ""}`);
     this._leg = [[MERAH, "di atas 1 juta ha"], [JINGGA, "di bawah 1 juta ha"], ["#f2a05c", "2026, data sementara"]];
-    return this.ex(`Luas terbakar 2026 sejauh ini ${this.hl(fmt(ini.v) + " ha")}, ${ini.v < mn ? "terendah sejak 2015 dan " : ""}baru ${this.hl(Math.round(ini.v / dulu.v * 100) + "%")} dari luas tahun 2015; angkanya masih bisa bertambah karena September–Oktober adalah puncak musim`, "", "",
+    return this.ex(`Luas terbakar 2026 menurut BNPB ${this.hl(fmt(ini.v) + " ha")} hingga 15 Oktober, angka sementara yang masih bisa bertambah karena ${this.hl("September–Oktober")} adalah puncak musim`, "", "",
       `<svg viewBox="0 0 940 ${H}" role="img" aria-label="Luas terbakar Indonesia per tahun">${g}</svg>`,
       `Sumber: BNPB, via ${f.sumber.split(",")[0]}`); },
   exDunia() {
