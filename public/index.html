@@ -792,8 +792,9 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 #kompleks .kp-ex .tbar{margin-top:12px!important}
 #kompleks .kp-ex > .ex-bd{padding:0 0 14px}
 #kompleks .kp-ex #pg{padding:0 18px}
-#kompleks .tw,#kompleks table{border-radius:0!important;box-shadow:none!important}
-#kompleks thead th:first-child,#kompleks thead th:last-child{border-radius:0!important}
+/* tabel kompleks seperti tabel lain: masuk dari tepi kartu, kepala membulat di sudut atas (pemilik, 15 Okt 2026) */
+#kompleks .tw{box-shadow:none!important;border:0!important;border-radius:12px!important;margin:0 16px!important}
+#kompleks table{box-shadow:none!important}
 #kompleks .tbar{margin:0 0 10px;padding:0}
 #kompleks #tjudul{font-family:var(--display);font-size:18px!important;font-weight:800}
 .ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}

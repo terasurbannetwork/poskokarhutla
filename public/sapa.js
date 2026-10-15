@@ -22,7 +22,7 @@
   const ik = k => `<svg viewBox="0 0 24 24" aria-hidden="true">${IK[k]}</svg>`;
   const baris = (p, i) => `<button class="sp-k" data-k="${esc(p.id)}"><i>${i + 1}</i><b translate="no">${esc(p.kab)}</b><span><span translate="no">${esc(p.kec || "")}</span> · ${esc(namaProv(p.prov))}</span>
     <em class="sp-p merah">${p.hari} hari</em>${p.gambut ? `<em class="sp-p gambut">${ik("daun")}Gambut</em>` : "<em></em>"}</button>`;
-  const kartu = (k, w, label, isi) => `<div class="sp-c" style="--w:${w}"><span class="sp-ci">${ik(k)}</span><div><span class="sp-ey">${label}</span><p>${isi}</p></div></div>`;
+  const kartu = (k, w, label, isi) => `<div class="sp-c" style="--w:${w}"><span class="sp-ci">${ik(k)}</span><div><b class="sp-ey">${label}</b><p>${isi}</p></div></div>`;
   const daftar = xs => `<span translate="no">${xs.map(x => esc(x.kab)).join(", ")}</span>`;
 
   async function siap() { for (let i = 0; i < 400 && !(S.meta && S.kluster); i++) await new Promise(r => setTimeout(r, 150)); return !!S.kluster; }
@@ -49,7 +49,7 @@
     const naik = h.ini - h.kmrn, arah = naik > 0 ? `<b class="naik">▲ ${fmt(naik)}</b> dari kemarin` : naik < 0 ? `<b class="turun">▼ ${fmt(-naik)}</b> dari kemarin` : "sama dengan kemarin";
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const kab = topKab(h.baru, 5), maks = kab[0]?.n || 1;
-    const bar = kab.map(x => `<div class="sp-b"><span translate="no">${esc(x.kab)}</span><i style="--p:${Math.max(4, x.n / maks * 100)}%"><em class="sp-p oranye">${fmt(x.n)}</em></i></div>`).join("");
+    const bar = kab.map(x => `<div class="sp-b"><span translate="no">${esc(x.kab)}</span><i><u style="--p:${Math.max(3, x.n / maks * 100)}%"></u></i><b>${fmt(x.n)}</b></div>`).join("");
     const pm = h.asapKab[0]?.[1];
     const awas = [
       h.gambut.length && kartu("daun", "#8a5a3c", "Lahan gambut", `<b>${fmt(h.gambut.length)}</b> dari ${fmt(h.nyala.length)} kompleks menyala di gambut, paling sulit dipadamkan`),
@@ -59,13 +59,13 @@
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("api")}Situasi karhutla hari ini</span>
         <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik api terdeteksi, ${arah}</h3>
-        <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} kompleks baru · 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span>
-          <span class="sp-wkt">Data ${jamWIB(S.meta.data_terakhir || S.meta.dibuat)}</span></div></div>
+        <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} kompleks baru · 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span></div>
+        <span class="sp-wkt">Data ${jamWIB(S.meta.data_terakhir || S.meta.dibuat)}</span></div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
-      ${kab.length ? sek("Kompleks baru terbanyak", `<div class="sp-bs">${bar}</div>`) : ""}
-      ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks">${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
-      ${awas ? sek("Perlu perhatian", `<div class="sp-cs">${awas}</div>`) : ""}
+      ${kab.length ? sek("Kompleks baru terbanyak", `<div class="sp-bs sp-panel">${bar}</div>`) : ""}
+      ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel">${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
+      ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel">${awas}</div>`) : ""}
       </div>
       <div class="sp-aksi"><span>Sumber: NASA FIRMS, Copernicus CAMS, BMKG</span><button class="sp-pri" data-tutup>Lihat peta</button></div>`;
   }
@@ -83,43 +83,51 @@
   }
 
   document.head.insertAdjacentHTML("beforeend", `<style>
-.sp{width:min(600px,calc(100vw - 24px))}
+/* satu kolom: kepala tetap, isi digulir, tombol menempel di bawah (tidak pernah terpotong) */
+dialog.sp{width:min(560px,calc(100vw - 24px));max-height:min(760px,calc(100dvh - 32px));overflow:hidden;padding:0;border:0;border-radius:22px}
+dialog.sp[open]{display:flex;flex-direction:column}
 .sp svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
-.sp-hd{display:flex;gap:12px;align-items:flex-start;padding:20px 22px 18px;background:linear-gradient(135deg,#0b2545,#13315c 60%,#1d4e89);color:#fff;position:sticky;top:0;z-index:2}
+.sp-hd{flex:none;display:flex;gap:12px;align-items:flex-start;padding:20px 22px 18px;background:linear-gradient(135deg,#0b2545,#163a66);color:#fff}
 .sp-eyh{display:inline-flex;align-items:center;gap:6px;font-size:11px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:#f5a06b}
-.sp-hd h3{font:700 21px/1.3 var(--display);letter-spacing:-.01em;margin:8px 0 12px;color:#fff}
-.sp-hd h3>b{color:#ff8a5c}.sp-hd h3 .naik{color:#ff8a5c}.sp-hd h3 .turun{color:#7fd6a4}
-.sp-chips{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
-.sp-wkt{font-size:11px;color:rgb(255 255 255 / .6);margin-left:auto}
-.sp .sp-x{border:0;background:rgb(255 255 255 / .12);color:#fff;width:34px;height:34px;border-radius:50%;font-size:19px;cursor:pointer;flex:none}
-.sp .sp-x:hover{background:rgb(255 255 255 / .22)}
-.sp-p{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11.5px;font-weight:700;padding:3px 9px;border-radius:999px;white-space:nowrap;line-height:1.3}
-.sp-p.putih{background:rgb(255 255 255 / .12);color:#fff;box-shadow:inset 0 0 0 1px rgb(255 255 255 / .18)}
-.sp-p.merah{background:color-mix(in oklch,#c9503a 13%,transparent);color:#b5412c}
-.sp-p.gambut{background:color-mix(in oklch,#8a5a3c 14%,transparent);color:#7a4a2c}
-.sp-p.oranye{background:#e8743b;color:#fff}
-.sp-isi{padding:18px 22px 6px;display:grid;gap:20px}
-.sp-sek h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2);margin:0 0 10px}
-.sp-bs{display:grid;gap:7px}
-.sp-b{display:grid;grid-template-columns:110px 1fr;align-items:center;gap:10px;font-size:13px;font-weight:600}
-.sp-b span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.sp-b i{display:flex;align-items:center;justify-content:flex-end;width:var(--p);height:22px;border-radius:6px;background:linear-gradient(90deg,color-mix(in oklch,#e8743b 25%,transparent),color-mix(in oklch,#e8743b 55%,transparent));padding-right:3px;box-sizing:border-box;min-width:fit-content}
-.sp-ks{display:grid;border:1px solid var(--line);border-radius:12px;overflow:hidden}
-.sp-k{display:grid;grid-template-columns:22px auto minmax(0,1fr) auto 76px;align-items:center;gap:10px;text-align:left;border:0;border-top:1px solid var(--line);background:var(--card);color:var(--ink);padding:10px 12px;cursor:pointer;font:inherit;font-size:13.5px}
-.sp-k:first-child{border-top:0}.sp-k:hover{background:var(--surface)}
-.sp-k i{font-style:normal;font-size:11px;font-weight:800;color:var(--ink2)}
+.sp-hd h3{font:700 20px/1.3 var(--display);letter-spacing:-.01em;margin:8px 0 12px;color:#fff}
+.sp-hd h3>b{color:#ff9a6b}.sp-hd h3 .naik{color:#ff9a6b}.sp-hd h3 .turun{color:#7fd6a4}
+.sp-chips{display:flex;flex-wrap:wrap;gap:6px}
+.sp-wkt{display:block;margin-top:10px;font-size:11.5px;color:rgb(255 255 255 / .62)}
+.sp .sp-x{border:0;background:rgb(255 255 255 / .14);color:#fff;width:36px;height:36px;border-radius:50%;font-size:20px;line-height:1;cursor:pointer;flex:none}
+.sp .sp-x:hover{background:rgb(255 255 255 / .24)}
+.sp-p{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;white-space:nowrap;line-height:1.3}
+.sp-p.putih{background:rgb(255 255 255 / .12);color:#fff}
+.sp-p.merah{background:color-mix(in oklch,#c9503a 12%,var(--card));color:#b5412c}
+.sp-p.gambut{background:color-mix(in oklch,#8a5a3c 12%,var(--card));color:#7a4a2c}
+.sp-isi{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:20px 22px 8px;display:grid;gap:20px;align-content:start}
+.sp-sek h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
+.sp-panel{background:var(--surface);border-radius:16px}
+.sp-bs{display:grid;gap:10px;padding:14px 16px}
+.sp-b{display:grid;grid-template-columns:118px 1fr 40px;align-items:center;gap:12px;font-size:13.5px}
+.sp-b span{font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-b i{display:block;height:8px;border-radius:4px;background:color-mix(in oklch,var(--ink) 8%,transparent);overflow:hidden}
+.sp-b u{display:block;height:100%;width:var(--p);border-radius:4px;background:#e8743b}
+.sp-b b{text-align:right;font-variant-numeric:tabular-nums}
+.sp-ks{display:grid;padding:2px 0}
+.sp-k{display:grid;grid-template-columns:20px auto minmax(0,1fr) auto 84px;align-items:center;gap:10px;text-align:left;border:0;border-top:1px solid var(--line);background:none;color:var(--ink);padding:11px 16px;cursor:pointer;font:inherit;font-size:13.5px}
+.sp-k:first-child{border-top:0}.sp-k:hover{background:color-mix(in oklch,var(--ink) 4%,transparent)}
+.sp-k:focus-visible{outline:3px solid #e3b94e;outline-offset:-3px}
+.sp-k i{font-style:normal;font-size:11.5px;font-weight:800;color:var(--ink2)}
 .sp-k span{font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .sp-k em:last-child{justify-self:start}
-.sp-cs{display:grid;grid-template-columns:1fr 1fr;gap:8px}
-.sp-c{display:flex;gap:10px;align-items:flex-start;padding:12px;border-radius:12px;background:color-mix(in oklch,var(--w) 7%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in oklch,var(--w) 22%,var(--line))}
-.sp-ci{display:grid;place-items:center;width:30px;height:30px;border-radius:50%;background:var(--w);color:#fff;flex:none}.sp-ci svg{width:15px;height:15px}
-.sp-ey{font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--w)}
-.sp-c p{margin:3px 0 0;font-size:12.8px;line-height:1.45;color:var(--ink)}.sp-c p b{color:#c9503a}
-.sp-aksi{padding:16px 22px 20px;display:flex;align-items:center;gap:12px}
-.sp-aksi>span{flex:1;font-size:11px;color:var(--ink2)}
-.sp-pri{min-height:42px;padding:0 26px;border:0;border-radius:999px;background:#e8743b;color:#fff;font:700 14px var(--font);cursor:pointer;box-shadow:0 6px 16px -6px #e8743b}
-.sp-pri:hover{filter:brightness(1.06)}
-@media (max-width:560px){.sp-cs{grid-template-columns:1fr}.sp-k{grid-template-columns:18px auto minmax(0,1fr) auto}.sp-k span,.sp-k em:last-child:empty{display:none}.sp-b{grid-template-columns:90px 1fr}.sp-wkt{margin-left:0;width:100%}}
+.sp-cs{display:grid;padding:2px 0}
+.sp-c{display:flex;gap:12px;align-items:flex-start;padding:13px 16px;border-top:1px solid var(--line)}.sp-c:first-child{border-top:0}
+.sp-ci{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;background:color-mix(in oklch,var(--w) 15%,var(--card));color:var(--w);flex:none}.sp-ci svg{width:16px;height:16px}
+.sp-ey{display:block;font-size:13.5px;font-weight:700;color:var(--ink)}
+.sp-c p{margin:2px 0 0;font-size:13px;line-height:1.45;color:var(--ink2)}.sp-c p b{color:var(--ink)}
+.sp-aksi{flex:none;padding:14px 22px 18px;display:flex;align-items:center;gap:12px;border-top:1px solid var(--line);background:var(--card)}
+.sp-aksi>span{flex:1;font-size:11.5px;color:var(--ink2)}
+.sp-pri{min-height:44px;padding:0 28px;border:0;border-radius:999px;background:#0b2545;color:#fff;font:700 14px var(--font);cursor:pointer}
+.sp-pri:hover{background:#163a66}.sp-pri:focus-visible,.sp .sp-x:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-pri{background:#e8743b}}
+:root[data-theme="dark"] .sp-pri{background:#e8743b}
+@media (max-width:560px){.sp-hd{padding:18px 16px 16px}.sp-isi{padding:16px 16px 8px}.sp-aksi{padding:12px 16px 16px}.sp-aksi>span{display:none}.sp-pri{flex:1}
+  .sp-k{grid-template-columns:18px auto minmax(0,1fr) auto}.sp-k span,.sp-k em:last-child:empty{display:none}.sp-b{grid-template-columns:96px 1fr 34px}}
 </style>`);
 
   /* tunggu spanduk persetujuan selesai supaya dua lapisan tidak bertumpuk */
