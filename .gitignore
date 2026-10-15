@@ -50,3 +50,9 @@ data/raw/sebaran/*
 !data/raw/sebaran/*.log
 !data/raw/sebaran/prospektif/
 !data/raw/sebaran/prospektif_uji_alur_14okt/
+
+# salinan otomatis Finder/iCloud ("berkas 2.js"): jangan pernah ikut commit
+* 2
+* 2.*
+.env*
+!.env.example
