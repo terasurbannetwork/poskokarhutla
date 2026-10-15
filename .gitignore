@@ -43,3 +43,10 @@ scripts/data/.cache/
 
 # gambar pratinjau tautan dibuat di Actions
 public/data/og/
+# hasil uji & log model sebaran (kecil) ikut git; cache latih raksasa (*.pkl, *.jsonl, cuaca/) tidak
+!data/raw/sebaran/
+data/raw/sebaran/*
+!data/raw/sebaran/*.json
+!data/raw/sebaran/*.log
+!data/raw/sebaran/prospektif/
+!data/raw/sebaran/prospektif_uji_alur_14okt/

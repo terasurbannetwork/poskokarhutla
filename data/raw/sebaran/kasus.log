@@ -1,0 +1,7 @@
+19:19:29 model lipat tanpa (2015,): 145993 baris
+19:20:21 model lipat tanpa (2016, 2017, 2018): 434311 baris
+19:21:11 model lipat tanpa (2019,): 379714 baris
+19:21:59 model lipat tanpa (2020, 2021, 2022): 462774 baris
+19:24:15 128 kasus dipilih
+19:33:36 123 kasus berhasil dihitung
+19:33:38 selesai {"n": 123, "iou_24": [0.5842, 0.5259, 0.6398, 123], "f1_24": [0.4372, 0.3548, 0.5124, 123], "lepas_akurasi": [0.6504, 0.561, 0.7317, 123]}

@@ -1,0 +1,288 @@
+{
+ "n": 930277,
+ "tahun": [
+  2012,
+  2026
+ ],
+ "laju_dasar": 0.0211,
+ "banding": [
+  {
+   "banding": "Sawit di gambut vs di luar konsesi (semua lahan)",
+   "n": 62649,
+   "n_acuan": 630205,
+   "lolos": 0.041,
+   "lolos_acuan": 0.0213,
+   "rasio_lolos": [
+    1.93,
+    1.84,
+    2.01
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Sawit di gambut vs gambut di luar konsesi",
+   "n": 62649,
+   "n_acuan": 280636,
+   "lolos": 0.041,
+   "lolos_acuan": 0.0385,
+   "rasio_lolos": [
+    1.06,
+    1.02,
+    1.11
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Sawit di tanah mineral vs mineral di luar konsesi",
+   "n": 87624,
+   "n_acuan": 349569,
+   "lolos": 0.008,
+   "lolos_acuan": 0.0074,
+   "rasio_lolos": [
+    1.08,
+    0.99,
+    1.19
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Konsesi sawit (semua) vs di luar konsesi",
+   "n": 150273,
+   "n_acuan": 630205,
+   "lolos": 0.0217,
+   "lolos_acuan": 0.0213,
+   "rasio_lolos": [
+    1.02,
+    0.99,
+    1.06
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "HTI (kayu pulp) vs di luar konsesi",
+   "n": 108512,
+   "n_acuan": 630205,
+   "lolos": 0.0234,
+   "lolos_acuan": 0.0213,
+   "rasio_lolos": [
+    1.1,
+    1.05,
+    1.15
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "HTI di gambut vs gambut di luar konsesi",
+   "n": 34259,
+   "n_acuan": 280636,
+   "lolos": 0.046,
+   "lolos_acuan": 0.0385,
+   "rasio_lolos": [
+    1.19,
+    1.13,
+    1.27
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "HPH (penebangan) vs di luar konsesi",
+   "n": 62346,
+   "n_acuan": 630205,
+   "lolos": 0.0138,
+   "lolos_acuan": 0.0213,
+   "rasio_lolos": [
+    0.65,
+    0.61,
+    0.69
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Izin tambang vs di luar konsesi",
+   "n": 7267,
+   "n_acuan": 630205,
+   "lolos": 0.0073,
+   "lolos_acuan": 0.0213,
+   "rasio_lolos": [
+    0.34,
+    0.26,
+    0.45
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Pemegang konsesi yang sudah disanksi vs konsesi lain",
+   "n": 2222,
+   "n_acuan": 297850,
+   "lolos": 0.0752,
+   "lolos_acuan": 0.0203,
+   "rasio_lolos": [
+    3.71,
+    3.16,
+    4.32
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Gambut vs tanah mineral",
+   "n": 385598,
+   "n_acuan": 544679,
+   "lolos": 0.039,
+   "lolos_acuan": 0.0084,
+   "rasio_lolos": [
+    4.66,
+    4.51,
+    4.82
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Kawasan lindung/konservasi vs APL (di luar kawasan hutan)",
+   "n": 127815,
+   "n_acuan": 454984,
+   "lolos": 0.0319,
+   "lolos_acuan": 0.0136,
+   "rasio_lolos": [
+    2.34,
+    2.24,
+    2.44
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  },
+  {
+   "banding": "Hutan produksi (HP/HPT/HPK) vs APL",
+   "n": 347478,
+   "n_acuan": 454984,
+   "lolos": 0.0268,
+   "lolos_acuan": 0.0136,
+   "rasio_lolos": [
+    1.97,
+    1.91,
+    2.03
+   ],
+   "n_hari": 0,
+   "ha_hari": null,
+   "ha_hari_acuan": null,
+   "rasio_ha_hari": null,
+   "geser_km": null,
+   "geser_km_acuan": null
+  }
+ ],
+ "per_tahun_gambut": {
+  "2012": [
+   0.0242,
+   0.005
+  ],
+  "2013": [
+   0.0286,
+   0.0073
+  ],
+  "2014": [
+   0.0421,
+   0.0097
+  ],
+  "2015": [
+   0.0493,
+   0.0158
+  ],
+  "2016": [
+   0.0268,
+   0.003
+  ],
+  "2017": [
+   0.01,
+   0.0032
+  ],
+  "2018": [
+   0.0263,
+   0.0045
+  ],
+  "2019": [
+   0.0537,
+   0.0109
+  ],
+  "2020": [
+   0.0105,
+   0.0035
+  ],
+  "2021": [
+   0.0119,
+   0.0011
+  ],
+  "2022": [
+   0.007,
+   0.0015
+  ],
+  "2023": [
+   0.0343,
+   0.0062
+  ],
+  "2024": [
+   0.0125,
+   0.0025
+  ],
+  "2025": [
+   0.0107,
+   0.0018
+  ],
+  "2026": [
+   0.0519,
+   0.0186
+  ]
+ }
+}

@@ -1,0 +1,93 @@
+14:18:59 438217 baris; latih-CV 340468
+14:25:02   lipatan 2015 selesai
+14:27:12   lipatan 2016 selesai
+14:29:28   lipatan 2017 selesai
+14:32:14   lipatan 2018 selesai
+14:35:18   lipatan 2019 selesai
+14:37:07   lipatan 2020 selesai
+14:38:30   lipatan 2021 selesai
+14:39:50   lipatan 2022 selesai
+14:41:45   lipatan 2023 selesai
+14:42:15 A: cuaca + lahan + ukuran awal (setara pendorong) AUC 0.9024 AP 0.4686 {'ambang': 0.0465, 'recall': 0.7, 'presisi': 0.179, 'alarm_palsu_per_tidak_lolos': 0.092, 'ditandai_per_100': 10.9, 'tp': 6660, 'fp': 30548, 'fn': 2854, 'tn': 300406} 1395 dtk
+14:46:17   lipatan 2015 selesai
+14:47:46   lipatan 2016 selesai
+14:49:19   lipatan 2017 selesai
+14:51:06   lipatan 2018 selesai
+14:53:00   lipatan 2019 selesai
+14:54:19   lipatan 2020 selesai
+14:55:24   lipatan 2021 selesai
+14:56:25   lipatan 2022 selesai
+14:58:14   lipatan 2023 selesai
+14:58:54 B: A + konteks titik sekitar AUC 0.9092 AP 0.4839 {'ambang': 0.0485, 'recall': 0.7, 'presisi': 0.191, 'alarm_palsu_per_tidak_lolos': 0.085, 'ditandai_per_100': 10.2, 'tp': 6660, 'fp': 28184, 'fn': 2854, 'tn': 302770} 999 dtk
+15:02:48   lipatan 2015 selesai
+15:04:16   lipatan 2016 selesai
+15:05:41   lipatan 2017 selesai
+15:07:09   lipatan 2018 selesai
+15:08:36   lipatan 2019 selesai
+15:09:19   lipatan 2020 selesai
+15:10:00   lipatan 2021 selesai
+15:10:40   lipatan 2022 selesai
+15:11:53   lipatan 2023 selesai
+15:12:10 C: B + NOAA-20 AUC 0.909 AP 0.4787 {'ambang': 0.048, 'recall': 0.7, 'presisi': 0.193, 'alarm_palsu_per_tidak_lolos': 0.084, 'ditandai_per_100': 10.1, 'tp': 6660, 'fp': 27804, 'fn': 2854, 'tn': 303150} 796 dtk
+15:14:51   lipatan 2015 selesai
+15:15:44   lipatan 2016 selesai
+15:16:42   lipatan 2017 selesai
+15:17:50   lipatan 2018 selesai
+15:19:09   lipatan 2019 selesai
+15:21:05   lipatan 2020 selesai
+15:22:45   lipatan 2021 selesai
+15:24:07   lipatan 2022 selesai
+15:26:01   lipatan 2023 selesai
+15:26:35 D: C + bobot kelas lolos 5x AUC 0.9085 AP 0.4777 {'ambang': 0.0501, 'recall': 0.7, 'presisi': 0.192, 'alarm_palsu_per_tidak_lolos': 0.085, 'ditandai_per_100': 10.2, 'tp': 6660, 'fp': 28076, 'fn': 2854, 'tn': 302878} 865 dtk
+15:30:00   lipatan 2015 selesai
+15:31:19   lipatan 2016 selesai
+15:32:48   lipatan 2017 selesai
+15:34:39   lipatan 2018 selesai
+15:36:47   lipatan 2019 selesai
+15:37:56   lipatan 2020 selesai
+15:39:02   lipatan 2021 selesai
+15:40:12   lipatan 2022 selesai
+15:41:33   lipatan 2023 selesai
+15:41:52 E: C + kendala monoton AUC 0.9096 AP 0.4826 {'ambang': 0.0479, 'recall': 0.7, 'presisi': 0.194, 'alarm_palsu_per_tidak_lolos': 0.083, 'ditandai_per_100': 10.1, 'tp': 6660, 'fp': 27626, 'fn': 2854, 'tn': 303328} 917 dtk
+15:44:11   lipatan 2015 selesai
+15:45:18   lipatan 2016 selesai
+15:46:33   lipatan 2017 selesai
+15:47:49   lipatan 2018 selesai
+15:49:12   lipatan 2019 selesai
+15:50:01   lipatan 2020 selesai
+15:50:47   lipatan 2021 selesai
+15:51:33   lipatan 2022 selesai
+15:52:45   lipatan 2023 selesai
+15:53:05 F: C + fokal gamma 2 AUC 0.9045 AP 0.4181 {'ambang': 0.0519, 'recall': 0.7, 'presisi': 0.185, 'alarm_palsu_per_tidak_lolos': 0.088, 'ditandai_per_100': 10.5, 'tp': 6660, 'fp': 29247, 'fn': 2854, 'tn': 301707} 673 dtk
+15:55:45   lipatan 2015 selesai
+15:56:58   lipatan 2016 selesai
+15:58:04   lipatan 2017 selesai
+15:59:27   lipatan 2018 selesai
+16:01:17   lipatan 2019 selesai
+16:02:18   lipatan 2020 selesai
+16:03:12   lipatan 2021 selesai
+16:04:19   lipatan 2022 selesai
+16:06:04   lipatan 2023 selesai
+16:06:43 U: C + ramal ulang 14 jam (lintasan berikutnya) AUC 0.951 AP 0.6742 {'ambang': 0.0985, 'recall': 0.7, 'presisi': 0.433, 'alarm_palsu_per_tidak_lolos': 0.026, 'ditandai_per_100': 4.5, 'tp': 6660, 'fp': 8726, 'fn': 2854, 'tn': 322228} 817 dtk
+16:06:43 kisi {'dalam': 4, 'pohon': 150, 'lr': 0.08} {'dalam': 4, 'pohon': 150, 'lr': 0.08, 'auc': 0.9092, 'ap': 0.4839, 'presisi70': 0.191}
+16:14:22   lipatan 2015 selesai
+16:17:23   lipatan 2016 selesai
+16:20:59   lipatan 2017 selesai
+16:24:20   lipatan 2018 selesai
+16:28:39   lipatan 2019 selesai
+16:29:55   lipatan 2020 selesai
+16:31:03   lipatan 2021 selesai
+16:32:07   lipatan 2022 selesai
+16:34:02   lipatan 2023 selesai
+16:34:19 kisi {'dalam': 3, 'pohon': 300, 'lr': 0.08} {'dalam': 3, 'pohon': 300, 'lr': 0.08, 'auc': 0.9088, 'ap': 0.4793, 'presisi70': 0.189}
+16:36:29   lipatan 2015 selesai
+16:37:17   lipatan 2016 selesai
+16:38:10   lipatan 2017 selesai
+16:39:29   lipatan 2018 selesai
+16:41:27   lipatan 2019 selesai
+16:42:24   lipatan 2020 selesai
+16:43:20   lipatan 2021 selesai
+16:44:07   lipatan 2022 selesai
+16:45:20   lipatan 2023 selesai
+16:45:42 kisi {'dalam': 5, 'pohon': 150, 'lr': 0.06} {'dalam': 5, 'pohon': 150, 'lr': 0.06, 'auc': 0.9094, 'ap': 0.4863, 'presisi70': 0.193}
+16:45:43 cv selesai

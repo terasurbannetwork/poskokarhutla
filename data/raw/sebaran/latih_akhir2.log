@@ -1,0 +1,2 @@
+14:14:45 baris: latih 474264, val 78963, uji 194447
+14:14:45 kisi & kurva belajar dipakai ulang: {'dalam': 4, 'pohon': 150, 'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}

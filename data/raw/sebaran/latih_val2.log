@@ -1,0 +1,52 @@
+12:22:36 baris: latih 474264, val 78963, uji 194447
+12:23:07 LR val {'logloss': 0.0254, 'auc': 0.9153, 'brier': 0.00521}
+12:23:19     pohon 20/200
+12:23:27     pohon 40/200
+12:23:36     pohon 60/200
+12:23:44     pohon 80/200
+12:23:52     pohon 100/200
+12:24:00     pohon 120/200
+12:24:08     pohon 140/200
+12:24:15     pohon 160/200
+12:24:23     pohon 180/200
+12:24:30     pohon 200/200
+12:24:31 GBDT 3 50 {'logloss': 0.02535, 'auc': 0.9147, 'brier': 0.00517}
+12:24:35 GBDT 3 100 {'logloss': 0.02486, 'auc': 0.9206, 'brier': 0.00515}
+12:24:41 GBDT 3 150 {'logloss': 0.02486, 'auc': 0.9212, 'brier': 0.00516}
+12:24:46 GBDT 3 200 {'logloss': 0.02483, 'auc': 0.922, 'brier': 0.00518}
+12:25:00     pohon 20/200
+12:25:12     pohon 40/200
+12:25:23     pohon 60/200
+12:25:33     pohon 80/200
+12:25:43     pohon 100/200
+12:25:52     pohon 120/200
+12:26:01     pohon 140/200
+12:26:11     pohon 160/200
+12:26:20     pohon 180/200
+12:26:29     pohon 200/200
+12:26:31 GBDT 4 50 {'logloss': 0.02529, 'auc': 0.9161, 'brier': 0.00519}
+12:26:34 GBDT 4 100 {'logloss': 0.02495, 'auc': 0.9211, 'brier': 0.00518}
+12:26:38 GBDT 4 150 {'logloss': 0.025, 'auc': 0.9218, 'brier': 0.00522}
+12:26:45 GBDT 4 200 {'logloss': 0.02508, 'auc': 0.9217, 'brier': 0.00526}
+12:26:57     pohon 20/200
+12:27:07     pohon 40/200
+12:27:21     pohon 60/200
+12:27:34     pohon 80/200
+12:27:46     pohon 100/200
+12:27:57     pohon 120/200
+12:28:08     pohon 140/200
+12:28:18     pohon 160/200
+12:28:28     pohon 180/200
+12:28:37     pohon 200/200
+12:28:39 GBDT 5 50 {'logloss': 0.02513, 'auc': 0.9179, 'brier': 0.00517}
+12:28:42 GBDT 5 100 {'logloss': 0.02496, 'auc': 0.9213, 'brier': 0.0052}
+12:28:47 GBDT 5 150 {'logloss': 0.02503, 'auc': 0.9214, 'brier': 0.00523}
+12:28:53 GBDT 5 200 {'logloss': 0.02512, 'auc': 0.9217, 'brier': 0.00527}
+12:51:53 kandidat buang: ['angin_searah', 'dmi', 'hujan72', 'oni', 'tetangga8', 'ws', 'ws_maks']
+12:55:19 pangkas {'dibuang': ['angin_searah', 'dmi', 'hujan72', 'oni', 'tetangga8', 'ws', 'ws_maks'], 'val': {'logloss': 0.02501, 'auc': 0.9223, 'brier': 0.00524}, 'val_semua': {'logloss': 0.02483, 'auc': 0.922, 'brier': 0.00518}, 'keputusan': 'dibatalkan: model terpangkas lebih buruk di validasi'}
+12:55:49 GBDT akhir val {'logloss': 0.02483, 'auc': 0.922, 'brier': 0.00518}
+12:55:57 peristiwa eval: {'latih': 232912, 'val': 44684, 'uji': 107571}
+12:56:40 tau {'lr': {'tau': 0.05, 'f1_mikro_hari1': 0.1527}, 'gbdt': {'tau': 0.08, 'f1_mikro_hari1': 0.1714}}
+13:01:35 hibrida {'k_angin': 1.0, 'm_gambut': 4.0, 'm': 0.03, 'f1_mikro': 0.1486, 'rasio_luas': 1.04}
+13:05:32 validasi selesai
+13:05:32 berhenti sebelum uji (SEBARAN_TANPA_UJI)

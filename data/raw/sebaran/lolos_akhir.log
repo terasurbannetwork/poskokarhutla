@@ -1,0 +1,20 @@
+16:46:32 konfigurasi ['ws', 'ws_maks', 'rh_min', 't_maks', 'vpd_maks', 'hujan24', 'hujan72', 'hari_kering', 'ffmc', 'dmc', 'dc', 'bui', 'isi_maks', 'fwi', 'gambut', 'hutan', 'produksi', 'apl', 'kebun', 'hti', 'hph', 'tambang', 'sanksi', 'kanal_km', 'jalan_km', 'desa_km', 'penduduk_km2', 'riwayat_f', 'n0', 'frp0', 'frp_jml0', 'malam', 'oni', 'dmi', 'titik5_3h', 'titik10_3h', 'jarak_aktif_km', 'hari_aktif10'] {'dalam': 5, 'pohon': 150, 'lr': 0.06}
+16:48:39   lipatan 2015 selesai
+16:49:27   lipatan 2016 selesai
+16:50:19   lipatan 2017 selesai
+16:51:24   lipatan 2018 selesai
+16:52:47   lipatan 2019 selesai
+16:53:32   lipatan 2020 selesai
+16:54:13   lipatan 2021 selesai
+16:54:55   lipatan 2022 selesai
+16:56:03   lipatan 2023 selesai
+16:58:22   lipatan 2015 selesai
+16:59:15   lipatan 2016 selesai
+17:00:11   lipatan 2017 selesai
+17:01:25   lipatan 2018 selesai
+17:02:47   lipatan 2019 selesai
+17:03:58   lipatan 2020 selesai
+17:04:40   lipatan 2021 selesai
+17:05:23   lipatan 2022 selesai
+17:06:31   lipatan 2023 selesai
+17:10:52 akhir: {"uji2": {"n": 97749, "lolos": 2922, "auc": 0.9077, "ap": 0.4671, "ap_acak": 0.0299, "pada_ambang": {"ambang": 0.0484, "recall": 0.674, "presisi": 0.216, "alarm_palsu_per_tidak_lolos": 0.075, "ditandai_per_100": 9.3, "tp": 1969, "fp": 7147, "fn": 953, "tn": 87680}, "brier": 0.0209}, "uji500": {"n": 500, "lolos": 42, "auc": 0.8085, "ap": 0.4726, "ap_acak": 0.084, "pada_ambang": {"ambang": 0.0484, "recall": 0.643, "presisi": 0.223, "alarm_palsu_per_tidak_lolos": 0.205, "ditandai_per_100": 24.2, "tp": 27, "fp": 94, "fn": 15, "tn": 364}, "brier": 0.0591}, "kasus": {"n": 123, "lolos": 58, "auc": 0.8313, "ap": 0.8166, "ap_acak": 0.4715, "pada_ambang": {"ambang": 0.0484, "recall": 0.638, "presisi": 0.755, "alarm_palsu_per_tidak_lolos": 0.185, "ditandai_per_100": 39.8, "tp": 37, "fp": 12, "fn": 21, "tn": 53}, "brier": 0.2813}}

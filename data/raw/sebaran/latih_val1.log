@@ -1,0 +1,56 @@
+11:54:40 baris: latih 474264, val 78963, uji 194447
+11:55:07 LR val {'logloss': 0.02569, 'auc': 0.9106, 'brier': 0.00523}
+11:55:20     pohon 20/200
+11:55:30     pohon 40/200
+11:55:40     pohon 60/200
+11:55:54     pohon 80/200
+11:56:07     pohon 100/200
+11:56:15     pohon 120/200
+11:56:22     pohon 140/200
+11:56:29     pohon 160/200
+11:56:36     pohon 180/200
+11:56:48     pohon 200/200
+11:56:49 GBDT 3 50 {'logloss': 0.02552, 'auc': 0.914, 'brier': 0.00518}
+11:56:51 GBDT 3 100 {'logloss': 0.02511, 'auc': 0.9188, 'brier': 0.00518}
+11:56:55 GBDT 3 150 {'logloss': 0.02497, 'auc': 0.9202, 'brier': 0.00518}
+11:56:59 GBDT 3 200 {'logloss': 0.02499, 'auc': 0.9195, 'brier': 0.00517}
+11:57:13     pohon 20/200
+11:57:22     pohon 40/200
+11:57:30     pohon 60/200
+11:57:38     pohon 80/200
+11:57:48     pohon 100/200
+11:58:06     pohon 120/200
+11:58:51     pohon 140/200
+11:59:09     pohon 160/200
+11:59:30     pohon 180/200
+12:00:20     pohon 200/200
+12:00:24 GBDT 4 50 {'logloss': 0.02531, 'auc': 0.9171, 'brier': 0.00517}
+12:00:29 GBDT 4 100 {'logloss': 0.02521, 'auc': 0.9174, 'brier': 0.00519}
+12:00:35 GBDT 4 150 {'logloss': 0.02515, 'auc': 0.9182, 'brier': 0.00519}
+12:00:41 GBDT 4 200 {'logloss': 0.02508, 'auc': 0.9188, 'brier': 0.00519}
+12:00:58     pohon 20/200
+12:01:21     pohon 40/200
+12:01:45     pohon 60/200
+12:02:07     pohon 80/200
+12:02:23     pohon 100/200
+12:02:43     pohon 120/200
+12:03:01     pohon 140/200
+12:03:19     pohon 160/200
+12:03:36     pohon 180/200
+12:03:53     pohon 200/200
+12:03:56 GBDT 5 50 {'logloss': 0.02526, 'auc': 0.917, 'brier': 0.00518}
+12:04:01 GBDT 5 100 {'logloss': 0.02514, 'auc': 0.9193, 'brier': 0.00521}
+12:04:10 GBDT 5 150 {'logloss': 0.02522, 'auc': 0.9187, 'brier': 0.00523}
+12:04:30 GBDT 5 200 {'logloss': 0.02533, 'auc': 0.9182, 'brier': 0.00527}
+12:09:17 tak membantu di validasi: ['ffmc', 'log_luas', 'bui', 'dc', 'dmc', 'fwi', 'hujan72', 'hari_kering', 'hutan', 'kebun', 'ws', 'oni', 'aktif24', 'hujan24', 'searah', 'rh_min', 'desa_km', 't_maks', 'dmi', 'semak', 'gambut', 'angin_searah', 'jalan_km', 'ws_maks', 'isi_maks']
+12:09:28     pohon 20/150
+12:09:31     pohon 40/150
+12:09:34     pohon 60/150
+12:09:37     pohon 80/150
+12:09:41     pohon 100/150
+12:09:44     pohon 120/150
+12:09:47     pohon 140/150
+12:09:55 GBDT akhir val {'logloss': 0.02533, 'auc': 0.911, 'brier': 0.00517}
+12:10:02 peristiwa eval: {'latih': 232912, 'val': 44684, 'uji': 107571}
+12:10:53 tau {'lr': {'tau': 0.1, 'f1_mikro_hari1': 0.0417}, 'gbdt': {'tau': 0.1, 'f1_mikro_hari1': 0.1291}}
+12:13:56 hibrida {'k_angin': 0.5, 'm_gambut': 2.0, 'm': 0.1, 'f1_mikro': 0.1479, 'rasio_luas': 3.07}

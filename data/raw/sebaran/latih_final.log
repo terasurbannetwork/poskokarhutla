@@ -1,0 +1,17 @@
+16:06:06 baris: latih 474264, val 78963, uji 194447
+16:06:06 kisi & kurva belajar dipakai ulang: {'dalam': 4, 'pohon': 150, 'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}
+16:06:06 ablasi dipakai ulang
+16:06:06 kandidat buang: ['aktif24', 'angin_searah', 'hujan72', 'searah', 't_maks', 'ws', 'ws_maks']
+16:08:25 pangkas {'dibuang': ['aktif24', 'angin_searah', 'hujan72', 'searah', 't_maks', 'ws', 'ws_maks'], 'val': {'logloss': 0.02494, 'auc': 0.9194, 'brier': 0.00518}, 'val_semua': {'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}, 'keputusan': 'dibatalkan: model terpangkas lebih buruk di validasi'}
+16:09:01 GBDT akhir val {'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}
+16:09:05 peristiwa eval: {'latih': 175, 'val': 480, 'uji': 630}
+16:11:08 tau {'lr': {'tau': 0.05, 'f1_mikro_hari1': 0.1368}, 'gbdt': {'tau': 0.08, 'f1_mikro_hari1': 0.1501}}
+16:14:02 fisika terkalibrasi (latih) {'hibrida': (0.5, 4.0, 0.03), 'rothermel': 0.1, 'mcarthur': 0.3, 'csiro_vesta': 0.1, 'elips_angin': 0.3}
+16:25:38 model terbaik per strata (validasi): {'gambut': 'gbdt', 'mineral': 'gbdt', 'sabana': 'mcarthur'}
+16:35:58 geser 0.0 {'gambut': 0.301, 'mineral': 0.099, 'sabana': -0.018}
+16:48:13 geser -0.25 {'gambut': 0.123, 'mineral': -0.007, 'sabana': -0.071}
+17:02:37 geser -0.5 {'gambut': 0.0, 'mineral': -0.123, 'sabana': -0.167}
+17:17:06 geser -0.75 {'gambut': -0.161, 'mineral': -0.209, 'sabana': -0.231}
+17:29:37 geser -1.0 {'gambut': -0.299, 'mineral': -0.287, 'sabana': -0.275}
+17:44:00 geser terpilih {'gambut': -0.5, 'mineral': -0.25, 'sabana': 0.0} F1 mikro 24 sebelum 0.1501 sesudah 0.1338
+17:44:00 validasi selesai

@@ -1,0 +1,18 @@
+17:49:16 baris: latih 474264, val 78963, uji 194447
+17:49:17 kisi & kurva belajar dipakai ulang: {'dalam': 4, 'pohon': 150, 'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}
+17:49:17 ablasi dipakai ulang
+17:49:17 kandidat buang: ['aktif24', 'angin_searah', 'hujan72', 'searah', 't_maks', 'ws', 'ws_maks']
+17:52:31 pangkas {'dibuang': ['aktif24', 'angin_searah', 'hujan72', 'searah', 't_maks', 'ws', 'ws_maks'], 'val': {'logloss': 0.02494, 'auc': 0.9194, 'brier': 0.00518}, 'val_semua': {'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}, 'keputusan': 'dibatalkan: model terpangkas lebih buruk di validasi'}
+17:53:19 GBDT akhir val {'logloss': 0.02487, 'auc': 0.9225, 'brier': 0.00518}
+17:53:25 peristiwa eval: {'latih': 175, 'val': 480, 'uji': 630}
+17:56:28 tau {'lr': {'tau': 0.05, 'f1_mikro_hari1': 0.1368}, 'gbdt': {'tau': 0.08, 'f1_mikro_hari1': 0.1501}}
+18:00:21 fisika terkalibrasi (latih) {'hibrida': (0.5, 4.0, 0.03), 'rothermel': 0.1, 'mcarthur': 0.3, 'csiro_vesta': 0.1, 'elips_angin': 0.3}
+18:12:21 model terbaik per strata (validasi): {'gambut': 'gbdt', 'mineral': 'gbdt', 'sabana': 'mcarthur'}
+Traceback (most recent call last):
+  File "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/scripts/sebaran/latih.py", line 381, in <module>
+    latih_jalan.main()
+    ~~~~~~~~~~~~~~~~^^
+  File "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/scripts/sebaran/latih_jalan.py", line 396, in main
+    geser = {st: min(kand, key=lambda d: abs(bias[st][d][0])) for st in bias}
+                 ~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+ValueError: min() iterable argument is empty
