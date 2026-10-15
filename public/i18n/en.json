@@ -6027,6 +6027,7 @@
 "Kanal teraktif": "Most active channels",
 "Belum ada.": "None yet.",
 "Terbaru": "Latest",
+"View terbanyak": "Most viewed",
 "Paling ditonton": "Most viewed",
 "Lagi ramai": "Trending",
 "Media": "Media",
@@ -6592,7 +6593,23 @@
 "Pengirim": "Sender",
 "Pernyataan": "Declaration",
 "Koordinat": "Coordinates",
-"Foto lapangan untuk peta karhutla": "Field photo for the forest fire map"
+"Foto lapangan untuk peta karhutla": "Field photo for the forest fire map",
+"Foto": "Photos",
+"Galeri": "Gallery",
+"Paling disukai": "Most liked",
+"Paling dikomentari": "Most commented",
+"Paling dilihat": "Most viewed",
+"Video": "Video",
+"Terima kasih!": "Thank you!",
+"Hapus": "Remove",
+"Tambah": "Add",
+"Anonim": "Anonymous",
+"Bila tidak aktif, foto tampil sebagai \"Anonim\".": "When off, the photo is credited as \"Anonymous\".",
+"Tidak memuat wajah orang dengan jelas atau data pribadi.": "No clearly visible faces or personal data.",
+"Aktifkan pernyataan ini supaya foto bisa dikirim.": "Turn on this declaration to send the photo.",
+"Format email belum benar, mis. nama@contoh.com.": "Email format is not valid, e.g. name@example.com.",
+"Isi nama dulu, atau matikan kredit nama.": "Enter your name, or turn off name credit.",
+"Lokasi belum terbaca. Ketuk baris Lokasi untuk mencari lagi.": "Location not found yet. Tap the Location row to search again."
 },
 "pola": [["^Terpapar asap, hari ini → hari ke-(\\d+)$", "Exposed to smoke, today → day $1"], ["^· CAMS \\(Copernicus\\) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ ([\\d.,]+) km \\(dampak\\.json\\); prakiraan hari ke-(\\d+)$", "· CAMS (Copernicus) via Open-Meteo × WorldPop population; only cells with an upwind fire complex ≤ $1 km (dampak.json); forecast day $2"], ["^(.+?) · (.+)$", "$1 · $2"], ["^(.+?) / (.+)$", "$1 / $2"], ["^(.+?) → (.+)$", "$1 → $2"], ["^(.+?) – (.+)$", "$1 – $2"], ["^Min,? (\\d+)$", "Sun $1"], ["^Sen,? (\\d+)$", "Mon $1"], ["^Sel,? (\\d+)$", "Tue $1"], ["^Rab,? (\\d+)$", "Wed $1"], ["^Kam,? (\\d+)$", "Thu $1"], ["^Jum,? (\\d+)$", "Fri $1"], ["^Sab,? (\\d+)$", "Sat $1"], ["^Teras Urban\\. \\((\\d+)\\)\\. Pantau Bencana: pemantauan karhutla dan bencana hidrometeorologi Indonesia dari data terbuka \\[Situs web\\]\\. (\\S+) \\(diakses (.+)\\)\\.$", "Teras Urban. ($1). Pantau Bencana: monitoring forest fires and hydrometeorological disasters in Indonesia from open data [Website]. $2 (accessed $3)."], ["^([^:]{2,40}): (.+)$", "$1: $2"], ["^Buka kompleks (.+)$", "Open fire complex $1"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih awal dari median\\)$", "Season started early in $1 ($2 days earlier than the median)"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih lambat dari median\\)$", "Season started late in $1 ($2 days later than the median)"], ["^aktif di (.+)$", "active in $1"], ["^di wilayah kerja (.+)$", "in the $1 area of operations"], ["^kata pemicu: (.+)$", "trigger words: "], ["^Lihat berita (.+)$", "View $1 story"], ["^Warna asli (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "True colour, $1, $2 $3"], ["^SWIR (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "SWIR, $1, $2 $3"]]
 }

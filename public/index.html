@@ -585,9 +585,11 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .vd-th u{position:absolute;left:8px;bottom:8px;padding:1px 6px;border-radius:5px;background:rgb(0 0 0 / .72);color:#fff;font-size:11px;font-weight:700;text-decoration:none}
 .dh-bagi{flex:none;width:38px;height:38px;margin-left:auto;margin-right:6px;padding:0;display:grid;place-items:center;border:0;border-radius:10px;background:transparent;color:var(--ink2);cursor:pointer}
 .dh-bagi:hover{background:var(--surface);color:var(--ink)}
+.dlg .dh .dh-bagi~[data-tutup]{margin-left:0}
 .kl-sk{display:inline-flex;flex-direction:column;gap:2px}
 .kl-w{display:inline-flex;gap:3px}
-.kl-n{display:flex;justify-content:space-between;font-size:10px}
+.kal-leg .kl-sk{align-items:stretch}
+.kal-leg .kl-n{display:flex;justify-content:space-between;font-size:10px}
 .kl-n em{margin:0!important}
 .pmulti{position:relative}
 .pmulti > summary{list-style:none;cursor:pointer;height:34px;display:flex;align-items:center;gap:8px;padding:0 34px 0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);font-size:12.5px;font-weight:700;white-space:nowrap;position:relative}
@@ -721,60 +723,72 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .rk-ctl .pc{flex:1;max-width:none}
 /* rincian provinsi (Kompleks) */
 .pr-isi{color:var(--ink)}
-/* laci provinsi bergaya pop-up situasi (sapa.js): putih, panel abu radius 20, judul polos 15px, satu angka besar per ubin, ikon dalam lingkaran lembut, batang tinta + satu aksen oranye (pemilik, 15 Okt 2026) */
-.pv{display:grid;gap:22px;padding:6px 2px 4px}
-.pv-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:22px 18px}
-.pv-p{min-width:0;display:grid;gap:10px;align-content:start}
-.pv-p.pv-lebar{grid-column:1/-1}
-.pv-p>h4,.pv>details.lipat>summary,.pv .lbl{margin:0;font:700 15px/1.3 var(--font);letter-spacing:-.005em;text-transform:none;color:var(--ink)}
-.pv-b{display:grid;gap:14px;min-width:0}   /* tanpa kompartemen: bagian rata di atas putih (pemilik, 15 Okt 2026) */
-.pv-p + .pv-p,.pv-g + .pv-p,.pv-p.pv-lebar + .pv-g{padding-top:0}
-.pv{gap:28px!important}
-.pv > *:not(:first-child){padding-top:22px;border-top:1px solid var(--line)}
-.pv-g{row-gap:28px!important}
-.pv-us{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px 14px}
+/* laci provinsi ala Oyenza (pemilik, 15 Okt 2026, versi 2): monokrom netral, kartu abu #F5F5F7 radius 24 tanpa garis,
+   angka besar dengan satuan kecil, ikon dalam lingkaran lembut, batang abu + satu aksen oranye untuk hari ini.
+   Token lokal --lp-* (bukan --pv-*: kelas .pv juga dipakai dialog persetujuan) supaya laci tetap netral walau tema situs kebiruan. */
+.pr-isi .pv{font:inherit;--lp-panel:#F5F5F7;--lp-ink:#171717;--lp-ink2:#6B6B70;--lp-ink3:#A1A1A6;--lp-line:#E3E3E7;--lp-chip:#fff;--lp-bar:#D4D4D9;--lp-kosong:#EAEAED;
+  display:grid;gap:14px;padding:6px 0 4px;color:var(--lp-ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pr-isi .pv{--lp-panel:rgb(255 255 255 / .055);--lp-ink:#FBFBFB;--lp-ink2:#A9A9A9;--lp-ink3:#6E6E6E;--lp-line:rgb(255 255 255 / .09);--lp-chip:rgb(255 255 255 / .07);--lp-bar:rgb(255 255 255 / .22);--lp-kosong:rgb(255 255 255 / .06)}}
+:root[data-theme="dark"] .pr-isi .pv{--lp-panel:rgb(255 255 255 / .055);--lp-ink:#FBFBFB;--lp-ink2:#A9A9A9;--lp-ink3:#6E6E6E;--lp-line:rgb(255 255 255 / .09);--lp-chip:rgb(255 255 255 / .07);--lp-bar:rgb(255 255 255 / .22);--lp-kosong:rgb(255 255 255 / .06)}
+.pv-g{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:stretch}
+.pv-g>:only-child{grid-column:1/-1}
+.pv-p{min-width:0;background:var(--lp-panel);border-radius:24px;padding:20px 22px 22px;display:grid;gap:16px;align-content:start}
+.pv-p>h4{margin:0;font:600 15px/1.3 var(--font);letter-spacing:-.01em;color:var(--lp-ink);text-transform:none}
+.pv-b{display:grid;gap:18px;min-width:0}
+.pv-b>p{margin:0!important;font-size:13px!important;line-height:1.5;color:var(--lp-ink2)!important}
+/* angka */
+.pv-us{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px 16px}
 .pv-p.pv-lebar .pv-us{grid-template-columns:repeat(4,minmax(0,1fr))}
-.pv-u{min-width:0;display:grid;grid-template-columns:auto minmax(0,1fr);column-gap:10px;align-items:start;align-content:start}
-.pv-u .pv-i{grid-row:span 3;display:grid;place-items:center;width:34px;height:34px;border-radius:50%;background:color-mix(in oklch,var(--w) 18%,var(--card));color:color-mix(in oklch,var(--w) 75%,var(--ink))}
-.pv-u .pv-i svg{width:17px;height:17px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
-.pv-u b{display:block;font:700 24px/1.05 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pv-u span,.pv-u em{display:block;font-size:12px;font-style:normal;font-weight:500;color:var(--ink2);margin-top:3px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.pv-u em{margin-top:1px;font-size:11.5px;opacity:.85}
-.pv-sub{font-size:12.5px;font-weight:600;color:var(--ink2);padding-top:12px;border-top:1px solid var(--line)}
-.pr-isi svg.pr-hr{color:var(--ink)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pr-isi svg.pr-hr{color:var(--ink2)}}
-:root[data-theme="dark"] .pr-isi svg.pr-hr{color:var(--ink2)}
-.pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}
-.pv-c{display:flex;flex-direction:column;align-items:center;gap:4px;padding:2px 0;min-width:0}
-.pv-c small{font-size:12px;font-weight:600;color:var(--ink2);white-space:nowrap}
-.pv-c b{font:700 26px/1.1 var(--display);letter-spacing:-.02em;color:var(--ink);font-variant-numeric:tabular-nums}
-.pv-c em{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11px;font-weight:700;color:var(--ink);white-space:nowrap}
-.pv-c em::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--w)}
-.pv-c span{font-size:11.5px;color:var(--ink2);white-space:nowrap}
-.pv-ket{display:flex;flex-wrap:wrap;gap:6px;padding-top:12px;border-top:1px solid var(--line)}
-.pv-ket .br-lb{font-size:11.5px;padding:4px 10px;background:color-mix(in oklch,var(--w) 12%,var(--card));color:color-mix(in oklch,var(--w) 75%,var(--ink))}
-.pv-k2{display:grid;grid-template-columns:auto repeat(12,minmax(0,1fr));gap:3px;align-items:center}
-.pv-k2n{font-size:12px;font-weight:600;color:var(--ink2);padding-right:8px;white-space:nowrap}
-.pv-k2 i{height:26px;border-radius:7px;display:grid;place-items:center;font:700 10px/1 var(--font);font-style:normal}
-.pv-k2 i.kini{outline:2px solid var(--ink);outline-offset:-1px}
-.pv-k2 small{text-align:center;font-size:10.5px;color:var(--ink2)}
-.pv-b>p{margin:0!important;font-size:12.5px!important;line-height:1.5}
-/* rekomendasi: judul polos, daftar di panel abu, nomor dalam lingkaran lembut */
-.pv>details.lipat{border:0;border-radius:0;background:none;box-shadow:none;overflow:visible}
-.pv>details.lipat>summary{border:0;background:none;padding:0 0 10px}
-.pv>details.lipat>summary::after{width:7px;height:7px;color:var(--ink2)}
-.pv>details.lipat .isi{padding:0;gap:10px}
-.pv .lbl{margin-top:12px!important}
+.pv-u{min-width:0;display:grid;align-content:start}
+.pv-u .pv-i{display:grid;place-items:center;width:36px;height:36px;border-radius:50%;margin-bottom:12px;background:color-mix(in oklch,var(--w) 16%,var(--lp-chip));color:color-mix(in oklch,var(--w) 80%,var(--lp-ink))}
+.pv-u .pv-i svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.pv-u b{display:block;font:700 30px/1.05 var(--display);letter-spacing:-.03em;color:var(--lp-ink);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pv-u b small{font-size:.55em;font-weight:600;letter-spacing:0;color:var(--lp-ink2)}
+.pv-u span{display:block;margin-top:6px;font-size:13px;font-weight:500;color:var(--lp-ink2);line-height:1.35}
+.pv-u em{display:block;margin-top:2px;font-size:12px;font-style:normal;color:var(--lp-ink3)}
+/* batang 7 hari */
+.pv-sub{font-size:13px;font-weight:600;color:var(--lp-ink);padding-top:18px;border-top:1px solid var(--lp-line)}
+.pr-isi svg.pr-hr{color:var(--lp-bar)!important;max-height:190px}
+/* cuaca 4 hari: empat kolom dipisah garis tipis */
+.pv-cu{display:grid;grid-template-columns:repeat(4,minmax(0,1fr))}
+.pv-c{display:flex;flex-direction:column;align-items:center;gap:4px;padding:4px 0;min-width:0;border-left:1px solid var(--lp-line)}
+.pv-c:first-child{border-left:0}
+.pv-c small{font-size:12px;font-weight:500;color:var(--lp-ink2);white-space:nowrap}
+.pv-c b{font:700 30px/1.1 var(--display);letter-spacing:-.03em;color:var(--lp-ink);font-variant-numeric:tabular-nums}
+.pv-c em{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:11.5px;font-weight:600;color:var(--lp-ink);white-space:nowrap}
+.pv-c em::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--w)}
+.pv-c span{font-size:11.5px;color:var(--lp-ink3);white-space:nowrap}
+/* keterangan: pil putih, titik warna */
+.pv-ket{display:flex;flex-wrap:wrap;gap:6px}
+.pv-ket .br-lb{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:6px 12px;border-radius:999px;background:var(--lp-chip);color:var(--lp-ink);white-space:nowrap}
+.pv-ket .br-lb::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--w);flex:none}
+/* kalender musim */
+.pv-k2{display:grid;grid-template-columns:auto repeat(12,minmax(0,1fr));gap:4px;align-items:center}
+.pv-k2n{font-size:12px;font-weight:500;color:var(--lp-ink2);padding-right:8px;white-space:nowrap}
+.pv-k2 i{height:28px;border-radius:8px;display:grid;place-items:center;font:700 10px/1 var(--font);font-style:normal}
+.pv-k2 i[style*="var(--card)"]{background:var(--lp-kosong)!important}
+.pv-k2 i.kini{box-shadow:0 0 0 2px var(--lp-ink)}
+.pv-k2 small{text-align:center;font-size:10.5px;color:var(--lp-ink3);padding-top:2px}
+/* rekomendasi: baris ala daftar iOS, nomor dalam lingkaran lembut */
 ol.rek{margin:0;padding:0;list-style:none;display:grid;counter-reset:r}
-ol.rek li{counter-increment:r;display:grid;grid-template-columns:28px minmax(0,1fr);align-content:start;gap:2px 12px;font-size:13.5px;line-height:1.45;padding:13px 0;border-top:1px solid var(--line)}
-ol.rek li:first-child{border-top:0}
-ol.rek li::before{content:counter(r);grid-row:span 2;width:28px;height:28px;border-radius:50%;background:color-mix(in oklch,var(--w) 16%,var(--card));color:color-mix(in oklch,var(--w) 80%,var(--ink));font-size:12px;font-weight:800;display:grid;place-items:center}
-ol.rek li>span{font-weight:600;color:var(--ink)}
-ol.rek li small{grid-column:2;color:var(--ink2);font-size:12px}
+ol.rek li{counter-increment:r;display:grid;grid-template-columns:26px minmax(0,1fr);align-content:start;gap:3px 12px;font-size:13.5px;line-height:1.45;padding:12px 0;border-top:1px solid var(--lp-line)}
+ol.rek li:first-child{border-top:0;padding-top:0}
+ol.rek li:last-child{padding-bottom:0}
+ol.rek li::before{content:counter(r);grid-row:span 2;width:26px;height:26px;border-radius:50%;background:color-mix(in oklch,var(--w) 16%,var(--lp-chip));color:color-mix(in oklch,var(--w) 85%,var(--lp-ink));font-size:12px;font-weight:700;display:grid;place-items:center}
+ol.rek li>span{font-weight:500;color:var(--lp-ink)}
+ol.rek li>span b{font-weight:700}
+ol.rek li small{grid-column:2;color:var(--lp-ink3);font-size:12px}
 @media (max-width:800px){.pv-g{grid-template-columns:1fr}}
 @media (max-width:700px){.pv-p.pv-lebar .pv-us{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media (max-width:560px){.pv-b{padding:14px;border-radius:18px}ol.rek{padding:2px 14px}.pv-u b{font-size:22px}.pv-c b{font-size:22px}.pv-k2n{font-size:11px;padding-right:4px}.pv-k2 i{height:22px;border-radius:5px;font-size:8px;letter-spacing:-.03em}.pv-k2 small{font-size:0}.pv-k2 small::after{content:attr(data-s);font-size:10px}
-  .pv-cu{grid-template-columns:repeat(2,minmax(0,1fr));gap:14px 6px}.pv-u{grid-template-columns:1fr}.pv-u .pv-i{grid-row:auto;width:30px;height:30px;margin-bottom:8px}.pv-u .pv-i svg{width:15px;height:15px}.pv-u span,.pv-u em{white-space:normal}}
+@media (max-width:560px){.pv{gap:10px}.pv-g{gap:10px}.pv-p{padding:16px 14px 18px;border-radius:20px}.pv-c b{font-size:24px}
+  /* HP: angka jadi baris daftar ala iOS (ikon · label · angka di kanan), tidak ada label terbungkus */
+  .pv-us,.pv-p.pv-lebar .pv-us{grid-template-columns:1fr;gap:0}
+  .pv-u{grid-template-columns:auto minmax(0,1fr) auto;grid-template-areas:"i s b" "i e b";column-gap:12px;align-items:center;padding:10px 0;border-top:1px solid var(--lp-line)}
+  .pv-u:first-child{border-top:0;padding-top:0}.pv-u:last-child{padding-bottom:0}
+  .pv-u .pv-i{grid-area:i;margin:0;width:32px;height:32px}.pv-u .pv-i svg{width:16px;height:16px}
+  .pv-u b{grid-area:b;font-size:22px;text-align:right}.pv-u span{grid-area:s;margin:0;font-size:13.5px;color:var(--lp-ink)}.pv-u em{grid-area:e;margin:0;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .pv-cu{grid-template-columns:repeat(2,minmax(0,1fr));row-gap:14px}.pv-c:nth-child(3){border-left:0}
+  .pv-k2{gap:3px}.pv-k2n{font-size:11px;padding-right:4px}.pv-k2 i{height:22px;border-radius:6px;font-size:8px;letter-spacing:-.03em}.pv-k2 small{font-size:0}.pv-k2 small::after{content:attr(data-s);font-size:10px}}
 /* daftar provinsi: kolom statistik sejajar di semua baris */
 .pr-row > summary{display:grid!important;grid-template-columns:44px minmax(0,1fr) repeat(4,112px) 104px 18px;gap:10px!important}
 .pr-row > summary .pr-n b{color:var(--ink)!important}
@@ -994,6 +1008,7 @@ ol.rek li small{grid-column:2;color:var(--ink2);font-size:12px}
 .pr-row[open] > summary{background:none}
 .pr-row > summary:hover{background:color-mix(in oklch,var(--ink) 3%,transparent)}
 .pr-row > .pr-isi{padding:4px 18px 22px}
+@media (max-width:560px){.pr-row > .pr-isi{padding:2px 8px 10px}}   /* HP: kartu abu laci hampir selebar layar */
 .pr-row .lambang{width:30px;height:30px;object-fit:contain}
 .pr-n{flex:1;min-width:0;display:flex;flex-direction:column;line-height:1.2}
 .pr-n b{font-size:14.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
@@ -2732,7 +2747,6 @@ async function renderPrioritas() {
   const b = new Map((S.bnpb?.rows || []).map(r => [r.Provinsi, r])), asap = Lapis.cache.asap, M = Tren.musim;
   const t = new Date(Date.now() + 7 * 36e5), das = t.getUTCMonth() * 3 + Math.min(2, Math.floor((t.getUTCDate() - 1) / 10));
   const G = S.fwi.grid, hari = G[0].hari.map(h => h.tgl), i0 = Math.max(0, hari.indexOf(S.fwi.hari_ini)), hr = hari.slice(i0, i0 + 4);
-  const lipat = (j, isi, buka = true) => `<details class="lipat" ${buka ? "open" : ""}><summary>${j}</summary><div class="isi">${isi}</div></details>`;
   const kartu = S.meta.prioritas.map(k => {
     const w = S.wilayah[k] || {}, kl = klusterDi(k), bn = S.meta.bnpb[k] ? b.get(S.meta.bnpb[k]) : null, lv = Math.max(0, ...kl.map(f => f.properties.level));
     const harian = Object.entries(w.harian || {}).sort().slice(-8), mh = Math.max(1, ...harian.map(h => h[1]));
@@ -2745,28 +2759,32 @@ async function renderPrioritas() {
     const d = {kl, fwiH3: Math.max(...per.map(x => x.fwi)), hariSangat: per.filter(x => x.fwi >= 14).length, hujan: per.reduce((a, x) => a + x.hujan, 0), pm,
       musim: o && {p: o.p_semua[das], siaga: Tren.siaga(o.p_semua)}, posko: {perm: pk.filter(x => x.jenis_posko !== "aju").length, aju: pk.filter(x => x.jenis_posko === "aju").length, biaya}};
     const rek = rekomendasi(k, d), bnb = bn ? butirBNPB(bn.rekomendasi) : [];
-    const warnaRek = ["#4f8fc4", "#e3b94e", "#e58a45", "#c9503a"];
-    /* rincian provinsi (dibuat ulang): panel-panel bergaya kartu Insight berkepala pita; angka sebagai ubin statistik */
+    const warnaRek = ["#8e8e93", "#8e8e93", "#e8743b", "#e8743b"];   // satu aksen: hanya langkah siaga/segera yang oranye (pemilik, 15 Okt 2026)
+    /* rincian provinsi: kartu abu ala Oyenza berpasangan dua kolom, angka dulu lalu rekomendasi (pemilik, 15 Okt 2026) */
     const sek = (j, isi, kelas = "") => `<section class="pv-p ${kelas}"><h4>${j}</h4><div class="pv-b">${isi}</div></section>`;
     const ubin = pvUbin;
     const kelasF = v => FWI_KELAS[kelasFWI(v)][0];
     return {k, lv, nk: kl.length, np: lvN[3], kmr, fw: w.fwi_maks, html: `<div class="pv">
-      ${lipat(`Rekomendasi · ${rek.length} langkah`, `<ol class="rek">${rek.map(x => `<li style="--w:${warnaRek[x.lv]}"><span>${x.teks}</span><small>Dasar: ${esc(x.dasar)}</small></li>`).join("") || `<li style="--w:${warnaRek[0]}"><span>Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.</span></li>`}</ol>
-        ${bnb.length ? `<div class="lbl" style="margin-top:4px">Rekomendasi BNPB</div><ol class="rek bnpb">${bnb.map(x => `<li style="--w:var(--brand2)"><span>${esc(x)}</span></li>`).join("")}</ol>` : ""}`)}
-      <div class="pv-g">
       ${sek("Situasi api", `<div class="pv-us">${ubin(fmt(kmr), "titik panas " + tglPendek(kmrIso), "#e58a45", "", "api")}${ubin(fmt(lvN[3]), "kompleks prioritas", "#c9503a", fmt(lvN[2]) + " siaga · " + fmt(lvN[1]) + " patroli", "prio")}${ubin(fmt(gambut), "kompleks di gambut", "#8a6a3f", "dari " + fmt(kl.length), "daun")}${ubin(rb(luas), "ha luas indikatif", "#5f6fb0", "min. " + rb(luas * .3) + " ha", "luas")}</div>
         <div class="pv-sub">Titik panas 7 hari terakhir</div>${(() => { const W = matchMedia("(max-width:560px)").matches ? 360 : 640, H = 150, B = 120, T = 26, gp = W / harian.length, bw = gp * .6, Y = v => B - v / mh * (B - T);
           return `<svg viewBox="0 0 ${W} ${H}" class="pr-hr" role="img" aria-label="Titik panas harian">` + harian.map(([tg, v], i) => { const ak = i === harian.length - 1, x = i * gp + (gp - bw) / 2, w = ak ? "#e8743b" : "currentColor", tt = new Date(tg + "T12:00:00+07:00");
-            return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="6" fill="${w}" opacity="${ak ? 1 : .85}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
-              + Insight.pil(x + bw / 2 - (rb(v).length * 6.6 + 16) / 2, Y(v) - 23, rb(v), w, ak ? "#fff" : "var(--card)", 11)[0]
-              + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 700 : 500}" style="fill:${ak ? "var(--ink)" : "var(--ink2)"}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
+            return `<rect class="gy" style="--i:${i}" x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="${Math.min(8, bw / 4)}" fill="${w}" data-tip="<b>${tt.toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"})}</b><br>Titik panas: ${fmt(v)}${ak ? "<br>Status: hari berjalan" : ""}"/>`
+              + `<text x="${x + bw / 2}" y="${Y(v) - 8}" text-anchor="middle" font-size="12.5" font-weight="700" style="fill:${ak ? "#e8743b" : "var(--lp-ink)"}">${rb(v)}</text>`
+              + `<text x="${x + bw / 2}" y="${B + 18}" text-anchor="middle" font-size="11.5" font-weight="${ak ? 700 : 500}" style="fill:${ak ? "var(--lp-ink)" : "var(--lp-ink2)"}">${ak ? "hari ini" : tt.toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</text>`; }).join("") + `</svg>`; })()}`, "pv-lebar")}
+      <div class="pv-g">
+      ${sek(`Rekomendasi · ${rek.length} langkah`, `<ol class="rek">${rek.map(x => `<li style="--w:${warnaRek[x.lv]}"><span>${x.teks}</span><small>Dasar: ${esc(x.dasar)}</small></li>`).join("") || `<li style="--w:${warnaRek[0]}"><span>Pencegahan rutin; tidak ada kompleks berstatus siaga atau prioritas.</span></li>`}</ol>`)}
+      ${bnb.length ? sek("Rekomendasi BNPB", `<ol class="rek bnpb">${bnb.map(x => `<li style="--w:${warnaRek[0]}"><span>${esc(x)}</span></li>`).join("")}</ol>`) : ""}
+      </div>
+      <div class="pv-g">
       ${sek("Cuaca 4 hari", `<div class="pv-cu">${per.map((x, j) => { const c = `rgb(${warnaFWI(x.fwi).join(",")})`; return `<div class="pv-c" style="--w:${c}" data-tip="<b>${labelHari(hr[j])}</b><br>FWI maks: ${fmt(Math.round(x.fwi * 10) / 10)}<br>Hujan: ${fmt(Math.round(x.hujan * 10) / 10)} mm<br>DC: ${fmt(Math.round(x.dc))}"><small>${labelHari(hr[j])}</small><b>${fmt(Math.round(x.fwi))}</b><em>${kelasF(x.fwi)}</em><span>${x.hujan >= .5 ? "☂ " + fmt(Math.round(x.hujan * 10) / 10) + " mm" : "kering"}</span></div>`; }).join("")}</div>
         ${pm ? `<div class="pv-ket"><em class="br-lb" style="--w:${pm > 150.4 ? "#7a2b3f" : pm > 55.4 ? "#c9503a" : "#e3b94e"}">PM2.5 hingga ${fmt(Math.round(pm))} µg/m³ · ${pm > 250.4 ? "berbahaya" : pm > 150.4 ? "sangat tidak sehat" : pm > 55.4 ? "tidak sehat" : "sedang"}</em><em class="br-lb" style="--w:#8a6a3f">DC maks ${fmt(w.dc_maks)}</em></div>` : ""}`)}
       ${o ? sek("Kalender musim", (() => { /* dua baris (El Niño & tahun biasa), 12 kotak bulan berangka (pemilik, 14 Okt 2026) */
         const bln = ps => BULAN.map((_, m) => Math.max(ps[m * 3], ps[m * 3 + 1], ps[m * 3 + 2])), kini = Math.floor(das / 3), wv = (v, w) => v < .05 ? "var(--card)" : `color-mix(in oklch, ${w} ${Math.round(30 + v * 70)}%, #fbe3c4)`;
-        return `<div class="pv-k2">${[["El Niño", o.p_el_nino, "#c9503a"], ["Tahun biasa", o.p_biasa, "#e58a45"]].map(([n, ps, w]) => `<span class="pv-k2n">${n}</span>${bln(ps).map((v, m) => `<i class="${m === kini ? "kini" : ""}" style="background:${wv(v, w)};color:${v >= .45 ? "#fff" : "#7a4a2c"}" data-tip="<div class='tk'><div class='tk-h'><b>${BULAN[m]}</b><small>tahun ${n.toLowerCase()}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>">${v >= .05 ? Math.round(v * 100) : ""}</i>`).join("")}`).join("")}
+        return `<div class="pv-k2">${[["El Niño", o.p_el_nino, "#e8743b"], ["Tahun biasa", o.p_biasa, "#e8743b"]].map(([n, ps, w]) => `<span class="pv-k2n">${n}</span>${bln(ps).map((v, m) => `<i class="${m === kini ? "kini" : ""}" style="background:${wv(v, w)};color:${v >= .45 ? "#fff" : "#7a4a2c"}" data-tip="<div class='tk'><div class='tk-h'><b>${BULAN[m]}</b><small>tahun ${n.toLowerCase()}</small></div><div class='tk-n'><b>${Math.round(v * 100)}%</b><span>peluang periode api besar</span>${v >= .3 ? "<span class='tk-s on'>siaga</span>" : ""}</div></div>">${v >= .05 ? Math.round(v * 100) : ""}</i>`).join("")}`).join("")}
           <span></span>${BULAN.map(b => `<small data-s="${b[0]}">${b}</small>`).join("")}</div>
           <div class="pv-ket"><em class="br-lb" style="--w:#c9503a">Siaga El Niño: ${Tren.siaga(o.p_el_nino)}</em><em class="br-lb" style="--w:#e58a45">Siaga tahun biasa: ${Tren.siaga(o.p_biasa)}</em></div>`; })()) : ""}
+      </div>
+      <div class="pv-g">
       ${sek("Tren tahunan", trenKartu(k))}
       ${bn ? sek("Laporan BNPB", `<div class="pv-us">${ubin(fmt(angkaID(bn["Total Hotspot"])), "titik panas versi BNPB", "#e58a45", "", "api")}${ubin(fmt(Math.round(angkaID(bn["Lahan Terbakar Indikatif (Ha)"]) || 0)), "ha lahan terbakar", "#c9503a", "", "luas")}${ubin(esc(String(bn["Jarak Pandang Bandara (Km)"] ?? "–").replace(/(\d)\.(\d)/, "$1,$2")) + " km", "jarak pandang bandara", "#5f6fb0", "", "mata")}${ubin(esc(bn["Kabkot Terdampak"] ?? "–"), "kab/kota terdampak", "#1d4e89", "", "kota")}</div>
         <div class="pv-ket"><em class="br-lb" style="--w:#7a2b3f">Kualitas udara: ${esc(bn["Kualitas Udara (PM 25)"])}</em></div>`) : ""}
@@ -4046,7 +4064,7 @@ const Berita = {
   /* video YouTube (data/video.json dari scripts/data/video.py): tren unggahan, siapa & di mana, lalu daftar yang bisa diurutkan.
      Tiga kartu dibangun setelah berkasnya termuat; seluruhnya dibuang bila berkasnya belum ada. */
   VJ: {media: ["Media", "#4f8fc4"], resmi: ["Pemerintah", "#1d4e89"], kreator: ["Kreator", "#e58a45"]},
-  vo: {mode: "30", jenis: "", f: null, q: "", h: 0},   /* bawaan: paling ditonton sebulan terakhir (pemilik, 15 Okt 2026) */
+  vo: {mode: "30", urut: "tonton", jenis: "", f: null, q: "", h: 0},   /* bawaan: paling ditonton sebulan terakhir (pemilik, 15 Okt 2026) */
   exVideo() {
     if (!this.vid && !this._vidMuat) this._vidMuat = muatJSON("data/video.json").then(d => { if (!d?.video?.length) throw 0; this.vid = d; const el = $("#brVid"); if (el) { el.innerHTML = this.vidKartu(); this.vidIkat(el); } }).catch(() => $("#brVid")?.remove());
     setTimeout(() => { const el = $("#brVid"); if (el && this.vid) this.vidIkat(el); });
@@ -4079,7 +4097,7 @@ const Berita = {
       <footer class="ex-ft"><em>Sumber: judul video YouTube Data API</em></footer></article>`;
     const o = this.vo, sg = (k, xs) => `<div class="seg">${xs.map(([v, nm]) => `<button data-vo="${k}" data-v="${v}" aria-pressed="${o[k] === v}">${nm}</button>`).join("")}</div>`;
     const daftar = `<article class="ex" id="brVideo"><header class="ex-hd"><span class="ex-ey">Daftar video</span><div class="ex-jd"><h3 class="vd-jd"></h3></div>
-      <div class="ctl vd-ctl">${sg("mode", [["baru", "Terbaru"], ["3", "3 hari terakhir"], ["7", "Seminggu terakhir"], ["30", "Sebulan terakhir"], ["90", "3 bulan terakhir"]])}${sg("jenis", [["media", "Media"], ["resmi", "Pemerintah"], ["kreator", "Kreator"], ["pendek", "Shorts"]])}</div>
+      <div class="ctl vd-ctl">${sg("urut", [["baru", "Terbaru"], ["tonton", "View terbanyak"]])}${sg("mode", [["", "Semua"], ["3", "3 hari terakhir"], ["7", "Seminggu terakhir"], ["30", "Sebulan terakhir"], ["90", "3 bulan terakhir"]])}${sg("jenis", [["media", "Media"], ["resmi", "Pemerintah"], ["kreator", "Kreator"], ["pendek", "Shorts"]])}</div>
       <div class="ctl"><input type="search" placeholder="Cari judul atau kanal" aria-label="Cari video" value="${esc(o.q)}" style="width:100%;height:40px;border-radius:999px;border:1px solid var(--line);padding:0 16px;background:var(--card)"></div></header>
       <div class="ex-bd"><div class="vd-grid"></div><div class="vd-pg"></div></div><footer class="ex-ft"><em>Sumber: YouTube Data API; diputar di YouTube</em></footer></article>`;
     /* kanal: media & kreator terbanyak, plus video paling ditonton (pemilik, 15 Okt 2026) */
@@ -4092,13 +4110,11 @@ const Berita = {
       <div><div class="lbl">Paling ditonton</div><div class="br-rows">${tonton || `<p class="kosong">Jumlah tontonan belum tersedia.</p>`}</div></div></div></div>
       <footer class="ex-ft"><em>Sumber: YouTube Data API · klik kanal untuk menyaring daftar video</em></footer></article>`;
     return tren + siapa + kanal + daftar; },
-  vidIsi() { const el = $("#brVideo"); if (!el) return; const o = this.vo, q = o.q.toLowerCase(), PER = 15, kini = new Date(this.vid.dibuat);
+  vidIsi() { const el = $("#brVideo"); if (!el) return; const o = this.vo, q = o.q.toLowerCase(), PER = 15;
     const xs = this.vid.video.filter(v => (!q || (v.judul + " " + v.kanal).toLowerCase().includes(q)) && (!o.jenis || (o.jenis === "pendek" ? v.pendek : v.jenis === o.jenis))
       && (!o.f || (o.f.k === "kanal" ? v.kanal.trim() === o.f.v : (v[o.f.k] || []).includes(o.f.v)))
-      && (o.mode === "baru" || Date.now() - new Date(v.tgl) <= +o.mode * 864e5));   /* mode: Terbaru, atau paling ditonton dalam 3 hari … 3 bulan */
-    const ramai = v => (v.tonton || 0) / Math.max(1, (kini - new Date(v.tgl)) / 36e5);
-    o.urut = o.mode === "baru" ? "baru" : "tonton";
-    if (o.urut === "tonton") xs.sort((a, b) => (b.tonton || 0) - (a.tonton || 0)); else if (o.urut === "ramai") xs.sort((a, b) => ramai(b) - ramai(a)); else xs.sort((a, b) => b.tgl.localeCompare(a.tgl));
+      && (!o.mode || Date.now() - new Date(v.tgl) <= +o.mode * 864e5));   /* mode: jendela waktu; urut: terbaru atau view terbanyak (pemilik, 15 Okt 2026) */
+    if (o.urut === "tonton") xs.sort((a, b) => (b.tonton || 0) - (a.tonton || 0) || b.tgl.localeCompare(a.tgl)); else xs.sort((a, b) => b.tgl.localeCompare(a.tgl));
     const h = Math.min(o.h, Math.max(0, Math.ceil(xs.length / PER) - 1)), pl = (t, w) => `<em class="br-lb" style="--w:${w}">${esc(t)}</em>`;
     const dur = s => s == null ? "" : `<u>${Math.floor(s / 60)}:${String(s % 60).padStart(2, "0")}</u>`;
     el.querySelector(".vd-jd").innerHTML = `${Insight.hl(fmt(xs.length) + " video")} karhutla di YouTube${o.f ? ` ${o.f.k === "kanal" ? "dari" : o.f.k === "prov" ? "di" : "menyebut"} ${esc(o.f.k === "prov" ? namaProv(o.f.v) : o.f.v)} <button class="br-lb br-lb-k" style="--w:#1d4e89;font-size:11px;vertical-align:3px" data-vf="">Hapus saringan ✕</button>` : ""}`;
@@ -4663,7 +4679,7 @@ const PV_IK = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 
   kota: '<path d="M4 20V9l5-3v14M9 20V4l7 3v13M16 20v-8l4 2v6M3 20h18"/>',
   naik: '<path d="M4 17l5-5 4 4 7-8"/><path d="M15 8h5v5"/>', urut: '<path d="M8 21h8M12 17v4M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4"/>',
   kal: '<rect x="4" y="5" width="16" height="15" rx="3"/><path d="M4 10h16M9 3v4M15 3v4"/>', jam: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>'};
-const pvUbin = (v, l, w = "#1d4e89", ket = "", ik = "") => `<div class="pv-u" style="--w:${w}">${ik ? `<i class="pv-i"><svg viewBox="0 0 24 24">${PV_IK[ik]}</svg></i>` : ""}<b>${v}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
+const pvUbin = (v, l, w = "#1d4e89", ket = "", ik = "") => `<div class="pv-u" style="--w:${w}">${ik ? `<i class="pv-i"><svg viewBox="0 0 24 24">${PV_IK[ik]}</svg></i>` : ""}<b>${String(v).replace(/^([\d.,]+)( ?)(rb|jt|km|%|×)$/, (_, n, sp, u) => `${n}<small>${sp}${u}</small>`)}</b><span>${l}</span>${ket ? `<em>${ket}</em>` : ""}</div>`;
 function trenKartu(k) {
   const D = S.sejarah; if (!D || !D.prov[k]) return "";
   const P = D.prov[k], th = D.tahun, ini = th[th.length - 1], lalu = th.slice(0, -1), bln = new Date().getMonth();

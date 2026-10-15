@@ -15,7 +15,12 @@
   const kunciWil = (f, t) => t === "prov" ? f.prov : t === "kab" ? `${f.prov}|${f.kab}` : `${f.prov}|${f.kab}|${f.kec}`;
   /* koordinat & cap lokasi ala kamera bergeotag (pemilik, 15 Okt 2026) */
   const koord = l => `${Math.abs(l.lat).toFixed(5)}° ${l.lat < 0 ? "LS" : "LU"}, ${Math.abs(l.lon).toFixed(5)}° BT`;
-  const cap = (wil, l, t) => `<div class="fl-cap">${IK.pin}<span><b>${wil ? `Kec. ${esc(wil.kec)}` : "Lokasi"}</b>${wil ? `<small>${esc(wil.kab)}, ${esc(namaProv(wil.prov))}</small>` : ""}<small>${l ? koord(l) : ""}</small><small>${esc(t || "")}</small></span></div>`;
+  const cap = (wil, l, t) => `<div class="fl-cap"><span><b>${wil ? `Kec. ${esc(wil.kec)}` : "Lokasi"}</b>${wil ? `<small>${esc(wil.kab)}, ${esc(namaProv(wil.prov))}</small>` : ""}<small>${l ? koord(l) : ""}</small><small>${esc(t || "")}</small></span></div>`;
+  /* ikon kategori (pemilik, 15 Okt 2026) */
+  const IKAT = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z"/>', asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
+    padam: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', dampak: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>', lainnya: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>'};
+  const ikat = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKAT[k] || IKAT.lainnya}</svg>`;
+  const MAKS_N = 5, PENGIRIM = "fl-pengirim";   /* 5 = batas unggah per jam di server; data pengirim diingat di perangkat ini */
   const IK = {
     orang: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.9 3.1-7 7-7s7 3.1 7 7"/></svg>',
     galeri: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="16" height="14" rx="2.5"/><circle cx="8.5" cy="10" r="1.6"/><path d="m3 17 4.5-4.5 4 4 3-3 4.5 4.5"/><path d="M7 3h12.5A1.5 1.5 0 0 1 21 4.5V15"/></svg>',
@@ -47,40 +52,65 @@
         ${f.jenis === "video" ? `<span class="fl-vid">${IK.main}${durasi(f.durasi)}</span>` : ""}${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}</span>
       <b>${esc(f.kec ? "Kec. " + f.kec : f.kab)}</b><small>${k} · ${lalu(f.diambil)}</small></button>`; };
 
-  /* ------------------------------------------------------------ tab galeri */
-  const G = {tingkat: bacaL("fl-tingkat", "kab"), kat: "", wil: ""};
+  /* ------------------------------------------------------------ tab galeri
+     Galeri rata (bukan dikelompokkan wilayah): urutan Terbaru/Paling disukai/dikomentari/dilihat, saring provinsi (banyak),
+     kategori & jenis (klik lagi = semua), lalu Galeri atau Peta (pemilik, 15 Okt 2026) */
+  const URUT = [["baru", "Terbaru"], ["suka", "Paling disukai"], ["komentar", "Paling dikomentari"], ["dilihat", "Paling dilihat"]];
+  const G = {urut: bacaL("fl-urut", "baru"), prov: [], kat: "", jenis: "", h: 0}, PER_HAL = 24;
+  const stat = (ik, n) => `<span>${ik}${fmt(n || 0)}</span>`;
+  const IKS = {mata: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'};
+  const kartuG = f => { const [k, w] = KAT[f.kategori] || KAT.lainnya;
+    return `<button type="button" class="fg-k" data-fid="${f.id}" aria-label="${esc(`${k} di ${f.kec}, ${f.kab}`)}"><span class="fg-g"><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}" onerror="this.style.visibility='hidden'">
+      ${f.jenis === "video" ? `<span class="fl-vid">${IK.main}${durasi(f.durasi)}</span>` : ""}${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}
+      <span class="fg-kat" style="--k:${w}">${ikat(f.kategori)}${k}</span>
+      <span class="fg-st">${stat(IK.hati, f.suka)}${stat(IK.kom, f.komentar)}${stat(IKS.mata, f.dilihat)}</span></span>
+      <span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)} · ${esc(namaProv(f.prov))} · ${lalu(f.diambil || f.dibuat)}</small></span></button>`; };
   async function render() {
     const el = $("#foto"); if (!el) return;
     if (!el.dataset.siap) {
       el.dataset.siap = 1;
-      el.innerHTML = `<div class="fl-wrap"><header class="fl-kepala" aria-label="Foto">
-        <button class="fl-pri" data-kirim>${IK.kamera}Kirim foto</button></header>
-        <div class="fl-alat"><div class="fl-seg" role="group" aria-label="Kelompokkan per">${TINGKAT.map(([k, n]) => `<button data-t="${k}" aria-pressed="${k === G.tingkat}">${n}</button>`).join("")}</div>
-        <div class="fl-chip" role="group" aria-label="Kategori"><button data-k="" aria-pressed="true">Semua</button>${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${n}</button>`).join("")}</div></div>
-        <div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div></div>`;
+      el.innerHTML = `<div class="fl-wrap"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${n}</button>`).join("")}</div>
+          <div class="fg-kanan"><div class="fl-seg fg-mode" role="group" aria-label="Tampilan"><button data-m="galeri" aria-pressed="true">Galeri</button><button data-m="peta" aria-pressed="false">Peta</button></div>
+          <button class="fl-pri kecil" data-kirim>${IK.kamera}Kirim foto</button></div></div>
+        <div class="fg-saring"><div id="fgProv"></div><div class="fl-chip" role="group" aria-label="Kategori">${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${ikat(k)}${n}</button>`).join("")}</div>
+          <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">Foto</button><button data-j="video" aria-pressed="false">Video</button></div></div>
+        <p class="fg-ring" id="fgRing"></p><div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div><div class="fg-pg" id="fgPg"></div></div>`;
       el.addEventListener("click", e => {
-        const t = e.target.closest("[data-t]"); if (t) { G.tingkat = t.dataset.t; G.wil = ""; tulisL("fl-tingkat", G.tingkat); el.querySelectorAll("[data-t]").forEach(b => b.setAttribute("aria-pressed", b === t)); return isiGaleri(); }
-        const k = e.target.closest("[data-k]"); if (k) { G.kat = k.dataset.k; el.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b === k)); return isiGaleri(); }
+        const u = e.target.closest("[data-u]"); if (u) { G.urut = u.dataset.u; G.h = 0; tulisL("fl-urut", G.urut); el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-pressed", b === u)); return isiGaleri(); }
+        const k = e.target.closest("[data-k]"); if (k) { G.kat = G.kat === k.dataset.k ? "" : k.dataset.k; G.h = 0; el.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === G.kat)); return isiGaleri(); }
+        const j = e.target.closest("[data-j]"); if (j) { G.jenis = G.jenis === j.dataset.j ? "" : j.dataset.j; G.h = 0; el.querySelectorAll("[data-j]").forEach(b => b.setAttribute("aria-pressed", b.dataset.j === G.jenis)); return isiGaleri(); }
+        const m = e.target.closest("[data-m]"); if (m && m.dataset.m === "peta") return lihatPeta();
+        const h = e.target.closest("[data-h]"); if (h && !h.disabled) { G.h = +h.dataset.h; isiGaleri(); return el.scrollIntoView({block: "start"}); }
         if (e.target.closest("[data-kirim]")) return Kirim.buka();
-        const w = e.target.closest("[data-wil-hapus]"); if (w) { G.wil = ""; return isiGaleri(); }
         const c = e.target.closest("[data-fid]"); if (c) return Rinci.buka(c.dataset.fid);
       });
+      el.addEventListener("change", e => { const m = e.target.closest("input[data-fp]"); if (!m) return; const box = m.closest(".pm-menu");
+        if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
+        G.prov = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean); if (!G.prov.length) box.querySelector("input[value='']").checked = true;
+        box.closest("details").querySelector("summary").textContent = !G.prov.length ? "Semua provinsi" : G.prov.length === 1 ? namaProv(G.prov[0]) : G.prov.length + " provinsi"; G.h = 0; isiGaleri(); });
     }
-    await muat(); isiGaleri();
+    await muat();
+    const pv = [...new Set(D.foto.map(f => f.prov))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    $("#fgProv").innerHTML = pv.length > 1 ? `<details class="pmulti"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fp value="" checked><span>Semua provinsi (${pv.length})</span></label>${pv.map(k => `<label><input type="checkbox" data-fp value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>` : "";
+    isiGaleri();
   }
+  const tersaring = () => D.foto.filter(f => (!G.prov.length || G.prov.includes(f.prov)) && (!G.kat || f.kategori === G.kat) && (!G.jenis || f.jenis === G.jenis));
   function isiGaleri() {
     const isi = $("#flIsi"); if (!isi) return;
-    const xs = D.foto.filter(f => (!G.kat || f.kategori === G.kat) && (!G.wil || kunciWil(f, G.tingkat).startsWith(G.wil)));
     if (!D.foto.length) { isi.innerHTML = `<button type="button" class="fl-ajak" data-kirim><span class="fl-bingkai"><span class="fl-lensa">${IK.kamera}</span></span>
-      <b>Belum ada foto</b><small>Jadilah yang pertama mengirim foto dari lokasimu.</small><span class="fl-pri">${IK.kamera}Ambil foto</span></button>`; return; }
-    if (!xs.length) { isi.innerHTML = `<div class="fl-kosong">${IK.kamera}<b>${D.foto.length ? "Tidak ada foto untuk saringan ini" : "Belum ada foto lapangan"}</b>
-      <p>${D.foto.length ? "Coba kategori atau wilayah lain." : "Jadilah yang pertama mengirim foto dari lokasimu."}</p>${D.foto.length ? "" : '<button class="fl-pri" data-kirim>Kirim foto</button>'}</div>`; return; }
-    const grup = new Map();
-    for (const f of xs) { const k = kunciWil(f, G.tingkat); (grup.get(k) || grup.set(k, []).get(k)).push(f); }
-    const urut = [...grup.values()].sort((a, b) => b.length - a.length || b[0].dibuat - a[0].dibuat);
-    isi.innerHTML = (G.wil ? `<p class="fl-saring">Wilayah: <b>${esc(namaWil(xs[0], G.tingkat))}</b> <button data-wil-hapus>Semua wilayah ×</button></p>` : "") +
-      urut.map(g => `<section class="fl-grup"><h3>${esc(namaWil(g[0], G.tingkat))}<small>${G.tingkat !== "prov" ? esc(G.tingkat === "kec" ? g[0].kab + " · " : "") + esc(namaProv(g[0].prov)) + " · " : ""}${g.length} ${g.length > 1 ? "kiriman" : "kiriman"}</small></h3>
-        <div class="fl-grid">${g.map(f => kartu(f)).join("")}</div></section>`).join("");
+      <b>Belum ada foto</b><small>Jadilah yang pertama mengirim foto dari lokasimu.</small><span class="fl-pri">${IK.kamera}Ambil foto</span></button>`; $("#fgRing").textContent = ""; $("#fgPg").innerHTML = ""; return; }
+    const kunci = {baru: f => f.diambil || f.dibuat, suka: f => f.suka || 0, komentar: f => f.komentar || 0, dilihat: f => f.dilihat || 0}[G.urut] || (f => f.dibuat);
+    const xs = tersaring().sort((a, b) => kunci(b) - kunci(a) || b.dibuat - a.dibuat), nH = Math.max(1, Math.ceil(xs.length / PER_HAL)); G.h = Math.min(G.h, nH - 1);
+    const nPv = new Set(xs.map(f => f.prov)).size;
+    $("#fgRing").innerHTML = `<b>${fmt(xs.length)}</b> foto & video dari <b>${fmt(nPv)}</b> provinsi`;
+    isi.innerHTML = xs.length ? `<div class="fg-grid">${xs.slice(G.h * PER_HAL, (G.h + 1) * PER_HAL).map(kartuG).join("")}</div>` : `<div class="fl-kosong">${IK.kamera}<b>Tidak ada foto untuk saringan ini</b><p>Coba provinsi, kategori, atau jenis lain.</p></div>`;
+    $("#fgPg").innerHTML = nH > 1 ? Array.from({length: nH}, (_, i) => `<button data-h="${i}" aria-pressed="${i === G.h}">${i + 1}</button>`).join("") : "";
+  }
+  /* tampilan Peta: pindah ke tab Peta dengan lapisan foto menyala, dibingkai ke foto hasil saringan */
+  function lihatPeta() {
+    const xs = tersaring(); P.nyala = true; tulisL("fl-lapis", "1"); const i = document.querySelector('#lapis input[data-l="foto"]'); if (i) i.checked = true;
+    bukaTab("peta"); setTimeout(() => { if (typeof peta === "undefined" || !peta) return; gambarPeta();
+      if (xs.length) { const lo = xs.map(f => f.lon), la = xs.map(f => f.lat); peta.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], {padding: 90, maxZoom: 11}); } }, 400);
   }
 
   /* ------------------------------------------------------------ lapisan peta: kartu HTML, dikelompokkan menurut zoom */
@@ -101,7 +131,7 @@
       el.addEventListener("click", e => { e.stopPropagation();
         if (g.length === 1) return Rinci.buka(g[0].id);
         const lo = g.map(f => f.lon), la = g.map(f => f.lat);
-        if (Math.max(...lo) - Math.min(...lo) < .002 && Math.max(...la) - Math.min(...la) < .002) { G.wil = kunciWil(g[0], "kec"); G.tingkat = "kec"; return bukaTab("foto"); }
+        if (Math.max(...lo) - Math.min(...lo) < .002 && Math.max(...la) - Math.min(...la) < .002) { G.prov = [g[0].prov]; G.h = 0; return bukaTab("foto"); }
         peta.fitBounds([[Math.min(...lo), Math.min(...la)], [Math.max(...lo), Math.max(...la)]], {padding: 80, maxZoom: 13}); });
       el.addEventListener("keydown", e => { if (e.key === "Enter" || e.key === " ") { e.preventDefault(); el.click(); } });
       P.penanda.push(new maplibregl.Marker({element: el, anchor: "bottom"}).setLngLat([lon, lat]).addTo(peta));
@@ -142,7 +172,7 @@
           ${f.keterangan ? `<p class="fl-ket">${esc(f.keterangan)}</p>` : ""}
           <dl class="fl-info"><div><dt>Lokasi</dt><dd>Kec. ${esc(f.kec)}, ${esc(f.kab)}, ${esc(namaProv(f.prov))}</dd></div>
             <div><dt>Diambil</dt><dd>${jamWIB(f.diambil)} <small>(${lalu(f.diambil)})</small></dd></div>
-            <div><dt>Kredit</dt><dd>${f.kredit ? esc(f.kredit) : "Warga (anonim)"}</dd></div></dl>
+            <div><dt>Kredit</dt><dd>${f.kredit ? esc(f.kredit) : "Anonim"}</dd></div></dl>
           <ul class="fl-lencana">${lencana.map(x => `<li>${x[1]}</li>`).join("")}</ul>
           <div class="fl-aksi"><button data-suka aria-pressed="${!!f.suka_saya}">${IK.hati}<span>${fmt(f.suka)}</span></button>
             <button data-fokus-kom>${IK.kom}<span>${fmt(f.komentar)}</span></button>
@@ -238,29 +268,31 @@
   }
 
   const Kirim = {
-    async buka() {
+    async buka(lagi) {
       const k = await konfig(); this.k = k;
       let d = document.querySelector("#flKirim");
       if (!d) { d = document.createElement("dialog"); d.id = "flKirim"; d.className = "fl-sheet"; d.setAttribute("aria-labelledby", "flKJudul"); document.body.appendChild(d);
         d.addEventListener("click", e => this.klik(e, d)); d.addEventListener("change", e => this.ubah(e, d)); d.addEventListener("submit", e => this.kirim(e, d)); d.addEventListener("close", () => this.reset()); }
-      this.d = d; this.reset();
+      const lokSegar = lagi && this.loc && Date.now() - this.loc.waktu < 5 * 60e3 && this.wil;
+      this.d = d; this.reset(lokSegar);
       d.innerHTML = `<div class="fl-pegang"></div><header><span class="fl-hd-ik">${IK.kamera}</span><div class="fl-hd-tx"><h2 id="flKJudul">Kirim foto</h2><small>Foto lapangan untuk peta karhutla</small></div><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
         ${k.media === false ? `<div class="fl-kosong"><b>Unggah foto belum dibuka</b><p>Penyimpanan foto sedang disiapkan. Coba lagi nanti.</p></div>` : `<div class="fl-lok" aria-live="polite"></div><form novalidate>
         <div class="fl-bidik" data-bidik><div class="fl-bidik-kosong"><label class="fl-bingkai" aria-label="Ambil foto"><span class="fl-lensa">${IK.kamera}</span><input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div></div>
         <p class="fl-cat">Foto, atau video maks ${k.batas?.durasi || 60} detik (${(k.batas?.video || 31457280) / 1048576} MB), diambil di lokasimu. Lokasi GPS ikut terkirim, dan admin memeriksa sebelum tayang.</p>
-        <div class="fl-bawah"><label class="fl-galeri" aria-label="Pilih dari galeri" title="Pilih dari galeri">${IK.galeri}<input type="file" name="galeri" accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm" hidden></label><label class="fl-pri besar">${IK.kamera}Ambil foto<input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div>
+        <div class="fl-bawah"><label class="fl-galeri" aria-label="Pilih dari galeri" title="Pilih dari galeri">${IK.galeri}<input type="file" name="galeri" accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm" multiple hidden></label><label class="fl-pri besar">${IK.kamera}Ambil foto<input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div>
         <p class="fl-galat" role="alert" hidden></p>
         <div class="fl-lanjut"><div class="fl-panel"><div><span>Lokasi</span><b data-lok>Membaca GPS…</b></div><div><span>Koordinat</span><b data-koord>–</b></div><div><span>Waktu</span><b data-wkt>–</b></div><div><span>Berkas</span><b data-uk>–</b></div></div>
-        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#e8743b">${IK.kamera}</span>Tentang foto ini</h4><fieldset class="fl-kat"><legend>Kategori</legend>${Object.entries(KAT).map(([kk, [n, w]], i) => `<label style="--k:${w}"><input type="radio" name="kategori" value="${kk}" ${i ? "" : "checked"}>${n}</label>`).join("")}</fieldset>
+        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#e8743b">${IK.kamera}</span>Tentang foto ini</h4><fieldset class="fl-kat"><legend>Kategori</legend>${Object.entries(KAT).map(([kk, [n, w]], i) => `<label style="--k:${w}"><input type="radio" name="kategori" value="${kk}" ${i ? "" : "checked"}>${ikat(kk)}${n}</label>`).join("")}</fieldset>
         <label class="fl-f">Keterangan <small>(opsional)</small><textarea name="keterangan" maxlength="280" rows="2" placeholder="Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi"></textarea></label></section>
         <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#4f8fc4">${IK.orang}</span>Pengirim</h4><div class="fl-dua2"><label class="fl-f">Nama <small>(opsional)</small><input name="nama" maxlength="60" autocomplete="name"></label>
           <label class="fl-f">Email <small>(opsional, tidak ditampilkan)</small><input name="email" type="email" maxlength="254" autocomplete="email"></label></div>
-        <label class="fl-tog"><input type="checkbox" name="tampil_nama" value="1"><span><b>Tampilkan nama saya sebagai kredit</b><small>Bila tidak dicentang, foto tampil sebagai "Warga (anonim)".</small></span></label></section>
-        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#2f9e6a">${IK.cek}</span>Pernyataan</h4><label class="fl-tog"><input type="checkbox" name="setuju" value="1" required><span><b>Saya mengambil foto/video ini sendiri di lokasi ini</b><small>Tidak memuat wajah orang dengan jelas atau data pribadi. Boleh ditampilkan publik setelah diperiksa admin.</small></span></label></section>
-        <div data-ts></div><div class="fl-prog" hidden><i></i></div>
+        <label class="fl-tog"><input type="checkbox" name="tampil_nama" value="1"><span><b>Tampilkan nama saya sebagai kredit</b><small>Bila tidak aktif, foto tampil sebagai "Anonim".</small></span></label></section>
+        <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#2f9e6a">${IK.cek}</span>Pernyataan</h4><label class="fl-tog"><input type="checkbox" name="setuju" value="1" required><span><b>Saya mengambil foto/video ini sendiri di lokasi ini</b><small>Tidak memuat wajah orang dengan jelas atau data pribadi.</small></span></label></section>
+        <div data-ts></div><div class="fl-prog" hidden><i></i></div><p class="fl-galat fl-galat-b" role="alert" hidden></p>
         <button class="fl-pri besar" data-kirim-ok disabled>Kirim</button></div></form>`}`;
       if (!d.open) d.showModal();
-      this.tsId = null; d.classList.remove("tahap-foto"); if (k.media !== false) this.tahapLok("minta");
+      this.tsId = null; d.classList.remove("tahap-foto");
+      if (k.media !== false) { lokSegar ? (d.classList.add("tahap-foto"), this.isiLok()) : this.tahapLok("minta"); this.isiPengirim(); }
     },
     /* langkah 1: minta izin lokasi, lalu tunjukkan wilayah yang terbaca. Kamera baru dibuka setelah warga yakin lokasinya benar. */
     tahapLok(t, v = {}) {
@@ -288,13 +320,20 @@
       const w = await fetch(`${API}/lokasi?lat=${this.loc.lat}&lon=${this.loc.lon}`).then(r => r.json()).catch(() => null);
       if (w && !w.ada) return this.tahapLok("luar");
       this.wil = w?.ada ? w : null;
-      const lok = this.d.querySelector("[data-lok]"); if (lok) lok.textContent = this.wil ? `Kec. ${this.wil.kec}, ${this.wil.kab}, ${namaProv(this.wil.prov)}` : "–";
-      const ko = this.d.querySelector("[data-koord]"); if (ko) ko.textContent = koord(this.loc);
+      this.isiLok();
       this.siap();
       if (!this.wil) return this.d.classList.add("tahap-foto");   /* layanan wilayah gagal: jangan menahan warga, server tetap memeriksa saat kirim */
       this.tahapLok("ketemu", {...this.wil, akurasi: this.loc.akurasi});
     },
-    reset() { this.berkas = null; this.exif = null; this.kamera = false; this.loc = null; this.prev && URL.revokeObjectURL(this.prev); this.prev = null; },
+    reset(simpanLok) { (this.daftar || []).forEach(y => URL.revokeObjectURL(y.prev)); this.daftar = []; this.aktif = 0; if (!simpanLok) { this.loc = null; this.wil = null; } },
+    isiLok() { const lok = this.d.querySelector("[data-lok]"); if (lok) lok.textContent = this.wil ? `Kec. ${this.wil.kec}, ${this.wil.kab}, ${namaProv(this.wil.prov)}` : "–";
+      const ko = this.d.querySelector("[data-koord]"); if (ko && this.loc) ko.textContent = koord(this.loc); },
+    isiPengirim() { let p = {}; try { p = JSON.parse(localStorage.getItem(PENGIRIM) || "{}"); } catch (e) {} const fm = this.d.querySelector("form"); if (!fm) return;
+      if (p.nama) fm.nama.value = p.nama; if (p.email) fm.email.value = p.email; if (p.tampil) fm.tampil_nama.checked = true; },
+    get berkas() { return this.daftar?.[0] || null; },
+    /* pesan salah merah tepat di bawah bagian yang belum benar */
+    salah(kunci, el, pesan) { if (!el) return; this.salahHapus(kunci); el.insertAdjacentHTML("afterend", `<p class="fl-err" data-err="${kunci}" role="alert">${esc(pesan)}</p>`); el.classList.add("fl-bermasalah"); },
+    salahHapus(kunci) { this.d?.querySelectorAll(kunci ? `[data-err="${kunci}"]` : "[data-err]").forEach(p => { p.previousElementSibling?.classList.remove("fl-bermasalah"); p.remove(); }); },
     galat(t) { const p = this.d.querySelector(".fl-galat"); if (!p) return; p.hidden = !t; p.textContent = t || ""; },
     async gps() {
       const el = this.d.querySelector("[data-lok]");
@@ -303,41 +342,51 @@
       catch (e) { el.textContent = "Ketuk untuk coba lagi"; this.galat(e.message); }
       this.siap();
     },
-    siap() { const b = this.d.querySelector("[data-kirim-ok]"); if (b) b.disabled = !(this.berkas && this.loc && this.loc.akurasi <= (this.k.batas?.akurasi || 1000)); },
+    siap() { const b = this.d?.querySelector("[data-kirim-ok]"); if (b) b.disabled = false; },   /* tombol selalu bisa ditekan; yang kurang ditunjukkan saat kirim */
+    /* beberapa foto/video sekali kirim (paling banyak 5 = batas unggah per jam di server); tiap berkas punya EXIF & cap sendiri */
+    async olah(f, kamera) {
+      const b = this.k.batas || {}, video = f.type.startsWith("video/");
+      if (video) {
+        if (f.size > (b.video || 31457280)) throw new Error(`Video ${(f.size / 1048576).toFixed(1)} MB, maksimal ${(b.video || 31457280) / 1048576} MB`);
+        const v = await bingkaiVideo(f);
+        if (v.durasi > (b.durasi || 60) + .5) { v.lepas(); throw new Error(`Video ${Math.round(v.durasi)} detik, maksimal ${b.durasi || 60} detik. Potong dulu videonya.`); }
+        const o = {media: f, thumb: await kompres(v.bingkai, 480, .72), durasi: v.durasi, jenis: "video", exif: null, kamera, asli: f.size}; v.lepas(); o.prev = URL.createObjectURL(f); return o;
+      }
+      const exif = /jpe?g$/i.test(f.type) ? bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
+      if (exif?.waktu && Date.now() - exif.waktu > 48 * JAM) throw new Error(`Foto ini diambil ${Math.round((Date.now() - exif.waktu) / 864e5)} hari lalu. Hanya foto 48 jam terakhir.`);
+      const bmp = await createImageBitmap(f).catch(() => { throw new Error("Format foto tidak terbaca. Pakai JPEG/PNG, atau ambil langsung dari kamera."); });
+      const o = {media: await kompres(bmp, 1600, .8), thumb: await kompres(bmp, 480, .72), jenis: "foto", exif, kamera, asli: f.size}; bmp.close?.(); o.prev = URL.createObjectURL(o.media); return o;
+    },
     async ubah(e, d) {
-      const inp = e.target; if (inp.type !== "file" || !inp.files[0]) return;
-      const f = inp.files[0], video = f.type.startsWith("video/"); this.kamera = inp.name === "kamera"; this.galat("");
-      const b = this.k.batas || {}, bidik = d.querySelector("[data-bidik]");
-      try {
-        if (video) {
-          if (f.size > (b.video || 31457280)) throw new Error(`Video ${(f.size / 1048576).toFixed(1)} MB, maksimal ${(b.video || 31457280) / 1048576} MB`);
-          const v = await bingkaiVideo(f);
-          if (v.durasi > (b.durasi || 60) + .5) { v.lepas(); throw new Error(`Video ${Math.round(v.durasi)} detik, maksimal ${b.durasi || 60} detik. Potong dulu videonya.`); }
-          this.berkas = {media: f, thumb: await kompres(v.bingkai, 480, .72), durasi: v.durasi, jenis: "video"}; v.lepas(); this.exif = null;
-        } else {
-          this.exif = /jpe?g$/i.test(f.type) ? bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
-          if (this.exif?.waktu && Date.now() - this.exif.waktu > 48 * JAM) throw new Error(`Foto ini diambil ${Math.round((Date.now() - this.exif.waktu) / 864e5)} hari lalu. Hanya foto 48 jam terakhir.`);
-          const bmp = await createImageBitmap(f).catch(() => { throw new Error("Format foto tidak terbaca. Pakai JPEG/PNG, atau ambil langsung dari kamera."); });
-          this.berkas = {media: await kompres(bmp, 1600, .8), thumb: await kompres(bmp, 480, .72), jenis: "foto"}; bmp.close?.();
-        }
-      } catch (er) { this.berkas = null; this.galat(er.message); this.siap(); inp.value = ""; return; }
-      this.prev && URL.revokeObjectURL(this.prev); this.prev = URL.createObjectURL(video ? f : this.berkas.media);
-      bidik.classList.add("ada"); d.querySelector("form")?.classList.add("ada"); bidik.querySelector(".fl-pratinjau")?.remove();
+      const inp = e.target; if (inp.type !== "file" || !inp.files.length) return;
+      const kamera = inp.name === "kamera", sisa = MAKS_N - this.daftar.length, fs = [...inp.files].slice(0, Math.max(0, sisa)); this.galat("");
+      if (inp.files.length > sisa) this.galat(`Paling banyak ${MAKS_N} foto/video sekali kirim.`);
+      for (const f of fs) { try { this.daftar.push(await this.olah(f, kamera)); this.aktif = this.daftar.length - 1; } catch (er) { this.galat(er.message); } }
+      inp.value = ""; this.gambarDaftar(d);
+    },
+    gambarDaftar(d) {
+      const bidik = d.querySelector("[data-bidik]"), fm = d.querySelector("form"), x = this.daftar[this.aktif = Math.min(this.aktif || 0, this.daftar.length - 1)];
+      bidik.querySelector(".fl-pratinjau")?.remove(); d.querySelector(".fl-strip")?.remove();
+      bidik.classList.toggle("ada", !!x); fm?.classList.toggle("ada", !!x); if (!x) return;
       if (this.tsId == null) this.turnstile(d);   /* Turnstile dipasang setelah ada berkas: layar pertama cukup bidikan kamera */
       /* cap menempel di dalam bingkai media (bukan di bidang hitam di bawahnya) */
-      bidik.insertAdjacentHTML("beforeend", `<div class="fl-pratinjau"><div class="fl-mw">${video ? `<video src="${this.prev}" muted playsinline controls></video>` : `<img alt="Pratinjau" src="${this.prev}">`}${cap(this.wil, this.loc, jamWIB(this.exif?.waktu || Date.now()))}<button type="button" class="fl-ganti" data-ganti>Ganti</button></div></div>`);
-      d.querySelector("[data-wkt]").textContent = this.exif?.waktu ? jamWIB(this.exif.waktu) : "Saat dikirim";
-      const asli = f.size, jadi = this.berkas.media.size;
-      d.querySelector("[data-uk]").textContent = video ? `Video ${durasi(this.berkas.durasi)} · ${(jadi / 1048576).toFixed(1)} MB` : `${Math.round(jadi / 1024)} KB${asli > jadi * 1.2 ? ` (dari ${(asli / 1048576).toFixed(1)} MB)` : ""}`;
-      this.siap();
+      bidik.insertAdjacentHTML("beforeend", `<div class="fl-pratinjau"><div class="fl-mw">${x.jenis === "video" ? `<video src="${x.prev}" muted playsinline controls></video>` : `<img alt="Pratinjau" src="${x.prev}">`}${cap(this.wil, this.loc, jamWIB(x.exif?.waktu || Date.now()))}<button type="button" class="fl-ganti" data-hapus>Hapus</button></div></div>`);
+      const GAL = 'accept="image/jpeg,image/png,image/webp,image/heic,video/mp4,video/quicktime,video/webm" multiple';
+      bidik.insertAdjacentHTML("afterend", `<div class="fl-strip">${this.daftar.map((y, i) => `<button type="button" class="fl-th${i === this.aktif ? " on" : ""}" data-pilih="${i}" aria-label="Berkas ${i + 1}"><img alt="" src="${URL.createObjectURL(y.thumb)}">${y.jenis === "video" ? `<i>${IK.main}</i>` : ""}</button>`).join("")}
+        ${this.daftar.length < MAKS_N ? `<label class="fl-th fl-tambah" aria-label="Tambah foto atau video">+<small>Tambah</small><input type="file" name="galeri" ${GAL} hidden></label>` : ""}<span class="fl-strip-n">${this.daftar.length} dari ${MAKS_N}</span></div>`);
+      d.querySelector("[data-wkt]").textContent = x.exif?.waktu ? jamWIB(x.exif.waktu) : "Saat dikirim";
+      const jadi = x.media.size;
+      d.querySelector("[data-uk]").textContent = (this.daftar.length > 1 ? `${this.daftar.length} berkas · ` : "") + (x.jenis === "video" ? `Video ${durasi(x.durasi)} · ${(jadi / 1048576).toFixed(1)} MB` : `${Math.round(jadi / 1024)} KB${x.asli > jadi * 1.2 ? ` (dari ${(x.asli / 1048576).toFixed(1)} MB)` : ""}`);
+      this.salahHapus("berkas");
     },
     klik(e, d) {
       if (e.target === d || e.target.closest("[data-tutup]")) return d.close();
-      if (e.target.closest("[data-ganti]")) { const p = d.querySelector(".fl-pratinjau"); p?.remove(); d.querySelector("[data-bidik]").classList.remove("ada"); d.querySelector("form")?.classList.remove("ada"); this.berkas = null; this.siap(); return; }
+      if (e.target.closest("[data-hapus]")) { const y = this.daftar.splice(this.aktif, 1)[0]; y && URL.revokeObjectURL(y.prev); return this.gambarDaftar(d); }
+      const pl = e.target.closest("[data-pilih]"); if (pl) { this.aktif = +pl.dataset.pilih; return this.gambarDaftar(d); }
       if (e.target.closest("[data-lok-cari]")) return this.cariLok();
       if (e.target.closest("[data-lok-lanjut]")) { d.classList.add("tahap-foto"); return; }
       if (e.target.closest("[data-lok]")) { d.classList.remove("tahap-foto"); return this.cariLok(); }
-      if (e.target.closest("[data-lagi]")) return this.buka();
+      if (e.target.closest("[data-lagi]")) return this.buka(true);
     },
     turnstile(d) {
       const kunci = this.k.turnstile; if (!kunci) return;
@@ -346,28 +395,43 @@
       const s = document.createElement("script"); s.src = "https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit"; s.async = true; s.onload = pasang; document.head.appendChild(s);
     },
     async kirim(e, d) {
-      e.preventDefault(); const fm = e.target;
-      if (!fm.setuju.checked) return this.galat("Centang pernyataan bahwa foto ini kamu ambil sendiri di lokasi ini.");
-      if (!this.berkas) return this.galat("Pilih foto atau video dulu.");
-      try { if (!this.loc || Date.now() - this.loc.waktu > 5 * 60e3) this.loc = await ambilGPS(); } catch (er) { return this.galat(er.message); }
-      const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
-      set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
-      set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", this.kamera ? "1" : "0");
-      set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu);
-      if (this.exif?.waktu) set("exif_waktu", this.exif.waktu);
-      if (this.exif?.lat != null) { set("exif_lat", this.exif.lat); set("exif_lon", this.exif.lon); }
-      if (this.berkas.durasi) set("durasi", this.berkas.durasi);
-      if (this.tsId != null) set("turnstile", window.turnstile.getResponse(this.tsId));
-      x.append("media", this.berkas.media, this.berkas.jenis === "video" ? "video" : "foto"); x.append("thumb", this.berkas.thumb, "thumb");
-      const btn = fm.querySelector("button.besar"), prog = d.querySelector(".fl-prog"); btn.disabled = true; btn.textContent = "Mengirim…"; prog.hidden = false; this.galat("");
-      const r = await new Promise(ok => { const q = new XMLHttpRequest(); q.open("POST", API); q.upload.onprogress = ev => { if (ev.lengthComputable) prog.firstChild.style.width = (ev.loaded / ev.total * 100) + "%"; };
-        q.onload = () => { let j = {}; try { j = JSON.parse(q.responseText); } catch (er) {} ok({s: q.status, j}); }; q.onerror = () => ok({s: 0, j: {galat: "Koneksi terputus. Coba lagi."}}); q.send(x); });
-      prog.hidden = true; btn.textContent = "Kirim";
-      if (r.s !== 201) { btn.disabled = false; if (this.tsId != null) window.turnstile.reset(this.tsId); return this.galat(r.j.galat || `Gagal mengirim (${r.s})`); }
-      d.innerHTML = `<div class="fl-pegang"></div><div class="fl-selesai">${IK.cek}<h2>Terima kasih, fotomu sudah sampai</h2>
-        <p>Kiriman dari <b>Kec. ${esc(r.j.wilayah.kec)}, ${esc(r.j.wilayah.kab)}</b> sedang dicek admin. Begitu lolos, fotonya tampil di peta dan membantu petugas serta warga lain melihat kondisi terbaru di sekitarmu.</p>
-        <p class="fl-kecil">Satu foto dari lapangan sering lebih jelas dari ratusan titik di satelit.</p>
-        <div class="fl-selesai-aksi"><button class="fl-pri besar" data-tutup>Selesai</button><button class="fl-teks" data-lagi>Kirim foto lain</button></div></div>`;
+      e.preventDefault(); const fm = e.target, gb = d.querySelector(".fl-galat-b"), galatB = t => { gb.hidden = !t; gb.textContent = t || ""; };
+      this.salahHapus(); galatB("");
+      /* periksa semua dulu, tunjukkan semua yang kurang sekaligus, gulir ke yang pertama */
+      if (!this.daftar.length) this.salah("berkas", d.querySelector("[data-bidik]"), "Pilih foto atau video dulu.");
+      if (!this.loc) this.salah("lok", d.querySelector(".fl-panel"), "Lokasi belum terbaca. Ketuk baris Lokasi untuk mencari lagi.");
+      if (fm.email.value && !fm.email.checkValidity()) this.salah("email", fm.email, "Format email belum benar, mis. nama@contoh.com.");
+      if (fm.tampil_nama.checked && !fm.nama.value.trim()) this.salah("nama", fm.nama, "Isi nama dulu, atau matikan kredit nama.");
+      if (!fm.setuju.checked) this.salah("setuju", fm.setuju.closest(".fl-tog"), "Aktifkan pernyataan ini supaya foto bisa dikirim.");
+      const pertama = d.querySelector(".fl-err"); if (pertama) { pertama.scrollIntoView({behavior: "smooth", block: "center"}); return; }
+      try { if (Date.now() - this.loc.waktu > 5 * 60e3) this.loc = await ambilGPS(); } catch (er) { return galatB(er.message); }
+      try { localStorage.setItem(PENGIRIM, JSON.stringify({nama: fm.nama.value.trim(), email: fm.email.value.trim(), tampil: fm.tampil_nama.checked})); } catch (er) {}
+      const btn = d.querySelector("[data-kirim-ok]"), prog = d.querySelector(".fl-prog"); btn.disabled = true; prog.hidden = false;
+      let wil = null, n = 0;
+      for (const [i, y] of this.daftar.entries()) {
+        btn.textContent = this.daftar.length > 1 ? `Mengirim ${i + 1} dari ${this.daftar.length}…` : "Mengirim…";
+        const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
+        set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
+        set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", y.kamera ? "1" : "0");
+        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu);
+        if (y.exif?.waktu) set("exif_waktu", y.exif.waktu);
+        if (y.exif?.lat != null) { set("exif_lat", y.exif.lat); set("exif_lon", y.exif.lon); }
+        if (y.durasi) set("durasi", y.durasi);
+        if (this.tsId != null) set("turnstile", window.turnstile.getResponse(this.tsId));
+        x.append("media", y.media, y.jenis === "video" ? "video" : "foto"); x.append("thumb", y.thumb, "thumb");
+        const r = await new Promise(ok => { const q = new XMLHttpRequest(); q.open("POST", API); q.upload.onprogress = ev => { if (ev.lengthComputable) prog.firstChild.style.width = ((i + ev.loaded / ev.total) / this.daftar.length * 100) + "%"; };
+          q.onload = () => { let j = {}; try { j = JSON.parse(q.responseText); } catch (er) {} ok({s: q.status, j}); }; q.onerror = () => ok({s: 0, j: {galat: "Koneksi terputus. Coba lagi."}}); q.send(x); });
+        if (r.s !== 201) { prog.hidden = true; btn.disabled = false; btn.textContent = "Kirim"; if (this.tsId != null) window.turnstile.reset(this.tsId);
+          this.daftar.splice(0, i); this.aktif = 0; this.gambarDaftar(d);   /* yang sudah terkirim dibuang dari antrean */
+          return galatB((n ? `${n} berkas sudah terkirim. ` : "") + (r.j.galat || `Gagal mengirim (${r.s})`)); }
+        wil = r.j.wilayah || wil; n++;
+        /* token Turnstile sekali pakai: minta baru dan tunggu sampai terisi (paling lama 20 detik) sebelum berkas berikutnya */
+        if (i < this.daftar.length - 1 && this.tsId != null) { window.turnstile.reset(this.tsId);
+          for (let t = 0; t < 40 && !window.turnstile.getResponse(this.tsId); t++) await new Promise(ok => setTimeout(ok, 500)); }
+      }
+      d.innerHTML = `<div class="fl-selesai">${IK.cek}<h2>Terima kasih!</h2>
+        <p>${n > 1 ? `${n} kiriman` : "Kiriman"} dari <b>Kec. ${esc(wil?.kec || "")}, ${esc(wil?.kab || "")}</b> sedang dicek admin. Begitu lolos, ${n > 1 ? "semuanya" : "fotonya"} tampil di peta dan membantu warga lain melihat kondisi terbaru di tempatmu.</p>
+        <div class="fl-selesai-aksi"><button class="fl-pri besar" data-lagi>${IK.kamera}Kirim foto lain</button><button class="fl-sek besar" data-tutup>Selesai</button></div></div>`;
     },
   };
 

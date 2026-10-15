@@ -52,9 +52,9 @@ export function durasiMP4(b) {
 }
 
 /* ---------------- baris -> objek publik (tanpa email, hash IP, flag dummy) ---------------- */
-const KOLOM_PUBLIK = "id, jenis, kategori, lat, lon, prov, kab, kec, keterangan, nama, tampil_nama, diambil, dibuat, exif_waktu, exif_jarak, kamera, durasi, suka, komentar";
+const KOLOM_PUBLIK = "id, jenis, kategori, lat, lon, prov, kab, kec, keterangan, nama, tampil_nama, diambil, dibuat, exif_waktu, exif_jarak, kamera, durasi, suka, komentar, dilihat";
 const publik = r => ({id: r.id, jenis: r.jenis, kategori: r.kategori, lat: r.lat, lon: r.lon, prov: r.prov, kab: r.kab, kec: r.kec, keterangan: r.keterangan,
-  kredit: r.tampil_nama ? r.nama : null, diambil: r.diambil, dibuat: r.dibuat, durasi: r.durasi, suka: r.suka, komentar: r.komentar,
+  kredit: r.tampil_nama ? r.nama : null, diambil: r.diambil, dibuat: r.dibuat, durasi: r.durasi, suka: r.suka, komentar: r.komentar, dilihat: r.dilihat || 0,
   terverifikasi: {kamera: !!r.kamera, waktu: !!r.exif_waktu, gps: r.exif_jarak != null}, contoh: r.dummy ? true : undefined});
 
 async function daftar(env, req, url, kini, ctx) {
@@ -67,9 +67,11 @@ async function daftar(env, req, url, kini, ctx) {
   return lihatDummy ? ambil() : cacheTepi(req, ctx, 60, ambil);
 }
 
-async function rincian(env, req, id, kini) {
+async function rincian(env, req, id, kini, ctx) {
   const r = await env.DB.prepare(`SELECT ${KOLOM_PUBLIK}, status, dummy FROM foto WHERE id = ?`).bind(id).first();
   if (!r || (r.status !== "tayang" && !(await adminOK(env, req, kini)))) return gagal(404, "foto tidak ada atau belum disetujui");
+  /* hitung dilihat (hanya yang tayang); di belakang supaya respons tidak menunggu tulis */
+  if (r.status === "tayang") { const t = env.DB.prepare("UPDATE foto SET dilihat = dilihat + 1 WHERE id = ?").bind(id).run().catch(() => {}); ctx?.waitUntil ? ctx.waitUntil(t) : await t; }
   const ip = env.IP_SALT ? await ipHash(env, req) : "";
   const [k, s] = await env.DB.batch([
     env.DB.prepare("SELECT id, nama, teks, dibuat FROM foto_komentar WHERE foto_id = ? AND disembunyikan = 0 ORDER BY dibuat DESC LIMIT 200").bind(id),
@@ -328,7 +330,7 @@ export const RUTE_FOTO = {
     const [prov, kab, kec] = k.split("|"); return json({ada: true, prov, kab, kec});
   },
   "GET /api/foto/konfig": (env) => json({turnstile: env.TURNSTILE_SITEKEY || null, media: !!env.MEDIA, batas: {...MAKS, durasi: MAKS_DURASI, akurasi: AKURASI_MAKS}, kategori: KATEGORI}),
-  "GET /api/foto/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini),
+  "GET /api/foto/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini, ctx),
   "GET /api/foto/media/:id": (env, req, url, kini, ctx, id) => media(env, req, url, id, kini, false),
   "GET /api/foto/thumb/:id": (env, req, url, kini, ctx, id) => media(env, req, url, id, kini, true),
   "POST /api/foto/suka/:id": (env, req, url, kini, ctx, id) => suka(env, req, id, kini),

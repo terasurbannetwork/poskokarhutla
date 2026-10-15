@@ -24,16 +24,37 @@ button,input,select{font:inherit;color:inherit}
 .ad-top form{margin:0}
 
 /* masuk */
-.ad-masuk{display:grid;place-items:center;min-height:100dvh;padding:16px}
-.ad-kartu-masuk{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:28px 24px;width:min(380px,100%);display:grid;gap:12px}
-.ad-kartu-masuk h1{font-size:22px}
+.ad-masuk{position:relative;display:grid;place-items:center;min-height:100dvh;padding:40px 16px;overflow:hidden;background:linear-gradient(to bottom,var(--soft),var(--paper),var(--soft))}
+.ad-cahaya{position:absolute;inset:0;pointer-events:none;background-image:linear-gradient(to right,color-mix(in srgb,var(--ink) 4%,transparent) 1px,transparent 1px),linear-gradient(to bottom,color-mix(in srgb,var(--ink) 4%,transparent) 1px,transparent 1px);background-size:38px 38px}
+.ad-cahaya i{position:absolute;border-radius:50%;filter:blur(110px)}
+.ad-cahaya i:nth-child(1){top:-160px;left:50%;width:416px;height:416px;transform:translateX(-50%);background:color-mix(in srgb,var(--c5) 22%,transparent);filter:blur(120px)}
+.ad-cahaya i:nth-child(2){bottom:-128px;right:-64px;width:320px;height:320px;background:color-mix(in srgb,var(--c2) 16%,transparent)}
+.ad-cahaya i:nth-child(3){bottom:-96px;left:-64px;width:288px;height:288px;background:color-mix(in srgb,var(--c5) 12%,transparent)}
+.ad-kartu-masuk{position:relative;z-index:1;width:min(448px,100%);overflow:hidden;border-radius:28px;background:color-mix(in srgb,var(--card) 90%,transparent);backdrop-filter:blur(24px);-webkit-backdrop-filter:blur(24px);box-shadow:0 0 0 1px color-mix(in srgb,var(--ink) 5%,transparent),0 24px 60px -24px rgba(11,37,69,.25)}
 .ad-kartu-masuk p{margin:0}
-.ad-kartu-masuk form{display:grid;gap:8px}
-.ad-kartu-masuk label{font-weight:600;font-size:13px}
-.ad-kartu-masuk input{border:1px solid var(--line);background:var(--soft);border-radius:10px;padding:10px 12px}
-.ad-kartu-masuk button{background:var(--navy);color:#fff;border:0;border-radius:10px;padding:10px;font-weight:700;cursor:pointer;margin-top:6px}
-:root[data-theme="dark"] .ad-kartu-masuk button{background:var(--c5)}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ad-kartu-masuk button{background:var(--c5)}}
+.ad-kepala-masuk{padding:36px 32px 24px;text-align:center}
+.ad-kepala-masuk img{display:block;width:64px;height:64px;margin:0 auto 12px}
+.ad-kepala-masuk h1{font:800 26px/1.2 var(--display);letter-spacing:-.02em}
+.ad-kepala-masuk p{margin-top:2px;font:700 14px var(--display);color:var(--c5)}
+.ad-garis{height:1px;background:linear-gradient(to right,transparent,var(--line),transparent)}
+.ad-isi-masuk{padding:28px 32px 32px}
+.ad-isi-masuk h2{margin:0 0 24px;font:800 18px var(--display)}
+.ad-isi-masuk form{display:grid;gap:16px}
+.ad-isian{position:relative}
+.ad-isian input{width:100%;box-sizing:border-box;border:1px solid color-mix(in srgb,var(--ink) 15%,transparent);background:var(--card);color:var(--ink);border-radius:12px;padding:24px 44px 8px 14px;font:14px var(--font);transition:border-color .15s}
+.ad-isian input:focus{outline:none;border-color:color-mix(in srgb,var(--ink) 45%,transparent)}
+.ad-isian label{position:absolute;left:14px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:14px;color:var(--ink3);transition:top .15s ease-out,font-size .15s ease-out,color .15s ease-out}
+.ad-isian input:focus+label,.ad-isian input:not(:placeholder-shown)+label{top:8px;transform:none;font-size:10px;font-weight:600;color:var(--ink2)}
+.ad-mata{position:absolute;inset:0 0 0 auto;display:flex;align-items:center;padding:0 14px;background:none;border:0;color:var(--ink2);cursor:pointer}
+.ad-mata:hover{color:var(--ink)}
+.ad-mata svg{width:16px;height:16px}
+.ad-mata .coret{display:none}.ad-mata.buka .coret{display:inline}
+.ad-tombol-masuk{margin-top:8px;padding:11px;border:0;border-radius:12px;background:var(--navy);color:#fff;font:700 14px var(--font);cursor:pointer;transition:transform .1s,opacity .15s}
+.ad-tombol-masuk:hover{opacity:.92}.ad-tombol-masuk:active{transform:scale(.98)}
+.ad-catatan{margin-top:24px!important;text-align:center;font-size:12px;color:var(--ink2)}
+:root[data-theme="dark"] .ad-tombol-masuk{background:var(--c5)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ad-tombol-masuk{background:var(--c5)}}
+@media (prefers-reduced-motion:reduce){.ad-isian label,.ad-tombol-masuk{transition:none}}
 
 /* kerangka */
 .ad-wrap{max-width:1180px;margin:0 auto;padding:18px 16px 60px;display:grid;gap:16px}

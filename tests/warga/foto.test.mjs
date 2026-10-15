@@ -126,6 +126,23 @@ uji("foto: admin setujui lalu tayang di daftar & rincian tanpa email/hash; kredi
   assert.equal(t.status, 200); assert.equal(t.headers.get("x-content-type-options"), "nosniff");
 });
 
+uji("foto: wilayah dari koordinat untuk layar 'kamu terdeteksi di'", async () => {
+  const d = await panggil("GET", "/api/foto/lokasi?lat=-2.2&lon=113.9");
+  assert.equal(d.s, 200); assert.equal(d.j.ada, true); assert.equal(d.j.prov, "62"); assert.ok(d.j.kab && d.j.kec, JSON.stringify(d.j));
+  assert.equal((await panggil("GET", "/api/foto/lokasi?lat=50&lon=1")).s, 400, "di luar kotak Indonesia ditolak");
+  assert.equal((await panggil("GET", "/api/foto/lokasi?lat=abc&lon=1")).s, 400, "bukan angka ditolak");
+  const laut = await panggil("GET", "/api/foto/lokasi?lat=5.5&lon=132");
+  assert.equal(laut.s, 200); assert.equal(laut.j.ada, false, "laut lepas: tidak ada wilayah");
+});
+
+uji("foto: dilihat bertambah tiap rincian yang tayang dibuka", async () => {
+  const a = await unggah(); assert.equal((await setujui(a.j.id)).s, 200);
+  for (let i = 0; i < 3; i++) assert.equal((await panggil("GET", "/api/foto/" + a.j.id)).s, 200);
+  await new Promise(r => setTimeout(r, 200));
+  assert.equal(await DB.prepare("SELECT dilihat FROM foto WHERE id = ?").bind(a.j.id).first("dilihat"), 3);
+  const d = await panggil("GET", "/api/foto"); assert.equal(d.j.foto.find(x => x.id === a.j.id).dilihat, 3, "daftar publik membawa jumlah dilihat");
+});
+
 uji("foto: tolak butuh alasan, tidak tayang, tercatat di audit", async () => {
   const a = await unggah();
   assert.equal((await panggil("POST", "/api/foto/admin/" + a.j.id, {aksi: "tolak"}, "1.1.1.1", ADMIN)).s, 400);

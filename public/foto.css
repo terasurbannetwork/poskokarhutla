@@ -252,3 +252,62 @@ form:not(.ada) .fl-lanjut{display:none}
 .fl-pratinjau .fl-ganti{right:12px;bottom:12px}
 .fl-mw .fl-ganti{position:absolute;right:10px;bottom:10px;line-height:1.2}
 .fl-mw:has(video) .fl-ganti{top:10px;bottom:auto}
+/* kategori berikon; terpilih = latar warna kategori yang tua, teks putih (pemilik, 15 Okt 2026) */
+.fl-kat label{gap:6px}
+.fl-kat label svg{width:15px;height:15px;color:var(--k)}
+.fl-kat label:has(input:checked){background:color-mix(in oklch,var(--k) 82%,#000)!important;border-color:transparent!important;color:#fff}
+.fl-kat label:has(input:checked) svg{color:#fff}
+/* cap lokasi: tanpa ikon, satu baris per isi, menyesuaikan lebar foto (sempit pun tetap rapi) */
+.fl-mw .fl-cap{left:8px;right:auto;bottom:8px;max-width:calc(100% - 16px);padding:7px 10px;border-radius:10px;gap:0;font-size:10.5px;background:rgb(0 0 0 / .55)}
+.fl-mw .fl-cap span{gap:0}
+.fl-mw .fl-cap b{font-size:12px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.fl-mw .fl-cap small{font-size:10.5px}
+.fl-mw:has(.fl-ganti) .fl-cap{max-width:calc(100% - 96px)}
+/* deret berkas yang akan dikirim */
+.fl-strip{display:flex;align-items:center;gap:8px;overflow-x:auto;padding:2px}
+.fl-th{position:relative;flex:none;width:58px;height:58px;padding:0;border:2px solid transparent;border-radius:12px;overflow:hidden;background:var(--surface);cursor:pointer}
+.fl-th img{width:100%;height:100%;object-fit:cover;display:block}
+.fl-th i{position:absolute;inset:auto 4px 4px auto;color:#fff;font-style:normal}.fl-th i svg{width:14px;height:14px}
+.fl-th.on{border-color:var(--ink)}
+.fl-tambah{display:grid;place-items:center;align-content:center;gap:0;font:800 20px/1 var(--font);color:var(--ink);border:1.5px dashed color-mix(in oklch,var(--ink) 30%,transparent)}
+.fl-tambah small{font:600 10px var(--font);color:var(--ink2)}
+.fl-strip-n{font-size:12px;color:var(--ink2);margin-left:4px;white-space:nowrap}
+/* pesan salah per bagian */
+.fl-err{margin:-6px 0 0;color:#c03a3a;font-size:12.5px;font-weight:600}
+.fl-bermasalah{border-color:#d64545!important;box-shadow:0 0 0 3px color-mix(in oklch,#d64545 14%,transparent)}
+.fl-tog.fl-bermasalah{box-shadow:none;border:0}
+.fl-galat-b{text-align:center}
+/* layar terima kasih: dua tombol sejajar */
+.fl-selesai-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fl-selesai-aksi .fl-sek.besar{min-height:52px;background:var(--surface);color:var(--ink);width:100%}
+.fl-selesai-aksi .fl-pri.besar svg{width:18px;height:18px}
+@media (max-width:420px){.fl-selesai-aksi{grid-template-columns:1fr}}
+/* galeri Foto: urutan + tampilan di atas, saringan di bawahnya, kisi rata dengan statistik di atas gambar (pemilik, 15 Okt 2026) */
+.fg-atas{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:8px}
+.fg-kanan{display:flex;align-items:center;gap:10px;margin-left:auto}
+.fg-saring{display:flex;flex-wrap:wrap;align-items:center;gap:10px;margin:14px 0 4px}
+.fg-saring .fl-chip button{display:inline-flex;align-items:center;gap:6px}
+.fg-saring .fl-chip button svg{width:14px;height:14px;color:var(--k,var(--ink2))}
+.fg-saring .fl-chip button[aria-pressed="true"]{background:color-mix(in oklch,var(--k,var(--ink)) 82%,#000);border-color:transparent;color:#fff}
+.fg-saring .fl-chip button[aria-pressed="true"] svg{color:#fff}
+.fg-ring{margin:10px 0 12px;font-size:13.5px;color:var(--ink2)}.fg-ring b{color:var(--ink)}
+.fg-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:16px}
+.fg-k{display:flex;flex-direction:column;gap:8px;padding:0;border:0;background:none;color:var(--ink);text-align:left;cursor:pointer;font:inherit;min-width:0}
+.fg-g{position:relative;display:block;aspect-ratio:4/5;border-radius:18px;overflow:hidden;background:var(--surface)}
+.fg-g img{width:100%;height:100%;object-fit:cover;display:block;transition:transform .35s ease}
+.fg-k:hover .fg-g img{transform:scale(1.04)}
+.fg-g::after{content:"";position:absolute;inset:auto 0 0;height:45%;background:linear-gradient(transparent,rgb(0 0 0 / .55));pointer-events:none}
+.fg-kat{position:absolute;left:10px;top:10px;z-index:1;display:inline-flex;align-items:center;gap:5px;padding:4px 10px;border-radius:999px;background:color-mix(in oklch,var(--k) 85%,#000);color:#fff;font:700 11.5px var(--font)}
+.fg-kat svg{width:13px;height:13px}
+.fg-st{position:absolute;left:10px;right:10px;bottom:10px;z-index:1;display:flex;gap:12px;color:#fff;font:700 12px var(--font)}
+.fg-st span{display:inline-flex;align-items:center;gap:4px}.fg-st svg{width:14px;height:14px}
+.fg-g .fl-vid{top:10px;right:10px;bottom:auto;z-index:1}
+.fg-t{display:grid;gap:1px;padding:0 2px}.fg-t b{font:700 14px var(--display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fg-t small{font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fg-k:focus-visible .fg-g{outline:3px solid #e3b94e;outline-offset:2px}
+.fg-pg{display:flex;justify-content:center;gap:6px;margin-top:20px}
+.fg-pg button{min-width:36px;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font:700 13px var(--font);cursor:pointer}
+.fg-pg button[aria-pressed="true"]{background:var(--ink);color:var(--card);border-color:var(--ink)}
+@media (prefers-reduced-motion:reduce){.fg-g img{transition:none}}
+@media (max-width:640px){.fg-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.fg-atas .fl-seg{overflow-x:auto;max-width:100%}.fg-kanan{margin-left:0;width:100%;justify-content:space-between}}
+.fl-wrap:has(.fl-ajak) .fg-saring,.fl-wrap:has(.fl-ajak) .fg-atas .fl-seg:first-child{display:none}

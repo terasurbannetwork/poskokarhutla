@@ -15,7 +15,7 @@
   const sah = v => v === "en" || v === "id" ? v : null;
   const prm = sah(new URLSearchParams(location.search).get("lang"));
   if (prm) simpan(prm);
-  let B = prm || sah(baca()) || (/^en\b/i.test(navigator.language || "") ? "en" : "id");
+  let B = prm || sah(baca()) || "id";   /* pertama buka selalu ID, EN hanya bila dipilih (pemilik, 15 Okt 2026) */
   document.documentElement.lang = B;
 
   /* ---------- angka & tanggal: id-ID -> en-GB saat EN (en-GB = 1,234.5 seperti en-US, tetapi jam 24 dan "14 Oct" seperti id) */

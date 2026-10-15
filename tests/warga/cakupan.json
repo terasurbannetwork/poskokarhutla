@@ -59,6 +59,7 @@
     "GET /api/foto": "foto: admin setujui lalu tayang",
     "POST /api/foto": "foto: masukan salah DITOLAK",
     "GET /api/foto/konfig": "foto: tanpa R2 unggah dijawab 503",
+    "GET /api/foto/lokasi": "foto: wilayah dari koordinat",
     "GET /api/foto/:id": "foto: suka sakelar satu per IP",
     "GET /api/foto/media/:id": "foto: unggah sah masuk antrean",
     "GET /api/foto/thumb/:id": "foto: admin setujui lalu tayang",
