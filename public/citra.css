@@ -65,3 +65,4 @@
 .ct-pasang figure.ct-hilang img{visibility:hidden}
 .ct-pasang figure.ct-hilang{background:var(--surface)}
 .ct-pasang figure.ct-hilang::after{content:"Citra belum tersedia";position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:600;color:var(--ink2)}
+html[lang=en] .ct-pasang figure.ct-hilang::after{content:"Image not yet available"}
