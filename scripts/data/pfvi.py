@@ -167,6 +167,55 @@ def kalibrasi(rugi, batas, awal=12, seed=1, iterasi=400):
     return terbaik
 
 
+# ---------------- pipeline harian: sel gambut, keadaan bersambung, peluang gabungan FWI+PFVI ----------------
+PROV_GAMBUT = {"14", "15", "16", "61", "62", "63", "64"}  # Sumatra & Kalimantan prioritas, sama dengan pfvi_balik.PROV
+# Regresi logistik gabungan, hasil uji balik 2019+2023 (data/raw/pfvi/balik.json, RISET-PFVI.md): x = [log1p(FWI), PFVI/100]
+LR_MU, LR_SD = (1.5211041301825765, 1.7327343674588032), (1.291622854737806, 0.7995141649299287)
+LR_B = (0.11585189129591836, 1.023193404239875, 0.7168878468121602)
+AMBANG_PG = 0.6344  # anggaran alarm sama dengan FWI >= 7
+
+
+def peluang(fwi, pfvi):
+    """Peluang api besok di sel gambut dari FWI dan PFVI (0-1)."""
+    x = (math.log1p(max(fwi, 0)), pfvi / 100)
+    z = LR_B[0] + sum(b * (v - m) / s for b, v, m, s in zip(LR_B[1:], x, LR_MU, LR_SD))
+    return 1 / (1 + math.exp(-z))
+
+
+def sel_gambut(grid, cari, min_titik=30):
+    """Kunci "lat,lon" sel kisi 0,5 deg yang >= min_titik% dari 10x10 titik (jarak 0,05) jatuh di gambut. cari(lon, lat) -> truthy.
+    Sama dengan pfvi_balik.sel(), yang menghasilkan 89 sel pada fwi.json 13 Okt 2026."""
+    return {f"{g[0]},{g[1]}" for g in grid if g[2] in PROV_GAMBUT
+            and sum(1 for i in range(10) for j in range(10) if cari(g[1] - .225 + i * .05, g[0] - .225 + j * .05)) >= min_titik}
+
+
+def hari_dari_jam(h):
+    """Deret per jam waktu lokal Open-Meteo -> [(tgl, tmaks, hujan, et0)], hujan & ET0 = jumlah jam 00-24 lokal (sama dengan
+    pfvi_balik.harian). Hari tidak lengkap (suhu/hujan kosong, < 24 jam) dibuang."""
+    per = {}
+    for w, t, r, e in zip(h["time"], h["temperature_2m"], h["precipitation"], h["et0_fao_evapotranspiration"]):
+        per.setdefault(w[:10], []).append((t, r, e))
+    return [(d, max(t for t, _, _ in v), sum(r for _, r, _ in v), sum(e or 0 for _, _, e in v)) for d, v in sorted(per.items())
+            if len(v) == 24 and all(t is not None and r is not None for t, r, _ in v)]
+
+
+def lanjut(hari, keadaan, tgl_simpan):
+    """Lanjutkan PFVI dari keadaan {tgl, x, wt, kem} (None = mulai x0=0, wt0=0 seperti uji balik).
+    -> ({tgl: pfvi}, keadaan baru pada tgl_simpan atau keadaan lama bila hari itu tidak ada)."""
+    k = keadaan or {"tgl": "0000", "x": 0.0, "wt": 0.0, "kem": None}
+    hari = [d for d in hari if d[0] > k["tgl"]]
+    if not hari:
+        return {}, keadaan
+    hujan = [d[2] for d in hari]
+    wt = muka_air_proxy(hujan, [d[3] for d in hari], WT_PAR_BAKU, k["wt"])
+    x = deret(wt, hujan, [d[1] for d in hari], PAR_BAKU, k["x"], kemarin0=k["kem"])
+    baru = keadaan
+    for d, xi, w in zip(hari, x, wt):
+        if d[0] == tgl_simpan:
+            baru = {"tgl": d[0], "x": xi, "wt": w, "kem": d[2], "sumber": k.get("sumber", "awal 0")}
+    return {d[0]: xi for d, xi in zip(hari, x)}, baru
+
+
 # ---------------- self-check ----------------
 def _r_pfvi(WT, SM, Rf, Rf_b, Temp, aH, bH, n, alpha, R0=3000, dt=1):
     """Transkripsi harfiah PFVI() dari R (indeks 1, x[1] = DIobs(SM[1], 40, 70), keluaran x[-1] TANPA batas)."""
@@ -228,4 +277,17 @@ if __name__ == "__main__":
     a = [[(0, 5, 34)] * 7] * 5
     r = ansambel_pfvi(200, -80, 0, a)
     assert len(r) == 7 and all(d["p10"] == d["med"] == d["p90"] and 0 <= d["pt"] <= 1 for d in r)
+    # (8) peluang gabungan: naik dengan FWI dan PFVI, di 0..1; sel_gambut menghitung 10x10 titik; lanjut() bersambung
+    assert 0 < peluang(0, 0) < peluang(20, 250) < 1 and peluang(0, 250) > peluang(0, 0) and peluang(20, 0) > peluang(0, 0)
+    assert sel_gambut([(0.0, 100.0, "14"), (0.0, 101.0, "11")], lambda lo, la: lo < 100.3) == {"0.0,100.0"}  # 50% titik; prov 11 dibuang
+    jam = {"time": [f"2026-01-0{d}T{j:02d}:00" for d in (1, 2) for j in range(24)], "temperature_2m": [30 + j / 24 for _ in range(2) for j in range(24)],
+           "precipitation": [0.0] * 48, "et0_fao_evapotranspiration": [0.25] * 48}
+    hr = hari_dari_jam(jam)
+    assert len(hr) == 2 and abs(hr[0][3] - 6) < 1e-9 and hr[0][1] > 30.9
+    jam["precipitation"][5] = None
+    assert len(hari_dari_jam(jam)) == 1
+    s2, kb = lanjut(hr, None, "2026-01-01")
+    s1, ka = lanjut(hr[:1], None, "2026-01-01")
+    s3, _ = lanjut(hr[1:], ka, "2026-01-02")
+    assert abs(s2["2026-01-02"] - s3["2026-01-02"]) < 1e-12 and s1["2026-01-01"] == s2["2026-01-01"] and kb["tgl"] == "2026-01-01"
     print("ok pfvi", [round(v, 2) for v in py[:4]], "kalibrasi", [round(x, 3) for x in p], round(v, 5))

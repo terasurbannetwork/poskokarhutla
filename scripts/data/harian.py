@@ -9,6 +9,7 @@ from concurrent.futures import ThreadPoolExecutor
 sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
 import fwi as F
+import pfvi as P
 from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Poligon, Wilayah
 from garis_api import garis as garis_api
 from aturan import STATUS
@@ -195,7 +196,7 @@ def siang(h):
     return out
 
 
-VAR = "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation&timezone=auto"
+VAR = "hourly=temperature_2m,relative_humidity_2m,wind_speed_10m,wind_direction_10m,precipitation,et0_fao_evapotranspiration&timezone=auto"
 
 
 def cuaca_fwi(grid):
@@ -210,12 +211,19 @@ def cuaca_fwi(grid):
     tgl_simpan = (hari_ini - dt.timedelta(days=2)).isoformat()
     batas_lama = (hari_ini - dt.timedelta(days=8)).isoformat()
     kunci_ = lambda g: f"{g[0]},{g[1]}"
+    # PFVI hanya di sel gambut; keadaannya (x, muka air proxy, hujan kemarin) di pfvi_state.json, disimpan pada H-2 juga
+    jalur_pf = os.path.join(KELUAR, "pfvi_state.json")
+    keadaan_pf = json.load(open(jalur_pf)) if os.path.exists(jalur_pf) else {}
+    gambut = Poligon(os.path.join(KELUAR, "lahan/gambut.geojson"))
+    sel_pf = P.sel_gambut(grid, gambut.cari) if gambut.indeks else set()
+    pf_lama = lambda k: k not in keadaan_pf or keadaan_pf[k]["tgl"] < batas_lama
 
-    # 1. panaskan sel yang belum punya keadaan (atau keadaannya terlalu lama)
+    # 1. panaskan sel yang belum punya keadaan (atau keadaannya terlalu lama); sel gambut tanpa keadaan PFVI ikut
     baru = [g for g in grid if kunci_(g) not in keadaan or keadaan[kunci_(g)]["tgl"] < batas_lama]
+    hangat = [g for g in grid if g in baru or (kunci_(g) in sel_pf and pf_lama(kunci_(g)))]
     akhir_arsip = hari_ini - dt.timedelta(days=8)
-    for a in range(0, len(baru), 25):
-        bagian = baru[a:a + 25]
+    for a in range(0, len(hangat), 25):
+        bagian = hangat[a:a + 25]
         url = ("https://archive-api.open-meteo.com/v1/archive?latitude=" + ",".join(str(g[0]) for g in bagian)
                + "&longitude=" + ",".join(str(g[1]) for g in bagian)
                + f"&start_date={hari_ini - dt.timedelta(days=300)}&end_date={akhir_arsip}&" + VAR)
@@ -227,8 +235,13 @@ def cuaca_fwi(grid):
         for g, d in zip(bagian, data if isinstance(data, list) else [data]):
             hari = siang(d["hourly"])
             seri = F.deret([x[1:5] for x in hari])
-            if seri:
+            if seri and g in baru:
                 keadaan[kunci_(g)] = {"tgl": hari[-1][0], "kode": [seri[-1]["ffmc"], seri[-1]["dmc"], seri[-1]["dc"]], "sumber": "ERA5"}
+            if kunci_(g) in sel_pf and pf_lama(kunci_(g)):
+                _, kb = P.lanjut(P.hari_dari_jam(d["hourly"]), None, hari[-1][0] if hari else "")
+                if kb:
+                    kb["sumber"] = "ERA5"
+                    keadaan_pf[kunci_(g)] = kb
         time.sleep(2)
 
     # 2. lanjutkan dengan data 8 hari terakhir + prakiraan
@@ -237,7 +250,7 @@ def cuaca_fwi(grid):
         bagian = grid[a:a + 80]
         url = ("https://api.open-meteo.com/v1/forecast?latitude=" + ",".join(str(g[0]) for g in bagian)
                + "&longitude=" + ",".join(str(g[1]) for g in bagian)
-               + f"&past_days={8 if all(kunci_(g) in keadaan for g in bagian) else 92}&forecast_days=4&" + VAR)
+               + f"&past_days={8 if all(kunci_(g) in keadaan and (kunci_(g) not in sel_pf or kunci_(g) in keadaan_pf) for g in bagian) else 92}&forecast_days=4&" + VAR)
         data = ambil(url, json_=True)
         for g, d in zip(bagian, data if isinstance(data, list) else [data]):
             k = keadaan.get(kunci_(g), {"tgl": "0000", "kode": list(F.AWAL), "sumber": "awal standar"})
@@ -250,9 +263,16 @@ def cuaca_fwi(grid):
                 {"tgl": x[0], "t": x[1], "rh": x[2], "ws": x[3], "wd": x[5], "hujan": None if x[4] is None else round(x[4], 1),
                  **{kk: round(v, 1) for kk, v in sr.items()}}
                 for x, sr in zip(hari, seri)]})
+            if kunci_(g) in sel_pf:  # tambah pfvi & pg (peluang gabungan) di hari yang punya keduanya
+                pf, keadaan_pf[kunci_(g)] = P.lanjut(P.hari_dari_jam(d["hourly"]), keadaan_pf.get(kunci_(g)), tgl_simpan)
+                for h_ in hasil[-1]["hari"]:
+                    if h_["tgl"] in pf:
+                        h_["pfvi"] = round(pf[h_["tgl"]], 1)
+                        h_["pg"] = round(P.peluang(h_["fwi"], pf[h_["tgl"]]), 2)
         time.sleep(1)
-    with open(jalur, "w") as f:
-        json.dump(keadaan, f, separators=(",", ":"))
+    for j, isi in ((jalur, keadaan), (jalur_pf, keadaan_pf)):
+        with open(j, "w") as f:
+            json.dump(isi, f, separators=(",", ":"))
     return hasil
 
 
@@ -484,7 +504,7 @@ def main():
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
     simpan("kluster_geo.json", geo)
-    simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "grid": [
+    simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "pfvi": {"ambang": P.AMBANG_PG, "catatan": "Muka air tanah = perkiraan (proxy) dari hujan dan ET0, bukan pengukuran. Uji balik 2019+2023: scripts/sebaran/RISET-PFVI.md"}, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:]} for g in grid]})
     simpan("wilayah.json", rek)
     simpan("bnpb.json", bnpb)

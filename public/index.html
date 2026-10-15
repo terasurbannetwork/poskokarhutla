@@ -1523,6 +1523,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
         </details>
         <details open><summary>Cuaca & asap</summary>
           <label><input type="checkbox" data-l="fwi"> FWI (Fire Weather Index)</label>
+          <label style="display:none"><input type="checkbox" data-l="pfvi"> Bahaya api gambut (FWI + PFVI)</label>
           <label><input type="checkbox" data-l="angin" checked> Angin</label>
           <label><input type="checkbox" data-l="asap"> PM2.5</label>
           <label><input type="checkbox" data-l="pm10"> PM10</label>
@@ -1741,6 +1742,7 @@ async function muatData() {
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
   const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
   S.fwiHari = Math.max(0, fw.grid[0].hari.findIndex(h => h.tgl === fw.hari_ini));
+  { const lb = document.querySelector('#lapis input[data-l="pfvi"]')?.closest("label"); if (lb) lb.style.display = adaPfvi() ? "" : "none"; }
   $("#upd").textContent = "Data " + jamWIB(S.acuan || meta.dibuat); $("#upd").title = "Lintasan satelit terakhir; diolah " + jamWIB(meta.dibuat);
   const umur = (Date.now() - new Date(meta.dibuat)) / 36e5; S.basi = umur > 36;
   if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status kompleks tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
@@ -1889,6 +1891,18 @@ const Peta = {
     ctx.putImageData(img, 0, 0);
     return {url: cv.toDataURL(), kor: [[x0, y1], [141.5, y1], [141.5, -11.5], [x0, -11.5]]};
   },
+  pfviGambar() {
+    const x0 = 94.5, y1 = 6.5, sel = S.fwi.sel, w = Math.round((141.5 - x0) / sel), h = Math.round((y1 + 11.5) / sel), i = S.fwiHari;
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
+    for (const g of S.fwi.grid) { const d = g.hari[i]; if (!d || d.pg == null) continue;
+      const cx = Math.floor((g.lon - x0) / sel), cy = Math.floor((y1 - g.lat) / sel); if (cx < 0 || cy < 0 || cx >= w || cy >= h) continue;
+      const [r, gg, b] = warnaFWI(PG_FWI[kelasPG(d.pg)]), o = (cy * w + cx) * 4; img.data[o] = r; img.data[o + 1] = gg; img.data[o + 2] = b; img.data[o + 3] = 255; }
+    ctx.putImageData(img, 0, 0);
+    return {url: cv.toDataURL(), kor: [[x0, y1], [141.5, y1], [141.5, -11.5], [x0, -11.5]]};
+  },
+  /* sel gambut di bawah kursor (sel 0,5 derajat berpusat di g.lon/g.lat) */
+  pfviSel(ll) { const h = S.fwi.sel / 2, i = S.fwiHari;
+    for (const g of S.fwi.grid) if (Math.abs(ll.lng - g.lon) <= h && Math.abs(ll.lat - g.lat) <= h) return g.hari[i]?.pg != null ? g.hari[i] : null; return null; },
   geoFWI() {
     const h = S.fwi.sel / 2, i = S.fwiHari;
     return {type: "FeatureCollection", features: S.fwi.grid.filter(g => g.hari[i]).map(g => ({type: "Feature",
@@ -1920,6 +1934,13 @@ const Peta = {
       tampilTip(d[2] ? kartuTip({judul: "Sel ± 11 km", stat: [["kal", `${d[2]}/${G.tahun}`, "thn terbakar", "#c9503a"], ["titik", d[3], "titik/thn", "#e58a45"]], kaki: "MODIS 2002–2025"})
         : kartuTip({judul: "Tidak pernah terbakar berarti", kaki: `kurang dari ${G.ambang} titik setahun`}), e.originalEvent); });
     peta.on("mouseout", () => tip.classList.remove("on"));
+    peta.on("mousemove", e => { if (!peta.getLayer("pfvi") || !this.lihat("pfvi")) return;
+      const d = this.pfviSel(e.lngLat);
+      if (!d) { if (tip._pf) { tip._pf = false; tip.classList.remove("on"); } return; }
+      tip._pf = true; const k = kelasPG(d.pg), w = `rgb(${warnaFWI(PG_FWI[k]).join(",")})`;
+      tampilTip(kartuTip({judul: `Bahaya api gambut <span class="tp-pl" style="background:${w}">${PG_KELAS[k]}</span>`,
+        stat: [["api", "±" + fmt(Math.round(d.pg * 20) * 5) + "%", "Peluang api besok", w, k >= 2], ["fwi", fmt(Math.round(d.fwi * 10) / 10), "FWI hari itu", w]],
+        daftar: [[`PFVI ${fmt(Math.round(d.pfvi))}`, `${kelasPFVI(d.pfvi)}; batas 75/150/225`]], kaki: "Muka air tanah perkiraan, bukan pengukuran"}), e.originalEvent); });
     /* gelembung angka: kursor tangan + daftar kompleks di dalamnya; roda/trackpad diperlambat supaya zoom halus */
     peta.scrollZoom.setWheelZoomRate(1 / 650); peta.scrollZoom.setZoomRate(1 / 160);
     { const AMBANG = [5.8, 6, 6.5, 7.5, 8.5, 9], tingkat = () => AMBANG.filter(a => peta.getZoom() >= a).length; let t0 = tingkat();
@@ -2027,6 +2048,9 @@ const Lapis = {
         peta.on("mousemove", "aqi", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "pointer";
           tampilTip(kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`, stat: [["skor", p.v >= 500 ? "500+" : fmt(p.v), `AQI (ISPU) <span class="tp-pl" style="background:${p.w}">${esc(p.k)}</span>`, p.w, p.v > 100], ["fwi", fmt(p.pm) + " µg/m³", "PM2.5", p.w]]}), e.originalEvent); });
         peta.on("mouseleave", "aqi", () => { peta.getCanvas().style.cursor = ""; $("#tip").classList.remove("on"); }); },
+      pfvi: async () => { const g = Peta.pfviGambar();
+        peta.addSource("pfvi", {type: "image", url: g.url, coordinates: g.kor});
+        peta.addLayer({id: "pfvi", type: "raster", source: "pfvi", paint: {"raster-opacity": .75, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
       hujan: async () => { const g = gambarHujan();
         peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
         peta.addLayer({id: "hujan", type: "raster", source: "hujan", paint: {"raster-opacity": .7, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
@@ -2095,6 +2119,12 @@ function gambarHujan() { const i = S.fwiHari;
 function warnaFWI(v) { const st = [[0, [90, 158, 116]], [2, [168, 186, 102]], [7, [227, 185, 78]], [14, [226, 128, 63]], [25, [201, 80, 58]], [40, [122, 43, 63]]];
   for (let k = 1; k < st.length; k++) if (v <= st[k][0]) { const [a, ca] = st[k - 1], [b, cb] = st[k], t = (v - a) / (b - a); return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); }
   return st[st.length - 1][1]; }
+
+/* bahaya api gambut: peluang api besok (pg, regresi FWI + PFVI) per sel gambut; data lama tanpa pg = lapisan tidak ada */
+const PG_KELAS = ["Rendah", "Sedang", "Tinggi", "Sangat tinggi"], PG_FWI = [1, 4, 10, 25]; /* warna disamakan dengan skala FWI */
+const kelasPG = pg => pg < .4 ? 0 : pg < (S.fwi.pfvi?.ambang ?? .6344) ? 1 : pg < .8 ? 2 : 3;
+const kelasPFVI = v => v < 75 ? "Rendah" : v < 150 ? "Sedang" : v < 225 ? "Tinggi" : "Ekstrem";
+const adaPfvi = () => !!S.fwi?.pfvi && S.fwi.grid.some(g => g.hari.some(h => h.pg != null));
 
 /* angin bergerak: partikel di atas peta mengikuti angin siang (grid 0,5 derajat), gaya Windy */
 const Angin = {
@@ -2469,12 +2499,12 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
   posko: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', perisai: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', orang: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.5-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
   gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>', peringatan: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'};
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
-  fwi: ["#5a9e74", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
+  fwi: ["#5a9e74", "#c9503a", "api"], pfvi: ["#4a3426", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
   gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
@@ -2493,7 +2523,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   const lawan = {asap: "pm10", pm10: "asap"}[i.dataset.l], li = lawan && i.checked && $(`#lapis input[data-l="${lawan}"]`);
   if (li?.checked) { li.checked = false; li.dispatchEvent(new Event("change", {bubbles: true})); }
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
-  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
+  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
     angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
@@ -2518,10 +2548,11 @@ function renderFwiHari() {
     `<button data-i="${i0 + n}" aria-pressed="${S.fwiHari === i0 + n}">${labelHari(h.tgl)}</button>`).join("")}</div>`;
 }
 /* satu pemilih waktu saja: hari prakiraan (lapisan cuaca) menggantikan rentang titik panas selama tampil */
-const garisWaktu = () => { const on = ["fwi", "angin", "asap", "pm10", "aqi", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); /* rentang titik panas tetap tampil walau lapisan cuaca menyala */ };
+const garisWaktu = () => { const on = ["fwi", "pfvi", "angin", "asap", "pm10", "aqi", "hujan"].some(k => Peta.lihat(k)); $("#garisWaktu").classList.toggle("on", on); /* rentang titik panas tetap tampil walau lapisan cuaca menyala */ };
 $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.fwiHari = +b.dataset.i;
   $("#fwiHari").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => { const g = Peta.fwiGambar(); peta.getSource("fwi").updateImage({url: g.url, coordinates: g.kor});
+    if (peta.getSource("pfvi")) { const p = Peta.pfviGambar(); peta.getSource("pfvi").updateImage({url: p.url, coordinates: p.kor}); }
     if (Peta.lihat("angin")) Angin.bangun();
     if (peta.getSource("asap") && Lapis.cache.asap) { const a = gambarAsap(Lapis.cache.asap); peta.getSource("asap").updateImage({url: a.url, coordinates: a.kor}); }
     if (peta.getSource("pm10") && Lapis.cache.asap) { const a = gambarAsap(Lapis.cache.asap, 7, ST_PM10); peta.getSource("pm10").updateImage({url: a.url, coordinates: a.kor}); }
@@ -2529,7 +2560,7 @@ $("#fwiHari").addEventListener("click", e => { const b = e.target.closest("butto
     if (peta.getSource("hujan")) { const h = gambarHujan(); peta.getSource("hujan").updateImage({url: h.url, coordinates: h.kor}); } if (peta.getLayer("angin")) { peta.removeLayer("angin"); peta.removeSource("angin"); Lapis.pasang("panah"); } }); });
 function renderLegenda() {
   /* hanya yang sedang tergambar: lapisan menyala DAN terlihat pada zoom saat ini (ambang sama dengan minzoom/opasitas lapisannya) */
-  const fwiOn = Peta.lihat("fwi"), z = peta ? peta.getZoom() : 4;
+  const fwiOn = Peta.lihat("fwi"), pfOn = Peta.lihat("pfvi") && adaPfvi(), z = peta ? peta.getZoom() : 4;
   $("#legenda").innerHTML = `<details ${S.legBuka === false ? "" : "open"} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${S.panel === "riw" || !Peta.lihat("titik") || (Kini.on && z < 6.5) ? "" : `<div class="lbl">Umur titik panas</div>
     <div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#fff4a8;border:1px solid #4a1209"></i>&lt; 6 jam</span>
@@ -2558,7 +2589,8 @@ function renderLegenda() {
     ${Peta.lihat("pm10") ? `<div class="lbl" style="margin-top:8px">Asap PM10 maks. harian (µg/m³)</div><div class="legscale">${[25, 100, 250, 385, 500].map(v => `<i style="background:rgb(${gradasi(ST_PM10, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>baik</span><span>sedang</span><span>tdk sehat</span><span>sgt tdk sehat</span><span>bahaya</span></div>` : ""}
     ${Peta.lihat("hujan") ? `<div class="lbl" style="margin-top:8px">Hujan 24 jam (mm)</div><div class="legscale">${[1, 5, 15, 40, 80].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>5</span><span>15</span><span>40</span><span>80+</span></div>` : ""}
     ${Peta.lihat("angin") ? `<div class="leg-cat"><i style="--w:#1f5f8b"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg></i><span><b>Angin</b>garis = arah siang · terang = kencang</span></div>` : ""}
-    ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI)</div><div class="legscale">${[0, 2, 7, 14, 25, 40].map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>0</span><span>2</span><span>7</span><span>14</span><span>25</span><span>40+</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div>` : ""}</div></details>`;
+    ${fwiOn ? `<div class="lbl" style="margin-top:8px">Bahaya cuaca (FWI)</div><div class="legscale">${[0, 2, 7, 14, 25, 40].map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>0</span><span>2</span><span>7</span><span>14</span><span>25</span><span>40+</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div>` : ""}
+    ${pfOn ? `<div class="lbl" style="margin-top:8px">Bahaya api gambut (FWI + PFVI)</div><div class="legscale">${PG_FWI.map(v => `<i style="background:rgb(${warnaFWI(v).join(",")})"></i>`).join("")}</div><div class="legnum"><span>&lt; 40%</span><span>40–${fmt(Math.round(S.fwi.pfvi.ambang * 100))}%</span><span>${fmt(Math.round(S.fwi.pfvi.ambang * 100))}–80%</span><span>≥ 80%</span></div><div class="legnum"><span>rendah</span><span>sedang</span><span>tinggi</span><span>sangat tinggi</span></div><div class="legnum"><span>Peluang api besok · sumber: peatfr (Taufik dkk. 2022; Mahdiyasa dkk. 2025), dikalibrasi ulang</span></div>` : ""}</div></details>`;
   $("#legDet").ontoggle = e => S.legBuka = e.target.open;
   /* legenda mendatar: tiap judul (.lbl) membuka kelompok baru; keterangan lepas (.leg sesudah .leg) juga kelompok sendiri */
   const isi = $("#legenda .lg-isi"), el = [...isi.children]; let g = null;

@@ -1,0 +1,2 @@
+{"t":"2026-10-15T18:30:15.378+07:00","berkas":"scripts/data/harian.py","blob":"749fe175660b0f48971667ef7be2ef9d4d2961e1","aturan":"4f8e1f4d620a","vonis":"dikerjakan","ringkas":"PFVI + pg di sel gambut dalam cuaca_fwi, pfvi_state.json, kunci pfvi di fwi.json","sha":"b935fac"}
+{"t":"2026-10-15T18:30:15.430+07:00","berkas":"scripts/data/pfvi.py","blob":"8c73a468e0df2610d60f37dcfa4558455b388b1d","aturan":"4f8e1f4d620a","vonis":"dikerjakan","ringkas":"peluang(), sel_gambut(), hari_dari_jam(), lanjut() + assert (8)","sha":"b935fac"}
