@@ -2695,7 +2695,7 @@ function rekomendasi(k, d) {
   if (d.posko.perm) tambah(0, `${fmt(d.posko.perm)} posko permanen dan ${fmt(d.posko.aju)} posko aju direkomendasikan; anggaran ${rp(d.posko.biaya)}`, "tab Posko");
   return R.sort((a, b) => b.lv - a.lv); }
 /* rekomendasi BNPB datang sebagai satu paragraf; pecah menjadi butir di penanda "1.", "2." atau "-" */
-const butirBNPB = t => String(t || "").split(/\s*(?:\d+\.\s+|(?:^|\s)-\s+)/).map(x => x.trim()).filter(x => x.length > 3);
+const butirBNPB = t => String(t || "").split(/\s*(?:\d+\.\s+|(?:^|\s)-\s+)/).map(x => x.trim().replace(/^[`\x27"]+/, "")).filter(x => x.length > 3);   // laporan BNPB kadang membawa tanda kutip/backtick nyasar
 async function renderPrioritas() {
   if (!Tren.musim) Tren.musim = await muatJSON("data/musim.json").catch(() => null);
   if (!Lapis.cache.asap) Lapis.cache.asap = await muatJSON("data/asap.json").catch(() => null);

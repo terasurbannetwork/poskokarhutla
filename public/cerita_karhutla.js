@@ -434,7 +434,7 @@ if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.i
 document.addEventListener("click", e => { const b = e.target.closest?.("[data-ctbagi]"); if (!b) return;
   const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || "Pantau Bencana";
   const url = location.origin + "/insight#ct-" + b.dataset.ctbagi;
-  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:"), url, kampanye: "cerita"});
+  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:"), url, kampanye: "cerita"});
   else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });
 
 /* rekam bab peta bergerak (Musim 2026) jadi video 1080×1350: kanvas peta + tanggal, angka, judul, merek; diputar dari awal sampai selesai */

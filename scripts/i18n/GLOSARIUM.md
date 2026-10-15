@@ -1,7 +1,10 @@
 # Glosarium EN / ID — Pantau Bencana
 
 Satu istilah, satu padanan, di semua tab, PDF, dan gambar bagikan. Kamus: `public/i18n/en.json`.
-Menambah entri: jalankan `node scripts/i18n/kumpul.mjs`, lihat `scripts/i18n/laporan.json` → `hilang`, tulis padanan memakai glosarium ini.
+Menambah entri: jalankan `node scripts/i18n/kumpul.mjs --dump`, lihat `scripts/i18n/laporan.json` → `hilang` (kunci kamus yang belum ada),
+`en_berisi_id` (EN masih memuat kata Indonesia), `id_berisi_en` (ID memuat kata Inggris) dan `campur` (satu kalimat dua bahasa), lalu tulis
+padanan memakai glosarium ini. `node scripts/i18n/skor.mjs keluaran.json --contoh 50` menilai ulang hasil `--dump` tanpa crawl ulang;
+pengelompok katanya di `scripts/i18n/kelas.mjs`. Sasaran: kebocoran tiap arah ≤ 1% teks terlihat per tab (nama diri tidak dihitung).
 Angka di kunci ditulis `{0}`, `{1}`, … (penerjemah mengganti angka otomatis), jadi satu entri melayani semua nilai.
 
 ## Istilah inti
@@ -17,7 +20,12 @@ Angka di kunci ditulis `{0}`, `{1}`, … (penerjemah mengganti angka otomatis), 
 | MPA (Masyarakat Peduli Api) | MPA (community fire brigade) | |
 | gambut / lahan gambut | peat / peatland | |
 | kawasan hutan | forest estate | |
-| konsesi (sawit, HTI, HPH, tambang) | concession (oil palm, pulpwood/HTI, logging/HPH, mining) | |
+| konsesi (sawit, HTI, HPH, tambang) | concession (oil palm, HTI, HPH, mining) | singkatan HTI/HPH dipakai di kedua bahasa |
+| sawit / konsesi sawit | oil palm / oil palm concession | jangan "palm oil" untuk lahan; jangan campur "Konsesi oil palm" |
+| HTI (hutan tanaman industri) | HTI (industrial timber plantation) | bukan "kayu pulp" / "pulpwood" / "wood pulp" |
+| HPH (hutan alam) | HPH (natural-forest logging concession) | PBPH = nama izin baru, tetap |
+| areal konsesi / di luar areal konsesi | concession area / outside concession areas | |
+| status lahan titik panas | hotspot land status | nama perusahaan TIDAK ditampilkan |
 | regu | crew | |
 | personel | personnel | |
 | pemadaman | suppression | pemadaman awal = initial attack |
@@ -35,7 +43,10 @@ Angka di kunci ditulis `{0}`, `{1}`, … (penerjemah mengganti angka otomatis), 
 | desa | village | |
 | BNPB / BPBD | BNPB / BPBD | nama lembaga; BPBD = regional disaster agency bila perlu diuraikan |
 | BMKG | BMKG | |
-| status siaga darurat | emergency alert status | penetapan pemerintah daerah |
+| status siaga darurat (status hukum) | emergency alert status | penetapan kepala daerah; "saat siaga" = during the alert status |
+| pos siaga | standby post | siagakan = put on standby |
+| Dana Siap Pakai (DSP) BNPB | BNPB on-call funds | bukan "ready-use funds" |
+| dasbor (Ringkasan) | dashboard | label menu "Dashboard" & "Insight" = nama bagian pilihan pemilik, tetap di kedua bahasa |
 | tanggap darurat | emergency response | |
 
 ## Tingkat status (urutan naik)
@@ -49,6 +60,8 @@ Angka di kunci ditulis `{0}`, `{1}`, … (penerjemah mengganti angka otomatis), 
 | Prioritas | Priority |
 
 Tingkat dipakai seperti di peringatan bencana: Alert < Watch < Warning (level 2–4 BNPB). Jangan dicampur dengan "high/low".
+Tingkat kompleks api: Prioritas = Priority, Siaga = Watch ("kompleks siaga" = Watch-level fire complexes), Patroli = Patrol, Pencegahan = Prevention.
+Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat) = emergency alert. Musim/periode siaga = watch period.
 
 ## Cuaca & bahaya
 
@@ -97,5 +110,11 @@ Tingkat dipakai seperti di peringatan bencana: Alert < Watch < Warning (level 2�
 ## Gaya
 
 - Kalimat pendek, kata kerja aktif, sentence case untuk judul ("Hotspots by province", bukan "Hotspots By Province").
-- Angka dan tanggal diformat otomatis (en-GB: 1,234.5 · 14 Oct 21:20 WIB).
-- Judul berita, isi laporan warga, nama tempat, nama perusahaan, dan isi pesan TIDAK diterjemahkan.
+- Angka dan tanggal diformat otomatis (ID: 1.234,5 · 14 Okt 21.20 WIB; EN en-GB: 1,234.5 · 14 Oct 21:20 WIB). Desimal yang diketik di teks
+  sumber ("1,5 km") diubah ke "1.5 km" saat EN; ribuan ketikan ("2.156") belum — tulis angka lewat fmt(), jangan diketik.
+- Nama bulan/hari mengikuti bahasa: Okt/Agu/Des/Mei ↔ Oct/Aug/Dec/May; "Agu awal/tengah/akhir" ↔ "Early/Mid/Late Aug".
+- Nama provinsi dalam kalimat EN memakai nama Inggris (Central Kalimantan, South Papua); nama kabupaten/kecamatan/desa tetap.
+- Kontrol peta MapLibre ditulis Indonesia (Perbesar, Perkecil, Peta) dan diterjemahkan kamus saat EN.
+- Teks yang dipotong (…) diterjemahkan dulu baru dipotong; kalimat bagikan dirakit dari bagian yang masing-masing lewat T().
+- Judul berita, isi laporan warga, nama tempat, nama perusahaan, isi pesan, rumus (`.rumus`), judul publikasi dan jabatan tim TIDAK diterjemahkan.
+- ID: pakai padanan baku (dasbor, wawasan, prakiraan, area terbakar); istilah teknis Inggris hanya sebagai keterangan dalam kurung.
