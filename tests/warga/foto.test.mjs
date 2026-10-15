@@ -207,6 +207,8 @@ uji("foto dummy: isi semua ember lewat pintunya, publik tidak melihatnya, admin 
   const isi = await panggil("POST", "/api/foto/dummy", {aksi: "isi"}, "1.1.1.1", ADMIN);
   assert.equal(isi.s, 201, JSON.stringify(isi.j));
   assert.equal((await panggil("POST", "/api/foto/dummy", {aksi: "isi"}, "1.1.1.1", ADMIN)).s, 409, "gerbang sudah ada");
+  const akhir = (await DB.prepare("SELECT substr(id, -2) a FROM foto WHERE dummy = 1").all()).results.map(x => x.a);
+  assert.equal(new Set(akhir).size, akhir.length, "tiap dummy menunjuk foto contoh yang berbeda");
   const ember = (await DB.prepare("SELECT status, count(*) n FROM foto WHERE dummy = 1 GROUP BY status").all()).results;
   assert.deepEqual(ember.map(x => x.status).sort(), ["ditolak", "menunggu", "tayang"], `tiap ember terisi: ${JSON.stringify(ember)}`);
   const kat = (await DB.prepare("SELECT count(DISTINCT kategori) n, sum(tampil_nama) t, sum(suka) s, sum(komentar) k, sum(aduan) a FROM foto WHERE dummy = 1").first());

@@ -30,6 +30,7 @@
     kom: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M4 5h16v11H9l-5 4z"/></svg>',
     bagi: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.6M8.2 13.2l7.6 4.6"/></svg>',
     pin: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/></svg>',
+    video: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><rect x="3" y="6" width="13" height="12" rx="2.5"/><path d="m16 10.5 5-3v9l-5-3z"/></svg>',
     main: '<svg viewBox="0 0 24 24" fill="currentColor"><path d="M8 5v14l11-7z"/></svg>',
     titik: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="7"/><circle cx="12" cy="12" r="2"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/></svg>',
     jam: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
@@ -56,7 +57,7 @@
   /* ------------------------------------------------------------ tab galeri
      Galeri rata (bukan dikelompokkan wilayah): urutan Terbaru/Paling disukai/dikomentari/dilihat, saring provinsi (banyak),
      kategori & jenis (klik lagi = semua), lalu Galeri atau Peta (pemilik, 15 Okt 2026) */
-  const URUT = [["baru", "Terbaru"], ["suka", "Paling banyak dukungan"], ["komentar", "Paling dikomentari"], ["dilihat", "Paling dilihat"]];
+  const URUT = [["baru", "Terbaru", "jam"], ["suka", "Paling banyak dukungan", "naik"], ["komentar", "Paling dikomentari", "kom"], ["dilihat", "Paling dilihat", "mata"]];
   const G = {urut: bacaL("fl-urut", "baru"), prov: [], kat: "", jenis: "", h: 0}, PER_HAL = 24;
   const stat = (ik, n) => `<span>${ik}${fmt(n || 0)}</span>`;
   const IKS = {mata: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></svg>'};
@@ -70,10 +71,10 @@
     const el = $("#foto"); if (!el) return;
     if (!el.dataset.siap) {
       el.dataset.siap = 1;
-      el.innerHTML = `<div class="fl-wrap"><div class="fg-panel"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${n}</button>`).join("")}</div>
-          <div class="fg-kanan"><button class="fl-pri kecil" data-kirim>${IK.kamera}Kirim foto</button></div></div>
+      el.innerHTML = `<div class="fl-wrap"><div class="fg-panel"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n, i]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${IK[i] || IKS[i]}${n}</button>`).join("")}</div></div>
         <div class="fg-saring"><div id="fgProv"></div><div class="fl-chip" role="group" aria-label="Kategori">${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${ikat(k)}${n}</button>`).join("")}</div>
-          <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">Foto</button><button data-j="video" aria-pressed="false">Video</button></div></div></div>
+          <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">${IK.kamera}Foto</button><button data-j="video" aria-pressed="false">${IK.video}Video</button></div></div></div>
+        <button class="fl-pri fg-apung" data-kirim>${IK.kamera}Kirim foto</button>
         <div class="fg-panel fg-isi"><div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div><div class="fg-pg" id="fgPg"></div></div></div>`;
       el.addEventListener("click", e => {
         const u = e.target.closest("[data-u]"); if (u) { G.urut = u.dataset.u; G.h = 0; tulisL("fl-urut", G.urut); el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-pressed", b === u)); return isiGaleri(); }
@@ -166,9 +167,9 @@
       return `<div class="fl-r" style="--k:${w}">
         <div class="fl-r-media"><div class="fl-mw">${f.jenis === "video" ? `<video controls playsinline preload="metadata" poster="${API}/thumb/${f.id}" src="${API}/media/${f.id}"></video>` : `<img alt="${esc(f.keterangan || k)}" src="${API}/media/${f.id}">`}${cap({kec: f.kec, kab: f.kab, prov: f.prov}, f.lat != null ? {lat: f.lat, lon: f.lon} : null, f.diambil ? jamWIB(f.diambil) : "")}</div>
           <div class="fl-r-atas"><span class="fl-pil">${ikat(f.kategori)}${k}</span>${f.contoh ? '<span class="fl-pil abu">data contoh</span>' : ""}</div>
-          <button class="fl-x" data-tutup aria-label="Tutup">×</button></div>
+          ${f.keterangan ? `<p class="fl-ket">${esc(f.keterangan)}</p>` : ""}</div>
+        <button class="fl-x" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
         <div class="fl-r-isi">
-          ${f.keterangan ? `<p class="fl-ket">${esc(f.keterangan)}</p>` : ""}
           <dl class="fl-info"><div><dt>${IK.pin}Lokasi</dt><dd>Kec. ${esc(f.kec)}, ${esc(f.kab)}, ${esc(namaProv(f.prov))}</dd></div>
             ${f.lat != null ? `<div><dt>${IK.titik}Koordinat GPS</dt><dd class="fl-angka">${koord(f)}</dd></div>` : ""}
             <div><dt>${IK.jam}Diambil</dt><dd class="fl-nw">${jamWIB(f.diambil)} <small>(${lalu(f.diambil)})</small></dd></div>

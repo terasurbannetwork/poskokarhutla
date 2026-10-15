@@ -1,9 +1,11 @@
 /* Admin foto lapangan: kartu antrean. Token warna, panel, tab, tombol, dan tabel dari admin.css (ikut tema gelap). */
-.af-daftar{display:grid;gap:12px}
-.af-k{display:grid;grid-template-columns:200px 1fr;gap:16px;background:var(--card);border-radius:16px;padding:12px;box-shadow:var(--bayang)}
-.af-media{display:block;border-radius:12px;overflow:hidden;background:#0b1220;aspect-ratio:4/5}
+.af-daftar{display:grid;gap:14px}
+/* kartu antrean: 3 kolom di layar lebar, 2 di tablet, 1 di HP; foto di atas supaya kolomnya tidak sempit */
+.af-daftar:has(>.af-k){grid-template-columns:repeat(auto-fill,minmax(300px,1fr));align-items:stretch}
+.af-k{display:grid;grid-template-rows:auto 1fr;gap:12px;background:var(--card);border-radius:16px;padding:10px;box-shadow:var(--bayang)}
+.af-media{display:block;border-radius:12px;overflow:hidden;background:#0b1220;aspect-ratio:4/3}
 .af-media img,.af-media video{width:100%;height:100%;object-fit:cover;display:block}
-.af-isi{display:grid;gap:6px;align-content:start;font-size:13.5px;min-width:0;padding:2px 4px}
+.af-isi{display:flex;flex-direction:column;gap:6px;font-size:13.5px;min-width:0;padding:2px 4px}
 .af-isi p{margin:0}
 .af-atas{display:flex;justify-content:space-between;align-items:baseline;gap:8px}
 .af-atas b{font:800 15px var(--display)}
@@ -22,4 +24,4 @@
 .af-kosong-baris{text-align:center;color:var(--ink2);padding:18px!important}
 .af-sembunyi td{opacity:.5}
 .af-sembunyi td.a{opacity:1}
-@media (max-width:640px){.af-k{grid-template-columns:1fr}.af-media{aspect-ratio:16/10}}
+

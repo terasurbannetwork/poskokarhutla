@@ -80,7 +80,8 @@ async function rincian(env, req, id, kini, ctx) {
 }
 
 /* media & thumbnail dari R2; yang belum tayang hanya untuk admin. Dukung Range (video bisa digeser tanpa unduh penuh). */
-const ASET_DUMMY = ["/img/foto-asap.jpg", "/img/foto-gambut.jpg", "/img/foto-heli.jpg", "/img/foto-pasca.jpg", "/img/bencana-karhutla.jpg"];
+/* 100 foto karhutla berbeda dari Wikimedia Commons (lisensi bebas, kredit di /img/dummy/kredit.json); dua digit hex terakhir id dummy = nomor fotonya */
+const ASET_DUMMY = Array.from({length: 100}, (_, i) => `/img/dummy/f${String(i).padStart(3, "0")}.jpg`);
 async function media(env, req, url, id, kini, thumb) {
   const r = await env.DB.prepare("SELECT status, mime, dummy FROM foto WHERE id = ?").bind(id).first();
   if (!r) return gagal(404, "foto tidak ada");
@@ -277,7 +278,7 @@ async function dummy(env, req, kini) {
   const pilih = Array.from({length: N_DUMMY}, (_, i) => kec[Math.floor((i * 7919) % kec.length)]);
   const ipPalsu = i => sha(`dummy-${i}`), KAT = Object.keys(KATEGORI), st = [], ids = [];
   for (let i = 0; i < pilih.length; i++) {
-    const [la, lo, kunci] = pilih[i], [prov, kab, kc] = kunci.split("|"), id = acak(8), nama = NAMA_DUMMY[i % NAMA_DUMMY.length];
+    const [la, lo, kunci] = pilih[i], [prov, kab, kc] = kunci.split("|"), id = acak(7) + i.toString(16).padStart(2, "0"), nama = NAMA_DUMMY[i % NAMA_DUMMY.length];
     const dibuat = kini - (i * 1.5 + 1) * JAM, exifW = i % 3 !== 2, exifJ = i % 4 === 0 ? 40 + i * 13 : null;
     ids.push(id);
     st.push(env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat, exif_waktu, exif_jarak,

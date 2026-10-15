@@ -48,9 +48,9 @@
 .fl-kipas img{position:absolute;left:50%;bottom:0;width:32px;height:40px;object-fit:cover;border:2px solid var(--card);border-radius:6px;background:color-mix(in oklch,var(--k) 22%,var(--card));
   box-shadow:0 3px 8px rgb(11 37 69 / .22);transform:translateX(calc(-50% + var(--i) * 15px)) rotate(calc(var(--i) * 9deg));transform-origin:50% 100%;transition:transform .2s ease}
 .fl-pn.tumpuk:hover .fl-kipas img{transform:translateX(calc(-50% + var(--i) * 18px)) rotate(calc(var(--i) * 12deg)) translateY(-2px)}
-.fl-lbl{display:inline-flex;align-items:center;gap:3px;background:var(--card);color:var(--ink);border-radius:999px;padding:1.5px 2px 1.5px 5px;box-shadow:0 1px 4px rgb(11 37 69 / .2);font-size:6px;max-width:90px}
+.fl-lbl{display:inline-flex;align-items:center;gap:4px;background:var(--card);color:var(--ink);border-radius:999px;padding:2px 2.5px 2px 7px;box-shadow:0 1px 4px rgb(11 37 69 / .2);font-size:8.5px;line-height:1.2;max-width:130px}   /* line-height tegas: penanda maplibre mewariskan 20px */
 .fl-lbl b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-.fl-lbl em{font-style:normal;font-weight:800;background:var(--ink);color:var(--card);border-radius:999px;padding:.5px 3.5px;font-size:5.75px}
+.fl-lbl em{font-style:normal;font-weight:800;background:var(--ink);color:var(--card);border-radius:999px;padding:1px 5px;font-size:8px;line-height:1.2}
 @media (prefers-reduced-motion:reduce){.fl-kartu,.fl-kipas img{transition:none}}
 
 /* kosong & kerangka muat */
@@ -372,3 +372,22 @@ form:not(.ada) .fl-lanjut{display:none}
 .fg-g .fl-contoh{top:10px;right:10px}.fg-g .fl-vid:has(+ .fl-contoh){top:36px}   /* video + contoh: bertumpuk, tidak bertindih */
 @media (max-width:640px){.fg-pg-nav button span{display:none}.fg-pg-nav button{padding:0;min-width:36px}}
 @media (max-width:640px){.fg-g .fl-contoh{left:10px;right:auto;top:38px}.fg-g .fl-vid:has(+ .fl-contoh){top:10px}.fg-kat{max-width:calc(100% - 20px);font-size:11px}.fg-atas .fl-seg{scrollbar-width:none}.fg-atas .fl-seg::-webkit-scrollbar{display:none}}
+
+/* rincian foto (pemilik, 15 Okt 2026): keterangan di bawah foto, label tulisan putih berlatar pekat, tutup merah di kanan atas pop-up */
+.fl-r{position:relative}
+.fl-r-media{grid-template-rows:1fr auto}
+.fl-r-media .fl-ket{justify-self:stretch;margin:0;padding:12px 18px 14px;color:#e8ecf1;font-size:14.5px;line-height:1.5;background:#0d1117;border-top:1px solid rgb(255 255 255 / .08)}
+.fl-r-atas .fl-pil{color:#fff;background:color-mix(in oklch,var(--k) 88%,#000);font-weight:700;text-shadow:0 1px 1px rgb(0 0 0 / .2)}
+.fl-r-atas .fl-pil svg{color:#fff}
+.fl-r>.fl-x{right:14px;top:14px;z-index:3;display:grid;place-items:center;width:38px;height:38px;background:#dc2626;color:#fff;box-shadow:0 4px 12px rgb(220 38 38 / .35);transition:background .15s ease,transform .15s ease}
+.fl-r>.fl-x svg{width:18px;height:18px}
+.fl-r>.fl-x:hover{background:#b91c1c}.fl-r>.fl-x:active{transform:scale(.94)}
+@media (min-width:761px){.fl-r .fl-r-isi{padding-top:64px}}
+/* ikon urutan & jenis, saringan selebar baris, Kirim foto mengapung di tengah bawah (pemilik, 15 Okt 2026) */
+.fg-atas>.fl-seg:first-child button{display:inline-flex;align-items:center;justify-content:center;gap:7px}
+.fl-seg button svg{width:15px;height:15px;flex:none}
+.fg-saring>.fl-chip{flex:1 1 auto}
+.fg-saring>.fl-chip button{flex:1 1 auto;justify-content:center}
+.fg-apung{position:fixed;left:50%;bottom:max(24px,env(safe-area-inset-bottom));transform:translateX(-50%);z-index:30;min-height:48px;padding:0 22px;box-shadow:0 0 0 2px rgb(255 255 255 / .85),0 10px 28px rgb(11 37 69 / .28)}  /* cincin putih: tetap terbaca di atas kaki navy */
+.fl-wrap:has(.fl-ajak) .fg-apung{display:none}
+.fl-wrap{padding-bottom:88px}

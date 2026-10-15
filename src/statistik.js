@@ -32,7 +32,7 @@ const bersih = (s, n) => String(s ?? "").replace(/[\u0000-\u001F\u007F<>"\\]/g, 
 const angka = (x, maks) => { const v = Number(x ?? 0); return Number.isFinite(v) && v >= 0 && v <= maks ? v : NaN; };
 /* sampel: bagian kiriman yang ditulis, turun bertahap supaya tulisan D1 (100 rb/hari gratis) cukup untuk semuanya:
    kiriman analitik (berpersetujuan) maks ~22 rb + 5 % kelebihan; hit HTML publik maks ~40 rb (+ ≤ 1 baris stat_tamu per
-   pengunjung baru) + 5 % kelebihan. Sisanya untuk Lapor Warga, pesan, dan masuk admin. */
+   pengunjung baru, + ≤ 1 baris stat_tamu dan 1 tulisan slot per pengunjung per 10 menit) + 5 % kelebihan. Sisanya untuk Lapor Warga, pesan, dan masuk admin. */
 export const pSampel = total => total < 12000 ? 1 : total < 18000 ? .5 : total < 22000 ? .2 : .05;
 export const pHit = total => total < 30000 ? 1 : total < 36000 ? .5 : total < 40000 ? .2 : .05;
 const fnv = s => { let h = 2166136261; for (let i = 0; i < s.length; i++) h = Math.imul(h ^ s.charCodeAt(i), 16777619); return (h >>> 0) / 4294967296; };
@@ -89,6 +89,8 @@ export async function tulisHari(env, tgl, hal, x, kini, kunciSampel) {
       ai_jawab = ai_jawab + ${L((x.ai_jawab || 0) * w)}, ai_crawl = ai_crawl + ${L((x.ai_crawl || 0) * w)}, mesin_cari = mesin_cari + ${L((x.mesin_cari || 0) * w)},
       tak_dihitung = tak_dihitung + ${L((x.tak_dihitung || 0) * w)},
       slot = ${slotE}, menit = ${menitE}, dim = ${dimE}, kini = ${kiniE} WHERE tgl = ?1 AND hal = ?2`).bind(...ikat),
+    ...(x.slotUnik ? [x.slotUnik.tamu, env.DB.prepare(`UPDATE stat_hari SET slot = json_set(slot, '$[${x.slotUnik.s}]', round(json_extract(slot, '$[${x.slotUnik.s}]') + ${L(w)}, 3))
+      WHERE tgl = ?1 AND hal = ?2 AND changes() = 1`).bind(tgl, hal)] : []),   // tulis hanya bila sidik (tamu, slot) baru
   ]);
   return w;
 }

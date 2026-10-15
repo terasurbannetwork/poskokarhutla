@@ -240,3 +240,70 @@ button{-webkit-tap-highlight-color:transparent}
 .pb-rentang .ad-chip{min-height:44px;padding:8px 16px}
 @media (max-width:900px){.pb-dua,.pb-tiga,.pb-langsung{grid-template-columns:1fr}.pb-kpi4{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:480px){.pb-kpi{grid-template-columns:1fr}}
+
+/* ---------- penyegaran statistik (pemilik, 15 Okt 2026) ---------- */
+/* nav admin di tengah header; Keluar tetap di kanan */
+.ad-top nav{position:absolute;left:50%;transform:translateX(-50%);margin:0;max-width:calc(100% - 420px)}
+.ad-top form{margin-left:auto}
+@media (max-width:560px){.ad-top nav{position:static;transform:none;max-width:none}}
+
+/* baris kontrol: rentang jadi segmen, pemisah tipis, tanggal & halaman sejajar */
+.ad-seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--surface)}
+.ad-seg button{height:32px;border:0;background:none;border-radius:999px;padding:0 15px;cursor:pointer;font-weight:700;font-size:12.5px;color:var(--ink2);white-space:nowrap}
+.ad-seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:0 1px 3px rgb(11 37 69 / .14)}
+@media (hover:hover) and (pointer:fine){.ad-seg button:not([aria-pressed="true"]):hover{color:var(--ink)}}
+.ad-seg button:active{transform:scale(.97)}
+.ad-pisah{width:1px;height:24px;background:var(--line);margin:0 4px}
+.ad-kontrol{padding:8px 10px}
+@media (max-width:640px){.ad-pisah{display:none}.ad-seg{width:100%}.ad-seg button{flex:1;padding:0 8px}}
+
+/* angka utama: kartu navy bergradien, kartu langsung bernada hijau */
+.ad-hero>.ad-kartu:first-child{background:var(--gradien);color:#fff;position:relative;overflow:hidden;padding:22px 24px}
+.ad-hero>.ad-kartu:first-child::after{content:"";position:absolute;right:-60px;top:-60px;width:220px;height:220px;border-radius:50%;background:radial-gradient(closest-side,rgb(255 255 255 / .12),transparent)}
+.ad-hero>.ad-kartu:first-child .ad-ey{color:rgb(255 255 255 / .7)}
+.ad-hero>.ad-kartu:first-child .ad-besar-l{color:rgb(255 255 255 / .85)}
+.ad-hero>.ad-kartu:first-child .ad-catat{color:rgb(255 255 255 / .7)}
+.ad-langsung{background:color-mix(in srgb,var(--c4) 7%,var(--card));box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--c4) 22%,transparent),var(--bayang)}
+.ad-langsung .ad-hal span{background:var(--card)}
+
+/* KPI: garis warna pendek di atas, angka lebih besar */
+.ad-kpi .ad-garis{display:block;width:28px;height:4px;border-radius:4px;margin-bottom:12px}
+.ad-kpi b{font-size:28px}
+
+/* grafik interaktif */
+.ad-plot{position:relative}
+.ad-tangkap{fill:transparent;cursor:crosshair}
+.ad-hov[hidden]{display:none}
+.ad-hov line{stroke:var(--ink3);stroke-width:1;stroke-dasharray:3 3}
+.ad-hov circle{fill:#4f8fc4;stroke:var(--card);stroke-width:2}
+.ad-tip{position:absolute;transform:translate(-50%,calc(-100% - 12px));pointer-events:none;background:var(--navy);color:#fff;border-radius:10px;padding:7px 10px;font-size:12px;line-height:1.35;white-space:nowrap;box-shadow:0 8px 20px -6px rgb(11 37 69 / .45);display:grid;gap:1px;z-index:2}
+.ad-tip span{color:rgb(255 255 255 / .7);font-size:11px}.ad-tip b{font:800 14px var(--display)}.ad-tip small{color:#f2b5a8;font-size:11px}
+
+/* tiap seksi dalam satu kontainer */
+.ad-wadah{display:grid;gap:12px;background:color-mix(in srgb,var(--ink) 3%,var(--paper));border-radius:22px;padding:16px;box-shadow:inset 0 0 0 1px var(--line)}
+.ad-wadah .ad-seksi{margin:0 0 2px}
+.ad-wadah .ad-kartu{box-shadow:var(--ring),0 1px 2px rgb(11 37 69 / .04)}
+
+/* belum ada data: kerangka batang abu + label */
+.ad-hantu{position:relative}
+.ad-hantu .ad-rank{opacity:.55}
+.ad-hantu .k i,.ad-hantu .n i{display:inline-block;height:8px;border-radius:4px;background:var(--surface);vertical-align:middle}
+.ad-hantu .k i{width:60%}.ad-hantu .n i{width:22px}
+.ad-hantu .bar i{background:color-mix(in srgb,var(--ink) 10%,var(--surface))}
+.ad-hantu>span{position:absolute;inset:0;display:grid;place-items:center;font-size:12px;font-weight:700;color:var(--ink2)}
+.ad-hantu>span::before{content:"";position:absolute;width:118px;height:28px;border-radius:999px;background:var(--card);box-shadow:var(--bayang);z-index:-1}
+.ad-hantu>span{z-index:0;isolation:isolate}
+
+/* peta kosong */
+.ad-peta-w{position:relative}
+.ad-peta-kosong{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);background:var(--card);box-shadow:var(--bayang);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;color:var(--ink2)}
+
+/* Web Vitals: skala baik / perlu / buruk dengan penanda nilai */
+.ad-skala{position:relative;display:flex;height:6px;border-radius:3px;overflow:visible;margin:8px 0 6px}
+.ad-skala i{display:block;height:100%}
+.ad-skala i:nth-child(1){background:#5a9e74;border-radius:3px 0 0 3px}.ad-skala i:nth-child(2){background:#e3b94e}.ad-skala i:nth-child(3){flex:1;background:#c9503a;border-radius:0 3px 3px 0}
+.ad-vital:not(.baik):not(.perlu):not(.buruk) .ad-skala{opacity:.3}
+.ad-skala em{position:absolute;top:-4px;width:4px;height:14px;margin-left:-2px;border-radius:2px;background:var(--ink);box-shadow:0 0 0 2px var(--card)}
+.ad-vital.baik b{color:#3f8a5c}.ad-vital.perlu b{color:#b58a1c}.ad-vital.buruk b{color:#c9503a}
+.ad-tip[hidden]{display:none}
+.ad-hantu .ad-rank{opacity:1}.ad-hantu .k i,.ad-hantu .n i{background:color-mix(in srgb,var(--ink) 8%,var(--surface))}.ad-hantu .bar i{background:color-mix(in srgb,var(--ink) 16%,var(--surface))}

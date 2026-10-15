@@ -128,7 +128,9 @@ export async function catatHit(env, req, jalur, kini = Date.now()) {
   const x = {orang: 0, kembali: 0, kunjungan: 0, tampilan: 0, klik: 0, detik: 0, slot: [], menit: false, dim};
   if (k.jenis === "manusia") {
     const g = await garam(env, tgl), h = await tamuHash(g, ip, ua), r = kanal(req.headers.get("referer") || "", url.hostname, url.searchParams.get("utm_source"));
-    x.tampilan = 1; x.menit = true; x.slot = [slotWIB(kini)]; x.kini = [h.slice(0, 8), jalur];
+    x.tampilan = 1; x.menit = true; x.kini = [h.slice(0, 8), jalur];
+    /* slot 10 menit = orang, bukan muat ulang: sidik (tamu, slot) di stat_tamu, slot naik hanya saat sidiknya baru */
+    const sl = slotWIB(kini); x.slotUnik = {s: sl, tamu: env.DB.prepare("INSERT OR IGNORE INTO stat_tamu (tgl, h) VALUES (?, ?)").bind(tgl, (await sha(h + "|" + sl)).slice(0, 16))};
     x.tamu = env.DB.prepare("INSERT OR IGNORE INTO stat_tamu (tgl, h) VALUES (?, ?)").bind(tgl, h);
     d("halaman", jalur); d("rujukan", r.rujukan); d("kanal", r.kanal); d("negara", cf.country || "?"); d("perangkat", perangkat(ua));
   } else if (k.jenis === "tak") { x.tak_dihitung = 1; d("tak_dihitung", k.alasan); }

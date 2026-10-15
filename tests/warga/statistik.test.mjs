@@ -296,6 +296,7 @@ uji("hit HTML: manusia, jawaban AI, perayap terverifikasi/palsu, dan jaringan ho
   const p = await tunggu(async () => { const x = await hari(tgl, "publik"); return x && x.tampilan + x.ai_jawab + x.ai_crawl + x.tak_dihitung >= 9 ? x : null; });
   assert.ok(p, "hit HTML tidak tercatat (waitUntil)");
   assert.deepEqual([p.tampilan, p.orang, p.ai_jawab, p.ai_crawl, p.mesin_cari, p.tak_dihitung], [3, 2, 2, 1, 0, 3], "tampilan/orang/ai_jawab/ai_crawl/mesin_cari/tak_dihitung");
+  assert.equal(JSON.parse(p.slot).reduce((t, v) => t + v, 0), 2, "slot 10 menit menghitung orang (2), bukan muat halaman (3)");
   const d = JSON.parse(p.dim);
   assert.deepEqual(Object.keys(d.halaman).sort(), ["/", "/banjir/", "/k/K0001"]);
   assert.deepEqual(d.kanal, {"Dari jawaban AI": [1, 0], Langsung: [1, 0], Pencarian: [1, 0]});
