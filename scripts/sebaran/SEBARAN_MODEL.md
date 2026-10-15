@@ -98,3 +98,15 @@ Rancangan colokan (belum ditulis karena butuh kredensial):
   `jam_lokal`; evaluator JS sudah menerima `hari` 1–3, cukup ditambah `langkah_jam`.
 - Alternatif tanpa pendaftaran: data mentah Himawari L1b di AWS Open Data (`noaa-himawari9`), tetapi itu radiansi; deteksi
   api harus dibangun sendiri (algoritme kontekstual 3,9/11 µm). Lebih berat, tidak disarankan.
+
+## Melanjutkan di perangkat lain
+
+Hasil uji, log, dan state prospektif ada di git (`data/raw/sebaran/*.json|*.log`, `prospektif/`).
+Cache latih besar (`*.pkl`, `*.jsonl`, `cuaca/`, ±1,4 GB) ada di GitHub Release `model-cache-2026-10-15`:
+
+```
+gh release download model-cache-2026-10-15 -p sebaran-cache.tar.gz -D /tmp
+tar -xzf /tmp/sebaran-cache.tar.gz -C data/raw
+```
+
+Setelah melatih ulang, buat rilis baru dengan tanggalnya sendiri, jangan menimpa yang lama.
