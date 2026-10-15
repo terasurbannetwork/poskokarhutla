@@ -1968,7 +1968,7 @@ const Peta = {
           stat: [["titik", S.hit[k] || 0, "titik", "#e58a45"], ["api", kl.length, "kompleks", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : [])], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
-      if (S.panel === "riw" || $("#tip")._kl != null || Riwayat._diGelembung) return;
+      if (S.panel === "riw" || $("#tip")._kl != null || $("#tip")._pf || Riwayat._diGelembung) return;
       tampilTip(kartuWil, e.originalEvent); });
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (S.panel !== "riw") tip.classList.remove("on"); });
     peta.on("click", e => {
