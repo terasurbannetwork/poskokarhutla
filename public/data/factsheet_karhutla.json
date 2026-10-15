@@ -1,0 +1,28 @@
+{
+  "sumber": "Bakom RI, Infografis Data Karhutla 2026 (pembaruan 15 Oktober 2026), dari Dashboard Karhutla BNPB",
+  "tanggal": "2026-10-15",
+  "dunia": [
+    {"n": "Rusia", "ha": 6200000, "kira": true, "src": "Avialesookhrana"},
+    {"n": "Brasil", "ha": 4500000, "kira": true, "src": "Reuters, AP"},
+    {"n": "Kanada", "ha": 4100000, "per": "18 Agustus", "src": "Pemerintah Kanada"},
+    {"n": "Amerika Serikat", "ha": 3660000, "kira": true, "src": "NIFC"},
+    {"n": "Spanyol", "ha": 301000, "src": "Copernicus/EFFIS"},
+    {"n": "Indonesia", "ha": 129899, "src": "BNPB"},
+    {"n": "Prancis", "ha": 96000, "lebih": true, "src": "Copernicus/EFFIS, Le Monde"},
+    {"n": "Italia", "ha": 79100, "per": "awal Agustus", "src": "Copernicus/EFFIS"},
+    {"n": "Portugal", "ha": 47800, "per": "awal Agustus", "src": "Copernicus/EFFIS"},
+    {"n": "Yunani", "ha": 23800, "per": "awal Agustus", "src": "Copernicus/EFFIS"}
+  ],
+  "nasional": [
+    ["1997–1998", 11700000, "estimasi kumulatif dua tahun"],
+    ["2015", 2611411], ["2016", 438363], ["2017", 165484], ["2018", 529267], ["2019", 1649258],
+    ["2020", 296943], ["2021", 358864], ["2022", 205000, "dibulatkan"], ["2023", 1161193],
+    ["2024", 376806], ["2025", 343432], ["2026", 129899, "sementara, hingga 15 Oktober"]
+  ],
+  "personel_prov": {"14": 14837, "15": 5984, "16": 6615, "61": 14458, "62": 4686, "63": 7268},
+  "personel_unsur": [
+    ["TNI", 12285], ["Perusahaan", 8950], ["Polri", 8594], ["Relawan", 8201], ["Pemerintah daerah", 4767],
+    ["Masyarakat Peduli Api", 4749], ["BPBD", 3472], ["Polisi Hutan", 1434], ["Manggala Agni", 1376]
+  ],
+  "hari_ini": {"wb": 12, "wb_liter": 1135000, "tmc": 7, "tmc_kg": 6800, "ha_24j": 570.09}
+}
