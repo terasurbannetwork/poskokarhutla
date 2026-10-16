@@ -58,8 +58,8 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   const r = await worker.fetch(new Request("https://contoh.test/sitemap.xml"), {}, {});
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
-  for (const j of ["/", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi", "/banjir/"]) assert.ok(loc.includes(j), j);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/gempa/"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
+  for (const j of ["/", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
+  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/gempa/", "/banjir/"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
   assert.ok(!x.includes("terasurban"));
   const B = salinan(); B.bencana.push(baru);
   const l2 = sitemap("https://a.b", B);

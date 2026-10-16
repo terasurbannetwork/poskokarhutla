@@ -181,7 +181,7 @@ export default {
       "warna": "#4f9be0",
       "rute": "/banjir/",
       "data": "/banjir/data/",
-      "status": "aktif",
+      "status": "uji",
       "warisan": true,
       "tab": [
         "peta",
@@ -314,7 +314,7 @@ export default {
     },
     {
       "id": "gempa",
-      "nama": "Gempa Bumi & Tsunami",
+      "nama": "Gempa & Tsunami",
       "nama_en": "Earthquake & Tsunami",
       "ikon": "gempa",
       "warna": "#8a6d4e",

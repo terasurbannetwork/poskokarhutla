@@ -1,0 +1,15 @@
+/* Menu pilihan bencana di kepala: gaya bersama karhutla, banjir, tentang (dipindah dari tiga halaman, rupa tidak berubah). Digambar oleh kepala.js. */
+.bencana{position:relative}
+.bc-ik{width:18px;height:18px;flex:none}
+.bencana summary .bc-ik{width:17px;height:17px}
+.bencana summary{list-style:none;cursor:pointer;display:flex;align-items:center;gap:6px;font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap;color:#fff}
+.bencana summary::-webkit-details-marker{display:none}
+.bencana summary::after{content:"";width:7px;height:7px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.8}
+.bencana .menu{position:absolute;top:calc(100% + 10px);left:0;z-index:50;min-width:250px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
+.bencana.ada-segera .menu{min-width:330px}
+.bencana .menu a{display:flex;align-items:center;gap:9px;padding:8px 10px;border-radius:10px;text-decoration:none;color:inherit;font-weight:700;font-size:13.5px;white-space:nowrap}
+.bencana .menu a.segera{cursor:default;opacity:.75}
+.bencana .menu a.segera:hover{background:none}
+.bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
+.bencana .menu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
+.bc-segera{margin-left:auto;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in oklch,#4f9be0 16%,transparent);color:#2f6fb0;white-space:nowrap}

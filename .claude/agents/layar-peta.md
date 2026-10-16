@@ -48,6 +48,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/*.css`
 - `public/_headers*`
 - `public/.assetsignore`
+- `public/robots.txt`
+- `public/llms.txt`
 - `public/i18n/**`
 - `public/og/**`
 - `scripts/i18n/**`

@@ -40,3 +40,4 @@ Batas dengan pemilik lain (glob paling spesifik menang):
 Rencana (belum ada): `tests/agen/gerbang-inti.test.mjs` (nama ekspor inti tidak didefinisikan ulang di `public/<id>/`), `gerbang-inti-peta.test.mjs`, `gerbang-bencana.test.mjs` (kesamaan registry dengan generated). Milik `penulis-gerbang`; ajukan lewat orkestrator. Sekarang: `npm run uji:agen`, `inp-reviewer`, `selera-angka`.
 
 ## Kasus
+- 2026-10-16 · kepala.js: /tentang lokal wrangler jatuh ke index (pakai /tentang.html untuk uji); rata() buang .html. Menu index lama menandai Banjir 'Coming Soon' padahal registry aktif: kini tautan. Nama registry 'Gempa Bumi & Tsunami' beda dari menu lama 'Gempa & Tsunami'.
