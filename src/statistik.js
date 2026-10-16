@@ -12,9 +12,10 @@
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
+import {halStatistik} from "./bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, WIB = 7 * JAM;
-export const HAL = ["karhutla", "banjir", "warga", "tentang", "privasi", "statistik"];
+export const HAL = halStatistik();   // id bencana dari registry + halaman tetap
 /* dimensi yang boleh dikirim klien; cf_* / browser / os diisi server. Selain ini ditolak 400. */
 export const PERISTIWA = new Set(["tampil", "tab", "tab_detik", "gulir", "masuk_tab", "keluar_tab", "durasi_sesi", "pantul",
   "kompleks", "provinsi", "wilayah", "cari", "ex_lihat", "kontrol", "sim", "operasi", "unduh", "bagikan", "lapisan", "zoom", "sel_peta",

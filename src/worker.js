@@ -7,6 +7,7 @@ import {perbaruiTitik, titikTerbaru} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
+import {ruteBencana, sumberStatus, sitemap} from "./bencana.js";
 import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 
@@ -327,7 +328,7 @@ async function admin(env, req, url, id, kini) {
 
 /* ---------------- /api/status: umur data per sumber, 503 bila sumber kunci basi (untuk monitor uptime & langkah akhir CI) ---------------- */
 /* [nama, berkas aset, ambang jam (null = hanya dilaporkan)]. data/meta.json ditulis harian.py tiap 3 jam (titik.yml). */
-export const SUMBER_STATUS = [["titik", "/data/meta.json", 8], ["banjir", "/banjir/data/meta.json", 30], ["berita", "/data/berita.json", 30], ["dampak", "/data/dampak.json", null]];
+export const SUMBER_STATUS = sumberStatus();   // dari registry (public/bencana.json), bukan ditulis tangan
 /* "dibuat" selalu kunci pertama berkas: baca 1 KB awal saja, jangan urai berita.json 5 MB (batas CPU Workers) */
 async function dibuatAset(env, asal, jalur) {
   try {
@@ -395,17 +396,13 @@ async function rute(env, req, url, ctx) {
   catch (e) { console.error("rute", url.pathname, e); return gagal(500, "galat server"); }
 }
 
-const HALAMAN = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
-
 /* ================= HTML lewat Worker (statistik publik) — dipisah supaya mudah digabung dengan perubahan routing lain =================
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 export const HTML_RUTE = [
-  [/^\/(index\.html)?$/, "/index.html", "/"],
-  [/^\/banjir(\/|\/index\.html)?$/, "/banjir/index.html", "/banjir/"],
-  [HALAMAN, "/index.html", null],
-  [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (HALAMAN) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
+  ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
+  [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
 ];
 function catatHTML(env, req, jalur, ctx) {
@@ -447,6 +444,8 @@ export default {
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
+    if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
+      return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
     const r = await rute(env, req, url, ctx); if (r) return r;
     const h = await layaniHTML(req, env, ctx, url); if (h) return h;
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);

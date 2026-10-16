@@ -2,30 +2,38 @@
    dari public/data/og/meta.json (ditulis scripts/og/buat.py tiap jalan titik.yml). Halaman tanpa blok <!-- og --> tidak berubah.
    /k/K0001 -> keterangan kompleks + gambar provinsinya; /sim/K0001 -> simulasi; ?wil=62 -> provinsi; /peta dan tab lain -> og:url sendiri;
    "/" dan "/banjir/" -> angka terbaru (tanpa menunggu HTML dicap ulang). Gagal memuat meta.json = HTML apa adanya. */
-const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak", metode: "Metode",
+import REGISTRY from "./bencana.generated.js";
+import {hidup, akar, dasar, tabRute} from "./bencana.js";
+/* nama tab untuk judul; tab yang belum terdaftar jatuh ke id berhuruf kapital. Himpunan tab yang dikenal datang dari registry (tabRute). */
+const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak", metode: "Metode",
   operasi: "Operasi", sarana: "Sarana", keputusan: "Keputusan", prioritas: "Prioritas", informasi: "Informasi", ringkasan: "Ringkasan", sim: "Simulasi"};
+const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 
-/* murni: jalur + meta.json -> {judul, desk, gambar, url} atau null (tidak diubah) */
-export function metaRute(url, M) {
+/* murni: jalur + meta.json (+ registry) -> {judul, desk, gambar, url} atau null (tidak diubah) */
+export function metaRute(url, M, B = REGISTRY) {
   if (!M?.halaman?.["/"]) return null;
-  const S = M.situs, p = url.pathname.replace(/\/+$/, "") || "/", dasar = M.halaman["/"], gbr = g => `${S}/data/og/${g}.png?v=${M.v}`;
-  if (p === "/banjir" || p === "/banjir/index.html") { const h = M.halaman["/banjir/"]; return h && {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + "/banjir/"}; }
-  const k = p.match(/^\/(k|sim)\/(K\d+)$/);
-  if (k) {
-    const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = prov && M.prov?.[prov] ? "prov-" + prov : "ringkasan";
-    return {judul: `${sim ? "Simulasi penjalaran api" : "Kompleks api"} ${k[2]} · Pantau Bencana`,
-      desk: d ? `${d}. ${sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta."}` : dasar.desk,
+  const S = M.situs, p = url.pathname.replace(/\/+$/, "") || "/", dasarH = M.halaman["/"], gbr = g => `${S}/data/og/${g}.png?v=${M.v}`, bs = hidup(B);
+  for (const b of bs) if (!akar(b) && (p === dasar(b) || p === dasar(b) + "/index.html")) { const h = M.halaman[b.rute]; return h && {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + b.rute}; }
+  for (const b of bs) {   // /k/K0001, /sim/K0001 (akar) atau /<id>/k/<KODE>: awalan kode dari kejadian.awalan
+    const aw = b.kejadian?.awalan, k = aw && (akar(b) || !b.warisan) && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(k|sim)/(${aw}\\d+)$`));
+    if (!k) continue;
+    const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = prov && M.prov?.[prov] ? "prov-" + prov : "ringkasan", api = aw === "K";
+    return {judul: `${sim ? (api ? "Simulasi penjalaran api" : "Simulasi " + b.kejadian.nama.toLowerCase()) : b.kejadian.nama} ${k[2]} · Pantau Bencana`,
+      desk: d ? `${d}.${api ? " " + (sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta.") : ""}` : dasarH.desk,
       gambar: gbr(g), url: S + p};
   }
   const wil = (url.searchParams.get("wil") || "").slice(0, 2);
   if (/^\d{2}$/.test(wil) && M.nama?.[wil]) {
     const pv = M.prov?.[wil];
-    return {judul: pv ? pv.judul : `${M.nama[wil]} · Pantau Bencana`, desk: pv ? pv.desk : dasar.desk, gambar: gbr(pv ? pv.gambar : "ringkasan"), url: `${S}${p === "/" ? "/" : p}?wil=${wil}`};
+    return {judul: pv ? pv.judul : `${M.nama[wil]} · Pantau Bencana`, desk: pv ? pv.desk : dasarH.desk, gambar: gbr(pv ? pv.gambar : "ringkasan"), url: `${S}${p === "/" ? "/" : p}?wil=${wil}`};
   }
   const h = M.halaman[p === "/index.html" ? "/" : p];
   if (h) return {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + (p === "/index.html" ? "/" : p)};
-  const t = TAB[p.slice(1)];
-  return t ? {judul: `${t} · Pantau Bencana Karhutla`, desk: dasar.desk, gambar: gbr(dasar.gambar), url: S + p} : null;
+  for (const b of bs) {
+    const pre = akar(b) ? "" : dasar(b), t = p.startsWith(pre + "/") ? p.slice(pre.length + 1) : "";
+    if (t && tabRute(b).includes(t)) return {judul: `${label(t)} · Pantau Bencana ${b.nama}`, desk: dasarH.desk, gambar: gbr(dasarH.gambar), url: S + p};
+  }
+  return null;
 }
 
 let CACHE = null;
