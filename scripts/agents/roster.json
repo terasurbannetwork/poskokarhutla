@@ -171,7 +171,8 @@
       "bisa": "membangun dan menguji pustaka pipeline bersama, subperintah bencana.py",
       "tidak": "layar; worker; workflow; logika domain satu bencana",
       "milik": [
-        "scripts/umum/**"
+        "scripts/umum/**",
+        "scripts/berita/**"
       ]
     },
     {
