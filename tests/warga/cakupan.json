@@ -112,7 +112,13 @@
     "table ews_laju": "batas laju: IP dan per alamat email",
     "table ews_keadaan": "gempa: hanya pelanggan dalam radius",
     "GET /api/ews/rincian": "konfirmasi: GET tidak mengubah apa pun",
-    "POST /ews/konfirmasi": "konfirmasi: GET tidak mengubah apa pun"
+    "POST /ews/konfirmasi": "konfirmasi: GET tidak mengubah apa pun",
+    "table sosmed": "migrasi 0012 sosmed idempoten",
+    "GET /api/sosmed": "POST sah 201 lalu GET publik memuatnya",
+    "POST /api/sosmed": "POST /api/sosmed: tanpa admin atau token salah 403",
+    "POST /api/sosmed/:id": "sembunyikan: hilang dari GET publik",
+    "GET /api/sosmed/admin": "sembunyikan: hilang dari GET publik",
+    "GET /admin/sosmed": "GET /admin/sosmed: tanpa sesi"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

@@ -17,7 +17,7 @@ function temukan() {
   if (/bersihkan\(env\)/.test(w)) out.add("cron bersihkan");
   if (/perbaruiTitik\(env\)/.test(w)) out.add("cron titik");
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
-  const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8");   // RUTE_EWS digabung ke RUTE
+  const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED digabung ke RUTE
   for (const [, x] of (w + "\n" + f + "\n" + e).matchAll(/^\s*"((?:GET|POST) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan, foto)
   const gm = readFileSync(path.join(AKAR, "src/gempa.js"), "utf8");   // katalog gempa: rute baca + cron
   for (const [, x] of gm.matchAll(/j === "(\/api\/gempa\/\w+)"/g)) out.add("GET " + x);

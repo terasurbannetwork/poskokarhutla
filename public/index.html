@@ -570,6 +570,17 @@ dialog.dlg{border-radius:18px;overflow:auto}
 .tren-sumber{margin:0 0 14px}
 .tren-sumber .seg{display:flex;width:100%}
 .tren-sumber .seg button{flex:1}
+.ms-seg{display:flex;width:100%}
+.ms-seg button{flex:1}
+.ms-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:12px;margin-top:10px;align-items:start}
+.ms-k{display:grid;gap:6px;justify-items:start;padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--card);font-size:13px;line-height:1.4}
+.ms-k p{margin:0;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink2)}
+.ms-k small{color:var(--ink2);font-size:11.5px}
+.ms-aksi{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.ms-aksi a{color:var(--brand2);font-size:12px}
+.ms-lihat{border:0;border-radius:999px;background:var(--brand2);color:#fff;font-size:12px;font-weight:700;padding:5px 13px;cursor:pointer}
+.ms-k iframe{width:100%;border:0;border-radius:8px;background:var(--surface)}
+.ms-buka .ms-lihat{display:none}
 .vd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
 .vd-k{display:grid;gap:4px;color:var(--ink);text-decoration:none;font-size:13px;line-height:1.35}
 .vd-k:hover b{color:var(--brand2)}
@@ -3718,7 +3729,7 @@ const Berita = {
     /* baris kotak angka dihapus (permintaan pemilik): angkanya masuk ke judul kartu masing-masing */
     this._n7 = [n7, n7lalu];
     el.innerHTML = `<div id="brEx"></div>`;
-    $("#brEx").innerHTML = [this.exHarian(), `<div id="brSent">${this.exSentimen()}</div>`, this.exPeta(), this.exSorotan(), /* Celah liputan disembunyikan dulu (pemilik, 13 Okt 2026): this.exCelah(lonj) */ this.exTopik(), this.exDaftar(), this.exVideo()].join("");
+    $("#brEx").innerHTML = [this.exHarian(), `<div id="brSent">${this.exSentimen()}</div>`, this.exPeta(), this.exSorotan(), /* Celah liputan disembunyikan dulu (pemilik, 13 Okt 2026): this.exCelah(lonj) */ this.exTopik(), this.exDaftar(), this.exVideo(), this.exSosmed()].join("");
     this.pasangPeta(); this.ikat(); },
   /* 1. volume harian berwarna nada situasi + titik panas nasional 8 hari terakhir */
   exHarian() {
@@ -4070,6 +4081,33 @@ const Berita = {
         const c = {judul: v.judul, teks: v.judul + " (" + v.kanal.trim() + ")", url: v.url, kampanye: "video"};
         if (window.Bagi) Bagi.buka(c); else if (navigator.share) navigator.share({title: c.judul, url: c.url}).catch(() => {}); else navigator.clipboard?.writeText(c.url); return; }
       const b = e.target.closest(".vd-pg [data-h]"); if (b) { e.stopPropagation(); if (!b.disabled) { this.vo.h = +b.dataset.h; this.vidIsi(); $("#brVideo").scrollIntoView({block: "start", behavior: "smooth"}); } } }); },
+  /* post media sosial kurasi admin (/api/sosmed): kartu ringan, embed platform dimuat satu per klik. Dibuang diam-diam bila API belum ada/kosong. */
+  SM: {instagram: ["Instagram", "#c13584", 620], x: ["X", "#1a1a1a", 520], threads: ["Threads", "#7a5af8", 560]},
+  SMOK: /^https:\/\/(www\.instagram\.com|platform\.twitter\.com|www\.threads\.com)\//,
+  sm: {f: "", h: 0},
+  exSosmed() {
+    if (!this.sos && !this._sosMuat) this._sosMuat = muatJSON("/api/sosmed?bencana=karhutla").then(d => { const P = (d?.post || []).filter(x => this.SM[x.platform]); if (!P.length) throw 0; this.sos = P; const el = $("#brSos"); if (el) { el.innerHTML = this.sosKartu(); this.sosIkat(el); } }).catch(() => $("#brSos")?.remove());
+    setTimeout(() => { const el = $("#brSos"); if (el && this.sos) this.sosIkat(el); });
+    return `<div id="brSos">${this.sos ? this.sosKartu() : ""}</div>`; },
+  sosKartu() {
+    const P = this.sos, ada = k => P.some(x => x.platform === k), f = this.sm.f;
+    const asal = ["instagram", "x", "threads"].filter(ada).map(k => this.SM[k][0]).join(", ").replace(/, ([^,]*)$/, " dan $1"),
+      akhir = new Date(Math.max(...P.map(x => x.dibuat))).toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"});
+    return `<article class="ex" id="brSosmed"><header class="ex-hd"><span class="ex-ey">Media sosial</span><div class="ex-jd"><h3>${Insight.hl(fmt(P.length) + " post")} karhutla dikurasi dari ${asal}</h3></div>
+      <div class="ctl"><div class="seg ms-seg">${[["", "Semua"], ...Object.entries(this.SM).filter(([k]) => ada(k)).map(([k, v]) => [k, v[0]])].map(([k, n]) => `<button data-sf="${k}" aria-pressed="${f === k}">${n}</button>`).join("")}</div></div></header>
+      <div class="ex-bd"><div class="ms-grid"></div><div class="ms-pg"></div></div><footer class="ex-ft"><em>Sumber: post publik di ${asal}, dikurasi admin · terakhir ditambah ${akhir}</em></footer></article>`; },
+  sosIsi() { const el = $("#brSosmed"); if (!el) return; const PER = 12, xs = this.sos.filter(x => !this.sm.f || x.platform === this.sm.f), h = Math.min(this.sm.h, Math.max(0, Math.ceil(xs.length / PER) - 1));
+    el.querySelector(".ms-grid").innerHTML = xs.slice(h * PER, h * PER + PER).map(x => { const [nm, w] = this.SM[x.platform], ok = this.SMOK.test(x.embed || "");
+      return `<div class="ms-k" data-id="${esc(x.id)}"><span class="br-lb" style="--w:${w}">${nm}</span><b>${esc(x.akun || nm)}</b>${x.teks ? `<p>${esc(x.teks)}</p>` : ""}<small>${new Date(x.dibuat).toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "Asia/Jakarta"})}${x.prov ? ` · ${esc(namaProv(x.prov))}` : ""}</small>
+        <span class="ms-aksi">${ok ? `<button type="button" class="ms-lihat" data-lihat="${esc(x.id)}">Lihat post</button>` : ""}<a href="${escUrl(x.url)}" target="_blank" rel="noopener noreferrer">Buka di ${nm}</a></span></div>`; }).join("") || `<p class="kosong">Tidak ada post.</p>`;
+    el.querySelector(".ms-pg").innerHTML = xs.length > PER ? paginasi(h, xs.length, PER, "post") : ""; },
+  sosIkat(el) { if (el._ikat) return; el._ikat = 1; this.sosIsi();
+    el.addEventListener("click", e => {
+      const s = e.target.closest("[data-sf]"); if (s) { this.sm.f = s.dataset.sf; this.sm.h = 0; s.parentNode.querySelectorAll("button").forEach(b => b.setAttribute("aria-pressed", b === s)); return nanti(() => this.sosIsi()); }
+      const l = e.target.closest("[data-lihat]"); if (l) { const x = this.sos.find(y => y.id === l.dataset.lihat); if (!x || !this.SMOK.test(x.embed || "")) return; const k = l.closest(".ms-k"), [nm, , tg] = this.SM[x.platform];
+        k.classList.add("ms-buka");
+        return nanti(() => { k.querySelector("iframe") || k.insertAdjacentHTML("beforeend", `<iframe src="${escUrl(x.embed)}" title="Post ${nm} oleh ${esc(x.akun || nm)}" loading="lazy" referrerpolicy="no-referrer" sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox" style="height:${tg}px"></iframe>`); }); }
+      const b = e.target.closest(".ms-pg [data-h]"); if (b) { e.stopPropagation(); if (!b.disabled) { this.sm.h = +b.dataset.h; nanti(() => { this.sosIsi(); $("#brSosmed").scrollIntoView({block: "start", behavior: "smooth"}); }); } } }); },
   exDaftar() {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     return `<article class="ex" id="brDaftar"><h3>Daftar berita</h3><p class="sub">Disaring dan dicari; tiap berita menautkan ke sumber aslinya</p>

@@ -8,7 +8,8 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed} from "./admin_halaman.js";
+import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
@@ -388,7 +389,9 @@ const RUTE = {
   /* tautan bagikan foto lapangan: index.html dengan pratinjau foto itu; peramban membuka rinciannya (public/foto.js) */
   "GET /f/:id": async (env, req, url, kini, ctx, id) => { catatHTML(env, req, "/f", ctx);
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
+  "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
+  ...RUTE_SOSMED,
 };
 let GABUNG = null;
 async function rute(env, req, url, ctx) {
