@@ -1,0 +1,144 @@
+<title>__JUDUL__</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Tata letak: kolom daftar isi lengket di kiri (desktop) + kolom baca 70ch; satu kotak cari menyaring bab. Monokrom ala iOS, satu warna aksen per proyek. */
+:root{
+  --kertas:#ffffff; --panel:#f5f5f7; --tinta:#171717; --tinta2:#5f6168; --garis:#e6e6ea;
+  --aksen:__AKSEN__; --aksen-muda:color-mix(in oklab,var(--aksen) 12%,#fff); --tanda:#fff1a8;
+  --f-badan:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-kode:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:__AKSEN_GELAP__; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:__AKSEN_GELAP__; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--kertas);color:var(--tinta);font:15px/1.65 var(--f-badan);-webkit-font-smoothing:antialiased}
+.bungkus{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px}
+.kepala{grid-column:1/-1;display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--garis)}
+.proyek{justify-self:start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aksen);background:var(--aksen-muda);padding:4px 11px;border-radius:999px}
+.kepala h1{margin:0;font-size:clamp(28px,4.2vw,42px);line-height:1.12;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.kepala .sub{margin:0;color:var(--tinta2);max-width:70ch}
+.cari{position:relative;margin-top:6px;max-width:520px}
+.cari input{width:100%;font:inherit;font-size:15px;padding:11px 16px 11px 40px;border-radius:999px;border:1px solid var(--garis);background:var(--panel);color:var(--tinta)}
+.cari input:focus-visible{outline:2px solid var(--aksen);outline-offset:2px}
+.cari svg{position:absolute;left:14px;top:50%;translate:0 -50%;width:17px;height:17px;color:var(--tinta2)}
+.cari small{display:block;margin:6px 4px 0;color:var(--tinta2);font-size:12.5px;min-height:1.2em}
+nav.isi{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-right:6px}
+nav.isi b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta2);margin:0 0 8px 10px}
+nav.isi a{display:block;padding:6px 10px;border-radius:10px;color:var(--tinta);text-decoration:none;font-size:13.5px;line-height:1.35}
+nav.isi a:hover{background:var(--panel)}
+nav.isi a.aktif{background:var(--aksen-muda);color:var(--aksen);font-weight:600}
+nav.isi a.redup{opacity:.35}
+main{min-width:0;max-width:74ch}
+main section{scroll-margin-top:16px;padding-block:6px 18px}
+main section[hidden]{display:none}
+h2{font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.01em;margin:30px 0 12px;text-wrap:balance}
+h3{font-size:18px;line-height:1.3;font-weight:700;margin:24px 0 8px}
+h4{font-size:15.5px;margin:18px 0 6px}
+p,li{max-width:70ch}
+a{color:var(--aksen)}
+strong{font-weight:700}
+code{font-family:var(--f-kode);font-size:.88em;background:var(--panel);padding:1px 6px;border-radius:6px;word-break:break-word}
+pre{background:var(--panel);padding:14px 16px;border-radius:14px;overflow-x:auto;font-size:13px}
+pre code{background:none;padding:0}
+blockquote{margin:14px 0;padding:10px 16px;background:var(--panel);border-radius:14px;color:var(--tinta2)}
+hr{border:0;border-top:1px solid var(--garis);margin:28px 0}
+.tabel{overflow-x:auto;margin:14px 0;border:1px solid var(--garis);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-top:1px solid var(--garis);vertical-align:top}
+thead th{background:var(--panel);border-top:0;font-weight:700}
+mark{background:var(--tanda);color:inherit;border-radius:3px;padding:0 1px}
+.kaki{grid-column:1/-1;color:var(--tinta2);font-size:12.5px;border-top:1px solid var(--garis);padding-top:16px}
+@media (max-width:880px){
+  .bungkus{grid-template-columns:minmax(0,1fr);gap:18px;padding-inline:16px}
+  nav.isi{position:static;max-height:none;display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+  nav.isi b{display:none} nav.isi a{white-space:nowrap;background:var(--panel)}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<div class="bungkus">
+  <header class="kepala">
+    <span class="proyek">__PROYEK__</span>
+    <h1 id="judul">__JUDUL__</h1>
+    <p class="sub">__SUB__</p>
+    <label class="cari" for="kotakCari">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="kotakCari" type="search" placeholder="Cari aturan, istilah, atau keputusan" autocomplete="off">
+      <small id="hasilCari"></small>
+    </label>
+  </header>
+  <nav class="isi" id="daftarIsi" aria-label="Daftar isi"><b>Isi</b></nav>
+  <main id="isi"></main>
+  <footer class="kaki">__KAKI__</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+const SUMBER = __MD__;
+const slug = t => t.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const isi = document.getElementById("isi"), nav = document.getElementById("daftarIsi");
+/* buang kepala dokumen (baris sebelum judul H1 pertama) karena sudah tampil di kepala halaman */
+const baris = SUMBER.split("\n"); const h1 = baris.findIndex(b => /^# /.test(b));
+const md = (h1 >= 0 ? baris.slice(h1 + 1) : baris).join("\n");
+const html = marked.parse(md, {gfm: true, breaks: false});
+const wadah = document.createElement("div"); wadah.innerHTML = html;
+/* paragraf yang isinya hanya deretan tautan bab (sisa navigasi ekspor) sudah digantikan daftar isi */
+wadah.querySelectorAll("p").forEach(p => { const a = p.querySelectorAll('a[href^="#"]'); if (a.length > 2 && p.textContent.replace(/\s/g, "").length <= [...a].reduce((n, x) => n + x.textContent.replace(/\s/g, "").length, 0) + 4) p.remove(); });
+/* bungkus tiap H2 jadi section supaya bisa disaring dan dilompati */
+let bagian = document.createElement("section"); const semua = [bagian];
+for (const el of [...wadah.childNodes]) {
+  if (el.nodeName === "H2") { bagian = document.createElement("section"); semua.push(bagian); }
+  bagian.appendChild(el);
+}
+const dipakai = new Set();
+for (const s of semua) {
+  if (!s.childNodes.length) continue;
+  const h = s.querySelector("h2");
+  if (h) {
+    let id = slug(h.textContent) || "bab"; while (dipakai.has(id)) id += "-2"; dipakai.add(id);
+    s.id = id; const a = document.createElement("a"); a.href = "#" + id; a.textContent = h.textContent; a.dataset.id = id; nav.appendChild(a);
+  }
+  s.querySelectorAll("h3").forEach(h3 => { let id = slug(h3.textContent); if (id && !dipakai.has(id)) { dipakai.add(id); h3.id = id; } });
+  s.querySelectorAll("table").forEach(t => { const w = document.createElement("div"); w.className = "tabel"; t.replaceWith(w); w.appendChild(t); });
+  isi.appendChild(s);
+}
+/* tautan dalam dari ekspor lama (#keputusan, #b24) dicocokkan ke judul bab menurut teks tautannya */
+const judulKe = [...nav.querySelectorAll("a")].map(a => [slug(a.textContent).replace(/^\d+-?/, ""), a.dataset.id]);
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  const t = a.getAttribute("href").slice(1); if (!t || document.getElementById(t)) return;
+  const kunci = slug(a.textContent).replace(/^\d+-?/, ""); const cocok = judulKe.find(([k]) => k && (k === kunci || k.startsWith(kunci) || kunci.startsWith(k)));
+  if (cocok) a.setAttribute("href", "#" + cocok[1]);
+});
+document.querySelectorAll('a[href^="http"]').forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+/* sorot bab aktif saat menggulir */
+const lihat = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { nav.querySelectorAll("a").forEach(a => a.classList.toggle("aktif", a.dataset.id === e.target.id)); } }), {rootMargin: "0px 0px -70% 0px"});
+semua.forEach(s => s.id && lihat.observe(s));
+/* cari: sembunyikan bab tanpa kecocokan, tandai kecocokan */
+const kotak = document.getElementById("kotakCari"), hasil = document.getElementById("hasilCari");
+const asli = new Map(semua.map(s => [s, s.innerHTML]));
+let jeda;
+kotak.addEventListener("input", () => { clearTimeout(jeda); jeda = setTimeout(saring, 120); });
+function saring() {
+  const q = kotak.value.trim().toLowerCase(); let n = 0, bab = 0;
+  for (const s of semua) {
+    if (!s.parentNode) continue;
+    s.innerHTML = asli.get(s);
+    const ada = !q || s.textContent.toLowerCase().includes(q);
+    s.hidden = !ada; const a = nav.querySelector(`a[data-id="${s.id}"]`); if (a) a.classList.toggle("redup", !ada);
+    if (q && ada) { bab++; n += tandai(s, q); }
+  }
+  hasil.textContent = q ? (n ? `${n.toLocaleString("id-ID")} kecocokan di ${bab} bab` : "Tidak ada yang cocok. Coba kata lain.") : "";
+}
+function tandai(akar, q) {
+  let n = 0; const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT); const simpul = [];
+  while (jalan.nextNode()) simpul.push(jalan.currentNode);
+  for (const t of simpul) {
+    const s = t.nodeValue, i = s.toLowerCase().indexOf(q); if (i < 0) continue;
+    const m = document.createElement("mark"); const r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + q.length); r.surroundContents(m); n++;
+  }
+  return n;
+}
+</script>

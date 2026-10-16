@@ -1,0 +1,144 @@
+<title>Buku Pegangan Betutu Sambe</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Tata letak: kolom daftar isi lengket di kiri (desktop) + kolom baca 70ch; satu kotak cari menyaring bab. Monokrom ala iOS, satu warna aksen per proyek. */
+:root{
+  --kertas:#ffffff; --panel:#f5f5f7; --tinta:#171717; --tinta2:#5f6168; --garis:#e6e6ea;
+  --aksen:#8a1c1f; --aksen-muda:color-mix(in oklab,var(--aksen) 12%,#fff); --tanda:#fff1a8;
+  --f-badan:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-kode:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:#e9a3a5; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:#e9a3a5; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--kertas);color:var(--tinta);font:15px/1.65 var(--f-badan);-webkit-font-smoothing:antialiased}
+.bungkus{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px}
+.kepala{grid-column:1/-1;display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--garis)}
+.proyek{justify-self:start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aksen);background:var(--aksen-muda);padding:4px 11px;border-radius:999px}
+.kepala h1{margin:0;font-size:clamp(28px,4.2vw,42px);line-height:1.12;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.kepala .sub{margin:0;color:var(--tinta2);max-width:70ch}
+.cari{position:relative;margin-top:6px;max-width:520px}
+.cari input{width:100%;font:inherit;font-size:15px;padding:11px 16px 11px 40px;border-radius:999px;border:1px solid var(--garis);background:var(--panel);color:var(--tinta)}
+.cari input:focus-visible{outline:2px solid var(--aksen);outline-offset:2px}
+.cari svg{position:absolute;left:14px;top:50%;translate:0 -50%;width:17px;height:17px;color:var(--tinta2)}
+.cari small{display:block;margin:6px 4px 0;color:var(--tinta2);font-size:12.5px;min-height:1.2em}
+nav.isi{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-right:6px}
+nav.isi b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta2);margin:0 0 8px 10px}
+nav.isi a{display:block;padding:6px 10px;border-radius:10px;color:var(--tinta);text-decoration:none;font-size:13.5px;line-height:1.35}
+nav.isi a:hover{background:var(--panel)}
+nav.isi a.aktif{background:var(--aksen-muda);color:var(--aksen);font-weight:600}
+nav.isi a.redup{opacity:.35}
+main{min-width:0;max-width:74ch}
+main section{scroll-margin-top:16px;padding-block:6px 18px}
+main section[hidden]{display:none}
+h2{font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.01em;margin:30px 0 12px;text-wrap:balance}
+h3{font-size:18px;line-height:1.3;font-weight:700;margin:24px 0 8px}
+h4{font-size:15.5px;margin:18px 0 6px}
+p,li{max-width:70ch}
+a{color:var(--aksen)}
+strong{font-weight:700}
+code{font-family:var(--f-kode);font-size:.88em;background:var(--panel);padding:1px 6px;border-radius:6px;word-break:break-word}
+pre{background:var(--panel);padding:14px 16px;border-radius:14px;overflow-x:auto;font-size:13px}
+pre code{background:none;padding:0}
+blockquote{margin:14px 0;padding:10px 16px;background:var(--panel);border-radius:14px;color:var(--tinta2)}
+hr{border:0;border-top:1px solid var(--garis);margin:28px 0}
+.tabel{overflow-x:auto;margin:14px 0;border:1px solid var(--garis);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-top:1px solid var(--garis);vertical-align:top}
+thead th{background:var(--panel);border-top:0;font-weight:700}
+mark{background:var(--tanda);color:inherit;border-radius:3px;padding:0 1px}
+.kaki{grid-column:1/-1;color:var(--tinta2);font-size:12.5px;border-top:1px solid var(--garis);padding-top:16px}
+@media (max-width:880px){
+  .bungkus{grid-template-columns:minmax(0,1fr);gap:18px;padding-inline:16px}
+  nav.isi{position:static;max-height:none;display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+  nav.isi b{display:none} nav.isi a{white-space:nowrap;background:var(--panel)}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<div class="bungkus">
+  <header class="kepala">
+    <span class="proyek">Betutu Sambe</span>
+    <h1 id="judul">Buku Pegangan Betutu Sambe</h1>
+    <p class="sub">Selera dan keputusan pemilik yang berlaku di app Betutu Sambe, dapur pusat dan outlet ayam betutu Bali.</p>
+    <label class="cari" for="kotakCari">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="kotakCari" type="search" placeholder="Cari aturan, istilah, atau keputusan" autocomplete="off">
+      <small id="hasilCari"></small>
+    </label>
+  </header>
+  <nav class="isi" id="daftarIsi" aria-label="Daftar isi"><b>Isi</b></nav>
+  <main id="isi"></main>
+  <footer class="kaki">Sumber: <code>docs/buku-pegangan/rujukan/betutu-sambe.md</code> di repo poskokarhutla. Dibangun ulang dengan <code>python3 docs/buku-pegangan/bangun.py</code>.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+const SUMBER = "Ayam betutu Bali · dapur pusat dan outlet\n\n# Buku Pegangan Betutu Sambe\n\nSemua selera dan keputusan pemilik yang berlaku di app Betutu Sambe, di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.\n\nDisegarkan 8 Okt 2026\\\ncommit 1a15fa3\n\n[Riwayat perubahan](#riwayat) [Keputusan pemilik](#keputusan) [Merek & warna](#merek) [Susunan menu](#menu) [Standar tabel](#tabel) [Selera tampilan](#tampilan) [Pola data & uang](#pola) [Gerbang penjaga](#gerbang) [Cara halaman ini diperbarui](#pembaruan)\n\nTerbaru di atas\n\n## Riwayat perubahan\n\nVonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur.\n\n1. 8 Okt 2026\n   - **Pesan WA ke pelanggan ramah dan berikon**, seperti siaran PO: sapaan nama, item, hari PO, link lacak dengan kalimat penjelas, ajakan ulasan, penutup IG dan TikTok. Aturan ikon formal berlaku untuk tampilan app, bukan isi teks `wa.me` (pengecualian tercatat di gerbang `ikon-formal`).\n2. 5 Okt 2026\n   - **Matah in jar** = 6 porsi sambal matah + toples 200 ml + stiker. HPP-nya dihitung dari susunan itu.\n   - **Extra ayam suwir** = 1/7 ekor ayam, bumbu seperti paket, tanpa kemasan. Tidak lagi disamakan dengan potongan ayam Rp 8.874.\n   - **Sambe 4 dan Sambe 5 dapat sambal matah.** Sumber HPP: `HPP Betutu Sambe (1).xlsx`.\n3. 4 Okt 2026\n   - **Semua pesanan online diantar**: \"ambil sendiri\" dihapus dan aturan antar mulai 30 porsi gugur. Alamat wajib, titik GPS opsional, ongkir dikonfirmasi admin (spec §17).\n   - **Bayar online hanya transfer bank atau tunai saat diterima.** QRIS statis keluar dari jalur online, kasir tetap boleh memakainya.\n   - **Kode promo dihapus dari checkout publik**; promo tetap ada di kasir dan back-office.\n   - **`/pesan` jadi empat langkah**: hari dan data pemesan, pilih menu, alamat antar, konfirmasi dan bayar. PO dibuka tiap Selasa dan Jumat, batas H-1 pukul 15.00 WIB.\n4. 3 Okt 2026 (sore)\n   - **Paritas layar dengan Gemah Ripah**: tiap layar BS dipasangkan dengan layar GR, kekurangannya wajib dibereskan sebelum pemilik menemukannya sendiri (spec §20). Grup Bulan › Minggu dan kelompok kategori dipasang di Pesanan, Mutasi, Pembayaran, Invoice, Kas kecil, dan PO.\n   - **Baris daftar diklik membuka rincian** di semua tabel daftar (`barisKlik`).\n   - **Kolom jumlah barang dipecah dua**: Jumlah dan Satuan.\n   - **Nol kapital penuh ikut berlaku di dokumen cetak**, tanpa pengecualian kop. Dijaga gerbang baru `caps-layar`.\n   - **Ikon promo dan ikon hadiah loyalitas dipisah**: satu ikon tidak pernah dua arti.\n   - **Halaman `/lacak` dan `/absen`** masuk daftar halaman publik yang dijaga tetap ringan.\n5. 3 Okt 2026\n   - **Zona waktu WIB** (`Asia/Jakarta`), bukan WITA walau usahanya di Bali.\n   - **Supabase paket Free** (proyek \"Betutu-Sambe\"). Cadangan harian lewat modul cadangan sendiri.\n   - **Super Admin hanya Dewa Made Agung.** Pande Andhi tidak ikut, beda dengan Gemah Ripah.\n   - **WA Fonnte dan Anthropic tidak dipakai.** AI jalan lewat Groq dan Gemini. Pesan WA dikirim manual lewat tautan `wa.me`.\n   - **Empat jalur jual**: kasir outlet, ojol, link pesan online, katering. **Dapur pusat + outlet**, tiap transaksi membawa `lokasi_id` sejak hari pertama.\n   - **Resep dua tingkat**: menu terdiri dari komponen, komponen terdiri dari bahan. **HPP mengikuti sheet** (angka tetap bertanggal per komponen) sampai rincian bahan diisi.\n   - **Lima fitur kritikal diterima**: kuota ayam dan batas jam, rekonsiliasi ojol, piutang korporat dan katering, WA sekali klik, situs publik. **Yield dan susut ditolak, frozen batch dan kedaluwarsa ditolak.**\n   - **Situs publik dan `/pesan` tiga langkah** menggantikan Google Form pre-order. Batas pesan H-1 pukul 15.00 WIB. Antar mulai 30 porsi.\n   - **Login meniru pangantara**: label dalam kotak isian.\n   - **Warna kokpit marun tua #8A1C1F**, bukan merah logo yang menyala. Merah logo #D41217 hanya di logo dan situs publik.\n   - **Menu & Resep di depan Pesanan** menu dan harga adalah hulu semua pesanan.\n   - **Dashboard sepadat Gemah Ripah**: KPI bisa diklik, pembanding periode, kartu lipat, tab sebaris.\n   - **Laporan dikelompokkan per minggu dan per bulan.**\n   - **Daftar item tanpa titik jadi sel ringkas + popup rincian.**\n   - **Tabel kosong tetap tergambar**: kepala kolom plus satu baris \"Belum ada …\".\n   - **Paritas dengan \"Dashboard Penjualan\" xlsx pemilik**: tiap bagian sheet dipetakan ke BS, yang belum ada wajib dibangun (spec §18).\n   - **Fitur gelombang 2 digas** \"oke gas semua\": notifikasi pesanan baru, ulasan, langganan kantor, kode promo, loyalitas, absensi dan gaji staf dapur.\n\nCLAUDE.md\n\n## Keputusan pemilik\n\nYang sudah diputus tidak dibuka lagi tanpa pemilik. Yang belum diputus jangan ditebak.\n\nDiputus\n\n**Merek**\n\nKokpit marun tua #8A1C1F solid, krem #F7EBDC aksen, latar netral terang. Merah logo #D41217 hanya logo dan situs publik (3 Okt 2026).\n\nDiputus\n\n**Peran**\n\nowner · admin (pesanan dan kasir) · dapur (produksi dan stok) · finance. Super Admin = owner berjabatan `super_admin`, satu orang: Dewa Made Agung.\n\nDiputus\n\n**Zona dan infrastruktur**\n\nWIB. Supabase Free. WA otomatis dan Anthropic tidak dipakai, AI lewat Groq dan Gemini.\n\nDiputus\n\n**Satu repo per usaha**\n\nBranch cuma `main`. Fondasi disalin dari Gemah Ripah; domain toko supplier dan konsep MBG tidak ikut.\n\nDiputus\n\n**Empat jalur jual**\n\nKasir outlet, ojol, link pesan online, katering. Katering = total paket ≥ 10 box.\n\nDiputus\n\n**HPP dan food cost**\n\nHPP dibekukan per item saat jual. HPP menu dihitung dari komponennya. Food cost = HPP / penjualan bersih, target 35%.\n\nDiputus\n\n**Komisi ojol**\n\nBiaya terpisah, persen per platform dari Pengaturan. Bukan pemotong omzet.\n\nDiputus\n\n**Cetak dan bayar**\n\nSticker per box di lembar A4, struk thermal tidak di v1. Pembayaran QRIS statis tanpa gateway di kasir, jalur online transfer atau tunai; katering boleh DP.\n\nDiputus\n\n**Akuntansi ikut v1**\n\nJurnal otomatis, PPh final UMKM. Buku Pegangan ini artifact BS sendiri, bukan milik Gemah Ripah.\n\nDiputus\n\n**Ditolak pemilik**\n\nYield dan susut ayam, frozen batch dan kedaluwarsa (3 Okt 2026). Jangan dibangun.\n\nDiputus\n\n**Pesan online**\n\n`/pesan` empat langkah, PO tiap Selasa dan Jumat, batas H-1 15.00 WIB. Semua diantar, bayar transfer atau tunai saat diterima, tanpa kode promo (4 Okt 2026). Harga selalu dari tabel `menu`, bukan dari klien.\n\nDiputus\n\n**Susunan add-on dan HPP**\n\nMatah in jar = 6 porsi matah + toples 200 ml + stiker. Extra ayam suwir = 1/7 ekor, bumbu seperti paket, tanpa kemasan. Sambe 4/5 dapat sambal matah. Sumber `HPP Betutu Sambe (1).xlsx` (5 Okt 2026).\n\nBelum diputus\n\n**Komisi tiap platform ojol**\n\nDiisi pemilik di Pengaturan.\n\nBelum diputus\n\n**Status data impor xlsx**\n\nPesanan \"Baru\" bertanggal lewat diimpor sebagai selesai tanpa bayar supaya piutang terlihat. Pemilik belum memeriksanya.\n\napp/globals.css\n\n## Merek & warna\n\nNavy pangantara dan hijau-emas Gemah Ripah tidak berlaku di sini. Merah logo dipakai sebagai identitas; kokpit memakai marun supaya tidak menyala.\n\nMarun kokpit#8A1C1F · chrome back-office\n\nMerah logo#D41217 · logo dan situs publik\n\nKrem aksen#F7EBDC\n\nMarun lebih tua#6E1518 · fokus, hover\n\nLatar terang#F5F5F4\n\nLatar gelap#181515\n\nlib/nav-menu.ts\n\n## Susunan menu\n\nSepuluh menu, dipecah 5 + 5. Menu & Resep di depan Pesanan karena menu dan harga adalah hulu semua pesanan.\n\n1. Dashboard\n2. Menu & Resep\n3. Pesanan\n4. Dapur\n5. Pengantaran\n6. Pelanggan\n7. Stok & Pembelian\n8. Uang\n9. Laporan\n10. Admin\n\n- Baris atas: Dashboard, Menu & Resep, Pesanan, Dapur, Pengantaran. Baris bawah: Pelanggan, Stok & Pembelian, Uang, Laporan, Admin.\n- Ikon menu dibaca dari registri konsep `lib/ikon-status.ts`. Ikon nav sebuah modul sama dengan ikon tab dan legendanya.\n- `/admin` tidak boleh disembunyikan (`NAV_WAJIB`), supaya pemilik tidak terkunci di luar.\n- Admin: Pengguna, Tampilan, Pengaturan, System Health, Audit Log, Cadangan, impor xlsx.\n- Situs publik `/` dan `/pesan` berada di luar menu. Staf yang sudah masuk tetap melihat situs publik; kokpit ada di `/dashboard`.\n- Link bertoken tanpa login: `/pesan/<token>`, `/lacak/<token>`, `/kurir/<token>`.\n\ndocs/STANDAR-TABEL.md\n\n## Standar tabel\n\nStandar disalin dari Gemah Ripah (vonis 27 Sep 2026). Tiap tabel `.table-app` wajib memenuhi dua belas baris ini, ditambah dua vonis BS di bawahnya. Kepala tabel merah marun solid (`--color-primary`).\n\n| No | Aturan | Caranya |\n| --- | --- | --- |\n| 1 | Kolom No paling kiri, rata tengah | `sel-nomor` |\n| 2 | Semua kolom bisa di-sort | `SortTh` |\n| 3 | Uang: \"Rp\" kiri, angka kanan, minus di slot tetap, nol redup | `RpTd` / `RpCell` |\n| 4 | Persen satu desimal, tanda di slot tetap | `PersenSel` |\n| 5 | Tanggal di slot tetap, lurus vertikal | `TanggalSel` |\n| 6 | Desimal seragam per kolom | `fmtAngkaTetap` / `Qty` |\n| 7 | Status = ikon polos + satu legenda satu baris | `IkonStatus` + `LegendaTabel` |\n| 8 | Baris grup: latar muda, seluruh baris diklik, subtotal per kolom, nol hitungan | `BarisGrupTabel` |\n| 9 | Baris total di kaki tabel | `BarisTotalTabel` |\n| 10 | Rapat 12px, satu baris per sel, nol \"…\" | `.table-app`, teks panjang `sel-bungkus` |\n| 11 | Muat satu tampilan di 1280px, maksimal 12 kolom tampak | kolom sekunder ke rincian |\n| 12 | Kode dalam pil, nama tidak tebal | `KodePil` |\n| 13 | Tabel kosong tetap tergambar: kepala kolom + satu baris \"Belum ada …\" | `TabelKosong` / `BarisKosong` |\n| 14 | Daftar item tanpa titik jadi sel ringkas + popup rincian | `SelDaftarPopup` |\n\nMemori selera-tabel-ui\n\n## Selera tampilan\n\nHal-hal yang ditegur berulang di Gemah Ripah dan dibawa ke sini. Jadikan checklist sebelum menyerahkan tampilan apa pun.\n\n### Ikon & legenda\n\n- Satu registri konsep › ikon. Satu ikon tidak pernah dua arti.\n- Ikon formal: simbol netral atau benda harfiah. Nol gestur tangan, pesta, makhluk imut. Berlaku untuk tampilan app; isi pesan WA ke pelanggan boleh ramah berikon.\n- Tiap ikon di tabel masuk legenda, termasuk Aksi. Semua legenda satu baris.\n- Tiap opsi tab, sakelar, dan mini tab berikon.\n- Tempo tunai = ikon berlegenda, tidak pernah kata \"Tunai\".\n\n### Teks\n\n- **Nol teks kapital penuh** di layar maupun kertas, kecuali logo. Sudah empat kali divonis di Gemah Ripah. Kop dokumen cetak tidak dikecualikan.\n- Nama menu dari xlsx dan PDF wajib dirapikan jadi Title Case. Jangan pakai CSS `uppercase`.\n- Singkatan resmi tetap boleh kapital.\n- Satu masakan satu nama. Label, bahan, dan lauk tidak menempel di nama menu.\n\n### Toolbar & saringan\n\n- Toolbar = search + ikon (folder, Excel, PDF, tambah) saja.\n- Tiap tab bertabel punya search + Excel + PDF sebaris. Excel selalu berpasangan PDF.\n- Link langsung dibuka, nol tombol salin.\n- Filter yang cuma menyaring tabel yang sama ditolak. Cukup search + ikon kolom berlegenda.\n- Nol tab \"Semua\"; urutan tab = urutan proses.\n\n### Dashboard & KPI\n\n- Sepadat Gemah Ripah: KPI bisa diklik ke rincian, pembanding periode, kartu lipat, tab sebaris.\n- Ringkasan putih satu warna, tanpa pastel, tanpa tombol ekspor.\n- Tile sebaris mengisi penuh lebar. Tile tanpa data dihapus, bukan \"—\".\n- Nol lencana hitungan di kepala kartu. Hitungan cuma boleh di tab.\n- Angka dibaca dari satu sumber (`v_pesanan_angka`), tidak dihitung ulang per tab.\n\n### Tabel & grup\n\n- Satu tabel per tampilan; kelompok = baris grup lipat di dalamnya.\n- Grup tanggal per minggu, label \"14–20 Sep 2026\" tanpa \"Minggu 38\". Laporan juga per minggu dan per bulan.\n- Data berbaris = tabel, bukan grid kartu.\n- Tabel kosong tetap tergambar, bukan EmptyState besar.\n- Daftar item tanpa titik dirangkum jadi satu sel, rincian di popup.\n- Baris daftar diklik membuka rincian.\n- Jumlah barang dua kolom: Jumlah dan Satuan.\n\n### Login, form & popup\n\n- Login meniru pangantara: label dalam kotak, ring fokus netral, warna merek solid.\n- Label di atas input, tinggi input seragam, tanpa \"(opsional)\".\n- Nol gulir samping di popup; lebarkan popup-nya.\n- `/pesan`: hari dan data pemesan dulu, lalu menu, empat langkah (4 Okt 2026), jempol-first, target sentuh minimal 44 px, harga dan total selalu tampak.\n\n### Warna\n\n- Warna solid, nol gradien. Kolom sticky persis sewarna kepala.\n- Latar kokpit netral terang, bukan krem di atas krem. Terang dan gelap sama-sama dijaga.\n- Marun untuk kokpit, merah logo hanya logo dan situs publik.\n\ndocs/ARSITEKTUR.md · spec.md\n\n## Pola data & uang\n\nPenjagaan hidup di database, bukan di tampilan.\n\n- Tiga lapis penjagaan: `middleware.ts` mengarahkan, `requireStaff()` di tiap route, RLS dan trigger di DB.\n- Satu peta peran `PAGE_ACCESS` dibaca nav dan guard. Halaman baru wajib didaftarkan, bawaannya ditolak.\n- Tiap transaksi membawa `lokasi_id`. Admin dan dapur hanya melihat lokasinya; owner dan finance melihat semua.\n- Harga dan HPP dibekukan di `pesanan_item` saat insert. Mengubah harga menu tidak mengubah item lama.\n- Status pesanan hanya maju lewat RPC `ubah_status_pesanan`: baru, diproses, siap, terkirim, selesai, ditambah batal. Status bayar diset trigger dari jumlah pembayaran.\n- Penjualan bersih = Σ(qty × harga) − diskon. Komisi ojol dan ongkir ditanggung adalah biaya, bukan pemotong omzet. Satu rumus: `angka_pesanan`.\n- Pembayaran tidak boleh melebihi tagihan. Pesanan berbayar tidak bisa dihapus atau dibatalkan. Invoice `BS-YYMMDD-NN` mengunci item.\n- Stok tidak boleh minus dan turun lewat trigger. PostgREST memotong di 1000 baris tanpa error, jadi `ambilSemua()`.\n- Pesan online ditolak DB bila melewati kuota ayam atau batas jam. Staf boleh menimpa dengan alasan tercatat.\n- Data dummy terpisah (`is_dummy`), tombol isi data dummy sejak awal, Super Admin saja.\n- Keputusan data pemilik dicatat sebagai migrasi berkomentar alasan, bukan update diam.\n\ntests/unit/gerbang-\\*.test.ts\n\n## Gerbang penjaga\n\nAturan tanpa gerbang mekanis dianggap belum jadi. Gerbang ini menolak commit yang melanggar.\n\n`standar-tabel``selera``kolom-tabel``tanpa-gradien``strip-tanpa-semua``ikon-literal``ikon-formal``ikon-peran``ikon-strip``istilah-invoice``salin``kpi-tile``periode-dua-baris``legenda-tanpa-chip``sel-tanpa-titik``tabel-kosong``caps-layar``urutan-blok``isian-angka``rumah-ekspor``batas-klien``inp-transisi``dummy``dummy-layar``test-integrasi``penjaga-definisi``cron-katalog``analytics-token``noindex``deploy``berkas-kosong``model-agent``ilmu-agent`\n\ndocs/BUKU-PEGANGAN/ROUTINE.md\n\n## Cara halaman ini diperbarui\n\nRoutine `pembaru-buku-pegangan-bs` jalan tiap malam pukul 21.43 WIB di Mac mini. Ia memeriksa apakah sumber selera berubah sejak stempel di kop: memori pemilik, `CLAUDE.md`, `docs/STANDAR-TABEL.md`, `docs/usulan/betutu-sambe-v1/spec.md`, `lib/nav-menu.ts`, dan gerbang. Kalau ada, ia menambah entri Riwayat, menyesuaikan bagian aturannya, lalu menerbitkan ulang ke alamat yang sama. Hari tanpa perubahan dilewati tanpa menulis apa pun.\n\nSumber halaman: `docs/BUKU-PEGANGAN/buku-pegangan-bs.html` di repo Betutu Sambe. Kanon selera lengkap tetap di `.claude/skills/selera-pinka/`, dipakai bersama pangantara.";
+const slug = t => t.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const isi = document.getElementById("isi"), nav = document.getElementById("daftarIsi");
+/* buang kepala dokumen (baris sebelum judul H1 pertama) karena sudah tampil di kepala halaman */
+const baris = SUMBER.split("\n"); const h1 = baris.findIndex(b => /^# /.test(b));
+const md = (h1 >= 0 ? baris.slice(h1 + 1) : baris).join("\n");
+const html = marked.parse(md, {gfm: true, breaks: false});
+const wadah = document.createElement("div"); wadah.innerHTML = html;
+/* paragraf yang isinya hanya deretan tautan bab (sisa navigasi ekspor) sudah digantikan daftar isi */
+wadah.querySelectorAll("p").forEach(p => { const a = p.querySelectorAll('a[href^="#"]'); if (a.length > 2 && p.textContent.replace(/\s/g, "").length <= [...a].reduce((n, x) => n + x.textContent.replace(/\s/g, "").length, 0) + 4) p.remove(); });
+/* bungkus tiap H2 jadi section supaya bisa disaring dan dilompati */
+let bagian = document.createElement("section"); const semua = [bagian];
+for (const el of [...wadah.childNodes]) {
+  if (el.nodeName === "H2") { bagian = document.createElement("section"); semua.push(bagian); }
+  bagian.appendChild(el);
+}
+const dipakai = new Set();
+for (const s of semua) {
+  if (!s.childNodes.length) continue;
+  const h = s.querySelector("h2");
+  if (h) {
+    let id = slug(h.textContent) || "bab"; while (dipakai.has(id)) id += "-2"; dipakai.add(id);
+    s.id = id; const a = document.createElement("a"); a.href = "#" + id; a.textContent = h.textContent; a.dataset.id = id; nav.appendChild(a);
+  }
+  s.querySelectorAll("h3").forEach(h3 => { let id = slug(h3.textContent); if (id && !dipakai.has(id)) { dipakai.add(id); h3.id = id; } });
+  s.querySelectorAll("table").forEach(t => { const w = document.createElement("div"); w.className = "tabel"; t.replaceWith(w); w.appendChild(t); });
+  isi.appendChild(s);
+}
+/* tautan dalam dari ekspor lama (#keputusan, #b24) dicocokkan ke judul bab menurut teks tautannya */
+const judulKe = [...nav.querySelectorAll("a")].map(a => [slug(a.textContent).replace(/^\d+-?/, ""), a.dataset.id]);
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  const t = a.getAttribute("href").slice(1); if (!t || document.getElementById(t)) return;
+  const kunci = slug(a.textContent).replace(/^\d+-?/, ""); const cocok = judulKe.find(([k]) => k && (k === kunci || k.startsWith(kunci) || kunci.startsWith(k)));
+  if (cocok) a.setAttribute("href", "#" + cocok[1]);
+});
+document.querySelectorAll('a[href^="http"]').forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+/* sorot bab aktif saat menggulir */
+const lihat = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { nav.querySelectorAll("a").forEach(a => a.classList.toggle("aktif", a.dataset.id === e.target.id)); } }), {rootMargin: "0px 0px -70% 0px"});
+semua.forEach(s => s.id && lihat.observe(s));
+/* cari: sembunyikan bab tanpa kecocokan, tandai kecocokan */
+const kotak = document.getElementById("kotakCari"), hasil = document.getElementById("hasilCari");
+const asli = new Map(semua.map(s => [s, s.innerHTML]));
+let jeda;
+kotak.addEventListener("input", () => { clearTimeout(jeda); jeda = setTimeout(saring, 120); });
+function saring() {
+  const q = kotak.value.trim().toLowerCase(); let n = 0, bab = 0;
+  for (const s of semua) {
+    if (!s.parentNode) continue;
+    s.innerHTML = asli.get(s);
+    const ada = !q || s.textContent.toLowerCase().includes(q);
+    s.hidden = !ada; const a = nav.querySelector(`a[data-id="${s.id}"]`); if (a) a.classList.toggle("redup", !ada);
+    if (q && ada) { bab++; n += tandai(s, q); }
+  }
+  hasil.textContent = q ? (n ? `${n.toLocaleString("id-ID")} kecocokan di ${bab} bab` : "Tidak ada yang cocok. Coba kata lain.") : "";
+}
+function tandai(akar, q) {
+  let n = 0; const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT); const simpul = [];
+  while (jalan.nextNode()) simpul.push(jalan.currentNode);
+  for (const t of simpul) {
+    const s = t.nodeValue, i = s.toLowerCase().indexOf(q); if (i < 0) continue;
+    const m = document.createElement("mark"); const r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + q.length); r.surroundContents(m); n++;
+  }
+  return n;
+}
+</script>

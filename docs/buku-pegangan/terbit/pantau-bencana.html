@@ -1,0 +1,144 @@
+<title>Buku Pegangan Pantau Bencana</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+/* Tata letak: kolom daftar isi lengket di kiri (desktop) + kolom baca 70ch; satu kotak cari menyaring bab. Monokrom ala iOS, satu warna aksen per proyek. */
+:root{
+  --kertas:#ffffff; --panel:#f5f5f7; --tinta:#171717; --tinta2:#5f6168; --garis:#e6e6ea;
+  --aksen:#1f3a68; --aksen-muda:color-mix(in oklab,var(--aksen) 12%,#fff); --tanda:#fff1a8;
+  --f-badan:"Plus Jakarta Sans",ui-sans-serif,system-ui,-apple-system,"Segoe UI",sans-serif;
+  --f-kode:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,monospace;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:#8fb2ea; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}}
+:root[data-theme="dark"]{
+  --kertas:#111113; --panel:#1c1c1f; --tinta:#ececee; --tinta2:#a3a4ab; --garis:#2c2c31;
+  --aksen:#8fb2ea; --aksen-muda:color-mix(in oklab,var(--aksen) 22%,#111113); --tanda:#5a4b00; color-scheme:dark}
+*{box-sizing:border-box}
+body{background:var(--kertas);color:var(--tinta);font:15px/1.65 var(--f-badan);-webkit-font-smoothing:antialiased}
+.bungkus{max-width:1180px;margin:0 auto;padding-inline:20px;padding-block:28px 64px;display:grid;grid-template-columns:260px minmax(0,1fr);gap:40px}
+.kepala{grid-column:1/-1;display:grid;gap:10px;padding-bottom:22px;border-bottom:1px solid var(--garis)}
+.proyek{justify-self:start;font-size:12px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--aksen);background:var(--aksen-muda);padding:4px 11px;border-radius:999px}
+.kepala h1{margin:0;font-size:clamp(28px,4.2vw,42px);line-height:1.12;font-weight:800;letter-spacing:-.02em;text-wrap:balance}
+.kepala .sub{margin:0;color:var(--tinta2);max-width:70ch}
+.cari{position:relative;margin-top:6px;max-width:520px}
+.cari input{width:100%;font:inherit;font-size:15px;padding:11px 16px 11px 40px;border-radius:999px;border:1px solid var(--garis);background:var(--panel);color:var(--tinta)}
+.cari input:focus-visible{outline:2px solid var(--aksen);outline-offset:2px}
+.cari svg{position:absolute;left:14px;top:50%;translate:0 -50%;width:17px;height:17px;color:var(--tinta2)}
+.cari small{display:block;margin:6px 4px 0;color:var(--tinta2);font-size:12.5px;min-height:1.2em}
+nav.isi{position:sticky;top:calc(env(safe-area-inset-top,0px) + 16px);align-self:start;max-height:calc(100vh - 32px);overflow:auto;padding-right:6px}
+nav.isi b{display:block;font-size:11.5px;letter-spacing:.07em;text-transform:uppercase;color:var(--tinta2);margin:0 0 8px 10px}
+nav.isi a{display:block;padding:6px 10px;border-radius:10px;color:var(--tinta);text-decoration:none;font-size:13.5px;line-height:1.35}
+nav.isi a:hover{background:var(--panel)}
+nav.isi a.aktif{background:var(--aksen-muda);color:var(--aksen);font-weight:600}
+nav.isi a.redup{opacity:.35}
+main{min-width:0;max-width:74ch}
+main section{scroll-margin-top:16px;padding-block:6px 18px}
+main section[hidden]{display:none}
+h2{font-size:24px;line-height:1.25;font-weight:800;letter-spacing:-.01em;margin:30px 0 12px;text-wrap:balance}
+h3{font-size:18px;line-height:1.3;font-weight:700;margin:24px 0 8px}
+h4{font-size:15.5px;margin:18px 0 6px}
+p,li{max-width:70ch}
+a{color:var(--aksen)}
+strong{font-weight:700}
+code{font-family:var(--f-kode);font-size:.88em;background:var(--panel);padding:1px 6px;border-radius:6px;word-break:break-word}
+pre{background:var(--panel);padding:14px 16px;border-radius:14px;overflow-x:auto;font-size:13px}
+pre code{background:none;padding:0}
+blockquote{margin:14px 0;padding:10px 16px;background:var(--panel);border-radius:14px;color:var(--tinta2)}
+hr{border:0;border-top:1px solid var(--garis);margin:28px 0}
+.tabel{overflow-x:auto;margin:14px 0;border:1px solid var(--garis);border-radius:14px}
+table{border-collapse:collapse;width:100%;font-size:13.5px;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:8px 12px;border-top:1px solid var(--garis);vertical-align:top}
+thead th{background:var(--panel);border-top:0;font-weight:700}
+mark{background:var(--tanda);color:inherit;border-radius:3px;padding:0 1px}
+.kaki{grid-column:1/-1;color:var(--tinta2);font-size:12.5px;border-top:1px solid var(--garis);padding-top:16px}
+@media (max-width:880px){
+  .bungkus{grid-template-columns:minmax(0,1fr);gap:18px;padding-inline:16px}
+  nav.isi{position:static;max-height:none;display:flex;gap:6px;overflow-x:auto;padding-bottom:6px}
+  nav.isi b{display:none} nav.isi a{white-space:nowrap;background:var(--panel)}
+}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+</style>
+<div class="bungkus">
+  <header class="kepala">
+    <span class="proyek">Pantau Bencana</span>
+    <h1 id="judul">Buku Pegangan Pantau Bencana</h1>
+    <p class="sub">Semua selera, keputusan, gerbang, dan armada yang berlaku di situs Pantau Bencana, di satu tempat.</p>
+    <label class="cari" for="kotakCari">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+      <input id="kotakCari" type="search" placeholder="Cari aturan, istilah, atau keputusan" autocomplete="off">
+      <small id="hasilCari"></small>
+    </label>
+  </header>
+  <nav class="isi" id="daftarIsi" aria-label="Daftar isi"><b>Isi</b></nav>
+  <main id="isi"></main>
+  <footer class="kaki">Sumber: <code>docs/buku-pegangan/pantau-bencana.md</code> di repo poskokarhutla. Dibangun ulang dengan <code>python3 docs/buku-pegangan/bangun.py</code>.</footer>
+</div>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/marked/12.0.2/marked.min.js"></script>
+<script>
+const SUMBER = "Pemantauan bencana Indonesia · karhutla, banjir, dan yang menyusul\n\n# Buku Pegangan Pantau Bencana\n\nSemua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.\n\nDisegarkan 16 Okt 2026\\\ncommit fa93e79\n\n[Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Gerbang penjaga](#gerbang-penjaga) [Armada agent](#armada-agent) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)\n\nTerbaru di atas\n\n## Riwayat perubahan\n\nVonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.\n\n1. 16 Okt 2026\n   - **Tiga keputusan copy diputus**: sapaan \"kamu\", em dash dilarang di teks tampil, ikon tetap SVG garis. Sisa yang harus diganti: \"Anda\" di `informasi.js:377` dan `privasi.html`, em dash di `informasi.js:239`.\n   - **Rencana multi-bencana dilengkapi**: peta (`PETA.md`), pelatihan model (`PELATIHAN-MODEL.md`), copywriting (`COPYWRITING.md`), dan katalog modul plug-and-play (`MODUL-PLUG-AND-PLAY.md`) masuk `docs/multi-bencana/`. *\"Rencana arsitektur copywriting total fitur nya gimana modul nya yang udah ada jadi plug and play. Copy coding petanya. Petanya juga tiru modelnya.\"*\n   - **Lima buku pegangan rujukan dipasang di repo ini** (`docs/buku-pegangan/rujukan/`) dan diterbitkan sebagai artifact: Utama, MBG Bangka, Gemah Ripah, Betutu Sambe, Worth It. Buku ini lahir meniru bentuknya: *\"Iya lu tiru ya dari situ.\"*\n2. 15 Okt 2026\n   - **Semua bencana meniru karhutla, rinci dan exhaustive**: *\"Gw mau yang bencana lain tiru best practice dan secara rinci semua fitur dan bagian yang dari Karhutla.\"* Rencana lengkap di `docs/multi-bencana/` (registry `public/bencana.json`, rute `/<id>/`, `public/inti/`, 113 komponen paket fitur, alur 12 tahap).\n   - **Foto lapangan**: 100 foto dummy karhutla, unik semua, tersebar di provinsi yang sering mengalami karhutla. Label waktu (\"1 hari lalu\") dan ikon kategori duduk DI DALAM foto; *\"Gausah ada nomor ini de.\"* Label pakai tulisan putih di atas latar sorot; tombol tutup pop-up merah berikon putih di kanan atas; Upvote, bukan ikon hati; koordinat GPS tampil di pop-up.\n   - **Nama provinsi di peta**: rounded rectangle, dikecilkan lalu sedikit dibesarkan lagi karena tidak terbaca. *\"Bro coba agak besarin dikit dong yang nama provinsinya soalnya ga keliatan sumpah.\"*\n   - Admin masuk pakai email dan kata sandi; halaman admin didesain ulang mengikuti selera-pinka.\n   - Tiga kartu Insight dari factsheet Bakom; kartu Penanganan kemudian disembunyikan.\n   - Pop-up situasi: kartu jarak Daops dihapus; baris waktu data di kepala dihapus.\n   - Mobile ≤ 640 px: tab pindah ke menu garis tiga, pilihan bencana dan tombol tema disembunyikan.\n3. 14 Okt 2026\n   - **Daftar \"yang disembunyikan\" wajib dicatat**, karena pemilik bisa meminta daftarnya dan memulihkan sebagian. Lihat [Fitur yang disembunyikan](#fitur-yang-disembunyikan).\n   - Halaman Tentang bergaya editorial berfoto; label bagian dihapus; kartu Teras Urban tanpa kalimat peran dan tautan situs.\n   - **Bahasa konsesi netral**: \"titik panas berada di dalam areal konsesi\", tidak pernah menuduh siapa yang membakar. Data bernama perusahaan tidak boleh ada di `public/`.\n   - Lapisan Angin sempat dimatikan bawaannya, lalu dikembalikan NYALA.\n   - Caption bagikan tanpa emoji dan basa-basi; akun resmi di kaki gambar bagikan ditulis terpisah.\n4. 13 Okt 2026\n   - **Semua halaman memakai format kartu Insight** (memori `gaya-kartu-insight`). *\"jelek banget\"* untuk catatan teks polos, `<select>` bawaan, dan singkatan \"rb\" dalam perbandingan.\n   - **\"9 provinsi prioritas\" dilarang** di teks layar; tulis \"provinsi yang sering mengalami karhutla\".\n   - Model sebaran final (GBDT tulisan tangan, 40 variabel) diuji sekali pada 2024–2026 dan 123 kejadian lampau.\n5. 12 Okt 2026\n   - Repo lahir: situs statis Cloudflare, tab Insight, mode peta, kalender bahaya, pembaruan data harian 21.20 WIB.\n\n## Keputusan pemilik\n\n### Diputus\n\n| Keputusan | Tanggal | Bunyinya |\n| --- | --- | --- |\n| Sapaan pembaca \"kamu\" | 16 Okt 2026 | Semua teks yang menyapa memakai \"kamu\"; \"Anda\" yang tersisa diganti |\n| Em dash dilarang di teks tampil | 16 Okt 2026 | Pemisah pakai \":\" atau \"·\"; en dash tetap untuk rentang dan angka kosong |\n| Ikon SVG garis | 16 Okt 2026 | Seragam dengan karhutla, bukan emoji dalam lingkaran |\n| Semua bencana meniru karhutla | 15 Okt 2026 | Tiap bencana baru dinilai dengan paket 113 komponen karhutla; satu bencana selesai = 100% baris terisi (dibuat, diadaptasi, atau \"tidak berlaku\" beralasan) |\n| Satu situs, satu registry | 15 Okt 2026 | `public/bencana.json` sumber tunggal daftar bencana; karhutla tetap di `/` |\n| Kartu Insight di semua halaman | 13 Okt 2026 | Pil kategori + satu kalimat temuan berangka merah + kontrol segmen, grafik, kaki legenda + \"Sumber:\" |\n| Disembunyikan, bukan dihapus | 14 Okt 2026 | Tiap \"hilangkan\" dicatat berikut berkas dan cara memulihkannya |\n| Konsesi netral | 14 Okt 2026 | Tidak ada tuduhan pembakar; tidak ada nama perusahaan di berkas publik |\n| Foto: label di dalam foto | 15 Okt 2026 | Ikon kategori dan waktu relatif di dalam foto; tanpa nomor urut |\n| Upvote, bukan love | 15 Okt 2026 | Dukungan foto warga = tombol Upvote |\n| Bahasa bawaan Indonesia | 15 Okt 2026 | Pilihan bahasa di `sessionStorage`; kunjungan baru selalu ID |\n| Lapisan Foto mulai mati | 15 Okt 2026 | Tidak diingat di `localStorage` |\n| Lapisan Angin mulai nyala | 14 Okt 2026 | Dipulihkan sesudah sempat dimatikan |\n| Data dummy di tiap website | aturan global | Dua ikon, Super Admin saja, isinya ditentukan halaman yang sedang dibuka (`~/.claude/DUMMY.md`) |\n| Armada agent sejak hari pertama | aturan global | Roster, model tertulis, ilmu per agent, `AGENTS.md` (`~/.claude/AGEN.md`) |\n\n### Belum diputus\n\n| Pertanyaan | Usulan | Rujukan |\n| --- | --- | --- |\n| Keputusan arsitektur multi-bencana yang menunggu | Daftarnya di akhir `ARSITEKTUR.md` | `docs/multi-bencana/ARSITEKTUR.md` |\n| Routine pembaru buku ini | Didaftarkan di Mac mini, tiap hari 21.00 WIB | [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui) |\n\n## Stack & peta repo\n\n| Lapis | Isinya |\n| --- | --- |\n| Layar | Vanilla JS tanpa build step di `public/`, MapLibre 4.7.1 dari cdnjs, satu `.js` + satu `.css` per modul; `public/index.html` memuat inti peta |\n| Worker | Cloudflare Worker + D1 + R2 (`src/**`, `migrations/**`): laporan warga, foto, moderasi admin, `/api/titik` FIRMS 3-jam, statistik, OG meta |\n| Pipeline | Python 3.12 stdlib di GitHub Actions; JSON di-commit ke `public/data/` |\n| Jadwal | `data.yml` harian, `titik.yml` 3-jam, `statis.yml`, `banjir.yml` harian, `terbit.yml`; cron Worker `15 */3 * * *` FIRMS ke D1 dan `17 * * * *` bersih-bersih |\n| Terbit | Cloudflare static assets (`assets.directory ./public`); seluruh isi `public/` ikut terbit, jadi tidak ada data bernama perusahaan, kunci, atau berkas kerja di sana |\n\nPeta modul dan pengerjanya ada di `AGENTS.md` §2.\n\n## Selera tampilan\n\n### Kartu Insight\n\n- Pil kategori (`Insight.LABEL`) + judul SATU kalimat temuan dengan angka merah (`Insight.hl`) + kontrol segmen, pemilih provinsi di kanan judul.\n- Kaki kartu: legenda di tengah + `Sumber: …` miring (`Insight.ex`).\n- **Dilarang**: subjudul atau baris satuan, paragraf catatan, kotak KPI berkepala navy. Angkanya dilebur ke judul kartu.\n- Angka di ujung batang dan kolom tabel jadi pil (sering berikon); tiap bar chart menampilkan total di atas batang; garis rata-rata berpil navy \"rata-rata\".\n\n### Tooltip\n\n- Pita judul + kolom label/nilai (`rapikanTip`).\n- Naik ▲ merah, turun ▼ hijau. Tidak ada tanggal ISO mentah.\n\n### Tabel\n\n- Nol sel dua baris; info sekunder jadi kolom sendiri, huruf lebih kecil.\n- Kolom teks rata kiri. Daftar panjang dipaginasi (`paginasi()`), bukan tombol \"Tampilkan N\".\n- Judul artikel di tabel = tautan. `<select>` bawaan diganti `PilihCantik`.\n\n### Peta\n\n- Panel Overlay = ubin ikon ala Windy, satu baris per kategori, latar putih.\n- Nama provinsi di rounded rectangle, cukup besar untuk terbaca.\n- `peta.setStyle` selalu `{diff: false}`; `Peta.init` menunggu `style.load`.\n- Cetak biru peta untuk bencana lain: `docs/multi-bencana/PETA.md`.\n\n### Foto lapangan\n\n- Kategori dan waktu relatif di dalam foto; label putih di atas latar sorot; tanpa nomor.\n- Pop-up lebar, koordinat GPS tampil, Upvote, tombol tutup merah berikon putih di kanan atas.\n\n### Interaksi\n\n- Klik tidak boleh membekukan layar. Chrome kontrol (pil aktif, `aria-pressed`) di-set langsung, kerja berat lewat `nanti()`. Membungkus seluruh setState dalam transisi bukan obatnya (`~/.claude/INP.md`).\n\n## Angka & copy\n\n- `fmt` id-ID: titik ribuan, koma desimal, paling banyak 1 desimal; \"–\" bila kosong. `toFixed` mentah dilarang di teks tampil.\n- Satuan selalu tertulis. \"rb\"/\"jt\" cuma di label sempit; kalimat memakai \"ribu/juta\".\n- Tiap angka punya sumber dan waktu; \"hari ini/kemarin\" menurut hari WIB data.\n- Probabilitas dibulatkan kasar atau jadi kelas; angka kinerja model dibaca dari JSON uji, tidak diketik tangan.\n- Sapaan \"kamu\". Em dash dilarang di teks tampil; en dash untuk rentang. Ikon SVG garis.\n- Suara: polos, faktual, satu baris satu temuan, angka di depan, tanpa emoji. Pola lengkap tiap permukaan dan kosakata padanan per bencana: `docs/multi-bencana/COPYWRITING.md`.\n- Frasa wilayah: \"provinsi yang sering mengalami karhutla\", tidak pernah \"9 provinsi prioritas\".\n\n**Sisa pelanggaran yang diketahui** (dibereskan sebelum disalin ke bencana lain): \"provinsi prioritas\" di `ringkasan.js` dan `index.html`; merek lama \"Posko Karhutla\" di `privasi.html`, `warga/index.html`, `src/admin_halaman.js`, `public/admin/pesan.js`; \"titik api\" vs \"titik panas\"; teks pengembang bocor ke layar di `dampak.js`; `toFixed` mentah di beberapa baris `index.html`.\n\n## Fitur yang disembunyikan\n\nAturannya: **disembunyikan, tidak dihapus.** Caranya atribut `hidden`, `display:none`, flag (`SPANDUK = false`, `if (false && …)`, `TAB_SEMBUNYI`), `splice` dikomentari, `\"sembunyi\": true` di `data/tim.json`. Fungsinya tetap ada supaya bisa dipulihkan, dan fungsi yang dipulihkan wajib diuji (kasus `$q` di `rekamVideo`).\n\nDaftar lengkap berikut cara memulihkannya hidup di memori `fitur-disembunyikan`. Ringkasannya:\n\n| Wilayah | Yang tersembunyi |\n| --- | --- |\n| Tab | Posko (Ajuan), Ringkasan, Informasi, Kompleks (dilebur ke dasar Insight), Metode (masih bisa dibuka lewat URL) |\n| Insight | Model sebaran \"Coming soon\", sebDorong, sebUji, sebGalat, sebLolos, kartu Penanganan; tombol gambar kartu Musim (tombol video dipulihkan 15 Okt) |\n| Cerita | bab Model sebaran, bab Uji model, keterangan bab Pendorong |\n| Bagikan | tab Ekspor, subjudul, teks ukuran, watermark logo, blok Rekomendasi di templat provinsi dan kompleks |\n| Laci kompleks | nama provinsi di kepala, \"Teruskan ke\", caption langganan api; \"Kenapa status ini\" diganti visual |\n| Pop-up situasi | kartu jarak Daops, baris waktu data |\n| Tentang | Layanan, Sumber data, Cara kerja data, Cara mengutip, kotak angka hidup, landasan hukum, beberapa FAQ, tombol WhatsApp, label bagian |\n| Lain | spanduk privasi, spanduk data basi `#basi`, pil statistik di kepala, catatan privasi dialog pesan, kolom Peta batas dan tabel Status lahan konsesi, Unduh CSV Tren, judul dan hitungan galeri Foto, toggle Galeri/Peta, pilihan bencana dan tombol tema di HP |\n\n## Model & data\n\n- Model sebaran: GBDT tulisan tangan, dibagi waktu (latih/validasi/uji per tahun), kalibrasi Platt, uji balik POD/FAR/CSI/ETS dengan block bootstrap, prospektif append-only, kesetaraan Python ↔ JS.\n- **Bug yang dibetulkan dulu sebelum kerangka disalin**: strata sabana di `sebaran_model.js` tidak sama dengan `latih.py`; pilihan McArthur tidak dipakai di peramban; prospektif masih nol. Rinciannya `docs/multi-bencana/PELATIHAN-MODEL.md`.\n- Layar tidak menghitung ulang angka pipeline; skema JSON adalah kontrak dengan `pipa-data` dan `model-sebaran`.\n- Data BNPB bertipe campur selalu lewat `angkaID()`.\n- Status resmi lembaga didahulukan; indeks buatan sendiri tidak pernah menimpa status resmi.\n\n## Gerbang penjaga\n\n| Gerbang | Menjaga | Jalankan |\n| --- | --- | --- |\n| `tests/agen/gerbang-ilmu-agent.test.mjs` | katalog dan definisi agent segar, tiap agent punya ilmu, tiap berkas kode tepat satu pemilik, jejak melewati yang tak berubah | `npm run uji:agen` |\n| `tests/agen/gerbang-model-agent.test.mjs` | tiap agent punya `model:`; agent bawaan turun ke Sonnet lewat `CLAUDE_CODE_SUBAGENT_MODEL` | `npm run uji:agen` |\n| `tests/agen/gerbang-wrangler.test.mjs` | konfigurasi worker | `npm run uji:agen` |\n| `tests/warga/*.test.mjs` | gerbang route, skema D1, API, tepi, statistik, klien, foto, OG, dijalankan di Miniflare sungguhan | `npm run uji:warga` |\n| `npm run agents:check` | definisi agent sinkron dengan `roster.json` | |\n| `scripts/i18n/kumpul.mjs` | teks yang belum diterjemahkan atau bercampur | `node scripts/i18n/kumpul.mjs` |\n| `scripts/terbit/versi.py uji` | pemberi versi aset | |\n| `.gitignore` | salinan nyasar `* 2` dan `* 2.*` | |\n\n**Batas mati** (`AGENTS.md` §9): tidak ada `wrangler deploy` atau push produksi dari subagent; gerbang, plafon, dan uji haram dilemahkan; subagent tidak commit; berkas `* 2.*` tidak disunting; secret tidak pernah masuk berkas yang dilacak git. Commit dengan path spesifik, tidak pernah `git add -A`.\n\n**Gerbang yang direncanakan** (lihat rencana multi-bencana): `gerbang-copy`, `gerbang-tanpa-salin`, `gerbang-model`, gerbang peta, dan uji integrasi registry.\n\n## Armada agent\n\n14 agent, generate dari `scripts/agents/roster.json` (`.claude/ilmu-agent/KATALOG.md`):\n\n| Kelas | Agent |\n| --- | --- |\n| Pengerja domain (Sonnet) | `pipa-data`, `model-sebaran`, `banjir`, `warga-api`, `layar-peta` |\n| Pengerja platform (Sonnet) | `mekanik-mesin`, `penulis-gerbang` |\n| Pemeriksa | `validasi-model`, `security-reviewer`, `inp-reviewer` (Sonnet); `guard-api`, `migrasi-idempoten`, `higiene-repo`, `selera-angka` (Haiku) |\n\nAturannya: Opus merencanakan, model murah mengerjakan; penulis kode bukan pengulasnya; fan-out yang menulis memakai worktree. Tiap bencana baru mendapat pengerja Sonnet sendiri dengan ilmu dan wilayah berkasnya.\n\n## Rencana multi-bencana\n\nRencana lengkap ada di `docs/multi-bencana/` dan diterbitkan sebagai artifact \"Rencana Multi-Bencana\". Urutannya: fondasi bersama (FASE-0), banjir naik kelas, gempa dan tsunami, cuaca ekstrem, kualitas udara, gunung api, kekeringan, lalu beranda semua bencana.\n\n| Berkas | Isinya |\n| --- | --- |\n| `ARSITEKTUR.md` | registry, rute, data, pipeline, worker, D1, layar, i18n, OG, agent |\n| `PAKET-FITUR.md` | 113 komponen karhutla dan padanannya |\n| `FASE-0.md` | fondasi bersama sebelum bencana ketiga |\n| `ALUR.md` | 12 tahap per bencana dengan gerbang tiap tahap |\n| `SUMBER-DATA.md` | sumber data terbuka terverifikasi |\n| `PETA.md` | cetak biru peta |\n| `PELATIHAN-MODEL.md` | kerangka latih bersama |\n| `COPYWRITING.md` | suara, pola, kosakata padanan |\n| `MODUL-PLUG-AND-PLAY.md` | katalog 35 modul dan medan registry |\n| `bencana/*.md` | spesifikasi per bencana |\n\n## Buku pegangan rujukan\n\nLima buku pemilik dari proyek lain, disalin ke `docs/buku-pegangan/rujukan/` dan diterbitkan ulang sebagai artifact. Yang ditiru dari sana: bentuk buku ini (riwayat bertanggal, keputusan diputus dan belum, gerbang, armada), protokol tiga lapis (perbaiki, catat, gerbang), dan aturan bahwa halaman diterbitkan ulang ke URL yang SAMA. Alamatnya di `docs/buku-pegangan/ARTIFACT.json`.\n\n## Cara halaman ini diperbarui\n\n1. Keputusan baru pemilik masuk ke **Riwayat** (bertanggal, kutipan miring) lalu ke bagian aturannya, di `docs/buku-pegangan/pantau-bencana.md`.\n2. Bangun ulang: `python3 docs/buku-pegangan/bangun.py pantau-bencana`.\n3. Terbitkan ulang ke URL yang tersimpan di `docs/buku-pegangan/ARTIFACT.json`. **Jangan pernah menerbitkan sebagai artifact baru**: itu tidak gagal, ia cuma melahirkan halaman kedua dan yang lama berhenti diperbarui tanpa ada yang tahu.\n4. Routine harian yang menyapu sisanya dirumuskan di `docs/buku-pegangan/ROUTINE.md`.\n";
+const slug = t => t.toLowerCase().normalize("NFKD").replace(/[̀-ͯ]/g, "").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const isi = document.getElementById("isi"), nav = document.getElementById("daftarIsi");
+/* buang kepala dokumen (baris sebelum judul H1 pertama) karena sudah tampil di kepala halaman */
+const baris = SUMBER.split("\n"); const h1 = baris.findIndex(b => /^# /.test(b));
+const md = (h1 >= 0 ? baris.slice(h1 + 1) : baris).join("\n");
+const html = marked.parse(md, {gfm: true, breaks: false});
+const wadah = document.createElement("div"); wadah.innerHTML = html;
+/* paragraf yang isinya hanya deretan tautan bab (sisa navigasi ekspor) sudah digantikan daftar isi */
+wadah.querySelectorAll("p").forEach(p => { const a = p.querySelectorAll('a[href^="#"]'); if (a.length > 2 && p.textContent.replace(/\s/g, "").length <= [...a].reduce((n, x) => n + x.textContent.replace(/\s/g, "").length, 0) + 4) p.remove(); });
+/* bungkus tiap H2 jadi section supaya bisa disaring dan dilompati */
+let bagian = document.createElement("section"); const semua = [bagian];
+for (const el of [...wadah.childNodes]) {
+  if (el.nodeName === "H2") { bagian = document.createElement("section"); semua.push(bagian); }
+  bagian.appendChild(el);
+}
+const dipakai = new Set();
+for (const s of semua) {
+  if (!s.childNodes.length) continue;
+  const h = s.querySelector("h2");
+  if (h) {
+    let id = slug(h.textContent) || "bab"; while (dipakai.has(id)) id += "-2"; dipakai.add(id);
+    s.id = id; const a = document.createElement("a"); a.href = "#" + id; a.textContent = h.textContent; a.dataset.id = id; nav.appendChild(a);
+  }
+  s.querySelectorAll("h3").forEach(h3 => { let id = slug(h3.textContent); if (id && !dipakai.has(id)) { dipakai.add(id); h3.id = id; } });
+  s.querySelectorAll("table").forEach(t => { const w = document.createElement("div"); w.className = "tabel"; t.replaceWith(w); w.appendChild(t); });
+  isi.appendChild(s);
+}
+/* tautan dalam dari ekspor lama (#keputusan, #b24) dicocokkan ke judul bab menurut teks tautannya */
+const judulKe = [...nav.querySelectorAll("a")].map(a => [slug(a.textContent).replace(/^\d+-?/, ""), a.dataset.id]);
+document.querySelectorAll('a[href^="#"]').forEach(a => {
+  const t = a.getAttribute("href").slice(1); if (!t || document.getElementById(t)) return;
+  const kunci = slug(a.textContent).replace(/^\d+-?/, ""); const cocok = judulKe.find(([k]) => k && (k === kunci || k.startsWith(kunci) || kunci.startsWith(k)));
+  if (cocok) a.setAttribute("href", "#" + cocok[1]);
+});
+document.querySelectorAll('a[href^="http"]').forEach(a => { a.target = "_blank"; a.rel = "noopener"; });
+/* sorot bab aktif saat menggulir */
+const lihat = new IntersectionObserver(es => es.forEach(e => { if (e.isIntersecting) { nav.querySelectorAll("a").forEach(a => a.classList.toggle("aktif", a.dataset.id === e.target.id)); } }), {rootMargin: "0px 0px -70% 0px"});
+semua.forEach(s => s.id && lihat.observe(s));
+/* cari: sembunyikan bab tanpa kecocokan, tandai kecocokan */
+const kotak = document.getElementById("kotakCari"), hasil = document.getElementById("hasilCari");
+const asli = new Map(semua.map(s => [s, s.innerHTML]));
+let jeda;
+kotak.addEventListener("input", () => { clearTimeout(jeda); jeda = setTimeout(saring, 120); });
+function saring() {
+  const q = kotak.value.trim().toLowerCase(); let n = 0, bab = 0;
+  for (const s of semua) {
+    if (!s.parentNode) continue;
+    s.innerHTML = asli.get(s);
+    const ada = !q || s.textContent.toLowerCase().includes(q);
+    s.hidden = !ada; const a = nav.querySelector(`a[data-id="${s.id}"]`); if (a) a.classList.toggle("redup", !ada);
+    if (q && ada) { bab++; n += tandai(s, q); }
+  }
+  hasil.textContent = q ? (n ? `${n.toLocaleString("id-ID")} kecocokan di ${bab} bab` : "Tidak ada yang cocok. Coba kata lain.") : "";
+}
+function tandai(akar, q) {
+  let n = 0; const jalan = document.createTreeWalker(akar, NodeFilter.SHOW_TEXT); const simpul = [];
+  while (jalan.nextNode()) simpul.push(jalan.currentNode);
+  for (const t of simpul) {
+    const s = t.nodeValue, i = s.toLowerCase().indexOf(q); if (i < 0) continue;
+    const m = document.createElement("mark"); const r = document.createRange(); r.setStart(t, i); r.setEnd(t, i + q.length); r.surroundContents(m); n++;
+  }
+  return n;
+}
+</script>
