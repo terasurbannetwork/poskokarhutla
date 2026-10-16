@@ -105,10 +105,8 @@ Model per bencana (GBDT, uji balik) tidak dipaksa masuk 20 jam ini. Yang masuk a
 ## 6. Tambahan dari pemilik selama berjalan
 
 - **Peringatan dini dan pop-up alarm** (16 Okt): `PERINGATAN-DINI.md`. Tahap 1 (pemicu worker, API, pop-up) sesudah halaman gempa; tahap 2 Web Push menunggu kunci VAPID pemilik.
-- **Lapisan satelit NASA (Eyes on the Earth / GIBS, tanpa kunci)** (16 Okt): ubin Overlay dengan atribusi "NASA EOSDIS GIBS".
-  1. Karbon monoksida AIRS 3 harian, ketinggian ±5,5 km: karhutla + udara, ubin + kartu Insight asap terangkat dan lintas batas.
-  2. Presipitasi GPM IMERG: banjir + cuaca, berdampingan dengan prakiraan Open-Meteo, bahan uji ulang prakiraan hujan.
-  3. Kelembapan tanah SMAP dan cadangan air GRACE: kekeringan (dan banjir untuk SMAP).
-  4. Anomali muka laut dan suhu permukaan laut: rob dan cuaca; uap air: cuaca ekstrem.
-  5. "Satelit berikutnya melintas pukul …": karhutla.
-  Tidak dibawa: globe 3D (pemilik memilih peta 2D ala Windy), lapisan kimia atmosfer yang tidak terkait bencana.
+- **Lapisan satelit NASA (Eyes on the Earth / GIBS, tanpa kunci)** (16 Okt), dipangkas atas kata pemilik *"tambahin yang relevan aja"*: hanya tiga ubin Overlay berlabel "NASA EOSDIS GIBS".
+  1. Karbon monoksida AIRS 3 harian (±5,5 km): karhutla + udara. Asap karhutla yang terangkat dan lintas batas.
+  2. Hujan teramati GPM IMERG: banjir + cuaca, berdampingan dengan prakiraan Open-Meteo.
+  3. Kelembapan tanah SMAP: kekeringan.
+  Tidak dibawa: uap air, suhu dan muka laut, GRACE, "satelit berikutnya", globe 3D, lapisan kimia atmosfer.
