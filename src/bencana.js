@@ -23,7 +23,7 @@ function polaHalaman(b) {
 
 /* [pola, berkas aset, kunci statistik] untuk HTML_RUTE */
 export function ruteBencana(B = REGISTRY) {
-  const out = [[/^\/semua(\/|\/index\.html)?$/, "/semua/index.html", "/semua"]];   // beranda semua bencana: halaman tetap, bukan entri registry; belum di sitemap (noindex)
+  const out = [[/^\/semua(\/|\/index\.html)?$/, "/semua/index.html", "/semua"]];   // beranda semua bencana: halaman tetap, bukan entri registry; masuk sitemap
   for (const b of hidup(B)) {
     const p = polaHalaman(b);
     if (akar(b)) out.push([/^\/(index\.html)?$/, "/index.html", "/"], ...(p ? [[p, "/index.html", null]] : []));
@@ -39,7 +39,7 @@ export const halStatistik = (B = REGISTRY) => [...hidup(B).map(b => b.id), ...HA
 
 /* /sitemap.xml: asal = https://domain dari request. Tab tersembunyi tidak masuk. */
 export function sitemap(asal, B = REGISTRY) {
-  const j = new Set(["/"]);
+  const j = new Set(["/", "/semua"]);
   for (const b of B.bencana.filter(b => b.status === "aktif")) {
     j.add(b.rute);
     for (const t of tabRute(b)) if (b.tab.includes(t) && !(b.tab_sembunyi || []).includes(t)) j.add(akar(b) ? `/${t}` : `${dasar(b)}/${t}`);

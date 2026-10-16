@@ -31,7 +31,7 @@ test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa: uji
   for (const j of ["/gempa", "/gempa/", "/gempa/peta"]) assert.ok(!cocok(ruteBencana(MATI), j), `gempa mati harus 404: ${j}`);
   for (const j of ["/semua", "/semua/", "/semua/index.html"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/semua/index.html", j);
   assert.ok(!cocok(HTML_RUTE, "/semua/x"));
-  assert.ok(!sitemap("https://x.test").includes("/semua"), "/semua belum masuk sitemap");
+  assert.ok(sitemap("https://x.test").includes("<loc>https://x.test/semua</loc>"), "/semua masuk sitemap");
   assert.equal(cocok(HTML_RUTE, "/banjir/")[1], "/banjir/index.html");
   assert.equal(cocok(HTML_RUTE, "/banjir/")[2], "/banjir/");
 });
@@ -73,7 +73,7 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   const r = await worker.fetch(new Request("https://contoh.test/sitemap.xml"), {}, {});
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
-  for (const j of ["/", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
+  for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
   for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
   for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/", "/cuaca/peta", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/sim", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);

@@ -11,6 +11,7 @@ export const IKON = {
   gunungapi: '<path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/>',
 };
 const svg = (isi, atr = "") => `<svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"${atr}>${isi}</svg>`;
+const SEMUA = svg('<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>', ' fill="none" stroke="currentColor" stroke-width="2"');
 const TENTANG = svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"');
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
@@ -24,8 +25,9 @@ async function gambar(d) {
   if (!ini) return;
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
-  const butir = daftar.map(b => {
-    if (b.status === "aktif" || b.id === ini.id || (semua && b.status !== "mati")) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
+  const butirSemua = `<a href="/semua"${lokasi === "/semua" ? ' aria-current="page"' : ""}>${SEMUA}Semua bencana</a>`;
+  const butir = butirSemua + daftar.map(b => {
+    if (b.status === "aktif" || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
     return tanpaSegera ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">Segera</em></a>`;
   }).join("");
   const tentang = "tentang" in d.dataset
