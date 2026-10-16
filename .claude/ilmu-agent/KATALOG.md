@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **14 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **16 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (5)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (7)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -22,6 +22,8 @@ Cara memakai katalog ini:
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `.github/workflows/banjir.yml` |
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +9 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +8 |
+| `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json` |
+| `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**` |
 
 ## Pengerja platform — kerja menyeberang domain (layar, uji, gerbang, mesin, migrasi) (2)
 

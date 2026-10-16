@@ -16,6 +16,7 @@ Terbaru di atas
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
 1. 16 Okt 2026
+   - **Jalan 20 jam**: *"Lu yang tentukan sendiri habis ini apa setelah ini apa."* Ucapan berulang dari 438 pesan dijadikan aturan A1–A25 dan rencana sembilan blok di `docs/multi-bencana/RENCANA-20-JAM.md`. Push dan deploy menunggu kata pemilik.
    - **Tiga keputusan copy diputus**: sapaan "kamu", em dash dilarang di teks tampil, ikon tetap SVG garis. Sisa yang harus diganti: "Anda" di `informasi.js:377` dan `privasi.html`, em dash di `informasi.js:239`.
    - **Rencana multi-bencana dilengkapi**: peta (`PETA.md`), pelatihan model (`PELATIHAN-MODEL.md`), copywriting (`COPYWRITING.md`), dan katalog modul plug-and-play (`MODUL-PLUG-AND-PLAY.md`) masuk `docs/multi-bencana/`. *"Rencana arsitektur copywriting total fitur nya gimana modul nya yang udah ada jadi plug and play. Copy coding petanya. Petanya juga tiru modelnya."*
    - **Lima buku pegangan rujukan dipasang di repo ini** (`docs/buku-pegangan/rujukan/`) dan diterbitkan sebagai artifact: Utama, MBG Bangka, Gemah Ripah, Betutu Sambe, Worth It. Buku ini lahir meniru bentuknya: *"Iya lu tiru ya dari situ."*

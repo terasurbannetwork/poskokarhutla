@@ -97,3 +97,4 @@ Dokumen: `WARGA.md` (§Deploy 76, §Moderasi 110, §Statistik 153, §Foto 174). 
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode (src/*.js, migrations/0001-0007, wrangler*.jsonc, WARGA.md, tests/warga). Temuan kunci: wrangler.jsonc produksi tanpa R2 dan tanpa cron FIRMS; roster salah soal cron 17.
+- 2026-10-16 · Asersi spanduk memakai includes('pv-kartu') akan cocok dengan CSS yang selalu disisipkan ke head; pakai penanda elemen '<section class="pv pv-kartu"'. /tentang kini tab index.html (HALAMAN); tentang.html ada di /tentang-halaman. Uji klien.test.mjs berhenti-pada-gagal-pertama, jadi satu asersi basi menjatuhkan 11 uji.

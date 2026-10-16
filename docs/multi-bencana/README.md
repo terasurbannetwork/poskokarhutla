@@ -15,6 +15,7 @@ Dokumen ini adalah rencana, bukan kode. Tiap bencana dikerjakan mengikuti alur d
 | [`FASE-0.md`](FASE-0.md) | Fondasi bersama yang WAJIB ada sebelum bencana ketiga lahir | Pekerjaan pertama |
 | [`ALUR.md`](ALUR.md) | Alur kerja 12 tahap per bencana, dari riset sampai rilis, dengan gerbang tiap tahap | Tiap kali memulai bencana baru |
 | [`SUMBER-DATA.md`](SUMBER-DATA.md) | Sumber data terbuka per bencana (URL, format, frekuensi, lisensi, status verifikasi) | Tahap riset tiap bencana |
+| [`RENCANA-20-JAM.md`](RENCANA-20-JAM.md) | Aturan A1–A25 dari ucapan berulang pemilik dan urutan kerja sembilan blok | Sebelum blok kerja apa pun |
 | [`PETA.md`](PETA.md) | Cetak biru peta karhutla dipecah ke `public/inti/peta/`, beda peta per bencana, gerbang peta | Menulis layar peta bencana baru |
 | [`PELATIHAN-MODEL.md`](PELATIHAN-MODEL.md) | Kerangka latih bersama (`scripts/umum/latih/`), bug karhutla yang dibetulkan dulu, model per bencana, gerbang model | Sebelum melatih model apa pun |
 | [`COPYWRITING.md`](COPYWRITING.md) | Suara dan pola copy karhutla, aturan angka, pelanggaran sisa, kosakata padanan per bencana | Menulis teks layar, bagikan, OG |

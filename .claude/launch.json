@@ -2,73 +2,10 @@
   "version": "0.0.1",
   "configurations": [
     {
-      "name": "poskokarhutla",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-I",
-        "-c",
-        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/3afab187-f327-4290-ae6f-28fb31404476/scratchpad/web');sys.argv=['s','8791'];runpy.run_module('http.server',run_name='__main__')"
-      ],
-      "port": 8791
-    },
-    {
-      "name": "lapor-warga",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "wrangler",
-        "dev",
-        "--local",
-        "-c",
-        "wrangler.warga.jsonc",
-        "--port",
-        "8787"
-      ],
-      "port": 8787
-    },
-    {
-      "name": "publik",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-I",
-        "-c",
-        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/d36b1b34-f512-4677-a94f-bfae9874af70/scratchpad/web');sys.argv=['s','8793'];runpy.run_module('http.server',run_name='__main__')"
-      ],
-      "port": 8793
-    },
-    {
-      "name": "publik-konsesi",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-I",
-        "-m",
-        "http.server",
-        "8795",
-        "-d",
-        "/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public"
-      ],
-      "port": 8795
-    },
-    {
       "name": "lokal",
       "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "wrangler",
-        "dev",
-        "--local",
-        "--port",
-        "8788"
-      ],
+      "runtimeArgs": ["wrangler", "dev", "--local", "--port", "8788"],
       "port": 8788
-    },
-    {
-      "name": "public-lokal",
-      "runtimeExecutable": "python3",
-      "runtimeArgs": [
-        "-I",
-        "-c",
-        "import os,sys,runpy;os.chdir('/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/2b756a81-4b5e-466b-93df-34f5533035c7/scratchpad/web');sys.argv=['s','8797'];runpy.run_module('http.server',run_name='__main__')"
-      ],
-      "port": 8797
     }
   ]
 }

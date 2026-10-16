@@ -7,7 +7,7 @@ import pathlib
 import re
 
 AKAR = pathlib.Path(__file__).parent.parent / "multi-bencana"
-URUT = ["README", "ARSITEKTUR", "PAKET-FITUR", "FASE-0", "ALUR", "SUMBER-DATA", "PETA",
+URUT = ["README", "RENCANA-20-JAM", "ARSITEKTUR", "PAKET-FITUR", "FASE-0", "ALUR", "SUMBER-DATA", "PETA",
         "PELATIHAN-MODEL", "COPYWRITING", "MODUL-PLUG-AND-PLAY"]
 BENCANA = ["banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan"]
 

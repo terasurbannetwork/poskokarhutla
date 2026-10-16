@@ -51,7 +51,7 @@ uji("persetujuan: tanpa pilihan, analitik mati dan jejak tidak mengirim apa pun"
   const d = dunia();
   d.jalankan("persetujuan.js"); d.jalankan("jejak.js", {halaman: "karhutla"});
   assert.equal(d.win.Persetujuan.analitik(), false);
-  assert.ok(d.sisip.some(h => h.includes("pv-kartu") && h.includes("Terima semua") && h.includes("Tolak non-esensial") && h.includes("Atur")), "spanduk harus tampil");
+  assert.ok(!d.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk sengaja dimatikan (SPANDUK = false, pemilik 14 Okt 2026)");
   d.waktu(() => true); tutup(d);
   assert.equal(d.beacon.length + d.fetchLog.length, 0, "tidak boleh ada kiriman sebelum persetujuan");
   assert.equal(d.ls.has("pb_vid"), false, "id analitik tidak boleh dibuat sebelum persetujuan");
@@ -84,7 +84,7 @@ uji("persetujuan: DNT/GPC memaksa mati; pilihan lama (> 12 bulan) atau versi lai
     const x = dunia({simpan: {pb_persetujuan: JSON.stringify(lama)}});
     x.jalankan("persetujuan.js");
     assert.equal(x.win.Persetujuan.analitik(), false, `pilihan ${JSON.stringify(lama)} tidak berlaku`);
-    assert.ok(x.sisip.some(h => h.includes("pv-kartu")), "spanduk tampil lagi");
+    assert.ok(!x.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk tetap mati (SPANDUK = false); analitik mati di atas");
   }
 });
 

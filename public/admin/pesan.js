@@ -9,7 +9,7 @@
     if (!r.ok) throw new Error((await r.json().catch(() => ({}))).galat || r.status); return r.json(); };
   function render() {
     const h = d.hitung, K = d.kategori;
-    const balas = p => `mailto:${encodeURIComponent(p.email)}?subject=${encodeURIComponent("Re: pesan Anda ke Posko Karhutla (" + K[p.kategori] + ")")}&body=${encodeURIComponent(`Halo ${p.nama || ""},\n\n\n\n---\nPesan Anda (${waktu(p.dibuat)}):\n${p.isi}`)}`;
+    const balas = p => `mailto:${encodeURIComponent(p.email)}?subject=${encodeURIComponent("Re: pesan Anda ke Pantau Bencana (" + K[p.kategori] + ")")}&body=${encodeURIComponent(`Halo ${p.nama || ""},\n\n\n\n---\nPesan Anda (${waktu(p.dibuat)}):\n${p.isi}`)}`;
     app.innerHTML = `
     ${d.email_siap ? "" : `<div class="ad-spanduk" role="status"><b>Notifikasi email belum dikonfigurasi.</b> Pesan tetap tersimpan di sini; set EMAIL_API_KEY, EMAIL_FROM, EMAIL_TO agar tiap pesan baru juga dikirim ke email.</div>`}
     <nav class="ad-tabs" aria-label="Status pesan">

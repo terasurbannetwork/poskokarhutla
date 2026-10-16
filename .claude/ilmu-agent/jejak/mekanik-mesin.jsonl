@@ -1,0 +1,3 @@
+{"t":"2026-10-16T11:44:40.496+07:00","berkas":".claude/launch.json","blob":"a7e551d0c4e652b2ab1616128f9ad3b7ba83f72b","aturan":"88e58bdaf04b","vonis":"dikerjakan","ringkas":"6 konfigurasi jadi 1 (lokal); sisanya path scratchpad/pengguna lain","sha":"fa93e79"}
+{"t":"2026-10-16T11:44:40.540+07:00","berkas":"package.json","blob":"30de027935edb213ce8e20398b0dc65fa74dea4a","aturan":"88e58bdaf04b","vonis":"dikerjakan","ringkas":"dev:warga dibuang, duplikat lokal","sha":"fa93e79"}
+{"t":"2026-10-16T11:44:40.586+07:00","berkas":"scripts/agents/roster.json","blob":"a38e245bfa90d7a81af36089f4d5db7be564d9c7","aturan":"88e58bdaf04b","vonis":"dikerjakan","ringkas":"tambah inti-layar dan pipa-umum","sha":"fa93e79"}

@@ -22,7 +22,7 @@ Pola yang berulang di workflow: cache `actions/cache` per kelas data (`data-` un
 
 Secret: `FIRMS_MAP_KEY`, `YOUTUBE_API_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`. `.env.example` memuat nama kuncinya saja. `scripts/pasang-kunci.sh` memasang ke `.env` dan secret GitHub.
 
-`package.json`: `type: module`; skrip `uji:warga` (tujuh berkas `node --test tests/warga/*.test.mjs`), `dev:warga` (wrangler dev), `agents:build`, `agents:check`; devDependencies hanya `miniflare` dan `wrangler` (terpatok versi). Python tanpa dependensi.
+`package.json`: `type: module`; skrip `uji:warga` (tujuh berkas `node --test tests/warga/*.test.mjs`), (`dev:warga` dibuang 16 Okt 2026: sama dengan konfigurasi `lokal` di `.claude/launch.json`, `npx wrangler dev --local --port 8788` dari `wrangler.jsonc`), `agents:build`, `agents:check`; devDependencies hanya `miniflare` dan `wrangler` (terpatok versi). Python tanpa dependensi.
 
 Mesin armada `scripts/agents/`: `roster.json` (satu-satunya pintu; entri wajib nama, kelas, model, ringkas, kapan, fokus, larangan, bisa, tidak, dan `milik` untuk pengerja), `build.mjs` (membuat `.claude/agents/<nama>.md`, kerangka ilmu bila belum ada, `KATALOG.md`; agent `tangan: true` tidak ditimpa, blok ilmunya tetap disuntik), `ilmu.mjs` (perintah `baca`, `cek`, `catat`, `kasus`, `pemilik`; jejak di `.claude/ilmu-agent/jejak/<nama>.jsonl` dikunci ke blob git). `.claude/settings.json` memasang `CLAUDE_CODE_SUBAGENT_MODEL=sonnet`.
 
@@ -59,3 +59,4 @@ Mesin armada `scripts/agents/`: `roster.json` (satu-satunya pintu; entri wajib n
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode: lima workflow di .github/workflows, package.json, scripts/agents (roster.json, build.mjs, ilmu.mjs), .gitignore, git log (b6f645f, 3b90271, 6622f26, ec6fd99, dd0f47c, 75da424).
+- 2026-10-16 · Konfigurasi launch.json dengan python http.server menunjuk scratchpad sesi lama/path pengguna lain mati diam-diam; hanya lokal (wrangler dev --local, wrangler.jsonc) layak. wrangler.warga.jsonc adalah usulan ber-database_id placeholder, bukan config dev. D1 lokal perlu 'wrangler d1 migrations apply poskowarga --local' sekali.

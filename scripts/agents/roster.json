@@ -132,6 +132,47 @@
       ]
     },
     {
+      "nama": "inti-layar",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul layar bersama lintas bencana (public/inti) dan registry bencana (public/bencana.json), rencana docs/multi-bencana.",
+      "kapan": "public/inti/**, public/bencana.json, atau modul layar yang dipecah dari karhutla/banjir ke inti disentuh atau rusak",
+      "fokus": [
+        "Modul ES tanpa build step: format, tema, kepala, tab, peta/*, insight, tabel, laci, sapa, muat (ARSITEKTUR.md §7.1, PETA.md §2)",
+        "public/bencana.json adalah sumber tunggal registry; medan tambahan di MODUL-PLUG-AND-PLAY.md §2; src/bencana.generated.js dibangkitkan darinya",
+        "Pola strangler: karhutla dan banjir dipindah bertahap, tampil identik (tangkapan layar sebelum/sesudah); nol definisi kembar baru",
+        "Peta: setStyle {diff:false}, fitBounds berpadding terukur + maxZoom, kerja berat lewat nanti() (INP), style.load bukan load",
+        "Gaya kartu Insight sesuai memori pemilik (label pil, tanpa subjudul/kotak KPI)"
+      ],
+      "larangan": "Jangan menyentuh pipeline Python atau worker; minta ke pipa-umum / warga-api. Jangan menyalin modul bersama ke folder bencana.",
+      "bisa": "membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka",
+      "tidak": "pipeline data; worker & D1; workflow",
+      "milik": [
+        "public/inti/**",
+        "public/bencana.json"
+      ]
+    },
+    {
+      "nama": "pipa-umum",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja pustaka pipeline bersama lintas bencana (scripts/umum): jaring, simpan, waktu, wilayah, status, riwayat, posko, uji balik, berita.",
+      "kapan": "scripts/umum/** atau pemindahan modul pipeline dari scripts/data|banjir ke umum disentuh atau rusak",
+      "fokus": [
+        "Python 3.12 stdlib saja: tidak ada pip install di Actions",
+        "simpan_json menulis kunci \"dibuat\" paling pertama (syarat /api/status)",
+        "Pindahan dari karhutla/banjir: keluaran JSON identik byte demi byte sebelum/sesudah; satu salinan wilayah.py",
+        "Tiap modul punya self-check uji (kerangka uji.py); bencana.py membaca public/bencana.json dan melayani matriks workflow",
+        "Rencana: docs/multi-bencana/ARSITEKTUR.md §5.2, FASE-0.md tahap B"
+      ],
+      "larangan": "Jangan menyunting scripts/data, scripts/banjir (milik pipa-data/banjir) tanpa serah-terima; _pipa.yml dan workflow milik mekanik-mesin. Jangan memuat logika khas satu bencana.",
+      "bisa": "membangun dan menguji pustaka pipeline bersama, subperintah bencana.py",
+      "tidak": "layar; worker; workflow; logika domain satu bencana",
+      "milik": [
+        "scripts/umum/**"
+      ]
+    },
+    {
       "nama": "mekanik-mesin",
       "kelas": "platform",
       "model": "sonnet",

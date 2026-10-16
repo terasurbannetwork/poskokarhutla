@@ -16,12 +16,12 @@ const kepala = judul => `<!doctype html>
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"]};
 const atas = aktif => `<header class="ad-top">
-  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Posko Karhutla</a><span class="ad-sep">Admin</span>
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>
   <nav>${Object.entries(HAL).map(([k, [ik, l]]) => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
-const halaman = (k, memuat, ekor) => `${kepala(`${HAL[k][1]} · Posko Karhutla`)}
+const halaman = (k, memuat, ekor) => `${kepala(`${HAL[k][1]} · Pantau Bencana`)}
 <body>
 ${atas(k)}
 <main class="ad-wrap">
@@ -31,13 +31,13 @@ ${atas(k)}
 ${ekor}
 </body></html>`;
 
-export const halamanMasuk = galat => `${kepala("Masuk admin · Posko Karhutla")}
+export const halamanMasuk = galat => `${kepala("Masuk admin · Pantau Bencana")}
 <body class="ad-masuk">
 <div class="ad-cahaya" aria-hidden="true"><i></i><i></i><i></i></div>
 <main class="ad-kartu-masuk">
   <div class="ad-kepala-masuk">
     <img src="/img/logo.svg?v=2" alt="" width="64" height="64">
-    <h1>Posko Karhutla</h1>
+    <h1>Pantau Bencana</h1>
     <p>Panel admin</p>
   </div>
   <div class="ad-garis"></div>
