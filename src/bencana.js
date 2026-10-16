@@ -23,7 +23,7 @@ function polaHalaman(b) {
 
 /* [pola, berkas aset, kunci statistik] untuk HTML_RUTE */
 export function ruteBencana(B = REGISTRY) {
-  const out = [];
+  const out = [[/^\/semua(\/|\/index\.html)?$/, "/semua/index.html", "/semua"]];   // beranda semua bencana: halaman tetap, bukan entri registry; belum di sitemap (noindex)
   for (const b of hidup(B)) {
     const p = polaHalaman(b);
     if (akar(b)) out.push([/^\/(index\.html)?$/, "/index.html", "/"], ...(p ? [[p, "/index.html", null]] : []));

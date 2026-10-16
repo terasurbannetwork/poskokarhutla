@@ -5,7 +5,7 @@
   bahaya_meta.json      sumber, lisensi, atribusi, waktu ambil, lapisan yang dibuang
 
 Aturan A18: lapisan yang tidak bisa diakses DIBUANG (berkas tidak ditulis, yang lama dihapus), bukan ditulis kosong.
-Sesar Pusgen 2017 TIDAK diambil: lisensinya belum jelas (butuh kata pemilik), jadi tidak ada sesar.geojson.
+Sesar aktif: lihat sesar.py (sumber GEM/EOS, bukan PuSGeN).
 
 Sumber InaRISK: gis.bnpb.go.id/server/rest/services/inarisk/<layer>/ImageServer/getSamples (data terbuka BNPB, tanpa login).
 Pusat kecamatan dari public/banjir/data/pusat_kec.json (7.274 titik, 150 titik per permintaan).
@@ -115,7 +115,6 @@ def main():
     fc = lempeng(ambil(LEMPENG_URL))
     simpan(os.path.join(KELUAR, "batas_lempeng.geojson"), fc)
     meta["lapisan"]["batas_lempeng.geojson"] = {"sumber": "PB2002 Bird 2003", "lisensi": "ODC-By 1.0", "fitur": len(fc["features"])}
-    meta["dibuang"]["sesar.geojson"] = "Sesar Pusgen 2017: lisensi belum jelas, tidak diambil (tunggu kata pemilik)"
     simpan(os.path.join(KELUAR, "bahaya_meta.json"), meta)
     print(json.dumps(meta, ensure_ascii=False))
 
@@ -145,7 +144,6 @@ def uji():
     if os.path.exists(m):  # lapisan yang dibuang tidak boleh ada berkasnya (A18: dibuang, bukan kosong)
         for nama in json.load(open(m))["dibuang"]:
             assert not os.path.exists(os.path.join(KELUAR, nama)), nama
-    assert not os.path.exists(os.path.join(KELUAR, "sesar.geojson")), "sesar Pusgen tidak boleh di-commit (lisensi belum jelas)"
     print("ok")
 
 

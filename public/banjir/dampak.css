@@ -1,1 +1,16 @@
-/* kerangka kosong: diisi langkah berikutnya (RINCI-BANJIR.md) */
+@import url("../dampak.css");
+/* Tab Dampak banjir: kartu #dampak bergaya Insight; bagian dk-* dipakai bersama karhutla (public/dampak.css). */
+#dampak .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+#dampak .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#dampak .ex-bd{padding:16px 22px 10px}
+#dampak .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#dampak .ex-ft em{font-style:italic;opacity:.9}
+#dampak .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#dampak .ex-ey:empty{display:none}
+#dampak .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#dampak .ex .sub{margin:6px 0 0;font-weight:600;font-size:13px;color:var(--ink2)}
+#dampak .ex .unit{font-size:12px;margin:2px 0 0;color:var(--ink2)}
+#dampak .ex .ctl{margin:12px 0 0}
+#dampak .ex .ctl .seg{display:flex;width:100%}
+#dampak .ex .ctl .seg button{flex:1;text-align:center}
+#dampak .ex .bg-ex{margin:14px 16px 0 0}

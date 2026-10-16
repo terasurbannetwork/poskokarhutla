@@ -46,12 +46,15 @@ test('cek: skema registry sah (python3 scripts/umum/bencana.py cek hijau)', () =
   execFileSync('python3', [join(PY, 'bencana.py')], { cwd: ROOT, stdio: 'pipe' }) // self-check __main__
 })
 
-test('registry berisi karhutla dan banjir aktif, sisanya terdaftar', () => {
+// Tahap buka bertahap (keputusan pemilik 16 Okt 2026): halaman jadi = 'uji' (menu: Segera),
+// terverifikasi = 'aktif'. Tabel ini dibalik SENGAJA saat satu modul naik tahap; jangan dilonggarkan.
+const TAHAP = { karhutla: 'aktif', banjir: 'uji', gempa: 'mati', cuaca: 'uji', udara: 'uji', gunungapi: 'uji', kekeringan: 'uji' }
+
+test('registry mengikuti tabel tahap per bencana', () => {
   const o = Object.fromEntries(reg().bencana.map((b) => [b.id, b]))
-  assert.equal(o.karhutla.status, 'aktif')
+  assert.deepEqual(Object.fromEntries(reg().bencana.map((b) => [b.id, b.status])), TAHAP)
   assert.equal(o.karhutla.rute, '/')
   assert.equal(o.banjir.rute, '/banjir/')
-  for (const id of ['gempa', 'cuaca', 'udara', 'gunungapi', 'kekeringan']) assert.equal(o[id]?.status, 'mati', id)
 })
 
 test('id unik', () => {
@@ -62,6 +65,8 @@ test('bencana non-mati punya halaman', () => {
   assert.deepEqual(halamanHilang(reg(), ROOT), [])
   // rute karhutla dan banjir menunjuk dua halaman yang dimaksud spesifikasi
   assert.ok(existsSync(join(ROOT, 'public/index.html')) && existsSync(join(ROOT, 'public/banjir/index.html')))
+  // tiap bencana tahap 'uji' juga sudah punya halamannya (itulah arti 'uji')
+  for (const [id, st] of Object.entries(TAHAP)) if (st === 'uji') assert.ok(existsSync(join(ROOT, 'public', id, 'index.html')), id)
 })
 
 test('src/bencana.generated.js identik dengan hasil membangkitkan ulang', () => {
@@ -81,12 +86,17 @@ test('gerbang bisa merah: salinan sementara yang dirusak ditolak', () => {
   const g = skema(b).join('\n')
   for (const kata of ['status', 'diawali dan diakhiri', 'awalan']) assert.ok(g.includes(kata), `skema meloloskan: ${kata}`)
 
-  // 2. halaman: akar sementara tanpa public/banjir/index.html
+  // 2. halaman: akar sementara berisi halaman semua bencana non-mati KECUALI banjir
   const t = mkdtempSync(join(tmpdir(), 'bencana-'))
   mkdirSync(join(t, 'public/banjir'), { recursive: true })
   mkdirSync(join(t, 'src'), { recursive: true })
-  writeFileSync(join(t, 'public/index.html'), '<!doctype html>')
   const r = reg()
+  for (const x of r.bencana) {
+    if (x.status === 'mati' || x.id === 'banjir') continue
+    mkdirSync(join(t, 'public', x.rute), { recursive: true })
+    writeFileSync(join(t, 'public', x.rute, 'index.html'), '<!doctype html>')
+  }
+  assert.ok(existsSync(join(t, 'public/cuaca/index.html')), 'akar sementara harus memuat halaman bencana tahap uji')
   assert.deepEqual(halamanHilang(r, t), ['banjir: public/banjir/index.html'])
   writeFileSync(join(t, 'public/banjir/index.html'), '<!doctype html>')
   assert.deepEqual(halamanHilang(r, t), [])

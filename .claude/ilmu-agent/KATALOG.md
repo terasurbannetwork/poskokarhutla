@@ -23,7 +23,7 @@ Cara memakai katalog ini:
 | `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**` |
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +9 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +10 |
-| `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json` |
+| `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json`, `public/semua/**` |
 | `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**` |
 | `cuaca-udara` | sonnet | membangun pipeline dan layar modul cuaca ekstrem dan udara | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/cuaca/**`, `scripts/udara/**`, `public/cuaca/**` +1 |
 | `gunungapi-kering` | sonnet | membangun pipeline dan layar modul gunung api dan kekeringan | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/gunungapi/**`, `scripts/kekeringan/**`, `public/gunungapi/**` +1 |

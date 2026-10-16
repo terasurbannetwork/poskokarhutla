@@ -1,0 +1,90 @@
+{
+ "versi": 1,
+ "dibuat": "2026-10-16T08:08Z",
+ "jenis": "guncangan_gmpe_gmice",
+ "param": {
+  "bssa14_pga": {
+   "e0": 0.4473,
+   "e4": 1.431,
+   "e5": 0.05053,
+   "e6": -0.1662,
+   "Mh": 5.5,
+   "c1": -1.134,
+   "c2": 0.1917,
+   "c3": -0.008088,
+   "h": 4.5,
+   "clin": -0.6,
+   "Vc": 1500.0,
+   "Vref": 760.0,
+   "f1": 0.0,
+   "f3": 0.1,
+   "f4": -0.15,
+   "f5": -0.00701
+  },
+  "zhao06_pga": {
+   "a": 1.101,
+   "b": -0.00564,
+   "c": 0.0055,
+   "d": 1.08,
+   "e": 0.01412,
+   "hc": 15.0,
+   "SI": 0.0,
+   "SS": 2.607,
+   "SSL": -0.528,
+   "C": {
+    "I": 1.111,
+    "II": 1.344,
+    "III": 1.355,
+    "IV": 1.42
+   }
+  },
+  "worden12_pga": {
+   "c1": 1.78,
+   "c2": 1.55,
+   "c3": -1.6,
+   "c4": 3.7,
+   "t1": 1.57
+  },
+  "wells_coppersmith94": {
+   "a": -2.44,
+   "b": 0.59
+  },
+  "mmi_min": 1.0,
+  "mmi_maks": 10.0,
+  "ambang_jendela": 2.0,
+  "jendela_maks_km": 2500.0
+ },
+ "vs30_baku": 400.0,
+ "jenis_tektonik": [
+  "kerak",
+  "antarmuka",
+  "intraslab"
+ ],
+ "sitasi": {
+  "kerak": "Boore, Stewart, Seyhan, Atkinson 2014, Earthquake Spectra 30(3):1057-1085",
+  "antarmuka": "Zhao et al. 2006, BSSA 96(3):898-913",
+  "intraslab": "Zhao et al. 2006, BSSA 96(3):898-913",
+  "gmice": "Worden, Gerstenberger, Rhoades, Wald 2012, BSSA 102(1):204-221",
+  "panjang_rupture": "Wells & Coppersmith 1994, BSSA 84(4):974-1002"
+ },
+ "kinerja_uji": {
+  "status": "belum_diuji",
+  "n_laporan": 0,
+  "metrik": null,
+  "alasan": "Belum ada arsip laporan Dirasakan BMKG yang bisa dibaca: tabel D1 `gempa` (kolom mmi_maks) diisi cron Worker milik warga-api dan belum terkumpul/diekspor ke repo; BMKG hanya menyimpan 15 butir terakhir. Tidak ada angka kinerja yang dikarang.",
+  "rencana": "Bandingkan MMI model di kecamatan/kab yang dilaporkan dengan MMI Dirasakan (rentang ambil tertinggi): bias, RMSE, persen dalam +-1 kelas, lawan pembanding. Uji dibuka sekali."
+ },
+ "pembanding": {
+  "nama": "satu GMPE tanpa kelas tektonik (BSSA14 untuk semua jenis)",
+  "status": "belum_diuji"
+ },
+ "catatan": [
+  "Koefisien ditranskripsi dari tabel makalah tanpa salinan digital di sesi pembuatan; wajib dicocokkan oleh validasi-model sebelum angkanya tampil.",
+  "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
+  "Jenis tektonik ditebak dari kedalaman (>= 50 km intraslab, selain itu kerak); antarmuka/megathrust harus diberikan pemanggil.",
+  "Gempa titik diubah ke Rjb lewat Rjb = max(0, Repi - L/4), L Wells & Coppersmith: tanpa arah patahan, mengabaikan efek direktivitas.",
+  "Zhao 2006 tanpa suku kuadrat magnitudo (QI/WI/QS/WS) dan tanpa koreksi regional; MMI dipotong di 1 sampai 10.",
+  "Bukan prakiraan gempa utama dan tidak memuat status tsunami (kosakata terpisah, sumber BMKG/PTWC)."
+ ],
+ "prospektif": "prospektif_guncangan.json"
+}

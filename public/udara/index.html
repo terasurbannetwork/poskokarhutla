@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/udara/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pantau Bencana · Kualitas Udara</title>
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<script src="../i18n.js"></script>
+<link rel="alternate" hreflang="id" href="https://pantau.terasurban.com/udara/">
+<link rel="alternate" hreflang="en" href="https://pantau.terasurban.com/udara/?lang=en">
+<link rel="alternate" hreflang="x-default" href="https://pantau.terasurban.com/udara/">
+<meta name="description" content="Perkiraan PM2,5 empat hari ke depan untuk seluruh Indonesia, jarak pandang bandara, dan jumlah jiwa yang menghirup udara tidak sehat per provinsi.">
+<link rel="canonical" href="https://pantau.terasurban.com/udara/">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Pantau Bencana · Kualitas udara hari ini">
+<meta property="og:description" content="Perkiraan PM2,5 empat hari ke depan, jarak pandang bandara, dan jiwa yang menghirup udara tidak sehat per provinsi.">
+<meta property="og:url" content="https://pantau.terasurban.com/udara/">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:title" content="Pantau Bencana · Kualitas udara hari ini">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<link rel="stylesheet" href="../inti/kepala.css">
+<link rel="stylesheet" href="gaya.css">
+<link rel="stylesheet" href="peta.css">
+<link rel="stylesheet" href="tabel.css">
+<link rel="stylesheet" href="insight.css">
+<link rel="stylesheet" href="udara.css">
+<link rel="stylesheet" href="../inti/kartu.css">
+</head>
+<body>
+<div id="tip" role="tooltip"></div>
+<header class="top">
+  <div class="mark">
+    <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" id="menuBencana" data-bencana="udara" data-tentang data-tanpa-segera><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#4a9d9c" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>Kualitas Udara</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a href="../banjir/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</a><a href="../udara/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="#4a9d9c" stroke-width="2" stroke-linecap="round"><path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/></svg>Kualitas Udara</a><hr style="border:0;border-top:1px solid var(--line);margin:4px 6px"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <button class="iconbtn" id="bagikanHal" aria-label="Bagikan halaman ini" title="Bagikan"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
+    </button>
+  </div>
+</header>
+
+<main>
+  <section class="page on" id="p-peta" aria-label="Peta kualitas udara">
+    <div id="peta"></div>
+    <div class="muat" id="muat"><div><div class="spin"></div>Memuat perkiraan kualitas udara seluruh Indonesia…</div></div>
+    <div class="panel" id="panel">
+      <div class="card list">
+        <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
+        <div class="top">
+          <div class="crumb" id="crumb"></div>
+          <div class="cari">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+            <input id="cari" type="search" placeholder="Cari provinsi" autocomplete="off" aria-label="Cari provinsi">
+          </div>
+        </div>
+        <div class="rows" id="rows" role="list"></div>
+      </div>
+    </div>
+    <div class="tools" id="tools">
+      <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
+      </button>
+      <div class="box lapis" id="lapis">
+        <div class="lbl" style="margin-bottom:2px">Overlay</div>
+        <details open><summary>Kualitas udara</summary>
+          <label><input type="checkbox" data-l="pm25" checked> PM2,5 perkiraan</label>
+          <label><input type="checkbox" data-l="metar" checked> Jarak pandang bandara</label>
+        </details>
+        <details open><summary>Peta dasar</summary>
+          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+        </details>
+      </div>
+    </div>
+    <div class="dok" id="dok">
+      <div class="box" id="legenda"></div>
+      <div class="card garis-waktu on" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Hari</span><div id="hariSeg" style="flex:1"></div></div>
+    </div>
+  </section>
+
+  <section class="page scroll" id="p-insight" aria-label="Insight kualitas udara"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+
+<script src="../inti/format.js"></script>
+<script src="../inti/kartu.js"></script>
+<script src="../inti/pilih.js"></script>
+<script src="../inti/tip.js"></script>
+<script src="../inti/tabel.js"></script>
+<script src="app.js"></script>
+<script src="peta.js"></script>
+<script src="insight.js"></script>
+<script src="metode.js"></script>
+<script src="mulai.js"></script>
+<script type="module" src="../inti/kepala.js"></script>
+</body>
+</html>

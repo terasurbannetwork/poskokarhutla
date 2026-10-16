@@ -18,10 +18,16 @@ const baru = {id: "uji1", nama: "Bencana Baru", rute: "/uji1/", status: "aktif",
 test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa (mati) tetap 404", () => {
   const LAMA = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
   for (const j of ["/", "/index.html", "/banjir", "/banjir/", "/banjir/index.html", "/tentang", "/peta/", "/k/K0009", "/sim/K12", "/operasi", "/keputusan", "/sarana", "/prioritas",
-    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/gempa", "/gempa/", "/gempa/peta", "/gempa/k/G0001", "/cuaca/", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
+    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/gempa", "/gempa/", "/gempa/peta", "/gempa/k/G0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
     const lama = LAMA.test(j) || /^\/banjir\/(peta|insight|simulasi|rob)\/?$/.test(j) || /^\/(index\.html)?$/.test(j) || /^\/banjir(\/|\/index\.html)?$/.test(j) || j === "/tentang-halaman" || j === "/privasi";
     assert.equal(!!cocok(HTML_RUTE, j), lama, j);
   }
+  // tahap buka bertahap: halaman bencana 'uji' sudah dilayani (jadi tidak 404); 'mati' (gempa) tetap 404
+  for (const id of ["cuaca", "udara", "kekeringan", "gunungapi"]) assert.equal(cocok(HTML_RUTE, `/${id}/`)?.[1], `/${id}/index.html`, id);
+  assert.ok(!cocok(HTML_RUTE, "/gempa/"), "gempa mati harus 404");
+  for (const j of ["/semua", "/semua/", "/semua/index.html"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/semua/index.html", j);
+  assert.ok(!cocok(HTML_RUTE, "/semua/x"));
+  assert.ok(!sitemap("https://x.test").includes("/semua"), "/semua belum masuk sitemap");
   assert.equal(cocok(HTML_RUTE, "/banjir/")[1], "/banjir/index.html");
   assert.equal(cocok(HTML_RUTE, "/banjir/")[2], "/banjir/");
 });
@@ -35,8 +41,9 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
 });
 
 test("statistik dan sumber status mengikuti registry", () => {
-  assert.deepEqual(halStatistik(), ["karhutla", "banjir", "warga", "tentang", "privasi", "statistik"]);
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "titik"]);
+  assert.deepEqual(halStatistik(), ["karhutla", "banjir", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
+  // tahap buka bertahap: yang tidak mati (aktif + uji) ikut; gempa (mati) belum
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "cuaca", "dampak", "gunungapi", "kekeringan", "kualitas", "titik"]);
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
   assert.ok(!halStatistik(B).includes("gempa") && !sumberStatus(B).some(s => s[0] === "gempa_terbaru"));

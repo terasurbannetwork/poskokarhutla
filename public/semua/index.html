@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Semua bencana · Pantau Bencana</title>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<script src="/i18n.js"></script>
+<meta name="description" content="Situasi hari ini untuk semua bencana di Indonesia dalam satu peta: karhutla, banjir, gempa, dan lainnya.">
+<!-- belum siap terbit: tidak di sitemap, jangan diindeks -->
+<meta name="robots" content="noindex">
+<link rel="canonical" href="https://pantau.terasurban.com/semua">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Semua bencana · Pantau Bencana">
+<meta property="og:description" content="Situasi hari ini untuk semua bencana di Indonesia dalam satu peta.">
+<meta property="og:url" content="https://pantau.terasurban.com/semua">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/inti/peta/legenda.css">
+<link rel="stylesheet" href="/semua/semua.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tentang data-tanpa-segera><summary>Semua bencana</summary><div class="menu"><a href="/">Karhutla</a><a href="/banjir/">Banjir, Longsor &amp; Rob</a><hr><a href="/tentang">Tentang kami</a></div></details>
+  </div>
+  <div class="stat">
+    <button class="iconbtn" id="bagikan" aria-label="Bagikan" title="Bagikan"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
+    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+<main>
+  <section class="peta-bagian" aria-label="Peta semua bencana">
+    <div id="peta"></div>
+    <div class="saring" id="saring" role="group" aria-label="Pilih bencana"></div>
+    <div class="dok"><div class="box" id="legenda"></div></div>
+  </section>
+  <section class="kartu-bagian" id="kartu" aria-label="Situasi hari ini"></section>
+</main>
+<div class="toast" id="toast" role="status"></div>
+<script src="/inti/format.js"></script>
+<script src="/inti/kartu.js"></script>
+<script type="module" src="/inti/kepala.js"></script>
+<script type="module" src="/semua/semua.js"></script>
+</body>
+</html>

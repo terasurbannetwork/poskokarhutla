@@ -3263,8 +3263,8 @@ const IK_ELNINO = `<circle r="8" fill="#c9503a"/><g fill="none" stroke="#fff" st
 const IK_MASKER = `<path d="M2 4.5c2.5-1.2 5.5-1.2 8 0v3c-1 2-3 3-4 3s-3-1-4-3z"/><path d="M2 5.5 0.5 4.5M10 5.5l1.5-1M4 6.5h4"/>`;
 const Insight = {
   data: {},
-  st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
-  EX: ["harian", "ytd", "musim", "cuaca", "paparan", "bnpb", "tahun", "luas", "nasional", "dunia", "kec"],
+  st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
+  EX: ["harian", "ytd", "musim", "cuaca", "paparan", "bnpb", "tahun", "luasTahun", "luas", "nasional", "dunia", "kec"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
   leg: d => Kartu.leg(d),
@@ -3277,7 +3277,7 @@ const Insight = {
   selProvMulti(key, daftar = PRIO) { return Kartu.selProvMulti(key, daftar, namaProv, this.st); },
   selProv(key, semua) { return Kartu.selProv(key, semua, PRIO, namaProv, this.st); },
   /* label kategori di pojok kartu; kartu lebar (banyak panel / tabel) memakai dua kolom */
-  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", dunia: "Situasi global", kec: "Kecamatan langganan"},
+  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", luasTahun: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", dunia: "Situasi global", kec: "Kecamatan langganan"},
   PENUH: new Set(["harian", "tahun", "kec"]),
   async muat() {
     const D = this.data;
@@ -3534,6 +3534,30 @@ const Insight = {
       `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per tahun">${g}${leg}</svg>`,
       `Sumber: NASA FIRMS MODIS arsip standar + NRT.`,
       this.selProvMulti("tahunProv") + (pp ? "" : this.seg("tahun", [["jumlah", "Jumlah"], ["porsi", "Porsi provinsi"]]))); },
+
+  /* 6b. lahan terbakar per tahun (semua provinsi); tahun terakhir terpilih awal (2026 bila ada). sat.sampai/sat.parsial = tanggal data tahun terakhir bila belum penuh */
+  exLuasTahun() {
+    /* deret resmi KLHK SiPongi (indikasi luas, per provinsi kode Kemendagri) karena hanya deret ini yang sudah memuat 2026;
+       satelit GWIS ditulis di tooltip sebagai pembanding bila tahunnya ada */
+    const {sat, res} = this.data; if (!res) return "";
+    const th = res.tahun, t = th.includes(String(this.st.luasTh)) ? String(this.st.luasTh) : th.at(-1), i = th.indexOf(t);
+    const tot = th.map((_, j) => Object.values(res.ha).reduce((a, v) => a + (v[j] || 0), 0)), mx = Math.max(1, ...tot);
+    const sampai = y => { const s = res.sampai?.[y]; if (!s) return ""; const d = new Date(s + "-15"); return isNaN(d) ? "" : new Intl.DateTimeFormat("id-ID", {month: "long"}).format(d); };
+    const bln = sampai(t);
+    const prov = Object.entries(res.ha).map(([k, v]) => ({k, n: namaProv(k), v: v[i] || 0})).sort((a, b) => b.v - a.v).slice(0, 6);
+    prov.forEach(r => r.lbl = rb(r.v) + " ha");
+    const W = 940, H = 230, L = 50, B = 200, T = 28, gap = (W - L - 6) / th.length, bw = gap * .6, Y = v => B - v / mx * (B - T), MERAH = "#c9503a", PUDAR = "#e9b48a";
+    let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 6}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(mx * f)}</text>`).join("");
+    th.forEach((y, j) => { const x = L + j * gap + (gap - bw) / 2, on = j === i, sj = sat ? sat.tahun.indexOf(y) : -1, ss = sj < 0 ? 0 : Object.values(sat.ha).reduce((a, v) => a + (v[sj] || 0), 0), b = sampai(y);
+      g += `<rect class="gy" style="--i:${j};cursor:pointer" x="${x}" y="${Y(tot[j])}" width="${bw}" height="${Math.max(1, B - Y(tot[j]))}" rx="3" fill="${on ? MERAH : PUDAR}" data-set="luasTh" data-v="${y}" data-tip="<b>${y}</b>${b ? " sampai " + b : ""}<br>lahan terbakar (KLHK): ${fmt(Math.round(tot[j]))} ha${ss ? "<br>menurut satelit GWIS: " + fmt(ss) + " ha" : ""}"/>
+        <text class="gf" style="--i:${j}" x="${x + bw / 2}" y="${Y(tot[j]) - 5}" text-anchor="middle" font-size="11" font-weight="${on ? 800 : 600}" opacity="${on ? 1 : .75}">${rb(tot[j]).replace(" ", "\u00a0")}</text>
+        <text x="${x + bw / 2}" y="${B + 16}" text-anchor="middle" font-size="11" font-weight="${on ? 800 : 400}" opacity="${on ? 1 : .7}">${y}${b ? "*" : ""}</text>`; });
+    const [g3, h3] = this._batang(prov, W, 150, prov[0].v || 1, r => r === prov[0] ? MERAH : PUDAR, r => `<b>${esc(r.n)}</b> · ${t}<br>${fmt(Math.round(r.v))} ha`);
+    this._leg = [[MERAH, "tahun terpilih"], [PUDAR, "tahun lain"]];
+    return this.ex(`${this.hl(fmt(Math.round(tot[i])) + " ha")} lahan terbakar di Indonesia ${bln ? "pada" : "sepanjang"} ${t}${bln ? " sampai " + bln : ""}, terbanyak di ${this.hl(esc(prov[0].n))}`, "", "",
+      `<svg viewBox="0 0 ${W} ${H + 30 + h3}" role="img" aria-label="Lahan terbakar per tahun"><g>${g}</g><text x="0" y="${H + 8}" font-size="12" font-weight="800" opacity=".75">Per provinsi, ${t}${bln ? " sampai " + bln : ""}</text><g transform="translate(0,${H + 16})">${g3}</g></svg>`,
+      `Sumber: KLHK SiPongi (indikasi luas kebakaran); pembanding satelit GWIS/JRC (MODIS MCD64A1, CC BY 4.0).${Object.keys(res.sampai || {}).length ? " *tahun berjalan." : ""}`,
+      `<select data-set="luasTh" aria-label="Tahun">${[...th].reverse().map(y => `<option value="${y}"${y === t ? " selected" : ""}>${y}</option>`).join("")}</select>`); },
 
   /* 7. luas terbakar satelit vs resmi */
   exLuas() {
@@ -5444,7 +5468,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Gambut", "GFW Global peatland extent v20230315 (Miettinen dkk. 2016 + Gumbricht dkk. 2017)", "CC BY 4.0", "ubin z8 ± 600 m, sel 2 × 2 piksel ± 1,2 km (gambut bila ≥ 2 dari 4 piksel)", "manual", "lahan/gambut.geojson"],
       ["Konsesi sawit, HTI, HPH, tambang", "GFW (data KLHK; sawit & HPH ± 2014), Trase (HTI 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
       ["Kawasan hutan", "KLHK versi 2017 lewat akun GFW di ArcGIS Online", "tidak dicantumkan", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
-      ["Luas terbakar resmi 2018–2023", "KLHK SiPongi, dikutip Tulisan Hukum JDIH BPK 2024", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
+      ["Luas terbakar resmi 2018–2026", "KLHK SiPongi (2018–2023 sama dengan kutipan Tulisan Hukum JDIH BPK 2024)", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
       ["Luas terbakar satelit 2002–2025", "GWIS (EU JRC/Copernicus), MODIS MCD64A1 C6.1 per GADM 3.6", "CC BY 4.0", "per provinsi lama (Kaltim termasuk Kaltara; Papua lama)", "manual", "luas_satelit.json"],
       ["Peta dasar", "OpenFreeMap; citra Esri World Imagery (© Esri, Maxar, Earthstar)", "atribusi di peta", "ubin", "langsung", "–"],
       ["Foto Insight", "Wikimedia Commons", "per foto (CC BY-SA 4.0, CC BY 4.0, domain publik)", "–", "tetap", "img/kredit.json"],
@@ -6088,6 +6112,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="konsesi.js"></script>
 <script src="operasi.js"></script>
 <script src="ringkasan.js"></script>
+<script src="inti/sapa.js"></script>
 <script src="sapa.js"></script>
 <link rel="stylesheet" href="foto.css">
 <script src="foto.js"></script>

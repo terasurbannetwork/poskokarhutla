@@ -57,3 +57,4 @@ Semua keluaran ke `public/data/*.json` (kontrak dengan layar). Berkas besar/pera
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode: docstring skrip di scripts/data, scrape, geo; data.yml, titik.yml, statis.yml; git log (b6f645f, 3b90271, ec6fd99, dd0f47c, 5c6e8ca).
+- 2026-10-16 · GWIS Country Profile (Mei-Okt 2026) belum punya tahun 2026 dan Des 2025 masih 0 semua provinsi; luas 2026 hanya dari SiPongi (last Juli 2026). Cek: banf yearTo=2026 hanya mengembalikan 2025.

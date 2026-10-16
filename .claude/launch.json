@@ -4,8 +4,26 @@
     {
       "name": "lokal",
       "runtimeExecutable": "npx",
-      "runtimeArgs": ["wrangler", "dev", "--local", "--port", "8788"],
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8788"
+      ],
       "port": 8788
+    },
+    {
+      "name": "induk",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8790"
+      ],
+      "port": 8790
     }
   ]
 }

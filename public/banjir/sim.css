@@ -1,0 +1,46 @@
+/* Simulasi banjir: peta penuh + panel kiri + dok legenda, rupa /sim karhutla (index.html .simpanel/.simchips/.simatur/.simgeser/.kv). Dimuat dari sim.js. */
+#p-sim{--lp:380px;--tw:60px}
+.simpanel{width:380px;border-radius:18px;background:linear-gradient(180deg,var(--surface) 0,var(--card) 96px)}
+.simpanel h2{font-size:20px;letter-spacing:-.02em;margin-top:2px}
+.simpanel .lbl{text-transform:none;letter-spacing:0;font-size:13px;font-weight:700;color:var(--ink);margin-top:12px}
+.simpanel > .lbl:first-child{font-size:12px;font-weight:600;color:var(--ink2);margin-top:0}
+.simpanel .fld .lbl{margin-top:0}
+.simpanel .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
+.simpanel .kv div{--k:#c9503a;background:none;border:0;border-left:1px solid var(--line);border-radius:0;padding:2px 14px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px;min-width:0}
+.simpanel .kv div:first-child{border-left:0;padding-left:0}
+.simpanel .kv div:nth-child(2){--k:#e58a45}
+.simpanel .kv div:nth-child(3){--k:#b8912a}
+.simpanel .kv b{display:block;font-family:var(--display);font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.simpanel .kv span{display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:11.5px;line-height:1.3;color:var(--ink2);font-weight:500;max-width:100%;text-transform:none;letter-spacing:0}
+.simpanel .kv span em{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch,var(--k) 13%,var(--card));color:color-mix(in oklch,var(--k) 80%,var(--ink));white-space:nowrap}
+.simchips{display:grid;grid-template-columns:1fr 1fr;gap:6px}
+.simchips button{display:inline-flex;align-items:center;gap:6px;height:38px;justify-content:flex-start;padding:0 12px;border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;cursor:pointer;min-width:0}
+.simchips button i{width:9px;height:9px;border-radius:50%;flex:none;opacity:.45}
+.simchips button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.simchips button[aria-pressed="true"] i{opacity:1;box-shadow:0 0 0 2px var(--card)}
+.simchips button:disabled{cursor:default}
+.simchips button:disabled[aria-pressed="true"]{background:color-mix(in oklch,var(--ink) 80%,var(--card))}
+.simatur-grup{margin-top:10px}
+.simatur-grup > summary{cursor:pointer;padding:4px 0;margin-top:0}
+.simatur{margin-top:10px;padding:12px 14px;border-radius:16px;background:var(--surface)}
+.simatur > .lbl{display:flex;align-items:center;gap:7px;margin-top:0}
+.simatur > .lbl::before{content:"";width:9px;height:9px;border-radius:50%;background:currentColor;flex:none}
+.simgeser{display:grid;grid-template-columns:118px 1fr 70px;gap:8px;align-items:center;font-size:12px;margin:4px 0}
+.simgeser input{width:100%;min-width:0;accent-color:var(--ink)}
+.simgeser b{text-align:right;font-size:12px;font-weight:800}
+.simkartu-daftar{display:flex;flex-direction:column;gap:8px;margin-top:10px}
+.simkartu{display:flex;flex-direction:column;gap:4px;text-align:left;border:1px solid var(--line);border-left:4px solid var(--w);background:var(--card);border-radius:12px;padding:8px 10px;cursor:pointer;color:var(--ink);font:inherit;font-size:12px}
+.simkartu.on{background:var(--surface);box-shadow:0 0 0 1px var(--w)}
+.simkartu b{font-size:13px}
+.simangka{width:100%;border-collapse:collapse;font-size:12px}
+.simangka td{padding:0 4px 0 0;font-variant-numeric:tabular-nums}
+.simangka tr:first-child td{color:var(--ink2);font-size:11px}
+.simangka small{display:block;color:var(--ink2);font-size:10.5px}
+.simringkas{margin-top:10px;padding:10px 12px;border-radius:12px;background:var(--surface);border-left:4px solid var(--brand2)}
+.simringkas p{margin:6px 0 0;font-size:13px;line-height:1.5}
+#simPanel .tb3 td small,#simPanel .tb2 td small{display:block}
+#simPanel .tb2 td:first-child,#simPanel .tb3 td:not(.n){white-space:normal}
+#simLegenda{width:fit-content;max-width:100%;padding:8px 14px}
+#simLegenda .lbl{margin:0 0 4px}
+#simLegenda .leg.row{flex-direction:row;flex-wrap:wrap;gap:4px 14px}
+@media (max-width:900px){.simpanel{top:auto;bottom:112px;left:8px;right:8px;width:auto;max-height:44%}.simgeser{grid-template-columns:96px 1fr 64px}}

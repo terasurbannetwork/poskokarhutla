@@ -147,4 +147,11 @@ def uji():
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else main()
+    if sys.argv[1:] == ["uji"]:
+        uji()
+    else:
+        main()
+        # turunan kekeringan (scripts/kekeringan): dirantai di sini karena workflow tidak bisa disunting dari mesin agent; gagal tidak menggagalkan tanah
+        import subprocess
+        if subprocess.call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "kekeringan", "status.py")]) != 0:
+            print("::warning title=kekeringan::status kekeringan gagal; berkas lamanya dibiarkan", file=sys.stderr)

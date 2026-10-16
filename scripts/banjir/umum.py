@@ -13,6 +13,9 @@ class KuotaHabis(RuntimeError):
     """Open-Meteo menolak karena kuota jam/harian habis: menunggu di sini tidak menolong, berhenti dan lanjutkan nanti."""
 
 
+MAKS_UNDUH = 200_000_000   # plafon satu respons; berkas sumber terbesar (sesar GEM) jauh di bawahnya
+
+
 def ambil(url, data=None, coba=5, batas_waktu=180, kepala=None):
     """GET (atau POST bila data) -> JSON. 429 menunggu makin lama (kuota menit/jam Open-Meteo); galat lain 10, 20, 30 dtk."""
     if isinstance(data, dict):
@@ -21,7 +24,10 @@ def ambil(url, data=None, coba=5, batas_waktu=180, kepala=None):
         try:
             req = urllib.request.Request(url, data=data, headers={"User-Agent": "poskobanjir/1.0", **(kepala or {})})
             with urllib.request.urlopen(req, timeout=batas_waktu) as r:
-                return json.loads(r.read())
+                isi = r.read(MAKS_UNDUH + 1)
+                if len(isi) > MAKS_UNDUH:
+                    raise RuntimeError(f"{url.split('?')[0]}: respons melebihi {MAKS_UNDUH // 1_000_000} MB")
+                return json.loads(isi)
         except urllib.error.HTTPError as e:
             alasan = e.read().decode(errors="replace")[:300]
             if e.code == 429 and ("Daily" in alasan or "Hourly" in alasan):

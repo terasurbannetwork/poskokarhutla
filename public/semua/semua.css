@@ -1,0 +1,84 @@
+/* Beranda semua bencana. Token tema disalin dari banjir/gaya.css (belum ada inti/tema.css); gaya kartu Insight dari banjir/insight.css (#insight .ex). */
+:root{
+  --paper:oklch(97.6% .006 255); --card:oklch(100% 0 0); --surface:oklch(95.5% .012 255);
+  --ink:oklch(25.5% .075 256); --ink2:oklch(50% .045 258); --line:oklch(90% .015 255);
+  --brand:oklch(25.5% .075 256); --brand2:oklch(42% .11 255); --bad:oklch(57% .21 27); --info:oklch(66% .13 235);
+  --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
+  --r:16px; --top:58px; --lp:12px; --tw:12px;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
+h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
+button{font:inherit;color:inherit}
+.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
+a{color:inherit}
+
+header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.stat{display:flex;align-items:center;gap:8px;flex:none}
+.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{background:oklch(100% 0 0 / .22)}
+.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
+.toast.on{display:block}
+
+main{padding-top:var(--top)}
+.peta-bagian{position:relative;height:calc(100dvh - var(--top) - 120px);min-height:420px}
+#peta{position:absolute;inset:0}
+.saring{position:absolute;z-index:4;top:12px;left:12px;right:56px;display:flex;flex-wrap:wrap;gap:8px}
+.pf{display:inline-flex;align-items:center;gap:7px;height:34px;padding:0 14px 0 10px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);
+  font-size:12.5px;font-weight:700;cursor:pointer;user-select:none;white-space:nowrap}
+.pf input{position:absolute;opacity:0;pointer-events:none}
+.pf .ik{width:17px;height:17px;flex:none}
+.pf:has(input:checked){background:color-mix(in oklch,var(--w) 16%,var(--card));border-color:color-mix(in oklch,var(--w) 55%,var(--line))}
+.pf:not(:has(input:checked)){opacity:.62}
+.pf:has(input:focus-visible){outline:2px solid var(--info);outline-offset:2px}
+.dok{bottom:12px}
+.box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px}
+#legenda summary{font-size:10.5px}
+.leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
+.leg .sw{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:6px;vertical-align:-1px}
+.maplibregl-popup-content{font:12.5px/1.45 var(--font);color:#0b2545;border-radius:12px;padding:10px 14px}
+.maplibregl-popup-content a{font-weight:700}
+
+.kartu-bagian{max-width:1240px;margin:0 auto;padding:22px 18px 60px;display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(min(100%,380px),1fr))}
+.kartu-bagian > .kosong{grid-column:1/-1;text-align:center;color:var(--ink2);margin:30px 0}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:18px;box-shadow:var(--shadow);overflow:hidden;display:flex;flex-direction:column}
+.ex[hidden]{display:none}
+.ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch,var(--surface) 40%,var(--card)));border-bottom:1px solid var(--line)}
+.ex-ey{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--w,var(--brand2));
+  background:color-mix(in oklch,var(--w,var(--brand2)) 14%,transparent);padding:3px 9px 3px 7px;border-radius:999px;margin-bottom:8px}
+.ex-ey .ik{width:13px;height:13px}
+.ex h3{font-size:21px;line-height:1.3;letter-spacing:-.01em}
+.ex .hl{color:var(--bad)}
+.ex-bd{padding:16px 22px 10px;flex:1}
+.pls{display:flex;flex-wrap:wrap;gap:6px}
+.pl{display:inline-flex;align-items:center;font-size:11.5px;font-weight:700;padding:4px 10px;border-radius:999px;color:var(--w);background:color-mix(in oklch,var(--w) 14%,transparent);white-space:nowrap}
+.aksi{display:flex;align-items:center;justify-content:space-between;margin-top:14px}
+.lihat{font-size:12.5px;font-weight:700;text-decoration:none;padding:7px 14px;border-radius:999px;background:var(--brand);color:#fff}
+:root[data-theme="dark"] .lihat{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lihat{color:oklch(18% .035 256)}}
+.lihat:hover{filter:brightness(1.1)}
+.iconbtn-k{border:1px solid var(--line);background:var(--card);width:34px;height:34px;border-radius:50%;display:grid;place-items:center;cursor:pointer;color:var(--ink2)}
+.iconbtn-k:hover{color:var(--ink);background:var(--surface)}
+.ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+.ex-ft em{font-style:italic;opacity:.9}
+
+@media (max-width:900px){.dok{left:12px;right:12px;top:auto;bottom:8px}.lg-isi{max-height:90px}.peta-bagian{height:calc(100dvh - var(--top) - 80px);min-height:380px}}
+@media (max-width:640px){.saring{right:12px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.maplibregl-ctrl-top-right{top:52px}}

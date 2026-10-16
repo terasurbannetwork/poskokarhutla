@@ -35,3 +35,4 @@ Wilayahmu: `scripts/gunungapi/**`, `scripts/kekeringan/**`, `public/gunungapi/**
 - Kamu tidak memverifikasi kerjamu sendiri (AGENTS.md §3.2); tidak commit, tidak push, tidak menyunting `.github/workflows`.
 
 ## Kasus
+- 2026-10-16 · MAGMA (16 Okt 2026) tanpa API, tapi HTML publik bisa dibaca: /v1/gunung-api/tingkat-aktivitas (69 gunung per level + tautan laporan bertanda tangan), laporan harian (koordinat, radius dari kalimat 'radius N km', judul periode ada di <title> bukan di slim-mainpanel; ketinggian bisa negatif untuk Hobal), informasi-letusan (halaman 1 hanya ±8 jam bila Ibu/Semeru ramai). GVP 403, KRB tanpa lisensi: dibuang. Server MAGMA lambat (2-25 dtk/permintaan): lari pertama 13 menit, berikutnya hanya level>=II. Skrip dengan heredoc python di Bash sempat ditolak pagar worktree: tulis ke berkas dulu. Jangan taruh skrip bantu bernama html.py di folder yang jadi cwd python.

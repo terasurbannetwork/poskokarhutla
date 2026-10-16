@@ -484,27 +484,22 @@ export default {
       "warna": "#7d8ca3",
       "rute": "/cuaca/",
       "data": "/cuaca/data/",
-      "status": "mati",
+      "status": "uji",
       "warisan": false,
       "tab": [
         "peta",
         "insight",
-        "berita",
-        "tren",
-        "kejadian",
-        "dampak",
         "metode",
-        "informasi",
-        "foto"
+        "tentang"
       ],
       "tab_sembunyi": [
         "metode"
       ],
       "sumber_status": [
         [
-          "meta",
-          "/cuaca/data/meta.json",
-          12
+          "cuaca",
+          "/banjir/data/cuaca_meta.json",
+          null
         ]
       ],
       "kejadian": {
@@ -556,7 +551,7 @@ export default {
         "cuaca"
       ],
       "cron_worker": [],
-      "workflow": "cuaca.yml",
+      "workflow": "banjir.yml",
       "pengerja": "cuaca",
       "bagikan": {
         "nama": "Pantau Bencana · Cuaca Ekstrem",
@@ -604,26 +599,19 @@ export default {
       "warna": "#4a9d9c",
       "rute": "/udara/",
       "data": "/udara/data/",
-      "status": "mati",
+      "status": "uji",
       "warisan": false,
       "tab": [
         "peta",
         "insight",
-        "berita",
-        "tren",
-        "dampak",
-        "metode",
-        "informasi",
-        "foto"
-      ],
-      "tab_sembunyi": [
         "metode"
       ],
+      "tab_sembunyi": [],
       "sumber_status": [
         [
-          "meta",
-          "/udara/data/meta.json",
-          6
+          "kualitas",
+          "/data/udara_kualitas.json",
+          30
         ]
       ],
       "kejadian": {
@@ -676,7 +664,7 @@ export default {
         "udara"
       ],
       "cron_worker": [],
-      "workflow": "udara.yml",
+      "workflow": "data.yml",
       "pengerja": "udara",
       "bagikan": {
         "nama": "Pantau Bencana · Kualitas Udara",
@@ -723,27 +711,20 @@ export default {
       "warna": "#b5523b",
       "rute": "/gunungapi/",
       "data": "/gunungapi/data/",
-      "status": "mati",
+      "status": "uji",
       "warisan": false,
       "tab": [
         "peta",
         "insight",
-        "berita",
-        "tren",
-        "kejadian",
-        "dampak",
         "metode",
-        "informasi",
-        "foto"
+        "tentang"
       ],
-      "tab_sembunyi": [
-        "metode"
-      ],
+      "tab_sembunyi": [],
       "sumber_status": [
         [
-          "meta",
-          "/gunungapi/data/meta.json",
-          12
+          "gunungapi",
+          "/data/gunungapi_status.json",
+          null
         ]
       ],
       "kejadian": {
@@ -795,7 +776,7 @@ export default {
         "gunungapi"
       ],
       "cron_worker": [],
-      "workflow": "gunungapi.yml",
+      "workflow": "banjir.yml",
       "pengerja": "gunungapi",
       "bagikan": {
         "nama": "Pantau Bencana · Gunung Api",
@@ -843,7 +824,7 @@ export default {
       "warna": "#c9a24b",
       "rute": "/kekeringan/",
       "data": "/kekeringan/data/",
-      "status": "mati",
+      "status": "uji",
       "warisan": false,
       "tab": [
         "peta",
@@ -853,15 +834,16 @@ export default {
         "dampak",
         "metode",
         "informasi",
-        "foto"
+        "foto",
+        "tentang"
       ],
       "tab_sembunyi": [
         "metode"
       ],
       "sumber_status": [
         [
-          "meta",
-          "/kekeringan/data/meta.json",
+          "kekeringan",
+          "/data/kekeringan_meta.json",
           30
         ]
       ],
@@ -914,7 +896,7 @@ export default {
         "kekeringan"
       ],
       "cron_worker": [],
-      "workflow": "kekeringan.yml",
+      "workflow": "data.yml",
       "pengerja": "kekeringan",
       "bagikan": {
         "nama": "Pantau Bencana · Kekeringan",

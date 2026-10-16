@@ -107,9 +107,3 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .mt-batas li::before{content:"";flex:none;width:7px;height:7px;margin-top:7px;border-radius:2px;background:var(--mt-kuning);transform:rotate(45deg)}
 .mt-pil{display:inline-flex;flex-wrap:wrap;gap:6px}
 .mt-tekisi code,.mt-tl,.mt-cat{overflow-wrap:anywhere}
-
-/* panel Overlay: judul grup bergaya kepala tabel (pita navy, huruf kapital), isi selalu terbuka */
-.lapis details{border-top:0;padding:0;margin-top:8px}
-.lapis summary{background:#0b2545;color:#fff;border-radius:8px;padding:6px 10px;font-size:10.5px;letter-spacing:.08em;text-transform:uppercase;cursor:default;pointer-events:none}
-.lapis summary::after{content:none}
-.lapis details>label{padding-left:8px}

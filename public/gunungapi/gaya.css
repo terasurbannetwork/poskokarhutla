@@ -1,0 +1,92 @@
+:root{
+  --paper:oklch(97.6% .006 255); --card:oklch(100% 0 0); --surface:oklch(95.5% .012 255);
+  --ink:oklch(25.5% .075 256); --ink2:oklch(50% .045 258); --line:oklch(90% .015 255);
+  --brand:oklch(25.5% .075 256); --brand2:oklch(42% .11 255); --accent:oklch(68% .09 252);
+  --ok:oklch(62% .16 150); --warn:oklch(76% .16 75); --bad:oklch(57% .21 27); --info:oklch(66% .13 235);
+  --f0:oklch(72% .15 150); --f1:oklch(86% .16 98); --f2:oklch(73% .17 58); --f3:oklch(57% .21 27);
+  --shadow:0 2px 14px oklch(25% .07 256 / .08); --shadow-lg:0 8px 28px oklch(25% .07 256 / .16);
+  --r:16px; --r-sm:10px; --top:58px;
+  --font:"Inter",system-ui,-apple-system,"Segoe UI",sans-serif; --display:"Plus Jakarta Sans",var(--font);
+  color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --paper:oklch(18% .035 256); --card:oklch(22.5% .045 256); --surface:oklch(26% .05 256);
+  --ink:oklch(94% .012 255); --ink2:oklch(76% .035 255); --line:oklch(33% .05 256);
+  --brand:oklch(64% .12 252); --brand2:oklch(70% .11 250); --accent:oklch(72% .1 252);
+  --shadow:0 2px 14px oklch(0% 0 0 / .35); --shadow-lg:0 8px 28px oklch(0% 0 0 / .5); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html,body{margin:0;height:100%}
+body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
+h1,h2,h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
+button,input,select{font:inherit;color:inherit}
+.num{font-variant-numeric:tabular-nums}
+.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
+:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* ---------- top bar ---------- */
+header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.mark svg{flex:none}
+.mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
+.mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
+/* tab mengisi ruang antara logo dan status: jarak antar-tab rata, tidak menyisakan kekosongan kiri-kanan */
+nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
+@media (min-width:1500px){nav.tabs{margin:0 auto}}
+.stat,.mark{flex:none}
+nav.tabs::-webkit-scrollbar{display:none}
+nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
+@media (max-width:1280px){nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
+nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
+nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
+.lainnya{flex:none}
+.lainnya summary{list-style:none;display:flex;align-items:center;gap:6px;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+.lainnya summary::-webkit-details-marker{display:none}
+.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.lainnya summary:hover,.lainnya[open] summary{opacity:1;background:oklch(100% 0 0 / .08)}
+.lainnya:has(button[aria-current="page"]) summary{opacity:1;background:oklch(100% 0 0 / .16)}
+.lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
+nav.tabs .lainnya .menu button{color:var(--ink);opacity:1;text-align:left;border-radius:10px;padding:8px 12px}
+nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current="page"]{background:var(--surface)}
+.stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
+.stat .jam{font-family:var(--display);font-weight:700;font-size:14px}
+.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{background:oklch(100% 0 0 / .22)}
+@media (max-width:900px){.stat .upd,.mark small{display:none}}
+@media (max-width:1500px){.mark small,.stat .upd{display:none}}
+@media (max-width:1100px){.mark > div{display:none}}
+@media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
+/* mobile: pilihan bencana & tema disembunyikan, tab pindah ke menu garis tiga (pemilik, 15 Okt 2026) */
+#burger{display:none}
+@media (max-width:640px){#burger{display:grid}.bencana,#tema{display:none!important}.stat{margin-left:auto}
+  nav.tabs{display:none;position:fixed;top:var(--top);left:8px;right:auto;z-index:60;flex-direction:column;align-items:stretch;gap:2px;margin:6px 0 0;padding:6px;min-width:220px;max-height:calc(100dvh - var(--top) - 20px);overflow-y:auto;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg)}
+  header.top.buka nav.tabs{display:flex}
+  nav.tabs button{color:var(--ink);opacity:1;justify-content:flex-start;border-radius:10px;padding:11px 14px!important;font-size:15px!important}
+  nav.tabs button svg{display:block!important}
+  nav.tabs button:hover{background:var(--surface)}
+  nav.tabs button[aria-current="page"]{background:var(--surface);color:var(--accent,var(--ink))}}
+
+/* ---------- pages ---------- */
+main{position:fixed;inset:var(--top) 0 0 0}
+.page{position:absolute;inset:0;display:none}
+.page.on{display:block}
+.scroll{overflow-y:auto;padding:22px 18px 60px}
+.wrap{max-width:1240px;margin:0 auto}
+.card{background:var(--card);border-radius:var(--r);box-shadow:var(--shadow);border:1px solid var(--line)}
+.pad{padding:18px}
+.grid{display:grid;gap:14px}
+.grid>*{min-width:0}
+@media (min-width:900px){.g2{grid-template-columns:1fr 1fr}.g3{grid-template-columns:repeat(3,1fr)}.g4{grid-template-columns:repeat(4,1fr)}}
+.head{display:flex;align-items:flex-end;justify-content:space-between;gap:12px;flex-wrap:wrap;margin:6px 0 14px}
+.head>*{min-width:0;max-width:100%}
+.head p{margin:4px 0 0;color:var(--ink2);max-width:70ch}

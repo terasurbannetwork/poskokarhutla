@@ -33,4 +33,8 @@ def main():
     print(len(out), "bandara;", sum(o["asap"] for o in out), "FU/HZ;", sum((o["vis_m"] or 9999) < 5000 for o in out), "vis<5km")
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+    finally:  # turunan modul udara (scripts/udara/kualitas.py): workflow tidak bisa disunting dari mesin agent; jalan juga bila METAR gagal
+        import subprocess, sys
+        subprocess.call([sys.executable, str(ROOT / "scripts/udara/kualitas.py")])

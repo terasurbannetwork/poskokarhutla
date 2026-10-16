@@ -38,9 +38,9 @@ header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:
 .mark svg{flex:none}
 .mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
 .mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
-/* tab mengisi ruang antara logo dan status: jarak antar-tab rata, tidak menyisakan kekosongan kiri-kanan */
-nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
-@media (min-width:1500px){nav.tabs{margin:0 auto}}
+/* jarak antar-tab tetap 6px seperti karhutla (8 tab mengisi nav); tab sedikit tidak direnggangkan */
+nav.tabs{display:flex;justify-content:flex-start;gap:6px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
+@media (min-width:1500px){nav.tabs{margin:0 auto;justify-content:center}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}

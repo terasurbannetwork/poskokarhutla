@@ -283,3 +283,11 @@ if __name__ == "__main__":
             print("::warning title=berita::uji berita banjir gagal; berita.json lama dibiarkan", file=sys.stderr)
         elif subprocess.call([sys.executable, umum, "banjir"]) != 0:
             print("::warning title=berita::berita banjir gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # ringkasan cuaca ekstrem (/cuaca/): dari hujan.json dan ansambel yang baru saja dibuat; gagal = berkas lama dibiarkan
+        cuaca = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../cuaca/cuaca.py")
+        if subprocess.call([sys.executable, cuaca, "uji"]) != 0 or subprocess.call([sys.executable, cuaca]) != 0:
+            print("::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # gunung api (status MAGMA/PVMBG): dirantai di sini karena belum ada workflow sendiri; gagal tidak boleh menggagalkan banjir
+        magma = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../gunungapi/magma.py")
+        if subprocess.call([sys.executable, magma, "uji"]) != 0 or subprocess.call([sys.executable, magma]) != 0:
+            print("::warning title=gunungapi::magma.py gagal; berkas lamanya dibiarkan", file=sys.stderr)

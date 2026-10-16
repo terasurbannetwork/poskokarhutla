@@ -1,0 +1,24 @@
+"use strict";
+pasangTip(); /* tooltip [data-tip] bersama (inti/tip.js) */
+PilihCantik.pasang(); /* semua <select> di <main> jadi pil (inti/pilih.js), seperti karhutla */
+
+(async () => {
+  try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  renderMode(); await Peta.init(); renderLegenda();
+  $("#muat").classList.add("hilang");
+  /* /kekeringan/<tab> (bersih); tab tanpa isi jatuh ke Peta */
+  const j = location.pathname.replace(/^\/kekeringan\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, "");
+  if (TABS.some(t => t[0] === j) && halamanAda(j)) bukaTab(j, false);
+  else if (j) history.replaceState(null, "", "/kekeringan/peta");
+})();
+/* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
+(() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
+  const h = document.createElement("div"); h.className = "tarik"; h.title = "Tarik untuk mengubah lebar"; h.setAttribute("role", "separator"); h.setAttribute("aria-orientation", "vertical"); el.appendChild(h);
+  h.addEventListener("pointerdown", e => { e.preventDefault(); h.setPointerCapture(e.pointerId); h.classList.add("aktif"); const x0 = e.clientX, w = el.getBoundingClientRect().width;
+    const gerak = ev => { el.style.width = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))) + "px"; };
+    const lepas = () => { h.classList.remove("aktif"); h.removeEventListener("pointermove", gerak); h.removeEventListener("pointerup", lepas); simpanLokal(kunci, Math.round(el.getBoundingClientRect().width)); if (peta) peta.resize(); };
+    h.addEventListener("pointermove", gerak); h.addEventListener("pointerup", lepas); });
+  h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };
+  atur(document.querySelector(".panel"), "lebar-panel", "kanan", 320, Math.min(900, innerWidth * .6));
+  atur(document.querySelector(".tools"), "lebar-tools", "kiri", 220, 520); })();
+document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });

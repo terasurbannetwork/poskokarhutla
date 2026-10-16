@@ -170,7 +170,8 @@
       "tidak": "pipeline data; worker & D1; workflow",
       "milik": [
         "public/inti/**",
-        "public/bencana.json"
+        "public/bencana.json",
+        "public/semua/**"
       ]
     },
     {

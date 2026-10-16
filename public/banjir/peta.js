@@ -4,10 +4,9 @@ let peta = null;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 /* ruang peta yang terlihat diukur dari panel kiri, panel kanan, dan garis waktu (bukan angka tetap), seperti padRuang karhutla */
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
-const kiriPad = () => { const r = s => document.querySelector(s)?.getBoundingClientRect(), pt = r("#p-peta"), pn = r(".panel"), tl = r(".tools"), gw = r("#garisWaktu");
-  if (innerWidth <= 900) return {top: Math.max(60, gw?.width && pt ? gw.bottom - pt.top + 12 : 60), bottom: (pn?.height || innerHeight * .46) + 16, left: 16, right: 16};
-  const kiri = (pn?.width || 400) + 30, kanan = (tl?.width || 250) + 30, sisa = Math.max(0, kiri + kanan - (pt?.width || innerWidth) + 160), k = sisa ? Math.max(0, 1 - sisa / (kiri + kanan)) : 1;
-  return {top: 56, left: kiri * k, right: kanan * k, bottom: Math.max(30, gw?.width && pt ? pt.bottom - gw.top + 16 : 90)}; };
+const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
+  const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
 /* gambar lapisan peta: dimuat sekali dari modul inti (ubin Overlay, kartu hover) */
 let PI = null, LG = null, legBuka = innerWidth > 900;
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
@@ -155,24 +154,42 @@ function naik(n) { S.jalur = S.jalur.slice(0, n); nanti(() => Peta.aturWilayah()
 /* ---------- panel ---------- */
 function renderCrumb() {
   const j = S.jalur, b = [`<button data-n="0">Indonesia</button>`];
-  if (j[0]) b.push(`<span>›</span><button data-n="1">${esc(namaProv(j[0]))}</button>`);
-  if (j[1]) b.push(`<span>›</span><button data-n="2">${esc(j[1])}</button>`);
+  if (j[0]) b.push(`<button data-n="1">${esc(namaProv(j[0]))}</button>`);
+  if (j[1]) b.push(`<button data-n="2">${esc(j[1])}</button>`);
+  /* seperti karhutla: tombol Rincian membuka laci wilayah yang sedang dibuka */
+  if (j[0]) b.push(`<button class="cr-rinci" data-rinci title="Rincian ${esc(j[1] || namaProv(j[0]))}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>`);
   $("#crumb").innerHTML = b.join(""); }
-$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.rinci != null) return Analisa.wilayah(S.jalur.join("|")); naik(+b.dataset.n); });
 const pill = l => l == null ? `<span class="pill" style="background:var(--surface);color:var(--ink2)">belum ada ambang</span>` : `<span class="pill l${l}">${LEVEL[l]}</span>`;
 function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.mode === "riwayat" && Riwayat.R) return Riwayat.daftar();
-  const j = S.jalur, g = "grid-template-columns:20px minmax(0,1fr) 46px 46px 78px";
+  const j = S.jalur, g = "grid-template-columns:20px minmax(0,2.6fr) minmax(46px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr)";
   const item = [...new Map((S.fiturWil || []).map(f => [f.properties.kunci, f.properties])).values()].map(p => {
     const a = S.ag[p.kunci], c = j.length >= 2 ? selDekat(...pusat(p.kunci)) : null;
     return {kunci: p.kunci, nama: p.nama, lv: a?.lv || 0, n: a ? a.n[3] * 1e6 + a.n[2] * 1e3 + a.n[1] : 0, awas: a?.n[3] || 0, siaga: a?.n[2] || 0, h3: S.st.kec[p.kunci]?.h3 ?? c?.h3}; })
     .sort((a, b) => b.lv - a.lv || b.n - a.n || a.nama.localeCompare(b.nama));
   const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">${j.length >= 2 ? "Hujan 3h" : "Awas"}</span><span class="n">${j.length >= 2 ? "" : "Siaga"}</span><span style="text-align:right">Status</span></div>`;
-  $("#rows").innerHTML = ringkasHari() + kepala + (item.map((i, n) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${n + 1}</span><span style="font-weight:600">${esc(i.nama)}</span>
-    <span class="n">${j.length >= 2 ? (i.h3 != null ? fmt(Math.round(i.h3)) + " mm" : "–") : i.awas ? `<b style="color:var(--bad)">${fmt(i.awas)}</b>` : "–"}</span><span class="n">${j.length >= 2 ? "" : i.siaga ? fmt(i.siaga) : "–"}</span>
-    <span style="text-align:right">${i.lv ? pill(i.lv) : `<span style="color:var(--ink2);font-size:11.5px">Normal</span>`}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
+  $("#rows").innerHTML = (RINGKAS_TAMPIL ? ringkasHari() : "") + kepala + (item.map((i, n) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${n + 1}</span><span style="font-weight:600">${esc(i.nama)}</span>
+    <span class="n" data-sort="${j.length >= 2 ? (i.h3 ?? -1) : i.awas}">${j.length >= 2 ? (i.h3 != null ? fmt(Math.round(i.h3)) + " mm" : "–") : i.awas ? `<b style="color:var(--bad)">${fmt(i.awas)}</b>` : "–"}</span><span class="n" data-sort="${j.length >= 2 ? -1 : i.siaga}">${j.length >= 2 ? "" : i.siaga ? fmt(i.siaga) : "–"}</span>
+    <span style="text-align:right">${pill(i.lv)}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
+  terapkanUrut();
 }
+/* kepala tabel panel bisa diurut (klik kolom; klik lagi = balik arah), seperti karhutla; pilihan diingat per mode panel */
+S.urut = {};
+function terapkanUrut() {
+  const box = $("#rows"), kp = box.querySelector(".tb.kepala"); if (!kp) return;
+  const u = S.urut[S.mode === "riwayat" ? "riw" : "wil"];
+  [...kp.children].forEach((c, i) => { if (i < 1) return; c.dataset.s = i; c.classList.toggle("urut", u?.i === i); c.dataset.arah = u?.i === i ? u.d : ""; });
+  if (!u) return;
+  const nilai = b => { const c = b.children[u.i]; if (!c) return -1e15; if (c.dataset.sort != null) return +c.dataset.sort; const p = c.querySelector(".pill"); if (p) return +(p.className.match(/\bl(\d)/) || [0, 0])[1];
+    const t = c.textContent.trim(), n = t.replace(/\/.*/, "").replace(/\./g, "").replace(",", ".");
+    return t === "" || t === "–" ? -1e15 : u.i === 1 || isNaN(+n) ? t : +n; };
+  const rows = [...box.querySelectorAll("button.tb")];
+  rows.sort((a, b) => { const x = nilai(a), y = nilai(b); return u.d * (typeof x === "string" || typeof y === "string" ? String(x).localeCompare(String(y), "id") : x - y); });
+  rows.forEach((b, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; b.parentElement.appendChild(b); });
+}
+const RINGKAS_TAMPIL = false; /* kotak angka "Banjir · Sel, 13 Okt · kecamatan" di atas tabel: tidak ada di karhutla, disembunyikan (paritas); true untuk memulihkan */
 /* ringkas: jumlah kecamatan per level di wilayah aktif untuk hari aktif */
 function ringkasHari() {
   const pre = S.jalur.join("|"), n = [0, 0, 0, 0];
@@ -180,7 +197,9 @@ function ringkasHari() {
   return `<div class="ringkas"><div class="lbl">${NAMA_B[S.b] === "banjir" ? "Banjir" : "Longsor"} · ${tglPendek(S.st.hari[S.hari])} · kecamatan</div>
     <div class="kv" style="grid-template-columns:repeat(3,1fr)">${[3, 2, 1].map(l => `<div><b style="color:${WARNA_LV[l]}">${fmt(n[l])}</b><span>${LEVEL[l]}</span></div>`).join("")}</div></div>`; }
 function pusat(kunci) { const f = S.fiturWil?.find(f => f.properties.kunci === kunci); if (!f) return [0, 0]; const b = kotak([f]); return [(b[0][1] + b[1][1]) / 2, (b[0][0] + b[1][0]) / 2]; }
-$("#rows").addEventListener("click", e => { const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw); const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 2 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
+$("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
+  if (kol) { const k = S.mode === "riwayat" ? "riw" : "wil", i = +kol.dataset.s, u = S.urut[k]; S.urut[k] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; return terapkanUrut(); }
+  const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw); const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 2 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
 /* seg "Posko" di panel disembunyikan (A24, ledger fitur-disembunyikan); sisa satu pilihan "Wilayah" tak berguna, jadi seluruh seg ikut hidden */
 $("#panelMode").hidden = true; document.querySelector('#panelMode [data-m="posko"]').hidden = true;
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
@@ -188,8 +207,10 @@ $("#bahayaSeg").addEventListener("click", e => { const b = e.target.closest("but
   $("#bahayaSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.aturWilayah(false); renderLegenda(); }); });
 
 /* ---------- hari & mode ---------- */
+/* "Kam, 15": tombol hari muat 4 kolom di kartu kanan (karhutla: "Sel, 13") */
+const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"});
 function renderHari() {
-  $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${S.st.hari.map((t, i) => `<button data-i="${i}" aria-pressed="${S.hari === i}">${i ? tglPendek(t) : "Hari ini"}</button>`).join("")}</div>`; }
+  $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${S.st.hari.map((t, i) => `<button data-i="${i}" aria-pressed="${S.hari === i}">${i ? tglSingkat(t) : "Hari ini"}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.i;
   $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => Peta.segarkan()); });
 const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
@@ -247,10 +268,19 @@ function grafikSungai(t) {
   g += t.q.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v || 0)}" r="3.5" fill="#3f7fb8" data-tip="<b>${tglPendek(hr[j])}</b><br>debit ${fmt(Math.round(v))} m³/s (maks ansambel ${fmt(Math.round(t.qmax[j]))})"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity=".65">${hr[j].slice(8)}/${hr[j].slice(5, 7)}</text>`).join("");
   return `<svg viewBox="0 -8 ${W} ${B + 22}" width="100%" role="img" aria-label="Debit sungai">${g}</svg>`; }
 const Analisa = {
-  buka(html, kepala) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
-    d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => { if (e.target === d) return d.close();
-      const s = e.target.closest("[data-sg]"); if (s) return this.sungai(+s.dataset.sg); const w = e.target.closest("[data-wil]"); if (w) return this.wilayah(w.dataset.wil); };
-    d.showModal(); },
+  /* laci rincian di kanan (seperti Laci karhutla); di tab lain jatuh ke dialog tengah. kepala = lambang + <div><h3>nama</h3><p>jenis · induk</p></div> */
+  buka(html, kepala) {
+    const el = $("#laci"), diPeta = !!document.querySelector("#p-peta.on");
+    if (!diPeta || !el) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
+      d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => this.klik(e, () => d.close()); d.showModal(); return; }
+    const m = kepala.match(/^(.*?)<div><h3[^>]*>(.*?)<\/h3><p>(.*?)<\/p><\/div>$/s) || [0, "", kepala, ""], [ey, ...sisa] = m[3].split(" · ");
+    el.innerHTML = `<div class="hd">${m[1]}<div class="hd-isi"><span class="hd-ey">${ey || "Rincian"}</span><h2 id="dlgJudul" title="${m[2].replace(/<[^>]+>/g, "")}">${m[2]}</h2>${sisa.length ? `<div class="hd-meta"><span>${sisa.join(" · ")}</span></div>` : ""}</div>
+      <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+      <div class="bd" style="display:grid;gap:10px">${html}</div>`;
+    if (el._tarik) el.appendChild(el._tarik);
+    el.classList.add("on"); el.querySelector(".tutup").onclick = () => el.classList.remove("on");
+    el.onclick = e => this.klik(e); },
+  klik(e, sebelum) { const s = e.target.closest("[data-sg]"); if (s) { sebelum?.(); return this.sungai(+s.dataset.sg); } const w = e.target.closest("[data-wil]"); if (w) { sebelum?.(); return this.wilayah(w.dataset.wil); } },
   wilayah(kunci) {
     const p = kunci.split("|"), jenis = ["prov", "kab", "kec"][p.length - 1], f = S.fiturWil?.find(x => x.properties.kunci === kunci);
     const [lat, lon] = f ? pusat(kunci) : [0, 0], c = selDekat(lat, lon), v = S.st.kec[kunci], ag = agregat(S.b, 0);
@@ -264,7 +294,7 @@ const Analisa = {
     const isi = `<div class="grid g4">${S.st.hari.map((t, h) => kot(h ? tglPendek(t) : "Hari ini", `<span style="color:${WARNA_LV[lvH(h)]}">${LEVEL[lvH(h)]}</span>`, NAMA_B[S.b])).join("")}</div>
       ${jenis !== "kec" && ag[kunci] ? `<p class="fnd">Hari ini: ${[3, 2, 1].map(l => `${fmt(ag[kunci].n[l])} kecamatan ${LEVEL[l].toLowerCase()}`).join(" · ")}.</p>` : ""}
       ${c ? lipat("Hujan 10 hari · 3 hari teramati + 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
-        <p class="fnd">Sel 0,25° terdekat (${c.lat.toFixed(2)}, ${c.lon.toFixed(2)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
+        <p class="fnd">Sel 0,25° terdekat (${f2(c.lat)}, ${f2(c.lon)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
       ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1997–2025.</p>`) : ""}
       ${bh ? lipat("Indeks bahaya InaRISK (0–1)", `<table class="tb2"><tbody>${[["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => `<tr><td>${n}</td><td class="n">${fmt(Math.round(bh[k] * 100) / 100)} · ${bh[k] >= .66 ? "tinggi" : bh[k] >= .33 ? "sedang" : "rendah"}</td></tr>`).join("")}</tbody></table><p class="fnd">Sampel raster InaRISK BNPB di titik tengah kecamatan.</p>`) : ""}
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
@@ -277,7 +307,7 @@ const Analisa = {
     const t = S.sungai.titik[i]; if (!t) return;
     const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) : "–", "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? f2(t.puncak / t.q2) + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
       ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Angka kiri = m³/s.</p>`)}
-      <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${t.lat.toFixed(3)}, ${t.lon.toFixed(3)}.</p>`;
+      <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${f3(t.lat)}, ${f3(t.lon)}.</p>`;
     this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)} · ${esc(namaProv(t.prov))}</p></div>`); },
 };
 
@@ -306,7 +336,7 @@ const DAS = i => BLN[Math.floor(i / 3)] + " " + ["awal", "tengah", "akhir"][i % 
 const dasKini = () => { const t = new Date(Date.now() + 7 * 36e5); return t.getUTCMonth() * 3 + Math.min(2, Math.floor((t.getUTCDate() - 1) / 10)); };
 /* satu warna, makin pekat makin sering: terbaca sama di tema terang dan gelap */
 const warnaMusim = v => v < .05 ? "var(--surface)" : `color-mix(in oklch, #2f6fb8 ${Math.round(18 + v * 82)}%, transparent)`;
-const sumA = a => a.reduce((x, y) => x + y, 0), f2 = x => (Math.round(x * 100) / 100).toFixed(2).replace(".", ",");
+const sumA = a => a.reduce((x, y) => x + y, 0), f2 = x => (Math.round(x * 100) / 100).toFixed(2).replace(".", ","), f3 = x => (Math.round(x * 1000) / 1000).toFixed(3).replace(".", ",");
 function bukaDlg(kepala, isi, klik) {
   const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${isi}</div>`;
   d.querySelector("[data-tutup]").onclick = () => d.close();
@@ -407,7 +437,7 @@ const Riwayat = {
       + (item.map((r, i) => `<button class="tb" data-riw="${esc(r.kunci)}" style="${g}" title="${r.skor >= 0 ? `Berkejadian ${r.tahun} dari ${n} tahun, ${fmt(r.total)} kejadian ${J.tahun_cakup[0]}–${J.tahun_cakup.at(-1)}${r.tingkat === "kec" ? " (riwayat kab/kota)" : ""}` : "Belum ada kejadian tercatat"}">
         <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span class="n" style="font-weight:700">${r.skor >= 0 ? r.skor : "–"}</span>
         <span class="n">${r.skor >= 0 ? r.tahun + "/" + n : "–"}</span><span style="text-align:right">${r.skor >= 0 ? `<span class="pill l${r.lv}">${r.kelas}</span>` : ""}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
-    this.label(); },
+    terapkanUrut(); this.label(); },
   legenda() {
     const j = this.jenisPeta(), J = this.R?.jenis[j]; if (!J) return `<div class="lbl">Memuat riwayat…</div>`;
     const n = J.tahun_cakup.length;

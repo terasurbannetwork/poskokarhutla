@@ -1,4 +1,5 @@
 "use strict";
+document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="sim.css">');
 /* ================================================================ simulasi skenario */
 /* Aturan status = scripts/banjir/status.py, ditulis ulang di peramban, baris per baris:
    kecamatan -> titik berat poligon terbesar (fitur pertama bila kecamatan terbelah), sel hujan.json di petak yang sama
@@ -30,9 +31,13 @@ const jendela3 = (xs, m) => +xs.slice(m, m + 3).reduce((a, x) => a + (x || 0), 0
 const kelasSungai = (q, m, t) => { const ada = q.slice(m, m + 3).filter(x => x != null); if (!ada.length || !t.q2) return null; const p = Math.max(...ada);
   return p >= t.q20 ? 3 : p >= t.q5 ? 2 : p >= t.q2 ? 1 : 0; };
 const kmDatar = (la1, lo1, la2, lo2) => { const r = Math.PI / 180, x = (lo2 - lo1) * r * Math.cos((la1 + la2) / 2 * r); return 6371 * Math.hypot(x, (la2 - la1) * r); };
+/* skenario yang dibandingkan (tiap satu mengubah satu masukan; Prakiraan = status.json, selalu ikut sebagai pembanding) */
+const SKEN = [{id: "dasar", n: "Prakiraan", w: "#5f6fb0"}, {id: "hujan", n: "Hujan lebih deras", w: "#4f8fc4"}, {id: "ekstrem", n: "Hujan ekstrem", w: "#c9503a"},
+  {id: "jenuh", n: "Tanah jenuh", w: "#a8842e"}, {id: "sungai", n: "Sungai meluap", w: "#3f7fb8"}, {id: "pasang", n: "Pasang tinggi", w: "#5a9e74"}];
 const Simulasi = {
-  prov: "32", kab: "", b: "b", hari: "maks", x: 1, ekstrem: 0, jenuh: false, pasang: false, sungai: 0,
-  kec: null, kode: null, dasar: null, hasil: null, aktif: false, peta: null, JENUH: 200, PANTAI_KM: 15,
+  prov: "32", kab: "", b: "b", hari: "maks", lihat: "dasar", dom: false, basi: false, hasilSk: null, on: new Set(["hujan", "ekstrem", "jenuh", "sungai", "pasang"]), op: {x: 1.5, ekstrem: 100, sungai: 2},
+  kec: null, kode: null, dasar: null, aktif: false, peta: null, JENUH: 200, PANTAI_KM: 15,
+  get hasil() { return this.hasilSk?.[this.lihat] || this.dasar; },
   sentroid(ring) { let a = 0, cx = 0, cy = 0; const n = ring.length;
     for (let i = 0; i < n; i++) { const [x1, y1] = ring[i], [x2, y2] = ring[(i + 1) % n], c = x1 * y2 - x2 * y1; a += c; cx += (x1 + x2) * c; cy += (y1 + y2) * c; }
     if (Math.abs(a) < 1e-12) return [ring.reduce((s, p) => s + p[1], 0) / n, ring.reduce((s, p) => s + p[0], 0) / n];
@@ -80,7 +85,8 @@ const Simulasi = {
     for (const [k, v] of Object.entries(this.dasar)) { const s = S.st.kec[k] || {b: nol, l: nol}; if (["b", "l"].some(z => s[z].join() !== v[z].join())) beda.push(k); }
     const hilang = Object.keys(S.st.kec).filter(k => k.startsWith(this.kode + "|") && !this.dasar[k]);
     return {n: Object.keys(this.dasar).length, beda, hilang}; },
-  skenario() { return {x: this.x, ekstrem: this.ekstrem, jenuh: this.jenuh, pasang: this.pasang, sungai: this.sungai}; },
+  preset(id) { const o = this.op; return {x: id === "hujan" ? o.x : 1, ekstrem: id === "ekstrem" ? o.ekstrem : 0, jenuh: id === "jenuh", pasang: id === "pasang", sungai: id === "sungai" ? o.sungai : 0}; },
+  ids() { return SKEN.filter(s => s.id === "dasar" || this.on.has(s.id)).map(s => s.id); },
   lv(r, k) { const a = r[k][this.b]; return this.hari === "maks" ? Math.max(...a) : a[this.hari]; },
   kunciLihat() { return Object.keys(this.kec).filter(k => !this.kab || this.kec[k].kab === this.kab); },
   /* level skenario untuk peta utama: agregat ke prov/kab/kec = level tertinggi, sama dengan agregat() halaman */
@@ -103,91 +109,112 @@ const Simulasi = {
       o[f] = r.length ? [persentil(r, .25), persentil(r, .5), persentil(r, .75)] : [0, 0, 0]; }
     return o; },
   render() {
-    const el = $("#simulasi");
-    if (!S.st || !S.hujan) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat data…</div>`; return; }
-    if (!el.querySelector("#simIsi")) {
-      el.innerHTML = `<div class="head"><div><h2>Simulasi skenario</h2><p>Ubah hujan, tanah, sungai, atau pasang, lalu lihat status kecamatan 4 hari ke depan berubah. Aturannya sama persis dengan status di peta.</p></div>
-        <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center"><select id="smProv" class="btn sec" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select>
-        <select id="smKab" class="btn sec" aria-label="Kabupaten"></select>
-        <div class="seg" id="smB">${[["b", "Banjir"], ["l", "Longsor"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.b === v}">${n}</button>`).join("")}</div></div></div>
-      <div class="card pad sm-atur" style="margin-bottom:14px">
-        <div><span class="lbl">Hujan prakiraan</span><div class="seg" data-sm="x">${[[1, "Prakiraan"], [1.5, "+50%"], [2, "×2"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.x === v}">${n}</button>`).join("")}</div></div>
-        <label><span class="lbl">Hujan 3 hari ekstrem (mm, 0 = mati)</span><input type="number" min="0" step="10" data-sm="ekstrem" value="${this.ekstrem}"></label>
-        <div><span class="lbl">Sungai</span><div class="seg" data-sm="sungai">${[[0, "Prakiraan"], [2, "Meluap Q5"], [3, "Meluap Q20"]].map(([v, n]) => `<button data-v="${v}" aria-pressed="${this.sungai === v}">${n}</button>`).join("")}</div></div>
-        <label class="sm-cek"><input type="checkbox" data-sm="jenuh" ${this.jenuh ? "checked" : ""}> Tanah jenuh (hujan 7 hari ≥ ${this.JENUH} mm)</label>
-        <label class="sm-cek"><input type="checkbox" data-sm="pasang" ${this.pasang ? "checked" : ""}> Pasang tinggi + hujan di pesisir</label>
-        <div><span class="lbl">Hari</span><div class="seg" id="smHari">${[["maks", "4 hari"], ...S.st.hari.map((t, i) => [i, tglPendek(t)])].map(([v, n]) => `<button data-v="${v}" aria-pressed="${String(this.hari) === String(v)}">${n}</button>`).join("")}</div></div></div>
-      <div id="simIsi"></div>
-      <div class="grid g2" style="margin-bottom:14px"><div class="card sm-peta"><div id="smPeta" role="img" aria-label="Peta status kecamatan skenario"></div>
-        <div class="sm-leg">${LEVEL.map((n, i) => `<span><i style="background:${WARNA_LV[i]}"></i>${n}</span>`).join("")}<span><i style="background:none;border:2px solid var(--ink)"></i>berubah</span>
-        <button class="btn sec" id="smUtama" style="margin-left:auto">Tampilkan di peta utama</button></div></div>
-        <div class="card pad" id="simDaftar" style="max-height:470px;overflow:auto"></div></div>
-      <div id="simBawah"></div>`;
-      $("#smProv").onchange = e => { this.prov = e.target.value; this.kab = ""; this.hitungUlang(true); };
-      $("#smKab").onchange = e => { this.kab = e.target.value; this.hitungUlang(true); };
-      el.querySelectorAll(".seg").forEach(s => s.onclick = e => { const b = e.target.closest("button"); if (!b) return; s.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); const v = b.dataset.v;
-        if (s.id === "smB") this.b = v; else if (s.id === "smHari") this.hari = v === "maks" ? v : +v; else this[s.dataset.sm] = +v; this.hitungUlang(); });
-      el.querySelectorAll("input[data-sm]").forEach(i => i.onchange = () => { this[i.dataset.sm] = i.type === "checkbox" ? i.checked : Math.max(0, +i.value || 0); this.hitungUlang(); });
-      $("#smUtama").onclick = () => this.keUtama(); }
-    this.hitungUlang(true); },
-  async hitungUlang(terbang) {
-    if (this.kode !== this.prov) { $("#simIsi").innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan kecamatan…</div>`; await this.siapkan(this.prov);
-      $("#smKab").innerHTML = `<option value="">Semua kabupaten/kota</option>` + [...new Set(Object.values(this.kec).map(c => c.kab))].sort().map(k => `<option ${k === this.kab ? "selected" : ""}>${esc(k)}</option>`).join(""); }
-    const u = this.skenario(), adaSk = u.x !== 1 || u.ekstrem || u.jenuh || u.pasang || u.sungai;
-    this.hasil = adaSk ? this.hitung(u) : this.dasar;
-    const ks = this.kunciLihat(), D = this.dasar, R = this.hasil, nm = this.b === "b" ? "banjir" : "longsor";
-    const hit = r => { const n = [0, 0, 0, 0]; ks.forEach(k => n[this.lv(r, k)]++); return n; }, n0 = hit(D), n1 = hit(R);
+    const p = $("#p-sim");
+    /* peta penuh + panel kiri + dok legenda, seperti /sim karhutla; section dibuat ulang sekali (tanpa .scroll/.wrap halaman form lama) */
+    if (!this.dom) { p.classList.remove("scroll"); this.dom = true;
+      p.innerHTML = `<div id="simPeta" role="img" aria-label="Peta status kecamatan skenario"></div><div class="card simpanel" id="simPanel"></div><div class="dok" id="simDok"><div class="box" id="simLegenda"></div></div>`; }
+    if (!S.st || !S.hujan) { $("#simPanel").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat data…</div>`; return; }
+    this.muat(); },
+  async muat() {
+    if (this.kode !== this.prov) { $("#simPanel").innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan kecamatan…</div>`; await this.siapkan(this.prov); }
+    this.panel(); this.peta2(true); },
+  tandaiBasi() { if (!this.hasilSk) return; this.basi = true; const j = $("#simJalan"); if (j) j.textContent = "Jalankan ulang"; },
+  async jalan() {
+    const s = $("#simStatus"); if (s) s.textContent = "Menghitung…";
+    await this.siapkan(this.prov); await new Promise(r => setTimeout(r, 0));
+    const ids = this.ids(); this.hasilSk = {}; ids.forEach(id => this.hasilSk[id] = id === "dasar" ? this.dasar : this.hitung(this.preset(id)));
+    /* yang dilihat pertama = skenario dengan kecamatan berubah terbanyak */
+    const ubah = id => this.kunciLihat().filter(k => this.lv(this.dasar, k) !== this.lv(this.hasilSk[id], k)).length;
+    if (!ids.includes(this.lihat) || this.lihat === "dasar") this.lihat = ids.filter(i => i !== "dasar").sort((x, y) => ubah(y) - ubah(x))[0] || "dasar";
+    this.basi = false; this.panel(); this.peta2(false); const h = $("#simHasil"); if (h) $("#simPanel").scrollTop = h.offsetTop - 12; },
+  panel() {
+    const el = $("#simPanel"), atas = el.scrollTop, o = this.op, ks = this.kunciLihat(), R = this.hasil, D = this.dasar, ada = !!this.hasilSk;
+    const hit = r => { const n = [0, 0, 0, 0]; ks.forEach(k => n[this.lv(r, k)]++); return n; }, n1 = hit(R), n0 = hit(D), tinggi = n1[3] ? 3 : n1[2] ? 2 : n1[1] ? 1 : 0;
+    const wil = this.kab || namaProv(this.kode), kabs = [...new Set(Object.values(this.kec).map(c => c.kab))].sort();
+    const geser = (id, lbl, min, max, step, v, tampil) => `<label class="simgeser"><span>${lbl}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${v}"><b class="num" id="${id}V">${tampil(v)}</b></label>`;
+    const atur = {
+      hujan: geser("smX", "Pengali hujan", 1.25, 3, .25, o.x, v => "× " + fmt(v)),
+      ekstrem: geser("smE", "Hujan 3 hari minimal", 50, 300, 10, o.ekstrem, v => fmt(v) + " mm"),
+      jenuh: geser("smJ", "Hujan 7 hari ≥", 100, 300, 10, this.JENUH, v => fmt(v) + " mm"),
+      sungai: geser("smS", "Debit sungai", 2, 3, 1, o.sungai, v => v === 3 ? "Q20" : "Q5"),
+    };
+    const hariOpt = [["maks", "4 hari ke depan"], ...S.st.hari.map((t, i) => [i, tglPendek(t)])];
+    el.innerHTML = `<div class="lbl">Simulasi skenario 4 hari · model</div><h2>${esc(wil)}</h2>
+      <div style="font-size:12.5px;color:var(--ink2)">${this.kab ? esc(namaProv(this.kode)) : esc(fmt(kabs.length) + " kabupaten/kota")} · <span class="pill l${tinggi}">${LEVEL[tinggi]}</span></div>
+      <label class="fld"><span class="lbl">Provinsi</span><select id="smProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
+      <label class="fld"><span class="lbl">Kabupaten/kota</span><select id="smKab" aria-label="Kabupaten"><option value="">Semua kabupaten/kota</option>${kabs.map(k => `<option ${k === this.kab ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label>
+      <div class="kv">${[[3, "Awas"], [2, "Siaga"], [1, "Waspada"]].map(([i, n]) => `<div><b>${fmt(n1[i])}</b><span>Kecamatan ${n}${ada ? `<em>prakiraan ${fmt(n0[i])}</em>` : ""}</span></div>`).join("")}</div>
+      <div class="lbl" style="margin:12px 0 6px">Jenis bahaya</div>
+      <div class="simchips" role="group" aria-label="Jenis bahaya">${[["b", "Banjir"], ["l", "Longsor"]].map(([v, n]) => `<button type="button" data-b="${v}" aria-pressed="${this.b === v}">${n}</button>`).join("")}</div>
+      <div class="lbl" style="margin:12px 0 6px">Skenario yang dibandingkan</div>
+      <div class="simchips" role="group" aria-label="Skenario">${SKEN.map(s => `<button type="button" data-sk="${s.id}" aria-pressed="${s.id === "dasar" || this.on.has(s.id)}" ${s.id === "dasar" ? "disabled title=\"Selalu dihitung sebagai pembanding\"" : ""}><i style="background:${s.w}"></i>${s.n}</button>`).join("")}</div>
+      <details class="simatur-grup" ${ada && !this.basi ? "" : "open"}><summary class="lbl">Pengaturan skenario</summary>
+      ${SKEN.filter(s => atur[s.id] && this.on.has(s.id)).map(s => `<div class="simatur"><div class="lbl" style="color:${s.w}">${s.n}</div>${atur[s.id]}</div>`).join("")}
+      <div class="simatur"><div class="lbl">Hari yang dilihat</div><label class="fld" style="margin:6px 0 0"><select id="smHari" aria-label="Hari">${hariOpt.map(([v, n]) => `<option value="${v}" ${String(this.hari) === String(v) ? "selected" : ""}>${n}</option>`).join("")}</select></label></div></details>
+      <button class="btn pri" id="simJalan" style="width:100%;margin-top:10px">${ada ? "Jalankan ulang" : `Jalankan ${this.ids().length} skenario`}</button>
+      <p class="fnd" id="simStatus" aria-live="polite" style="margin-top:6px"></p>
+      <div id="simHasil">${ada ? this.hasilHtml(ks) : ""}</div>`;
+    el.onclick = e => { const b = e.target.closest("button"); if (!b) return;
+      if (b.dataset.sk) { const i = b.dataset.sk; this.on.has(i) ? this.on.delete(i) : this.on.add(i); if (this.hasilSk) this.basi = true; this.panel(); }
+      else if (b.dataset.b) { this.b = b.dataset.b; this.panel(); this.peta2(false); }
+      else if (b.dataset.lihat) { this.lihat = b.dataset.lihat; this.panel(); this.peta2(false); }
+      else if (b.id === "simJalan") this.jalan();
+      else if (b.id === "simUtama") this.keUtama(); };
+    $("#smProv").onchange = async e => { const ran = !!this.hasilSk; this.prov = e.target.value; this.kab = ""; this.hasilSk = null; await this.muat(); if (ran) this.jalan(); };
+    $("#smKab").onchange = e => { this.kab = e.target.value; this.panel(); this.peta2(true); };
+    $("#smHari").onchange = e => { this.hari = e.target.value === "maks" ? "maks" : +e.target.value; this.panel(); this.peta2(false); };
+    [["smX", v => o.x = v, v => "× " + fmt(v)], ["smE", v => o.ekstrem = v, v => fmt(v) + " mm"], ["smJ", v => this.JENUH = v, v => fmt(v) + " mm"], ["smS", v => o.sungai = v, v => v === 3 ? "Q20" : "Q5"]].forEach(([id, set, t]) => {
+      const i = $("#" + id); if (i) i.oninput = () => { set(+i.value); $("#" + id + "V").textContent = t(+i.value); this.tandaiBasi(); }; });
+    el.scrollTop = atas; this.legenda(); },
+  legenda() {
+    const nm = this.b === "b" ? "banjir" : "longsor", s = SKEN.find(x => x.id === this.lihat);
+    $("#simLegenda").innerHTML = `<div class="lbl" style="margin-bottom:4px"><span>Status ${nm}</span> · <span>${s.n}</span></div><div class="leg row">${LEVEL.map((n, i) => `<span><i class="sw" style="background:${WARNA_LV[i]}"></i>${n}</span>`).join("")}<span><i class="sw" style="background:none;border:2px solid var(--ink)"></i>berubah dari prakiraan</span></div>`; },
+  hasilHtml(ks) {
+    const D = this.dasar, R = this.hasil, u = this.preset(this.lihat), nm = this.b === "b" ? "banjir" : "longsor", hit = r => { const n = [0, 0, 0, 0]; ks.forEach(k => n[this.lv(r, k)]++); return n; }, n0 = hit(D), n1 = hit(R);
     const berubah = ks.filter(k => this.lv(D, k) !== this.lv(R, k)).map(k => ({k, c: this.kec[k], a: this.lv(D, k), z: this.lv(R, k)})).sort((x, y) => y.z - x.z || (y.z - y.a) - (x.z - x.a) || x.c.nama.localeCompare(y.c.nama));
     const perKab = {}; berubah.forEach(x => perKab[x.c.kab] = (perKab[x.c.kab] || 0) + 1); const kabTop = Object.entries(perKab).sort((a, b) => b[1] - a[1])[0];
     const kabSiaga = r => new Set(ks.filter(k => this.lv(r, k) >= 2).map(k => this.kec[k].kab)).size, kb0 = kabSiaga(D), kb1 = kabSiaga(R);
     const pk = this.perKejadian(), wil = this.kab ? esc(this.kab) : esc(namaProv(this.kode)), hariT = this.hari === "maks" ? "dalam 4 hari ke depan" : "pada " + tglPendek(S.st.hari[this.hari]);
-    const bag = [u.x !== 1 && `hujan ${u.x === 2 ? "dua kali" : "50% di atas"} prakiraan`, u.ekstrem && `hujan 3 hari minimal ${fmt(u.ekstrem)} mm`, u.jenuh && "tanah sudah jenuh",
+    const bag = [u.x !== 1 && `hujan ${fmt(u.x)} kali prakiraan`, u.ekstrem && `hujan 3 hari minimal ${fmt(u.ekstrem)} mm`, u.jenuh && `tanah sudah jenuh (hujan 7 hari ≥ ${fmt(this.JENUH)} mm)`,
       u.sungai && `sungai mencapai debit ${u.sungai === 3 ? "Q20 (sekali dalam 20 tahun)" : "Q5 (sekali dalam 5 tahun)"}`, u.pasang && "pasang tinggi di pesisir"].filter(Boolean);
     const s0 = n0[2] + n0[3], s1 = n1[2] + n1[3], orang = n => pk.mengungsi.map(x => n * x);
-    const catatan = [u.jenuh && this.b === "b" && "Aturan banjir tidak memakai hujan 7 hari sebelumnya, jadi tanah jenuh hanya mengubah status longsor.",
-      u.sungai && this.b === "l" && "Aturan longsor tidak memakai debit sungai.", u.pasang && this.b === "l" && "Pasang tinggi hanya memengaruhi status banjir.",
-      u.sungai && `Sungai hanya mengubah ${fmt(ks.filter(k => this.kec[k].sg != null).length)} dari ${fmt(ks.length)} kecamatan: yang punya titik sungai GloFAS dalam 25 km.`,
-      u.pasang && `${fmt(ks.filter(k => this.kec[k].pantai).length)} kecamatan dianggap pesisir.`].filter(Boolean);
-    $("#simIsi").innerHTML = `<div class="card pad" style="margin-bottom:14px;border-left:4px solid var(--brand2)"><div class="lbl">Ringkasan</div>
-      <p style="margin:6px 0 0;font-size:14px;line-height:1.55">${!bag.length ? `Ini status prakiraan ${nm} ${hariT}: ${fmt(s0)} kecamatan Siaga atau Awas di ${wil}. Pilih skenario di atas untuk melihat perubahannya.` :
+    const per = d => { const a = [0, 0, 0, 0], b = [0, 0, 0, 0]; ks.forEach(k => { a[D[k][this.b][d]]++; b[R[k][this.b][d]]++; }); return [a, b]; };
+    const kartu = Object.keys(this.hasilSk).map(id => { const s = SKEN.find(x => x.id === id), r = this.hasilSk[id], n = hit(r), ub = ks.filter(k => this.lv(D, k) !== this.lv(r, k)).length, d = i => n[i] - n0[i];
+      return `<button type="button" class="simkartu${id === this.lihat ? " on" : ""}" data-lihat="${id}" style="--w:${s.w}"><b>${s.n}</b>
+        <table class="simangka"><tr><td>Awas</td><td>Siaga</td><td>Waspada</td></tr><tr>${[3, 2, 1].map(i => `<td>${fmt(n[i])}${id === "dasar" ? "" : `<small>${d(i) >= 0 ? "+" : ""}${fmt(d(i))}</small>`}</td>`).join("")}</tr></table>
+        <span class="fnd">${id === "dasar" ? "Status prakiraan" : `${fmt(ub)} kecamatan berubah status`}</span></button>`; }).join("");
+    return `<span class="pill l3">Model, belum divalidasi</span>
+      <div class="simringkas"><div class="lbl"><span>Ringkasan</span> · <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
+      <p>${!bag.length ? `Ini status prakiraan ${nm} ${hariT}: ${fmt(s0)} kecamatan Siaga atau Awas di ${wil}.` :
         `Bila ${bag.join(", ")}, kecamatan Siaga atau Awas ${nm} di ${wil} ${s1 === s0 ? `tetap <b>${fmt(s0)}</b>` : `${s1 > s0 ? "naik" : "turun"} dari <b>${fmt(s0)}</b> menjadi <b>${fmt(s1)}</b>`} ${hariT}.
         ${berubah.length ? `${fmt(berubah.length)} kecamatan berubah status, terbanyak di ${esc(kabTop[0])} (${fmt(kabTop[1])}).` : "Tidak ada kecamatan yang berubah status."}
-        ${kb1 ? `${fmt(kb1)} kabupaten/kota perlu menyiapkan posko (prakiraan: ${fmt(kb0)}). Bila tiap kabupaten mengalami satu kejadian seukuran yang biasa di provinsi ini, kira-kira <b>${rb(orang(kb1)[0])}–${rb(orang(kb1)[2])}</b> orang mengungsi.` : ""}`}</p>
-      ${catatan.length ? `<p class="fnd" style="margin-top:6px">${catatan.join(" ")}</p>` : ""}</div>
-      <div class="grid g4" style="margin-bottom:14px">${[[3, "Awas"], [2, "Siaga"], [1, "Waspada"]].map(([i, n]) => kot(`Kecamatan ${n}`, fmt(n1[i]), `prakiraan ${fmt(n0[i])} · ${n1[i] - n0[i] >= 0 ? "+" : ""}${fmt(n1[i] - n0[i])}`)).join("")}
-        ${kot("Kabupaten Siaga/Awas", fmt(kb1), `prakiraan ${fmt(kb0)}`)}</div>`;
-    $("#simDaftar").innerHTML = `<h3 style="font-size:15px">Kecamatan yang berubah status</h3>${!berubah.length ? `<p class="fnd" style="margin-top:6px">Belum ada perubahan.</p>` :
-      `<table class="tb3" style="margin-top:6px"><thead><tr><th>Kecamatan</th><th>Prakiraan → skenario</th><th class="n">Hujan 3h</th></tr></thead><tbody>
-      ${berubah.slice(0, 200).map(x => { const d = D[x.k], r = R[x.k], sebab = [r.h3 !== d.h3 && `hujan ${fmt(d.h3)}→${fmt(r.h3)} mm`, r.rk !== d.rk && r.rk >= 0 && `sungai kelas ${r.rk}`, r.a7 !== d.a7 && `tanah jenuh`,
-          this.b === "b" && u.pasang && this.kec[x.k].pantai && "pesisir saat pasang"].filter(Boolean).join(", ");
+        ${kb1 ? `${fmt(kb1)} kabupaten/kota perlu menyiapkan posko (prakiraan: ${fmt(kb0)}).` : ""}`}</p>
+</div>
+      <div class="simkartu-daftar">${kartu}</div>
+      <div class="lbl" style="margin-top:12px"><span>Kecamatan yang berubah status</span> · <span>${SKEN.find(x => x.id === this.lihat).n}</span></div>
+      ${!berubah.length ? `<p class="fnd">Belum ada perubahan.</p>` : `<table class="tb3" style="margin-top:4px"><thead><tr><th>Kecamatan</th><th>Prakiraan → skenario</th><th class="n">Hujan 3h</th></tr></thead><tbody>
+      ${berubah.slice(0, 30).map(x => { const d = D[x.k], r = R[x.k], sebab = [r.h3 !== d.h3 && `hujan ${fmt(d.h3)}→${fmt(r.h3)} mm`, r.rk !== d.rk && r.rk >= 0 && `sungai kelas ${r.rk}`, r.a7 !== d.a7 && "tanah jenuh", this.b === "b" && u.pasang && this.kec[x.k].pantai && "pesisir saat pasang"].filter(Boolean).join(", ");
         return `<tr><td>${esc(x.c.nama)}<small>${esc(x.c.kab)} · bahaya ${nm} ${fmt(this.b === "b" ? x.c.bb : x.c.bl)}</small></td><td>${pill(x.a)} → ${pill(x.z)}<small>${sebab}</small></td><td class="n num">${fmt(r.h3)}</td></tr>`; }).join("")}</tbody></table>
-      ${berubah.length > 200 ? `<p class="fnd">200 dari ${fmt(berubah.length)} ditampilkan.</p>` : ""}`}`;
-    const per = d => { const a = [0, 0, 0, 0], b = [0, 0, 0, 0]; ks.forEach(k => { a[D[k][this.b][d]]++; b[R[k][this.b][d]]++; }); return [a, b]; };
-    $("#simBawah").innerHTML = `<div class="grid g2" style="margin-bottom:14px">
-      <div class="card pad"><h3 style="font-size:15px">Per hari: prakiraan → skenario</h3><table class="tb3" style="margin-top:6px"><thead><tr><th>Hari</th><th class="n">Awas</th><th class="n">Siaga</th><th class="n">Waspada</th></tr></thead><tbody>
+      ${berubah.length > 30 ? `<p class="fnd">${fmt(30)} dari ${fmt(berubah.length)}</p>` : ""}`}
+      <div class="lbl" style="margin-top:12px">Per hari: prakiraan → skenario</div><table class="tb3" style="margin-top:4px"><thead><tr><th>Hari</th><th class="n">Awas</th><th class="n">Siaga</th><th class="n">Waspada</th></tr></thead><tbody>
         ${S.st.hari.map((t, d) => { const [a, b] = per(d); return `<tr><td>${tglPendek(t)}</td>${[3, 2, 1].map(i => `<td class="n num">${fmt(a[i])} → <b>${fmt(b[i])}</b></td>`).join("")}</tr>`; }).join("")}</tbody></table>
-        <p class="fnd" style="margin-top:8px">${fmt(ks.length)} kecamatan di ${wil}. H3 = jumlah prakiraan hujan 3 hari mulai hari itu.</p></div>
-      <div class="card pad"><h3 style="font-size:15px">Perkiraan orang terpapar <span class="pill l3" style="height:17px;font-size:9.5px">asumsi</span></h3>
-        <table class="tb2" style="margin-top:6px"><tbody>
-          <tr><td>Kabupaten/kota dengan kecamatan Siaga/Awas</td><td class="n">${fmt(kb0)} → ${fmt(kb1)}</td></tr>
-          <tr><td>Pengungsi per kejadian (median, P25–P75 antartahun)</td><td class="n">${rb(pk.mengungsi[1])}<small style="display:block;color:var(--ink2);font-weight:500">${rb(pk.mengungsi[0])}–${rb(pk.mengungsi[2])}</small></td></tr>
-          <tr><td>Perkiraan mengungsi, skenario</td><td class="n">${rb(orang(kb1)[0])}–${rb(orang(kb1)[2])}</td></tr>
-          <tr><td>Perkiraan terdampak, skenario</td><td class="n">${rb(kb1 * pk.terdampak[0])}–${rb(kb1 * pk.terdampak[2])}</td></tr></tbody></table>
-        <p class="fnd" style="margin-top:8px">Tidak ada data penduduk per kecamatan di halaman ini. Asumsinya: tiap kabupaten dengan kecamatan Siaga/Awas mengalami satu kejadian ${nm}, dan dampaknya seperti rata-rata kejadian ${nm} di ${esc(namaProv(this.kode))} 2008–2025 (DIBI mencatat kejadian per kabupaten). Angka ini untuk menyiapkan skala logistik, bukan ramalan korban.</p></div></div>
-      ${lipat("Cara hitung dan uji", `<p style="margin:0;font-size:13px">Status dihitung ulang di peramban dengan aturan yang sama dengan pembuat status harian (scripts/banjir/status.py): banjir Awas bila sungai ≥ Q20 atau H3 ≥ 120 mm dan bahaya ≥ 0,66; Siaga bila sungai ≥ Q5, atau bahaya ≥ 0,33 dan (H3 ≥ 80 mm, hujan per jam ≥ 30 mm, atau peluang ansambel 3 hari ≥ 100 mm ≥ 50%); Waspada bila sungai ≥ Q2, H3 ≥ 40 mm, atau hujan per jam ≥ 20 mm (H3 = hujan sehari sebelum s.d. sehari sesudah). Longsor memakai H3 (ambang 30/60/90 mm), kejenuhan tanah (kelembapan 3–27 cm ≥ 0,45 dan hujan 7 hari ≥ 25 mm, atau hujan 7 hari ≥ 150 mm bila kelembapan tidak ada), hujan per jam, dan bahaya longsor InaRISK. Jalur yang datanya belum ada di berkas hari ini tidak dipakai.</p>
-        <p style="margin:0;font-size:13px"><b>Uji:</b> tanpa skenario, ${fmt(this.cek.n - this.cek.beda.length)} dari ${fmt(this.cek.n)} kecamatan ${esc(namaProv(this.kode))} sama persis dengan status.json${this.cek.beda.length ? ` (berbeda: ${esc(this.cek.beda.slice(0, 5).map(k => k.split("|")[2]).join(", "))}${this.cek.beda.length > 5 ? ", …" : ""})` : ""}${this.cek.hilang.length ? `; ${this.cek.hilang.length} kecamatan di status.json tidak ditemukan di peta` : ""}.</p>
-        <p style="margin:0;font-size:13px">Pasang tinggi adalah aturan tambahan simulasi (bukan bagian status harian) dan belum diuji terhadap kejadian. Ambang hujan diterapkan pada jumlah 3 hari dan sudah diuji balik terhadap kejadian DIBI 2016-2025 (RISET-UJI-BALIK.md); skenario simulasi sendiri tidak diuji.</p>`, false)}`;
-    this.peta2(terbang);
-    if (this.aktif) this.lukisPeta(); },
-  /* peta kecil di tab: kecamatan provinsi/kabupaten terpilih, warna = level skenario, garis tebal = berubah */
+      <div class="lbl" style="margin-top:12px">Perkiraan orang terpapar <span class="pill l3" style="height:17px;font-size:9.5px">asumsi</span></div>
+      <table class="tb2" style="margin-top:4px"><tbody>
+        <tr><td>Kabupaten/kota dengan kecamatan Siaga/Awas</td><td class="n">${fmt(kb0)} → ${fmt(kb1)}</td></tr>
+        <tr><td>Pengungsi per kejadian (median, P25–P75)</td><td class="n">${rb(pk.mengungsi[1])}<small style="display:block;color:var(--ink2);font-weight:500">${rb(pk.mengungsi[0])}–${rb(pk.mengungsi[2])}</small></td></tr>
+        <tr><td>Perkiraan mengungsi, skenario</td><td class="n">${rb(orang(kb1)[0])}–${rb(orang(kb1)[2])}</td></tr>
+        <tr><td>Perkiraan terdampak, skenario</td><td class="n">${rb(kb1 * pk.terdampak[0])}–${rb(kb1 * pk.terdampak[2])}</td></tr></tbody></table>
+      <p class="fnd" style="margin-top:8px"><b>Uji:</b> ${fmt(this.cek.n - this.cek.beda.length)} dari ${fmt(this.cek.n)} kecamatan sama dengan status.json</p>
+      <button class="btn sec" id="simUtama" style="margin-top:8px;width:100%">Tampilkan di peta utama</button>`; },
+  /* peta penuh halaman: kecamatan provinsi/kabupaten terpilih, warna = level skenario yang dilihat, garis tebal = berubah dari prakiraan */
   async peta2(terbang) {
-    const fc = {type: "FeatureCollection", features: (S.geo.kec[this.kode]?.features || []).filter(f => !this.kab || f.properties.kab === this.kab).map((f, i) => {
-      const k = `${this.kode}|${f.properties.kab}|${f.properties.kec}`, a = this.lv(this.dasar, k), z = this.lv(this.hasil, k);
+    const R = this.hasil, fc = {type: "FeatureCollection", features: (S.geo.kec[this.kode]?.features || []).filter(f => !this.kab || f.properties.kab === this.kab).map((f, i) => {
+      const k = `${this.kode}|${f.properties.kab}|${f.properties.kec}`, a = this.lv(this.dasar, k), z = this.lv(R, k);
       return {type: "Feature", geometry: f.geometry, properties: {i, k, nama: f.properties.kec, kab: f.properties.kab, lv: z, lv0: a, beda: a !== z ? 1 : 0}}; })};
     this._fc = fc; /* peta yang masih memuat memakai data terbaru begitu siap */
     if (!this.peta || !document.body.contains(this.peta.getContainer())) {
-      this.peta = new maplibregl.Map({container: "smPeta", style: DASAR(), center: [118, -2.4], zoom: 4, attributionControl: {compact: true}, dragRotate: false});
-      this.peta.touchZoomRotate.disableRotation();
+      this.peta = new maplibregl.Map({container: "simPeta", style: DASAR(), center: [118, -2.4], zoom: 4, attributionControl: {compact: true}, dragRotate: false});
+      this.peta.touchZoomRotate.disableRotation(); this.peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
       await new Promise(r => this.peta.once("load", r));
       this.peta.addSource("sm", {type: "geojson", data: this._fc});
       this.peta.addLayer({id: "sm-fill", type: "fill", source: "sm", paint: {"fill-color": ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], WARNA_LV[0]], "fill-opacity": ["match", ["get", "lv"], 0, .12, .6]}});
@@ -201,5 +228,5 @@ const Simulasi = {
     else if (!this.peta.getSource("sm")) return;
     else this.peta.getSource("sm").setData(fc);
     this.peta.resize();
-    if (terbang && this._fc.features.length) this.peta.fitBounds(kotak(this._fc.features), {padding: 20, duration: 0}); },
+    if (terbang && this._fc.features.length) { const hp = innerWidth <= 900; this.peta.fitBounds(kotak(this._fc.features), {padding: hp ? {top: 20, left: 20, right: 20, bottom: innerHeight * .5} : {top: 30, left: 420, right: 60, bottom: 100}, duration: 0}); } },
 };

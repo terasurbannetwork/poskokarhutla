@@ -1,0 +1,231 @@
+"""Gunung api Indonesia dari MAGMA Indonesia (PVMBG, Badan Geologi ESDM): level resmi, radius rekomendasi, letusan terbaru.
+
+Diperiksa live 16 Okt 2026 (tidak ada API terbuka; yang ada halaman HTML publik):
+  /v1/gunung-api/tingkat-aktivitas   daftar gunung per level (I Normal .. IV Awas) + tautan laporan bertanda tangan
+  /v1/gunung-api/laporan/<id>?sig=   laporan harian: koordinat, ketinggian, rekomendasi (radius km)
+  /v1/gunung-api/informasi-letusan   daftar letusan terbaru (waktu, gunung, ketinggian kolom abu)
+Smithsonian GVP menjawab 403 dari luar peramban dan GDACS hanya memuat gunung berstatus kejadian (sedikit, banyak di luar negeri),
+jadi dua-duanya tidak dipakai di sini. KRB (peta kawasan rawan bencana) hanya berupa unduhan gambar tanpa lisensi jelas: dibuang.
+
+Keluaran: public/data/gunungapi_status.json. Katalog koordinat statis: public/gunungapi/data/gunung.json (di-commit; gunung baru
+ditambahkan otomatis dari laporan hariannya). Level I Normal tidak punya cincin radius (laporannya tidak diambil).
+Pemakaian:  python3 scripts/gunungapi/magma.py [uji]
+"""
+import datetime as dt, html, json, math, os, re, sys, time, urllib.parse, urllib.request
+
+AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
+BASIS = "https://magma.esdm.go.id"
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+KELUAR = os.path.join(AKAR, "public/data/gunungapi_status.json")
+KATALOG = os.path.join(AKAR, "public/gunungapi/data/gunung.json")
+WIB = dt.timezone(dt.timedelta(hours=7))
+ZONA = {"WIB": 7, "WITA": 8, "WIT": 9}
+BULAN = {b: i + 1 for i, b in enumerate("januari februari maret april mei juni juli agustus september oktober november desember".split())}
+
+
+MAKS_HTML = 5_000_000
+
+
+def ambil(jalur, coba=3):
+    url = jalur if jalur.startswith("http") else BASIS + jalur
+    if urllib.parse.urlparse(url).hostname != urllib.parse.urlparse(BASIS).hostname:
+        raise RuntimeError(f"tolak host di luar MAGMA: {url[:80]}")   # href hasil scrape tidak boleh membawa runner ke host lain
+    for i in range(coba):
+        try:
+            req = urllib.request.Request(url, headers={"User-Agent": UA, "Accept-Language": "id"})
+            with urllib.request.urlopen(req, timeout=40) as r:
+                isi = r.read(MAKS_HTML + 1)
+                if len(isi) > MAKS_HTML:
+                    raise RuntimeError("halaman melebihi 5 MB")
+                return isi.decode("utf-8", "replace")
+        except Exception as e:
+            if i == coba - 1:
+                raise RuntimeError(f"{jalur[:80]}: {e}")
+            time.sleep(5 * (i + 1))
+
+
+def teks(h):
+    return re.sub(r"\s+", " ", html.unescape(re.sub(r"<[^>]+>", " ", h))).strip()
+
+
+def angka(s):
+    return float(s.replace(",", "."))
+
+
+def urai_tingkat(h):
+    """Halaman tingkat aktivitas -> [{nama, prov, level, laporan}]. Tiap kelompok level dibuka judul 'Level IV (Awas)' dst;
+    baris gunung: 'Nama - Provinsi[, Provinsi] <a href=laporan>'."""
+    out = []
+    for b in re.split(r'<a href="" class="tx-inverse tx-14 tx-medium d-block">Level ', h)[1:]:
+        lv = {"IV": 4, "III": 3, "II": 2, "I": 1}[b.split(" ")[0]]
+        for m in re.finditer(r"<td>\s*([^<]+?)\s*<a href=\"([^\"]+)\"", b):
+            nama, _, prov = html.unescape(m.group(1)).partition(" - ")
+            out.append({"nama": nama.strip(), "prov": prov.strip(), "level": lv, "laporan": html.unescape(m.group(2))})
+    return out
+
+
+def urai_laporan(h):
+    """Laporan harian -> koordinat, ketinggian, radius rekomendasi (km), jarak sektor (km), periode. Yang tak ditemukan tidak diisi."""
+    t = teks(h[h.find("slim-mainpanel"):])
+    o = {}
+    m = re.search(r"Latitude (-?[\d.,]+)°\s*(LU|LS)?,?\s*Longitude (-?[\d.,]+)°\s*(BT|BB)?\s*dan memiliki ketinggian (-?\d+)", t)
+    if m:
+        lat, lon = angka(m.group(1)), angka(m.group(3))
+        if m.group(2) == "LS" and lat > 0:  # MAGMA menulis tanda minus untuk selatan ('-8.108°LU'); 'LS' tanpa minus dibalik
+            lat = -lat
+        o.update(lat=lat, lon=lon, tinggi=int(m.group(5)))
+    r = t.find("Rekomendasi", t.find("Pengamatan Kegempaan"))
+    rek = t[r:t.find("Copyright", r)] if r >= 0 else ""
+    rad = [angka(x) for x in re.findall(r"radius\s+(\d+(?:[.,]\d+)?)\s*km", rek, re.I)]
+    sek = [angka(x) for x in re.findall(r"(?:sejauh|hingga jarak|jarak)\s+(\d+(?:[.,]\d+)?)\s*km", rek, re.I)]
+    if rad:
+        o["radius_km"] = max(rad)
+    if sek:
+        o["sektor_km"] = max(sek)
+    if rek:
+        o["rekomendasi"] = re.sub(r"^(Rekomendasi\s*)+", "", rek).strip()[:2500]
+    m = re.search(r"Laporan Aktivitas Gunung Api - [^,]+, ([^,]+?), periode ([\d:\-]+ \w+)", teks(h))  # judul ada di <title>, sebelum slim-mainpanel
+    if m:
+        o["periode"] = m.group(1).strip() + ", " + m.group(2)
+    return o
+
+
+def urai_letusan(h):
+    """Daftar letusan terbaru -> [{gunung, waktu (ISO, WIB), ket, tinggi_m}] terbaru dulu."""
+    out, tgl = [], None
+    for b in re.split(r'<div class="timeline-item', h)[1:]:
+        m = re.search(r'timeline-date">[^<]*?(\d{1,2}) (\w+) (\d{4})<', b)
+        if m:
+            tgl = (int(m.group(3)), BULAN.get(m.group(2).lower()), int(m.group(1)))
+            continue
+        jam = re.search(r"<small>(\d{1,2}):(\d{2}) (WIB|WITA|WIT)", b)
+        nm = re.search(r'timeline-title"><a[^>]*>([^<]+)<', b)
+        tx = re.search(r'timeline-text">(.*?)</p>', b, re.S)
+        if not (tgl and tgl[1] and jam and nm and tx):
+            continue
+        w = dt.datetime(*tgl, int(jam.group(1)), int(jam.group(2)), tzinfo=dt.timezone(dt.timedelta(hours=ZONA[jam.group(3)])))
+        ket = teks(tx.group(1))
+        tg = re.search(r"tinggi kolom abu teramati ± ?(\d+) m", ket)
+        out.append({"gunung": html.unescape(nm.group(1)).strip(), "waktu": w.astimezone(WIB).isoformat(timespec="minutes"), "ket": ket[:300],
+                    **({"tinggi_m": int(tg.group(1))} if tg else {})})
+    return out
+
+
+def km(a, b, c, d):
+    r = math.pi / 180
+    x = math.sin((c - a) * r / 2) ** 2 + math.cos(a * r) * math.cos(c * r) * math.sin((d - b) * r / 2) ** 2
+    return 12742 * math.asin(math.sqrt(x))
+
+
+def penduduk_radius(grid, lat, lon, r_km, sel=0.25, n=12):
+    """Perkiraan jiwa dalam lingkaran r_km: tiap sel kisi dihitung sebesar bagian luasnya yang tercakup (contoh n x n titik, penduduk dianggap merata di sel).
+    ponytail: sel 0,25 derajat (~28 km) jauh lebih kasar dari radius 2-13 km, jadi angka ini orde besar, bukan hitungan desa; naikkan dengan penduduk per kecamatan bila perlu."""
+    dlat = r_km / 111.2 + sel
+    dlon = r_km / (111.2 * max(.2, math.cos(math.radians(lat)))) + sel
+    tot = 0.0
+    for g_lat, g_lon, p, _ in grid:
+        if abs(g_lat - lat) > dlat or abs(g_lon - lon) > dlon or not p:
+            continue
+        dalam = sum(km(lat, lon, g_lat + sel * ((i + .5) / n - .5), g_lon + sel * ((j + .5) / n - .5)) <= r_km for i in range(n) for j in range(n))
+        tot += p * dalam / (n * n)
+    return int(round(tot, -2)) if tot >= 100 else int(round(tot))
+
+
+def baca(jalur, bawaan=None):
+    try:
+        return json.load(open(jalur))
+    except (OSError, ValueError):
+        return bawaan
+
+
+def simpan(jalur, isi):
+    os.makedirs(os.path.dirname(jalur), exist_ok=True)
+    with open(jalur + ".tmp", "w") as f:
+        json.dump(isi, f, ensure_ascii=False, separators=(",", ":"))
+    os.replace(jalur + ".tmp", jalur)
+
+
+def jalan():
+    sekarang = dt.datetime.now(WIB)
+    daftar = urai_tingkat(ambil("/v1/gunung-api/tingkat-aktivitas"))
+    if len(daftar) < 40:  # halaman berubah bentuk: berkas lama dibiarkan, jangan menimpa dengan setengah data
+        raise SystemExit(f"hanya {len(daftar)} gunung terurai dari MAGMA; berkas lama dibiarkan")
+    kat = baca(KATALOG, {})
+    lama = baca(KELUAR, {})
+    lv_lama = {g["nama"]: g["level"] for g in lama.get("gunung", [])}
+    gunung = []
+    for g in daftar:
+        k = kat.get(g["nama"], {})
+        lap = {}
+        if g["level"] >= 2 or not k.get("lat"):  # laporan hanya diambil untuk level >= II atau gunung yang koordinatnya belum ada
+            try:
+                lap = urai_laporan(ambil(g["laporan"]))
+            except RuntimeError as e:
+                print(f"  laporan {g['nama']} gagal: {e}", file=sys.stderr)
+            time.sleep(.4)
+        if lap.get("lat") is not None and not k.get("lat"):
+            k = kat[g["nama"]] = {"prov": g["prov"], "lat": lap["lat"], "lon": lap["lon"], **({"tinggi": lap["tinggi"]} if "tinggi" in lap else {})}
+        if k.get("lat") is None:
+            continue  # tanpa koordinat tidak bisa dipetakan: dibuang (A18)
+        o = {"nama": g["nama"], "prov": g["prov"], "level": g["level"], "lat": k["lat"], "lon": k["lon"], "tinggi": k.get("tinggi"), "laporan": g["laporan"].split("?")[0]}
+        if g["level"] >= 2:  # radius hanya bermakna saat ada rekomendasi pembatasan
+            o.update({x: lap[x] for x in ("radius_km", "sektor_km", "periode", "rekomendasi") if x in lap})
+        gunung.append(o)
+    pend = baca(os.path.join(AKAR, "public/data/penduduk.json"), {}).get("grid", [])
+    for o in gunung:
+        if o.get("radius_km") and pend:
+            o["penduduk_radius"] = penduduk_radius(pend, o["lat"], o["lon"], o["radius_km"])
+    # perubahan level: dibandingkan dengan berkas sebelumnya; riwayat dipertahankan 90 hari
+    batas = (sekarang - dt.timedelta(days=90)).date().isoformat()
+    perubahan = [p for p in lama.get("perubahan", []) if p["tgl"] >= batas]
+    for o in gunung:
+        a = lv_lama.get(o["nama"])
+        if a and a != o["level"]:
+            perubahan.append({"nama": o["nama"], "dari": a, "ke": o["level"], "tgl": sekarang.date().isoformat()})
+    try:
+        h, letusan = "", []
+        for hal in range(1, 9):  # halaman 1 memuat ±15 letusan (Ibu bisa belasan per hari): ambil mundur sampai melewati 24 jam, paling banyak 8 halaman
+            h += ambil(f"/v1/gunung-api/informasi-letusan?page={hal}")  # digabung dulu: tanggal hanya ditulis di awal tiap hari, kadang tak ikut di awal halaman berikut
+            letusan = urai_letusan(h)
+            if not letusan or dt.datetime.fromisoformat(letusan[-1]["waktu"]) < sekarang - dt.timedelta(hours=24):
+                break
+            time.sleep(.4)
+    except RuntimeError as e:
+        print(f"  letusan gagal: {e}", file=sys.stderr)
+        letusan = lama.get("letusan", [])
+    simpan(KATALOG, dict(sorted(kat.items())))
+    n_lv = {l: sum(1 for o in gunung if o["level"] == l) for l in (1, 2, 3, 4)}
+    simpan(KELUAR, {"sumber": "MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "dibuat": sekarang.isoformat(timespec="seconds"),
+                    "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan[:150]})
+    print(f"{len(gunung)} gunung; level {n_lv}; letusan {len(letusan)}; perubahan {len(perubahan)}", file=sys.stderr)
+
+
+def uji():
+    h = ('<a href="" class="tx-inverse tx-14 tx-medium d-block">Level IV (Awas)</a><td>Tidak ada gunung api Level IV (Awas)</td>'
+         '<a href="" class="tx-inverse tx-14 tx-medium d-block">Level III (Siaga)</a><tr><td>\n Semeru - Jawa Timur <a href="https://x/laporan/1?signature=a&amp;b=2"><i></i></a></td></tr>'
+         '<a href="" class="tx-inverse tx-14 tx-medium d-block">Level I (Normal)</a><tr><td> Kerinci - Jambi, Sumatera Barat <a href="https://x/laporan/2?s=1">z</a></td></tr>')
+    d = urai_tingkat(h)
+    assert [(g["nama"], g["prov"], g["level"]) for g in d] == [("Semeru", "Jawa Timur", 3), ("Kerinci", "Jambi, Sumatera Barat", 1)], d
+    assert d[0]["laporan"] == "https://x/laporan/1?signature=a&b=2"
+    lap = ('<title>Laporan Aktivitas Gunung Api - Semeru, Jumat - 16 Oktober 2026, periode 06:00-12:00 WIB</title><div class="slim-mainpanel">Laporan Aktivitas Gunung Api - Semeru, Jumat - 16 Oktober 2026, periode 06:00-12:00 WIB '
+           'Gunung Api Semeru terletak di Lumajang dengan posisi geografis di Latitude -8.108°LU, Longitude 112.92°BT dan memiliki ketinggian 3676 mdpl '
+           'Pengamatan Kegempaan 25 kali Rekomendasi Rekomendasi 1. Tidak melakukan aktivitas apapun di sektor tenggara sejauh 13 km dari puncak. '
+           '2. Tidak beraktivitas dalam radius 5 Km dari kawah. Copyright 2026</div>')
+    r = urai_laporan(lap)
+    assert (r["lat"], r["lon"], r["tinggi"], r["radius_km"], r["sektor_km"]) == (-8.108, 112.92, 3676, 5, 13), r
+    assert urai_laporan("slim-mainpanel Latitude -8.5444°LU, Longitude 123.585°BT dan memiliki ketinggian -50 mdpl")["tinggi"] == -50  # gunung bawah laut
+    assert r["rekomendasi"].startswith("1. Tidak") and r["periode"].startswith("Jumat - 16 Oktober 2026"), r
+    ev = ('<div class="timeline-item timeline-day"><p class="timeline-date">Hari Ini, Jumat, 16 Oktober 2026</p></div>'
+          '<div class="timeline-item"><small>14:43 WITA </small><p class="timeline-title"><a href="#">Ili Lewotolok</a></p>'
+          '<p class="timeline-text"> Terjadi erupsi dengan tinggi kolom abu teramati ± 400 m di atas puncak. </p></div>')
+    e = urai_letusan(ev)
+    assert e == [{"gunung": "Ili Lewotolok", "waktu": "2026-10-16T13:43+07:00", "ket": "Terjadi erupsi dengan tinggi kolom abu teramati ± 400 m di atas puncak.", "tinggi_m": 400}], e
+    grid = [[0.0, 0.0, 10000, ""]]
+    p_kecil, p_besar = penduduk_radius(grid, 0, 0, 3), penduduk_radius(grid, 0, 0, 200)
+    assert 0 < p_kecil < 10000 and p_besar == 10000, (p_kecil, p_besar)  # radius kecil mengambil sebagian sel; radius besar seluruhnya
+    assert penduduk_radius(grid, 5, 5, 10) == 0
+    print("ok")
+
+
+if __name__ == "__main__":
+    uji() if sys.argv[1:] == ["uji"] else jalan()

@@ -4,8 +4,8 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .garis-waktu{width:min(620px,100%);padding:8px 10px;display:none;align-items:center;gap:10px}
 .garis-waktu.on{display:flex}
 .garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
-@media (max-width:900px){#p-peta .dok{right:12px;align-items:flex-start}.garis-waktu{width:100%}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
-.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
+@media (max-width:900px){.garis-waktu{width:100%;min-width:0}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
+.panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:440px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .panel > *{pointer-events:auto}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
 .kpi{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);overflow:hidden;text-align:center}
@@ -16,10 +16,14 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .kpi small{display:block;color:var(--ink2);font-size:11px;padding:0 6px 7px}
 .list{flex:1;min-height:0;display:flex;flex-direction:column;overflow:hidden}
 .list .top{padding:12px 14px 8px;border-bottom:1px solid var(--line)}
-.crumb{display:flex;flex-wrap:wrap;gap:4px;align-items:center;font-size:12.5px;margin-bottom:8px}
-.crumb button{border:0;background:none;padding:2px 4px;border-radius:6px;color:var(--brand2);font-weight:600;cursor:pointer}
-.crumb button:hover{background:var(--surface)}
-.crumb span{color:var(--ink2)}
+.crumb{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.crumb button{border:1px solid var(--line);background:var(--card);color:var(--ink);padding:6px 14px;border-radius:999px;font-weight:700;font-size:12.5px;cursor:pointer;box-shadow:var(--shadow)}
+.crumb button:hover{border-color:var(--brand2)}
+.crumb button[data-n]:last-child,.crumb button[data-n]:has(+ .cr-rinci){background:var(--brand);border-color:var(--brand);color:#fff}
+.crumb .cr-rinci{display:inline-flex;align-items:center;gap:5px;background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));border:0;color:#fff}
+.crumb .cr-rinci svg{width:14px;height:14px}
+:root[data-theme="dark"] .crumb button:last-child{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .crumb button:last-child{color:oklch(18% .035 256)}}
 .cari{position:relative}
 .cari input{width:100%;height:36px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 14px 0 34px;font-size:13px}
 .cari svg{position:absolute;left:12px;top:10px;color:var(--ink2)}
@@ -29,13 +33,26 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .hasil small{color:var(--ink2)}
 .rows{overflow-y:auto;flex:1;padding:4px 6px 8px}
 .row{display:grid;grid-template-columns:22px 1fr auto;gap:8px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:8px;border-radius:10px;cursor:pointer}
-.tb{display:grid;grid-template-columns:20px minmax(0,1fr) 56px 50px 70px;gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:8px;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
+.tb{display:grid;grid-template-columns:20px minmax(0,2.6fr) minmax(50px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr);gap:6px;align-items:center;width:100%;text-align:left;border:0;background:none;padding:5px 8px;border-radius:0;cursor:pointer;font-size:12.5px;line-height:1.25;border-bottom:1px solid var(--line)}
 .tb:hover{background:var(--surface)}
-.tb.kepala{position:sticky;top:0;z-index:1;background:var(--card);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:6px 8px}
+.tb.kepala{position:sticky;top:0;z-index:3;background:oklch(25.5% .075 256);cursor:default;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:#fff;padding:7px 8px;border-radius:8px 8px 0 0;border-bottom:0;box-shadow:0 -6px 0 var(--card)}
+.tb.kepala:hover{background:oklch(25.5% .075 256)}
+.tb.kepala span[data-s]{cursor:pointer;user-select:none}
+.tb.kepala span[data-s]:hover{color:oklch(85% .08 70)}
+.tb.kepala span.urut{color:oklch(85% .08 70)}
+.tb.kepala span.urut::after{content:" ▾"}
+.tb.kepala span.urut[data-arah="1"]::after{content:" ▴"}
 .tb > span{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.tb > span:last-child{overflow:visible}
+.tb > span{text-align:center!important;justify-self:center}
+.tb > span:nth-child(2){text-align:left!important;justify-self:stretch}
+.tb .kom{display:flex;align-items:center;gap:6px;min-width:0}
+.tb .rk{justify-self:end!important;text-align:right!important}
+.tb .pill{justify-self:center}
 .tb .n{text-align:right;font-variant-numeric:tabular-nums}
 .tb .rk{color:var(--ink2);font-size:11px;font-weight:700;text-align:right}
 .tb .pill{height:19px;padding:0 7px;font-size:10.5px;justify-self:end}
+.tb.kepala > span:nth-child(2){text-align:center!important;justify-self:center}
 .kartu{margin:-10px -12px;min-width:270px;overflow:hidden;border-radius:12px}
 .kartu .kp{padding:8px 30px 8px 12px;color:#fff;display:flex;align-items:center;gap:10px}
 .kartu .kp>div{min-width:0}
@@ -70,7 +87,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 :root[data-theme="dark"] .l2{color:oklch(84% .13 75)} :root[data-theme="dark"] .l3{color:oklch(76% .15 27)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .l0{color:oklch(80% .14 150)}:root:not([data-theme="light"]) .l1{color:oklch(80% .1 235)}:root:not([data-theme="light"]) .l2{color:oklch(84% .13 75)}:root:not([data-theme="light"]) .l3{color:oklch(76% .15 27)}}
 
-.tools{position:absolute;z-index:5;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:250px}
+.tools{position:absolute;z-index:5;top:12px;right:12px;display:flex;flex-direction:column;gap:8px;align-items:flex-end;width:280px}
 .seg{display:inline-flex;flex-shrink:0;max-width:100%;overflow-x:auto;scrollbar-width:none;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;box-shadow:var(--shadow)}
 .seg.penuh{display:flex;width:100%}.seg.penuh button{flex:1;text-align:center}
 .seg button{border:0;background:none;padding:5px 11px;border-radius:999px;font-size:12px;font-weight:600;cursor:pointer;color:var(--ink2);white-space:nowrap}
@@ -78,17 +95,24 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 :root[data-theme="dark"] .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{color:oklch(18% .035 256)}}
 .box{background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow);padding:10px 12px;width:100%}
-.lapis label{display:flex;align-items:center;gap:8px;font-size:12.5px;padding:3px 0 3px 4px;cursor:pointer}
-.lapis details{border-top:1px solid var(--line);padding:4px 0}
-.lapis summary{cursor:pointer;font-size:12px;font-weight:700;padding:3px 0;list-style:none;display:flex;justify-content:space-between}
-.lapis summary::-webkit-details-marker{display:none}
-.lapis summary::after{content:"▾";color:var(--ink2);transition:transform .15s}
-.lapis details:not([open]) summary::after{transform:rotate(-90deg)}
+.lapis label{display:flex;align-items:center;gap:7px;font-size:12px;padding:1px 0 1px 4px;cursor:pointer;line-height:1.35}
+.lapis details{border-top:1px solid var(--line);padding:3px 0 1px;margin-top:3px}
+.lapis summary{font-size:11.5px;font-weight:800;padding:2px 0;color:var(--ink);cursor:pointer;list-style:none;display:flex;justify-content:space-between;align-items:center}
+.lapis summary::after{content:"";width:6px;height:6px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s;margin-right:4px}
+.lapis details:not([open]) > summary::after{transform:rotate(-45deg)}
+.lapis details>label{padding-left:8px}
+.lapis-hd{margin:-10px -12px 6px;padding:8px 12px;border-radius:13px 13px 0 0;background:oklch(25.5% .075 256);color:#fff;font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase}
+.lapis-hd+details{border-top:0;margin-top:0}
+.lapis-hd{text-align:center;position:relative}
+.lapis-hd button{position:absolute;right:8px;top:50%;transform:translateY(-50%);width:24px;height:24px;border:0;border-radius:7px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer}
+.lapis-hd button:hover{background:oklch(100% 0 0 / .26)}
+.lapis-hd button svg{width:13px;height:13px;transition:transform .2s}
+.lapis-hd button.tutup svg{transform:rotate(180deg)}
 .tools{max-height:calc(100% - 24px);overflow-y:auto;scrollbar-width:thin}
 .tools #lapis{display:none}
 .tools #lapis.buka{display:block}
 #lapisBtn{align-self:flex-end}
-/* desktop: Overlay selalu terbuka (ubin ikon), tombol layer hanya untuk mobile; seg tersembunyi benar-benar hilang (A24) */
+/* desktop: Overlay selalu tampil (ubin ikon), tombol layer hanya untuk mobile; seg tersembunyi benar-benar hilang (A24) */
 @media (min-width:901px){.tools #lapis{display:block}#lapisBtn{display:none!important}}
 .seg[hidden],.seg button[hidden]{display:none!important}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}
@@ -101,14 +125,34 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 
 .laci{position:absolute;z-index:8;top:12px;right:12px;bottom:12px;width:390px;display:none;flex-direction:column;overflow:hidden}
 .laci.on{display:flex}
-.laci .hd{padding:14px 16px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start}
-.laci .hd h2{font-size:17px}
-.laci .bd{overflow-y:auto;padding:14px 16px 18px}
+.laci .hd{padding:14px 16px 13px;border-bottom:1px solid var(--line);display:flex;gap:10px;align-items:flex-start;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)))}
+.laci .hd h2{font-size:19px;line-height:1.2;margin:6px 0 7px;letter-spacing:-.01em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laci .hd-isi{min-width:0}
+.laci .hd-meta{flex-wrap:nowrap}
+.laci .hd-aksi .ik-btn{width:30px;height:30px;border-radius:9px;border:0;background:var(--brand2);color:#fff}
+.laci .hd-aksi .ik-btn:hover{background:var(--brand);color:#fff}
+.laci .hd-aksi .ik-btn.tutup{background:var(--surface);color:var(--ink)}
+.laci .hd-aksi .ik-btn svg{width:15px;height:15px}
+.laci .hd-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
+.laci .hd-meta{display:flex;flex-wrap:wrap;white-space:nowrap;align-items:center;gap:6px 8px;font-size:12px;color:var(--ink2)}
+.laci .hd-ko{display:inline-flex;align-items:center;gap:4px;padding:2px 8px;border-radius:999px;background:var(--card);border:1px solid var(--line);font-variant-numeric:tabular-nums;font-size:11.5px}
+.laci .hd-ko svg{width:12px;height:12px}
+.laci .bd{overflow-y:auto;padding:14px 16px 18px;grid-auto-rows:max-content;align-content:start;flex:1;min-height:0}
 .tutup{margin-left:auto;border:0;background:var(--surface);width:30px;height:30px;border-radius:8px;cursor:pointer;flex:none}
+.hd-aksi{margin-left:auto;display:flex;gap:6px;flex:none}
+.ik-btn{width:36px;height:36px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink);display:grid;place-items:center;cursor:pointer;padding:0;margin:0}
+.ik-btn:hover{background:var(--surface);border-color:var(--brand2)}
+.ik-btn svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .kv{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin:10px 0}
-.kv div{background:var(--surface);border-radius:10px;padding:8px 6px;text-align:center}
-.kv b{display:block;font-family:var(--display);font-size:16px;font-variant-numeric:tabular-nums}
-.kv span{font-size:10px;color:var(--ink2);font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+/* ubin angka laci kompleks gaya Oyenza: panel abu tanpa garis & bingkai, angka besar rata kiri, label satu baris, kelas jadi pil (pemilik, 15 Okt 2026) */
+.kv div{--k:#c9503a;background:none;border:0;border-left:1px solid var(--line);border-radius:0;padding:2px 14px;text-align:left;display:flex;flex-direction:column;align-items:flex-start;gap:3px;position:relative;min-width:0}
+.kv div:first-child{border-left:0;padding-left:0}   /* tanpa wadah: angka dipisah garis tipis (pemilik, 15 Okt 2026) */
+.kv div:nth-child(2){--k:#e58a45}
+.kv div:nth-child(3){--k:#5f6fb0}
+.kv b{display:block;font-family:var(--display);font-size:22px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--ink)}
+.kv b small,.kv b sub,.kv b span{display:inline!important;font-size:12px;font-weight:600;color:var(--ink2);letter-spacing:0}
+.kv span{display:flex;flex-direction:column;align-items:flex-start;gap:5px;font-size:11.5px;line-height:1.3;color:var(--ink2);font-weight:500;max-width:100%}
+.kv span em{font-style:normal;font-size:10.5px;font-weight:700;padding:2px 8px;border-radius:999px;background:color-mix(in oklch, var(--k) 13%, var(--card));color:color-mix(in oklch, var(--k) 80%, var(--ink));white-space:nowrap}
 .sop{border-left:3px solid var(--bad);padding:8px 12px;background:var(--surface);border-radius:0 10px 10px 0;margin:10px 0;font-size:13px}
 .sop ul{margin:6px 0 0;padding-left:18px}
 .btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;height:38px;padding:0 16px;border-radius:12px;border:0;cursor:pointer;font-weight:700;font-size:13.5px}
@@ -131,9 +175,21 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
   .panel .kpis{display:none}
   .panel .list{border-radius:18px 18px 0 0}
   .handle{display:block;width:44px;height:5px;border-radius:5px;background:var(--line);margin:8px auto 0;border:0;cursor:pointer}
-  .tools{width:auto;right:8px;top:8px}
+  .tools{width:264px;right:8px;top:8px}
   .tools .box{display:none}
   .tools .box.buka{display:block;width:230px}
   .laci{inset:auto 0 0 0;width:auto;height:72%;border-radius:18px 18px 0 0}
 }
 @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+/* kartu hari di kolom kanan (seperti kartu Prakiraan cuaca karhutla) */
+.tools .garis-waktu{width:100%;flex-direction:column;align-items:stretch;gap:5px;padding:7px 8px}
+.tools .garis-waktu > .lbl{display:block;text-align:center}
+.tools #hariSeg .seg{display:grid;grid-template-columns:repeat(4,1fr)}
+.tools #hariSeg .seg button{padding:5px 2px;font-size:11px;white-space:nowrap;min-width:0}
+
+/* isi Analisa di laci 390px: kotak status 2 kolom, angka lebih kecil, tabel boleh digeser */
+.laci .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr))}
+.laci .kpi b{font-size:17px;padding-top:5px}
+.laci details.lipat .isi{overflow-x:auto}
+@media (max-width:900px){.laci .grid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
