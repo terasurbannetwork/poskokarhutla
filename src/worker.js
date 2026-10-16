@@ -497,8 +497,15 @@ export default {
     }
   },
   // cron CRON_TITIK = titik panas FIRMS; CRON_GEMPA = BMKG/USGS tiap menit; "17 * * * *" = bersih-bersih Lapor Warga
+  /* Akun Workers Free hanya boleh 5 jadwal cron untuk SEMUA worker di akun (16 Okt 2026 terbit gagal karena worker lain menambah jadwal).
+     Karena itu wrangler.jsonc cukup satu jadwal "* * * * *"; tugas titik (menit 15 tiap 3 jam UTC) dan bersih-bersih (menit 17) dipilih
+     dari scheduledTime di sini. Jadwal lama (CRON_TITIK, "17 * * * *") tetap dikenali supaya uji dan pemanggilan manual tidak berubah. */
   async scheduled(ev, env) {
-    const sekarang = ev.scheduledTime || Date.now();
+    const sekarang = ev.scheduledTime || Date.now(), w = new Date(sekarang), m = w.getUTCMinutes();
+    if (ev.cron === CRON_GEMPA) {
+      if (m === 15 && w.getUTCHours() % 3 === 0) try { console.log("titik", JSON.stringify(await perbaruiTitik(env))); } catch (e) { console.error("titik", e?.message); }
+      if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
+    }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
     if (ev.cron === CRON_GEMPA) {
       /* tiap langkah dibungkus sendiri: galat katalog gempa tidak boleh menahan email tsunami/gempa ke pelanggan EWS di bawah */
@@ -507,6 +514,12 @@ export default {
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       return console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
     }
+    return bersihSemua(env, sekarang);
+  },
+};
+
+// bersih-bersih Lapor Warga, foto, gempa, peringatan, EWS, gangguan, garam IP (dulu cron "17 * * * *", kini menit 17 dari cron tiap menit)
+async function bersihSemua(env, sekarang) {
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
@@ -517,5 +530,4 @@ export default {
     await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
     const ip = await env.DB.prepare("SELECT min(diambil) t, count(*) n FROM stat_ip").first();   // daftar IP perayap: sehari sekali
     if (!ip.n || kini - ip.t > 24 * JAM) console.log("rentang ip", JSON.stringify(await Pub.perbaruiRentang(env, kini)));
-  },
-};
+}

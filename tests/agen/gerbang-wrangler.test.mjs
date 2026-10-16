@@ -36,8 +36,15 @@ test('wrangler.jsonc punya tiap binding yang dipakai src/', () => {
   assert.deepEqual(kurang, [], `wrangler.jsonc (produksi) tanpa binding: ${kurang.join(', ')}`)
 })
 
-test('wrangler.jsonc punya tiap cron yang ditunggu scheduled()', () => {
+// 16 Okt 2026: akun Workers Free dibatasi 5 jadwal cron untuk SEMUA worker di akun; terbit gagal saat worker lain menambah jadwal.
+// Produksi kini satu jadwal "* * * * *" dan scheduled() memilih tugas titik (menit 15 tiap 3 jam) dan bersih (menit 17) dari jamnya.
+// Gerbang tetap menagih: jadwal tiap menit ada, dan tiap CRON_* lain di src/ dilayani lewat pemilihan menit itu (bukti perilaku:
+// tests/warga/api.test.mjs memanggil scheduled() dengan cron tiap menit pada 00:15 UTC lalu menagih /api/titik terisi).
+test('wrangler.jsonc punya jadwal tiap menit; jadwal lain dilayani dari dalam scheduled()', () => {
   const ada = new Set(prod.triggers?.crons ?? [])
-  const kurang = [...new Set([...cronKode, ...(usulan.triggers?.crons ?? [])])].filter((c) => !ada.has(c))
-  assert.deepEqual(kurang, [], `wrangler.jsonc (produksi) tanpa cron: ${kurang.join(', ')}`)
+  assert.ok(ada.has('* * * * *'), 'wrangler.jsonc (produksi) tanpa cron "* * * * *"')
+  assert.ok(ada.size <= 2, `wrangler.jsonc memakai ${ada.size} jadwal cron; batas akun Free 5 untuk semua worker`)
+  const lain = [...new Set([...cronKode, ...(usulan.triggers?.crons ?? [])])].filter((c) => !ada.has(c))
+  for (const c of lain) assert.ok(c === '15 */3 * * *' && /getUTCMinutes\(\)[\s\S]{0,200}m === 15 && w\.getUTCHours\(\) % 3 === 0/.test(src),
+    `cron ${c} tidak ada di wrangler.jsonc dan tidak dilayani dari scheduled()`)
 })

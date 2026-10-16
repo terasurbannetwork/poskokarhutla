@@ -415,7 +415,12 @@ uji("tanpa IP_SALT semua penulisan ditolak 503 (tidak pernah hash tanpa garam)",
 
 uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, laut dibuang", async () => {
   assert.equal((await panggil("GET", "/api/titik")).status, 404, "sebelum cron pertama /api/titik harus 404");
-  await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
+  // produksi hanya punya jadwal "* * * * *" (batas 5 cron akun Free): titik dipilih di menit 15 jam UTC kelipatan 3
+  const w = await mf.getWorker(), jam = (h, m) => Date.UTC(2026, 9, 16, h, m);
+  await w.scheduled({cron: "* * * * *", scheduledTime: jam(0, 14)});
+  await w.scheduled({cron: "* * * * *", scheduledTime: jam(1, 15)});
+  assert.equal((await panggil("GET", "/api/titik")).status, 404, "menit 14, atau menit 15 di jam bukan kelipatan 3, tidak boleh menarik FIRMS");
+  await w.scheduled({cron: "* * * * *", scheduledTime: jam(3, 15)});
   const r = await panggil("GET", "/api/titik");
   assert.equal(r.status, 200, r.teks);
   assert.match(r.h.get("cache-control"), /max-age=600/);
