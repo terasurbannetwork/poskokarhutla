@@ -1,0 +1,86 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Peringatan Dini untuk lokasimu — Pantau Bencana</title>
+<meta name="description" content="Dapatkan peringatan dini lewat email untuk lokasimu: karhutla, banjir, longsor, cuaca ekstrem, rob, serta gempa dan tsunami. Gratis, bisa berhenti kapan saja.">
+<link rel="canonical" href="https://pantau.terasurban.com/peringatan">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Peringatan dini untuk lokasimu · Pantau Bencana">
+<meta property="og:description" content="Langganan peringatan dini lewat email untuk titik lokasimu, dan pelajari apa yang harus dilakukan saat bencana terjadi.">
+<meta property="og:url" content="https://pantau.terasurban.com/peringatan">
+<meta property="og:image" content="https://pantau.terasurban.com/img/bencana-banjir.jpg">
+<meta name="twitter:card" content="summary_large_image">
+<script src="/i18n.js"></script>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Montserrat:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/peringatan.css">
+</head>
+<body>
+<a class="loncat" href="#isi">Langsung ke isi</a>
+<header class="top">
+  <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a>
+  <nav class="pe-nav" aria-label="Menu utama">
+    <a href="/">Karhutla</a>
+    <a href="/banjir/">Banjir<span class="pe-pj">, Longsor &amp; Rob</span></a>
+    <a class="pe-ini" href="/peringatan" aria-current="page" aria-label="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg><span class="pe-tx">Peringatan Dini</span></a>
+  </nav>
+  <button class="iconbtn" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+</header>
+
+<main id="isi">
+  <section class="hero" aria-labelledby="judul">
+    <img class="hero-gbr" src="/img/bencana-cuaca.jpg" alt="" fetchpriority="high" decoding="async">
+    <div class="wrap hero-isi">
+      <h1 id="judul">Peringatan dini untuk lokasimu</h1>
+      <p>Kami kirim peringatan lewat email bila titik lokasimu terancam hari ini, besok, atau lusa; gempa dan tsunami dikirim seketika.</p>
+      <div class="hero-aksi">
+        <button class="tbl pri" type="button" data-langganan><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>Langganan lewat email</button>
+        <button class="tbl sek" type="button" data-cek><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/></svg>Cek lokasiku sekarang</button>
+      </div>
+    </div>
+  </section>
+
+  <div class="wrap">
+    <div id="spanduk" role="status" hidden></div>
+    <section id="aksi" class="aksi" hidden aria-live="polite"></section>
+
+    <section id="status" class="bag" aria-labelledby="h-status">
+      <h2 id="h-status">Status di lokasimu</h2>
+      <div id="statusIsi" class="st-isi" aria-live="polite">
+        <div class="kosong"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-6.5-6-6.5-11a6.5 6.5 0 0 1 13 0C18.5 15 12 21 12 21z"/><circle cx="12" cy="10" r="2.2"/></svg>
+          <b>Belum ada lokasi</b><p>Ketuk Cek lokasiku sekarang untuk melihat peringatan tiga hari ke depan di titikmu.</p>
+          <button class="tbl pri" type="button" data-cek>Cek lokasiku sekarang</button></div>
+      </div>
+      <details class="manual"><summary>Isi koordinat sendiri</summary>
+        <form id="fmManual" novalidate><label>Lintang<input name="lat" inputmode="decimal" placeholder="-2,21" autocomplete="off"></label><label>Bujur<input name="lon" inputmode="decimal" placeholder="113,92" autocomplete="off"></label><button class="tbl sek" type="submit">Cek</button></form>
+      </details>
+    </section>
+
+    <section id="tindakan" class="bag" aria-labelledby="h-tindakan">
+      <h2 id="h-tindakan">Kalau ini terjadi, lakukan ini</h2>
+      <p class="sub">Pilih tingkatnya untuk melihat langkah yang disarankan.</p>
+      <div id="kartu" class="kartu-grid"></div>
+    </section>
+  </div>
+</main>
+
+<footer class="kaki">
+  <div class="wrap">
+    <p class="catatan"><b>Email bukan pengganti sirene dan arahan petugas.</b> Bila petugas meminta mengungsi, ikuti arahan mereka lebih dulu.</p>
+    <p>Sumber: BMKG (cuaca, gempa, tsunami), BNPB (kejadian dan panduan), NASA FIRMS (titik panas), dan model Pantau Bencana (indeks cuaca kebakaran, banjir, longsor, rob).</p>
+    <p><a href="/">Karhutla</a> · <a href="/banjir/">Banjir, Longsor &amp; Rob</a> · <a href="/tentang">Tentang kami</a> · <a href="/privasi">Privasi</a></p>
+    <details class="kredit"><summary>Kredit foto</summary><ul id="kreditIsi"></ul></details>
+  </div>
+</footer>
+
+<script type="module" src="/peringatan.js"></script>
+</body>
+</html>

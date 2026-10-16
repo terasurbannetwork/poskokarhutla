@@ -9,7 +9,7 @@ export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA2
 export const SENSOR_UTAMA = ["M", "N", "N20"];
 const BBOX = [94, -11.5, 141.5, 6.5], JAM = 3600e3, SIMPAN = 8, MAKS_BYTE = 1.8e6, KEC_CADANGAN_KM = 8;
 
-const km = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
+export const km = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
 const tglWIB = t => new Date(t + 7 * JAM).toISOString().slice(5, 10);
 
 /* keyakinan: MODIS 0–29 rendah, 30–79 sedang, 80–100 tinggi; VIIRS l/n/h; selain itu sedang (sama dengan harian.py) */
@@ -54,7 +54,7 @@ export async function wilayah(env) {
   for (const [k, [la, lo]] of Object.entries(kec)) { const g = Math.floor(la * 2) + "," + Math.floor(lo * 2); (grid.get(g) || grid.set(g, []).get(g)).push([la, lo, k]); }
   return WIL = {poli, grid};
 }
-const dalam = (x, y, cincin) => { let ok = false; for (const r of cincin) for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
+export const dalam = (x, y, cincin) => { let ok = false; for (const r of cincin) for (let i = 0, j = r.length - 1; i < r.length; j = i++) {
   const [xi, yi] = r[i], [xj, yj] = r[j]; if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) ok = !ok; } return ok; };
 export function cariWilayah(W, lat, lon) {
   const p = W.poli.find(q => lon >= q.kotak[0] && lon <= q.kotak[2] && lat >= q.kotak[1] && lat <= q.kotak[3] && dalam(lon, lat, q.cincin));

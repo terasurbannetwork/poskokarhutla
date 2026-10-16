@@ -97,7 +97,22 @@
     "table audit_foto": "foto: audit hanya bisa ditambah",
     "trigger audit_foto_ubah": "foto: audit hanya bisa ditambah",
     "trigger audit_foto_hapus": "foto: audit hanya bisa ditambah",
-    "table foto_laju": "foto: batas laju 5 unggahan"
+    "table foto_laju": "foto: batas laju 5 unggahan",
+    "GET /api/ews/konfig": "konfig: sitekey, email_aktif",
+    "GET /api/ews/cek": "/api/ews/cek: peringatan lokasi",
+    "POST /api/ews/langganan": "langganan: masukan salah DITOLAK",
+    "GET /ews/konfirmasi": "konfirmasi: GET tidak mengubah apa pun",
+    "GET /ews/berhenti": "berhenti: POST satu klik",
+    "POST /ews/berhenti": "berhenti: POST satu klik",
+    "cron kirimEws": "dedupe: putaran kedua",
+    "cron prosesGempa": "gempa: hanya pelanggan dalam radius",
+    "cron bersihkanEws": "pembersihan: menunggu > 48 jam",
+    "table ews_langganan": "skema: constraint menolak baris",
+    "table ews_terkirim": "dedupe: putaran kedua",
+    "table ews_laju": "batas laju: IP dan per alamat email",
+    "table ews_keadaan": "gempa: hanya pelanggan dalam radius",
+    "GET /api/ews/rincian": "konfirmasi: GET tidak mengubah apa pun",
+    "POST /ews/konfirmasi": "konfirmasi: GET tidak mengubah apa pun"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

@@ -12,6 +12,7 @@ import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
+import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *", CRON_GEMPA = "* * * * *";
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -385,10 +386,15 @@ const RUTE = {
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
   ...RUTE_FOTO,
 };
+let GABUNG = null;
 async function rute(env, req, url, ctx) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/", id = jalur.match(/\/([0-9a-f]{16})$/)?.[1];
-  const f = RUTE[req.method + " " + (id ? jalur.slice(0, -16) + ":id" : jalur)];
-  if (!f) return null;
+  const kunci = id ? jalur.slice(0, -16) + ":id" : jalur, tabel = (GABUNG ||= {...RUTE, ...Ews.RUTE_EWS});
+  const f = tabel[req.method + " " + kunci];
+  if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
+    const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
+    return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
+  }
   if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi juga SameSite=Strict)
     const o = req.headers.get("origin");
     if (o && o !== "null" && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
@@ -406,6 +412,7 @@ export const HTML_RUTE = [
   ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
+  [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
 ];
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
@@ -482,15 +489,18 @@ export default {
   },
   // cron CRON_TITIK = titik panas FIRMS; CRON_GEMPA = BMKG/USGS tiap menit; "17 * * * *" = bersih-bersih Lapor Warga
   async scheduled(ev, env) {
+    const sekarang = ev.scheduledTime || Date.now();
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
     if (ev.cron === CRON_GEMPA) {
       console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime)));
-      return console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime)));   // gagal-lunak; sesudah gempa baru tersimpan
+      console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime)));   // gagal-lunak; sesudah gempa baru tersimpan
+      return console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
     }
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
+    try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
     await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
     await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi

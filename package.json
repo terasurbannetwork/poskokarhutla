@@ -2,7 +2,8 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "uji:warga": "node --test tests/warga/gerbang.test.mjs && node --test tests/warga/skema.test.mjs && node --test tests/warga/api.test.mjs && node --test tests/warga/tepi.test.mjs && node --test tests/warga/statistik.test.mjs && node --test tests/warga/klien.test.mjs && node --test tests/warga/foto.test.mjs && node --test tests/warga/og.test.mjs && node --test tests/warga/registry.test.mjs && node --test tests/warga/gempa.test.mjs && node --test tests/warga/peringatan.test.mjs",
+    "uji:warga": "node --test tests/warga/gerbang.test.mjs && node --test tests/warga/skema.test.mjs && node --test tests/warga/api.test.mjs && node --test tests/warga/tepi.test.mjs && node --test tests/warga/statistik.test.mjs && node --test tests/warga/klien.test.mjs && node --test tests/warga/foto.test.mjs && node --test tests/warga/ews.test.mjs && node --test tests/warga/og.test.mjs && node --test tests/warga/registry.test.mjs && node --test tests/warga/gempa.test.mjs && node --test tests/warga/peringatan.test.mjs",
+    "dev:warga": "wrangler dev --local -c wrangler.warga.jsonc --port 8787",
     "agents:build": "node scripts/agents/build.mjs",
     "agents:check": "node scripts/agents/build.mjs --cek",
     "uji:agen": "node --test tests/agen/*.test.mjs",
