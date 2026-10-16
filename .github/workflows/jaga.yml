@@ -1,0 +1,39 @@
+name: Jaga kesegaran data
+
+# /api/status sudah tahu kalau data yang tayang basi, tapi selama ini cuma ditanya sekali di akhir data.yml. Data yang
+# tertimpa SESUDAH itu (16 Okt 2026: build git Cloudflare menerbitkan public/data commit 12 Okt di tiap push, 4 hari
+# tanpa ada yang tahu) lolos. Di sini ditanya tiap jam: basi -> run merah (notifikasi GitHub) + terbit.yml dipicu
+# sekali, yang memulihkan cache data- terbaru. Satu panggilan curl, ± 10 detik per jam.
+on:
+  schedule:
+    - cron: "50 * * * *"
+  workflow_dispatch:
+
+permissions:
+  actions: write
+
+jobs:
+  jaga:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+    steps:
+      - name: Periksa /api/status, terbitkan ulang bila basi
+        run: |
+          for i in 1 2 3; do
+            kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
+            [ "$kode" = 200 ] && { echo "segar: $(cat status.json)"; exit 0; }
+            sleep 20
+          done
+          echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
+          # terbit sekali per 3 jam saja: kalau sumbernya sendiri yang basi (FIRMS mati), terbit ulang tiap jam tak menolong
+          sejak=$(date -u -d '-3 hours' +%Y-%m-%dT%H:%M:%SZ)
+          if [ -z "$(gh run list --workflow terbit.yml --created ">=$sejak" --json databaseId --jq '.[].databaseId')" ]; then
+            gh workflow run terbit.yml && echo "terbit.yml dipicu"
+          else
+            echo "terbit.yml sudah jalan < 3 jam lalu; sumbernya yang perlu diperiksa"
+          fi
+          exit 1

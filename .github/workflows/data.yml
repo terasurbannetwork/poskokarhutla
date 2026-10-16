@@ -273,8 +273,9 @@ jobs:
           path: public/data
           key: data-${{ github.run_id }}
 
-      # Ada token Cloudflare: terbit langsung. Tidak ada: commit data ke main, build Cloudflare yang terhubung ke repo
-      # menerbitkannya. ponytail: commit harian menambah ± beberapa MB per hari ke riwayat git; pasang token untuk menghentikannya.
+      # Ada token Cloudflare: terbit langsung. Tidak ada: commit data ke main (cadangan lama, tidak terbit sendiri).
+      # JANGAN sambungkan lagi Workers Builds (build git Cloudflare): ia menerbitkan public/data hasil commit di tiap push dan
+      # menimpa data segar; 16 Okt 2026 situs tertahan 4 hari di data 12 Okt karenanya. Triggernya dihapus; jaga.yml memantau.
       # satu situs dengan banjir: pulihkan data banjir terakhir supaya ikut terbit utuh
       - name: Pulihkan data banjir terakhir
         uses: actions/cache/restore@v4
