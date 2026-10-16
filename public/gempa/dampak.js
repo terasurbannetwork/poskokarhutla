@@ -8,9 +8,7 @@ const Dampak = (() => {
   const IKON = "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8";
   let D = null; const st = {kelas: "tinggi", ukuran: "jiwa"};
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
-  const bag = (judul, isi, sumber, ctl = "", leg = null) => { if (leg) Kartu.leg(leg);
-    return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber, ctl).replace('<span class="ex-ey"></span>', '<span class="ex-ey">Penduduk terpapar</span>')
-      .replace("</h3>", `</h3><button type="button" class="bg-ex" data-bagi title="Bagikan" aria-label="Bagikan kartu ini">${KG.IKON_BAGI}</button>`); };
+  const bag = (judul, isi, sumber, ctl = "", leg = null) => Kartu.kartu("Penduduk terpapar", judul, isi, sumber, ctl, leg);
   const SUMBER = "InaRISK BNPB (indeks bahaya gempa), WorldPop 2026 (penduduk)";
   function nasional() {
     const N = D.nasional, tot = N.rendah + N.sedang + N.tinggi; if (!tot) return "";

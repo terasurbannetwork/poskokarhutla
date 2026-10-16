@@ -68,12 +68,11 @@ H.then(daftar => {
   document.querySelectorAll("#legenda .lg-g").forEach(g => g.dataset.h = g.firstElementChild.dataset.h);
 });
 
-/* ---------- bagikan (ikon saja) dan tema */
-async function bagikan(url, nama) {
+/* ---------- bagikan (ikon saja, lembar bersama public/bagi.js) dan tema */
+function bagikan(url, nama, kampanye) {
   const u = new URL(url, location.origin).href;
-  try { if (navigator.share) return await navigator.share({title: nama, url: u}); await navigator.clipboard.writeText(u); toast("Tautan disalin."); }
-  catch (e) { if (e.name !== "AbortError") toast("Tautan tidak bisa dibagikan."); }
+  if (window.Bagi) Bagi.buka({judul: nama, teks: nama + ". Pantau Bencana:", url: u, kampanye}); else toast("Bagikan belum siap, coba lagi.");
 }
-$("#bagikan").onclick = () => bagikan("/semua", "Semua bencana · Pantau Bencana");
-$("#kartu").addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (b) bagikan(b.dataset.bagi, b.dataset.nama + " · Pantau Bencana"); });
+$("#bagikan").onclick = () => bagikan("/semua", "Semua bencana · Pantau Bencana", "semua");
+$("#kartu").addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (b) bagikan(b.dataset.bagi, b.dataset.nama + " · Pantau Bencana", "semua-" + b.closest("article").dataset.h); });
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pb-tema", t); } catch (e) {} nanti(() => peta.setStyle(DASAR(), {diff: false})); };

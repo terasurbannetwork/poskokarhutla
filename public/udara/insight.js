@@ -5,7 +5,6 @@ const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".p
    Kartu bergaya Insight karhutla lewat mesin bersama public/inti (Kartu.ex/hl/pil/seg/leg, paginasi, pengurutKepala): pil kategori, judul satu kalimat
    berangka merah, grafik dengan angka tertulis, kaki legenda dan "Sumber:". Semua angka PERKIRAAN MODEL CAMS (bukan ISPU resmi). */
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
-const IK_BAGI = '<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/>';
 const jt = v => fmt(Math.round(v / 1e5) / 10) + " jt";
 const tglIns = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 
@@ -88,15 +87,13 @@ const Insight = {
       <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
   gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), tren: () => this.exTren(), jarak: () => this.exJarak()})[id](); },
   pasang(box) {
-    const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box));
-    box.querySelectorAll(".ex-jd").forEach(jd => { if (!jd.querySelector(".bagi-ex")) jd.insertAdjacentHTML("beforeend", `<button class="bagi-ex" aria-label="Bagikan kartu ini" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_BAGI}</svg></button>`); }); },
+    const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasang(box); }); },
   render() {
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));
     el.onclick = e => {
-      const bg = e.target.closest(".bagi-ex"); if (bg) return bagikan(bg.closest(".ex").querySelector("h3").textContent, "/udara/insight");
       const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); nanti(() => Peta.pilihProv(pv.dataset.prov)); } };

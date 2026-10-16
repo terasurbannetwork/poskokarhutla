@@ -3,7 +3,7 @@
 const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".pgn-b").forEach(x => { if (!/^\d+$/.test(x.textContent)) return; const on = x.dataset.h === h; x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); }); };
 /* ================================================================ insight */
 /* Kartu Insight cuaca ekstrem: anatomi sama dengan karhutla dan banjir (pil kategori, judul satu kalimat dengan angka merah, grafik berangka,
-   legenda tengah dan "Sumber:"), mesin kartu dari public/inti. Kartu tanpa isi dibuang (A18); tiap kartu bisa dibagikan lewat ikon (bagi.js). */
+   legenda tengah dan "Sumber:"), mesin kartu dari public/inti. Kartu tanpa isi dibuang (A18); ikon bagikan dari mesin Bagikan. */
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kecamatan|perairan|mm|km\/jam|titik))$/;
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 const NAVY = "oklch(25.5% .075 256)", BIRU = "#4f8fc4", HIJAU = "#2b8c86";
@@ -12,7 +12,6 @@ const warnaAngin = v => v >= 90 ? WARNA_LV[3] : v >= 72 ? WARNA_LV[2] : v >= 54 
 const IK = {nowcast: '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/>', gelombang: '<path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"/>',
   hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
   ansambel: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', provinsi: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>'};
-const BAGI = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 15V3M8 7l4-4 4 4M5 12v7a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2v-7"/></svg>';
 
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
@@ -107,12 +106,10 @@ const Insight = {
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik">${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
-  /* satu kartu: label pil berikon di kepala, ikon bagikan di kanan atas */
+  /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;
     try { const h = this["ex" + id[0].toUpperCase() + id.slice(1)](); if (!h) return "";
-      const judul = (h.match(/<h3>(.*?)<\/h3>/)?.[1] || "").replace(/<[^>]+>/g, "");
-      return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`)
-        .replace('<header class="ex-hd">', `<header class="ex-hd"><button class="bg-ex" data-bagikan="cuaca-${id}" data-judul="Pantau Bencana · Cuaca ekstrem" data-teks="${esc(judul)}. Pantau Bencana:" data-url="/cuaca/insight" aria-label="Bagikan" title="Bagikan">${BAGI}</button>`);
+      return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`);
     } catch (e) { console.error(e); return ""; } },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); },
   async render() {

@@ -1,4 +1,4 @@
-/* gunung api: tambahan di atas gaya dasar (gaya/peta/tabel/insight.css disalin dari banjir; kartu di inti/kartu.css) */
+/* gunung api: tambahan di atas gaya dasar (../inti/gaya, peta, tabel, insight.css dan kartu.css) */
 .pl.lvp{gap:5px}
 .pl.lvp svg{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
 .row.gn{grid-template-columns:22px minmax(0,1fr) auto}

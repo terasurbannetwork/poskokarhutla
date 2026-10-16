@@ -1,4 +1,4 @@
-/* Tambahan khusus cuaca; selebihnya dari banjir/gaya.css, peta.css, tabel.css, insight.css dan inti/kartu.css */
+/* Tambahan khusus cuaca; selebihnya dari inti/gaya.css, peta.css, tabel.css, insight.css dan inti/kartu.css */
 .toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:70;background:var(--brand);color:#fff;padding:9px 16px;border-radius:12px;font-size:13px;font-weight:600;transition:.25s}
 .toast.on{opacity:1;transform:translate(-50%,0)}
 /* baris peringatan di panel kiri */

@@ -36,6 +36,5 @@ const Tren = {
       this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana", [[MERAH, "jiwa di kecamatan awas"]]); },
 
   render() {
-    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`;
-    pasangBagi(el, "tren"); },
+    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

@@ -52,13 +52,6 @@ function bukaTab(id, dorong = true) {
 const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
-/* bagikan = ikon saja: lembar bawaan perangkat bila ada, kalau tidak tautan disalin */
-async function bagikan(judul, jalur) {
-  const url = location.origin + jalur;
-  try { if (navigator.share) return await navigator.share({title: judul, text: judul, url}); await navigator.clipboard.writeText(url); toast("Tautan disalin"); }
-  catch (e) { if (e.name !== "AbortError") toast("Tautan: " + url); } }
-$("#bagikanHal").onclick = () => bagikan("Pantau Bencana · Kualitas udara", location.pathname);
-
 /* ================================================================ data */
 async function muatData() {
   const [uk, asap, geo] = await Promise.all([muatJSON("../data/udara_kualitas.json"), muatJSON("../data/asap.json"), muatJSON("../geo/provinsi.json")]);

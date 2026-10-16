@@ -16,6 +16,11 @@ const Kartu = {
     return `<article class="ex"><header class="ex-hd"><span class="ex-ey"></span><div class="ex-jd"><h3>${judul}</h3>${kanan}</div>${ctl ? `<div class="ctl">${ctl}</div>` : ""}</header>
       <div class="ex-bd">${isi}</div><footer class="ex-ft">${leg ? `<span class="ex-leg">${leg.map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</span>` : ket ? `<span>${ket}</span>` : ""}${sumber ? `<em>Sumber: ${sumber}</em>` : ""}</footer></article>`; },
   leg(daftar) { this._leg = daftar; return ""; },
+  /* kartu Insight siap pakai untuk bencana baru: pil kategori `ey` di kepala, legenda `leg` = [[warna, nama]], "Sumber: ..." di kaki.
+     Ikon bagikan TIDAK dibuat di sini: Bagikan.tombolEx (bagikan.js) memasangnya di tiap article.ex (tanpa subjudul/unit, A1). */
+  kartu(ey, judul, isi, sumber, ctl = "", leg = null) {
+    if (leg) this.leg(leg);
+    return this.ex(judul, "", "", isi, "Sumber: " + sumber, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
   /* label pil SVG: lebar ditaksir dari jumlah huruf (SVG tidak bisa auto-lebar tanpa mengukur); ik = isi <g> ikon 12 px di kiri */
   pil(x, y, t, bg, fg, fs = 12, ik = "") { const w = t.length * fs * .6 + 16 + (ik ? 16 : 0), tx = x + (ik ? 16 : 0) + (w - (ik ? 16 : 0)) / 2;
     return [`<rect x="${x}" y="${y}" width="${w}" height="20" rx="10" fill="${bg}"/>${ik ? `<g transform="translate(${x + 8},${y + 4})" fill="none" stroke="${fg}" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">${ik}</g>` : ""}<text x="${tx}" y="${y + 14}" text-anchor="middle" font-size="${fs}" font-weight="700" style="fill:${fg}">${t}</text>`, w]; },

@@ -1,10 +1,12 @@
 /* ================================================================ bagikan & ekspor
    Gambar siap unggah (IG feed 4:5, story/TikTok 9:16, kotak 1:1), tautan, dan berkas data (xlsx, pdf, pptx).
-   Satu berkas untuk dua halaman: Bagikan.init("karhutla") | Bagikan.init("banjir").
+   Satu mesin untuk semua halaman bencana: Bagikan.init("karhutla") | Bagikan.init("banjir") | Bagikan.init(id) untuk bencana yang mendaftarkan
+   Bagikan.tema[id] = {siap, tanggal, acuan, data, teksWil, keterangan?, konteks?, tautan?, geo?, titik?} di berkasnya sendiri (public/<id>/bagikan.js).
+   Nama, sumber, dan tagar dibaca dari medan `bagikan` di public/bencana.json (registry).
    Memakai state & fungsi halaman (S, peta, fmt, esc, jamWIB, namaProv, toast, ...). Pustaka berat dimuat saat diminta. */
 "use strict";
 const Bagikan = {
-  hal: "karhutla", dasar: "", tab: "gambar", tpl: "ringkas", uk: "feed", prov: "", exId: "", pakaiPeta: true,
+  hal: "karhutla", dasar: "", tema: {}, reg: null, tab: "gambar", tpl: "ringkas", uk: "feed", prov: "", exId: "", pakaiPeta: true,
   UK: {feed: [1080, 1350, "Feed 4:5"], story: [1080, 1920, "Story · TikTok 9:16"], kotak: [1080, 1080, "Kotak 1:1"]},
   TPL: [["kompleks", "Kompleks ini"], ["ringkas", "Ringkasan hari ini"], ["provinsi", "Provinsi"], ["ex", "Grafik Insight"]],
   C: {navy: "#0b2545", navy2: "#1d4e89", kertas: "#f3f6fa", tinta: "#0b2545", tinta2: "#5b6b82", garis: "#dde4ee", jalur: "#edf1f6", hl: "#ffb37a"},
@@ -17,21 +19,29 @@ const Bagikan = {
     pptx: ["https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", () => window.PptxGenJS],
     dom: ["https://cdn.jsdelivr.net/npm/html-to-image@1.11.11/dist/html-to-image.js", () => window.htmlToImage],
   },
+  /* adaptor bencana yang terdaftar (karhutla dan banjir tinggal di mesin ini, jadi undefined) */
+  get T() { return this.tema[this.hal]; },
+  siap() { return this.T ? !!this.T.siap() : typeof S !== "undefined" && !!S.meta; },
+  acuan() { return this.T ? this.T.acuan() : S.acuan || S.meta.dibuat; },
   get K() {
     const k = this._K();
     return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
   },
+  /* tema dari registry (medan `bagikan`); literal di bawah hanya cadangan sebelum bencana.json terbaca */
   _K() {
-    return this.hal === "banjir"
+    const r = this.reg?.[this.hal]?.bagikan, a = this.hal === "banjir"
       ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PantauBencana"}
+      : this.T ? {nama: "Pantau Bencana", pendek: "Pantau Bencana", sumber: "", tagar: [], akhir: "#PantauBencana"}
       : {nama: "Pantau Bencana · Karhutla", pendek: "Pantau Bencana", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
         tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#PantauBencana"};
+    return r ? {...a, nama: r.nama, sumber: "Sumber: " + r.sumber, tagar: r.tagar} : a;
   },
 
   /* ---------------------------------------------------------------- pasang */
   init(halaman) {
-    this.hal = halaman === "banjir" ? "banjir" : "karhutla";
+    this.hal = halaman === "banjir" || this.tema[halaman] ? halaman : "karhutla";
+    fetch(this.dasar + "bencana.json").then(r => r.ok ? r.json() : null).then(j => { if (j) this.reg = Object.fromEntries(j.bencana.map(b => [b.id, b])); }).catch(() => {});
     const st = document.querySelector("header.top .stat");
     if (!st || document.getElementById("bgBuka")) return;
     if (!document.querySelector("link[data-bagikan]")) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = this.dasar + "bagikan.css"; l.dataset.bagikan = ""; document.head.appendChild(l); }
@@ -53,7 +63,7 @@ const Bagikan = {
       if (!t.closest("#insight") || t.closest(".ct-bab, [data-ex=citra]") || !art?.querySelector("svg[viewBox]")) { this._exLuar = this.ambilLuar(t); this.halEx = 0; return this.buka("ex", "luar"); }
       this.buka("ex", box ? box.dataset.ex : "b" + [...document.querySelectorAll("#insight article.ex")].indexOf(art)); }, true);
     /* tautan dalam: ?wil=62|Seruyan membuka wilayah itu setelah peta siap */
-    const w = new URLSearchParams(location.search).get("wil");
+    const w = this.T ? null : new URLSearchParams(location.search).get("wil");
     if (w && /^\d{2}(\|[^|<>"]{1,80}){0,2}$/.test(w)) this.tungguWil(w);
   },
   tombolEx() {
@@ -257,15 +267,16 @@ const Bagikan = {
       kpi, bar: {judul: "Unit pemadam terdekat (jarak lurus)", pendek: "Unit terdekat", rows}, rek, legenda: [[this.LV[3], "Prioritas"], [this.LV[2], "Siaga"], [this.LV[1], "Patroli"]], petaKet: `Kompleks ${p.id}`};
   },
   async buka(tpl, exId) {
-    if (typeof S === "undefined" || !S.meta) return this.kabar("Data belum termuat, coba lagi sebentar.");
+    if (!this.siap()) return this.kabar("Data belum termuat, coba lagi sebentar.");
     this._hari = null; this._snap = undefined; this._ex = null; this._th = {}; this._d = {};
     if (tpl) this.tpl = tpl; if (exId != null) this.exId = exId; if (!this._kom && this.tpl === "kompleks") this.tpl = "ringkas";
     /* tombol share di kepala halaman: ikut wilayah yang sedang dibuka (provinsi), nasional bila belum memilih */
-    if (!tpl && this.tpl !== "ex") this.tpl = document.querySelector("#p-peta.on") && S.jalur?.[0] ? "provinsi" : "ringkas";
-    this.prov = this._provPaksa || S.jalur?.[0] || (S.meta.provinsi[this.prov] ? this.prov : this.provAwal()); this._provPaksa = null;
+    if (this.T && (this.tpl === "provinsi" || this.tpl === "kompleks")) this.tpl = "ringkas";
+    if (!tpl && this.tpl !== "ex") this.tpl = !this.T && document.querySelector("#p-peta.on") && S.jalur?.[0] ? "provinsi" : "ringkas";
+    this.prov = this.T ? "" : this._provPaksa || S.jalur?.[0] || (S.meta.provinsi[this.prov] ? this.prov : this.provAwal()); this._provPaksa = null;
     const d = this.dialog(), q = s => d.querySelector(s);
-    q("#bgProv").innerHTML = this.daftarProv().map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join(""); q("#bgProv").value = this.prov;
-    q("#bgPeta").checked = this.pakaiPeta; q('[data-tpl="kompleks"]').hidden = !this._kom;
+    if (!this.T) { q("#bgProv").innerHTML = this.daftarProv().map(k => `<option value="${k}">${esc(namaProv(k))}</option>`).join(""); q("#bgProv").value = this.prov; }
+    q("#bgPeta").checked = this.pakaiPeta; q('[data-tpl="kompleks"]').hidden = !this._kom || !!this.T; q('[data-tpl="provinsi"]').hidden = !!this.T;
     q("#bgBagiU").hidden = !navigator.share;
     q("#bgUrl").value = this.tautan(); this.sosial();
     if (!d.open) d.showModal();
@@ -283,8 +294,8 @@ const Bagikan = {
     const a = document.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nama; document.body.appendChild(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 5000);
   },
-  tanggal() { return S.meta.hari_wib || new Date().toISOString().slice(0, 10); },
-  namaBerkas(ext) { return `${this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tpl === "provinsi" ? this.slug(namaProv(this.prov)) + "-" : this.tpl === "kompleks" && this._kom ? this._kom + "-" : ""}${this.tanggal()}${ext === "png" ? "-" + this.uk : ""}.${ext}`; },
+  tanggal() { if (this.T) return this.T.tanggal(); return S.meta.hari_wib || new Date().toISOString().slice(0, 10); },
+  namaBerkas(ext) { return `${this.T ? this.hal : this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tpl === "provinsi" ? this.slug(namaProv(this.prov)) + "-" : this.tpl === "kompleks" && this._kom ? this._kom + "-" : ""}${this.tanggal()}${ext === "png" ? "-" + this.uk : ""}.${ext}`; },
   slug: s => String(s).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   tglPanjang() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}); },
   /* alamat yang dicetak di gambar: domain publik, bukan localhost/pratinjau */
@@ -292,8 +303,9 @@ const Bagikan = {
     return h; /* cukup domain, tanpa /insight dsb. (pemilik, 14 Okt 2026) */ },
   tautan() {
     if (this._urlKhusus) return this._urlKhusus; /* dibuka dari laci kompleks: tautan langsung /k/K0001 */
+    if (this.T?.tautan) return this.T.tautan();
     const u = new URL(location.href); u.search = "";
-    if (S.jalur?.length) u.searchParams.set("wil", S.jalur.join("|"));
+    if (!this.T && S.jalur?.length) u.searchParams.set("wil", S.jalur.join("|"));
     return u.toString();
   },
   muatKontak() { if (!this._kontak) this._kontak = fetch("/data/kontak.json").then(r => r.ok ? r.json() : null).then(k => (this.kontak = k)).catch(() => null); return this._kontak; },
@@ -310,6 +322,7 @@ const Bagikan = {
     this.dialog().querySelector("#bgSos").innerHTML = L.map(([n, h]) => `<a class="bg-app" href="${h}" target="_blank" rel="noopener noreferrer" style="--w:${IK[n][0]}"><i><svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="${IK[n][1]}"/></svg></i><span>${n}</span></a>`).join("");
   },
   teksPendek() {
+    if (this.T) return `${this.T.teksWil("")} ${this.en() ? "Follow" : "Pantau"} ${this.K.nama}:`;
     const d = this.data("");
     return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} kompleks prioritas pemadaman hari ini. Pantau ${this.K.nama}:`;
   },
@@ -321,8 +334,9 @@ const Bagikan = {
   bagi(c) { if (window.Bagi) Bagi.buka(c); else this.buka(); },
   /* tombol header: selalu lembar (berisi tombol aplikasi, gambar, dan ekspor) */
   cepat() {
-    if (typeof S === "undefined" || !S.meta) return this.kabar(this.en() ? "Data is still loading, try again shortly." : "Data belum termuat, coba lagi sebentar.");
+    if (!this.siap()) return this.kabar(this.en() ? "Data is still loading, try again shortly." : "Data belum termuat, coba lagi sebentar.");
     /* model Insight: dialog gambar. Provinsi hanya bila sedang di Peta dengan provinsi terpilih; halaman lain = Indonesia */
+    if (this.T) return this.buka("ringkas");
     const diPeta = !!document.querySelector("#p-peta.on"), k = diPeta ? S.jalur?.[0] || "" : "";
     this.buka(k ? "provinsi" : "ringkas");
   },
@@ -338,6 +352,7 @@ const Bagikan = {
   /* ponytail: jiwa terpapar asap hanya bila tab Ringkasan sudah menghitung (Ringkasan.D); selain itu titik panas hari ini */
   ringkasanD() { try { return typeof Ringkasan !== "undefined" && Ringkasan.D?.adaAsap ? Ringkasan.D : null; } catch (e) { return null; } },
   teksWil(k) {
+    if (this.T) return this.T.teksWil(k);
     const E = this.en(), tg = this.tglPendek(), nm = k ? namaProv(k) : "Indonesia";
     if (this.hal === "banjir") { const d = this.data(k);
       return E ? `${nm}: ${d.kpi[0].v} sub-districts on flood alert, 3-day rain up to ${d.kpi[1].v} (${tg}).` : `${nm}: ${d.kpi[0].v} kecamatan berstatus banjir, hujan 3 hari hingga ${d.kpi[1].v} (${tg}).`; }
@@ -348,6 +363,7 @@ const Bagikan = {
   },
   konteks(jenis, a) {
     const E = this.en(), tg = this.tglPendek(), o = location.origin, L = E ? "Live map:" : "Pantau langsung:";
+    if (this.T) return this.T.konteks?.(jenis, a, {tg, o}) || {judul: document.title, teks: this.teksWil("") + " " + L, url: o + location.pathname, kampanye: this.hal + "-" + (jenis || "ringkasan")};
     if (jenis === "kompleks") {
       const p = S.kluster?.features.find(f => f.properties.id === a)?.properties, J = (E ? "Fire complex " : "Kompleks api ") + a;
       const st = p && (E ? ["routine prevention", "patrol", "suppression standby", "priority suppression"][p.level] : S.meta.status[p.level].toLowerCase());
@@ -365,13 +381,13 @@ const Bagikan = {
   pasangCepat() {
     const E = this.en(), o = location.origin;
     const tombol = (lbl, f) => { const b = document.createElement("button"); b.type = "button"; b.className = "bs-sel"; b.title = lbl; b.setAttribute("aria-label", lbl); b.innerHTML = this.IKON;
-      b.onclick = ev => { ev.stopPropagation(); if (typeof S === "undefined" || !S.meta) return; this.bagi(f()); }; return b; };
+      b.onclick = ev => { ev.stopPropagation(); if (!this.siap()) return; this.bagi(f()); }; return b; };
     const amati = (id, f) => { const el = document.getElementById(id); if (!el) return; let r = 0;
       const jalan = () => { r = 0; try { f(el); } catch (e) { console.warn("bagikan", id, e); } };
       new MutationObserver(() => { r ||= requestAnimationFrame(jalan); }).observe(el, {childList: true, subtree: true}); jalan(); };
     /* teks judul tanpa tombol di dalamnya (mis. "Hapus saringan ✕") */
     const judul = el => { if (!el) return ""; const c = el.cloneNode(true); c.querySelectorAll("button").forEach(b => b.remove()); return c.textContent.replace(/\s+/g, " ").trim(); };
-    amati("ringkasan", el => { const a = el.querySelector(".rk-hero .rk-aksi"); if (!a || a.querySelector(".bg-rk")) return;
+    if (!this.T) amati("ringkasan", el => { const a = el.querySelector(".rk-hero .rk-aksi"); if (!a || a.querySelector(".bg-rk")) return;
       const b = document.createElement("button"); b.type = "button"; b.className = "btn sec bg-rk"; b.innerHTML = `${this.IKON}<span>${E ? "Share" : "Bagikan"}</span>`;
       b.onclick = () => this.bagi({...this.konteks("nasional"), gambar: () => this.gambarCepat(""), lainnya: () => this.buka()}); a.prepend(b); });
     amati("berita", el => {
@@ -379,11 +395,11 @@ const Bagikan = {
       /* kartu Berita: semua memakai tombol gambar (tombolEx); tombol tautan hanya per berita di daftar */
       el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
         it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
-          teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik panas karhutla di Pantau Bencana:"}`}))); });
+          teks: `"${Bagi.potong(j, 150)}" (${src}). ${this.T ? (E ? "Follow the news on Pantau Bencana:" : `Pantau berita ${this.T.kata || this.hal} di Pantau Bencana:`) : E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik panas karhutla di Pantau Bencana:"}`}))); });
     });
     /* Dampak: tiap kartu grafik memakai tombol gambar ala Insight (tombolEx); tombol tautan per bagian tidak dipakai lagi */
     /* dialog provinsi tab Operasi (#dlg dipakai bersama; hanya yang berisi .op-db) */
-    amati("dlg", d => { const hd = d.querySelector(".dh"), j = judul(d.querySelector("#dlgJudul")); if (!d.querySelector(".op-db") || !hd || hd.querySelector(".bs-sel") || !/:/.test(j)) return;
+    if (!this.T) amati("dlg", d => { const hd = d.querySelector(".dh"), j = judul(d.querySelector("#dlgJudul")); if (!d.querySelector(".op-db") || !hd || hd.querySelector(".bs-sel") || !/:/.test(j)) return;
       const k = Object.keys(S.meta?.provinsi || {}).find(x => namaProv(x) === j.split(":")[0].trim()); if (!k) return;
       hd.querySelector("[data-tutup]")?.before(tombol(E ? "Share this province" : "Bagikan provinsi ini", () => ({judul: j, kampanye: "operasi", url: o + "/operasi?wil=" + k,
         teks: `${this.teksWil(k)} ${E ? "Operations needs:" : "Kebutuhan operasi:"}`}))); });
@@ -392,6 +408,7 @@ const Bagikan = {
   /* ---------------------------------------------------------------- data */
   provAwal() { return this.daftarProv()[0]; },
   daftarProv() {
+    if (this.T) return [];
     const semua = Object.keys(S.meta.provinsi);
     if (this.hal === "banjir") { const ag = agregat("b", 0), n = k => ag[k] ? ag[k].lv * 1e6 + ag[k].n[3] * 1e4 + ag[k].n[2] * 100 + ag[k].n[1] : 0; return semua.sort((a, b) => n(b) - n(a)); }
     const h = this.hariIni(), pr = S.meta.prioritas || [];
@@ -406,7 +423,7 @@ const Bagikan = {
     return this._hari = {per, kab, tot, tinggi};
   },
   polos(html) { return new DOMParser().parseFromString(String(html), "text/html").body.textContent.replace(/\s+/g, " ").trim(); },
-  data(k) { return this._d?.[k || "-"] || ((this._d ||= {})[k || "-"] = this.hal === "banjir" ? this.dataBanjir(k) : this.dataApi(k)); },
+  data(k) { return this._d?.[k || "-"] || ((this._d ||= {})[k || "-"] = this.T ? this.T.data(k) : this.hal === "banjir" ? this.dataBanjir(k) : this.dataApi(k)); },
   dataApi(k) {
     const h = this.hariIni(), kl = k ? klusterDi(k) : S.kluster.features, lvN = [0, 1, 2, 3].map(l => kl.filter(f => f.properties.level === l).length);
     const fw = k ? S.wilayah[k]?.fwi_maks : Math.max(0, ...Object.keys(S.meta.provinsi).map(p => S.wilayah[p]?.fwi_maks || 0)), kf = fw == null ? 0 : kelasFWI(fw);
@@ -490,7 +507,7 @@ const Bagikan = {
       box.innerHTML = Insight.EX.map(id => `<div data-ex="${id}">${Insight.gambar(id)}</div>`).join("");
       box.querySelectorAll("[data-ex]").forEach(d => out.push({id: d.dataset.ex, art: d.querySelector("article.ex")}));
     } else {
-      if (!document.querySelector("#insight article.ex")) Insight.render();
+      if (!document.querySelector("#insight article.ex") && typeof Insight !== "undefined") await Insight.render();
       box.innerHTML = "";
       document.querySelectorAll("#insight article.ex").forEach((a, i) => { const c = a.cloneNode(true); c.querySelector(".bg-ex")?.remove(); box.appendChild(c); out.push({id: "b" + i, art: c}); });
     }
@@ -570,7 +587,7 @@ const Bagikan = {
   kotakFitur(f) { const bb = [180, 90, -180, -90]; const jalan = c => typeof c[0] === "number" ? (bb[0] = Math.min(bb[0], c[0]), bb[1] = Math.min(bb[1], c[1]), bb[2] = Math.max(bb[2], c[0]), bb[3] = Math.max(bb[3], c[1])) : c.forEach(jalan); jalan(f.geometry.coordinates); return bb; },
   /* peta sederhana tanpa ubin: batas provinsi + titik data, selalu bisa digambar */
   gambarPeta(x, a, b, w, h, prov) {
-    const F = S.geo?.prov?.features || [], fp = prov && F.find(f => f.properties.kode === prov);
+    const F = (this.T ? this.T.geo?.() : S.geo?.prov?.features) || [], fp = prov && F.find(f => f.properties.kode === prov);
     let bb = [94.6, -11.2, 141.2, 6.3];
     if (fp) { bb = this.kotakFitur(fp); const dx = (bb[2] - bb[0]) * .14 + .2, dy = (bb[3] - bb[1]) * .14 + .2; bb = [bb[0] - dx, bb[1] - dy, bb[2] + dx, bb[3] + dy]; }
     const kx = Math.cos((bb[1] + bb[3]) / 2 * Math.PI / 180), s = Math.min(w / ((bb[2] - bb[0]) * kx), h / (bb[3] - bb[1])), mx = (bb[0] + bb[2]) / 2, my = (bb[1] + bb[3]) / 2;
@@ -582,12 +599,13 @@ const Bagikan = {
       const g = f.geometry, poli = g.type === "Polygon" ? [g.coordinates] : g.coordinates, k = f.properties.kode;
       x.beginPath(); for (const p of poli) for (const ring of p) ring.forEach(([lo, la], i) => { const [px, py] = P(lo, la); i ? x.lineTo(px, py) : x.moveTo(px, py); });
       x.fillStyle = prov && k !== prov ? "#d6dfea" : "#ffffff"; x.fill("evenodd");
-      const lv = ag ? ag[k]?.lv || 0 : S.wilayah?.[k]?.level || 0;
+      const lv = this.T ? 0 : ag ? ag[k]?.lv || 0 : S.wilayah?.[k]?.level || 0;
       if (lv && (!prov || k === prov)) { x.globalAlpha = prov ? .16 : .3; x.fillStyle = this.LV[lv]; x.fill("evenodd"); x.globalAlpha = 1; }
       x.strokeStyle = "#a9b8ca"; x.lineWidth = Math.max(1, w / 900); x.stroke();
     }
     const z = Math.max(.7, w / 1000) * (fp ? 1.35 : 1), titik = (lo, la, r, c) => { const [px, py] = P(lo, la); x.beginPath(); x.arc(px, py, r * z, 0, 7); x.fillStyle = c; x.fill(); x.lineWidth = 1.2 * z; x.strokeStyle = "rgba(255,255,255,.9)"; x.stroke(); };
-    if (this.hal === "banjir") {
+    if (this.T) (this.T.titik?.() || []).forEach(q => titik(q.lon, q.lat, q.r || 4, q.w || this.LV[3]));
+    else if (this.hal === "banjir") {
       const iH = S.rob ? Math.max(0, S.rob.hari.indexOf(S.hujan.hari_ini)) : 0;
       (S.sungai?.titik || []).filter(t => t.kelas).forEach(t => titik(t.lon, t.lat, 5, "#5f6fb0"));
       (S.rob?.titik || []).forEach(t => { const l = Math.max(0, ...t.lv.slice(iH).map(v => v || 0)); if (l) titik(t.lon, t.lat, 5, "#2b8c86"); });
@@ -727,7 +745,7 @@ const Bagikan = {
     const y = bawah - 70;
     x.strokeStyle = this.C.garis; x.lineWidth = 2; x.beginPath(); x.moveTo(P, y); x.lineTo(W - P, y); x.stroke();
     /* baris 1: sumber (kiri) + "Data …" (kanan) sebaris; baris 2: akun resmi dibentang rata dari tepi ke tepi (pemilik, 15 Okt 2026) */
-    this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.textAlign = "right"; const dt = "Data " + jamWIB(S.acuan || S.meta.dibuat); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 34); const dw = x.measureText(dt).width; x.textAlign = "left";
+    this.f(x, 500, 21); x.fillStyle = this.C.tinta2; x.textAlign = "right"; const dt = "Data " + jamWIB(this.acuan()); /* sama dengan lencana "Data …" di header (lintasan satelit terakhir) */ x.fillText(dt, W - P, y + 34); const dw = x.measureText(dt).width; x.textAlign = "left";
     x.fillText(this.potong(x, this.K.sumber, W - 2 * P - dw - 24), P, y + 34);
     /* akun resmi per platform (dari data/kontak.json) lalu alamat situs: tiap ikon diberi nama akunnya sendiri,
        bukan lima ikon yang seolah-olah semuanya menunjuk ke situs */
@@ -901,7 +919,7 @@ const Bagikan = {
     d.querySelector('[data-tpl="ex"]').disabled = !ex.length;
     for (const [k] of this.TPL) {
       if (t !== this._t) { this._th[uk] = 0; return; }
-      if ((k === "ex" && !ex.length) || (k === "kompleks" && !this._kom)) continue;
+      if ((k === "ex" && !ex.length) || (k === "kompleks" && !this._kom) || (this.T && (k === "kompleks" || k === "provinsi"))) continue;
       const c = d.querySelector(`[data-tpl="${k}"] canvas`), src = k === this.tpl && this.cv?.width === this.UK[uk][0] && this.cv.height === this.UK[uk][1] ? this.cv : await this.render(k, uk), [W, H] = this.UK[uk];
       c.width = 90; c.height = Math.round(90 * H / W);
       const x = c.getContext("2d"); x.imageSmoothingQuality = "high"; x.drawImage(src, 0, 0, c.width, c.height);
@@ -914,10 +932,11 @@ const Bagikan = {
     /* caption: kalimat utama, konteks dari kartu, sumber + tanggal, lalu ajakan membuka situs. Tanpa emoji dan basa-basi (pemilik, 14 Okt 2026) */
     const titik = t => { t = String(t || "").replace(/\s+/g, " ").trim(); return t && !/[.!?]$/.test(t) ? t + "." : t; };
     const sumber = (d.fn || "").match(/Sumber:\s*([^·\n]+)/)?.[1]?.trim(), konteks = [d.sub, (d.fn || "").replace(/Sumber:[^·\n]+/, "").replace(/^[\s·]+|[\s·]+$/g, "")].map(titik).filter(Boolean).join(" ");
-    if (d.tpl === "ex") return `${titik(d.judul)}${konteks ? `\n\n${konteks}` : ""}\n\nData per ${tg}${sumber ? `, diolah dari ${sumber}` : ""}. Peta titik panas dan grafik lengkapnya bisa dibuka di https://${this.situs()}\n\n${tagar}`;
+    if (d.tpl === "ex") return `${titik(d.judul)}${konteks ? `\n\n${konteks}` : ""}\n\nData per ${tg}${sumber ? `, diolah dari ${sumber}` : ""}. ${this.T ? "Peta dan grafik lengkapnya" : "Peta titik panas dan grafik lengkapnya"} bisa dibuka di https://${this.situs()}\n\n${tagar}`;
     const K = d.kpi.map(q => q.v), top = (d.bar?.rows || []).slice(0, 3).map(r => `${r.n} (${r.t})`).join(", ");
     let isi;
-    if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
+    if (this.T) isi = this.T.keterangan?.(d, tg) || `${d.judul}, ${tg}. ${d.sub}.`;
+    else if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
     else isi = d.tpl === "kompleks" ? `${d.label} di ${d.judul}: ${d.sub}.`
       : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. Satelit mendeteksi ${K[0]} titik panas hari ini. Dari ${K[1]} kompleks api yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
@@ -958,7 +977,7 @@ const Bagikan = {
     } catch (e) { console.error(e); st.textContent = "Ekspor gagal: " + e.message; }
     finally { tb.forEach(b => b.disabled = false); }
   },
-  namaEkspor(ext) { return `${this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tanggal()}.${ext}`; },
+  namaEkspor(ext) { return `${this.T ? this.hal : this.hal === "banjir" ? "posko-banjir" : "posko-karhutla"}-${this.tanggal()}.${ext}`; },
   /* tabel provinsi ringkas untuk PDF & slide */
   tabelProv() {
     if (this.hal === "banjir") {

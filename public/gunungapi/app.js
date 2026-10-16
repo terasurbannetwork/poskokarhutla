@@ -39,16 +39,9 @@ function bukaTab(id, dorong = true) {
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
   $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); atur(false); }); }
 
-/* ================================================================ tema, bagikan */
+/* ================================================================ tema */
 const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
-/* bagikan = ikon saja (A19): lembar bagikan peramban, cadangannya salin tautan */
-async function bagikan(judul, jalur) {
-  const url = location.origin + jalur, data = {title: judul, text: judul + " · Pantau Bencana", url};
-  try { if (navigator.share) return await navigator.share(data); await navigator.clipboard.writeText(url); toast("Tautan disalin"); } catch (e) { if (e.name !== "AbortError") toast("Tautan: " + url); }
-}
-$("#bagikan").onclick = () => bagikan("Gunung api hari ini", location.pathname);
-
 /* ================================================================ data */
 async function muatData() {
   const st = await muatJSON("../data/gunungapi_status.json");

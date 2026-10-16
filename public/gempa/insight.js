@@ -35,24 +35,24 @@ const Insight = {
     if (!this.hidupAda(this.d)) return "";
     const hari = +this.st.terkini, w = this.jendela(hari), A = this.d.gempa.filter(g => g.m >= 5 && g.t >= w.mulai), ctl = this.seg("terkini", [["7", "7 hari"], ["30", "30 hari"]]);
     const jd = A.length ? "" : `Tidak ada gempa M 5+ di Indonesia ${w.teks}`;
-    if (!A.length) return KG.kartu(this.LABEL.terkini, jd, "", "BMKG, USGS", ctl);
+    if (!A.length) return Kartu.kartu(this.LABEL.terkini, jd, "", "BMKG, USGS", ctl);
     const K = this.kelompok(A), P = Object.entries(K).sort((a, b) => b[1].n - a[1].n || b[1].m - a[1].m), np = P.filter(([k]) => k !== "-").length;
     const rows = P.slice(0, 12).map(([k, o]) => ({nama: this.nmU(k), v: o.n, warna: KG.TANAH, pil: [[mTulis(o.m), warnaM(o.m)]],
       tip: `<b>${this.nmU(k)}</b><br>Gempa M 5+: ${fmt(o.n)}<br>Terbesar: ${mTulis(o.m)}`}));
     const judul = np ? `${KG.awal(A.length, "gempa")} M 5+ mengguncang ${Kartu.hl(fmt(np) + " provinsi")} ${w.teks}` : `${KG.awal(A.length, "gempa")} M 5+ terjadi di perairan Indonesia ${w.teks}`;
-    return KG.kartu(this.LABEL.terkini, judul, KG.mendatar(rows, {akhir: 130}), "BMKG, USGS", ctl); },
+    return Kartu.kartu(this.LABEL.terkini, judul, KG.mendatar(rows, {akhir: 130}), "BMKG, USGS", ctl); },
 
   /* 2. gempa yang dirasakan warga (BMKG Dirasakan, skala MMI) */
   exDirasakan() {
     if (!this.hidupAda(this.d)) return "";
     const hari = +this.st.dirasakan, w = this.jendela(hari), A = this.d.gempa.filter(g => g.mmi_maks > 0 && g.t >= w.mulai), ctl = this.seg("dirasakan", [["7", "7 hari"], ["30", "30 hari"]]);
-    if (!A.length) return KG.kartu(this.LABEL.dirasakan, `Tidak ada gempa yang dirasakan warga ${w.teks}`, "", "BMKG", ctl);
+    if (!A.length) return Kartu.kartu(this.LABEL.dirasakan, `Tidak ada gempa yang dirasakan warga ${w.teks}`, "", "BMKG", ctl);
     const K = this.kelompok(A), P = Object.entries(K).sort((a, b) => b[1].mmi - a[1].mmi || b[1].n - a[1].n), np = P.filter(([k]) => k !== "-").length;
     const top = [...A].sort((a, b) => b.mmi_maks - a.mmi_maks || b.m - a.m)[0], rom = v => ROMAWI[Math.min(12, Math.max(1, Math.round(v)))];
     const rows = P.slice(0, 12).map(([k, o]) => ({nama: this.nmU(k), v: o.n, warna: KG.TANAH, pil: [["MMI " + rom(o.mmi), MMI_WARNA[Math.round(o.mmi)] || MMI_WARNA[1], o.mmi <= 3 ? "#3b3320" : "#fff"]],
       tip: `<b>${this.nmU(k)}</b><br>Gempa dirasakan: ${fmt(o.n)}<br>Terkuat: MMI ${rom(o.mmi)}`}));
     const judul = `${KG.awal(A.length, "gempa")} dirasakan warga${np ? ` di ${Kartu.hl(fmt(np) + " provinsi")}` : ""} ${w.teks}, terkuat MMI ${Kartu.hl(rom(top.mmi_maks))} di ${esc(wilayahPendek(top.wilayah))}`;
-    return KG.kartu(this.LABEL.dirasakan, judul, KG.mendatar(rows, {akhir: 150}), "BMKG", ctl); },
+    return Kartu.kartu(this.LABEL.dirasakan, judul, KG.mendatar(rows, {akhir: 150}), "BMKG", ctl); },
 
   /* 3. provinsi paling sering diguncang: gempa M 5+ menurut kelas, sejak 2000 atau 1900 (USGS) */
   exProvinsi() {
@@ -62,7 +62,7 @@ const Insight = {
       .filter(r => r.n).sort((a, b) => b.n - a.n).slice(0, 12);
     if (!baris.length) return "";
     const rows = baris.map(r => ({nama: this.nmU(r.k), v: r.c, warna: WARNA_M_STACK, tip: `<b>${this.nmU(r.k)}</b><br>Gempa M 5+ sejak ${dari}: ${fmt(r.n)}<br>${NAMA_M_STACK.map((n, i) => `${n}: ${fmt(r.c[i])}`).join("<br>")}`}));
-    return KG.kartu(this.LABEL.provinsi, `${Kartu.hl(this.nmU(baris[0].k))} paling sering diguncang: ${Kartu.hl(fmt(baris[0].n) + " gempa")} M 5+ tercatat sejak ${dari}`,
+    return Kartu.kartu(this.LABEL.provinsi, `${Kartu.hl(this.nmU(baris[0].k))} paling sering diguncang: ${Kartu.hl(fmt(baris[0].n) + " gempa")} M 5+ tercatat sejak ${dari}`,
       KG.mendatar(rows, {akhir: 60}), "USGS (data sebelum 2000 tidak lengkap)", ctl, NAMA_M_STACK.map((n, i) => [WARNA_M_STACK[i], n])); },
 
   /* 4. riwayat gempa M 5+ sejak 1900: per dasawarsa atau per tahun sejak 2000 */
@@ -76,7 +76,7 @@ const Insight = {
     const jml = dasa ? total : nilai.reduce((a, v) => a + v[0], 0), dr = dasa ? 1900 : 2000;
     const gr = KG.kolom({cat, seri: [["Gempa M 5+", KG.TANAH]], nilai, ber: true, aria: "Gempa M 5+ per " + (dasa ? "dasawarsa" : "tahun"),
       tip: i => `<b>${dasa ? `Tahun ${kunci[i]}-an` : kunci[i]}${i === kunci.length - 1 ? " (berjalan)" : ""}</b><br>Gempa M 5+: ${fmt(nilai[i][0])}`});
-    return KG.kartu(this.LABEL.riwayat, `${Kartu.hl(fmt(jml) + " gempa")} M 5+ tercatat di Indonesia sejak ${dr}, terbanyak pada ${dasa ? "tahun " : ""}${Kartu.hl(dasa ? kunci[pk] + "-an" : String(kunci[pk]))}: ${fmt(nilai[pk][0])} gempa`,
+    return Kartu.kartu(this.LABEL.riwayat, `${Kartu.hl(fmt(jml) + " gempa")} M 5+ tercatat di Indonesia sejak ${dr}, terbanyak pada ${dasa ? "tahun " : ""}${Kartu.hl(dasa ? kunci[pk] + "-an" : String(kunci[pk]))}: ${fmt(nilai[pk][0])} gempa`,
       gr, "USGS (catatan awal tidak lengkap, termasuk susulan)", this.seg("riwayat", [["dasawarsa", "Per dasawarsa"], ["tahun", "Per tahun sejak 2000"]]), [[KG.TANAH, "gempa M 5+"], ["#b07a3c8c", `${akhir} (berjalan)`]]); },
 
   /* 5. status tsunami resmi BMKG: ditampilkan apa adanya; "BMKG tidak menyebut tsunami" BUKAN "aman" */
@@ -91,7 +91,7 @@ const Insight = {
     const M = innerWidth < 640, rows = [{nama: M ? "Berpotensi" : "Berpotensi tsunami", v: ada.length, warna: "#d64545", tip: `<b>Berpotensi tsunami</b><br>${[1, 2, 3].map(k => `${TSUNAMI[k][0]}: ${fmt(lv[k - 1])}`).join("<br>")}`},
       {nama: M ? "Tidak berpotensi" : "Tidak berpotensi tsunami", v: tidak.length, warna: "#9aa4b2", tip: `<b>Tidak berpotensi tsunami</b><br>Gempa: ${fmt(tidak.length)}`},
       {nama: M ? "Tidak disebut" : "BMKG tidak menyebut tsunami", v: diam.length, warna: "#c3cad4", tip: `<b>BMKG tidak menyebut tsunami</b><br>Gempa: ${fmt(diam.length)}`}];
-    return KG.kartu(this.LABEL.tsunami, judul, KG.mendatar(rows, {akhir: 50}), "BMKG (status resmi, apa adanya)"); },
+    return Kartu.kartu(this.LABEL.tsunami, judul, KG.mendatar(rows, {akhir: 50}), "BMKG (status resmi, apa adanya)"); },
 
   gambar(id) { Kartu._leg = null;
     try { return this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""; } catch (e) { console.error(e); return ""; } },

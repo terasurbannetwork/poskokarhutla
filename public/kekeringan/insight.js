@@ -91,11 +91,11 @@ const Insight = {
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
     try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
   pasangUrut(box) { const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
-  ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); pasangBagi(box, "insight"); }); },
+  ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
-    el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b)); pasangBagi(el, "insight");
+    el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     el.onclick = e => {
       const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }

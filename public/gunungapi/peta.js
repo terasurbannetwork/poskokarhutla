@@ -108,7 +108,7 @@ const Detail = {
       <div class="dk"><a class="btn sec" href="${escUrl(g.laporan)}" target="_blank" rel="noopener">Laporan lengkap di MAGMA</a>
       <button class="btn sec" type="button" data-bagi aria-label="Bagikan" title="Bagikan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.7 7.4-4.3M8.3 13.3l7.4 4.3"/></svg></button></div></div>`;
     const d = $("#dlg"); d.querySelector("[data-tutup]").onclick = () => d.close();
-    d.querySelector("[data-bagi]").onclick = () => bagikan(`${g.nama}: Level ${LEVEL[g.level][0]} ${LEVEL[g.level][1]}`, "/gunungapi/peta");
+    d.querySelector("[data-bagi]").onclick = () => Bagikan.bagi({...Bagikan.konteks("gunung", g), lainnya: () => Bagikan.buka()});
     d.onclick = e => { if (e.target === d) d.close(); };
     if (!d.open) d.showModal();
   },

@@ -46,20 +46,6 @@ const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElem
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
 
-/* ---------- bagikan: ikon saja (A19); mesinnya public/bagi.js */
-function bagikan(judul, tab) {
-  const n = S.meta?.nasional, teks = judul || (n ? `${fmt(n.kab_n[2])} kabupaten/kota kering ekstrem, ${rb(n.jiwa[2])} jiwa tinggal di kecamatan itu. Pantau Bencana:` : "Kekeringan di Indonesia. Pantau Bencana:");
-  if (window.Bagi) window.Bagi.buka({judul: "Pantau Bencana · Kekeringan", teks, url: location.origin + "/kekeringan/" + (tab || "peta"), kampanye: "kekeringan"}); else toast("Bagikan belum siap, coba lagi");
-}
-$("#bagi").onclick = () => bagikan(null, document.querySelector(".page.on")?.id.slice(2));
-const IK_BAGI = '<svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.8 7.4-4.4M8.3 13.2l7.4 4.4"/></svg>';
-/* tiap kartu bisa dibagikan: tombol ikon di ujung kepala kartu */
-function pasangBagi(el, tab) {
-  el.querySelectorAll(".ex-hd").forEach(h => { if (h.querySelector(".ex-bagi")) return;
-    const b = document.createElement("button"); b.type = "button"; b.className = "ex-bagi"; b.setAttribute("aria-label", "Bagikan kartu ini"); b.innerHTML = IK_BAGI;
-    b.onclick = () => bagikan(h.querySelector("h3")?.textContent.trim() + ". Pantau Bencana:", tab); h.append(b); });
-}
-
 /* ---------- data */
 async function muatData() {
   const [meta, grid, wil, tren, prov] = await Promise.all([muatJSON("../data/kekeringan_meta.json"), muatJSON("../data/kekeringan_grid.json"), muatJSON("../data/kekeringan_wilayah.json"),

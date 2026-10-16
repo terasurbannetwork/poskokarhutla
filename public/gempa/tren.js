@@ -11,7 +11,7 @@ const Tren = {
     const [ay, am] = this.akhir.slice(0, 7).split("-").map(Number), kunci = Array.from({length: N}, (_, i) => { const t = ay * 12 + am - 1 - (N - 1 - i); return `${Math.floor(t / 12)}-${String(t % 12 + 1).padStart(2, "0")}`; });
     const nilai = kunci.map(k => [per[k] || 0]), tot = nilai.reduce((a, v) => a + v[0], 0), pk = nilai.map(v => v[0]).indexOf(Math.max(...nilai.map(v => v[0])));
     const nama = k => `${KG.BLN[+k.slice(5) - 1]} ${k.slice(0, 4)}`;
-    return KG.kartu("Per bulan", `${Kartu.hl(fmt(tot) + " gempa")} M 5+ tercatat di Indonesia dalam ${N} bulan terakhir, terbanyak ${Kartu.hl(fmt(nilai[pk][0]))} pada ${Kartu.hl(nama(kunci[pk]))}`,
+    return Kartu.kartu("Per bulan", `${Kartu.hl(fmt(tot) + " gempa")} M 5+ tercatat di Indonesia dalam ${N} bulan terakhir, terbanyak ${Kartu.hl(fmt(nilai[pk][0]))} pada ${Kartu.hl(nama(kunci[pk]))}`,
       KG.kolom({cat: kunci.map(k => `${KG.BLN[+k.slice(5) - 1]} ${k.slice(2, 4)}`), seri: [["Gempa M 5+", KG.TANAH]], nilai, ber: true, aria: "Gempa M 5+ per bulan",
         tip: i => `<b>${nama(kunci[i])}${i === N - 1 ? " (berjalan)" : ""}</b><br>Gempa M 5+: ${fmt(nilai[i][0])}`}),
       `USGS sampai ${KG.tgl(this.akhir + "T12:00:00+07:00")}`, Kartu.seg("bulan", [["24", "24 bulan"], ["60", "60 bulan"]], this.st), [[KG.TANAH, "gempa M 5+"], ["#b07a3c8c", "bulan berjalan"]]); },
@@ -20,7 +20,7 @@ const Tren = {
   exTahun() {
     const per = {}; for (const b of this.R.baris) { const th = +b[0].slice(0, 4); if (th < 2000) continue; const c = per[th] ||= [0, 0, 0]; c[b[4] >= 7 ? 2 : b[4] >= 6 ? 1 : 0]++; }
     const th = Object.keys(per).map(Number).sort(), nilai = th.map(t => per[t]), tot = nilai.reduce((a, v) => a + v[0] + v[1] + v[2], 0), n6 = nilai.reduce((a, v) => a + v[1] + v[2], 0);
-    return KG.kartu("Per tahun", `${Kartu.hl(fmt(tot) + " gempa")} M 5+ mengguncang Indonesia sejak 2000, ${Kartu.hl(fmt(n6))} di antaranya M 6 atau lebih`,
+    return Kartu.kartu("Per tahun", `${Kartu.hl(fmt(tot) + " gempa")} M 5+ mengguncang Indonesia sejak 2000, ${Kartu.hl(fmt(n6))} di antaranya M 6 atau lebih`,
       KG.kolom({cat: th.map(t => String(t).slice(2)), seri: NAMA_M_STACK.map((n, i) => [n, WARNA_M_STACK[i]]), nilai, ber: true, aria: "Gempa M 5+ per tahun menurut kelas",
         tip: i => `<b>${th[i]}${i === th.length - 1 ? " (berjalan)" : ""}</b><br>${NAMA_M_STACK.map((n, k) => `${n}: ${fmt(nilai[i][k])}`).join("<br>")}`}),
       "USGS", "", NAMA_M_STACK.map((n, i) => [WARNA_M_STACK[i], n])); },
@@ -31,7 +31,7 @@ const Tren = {
     for (const b of this.R.baris) if (+b[0].slice(0, 4) >= dari && b[3] != null) c[kelasDalam(b[3])]++;
     const tot = c[0] + c[1] + c[2]; if (!tot) return "";
     const rows = KELAS_DALAM.map(([n, w, r], i) => ({nama: innerWidth < 640 ? n : `${n} (${r.replace(" sampai ", "-")})`, v: c[i], warna: w, pil: [[Math.round(c[i] / tot * 100) + "%", w]], tip: `<b>${n}</b> · ${r}<br>Gempa M 5+: ${fmt(c[i])}<br>Bagian: ${Math.round(c[i] / tot * 100)}%`}));
-    return KG.kartu("Kedalaman", `${Kartu.hl(Math.round(c[0] / tot * 100) + "%")} gempa M 5+ di Indonesia sejak ${dari} berpusat dangkal (kurang dari 60 km): ${Kartu.hl(fmt(c[0]) + " gempa")}`,
+    return Kartu.kartu("Kedalaman", `${Kartu.hl(Math.round(c[0] / tot * 100) + "%")} gempa M 5+ di Indonesia sejak ${dari} berpusat dangkal (kurang dari 60 km): ${Kartu.hl(fmt(c[0]) + " gempa")}`,
       KG.mendatar(rows, {akhir: 70}), "USGS", Kartu.seg("dalam", [["2000", "Sejak 2000"], ["5", "5 tahun terakhir"]], this.st)); },
 
   gambar(id) { Kartu._leg = null;

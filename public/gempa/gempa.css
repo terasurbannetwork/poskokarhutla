@@ -1,0 +1,21 @@
+/* Khas gempa (karhutla tidak punya padanannya): pita status tsunami BMKG, pil kekuatan M, legenda sumber, contoh lingkaran. Selebihnya dari ../inti/*.css */
+.kosong{padding:28px 14px;text-align:center;color:var(--ink2);font-size:13px}
+.hasil button small{color:var(--ink2)}
+/* pil kekuatan (M) satu warna per kelas */
+.pill.pm{background:color-mix(in oklch,var(--w) 16%,transparent);color:var(--w)}
+.pill.pm::before{display:none}
+.tb .kom b{font-weight:600}
+.tb .n b{font-weight:700}
+/* pita status tsunami resmi BMKG (hanya bila ada pernyataan) */
+.pita{position:absolute;z-index:6;top:12px;left:calc(var(--lp,440px) + 24px);right:calc(var(--tw,280px) + 24px);margin:0 auto;width:fit-content;max-width:calc(100% - var(--lp,440px) - var(--tw,280px) - 48px);display:flex;align-items:center;gap:10px;padding:8px 14px;border-radius:14px;
+  background:var(--card);border:1px solid var(--line);border-left:5px solid var(--w);box-shadow:var(--shadow-lg);cursor:pointer;font-size:12.5px}
+.pita[hidden]{display:none}
+.pita svg{flex:none;color:var(--w)}
+.pita b{font-family:var(--display);white-space:nowrap}
+.pita span{color:var(--ink2);white-space:nowrap;overflow:hidden;text-overflow:ellipsis;min-width:0}
+.lg-sumber{font-size:10.5px;color:var(--ink2);gap:2px!important}
+.lg-sumber span{cursor:default}
+@media (max-width:900px){.panel{width:auto}.tools{width:auto}.pita{left:8px;right:8px;top:auto;bottom:calc(46% + 12px);max-width:none;width:auto}}
+/* lingkaran contoh kekuatan: slot tetap supaya tulisan lurus */
+.leg .sw.dot.bulat{margin:0 6px 0 0;flex:none}
+.leg .bulat-slot{display:inline-flex;width:28px;justify-content:center;margin-right:2px}

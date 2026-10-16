@@ -48,9 +48,4 @@ PilihCantik.pasang();
   h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };
   atur(document.querySelector(".panel"), "lebar-panel", "kanan", 320, Math.min(900, innerWidth * .6));
   atur(document.querySelector(".tools"), "lebar-tools", "kiri", 220, 520); })();
-/* bagikan: ikon di kepala, tautan halaman lewat lembar bagikan bawaan atau salin. Gambar/ekspor (public/bagikan.js) hanya mengenal karhutla dan banjir: perlu layar-peta. */
-{ const b = document.createElement("button"); b.className = "iconbtn"; b.id = "bgBuka"; b.type = "button"; b.title = "Bagikan"; b.setAttribute("aria-label", "Bagikan");
-  b.innerHTML = '<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>';
-  b.onclick = () => { const u = location.href; if (navigator.share) navigator.share({title: "Pantau Bencana · Gempa", url: u}).catch(() => {}); else navigator.clipboard?.writeText(u).then(() => toast("Tautan disalin")); };
-  $("#tema").before(b); }
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });

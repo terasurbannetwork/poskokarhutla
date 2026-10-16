@@ -18,8 +18,7 @@ const Berita = {
       : fv ? `<img class="br-thumb fb" src="${esc(fv)}" alt="" loading="lazy" referrerpolicy="no-referrer" onerror="this.remove()">` : ""; },
   pl: (t, w) => `<em class="br-lb" style="--w:${w}">${t}</em>`,
   /* kartu Insight: pil kategori di kepala, judul, kontrol; legenda/sumber di kaki */
-  kartu(ey, judul, isi, catatan, ctl = "") { return Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)
-    .replace("</h3>", `</h3><button type="button" class="bg-ex" data-bagi title="Bagikan" aria-label="Bagikan kartu ini">${KG.IKON_BAGI}</button>`); },
+  kartu(ey, judul, isi, catatan, ctl = "") { return Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
   hari7() { return Object.keys(this.d.harian).sort().slice(-7); },
 
   async render() {

@@ -1,18 +1,12 @@
 "use strict";
-/* Adaptor kartu tab gempa (Insight, Tren, Berita, Dampak): mesin kartu tetap dari public/inti/kartu.js (Kartu.ex/pil/seg/leg/hl);
-   di sini hanya pil kategori di kepala, ikon bagikan, perkakas data dan ukuran grafik. Tanpa subjudul/unit (A1); bagikan = ikon (A19). */
+/* Perkakas grafik khas gempa (batang tegak/mendatar berpil, sumbu, ukuran). Kartunya sendiri = Kartu.kartu di public/inti/kartu.js;
+   ikon bagikan dipasang mesin Bagikan (public/bagikan.js), bukan di sini. */
 const KG = {
   TANAH: "#b07a3c", NAVY: "oklch(25.5% .075 256)", MERAH: "#c9503a", BIRU: "#4f8fc4", UNGU: "#5f6fb0",
   BLN: ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"],
   EJA: ["Tidak ada", "Satu", "Dua", "Tiga", "Empat", "Lima", "Enam", "Tujuh", "Delapan", "Sembilan"],
-  IKON_BAGI: '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg>',
   /* cacah kecil di awal kalimat dieja; selain itu angka berformat. Satuan ikut disorot. */
   awal: (n, satuan) => Kartu.hl((n < 10 ? KG.EJA[n] : fmt(n)) + " " + satuan),
-  /* kartu Insight: ey = pil kategori di kepala, leg = [[warna, nama]] untuk kaki, ctl = pemilih (pemilih pertama pindah ke kanan judul) */
-  kartu(ey, judul, isi, sumber, ctl = "", leg = null) {
-    if (leg) Kartu.leg(leg);
-    return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`)
-      .replace("</h3>", `</h3><button type="button" class="bg-ex" data-bagi title="Bagikan" aria-label="Bagikan kartu ini">${KG.IKON_BAGI}</button>`); },
   /* ukuran grafik batang mendatar: layar sempit merapatkan viewBox supaya huruf tetap terbaca */
   uk() { const M = innerWidth < 640; return M ? {M, W: 520, L: 118, rh: 30, fs: 13} : {M, W: 940, L: 190, rh: 30, fs: 13}; },
   pendek: n => n.replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.").replace("Sulawesi", "Sul.").replace("Nusa Tenggara", "NT").replace("Papua", "Pap."),
@@ -47,7 +41,3 @@ const KG = {
       return `<g${r.attr || ""}><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${r.nama}</text>${bar}<g class="gf" style="--i:${i}">${pils}</g></g>`; }).join("");
     return `<svg viewBox="0 0 ${W} ${rows.length * rh + 4}" role="img" aria-label="Grafik batang">${g}</svg>`; },
 };
-/* ikon bagikan: tautan halaman lewat lembar bagikan bawaan atau salin (gambar/ekspor milik bagikan.js belum mengenal gempa) */
-document.addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (!b) return;
-  const h = b.closest("article.ex")?.querySelector("h3")?.textContent || "Pantau Bencana · Gempa", u = location.origin + location.pathname;
-  if (navigator.share) navigator.share({title: h, text: h, url: u}).catch(() => {}); else navigator.clipboard?.writeText(h + " " + u).then(() => toast("Tautan disalin")); });

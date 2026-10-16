@@ -1,10 +1,7 @@
-/* Khusus /udara/: pil kategori, tombol bagikan kartu, kisi Metode. Dasar rupa dari gaya.css/peta.css/insight.css (salinan banjir). */
+/* Khusus /udara/: pil kategori, kisi Metode. Dasar rupa dari ../inti/gaya.css, peta.css, tabel.css, insight.css. */
 .kt{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:10.5px;font-weight:700;white-space:nowrap;background:var(--c);color:var(--f)}
 .tb.dipilih{background:var(--surface)}
 .tb .kt{justify-self:end}
-.bagi-ex{flex:none;margin-top:2px;width:32px;height:32px;border-radius:10px;border:1px solid var(--line);background:var(--card);color:var(--ink2);display:grid;place-items:center;cursor:pointer}
-.bagi-ex:hover{color:var(--ink);background:var(--surface)}
-.bagi-ex svg{width:15px!important;height:15px!important}
 #insight .ex-bd .tw td .kt{height:22px}
 .mt-kisi{display:grid;gap:16px;max-width:980px;margin:0 auto}
 .mt-bag h3{font-size:18px;margin-bottom:10px}
