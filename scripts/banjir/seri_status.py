@@ -44,7 +44,8 @@ def main():
     jalur = os.path.join(KELUAR, "seri_status.json")
     seri = baca(jalur, {"hari": [], "prov": {}, "nas": {}})
     n = len(seri["hari"])
-    if tambah(seri, st, hujan["hari_ini"]):
+    ada = os.path.exists(jalur)  # berkas selalu ada (kosong sah): layar memuatnya tanpa 404
+    if tambah(seri, st, hujan["hari_ini"]) or not ada:
         simpan(jalur, seri)
         print(f"seri_status: {st['hari'][0]} nasional [bw,bs,ba,lw,ls,la] = {seri['nas'][st['hari'][0]]}; {len(seri['hari'])} hari (sebelumnya {n})", file=sys.stderr)
     else:

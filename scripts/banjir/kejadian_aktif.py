@@ -155,7 +155,10 @@ def main():
     d = a.hari
     hari = st["hari"][d]
     hujan = baca(os.path.join(KELUAR, "hujan.json"))
-    if not hujan or st["hari"][0] != hujan["hari_ini"]:  # status basi: tidak menulis apa pun (seperti seri_status)
+    if not hujan or st["hari"][0] != hujan["hari_ini"]:  # status basi: tidak menimpa; hanya berkas awal yang belum ada ditulis kosong (seperti seri_status)
+        jalur = os.path.join(a.keluar, "kejadian_aktif_awal.json")
+        if not os.path.exists(jalur):
+            simpan(jalur, {"hari": None, "terakhir": 0, "kejadian": []})
         sys.exit(f"status.json hari ke-0 {st['hari'][0]} bukan hari ini ({hujan and hujan['hari_ini']}): ditolak, tidak ada yang ditulis")
     siaga = {k: v for k, v in st["kec"].items() if v["b"][d] >= SIAGA}
     pend = (baca(os.path.join(AKAR, "public/data/penduduk.json"), {}) or {}).get("kec", {})

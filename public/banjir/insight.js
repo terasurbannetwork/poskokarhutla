@@ -97,7 +97,7 @@ const Insight = {
     g += T.map((t, i) => { const y = T0 + i * rh, w = t.kelas ? WARNA_LV[t.kelas] : BIRU, tip = `<b>${esc(t.kec)}</b>${t.kab ? " · " + esc(t.kab) : ""}<br>Puncak 7 hari: ${fmt(Math.round(t.puncak))} m³/s<br>Banjir 2 tahunan: ${fmt(Math.round(t.q2))} m³/s`;
       return `<g data-sg="${t.i}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.M ? 13 : 12.5}"><tspan font-weight="700">${esc(t.kec)}</tspan>${U.M ? "" : `<tspan opacity=".6"> ${esc(t.kab)}</tspan>`}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(t.r) - L)}" height="${rh - 10}" rx="4" fill="${w}" data-tip="${tip}"/>
-        <g class="gf" style="--i:${i}">${this.p(X(t.r) + 8, y + 5, f2(t.r) + "×", w, t.kelas === 1 ? FG_LV[1] : "#fff")[0]}</g></g>`; }).join("");
+        <g class="gf" style="--i:${i}">${this.p(X(t.r) + 8, y + 5, F2(t.r) + "×", w, t.kelas === 1 ? FG_LV[1] : "#fff")[0]}</g></g>`; }).join("");
     const n = S.sungai.titik.filter(t => t.kelas >= 1).length;
     Kartu.leg([[BIRU, "di bawah banjir 2 tahunan"], [WARNA_LV[1], "Waspada"], [WARNA_LV[2], "Siaga"], [WARNA_LV[3], "Awas"]]);
     return this.ex(n ? `${this.hl(fmt(n) + " titik sungai")} diperkirakan melewati debit banjir 2 tahunan dalam 7 hari` : `Belum ada sungai besar yang diperkirakan melewati debit banjir 2 tahunan dalam 7 hari`, "", "",
@@ -111,10 +111,10 @@ const Insight = {
     if (!T.length) return "";
     const W = 940, L = 230, cw = (W - L) / hr.length, rh = 28, T0 = 24, H = T0 + T.length * rh;
     let g = hr.map((d, j) => `<text x="${L + j * cw + cw / 2}" y="14" text-anchor="middle" font-size="11" font-weight="${j ? 500 : 800}">${j ? d.slice(8) + "/" + d.slice(5, 7) : "Hari ini"}</text>`).join("");
-    g += T.map((t, i) => `<g data-rob="${t.i}" style="cursor:pointer"><text x="${L - 10}" y="${T0 + i * rh + 18}" text-anchor="end" font-size="12.5"><tspan font-weight="700">${esc(t.kec || t.kab)}</tspan><tspan opacity=".6"> ${esc(t.kab)}</tspan></text>` +
+    g += T.map((t, i) => `<g data-rob="${t.i}" style="cursor:pointer"><text x="${L - 10}" y="${T0 + i * rh + 18}" text-anchor="end" font-size="12.5"><tspan font-weight="700" translate="no">${esc(t.kec || t.kab)}</tspan><tspan opacity=".6" translate="no"> ${esc(t.kab)}</tspan></text>` +
       t.lvs.map((l, j) => { const v = t.h[iH + j], d = v - t.p95, nm = esc(t.kec || t.kab);
-        return `<rect x="${L + j * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="5" style="fill:${l ? WARNA_LV[l] : `color-mix(in oklch, ${BIRU} ${Math.round(Math.max(8, Math.min(70, 40 + d * 200)))}%, var(--surface))`}" data-tip="<b>${nm} · ${tglPendek(hr[j])}</b><br>Muka laut maks: ${f2(v)} m<br>Ambang p95: ${f2(t.p95)} m<br>Status: ${LEVEL[l || 0]}"/>`
-          + `<text x="${L + j * cw + cw / 2}" y="${T0 + i * rh + 18}" text-anchor="middle" font-size="10.5" font-weight="700" pointer-events="none" style="fill:${l === 1 ? FG_LV[1] : l ? "#fff" : "currentColor"}">${f2(v)}</text>`; }).join("") + `</g>`).join("");
+        return `<rect x="${L + j * cw + 1.5}" y="${T0 + i * rh + 3}" width="${cw - 3}" height="${rh - 6}" rx="5" style="fill:${l ? WARNA_LV[l] : `color-mix(in oklch, ${BIRU} ${Math.round(Math.max(8, Math.min(70, 40 + d * 200)))}%, var(--surface))`}" data-tip="<b>${nm} · ${tglPendek(hr[j])}</b><br>Muka laut maks: ${F2(v)} m<br>Ambang p95: ${F2(t.p95)} m<br>Status: ${LEVEL[l || 0]}"/>`
+          + `<text x="${L + j * cw + cw / 2}" y="${T0 + i * rh + 18}" text-anchor="middle" font-size="10.5" font-weight="700" pointer-events="none" style="fill:${l === 1 ? FG_LV[1] : l ? "#fff" : "currentColor"}">${F2(v)}</text>`; }).join("") + `</g>`).join("");
     const n = R.titik.filter(t => Math.max(...t.lv.slice(iH)) > 0).length, bm = R.bmkg?.rob?.length || 0;
     Kartu.leg([[BIRU, "di bawah ambang"], [WARNA_LV[1], "Waspada"], [WARNA_LV[2], "Siaga"], [WARNA_LV[3], "Awas"]]);
     return this.ex(n ? `${this.hl(fmt(n) + " titik pantai")} diperkirakan berstatus rob dalam 10 hari ke depan` : `Pasang belum melewati ambang dalam 10 hari ke depan; BMKG mengeluarkan ${this.hl(fmt(bm) + " peringatan rob")}`, "", "",

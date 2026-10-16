@@ -46,7 +46,6 @@
 .ex [data-set]{cursor:pointer}
 /* tanpa animasi masuk: bila animasi tertahan (tab latar, pratinjau) batang berhenti di lebar 0 dan angkanya tak tampak */
 .ex .gy,.ex .gx,.ex .gf{animation:none}
-@media (max-width:640px){#insight .ex-hd{padding:16px 16px 12px}#insight .ex-bd{padding:12px 14px 8px}#insight .ex-ft{padding:10px 16px 14px}#insight .ex h3{font-size:18px}.ex-jd{flex-wrap:wrap}}
 .ex2{display:grid;grid-template-columns:1fr;gap:18px}
 @media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .ins-hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:260px;display:flex;align-items:flex-end;margin-bottom:18px;background:var(--brand)}
