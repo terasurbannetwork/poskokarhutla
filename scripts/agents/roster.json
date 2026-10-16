@@ -71,6 +71,25 @@
       ]
     },
     {
+      "nama": "gempa",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul gempa & tsunami: pipeline riwayat/risiko, model guncangan (GMPE+MMI) dan susulan, layar public/gempa.",
+      "kapan": "scripts/gempa/** atau public/gempa/** disentuh atau rusak",
+      "fokus": [
+        "Status resmi tsunami BMKG/PTWC tampil apa adanya dan terpisah dari Tingkat Pantau Bencana; Potensi tanpa kata tsunami = null, bukan aman",
+        "Gempa data hidup (cron Worker + D1 milik warga-api); pipa Python hanya riwayat USGS, risiko, berita; keluaran CI ke public/data, yang di-commit ke public/gempa/data",
+        "Model mengikuti PELATIHAN-MODEL: uji dibuka sekali, pembanding sederhana, kesetaraan Python-JS, prospektif append-only; tidak ada prakiraan gempa utama"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (src, migrations), karhutla, banjir, atau .github/workflows (token tanpa scope workflow).",
+      "bisa": "membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami",
+      "tidak": "worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows",
+      "milik": [
+        "scripts/gempa/**",
+        "public/gempa/**"
+      ]
+    },
+    {
       "nama": "warga-api",
       "kelas": "pengerja",
       "model": "sonnet",

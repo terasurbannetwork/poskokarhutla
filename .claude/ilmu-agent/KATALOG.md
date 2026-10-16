@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **16 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **17 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,13 +13,14 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (7)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (8)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
 | `pipa-data` | sonnet | membangun & membetulkan skrip pipeline data karhutla dan JSON keluarannya | model ML sebaran; tampilan layar; worker Cloudflare | `scripts/data/**`, `scripts/scrape/**`, `scripts/geo/**` +4 |
 | `model-sebaran` | sonnet | membangun, melatih ulang, dan menguji model sebaran/eskalasi serta evaluator JS-nya | pipeline data mentah; worker; memverifikasi kejujuran uji baliknya sendiri (itu validasi-model) | `scripts/sebaran/**`, `public/sebaran_model.js`, `public/insight_sebaran*.js` +2 |
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `.github/workflows/banjir.yml` |
+| `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**` |
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +9 |
 | `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +10 |
 | `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json` |
