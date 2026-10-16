@@ -88,6 +88,9 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tools #lapis{display:none}
 .tools #lapis.buka{display:block}
 #lapisBtn{align-self:flex-end}
+/* desktop: Overlay selalu terbuka (ubin ikon), tombol layer hanya untuk mobile; seg tersembunyi benar-benar hilang (A24) */
+@media (min-width:901px){.tools #lapis{display:block}#lapisBtn{display:none!important}}
+.seg[hidden],.seg button[hidden]{display:none!important}
 #legenda summary{cursor:pointer;list-style:none}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}
 .leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}

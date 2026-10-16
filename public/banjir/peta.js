@@ -2,28 +2,38 @@
 /* ================================================================ peta */
 let peta = null;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
-const kiriPad = () => innerWidth > 900 ? {top: 40, bottom: 80, left: 430, right: 280} : {top: 40, bottom: innerHeight * .48, left: 20, right: 20};
+/* ruang peta yang terlihat diukur dari panel kiri, panel kanan, dan garis waktu (bukan angka tetap), seperti padRuang karhutla */
+const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
+const kiriPad = () => { const r = s => document.querySelector(s)?.getBoundingClientRect(), pt = r("#p-peta"), pn = r(".panel"), tl = r(".tools"), gw = r("#garisWaktu");
+  if (innerWidth <= 900) return {top: Math.max(60, gw?.width && pt ? gw.bottom - pt.top + 12 : 60), bottom: (pn?.height || innerHeight * .46) + 16, left: 16, right: 16};
+  const kiri = (pn?.width || 400) + 30, kanan = (tl?.width || 250) + 30, sisa = Math.max(0, kiri + kanan - (pt?.width || innerWidth) + 160), k = sisa ? Math.max(0, 1 - sisa / (kiri + kanan)) : 1;
+  return {top: 56, left: kiri * k, right: kanan * k, bottom: Math.max(30, gw?.width && pt ? pt.bottom - gw.top + 16 : 90)}; };
+/* gambar lapisan peta: dimuat sekali dari modul inti (ubin Overlay, kartu hover) */
+let PI = null;
+const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
+  hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
+  bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
+const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", rob: "Rob", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
 function kotak(fitur) { let a = [180, 90, -180, -90];
   const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
 const Peta = {
   async init() {
+    document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css">');
+    PI = await import("../inti/peta/lapis.js").catch(() => null);
+    PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
     peta.touchZoomRotate.disableRotation();
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
-    await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r)); },
+    await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
+    peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 0}); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("wil")) return;
     const bl = this.bawahLabel();
-    peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
-    peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: {visibility: this.lihat("satelit") ? "visible" : "none"}}, bl);
-    const g = this.gambarHujan();
-    peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
-    peta.addLayer({id: "hujan", type: "raster", source: "hujan", layout: {visibility: this.lihat("hujan") || this.lihat("h3") ? "visible" : "none"}, paint: {"raster-opacity": .75, "raster-resampling": "linear", "raster-fade-duration": 0}}, bl);
     peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});
     peta.addLayer({id: "wil-fill", type: "fill", source: "wil", layout: {visibility: this.lihat("wilayah") ? "visible" : "none"},
       paint: {"fill-color": ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "rgba(0,0,0,0)"],
@@ -31,16 +41,32 @@ const Peta = {
     peta.addLayer({id: "wil-line", type: "line", source: "wil", paint: {"line-color": gelap() ? "#9fb3d1" : "#1d4e89", "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.4, .6], "line-opacity": .7}});
     peta.addSource("prov", {type: "geojson", data: S.geo.prov});
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
-    peta.addSource("sungai", {type: "geojson", data: this.geoSungai()});
-    peta.addLayer({id: "sungai", type: "circle", source: "sungai", layout: {visibility: this.lihat("sungai") ? "visible" : "none", "circle-sort-key": ["get", "k"]},
-      filter: [">=", ["get", "k"], 0],
-      paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 2.5, -1, 2, 5], 9, ["match", ["get", "k"], 0, 6, -1, 5, 11]],
-        "circle-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], -1, "#9aa8b8", "#3f7fb8"], "circle-stroke-color": "#fff", "circle-stroke-width": ["match", ["get", "k"], 0, .8, 1.8],
-        "circle-opacity": ["match", ["get", "k"], 0, .65, 1]}});
-    if (S.rob) { peta.addSource("rob", {type: "geojson", data: this.geoRob()});
-      peta.addLayer({id: "rob", type: "symbol", source: "rob", layout: {visibility: this.lihat("rob") ? "visible" : "none", "text-field": "▲", "text-size": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 9, 15], 9, ["match", ["get", "k"], 0, 16, 24]], "text-allow-overlap": true, "symbol-sort-key": ["get", "k"]},
+    this.aturWilayah(false); this.interaksi();
+    /* lapisan lain dipasang malas, satu per giliran, supaya klik pertama tidak tertahan; satelit hanya bila dinyalakan */
+    ["hujan", "sungai", "rob"].forEach(k => nanti(() => this.pasangLapis(k)));
+    nanti(() => this.lihat("satelit") && this.pasangLapis("satelit"));
+    nanti(() => Posko.lapis()); },
+  pasangLapis(k) {
+    if (!peta.getSource("wil") || peta.getLayer(k)) return;
+    const vis = on => ({visibility: on ? "visible" : "none"});
+    if (k === "satelit") { peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
+      peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: vis(this.lihat("satelit"))}, peta.getLayer("hujan") ? "hujan" : "wil-fill"); }
+    else if (k === "hujan") { const g = this.gambarHujan();
+      peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
+      peta.addLayer({id: "hujan", type: "raster", source: "hujan", layout: vis(this.lihat("hujan") || this.lihat("h3")), paint: {"raster-opacity": .75, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-fill"); }
+    else if (k === "sungai") {
+      peta.addSource("sungai", {type: "geojson", data: this.geoSungai()});
+      peta.addLayer({id: "sungai", type: "circle", source: "sungai", layout: {...vis(this.lihat("sungai")), "circle-sort-key": ["get", "k"]},
+        filter: S.mode === "sungai" ? null : [">=", ["get", "k"], 0],
+        paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 2.5, -1, 2, 5], 9, ["match", ["get", "k"], 0, 6, -1, 5, 11]],
+          "circle-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], -1, "#9aa8b8", "#3f7fb8"], "circle-stroke-color": "#fff", "circle-stroke-width": ["match", ["get", "k"], 0, .8, 1.8],
+          "circle-opacity": ["match", ["get", "k"], 0, .65, 1]}}); }
+    else if (k === "rob" && S.rob) { peta.addSource("rob", {type: "geojson", data: this.geoRob()});
+      peta.addLayer({id: "rob", type: "symbol", source: "rob", layout: {...vis(this.lihat("rob")), "text-field": "▲", "text-font": ["Noto Sans Bold"], "text-size": ["interpolate", ["linear"], ["zoom"], 4, ["match", ["get", "k"], 0, 9, 15], 9, ["match", ["get", "k"], 0, 16, 24]], "text-allow-overlap": true, "symbol-sort-key": ["get", "k"]},
         paint: {"text-color": ["match", ["get", "k"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "#2b8c86"], "text-halo-color": "#fff", "text-halo-width": 1.4}}); }
-    Posko.lapis(); this.aturWilayah(false); this.interaksi(); },
+    renderLegenda(); },
+  /* lapisan dicentang DAN benar-benar tergambar pada zoom ini (minzoom/maxzoom lapisan); untuk legenda */
+  terlihat(k, id = k) { if (!this.lihat(k)) return false; const l = peta?.getLayer(id), z = peta?.getZoom() ?? 0; return !l || (z >= (l.minzoom ?? 0) && z <= (l.maxzoom ?? 24)); },
   /* titik pantai: level rob pada hari aktif (indeks hari rob.json disejajarkan dengan tanggal) */
   geoRob() { const j = S.rob.hari.indexOf(S.st.hari[S.hari]);
     return {type: "FeatureCollection", features: S.rob.titik.map((t, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [t.lon, t.lat]}, properties: {i, k: j < 0 ? 0 : t.lv[j] || 0}}))}; },
@@ -61,8 +87,8 @@ const Peta = {
     return {url: cv.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
   segarkan() {
     if (!peta?.getSource("wil")) return;
-    const g = this.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor});
-    peta.getSource("sungai").setData(this.geoSungai()); if (peta.getSource("rob")) peta.getSource("rob").setData(this.geoRob()); this.aturWilayah(false); },
+    if (peta.getSource("hujan")) { const g = this.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); }
+    peta.getSource("sungai")?.setData(this.geoSungai()); peta.getSource("rob")?.setData(this.geoRob()); this.aturWilayah(false); },
   async aturWilayah(terbang = true) {
     const j = S.jalur; let fc;
     if (j.length === 0) fc = S.geo.prov;
@@ -73,16 +99,35 @@ const Peta = {
       return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : j.length === 1 ? p.kab : p.kec, lv: ag[kunci]?.lv || 0}}; });
     S.ag = ag;
     if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: S.fiturWil});
-    if (terbang && S.fiturWil.length) peta.fitBounds(kotak(S.fiturWil), {padding: kiriPad(), duration: 700, maxZoom: 11});
-    else if (terbang) peta.flyTo({center: [118, -2.4], zoom: 4.1});
+    if (terbang) peta.fitBounds(j.length && S.fiturWil.length ? kotak(S.fiturWil) : BB_ID, {padding: kiriPad(), duration: 700, maxZoom: 11});
     renderCrumb(); renderDaftar(); },
+  /* kartu hover satu baris berikon: wilayah (jumlah kecamatan per status, atau status + hujan di kecamatan), titik sungai, titik pantai */
+  kartuWilayah(f) { const p = f.properties, kp = p.kunci.split("|"), n = S.ag[p.kunci]?.n || [0, 0, 0, 0], W = WARNA_LV;
+    let stat; if (kp.length < 3) stat = [["peringatan", n[3], "awas", W[3], n[3] > 0], ["bel", n[2], "siaga", W[2]], ["mata", n[1], "waspada", W[1]]];
+    else { const c = selDekat(...pusat(p.kunci)); stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ["hujan", c ? fmt(Math.round(c.h3)) + " mm" : "–", "hujan 3 hari", "#3f7fb8"]]; }
+    return PI.kartuTip({judul: esc(p.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "", stat}); },
+  kartuSungai(i, k) { const t = S.sungai.titik[i], W = WARNA_LV; if (!t) return "";
+    return PI.kartuTip({judul: esc(t.kec), kepala: lambang(t.prov, t.kab), stat: [["sungai", k < 0 ? "–" : LEVEL[k], "status", k < 0 ? "#9aa8b8" : W[k], k >= 2], ["debit", fmt(Math.round(t.puncak)) + " m³/s", "puncak 7 hari", "#3f7fb8"],
+      ...(t.q2 ? [["rasio", f2(t.puncak / t.q2) + "×", "dari banjir 2 th", "#3f7fb8"]] : [])]}); },
+  kartuRob(i, k) { const t = S.rob.titik[i], j = S.rob.hari.indexOf(S.st.hari[S.hari]), h = j < 0 ? null : t.h[j]; if (!t) return "";
+    return PI.kartuTip({judul: esc(t.kec || t.kab), kepala: lambang(t.prov, t.kab), stat: [["ombak", LEVEL[k], "status", k ? WARNA_LV[k] : "#2b8c86", k >= 2], ["debit", h == null ? "–" : f2(h) + " m", "muka laut", "#2b8c86"]]}); },
   interaksi() {
-    let hov = null;
-    peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false});
-      hov = e.features[0].id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); });
-    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; });
-    peta.on("mouseenter", "sungai", () => peta.getCanvas().style.cursor = "pointer");
-    peta.on("mouseenter", "rob", () => peta.getCanvas().style.cursor = "pointer");
+    if (this._ia) return; this._ia = true;
+    let hov = null, diTitik = false; const tip = () => PI?.sembunyiTip();
+    /* titik sungai dan rob di atas wilayah: kartunya menang bila kursor di titik */
+    for (const [id, kartu] of [["sungai", "kartuSungai"], ["rob", "kartuRob"]]) {
+      peta.on("mousemove", id, e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; const f = e.features[0]; PI?.tampilTip(this[kartu](f.properties.i, f.properties.k), e.originalEvent); });
+      peta.on("mouseleave", id, () => { diTitik = false; peta.getCanvas().style.cursor = ""; tip(); }); }
+    peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
+      if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
+      if (!diTitik && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
+    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
+    /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
+    peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
+      S.jalur = S.jalur.slice(0, ke); nanti(() => Peta.aturWilayah(false)); });
+    /* legenda hanya lapisan yang terlihat: dihitung ulang saat zoom melewati ambang minzoom/maxzoom salah satu lapisan */
+    const AMBANG = () => ["wil-fill", "sungai", "rob", "hujan", "satelit"].flatMap(id => { const l = peta.getLayer(id); return l ? [l.minzoom, l.maxzoom].filter(z => z > 0 && z < 24) : []; }), tingkat = () => AMBANG().filter(a => peta.getZoom() >= a).length; let t0 = tingkat();
+    peta.on("zoomend", () => { const t = tingkat(); if (t !== t0) { t0 = t; renderLegenda(); } });
     peta.on("click", e => {
       const pk = peta.getLayer("posko") && peta.queryRenderedFeatures(e.point, {layers: ["posko"]});
       if (pk && pk.length) return Posko.popup(pk[0].properties.id, pk[0].geometry.coordinates.slice());
@@ -131,6 +176,8 @@ function ringkasHari() {
     <div class="kv" style="grid-template-columns:repeat(3,1fr)">${[3, 2, 1].map(l => `<div><b style="color:${WARNA_LV[l]}">${fmt(n[l])}</b><span>${LEVEL[l]}</span></div>`).join("")}</div></div>`; }
 function pusat(kunci) { const f = S.fiturWil?.find(f => f.properties.kunci === kunci); if (!f) return [0, 0]; const b = kotak([f]); return [(b[0][1] + b[1][1]) / 2, (b[0][0] + b[1][0]) / 2]; }
 $("#rows").addEventListener("click", e => { const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw); const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 2 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
+/* seg "Posko" di panel disembunyikan (A24, ledger fitur-disembunyikan); sisa satu pilihan "Wilayah" tak berguna, jadi seluruh seg ikut hidden */
+$("#panelMode").hidden = true; document.querySelector('#panelMode [data-m="posko"]').hidden = true;
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 $("#bahayaSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.b = b.dataset.b;
   $("#bahayaSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.aturWilayah(false); renderLegenda(); }); });
@@ -149,18 +196,19 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   Posko.tampil(S.mode !== "riwayat");
   renderLegenda(); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
-  const map = {posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], hujan: ["hujan"], h3: ["hujan"], satelit: ["satelit"]}[i.dataset.l];
-  if (i.dataset.l === "hujan" || i.dataset.l === "h3") { const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none"); const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); }
-  else map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
+  const k = i.dataset.l, map = {posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
+  if (k === "hujan" || k === "h3") nanti(() => { Peta.pasangLapis("hujan"); if (!peta.getLayer("hujan")) return; const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none");
+    const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); renderLegenda(); });
+  else { if (["sungai", "rob", "satelit"].includes(k)) Peta.pasangLapis(k); map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); }
   renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
-  const hj = Peta.lihat("hujan") || Peta.lihat("h3");
+  const hj = Peta.terlihat("hujan") || Peta.terlihat("h3"), T = k => Peta.terlihat(k);
   $("#legenda").innerHTML = `<details open id="legDet"><summary class="lbl" style="display:flex;justify-content:space-between">Legenda <span>▾</span></summary><div style="margin-top:6px">
     ${S.mode === "riwayat" ? Riwayat.legenda() :
-    `<div class="lbl">Status ${NAMA_B[S.b]} per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => `<span><i class="sw" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>`}
-    ${Peta.lihat("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#3f7fb8"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
-    ${Peta.lihat("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
+    T("wilayah") ? `<div class="lbl">Status ${NAMA_B[S.b]} per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => `<span><i class="sw" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
+    ${T("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#3f7fb8"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
+    ${T("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
     ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
       <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`; }
 
