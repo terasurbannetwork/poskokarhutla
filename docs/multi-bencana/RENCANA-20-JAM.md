@@ -105,8 +105,12 @@ Model per bencana (GBDT, uji balik) tidak dipaksa masuk 20 jam ini. Yang masuk a
 ## 6. Tambahan dari pemilik selama berjalan
 
 - **Peringatan dini dan pop-up alarm** (16 Okt): `PERINGATAN-DINI.md`. Tahap 1 (pemicu worker, API, pop-up) sesudah halaman gempa; tahap 2 Web Push menunggu kunci VAPID pemilik.
-- **Lapisan satelit NASA (Eyes on the Earth / GIBS, tanpa kunci)** (16 Okt), dipangkas atas kata pemilik *"tambahin yang relevan aja"*: hanya tiga ubin Overlay berlabel "NASA EOSDIS GIBS".
-  1. Karbon monoksida AIRS 3 harian (±5,5 km): karhutla + udara. Asap karhutla yang terangkat dan lintas batas.
+- **Lapisan satelit NASA (Eyes on the Earth / GIBS, tanpa kunci)** (16 Okt). Pemilik: *"tambahin yang relevan aja"*, lalu *"Ini kan ada satelit dan datanya semua"*. Ubin Overlay berlabel "NASA EOSDIS GIBS":
+  1. Karbon monoksida AIRS 3 harian (±5,5 km): karhutla + udara. Asap terangkat dan lintas batas.
   2. Hujan teramati GPM IMERG: banjir + cuaca, berdampingan dengan prakiraan Open-Meteo.
   3. Kelembapan tanah SMAP: kekeringan.
-  Tidak dibawa: uap air, suhu dan muka laut, GRACE, "satelit berikutnya", globe 3D, lapisan kimia atmosfer.
+  4. Citra satelit kemarin VIIRS (true color): semua bencana. Asap, awan badai, kolom abu terlihat langsung.
+  5. MODIS Terra/Aqua komposit 7-2-1: banjir. Genangan tampil biru tua.
+  6. Suhu permukaan AIRS: cuaca ekstrem + kekeringan (gelombang panas).
+  7. "Satelit berikutnya melintas pukul ...": karhutla. VIIRS S-NPP, NOAA-20, NOAA-21 dari elemen orbit CelesTrak, dihitung di peramban.
+  Tidak dibawa: CO2, ozon, klorofil, salinitas, kimia atmosfer (HCl, ClO, HNO3, N2O), globe 3D.
