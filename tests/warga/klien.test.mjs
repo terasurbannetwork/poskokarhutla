@@ -11,6 +11,7 @@ import {PERISTIWA, pSampel, pHit, MAKS_BODY_JEJAK} from "../../src/statistik.js"
 import {klasifikasi, dalamCidr, cidrKe, ambilCidr, jaringanHosting, kanal, perangkat, tamuHash} from "../../src/publik.js";
 
 const SKRIP = n => readFileSync(path.join(AKAR, "public", n), "utf8");
+const SPANDUK = /const SPANDUK = true\b/.test(SKRIP("persetujuan.js"));
 const MENIT = 60e3, WIB = 7 * 36e5, hariWIB = t => new Date(t + WIB).toISOString().slice(0, 10);
 
 /* ---------- DOM tiruan: cukup untuk persetujuan.js + jejak.js ---------- */
@@ -51,7 +52,10 @@ uji("persetujuan: tanpa pilihan, analitik mati dan jejak tidak mengirim apa pun"
   const d = dunia();
   d.jalankan("persetujuan.js"); d.jalankan("jejak.js", {halaman: "karhutla"});
   assert.equal(d.win.Persetujuan.analitik(), false);
-  assert.ok(!d.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk sengaja dimatikan (SPANDUK = false, pemilik 14 Okt 2026)");
+  /* spanduk bisa disembunyikan pemilik lewat saklar SPANDUK di persetujuan.js (14 Okt 2026); ujinya mengikuti saklar itu */
+  const tampil = d.sisip.some(h => h.includes("pv-kartu") && h.includes("Terima semua") && h.includes("Tolak non-esensial") && h.includes("Atur"));
+  assert.equal(tampil, SPANDUK, SPANDUK ? "spanduk harus tampil" : "spanduk disembunyikan (SPANDUK = false) tapi tetap muncul");
+  assert.ok(SPANDUK || !d.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk sengaja dimatikan (SPANDUK = false, pemilik 14 Okt 2026)");
   d.waktu(() => true); tutup(d);
   assert.equal(d.beacon.length + d.fetchLog.length, 0, "tidak boleh ada kiriman sebelum persetujuan");
   assert.equal(d.ls.has("pb_vid"), false, "id analitik tidak boleh dibuat sebelum persetujuan");
@@ -84,7 +88,9 @@ uji("persetujuan: DNT/GPC memaksa mati; pilihan lama (> 12 bulan) atau versi lai
     const x = dunia({simpan: {pb_persetujuan: JSON.stringify(lama)}});
     x.jalankan("persetujuan.js");
     assert.equal(x.win.Persetujuan.analitik(), false, `pilihan ${JSON.stringify(lama)} tidak berlaku`);
-    assert.ok(!x.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk tetap mati (SPANDUK = false); analitik mati di atas");
+    assert.equal(x.sisip.some(h => h.includes('class="pv pv-kartu"')), SPANDUK, "pilihan kedaluwarsa: spanduk ditanya ulang bila SPANDUK menyala");
+    assert.equal(x.win.Persetujuan.pilihan(), null, "pilihan kedaluwarsa dianggap belum memilih");
+    assert.ok(SPANDUK || !x.sisip.some(h => h.includes("<section class=\"pv pv-kartu\"")), "spanduk tetap mati (SPANDUK = false); analitik mati di atas");
   }
 });
 

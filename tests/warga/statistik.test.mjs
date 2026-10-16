@@ -338,6 +338,7 @@ uji("hit HTML: rute HTML dilayani dari aset, aset lain tidak lewat jalur ini", a
   // /tentang kini tab di index.html (HALAMAN); berkas tentang.html dilayani di /tentang-halaman
   const t = await panggil("GET", "/tentang"); assert.equal(tanpaPil(t.teks), tanpaPil(idx));
   const th = await panggil("GET", "/tentang-halaman"); assert.equal(tanpaPil(th.teks), tanpaPil(readFileSync(path.join(AKAR, "public/tentang.html"), "utf8")));
+  const th2 = await panggil("GET", "/tentang-halaman/"); assert.equal(tanpaPil(th2.teks), tanpaPil(readFileSync(path.join(AKAR, "public/tentang.html"), "utf8")), "garis miring di ujung tetap halaman yang sama");
   const {HTML_RUTE} = await import("../../src/worker.js");
   for (const j of ["/jejak.js", "/data/meta.json", "/admin/admin.css", "/img/logo.svg", "/banjir/data/meta.json"]) assert.ok(!HTML_RUTE.some(([re]) => re.test(j)), `${j} tidak boleh memanggil Worker`);
   const s = await panggil("GET", "/statistik"); assert.equal(s.status, 200); assert.match(s.teks, /statistik_publik\.js/);
