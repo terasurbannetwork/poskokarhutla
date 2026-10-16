@@ -30,7 +30,7 @@ def sidik(p):
     return hashlib.sha256(open(p, "rb").read()).hexdigest()[:10]
 
 
-def jalan(akar=AKAR):
+def jalan(akar=AKAR, maks=100):
     akar = os.path.abspath(akar)
     halaman, versi, sisa = [], {}, []   # versi: jalur web -> hash; sisa: teks HTML di luar tag yang diberi versi
     for h in berkas(akar, ".html"):
@@ -60,6 +60,11 @@ def jalan(akar=AKAR):
     hp = os.path.join(akar, "_headers")
     lama = open(hp, encoding="utf-8").read() if os.path.exists(hp) else ""
     lama = lama.split("\n" + TANDA)[0].rstrip("\n")
+    # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). No-cache halaman wajib; immutable cuma optimasi,
+    # jadi yang dibuang immutable berkas terkecil dulu. ponytail: per berkas; gabung per folder kalau sisa jatahnya terlalu sempit.
+    jatah = maks - sum(1 for b in lama.splitlines() if b.startswith("/")) - len(halaman)
+    if len(abadi) > jatah:
+        abadi = sorted(sorted(abadi, key=lambda w: -os.path.getsize(os.path.join(akar, w.lstrip("/"))))[:max(jatah, 0)])
     blok = [TANDA]
     for w in abadi:
         blok += [w, "  Cache-Control: public, max-age=31536000, immutable"]
@@ -91,6 +96,10 @@ def uji():
         assert h.count(TANDA) == 1 and h.startswith("/*\n  X: 1") and "/banjir/index.html\n  Cache-Control: no-cache" in h, h
         w("a.js", "x=2"); v2, _ = jalan(t)
         assert v2["/a.js"] != versi["/a.js"] and v2["/c.js"] == versi["/c.js"], "versi harus mengikuti isi berkas"
+        _, abadi = jalan(t, maks=4)                          # 1 dasar + 2 halaman -> jatah 1: yang terbesar (c.js) bertahan
+        h = open(os.path.join(t, "_headers")).read()
+        aturan = sum(1 for b in h.splitlines() if b.startswith("/"))
+        assert abadi == ["/c.js"] and aturan == 4, f"jatah aturan dilanggar: {aturan} aturan, abadi={abadi}"
     print("versi uji: lolos")
 
 
