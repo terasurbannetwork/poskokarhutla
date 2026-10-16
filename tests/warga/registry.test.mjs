@@ -48,7 +48,7 @@ test("statistik dan sumber status mengikuti registry", () => {
   assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
   // hanya "aktif" menentukan 503 /api/status (banjir dan gempa aktif); "uji" (cuaca, ...) dilaporkan terpisah
   assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "gempa_terbaru", "titik"]);
-  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "gunungapi", "kekeringan", "kualitas"]);
+  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "cuaca_nowcast", "gunungapi", "kekeringan", "kualitas"]);
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
   const M = salinan(); M.bencana.find(b => b.id === "gempa").status = "mati";

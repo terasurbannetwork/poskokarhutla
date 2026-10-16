@@ -12,6 +12,7 @@ import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
+import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
 
@@ -347,7 +348,7 @@ async function dibuatAset(env, asal, jalur) {
   } catch (e) { return null; }
 }
 async function umurSumber(env, url, kini, [jalur, ambang]) {
-  const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
+  const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
   return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
 }
 async function periksaStatus(env, url, kini) {
@@ -458,6 +459,7 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
+    if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
@@ -501,6 +503,7 @@ export default {
     if (ev.cron === CRON_GEMPA) {
       /* tiap langkah dibungkus sendiri: galat katalog gempa tidak boleh menahan email tsunami/gempa ke pelanggan EWS di bawah */
       try { console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime))); } catch (e) { console.error("gempa", e?.message); }
+      if (new Date(sekarang).getUTCMinutes() % 10 === 0) try { console.log("nowcast", JSON.stringify(await perbaruiNowcast(env, sekarang))); } catch (e) { console.error("nowcast", e?.message); }
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       return console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
     }

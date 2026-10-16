@@ -85,7 +85,7 @@ const Peta = {
     Laci.buka("Nowcast BMKG", `<span translate="no">${esc(a.event)}</span>`, `${pilSev(a.severity)} · ${fmt(a.n)} kecamatan`,
       `<div class="grid g4">${kot("Tingkat", `<span style="color:${sevWarna(a.severity)}">${esc(a.severity)}</span>`, "BMKG")}${kot("Kecamatan", fmt(a.n), "dalam peringatan")}</div>
       <p class="fnd" translate="no"><b>${esc(a.wilayah)}</b></p><p class="fnd">${waktuBerlaku(a.mulai, a.selesai)}</p>${a.deskripsi ? `<p class="fnd" translate="no">${esc(a.deskripsi)}</p>` : ""}
-      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.per.dibuat)}${a.web ? ` · <a href="${escUrl(a.web)}" target="_blank" rel="noopener">Infografis</a>` : ""}</p>`); },
+      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}${a.web ? ` · <a href="${escUrl(a.web)}" target="_blank" rel="noopener">Infografis</a>` : ""}</p>`); },
   laciProv(o) { if (!o) return;
     Laci.buka("Gelombang tinggi", `<span translate="no">${esc(namaProv(o.prov))}</span>`, `${pilGel(o.lv - 1)} · ${fmt(o.total)} perairan`,
       `<div class="grid g4">${GEL.map((k, i) => kot(k[1], fmt(o.kelas[i]), k[2])).join("")}</div>
@@ -144,7 +144,7 @@ function renderPanel() {
     ? nc.map(({a, i}) => `<button class="rw" data-nc="${i}"><span class="rw-hd">${pilSev(a.severity)}<b translate="no">${esc(a.event)}</b></span><span class="rw-wil" translate="no">${esc(a.wilayah)}</span><span class="rw-jam">${waktuBerlaku(a.mulai, a.selesai)}</span></button>`).join("")
     : gl.map(o => `<button class="rw" data-gl="${o.prov}"><span class="rw-hd">${pilGel(o.lv - 1)}<b translate="no">${esc(namaProv(o.prov))}</b></span><span class="rw-wil">${fmt(o.total)} perairan</span></button>`).join("");
   /* tanpa peringatan berlaku: sebut terbitan BMKG yang dipakai, supaya bukan terbaca "BMKG menyatakan aman" (berkasnya terbit berkala, nowcast hidup 2-3 jam) */
-  if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
+  if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(panelMode === "nc" ? (S.ncDibuat ?? S.per.dibuat) : S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
 }
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; renderPanel(); });
 $("#cari").addEventListener("input", renderPanel);

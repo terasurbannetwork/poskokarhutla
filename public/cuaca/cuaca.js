@@ -62,7 +62,12 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 async function muatData() {
   const [pr, meta, geo] = await Promise.all([muatJSON("../banjir/data/cuaca_prakiraan.json"), muatJSON("../banjir/data/cuaca_meta.json"), muatJSON("../geo/provinsi.json")]);
   Object.assign(S, {pr, meta, geo});
-  S.per = await muatJSON("../data/peringatan.json").catch(() => null); /* BMKG tak terbaca: bagian peringatan dibuang, prakiraan tetap */
+  /* nowcast: /api/cuaca/nowcast (Worker menarik BMKG tiap 10 menit) lebih dulu, lalu peringatan.json harian; gelombang selalu dari peringatan.json.
+     S.ncDibuat = waktu terbit RSS BMKG yang sebenarnya (atau waktu tarik bila terbit tak ada); null bila nowcast dari berkas harian. */
+  const [file, api] = await Promise.all([muatJSON("../data/peringatan.json").catch(() => null), muatJSON("/api/cuaca/nowcast").catch(() => null)]);
+  const apiSah = api && Array.isArray(api.nowcast) && (api.terbit || api.dibuat);
+  S.ncDibuat = apiSah ? api.terbit || api.dibuat : null;
+  S.per = apiSah ? {gelombang: [], ...file, dibuat: file ? file.dibuat : S.ncDibuat, nowcast: api.nowcast} : file; /* BMKG tak terbaca: bagian peringatan dibuang, prakiraan tetap */
   /* hari ini menurut jam WIB peramban; di luar jangkauan data (data basi) jatuh ke hari_ini data */
   const i = pr.hari.indexOf(tglWIB(SEKARANG())); S.h0 = S.hari = i >= 0 ? i : Math.max(0, pr.hari.indexOf(pr.hari_ini));
   S.sel = new Map(pr.sel.map(r => [r[0].toFixed(3) + "," + r[1].toFixed(3), r]));

@@ -53,7 +53,7 @@ const Insight = {
     Kartu.leg(Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => [w, k]));
     return this.ex(A.length ? `${this.hl(fmt(nKec) + " kecamatan")} di ${this.hl(fmt(nProv) + " provinsi")} dalam peringatan nowcast BMKG yang berlaku` : `Tidak ada peringatan nowcast BMKG yang berlaku`, "", "",
       A.length ? this.batangH(A.map(a => ({label: innerWidth < 640 ? a.headline.split(" di ").pop() : a.headline, nilai: a.n, warna: sevWarna(a.severity), teks: fmt(a.n), tip: `<b>${esc(a.event)}</b> · ${esc(a.severity)}<br>Kecamatan: ${a.n} kecamatan<br>${waktuBerlaku(a.mulai, a.selesai)}`})), this.uk()) : "",
-      `Sumber: BMKG, terbit ${jamWIB(S.per.dibuat)}`); },
+      `Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}`); },
   exGelombang() {
     const A = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).slice(0, 15); if (!S.per) return "";
     const nPer = S.gl.reduce((a, o) => a + o.total, 0);

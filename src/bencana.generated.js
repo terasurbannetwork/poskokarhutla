@@ -503,6 +503,11 @@ export default {
           "cuaca",
           "/banjir/data/cuaca_meta.json",
           null
+        ],
+        [
+          "cuaca_nowcast",
+          "/api/cuaca/nowcast",
+          1
         ]
       ],
       "kejadian": {
