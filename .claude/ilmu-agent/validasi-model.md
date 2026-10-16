@@ -52,3 +52,4 @@ Dari akar repo; semua read-only dan murah:
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode (fwi.py, ansambel.py, aturan.py, scripts/banjir/uji_balik.py, validasi.json, keputusan.py kalibrasi(), model_sebaran.json, sebaran_kasus.json, prospektif.json, docstring pfvi.py) dan grep tampilan layar; gerbang `fwi.py`, `aturan.py`, `ansambel.py uji`, `uji_balik.py uji` dijalankan semua `ok`. Celah terbuka di Ranjau: back-test aturan tanpa sumber, ansambel tanpa uji kalibrasi.
+- 2026-10-16 · 2026-10-16 · GMPE: bandingkan koefisien dengan openquake/hazardlib/gsim/boore_2014.py & zhao_2006.py (raw.githubusercontent.com/gem/oq-engine/master); Worden 2012 tak ada di OQ, URL shakemap wgrw12 404. SPI: cek berapa sel punya pct tanah (kekeringan_grid kolom 3/4); hanya 12/611 -> bukti ganda palsu.

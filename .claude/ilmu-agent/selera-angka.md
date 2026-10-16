@@ -56,3 +56,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 
 - 2026-10-15 · Ilmu awal diisi dari kode `public/index.html` (fmt, jamWIB, rb, angkaID), `cerita_karhutla.js`, `operasi.js`, `dampak.js`, `i18n.js`, dan memori gaya-kartu-insight. Dicatat: `toFixed` mentah di teks tampil memakai titik desimal; sisa "9 provinsi prioritas" di index.html; "rb" ditolak pemilik dalam perbandingan.
 - 2026-10-16 · Sapuan copy massal: kunci en.json dicocokkan ke teks kode dengan skrip frasa (split {n}), bukan hanya 'kunci ada'. Pola gagal: kode dihapus angka '9' tapi kunci tetap '{0} provinsi'; em dash di kunci tertinggal saat kode diganti ':'. Cara tahu: node membandingkan kunci baru terhadap code.txt.
+- 2026-10-16 · Pola rb-dalam-judul lolos ke kode baru (kekeringan, gunungapi, tren): rb ditolak pemilik untuk kalimat judul, tapi modul baru menyalinnya dari dampak/rb tanpa cek. Cara tahu: grep this.ex(/Kartu.ex( yang memuat rb( di baris judul.
