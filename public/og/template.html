@@ -5,7 +5,7 @@
 <meta name="robots" content="noindex">
 <title>Pratinjau tautan</title>
 <!-- Templat gambar pratinjau tautan (Open Graph 1200×630). Dirender headless oleh scripts/og/buat.py:
-     /og/template.html?k=ringkasan|peta|banjir|prov-62 -> public/data/og/<k>.png. Angka dari /data/og/meta.json (ditulis buat.py). -->
+     /og/template.html?k=ringkasan|peta|banjir|gempa|gunungapi|kekeringan|cuaca|udara|umum|prov-62 -> public/data/og/<k>.png. Angka dari /data/og/meta.json (ditulis buat.py). -->
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@500;600;700&family=Plus+Jakarta+Sans:wght@700;800&display=block" rel="stylesheet">
 <style>
 *{box-sizing:border-box;margin:0}
@@ -75,6 +75,8 @@ try {
     const isi = E.prov && kode !== E.prov ? "#cfd9e5" : lv ? LV[lv] : "#ffffff", op = E.prov && kode !== E.prov ? 1 : lv ? .3 : 1;
     out += `<path d="${d}" fill="#fff" stroke="none"/><path d="${d}" fill="${isi}" fill-opacity="${op}" stroke="#a9b8ca" stroke-width="${fp ? 1.4 : .8}" fill-rule="evenodd"/>`;
   }
+  /* titik generik per bencana: E.pts = [[lon, lat, tingkat 0-3]] (gempa, gunung api) */
+  if (E.pts) for (const [lo, la, l] of E.pts) { const [x, y] = P(lo, la); out += `<circle cx="${x}" cy="${y}" r="${[3, 4, 5.5, 8][l]}" fill="${LV[l]}" fill-opacity=".85" stroke="#fff" stroke-width="1.2"/>`; }
   if (E.titik) {
     const K = ambil("/data/kluster_awal.json").features.map(f => f.properties)
       .filter(p => p.level >= (E.prov ? 1 : 2) && (!E.prov || p.prov === E.prov)).sort((a, b) => a.level - b.level);

@@ -4,7 +4,7 @@
   python3 scripts/og/buat.py            hitung angka -> public/data/og/meta.json, render PNG, cap meta HTML
   python3 scripts/og/buat.py --stempel  hanya cap blok <!-- og --> di HTML dari meta.json yang sudah ada (tanpa Chrome)
 
-PNG: public/data/og/{ringkasan,peta,banjir,prov-<kode>}.png, dirender Chrome headless dari public/og/template.html.
+PNG: public/data/og/{ringkasan,peta,banjir,gempa,gunungapi,kekeringan,cuaca,udara,umum,prov-<kode>}.png, dirender Chrome headless dari public/og/template.html.
 Sengaja di public/data/og/ (bukan public/og/): public/data ikut cache Actions "data-", jadi semua workflow yang menerbitkan
 (data, banjir, terbit) ikut membawa gambar terbaru walau hanya titik.yml yang merender.
 Cap: blok <!-- og --> ... <!-- /og --> di HTML berisi og:*, twitter:*, canonical, theme-color; og:image diberi ?v=<tanggal>
@@ -80,6 +80,114 @@ def og_banjir(nama):
     return {"gambar": {"banjir": gb}, "halaman": halaman}
 
 
+UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36"
+BIRU = "#4f8fc4"
+wib = lambda: datetime.now(timezone(timedelta(hours=7)))
+
+
+def _og(id_, gb, judul, desk):
+    """Bentuk keluaran sama dengan og_banjir: satu gambar + satu baris halaman '/<id>/' (tab ikut lewat profil() di src/og_meta.js)."""
+    return {"gambar": {id_: gb}, "halaman": {f"/{id_}/": {"judul": judul, "gambar": id_, "desk": desk}}}
+
+
+def og_gempa(nama):
+    """Gempa M5+ terbaru dari BMKG (gempaterkini.json, 15 kejadian terakhir; butuh UA peramban). Sumber disebut di gambar dan deskripsi."""
+    import urllib.request
+    req = urllib.request.Request("https://data.bmkg.go.id/DataMKG/TEWS/gempaterkini.json", headers={"User-Agent": UA})
+    L = json.load(urllib.request.urlopen(req, timeout=30))["Infogempa"]["gempa"]
+    E = []
+    for g in L:
+        la, lo = (float(x) for x in g["Coordinates"].split(","))
+        E.append({"t": datetime.fromisoformat(g["DateTime"]), "m": float(g["Magnitude"]), "d": g["Kedalaman"], "w": re.sub(r"^\d+ km \S+ ", "", g["Wilayah"]).title(), "la": la, "lo": lo})
+    if not E: raise ValueError("gempaterkini kosong")
+    now = datetime.now(timezone.utc); mulai = now - timedelta(days=7)
+    if len(E) >= 15 and min(e["t"] for e in E) > mulai: mulai = min(e["t"] for e in E)   # daftar BMKG terpotong 15: hitung sejak kejadian tertuanya
+    E = sorted((e for e in E if e["t"] >= mulai), key=lambda e: -e["m"])
+    if not E: raise ValueError("tak ada gempa M5+ dalam 7 hari")
+    mk, dr = lambda v: f"{v:.1f}".replace(".", ","), lambda e: e["t"] + timedelta(hours=7)
+    lv = lambda v: 3 if v >= 6.5 else 2 if v >= 6 else 1 if v >= 5.5 else 0
+    n6, t0, top = sum(e["m"] >= 6 for e in E), tgl_pendek((mulai + timedelta(hours=7)).strftime("%Y-%m-%d")), E[0]
+    gb = {"sub": "Gempa bumi · M 5+ · data BMKG", "tgl": f"{tgl_panjang(wib().strftime('%Y-%m-%d'))} · sumber BMKG (gempaterkini)", "lv": lv(top["m"]),
+          "eyebrow": f"Gempa M 5+ · sejak {t0}", "judul": f"{angka(len(E))} gempa M 5+ tercatat BMKG sejak {t0}, terkuat M {mk(top['m'])}",
+          "angka": [[angka(len(E)), f"gempa M 5+ sejak {t0}", LV[2]], ["M " + mk(top["m"]), "gempa terkuat", LV[3]], [angka(n6), "gempa M 6+", BIRU]],
+          "titik": False, "pts": [[e["lo"], e["la"], lv(e["m"])] for e in reversed(E)], "legenda": [[LV[3], "M 6,5+"], [LV[2], "M 6+"], [LV[1], "M 5,5+"], [LV[0], "M 5+"]],
+          "daftarJudul": "Gempa terkuat (BMKG)", "daftar": [[e["w"], e["m"] - 4, "M " + mk(e["m"]), lv(e["m"])] for e in E[:5]]}
+    ws = f"{top['w']}, {dr(top).day} {BULAN[dr(top).month - 1][:3]}"
+    return _og("gempa", gb, "Pantau Bencana · Gempa bumi M 5+ terbaru",
+               f"{t0}: {angka(len(E))} gempa M 5+ tercatat BMKG, terkuat M {mk(top['m'])} ({ws}, kedalaman {top['d']}). Peta, riwayat sejak 1900, dan guncangan per wilayah. Sumber: BMKG.")
+
+
+def og_gunungapi(nama):
+    """Status gunung api harian dari MAGMA Indonesia (PVMBG) lewat public/banjir/data/gunungapi_status.json."""
+    g = baca("banjir/data/gunungapi_status.json"); jl = g["jumlah_level"]; tb = tgl_pendek(g["dibuat"][:10])
+    n4, n3, n2 = jl.get("4", 0), jl.get("3", 0), jl.get("2", 0)
+    kuat = sorted((x for x in g["gunung"] if x["level"] >= 3), key=lambda x: (-x["level"], -(x.get("penduduk_radius") or 0)))
+    gb = {"sub": "Gunung api · status PVMBG", "tgl": f"{tgl_panjang(g['dibuat'][:10])} · data {g['dibuat'][11:16].replace(':', '.')} WIB · MAGMA Indonesia", "lv": 3 if n4 else 2 if n3 else 1 if n2 else 0,
+          "eyebrow": f"Status gunung api · {tb}", "judul": f"{angka(n3 + n4)} gunung api berstatus siaga atau awas hari ini",
+          "angka": [[angka(n4), "gunung api awas (level IV)", LV[3]], [angka(n3), "gunung api siaga (level III)", LV[2]], [angka(n2), "gunung api waspada (level II)", LV[1]]],
+          "titik": False, "pts": [[x["lon"], x["lat"], x["level"] - 1] for x in sorted(g["gunung"], key=lambda x: x["level"]) if x["level"] >= 2],
+          "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]], "daftarJudul": "Siaga/awas, jiwa dalam radius bahaya",
+          "daftar": [[x["nama"], x.get("penduduk_radius") or 0, (jiwa(x["penduduk_radius"]) if x.get("penduduk_radius") else "Siaga" if x["level"] == 3 else "Awas"), x["level"] - 1] for x in kuat[:5]]}
+    return _og("gunungapi", gb, "Pantau Bencana · Status gunung api hari ini",
+               f"{tb}: {angka(n4)} gunung api awas, {angka(n3)} siaga, {angka(n2)} waspada" + (f" ({', '.join(x['nama'] for x in kuat[:3])})" if kuat else "") + ". Sumber: MAGMA Indonesia, PVMBG (Badan Geologi).")
+
+
+def og_kekeringan(nama):
+    """Kekeringan dari public/data/kekeringan_meta.json + kekeringan_wilayah.json (kab_n kumulatif: >= waspada, >= siaga, >= awas)."""
+    m, w = baca("data/kekeringan_meta.json"), baca("data/kekeringan_wilayah.json")["prov"]; nas = m["nasional"]; k = nas["kab_n"]
+    awas, siaga, waspada, ja, tb = k[2], k[1] - k[2], k[0] - k[1], nas["jiwa"][2], tgl_pendek(m["hari_ini"])
+    gb = {"sub": "Kekeringan · hujan, tanah & indeks kekeringan", "tgl": f"{tgl_panjang(m['hari_ini'])} · data {m['dibuat'][11:16].replace(':', '.')} WIB", "lv": 3 if awas else 2 if siaga else 1,
+          "eyebrow": f"Status kekeringan · {tb}", "judul": f"{angka(awas)} kabupaten/kota berstatus awas kekeringan, {jiwa(ja)} jiwa di kecamatan awas",
+          "angka": [[angka(awas), "kabupaten/kota awas", LV[3]], [angka(siaga), "kabupaten/kota siaga", LV[2]], [jiwa(ja), "jiwa di kecamatan awas", "#5f6fb0"]],
+          "lvProv": {p: v.get("lv") or 0 for p, v in w.items()}, "titik": False, "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]], "daftarJudul": "Jiwa di kecamatan awas per provinsi",
+          "daftar": [[m["provinsi"].get(p, p), v["jiwa"][2], jiwa(v["jiwa"][2]), v.get("lv") or 0] for p, v in sorted(w.items(), key=lambda x: -x[1]["jiwa"][2])[:5] if v["jiwa"][2] > 0]}
+    return _og("kekeringan", gb, "Pantau Bencana · Kekeringan hari ini",
+               f"{tb}: {angka(awas)} kabupaten/kota awas, {angka(siaga)} siaga, {angka(waspada)} waspada kekeringan; sekitar {jiwa(ja)} jiwa tinggal di kecamatan awas. Sumber: Deteksi Pantau Bencana dari hujan (SPI), tanah, dan indeks kekeringan.")
+
+
+def og_cuaca(nama):
+    """Cuaca ekstrem: prakiraan hujan/angin per provinsi (cuaca_prakiraan.json, ambang di cuaca_meta.json) + peringatan nowcast BMKG yang belum berakhir (peringatan.json)."""
+    m, pr, pg = baca("banjir/data/cuaca_meta.json"), baca("banjir/data/cuaca_prakiraan.json"), baca("data/peringatan.json")
+    hari_ini = wib().strftime("%Y-%m-%d"); i = m["hari"].index(hari_ini) if hari_ini in m["hari"] else m["i0"]; tb = tgl_pendek(m["hari"][i])
+    ah = m["ambang"]["hujan"]; lvh = lambda v: sum(v >= t for t in ah)
+    P = {}
+    for r in pr["sel"]:
+        p = P.setdefault(r[2], [0, 0]); p[0] = max(p[0], r[3][i] or 0); p[1] = max(p[1], r[4][i] or 0)
+    now = datetime.now(timezone.utc); nc = sum(1 for x in pg.get("nowcast", []) if datetime.fromisoformat(x["selesai"]) > now)
+    nh, ang = sum(p[0] >= ah[0] for p in P.values()), max((p[1] for p in P.values()), default=0)
+    gb = {"sub": "Cuaca ekstrem · prakiraan model & peringatan BMKG", "tgl": f"{tgl_panjang(m['hari'][i])} · data {m.get('dibuat', '')[11:16].replace(':', '.')} WIB", "lv": max((lvh(p[0]) for p in P.values()), default=0),
+          "eyebrow": f"Prakiraan cuaca · {tb}", "judul": f"{angka(nh)} provinsi berpotensi hujan lebat, {angka(nc)} peringatan nowcast BMKG aktif",
+          "angka": [[angka(nh), f"provinsi hujan lebat (≥ {ah[0]} mm)", LV[2]], [angka(nc), "peringatan nowcast BMKG aktif", LV[3]], [angka(ang) + " km/j", "embusan angin terkuat", BIRU]],
+          "lvProv": {k: lvh(p[0]) for k, p in P.items()}, "titik": False, "legenda": [[LV[3], f"≥ {ah[2]} mm"], [LV[2], f"≥ {ah[1]} mm"], [LV[1], f"≥ {ah[0]} mm"]], "daftarJudul": "Hujan terderas per provinsi (mm/hari)",
+          "daftar": [[m["prov"].get(k, k), p[0], angka(p[0]) + " mm", lvh(p[0])] for k, p in sorted(P.items(), key=lambda x: -x[1][0])[:5]]}
+    return _og("cuaca", gb, "Pantau Bencana · Cuaca ekstrem hari ini",
+               f"{tb}: {angka(nh)} provinsi berpotensi hujan lebat (≥ {ah[0]} mm), embusan angin hingga {angka(ang)} km/jam, {angka(nc)} peringatan nowcast BMKG aktif. Sumber: prakiraan model Open-Meteo, peringatan BMKG.")
+
+
+def og_udara(nama):
+    """Kualitas udara: perkiraan model CAMS (Copernicus) per hari di public/data/udara_kualitas.json, belum dikoreksi stasiun."""
+    u = baca("data/udara_kualitas.json"); hari_ini = wib().strftime("%Y-%m-%d")
+    if hari_ini not in u["hari"]: raise ValueError(f"udara_kualitas.json tak memuat {hari_ini}")
+    i = u["hari"].index(hari_ini); n = u["nasional"][i]; tb = tgl_pendek(hari_ini)
+    nj, nb, rata = sum(n["jiwa"][2:5]), sum(n["jiwa"][3:5]), n["rata"]
+    lvu = lambda r: 3 if r[4] else 2 if r[3] else 1 if r[2] else 0
+    R = {k: v[i] for k, v in u["prov"].items()}
+    gb = {"sub": "Kualitas udara · perkiraan model CAMS", "tgl": f"{tgl_panjang(hari_ini)} · data {u['dibuat'][11:16].replace(':', '.')} WIB · belum dikoreksi stasiun", "lv": max((lvu(r) for r in R.values()), default=0),
+          "eyebrow": f"Perkiraan udara · {tb}", "judul": f"Perkiraan model: {jiwa(nj)} jiwa menghirup udara tidak sehat hari ini",
+          "angka": [[jiwa(nj), "jiwa udara tidak sehat (perkiraan)", LV[2]], [jiwa(nb), "jiwa sangat tidak sehat/berbahaya", LV[3]], [angka(rata) + " µg/m³", "PM2,5 rata-rata (model)", BIRU]],
+          "lvProv": {k: lvu(r) for k, r in R.items()}, "titik": False, "legenda": [[LV[3], "Berbahaya"], [LV[2], "Sangat tidak sehat"], [LV[1], "Tidak sehat"]], "daftarJudul": "Jiwa udara tidak sehat per provinsi (perkiraan)",
+          "daftar": [[u["nama_prov"].get(k, k), sum(r[2:5]), jiwa(sum(r[2:5])), lvu(r)] for k, r in sorted(R.items(), key=lambda x: -sum(x[1][2:5]))[:5]]}
+    return _og("udara", gb, "Pantau Bencana · Perkiraan kualitas udara hari ini",
+               f"{tb}: perkiraan model, sekitar {jiwa(nj)} jiwa menghirup udara tidak sehat (PM2,5 rata-rata {angka(rata)} µg/m³). Sumber: model CAMS (Copernicus) lewat Open-Meteo, belum dikoreksi stasiun.")
+
+
+def og_umum():
+    """Gambar netral (tanpa angka bahaya mana pun) untuk bencana yang belum punya gambar sendiri; dipakai src/og_meta.js sebagai cadangan."""
+    gb = {"sub": "Peta, peringatan & data bencana Indonesia", "tgl": "Sumber resmi dicantumkan di tiap halaman", "lv": 0, "eyebrow": "Karhutla · banjir · gempa · gunung api · cuaca", "judul": "Pantau bencana di seluruh Indonesia, langsung dari data resmi",
+          "angka": [["38", "provinsi dipantau", BIRU], ["Peta", "dan peringatan langsung", LV[2]], ["Resmi", "BMKG, PVMBG, BNPB", LV[0]]], "titik": False, "legenda": []}
+    return gb
+
+
 def hitung():
     m, w, kl = baca("data/meta.json"), baca("data/wilayah.json"), baca("data/kluster_awal.json")["features"]
     hari, nama = m["hari_wib"], m["provinsi"]
@@ -125,6 +233,12 @@ def hitung():
         G.update(ob["gambar"]); H.update(ob["halaman"])
     except Exception as e:
         print("og: data banjir dilewati:", e)
+    for fn in (og_gempa, og_gunungapi, og_kekeringan, og_cuaca, og_udara):   # tiap bencana berdiri sendiri: gagal satu tidak menggagalkan yang lain
+        try:
+            o = fn(nama); G.update(o["gambar"]); H.update(o["halaman"])
+        except Exception as e:
+            print(f"og: {fn.__name__} dilewati:", e)
+    G["umum"] = og_umum()
     v = datetime.now(timezone(timedelta(hours=7))).strftime("%Y-%m-%d")
     return {"dibuat": datetime.now(timezone.utc).isoformat(timespec="minutes"), "tgl": hari, "v": v, "situs": SITUS,
             "tgl_panjang": f"{tgl_panjang(hari)} · data {m.get('dibuat', '')[11:16].replace(':', '.')} WIB",
@@ -161,7 +275,8 @@ def render(M):
 
 
 # halaman yang dicap walau belum punya blok: berkas -> jalur publik (kunci M["halaman"]); None = pakai <title>/description halaman
-HALAMAN = {"index.html": "/", "banjir/index.html": "/banjir/", "privasi.html": None}
+# cuaca/ dan udara/ sudah punya og:* tanpa penanda blok; baris meta '/cuaca/', '/udara/' dipakai Worker (src/og_meta.js), jadi tidak distempel di sini
+HALAMAN = {"index.html": "/", "privasi.html": None, **{f"{b}/index.html": f"/{b}/" for b in "banjir gempa gunungapi kekeringan".split()}}
 
 
 def blok(jalur, judul, desk, gambar, M):
@@ -188,8 +303,9 @@ def stempel(M):
             h = M["halaman"][kunci]; jalur, judul, desk, gbr = kunci, h["judul"], h["desk"], h["gambar"]
         else:
             t = re.search(r"<title>(.*?)</title>", s, re.S); d = re.search(r'<meta name="description" content="([^"]*)"', s)
-            jalur = "/" + re.sub(r"\.html$", "", re.sub(r"(^|/)index\.html$", r"\1", rel));   # /privasi.html -> /privasi (HTML_RUTE) judul = html.unescape(t.group(1).strip()) if t else "Pantau Bencana"
-            desk, gbr = html.unescape(d.group(1)) if d else M["halaman"]["/"]["desk"], "ringkasan"
+            jalur = "/" + re.sub(r"\.html$", "", re.sub(r"(^|/)index\.html$", r"\1", rel))   # /privasi.html -> /privasi (HTML_RUTE)
+            judul = html.unescape(t.group(1).strip()) if t else "Pantau Bencana"
+            desk, gbr = html.unescape(d.group(1)) if d else M["halaman"]["/"]["desk"], "umum" if "umum" in M["gambar"] else "ringkasan"   # bukan gambar karhutla untuk halaman tanpa baris meta
         b = blok(jalur, judul, desk, gbr, M)
         if RE_BLOK.search(s): s2 = RE_BLOK.sub(lambda _: b, s, count=1)
         else:

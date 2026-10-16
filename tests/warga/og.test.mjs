@@ -56,3 +56,13 @@ test("tiap bencana registry punya pratinjau sendiri di akar dan tab-nya, walau m
     assert.ok(tab, `${b.id}/${t}`); assert.equal(tab.url, S + b.rute + t);
   }
 });
+
+test("bencana dengan baris meta memakai gambarnya sendiri; tanpa baris jatuh ke gambar netral, bukan karhutla", async () => {
+  const {default: REG} = await import("../../src/bencana.generated.js");
+  const Mg = {...M, gambar: {umum: {}, gempa: {}}, halaman: {...M.halaman, "/gempa/": {judul: "Gempa", desk: "desk gempa", gambar: "gempa"}}};
+  assert.equal(metaRute(u("/gempa/"), Mg, REG).gambar, img("gempa"));
+  assert.equal(metaRute(u("/gempa/peta"), Mg, REG).gambar, img("gempa"));
+  assert.equal(metaRute(u("/gunungapi/"), Mg, REG).gambar, img("umum"));
+  assert.equal(metaRute(u("/gunungapi/peta"), Mg, REG).gambar, img("umum"));
+  assert.equal(metaRute(u("/gunungapi/"), M, REG).gambar, img("ringkasan"));   // meta.json lama tanpa "umum": perilaku lama
+});

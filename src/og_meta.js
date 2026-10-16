@@ -10,7 +10,7 @@ const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren",
 const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 
 /* Profil pratinjau satu bencana: baris meta.json bila ada, kalau tidak turunan registry (og.judul + sumber), supaya tiap modul punya pratinjau sendiri tanpa menunggu generator OG. */
-const profil = (b, M) => M.halaman[b.rute] || {judul: b.og?.judul || `${b.nama} · Pantau Bencana`, desk: `Pantau ${b.nama.toLowerCase()} di seluruh Indonesia.${b.bagikan?.sumber ? " Sumber: " + b.bagikan.sumber + "." : ""}`, gambar: M.halaman["/"].gambar};
+const profil = (b, M) => M.halaman[b.rute] || {judul: b.og?.judul || `${b.nama} · Pantau Bencana`, desk: `Pantau ${b.nama.toLowerCase()} di seluruh Indonesia.${b.bagikan?.sumber ? " Sumber: " + b.bagikan.sumber + "." : ""}`, gambar: M.gambar?.umum ? "umum" : M.halaman["/"].gambar};   // tanpa baris sendiri: gambar netral, bukan gambar karhutla
 
 /* murni: jalur + meta.json (+ registry) -> {judul, desk, gambar, url} atau null (tidak diubah) */
 export function metaRute(url, M, B = REGISTRY) {
