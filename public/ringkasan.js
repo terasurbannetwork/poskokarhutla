@@ -21,9 +21,9 @@ const Ringkasan = (() => {
   const SUMBER = {
     titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20), dihitung setara SiPongi",
     kompleks: "Kompleks kebakaran: titik panas 7 hari digabung DBSCAN 1,5 km, status dari aturan keparahan + cuaca (tab Metode)",
-    asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ 300 km (dampak.json)",
+    asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ 300 km",
     ansambel: "Ansambel ECMWF 51 anggota (fwi_ansambel.json), rata-rata sel 0,5° per provinsi",
-    luas: "Titik MODIS sejak 1 Juni × rasio ha/titik GWIS MCD64A1 per provinsi (dampak.json)",
+    luas: "Titik MODIS sejak 1 Juni × rasio ha/titik GWIS MCD64A1 per provinsi",
     bnpb: "Laporan harian BNPB (bnpb.json), 6 provinsi pantauan",
     pesawat: "Kejadian dari judul berita Google News + METAR (penerbangan.json); batas bawah, bukan data resmi bandara",
     berita: "Judul Google News 120 hari, dinilai bot berita (berita.json)",
@@ -232,8 +232,8 @@ const Ringkasan = (() => {
         if (x) { const kota = (D.dp?.udara?.kota || []).filter(c => c.prov === x.k && c.karhutla !== false && c.pm[0] > 55.4).sort((a, b) => b.pm[0] - a.pm[0]).slice(0, 3);
           C.push({skor: 65 + Math.min(9, x.jiwaSTS / 1e6), jenis: "kesehatan", siapa: `Gubernur ${namaProv(x.k)}`, apa: `Berlakukan belajar dari rumah dan buka posko kesehatan${kota.length ? " di " + daftar(kota.map(c => esc(c.nama))) : ""}`,
             kenapa: [[`${n(rb(x.jiwa) + " jiwa", SUMBER.asap, "model")} menghirup udara tidak sehat, ${n(rb(x.jiwaSTS), SUMBER.asap, "model")} di antaranya sangat tidak sehat atau berbahaya`, "model"],
-              kota.length ? [`PM2.5 tertinggi ${esc(kota[0].nama)} ${n(fmt(kota[0].pm[0]) + " µg/m³", "CAMS via Open-Meteo, maksimum per jam hari ini; ambang ISPU tidak sehat 55,4", "model")}; tambahan kunjungan ISPA ± ${n(fmt(x.ispa) + "/hari", "Riskesdas 2018 × risiko relatif PM2.5 asap (dampak.json)", "model")}`, "model"]
-                : [`Tambahan kunjungan ISPA ± ${n(fmt(x.ispa) + "/hari", "Riskesdas 2018 × risiko relatif PM2.5 asap (dampak.json)", "model")}`, "model"]],
+              kota.length ? [`PM2.5 tertinggi ${esc(kota[0].nama)} ${n(fmt(kota[0].pm[0]) + " µg/m³", "CAMS via Open-Meteo, maksimum per jam hari ini; ambang ISPU tidak sehat 55,4", "model")}; tambahan kunjungan ISPA ± ${n(fmt(x.ispa) + "/hari", "Riskesdas 2018 × risiko relatif PM2.5 asap", "model")}`, "model"]
+                : [`Tambahan kunjungan ISPA ± ${n(fmt(x.ispa) + "/hari", "Riskesdas 2018 × risiko relatif PM2.5 asap", "model")}`, "model"]],
             biaya: `Rendah: masker N95 ± ${rp(15e3)}/buah; posko memakai puskesmas`, waktu: "Mulai besok, selama PM2.5 > 150", yakin: ["Sedang", "prakiraan CAMS dan atribusi arah angin; belum diukur stasiun di semua kota"],
             bukti: {judul: `${namaProv(x.k)}: paparan asap`, isi: () => this.buktiAsap(D, x), prov: x.k}}); } }
       /* G. Kapolri & Menteri LH: areal konsesi (jenis x provinsi, tanpa nama pemegang) dengan >= 3 kompleks prioritas */
@@ -563,7 +563,7 @@ const Ringkasan = (() => {
           <tr><td>Titik panas 24 jam (satelit)</td><td>${fmt(K.h24)}; ${K.hKmr ? (K.h24 >= K.hKmr ? "naik " : "turun ") + fmt(Math.abs(Math.round((K.h24 / K.hKmr - 1) * 100))) + "% dari kemarin" : ""}${K.rasio != null ? `; ${fmt(Math.round(K.rasio * 10) / 10)} kali normal` : ""}</td></tr>
           <tr><td>Kompleks api prioritas (satelit)</td><td>${fmt(K.k3)}; front membesar di ${fmt(K.naik)} kompleks; ditambah ${fmt(K.k2)} kompleks siaga</td></tr>
           <tr><td>Provinsi siaga dan darurat (model)</td><td>${fmt(D.nD)} darurat, ${fmt(D.nS)} siaga, ${fmt(D.nW)} waspada</td></tr>
-          <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${rb(K.jiwaPrio)} jiwa menghirup udara tidak sehat di provinsi yang sering mengalami karhutla (${rb(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
+          <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${fmt(K.jiwaPrio)} jiwa menghirup udara tidak sehat di provinsi yang sering mengalami karhutla (${fmt(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
           <tr><td>Luas terbakar sejak 1 Juni</td><td>perkiraan satelit ${K.luas ? `${rb(K.luas[1])} ha (rentang ${rb(K.luas[0])}–${rb(K.luas[2])} ha)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? rb(K.bnpbHa) + " ha (6 provinsi)" : "–"}</td></tr>
           <tr><td>Gangguan penerbangan 7 hari (berita)</td><td>${fmt(K.kj7.length)} kejadian di ${fmt(K.bandara7)} bandara</td></tr></tbody></table>
         <h2>II. Keputusan yang dibutuhkan hari ini</h2><ol class="rk-ckp">${kp}</ol>
