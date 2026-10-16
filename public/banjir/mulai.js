@@ -9,11 +9,13 @@ $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"
   if (p.length === 3) { S.jalur = p.slice(0, 2); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); } else turun(b.dataset.k); });
 
 pasangTip(); /* tooltip [data-tip] bersama (inti/tip.js) */
+PilihCantik.pasang(); /* semua <select> di <main> jadi pil (inti/pilih.js), seperti karhutla */
+const BASI_TAMPIL = false; /* spanduk merah "Prakiraan terakhir diperbarui": disembunyikan pemilik di karhutla (`if (false && umur > 26)`); ubah ke true untuk memulihkan */
 
 /* ================================================================ mulai */
 (async () => {
-  try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
-  renderHari(); await Peta.init(); renderLegenda();
+  try { await muatData(); }  catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  if (!BASI_TAMPIL) $("#basi").hidden = true; renderHari(); await Peta.init(); renderLegenda();
   $("#muat").classList.add("hilang");
   /* /banjir/<tab> (bersih) atau #tab lama (dialihkan ke /banjir/<tab>); tab tanpa isi jatuh ke Peta */
   const j = location.pathname.replace(/^\/banjir\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, ""), hs = location.hash.slice(1), h = ID_JADI(j || hs);

@@ -9,3 +9,40 @@
 @media (max-width:899px){.dlg .grid.g4,#tren .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .dlg table.skor td:nth-child(2){white-space:normal}
 .dlg .tb3 td:first-child{white-space:normal}
+/* kartu Tren bergaya Insight (Kartu.ex): pil kategori | judul + pemilih | isi | legenda + sumber; tabel standar di dalam kartu */
+.tren-sumber{margin:0 0 14px}
+.tren-sumber .seg{display:flex;width:100%}
+.tren-sumber .seg button{flex:1}
+#tren .tk{margin:0 0 18px}
+#tren .ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#tren .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#tren .ex-bd{padding:16px 22px 10px}
+#tren .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#tren .ex-ft em{font-style:italic;opacity:.9}
+#tren .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
+#tren .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#tren .ex-ey:empty{display:none}
+#tren .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#tren .ex .ctl{margin:12px 0 0}
+#tren .ex .ctl .seg{display:flex;width:100%}
+#tren .ex .ctl .seg button{flex:1;text-align:center}
+.ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.ex-jd > select,.ex-jd > .pmulti{flex:none;margin-top:2px}
+#tren svg[role="img"]:not([aria-label="Kalender kejadian"]){max-height:320px}
+#tren svg rect[data-tip]{cursor:pointer;transition:filter .12s}
+#tren svg rect[data-tip]:hover{filter:brightness(1.12) saturate(1.15)}
+#tren tr.klik{cursor:pointer}
+#tren .tw{border:0;box-shadow:none;border-radius:12px}
+#tren .tw th,#tren .tw td{text-align:center}
+#tren .tw th.l,#tren .tw td.l{text-align:left}
+#tren .tw thead th button{justify-content:center}
+#tren .kl-tb td{vertical-align:middle}
+#tren .kl-tb th,#tren .kl-tb td{padding-left:7px;padding-right:7px}
+.kl-no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface);font-size:10.5px;font-weight:800;color:var(--ink2)}
+.br-lb{font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 14%, transparent);color:var(--w);white-space:nowrap}
+@media (max-width:700px){
+  #tren .ex-hd{padding:14px 16px 12px}#tren .ex-bd{padding:12px 14px 8px}#tren .ex-ft{padding:10px 16px 12px}
+  #tren .ex h3{font-size:18px}
+  .ex-jd{flex-direction:column;gap:10px}.ex-jd > select,.ex-jd > .pmulti,.ex-jd > .pc{align-self:stretch;width:100%}
+  .tren-sumber .seg button{flex:none}
+}

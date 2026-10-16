@@ -1,10 +1,10 @@
 /* ---------- map page ---------- */
 #peta,#simPeta{position:absolute;inset:0}
 canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:none}
-.garis-waktu{position:absolute;z-index:6;left:50%;transform:translateX(-50%);bottom:18px;width:min(620px,calc(100% - 820px));min-width:340px;padding:8px 10px;display:none;align-items:center;gap:10px}
+.garis-waktu{width:min(620px,100%);padding:8px 10px;display:none;align-items:center;gap:10px}
 .garis-waktu.on{display:flex}
 .garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
-@media (max-width:900px){.garis-waktu{bottom:auto;top:112px;width:calc(100% - 24px);min-width:0}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
+@media (max-width:900px){#p-peta .dok{right:12px;align-items:flex-start}.garis-waktu{width:100%}.garis-waktu > .lbl,.garis-waktu .skala{display:none}}
 .panel{position:absolute;z-index:5;top:12px;left:12px;bottom:12px;width:400px;display:flex;flex-direction:column;gap:10px;pointer-events:none}
 .panel > *{pointer-events:auto}
 .kpis{display:grid;grid-template-columns:1fr 1fr;gap:8px}
@@ -91,7 +91,6 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 /* desktop: Overlay selalu terbuka (ubin ikon), tombol layer hanya untuk mobile; seg tersembunyi benar-benar hilang (A24) */
 @media (min-width:901px){.tools #lapis{display:block}#lapisBtn{display:none!important}}
 .seg[hidden],.seg button[hidden]{display:none!important}
-#legenda summary{cursor:pointer;list-style:none}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}
 .leg{display:flex;flex-direction:column;gap:4px;font-size:11.5px}
 .leg .sw{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:6px;vertical-align:-2px}
