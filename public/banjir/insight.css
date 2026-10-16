@@ -1,4 +1,54 @@
-/* ---------- insight: exhibit bergaya konsultan ---------- */
+/* ---------- insight: kartu bergaya karhutla (rupa disalin dari #insight di public/index.html; mesin kartu di public/inti/kartu.css) ---------- */
+.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px 16px;margin-bottom:18px}
+.ex h3{font-size:clamp(17px,2vw,21px);line-height:1.3;max-width:62ch}
+.ex .hl{color:var(--bad)}
+.ex svg{display:block;width:100%;height:auto;overflow:visible}
+.ex svg text{fill:currentColor}
+.ex button svg,.head button svg{display:inline-block;width:14px!important;height:14px;flex:none}
+.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-4px 0 12px}
+#insight select:not([multiple]){appearance:none;-webkit-appearance:none;height:34px;border-radius:999px;border:1px solid var(--line);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/13px;padding:0 34px 0 14px;font-size:12.5px;font-weight:600;color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
+.ex .ctl .seg{height:34px;align-items:center}
+.ex .ctl .seg button{padding:5px 13px}
+#insight{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
+#insight > *{min-width:0}
+#insight > [data-ex]:empty{display:none}
+#insight .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+#insight .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#insight .ex-bd{padding:16px 22px 10px}
+.ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
+#insight .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#insight .ex-ft em{font-style:italic;opacity:.9}
+#insight .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#insight .ex-ey:empty{display:none}
+.ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.ex-jd > select{flex:none;margin-top:2px;box-shadow:none;background-color:var(--card)}
+#insight .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#insight .ex .ctl{margin:12px 0 0}
+#insight .ex .ctl .seg{display:flex;width:100%}
+#insight .ex .ctl .seg button{flex:1;text-align:center}
+#insight .ex .ctl:has(.seg ~ .seg){flex-wrap:nowrap}
+#insight .ex .ctl:has(.seg ~ .seg) .seg{width:auto;flex:1 1 0;min-width:0}
+#insight .ex .bg-ex{margin:14px 16px 0 0}
+/* tabel di dalam kartu: satu kotak berujung bulat, kepala gelap (kepala dari tabel.css), baris bisa diklik */
+#insight .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);box-shadow:none;overflow:auto}
+#insight .ex-bd .tw.sk{border:0;margin:0}
+#insight .ex-bd .tw table thead th{padding:10px 14px}
+#insight .ex-bd .tw table tbody td{padding:11px 14px;vertical-align:middle}
+#insight .ex-bd .tw thead th button i{font-style:normal;min-width:10px}
+#insight .ex-bd .tw td .pvn{display:inline-flex;align-items:center;gap:8px}
+#insight .ex-bd .tw td .pvn .lambang{width:18px;height:22px;filter:none}
+#insight .ex-bd .tw td .pill{height:20px;font-size:10.5px}
+.pl{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;background:color-mix(in oklch, var(--w) 16%, transparent);color:color-mix(in oklch, var(--w) 72%, #000)}
+:root[data-theme="dark"] .pl{color:color-mix(in oklch, var(--w) 70%, #fff)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pl{color:color-mix(in oklch, var(--w) 70%, #fff)}}
+.ex [data-tip]{cursor:pointer}
+.ex [data-tip]:hover{opacity:.82}
+.ex [data-set]{cursor:pointer}
+/* tanpa animasi masuk: bila animasi tertahan (tab latar, pratinjau) batang berhenti di lebar 0 dan angkanya tak tampak */
+.ex .gy,.ex .gx,.ex .gf{animation:none}
+@media (max-width:640px){#insight .ex-hd{padding:16px 16px 12px}#insight .ex-bd{padding:12px 14px 8px}#insight .ex-ft{padding:10px 16px 14px}#insight .ex h3{font-size:18px}.ex-jd{flex-wrap:wrap}}
+.ex2{display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .ins-hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:260px;display:flex;align-items:flex-end;margin-bottom:18px;background:var(--brand)}
 .ins-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
 .ins-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(15% .03 256 / .05) 30%,oklch(15% .03 256 / .85))}
@@ -6,37 +56,11 @@
 .ins-hero h2{font-size:clamp(22px,3vw,32px);line-height:1.15}
 .ins-hero p{margin:6px 0 0;opacity:.9;font-size:14px}
 .ins-hero small{position:absolute;right:10px;top:8px;text-shadow:0 1px 2px rgb(0 0 0 / .6);z-index:1;color:#fff;opacity:.7;font-size:10.5px}
-.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px 16px;margin-bottom:18px}
-.ex h3{font-size:clamp(17px,2vw,21px);line-height:1.3;max-width:62ch}
-.ex .hl{color:var(--bad)}
-.ex .sub{margin:8px 0 0;font-weight:700;font-size:13.5px}
-.ex .unit{margin:2px 0 12px;color:var(--ink2);font-size:12.5px}
-.ex .fn{margin:10px 0 0;color:var(--ink2);font-size:11.5px;border-top:1px solid var(--line);padding-top:8px}
-.ex svg{display:block;width:100%;height:auto;overflow:visible}
-.ex svg text{fill:currentColor}
-.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 10px}
-.ex .ctl select{height:32px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 12px;font-size:12.5px}
-.ex2{display:grid;grid-template-columns:1fr;gap:18px}
-@media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
 .foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
 .foto figure{margin:0;border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid var(--line)}
 .foto img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
 .foto figcaption{padding:8px 10px;font-size:12px;line-height:1.35}
 .foto figcaption small{display:block;color:var(--ink2);font-size:10.5px;margin-top:2px}
-#tip{position:fixed;z-index:60;pointer-events:none;background:oklch(18% .035 256);color:#fff;font-size:12px;line-height:1.4;padding:7px 10px;border-radius:8px;box-shadow:var(--shadow-lg);max-width:260px;opacity:0;transition:opacity .12s}
-#tip.on{opacity:1}
-.ex [data-tip]{cursor:pointer}
-.ex [data-tip]:hover{opacity:.82}
-.ex .hov{transition:fill .15s}
-.ex g:hover>.hov{fill:var(--surface)}
-.ex [data-set]{cursor:pointer}
-@keyframes tumbuh{from{transform:scaleY(0)}}
-@keyframes tumbuhX{from{transform:scaleX(0)}}
-@keyframes muncul{from{opacity:0}}
-.ex .gy{transform-box:fill-box;transform-origin:bottom;animation:tumbuh .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 18ms)}
-.ex .gx{transform-box:fill-box;transform-origin:left;animation:tumbuhX .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
-.ex .gf{animation:muncul .5s both;animation-delay:calc(var(--i,0) * 18ms + .2s)}
-@media (prefers-reduced-motion:reduce){.ex .gy,.ex .gx,.ex .gf{animation:none}}
 .sens{display:grid;grid-template-columns:220px 1fr 210px;gap:10px;align-items:center;font-size:12.5px;padding:3px 0}
 @media (max-width:700px){.sens{grid-template-columns:1fr;gap:3px;padding:6px 0}}
 figure.banner{position:relative;margin:0 0 16px;border-radius:var(--r);overflow:hidden;height:150px;background:var(--surface)}
