@@ -30,9 +30,9 @@ const Insight = {
       return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>`
         + x.n.map((n, j) => { const bw = X(n); if (!bw) return ""; const s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="${WARNA_LV[3 - j]}" data-tip="${tip}"/>`; acc += bw; return s; }).join("")
         + `<g class="gf" style="--i:${i}">${this.p(L + acc + 8, y + 5, fmt(tot), WARNA_LV[x.n[0] ? 3 : x.n[1] ? 2 : 1], FG_LV[x.n[0] ? 3 : x.n[1] ? 2 : 1])[0]}</g></g>`; }).join("");
-    Kartu.leg([[WARNA_LV[3], "Awas · kering ekstrem"], [WARNA_LV[2], "Siaga"], [WARNA_LV[1], "Waspada"]]);
-    return this.ex(t[2] ? `${this.hl(fmt(t[2]) + " kabupaten/kota")} kering ekstrem di ${fmt(N.prov_n[2])} provinsi, ${fmt(t[1])} siaga, ${fmt(t[0])} waspada`
-        : `Belum ada kabupaten/kota kering ekstrem; ${this.hl(fmt(t[1] + t[0]) + " kabupaten/kota")} siaga atau waspada`, "", "",
+    Kartu.leg([[WARNA_LV[3], "Awas"], [WARNA_LV[2], "Siaga"], [WARNA_LV[1], "Waspada"]]);
+    return this.ex(t[2] ? `${this.hl(fmt(t[2]) + " kabupaten/kota")} berstatus Awas di ${fmt(N.prov_n[2])} provinsi, ${fmt(t[1])} Siaga, ${fmt(t[0])} Waspada`
+        : `Belum ada kabupaten/kota berstatus Awas; ${this.hl(fmt(t[1] + t[0]) + " kabupaten/kota")} Siaga atau Waspada`, "", "",
       `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Kabupaten kering per provinsi">${g}</svg>`, `Sumber: ${SUMBER}`); },
 
   /* 2. jiwa di kecamatan kering, per provinsi */
@@ -45,9 +45,9 @@ const Insight = {
       return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(x.n))}" height="${rh - 10}" fill="${WARNA_LV[m]}" data-tip="${tip}"/>
         <g class="gf" style="--i:${i}">${this.p(L + X(x.n) + 8, y + 5, rb(x.n), WARNA_LV[m], FG_LV[m])[0]}</g></g>`; }).join("");
-    const nama = ["waspada kekeringan atau lebih", "siaga kekeringan atau lebih", "kering ekstrem"][m - 1];
+    const nama = ["Waspada kekeringan atau lebih", "Siaga kekeringan atau lebih", "Awas kekeringan"][m - 1];
     Kartu.leg([[WARNA_LV[m], "jiwa di kecamatan " + ["waspada ke atas", "siaga ke atas", "awas"][m - 1]]]);
-    return this.ex(`${this.hl(rb(N.jiwa[m - 1]) + " jiwa")} tinggal di kecamatan ${nama}, ${fmt(Math.round(N.jiwa[m - 1] / N.total * 100))}% penduduk`, "", "",
+    return this.ex(`${this.hl(jt(N.jiwa[m - 1]) + " jiwa")} tinggal di kecamatan ${nama}, ${fmt(Math.round(N.jiwa[m - 1] / N.total * 100))}% penduduk`, "", "",
       `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Jiwa di kecamatan kering per provinsi">${g}</svg>`, `Sumber: ${SUMBER}`,
       this.seg("jiwa", [["1", "Waspada ke atas"], ["2", "Siaga ke atas"], ["3", "Awas"]])); },
 
@@ -80,12 +80,12 @@ const Insight = {
     const ada = f => R.some(r => r[f] != null), N = S.meta.nasional;
     const kol = [{k: "_", h: "#", s: (r, i) => `<span class="rk">${i + 1}</span>`}, {k: "nama", h: "Kabupaten/kota", v: r => r.nama, s: r => `<b translate="no">${esc(r.nama)}</b>`},
       {k: "prov", h: "Provinsi", v: r => namaProv(r.p), s: r => `<span translate="no">${esc(namaProv(r.p))}</span>`}, {k: "lv", h: "Status", v: r => r.lv * 1e9 + r.jiwa[2], s: r => pill(r.lv)},
-      ...(ada("spi3") ? [{k: "spi", h: "SPI-3", n: 1, v: r => r.spi3, s: r => r.spi3 != null ? F2(r.spi3) : "–"}] : []),
-      ...(ada("pct") ? [{k: "pct", h: "Tanah", n: 1, v: r => r.pct, s: r => r.pct != null ? fmt(r.pct) : "–"}] : []),
+      ...(ada("spi3") ? [{k: "spi", h: "SPI " + bulanPanjang(S.meta.spi.bulan), n: 1, v: r => r.spi3, s: r => r.spi3 != null ? `${F2(r.spi3)} <small>${katSpi(r.spi3)}</small>` : "–"}] : []),
+      ...(ada("mm3") ? [{k: "mm", h: "Hujan 3 bln (mm)", n: 1, v: r => r.mm3, s: r => r.mm3 != null ? fmt(r.mm3) : "–"}] : []), ...(ada("pct") ? [{k: "pct", h: "Tanah", n: 1, v: r => r.pct, s: r => r.pct != null ? fmt(r.pct) : "–"}] : []),
       ...(ada("dc") ? [{k: "dc", h: "DC", n: 1, v: r => r.dc, s: r => r.dc != null ? fmt(r.dc) : "–"}] : []),
       {k: "jiwa", h: "Jiwa kering", n: 1, v: r => r.jiwa[0], s: r => rb(r.jiwa[0])}];
     if (this.T.tabel.urut === "_") this.T.tabel.urut = "lv";
-    return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} berstatus siaga atau awas kekeringan, ${this.hl(rb(R.reduce((a, r) => a + r.jiwa[0], 0)) + " jiwa")} di kecamatan kering`, "", "",
+    return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} berstatus Siaga atau Awas kekeringan, ${this.hl(jt(R.reduce((a, r) => a + r.jiwa[0], 0)) + " jiwa")} di kecamatan kering`, "", "",
       this.tabel("tabel", kol, R, r => `data-kab="${esc(r.k)}"`, 10, "kabupaten/kota"), `Sumber: ${SUMBER}`); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;

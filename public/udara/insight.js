@@ -5,7 +5,7 @@ const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".p
    Kartu bergaya Insight karhutla lewat mesin bersama public/inti (Kartu.ex/hl/pil/seg/leg, paginasi, pengurutKepala): pil kategori, judul satu kalimat
    berangka merah, grafik dengan angka tertulis, kaki legenda dan "Sumber:". Semua angka PERKIRAAN MODEL CAMS (bukan ISPU resmi). */
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
-const jt = v => fmt(Math.round(v / 1e5) / 10) + " jt";
+const jt = kr;
 const tglIns = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 
 const Insight = {
@@ -13,6 +13,7 @@ const Insight = {
   EX: ["jiwa", "kab", "tren", "jarak"],
   T: {kab: {urut: "_", turun: true, hal: 0}},
   hl: Kartu.hl,
+  exM: (...a) => Kartu.ex(...a).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${PIL_MODEL}</span>`),
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
   segHari: function (key) { return this.seg(key, S.uk.hari.map((t, i) => [i, i ? tglPendek(t) : "Hari ini"])); },
   kapan: h => h ? `<span translate="no">${tglPendek(S.uk.hari[h])}</span>` : "hari ini",
@@ -28,9 +29,9 @@ const Insight = {
       const tip = `<b>${esc(namaProv(x.k))}</b><br>Tidak sehat: ${jiwa(x.p[2])}<br>Sangat tidak sehat: ${jiwa(x.p[3])}<br>Berbahaya: ${jiwa(x.p[4])}<br>PM2,5 rata-rata: ${fmt(Math.round(x.p[5]))} µg/m³`;
       return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${fs}" font-weight="600" translate="no">${esc(nm)}</text>`
         + [2, 3, 4].map(c => { const bw = X(x.p[c]); if (!bw) return ""; const s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="${KAT[c].w}" data-tip="${tip}"/>`; acc += bw; return s; }).join("")
-        + `<g class="gf" style="--i:${i}">${Kartu.pil(L + acc + 8, y + 5, rb(x.ts), KAT[kt].w, KAT[kt].fg)[0]}</g></g>`; }).join("");
+        + `<g class="gf" style="--i:${i}">${Kartu.pil(L + acc + 8, y + 5, kr(x.ts), KAT[kt].w, KAT[kt].fg)[0]}</g></g>`; }).join("");
     Kartu.leg([2, 3, 4].map(c => [KAT[c].w, KAT[c].n]));
-    return Kartu.ex(ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
+    return this.exM(ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
       pv.length ? `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Jiwa terpapar udara tidak sehat per provinsi">${g}</svg>` : `<p class="kosong">Semua provinsi di kategori baik atau sedang.</p>`,
       "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("hari")); },
 
@@ -43,8 +44,8 @@ const Insight = {
       {k: "rata", n: "PM2,5 24 jam", num: 1, v: r => r[2], h: r => `<span class="kt" style="--c:${KAT[kat(r[2])].w};--f:${KAT[kat(r[2])].fg}">${fmt(Math.round(r[2]))} µg/m³</span>`},
       {k: "kat", n: "Kategori", v: r => kat(r[2]), h: r => pilKat(kat(r[2]))},
       {k: "maks", n: "Puncak per jam", num: 1, v: r => r[3], h: r => fmt(Math.round(r[3])) + " µg/m³"},
-      {k: "ts", n: "Jiwa tidak sehat", num: 1, v: r => r[5], h: r => r[5] ? rb(r[5]) + " jiwa" : "–"}];
-    return Kartu.ex(`${this.hl(esc(top[1]))} paling tercemar ${this.kapan(h)}: PM2,5 ${this.hl(fmt(Math.round(top[2])) + " µg/m³")} rata-rata 24 jam${ts ? `, ${this.hl(jiwa(ts))} menghirup udara tidak sehat` : ""}`, "", "",
+      {k: "ts", n: "Jiwa tidak sehat", num: 1, v: r => r[5], h: r => r[5] ? kr(r[5]) + " jiwa" : "–"}];
+    return this.exM(`${this.hl(esc(top[1]))} paling tercemar ${this.kapan(h)}: PM2,5 ${this.hl(fmt(Math.round(top[2])) + " µg/m³")} rata-rata 24 jam${ts ? `, ${this.hl(jiwa(ts))} menghirup udara tidak sehat` : ""}`, "", "",
       this.tabel("kab", kol, R, r => `data-prov="${r[0]}"`, 10, "kabupaten/kota", r => r[2]), "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("kabHari")); },
 
   /* 3. tren nasional: titik riwayat tiap hari + prakiraan 4 hari */
@@ -61,7 +62,7 @@ const Insight = {
         + `<text x="${X(i)}" y="${Y(p.v) - 12}" text-anchor="middle" font-size="${M ? 13 : 12}" font-weight="700">${tx(p.v)}</text><text x="${X(i)}" y="${H - 14}" text-anchor="middle" font-size="${M ? 12 : 11}" translate="no">${tglIns(p.t)}</text>`).join("");
     const v0 = ke[0].v, v1 = ke[ke.length - 1].v, arah = v1 > v0 ? "naik" : "turun";
     Kartu.leg([[KAT[2].w, "Garis putus-putus: prakiraan"]]);
-    return Kartu.ex(Math.abs(v1 - v0) < (m === "jiwa" ? 5e5 : 2) ? `${m === "jiwa" ? "Jiwa di udara tidak sehat" : "PM2,5 rata-rata nasional"} ${this.hl("hampir tetap")} sampai ${tglIns(ke[ke.length - 1].t)}: ${this.hl(tx(v1) + (m === "jiwa" ? " jiwa" : " µg/m³"))}`
+    return this.exM(Math.abs(v1 - v0) < (m === "jiwa" ? 5e5 : 2) ? `${m === "jiwa" ? "Jiwa di udara tidak sehat" : "PM2,5 rata-rata nasional"} ${this.hl("hampir tetap")} sampai ${tglIns(ke[ke.length - 1].t)}: ${this.hl(tx(v1) + (m === "jiwa" ? " jiwa" : " µg/m³"))}`
       : `${m === "jiwa" ? "Jiwa di udara tidak sehat" : "PM2,5 rata-rata nasional"} ${arah} dari ${this.hl(tx(v0))} hari ini ke ${this.hl(tx(v1) + (m === "jiwa" ? " jiwa" : " µg/m³"))} pada ${tglIns(ke[ke.length - 1].t)}`, "", "",
       `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Tren nasional">${g}</svg>`, "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.seg("tren", [["jiwa", "Jiwa tidak sehat"], ["rata", "PM2,5 rata-rata"]])); },
 

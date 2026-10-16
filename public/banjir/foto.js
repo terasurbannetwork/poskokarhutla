@@ -1,8 +1,7 @@
 "use strict";
 /* ================================================================ foto */
 /* Tab Foto banjir: galeri foto lapangan warga, rupa sama dengan tab Foto karhutla (kartu fg-k, urutan, saring provinsi dan kategori, paginasi 24; gaya dari public/foto.css).
-   Hanya baca: GET /api/foto, disaring ke foto banjir (field `bencana` = "banjir" bila server sudah mengirimnya, atau kategori khas banjir dari registry `foto_kategori`).
-   Server sekarang baru punya kategori karhutla (api, asap, padam, dampak, lainnya), jadi galeri kosong sampai migrasi foto.bahaya (RINCI L13) jalan.
+   Hanya baca: GET /api/foto?bencana=banjir (server menyaring; migrasi 0012 belum dijalankan = daftar kosong, bukan galat).
    Pengiriman foto belum dipasang di sini: tombolnya baru ada setelah server menerima kategori banjir (A18). */
 const Foto = (() => {
   const API = "/api/foto", PER = 24;
@@ -20,10 +19,9 @@ const Foto = (() => {
   const G = {urut: "baru", prov: [], kat: "", h: 0};
   let semua = null;
   const lalu = t => { const m = Math.max(0, (Date.now() - t) / 6e4); return m < 1 ? "baru saja" : m < 60 ? `${Math.floor(m)} mnt lalu` : m < 1440 ? `${Math.floor(m / 60)} jam lalu` : `${Math.floor(m / 1440)} hari lalu`; };
-  const banjir = f => f.bencana ? f.bencana === "banjir" : !!KAT[f.kategori] && f.kategori !== "lainnya";
   async function muat() {
     if (semua) return semua;
-    try { const r = await fetch(API, {credentials: "same-origin"}); semua = r.ok ? ((await r.json()).foto || []).filter(banjir) : []; } catch (e) { semua = []; }
+    try { const r = await fetch(API + "?bencana=banjir", {credentials: "same-origin"}); semua = r.ok ? (await r.json()).foto || [] : []; } catch (e) { semua = []; }
     return semua; }
   const stat = (ik, n) => `<span>${ik}${fmt(n || 0)}</span>`;
   const kartu = f => { const [k, w] = KAT[f.kategori] || KAT.lainnya;

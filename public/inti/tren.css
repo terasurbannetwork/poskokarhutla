@@ -44,3 +44,8 @@
   .tren-sumber .seg button{flex:none}
 }
 #tren .ex .bg-ex{margin:14px 16px 0 0}
+/* mobile: seg jenis bencana (8 pilihan) turun baris, tidak digeser keluar layar */
+@media (max-width:700px){
+  .tren-sumber .seg{flex-wrap:wrap;border-radius:18px}
+  .tren-sumber .seg button{flex:1 1 auto}
+}

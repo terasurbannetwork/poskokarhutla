@@ -18,7 +18,7 @@ const TANGGA = {
   dc: [[79.99, "#7fb685"], [189.99, "#e3d36a"], [299.99, "#e3b94e"], [424.99, "#e58a45"], [1e9, "#c9503a"]],
 };
 const warnaTangga = (k, v) => v == null ? "" : TANGGA[k].find(([b]) => v <= b)[1];
-/* kolom grid: lat, lon, prov, pct0, pct1, dc, spi3, lv */
+/* kolom grid: lat, lon, prov, pct0, pct1, dc, spi3, lv, spi6, mm3 */
 const nilaiMode = (r, m) => m === "tanah" ? (r[4] ?? r[3]) : m === "spi" ? r[6] : m === "dc" ? r[5] : null;
 const warnaSel = (r, m) => m === "status" ? (r[7] ? WARNA_LV[r[7]] : "") : warnaTangga(m, nilaiMode(r, m));
 const MODE = [["status", "Status"], ["spi", "Hujan"], ["tanah", "Tanah"], ["dc", "Kode DC"]];
@@ -84,11 +84,11 @@ const Peta = {
     renderCrumb(); renderDaftar(); },
   /* kartu hover satu baris berikon (inti/peta/lapis.js); stat tanpa nilai dibuang */
   kartuWilayah(f) { const p = f.properties, a = (S.jalur.length ? S.wil.kab : S.wil.prov)[p.kunci], W = WARNA_LV;
-    const stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ...(a ? [["mata", rb(a.jiwa[0]), "jiwa kering", "#c9a24b"], ...(a.spi3 != null ? [["hujan", F2(a.spi3), "SPI-3", "#3f7fb8"]] : [])] : [])];
+    const stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ...(a ? [["mata", rb(a.jiwa[0]), "jiwa kering", "#c9a24b"], ...(a.spi3 != null ? [["hujan", F2(a.spi3), `SPI ${spiBulan()} · ${katSpi(a.spi3)}`, "#3f7fb8"]] : []), ...(a.mm3 != null ? [["hujan", fmt(a.mm3) + " mm", "hujan 3 bulan", "#3f7fb8"]] : [])] : [])];
     return PI.kartuTip({judul: esc(p.nama), kepala: S.jalur.length ? lambang(S.jalur[0], p.nama) : lambang(p.kunci), stat}); },
   kartuSel(r) { const W = WARNA_LV, lv = r[7] || 0, tanah = r[4] ?? r[3];
     return PI.kartuTip({judul: esc(namaProv(r[2])), sub: `<small>${F2(Math.abs(r[0]))}° ${r[0] < 0 ? "LS" : "LU"}, ${F2(r[1])}° BT</small>`, stat: [["perisai", LEVEL[lv], "status", W[lv], lv >= 2],
-      ...(r[6] != null ? [["hujan", F2(r[6]), "SPI-3", "#3f7fb8"]] : []), ...(tanah != null ? [["rasio", fmt(tanah), "persentil tanah", "#8a6d4e"]] : []), ...(r[5] != null ? [["debit", fmt(Math.round(r[5])), "kode DC", "#c9a24b"]] : [])]}); },
+      ...(r[6] != null ? [["hujan", F2(r[6]), `SPI ${spiBulan()} · ${katSpi(r[6])}`, "#3f7fb8"]] : []), ...(r[9] != null ? [["hujan", fmt(r[9]) + " mm", "hujan 3 bulan", "#3f7fb8"]] : []), ...(tanah != null ? [["rasio", fmt(tanah), "persentil tanah", "#8a6d4e"]] : []), ...(r[5] != null ? [["debit", fmt(Math.round(r[5])), "kode DC", "#c9a24b"]] : [])]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
     let hov = null, hovG = null; const tip = () => PI?.sembunyiTip();
@@ -121,8 +121,9 @@ function renderDaftar() {
   const item = [...new Map(S.fiturWil.map(f => [f.properties.kunci, f.properties])).values()].map(p => ({kunci: p.kunci, nama: p.nama, a: T[p.kunci]}))
     .filter(i => i.a).sort((a, b) => b.a.lv - a.a.lv || b.a.jiwa[0] - a.a.jiwa[0] || a.nama.localeCompare(b.nama));
   const n = tepat(j.length ? S.wil.prov[j[0]]?.kab_n || [0, 0, 0] : S.meta.nasional.kab_n);
-  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div></div>`;
-  const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n">SPI-3</span><span class="n">Jiwa</span><span style="text-align:right">Status</span></div>`;
+  const pn = t => `<span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${t}</span>`;   /* pil netral: bulan SPI dan ambang belum teruji (A17) */
+  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn("Ambang belum diuji balik")}</div></div>`;
+  const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n">SPI</span><span class="n">Jiwa</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = ringkas + kepala + (item.map((i, k) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${k + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
     <span class="n">${i.a.spi3 != null ? F2(i.a.spi3) : "–"}</span><span class="n">${i.a.jiwa[0] ? rb(i.a.jiwa[0]) : "–"}</span>
     <span style="text-align:right">${i.a.lv ? pill(i.a.lv) : `<span style="color:var(--ink2);font-size:11.5px">Normal</span>`}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
@@ -162,9 +163,9 @@ function renderLegenda() {
   const m = S.mode, M = S.meta, grid = Peta.lihat("grid") && m !== "status", wil = Peta.lihat("wilayah");
   const sw = (w, t) => `<span><i class="sw" style="background:${w}"></i>${t}</span>`;
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
-    ${wil ? `<div class="lbl">Status kekeringan per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => sw(WARNA_LV[l], LEVEL[l] + " · " + ["", "kering", "kering parah", "kering ekstrem"][l])).join("")}</div>` : ""}
+    ${wil ? `<div class="lbl">Status kekeringan per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => sw(WARNA_LV[l], LEVEL[l])).join("")}</div>` : ""}
     ${Peta.lihat("grid") && m === "status" ? `<div class="lbl">Status kisi 0,5°</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => sw(WARNA_LV[l], LEVEL[l])).join("")}</div>` : ""}
-    ${grid && m === "spi" ? `<div class="lbl">Indeks hujan 3 bulan (SPI-3${M.spi ? ", sampai " + bulanPanjang(M.spi.bulan) : ""})</div>${skala("spi", [-3, -1.75, -1.25, -.75, 0, .75, 1.25, 2], ["−2", "−1,5", "−1", "−0,5", "+0,5", "+1", "+1,5", "> 1,5"])}` : ""}
+    ${grid && m === "spi" ? `<div class="lbl">Indeks hujan 3 bulan (SPI-3${M.spi ? ", " + spiBulan() : ""})</div>${skala("spi", [-3, -1.75, -1.25, -.75, 0, .75, 1.25, 2], ["−2", "−1,5", "−1", "−0,5", "+0,5", "+1", "+1,5", "> 1,5"])}` : ""}
     ${grid && m === "tanah" ? `<div class="lbl">Kelembapan tanah 7–28 cm (persentil, ${fmt(M.tanah.sel)} sel)</div>${skala("tanah", [3, 8, 15, 30, 50, 70, 90, 99], ["5", "10", "20", "40", "60", "80", "95", "> 95"])}` : ""}
     ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "< 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "≥ 425 ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
     <div class="lbl" style="margin-top:2px">Deteksi Pantau Bencana</div></div></details>`;
@@ -179,10 +180,10 @@ const Analisa = {
     const p = kunci.split("|"), kab = p.length === 2, a = (kab ? S.wil.kab : S.wil.prov)[kunci]; if (!a) return;
     const nama = kab ? p[1] : namaProv(p[0]), sub = kab ? "Kabupaten/kota · " + namaProv(p[0]) : "Provinsi", sp = S.meta.spi;
     const kepala = `${kab ? lambang(p[0], p[1]) : lambang(p[0])}<div><h3 id="dlgJudul">${esc(nama)}</h3><p>${esc(sub)}</p></div>`;
-    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${WARNA_LV[a.lv]}">${LEVEL[a.lv]}</span>`, ["tidak kering", "kering", "kering parah", "kering ekstrem"][a.lv])}
-      ${kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`)}${kot("Jiwa kering ekstrem", a.jiwa[2] ? rb(a.jiwa[2]) : "–", "di kecamatan awas")}
-      ${a.spi3 != null ? kot("SPI-3", F2(a.spi3), sp ? "sampai " + bulanPanjang(sp.bulan) : "") : ""}${a.pct != null ? kot("Tanah", fmt(a.pct), "persentil") : ""}${a.dc != null ? kot("Kode DC", fmt(a.dc), "rata-rata tertimbang") : ""}
-      ${!kab ? kot("Kabupaten/kota", `${fmt(a.kab_n[0])}`, `${fmt(a.kab_n[2])} kering ekstrem`) : ""}</div>
+    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${WARNA_LV[a.lv]}">${LEVEL[a.lv]}</span>`, ["tidak kering", "kering", "kering parah", "kering berat"][a.lv])}
+      ${kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`)}${kot("Jiwa Awas", a.jiwa[2] ? rb(a.jiwa[2]) : "–", "di kecamatan Awas")}
+      ${a.spi3 != null ? kot("SPI " + spiBulan(), F2(a.spi3), katSpi(a.spi3)) : ""}${a.mm3 != null ? kot("Hujan 3 bulan", fmt(a.mm3) + " mm", sp ? "sampai " + spiBulan() : "") : ""}${a.pct != null ? kot("Tanah", fmt(a.pct), "persentil") : ""}${a.dc != null ? kot("Kode DC", fmt(a.dc), "rata-rata tertimbang") : ""}
+      ${!kab ? kot("Kabupaten/kota", `${fmt(a.kab_n[0])}`, `${fmt(a.kab_n[2])} Awas`) : ""}</div>
       <p class="fnd">Deteksi Pantau Bencana</p>`;
     this.buka(isi, kepala); },
 };

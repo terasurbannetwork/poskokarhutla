@@ -7,14 +7,21 @@ const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v))
 const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 /* dua desimal lewat toLocaleString supaya i18n.js menukar koma jadi titik di EN */
-const F2 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+const F2 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2}).replace("-", "−");   /* minus U+2212, sama dengan sumbu dan legenda */
+/* judul dan teks bagikan: ribu/juta ditulis penuh, bukan rb/jt (pola jt() di banjir/dampak.js) */
+const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
 const F1 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
 const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const DAS = i => BLN[Math.floor(i / 3)] + " " + ["I", "II", "III"][i % 3];
 const bulanPanjang = ym => { const [y, m] = ym.split("-"); return BLN[m - 1] + " " + y; };
+const BLN_PENUH = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+/* bulan SPI ("Agustus 2026"): SPI tertinggal ~6 minggu dari hari ini, jadi selalu disebut di samping angkanya */
+const spiBulan = () => { const b = S.meta?.spi?.bulan; return b ? BLN_PENUH[b.slice(5) - 1] + " " + b.slice(0, 4) : ""; };
+/* kategori SPI menurut WMO/McKee; Waspada/Siaga/Awas hanya untuk status gabungan */
+const katSpi = s => s == null ? "" : s <= -2 ? "Kering ekstrem (curah hujan)" : s <= -1.5 ? "Sangat kering" : s <= -1 ? "Agak kering" : s < 1 ? "Normal" : "Basah";
 const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 
-/* Tingkat mengikuti istilah BNPB/BPBD; "Awas" di halaman ini disebut kering ekstrem */
+/* Tingkat mengikuti istilah BNPB/BPBD; "Awas" di halaman ini disebut Awas (bukan "kering ekstrem": itu kategori SPI) */
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"], WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"], FG_LV = ["#fff", "#3b2e00", "#fff", "#fff"];
 const NAVY = "oklch(25.5% .075 256)", MERAH = "#c9503a", JINGGA = "#e58a45", KUNING = "#e3b94e", BIRU = "#4f8fc4";
 const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: []};

@@ -20,6 +20,7 @@ const Metode = {
         <li>Rata-rata provinsi dan kabupaten dihitung dengan bobot jumlah penduduk.</li></ol>`],
       ["Batasan", `<ul class="mt-daftar">
         <li>Model global beresolusi sekitar 40 km: asap karhutla tertangkap, tetapi polusi kota dan kejadian sempit bisa meleset. Di kota besar model sering membaca lebih tinggi daripada alat ukur di tanah.</li>
+        <li>Angka PM2,5 CAMS belum dikoreksi dengan alat ukur di tanah dan belum divalidasi (data stasiun OpenAQ perlu kunci API, jadi belum bisa dipakai). Di kota besar di Jawa angkanya cenderung terlalu tinggi, jadi jumlah jiwa dibulatkan dan hanya perkiraan kasar. Asap karhutla tidak otomatis penyebab angka kota.</li>
         <li>Data ISPU resmi KLHK tidak bisa kami jangkau, jadi tidak ditampilkan di sini. Untuk keputusan kesehatan, ikuti pengumuman BMKG dan dinas lingkungan hidup setempat.</li>
         <li>Jarak pandang bandara dipengaruhi kabut dan hujan, tidak hanya asap, dan hanya mewakili sekitar bandara.</li></ul>`],
     ];

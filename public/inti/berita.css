@@ -178,3 +178,5 @@
 .br-item.br-tb>.br-thumb{grid-column:2;grid-row:1/span 4;align-self:start}
 .br-kartu .br-thumb{margin-left:auto}
 @media (max-width:520px){.br-thumb{width:72px;height:54px;border-radius:8px}.br-item.br-tb{grid-template-columns:minmax(0,1fr) 72px}}
+/* jarak antar kartu = #brEx karhutla (gap 18px) */
+#berita{display:grid;grid-template-columns:minmax(0,1fr);gap:18px}

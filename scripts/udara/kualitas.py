@@ -91,7 +91,9 @@ def main():
     asap, pend = muat("public/data/asap.json"), muat("public/data/penduduk.json")
     nama = muat("public/banjir/data/meta.json")["provinsi"]
     h = hitung(asap, pend, muat("public/banjir/data/pusat_kec.json"))
-    out = {"sumber": "CAMS (Copernicus) via Open-Meteo; penduduk WorldPop 2026", "dibuat": asap["dibuat"], "hari": asap["hari"], "batas": BATAS,
+    out = {"status_validasi": "belum_divalidasi",
+           "koreksi": {"status": "tidak_tersedia", "alasan": "OpenAQ v3 butuh kunci API (401); arsip S3 butuh id stasiun yang tak bisa dicari tanpa API. pm25_terkoreksi tidak dibuat, angka mentah CAMS."},
+           "sumber": "CAMS (Copernicus) via Open-Meteo; penduduk WorldPop 2026", "dibuat": asap["dibuat"], "hari": asap["hari"], "batas": BATAS,
            "prov": h["prov"], "nasional": h["nasional"], "kab": h["kab"], "nama_prov": nama,
            "kolom_prov": ["baik", "sedang", "tidak_sehat", "sangat_tidak_sehat", "berbahaya", "rata_pm25", "maks_pm25"],
            "kolom_kab": ["prov", "kabupaten", "rata_pm25", "maks_pm25", "jiwa", "jiwa_tidak_sehat"]}

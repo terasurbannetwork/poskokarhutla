@@ -19,7 +19,7 @@
       const perhatian = h.kabut.length && Sapa.kartu("kabut", JP[kelasJP(h.kabut[0].vis_m)].w, "Jarak pandang rendah", `<b>${fmt(h.kabut.length)}</b> bandara melaporkan jarak pandang di bawah 5 km; terendah: <span translate="no">${fmt(h.kabut[0].vis_m)} m, ${esc(h.kabut[0].nama)}</span>`);
       return Sapa.rangka({ikon: "udara", eyebrow: "Situasi kualitas udara hari ini",
         judul: `<b>${jiwa(sekarang)}</b> terpapar udara tidak sehat${arah}`,
-        chips: [["awas", `${rb(h.n0[3] + h.n0[4])} jiwa sangat tidak sehat atau berbahaya`], ["udara", `PM2,5 rata-rata ${fmt(Math.round(S.uk.nasional[0].rata))} µg/m³`]],
+        chips: [["awas", `${kr(h.n0[3] + h.n0[4])} jiwa sangat tidak sehat atau berbahaya`], ["udara", `PM2,5 rata-rata ${fmt(Math.round(S.uk.nasional[0].rata))} µg/m³`]],
         bagian: [
           h.prov.length && ["Provinsi perlu perhatian", "ps", h.prov.map(o => Sapa.provBaris(esc(namaProv(o.k)), [Sapa.pil(jiwa(o.t), o.p[3] + o.p[4] ? "merah" : "oranye", "udara"), Sapa.pil(`PM2,5 ${fmt(Math.round(o.p[5]))} µg/m³`, "prov")])).join("")],
           h.kab.length && ["Kabupaten/kota paling terpapar", "ks", h.kab.map((r, i) => Sapa.item(esc(r[0]), i + 1, esc(r[1]), esc(namaProv(r[0])), `<em class="sp-p merah">${jiwa(r[5])}</em>`, `<em class="sp-p prov">${fmt(Math.round(r[3]))} µg/m³</em>`)).join("")],

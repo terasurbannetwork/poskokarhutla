@@ -1,7 +1,12 @@
 /* kaki.js — footer situs untuk halaman Insight, Berita, Tren, Dampak (pemilik, 14 Okt 2026).
    Merek + ringkasan di kiri, tiga kolom tautan, ikon sosial dari data/kontak.json, lalu baris hak cipta. */
 (() => {
-  const D = document, HAL = ["insight", "berita", "tren", "dampak", "foto"], BJ = location.pathname.startsWith("/banjir"), AWAL = BJ ? "/banjir" : "";
+  const D = document, HAL = ["insight", "berita", "tren", "dampak", "foto"];
+  /* kolom "Pantau" = tab bencana halaman ini minus tab_sembunyi (tanpa Simulasi → "Alat", tanpa Tentang → "Tentang"); kolom "Bencana" = bencana registry berstatus aktif (yang uji masih "Segera", tidak ditautkan).
+     Registry gagal dimuat = footer karhutla seperti dulu. */
+  const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", foto: "Foto", kejadian: "Kejadian", sim: "Simulasi"};
+  const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
+  const LAMA = {bencana: [{nama: "Karhutla", rute: "/", status: "aktif", tab: ["peta", "insight", "berita", "tren", "dampak", "sim", "foto"], tab_sembunyi: []}]};
   const IK = {x: "M4 4l16 16M20 4 4 20", linkedin: "M6 9v10M6 5v.5M10 19v-6a3 3 0 0 1 6 0v6M10 13v6", facebook: "M14 8h3V4h-3a4 4 0 0 0-4 4v3H7v4h3v7h4v-7h3l1-4h-4V8z",
     instagram: "M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4zM12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM17.5 6.5v.01", youtube: "M3 8a3 3 0 0 1 3-3h12a3 3 0 0 1 3 3v8a3 3 0 0 1-3 3H6a3 3 0 0 1-3-3zM10 9l5 3-5 3z", tiktok: "M14 3v11a3 3 0 1 1-3-3M14 3a5 5 0 0 0 5 5"};
   D.head.insertAdjacentHTML("beforeend", `<style>
@@ -9,7 +14,7 @@
 .page.scroll > .kaki-situs{margin:40px -18px 0!important}
 .kaki-situs{margin:40px -16px 0;padding:44px 16px 24px;background:#0b1b33;color:#cfd8e6;font-size:13.5px}
 .kaki-situs .kk{max-width:1120px;margin:0 auto}
-.kaki-situs .kk-g{display:grid;grid-template-columns:1.6fr repeat(3,1fr);gap:28px}
+.kaki-situs .kk-g{display:grid;grid-template-columns:1.6fr repeat(var(--n,3),1fr);gap:28px}
 .kaki-situs .kk-tum{display:inline-flex;align-items:center;gap:10px;text-decoration:none!important;}
 .kaki-situs .kk-tum img{width:46px;height:auto}
 .kaki-situs .kk-tum span{display:inline-block;font:900 20px/0.95 var(--display,Inter),sans-serif;letter-spacing:.02em;color:#fff}
@@ -37,20 +42,25 @@
     sos = `<a href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Situs Teras Urban" title="terasurban.com"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/></svg></a>` + sos;
     D.querySelectorAll(".kaki-situs .kk-s").forEach(el => el.innerHTML = sos);
   });
-  /* di /banjir/ tautan mengikuti rute banjir dan hanya tab yang ada di menu (Berita/Dampak/Foto banjir belum ada) */
-  const ada = id => !BJ || !!D.querySelector(`#tabs button[data-t="${id}"]`);
-  const tautan = xs => xs.filter(([id]) => ada(id)).map(([id, n]) => `<li><a href="${AWAL}/${id}">${n}</a></li>`).join("");
-  const html = () => `<footer class="kaki-situs"><div class="kk"><div class="kk-g">
+  let R = LAMA;
+  const dasar = b => b.rute.replace(/\/$/, "");
+  const ini = () => R.bencana.filter(b => b.rute !== "/").find(b => location.pathname === dasar(b) || location.pathname.startsWith(b.rute)) || R.bencana.find(b => b.rute === "/") || LAMA.bencana[0];
+  const tautan = (b, xs) => xs.map(t => `<li><a href="${dasar(b)}/${t}">${label(t)}</a></li>`).join("");
+  const html = () => { const b = ini(), nampak = b.tab.filter(t => !(b.tab_sembunyi || []).includes(t)), alat = nampak.filter(t => t === "sim"), pantau = nampak.filter(t => t !== "sim" && t !== "tentang");
+    const lain = R.bencana.filter(x => x.status === "aktif"), n = 2 + (alat.length ? 1 : 0) + (lain.length > 1 ? 1 : 0);
+    return `<footer class="kaki-situs"><div class="kk"><div class="kk-g" style="--n:${n}">
     <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>
       <div class="kk-s">${sos}</div><a class="kk-al" href="https://www.google.com/maps/search/?api=1&query=Jl.%20Plumpang%20Semper%20Raya%20No.%2022%2C%20Tugu%20Selatan%2C%20Koja%2C%20Jakarta%20Utara%2014260" target="_blank" rel="noopener" title="Buka di Google Maps"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span>Jl. Plumpang Semper Raya No. 22, RT.10/RW.2, Tugu Selatan, Kec. Koja, Jakarta Utara, DKI Jakarta 14260</span></a></div>
-    <div><h4>Pantau</h4><ul>${tautan([["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"]])}</ul></div>
-    <div><h4>Alat</h4><ul>${tautan([["sim", "Simulasi"]])}</ul></div>
+    <div><h4>Pantau</h4><ul>${tautan(b, pantau)}</ul></div>
+    ${alat.length ? `<div><h4>Alat</h4><ul>${tautan(b, alat)}</ul></div>` : ""}
+    ${lain.length > 1 ? `<div><h4>Bencana</h4><ul>${lain.map(x => `<li><a href="${x.rute}">${x.nama}</a></li>`).join("")}</ul></div>` : ""}
     <div><h4>Tentang</h4><ul><li><a href="/tentang">Tentang</a></li><li><a href="#" data-pesan>Hubungi kami</a></li></ul></div>
-  </div></div></footer>`;
+  </div></div></footer>`; };
   /* di halaman tanpa tab (tentang.html) footer dipasang di akhir body */
   const pasang = () => { if (!D.querySelector(".page")) { if (!D.querySelector(".kaki-situs")) D.body.insertAdjacentHTML("beforeend", html()); return; }
     HAL.forEach(id => { const p = D.getElementById("p-" + id); if (p && !p.querySelector(":scope > .kaki-situs")) p.insertAdjacentHTML("beforeend", html()); }); };
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pesan]")) { e.preventDefault(); D.getElementById("kirimPesan")?.click(); } });
-  D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", pasang) : pasang();
+  const mulai = () => D.readyState === "loading" ? D.addEventListener("DOMContentLoaded", pasang) : pasang();
+  fetch("/bencana.json").then(r => r.ok ? r.json() : LAMA).catch(() => LAMA).then(j => { if (j?.bencana?.length) R = j; mulai(); });
 })();

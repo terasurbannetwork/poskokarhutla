@@ -6,7 +6,7 @@ const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "htt
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
-  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
 /* gambar lapisan peta: dimuat sekali dari modul inti (ubin Overlay, kartu hover) */
 let PI = null, LG = null, legBuka = innerWidth > 900;
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
@@ -303,8 +303,8 @@ const Analisa = {
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
           return `<rect x="${j * 26 + 3}" y="${72 - h}" width="20" height="${Math.max(1, h)}" rx="3" fill="#3f7fb8" data-tip="<b>${t}</b><br>${fmt(n)} kejadian${riw[t].meninggal != null ? `<br>${fmt(riw[t].meninggal)} meninggal · ${rb(riw[t].terdampak || 0)} terdampak` : ""}"/><text x="${j * 26 + 13}" y="${68 - h}" text-anchor="middle" font-size="9.5">${n || ""}</text><text x="${j * 26 + 13}" y="86" text-anchor="middle" font-size="9" opacity=".6">${t.slice(2)}</text>`; }).join("")}</svg>
         <p class="fnd">Total ${fmt(thR.reduce((a, t) => a + (riw[t].kejadian || 0), 0))} kejadian, ${thR[0]}–${thR.at(-1)}. Sumber: BNPB (data.bnpb.go.id).</p>`, false) : ""}
-      ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${AKSI[S.b][Math.max(...S.st.hari.map((_, h) => lvH(h)))].map(a => `<li>${esc(a)}</li>`).join("")}</ul><p class="fnd">Mengikuti status tertinggi 4 hari ke depan. Disusun dari praktik penanggulangan banjir/longsor; ikuti arahan BPBD setempat.</p>`)}
-      <p class="fnd">Status dari aturan di tab Metode. Data ${jamWIB(S.meta.dibuat)}.</p>`;
+      ${lipat("Tindakan yang disarankan", `<ul style="margin:0;padding-left:18px;font-size:12.5px">${AKSI[S.b][Math.max(...S.st.hari.map((_, h) => lvH(h)))].map(a => `<li>${esc(a)}</li>`).join("")}</ul>`)}
+      <p class="fnd">Data ${jamWIB(S.meta.dibuat)}</p>`;
     this.buka(isi, kepala); },
   sungai(i) {
     const t = S.sungai.titik[i]; if (!t) return;

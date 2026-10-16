@@ -17,9 +17,9 @@ const Tren = {
   kSpi() {
     const s = S.tren?.spi_bulanan; if (!s || s.length < 3) return "";
     const v = s.map(x => ({n: x.kering, n2: x.ekstrem, t: BLN[+x.bln.slice(5) - 1] + (x.bln.endsWith("-01") || x === s[0] ? " " + x.bln.slice(2, 4) : ""),
-      tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 ≤ −1): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (≤ −2): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
-    return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem${tertinggi ? ", tertinggi dalam 24 bulan" : ""}`,
-      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Pantau Bencana (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "kering (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (≤ −2)"]]); },
+      tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 ≤ −1): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (curah hujan, ≤ −2): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
+    return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? ", tertinggi dalam 24 bulan" : ""}`,
+      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Pantau Bencana (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (curah hujan, ≤ −2)"]]); },
 
   /* 2. kode kekeringan (DC) harian: median dan persentil ke-90 seluruh sel */
   kDc() {
@@ -31,9 +31,9 @@ const Tren = {
   /* 3. riwayat dasarian: jiwa di kecamatan kering ekstrem; titik baru bertambah tiap dasarian */
   kDasarian() {
     const r = S.tren?.dasarian; if (!r || r.length < 2) return "";
-    const v = r.map(x => ({n: x.jiwa[2], n2: 0, t: DAS(x.das), tip: `<b>${DAS(x.das)} ${x.id.slice(0, 4)}</b><br>${rb(x.jiwa[2])} jiwa di kecamatan awas<br>${fmt(x.kab_n[2])} kabupaten/kota kering ekstrem`})), a = r.at(-1);
-    return this.kartu("Dasarian", `${Kartu.hl(rb(a.jiwa[2]) + " jiwa")} di kecamatan kering ekstrem pada dasarian ${DAS(a.das)}, ${fmt(a.kab_n[2])} kabupaten/kota`,
-      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana", [[MERAH, "jiwa di kecamatan awas"]]); },
+    const v = r.map(x => ({n: x.jiwa[2], n2: 0, t: DAS(x.das), tip: `<b>${DAS(x.das)} ${x.id.slice(0, 4)}</b><br>${rb(x.jiwa[2])} jiwa di kecamatan Awas<br>${fmt(x.kab_n[2])} kabupaten/kota Awas`})), a = r.at(-1);
+    return this.kartu("Dasarian", `${Kartu.hl(jt(a.jiwa[2]) + " jiwa")} di kecamatan Awas pada dasarian ${DAS(a.das)}, ${fmt(a.kab_n[2])} kabupaten/kota`,
+      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana", [[MERAH, "jiwa di kecamatan Awas"]]); },
 
   render() {
     const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },

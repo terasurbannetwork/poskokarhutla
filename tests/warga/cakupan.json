@@ -94,6 +94,8 @@
     "trigger foto_komentar_hapus": "foto dummy: isi semua ember",
     "table foto_aduan": "foto: 3 aduan dari 3 IP",
     "trigger foto_aduan_tambah": "foto: 3 aduan dari 3 IP",
+    "table foto_kategori": "migrasi 0013: bagian tabel rujukan idempoten",
+    "trigger foto_kategori_sah": "trigger foto_kategori_sah menolak pasangan",
     "table audit_foto": "foto: audit hanya bisa ditambah",
     "trigger audit_foto_ubah": "foto: audit hanya bisa ditambah",
     "trigger audit_foto_hapus": "foto: audit hanya bisa ditambah",

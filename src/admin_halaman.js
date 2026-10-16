@@ -1,5 +1,7 @@
 /* Kerangka HTML halaman admin. Dilayani worker (bukan aset statis) supaya /admin/* hanya terbuka setelah masuk.
    Skrip & gaya di public/admin/ (tanpa data; datanya dari /api/statistik dan /api/pesan yang dijaga sesi). */
+import REGISTRY from "./bencana.generated.js";
+import {hidup} from "./bencana.js";
 const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 const kepala = judul => `<!doctype html>
 <html lang="id">
@@ -90,7 +92,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>
-  <nav><a href="/">Karhutla</a><a href="/banjir/">Banjir</a><a href="/privasi.html">Privasi</a></nav></header>
+  <nav>${hidup(REGISTRY).map(b => `<a href="${esc(b.rute)}">${esc(b.nama)}</a>`).join("")}<a href="/privasi.html">Privasi</a></nav></header>
 <main class="ad-wrap pb-wrap" id="app"><p class="ad-redup">Memuat statistik…</p></main>
 <script src="/statistik_publik.js?v=1"></script>
 <script src="/persetujuan.js" defer></script>

@@ -16,7 +16,11 @@ const KAT = [{n: "Baik", w: "#5a9e74", fg: "#fff", r: "0 sampai 15,5"}, {n: "Sed
   {n: "Tidak sehat", w: "#e8743b", fg: "#fff", r: "55,5 sampai 150,4"}, {n: "Sangat tidak sehat", w: "#d64545", fg: "#fff", r: "150,5 sampai 250,4"}, {n: "Berbahaya", w: "#8a2be2", fg: "#fff", r: "di atas 250,4"}];
 const kat = v => BATAS.reduce((n, b) => n + (v > b), 0);
 const pilKat = c => `<span class="kt" style="--c:${KAT[c].w};--f:${KAT[c].fg}">${KAT[c].n}</span>`;
-const jiwa = v => rb(v) + " jiwa";
+/* Jiwa = perkiraan model CAMS mentah (belum dikoreksi ke alat ukur): selalu dibulatkan dan diberi "sekitar", tanpa desimal presisi palsu.
+   kr = ringkas untuk label grafik/tabel; jiwa = kalimat. PIL_MODEL dipasang di kepala kartu yang memuat angka jiwa. */
+const kr = v => v >= 1e7 ? fmt(Math.round(v / 1e6)) + " jt" : v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " jt" : v >= 1e3 ? fmt(Math.round(v / 1e3)) + " rb" : fmt(Math.round(v));
+const jiwa = v => (v < 1e3 ? "" : "sekitar ") + (v >= 1e7 ? fmt(Math.round(v / 1e6)) + " juta" : v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " juta" : v >= 1e3 ? fmt(Math.round(v / 1e3)) + " ribu" : fmt(Math.round(v))) + " jiwa";
+const PIL_MODEL = '<span class="kt" style="--c:#6b7280;--f:#fff;text-transform:none;letter-spacing:0">perkiraan model CAMS, belum dikoreksi</span>';
 /* gradasi warna peta PM2,5 (µg/m³ -> rgba): hijau samar sampai ungu pekat, titik beloknya batas kategori */
 const ST_PM = [[0, [90, 158, 116, 0]], [15.5, [90, 158, 116, 85]], [35, [227, 185, 78, 150]], [55.4, [232, 116, 59, 185]], [150, [214, 69, 69, 210]], [250, [138, 43, 226, 225]], [500, [80, 15, 140, 235]]];
 /* jarak pandang METAR (m): ICAO kabut < 1000 m, kabut tipis/asap tipis < 5000 m */

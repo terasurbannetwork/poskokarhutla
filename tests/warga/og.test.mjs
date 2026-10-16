@@ -45,3 +45,14 @@ test("halaman & tab: peta, banjir, tab lain dapat og:url sendiri", () => {
   assert.equal(metaRute(u("/index.html"), M).url, S + "/");
   assert.equal(metaRute(u("/dampak"), M).url, S + "/dampak");
 });
+
+test("tiap bencana registry punya pratinjau sendiri di akar dan tab-nya, walau meta.json belum memuatnya", async () => {
+  const {default: REG} = await import("../../src/bencana.generated.js"), {tabRute} = await import("../../src/bencana.js");
+  for (const b of REG.bencana.filter(b => b.status !== "mati" && b.rute !== "/")) {
+    const akar = metaRute(u(b.rute), M, REG), t = tabRute(b)[0];
+    assert.ok(akar, `${b.id}: akar`); assert.equal(akar.url, S + b.rute);
+    if (!M.halaman[b.rute]) assert.equal(akar.judul, b.og.judul, `${b.id}: judul dari registry, bukan karhutla`);
+    const tab = metaRute(u(b.rute + t), M, REG);
+    assert.ok(tab, `${b.id}/${t}`); assert.equal(tab.url, S + b.rute + t);
+  }
+});

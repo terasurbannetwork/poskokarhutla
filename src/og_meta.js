@@ -9,11 +9,14 @@ const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren",
   operasi: "Operasi", sarana: "Sarana", keputusan: "Keputusan", prioritas: "Prioritas", informasi: "Informasi", ringkasan: "Ringkasan", sim: "Simulasi"};
 const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 
+/* Profil pratinjau satu bencana: baris meta.json bila ada, kalau tidak turunan registry (og.judul + sumber), supaya tiap modul punya pratinjau sendiri tanpa menunggu generator OG. */
+const profil = (b, M) => M.halaman[b.rute] || {judul: b.og?.judul || `${b.nama} · Pantau Bencana`, desk: `Pantau ${b.nama.toLowerCase()} di seluruh Indonesia.${b.bagikan?.sumber ? " Sumber: " + b.bagikan.sumber + "." : ""}`, gambar: M.halaman["/"].gambar};
+
 /* murni: jalur + meta.json (+ registry) -> {judul, desk, gambar, url} atau null (tidak diubah) */
 export function metaRute(url, M, B = REGISTRY) {
   if (!M?.halaman?.["/"]) return null;
   const S = M.situs, p = url.pathname.replace(/\/+$/, "") || "/", dasarH = M.halaman["/"], gbr = g => `${S}/data/og/${g}.png?v=${M.v}`, bs = hidup(B);
-  for (const b of bs) if (!akar(b) && (p === dasar(b) || p === dasar(b) + "/index.html")) { const h = M.halaman[b.rute]; return h && {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + b.rute}; }
+  for (const b of bs) if (!akar(b) && (p === dasar(b) || p === dasar(b) + "/index.html")) { const h = profil(b, M); return {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + b.rute}; }
   for (const b of bs) {   // /k/K0001, /sim/K0001 (akar) atau /<id>/k/<KODE>: awalan kode dari kejadian.awalan
     const aw = b.kejadian?.awalan, k = aw && (akar(b) || !b.warisan) && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(k|sim)/(${aw}\\d+)$`));
     if (!k) continue;
@@ -31,7 +34,7 @@ export function metaRute(url, M, B = REGISTRY) {
   if (h) return {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + (p === "/index.html" ? "/" : p)};
   for (const b of bs) {
     const pre = akar(b) ? "" : dasar(b), t = p.startsWith(pre + "/") ? p.slice(pre.length + 1) : "";
-    if (t && tabRute(b).includes(t)) return {judul: `${label(t)} · Pantau Bencana ${b.nama}`, desk: dasarH.desk, gambar: gbr(dasarH.gambar), url: S + p};
+    if (t && tabRute(b).includes(t)) { const h = akar(b) ? dasarH : profil(b, M); return {judul: `${label(t)} · Pantau Bencana ${b.nama}`, desk: h.desk, gambar: gbr(h.gambar), url: S + p}; }
   }
   return null;
 }

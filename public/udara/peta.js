@@ -85,7 +85,7 @@ const Peta = {
 /* ---------- panel ---------- */
 function renderRingkas() {
   const n = S.uk.nasional[S.hari].jiwa, ts = n[2] + n[3] + n[4];
-  $("#crumb").innerHTML = `<div class="kv" style="grid-template-columns:repeat(3,1fr);width:100%;margin:0 0 8px">${[["Tidak sehat atau lebih", ts, KAT[2].w], ["Sedang", n[1], KAT[1].w], ["Baik", n[0], KAT[0].w]].map(([t, v, w]) => `<div><b style="color:${w}">${rb(v)}</b><span>${t}</span></div>`).join("")}</div>`; }
+  $("#crumb").innerHTML = `<div class="kv" style="grid-template-columns:repeat(3,1fr);width:100%;margin:0 0 8px">${[["Tidak sehat atau lebih", ts, KAT[2].w], ["Sedang", n[1], KAT[1].w], ["Baik", n[0], KAT[0].w]].map(([t, v, w]) => `<div><b style="color:${w}">${kr(v)}</b><span>${t}</span></div>`).join("")}</div>`; }
 function renderDaftar() {
   renderRingkas();
   const q = ($("#cari").value || "").trim().toLowerCase(), g = "grid-template-columns:20px minmax(0,1fr) 56px 54px 122px";
@@ -93,7 +93,7 @@ function renderDaftar() {
     .filter(i => !q || i.nama.toLowerCase().includes(q)).sort((a, b) => b.rata - a.rata);
   $("#rows").innerHTML = `<div class="tb kepala" style="${g}"><span></span><span>Provinsi</span><span class="n" style="text-transform:none">µg/m³</span><span class="n">Jiwa</span><span style="text-align:right">Kategori</span></div>`
     + (item.map((i, n) => `<button class="tb${i.k === S.pilih ? " dipilih" : ""}" data-k="${i.k}" style="${g}"><span class="rk">${n + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
-      <span class="n">${fmt(Math.round(i.rata))}</span><span class="n">${i.ts ? rb(i.ts) : "–"}</span><span style="text-align:right">${pilKat(i.c)}</span></button>`).join("") || `<div class="kosong">Tidak ditemukan.</div>`); }
+      <span class="n">${fmt(Math.round(i.rata))}</span><span class="n">${i.ts ? kr(i.ts) : "–"}</span><span style="text-align:right">${pilKat(i.c)}</span></button>`).join("") || `<div class="kosong">Tidak ditemukan.</div>`); }
 $("#rows").addEventListener("click", e => { const b = e.target.closest(".tb:not(.kepala)"); if (b) Peta.pilihProv(b.dataset.k === S.pilih ? null : b.dataset.k, b.dataset.k !== S.pilih); });
 $("#cari").addEventListener("input", renderDaftar);
 $("#handle").onclick = () => $("#panel").classList.toggle("min");

@@ -74,9 +74,14 @@
   catat("rujukan", !ref ? "Langsung" : ref === location.hostname ? "Internal" : (SUMBER.find(([r]) => r.test(ref))?.[1] || ref));
   const Q = new URLSearchParams(location.search);
   [["utm_source", "utm_sumber"], ["utm_medium", "utm_medium"], ["utm_campaign", "utm_kampanye"]].forEach(([p, d]) => Q.get(p) && catat(d, Q.get(p).slice(0, 40)));
-  const jalur = location.pathname.replace(/^\/(banjir|warga)\/?/, "/"), dalam = Q.has("wil") ? "wil" : Q.has("laporan") ? "laporan" : /^\/k\/K\d+/.test(jalur) ? "kompleks"
-    : /^\/sim\/K\d+/.test(jalur) ? "sim kompleks" : jalur.length > 1 ? "tab " + jalur.split("/")[1] : "";
-  if (dalam) catat("tautan_dalam", dalam);
+  /* tautan dalam: awalan rute dan huruf kejadian (k/K0001, sim/B0001, ...) dari registry /bencana.json; gagal dimuat = bentuk karhutla/banjir lama */
+  const dalamJalur = B => { const rute = [...(B.bencana || []).map(b => b.rute.replace(/\/$/, "")).filter(Boolean), "/warga"], aw = (B.bencana || []).map(b => b.kejadian?.awalan).filter(Boolean).join("") || "K",
+      jalur = location.pathname.replace(new RegExp(`^(?:${rute.join("|")})/?`), "/"), kej = new RegExp(`^/(k|sim)/[${aw}]\\d+`).exec(jalur);
+    return kej ? (kej[1] === "k" ? "kompleks" : "sim kompleks") : jalur.length > 1 ? "tab " + jalur.split("/")[1] : ""; };
+  const dalamQ = Q.has("wil") ? "wil" : Q.has("laporan") ? "laporan" : "";
+  if (dalamQ) catat("tautan_dalam", dalamQ);
+  else if (location.pathname.length > 1) fetch(new URL("/bencana.json", API).href).then(r => r.ok ? r.json() : {}).catch(() => ({}))
+    .then(B => { const d = aman(() => dalamJalur(B.bencana ? B : {bencana: [{rute: "/banjir/", kejadian: {awalan: "B"}}, {rute: "/", kejadian: {awalan: "K"}}]})); if (d) catat("tautan_dalam", d); });
   let tab = tabKini(), tTab = Date.now(); const gulir = {};
   catat("tampil", tab); catat("masuk_tab", tab); catat("tab", tab);
 

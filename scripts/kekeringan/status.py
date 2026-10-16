@@ -9,6 +9,8 @@ Bahan (semuanya sudah ada di repo, tanpa kuota Open-Meteo tambahan):
 Tingkat sel (hipotesis, belum diuji balik; docs/multi-bencana/bencana/kekeringan.md §2):
   SPI-3  <= -1 Waspada, <= -1,5 Siaga, <= -2 Awas.   Tanah  persentil <= 20 Waspada, <= 10 Siaga, <= 5 Awas.
   Keduanya ada: tingkat SPI, boleh dinaikkan SATU tingkat oleh tanah. Hanya satu ada: tingkat itu, tanah sendirian maksimal Siaga.
+  AWAS butuh SPI-3 <= -2 DAN (tanah persentil <= 10 ATAU SPI-6 <= -1,5); tanpa penguat itu tingkat dipotong ke Siaga
+  (persentil tanah baru ada di segelintir sel, jadi SPI-3 sendirian tidak cukup untuk Awas).
   DC TIDAK masuk tingkat: DC tinggi di NTT musim kemarau itu wajar; DC dipakai sebagai lapisan peta saja.
 Tingkat kecamatan = tingkat sel terdekat (<= ~0,5 derajat). Tingkat kabupaten/provinsi = tingkat tertinggi L yang dialami
 >= 30% penduduknya. Status resmi lembaga tidak dibuat di sini; semua keluaran berlabel "Deteksi Pantau Bencana".
@@ -42,13 +44,16 @@ def lv_tanah(p):
     return None if p is None else 3 if p <= 5 else 2 if p <= 10 else 1 if p <= 20 else 0
 
 
-def gabung(a, b):
-    """a = tingkat SPI, b = tingkat tanah (None = tak ada)."""
+def gabung(a, b, s6=None):
+    """a = tingkat SPI-3, b = tingkat tanah (None = tak ada), s6 = nilai SPI-6. Awas hanya bila tanah <= persentil 10 atau SPI-6 <= -1,5."""
     if a is None and b is None:
         return None
     if a is None:
         return min(b, 2)
-    return a if b is None else max(a, min(b, a + 1))
+    r = a if b is None else max(a, min(b, a + 1))
+    if r == 3 and not ((b is not None and b >= 2) or (s6 is not None and s6 <= -1.5)):
+        r = 2
+    return r
 
 
 def lv_wilayah(jiwa_per_lv, total):
@@ -96,9 +101,11 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
         k = (round(g["lat"], 2), round(g["lon"], 2))
         h = hujan.get(f"{g['lat']},{g['lon']}") if hujan else None
         s3 = SPI.spi_seri(h, ym[0], ym[1], 3) if h and ym else None
+        s6 = SPI.spi_seri(h, ym[0], ym[1], 6) if h and ym else None
+        x3 = SPI.jumlah(h, ym[0], ym[1], 3) if h and ym else None
         p = g.get("pct1") if g.get("pct1") is not None else g.get("pct0")
         d = dc[k][-1]["dc"] if k in dc else None
-        sel[k] = {"prov": g["prov"], "p0": g.get("pct0"), "p1": g.get("pct1"), "dc": d, "spi3": s3, "lv": gabung(lv_spi(s3), lv_tanah(p))}
+        sel[k] = {"prov": g["prov"], "p0": g.get("pct0"), "p1": g.get("pct1"), "dc": d, "spi3": s3, "spi6": s6, "mm3": None if x3 is None else round(x3), "lv": gabung(lv_spi(s3), lv_tanah(p), s6)}
     # kecamatan -> sel terdekat
     kab, prov = {}, {}
     for kk, jiwa in penduduk["kec"].items():
@@ -107,7 +114,7 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
         c = sel_terdekat(sel, a[0], a[1]) if a else None
         s = sel[c] if c else None
         for tabel, key in ((kab, f"{p}|{kb}"), (prov, p)):
-            w = tabel.setdefault(key, {"total": 0, "lv": [0, 0, 0, 0], "ada": 0, "s": 0.0, "ns": 0, "d": 0.0, "nd": 0, "t": 0.0, "nt": 0})
+            w = tabel.setdefault(key, {"total": 0, "lv": [0, 0, 0, 0], "ada": 0, "s": 0.0, "ns": 0, "m": 0.0, "nm": 0, "d": 0.0, "nd": 0, "t": 0.0, "nt": 0})
             w["total"] += jiwa
             if s and s["lv"] is not None:
                 w["lv"][s["lv"]] += jiwa
@@ -115,6 +122,9 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
             if s and s["spi3"] is not None:
                 w["s"] += s["spi3"] * jiwa
                 w["ns"] += jiwa
+            if s and s["mm3"] is not None:
+                w["m"] += s["mm3"] * jiwa
+                w["nm"] += jiwa
             if s and s["dc"] is not None:
                 w["d"] += s["dc"] * jiwa
                 w["nd"] += jiwa
@@ -126,7 +136,7 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
     def rapi(w):
         L = lv_wilayah(w["lv"], w["total"])
         return {"lv": L, "total": w["total"], "jiwa": [sum(w["lv"][i:]) for i in (1, 2, 3)],
-                "spi3": round(w["s"] / w["ns"], 2) if w["ns"] else None, "dc": round(w["d"] / w["nd"]) if w["nd"] else None,
+                "spi3": round(w["s"] / w["ns"], 2) if w["ns"] else None, "mm3": round(w["m"] / w["nm"]) if w["nm"] else None, "dc": round(w["d"] / w["nd"]) if w["nd"] else None,
                 "pct": round(w["t"] / w["nt"]) if w["nt"] else None}
     P = {k: rapi(w) for k, w in prov.items()}
     K = {k: rapi(w) for k, w in kab.items()}
@@ -163,12 +173,12 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
     riw.append({"id": das_id, "tgl": hari_ini.isoformat(), "das": dasarian(hari_ini.isoformat()), "jiwa": nas["jiwa"], "kab_n": nas["kab_n"], "sel_n": nas["sel_n"], "sel": nas["sel"]})
     riw = sorted(riw, key=lambda r: r["id"])[-108:]  # 3 tahun
     tren = {"spi_bulanan": spi_bln, "dc_harian": dc_harian, "dasarian": riw}
-    grid = [[k[0], k[1], s["prov"], s["p0"], s["p1"], s["dc"], s["spi3"], s["lv"]] for k, s in sorted(sel.items())]
+    grid = [[k[0], k[1], s["prov"], s["p0"], s["p1"], s["dc"], s["spi3"], s["lv"], s["spi6"], s["mm3"]] for k, s in sorted(sel.items())]
     meta = {"hari_ini": hari_ini.isoformat(), "dasarian": dasarian(hari_ini.isoformat()), "label": "Deteksi Pantau Bencana",
             "spi": {"bulan": f"{ym[0]}-{ym[1]:02d}", "k": 3, "sel": sum(1 for s in sel.values() if s["spi3"] is not None)} if ym else None,
             "tanah": {"tgl": tanah.get("hari_ini"), "sel": sum(1 for s in sel.values() if s["p1"] is not None or s["p0"] is not None)},
             "dc": {"tgl": fwi.get("hari_ini")}, "enso": teks_enso(iklim), "nasional": nas,
-            "kolom": ["lat", "lon", "prov", "pct0", "pct1", "dc", "spi3", "lv"],
+            "kolom": ["lat", "lon", "prov", "pct0", "pct1", "dc", "spi3", "lv", "spi6", "mm3"],
             "provinsi": {k: n for k, n in PROVINSI.items() if k in P}}
     return meta, grid, {"prov": P, "kab": K}, tren
 
@@ -196,7 +206,8 @@ def main():
 
 def uji():
     assert [lv_spi(x) for x in (None, 0, -1, -1.5, -2.3)] == [None, 0, 1, 2, 3] and [lv_tanah(x) for x in (None, 50, 20, 10, 0)] == [None, 0, 1, 2, 3]
-    assert gabung(None, None) is None and gabung(None, 3) == 2 and gabung(2, None) == 2 and gabung(0, 3) == 1 and gabung(1, 3) == 2 and gabung(3, 0) == 3
+    assert gabung(None, None) is None and gabung(None, 3) == 2 and gabung(2, None) == 2 and gabung(0, 3) == 1 and gabung(1, 3) == 2 and gabung(3, 0) == 2
+    assert gabung(3, None) == 2 and gabung(3, None, -1.4) == 2 and gabung(3, None, -1.5) == 3 and gabung(3, 2) == 3 and gabung(3, 1) == 2 and gabung(2, 3) == 3 and gabung(None, None, -3) is None
     assert lv_wilayah([70, 0, 0, 30], 100) == 3 and lv_wilayah([71, 0, 0, 29], 100) == 0 and lv_wilayah([0, 0, 20, 20], 100) == 2 and lv_wilayah([0, 0, 0, 0], 0) == 0
     assert pusat_sel(-10.3) == -10.25 and pusat_sel(123.7) == 123.75 and sel_terdekat({(0.25, 0.25): 1}, 0.1, 0.4) == (0.25, 0.25) and sel_terdekat({}, 0, 0) is None
     e = teks_enso({"status": "El Niño", "cpc_sinopsis": "likely through January-March 2027 (remaining greater than an 83% chance).", "oni_terakhir": {"nilai": 2.16, "musim": "JAS", "tahun": 2026}})

@@ -12,10 +12,26 @@
    kecuali FOTO_DUMMY_PUBLIK = "1" menayangkannya sebagai contoh. */
 import {json, gagal, acak, sha, ipHash, turnstileOK, adminOK, bersihTeks, bacaBody, cacheTepi} from "./worker.js";
 import {wilayah, cariWilayah} from "./titik.js";
+import REGISTRY from "./bencana.generated.js";
+import {hidup} from "./bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 export const BATAS_FOTO = {unggah: [[JAM, 5], [HARI, 20]], komentar: [[JAM, 10], [HARI, 50]], suka: [[JAM, 120]], aduan: [[JAM, 20]]};
-export const KATEGORI = {api: "Api", asap: "Asap", padam: "Pemadaman", dampak: "Dampak", lainnya: "Lainnya"};
+/* kategori per bencana dari registry (foto_kategori); migrasi 0013 menyalinnya ke tabel foto_kategori. KATEGORI = karhutla (bentuk lama, dummy). */
+export const KAT_BENCANA = Object.fromEntries(hidup(REGISTRY).map(b => [b.id, Object.fromEntries(b.foto_kategori)]));
+export const KATEGORI = KAT_BENCANA.karhutla;
+const LAMA = new Set(Object.keys(KATEGORI));   // CHECK kategori di 0007 hanya menerima ini; kode lain disimpan di kategori_b
+/* Migrasi 0013 (kolom bencana, kategori_b) mungkin belum dijalankan di D1 jauh: tanpanya karhutla jalan seperti dulu, bencana lain kosong/503. Hanya "ada" yang di-cache. */
+let ADA = {ok: false, t: 0};
+async function bencanaAda(env, kini) {
+  if (ADA.ok) return true;
+  if (kini - ADA.t < 60e3 && ADA.t) return false;
+  ADA.t = kini;
+  try { await env.DB.prepare("SELECT bencana, kategori_b FROM foto LIMIT 0").first(); ADA.ok = true; } catch (e) {}
+  return ADA.ok;
+}
+const kolomPublik = ada => ada ? KOLOM_PUBLIK.replace(" kategori,", " coalesce(nullif(kategori_b, ''), kategori) kategori, bencana,") : KOLOM_PUBLIK;
+const namaKat = (b, k) => KAT_BENCANA[b || "karhutla"]?.[k] || k;
 const ALASAN = ["tidak_relevan", "palsu", "kasar", "pribadi", "lainnya"];
 const MAKS = {foto: 3 * 1048576, video: 30 * 1048576, thumb: 300 * 1024}, MAKS_DURASI = 60, AKURASI_MAKS = 1000;
 const EXIF_JARAK_MAKS = 5000, EXIF_UMUR_MAKS = 48 * JAM, GPS_UMUR_MAKS = 10 * MENIT, UMUR_DAFTAR = 90 * HARI;
@@ -55,23 +71,27 @@ export function durasiMP4(b) {
 /* ---------------- baris -> objek publik (tanpa email, hash IP, flag dummy) ---------------- */
 const KOLOM_PUBLIK = "id, jenis, kategori, lat, lon, prov, kab, kec, keterangan, nama, tampil_nama, diambil, dibuat, exif_waktu, exif_jarak, kamera, durasi, suka, komentar, dilihat";
 const publik = r => ({id: r.id, jenis: r.jenis, kategori: r.kategori, lat: r.lat, lon: r.lon, prov: r.prov, kab: r.kab, kec: r.kec, keterangan: r.keterangan,
-  kredit: r.tampil_nama ? r.nama : null, diambil: r.diambil, dibuat: r.dibuat, durasi: r.durasi, suka: r.suka, komentar: r.komentar, dilihat: r.dilihat || 0,
+  bencana: r.bencana, kredit: r.tampil_nama ? r.nama : null, diambil: r.diambil, dibuat: r.dibuat, durasi: r.durasi, suka: r.suka, komentar: r.komentar, dilihat: r.dilihat || 0,
   terverifikasi: {kamera: !!r.kamera, waktu: !!r.exif_waktu, gps: r.exif_jarak != null}, contoh: r.dummy ? true : undefined});
 
 async function daftar(env, req, url, kini, ctx) {
   const lihatDummy = url.searchParams.get("dummy") === "1" && await adminOK(env, req, kini);
   /* FOTO_DUMMY_PUBLIK = "1" (wrangler.jsonc): dummy yang tayang ikut di daftar publik, tetap berlencana "contoh" (pemilik, 15 Okt 2026) */
   const dummyPublik = env.FOTO_DUMMY_PUBLIK === "1";
+  const ben = url.searchParams.get("bencana") || "karhutla";   // tanpa ?bencana= = karhutla, seperti sebelum 0013
+  if (!KAT_BENCANA[ben]) return gagal(400, `bencana harus ${Object.keys(KAT_BENCANA).join("/")}`);
   const ambil = async () => {
-    const r = await env.DB.prepare(`SELECT ${KOLOM_PUBLIK}, dummy FROM foto WHERE status = 'tayang' AND dibuat > ? ${lihatDummy || dummyPublik ? "" : "AND dummy = 0"} ORDER BY dibuat DESC LIMIT 1000`)
-      .bind(kini - UMUR_DAFTAR).all();
-    return json({foto: r.results.map(publik), kategori: KATEGORI});
+    const ada = await bencanaAda(env, kini);
+    if (!ada && ben !== "karhutla") return json({foto: [], kategori: KAT_BENCANA[ben]});   // gagal lunak: migrasi 0013 belum jalan
+    const r = await env.DB.prepare(`SELECT ${kolomPublik(ada)}, dummy FROM foto WHERE status = 'tayang' AND dibuat > ? ${ada ? "AND bencana = ?" : ""} ${lihatDummy || dummyPublik ? "" : "AND dummy = 0"} ORDER BY dibuat DESC LIMIT 1000`)
+      .bind(...[kini - UMUR_DAFTAR, ...(ada ? [ben] : [])]).all();
+    return json({foto: r.results.map(publik), kategori: KAT_BENCANA[ben]});
   };
   return lihatDummy ? ambil() : cacheTepi(req, ctx, 60, ambil);
 }
 
 async function rincian(env, req, id, kini, ctx) {
-  const r = await env.DB.prepare(`SELECT ${KOLOM_PUBLIK}, status, dummy FROM foto WHERE id = ?`).bind(id).first();
+  const r = await env.DB.prepare(`SELECT ${kolomPublik(await bencanaAda(env, kini))}, status, dummy FROM foto WHERE id = ?`).bind(id).first();
   if (!r || (r.status !== "tayang" && !(await adminOK(env, req, kini)))) return gagal(404, "foto tidak ada atau belum disetujui");
   /* hitung dilihat (hanya yang tayang); di belakang supaya respons tidak menunggu tulis */
   if (r.status === "tayang") { const t = env.DB.prepare("UPDATE foto SET dilihat = dilihat + 1 WHERE id = ?").bind(id).run().catch(() => {}); ctx?.waitUntil ? ctx.waitUntil(t) : await t; }
@@ -120,8 +140,11 @@ async function unggah(env, req, url, kini) {
   let f; try { f = await req.formData(); } catch (e) { return gagal(400, "formulir tidak terbaca"); }
   const v = k => f.get(k), n = k => (v(k) == null || v(k) === "" ? null : Number(v(k)));
 
-  const kategori = String(v("kategori") || "");
-  if (!KATEGORI[kategori]) return gagal(400, `kategori harus ${Object.keys(KATEGORI).join("/")}`);
+  const ben = String(v("bencana") || "karhutla"), kategori = String(v("kategori") || "");
+  if (!KAT_BENCANA[ben]) return gagal(400, `bencana harus ${Object.keys(KAT_BENCANA).join("/")}`);
+  if (!KAT_BENCANA[ben][kategori]) return gagal(400, `kategori ${ben} harus ${Object.keys(KAT_BENCANA[ben]).join("/")}`);
+  const ada = await bencanaAda(env, kini);
+  if (!ada && ben !== "karhutla") return gagal(503, "foto untuk bencana ini belum aktif (migrasi 0013 belum dijalankan)");
   if (v("setuju") !== "1") return gagal(400, "centang persetujuan unggah dulu");
   const lat = n("lat"), lon = n("lon"), akurasi = n("akurasi"), waktuGps = n("waktu_gps");
   if (![lat, lon, akurasi, waktuGps].every(Number.isFinite)) return gagal(400, "lokasi GPS perangkat wajib (izinkan akses lokasi)");
@@ -173,9 +196,9 @@ async function unggah(env, req, url, kini) {
   await env.MEDIA.put(`foto/${id}_t`, tb, {httpMetadata: {contentType: mimeT}});
   try {
     await env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat,
-      exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
-      .bind(id, jenis, kategori, Math.round(lat * 1e5) / 1e5, Math.round(lon * 1e5) / 1e5, Math.round(akurasi), prov, kab, kec, ket.teks, nm.teks, tampil, email,
-        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, b.length, durasi, mime, ip).run();
+      exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash${ada ? ", bencana, kategori_b" : ""}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?${ada ? ", ?, ?" : ""})`)
+      .bind(id, jenis, LAMA.has(kategori) ? kategori : "lainnya", Math.round(lat * 1e5) / 1e5, Math.round(lon * 1e5) / 1e5, Math.round(akurasi), prov, kab, kec, ket.teks, nm.teks, tampil, email,
+        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, b.length, durasi, mime, ip, ...(ada ? [ben, ben === "karhutla" ? "" : kategori] : [])).run();
   } catch (e) { await env.MEDIA.delete([`foto/${id}`, `foto/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, status: "menunggu", wilayah: {prov, kab, kec}}, 201);
 }
@@ -225,7 +248,7 @@ async function adminDaftar(env, req, url, kini) {
   const [r, n] = await env.DB.batch([
     env.DB.prepare(`SELECT *, substr(ip_hash, 1, 8) pengirim FROM foto WHERE status = ? ORDER BY dibuat ${st === "menunggu" ? "ASC" : "DESC"} LIMIT 300`).bind(st),
     env.DB.prepare("SELECT status, count(*) n FROM foto GROUP BY status")]);
-  return json({foto: r.results.map(({ip_hash, ...x}) => x), jumlah: Object.fromEntries(n.results.map(x => [x.status, x.n]))});
+  return json({foto: r.results.map(({ip_hash, kategori_b, ...x}) => ({...x, kategori: kategori_b || x.kategori})), jumlah: Object.fromEntries(n.results.map(x => [x.status, x.n]))});
 }
 const AKSI = ["setujui", "tolak", "hapus", "sembunyikan_komentar", "tampilkan_komentar"];
 async function adminAksi(env, req, url, id, kini) {
@@ -319,10 +342,11 @@ export async function bersihkanFoto(env, kini = Date.now()) {
 
 /* pratinjau tautan /f/<id>: judul, keterangan, thumbnail (hanya yang tayang & bukan dummy) */
 export async function ogFoto(env, url, id) {
-  const r = await env.DB.prepare("SELECT kategori, keterangan, kab, kec, prov, diambil, nama, tampil_nama FROM foto WHERE id = ? AND status = 'tayang' AND dummy = 0").bind(id).first();
+  const ada = await bencanaAda(env, Date.now());
+  const r = await env.DB.prepare(`SELECT ${ada ? "bencana, coalesce(nullif(kategori_b, ''), kategori)" : "kategori"} kategori, keterangan, kab, kec, prov, diambil, nama, tampil_nama FROM foto WHERE id = ? AND status = 'tayang' AND dummy = 0`).bind(id).first();
   if (!r) return null;
   const tgl = new Date(r.diambil).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"});
-  return {judul: `${KATEGORI[r.kategori]} di ${r.kec}, ${r.kab} · Foto Lapangan`, desk: `${r.keterangan || "Foto lapangan warga"} (${tgl} WIB${r.tampil_nama ? ", oleh " + r.nama : ""})`,
+  return {judul: `${namaKat(r.bencana, r.kategori)} di ${r.kec}, ${r.kab} · Foto Lapangan`, desk: `${r.keterangan || "Foto lapangan warga"} (${tgl} WIB${r.tampil_nama ? ", oleh " + r.nama : ""})`,
     gambar: `${url.origin}/api/foto/thumb/${id}`, url: `${url.origin}/f/${id}`};
 }
 
@@ -337,7 +361,7 @@ export const RUTE_FOTO = {
     const k = cariWilayah(await wilayah(env), lat, lon); if (!k) return json({ada: false});
     const [prov, kab, kec] = k.split("|"); return json({ada: true, prov, kab, kec});
   },
-  "GET /api/foto/konfig": (env) => json({turnstile: env.TURNSTILE_SITEKEY || null, media: !!env.MEDIA, batas: {...MAKS, durasi: MAKS_DURASI, akurasi: AKURASI_MAKS}, kategori: KATEGORI}),
+  "GET /api/foto/konfig": (env) => json({turnstile: env.TURNSTILE_SITEKEY || null, media: !!env.MEDIA, batas: {...MAKS, durasi: MAKS_DURASI, akurasi: AKURASI_MAKS}, kategori: KATEGORI, bencana: KAT_BENCANA}),
   "GET /api/foto/:id": (env, req, url, kini, ctx, id) => rincian(env, req, id, kini, ctx),
   "GET /api/foto/media/:id": (env, req, url, kini, ctx, id) => media(env, req, url, id, kini, false),
   "GET /api/foto/thumb/:id": (env, req, url, kini, ctx, id) => media(env, req, url, id, kini, true),

@@ -11,7 +11,9 @@
   const TAB = {ringkasan: "Dashboard", peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", kompleks: "Kompleks", posko: "Posko", dampak: "Dampak",
     metode: "Metode", sim: "Simulasi", simulasi: "Simulasi", informasi: "Lapor Warga", prakiraan: "Prakiraan", daftar: "Wilayah siaga", provinsi: "Provinsi", rob: "Rob",
     sungai: "Sungai", keputusan: "Keputusan", sarana: "Sarana"};
-  const HALN = {karhutla: "Karhutla", banjir: "Banjir", warga: "Lapor Warga", tentang: "Tentang", privasi: "Privasi", statistik: "Statistik publik"};
+  /* nama halaman: bencana dari registry (public/bencana.json, diisi sebelum render pertama) + halaman tetap; urutan karhutla, banjir, ... lalu tetap */
+  const HALN = {karhutla: "Karhutla", banjir: "Banjir"}, HAL_TETAP = {warga: "Lapor Warga", tentang: "Tentang", privasi: "Privasi", statistik: "Statistik publik"};
+  Object.assign(HALN, HAL_TETAP);
   let st = {rentang: 1, sampai: hariIni(), hal: ""}, data = null, meta = null, geo = null, kluster = null;
   try { Object.assign(st, JSON.parse(sessionStorage.getItem("ad-stat") || "{}")); } catch (e) {}
   const ambil = async u => { const r = await fetch(u, {credentials: "same-origin"}); if (r.status === 401) { location.href = "/admin/masuk"; throw new Error("sesi habis"); } if (!r.ok) throw new Error((await r.json().catch(() => ({}))).galat || r.status); return r.json(); };
@@ -232,5 +234,7 @@
     } catch (e) { app.innerHTML = `<p class="ad-galat">Statistik gagal dimuat: ${esc(e.message)}</p>`; }
   }
   setInterval(() => { if (document.visibilityState === "visible") ambil("/api/statistik?kini=1" + (st.hal ? "&hal=" + st.hal : "")).then(langsung).catch(() => {}); }, 15e3);
-  muat();
+  fetch("/bencana.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => {
+    if (j?.bencana?.length) { for (const k of Object.keys(HALN)) delete HALN[k]; for (const b of j.bencana) if (b.status !== "mati") HALN[b.id] = b.nama; Object.assign(HALN, HAL_TETAP); }
+  }).then(muat);
 })();

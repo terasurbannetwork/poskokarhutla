@@ -3,8 +3,12 @@
    API: /api/foto* (src/foto.js). Skrip klasik dimuat SETELAH skrip utama index.html. Global: S, peta, $, esc, fmt, namaProv,
    jamWIB, bukaTab, toast. Tidak ada angka karangan: semua dari /api/foto. Foto antrean (belum disetujui admin) tidak pernah tampil. */
 (() => {
-  const API = "/api/foto", JAM = 36e5;
+  const API = "/api/foto", JAM = 36e5, BEN = "karhutla";   // galeri ini = bencana akar; modul lain punya galerinya sendiri dan memakai ?bencana=
+  let NAMA_BEN = "karhutla";
   const KAT = {api: ["Api", "#d9603b"], asap: ["Asap", "#6b7489"], padam: ["Pemadaman", "#2f7fb8"], dampak: ["Dampak", "#c49a1c"], lainnya: ["Lainnya", "#3d9461"]};
+  /* nama bencana dan nama kategori dari registry (public/bencana.json: nama, foto_kategori); warna dan ikon tetap milik galeri ini. Gagal dimuat = nilai di atas. */
+  fetch("/bencana.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { const b = j?.bencana?.find(x => x.id === BEN); if (!b) return;
+    NAMA_BEN = b.nama.toLowerCase(); for (const [k, n] of b.foto_kategori || []) if (KAT[k]) KAT[k][0] = n; });
   const TINGKAT = [["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"]];
   const bacaL = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
   const tulisL = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -41,7 +45,7 @@
   const D = {foto: [], muat: null, konfig: null};
   async function muat(paksa) {
     if (D.muat && !paksa) return D.muat;
-    return D.muat = fetch(API + (admin ? "?dummy=1" : ""), {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
+    return D.muat = fetch(`${API}?bencana=${BEN}` + (admin ? "&dummy=1" : ""), {credentials: "same-origin"}).then(r => r.ok ? r.json() : {foto: []}).then(j => {
       D.foto = j.foto || [];
       return D.foto;
     }).catch(() => (D.foto = []));
@@ -275,7 +279,7 @@
         d.addEventListener("click", e => this.klik(e, d)); d.addEventListener("change", e => this.ubah(e, d)); d.addEventListener("submit", e => this.kirim(e, d)); d.addEventListener("close", () => this.reset()); }
       const lokSegar = lagi && this.loc && Date.now() - this.loc.waktu < 5 * 60e3 && this.wil;
       this.d = d; this.reset(lokSegar);
-      d.innerHTML = `<div class="fl-pegang"></div><header><span class="fl-hd-ik">${IK.kamera}</span><div class="fl-hd-tx"><h2 id="flKJudul">Kirim foto</h2><small>Foto lapangan untuk peta karhutla</small></div><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
+      d.innerHTML = `<div class="fl-pegang"></div><header><span class="fl-hd-ik">${IK.kamera}</span><div class="fl-hd-tx"><h2 id="flKJudul">Kirim foto</h2><small>Foto lapangan untuk peta ${NAMA_BEN}</small></div><button type="button" class="fl-x" data-tutup aria-label="Tutup">×</button></header>
         ${k.media === false ? `<div class="fl-kosong"><b>Unggah foto belum dibuka</b><p>Penyimpanan foto sedang disiapkan. Coba lagi nanti.</p></div>` : `<div class="fl-lok" aria-live="polite"></div><form novalidate>
         <div class="fl-bidik" data-bidik><div class="fl-bidik-kosong"><label class="fl-bingkai" aria-label="Ambil foto"><span class="fl-lensa">${IK.kamera}</span><input type="file" name="kamera" accept="image/*,video/*" capture="environment" hidden></label></div></div>
         <p class="fl-cat">Foto, atau video maks ${k.batas?.durasi || 60} detik (${(k.batas?.video || 31457280) / 1048576} MB), diambil di lokasimu. Lokasi GPS ikut terkirim, dan admin memeriksa sebelum tayang.</p>
@@ -411,7 +415,7 @@
       for (const [i, y] of this.daftar.entries()) {
         btn.textContent = this.daftar.length > 1 ? `Mengirim ${i + 1} dari ${this.daftar.length}…` : "Mengirim…";
         const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
-        set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
+        set("bencana", BEN); set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
         set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", y.kamera ? "1" : "0");
         set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu);
         if (y.exif?.waktu) set("exif_waktu", y.exif.waktu);
