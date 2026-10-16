@@ -58,3 +58,4 @@ Dokumen riset: `RISET-PARAMETER.md` (regulasi Perka BNPB, parameter kuat vs lema
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode: docstring scripts/banjir/*.py, banjir.yml, RISET-PARAMETER/ROB/UJI-BALIK.md, git log (6622f26, dd0f47c, 7cadb25, 3b90271).
+- 2026-10-16 · sekolah.json dan fasilitas.json hanya mencakup 9 provinsi karhutla; jumlah sekolah/faskes di luar itu dibuang, bukan 0 (dampak.py kec_tercakup_*). Batas kecamatan berbagi simpul persis, jadi tetangga = berbagi sisi dan gabungan poligon cukup penghapusan sisi bersama. status.json hari ke-0 bisa lebih tua dari tanggal sebenarnya (13 Okt saat 16 Okt): seri_status menolak mencatat bila beda dari hujan.hari_ini.

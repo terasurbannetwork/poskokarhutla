@@ -39,8 +39,9 @@ def ambil(url, data=None, coba=5, batas_waktu=180, kepala=None):
 
 def simpan(jalur, isi):
     os.makedirs(os.path.dirname(jalur), exist_ok=True)
-    with open(jalur, "w") as f:
+    with open(jalur + ".tmp", "w") as f:  # atomik: tulis .tmp lalu ganti, jalan yang mati di tengah tidak merusak berkas lama
         json.dump(isi, f, ensure_ascii=False, separators=(",", ":"))
+    os.replace(jalur + ".tmp", jalur)
 
 
 def baca(jalur, bawaan=None):

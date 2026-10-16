@@ -271,3 +271,9 @@ if __name__ == "__main__":
         print("ok")
     else:
         main()
+        # turunan status: dijalankan di sini karena workflow tidak bisa disunting dari mesin agent (token tanpa scope workflow).
+        # Pindahkan ke langkah sendiri di banjir.yml bila workflow disunting; jangan jalankan dua kali.
+        import subprocess
+        for s in ("kejadian_aktif", "seri_status", "dampak"):
+            if subprocess.call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), s + ".py")]) != 0:
+                print(f"::warning title={s}::{s}.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
