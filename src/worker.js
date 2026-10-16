@@ -11,6 +11,7 @@ import {ruteBencana, sumberStatus, sitemap} from "./bencana.js";
 import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
+import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *", CRON_GEMPA = "* * * * *";
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -444,6 +445,7 @@ export default {
     const url = new URL(req.url);
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
+    if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
@@ -481,10 +483,14 @@ export default {
   // cron CRON_TITIK = titik panas FIRMS; CRON_GEMPA = BMKG/USGS tiap menit; "17 * * * *" = bersih-bersih Lapor Warga
   async scheduled(ev, env) {
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
-    if (ev.cron === CRON_GEMPA) return console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime)));
+    if (ev.cron === CRON_GEMPA) {
+      console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime)));
+      return console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime)));   // gagal-lunak; sesudah gempa baru tersimpan
+    }
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
-    try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }   // migrasi 0009 belum jalan = cron lain tetap jalan
+    try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
+    try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
     await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
     await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi

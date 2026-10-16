@@ -21,6 +21,10 @@ function temukan() {
   const gm = readFileSync(path.join(AKAR, "src/gempa.js"), "utf8");   // katalog gempa: rute baca + cron
   for (const [, x] of gm.matchAll(/j === "(\/api\/gempa\/\w+)"/g)) out.add("GET " + x);
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
+  const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron
+  if (/j === "\/api\/peringatan\/aktif"/.test(pr)) out.add("GET /api/peringatan/aktif");
+  if (/\/api\/admin\/peringatan\//.test(pr)) out.add("POST /api/admin/peringatan/:kunci/cabut");
+  if (/periksaPeringatan\(env/.test(w)) out.add("cron peringatan");
   if (/bersihkanFoto\(env\)/.test(w)) out.add("cron bersihkanFoto");
   if (/HTML_RUTE/.test(w)) out.add("hit HTML (HTML_RUTE)");
   for (const [, x] of w.matchAll(/(catatGangguan|musnahkanGaram|perbaruiRentang)\(/g)) out.add("cron " + x);
