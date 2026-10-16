@@ -88,7 +88,7 @@ const panggil = async (metode, jalur, body, ip = ipBaru(), h = {}, w = mf) => {
   return {s: r.status, j, t, h: r.headers};
 };
 const cron = async (isi, t, w = mf) => (await w.getWorker()).scheduled({cron: isi, scheduledTime: new Date(t)});
-const JAM_CRON = "17 * * * *", CRON_GEMPA = "*/5 * * * *";
+const JAM_CRON = "17 * * * *", CRON_GEMPA = E.CRON_GEMPA;   // cron gempa bersama src/gempa.js (tiap menit)
 const sampai = async (fn, ms = 4000) => { const m = Date.now(); while (Date.now() - m < ms) { if (fn()) return true; await new Promise(r => setTimeout(r, 40)); } return false; };
 const untuk = (email, daftar = surat) => daftar.filter(s => s.to.includes(email));
 const ASAL = "https://pantau.terasurban.com";

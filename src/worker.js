@@ -492,8 +492,9 @@ export default {
     const sekarang = ev.scheduledTime || Date.now();
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
     if (ev.cron === CRON_GEMPA) {
-      console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime)));
-      console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime)));   // gagal-lunak; sesudah gempa baru tersimpan
+      /* tiap langkah dibungkus sendiri: galat katalog gempa tidak boleh menahan email tsunami/gempa ke pelanggan EWS di bawah */
+      try { console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime))); } catch (e) { console.error("gempa", e?.message); }
+      try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       return console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
     }
     await bersihkan(env);
