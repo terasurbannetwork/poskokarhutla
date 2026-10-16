@@ -14,7 +14,7 @@ concurrency:
 jobs:
   titik:
     runs-on: ubuntu-latest
-    timeout-minutes: 30
+    timeout-minutes: 40   # 30 + jejak api harian (sampai 15 menit) di putaran 21-23 UTC
     steps:
       - uses: actions/checkout@v4
 
@@ -79,8 +79,8 @@ jobs:
       # (dibaca src/ews.js untuk peringatan email). Cache cuaca ikut folder prospektif (disimpan di langkah berikutnya). Anggaran sendiri 420 dtk.
       - name: Jejak api kompleks aktif (boleh gagal)
         continue-on-error: true
-        timeout-minutes: 10
-        # sekali sehari (pemilik: "pipeline harian"; ~7 menit per jalan, tiap 3 jam = ~1.800 menit Actions/bulan): putaran 21:40 UTC
+        timeout-minutes: 17   # JEJAK_DETIK 900 (300 kompleks, 16 Okt 2026: 40 kompleks = 49 dtk) + kelonggaran tulis berkas
+        # sekali sehari (pemilik: "pipeline harian"; sampai ~15 menit per jalan, tiap 3 jam = ~3.600 menit Actions/bulan): putaran 21:40 UTC
         # = 04:40 WIB, jadi email terkirim pagi. Jendela 21-23 UTC menampung keterlambatan jadwal GitHub. Manual (dispatch) selalu jalan.
         run: |
           jam=$(date -u +%H)

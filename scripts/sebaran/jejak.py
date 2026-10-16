@@ -14,7 +14,7 @@ Urutan kompleks: level, lalu penduduk sekitar (WorldPop 0,25 derajat, 3x3 sel di
 yang diramal lebih dulu adalah api yang dekat orang. "cakupan" di JSON mencatat berapa kompleks aktif, berapa diramal, dan alasan dilewati.
 
 Pakai:  python3 scripts/sebaran/jejak.py  |  ... uji        Stdlib saja. Boleh gagal di CI (titik.yml).
-Env: JEJAK_MAKS (kompleks, 40) JEJAK_MC (20) JEJAK_DETIK (anggaran total, 420) JEJAK_BASI_JAM (12) JEJAK_AKTIF (0 = tanpa batas) JEJAK_KELUAR (berkas keluaran)
+Env: JEJAK_MAKS (kompleks, 300) JEJAK_MC (20) JEJAK_DETIK (anggaran total, 900) JEJAK_BASI_JAM (12) JEJAK_AKTIF (0 = tanpa batas) JEJAK_KELUAR (berkas keluaran)
 """
 import datetime as dt, json, math, os, random, sys, time, urllib.parse, zlib
 
@@ -28,9 +28,9 @@ from umum import HA_SEL, MENTAH, PUBLIK, T0, pusat, sel  # noqa: E402
 
 AMBANG_P = 0.05
 HARI = 3
-MAKS_KOMPLEKS = int(os.environ.get("JEJAK_MAKS", "40"))
+MAKS_KOMPLEKS = int(os.environ.get("JEJAK_MAKS", "300"))
 N_MC = int(os.environ.get("JEJAK_MC", "20"))
-ANGGARAN_DETIK = float(os.environ.get("JEJAK_DETIK", "420"))
+ANGGARAN_DETIK = float(os.environ.get("JEJAK_DETIK", "900"))
 BASI_JAM = float(os.environ.get("JEJAK_BASI_JAM", "12"))
 KELUAR = os.environ.get("JEJAK_KELUAR", os.path.join(PUBLIK, "jejak_api.json"))
 CAP_SEL = 3000  # sel per horizon per kompleks
