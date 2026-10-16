@@ -336,9 +336,12 @@ uji("hapus_pengirim wajib konfirmasi jumlah; tanpa itu tidak mengubah apa pun", 
   assert.deepEqual((await audit(a.j.id)).map(x => [x.aksi, x.jumlah]), [["hapus_pengirim", 2]]);
 });
 
+const gempaSumber = jam => DB.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?) ON CONFLICT(kunci) DO UPDATE SET dibuat = excluded.dibuat").bind(KINI - jam * JAM).run();
+const hapusGempaSumber = () => DB.prepare("DELETE FROM gempa_sumber").run();
 const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
 uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
   Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+  await gempaSumber(0.1);
   try {
     let r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `semua segar (dampak tidak punya ambang) harus 200: ${r.teks}`);
@@ -353,17 +356,18 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
     assert.equal(r.j.sumber.berita.umur_jam, null);
     ASET_UJI["/data/berita.json"] = '{"judul":"tanpa dibuat"}';
     assert.ok((await panggil("GET", "/api/status")).j.basi.includes("berita"), "berkas tanpa 'dibuat' harus dianggap basi");
-  } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; }
+  } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; await hapusGempaSumber(); }
 });
 
-uji("status: sumber bencana tahap uji (kekeringan basi, gempa_terbaru tanpa tabel D1) tidak pernah 503; hanya aktif yang menentukan", async () => {
+uji("status: sumber bencana tahap uji (kekeringan basi) tidak pernah 503; hanya aktif (banjir, gempa_terbaru) yang menentukan", async () => {
   Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(31), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+  await gempaSumber(0.1);
   try {
     const r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `uji basi/hilang harus tetap 200: ${r.teks}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);
     assert.equal(r.j.uji.kekeringan.umur_jam, 31); assert.equal(r.j.uji.kekeringan.basi, true, "kekeringan (uji) 31 jam > ambang dilaporkan basi tetapi informatif");
-    assert.equal(r.j.uji.gempa_terbaru.umur_jam, null); assert.equal(r.j.uji.gempa_terbaru.basi, true, "tabel gempa_sumber belum ada = belum ada data, bukan galat");
-    assert.ok(!("kekeringan" in r.j.sumber) && !("gempa_terbaru" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
+    assert.ok(!("kekeringan" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
+    assert.ok("gempa_terbaru" in r.j.sumber && !("gempa_terbaru" in r.j.uji), "gempa aktif masuk `sumber`, bukan `uji`");
     assert.equal(r.j.sumber.banjir.umur_jam, 20, "banjir aktif (16 Okt) masuk `sumber`");
     ASET_UJI["/banjir/data/meta.json"] = metaUji(31);   // banjir aktif basi = 503
     const b = await panggil("GET", "/api/status");
@@ -371,7 +375,14 @@ uji("status: sumber bencana tahap uji (kekeringan basi, gempa_terbaru tanpa tabe
     ASET_UJI["/banjir/data/meta.json"] = metaUji(20); ASET_UJI["/data/meta.json"] = metaUji(9);   // sumber aktif basi tetap 503 walau uji ikut basi
     const s = await panggil("GET", "/api/status");
     assert.equal(s.status, 503); assert.deepEqual(s.j.basi, ["titik"]);
-  } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; }
+    ASET_UJI["/data/meta.json"] = metaUji(2);
+    await gempaSumber(0.6);   // gempa_terbaru aktif, ambang 0,5 jam
+    const g = await panggil("GET", "/api/status");
+    assert.equal(g.status, 503, `gempa_terbaru 0,6 jam (> 0,5) harus 503: ${g.teks}`); assert.deepEqual(g.j.basi, ["gempa_terbaru"]);
+    await hapusGempaSumber();   // belum pernah ada data = basi juga
+    const h = await panggil("GET", "/api/status");
+    assert.equal(h.status, 503); assert.deepEqual(h.j.basi, ["gempa_terbaru"]); assert.equal(h.j.sumber.gempa_terbaru.umur_jam, null);
+  } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; await hapusGempaSumber(); }
 });
 
 uji("POST dari origin lain ditolak", async () => {

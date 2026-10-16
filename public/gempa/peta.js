@@ -123,7 +123,7 @@ const Peta = {
   terbang(k) { if (k === "-" || !S.geo) { const d = dalamRentang().filter(g => !g.prov); if (!d.length) return; const b = kotak(d.map(g => ({geometry: {coordinates: [g.lon, g.lat]}}))); return peta.fitBounds(b, {padding: kiriPad(), duration: 700, maxZoom: 7}); }
     const f = S.geo.features.find(f => f.properties.kode === k); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); },
   pilih(g) { S.pilih = g.id; peta.getSource("pilih")?.setData({type: "FeatureCollection", features: [{type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {}}]});
-    peta.flyTo({center: [g.lon, g.lat], zoom: Math.max(peta.getZoom(), 6.5), duration: 700}); },
+    peta.flyTo({center: [g.lon, g.lat], zoom: Math.max(peta.getZoom(), 6.5), duration: 700}); Laci.buka(g); },
   kartuGempa(g) { const ts = g.tsunami?.kode >= 1 ? TSUNAMI[g.tsunami.kode] : null, kd = kelasDalam(g.dalam);
     return PI.kartuTip({judul: esc(wilayahPendek(g.wilayah)), stat: [
       ...(ts ? [["peringatan", ts[0], "BMKG", ts[1], true]] : []),
@@ -164,12 +164,12 @@ function renderCrumb() {
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (b) naik(+b.dataset.n); });
 function renderDaftar() {
   const box = $("#rows"), d = dalamRentang(), j = S.jalur, u = S.urut, arah = u.turun ? -1 : 1;
-  if (!d.length) { box.innerHTML = `<div class="kosong">${S.tersedia ? `Tidak ada gempa dalam ${S.rentang === 168 ? "7 hari" : S.rentang + " jam"} terakhir.` : "Data gempa belum tersedia."}</div>`; return; }
+  if (!d.length) { box.innerHTML = `<div class="kosong">${S.tersedia ? `Tidak ada gempa ${S.rentang * 36e5 > Date.now() - ARSIP ? "sejak " + KG.tgl(ARSIP) : "dalam " + (S.rentang === 168 ? "7 hari" : S.rentang + " jam") + " terakhir"}.` : "Data gempa belum tersedia."}</div>`; return; }
   const kepala = (g, kol) => `<div class="tb kepala" style="grid-template-columns:${g}"><span></span>${kol.map(([k, n, c]) => `<span class="${[c, k && u.k === k ? "urut" : ""].join(" ").trim()}"${k ? ` data-s="${k}"` : ""}${k && u.k === k ? ` data-arah="${u.turun ? 0 : 1}"` : ""}>${n}</span>`).join("")}</div>`;
   if (!j.length) {
-    const G = "20px minmax(0,2.6fr) minmax(50px,.8fr) minmax(44px,.8fr) minmax(76px,1.1fr)", ag = agregat(d);
+    const G = "20px minmax(0,2fr) minmax(46px,.7fr) minmax(72px,1fr) minmax(64px,1fr)", ag = agregat(d);
     const baris = Object.entries(ag).map(([k, a]) => ({k, nama: namaProv(k), ...a})).sort((a, b) => arah * ((u.k === "nama" ? a.nama.localeCompare(b.nama) : a[u.k] - b[u.k]) || b.n - a.n || a.nama.localeCompare(b.nama)));
-    box.innerHTML = kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "M terbesar"]]) +
+    box.innerHTML = kepala(G, [["nama", "Provinsi"], ["n", "Gempa", "n"], ["mmi", "Dirasakan", "n"], ["m", "Terbesar"]]) +
       baris.map((p, i) => `<button class="tb" data-k="${esc(p.k)}" style="grid-template-columns:${G}"><span class="rk">${i + 1}</span><span class="kom"><b>${esc(p.nama)}</b></span><span class="n"><b>${fmt(p.n)}</b></span><span class="n">${p.mmi ? fmt(p.mmi) : "–"}</span><span>${pilM(p.m)}</span></button>`).join("");
     return; }
   const G = "20px minmax(0,2.4fr) minmax(70px,.9fr) minmax(80px,1.2fr)", per = 20;

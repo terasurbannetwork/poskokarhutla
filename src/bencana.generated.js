@@ -338,7 +338,7 @@ export default {
       "warna": "#8a6d4e",
       "rute": "/gempa/",
       "data": "/gempa/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": false,
       "tab": [
         "ringkasan",
@@ -357,16 +357,11 @@ export default {
       ],
       "tab_sembunyi": [
         "ringkasan",
-        "insight",
-        "berita",
-        "tren",
         "kejadian",
         "posko",
-        "dampak",
         "metode",
         "sim",
-        "informasi",
-        "foto"
+        "informasi"
       ],
       "sumber_status": [
         [

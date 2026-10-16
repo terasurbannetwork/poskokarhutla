@@ -2,7 +2,7 @@
 /* ================================================================ insight gempa */
 /* Kartu Insight gempa: rupa dan anatomi sama dengan karhutla dan banjir (pil kategori, judul satu kalimat berangka merah, grafik berangka, kaki legenda + "Sumber:",
    ikon bagikan). Mesin dari public/inti (Kartu.ex lewat KG.kartu). Data hidup: /api/gempa/terbaru?jam=720 (hanya baca, D1 milik warga-api); riwayat: data/riwayat_*.json.
-   Tanpa data hidup, kartu yang menyatakan "tidak ada gempa" DIBUANG (A18): tabel kosong bukan bukti tak ada gempa.
+   Tanpa data hidup, kartu yang menyatakan "tidak ada gempa" DIBUANG (A18): tabel kosong bukan bukti tak ada gempa. Arsip D1 mulai 16 Okt 2026: jendela 7/30 hari ditulis "sejak <tanggal>" (lihat jendela()).
    Model guncangan (guncangan.js) belum dipakai di layar: koefisiennya belum diverifikasi. */
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:gempa|berita|jiwa|kecamatan))$/;
 const MMI_WARNA = ["", "#d8d2b8", "#d8d2b8", "#e3c77a", "#e0a64f", "#d4802f", "#c9503a", "#a83a2a", "#8f2a1e", "#8f2a1e", "#6e1d14", "#6e1d14", "#6e1d14"];
@@ -20,9 +20,10 @@ const Insight = {
     this.d = await fetch("/api/gempa/terbaru?jam=720").then(r => r.ok ? r.json() : null).catch(() => null); this.dMuat = Date.now();
     if (this.d) this.d.gempa = this.d.gempa.map(g => ({...g, t: Date.parse(g.waktu)}));
     return this.d; },
-  /* jendela waktu: bila arsip D1 baru mulai di tengah jendela, ditulis "sejak <tanggal>", bukan "N hari terakhir" */
-  jendela(hari) { const kini = Date.now(), mulai = kini - hari * 864e5, awal = Math.min(...this.d.gempa.map(g => g.t));
-    return {mulai, teks: awal > mulai + 36e5 * 36 ? `sejak ${KG.tgl(awal)}` : `dalam ${hari} hari terakhir`}; },
+  /* jendela waktu: arsip D1 baru mulai 16 Okt 2026 (migrasi); sebelum itu hanya sisa daftar BMKG (15 butir terbaru per daftar) yang ikut terserap.
+     Jadi awal data yang jujur = yang lebih lama antara ARSIP dan gempa tertua DALAM KELOMPOK kartu itu (daftar M5+ BMKG menjangkau ~sebulan,
+     daftar Dirasakan hanya beberapa hari). Jendela yang mulai sebelum awal itu ditulis "sejak <tanggal>", bukan "N hari terakhir". */
+  jendela: jendelaGempa,
   hidupAda: d => !!d && d.gempa.length > 0,
   tglPendek: t => KG.tgl(t, {day: "numeric", month: "short"}),
   nmU: k => k === "-" ? "Perairan lepas" : esc(innerWidth < 640 ? KG.pendek(namaProv(k)) : namaProv(k)),
@@ -33,7 +34,7 @@ const Insight = {
   /* 1. gempa M 5+ terkini per provinsi */
   exTerkini() {
     if (!this.hidupAda(this.d)) return "";
-    const hari = +this.st.terkini, w = this.jendela(hari), A = this.d.gempa.filter(g => g.m >= 5 && g.t >= w.mulai), ctl = this.seg("terkini", [["7", "7 hari"], ["30", "30 hari"]]);
+    const hari = +this.st.terkini, w = this.jendela(hari, this.d.gempa.filter(g => g.m >= 5)), A = this.d.gempa.filter(g => g.m >= 5 && g.t >= w.mulai), ctl = this.seg("terkini", [["7", "7 hari"], ["30", "30 hari"]]);
     const jd = A.length ? "" : `Tidak ada gempa M 5+ di Indonesia ${w.teks}`;
     if (!A.length) return Kartu.kartu(this.LABEL.terkini, jd, "", "BMKG, USGS", ctl);
     const K = this.kelompok(A), P = Object.entries(K).sort((a, b) => b[1].n - a[1].n || b[1].m - a[1].m), np = P.filter(([k]) => k !== "-").length;
@@ -45,13 +46,13 @@ const Insight = {
   /* 2. gempa yang dirasakan warga (BMKG Dirasakan, skala MMI) */
   exDirasakan() {
     if (!this.hidupAda(this.d)) return "";
-    const hari = +this.st.dirasakan, w = this.jendela(hari), A = this.d.gempa.filter(g => g.mmi_maks > 0 && g.t >= w.mulai), ctl = this.seg("dirasakan", [["7", "7 hari"], ["30", "30 hari"]]);
+    const hari = +this.st.dirasakan, w = this.jendela(hari, this.d.gempa.filter(g => g.mmi_maks > 0)), A = this.d.gempa.filter(g => g.mmi_maks > 0 && g.t >= w.mulai), ctl = this.seg("dirasakan", [["7", "7 hari"], ["30", "30 hari"]]);
     if (!A.length) return Kartu.kartu(this.LABEL.dirasakan, `Tidak ada gempa yang dirasakan warga ${w.teks}`, "", "BMKG", ctl);
     const K = this.kelompok(A), P = Object.entries(K).sort((a, b) => b[1].mmi - a[1].mmi || b[1].n - a[1].n), np = P.filter(([k]) => k !== "-").length;
     const top = [...A].sort((a, b) => b.mmi_maks - a.mmi_maks || b.m - a.m)[0], rom = v => ROMAWI[Math.min(12, Math.max(1, Math.round(v)))];
     const rows = P.slice(0, 12).map(([k, o]) => ({nama: this.nmU(k), v: o.n, warna: KG.TANAH, pil: [["MMI " + rom(o.mmi), MMI_WARNA[Math.round(o.mmi)] || MMI_WARNA[1], o.mmi <= 3 ? "#3b3320" : "#fff"]],
       tip: `<b>${this.nmU(k)}</b><br>Gempa dirasakan: ${fmt(o.n)}<br>Terkuat: MMI ${rom(o.mmi)}`}));
-    const judul = `${KG.awal(A.length, "gempa")} dirasakan warga${np ? ` di ${Kartu.hl(fmt(np) + " provinsi")}` : ""} ${w.teks}, terkuat MMI ${Kartu.hl(rom(top.mmi_maks))} di ${esc(wilayahPendek(top.wilayah))}`;
+    const judul = `${KG.awal(A.length, "gempa")} dirasakan warga${np ? ` di ${Kartu.hl(fmt(np) + " provinsi")}` : ""} ${w.teks}, terkuat MMI ${Kartu.hl(rom(top.mmi_maks))} di <span translate="no">${esc(wilayahPendek(top.wilayah))}</span>`;
     return Kartu.kartu(this.LABEL.dirasakan, judul, KG.mendatar(rows, {akhir: 150}), "BMKG", ctl); },
 
   /* 3. provinsi paling sering diguncang: gempa M 5+ menurut kelas, sejak 2000 atau 1900 (USGS) */
@@ -82,11 +83,11 @@ const Insight = {
   /* 5. status tsunami resmi BMKG: ditampilkan apa adanya; "BMKG tidak menyebut tsunami" BUKAN "aman" */
   exTsunami() {
     if (!this.hidupAda(this.d)) return "";
-    const w = this.jendela(30), B = this.d.gempa.filter(g => g.t >= w.mulai && g.sumber !== "usgs");
+    const w = this.jendela(30, this.d.gempa.filter(g => g.m >= 5 && g.sumber !== "usgs")), B = this.d.gempa.filter(g => g.t >= w.mulai && g.sumber !== "usgs");
     if (!B.length) return "";
     const ada = B.filter(g => (g.tsunami?.kode ?? 0) >= 1).sort((a, b) => b.t - a.t), tidak = B.filter(g => g.tsunami?.kode === 0), diam = B.filter(g => g.tsunami?.kode == null);
     const lv = [1, 2, 3].map(k => ada.filter(g => g.tsunami.kode === k).length);
-    const judul = ada.length ? `${KG.awal(ada.length, "gempa")} dinyatakan BMKG berpotensi tsunami ${w.teks}, terakhir di ${esc(wilayahPendek(ada[0].wilayah))} pada ${waktuGempa(ada[0].t)}`
+    const judul = ada.length ? `${KG.awal(ada.length, "gempa")} dinyatakan BMKG berpotensi tsunami ${w.teks}, terakhir di <span translate="no">${esc(wilayahPendek(ada[0].wilayah))}</span> pada ${waktuGempa(ada[0].t)}`
       : `Tidak ada gempa yang dinyatakan BMKG berpotensi tsunami ${w.teks}`;
     const M = innerWidth < 640, rows = [{nama: M ? "Berpotensi" : "Berpotensi tsunami", v: ada.length, warna: "#d64545", tip: `<b>Berpotensi tsunami</b><br>${[1, 2, 3].map(k => `${TSUNAMI[k][0]}: ${fmt(lv[k - 1])}`).join("<br>")}`},
       {nama: M ? "Tidak berpotensi" : "Tidak berpotensi tsunami", v: tidak.length, warna: "#9aa4b2", tip: `<b>Tidak berpotensi tsunami</b><br>Gempa: ${fmt(tidak.length)}`},

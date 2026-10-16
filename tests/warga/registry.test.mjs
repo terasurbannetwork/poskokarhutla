@@ -24,8 +24,8 @@ test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa: uji
   }
   // tahap buka bertahap: halaman bencana 'uji' sudah dilayani (jadi tidak 404); 'mati' (gempa) tetap 404
   for (const id of ["cuaca", "udara", "kekeringan", "gunungapi"]) assert.equal(cocok(HTML_RUTE, `/${id}/`)?.[1], `/${id}/index.html`, id);
-  // gempa tahap uji: halaman, tab (juga yang tersembunyi dari nav), dan kejadian G dilayani; mati = 404 lagi
-  for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
+  // gempa aktif: halaman, tab (juga yang tersembunyi dari nav), dan kejadian G dilayani; mati = 404 lagi
+  for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/posko", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
   assert.ok(!cocok(HTML_RUTE, "/gempa/k/K0001"), "kejadian karhutla bukan di gempa");
   const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
   for (const j of ["/gempa", "/gempa/", "/gempa/peta"]) assert.ok(!cocok(ruteBencana(MATI), j), `gempa mati harus 404: ${j}`);
@@ -46,9 +46,9 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
 
 test("statistik dan sumber status mengikuti registry", () => {
   assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
-  // hanya "aktif" menentukan 503 /api/status (banjir aktif sejak 16 Okt); "uji" (gempa, cuaca, ...) dilaporkan terpisah
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "titik"]);
-  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas"]);
+  // hanya "aktif" menentukan 503 /api/status (banjir dan gempa aktif); "uji" (cuaca, ...) dilaporkan terpisah
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "gempa_terbaru", "titik"]);
+  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "gunungapi", "kekeringan", "kualitas"]);
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
   const M = salinan(); M.bencana.find(b => b.id === "gempa").status = "mati";
@@ -64,7 +64,7 @@ test("OG: tab, kejadian, dan halaman utama bencana baru dari registry", () => {
   assert.equal(metaRute(u("/uji1/k/X0001"), M, B).url, S + "/uji1/k/X0001");
   assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Pantau Bencana Karhutla");
   assert.equal(metaRute(u("/uji1/tren"), M), null, "registry asli tidak mengenalnya");
-  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Pantau Bencana Gempa & Tsunami", "gempa (uji) punya OG");
+  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Pantau Bencana Gempa & Tsunami", "gempa (aktif) punya OG");
   const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
   assert.equal(metaRute(u("/gempa/peta"), M, MATI), null, "gempa mati tidak punya OG");
 });
@@ -74,7 +74,8 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
   for (const j of ["/", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/gempa/", "/cuaca/", "/banjir/posko", "/banjir/metode"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
+  for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
+  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/", "/udara/", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/sim", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
   assert.ok(!x.includes("terasurban"));
   const B = salinan(); B.bencana.push(baru);
@@ -86,5 +87,4 @@ test("robots.txt dan llms.txt ada, robots menunjuk sitemap", () => {
   assert.match(readFileSync(path.join(AKAR, "public/robots.txt"), "utf8"), /^Sitemap: https:\/\/\S+\/sitemap\.xml$/m);
   const l = readFileSync(path.join(AKAR, "public/llms.txt"), "utf8");
   for (const b of REG.bencana.filter(b => b.status === "aktif")) assert.ok(l.includes(b.rute === "/" ? "Karhutla" : b.rute), b.id);
-  assert.ok(!/\/gempa\//.test(l));
 });

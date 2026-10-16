@@ -6,12 +6,15 @@
   const API = "/api/foto", JAM = 36e5, BEN = window.FOTO_BENCANA || "karhutla";   // halaman bencana lain (mis. /banjir/foto.js) menyetel window.FOTO_BENCANA sebelum memuat berkas ini; tanpa itu = karhutla
   let NAMA_BEN = BEN;
   const KAT_AWAL = {karhutla: {api: ["Api", "#d9603b"], asap: ["Asap", "#6b7489"], padam: ["Pemadaman", "#2f7fb8"], dampak: ["Dampak", "#c49a1c"], lainnya: ["Lainnya", "#3d9461"]},
-    banjir: {genangan: ["Genangan", "#3f7fb8"], arus: ["Arus", "#2b8c86"], longsor: ["Longsor", "#9a7448"], rob: ["Rob", "#5f6fb0"], evakuasi: ["Evakuasi", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]}};
-  const KAT = KAT_AWAL[BEN] || KAT_AWAL.karhutla;
-  const CONTOH_KET = {karhutla: "Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi", banjir: "Apa yang terlihat? Mis. air setinggi lutut di jalan utama, arus deras di sungai"};
+    banjir: {genangan: ["Genangan", "#3f7fb8"], arus: ["Arus", "#2b8c86"], longsor: ["Longsor", "#9a7448"], rob: ["Rob", "#5f6fb0"], evakuasi: ["Evakuasi", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]},
+    gempa: {guncangan: ["Kerusakan bangunan", "#c9503a"], retakan: ["Retakan tanah", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], tsunami: ["Genangan tsunami", "#3f7fb8"], lainnya: ["Lainnya", "#3d9461"]}};
+  /* bencana tanpa entri di atas: kategori dari registry (diisi saat bencana.json termuat), warna dari palet ini; ikon jatuh ke "lainnya" */
+  const PALET = ["#c9503a", "#3f7fb8", "#e58a45", "#9a7448", "#2b8c86", "#5f6fb0"];
+  const KAT = KAT_AWAL[BEN] || (BEN === "karhutla" ? KAT_AWAL.karhutla : {lainnya: ["Lainnya", "#3d9461"]});
+  const CONTOH_KET = {karhutla: "Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi", banjir: "Apa yang terlihat? Mis. air setinggi lutut di jalan utama, arus deras di sungai", gempa: "Apa yang terlihat? Mis. dinding retak, atap runtuh, warga mengungsi"};
   /* nama bencana dan nama kategori dari registry (public/bencana.json: nama, foto_kategori); warna dan ikon tetap milik galeri ini. Gagal dimuat = nilai di atas. */
   fetch("/bencana.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { const b = j?.bencana?.find(x => x.id === BEN); if (!b) return;
-    NAMA_BEN = b.nama.toLowerCase(); for (const [k, n] of b.foto_kategori || []) if (KAT[k]) KAT[k][0] = n; });
+    NAMA_BEN = b.nama.toLowerCase(); let i = 0; for (const [k, n] of b.foto_kategori || []) if (KAT[k]) KAT[k][0] = n; else KAT[k] = [n, PALET[i++ % PALET.length]]; });
   const TINGKAT = [["prov", "Provinsi"], ["kab", "Kab/Kota"], ["kec", "Kecamatan"]];
   const bacaL = (k, d) => { try { return localStorage.getItem(k) ?? d; } catch (e) { return d; } };
   const tulisL = (k, v) => { try { localStorage.setItem(k, v); } catch (e) {} };
@@ -25,7 +28,9 @@
   const cap = (wil, l, t) => `<div class="fl-cap"><span><b>${wil ? `Kec. ${esc(wil.kec)}` : "Lokasi"}</b>${wil ? `<small>${esc(wil.kab)}, ${esc(namaProv(wil.prov))}</small>` : ""}<small>${l ? koord(l) : ""}</small><small>${esc(t || "")}</small></span></div>`;
   /* ikon kategori (pemilik, 15 Okt 2026) */
   const IKAT = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z"/>', asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
-    padam: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', dampak: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>', lainnya: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>',
+    padam: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', dampak: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>', guncangan: '<path d="M4 20V9l5-4 5 4v11M14 12h6v8M7 20v-5h4v5M9 3l1 3-2 2"/>', retakan: '<path d="M3 8h6l2 3-2 3 3 3-1 4M15 3l-1 4 3 2-2 3h6"/>',
+    pengungsian: '<path d="M3 20 12 5l9 15zM12 20v-6l-3 6M12 14l3 6"/>', tsunami: '<path d="M2 16c2 0 2-1.5 4-1.5S8 16 10 16s2-1.5 4-1.5S16 16 18 16s2-1.5 4-1.5M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5S16 20 18 20s2-1.5 4-1.5M4 12c3-1 5-4 6-8 3 2 5 5 5 8"/>',
+    lainnya: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>',
     genangan: '<path d="M2 16c2 0 2-1.5 4-1.5S8 16 10 16s2-1.5 4-1.5S16 16 18 16s2-1.5 4-1.5M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5S16 20 18 20s2-1.5 4-1.5M12 3c2 3 4 5 4 8a4 4 0 0 1-8 0c0-3 2-5 4-8z"/>',
     arus: '<path d="M3 8h11a3 3 0 1 0-3-3M3 13h15a3 3 0 1 1-3 3M3 18h7"/>', longsor: '<path d="M3 20 9 8l4 6 3-4 5 10zM14 4l2 2"/>',
     rob: '<path d="M2 15c2 0 2-1.5 4-1.5S8 15 10 15s2-1.5 4-1.5S16 15 18 15s2-1.5 4-1.5M2 19c2 0 2-1.5 4-1.5S8 19 10 19s2-1.5 4-1.5S16 19 18 19M12 3v6M9 6l3-3 3 3"/>', evakuasi: '<circle cx="12" cy="5" r="2"/><path d="M12 8v6l-3 5M12 14l3 5M8 11h8"/>'};

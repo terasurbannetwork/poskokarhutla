@@ -23,6 +23,7 @@ $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"
   if (b.dataset.k) return turun(b.dataset.k);
   const g = S.gempa.find(x => x.id === b.dataset.g); if (g) Peta.pilih(g); });
 
+addEventListener("bahasa", () => { if (S.gempa) { renderDaftar(); renderPita(); } });   /* teks wilayah mengikuti bahasa (wilayahPendek) */
 pasangTip(); /* tooltip [data-tip] bersama (inti/tip.js) */
 PilihCantik.pasang();
 
