@@ -65,13 +65,13 @@
         p10 && `PM10 hingga <b>${fmt(p10)} µg/m³</b> di ${fmt(h.pm10Kab.length)} kabupaten, antara lain ${kabAsap(h.pm10Kab)}`].filter(Boolean).join("<br>")),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("api")}Situasi karhutla hari ini</span>
-        <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik api terdeteksi, ${arah}</h3>
+        <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik panas terdeteksi, ${arah}</h3>
         <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} kompleks baru · 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span></div>
 </div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
       ${h.provAwas.length ? sek("Provinsi perlu perhatian", `<div class="sp-ps sp-panel">${h.provAwas.map(o => { const d = o.ini - o.kmrn;
-        return `<div class="sp-pv"><b>${esc(namaProv(o.k))}</b><div class="sp-chips"><em class="sp-p oranye">${ik("api")}${fmt(o.ini)} titik api${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}</em>${o.baru ? `<em class="sp-p prov">${fmt(o.baru)} kompleks baru</em>` : ""}${o.lama ? `<em class="sp-p merah">${ik("jam")}${fmt(o.lama)} bertahan &gt; 2 hari</em>` : ""}${o.gambut ? `<em class="sp-p gambut">${ik("daun")}${fmt(o.gambut)} di gambut</em>` : ""}</div></div>`; }).join("")}</div>`) : ""}
+        return `<div class="sp-pv"><b>${esc(namaProv(o.k))}</b><div class="sp-chips"><em class="sp-p oranye">${ik("api")}${fmt(o.ini)} titik panas${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}</em>${o.baru ? `<em class="sp-p prov">${fmt(o.baru)} kompleks baru</em>` : ""}${o.lama ? `<em class="sp-p merah">${ik("jam")}${fmt(o.lama)} bertahan &gt; 2 hari</em>` : ""}${o.gambut ? `<em class="sp-p gambut">${ik("daun")}${fmt(o.gambut)} di gambut</em>` : ""}</div></div>`; }).join("")}</div>`) : ""}
       ${kab.length ? sek("Kompleks baru terbanyak", `<div class="sp-bs sp-panel">${bar}</div>`) : ""}
       ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel">${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
       ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel">${awas}</div>`) : ""}

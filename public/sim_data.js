@@ -1,6 +1,6 @@
 /* sim_data.js — pilihan "Model data (dilatih)" di tab Simulasi, di samping model fisika.
    Tambalan seperti sim_perlakuan.js: membungkus Sim.panel / Sim.jalan / Sim.pasangLapis, tidak mengubah mesin fisika.
-   Saat dicentang: setelah skenario fisika selesai, jalankan SebaranModel.ramal() (sebaran_model.js) dari titik api 24 jam
+   Saat dicentang: setelah skenario fisika selesai, jalankan SebaranModel.ramal() (sebaran_model.js) dari titik panas 24 jam
    kompleks, gambar peluang 72 jam di peta Sim (lapisan "sim-data") dan tambah kartu ringkasan di hasil. */
 (() => {
 if (typeof Sim === "undefined" || typeof SebaranModel === "undefined") return;
@@ -25,7 +25,7 @@ const SimData = window.SimData = {
     } catch (e) { console.error(e); this.hasil = null; if (st) st.textContent += " · model data gagal: " + e.message; }
   },
   /* deteksi S-NPP/NOAA-20 7 hari (hotspot.json) untuk model "akan membesar"; titik kompleks ini sendiri (<= 750 m dari sel awal)
-     dibuang karena model dilatih pada titik api BARU yang belum punya riwayat di tempatnya */
+     dibuang karena model dilatih pada titik panas BARU yang belum punya riwayat di tempatnya */
   async titik(sel0) {
     try {
       let rows = typeof S !== "undefined" && S.titikPenuh ? S.titik : null, acuan = typeof S !== "undefined" ? S.acuan : null;
@@ -51,7 +51,7 @@ const SimData = window.SimData = {
     const mata = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
     const ha = fmt((this.model.lepas_sel || 10) * 14), L = this.model.lolos, K = L?.kinerja || {};
     const membesar = r.sudah_besar ? `Sudah ≥ ${ha} ha (≥ ${this.model.lepas_sel || 10} sel aktif 24 jam): perlakukan sebagai kebakaran besar.`
-      : r.lolos ? `${r.lolos.waspada ? `<b style="display:inline-block;padding:1px 8px;border-radius:6px;background:var(--bad);color:#fff">WASPADA: berpotensi membesar</b> ` : ""}Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik api baru, terkalibrasi).
+      : r.lolos ? `${r.lolos.waspada ? `<b style="display:inline-block;padding:1px 8px;border-radius:6px;background:var(--bad);color:#fff">WASPADA: berpotensi membesar</b> ` : ""}Peluang membesar ≥ ${ha} ha dalam 72 jam: <b>${fmt(Math.round(r.lolos.p * 100))}%</b> (model khusus titik panas baru, terkalibrasi).
         Tanda WASPADA dipasang mulai ${fmt(Math.round(r.lolos.ambang * 1000) / 10)}% agar sedikitnya 7 dari 10 api yang benar-benar membesar tertangkap${K.uji2_presisi != null ? `; akibatnya hanya ± ${fmt(Math.round(K.uji2_presisi * 100))}% tanda yang benar-benar membesar (uji 2024–2026: ${fmt(Math.round(K.uji2_recall * 100))}% api besar tertangkap)` : ""}. Model ini untuk api yang baru muncul; kompleks yang sudah lama menyala bisa dinilai terlalu rendah.`
       : `Peluang membesar ≥ ${ha} ha: ${fmt(Math.round(r.p_lepas * 100))}% (dari Monte Carlo; data titik sekitar tidak termuat, model khusus tidak dijalankan).`;
     return `<div class="sop" style="margin:0 0 12px;border-left:4px solid #5f6fb0"><b>Perkiraan utama: model data (dilatih dari 12 musim VIIRS, diuji pada 2024–2026 dan 123 kejadian lalu).</b> Luas 24/48/72 jam, median (rentang 80%${this.model.selang ? ", dikalibrasi pada 2015–2023" : ""}): ${r.luas.map(x => `${fmt(Math.round(x.p50))} ha (${fmt(Math.round(x.p10))}–${fmt(Math.round(x.p90))})`).join(" · ")}.

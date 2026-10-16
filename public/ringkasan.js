@@ -352,8 +352,8 @@ const Ringkasan = (() => {
       return [
         kp("sensor", "Titik panas 24 jam", fmt(K.h24), "", "satelit", `${SUMBER.titik}; 24 jam s.d. ${jamWIB(D.asOf)}; normal = median VIIRS 2015–2025`, [K.rasio != null ? `${desimal(K.rasio)}× normal` : "", dk != null ? `${ubahKata(dk)} kemarin` : ""].filter(Boolean).join(" · "), spark),
         kp("kelompok", "Kompleks prioritas", fmt(K.k3), "", "satelit", SUMBER.kompleks, `front membesar di ${fmt(K.naik)}, mengecil di ${fmt(K.turun)}`, split),
-        kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; 9 provinsi prioritas; seluruh Indonesia ${rb(K.jiwaNas)}`,
-          D.adaAsap ? `9 provinsi prioritas${jb != null ? ` · besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),
+        kp("awan", "Terpapar asap karhutla", D.adaAsap ? rb(K.jiwaPrio) : "–", D.adaAsap ? "jiwa" : "", "model", `${SUMBER.asap}; provinsi yang sering mengalami karhutla; seluruh Indonesia ${rb(K.jiwaNas)}`,
+          D.adaAsap ? `provinsi yang sering mengalami karhutla${jb != null ? ` · besok ${Math.abs(jb) < .005 ? "tetap" : (jb > 0 ? "naik " : "turun ") + pct(Math.abs(jb))}` : ""}` : "data asap belum tersedia", asap),
         kp("grafik", "Luas terbakar musim ini", L ? rb(L[1]) : "–", L ? "ha" : "", "model", SUMBER.luas, L ? `${rb(L[0])}–${rb(L[2])} ha${K.luasNormal ? ` · ${desimal(L[1] / K.luasNormal)}× median tahunan` : ""}` : "", rng),
       ].join("");
     },
@@ -383,7 +383,7 @@ const Ringkasan = (() => {
       const judul = D.adaAsap && pr.length ? `Asap tidak sehat paling luas di ${daftar(pr.slice(0, 2).map(x => namaProv(x.k)))}` : `Kompleks prioritas terbanyak di ${namaProv(banyak.k)}`;
       const tg = (D.dp?.udara?.tetangga || []).filter(c => c.karhutla && Math.max(...c.pm) > 55.4);
       return `<header class="rk-sh"><h2 id="rkPetaJ">${esc(judul)}</h2><p>${fmt(ks.length)} kompleks prioritas; warna provinsi = penduduk yang menghirup udara tidak sehat akibat asap karhutla</p></header>
-        <div class="rk-kartu-p"><div class="rk-peta" id="rkPeta" role="img" aria-label="Peta Indonesia: ${fmt(ks.length)} kompleks prioritas; provinsi prioritas diwarnai jumlah penduduk terpapar asap karhutla${tg.length ? "; asap mencapai " + esc(tg.map(c => c.nama).join(", ")) : ""}"></div>
+        <div class="rk-kartu-p"><div class="rk-peta" id="rkPeta" role="img" aria-label="Peta Indonesia: ${fmt(ks.length)} kompleks prioritas; provinsi yang sering mengalami karhutla diwarnai jumlah penduduk terpapar asap karhutla${tg.length ? "; asap mencapai " + esc(tg.map(c => c.nama).join(", ")) : ""}"></div>
         <div class="rk-pleg"><span class="rk-ramp">Terpapar asap ${tag("model")}${["10 rb", "500 rb", "2 jt", "5 jt"].map((t, i) => `<i style="--c:${this.RAMP[i]}"></i>${t}`).join("")}</span>
           <span><i class="o"></i>kompleks prioritas, besar = front aktif ${tag("satelit")}</span>${tg.length ? `<span><i class="q"></i>kota tetangga berasap</span>` : ""}</div>
         <p class="rk-top"><span>Terbesar</span> ${ks.slice(0, 5).map(p => `<button class="rk-lnk" data-kom="${esc(p.id)}">${esc(p.id)} ${esc(p.kab)}</button>`).join(" ")}</p></div>`;
@@ -424,7 +424,7 @@ const Ringkasan = (() => {
       const H = D.ansHari, bar = (p, c) => `<span class="rk-bar ${c}" style="--p:${Math.round((p || 0) * 100)}%"><i></i><b>${pct(p)}</b></span>`;
       const rows = PRIO.map(k => D.P[k]).sort((a, b) => (b.pE || 0) - (a.pE || 0)), besar = rows.filter(x => x.pE >= .5);
       const tg = (D.dp?.udara?.tetangga || []).filter(c => c.karhutla && Math.max(...c.pm.slice(0, 3)) > 55.4);
-      return `<header class="rk-sh"><h2 id="rk72J">${besar.length ? `Cuaca sangat berbahaya berpeluang besar di ${esc(daftar(besar.map(x => namaProv(x.k))))}` : "Tidak ada provinsi prioritas dengan peluang cuaca sangat berbahaya ≥ 50%"}</h2>
+      return `<header class="rk-sh"><h2 id="rk72J">${besar.length ? `Cuaca sangat berbahaya berpeluang besar di ${esc(daftar(besar.map(x => namaProv(x.k))))}` : "Tidak ada provinsi yang sering mengalami karhutla dengan peluang cuaca sangat berbahaya ≥ 50%"}</h2>
           <p>Prakiraan 72 jam${H.length ? `, ${hariN(H[0])}–${hariN(H.at(-1))}` : ""}; peluang dari 51 skenario cuaca ECMWF ${tag("model")}</p></header>
         <div class="rk-kartu-p"><div class="rk-tw"><table class="rk-t"><thead><tr><th>Provinsi</th><th>Cuaca sangat berbahaya</th><th>Hujan ≥ 5 mm</th><th class="n">Terpapar asap, hari ini → hari ke-4</th></tr></thead><tbody>
         ${rows.map(x => { const v = (D.dp?.udara?.prov?.[x.k]?.jiwa || []).map(a => a[2] + a[3] + a[4]), a0 = v[0] || 0, akhir = v.at(-1) ?? 0;
@@ -438,7 +438,7 @@ const Ringkasan = (() => {
         const celah = [kr > 0 ? `kurang ${fmt(kr)} regu` : "", hk > 0 ? `kurang ${fmt(hk)} heli` : ""].filter(Boolean), belum = [kr == null && a.reguButuh > a.reguMA ? "personel gabungan" : "", a.wb == null && a.heliButuh ? "heli" : ""].filter(Boolean);
         return {a, ada, celah, belum}; });
       const nk = R.filter(r => r.celah.length).length, nb = R.filter(r => !r.celah.length && r.belum.length).length;
-      const judul = nk ? `Regu atau heli kurang di ${kata(nk).toLowerCase()} dari ${fmt(R.length)} provinsi prioritas` : `Tidak ada kekurangan yang terlapor di ${fmt(R.length)} provinsi prioritas`;
+      const judul = nk ? `Regu atau heli kurang di ${kata(nk).toLowerCase()} dari ${fmt(R.length)} provinsi yang sering mengalami karhutla` : `Tidak ada kekurangan yang terlapor di ${fmt(R.length)} provinsi yang sering mengalami karhutla`;
       return `<header class="rk-sh"><h2 id="rkAkJ">${judul}</h2><p>Kebutuhan ${tag("model")} menurut aturan tab Posko; yang ada ${tag("resmi")} dari laporan BNPB dan SiPongi${nb ? `; ${fmt(nb)} provinsi belum melaporkan sebagian sumber daya` : ""}</p></header>
         <div class="rk-kartu-p"><div class="rk-tw"><table class="rk-t rk-akun"><thead><tr><th>Provinsi</th><th>Dansatgas</th><th class="n">Regu perlu / ada</th><th class="n">Heli perlu / ada</th><th>Celah</th></tr></thead><tbody>
         ${R.map(({a, ada, celah, belum}) => `<tr><td><button class="link" data-rk-prov="${a.k}">${esc(namaProv(a.k))}</button> ${lencana(a.x.lv)}</td>
@@ -488,7 +488,7 @@ const Ringkasan = (() => {
       const kering = PRIO.filter(k => D.P[k].pE >= .5).map(namaProv);
       return [
         per ? `Pemerintah mengerahkan ${fmt(per)} personel gabungan (TNI, Polri, BPBD, Manggala Agni, Masyarakat Peduli Api, dan regu perusahaan) serta ${fmt(udara)} unit pesawat dan helikopter di ${fmt(rows.length)} provinsi pantauan BNPB.` : "",
-        `Pemadaman diprioritaskan pada ${fmt(D.kpi.k3)} kompleks api terbesar yang dipantau satelit setiap 3 jam; daftar dan lokasinya terbuka di Posko Karhutla.`,
+        `Pemadaman diprioritaskan pada ${fmt(D.kpi.k3)} kompleks api terbesar yang dipantau satelit setiap 3 jam; daftar dan lokasinya terbuka di Pantau Bencana.`,
         kota.length ? `Warga ${daftar(kota.map(esc))} diimbau memakai masker N95, mengurangi kegiatan di luar ruang, dan melindungi anak, lansia, ibu hamil, serta penderita penyakit paru. Keadaan darurat: hubungi 112.` : "Warga di wilayah berasap diimbau memakai masker N95 dan mengurangi kegiatan di luar ruang. Keadaan darurat: hubungi 112.",
         kering.length ? `Cuaca 3 hari ke depan sangat mendukung api di ${daftar(kering.map(esc))}; masyarakat diminta tidak membakar dalam bentuk apa pun.` : "",
         "Membuka lahan dengan membakar dilarang (UU 32/2009 Pasal 69; UU 39/2014 Pasal 56) dan pelakunya diproses hukum.",
@@ -532,8 +532,8 @@ const Ringkasan = (() => {
         <div class="lbl">Kartu keputusan</div><ol class="rk-li"><li>Presiden: bila tingkat nasional darurat.</li><li>Gubernur, status tanggap darurat: provinsi darurat dengan kompleks prioritas terbanyak.</li>
           <li>Kepala BNPB, helikopter: provinsi dengan kompleks prioritas terbanyak yang tidak terjangkau regu darat ≤ ${ATURAN.jamTiba} jam; 1 heli per ${fmt(ASUMSI.heliJamHari / (Kp.d?.param?.jam_heli_per_api?.[0] ?? 3))} kompleks (${ASUMSI.heliJamHari} jam terbang/hari ÷ ${fmt(Kp.d?.param?.jam_heli_per_api?.[0] ?? 3)} jam per api), dikurangi heli yang dilaporkan BNPB.</li>
           <li>Panglima TNI & Kapolri, regu: kompleks prioritas terjangkau dengan selisih terbesar antara regu perlu (keliling front ÷ ${fmt(ATURAN.garisRegu)} km/regu/hari ÷ ${ATURAN.hariKurung} hari) dan regu yang tiba ≤ ${ATURAN.jamTiba} jam; tampil bila selisih ≥ 3.</li>
-          <li>Kepala BNPB, modifikasi cuaca: provinsi prioritas dengan peluang FWI ≥ 14 ≥ 50%, ≥ 5 kompleks prioritas, dan DC ≥ 350 (gambut kering).</li>
-          <li>Gubernur, kesehatan: provinsi prioritas dengan ≥ 100 ribu jiwa sangat tidak sehat atau ≥ 1 juta jiwa tidak sehat.</li><li>Kapolri & Menteri LH: konsesi yang memuat ≥ 3 kompleks prioritas.</li></ol>
+          <li>Kepala BNPB, modifikasi cuaca: provinsi yang sering mengalami karhutla dengan peluang FWI ≥ 14 ≥ 50%, ≥ 5 kompleks prioritas, dan DC ≥ 350 (gambut kering).</li>
+          <li>Gubernur, kesehatan: provinsi yang sering mengalami karhutla dengan ≥ 100 ribu jiwa sangat tidak sehat atau ≥ 1 juta jiwa tidak sehat.</li><li>Kapolri & Menteri LH: konsesi yang memuat ≥ 3 kompleks prioritas.</li></ol>
         <p class="fnd">Maksimal 5 kartu, maksimal 2 per jenis, diurutkan menurut bobot tetap (Presiden > status > heli > regu > kesehatan > modifikasi cuaca > hukum). Keyakinan: Tinggi bila ≥ 3 sumber independen saling menguatkan, Sedang 2, Rendah 1; turun satu tingkat bila data kompleks lebih tua dari 26 jam.</p>
         ${this.tabelTingkat(this.D, 1)}`);
       this.ikatDlg();
@@ -563,7 +563,7 @@ const Ringkasan = (() => {
           <tr><td>Titik panas 24 jam (satelit)</td><td>${fmt(K.h24)}; ${K.hKmr ? (K.h24 >= K.hKmr ? "naik " : "turun ") + fmt(Math.abs(Math.round((K.h24 / K.hKmr - 1) * 100))) + "% dari kemarin" : ""}${K.rasio != null ? `; ${fmt(Math.round(K.rasio * 10) / 10)} kali normal` : ""}</td></tr>
           <tr><td>Kompleks api prioritas (satelit)</td><td>${fmt(K.k3)}; front membesar di ${fmt(K.naik)} kompleks; ditambah ${fmt(K.k2)} kompleks siaga</td></tr>
           <tr><td>Provinsi siaga dan darurat (model)</td><td>${fmt(D.nD)} darurat, ${fmt(D.nS)} siaga, ${fmt(D.nW)} waspada</td></tr>
-          <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${rb(K.jiwaPrio)} jiwa menghirup udara tidak sehat di 9 provinsi prioritas (${rb(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
+          <tr><td>Penduduk terpapar asap karhutla (model)</td><td>${D.adaAsap ? `${rb(K.jiwaPrio)} jiwa menghirup udara tidak sehat di provinsi yang sering mengalami karhutla (${rb(K.jiwaNas)} seluruh Indonesia)` : "data belum tersedia"}</td></tr>
           <tr><td>Luas terbakar sejak 1 Juni</td><td>perkiraan satelit ${K.luas ? `${rb(K.luas[1])} ha (rentang ${rb(K.luas[0])}–${rb(K.luas[2])} ha)` : "–"}; angka resmi indikatif BNPB ${K.bnpbHa != null ? rb(K.bnpbHa) + " ha (6 provinsi)" : "–"}</td></tr>
           <tr><td>Gangguan penerbangan 7 hari (berita)</td><td>${fmt(K.kj7.length)} kejadian di ${fmt(K.bandara7)} bandara</td></tr></tbody></table>
         <h2>II. Keputusan yang dibutuhkan hari ini</h2><ol class="rk-ckp">${kp}</ol>

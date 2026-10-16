@@ -76,10 +76,10 @@ body:has(#p-peta.on) .ps-fab{right:62px;bottom:44px} /* kiri tombol zoom peta (p
         <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Chat Admin</h2><p class="ps-hp2">Tim Pantau Bencana membaca setiap pesan dan membalas lewat email.</p></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="ps-bd">
         <div class="ps-kat" role="radiogroup" aria-label="Topik pesan"><span class="ps-l">Topik</span><div>${KAT.map(([k, n], i) => `<label class="ps-chip"><input type="radio" name="kategori" value="${k}" ${i ? "" : "checked"}><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_KAT[k]}</svg>${n}</span></label>`).join("")}</div></div>
-        <div class="ps-2"><label><span class="ps-l">Nama <small>opsional</small></span><input name="nama" maxlength="100" autocomplete="name" placeholder="Nama Anda"></label>
+        <div class="ps-2"><label><span class="ps-l">Nama <small>opsional</small></span><input name="nama" maxlength="100" autocomplete="name" placeholder="Nama kamu"></label>
         <label><span class="ps-l">Instansi <small>opsional</small></span><input name="instansi" maxlength="150" autocomplete="organization" placeholder="Organisasi / media"></label></div>
         <label><span class="ps-l">Email</span><input name="email" type="email" maxlength="254" required autocomplete="email" inputmode="email" placeholder="nama@contoh.com"></label>
-        <label><span class="ps-l">Pesan <small>10–2000 karakter</small></span><textarea name="pesan" minlength="10" maxlength="2000" required placeholder="Tulis pesan, koreksi data, atau pertanyaan Anda…"></textarea></label>
+        <label><span class="ps-l">Pesan <small>10–2000 karakter</small></span><textarea name="pesan" minlength="10" maxlength="2000" required placeholder="Tulis pesan, koreksi data, atau pertanyaan kamu…"></textarea></label>
         <label class="ps-cek"><input type="checkbox" name="sertakan" checked> <span>Sertakan tautan tampilan yang sedang saya buka</span></label>
         <label class="ps-hp" aria-hidden="true">Situs<input name="situs" tabindex="-1" autocomplete="off"></label>
         <div id="psTs"></div>
@@ -111,7 +111,7 @@ body:has(#p-peta.on) .ps-fab{right:62px;bottom:44px} /* kiri tombol zoom peta (p
       if (!r.ok) throw new Error((await r.json().catch(() => ({}))).galat || "Gagal mengirim (" + r.status + ")");
       window.Jejak?.catat("pesan_kirim", o.kategori);
       f.reset(); dlg.close();
-      (typeof toast === "function" ? toast : alert)("Terima kasih, pesan Anda sudah terkirim. Kami akan membalas lewat email.");
+      (typeof toast === "function" ? toast : alert)("Terima kasih, pesan kamu sudah terkirim. Kami akan membalas lewat email.");
     } catch (err) { g.textContent = err.message; if (ts != null) turnstile.reset(ts); }
     finally { b.disabled = false; b.textContent = "Kirim"; }
   }

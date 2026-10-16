@@ -186,7 +186,7 @@ const Cerita = {
 
   /* ---------- model sebaran: belum dibuka ---------- */
   model() {
-    return this.bab("Model sebaran", "model", "Simulasi sebaran dari titik api pilihan Anda",
+    return this.bab("Model sebaran", "model", "Simulasi sebaran dari titik panas pilihan kamu",
       `<div class="ct-soon"><span class="ct-badge">Coming soon</span><p>Pilih satu titik di peta, lalu model memperkirakan ke arah mana api menyebar dan berapa hektare yang terbakar dalam 72 jam.</p></div>`,
       {sumber: "model sebaran data 2015–2026"});
   },
@@ -305,7 +305,7 @@ const Cerita = {
   infoMusim() { /* kartu tanggal, label peta, daftar samping, keterangan; dipanggil tiap ganti hari */
     if (this.st.mode !== "nas") return;
     const d = this.st.hariMusim, e = this.el, o = $q("#ct-ovl", e);
-    if (o) { o.innerHTML = this.ovl("Sebaran titik api", `${hariKe(d)} <small>2026</small>`, `<b id="ct-cnt"></b> sel terbakar sejak ${hariKe(TL0)}`) + this.spark(d); this.hitung($q("#ct-cnt", e), this.nSel(d)); }
+    if (o) { o.innerHTML = this.ovl("Sebaran titik panas", `${hariKe(d)} <small>2026</small>`, `<b id="ct-cnt"></b> sel terbakar sejak ${hariKe(TL0)}`) + this.spark(d); this.hitung($q("#ct-cnt", e), this.nSel(d)); }
     const on = [];
     this.ev.forEach((x, i) => { const a = d - x.d, l = this.lb?.[i]; if (a >= 0 && (x.jenis === "besar" || a < 10)) on.push(i);
       if (l) { l.classList.toggle("on", a >= 0); l.classList.toggle("baru", a >= 0 && a < 10); } });

@@ -347,7 +347,7 @@
     async olah(f, kamera) {
       const b = this.k.batas || {}, video = f.type.startsWith("video/");
       if (video) {
-        if (f.size > (b.video || 31457280)) throw new Error(`Video ${(f.size / 1048576).toFixed(1)} MB, maksimal ${(b.video || 31457280) / 1048576} MB`);
+        if (f.size > (b.video || 31457280)) throw new Error(`Video ${(f.size / 1048576).toFixed(1).replace(".", ",")} MB, maksimal ${(b.video || 31457280) / 1048576} MB`);
         const v = await bingkaiVideo(f);
         if (v.durasi > (b.durasi || 60) + .5) { v.lepas(); throw new Error(`Video ${Math.round(v.durasi)} detik, maksimal ${b.durasi || 60} detik. Potong dulu videonya.`); }
         const o = {media: f, thumb: await kompres(v.bingkai, 480, .72), durasi: v.durasi, jenis: "video", exif: null, kamera, asli: f.size}; v.lepas(); o.prev = URL.createObjectURL(f); return o;
@@ -376,7 +376,7 @@
         ${this.daftar.length < MAKS_N ? `<label class="fl-th fl-tambah" aria-label="Tambah foto atau video">+<small>Tambah</small><input type="file" name="galeri" ${GAL} hidden></label>` : ""}<span class="fl-strip-n">${this.daftar.length} dari ${MAKS_N}</span></div>`);
       d.querySelector("[data-wkt]").textContent = x.exif?.waktu ? jamWIB(x.exif.waktu) : "Saat dikirim";
       const jadi = x.media.size;
-      d.querySelector("[data-uk]").textContent = (this.daftar.length > 1 ? `${this.daftar.length} berkas · ` : "") + (x.jenis === "video" ? `Video ${durasi(x.durasi)} · ${(jadi / 1048576).toFixed(1)} MB` : `${Math.round(jadi / 1024)} KB${x.asli > jadi * 1.2 ? ` (dari ${(x.asli / 1048576).toFixed(1)} MB)` : ""}`);
+      d.querySelector("[data-uk]").textContent = (this.daftar.length > 1 ? `${this.daftar.length} berkas · ` : "") + (x.jenis === "video" ? `Video ${durasi(x.durasi)} · ${(jadi / 1048576).toFixed(1).replace(".", ",")} MB` : `${Math.round(jadi / 1024)} KB${x.asli > jadi * 1.2 ? ` (dari ${(x.asli / 1048576).toFixed(1).replace(".", ",")} MB)` : ""}`);
       this.salahHapus("berkas");
     },
     klik(e, d) {

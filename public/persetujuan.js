@@ -51,8 +51,8 @@
   function spanduk() {
     if (kartu) return;
     D.body.insertAdjacentHTML("beforeend", `<section class="pv pv-kartu" role="region" aria-label="Persetujuan penyimpanan dan analitik">
-      <div class="pv-kepala">${KUE}Privasi Anda</div>
-      <p>Kami memakai penyimpanan lokal untuk mengingat preferensi Anda dan, bila Anda setuju, menghitung bagian situs mana yang dibaca. Hanya pihak pertama — tidak dijual atau dibagikan. <a href="${kebijakan}">Kebijakan privasi</a></p>
+      <div class="pv-kepala">${KUE}Privasi kamu</div>
+      <p>Kami memakai penyimpanan lokal untuk mengingat preferensi kamu dan, bila kamu setuju, menghitung bagian situs mana yang dibaca. Hanya pihak pertama: tidak dijual atau dibagikan. <a href="${kebijakan}">Kebijakan privasi</a></p>
       <div class="pv-aksi"><button class="pv-pri" data-pv="terima">Terima semua</button><button data-pv="tolak">Tolak non-esensial</button><button data-pv="atur">Atur</button></div></section>`);
     kartu = D.body.lastElementChild;
     kartu.addEventListener("click", e => { const b = e.target.closest("[data-pv]"); if (!b) return; const a = b.dataset.pv; if (a === "terima") simpan(true); else if (a === "tolak") simpan(false); else atur(); });
@@ -63,9 +63,9 @@
     if (!dlg) {
       D.body.insertAdjacentHTML("beforeend", `<dialog class="pv pv-dlg" aria-labelledby="pvJudul"><form method="dialog">
         <h2 id="pvJudul">Pengaturan privasi</h2>
-        <p class="kecil">Pilih apa yang boleh kami simpan di peramban ini. Anda bisa mengubahnya kapan saja lewat "Pengaturan privasi". <a href="${kebijakan}">Kebijakan privasi</a></p>
+        <p class="kecil">Pilih apa yang boleh kami simpan di peramban ini. Kamu bisa mengubahnya kapan saja lewat "Pengaturan privasi". <a href="${kebijakan}">Kebijakan privasi</a></p>
         <div class="pv-kat"><b>Esensial</b><small>Tema terang/gelap, preferensi tampilan, token laporan Lapor Warga, dan sesi admin. Selalu aktif karena situs membutuhkannya.</small><em>Selalu aktif</em></div>
-        <label class="pv-kat"><b>Analitik</b><small>Statistik penggunaan anonim (tab, wilayah, dan fitur yang dibuka) untuk memperbaiki situs. Tanpa cookie, tanpa IP, tanpa iklan.${dnt ? " Dimatikan karena peramban Anda mengirim Do Not Track / Global Privacy Control." : ""}</small><input type="checkbox" name="analitik" ${W.Persetujuan.analitik() ? "checked" : ""} ${dnt ? "disabled" : ""}></label>
+        <label class="pv-kat"><b>Analitik</b><small>Statistik penggunaan anonim (tab, wilayah, dan fitur yang dibuka) untuk memperbaiki situs. Tanpa cookie, tanpa IP, tanpa iklan.${dnt ? " Dimatikan karena peramban kamu mengirim Do Not Track / Global Privacy Control." : ""}</small><input type="checkbox" name="analitik" ${W.Persetujuan.analitik() ? "checked" : ""} ${dnt ? "disabled" : ""}></label>
         <div class="pv-aksi"><button class="pv-pri" value="terima" type="submit">Terima semua</button><button value="simpan" type="submit">Simpan pilihan</button><button value="batal" type="submit" formnovalidate>Batal</button></div>
       </form></dialog>`);
       dlg = D.body.lastElementChild;

@@ -2066,7 +2066,7 @@ const Lapis = {
           "icon-size": ["interpolate", ["linear"], ["get", "ws"], 0, .45, 10, .7, 25, 1.1]}, paint: {"icon-opacity": .85}}); },
       metar: async () => { const d = this.cache.metar ||= await muatJSON("data/metar.json");
         peta.addSource("metar", {type: "geojson", data: {type: "FeatureCollection", features: d.map(m => ({type: "Feature", geometry: {type: "Point", coordinates: [m.lon, m.lat]},
-          properties: {v: m.vis_m ?? 9999, lbl: `${m.icao} ${m.vis_m == null ? "?" : m.vis_m >= 9999 ? "≥10 km" : (m.vis_m / 1000).toFixed(1) + " km"}${m.asap ? " asap" : ""}`}}))}});
+          properties: {v: m.vis_m ?? 9999, lbl: `${m.icao} ${m.vis_m == null ? "?" : m.vis_m >= 9999 ? "≥10 km" : (m.vis_m / 1000).toFixed(1).replace(".", ",") + " km"}${m.asap ? " asap" : ""}`}}))}});
         peta.addLayer({id: "metar", type: "circle", source: "metar", paint: {"circle-radius": 7, "circle-color": ["step", ["get", "v"], "#c9503a", 1000, "#e58a45", 5000, "#e3b94e", 8000, "#5a9e74"], "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
         peta.addLayer({id: "metar-lbl", type: "symbol", source: "metar", layout: {"text-field": ["get", "lbl"], "text-size": 11, "text-offset": [0, 1.2], "text-anchor": "top", "text-font": ["Noto Sans Bold"]},
           paint: {"text-color": gelap() ? "#fff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#fff", "text-halo-width": 1.6}}); },
@@ -2255,7 +2255,7 @@ function renderKPI() {
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],
   ];
   const nrm = normalHarian(S.jalur[0]);
-  if (nrm && S.rentang === "kemarin") { const v = jml(S.snpp); kart[0][2] = `${(v / nrm).toFixed(1)}× normal harian ${BULAN[new Date().getMonth()]} (${S.sejarah.tahun[0]}–${S.sejarah.tahun[S.sejarah.tahun.length - 2]})`; }
+  if (nrm && S.rentang === "kemarin") { const v = jml(S.snpp); kart[0][2] = `${(v / nrm).toFixed(1).replace(".", ",")}× normal harian ${BULAN[new Date().getMonth()]} (${S.sejarah.tahun[0]}–${S.sejarah.tahun[S.sejarah.tahun.length - 2]})`; }
   $("#kpis").innerHTML = kart.map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("");
 }
 /* ---------- tren harian per wilayah: hari penuh terakhir (hari ini belum lengkap, tidak ikut) ---------- */
@@ -2319,9 +2319,9 @@ function renderDaftar() {
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
     const t = j.length === 0 ? trenProv(i.kunci) : null;
-    const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1)}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
+    const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
     return `<button class="tb${lv >= 2 ? " hl" + lv : ""}" style="${G}" role="listitem" data-k="${esc(i.kunci)}" ${j.length >= 2 ? "data-daun=1" : ""} title="${esc(judul)}">
-      <span class="rk">${n + 1}</span><span style="font-weight:600">${esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi prioritas"></i>' : ""}</span>
+      <span class="rk">${n + 1}</span><span style="font-weight:600">${esc(i.nama)}${j.length === 0 && prio.has(i.kunci) ? '<i class="prio" title="Provinsi yang sering mengalami karhutla"></i>' : ""}</span>
       <span class="n" style="font-weight:700">${fmt(i.v)}</span><span class="n">${kl.length ? fmt(kl.length) : "–"}</span>${selTren(i.kunci)}
       <span style="text-align:right">${lv >= 1 ? `<span class="pill l${lv}">${["Rutin", "Patroli", "Siaga", "Prioritas"][lv]}</span>` : ""}</span></button>`;
   }).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
@@ -2381,7 +2381,7 @@ function trenMini(k) { const t = trenProv(k); if (!t) return "";
   const n = t.v.length, W = 360, H = 92, B = 74, m = Math.max(...t.v, t.rata, rEN || 0), bw = W / n, Y = v => B - v / m * 58;
   const pendek = v => v >= 1e6 ? (v / 1e6).toFixed(1).replace(".", ",") + "jt" : v >= 1e3 ? Math.round(v / 1e3) + "rb" : String(v);
   const g = t.v.map((x, i) => { const h = Math.max(1, x / m * 58), ini = i === n - 1, atas = x > t.rata;
-    const tip = `<b>${t.th[i]}</b>${ini ? " (berjalan)" : ""}<br>${fmt(x)} titik panas<br>${t.rata ? (x / t.rata).toFixed(1) + "× rata-rata" : ""}`;
+    const tip = `<b>${t.th[i]}</b>${ini ? " (berjalan)" : ""}<br>${fmt(x)} titik panas<br>${t.rata ? (x / t.rata).toFixed(1).replace(".", ",") + "× rata-rata" : ""}`;
     return `<g class="tm-b" data-tip="${esc(tip)}"><rect x="${i * bw}" y="0" width="${bw}" height="${H}" fill="transparent"/>
       <rect x="${i * bw + 2}" y="${B - h}" width="${bw - 4}" height="${h}" rx="2.5" fill="${ini ? "#c9503a" : atas ? "#e58a45" : "#f3c79a"}"/>
       ${ini || atas || EN.has(String(t.th[i])) ? `<text x="${i * bw + bw / 2}" y="${B - h - 3}" text-anchor="middle" font-size="8.5" font-weight="700" fill="currentColor">${pendek(x)}</text>` : ""}
@@ -3688,7 +3688,7 @@ const Insight = {
     const satu = nProv === 1 ? namaProv(langganan[0].prov) : "", diMana = pp ? "di " + esc(namaProv(pp))
       : PP.length > 1 ? `di ${this.hl(PP.length + " provinsi pilihan")}${satu ? `, semuanya di ${esc(satu)},` : ""}` : satu ? "di " + esc(satu) : `di ${this.hl(nProv + " provinsi")}`;
     return this.ex(`${this.hl(langganan.length + " kecamatan")} ${diMana} mengalami karhutla hampir setiap tahun`,
-      `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "9 provinsi prioritas"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. ${PV ? "Klik baris untuk rencana pencegahan." : "Klik baris untuk analisa rinci."}`,
+      `Kecamatan dengan skor risiko riwayat tertinggi, ${pp ? esc(namaProv(pp)) : "provinsi yang sering mengalami karhutla"}`, `tiap kotak = satu tahun; makin merah makin banyak titik panas di kecamatan itu. ${PV ? "Klik baris untuk rencana pencegahan." : "Klik baris untuk analisa rinci."}`,
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:${760 + PV}px" role="img" aria-label="Kecamatan langganan api">${g}</svg></div>${PV ? Preventif.ringkasProv(pp) : ""}`,
       `Sumber: NASA FIRMS MODIS ${th[0]}–${th.at(-1)}.`,
       this.selProvMulti("kecProv") + this.seg("kecN", [[10, "Top 10"], [25, "Top 25"], [50, "Top 50"], [100, "Top 100"]]) + (PV ? Preventif.kontrol(this.st) : "")); },
@@ -5049,7 +5049,7 @@ function renderMetode() {
     <p><b>Kelipatan normal harian</b> (kartu titik panas, rentang "kemarin"): rata-rata titik VIIRS S-NPP keyakinan sedang/tinggi per hari pada bulan yang sama di tahun-tahun lalu (arsip <code>sejarah.json</code>, 2015 s.d. tahun lalu) = jumlah titik bulan itu ÷ jumlah tahun ÷ jumlah hari bulan itu. Pembandingnya hitungan S-NPP sedang/tinggi kemarin saja, supaya sebanding dengan arsip.</p>
     ${h("Validasi")}<p><b>Uji silang 11 Oktober 2026</b> terhadap dasbor BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>
     ${h("Yang mengubah hasil")}<p>Jam jalan: deteksi yang masuk FIRMS setelah 21.20 WIB baru terhitung di jalan berikutnya (sebagai "kemarin"). Perubahan daftar sensor di <code>SENSOR_UTAMA</code> mengubah angka resmi secara langsung.</p>`,
-    batas: ["Awan dan asap tebal menutupi api; tidak ada deteksi bukan berarti tidak ada api.", "Titik panas adalah anomali panas, bukan selalu kebakaran lahan. Di luar 9 provinsi prioritas banyak titik berasal dari smelter dan industri, karena itu peringkat risiko dan kalender musim dibatasi ke 9 provinsi.",
+    batas: ["Awan dan asap tebal menutupi api; tidak ada deteksi bukan berarti tidak ada api.", "Titik panas adalah anomali panas, bukan selalu kebakaran lahan. Di luar provinsi yang sering mengalami karhutla banyak titik berasal dari smelter dan industri, karena itu peringkat risiko dan kalender musim dibatasi ke 9 provinsi.",
       "Data cepat (NRT) bisa berbeda dari arsip standar yang terbit kemudian.", "Batas kecamatan disederhanakan; titik di garis pantai atau perbatasan bisa salah wilayah atau terbuang.", "Selisih dengan BNPB belum bisa direkonsiliasi karena saringan BNPB tidak dipublikasikan (Kalbar dan Riau belum cocok)."]});
 
   B.push({ik: "awan", j: "Bahaya cuaca: Fire Weather Index (FWI)", sub: "Seberapa mudah api menyala dan menjalar, dari cuaca saja",
@@ -5148,7 +5148,7 @@ FWI
       const j = a.slice(1).reduce((b, q) => km(a[0][1], a[0][0], q[1], q[0]) < km(a[0][1], a[0][0], b[1], b[0]) ? q : b, a[1]), jarak = km(a[0][1], a[0][0], j[1], j[0]);
       const eps = d.eps_km || 1.5, e375 = Math.min(eps, Math.max(.6, 1.5 * .375)), e800 = Math.min(eps, Math.max(.6, 1.5 * .8)), sel = Math.round(p.luas / 14.0625);
       const batasJam = p.gambut && p.dc > 350 ? d.aktif_gambut_jam : d.aktif_jam;
-      return mtTangga(`${esc(p.id)} · ${esc(p.kec)}, ${esc(p.kab)}`, `Dua titik api 24 jam terakhir dari ${mtNamaK(p)}, lalu ciri kompleksnya.`, [
+      return mtTangga(`${esc(p.id)} · ${esc(p.kec)}, ${esc(p.kab)}`, `Dua titik panas 24 jam terakhir dari ${mtNamaK(p)}, lalu ciri kompleksnya.`, [
         ["in", "Titik A dan titik terdekatnya, B", `A ${mtA(a[0][1], 4)}, ${mtA(a[0][0], 4)} · B ${mtA(j[1], 4)}, ${mtA(j[0], 4)}`, ""],
         ["", "Jarak di permukaan bumi", "rumus Haversine (jari-jari bumi 6.371 km)", mtA(jarak * 1000, 0) + " m"],
         ["", "Batas jarak tetangga", `1,5 × ukuran piksel, paling kecil 0,6 km dan paling besar ${mtA(eps)} km. Piksel 375 m di tengah sapuan → ${mtA(e375)} km; piksel 0,8 km di tepi sapuan → ${mtA(e800)} km`, `${mtA(e375)}–${mtA(e800)} km`],
@@ -5271,7 +5271,7 @@ skor = round(100 · (0,5·fK + 0,3·fB + 0,2·fT))`)}
     ${h("Data")}<p>Arsip NASA FIRMS MODIS Terra/Aqua (arsip standar + NRT), keyakinan ≥ 30, tanggal WIB, 2002 s.d. tahun berjalan (<code>sejarah_modis.json</code>). Tahun 2001 dikeluarkan karena hanya ada Terra (Aqua mulai Juli 2002), jadi jumlahnya tidak sebanding. Berkas hanya menyimpan kecamatan yang pernah ≥ 10 titik setahun; angka kabupaten dan provinsi adalah jumlah kecamatan-kecamatan itu. Tab Tren juga bisa memakai arsip VIIRS S-NPP 2015 s.d. sekarang (keyakinan sedang/tinggi).</p>
     ${h("Versi untuk skor prioritas (aturan.py)")}<p>Skor prioritas kompleks memakai rumus bobot yang sama pada arsip VIIRS S-NPP 2015 s.d. sekarang (<code>sejarah.json</code>), ambang 10 titik di kecamatan, besaran dibagi total kecamatan terbesar. Hasilnya mengalikan skor kompleks dengan (1 + risiko/100), maksimal 2 kali. Laci kompleks menyebut kecamatan "langganan api" bila risikonya ≥ 60.</p>
     ${h("Validasi")}<p>Uji di <code>aturan.py</code>: kecamatan yang terbakar 500 titik tiap tahun harus berisiko lebih tinggi daripada yang terbakar 6.000 titik sekali saja; tanpa api sama sekali skor = 10 (hanya komponen tren netral). Belum ada uji kecocokan indeks terhadap luas terbakar resmi yang tercatat di repo.</p>`,
-    batas: ["Tahun berjalan ikut dihitung padahal belum lengkap: menekan kekerapan dan tren sebelum musim selesai.", "Titik panas MODIS mencakup sumber panas non-kebakaran (industri) di luar 9 provinsi prioritas.",
+    batas: ["Tahun berjalan ikut dihitung padahal belum lengkap: menekan kekerapan dan tren sebelum musim selesai.", "Titik panas MODIS mencakup sumber panas non-kebakaran (industri) di luar provinsi yang sering mengalami karhutla.",
       "Kabupaten dan provinsi tidak menghitung kecamatan yang tidak pernah ≥ 10 titik setahun.", "Dua versi (MODIS 2002–sekarang dan VIIRS 2015–sekarang) memberi angka berbeda untuk kecamatan yang sama.", "Indeks belum diuji terhadap luas terbakar resmi."]});
 
   B.push({ik: "kalender", j: "Kalender musim per 10 hari", sub: "Kapan tiap provinsi biasanya masuk periode api besar",
@@ -5328,7 +5328,7 @@ puncak      = dasarian dengan rata tertinggi`)}
         kab ? ["", "Melapor ke", `posko kabupaten ${esc(kab.kab)} (${esc(kab.nama)})${prov ? `, lalu posko provinsi ${esc(prov.nama)}` : ""}`, esc(kab.id) + (prov ? " → " + esc(prov.id) : "")] : null,
         ["hasil", "Anggaran posko (APBD/instansi)", "operasional + alat", rp(g.total)]]);
     },
-    teknis: `${h("Posko permanen (posko.py, sekali per musim)")}${rumus(`Kandidat  = kecamatan di 9 provinsi prioritas yang terbakar (≥ 10 titik VIIRS S-NPP) di ≥ 3 tahun sejak 2015
+    teknis: `${h("Posko permanen (posko.py, sekali per musim)")}${rumus(`Kandidat  = kecamatan terbakar di provinsi yang sering mengalami karhutla (≥ 10 titik VIIRS S-NPP) di ≥ 3 tahun sejak 2015
 Bobot     = jumlah tahun terbakar × ln(1 + total titik)
 Lokasi    = titik berat luas poligon kecamatan (rumus shoelace; rata-rata simpul bisa jatuh di rawa)
 Per provinsi, greedy maximal covering radius 30 km: pilih kandidat yang menjangkau bobot terbesar yang belum terjangkau,
@@ -5380,7 +5380,7 @@ Dana Siap Pakai BNPB (provinsi yang punya kompleks prioritas, terpisah dari tota
         o ? mtCek(o.landasan_m >= 1000, "Pangkalan modifikasi cuaca: " + esc(o.nama), `landasan ≥ 1.000 m (CN-295 butuh ± 962 m), ${fmt(o.jarak_ke_pusat_api)} km dari pusat bobot api`, fmt(o.landasan_m) + " m") : null,
         ["hasil", "Rekomendasi pangkalan", `ditambah ${fmt((U.aju || []).filter(q => q.prov === kode).length)} pangkalan aju untuk api prioritas yang lebih dari 100 km`, esc(x.nama)]]);
     },
-    teknis: `${h("Data")}<p>Bandara, landasan perintis, helipad, dan pangkalan militer dari OurAirports (seluruh Indonesia) dan OpenStreetMap lewat Overpass (9 provinsi prioritas). Titik OSM yang &lt; 2 km dari titik OurAirports dibuang. Pangkalan militer dikenali dari nama (lanud, lanal, TNI, air base, dan sejenisnya); bandara kecil dengan landasan tanah/rumput atau &lt; 1.200 m dicatat sebagai landasan perintis.</p>
+    teknis: `${h("Data")}<p>Bandara, landasan perintis, helipad, dan pangkalan militer dari OurAirports (seluruh Indonesia) dan OpenStreetMap lewat Overpass (provinsi yang sering mengalami karhutla). Titik OSM yang &lt; 2 km dari titik OurAirports dibuang. Pangkalan militer dikenali dari nama (lanud, lanal, TNI, air base, dan sejenisnya); bandara kecil dengan landasan tanah/rumput atau &lt; 1.200 m dicatat sebagai landasan perintis.</p>
     ${h("Pangkalan helikopter water bombing (udara_rekom.py)")}${rumus(`Kandidat  = bandara besar/sedang/kecil atau pangkalan militer dengan landasan ≥ 800 m, boleh lintas provinsi (butuh Avtur)
 Bobot     = (3 bila prioritas, 0,3 bila siaga) × max(1, px24)
 Per provinsi, greedy maximal covering radius 100 km; berhenti bila ≥ 90% bobot terjangkau atau sudah 3 pangkalan
@@ -5479,8 +5479,8 @@ Bobot bawaan 50/20/30 → α = 10/4/6`)}
       "Biaya posko permanen diskalakan linear dengan jumlah regu, termasuk komponen tetap per posko.", "Hasilnya untuk membandingkan pilihan, bukan meramal luas terbakar."]});
 
   B.push({ik: "api", j: "Simulasi penjalaran api", sub: "Ke arah mana dan seberapa cepat api permukaan bisa menjalar dalam 72 jam",
-    singkat: `Simulasi memperkirakan ke arah mana dan seberapa cepat api permukaan bisa menjalar dalam 72 jam, mulai dari titik api 24 jam terakhir. Kecepatannya dihitung dari angin, kelembapan, dan jenis bahan bakar dengan rumus Kanada (FBP). Api menjalar paling cepat searah angin dan paling lambat ke belakang, jadi bentuknya lonjong. Model ini belum diuji untuk Indonesia, jadi luasnya sengaja tidak ditampilkan.`,
-    alur: [["d", "api", "Titik awal", "≤ 80 titik api 24 jam terakhir"], ["d", "angin", "Cuaca per jam", "angin, kelembapan, hujan 72 jam"], ["d", "daun", "Jenis bahan bakar", "gambut, rumput, atau sabana"],
+    singkat: `Simulasi memperkirakan ke arah mana dan seberapa cepat api permukaan bisa menjalar dalam 72 jam, mulai dari titik panas 24 jam terakhir. Kecepatannya dihitung dari angin, kelembapan, dan jenis bahan bakar dengan rumus Kanada (FBP). Api menjalar paling cepat searah angin dan paling lambat ke belakang, jadi bentuknya lonjong. Model ini belum diuji untuk Indonesia, jadi luasnya sengaja tidak ditampilkan.`,
+    alur: [["d", "api", "Titik awal", "≤ 80 titik panas 24 jam terakhir"], ["d", "angin", "Cuaca per jam", "angin, kelembapan, hujan 72 jam"], ["d", "daun", "Jenis bahan bakar", "gambut, rumput, atau sabana"],
       ["o", "hitung", "Laju ke tiap arah", "cepat searah angin, lambat ke belakang"], ["h", "kisi", "Peta waktu tiba", "≤ 12, 24, 48, 72 jam"]],
     contoh: () => {
       const p = mtKompleks(), kunciB = p.gambut ? "gambut" : ["93", "53", "52", "81"].includes(p.prov) ? "sabana" : "rumput", bb = BAHAN[kunciB];
@@ -5562,7 +5562,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
         ["in", `3 hari penuh terakhir (${tg(hari.at(-4))}–${tg(hari.at(-2))})`, `${tiga.map(fmt).join(" + ")}; hari ini (${tg(hari.at(-1))}) belum dihitung`, fmt(a)],
         ["", "Perubahan", `${fmt(a)} ÷ ${fmt(b)} − 1`, (dd > 0 ? "+" : dd < 0 ? "−" : "") + mtA(Math.abs(dd * 100), 0) + "%"],
         mtCek(dd > .1, "Naik lebih dari 10%?", "provinsi ini dihitung \"naik\" bila ya", "naik", dd < -.1 ? "turun" : "tetap"),
-        ["", "Ulangi untuk 9 provinsi prioritas", "", `${fmt(naik)} naik`],
+        ["", "Ulangi untuk provinsi yang sering mengalami karhutla", "", `${fmt(naik)} naik`],
         ["hasil", "Judul yang tertulis", "", `naik di ${fmt(naik)} dari ${fmt(n)} provinsi`]]);
     },
     teknis: `${tb(["Exhibit", "Angka di judul", "Cara hitung"], [
@@ -5584,7 +5584,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
     contoh: () => {
       const p = mtKompleks();
       return mtTangga(`Satu kompleks, banyak sumber: ${esc(p.id)}`, `Dari mana tiap angka ${mtNamaK(p)} berasal.`, [
-        ["in", "Titik api dan front 24 jam", "NASA FIRMS, VIIRS 3 satelit", `${fmt(p.n)} deteksi`],
+        ["in", "Titik panas dan front 24 jam", "NASA FIRMS, VIIRS 3 satelit", `${fmt(p.n)} deteksi`],
         ["in", "Cuaca dan FWI", "Open-Meteo (model) di sel 0,5° terdekat", "FWI " + mtA(p.fwi)],
         ["in", "Kecamatan", "batas wilayah kode Kemendagri", esc(p.kec)],
         ["in", "Gambut", "Global Forest Watch, peta gambut 2023", p.gambut ? "ya" : "tidak"],
@@ -6183,7 +6183,7 @@ const Sim = {
     const p = this.f.properties, membara = A.gambutHa > 0 && p.dc > 350;
     $("#simHasil").innerHTML = `<div class="sop" style="border-color:var(--warn);margin-top:4px"><b>Model, belum divalidasi.</b> Luas dalam hektare indikatif; pita = laju api ±20%. Pakai untuk membandingkan skenario dan melihat arah, bukan sebagai angka resmi.</div>
       <div class="lbl" style="margin-top:10px">Luas terbakar indikatif (ha) terhadap jam</div>${this.grafik()}
-      <div class="leg simleg">${PITA.map((b, i) => `<span><i class="sw" style="background:rgb(${b[1]})"></i>${i ? PITA[i - 1][0] + "–" : "≤ "}${b[0]} jam</span>`).join("")}<span><i class="sw" style="background:#4f8fc4;opacity:.6"></i>terbakar di prakiraan, tidak di skenario ini</span><span><i class="sw dot" style="background:#1d1d1d"></i>titik api 24 jam (benih)</span><span><i class="sw dot" style="background:#c9503a"></i>desa sudah tercapai</span></div>
+      <div class="leg simleg">${PITA.map((b, i) => `<span><i class="sw" style="background:rgb(${b[1]})"></i>${i ? PITA[i - 1][0] + "–" : "≤ "}${b[0]} jam</span>`).join("")}<span><i class="sw" style="background:#4f8fc4;opacity:.6"></i>terbakar di prakiraan, tidak di skenario ini</span><span><i class="sw dot" style="background:#1d1d1d"></i>titik panas 24 jam (benih)</span><span><i class="sw dot" style="background:#c9503a"></i>desa sudah tercapai</span></div>
       <div class="simkartu-daftar">${ids.map(i => { const x = H[i];
         return `<button type="button" class="simkartu${i === this.lihat ? " on" : ""}" data-lihat="${i}" style="--w:${x.s.w}">
           <img alt="" src="${this.kanvas(x, 72, true).toDataURL()}"><div><b>${esc(x.s.n)}</b>

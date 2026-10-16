@@ -211,7 +211,7 @@ const Dampak = (() => {
     fb.onclick = ev => { const b = ev.target.closest("button[data-pj]"); if (!b) return; jenis = b.dataset.pj; sel = null; fb.querySelectorAll("button").forEach(q => q.setAttribute("aria-pressed", q === b)); pop?.remove(); if (m.isStyleLoaded()) daftar(); };
   }
   function b2() {
-    if (!F) return ex(2, "Data gangguan penerbangan belum tersedia", "", "", `<p>Berkas penerbangan.json belum dibuat (scripts/data/penerbangan.py).</p>`, "");
+    if (!F) return ex(2, "Data gangguan penerbangan belum tersedia", "", "", `<p>Data gangguan penerbangan belum tersedia.</p>`, "");
     const ev = F.kejadian, bd = ev.filter(e => e.bandara), rek = ev.filter(e => !e.bandara && e.jumlah), B = F.bandara;
     const sumB = bd.reduce((a, e) => a + e.terdampak, 0), rekMax = rek.reduce((a, e) => e.jumlah > a.jumlah ? e : a, {jumlah: 0}), nB = new Set(bd.map(e => e.bandara)).size, hariG = new Set(ev.map(e => e.tgl)).size;
     const hit = {}; bd.forEach(e => (hit[e.bandara] ||= []).push(e));
@@ -468,7 +468,7 @@ const Dampak = (() => {
   async function render() {
     const el = $("#dampak"); if (!el) return; ikat(el);
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak kebakaran…</div>`;
-      try { await muat(); } catch (e) { gagal = e.message; el.innerHTML = `<div class="kosong">Data dampak belum tersedia (${esc(gagal)}). Jalankan scripts/data/dampak.py.</div>`; return; } }
+      try { await muat(); } catch (e) { gagal = e.message; el.innerHTML = `<div class="kosong">Data dampak belum tersedia (${esc(gagal)}).</div>`; return; } }
     /* judul halaman dihapus (pemilik); tiap pintasan bagian berikon dengan warna sendiri */
     el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${JUDUL.map((j, i) => `<button data-ke="${i + 1}" style="--w:${WK[i]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[i]}"/></svg>${j}</button>`).join("")}</nav>
       <div id="dkIsi"></div></div>`;

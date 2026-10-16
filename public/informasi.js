@@ -236,7 +236,7 @@
       ${p.kedaluwarsa_lewat ? `<p class="lw-catatan">Laporan ini sudah kedaluwarsa (lebih dari ${J.umur} jam).</p>` : ""}
       ${p.digantikan ? `<p class="lw-catatan">Sudah ada status yang lebih baru di titik ini. <button class="lw-tautan" data-buka="${p.digantikan}">Buka yang terbaru</button></p>` : ""}
       ${durTeks}
-      ${p.titik_panas ? `<div class="lw-satelit"><b>Terkonfirmasi satelit</b> — ada titik panas ≤ 2 km dalam 24 jam terakhir. ${laciL}</div>` : p.jenis === "api" ? `<p class="lw-catatan">Belum ada titik panas satelit ≤ 2 km (awan/asap bisa menutupi). Laporan warga tetap penting.</p>` : ""}
+      ${p.titik_panas ? `<div class="lw-satelit"><b>Terkonfirmasi satelit</b>: ada titik panas ≤ 2 km dalam 24 jam terakhir. ${laciL}</div>` : p.jenis === "api" ? `<p class="lw-catatan">Belum ada titik panas satelit ≤ 2 km (awan/asap bisa menutupi). Laporan warga tetap penting.</p>` : ""}
       ${p.teks ? `<p class="lw-teks">${esc(p.teks)}</p>` : ""}
       ${isian || p.jumlah ? `<dl class="lw-dl">${isian}${p.jumlah ? `<div><dt>${esc(J.jumlah)}</dt><dd>${p.jumlah.toLocaleString("id-ID")}</dd></div>` : ""}</dl>` : ""}
       ${p.jenis === "satwa" ? `<p class="lw-catatan">Lokasi dibulatkan ±1 km untuk melindungi satwa. Jangan mendekat; laporkan ke BKSDA setempat.</p>` : ""}
@@ -245,7 +245,7 @@
       ${lanjut}
       ${J.bantuan && p.kontak ? `<div class="lw-blok"><h4>Kontak pelapor</h4><p class="lw-kecil">Nomor hanya ditampilkan bila diminta, dibatasi per orang, dan dihapus otomatis 72 jam setelah laporan dibuat.</p><div id="lwKontak"><button class="lw-btn lw-utama" data-kontak>Tampilkan kontak WhatsApp</button></div></div>` : ""}
       ${S.token[p.id] && J.bantuan ? `<div class="lw-blok"><button class="lw-btn" data-selesai>Tandai sudah terpenuhi / selesai</button></div>` : ""}
-      ${p.riwayat?.length ? `<div class="lw-blok"><h4>Riwayat di titik ini</h4><ol class="lw-riwayat">${p.riwayat.map(r => `<li><span class="lw-titikw" style="background:${K.WARNA[J.sub[r.sub]?.[1]] || "#999"}"></span>${esc(J.sub[r.sub]?.[0] || r.sub)} · ${lalu(r.dibuat)}${r.teks ? ` — ${esc(r.teks)}` : ""}</li>`).join("")}</ol></div>` : ""}
+      ${p.riwayat?.length ? `<div class="lw-blok"><h4>Riwayat di titik ini</h4><ol class="lw-riwayat">${p.riwayat.map(r => `<li><span class="lw-titikw" style="background:${K.WARNA[J.sub[r.sub]?.[1]] || "#999"}"></span>${esc(J.sub[r.sub]?.[0] || r.sub)} · ${lalu(r.dibuat)}${r.teks ? ` · ${esc(r.teks)}` : ""}</li>`).join("")}</ol></div>` : ""}
       <div class="lw-blok lw-bawah"><button class="lw-tautan" data-bagikan>Salin tautan laporan</button>
         <details class="lw-aduan"><summary>Laporkan penyalahgunaan</summary><div class="lw-pil">${[["spam", "Spam / iklan"], ["palsu", "Info palsu"], ["kasar", "Kasar / SARA"], ["pribadi", "Data pribadi"], ["lainnya", "Lainnya"]].map(([k, n]) => `<button class="lw-btn" data-aduan="${k}">${n}</button>`).join("")}</div></details></div>`);
     const P = $("#lwPanel");
@@ -330,7 +330,7 @@
       try {
         const r = await kirimAPI("", o);
         S.token[r.id] = r.token; tulis("lw-token", S.token);
-        toast(r.durasi_buruk != null ? `Terkirim. Tercatat ${Math.round(r.durasi_buruk / JAM)} jam ${jenis === "listrik" ? "padam" : "terganggu"} di titik ini.` : r.titik_panas ? "Terkirim. Ada titik panas satelit di dekat laporan Anda." : "Laporan terkirim. Terima kasih!", 4500);
+        toast(r.durasi_buruk != null ? `Terkirim. Tercatat ${Math.round(r.durasi_buruk / JAM)} jam ${jenis === "listrik" ? "padam" : "terganggu"} di titik ini.` : r.titik_panas ? "Terkirim. Ada titik panas satelit di dekat laporan kamu." : "Laporan terkirim. Terima kasih!", 4500);
         tutupPanel(); muat._k = null; await muat(true); if (S.mati.has(jenis)) { S.mati.delete(jenis); renderKiri(); terapkan(); }
         rincian(r.id);
       } catch (err) { g.textContent = err.message; if (ts != null) turnstile.reset(ts); }
@@ -374,7 +374,7 @@
 
   function bantuan() {
     bukaPanel("bantu", `<div class="lw-p-kepala"><div><h3>Lapor Warga</h3><p>Warga bantu warga saat bencana</p></div></div>
-      <p>Tandai kondisi di sekitar Anda supaya tetangga, relawan, dan posko tahu: listrik, sinyal, BBM/LPG, kebutuhan bantuan, dan kondisi bencana.</p>
+      <p>Tandai kondisi di sekitar kamu supaya tetangga, relawan, dan posko tahu: listrik, sinyal, BBM/LPG, kebutuhan bantuan, dan kondisi bencana.</p>
       <h4>Warna penanda</h4><ul class="lw-legenda">${[["buruk", "Mati / habis / parah"], ["sedang", "Terbatas / genset / lemah"], ["baik", "Normal / hidup / lancar"], ["minta", "Minta bantuan"], ["tawar", "Tawaran bantuan"], ["info", "Pesan"]].map(([k, n]) =>
         `<li><span class="lw-titikw" style="background:${pastel(K.WARNA[k], .5)};border:2px solid ${K.WARNA[k]}"></span>${n}</li>`).join("")}</ul>
       <h4>Jenis laporan</h4><ul class="lw-legenda">${K.jenisUntuk(S.bahaya).map(j => `<li>${chip(j, 15)}${esc(K.JENIS[j].nama)} <small>· berlaku ${K.JENIS[j].bantuan ? "s.d. selesai/7 hari" : K.JENIS[j].umur >= 168 ? "7 hari" : K.JENIS[j].umur + " jam"}</small></li>`).join("")}</ul>

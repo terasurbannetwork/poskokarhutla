@@ -88,7 +88,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
   /* ---------- gambar ---------- */
   async function render() {
     const el = $("#operasi"); if (!el) return;
-    if (!D) { el.innerHTML = `<p class="op-muat">Memuat rencana operasi…</p>`; if (!await siap()) { el.innerHTML = `<p class="op-muat">Data operasi belum tersedia (${esc(gagal)}). Jalankan scripts/data/operasi.py.</p>`; return; } }
+    if (!D) { el.innerHTML = `<p class="op-muat">Memuat rencana operasi…</p>`; if (!await siap()) { el.innerHTML = `<p class="op-muat">Data operasi belum tersedia (${esc(gagal)}).</p>`; return; } }
     const T = st.T, s = st.s, nas = H.total(D.kompleks, T, s), resmiP = R?.personel_darat ?? null;
     const provs = Object.keys(D.byP).map(k => ({k, b: butuhProv(k, T, s)})).sort((a, b) => b.b.personel - a.b.personel);
     const tReal = resmiP ? tRealistis(D.kompleks, resmiP, s) : null, gapN = resmiP != null ? nas.personel - resmiP : null;
@@ -162,7 +162,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
     const bn = Object.entries(D.prov).filter(([, v]) => v.ada).map(([k, v]) => [k, v.ada.belum_padam_ha, (D.byP[k] || []).reduce((a, c) => a + c.px, 0)]);
     return `<section class="card op-blok op-rekon"><h3>Resmi vs satelit: mengapa angkanya berbeda</h3>
       <div class="grid g3">
-        <div><span class="lbl">Belum padam ${tag("resmi")}</span><b class="op-big">${res != null ? fmt(res) + " ha" : "–"}</b><small>${R ? `${fmt(R.belum_padam_ha.prioritas_6_prov)} ha di 6 provinsi prioritas + ${fmt(R.belum_padam_ha.lainnya)} ha lainnya; ${fmt(R.dipadamkan_total_ha)} ha sudah dipadamkan; ${R.padam_hari_sama_pct}% luas baru padam di hari yang sama` : ""}</small></div>
+        <div><span class="lbl">Belum padam ${tag("resmi")}</span><b class="op-big">${res != null ? fmt(res) + " ha" : "–"}</b><small>${R ? `${fmt(R.belum_padam_ha.prioritas_6_prov)} ha di 6 provinsi yang sering mengalami karhutla + ${fmt(R.belum_padam_ha.lainnya)} ha lainnya; ${fmt(R.dipadamkan_total_ha)} ha sudah dipadamkan; ${R.padam_hari_sama_pct}% luas baru padam di hari yang sama` : ""}</small></div>
         <div><span class="lbl">Api aktif 24 jam ${tag("satelit")}</span><b class="op-big">${fmt(r.kompleks)} kompleks</b><small>${fmt(r.px24)} piksel VIIRS (${fmt(r.px24_gambut)} di gambut); jejak piksel ${fmt(r.ha_piksel)} ha, bukan luas terbakar</small></div>
         <div><span class="lbl">Bara gambut yang direncanakan ${tag("model")}</span><b class="op-big">${fmt(r.bara_ha[s])} ha</b><small>${fmt(H.k("ha_bara_piksel", s))} ha bara per piksel aktif (rentang ${fmt(r.bara_ha[0])}–${fmt(r.bara_ha[2])} ha). Agar sama dengan angka BNPB, tiap piksel hanya boleh berisi ${r.ha_per_piksel_setara_resmi ?? "?"} ha api.</small></div>
       </div>
@@ -256,7 +256,7 @@ var Operasi = typeof document === "undefined" ? null : (() => {
       <div class="tw"><table class="op-tb"><thead><tr><th>Provinsi</th><th class="n">Petak langganan</th><th class="n">Polisi hutan patroli</th><th class="n">Rentang</th></tr></thead><tbody>
         ${L.map(([k, v]) => `<tr><td>${esc(nP(k))}</td><td class="n">${fmt(v.polhut.rawan_ha)} ha</td><td class="n"><b>${fmt(v.polhut.butuh[s])}</b></td><td class="n">${fmt(v.polhut.butuh[0])}–${fmt(v.polhut.butuh[2])}</td></tr>`).join("")}
         <tr class="op-jml"><td>Jumlah</td><td class="n">${fmt(ha)} ha</td><td class="n">${fmt(tot)}</td><td></td></tr></tbody></table></div>
-      <p class="op-cat">Pembanding ${tag("resmi")}: polisi hutan sekarang ± 4.500 orang (1 orang per ± 26.000 ha), target bertahap 70.000 (21.000 pada 2027) menurut Presiden 6 Oktober 2026. Patroli api di petak langganan hanya memakai ± ${fmt(Math.round(tot / 700))}% dari target itu; sisanya untuk pembalakan liar, perambahan, dan kawasan hutan ± 125 juta ha. Daftar petak hanya mencakup kecamatan langganan di sembilan provinsi prioritas, jadi angka ini batas bawah.</p></section>`;
+      <p class="op-cat">Pembanding ${tag("resmi")}: polisi hutan sekarang ± 4.500 orang (1 orang per ± 26.000 ha), target bertahap 70.000 (21.000 pada 2027) menurut Presiden 6 Oktober 2026. Patroli api di petak langganan hanya memakai ± ${fmt(Math.round(tot / 700))}% dari target itu; sisanya untuk pembalakan liar, perambahan, dan kawasan hutan ± 125 juta ha. Daftar petak hanya mencakup kecamatan langganan di sembilan provinsi yang sering mengalami karhutla, jadi angka ini batas bawah.</p></section>`;
   }
 
   function hKoef() {

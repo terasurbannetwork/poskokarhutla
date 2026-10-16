@@ -379,7 +379,7 @@ const Bagikan = {
       /* kartu Berita: semua memakai tombol gambar (tombolEx); tombol tautan hanya per berita di daftar */
       el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
         it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
-          teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik api karhutla di Pantau Bencana:"}`}))); });
+          teks: `"${Bagi.potong(j, 150)}" (${src}). ${E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik panas karhutla di Pantau Bencana:"}`}))); });
     });
     /* Dampak: tiap kartu grafik memakai tombol gambar ala Insight (tombolEx); tombol tautan per bagian tidak dipakai lagi */
     /* dialog provinsi tab Operasi (#dlg dipakai bersama; hanya yang berisi .op-db) */
