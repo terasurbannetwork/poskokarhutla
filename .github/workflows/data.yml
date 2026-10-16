@@ -116,6 +116,12 @@ jobs:
           YOUTUBE_API_KEY: ${{ secrets.YOUTUBE_API_KEY }}
         run: python3 scripts/data/video.py
 
+      # Analisis post media sosial kurasi admin (/api/sosmed) dengan leksikon berita -> public/data/sosmed.json.
+      - name: Analisis post sosmed (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/umum/sosmed.py --uji && python3 scripts/umum/sosmed.py
+
       - name: Simpan arsip berita
         uses: actions/cache/save@v4
         with:
