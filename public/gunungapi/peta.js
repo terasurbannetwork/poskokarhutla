@@ -4,10 +4,9 @@ let peta = null, PI = null, LG = null, legBuka = innerWidth > 900;
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const UBIN = {gunung: ["#7a2e1d", "#e58a45", "peringatan"], radius: ["#7a3b0b", "#f2b544", "perisai"], nama: ["#1f3a5f", "#6d8fc0", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {gunung: "Gunung", radius: "Radius", nama: "Nama", satelit: "Satelit"};
-const kiriPad = () => { const r = s => document.querySelector(s)?.getBoundingClientRect(), pt = r("#p-peta"), pn = r(".panel"), tl = r(".tools"), lg = r("#dok");
-  if (innerWidth <= 900) return {top: 70, bottom: (pn?.height || innerHeight * .46) + 16, left: 16, right: 16};
-  const kiri = (pn?.width || 400) + 30, kanan = (tl?.width || 250) + 30, sisa = Math.max(0, kiri + kanan - (pt?.width || innerWidth) + 160), k = sisa ? Math.max(0, 1 - sisa / (kiri + kanan)) : 1;
-  return {top: 56, left: kiri * k, right: kanan * k, bottom: Math.max(30, lg && pt ? pt.bottom - lg.top + 16 : 90)}; };
+const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
+  const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
 
 /* lingkaran radius sebagai poligon (64 titik), tanpa pustaka */
 function cincin(lat, lon, rKm, n = 64) {
@@ -33,7 +32,8 @@ const Peta = {
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
     await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
-    peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 0}); },
+    /* pandangan awal desktop disamakan dengan /banjir/ (panel 440, tools 280, dok baru setengah tersusun saat fit = bawah 44); lebar panel/dok gunung api beda */
+    peta.fitBounds(BB_ID, {padding: innerWidth <= 900 ? kiriPad() : {top: 56, left: 470, right: 310, bottom: 44}, duration: 0}); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   geoTitik() { return {type: "FeatureCollection", features: saring().map(g => ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {nama: g.nama, lv: g.level}}))}; },
   geoRadius() { return {type: "FeatureCollection", features: saring().filter(g => g.radius_km).map(g => ({type: "Feature", geometry: {type: "Polygon", coordinates: [cincin(g.lat, g.lon, g.radius_km)]}, properties: {nama: g.nama, lv: g.level}}))}; },

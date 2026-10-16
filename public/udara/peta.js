@@ -7,10 +7,9 @@ const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "htt
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const UBIN = {pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {pm25: "PM2,5", metar: "Jarak pandang", satelit: "Satelit"};
-const kiriPad = () => { const r = s => document.querySelector(s)?.getBoundingClientRect(), pt = r("#p-peta"), pn = r(".panel"), tl = r(".tools"), gw = r("#garisWaktu");
-  if (innerWidth <= 900) return {top: Math.max(60, gw?.width && pt ? gw.bottom - pt.top + 12 : 60), bottom: (pn?.height || innerHeight * .46) + 16, left: 16, right: 16};
-  const kiri = (pn?.width || 400) + 30, kanan = (tl?.width || 250) + 30, sisa = Math.max(0, kiri + kanan - (pt?.width || innerWidth) + 160), k = sisa ? Math.max(0, 1 - sisa / (kiri + kanan)) : 1;
-  return {top: 56, left: kiri * k, right: kanan * k, bottom: Math.max(30, gw?.width && pt ? pt.bottom - gw.top + 16 : 90)}; };
+const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
+  const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
 function kotak(fitur) { const a = [180, 90, -180, -90];
   const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }

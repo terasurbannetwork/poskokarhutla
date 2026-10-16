@@ -341,7 +341,7 @@ export default {
       "warna": "#8a6d4e",
       "rute": "/gempa/",
       "data": "/gempa/data/",
-      "status": "mati",
+      "status": "uji",
       "warisan": false,
       "tab": [
         "ringkasan",
@@ -355,14 +355,21 @@ export default {
         "metode",
         "sim",
         "informasi",
-        "foto"
+        "foto",
+        "tentang"
       ],
       "tab_sembunyi": [
         "ringkasan",
-        "posko",
-        "informasi",
+        "insight",
+        "berita",
+        "tren",
         "kejadian",
-        "metode"
+        "posko",
+        "dampak",
+        "metode",
+        "sim",
+        "informasi",
+        "foto"
       ],
       "sumber_status": [
         [
@@ -434,7 +441,7 @@ export default {
           "selang_detik": 300
         }
       ],
-      "workflow": "gempa.yml",
+      "workflow": "statis.yml",
       "pengerja": "gempa",
       "bagikan": {
         "nama": "Pantau Bencana · Gempa",

@@ -177,17 +177,20 @@ function renderDaftar() {
 }
 /* kepala tabel panel bisa diurut (klik kolom; klik lagi = balik arah), seperti karhutla; pilihan diingat per mode panel */
 S.urut = {};
-function terapkanUrut() {
-  const box = $("#rows"), kp = box.querySelector(".tb.kepala"); if (!kp) return;
+function tandaiUrut() { /* panah kepala kolom: urgen */
+  const kp = $("#rows").querySelector(".tb.kepala"); if (!kp) return;
   const u = S.urut[S.mode === "riwayat" ? "riw" : "wil"];
-  [...kp.children].forEach((c, i) => { if (i < 1) return; c.dataset.s = i; c.classList.toggle("urut", u?.i === i); c.dataset.arah = u?.i === i ? u.d : ""; });
-  if (!u) return;
+  [...kp.children].forEach((c, i) => { if (i < 1) return; c.dataset.s = i; c.classList.toggle("urut", u?.i === i); c.dataset.arah = u?.i === i ? u.d : ""; }); }
+function terapkanUrut() {
+  const box = $("#rows"), u = S.urut[S.mode === "riwayat" ? "riw" : "wil"]; tandaiUrut();
+  if (!u || !box.querySelector(".tb.kepala")) return;
   const nilai = b => { const c = b.children[u.i]; if (!c) return -1e15; if (c.dataset.sort != null) return +c.dataset.sort; const p = c.querySelector(".pill"); if (p) return +(p.className.match(/\bl(\d)/) || [0, 0])[1];
     const t = c.textContent.trim(), n = t.replace(/\/.*/, "").replace(/\./g, "").replace(",", ".");
     return t === "" || t === "–" ? -1e15 : u.i === 1 || isNaN(+n) ? t : +n; };
-  const rows = [...box.querySelectorAll("button.tb")];
-  rows.sort((a, b) => { const x = nilai(a), y = nilai(b); return u.d * (typeof x === "string" || typeof y === "string" ? String(x).localeCompare(String(y), "id") : x - y); });
-  rows.forEach((b, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; b.parentElement.appendChild(b); });
+  const rows = [...box.querySelectorAll("button.tb")].map(b => ({b, v: nilai(b)})), fr = document.createDocumentFragment();
+  rows.sort((a, b) => u.d * (typeof a.v === "string" || typeof b.v === "string" ? String(a.v).localeCompare(String(b.v), "id") : a.v - b.v));
+  rows.forEach(({b}, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; fr.appendChild(b); });
+  rows[0]?.b.parentElement.appendChild(fr);
 }
 const RINGKAS_TAMPIL = false; /* kotak angka "Banjir · Sel, 13 Okt · kecamatan" di atas tabel: tidak ada di karhutla, disembunyikan (paritas); true untuk memulihkan */
 /* ringkas: jumlah kecamatan per level di wilayah aktif untuk hari aktif */
@@ -198,7 +201,7 @@ function ringkasHari() {
     <div class="kv" style="grid-template-columns:repeat(3,1fr)">${[3, 2, 1].map(l => `<div><b style="color:${WARNA_LV[l]}">${fmt(n[l])}</b><span>${LEVEL[l]}</span></div>`).join("")}</div></div>`; }
 function pusat(kunci) { const f = S.fiturWil?.find(f => f.properties.kunci === kunci); if (!f) return [0, 0]; const b = kotak([f]); return [(b[0][1] + b[1][1]) / 2, (b[0][0] + b[1][0]) / 2]; }
 $("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
-  if (kol) { const k = S.mode === "riwayat" ? "riw" : "wil", i = +kol.dataset.s, u = S.urut[k]; S.urut[k] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; return terapkanUrut(); }
+  if (kol) { const k = S.mode === "riwayat" ? "riw" : "wil", i = +kol.dataset.s, u = S.urut[k]; S.urut[k] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; tandaiUrut(); return nanti(terapkanUrut); }
   const rw = e.target.closest("[data-riw]"); if (rw) return Riwayat.buka(rw.dataset.riw); const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 2 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
 /* seg "Posko" di panel disembunyikan (A24, ledger fitur-disembunyikan); sisa satu pilihan "Wilayah" tak berguna, jadi seluruh seg ikut hidden */
 $("#panelMode").hidden = true; document.querySelector('#panelMode [data-m="posko"]').hidden = true;

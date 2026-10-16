@@ -1,0 +1,213 @@
+@import url("../dampak.css");
+/* Kartu tab Insight, Tren, Berita, Dampak gempa: rupa disalin dari banjir (insight.css, berita.css, tren.css); selektor id disatukan lewat :is(). Mesin kartu: public/inti/kartu.css. */
+/* ---------- insight: kartu bergaya karhutla (rupa disalin dari :is(#insight,#tren,#dampak,#berita) di public/index.html; mesin kartu di public/inti/kartu.css) ---------- */
+.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px 16px;margin-bottom:18px}
+.ex h3{font-size:clamp(17px,2vw,21px);line-height:1.3;max-width:62ch}
+.ex .hl{color:var(--bad)}
+.ex svg{display:block;width:100%;height:auto;overflow:visible}
+.ex svg text{fill:currentColor}
+.ex button svg,.head button svg{display:inline-block;width:14px!important;height:14px;flex:none}
+.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:-4px 0 12px}
+:is(#insight,#tren,#dampak,#berita) select:not([multiple]){appearance:none;-webkit-appearance:none;height:34px;border-radius:999px;border:1px solid var(--line);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2.5' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E") no-repeat right 12px center/13px;padding:0 34px 0 14px;font-size:12.5px;font-weight:600;color:var(--ink);box-shadow:var(--shadow);cursor:pointer}
+.ex .ctl .seg{height:34px;align-items:center}
+.ex .ctl .seg button{padding:5px 13px}
+:is(#insight,#tren,#dampak,#berita){display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
+:is(#insight,#tren,#dampak,#berita) > *{min-width:0}
+:is(#insight,#tren,#dampak,#berita) > [data-ex]:empty{display:none}
+:is(#insight,#tren,#dampak,#berita) .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+:is(#insight,#tren,#dampak,#berita) .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+:is(#insight,#tren,#dampak,#berita) .ex-bd{padding:16px 22px 10px}
+.ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
+:is(#insight,#tren,#dampak,#berita) .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+:is(#insight,#tren,#dampak,#berita) .ex-ft em{font-style:italic;opacity:.9}
+:is(#insight,#tren,#dampak,#berita) .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+:is(#insight,#tren,#dampak,#berita) .ex-ey:empty{display:none}
+.ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.ex-jd > select{flex:none;margin-top:2px;box-shadow:none;background-color:var(--card)}
+:is(#insight,#tren,#dampak,#berita) .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+:is(#insight,#tren,#dampak,#berita) .ex .ctl{margin:12px 0 0}
+:is(#insight,#tren,#dampak,#berita) .ex .ctl .seg{display:flex;width:100%}
+:is(#insight,#tren,#dampak,#berita) .ex .ctl .seg button{flex:1;text-align:center}
+:is(#insight,#tren,#dampak,#berita) .ex .ctl:has(.seg ~ .seg){flex-wrap:nowrap}
+:is(#insight,#tren,#dampak,#berita) .ex .ctl:has(.seg ~ .seg) .seg{width:auto;flex:1 1 0;min-width:0}
+:is(#insight,#tren,#dampak,#berita) .ex .bg-ex{margin:14px 16px 0 0}
+/* tabel di dalam kartu: satu kotak berujung bulat, kepala gelap (kepala dari tabel.css), baris bisa diklik */
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);box-shadow:none;overflow:auto}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw.sk{border:0;margin:0}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw table thead th{padding:10px 14px}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw table tbody td{padding:11px 14px;vertical-align:middle}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw thead th button i{font-style:normal;min-width:10px}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw td .pvn{display:inline-flex;align-items:center;gap:8px}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw td .pvn .lambang{width:18px;height:22px;filter:none}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw td .pill{height:20px;font-size:10.5px}
+.pl{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;font-variant-numeric:tabular-nums;background:color-mix(in oklch, var(--w) 16%, transparent);color:color-mix(in oklch, var(--w) 72%, #000)}
+:root[data-theme="dark"] .pl{color:color-mix(in oklch, var(--w) 70%, #fff)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .pl{color:color-mix(in oklch, var(--w) 70%, #fff)}}
+.ex [data-tip]{cursor:pointer}
+.ex [data-tip]:hover{opacity:.82}
+.ex [data-set]{cursor:pointer}
+/* tanpa animasi masuk: bila animasi tertahan (tab latar, pratinjau) batang berhenti di lebar 0 dan angkanya tak tampak */
+.ex .gy,.ex .gx,.ex .gf{animation:none}
+.ex2{display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
+/* berita */
+#berita tbody tr:nth-child(even),#berita .pm-row:nth-of-type(even){background:var(--card)}
+.dlg .dh-cs{display:flex;flex-wrap:wrap;gap:5px;margin-top:7px}
+.dlg .dh-c{display:inline-flex;align-items:center;gap:5px;font-size:11px;font-weight:700;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 11%, transparent);padding:2px 9px 2px 7px;border-radius:999px;white-space:nowrap}
+.dlg .dh-c svg{width:12px;height:12px}
+.br-lb-k{border:0;cursor:pointer;font-family:var(--font)}
+.br-lb-k:hover{filter:brightness(.92);text-decoration:underline}
+.br-stack-b{height:22px!important;border-radius:6px;overflow:hidden}
+.br-stack-b i{display:flex;align-items:center;justify-content:center;color:#fff;font-size:11px;font-weight:800;font-style:normal}
+.br-snt{display:flex;justify-content:center;flex-wrap:wrap;gap:4px 16px;margin-top:8px;font-size:12px;color:var(--ink2)}
+.br-snt span{display:inline-flex;align-items:center;gap:6px}
+.br-snt i{width:10px;height:10px;border-radius:3px}
+.br-snt b{color:var(--ink)}
+.br-bb{display:grid;gap:6px}
+.br-bb > div{display:grid;grid-template-columns:minmax(90px,38%) 1fr 34px;gap:8px;align-items:center;font-size:12px}
+.br-bb span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-bb i{height:10px;border-radius:5px;background:var(--surface);overflow:hidden}
+.br-bb i b{display:block;height:100%;border-radius:5px}
+.br-bb em{font-style:normal;font-weight:700;text-align:right;font-variant-numeric:tabular-nums}
+.dlg .br-dlg-l{gap:8px}
+.dlg .br-dlg-l a{border:1px solid var(--line);border-radius:12px;padding:10px 12px;background:var(--card);transition:border-color .12s,box-shadow .12s}
+.dlg .br-dlg-l a:hover{border-color:var(--brand2);box-shadow:var(--shadow)}
+.dlg .db{padding:14px 18px 18px;display:grid;gap:14px}
+.br-sorot{display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(min(300px,100%),1fr))}
+.br-kartu{display:flex;gap:10px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);box-shadow:0 1px 2px oklch(25% .05 256 / .05);text-decoration:none;color:inherit}
+.br-kartu:hover{border-color:var(--brand2)}
+.br-no{flex:none;width:24px;height:24px;border-radius:50%;background:var(--brand);color:#fff;font-weight:800;font-size:12px;display:grid;place-items:center}
+.br-isi{display:grid;gap:4px;min-width:0}
+.br-isi b{font-size:13.5px;line-height:1.35}
+.br-isi small,.br-item small{color:var(--ink2);font-size:11.5px}
+.br-chip{display:flex;flex-wrap:wrap;gap:4px}
+.br-chip i{display:inline-flex;align-items:center;gap:5px;font-style:normal;font-size:10.5px;font-weight:700;padding:2px 9px 2px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 12%, var(--card));color:color-mix(in oklch, var(--w) 78%, var(--ink));border:0;line-height:16px}
+.br-chip i::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--w);flex:none}
+.br-list{display:grid;grid-template-columns:repeat(auto-fill,minmax(340px,1fr));gap:10px}
+.br-rows{display:grid;gap:2px;margin-top:6px}
+.br-row{all:unset;box-sizing:border-box;display:grid;grid-template-columns:minmax(150px,1.5fr) 1.5fr auto 80px 54px 12px;align-items:center;gap:12px;padding:9px 10px;border-radius:10px;cursor:pointer;font-size:13.5px}
+.br-row-m{grid-template-columns:minmax(150px,1.3fr) 1.7fr auto 12px}
+.br-row::after{content:"";width:7px;height:7px;border-right:2px solid var(--ink2);border-top:2px solid var(--ink2);transform:rotate(45deg);opacity:.45;transition:opacity .15s,transform .15s}
+.br-row:hover::after{opacity:1;transform:translateX(2px) rotate(45deg)}
+.br-row{transition:background .12s}
+.br-row .br-nm img{width:16px;height:16px;border-radius:4px;flex:none}
+.br-row:hover,.br-row:focus-visible{background:var(--surface)}
+.br-row:focus-visible{outline:2px solid var(--brand2)}
+.br-nm{display:flex;align-items:center;gap:8px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.br-nm i{flex:none;width:10px;height:10px;border-radius:3px}
+.br-bar{height:10px;border-radius:5px;background:color-mix(in oklch, var(--line) 60%, transparent);overflow:hidden}
+.br-bar i{display:block;height:100%;border-radius:5px}
+.br-n{display:grid;justify-items:end;line-height:1.1}
+.br-n small{color:var(--ink2);font-size:11px}
+.br-spark{width:90px;height:24px}
+.br-d{font-size:12px;font-weight:800;text-align:right}
+.br-stack{display:flex;height:12px;border-radius:6px;overflow:hidden;margin-top:6px}
+@media (max-width:640px){.br-row{grid-template-columns:1fr 1fr auto;gap:8px}.br-spark,.br-d{display:none}}
+.br-pop{display:grid;gap:6px;font-size:12.5px}
+.br-pop>small{color:var(--ink2)}
+.br-pop-l{display:grid;gap:2px;max-height:min(260px,calc(var(--tg,420px) - 190px));overflow:auto;margin:2px -4px}
+.br-pop-l a{display:grid;grid-template-columns:minmax(0,1fr) auto;column-gap:10px;row-gap:2px;padding:7px 4px;border-bottom:1px solid var(--line);color:inherit;text-decoration:none}
+.br-pop-l a > span,.br-pop-l a > small{grid-column:1}
+.br-pop-l a > small.br-pop-lb{margin-top:2px}
+.br-pt{grid-column:2;grid-row:1/span 3;width:64px;height:48px;border-radius:8px;object-fit:cover;background:var(--surface);border:1px solid var(--line)}
+.br-pt.fb{object-fit:contain;padding:12px;background:var(--card)}
+.br-pt.kosong{display:block;background:var(--surface) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%238a94a6' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4'/%3E%3C/svg%3E") center/22px no-repeat}
+.br-pop-h{display:grid;gap:5px}
+.br-pop-h b{font-size:14px;font-family:var(--display)}
+.br-pop-h span,.br-pop-lb{display:flex;flex-wrap:wrap;gap:4px}
+/* saring Daftar berita: kotak cari selebar kartu di atas, tiga pilihan membagi rata baris di bawahnya */
+.br-saring{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.br-saring .br-cari{grid-column:1/-1;height:40px;border-radius:999px;border:1px solid var(--line);background:var(--card) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%236b7a99' stroke-width='2.4' stroke-linecap='round'%3E%3Ccircle cx='11' cy='11' r='7'/%3E%3Cpath d='m20 20-3.5-3.5'/%3E%3C/svg%3E") no-repeat 14px center/15px;padding:0 16px 0 38px;font-size:13px;box-shadow:var(--shadow);width:100%}
+.br-saring select{width:100%}
+.br-saring .pc,.sn-ctl > .pc{width:100%}
+.sn-ctl > .pc{grid-column:span 2}
+.btn-gelap{background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));color:#fff;border:0;box-shadow:var(--shadow);height:34px;padding:0 16px;border-radius:999px;font-weight:700;font-size:12.5px;cursor:pointer}
+.btn-gelap:hover{filter:brightness(1.15)}
+/* bagian di dalam dialog rincian: kepala pita kecil */
+.dl-sek{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--card)}
+.dl-sek > h4{margin:0;padding:8px 12px;font-size:10.5px;font-weight:800;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2);background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+.dl-sek > div{padding:10px 12px}
+.dl-sek .br-grp:last-child{margin-bottom:0}
+/* dialog daftar berita dikelompokkan per bulan, tiap kelompok bisa dilipat */
+.br-grp{border:1px solid var(--line);border-radius:12px;overflow:hidden;margin-bottom:10px}
+.br-grp > summary{display:flex;align-items:center;gap:8px;padding:9px 12px;cursor:pointer;list-style:none;background:var(--surface);font-weight:800;font-size:12.5px}
+.br-grp > summary::-webkit-details-marker{display:none}
+.br-grp > summary::after{content:"";margin-left:auto;width:7px;height:7px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform .15s}
+.br-grp:not([open]) > summary::after{transform:rotate(-45deg)}
+.br-grp > summary em{font-style:normal;font-size:10.5px;font-weight:700;padding:1px 8px;border-radius:999px;background:color-mix(in oklch, var(--brand2) 12%, transparent);color:var(--brand2)}
+.br-grp > .br-dlg-l{padding:8px}
+.br-mi3{grid-template-columns:minmax(0,1fr) minmax(0,1.2fr) 90px auto!important}
+.br-mi-m{font-size:11px;color:var(--ink2)}
+/* tren */
+#tren svg rect[data-tip]{cursor:pointer;transition:filter .12s}
+#tren svg rect[data-tip]:hover{filter:brightness(1.12) saturate(1.15)}
+#tren tr.klik{cursor:pointer}
+#tren .tw{border:0;box-shadow:none;border-radius:12px}
+#tren .tw th,#tren .tw td{text-align:center}
+#tren .tw th.l,#tren .tw td.l{text-align:left}
+#tren .tw thead th button{justify-content:center}
+#tren .kl-tb td{vertical-align:middle}
+#tren .kl-tb th,#tren .kl-tb td{padding-left:7px;padding-right:7px}
+/* kartu gempa: tren/dampak/berita memakai rupa Insight */
+:is(#tren,#dampak,#berita) .ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+:is(#tren,#dampak,#berita) .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+:is(#tren,#dampak,#berita) .ex-bd{padding:16px 22px 10px}
+:is(#tren,#dampak,#berita) .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+:is(#tren,#dampak,#berita) .ex-ft em{font-style:italic;opacity:.9}
+:is(#tren,#dampak,#berita) .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+:is(#tren,#dampak,#berita) .ex .ctl{margin:12px 0 0}
+:is(#tren,#dampak,#berita) .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+:is(#tren,#dampak,#berita) .ex-ey:empty{display:none}
+:is(#tren,#dampak,#berita) .ex .ctl .seg{display:flex;width:100%}
+:is(#tren,#dampak,#berita) .ex .ctl .seg button{flex:1;text-align:center}
+:is(#tren,#dampak,#berita) .ex .ctl:has(.seg ~ .seg){flex-wrap:nowrap}
+:is(#tren,#dampak,#berita) .ex .ctl:has(.seg ~ .seg) .seg{width:auto;flex:1 1 0;min-width:0}
+:is(#tren,#dampak,#berita) .ex svg{display:block;width:100%;height:auto;overflow:visible}
+:is(#tren,#dampak,#berita) .ex svg text{fill:currentColor}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .tw.sk{border:0;box-shadow:none;margin:0;overflow-x:auto;background:none}
+:is(#tren,#dampak,#berita) .ex [data-tip]{cursor:pointer}
+:is(#insight,#tren,#dampak,#berita) .ex-bd .kosong{padding:6px 0;margin:0}
+.ex-jd{display:flex;align-items:flex-start;justify-content:space-between;gap:14px}
+.ex-jd .bg-ex{flex:none;width:36px;height:36px;margin:-6px -8px 0 0;display:grid;place-items:center;border:0;background:transparent;color:var(--ink2);border-radius:10px;cursor:pointer}
+.ex-jd .bg-ex:hover{background:var(--surface);color:var(--ink)}
+.ex-jd .bg-ex svg{display:block;width:20px!important;height:20px}
+:is(#tren,#dampak,#berita) {display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
+#dampak .dk-kartu{display:grid;gap:16px}
+#berita .ex-bd .kosong{padding:10px 0}
+/* berita: butir daftar, sorotan, thumbnail */
+/* Peta berita: peta + panel samping */
+/* peta penuh di belakang, panel kiri & kanan mengambang di atasnya (seperti peta utama) */
+/* kartu berita: label negara asal di pojok kanan atas; meta jadi label */
+.br-kartu,.br-item{position:relative}
+.br-ng{position:absolute;top:-10px;right:10px;z-index:1;font-size:15px;line-height:1;padding:3px 6px;border-radius:999px;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow);white-space:nowrap}
+.br-meta{display:flex;align-items:center;gap:5px;color:var(--ink2);font-size:11.5px}
+.br-meta .br-fav{width:14px;height:14px}
+.br-meta2{display:flex;flex-wrap:wrap;gap:4px}
+.br-item .br-chip{margin-top:2px}
+.br-item b{font-size:13.5px!important;line-height:1.35}
+.br-klik{cursor:pointer;border-radius:8px;transition:background .12s}
+.br-klik:hover,.br-klik:focus-visible{background:var(--surface);outline:none}
+.br-dlg-l{max-height:none;margin:0}
+.br-lb{font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 14%, transparent);color:var(--w);white-space:nowrap}
+.br-pop-l a:hover span{text-decoration:underline}
+.br-pop-l span{font-weight:600;line-height:1.3}
+.br-pop-l small{color:var(--ink2);font-size:11px}
+.br-pop-l i{font-style:normal;font-weight:700}
+#berita .grid>*{min-width:0}
+#berita .tb3 td{overflow-wrap:anywhere;white-space:normal}
+.br-kartu,.br-sorot>*{min-width:0}
+.br-item{display:grid;gap:5px;padding:12px 14px;border:1px solid var(--line);border-radius:14px;background:var(--card);box-shadow:var(--shadow);align-content:start;transition:border-color .15s}
+.br-item:hover{border-color:var(--brand2)}
+.br-item{cursor:pointer}
+.br-item a{color:inherit;text-decoration:none}
+.br-item a:hover b{text-decoration:underline}
+.br-item b{font-size:14px;line-height:1.35}
+/* thumbnail + ikon media (tambalan karhutla, tanpa label negara) */
+.br-thumb{flex:none;width:96px;height:72px;border-radius:10px;object-fit:cover;background:var(--surface);border:1px solid var(--line)}
+.br-thumb.fb{object-fit:contain;padding:18px;background:var(--card)}
+.br-fav{width:14px;height:14px;border-radius:3px;vertical-align:-2px;margin-right:5px}
+.br-item.br-tb{grid-template-columns:minmax(0,1fr) 96px;column-gap:12px}
+.br-item.br-tb>*{grid-column:1}
+.br-item.br-tb>.br-thumb{grid-column:2;grid-row:1/span 4;align-self:start}
+.br-kartu .br-thumb{margin-left:auto}
+@media (max-width:520px){.br-thumb{width:72px;height:54px;border-radius:8px}.br-item.br-tb{grid-template-columns:minmax(0,1fr) 72px}}

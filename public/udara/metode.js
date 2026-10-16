@@ -4,7 +4,7 @@
 const Metode = {
   bagian() {
     const kolKat = KAT.map((k, i) => `<tr><td>${pilKat(i)}</td><td class="n">${k.r}</td><td class="n">${["0 sampai 50", "51 sampai 100", "101 sampai 200", "201 sampai 300", "di atas 300"][i]}</td>
-      <td>${["Aman beraktivitas di luar", "Kelompok sensitif kurangi aktivitas berat di luar", "Pakai masker, kurangi aktivitas di luar", "Tetap di dalam ruangan, pakai masker rapat", "Hindari aktivitas luar, cari ruang udara bersih"][i]}</td></tr>`).join("");
+      <td>${["Boleh beraktivitas di luar seperti biasa", "Kelompok sensitif kurangi aktivitas berat di luar", "Pakai masker, kurangi aktivitas di luar", "Tetap di dalam ruangan, pakai masker rapat", "Hindari aktivitas luar, cari ruang udara bersih"][i]}</td></tr>`).join("");
     return [
       ["Tentang", `<p>Halaman ini menunjukkan perkiraan PM2,5 empat hari ke depan, jarak pandang di bandara, dan berapa banyak orang yang menghirup udara tidak sehat. Angkanya perkiraan model, bukan ISPU resmi KLHK.</p>`],
       ["Kategori udara", `<div class="tw"><table><thead><tr><th>Kategori</th><th class="n">PM2,5 24 jam <span style="text-transform:none">(µg/m³)</span></th><th class="n">ISPU</th><th>Yang disarankan</th></tr></thead><tbody>${kolKat}</tbody></table></div>

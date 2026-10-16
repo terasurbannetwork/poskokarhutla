@@ -32,7 +32,9 @@ export function ruteBencana(B = REGISTRY) {
   return out;
 }
 
-export const sumberStatus = (B = REGISTRY) => hidup(B).flatMap(b => b.sumber_status || []);
+/* hanya bencana "aktif" yang menentukan 503 /api/status; tahap "uji" cuma dilaporkan (sumberUji), tak pernah membuat status merah */
+export const sumberStatus = (B = REGISTRY) => B.bencana.filter(b => b.status === "aktif").flatMap(b => b.sumber_status || []);
+export const sumberUji = (B = REGISTRY) => B.bencana.filter(b => b.status === "uji").flatMap(b => b.sumber_status || []);
 export const halStatistik = (B = REGISTRY) => [...hidup(B).map(b => b.id), ...HAL_TETAP];
 
 /* /sitemap.xml: asal = https://domain dari request. Tab tersembunyi tidak masuk. */

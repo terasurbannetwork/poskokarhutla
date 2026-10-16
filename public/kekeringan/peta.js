@@ -4,10 +4,9 @@ let peta = null;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 /* ruang peta yang terlihat diukur dari panel kiri/kanan dan dok legenda (bukan angka tetap), seperti padRuang karhutla */
-const kiriPad = () => { const r = s => document.querySelector(s)?.getBoundingClientRect(), pt = r("#p-peta"), pn = r(".panel"), tl = r(".tools");
-  if (innerWidth <= 900) return {top: 60, bottom: (pn?.height || innerHeight * .46) + 16, left: 16, right: 16};
-  const kiri = (pn?.width || 400) + 30, kanan = (tl?.width || 250) + 30, sisa = Math.max(0, kiri + kanan - (pt?.width || innerWidth) + 160), k = sisa ? Math.max(0, 1 - sisa / (kiri + kanan)) : 1;
-  return {top: 56, left: kiri * k, right: kanan * k, bottom: 90}; };
+const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
+  const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
 function kotak(fitur) { let a = [180, 90, -180, -90];
   const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
@@ -72,7 +71,7 @@ const Peta = {
   geoGrid() { const h = (S.grid.sel || .5) / 2, m = S.mode;
     return {type: "FeatureCollection", features: S.grid.grid.map((r, i) => ({type: "Feature", geometry: {type: "Polygon", coordinates: [[[r[1] - h, r[0] - h], [r[1] + h, r[0] - h], [r[1] + h, r[0] + h], [r[1] - h, r[0] + h], [r[1] - h, r[0] - h]]]},
       properties: {i, c: warnaSel(r, m)}}))}; },
-  segarkan() { if (!peta?.getSource("grid")) return; peta.getSource("grid").setData(this.geoGrid()); this.aturWilayah(false); },
+  segarkan() { if (!peta?.getSource("grid")) return; peta.getSource("grid").setData(this.geoGrid()); },
   async aturWilayah(terbang = true) {
     const j = S.jalur; let fc;
     if (j.length === 0) fc = S.geo.prov;
@@ -149,7 +148,7 @@ const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[dat
 $("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.mp;
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   setLapis("wilayah", S.mode === "status"); setLapis("grid", S.mode !== "status");
-  Peta.segarkan(); renderLegenda(); });
+  nanti(() => { Peta.segarkan(); renderLegenda(); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
   const k = i.dataset.l, id = {wilayah: ["wil-fill"], grid: ["grid-fill"], satelit: ["satelit"]}[k];
   if (k === "satelit") Peta.pasangSatelit();

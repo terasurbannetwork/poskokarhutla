@@ -12,7 +12,7 @@ const Metode = {
       ["Hujan harian (mm)", ...A.hujan.map((v, i) => `${v} ${["lebat", "sangat lebat", "ekstrem"][i]}`)],
       ["Embusan (km/jam)", ...A.angin_kmj.map((v, i) => `${v} ${["waspada", "siaga", "awas"][i]}`)]]);
     const batas = `<ul class="mt"><li>Deteksi Pantau Bencana dari prakiraan model, bukan pengukuran; sel model 0,25 derajat lebih luas dari puting beliung dan sel badai.</li><li>Ambang adalah hipotesis awal dan belum dikunci uji balik.</li><li>Badai guntur tidak ditampilkan: indeks angkat tidak ada di sumber.</li><li>Peringatan BMKG tidak dipetakan ulang ke tingkat Pantau Bencana.</li></ul>`;
-    $("#metode").innerHTML = [["Sumber data", sumber, "Sumber: BMKG, Open-Meteo, ECMWF"], ["Ambang", ambang, "Sumber: kelas hujan BMKG"], ["Batasan", batas, ""]]
+    $("#metode").innerHTML = [["Sumber data", sumber, "Sumber: BMKG, Open-Meteo, ECMWF"], ["Ambang", ambang, "Sumber: kelas hujan BMKG"], ["Batasan", batas, "Sumber: BMKG, Open-Meteo, ECMWF"]]
       .map(([j, isi, s]) => `<div data-ex="${j}">${Kartu.ex(j, "", "", isi, s).replace('<span class="ex-ey"></span>', "")}</div>`).join("");
   },
 };

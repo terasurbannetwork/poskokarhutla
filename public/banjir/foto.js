@@ -50,14 +50,14 @@ const Foto = (() => {
       el.dataset.siap = 1;
       el.innerHTML = `<div class="fl-wrap"><div class="fg-panel" id="fgSaring"></div><div class="fg-panel fg-isi"><div id="flIsi" class="fl-isi"><div class="fl-skel"></div><div class="fl-skel"></div><div class="fl-skel"></div></div><div class="fg-pg" id="fgPg"></div></div></div>`;
       el.addEventListener("click", e => {
-        const u = e.target.closest("[data-u]"); if (u) { G.urut = u.dataset.u; G.h = 0; el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-pressed", b === u)); return isi(); }
-        const k = e.target.closest("[data-k]"); if (k) { G.kat = G.kat === k.dataset.k ? "" : k.dataset.k; G.h = 0; el.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === G.kat)); return isi(); }
-        const h = e.target.closest("[data-h]"); if (h && !h.disabled) { G.h = +h.dataset.h; isi(); return el.scrollIntoView({block: "start"}); }
+        const u = e.target.closest("[data-u]"); if (u) { G.urut = u.dataset.u; G.h = 0; el.querySelectorAll("[data-u]").forEach(b => b.setAttribute("aria-pressed", b === u)); return nanti(isi); }
+        const k = e.target.closest("[data-k]"); if (k) { G.kat = G.kat === k.dataset.k ? "" : k.dataset.k; G.h = 0; el.querySelectorAll("[data-k]").forEach(b => b.setAttribute("aria-pressed", b.dataset.k === G.kat)); return nanti(isi); }
+        const h = e.target.closest("[data-h]"); if (h && !h.disabled) { G.h = +h.dataset.h; return nanti(() => { isi(); el.scrollIntoView({block: "start"}); }); }
         const c = e.target.closest("[data-fid]"); if (c) rinci(c.dataset.fid); });
       el.addEventListener("change", e => { const m = e.target.closest("input[data-fp]"); if (!m) return; const box = m.closest(".pm-menu");
         if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
         G.prov = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean); if (!G.prov.length) box.querySelector("input[value='']").checked = true;
-        box.closest("details").querySelector("summary").textContent = !G.prov.length ? "Semua provinsi" : G.prov.length === 1 ? namaProv(G.prov[0]) : G.prov.length + " provinsi"; G.h = 0; isi(); }); }
+        box.closest("details").querySelector("summary").textContent = !G.prov.length ? "Semua provinsi" : G.prov.length === 1 ? namaProv(G.prov[0]) : G.prov.length + " provinsi"; G.h = 0; nanti(isi); }); }
     await muat();
     if (!semua.length) { $("#flIsi").innerHTML = `<div class="fl-ajak" style="cursor:default"><span class="fl-bingkai"><span class="fl-lensa">${IK.kamera}</span></span><b>Belum ada foto banjir</b><small>Foto lapangan dari warga muncul di sini setelah disetujui admin.</small></div>`; $("#fgSaring")?.remove(); return; }
     const pv = [...new Set(semua.map(f => f.prov))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));

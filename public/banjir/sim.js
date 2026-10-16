@@ -121,7 +121,7 @@ const Simulasi = {
   tandaiBasi() { if (!this.hasilSk) return; this.basi = true; const j = $("#simJalan"); if (j) j.textContent = "Jalankan ulang"; },
   async jalan() {
     const s = $("#simStatus"); if (s) s.textContent = "Menghitung…";
-    await this.siapkan(this.prov); await new Promise(r => setTimeout(r, 0));
+    await this.siapkan(this.prov); await new Promise(nanti);
     const ids = this.ids(); this.hasilSk = {}; ids.forEach(id => this.hasilSk[id] = id === "dasar" ? this.dasar : this.hitung(this.preset(id)));
     /* yang dilihat pertama = skenario dengan kecamatan berubah terbanyak */
     const ubah = id => this.kunciLihat().filter(k => this.lv(this.dasar, k) !== this.lv(this.hasilSk[id], k)).length;
@@ -133,7 +133,7 @@ const Simulasi = {
     const wil = this.kab || namaProv(this.kode), kabs = [...new Set(Object.values(this.kec).map(c => c.kab))].sort();
     const geser = (id, lbl, min, max, step, v, tampil) => `<label class="simgeser"><span>${lbl}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${v}"><b class="num" id="${id}V">${tampil(v)}</b></label>`;
     const atur = {
-      hujan: geser("smX", "Pengali hujan", 1.25, 3, .25, o.x, v => "× " + fmt(v)),
+      hujan: geser("smX", "Pengali hujan", 1.25, 3, .25, o.x, v => fmt(v) + "×"),
       ekstrem: geser("smE", "Hujan 3 hari minimal", 50, 300, 10, o.ekstrem, v => fmt(v) + " mm"),
       jenuh: geser("smJ", "Hujan 7 hari ≥", 100, 300, 10, this.JENUH, v => fmt(v) + " mm"),
       sungai: geser("smS", "Debit sungai", 2, 3, 1, o.sungai, v => v === 3 ? "Q20" : "Q5"),
@@ -155,15 +155,16 @@ const Simulasi = {
       <p class="fnd" id="simStatus" aria-live="polite" style="margin-top:6px"></p>
       <div id="simHasil">${ada ? this.hasilHtml(ks) : ""}</div>`;
     el.onclick = e => { const b = e.target.closest("button"); if (!b) return;
-      if (b.dataset.sk) { const i = b.dataset.sk; this.on.has(i) ? this.on.delete(i) : this.on.add(i); if (this.hasilSk) this.basi = true; this.panel(); }
-      else if (b.dataset.b) { this.b = b.dataset.b; this.panel(); this.peta2(false); }
-      else if (b.dataset.lihat) { this.lihat = b.dataset.lihat; this.panel(); this.peta2(false); }
+      const tekan = () => b.setAttribute("aria-pressed", "true"), segar = peta => nanti(() => { this.panel(); if (peta) this.peta2(false); });
+      if (b.dataset.sk) { const i = b.dataset.sk; const on = !this.on.has(i); on ? this.on.add(i) : this.on.delete(i); b.setAttribute("aria-pressed", on); if (this.hasilSk) this.basi = true; segar(false); }
+      else if (b.dataset.b) { this.b = b.dataset.b; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); segar(true); }
+      else if (b.dataset.lihat) { this.lihat = b.dataset.lihat; tekan(); segar(true); }
       else if (b.id === "simJalan") this.jalan();
       else if (b.id === "simUtama") this.keUtama(); };
     $("#smProv").onchange = async e => { const ran = !!this.hasilSk; this.prov = e.target.value; this.kab = ""; this.hasilSk = null; await this.muat(); if (ran) this.jalan(); };
-    $("#smKab").onchange = e => { this.kab = e.target.value; this.panel(); this.peta2(true); };
-    $("#smHari").onchange = e => { this.hari = e.target.value === "maks" ? "maks" : +e.target.value; this.panel(); this.peta2(false); };
-    [["smX", v => o.x = v, v => "× " + fmt(v)], ["smE", v => o.ekstrem = v, v => fmt(v) + " mm"], ["smJ", v => this.JENUH = v, v => fmt(v) + " mm"], ["smS", v => o.sungai = v, v => v === 3 ? "Q20" : "Q5"]].forEach(([id, set, t]) => {
+    $("#smKab").onchange = e => { this.kab = e.target.value; nanti(() => { this.panel(); this.peta2(true); }); };
+    $("#smHari").onchange = e => { this.hari = e.target.value === "maks" ? "maks" : +e.target.value; nanti(() => { this.panel(); this.peta2(false); }); };
+    [["smX", v => o.x = v, v => fmt(v) + "×"], ["smE", v => o.ekstrem = v, v => fmt(v) + " mm"], ["smJ", v => this.JENUH = v, v => fmt(v) + " mm"], ["smS", v => o.sungai = v, v => v === 3 ? "Q20" : "Q5"]].forEach(([id, set, t]) => {
       const i = $("#" + id); if (i) i.oninput = () => { set(+i.value); $("#" + id + "V").textContent = t(+i.value); this.tandaiBasi(); }; });
     el.scrollTop = atas; this.legenda(); },
   legenda() {

@@ -7,7 +7,7 @@ import {perbaruiTitik, titikTerbaru} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
-import {ruteBencana, sumberStatus, sitemap} from "./bencana.js";
+import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
 import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
@@ -331,7 +331,8 @@ async function admin(env, req, url, id, kini) {
 
 /* ---------------- /api/status: umur data per sumber, 503 bila sumber kunci basi (untuk monitor uptime & langkah akhir CI) ---------------- */
 /* [nama, berkas aset, ambang jam (null = hanya dilaporkan)]. data/meta.json ditulis harian.py tiap 3 jam (titik.yml). */
-export const SUMBER_STATUS = sumberStatus();   // dari registry (public/bencana.json), bukan ditulis tangan
+export const SUMBER_STATUS = sumberStatus();
+export const SUMBER_UJI = sumberUji();   // tahap uji: dilaporkan di `uji`, tidak pernah ikut 503   // dari registry (public/bencana.json), bukan ditulis tangan
 /* "dibuat" selalu kunci pertama berkas: baca 1 KB awal saja, jangan urai berita.json 5 MB (batas CPU Workers) */
 async function dibuatAset(env, asal, jalur) {
   try {
@@ -344,14 +345,17 @@ async function dibuatAset(env, asal, jalur) {
     return Number.isNaN(w) ? null : w;
   } catch (e) { return null; }
 }
+async function umurSumber(env, url, kini, [jalur, ambang]) {
+  const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
+  return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
+}
 async function periksaStatus(env, url, kini) {
-  const sumber = {}, basi = [];
-  await Promise.all(SUMBER_STATUS.map(async ([nama, jalur, ambang]) => {
-    const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
-    sumber[nama] = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang};
-    if (ambang != null && (jam == null || jam > ambang)) basi.push(nama);
-  }));
-  return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber};
+  const sumber = {}, uji = {}, basi = [];
+  await Promise.all([
+    ...SUMBER_STATUS.map(async ([nama, ...r]) => { const {basi: b, ...o} = await umurSumber(env, url, kini, r); sumber[nama] = o; if (b) basi.push(nama); }),
+    ...SUMBER_UJI.map(async ([nama, ...r]) => { uji[nama] = await umurSumber(env, url, kini, r); }),   // informatif: `basi` di sini tidak memengaruhi ok
+  ]);
+  return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
 }
 const status = async (env, url, kini) => { const h = await periksaStatus(env, url, kini); return json(h, h.ok ? 200 : 503); };
 

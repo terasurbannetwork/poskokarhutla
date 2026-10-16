@@ -40,7 +40,7 @@ const Berita = {
         + (t === puncak ? Kartu.pil(X(i) - pw / 2, y - 24, lbl, "#c9503a", "#fff", 11)[0] : n <= 30 ? `<text x="${X(i)}" y="${y - 5}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".7">${lbl}</text>` : "")
         + (i % Math.ceil(n / 10) === 0 ? `<text x="${X(i)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity=".65">${this.tgP(t, {day: "numeric", month: "short"})}</text>` : ""); }).join("");
     const ini = hari.reduce((a, t) => a + jml(t), 0), lalu = semua.slice(-2 * n, -n).reduce((a, t) => a + jml(t), 0), d = lalu ? Math.round((ini / lalu - 1) * 100) : null;
-    const judul = `${Kartu.hl(fmt(ini) + " berita")} banjir, longsor, dan rob dalam ${n} hari terakhir${d != null && semua.length >= 2 * n ? `, ${Kartu.hl((d >= 0 ? "naik " : "turun ") + Math.abs(d) + "%")} dari ${n} hari sebelumnya` : ""}. Perhatian media memuncak pada ${Kartu.hl(this.tgP(puncak, {day: "numeric", month: "long"}))} dengan ${fmt(jml(puncak))} berita`;
+    const judul = `${Kartu.hl(fmt(ini) + " berita")} banjir, longsor, dan rob dalam ${n} hari terakhir${d != null && semua.length >= 2 * n ? `, ${Kartu.hl((d >= 0 ? "naik " : "turun ") + fmt(Math.abs(d)) + "%")} dari ${n} hari sebelumnya` : ""}. Perhatian media memuncak pada ${Kartu.hl(this.tgP(puncak, {day: "numeric", month: "long"}))} dengan ${fmt(jml(puncak))} berita`;
     const ctl = `<div class="seg">${[[14, "14 hari"], [30, "30 hari"], [120, "120 hari"]].map(([v, nm]) => `<button data-br="rentang" data-v="${v}" aria-pressed="${this.rentang === v}">${nm}</button>`).join("")}</div>`;
     return this.kartu("Volume berita", judul, `<svg viewBox="0 0 ${W} ${B + 22}" role="img" aria-label="Berita per hari">${g}</svg>`, "Sumber: Google News RSS", ctl); },
 
@@ -156,7 +156,7 @@ const Berita = {
 
   /* 5. daftar berita berpaginasi */
   saring() { const f = this.f, q = f.q.toLowerCase(), PV = String(f.prov || "").split(",").filter(Boolean);
-    return this.d.artikel.filter(a => (!PV.length || PV.some(k => a.prov?.includes(k))) && (!f.topik || a.topik?.includes(f.topik)) && (!q || (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase().includes(q))); },
+    return this.d.artikel.filter(a => (!PV.length || PV.some(k => a.prov?.includes(k))) && (!f.topik || a.topik?.includes(f.topik)) && (!q || (a._k ||= (a.judul + " " + (a.kab || []).join(" ") + " " + a.sumber).toLowerCase()).includes(q))); },
   exDaftar() {
     const pv = [...new Set(this.d.artikel.flatMap(a => a.prov || []))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     const ctl = `<details class="pmulti"><summary>Semua provinsi</summary><div class="pm-menu"><label><input type="checkbox" data-fm="prov" value="" checked><span>Semua provinsi (${pv.length})</span></label>${pv.map(k => `<label><input type="checkbox" data-fm="prov" value="${k}"><span>${esc(namaProv(k))}</span></label>`).join("")}</div></details>`
@@ -175,14 +175,14 @@ const Berita = {
     const el = $("#berita");
     el.onclick = e => {
       const kartu = e.target.closest(".br-item"); if (kartu && !e.target.closest("a, button, [data-tip], select, input")) { const a = kartu.querySelector("a[href]"); if (a) return window.open(a.href, "_blank", "noopener"); }
-      const r = e.target.closest("[data-br]"); if (r) { this[r.dataset.br] = +r.dataset.v; return nanti(() => this.render()); }
-      const tr = e.target.closest("[data-topikr]"); if (tr) { const k = tr.dataset.topikr; return this.rinciKumpulan(`Topik: ${TOPIK_B[k] || k}`, this.d.artikel.filter(a => a.topik?.includes(k))); }
-      const md = e.target.closest("[data-media]"); if (md) { const m = md.dataset.media; return this.rinciKumpulan(`Media: ${esc(m)}`, this.d.artikel.filter(a => a.sumber === m)); }
-      const h = e.target.closest("[data-h]"); if (h) { this.f.hal = +h.dataset.h; return this.ulangDaftar(); } };
+      const r = e.target.closest("[data-br]"); if (r) { this[r.dataset.br] = +r.dataset.v; r.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === r)); return nanti(() => this.render()); }
+      const tr = e.target.closest("[data-topikr]"); if (tr) { const k = tr.dataset.topikr; return nanti(() => this.rinciKumpulan(`Topik: ${TOPIK_B[k] || k}`, this.d.artikel.filter(a => a.topik?.includes(k)))); }
+      const md = e.target.closest("[data-media]"); if (md) { const m = md.dataset.media; return nanti(() => this.rinciKumpulan(`Media: ${esc(m)}`, this.d.artikel.filter(a => a.sumber === m))); }
+      const h = e.target.closest("[data-h]"); if (h) { this.f.hal = +h.dataset.h; return nanti(() => this.ulangDaftar()); } };
     el.addEventListener("change", e => { const m = e.target.closest("input[data-fm]"); if (!m) return; const box = m.closest(".pm-menu");
       if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
       const P = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean); if (!P.length) box.querySelector("input[value='']").checked = true;
-      this.f.prov = P.join(","); this.f.hal = 0; box.closest("details").querySelector("summary").textContent = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi"; this.ulangDaftar(); });
-    el.oninput = e => { const x = e.target.closest("[data-f]"); if (!x) return; this.f[x.dataset.f] = x.value; this.f.hal = 0; clearTimeout(this._t); this._t = setTimeout(() => this.ulangDaftar(), x.tagName === "INPUT" ? 250 : 0); };
+      this.f.prov = P.join(","); this.f.hal = 0; box.closest("details").querySelector("summary").textContent = !P.length ? "Semua provinsi" : P.length === 1 ? namaProv(P[0]) : P.length + " provinsi"; nanti(() => this.ulangDaftar()); });
+    el.oninput = e => { const x = e.target.closest("[data-f]"); if (!x) return; this.f[x.dataset.f] = x.value; this.f.hal = 0; clearTimeout(this._t); const g = () => nanti(() => this.ulangDaftar()); if (x.tagName === "INPUT") this._t = setTimeout(g, 250); else g(); };
     this.ulangDaftar(); },
 };

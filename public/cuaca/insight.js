@@ -1,4 +1,6 @@
 "use strict";
+/* chrome urgen: halaman aktif langsung berpindah, isi tabel menyusul di ulang() */
+const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".pgn-b").forEach(x => { if (!/^\d+$/.test(x.textContent)) return; const on = x.dataset.h === h; x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); }); };
 /* ================================================================ insight */
 /* Kartu Insight cuaca ekstrem: anatomi sama dengan karhutla dan banjir (pil kategori, judul satu kalimat dengan angka merah, grafik berangka,
    legenda tengah dan "Sumber:"), mesin kartu dari public/inti. Kartu tanpa isi dibuang (A18); tiap kartu bisa dibagikan lewat ikon (bagi.js). */
@@ -117,8 +119,10 @@ const Insight = {
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.onclick = e => {
-      const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; this.ulang(box); } return; }
+      const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }
       const th = e.target.closest("th button[data-k]"); if (th) { const box = th.closest("[data-ex]"), st = this.T[box.dataset.ex], k = th.dataset.k;
-        st.turun = st.urut === k ? !st.turun : true; st.urut = k; st.hal = 0; this.ulang(box); } };
+        st.turun = st.urut === k ? !st.turun : true; st.urut = k; st.hal = 0;
+        box.querySelectorAll("th").forEach(h => { const b = h.querySelector("button"), on = b === th; h.setAttribute("aria-sort", on ? (st.turun ? "descending" : "ascending") : "none"); b.querySelector("i").textContent = on ? (st.turun ? "↓" : "↑") : ""; });
+        this.ulang(box); } };
   },
 };

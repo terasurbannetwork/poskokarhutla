@@ -1,4 +1,6 @@
 "use strict";
+/* chrome urgen: halaman aktif langsung berpindah, isi tabel menyusul di ulang() */
+const halUrgen = (pg, box) => { const h = pg.dataset.h; box.querySelectorAll(".pgn-b").forEach(x => { if (!/^\d+$/.test(x.textContent)) return; const on = x.dataset.h === h; x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); }); };
 /* ================================================================ insight
    Kartu bergaya Insight karhutla lewat mesin bersama public/inti (Kartu.ex/hl/pil/seg/leg, paginasi, pengurutKepala): pil kategori, judul satu kalimat
    berangka merah, grafik dengan angka tertulis, kaki legenda dan "Sumber:". Semua angka PERKIRAAN MODEL CAMS (bukan ISPU resmi). */
@@ -96,7 +98,7 @@ const Insight = {
     el.onclick = e => {
       const bg = e.target.closest(".bagi-ex"); if (bg) return bagikan(bg.closest(".ex").querySelector("h3").textContent, "/udara/insight");
       const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
-      const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; this.ulang(box); } return; }
+      const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); nanti(() => Peta.pilihProv(pv.dataset.prov)); } };
   },
 };

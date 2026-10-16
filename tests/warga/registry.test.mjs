@@ -6,25 +6,29 @@ import {readFileSync} from "node:fs";
 import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
 import REG from "../../src/bencana.generated.js";
-import {ruteBencana, sumberStatus, halStatistik, sitemap} from "../../src/bencana.js";
+import {ruteBencana, sumberStatus, sumberUji, halStatistik, sitemap} from "../../src/bencana.js";
 import {metaRute} from "../../src/og_meta.js";
-import worker, {HTML_RUTE, SUMBER_STATUS} from "../../src/worker.js";
+import worker, {HTML_RUTE, SUMBER_STATUS, SUMBER_UJI} from "../../src/worker.js";
 
 const salinan = () => structuredClone(REG);
 const cocok = (R, j) => R.find(([re]) => re.test(j));
 const baru = {id: "uji1", nama: "Bencana Baru", rute: "/uji1/", status: "aktif", tab: ["peta", "tren", "metode"], tab_sembunyi: ["metode"],
   kejadian: {awalan: "X", nama: "Kejadian baru", nama_jamak: "Kejadian baru"}, sumber_status: [["uji1", "/uji1/data/meta.json", 6]]};
 
-test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa (mati) tetap 404", () => {
+test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa: uji dilayani, mati 404", () => {
   const LAMA = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
   for (const j of ["/", "/index.html", "/banjir", "/banjir/", "/banjir/index.html", "/tentang", "/peta/", "/k/K0009", "/sim/K12", "/operasi", "/keputusan", "/sarana", "/prioritas",
-    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/gempa", "/gempa/", "/gempa/peta", "/gempa/k/G0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
+    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
     const lama = LAMA.test(j) || /^\/banjir\/(peta|insight|simulasi|rob)\/?$/.test(j) || /^\/(index\.html)?$/.test(j) || /^\/banjir(\/|\/index\.html)?$/.test(j) || j === "/tentang-halaman" || j === "/privasi";
     assert.equal(!!cocok(HTML_RUTE, j), lama, j);
   }
   // tahap buka bertahap: halaman bencana 'uji' sudah dilayani (jadi tidak 404); 'mati' (gempa) tetap 404
   for (const id of ["cuaca", "udara", "kekeringan", "gunungapi"]) assert.equal(cocok(HTML_RUTE, `/${id}/`)?.[1], `/${id}/index.html`, id);
-  assert.ok(!cocok(HTML_RUTE, "/gempa/"), "gempa mati harus 404");
+  // gempa tahap uji: halaman, tab (juga yang tersembunyi dari nav), dan kejadian G dilayani; mati = 404 lagi
+  for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
+  assert.ok(!cocok(HTML_RUTE, "/gempa/k/K0001"), "kejadian karhutla bukan di gempa");
+  const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
+  for (const j of ["/gempa", "/gempa/", "/gempa/peta"]) assert.ok(!cocok(ruteBencana(MATI), j), `gempa mati harus 404: ${j}`);
   for (const j of ["/semua", "/semua/", "/semua/index.html"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/semua/index.html", j);
   assert.ok(!cocok(HTML_RUTE, "/semua/x"));
   assert.ok(!sitemap("https://x.test").includes("/semua"), "/semua belum masuk sitemap");
@@ -36,17 +40,19 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
   const B = salinan(); B.bencana.push(baru, {...baru, id: "mati1", rute: "/mati1/", status: "mati"});
   const R = ruteBencana(B);
   for (const j of ["/uji1", "/uji1/", "/uji1/peta", "/uji1/tren/", "/uji1/k/X0001", "/uji1/sim/X12"]) assert.equal(cocok(R, j)?.[1], "/uji1/index.html", j);
-  for (const j of ["/uji1/x", "/uji1/data/meta.json", "/uji1/k/K0001", "/mati1/", "/mati1/peta", "/gempa/"]) assert.ok(!cocok(R, j), j);
+  for (const j of ["/uji1/x", "/uji1/data/meta.json", "/uji1/k/K0001", "/mati1/", "/mati1/peta"]) assert.ok(!cocok(R, j), j);
   assert.ok(!cocok(ruteBencana(REG), "/uji1/"), "registry asli tidak berubah");
 });
 
 test("statistik dan sumber status mengikuti registry", () => {
-  assert.deepEqual(halStatistik(), ["karhutla", "banjir", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
-  // tahap buka bertahap: yang tidak mati (aktif + uji) ikut; gempa (mati) belum
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "cuaca", "dampak", "gunungapi", "kekeringan", "kualitas", "titik"]);
+  assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
+  // hanya "aktif" menentukan 503 /api/status; "uji" (banjir, gempa, ...) dilaporkan terpisah
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["berita", "dampak", "titik"]);
+  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["banjir", "cuaca", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas"]);
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
-  assert.ok(!halStatistik(B).includes("gempa") && !sumberStatus(B).some(s => s[0] === "gempa_terbaru"));
+  const M = salinan(); M.bencana.find(b => b.id === "gempa").status = "mati";
+  assert.ok(!halStatistik(M).includes("gempa") && !sumberUji(M).some(s => s[0] === "gempa_terbaru") && !sumberStatus(M).some(s => s[0] === "gempa_terbaru"), "mati: tak melahirkan apa pun");
 });
 
 test("OG: tab, kejadian, dan halaman utama bencana baru dari registry", () => {
@@ -58,7 +64,9 @@ test("OG: tab, kejadian, dan halaman utama bencana baru dari registry", () => {
   assert.equal(metaRute(u("/uji1/k/X0001"), M, B).url, S + "/uji1/k/X0001");
   assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Pantau Bencana Karhutla");
   assert.equal(metaRute(u("/uji1/tren"), M), null, "registry asli tidak mengenalnya");
-  assert.equal(metaRute(u("/gempa/peta"), M, B), null);
+  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Pantau Bencana Gempa & Tsunami", "gempa (uji) punya OG");
+  const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
+  assert.equal(metaRute(u("/gempa/peta"), M, MATI), null, "gempa mati tidak punya OG");
 });
 
 test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain dari request", async () => {
