@@ -1,0 +1,31 @@
+/* ---------- posko & sarana banjir (setara karhutla; .kartu, .rp, .chk, .fold sudah ada) ---------- */
+.chk.srn{grid-template-columns:minmax(0,1fr) 92px 70px 104px 104px}
+.chk.srn .n{text-align:right}
+.chk.srn input[type=checkbox]{width:18px;height:18px;accent-color:var(--brand2);vertical-align:middle}
+.chk.srn small.m{display:none}
+.fold > button .num{margin-left:auto;white-space:nowrap}
+.fold > button .num + .chev{margin-left:8px}
+#posko .tw td small,#posko .tw td b{font-variant-numeric:tabular-nums}
+.cetak-judul{display:none}
+.dlg .db>*{min-width:0}
+@media (max-width:700px){
+  .chk.srn{grid-template-columns:1fr 1fr;row-gap:2px}
+  .chk.srn>:first-child{grid-column:1 / -1}
+  .chk.srn.lbl{display:none}
+  .chk.srn .n,.chk.srn label{text-align:left!important}
+  .chk.srn small.m{display:inline;color:var(--ink2);font-size:11px}
+  #asumsiB .fld,#asumsiB input{width:100%!important}
+  #asumsiB .fld{flex:1 1 140px}
+}
+@media print{
+  body.cetak-sarana header.top,body.cetak-sarana .toast,body.cetak-sarana #tip,body.cetak-sarana #basi,body.cetak-sarana .np,body.cetak-sarana .tarik{display:none!important}
+  body.cetak-sarana main{position:static}
+  body.cetak-sarana .page{display:none!important}
+  body.cetak-sarana #p-sarana{display:block!important;position:static;overflow:visible;padding:0}
+  body.cetak-sarana .fold{break-inside:avoid;box-shadow:none}
+  body.cetak-sarana .fold > div{display:block!important}
+  body.cetak-sarana .fold .chev{display:none}
+  body.cetak-sarana .cetak-judul{display:block;font-weight:700;margin:0 0 10px}
+  body.cetak-sarana .chk.srn{grid-template-columns:minmax(0,1fr) 92px 70px 104px 104px}
+  body.cetak-sarana .chk.srn small.m{display:none}
+}

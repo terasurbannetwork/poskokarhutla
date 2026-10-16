@@ -1,0 +1,62 @@
+/* ---------- insight: exhibit bergaya konsultan ---------- */
+.ins-hero{position:relative;border-radius:var(--r);overflow:hidden;min-height:260px;display:flex;align-items:flex-end;margin-bottom:18px;background:var(--brand)}
+.ins-hero img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ins-hero::after{content:"";position:absolute;inset:0;background:linear-gradient(180deg,oklch(15% .03 256 / .05) 30%,oklch(15% .03 256 / .85))}
+.ins-hero div{position:relative;z-index:1;padding:22px 24px;color:#fff;max-width:900px}
+.ins-hero h2{font-size:clamp(22px,3vw,32px);line-height:1.15}
+.ins-hero p{margin:6px 0 0;opacity:.9;font-size:14px}
+.ins-hero small{position:absolute;right:10px;top:8px;text-shadow:0 1px 2px rgb(0 0 0 / .6);z-index:1;color:#fff;opacity:.7;font-size:10.5px}
+.ex{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:22px 24px 16px;margin-bottom:18px}
+.ex h3{font-size:clamp(17px,2vw,21px);line-height:1.3;max-width:62ch}
+.ex .hl{color:var(--bad)}
+.ex .sub{margin:8px 0 0;font-weight:700;font-size:13.5px}
+.ex .unit{margin:2px 0 12px;color:var(--ink2);font-size:12.5px}
+.ex .fn{margin:10px 0 0;color:var(--ink2);font-size:11.5px;border-top:1px solid var(--line);padding-top:8px}
+.ex svg{display:block;width:100%;height:auto;overflow:visible}
+.ex svg text{fill:currentColor}
+.ex .ctl{display:flex;gap:8px;flex-wrap:wrap;margin:-4px 0 10px}
+.ex .ctl select{height:32px;border-radius:999px;border:1px solid var(--line);background:var(--surface);padding:0 12px;font-size:12.5px}
+.ex2{display:grid;grid-template-columns:1fr;gap:18px}
+@media (min-width:1000px){.ex2{grid-template-columns:1fr 1fr}.ex2 .ex{margin-bottom:0}}
+.foto{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:12px;margin:0 0 18px}
+.foto figure{margin:0;border-radius:var(--r);overflow:hidden;background:var(--card);border:1px solid var(--line)}
+.foto img{display:block;width:100%;aspect-ratio:3/2;object-fit:cover}
+.foto figcaption{padding:8px 10px;font-size:12px;line-height:1.35}
+.foto figcaption small{display:block;color:var(--ink2);font-size:10.5px;margin-top:2px}
+#tip{position:fixed;z-index:60;pointer-events:none;background:oklch(18% .035 256);color:#fff;font-size:12px;line-height:1.4;padding:7px 10px;border-radius:8px;box-shadow:var(--shadow-lg);max-width:260px;opacity:0;transition:opacity .12s}
+#tip.on{opacity:1}
+.ex [data-tip]{cursor:pointer}
+.ex [data-tip]:hover{opacity:.82}
+.ex .hov{transition:fill .15s}
+.ex g:hover>.hov{fill:var(--surface)}
+.ex [data-set]{cursor:pointer}
+@keyframes tumbuh{from{transform:scaleY(0)}}
+@keyframes tumbuhX{from{transform:scaleX(0)}}
+@keyframes muncul{from{opacity:0}}
+.ex .gy{transform-box:fill-box;transform-origin:bottom;animation:tumbuh .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 18ms)}
+.ex .gx{transform-box:fill-box;transform-origin:left;animation:tumbuhX .55s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
+.ex .gf{animation:muncul .5s both;animation-delay:calc(var(--i,0) * 18ms + .2s)}
+@media (prefers-reduced-motion:reduce){.ex .gy,.ex .gx,.ex .gf{animation:none}}
+.sens{display:grid;grid-template-columns:220px 1fr 210px;gap:10px;align-items:center;font-size:12.5px;padding:3px 0}
+@media (max-width:700px){.sens{grid-template-columns:1fr;gap:3px;padding:6px 0}}
+figure.banner{position:relative;margin:0 0 16px;border-radius:var(--r);overflow:hidden;height:150px;background:var(--surface)}
+figure.banner img{width:100%;height:100%;object-fit:cover;display:block}
+figure.banner::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,oklch(15% .03 256 / .7),transparent 60%)}
+figure.banner figcaption{position:absolute;left:16px;bottom:12px;right:16px;z-index:1;color:#fff;font-size:13px;font-weight:600;max-width:60ch}
+figure.banner figcaption a{display:block;color:#fff;opacity:.75;font-size:10.5px;font-weight:400;margin-top:2px}
+@media (max-width:700px){figure.banner{height:110px}}
+.kv>*{min-width:0}
+.ringkas{padding:10px 10px 4px}
+.ringkas .kv{margin:6px 0 4px}
+.garis-waktu{display:flex}
+.logo{display:flex;flex:none}.logo img{display:block;border-radius:9px}
+.tarik{position:absolute;top:0;bottom:0;width:10px;cursor:col-resize;z-index:6;pointer-events:auto;touch-action:none}
+.tarik::after{content:"";position:absolute;top:50%;left:3px;width:4px;height:44px;margin-top:-22px;border-radius:4px;background:var(--line);transition:background .15s}
+.tarik:hover::after,.tarik.aktif::after{background:var(--brand2)}
+.panel .tarik{right:-9px}
+.tools .tarik{left:-9px}
+@media (max-width:900px){.tarik{display:none}}
+ol.rek{margin:0;padding:0;list-style:none;display:grid;gap:6px;counter-reset:r}
+ol.rek li{counter-increment:r;display:grid;grid-template-columns:22px 1fr;gap:2px 8px;font-size:12.5px;line-height:1.45;padding:8px 10px;border-radius:10px;background:var(--surface);border-left:3px solid var(--w)}
+ol.rek li::before{content:counter(r);grid-row:span 2;width:20px;height:20px;border-radius:50%;background:var(--w);color:#fff;font-size:11px;font-weight:800;display:grid;place-items:center}
+ol.rek li small{grid-column:2;color:var(--ink2);font-size:11px}

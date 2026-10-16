@@ -1,0 +1,34 @@
+"use strict";
+/* ================================================================ cari */
+$("#cari").addEventListener("input", async e => {
+  const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
+  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.st.kec).map(k => { const p = k.split("|"); return {k, n: p[2], j: "Kec. · " + p[1]}; })];
+  const hs = idx.filter(i => i.n.toLowerCase().includes(q)).slice(0, 12);
+  h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan di wilayah berstatus.</div>`; h.hidden = false; });
+$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
+  if (p.length === 3) { S.jalur = p.slice(0, 2); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); } else turun(b.dataset.k); });
+
+/* tooltip */
+(() => { const t = $("#tip");
+  document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); t.innerHTML = x.dataset.tip; t.classList.add("on"); });
+  document.addEventListener("pointermove", e => { if (!t.classList.contains("on")) return; t.style.left = Math.min(innerWidth - t.offsetWidth - 8, e.clientX + 14) + "px"; t.style.top = Math.max(8, e.clientY - t.offsetHeight - 12) + "px"; });
+  document.addEventListener("scroll", () => t.classList.remove("on"), true); })();
+
+/* ================================================================ mulai */
+(async () => {
+  try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
+  renderHari(); await Peta.init(); renderLegenda();
+  $("#muat").classList.add("hilang");
+  const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) bukaTab(h, false);
+})();
+/* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
+(() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
+  const h = document.createElement("div"); h.className = "tarik"; h.title = "Tarik untuk mengubah lebar"; h.setAttribute("role", "separator"); h.setAttribute("aria-orientation", "vertical"); el.appendChild(h);
+  h.addEventListener("pointerdown", e => { e.preventDefault(); h.setPointerCapture(e.pointerId); h.classList.add("aktif"); const x0 = e.clientX, w = el.getBoundingClientRect().width;
+    const gerak = ev => { const lebar = Math.max(min, Math.min(max, w + (sisi === "kanan" ? ev.clientX - x0 : x0 - ev.clientX))); el.style.width = lebar + "px"; };
+    const lepas = () => { h.classList.remove("aktif"); h.removeEventListener("pointermove", gerak); h.removeEventListener("pointerup", lepas); simpanLokal(kunci, Math.round(el.getBoundingClientRect().width)); if (typeof peta !== "undefined" && peta) peta.resize(); };
+    h.addEventListener("pointermove", gerak); h.addEventListener("pointerup", lepas); });
+  h.addEventListener("dblclick", () => { el.style.width = ""; simpanLokal(kunci, null); }); };
+  atur(document.querySelector(".panel"), "lebar-panel", "kanan", 320, Math.min(900, innerWidth * .6));
+  atur(document.querySelector(".tools"), "lebar-tools", "kiri", 220, 520); })();
+document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });

@@ -1,0 +1,18 @@
+/* keputusan banjir: semua kelas lain (.card .kpi .tb3 .tb2 .hbar .sens .seg .fld .pill .rp) sudah ada di halaman */
+#keputusan .tb3 td.n small{display:block;color:var(--ink2);font-size:10.5px;font-weight:500}
+#keputusan td a{font-weight:600}
+#keputusan .tb2 td:first-child,#keputusan .tb3 td:not(.n){white-space:normal}
+/* simulasi skenario */
+.sm-atur{display:flex;flex-wrap:wrap;gap:12px 18px;align-items:flex-end}
+.sm-atur>*{display:flex;flex-direction:column;gap:4px;min-width:0;max-width:100%}
+.sm-atur input[type=number]{height:32px;width:150px;border-radius:10px;border:1px solid var(--line);background:var(--surface);padding:0 10px}
+.sm-atur .sm-cek{flex-direction:row;align-items:center;gap:6px;font-size:13px;height:32px}
+.sm-atur .sm-cek input{accent-color:var(--brand2);width:16px;height:16px}
+.sm-peta{overflow:hidden;display:flex;flex-direction:column}
+#smPeta{height:420px;flex:none}
+.sm-leg{display:flex;flex-wrap:wrap;gap:6px 12px;align-items:center;padding:8px 12px;font-size:11.5px;color:var(--ink2);border-top:1px solid var(--line)}
+.sm-leg span{display:inline-flex;align-items:center;gap:5px}
+.sm-leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+#simulasi .tb3 td small{display:block}
+@media (max-width:700px){#smPeta{height:300px}.sm-atur input[type=number]{width:100%}}
+#simulasi .tb2 td:first-child,#simulasi .tb3 td:not(.n){white-space:normal}
