@@ -46,9 +46,9 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
 
 test("statistik dan sumber status mengikuti registry", () => {
   assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
-  // hanya "aktif" menentukan 503 /api/status; "uji" (banjir, gempa, ...) dilaporkan terpisah
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["berita", "dampak", "titik"]);
-  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["banjir", "cuaca", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas"]);
+  // hanya "aktif" menentukan 503 /api/status (banjir aktif sejak 16 Okt); "uji" (gempa, cuaca, ...) dilaporkan terpisah
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "titik"]);
+  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas"]);
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
   const M = salinan(); M.bencana.find(b => b.id === "gempa").status = "mati";
@@ -74,7 +74,8 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
   for (const j of ["/", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/gempa/", "/banjir/"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
+  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/gempa/", "/cuaca/", "/banjir/posko", "/banjir/metode"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
+  for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
   assert.ok(!x.includes("terasurban"));
   const B = salinan(); B.bencana.push(baru);
   const l2 = sitemap("https://a.b", B);

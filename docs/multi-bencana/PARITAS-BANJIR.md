@@ -4,7 +4,7 @@ Audit akhir 16 Okt 2026 (HEAD 02e7568 + perbaikan audit ini), `wrangler dev --lo
 
 Keterangan: SAMA = identik atau memakai mesin bersama yang sama. D = beda yang sah karena data/bahaya (alasan tertulis). BEDA = selisih yang belum bisa ditutup.
 
-Hasil: 44 SAMA, 11 D, **1 BEDA** (Foto kirim, di luar wilayah `layar-peta`). Status registry tidak diubah; belum "SIAP AKTIF" selama BEDA itu terbuka.
+Hasil: 45 SAMA, 11 D, 0 BEDA (Foto kirim dipasang 16 Okt 2026). Status registry tidak diubah.
 
 ## Diperbaiki pada audit ini
 
@@ -106,7 +106,7 @@ Hasil: 44 SAMA, 11 D, **1 BEDA** (Foto kirim, di luar wilayah `layar-peta`). Sta
 | # | Hasil | Catatan |
 | --- | --- | --- |
 | Galeri, saring, urut, paginasi, kartu `fg-k` | SAMA | |
-| **F3 tombol "Ambil foto" dan kalimat ajakan** | **BEDA** | Server `/api/foto` baru menerima kategori karhutla; tombol dibuang sesuai A18 sampai `warga-api` menambah kategori banjir (migrasi foto.bahaya, RINCI L13). Pemilik: `warga-api`. Setelah itu `banjir/foto.js` memasang `Foto.kirim` seperti `public/foto.js` |
+| F3 tombol "Ambil foto", kalimat ajakan, alur kirim (Turnstile, EXIF/GPS, batas ukuran, pernyataan) | SAMA | Satu kode: `public/foto.js` diparameterkan lewat `window.FOTO_BENCANA` (disetel `public/banjir/foto.js`), mengirim `bencana=banjir` dan kategori banjir dari server (migrasi 0013). Diuji lokal: kirim dari `/banjir/` tampil di galeri banjir, tidak di karhutla. Tombol "Peta" di rincian tidak ada (banjir belum punya lapisan foto di peta) |
 
 ## 9. Kaki, bagikan, jejak
 

@@ -3,9 +3,12 @@
    API: /api/foto* (src/foto.js). Skrip klasik dimuat SETELAH skrip utama index.html. Global: S, peta, $, esc, fmt, namaProv,
    jamWIB, bukaTab, toast. Tidak ada angka karangan: semua dari /api/foto. Foto antrean (belum disetujui admin) tidak pernah tampil. */
 (() => {
-  const API = "/api/foto", JAM = 36e5, BEN = "karhutla";   // galeri ini = bencana akar; modul lain punya galerinya sendiri dan memakai ?bencana=
-  let NAMA_BEN = "karhutla";
-  const KAT = {api: ["Api", "#d9603b"], asap: ["Asap", "#6b7489"], padam: ["Pemadaman", "#2f7fb8"], dampak: ["Dampak", "#c49a1c"], lainnya: ["Lainnya", "#3d9461"]};
+  const API = "/api/foto", JAM = 36e5, BEN = window.FOTO_BENCANA || "karhutla";   // halaman bencana lain (mis. /banjir/foto.js) menyetel window.FOTO_BENCANA sebelum memuat berkas ini; tanpa itu = karhutla
+  let NAMA_BEN = BEN;
+  const KAT_AWAL = {karhutla: {api: ["Api", "#d9603b"], asap: ["Asap", "#6b7489"], padam: ["Pemadaman", "#2f7fb8"], dampak: ["Dampak", "#c49a1c"], lainnya: ["Lainnya", "#3d9461"]},
+    banjir: {genangan: ["Genangan", "#3f7fb8"], arus: ["Arus", "#2b8c86"], longsor: ["Longsor", "#9a7448"], rob: ["Rob", "#5f6fb0"], evakuasi: ["Evakuasi", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]}};
+  const KAT = KAT_AWAL[BEN] || KAT_AWAL.karhutla;
+  const CONTOH_KET = {karhutla: "Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi", banjir: "Apa yang terlihat? Mis. air setinggi lutut di jalan utama, arus deras di sungai"};
   /* nama bencana dan nama kategori dari registry (public/bencana.json: nama, foto_kategori); warna dan ikon tetap milik galeri ini. Gagal dimuat = nilai di atas. */
   fetch("/bencana.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { const b = j?.bencana?.find(x => x.id === BEN); if (!b) return;
     NAMA_BEN = b.nama.toLowerCase(); for (const [k, n] of b.foto_kategori || []) if (KAT[k]) KAT[k][0] = n; });
@@ -22,7 +25,10 @@
   const cap = (wil, l, t) => `<div class="fl-cap"><span><b>${wil ? `Kec. ${esc(wil.kec)}` : "Lokasi"}</b>${wil ? `<small>${esc(wil.kab)}, ${esc(namaProv(wil.prov))}</small>` : ""}<small>${l ? koord(l) : ""}</small><small>${esc(t || "")}</small></span></div>`;
   /* ikon kategori (pemilik, 15 Okt 2026) */
   const IKAT = {api: '<path d="M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z"/>', asap: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>',
-    padam: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', dampak: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>', lainnya: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>'};
+    padam: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', dampak: '<path d="M12 4 2.5 20h19z"/><path d="M12 10v4.5M12 17.5v.01"/>', lainnya: '<circle cx="6" cy="12" r="1.3"/><circle cx="12" cy="12" r="1.3"/><circle cx="18" cy="12" r="1.3"/>',
+    genangan: '<path d="M2 16c2 0 2-1.5 4-1.5S8 16 10 16s2-1.5 4-1.5S16 16 18 16s2-1.5 4-1.5M2 20c2 0 2-1.5 4-1.5S8 20 10 20s2-1.5 4-1.5S16 20 18 20s2-1.5 4-1.5M12 3c2 3 4 5 4 8a4 4 0 0 1-8 0c0-3 2-5 4-8z"/>',
+    arus: '<path d="M3 8h11a3 3 0 1 0-3-3M3 13h15a3 3 0 1 1-3 3M3 18h7"/>', longsor: '<path d="M3 20 9 8l4 6 3-4 5 10zM14 4l2 2"/>',
+    rob: '<path d="M2 15c2 0 2-1.5 4-1.5S8 15 10 15s2-1.5 4-1.5S16 15 18 15s2-1.5 4-1.5M2 19c2 0 2-1.5 4-1.5S8 19 10 19s2-1.5 4-1.5S16 19 18 19M12 3v6M9 6l3-3 3 3"/>', evakuasi: '<circle cx="12" cy="5" r="2"/><path d="M12 8v6l-3 5M12 14l3 5M8 11h8"/>'};
   const ikat = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IKAT[k] || IKAT.lainnya}</svg>`;
   const MAKS_N = 5, PENGIRIM = "fl-pengirim";   /* 5 = batas unggah per jam di server; data pengirim diingat di perangkat ini */
   const IK = {
@@ -180,7 +186,7 @@
             <div><dt>${IK.orang}Kredit</dt><dd>${f.kredit ? esc(f.kredit) : "Anonim"}</dd></div></dl>
           <div class="fl-aksi"><button data-suka aria-pressed="${!!f.suka_saya}" aria-label="Dukung foto ini" title="Dukung">${IK.naik}<span>${fmt(f.suka)}</span></button>
             <button data-fokus-kom aria-label="Komentar">${IK.kom}<span>${fmt(f.komentar)}</span></button>
-            <button data-bagi>${IK.bagi}Bagikan</button><button data-peta>${IK.pin}Peta</button></div>
+            <button data-bagi>${IK.bagi}Bagikan</button>${BEN === "karhutla" ? `<button data-peta>${IK.pin}Peta</button>` : ""}</div>
           <div class="fl-bagi" hidden>${[["wa", "WhatsApp"], ["x", "X"], ["fb", "Facebook"], ["tg", "Telegram"], ["salin", "Salin tautan"]].map(([k2, n]) => `<button data-ke="${k2}">${n}</button>`).join("")}</div>
           <section class="fl-kom"><h4>Komentar</h4>
             <form class="fl-kom-form"><input name="nama" maxlength="60" placeholder="Nama (opsional)" autocomplete="name"><textarea name="teks" maxlength="280" rows="2" required placeholder="Tulis komentar…"></textarea><button class="fl-pri kecil">Kirim</button></form>
@@ -287,7 +293,7 @@
         <p class="fl-galat" role="alert" hidden></p>
         <div class="fl-lanjut"><div class="fl-panel"><div><span>Lokasi</span><b data-lok>Membaca GPS…</b></div><div><span>Koordinat</span><b data-koord>–</b></div><div><span>Waktu</span><b data-wkt>–</b></div><div><span>Berkas</span><b data-uk>–</b></div></div>
         <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#e8743b">${IK.kamera}</span>Tentang foto ini</h4><fieldset class="fl-kat"><legend>Kategori</legend>${Object.entries(KAT).map(([kk, [n, w]], i) => `<label style="--k:${w}"><input type="radio" name="kategori" value="${kk}" ${i ? "" : "checked"}>${ikat(kk)}${n}</label>`).join("")}</fieldset>
-        <label class="fl-f">Keterangan <small>(opsional)</small><textarea name="keterangan" maxlength="280" rows="2" placeholder="Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi"></textarea></label></section>
+        <label class="fl-f">Keterangan <small>(opsional)</small><textarea name="keterangan" maxlength="280" rows="2" placeholder="${CONTOH_KET[BEN] || CONTOH_KET.karhutla}"></textarea></label></section>
         <section class="fl-wadah"><h4><span class="fl-w-ik" style="--w:#4f8fc4">${IK.orang}</span>Pengirim</h4><div class="fl-dua2"><label class="fl-f">Nama <small>(opsional)</small><input name="nama" maxlength="60" autocomplete="name"></label>
           <label class="fl-f">Email <small>(opsional, tidak ditampilkan)</small><input name="email" type="email" maxlength="254" autocomplete="email"></label></div>
         <label class="fl-tog"><input type="checkbox" name="tampil_nama" value="1"><span><b>Tampilkan nama saya sebagai kredit</b><small>Bila tidak aktif, foto tampil sebagai "Anonim".</small></span></label></section>
@@ -442,7 +448,7 @@
   /* ------------------------------------------------------------ pasang */
   window.Foto = {render, lapis, buka: id => Rinci.buka(id), kirim: () => Kirim.buka()};
   /* fitur yang belum bisa dipakai disembunyikan, bukan dinonaktifkan: tanpa R2 (MEDIA) tab & lapisan tidak tampil */
-  konfig().then(k => { if (k.media) return pasangPeta();
+  konfig().then(k => { if (k.media) return BEN === "karhutla" ? pasangPeta() : null;   /* lapisan foto di peta baru ada di karhutla */
     document.querySelector('#tabs button[data-t="foto"]')?.setAttribute("hidden", "");
     document.querySelector('#lapis input[data-l="foto"]')?.closest("label")?.setAttribute("hidden", ""); });
   const fid = location.pathname.match(/^\/f\/([0-9a-f]{16})\/?$/)?.[1];

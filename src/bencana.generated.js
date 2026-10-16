@@ -181,7 +181,7 @@ export default {
       "warna": "#4f9be0",
       "rute": "/banjir/",
       "data": "/banjir/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": true,
       "tab": [
         "peta",
@@ -204,9 +204,6 @@ export default {
         "sarana"
       ],
       "tab_sembunyi": [
-        "berita",
-        "dampak",
-        "foto",
         "posko",
         "informasi",
         "metode",

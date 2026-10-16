@@ -356,15 +356,19 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
   } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; }
 });
 
-uji("status: sumber bencana tahap uji (banjir basi, gempa_terbaru tanpa tabel D1) tidak pernah 503; hanya aktif yang menentukan", async () => {
-  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(31), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+uji("status: sumber bencana tahap uji (kekeringan basi, gempa_terbaru tanpa tabel D1) tidak pernah 503; hanya aktif yang menentukan", async () => {
+  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(31), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
   try {
     const r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `uji basi/hilang harus tetap 200: ${r.teks}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);
-    assert.equal(r.j.uji.banjir.umur_jam, 31); assert.equal(r.j.uji.banjir.basi, true, "banjir (uji) 31 jam > ambang dilaporkan basi tetapi informatif");
+    assert.equal(r.j.uji.kekeringan.umur_jam, 31); assert.equal(r.j.uji.kekeringan.basi, true, "kekeringan (uji) 31 jam > ambang dilaporkan basi tetapi informatif");
     assert.equal(r.j.uji.gempa_terbaru.umur_jam, null); assert.equal(r.j.uji.gempa_terbaru.basi, true, "tabel gempa_sumber belum ada = belum ada data, bukan galat");
-    assert.ok(!("banjir" in r.j.sumber) && !("gempa_terbaru" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
-    ASET_UJI["/data/meta.json"] = metaUji(9);   // sumber aktif basi tetap 503 walau uji ikut basi
+    assert.ok(!("kekeringan" in r.j.sumber) && !("gempa_terbaru" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
+    assert.equal(r.j.sumber.banjir.umur_jam, 20, "banjir aktif (16 Okt) masuk `sumber`");
+    ASET_UJI["/banjir/data/meta.json"] = metaUji(31);   // banjir aktif basi = 503
+    const b = await panggil("GET", "/api/status");
+    assert.equal(b.status, 503); assert.deepEqual(b.j.basi, ["banjir"]);
+    ASET_UJI["/banjir/data/meta.json"] = metaUji(20); ASET_UJI["/data/meta.json"] = metaUji(9);   // sumber aktif basi tetap 503 walau uji ikut basi
     const s = await panggil("GET", "/api/status");
     assert.equal(s.status, 503); assert.deepEqual(s.j.basi, ["titik"]);
   } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; }
