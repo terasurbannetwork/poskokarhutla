@@ -30,8 +30,9 @@ norm = _u.norm
 PROVINSI = json.load(open(os.path.join(_AKAR, "public/gempa/data/riwayat_prov.json")))["nama"]
 
 ID = "gempa"
-DATA = "public/gempa/data"
-RAW = "data/raw/gempa/berita"
+DATA = "public/banjir/data"   # folder yang ikut cache + terbit banjir.yml (public/gempa/data ditimpa checkout main saat terbit)
+KELUAR = "berita_gempa.json"
+RAW = "data/raw/banjir/berita_gempa"   # di bawah folder yang sudah ikut cache banjir.yml
 JENDELA_HARI = 120
 SENTIMEN_TERUJI = False
 

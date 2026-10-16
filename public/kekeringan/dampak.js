@@ -1,7 +1,7 @@
 "use strict";
 /* ================================================================ dampak */
 /* Tab Dampak kekeringan: rupa sama dengan Dampak banjir/karhutla (pintasan bagian di kiri, pita bagian berwarna, kartu bergaya Insight, gaya dk-* dari public/inti/dampak.css).
-   Data: data/dampak.json (scripts/kekeringan/dampak.py). Bagian yang datanya tidak ada dibuang (A18): tanpa kecamatan Siaga/Awas hari ini, bagian Penduduk tidak muncul;
+   Data: ../banjir/data/dampak_kekeringan.json (scripts/kekeringan/dampak.py, harian lewat scripts/banjir/posko.py). Bagian yang datanya tidak ada dibuang (A18): tanpa kecamatan Siaga/Awas hari ini, bagian Penduduk tidak muncul;
    Korban dan kerugian historis (BNPB) ada selama sumbernya ada. Sekolah, fasilitas kesehatan, dan lahan pertanian tidak ada: datanya hanya mencakup provinsi prioritas karhutla atau tidak ada.
    Kerugian ekonomi (rupiah) belum ada asumsi bernama yang bersumber kuat, jadi tidak ditampilkan. */
 const Dampak = (() => {
@@ -53,7 +53,7 @@ const Dampak = (() => {
       let rf = 0; document.addEventListener("scroll", () => { if (rf) return; rf = requestAnimationFrame(() => { rf = 0; let a = ""; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = b.dataset.bag; });
         el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", b.dataset.ke === a)); }); }, {capture: true, passive: true}); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak kekeringan…</div>`;
-      try { D = await muatJSON("data/dampak.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
+      try { D = await muatJSON("../banjir/data/dampak_kekeringan.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
     const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
     const ada = Object.keys(BAG).filter(k => isi.includes(`id="dk-${k}"`));
     el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div id="dkIsi">${isi}</div></div>`; }

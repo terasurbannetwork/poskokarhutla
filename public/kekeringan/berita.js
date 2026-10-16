@@ -1,7 +1,7 @@
 "use strict";
 /* ================================================================ berita */
 /* Tab Berita kekeringan: rupa dan anatomi sama dengan tab Berita banjir/karhutla (kartu bergaya Insight: pil kategori, judul berangka, grafik, kaki "Sumber:";
-   daftar berpaginasi, pil topik). Data: data/berita.json (scripts/kekeringan/berita.py, dijalankan tangan: tanpa workflow kekeringan; `dibuat` ditampilkan di kaki). Nada/sentimen TIDAK ditampilkan selama
+   daftar berpaginasi, pil topik). Data: ../banjir/data/berita_kekeringan.json (scripts/kekeringan/berita.py, harian lewat scripts/banjir/posko.py; `dibuat` ditampilkan di kaki). Nada/sentimen TIDAK ditampilkan selama
    `sentimen_teruji` false (belum ada label uji manusia): tidak ada kartu sentimen, tidak ada pil nada, warna batang/gelembung satu warna.
    Dibuang dulu (data belum ada): celah liputan, pantauan media, video, berita internasional. Mesin kartu dari public/inti. */
 const TOPIK_B = {kejadian: "Kejadian kekeringan", air_bersih: "Air bersih", pertanian: "Pertanian", korban: "Korban", penanganan: "Penanganan", cuaca: "Cuaca", kebakaran: "Kebakaran"};
@@ -24,7 +24,7 @@ const Berita = {
   async render() {
     const el = $("#berita");
     if (!this.d) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat berita…</div>`;
-      try { this.d = await muatJSON("data/berita.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data berita belum tersedia.</div>`; return; } }
+      try { this.d = await muatJSON("../banjir/data/berita_kekeringan.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data berita belum tersedia.</div>`; return; } }
     el.innerHTML = [this.exHarian(), this.exPeta(), this.exSorotan(), this.exTopik(), this.exDaftar()].join("");
     this.pasangPeta(); this.ikat(); },
 

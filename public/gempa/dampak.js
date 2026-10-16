@@ -1,6 +1,6 @@
 "use strict";
 /* ================================================================ dampak gempa */
-/* Tab Dampak gempa: penduduk yang tinggal di kecamatan berindeks bahaya gempa tinggi (InaRISK x WorldPop), data/dampak.json (scripts/gempa/dampak.py).
+/* Tab Dampak gempa: penduduk yang tinggal di kecamatan berindeks bahaya gempa tinggi (InaRISK x WorldPop), ../banjir/data/dampak_gempa.json (scripts/gempa/dampak.py, harian lewat scripts/banjir/posko.py).
    Ini paparan bahaya jangka panjang, BUKAN perkiraan guncangan satu gempa: model guncangan (guncangan.js) belum dipakai karena koefisiennya belum diverifikasi.
    Bagian yang datanya tidak ada dibuang (A18): sekolah, fasilitas kesehatan, jalan, kelas PAGER, korban historis (DIBI gempa) belum punya data gempa. Rupiah tidak ditampilkan. */
 const Dampak = (() => {
@@ -34,7 +34,7 @@ const Dampak = (() => {
     if (!el.dataset.siap) { el.dataset.siap = 1;
       el.addEventListener("click", e => { const s = e.target.closest("[data-set]"); if (!s) return; st[s.dataset.set] = s.dataset.v; nanti(() => { el.innerHTML = D ? gambar() : ""; }); }); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak gempa…</div>`;
-      try { D = await muatJSON("data/dampak.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
+      try { D = await muatJSON("../banjir/data/dampak_gempa.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
     el.innerHTML = gambar(); }
   return {render};
 })();

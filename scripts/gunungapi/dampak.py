@@ -1,4 +1,4 @@
-"""Dampak gunung api -> public/gunungapi/data/dampak.json
+"""Dampak gunung api -> public/banjir/data/dampak_gunungapi.json
 
   terpapar  jiwa dalam radius rekomendasi PVMBG tiap gunung berstatus Level II ke atas (penduduk_radius di public/data/gunungapi_status.json,
             WorldPop kisi 25 km, jadi ORDE BESAR, bukan hitungan desa), per gunung dan per level. Tanpa jaringan.
@@ -18,7 +18,7 @@ API = "https://data.bnpb.go.id/api/3/action/"
 JENIS = "ERUPSI GUNUNG API"
 METRIK = [("kejadian", r"Jumlah Kejadian Bencana"), ("meninggal", r"Korban Meninggal"), ("terdampak", r"Korban Terdampak"),
           ("mengungsi", r"Korban Mengungsi"), ("rumah_rusak", r"Jumlah Rumah Rusak")]
-KELUAR = os.path.join(AKAR, "public/gunungapi/data/dampak.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/dampak_gunungapi.json")
 
 
 def terpapar(gunung):

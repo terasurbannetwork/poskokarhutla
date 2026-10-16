@@ -1,4 +1,4 @@
-"""Penduduk terpapar bahaya gempa per provinsi -> public/gempa/data/dampak.json
+"""Penduduk terpapar bahaya gempa per provinsi -> public/banjir/data/dampak_gempa.json
 
 Silang dua berkas yang sudah ada: indeks bahaya gempa InaRISK per pusat kecamatan (public/gempa/data/inarisk_gempa.json, 0-1)
 dan penduduk per kecamatan (public/data/penduduk.json `kec`, WorldPop). Kelas indeks: rendah < 1/3, sedang 1/3 sampai < 2/3, tinggi >= 2/3
@@ -44,7 +44,7 @@ def tulis():
            "batas": [round(b, 3) for b in BATAS], "nasional": nas, "kec_tanpa_penduduk": tanpa, "prov": prov,
            "sumber": {"bahaya": ind["sumber"], "penduduk": pen["sumber"]},
            "catatan": "Penduduk seluruh kecamatan menurut kelas indeks bahaya di pusat kecamatan; kelas = tiga sama lebar dari indeks 0-1."}
-    with open(os.path.join(AKAR, "public/gempa/data/dampak.json"), "w") as f:
+    with open(os.path.join(AKAR, "public/banjir/data/dampak_gempa.json"), "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"dampak: tinggi {nas['tinggi']:,} jiwa, sedang {nas['sedang']:,}, rendah {nas['rendah']:,}; {tanpa} kecamatan tanpa penduduk")
 

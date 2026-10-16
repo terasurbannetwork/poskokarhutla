@@ -31,7 +31,8 @@ norm = _u.norm
 PROVINSI = _muat("scripts/banjir/wilayah.py", "banjir_wilayah").PROVINSI   # kode -> nama provinsi, tabel statis yang sama dengan modul lain
 
 ID = "gunungapi"
-DATA = "public/gunungapi/data"
+DATA = "public/banjir/data"   # folder yang ikut cache + terbit banjir.yml (public/gunungapi/data ditimpa checkout main saat terbit)
+KELUAR = "berita_gunungapi.json"
 RAW = "data/raw/banjir/berita_gunungapi"   # di bawah folder yang sudah ikut cache banjir.yml
 JENDELA_HARI = 120
 SENTIMEN_TERUJI = False
@@ -160,7 +161,7 @@ def beri_lokasi(artikel, pola):
 
 def olah_lokasi():
     """Baca berita.json hasil mesin, isi lokasi gunung, tulis ulang (atomik)."""
-    p = os.path.join(_AKAR, DATA, "berita.json")
+    p = os.path.join(_AKAR, DATA, KELUAR)
     d = json.load(open(p))
     kat = json.load(open(os.path.join(_AKAR, "public/gunungapi/data/gunung.json")))
     n = beri_lokasi(d["artikel"], pola_gunung(kat))

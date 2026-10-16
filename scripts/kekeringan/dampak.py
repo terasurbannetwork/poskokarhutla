@@ -1,4 +1,4 @@
-"""Dampak kekeringan, tanpa jaringan -> public/kekeringan/data/dampak.json
+"""Dampak kekeringan, tanpa jaringan -> public/banjir/data/dampak_kekeringan.json
 
   terpapar  jiwa di kecamatan berstatus Awas/Siaga kekeringan hari ini, nasional dan per provinsi, serta jumlah kabupaten/kota
             (public/data/kekeringan_wilayah.json dan kekeringan_meta.json; penduduk WorldPop 2026 = semua penghuni kecamatan berstatus, bukan hanya yang kehilangan air).
@@ -13,7 +13,7 @@ import datetime as dt, json, os, sys
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 WIB = dt.timezone(dt.timedelta(hours=7))
-KELUAR = os.path.join(AKAR, "public/kekeringan/data/dampak.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/dampak_kekeringan.json")
 
 
 def terpapar(wil, nasional):

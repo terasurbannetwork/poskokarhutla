@@ -496,7 +496,7 @@ MAKS_ARTIKEL = 1500
 
 
 def jalankan(L, ambil_rss=True, isi_hari=0, akar=AKAR, sekarang=None):
-    """Panen -> arsip bergulir data/raw/berita/<id>/arsip.json -> <L.DATA>/berita.json. Mengembalikan dict keluaran."""
+    """Panen -> arsip bergulir data/raw/berita/<id>/arsip.json -> <L.DATA>/<L.KELUAR, bawaan berita.json>. Mengembalikan dict keluaran."""
     t0 = time.time()
     sekarang = sekarang or dt.datetime.now(WIB)
     raw = os.path.join(akar, getattr(L, "RAW", os.path.join("data/raw/berita", L.ID)))
@@ -526,7 +526,7 @@ def jalankan(L, ambil_rss=True, isi_hari=0, akar=AKAR, sekarang=None):
            "metode": L.METODE,
            "ringkasan": {"diambil": len(baru), "arsip": len(arsip), "artikel": len(semua), "cerita": n_cerita,
                          "berlokasi": round(sum(1 for x in semua if x["prov"]) / max(1, len(semua)), 3), "detik": round(time.time() - t0)}}
-    with open(os.path.join(akar, L.DATA, "berita.json"), "w") as f:
+    with open(os.path.join(akar, L.DATA, getattr(L, "KELUAR", "berita.json")), "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(json.dumps(out["ringkasan"]), file=sys.stderr)
     return out

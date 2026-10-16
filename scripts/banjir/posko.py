@@ -291,3 +291,19 @@ if __name__ == "__main__":
         magma = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../gunungapi/magma.py")
         if subprocess.call([sys.executable, magma, "uji"]) != 0 or subprocess.call([sys.executable, magma]) != 0:
             print("::warning title=gunungapi::magma.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # berita + dampak modul lain, harian (aturan A22). Keluaran HARUS di public/banjir/data/{berita,dampak}_<id>.json dan arsip mentah di
+        # data/raw/banjir/berita_<id>: hanya dua folder itu yang di-cache, di-commit, dan diterbitkan banjir.yml/data.yml/titik.yml/terbit.yml.
+        # Modul baru (cuaca, udara) cukup menaruh scripts/<id>/berita.py|dampak.py berbentuk sama (uji + jalan) dan menambah id di sini.
+        # Urutan: setelah magma.py (dampak gunungapi membaca public/data/gunungapi_status.json).
+        base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
+        for m in ("gempa", "gunungapi", "kekeringan", "cuaca", "udara"):
+            for s in ("dampak", "berita"):
+                p = os.path.join(base, m, s + ".py")
+                if not os.path.exists(p):
+                    continue
+                try:   # cache arsip hilang = isi ulang 120 hari (± 8 mnt); batas waktu supaya tidak menahan terbit
+                    ok = subprocess.call([sys.executable, p, "uji"]) == 0 and subprocess.call([sys.executable, p], timeout=900) == 0
+                except subprocess.TimeoutExpired:
+                    ok = False
+                if not ok:
+                    print(f"::warning title={m}-{s}::{m}/{s}.py gagal; berkas lamanya dibiarkan", file=sys.stderr)

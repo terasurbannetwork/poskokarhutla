@@ -29,8 +29,9 @@ norm = _u.norm
 PROVINSI = _muat("scripts/banjir/wilayah.py", "banjir_wilayah").PROVINSI   # kode -> nama provinsi, tabel statis yang sama dengan modul lain
 
 ID = "kekeringan"
-DATA = "public/kekeringan/data"
-RAW = "data/raw/berita/kekeringan"
+DATA = "public/banjir/data"   # folder yang ikut cache + terbit banjir.yml (public/kekeringan/data ditimpa checkout main saat terbit)
+KELUAR = "berita_kekeringan.json"
+RAW = "data/raw/banjir/berita_kekeringan"   # di bawah folder yang sudah ikut cache banjir.yml
 JENDELA_HARI = 120
 SENTIMEN_TERUJI = False
 
