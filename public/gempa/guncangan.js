@@ -10,7 +10,28 @@
     var P = model.param, vs0 = model.vs30_baku || VS30;
 
     function kelasZhao(v) { return v >= 600 ? "I" : v >= 300 ? "II" : v >= 200 ? "III" : "IV"; }
-    function tebakJenis(dalam) { return dalam >= 50 ? "intraslab" : "kerak"; }
+    function jarakSegmen(lat, lon, a, b) {
+      var k = Math.cos(lat * Math.PI / 180), px = (a[0] - lon) * k, py = a[1] - lat, qx = (b[0] - lon) * k, qy = b[1] - lat;
+      var dx = qx - px, dy = qy - py;
+      var t = dx === 0 && dy === 0 ? 0 : Math.max(0, Math.min(1, -(px * dx + py * dy) / (dx * dx + dy * dy)));
+      return Math.hypot(px + t * dx, py + t * dy) * Math.PI / 180 * R_BUMI;
+    }
+    function dekatPalung(lat, lon) {
+      return P.palung.some(function (l) {
+        for (var i = 0; i < l.length - 1; i++) if (jarakSegmen(lat, lon, l[i], l[i + 1]) <= P.radius_palung_km) return true;
+        return false;
+      });
+    }
+    /* >= 50 km intraslab; 15-50 km dan M >= 7: antarmuka bila <= 200 km dari palung subduksi, tanpa lat/lon error; selebihnya kerak */
+    function tebakJenis(dalam, m, lat, lon) {
+      if (dalam >= 50) return "intraslab";
+      if (m != null && m >= 7 && dalam >= 15 && dalam < 50) {
+        if (lat == null || lon == null) throw new Error("gempa dangkal M>=7 (15-50 km) butuh jenis eksplisit atau lat/lon");
+        return dekatPalung(lat, lon) ? "antarmuka" : "kerak";
+      }
+      return "kerak";
+    }
+    function ekstrapolasi(v) { return !(P.mmi_valid_min <= v && v <= P.mmi_valid_maks); }
     function rjb(m, repi) { var w = P.wells_coppersmith94; return Math.max(0, repi - Math.pow(10, w.a + w.b * m) / 4); }
 
     function bssa(m, rj, vs30) {
@@ -28,9 +49,12 @@
     }
 
     function zhao(m, x, h, jenis, vs30) {
-      var c = P.zhao06_pga, r = x + c.c * Math.exp(c.d * m);
+      var c = P.zhao06_pga;
+      m = Math.min(Math.max(m, 0), c.mag_maks); h = Math.min(h, c.h_maks);
+      var r = x + c.c * Math.exp(c.d * m);
       var ln = c.a * m + c.b * x - Math.log(r) + (h >= c.hc ? c.e * (h - c.hc) : 0) + c.C[kelasZhao(vs30)];
-      ln += jenis === "antarmuka" ? c.SI : c.SS + c.SSL * Math.log(x);
+      if (jenis === "antarmuka") ln += c.SI + c.PI * (m - c.MCI) + c.QI * Math.pow(m - c.MCI, 2) + c.WI;
+      else ln += c.SS + c.SSL * Math.log(x) + c.PS * (m - c.MCS) + c.QS * Math.pow(m - c.MCS, 2) + c.WS;
       return Math.exp(ln);
     }
 
@@ -48,11 +72,11 @@
     }
 
     function mmi(m, repi, dalam, jenis, vs30) {
-      return pgaKeMmi(pga(m, repi, dalam, jenis || tebakJenis(dalam), vs30 == null ? vs0 : vs30));
+      return pgaKeMmi(pga(m, repi, dalam, jenis || tebakJenis(dalam, m), vs30 == null ? vs0 : vs30));
     }
 
     function jendelaKm(m, dalam, jenis, vs30) {
-      jenis = jenis || tebakJenis(dalam);
+      jenis = jenis || tebakJenis(dalam, m);
       var lo = 1, hi = P.jendela_maks_km;
       if (mmi(m, hi, dalam, jenis, vs30) >= P.ambang_jendela) return Math.floor(hi);
       for (var i = 0; i < 40; i++) {
@@ -70,17 +94,17 @@
 
     /* pusat = {kunci: [lat, lon]} (public/banjir/data/pusat_kec.json); hasil hanya kecamatan di dalam jendelaKm */
     function kecamatan(gm, pusat, vs30) {
-      var jenis = gm.jenis || tebakJenis(gm.dalam), win = jendelaKm(gm.m, gm.dalam, jenis, vs30), out = {};
+      var jenis = gm.jenis || tebakJenis(gm.dalam, gm.m, gm.lat, gm.lon), win = jendelaKm(gm.m, gm.dalam, jenis, vs30), out = {};
       for (var k in pusat) {
         var d = jarakKm(gm.lat, gm.lon, pusat[k][0], pusat[k][1]);
-        if (d <= win) out[k] = mmi(gm.m, d, gm.dalam, jenis, vs30);
+        if (d <= win) { var v = mmi(gm.m, d, gm.dalam, jenis, vs30); out[k] = { mmi: v, ekstrapolasi: ekstrapolasi(v) }; }
       }
       return out;
     }
 
-    return { mmi: mmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d), v == null ? vs0 : v); },
+    return { mmi: mmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d, m), v == null ? vs0 : v); },
              jendelaKm: function (m, d, j, v) { return jendelaKm(m, d, j, v == null ? vs0 : v); },
-             kecamatan: function (gm, p, v) { return kecamatan(gm, p, v == null ? vs0 : v); }, tebakJenis: tebakJenis };
+             kecamatan: function (gm, p, v) { return kecamatan(gm, p, v == null ? vs0 : v); }, tebakJenis: tebakJenis, ekstrapolasi: ekstrapolasi };
   }
 
   g.GempaGuncangan = { pasang: pasang };
