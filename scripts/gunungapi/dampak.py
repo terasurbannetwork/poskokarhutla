@@ -1,6 +1,6 @@
 """Dampak gunung api -> public/banjir/data/dampak_gunungapi.json
 
-  terpapar  jiwa dalam radius rekomendasi PVMBG tiap gunung berstatus Level II ke atas (penduduk_radius di public/data/gunungapi_status.json,
+  terpapar  jiwa dalam radius rekomendasi PVMBG tiap gunung berstatus Level II ke atas (penduduk_radius di public/banjir/data/gunungapi_status.json,
             WorldPop kisi 25 km, jadi ORDE BESAR, bukan hitungan desa), per gunung dan per level. Tanpa jaringan.
   tahunan   kejadian erupsi dan korbannya per tahun 2010-2024 (BNPB, data.bnpb.go.id, jenis "ERUPSI GUNUNG API"): kejadian, meninggal, terdampak,
             mengungsi, rumah rusak. Hanya angka yang tercatat; bila BNPB tak bisa diakses dan belum ada berkas lama, bagian ini tidak ada (A18).
@@ -72,7 +72,7 @@ def tahunan():
 
 
 def tulis():
-    st = json.load(open(os.path.join(AKAR, "public/data/gunungapi_status.json")))
+    st = json.load(open(os.path.join(AKAR, "public/banjir/data/gunungapi_status.json")))
     lama = json.load(open(KELUAR)) if os.path.exists(KELUAR) else {}
     try:
         th = tahunan()

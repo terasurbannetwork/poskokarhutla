@@ -54,7 +54,7 @@ const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElem
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
 /* ================================================================ data */
 async function muatData() {
-  const st = await muatJSON("../data/gunungapi_status.json");
+  const st = await muatJSON("../banjir/data/gunungapi_status.json");
   if (!st.gunung?.length) throw new Error("data gunung api kosong");
   S.st = st; muatJSON("../geo/provinsi.json").then(g => { S.geo.prov = g; }).catch(() => {});
   $("#upd").textContent = "Data " + jamWIB(st.dibuat);

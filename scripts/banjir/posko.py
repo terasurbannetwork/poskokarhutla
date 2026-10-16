@@ -294,7 +294,7 @@ if __name__ == "__main__":
         # berita + dampak modul lain, harian (aturan A22). Keluaran HARUS di public/banjir/data/{berita,dampak}_<id>.json dan arsip mentah di
         # data/raw/banjir/berita_<id>: hanya dua folder itu yang di-cache, di-commit, dan diterbitkan banjir.yml/data.yml/titik.yml/terbit.yml.
         # Modul baru (cuaca, udara) cukup menaruh scripts/<id>/berita.py|dampak.py berbentuk sama (uji + jalan) dan menambah id di sini.
-        # Urutan: setelah magma.py (dampak gunungapi membaca public/data/gunungapi_status.json).
+        # Urutan: setelah magma.py (dampak gunungapi membaca public/banjir/data/gunungapi_status.json).
         base = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..")
         for m in ("gempa", "gunungapi", "kekeringan", "cuaca", "udara"):
             for s in ("dampak", "berita"):

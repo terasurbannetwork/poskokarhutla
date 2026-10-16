@@ -7,7 +7,7 @@ Diperiksa live 16 Okt 2026 (tidak ada API terbuka; yang ada halaman HTML publik)
 Smithsonian GVP menjawab 403 dari luar peramban dan GDACS hanya memuat gunung berstatus kejadian (sedikit, banyak di luar negeri),
 jadi dua-duanya tidak dipakai di sini. KRB (peta kawasan rawan bencana) hanya berupa unduhan gambar tanpa lisensi jelas: dibuang.
 
-Keluaran: public/data/gunungapi_status.json. Katalog koordinat statis: public/gunungapi/data/gunung.json (di-commit; gunung baru
+Keluaran: public/banjir/data/gunungapi_status.json. Katalog koordinat statis: public/gunungapi/data/gunung.json (di-commit; gunung baru
 ditambahkan otomatis dari laporan hariannya). Level I Normal tidak punya cincin radius (laporannya tidak diambil).
 Pemakaian:  python3 scripts/gunungapi/magma.py [uji]
 """
@@ -16,7 +16,7 @@ import datetime as dt, html, json, math, os, re, sys, time, urllib.parse, urllib
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 BASIS = "https://magma.esdm.go.id"
 UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
-KELUAR = os.path.join(AKAR, "public/data/gunungapi_status.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/gunungapi_status.json")
 KATALOG = os.path.join(AKAR, "public/gunungapi/data/gunung.json")
 WIB = dt.timezone(dt.timedelta(hours=7))
 ZONA = {"WIB": 7, "WITA": 8, "WIT": 9}

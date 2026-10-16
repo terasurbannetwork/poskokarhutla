@@ -739,7 +739,7 @@ export default {
       "sumber_status": [
         [
           "gunungapi",
-          "/data/gunungapi_status.json",
+          "/banjir/data/gunungapi_status.json",
           null
         ]
       ],
