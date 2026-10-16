@@ -5,7 +5,7 @@ const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "htt
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
-  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
 const UBIN = {bmkg: ["#7a3b0b", "#f2b544", "peringatan"], gelombang: ["#16405c", "#4fa3c4", "ombak"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {bmkg: "BMKG", gelombang: "Ombak", satelit: "Satelit"};
 function kotak(fitur) { let a = [180, 90, -180, -90];
@@ -43,7 +43,7 @@ const Peta = {
     peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: vis("satelit")}, "medan");
     peta.addSource("prov", {type: "geojson", data: this.geoGelombang(), promoteId: "kode"});
     peta.addLayer({id: "gelombang", type: "fill", source: "prov", layout: vis("gelombang"), filter: [">", ["get", "lv"], 0],
-      paint: {"fill-color": ["match", ["get", "lv"], 4, GEL[3][3], 3, GEL[2][3], 2, GEL[1][3], GEL[0][3]], "fill-opacity": .3}}, bl);
+      paint: {"fill-color": ["match", ["get", "lv"], 3, GEL[2][3], 2, GEL[1][3], GEL[0][3]], "fill-opacity": .3}}, bl);
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1, "line-opacity": .5}});
     peta.addSource("bmkg", {type: "geojson", data: this.geoBmkg()});
     peta.addLayer({id: "bmkg-fill", type: "fill", source: "bmkg", layout: vis("bmkg"), paint: {"fill-color": ["get", "w"], "fill-opacity": .4}});
@@ -52,7 +52,7 @@ const Peta = {
     peta.addLayer({id: "ens", type: "circle", source: "ens", layout: {visibility: S.mode === "ens" ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
-    this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderPanel(); },
+    this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
   gambarMedan() {
@@ -78,21 +78,26 @@ const Peta = {
   kartuSel(r) { const i = S.hari, p = S.ensK.get(Math.round(r[0]) + "," + Math.round(r[1])), pe = p?.[3][i];
     return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(r[2]))}</span>`, stat: [["hujan", fmt(Math.round(r[3][i] || 0)) + " mm", "hujan", "#3f7fb8", tingkat(r[3][i], AMB().hujan) > 0],
       ["angin", fmt(Math.round(r[4][i] || 0)) + " km/jam", "embusan", "#2b8c86", tingkat(r[4][i], AMB().angin_kmj) > 0], ...(pe != null ? [["rasio", Math.round(pe * 100) + "%", "peluang ≥ 50 mm", "#7a4fc4", pe >= .5]] : [])]}); },
-  kartuProv(o) { return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(o.prov))}</span>`, stat: [["ombak", GEL[o.lv - 1][1], "gelombang", GEL[o.lv - 1][3], o.lv >= 3], ["peringatan", o.total, "perairan", "#3f7fb8"]]}); },
+  kartuProv(o) { return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(o.prov))}</span>`, stat: [["ombak", GEL[o.lv - 1][1], "gelombang", GEL[o.lv - 1][3], o.lv >= 2], ["peringatan", o.total, "perairan", "#3f7fb8"]]}); },
   kartuBmkg(a) { return PI.kartuTip({judul: `<span translate="no">${esc(a.event)}</span>`, stat: [["peringatan", a.severity, "BMKG", sevWarna(a.severity), a.severity === "Severe" || a.severity === "Extreme"], ["mata", a.n, "kecamatan", "#3f7fb8"]]}); },
-  popupBmkg(i, ll) { const a = S.nc[i]; if (!a) return;
-    new maplibregl.Popup({maxWidth: "420px", offset: 8}).setLngLat(ll).setHTML(`<div class="pp"><div class="pp-hd">${pilSev(a.severity)}<b translate="no">${esc(a.event)}</b></div>
-      <p class="pp-w" translate="no">${esc(a.wilayah)}</p><p>${waktuBerlaku(a.mulai, a.selesai)}</p>${a.deskripsi ? `<p translate="no">${esc(a.deskripsi)}</p>` : ""}
-      <em>Sumber: BMKG, terbit ${jamWIB(S.per.dibuat)}</em>${a.web ? ` <a href="${escUrl(a.web)}" target="_blank" rel="noopener">Infografis</a>` : ""}</div>`).addTo(peta); },
-  popupProv(o, ll) { new maplibregl.Popup({maxWidth: "420px", offset: 8}).setLngLat(ll).setHTML(`<div class="pp"><div class="pp-hd">${pilGel(o.lv - 1)}<b translate="no">${esc(namaProv(o.prov))}</b></div>
-      ${GEL.map((k, i) => o.kelas[i] ? `<p>${pilGel(i)} <span translate="no">${esc(o.perairan[i].join(", "))}</span></p>` : "").join("")}
-      <p>${waktuBerlaku(o.dari + (OFS[o.zona] || "+07:00"), o.sampai + (OFS[o.zona] || "+07:00"))}</p><em>Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}</em></div>`).addTo(peta); },
+  /* laci rincian di kanan (sama dengan laci karhutla dan banjir): satu peringatan nowcast atau satu provinsi bergelombang */
+  laciBmkg(i) { const a = S.nc[i]; if (!a) return;
+    Laci.buka("Nowcast BMKG", `<span translate="no">${esc(a.event)}</span>`, `${pilSev(a.severity)} · ${fmt(a.n)} kecamatan`,
+      `<div class="grid g4">${kot("Tingkat", `<span style="color:${sevWarna(a.severity)}">${esc(a.severity)}</span>`, "BMKG")}${kot("Kecamatan", fmt(a.n), "dalam peringatan")}</div>
+      <p class="fnd" translate="no"><b>${esc(a.wilayah)}</b></p><p class="fnd">${waktuBerlaku(a.mulai, a.selesai)}</p>${a.deskripsi ? `<p class="fnd" translate="no">${esc(a.deskripsi)}</p>` : ""}
+      <p class="fnd">Sumber: BMKG, terbit ${jamWIB(S.per.dibuat)}${a.web ? ` · <a href="${escUrl(a.web)}" target="_blank" rel="noopener">Infografis</a>` : ""}</p>`); },
+  laciProv(o) { if (!o) return;
+    Laci.buka("Gelombang tinggi", `<span translate="no">${esc(namaProv(o.prov))}</span>`, `${pilGel(o.lv - 1)} · ${fmt(o.total)} perairan`,
+      `<div class="grid g4">${GEL.map((k, i) => kot(k[1], fmt(o.kelas[i]), k[2])).join("")}</div>
+      ${GEL.map((k, i) => o.kelas[i] ? `<p class="fnd">${pilGel(i)} <span translate="no">${esc(o.perairan[i].join(", "))}</span></p>` : "").join("")}
+      <p class="fnd">${waktuBerlaku(o.dari + (OFS[o.zona] || "+07:00"), o.sampai + (OFS[o.zona] || "+07:00"))}</p><p class="fnd">Sumber: BMKG Maritim, terbit ${jamWIB(S.per.dibuat)}</p>`); },
   /* terbang ke satu peringatan: nowcast ke kotaknya, gelombang ke provinsinya */
   fokus(jenis, k) {
     const nc = jenis === "nc", f = nc ? {geometry: {coordinates: S.nc[k].polygon}} : S.geo.features.find(x => x.properties.kode === k); if (!f) return;
-    const b = kotak([f]), c = [(b[0][0] + b[1][0]) / 2, (b[0][1] + b[1][1]) / 2];
+    const b = kotak([f]);
+    S.pilih = {jenis, k}; renderCrumb();
     peta.fitBounds(b, {padding: kiriPad(), duration: 700, maxZoom: nc ? 10 : 8});
-    nanti(() => nc ? this.popupBmkg(k, c) : this.popupProv(S.gl.find(o => o.prov === k), c)); },
+    nc ? this.laciBmkg(k) : this.laciProv(S.gl.find(o => o.prov === k)); },
   interaksi() {
     if (this._ia) return; this._ia = true;
     const tip = () => PI?.sembunyiTip();
@@ -107,22 +112,42 @@ const Peta = {
     peta.getCanvas().addEventListener("mouseleave", tip);
     peta.on("click", e => {
       const b = this.lihat("bmkg") && peta.queryRenderedFeatures(e.point, {layers: ["bmkg-fill"]})[0];
-      if (b) return this.popupBmkg(b.properties.i, e.lngLat);
+      if (b) return this.fokus("nc", b.properties.i);
       const gl = this.lihat("gelombang") && peta.queryRenderedFeatures(e.point, {layers: ["gelombang"]})[0];
-      if (gl) this.popupProv(S.gl.find(o => o.prov === gl.properties.kode), e.lngLat); }); },
+      if (gl) this.fokus("gl", gl.properties.kode); }); },
 };
 
 /* ================================================================ panel kiri: peringatan BMKG yang berlaku */
 let panelMode = "nc";
+const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
+const Laci = {
+  buka(ey, judul, meta, isi) { const el = $("#laci");
+    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta"><span>${meta}</span></div>` : ""}</div>
+      <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="bd" style="display:grid;gap:10px">${isi}</div>`;
+    if (el._tarik) el.appendChild(el._tarik);
+    el.classList.add("on"); el.querySelector(".tutup").onclick = () => Laci.tutup(); },
+  tutup() { $("#laci").classList.remove("on"); S.pilih = null; renderCrumb(); },
+};
+/* crumb seperti karhutla/banjir: pil "Indonesia" di luar kartu; peringatan yang dibuka jadi pil kedua dengan tombol Rincian */
+function renderCrumb() {
+  const p = S.pilih, nama = !p ? "" : p.jenis === "nc" ? S.nc[p.k]?.event : namaProv(p.k);
+  $("#crumb").innerHTML = `<button data-n="0">Indonesia</button>` + (nama ? `<button data-n="1" translate="no">${esc(nama)}</button><button class="cr-rinci" data-rinci title="Rincian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>` : ""); }
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const p = S.pilih;
+  if (b.dataset.rinci != null) return p && (p.jenis === "nc" ? Peta.laciBmkg(p.k) : Peta.laciProv(S.gl.find(o => o.prov === p.k)));
+  if (b.dataset.n === "0") { Laci.tutup(); peta?.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); } });
 function renderPanel() {
-  const rows = $("#rows"), nc = S.nc, gl = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total);
+  const q = ($("#cari").value || "").trim().toLowerCase(), rows = $("#rows"),
+    nc = S.nc.map((a, i) => ({a, i})).filter(({a}) => !q || (a.wilayah + " " + a.headline + " " + a.event).toLowerCase().includes(q)),
+    gl = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).filter(o => !q || namaProv(o.prov).toLowerCase().includes(q));
   $("#panelMode").innerHTML = `<button data-m="nc" aria-pressed="${panelMode === "nc"}">Nowcast · ${fmt(nc.length)} wilayah</button><button data-m="gl" aria-pressed="${panelMode === "gl"}">Gelombang · ${fmt(gl.length)} provinsi</button>`;
   rows.innerHTML = panelMode === "nc"
-    ? nc.map((a, i) => `<button class="rw" data-nc="${i}"><span class="rw-hd">${pilSev(a.severity)}<b translate="no">${esc(a.event)}</b></span><span class="rw-wil" translate="no">${esc(a.wilayah)}</span><span class="rw-jam">${waktuBerlaku(a.mulai, a.selesai)}</span></button>`).join("")
+    ? nc.map(({a, i}) => `<button class="rw" data-nc="${i}"><span class="rw-hd">${pilSev(a.severity)}<b translate="no">${esc(a.event)}</b></span><span class="rw-wil" translate="no">${esc(a.wilayah)}</span><span class="rw-jam">${waktuBerlaku(a.mulai, a.selesai)}</span></button>`).join("")
     : gl.map(o => `<button class="rw" data-gl="${o.prov}"><span class="rw-hd">${pilGel(o.lv - 1)}<b translate="no">${esc(namaProv(o.prov))}</b></span><span class="rw-wil">${fmt(o.total)} perairan</span></button>`).join("");
-  if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">Tidak ada peringatan yang berlaku.</p>`;
+  /* tanpa peringatan berlaku: sebut terbitan BMKG yang dipakai, supaya bukan terbaca "BMKG menyatakan aman" (berkasnya terbit berkala, nowcast hidup 2-3 jam) */
+  if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
 }
 $("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; renderPanel(); });
+$("#cari").addEventListener("input", renderPanel);
 $("#rows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.nc != null) Peta.fokus("nc", +b.dataset.nc); else if (b.dataset.gl) Peta.fokus("gl", b.dataset.gl); });
 
 /* ================================================================ legenda dok */
@@ -139,8 +164,9 @@ function renderLegenda() {
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 
 /* ================================================================ kontrol */
+const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"});
 function renderHari() {
-  $("#hariSeg").innerHTML = `<div class="seg penuh" role="group" style="box-shadow:none">${hariTampil().map(i => `<button data-h="${i}" aria-pressed="${i === S.hari}">${labelHari(i)}</button>`).join("")}</div>`; }
+  $("#hariSeg").innerHTML = `<div class="seg penuh" role="group" style="box-shadow:none">${hariTampil().slice(0, 4).map(i => `<button data-h="${i}" aria-pressed="${i === S.hari}">${i === S.h0 ? "Hari ini" : tglSingkat(S.pr.hari[i])}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.h;
   $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => Peta.segarkan()); });
 $("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.mp;

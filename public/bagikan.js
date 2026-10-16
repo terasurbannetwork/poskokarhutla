@@ -28,6 +28,8 @@ const Bagikan = {
     return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
   },
   /* tema dari registry (medan `bagikan`); literal di bawah hanya cadangan sebelum bencana.json terbaca */
+  /* nama pendek bencana untuk label ekspor ("Insight karhutla", "Tren banjir", ...): id halaman, kecuali yang namanya lebih dari satu kata */
+  namaBencana() { return {cuaca: "cuaca ekstrem", udara: "kualitas udara", gunungapi: "gunung api"}[this.hal] || this.hal; },
   _K() {
     const r = this.reg?.[this.hal]?.bagikan, a = this.hal === "banjir"
       ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
@@ -95,7 +97,7 @@ const Bagikan = {
     const svgs = isi.flatMap(x => [...(x.querySelectorAll?.("svg[viewBox]") || [])]).filter(v => (v.viewBox.baseVal?.width || 0) >= 300).slice(0, 2), svg = svgs[0];
     const tabel0 = cari("table") || this.tabelDariTip(svgs) || (art ? this.tabelVideo(art) : null);
     return {judul: jd.textContent.replace(/\s+/g, " ").trim(), judulSeg: [...jd.childNodes].map(x => ({t: x.textContent, hl: x.nodeType === 1 && x.classList.contains("hl")})),
-      svg, svgs, tabel: tabel0, peta: svgs.length ? null : cari(".maplibregl-canvas"), galeri: cari(".ct-galeri2"), dom: !svgs.length && !tabel0 && !cari(".ct-galeri2") && !cari(".maplibregl-canvas") && art ? this.blokDom(art) : null, fn: art?.querySelector(".fn")?.textContent.trim() || "", label: t.closest("#insight") ? "Insight karhutla" : t.closest("#dampak") ? "Dampak karhutla" : t.closest("#berita") ? "Pantauan berita" : "Tren karhutla"};
+      svg, svgs, tabel: tabel0, peta: svgs.length ? null : cari(".maplibregl-canvas"), galeri: cari(".ct-galeri2"), dom: !svgs.length && !tabel0 && !cari(".ct-galeri2") && !cari(".maplibregl-canvas") && art ? this.blokDom(art) : null, fn: art?.querySelector(".fn")?.textContent.trim() || "", label: (t.closest("#insight") ? "Insight " : t.closest("#dampak") ? "Dampak " : t.closest("#berita") ? "Pantauan berita" : "Tren ") + (t.closest("#berita") ? "" : this.namaBencana())};
   },
   /* grafik tanpa tabel: susun tabel dari tooltip batang ("<b>Nama</b><br>Label: nilai<br>…"), satu baris per nama */
   sorotDari(svgs) { const t = this.tabelDariTip(svgs); if (!t) return [];

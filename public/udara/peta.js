@@ -9,7 +9,7 @@ const UBIN = {pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1
 const UBIN_PENDEK = {pm25: "PM2,5", metar: "Jarak pandang", satelit: "Satelit"};
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
-  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
+  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
 function kotak(fitur) { const a = [180, 90, -180, -90];
   const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
@@ -35,6 +35,8 @@ const Peta = {
   pasang() {
     if (peta.getSource("pm")) return;
     const bl = this.bawahLabel(), vis = on => ({visibility: on ? "visible" : "none"});
+    peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
+    peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: vis(this.lihat("satelit"))}, bl);
     const g = this.gambarPM();
     peta.addSource("pm", {type: "image", url: g.url, coordinates: g.kor});
     peta.addLayer({id: "pm", type: "raster", source: "pm", layout: vis(this.lihat("pm25")), paint: {"raster-opacity": .8, "raster-resampling": "linear", "raster-fade-duration": 0}}, bl);
@@ -70,7 +72,16 @@ const Peta = {
     S.pilih = kode || null;
     if (S.pilih && peta?.getSource("prov")) peta.setFeatureState({source: "prov", id: S.pilih}, {pilih: true});
     if (terbang && peta) { const f = S.geo.features.find(f => f.properties.kode === kode); peta.fitBounds(f ? kotak([f]) : BB_ID, {padding: kiriPad(), duration: 700, maxZoom: 8}); }
-    renderDaftar(); },
+    renderDaftar(); renderCrumb(); kode ? this.laciProv(kode) : $("#laci").classList.remove("on"); },
+  /* laci rincian di kanan (sama dengan laci karhutla dan banjir): PM2,5 per hari, jiwa per kategori, kabupaten/kota paling terpapar. Semua angka perkiraan model. */
+  laciProv(kode) { const H = S.uk.prov[kode]; if (!H) return $("#laci").classList.remove("on");
+    const p = H[S.hari], kab = (S.uk.kab[S.hari] || []).filter(r => r[0] === kode && r[5] > 0).slice(0, 5), hr = hariTampil();
+    Laci.buka("Provinsi", `<span translate="no">${esc(namaProv(kode))}</span>`, PIL_MODEL,
+      `<div class="grid g4">${hr.slice(0, 4).map(i => kot(labelHari(i), `<span style="color:${KAT[kat(H[i][5])].w}">${fmt(Math.round(H[i][5]))} µg/m³</span>`, KAT[kat(H[i][5])].n)).join("")}</div>
+      <p class="fnd">Jiwa menurut kategori ${S.uk.hari[S.hari] === tglWIB(SEKARANG()) && S.hari === S.h0 ? "hari ini" : tglPendek(S.uk.hari[S.hari])}:</p>
+      <div class="legd">${KAT.map((k, c) => p[c] ? `<span class="kt" style="--c:${k.w};--f:${k.fg}">${k.n} · ${jiwa(p[c])}</span>` : "").join(" ")}</div>
+      ${kab.length ? `<p class="fnd">Kabupaten/kota paling terpapar:</p><div class="legd">${kab.map(r => `<span class="kt" style="--c:#3f4a5e;--f:#fff;text-transform:none" translate="no">${esc(r[1])} · ${fmt(Math.round(r[2]))} µg/m³</span>`).join(" ")}</div>` : ""}
+      <p class="fnd">Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop. Perkiraan model, belum dikoreksi ke alat ukur.</p><p class="fnd">Data ${jamWIB(S.uk.dibuat)}</p>`); },
   interaksi() {
     if (this._ia) return; this._ia = true; let diTitik = false;
     peta.on("mousemove", "metar", e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(this.kartuMetar(e.features[0].properties.i), e.originalEvent); });
@@ -83,29 +94,55 @@ const Peta = {
 };
 
 /* ---------- panel ---------- */
-function renderRingkas() {
-  const n = S.uk.nasional[S.hari].jiwa, ts = n[2] + n[3] + n[4];
-  $("#crumb").innerHTML = `<div class="kv" style="grid-template-columns:repeat(3,1fr);width:100%;margin:0 0 8px">${[["Tidak sehat atau lebih", ts, KAT[2].w], ["Sedang", n[1], KAT[1].w], ["Baik", n[0], KAT[0].w]].map(([t, v, w]) => `<div><b style="color:${w}">${kr(v)}</b><span>${t}</span></div>`).join("")}</div>`; }
+const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
+const Laci = {
+  buka(ey, judul, meta, isi) { const el = $("#laci");
+    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta">${meta}</div>` : ""}</div>
+      <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="bd" style="display:grid;gap:10px">${isi}</div>`;
+    el.classList.add("on"); el.querySelector(".tutup").onclick = () => Peta.pilihProv(null, false); },
+};
+/* crumb seperti karhutla/banjir: pil "Indonesia" di luar kartu; provinsi yang dibuka jadi pil kedua dengan tombol Rincian */
+function renderCrumb() {
+  $("#crumb").innerHTML = `<button data-n="0">Indonesia</button>` + (S.pilih ? `<button data-n="1" translate="no">${esc(namaProv(S.pilih))}</button><button class="cr-rinci" data-rinci title="Rincian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>` : ""); }
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.rinci != null) return Peta.laciProv(S.pilih); if (b.dataset.n === "0") Peta.pilihProv(null); });
+/* kolom Tren seperti karhutla: batang mini 7 hari terakhir + panah dan persen. Hari lampau dari riwayat (analisis CAMS), hari ini dari prakiraan; kurang dari 4 hari = kolom kosong (A18). */
+const WARNA_TREN = {"-1": "#2b8c86", "0": "#8a94a6", "1": "#c9503a"};
+function trenProv(k) {
+  const rw = S.rw?.prov?.[k] || {}, ini = S.uk.hari[S.h0], v = [...Object.keys(rw).sort().filter(t => t < ini).map(t => rw[t][1]), S.uk.prov[k][S.h0][5]].slice(-7);
+  if (v.length < 4) return null;
+  const a = v.slice(-3).reduce((x, y) => x + y, 0) / 3, b = v.slice(0, -3).reduce((x, y) => x + y, 0) / (v.length - 3), d = b ? a / b - 1 : 0, arah = d > .1 ? 1 : d < -.1 ? -1 : 0, m = Math.max(1, ...v), bw = 40 / v.length;
+  return {d, arah, html: `<span class="tr-c"><svg viewBox="0 0 40 16" width="30" height="14" aria-hidden="true">${v.map((x, i) => `<rect x="${i * bw + .3}" y="${16 - Math.max(.8, x / m * 15)}" width="${Math.max(.6, bw - .6)}" height="${Math.max(.8, x / m * 15)}" fill="${i >= v.length - 3 ? WARNA_TREN[arah] : "currentColor"}" opacity="${i >= v.length - 3 ? 1 : .35}"/>`).join("")}</svg><b style="color:${WARNA_TREN[arah]}">${arah > 0 ? "▲" : arah < 0 ? "▼" : "•"}${fmt(Math.abs(Math.round(d * 100)))}%</b></span>`}; }
 function renderDaftar() {
-  renderRingkas();
-  const q = ($("#cari").value || "").trim().toLowerCase(), g = "grid-template-columns:20px minmax(0,1fr) 56px 54px 122px";
-  const item = Object.entries(S.uk.prov).map(([k, h]) => { const p = h[S.hari]; return {k, nama: namaProv(k), rata: p[5], ts: p[2] + p[3] + p[4], c: kat(p[5])}; })
+  const q = ($("#cari").value || "").trim().toLowerCase();
+  const item = Object.entries(S.uk.prov).map(([k, h]) => { const p = h[S.hari]; return {k, nama: namaProv(k), rata: p[5], ts: p[2] + p[3] + p[4], c: kat(p[5]), t: trenProv(k)}; })
     .filter(i => !q || i.nama.toLowerCase().includes(q)).sort((a, b) => b.rata - a.rata);
-  $("#rows").innerHTML = `<div class="tb kepala" style="${g}"><span></span><span>Provinsi</span><span class="n" style="text-transform:none">µg/m³</span><span class="n">Jiwa</span><span style="text-align:right">Kategori</span></div>`
-    + (item.map((i, n) => `<button class="tb${i.k === S.pilih ? " dipilih" : ""}" data-k="${i.k}" style="${g}"><span class="rk">${n + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
-      <span class="n">${fmt(Math.round(i.rata))}</span><span class="n">${i.ts ? kr(i.ts) : "–"}</span><span style="text-align:right">${pilKat(i.c)}</span></button>`).join("") || `<div class="kosong">Tidak ditemukan.</div>`); }
-$("#rows").addEventListener("click", e => { const b = e.target.closest(".tb:not(.kepala)"); if (b) Peta.pilihProv(b.dataset.k === S.pilih ? null : b.dataset.k, b.dataset.k !== S.pilih); });
+  $("#rows").innerHTML = `<div class="tb kepala"><span></span><span>Provinsi</span><span class="n" style="text-transform:none">µg/m³</span><span class="n">Jiwa</span><span class="n">Tren</span><span style="text-align:right">Kategori</span></div>`
+    + (item.map((i, n) => `<button class="tb${i.k === S.pilih ? " dipilih" : ""}" data-k="${i.k}"><span class="rk">${n + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
+      <span class="n" data-sort="${i.rata}">${fmt(Math.round(i.rata))}</span><span class="n" data-sort="${i.ts}">${i.ts ? kr(i.ts) : "–"}</span><span class="n" data-sort="${i.t ? i.t.d : -1e15}">${i.t ? i.t.html : "–"}</span><span style="text-align:right" data-sort="${i.c}">${pilKat(i.c)}</span></button>`).join("") || `<div class="kosong">Tidak ditemukan.</div>`);
+  terapkanUrut(); }
+/* kepala tabel panel bisa diurut (klik kolom; klik lagi = balik arah), seperti karhutla; bawaan = PM2,5 tertinggi di atas */
+S.urut = null;
+function tandaiUrut() { const kp = $("#rows").querySelector(".tb.kepala"); if (!kp) return;
+  [...kp.children].forEach((c, i) => { if (i < 1) return; c.dataset.s = i; c.classList.toggle("urut", S.urut?.i === i); c.dataset.arah = S.urut?.i === i ? S.urut.d : ""; }); }
+function terapkanUrut() { const box = $("#rows"); tandaiUrut(); if (!S.urut || !box.querySelector(".tb.kepala")) return;
+  const u = S.urut, nilai = b => { const c = b.children[u.i]; if (c.dataset.sort != null) return +c.dataset.sort; return c.textContent.trim(); };
+  const rows = [...box.querySelectorAll("button.tb")].map(b => ({b, v: nilai(b)})), fr = document.createDocumentFragment();
+  rows.sort((a, b) => u.d * (typeof a.v === "string" || typeof b.v === "string" ? String(a.v).localeCompare(String(b.v), "id") : a.v - b.v));
+  rows.forEach(({b}, n) => { const rk = b.querySelector(".rk"); if (rk) rk.textContent = n + 1; fr.appendChild(b); });
+  box.appendChild(fr); }   /* fr dulu: parentElement simpul di dalam fragmen null */
+$("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
+  if (kol) { const i = +kol.dataset.s, u = S.urut; S.urut = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; tandaiUrut(); return nanti(terapkanUrut); }
+  const b = e.target.closest(".tb:not(.kepala)"); if (b) Peta.pilihProv(b.dataset.k === S.pilih ? null : b.dataset.k, b.dataset.k !== S.pilih); });
 $("#cari").addEventListener("input", renderDaftar);
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- hari, overlay, legenda ---------- */
+const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"});
 function renderHari() {
-  $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${S.uk.hari.map((t, i) => `<button data-i="${i}" aria-pressed="${S.hari === i}">${i ? tglPendek(t) : "Hari ini"}</button>`).join("")}</div>`; }
+  $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${hariTampil().map(i => `<button data-i="${i}" aria-pressed="${S.hari === i}">${labelHari(i) === "Hari ini" ? "Hari ini" : tglSingkat(S.uk.hari[i])}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.i;
-  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); renderDaftar(); }); });
+  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l;
-  if (k === "satelit") { if (!peta.getSource("satelit")) { peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
-      peta.addLayer({id: "satelit", type: "raster", source: "satelit"}, "pm"); } }
   const id = {pm25: "pm", metar: "metar", satelit: "satelit"}[k]; peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", i.checked ? "visible" : "none");
   renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");

@@ -10,3 +10,17 @@
 .mt-daftar{margin:0;padding-left:20px;display:grid;gap:8px}
 .mt-bag .tw{box-shadow:none}
 .mt-bag td{white-space:normal}
+.legd{display:flex;flex-wrap:wrap;gap:6px}
+#insight .ex-ey,#tren .ex-ey{display:inline-flex;align-items:center;gap:5px}
+#insight .ex-ey svg,#tren .ex-ey svg{width:12px;height:12px;display:inline-block}
+#insight .ex-bd:empty{display:none}
+/* pil kategori + pil "perkiraan model CAMS" sebaris di kepala kartu */
+.ex-hd > .kt{margin:0 0 8px 6px;vertical-align:top}
+.ex-hd > .ex-ey{vertical-align:top}
+/* kolom Tren di panel (sama dengan karhutla: .tr-c) */
+.tr-c{display:flex;align-items:center;justify-content:center;gap:4px;color:var(--ink2);overflow:visible!important}
+.tr-c svg{flex:none;color:var(--ink2)}
+.tr-c b{font-size:10.5px;font-variant-numeric:tabular-nums}
+/* kolom panel: nomor, provinsi, µg/m³, jiwa, tren, kategori; layar sempit membuang Tren supaya nama provinsi terbaca */
+#rows .tb{grid-template-columns:20px minmax(0,1fr) 50px 46px 74px 112px}
+@media (max-width:640px){#rows .tb{grid-template-columns:20px minmax(0,1fr) 46px 44px 108px}#rows .tb > :nth-child(5){display:none}}

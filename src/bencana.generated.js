@@ -488,8 +488,12 @@ export default {
       "tab": [
         "peta",
         "insight",
-        "metode",
-        "tentang"
+        "berita",
+        "tren",
+        "dampak",
+        "foto",
+        "tentang",
+        "metode"
       ],
       "tab_sembunyi": [
         "metode"
@@ -554,7 +558,7 @@ export default {
       "pengerja": "cuaca",
       "bagikan": {
         "nama": "Pantau Bencana · Cuaca Ekstrem",
-        "sumber": "BMKG",
+        "sumber": "BMKG, Open-Meteo, ECMWF",
         "tagar": [
           "#cuacaekstrem",
           "#peringatandini"
@@ -586,7 +590,7 @@ export default {
           "cuaca ekstrem",
           "puting beliung"
         ],
-        "leksikon": "scripts/berita/cuaca.py"
+        "leksikon": "scripts/cuaca/berita.py"
       },
       "prioritas": []
     },
@@ -603,9 +607,16 @@ export default {
       "tab": [
         "peta",
         "insight",
+        "berita",
+        "tren",
+        "dampak",
+        "foto",
+        "tentang",
         "metode"
       ],
-      "tab_sembunyi": [],
+      "tab_sembunyi": [
+        "metode"
+      ],
       "sumber_status": [
         [
           "kualitas",
@@ -667,15 +678,15 @@ export default {
       "pengerja": "udara",
       "bagikan": {
         "nama": "Pantau Bencana · Kualitas Udara",
-        "sumber": "KLH (ISPU), Open-Meteo CAMS",
+        "sumber": "Copernicus CAMS via Open-Meteo, NOAA METAR, WorldPop (perkiraan model)",
         "tagar": [
           "#kualitasudara",
-          "#ISPU"
+          "#polusiudara"
         ]
       },
       "og": {
         "judul": "Kualitas udara hari ini · Pantau Bencana",
-        "desk_templat": "{tgl}: {n} kota berstatus tidak sehat, {jiwa} jiwa menghirup udara tidak sehat."
+        "desk_templat": "{tgl}: sekitar {jiwa} jiwa menghirup udara tidak sehat (perkiraan model CAMS, belum dikoreksi)."
       },
       "kata": {
         "unit": "PM2.5 (µg/m³)",
@@ -698,7 +709,7 @@ export default {
           "kualitas udara",
           "ISPU"
         ],
-        "leksikon": "scripts/berita/udara.py"
+        "leksikon": "scripts/udara/berita.py"
       },
       "prioritas": []
     },

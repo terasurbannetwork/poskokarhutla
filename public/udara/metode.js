@@ -12,7 +12,10 @@ const Metode = {
       ["Dari mana datanya", `<ul class="mt-daftar">
         <li><b>PM2,5 dan PM10</b>: Copernicus CAMS (ECMWF) lewat Open-Meteo, satu titik per kotak 1 derajat, empat hari. Diperbarui tiap hari.</li>
         <li><b>Jarak pandang bandara</b>: laporan METAR dari NOAA Aviation Weather. Laporan yang lebih tua dari ${MAKS_JAM_METAR} jam tidak ditampilkan.</li>
-        <li><b>Penduduk</b>: WorldPop 2026, kotak 1 km dijumlahkan ke kotak 0,25 derajat (CC BY 4.0).</li></ul>`],
+        <li><b>Penduduk</b>: WorldPop 2026, kotak 1 km dijumlahkan ke kotak 0,25 derajat (CC BY 4.0).</li>
+        <li><b>Riwayat (Tren)</b>: hari lampau dari analisis CAMS lewat Open-Meteo, sesudahnya satu titik per hari dari prakiraan pagi harinya; bukan alat ukur.</li>
+        <li><b>Sekolah dan fasilitas kesehatan (Dampak)</b>: Dapodik/EMIS dan OpenStreetMap, dihitung di kecamatan yang PM2,5 24 jamnya di atas 55,4 µg/m³; hanya yang tercatat dan cocok nama atau titiknya.</li>
+        <li><b>Berita</b>: Google News RSS, judul dan cuplikan; diperbarui tangan, jam panen tertulis di kartu.</li></ul>`],
       ["Cara menghitung", `<ol class="mt-daftar">
         <li>Tiap kotak 1 derajat diberi kategori dari PM2,5 rata-rata 24 jam.</li>
         <li>Penduduk di tiap kotak 0,25 derajat ikut kategori kotak 1 derajat yang memuatnya.</li>

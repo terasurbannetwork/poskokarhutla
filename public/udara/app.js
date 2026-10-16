@@ -31,24 +31,35 @@ const wxNama = w => (w || "").split(/\s+/).map(t => WX[t.replace(/^[+-]|^VC/, ""
 const MAKS_JAM_METAR = 12;   /* laporan METAR lebih tua dari ini dibuang (A18), bukan ditampilkan basi */
 
 /* ================================================================ state */
-const S = {uk: null, asap: null, metar: [], geo: null, hari: 0, sel: null, rw: null, bbProv: {}, maksJam: MAKS_JAM_METAR};
+const S = {uk: null, asap: null, metar: [], geo: null, hari: 0, h0: 0, sel: null, rw: null, bbProv: {}, maksJam: MAKS_JAM_METAR};
+/* ?sekarang=2026-10-13T02:00:00+07:00 mengganti jam untuk menguji layar dengan data lama; tanpa itu jam peramban */
+const SEKARANG = () => { const q = new URLSearchParams(location.search).get("sekarang"), t = q && Date.parse(q); return t || Date.now(); };
+const tglWIB = t => new Date(t + 7 * 36e5).toISOString().slice(0, 10);
+/* indeks hari ini (WIB) di prakiraan; hari yang sudah lewat tidak ditawarkan. Data lebih tua dari hari ini: jatuh ke hari pertamanya dan diberi tanggal, bukan "Hari ini" (data basi tidak menyamar jadi hari ini). */
+const labelHari = i => S.uk.hari[i] === tglWIB(SEKARANG()) ? "Hari ini" : tglPendek(S.uk.hari[i]);
+const hariTampil = () => S.uk.hari.map((t, i) => i).filter(i => i >= S.h0);
 const namaProv = k => S.uk?.nama_prov?.[k] ?? k;
 /* indeks sel asap: "lat,lon" -> baris; rata/maks per hari */
 const sel = (la, lo) => S.sel.get((Math.floor(la) + .5) + "," + (Math.floor(lo) + .5));
 const ROW = {maks: 2, rata: 6, pm10: 7};
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["metode", "Metode"]];
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', metode: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', metode: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
   if (!TABS.some(t => t[0] === id)) id = "peta";
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/udara/" + id);   /* tautan bersih tanpa tagar; worker melayani index.html untuk jalur ini */
-  nanti(() => { if (id === "peta" && peta) peta.resize(); ({insight: Insight, metode: Metode})[id]?.render(); });
+  nanti(() => { if (id === "peta" && peta) peta.resize();
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
+    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;
-  $("#tabs").innerHTML = TABS.map(tb).join("");
+  $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
   const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
   bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
@@ -60,6 +71,7 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 async function muatData() {
   const [uk, asap, geo] = await Promise.all([muatJSON("../data/udara_kualitas.json"), muatJSON("../data/asap.json"), muatJSON("../geo/provinsi.json")]);
   Object.assign(S, {uk, asap, geo});
+  S.h0 = S.hari = Math.max(0, uk.hari.indexOf(tglWIB(SEKARANG())));
   S.sel = new Map(asap.grid.map(r => [r[0] + "," + r[1], r]));
   /* METAR dan riwayat boleh tidak ada: kartu dan lapisannya dibuang */
   S.metar = await muatJSON("../data/metar.json").catch(() => []);

@@ -1,10 +1,13 @@
 """Kualitas udara dari prakiraan CAMS (asap.json) + penduduk: jiwa per kategori ISPU per provinsi dan kabupaten.
 
 Masukan  : public/data/asap.json (scripts/data/asap.py), public/data/penduduk.json, public/banjir/data/pusat_kec.json + meta.json (nama wilayah)
-Keluaran : public/data/udara_kualitas.json (4 hari) dan udara_kualitas_riwayat.json (satu titik per hari, tumbuh tiap jalan)
+Keluaran : public/data/udara_kualitas.json (4 hari) dan udara_kualitas_riwayat.json (satu titik per hari, tumbuh tiap jalan; tab Tren)
+           riwayat: tgl[t] = [jiwa di atas Baik, jiwa Tidak sehat atau lebih, PM2,5 rata-rata berbobot jiwa, jiwa Sangat tidak sehat atau lebih],
+           prov[kode][t] = [jiwa Tidak sehat atau lebih, PM2,5 rata-rata]. Hari lampau diisi sekali oleh scripts/udara/isi_riwayat.py (analisis CAMS).
            Bukan udara.json: itu data bandara karhutla.
 Kategori : titik potong PM2,5 rata-rata 24 jam Permen LHK P.14/2020. Ini PERKIRAAN MODEL (CAMS ~40 km), bukan ISPU resmi KLHK;
            ISPU KLHK (ispu.menlhk.go.id) tidak bisa dijangkau dari CI, jadi tidak ditampilkan.
+           Dampak: scripts/udara/dampak_udara.py -> public/data/udara_dampak.json (dirantai di akhir main).
 Pakai    : python3 scripts/udara/kualitas.py [uji]   (dirantai di akhir scripts/scrape/metar.py)
 """
 import json
@@ -17,6 +20,7 @@ DATA = os.path.join(AKAR, "public/data")
 BATAS = [15.5, 55.4, 150.4, 250.4]  # batas atas Baik, Sedang, Tidak sehat, Sangat tidak sehat (ug/m3, rata-rata 24 jam)
 TOP_KAB = 30
 RIWAYAT_MAKS = 400
+KOLOM_RW = ["jiwa_di_atas_baik", "jiwa_tidak_sehat", "rata_pm25", "jiwa_sangat_tidak_sehat"]
 
 
 def kategori(v):
@@ -85,6 +89,21 @@ def hitung(asap, pend, pusat_kec):
     return {"prov": per_prov, "nasional": nasional, "kab": kab_out}
 
 
+def riwayat(rw, tgl, nasional, per_prov):
+    """Catat satu hari (`tgl`) ke riwayat. nasional = {"jiwa": [5], "rata"}; per_prov = {kode: [[5 + rata + maks]]} indeks hari ke-0 dipakai.
+    Skema lama (3 kolom, tanpa prov) dibuang: isinya hanya satu hari dan dibangun ulang oleh isi_riwayat.py."""
+    if not rw or rw.get("kolom") != KOLOM_RW:
+        rw = {"kolom": KOLOM_RW, "tgl": {}, "prov": {}}
+    n = nasional["jiwa"]
+    rw["tgl"][tgl] = [sum(n[1:]), sum(n[2:]), nasional["rata"], sum(n[3:])]
+    for k, P in per_prov.items():
+        rw["prov"].setdefault(k, {})[tgl] = [sum(P[2:5]), P[5]]
+    rw["tgl"] = dict(sorted(rw["tgl"].items())[-RIWAYAT_MAKS:])
+    awal = next(iter(rw["tgl"]))
+    rw["prov"] = {k: dict(sorted((t, v) for t, v in d.items() if t >= awal)) for k, d in rw["prov"].items()}
+    return rw
+
+
 def main():
     def muat(p):
         return json.load(open(os.path.join(AKAR, p), encoding="utf-8"))
@@ -98,15 +117,18 @@ def main():
            "kolom_prov": ["baik", "sedang", "tidak_sehat", "sangat_tidak_sehat", "berbahaya", "rata_pm25", "maks_pm25"],
            "kolom_kab": ["prov", "kabupaten", "rata_pm25", "maks_pm25", "jiwa", "jiwa_tidak_sehat"]}
     rw_p = os.path.join(DATA, "udara_kualitas_riwayat.json")
-    rw = json.load(open(rw_p)) if os.path.exists(rw_p) else {"kolom": ["jiwa_di_atas_baik", "jiwa_tidak_sehat", "rata_pm25"], "tgl": {}}
     n0 = h["nasional"][0]
-    rw["tgl"][asap["hari"][0]] = [sum(n0["jiwa"][1:]), sum(n0["jiwa"][2:]), n0["rata"]]
-    rw["tgl"] = dict(sorted(rw["tgl"].items())[-RIWAYAT_MAKS:])
+    rw = riwayat(json.load(open(rw_p)) if os.path.exists(rw_p) else None, asap["hari"][0], n0, {k: v[0] for k, v in h["prov"].items()})
     for p, isi in ((os.path.join(DATA, "udara_kualitas.json"), out), (rw_p, rw)):
         with open(p + ".tmp", "w", encoding="utf-8") as f:
             json.dump(isi, f, ensure_ascii=False, separators=(",", ":"))
         os.replace(p + ".tmp", p)
     print(f"udara_kualitas: {len(h['prov'])} provinsi, hari {asap['hari']}; tidak sehat hari ini {sum(n0['jiwa'][2:]):,} jiwa", file=sys.stderr)
+    try:   # tab Dampak: kecamatan tidak sehat + penduduk/sekolah/faskes; tak boleh menjatuhkan kualitas.json
+        import dampak_udara
+        dampak_udara.main()
+    except Exception as e:
+        print(f"::warning title=udara dampak::{e}", file=sys.stderr)
 
 
 def uji():
@@ -120,6 +142,10 @@ def uji():
     assert r["prov"]["14"][0][:5] == [0, 0, 1500, 0, 0] and r["prov"]["14"][1][:5] == [1500, 0, 0, 0, 0], r["prov"]
     assert r["nasional"][0]["jiwa"][2] == 1500 and r["nasional"][0]["rata"] == 60  # penduduk tanpa provinsi atau di luar sel dibuang
     assert r["kab"][0][0][:2] == ["14", "Kab A"] and r["kab"][0][0][5] == 1500
+    rw = riwayat({"kolom": ["x"], "tgl": {"d0": [1]}}, "d1", r["nasional"][1], {k: v[1] for k, v in r["prov"].items()})   # skema lama dibuang
+    assert rw["tgl"] == {"d1": [0, 0, 10, 0]} and rw["prov"] == {"14": {"d1": [0, 10]}}, rw
+    rw = riwayat(rw, "d2", r["nasional"][0], {k: v[0] for k, v in r["prov"].items()})
+    assert rw["tgl"]["d2"] == [1500, 1500, 60, 0] and rw["prov"]["14"]["d2"] == [1500, 60] and list(rw["tgl"]) == ["d1", "d2"]
     print("ok")
 
 

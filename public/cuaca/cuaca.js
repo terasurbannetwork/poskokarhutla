@@ -24,8 +24,9 @@ const KELAS_HUJAN = ["", "lebat", "sangat lebat", "ekstrem"], KELAS_ANGIN = ["",
 const tingkat = (v, a) => a.reduce((n, x) => n + ((v || 0) >= x ? 1 : 0), 0);
 /* tingkat peringatan CAP BMKG dengan warnanya (kata asli BMKG dipertahankan) */
 const WARNA_SEV = {Minor: "#e3b94e", Moderate: "#e58a45", Severe: "#c9503a", Extreme: "#7a1f2b"}, SEV_ASAL = "#8a96a6";
-/* kelas gelombang BMKG Maritim, tinggi dalam meter */
-const GEL = [["sedang", "Sedang", "1,25 sampai 2,5 m", "#7ec2d8"], ["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
+/* kelas gelombang BMKG Maritim yang jadi PERINGATAN: tinggi, sangat tinggi, ekstrem (tinggi dalam meter). Kelas "sedang" (1,25 sampai 2,5 m) ada di berkas BMKG tetapi bukan peringatan
+   (sama dengan hitungan scripts/banjir/peringatan.py "kategori tinggi+"), jadi tidak dihitung: "21 provinsi dalam peringatan" dulu menghitung provinsi yang hanya bergelombang sedang. */
+const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
 
 /* ================================================================ state */
 const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: []};
@@ -33,9 +34,11 @@ const namaProv = k => S.meta?.prov?.[k] ?? k;
 const AMB = () => S.meta.ambang;
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["metode", "Metode"], ["tentang", "Tentang"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const halamanAda = id => !!$("#p-" + id);
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -43,7 +46,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/cuaca/" + id + location.search);
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, metode: Metode})[id]?.render(); });
+    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
@@ -74,7 +77,7 @@ function olahPeringatan() {
   S.nc = (p.nowcast || []).filter(a => Date.parse(a.selesai) > t && a.polygon?.length).map(a => ({...a, n: a.wilayah.split(",").length}));
   const per = {};
   for (const g of p.gelombang || []) { if (!g.prov || Date.parse(g.sampai + (OFS[g.zona] || "+07:00")) <= t) continue;
-    const o = per[g.prov] ||= {prov: g.prov, nama: g.wilayah, kelas: [0, 0, 0, 0], perairan: [[], [], [], []], dari: g.dari, sampai: g.sampai, zona: g.zona};
+    const o = per[g.prov] ||= {prov: g.prov, nama: g.wilayah, kelas: [0, 0, 0], perairan: [[], [], []], dari: g.dari, sampai: g.sampai, zona: g.zona};
     GEL.forEach((k, i) => { o.kelas[i] += g[k[0]].length; o.perairan[i].push(...g[k[0]]); }); if (g.sampai > o.sampai) o.sampai = g.sampai; }
   S.gl = Object.values(per).map(o => ({...o, lv: o.kelas.reduce((a, n, i) => n ? i + 1 : a, 0), total: o.kelas.reduce((a, b) => a + b, 0)})).filter(o => o.lv);
 }

@@ -109,7 +109,7 @@ const Insight = {
   /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;
     try { const h = this["ex" + id[0].toUpperCase() + id.slice(1)](); if (!h) return "";
-      return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`);
+      return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`);
     } catch (e) { console.error(e); return ""; } },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); },
   async render() {

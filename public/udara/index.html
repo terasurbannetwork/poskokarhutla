@@ -32,11 +32,16 @@
 <link rel="stylesheet" href="../inti/peta.css">
 <link rel="stylesheet" href="../inti/tabel.css">
 <link rel="stylesheet" href="../inti/insight.css">
-<link rel="stylesheet" href="udara.css">
+<link rel="stylesheet" href="../inti/tren.css">
+<link rel="stylesheet" href="../inti/dampak.css">
+<link rel="stylesheet" href="../inti/berita.css">
+<link rel="stylesheet" href="../foto.css">
 <link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="udara.css">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
+<dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
 <header class="top">
   <div class="mark">
     <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
@@ -45,6 +50,7 @@
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
+    <a class="iconbtn" href="/peringatan" aria-label="Peringatan Dini" title="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </button>
@@ -56,10 +62,11 @@
     <div id="peta"></div>
     <div class="muat" id="muat"><div><div class="spin"></div>Memuat perkiraan kualitas udara seluruh Indonesia…</div></div>
     <div class="panel" id="panel">
+      <nav class="crumb" id="crumb" aria-label="Tingkat wilayah"></nav>
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="crumb" id="crumb"></div>
+          <div style="margin-bottom:8px"><span class="kt" style="--c:#6b7280;--f:#fff;text-transform:none;letter-spacing:0">perkiraan model CAMS, belum dikoreksi</span></div>
           <div class="cari">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
             <input id="cari" type="search" placeholder="Cari provinsi" autocomplete="off" aria-label="Cari provinsi">
@@ -69,27 +76,31 @@
       </div>
     </div>
     <div class="tools" id="tools">
+      <div class="card garis-waktu on" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Prakiraan udara (hari)</span><div id="hariSeg" style="flex:1"></div></div>
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
       <div class="box lapis" id="lapis">
-        <div class="lbl" style="margin-bottom:2px">Overlay</div>
+        <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Kualitas udara</summary>
           <label><input type="checkbox" data-l="pm25" checked> PM2,5 perkiraan</label>
           <label><input type="checkbox" data-l="metar" checked> Jarak pandang bandara</label>
-        </details>
-        <details open><summary>Peta dasar</summary>
-          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+          <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
         </details>
       </div>
     </div>
     <div class="dok" id="dok">
       <div class="box" id="legenda"></div>
-      <div class="card garis-waktu on" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Hari</span><div id="hariSeg" style="flex:1"></div></div>
     </div>
+    <aside class="card laci" id="laci" aria-label="Rincian provinsi"></aside>
   </section>
 
   <section class="page scroll" id="p-insight" aria-label="Insight kualitas udara"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-berita" aria-label="Berita kualitas udara"><div class="wrap" id="berita"></div></section>
+  <section class="page scroll" id="p-tren" aria-label="Tren kualitas udara"><div class="wrap" id="tren"></div></section>
+  <section class="page scroll" id="p-dampak" aria-label="Dampak kualitas udara"><div class="wrap" id="dampak"></div></section>
+  <section class="page scroll" id="p-foto" aria-label="Foto warga"><div id="foto"></div></section>
+  <section class="page" id="p-tentang" aria-label="Tentang Pantau Bencana"><iframe id="tentangBingkai" title="Tentang Pantau Bencana" style="width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s cubic-bezier(.16,1,.3,1)" onload="this.style.opacity=1" loading="lazy"></iframe></section>
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
 </main>
 <div class="toast" id="toast" role="status"></div>
@@ -103,6 +114,11 @@
 <script src="peta.js"></script>
 <script src="insight.js"></script>
 <script src="metode.js"></script>
+<script src="berita.js"></script>
+<script src="tren.js"></script>
+<script src="dampak.js"></script>
+<script src="foto.js"></script>
+<script src="../foto.js"></script>
 <script src="mulai.js"></script>
 <script src="../inti/sapa.js"></script>
 <script src="sapa.js"></script>
@@ -111,6 +127,7 @@
 <script src="../persetujuan.js" defer></script>
 <script src="../jejak.js" data-halaman="udara" defer></script>
 <script src="../kaki.js" defer></script>
+<script src="../pesan.js" defer></script>
 <script type="module" src="../inti/kepala.js"></script>
 </body>
 </html>
