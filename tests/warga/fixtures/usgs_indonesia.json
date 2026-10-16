@@ -1,0 +1,217 @@
+{
+ "type": "FeatureCollection",
+ "metadata": {
+  "title": "USGS Earthquakes (fixture uji, 5 fitur dari kueri nyata 16 Okt 2026)",
+  "count": 5
+ },
+ "features": [
+  {
+   "type": "Feature",
+   "properties": {
+    "mag": 4.8,
+    "place": "8 km SE of Sarangani, Philippines",
+    "time": 1791904904242,
+    "updated": 1791913990040,
+    "tz": null,
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u21y",
+    "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000u21y&format=geojson",
+    "felt": null,
+    "cdi": null,
+    "mmi": null,
+    "alert": null,
+    "status": "reviewed",
+    "tsunami": 0,
+    "sig": 354,
+    "net": "us",
+    "code": "6000u21y",
+    "ids": ",us6000u21y,",
+    "sources": ",us,",
+    "types": ",origin,phase-data,",
+    "nst": 59,
+    "dmin": 1.712,
+    "rms": 0.73,
+    "gap": 102,
+    "magType": "mb",
+    "type": "earthquake",
+    "title": "M 4.8 - 8 km SE of Sarangani, Philippines"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     125.5183,
+     5.3478,
+     65.699
+    ]
+   },
+   "id": "us6000u21y"
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "mag": 5.1,
+    "place": "119 km SSW of Gambiran Satu, Indonesia",
+    "time": 1791864015768,
+    "updated": 1791864946040,
+    "tz": null,
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u1ye",
+    "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000u1ye&format=geojson",
+    "felt": null,
+    "cdi": null,
+    "mmi": null,
+    "alert": null,
+    "status": "reviewed",
+    "tsunami": 0,
+    "sig": 400,
+    "net": "us",
+    "code": "6000u1ye",
+    "ids": ",us6000u1ye,",
+    "sources": ",us,",
+    "types": ",origin,phase-data,",
+    "nst": 40,
+    "dmin": 7.295,
+    "rms": 0.76,
+    "gap": 59,
+    "magType": "mb",
+    "type": "earthquake",
+    "title": "M 5.1 - 119 km SSW of Gambiran Satu, Indonesia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     113.8887,
+     -9.4473,
+     10
+    ]
+   },
+   "id": "us6000u1ye"
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "mag": 4.7,
+    "place": "219 km E of Lospalos, Timor Leste",
+    "time": 1791793808695,
+    "updated": 1791798855040,
+    "tz": null,
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u1qy",
+    "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000u1qy&format=geojson",
+    "felt": null,
+    "cdi": null,
+    "mmi": null,
+    "alert": null,
+    "status": "reviewed",
+    "tsunami": 0,
+    "sig": 340,
+    "net": "us",
+    "code": "6000u1qy",
+    "ids": ",us6000u1qy,",
+    "sources": ",us,",
+    "types": ",origin,phase-data,",
+    "nst": 33,
+    "dmin": 5.049,
+    "rms": 0.71,
+    "gap": 123,
+    "magType": "mb",
+    "type": "earthquake",
+    "title": "M 4.7 - 219 km E of Lospalos, Timor Leste"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     128.9661,
+     -8.237,
+     22.434
+    ]
+   },
+   "id": "us6000u1qy"
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "mag": 5.2,
+    "place": "152 km W of Gorontalo, Indonesia",
+    "time": 1791754493947,
+    "updated": 1791813903040,
+    "tz": null,
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u1mj",
+    "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000u1mj&format=geojson",
+    "felt": null,
+    "cdi": null,
+    "mmi": null,
+    "alert": null,
+    "status": "reviewed",
+    "tsunami": 0,
+    "sig": 416,
+    "net": "us",
+    "code": "6000u1mj",
+    "ids": ",us6000u1mj,",
+    "sources": ",us,",
+    "types": ",moment-tensor,origin,phase-data,",
+    "nst": 119,
+    "dmin": 5.834,
+    "rms": 0.88,
+    "gap": 32,
+    "magType": "mww",
+    "type": "earthquake",
+    "title": "M 5.2 - 152 km W of Gorontalo, Indonesia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     121.697,
+     0.5235,
+     111.257
+    ]
+   },
+   "id": "us6000u1mj"
+  },
+  {
+   "type": "Feature",
+   "properties": {
+    "mag": 5.2,
+    "place": "180 km S of Pelabuhanratu, Indonesia",
+    "time": 1791689417430,
+    "updated": 1791693785627,
+    "tz": null,
+    "url": "https://earthquake.usgs.gov/earthquakes/eventpage/us6000u1i6",
+    "detail": "https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=us6000u1i6&format=geojson",
+    "felt": 1,
+    "cdi": 2,
+    "mmi": null,
+    "alert": null,
+    "status": "reviewed",
+    "tsunami": 0,
+    "sig": 416,
+    "net": "us",
+    "code": "6000u1i6",
+    "ids": ",us6000u1i6,",
+    "sources": ",us,",
+    "types": ",dyfi,origin,phase-data,",
+    "nst": 56,
+    "dmin": 2.001,
+    "rms": 0.84,
+    "gap": 46,
+    "magType": "mb",
+    "type": "earthquake",
+    "title": "M 5.2 - 180 km S of Pelabuhanratu, Indonesia"
+   },
+   "geometry": {
+    "type": "Point",
+    "coordinates": [
+     106.526,
+     -8.6161,
+     10
+    ]
+   },
+   "id": "us6000u1i6"
+  }
+ ],
+ "bbox": [
+  94.7814,
+  -10.0202,
+  10,
+  141.496,
+  5.6006,
+  121.25
+ ]
+}

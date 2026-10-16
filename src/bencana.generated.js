@@ -185,21 +185,42 @@ export default {
       "warisan": true,
       "tab": [
         "peta",
-        "informasi",
         "insight",
-        "prakiraan",
+        "berita",
+        "tren",
+        "dampak",
+        "sim",
+        "foto",
+        "tentang",
         "posko",
+        "informasi",
+        "metode",
+        "prakiraan",
         "daftar",
         "provinsi",
         "rob",
         "sungai",
-        "tren",
         "keputusan",
-        "simulasi",
-        "sarana",
-        "metode"
+        "sarana"
       ],
-      "tab_sembunyi": [],
+      "tab_sembunyi": [
+        "berita",
+        "dampak",
+        "foto",
+        "posko",
+        "informasi",
+        "metode",
+        "prakiraan",
+        "daftar",
+        "provinsi",
+        "rob",
+        "sungai",
+        "keputusan",
+        "sarana"
+      ],
+      "alias": {
+        "simulasi": "sim"
+      },
       "sumber_status": [
         [
           "banjir",
@@ -348,11 +369,6 @@ export default {
           "gempa_terbaru",
           "/api/gempa/terbaru",
           0.5
-        ],
-        [
-          "meta",
-          "/gempa/data/meta.json",
-          30
         ]
       ],
       "kejadian": {

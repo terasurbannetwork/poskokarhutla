@@ -10,8 +10,9 @@ import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sitemap} from "./bencana.js";
 import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto} from "./admin_halaman.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
+import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *";
+const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *", CRON_GEMPA = "* * * * *";
 const BATAS_ID = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
 /* aksi -> [[jendela ms, maks], ...] per hash IP */
 export const BATAS = {lapor: [[JAM, 10], [HARI, 30]], konfirmasi: [[JAM, 60]], aduan: [[JAM, 20]], kontak: [[JAM, 5], [HARI, 15]], selesai: [[JAM, 30]],
@@ -344,7 +345,7 @@ async function dibuatAset(env, asal, jalur) {
 async function periksaStatus(env, url, kini) {
   const sumber = {}, basi = [];
   await Promise.all(SUMBER_STATUS.map(async ([nama, jalur, ambang]) => {
-    const w = await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
+    const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
     sumber[nama] = {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang};
     if (ambang != null && (jam == null || jam > ambang)) basi.push(nama);
   }));
@@ -442,6 +443,7 @@ export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
+    if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
@@ -476,11 +478,13 @@ export default {
       return gagal(500, "galat server");
     }
   },
-  // cron CRON_TITIK = titik panas FIRMS; "17 * * * *" = bersih-bersih Lapor Warga
+  // cron CRON_TITIK = titik panas FIRMS; CRON_GEMPA = BMKG/USGS tiap menit; "17 * * * *" = bersih-bersih Lapor Warga
   async scheduled(ev, env) {
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
+    if (ev.cron === CRON_GEMPA) return console.log("gempa", JSON.stringify(await perbaruiGempa(env, ev.scheduledTime)));
     await bersihkan(env);
-    try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }   // migrasi 0007 belum jalan = cron lain tetap jalan
+    try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
+    try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
     await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini);
     await Pub.musnahkanGaram(env, kini).run();   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi

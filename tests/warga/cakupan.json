@@ -1,6 +1,13 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "table gempa": "migrasi 0009 idempoten",
+    "table gempa_kejadian": "kejadian G: susulan dalam jendela",
+    "table gempa_sumber": "putaran ulang bukan kelipatan 5",
+    "cron gempa": "menit kelipatan 5: autogempa",
+    "GET /api/gempa/terbaru": "GET /api/gempa/terbaru: bentuk JSON",
+    "GET /api/gempa/status": "GET /api/gempa/kejadian dan /kejadian/G0001 dan /status",
+    "GET /api/gempa/kejadian": "GET /api/gempa/kejadian dan /kejadian/G0001 dan /status",
     "GET /api/warga": "laporan sah tersimpan dan muncul di daftar",
     "POST /api/warga": "masukan salah DITOLAK",
     "GET /api/warga/:id": "laporan lanjutan: durasi padam",

@@ -1,0 +1,1 @@
+{"t":"2026-10-16T12:32:30.056+07:00","berkas":"migrations/0010_gempa.sql","blob":"da2f6f5a87cce589bbabf5a15335a1d3b0b1624e","aturan":"e3f09eb01e53","vonis":"temuan","ringkas":"nomor loncat: 0008 lalu 0010 (0009 tidak ada di mana pun); idempoten penuh IF NOT EXISTS, hanya CREATE, tidak sentuh tabel lama; belum git add","sha":"211c688"}
