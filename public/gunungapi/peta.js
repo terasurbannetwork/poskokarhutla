@@ -32,8 +32,8 @@ const Peta = {
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
     await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
-    /* pandangan awal desktop disamakan dengan /banjir/ (panel 440, tools 280, dok baru setengah tersusun saat fit = bawah 44); lebar panel/dok gunung api beda */
-    peta.fitBounds(BB_ID, {padding: innerWidth <= 900 ? kiriPad() : {top: 56, left: 470, right: 310, bottom: 44}, duration: 0}); },
+    /* pandangan awal desktop disamakan dengan karhutla (panel 440, tools 280, dok bawah ~163); dok gunung api lebih pendek, jadi angkanya dipaku, bukan diukur */
+    peta.fitBounds(BB_ID, {padding: innerWidth <= 900 ? kiriPad() : {top: 56, left: 470, right: 310, bottom: 163}, duration: 0}); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   geoTitik() { return {type: "FeatureCollection", features: saring().map(g => ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {nama: g.nama, lv: g.level}}))}; },
   geoRadius() { return {type: "FeatureCollection", features: saring().filter(g => g.radius_km).map(g => ({type: "Feature", geometry: {type: "Polygon", coordinates: [cincin(g.lat, g.lon, g.radius_km)]}, properties: {nama: g.nama, lv: g.level}}))}; },
@@ -79,12 +79,18 @@ const Peta = {
 function renderLevelSeg() {
   const op = [[0, "Semua"], [4, "Awas"], [3, "Siaga"], [2, "Waspada"], [1, "Normal"]].filter(([l]) => !l || S.n[l]);
   $("#levelSeg").innerHTML = op.map(([l, n]) => `<button data-l="${l}" aria-pressed="${S.level === l}">${n}${l ? ` <b class="num">${S.n[l]}</b>` : ""}</button>`).join(""); }
+/* tabel standar panel kiri (kepala gelap, kolom bisa diurut): sama dengan daftar provinsi karhutla dan wilayah kekeringan */
+const KOL = {nm: g => g.nama, pv: g => g.prov, rd: g => g.radius_km ?? -1, lv: g => g.level * 1e3 + (g.radius_km || 0)};
+const urutDaftar = L => { const {k, d} = S.urut, f = KOL[k]; return [...L].sort((a, b) => { const x = f(a), y = f(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * d || a.nama.localeCompare(b.nama); }); };
 function renderDaftar() {
-  const L = saring();
-  $("#rows").innerHTML = L.length ? L.map(g => `<button class="row gn" role="listitem" data-n="${esc(g.nama)}"><span class="rk" style="color:${WARNA_LV[g.level]}">▲</span>
-    <span><span class="nm">${esc(g.nama)}</span><span class="sub">${esc(g.prov)}${g.radius_km ? ` · radius ${fmt(g.radius_km)} km` : ""}</span></span>${pilLv(g.level, true)}</button>`).join("")
+  const L = urutDaftar(saring()), gr = "grid-template-columns:20px minmax(0,1fr) minmax(0,.8fr) 44px 92px", u = k => S.urut.k === k ? " urut" : "";
+  const kepala = `<div class="tb kepala" style="${gr}"><span></span><span data-s="nm" class="${u("nm")}">Gunung</span><span data-s="pv" class="${u("pv")}">Provinsi</span><span class="n ${u("rd")}" data-s="rd">Radius</span><span data-s="lv" class="${u("lv")}" style="text-align:right">Status</span></div>`;
+  $("#rows").innerHTML = L.length ? kepala + L.map((g, i) => `<button class="tb" role="listitem" data-n="${esc(g.nama)}" style="${gr}"><span class="rk">${i + 1}</span><span style="font-weight:600" translate="no">${esc(g.nama)}</span>
+    <span style="justify-self:stretch;text-align:left!important;color:var(--ink2)" title="${esc(g.prov)}">${esc(g.prov)}</span><span class="n">${g.radius_km ? fmt(g.radius_km) + " km" : "–"}</span><span style="text-align:right">${pilLv(g.level, true)}</span></button>`).join("")
     : `<div class="kosong">Tidak ada gunung yang cocok.</div>`; }
-$("#rows").addEventListener("click", e => { const b = e.target.closest("[data-n]"); if (!b) return; const g = S.st.gunung.find(x => x.nama === b.dataset.n); if (g) { Peta.terbang(g); Detail.buka(g); } });
+$("#rows").addEventListener("click", e => {
+  const kol = e.target.closest(".kepala span[data-s]"); if (kol) { const k = kol.dataset.s; S.urut = {k, d: S.urut.k === k ? -S.urut.d : k === "lv" ? -1 : 1}; return nanti(renderDaftar); }
+  const b = e.target.closest("[data-n]"); if (!b) return; const g = S.st.gunung.find(x => x.nama === b.dataset.n); if (g) { Peta.terbang(g); Detail.buka(g); } });
 $("#levelSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.level = +b.dataset.l; renderLevelSeg(); nanti(() => Peta.segarkan()); });
 $("#cari").addEventListener("input", e => { S.q = e.target.value; nanti(() => Peta.segarkan()); });
 
@@ -103,8 +109,8 @@ const Detail = {
     const kot = [kv(g.radius_km && fmt(g.radius_km) + " km", "radius"), kv(g.sektor_km && fmt(g.sektor_km) + " km", "jarak sektor"), kv(g.penduduk_radius > 0 ? "±" + rb(g.penduduk_radius) : null, "jiwa dalam radius"), kv(g.tinggi > 0 && fmt(g.tinggi) + " m", "tinggi puncak")].join("");
     $("#dlg").innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(g.nama)}</h3><p>${esc(g.prov)}</p><div style="margin-top:8px">${pilLv(g.level)}</div></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">${kot ? `<div class="kv gn-kv">${kot}</div>` : ""}
-      ${g.rekomendasi ? `<details class="lipat" open><summary>Rekomendasi PVMBG</summary><div class="isi"><p class="rek-teks">${esc(g.rekomendasi)}</p><p class="rek-sumber">${esc(g.periode || "")}${g.periode ? " · " : ""}MAGMA Indonesia</p></div></details>` : ""}
-      ${ev.length ? `<details class="lipat" open><summary>Erupsi terbaru</summary><div class="isi"><ul class="ev">${ev.map(x => `<li><b>${tglJam(x.waktu)}</b>${x.tinggi_m ? ` <span class="pl" style="--w:#b5523b">kolom abu ${fmt(x.tinggi_m)} m</span>` : ""}<br>${esc(x.ket)}</li>`).join("")}</ul></div></details>` : ""}
+      ${g.rekomendasi ? `<details class="lipat" open><summary>Rekomendasi PVMBG</summary><div class="isi"><p class="rek-teks" translate="no" lang="id">${esc(g.rekomendasi)}</p><p class="rek-sumber">${g.periode ? `<span translate="no" lang="id">${esc(g.periode)}</span> · ` : ""}MAGMA Indonesia</p></div></details>` : ""}
+      ${ev.length ? `<details class="lipat" open><summary>Erupsi terbaru</summary><div class="isi"><ul class="ev">${ev.map(x => `<li><b>${tglJam(x.waktu)}</b>${x.tinggi_m ? ` <span class="pl" style="--w:#b5523b">kolom abu ${fmt(x.tinggi_m)} m</span>` : ""}<br><span translate="no" lang="id">${esc(x.ket)}</span></li>`).join("")}</ul></div></details>` : ""}
       <div class="dk"><a class="btn sec" href="${escUrl(g.laporan)}" target="_blank" rel="noopener">Laporan lengkap di MAGMA</a>
       <button class="btn sec" type="button" data-bagi aria-label="Bagikan" title="Bagikan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.7 7.4-4.3M8.3 13.3l7.4 4.3"/></svg></button></div></div>`;
     const d = $("#dlg"); d.querySelector("[data-tutup]").onclick = () => d.close();

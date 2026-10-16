@@ -7,11 +7,13 @@
   let NAMA_BEN = BEN;
   const KAT_AWAL = {karhutla: {api: ["Api", "#d9603b"], asap: ["Asap", "#6b7489"], padam: ["Pemadaman", "#2f7fb8"], dampak: ["Dampak", "#c49a1c"], lainnya: ["Lainnya", "#3d9461"]},
     banjir: {genangan: ["Genangan", "#3f7fb8"], arus: ["Arus", "#2b8c86"], longsor: ["Longsor", "#9a7448"], rob: ["Rob", "#5f6fb0"], evakuasi: ["Evakuasi", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]},
+    gunungapi: {hujan_abu: ["Hujan abu", "#7d8795"], lahar: ["Lahar", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]},
+    kekeringan: {sumur: ["Sumur kering", "#c9a24b"], sawah: ["Sawah puso", "#8a6d4e"], antre: ["Antre air", "#4f8fc4"], lainnya: ["Lainnya", "#3d9461"]},
     gempa: {guncangan: ["Kerusakan bangunan", "#c9503a"], retakan: ["Retakan tanah", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], tsunami: ["Genangan tsunami", "#3f7fb8"], lainnya: ["Lainnya", "#3d9461"]}};
   /* bencana tanpa entri di atas: kategori dari registry (diisi saat bencana.json termuat), warna dari palet ini; ikon jatuh ke "lainnya" */
   const PALET = ["#c9503a", "#3f7fb8", "#e58a45", "#9a7448", "#2b8c86", "#5f6fb0"];
   const KAT = KAT_AWAL[BEN] || (BEN === "karhutla" ? KAT_AWAL.karhutla : {lainnya: ["Lainnya", "#3d9461"]});
-  const CONTOH_KET = {karhutla: "Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi", banjir: "Apa yang terlihat? Mis. air setinggi lutut di jalan utama, arus deras di sungai", gempa: "Apa yang terlihat? Mis. dinding retak, atap runtuh, warga mengungsi"};
+  const CONTOH_KET = {karhutla: "Apa yang terlihat? Mis. api di lahan gambut, asap tebal sejak pagi", banjir: "Apa yang terlihat? Mis. air setinggi lutut di jalan utama, arus deras di sungai", gempa: "Apa yang terlihat? Mis. dinding retak, atap runtuh, warga mengungsi", gunungapi: "Apa yang terlihat? Mis. hujan abu tebal di atap, aliran lahar di sungai", kekeringan: "Apa yang terlihat? Mis. sumur warga kering, sawah retak, antre air bersih"};
   /* nama bencana dan nama kategori dari registry (public/bencana.json: nama, foto_kategori); warna dan ikon tetap milik galeri ini. Gagal dimuat = nilai di atas. */
   fetch("/bencana.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => { const b = j?.bencana?.find(x => x.id === BEN); if (!b) return;
     NAMA_BEN = b.nama.toLowerCase(); let i = 0; for (const [k, n] of b.foto_kategori || []) if (KAT[k]) KAT[k][0] = n; else KAT[k] = [n, PALET[i++ % PALET.length]]; });

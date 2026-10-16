@@ -15,25 +15,35 @@ const IK_GN = '<path d="M3 20 9 9h6l6 11z"/><path d="M12 9V6M9.5 5l-1-2M14.5 5l1
 const pilLv = (l, pendek = false) => `<span class="pl lvp" style="--w:${WARNA_LV[l]}"><svg viewBox="0 0 24 24" aria-hidden="true">${IK_GN}</svg>${pendek ? LEVEL[l][1] : `Level ${LEVEL[l][0]} ${LEVEL[l][1]}`}</span>`;
 const tglJam = t => new Date(t).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "").replace(/\./g, ":") + " WIB";
 
-const S = {st: null, level: 0, q: ""};   /* level 0 = semua */
+const S = {st: null, level: 0, q: "", urut: {k: "lv", d: -1}, geo: {prov: null}};   /* level 0 = semua */
+/* kode provinsi BPS -> nama (Berita memberi kode); tabel administratif statis */
+const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14: "Riau", 15: "Jambi", 16: "Sumatera Selatan", 17: "Bengkulu", 18: "Lampung", 19: "Kep. Bangka Belitung", 21: "Kepulauan Riau",
+  31: "DKI Jakarta", 32: "Jawa Barat", 33: "Jawa Tengah", 34: "DI Yogyakarta", 35: "Jawa Timur", 36: "Banten", 51: "Bali", 52: "Nusa Tenggara Barat", 53: "Nusa Tenggara Timur", 61: "Kalimantan Barat",
+  62: "Kalimantan Tengah", 63: "Kalimantan Selatan", 64: "Kalimantan Timur", 65: "Kalimantan Utara", 71: "Sulawesi Utara", 72: "Sulawesi Tengah", 73: "Sulawesi Selatan", 74: "Sulawesi Tenggara", 75: "Gorontalo",
+  76: "Sulawesi Barat", 81: "Maluku", 82: "Maluku Utara", 91: "Papua", 92: "Papua Barat", 93: "Papua Selatan", 94: "Papua Tengah", 95: "Papua Pegunungan", 96: "Papua Barat Daya"};
+const namaProv = k => PROV[k] ?? k;
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["metode", "Metode"], ["tentang", "Tentang"]];
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
-  metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+/* tidak tampil di nav: Metode ada tapi disembunyikan (A24, sama dengan karhutla); Foto menunggu kategori gunung api di public/foto.js (KAT_AWAL): tanpa itu galerinya
+   jatuh ke kategori karhutla dan kirimannya ditolak server. Hapus "foto" dari sini dan dari tab_sembunyi di public/bencana.json begitu foto.js memilikinya. */
+const TAB_SEMBUNYI = new Set(["metode"]);
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
-  if (!TABS.some(t => t[0] === id)) id = "peta";
+  if (!TABS.some(t => t[0] === id) || (TAB_SEMBUNYI.has(id) && !["metode"].includes(id))) id = "peta";
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   /* tautan bersih tanpa tagar: /gunungapi/insight (worker mengarahkan jalur ini ke index.html) */
   if (dorong) history.replaceState(null, "", "/gunungapi/" + id);
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, metode: Metode})[id]?.render(); });
+    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, foto: window.Foto, metode: Metode})[id]?.render(); });
 }
-{ $("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
+{ $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
   const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
   bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
@@ -46,7 +56,8 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 async function muatData() {
   const st = await muatJSON("../data/gunungapi_status.json");
   if (!st.gunung?.length) throw new Error("data gunung api kosong");
-  S.st = st; $("#upd").textContent = "Data " + jamWIB(st.dibuat);
+  S.st = st; muatJSON("../geo/provinsi.json").then(g => { S.geo.prov = g; }).catch(() => {});
+  $("#upd").textContent = "Data " + jamWIB(st.dibuat);
   /* hitungan dari daftar, bukan dari tulisan pada berkas: satu sumber kebenaran */
   S.n = {1: 0, 2: 0, 3: 0, 4: 0}; st.gunung.forEach(g => S.n[g.level]++);
 }

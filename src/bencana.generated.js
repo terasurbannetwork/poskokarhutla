@@ -715,10 +715,16 @@ export default {
       "tab": [
         "peta",
         "insight",
-        "metode",
-        "tentang"
+        "berita",
+        "tren",
+        "dampak",
+        "foto",
+        "tentang",
+        "metode"
       ],
-      "tab_sembunyi": [],
+      "tab_sembunyi": [
+        "metode"
+      ],
       "sumber_status": [
         [
           "gunungapi",
@@ -779,7 +785,7 @@ export default {
       "pengerja": "gunungapi",
       "bagikan": {
         "nama": "Pantau Bencana · Gunung Api",
-        "sumber": "PVMBG (MAGMA Indonesia), Smithsonian GVP",
+        "sumber": "PVMBG (MAGMA Indonesia)",
         "tagar": [
           "#gunungapi",
           "#erupsi"
@@ -831,10 +837,9 @@ export default {
         "berita",
         "tren",
         "dampak",
-        "metode",
-        "informasi",
         "foto",
-        "tentang"
+        "tentang",
+        "metode"
       ],
       "tab_sembunyi": [
         "metode"
@@ -899,7 +904,7 @@ export default {
       "pengerja": "kekeringan",
       "bagikan": {
         "nama": "Pantau Bencana · Kekeringan",
-        "sumber": "BMKG, Open-Meteo",
+        "sumber": "Deteksi Pantau Bencana",
         "tagar": [
           "#kekeringan",
           "#krisisair"

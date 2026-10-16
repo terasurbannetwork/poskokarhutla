@@ -8,8 +8,8 @@ const SUMBER = "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)";
 const NAVY = "oklch(25.5% .075 256)", BATA = "#b5523b";
 
 const Insight = {
-  EX: ["status", "letusan", "perubahan", "penduduk", "daftar"],
-  LABEL: {status: "Status", letusan: "Erupsi", perubahan: "Perubahan level", penduduk: "Penduduk", daftar: "Daftar gunung"},
+  EX: ["status", "letusan", "perubahan", "daftar"],
+  LABEL: {status: "Status", letusan: "Erupsi", perubahan: "Perubahan level", daftar: "Daftar gunung"},
   T: {daftar: {urut: "_", turun: true, hal: 0}},
   ex: (...a) => Kartu.ex(...a),
   hl: Kartu.hl,
@@ -63,19 +63,7 @@ const Insight = {
     return this.ex(`${this.hl(this.nm(p0.nama))} ${naik ? "naik" : "turun"} dari Level ${LEVEL[p0.dari][0]} ${LEVEL[p0.dari][1]} ke Level ${LEVEL[p0.ke][0]} ${LEVEL[p0.ke][1]} pada ${this.tgl(p0.tgl + "T12:00:00+07:00")}`, "", "",
       `<svg viewBox="0 0 ${U.W} ${Math.min(P.length, 10) * U.rh + 4}" role="img" aria-label="Perubahan level">${g}</svg>`, "Sumber: perbandingan status MAGMA Indonesia (PVMBG) dari pembaruan ke pembaruan"); },
 
-  /* 4. perkiraan penduduk dalam radius rekomendasi */
-  exPenduduk() {
-    const T = S.st.gunung.filter(g => g.penduduk_radius > 0 && g.radius_km).sort((a, b) => b.penduduk_radius - a.penduduk_radius).slice(0, 12); if (!T.length) return "";
-    const tot = T.reduce((a, g) => a + g.penduduk_radius, 0), U = this.uk(), mx = Math.max(1, ...T.map(g => g.penduduk_radius)), X = v => v / mx * (U.W - U.L - 190);
-    const g = T.map((x, i) => { const y = i * U.rh, tip = `<b>${esc(x.nama)}</b><br>Radius: ${fmt(x.radius_km)} km<br>Perkiraan penduduk: ± ${rb(x.penduduk_radius)} jiwa`;
-      return `<g><text x="${U.L - 10}" y="${y + 21}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(x.nama)}</text>
-        <rect class="gx" x="${U.L}" y="${y + 6}" width="${Math.max(3, X(x.penduduk_radius))}" height="${U.rh - 12}" rx="5" fill="${WARNA_LV[x.level]}" data-tip="${tip}"/>
-        <g class="gf">${this.p(U.L + Math.max(3, X(x.penduduk_radius)) + 8, y + 7, "±" + rb(x.penduduk_radius), WARNA_LV[x.level], FG_LV[x.level])[0]}${this.p(U.L + Math.max(3, X(x.penduduk_radius)) + 8 + 74, y + 7, fmt(x.radius_km) + " km", NAVY)[0]}</g></g>`; }).join("");
-    Kartu.leg([[WARNA_LV[4], "Awas"], [WARNA_LV[3], "Siaga"], [WARNA_LV[2], "Waspada"]]);
-    return this.ex(`Sekitar ${this.hl(rb(tot).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa")} tinggal dalam radius rekomendasi ${fmt(T.length)} gunung`, "", "",
-      `<svg viewBox="0 0 ${U.W} ${T.length * U.rh + 4}" role="img" aria-label="Penduduk dalam radius">${g}</svg>`, SUMBER + ", WorldPop 2026 (perkiraan kisi 25 km)"); },
-
-  /* 5. tabel standar */
+  /* 4. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
   exDaftar() {
     const G = S.st.gunung, kol = [{k: "nm", n: "Gunung", v: r => r.nama, h: r => `<b>${esc(r.nama)}</b>`}, {k: "pv", n: "Provinsi", v: r => r.prov, h: r => esc(r.prov)},
       {k: "lv", n: "Level", v: r => r.level, h: r => pilLv(r.level, true)},

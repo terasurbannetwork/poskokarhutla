@@ -11,6 +11,7 @@
 <link rel="alternate" hreflang="en" href="https://pantau.terasurban.com/gunungapi/?lang=en">
 <link rel="alternate" hreflang="x-default" href="https://pantau.terasurban.com/gunungapi/">
 <meta name="description" content="Status Level I sampai IV semua gunung api Indonesia dari PVMBG (MAGMA Indonesia), radius rekomendasi, dan erupsi terbaru.">
+<!-- og -->
 <link rel="canonical" href="https://pantau.terasurban.com/gunungapi/">
 <meta name="theme-color" content="#0b2545">
 <meta property="og:type" content="website">
@@ -19,7 +20,15 @@
 <meta property="og:title" content="Pantau Bencana · Gunung api hari ini">
 <meta property="og:description" content="Status Level I sampai IV semua gunung api Indonesia dari PVMBG, radius rekomendasi, dan erupsi terbaru.">
 <meta property="og:url" content="https://pantau.terasurban.com/gunungapi/">
-<meta name="twitter:card" content="summary">
+<meta property="og:image" content="https://pantau.terasurban.com/data/og/ringkasan.png">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta property="og:image:alt" content="Status Level I sampai IV semua gunung api Indonesia dari PVMBG, radius rekomendasi, dan erupsi terbaru.">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="Pantau Bencana · Gunung api hari ini">
+<meta name="twitter:description" content="Status Level I sampai IV semua gunung api Indonesia dari PVMBG, radius rekomendasi, dan erupsi terbaru.">
+<meta name="twitter:image" content="https://pantau.terasurban.com/data/og/ringkasan.png">
+<!-- /og -->
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -31,6 +40,11 @@
 <link rel="stylesheet" href="../inti/peta.css">
 <link rel="stylesheet" href="../inti/tabel.css">
 <link rel="stylesheet" href="../inti/insight.css">
+<link rel="stylesheet" href="../inti/tren.css">
+<link rel="stylesheet" href="../inti/metode.css">
+<link rel="stylesheet" href="../inti/dampak.css">
+<link rel="stylesheet" href="../inti/berita.css">
+<link rel="stylesheet" href="../foto.css">
 <link rel="stylesheet" href="gunungapi.css">
 <link rel="stylesheet" href="../inti/kartu.css">
 </head>
@@ -40,11 +54,12 @@
 <header class="top">
   <div class="mark">
     <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="gunungapi" data-tentang data-tanpa-segera><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a><a href="../gunungapi/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</a><hr style="border:0;border-top:1px solid var(--line);margin:4px 6px"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
+    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="gunungapi"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a><a href="../gunungapi/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
+    <a class="iconbtn" href="/peringatan" aria-label="Peringatan Dini" title="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </button>
@@ -73,14 +88,14 @@
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
       <div class="box lapis" id="lapis">
-        <div class="lbl" style="margin-bottom:2px">Overlay</div>
+        <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Gunung api</summary>
           <label><input type="checkbox" data-l="gunung" checked> Status gunung</label>
           <label><input type="checkbox" data-l="radius" checked> Radius rekomendasi</label>
           <label><input type="checkbox" data-l="nama" checked> Nama gunung</label>
         </details>
         <details open><summary>Peta dasar</summary>
-          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
+          <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
         </details>
       </div>
     </div>
@@ -90,6 +105,10 @@
   </section>
 
   <section class="page scroll" id="p-insight" aria-label="Insight gunung api"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-berita" aria-label="Berita gunung api"><div class="wrap" id="berita"></div></section>
+  <section class="page scroll" id="p-tren" aria-label="Tren gunung api"><div class="wrap" id="tren"></div></section>
+  <section class="page scroll" id="p-dampak" aria-label="Dampak gunung api"><div class="wrap" id="dampak"></div></section>
+  <section class="page scroll" id="p-foto" aria-label="Foto warga"><div id="foto"></div></section>
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
   <section class="page" id="p-tentang" aria-label="Tentang Pantau Bencana"><iframe id="tentangBingkai" title="Tentang Pantau Bencana" style="width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s cubic-bezier(.16,1,.3,1)" onload="this.style.opacity=1" loading="lazy"></iframe></section>
 </main>
@@ -103,7 +122,12 @@
 <script src="app.js"></script>
 <script src="peta.js"></script>
 <script src="insight.js"></script>
+<script src="tren.js"></script>
 <script src="metode.js"></script>
+<script src="berita.js"></script>
+<script src="dampak.js"></script>
+<script src="foto.js"></script>
+<script src="../foto.js"></script>
 <script src="mulai.js"></script>
 <script src="../inti/sapa.js"></script>
 <script src="sapa.js"></script>
@@ -113,8 +137,6 @@
 <script src="../jejak.js" data-halaman="gunungapi" defer></script>
 <script src="../kaki.js" defer></script>
 <script src="../pesan.js" defer></script>
-<script>/* Overlay: grup selalu terbuka; judul grup hanya kepala */
-document.addEventListener("click", e => { if (e.target.closest("#lapisBtn")) setTimeout(() => document.querySelectorAll("#lapis details").forEach(d => d.open = true), 0); });</script>
 <script type="module" src="../inti/kepala.js"></script>
 </body>
 </html>

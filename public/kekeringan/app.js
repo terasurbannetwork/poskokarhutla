@@ -24,24 +24,28 @@ const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID
 /* Tingkat mengikuti istilah BNPB/BPBD; "Awas" di halaman ini disebut Awas (bukan "kering ekstrem": itu kategori SPI) */
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"], WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"], FG_LV = ["#fff", "#3b2e00", "#fff", "#fff"];
 const NAVY = "oklch(25.5% .075 256)", MERAH = "#c9503a", JINGGA = "#e58a45", KUNING = "#e3b94e", BIRU = "#4f8fc4";
-const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: []};
+const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: [], urut: null};
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 /* jumlah wilayah per tingkat TEPAT (kab_n di berkas kumulatif: >= waspada, >= siaga, >= awas) */
 const tepat = n => [n[0] - n[1], n[1] - n[2], n[2]];   /* [waspada, siaga, awas] */
 const pill = l => `<span class="pill l${l}">${LEVEL[l]}</span>`;
 
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["tentang", "Tentang"], ["metode", "Metode"]];
-const TAB_SEMBUNYI = new Set(["metode"]);   /* ada, tapi tidak di menu (A24); Berita/Dampak/Foto menunggu isinya (A18) */
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+/* tidak tampil di nav: Metode ada tapi disembunyikan (A24, sama dengan karhutla); Foto menunggu kategori kekeringan di public/foto.js (KAT_AWAL): tanpa itu galerinya
+   jatuh ke kategori karhutla dan kirimannya ditolak server. Hapus "foto" dari sini dan dari tab_sembunyi di public/bencana.json begitu foto.js memilikinya. */
+const TAB_SEMBUNYI = new Set(["metode"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
-  tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
-const halamanAda = id => !!$("#p-" + id);
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const halamanAda = id => !!$("#p-" + id) && (!TAB_SEMBUNYI.has(id) || id === "metode");
 function bukaTab(id, dorong = true) {
+  if (!halamanAda(id)) id = "peta";
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/kekeringan/" + id);   /* tautan bersih tanpa tagar; worker mengarahkan jalur ini ke index.html */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, tren: Tren, metode: Metode})[id]?.render(); });
+    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, foto: window.Foto, metode: Metode})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
@@ -60,4 +64,8 @@ async function muatData() {
   Object.assign(S, {meta, grid, wil, tren}); S.geo.prov = prov;
   muatJSON("../data/iklim.json").then(d => { S.iklim = d; if ($("#p-insight").classList.contains("on")) Insight.render(); }).catch(() => {});
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  /* lencana ENSO di kepala, sama dengan karhutla (lapisan5.js lencanaIklim): El Niño = kemarau lebih kering */
+  const e = meta.enso; if (e?.status && !$(".l5-iklim")) { const o = e.oni, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "", kering = e.status === "El Niño" || e.iod === "IOD positif";
+    const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : ""); el.textContent = e.status === "El Niño" ? "El Niño" + kuat : e.status === "La Niña" ? "La Niña" : "ENSO netral";
+    el.title = `ONI ${e.musim} ${e.tahun}: ${o > 0 ? "+" : ""}${F2(o)} °C${e.dmi != null ? ` · DMI ${e.dmi > 0 ? "+" : ""}${F2(e.dmi)} °C` : ""}${e.cpc ? " · " + e.cpc : ""}`; $("#upd").before(el); }
 }

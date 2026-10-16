@@ -44,7 +44,7 @@ const Peta = {
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
     await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
-    peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 0}); },
+    peta.fitBounds(BB_ID, {padding: innerWidth <= 900 ? kiriPad() : {top: 56, left: 470, right: 310, bottom: 163}, duration: 0}); },   /* pandangan awal desktop = karhutla (dok bawah ~163); dipaku karena dok belum tersusun saat fit */
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   vis: on => ({visibility: on ? "visible" : "none"}),
@@ -120,15 +120,21 @@ function renderDaftar() {
   const j = S.jalur, g = "grid-template-columns:20px minmax(0,1fr) 46px 54px 78px", T = j.length ? S.wil.kab : S.wil.prov;
   const item = [...new Map(S.fiturWil.map(f => [f.properties.kunci, f.properties])).values()].map(p => ({kunci: p.kunci, nama: p.nama, a: T[p.kunci]}))
     .filter(i => i.a).sort((a, b) => b.a.lv - a.a.lv || b.a.jiwa[0] - a.a.jiwa[0] || a.nama.localeCompare(b.nama));
+  /* kepala bisa diurut (seperti karhutla); tanpa pilihan = tingkat lalu jiwa. SPI paling kering = paling negatif */
+  const U = S.urut, K = {nm: i => i.nama, spi: i => i.a.spi3 ?? 99, jiwa: i => i.a.jiwa[0], lv: i => i.a.lv};
+  if (U) item.sort((a, b) => { const x = K[U.k](a), y = K[U.k](b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * U.d || a.nama.localeCompare(b.nama); });
+  const u = k => U?.k === k ? ' class="urut"' + (U.d > 0 ? ' data-arah="1"' : "") : "";
   const n = tepat(j.length ? S.wil.prov[j[0]]?.kab_n || [0, 0, 0] : S.meta.nasional.kab_n);
   const pn = t => `<span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${t}</span>`;   /* pil netral: bulan SPI dan ambang belum teruji (A17) */
   const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn("Ambang belum diuji balik")}</div></div>`;
-  const kepala = `<div class="tb kepala" style="${g}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n">SPI</span><span class="n">Jiwa</span><span style="text-align:right">Status</span></div>`;
+  const kepala = `<div class="tb kepala" style="${g}"><span></span><span data-s="nm"${u("nm")}>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n" data-s="spi"${u("spi")}>SPI</span><span class="n" data-s="jiwa"${u("jiwa")}>Jiwa</span><span data-s="lv"${u("lv")} style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = ringkas + kepala + (item.map((i, k) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${k + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
     <span class="n">${i.a.spi3 != null ? F2(i.a.spi3) : "–"}</span><span class="n">${i.a.jiwa[0] ? rb(i.a.jiwa[0]) : "–"}</span>
     <span style="text-align:right">${i.a.lv ? pill(i.a.lv) : `<span style="color:var(--ink2);font-size:11.5px">Normal</span>`}</span></button>`).join("") || `<div class="kosong">Tidak ada wilayah.</div>`);
 }
-$("#rows").addEventListener("click", e => { const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 1 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
+$("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
+  if (kol) { const k = kol.dataset.s; S.urut = {k, d: S.urut?.k === k ? -S.urut.d : k === "nm" || k === "spi" ? 1 : -1}; return nanti(renderDaftar); }
+  const b = e.target.closest(".tb:not(.kepala)"); if (!b) return; S.jalur.length >= 1 ? Analisa.wilayah(b.dataset.k) : turun(b.dataset.k); });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- cari: provinsi dan kabupaten yang berstatus */

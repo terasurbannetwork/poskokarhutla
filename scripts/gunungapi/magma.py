@@ -94,7 +94,7 @@ def urai_letusan(h):
     """Daftar letusan terbaru -> [{gunung, waktu (ISO, WIB), ket, tinggi_m}] terbaru dulu."""
     out, tgl = [], None
     for b in re.split(r'<div class="timeline-item', h)[1:]:
-        m = re.search(r'timeline-date">[^<]*?(\d{1,2}) (\w+) (\d{4})<', b)
+        m = re.search(r'timeline-date">[^<]*?(\d{1,2}) (\w+) (\d{4})', b)   # judul hari lama berbunyi "Kamis, 15 Oktober 2026, 1 hari yang lalu": jangan mensyaratkan tanda tutup tepat sesudah tahun
         if m:
             tgl = (int(m.group(3)), BULAN.get(m.group(2).lower()), int(m.group(1)))
             continue
@@ -108,7 +108,12 @@ def urai_letusan(h):
         tg = re.search(r"tinggi kolom abu teramati ± ?(\d+) m", ket)
         out.append({"gunung": html.unescape(nm.group(1)).strip(), "waktu": w.astimezone(WIB).isoformat(timespec="minutes"), "ket": ket[:300],
                     **({"tinggi_m": int(tg.group(1))} if tg else {})})
-    return out
+    lihat, uniq = set(), []   # halaman yang digabung saling tumpang tindih; satu letusan = gunung + waktu + awal keterangan
+    for x in sorted(out, key=lambda x: x["waktu"], reverse=True):
+        k = (x["gunung"], x["waktu"], x["ket"][:60])
+        if k not in lihat:
+            lihat.add(k); uniq.append(x)
+    return uniq
 
 
 def km(a, b, c, d):
@@ -195,8 +200,14 @@ def jalan():
         letusan = lama.get("letusan", [])
     simpan(KATALOG, dict(sorted(kat.items())))
     n_lv = {l: sum(1 for o in gunung if o["level"] == l) for l in (1, 2, 3, 4)}
+    # riwayat harian (satu baris per tanggal WIB, diganti bila jalan lagi di hari sama): jumlah gunung per level + erupsi 24 jam; layar Tren menggambarnya setelah >= 2 hari
+    r24 = sum(1 for x in letusan if dt.datetime.fromisoformat(x["waktu"]) >= sekarang - dt.timedelta(hours=24))
+    batas_r = (sekarang - dt.timedelta(days=365)).date().isoformat()
+    riwayat = [r for r in lama.get("riwayat", []) if r["tgl"] >= batas_r and r["tgl"] != sekarang.date().isoformat()]
+    lengkap = bool(letusan) and dt.datetime.fromisoformat(letusan[-1]["waktu"]) < sekarang - dt.timedelta(hours=24)   # daftar MAGMA dibaca mundur terbatas: bila tak mencapai 24 jam, hitungannya batas bawah dan tidak disimpan
+    riwayat.append({"tgl": sekarang.date().isoformat(), "level": {str(l): n for l, n in n_lv.items()}, **({"erupsi": r24} if lengkap else {})})
     simpan(KELUAR, {"sumber": "MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "dibuat": sekarang.isoformat(timespec="seconds"),
-                    "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan[:150]})
+                    "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan[:150], "riwayat": riwayat})
     print(f"{len(gunung)} gunung; level {n_lv}; letusan {len(letusan)}; perubahan {len(perubahan)}", file=sys.stderr)
 
 
@@ -220,6 +231,14 @@ def uji():
           '<p class="timeline-text"> Terjadi erupsi dengan tinggi kolom abu teramati ± 400 m di atas puncak. </p></div>')
     e = urai_letusan(ev)
     assert e == [{"gunung": "Ili Lewotolok", "waktu": "2026-10-16T13:43+07:00", "ket": "Terjadi erupsi dengan tinggi kolom abu teramati ± 400 m di atas puncak.", "tinggi_m": 400}], e
+    dua = ('<div class="timeline-item timeline-day"><p class="timeline-date">Hari Ini, Jumat, 16 Oktober 2026</p></div>'
+           '<div class="timeline-item"><small>10:00 WIB </small><p class="timeline-title"><a href="#">Semeru</a></p><p class="timeline-text"> Erupsi A. </p></div>'
+           '<div class="timeline-item timeline-day"><p class="timeline-date">Kamis, 15 Oktober 2026, 1 hari yang lalu</p></div>'
+           '<div class="timeline-item"><small>23:42 WIB </small><p class="timeline-title"><a href="#">Semeru</a></p><p class="timeline-text"> Erupsi B. </p></div>'
+           '<div class="timeline-item timeline-day"><p class="timeline-date">Kamis, 15 Oktober 2026, 1 hari yang lalu</p></div>'
+           '<div class="timeline-item"><small>23:42 WIB </small><p class="timeline-title"><a href="#">Semeru</a></p><p class="timeline-text"> Erupsi B. </p></div>')
+    d2 = urai_letusan(dua)   # judul hari dengan akhiran "N hari yang lalu" tetap terbaca; halaman tumpang tindih tidak menggandakan
+    assert [x["waktu"] for x in d2] == ["2026-10-16T10:00+07:00", "2026-10-15T23:42+07:00"], d2
     grid = [[0.0, 0.0, 10000, ""]]
     p_kecil, p_besar = penduduk_radius(grid, 0, 0, 3), penduduk_radius(grid, 0, 0, 200)
     assert 0 < p_kecil < 10000 and p_besar == 10000, (p_kecil, p_besar)  # radius kecil mengambil sebagian sel; radius besar seluruhnya

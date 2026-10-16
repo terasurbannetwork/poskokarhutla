@@ -1,8 +1,6 @@
 /* gunung api: tambahan di atas gaya dasar (../inti/gaya, peta, tabel, insight.css dan kartu.css) */
 .pl.lvp{gap:5px}
 .pl.lvp svg{width:12px;height:12px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-.row.gn{grid-template-columns:22px minmax(0,1fr) auto}
-.row.gn .rk{font-size:15px;text-align:center}
 .seg button b{font-weight:800;margin-left:3px;opacity:.75}
 .leg .sw.ring{width:16px;height:16px;border-radius:50%;border:2px dashed var(--ink2);background:transparent;vertical-align:-4px}
 #metode{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
