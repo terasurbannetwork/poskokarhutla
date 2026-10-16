@@ -15,6 +15,12 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 17 Okt 2026
+   - **Enam bencana dibuka** (status aktif, "Segera" hilang, masuk sitemap): banjir, gempa & tsunami, letusan gunung api, kekeringan, kualitas udara, ditambah beranda `/semua`. Tiap modul lolos audit paritas terhadap karhutla (`docs/multi-bencana/PARITAS-*.md`) dan cek data ke sumber resmi (BMKG gempaterkini 15/15, MAGMA level dan radius, SPI dihitung ulang). *"Kalo misal udah selesai maka coming soon nya dihilangkan dan orang bisa akses ya."* Cuaca tetap uji sampai migrasi 0014 (nowcast BMKG tiap 10 menit) dijalankan pemilik.
+   - **Modul karhutla dipasang ulang, bukan disalin**: *"modulnya yang dari karhutla kaya plug and play ya... Lu tetap berpaku pada artifacts"*, lalu *"kodingannya udah ada semua ya tiru aja semua. Biar bisa kaya mirroring gitu."* CSS bersama di `public/inti/`, kartu Insight, mesin Bagikan per bencana, pop-up Situasi `Sapa.daftar`, foto per bencana (`?bencana=`), kaki/jejak/OG dari registry. Tambahan khas bencana boleh asal beralasan.
+   - **Data dijujurkan**: kekeringan "Awas" butuh dua bukti (SPI-3 dan tanah atau SPI-6; 154 jadi 80 kab/kota), udara berlabel "perkiraan model CAMS, belum dikoreksi", tanggal letusan MAGMA dibetulkan, "hari ini" udara tidak lagi data kemarin, gelombang cuaca hanya kelas tinggi ke atas.
+   - **Peringatan dini dan NASA**: pop-up alarm di semua halaman (`public/inti/alarm.js`, langganan email `/peringatan` dibuat sesi lain); lapisan satelit NASA GIBS per bencana di panel Overlay (`public/inti/peta/nasa.js`). *"tambahin yang relevan aja tapi ya."*
+   - **Insiden dan gerbangnya**: terbit gagal karena `_headers` > 100 aturan (gerbang `tests/agen/gerbang-headers.test.mjs`); terbit gagal karena batas 5 cron akun Workers Free (kini satu cron tiap menit, gerbang wrangler + uji menit titik); data live basi karena deploy dari laptop; git macet karena repo di iCloud Documents (kerja pindah ke `~/Developer/poskokarhutla`). *"Catat ya biar ga gagal lagi."* *"Agar cukup main saja ya jangan ada branch."*
 1. 16 Okt 2026
    - **Jalan 20 jam**: *"Lu yang tentukan sendiri habis ini apa setelah ini apa."* Ucapan berulang dari 438 pesan dijadikan aturan A1–A25 dan rencana sembilan blok di `docs/multi-bencana/RENCANA-20-JAM.md`. Push dan deploy menunggu kata pemilik.
    - **Tiga keputusan copy diputus**: sapaan "kamu", em dash dilarang di teks tampil, ikon tetap SVG garis. Sisa yang harus diganti: "Anda" di `informasi.js:377` dan `privasi.html`, em dash di `informasi.js:239`.
@@ -47,6 +53,9 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Modul bencana lain meniru kode karhutla (plug and play); tambahan khas bencana boleh dengan alasan | 17 Okt 2026 | Bagian yang sudah ada di karhutla dipakai ulang lewat registry, tidak disalin |
+| Hanya branch main, tanpa worktree | 17 Okt 2026 | Agent bekerja langsung di main, satu per satu bila berkasnya bersinggungan |
+| Bencana dibuka bertahap | 17 Okt 2026 | uji = halaman jadi, menu "Segera"; aktif = lolos audit paritas + cek data |
 | Sapaan pembaca "kamu" | 16 Okt 2026 | Semua teks yang menyapa memakai "kamu"; "Anda" yang tersisa diganti |
 | Em dash dilarang di teks tampil | 16 Okt 2026 | Pemisah pakai ":" atau "·"; en dash tetap untuk rentang dan angka kosong |
 | Ikon SVG garis | 16 Okt 2026 | Seragam dengan karhutla, bukan emoji dalam lingkaran |

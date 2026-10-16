@@ -1,12 +1,47 @@
 {
   "catatan": "URL tetap tiap buku. Terbitkan ulang SELALU ke url ini, tidak pernah sebagai artifact baru.",
   "buku": {
-    "pantau-bencana": { "url": "https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z", "sumber": "docs/buku-pegangan/pantau-bencana.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "rencana-multi-bencana": { "url": "https://claude.ai/artifact/7yMBxxVZjfFi6TQvkdcR85", "sumber": "docs/multi-bencana/_gabung.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "utama": { "url": "https://claude.ai/artifact/PCc5A2wAdrSww3ebnxEiSn", "sumber": "docs/buku-pegangan/rujukan/utama.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "mbg-bangka": { "url": "https://claude.ai/artifact/PX1dDyp7XU4qsfqwM823jK", "sumber": "docs/buku-pegangan/rujukan/mbg-bangka.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "gemah-ripah": { "url": "https://claude.ai/artifact/MyF3ztfGar2JvDrh46vAoo", "sumber": "docs/buku-pegangan/rujukan/gemah-ripah.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "betutu-sambe": { "url": "https://claude.ai/artifact/3ToFEuKEhDhtaNZz96vmz2", "sumber": "docs/buku-pegangan/rujukan/betutu-sambe.md", "commit": "fa93e79", "disegarkan": "2026-10-16" },
-    "worth-it": { "url": "https://claude.ai/artifact/R9514sAPuqKCXhQFpHWpGL", "sumber": "docs/buku-pegangan/rujukan/worth-it.md", "commit": "fa93e79", "disegarkan": "2026-10-16" }
+    "pantau-bencana": {
+      "url": "https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z",
+      "sumber": "docs/buku-pegangan/pantau-bencana.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-17"
+    },
+    "rencana-multi-bencana": {
+      "url": "https://claude.ai/artifact/7yMBxxVZjfFi6TQvkdcR85",
+      "sumber": "docs/multi-bencana/_gabung.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    },
+    "utama": {
+      "url": "https://claude.ai/artifact/PCc5A2wAdrSww3ebnxEiSn",
+      "sumber": "docs/buku-pegangan/rujukan/utama.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    },
+    "mbg-bangka": {
+      "url": "https://claude.ai/artifact/PX1dDyp7XU4qsfqwM823jK",
+      "sumber": "docs/buku-pegangan/rujukan/mbg-bangka.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    },
+    "gemah-ripah": {
+      "url": "https://claude.ai/artifact/MyF3ztfGar2JvDrh46vAoo",
+      "sumber": "docs/buku-pegangan/rujukan/gemah-ripah.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    },
+    "betutu-sambe": {
+      "url": "https://claude.ai/artifact/3ToFEuKEhDhtaNZz96vmz2",
+      "sumber": "docs/buku-pegangan/rujukan/betutu-sambe.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    },
+    "worth-it": {
+      "url": "https://claude.ai/artifact/R9514sAPuqKCXhQFpHWpGL",
+      "sumber": "docs/buku-pegangan/rujukan/worth-it.md",
+      "commit": "fa93e79",
+      "disegarkan": "2026-10-16"
+    }
   }
 }
