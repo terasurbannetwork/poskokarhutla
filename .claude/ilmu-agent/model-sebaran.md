@@ -58,3 +58,4 @@ Semua murah dan tanpa data mentah kecuali ditandai; dijalankan dari akar repo:
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode (scripts/sebaran/*.py, public/sebaran_model.js, insight_sebaran.js, kunci model_sebaran.json, prospektif.json) dan `git log -- scripts/sebaran`; cek: `python3 scripts/sebaran/{latih,gbdt,simfisika,umum,prospektif}.py uji` semua `ok`. Riwayat bermakna hanya `e28967c` dan `b18f946`; sisanya commit "gas" tanpa pesan.
+- 2026-10-16 · jejak.py: kompleks aktif = kluster.json level>=2 (n24>0) ~2259 buah, jadi dibatasi JEJAK_MAKS=40 + anggaran 420 dtk (K0001 ~76 dtk @20 MC). Cuaca: public/data/cuaca (cuaca_jam.py, 20 sel) dulu, selebihnya Open-Meteo past33+forecast4 (forecast_days=3 prospektif tak cukup 72 jam). hotspot.json basi >12 jam -> status data_basi, kompleks []. Cache jejak_cuaca di data/raw/sebaran/prospektif tidak di-gitignore.

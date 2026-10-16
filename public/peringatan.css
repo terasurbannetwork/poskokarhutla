@@ -210,3 +210,8 @@ input[type=text],input[type=email],.manual input{width:100%;min-height:44px;bord
 .chip.baca{cursor:default;border-color:var(--w)}
 .chip.baca::after{display:none}
 .chip.baca span{padding-right:12px}
+.st-sim{margin-top:2px;padding:8px 10px;border-radius:10px;background:#fff3d6;color:#4a3600;border-left:4px solid #e0701f;font-weight:600}
+.st-sim a{color:inherit;font-weight:700}
+:root[data-theme="dark"] .st-sim{background:#40330f;color:#f3e2b0}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .st-sim{background:#40330f;color:#f3e2b0}}
+.k-cat{font-size:13.5px;color:var(--ink2)}

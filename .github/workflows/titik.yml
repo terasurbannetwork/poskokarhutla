@@ -75,6 +75,18 @@ jobs:
         timeout-minutes: 10
         run: python3 scripts/sebaran/prospektif.py
 
+      # Jejak api: simulasi sebaran +24/+48/+72 jam tiap kompleks aktif (model data + cuaca prakiraan) -> public/data/jejak_api.json
+      # (dibaca src/ews.js untuk peringatan email). Cache cuaca ikut folder prospektif (disimpan di langkah berikutnya). Anggaran sendiri 420 dtk.
+      - name: Jejak api kompleks aktif (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        # sekali sehari (pemilik: "pipeline harian"; ~7 menit per jalan, tiap 3 jam = ~1.800 menit Actions/bulan): putaran 21:40 UTC
+        # = 04:40 WIB, jadi email terkirim pagi. Jendela 21-23 UTC menampung keterlambatan jadwal GitHub. Manual (dispatch) selalu jalan.
+        run: |
+          jam=$(date -u +%H)
+          if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
+          python3 scripts/sebaran/jejak.py
+
       - name: Simpan catatan uji prospektif
         if: always()
         continue-on-error: true

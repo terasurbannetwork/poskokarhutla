@@ -6,6 +6,8 @@ import {TINGKAT, HARI, BENCANA, tindakanUntuk} from "../public/ews_tindakan.js";
 const FONT = "Inter,Arial,Helvetica,sans-serif", BIRU = "#0f3d5e";
 export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
 export const angka = (n, d = 0) => Number(n).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});
+/* peluang -> kata, supaya tidak ada ketelitian palsu (galat baku model ~0,1) */
+export const kataPeluang = p => p < 0.3 ? "kemungkinan kecil (sekitar 1 dari 5)" : p < 0.45 ? "sekitar 1 dari 3 kemungkinan" : p < 0.65 ? "sekitar 1 dari 2 kemungkinan" : "lebih dari separuh kemungkinan";
 const HARI_KATA = ["hari ini", "besok", "lusa"];
 const lokasi = w => [w?.kec && `Kec. ${w.kec}`, w?.kab, w?.prov_nama].filter(Boolean).join(", ") || "lokasi Anda";
 
@@ -40,16 +42,24 @@ ${tombol(tautan, "Ya, kirimi saya peringatan")}
 /* ---------------- prakiraan 3 hari ---------------- */
 const tertinggi = ps => ps.reduce((a, p) => !a || p.tingkat > a.tingkat || (p.tingkat === a.tingkat && p.hari < a.hari) ? p : a, null);
 
-export function emailPeringatan({asal, lat, lon, wilayah, peringatan, tautanBerhenti}) {
+export function emailPeringatan({asal, lat, lon, wilayah, peringatan, simulasi, tautanBerhenti}) {
   const top = tertinggi(peringatan), B = BENCANA[top.bencana], w = lokasi(wilayah);
   const kepala = `${TINGKAT[top.tingkat].nama} ${B.pendek.toLowerCase()} ${HARI_KATA[top.hari]} di ${w.split(", ").slice(0, 2).join(", ")}`;
   const subject = kepala[0].toUpperCase() + kepala.slice(1);
   const urut = [...new Set(peringatan.map(p => p.bencana))].map(b => ({b, t: Math.max(...peringatan.filter(p => p.bencana === b).map(p => p.tingkat))})).sort((a, b) => b.t - a.t);
   const sel = (b, h) => { const t = Math.max(0, ...peringatan.filter(p => p.bencana === b && p.hari === h).map(p => p.tingkat)); return t ? pil(t) : `<span style="color:#9aa5b1">&ndash;</span>`; };
   const baris = urut.map(({b}) => `<tr><td style="padding:9px 10px;border-top:1px solid #e3e8ee;font:700 13px ${FONT}">${esc(BENCANA[b].pendek)}</td>${[0, 1, 2].map(h => `<td align="center" style="padding:9px 6px;border-top:1px solid #e3e8ee">${sel(b, h)}</td>`).join("")}</tr>`).join("");
-  const rincian = peringatan.filter(p => p.rincian).filter((p, i, a) => a.findIndex(q => q.bencana === p.bencana && q.rincian === p.rincian) === i)
+  const rincian = peringatan.filter(p => p.rincian && p.sumber_jenis !== "simulasi").filter((p, i, a) => a.findIndex(q => q.bencana === p.bencana && q.rincian === p.rincian) === i)
     .map(p => `<li style="margin:3px 0">${esc(p.rincian)}</li>`).join("");
   const blok = urut.map(({b, t}, i) => `<p style="margin:${i ? 16 : 6}px 0 4px;font:700 14px ${FONT};color:#12202e">${esc(BENCANA[b].nama)} ${pil(t)}</p>${daftar(tindakanUntuk(b, t))}`).join("");
+  /* karhutla yang tingkatnya dibawa simulasi: blok sorot jarak, cakrawala, peluang + tombol ke /sim/<kompleks> */
+  const sim = peringatan.filter(p => p.sumber_jenis === "simulasi" && p.kompleks).sort((a, b) => b.tingkat - a.tingkat || a.jam_sisa - b.jam_sisa);
+  const cakupan = Number.isFinite(simulasi?.n_aktif) && Number.isFinite(simulasi?.n_diramal) ? ` Simulasi hanya mencakup ${angka(simulasi.n_diramal)} dari ${angka(simulasi.n_aktif)} kompleks aktif hari ini; tidak ada peringatan simulasi bukan berarti aman.` : "";
+  const catatSim = `Ini perkiraan model, bukan pengamatan. Model paling lemah untuk kebakaran gambut dan kompleks besar.${cakupan}`;
+  const blokSim = sim.length ? `<table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:16px 0 0;background:#fff4e8;border-left:4px solid ${TINGKAT[sim[0].tingkat].warna};border-collapse:separate"><tr><td style="padding:12px 14px;font:14px/1.55 ${FONT};color:#1d2733">
+<b style="font:700 15px ${FONT};color:#12202e">Simulasi penjalaran api</b>${sim.map(p => `<br>${esc(p.kalimat || p.rincian)}`).join("")}
+<br><span style="font:12px/1.5 ${FONT};color:#5b6773">${esc(catatSim)}</span>
+${tombol(`${asal}/sim/${encodeURIComponent(sim[0].kompleks)}`, "Lihat simulasi", "#e2711d")}</td></tr></table>` : "";
   const peta = `${asal}/peringatan?lat=${lat}&lon=${lon}`;
   const html = bungkus(subject, `<img src="${esc(asal)}/img/${esc(B.gambar)}" width="552" alt="${esc(B.nama)}" style="display:block;width:100%;max-width:552px;height:auto;border-radius:8px;margin:0 0 16px">
 <p style="margin:0 0 6px">${pil(top.tingkat)}</p>
@@ -57,13 +67,13 @@ export function emailPeringatan({asal, lat, lon, wilayah, peringatan, tautanBerh
 <p style="margin:0 0 14px;color:#34414e">${esc(TINGKAT[top.tingkat].arti)}</p>
 <table role="presentation" cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #e3e8ee;border-radius:8px;border-collapse:separate;overflow:hidden"><tr style="background:#f4f7fa"><td style="padding:9px 10px;font:700 12px ${FONT};color:#5b6773">Bencana</td>${HARI.map(h => `<td align="center" style="padding:9px 6px;font:700 12px ${FONT};color:#5b6773">${esc(h)}</td>`).join("")}</tr>${baris}</table>
 ${rincian ? `<ul style="margin:14px 0 0;padding-left:18px;color:#34414e">${rincian}</ul>` : ""}
-<h2 style="margin:22px 0 4px;font:700 17px ${FONT};color:#12202e">Yang perlu Anda lakukan</h2>${blok}
+${blokSim}<h2 style="margin:22px 0 4px;font:700 17px ${FONT};color:#12202e">Yang perlu Anda lakukan</h2>${blok}
 ${tombol(peta, "Lihat peta")}
-<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(urut.map(x => BENCANA[x.b].sumber))].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
+<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(urut.map(x => BENCANA[x.b].sumber)), ...(sim.length ? [sim[0].sumber || "Simulasi penjalaran api Pantau Bencana"] : [])].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
   kakiUmum(wilayah, "Anda menerima email ini karena berlangganan Peringatan Dini untuk lokasi di atas dan lokasi itu sedang diprakirakan berisiko.", tautanBerhenti));
   const text = `${subject}\n\n` + peringatan.map(p => `- ${HARI[p.hari]}: ${BENCANA[p.bencana].nama}, ${TINGKAT[p.tingkat].nama}`).join("\n") + "\n\nYang perlu Anda lakukan:\n" +
     urut.map(({b, t}) => `${BENCANA[b].nama}\n` + tindakanUntuk(b, t).map((x, i) => `${i + 1}. ${x}`).join("\n")).join("\n\n") +
-    `\n\nPeta: ${peta}\nPrakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.\nBerhenti berlangganan: ${tautanBerhenti}`;
+    `${sim.length ? "\n\nSimulasi: " + sim.map(p => p.kalimat || p.rincian).join(" ") + ` ${catatSim} Lihat simulasi: ${asal}/sim/${encodeURIComponent(sim[0].kompleks)}` : ""}\n\nPeta: ${peta}\nPrakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.\nBerhenti berlangganan: ${tautanBerhenti}`;
   return {subject, html, text};
 }
 

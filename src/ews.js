@@ -11,7 +11,7 @@
 import {json, gagal, sha, acak, hex, ipHash, turnstileOK, bacaBody, cacheTepi} from "./worker.js";
 import {wilayah, cariWilayah, km, dalam} from "./titik.js";
 import {BENCANA, TINGKAT} from "../public/ews_tindakan.js";
-import {emailKonfirmasi, emailPeringatan, emailGempa, angka} from "./ews_email.js";
+import {emailKonfirmasi, emailPeringatan, emailGempa, angka, kataPeluang} from "./ews_email.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 const ASAL_PUBLIK = "https://pantau.terasurban.com";   // cron tak punya permintaan, jadi tak tahu origin
@@ -32,6 +32,15 @@ export const FWI_WASPADA = 7, FWI_SIAGA = 14;     // scripts/data/aturan.py::kel
 export const FWI_JARAK_SEL = 0.5;                 // public/data/fwi.json: sel 0,5 derajat; titik dianggap tercakup bila selisih lat dan lon sel terdekat <= 0,5
 export const TITIK_AWAS_KM = 5, TITIK_SIAGA_KM = 15, TITIK_UMUR = 24 * JAM;   // titik panas FIRMS (D1 titik_terbaru) dalam 24 jam: <=5 km Awas, <=15 km Siaga (hari ini)
 export const ROB_JARAK_KM = 10;                   // public/banjir/data/rob.json: titik pesisir terdekat <= 10 km mewakili lokasi
+/* simulasi penjalaran api (public/data/jejak_api.json, scripts/sebaran/jejak.py): sel peluang-bakar kumulatif pada cakrawala 24/48/72 jam sesudah `acuan` (deteksi satelit terbaru).
+   Ambang sengaja KONSERVATIF, dibatasi bukti hasil review model: Monte Carlo n=20 -> galat baku peluang ~0,1 (selisih < 0,2 tidak bermakna); lompatan model <= ~1,9 km/hari
+   (jadi "dalam 2 km" sudah batas wajar, bukan 1 km); galat arah ~80 derajat (maka jarak 5 km, bukan 10 km, dan tidak ada Waspada dari simulasi).
+   Awas = ada sel <= 2 km dengan p >= 0,50 DAN kompleks tidak terpangkas (sel dipangkas = model tak penuh); Siaga = ada sel <= 5 km dengan p >= 0,20. */
+export const SIM_AWAS_KM = 2, SIM_AWAS_P = 0.50, SIM_SIAGA_KM = 5, SIM_SIAGA_P = 0.20;
+export const SIM_UMUR = 36 * JAM;                 // jejak_api.json dianggap segar bila kini - acuan <= ini DAN status "ok"; selain itu diabaikan dan "jejak" masuk basi_sumber
+const SIM_JAM = [24, 48, 72];
+const SIM_GRID = 0.1;                             // derajat (>= 11 km di lintang Indonesia) > SIM_SIAGA_KM, jadi 3x3 sel cukup
+const SIM_SUMBER = "Simulasi penjalaran api Pantau Bencana (model data, prakiraan, bukan kepastian)";
 export const CUACA_DEPAN = 24 * JAM;              // peringatan nowcast BMKG yang aktif sekarang atau mulai dalam 24 jam
 const CUACA_TINGKAT = {Moderate: 2, Severe: 3, Extreme: 3};   // CAP: lainnya (Minor dst.) = 1
 /* gempa terasa (km) menurut magnitudo: [M minimal, radius]. Aproksimasi kasar jarak guncangan terasa (skala MMI >= III-IV) dari praktik BMKG/USGS. */
@@ -75,13 +84,47 @@ let DATA = null;
 export async function muatData(env, kini) {
   if (DATA && Math.abs(kini - DATA.kini) < CACHE_DATA) return DATA;
   const ambil = async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); return r.ok ? await r.json() : null; } catch (e) { return null; } };
-  const [fwi, status, cuaca, rob, titik] = await Promise.all([ambil("/data/fwi.json"), ambil("/banjir/data/status.json"), ambil("/data/peringatan.json"), ambil("/banjir/data/rob.json"),
+  const [fwi, status, cuaca, rob, jejakMentah, titik] = await Promise.all([ambil("/data/fwi.json"), ambil("/banjir/data/status.json"), ambil("/data/peringatan.json"), ambil("/banjir/data/rob.json"), ambil("/data/jejak_api.json"),
     env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first().then(r => r && JSON.parse(r.isi), () => null)]);
   /* titik panas: hanya yang <= 24 jam dan keyakinan sedang ke atas (rendah = banyak alarm palsu). ponytail: pindai linear (~20 rb titik) per pelanggan; indeks grid bila pelanggan > ribuan */
   const acuan = titik ? Date.parse(titik.acuan) : 0, pts = [];
   if (titik) for (const [la, lo, jam, , , c] of titik.baris) { const t = acuan + jam * JAM; if (c >= 1 && t >= kini - TITIK_UMUR) pts.push([la, lo, t]); }
-  return DATA = {kini, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat};
+  const jejakAcuan = jejakMentah?.acuan, jejakStatus = jejakMentah?.status, jejak = jejakSegar({jejakAcuan, jejakStatus}, kini) ? indeksJejak(jejakMentah) : null;
+  return DATA = {kini, jejak, jejakAcuan, jejakStatus, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat};
 }
+export const jejakSegar = (d, kini) => d.jejakStatus === "ok" && kini - Date.parse(d.jejakAcuan) <= SIM_UMUR;
+/* sel simulasi diindeks ke grid per cakrawala sekali per muat, jadi tiap pelanggan hanya memeriksa 9 sel, bukan semua sel. ponytail: seluruh sel di memori isolat; kalau jejak_api.json membengkak (> ~100 rb sel) pangkas di jejak.py */
+export function indeksJejak(j) {
+  const kompleks = [], grid = {24: new Map(), 48: new Map(), 72: new Map()};
+  for (const k of Array.isArray(j.kompleks) ? j.kompleks : []) {
+    if (!/^[A-Za-z0-9_-]{1,24}$/.test(String(k?.id))) continue;
+    const ki = kompleks.push({id: k.id, nama: String(k.nama || ""), terpangkas: !!k.terpangkas}) - 1;
+    for (const h of k.hari || []) {
+      const g = grid[h?.jam]; if (!g) continue;
+      for (const [la, lo, p] of h.sel || []) {
+        if (!Number.isFinite(la) || !Number.isFinite(lo) || !Number.isFinite(p)) continue;
+        const kunci = Math.floor(la / SIM_GRID) + "," + Math.floor(lo / SIM_GRID);
+        (g.get(kunci) || g.set(kunci, []).get(kunci)).push([la, lo, p, ki]);
+      }
+    }
+  }
+  const c = j.cakupan, ada = n => Number.isFinite(n) ? n : null;
+  return {kompleks, grid, acuan: Date.parse(j.acuan), n_aktif: ada(c?.n_aktif), n_diramal: ada(c?.n_diramal)};
+}
+/* untuk satu cakrawala: per kompleks {a: p tertinggi sel <= SIM_AWAS_KM dengan p >= SIM_AWAS_P (0 bila tak ada), s: idem untuk Siaga} */
+function jejakDekat(J, jam, lat, lon) {
+  const g = J.grid[jam], a = Math.floor(lat / SIM_GRID), b = Math.floor(lon / SIM_GRID), per = new Map();
+  for (let i = -1; i <= 1; i++) for (let j = -1; j <= 1; j++) for (const [la, lo, p, ki] of g.get((a + i) + "," + (b + j)) || []) {
+    if (p < SIM_SIAGA_P) continue;
+    const d = km(lat, lon, la, lo); if (d > SIM_SIAGA_KM) continue;
+    const x = per.get(ki) || {a: 0, s: 0};
+    x.s = Math.max(x.s, p); if (d <= SIM_AWAS_KM && p >= SIM_AWAS_P) x.a = Math.max(x.a, p);
+    per.set(ki, x);
+  }
+  return per;
+}
+const jamWib = t => { const d = new Date(t + 7 * JAM); return `${String(d.getUTCHours()).padStart(2, "0")}.${String(d.getUTCMinutes()).padStart(2, "0")}`; };
+
 export const lupakanData = () => { DATA = null; };
 
 /* ---------------- penilaian lokasi ---------------- */
@@ -114,6 +157,27 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
   if (dekat <= TITIK_AWAS_KM) tambahkan("karhutla", 3, 0, "Titik panas sangat dekat", `Titik panas satelit terdeteksi ${angka(dekat, 1)} km dari lokasi Anda dalam 24 jam terakhir.`);
   else if (dekat <= TITIK_SIAGA_KM) tambahkan("karhutla", 2, 0, "Titik panas di sekitar Anda", `Titik panas satelit terdeteksi ${angka(dekat, 1)} km dari lokasi Anda dalam 24 jam terakhir.`);
 
+  /* karhutla: simulasi penjalaran api. Cakrawala yang sudah lewat dilewati; sel kumulatif, jadi cakrawala lebih jauh hanya mengabari bila tingkatnya LEBIH tinggi dari yang sudah ada untuk kompleks yang sama.
+     Label "dalam N jam" dari sisa waktu sampai akhir cakrawala (dibulatkan naik ke kelipatan 6 jam), bukan rentang, karena peluangnya kumulatif. */
+  if (data.jejak) {
+    const lalu = new Map(), J = data.jejak;
+    for (const jam of SIM_JAM) {
+      const akhir = J.acuan + jam * JAM; if (akhir <= data.kini) continue;
+      let top = null;
+      for (const [ki, x] of jejakDekat(J, jam, lat, lon)) {
+        const t = x.a && !J.kompleks[ki].terpangkas ? 3 : x.s ? 2 : 0, p = t === 3 ? x.a : x.s;
+        if (!t || t <= (lalu.get(ki) || 0)) continue;
+        lalu.set(ki, t); if (!top || t > top.t || (t === top.t && p > top.p)) top = {t, p, ki};
+      }
+      if (!top) continue;
+      const h = Math.min(2, Math.ceil((akhir - data.kini) / HARI) - 1), kp = J.kompleks[top.ki], band = top.t === 3 ? SIM_AWAS_KM : SIM_SIAGA_KM, sisa = Math.ceil((akhir - data.kini) / (6 * JAM)) * 6, peluang = Math.round(top.p * 10) / 10;
+      /* potongan dipisah " · " persis seperti kamus EN di public/i18n/en.json (layar menerjemahkan per potongan) */
+      const judul = `Perkiraan model: api bisa mencapai area dalam ${band} km dari lokasimu dalam ${sisa} jam`;
+      const kalimat = `${judul} · ${kataPeluang(top.p)} · simulasi dari deteksi satelit pukul ${jamWib(J.acuan)} WIB`;
+      out.push({bencana: "karhutla", tingkat: top.t, hari: h, judul, rincian: kalimat, sumber: SIM_SUMBER,
+        kunci: `karhutla-sim|${kp.id}|${hari[h]}|${top.t}`, sumber_jenis: "simulasi", kompleks: kp.id, jarak_maks_km: band, peluang, jam_sisa: sisa, kalimat});
+    }
+  }
   /* banjir & longsor: status per kecamatan, indeks sejajar status.hari */
   const k = data.status?.kec?.[kecKunci];
   if (k) for (const [kunci, b, kata] of [["b", "banjir", "Banjir"], ["l", "longsor", "Tanah longsor"]]) (k[kunci] || []).forEach((lv, i) => {
@@ -137,7 +201,7 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
       if (lv >= 1) tambahkan("rob", Math.min(3, lv), h, `${TINGKAT[Math.min(3, lv)].nama} banjir rob di pesisir ${t.kec}`, `Pasang laut tinggi diprakirakan di ${t.kec}, ${t.kab} (${angka(bd, 1)} km dari lokasi Anda).`); });
   }
   /* satu entri tertinggi per bencana per hari */
-  const peta = new Map(); for (const e of out) { const c = e.bencana + e.hari; if (!peta.has(c) || peta.get(c).tingkat < e.tingkat) peta.set(c, e); }
+  const peta = new Map(); for (const e of out) { const c = e.bencana + e.hari; if (!peta.has(c) || peta.get(c).tingkat < e.tingkat || (peta.get(c).tingkat === e.tingkat && e.sumber_jenis)) peta.set(c, e); }
   return [...peta.values()].sort((a, b) => b.tingkat - a.tingkat || a.hari - b.hari);
 }
 
@@ -197,7 +261,7 @@ export async function kirimEws(env, kini = Date.now()) {
           await env.DB.batch([...baru.map(k => env.DB.prepare("INSERT OR IGNORE INTO ews_terkirim (langganan_id, kunci, waktu) VALUES (?, ?, ?)").bind(s.id, k, kini)),
             env.DB.prepare("UPDATE ews_langganan SET kirim_terakhir = ? WHERE id = ?").bind(kini, s.id)]);
           const tautan = await tautanBerhenti(env, s.id);
-          try { await kirimEmail(env, s.email, emailPeringatan({asal: ASAL_PUBLIK, ...baris(s, pn), peringatan: ps, tautanBerhenti: tautan}), tautan); hasil.dikirim++; }
+          try { await kirimEmail(env, s.email, emailPeringatan({asal: ASAL_PUBLIK, ...baris(s, pn), peringatan: ps, simulasi: data.jejak, tautanBerhenti: tautan}), tautan); hasil.dikirim++; }
           catch (e) {
             console.error("ews kirim", s.id, e.message); hasil.gagal++;
             await env.DB.batch([...baru.map(k => env.DB.prepare("DELETE FROM ews_terkirim WHERE langganan_id = ? AND kunci = ?").bind(s.id, k)),
@@ -283,6 +347,7 @@ export function sumberBasi(data, kini) {
   if (!data.cuacaDibuat || Date.parse(data.cuacaDibuat) < kini - 24 * JAM) out.push("cuaca");
   if (!data.rob?.hari?.includes(h)) out.push("rob");
   if (!data.titikDibuat || Date.parse(data.titikDibuat) < kini - 9 * JAM) out.push("titik");   // FIRMS diperbarui tiap 3 jam
+  if (!jejakSegar(data, kini)) out.push("jejak");
   return out;
 }
 
@@ -294,8 +359,8 @@ async function cek(env, req, url, kini, ctx) {
     const [data, W, pn] = await Promise.all([muatData(env, kini), wilayah(env), namaProv(env)]);
     const kec = cariWilayah(W, lat, lon), hariIni = wib(kini), basi = sumberBasi(data, kini);
     return json({wilayah: kec ? pecahKec(kec, pn) : null, hari: [0, 1, 2].map(i => tambah(hariIni, i)),
-      peringatan: nilaiTitik(data, lat, lon, kec || "", hariIni).map(({kunci, ...p}) => p), basi: basi.length > 0, basi_sumber: basi,
-      diperbarui: Object.fromEntries(Object.entries({fwi: data.fwi?.hari_ini, banjir: data.status?.hari?.[0], cuaca: data.cuacaDibuat, rob: data.rob?.dibuat, titik: data.titikAcuan}).filter(([, v]) => v))});
+      peringatan: nilaiTitik(data, lat, lon, kec || "", hariIni).map(({kunci, ...p}) => p), basi: basi.length > 0, basi_sumber: basi, simulasi: data.jejak ? {acuan: data.jejakAcuan, n_aktif: data.jejak.n_aktif, n_diramal: data.jejak.n_diramal} : null,
+      diperbarui: Object.fromEntries(Object.entries({fwi: data.fwi?.hari_ini, banjir: data.status?.hari?.[0], cuaca: data.cuacaDibuat, rob: data.rob?.dibuat, titik: data.titikAcuan, jejak: data.jejak ? data.jejakAcuan : null}).filter(([, v]) => v))});
   });
 }
 

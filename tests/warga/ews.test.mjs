@@ -10,7 +10,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import * as E from "../../src/ews.js";   // ews.js diimpor PERTAMA dan sendirian: dulu melempar (siklus dengan worker.js)
-import {emailPeringatan, emailKonfirmasi, emailGempa} from "../../src/ews_email.js";
+import {emailPeringatan, emailKonfirmasi, emailGempa, kataPeluang} from "../../src/ews_email.js";
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM;
 const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
@@ -36,16 +36,22 @@ const luar = async req => {
 };
 const fx = {};
 let kecKunci = null;         // "prov|kab|kec" Palangka Raya, diisi setelah langganan pertama
+/* jejak_api.json: satu kompleks K0012 (Palangka Raya); o = {24: [[km, p], ...], 48: ..., 72: ...} sel di utara PAL sejauh km */
+const jejakFx = (o, acuan, id = "K0012", nama = "Kec. Pahandut, Kota Palangka Raya", extra = {}, atas = {}) => ({dibuat: new Date(acuan + 8 * JAM).toISOString(), acuan: new Date(acuan).toISOString(), status: "ok", model: "uji", sumber: "uji", ambang_p: 0.05,
+  cakupan: {n_aktif: 10, n_diramal: 8, dilewati: {}}, ...atas,
+  kompleks: [{id, nama, prov: "62", lat: -2.2, lon: 113.9, titik_24j: 3, p_lepas: 0.5, ...extra, hari: [24, 48, 72].map(jam => ({jam, p_maks: 0.5, luas_p50_ha: 10, sel: (o[jam] || []).map(([k, p]) => [-2.21 + k / 111.2, 113.92, p])}))}]});
 function muat(t, o = {}) {   // data bahaya untuk hari WIB dari waktu t
   const h = i => tambah(wib(t), i);
   fx.fwi = {sel: 0.5, hari_ini: h(0), grid: [{lat: -2.25, lon: 114.0, prov: "62", hari: [0, 1, 2].map(i => ({tgl: h(i), fwi: [o.f0 ?? 3, o.f1 ?? 9, o.f2 ?? 3][i]}))}]};
   fx.status = {hari: [0, 1, 2, 3].map(h), kec: kecKunci && !o.tanpaBanjir ? {[kecKunci]: {b: o.b ?? [0, 2, 0, 0], l: o.l ?? [0, 0, 0, 0]}} : {}};
   fx.peringatan = {dibuat: new Date(t).toISOString(), nowcast: o.cuaca || []};
   fx.rob = {dibuat: new Date(t).toISOString(), hari: [0, 1, 2].map(h), titik: o.rob || []};
+  fx.jejak = o.tanpaJejak ? null : jejakFx(o.jejak || {}, o.jejakAcuan ?? t - 6 * JAM);
 }
 const aset = async req => {
   const p = new URL(req.url).pathname;
-  const peta = {"/data/fwi.json": fx.fwi, "/banjir/data/status.json": fx.status, "/data/peringatan.json": fx.peringatan, "/banjir/data/rob.json": fx.rob};
+  const peta = {"/data/fwi.json": fx.fwi, "/banjir/data/status.json": fx.status, "/data/peringatan.json": fx.peringatan, "/banjir/data/rob.json": fx.rob, "/data/jejak_api.json": fx.jejak};
+  if (p === "/data/jejak_api.json" && !fx.jejak) return new Response("tidak ada", {status: 404});
   if (peta[p]) return Response.json(peta[p]);
   const f = path.join(AKAR, "public", decodeURIComponent(p));
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !f.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
@@ -54,7 +60,7 @@ const opsi = (nama, ikat = {}) => ({modules: true, scriptPath: path.join(AKAR, "
   compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, bindings: {IP_SALT: "garam-uji", TURNSTILE_SITEKEY: "kunci-situs", TURNSTILE_SECRET: "rahasia-ts", EMAIL_API_KEY: "kunci-resend", EMAIL_FROM: "Pantau Bencana <peringatan@contoh.id>", ...ikat},
   serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
 
-let mf, DB, mf2, DB2, mf3, DB3, mf4, DB4;
+let mf, DB, mf2, DB2, mf3, DB3, mf4, DB4, mf5, DB5;
 before(async () => {
   muat(T0);
   mf = new Miniflare(opsi("uji-ews")); DB = await mf.getD1Database("DB");
@@ -65,8 +71,10 @@ before(async () => {
   DB3 = await mf3.getD1Database("DB"); await DB3.batch(pecah(migrasi()).map(s => DB3.prepare(s)));
   mf4 = new Miniflare(opsi("uji-ews-giliran", {EWS_MAKS_EMAIL: "2"})); DB4 = await mf4.getD1Database("DB");
   await DB4.batch(pecah(migrasi()).map(s => DB4.prepare(s)));
+  mf5 = new Miniflare(opsi("uji-ews-simulasi")); DB5 = await mf5.getD1Database("DB");
+  await DB5.batch(pecah(migrasi()).map(s => DB5.prepare(s)));
 });
-after(async () => { await mf?.dispose(); await mf2?.dispose(); await mf3?.dispose(); await mf4?.dispose(); });
+after(async () => { await mf?.dispose(); await mf2?.dispose(); await mf3?.dispose(); await mf4?.dispose(); await mf5?.dispose(); });
 let rusak = null;
 const uji = (nama, fn) => test(nama, async () => {
   if (rusak) throw new Error(`tidak dijalankan: "${rusak}" gagal lebih dulu`);
@@ -92,11 +100,11 @@ const ACEH = {lat: 5.55, lon: 95.32};      // Banda Aceh
 const PAPUA = {lat: -2.53, lon: 140.72};   // Jayapura
 const sub = (email, lokasi, bencana, waspada = false, tambahan = {}) => ({email, ...lokasi, akurasi: 20, bencana, waspada, turnstile: "lolos", ...tambahan});
 /* daftar + klik konfirmasi; mengembalikan token */
-async function daftarAktif(isian) {
-  const awal = untuk(isian.email).length, r = await panggil("POST", "/api/ews/langganan", isian);
+async function daftarAktif(isian, w = mf) {
+  const awal = untuk(isian.email).length, r = await panggil("POST", "/api/ews/langganan", isian, ipBaru(), {}, w);
   assert.equal(r.s, 202, r.t);
   assert.ok(await sampai(() => untuk(isian.email).length > awal), "email konfirmasi tidak terkirim");
-  const token = tokenDari(untuk(isian.email).at(-1)), k = await panggil("POST", "/ews/konfirmasi?t=" + token);
+  const token = tokenDari(untuk(isian.email).at(-1)), k = await panggil("POST", "/ews/konfirmasi?t=" + token, undefined, ipBaru(), {}, w);
   assert.equal(k.s, 200, k.t); assert.equal(k.j.ok, true);
   return {token, wilayah: r.j.wilayah};
 }
@@ -420,12 +428,14 @@ uji("/api/ews/cek: peringatan lokasi dengan nilaiTitik yang sama, wilayah, 3 har
 });
 
 uji("sumberBasi: sumber yang tidak mencakup hari ini ditandai; cek melaporkan basi", async () => {
-  const d = {fwi: {hari_ini: "2026-10-20"}, status: {hari: ["2026-10-20"]}, cuacaDibuat: "2026-10-20T03:00:00Z", rob: {hari: ["2026-10-20"]}, titikDibuat: "2026-10-20T02:00:00Z"};
+  const d = {fwi: {hari_ini: "2026-10-20"}, status: {hari: ["2026-10-20"]}, cuacaDibuat: "2026-10-20T03:00:00Z", rob: {hari: ["2026-10-20"]}, titikDibuat: "2026-10-20T02:00:00Z", jejakAcuan: "2026-10-20T02:00:00Z", jejakStatus: "ok"};
   const t = Date.parse("2026-10-20T03:00:00Z");
   assert.deepEqual(E.sumberBasi(d, t), []);
-  assert.deepEqual(E.sumberBasi(d, t + HARI + MENIT), ["banjir", "cuaca", "rob", "titik"], "besoknya: fwi masih sehari tertinggal = boleh; sisanya tidak mencakup hari ini");
-  assert.deepEqual(E.sumberBasi(d, t + 2 * HARI + MENIT), ["fwi", "banjir", "cuaca", "rob", "titik"]);
-  assert.deepEqual(E.sumberBasi({}, t), ["fwi", "banjir", "cuaca", "rob", "titik"], "berkas hilang = basi, bukan aman");
+  assert.deepEqual(E.sumberBasi(d, t + HARI + MENIT), ["banjir", "cuaca", "rob", "titik"], "besoknya: fwi masih sehari tertinggal = boleh; jejak harian masih dalam SIM_UMUR; sisanya tidak mencakup hari ini");
+  assert.ok(E.sumberBasi(d, Date.parse(d.jejakAcuan) + E.SIM_UMUR + MENIT).includes("jejak"), "acuan lebih tua dari SIM_UMUR = basi");
+  assert.ok(E.sumberBasi({...d, jejakStatus: "data_basi"}, t).includes("jejak"), "status bukan ok = basi");
+  assert.deepEqual(E.sumberBasi(d, t + 2 * HARI + MENIT), ["fwi", "banjir", "cuaca", "rob", "titik", "jejak"]);
+  assert.deepEqual(E.sumberBasi({}, t), ["fwi", "banjir", "cuaca", "rob", "titik", "jejak"], "berkas hilang = basi, bukan aman");
   /* e2e: fixture segar untuk hari ini, tapi belum ada putaran titik panas di D1 */
   muat(Date.now(), {kecKunci});
   const r = await panggil("GET", "/api/ews/cek?lat=-2.21&lon=113.92");
@@ -564,4 +574,100 @@ uji("skema: constraint menolak baris yang salah langsung di D1", async () => {
     await assert.rejects(masuk(o), undefined, `${nama} harus ditolak`);
   await assert.rejects(DB.prepare("INSERT INTO ews_laju VALUES ('h', 'liar', 1)").run(), undefined, "aksi laju liar");
   await masuk(); await DB.prepare("DELETE FROM ews_langganan WHERE id = 'b000000000000001'").run();
+});
+
+/* ================= simulasi penjalaran api (public/data/jejak_api.json) ================= */
+uji("simulasi: ambang, cakrawala yang lewat dilewati, label sisa jam, kunci dedupe, tanpa presisi palsu", () => {
+  const h0 = "2026-10-20", kini = Date.parse("2026-10-20T03:00:00Z"), acuan = kini - 6 * JAM;   // cakrawala berakhir kini+18, +42, +66 jam
+  const f = (o, {lat = PAL.lat, lon = PAL.lon, id, extra, ac = acuan, atas} = {}) => E.nilaiTitik({kini, fwi: null, titik: [], cuaca: [], status: null, rob: null, jejak: E.indeksJejak(jejakFx(o, ac, id, undefined, extra, atas))}, lat, lon, "", h0);
+  const ringkas = ps => ps.map(p => [p.tingkat, p.hari, p.jam_sisa]);
+  /* 1,5 km, p 0,6 = Awas; label dari sisa waktu (18 jam -> 18) */
+  const a = f({24: [[1.5, 0.6]]});
+  assert.deepEqual(ringkas(a), [[3, 0, 18]]);
+  assert.equal(a[0].bencana, "karhutla"); assert.equal(a[0].sumber_jenis, "simulasi"); assert.equal(a[0].kompleks, "K0012");
+  assert.equal(a[0].jarak_maks_km, 2); assert.equal(a[0].peluang, 0.6);
+  assert.equal(a[0].kunci, "karhutla-sim|K0012|2026-10-20|3"); assert.ok(a[0].kunci.length <= 80);
+  assert.equal(a[0].judul, "Perkiraan model: api bisa mencapai area dalam 2 km dari lokasimu dalam 18 jam");
+  assert.match(a[0].kalimat, /^Perkiraan model: api bisa mencapai area dalam \d km dari lokasimu dalam \d+ jam · sekitar 1 dari 2 kemungkinan · simulasi dari deteksi satelit pukul 04\.00 WIB$/,
+    "potongan ' · ' harus persis kunci kamus EN (public/i18n/en.json), layar menerjemahkan per potongan");
+  assert.equal(a[0].rincian, a[0].kalimat); assert.match(a[0].sumber, /bukan kepastian/);
+  /* p 0,4 dalam 1 km = Siaga (bukan Awas); 8 km = tidak ada; p < 0,2 = tidak ada */
+  const b = f({24: [[1, 0.4]]}); assert.deepEqual(ringkas(b), [[2, 0, 18]]); assert.equal(b[0].jarak_maks_km, 5); assert.equal(b[0].peluang, 0.4);
+  assert.deepEqual(f({24: [[8, 0.9]], 48: [[8, 0.9]], 72: [[8, 0.9]]}), [], "8 km: tidak ada Waspada simulasi");
+  assert.deepEqual(f({24: [[1, 0.15]]}), [], "p < 0,20");
+  assert.deepEqual(ringkas(f({24: [[4.5, 0.25]]})), [[2, 0, 18]]);
+  assert.deepEqual(f({24: [[30, 0.9]]}), []);
+  /* kompleks terpangkas: paling tinggi Siaga */
+  assert.deepEqual(ringkas(f({24: [[1, 0.9]]}, {extra: {terpangkas: true}})), [[2, 0, 18]]);
+  /* peluang yang dilaporkan = sel penentu tingkat (Awas 0,5 bukan sel Siaga 0,9 di 4 km) */
+  assert.equal(f({24: [[1, 0.5], [4, 0.9]]})[0].peluang, 0.5);
+  /* cakrawala 24 jam sudah lewat (acuan 30 jam lalu): dilewati; 48 jam sisa 18 jam; label membulat naik ke 6 jam */
+  assert.deepEqual(ringkas(f({24: [[1, 0.9]], 48: [[1, 0.9]]}, {ac: kini - 30 * JAM})), [[3, 0, 18]]);
+  assert.deepEqual(ringkas(f({48: [[1, 0.9]]}, {ac: kini - 31 * JAM})), [[3, 0, 18]], "sisa 17 jam -> 18");
+  assert.deepEqual(ringkas(f({72: [[1, 0.9]]}, {ac: kini - 3 * JAM})), [[3, 2, 72]], "sisa 69 jam -> 72, hari ke-3");
+  /* sel kumulatif: sama di dua cakrawala = sekali; kenaikan di cakrawala lebih jauh tetap mengabari */
+  assert.deepEqual(ringkas(f({24: [[1, 0.9]], 48: [[1, 0.9]]})), [[3, 0, 18]]);
+  assert.deepEqual(ringkas(f({24: [[4, 0.3]], 48: [[1, 0.9], [4, 0.3]]})), [[3, 1, 42], [2, 0, 18]]);
+  /* tanpa ± dan tanpa rentang "24–48" di teks mana pun */
+  for (const x of [...a, ...b, ...f({48: [[1, 0.9]]})]) assert.ok(!/±|24–48|48–72/.test(x.judul + x.kalimat + x.rincian), x.judul);
+  /* kata peluang */
+  assert.deepEqual([0.2, 0.3, 0.45, 0.65].map(kataPeluang), ["kemungkinan kecil (sekitar 1 dari 5)", "sekitar 1 dari 3 kemungkinan", "sekitar 1 dari 2 kemungkinan", "lebih dari separuh kemungkinan"]);
+  /* kompleks Aceh tidak pernah sampai ke pelanggan Papua; dan Aceh dekat ke pelanggan Aceh */
+  const aceh = {kini, fwi: null, titik: [], cuaca: [], status: null, rob: null, jejak: E.indeksJejak({acuan: new Date(acuan).toISOString(), status: "ok", kompleks: [{id: "K0001", nama: "Kec. X, Kab. Aceh", hari: [{jam: 24, sel: [[ACEH.lat + 0.005, ACEH.lon, 0.7]]}]}]})};
+  assert.deepEqual(E.nilaiTitik(aceh, PAPUA.lat, PAPUA.lon, "", h0), []);
+  assert.equal(E.nilaiTitik(aceh, ACEH.lat, ACEH.lon, "", h0)[0].tingkat, 3);
+  /* berdampingan dengan FWI: tingkat sama = kalimat simulasi yang menang; FWI lebih tinggi = FWI menang */
+  const fwi = fw => ({grid: [{lat: -2.25, lon: 114.0, hari: [{tgl: h0, fwi: fw}]}]});
+  const dasar = {kini, titik: [], cuaca: [], status: null, rob: null, jejak: E.indeksJejak(jejakFx({24: [[4, 0.3]]}, acuan))};
+  assert.equal(E.nilaiTitik({...dasar, fwi: fwi(15)}, PAL.lat, PAL.lon, "", h0)[0].sumber_jenis, "simulasi", "Siaga FWI = Siaga simulasi: simulasi menang");
+  assert.equal(E.nilaiTitik({...dasar, jejak: E.indeksJejak(jejakFx({24: [[4, 0.3]]}, acuan, undefined, undefined, {terpangkas: false})), fwi: fwi(15)}, PAL.lat, PAL.lon, "", h0)[0].sumber_jenis, "simulasi");
+  assert.equal(E.nilaiTitik({...dasar, jejak: E.indeksJejak(jejakFx({24: [[8, 0.9]]}, acuan)), fwi: fwi(15)}, PAL.lat, PAL.lon, "", h0)[0].sumber_jenis, undefined, "FWI saja");
+  /* id kompleks yang tidak aman dibuang saat memuat */
+  assert.deepEqual(f({24: [[1, 0.9]]}, {id: 'K1"><img'}), []);
+});
+
+uji("simulasi: email memuat kalimat, kata peluang, cakupan, catatan kelemahan, tombol Lihat simulasi dengan id di-escape", () => {
+  const p = {bencana: "karhutla", tingkat: 3, hari: 1, judul: "j", rincian: "x", kalimat: "Perkiraan model dari kompleks Kec. <i>X</i>: api bisa mencapai area dalam 2 km dari lokasimu dalam 30 jam, sekitar 1 dari 2 kemungkinan.", sumber: "s",
+    sumber_jenis: "simulasi", kompleks: 'K1"><b>x', jarak_maks_km: 2, peluang: 0.5, jam_sisa: 30};
+  const bangun = (peringatan, simulasi) => emailPeringatan({asal: "https://contoh.id", lat: -2.21, lon: 113.92, wilayah: {kec: "A", kab: "B", prov_nama: "C"}, peringatan, simulasi, tautanBerhenti: "https://contoh.id/b"});
+  const a = bangun([p], {n_aktif: 1234, n_diramal: 987});
+  assert.ok(a.html.includes("Lihat simulasi") && a.html.includes('href="https://contoh.id/sim/K1%22%3E%3Cb%3Ex"'), "id di-encode di URL");
+  assert.ok(!a.html.includes("<b>x") && !a.html.includes("<i>X</i>"), "data di-escape");
+  assert.ok(a.html.includes("dalam 30 jam") && a.html.includes("sekitar 1 dari 2 kemungkinan"));
+  assert.ok(a.html.includes("Ini perkiraan model, bukan pengamatan.") && a.html.includes("kebakaran gambut dan kompleks besar"));
+  assert.ok(a.html.includes("Simulasi hanya mencakup 987 dari 1.234 kompleks aktif hari ini; tidak ada peringatan simulasi bukan berarti aman."), "cakupan id-ID");
+  assert.ok(a.text.includes("/sim/K1%22%3E%3Cb%3Ex") && a.text.includes("987 dari 1.234"));
+  assert.ok(!/±|24–48/.test(a.html + a.text));
+  const tanpaCakupan = bangun([p], null);
+  assert.ok(tanpaCakupan.html.includes("Ini perkiraan model") && !tanpaCakupan.html.includes("kompleks aktif hari ini"), "tanpa cakupan: kalimat cakupan dihilangkan");
+  const tanpa = bangun([{...p, sumber_jenis: undefined, kompleks: undefined}], null);
+  assert.ok(!tanpa.html.includes("Lihat simulasi"), "peringatan karhutla biasa tanpa blok simulasi");
+});
+
+uji("simulasi e2e: Awas terkirim, dedupe, kenaikan terkirim, acuan basi diabaikan (basi_sumber), /api/ews/cek memuat bidang tambahan", async () => {
+  const TA = T0 + 100 * JAM, em = "sim@contoh.id", opt = {kecKunci, f1: 3, tanpaBanjir: true};
+  await daftarAktif(sub(em, PAL, ["karhutla"], true), mf5);
+  const kirim = async (t, jejak, extra = {}) => { muat(t, {...opt, jejak, ...extra}); await cron(JAM_CRON, t, mf5); return untuk(em).slice(1).length; };
+  assert.equal(await kirim(TA, {24: [[4, 0.3]]}), 1, "Siaga terkirim");
+  assert.match(untuk(em).at(-1).subject, /^Siaga karhutla hari ini/);
+  assert.equal(await kirim(TA + JAM, {24: [[4, 0.3]]}), 1, "tanpa perubahan: tidak ada email baru");
+  assert.equal(await kirim(TA + 7 * JAM, {24: [[1, 0.7]]}, {jejakAcuan: TA + 7 * JAM - 6 * JAM}), 2, "naik ke Awas: email baru");
+  const awas = untuk(em).at(-1);
+  assert.match(awas.subject, /^Awas karhutla hari ini/);
+  assert.ok(awas.html.includes("Lihat simulasi") && awas.html.includes(ASAL + "/sim/K0012") && awas.html.includes("dalam 2 km dari lokasimu") && awas.html.includes("lebih dari separuh kemungkinan") && awas.html.includes("8 dari 10 kompleks aktif"));
+  const kunci = (await DB5.prepare("SELECT kunci FROM ews_terkirim").all()).results.map(r => r.kunci);
+  assert.ok(kunci.includes(`karhutla-sim|K0012|${wib(TA + 7 * JAM)}|3`) && kunci.every(k => k.length <= 80), kunci.join());
+  /* acuan lebih tua dari SIM_UMUR: diabaikan walau memuat sel Awas baru */
+  assert.equal(await kirim(TA + 40 * JAM, {24: [[1, 0.9]], 48: [[0.5, 0.9]]}, {jejakAcuan: TA + 40 * JAM - E.SIM_UMUR - JAM}), 2, "acuan basi = tidak mengirim");
+  assert.equal(await kirim(TA + 47 * JAM, {48: [[1, 0.9]]}, {jejakAcuan: TA + 47 * JAM - 30 * JAM}), 3, "acuan segar, cakrawala 24 jam sudah lewat, 48 jam masih: terkirim");
+  assert.match(untuk(em).at(-1).html, /dalam 18 jam/);
+  /* cek: bidang tambahan hanya pada butir simulasi; kunci tidak bocor */
+  muat(Date.now(), {...opt, jejak: {24: [[1, 0.7]]}});
+  const r = await panggil("GET", "/api/ews/cek?lat=-2.21&lon=113.92", undefined, ipBaru(), {}, mf5);
+  assert.equal(r.s, 200, r.t); assert.ok(!r.j.basi_sumber.includes("jejak"), JSON.stringify(r.j.basi_sumber));
+  assert.deepEqual([r.j.simulasi.n_aktif, r.j.simulasi.n_diramal], [10, 8]); assert.ok(r.j.simulasi.acuan);
+  const s = r.j.peringatan.find(x => x.sumber_jenis === "simulasi");
+  assert.deepEqual(Object.keys(s).sort(), "bencana,hari,jam_sisa,jarak_maks_km,judul,kalimat,kompleks,peluang,rincian,sumber,sumber_jenis,tingkat".split(","));
+  assert.deepEqual([s.tingkat, s.hari, s.kompleks, s.jarak_maks_km, s.peluang], [3, 0, "K0012", 2, 0.7]);
+  assert.ok(s.jam_sisa % 6 === 0 && s.kalimat.includes("dalam 2 km"));
 });

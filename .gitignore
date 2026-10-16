@@ -49,6 +49,7 @@ data/raw/sebaran/*
 !data/raw/sebaran/*.json
 !data/raw/sebaran/*.log
 !data/raw/sebaran/prospektif/
+data/raw/sebaran/prospektif/jejak_cuaca/
 !data/raw/sebaran/prospektif_uji_alur_14okt/
 
 # salinan otomatis Finder/iCloud ("berkas 2.js"): jangan pernah ikut commit
@@ -56,3 +57,6 @@ data/raw/sebaran/*
 * 2.*
 .env*
 !.env.example
+
+# keluaran CI harian (scripts/sebaran/jejak.py), terbit lewat cache data- di titik.yml, bukan git
+public/data/jejak_api.json
