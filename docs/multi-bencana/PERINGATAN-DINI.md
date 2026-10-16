@@ -44,8 +44,11 @@ kita buat. Dan munculin pop up alert gitu kalo terjadi sesuatu."*
    - alarm baru muncul sebagai kartu bergaya kartu Situasi karhutla: pita tingkat berwarna, satu kalimat berangka,
      wilayah, jam, sumber, tombol "Lihat di peta";
    - sekali per alarm per perangkat (localStorage); bunyi hanya bila pengguna mengizinkan.
-4. **Notifikasi di luar layar (tahap 2)**: Web Push lewat service worker dan langganan per wilayah di D1.
-   Butuh kunci VAPID sebagai secret Worker (pemilik yang memasang lewat `wrangler secret put`, tidak pernah di repo).
+4. **Notifikasi email (tahap 2)**, keputusan pemilik 16 Okt: *"Notifikasi tuh ke email bro"*.
+   - langganan: email + wilayah (provinsi/kabupaten) + jenis bencana, dengan konfirmasi ganda (tautan verifikasi), batas laju, dan Turnstile seperti form warga;
+   - tiap email membawa tautan berhenti langganan sekali klik; data pelanggan tidak pernah tampil publik (UU PDP), dicatat di privasi.html;
+   - pengiriman lewat Resend dari Worker, satu email per alarm per pelanggan (kunci idempoten), ringkas: tingkat, satu kalimat, wilayah, jam, sumber, tautan peta;
+   - butuh dari pemilik: akun Resend, verifikasi domain terasurban.com (DNS di Cloudflare), dan `wrangler secret put RESEND_API_KEY`. Kunci tidak pernah di repo.
 5. **Admin**: daftar alarm terkirim dan tombol cabut (alarm keliru).
 
 ## Gerbang

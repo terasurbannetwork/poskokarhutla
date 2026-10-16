@@ -50,6 +50,9 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Sapaan pembaca "kamu" | 16 Okt 2026 | Semua teks yang menyapa memakai "kamu"; "Anda" yang tersisa diganti |
 | Em dash dilarang di teks tampil | 16 Okt 2026 | Pemisah pakai ":" atau "·"; en dash tetap untuk rentang dan angka kosong |
 | Ikon SVG garis | 16 Okt 2026 | Seragam dengan karhutla, bukan emoji dalam lingkaran |
+| Peta sesar Pusgen 2017 boleh dipakai | 16 Okt 2026 | Lapisan sesar aktif masuk peta gempa |
+| Notifikasi peringatan dini lewat email | 16 Okt 2026 | Bukan Web Push; langganan email per wilayah dengan konfirmasi dan berhenti langganan |
+| Bencana yang selesai langsung dibuka | 16 Okt 2026 | Status registry jadi aktif: "Segera" hilang dari menu, halaman bisa diakses publik |
 | Semua bencana meniru karhutla | 15 Okt 2026 | Tiap bencana baru dinilai dengan paket 113 komponen karhutla; satu bencana selesai = 100% baris terisi (dibuat, diadaptasi, atau "tidak berlaku" beralasan) |
 | Satu situs, satu registry | 15 Okt 2026 | `public/bencana.json` sumber tunggal daftar bencana; karhutla tetap di `/` |
 | Kartu Insight di semua halaman | 13 Okt 2026 | Pil kategori + satu kalimat temuan berangka merah + kontrol segmen, grafik, kaki legenda + "Sumber:" |
