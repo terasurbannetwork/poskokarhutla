@@ -340,7 +340,7 @@ const gempaSumber = jam => DB.prepare("INSERT INTO gempa_sumber (kunci, etag, is
 const hapusGempaSumber = () => DB.prepare("DELETE FROM gempa_sumber").run();
 const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
 uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
-  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+  Object.assign(ASET_UJI, {"/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
   await gempaSumber(0.1);
   try {
     let r = await panggil("GET", "/api/status");
@@ -356,17 +356,32 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
     assert.equal(r.j.sumber.berita.umur_jam, null);
     ASET_UJI["/data/berita.json"] = '{"judul":"tanpa dibuat"}';
     assert.ok((await panggil("GET", "/api/status")).j.basi.includes("berita"), "berkas tanpa 'dibuat' harus dianggap basi");
+    ASET_UJI["/data/berita.json"] = metaUji(5);
+    for (const [nama, jalur] of [["kekeringan", "/data/kekeringan_meta.json"], ["kualitas", "/data/udara_kualitas.json"]]) {
+      ASET_UJI[jalur] = metaUji(31);   // ambang 30 jam, bencana aktif
+      r = await panggil("GET", "/api/status");
+      assert.equal(r.status, 503, `${nama} 31 jam (> 30, aktif) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, [nama]);
+      assert.ok(nama in r.j.sumber && !(nama in r.j.uji), `${nama} aktif masuk sumber, bukan uji`);
+      ASET_UJI[jalur] = null;
+      r = await panggil("GET", "/api/status");
+      assert.equal(r.status, 503); assert.deepEqual(r.j.basi, [nama], `${nama} hilang harus basi`);
+      ASET_UJI[jalur] = metaUji(2);
+    }
+    ASET_UJI["/banjir/data/gunungapi_status.json"] = null;   // gunungapi tanpa ambang: hanya dilaporkan, tidak pernah basi
+    r = await panggil("GET", "/api/status");
+    assert.equal(r.status, 200); assert.equal(r.j.sumber.gunungapi.basi, undefined); assert.equal(r.j.sumber.gunungapi.ambang_jam, null);
   } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; await hapusGempaSumber(); }
 });
 
-uji("status: sumber bencana tahap uji (kekeringan basi) tidak pernah 503; hanya aktif (banjir, gempa_terbaru) yang menentukan", async () => {
-  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(31), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+uji("status: sumber bencana tahap uji (cuaca basi/hilang) tidak pernah 503; hanya yang aktif menentukan", async () => {
+  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
   await gempaSumber(0.1);
   try {
     const r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `uji basi/hilang harus tetap 200: ${r.teks}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);
-    assert.equal(r.j.uji.kekeringan.umur_jam, 31); assert.equal(r.j.uji.kekeringan.basi, true, "kekeringan (uji) 31 jam > ambang dilaporkan basi tetapi informatif");
-    assert.ok(!("kekeringan" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
+    assert.equal(r.j.uji.cuaca_nowcast.umur_jam, null); assert.equal(r.j.uji.cuaca_nowcast.basi, true, "cuaca_nowcast (uji, tabel D1 tak ada) dilaporkan basi tetapi informatif");
+    assert.ok(!("cuaca_nowcast" in r.j.sumber) && !("cuaca" in r.j.sumber), "uji tidak boleh masuk `sumber` (yang menentukan ok)");
+    for (const n of ["kekeringan", "kualitas", "gunungapi"]) assert.ok(n in r.j.sumber && !(n in r.j.uji), `${n} aktif masuk sumber, bukan uji`);
     assert.ok("gempa_terbaru" in r.j.sumber && !("gempa_terbaru" in r.j.uji), "gempa aktif masuk `sumber`, bukan `uji`");
     assert.equal(r.j.sumber.banjir.umur_jam, 20, "banjir aktif (16 Okt) masuk `sumber`");
     ASET_UJI["/banjir/data/meta.json"] = metaUji(31);   // banjir aktif basi = 503

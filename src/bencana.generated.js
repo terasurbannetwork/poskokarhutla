@@ -607,7 +607,7 @@ export default {
       "warna": "#4a9d9c",
       "rute": "/udara/",
       "data": "/udara/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": false,
       "tab": [
         "peta",
@@ -726,7 +726,7 @@ export default {
       "warna": "#b5523b",
       "rute": "/gunungapi/",
       "data": "/gunungapi/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": false,
       "tab": [
         "peta",
@@ -845,7 +845,7 @@ export default {
       "warna": "#c9a24b",
       "rute": "/kekeringan/",
       "data": "/kekeringan/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": false,
       "tab": [
         "peta",

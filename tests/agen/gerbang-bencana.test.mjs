@@ -48,7 +48,7 @@ test('cek: skema registry sah (python3 scripts/umum/bencana.py cek hijau)', () =
 
 // Tahap buka bertahap (keputusan pemilik 16 Okt 2026): halaman jadi = 'uji' (menu: Segera),
 // terverifikasi = 'aktif'. Tabel ini dibalik SENGAJA saat satu modul naik tahap; jangan dilonggarkan.
-const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'uji', udara: 'uji', gunungapi: 'uji', kekeringan: 'uji' }
+const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'uji', udara: 'aktif', gunungapi: 'aktif', kekeringan: 'aktif' }
 
 test('registry mengikuti tabel tahap per bencana', () => {
   const o = Object.fromEntries(reg().bencana.map((b) => [b.id, b]))

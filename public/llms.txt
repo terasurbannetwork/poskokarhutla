@@ -7,6 +7,9 @@
 - Karhutla (https://pantau.terasurban.com/): titik panas 3-jam, kompleks api, prakiraan sebaran, dampak, berita.
 - Banjir, longsor & rob (https://pantau.terasurban.com/banjir/): status kecamatan, prakiraan, rob, sungai, posko.
 - Gempa & tsunami (https://pantau.terasurban.com/gempa/): gempa BMKG dan USGS tiap menit, status tsunami resmi BMKG, riwayat M5+ sejak 1900, sesar aktif, dampak.
+- Letusan gunung api (https://pantau.terasurban.com/gunungapi/): status resmi PVMBG/MAGMA Level I-IV, radius rekomendasi, letusan terbaru, penduduk dalam radius.
+- Kekeringan (https://pantau.terasurban.com/kekeringan/): SPI-3/SPI-6 dari hujan NASA POWER dan kelembapan tanah, status per kabupaten (deteksi Pantau Bencana, ambang belum diuji balik).
+- Kualitas udara (https://pantau.terasurban.com/udara/): PM2,5 perkiraan model CAMS (belum dikoreksi stasiun), jiwa terpapar per provinsi, jarak pandang bandara.
 
 ## Sumber data utama
 
