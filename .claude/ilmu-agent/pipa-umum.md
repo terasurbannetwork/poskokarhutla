@@ -38,3 +38,4 @@ Batas pemilik:
 `python3 scripts/umum/<m>.py uji`, uji pembanding byte-identik, `npm run uji:agen`. Pemeriksa: `validasi-model` bila rumus status/riwayat/uji balik berubah.
 
 ## Kasus
+- 2026-10-16 · Bukti identik berita karhutla: bandingkan main(ambil_rss=False) lama vs baru pada arsip.json nyata dengan waktu dibekukan; field validasi.lembaga.ci95 berubah antar-jalan bahkan lama-vs-lama (bootstrap tak berbenih), abaikan. Berkas scripts/umum/berita.py dan scripts/data/berita.py sama-sama bernama berita: muat lewat importlib dengan nama unik (umum_berita), jangan sys.path.

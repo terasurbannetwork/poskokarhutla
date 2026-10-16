@@ -40,6 +40,46 @@ def tgl_pendek(t): d = datetime.fromisoformat(t); return f"{d.day} {BULAN[d.mont
 def tgl_panjang(t): d = datetime.fromisoformat(t); return f"{HARI[d.weekday()]}, {d.day} {BULAN[d.month - 1]} {d.year}"
 
 
+# deskripsi per subrute banjir (kunci = tab di public/bencana.json); tab tanpa entri memakai desk halaman utama
+TAB_BANJIR = {
+    "peta": ("Peta banjir langsung", "Peta status banjir, longsor, dan rob per kecamatan untuk 38 provinsi; klik kecamatan untuk rincian."),
+    "prakiraan": ("Prakiraan banjir", "Prakiraan hujan dan status banjir per kecamatan untuk beberapa hari ke depan."),
+    "rob": ("Rob dan pasang laut", "Prakiraan banjir rob dan pasang laut di pesisir Indonesia."),
+    "sungai": ("Debit sungai", "Prakiraan debit sungai dan potensi luapan di daerah aliran sungai."),
+    "posko": ("Posko banjir", "Rekomendasi lokasi posko banjir dan sarana terdekat dari kecamatan terdampak."),
+    "daftar": ("Daftar kecamatan", "Daftar kecamatan berstatus banjir, urut dari yang paling rawan."),
+    "provinsi": ("Banjir per provinsi", "Ringkasan status banjir, longsor, dan rob per provinsi."),
+    "tren": ("Tren banjir", "Tren status banjir dan curah hujan dari hari ke hari."),
+    "insight": ("Insight banjir", "Pembacaan angka banjir hari ini: yang naik, yang turun, dan yang perlu dipantau."),
+    "keputusan": ("Keputusan banjir", "Bahan keputusan siaga banjir: wilayah, waktu, dan sarana."),
+    "simulasi": ("Simulasi banjir", "Simulasi genangan dan kesiapan evakuasi untuk kecamatan pilihan."),
+    "sarana": ("Sarana banjir", "Sarana di sekitar kecamatan terdampak: posko, puskesmas, jalur evakuasi."),
+    "metode": ("Metode banjir", "Cara status banjir dihitung, sumber data, dan batasnya."),
+    "informasi": ("Informasi banjir", "Panduan sebelum, saat, dan sesudah banjir, longsor, dan rob."),
+}
+
+
+def og_banjir(nama):
+    """Gambar + halaman OG untuk /banjir/ dan tiap subrute (/banjir/<tab>). Subrute memakai gambar banjir, bukan gambar karhutla."""
+    bm, st = baca("banjir/data/meta.json"), baca("banjir/data/status.json")["kec"]
+    nb, ns, lvb, h3, nkp, nm = [0] * 4, 0, {}, 0, {}, bm.get("provinsi") or nama
+    for kk, v in st.items():
+        l = (v.get("b") or [0])[0] or 0; nb[l] += 1; pv = kk.split("|")[0]; lvb[pv] = max(lvb.get(pv, 0), l); nkp[pv] = nkp.get(pv, 0) + (l > 0); h3 = max(h3, v.get("h3") or 0)
+    ns, tb = nb[1] + nb[2] + nb[3], tgl_pendek(bm["hari_wib"])
+    gb = {"sub": "Banjir, longsor & rob", "tgl": f"{tgl_panjang(bm['hari_wib'])} · data {bm.get('dibuat', '')[11:16].replace(':', '.')} WIB", "lv": max(lvb.values(), default=0), "eyebrow": f"Prakiraan banjir · {tb}", "judul": f"{angka(ns)} kecamatan berstatus banjir hari ini",
+                   "angka": [[angka(ns), "kecamatan waspada ke atas", LV[2]], [angka(nb[2] + nb[3]), "kecamatan siaga/awas", LV[3]], [angka(h3) + " mm", "hujan 3 hari maksimum", "#4f8fc4"]],
+                   "lvProv": lvb, "titik": False, "daftarJudul": "Kecamatan berstatus per provinsi",
+                   "daftar": [[nm.get(k, k), v, angka(v) + " kec.", lvb.get(k, 0)] for k, v in sorted(nkp.items(), key=lambda x: -x[1])[:5]], "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]]}
+    hb = {"judul": "Pantau Bencana · Banjir, longsor & rob hari ini", "gambar": "banjir",
+                     "desk": f"{tb}: {angka(ns)} kecamatan berstatus banjir ({angka(nb[3])} awas, {angka(nb[2])} siaga), hujan 3 hari hingga {angka(h3)} mm. Prakiraan per kecamatan untuk 38 provinsi."}
+    tabs = next((b["tab"] for b in baca("bencana.json")["bencana"] if b["id"] == "banjir"), [])
+    halaman = {"/banjir/": hb}
+    for tb_ in tabs:
+        j, d = TAB_BANJIR.get(tb_, (tb_.capitalize(), hb["desk"]))
+        halaman["/banjir/" + tb_] = {"judul": f"{j} · Pantau Bencana Banjir, Longsor & Rob", "gambar": "banjir", "desk": f"{tb}: {d}"}
+    return {"gambar": {"banjir": gb}, "halaman": halaman}
+
+
 def hitung():
     m, w, kl = baca("data/meta.json"), baca("data/wilayah.json"), baca("data/kluster_awal.json")["features"]
     hari, nama = m["hari_wib"], m["provinsi"]
@@ -80,19 +120,9 @@ def hitung():
                "desk": f"{tp}: {angka(nt)} titik panas, {angka(n3)} kompleks api prioritas, {jiwa(nj)} jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi."},
          "/peta": {"judul": "Peta karhutla langsung · Pantau Bencana", "gambar": "peta",
                    "desk": f"{tp}: {angka(len(kl))} kompleks api aktif dan {angka(nt)} titik panas di peta Indonesia; klik provinsi atau kompleks untuk rincian."}}
-    # banjir
     try:
-        bm, st = baca("banjir/data/meta.json"), baca("banjir/data/status.json")["kec"]
-        nb, ns, lvb, h3, nkp, nm = [0] * 4, 0, {}, 0, {}, bm.get("provinsi") or nama
-        for kk, v in st.items():
-            l = (v.get("b") or [0])[0] or 0; nb[l] += 1; pv = kk.split("|")[0]; lvb[pv] = max(lvb.get(pv, 0), l); nkp[pv] = nkp.get(pv, 0) + (l > 0); h3 = max(h3, v.get("h3") or 0)
-        ns, tb = nb[1] + nb[2] + nb[3], tgl_pendek(bm["hari_wib"])
-        G["banjir"] = {"sub": "Banjir, longsor & rob", "tgl": f"{tgl_panjang(bm['hari_wib'])} · data {bm.get('dibuat', '')[11:16].replace(':', '.')} WIB", "lv": max(lvb.values(), default=0), "eyebrow": f"Prakiraan banjir · {tb}", "judul": f"{angka(ns)} kecamatan berstatus banjir hari ini",
-                       "angka": [[angka(ns), "kecamatan waspada ke atas", LV[2]], [angka(nb[2] + nb[3]), "kecamatan siaga/awas", LV[3]], [angka(h3) + " mm", "hujan 3 hari maksimum", "#4f8fc4"]],
-                       "lvProv": lvb, "titik": False, "daftarJudul": "Kecamatan berstatus per provinsi",
-                       "daftar": [[nm.get(k, k), v, angka(v) + " kec.", lvb.get(k, 0)] for k, v in sorted(nkp.items(), key=lambda x: -x[1])[:5]], "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]]}
-        H["/banjir/"] = {"judul": "Pantau Bencana · Banjir, longsor & rob hari ini", "gambar": "banjir",
-                         "desk": f"{tb}: {angka(ns)} kecamatan berstatus banjir ({angka(nb[3])} awas, {angka(nb[2])} siaga), hujan 3 hari hingga {angka(h3)} mm. Prakiraan per kecamatan untuk 38 provinsi."}
+        ob = og_banjir(nama)
+        G.update(ob["gambar"]); H.update(ob["halaman"])
     except Exception as e:
         print("og: data banjir dilewati:", e)
     v = datetime.now(timezone(timedelta(hours=7))).strftime("%Y-%m-%d")

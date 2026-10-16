@@ -277,3 +277,9 @@ if __name__ == "__main__":
         for s in ("kejadian_aktif", "seri_status", "dampak"):
             if subprocess.call([sys.executable, os.path.join(os.path.dirname(os.path.abspath(__file__)), s + ".py")]) != 0:
                 print(f"::warning title={s}::{s}.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # berita banjir (FASE-0 B3): uji dulu; bila uji gagal jangan jalan sungguhan
+        umum = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../umum/berita.py")
+        if subprocess.call([sys.executable, umum, "banjir", "uji"]) != 0:
+            print("::warning title=berita::uji berita banjir gagal; berita.json lama dibiarkan", file=sys.stderr)
+        elif subprocess.call([sys.executable, umum, "banjir"]) != 0:
+            print("::warning title=berita::berita banjir gagal; berkas lamanya dibiarkan", file=sys.stderr)

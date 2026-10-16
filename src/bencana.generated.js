@@ -152,7 +152,7 @@ export default {
           "kabut asap",
           "titik panas"
         ],
-        "leksikon": "scripts/data/berita.py"
+        "leksikon": "scripts/berita/karhutla.py"
       },
       "prioritas": [
         "62",
