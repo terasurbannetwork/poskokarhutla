@@ -345,6 +345,48 @@
       "larangan": "Read-only.",
       "bisa": "memeriksa responsivitas interaksi layar",
       "tidak": "menyunting layar"
+    },
+    {
+      "nama": "cuaca-udara",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul cuaca ekstrem dan kualitas udara: pipeline peringatan BMKG, hujan ensemble, angin, PM2.5/ISPU, layar public/cuaca dan public/udara.",
+      "kapan": "scripts/cuaca/**, scripts/udara/**, public/cuaca/** atau public/udara/** disentuh atau rusak",
+      "fokus": [
+        "Halaman meniru karhutla persis: kepala, peta, legenda dock bawah, kartu Insight, tab URL bersih, bagikan, i18n",
+        "Status resmi BMKG tampil apa adanya, berlabel lembaga dan jam terbit; deteksi sendiri berlabel Pantau Bencana",
+        "Data yang tidak bisa diakses dibuang, bukan ditampilkan kosong"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (src, migrations), karhutla inline, banjir, gempa, atau .github/workflows (token tanpa scope workflow).",
+      "bisa": "membangun pipeline dan layar modul cuaca ekstrem dan udara",
+      "tidak": "worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows",
+      "milik": [
+        "scripts/cuaca/**",
+        "scripts/udara/**",
+        "public/cuaca/**",
+        "public/udara/**"
+      ]
+    },
+    {
+      "nama": "gunungapi-kering",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul gunung api dan kekeringan: pipeline MAGMA/PVMBG, KRB, HTH/SPI/kelembapan tanah, layar public/gunungapi dan public/kekeringan.",
+      "kapan": "scripts/gunungapi/**, scripts/kekeringan/**, public/gunungapi/** atau public/kekeringan/** disentuh atau rusak",
+      "fokus": [
+        "Halaman meniru karhutla persis: kepala, peta, legenda dock bawah, kartu Insight, tab URL bersih, bagikan, i18n",
+        "Status Level I-IV PVMBG tampil apa adanya; tanpa pernyataan resmi tidak pernah ditulis aman",
+        "Data yang tidak bisa diakses dibuang, bukan ditampilkan kosong"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (src, migrations), karhutla inline, banjir, gempa, atau .github/workflows (token tanpa scope workflow).",
+      "bisa": "membangun pipeline dan layar modul gunung api dan kekeringan",
+      "tidak": "worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows",
+      "milik": [
+        "scripts/gunungapi/**",
+        "scripts/kekeringan/**",
+        "public/gunungapi/**",
+        "public/kekeringan/**"
+      ]
     }
   ]
 }
