@@ -38,12 +38,25 @@ header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:
 .mark svg{flex:none}
 .mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
 .mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
-nav.tabs{display:flex;gap:2px;margin:0 auto;overflow-x:auto;scrollbar-width:none;min-width:0;flex:0 1 auto;mask-image:linear-gradient(90deg,transparent,#000 12px,#000 calc(100% - 12px),transparent)}
+/* tab mengisi ruang antara logo dan status: jarak antar-tab rata, tidak menyisakan kekosongan kiri-kanan */
+nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
+@media (min-width:1500px){nav.tabs{margin:0 auto}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
-nav.tabs button{border:0;background:transparent;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
+@media (max-width:1280px){nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
+nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
+.lainnya{flex:none}
+.lainnya summary{list-style:none;display:flex;align-items:center;gap:6px;color:#fff;opacity:.78;padding:8px 13px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
+.lainnya summary::-webkit-details-marker{display:none}
+.lainnya summary::after{content:"";width:6px;height:6px;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px)}
+.lainnya summary:hover,.lainnya[open] summary{opacity:1;background:oklch(100% 0 0 / .08)}
+.lainnya:has(button[aria-current="page"]) summary{opacity:1;background:oklch(100% 0 0 / .16)}
+.lainnya .menu{position:fixed;z-index:60;min-width:190px;background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:6px;display:grid;gap:2px}
+nav.tabs .lainnya .menu button{color:var(--ink);opacity:1;text-align:left;border-radius:10px;padding:8px 12px}
+nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current="page"]{background:var(--surface)}
 .stat{display:flex;align-items:center;gap:10px;font-size:12px;white-space:nowrap}
 .stat .jam{font-family:var(--display);font-weight:700;font-size:14px}
 .iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
@@ -52,6 +65,16 @@ nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 @media (max-width:1500px){.mark small,.stat .upd{display:none}}
 @media (max-width:1100px){.mark > div{display:none}}
 @media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
+/* mobile: pilihan bencana & tema disembunyikan, tab pindah ke menu garis tiga (pemilik, 15 Okt 2026) */
+#burger{display:none}
+@media (max-width:640px){#burger{display:grid}.bencana,#tema{display:none!important}.stat{margin-left:auto}
+  nav.tabs{display:none;position:fixed;top:var(--top);left:8px;right:auto;z-index:60;flex-direction:column;align-items:stretch;gap:2px;margin:6px 0 0;padding:6px;min-width:220px;max-height:calc(100dvh - var(--top) - 20px);overflow-y:auto;
+    background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg)}
+  header.top.buka nav.tabs{display:flex}
+  nav.tabs button{color:var(--ink);opacity:1;justify-content:flex-start;border-radius:10px;padding:11px 14px!important;font-size:15px!important}
+  nav.tabs button svg{display:block!important}
+  nav.tabs button:hover{background:var(--surface)}
+  nav.tabs button[aria-current="page"]{background:var(--surface);color:var(--accent,var(--ink))}}
 
 /* ---------- pages ---------- */
 main{position:fixed;inset:var(--top) 0 0 0}

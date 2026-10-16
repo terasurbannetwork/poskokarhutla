@@ -2,6 +2,7 @@
 <html lang="id">
 <head>
 <meta charset="utf-8">
+<base href="/banjir/">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
 <title>Pantau Bencana</title>
 <link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
@@ -45,6 +46,7 @@
 <link rel="stylesheet" href="dampak.css">
 <link rel="stylesheet" href="berita.css">
 <link rel="stylesheet" href="foto.css">
+<link rel="stylesheet" href="../inti/kartu.css">
 <link href="../databaru.css" rel="stylesheet">
 <link href="../informasi.css" rel="stylesheet">
 </head>
@@ -53,6 +55,7 @@
 <dialog class="dlg" id="dlg" aria-labelledby="dlgJudul"></dialog>
 <header class="top">
   <div class="mark">
+    <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
     <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="banjir" data-tentang data-tanpa-segera><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a href="../banjir/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</a><hr style="border:0;border-top:1px solid var(--line);margin:4px 6px"><a href="/tentang"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Tentang kami</a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
@@ -119,34 +122,31 @@
   <section class="page scroll" id="p-sungai" aria-label="Sungai"><div class="wrap" id="sungaiTab"></div></section>
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat kejadian"><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-keputusan" aria-label="Keputusan"><div class="wrap" id="keputusan"></div></section>
-  <section class="page scroll" id="p-simulasi" aria-label="Simulasi skenario"><div class="wrap" id="simulasi"></div></section>
+  <section class="page scroll" id="p-sim" aria-label="Simulasi skenario"><div class="wrap" id="simulasi"></div></section>
   <section class="page scroll" id="p-posko" aria-label="Rekomendasi posko"><div class="wrap" id="posko"></div></section>
   <section class="page scroll" id="p-sarana" aria-label="Kesiapan sarana posko"><div class="wrap" id="sarana"></div></section>
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita" hidden></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak" hidden></section>
   <section class="page scroll" id="p-foto" aria-label="Foto warga" hidden></section>
-  <section class="page scroll" id="p-tentang" aria-label="Tentang" hidden></section>
+  <section class="page" id="p-tentang" aria-label="Tentang Pantau Bencana"><iframe id="tentangBingkai" title="Tentang Pantau Bencana" style="width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s cubic-bezier(.16,1,.3,1)" onload="this.style.opacity=1" loading="lazy"></iframe></section>
 </main>
 <div class="toast" id="toast" role="status"></div>
 <div id="basi" role="alert" hidden style="position:fixed;top:calc(var(--top) + 8px);left:50%;transform:translateX(-50%);z-index:40;background:var(--bad);color:#fff;padding:8px 14px;border-radius:12px;font-size:13px;font-weight:600;box-shadow:var(--shadow-lg)"></div>
 
+<script src="../inti/format.js"></script>
+<script src="../inti/kartu.js"></script>
+<script src="../inti/pilih.js"></script>
+<script src="../inti/tip.js"></script>
+<script src="../inti/tabel.js"></script>
 <script>
 "use strict";
-/* ================================================================ util (sama dengan Posko Karhutla) */
-const $ = s => document.querySelector(s);
-const fmt = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-/* href dari data pihak ketiga: hanya http(s), selain itu (javascript:, data:, …) jadi "#" */
-const escUrl = u => { const s = String(u ?? "").trim(); return /^https?:\/\//i.test(s) ? esc(s) : "#"; };
-const WIB = {timeZone: "Asia/Jakarta"};
-const jamWIB = d => new Date(d).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
+/* ================================================================ util ($, fmt, esc, escUrl, WIB, jamWIB, rb ada di inti/format.js) */
 const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600); };
 const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
-const rb = v => v >= 1e6 ? fmt(Math.round(v / 1e5) / 10) + " jt" : v >= 1e4 ? fmt(Math.round(v / 1e3)) + " rb" : v >= 1e3 ? fmt(Math.round(v / 100) / 10) + " rb" : fmt(Math.round(v));
 async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
 function gradasi(st, v) { for (let k = 1; k < st.length; k++) if (v <= st[k][0]) { const [a, ca] = st[k - 1], [b, cb] = st[k], t = (v - a) / (b - a);
     return ca.map((c, j) => Math.round(c + (cb[j] - c) * t)); } return st[st.length - 1][1]; }
@@ -175,15 +175,34 @@ const S = {meta: null, st: null, hujan: null, sungai: null, bahaya: {}, kejadian
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs */
-const TABS = [["peta", "Peta"], ["informasi", "Informasi"], ["insight", "Insight"], ["prakiraan", "Prakiraan"], ["posko", "Posko"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["tren", "Tren"], ["keputusan", "Keputusan"], ["simulasi", "Simulasi"], ["sarana", "Sarana"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"],
+  ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"], ["prakiraan", "Prakiraan"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["keputusan", "Keputusan"], ["sarana", "Sarana"]];
+/* id lama -> id baru (tautan lama tetap hidup); sama dengan "alias" di public/bencana.json */
+const ALIAS = {simulasi: "sim"};
+/* tidak tampil di nav: Posko/Informasi/Metode ada tapi disembunyikan (A24); Berita/Dampak/Foto menunggu isinya (A18);
+   Prakiraan, Wilayah siaga, Provinsi, Rob, Sungai bukan tab lagi, isinya pindah ke Insight/Peta (L6/L7), sementara tetap bisa dibuka lewat tautan */
+const TAB_SEMBUNYI = new Set(["posko", "informasi", "metode", "berita", "dampak", "foto", "prakiraan", "daftar", "provinsi", "rob", "sungai", "keputusan", "sarana"]);
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+  berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const ID_JADI = id => ALIAS[id] || id;
+const halamanAda = id => { const p = $("#p-" + id); return !!p && !p.hidden; };
 function bukaTab(id, dorong = true) {
+  id = ID_JADI(id);
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
-  if (dorong) history.replaceState(null, "", "#" + id);
-  nanti(() => { if (id === "peta" && peta) peta.resize(); if (id === "informasi") window.Informasi?.render(); const f = {insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, simulasi: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
+  /* tautan bersih tanpa tagar: /banjir/insight (worker mengarahkan jalur ini ke index.html, routing di peramban) */
+  if (dorong) history.replaceState(null, "", "/banjir/" + id);
+  nanti(() => { if (id === "peta" && peta) peta.resize(); if (id === "informasi") window.Informasi?.render();
+    if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
+    const f = {insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, sim: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
 }
-$("#tabs").innerHTML = TABS.map(([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}">${n}</button>`).join("");
-$("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (b) bukaTab(b.dataset.t); });
+{ const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
+  $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
+  const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
+  bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
+  document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
+  $("#tabs").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; bukaTab(b.dataset.t); atur(false); }); }
 const temaAwal = bacaLokal("pb-tema", null); if (temaAwal) document.documentElement.dataset.theme = temaAwal;
 const gelap = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };

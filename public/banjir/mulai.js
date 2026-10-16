@@ -8,18 +8,17 @@ $("#cari").addEventListener("input", async e => {
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
   if (p.length === 3) { S.jalur = p.slice(0, 2); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); } else turun(b.dataset.k); });
 
-/* tooltip */
-(() => { const t = $("#tip");
-  document.addEventListener("pointerover", e => { const x = e.target.closest?.("[data-tip]"); if (!x) return t.classList.remove("on"); t.innerHTML = x.dataset.tip; t.classList.add("on"); });
-  document.addEventListener("pointermove", e => { if (!t.classList.contains("on")) return; t.style.left = Math.min(innerWidth - t.offsetWidth - 8, e.clientX + 14) + "px"; t.style.top = Math.max(8, e.clientY - t.offsetHeight - 12) + "px"; });
-  document.addEventListener("scroll", () => t.classList.remove("on"), true); })();
+pasangTip(); /* tooltip [data-tip] bersama (inti/tip.js) */
 
 /* ================================================================ mulai */
 (async () => {
   try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
   renderHari(); await Peta.init(); renderLegenda();
   $("#muat").classList.add("hilang");
-  const h = location.hash.slice(1); if (TABS.some(t => t[0] === h)) bukaTab(h, false);
+  /* /banjir/<tab> (bersih) atau #tab lama (dialihkan ke /banjir/<tab>); tab tanpa isi jatuh ke Peta */
+  const j = location.pathname.replace(/^\/banjir\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, ""), hs = location.hash.slice(1), h = ID_JADI(j || hs);
+  if (TABS.some(t => t[0] === h) && halamanAda(h)) bukaTab(h, !j || ID_JADI(j) !== j || !!hs);
+  else if (j) history.replaceState(null, "", "/banjir/peta");
 })();
 /* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
 (() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
