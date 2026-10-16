@@ -82,7 +82,7 @@ uji("POST sah 201 lalu GET publik memuatnya tanpa kolom internal; dobel 409", as
   assert.equal(r.s, 201, r.t);
   assert.match(r.j.post.id, /^[0-9a-f]{16}$/); assert.equal(r.j.post.url, "https://www.instagram.com/p/Cabc123xyz/"); assert.equal(r.j.post.akun, "@kapuas_info");
   const g = await api("GET", "/api/sosmed?bencana=karhutla");
-  assert.equal(g.s, 200); assert.equal(g.h.get("cache-control"), "public, max-age=120");
+  assert.equal(g.s, 200); assert.equal(g.h.get("cache-control"), "public, max-age=30");
   assert.equal(g.j.post.length, 1);
   assert.deepEqual(Object.keys(g.j.post[0]).sort(), ["akun", "dibuat", "embed", "id", "platform", "prov", "teks", "url"]);
   assert.equal(g.j.post[0].embed, "https://www.instagram.com/p/Cabc123xyz/embed/captioned/"); assert.equal(g.j.post[0].prov, "62");
@@ -101,10 +101,14 @@ uji("GET /api/sosmed: parameter lain tidak memecah kunci cache (cache tepi nyala
   const m2 = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-sosmed"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin"}, serviceBindings: {ASSETS: aset}, cache: true});
   try {
-    const ambil = async q => (await (await m2.dispatchFetch("http://sosmed.lokal/api/sosmed" + q)).json()).post.length;
-    const n = await ambil("?bencana=karhutla&a=1");
-    await DB.prepare("DELETE FROM sosmed WHERE url LIKE '%dd/status%'").run();
-    assert.equal(await ambil("?bencana=karhutla&b=2"), n, "kunci cache sama walau query lain berbeda");
+    const D2 = await m2.getD1Database("DB");   // instans sendiri, D1 sendiri: migrasi dan baris uji dibuat di sini
+    await D2.batch(pecah(migrasi()).map(s => D2.prepare(s)));
+    await D2.prepare("INSERT INTO sosmed (id, platform, kode, url, dibuat) VALUES ('0123456789abcdef', 'x', '12345', 'https://x.com/a/status/12345', 1)").run();
+    const ambil = async q => { const r = await m2.dispatchFetch("http://sosmed.lokal/api/sosmed" + q); assert.equal(r.status, 200); return (await r.json()).post.length; };
+    assert.equal(await ambil("?bencana=karhutla&a=1"), 1);
+    await D2.prepare("DELETE FROM sosmed").run();
+    assert.equal(await ambil("?bencana=karhutla&b=2"), 1, "kunci cache sama walau query lain berbeda");
+    assert.equal(await ambil("?bencana=banjir"), 0, "bencana lain = kunci lain");
   } finally { await m2.dispose(); }
 });
 

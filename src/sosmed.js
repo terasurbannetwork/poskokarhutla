@@ -29,7 +29,7 @@ const dekode = s => s.replace(/&(?:#(\d+)|#x([0-9a-f]+)|(\w+));/gi, (a, d, x, n)
 /* oEmbed X: isi <p> sebagai teks. Akun tetap @handle dari URL (author_name hanya nama tampilan). Gagal apa pun = diabaikan (admin bisa mengisi sendiri). */
 async function oembedX(url) {
   try {
-    const r = await fetch(`https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}&omit_script=1&dnt=true`, {signal: AbortSignal.timeout(5000), redirect: "error"});
+    const r = await fetch(`https://publish.twitter.com/oembed?url=${encodeURIComponent(url)}&omit_script=1&dnt=true`, {signal: AbortSignal.timeout(5000), redirect: "manual"});
     if (!r.ok) return {};
     const o = await r.json(), p = String(o.html || "").match(/<p[^>]*>([\s\S]*?)<\/p>/i);
     return {teks: p ? bersih(dekode(p[1].replace(/<br\s*\/?>/gi, " ").replace(/<[^>]*>/g, "")).replace(/\s+/g, " ")).slice(0, 500) : null};
