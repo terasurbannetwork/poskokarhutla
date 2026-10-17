@@ -10,7 +10,7 @@ Definisi angka:
   Kalibrasi HA_TITIK: luas terbakar resmi per tahun (seri Bakom/BNPB = SiPongi KLHK 2015-2025) dibagi titik VIIRS S-NPP
   tahun yang sama (sejarah.json): median 4,30 ha/titik, kuartil 3,22-4,59, min-maks 2,15-6,54. Uji balik tinggalkan-satu-tahun
   (rasio median tahun lain) pada seri 2015-2025: 6 dari 11 tahun meleset <= 15%; terburuk +101% (2017) dan -35% (2021).
-  Uji luar-contoh: SiPongi Jan-Jul 2026 202.011 ha vs perkiraan 173.161 ha (-14%, Mei kosong di FIRMS).
+  Uji luar-contoh: SiPongi Jan-Jul 2026 202.011 ha vs perkiraan 189.376 ha (-6%).
   Angka resmi 2025 di infografis Bakom (343.432) beda 4,7% dari luas_resmi.json (359.619); median tidak berubah.
   Bias yang belum diukur: sejarah.json membuang titik gunung api/sumber panas tetap/lepas pantai, hotspot.json NRT tidak
   (kolom type tidak ada di NRT) -> luas harian condong sedikit ke atas. Kalibrasi nasional tahunan: tidak diuji per hari
@@ -213,7 +213,7 @@ def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun):
     ha = sum(bln)
     akhir = hari_iso[-1] if hari_iso else batas
     nama = ["Jan–Mar", "Apr–Jun", "Jul–Sep", "Okt–Des"]
-    # triwulan yang sudah dimulai; Mei 2026 kosong di FIRMS (8 Mei-1 Jun) sehingga Apr-Jun lebih kecil dari sebenarnya
+    # triwulan yang sudah dimulai; bulan_kosong = bulan tanpa titik di sejarah.json (celah S-NPP 28 Apr-2 Jun 2026 sudah diisi NOAA-20)
     aktif = lambda q: sum(1 for v in sejarah["prov"].values() if sum((v.get(tahun) or [0] * 12)[3 * q:3 * q + 3]) > 0)
     tw = [{"nama": nama[q], "ha": round(sum(bln[3 * q:3 * q + 3])), "titik_snpp": round(sum(bln[3 * q:3 * q + 3]) / HA_TITIK), "prov_aktif": aktif(q), "bulan_kosong": [BULAN[m] for m in range(3 * q, 3 * q + 3) if bln[m] == 0 and m < int(akhir[5:7]) - 1]}
           for q in range(4) if 3 * q < int(akhir[5:7])]
