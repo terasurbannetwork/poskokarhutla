@@ -1,5 +1,5 @@
 {
- "diperiksa": "2026-10-13",
+ "diperiksa": "2026-10-17",
  "catatan": "Ubin raster langsung dari Global Forest Watch: tanpa kunci API, CORS *, PNG transparan (render_type=true_color). 'latest' dialihkan 307 ke versi terbaru (header pengalihan juga ber-CORS). {mulai}/{akhir} diisi UI (YYYY-MM-DD).",
  "lapisan": {
   "hilang": {
@@ -53,11 +53,216 @@
    "atribusi": "Citra: NASA GIBS / VIIRS NOAA-20",
    "lisensi": "domain publik",
    "pembaruan": "harian"
+  },
+  "jrc": {
+   "nama": "Tutupan pohon 2020 (JRC GFC2020)",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/jrc_global_forest_cover/v2020.3/default/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "opasitas": 0.7,
+   "atribusi": "Tutupan pohon 2020: JRC Global Forest Cover 2020 v3 (Bourgoin dkk. 2024, Komisi Eropa) via Global Forest Watch",
+   "lisensi": "bebas pakai dengan sitasi (Regulasi Copernicus)",
+   "pembaruan": "statis (tahun 2020)",
+   "legenda": [
+    [
+     "#7266f9",
+     "Tutupan pohon 2020 (hutan menurut batas EUDR)"
+    ]
+   ],
+   "catatan": "Dasar pembanding EUDR, bukan data kebakaran"
+  },
+  "primer": {
+   "nama": "Hutan primer (Kemenhut 2025)",
+   "tiles": [
+    "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image&layers=show:0&layerDefs=%7B%220%22%3A%22PL2025_ID_50K%20IN%20(2001%2C2004%2C2005)%22%7D"
+   ],
+   "tileSize": 512,
+   "minzoom": 7,
+   "maxzoom": 11,
+   "opasitas": 0.85,
+   "lambat": true,
+   "atribusi": "Kementerian Kehutanan (Peta Interaktif 2026), Penutupan Lahan 2025 skala 1:50.000 (data pemerintah, publik; lisensi tidak dinyatakan)",
+   "lisensi": "data pemerintah, publik; lisensi tidak dinyatakan",
+   "pembaruan": "tahunan (PL2025)",
+   "legenda": [
+    [
+     "#60e663",
+     "Hutan lahan kering & rawa primer"
+    ],
+    [
+     "#8ea704",
+     "Hutan mangrove primer"
+    ]
+   ],
+   "catatan": "Data pemerintah, publik"
+  },
+  "mangrove": {
+   "nama": "Mangrove (Global Mangrove Watch v3)",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/gmw_global_mangrove_extent/v3/default/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "opasitas": 0.9,
+   "atribusi": "Mangrove: Global Mangrove Watch v3.0 (Bunting dkk. 2022) via Global Forest Watch (CC BY 4.0)",
+   "lisensi": "CC BY 4.0",
+   "pembaruan": "statis (s.d. 2020)",
+   "legenda": [
+    [
+     "#4ffec3",
+     "Hutan mangrove"
+    ]
+   ]
+  },
+  "tanaman": {
+   "nama": "Hutan tanaman & kebun (SDPT v2)",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/gfw_planted_forests/v20231128/default/{z}/{x}/{y}.png"
+   ],
+   "tileSize": 256,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "opasitas": 0.8,
+   "atribusi": "Hutan tanaman & kebun: Spatial Database of Planted Trees v2.0, WRI via Global Forest Watch (CC BY 4.0)",
+   "lisensi": "CC BY 4.0",
+   "pembaruan": "statis (±2020)",
+   "legenda": [
+    [
+     "#fcada9",
+     "Hutan tanaman, kebun sawit & lainnya"
+    ]
+   ],
+   "catatan": "Jenis tidak dipisah di ubin; tahun data beragam"
+  },
+  "tambang": {
+   "nama": "Area tambang (Maus dkk. v2)",
+   "jenis": "vector",
+   "tiles": [
+    "https://tiles.globalforestwatch.org/pangaea_global_mining/v2/dynamic/{z}/{x}/{y}.pbf"
+   ],
+   "tileSize": 512,
+   "minzoom": 3,
+   "maxzoom": 12,
+   "sumber_layer": "pangaea_global_mining",
+   "warna": "#a70400",
+   "atribusi": "Area tambang: Maus dkk. 2022, Global-scale mining polygons v2 (PANGAEA) via Global Forest Watch (CC BY-SA 4.0)",
+   "lisensi": "CC BY-SA 4.0",
+   "pembaruan": "statis (2019)",
+   "legenda": [
+    [
+     "#a70400",
+     "Area tambang (CC BY-SA 4.0)"
+    ]
+   ]
+  },
+  "plkemenhut": {
+   "nama": "Penutupan lahan Kemenhut 2025 (1:50.000)",
+   "tiles": [
+    "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
+   ],
+   "tileSize": 512,
+   "minzoom": 7,
+   "maxzoom": 11,
+   "opasitas": 0.7,
+   "lambat": true,
+   "atribusi": "Kementerian Kehutanan (Peta Interaktif 2026), Penutupan Lahan 2025 skala 1:50.000 (data pemerintah, publik; lisensi tidak dinyatakan)",
+   "lisensi": "data pemerintah, publik; lisensi tidak dinyatakan",
+   "pembaruan": "tahunan (PL2025)",
+   "legenda": [
+    [
+     "#60e663",
+     "Hutan primer"
+    ],
+    [
+     "#72ff00",
+     "Hutan sekunder"
+    ],
+    [
+     "#8ea704",
+     "Mangrove"
+    ],
+    [
+     "#ebc0a7",
+     "Semak/belukar"
+    ],
+    [
+     "#d3e598",
+     "Hutan tanaman industri"
+    ],
+    [
+     "#e5d298",
+     "Perkebunan"
+    ],
+    [
+     "#f6fea7",
+     "Pertanian lahan kering"
+    ],
+    [
+     "#a8d5ff",
+     "Sawah"
+    ],
+    [
+     "#a70400",
+     "Pertambangan"
+    ],
+    [
+     "#4e4e4e",
+     "Permukiman"
+    ],
+    [
+     "#d4fcf7",
+     "Tubuh air"
+    ]
+   ],
+   "catatan": "Data pemerintah, publik; server lambat"
+  },
+  "kwskemenhut": {
+   "nama": "Kawasan hutan Kemenhut 2026",
+   "tiles": [
+    "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/KWSHUTAN_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
+   ],
+   "tileSize": 512,
+   "minzoom": 7,
+   "maxzoom": 11,
+   "opasitas": 0.6,
+   "lambat": true,
+   "atribusi": "Kementerian Kehutanan (Peta Interaktif 2026), Kawasan Hutan Juni 2026 (data pemerintah, publik; lisensi tidak dinyatakan)",
+   "lisensi": "data pemerintah, publik; lisensi tidak dinyatakan",
+   "pembaruan": "Juni 2026",
+   "legenda": [
+    [
+     "#ad3fff",
+     "Kawasan konservasi"
+    ],
+    [
+     "#02ad00",
+     "Hutan lindung"
+    ],
+    [
+     "#ffff00",
+     "Hutan produksi tetap"
+    ],
+    [
+     "#8af200",
+     "Hutan produksi terbatas"
+    ],
+    [
+     "#ff5eff",
+     "Hutan produksi konversi"
+    ]
+   ],
+   "catatan": "Data pemerintah, publik"
   }
  },
  "tidak_dipakai": {
   "gfw_integrated_alerts": "dialihkan otomatis ke gfw_integrated_dist_alerts (produk lama dihentikan)",
   "wur_radd_alerts, umd_glad_*_alerts": "hanya ubin 'encoded' (tanggal & keyakinan disandi di RGB), perlu dekoder shader; sudah tercakup di peringatan terintegrasi",
-  "kanal gambut BRG/PRIMS": "tidak ada layanan ubin/unduhan terbuka tanpa login yang ditemukan; kanal diambil dari OpenStreetMap (data/kanal.json)"
+  "kanal gambut BRG/PRIMS": "tidak ada layanan ubin/unduhan terbuka tanpa login yang ditemukan; kanal diambil dari OpenStreetMap (data/kanal.json)",
+  "umd_regional_primary_forest_2001": "ubin PNG berlatar hitam opak (RGB tanpa alpha): tidak bisa ditumpuk; diganti hutan primer Kemenhut PL2025 (layerDefs PL2025_ID_50K IN 2001,2004,2005)",
+  "pangaea_global_mining png": "ubin raster tidak ada (dynamic .png 422); dipakai .pbf vektor"
  }
 }

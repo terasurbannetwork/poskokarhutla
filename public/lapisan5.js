@@ -17,13 +17,16 @@
   const grupJenjang = j => /^(TK|KB|SPS|TPA|PAUD|RA|BA|KOBER)/i.test(j) ? "dini" : /^(SD|MI)$/i.test(j) ? "sd" : /^(SMP|MTS)$/i.test(j) ? "smp" : /^(SMA|SMK|MA|MAK)$/i.test(j) ? "sma" : "lain";
   const FAS = () => C5.fas ||= Promise.all([muat("fasilitas_osm", "data/fasilitas.json"), muat("sekolah", "data/sekolah.json")]).then(([f, s]) =>
     Lapis.cache.fasilitas = f.filter(x => x.t !== "sekolah").concat(s.baris.map(([nama, j, st, , sw, prov, kab, kec, desa, lat, lon]) => ({t: "sekolah", nama, j, g: grupJenjang(j), st, sw, prov, kab, kec, desa, lat, lon})))).catch(e => { delete C5.fas; throw e; });
+  const warnaOk = w => /^#[0-9a-f]{3,8}$|^rgb/i.test(w) ? w : "#888";
   const GFW = () => muat("lapisan_tambahan", "data/lapisan_tambahan.json");
 
   /* ---------- kotak centang: disisipkan ke #lapis bila belum ada (boleh juga ditulis statis, lihat LAPISAN5.md) ---------- */
   const GRUP = [
     ["Akses", [["jalan", "Jalan & sungai (OSM)"]]],
   ];
-  const LAHAN = [["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"]];
+  /* lapisan ubin pasif (config + legenda di data/lapisan_tambahan.json): satu sumber ditambah hanya saat dinyalakan */
+  const UBIN = [["jrc", "Tutupan pohon 2020 (JRC)"], ["primer", "Hutan primer (Kemenhut 2025)"], ["mangrove", "Mangrove (GMW v3)"], ["tanaman", "Hutan tanaman & kebun (SDPT)"], ["tambang", "Area tambang (Maus v2)"], ["plkemenhut", "Penutupan lahan Kemenhut 2025"], ["kwskemenhut", "Kawasan hutan Kemenhut 2026"]];
+  const LAHAN = [["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"], ...UBIN];
   const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0])]);
   const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>`;
   function sisipKotak() {
@@ -39,6 +42,7 @@
   const nyala = k => !!document.querySelector(`#lapis input[data-l="${k}"]:checked`);
   const LAYER = {penduduk: ["l5-penduduk"], fasilitas: ["l5-fasilitas"], jalan: ["l5-jalan", "l5-sungai"],
     hilang: ["l5-hilang", "l5-hilang_api"], satelit: ["l5-satelit"], peringatan: ["l5-peringatan"], kanal: ["l5-kanal"]};
+  UBIN.forEach(([k]) => LAYER[k] = k === "tambang" ? ["l5-tambang", "l5-tambang_g"] : ["l5-" + k]);
 
   /* ---------- data turunan ---------- */
   const hariAsap = a => { const tgl = S.fwi?.grid[0].hari[S.fwiHari]?.tgl; return Math.max(0, a.hari.indexOf(tgl)); };
@@ -111,10 +115,19 @@
   };
   /* "hilang" satu ubin, dua lapisan: semua hutan hilang + yang akibat kebakaran di atasnya; dibedakan di legenda (pemilik, 15 Okt 2026) */
   const gfw = async k => { const c = (await GFW()).lapisan[k];
+    if (c.jenis === "vector") { peta.addSource("l5-" + k, {type: "vector", tiles: c.tiles, minzoom: c.minzoom, maxzoom: c.maxzoom, attribution: c.atribusi});
+      peta.addLayer({id: "l5-" + k, type: "fill", source: "l5-" + k, "source-layer": c.sumber_layer, paint: {"fill-color": warnaOk(c.warna), "fill-opacity": .75}}, Peta.lapisAwal());
+      peta.addLayer({id: "l5-" + k + "_g", type: "line", source: "l5-" + k, "source-layer": c.sumber_layer, paint: {"line-color": "#fff", "line-width": .6, "line-opacity": .8}}, Peta.lapisAwal()); return; }
     const akhir = new Date().toISOString().slice(0, 10), mulai = new Date(Date.now() - (c.hari || 90) * 864e5).toISOString().slice(0, 10);
     peta.addSource("l5-" + k, {type: "raster", tiles: c.tiles.map(t => t.replace("{mulai}", mulai).replace("{akhir}", akhir).replace("{kemarin}", new Date(Date.now() - 864e5).toISOString().slice(0, 10))), tileSize: c.tileSize, minzoom: c.minzoom, maxzoom: c.maxzoom, attribution: c.atribusi});
-    peta.addLayer({id: "l5-" + k, type: "raster", source: "l5-" + k, paint: {"raster-opacity": .85, "raster-fade-duration": 0}}, Peta.lapisAwal()); };
-  for (const k of ["peringatan", "satelit"]) pasang[k] = () => gfw(k);
+    peta.addLayer({id: "l5-" + k, type: "raster", source: "l5-" + k, paint: {"raster-opacity": c.opasitas ?? .85, "raster-fade-duration": 0}}, Peta.lapisAwal());
+    if (c.lambat) petunjukMuat(k, c); };
+  /* server lambat (Kemenhut): tulisan "memuat…" di legenda; galat ubin diam-diam (tanpa toast/konsol berisik) */
+  function petunjukMuat(k, c) { const id = "l5-" + k, ubah = () => { const el = document.getElementById("l5m-" + k); if (!el) return;
+      el.textContent = peta.getZoom() < c.minzoom ? ` · perbesar peta (zoom ${c.minzoom}+) untuk melihat` : peta.isSourceLoaded(id) ? "" : " · memuat…"; };
+    (C5.ubah ||= {})[k] = ubah; ubah();
+    peta.on("sourcedata", e => e.sourceId === id && ubah()); peta.on("idle", ubah); peta.on("zoomend", ubah); peta.on("error", e => e.sourceId === id ? ubah() : console.error(e.error)); }
+  for (const k of ["peringatan", "satelit", ...UBIN.map(x => x[0])]) pasang[k] = () => gfw(k);
   pasang.hilang = async () => { await gfw("hilang"); await gfw("hilang_api"); };
 
   const klik = new Set();
@@ -154,7 +167,11 @@
     if (nyala("satelit")) h += `<div class="leg-cat"><i style="--w:#13324d"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="9" y="9" width="6" height="6" rx="1"/><path d="M3 3l5 5M16 16l5 5M9 12H3M21 12h-6M12 9V3M12 21v-6"/></svg></i><span><b>Citra satelit</b>Esri World Imagery (mosaik, bukan citra hari ini)</span></div>`;
     if (nyala("peringatan")) h += `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#dc6c9c"></i>Peringatan gangguan hutan 90 hari terakhir (GFW)</span></div>`;
     if (nyala("kanal") && C5.kanalST) h += `<div class="lbl" style="margin-top:8px">Kanal & parit (km per sel ± 2 km)</div><div class="legscale">${[1, 3, 8, 20, 40].map(v => `<i style="background:rgb(${gradasi(C5.kanalST, v).slice(0, 3).join(",")})"></i>`).join("")}</div><div class="legnum"><span>1</span><span>3</span><span>8</span><span>20</span><span>40+</span></div>`;
+    const T = Lapis.cache.lapisan_tambahan?.lapisan;
+    for (const [k] of UBIN) { const c = nyala(k) && T?.[k]; if (!c) continue;
+      h += `<div class="lbl" style="margin-top:8px">${esc(c.nama)}<span id="l5m-${k}" style="font-weight:400;opacity:.7"></span></div><div class="leg" style="margin-top:4px">${c.legenda.map(([w, n]) => `<span><i class="sw" style="background:${warnaOk(w)}"></i>${esc(n)}</span>`).join("")}${c.catatan ? `<span>${esc(c.catatan)}</span>` : ""}</div>`; }
     if (h) box.insertAdjacentHTML("beforeend", h);
+    for (const [k] of UBIN) nyala(k) && C5.ubah?.[k]?.();
     /* catatan berikon (angin, satelit) dikumpulkan jadi satu baris di bawah supaya tidak meninggalkan ruang kosong di kisi legenda */
     const cats = [...box.querySelectorAll(".leg-cat")].filter(c => !c.closest(".leg-cats")); if (cats.length) { const w = box.querySelector(":scope > .leg-cats") || document.createElement("div"); w.className = "leg-cats"; cats.forEach(c => w.append(c)); box.append(w); }
     /* baris yang membungkus membuat fit-content melebar penuh: kunci lebar ke tepi kanan isi terjauh supaya tak ada ruang kosong di kanan */
