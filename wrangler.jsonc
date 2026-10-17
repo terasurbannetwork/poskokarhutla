@@ -1,5 +1,8 @@
 {
-  "name": "poskokarhutla",
+  // Nama worker = worker yang memegang domain pantau.terasurban.com, secret, dan jadwal cron. 16 Okt 2026 worker
+  // aslinya berganti nama jadi centurisk97 di dasbor; terbit berikutnya membuat worker "poskokarhutla" baru tanpa
+  // domain dan secret, dan situs publik membeku sejak 17 Okt 00.42 WIB. Jangan ganti nama ini tanpa memindah domain + secret.
+  "name": "centurisk97",
   "main": "src/worker.js",
   "compatibility_date": "2026-10-01",
   "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "none" },
