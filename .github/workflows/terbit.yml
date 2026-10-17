@@ -4,7 +4,7 @@ name: Terbitkan tampilan
 # cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 2 menit.
 on:
   push:
-    branches: [main]
+    branches: [main, staging]
     paths:
       - "public/**"
       - "!public/data/**"
@@ -64,10 +64,18 @@ jobs:
           key: citra-${{ github.run_id }}
           restore-keys: citra-
 
+      # main = produksi (`wrangler deploy`). staging = versi PRATINJAU di URL tetap (`versions upload --preview-alias`): tidak
+      # dipromosikan, jadi workers.dev produksi, domain kustom, dan cron tidak berubah. Awas: staging memakai D1/R2 produksi yang
+      # sama, jadi laporan uji di staging masuk DB produksi. Dipromosikan dengan merge ke main. data.yml/banjir.yml/titik.yml
+      # tetap men-deploy main, jadi kode yang belum siap jangan masuk main. workflow_dispatch dari staging ikut cabang staging.
       - name: Terbitkan ke Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           python3 scripts/terbit/versi.py
-          npx --yes wrangler@3 deploy
+          if [ "$GITHUB_REF_NAME" = main ]; then
+            npx --yes wrangler@3 deploy
+          else
+            npx --yes wrangler@4.42.0 versions upload --preview-alias staging --message "staging ${GITHUB_SHA::7}"
+          fi
