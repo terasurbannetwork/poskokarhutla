@@ -3246,11 +3246,16 @@ const Tren = {
     headKeKartu(el, "Tren", false);
     tipDariTitle(el);
     /* kartu riwayat panjang yang pindah dari Insight (pemilik, 17 Okt 2026): luas terbakar, El Niño, BNPB, dunia, penempatan regu */
+    /* tidak bergantung pada pilihan Tren: dibangun sekali, simpulnya dipakai ulang tiap Tren.render (tanpa kedip, menu provinsi tetap) */
     const rw = el.querySelector("#trenRiwayat");
-    Insight.siap().then(async () => { if (!rw.isConnected) return;
+    if (this._rw) rw.replaceWith(this._rw);
+    else Insight.siap().then(async () => { if (!rw.isConnected) return;
       rw.innerHTML = Insight.kartu(Insight.TREN); Insight.pasang(rw);
       const regu = await window.Cerita?.reguKartu?.().catch(() => "");
-      if (regu && rw.isConnected) rw.insertAdjacentHTML("beforeend", `<article class="cerita">${regu}</article>`); }).catch(() => {});
+      if (!rw.isConnected) return;
+      if (regu) rw.insertAdjacentHTML("beforeend", `<article class="cerita">${regu}</article>`);
+      this._rw = rw;
+      if (location.hash.startsWith("#ct-")) document.getElementById(location.hash.slice(1))?.scrollIntoView({block: "start"}); }).catch(() => {});
     $("#tSumber").onclick = e => { const b = e.target.closest("button"); if (!b) return; this.sumber = b.dataset.s; this.rh = 0;
       $("#tSumber").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => this.render()); };
     /* pilih beberapa provinsi (centang) untuk tabel risiko */
