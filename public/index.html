@@ -633,6 +633,7 @@ table.tb2 td{padding:5px 0;border-bottom:1px solid var(--line);vertical-align:to
 table.tb2 td{padding-left:10px}
 table.tb2 td.n{text-align:right;padding-left:10px;padding-right:16px;font-weight:600}
 table.tb2 tr:last-child td{border-bottom:0}
+table.tb2.br td{white-space:normal}
 table.tb3{width:100%;font-size:12px;border-collapse:collapse}
 table.tb3 th{text-align:center!important;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;text-align:left;padding:4px 3px;border-bottom:1px solid var(--line);vertical-align:bottom}
 table.tb3 td{text-align:center;padding:7px 6px;border-bottom:1px solid var(--line);vertical-align:top}
@@ -2626,7 +2627,7 @@ const Laci = {
         const rt = (x, u) => `sekitar ${sk(x[1])} ${u} (skenario ${sk(x[0])}–${sk(x[2])})`;
         const wt = b.wt == null || !Number.isFinite(b.wt) ? "tidak ada data" : `${Math.abs(Math.round(b.wt)).toLocaleString("id-ID")} cm ${b.wt > 0 ? "di atas" : "di bawah"} permukaan`;
         const ket = t => `<p class="fnd" style="margin-top:8px">${t}</p>`;
-        return lipat("Gambut terbakar di bawah permukaan (estimasi)", `<table class="tb2"><tbody>${baris("Luas gambut terbakar", rt(b.a, "ha"))}${baris("Kedalaman terbakar", rt(b.d, "cm"))}${b.tertahan_air
+        return lipat("Gambut terbakar di bawah permukaan (estimasi)", `<table class="tb2 br"><tbody>${baris("Luas gambut terbakar", rt(b.a, "ha"))}${baris("Kedalaman terbakar", rt(b.d, "cm"))}${b.tertahan_air
           ? `<tr><td colspan="2">Muka air perkiraan di atas permukaan; gambut di bawahnya dianggap tidak terbakar.</td></tr>`
           : baris("Massa gambut terbakar", rt(b.m, "ton")) + baris("Emisi CO₂", rt(b.co2, "ton")) + baris("Emisi CH₄", rt(b.ch4, "ton")) + baris("Emisi CO", rt(b.co, "ton"))}${b.fb != null && Number.isFinite(b.fb) ? baris("Persistensi api", `${Math.round(b.fb * 100).toLocaleString("id-ID")}% sel gambut terdeteksi ≥ 2 hari`) : ""}${baris("Muka air (perkiraan)", wt)}</tbody></table>
         ${b.dipotong === false ? ket("kedalaman tidak dipotong muka air") : ""}${ket("Perkiraan = luas × kedalaman × kerapatan gambut × faktor emisi (IPCC 2013). Skenario memakai asumsi rendah–tinggi, belum divalidasi lapangan; bukan tambahan dari estimasi emisi nasional. Muka air = perkiraan, bukan pengukuran.")}${ket(`Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s.d. ${jamWIB(p.akhir)}`)}`); })()}
