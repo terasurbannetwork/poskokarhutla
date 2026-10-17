@@ -3,7 +3,8 @@
 .ak-bd + .ak-bd{margin-left:3px}
 .ak-tw td{white-space:nowrap}
 .ak-tw tbody tr[data-ak]{cursor:pointer}
-.ak-nm{font-weight:700}
+.ak-nm{font-weight:700;text-align:left}
+.ex .ak-tw th:nth-child(2),.ex .ak-tw td.ak-nm{text-align:left}.ex .ak-tw th:nth-child(2) button{justify-content:flex-start;text-align:left;margin:0}
 .ak-gr{color:var(--ink2);font-size:11.5px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
 .ak-ng{min-width:44px}
 .ak-mt{color:var(--ink2);opacity:.7;font-size:11.5px}
@@ -32,7 +33,6 @@
 .ak-ph{color:var(--ink2);font-size:11.5px}
 .ak-li .ak-j{font-size:11px;color:var(--ink2)}
 .ak-lg{flex:none;border-radius:6px;object-fit:contain;background:#fff;box-shadow:0 0 0 1px var(--line)}
-.ak-lgi{display:inline-grid;place-items:center;font-size:9.5px;font-weight:800;color:#fff;background:oklch(25.5% .075 256)}
 @media (max-width:1100px){.ak-nk-lebar ul{grid-template-columns:repeat(2,minmax(0,1fr))}.ak-ngr-lain{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
 @media (max-width:640px){.ak-nk-lebar ul{grid-template-columns:1fr}}
 
@@ -53,5 +53,18 @@
 /* peta: pil bendera di tengah poligon perusahaan WALHI */
 .ak-mk{display:inline-flex;align-items:center;gap:2px;padding:3px 5px;border-radius:999px;border:1.5px solid #c9503a;background:#fff;cursor:pointer;box-shadow:0 1px 4px oklch(0% 0 0 / .25);line-height:0}
 .ak-mk .ak-bd + .ak-bd{margin-left:1px}
-.ak-tpb{font-size:12px;line-height:1.5}
 .ak-tw2{display:block;color:#c9503a;font-weight:700}
+/* tooltip perusahaan: kartu rata kiri */
+#tip .ak-tch{display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left}#tip .tp2-h.ak-tch,#tip .tp2-h.ak-tch b,#tip .tp2-h.ak-tch small{text-align:left}
+#tip .ak-tch>span{display:flex;flex-direction:column;min-width:0}
+#tip .ak-tch b{font-size:13px;line-height:1.25}
+#tip .ak-tch small{color:var(--muted);font-size:11px}
+#tip .ak-tcs{display:flex;gap:6px;margin-bottom:7px}
+#tip .ak-tcs span{flex:1;display:flex;flex-direction:column;padding:5px 8px;border-radius:9px;background:var(--surface);color:var(--muted);font-size:10.5px}
+#tip .ak-tcs b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+#tip .ak-tcs .ak-tck{background:#c9503a14}#tip .ak-tcs .ak-tck b{color:#c9503a}
+#tip .ak-tcm{color:var(--muted);margin-bottom:6px}
+#tip .ak-tcl{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
+#tip .ak-tcl small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+#tip .ak-tcl span{display:flex;align-items:center;gap:6px}
+#tip .ak-tcn{margin:0;padding-top:6px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.45}

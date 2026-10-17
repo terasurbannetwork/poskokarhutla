@@ -19,24 +19,23 @@
   /* industri (aktor_walhi.py industri()) -> warna pil */
   const IND = {"Kelapa sawit": "#c98a3c", "Hutan tanaman (pulp)": "#6b8e3a", "Hutan alam (HPH)": "#2f6f8f", "Tebu dan gula": "#b5658a", "Restorasi ekosistem": "#2b8c86"};
   const indPil = t => t ? `<span class="ak-j" style="--w:${IND[t] || "#8a94a6"}">${esc(t)}</span>` : "";
-  /* logo grup/pemegang: favicon resmi situs grupnya, disimpan di img/logo-grup; tanpa logo = inisial */
+  /* logo grup/pemegang: favicon resmi situs grupnya, disimpan di img/logo-grup; tanpa logo resmi = tidak ada logo (pemilik, 17 Okt 2026) */
   const LOGO = [[/Nordic Forest|Stora Enso/i, "stora-enso"], [/Salween|GIC/i, "gic"], [/Gochean|TPG/i, "tpg"], [/Sampoerna|AGPA/i, "sampoerna-agro"], [/POSCO/i, "posco"],
     [/Musim Mas/i, "musim-mas"], [/^Wilmar/i, "wilmar"], [/APP|Asia Pulp/i, "app"], [/Sinar Mas/i, "sinar-mas"], [/APRIL/i, "april"], [/RGE|Royal Golden/i, "rge"],
     [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"],
     [/Salim|Indofood/i, "salim"], [/London Sumatra|Lonsum/i, "lonsum"], [/Medco/i, "medco"], [/Perkebunan Nusantara|PTPN/i, "ptpn"], [/Goodhope/i, "goodhope"],
     [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"], [/Royal Golden Eagle/i, "rge"]];
-  A.logo = (nama, h = 22, ini0 = true) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
-    if (f) return `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">`;
-    if (!ini0) return "";
-    const ini = String(nama || "?").replace(/\b(PT|Pte|Ltd|Limited|Group|Holdings?|Incorporated|Corporation|Pvt)\b/gi, "").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
-    return `<span class="ak-lg ak-lgi" style="width:${h}px;height:${h}px">${esc(ini)}</span>`; };
+  A.logo = (nama, h = 22) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
+    return f ? `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">` : ""; };
   const titik = p => p.titik_agu ?? p.titik_sep;
   const tunggu = () => { A.muat(); return `<article class="ex"><div class="kosong"><div class="spin"></div>Memuat data perusahaan…</div></article>`; };
-  /* tooltip perusahaan: pemegang saham, catatan, tokoh, angka WALHI & peta */
-  A.tip = p => `<b>${esc(p.nama)}</b>${p.grup.length ? `<br>Grup: ${esc(p.grup.join(", "))}` : ""}`
-    + (p.pemegang || []).filter(x => x.negara !== "ID").map(x => `<br>${bendera(x.negara, 10)} ${esc(x.nama)}`).join("")
-    + (!p.cek?.poligon ? "<br>Tidak ada di peta konsesi" : p.cek.lokasi === "beda" ? "<br>Poligon senama di peta ada di provinsi lain" : `<br>Di peta konsesi: ${fmt(p.cek.titik_viirs ?? 0)} titik VIIRS Jan–Agu${p.cek.titik_terkini != null ? `, ${fmt(p.cek.titik_terkini)} titik terkini` : ""}`)
-    + (p.catatan ? `<br><small>${esc(p.catatan)}</small>` : "");
+  /* tooltip perusahaan (kartu rata kiri): logo + nama + grup, ubin titik panas di konsesi, pemegang saham asing, catatan */
+  A.tip = p => { const ok = p.cek?.poligon && p.cek.lokasi !== "beda", ps = (p.pemegang || []).filter(x => x.negara !== "ID");
+    return `<div class="tp2-h ak-tch">${A.logo(p.grup[0] || p.nama, 26)}<span><b>${esc(p.nama)}</b><small>${esc([p.grup.join(", "), p.prov].filter(Boolean).join(" · "))}</small></span></div>`
+      + (ok ? `<div class="ak-tcs"><span><b>${fmt(p.cek.titik_viirs ?? 0)}</b>titik panas Jan–Agu</span>${p.cek.titik_terkini != null ? `<span${p.cek.titik_terkini ? ' class="ak-tck"' : ""}><b>${fmt(p.cek.titik_terkini)}</b>titik terkini</span>` : ""}</div>`
+        : `<div class="ak-tcm">${!p.cek?.poligon ? "Tidak ada di peta konsesi" : "Poligon senama di peta ada di provinsi lain"}</div>`)
+      + (ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : "")
+      + (p.catatan ? `<p class="ak-tcn">${esc(p.catatan)}</p>` : ""); };
 
   Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "peta", akTurun: true});
   Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke", aktorTokoh: "Tokoh politik"});
@@ -93,7 +92,7 @@
     const G = A.d.grup, mx = Math.max(...G.map(x => x.jumlah)), tot = G.reduce((a, x) => a + x.jumlah, 0);
     const per = k => G.filter(x => x.negara === k).reduce((a, x) => a + x.jumlah, 0);
     const isi = `<div class="ak-bar">${G.map(x => `<div class="ak-br" data-tip="<b>${esc(x.grup)}</b><br>${esc(NEG()[x.negara])}<br>${x.jumlah} perusahaan terindikasi karhutla">
-      <span class="ak-bl">${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></div>`).join("")}</div>`;
+      <span class="ak-bl">${A.logo(x.grup, 18)}${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></div>`).join("")}</div>`;
     Insight.leg([["#c9503a", `Singapura (${per("SG")})`], ["#2f6f8f", `Malaysia (${per("MY")})`]]);
     return this.ex(`${this.hl(tot + " perusahaan")} terindikasi karhutla terafiliasi grup asal Singapura dan Malaysia; ${this.hl("Sinar Mas")} dan ${this.hl("Wilmar")} terbanyak`, "", "", isi,
       ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
@@ -167,7 +166,7 @@
     const fs = A.poli[nama].map(i => by[i]).filter(Boolean); if (!fs.length) return;
     const besar = fs.reduce((a, f) => (f.properties.luas_peta_ha || 0) > (a.properties.luas_peta_ha || 0) ? f : a), [x0, y0, x1, y1] = kotak(besar.geometry);
     const el = document.createElement("button"); el.type = "button"; el.className = "ak-mk"; el.innerHTML = benderaDaf(p.negara, 11); el.setAttribute("aria-label", p.nama);
-    el.onmouseenter = ev => tampilTip(`<div class="tp-hd"><span class="tp-nm"><b>${esc(p.nama)}</b></span></div><div class="tp-bd ak-tpb">${A.tip(p).replace(/^<b>.*?<\/b><br>/, "")}</div>`, ev);
+    el.onmouseenter = ev => { tampilTip(A.tip(p), ev); $("#tip")?.classList.remove("kartu"); };
     el.onmouseleave = () => $("#tip")?.classList.remove("on");
     el.onclick = ev => { ev.stopPropagation(); A.tunjuk(p.nama); };
     penanda = new maplibregl.Marker({element: el}).setLngLat([(x0 + x1) / 2, (y0 + y1) / 2]).addTo(peta);
@@ -176,6 +175,6 @@
   A.kartuPoligon = p => {
     const w = A.d && !A.d.gagal ? A.per[A.d.poligon[p.id]] : null, ng = w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean);
     const sub = [p.grup, p.kab].filter(Boolean).map(esc).join(" · ");
-    return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(p.grup, 20, false)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
+    return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(p.grup, 20)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
   A.muat();
 })();
