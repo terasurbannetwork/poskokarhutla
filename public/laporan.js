@@ -30,7 +30,9 @@ function ubah(n, p) {
 const ubahTeks = (n, p) => { if (!p) return ""; const v = Math.round((n - p) / p * 100); return v > 0 ? `<span class="naik">▲ ${fmt(v)}%</span>` : v < 0 ? `<span class="turun">▼ ${fmt(-v)}%</span>` : "tetap"; };
 
 const idx = () => D.hari.indexOf(st.hari);
-const sementara = () => st.hari === D.hari_berjalan;
+/* hari terbaru langsung jadi laporan utama dan dianggap final per cut-off data satelit terakhir (pemilik, 17 Okt 2026);
+   tidak ada lagi label "sementara/belum final" atau panel hari berjalan terpisah */
+const sementara = () => false;
 const pilLv = l => `<span class="lp-lv lv${l}">${LEVEL[l] || "–"}</span>`;
 
 /* ---------- baris data ---------- */
@@ -66,9 +68,9 @@ function batang(hari, vals, sel, satuan) {
   const n = hari.length, W = Math.max(900, n * 64), H = 290, pb = 30, pt = 62, slot = W / n, bw = Math.min(46, slot * .62), mx = Math.max(...vals, 1), gy = v => pt + (H - pt - pb) * (1 - v / mx);
   let s = `<line x1="0" x2="${W}" y1="${H - pb}" y2="${H - pb}" style="stroke:var(--line)" stroke-width="1.5"/>`;
   hari.forEach((h, i) => {
-    const v = vals[i] ?? 0, cx = slot * i + slot / 2, y = gy(v), on = h === sel, sm = h === D.hari_berjalan, ix = D.hari.indexOf(h);
+    const v = vals[i] ?? 0, cx = slot * i + slot / 2, y = gy(v), on = h === sel, sm = false, ix = D.hari.indexOf(h);
     const p = ix > 0 ? ubahTeks(v, satuan.arr[ix - 1]) : "";
-    const tip = `<b>${tgl(h)}${sm ? " (sementara)" : ""}</b><br>${satuan.nama}: ${fmt(v)} ${satuan.u}${p ? `<br>Perubahan: ${p}` : ""}`.replace(/"/g, "&quot;");
+    const tip = `<b>${tgl(h)}</b><br>${satuan.nama}: ${fmt(v)} ${satuan.u}${p ? `<br>Perubahan: ${p}` : ""}`.replace(/"/g, "&quot;");
     s += `<g data-tip="${tip}"><rect x="${cx - bw / 2}" y="${y}" width="${bw}" height="${Math.max(2, H - pb - y)}" rx="5" style="fill:${on ? WARNA_SEL : WARNA_TOT}" opacity="${sm ? .55 : 1}"/>`
       + Kartu.pil(cx - (String(fmt(v)).length * 6.6 + 16) / 2, y - 25, fmt(v), on ? WARNA_SEL : "#0b2545", "#fff", 11)[0]
       + pilPersen(cx, y - 49, v, ix > 0 ? satuan.arr[ix - 1] : null)
@@ -191,7 +193,7 @@ function kartuProvGrafik() {
   const h2 = Math.ceil(rows.length / 2), cetak = `<div class="lp-prt">${batangProv(rows.slice(0, h2), 760, rows[0].t || 1)}${rows.length > 1 ? batangProv(rows.slice(h2), 760, rows[0].t || 1) : ""}</div>`;
   /* grafik selalu memakai hari terpilih (tertutup); label harinya ditulis supaya tidak tertukar dengan poin hari berjalan */
   const lbl = `<div class="lp-gh"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="lp-gh-k">Data grafik</span><b>${tglHari(st.hari)}</b>`
-    + `<i></i><span>Cut-off ${cutoff(st.hari)}</span>${st.hari === D.hari_berjalan ? ' <span class="lp-bf">Data belum final</span>' : ""}${idx() > 0 ? `<i></i><span>▲▼ dibanding ${tgl(D.hari[idx() - 1])}</span>` : ""}</div>`;
+    + `<i></i><span>Cut-off ${cutoff(st.hari)}</span>${idx() > 0 ? `<i></i><span>▲▼ dibanding ${tgl(D.hari[idx() - 1])}</span>` : ""}</div>`;
   return Kartu.kartu("Per provinsi", j, rows.length ? lbl + `<div class="lp-scr">${batangProv(rows)}</div>` + cetak : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
     Kartu.selProvMulti("provM", kode, k => D.prov[k].nama, st));
 }
@@ -217,7 +219,7 @@ function tabelHarian(kol, ekor = "", tot = null, gt = null) {
   const baris = tot && hs.length > 1 ? `<tr class="lp-tot"><td>Total ${tgl(hs.at(-1))} s.d. ${tgl(hs[0])} ${hs[0].slice(0, 4)}</td>${tot(ix).map(v => `<td class="n">${v}</td>`).join("")}</tr>` : "";
   return `<div class="tw lp-th"><table class="lp-tb"><thead><tr><th>Tanggal</th>${kol.map(k => `<th${k[2] ? ' class="n"' : ""}>${k[0]}</th>`).join("")}</tr></thead><tbody>${hs.map(h => {
     const i = D.hari.indexOf(h);
-    return `<tr class="${h === st.hari ? "lp-on" : ""}${h === D.hari_berjalan ? " lp-sm" : ""}"><td>${tglPanjang(h)}${h === D.hari_berjalan ? ' <span class="lp-bf">Belum final</span>' : ""}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}${baris}${ekor}${gt ? `<tr class="lp-gt"><td>${gt[0]}</td>${gt.slice(1).map(v => `<td class="n">${v}</td>`).join("")}</tr>` : ""}</tbody></table></div>`;
+    return `<tr class="${h === st.hari ? "lp-on" : ""}"><td>${tglPanjang(h)}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}${baris}${ekor}${gt ? `<tr class="lp-gt"><td>${gt[0]}</td>${gt.slice(1).map(v => `<td class="n">${v}</td>`).join("")}</tr>` : ""}</tbody></table></div>`;
 }
 
 /* ---------- kartu ---------- */
@@ -227,12 +229,11 @@ const awalBulan = () => D.hari.at(-1).slice(0, 8) + "01";
 const segRentang = () => D.hari.length > 7 ? Kartu.seg("rentang", [[7, "7 hari"], [14, "14 hari"], ["b", "Sejak " + tgl(awalBulan())]], st) : "";
 const hariGrafik = () => st.rentang === "b" ? D.hari.filter(h => h >= awalBulan()) : D.hari.slice(-st.rentang);
 
-/* hari terpilih = hari tertutup terakhir: hari berjalan (belum final) ikut tampil sebagai poin kedua */
 /* tiap poin diawali label harinya, jadi "pada <tanggal>" di kalimat dibuang (sudah tertulis di label) */
 const tglHari = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "short", year: "numeric", timeZone: "UTC"});
-/* cut-off tiap hari: hari tertutup = jam penutupan hari itu, hari berjalan = data satelit terakhir */
+/* cut-off tiap hari: hari terbaru = data satelit terakhir (ikut tiap pembaruan 3 jam), hari sebelumnya = jam penutupan hari itu */
 const cutoff = h => h === D.hari_berjalan ? jamWIB(D.cutoff) : `${tgl(h)} ${D.jadwal.tutup}`;
-const iB = () => { const b = D.hari.indexOf(D.hari_berjalan); return b > 0 && D.hari[b - 1] === st.hari ? b : -1; };
+const iB = () => -1;
 function poinBerjalan(j, teks) {
   const b = iB();
   if (b < 0) return j;
@@ -353,7 +354,7 @@ function kartuSumber() {
   /* kompartemen 1: alur waktu laporan, dari arsip sampai penutupan */
   const tutup = new Date(`${st.hari}T${(D.jadwal.tutup.match(/\d{1,2}[.:]\d{2}/) || ["21.20"])[0].replace(".", ":").padStart(5, "0")}:00+07:00`);
   const waktu = [[new Date(c), "Cut-off data", jamWIB(c)], [new Date(D.dibuat), "Dihitung", jamWIB(D.dibuat)],
-    [tutup, sm ? "Ditutup nanti" : "Ditutup", `${tgl(st.hari)} ${D.jadwal.tutup}`, "tt"]].sort((a, b) => a[0] - b[0]);
+    ...(st.hari === D.hari_berjalan ? [] : [[tutup, "Ditutup", `${tgl(st.hari)} ${D.jadwal.tutup}`, "tt"]])].sort((a, b) => a[0] - b[0]);
   const alur = `<div class="lp-km"><div class="lp-km-h"><span>Waktu laporan</span><span class="lp-bf${sm ? "" : " ok"}">${sm ? "Data belum final" : "Final"}</span></div>`
     + `<ol class="lp-alur">${waktu.map(w => `<li${w[3] ? ' class="tt"' : ""}><i></i><b>${esc(w[2])}</b><span>${w[1]}</span></li>`).join("")}</ol></div>`;
   /* kompartemen 2: ubin sumber, satu per data */
@@ -367,14 +368,14 @@ function kartuSumber() {
     ["kej", "Kejadian api", MEREK, s.kompleks && rinci(s.kompleks)], ["fwi", "FWI", "Open-Meteo", s.fwi && tt(s.fwi)],
     ["wil", "Wilayah", "BIG", s.wilayah && rinci(s.wilayah)]].filter(r => r[3]);
   const ubin = baris.map(r => `<div class="lp-ub"><div class="lp-ub-h"><svg viewBox="0 0 24 24" aria-hidden="true">${IK[r[0]]}</svg><b>${r[1]}</b><span class="lp-src">${esc(r[2])}</span></div><p>${esc(r[3])}</p></div>`).join("");
-  const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} ${sm ? "masih sementara" : "sudah ditutup"}`;
+  const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} final per cut-off ini, diperbarui otomatis tiap 3 jam`;
   return Kartu.kartu("Cut-off dan sumber data", j, `<div class="lp-kms">${alur}<div class="lp-km"><div class="lp-km-h"><span>Sumber data</span></div><div class="lp-ubs">${ubin}</div></div></div>`,
     "NASA FIRMS, BIG, KLHK SiPongi, olahan " + MEREK);
 }
 
 function kepala() {
   const hs = D.hari.slice(-7), sm = sementara();
-  const opsi = hs.map(h => [h, tgl(h) + (h === D.hari_berjalan ? " (sementara)" : "")]);
+  const opsi = hs.map(h => [h, tgl(h)]);
   $("#lpKepala").innerHTML = `<div class="lp-jd"><h1>Laporan Harian Karhutla</h1>
     <div class="lp-pils"><span class="lp-pil">${tglPanjang(st.hari)}</span><span class="lp-pil ${sm ? "sm" : "ok"}">Cut-off ${cutoff(st.hari)}</span>${!sm && iB() > 0 ? `<span class="lp-pil sm">Cut-off ${cutoff(D.hari[iB()])}</span>` : ""}</div></div>
     <div class="lp-aksi"><button class="lp-cetak" type="button" id="lpCetak" aria-label="Cetak atau unduh PDF" title="Cetak atau unduh PDF">${IK_CETAK}</button>${Kartu.seg("hari", opsi, st)}</div>`;
@@ -389,7 +390,7 @@ function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`
    dengan peringkat. Isinya disalin dari kartu yang sudah dirender, jadi angka dan teksnya selalu sama dengan halaman */
 function sampul() {
   const q = s => document.querySelector(s), j = q('[data-ex="peta"] h3'), pt = q('[data-ex="peta"] .lp-pt-w');
-  const b = iB(), h = st.petaH === "b" && b > 0 ? D.hari[b] : st.hari, bf = h === D.hari_berjalan;
+  const h = st.hari, bf = false;
   $("#lpSampul").innerHTML = (j ? `<div class="lp-sp-p">${j.innerHTML}</div>` : "")
     + (pt ? `<div class="lp-sp-ey">Peta: data ${tglHari(h)}${bf ? ' <span class="lp-bf">Data belum final</span>' : ` <span class="lp-co">Cut-off ${cutoff(h)}</span>`}</div>${pt.outerHTML}` : "");
 }
@@ -429,7 +430,8 @@ function semua() {
     @bottom-left{content:${css("Sumber: NASA FIRMS, BIG, KLHK SiPongi; olahan " + MEREK)};${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
     @bottom-right{content:"${en ? "Page" : "Halaman"} " counter(page) " ${en ? "of" : "dari"} " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}`;
 }
-const awal = () => D.hari_lengkap || D.hari[D.hari.length - 1];
+/* hari terpilih = hari terbaru yang sudah ada datanya (titik > 0) = final; belum ada data, mundur ke hari sebelumnya */
+const awal = () => D.hari.findLast((h, i) => D.nasional.titik[i] > 0) || D.hari.at(-1);
 
 /* ---------- interaksi ---------- */
 document.addEventListener("click", e => {
@@ -474,14 +476,14 @@ function kartuTren() {
     const tiga = v.slice(-3).reduce((a, b) => a + b, 0), sblm = v.slice(-6, -3).reduce((a, b) => a + b, 0), d = sblm ? tiga / sblm - 1 : 0, arah = Math.sign(d); if (arah > 0) naik++;
     const wA = arah > 0 ? MERAH : arah < 0 ? HIJAU : "#8a94a6";
     g += `<text x="${x0 + 10}" y="${y0 + 18}" font-size="13.5" font-weight="700">${esc(nmP(k))}</text><text x="${x0 + cw - 26}" y="${y0 + 18}" text-anchor="end" font-size="12.5" font-weight="800" style="fill:${wA}">${arah > 0 ? "▲" : arah < 0 ? "▼" : "•"} ${fmt(Math.abs(Math.round(d * 100)))}%</text>`;
-    v.forEach((x, j) => { const h = x / m * (ch - 52), w = j >= L - 3 ? wA : j >= L - 6 ? BANDING : LAMA, cx = x0 + 10 + j * bw + bw / 2, bf = hari[j] === D.hari_berjalan;
+    v.forEach((x, j) => { const h = x / m * (ch - 52), w = j >= L - 3 ? wA : j >= L - 6 ? BANDING : LAMA, cx = x0 + 10 + j * bw + bw / 2, bf = false;
       g += `<rect x="${x0 + 10 + j * bw + bw * .16}" y="${y0 + ch - 18 - h}" width="${bw * .68}" height="${Math.max(2, h)}" rx="4" fill="${w}"/>`
         + `<text x="${cx}" y="${y0 + ch - 22 - Math.max(2, h)}" text-anchor="middle" font-size="10" font-weight="800" opacity=".8">${fmt(x)}</text>`
         + `<text x="${cx}" y="${y0 + ch - 4}" text-anchor="middle" font-size="10" opacity="${bf ? .9 : .55}" font-weight="${bf ? 700 : 400}">${+hari[j].slice(8)}${bf ? "*" : ""}</text>`
         + (j > 0 && v[j - 1] ? (() => { const a = Math.round((x / v[j - 1] - 1) * 100); return `<text x="${cx}" y="${y0 + ch + 10}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:${a > 0 ? MERAH : a < 0 ? HIJAU : "#8a94a6"}">${a > 0 ? "▲" : a < 0 ? "▼" : "•"}${fmt(Math.abs(a))}%</text>`; })() : ""); }); });
   return Kartu.kartu("Tren harian", `Titik panas naik di ${Kartu.hl(naik + " dari " + pv.length)} provinsi yang sering mengalami karhutla dalam 3 hari terakhir`,
     `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)", "",
-    [[HIJAU, "3 hari terakhir turun"], [MERAH, "3 hari terakhir naik"], [BANDING, "3 hari pembanding"], [LAMA, "hari sebelumnya"], ["#8a94a6", "▲▼% di bawah tanggal = perubahan dari hari sebelumnya (* belum final)"]]);
+    [[HIJAU, "3 hari terakhir turun"], [MERAH, "3 hari terakhir naik"], [BANDING, "3 hari pembanding"], [LAMA, "hari sebelumnya"], ["#8a94a6", "▲▼% di bawah tanggal = perubahan dari hari sebelumnya"]]);
 }
 
 /* riwayat luas terbakar nasional 1997–2026: tahun lalu = angka resmi BNPB (factsheet), 2026 = perkiraan satelit laporan ini
