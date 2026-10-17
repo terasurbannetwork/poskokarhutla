@@ -35,7 +35,7 @@ const pilLv = l => `<span class="lp-lv lv${l}">${LEVEL[l] || "–"}</span>`;
 function barisDari(o, i, w) {
   const tp = i > 0 ? o.titik[i - 1] : null, lp = i > 0 ? o.luas[i - 1] : null, t = o.titik[i], l = o.luas[i];
   const b = iB();
-  return {t, tp, tb: b > 0 && i === b - 1 ? o.titik[b] : null, dt: tp == null ? null : t - tp, l, lp, dl: lp == null ? null : l - lp, kum: sum(o.baru, i),
+  return {t, tp, tb: b > 0 && i === b - 1 ? o.titik[b] : null, db: b > 0 && i === b - 1 ? o.titik[b] - t : null, dt: tp == null ? null : t - tp, l, lp, dl: lp == null ? null : l - lp, kum: sum(o.baru, i),
     kompleks: o.kompleks ?? null, lk: o.luas_kompleks ?? null, level: o.level ?? null, ada: sum(o.titik.slice(Math.max(0, i - w + 1)), w) + sum(o.luas.slice(Math.max(0, i - w + 1)), w) };
 }
 const jendela = () => Math.min(st.rentang, 30);
@@ -73,17 +73,18 @@ function batang(hari, vals, sel, satuan) {
   });
   return `<div class="lp-gr"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(satuan.nama)} per hari">${s}</svg></div>`;
 }
-function batangMendatar(rows) {
-  const W = 1300, bh = 26, g = 8, H = rows.length * (bh + g) + 6, x0 = 250, mx = Math.max(...rows.map(r => r.v), 1);
+/* sm = panel hari berjalan (batang pudar seperti batang belum final di grafik harian); mx dipakai bersama supaya dua panel sebanding */
+function batangMendatar(rows, W = 1300, sm = false, mx = Math.max(...rows.map(r => r.v), 1)) {
+  const bh = 26, g = 8, H = rows.length * (bh + g) + 6, x0 = W > 900 ? 250 : 200;
   let s = "";
   rows.forEach((r, i) => {
     const y = i * (bh + g) + 3, w = Math.max(4, (W - x0 - 110) * r.v / mx), nm = r.nama.length > 30 ? r.nama.slice(0, 29) + "…" : r.nama;
     s += `<g data-tip="${esc(`<b>${r.nama}</b><br>Provinsi: ${r.prov}<br>Titik: ${fmt(r.t)}<br>Sebelumnya: ${fmt(r.tp)}<br>Perubahan: ▲ ${fmt(r.v)} titik`)}">`
       + `<text x="${x0 - 10}" y="${y + bh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="600">${esc(nm)}</text>`
-      + `<rect x="${x0}" y="${y}" width="${w}" height="${bh}" rx="6" style="fill:${WARNA_TOT}"/>`
+      + `<rect x="${x0}" y="${y}" width="${w}" height="${bh}" rx="6" style="fill:${WARNA_TOT}"${sm ? ' opacity=".55"' : ""}/>`
       + Kartu.pil(x0 + w + 8, y + 3, "▲ " + fmt(r.v), WARNA_SEL, "#fff", 12)[0] + "</g>";
   });
-  return `<div class="lp-gr lp-gr-h"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Kenaikan titik terbesar">${s}</svg></div>`;
+  return `<div class="lp-gr${W > 900 ? " lp-gr-h" : ""}"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Kenaikan titik terbesar">${s}</svg></div>`;
 }
 
 /* pil perubahan harian di atas batang: ▲ merah naik, ▼ hijau turun, abu tetap; tanpa pembanding tidak digambar */
@@ -220,7 +221,13 @@ function kartuNaik() {
   const j = poinBerjalan(rows.length ? `${Kartu.hl(esc(rows[0].nama))} naik paling tajam: <span class="naik">▲ ${fmt(rows[0].dt)}</span> titik panas pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}` : `Tidak ada kab/kota yang naik pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}`, b => {
     const t2 = barisKab(b).filter(r => r.dt > 0).sort((a, c) => c.dt - a.dt)[0];
     return t2 ? `${Kartu.hl(esc(t2.nama))} naik paling tajam pada ${tgl(D.hari[b])}: <span class="naik">▲ ${fmt(t2.dt)}</span> titik panas` : `Tidak ada kab/kota yang naik pada ${tgl(D.hari[b])}`; });
-  return Kartu.kartu("Kenaikan terbesar", j, rows.length ? batangMendatar(rows) : '<div class="kosong">Semua kab/kota tetap atau turun</div>', tt(D.sumber.titik));
+  /* hari berjalan tersedia: dua panel berdampingan, kiri hari terpilih, kanan hari berjalan (belum final) */
+  const b = iB(), rb = b < 0 ? [] : barisKab().filter(r => r.db > 0).sort((a, c) => c.db - a.db).slice(0, 10).map(r => ({...r, t: r.tb, tp: r.t, v: r.db}));
+  const kosong = '<div class="kosong">Semua kab/kota tetap atau turun</div>';
+  if (b < 0) return Kartu.kartu("Kenaikan terbesar", j, rows.length ? batangMendatar(rows) : kosong, tt(D.sumber.titik));
+  const mx = Math.max(1, ...rows.map(r => r.v), ...rb.map(r => r.v));
+  const panel = (h, rs, sm) => `<div class="lp-pn"><div class="lp-pn-h">${tglHari(h)}${sm ? ' <span class="lp-bf">Data belum final</span>' : ""}</div>${rs.length ? batangMendatar(rs, 640, sm, mx) : kosong}</div>`;
+  return Kartu.kartu("Kenaikan terbesar", j, `<div class="lp-pns">${panel(st.hari, rows, false)}${panel(D.hari[b], rb, true)}</div>`, tt(D.sumber.titik));
 }
 function kartuSumber() {
   const s = D.sumber, c = D.cutoff, sm = sementara();
@@ -274,12 +281,17 @@ function semua() {
       ["Luas indikasi terbakar", fmt(n.luas[i]) + " ha", ub(n.luas[i], n.luas[i - 1]) + (i > 0 ? " dari " + fmt(n.luas[i - 1]) + " ha (" + tgl(D.hari[i - 1]) + ")" : "")], ["Kumulatif", fmt(sum(n.baru, i)) + " ha", "sejak " + tgl(D.awal_arsip)]]
       .map(([l, v, k]) => `<div><span>${l}</span><b>${v}</b><small>${k}</small></div>`).join(""); }
   /* kepala dan kaki kertas cetak: kotak margin @page (menggantikan tanggal/URL bawaan browser), isinya mengikuti hari terpilih */
-  const css = t => '"' + String(t).replace(/["\\]/g, "") + '"', f = "font:600 8.5px Inter,system-ui,sans-serif;color:#5b6b82";
+  const en = window.BAHASA === "en" && typeof window.T === "function", T = t => en ? window.T(t) : t;
+  const css = t => '"' + String(T(t)).replace(/["\\]/g, "") + '"', f = "font:600 8.5px Inter,system-ui,sans-serif;color:#5b6b82";
+  /* laporan bertanggal hari dicetak (WIB); hari data dan status finalnya ada di kanan */
+  const cetak = tglPanjang(new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10));
+  const kanan = sementara() ? `Data ${tgl(st.hari)} s.d. ${jamWIB(D.cutoff)}, belum final` : `Data ${tgl(st.hari)} final, ditutup ${D.jadwal.tutup}`;
+  $("#lpKopTgl").textContent = cetak + "  ·  " + kanan;
   $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:20mm 10mm 14mm;
-    @top-left{content:${css("Centurisk97  ·  Laporan Harian Karhutla  ·  " + tglPanjang(st.hari) + (sementara() ? " (sementara)" : ""))};font:800 9px Inter,system-ui,sans-serif;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
-    @top-right{content:${css(sementara() ? "Data s.d. " + jamWIB(D.cutoff) + "  ·  belum final" : "Final, ditutup " + tgl(st.hari) + " " + D.jadwal.tutup)};${f};border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
-    @bottom-left{content:"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk97";${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
-    @bottom-right{content:"Halaman " counter(page) " dari " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}
+    @top-left{content:${css("Centurisk97  ·  Laporan Harian Karhutla  ·  " + cetak)};font:800 9px Inter,system-ui,sans-serif;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
+    @top-right{content:${css(kanan)};${f};border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
+    @bottom-left{content:${css("Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk97")};${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
+    @bottom-right{content:"${en ? "Page" : "Halaman"} " counter(page) " ${en ? "of" : "dari"} " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}
     @page :first{@top-left{content:"";border:0}@top-right{content:"";border:0}}`;
 }
 const awal = () => D.hari_lengkap || D.hari[D.hari.length - 1];

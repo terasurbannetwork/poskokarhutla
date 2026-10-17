@@ -7885,9 +7885,26 @@
 "kab/kota,": "regencies/cities,",
 "mencatat titik panas terbanyak:": "recorded the most hotspots:",
 "kab/kota mencatat titik panas, terbanyak": "regencies/cities recorded hotspots, most in",
-"kab/kota, terbanyak": "regencies/cities, most in"
+"kab/kota, terbanyak": "regencies/cities, most in",
+"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk{0}": "Source: NASA FIRMS, BIG, KLHK SiPongi, BNPB; processed by Centurisk{0}"
 },
 "pola": [
+[
+"^Data (.+?) final, ditutup (.+)$",
+"Data $1 final, closed $2"
+],
+[
+"^Data (.+?) s\\.d\\. (.+?), belum final$",
+"Data $1 to $2, not final"
+],
+[
+"^(.+?)  ·  Data (.+?) final, ditutup (.+)$",
+"$1  ·  Data $2 final, closed $3"
+],
+[
+"^(.+?)  ·  Data (.+?) s\\.d\\. (.+?), belum final$",
+"$1  ·  Data $2 to $3, not final"
+],
 [
 "^Final, ditutup (.+)$",
 "Final, closed $1"

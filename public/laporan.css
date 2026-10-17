@@ -81,7 +81,9 @@
   body,html{height:auto;background:#fff}
   main{position:static;inset:auto}
   .page{position:static;display:block;overflow:visible}
-  .scroll{overflow:visible;padding:0}
+  .scroll,#p-laporan.scroll{overflow:visible;padding:0}
+  /* tanpa sisa margin di ujung: sisa 58 px sempat mendorong satu halaman kosong di akhir */
+  #insight > :last-child .ex{margin-bottom:0}
   #insight.lp{display:block}
   #insight .ex{margin-bottom:10px;border-radius:8px;break-inside:auto}
   #insight .ex-hd{break-after:avoid}
@@ -124,7 +126,10 @@
 .lp-alur li.tt i{border-color:#c9503a}
 .lp-alur b{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
 .lp-alur span{font-size:11px;font-weight:600;color:var(--ink2)}
-.lp-ubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+/* 8 ubin: 4 atas 4 bawah; menyusut 2 lalu 1 kolom di layar sempit */
+.lp-ubs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
+@media (max-width:1100px){.lp-ubs{grid-template-columns:repeat(2,1fr)}}
+@media (max-width:640px){.lp-ubs{grid-template-columns:1fr}}
 .lp-ub{border-radius:12px;padding:10px 12px;background:oklch(42% .11 255 / .05);border:1px solid oklch(42% .11 255 / .1)}
 .lp-ub-h{display:flex;align-items:center;gap:7px;margin-bottom:5px}
 .lp-ub-h svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--brand);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
@@ -134,7 +139,7 @@
 .lp-src{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;white-space:nowrap;background:var(--brand);color:#fff}
 @media (max-width:640px){.lp-alur{grid-template-columns:1fr;gap:10px}.lp-alur::before{left:6px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
   .lp-alur li{flex-direction:row;text-align:left;gap:8px}.lp-alur i{margin:0}}
-@media print{.lp-ubs{grid-template-columns:repeat(2,1fr)}.lp-km,.lp-ub{break-inside:avoid}}
+@media print{.lp-ubs{grid-template-columns:repeat(4,1fr)}.lp-km,.lp-ub{break-inside:avoid}}
 /* judul dua poin: hari tertutup + hari berjalan yang belum final */
 .lp-pt{display:block;position:relative;padding-left:16px}
 .lp-pt::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--brand)}
@@ -149,3 +154,8 @@
 /* kolom titik hari berjalan (belum final): oranye pucat seperti baris belum final */
 .lp-tb td.lp-smc{background:oklch(85% .1 75 / .22);font-style:italic}
 #insight .lp-tb thead th[data-sm]{background:#b8641f}
+/* Kenaikan terbesar: panel hari terpilih dan hari berjalan berdampingan */
+.lp-pns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.lp-pn-h{display:flex;align-items:center;gap:8px;margin:0 0 8px;font:800 13px var(--display);color:var(--ink)}
+.lp-pn .lp-gr svg{min-width:0;width:100%}
+@media (max-width:900px){.lp-pns{grid-template-columns:1fr}}
