@@ -8,6 +8,10 @@
   if (typeof Insight === "undefined" || !Array.isArray(Insight.EX)) return;
   const A = window.Aktor = {d: null, janji: null, poli: {}};
   A.muat = () => A.janji ||= muatJSON("data/aktor_karhutla.json").then(d => {
+    /* perusahaan yang tidak ada di peta konsesi disembunyikan; poligon senama di provinsi lain tetap tampil dengan provinsi poligon
+       peta (pemilik, 17 Okt 2026) */
+    d.perusahaan = d.perusahaan.filter(p => p.cek?.poligon);
+    d.perusahaan.forEach(p => { if (p.cek.lokasi === "beda" && p.cek.prov_peta) { p.prov = p.cek.prov_peta; p.cek.lokasi = "cocok"; } });
     A.d = d; A.per = Object.fromEntries(d.perusahaan.map(p => [p.nama, p]));
     for (const [id, nm] of Object.entries(d.poligon)) (A.poli[nm] ||= []).push(id);
     document.querySelectorAll('[data-ex^="aktor"]').forEach(b => { b.innerHTML = Insight.gambar(b.dataset.ex); });

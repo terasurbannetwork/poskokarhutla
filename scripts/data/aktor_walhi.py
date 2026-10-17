@@ -320,6 +320,10 @@ def cek_silang(P, fitur):
             p["cek"]["titik_viirs"] = per[k]
             # lokasi cocok bila separuh lebih titik di poligon jatuh di provinsi WALHI (PT Grace Putri Perdana: poligon peta di Kalteng, WALHI Kalbar)
             p["cek"]["lokasi"] = "cocok" if not kode[k] or not per[k] or di_prov[k] >= per[k] / 2 else "beda"
+            if p["cek"]["lokasi"] == "beda":  # layar menampilkan provinsi poligon peta (pemilik, 17 Okt 2026)
+                nama_kode = {v: n for n, v in KODE.items()}
+                pv = [fitur[i]["properties"].get("prov") for i in p["_poli"]]
+                p["cek"]["prov_peta"] = nama_kode.get(max(set(pv), key=pv.count), "")
     return True
 
 
@@ -412,7 +416,7 @@ def uji():
     assert q["PT Sepanjang Inti Surya Utama"]["titik_sep"] == 13 + 7 + 10, "blok lampiran tidak dijumlah"
     assert len(q["PT Kiani Lestari"]["tokoh"]) == 3
     assert q["PT Mayawana Persada"]["industri"] == "Hutan tanaman (pulp)" and q["PT Kayung Agro Lestari"]["industri"] == "Kelapa sawit"
-    assert q["PT Grace Putri Perdana"]["cek"].get("lokasi") == "beda" and q["PT Mayawana Persada"]["cek"].get("lokasi") == "cocok", "cek lokasi"
+    assert q["PT Grace Putri Perdana"]["cek"].get("lokasi") == "beda" and q["PT Grace Putri Perdana"]["cek"].get("prov_peta") == "Kalimantan Tengah" and q["PT Mayawana Persada"]["cek"].get("lokasi") == "cocok", "cek lokasi"
     print("ok", len(nama), "perusahaan;", sum(1 for p in d["perusahaan"] if p["cek"]["poligon"]), "cocok peta")
 
 
