@@ -261,6 +261,7 @@ def kompleks(kl):
     return r
 
 
+SIPONGI_MULAI = {"93": "2023", "94": "2023", "95": "2023", "96": "2023"}   # provinsi pemekaran: SiPongi mengisi 0,0 sebelum ada; Papua lama utuh di kode 91
 GABUNG = {"64": ["64", "65"], "91": ["91", "93", "94", "95"], "92": ["92", "96"]}   # GWIS: kunci "64", "91+93+94+95", "92+96"
 
 
@@ -303,24 +304,24 @@ def luas_banding(sejarah, sat, resmi, tb, hari_iso, prov, tahun):
     for p, arr in ((resmi or {}).get("ha") or {}).items():
         for i, y in enumerate(resmi["tahun"]):
             if y in ths:
-                sp_p.setdefault(p, {})[y] = arr[i]
+                sp_p.setdefault(p, {})[y] = None if y < SIPONGI_MULAI.get(p, "0") else arr[i]
     for y in ths:
         if resmi and y in resmi["tahun"]:
-            sp[y] = round(sum(v[y] for v in sp_p.values() if y in v))
+            sp[y] = round(sum(v[y] for v in sp_p.values() if v.get(y) is not None))
     isi = lambda d: {y: d.get(y) for y in ths}   # tahun tanpa data = None
     kodep = sorted(set(pk_p) | set(gw_p) | set(sp_p))
     return {
         "tahun": ths,
         "sumber": [
             {"kode": "perkiraan", "nama": "Perkiraan satelit (titik VIIRS S-NPP x 4,3 ha)",
-             "metode": "Titik VIIRS S-NPP keyakinan sedang/tinggi per tahun x 4,3 ha per titik (median ha resmi per titik 2015-2025). Tahun berjalan: sejarah.json + perkiraan harian laporan. Bukan pengukuran citra; kuartil 3,2-4,6 ha per titik.",
+             "metode": "Titik VIIRS S-NPP keyakinan sedang/tinggi per tahun x 4,3 ha per titik (median ha resmi per titik 2015-2025). Tahun berjalan: sejarah.json + perkiraan harian laporan. Bukan pengukuran citra; kuartil 3,2-4,6 ha per titik. 37 hari (11 Mar-2 Jun 2026) tanpa data S-NPP diisi NOAA-20 x 0,978. Faktor 4,3 ha dikalibrasi dari SiPongi 2015-2025, jadi perbandingan dengan SiPongi TIDAK independen; pembanding independen adalah GWIS.",
              "ha": isi(pk), "sd": sd_pk},
             {"kode": "gwis", "nama": "GWIS MODIS MCD64A1 (EU JRC)",
              "metode": "Luas bekas bakar dari citra MODIS MCD64A1 C6.1 (resolusi 500 m), GWIS Country Profile per provinsi (GADM 3.6). 2025 terisi s.d. November; Desember belum diproses GWIS. Tahun berjalan belum dirilis (None).",
              "catatan": "Kaltara (65) dihitung di Kaltim (64); Papua lama (91+93+94+95) dan Papua Barat lama (92+96) tak dipisah: nilai gabungan ada di kode pertama grup (64, 91, 92), anggota lain None. Lihat 'gabung'.",
              "ha": isi(gw), "sd": {y: v for y, v in sd_gw.items() if y in ths}},
             {"kode": "sipongi", "nama": "KLHK SiPongi (indikasi luas)",
-             "metode": "Indikasi luas kebakaran per provinsi dari titik panas + verifikasi KLHK (bukan citra). 2026 baru s.d. Juli.",
+             "metode": "Indikasi luas kebakaran per provinsi dari titik panas + verifikasi KLHK (bukan citra). 2026 baru s.d. Juli. Provinsi pemekaran Papua (93-96) None sebelum 2023 (SiPongi mengisi 0,0); Papua lama utuh di kode 91.",
              "ha": isi(sp), "sd": {y: v for y, v in ((resmi or {}).get("sampai") or {}).items() if y in ths}},
         ],
         "gabung": GABUNG,
@@ -508,8 +509,16 @@ def uji():
     for x in lb["sumber"]:   # 0 hanya bila sumbernya memang memuat tahun itu
         for y, v in x["ha"].items():
             assert v != 0 or (y in {"gwis": ["2025"], "sipongi": ["2025", "2026"], "perkiraan": ["2025", "2026"]}[x["kode"]]), f"{x['kode']} {y}: 0 untuk data hilang"
+    assert lb["prov"]["14"]["sipongi"]["2025"] == 80.0
+    res2 = {"tahun": ["2022", "2023"], "ha": {"93": [0.0, 150.0], "91": [0.0, 9.0], "96": [0.0, 5.0]}}
+    lb2 = luas_banding(sj2, None, res2, None, [], {}, "2026")
+    assert lb2["prov"]["93"]["sipongi"]["2022"] is None and lb2["prov"]["96"]["sipongi"]["2022"] is None, "pemekaran 2022 harus None, bukan 0,0"
+    assert lb2["prov"]["93"]["sipongi"]["2023"] == 150.0 and lb2["prov"]["91"]["sipongi"]["2022"] == 0.0   # 0 asli provinsi lama tetap 0
     r = baca("laporan.json")
-    if r and r.get("luas_banding"):   # berkas nyata: tahun di luar cakupan sumber tidak boleh 0
+    if r and r.get("luas_banding"):
+        for k in SIPONGI_MULAI:
+            for y, v in r["luas_banding"]["prov"].get(k, {}).get("sipongi", {}).items():
+                assert (v is None) == (y < SIPONGI_MULAI[k]), f"sipongi {k} {y}: {v}"   # berkas nyata: tahun di luar cakupan sumber tidak boleh 0
         rb = {x["kode"]: x for x in r["luas_banding"]["sumber"]}
         lsat, lres = baca("luas_satelit.json"), baca("luas_resmi.json")
         for y, v in rb["gwis"]["ha"].items():
