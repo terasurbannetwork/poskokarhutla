@@ -145,7 +145,7 @@ function kartuPeta() {
   const rowsDi = ix => Object.values(D.prov).map(o => ({nama: o.nama, t: o.titik[ix] || 0})).filter(r => r.t > 0).sort((a, c) => c.t - a.t);
   const j = poinBerjalan(teks(idx(), rowsDi(idx())), x => teks(x, rowsDi(x)));
   const ctl = b > 0 ? Kartu.seg("petaH", [["", tgl(st.hari)], ["b", tgl(D.hari[b]) + " (belum final)"]], {petaH: pakaiB ? "b" : ""}) : "";
-  if (!GEO) { muatGeo().then(() => isi("peta", kartuPeta())).catch(() => {}); return Kartu.kartu("Peta provinsi", j, '<div class="kosong">Memuat peta…</div>', "NASA FIRMS; batas wilayah BIG", ctl); }
+  if (!GEO) { muatGeo().then(() => { isi("peta", kartuPeta()); sampul(); }).catch(() => {}); return Kartu.kartu("Peta provinsi", j, '<div class="kosong">Memuat peta…</div>', "NASA FIRMS; batas wilayah BIG", ctl); }
   const mx = Math.max(1, top?.t || 1), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
   let s = Object.entries(GEO.d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? "pp-on" : "pp"}"/>`).join("");
   /* lingkaran kecil di atas yang besar supaya semuanya terlihat */
@@ -252,7 +252,7 @@ function kartuLuas() {
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
   const tb = D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2});
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
-    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (kuartil ${jt(tb.rendah)}–${jt(tb.tinggi)} juta)` : "");
+    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}) + tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1]], triwulan()), tt(D.sumber.luas), segRentang());
@@ -367,9 +367,16 @@ const isi = (k, h) => { $(`[data-ex="${k}"]`).innerHTML = h; };
 function renderProv() { const e = $("#lpProv"); if (e) { e.innerHTML = tabelProv(); tandai(e, st.p); pengurutKepala(st.p, e.querySelector("thead"), () => nanti(renderProv)); } }
 function renderKab() { const e = $("#lpKab"); if (e) { e.innerHTML = tabelKab(); tandai(e, st.k); pengurutKepala(st.k, e.querySelector("thead"), () => nanti(renderKab)); } }
 function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`); if (b) b.textContent = s.turun ? "↓" : "↑"; }
+/* sampul kertas cetak (gaya lembar Pangantara): kepala + angka pokok (sudah ada) + poin Ringkasan dan Luas + peta provinsi
+   dengan peringkat. Isinya disalin dari kartu yang sudah dirender, jadi angka dan teksnya selalu sama dengan halaman */
+function sampul() {
+  const q = s => document.querySelector(s), r = q('[data-ex="ring"] h3'), l = q('[data-ex="luas"] h3'), pt = q('[data-ex="peta"] .lp-pt-w');
+  $("#lpSampul").innerHTML = `<div class="lp-sp-ey">Situasi nasional</div><div class="lp-sp-p">${r ? r.innerHTML : ""}${l ? l.innerHTML : ""}</div>`
+    + (pt ? `<div class="lp-sp-ey">Sebaran titik panas per provinsi, ${tgl(st.hari)}</div>${pt.outerHTML}` : "");
+}
 function semua() {
   kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("peta", kartuPeta()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
-  renderProv(); renderKab();
+  renderProv(); renderKab(); sampul();
   document.querySelectorAll(".lp-gr,.lp-kep .seg").forEach(e => { e.scrollLeft = e.scrollWidth; });   /* hari terpilih ada di ujung kanan */
   $("#upd").textContent = "Data s.d. " + jamWIB(D.cutoff);
   /* angka pokok untuk kertas cetak (gaya lembar ekspor pangantara: kotak navy 4 lajur, label kecil di atas, nilai besar) */

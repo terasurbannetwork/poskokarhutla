@@ -60,7 +60,7 @@
 }
 /* @page (ukuran, margin, kepala/kaki kertas) ditulis laporan.js ke <style id="lpHalaman"> karena isinya ikut hari terpilih */
 /* kop resmi dan angka pokok: hanya di kertas cetak (layar tetap kartu Insight) */
-.lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth,.lp-prt{display:none}
+.lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth,.lp-prt,.lp-sampul{display:none}
 @media print{
   /* kop berlogo di tiap halaman digambar di kotak margin @page (laporan.js); kop di alur halaman tidak dipakai */
   .lp-kop,.lp-kop-garis{display:none!important}
@@ -94,6 +94,16 @@
   #insight .ex-jd h3 .lp-pt + .lp-pt{margin-top:1px}
   [data-ex="ring"],[data-ex="luas"],[data-ex="peta"]{break-before:page}
   [data-ex="sumber"] .ex{break-inside:avoid}
+  /* sampul (halaman 1): poin situasi + peta dengan peringkat; kartu peta tidak dicetak ulang di halaman lain */
+  .lp-sampul{display:block;break-inside:avoid;border:1px solid #c9d3e0;border-radius:10px;padding:10px 14px 12px}
+  .lp-sp-ey{font:800 9px var(--font);letter-spacing:.08em;text-transform:uppercase;color:#5b6b82;margin:2px 0 5px}
+  .lp-sp-p{font:700 14px/1.5 var(--display);color:#0b2545;margin-bottom:8px}
+  .lp-sp-p .lp-pt{white-space:nowrap;font-size:var(--fs,14px)}
+  .lp-sampul .lp-pt-w{grid-template-columns:minmax(0,1fr) 62mm;gap:10px}
+  .lp-sampul .lp-peta svg{max-height:96mm}
+  [data-ex="peta"]{display:none}
+  .lp-sp-p .hl{color:#c9503a}
+  .lp-sampul,.lp-rk .pr,.lp-rk li,.lp-sampul .pc,.lp-sampul .pp-on{print-color-adjust:exact;-webkit-print-color-adjust:exact}
   /* kaki kartu (Sumber) menempel ke isi di atasnya, kecil, tidak terbelah ke halaman berikutnya */
   #insight .ex-ft{break-inside:avoid;break-before:avoid;padding:3px 14px!important;font-size:7.5px;line-height:1.35;margin-top:0}
   .lp-cetak-n{margin:3px 0 0;font-size:8px;break-before:avoid}
