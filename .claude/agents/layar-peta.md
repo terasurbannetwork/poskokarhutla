@@ -52,6 +52,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/llms.txt`
 - `public/i18n/**`
 - `public/og/**`
+- `public/vendor/**`
 - `scripts/i18n/**`
 - `scripts/og/**`
 - `scripts/situs/**`
