@@ -195,15 +195,15 @@ function kartuProvGrafik() {
 }
 
 /* tabel harian di bawah grafik: hari terbaru di atas, hari terpilih ditandai; kol = [[judul, (i) => isi sel, angka?]] */
-/* baris riwayat per triwulan: judul bagian + satu baris per triwulan, terbaru di atas. Triwulan berjalan ikut tampil
-   ("Okt–Des s.d. 17 Okt") supaya baris-baris S-NPP ini persis berjumlah Grand total; perubahannya "–" karena belum genap.
+/* baris riwayat per triwulan: judul bagian + satu baris per triwulan yang sudah genap, terbaru di atas.
+   Triwulan berjalan tidak ditampilkan (pemilik, 17 Okt 2026): bulan berjalan sudah ada di baris harian di atasnya.
    sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
 function riwayatTw(sel) {
-  const tw = D.tahun_berjalan?.triwulan || []; if (!tw.length) return "";
-  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length, akhir = tw.length - 1;
+  const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
+  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
   return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></td></tr>`
-    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}${i === akhir ? ` s.d. ${tgl(D.tahun_berjalan.sd)}` : ""}</b></td>`
-      + sel(q, i === akhir ? null : tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
+    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
+      + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
 }
 /* kertas: grafik dipendekkan sesuai jumlah baris tabel supaya kartu (kepala + grafik + tabel + sumber) muat satu halaman
    A4 mendatar (isi 174 mm, baris ~4,1 mm, sisanya ~46 mm). ponytail: bulan > ~28 baris tetap meluber, grafik berhenti di 22 mm */
@@ -264,8 +264,7 @@ function kartuLuas() {
   /* kumulatif sejak 1 Januari = total tahun berjalan dikurangi luas hari-hari sesudahnya */
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(n.luas, i));
   const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
-    /* kumulatif triwulan berjalan = grand total persis (jumlah ha per triwulan yang sudah dibulatkan bisa meleset 1 ha) */
-    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(i === kum.length - 1 && tb ? tb.ha : kum[i])]); };
+    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i])]); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
   const tb = D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2});
