@@ -158,14 +158,14 @@ uji("GET/HEAD saja: POST 405; HEAD tanpa badan", async () => {
   assert.equal(h.status, 200); assert.equal(await h.text(), "");
 });
 
-uji("/api/status melaporkan cuaca_nowcast di `uji` dengan ambang 1 jam", async () => {
+uji("/api/status melaporkan cuaca_nowcast di `sumber` (cuaca aktif) dengan ambang 2 jam", async () => {
   const r = await api("/api/status");
-  assert.equal(r.j.uji.cuaca_nowcast.ambang_jam, 1); assert.ok(r.j.uji.cuaca_nowcast.dibuat);
+  assert.equal(r.j.sumber.cuaca_nowcast.ambang_jam, 2); assert.ok(r.j.sumber.cuaca_nowcast.dibuat); assert.ok(!("cuaca_nowcast" in r.j.uji));
 });
 
 uji("tabel hilang (migrasi 0014 belum jalan): GET 503 bukan 500, cron tidak melempar", async () => {
   await DB.batch([DB.prepare("DROP TABLE cuaca_nowcast"), DB.prepare("DROP TABLE cuaca_sumber")]);
   const r = await api("/api/cuaca/nowcast"); assert.equal(r.status, 503);
   await tik(T10 + 3600e3);
-  const s = await api("/api/status"); assert.equal(s.j.uji.cuaca_nowcast.dibuat, null);
+  const s = await api("/api/status"); assert.equal(s.j.sumber.cuaca_nowcast.dibuat, null); assert.ok(s.j.basi.includes("cuaca_nowcast"), "aktif + tabel hilang = basi");
 });
