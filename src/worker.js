@@ -436,8 +436,14 @@ async function layaniHTML(req, env, ctx, url) {
   catatHTML(env, req, jalur, ctx);
   /* pil header "N online · N tampilan": angka ditaruh di atribut <html>, digambar public/persetujuan.js (tanpa panggilan API tambahan) */
   let a = null; try { a = await Pub.angkaPil(env); } catch (e) {}
-  if (!a || (!a.online && !a.tampilan)) return aset;
-  return new HTMLRewriter().on("html", {element: el => { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }}).transform(aset);
+  if (a && !a.online && !a.tampilan) a = null;
+  /* situs per alamat: *.workers.dev = "w" (tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]); domain utama tanpa atribut */
+  const situsW = url.hostname.endsWith(".workers.dev");
+  if (!a && !situsW) return aset;
+  return new HTMLRewriter().on("html", {element: el => {
+    if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
+    if (situsW) el.setAttribute("data-situs", "w");
+  }}).transform(aset);
 }
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================

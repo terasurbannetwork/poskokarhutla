@@ -64,6 +64,7 @@
 .ps-fab svg{width:20px;height:20px}
 @media (max-width:640px){.ps-fab span{display:none}.ps-fab{width:48px;padding:0;justify-content:center}}
 body:has(#p-peta.on) .ps-fab{right:62px;bottom:44px} /* kiri tombol zoom peta (pemilik, 14 Okt 2026) */
+html[data-situs=w] .ps-fab{display:none} /* tidak tampil di *.workers.dev (pemilik, 17 Okt 2026) */
 .ps-kaki{display:flex;justify-content:center;flex-wrap:wrap;gap:8px;padding:18px 16px 28px}
 .ps-kaki button{font:600 14px Inter,sans-serif;display:inline-flex;gap:8px;align-items:center;border-radius:999px;padding:9px 18px;min-height:44px;cursor:pointer;border:1px solid currentColor;background:transparent;color:inherit;opacity:.85}
 .ps-kaki button:hover{opacity:1}
