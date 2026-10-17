@@ -91,7 +91,8 @@ uji("situs statis tetap dilayani lewat ASSETS", async () => {
 });
 
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
-  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8");
+  /* selain *.workers.dev, merek Centurisk97 di <title>/meta diganti Pantau Bencana oleh worker (layaniHTML, 17 Okt 2026) */
+  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8").replace(/Centurisk97/g, "Pantau Bencana");
   for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
     const r = await panggil("GET", j);
     assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
