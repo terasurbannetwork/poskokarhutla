@@ -4,9 +4,9 @@
 
    Lokasi "beneran dari situ": koordinat = GPS perangkat saat unggah (peramban, akurasi <= 1 km, dibaca <= 10 menit lalu),
    pengguna tidak bisa memilih titik. Bila foto masih membawa GPS/waktu EXIF, keduanya dicocokkan: > 5 km dari GPS perangkat
-   atau diambil > 48 jam lalu = ditolak. Sisanya (GPS palsu lewat aplikasi pengubah lokasi) disaring admin; lencana di antrean
-   admin menunjukkan apa yang terverifikasi. ponytail: GPS peramban bisa dipalsukan; atestasi perangkat (Play Integrity/App
-   Attest) butuh aplikasi asli, bukan web.
+   atau diambil > 48 jam lalu = ditolak. GPS palsu (aplikasi pengubah lokasi): src/gps.js menolak yang pasti janggal dan
+   menandai yang curiga (gps_curiga) untuk admin; lencana di antrean admin menunjukkan apa yang terverifikasi. ponytail: GPS
+   peramban tetap bisa dipalsukan; atestasi perangkat (Play Integrity/App Attest) butuh aplikasi asli, bukan web.
 
    Publik tidak pernah melihat email, hash IP, atau baris dummy (dummy hanya untuk admin bersesi lewat ?dummy=1),
    kecuali FOTO_DUMMY_PUBLIK = "1" menayangkannya sebagai contoh. */
@@ -14,6 +14,7 @@ import {json, gagal, acak, sha, ipHash, turnstileOK, adminOK, bersihTeks, bacaBo
 import {wilayah, cariWilayah} from "./titik.js";
 import REGISTRY from "./bencana.generated.js";
 import {hidup} from "./bencana.js";
+import {nilaiGps} from "./gps.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 export const BATAS_FOTO = {unggah: [[JAM, 5], [HARI, 20]], komentar: [[JAM, 10], [HARI, 50]], suka: [[JAM, 120]], aduan: [[JAM, 20]]};
@@ -22,14 +23,17 @@ export const KAT_BENCANA = Object.fromEntries(hidup(REGISTRY).map(b => [b.id, Ob
 export const KATEGORI = KAT_BENCANA.karhutla;
 const LAMA = new Set(Object.keys(KATEGORI));   // CHECK kategori di 0007 hanya menerima ini; kode lain disimpan di kategori_b
 /* Migrasi 0013 (kolom bencana, kategori_b) mungkin belum dijalankan di D1 jauh: tanpanya karhutla jalan seperti dulu, bencana lain kosong/503. Hanya "ada" yang di-cache. */
-let ADA = {ok: false, t: 0};
-async function bencanaAda(env, kini) {
-  if (ADA.ok) return true;
-  if (kini - ADA.t < 60e3 && ADA.t) return false;
-  ADA.t = kini;
-  try { await env.DB.prepare("SELECT bencana, kategori_b FROM foto LIMIT 0").first(); ADA.ok = true; } catch (e) {}
-  return ADA.ok;
+/* Migrasi 0015 (gps_curiga) sama: tanpanya unggah tetap jalan, tanda curiga tidak tersimpan. */
+const ADA = {};
+async function kolomAda(env, kolom, kini) {
+  const a = ADA[kolom] ||= {ok: false, t: 0};
+  if (a.ok) return true;
+  if (kini - a.t < 60e3 && a.t) return false;
+  a.t = kini;
+  try { await env.DB.prepare(`SELECT ${kolom} FROM foto LIMIT 0`).first(); a.ok = true; } catch (e) {}
+  return a.ok;
 }
+const bencanaAda = (env, kini) => kolomAda(env, "bencana, kategori_b", kini);
 const kolomPublik = ada => ada ? KOLOM_PUBLIK.replace(" kategori,", " coalesce(nullif(kategori_b, ''), kategori) kategori, bencana,") : KOLOM_PUBLIK;
 const namaKat = (b, k) => KAT_BENCANA[b || "karhutla"]?.[k] || k;
 const ALASAN = ["tidak_relevan", "palsu", "kasar", "pribadi", "lainnya"];
@@ -189,16 +193,20 @@ async function unggah(env, req, url, kini) {
   const email = String(v("email") || "").trim();
   if (email && (email.length > 254 || !RE_EMAIL.test(email))) return gagal(400, "alamat email tidak sah");
   if (!(await turnstileOK(env, v("turnstile"), req))) return gagal(403, "verifikasi Turnstile gagal");
-  const ip = await ipHash(env, req), l = await laju(env, ip, "unggah", kini); if (l) return l;
+  const ip = await ipHash(env, req), l = await laju(env, ip, "unggah", kini); if (l) return l;   // sebelum cek GPS: penolakan ikut terhitung, probe dibatasi
+  const sebelum = await env.DB.prepare("SELECT lat, lon, dibuat FROM foto WHERE ip_hash = ? AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1").bind(ip, kini - HARI).first();
+  const gps = nilaiGps({negara: req.cf?.country, lat, lon, waktuGps, sampel: v("sampel"), sebelum, kini});
+  if (gps.tolak) return gagal(400, gps.tolak);
+  const curiga = (await kolomAda(env, "gps_curiga", kini)) ? gps.curiga.join(" · ").slice(0, 600) : null;
 
   const id = acak(8);
   await env.MEDIA.put(`foto/${id}`, b, {httpMetadata: {contentType: mime}});
   await env.MEDIA.put(`foto/${id}_t`, tb, {httpMetadata: {contentType: mimeT}});
   try {
     await env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat,
-      exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash${ada ? ", bencana, kategori_b" : ""}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?${ada ? ", ?, ?" : ""})`)
+      exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash${ada ? ", bencana, kategori_b" : ""}${curiga != null ? ", gps_curiga" : ""}) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?${ada ? ", ?, ?" : ""}${curiga != null ? ", ?" : ""})`)
       .bind(id, jenis, LAMA.has(kategori) ? kategori : "lainnya", Math.round(lat * 1e5) / 1e5, Math.round(lon * 1e5) / 1e5, Math.round(akurasi), prov, kab, kec, ket.teks, nm.teks, tampil, email,
-        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, b.length, durasi, mime, ip, ...(ada ? [ben, ben === "karhutla" ? "" : kategori] : [])).run();
+        diambil, kini, exifWaktu, exifJarak, v("kamera") === "1" ? 1 : 0, b.length, durasi, mime, ip, ...(ada ? [ben, ben === "karhutla" ? "" : kategori] : []), ...(curiga != null ? [curiga] : [])).run();
   } catch (e) { await env.MEDIA.delete([`foto/${id}`, `foto/${id}_t`]); throw e; }   // baris gagal = berkas jangan yatim
   return json({id, status: "menunggu", wilayah: {prov, kab, kec}}, 201);
 }

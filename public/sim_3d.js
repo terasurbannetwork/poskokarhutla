@@ -11,7 +11,7 @@ const JAM = [0, 6, 12, 24, 36, 48, 60, 72];
    Cuaca per jam tetap dari Open-Meteo; ini hanya FFMC awal, BUI, DC, dan cadangan bila prakiraan gagal. */
 const CAD = {prov: "", ffmc: 85, bui: 40, dc: 300, isi: 5, ws: 10, wd: 90, rh: 60, t: 30};
 const TG = {on: false, f: null, dataMati: false, dataAsal: true};
-const T3 = {d3: false, citra: true}; /* 3D = citra satelit + medan seperti FireTrace; checkbox Citra mematikannya */
+const T3 = {d3: false, citra: true, adegan: true}; /* 3D = citra satelit + medan seperti FireTrace; checkbox Citra mematikannya */
 const D = {H: null, t: 72, buka: null, cv: null, img: null, jalur: new WeakMap(), jh: new WeakMap(), tab: new WeakMap(), prof: new WeakMap(), mk: [], pts: null,
   hasilObj: null, keluar: false, user2d: false, zb: null, aw: -1, ev: [], mulai: null, rafF: 0, rt: 0, kam: 0};
 const F = {on: false, tabs: new Map(), aktif: "insiden", terbuka: null, el: {}};
@@ -133,6 +133,16 @@ function mode(d3, citra) {
     if (T3.d3) { m.dragRotate.enable(); m.touchZoomRotate.enableRotation(); m.easeTo({pitch: 60, duration: 700}); }
     else { m.dragRotate.disable(); m.touchZoomRotate.disableRotation(); m.easeTo({pitch: 0, bearing: 0, duration: 500}); }
   });
+  segarAdegan();
+}
+/* Adegan (sim_adegan.js, three.js) = kanvas di atas peta untuk 3D mode forensik; default bila WebGL2 ada. Peta MapLibre tetap hidup di bawahnya. */
+function segarAdegan() {
+  const A = SimFT.adegan, vw = document.querySelector(".s3-vw"), mau = !!(A?.tersedia && F.on && T3.d3 && T3.adegan && D.H);
+  if (vw) vw.hidden = !T3.d3 || !A?.tersedia;
+  if (mau && !A.buka(ctx())) { T3.adegan = false; return segarAdegan(); }
+  if (!mau) A?.jeda?.();
+  hal.classList.toggle("s3-ad", mau);
+  document.querySelectorAll(".s3-vw [data-v]").forEach(b => b.setAttribute("aria-pressed", (b.dataset.v === "adegan") === !!T3.adegan));
 }
 /* keburaman & visibilitas lapis di panel kanan -> properti MapLibre. Murah; dipanggil dari rAF */
 function terapkan() {
@@ -415,7 +425,7 @@ function pilihTab(id) {
   const lama = F.tabs.get(F.terbuka); if (lama) aman(() => lama.tutup?.(ctx()));
   F.el.kanan.replaceChildren(); F.el.bawah.replaceChildren();
   F.aktif = SimFT.aktif = id; F.terbuka = id;
-  aman(() => t.buka?.(ctx())); aman(() => t.waktu?.(+$("#simT").value, ctx())); segarkanTabs();
+  aman(() => t.buka?.(ctx())); aman(() => t.waktu?.(+$("#simT").value, ctx())); segarkanTabs(); aman(() => SimFT.adegan?.segar?.());
 }
 function masukF(baru) {
   if (F.on || !D.H || !Sim.peta) return;
@@ -424,26 +434,27 @@ function masukF(baru) {
   segarkanBar();
   for (const t of F.tabs.values()) aman(() => t.hasilBaru?.(ctx()));
   pilihTab(F.tabs.has(F.aktif) ? F.aktif : "insiden");
-  requestAnimationFrame(() => { const m = Sim.peta; if (!m || !F.on) return; m.resize(); pasangFT(); terapkan(); petaF(D.t); if (baru) kamera(); });
+  requestAnimationFrame(() => { const m = Sim.peta; if (!m || !F.on) return; m.resize(); pasangFT(); terapkan(); petaF(D.t); if (baru) kamera(); segarAdegan(); });
 }
 function keluarF() {
   const t = F.tabs.get(F.terbuka); if (t) aman(() => t.tutup?.(ctx()));
   F.on = false; F.terbuka = null; F.el.kanan.replaceChildren(); F.el.bawah.replaceChildren();
-  hal.classList.remove("s3f", "s3-pa", "s3-kn"); hal.append(wk);
+  hal.classList.remove("s3f", "s3-pa", "s3-kn", "s3-ad"); hal.append(wk); SimFT.adegan?.tutup();
   const m = Sim.peta; if (m) { for (const l of ["s3-puncak", "s3-angin", "s3-angin-bg"]) if (m.getLayer(l)) m.removeLayer(l); if (m.getSource("s3-angin")) m.removeSource("s3-angin"); requestAnimationFrame(() => m.resize()); }
 }
 const aturPa = on => { hal.classList.toggle("s3-pa", on); $("#s3Gear").setAttribute("aria-pressed", on); };
 function hasilBaruF(objBaru) {
   if (!F.on) { if (!D.keluar) masukF(objBaru); return; }
   for (const t of F.tabs.values()) aman(() => t.hasilBaru?.(ctx()));
-  segarkanBar(); segarkanTabs(); if (objBaru) requestAnimationFrame(kamera);
+  segarkanBar(); segarkanTabs(); if (objBaru) requestAnimationFrame(kamera); segarAdegan();
 }
 /* peta khusus forensik: kompas, skala metrik, 2D|3D + pembesaran, layar penuh, label puncak, lapis angin */
 class KontrolFT {
   onAdd(m) { this.m = m; const c = this._c = document.createElement("div"); c.className = "maplibregl-ctrl s3-grp";
     c.innerHTML = `<div class="s3-m s3-seg" role="group" aria-label="Tampilan peta"><button type="button" data-m="2d" aria-pressed="${!T3.d3}">2D</button><button type="button" data-m="3d" aria-pressed="${T3.d3}">3D</button></div>
+      <div class="s3-m s3-seg s3-vw" role="group" aria-label="Jenis tampilan 3D" hidden><button type="button" data-v="peta" aria-pressed="false">Peta</button><button type="button" data-v="adegan" aria-pressed="true">Adegan</button></div>
       <select class="s3-zm" aria-label="Pembesaran peta"><option value="">1×</option>${[1, 2, 4, 8].map(v => `<option value="${v}">${v}×</option>`).join("")}</select>`;
-    c.addEventListener("click", e => { const b = e.target.closest("[data-m]"); if (b) mode(b.dataset.m === "3d", null); });
+    c.addEventListener("click", e => { const v = e.target.closest("[data-v]"); if (v) { T3.adegan = v.dataset.v === "adegan"; return segarAdegan(); } const b = e.target.closest("[data-m]"); if (b) mode(b.dataset.m === "3d", null); });
     c.querySelector("select").addEventListener("change", e => { if (e.target.value) m.easeTo({zoom: (D.zb ?? m.getZoom()) + Math.log2(+e.target.value), duration: 600}); e.target.selectedIndex = 0; });
     const lbl = () => { c.querySelector("option").textContent = fmt(Math.round(2 ** (m.getZoom() - (D.zb ?? m.getZoom())) * 10) / 10) + "×"; };
     m.on("zoom", lbl); lbl(); return c; }
@@ -582,6 +593,10 @@ const SimFT = window.SimFT = {
   aktif: "insiden",
   daftar(tab) { if (!tab?.id) return; F.tabs.set(tab.id, tab); if (F.on) { segarkanTabs(); if (D.H) aman(() => tab.hasilBaru?.(ctx())); } },
   ctx, buka: pilihTab,
+  /* kait untuk sim_adegan.js */
+  ubin: ubinTerrarium, elevasi, jalur: H => jalurH(Sim, H), ex: () => T3.ex, segarAdegan,
+  lahan: () => ({kons: Lapis.cache.konsesi?.features || [], kaw: Lapis.cache.kawasan?.features || [], raster: (f, p) => Sim.raster(Sim.K, f, p), peta: Sim.peta}),
+  adeganGagal(pesan) { T3.adegan = false; SimFT.adegan?.tutup(); segarAdegan(); toast(pesan); },
 };
 SimFT.daftar(insiden);
 
@@ -591,7 +606,7 @@ Sim.waktu = function (t, ...a) {
   D.t = t;
   if (D.H !== H || D.mulai !== this.cuaca.mulai) { const baru = D.hasilObj !== this.hasil; D.hasilObj = this.hasil; bangun(this, H); hasilBaruF(baru); }
   kursor(t); redupJalur(this, t);
-  if (!D.rafF) D.rafF = requestAnimationFrame(() => { D.rafF = 0; const tt = +$("#simT").value; D.t = tt; petaF(tt); if (F.on) { const tab = F.tabs.get(F.terbuka); if (tab) aman(() => tab.waktu?.(tt, ctx())); } });
+  if (!D.rafF) D.rafF = requestAnimationFrame(() => { D.rafF = 0; const tt = +$("#simT").value; D.t = tt; petaF(tt); aman(() => SimFT.adegan?.waktu?.(tt)); if (F.on) { const tab = F.tabs.get(F.terbuka); if (tab) aman(() => tab.waktu?.(tt, ctx())); } });
   return r;
 };
 

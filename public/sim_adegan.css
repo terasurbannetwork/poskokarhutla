@@ -1,0 +1,20 @@
+/* sim_adegan.css — kanvas three.js "Adegan" di atas peta (mode forensik). Label kotak gelap sengaja mengikuti frame referensi. */
+.s3-vw[hidden]{display:none}
+.sa{position:absolute;inset:0;z-index:1;overflow:hidden;touch-action:none;background:linear-gradient(#9fb8d0,#d4d2c6)}
+.sa canvas{position:absolute;inset:0;width:100%;height:100%;display:block;outline:0;cursor:grab}
+.sa canvas:active{cursor:grabbing}
+.sa-lbl{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sa-lb{position:absolute;left:0;top:0;display:flex;align-items:center;gap:6px;will-change:transform;white-space:nowrap;font-size:11.5px;line-height:1.25;color:#fff}
+.sa-lb i{flex:none;width:11px;height:11px;margin-left:-5px;border-radius:50%;background:#ffd24a;border:2px solid #1d1d1d;box-shadow:0 0 0 2px rgba(255,210,74,.35)}
+.sa-lb span{display:flex;flex-direction:column;padding:3px 8px;border-radius:7px;background:rgba(29,29,29,.82);font-weight:600}
+.sa-lb b{font-weight:800;font-size:12px}
+.sa-lb:first-child i{background:#e0402a;box-shadow:0 0 0 3px rgba(224,64,42,.4)}
+.sa-fut span,.sa-fut i{opacity:.5}
+.sa-lb .sa-pk{flex-direction:row;background:transparent;padding:0;font-weight:700;text-shadow:0 1px 2px rgba(0,0,0,.85)}
+.sa-msg{position:absolute;left:12px;bottom:26px;pointer-events:none}
+.sa-attr{position:absolute;left:10px;bottom:4px;font-size:10px;color:rgba(255,255,255,.92);text-shadow:0 1px 2px rgba(0,0,0,.7);pointer-events:none}
+.sa-kmp{position:absolute;top:10px;left:10px;width:38px;height:38px;pointer-events:none;will-change:transform}
+.sa-kmp b{position:absolute;left:0;right:0;top:-12px;text-align:center;font-size:10px;color:#fff;text-shadow:0 1px 2px rgba(0,0,0,.8)}
+#p-sim.s3-ad .maplibregl-ctrl-top-left,#p-sim.s3-ad .maplibregl-ctrl-scale,#p-sim.s3-ad .s3-zm{display:none}
+@media (max-width:900px){.sa-lb{font-size:10.5px}.sa-attr{max-width:70%}}
+@media (prefers-reduced-motion:reduce){.sa-kmp{transition:none}}

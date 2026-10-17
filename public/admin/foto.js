@@ -16,6 +16,7 @@
       [f.kamera ? "Dari kamera" : "Dari galeri", f.kamera ? "baik" : "sedang"],
       [f.exif_waktu ? "Waktu EXIF cocok" : "Tanpa waktu EXIF", f.exif_waktu ? "baik" : "sedang"],
       [f.exif_jarak == null ? "Tanpa GPS EXIF" : `GPS EXIF ${f.exif_jarak} m dari perangkat`, f.exif_jarak == null ? "sedang" : "baik"]];
+    for (const c of (f.gps_curiga || "").split(" · ").filter(Boolean)) L.push([`Curiga GPS palsu: ${c}`, "buruk"]);
     if (f.aduan) L.push([`${f.aduan} aduan`, "buruk"]);
     if (f.dummy) L.push(["DUMMY", "dummy"]);
     return L.map(([t, k]) => `<span class="af-l ${k}">${esc(t)}</span>`).join("");

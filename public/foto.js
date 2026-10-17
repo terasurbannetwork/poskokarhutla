@@ -275,13 +275,19 @@
       v.onseeked = () => { ok({bingkai: v, durasi: v.duration, lepas: () => URL.revokeObjectURL(u)}); };
       v.onerror = () => { URL.revokeObjectURL(u); no(new Error("Video tidak bisa dibaca peramban ini")); }; });
   }
-  function ambilGPS() {
-    return new Promise((ok, no) => {
-      if (!navigator.geolocation) return no(new Error("Peramban ini tidak bisa membaca lokasi"));
-      navigator.geolocation.getCurrentPosition(p => ok({lat: p.coords.latitude, lon: p.coords.longitude, akurasi: p.coords.accuracy, waktu: Date.now()}),
-        e => no(new Error(e.code === 1 ? "Izin lokasi ditolak. Foto lapangan hanya bisa dikirim dari lokasimu, jadi izinkan akses lokasi lalu coba lagi." : "Lokasi belum terbaca. Coba di tempat terbuka.")),
-        {enableHighAccuracy: true, timeout: 20000, maximumAge: 0});
-    });
+  /* tiga bacaan GPS segar berurutan: server memeriksa getarannya (GPS asli bergeser sedikit, aplikasi lokasi palsu sering diam sempurna) */
+  const bacaGPS = () => new Promise((ok, no) => navigator.geolocation.getCurrentPosition(ok,
+    e => no(new Error(e.code === 1 ? "Izin lokasi ditolak. Foto lapangan hanya bisa dikirim dari lokasimu, jadi izinkan akses lokasi lalu coba lagi." : "Lokasi belum terbaca. Coba di tempat terbuka.")),
+    {enableHighAccuracy: true, timeout: 20000, maximumAge: 0}));
+  async function ambilGPS() {
+    if (!navigator.geolocation) throw new Error("Peramban ini tidak bisa membaca lokasi");
+    const s = [];
+    for (let i = 0; i < 3; i++) {
+      if (i) await new Promise(r => setTimeout(r, 1000));
+      const p = await bacaGPS(); s.push([p.coords.latitude, p.coords.longitude, p.coords.accuracy, Date.now()]);
+    }
+    const [lat, lon, akurasi, waktu] = s[2];
+    return {lat, lon, akurasi, waktu, sampel: s};
   }
 
   const Kirim = {
@@ -430,7 +436,7 @@
         const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
         set("bencana", BEN); set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
         set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", y.kamera ? "1" : "0");
-        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu);
+        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu); set("sampel", JSON.stringify(this.loc.sampel));
         if (y.exif?.waktu) set("exif_waktu", y.exif.waktu);
         if (y.exif?.lat != null) { set("exif_lat", y.exif.lat); set("exif_lon", y.exif.lon); }
         if (y.durasi) set("durasi", y.durasi);

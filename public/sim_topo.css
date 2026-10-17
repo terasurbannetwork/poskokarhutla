@@ -1,0 +1,12 @@
+/* sim_topo.css — kisi lintang/bujur di atas peta topo mode forensik (sim_topo.js) */
+.topo-kisi{position:absolute;inset:0;width:100%;height:100%;pointer-events:none;z-index:1;overflow:hidden}
+.topo-kisi .tk-g line{stroke:rgb(120 108 84 / .24);stroke-width:1;shape-rendering:crispEdges}
+.topo-kisi .tk-l rect{fill:rgb(66 62 54 / .86)}
+.topo-kisi .tk-l text{fill:#fff;font:600 10px/1 var(--font,system-ui,sans-serif);font-variant-numeric:tabular-nums}
+:root[data-theme="dark"] .topo-kisi .tk-g line{stroke:rgb(220 210 190 / .16)}
+:root[data-theme="dark"] .topo-kisi .tk-l rect{fill:rgb(40 38 34 / .9)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .topo-kisi .tk-g line{stroke:rgb(220 210 190 / .16)}:root:not([data-theme="light"]) .topo-kisi .tk-l rect{fill:rgb(40 38 34 / .9)}}
+/* legenda ringkas kondisi lahan, pojok kiri bawah peta topo */
+.topo-leg{position:absolute;left:8px;bottom:26px;z-index:2;display:flex;flex-wrap:wrap;gap:4px;max-width:min(420px,70%);pointer-events:none}
+.topo-leg span{display:inline-flex;align-items:center;gap:5px;padding:2px 8px 2px 3px;border-radius:999px;background:rgb(246 241 228 / .92);color:#5b5546;font:600 10px/1.4 var(--font,system-ui,sans-serif);box-shadow:0 1px 3px rgb(0 0 0 / .12)}
+.topo-leg i{width:14px;height:14px;border-radius:50%;border:1px solid rgb(90 80 60 / .35);background-size:auto;background-position:center}

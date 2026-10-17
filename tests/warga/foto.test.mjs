@@ -39,13 +39,15 @@ function mp4(detik) {   // ftyp + mvhd versi 0, skala 1000
 let n = 0; const ipBaru = () => `10.7.${Math.floor(++n / 250)}.${n % 250}`;
 const kini = () => Date.now();
 /* lokasi sah: Palangka Raya (darat, Kalteng) */
-const SAH = () => ({kategori: "api", lat: "-2.2100", lon: "113.9200", akurasi: "15", waktu_gps: String(kini()), setuju: "1", keterangan: "Api di belakang kebun"});
-async function unggah(isian = {}, berkas = {}, ip = ipBaru()) {
+/* tiga bacaan GPS bergetar sedikit, yang terakhir = titik kiriman (seperti GPS asli) */
+const sampel = (lat = -2.21, lon = 113.92, t = kini()) => JSON.stringify([[lat + 2e-5, lon - 1e-5, 18, t - 2000], [lat - 1e-5, lon + 2e-5, 16, t - 1000], [lat, lon, 15, t]]);
+const SAH = () => ({kategori: "api", lat: "-2.2100", lon: "113.9200", akurasi: "15", waktu_gps: String(kini()), setuju: "1", keterangan: "Api di belakang kebun", sampel: sampel()});
+async function unggah(isian = {}, berkas = {}, ip = ipBaru(), cf = {country: "ID"}) {
   const f = new FormData();
   for (const [k, v] of Object.entries({...SAH(), ...isian})) if (v != null) f.append(k, v);
   if (berkas.media !== null) f.append("media", new File([berkas.media || JPEG], "a.bin"));
   if (berkas.thumb !== null) f.append("thumb", new File([berkas.thumb || WEBP], "t.bin"));
-  const r = await mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ip}});
+  const r = await mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ip}, cf});
   return {s: r.status, j: await r.json()};
 }
 const panggil = async (metode, jalur, body, ip = "10.8.8.8", h = {}) => {
@@ -102,6 +104,32 @@ uji("foto: video 45 detik sah (durasi dari mvhd), GPS EXIF dekat dicatat jarakny
   const y = await DB.prepare("SELECT exif_jarak, exif_waktu, dibuat - diambil umur FROM foto WHERE id = ?").bind(e.j.id).first();
   assert.ok(y.exif_jarak > 100 && y.exif_jarak < 200, `jarak EXIF ${y.exif_jarak} m`);
   assert.equal(y.exif_waktu, 1); assert.ok(Math.abs(y.umur - 2 * JAM) < 60e3, "waktu diambil dari EXIF");
+});
+
+uji("foto: anti GPS palsu — tolak yang pasti janggal, tandai yang curiga untuk admin", async () => {
+  const t = kini(), diam = JSON.stringify([[-2.21, 113.92, 5, t - 2000], [-2.21, 113.92, 5, t - 1000], [-2.21, 113.92, 5, t]]);
+  for (const [isian, cf, pesan] of [
+    [{sampel: null}, {country: "ID"}, "tidak bisa diverifikasi"],
+    [{sampel: "bukan json"}, {country: "ID"}, "tidak bisa diverifikasi"],
+    [{sampel: sampel(-2.3, 113.92)}, {country: "ID"}, "tidak bisa diverifikasi"],
+    [{sampel: JSON.stringify([[-2.21, 113.92, 15, t], [-2.21, 113.92, 15, t - 9e3], [-2.21, 113.92, 15, t]])}, {country: "ID"}, "tidak bisa diverifikasi"],
+    [{sampel: sampel(-2.21, 113.92, t - 5000)}, {country: "ID"}, "tidak bisa diverifikasi"],   // waktu sampel tak cocok waktu_gps
+    [{sampel: "[" + "1,".repeat(600) + "1]"}, {country: "ID"}, "tidak bisa diverifikasi"],
+    [{}, {country: "SG"}, "luar Indonesia"]]) {
+    const r = await unggah(isian, {}, ipBaru(), cf);
+    assert.equal(r.s, 400, `${pesan}: ${JSON.stringify(r.j)}`); assert.match(r.j.galat, new RegExp(pesan));
+  }
+  const curiga = async id => (await DB.prepare("SELECT gps_curiga c FROM foto WHERE id = ?").bind(id).first()).c;
+  const asli = await unggah(); assert.equal(asli.s, 201); assert.equal(await curiga(asli.j.id), "", "GPS bergetar wajar = tanpa tanda");
+  const d = await unggah({sampel: diam, akurasi: "5"}); assert.equal(d.s, 201, "diam sempurna tetap masuk antrean (bisa lokasi Wi-Fi)");
+  assert.match(await curiga(d.j.id), /tidak bergeser/);
+  const ip = ipBaru(); assert.equal((await unggah({}, {}, ip)).s, 201);
+  const loncat = await unggah({lat: "-6.2000", lon: "106.8200", sampel: sampel(-6.2, 106.82)}, {}, ip);   // Palangka Raya -> Jakarta dalam detik
+  assert.equal(loncat.s, 201); assert.match(await curiga(loncat.j.id), /pindah .* km/);
+  const a = await panggil("GET", "/api/foto/admin?status=menunggu", null, "10.8.8.8", ADMIN);
+  assert.ok(a.j.foto.find(f => f.id === d.j.id).gps_curiga, "admin melihat tanda curiga");
+  const p = await panggil("GET", "/api/foto/" + d.j.id, null, "10.8.8.8", ADMIN);
+  assert.equal(JSON.stringify(p.j).includes("gps_curiga"), false, "tanda curiga tidak ikut kolom publik");
 });
 
 uji("foto: batas laju 5 unggahan per jam per IP", async () => {
