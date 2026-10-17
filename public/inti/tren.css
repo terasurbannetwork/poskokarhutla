@@ -5,7 +5,7 @@
 .dlg ul.aksi .tg{flex:none;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.04em;padding:2px 6px;border-radius:6px;background:var(--surface);color:var(--ink2)}
 #tren select.btn{max-width:100%}
 .kal .nm{position:sticky;left:0;background:var(--card);z-index:1}
-@media (max-width:600px){.kal{grid-template-columns:110px repeat(36,minmax(12px,1fr)) 150px;min-width:640px}}
+@media (max-width:600px){.kal{grid-template-columns:110px repeat(36,minmax(22px,1fr)) 150px;min-width:1060px}}
 @media (max-width:899px){.dlg .grid.g4,#tren .grid.g4{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .dlg table.skor td:nth-child(2){white-space:normal}
 .dlg .tb3 td:first-child{white-space:normal}

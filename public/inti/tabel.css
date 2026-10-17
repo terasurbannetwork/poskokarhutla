@@ -85,11 +85,11 @@ table.tb3 tr:last-child td{border-bottom:0}
 .dlg .baris{display:grid;grid-template-columns:110px 1fr 54px;gap:10px;align-items:center;font-size:13px}
 .dlg .baris i{display:block;height:8px;border-radius:4px;background:var(--surface);overflow:hidden}
 .dlg .baris i b{display:block;height:100%;background:linear-gradient(90deg,#e58a45,#c9503a)}
-.kal{display:grid;grid-template-columns:150px repeat(36,minmax(14px,1fr)) 160px;min-width:900px;font-size:12px}
+.kal{display:grid;grid-template-columns:150px repeat(36,minmax(22px,1fr)) 160px;min-width:1100px;font-size:12px}
 .kal>div{padding:0;height:26px;display:flex;align-items:center}
 .kal .bl{grid-column:span 3;justify-content:center;font-size:10.5px;font-weight:800;color:var(--ink2);text-transform:uppercase;letter-spacing:.05em;height:22px}
 .kal .nm{padding:0 10px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;cursor:pointer}
 .kal .nm[aria-current="true"]{color:var(--brand)}
-.kal .c{margin:1px;border-radius:3px;height:24px}
+.kal .c{margin:1px;border-radius:3px;height:24px;justify-content:center;font:700 9px var(--font);color:#fff;font-variant-numeric:tabular-nums;letter-spacing:-.02em}
 .kal .c.kini{outline:2px solid var(--ink);outline-offset:-1px}
 .kal .sg{padding:0 10px;color:var(--ink2);white-space:nowrap}
