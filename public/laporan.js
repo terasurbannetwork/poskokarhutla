@@ -108,6 +108,46 @@ function batangProv(rows, W = 1300, mxG = 0) {
     const [b] = Kartu.pil(x, y + 4, fmt(r.l) + " ha", "var(--surface)", "currentColor", 11); o += b;
     return o + "</g>"; }).join("")}</svg></div>`;
 }
+/* ---------- peta sebaran per provinsi: lingkaran sebanding jumlah titik panas, label untuk provinsi terbanyak ---------- */
+let GEO = null;   /* {d: {kode: path}, c: {kode: [x, y]}} sekali proyeksi; geo/provinsi.json dimuat malas */
+const PW = 1000, PH = 400, PS = PW / 46, pj = ([lo, la]) => [(lo - 95) * PS, (6.5 - la) * PS];
+async function muatGeo() {
+  if (GEO) return;
+  const g = await fetch("/geo/provinsi.json").then(r => r.json()), d = {}, c = {};
+  for (const f of g.features) {
+    const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
+    let s = "", best = 0;
+    for (const p of polys) {
+      const pts = p[0].map(pj); let a = 0, cx = 0, cy = 0, lx = -9, ly = -9, seg = "";
+      pts.forEach(([x, y], i) => { const j = pts[(i + 1) % pts.length], k = x * j[1] - j[0] * y; a += k; cx += (x + j[0]) * k; cy += (y + j[1]) * k;
+        if (Math.abs(x - lx) + Math.abs(y - ly) > .8) { seg += (seg ? "L" : "M") + x.toFixed(1) + " " + y.toFixed(1); lx = x; ly = y; } });
+      if (Math.abs(a) > 4) s += seg + "Z";
+      if (Math.abs(a) > best) { best = Math.abs(a); c[f.properties.kode] = [cx / (3 * a), cy / (3 * a)]; }
+    }
+    d[f.properties.kode] = s;
+  }
+  GEO = {d, c};
+}
+function kartuPeta() {
+  const b = iB(), pakaiB = st.petaH === "b" && b > 0, i = pakaiB ? b : idx(), h = D.hari[i];
+  const rows = Object.entries(D.prov).map(([k, o]) => ({k, nama: o.nama, t: o.titik[i] || 0, tp: i > 0 ? o.titik[i - 1] : null})).filter(r => r.t > 0).sort((a, c) => c.t - a.t);
+  const tot = rows.reduce((a, r) => a + r.t, 0), top = rows[0];
+  const teks = (ix, rs) => rs.length ? `${Kartu.hl(fmt(rs.length))} provinsi mencatat titik panas, terbanyak ${Kartu.hl(esc(rs[0].nama))} (${Kartu.hl(fmt(rs[0].t))} titik)` : "Tidak ada titik panas tercatat";
+  const rowsDi = ix => Object.values(D.prov).map(o => ({nama: o.nama, t: o.titik[ix] || 0})).filter(r => r.t > 0).sort((a, c) => c.t - a.t);
+  const j = poinBerjalan(teks(idx(), rowsDi(idx())), x => teks(x, rowsDi(x)));
+  const ctl = b > 0 ? Kartu.seg("petaH", [["", tgl(st.hari)], ["b", tgl(D.hari[b]) + " (belum final)"]], {petaH: pakaiB ? "b" : ""}) : "";
+  if (!GEO) { muatGeo().then(() => isi("peta", kartuPeta())).catch(() => {}); return Kartu.kartu("Peta provinsi", j, '<div class="kosong">Memuat peta…</div>', "NASA FIRMS; batas wilayah BIG", ctl); }
+  const mx = Math.max(1, top?.t || 1), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
+  let s = Object.entries(GEO.d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? "pp-on" : "pp"}"/>`).join("");
+  /* lingkaran kecil di atas yang besar supaya semuanya terlihat */
+  const bul = rows.filter(r => GEO.c[r.k]).map(r => ({...r, x: GEO.c[r.k][0], y: GEO.c[r.k][1], r: rad(r.t)}));
+  s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc${pakaiB ? " sm" : ""}" data-tip="${esc(`<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / tot * 100))}%`)}"/>`).join("");
+  /* angka di dalam lingkaran yang cukup besar; nama dan peringkat di daftar samping (callout di peta padat saling tabrak) */
+  s += bul.filter(r => r.r >= 15).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + 4).toFixed(1)}" class="pa">${fmt(r.t)}</text>`).join("");
+  const daftar = rows.slice(0, 10).map((r, n) => `<li><span class="pr">${n + 1}</span><span class="pnm">${esc(r.nama)}</span><b>${fmt(r.t)}</b>${r.tp != null ? `<span class="pub">${ubah(r.t, r.tp)}</span>` : ""}</li>`).join("");
+  return Kartu.kartu("Peta provinsi", j, `<div class="lp-pt-w"><div class="lp-peta"><svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="Peta titik panas per provinsi ${tgl(h)}">${s}</svg></div><ol class="lp-rk">${daftar}</ol></div>`,
+    "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG", ctl, [["#e0b46a", "Ukuran lingkaran sebanding jumlah titik panas"], ["#0b2545", "Provinsi dengan titik panas"]]);
+}
 function kartuProvGrafik() {
   const P = Kartu.provDipilih("provM", st), semuaRows = barisProv(), rows = semuaRows.filter(r => !P.length || P.includes(r.kode)).sort((a, b) => b.t - a.t);
   const kode = semuaRows.map(r => r.kode).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
@@ -271,7 +311,7 @@ function renderProv() { const e = $("#lpProv"); if (e) { e.innerHTML = tabelProv
 function renderKab() { const e = $("#lpKab"); if (e) { e.innerHTML = tabelKab(); tandai(e, st.k); pengurutKepala(st.k, e.querySelector("thead"), () => nanti(renderKab)); } }
 function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`); if (b) b.textContent = s.turun ? "↓" : "↑"; }
 function semua() {
-  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
+  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("peta", kartuPeta()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
   renderProv(); renderKab();
   document.querySelectorAll(".lp-gr,.lp-kep .seg").forEach(e => { e.scrollLeft = e.scrollWidth; });   /* hari terpilih ada di ujung kanan */
   $("#upd").textContent = "Data s.d. " + jamWIB(D.cutoff);
