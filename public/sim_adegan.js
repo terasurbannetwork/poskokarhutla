@@ -151,9 +151,12 @@ export function resample(p, step) { /* p = [x,z,x,z,...] -> titik [[x,z]] berjar
 const LEBAR_AIR = {river: [0, 36], stream: [1, 9], canal: [2, 14], ditch: [2, 7], drain: [2, 7]};
 const LEBAR_JALAN = {motorway: [3, 12], trunk: [3, 11], primary: [3, 10], secondary: [3, 9], tertiary: [3, 8], minor: [3, 6], service: [3, 5], track: [4, 5], path: [4, 3]};
 function garisDunia(geom, K, vt) { const ls = geom.type === "LineString" ? [geom.coordinates] : geom.type === "MultiLineString" ? geom.coordinates : []; return ls.map(l => l.flatMap(([lo, la]) => { const q = keDunia(K, vt, lo, la); return [q.x, q.z]; })); }
+export function dalamKotak(p, lim) { /* potong polyline [x,z,...] di tepi kotak: kembalikan potongan yang seluruhnya di dalam (>= 2 titik) */
+  const o = []; let run = []; for (let q = 0; q + 1 < p.length; q += 2) { if (Math.abs(p[q]) <= lim && Math.abs(p[q + 1]) <= lim) run.push(p[q], p[q + 1]); else { if (run.length >= 4) o.push(run); run = []; } } if (run.length >= 4) o.push(run); return o;
+}
 export function keGaris(feats, tabel, K, vt) { /* fitur OSM (waterway|transportation) -> [{p,lebar,tipe}] */
   const out = [], seen = new Set(); for (const f of feats || []) { const t = tabel[f.properties?.class]; if (!t || !f.geometry) continue;
-    for (const p of garisDunia(f.geometry, K, vt)) { if (p.length < 4) continue; const k = `${t[0]}|${p[0].toFixed(0)},${p[1].toFixed(0)}|${p.length}`; if (seen.has(k)) continue; seen.add(k); out.push({p, lebar: t[1], tipe: t[0]}); } }
+    for (const p0 of garisDunia(f.geometry, K, vt)) for (const p of dalamKotak(p0, vt.w * vt.d / 2)) { const k = `${t[0]}|${p[0].toFixed(0)},${p[1].toFixed(0)}|${p.length}`; if (seen.has(k)) continue; seen.add(k); out.push({p, lebar: t[1], tipe: t[0]}); } }
   return out;
 }
 export const keGarisAir = (f, K, vt) => keGaris(f, LEBAR_AIR, K, vt), keGarisJalan = (f, K, vt) => keGaris(f, LEBAR_JALAN, K, vt);
@@ -173,7 +176,7 @@ export function kanalSintetis(grid, K, vt, W, sel = .02) {
   const out = [], kx = 111320 * Math.cos((K.y0 + K.y1) / 2 * Math.PI / 180), ky = 110574;
   for (const [la, lo, km] of grid || []) { const c = keDunia(K, vt, lo + sel / 2, la + sel / 2), sx = sel * kx, sz = sel * ky; if (Math.abs(c.x) > W / 2 + sx || Math.abs(c.z) > W / 2 + sz || km < .3) continue;
     const n = klem(Math.round(km / 2), 1, 6), ang = h2(Math.round(lo * 50), Math.round(la * 50)) > .5 ? .14 : Math.PI / 2 + .14, ux = Math.cos(ang), uz = Math.sin(ang), L = Math.min(sx, km / n * 1000 * 1.3);
-    for (let q = 0; q < n; q++) { const o = (q + .5) / n - .5, cx = c.x + (-uz) * o * sx, cz = c.z + ux * o * sz; out.push({p: [cx - ux * L / 2, cz - uz * L / 2, cx + ux * L / 2, cz + uz * L / 2], lebar: 10, tipe: 2}); } }
+    for (let q = 0; q < n; q++) { const o = (q + .5) / n - .5, cx = c.x + (-uz) * o * sx, cz = c.z + ux * o * sz; for (const p of dalamKotak([cx - ux * L / 2, cz - uz * L / 2, cx + ux * L / 2, cz + uz * L / 2], W / 2)) out.push({p, lebar: 10, tipe: 2}); } }
   return out;
 }
 
@@ -219,7 +222,7 @@ export function hitungCincin({K, vt, sampel, zmin, ex, M, k = 24}) {
   const rata = v ? jml / v : 0, hor = [212, 210, 198]; let zmax = 1; for (let i = 0; i < N; i++) { if (!Number.isFinite(Z[i])) Z[i] = rata; if (Z[i] > zmax) zmax = Z[i]; }
   for (let b = 0; b < nb; b++) for (let a = 0; a < nb; a++) { const i = b * nb + a, x = (a / (nb - 1) - .5) * L, z = -(b / (nb - 1) - .5) * L, dx = Math.max(Math.abs(x) - W / 2, 0), dz = Math.max(Math.abs(z) - W / 2, 0), d = Math.hypot(dx, dz);
     const own = (Math.max(Z[i], 0) - zmin) * ex, edge = tinggiDi(M, klem(x, -W / 2, W / 2), klem(z, -W / 2, W / 2)); Y[i] = mix(edge, own, ss(0, 4000, d)) - 8; laut[i] = Z[i] <= .8 ? 1 : 0;
-    const n1 = noise2(a * .55, b * .55), n2 = noise2(a * .17 + 9, b * .17), th = Z[i] / zmax, kabut = .3 + .5 * ss(0, L / 2, d);
+    const n1 = noise2(a * .55, b * .55), n2 = noise2(a * .17 + 9, b * .17), th = Z[i] / zmax, kabut = .08 + .5 * ss(0, L / 2, d);
     let c = laut[i] ? [74, 111, 138] : [0, 1, 2].map(q => mix(mix([101, 114, 70][q], [58, 84, 52][q], ss(.35, .65, n1)), [186, 170, 125][q], ss(.45, .9, th) * .6 + (n2 > .7 ? .25 : 0)));
     for (let q = 0; q < 3; q++) warna[i * 3 + q] = lin(mix(c[q], hor[q], kabut)); }
   return {nb, L, W, Y, warna, k};
@@ -377,7 +380,7 @@ async function bangun(tok) {
     const z = ZUBIN, perlu = ubinDiperlukan(K, vt, z), tiles = new Map(), Wm = vt.w * vt.d;
     const tilesP = Promise.all(perlu.map(async ([zz, x, y]) => { const im = await SF().ubin(zz, x, y); if (im) tiles.set(`${x},${y}`, im); }));
     const tiles9 = new Map(), t9P = Promise.all(ubinDiperlukan(K, {i0: vt.i0 - vt.w, j0: vt.j0 - vt.w, w: 3 * vt.w}, 9).map(async ([zz, x, y]) => { const im = await SF().ubin(zz, x, y); if (im) tiles9.set(`${x},${y}`, im); }));
-    const [, vek, hilang] = await Promise.all([tilesP, t9P, muatVektor(K, vt, Wm), muatHilang(K, vt)]);
+    const [, , vek, hilang] = await Promise.all([tilesP, t9P, muatVektor(K, vt, Wm), muatHilang(K, vt)]);
     if (!hidup()) return; await tick(); if (!hidup()) return;
     const ras = rasterLahan(vt), sum = A.sumber = {}; let garis = [], lc = {}, airV = null, airC = potong(K.air || new Uint8Array(K.n * K.n), vt);
     if (vek) { garis = [...keGarisAir(vek.waterway, K, vt), ...keGarisJalan(vek.transport, K, vt)]; const pa = keRings(vek.water, K, vt);
@@ -624,5 +627,9 @@ function turunMutu() {
 }
 
 /* ====================== 4. REGISTRASI ====================== */
-export const adegan = {get tersedia() { return punyaGL(); }, buka, jeda, tutup, waktu, segar, get terbuka() { return !!A.root; }};
+export const adegan = {get tersedia() { return punyaGL(); }, buka, jeda, tutup, waktu, segar, get terbuka() { return !!A.root; },
+  lihat({x = 0, z = 0, jarak = 4000, polar = 62, az = 0} = {}) { /* pembantu uji/foto: arahkan kamera ke (x,z) dunia */
+    if (!A.siap) return false; A.terbang = null; const ty = tinggiDi(A.M, x, z), ph = polar * Math.PI / 180; A.controls.target.set(x, ty, z); A.cam.position.set(x + jarak * Math.sin(ph) * Math.sin(az), ty + jarak * Math.cos(ph), z + jarak * Math.sin(ph) * Math.cos(az));
+    A.controls.update(); A.kotor = true; sentuhUser(); jadwal(); return true; },
+  get info() { const g = A.garis || [], t = [0, 0, 0, 0, 0]; for (const x of g) t[x.tipe]++; return {garisPerTipe: t, sumber: A.sumber, pohon: A.P && A.P.off.slice(1).map((v, i) => v - A.P.off[i]), ex: A.M?.ex, contoh: A.garis?.[0] && {x: A.garis[0].p[0], z: A.garis[0].p[1], tipe: A.garis[0].tipe}, W: A.M?.W, tanpaDem: A.tanpaDem, msF: A.msF}; }};
 if (typeof window !== "undefined" && window.SimFT) { window.SimFT.adegan = adegan; window.SimFT.segarAdegan?.(); }
