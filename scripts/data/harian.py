@@ -283,6 +283,14 @@ def terdekat(grid, lat, lon):
     return min(grid, key=lambda g: (g["lat"] - lat) ** 2 + (g["lon"] - lon) ** 2)
 
 
+def wt_dekat(grid, g, lat, lon, radius=1.0):
+    """Muka air proxy sel terdekat; bila sel itu tak punya, sel terdekat yang punya dalam radius derajat; selain itu None."""
+    if g.get("wt") is not None:
+        return g["wt"]
+    ada = [c for c in grid if c.get("wt") is not None and abs(c["lat"] - lat) <= radius and abs(c["lon"] - lon) <= radius]
+    return min(ada, key=lambda c: (c["lat"] - lat) ** 2 + (c["lon"] - lon) ** 2)["wt"] if ada else None
+
+
 # ---------------------------------------------------------------- utama
 def main():
     os.makedirs(KELUAR, exist_ok=True)
@@ -406,7 +414,7 @@ def main():
         bara = None  # gambut bawah permukaan (gambut_bara.py): hanya jejak piksel yang jatuh di peta gambut
         if lv >= 2 and di_gambut:
             bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"]) for p in pts if GAMBUT.cari(p["lon"], p["lat"])],
-                             luas_ha, g.get("wt"))
+                             luas_ha, wt_dekat(grid, g, lat0, lon0))
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",

@@ -47,7 +47,7 @@
     if (tok.length && (v = KAMUS[kunci]) != null) return isi(v, tok);
     if (tok.length && !/\p{L}{2}/u.test(kunci.replace(/\{\d+\}/g, ""))) return isi(kunci, tok);   // hanya angka ("14,6 jt", "Rp3 M"): satuannya saja yang diganti
     for (const [re, ganti] of POLA) { const m = t.match(re); if (!m) continue;
-      const r = ganti.replace(/\$(\d)/g, (_, i) => m[i] == null ? "" : terj(m[i], false)); if (r !== t) return r; }
+      const r = ganti.replace(/\$(\d)/g, (_, i) => m[i] == null ? "" : /^\d[\d.,]*$/.test(m[i]) ? desimal(m[i]) : terj(m[i], false)); if (r !== t) return r; }
     /* huruf besar/kecil: "Titik panas" vs "titik panas", "TITIK PANAS" */
     const kc = t.charAt(0).toLowerCase() + t.slice(1);
     if (kc !== t && (v = KAMUS[kc] ?? (tok.length ? KAMUS[kunci.charAt(0).toLowerCase() + kunci.slice(1)] : null)) != null) return kapital(tok.length ? isi(v, tok) : v);
