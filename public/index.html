@@ -1915,7 +1915,10 @@ const Peta = {
       const t = peta.queryRenderedFeatures(e.point, {layers: ["titik"]});
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
-        return new maplibregl.Popup({closeButton: false}).setLngLat(e.lngLat).setHTML(`<b>Titik panas</b><br>${p.u < 1 ? "< 1" : fmt(p.u)} jam sebelum lintasan terakhir<br>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21 (tidak dihitung)", M: "MODIS"}[p.s]} · keyakinan ${["rendah", "sedang", "tinggi"][p.c]}<br>FRP ${fmt(p.f)} MW`).addTo(peta); }
+        const kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
+        return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
+          <div class="kg">${kb("Sebelum lintasan terakhir", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
+          <div class="kk">${p.s === "N21" ? "NOAA-21 tidak dihitung dalam jumlah titik. " : ""}Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
