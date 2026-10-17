@@ -439,11 +439,19 @@ async function layaniHTML(req, env, ctx, url) {
   if (a && !a.online && !a.tampilan) a = null;
   /* situs per alamat: *.workers.dev = "w" (tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]); domain utama tanpa atribut */
   const situsW = url.hostname.endsWith(".workers.dev");
-  if (!a && !situsW) return aset;
-  return new HTMLRewriter().on("html", {element: el => {
+  /* merek: berkas HTML bermerek Centurisk97; selain *.workers.dev diganti "Pantau Bencana" di judul, meta, dan kop laporan */
+  const ganti = t => t.replace(/Centurisk97/g, "Pantau Bencana");
+  const rw = new HTMLRewriter().on("html", {element: el => {
     if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
     if (situsW) el.setAttribute("data-situs", "w");
-  }}).transform(aset);
+  }});
+  if (!situsW) {
+    let buf = "";   // teks <title>/<b> bisa terpecah antar potongan: kumpulkan lalu tulis sekali di potongan terakhir
+    const teks = {text(t) { buf += t.text; if (t.lastInTextNode) { t.replace(ganti(buf), {html: true}); buf = ""; } else t.remove(); }};
+    rw.on("title", teks).on(".lp-kop b", teks)
+      .on("meta[content*=Centurisk97]", {element: el => el.setAttribute("content", ganti(el.getAttribute("content")))});
+  }
+  return rw.transform(aset);
 }
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================

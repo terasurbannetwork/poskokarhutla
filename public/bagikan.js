@@ -5,6 +5,7 @@
    Nama, sumber, dan tagar dibaca dari medan `bagikan` di public/bencana.json (registry).
    Memakai state & fungsi halaman (S, peta, fmt, esc, jamWIB, namaProv, toast, ...). Pustaka berat dimuat saat diminta. */
 "use strict";
+const SITUS_W = document.documentElement.dataset.situs === "w";   /* *.workers.dev: merek Centurisk97, tanpa akun Teras Urban (pemilik, 17 Okt 2026) */
 const Bagikan = {
   hal: "karhutla", dasar: "", tema: {}, reg: null, tab: "gambar", tpl: "ringkas", uk: "feed", prov: "", exId: "", pakaiPeta: true,
   UK: {feed: [1080, 1350, "Feed 4:5"], story: [1080, 1920, "Story · TikTok 9:16"], kotak: [1080, 1080, "Kotak 1:1"]},
@@ -24,7 +25,9 @@ const Bagikan = {
   siap() { return this.T ? !!this.T.siap() : typeof S !== "undefined" && !!S.meta; },
   acuan() { return this.T ? this.T.acuan() : S.acuan || S.meta.dibuat; },
   get K() {
-    const k = this._K();
+    let k = this._K();
+    /* *.workers.dev bermerek Centurisk97 (pemilik, 17 Okt 2026) */
+    if (SITUS_W) k = {...k, nama: k.nama.replace("Pantau Bencana", "Centurisk97"), pendek: "Centurisk97", akhir: "#Centurisk97"};
     return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
   },
   /* tema dari registry (medan `bagikan`); literal di bawah hanya cadangan sebelum bencana.json terbaca */
@@ -397,7 +400,7 @@ const Bagikan = {
       /* kartu Berita: semua memakai tombol gambar (tombolEx); tombol tautan hanya per berita di daftar */
       el.querySelectorAll(".br-item").forEach(it => { if (it.querySelector(".bs-sel")) return; const j = judul(it.querySelector("a b")), src = judul(it.querySelector(".br-src"));
         it.querySelector(".br-meta")?.append(tombol(E ? "Share this news" : "Bagikan berita ini", () => ({judul: j, kampanye: "berita", url: o + "/berita",
-          teks: `"${Bagi.potong(j, 150)}" (${src}). ${this.T ? (E ? "Follow the news on Pantau Bencana:" : `Pantau berita ${this.T.kata || this.hal} di Pantau Bencana:`) : E ? "Follow fire news & hotspots on Pantau Bencana:" : "Pantau berita & titik panas karhutla di Pantau Bencana:"}`}))); });
+          teks: `"${Bagi.potong(j, 150)}" (${src}). ${this.T ? (E ? "Follow the news on " + this.K.pendek + ":" : `Pantau berita ${this.T.kata || this.hal} di ${this.K.pendek}:`) : E ? "Follow fire news & hotspots on " + this.K.pendek + ":" : `Pantau berita & titik panas karhutla di ${this.K.pendek}:`}`}))); });
     });
     /* Dampak: tiap kartu grafik memakai tombol gambar ala Insight (tombolEx); tombol tautan per bagian tidak dipakai lagi */
     /* dialog provinsi tab Operasi (#dlg dipakai bersama; hanya yang berisi .op-db) */
@@ -751,7 +754,7 @@ const Bagikan = {
     x.fillText(this.potong(x, this.K.sumber, W - 2 * P - dw - 24), P, y + 34);
     /* akun resmi per platform (dari data/kontak.json) lalu alamat situs: tiap ikon diberi nama akunnya sendiri,
        bukan lima ikon yang seolah-olah semuanya menunjuk ke situs */
-    const sos = (this.kontak && this.kontak.sosial) || {}, akun = [];
+    const sos = (!SITUS_W && this.kontak && this.kontak.sosial) || {}, akun = [];   /* akun Teras Urban tidak tampil di *.workers.dev */
     const nama = u => { try { const q = new URL(u).pathname.split("/").filter(Boolean); return q[q.length - 1] || ""; } catch (e) { return ""; } };
     if (sos.instagram) akun.push(["#d62976", "ig", "@" + nama(sos.instagram)]);
     if (sos.linkedin) akun.push(["#0a66c2", "in", "Teras Urban"]);
@@ -781,7 +784,7 @@ const Bagikan = {
     else if (k === "peta") await this.petaBlok(x, a, b, w, h, d);
     else if (k === "ex") { const img = f => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = this.dasar + f; });
       /* QR langsung ke https://pantau.terasurban.com (koreksi galat H, jadi logo di tengah tetap terbaca) */
-      this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png"), img("img/logo.svg?v=2")]); this.exBlok(x, a, b, w, h, d, ...await this._qr); }
+      this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png"), img("img/logo.svg?v=2")]); this.exBlok(x, a, b, w, h, d, ...(SITUS_W ? [null, null, (await this._qr)[2]] : await this._qr)); }   /* QR & logo Teras Urban tidak tampil di *.workers.dev */
   },
   /* ubin KPI gaya Oyenza: panel abu tanpa garis, ikon dalam lingkaran lembut, label kecil, angka besar, keterangan sebagai pil (pemilik, 15 Okt 2026) */
   IKK: {api: "M12 3c1 3 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3.5 2-4.5 0 2 1 3 2 3-1-3 0-6 1-8.5z", lapis: "M12 3 3 8l9 5 9-5zM3 13l9 5 9-5", awas: "M12 4 2.5 20h19zM12 10v4.5M12 17.5v.01",

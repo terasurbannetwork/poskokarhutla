@@ -6,6 +6,8 @@
    kiriPad, paginasi, pengurutKepala, tampilTip, kartuTip, ikon, maplibregl, nanti. */
 (() => {
   if (typeof Insight === "undefined" || !Array.isArray(Insight.EX)) return;
+  /* nama perusahaan, negara, dan titik per perusahaan hanya di *.workers.dev; pantau.terasurban.com tanpa kartu & tooltip ini (pemilik, 17 Okt 2026) */
+  if (document.documentElement.dataset.situs !== "w") return;
   const A = window.Aktor = {d: null, janji: null, poli: {}};
   A.muat = () => A.janji ||= muatJSON("data/aktor_karhutla.json").then(d => {
     /* perusahaan yang tidak ada di peta konsesi disembunyikan; poligon senama di provinsi lain tetap tampil dengan provinsi poligon

@@ -11,7 +11,9 @@ let D = null;
 /* klik beruntun pada kontrol yang sama digabung: fn yang sudah antre tidak diantre lagi (st sudah mutakhir saat fn jalan) */
 const antre = new Set();
 const nanti = fn => { if (antre.has(fn)) return; antre.add(fn); let ok = false; const go = () => { if (!ok) { ok = true; antre.delete(fn); fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
-const tt = s => String(s ?? "").replace(/\s*[—–]\s*/g, ", ");
+/* merek per alamat: *.workers.dev = Centurisk97, selain itu Pantau Bencana (pemilik, 17 Okt 2026); data laporan.json ikut diganti di tt() */
+const MEREK = document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana";
+const tt = s => String(s ?? "").replace(/\s*[—–]\s*/g, ", ").replace(/Centurisk97/g, MEREK);
 const tgl = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"});
 const tglPanjang = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
 const sum = (a, n) => a.slice(0, n + 1).reduce((x, y) => x + (y || 0), 0);
@@ -361,14 +363,14 @@ function kartuSumber() {
     fwi: '<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z"/>', wil: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>'};
   const baris = [
     ["titik", "Titik panas", "NASA FIRMS", s.titik && rinci(s.titik) + "; dikelompokkan per tanggal WIB (00.00–23.59 WIB), bukan tanggal UTC dari NASA"],
-    ["luas", "Perkiraan luas", "Centurisk97", s.luas && tt(s.luas) + "; 4,3 ha = 31% luas 1 piksel VIIRS (375 m = 14,06 ha); ~ = hari dengan titik S-NPP ditaksir"],
-    ["kum", "Kumulatif", "Centurisk97", "Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak 1 Januari x 4,3 ha"],
-    ["kej", "Kejadian api", "Centurisk97", s.kompleks && rinci(s.kompleks)], ["fwi", "FWI", "Open-Meteo", s.fwi && tt(s.fwi)],
+    ["luas", "Perkiraan luas", MEREK, s.luas && tt(s.luas) + "; 4,3 ha = 31% luas 1 piksel VIIRS (375 m = 14,06 ha); ~ = hari dengan titik S-NPP ditaksir"],
+    ["kum", "Kumulatif", MEREK, "Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak 1 Januari x 4,3 ha"],
+    ["kej", "Kejadian api", MEREK, s.kompleks && rinci(s.kompleks)], ["fwi", "FWI", "Open-Meteo", s.fwi && tt(s.fwi)],
     ["wil", "Wilayah", "BIG", s.wilayah && rinci(s.wilayah)]].filter(r => r[3]);
   const ubin = baris.map(r => `<div class="lp-ub"><div class="lp-ub-h"><svg viewBox="0 0 24 24" aria-hidden="true">${IK[r[0]]}</svg><b>${r[1]}</b><span class="lp-src">${esc(r[2])}</span></div><p>${esc(r[3])}</p></div>`).join("");
   const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} ${sm ? "masih sementara" : "sudah ditutup"}`;
   return Kartu.kartu("Cut-off dan sumber data", j, `<div class="lp-kms">${alur}<div class="lp-km"><div class="lp-km-h"><span>Sumber data</span></div><div class="lp-ubs">${ubin}</div></div></div>`,
-    "NASA FIRMS, BIG, KLHK SiPongi, olahan Centurisk97");
+    "NASA FIRMS, BIG, KLHK SiPongi, olahan " + MEREK);
 }
 
 function kepala() {
@@ -413,7 +415,7 @@ function semua() {
   const xe = t => String(T(t)).replace(/&/g, "&amp;").replace(/</g, "&lt;");
   /* kiri: logo + nama + judul; kanan: tanggal cetak + pil cut-off tiap hari (hijau = final, oranye = berjalan) */
   const kiri = `<svg xmlns="http://www.w3.org/2000/svg" width="260" height="26" viewBox="0 0 260 26">${LOGO.replace("<svg ", '<svg x="0" y="1" width="24" height="24" ')}`
-    + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="31" y="11" font-size="10.5" font-weight="800">Centurisk97</text>`
+    + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="31" y="11" font-size="10.5" font-weight="800">${MEREK}</text>`
     + `<text x="31" y="22" font-size="8" font-weight="700">${xe("Laporan Harian Kebakaran Hutan dan Lahan")}</text></g></svg>`;
   const pil = [[st.hari, sementara() ? "#d2772c" : "#2b8c86"], ...(iB() > 0 ? [[D.hari[iB()], "#d2772c"]] : [])]
     .map(([h, w]) => [T(`Cut-off ${tgl(h)}: ${cutoff(h).replace(tgl(h) + " ", "")}`), w]);
@@ -425,7 +427,7 @@ function semua() {
   const uri = t => `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(t)}")`, garis = "vertical-align:bottom;padding-bottom:2.5mm;border-bottom:1.5px solid #0b2545;margin-bottom:5mm";
   $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:22mm 10mm 14mm;
     @top-left{content:${uri(kiri)};${garis};text-align:left}@top-center{content:" ";${garis}}@top-right{content:${uri(kn)};${garis};text-align:right}
-    @bottom-left{content:${css("Sumber: NASA FIRMS, BIG, KLHK SiPongi; olahan Centurisk97")};${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
+    @bottom-left{content:${css("Sumber: NASA FIRMS, BIG, KLHK SiPongi; olahan " + MEREK)};${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
     @bottom-right{content:"${en ? "Page" : "Halaman"} " counter(page) " ${en ? "of" : "dari"} " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}`;
 }
 const awal = () => D.hari_lengkap || D.hari[D.hari.length - 1];
@@ -502,7 +504,7 @@ function kartuRiwayat() {
   const ini = rows.at(-1), lalu = rows.filter(r => !r.ini && r.n !== "1997–1998"), lebih = lalu.filter(r => r.v > ini.v).map(r => r.n);
   const j = `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + fmt(Math.round(ini.v / 1e4) / 100) + " juta ha")} hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`;
   return Kartu.kartu("Riwayat nasional", j, `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Luas terbakar Indonesia per tahun 1997–${th}">${g}</svg>`,
-    `${th}: perkiraan Centurisk97 dari titik VIIRS S-NPP x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi; 1997–${+th - 1}: BNPB via ${f.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
+    `${th}: perkiraan ${MEREK} dari titik VIIRS S-NPP x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi; 1997–${+th - 1}: BNPB via ${f.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
     "", [[MERAH, "di atas 1 juta ha"], [NAVY, "di bawah 1 juta ha"], ["#d98b7c", `${th}, perkiraan satelit (sementara)`]]);
 }
 

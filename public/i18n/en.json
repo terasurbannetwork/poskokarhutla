@@ -17,6 +17,7 @@
 "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
 "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari)": "Fire events: nearby VIIRS hotspots (1.5 km, 7 days)",
 "status dihitung dari aturan Centurisk97": "status computed from Centurisk97 rules",
+"status dihitung dari aturan Pantau Bencana": "status computed from Pantau Bencana rules",
 "Fire Weather Index (FWI) Kanada dari cuaca Open-Meteo (ERA5 dan prakiraan), nilai tertinggi kejadian api di wilayah itu": "Canadian Fire Weather Index (FWI) from Open-Meteo weather (ERA5 and forecast), highest value among fire events in the area",
 "Badan Informasi Geospasial (BIG), batas wilayah administrasi edisi Juni 2026": "Geospatial Information Agency (BIG), administrative boundaries, June 2026 edition",
 "1997–2025: BNPB via Bakom RI": "1997–2025: BNPB via Bakom RI",
@@ -29,6 +30,7 @@
 "batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026 (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH)": "concession boundaries: oil palm/logging ± 2014, pulpwood 2020–2022, mining 2026 (Ministry of Forestry via Global Forest Watch, Trase, Ministry of Forestry PPKH)",
 "gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar": "peat from KLHK. A hotspot in a concession area is not proof of who set the fire",
 "NASA FIRMS, BIG, KLHK SiPongi, olahan Centurisk97": "NASA FIRMS, BIG, KLHK SiPongi, processed by Centurisk97",
+"NASA FIRMS, BIG, KLHK SiPongi, olahan Pantau Bencana": "NASA FIRMS, BIG, KLHK SiPongi, processed by Pantau Bencana",
 "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)": "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)",
 "Januari awal": "early January",
 "Januari tengah": "mid January",
@@ -8478,6 +8480,18 @@
 [
 "^(\\d+ [A-Za-z]+ [\\d:.]+) sampai (\\d+ [A-Za-z]+ [\\d:.]+) (WIB|WITA|WIT)$",
 "$1 to $2 $3"
+],
+[
+"^(\\d{4}): perkiraan Pantau Bencana dari titik VIIRS S-NPP x ([\\d.,]+) ha \\(rentang (.+?)–(.+?) ribu ha\\), bukan angka resmi$",
+"$1: Pantau Bencana estimate from VIIRS S-NPP hotspots x $2 ha (range $3–$4 thousand ha), not an official figure"
+],
+[
+"^Pantau Bencana  ·  Laporan Harian Karhutla  ·  (.+?) \\(sementara\\)$",
+"Pantau Bencana  ·  Daily Forest Fire Report  ·  $1 (provisional)"
+],
+[
+"^Pantau Bencana  ·  Laporan Harian Karhutla  ·  (.+)$",
+"Pantau Bencana  ·  Daily Forest Fire Report  ·  $1"
 ]
 ]
 }

@@ -2,6 +2,7 @@
    Merek + ringkasan di kiri, tiga kolom tautan, ikon sosial dari data/kontak.json, lalu baris hak cipta. */
 (() => {
   const D = document, HAL = ["insight", "berita", "tren", "dampak", "foto"];
+  if (D.documentElement.dataset.situs === "w") return;   /* footer Teras Urban tidak tampil di *.workers.dev (pemilik, 17 Okt 2026) */
   /* kolom "Pantau" = tab bencana halaman ini minus tab_sembunyi (tanpa Simulasi → "Alat", tanpa Tentang → "Tentang"); kolom "Bencana" = bencana registry berstatus aktif (yang uji masih "Segera", tidak ditautkan).
      Registry gagal dimuat = footer karhutla seperti dulu. */
   const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", foto: "Foto", kejadian: "Kejadian", sim: "Simulasi"};
