@@ -200,10 +200,10 @@ function kartuProvGrafik() {
 /* baris riwayat per triwulan: judul bagian + satu baris per triwulan yang sudah genap, terbaru di atas.
    Triwulan berjalan tidak ditampilkan (pemilik, 17 Okt 2026): bulan berjalan sudah ada di baris harian di atasnya.
    sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
-function riwayatTw(sel) {
+function riwayatTw(sel, snpp = true) {
   const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
   const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
-  return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></td></tr>`
+  return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th}${snpp ? ' <span class="lp-co">VIIRS S-NPP</span>' : ""}</td></tr>`
     + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
       + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
 }
@@ -247,17 +247,16 @@ function kartuRingkasan() {
   const bdg = i > 0 ? ` dibanding ${tgl(D.hari[i - 1])}` : "";
   const j = poinBerjalan(`${Kartu.hl(fmt(n.titik[i]))} titik panas di ${Kartu.hl(fmt(n.kab[i]))} kab/kota pada ${tgl(h)}${sementara() ? " (sementara)" : ""}${tp != null ? `, ${ubah(n.titik[i], tp)}${bdg} (${fmt(tp)} titik)` : ""}`,
     b => `${Kartu.hl(fmt(n.titik[b]))} titik panas di ${Kartu.hl(fmt(n.kab[b]))} kab/kota pada ${tgl(D.hari[b])}, ${ubah(n.titik[b], n.titik[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
-  const hs = hariGrafik();
+  const hs = hariGrafik(), semua = D.tahun_berjalan?.titik != null, tk = semua ? "titik" : "titik_snpp";
   return Kartu.kartu("Ringkasan", j, pasCetak(batang(hs, hs.map(x => n.titik[D.hari.indexOf(x)]), h, {nama: "Titik panas", u: "titik", arr: n.titik}), tabelHarian([["Titik panas", i => fmt(n.titik[i]), 1], ["Perubahan hotspot", i => i > 0 ? ubah(n.titik[i], n.titik[i - 1]) : "–", 1],
     ["Kab/kota memiliki hotspot", i => fmt(n.kab[i]), 1], ["Provinsi memiliki hotspot", i => fmt(Object.values(D.prov).filter(o => o.titik[i] > 0).length), 1]],
-    /* riwayat triwulan: hanya titik VIIRS S-NPP yang tersedia per bulan (sejarah.json), jadi diberi label sensornya */
-    riwayatTw((q, p) => [fmt(q.titik_snpp), p ? ubah(q.titik_snpp, p.titik_snpp) : "–", "", fmt(q.prov_aktif)]),
+    /* riwayat triwulan & grand total: semua satelit seperti baris harian (titik_tahun.json); data lama tanpa "titik" jatuh ke S-NPP berlabel */
+    riwayatTw((q, p) => [fmt(q[tk]), p ? ubah(q[tk], p[tk]) : "–", "", fmt(q.prov_aktif)], !semua),
     /* total rentang: kab/kota dan provinsi dihitung unik (pernah bertitik di salah satu hari), bukan dijumlah */
     ix => [fmt(ix.reduce((a, i) => a + (n.titik[i] || 0), 0)), "–", fmt(D.kab.filter(o => ix.some(i => o.titik[i] > 0)).length),
       fmt(Object.values(D.prov).filter(o => ix.some(i => o.titik[i] > 0)).length)],
-    /* grand total tahun berjalan: hanya titik VIIRS S-NPP yang tersedia sejak 1 Januari (= perkiraan luas / ha per titik) */
-    D.tahun_berjalan?.ha_titik ? [`Grand total s.d. ${tgl(D.tahun_berjalan.sd)} ${D.tahun_berjalan.sd.slice(0, 4)} <span class="lp-co">VIIRS S-NPP</span>`,
-      fmt(Math.round(D.tahun_berjalan.ha / D.tahun_berjalan.ha_titik)), "–", "–",
+    D.tahun_berjalan?.ha_titik ? [`Grand total s.d. ${tgl(D.tahun_berjalan.sd)} ${D.tahun_berjalan.sd.slice(0, 4)}${semua ? "" : ' <span class="lp-co">VIIRS S-NPP</span>'}`,
+      fmt(semua ? D.tahun_berjalan.titik : Math.round(D.tahun_berjalan.ha / D.tahun_berjalan.ha_titik)), "–", "–",
       fmt(Math.max(Object.values(D.prov).filter(o => o.titik.some(v => v > 0)).length, ...(D.tahun_berjalan.triwulan || []).map(q => q.prov_aktif || 0)))] : null)), tt(D.sumber.titik), segRentang());
 }
 function kartuLuas() {

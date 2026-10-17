@@ -200,7 +200,25 @@ def isi_mundur(arsip, h30, porsi):
     return a
 
 
-def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun):
+def titik_semua(tt, hari_iso, titik_nas, tahun):
+    """Titik semua satelit per bulan sejak 1 Jan: titik_tahun.json untuk hari sebelum arsip harian, baris harian sesudahnya
+    (jadi Grand total = titik sebelum arsip + jumlah baris harian). None bila ada hari yang tidak tertutup keduanya."""
+    if not tt or tt.get("tahun") != tahun or not hari_iso:
+        return None
+    awal, bln = dt.date(int(tahun), 1, 1), [0] * 12
+    for i, n in enumerate(tt["harian"]):
+        d = awal + dt.timedelta(days=i)
+        if d.isoformat() < hari_iso[0]:
+            bln[d.month - 1] += n
+    if max(awal.isoformat(), hari_iso[0]) > (dt.date.fromisoformat(tt["sd"]) + dt.timedelta(days=1)).isoformat():
+        return None   # celah antara titik_tahun.json dan arsip harian
+    for d, n in zip(hari_iso, titik_nas):
+        if d.startswith(tahun):
+            bln[int(d[5:7]) - 1] += n
+    return bln
+
+
+def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun, tt=None, titik_nas=()):
     """Perkiraan luas terbakar sejak 1 Jan: titik S-NPP sejarah.json (s.d. sehari sebelum dibuat) x HA_TITIK + luas harian
     laporan sesudahnya. None bila sejarah tidak memuat tahun ini."""
     if not sejarah or tahun not in sejarah.get("tahun", []):
@@ -215,9 +233,14 @@ def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun):
     nama = ["Jan–Mar", "Apr–Jun", "Jul–Sep", "Okt–Des"]
     # triwulan yang sudah dimulai; bulan_kosong = bulan tanpa titik di sejarah.json (celah S-NPP 28 Apr-2 Jun 2026 sudah diisi NOAA-20)
     aktif = lambda q: sum(1 for v in sejarah["prov"].values() if sum((v.get(tahun) or [0] * 12)[3 * q:3 * q + 3]) > 0)
-    tw = [{"nama": nama[q], "ha": round(sum(bln[3 * q:3 * q + 3])), "titik_snpp": round(sum(bln[3 * q:3 * q + 3]) / HA_TITIK), "prov_aktif": aktif(q), "bulan_kosong": [BULAN[m] for m in range(3 * q, 3 * q + 3) if bln[m] == 0 and m < int(akhir[5:7]) - 1]}
+    # titik semua satelit (sama dengan baris harian); prov_aktif dari titik_tahun.json bila ada
+    sm = titik_semua(tt, hari_iso, titik_nas, tahun)
+    if sm:
+        aktif = lambda q: sum(1 for v in tt["prov"].values() if sum(v[3 * q:3 * q + 3]) > 0)
+    tw = [{"nama": nama[q], "ha": round(sum(bln[3 * q:3 * q + 3])), "titik_snpp": round(sum(bln[3 * q:3 * q + 3]) / HA_TITIK),
+           **({"titik": sum(sm[3 * q:3 * q + 3])} if sm else {}), "prov_aktif": aktif(q), "bulan_kosong": [BULAN[m] for m in range(3 * q, 3 * q + 3) if bln[m] == 0 and m < int(akhir[5:7]) - 1]}
           for q in range(4) if 3 * q < int(akhir[5:7])]
-    return {"ha": round(ha), "rendah": round(ha / HA_TITIK * HA_RENDAH), "tinggi": round(ha / HA_TITIK * HA_TINGGI),
+    return {"ha": round(ha), **({"titik": sum(sm)} if sm else {}), "rendah": round(ha / HA_TITIK * HA_RENDAH), "tinggi": round(ha / HA_TITIK * HA_TINGGI),
             "ha_titik": HA_TITIK, "ha_titik_rendah": HA_RENDAH, "ha_titik_tinggi": HA_TINGGI, "sd": akhir, "triwulan": tw}
 
 
@@ -236,7 +259,7 @@ def kompleks(kl):
     return r
 
 
-def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None):
+def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None, titik_tahun=None):
     acuan, akhir, t, s = hitung(hs)
     porsi, taksir = isi_celah(t, s)
     hari, out, konteks = seri(t, s)
@@ -287,7 +310,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "luas_v": LUAS_V,
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
-        "tahun_berjalan": tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun),
+        "tahun_berjalan": tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun, titik_tahun, nas["titik"]),
         "sumber": {
             "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
             "luas": "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x 4,3 ha, dikalibrasi ke luas terbakar resmi tahunan 2015-2025 (SiPongi KLHK); kuartil 3,2-4,6 ha per titik; uji balik tahunan meleset sampai +101%/-35%; angka harian dan per wilayah indikatif; bukan pengukuran citra",
@@ -310,7 +333,7 @@ def main():
     if not hs:
         sys.exit("hotspot.json tidak ada")
     lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), baca("laporan.json"),
-                sejarah=baca("sejarah.json"), h30=baca("harian30.json"))
+                sejarah=baca("sejarah.json"), h30=baca("harian30.json"), titik_tahun=baca("titik_tahun.json"))
     jalur = os.path.join(DATA, "laporan.json")
     with open(jalur, "w") as f:
         json.dump(lap, f, ensure_ascii=False, separators=(",", ":"))
@@ -361,6 +384,11 @@ def uji():
     assert tb["ha"] == round(10000 * HA_TITIK + 7) and tb["rendah"] < tb["ha"] < tb["tinggi"], tb
     assert tb["triwulan"] == [{"nama": "Jan–Mar", "ha": tb["ha"], "titik_snpp": 10002, "prov_aktif": 1, "bulan_kosong": []}], tb["triwulan"]
     assert tahun_berjalan(None, [], [], "2026") is None
+    # titik semua satelit: titik_tahun.json sebelum arsip harian (02-01 dst.), baris harian sesudahnya; celah -> None
+    tt = {"tahun": "2026", "sd": "2026-01-02", "harian": [3, 4], "prov": {"14": [7] + [0] * 11}}
+    tb = tahun_berjalan(sj, ["2026-01-02", "2026-01-03"], [4, 7], "2026", tt, [5, 6])
+    assert tb["titik"] == 3 + 5 + 6 and tb["triwulan"][0]["titik"] == 14 and tb["triwulan"][0]["prov_aktif"] == 1, tb
+    assert "titik" not in tahun_berjalan(sj, ["2026-01-05"], [4], "2026", tt, [5])
     # (c) hari lengkap / berjalan di sekitar 21:00 WIB
     d = dt.date(2026, 10, 12)
     ja = lambda h, m: dt.datetime(2026, 10, 12, h, m, tzinfo=WIB)
