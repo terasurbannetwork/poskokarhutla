@@ -7881,9 +7881,49 @@
 "batas wilayah administrasi edisi Juni {0}": "administrative boundaries, June {0} edition",
 "indikasi luas kebakaran per provinsi": "indicated burned area per province",
 "Laporan dihitung": "Report computed",
-", laporan": ", report"
+", laporan": ", report",
+"kab/kota,": "regencies/cities,",
+"mencatat titik panas terbanyak:": "recorded the most hotspots:",
+"kab/kota mencatat titik panas, terbanyak": "regencies/cities recorded hotspots, most in",
+"kab/kota, terbanyak": "regencies/cities, most in"
 },
 "pola": [
+[
+"^Final, ditutup (.+)$",
+"Final, closed $1"
+],
+[
+"^dibanding (.+?) \\((.+?) titik\\)$",
+"vs $1 ($2 hotspots)"
+],
+[
+"^dibanding (.+?);$",
+"vs $1;"
+],
+[
+"^dibanding (.+)$",
+"vs $1"
+],
+[
+"^ha \\((.+?): (.+?) ha\\),$",
+"ha ($1: $2 ha),"
+],
+[
+"^provinsi dibanding (.+)$",
+"provinces vs $1"
+],
+[
+"^titik panas dibanding (.+)$",
+"hotspots vs $1"
+],
+[
+"^Titik (\\d+ \\S+) \\(belum final\\)$",
+"Hotspots $1 (not final)"
+],
+[
+"^Centurisk97  ·  Laporan Harian Karhutla  ·  (.+?) \\(sementara\\)$",
+"Centurisk97  ·  Daily Forest Fire Report  ·  $1 (provisional)"
+],
 [
 "^Rekap BNPB operasi karhutla (\\d+) s\\.d\\. (.+?), belum diverifikasi ke dokumen resmi BNPB$",
 "BNPB $1 forest fire operations recap up to $2, not yet verified against official BNPB documents"
