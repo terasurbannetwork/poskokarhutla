@@ -151,23 +151,29 @@ function kartuPeta() {
   /* lingkaran kecil di atas yang besar supaya semuanya terlihat */
   const bul = rows.filter(r => GEO.c[r.k]).map(r => ({...r, x: GEO.c[r.k][0], y: GEO.c[r.k][1], r: rad(r.t)}));
   s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc${pakaiB ? " sm" : ""}" data-tip="${esc(`<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / tot * 100))}%`)}"/>`).join("");
-  /* angka di dalam lingkaran yang cukup besar; nama dan peringkat di daftar samping (callout di peta padat saling tabrak) */
-  s += bul.filter(r => r.r >= 15).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + (r.r >= 22 ? 1 : 4)).toFixed(1)}" class="pa">${fmt(r.t)}</text>`
-    + (r.r >= 22 ? `<text x="${r.x.toFixed(1)}" y="${(r.y + 13).toFixed(1)}" class="pn">${SINGKAT[r.k] || ""}</text>` : "")).join("");
-  /* lingkaran kecil: angka di luar dengan garis callout; arah dipilih yang tidak menabrak lingkaran atau angka lain */
-  const lab = [], kena = (x, y, w) => x - w / 2 < 2 || x + w / 2 > PW - 2 || y - 9 < 2 || y + 5 > PH - 2
-    || lab.some(q => Math.abs(q[0] - x) < (q[2] + w) / 2 + 3 && Math.abs(q[1] - y) < 15)
-    || bul.some(c => Math.max(Math.abs(c.x - x) - w / 2, 0) ** 2 + Math.max(Math.abs(c.y - (y - 4)) - 7, 0) ** 2 < (c.r + 2) ** 2);
+  /* label: lingkaran besar (r >= 22) memuat angka + singkatan di dalam; lainnya diberi pil putih "Singkatan angka" di luar,
+     disambung garis tipis. Posisi pil dicari melingkar (8 arah, 3 jarak) yang tidak menutup pil lain, lingkaran, atau tepi peta */
+  s += bul.filter(r => r.r >= 22).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + 2).toFixed(1)}" class="pa">${fmt(r.t)}</text>`
+    + `<text x="${r.x.toFixed(1)}" y="${(r.y + 14).toFixed(1)}" class="pn">${SINGKAT[r.k] || ""}</text>`).join("");
+  const LH = 17, pil = [], kena = (x, y, w) => x < 2 || x + w > PW - 2 || y < 2 || y + LH > PH - 2
+    || pil.some(q => x < q[0] + q[2] + 3 && x + w + 3 > q[0] && y < q[1] + LH + 3 && y + LH + 3 > q[1])
+    || bul.some(c => { const nx = Math.max(x, Math.min(c.x, x + w)), ny = Math.max(y, Math.min(c.y, y + LH)); return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2; });
+  let garis = "", label = "";
   for (const r of bul.filter(r => r.r < 22)) {
-    const t = r.r < 15 ? `${SINGKAT[r.k] || ""} ${fmt(r.t)}` : (SINGKAT[r.k] || ""), w = t.length * 6.9 + 4;
+    const nm = SINGKAT[r.k] || "", n = fmt(r.t), w = nm.length * 5.9 + n.length * 6.6 + 18;
     let pos = null;
-    for (const d of [10, 20, 32]) { for (let a = 0; a < 8 && !pos; a++) { const ang = -Math.PI / 4 - a * Math.PI / 4,
-      x = r.x + Math.cos(ang) * (r.r + d + w / 2 - 4), y = r.y + Math.sin(ang) * (r.r + d) + 4; if (!kena(x, y, w)) pos = [x, y, ang]; } if (pos) break; }
+    for (const d of [8, 18, 30, 46, 64]) { for (let a = 0; a < 16 && !pos; a++) { const ang = -Math.PI / 4 - a * Math.PI / 8,
+      cx = r.x + Math.cos(ang) * (r.r + d + w / 2), cy = r.y + Math.sin(ang) * (r.r + d + LH / 2), x = cx - w / 2, y = cy - LH / 2;
+      if (!kena(x, y, w)) pos = [x, y, cx, cy]; } if (pos) break; }
     if (!pos) continue;
-    const [x, y, ang] = pos; lab.push([x, y, w]);
-    const ex = r.x + Math.cos(ang) * r.r, ey = r.y + Math.sin(ang) * r.r, lx = x - Math.cos(ang) * (w / 2 + 2), ly = y - 4;
-    s += `<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${lx.toFixed(1)}" y2="${ly.toFixed(1)}" class="pl"/><text x="${x.toFixed(1)}" y="${y.toFixed(1)}" class="pa pa-l">${t}</text>`;
+    const [x, y, cx, cy] = pos; pil.push([x, y, w]);
+    const dd = Math.hypot(cx - r.x, cy - r.y) || 1, ex = r.x + (cx - r.x) * r.r / dd, ey = r.y + (cy - r.y) * r.r / dd;
+    const tx = Math.max(x, Math.min(r.x, x + w)), ty = Math.max(y, Math.min(r.y, y + LH));
+    if (Math.hypot(tx - ex, ty - ey) > 3) garis += `<line x1="${ex.toFixed(1)}" y1="${ey.toFixed(1)}" x2="${tx.toFixed(1)}" y2="${ty.toFixed(1)}" class="pl"/>`;
+    label += `<g transform="translate(${x.toFixed(1)},${y.toFixed(1)})"><rect width="${w.toFixed(1)}" height="${LH}" rx="8.5" class="pk"/>`
+      + `<text x="8" y="12" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${n}</tspan></text></g>`;
   }
+  s += garis + label;
   const daftar = rows.slice(0, 10).map((r, n) => `<li><span class="pr">${n + 1}</span><span class="pnm">${esc(r.nama)}</span><b>${fmt(r.t)}</b>${r.tp != null ? `<span class="pub">${ubah(r.t, r.tp)}</span>` : ""}</li>`).join("");
   return Kartu.kartu("Peta provinsi", j, `<div class="lp-pt-w"><div class="lp-peta"><svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="Peta titik panas per provinsi ${tgl(h)}">${s}</svg></div><ol class="lp-rk">${daftar}</ol></div>`,
     "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG", ctl, [["#e0b46a", "Ukuran lingkaran sebanding jumlah titik panas"], ["#0b2545", "Provinsi dengan titik panas"]]);
@@ -192,7 +198,7 @@ function riwayatTw(sel) {
   const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
   const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
   return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></td></tr>`
-    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b>${q.bulan_kosong.length ? ` <span class="lp-co">data ${q.bulan_kosong.join(", ")} kosong di FIRMS</span>` : ""}</td>`
+    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
       + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
 }
 function tabelHarian(kol, ekor = "") {
@@ -242,12 +248,11 @@ function kartuLuas() {
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(n.luas, i));
   const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
     return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i])]); };
-  const kosong = (D.tahun_berjalan?.triwulan || []).flatMap(q => q.bulan_kosong);
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
   const tb = D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2});
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
-    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (kuartil ${jt(tb.rendah)}–${jt(tb.tinggi)} juta${kosong.length ? `, tanpa ${kosong.join(", ")}` : ""})` : "");
+    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (kuartil ${jt(tb.rendah)}–${jt(tb.tinggi)} juta)` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}) + tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1]], triwulan()), tt(D.sumber.luas), segRentang());
