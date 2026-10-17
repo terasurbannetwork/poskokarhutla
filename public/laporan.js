@@ -264,7 +264,8 @@ function kartuLuas() {
   /* kumulatif sejak 1 Januari = total tahun berjalan dikurangi luas hari-hari sesudahnya */
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(n.luas, i));
   const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
-    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i])]); };
+    /* kumulatif triwulan berjalan = grand total persis (jumlah ha per triwulan yang sudah dibulatkan bisa meleset 1 ha) */
+    return riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(i === kum.length - 1 && tb ? tb.ha : kum[i])]); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
   const tb = D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2});
