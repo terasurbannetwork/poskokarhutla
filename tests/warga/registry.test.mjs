@@ -15,14 +15,14 @@ const cocok = (R, j) => R.find(([re]) => re.test(j));
 const baru = {id: "uji1", nama: "Bencana Baru", rute: "/uji1/", status: "aktif", tab: ["peta", "tren", "metode"], tab_sembunyi: ["metode"],
   kejadian: {awalan: "X", nama: "Kejadian baru", nama_jamak: "Kejadian baru"}, sumber_status: [["uji1", "/uji1/data/meta.json", 6]]};
 
-test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; gempa: uji dilayani, mati 404", () => {
+test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; semua bencana dilayani, mati 404", () => {
   const LAMA = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
   for (const j of ["/", "/index.html", "/banjir", "/banjir/", "/banjir/index.html", "/tentang", "/peta/", "/k/K0009", "/sim/K12", "/operasi", "/keputusan", "/sarana", "/prioritas",
     "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
     const lama = LAMA.test(j) || /^\/banjir\/(peta|insight|simulasi|rob)\/?$/.test(j) || /^\/(index\.html)?$/.test(j) || /^\/banjir(\/|\/index\.html)?$/.test(j) || j === "/tentang-halaman" || j === "/privasi";
     assert.equal(!!cocok(HTML_RUTE, j), lama, j);
   }
-  // tahap buka bertahap: halaman bencana 'uji' sudah dilayani (jadi tidak 404); 'mati' (gempa) tetap 404
+  // semua bencana kini aktif dan dilayani (tidak ada lagi tahap 'uji'); 'mati' disimulasikan pada salinan di bawah
   for (const id of ["cuaca", "udara", "kekeringan", "gunungapi"]) assert.equal(cocok(HTML_RUTE, `/${id}/`)?.[1], `/${id}/index.html`, id);
   // gempa aktif: halaman, tab (juga yang tersembunyi dari nav), dan kejadian G dilayani; mati = 404 lagi
   for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/posko", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
@@ -46,9 +46,11 @@ test("menambah entri aktif di salinan registry memunculkan rutenya; mati tidak",
 
 test("statistik dan sumber status mengikuti registry", () => {
   assert.deepEqual(halStatistik(), ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "warga", "tentang", "privasi", "statistik"]);
-  // hanya "aktif" menentukan 503 /api/status (banjir, gempa, udara, gunungapi, kekeringan aktif); "uji" (cuaca) dilaporkan terpisah
-  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "dampak", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas", "titik"]);
-  assert.deepEqual(SUMBER_UJI.map(s => s[0]).sort(), ["cuaca", "cuaca_nowcast"]);
+  // hanya "aktif" menentukan 503 /api/status (banjir, gempa, cuaca, udara, gunungapi, kekeringan aktif); tahap "uji" dilaporkan terpisah (kini tak ada bencana uji)
+  assert.deepEqual(SUMBER_STATUS.map(s => s[0]).sort(), ["banjir", "berita", "cuaca", "cuaca_nowcast", "dampak", "gempa_terbaru", "gunungapi", "kekeringan", "kualitas", "titik"]);
+  assert.deepEqual(SUMBER_UJI, []);
+  const U = salinan(); U.bencana.find(b => b.id === "cuaca").status = "uji";   // pemisahan aktif/uji diuji pada salinan
+  assert.deepEqual(sumberUji(U).map(s => s[0]).sort(), ["cuaca", "cuaca_nowcast"]); assert.ok(!sumberStatus(U).some(s => s[0].startsWith("cuaca")));
   const B = salinan(); B.bencana.push(baru);
   assert.ok(halStatistik(B).includes("uji1")); assert.ok(sumberStatus(B).some(s => s[0] === "uji1"));
   const M = salinan(); M.bencana.find(b => b.id === "gempa").status = "mati";
@@ -75,9 +77,9 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
   for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
   for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/", "/cuaca/peta", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/sim", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati/uji tidak boleh ada`);
+  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/sim", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
-  for (const id of ["udara", "gunungapi", "kekeringan"]) for (const t of ["", "peta", "insight", "berita", "tren", "dampak", "foto", "tentang"]) assert.ok(loc.includes(`/${id}/${t}`), `/${id}/${t} aktif harus ada`);
+  for (const id of ["cuaca", "udara", "gunungapi", "kekeringan"]) for (const t of ["", "peta", "insight", "berita", "tren", "dampak", "foto", "tentang"]) assert.ok(loc.includes(`/${id}/${t}`), `/${id}/${t} aktif harus ada`);
   assert.ok(!x.includes("terasurban"));
   const B = salinan(); B.bencana.push(baru);
   const l2 = sitemap("https://a.b", B);

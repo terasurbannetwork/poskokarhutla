@@ -10,6 +10,7 @@
 - Gempa & tsunami (https://pantau.terasurban.com/gempa/): gempa BMKG dan USGS tiap menit, status tsunami resmi BMKG, riwayat M5+ sejak 1900, sesar aktif, dampak.
 - Letusan gunung api (https://pantau.terasurban.com/gunungapi/): status resmi PVMBG/MAGMA Level I-IV, radius rekomendasi, letusan terbaru, penduduk dalam radius.
 - Kekeringan (https://pantau.terasurban.com/kekeringan/): SPI-3/SPI-6 dari hujan NASA POWER dan kelembapan tanah, status per kabupaten (deteksi Pantau Bencana, ambang belum diuji balik).
+- Cuaca ekstrem (https://pantau.terasurban.com/cuaca/): peringatan nowcast BMKG tiap 10 menit, gelombang tinggi BMKG Maritim, prakiraan hujan dan angin, peluang hujan lebat ansambel.
 - Kualitas udara (https://pantau.terasurban.com/udara/): PM2,5 perkiraan model CAMS (belum dikoreksi stasiun), jiwa terpapar per provinsi, jarak pandang bandara.
 
 ## Sumber data utama

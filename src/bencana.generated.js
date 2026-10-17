@@ -483,7 +483,7 @@ export default {
       "warna": "#7d8ca3",
       "rute": "/cuaca/",
       "data": "/cuaca/data/",
-      "status": "uji",
+      "status": "aktif",
       "warisan": false,
       "tab": [
         "peta",
@@ -507,7 +507,7 @@ export default {
         [
           "cuaca_nowcast",
           "/api/cuaca/nowcast",
-          1
+          2
         ]
       ],
       "kejadian": {
