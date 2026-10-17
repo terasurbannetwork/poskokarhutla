@@ -61,19 +61,24 @@
 /* kop resmi dan angka pokok: hanya di kertas cetak (layar tetap kartu Insight) */
 .lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth,.lp-prt{display:none}
 @media print{
-  /* kop berlogo diulang di tiap halaman: Chrome menggambar elemen fixed di setiap kertas; ditaruh di margin atas @page (27 mm) */
-  .lp-kop{display:flex;align-items:center;justify-content:center;gap:12px;color:#0b2545;text-align:center;position:fixed;top:-24mm;left:0;right:0;height:17mm}
+  /* kop berlogo di tiap halaman digambar di kotak margin @page (laporan.js); kop di alur halaman tidak dipakai */
+  .lp-kop,.lp-kop-garis{display:none!important}
   .lp-kop img{width:40px;height:40px}
   .lp-kop div{display:flex;flex-direction:column;line-height:1.25}
   .lp-kop b{font:800 15px var(--display,inherit)}
   .lp-kop span{font-size:11px;font-weight:700}
   .lp-kop small{font-size:9px;color:#5b6b82}
-  .lp-kop-garis{display:block;height:2.5px;background:#0b2545;box-shadow:0 3.5px 0 -2px #0b2545;position:fixed;top:-5.5mm;left:0;right:0;margin:0}
+  .lp-kop-garis{display:block;height:2.5px;background:#0b2545;box-shadow:0 3.5px 0 -2px #0b2545;position:fixed;top:18.5mm;left:0;right:0;margin:0}
   /* halaman 1 = kepala + angka pokok + Ringkasan; Ringkasan dikecilkan supaya muat */
-  [data-ex="ring"] .lp-gr svg{max-height:46mm}
+  [data-ex="ring"] .lp-gr svg{max-height:31mm}
+  [data-ex="ring"] .ex{break-inside:avoid}
+  /* judul dua poin: satu baris per poin, huruf kecil */
+  #insight .ex-jd h3{font-size:12.5px;line-height:1.45}
+  #insight .ex-jd h3 .lp-pt{white-space:nowrap}
+  .lp-co,.lp-bf{font-size:8.5px;padding:1px 6px}
   [data-ex="ring"] .ex-hd{padding-top:6px;padding-bottom:6px}
   [data-ex="ring"] .lp-th{margin-top:4px}
-  #insight [data-ex="ring"] .ex-bd .tw table.lp-tb tbody td{padding:1.5px 6px!important;font-size:8px}
+  #insight [data-ex="ring"] .ex-bd .tw table.lp-tb tbody td{padding:1px 6px!important;font-size:8px}
   [data-ex="luas"]{break-before:page}
   .lp-pokok{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0 0 12px;break-inside:avoid}
   .lp-pokok div{flex:0 0 calc((100% - 18px) / 4);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border-radius:8px;color:#fff;text-align:center;
@@ -192,3 +197,7 @@
 .lp-tb tr.lp-tw:first-of-type td,.lp-tb tr:not(.lp-tw) + tr.lp-tw td{border-top:2px solid oklch(42% .11 255 / .35)}
 .lp-peta .pa-l{font-size:12px;fill:#0b2545;stroke:#fff;stroke-width:3px}
 .lp-peta .pl{stroke:#e0b46a;stroke-width:1.3}
+/* baris total (latar navy): sel hari berjalan oranye gelap, perubahan memakai warna terang supaya terbaca */
+.lp-tb tfoot td.lp-smc{background:#8a4a18;color:#fff}
+.lp-tb tfoot .naik{color:#ff9d8c}
+.lp-tb tfoot .turun{color:#7fe3cf}

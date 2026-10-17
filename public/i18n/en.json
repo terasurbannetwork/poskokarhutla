@@ -7897,9 +7897,32 @@
 "Provinsi dengan titik panas": "Provinces with hotspots",
 "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi {1}{2} (SiPongi KLHK); rentang {3}{4} ha per titik; bukan pengukuran citra; {5} ha = {6} luas {7} piksel VIIRS ({8} m = {9} ha)": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official burned area {1}{2} (SiPongi KLHK); range {3}{4} ha per hotspot; not an imagery measurement; {5} ha = {6} of {7} VIIRS pixel ({8} m = {9} ha)",
 "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi {1}{2} (SiPongi KLHK); rentang {3}{4} ha per titik; bukan pengukuran citra": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official burned area {1}{2} (SiPongi KLHK); range {3}{4} ha per hotspot; not an imagery measurement",
-"Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak {0} Januari x {1} ha": "Sum of daily estimates; year to date = S-NPP hotspots since {0} January x {1} ha"
+"Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak {0} Januari x {1} ha": "Sum of daily estimates; year to date = S-NPP hotspots since {0} January x {1} ha",
+"Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi tahunan {1}{2} (SiPongi KLHK); kuartil {3}{4} ha per titik; uji balik tahunan meleset sampai +{5}/{6}; angka harian dan per wilayah indikatif; bukan pengukuran citra": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official annual burned area {1}{2} (SiPongi KLHK); quartiles {3}{4} ha per hotspot; annual back-test errors up to +{5}/{6}; daily and regional figures are indicative; not an imagery measurement",
+"Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi tahunan {1}{2} (SiPongi KLHK); kuartil {3}{4} ha per titik; uji balik tahunan meleset sampai +{5}/{6}; angka harian dan per wilayah indikatif; bukan pengukuran citra; {7} ha = {8} luas {9} piksel VIIRS ({10} m = {11} ha); ~ = hari dengan titik S-NPP ditaksir": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official annual burned area {1}{2} (SiPongi KLHK); quartiles {3}{4} ha per hotspot; annual back-test errors up to +{5}/{6}; daily and regional figures are indicative; not an imagery measurement; {7} ha = {8} of {9} VIIRS pixel ({10} m = {11} ha); ~ = day with estimated S-NPP count",
+"taksiran": "estimate"
 },
 "pola": [
+[
+"^ha \\(kuartil (.+?)–(.+?) juta ha, tanpa data (.+)\\)$",
+"ha (quartiles $1–$2 million ha, without $3 data)"
+],
+[
+"^ha \\(kuartil (.+?)–(.+?) juta ha\\)$",
+"ha (quartiles $1–$2 million ha)"
+],
+[
+"^ha \\((.+?): (.+?) ha\\); sepanjang (\\d+) ~$",
+"ha ($1: $2 ha); $3 to date ~"
+],
+[
+"^Kumulatif (\\d{4})$",
+"Cumulative $1"
+],
+[
+"^perkiraan sejak 1 Jan$",
+"estimate since 1 Jan"
+],
 [
 "^Kumulatif (\\d{4}) \\(ha\\)$",
 "Cumulative $1 (ha)"

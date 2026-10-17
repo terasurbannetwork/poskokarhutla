@@ -109,6 +109,8 @@ function batangProv(rows, W = 1300, mxG = 0) {
     return o + "</g>"; }).join("")}</svg></div>`;
 }
 /* ---------- peta sebaran per provinsi: lingkaran sebanding jumlah titik panas, label untuk provinsi terbanyak ---------- */
+let LOGO = "";
+fetch("/img/logo.svg?v=2").then(r => r.text()).then(t => { LOGO = t.replace(/<title>.*?<\/title>/, ""); if (D) semua(); }).catch(() => {});
 let GEO = null;   /* {d: {kode: path}, c: {kode: [x, y]}} sekali proyeksi; geo/provinsi.json dimuat malas */
 const PW = 1000, PH = 400, PS = PW / 46, pj = ([lo, la]) => [(lo - 95) * PS, (6.5 - la) * PS];
 async function muatGeo() {
@@ -355,8 +357,14 @@ function semua() {
   const cetak = tglPanjang(new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10));
   /* kop berlogo = kepala tiap halaman (position:fixed di cetak); baris kecilnya: tanggal cetak + cut-off tiap hari laporan */
   const kanan = [st.hari, ...(iB() > 0 ? [D.hari[iB()]] : [])].map(h => `Cut-off ${tgl(h)}: ${cutoff(h).replace(tgl(h) + " ", "")}`).join("  ·  ");
-  $("#lpKopTgl").textContent = cetak + "  ·  " + kanan;
-  $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:27mm 10mm 14mm;
+  /* kop tiap halaman = SVG berukuran tetap di kotak margin @page (elemen fixed salah letak di Chrome, gambar tanpa ukuran membesar) */
+  const xe = t => String(T(t)).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+  const kop = `<svg xmlns="http://www.w3.org/2000/svg" width="560" height="54" viewBox="0 0 560 54">${LOGO.replace("<svg ", '<svg x="0" y="3" width="46" height="46" ')}`
+    + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="58" y="18" font-size="16" font-weight="800">Centurisk97</text>`
+    + `<text x="58" y="34" font-size="11.5" font-weight="700">${xe("Laporan Harian Kebakaran Hutan dan Lahan")}</text>`
+    + `<text x="58" y="48" font-size="9.5" fill="#5b6b82">${xe(cetak)}  ·  ${xe(kanan)}</text></g></svg>`;
+  $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:24mm 10mm 14mm;
+    @top-center{content:url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(kop)}");vertical-align:bottom;padding-bottom:4mm;border-bottom:2px solid #0b2545}
     @bottom-left{content:${css("Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk97")};${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
     @bottom-right{content:"${en ? "Page" : "Halaman"} " counter(page) " ${en ? "of" : "dari"} " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}`;
 }
