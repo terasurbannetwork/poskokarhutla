@@ -50,6 +50,15 @@ function buatTitik(lon, lat) {
   return {type: "Feature", geometry: {type: "Point", coordinates: [lon, lat]}, properties: {id: "titik", kec: "Titik pilihan", kab: koor(lat, lon), prov: v("prov"), lat, lon, api24: [[lon, lat]], n: 1, level: 0,
     ffmc: v("ffmc"), bui: v("bui"), dc: v("dc"), isi: v("isi"), ws: v("ws"), wd: v("wd"), rh: v("rh"), t: v("t"), hari: 0, luas: 0}};
 }
+/* titik contoh siap pakai + tautan /sim?titik=lat,lon: pilih, hitung, lalu buka 3D (Adegan bila WebGL2 ada) */
+const CONTOH = {bromo: [112.975, -7.96]}; /* kaldera Tengger, ± 2,5 km tenggara Kawah Bromo; uji medan bergunung */
+async function contohTitik([lon, lat]) {
+  pilihTitik(lon, lat);
+  await new Promise(r => requestAnimationFrame(() => setTimeout(r, 50)));
+  $("#simJalan")?.click();
+  for (let i = 0; i < 240 && !(Sim.hasil && Sim.k === "titik"); i++) await new Promise(r => setTimeout(r, 250));
+  if (Sim.hasil && !D.user2d) mode(true, null);
+}
 function labelSim() { $("#s3Label").hidden = Sim.k !== "titik"; }
 function pilihTitik(lon, lat) {
   TG.f = buatTitik(lon, lat); Sim.pk = null; if (window.SimData) SimData.hasil = null; /* id sama dengan titik sebelumnya: buang sisa hitungan lama */
@@ -89,6 +98,8 @@ Sim.panel = function (...a) {
     TG.on = !TG.on; e.currentTarget.setAttribute("aria-pressed", TG.on); this.peta.getCanvas().style.cursor = TG.on ? "crosshair" : "";
     if (TG.on) toast("Klik titik di peta");
   };
+  $("#s3Pilih").insertAdjacentHTML("afterend", ` <button type="button" class="s3-pill" id="s3Bromo" style="margin-top:12px">${ik(P.pin)}Contoh: Bromo</button>`);
+  $("#s3Bromo").onclick = () => contohTitik(CONTOH.bromo);
   /* jalan masuk/keluar mode forensik dari panel pengaturan */
   if (this.hasil) { pa.insertAdjacentHTML("afterbegin", `<button type="button" class="s3-pill" id="s3Msk" style="margin-bottom:8px">${ik(F.on ? P.keluar : P.grafik)}${F.on ? "Tutup pengaturan" : "Mode forensik"}</button>`);
     $("#s3Msk").onclick = () => { if (F.on) { aturPa(false); return; } D.keluar = false; masukF(false); }; }
@@ -665,4 +676,9 @@ if (hal && wk) {
 /* bila tab Simulasi sudah termuat sebelum modul ini */
 if (Sim.f && $("#simPanel")?.innerHTML && !$("#s3Pilih")) Sim.panel();
 if (Sim.peta?.getLayer("sim-k")) Sim.pasangLapis();
+/* tautan langsung: /sim?titik=bromo atau /sim?titik=-7.96,112.975 (lintang,bujur; hanya di dalam kotak Indonesia) */
+(() => { const q = new URLSearchParams(location.search).get("titik"); if (!q) return;
+  const ll = CONTOH[q.toLowerCase()] || (([la, lo]) => [lo, la])(q.split(",").map(Number));
+  if (!(ll[1] >= -11.5 && ll[1] <= 6.5 && ll[0] >= 94 && ll[0] <= 141.5)) return;
+  const t = setInterval(() => { if (Sim.k && Sim.peta?.loaded()) { clearInterval(t); contohTitik(ll); } }, 300); })();
 })();
