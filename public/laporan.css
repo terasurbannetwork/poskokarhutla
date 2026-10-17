@@ -61,13 +61,20 @@
 /* kop resmi dan angka pokok: hanya di kertas cetak (layar tetap kartu Insight) */
 .lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth,.lp-prt{display:none}
 @media print{
-  .lp-kop{display:flex;align-items:center;justify-content:center;gap:12px;color:#0b2545;text-align:center}
+  /* kop berlogo diulang di tiap halaman: Chrome menggambar elemen fixed di setiap kertas; ditaruh di margin atas @page (27 mm) */
+  .lp-kop{display:flex;align-items:center;justify-content:center;gap:12px;color:#0b2545;text-align:center;position:fixed;top:-24mm;left:0;right:0;height:17mm}
   .lp-kop img{width:40px;height:40px}
   .lp-kop div{display:flex;flex-direction:column;line-height:1.25}
   .lp-kop b{font:800 15px var(--display,inherit)}
   .lp-kop span{font-size:11px;font-weight:700}
   .lp-kop small{font-size:9px;color:#5b6b82}
-  .lp-kop-garis{display:block;height:2.5px;background:#0b2545;margin:7px 0 12px;box-shadow:0 3.5px 0 -2px #0b2545}
+  .lp-kop-garis{display:block;height:2.5px;background:#0b2545;box-shadow:0 3.5px 0 -2px #0b2545;position:fixed;top:-5.5mm;left:0;right:0;margin:0}
+  /* halaman 1 = kepala + angka pokok + Ringkasan; Ringkasan dikecilkan supaya muat */
+  [data-ex="ring"] .lp-gr svg{max-height:46mm}
+  [data-ex="ring"] .ex-hd{padding-top:6px;padding-bottom:6px}
+  [data-ex="ring"] .lp-th{margin-top:4px}
+  #insight [data-ex="ring"] .ex-bd .tw table.lp-tb tbody td{padding:1.5px 6px!important;font-size:8px}
+  [data-ex="luas"]{break-before:page}
   .lp-pokok{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0 0 12px;break-inside:avoid}
   .lp-pokok div{flex:0 0 calc((100% - 18px) / 4);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border-radius:8px;color:#fff;text-align:center;
     background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));print-color-adjust:exact;-webkit-print-color-adjust:exact}
@@ -178,3 +185,10 @@
 :root[data-theme="dark"] .lp-peta{background:oklch(25% .03 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lp-peta{background:oklch(25% .03 256)}}
 @media print{.lp-pt-w{grid-template-columns:minmax(0,1fr) 62mm}.lp-rk li{padding:2px 6px;font-size:9px}.lp-peta{break-inside:avoid;print-color-adjust:exact;-webkit-print-color-adjust:exact}.lp-peta svg{max-height:120mm}}
+/* pil cut-off di ujung tiap poin judul */
+.lp-co{display:inline-block;vertical-align:middle;padding:2px 8px;border-radius:999px;font:700 10.5px var(--font);background:oklch(42% .11 255 / .1);color:var(--ink2);white-space:nowrap}
+/* baris triwulan di bawah tabel harian luas */
+.lp-tb tr.lp-tw td{background:oklch(42% .11 255 / .07);font-weight:700}
+.lp-tb tr.lp-tw:first-of-type td,.lp-tb tr:not(.lp-tw) + tr.lp-tw td{border-top:2px solid oklch(42% .11 255 / .35)}
+.lp-peta .pa-l{font-size:12px;fill:#0b2545;stroke:#fff;stroke-width:3px}
+.lp-peta .pl{stroke:#e0b46a;stroke-width:1.3}

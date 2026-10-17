@@ -7886,9 +7886,92 @@
 "mencatat titik panas terbanyak:": "recorded the most hotspots:",
 "kab/kota mencatat titik panas, terbanyak": "regencies/cities recorded hotspots, most in",
 "kab/kota, terbanyak": "regencies/cities, most in",
-"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk{0}": "Source: NASA FIRMS, BIG, KLHK SiPongi, BNPB; processed by Centurisk{0}"
+"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk{0}": "Source: NASA FIRMS, BIG, KLHK SiPongi, BNPB; processed by Centurisk{0}",
+"Perubahan hotspot": "Hotspot change",
+"Perkiraan luas per hari": "Estimated area per day",
+"Perkiraan luas (ha)": "Estimated area (ha)",
+"Peta provinsi": "Province map",
+"provinsi mencatat titik panas, terbanyak": "provinces recorded hotspots, most in",
+"Memuat peta…": "Loading map…",
+"Ukuran lingkaran sebanding jumlah titik panas": "Circle size proportional to hotspot count",
+"Provinsi dengan titik panas": "Provinces with hotspots",
+"Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi {1}{2} (SiPongi KLHK); rentang {3}{4} ha per titik; bukan pengukuran citra; {5} ha = {6} luas {7} piksel VIIRS ({8} m = {9} ha)": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official burned area {1}{2} (SiPongi KLHK); range {3}{4} ha per hotspot; not an imagery measurement; {5} ha = {6} of {7} VIIRS pixel ({8} m = {9} ha)",
+"Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x {0} ha, dikalibrasi ke luas terbakar resmi {1}{2} (SiPongi KLHK); rentang {3}{4} ha per titik; bukan pengukuran citra": "Estimate: VIIRS S-NPP hotspots (NASA FIRMS) x {0} ha, calibrated to official burned area {1}{2} (SiPongi KLHK); range {3}{4} ha per hotspot; not an imagery measurement",
+"Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak {0} Januari x {1} ha": "Sum of daily estimates; year to date = S-NPP hotspots since {0} January x {1} ha"
 },
 "pola": [
+[
+"^Kumulatif (\\d{4}) \\(ha\\)$",
+"Cumulative $1 (ha)"
+],
+[
+"^data (.+?) kosong di FIRMS$",
+"$1 data missing in FIRMS"
+],
+[
+"^Jan–Mar (\\d{4})$",
+"Jan–Mar $1"
+],
+[
+"^Apr–Jun (\\d{4})$",
+"Apr–Jun $1"
+],
+[
+"^Jul–Sep (\\d{4})$",
+"Jul–Sep $1"
+],
+[
+"^Okt–Des (\\d{4})$",
+"Oct–Dec $1"
+],
+[
+"^Okt–Des (\\d{4}) \\(s\\.d\\. (.+)\\)$",
+"Oct–Dec $1 (to $2)"
+],
+[
+"^Cut-off (.+)$",
+"Cut-off $1"
+],
+[
+"^Perubahan hotspot: (.+)$",
+"Hotspot change: $1"
+],
+[
+"^Perkiraan luas: (.+)$",
+"Estimated area: $1"
+],
+[
+"^Perkiraan luas (\\d+ \\S+) \\(ha\\)$",
+"Estimated area $1 (ha)"
+],
+[
+"^Kumulatif sejak (.+?) \\(ha\\)$",
+"Cumulative since $1 (ha)"
+],
+[
+"^ha \\((.+?): (.+?) ha\\); sepanjang (\\d+) ±$",
+"ha ($1: $2 ha); $3 to date ±"
+],
+[
+"^juta$",
+"million"
+],
+[
+"^(.+?) juta$",
+"$1 million"
+],
+[
+"^ha \\(rentang (.+?)–(.+?) juta ha\\)$",
+"ha (range $1–$2 million ha)"
+],
+[
+"^(.+?) \\(belum final\\)$",
+"$1 (not final)"
+],
+[
+"^Peta titik panas per provinsi (.+)$",
+"Hotspot map by province $1"
+],
 [
 "^Data (.+?) final, ditutup (.+)$",
 "Data $1 final, closed $2"
