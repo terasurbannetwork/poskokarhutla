@@ -71,7 +71,6 @@
   .lp-kop small{font-size:9px;color:#5b6b82}
   .lp-kop-garis{display:block;height:2.5px;background:#0b2545;box-shadow:0 3.5px 0 -2px #0b2545;position:fixed;top:18.5mm;left:0;right:0;margin:0}
   /* halaman 1 = kepala + angka pokok + Ringkasan; Ringkasan dikecilkan supaya muat */
-  [data-ex="ring"] .lp-gr svg,[data-ex="luas"] .lp-gr svg{max-height:25mm}
   #insight [data-ex="ring"] .ex-ft,#insight [data-ex="luas"] .ex-ft{padding:2px 14px!important;font-size:8px;min-height:0}
   [data-ex="ring"] .ex-bd,[data-ex="luas"] .ex-bd{padding-top:4px;padding-bottom:4px}
   [data-ex="ring"] .ex,[data-ex="luas"] .ex{break-inside:avoid}
@@ -89,7 +88,7 @@
   .lp-tb .lp-co,.lp-tb .lp-bf{font-size:6.5px;padding:0 5px;line-height:1.5}
   /* jarak kepala kartu ke grafik dirapatkan */
   [data-ex="ring"] .lp-gr,[data-ex="luas"] .lp-gr{margin-top:-4px}
-  [data-ex="ring"] .lp-gr svg,[data-ex="luas"] .lp-gr svg{max-height:48mm}
+  [data-ex="ring"] .lp-gr svg,[data-ex="luas"] .lp-gr svg{max-height:var(--gr,48mm)}
   #insight [data-ex="ring"] .ex-hd,#insight [data-ex="luas"] .ex-hd{padding-bottom:4px!important}
   #insight .ex-jd h3 .lp-pt + .lp-pt{margin-top:1px}
   [data-ex="ring"],[data-ex="luas"],[data-ex="peta"]{break-before:page}
@@ -203,6 +202,7 @@
 /* Kenaikan terbesar: panel hari terpilih dan hari berjalan berdampingan */
 .lp-pns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .lp-pn-h{display:flex;align-items:center;gap:8px;margin:0 0 8px;font:800 13px var(--display);color:var(--ink)}
+.lp-pn-h .lp-gl{font:600 11px var(--font);color:var(--ink2)}
 .lp-pn .lp-gr svg{min-width:0;width:100%}
 @media (max-width:900px){.lp-pns{grid-template-columns:1fr}}
 /* peta provinsi: provinsi bertitik navy, lainnya abu; lingkaran emas sebanding jumlah titik */
