@@ -24,6 +24,7 @@ VIIRS = os.path.join(AKAR, "data/raw/sebaran/viirs_veg_panjang.pkl")
 KELUAR = os.path.join(AKAR, "public/data/aktor_karhutla.json")
 T0 = dt.datetime(2015, 1, 1, tzinfo=dt.timezone.utc)  # menit arsip VIIRS dihitung dari sini (scripts/sebaran/umum.py)
 PERIODE = ("2026-01-01", "2026-09-01")
+TITIK_MAKS = 300  # titik terbaru per perusahaan yang disimpan untuk terbang-ke-titik
 
 SUMBER = {"judul": "Siapa di Balik Api? Kajian Peta Aktor Karhutla 2026", "penerbit": "Eksekutif Nasional WALHI",
           "tahun": 2026, "url": "https://www.walhi.or.id"}
@@ -289,7 +290,8 @@ def cek_silang(P, fitur):
     if not os.path.exists(VIIRS):
         return False
     v = pickle.load(open(VIIRS, "rb"))
-    m0, m1 = (int((dt.datetime.fromisoformat(t).replace(tzinfo=dt.timezone.utc) - T0).total_seconds() // 60) for t in PERIODE)
+    # hari kalender WIB (konvensi SiPongi): 1 Jan 00.00 WIB = 31 Des 17.00 UTC, supaya jumlah harian == titik_viirs persis
+    m0, m1 = (int((dt.datetime.fromisoformat(t).replace(tzinfo=dt.timezone.utc) - T0).total_seconds() // 60) - 420 for t in PERIODE)
     pakai = sorted({i for p in P.values() for i in p["_poli"]})
     ix = Indeks([fitur[i] for i in pakai])
     hit = {i: 0 for i in pakai}
@@ -305,16 +307,19 @@ def cek_silang(P, fitur):
     kode = {k: {KODE[x.strip()] for x in p["prov"].split(";") if x.strip() in KODE} for k, p in P.items()}
     t, la, lo = v["t"], v["lat"], v["lon"]
     import bisect
-    a, b = bisect.bisect_left(t, m0), bisect.bisect_left(t, m1)
-    for j in range(a, b):
+    a, b = bisect.bisect_left(t, m0), bisect.bisect_left(t, m1)  # a: 1 Jan 00.00 WIB (= 31 Des 17.00 UTC)
+    sam = {k: [] for k in P}  # indeks titik per perusahaan, 1 Jan WIB s.d. titik terakhir arsip
+    for j in range(a, len(t)):
         ks = set()
         for q in ix.cari(lo[j], la[j]):
             ks |= milik[pakai[q]]
             hit[pakai[q]] += 1
-        pv = (wil.cari(lo[j], la[j]) or ("",))[0] if ks else ""
+        pv = (wil.cari(lo[j], la[j]) or ("",))[0] if ks and m0 <= t[j] < m1 else ""
         for k in ks:  # satu titik dihitung sekali per perusahaan walau bloknya tumpang tindih
-            per[k] += 1
-            di_prov[k] += pv in kode[k]
+            sam[k].append(j)
+            if m0 <= t[j] < m1:
+                per[k] += 1
+                di_prov[k] += pv in kode[k]
     for k, p in P.items():
         if p["_poli"]:
             p["cek"]["titik_viirs"] = per[k]
@@ -324,7 +329,48 @@ def cek_silang(P, fitur):
                 nama_kode = {v: n for n, v in KODE.items()}
                 pv = [fitur[i]["properties"].get("prov") for i in p["_poli"]]
                 p["cek"]["prov_peta"] = nama_kode.get(max(set(pv), key=pv.count), "")
+            wib = lambda j: T0 + dt.timedelta(minutes=int(t[j]) + 420)
+            hr = {}
+            for j in sam[k]:
+                d = wib(j).date().isoformat()
+                hr[d] = hr.get(d, 0) + 1
+            p["harian"] = sorted(hr.items())
+            p["titik"] = [[round(la[j], 4), round(lo[j], 4), wib(j).strftime("%Y-%m-%d %H:%M"), round(float(v["frp"][j]), 1), "SNPP"]
+                          for j in sorted(sam[k], key=lambda j: -t[j])[:TITIK_MAKS]]
     return True
+
+
+class Kompleks:
+    """Titik -> kompleks K#### (kluster.json, jendela 7 hari): di dalam poligonnya, atau pusat terdekat <= 0,03 derajat (~3 km)."""
+    def __init__(self, jalur):
+        self.f, self.g = [], {}
+        if not os.path.exists(jalur):
+            return
+        for f in json.load(open(jalur))["features"]:
+            p = f["properties"]
+            poli = cincin(f["geometry"]) if f["geometry"]["type"] != "Point" else []
+            bb = None
+            if poli:
+                xs, ys = zip(*(c for r in poli for c in r[0]))
+                bb = (min(xs), min(ys), max(xs), max(ys))
+            self.g.setdefault((int(p["lon"] * 20), int(p["lat"] * 20)), []).append(len(self.f))  # sel 0,05 derajat
+            self.f.append((p["id"], p["lon"], p["lat"], poli, bb))
+
+    def cari(self, lon, lat):
+        cx, cy, ada = int(lon * 20), int(lat * 20), []
+        for a in (cx - 1, cx, cx + 1):
+            for b in (cy - 1, cy, cy + 1):
+                ada += self.g.get((a, b), [])
+        for i in ada:
+            kid, _, _, poli, bb = self.f[i]
+            if bb and bb[0] <= lon <= bb[2] and bb[1] <= lat <= bb[3] and any(di_dalam(lon, lat, r) for r in poli):
+                return kid
+        d, kid = 0.03 ** 2, None
+        for i in ada:
+            dd = (self.f[i][1] - lon) ** 2 + (self.f[i][2] - lat) ** 2
+            if dd <= d:
+                d, kid = dd, self.f[i][0]
+        return kid
 
 
 def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
@@ -340,15 +386,25 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
         for i in p["_poli"]:
             milik.setdefault(i, set()).add(k)
     per = {k: 0 for k in P}
+    kp = Kompleks(os.path.join(AKAR, "public/data/kluster.json"))
+    t0 = dt.datetime.fromisoformat(h["acuan"])
+    kom = {k: {} for k in P}
     for r in h["baris"]:
         ks = set()
         for q in ix.cari(r[io], r[il]):
             ks |= milik[pakai[q]]
+        kid = kp.cari(r[io], r[il]) if ks else None
+        w = (t0 + dt.timedelta(hours=r[h["kolom"].index("jam")] + 7)).strftime("%Y-%m-%d")
         for k in ks:
             per[k] += 1
+            if kid:
+                e = kom[k].setdefault(kid, {"id": kid, "n": 0, "dari": w, "sampai": w})
+                e["n"] += 1
+                e["dari"], e["sampai"] = min(e["dari"], w), max(e["sampai"], w)
     for k, p in P.items():
         if p["_poli"]:
             p["cek"]["titik_terkini"] = per[k]
+            p["kompleks"] = sorted(kom[k].values(), key=lambda e: -e["n"])
     tgl = sorted({r[h["kolom"].index("tgl_wib")] for r in h["baris"]})
     return {"acuan": h["acuan"], "dari": tgl[0] if tgl else "", "sampai": tgl[-1] if tgl else ""}
 
@@ -370,14 +426,25 @@ def industri(q):
 def tulis(P, fitur, viirs_baru, acuan=None):
     lama = {}
     if os.path.exists(KELUAR):
-        lama = {p["nama"]: p.get("cek", {}) for p in json.load(open(KELUAR)).get("perusahaan", [])}
+        lama = {p["nama"]: p for p in json.load(open(KELUAR)).get("perusahaan", [])}
     daf = []
     for p in P.values():
         q = {k: v for k, v in p.items() if not k.startswith("_")}
         if not viirs_baru:
             for c in ("titik_viirs", "lokasi"):
+                if c in lama.get(q["nama"], {}).get("cek", {}):
+                    q["cek"][c] = lama[q["nama"]]["cek"][c]
+            for c in ("harian", "titik"):  # tanpa arsip VIIRS: pertahankan yang lama
                 if c in lama.get(q["nama"], {}):
-                    q["cek"][c] = lama[q["nama"]][c]
+                    q[c] = lama[q["nama"]][c]
+        if not q["cek"]["poligon"]:  # lokasi beda tetap diisi: layar memakai provinsi poligon peta (prov_peta, pemilik 17 Okt 2026)
+            q["kosong"] = "tanpa_poligon"
+        if q.get("kosong"):  # tidak ada poligon peta: tidak ada titik, tidak ada kompleks
+            q["harian"], q["titik"], q["kompleks"] = [], [], []
+        else:
+            q.setdefault("harian", [])
+            q.setdefault("titik", [])
+            q.setdefault("kompleks", [])
         q["peringkat"] = max(p["titik_agu"] or 0, p["titik_sep"] or 0)
         q["industri"] = industri(q)
         daf.append(q)
@@ -388,7 +455,7 @@ def tulis(P, fitur, viirs_baru, acuan=None):
         for i in p["_poli"]:
             poli.setdefault(fitur[i]["properties"].get("id") or str(i), p["nama"])
     out = {"dibuat": dt.date.today().isoformat(), "sumber": SUMBER, "periode": {"tabel": "1 Jan - 31 Agu 2026", "lampiran": "Jan - Sep 2026",
-           "cek": "1 Jan - 31 Agu 2026, VIIRS S-NPP, FIRMS kosong 8 Mei - 1 Jun", "terkini": acuan},
+           "cek": "1 Jan - 31 Agu 2026 (hari WIB), VIIRS S-NPP, FIRMS kosong 8 Mei - 1 Jun", "terkini": acuan},
            "ringkasan": {"titik_jan_sep": 30927, "titik_konsesi": 9951, "areal_sawit": 561, "pbph": 293, "modal_asing": 9, "grup_my_sg": 93,
                          "teridentifikasi": 22, "belum_teridentifikasi": 10},
            "negara": NEGARA, "grup_negara": {**GRUP_NEGARA, **GRUP_PETA}, "grup": [{"grup": g, "negara": n, "jumlah": j} for g, n, j in TABEL4],
@@ -417,6 +484,19 @@ def uji():
     assert len(q["PT Kiani Lestari"]["tokoh"]) == 3
     assert q["PT Mayawana Persada"]["industri"] == "Hutan tanaman (pulp)" and q["PT Kayung Agro Lestari"]["industri"] == "Kelapa sawit"
     assert q["PT Grace Putri Perdana"]["cek"].get("lokasi") == "beda" and q["PT Grace Putri Perdana"]["cek"].get("prov_peta") == "Kalimantan Tengah" and q["PT Mayawana Persada"]["cek"].get("lokasi") == "cocok", "cek lokasi"
+    assert q["PT Grace Putri Perdana"]["harian"], "lokasi beda tetap punya titik harian"
+    for p in d["perusahaan"]:  # harian/titik/kompleks selalu ada; kosong bila poligon tak dipercaya
+        assert all(k in p for k in ("harian", "titik", "kompleks")), p["nama"]
+        if p.get("kosong"):
+            assert p["kosong"] == "tanpa_poligon" and not (p["harian"] or p["titik"] or p["kompleks"]), p["nama"]
+        hr = [d_ for d_, _ in p["harian"]]
+        assert hr == sorted(set(hr)) and all(n > 0 and d_ >= "2026-01-01" for d_, n in p["harian"]), p["nama"]
+        assert len(p["titik"]) <= TITIK_MAKS and all(len(x) == 5 for x in p["titik"]), p["nama"]
+        assert [x[2] for x in p["titik"]] == sorted((x[2] for x in p["titik"]), reverse=True), "titik bukan terbaru-dulu"
+        assert sum(n for _, n in p["harian"]) >= len(p["titik"]), p["nama"]
+        if "titik_viirs" in p["cek"] and p["harian"]:
+            assert sum(n for d_, n in p["harian"] if d_ < "2026-09-01") == p["cek"]["titik_viirs"], p["nama"]
+        assert all(e["n"] > 0 and e["dari"] <= e["sampai"] and e["id"].startswith("K") for e in p["kompleks"]), p["nama"]
     print("ok", len(nama), "perusahaan;", sum(1 for p in d["perusahaan"] if p["cek"]["poligon"]), "cocok peta")
 
 
