@@ -110,8 +110,8 @@
   /* Kenaikan terbesar: dua panel berdampingan di kertas, judul panel tidak terpisah dari batangnya, kartu utuh satu halaman */
   .lp-pns{grid-template-columns:1fr 1fr!important;gap:8mm}
   .lp-pn{break-inside:avoid}
-  [data-ex="naik"]{break-before:page}
-  [data-ex="naik"] .ex{break-inside:avoid}
+  [data-ex="naikp"],[data-ex="naik"]{break-before:page}
+  [data-ex="naikp"] .ex,[data-ex="naik"] .ex{break-inside:avoid}
   .lp-pn .lp-gr svg{max-height:none}
   .lp-pokok{display:flex;flex-wrap:wrap;justify-content:center;gap:6px;margin:0 0 12px;break-inside:avoid}
   .lp-pokok div{flex:0 0 calc((100% - 18px) / 4);display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 10px;border-radius:8px;color:#fff;text-align:center;
