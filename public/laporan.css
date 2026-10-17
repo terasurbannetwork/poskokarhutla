@@ -16,6 +16,10 @@
 .lp-kep .seg{border-color:transparent}
 .lp-kep .kosong{color:#fff}
 .lp-gr{overflow-x:auto;scrollbar-width:thin}
+/* huruf grafik: keluarga huruf halaman, label sumbu abu tebal, hari terpilih pekat */
+.lp-gr svg text{font-family:var(--font)}
+.lp-gr svg text.lp-sb{font:700 12.5px var(--display);fill:var(--ink2)}
+.lp-gr svg text.lp-sb.on{font-weight:800;fill:var(--ink)}
 .lp-gr svg{min-width:640px}
 .lp-gr-h svg{min-width:900px}
 .naik{color:#b8392b;font-weight:700}

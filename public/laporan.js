@@ -68,7 +68,7 @@ function batang(hari, vals, sel, satuan) {
     s += `<g data-tip="${tip}"><rect x="${cx - bw / 2}" y="${y}" width="${bw}" height="${Math.max(2, H - pb - y)}" rx="5" style="fill:${on ? WARNA_SEL : WARNA_TOT}" opacity="${sm ? .55 : 1}"/>`
       + Kartu.pil(cx - (String(fmt(v)).length * 6.6 + 16) / 2, y - 25, fmt(v), on ? WARNA_SEL : "#0b2545", "#fff", 11)[0]
       + pilPersen(cx, y - 49, v, ix > 0 ? satuan.arr[ix - 1] : null)
-      + `<text x="${cx}" y="${H - 9}" text-anchor="middle" font-size="11.5" font-weight="${on ? 800 : 500}">${tgl(h)}</text></g>`;
+      + `<text class="lp-sb${on ? " on" : ""}" x="${cx}" y="${H - 8}" text-anchor="middle">${tgl(h)}</text></g>`;
   });
   return `<div class="lp-gr"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(satuan.nama)} per hari">${s}</svg></div>`;
 }
