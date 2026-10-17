@@ -134,7 +134,7 @@ function kartuRingkasan() {
   const j = `${Kartu.hl(fmt(n.titik[i]))} titik panas di ${Kartu.hl(fmt(n.kab[i]))} kab/kota pada ${tgl(h)}${sementara() ? " (sementara)" : ""}${tp != null ? `, ${ubah(n.titik[i], tp)}${bdg} (${fmt(tp)} titik)` : ""}; luas indikasi terbakar ${Kartu.hl(fmt(n.luas[i]))} ha${lp != null ? `, ${ubah(n.luas[i], lp)} dari ${fmt(lp)} ha` : ""}`;
   const hs = hariGrafik();
   return Kartu.kartu("Ringkasan", j, batang(hs, hs.map(x => n.titik[D.hari.indexOf(x)]), h, {nama: "Titik panas", u: "titik", arr: n.titik}) + tabelHarian([["Titik panas", i => fmt(n.titik[i]), 1], ["Perubahan titik", i => i > 0 ? ubah(n.titik[i], n.titik[i - 1]) : "–", 1],
-    ["Kab/kota bertitik", i => fmt(n.kab[i]), 1], ["Provinsi bertitik", i => fmt(Object.values(D.prov).filter(o => o.titik[i] > 0).length), 1]]), tt(D.sumber.titik), segRentang());
+    ["Kab/kota memiliki hotspot", i => fmt(n.kab[i]), 1], ["Provinsi memiliki hotspot", i => fmt(Object.values(D.prov).filter(o => o.titik[i] > 0).length), 1]]), tt(D.sumber.titik), segRentang());
 }
 function kartuLuas() {
   const i = idx(), n = D.nasional, kum = sum(n.baru, i), hs = hariGrafik();
@@ -210,7 +210,7 @@ function kartuSumber() {
     ["Kumulatif", "Jumlah luas baru harian: piksel yang tidak terdeteksi pada 7 hari sebelumnya"],
     ["Kejadian api", tt(s.kompleks)], ["FWI", tt(s.fwi)], ["Wilayah", tt(s.wilayah)], ["SiPongi", tt(s.sipongi)], ["BNPB", tt(s.bnpb)]].filter(r => r[1] && r[1] !== "undefined");
   const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} ${sementara() ? "masih sementara" : "sudah ditutup"}`;
-  return Kartu.kartu("Cut-off dan sumber data", j, `<div class="tw"><table class="lp-tb lp-tb-s"><thead><tr><th>Label</th><th>Isi</th></tr></thead><tbody>${baris.map(r => `<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td></tr>`).join("")}</tbody></table></div>`, "NASA FIRMS, BIG, KLHK SiPongi, BNPB, olahan Pantau Bencana");
+  return Kartu.kartu("Cut-off dan sumber data", j, `<div class="tw"><table class="lp-tb lp-tb-s"><thead><tr><th>Label</th><th>Isi</th></tr></thead><tbody>${baris.map(r => `<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td></tr>`).join("")}</tbody></table></div>`, "NASA FIRMS, BIG, KLHK SiPongi, BNPB, olahan Centurisk97");
 }
 
 function kepala() {
@@ -233,15 +233,15 @@ function semua() {
   $("#upd").textContent = "Data s.d. " + jamWIB(D.cutoff);
   /* angka pokok untuk kertas cetak (gaya lembar ekspor pangantara: kotak navy 4 lajur, label kecil di atas, nilai besar) */
   { const i = idx(), n = D.nasional, pv = Object.values(D.prov).filter(o => o.titik[i] > 0).length, ub = (a, b) => i > 0 && b ? (v => (v > 0 ? "▲ " : v < 0 ? "▼ " : "") + fmt(Math.abs(v)) + "%")(Math.round((a - b) / b * 100)) : "–";
-    $("#lpPokok").innerHTML = [["Titik panas", fmt(n.titik[i]), ub(n.titik[i], n.titik[i - 1]) + (i > 0 ? " dari " + fmt(n.titik[i - 1]) + " (" + tgl(D.hari[i - 1]) + ")" : "")], ["Kab/kota bertitik", fmt(n.kab[i]), "di " + fmt(pv) + " provinsi"],
+    $("#lpPokok").innerHTML = [["Titik panas", fmt(n.titik[i]), ub(n.titik[i], n.titik[i - 1]) + (i > 0 ? " dari " + fmt(n.titik[i - 1]) + " (" + tgl(D.hari[i - 1]) + ")" : "")], ["Kab/kota memiliki hotspot", fmt(n.kab[i]), "di " + fmt(pv) + " provinsi"],
       ["Luas indikasi terbakar", fmt(n.luas[i]) + " ha", ub(n.luas[i], n.luas[i - 1]) + (i > 0 ? " dari " + fmt(n.luas[i - 1]) + " ha (" + tgl(D.hari[i - 1]) + ")" : "")], ["Kumulatif", fmt(sum(n.baru, i)) + " ha", "sejak " + tgl(D.awal_arsip)]]
       .map(([l, v, k]) => `<div><span>${l}</span><b>${v}</b><small>${k}</small></div>`).join(""); }
   /* kepala dan kaki kertas cetak: kotak margin @page (menggantikan tanggal/URL bawaan browser), isinya mengikuti hari terpilih */
   const css = t => '"' + String(t).replace(/["\\]/g, "") + '"', f = "font:600 8.5px Inter,system-ui,sans-serif;color:#5b6b82";
   $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:14mm 10mm 14mm;
-    @top-left{content:${css("LAPORAN HARIAN KARHUTLA  ·  " + tglPanjang(st.hari) + (sementara() ? " (sementara)" : ""))};font:800 9px Inter,system-ui,sans-serif;letter-spacing:.06em;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm}
+    @top-left{content:${css("Centurisk97  ·  Laporan Harian Karhutla  ·  " + tglPanjang(st.hari) + (sementara() ? " (sementara)" : ""))};font:800 9px Inter,system-ui,sans-serif;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm}
     @top-right{content:${css("Cut-off " + jamWIB(D.cutoff) + "  ·  ditutup " + D.jadwal.tutup)};${f};border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm}
-    @bottom-left{content:"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Pantau Bencana  ·  pantau.terasurban.com/laporan";${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
+    @bottom-left{content:"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk97";${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
     @bottom-right{content:"Halaman " counter(page) " dari " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}
     @page :first{@top-left{content:"";border:0}@top-right{content:"";border:0}}`;
 }

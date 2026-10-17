@@ -199,7 +199,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None):
         "sumber": {
             "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
             "luas": "NASA FIRMS NRT: VIIRS S-NPP, NOAA-20, NOAA-21, keyakinan nominal dan tinggi; indikasi, bukan citra",
-            "kompleks": "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari); status dihitung dari aturan Pantau Bencana",
+            "kompleks": "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari); status dihitung dari aturan Centurisk97",
             "wilayah": "Badan Informasi Geospasial (BIG), batas wilayah administrasi edisi Juni 2026",
             "sipongi": "KLHK SiPongi, indikasi luas kebakaran per provinsi",
             "bnpb": bn,
