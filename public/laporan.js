@@ -195,14 +195,15 @@ function kartuProvGrafik() {
 }
 
 /* tabel harian di bawah grafik: hari terbaru di atas, hari terpilih ditandai; kol = [[judul, (i) => isi sel, angka?]] */
-/* baris riwayat triwulan yang sudah lewat (triwulan berjalan sudah terwakili baris harian): judul bagian + satu baris per
-   triwulan, terbaru di atas. sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
+/* baris riwayat per triwulan: judul bagian + satu baris per triwulan, terbaru di atas. Triwulan berjalan ikut tampil
+   ("Okt–Des s.d. 17 Okt") supaya baris-baris S-NPP ini persis berjumlah Grand total; perubahannya "–" karena belum genap.
+   sel(q, triwulan sebelumnya, indeks) -> isi kolom angka; "" = sel kosong tanpa tanda */
 function riwayatTw(sel) {
-  const tw = (D.tahun_berjalan?.triwulan || []).slice(0, -1); if (!tw.length) return "";
-  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length;
+  const tw = D.tahun_berjalan?.triwulan || []; if (!tw.length) return "";
+  const th = D.tahun_berjalan.sd.slice(0, 4), kolom = sel(tw[0], null, 0).length, akhir = tw.length - 1;
   return `<tr class="lp-twh"><td colspan="${kolom + 1}">Riwayat per triwulan ${th} <span class="lp-co">VIIRS S-NPP</span></td></tr>`
-    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}</b></td>`
-      + sel(q, tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
+    + tw.map((q, i) => `<tr class="lp-tw"><td><b>${q.nama} ${th}${i === akhir ? ` s.d. ${tgl(D.tahun_berjalan.sd)}` : ""}</b></td>`
+      + sel(q, i === akhir ? null : tw[i - 1], i).map(v => `<td class="n">${v}</td>`).join("") + "</tr>").reverse().join("");
 }
 /* kertas: grafik dipendekkan sesuai jumlah baris tabel supaya kartu (kepala + grafik + tabel + sumber) muat satu halaman
    A4 mendatar (isi 174 mm, baris ~4,1 mm, sisanya ~46 mm). ponytail: bulan > ~28 baris tetap meluber, grafik berhenti di 22 mm */
