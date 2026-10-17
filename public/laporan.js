@@ -3,7 +3,7 @@
    tidak menghitung ulang angka pipeline, hanya selisih/persentase tampilan. Butuh inti/format.js, kartu.js, pilih.js, tip.js, tabel.js. */
 const LEVEL = ["Pencegahan rutin", "Patroli terpadu", "Siaga pemadaman awal", "Prioritas pemadaman"];
 const PER = 20;
-const st = {hari: null, manual: false, rentang: 14, cari: "", provK: "", cetak: false,
+const st = {hari: null, manual: false, rentang: 14, cari: "", provK: "", provM: "", cetak: false,
   p: {urut: "t", turun: true, hal: 0}, k: {urut: "t", turun: true, hal: 0}};
 let D = null;
 
@@ -59,7 +59,7 @@ function urut(a, s) {
 /* ---------- grafik SVG ---------- */
 const WARNA_TOT = "#33507a", WARNA_SEL = "#c9503a";
 function batang(hari, vals, sel, satuan) {
-  const W = 900, H = 270, pb = 30, pt = 38, n = hari.length, slot = W / n, bw = Math.min(46, slot * .62), mx = Math.max(...vals, 1), gy = v => pt + (H - pt - pb) * (1 - v / mx);
+  const W = 900, H = 290, pb = 30, pt = 62, n = hari.length, slot = W / n, bw = Math.min(46, slot * .62), mx = Math.max(...vals, 1), gy = v => pt + (H - pt - pb) * (1 - v / mx);
   let s = `<line x1="0" x2="${W}" y1="${H - pb}" y2="${H - pb}" style="stroke:var(--line)" stroke-width="1.5"/>`;
   hari.forEach((h, i) => {
     const v = vals[i] ?? 0, cx = slot * i + slot / 2, y = gy(v), on = h === sel, sm = h === D.hari_berjalan, ix = D.hari.indexOf(h);
@@ -67,6 +67,7 @@ function batang(hari, vals, sel, satuan) {
     const tip = `<b>${tgl(h)}${sm ? " (sementara)" : ""}</b><br>${satuan.nama}: ${fmt(v)} ${satuan.u}${p ? `<br>Perubahan: ${p}` : ""}`.replace(/"/g, "&quot;");
     s += `<g data-tip="${tip}"><rect x="${cx - bw / 2}" y="${y}" width="${bw}" height="${Math.max(2, H - pb - y)}" rx="5" style="fill:${on ? WARNA_SEL : WARNA_TOT}" opacity="${sm ? .55 : 1}"/>`
       + Kartu.pil(cx - (String(fmt(v)).length * 6.6 + 16) / 2, y - 25, fmt(v), on ? WARNA_SEL : "#0b2545", "#fff", 11)[0]
+      + pilPersen(cx, y - 49, v, ix > 0 ? satuan.arr[ix - 1] : null)
       + `<text x="${cx}" y="${H - 9}" text-anchor="middle" font-size="11.5" font-weight="${on ? 800 : 500}">${tgl(h)}</text></g>`;
   });
   return `<div class="lp-gr"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${esc(satuan.nama)} per hari">${s}</svg></div>`;
@@ -84,8 +85,39 @@ function batangMendatar(rows) {
   return `<div class="lp-gr lp-gr-h"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Kenaikan titik terbesar">${s}</svg></div>`;
 }
 
+/* pil perubahan harian di atas batang: ▲ merah naik, ▼ hijau turun, abu tetap; tanpa pembanding tidak digambar */
+function pilPersen(cx, y, v, p) {
+  if (p == null) return "";
+  const n = !p ? null : Math.round((v - p) / p * 100), t = n == null ? (v ? "▲ baru" : "0%") : n > 0 ? `▲ ${fmt(n)}%` : n < 0 ? `▼ ${fmt(-n)}%` : "0%";
+  const bg = n > 0 || (n == null && v) ? "#fbe3de" : n < 0 ? "#dcefed" : "var(--surface)", fg = n > 0 || (n == null && v) ? "#b8392b" : n < 0 ? "#1f6f6a" : "currentColor";
+  return Kartu.pil(cx - (t.length * 6 + 16) / 2, y, t, bg, fg, 10)[0];
+}
+/* batang per provinsi hari terpilih: titik (batang), luas, perubahan harian; rincian lengkap di tooltip */
+function batangProv(rows) {
+  const W = 1300, bh = 28, g = 8, H = rows.length * (bh + g) + 6, x0 = 230, mx = Math.max(...rows.map(r => r.t), 1), i = idx();
+  const kem = i > 0 ? tgl(D.hari[i - 1]) : "";
+  return `<div class="lp-gr lp-gr-h"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per provinsi">${rows.map((r, j) => {
+    const y = j * (bh + g) + 3, w = Math.max(3, (W - x0 - 330) * r.t / mx), ub = (n, q) => q == null ? "–" : !q ? (n ? "▲ baru" : "–") : (v => v > 0 ? `▲ ${fmt(v)}%` : v < 0 ? `▼ ${fmt(-v)}%` : "0%")(Math.round((n - q) / q * 100));
+    const tip = `<b>${r.nama}</b> · ${tgl(st.hari)}<br>Titik panas: ${fmt(r.t)}${kem ? `<br>Titik ${kem}: ${fmt(r.tp)}<br>Perubahan titik: ${ub(r.t, r.tp)}` : ""}<br>Luas indikasi: ${fmt(r.l)} ha${kem ? `<br>Perubahan luas: ${ub(r.l, r.lp)}` : ""}<br>Kumulatif: ${fmt(r.kum)} ha<br>Kejadian api: ${fmt(r.kompleks)}<br>Status: ${LEVEL[r.level] || "–"}`;
+    let x = x0 + w + 8, o = `<g data-tip="${esc(tip)}"><text x="${x0 - 10}" y="${y + bh / 2 + 4}" text-anchor="end" font-size="12.5" font-weight="600">${esc(r.nama)}</text>`
+      + `<rect x="${x0}" y="${y}" width="${w}" height="${bh}" rx="6" style="fill:${WARNA_TOT}"/>`;
+    const [a, wa] = Kartu.pil(x, y + 4, fmt(r.t) + " titik", "#0b2545", "#fff", 11.5); o += a; x += wa + 6;
+    o += pilPersen(x + (ub(r.t, r.tp).length * 6 + 16) / 2, y + 4, r.t, r.tp); x += ub(r.t, r.tp).length * 6 + 22;
+    const [b] = Kartu.pil(x, y + 4, fmt(r.l) + " ha", "var(--surface)", "currentColor", 11); o += b;
+    return o + "</g>"; }).join("")}</svg></div>`;
+}
+function kartuProvGrafik() {
+  const P = Kartu.provDipilih("provM", st), semuaRows = barisProv(), rows = semuaRows.filter(r => !P.length || P.includes(r.kode)).sort((a, b) => b.t - a.t);
+  const kode = semuaRows.map(r => r.kode).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
+  const naik = rows.filter(r => r.tp != null && r.t > r.tp).length;
+  const j = rows.length ? `Titik panas naik di ${Kartu.hl(fmt(naik) + " dari " + fmt(rows.length))} provinsi pada ${tgl(st.hari)}${idx() > 0 ? ` dibanding ${tgl(D.hari[idx() - 1])}` : ""}` : "Tidak ada provinsi yang cocok";
+  return Kartu.kartu("Per provinsi", j, rows.length ? batangProv(rows) : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
+    Kartu.selProvMulti("provM", kode, k => D.prov[k].nama, st));
+}
+
 /* ---------- kartu ---------- */
-const segRentang = () => Kartu.seg("rentang", [[7, "7 hari"], [14, "14 hari"]], st);
+/* pilihan rentang baru muncul bila arsip sudah lebih dari 7 hari (sebelumnya 7 dan 14 hari tampil sama) */
+const segRentang = () => D.hari.length > 7 ? Kartu.seg("rentang", [[7, "7 hari"], [14, "14 hari"]], st) : "";
 const hariGrafik = () => D.hari.slice(-st.rentang);
 
 function kartuRingkasan() {
@@ -116,7 +148,7 @@ function tabelProv() {
 function kartuProv() {
   const i = idx(), rows = barisProv().sort((a, b) => b.t - a.t), top = rows[0], tot = D.nasional.titik[i];
   const j = top && top.t ? `${Kartu.hl(esc(top.nama))} mencatat titik panas terbanyak pada ${tgl(st.hari)}: ${Kartu.hl(fmt(top.t))} dari ${Kartu.hl(fmt(tot))} titik di seluruh Indonesia (${fmt(Math.round(top.t / tot * 100))}%)` : `Tidak ada titik panas tercatat pada ${tgl(st.hari)}`;
-  return Kartu.kartu("Per provinsi", j, '<div id="lpProv"></div>', tt([D.sumber.titik, D.sumber.luas, D.sumber.kompleks, D.sumber.sipongi, D.sumber.bnpb].filter(Boolean).join("; ")));
+  return Kartu.kartu("Tabel provinsi", j, '<div id="lpProv"></div>', tt([D.sumber.titik, D.sumber.luas, D.sumber.kompleks, D.sumber.sipongi, D.sumber.bnpb].filter(Boolean).join("; ")));
 }
 function tabelKab() {
   const i = idx(), h = tgl(st.hari), kem = i > 0 ? tgl(D.hari[i - 1]) : "sebelumnya", q = st.cari.trim().toLowerCase();
@@ -175,7 +207,7 @@ function renderProv() { const e = $("#lpProv"); if (e) { e.innerHTML = tabelProv
 function renderKab() { const e = $("#lpKab"); if (e) { e.innerHTML = tabelKab(); tandai(e, st.k); pengurutKepala(st.k, e.querySelector("thead"), () => nanti(renderKab)); } }
 function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`); if (b) b.textContent = s.turun ? "↓" : "↑"; }
 function semua() {
-  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
+  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
   renderProv(); renderKab();
   document.querySelectorAll(".lp-gr,.lp-kep .seg").forEach(e => { e.scrollLeft = e.scrollWidth; });   /* hari terpilih ada di ujung kanan */
   $("#upd").textContent = "Data s.d. " + jamWIB(D.cutoff);
@@ -195,6 +227,11 @@ document.addEventListener("click", e => {
   if (p && !p.disabled) { if (/^\d+$/.test(p.textContent)) p.parentElement.querySelectorAll(".pgn-b").forEach(x => x.classList.toggle("on", x === p)); st.k.hal = +p.dataset.h; nanti(renderKab); return; }
   if (e.target.closest("#lpCetak")) print();
 });
+document.addEventListener("change", e => {
+  const m = e.target.closest("input[data-multi]");
+  if (m) { const box = m.closest(".pm-menu"); if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
+    st[m.dataset.multi] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); Kartu._bukaMulti = m.dataset.multi; nanti(renderProvGrafik); return; } });
+const renderProvGrafik = () => isi("provg", kartuProvGrafik());
 document.addEventListener("change", e => { const s = e.target.closest('select[data-set="provK"]'); if (s) { st.provK = s.value; st.k.hal = 0; nanti(renderKab); } });
 let tunda;
 document.addEventListener("input", e => { if (e.target.id !== "lpCari") return; st.cari = e.target.value; st.k.hal = 0; clearTimeout(tunda); tunda = setTimeout(() => nanti(renderKab), 120); });

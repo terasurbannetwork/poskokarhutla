@@ -28,7 +28,8 @@
 .lp-tb th.n,.lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
 .lp-tb tbody td:first-child{font-weight:600}
 .lp-tb tfoot td{padding:10px 14px}
-.lp-tb thead th{text-transform:none;font-size:11.5px;letter-spacing:0}
+.lp-tb thead th{text-transform:none;font-size:11px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
+.lp-tb thead th button{display:inline;white-space:normal}
 .lp-tb thead th button i{margin-left:2px}
 .lp-lv{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;color:#fff}
 .lv0{background:#6b7f99}.lv1{background:#b08a1e}.lv2{background:#d2772c}.lv3{background:#c9503a}
@@ -65,4 +66,4 @@
   thead th,tfoot td,.lp-lv,.lp-pil,rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
 
-#insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:9px 10px}
+#insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:8px 8px}
