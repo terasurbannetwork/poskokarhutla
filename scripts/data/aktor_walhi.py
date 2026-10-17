@@ -29,7 +29,7 @@ TITIK_MAKS = 300  # titik terbaru per perusahaan yang disimpan untuk terbang-ke-
 SUMBER = {"judul": "Siapa di Balik Api? Kajian Peta Aktor Karhutla 2026", "penerbit": "Eksekutif Nasional WALHI",
           "tahun": 2026, "url": "https://www.walhi.or.id"}
 NEGARA = {"ID": "Indonesia", "SG": "Singapura", "MY": "Malaysia", "IN": "India", "KR": "Korea Selatan",
-          "KY": "Kepulauan Cayman", "VG": "Kepulauan Virgin Britania (BVI)", "WS": "Samoa"}
+          "KY": "Kep. Cayman", "VG": "Kep. Virgin Britania (BVI)", "WS": "Samoa"}
 # Tabel 4: grup -> negara basis hukum (Sinar Mas, Wilmar, Salim: induk usaha terdaftar di Singapura)
 GRUP_NEGARA = {"Sinar Mas": "SG", "APP/Sinar Mas": "SG", "Wilmar": "SG", "Sime Darby": "MY", "Genting Group": "MY",
                "BHD Group": "MY", "Musim Mas": "SG", "RGE/APRIL": "SG", "Lion Group": "MY", "First Resources": "SG",
@@ -73,7 +73,7 @@ CATATAN = {
     "PT Kayung Agro Lestari": "Grup First Resources setelah PT Austindo Nusantara Jaya Tbk diambil alih PT Ciliandra Perkasa (2025); induknya tercatat di Bursa Efek Singapura.",
     "PT Panca Surya Agrindo Sejahtera": "Grup First Resources setelah PT Austindo Nusantara Jaya Tbk diambil alih PT Ciliandra Perkasa (2025).",
     "PT Arjuna Utama Sawit": "63,3% saham dipegang Premier Palmoil Energy Pte Ltd (Singapura, First Borneo Group); 36,67% oleh PT Oilim Agriculture.",
-    "PT Sumber Mardhika Graha": "Di bawah PT Triputra Agro Persada Tbk; pemegang saham minoritas asing Salween Investment Pte Ltd (kendaraan investasi GIC Singapura) dan Gochean Holdings Incorporated (sebagian dimiliki TPG Capital, Kepulauan Cayman).",
+    "PT Sumber Mardhika Graha": "Di bawah PT Triputra Agro Persada Tbk; pemegang saham minoritas asing Salween Investment Pte Ltd (kendaraan investasi GIC Singapura) dan Gochean Holdings Incorporated (sebagian dimiliki TPG Capital, Kep. Cayman).",
     "PT Finnantara Intiga": "Mayoritas saham dipegang Nordic Forest Development Pte Ltd (Singapura, terafiliasi Stora Enso, Finlandia); sisanya PT Purinusa Ekapersada (induk Sinar Mas/APP).",
     "PT Hutan Ketapang Industri": "Dahulu PT Kertas Basuki Rachmat. 80% saham beralih ke Sampoerna Agri Resources Pte Ltd (Singapura) pada Nov 2025, setelah Sampoerna Agro Tbk dilepas ke AGPA Pte Ltd, anak usaha POSCO International (Korea Selatan).",
     "PT Mayawana Persada": "Sejak 2022-2023 seluruh saham beralih ke Green Ascend Group Limited (BVI) dan Balaji Investment Group Holdings Limited (Samoa); pemilik manfaat akhir tidak teridentifikasi. Mei 2026 diumumkan resmi menjadi pemasok APRIL.",

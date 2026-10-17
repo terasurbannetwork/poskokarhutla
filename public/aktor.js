@@ -129,8 +129,62 @@
     const u = e.target.closest("[data-ak-urut]"); if (u) { st.akTurun = st.akUrut === u.dataset.akUrut ? !st.akTurun : true; st.akUrut = u.dataset.akUrut; st.akHal = 0; return ulang(); }
     const h = e.target.closest(".pgn [data-h]"); if (h && box.dataset.ex === "aktor") { st.akHal = +h.dataset.h; return ulang(); }
     if (e.target.closest("[data-set=akJenis]")) st.akHal = 0;
-    const r = e.target.closest("[data-ak]"); if (r) A.tunjuk(r.dataset.ak); });
-  document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[data-ex^="aktor"] [data-ak]')) { e.preventDefault(); A.tunjuk(e.target.dataset.ak); } });
+    const r = e.target.closest("[data-ak]"); if (r) A.buka(r.dataset.ak); });
+  document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.('[data-ex^="aktor"] [data-ak]')) { e.preventDefault(); A.buka(e.target.dataset.ak); } });
+
+  /* ---------- laci perusahaan: memakai #laci (laci kompleks) dengan isi perusahaan; Laci.buka menimpanya lagi ---------- */
+  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tgl = s => `${+s.slice(8, 10)} ${BLN[+s.slice(5, 7) - 1]}`;                       /* "2026-10-12" -> "12 Okt" */
+  const rentang = (a, b) => a === b ? tgl(a) : a.slice(5, 7) === b.slice(5, 7) ? `${+a.slice(8, 10)}–${tgl(b)}` : `${tgl(a)}–${tgl(b)}`;
+  const hariKe = s => Date.UTC(+s.slice(0, 4), +s.slice(5, 7) - 1, +s.slice(8, 10)) / 864e5;
+  const NAMA_TAHUN = 2026, AWAL = hariKe(NAMA_TAHUN + "-01-01"), AWAL_TITIK = 20;
+  const lipatA = (judul, isi, buka = true) => `<details class="lipat" ${buka ? "open" : ""}><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
+  /* grafik harian: satu batang per hari, 1 Jan sampai hari ini (WIB), skala tegak ke puncak; hari kosong tidak digambar */
+  A.grafikHarian = (harian, hariIni) => {
+    const n = hariIni - AWAL + 1, W = 3, H = 60, mx = Math.max(1, ...harian.map(x => x[1]));
+    const bar = harian.map(([t, v]) => { const i = hariKe(t) - AWAL, h = Math.max(1.5, v / mx * (H - 4)), tip = `<b>${tgl(t)}</b><br>${fmt(v)} titik panas`;
+      return `<rect x="${i * W}" y="0" width="${W}" height="${H}" fill="transparent" data-tip="${tip}"/><rect x="${i * W + .4}" y="${H - h}" width="${W - .8}" height="${h}" rx=".6" fill="#c9503a" pointer-events="none"/>`; }).join("");
+    const bln = BLN.map((b, m) => [b, hariKe(`${NAMA_TAHUN}-${String(m + 1).padStart(2, "0")}-01`) - AWAL]).filter(([, i]) => i < n)
+      .map(([b, i]) => `<span style="left:${i / n * 100}%">${b}</span>`).join("");
+    return `<svg viewBox="0 0 ${n * W} ${H}" preserveAspectRatio="none" width="100%" height="64" role="img" aria-label="Titik panas harian">${bar}</svg><div class="ak-bln">${bln}</div>`; };
+  const hariIniWIB = () => { const d = new Date(Date.now() + 7 * 36e5); return Math.floor(d.getTime() / 864e5); };
+  const barisTitik = t => `<button type="button" class="ak-lr" data-lat="${t[0]}" data-lon="${t[1]}"><span>${tgl(t[2])} ${t[2].slice(11, 16)} WIB</span><b>${fmt(Math.round(t[3]))} MW</b><span class="ak-mt">${esc(t[4] === "SNPP" ? "S-NPP" : t[4] || "")}</span></button>`;
+  A.isiLaci = p => {
+    const bendera_ = benderaDaf(p.negara, 14), grup = p.grup.join(", ");
+    let isi;
+    if (p.kosong || !p.cek?.poligon) isi = `<p class="fnd">Tidak ada di peta konsesi.</p>`;
+    else {
+      const har = p.harian || [], tot = har.reduce((a, x) => a + x[1], 0), puncak = har.reduce((a, x) => x[1] > (a?.[1] || 0) ? x : a, null);
+      const lini = har.length ? `<div class="ak-ml"><span class="ak-pl">${fmt(tot)}</span> titik panas${puncak ? ` · puncak <b>${tgl(puncak[0])}</b> (${fmt(puncak[1])})` : ""}</div>${A.grafikHarian(har, Math.max(hariIniWIB(), hariKe(har[har.length - 1][0])))}`
+        : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
+      const kom = (p.kompleks || []).length ? `<div class="ak-ls">${p.kompleks.map(k => `<button type="button" class="ak-lr" data-kom="${esc(k.id)}"><span>${esc(k.id)}</span><b>${fmt(k.n)} titik</b><span class="ak-mt">${rentang(k.dari, k.sampai)}</span></button>`).join("")}</div>`
+        : `<p class="fnd">Tidak ada kompleks api aktif di konsesi ini dalam 7 hari terakhir.</p>`;
+      const tt = p.titik || [];
+      const tp = tt.length ? `<div class="ak-ls" data-tt>${tt.slice(0, AWAL_TITIK).map(barisTitik).join("")}</div>${tt.length > AWAL_TITIK ? `<button type="button" class="btn" data-semua-tt>Tampilkan semua (${fmt(tt.length)})</button>` : ""}`
+        : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
+      isi = lipatA("Linimasa titik panas 2026", lini) + lipatA("Kompleks api 7 hari", kom) + lipatA("Titik panas terbaru", tp);
+    }
+    return `<div class="hd"><div class="hd-isi"><span class="hd-ey">Perusahaan</span><h2 title="${esc(p.nama)}">${esc(p.nama)}</h2>
+      <div class="hd-meta">${bendera_}${grup ? `<span class="ak-gr" data-tip="${esc(grup)}">${esc(grup)}</span>` : ""}<span>${esc(p.prov || "")}</span>${indPil(p.industri)}</div></div>
+      <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+      <div class="bd" style="display:grid;gap:10px">${isi}</div>`; };
+  let denyut = null;
+  const lepasDenyut = () => { denyut?.remove(); denyut = null; };
+  A.buka = nama => {
+    const p = A.per?.[nama]; A.tunjuk(nama);
+    if (!p) return;
+    const dl = $("#dlgLaci"); if (dl?.open) dl.close();                                  /* laci kompleks mode pop-up: kembalikan #laci ke peta */
+    const el = $("#laci"); el.innerHTML = A.isiLaci(p); el.classList.add("on");
+    const bd = el.querySelector(".bd");
+    el.querySelector(".tutup").onclick = () => { el.classList.remove("on"); lepasDenyut(); };
+    bd.onclick = e => {
+      const k = e.target.closest("[data-kom]"); if (k) { if (!S.kluster?.features.some(f => f.properties.id === k.dataset.kom)) return typeof toast === "function" && toast("Kompleks ini sudah tidak aktif"); return Laci.buka(k.dataset.kom); }
+      const t = e.target.closest("[data-lat]"); if (t) { const lat = +t.dataset.lat, lon = +t.dataset.lon; bukaTab("peta"); lepasDenyut();
+        requestAnimationFrame(() => { peta.flyTo({center: [lon, lat], zoom: 13, duration: 900});
+          const m = document.createElement("div"); m.className = "ak-dn"; denyut = new maplibregl.Marker({element: m}).setLngLat([lon, lat]).addTo(peta); }); return; }
+      if (e.target.closest("[data-semua-tt]")) { const b = e.target.closest("[data-semua-tt]"); b.remove();
+        nanti(() => bd.querySelector("[data-tt]").insertAdjacentHTML("beforeend", p.titik.slice(AWAL_TITIK).map(barisTitik).join(""))); } };
+  };
 
   /* ---------- peta ---------- */
   const kotak = g => { let x0 = 180, y0 = 90, x1 = -180, y1 = -90; (g.type === "MultiPolygon" ? g.coordinates : [g.coordinates]).forEach(p => p[0].forEach(([x, y]) => { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); })); return [x0, y0, x1, y1]; };
