@@ -45,7 +45,7 @@
   Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "peta", akTurun: true});
   Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke", aktorTokoh: "Tokoh politik"});
   ["aktor", "aktorNegara"].forEach(k => Insight.PENUH.add(k));
-  const i0 = Insight.EX.indexOf("bnpb");
+  const i0 = Insight.EX.indexOf("paparan");   /* sesudah paparan = posisi lama sesudah kartu bnpb (disembunyikan 17 Okt 2026) */
   Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0 + 1, 0, "aktor", "aktorNegara", "aktorGrup");   /* aktorPsn dan aktorTokoh disembunyikan (pemilik, 17 Okt 2026); fungsinya tetap ada */
 
   /* ---------- 1. daftar perusahaan ---------- */

@@ -3313,7 +3313,8 @@ const Insight = {
   data: {},
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
   /* ytd, tahun, kec dibuang (sudah ada di Tren); kartu riwayat panjang pindah ke Tren lewat TREN (pemilik, 17 Okt 2026) */
-  EX: ["harian", "musim", "cuaca", "paparan", "bnpb", "penanganan"],
+  /* bnpb (Laporan resmi BNPB) dan penanganan disembunyikan (pemilik, 17 Okt 2026); exBnpb/exPenanganan tetap ada, pulihkan dengan menambah id ke EX */
+  EX: ["harian", "musim", "cuaca", "paparan"],
   TREN: ["luasTahun", "luas", "nasional", "dunia"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
@@ -3351,7 +3352,8 @@ const Insight = {
   /* 1. delapan hari terakhir per provinsi; klik panel = buka provinsi di peta */
   exHarian() {
     /* hari ini ikut dihitung: 3 hari terakhir (termasuk hari ini) dibanding 3 hari sebelumnya; turun berapa pun = hijau, naik = merah */
-    const hari = Object.keys(S.wilayah[PRIO.find(k => S.wilayah[k])]?.harian || {}).sort().slice(-7), pv = PRIO.filter(k => S.wilayah[k]);
+    /* sumbu = 7 hari kalender berurutan sampai hari ini WIB; kunci harian jarang (hari 0 titik tidak ditulis), jadi tidak dipakai sebagai sumbu */
+    const hari = [...Array(7)].map((_, j) => new Date(Date.parse(S.meta.hari_wib + "T00:00:00Z") - (6 - j) * 864e5).toISOString().slice(0, 10)), pv = PRIO.filter(k => S.wilayah[k]);
     const W = 940, cw = W / 3, ch = 118, H = Math.ceil(pv.length / 3) * (ch + 36), HIJAU = "#2b8c86", MERAH = "#c9503a", BANDING = "#f2c49c", LAMA = "#dfe3ea";
     let naik = 0, g = "";
     pv.forEach((k, i) => { const v = hari.map(h => S.wilayah[k].harian?.[h] || 0), m = Math.max(1, ...v), x0 = (i % 3) * cw, y0 = Math.floor(i / 3) * (ch + 36), bw = (cw - 34) / v.length, L = v.length;
@@ -3409,8 +3411,8 @@ const Insight = {
         g += `<rect class="gf" style="--i:${i + j};fill:${warna(v)}" x="${L + j * cw + 2}" y="${y + 3}" width="${cw - 4}" height="${rh - 6}" rx="5" data-tip="<b>${esc(namaProv(k))}</b> · ${DAS(d)}<br>Peluang tahun El Niño: ${Math.round(o.p_el_nino[d] * 100)}%<br>Peluang tahun biasa: ${Math.round(o.p_biasa[d] * 100)}%<br>Rata-rata titik: ${fmt(o.rata[d])}"/>
           <text x="${L + j * cw + cw / 2}" y="${y + 22}" text-anchor="middle" font-size="12.5" font-weight="700" pointer-events="none" style="fill:${v >= .05 ? "#fff" : "currentColor"}">${Math.round(v * 100)}%</text>`; }); });
     const masih = pv.filter(k => idx.slice(0, 3).some(d => mu.prov[k][kunci][d] >= .3)), akhir = pv.map(k => { const p = mu.prov[k][kunci]; let j = 0; while (j < n && p[idx[j]] >= .15) j++; return [k, j]; }).sort((a, b) => b[1] - a[1])[0];
-    const nmMode = {p_semua: "", p_el_nino: " bila tahun ini El Niño", p_biasa: " bila tahun ini biasa"}[kunci];
-    return this.ex(`${this.hl(masih.length + " provinsi")} masih harus dalam pantauan 30 hari ke depan${nmMode}, karena berdasarkan tren 2002–2025 berpeluang masuk masa puncak kebakaran${akhir[1] ? `. ${esc(namaProv(akhir[0]))} perlu dipantau hingga ${this.hl((d => new Date(2026, Math.floor(d / 3), 1).toLocaleDateString("id-ID", {month: "long"}) + " " + ["awal", "tengah", "akhir"][d % 3])(idx[akhir[1] - 1]))}` : ""}`,
+    const nmMode = {p_semua: "", p_el_nino: " karena tahun ini adalah El Niño", p_biasa: " bila tahun ini biasa"}[kunci];
+    return this.ex(`${this.hl(masih.length + " provinsi")} masih harus dalam pantauan 30 hari ke depan${nmMode}${kunci === "p_el_nino" ? "; berdasarkan" : ", karena berdasarkan"} tren 2002–2025 berpeluang masuk masa puncak kebakaran${akhir[1] ? `. ${esc(namaProv(akhir[0]))} perlu dipantau hingga ${this.hl((d => new Date(2026, Math.floor(d / 3), 1).toLocaleDateString("id-ID", {month: "long"}) + " " + ["awal", "tengah", "akhir"][d % 3])(idx[akhir[1] - 1]))}` : ""}`,
       "", "",
       `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Peluang periode berbahaya">${g}</svg></div>`,
       `${this.leg([["#e3b94e", "peluang rendah"], ["#d9733f", "sedang"], ["#b8392b", "≥ 50%"]])}Sumber: NASA FIRMS MODIS 2002–2025; tahun El Niño ${mu.tahun_el_nino.join(", ")}`,
