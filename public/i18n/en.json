@@ -7880,7 +7880,8 @@
 "Fire Weather Index (FWI) Kanada dari cuaca Open-Meteo (ERA{0} dan prakiraan), nilai tertinggi kejadian api di wilayah itu": "Canadian Fire Weather Index (FWI) from Open-Meteo weather (ERA{0} and forecast), highest value among fire events in the area",
 "batas wilayah administrasi edisi Juni {0}": "administrative boundaries, June {0} edition",
 "indikasi luas kebakaran per provinsi": "indicated burned area per province",
-"Laporan dihitung": "Report computed"
+"Laporan dihitung": "Report computed",
+", laporan": ", report"
 },
 "pola": [
 [
