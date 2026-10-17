@@ -183,7 +183,7 @@ function susun(ctx) {
   const pks = (Sim?.pk?.C || []).filter(c => c.jenis === "heli" && c.pangkalan).map(c => c.pangkalan);
   const ud = typeof Lapis !== "undefined" ? Lapis.cache?.udara : null, fl = ctx.Sim?.f?.properties;
   const bandara = pks.length ? pks.slice(0, 2) : ud?.heli && fl ? ud.heli.map(h => ({...h, d: jarakKm(fl.lat, fl.lon, h.lat, h.lon)})).filter(h => h.d <= 500).sort((a, b) => a.d - b.d).slice(0, 2) : [];
-  const simB = {nama: "pangkalan simulasi", sim: true, o: [P0.cx + P0.ux * A.PANGKALAN_UDARA_SIM_KM * 1000, P0.cy + P0.uy * A.PANGKALAN_UDARA_SIM_KM * 1000]};
+  const simB = {nama: "pangkalan simulasi", sim: true, o: [P0.cx - P0.ux * A.PANGKALAN_UDARA_SIM_KM * 1000, P0.cy - P0.uy * A.PANGKALAN_UDARA_SIM_KM * 1000]};
   const pang = (bandara.length ? bandara : [simB]).map(b => b.o ? b : {...b, o: g.xy(b.lon, b.lat)}), air = sumberAir(K, P0), kmF = o => Math.hypot(o[0] - P0.cx, o[1] - P0.cy) / 1000;
   const tcOf = (src, v) => Math.max(.08, 2 * Math.max(.5, kmF(src)) / v + A.ISI_SIRAM);
   U.push({kode: "AT-01", jenis: "AT", grup: "udara", ln: "Air Tractor AT-802", nyata: false, sumber: "simulasi", base: pang[0].o, src: pang[0].o, tMob: A.MOB_AT, T0: A.MOB_AT, kap: A.KAP_AT, v: A.LAJU_AT, pers: A.PERS_UDARA, Tc: tcOf(pang[0].o, A.LAJU_AT), isi: "retardan", air: false, ket: `pesawat retardan, isi ulang di ${pang[0].nama}`, idx: 0});

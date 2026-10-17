@@ -1,7 +1,10 @@
-/* sim_3d.css — tampilan FireTrace di tab Simulasi (3D, dasbor bawah, titik pilihan). Warna lewat token tema. */
-.s3-pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;white-space:nowrap;cursor:pointer}
+/* sim_3d.css — tampilan FireTrace di tab Simulasi (3D, mode forensik, dasbor, titik pilihan). Warna lewat token tema. */
+:root{--s3-krem:color-mix(in oklch,var(--paper) 88%,oklch(92% .05 85));--s3-kn:330px;--s3-bh:272px;--s3-bar:46px}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--s3-krem:var(--paper)}}
+:root[data-theme="dark"]{--s3-krem:var(--paper)}
+.s3-pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;white-space:nowrap;cursor:pointer;flex:none}
 .s3-pill[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
-.s3-pill:focus-visible,.s3-mode button:focus-visible,.s3-kjb:focus-visible,.s3-mk:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.s3-pill:focus-visible,.s3-mode button:focus-visible,.s3-kjb:focus-visible,.s3-mk:focus-visible,.s3-tabs button:focus-visible,.s3-ib:focus-visible,.s3-spd button:focus-visible,.s3-seg button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .s3-jdl{cursor:default;height:22px;font-size:11px;margin-bottom:4px}
 .s3-sim{background:var(--warn);border-color:var(--warn);color:oklch(25.5% .075 256);cursor:default}
 .s3-mode{position:absolute;z-index:6;top:12px;right:12px;display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
@@ -11,17 +14,18 @@
 .s3-label{position:absolute;z-index:6;top:12px;left:12px}
 .s3-label[hidden]{display:none}
 @media (min-width:901px){.s3-label{left:404px}#simWaktu.s3{left:calc(50% + 196px);width:min(1040px,calc(100% - 420px))}}
-/* lintasan waktu: slider + penanda kejadian + label per 12 jam */
+/* lintasan waktu: slider + penanda kejadian + pita laju + label hari/jam per 6 jam */
 .s3-lintas{flex:1;min-width:0;position:relative}
 .s3-lintas input[type=range]{width:100%;margin:0;display:block}
 .s3-tks{position:relative;height:40px;margin:0 8px}
+.s3-band{position:absolute;left:0;right:0;top:5px;height:4px;border-radius:3px;pointer-events:none}
 .s3-tk{position:absolute;top:14px;left:calc(var(--f) * 100%);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:10px;line-height:1.25;color:var(--ink2);white-space:nowrap;pointer-events:none}
-.s3-tk:first-of-type{transform:none;align-items:flex-start}
-.s3-tk:last-child{transform:translateX(-100%);align-items:flex-end}
-.s3-tk em{font-style:normal;font-weight:700;color:var(--ink)}
+.s3-tk.a0{transform:none;align-items:flex-start}
+.s3-tk.a1{transform:translateX(-100%);align-items:flex-end}
+.s3-tk em{font-style:normal;font-weight:700;color:var(--ink);min-height:12px}
 .s3-tk small{font-size:9.5px}
 .s3-mk{position:absolute;top:0;left:calc(var(--f) * 100%);width:12px;height:12px;margin-left:-6px;padding:0;border-radius:50%;border:2px solid var(--card);background:var(--w);cursor:pointer;box-shadow:0 0 0 1px var(--line);z-index:1}
-/* dasbor */
+/* dasbor lama */
 .s3-dash{flex-basis:100%;display:grid;grid-template-columns:minmax(0,3fr) minmax(190px,1fr);gap:10px 14px;max-height:min(44vh,330px);overflow:auto;padding-top:8px;border-top:1px solid var(--line)}
 .s3-dash[hidden]{display:none}
 .s3-gr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
@@ -33,16 +37,118 @@
 .s3-g text.v{font-weight:700}
 .s3-g text.v:not([fill]){fill:var(--ink)}
 .s3-g line.s3-kursor{stroke:var(--ink2);stroke-dasharray:3 3}
+.s3-g .s3-dot{stroke:var(--card);stroke-width:1.5}
 .s3-kj{display:flex;flex-direction:column;gap:5px;min-width:0}
 .s3-kjb{display:grid;grid-template-columns:10px 1fr;column-gap:7px;text-align:left;padding:6px 9px;border:1px solid var(--line);border-left:3px solid var(--w);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
 .s3-kjb i{grid-row:1/4;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--w)}
 .s3-kn{font-size:12px;font-weight:700}
 .s3-kd{font-size:10.5px;color:var(--ink2)}
 .s3-kv{font-size:11px;color:var(--ink);overflow-wrap:anywhere}
-.s3-kjb:hover{background:var(--card)}
+.s3-kjb:hover,.s3-kjb.on{background:var(--card)}
+.s3-kjb.on{box-shadow:0 0 0 1px var(--w) inset}
+/* penanda peta: penyulutan berdenyut + kotak label gelap */
+.s3-pin{width:16px;height:16px;cursor:pointer}
+.s3-pin-in{position:relative;width:16px;height:16px}
+.s3-pin-in i{position:absolute;inset:2px;border-radius:50%;background:#ffd24a;border:2px solid #1d1d1d;box-shadow:0 0 0 2px rgba(255,210,74,.5)}
+.s3-nyala .s3-pin-in i{background:#e0402a;border-color:#fff;box-shadow:0 0 0 0 rgba(224,64,42,.7);animation:s3-denyut 1.8s ease-out infinite}
+.s3-lb{position:absolute;left:20px;top:50%;transform:translateY(-50%);display:flex;flex-direction:column;padding:4px 8px;border-radius:7px;background:rgba(29,29,29,.84);color:#fff;font:600 11px/1.25 var(--font);white-space:nowrap;pointer-events:none}
+.s3-lb b{font-weight:800}
+.s3-fut .s3-lb,.s3-fut i{opacity:.5}
+@keyframes s3-denyut{70%{box-shadow:0 0 0 14px rgba(224,64,42,0)}100%{box-shadow:0 0 0 0 rgba(224,64,42,0)}}
+@media (prefers-reduced-motion:reduce){.s3-nyala .s3-pin-in i{animation:none}}
+
+/* ===== MODE FORENSIK ===== */
+#p-sim:not(.s3f) .s3f-only,#p-sim:not(.s3f) .s3-ctl-f{display:none!important}
+#p-sim.s3f #simPeta{inset:var(--s3-bar) var(--s3-kn) var(--s3-bh) 0}
+#p-sim.s3f .s3-mode,#p-sim.s3f .s3-label,#p-sim.s3f #s3Tog,#p-sim.s3f #s3Dash,#p-sim.s3f #simInfo,#p-sim.s3f #simTL{display:none!important}
+.s3-bar{position:absolute;z-index:8;top:0;left:0;right:0;height:var(--s3-bar);display:flex;align-items:center;gap:10px;padding:0 12px;background:var(--card);border-bottom:1px solid var(--line);overflow-x:auto;scrollbar-width:none;white-space:nowrap}
+.s3-bar::-webkit-scrollbar{display:none}
+.s3-nm{font-family:var(--display);font-size:14px;letter-spacing:-.01em;flex:none}
+.s3-info{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2);flex:none}
+.s3-sp{flex:1}
+.s3-tabs{display:flex;gap:2px;padding:3px;border-radius:12px;background:var(--surface);flex:none}
+.s3-tabs button{display:inline-flex;align-items:center;gap:6px;height:28px;padding:0 11px;border:0;border-radius:9px;background:transparent;color:var(--ink2);font:inherit;font-size:12.5px;font-weight:700;cursor:pointer}
+.s3-tabs button[aria-selected="true"]{background:var(--card);color:var(--ink);box-shadow:0 0 0 1px var(--line)}
+.s3-bdg{font-style:normal;min-width:17px;height:17px;padding:0 5px;border-radius:9px;background:var(--bad);color:#fff;font-size:10.5px;line-height:17px;text-align:center}
+.s3-nar{display:none}
+.s3-kanan{position:absolute;z-index:7;top:var(--s3-bar);right:0;bottom:0;width:var(--s3-kn);overflow:auto;background:var(--s3-krem);border-left:1px solid var(--line);padding:8px;display:flex;flex-direction:column;gap:8px}
+.s3-sec{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:10px 12px}
+.s3-sec h3{display:flex;align-items:center;gap:6px;margin:0 0 8px;font-size:12.5px;font-weight:800}
+.s3-sec h3 small{margin-left:auto;font-size:10.5px;font-weight:600;color:var(--ink2)}
+.s3-ly{display:grid;grid-template-columns:minmax(0,1fr) 74px 34px;align-items:center;gap:6px;padding:3px 0}
+.s3-cb{display:flex;align-items:center;gap:7px;min-width:0;cursor:pointer;font-size:12px}
+.s3-cb input{margin:0;accent-color:var(--ink)}
+.s3-cb input:disabled~*{opacity:.45}
+.s3-ln{white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.s3-op{width:100%;margin:0;accent-color:var(--ink)}
+.s3-pc{font-size:11px;color:var(--ink2);text-align:right;font-variant-numeric:tabular-nums}
+.s3-th{width:28px;height:20px;border-radius:5px;border:1px solid var(--line);flex:none}
+.s3-th-medan{background:linear-gradient(135deg,#7a8a4a,#c9b27a 55%,#5f7a45)}
+.s3-th-citra{background:radial-gradient(circle at 30% 30%,#a3a8aa,#6e7478 60%,#a5aaa8)}
+.s3-th-bekas{background:linear-gradient(135deg,#3a1b14,#7a2e1c 60%,#2a1410)}
+.s3-th-depan{background:linear-gradient(135deg,#ffcf5a,#ef7d2e 60%,#c9503a)}
+.s3-th-jalur{background:repeating-linear-gradient(135deg,#ffd24a 0 5px,#3a3a3a 5px 8px)}
+.s3-th-angin{background:repeating-linear-gradient(160deg,#a9c7de 0 5px,#fff 5px 6px)}
+.s3-th-desa{background:radial-gradient(circle,#c9503a 0 3px,transparent 4px) 4px 4px/12px 10px,var(--surface)}
+.s3-th-lahan{background:linear-gradient(90deg,#6b4a2b 0 25%,#e3b94e 25% 50%,#9cbf6a 50% 75%,#3f7f55 75%)}
+.s3-kv2{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 12px;margin:0;font-size:12px}
+.s3-kv2 dt{color:var(--ink2)}
+.s3-kv2 dd{margin:0;font-weight:600;overflow-wrap:anywhere}
+.s3-kv2 small{font-weight:500;color:var(--ink2)}
+.s3-st{display:inline-flex;align-items:center;gap:6px}
+.s3-st i{width:8px;height:8px;border-radius:50%;background:var(--warn);flex:none}
+.s3-sk{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+.s3-sk button{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px;border:1px solid var(--line);border-radius:999px;background:var(--surface);color:var(--ink2);font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.s3-sk button i{width:8px;height:8px;border-radius:50%;background:var(--w)}
+.s3-sk button[aria-pressed="true"]{background:var(--ink);border-color:var(--ink);color:var(--card)}
+.s3-wg{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.s3-wt{background:var(--surface);border-radius:10px;padding:7px 8px;min-width:0}
+.s3-wn{display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--ink2);white-space:nowrap}
+.s3-wt b{display:block;font-size:13px;margin-top:2px;overflow-wrap:anywhere}
+.s3-wt small{display:block;font-size:10px;color:var(--ink2);min-height:12px}
+.s3-cat{margin:8px 0 0;font-size:10.5px;color:var(--ink2);line-height:1.4}
+.s3-bawah{position:absolute;z-index:7;left:0;right:var(--s3-kn);bottom:0;height:var(--s3-bh);display:flex;flex-direction:column;background:var(--s3-krem);border-top:1px solid var(--line);min-width:0}
+.s3-th2{display:flex;align-items:baseline;justify-content:space-between;gap:10px;padding:7px 14px 0;font-size:12.5px}
+.s3-th2 span{font-size:11px;color:var(--ink2)}
+#p-sim.s3f #simWaktu{position:static;transform:none;left:auto;bottom:auto;width:auto;margin:0;padding:2px 14px 0;box-shadow:none;border:0;border-radius:0;background:transparent;flex-wrap:nowrap;gap:8px}
+#p-sim.s3f #simWaktu .s3-lintas{padding-top:28px}
+#p-sim.s3f #simPlay,.s3-ib{width:34px;height:34px;padding:0;border-radius:10px;display:inline-grid;place-items:center;flex:none;border:1px solid var(--line);background:var(--card);color:var(--ink);cursor:pointer}
+#p-sim.s3f .s3-tx{display:none}
+.s3-spd{display:flex;gap:2px;padding:3px;border-radius:10px;background:var(--surface);flex:none}
+.s3-spd button{height:26px;min-width:34px;border:0;border-radius:7px;background:transparent;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.s3-spd button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.s3-chip{position:absolute;top:0;padding:3px 9px;border-radius:7px;background:var(--ink);color:var(--card);font-size:11.5px;font-weight:700;white-space:nowrap;pointer-events:none;z-index:2}
+.s3-isi{flex:1;min-height:0;overflow:hidden;padding:0 12px 8px}
+.s3-fd{display:grid;grid-template-columns:minmax(0,1fr) 230px;gap:12px;height:100%}
+.s3-fgr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;min-width:0;align-content:start}
+.s3-fkj{display:flex;flex-direction:column;gap:5px;min-width:0;overflow:auto}
+.s3-gf{height:auto}
+/* kontrol peta */
+.s3-grp{display:flex;gap:6px;align-items:center;background:transparent!important;box-shadow:none!important}
+.s3-seg{display:flex;gap:2px;padding:3px;border-radius:9px;background:var(--card);border:1px solid var(--line)}
+.s3-seg button{height:24px;min-width:34px;border:0;border-radius:6px;background:transparent;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.s3-seg button[aria-pressed="true"]{background:#c9503a;color:#fff}
+.s3-zm{height:32px;border:1px solid var(--line);border-radius:9px;background:var(--card);color:var(--ink);font:inherit;font-size:12px;font-weight:700;padding:0 6px}
+#p-sim.s3f .maplibregl-ctrl-top-left{top:6px}
+/* panel pengaturan skenario lama: disembunyikan selama mode forensik, tombol Skenario membukanya sebagai tumpukan */
+#p-sim.s3f .simpanel{display:none}
+#p-sim.s3f.s3-pa .simpanel{display:block;z-index:9;top:calc(var(--s3-bar) + 8px);left:8px;bottom:auto;right:auto;width:min(380px,calc(100% - 16px));max-height:calc(100% - var(--s3-bar) - 16px)}
 @media (max-width:900px){
+  :root{--s3-kn:0px;--s3-bh:min(340px,50vh)}
   .s3-dash{grid-template-columns:1fr}
   .s3-gr{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
   .s3-fig{flex:0 0 min(78%,260px);scroll-snap-align:start}
   .s3-tk.s{display:none}
+  .s3-nar{display:inline-flex}
+  .s3-info{display:none}
+  .s3-kanan{display:none}
+  #p-sim.s3f.s3-kn .s3-kanan{display:flex;z-index:9;left:0;width:auto;bottom:var(--s3-bh);border-left:0}
+  .s3-bawah{right:0}
+  .s3-fd{grid-template-columns:1fr;overflow-y:auto}
+  .s3-fgr{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}
+  .s3-fgr .s3-fig{flex:0 0 min(80%,300px)}
+  .s3-fkj{flex-direction:row;overflow-x:auto}
+  .s3-fkj .s3-kjb{flex:0 0 190px}
+  .s3-spd button{min-width:28px}
+  #p-sim.s3f.s3-pa .simpanel{top:calc(var(--s3-bar) + 6px);left:8px;right:8px;bottom:auto;width:auto;max-height:calc(100% - var(--s3-bar) - var(--s3-bh) - 12px)}
 }
