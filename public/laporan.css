@@ -26,7 +26,9 @@
 .lp-cari{height:34px;min-width:200px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 14px;font:600 12.5px var(--font)}
 .ex-jd > .pc{margin-left:auto}
 /* tabel: kolom teks rata kiri, angka kanan, sel satu baris, gulir horizontal di dalam kartunya */
-.lp-tb th.n,.lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+/* semua kepala kolom rata tengah, kolom angka sekalipun */
+#insight .lp-tb thead th,#insight .lp-tb thead th.n{text-align:center}
 .lp-tb tbody td:first-child{font-weight:600}
 .lp-tb tfoot td{padding:10px 14px}
 .lp-tb thead th{text-transform:none;font-size:11px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
@@ -52,7 +54,7 @@
 }
 /* @page (ukuran, margin, kepala/kaki kertas) ditulis laporan.js ke <style id="lpHalaman"> karena isinya ikut hari terpilih */
 /* kop resmi dan angka pokok: hanya di kertas cetak (layar tetap kartu Insight) */
-.lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth{display:none}
+.lp-kop,.lp-kop-garis,.lp-pokok,.lp-cth,.lp-prt{display:none}
 @media print{
   .lp-kop{display:flex;align-items:center;justify-content:center;gap:12px;color:#0b2545;text-align:center}
   .lp-kop img{width:40px;height:40px}
@@ -80,7 +82,9 @@
   #insight .ex-hd{break-after:avoid}
   .lp-gr{break-inside:avoid;text-align:center}
   .lp-gr svg{max-height:64mm}
-  .lp-gr-h svg{max-height:150mm;width:auto!important;max-width:100%}
+  .lp-scr{display:none}
+  .lp-prt{display:grid;grid-template-columns:1fr 1fr;gap:6mm;align-items:start}
+  .lp-prt .lp-gr-h svg{max-height:none;width:100%!important;min-width:0}
   [data-ex="provg"],[data-ex="kab"]{break-before:page}
   [data-ex="provg"] .ex{break-inside:avoid}
   .pmulti{display:none!important}
@@ -102,4 +106,4 @@
   thead th,tfoot td,.lp-grp td,.lp-on td,.lp-lv,.lp-pil,rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
 
-#insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:8px 8px}
+#insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:6px 8px;line-height:1.3}

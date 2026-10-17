@@ -93,8 +93,8 @@ function pilPersen(cx, y, v, p) {
   return Kartu.pil(cx - (t.length * 6 + 16) / 2, y, t, bg, fg, 10)[0];
 }
 /* batang per provinsi hari terpilih: titik (batang), luas, perubahan harian; rincian lengkap di tooltip */
-function batangProv(rows) {
-  const W = 1300, bh = 28, g = 8, H = rows.length * (bh + g) + 6, x0 = 230, mx = Math.max(...rows.map(r => r.t), 1), i = idx();
+function batangProv(rows, W = 1300, mxG = 0) {
+  const bh = 28, g = 8, H = rows.length * (bh + g) + 6, x0 = 230, mx = mxG || Math.max(...rows.map(r => r.t), 1), i = idx();
   const kem = i > 0 ? tgl(D.hari[i - 1]) : "";
   return `<div class="lp-gr lp-gr-h"><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas per provinsi">${rows.map((r, j) => {
     const y = j * (bh + g) + 3, w = Math.max(3, (W - x0 - 330) * r.t / mx), ub = (n, q) => q == null ? "–" : !q ? (n ? "▲ baru" : "–") : (v => v > 0 ? `▲ ${fmt(v)}%` : v < 0 ? `▼ ${fmt(-v)}%` : "0%")(Math.round((n - q) / q * 100));
@@ -111,7 +111,9 @@ function kartuProvGrafik() {
   const kode = semuaRows.map(r => r.kode).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
   const naik = rows.filter(r => r.tp != null && r.t > r.tp).length;
   const j = rows.length ? `Titik panas naik di ${Kartu.hl(fmt(naik) + " dari " + fmt(rows.length))} provinsi pada ${tgl(st.hari)}${idx() > 0 ? ` dibanding ${tgl(D.hari[idx() - 1])}` : ""}` : "Tidak ada provinsi yang cocok";
-  return Kartu.kartu("Per provinsi", j, rows.length ? batangProv(rows) : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
+  /* kertas: dua kolom selebar setengah halaman supaya huruf tetap terbaca (satu kolom 38 baris menyusut sampai tak terbaca) */
+  const h2 = Math.ceil(rows.length / 2), cetak = `<div class="lp-prt">${batangProv(rows.slice(0, h2), 760, rows[0].t || 1)}${rows.length > 1 ? batangProv(rows.slice(h2), 760, rows[0].t || 1) : ""}</div>`;
+  return Kartu.kartu("Per provinsi", j, rows.length ? `<div class="lp-scr">${batangProv(rows)}</div>` + cetak : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
     Kartu.selProvMulti("provM", kode, k => D.prov[k].nama, st));
 }
 
