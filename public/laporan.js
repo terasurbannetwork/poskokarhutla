@@ -370,9 +370,10 @@ function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`
 /* sampul kertas cetak (gaya lembar Pangantara): kepala + angka pokok (sudah ada) + poin Ringkasan dan Luas + peta provinsi
    dengan peringkat. Isinya disalin dari kartu yang sudah dirender, jadi angka dan teksnya selalu sama dengan halaman */
 function sampul() {
-  const q = s => document.querySelector(s), r = q('[data-ex="ring"] h3'), l = q('[data-ex="luas"] h3'), pt = q('[data-ex="peta"] .lp-pt-w');
-  $("#lpSampul").innerHTML = `<div class="lp-sp-ey">Situasi nasional</div><div class="lp-sp-p">${r ? r.innerHTML : ""}${l ? l.innerHTML : ""}</div>`
-    + (pt ? `<div class="lp-sp-ey">Sebaran titik panas per provinsi, ${tgl(st.hari)}</div>${pt.outerHTML}` : "");
+  const q = s => document.querySelector(s), j = q('[data-ex="peta"] h3'), pt = q('[data-ex="peta"] .lp-pt-w');
+  const b = iB(), h = st.petaH === "b" && b > 0 ? D.hari[b] : st.hari, bf = h === D.hari_berjalan;
+  $("#lpSampul").innerHTML = (j ? `<div class="lp-sp-p">${j.innerHTML}</div>` : "")
+    + (pt ? `<div class="lp-sp-ey">Peta: data ${tglHari(h)}${bf ? ' <span class="lp-bf">Data belum final</span>' : ` <span class="lp-co">Cut-off ${cutoff(h)}</span>`}</div>${pt.outerHTML}` : "");
 }
 function semua() {
   kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("peta", kartuPeta()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
