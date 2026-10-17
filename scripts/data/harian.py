@@ -10,6 +10,7 @@ sys.path.insert(0, os.path.dirname(__file__))
 import aturan as A
 import fwi as F
 import pfvi as P
+import gambut_bara as GB
 from wilayah import AKAR, BNPB, PRIORITAS, PROVINSI, Poligon, Wilayah
 from garis_api import garis as garis_api
 from aturan import STATUS
@@ -269,6 +270,8 @@ def cuaca_fwi(grid):
                     if h_["tgl"] in pf:
                         h_["pfvi"] = round(pf[h_["tgl"]], 1)
                         h_["pg"] = round(P.peluang(h_["fwi"], pf[h_["tgl"]]), 2)
+                if keadaan_pf.get(kunci_(g)):  # muka air proxy (cm, negatif = di bawah permukaan) untuk estimasi bara
+                    hasil[-1]["wt"] = round(keadaan_pf[kunci_(g)]["wt"], 1)
         time.sleep(1)
     for j, isi in ((jalur, keadaan), (jalur_pf, keadaan_pf)):
         with open(j, "w") as f:
@@ -400,6 +403,10 @@ def main():
         # garis luar organik (raster jejak piksel 375 m, closing, kontur, Chaikin; lihat garis_api.py), bukan lambung cembung.
         # luas = luas garis luar itu (dulu: jumlah sel pusat deteksi x 14,06 ha); bisa Polygon atau MultiPolygon.
         bentuk, luas_ha = garis_api(pts)
+        bara = None  # gambut bawah permukaan (gambut_bara.py): hanya jejak piksel yang jatuh di peta gambut
+        if lv >= 2 and di_gambut:
+            bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"]) for p in pts if GAMBUT.cari(p["lon"], p["lat"])],
+                             luas_ha, g.get("wt"))
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",
@@ -423,6 +430,7 @@ def main():
                 "skor": A.skor_dengan_riwayat(A.skor(px24, sum(p["frp"] for p in p24), len(hari), (h or {}).get("isi"),
                                                      (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
                 "level": lv, "status": STATUS[lv],
+                **({"bara": bara} if bara else {}),
             }})
 
     # Prioritas = ambang hasil uji balik (lihat aturan.py); skor hanya untuk urutan di dalam wilayah kerja Daops
@@ -505,14 +513,15 @@ def main():
     simpan("kluster_awal.json", awal)
     simpan("kluster_geo.json", geo)
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "pfvi": {"ambang": P.AMBANG_PG, "catatan": "Muka air tanah = perkiraan (proxy) dari hujan dan ET0, bukan pengukuran. Uji balik 2019+2023: scripts/sebaran/RISET-PFVI.md"}, "grid": [
-        {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:]} for g in grid]})
+        {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:], **({"wt": g["wt"]} if "wt" in g else {})} for g in grid]})
     simpan("wilayah.json", rek)
     simpan("bnpb.json", bnpb)
     simpan("meta.json", {
         "dibuat": sekarang.isoformat(timespec="minutes"), "data_terakhir": akhir.isoformat(), "hari_wib": hari_akhir.isoformat(),
         "jumlah_titik": len(titik), "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
-        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48}})
+        "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48},
+        "bara": GB.CATATAN})
     from collections import Counter
     print(f"{len(titik)} titik, {len(fitur)} kompleks (+{s1} titik tunggal belum dinilai), {len(grid)} sel FWI;",
           "level", dict(Counter(f["properties"]["level"] for f in fitur)), file=sys.stderr)
@@ -546,6 +555,7 @@ def uji():
     print("harian uji: pecah_kluster OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat
+    GB.uji()  # estimasi bara gambut: rumus tangan, urutan rentang, pemotongan muka air
 
 
 if __name__ == "__main__":

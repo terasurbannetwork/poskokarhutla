@@ -1,5 +1,16 @@
 {
 "kamus": {
+"Gambut terbakar di bawah permukaan (estimasi)": "Subsurface peat burning (estimate)",
+"Luas gambut terbakar": "Peat area burned",
+"Kedalaman terbakar": "Burn depth",
+"Massa gambut terbakar": "Peat mass burned",
+"Emisi CO2": "CO2 emissions",
+"Emisi CH4": "CH4 emissions",
+"Emisi CO": "CO emissions",
+"Piksel gambut membara": "Smouldering peat pixels",
+"Muka air (perkiraan)": "Water table (estimate)",
+"tidak ada data": "no data",
+"Estimasi E = A × D × BD × CC × EF, rentang = batas bawah–atas asumsi, belum divalidasi lapangan. Muka air = perkiraan, bukan pengukuran.": "Estimate E = A × D × BD × CC × EF; range = lower–upper bound of assumptions, not yet field-validated. Water table = estimate, not a measurement.",
 "Status tertinggi": "Highest status",
 "basah": "wet",
 "jenuh": "saturated",
