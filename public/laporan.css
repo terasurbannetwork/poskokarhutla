@@ -261,3 +261,6 @@
 .lp-aksi .pc{flex:0 0 220px}
 .lp-peta .pp.pp-d{fill:#eef1f6}
 @media (max-width:700px){.lp-aksi{flex-wrap:wrap}.lp-aksi .pc{flex:1 1 100%}}
+/* kartu musim, percepatan, luas menurut sumber */
+.lp-tb td .lp-co{margin-right:6px;font-size:9.5px;padding:1px 6px}
+@media print{[data-ex="kurva"]{break-before:page}[data-ex="kurva"] .lp-gr svg{max-height:96mm}#insight [data-ex="luasb"] .ex,#insight [data-ex="kurva"] .ex,#insight [data-ex="akc"] .ex{break-inside:avoid}}
