@@ -31,3 +31,5 @@
 {"t":"2026-10-17T16:17:28.297+07:00","berkas":"public/laporan.html","blob":"4837169d50fc075afa4055ffdd94227bead605db","aturan":"f72f1db30e14","vonis":"dikerjakan","ringkas":"halaman Laporan Harian baru","sha":"de01b8d"}
 {"t":"2026-10-17T16:17:28.346+07:00","berkas":"public/laporan.js","blob":"a7bbddaa953a1bc02d1ecbd9734793e519841490","aturan":"f72f1db30e14","vonis":"dikerjakan","ringkas":"render kartu, tabel, cetak","sha":"de01b8d"}
 {"t":"2026-10-17T16:17:28.396+07:00","berkas":"public/laporan.css","blob":"948caee6fcf659e1efa4f26c02ffeebcc6d3e96c","aturan":"f72f1db30e14","vonis":"dikerjakan","ringkas":"pita kepala, tabel, print A4","sha":"de01b8d"}
+{"t":"2026-10-17T16:43:59.244+07:00","berkas":"public/index.html","blob":"bc6ba375885da5f4e1332c06116c2031732cd7f6","aturan":"f72f1db30e14","vonis":"dikerjakan","ringkas":"bara v2: pola sekitar X (skenario Y-Z), ribu/juta, tertahan_air, guard bentuk, diuji CDP ID/EN/390","sha":"fda3f15"}
+{"t":"2026-10-17T16:43:59.303+07:00","berkas":"public/i18n.js","blob":"3743e0201de1fb43d7f15970ff90d06002fd42b6","aturan":"f72f1db30e14","vonis":"dikerjakan","ringkas":"pola: tangkapan angka murni lewat desimal()","sha":"fda3f15"}
