@@ -4186,7 +4186,7 @@
 "Wed {0}: {1} skenario FWI ≥ {2} (sangat tinggi). FWI tengah {3} rentang wajar {4}–{5}": "Wed {0}: {1} scenarios FWI ≥ {2} (very high). Median FWI {3}, plausible range {4}–{5}",
 "Wed {0}: {1} skenario FWI ≥ {2} (tinggi)": "Wed {0}: {1} scenarios FWI ≥ {2} (high)",
 "Wed {0}: {1} skenario hujan ≥ {2} mm": "Wed {0}: {1} scenarios with rain ≥ {2} mm",
-"Wilayah": "Area",
+"Wilayah": "Boundaries",
 "Wilayah siaga": "Areas on alert",
 "Wilayah: uji titik-dalam-poligon (ray casting) terhadap poligon kecamatan kode Kemendagri, diindeks per sel {0}°. Hanya cincin luar yang dipakai (lubang diabaikan, batas sudah disederhanakan). Titik yang tidak jatuh di kecamatan mana pun dibuang (laut atau negara tetangga).": "Area: point-in-polygon test (ray casting) against Kemendagri-coded district polygons, indexed per {0}° cell. Only outer rings are used (holes ignored, boundaries already simplified). Points that fall in no district are discarded (sea or neighbouring countries).",
 "X dari {0} provinsi di atas {1}×; provinsi tertinggi": "X of {0} provinces above {1}×; highest province",
@@ -7812,7 +7812,412 @@
 "▼ sekitar {0} juta jiwa": "▼ about {0} million people",
 "▲ sekitar {0} juta jiwa": "▲ about {0} million people",
 "▼ sekitar {0} ribu jiwa": "▼ about {0} thousand people",
-"▲ sekitar {0} ribu jiwa": "▲ about {0} thousand people"
+"▲ sekitar {0} ribu jiwa": "▲ about {0} thousand people",
+"Laporan Harian Karhutla · Centurisk{0}": "Daily Forest Fire Report · Centurisk{0}",
+"Laporan Harian Karhutla": "Daily Forest Fire Report",
+"Laporan Harian Kebakaran Hutan dan Lahan": "Daily Forest and Land Fire Report",
+"Memuat laporan…": "Loading report…",
+"Laporan belum tersedia. Coba muat ulang beberapa menit lagi.": "Report not available yet. Try reloading in a few minutes.",
+"Data belum tersedia": "Data not available yet",
+"Cetak atau unduh PDF": "Print or download PDF",
+"titik panas di": "hotspots in",
+"; luas indikasi": "; indicated area",
+"Data belum final": "Data not final",
+"Belum final": "Not final",
+"Final": "Final",
+"Sementara": "Provisional",
+"sementara": "provisional",
+"masih sementara": "is still provisional",
+"sudah ditutup": "is closed",
+"Titik panas per hari": "Hotspots per day",
+"Perubahan titik": "Hotspot change",
+"Kab/kota memiliki hotspot": "Regencies/cities with hotspots",
+"Provinsi memiliki hotspot": "Provinces with hotspots",
+"Luas terdampak": "Affected area",
+"Luas indikasi terbakar": "Indicated burned area",
+"ha di antaranya baru; kumulatif": "ha of it new; cumulative",
+"Luas indikasi": "Indicated area",
+"ha baru": "ha new",
+"Luas indikasi per hari": "Indicated area per day",
+"Luas indikasi (ha)": "Indicated area (ha)",
+"Perubahan luas": "Area change",
+"Luas baru (ha)": "New area (ha)",
+"Kumulatif (ha)": "Cumulative (ha)",
+"Kumulatif": "Cumulative",
+"Titik panas per provinsi": "Hotspots per province",
+"▲ baru": "▲ new",
+"Tabel provinsi": "Province table",
+"Per kab/kota": "By regency/city",
+"Luas kejadian api (ha)": "Fire event area (ha)",
+"Cari nama kab/kota": "Search regency/city",
+"Kab/kota": "Regency/city",
+"FWI tertinggi": "Highest FWI",
+"Kenaikan terbesar": "Largest increases",
+"Kenaikan titik terbesar": "Largest hotspot increases",
+"naik paling tajam:": "rose most sharply:",
+"Belum ada hari pembanding": "No comparison day yet",
+"Laporan baru punya satu hari": "The report has only one day so far",
+"Pilih minimal satu provinsi": "Select at least one province",
+"Semua kab/kota tetap atau turun": "All regencies/cities flat or down",
+"Tidak ada provinsi yang cocok": "No matching province",
+"Tidak ada kab/kota yang cocok": "No matching regency/city",
+"Tidak ada titik panas pada rentang ini": "No hotspots in this range",
+"Cut-off dan sumber data": "Cut-off and data sources",
+"Data satelit masuk sampai": "Satellite data received up to",
+"laporan": "report",
+"Waktu laporan": "Report timing",
+"Arsip sejak": "Archive since",
+"Cut-off data": "Data cut-off",
+"Dihitung": "Computed",
+"Ditutup": "Closed",
+"Ditutup nanti": "Closes at",
+"tiap {0} jam": "every {0} hours",
+"Luas resmi": "Official area",
+"MODIS C{0} VIIRS S-NPP, VIIRS NOAA{1} per hari WIB": "MODIS C{0} VIIRS S-NPP, VIIRS NOAA{1} per WIB day",
+"VIIRS S-NPP, NOAA{0} NOAA{1} keyakinan nominal dan tinggi; indikasi, bukan citra, {2} piksel {3} m = {4} ha": "VIIRS S-NPP, NOAA{0} NOAA{1} nominal and high confidence; an indication, not imagery, {2} pixel {3} m = {4} ha",
+"Jumlah luas baru harian, piksel tanpa deteksi {0} hari sebelumnya": "Sum of daily new area, pixels with no detection in the previous {0} days",
+"titik VIIRS yang berdekatan ({0} km, {1} hari); status dihitung dari aturan Centurisk{2}": "nearby VIIRS hotspots ({0} km, {1} days); status computed from Centurisk{2} rules",
+"Fire Weather Index (FWI) Kanada dari cuaca Open-Meteo (ERA{0} dan prakiraan), nilai tertinggi kejadian api di wilayah itu": "Canadian Fire Weather Index (FWI) from Open-Meteo weather (ERA{0} and forecast), highest value among fire events in the area",
+"batas wilayah administrasi edisi Juni {0}": "administrative boundaries, June {0} edition",
+"indikasi luas kebakaran per provinsi": "indicated burned area per province",
+"Laporan dihitung": "Report computed"
 },
-"pola": [["^sekitar (.+?) ha \\(skenario (.+?)–(.+?)\\)$", "about $1 ha (scenario $2–$3)"], ["^sekitar (.+?) cm \\(skenario (.+?)–(.+?)\\)$", "about $1 cm (scenario $2–$3)"], ["^sekitar (.+?) ton \\(skenario (.+?)–(.+?)\\)$", "about $1 tonnes (scenario $2–$3)"], ["^Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s\\.d\\. (.+)$", "Source: NASA FIRMS VIIRS, GFW peatland map, IPCC 2013 · detections up to $1"], ["^Terpapar asap, hari ini → hari ke-(\\d+)$", "Exposed to smoke, today → day $1"], ["^· CAMS \\(Copernicus\\) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ ([\\d.,]+) km; prakiraan hari ke-(\\d+)$", "· CAMS (Copernicus) via Open-Meteo × WorldPop population; only cells with an upwind fire complex ≤ $1 km; forecast day $2"], ["^(.+?) · (.+)$", "$1 · $2"], ["^(.+?) / (.+)$", "$1 / $2"], ["^(.+?) → (.+)$", "$1 → $2"], ["^(.+?) – (.+)$", "$1 – $2"], ["^Min,? (\\d+)$", "Sun $1"], ["^Sen,? (\\d+)$", "Mon $1"], ["^Sel,? (\\d+)$", "Tue $1"], ["^Rab,? (\\d+)$", "Wed $1"], ["^Kam,? (\\d+)$", "Thu $1"], ["^Jum,? (\\d+)$", "Fri $1"], ["^Sab,? (\\d+)$", "Sat $1"], ["^Teras Urban\\. \\((\\d+)\\)\\. Pantau Bencana: pemantauan karhutla dan bencana hidrometeorologi Indonesia dari data terbuka \\[Situs web\\]\\. (\\S+) \\(diakses (.+)\\)\\.$", "Teras Urban. ($1). Pantau Bencana: monitoring forest fires and hydrometeorological disasters in Indonesia from open data [Website]. $2 (accessed $3)."], ["^([^:]{2,40}): (.+)$", "$1: $2"], ["^Buka kompleks (.+)$", "Open fire complex $1"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih awal dari median\\)$", "Season started early in $1 ($2 days earlier than the median)"], ["^Awal musim di (.+) \\(([\\d,.]+) hari lebih lambat dari median\\)$", "Season started late in $1 ($2 days later than the median)"], ["^aktif di (.+)$", "active in $1"], ["^di wilayah kerja (.+)$", "in the $1 area of operations"], ["^kata pemicu: (.+)$", "trigger words: "], ["^Lihat berita (.+)$", "View $1 story"], ["^Warna asli (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "True colour, $1, $2 $3"], ["^SWIR (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$", "SWIR, $1, $2 $3"], ["^Level (I{1,3}|IV) (Normal|Waspada|Siaga|Awas)$", "Level $1 $2"], ["^naik dari Level (\\S+) (\\S+) ke Level (\\S+) (\\S+) pada (.+)$", "went up from Level $1 $2 to Level $3 $4 on $5"], ["^turun dari Level (\\S+) (\\S+) ke Level (\\S+) (\\S+) pada (.+)$", "went down from Level $1 $2 to Level $3 $4 on $5"], ["^Erupsi terakhir tercatat pada (.+) di$", "Last eruption recorded on $1 at"], ["^(Kerusakan bangunan|Retakan tanah|Pengungsian|Genangan tsunami|Lainnya) di (.+)$", "$1 in $2"], ["^Terkuat: MMI (\\S+)$", "Strongest: MMI $1"], ["^sejak (.+?), terkuat MMI$", "since $1, strongest MMI"], ["^sejak (.+)$", "since $1"], ["^Tidak ada gempa yang dinyatakan BMKG berpotensi tsunami sejak (.+)$", "No earthquake was declared by BMKG as having tsunami potential since $1"], ["^Tidak ada gempa M (\\d+)\\+ di Indonesia sejak (.+)$", "No M $1+ earthquakes in Indonesia since $2"], ["^Tidak ada gempa yang dirasakan warga sejak (.+)$", "No earthquakes felt by residents since $1"], ["^Tidak ada gempa sejak (.+?)\\.$", "No earthquakes since $1."], ["^Tidak ada gempa dalam (\\d+) jam terakhir\\.$", "No earthquakes in the last $1 hours."], ["^Tidak ada gempa dalam (\\d+) hari terakhir\\.$", "No earthquakes in the last $1 days."], ["^Tidak ada peringatan nowcast yang berlaku pada data BMKG terbit (.+)\\.$", "No nowcast warning in force in the BMKG data published $1."], ["^Tidak ada peringatan gelombang yang berlaku pada data BMKG terbit (.+)\\.$", "No wave warning in force in the BMKG data published $1."], ["^Tidak ada peringatan nowcast BMKG yang berlaku$", "No BMKG nowcast warning in force"], ["^(\\d+ [A-Za-z]+ [\\d:.]+) sampai (\\d+ [A-Za-z]+ [\\d:.]+) (WIB|WITA|WIT)$", "$1 to $2 $3"]]
+"pola": [
+[
+"^Rekap BNPB operasi karhutla (\\d+) s\\.d\\. (.+?), belum diverifikasi ke dokumen resmi BNPB$",
+"BNPB $1 forest fire operations recap up to $2, not yet verified against official BNPB documents"
+],
+[
+"^Data s\\.d\\. (.+)$",
+"Data to $1"
+],
+[
+"^Ditutup (.+? WIB)$",
+"Closed $1"
+],
+[
+"^(.+?) \\(sementara\\)$",
+"$1 (provisional)"
+],
+[
+"^(.+?) \\(sementara\\),$",
+"$1 (provisional),"
+],
+[
+"^(.+?) \\(lanjutan\\)$",
+"$1 (continued)"
+],
+[
+"^kab/kota pada (.+?) \\(sementara\\),$",
+"regencies/cities on $1 (provisional),"
+],
+[
+"^kab/kota pada (.+?),$",
+"regencies/cities on $1,"
+],
+[
+"^kab/kota pada (.+?), terbanyak$",
+"regencies/cities on $1, most in"
+],
+[
+"^kab/kota mencatat titik panas pada (.+?), terbanyak$",
+"regencies/cities recorded hotspots on $1, most in"
+],
+[
+"^dibanding (.+?) \\((.+?) titik\\); luas indikasi terbakar$",
+"vs $1 ($2 hotspots); indicated burned area"
+],
+[
+"^dari (.+?) ha$",
+"from $1 ha"
+],
+[
+"^ha pada (.+?) \\((.+?): (.+?) ha\\),$",
+"ha on $1 ($2: $3 ha),"
+],
+[
+"^ha pada (.+?),$",
+"ha on $1,"
+],
+[
+"^ha sejak (.+)$",
+"ha since $1"
+],
+[
+"^Luas indikasi: (.+)$",
+"Indicated area: $1"
+],
+[
+"^provinsi pada (.+?) dibanding (.+)$",
+"provinces on $1 vs $2"
+],
+[
+"^provinsi pada (.+)$",
+"provinces on $1"
+],
+[
+"^Titik (\\d+ \\S+): (.+)$",
+"Hotspots $1: $2"
+],
+[
+"^Titik (\\d+ \\S+)$",
+"Hotspots $1"
+],
+[
+"^Luas (\\d+ \\S+) \\(ha\\)$",
+"Area $1 (ha)"
+],
+[
+"^Perubahan titik: (.+)$",
+"Hotspot change: $1"
+],
+[
+"^Perubahan luas: (.+)$",
+"Area change: $1"
+],
+[
+"^Kumulatif: (.+)$",
+"Cumulative: $1"
+],
+[
+"^Sebelumnya: (.+)$",
+"Previous: $1"
+],
+[
+"^mencatat titik panas terbanyak pada (.+?):$",
+"recorded the most hotspots on $1:"
+],
+[
+"^terbanyak pada (.+?):$",
+"most on $1:"
+],
+[
+"^titik di seluruh Indonesia \\((.+)\\)$",
+"hotspots across Indonesia ($1)"
+],
+[
+"^SiPongi (\\d+) \\(ha, s\\.d\\. (.+)\\)$",
+"SiPongi $1 (ha, to $2)"
+],
+[
+"^BNPB dipadamkan \\(ha, s\\.d\\. (.+)\\)$",
+"BNPB extinguished (ha, to $1)"
+],
+[
+"^titik panas pada (.+?) dibanding (.+)$",
+"hotspots on $1 vs $2"
+],
+[
+"^naik paling tajam pada (.+?):$",
+"rose most sharply on $1:"
+],
+[
+"^([▲▼] .+?) dari (.+?) \\((.+?)\\)$",
+"$1 from $2 ($3)"
+],
+[
+"^(.+?) kab/kota dengan titik panas atau luas indikasi pada (.+?) atau (.+)$",
+"$1 regencies/cities with hotspots or indicated area on $2 or $3"
+],
+[
+"^Tidak ada kab/kota yang naik pada (.+?) dibanding (.+)$",
+"No regency/city rose on $1 vs $2"
+],
+[
+"^Tidak ada kab/kota yang naik pada (.+)$",
+"No regency/city rose on $1"
+],
+[
+"^Tidak ada titik panas tercatat pada (.+)$",
+"No hotspots recorded on $1"
+],
+[
+"^Centurisk97  ·  Laporan Harian Karhutla  ·  (.+)$",
+"Centurisk97  ·  Daily Forest Fire Report  ·  $1"
+],
+[
+"^sekitar (.+?) ha \\(skenario (.+?)–(.+?)\\)$",
+"about $1 ha (scenario $2–$3)"
+],
+[
+"^sekitar (.+?) cm \\(skenario (.+?)–(.+?)\\)$",
+"about $1 cm (scenario $2–$3)"
+],
+[
+"^sekitar (.+?) ton \\(skenario (.+?)–(.+?)\\)$",
+"about $1 tonnes (scenario $2–$3)"
+],
+[
+"^Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s\\.d\\. (.+)$",
+"Source: NASA FIRMS VIIRS, GFW peatland map, IPCC 2013 · detections up to $1"
+],
+[
+"^Terpapar asap, hari ini → hari ke-(\\d+)$",
+"Exposed to smoke, today → day $1"
+],
+[
+"^· CAMS \\(Copernicus\\) via Open-Meteo × penduduk WorldPop; hanya sel dengan kompleks api searah angin ≤ ([\\d.,]+) km; prakiraan hari ke-(\\d+)$",
+"· CAMS (Copernicus) via Open-Meteo × WorldPop population; only cells with an upwind fire complex ≤ $1 km; forecast day $2"
+],
+[
+"^(.+?) · (.+)$",
+"$1 · $2"
+],
+[
+"^(.+?) / (.+)$",
+"$1 / $2"
+],
+[
+"^(.+?) → (.+)$",
+"$1 → $2"
+],
+[
+"^(.+?) – (.+)$",
+"$1 – $2"
+],
+[
+"^Min,? (\\d+)$",
+"Sun $1"
+],
+[
+"^Sen,? (\\d+)$",
+"Mon $1"
+],
+[
+"^Sel,? (\\d+)$",
+"Tue $1"
+],
+[
+"^Rab,? (\\d+)$",
+"Wed $1"
+],
+[
+"^Kam,? (\\d+)$",
+"Thu $1"
+],
+[
+"^Jum,? (\\d+)$",
+"Fri $1"
+],
+[
+"^Sab,? (\\d+)$",
+"Sat $1"
+],
+[
+"^Teras Urban\\. \\((\\d+)\\)\\. Pantau Bencana: pemantauan karhutla dan bencana hidrometeorologi Indonesia dari data terbuka \\[Situs web\\]\\. (\\S+) \\(diakses (.+)\\)\\.$",
+"Teras Urban. ($1). Pantau Bencana: monitoring forest fires and hydrometeorological disasters in Indonesia from open data [Website]. $2 (accessed $3)."
+],
+[
+"^([^:]{2,40}): (.+)$",
+"$1: $2"
+],
+[
+"^Buka kompleks (.+)$",
+"Open fire complex $1"
+],
+[
+"^Awal musim di (.+) \\(([\\d,.]+) hari lebih awal dari median\\)$",
+"Season started early in $1 ($2 days earlier than the median)"
+],
+[
+"^Awal musim di (.+) \\(([\\d,.]+) hari lebih lambat dari median\\)$",
+"Season started late in $1 ($2 days later than the median)"
+],
+[
+"^aktif di (.+)$",
+"active in $1"
+],
+[
+"^di wilayah kerja (.+)$",
+"in the $1 area of operations"
+],
+[
+"^kata pemicu: (.+)$",
+"trigger words: "
+],
+[
+"^Lihat berita (.+)$",
+"View $1 story"
+],
+[
+"^Warna asli (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$",
+"True colour, $1, $2 $3"
+],
+[
+"^SWIR (.+?) (\\d+) (Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)$",
+"SWIR, $1, $2 $3"
+],
+[
+"^Level (I{1,3}|IV) (Normal|Waspada|Siaga|Awas)$",
+"Level $1 $2"
+],
+[
+"^naik dari Level (\\S+) (\\S+) ke Level (\\S+) (\\S+) pada (.+)$",
+"went up from Level $1 $2 to Level $3 $4 on $5"
+],
+[
+"^turun dari Level (\\S+) (\\S+) ke Level (\\S+) (\\S+) pada (.+)$",
+"went down from Level $1 $2 to Level $3 $4 on $5"
+],
+[
+"^Erupsi terakhir tercatat pada (.+) di$",
+"Last eruption recorded on $1 at"
+],
+[
+"^(Kerusakan bangunan|Retakan tanah|Pengungsian|Genangan tsunami|Lainnya) di (.+)$",
+"$1 in $2"
+],
+[
+"^Terkuat: MMI (\\S+)$",
+"Strongest: MMI $1"
+],
+[
+"^sejak (.+?), terkuat MMI$",
+"since $1, strongest MMI"
+],
+[
+"^sejak (.+)$",
+"since $1"
+],
+[
+"^Tidak ada gempa yang dinyatakan BMKG berpotensi tsunami sejak (.+)$",
+"No earthquake was declared by BMKG as having tsunami potential since $1"
+],
+[
+"^Tidak ada gempa M (\\d+)\\+ di Indonesia sejak (.+)$",
+"No M $1+ earthquakes in Indonesia since $2"
+],
+[
+"^Tidak ada gempa yang dirasakan warga sejak (.+)$",
+"No earthquakes felt by residents since $1"
+],
+[
+"^Tidak ada gempa sejak (.+?)\\.$",
+"No earthquakes since $1."
+],
+[
+"^Tidak ada gempa dalam (\\d+) jam terakhir\\.$",
+"No earthquakes in the last $1 hours."
+],
+[
+"^Tidak ada gempa dalam (\\d+) hari terakhir\\.$",
+"No earthquakes in the last $1 days."
+],
+[
+"^Tidak ada peringatan nowcast yang berlaku pada data BMKG terbit (.+)\\.$",
+"No nowcast warning in force in the BMKG data published $1."
+],
+[
+"^Tidak ada peringatan gelombang yang berlaku pada data BMKG terbit (.+)\\.$",
+"No wave warning in force in the BMKG data published $1."
+],
+[
+"^Tidak ada peringatan nowcast BMKG yang berlaku$",
+"No BMKG nowcast warning in force"
+],
+[
+"^(\\d+ [A-Za-z]+ [\\d:.]+) sampai (\\d+ [A-Za-z]+ [\\d:.]+) (WIB|WITA|WIT)$",
+"$1 to $2 $3"
+]
+]
 }

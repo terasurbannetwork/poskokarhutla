@@ -107,7 +107,39 @@
   .tw{overflow:visible}
   .lp-gr svg{min-width:0;width:100%}
   .lp-kep{print-color-adjust:exact;-webkit-print-color-adjust:exact;border-radius:8px}
-  thead th,tfoot td,.lp-grp td,.lp-on td,.lp-lv,.lp-pil,rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  thead th,tfoot td,.lp-grp td,.lp-on td,.lp-sm td,.lp-bf,.lp-src,.lp-alur i,.lp-lv,.lp-pil,rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
 }
 
 #insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:6px 8px;line-height:1.3}
+/* kartu sumber: dua kompartemen, alur waktu dan ubin sumber */
+.lp-kms{display:grid;gap:12px}
+.lp-km{border:1px solid var(--line);border-radius:14px;padding:12px 14px 14px;background:var(--card)}
+.lp-km-h{display:flex;align-items:center;gap:8px;margin-bottom:12px;font:800 10.5px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.lp-bf.ok{background:#2b8c86}
+.lp-alur{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(5,1fr);position:relative}
+.lp-alur::before{content:"";position:absolute;left:10%;right:10%;top:6px;height:2px;background:linear-gradient(90deg,var(--brand),#8a9bb5)}
+.lp-alur li{position:relative;display:flex;flex-direction:column;align-items:center;text-align:center;gap:3px;padding:0 4px}
+.lp-alur i{width:14px;height:14px;border-radius:50%;background:var(--card);border:3px solid var(--brand);margin-bottom:6px;z-index:1}
+.lp-alur li.tt i{border-color:#c9503a}
+.lp-alur b{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
+.lp-alur span{font-size:11px;font-weight:600;color:var(--ink2)}
+.lp-ubs{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:8px}
+.lp-ub{border-radius:12px;padding:10px 12px;background:oklch(42% .11 255 / .05);border:1px solid oklch(42% .11 255 / .1)}
+.lp-ub-h{display:flex;align-items:center;gap:7px;margin-bottom:5px}
+.lp-ub-h svg{width:16px;height:16px;flex:none;fill:none;stroke:var(--brand);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.lp-ub-h b{font-size:12.5px;color:var(--ink)}
+.lp-ub-h .lp-src{margin-left:auto}
+.lp-ub p{margin:0;font-size:11.5px;line-height:1.45;color:var(--ink2)}
+.lp-src{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;white-space:nowrap;background:var(--brand);color:#fff}
+@media (max-width:640px){.lp-alur{grid-template-columns:1fr;gap:10px}.lp-alur::before{left:6px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
+  .lp-alur li{flex-direction:row;text-align:left;gap:8px}.lp-alur i{margin:0}}
+@media print{.lp-ubs{grid-template-columns:repeat(2,1fr)}.lp-km,.lp-ub{break-inside:avoid}}
+/* judul dua poin: hari tertutup + hari berjalan yang belum final */
+.lp-pt{display:block;position:relative;padding-left:16px}
+.lp-pt::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--brand)}
+.lp-pt2{margin-top:4px;font-size:.82em}
+.lp-pt2::before{background:#8a9bb5}
+.lp-bf{display:inline-block;vertical-align:middle;padding:2px 8px;border-radius:999px;font:800 10.5px var(--font);background:#c9503a;color:#fff;white-space:nowrap}
+/* baris hari berjalan (belum final) di tabel harian: latar oranye pucat + pil */
+.lp-tb tr.lp-sm td{background:oklch(70% .13 50 / .12);font-style:italic}
+.lp-tb tr.lp-sm .lp-bf{font-style:normal;margin-left:6px}

@@ -176,6 +176,8 @@ html[data-i18n-muat] body>header,html[data-i18n-muat] main{opacity:0}`;
     if (!sah(b) || b === B) return;
     B = b; simpan(b); document.documentElement.lang = b; segarTombol();
     try { history.replaceState(history.state, "", location.href); } catch (e) {}
+    /* halaman tanpa bukaTab (laporan, halaman bencana lain) tidak bisa render ulang tanggal/angka yang sudah diformat: muat ulang */
+    if (typeof window.bukaTab !== "function") return location.reload();
     if (b === "en") { await muatKamus(); if (B !== "en") return; terjemahSemua(); }
     else { pengamat.disconnect(); pulihkan(document.documentElement); }
     /* render ulang tab aktif supaya angka/tanggal ikut format bahasa baru */

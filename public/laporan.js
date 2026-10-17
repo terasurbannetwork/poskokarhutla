@@ -38,13 +38,13 @@ function barisDari(o, i, w) {
     kompleks: o.kompleks ?? null, lk: o.luas_kompleks ?? null, level: o.level ?? null, ada: sum(o.titik.slice(Math.max(0, i - w + 1)), w) + sum(o.luas.slice(Math.max(0, i - w + 1)), w) };
 }
 const jendela = () => Math.min(st.rentang, 30);
-function barisProv() {
-  const i = idx(), w = jendela();
+function barisProv(i = idx()) {
+  const w = jendela();
   return Object.entries(D.prov).map(([kode, o]) => ({kode, nama: o.nama, ...barisDari(o, i, w), sip: o.sipongi_ha ?? null, pad: o.padam_ha ?? null}))
     .filter(r => r.ada > 0);
 }
-function barisKab() {
-  const i = idx(), w = jendela();
+function barisKab(i = idx()) {
+  const w = jendela();
   return D.kab.map(o => ({kode: o.prov, prov: D.prov[o.prov]?.nama || "", nama: o.nama, ...barisDari(o, i, w), fwi: o.fwi_maks ?? null}))
     .filter(r => r.ada > 0);
 }
@@ -110,7 +110,9 @@ function kartuProvGrafik() {
   const P = Kartu.provDipilih("provM", st), semuaRows = barisProv(), rows = semuaRows.filter(r => !P.length || P.includes(r.kode)).sort((a, b) => b.t - a.t);
   const kode = semuaRows.map(r => r.kode).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
   const naik = rows.filter(r => r.tp != null && r.t > r.tp).length;
-  const j = rows.length ? `Titik panas naik di ${Kartu.hl(fmt(naik) + " dari " + fmt(rows.length))} provinsi pada ${tgl(st.hari)}${idx() > 0 ? ` dibanding ${tgl(D.hari[idx() - 1])}` : ""}` : "Tidak ada provinsi yang cocok";
+  const j = rows.length ? poinBerjalan(`Titik panas naik di ${Kartu.hl(fmt(naik) + " dari " + fmt(rows.length))} provinsi pada ${tgl(st.hari)}${idx() > 0 ? ` dibanding ${tgl(D.hari[idx() - 1])}` : ""}`, b => {
+    const rb = barisProv(b).filter(r => !P.length || P.includes(r.kode));
+    return `Titik panas naik di ${Kartu.hl(fmt(rb.filter(r => r.tp != null && r.t > r.tp).length) + " dari " + fmt(rb.length))} provinsi pada ${tgl(D.hari[b])}`; }) : "Tidak ada provinsi yang cocok";
   /* kertas: dua kolom selebar setengah halaman supaya huruf tetap terbaca (satu kolom 38 baris menyusut sampai tak terbaca) */
   const h2 = Math.ceil(rows.length / 2), cetak = `<div class="lp-prt">${batangProv(rows.slice(0, h2), 760, rows[0].t || 1)}${rows.length > 1 ? batangProv(rows.slice(h2), 760, rows[0].t || 1) : ""}</div>`;
   return Kartu.kartu("Per provinsi", j, rows.length ? `<div class="lp-scr">${batangProv(rows)}</div>` + cetak : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
@@ -122,7 +124,7 @@ function tabelHarian(kol) {
   const hs = hariGrafik().slice().reverse();
   return `<div class="tw lp-th"><table class="lp-tb"><thead><tr><th>Tanggal</th>${kol.map(k => `<th${k[2] ? ' class="n"' : ""}>${k[0]}</th>`).join("")}</tr></thead><tbody>${hs.map(h => {
     const i = D.hari.indexOf(h);
-    return `<tr${h === st.hari ? ' class="lp-on"' : ""}><td>${tglPanjang(h)}${h === D.hari_berjalan ? " (sementara)" : ""}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}</tbody></table></div>`;
+    return `<tr class="${h === st.hari ? "lp-on" : ""}${h === D.hari_berjalan ? " lp-sm" : ""}"><td>${tglPanjang(h)}${h === D.hari_berjalan ? ' <span class="lp-bf">Belum final</span>' : ""}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}</tbody></table></div>`;
 }
 
 /* ---------- kartu ---------- */
@@ -130,10 +132,17 @@ function tabelHarian(kol) {
 const segRentang = () => D.hari.length > 7 ? Kartu.seg("rentang", [[7, "7 hari"], [14, "14 hari"]], st) : "";
 const hariGrafik = () => D.hari.slice(-st.rentang);
 
+/* hari terpilih = hari tertutup terakhir: hari berjalan (belum final) ikut tampil sebagai poin kedua */
+function poinBerjalan(j, teks) {
+  const b = D.hari.indexOf(D.hari_berjalan);
+  if (b < 1 || D.hari[b - 1] !== st.hari) return j;
+  return `<span class="lp-pt">${j}</span><span class="lp-pt lp-pt2">${teks(b)} <span class="lp-bf">Data belum final</span></span>`;
+}
 function kartuRingkasan() {
   const i = idx(), n = D.nasional, h = st.hari, tp = i > 0 ? n.titik[i - 1] : null, lp = i > 0 ? n.luas[i - 1] : null;
   const bdg = i > 0 ? ` dibanding ${tgl(D.hari[i - 1])}` : "";
-  const j = `${Kartu.hl(fmt(n.titik[i]))} titik panas di ${Kartu.hl(fmt(n.kab[i]))} kab/kota pada ${tgl(h)}${sementara() ? " (sementara)" : ""}${tp != null ? `, ${ubah(n.titik[i], tp)}${bdg} (${fmt(tp)} titik)` : ""}; luas indikasi terbakar ${Kartu.hl(fmt(n.luas[i]))} ha${lp != null ? `, ${ubah(n.luas[i], lp)} dari ${fmt(lp)} ha` : ""}`;
+  const j = poinBerjalan(`${Kartu.hl(fmt(n.titik[i]))} titik panas di ${Kartu.hl(fmt(n.kab[i]))} kab/kota pada ${tgl(h)}${sementara() ? " (sementara)" : ""}${tp != null ? `, ${ubah(n.titik[i], tp)}${bdg} (${fmt(tp)} titik)` : ""}; luas indikasi terbakar ${Kartu.hl(fmt(n.luas[i]))} ha${lp != null ? `, ${ubah(n.luas[i], lp)} dari ${fmt(lp)} ha` : ""}`,
+    b => `${Kartu.hl(fmt(n.titik[b]))} titik panas di ${Kartu.hl(fmt(n.kab[b]))} kab/kota pada ${tgl(D.hari[b])}, ${ubah(n.titik[b], n.titik[b - 1])}; luas indikasi ${Kartu.hl(fmt(n.luas[b]))} ha`);
   const hs = hariGrafik();
   return Kartu.kartu("Ringkasan", j, batang(hs, hs.map(x => n.titik[D.hari.indexOf(x)]), h, {nama: "Titik panas", u: "titik", arr: n.titik}) + tabelHarian([["Titik panas", i => fmt(n.titik[i]), 1], ["Perubahan titik", i => i > 0 ? ubah(n.titik[i], n.titik[i - 1]) : "–", 1],
     ["Kab/kota memiliki hotspot", i => fmt(n.kab[i]), 1], ["Provinsi memiliki hotspot", i => fmt(Object.values(D.prov).filter(o => o.titik[i] > 0).length), 1]]), tt(D.sumber.titik), segRentang());
@@ -141,7 +150,8 @@ function kartuRingkasan() {
 function kartuLuas() {
   const i = idx(), n = D.nasional, kum = sum(n.baru, i), hs = hariGrafik();
   const j = `Luas indikasi terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? ` (${tgl(D.hari[i - 1])}: ${fmt(n.luas[i - 1])} ha)` : ""}, ${Kartu.hl(fmt(n.baru[i]))} ha di antaranya baru; kumulatif ${Kartu.hl(fmt(kum))} ha sejak ${tgl(D.awal_arsip)}`;
-  return Kartu.kartu("Luas terdampak", j, batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Luas indikasi", u: "ha", arr: n.luas}) + tabelHarian([["Luas indikasi (ha)", i => fmt(n.luas[i]), 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
+  const j2 = poinBerjalan(j, b => `Luas indikasi ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])}; ${Kartu.hl(fmt(n.baru[b]))} ha baru`);
+  return Kartu.kartu("Luas terdampak", j2, batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Luas indikasi", u: "ha", arr: n.luas}) + tabelHarian([["Luas indikasi (ha)", i => fmt(n.luas[i]), 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     ["Luas baru (ha)", i => fmt(n.baru[i]), 1], ["Kumulatif (ha)", i => fmt(sum(n.baru, i)), 1]]), tt(D.sumber.luas), segRentang());
 }
 
@@ -160,7 +170,9 @@ function tabelProv() {
 }
 function kartuProv() {
   const i = idx(), rows = barisProv().sort((a, b) => b.t - a.t), top = rows[0], tot = D.nasional.titik[i];
-  const j = top && top.t ? `${Kartu.hl(esc(top.nama))} mencatat titik panas terbanyak pada ${tgl(st.hari)}: ${Kartu.hl(fmt(top.t))} dari ${Kartu.hl(fmt(tot))} titik di seluruh Indonesia (${fmt(Math.round(top.t / tot * 100))}%)` : `Tidak ada titik panas tercatat pada ${tgl(st.hari)}`;
+  const j = top && top.t ? poinBerjalan(`${Kartu.hl(esc(top.nama))} mencatat titik panas terbanyak pada ${tgl(st.hari)}: ${Kartu.hl(fmt(top.t))} dari ${Kartu.hl(fmt(tot))} titik di seluruh Indonesia (${fmt(Math.round(top.t / tot * 100))}%)`, b => {
+    const t2 = barisProv(b).sort((a, c) => c.t - a.t)[0];
+    return t2 ? `${Kartu.hl(esc(t2.nama))} terbanyak pada ${tgl(D.hari[b])}: ${Kartu.hl(fmt(t2.t))} titik, ${ubah(t2.t, t2.tp)}` : `Tidak ada titik panas tercatat pada ${tgl(D.hari[b])}`; }) : `Tidak ada titik panas tercatat pada ${tgl(st.hari)}`;
   return Kartu.kartu("Tabel provinsi", j, '<div id="lpProv"></div>', tt([D.sumber.titik, D.sumber.luas, D.sumber.kompleks, D.sumber.sipongi, D.sumber.bnpb].filter(Boolean).join("; ")));
 }
 /* kab/kota dikelompokkan per provinsi: provinsi diurut titik hari terpilih (terbanyak dulu), kab/kota di dalamnya mengikuti urutan kolom.
@@ -186,7 +198,9 @@ function tabelKab() {
 }
 function kartuKab() {
   const i = idx(), rows = barisKab().sort((a, b) => b.t - a.t), top = rows[0], aktif = rows.filter(r => r.t > 0).length;
-  const j = top && top.t ? `${Kartu.hl(fmt(aktif))} kab/kota mencatat titik panas pada ${tgl(st.hari)}, terbanyak ${Kartu.hl(esc(top.nama))} (${Kartu.hl(fmt(top.t))} titik)` : `Tidak ada titik panas tercatat pada ${tgl(st.hari)}`;
+  const j = top && top.t ? poinBerjalan(`${Kartu.hl(fmt(aktif))} kab/kota mencatat titik panas pada ${tgl(st.hari)}, terbanyak ${Kartu.hl(esc(top.nama))} (${Kartu.hl(fmt(top.t))} titik)`, b => {
+    const rb = barisKab(b).sort((a, c) => c.t - a.t);
+    return rb[0]?.t ? `${Kartu.hl(fmt(rb.filter(r => r.t > 0).length))} kab/kota pada ${tgl(D.hari[b])}, terbanyak ${Kartu.hl(esc(rb[0].nama))} (${Kartu.hl(fmt(rb[0].t))} titik)` : `Tidak ada titik panas tercatat pada ${tgl(D.hari[b])}`; }) : `Tidak ada titik panas tercatat pada ${tgl(st.hari)}`;
   const kodeAda = [...new Set(rows.map(r => r.kode))].sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
   const ctl = Kartu.selProv("provK", "Semua provinsi", kodeAda, k => D.prov[k].nama, st)
     + `<input class="lp-cari" id="lpCari" type="search" placeholder="Cari nama kab/kota" autocomplete="off" aria-label="Cari nama kab/kota" value="${esc(st.cari)}">`;
@@ -196,23 +210,37 @@ function kartuNaik() {
   const i = idx();
   if (i < 1) return Kartu.kartu("Kenaikan terbesar", "Belum ada hari pembanding", '<div class="kosong">Laporan baru punya satu hari</div>', tt(D.sumber.titik));
   const rows = barisKab().filter(r => r.dt > 0).sort((a, b) => b.dt - a.dt).slice(0, 10).map(r => ({...r, v: r.dt}));
-  const j = rows.length ? `${Kartu.hl(esc(rows[0].nama))} naik paling tajam: <span class="naik">▲ ${fmt(rows[0].dt)}</span> titik panas pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}` : `Tidak ada kab/kota yang naik pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}`;
+  const j = poinBerjalan(rows.length ? `${Kartu.hl(esc(rows[0].nama))} naik paling tajam: <span class="naik">▲ ${fmt(rows[0].dt)}</span> titik panas pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}` : `Tidak ada kab/kota yang naik pada ${tgl(st.hari)} dibanding ${tgl(D.hari[i - 1])}`, b => {
+    const t2 = barisKab(b).filter(r => r.dt > 0).sort((a, c) => c.dt - a.dt)[0];
+    return t2 ? `${Kartu.hl(esc(t2.nama))} naik paling tajam pada ${tgl(D.hari[b])}: <span class="naik">▲ ${fmt(t2.dt)}</span> titik panas` : `Tidak ada kab/kota yang naik pada ${tgl(D.hari[b])}`; });
   return Kartu.kartu("Kenaikan terbesar", j, rows.length ? batangMendatar(rows) : '<div class="kosong">Semua kab/kota tetap atau turun</div>', tt(D.sumber.titik));
 }
 function kartuSumber() {
-  const s = D.sumber, c = D.cutoff;
+  const s = D.sumber, c = D.cutoff, sm = sementara();
+  /* teks sumber dari pipeline diawali nama sumbernya; nama itu pindah ke pil sumber, sisanya jadi rincian */
+  const rinci = t => tt(t).replace(/^(NASA FIRMS NRT|Kejadian api):\s*/, "").replace(/^(Badan Informasi Geospasial \(BIG\)|KLHK SiPongi),\s*/, "");
+  /* kompartemen 1: alur waktu laporan, dari arsip sampai penutupan */
+  const tutup = new Date(`${st.hari}T${(D.jadwal.tutup.match(/\d{1,2}[.:]\d{2}/) || ["21.20"])[0].replace(".", ":").padStart(5, "0")}:00+07:00`);
+  const waktu = [[new Date(D.awal_arsip + "T00:00:00+07:00"), "Arsip sejak", tgl(D.awal_arsip)], [new Date(c), "Cut-off data", jamWIB(c)], [new Date(D.dibuat), "Dihitung", jamWIB(D.dibuat)],
+    [tutup, sm ? "Ditutup nanti" : "Ditutup", `${tgl(st.hari)} ${D.jadwal.tutup}`, "tt"]].sort((a, b) => a[0] - b[0]).concat([[0, "Pembaruan", D.jadwal.pembaruan]]);
+  const alur = `<div class="lp-km"><div class="lp-km-h"><span>Waktu laporan</span><span class="lp-bf${sm ? "" : " ok"}">${sm ? "Data belum final" : "Final"}</span></div>`
+    + `<ol class="lp-alur">${waktu.map(w => `<li${w[3] ? ' class="tt"' : ""}><i></i><b>${esc(w[2])}</b><span>${w[1]}</span></li>`).join("")}</ol></div>`;
+  /* kompartemen 2: ubin sumber, satu per data */
+  const IK = {titik: '<path d="M12 3c1 3 4 5 4 9a4 4 0 0 1-8 0c0-2 1-3 2-4 0 2 1 3 2 3 0-3-1-5 0-8z"/>', luas: '<path d="M4 4h16v16H4zM4 12h16M12 4v16"/>',
+    kum: '<path d="M4 17l8 4 8-4M4 12l8 4 8-4M12 3l8 4-8 4-8-4z"/>', kej: '<circle cx="7" cy="8" r="2.5"/><circle cx="16" cy="7" r="2.5"/><circle cx="11" cy="16" r="2.5"/>',
+    fwi: '<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z"/>', wil: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>',
+    res: '<path d="M6 3h9l4 4v14H6zM14 3v5h5M9 13h7M9 17h5"/>', ops: '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/>'};
   const baris = [
-    ["Hari laporan", `${tglPanjang(st.hari)} (${sementara() ? "sementara" : "ditutup"})`],
-    ["Cut-off data", jamWIB(c)],
-    ["Laporan dihitung", jamWIB(D.dibuat)],
-    ["Penutupan harian", `${D.jadwal.tutup}; pembaruan ${D.jadwal.pembaruan}`],
-    ["Arsip", `sejak ${tgl(D.awal_arsip)}; kumulatif dihitung dari tanggal ini`],
-    ["Titik panas", `${tt(s.titik)}; dihitung per hari WIB`],
-    ["Luas indikasi", `${tt(s.luas)}; 1 piksel 375 m = 14,06 ha`],
-    ["Kumulatif", "Jumlah luas baru harian: piksel yang tidak terdeteksi pada 7 hari sebelumnya"],
-    ["Kejadian api", tt(s.kompleks)], ["FWI", tt(s.fwi)], ["Wilayah", tt(s.wilayah)], ["SiPongi", tt(s.sipongi)], ["BNPB", tt(s.bnpb)]].filter(r => r[1] && r[1] !== "undefined");
-  const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} ${sementara() ? "masih sementara" : "sudah ditutup"}`;
-  return Kartu.kartu("Cut-off dan sumber data", j, `<div class="tw"><table class="lp-tb lp-tb-s"><thead><tr><th>Label</th><th>Isi</th></tr></thead><tbody>${baris.map(r => `<tr><td><b>${r[0]}</b></td><td>${esc(r[1])}</td></tr>`).join("")}</tbody></table></div>`, "NASA FIRMS, BIG, KLHK SiPongi, BNPB, olahan Centurisk97");
+    ["titik", "Titik panas", "NASA FIRMS", s.titik && rinci(s.titik) + ", per hari WIB"],
+    ["luas", "Luas indikasi", "NASA FIRMS", s.luas && rinci(s.luas) + ", 1 piksel 375 m = 14,06 ha"],
+    ["kum", "Kumulatif", "Centurisk97", "Jumlah luas baru harian, piksel tanpa deteksi 7 hari sebelumnya"],
+    ["kej", "Kejadian api", "Centurisk97", s.kompleks && rinci(s.kompleks)], ["fwi", "FWI", "Open-Meteo", s.fwi && tt(s.fwi)],
+    ["wil", "Wilayah", "BIG", s.wilayah && rinci(s.wilayah)], ["res", "Luas resmi", "KLHK SiPongi", s.sipongi && rinci(s.sipongi)],
+    ["ops", "Operasi", "BNPB", s.bnpb && tt(s.bnpb)]].filter(r => r[3]);
+  const ubin = baris.map(r => `<div class="lp-ub"><div class="lp-ub-h"><svg viewBox="0 0 24 24" aria-hidden="true">${IK[r[0]]}</svg><b>${r[1]}</b><span class="lp-src">${esc(r[2])}</span></div><p>${esc(r[3])}</p></div>`).join("");
+  const j = `Data satelit masuk sampai ${Kartu.hl(jamWIB(c))}, laporan ${Kartu.hl(tgl(st.hari))} ${sm ? "masih sementara" : "sudah ditutup"}`;
+  return Kartu.kartu("Cut-off dan sumber data", j, `<div class="lp-kms">${alur}<div class="lp-km"><div class="lp-km-h"><span>Sumber data</span></div><div class="lp-ubs">${ubin}</div></div></div>`,
+    "NASA FIRMS, BIG, KLHK SiPongi, BNPB, olahan Centurisk97");
 }
 
 function kepala() {
@@ -240,9 +268,9 @@ function semua() {
       .map(([l, v, k]) => `<div><span>${l}</span><b>${v}</b><small>${k}</small></div>`).join(""); }
   /* kepala dan kaki kertas cetak: kotak margin @page (menggantikan tanggal/URL bawaan browser), isinya mengikuti hari terpilih */
   const css = t => '"' + String(t).replace(/["\\]/g, "") + '"', f = "font:600 8.5px Inter,system-ui,sans-serif;color:#5b6b82";
-  $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:14mm 10mm 14mm;
-    @top-left{content:${css("Centurisk97  ·  Laporan Harian Karhutla  ·  " + tglPanjang(st.hari) + (sementara() ? " (sementara)" : ""))};font:800 9px Inter,system-ui,sans-serif;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm}
-    @top-right{content:${css("Cut-off " + jamWIB(D.cutoff) + "  ·  ditutup " + D.jadwal.tutup)};${f};border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm}
+  $("#lpHalaman").textContent = `@page{size:A4 landscape;margin:20mm 10mm 14mm;
+    @top-left{content:${css("Centurisk97  ·  Laporan Harian Karhutla  ·  " + tglPanjang(st.hari) + (sementara() ? " (sementara)" : ""))};font:800 9px Inter,system-ui,sans-serif;color:#0b2545;border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
+    @top-right{content:${css("Cut-off " + jamWIB(D.cutoff) + "  ·  ditutup " + D.jadwal.tutup)};${f};border-bottom:1.5px solid #0b2545;vertical-align:bottom;padding-bottom:3mm;margin-bottom:6mm}
     @bottom-left{content:"Sumber: NASA FIRMS, BIG, KLHK SiPongi, BNPB; olahan Centurisk97";${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}
     @bottom-right{content:"Halaman " counter(page) " dari " counter(pages);${f};border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm}}
     @page :first{@top-left{content:"";border:0}@top-right{content:"";border:0}}`;
