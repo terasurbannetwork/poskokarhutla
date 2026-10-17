@@ -176,7 +176,7 @@ function kartuPeta() {
   s += garis + label;
   const daftar = rows.slice(0, 10).map((r, n) => `<li><span class="pr">${n + 1}</span><span class="pnm">${esc(r.nama)}</span><b>${fmt(r.t)}</b>${r.tp != null ? `<span class="pub">${ubah(r.t, r.tp)}</span>` : ""}</li>`).join("");
   return Kartu.kartu("Peta provinsi", j, `<div class="lp-pt-w"><div class="lp-peta"><svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="Peta titik panas per provinsi ${tgl(h)}">${s}</svg></div><ol class="lp-rk">${daftar}</ol></div>`,
-    "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG", ctl, [["#e0b46a", "Ukuran lingkaran sebanding jumlah titik panas"], ["#0b2545", "Provinsi dengan titik panas"]]);
+    "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG", ctl, [["#c4851f", "Ukuran lingkaran sebanding jumlah titik panas"], ["#0b2545", "Provinsi dengan titik panas"]]);
 }
 function kartuProvGrafik() {
   const P = Kartu.provDipilih("provM", st), semuaRows = barisProv(), rows = semuaRows.filter(r => !P.length || P.includes(r.kode)).sort((a, b) => b.t - a.t);
@@ -390,7 +390,7 @@ function sampul() {
     + (pt ? `<div class="lp-sp-ey">Peta: data ${tglHari(h)}${bf ? ' <span class="lp-bf">Data belum final</span>' : ` <span class="lp-co">Cut-off ${cutoff(h)}</span>`}</div>${pt.outerHTML}` : "");
 }
 function semua() {
-  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("peta", kartuPeta()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("sumber", kartuSumber());
+  kepala(); isi("ring", kartuRingkasan()); isi("luas", kartuLuas()); isi("peta", kartuPeta()); isi("provg", kartuProvGrafik()); isi("prov", kartuProv()); isi("kab", kartuKab()); isi("naik", kartuNaik()); isi("tren", kartuTren()); isi("musim", kartuMusim()); isi("cuaca", kartuCuaca()); isi("konsesi", kartuKonsesi()); isi("sumber", kartuSumber());
   renderProv(); renderKab(); sampul();
   document.querySelectorAll(".lp-gr,.lp-kep .seg").forEach(e => { e.scrollLeft = e.scrollWidth; });   /* hari terpilih ada di ujung kanan */
   $("#upd").textContent = "Data s.d. " + jamWIB(D.cutoff);
@@ -453,6 +453,97 @@ addEventListener("afterprint", () => { st.cetak = false; renderKab(); });
 const gelapSkrg = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelapSkrg() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {} };
 
+/* ---------- kartu dari Insight beranda (pemilik, 17 Okt 2026): tren 9 provinsi, musim El Niño, cuaca FWI, konsesi & gambut.
+   Digambar ulang dari data laporan + musim.json, fwi.json, kompleks_konsesi.json; rupa mengikuti kartu beranda ---------- */
+const PRIO = ["14", "15", "16", "61", "62", "63", "64", "53", "93"], nmP = k => D.prov[k]?.nama || k;
+const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], DAS = i => BLN[Math.floor(i / 3)] + " " + ["awal", "tengah", "akhir"][i % 3];
+const X = {};
+const muatTambahan = () => Promise.all(["musim", "fwi", "kompleks_konsesi"].map(n => fetch(`/data/${n}.json`).then(r => r.ok ? r.json() : null).catch(() => null)))
+  .then(([mu, fwi, ks]) => { Object.assign(X, {mu, fwi, ks}); if (D) { isi("tren", kartuTren()); isi("musim", kartuMusim()); isi("cuaca", kartuCuaca()); isi("konsesi", kartuKonsesi()); } });
+const tunggu = ey => Kartu.kartu(ey, "Memuat…", '<div class="kosong">Memuat data…</div>', "");
+
+function kartuTren() {
+  const hari = D.hari.slice(-7), L = hari.length, pv = PRIO.filter(k => D.prov[k]);
+  const W = 940, cw = W / 3, ch = 118, H = Math.ceil(pv.length / 3) * (ch + 36), HIJAU = "#2b8c86", MERAH = "#c9503a", BANDING = "#f2c49c", LAMA = "#dfe3ea";
+  let naik = 0, g = "";
+  pv.forEach((k, i) => { const v = hari.map(h => D.prov[k].titik[D.hari.indexOf(h)] || 0), m = Math.max(1, ...v), x0 = (i % 3) * cw, y0 = Math.floor(i / 3) * (ch + 36), bw = (cw - 34) / L;
+    const tiga = v.slice(-3).reduce((a, b) => a + b, 0), sblm = v.slice(-6, -3).reduce((a, b) => a + b, 0), d = sblm ? tiga / sblm - 1 : 0, arah = Math.sign(d); if (arah > 0) naik++;
+    const wA = arah > 0 ? MERAH : arah < 0 ? HIJAU : "#8a94a6";
+    g += `<text x="${x0 + 10}" y="${y0 + 18}" font-size="13.5" font-weight="700">${esc(nmP(k))}</text><text x="${x0 + cw - 26}" y="${y0 + 18}" text-anchor="end" font-size="12.5" font-weight="800" style="fill:${wA}">${arah > 0 ? "▲" : arah < 0 ? "▼" : "•"} ${fmt(Math.abs(Math.round(d * 100)))}%</text>`;
+    v.forEach((x, j) => { const h = x / m * (ch - 52), w = j >= L - 3 ? wA : j >= L - 6 ? BANDING : LAMA, cx = x0 + 10 + j * bw + bw / 2, bf = hari[j] === D.hari_berjalan;
+      g += `<rect x="${x0 + 10 + j * bw + bw * .16}" y="${y0 + ch - 18 - h}" width="${bw * .68}" height="${Math.max(2, h)}" rx="4" fill="${w}"/>`
+        + `<text x="${cx}" y="${y0 + ch - 22 - Math.max(2, h)}" text-anchor="middle" font-size="10" font-weight="800" opacity=".8">${fmt(x)}</text>`
+        + `<text x="${cx}" y="${y0 + ch - 4}" text-anchor="middle" font-size="10" opacity="${bf ? .9 : .55}" font-weight="${bf ? 700 : 400}">${+hari[j].slice(8)}${bf ? "*" : ""}</text>`
+        + (j > 0 && v[j - 1] ? (() => { const a = Math.round((x / v[j - 1] - 1) * 100); return `<text x="${cx}" y="${y0 + ch + 10}" text-anchor="middle" font-size="9.5" font-weight="800" style="fill:${a > 0 ? MERAH : a < 0 ? HIJAU : "#8a94a6"}">${a > 0 ? "▲" : a < 0 ? "▼" : "•"}${fmt(Math.abs(a))}%</text>`; })() : ""); }); });
+  return Kartu.kartu("Tren harian", `Titik panas naik di ${Kartu.hl(naik + " dari " + pv.length)} provinsi yang sering mengalami karhutla dalam 3 hari terakhir`,
+    `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian per provinsi">${g}</svg>`, "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20)", "",
+    [[HIJAU, "3 hari terakhir turun"], [MERAH, "3 hari terakhir naik"], [BANDING, "3 hari pembanding"], [LAMA, "hari sebelumnya"], ["#8a94a6", "▲▼% di bawah tanggal = perubahan dari hari sebelumnya (* belum final)"]]);
+}
+
+/* musim: tahun ini El Niño, jadi peluang tahun El Niño saja (tanpa pilihan tahun biasa) */
+function kartuMusim() {
+  const mu = X.mu; if (!mu) return tunggu("Musim");
+  const h = D.hari_berjalan || D.hari.at(-1), kini = (+h.slice(5, 7) - 1) * 3 + Math.min(2, Math.floor((+h.slice(8) - 1) / 10)), n = 7, K = "p_el_nino";
+  const idx = Array.from({length: n}, (_, j) => (kini + j) % 36), pv = PRIO.filter(k => mu.prov[k]);
+  const W = 940, L = 190, cw = (W - L - 10) / n, rh = 34, T = 28, H = T + pv.length * rh + 6;
+  const warna = v => v < .05 ? "var(--surface)" : v >= .5 ? "#b8392b" : `color-mix(in oklch, #c9503a ${Math.round(25 + v * 75)}%, #e3b94e)`;
+  let g = idx.map((d, j) => `<text x="${L + j * cw + cw / 2}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" opacity="${j ? .7 : 1}">${DAS(d)}</text>`).join("");
+  pv.forEach((k, i) => { const y = T + i * rh, o = mu.prov[k];
+    g += `<text x="${L - 10}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(nmP(k))}</text>`;
+    idx.forEach((d, j) => { const v = o[K][d];
+      g += `<rect style="fill:${warna(v)}" x="${L + j * cw + 2}" y="${y + 3}" width="${cw - 4}" height="${rh - 6}" rx="5"/><text x="${L + j * cw + cw / 2}" y="${y + 22}" text-anchor="middle" font-size="12.5" font-weight="700" style="fill:${v >= .05 ? "#fff" : "currentColor"}">${Math.round(v * 100)}%</text>`; }); });
+  const masih = pv.filter(k => idx.slice(0, 3).some(d => mu.prov[k][K][d] >= .3)), akhir = pv.map(k => { const p = mu.prov[k][K]; let j = 0; while (j < n && p[idx[j]] >= .15) j++; return [k, j]; }).sort((a, b) => b[1] - a[1])[0];
+  const sampai = akhir[1] ? (d => ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"][Math.floor(d / 3)] + " " + ["awal", "tengah", "akhir"][d % 3])(idx[akhir[1] - 1]) : "";
+  return Kartu.kartu("Musim", `${Kartu.hl(masih.length + " provinsi")} masih harus dalam pantauan 30 hari ke depan karena tahun ini adalah El Niño; berdasarkan tren 2002–2025 berpeluang masuk masa puncak kebakaran${sampai ? `. ${esc(nmP(akhir[0]))} perlu dipantau hingga ${Kartu.hl(sampai)}` : ""}`,
+    `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Peluang periode berbahaya tahun El Niño">${g}</svg></div>`,
+    `NASA FIRMS MODIS 2002–2025; peluang tahun El Niño (${mu.tahun_el_nino.join(", ")})`, "", [["#e3b94e", "peluang rendah"], ["#d9733f", "sedang"], ["#b8392b", "≥ 50%"]]);
+}
+
+function warnaFWI(v) { const s = [[0, [90, 158, 116]], [2, [168, 186, 102]], [7, [227, 185, 78]], [14, [226, 128, 63]], [25, [201, 80, 58]], [40, [122, 43, 63]]];
+  for (let k = 1; k < s.length; k++) if (v <= s[k][0]) { const [a, ca] = s[k - 1], [b, cb] = s[k], t = (v - a) / (b - a); return `rgb(${ca.map((c, j) => Math.round(c + (cb[j] - c) * t)).join(",")})`; }
+  return `rgb(${s.at(-1)[1].join(",")})`; }
+function kartuCuaca() {
+  const F = X.fwi; if (!F) return tunggu("Cuaca");
+  const G = F.grid, hari = G[0].hari.map(x => x.tgl), i0 = Math.max(0, hari.indexOf(F.hari_ini)), hr = hari.slice(i0, i0 + 4), pv = PRIO.filter(k => G.some(c => c.prov === k));
+  const lab = t => { const d = (Date.parse(t) - Date.parse(F.hari_ini)) / 864e5; return ["Hari ini", "Besok", "Lusa"][d] || new Date(t + "T12:00:00Z").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", timeZone: "UTC"}); };
+  const fwi = (k, t) => Math.max(...G.filter(c => c.prov === k).map(c => c.hari.find(x => x.tgl === t)?.fwi ?? 0));
+  const W = 940, L = 190, cw = (W - L) / hr.length, rh = 40, T = 30, H = T + pv.length * rh;
+  let g = hr.map((t, j) => { const x = L + j * cw + cw / 2;
+    return j === 0 ? `<rect x="${x - 34}" y="2" width="68" height="20" rx="10" fill="#0b2545"/><text x="${x}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" style="fill:#fff">${lab(t)}</text>`
+      : `<text x="${x}" y="16" text-anchor="middle" font-size="11.5" font-weight="700" opacity=".7">${lab(t)}</text>`; }).join(""), hit = 0;
+  pv.forEach((k, i) => { const y = T + i * rh; g += `<text x="${L - 10}" y="${y + 24}" text-anchor="end" font-size="13" font-weight="600">${esc(nmP(k))}</text>`;
+    hr.forEach((t, j) => { const v = fwi(k, t); if (j === hr.length - 1 && v >= 14) hit++;
+      g += `<rect x="${L + j * cw + 3}" y="${y + 4}" width="${cw - 6}" height="${rh - 8}" rx="9" fill="${warnaFWI(v)}"/><text x="${L + j * cw + cw / 2}" y="${y + 25}" text-anchor="middle" font-size="13" font-weight="800" style="fill:#fff">${fmt(Math.round(v))}</text>`; }); });
+  const sd = new Date(hr.at(-1) + "T12:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "UTC"});
+  return Kartu.kartu("Cuaca", `Fire Weather Index masih sangat tinggi di ${Kartu.hl(hit + " provinsi")} sampai ${sd}. Artinya ${Kartu.hl(hit + " provinsi")} ini masih perlu terus dipantau karena cuaca kering dapat membuat api mudah menyala dan cepat menyebar`,
+    `<div class="tw" style="border:0;box-shadow:none"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Prakiraan bahaya cuaca kebakaran">${g}</svg></div>`,
+    "Open-Meteo (ECMWF/ICON); FWI rumus Kanada (Van Wagner 1987)", "", [[warnaFWI(0), "rendah 0–1"], [warnaFWI(4), "sedang 2–6"], [warnaFWI(10), "tinggi 7–13"], [warnaFWI(25), "sangat tinggi > 13"]]);
+}
+
+/* konsesi & gambut: porsi titik panas 7 hari di kompleks api per provinsi (kompleks_konsesi.json total.prov / total.gambut) */
+function kartuKonsesi() {
+  const KK = X.ks; if (!KK) return tunggu("Konsesi");
+  const T = KK.total || {}, JN = [["sawit", "Sawit", "#c98a3c"], ["hti", "HTI", "#6b8e3a"], ["hph", "HPH", "#2f6f8f"], ["tambang", "Tambang", "#7a5c99"]];
+  const R = Object.fromEntries((KK.jenis || []).map(a => [a.jenis, a])), pct = p => (p < .005 && p > 0 ? "< 1" : Math.round(p * 100)) + "%";
+  const W = 940, L = 210, RW = 70, rh = 34, bw = W - L - RW;
+  const batang = (rows, segs, kanan) => { let g = ""; rows.forEach(([k, t, o], i) => { const y = 8 + i * rh; let x0 = L;
+      g += `<text x="${L - 12}" y="${y + 21}" text-anchor="end" font-size="13" font-weight="600">${esc(nmP(k))}</text>`;
+      segs.forEach(([nm, w, f, gelap]) => { const v = f(o, t), lw = t ? v / t * bw : 0; if (lw <= 0) return;
+        g += `<rect x="${x0}" y="${y + 7}" width="${lw}" height="${rh - 14}" fill="${w}"/>${lw >= 34 ? `<text x="${x0 + lw / 2}" y="${y + 21.5}" text-anchor="middle" font-size="10.5" font-weight="700" style="fill:${gelap ? "#fff" : "#3a4658"}">${pct(v / t)}</text>` : ""}`; x0 += lw; });
+      g += `<text x="${W - RW + 10}" y="${y + 21}" font-size="12" font-weight="800">${kanan(o, t)}</text>`; });
+    return `<svg viewBox="0 0 ${W} ${14 + rows.length * rh}" role="img">${g}</svg>`; };
+  const leg = a => `<div class="ex-leg" style="justify-content:center;font-size:11.5px;margin:4px 0 10px">${a.map(([n, w]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</div>`;
+  const kep = (a, b) => `<div class="lp-ksh"><b>${a}</b><span>${b}</span></div>`;
+  const pv = {}; for (const [j] of JN) for (const [k, n] of Object.entries(R[j]?.prov || {})) (pv[k] ||= {})[j] = n;
+  const rk = Object.entries(pv).filter(([k]) => T.prov?.[k]).map(([k, o]) => [k, T.prov[k][0], {...o, _k: T.prov[k][1]}]).sort((a, b) => Object.values(b[2]).reduce((x, y) => x + y, 0) - Object.values(a[2]).reduce((x, y) => x + y, 0)).slice(0, 10);
+  const sKons = [...JN.filter(([j]) => R[j]).map(([j, n, w]) => [n, w, o => o[j] || 0, 1]), ["Di luar konsesi", "#cfd8e3", (o, t) => t - Object.entries(o).filter(([j]) => j !== "_k").reduce((a, [, v]) => a + v, 0), 0]];
+  const rg = Object.entries(T.gambut || {}).filter(([k]) => T.prov?.[k]?.[0] >= 50).map(([k, gb]) => [k, T.prov[k][0], {gb}]).sort((a, b) => b[1] - a[1]).slice(0, 10);
+  const badan = (rk.length ? kep("Titik panas di areal konsesi per provinsi", "% di konsesi") + batang(rk, sKons, (o, t) => pct(Math.min(o._k, t) / (t || 1))) + leg(sKons.map(s => [s[0], s[1]])) : "")
+    + (rg.length ? kep("Titik panas di lahan gambut per provinsi", "% di gambut") + batang(rg, [["Gambut", "#6b4a2b", o => o.gb, 1], ["Tanah mineral", "#d9c7a8", (o, t) => t - o.gb, 0]], (o, t) => pct(o.gb / (t || 1))) + leg([["Gambut", "#6b4a2b"], ["Tanah mineral", "#d9c7a8"]]) : "");
+  return Kartu.kartu("Konsesi", `${Kartu.hl(pct(T.n ? T.konsesi / T.n : 0))} titik panas di kompleks api 7 hari terakhir (${fmt(T.konsesi)} dari ${fmt(T.n)}) berada di dalam areal konsesi`,
+    badan || '<div class="kosong">Data status lahan belum tersedia</div>', "NASA FIRMS VIIRS 375 m (7 hari); batas konsesi: sawit/HPH ± 2014, HTI 2020–2022, tambang 2026 (Kemenhut via Global Forest Watch, Trase, Kemenhut PPKH); gambut KLHK. Titik di areal konsesi bukan bukti siapa yang membakar");
+}
+
 /* ---------- muat ---------- */
 async function muat(ulang) {
   const r = await fetch("/data/laporan.json?t=" + Math.floor(Date.now() / 60000), {cache: "no-cache"});
@@ -463,7 +554,7 @@ async function muat(ulang) {
   if (!st.manual || !D.hari.includes(st.hari)) st.hari = awal();
   ulang ? nanti(semua) : semua();
 }
-pasangTip(); PilihCantik.pasang();
+pasangTip(); PilihCantik.pasang(); muatTambahan();
 muat(false).catch(() => { $("#lpKepala").innerHTML = '<div class="kosong">Laporan belum tersedia. Coba muat ulang beberapa menit lagi.</div>'; $("#upd").textContent = "Data belum tersedia"; });
 /* muat ulang dilewati selama kamu mengetik di kotak cari (render ulang akan membuang fokusnya) */
 setInterval(() => { if (document.activeElement?.id !== "lpCari") muat(true).catch(() => {}); }, 600000);
