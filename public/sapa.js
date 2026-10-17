@@ -104,8 +104,8 @@
       <div class="sp-aksi"><span>Sumber: NASA FIRMS, Copernicus CAMS, BMKG</span><button class="sp-pri" data-tutup>Lihat peta</button></div>`;
   }
 
-  async function tampil() {
-    if (!(await siap()) || sudah()) return;
+  async function tampil(paksa) {
+    if (!(await siap()) || (!paksa && sudah())) return;
     const [per, asap] = await Promise.all([muatJSON("data/peringatan.json").catch(() => null), muatJSON("data/asap.json").catch(() => null)]);
     const h = hitung(per, asap);
     SapaInti.dialog(html(h), (e, d) => {
@@ -125,5 +125,8 @@
 
   SapaInti.css();
 
-  SapaInti.mulai(tampil);
+  SapaInti.mulai(() => tampil());
+  let muat = 0;
+  /* tombol "!" di header membuka pop-up ini kapan saja, tanpa kunci sekali-per-hari */
+  document.getElementById("sapaBuka")?.addEventListener("click", async () => { if (muat || document.querySelector("dialog.sp[open]")) return; muat = 1; try { await tampil(true); } finally { muat = 0; } });
 })();

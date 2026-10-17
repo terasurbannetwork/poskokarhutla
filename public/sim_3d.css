@@ -152,3 +152,5 @@
   .s3-spd button{min-width:28px}
   #p-sim.s3f.s3-pa .simpanel{top:calc(var(--s3-bar) + 6px);left:8px;right:8px;bottom:auto;width:auto;max-height:calc(100% - var(--s3-bar) - var(--s3-bh) - 12px)}
 }
+.s3-ex{align-self:center;padding:0 9px;font-size:11.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.s3-ln .s3-ex{font-size:10.5px;padding:0 0 0 2px;color:var(--ink2)}

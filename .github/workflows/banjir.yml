@@ -41,13 +41,15 @@ jobs:
           restore-keys: data-
 
       # sama dengan data.yml: berkas karhutla yang di-commit tapi tidak dibuat ulang di CI jangan digantikan versi cache
+      # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/lahan public/data/osm)
+            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/lahan public/data/osm)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Uji aturan

@@ -213,6 +213,9 @@
       if (!on) lepas(); };
     peta.on("styledata", () => nanti(garis)); garis();
     peta.on("click", e => { if (!peta.getLayer("konsesi") || !Peta.lihat("konsesi")) return;
+      /* klik yang kena titik panas atau kompleks milik pop-up/laci lain: bendera tidak ikut menumpuk di atasnya */
+      const pas = (l, r) => { const ls = l.filter(x => peta.getLayer(x)); return ls.length && peta.queryRenderedFeatures([[e.point.x - r, e.point.y - r], [e.point.x + r, e.point.y + r]], {layers: ls}).length; };
+      if (pas(["titik"], 0) || pas(["kl-pt3", "kl-pt", "kl-line", "kl-fill"], 6)) return lepas();
       const f = peta.queryRenderedFeatures(e.point, {layers: ["konsesi"]}).find(f => A.d.poligon[f.properties.id]);
       f ? pasangPenanda(A.d.poligon[f.properties.id]) : lepas(); });
     $("#lapis")?.addEventListener("change", e => { if (e.target.dataset?.l === "konsesi") setTimeout(() => { garis(); sinkron(); }, 400); });

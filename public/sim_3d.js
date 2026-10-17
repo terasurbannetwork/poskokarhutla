@@ -115,12 +115,16 @@ function atur3D(S) {
   if (T3.citra && !m.getLayer("s3-sat")) m.addLayer({id: "s3-sat", type: "raster", source: "s3-sat"}, m.getLayer("s3-hill") ? "s3-hill" : sebelum);
   if (!m.getLayer("s3-hill")) m.addLayer({id: "s3-hill", type: "hillshade", source: "s3-dem", paint: {"hillshade-exaggeration": T3.citra ? .25 : .45,
     "hillshade-shadow-color": gelap() ? "#000000" : "#473b24", "hillshade-highlight-color": gelap() ? "#5a6a85" : "#ffffff"}}, sebelum);
-  if (!m.getTerrain()) m.setTerrain({source: "s3-dem", exaggeration: 1.5});
+  /* pembesaran dihitung ulang tiap lokasi baru: nilai Seruyan (×12) di Bromo membuat kamera masuk ke gunung */
+  const kunci = `${S.k}|${S.f?.properties.lat}|${S.f?.properties.lon}`;
+  if (T3.exKunci !== kunci) { T3.exKunci = kunci; T3.ex = 1.5; if (m.getTerrain()) m.setTerrain({source: "s3-dem", exaggeration: 1.5}); reliefAdaptif(S); }
+  if (!m.getTerrain()) m.setTerrain({source: "s3-dem", exaggeration: T3.ex || 1.5});
   /* area yang sudah terbakar digelapkan jadi bekas bakar; garis depan (sim-depan) tetap menyala. Keburaman: terapkan() */
   if (m.getLayer("sim-img")) m.setPaintProperty("sim-img", "raster-brightness-max", .5);
 }
 function mode(d3, citra) {
   if (d3 != null) { T3.d3 = d3; D.user2d = !d3; } if (citra != null) T3.citra = citra;
+  const ex = $("#s3Ex"); if (ex) ex.hidden = !T3.d3 || !T3.ex;
   document.querySelectorAll(".s3-m [data-m]").forEach(b => b.setAttribute("aria-pressed", (b.dataset.m === "3d") === T3.d3));
   $("#s3Citra").hidden = !T3.d3; $("#s3Citra").setAttribute("aria-pressed", T3.citra); segarkanLapis();
   requestAnimationFrame(() => { /* chrome urgent di atas; kerja peta menyusul */
@@ -275,6 +279,20 @@ function lajuT(H, h) { /* laju kepala (m/menit) = maks 16 arah di tabelLaju jam 
   let mx = 0; for (let q = 0; q < 16; q++) mx = Math.max(mx, tb[(h * NF + f) * 16 + q]);
   const ros = mx * (Sim.kal?.m ?? 1), sfc = SFC[FUEL[f - 1]] ?? .5, I = 300 * sfc * ros, L = I > 0 ? .0775 * I ** .46 : 0; /* Byram 1959 */
   return {ros, I, L};
+}
+/* pembesaran medan menurut relief setempat: gambut Kalimantan (beda ± 20 m) tetap terlihat berbukit-lembah, gunung tidak berlebihan.
+   Target ± 400 m relief tampak di bingkai kisi; batas 1,5×–12×. Angkanya selalu ditampilkan di pill ×N supaya tidak menyesatkan. */
+const EX_TARGET = 400, EX_MIN = 1.5, EX_MAX = 12;
+async function reliefAdaptif(S) {
+  const K = S.K, m = S.peta, f = S.f?.properties; if (!m || !f) return;
+  const w = K ? (K.x1 - K.x0) / 4 : .06, h = K ? (K.y1 - K.y0) / 4 : .06, z = [];
+  for (let i = 0; i < 7; i++) for (let j = 0; j < 7; j++) z.push(elevasi(f.lon - w + 2 * w * i / 6, f.lat - h + 2 * h * j / 6));
+  const v = (await Promise.all(z)).filter(x => x != null); if (v.length < 10) return;
+  v.sort((a, b) => a - b); const relief = Math.max(1, v[Math.floor(v.length * .95)] - v[Math.floor(v.length * .05)]);
+  T3.ex = Math.round(Math.min(EX_MAX, Math.max(EX_MIN, EX_TARGET / relief)) * 2) / 2;
+  if (T3.d3 && m.getTerrain()) m.setTerrain({source: "s3-dem", exaggeration: T3.ex});
+  const el = $("#s3Ex"); if (el) { el.hidden = !T3.d3; el.textContent = `Ketinggian ×${fmt(T3.ex)}`; el.title = `Relief setempat ± ${fmt(Math.round(relief))} m`; }
+  const e2 = $("#s3Ex2"); if (e2) { e2.textContent = T3.d3 ? "×" + fmt(T3.ex) : ""; e2.title = `Ketinggian dibesarkan ${fmt(T3.ex)} kali; relief setempat ± ${fmt(Math.round(relief))} m`; }
 }
 const TER = new Map(); /* tile terrarium z12 -> Promise<ImageData|null>, di-cache per sesi */
 function ubinTerrarium(z, x, y) {
@@ -441,7 +459,7 @@ function pasangFT() {
     add(new KontrolFT(), "bottom-right"); }
   gambarIkon(m);
   if (m.getSource("openmaptiles") && !m.getLayer("s3-puncak")) aman(() => m.addLayer({id: "s3-puncak", type: "symbol", source: "openmaptiles", "source-layer": "mountain_peak", minzoom: 8, filter: ["has", "name"],
-    layout: {"icon-image": "s3-seg", "icon-size": .5, "icon-anchor": "bottom", "text-field": ["format", ["get", "name"], {}, "\n", {}, ["concat", ["number-format", ["to-number", ["get", "ele"], 0], {locale: "id-ID"}], " m"], {"font-scale": .88}],
+    layout: {"icon-image": "s3-seg", "icon-size": .5, "icon-anchor": "bottom", "text-field": ["case", [">", ["to-number", ["get", "ele"], 0], 0], ["format", ["get", "name"], {}, "\n", {}, ["concat", ["number-format", ["to-number", ["get", "ele"], 0], {locale: "id-ID"}], " m"], {"font-scale": .88}], ["get", "name"]],
       "text-font": ["Noto Sans Bold"], "text-size": 11.5, "text-anchor": "top", "text-offset": [0, .1], "symbol-sort-key": ["*", -1, ["to-number", ["get", "ele"], 0]]},
     paint: {"text-color": "#fff", "text-halo-color": "rgba(29,29,29,.85)", "text-halo-width": 1.4}}));
   if (D.H && !m.getSource("s3-angin")) { m.addSource("s3-angin", {type: "geojson", data: dataAngin(D.t) || {type: "FeatureCollection", features: []}});
@@ -468,7 +486,7 @@ function kamera() { /* terbang ke api, pitch 60 lalu putar pelan sekali; hormati
 /* lapisan panel kanan */
 const THM = ["medan", "citra", "bekas", "depan", "jalur", "angin", "desa", "lahan"];
 function nyala(k) { return k === "medan" ? T3.d3 : k === "citra" ? T3.d3 && T3.citra : k === "lahan" ? !!Sim.op.lahanTampil : LP[k].on; }
-const htmlLapis = () => THM.map(k => `<div class="s3-ly"><label class="s3-cb"><input type="checkbox" data-c="${k}" ${nyala(k) ? "checked" : ""} ${k === "citra" && !T3.d3 ? "disabled" : ""}><span class="s3-th s3-th-${k}"></span><span class="s3-ln">${LP[k].n}</span></label>
+const htmlLapis = () => THM.map(k => `<div class="s3-ly"><label class="s3-cb"><input type="checkbox" data-c="${k}" ${nyala(k) ? "checked" : ""} ${k === "citra" && !T3.d3 ? "disabled" : ""}><span class="s3-th s3-th-${k}"></span><span class="s3-ln">${LP[k].n}${k === "medan" ? ` <b class="s3-ex" id="s3Ex2">${T3.d3 && T3.ex ? "×" + fmt(T3.ex) : ""}</b>` : ""}</span></label>
   <input type="range" class="s3-op" data-o="${k}" min="0" max="100" step="5" value="${LP[k].op}" aria-label="Keburaman ${LP[k].n}"><span class="s3-pc">${LP[k].op}%</span></div>`).join("");
 function segarkanLapis() { document.querySelectorAll("#s3Kanan [data-c]").forEach(c => { c.checked = nyala(c.dataset.c); c.disabled = c.dataset.c === "citra" && !T3.d3; }); }
 function aturLapis(k, on) {
@@ -595,7 +613,7 @@ function putar() {
 
 /* ---------- pasang DOM sekali ---------- */
 if (hal && wk) {
-  hal.insertAdjacentHTML("beforeend", `<div class="s3-mode s3-m" id="s3Mode" role="group" aria-label="Tampilan peta"><button type="button" data-m="2d" aria-pressed="true">2D</button><button type="button" data-m="3d" aria-pressed="false">3D</button><button type="button" id="s3Citra" aria-pressed="false" hidden>Citra</button></div>
+  hal.insertAdjacentHTML("beforeend", `<div class="s3-mode s3-m" id="s3Mode" role="group" aria-label="Tampilan peta"><button type="button" data-m="2d" aria-pressed="true">2D</button><button type="button" data-m="3d" aria-pressed="false">3D</button><button type="button" id="s3Citra" aria-pressed="false" hidden>Citra</button><span class="s3-ex" id="s3Ex" hidden></span></div>
     <div class="s3-label" id="s3Label" hidden title="Data insiden buatan; cuaca dari prakiraan nyata"><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI · insiden buatan</span></div>
     <div class="s3-bar s3f-only" id="s3Bar"><b class="s3-nm" id="s3Nm">Insiden simulasi</b><span class="s3-info" id="s3Lok"></span><span class="s3-info" id="s3Rg"></span>
       <div class="s3-tabs" id="s3Tabs" role="tablist" aria-label="Tab insiden"></div><span class="s3-pill s3-sim">${ik(P.api)}SIMULASI</span><span class="s3-sp"></span>

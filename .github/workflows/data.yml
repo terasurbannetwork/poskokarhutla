@@ -44,7 +44,8 @@ jobs:
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/lahan public/data/osm)
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/lahan public/data/osm)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Titik panas, kompleks, FWI, BNPB
@@ -54,6 +55,11 @@ jobs:
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py
+
+      # ID kompleks berganti tiap kluster.json dibuat ulang: titik terkini & kompleks tiap perusahaan Aktor dihitung ulang di sini
+      - name: Aktor WALHI x titik terkini (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/aktor_walhi.py
 
       # titik panas 24 jam untuk lencana "terkonfirmasi satelit" di laporan warga (tab Informasi)
       - name: Titik 24 jam untuk laporan warga
@@ -270,6 +276,7 @@ jobs:
           python3 scripts/data/citra.py uji
           python3 scripts/data/asap.py uji
           python3 scripts/data/konsesi_kompleks.py uji
+          python3 scripts/data/aktor_walhi.py uji
           python3 scripts/data/dampak.py uji
           python3 scripts/data/penerbangan.py uji
           python3 scripts/data/ansambel.py uji

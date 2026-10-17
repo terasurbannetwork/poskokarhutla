@@ -451,8 +451,9 @@ function rPanel(ctx, U, ST) {
     <div class="sf-ring"><div><b>${naik}/${udara.length}</b><small>pesawat mengudara</small></div><div><b>${vol >= 1e4 ? n0(vol / 1e3) + " rb" : n0(vol)}</b><small>L air/retardan</small></div><div><b>${n1(gar / 1000)}</b><small>km garis</small></div><div><b>${n0(per)}</b><small>personel</small></div></div>
     ${gp.map(([k, jd]) => `<div class="sf-gt">${jd}</div>${U.map((u, i) => u.grup === k ? baris(u, i) : "").join("")}`).join("")}
     <div class="sf-card"><div class="sf-hd"><b>Operasi</b><span class="sf-ket">${aktif ? "operasi berjalan" : "belum ada unit tiba"}</span></div>
-      <p class="sf-p">Klik pesawat, engine, kru, atau dozer untuk mengikutinya di peta. Jatuhan retardan (merah) dan air (biru) meninggalkan jejak di tepi api yang memudar dalam ${A.JEJAK_JAM / 24} hari.</p>
-      <p class="sf-p">Pesawat terbang siang saja (${String(A.TERBANG_AWAL).replace(".", ",")}–${String(A.TERBANG_AKHIR).replace(".", ",")} WIB). Garis kendali per regu = ${n0(ctx.Sim?.op?.L || 150)} m/jam seperti model serangan awal. Luas api di peta mengikuti skenario <b>${esc(H.s?.n || "yang dilihat")}</b>; tab ini menampilkan operasinya, tidak mengubah hasilnya.</p></div>`;
+      <div class="sf-ops"><span class="sf-pill"><i style="background:#d8402f"></i>Retardan</span><span class="sf-pill"><i style="background:#3b82c4"></i>Air</span>
+        <span class="sf-pill">Terbang ${String(A.TERBANG_AWAL).replace(".", ",")}–${String(A.TERBANG_AKHIR).replace(".", ",")} WIB</span><span class="sf-pill">${n0(ctx.Sim?.op?.L || 150)} m/jam per regu</span>
+        <span class="sf-pill">Jejak ${A.JEJAK_JAM / 24} hari</span><span class="sf-pill">${esc(H.s?.n || "Prakiraan")}</span></div></div>`; /* tab ini hanya menampilkan operasi; luas api tetap hasil skenario */
 }
 function rKartu(ctx, U, ST) {
   const u = U.find(x => x.kode === R.sel), k = R.kartu; if (!u) { k.hidden = true; return; } if (!R.follow) { k.hidden = true; return; } const i = U.indexOf(u), s = ST[i], gk = gerakUnit(ctx.K, ctx.H, U, u, R.t);

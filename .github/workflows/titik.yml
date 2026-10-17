@@ -29,13 +29,15 @@ jobs:
           key: data-${{ github.run_id }}
           restore-keys: data-
 
+      # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
       - name: Pakai lapisan statis dari repo, bukan dari cache
         run: |
           f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
-            public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/lahan public/data/osm)
+            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/lahan public/data/osm)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Titik panas, kompleks (FWI dipakai ulang)
@@ -52,6 +54,7 @@ jobs:
           python3 scripts/data/posko.py
           python3 scripts/data/operasi.py
           python3 scripts/data/ringkasan.py
+          python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
 
       # Uji prospektif model "akan membesar": catat ramalan titik api baru, nilai 72 jam kemudian (stdlib; data dari hotspot.json,
       # cuaca Open-Meteo <= 400 bobot/jalan). Catatan bergulir lewat cache Actions, ringkasan -> public/data/prospektif.json.
