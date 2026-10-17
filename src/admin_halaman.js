@@ -82,7 +82,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Statistik pengunjung · Pantau Bencana</title>
+<title>Statistik pengunjung · Centurisk97</title>
 <script src="/i18n.js"></script>
 <meta name="description" content="Berapa orang membaca Pantau Bencana, dan berapa kali asisten AI serta perayap membuka halamannya, dihitung terpisah.">
 <link rel="preconnect" href="https://fonts.googleapis.com">

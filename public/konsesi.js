@@ -1,5 +1,5 @@
 /* konsesi.js — status lahan titik panas di lokasi kompleks api: areal konsesi sawit / HTI (hutan tanaman industri) / HPH (hutan alam) /
-   izin tambang, gambut, kawasan lindung. TANPA nama perusahaan, grup, nomor izin, atau kasus sanksi (keputusan pemilik 14 Okt 2026).
+   izin tambang, gambut, kawasan lindung. Nama pemegang & grup di tooltip poligon lewat aktor.js (pemilik, 17 Okt 2026); tanpa nomor izin.
    Data: data/kompleks_konsesi.json (scripts/data/konsesi_kompleks.py, harian; porsi titik per jenis konsesi).
    Menambah: bagian "Status lahan titik panas" di laci "Lahan & penanggung jawab"; jenis areal di tooltip kompleks dan lapisan
    konsesi; kolom "Areal konsesi" + saringan di tab Kompleks api; peraga "Kebakaran di konsesi" (agregat per jenis & provinsi).
@@ -56,13 +56,14 @@
         .replace('<div class="tp-ft">', `${isi}<div class="tp-ft">`);
       tip.classList.add("on", "kartu"); taruh(e.originalEvent); }); };
     ["kl-fill", "kl-pt", "kl-pt3"].forEach(l => { peta.on("mousemove", l, kom); peta.on("mouseleave", l, () => tip.classList.remove("on")); });
-    /* lapisan konsesi: warna per jenis + jenis & tahun peta saat disorot (berkas publik tidak memuat nama) */
+    /* lapisan konsesi: warna per jenis + nama pemegang, grup, bendera saat disorot */
     const warnai = () => { if (!peta.getLayer("konsesi")) return;
       const w = ["match", ["get", "jenis"], ...Object.entries(JN).flatMap(([k, v]) => [k, v[1]]), "#888"];
       peta.setPaintProperty("konsesi", "fill-color", w); peta.setPaintProperty("konsesi-line", "line-color", w);
       if (peta._ksTip) return; peta._ksTip = 1;
       peta.on("mousemove", "konsesi", e => { if (peta.queryRenderedFeatures(e.point, {layers: ["kl-fill", "kl-pt", "kl-pt3"].filter(l => peta.getLayer(l))}).length) return;
-        const p = e.features[0].properties; tip.innerHTML = `<div class="tp2-h tp2-only"><div class="tp2-hr"><b><i class="ks-tip-sw" style="background:${jn(p.jenis)[1]}"></i>Areal ${esc(jn(p.jenis)[2].replace(/^Konsesi/, "konsesi"))}</b></div><small>${p.kab ? esc(p.kab) + " · " : ""}peta batas ${esc(p.tahun_data || "–")}</small></div>`;
+        const p = e.features[0].properties; tip.innerHTML = window.Aktor?.kartuPoligon && p.nama ? window.Aktor.kartuPoligon(p) /* nama, grup, bendera (aktor.js) */
+          : `<div class="tp2-h tp2-only"><div class="tp2-hr"><b><i class="ks-tip-sw" style="background:${jn(p.jenis)[1]}"></i>Areal ${esc(jn(p.jenis)[2].replace(/^Konsesi/, "konsesi"))}</b></div><small>${p.kab ? esc(p.kab) + " · " : ""}peta batas ${esc(p.tahun_data || "–")}</small></div>`;
         tip.classList.add("on"); taruh(e.originalEvent); });
       peta.on("mouseleave", "konsesi", () => tip.classList.remove("on")); };
     warnai(); peta.on("styledata", () => nanti(warnai));

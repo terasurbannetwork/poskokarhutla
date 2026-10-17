@@ -1,8 +1,8 @@
 """Konsesi (sawit, HTI, HPH, tambang) -> data/raw/konsesi/konsesi_lengkap.geojson (nama, grup, izin; TIDAK diterbitkan)
-dan public/data/lahan/konsesi.geojson (tanpa nama: jenis, tahun peta, wilayah, luas peta, sanksi_th).
+dan public/data/lahan/konsesi.geojson (nama pemegang, grup, jenis, tahun peta, wilayah, luas peta, sanksi_th; tanpa nomor izin).
 
-Keputusan pemilik 14 Okt 2026: situs tidak menampilkan nama perusahaan, grup, nomor izin, atau kasus per perusahaan;
-hanya status lahan (areal konsesi sawit / HTI / HPH / tambang). Fitur model sebaran "pemegang pernah disanksi" ikut
+Keputusan pemilik 14 Okt 2026 menyembunyikan nama perusahaan; 17 Okt 2026 nama pemegang dan grup tampil lagi
+(dicek silang ke kajian WALHI, scripts/data/aktor_walhi.py). Nomor izin dan kasus per perusahaan tetap tidak diterbitkan. Fitur model sebaran "pemegang pernah disanksi" ikut
 diterbitkan sebagai satu angka per poligon (sanksi_th: tahun sanksi karhutla pertama pemegangnya), tanpa nama.
 
 Pakai:  python3 scripts/scrape/konsesi.py           # unduh (kalau belum ada di cache) + bangun + uji
@@ -28,7 +28,7 @@ MENTAH = os.path.join(AKAR, "data/raw/konsesi")
 KELUAR = os.path.join(AKAR, "public/data/lahan")
 LENGKAP = os.path.join(MENTAH, "konsesi_lengkap.geojson")  # bernama, tidak diterbitkan
 SANKSI = os.path.join(MENTAH, "sanksi_karhutla.json")  # kurasi tangan, bersumber; di-commit (lihat .gitignore), tidak diterbitkan
-PUBLIK_KOLOM = ("jenis", "tahun_data", "aktif", "prov", "kab", "luas_peta_ha")
+PUBLIK_KOLOM = ("id", "nama", "grup", "jenis", "tahun_data", "aktif", "prov", "kab", "luas_peta_ha")  # nama & grup tampil lagi (pemilik, 17 Okt 2026)
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
 from lahan import UNDUH, ambil, baca_shp, dp, di_dalam  # noqa: E402
@@ -400,7 +400,7 @@ def uji_publik(fs_lengkap, kasus):
               {"properties": {"nama": "PT Lain", "jenis": "hti"}, "geometry": None}]
     t = tanpa_nama(contoh, tahun_sanksi([{"nama": "PT Api Jaya", "tahun_putusan": 2016, "sumber": []}]))
     assert t[0]["properties"]["sanksi_th"] == 2016 and "sanksi_th" not in t[1]["properties"], t
-    assert not {"nama", "pemegang", "grup", "izin"} & set(t[0]["properties"]), t
+    assert not {"pemegang", "izin"} & set(t[0]["properties"]) and t[0]["properties"]["nama"] == "PT. Api Jaya", t
     jalur = os.path.join(KELUAR, "konsesi.geojson")
     teks = open(jalur, encoding="utf-8").read()
     d = json.loads(teks)
@@ -408,7 +408,6 @@ def uji_publik(fs_lengkap, kasus):
         lebih = set(f["properties"]) - set(PUBLIK_KOLOM) - {"sanksi_th"}
         assert not lebih, f"kolom bernama/berizin bocor ke berkas publik: {lebih}"
     assert len(d["features"]) == len(fs_lengkap), f"publik {len(d['features'])} fitur != lengkap {len(fs_lengkap)}: jalankan konsesi.py publik"
-    assert not re.search(r"\bPT\.? ?[A-Z]|\bTbk\b", teks), "nama perusahaan (PT/Tbk) di berkas publik"
     th = tahun_sanksi(kasus)
     n_s = sum(1 for f in fs_lengkap if min(th.get(nama_baku(f["properties"].get("pemegang") or f["properties"]["nama"]), 9999),
                                             th.get(nama_baku(f["properties"]["nama"]), 9999)) < 9999)

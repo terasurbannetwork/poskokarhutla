@@ -1,0 +1,57 @@
+/* aktor.css — kartu perusahaan WALHI dan pil bendera di peta (aktor.js) */
+.ak-bd{display:inline-block;vertical-align:-2px;border-radius:2px;box-shadow:0 0 0 1px oklch(0% 0 0 / .14);object-fit:cover;flex:none}
+.ak-bd + .ak-bd{margin-left:3px}
+.ak-tw td{white-space:nowrap}
+.ak-tw tbody tr[data-ak]{cursor:pointer}
+.ak-nm{font-weight:700}
+.ak-gr{color:var(--ink2);font-size:11.5px;max-width:150px;overflow:hidden;text-overflow:ellipsis}
+.ak-ng{min-width:44px}
+.ak-mt{color:var(--ink2);opacity:.7;font-size:11.5px}
+.ak-tk{margin-left:6px;padding:1px 7px;border-radius:999px;font-size:10px;font-weight:700;background:oklch(25.5% .075 256);color:#fff;vertical-align:1px}
+.ak-j{display:inline-flex;align-items:center;gap:5px;white-space:nowrap;font-size:11.5px}
+.ak-j::before{content:"";width:9px;height:9px;border-radius:2px;background:var(--w)}
+.ak-pl{display:inline-block;min-width:28px;padding:1px 9px;border-radius:999px;background:color-mix(in oklch, #c9503a 14%, transparent);color:#b8392b;font-weight:800;font-size:11.5px;text-align:center}
+.ak-pl3{background:var(--surface);color:var(--ink2)}
+.ak-pl2{background:color-mix(in oklch, #2f6f8f 14%, transparent);color:#2f6f8f}
+:root[data-theme="dark"] .ak-pl{color:#f08a7a}:root[data-theme="dark"] .ak-pl2{color:#8cc3dd}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .ak-pl{color:#f08a7a}:root:not([data-theme="light"]) .ak-pl2{color:#8cc3dd}}
+
+/* modal asing per negara: kotak per negara, gaya Insight */
+.ak-ngr{display:flex;flex-direction:column;gap:12px}
+.ak-ngr-lain{display:grid;grid-template-columns:repeat(var(--n),minmax(0,1fr));gap:12px;align-items:stretch}
+.ak-nk{border:1px solid var(--line);border-radius:14px;background:var(--card);overflow:hidden;min-width:0}
+.ak-nk header{display:flex;align-items:center;gap:8px;padding:10px 12px;border-bottom:1px solid var(--line)}
+.ak-nk header b{flex:1;font-size:13.5px}
+.ak-nk ul{list-style:none;margin:0;padding:6px 0}
+.ak-nk-lebar ul{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));column-gap:4px}
+.ak-nk li{display:flex;align-items:center;gap:9px;padding:7px 12px;cursor:pointer;font-size:12.5px;min-width:0}
+.ak-nk li:hover{background:oklch(42% .11 255 / .06)}
+.ak-li{display:flex;flex-direction:column;gap:3px;min-width:0;flex:1}
+.ak-lb{display:block;min-width:0;line-height:1.35}
+.ak-lb b{margin-right:5px}
+.ak-ph{color:var(--ink2);font-size:11.5px}
+.ak-li .ak-j{font-size:11px;color:var(--ink2)}
+.ak-lg{flex:none;border-radius:6px;object-fit:contain;background:#fff;box-shadow:0 0 0 1px var(--line)}
+.ak-lgi{display:inline-grid;place-items:center;font-size:9.5px;font-weight:800;color:#fff;background:oklch(25.5% .075 256)}
+@media (max-width:1100px){.ak-nk-lebar ul{grid-template-columns:repeat(2,minmax(0,1fr))}.ak-ngr-lain{grid-template-columns:repeat(auto-fill,minmax(240px,1fr))}}
+@media (max-width:640px){.ak-nk-lebar ul{grid-template-columns:1fr}}
+
+/* batang horizontal berlabel bendera (grup usaha, PSN) */
+.ak-bar{display:flex;flex-direction:column;gap:4px}
+.ak-br{display:grid;grid-template-columns:minmax(150px,42%) 1fr auto;gap:10px;align-items:center;font-size:12.5px;padding:2px 0}
+.ak-bl{display:flex;align-items:center;gap:6px;font-weight:600;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-br i{display:block;height:14px;border-radius:4px;background:var(--surface);overflow:hidden}
+.ak-br i b{display:block;height:100%;border-radius:4px}
+.ak-br4{grid-template-columns:minmax(0,1.3fr) auto minmax(60px,1fr) auto}
+.ak-sub{color:var(--ink2);font-size:11px;white-space:nowrap}
+.ak-psn{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.ak-sb{font-size:11px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2);margin-bottom:6px}
+@media (max-width:760px){.ak-br4{grid-template-columns:minmax(0,1.3fr) auto minmax(60px,1fr) auto}
+.ak-sub{color:var(--ink2);font-size:11px;white-space:nowrap}
+.ak-psn{grid-template-columns:1fr}.ak-br{grid-template-columns:minmax(120px,50%) 1fr auto}}
+
+/* peta: pil bendera di tengah poligon perusahaan WALHI */
+.ak-mk{display:inline-flex;align-items:center;gap:2px;padding:3px 5px;border-radius:999px;border:1.5px solid #c9503a;background:#fff;cursor:pointer;box-shadow:0 1px 4px oklch(0% 0 0 / .25);line-height:0}
+.ak-mk .ak-bd + .ak-bd{margin-left:1px}
+.ak-tpb{font-size:12px;line-height:1.5}
+.ak-tw2{display:block;color:#c9503a;font-weight:700}
