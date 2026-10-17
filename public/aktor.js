@@ -1,7 +1,7 @@
 /* aktor.js — perusahaan di balik titik panas karhutla 2026 (kajian WALHI "Siapa di Balik Api?"), dicek silang ke peta konsesi.
    Data: data/aktor_karhutla.json (scripts/data/aktor_walhi.py). Nama & grup pemegang konsesi tampil lagi (pemilik, 17 Okt 2026).
    Menambah: lima kartu Insight (daftar perusahaan, modal asing per negara, grup usaha, PSN Merauke, tokoh politik);
-   di peta: garis tebal di poligon perusahaan WALHI, pil bendera negara afiliasi, tooltip poligon konsesi bernama.
+   di peta: garis tebal di poligon perusahaan WALHI, pil bendera negara afiliasi saat poligon diklik, tooltip poligon konsesi bernama.
    Skrip klasik dimuat SETELAH konsesi.js. Memakai global halaman: Insight, Lapis, Peta, peta, $, esc, fmt, muatJSON, bukaTab,
    kiriPad, paginasi, pengurutKepala, tampilTip, kartuTip, ikon, maplibregl, nanti. */
 (() => {
@@ -22,13 +22,15 @@
   /* logo grup/pemegang: favicon resmi situs grupnya, disimpan di img/logo-grup; tanpa logo = inisial */
   const LOGO = [[/Nordic Forest|Stora Enso/i, "stora-enso"], [/Salween|GIC/i, "gic"], [/Gochean|TPG/i, "tpg"], [/Sampoerna|AGPA/i, "sampoerna-agro"], [/POSCO/i, "posco"],
     [/Musim Mas/i, "musim-mas"], [/^Wilmar/i, "wilmar"], [/APP|Asia Pulp/i, "app"], [/Sinar Mas/i, "sinar-mas"], [/APRIL/i, "april"], [/RGE|Royal Golden/i, "rge"],
-    [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"]];
-  A.logo = (nama, h = 22) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
+    [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"],
+    [/Salim|Indofood/i, "salim"], [/London Sumatra|Lonsum/i, "lonsum"], [/Medco/i, "medco"], [/Perkebunan Nusantara|PTPN/i, "ptpn"], [/Goodhope/i, "goodhope"],
+    [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"], [/Royal Golden Eagle/i, "rge"]];
+  A.logo = (nama, h = 22, ini0 = true) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
     if (f) return `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">`;
+    if (!ini0) return "";
     const ini = String(nama || "?").replace(/\b(PT|Pte|Ltd|Limited|Group|Holdings?|Incorporated|Corporation|Pvt)\b/gi, "").trim().split(/\s+/).slice(0, 2).map(w => w[0]).join("").toUpperCase();
     return `<span class="ak-lg ak-lgi" style="width:${h}px;height:${h}px">${esc(ini)}</span>`; };
   const titik = p => p.titik_agu ?? p.titik_sep;
-  const SUMBER = "Kajian Peta Aktor Karhutla 2026";   /* nama lembaga penyusun tidak ditampilkan (pemilik, 17 Okt 2026) */
   const tunggu = () => { A.muat(); return `<article class="ex"><div class="kosong"><div class="spin"></div>Memuat data perusahaan…</div></article>`; };
   /* tooltip perusahaan: pemegang saham, catatan, tokoh, angka WALHI & peta */
   A.tip = p => `<b>${esc(p.nama)}</b>${p.grup.length ? `<br>Grup: ${esc(p.grup.join(", "))}` : ""}`
@@ -66,7 +68,7 @@
         || `<tr><td colspan="8" class="kosong">Tidak ada perusahaan.</td></tr>`}</tbody></table></div>${paginasi(st.akHal, r.length, PER, "perusahaan")}`;
     const kini = semua.filter(p => p.cek?.titik_terkini && p.cek.lokasi !== "beda").length;
     return this.ex(`${this.hl(fmt(semua.length) + " perusahaan")} terindikasi karhutla 2026, ${this.hl(fmt(asing))} terafiliasi luar negeri; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`, "", "", tabel,
-      `Sumber: ${SUMBER}; NASA FIRMS VIIRS di poligon konsesi GFW/Trase senama (Peta Jan–Agu, ${esc(lbKini)})`,
+      `Sumber: NASA FIRMS VIIRS di poligon konsesi GFW/Trase senama (Peta Jan–Agu, ${esc(lbKini)})`,
       this.seg("akJenis", [["", "Semua"], ["sawit", "Sawit"], ["pbph", "PBPH"], ["asing", "Modal asing"]])); };
 
   /* ---------- 2. modal asing per negara (Tabel 3) ---------- */
@@ -83,7 +85,7 @@
     const [besar, ...lain] = urut, lebar = besar && besar[1].length >= 4;
     const isi = `<div class="ak-ngr">${lebar ? kotak(besar, 1) : ""}<div class="ak-ngr-lain" style="--n:${Math.max(1, Math.min(5, (lebar ? lain : urut).length))}">${(lebar ? lain : urut).map(r => kotak(r)).join("")}</div></div>`;
     return this.ex(`${this.hl(nP + " perusahaan")} dengan titik panas terbanyak dimiliki pemegang saham di ${this.hl(urut.length + " negara")}, termasuk yurisdiksi rahasia BVI dan Samoa`, "", "", isi,
-      `Sumber: ${SUMBER}, Tabel 3`); };
+      ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* ---------- 3. grup usaha & negara (Tabel 4) ---------- */
   Insight.exAktorGrup = function () {
@@ -94,7 +96,7 @@
       <span class="ak-bl">${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></div>`).join("")}</div>`;
     Insight.leg([["#c9503a", `Singapura (${per("SG")})`], ["#2f6f8f", `Malaysia (${per("MY")})`]]);
     return this.ex(`${this.hl(tot + " perusahaan")} terindikasi karhutla terafiliasi grup asal Singapura dan Malaysia; ${this.hl("Sinar Mas")} dan ${this.hl("Wilmar")} terbanyak`, "", "", isi,
-      `Sumber: ${SUMBER}, Tabel 4`); };
+      ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* ---------- 4. PSN Merauke (Tabel 5) ---------- */
   Insight.exAktorPsn = function () {
@@ -105,7 +107,7 @@
     const isi = `<div class="ak-psn"><div><div class="ak-sb">Energy estate · ${fmt(en)} titik</div><div class="ak-bar">${P.energi.map(x => baris(x.nama, x.grup, x.titik, "#c98a3c", bendera(x.negara, 12))).join("")}</div></div>
       <div><div class="ak-sb">Food estate · ${fmt(pg)} titik</div><div class="ak-bar">${P.pangan.map(x => baris(x.nama, x.pengampu, x.titik, "#7a4bb0", "")).join("")}</div></div></div>`;
     return this.ex(`${this.hl(fmt(pg) + " dari " + fmt(P.total))} titik panas PSN Pangan dan Energi Merauke ada di klaster food estate yang diampu pemerintah`, "", "", isi,
-      `Sumber: ${SUMBER}, Tabel 5 (1 Jan–31 Agu 2026)`); };
+      ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* ---------- 5. tokoh politik (bab 2) ---------- */
   Insight.exAktorTokoh = function () {
@@ -115,7 +117,7 @@
       ${T.map(t => { const p = A.per[t.perusahaan] || {}; return `<tr data-ak="${esc(t.perusahaan)}" tabindex="0"><td class="ak-nm">${esc(t.nama)}</td><td class="ak-gr" data-tip="${esc(t.peran)}">${esc(t.peran)}</td><td class="ak-gr" data-tip="${esc(t.kaitan)}">${esc(t.kaitan)}</td><td>${esc(t.perusahaan)}</td>
         <td class="n">${titik(p) != null ? `<span class="ak-pl">${fmt(titik(p))}</span>` : `<span class="ak-mt" data-tip="Kebakaran ditemukan lewat pemantauan lapangan">–</span>`}</td></tr>`; }).join("")}</tbody></table></div>`;
     return this.ex(`${this.hl(T.length + " tokoh politik")} duduk di jajaran pemilik atau pengurus ${this.hl(nP + " perusahaan")} terindikasi karhutla`, "", "", isi,
-      `Sumber: ${SUMBER}, bab D.2`); };
+      ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
 
   /* klik di kartu: urut, halaman, baris -> peta */
   document.addEventListener("click", e => {
@@ -137,10 +139,12 @@
     bukaTab("peta"); nyalaKonsesi();
     const fs = (await geo()).features.filter(f => ids.includes(f.properties.id)), b = new maplibregl.LngLatBounds();
     fs.forEach(f => { const [x0, y0, x1, y1] = kotak(f.geometry); b.extend([x0, y0]); b.extend([x1, y1]); });
-    nanti(() => { peta.fitBounds(b, {padding: kiriPad(), maxZoom: 10, duration: 900}); if (typeof toast === "function" && p) toast(`${p.nama}: ${fmt(p.cek?.titik_viirs ?? 0)} titik panas di konsesi Jan–Agu (VIIRS)`); });
+    nanti(() => { peta.fitBounds(b, {padding: kiriPad(), maxZoom: 10, duration: 900}); pasangPenanda(nama); if (typeof toast === "function" && p) toast(`${p.nama}: ${fmt(p.cek?.titik_viirs ?? 0)} titik panas di konsesi Jan–Agu (VIIRS)`); });
   };
-  /* poligon perusahaan WALHI: garis merah tebal; pil bendera di tengahnya (hanya saat lapisan Konsesi menyala) */
-  let penanda = [], memasang = null;
+  /* poligon perusahaan WALHI: garis merah tebal (hanya saat lapisan Konsesi menyala); pil bendera negara afiliasi
+     baru muncul saat poligonnya diklik atau barisnya dipilih, satu perusahaan sekali tampil (pemilik, 17 Okt 2026) */
+  let penanda = null;
+  const lepas = () => { penanda?.remove(); penanda = null; };
   function pasangPeta() {
     if (typeof peta === "undefined" || !peta?.getLayer) return setTimeout(pasangPeta, 1500);
     const ids = Object.keys(A.d.poligon);
@@ -149,27 +153,29 @@
       sinkron(); };
     const sinkron = () => { const on = Peta.lihat("konsesi") && !!peta.getLayer("konsesi");
       if (peta.getLayer("konsesi-walhi")) peta.setLayoutProperty("konsesi-walhi", "visibility", on ? "visible" : "none");
-      on ? (memasang ||= pasangPenanda().finally(() => { memasang = null; })) : (penanda.forEach(m => m.remove()), penanda = []); };
+      if (!on) lepas(); };
     peta.on("styledata", () => nanti(garis)); garis();
+    peta.on("click", e => { if (!peta.getLayer("konsesi") || !Peta.lihat("konsesi")) return;
+      const f = peta.queryRenderedFeatures(e.point, {layers: ["konsesi"]}).find(f => A.d.poligon[f.properties.id]);
+      f ? pasangPenanda(A.d.poligon[f.properties.id]) : lepas(); });
     $("#lapis")?.addEventListener("change", e => { if (e.target.dataset?.l === "konsesi") setTimeout(() => { garis(); sinkron(); }, 400); });
-    if (Peta.lihat("konsesi")) setTimeout(sinkron, 800);
   }
-  async function pasangPenanda() {
-    if (penanda.length) return;
+  async function pasangPenanda(nama) {
+    const p = A.per[nama]; lepas();
+    if (!p || !p.negara.some(k => k !== "ID") || !A.poli[nama]) return;
     const by = {}; (await geo()).features.forEach(f => { by[f.properties.id] = f; });
-    A.d.perusahaan.filter(p => p.negara.some(k => k !== "ID") && A.poli[p.nama]).forEach(p => {
-      const fs = A.poli[p.nama].map(i => by[i]).filter(Boolean); if (!fs.length) return;
-      const besar = fs.reduce((a, f) => (f.properties.luas_peta_ha || 0) > (a.properties.luas_peta_ha || 0) ? f : a), [x0, y0, x1, y1] = kotak(besar.geometry);
-      const el = document.createElement("button"); el.type = "button"; el.className = "ak-mk"; el.innerHTML = benderaDaf(p.negara, 11); el.setAttribute("aria-label", p.nama);
-      el.onmouseenter = ev => tampilTip(`<div class="tp-hd"><span class="tp-nm"><b>${esc(p.nama)}</b></span></div><div class="tp-bd ak-tpb">${A.tip(p).replace(/^<b>.*?<\/b><br>/, "")}</div>`, ev);
-      el.onmouseleave = () => $("#tip")?.classList.remove("on");
-      el.onclick = () => A.tunjuk(p.nama);
-      penanda.push(new maplibregl.Marker({element: el}).setLngLat([(x0 + x1) / 2, (y0 + y1) / 2]).addTo(peta)); });
+    const fs = A.poli[nama].map(i => by[i]).filter(Boolean); if (!fs.length) return;
+    const besar = fs.reduce((a, f) => (f.properties.luas_peta_ha || 0) > (a.properties.luas_peta_ha || 0) ? f : a), [x0, y0, x1, y1] = kotak(besar.geometry);
+    const el = document.createElement("button"); el.type = "button"; el.className = "ak-mk"; el.innerHTML = benderaDaf(p.negara, 11); el.setAttribute("aria-label", p.nama);
+    el.onmouseenter = ev => tampilTip(`<div class="tp-hd"><span class="tp-nm"><b>${esc(p.nama)}</b></span></div><div class="tp-bd ak-tpb">${A.tip(p).replace(/^<b>.*?<\/b><br>/, "")}</div>`, ev);
+    el.onmouseleave = () => $("#tip")?.classList.remove("on");
+    el.onclick = ev => { ev.stopPropagation(); A.tunjuk(p.nama); };
+    penanda = new maplibregl.Marker({element: el}).setLngLat([(x0 + x1) / 2, (y0 + y1) / 2]).addTo(peta);
   }
-  /* tooltip poligon konsesi (konsesi.js memanggil ini): nama pemegang, grup, bendera, angka WALHI */
+  /* tooltip poligon konsesi (konsesi.js memanggil ini): logo grup (kalau ada), nama pemegang, grup, bendera, titik panas VIIRS */
   A.kartuPoligon = p => {
     const w = A.d && !A.d.gagal ? A.per[A.d.poligon[p.id]] : null, ng = w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean);
     const sub = [p.grup, p.kab].filter(Boolean).map(esc).join(" · ");
-    return `<div class="tp2-h tp2-only"><div class="tp2-hr"><b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
+    return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(p.grup, 20, false)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
   A.muat();
 })();

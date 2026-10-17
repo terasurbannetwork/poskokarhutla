@@ -47,7 +47,7 @@
   const ini = () => R.bencana.filter(b => b.rute !== "/").find(b => location.pathname === dasar(b) || location.pathname.startsWith(b.rute)) || R.bencana.find(b => b.rute === "/") || LAMA.bencana[0];
   const tautan = (b, xs) => xs.map(t => `<li><a href="${dasar(b)}/${t}">${label(t)}</a></li>`).join("");
   const html = () => { const b = ini(), nampak = b.tab.filter(t => !(b.tab_sembunyi || []).includes(t)), alat = nampak.filter(t => t === "sim"), pantau = nampak.filter(t => t !== "sim" && t !== "tentang");
-    const lain = R.bencana.filter(x => x.status === "aktif"), n = 2 + (alat.length ? 1 : 0) + (lain.length > 1 ? 1 : 0);
+    const lain = R.bencana.filter(x => x.status === "aktif" && x.id === "karhutla"),   /* bencana lain disembunyikan sementara (pemilik, 17 Okt 2026) */ n = 2 + (alat.length ? 1 : 0) + (lain.length > 1 ? 1 : 0);
     return `<footer class="kaki-situs"><div class="kk"><div class="kk-g" style="--n:${n}">
     <div class="kk-tu"><a class="kk-tum" href="https://terasurban.com/" target="_blank" rel="noopener" aria-label="Teras Urban"><img src="/img/teras-urban-mark.png" alt="" width="46" height="34"><span>TERAS<br>URBAN</span></a>
       <p>Unit socio-urban intelligence dan geospatial advisory. Jakarta, Indonesia.</p><p class="kk-sl">Di antara ruang dan manusia.</p>

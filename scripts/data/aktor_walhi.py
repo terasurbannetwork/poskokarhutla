@@ -220,7 +220,7 @@ def gabung():
     for nm, c in CATATAN.items():
         ambil(nm)["catatan"] = c
     for nm, g in (("PT Bumi Mekar Hijau", "Sinar Mas"), ("PT Wahana Samudera Sentosa", "Wilmar"), ("PT Kiani Lestari", "Nusantara Group"),
-                  ("PT Golden Blossom Sumatra", "Bomba Group"), ("PT Monrad Intan Barakat", "Bakrie Group"), ("PT Mayawana Persada", "RGE/APRIL (dugaan)"),
+                  ("PT Golden Blossom Sumatra", "Bomba Group"), ("PT Monrad Intan Barakat", "Bakrie Group"), ("PT Mayawana Persada", "RGE/APRIL"),
                   ("PT Hutan Ketapang Industri", "Sampoerna Agro/POSCO"), ("PT Arjuna Utama Sawit", "First Borneo Group"),
                   ("PT Sumber Mardhika Graha", "Triputra Group"), ("PT Hermes Sugar Indonesia", "Hermes Distillery")):
         p = ambil(nm)

@@ -19,18 +19,21 @@ const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
 async function gambar(d) {
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
-  const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon]);
+  /* sementara hanya Karhutla di menu; bencana lain, "Semua bencana", dan "Tentang kami" disembunyikan (pemilik, 17 Okt 2026).
+     Memulihkan: kosongkan TAMPIL. Halamannya tetap bisa dibuka lewat URL. */
+  const TAMPIL = new Set(["karhutla"]);
+  const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon] && (!TAMPIL.size || TAMPIL.has(b.id) || b.id === d.dataset.bencana));
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */
   const ini = semua ? {} : daftar.find(b => b.id === d.dataset.bencana) || daftar[0];
   if (!ini) return;
   const lokasi = rata(location.pathname);
   const tanpaSegera = "tanpaSegera" in d.dataset;
-  const butirSemua = `<a href="/semua"${lokasi === "/semua" ? ' aria-current="page"' : ""}>${SEMUA}Semua bencana</a>`;
+  const butirSemua = TAMPIL.size ? "" : `<a href="/semua"${lokasi === "/semua" ? ' aria-current="page"' : ""}>${SEMUA}Semua bencana</a>`;
   const butir = butirSemua + daftar.map(b => {
     if (b.status === "aktif" || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
     return tanpaSegera ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">Segera</em></a>`;
   }).join("");
-  const tentang = "tentang" in d.dataset
+  const tentang = !TAMPIL.size && "tentang" in d.dataset
     ? `<hr><a href="/tentang"${lokasi === "/tentang" ? ' aria-current="page"' : ""}>${TENTANG}Tentang kami</a>` : "";
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
