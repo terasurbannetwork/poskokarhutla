@@ -36,7 +36,7 @@ dialog.sp[open]{display:flex;flex-direction:column}
 .sp-p.oranye{background:color-mix(in oklch,#e8743b 14%,var(--card));color:#b8521f}
 .sp-p.gambut{background:color-mix(in oklch,#8a5a3c 12%,var(--card));color:#7a4a2c}
 .sp-isi{flex:1;min-height:0;overflow:auto;overscroll-behavior:contain;padding:20px 22px 8px;display:grid;gap:20px;align-content:start}
-.sp-sek h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
+.sp-sek{min-width:0}.sp-sek h4{font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
 .sp-panel{border:1px solid var(--line);border-radius:16px}
 .sp-bs{display:grid;gap:10px;padding:14px 16px}
 .sp-b{display:grid;grid-template-columns:minmax(0,1.25fr) 1fr 40px;align-items:center;gap:12px;font-size:13.5px}
@@ -62,11 +62,39 @@ dialog.sp[open]{display:flex;flex-direction:column}
 .sp-aksi>span{flex:1;font-size:11.5px;color:var(--ink2)}
 .sp-pri{min-height:44px;padding:0 28px;border:0;border-radius:999px;background:#0b2545;color:#fff;font:700 14px var(--font);cursor:pointer}
 .sp-pri:hover{background:#163a66}.sp-pri:focus-visible,.sp .sp-x:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+/* kepala tabel + kolom tetap (.rata) supaya pil lurus ke bawah */
+.sp-th{display:grid;align-items:center;gap:10px;padding:9px 16px;font-size:10.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);background:color-mix(in oklch,var(--ink) 4%,transparent);border-radius:15px 15px 0 0}
+.sp-ka{text-align:right}.sp-th .sat{font-style:normal;text-transform:none;letter-spacing:0}.sp-km{color:var(--ink2);font-weight:600}.sp-nol{color:var(--ink2)}
+.sp-k>em,.sp-pr>*,.sp-b>em{justify-self:start}
+.sp-ks.rata .sp-k,.sp-th.k{grid-template-columns:20px minmax(120px,1fr) 128px 50px 58px 78px 64px 60px 82px;gap:8px}
+.sp-nm1{min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp-nm1 span{color:var(--ink2)}
+.sp-k small{font-size:10.5px;font-weight:700}.sp-k .naik{color:#b5412c}.sp-k .turun{color:#2f7d4f}
+.sp-as .sp-th,.sp-ar{grid-template-columns:minmax(0,1fr) 150px 110px 110px}
+.sp-ar{display:grid;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--line);font-size:13.5px}.sp-ar>em{justify-self:start}.sp-ar b{font-weight:600}
+.sp-bs.rata .sp-b,.sp-th.b{grid-template-columns:minmax(0,1fr) 150px minmax(80px,1fr) 64px 64px}
+.sp-bs>.sp-th{margin:-14px -16px 4px;border-bottom:1px solid var(--line)}
+.sp-pt>.sp-th,.sp-pr{grid-template-columns:minmax(130px,1.2fr) 1.3fr 1fr 1fr .9fr}
+.sp-pr{display:grid;align-items:center;gap:10px;padding:11px 16px;border-top:1px solid var(--line);font-size:14px}
+.sp-pn{border:0;background:none;padding:0;font:inherit;font-weight:700;color:var(--ink);cursor:pointer;text-align:left}.sp-pn:hover{text-decoration:underline}
+button.sp-p{border:0;cursor:pointer;font-family:inherit}button.sp-p:hover{filter:brightness(.95)}button.sp-p[aria-expanded="true"]{box-shadow:inset 0 0 0 1.5px currentColor}
+button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+.sp-pd{padding:2px 16px 14px;background:color-mix(in oklch,var(--ink) 2.5%,transparent)}
+.sp-pd>p{margin:10px 0 8px;font-size:12.5px;color:var(--ink2)}.sp-pd>p b{color:var(--ink)}
+.sp-pd .sp-ks{border:1px solid var(--line);border-radius:12px;background:var(--card)}.sp-pd .sp-th{border-radius:11px 11px 0 0}
+.sp-cs button.sp-c{width:100%;border:0;border-top:1px solid var(--line);background:none;color:inherit;font:inherit;text-align:left;cursor:pointer}
+.sp-cs button.sp-c:hover,.sp-cs button.sp-c[aria-expanded="true"]{background:color-mix(in oklch,var(--ink) 4%,transparent)}.sp-cs button.sp-c:focus-visible{outline:3px solid #e3b94e;outline-offset:-3px}
+.sp-cs.rata .sp-c{display:grid;grid-template-columns:32px 150px 1fr;gap:12px;align-items:center}.sp-cs.rata .sp-c>div{display:contents}.sp-cs.rata .sp-c p{margin:0}
+.sp-th.c{grid-template-columns:194px 1fr;gap:12px}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-pri{background:#e8743b}}
 :root[data-theme="dark"] .sp-pri{background:#e8743b}
 @media (max-width:560px){.sp-eyh{font-size:12px;letter-spacing:.05em;white-space:nowrap}.sp-pv{display:grid;gap:7px}.sp-pv>b{min-width:0}.sp-chips{gap:4px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none;margin-right:-16px;padding-right:16px}.sp-chips::-webkit-scrollbar{display:none}.sp-p{font-size:9.5px;padding:3px 6px;gap:3px}.sp-p svg{display:none}.sp-pv{min-width:0}.sp-hd{padding:18px 16px 16px}.sp-isi{padding:16px 16px 8px}.sp-aksi{padding:12px 16px 16px}.sp-aksi>span{display:none}.sp-pri{flex:1}
   .sp-k{grid-template-columns:18px minmax(0,1fr) auto auto}.sp-nm span,.sp-k em:last-child{display:none}
-  .sp-b{grid-template-columns:minmax(0,1.3fr) 1fr 34px}.sp-b>span{flex-direction:column;align-items:flex-start;gap:3px}}
+  .sp-b{grid-template-columns:minmax(0,1.3fr) 1fr 34px}.sp-b>span{flex-direction:column;align-items:flex-start;gap:3px}
+  .sp-pt{overflow-x:auto}.sp-pt>*{min-width:600px}
+  .sp-mh{display:none!important}.sp-ks.rata .sp-k,.sp-th.k{grid-template-columns:18px minmax(0,1fr) 64px 54px}
+  .sp-as .sp-th,.sp-ar{grid-template-columns:minmax(0,1fr) 96px 58px 58px}.sp-ar{font-size:12.5px}
+  .sp-bs.rata .sp-b,.sp-th.b{grid-template-columns:minmax(0,1fr) 108px 40px 40px}.sp-bs.rata .sp-b>i,.sp-th.b>:nth-child(3){display:none}
+  .sp-cs.rata .sp-c{grid-template-columns:32px 1fr;row-gap:2px}.sp-cs.rata .sp-c p{grid-column:2}.sp-th.c{grid-template-columns:1fr}.sp-th.c>:last-child{display:none}}
 </style>`);
   /* html: isi dialog; saatKlik(e, d): penangan klik tambahan (return true bila sudah ditangani); tombol [data-tutup] dan latar menutup */
   function dialog(html, saatKlik, kunci) {
