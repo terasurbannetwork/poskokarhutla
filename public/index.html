@@ -2224,7 +2224,7 @@ function hariIniWil(k) { const hi = S.meta.hari_wib, l = k.split("|").length;
 function grafikTren(kunci) { const sr = seriHarian(kunci, Math.max(7, S.trenN)), t = nilaiTren(sr), n = sr.v.length; if (!n || sr.v.reduce((x, y) => x + y, 0) < 6) return "";
   const kini = hariIniWil(kunci), N = n + (kini == null ? 0 : 1), W = 260, H = 46, m = Math.max(1, ...sr.v, kini || 0), bw = W / N,
     rr = sr.v.map((_, i) => { const a = sr.v.slice(Math.max(0, i - 6), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; }), tg = d => new Date(d + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
-  const vonis = t.d == null ? ["Titik sedikit", "#8a94a6"] : [["Membaik", "Stabil", "Memburuk"][t.arah + 1] + ` ${t.d > 0 ? "+" : ""}${Math.round(t.d * 100)}%`, WARNA_TREN[t.arah]];
+  const vonis = t.d == null ? ["Titik sedikit", "#8a94a6"] : [["Membaik", "Stabil", "Memburuk"][t.arah + 1] + ` ${t.d > 0 ? "+" : ""}${fmt(Math.round(t.d * 100))}%`, WARNA_TREN[t.arah]];
   /* angka di atas tiap batang (dilewati bila batang terlalu rapat) */
   const bar = (x, i, warna, op) => `<rect x="${i * bw + .5}" y="${H - x / m * (H - 14)}" width="${Math.max(1, bw - 1.5)}" height="${Math.max(.8, x / m * (H - 14))}" rx="1.5" fill="${warna}" opacity="${op}"/>${N <= 14 ? `<text x="${(i + .5) * bw}" y="${H - x / m * (H - 14) - 3}" text-anchor="middle" font-size="${N > 9 ? 7.5 : 9}" font-weight="700" fill="var(--ink2)">${x >= 1000 ? (Math.round(x / 100) / 10 + "rb").replace(".", ",") : x}</text>` : ""}`;
   return `<div class="tp-tr"><div class="tp-tr-h"><span>${n} hari penuh terakhir</span><span class="tp-pl" style="background:${vonis[1]}">${vonis[0]}</span></div>
