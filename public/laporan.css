@@ -256,4 +256,4 @@
 /* kartu konsesi: judul kecil tiap grafik batang 100% */
 .lp-ksh{display:flex;justify-content:space-between;align-items:baseline;margin:4px 0 2px;font-size:12.5px}
 .lp-ksh span{font:800 9.5px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
-@media print{[data-ex="tren"],[data-ex="musim"],[data-ex="cuaca"],[data-ex="konsesi"]{break-before:page}[data-ex="tren"] .ex,[data-ex="musim"] .ex,[data-ex="cuaca"] .ex{break-inside:avoid}}
+@media print{[data-ex="naikp"] .ex,[data-ex="riwayat"] .ex{break-inside:avoid}[data-ex="naikp"],[data-ex="riwayat"],[data-ex="tren"],[data-ex="musim"],[data-ex="cuaca"],[data-ex="konsesi"]{break-before:page}[data-ex="tren"] .ex,[data-ex="musim"] .ex,[data-ex="cuaca"] .ex{break-inside:avoid}}
