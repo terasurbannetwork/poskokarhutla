@@ -1,5 +1,6 @@
 {
 "kamus": {
+"{0}, perkiraan satelit (provisional)": "{0}, satellite estimate (provisional)",
 "Data grafik": "Chart data",
 "Kenaikan terbesar per provinsi": "Largest increase by province",
 "Kenaikan terbesar per kab/kota": "Largest increase by regency/city",
@@ -7966,6 +7967,7 @@
 "taksiran": "estimate"
 },
 "pola": [
+["^hingga (.+?), tertinggi ke-(\\d+) sejak (\\d{4})$", "to $1, rank $2 since $3"],
 ["^▲▼ dibanding (.+)$", "▲▼ vs $1"],
 ["^Total (.+?) s\\.d\\. (.+)$", "Total $1 to $2"],
 ["^Grand total s\\.d\\. (.+)$", "Grand total to $1"],
