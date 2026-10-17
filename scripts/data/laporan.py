@@ -166,6 +166,40 @@ def konversi_arsip(arsip, porsi):
     return a
 
 
+def isi_mundur(arsip, h30, porsi):
+    """Hari sebelum arsip tertua sampai tanggal 1 bulannya diisi dari harian30.json (titik sensor utama yang sama, per hari WIB);
+    luas = titik x porsi S-NPP x HA_TITIK, ditandai taksiran. Arsip lama (belum dikonversi) tetap diserahkan ke konversi_arsip."""
+    if not arsip or not arsip.get("hari") or not h30:
+        return arsip
+    awal = arsip["hari"][0]
+    hs = [d for d in h30["hari"] if d[:8] + "01" <= d < awal and d >= awal[:8] + "01"]
+    if not hs:
+        return arsip
+    ix = [h30["hari"].index(d) for d in hs]
+    ser = lambda arr: (lambda tt: {"titik": tt, "luas": [round(x * porsi * HA_TITIK) for x in tt], "baru": [round(x * porsi * HA_TITIK) for x in tt]})([arr[i] for i in ix])
+    a = json.loads(json.dumps(arsip))
+    def sambung(lama, baru):  # baru: seri isi mundur, lama: seri arsip (boleh None)
+        n = len(arsip["hari"])
+        lama = lama or {"titik": [0] * n, "luas": [0] * n, "baru": [0] * n}
+        return {f: baru[f] + lama[f] for f in ("titik", "luas", "baru")}
+    nas = [sum(v[i] for v in h30["prov"].values()) for i in range(len(h30["hari"]))]
+    a["nasional"] = {**sambung(a.get("nasional"), ser(nas)), "kab": [sum(1 for v in h30["kab"].values() if v[i] > 0) for i in ix] + (a.get("nasional") or {}).get("kab", [0] * len(arsip["hari"]))}
+    for p, v in h30["prov"].items():
+        a.setdefault("prov", {})[p] = {**(a["prov"].get(p) or {}), **sambung(a["prov"].get(p), ser(v))}
+    kab = {(k["prov"], k["nama"]): k for k in a.get("kab") or []}
+    for k, v in h30["kab"].items():
+        pk = tuple(k.split("|", 1))
+        kab[pk] = {**(kab.get(pk) or {"prov": pk[0], "nama": pk[1]}), **sambung(kab.get(pk), ser(v))}
+    for k, v in kab.items():
+        if len(v["titik"]) == len(arsip["hari"]):   # kab tanpa riwayat harian30: nol di depan
+            v.update({f: [0] * len(hs) + v[f] for f in ("titik", "luas", "baru")})
+    a["kab"] = list(kab.values())
+    a["hari"] = hs + arsip["hari"]
+    a["luas_taksir"] = sorted(set(hs) | set(arsip.get("luas_taksir") or []))
+    a["_isi_mundur"] = hs
+    return a
+
+
 def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun):
     """Perkiraan luas terbakar sejak 1 Jan: titik S-NPP sejarah.json (s.d. sehari sebelum dibuat) x HA_TITIK + luas harian
     laporan sesudahnya. None bila sejarah tidak memuat tahun ini."""
@@ -180,7 +214,8 @@ def tahun_berjalan(sejarah, hari_iso, luas_nas, tahun):
     akhir = hari_iso[-1] if hari_iso else batas
     nama = ["Jan–Mar", "Apr–Jun", "Jul–Sep", "Okt–Des"]
     # triwulan yang sudah dimulai; Mei 2026 kosong di FIRMS (8 Mei-1 Jun) sehingga Apr-Jun lebih kecil dari sebenarnya
-    tw = [{"nama": nama[q], "ha": round(sum(bln[3 * q:3 * q + 3])), "bulan_kosong": [BULAN[m] for m in range(3 * q, 3 * q + 3) if bln[m] == 0 and m < int(akhir[5:7]) - 1]}
+    aktif = lambda q: sum(1 for v in sejarah["prov"].values() if sum((v.get(tahun) or [0] * 12)[3 * q:3 * q + 3]) > 0)
+    tw = [{"nama": nama[q], "ha": round(sum(bln[3 * q:3 * q + 3])), "titik_snpp": round(sum(bln[3 * q:3 * q + 3]) / HA_TITIK), "prov_aktif": aktif(q), "bulan_kosong": [BULAN[m] for m in range(3 * q, 3 * q + 3) if bln[m] == 0 and m < int(akhir[5:7]) - 1]}
           for q in range(4) if 3 * q < int(akhir[5:7])]
     return {"ha": round(ha), "rendah": round(ha / HA_TITIK * HA_RENDAH), "tinggi": round(ha / HA_TITIK * HA_TINGGI),
             "ha_titik": HA_TITIK, "ha_titik_rendah": HA_RENDAH, "ha_titik_tinggi": HA_TINGGI, "sd": akhir, "triwulan": tw}
@@ -201,11 +236,11 @@ def kompleks(kl):
     return r
 
 
-def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None):
+def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None):
     acuan, akhir, t, s = hitung(hs)
     porsi, taksir = isi_celah(t, s)
     hari, out, konteks = seri(t, s)
-    arsip = konversi_arsip(arsip, porsi)
+    arsip = isi_mundur(konversi_arsip(arsip, porsi), h30, porsi)
     dibuat = sekarang or (dt.datetime.fromisoformat(meta["dibuat"]) if meta and meta.get("dibuat") else dt.datetime.now(WIB))
     if dibuat.tzinfo is None:
         dibuat = dibuat.replace(tzinfo=WIB)
@@ -275,7 +310,7 @@ def main():
     if not hs:
         sys.exit("hotspot.json tidak ada")
     lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), baca("laporan.json"),
-                sejarah=baca("sejarah.json"))
+                sejarah=baca("sejarah.json"), h30=baca("harian30.json"))
     jalur = os.path.join(DATA, "laporan.json")
     with open(jalur, "w") as f:
         json.dump(lap, f, ensure_ascii=False, separators=(",", ":"))
@@ -324,7 +359,7 @@ def uji():
     sj = {"tahun": ["2026"], "dibuat": "2026-01-02", "prov": {"14": {"2026": [10000] + [0] * 11}}}
     tb = tahun_berjalan(sj, ["2025-12-31", "2026-01-01", "2026-01-02"], [9, 4, 7], "2026")
     assert tb["ha"] == round(10000 * HA_TITIK + 7) and tb["rendah"] < tb["ha"] < tb["tinggi"], tb
-    assert tb["triwulan"] == [{"nama": "Jan–Mar", "ha": tb["ha"], "bulan_kosong": []}], tb["triwulan"]
+    assert tb["triwulan"] == [{"nama": "Jan–Mar", "ha": tb["ha"], "titik_snpp": 10002, "prov_aktif": 1, "bulan_kosong": []}], tb["triwulan"]
     assert tahun_berjalan(None, [], [], "2026") is None
     # (c) hari lengkap / berjalan di sekitar 21:00 WIB
     d = dt.date(2026, 10, 12)

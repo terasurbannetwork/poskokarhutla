@@ -7904,6 +7904,22 @@
 },
 "pola": [
 [
+"^Riwayat per triwulan (\\d{4})$",
+"Quarterly history $1"
+],
+[
+"^Sejak (.+)$",
+"Since $1"
+],
+[
+"^ha \\(kuartil (.+?)–(.+?) juta, tanpa (.+)\\)$",
+"ha (quartiles $1–$2 M, excl. $3)"
+],
+[
+"^ha \\(kuartil (.+?)–(.+?) juta\\)$",
+"ha (quartiles $1–$2 M)"
+],
+[
 "^ha \\(kuartil (.+?)–(.+?) juta ha, tanpa data (.+)\\)$",
 "ha (quartiles $1–$2 million ha, without $3 data)"
 ],
