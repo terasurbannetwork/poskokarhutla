@@ -172,8 +172,8 @@
 .lp-alur b{font-size:13px;font-weight:800;color:var(--ink);font-variant-numeric:tabular-nums}
 .lp-alur span{font-size:11px;font-weight:600;color:var(--ink2)}
 /* 8 ubin: 4 atas 4 bawah; menyusut 2 lalu 1 kolom di layar sempit */
-.lp-ubs{display:grid;grid-template-columns:repeat(4,1fr);gap:8px}
-@media (max-width:1100px){.lp-ubs{grid-template-columns:repeat(2,1fr)}}
+.lp-ubs{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+@media (max-width:900px){.lp-ubs{grid-template-columns:repeat(2,1fr)}}
 @media (max-width:640px){.lp-ubs{grid-template-columns:1fr}}
 .lp-ub{border-radius:12px;padding:10px 12px;background:oklch(42% .11 255 / .05);border:1px solid oklch(42% .11 255 / .1)}
 .lp-ub-h{display:flex;align-items:center;gap:7px;margin-bottom:5px}
@@ -184,7 +184,7 @@
 .lp-src{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;white-space:nowrap;background:var(--brand);color:#fff}
 @media (max-width:640px){.lp-alur{grid-template-columns:1fr;gap:10px}.lp-alur::before{left:6px;right:auto;top:6px;bottom:6px;width:2px;height:auto}
   .lp-alur li{flex-direction:row;text-align:left;gap:8px}.lp-alur i{margin:0}}
-@media print{.lp-ubs{grid-template-columns:repeat(4,1fr)}.lp-km,.lp-ub{break-inside:avoid}}
+@media print{.lp-ubs{grid-template-columns:repeat(3,1fr)}.lp-km,.lp-ub{break-inside:avoid}}
 /* judul dua poin: hari tertutup + hari berjalan yang belum final */
 .lp-pt{display:block;position:relative;padding-left:16px}
 .lp-pt::before{content:"";position:absolute;left:2px;top:.55em;width:7px;height:7px;border-radius:50%;background:var(--brand)}
@@ -195,6 +195,8 @@
 /* baris hari berjalan (belum final) di tabel harian: latar oranye pucat + pil */
 .lp-tb tr.lp-sm td{background:oklch(85% .1 75 / .28)}
 .lp-tb tr.lp-tot td{font-weight:800;color:var(--ink);border-top:2px solid var(--line);background:oklch(55% .12 250 / .06)}
+.lp-tb tr.lp-gt td{background:#0b2545;color:#fff;font-weight:800;border-top:0;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.lp-tb tr.lp-gt .lp-co{background:rgb(255 255 255 / .18);color:#fff}
 .lp-tb tr.lp-sm td:first-child{box-shadow:inset 4px 0 0 #d2772c}
 .lp-tb tr.lp-sm .lp-bf{font-style:normal;margin-left:6px}
 /* kolom titik hari berjalan (belum final): oranye pucat seperti baris belum final */
@@ -203,7 +205,13 @@
 /* Kenaikan terbesar: panel hari terpilih dan hari berjalan berdampingan */
 .lp-pns{display:grid;grid-template-columns:1fr 1fr;gap:16px}
 .lp-pn-h{display:flex;align-items:center;gap:8px;margin:0 0 8px;font:800 13px var(--display);color:var(--ink)}
-.lp-pn-h .lp-gl{font:600 11px var(--font);color:var(--ink2)}
+/* label hari data grafik Per provinsi: satu kapsul, segmen dipisah garis tipis */
+.lp-gh{display:inline-flex;align-items:center;flex-wrap:wrap;gap:6px 10px;margin:0 0 10px;padding:6px 14px 6px 10px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font:600 11.5px var(--font);color:var(--ink2)}
+.lp-gh svg{width:15px;height:15px;fill:none;stroke:var(--brand);stroke-width:2;stroke-linecap:round}
+.lp-gh-k{font:800 9.5px var(--font);letter-spacing:.08em;text-transform:uppercase}
+.lp-gh b{font:800 13px var(--display);color:var(--ink)}
+.lp-gh i{width:1px;height:14px;background:var(--line)}
+@media print{.lp-gh{print-color-adjust:exact;-webkit-print-color-adjust:exact;padding:3px 12px 3px 8px;margin-bottom:6px}}
 .lp-pn .lp-gr svg{min-width:0;width:100%}
 @media (max-width:900px){.lp-pns{grid-template-columns:1fr}}
 /* peta provinsi: provinsi bertitik navy, lainnya abu; lingkaran emas sebanding jumlah titik */

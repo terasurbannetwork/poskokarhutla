@@ -188,7 +188,8 @@ function kartuProvGrafik() {
   /* kertas: dua kolom selebar setengah halaman supaya huruf tetap terbaca (satu kolom 38 baris menyusut sampai tak terbaca) */
   const h2 = Math.ceil(rows.length / 2), cetak = `<div class="lp-prt">${batangProv(rows.slice(0, h2), 760, rows[0].t || 1)}${rows.length > 1 ? batangProv(rows.slice(h2), 760, rows[0].t || 1) : ""}</div>`;
   /* grafik selalu memakai hari terpilih (tertutup); label harinya ditulis supaya tidak tertukar dengan poin hari berjalan */
-  const lbl = `<div class="lp-pn-h">Grafik: data ${tglHari(st.hari)} <span class="lp-co">Cut-off ${cutoff(st.hari)}</span>${st.hari === D.hari_berjalan ? ' <span class="lp-bf">Data belum final</span>' : ""}${idx() > 0 ? ` <span class="lp-gl">perubahan dibanding ${tgl(D.hari[idx() - 1])}</span>` : ""}</div>`;
+  const lbl = `<div class="lp-gh"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg><span class="lp-gh-k">Data grafik</span><b>${tglHari(st.hari)}</b>`
+    + `<i></i><span>Cut-off ${cutoff(st.hari)}</span>${st.hari === D.hari_berjalan ? ' <span class="lp-bf">Data belum final</span>' : ""}${idx() > 0 ? `<i></i><span>▲▼ dibanding ${tgl(D.hari[idx() - 1])}</span>` : ""}</div>`;
   return Kartu.kartu("Per provinsi", j, rows.length ? lbl + `<div class="lp-scr">${batangProv(rows)}</div>` + cetak : '<div class="kosong">Pilih minimal satu provinsi</div>', tt([D.sumber.titik, D.sumber.luas].join("; ")),
     Kartu.selProvMulti("provM", kode, k => D.prov[k].nama, st));
 }
@@ -206,13 +207,14 @@ function riwayatTw(sel) {
 /* kertas: grafik dipendekkan sesuai jumlah baris tabel supaya kartu (kepala + grafik + tabel + sumber) muat satu halaman
    A4 mendatar (isi 174 mm, baris ~4,1 mm, sisanya ~46 mm). ponytail: bulan > ~28 baris tetap meluber, grafik berhenti di 22 mm */
 const pasCetak = (grafik, tabel) => `<div style="--gr:${Math.max(22, Math.min(48, 128 - (tabel.match(/<tr/g) || []).length * 4.1)).toFixed(0)}mm">${grafik}${tabel}</div>`;
-/* tot(ix) = sel baris "Total <rentang>" di bawah baris harian; ix = indeks D.hari yang tampil */
-function tabelHarian(kol, ekor = "", tot = null) {
+/* tot(ix) = sel baris "Total <rentang>" di bawah baris harian; ix = indeks D.hari yang tampil.
+   gt = [label, sel...] baris "Grand total" paling bawah (sesudah riwayat triwulan), latar navy */
+function tabelHarian(kol, ekor = "", tot = null, gt = null) {
   const hs = hariGrafik().slice().reverse(), ix = hs.map(h => D.hari.indexOf(h));
   const baris = tot && hs.length > 1 ? `<tr class="lp-tot"><td>Total ${tgl(hs.at(-1))} s.d. ${tgl(hs[0])} ${hs[0].slice(0, 4)}</td>${tot(ix).map(v => `<td class="n">${v}</td>`).join("")}</tr>` : "";
   return `<div class="tw lp-th"><table class="lp-tb"><thead><tr><th>Tanggal</th>${kol.map(k => `<th${k[2] ? ' class="n"' : ""}>${k[0]}</th>`).join("")}</tr></thead><tbody>${hs.map(h => {
     const i = D.hari.indexOf(h);
-    return `<tr class="${h === st.hari ? "lp-on" : ""}${h === D.hari_berjalan ? " lp-sm" : ""}"><td>${tglPanjang(h)}${h === D.hari_berjalan ? ' <span class="lp-bf">Belum final</span>' : ""}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}${baris}${ekor}</tbody></table></div>`;
+    return `<tr class="${h === st.hari ? "lp-on" : ""}${h === D.hari_berjalan ? " lp-sm" : ""}"><td>${tglPanjang(h)}${h === D.hari_berjalan ? ' <span class="lp-bf">Belum final</span>' : ""}</td>${kol.map(k => `<td${k[2] ? ' class="n"' : ""}>${k[1](i)}</td>`).join("")}</tr>`; }).join("")}${baris}${ekor}${gt ? `<tr class="lp-gt"><td>${gt[0]}</td>${gt.slice(1).map(v => `<td class="n">${v}</td>`).join("")}</tr>` : ""}</tbody></table></div>`;
 }
 
 /* ---------- kartu ---------- */
@@ -249,7 +251,11 @@ function kartuRingkasan() {
     riwayatTw((q, p) => [fmt(q.titik_snpp), p ? ubah(q.titik_snpp, p.titik_snpp) : "–", "", fmt(q.prov_aktif)]),
     /* total rentang: kab/kota dan provinsi dihitung unik (pernah bertitik di salah satu hari), bukan dijumlah */
     ix => [fmt(ix.reduce((a, i) => a + (n.titik[i] || 0), 0)), "–", fmt(D.kab.filter(o => ix.some(i => o.titik[i] > 0)).length),
-      fmt(Object.values(D.prov).filter(o => ix.some(i => o.titik[i] > 0)).length)])), tt(D.sumber.titik), segRentang());
+      fmt(Object.values(D.prov).filter(o => ix.some(i => o.titik[i] > 0)).length)],
+    /* grand total tahun berjalan: hanya titik VIIRS S-NPP yang tersedia sejak 1 Januari (= perkiraan luas / ha per titik) */
+    D.tahun_berjalan?.ha_titik ? [`Grand total s.d. ${tgl(D.tahun_berjalan.sd)} ${D.tahun_berjalan.sd.slice(0, 4)} <span class="lp-co">VIIRS S-NPP</span>`,
+      fmt(Math.round(D.tahun_berjalan.ha / D.tahun_berjalan.ha_titik)), "–", "–",
+      fmt(Math.max(Object.values(D.prov).filter(o => o.titik.some(v => v > 0)).length, ...(D.tahun_berjalan.triwulan || []).map(q => q.prov_aktif || 0)))] : null)), tt(D.sumber.titik), segRentang());
 }
 function kartuLuas() {
   const i = idx(), n = D.nasional, hs = hariGrafik();
@@ -265,7 +271,8 @@ function kartuLuas() {
     + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, pasCetak(batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}), tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
-    [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–"])), tt(D.sumber.luas), segRentang());
+    [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–"],
+    tb ? [`Grand total s.d. ${tgl(tb.sd)} ${tb.sd.slice(0, 4)}`, fmt(tb.ha), "–", fmt(tb.ha)] : null)), tt(D.sumber.luas), segRentang());
 }
 
 /* teks kepala juga disalin ke span cetak: Chrome tidak menggambar tombol di kepala tabel yang diulang tiap halaman kertas */
