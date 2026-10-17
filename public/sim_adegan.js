@@ -326,7 +326,7 @@ const ik = '<svg viewBox="0 0 24 24" width="13" height="13" fill="none" stroke="
 
 function kerangkaDOM() {
   const r = document.createElement("div"); r.className = "sa"; r.setAttribute("aria-label", "Adegan 3D simulasi");
-  r.innerHTML = `<div class="sa-lbl"></div><span class="sa-msg s3-pill">${ik}<span>Menyiapkan adegan…</span></span><span class="sa-attr">Medan © Mapzen, NASA SRTM, USGS · Adegan 3D bergaya, bukan citra</span>
+  r.innerHTML = `<div class="sa-lbl"></div><div class="sa-lbu"></div><span class="sa-msg s3-pill">${ik}<span>Menyiapkan adegan…</span></span><span class="sa-attr">Medan © Mapzen, NASA SRTM, USGS · Adegan 3D bergaya, bukan citra</span>
     <div class="sa-kmp" aria-hidden="true"><svg viewBox="0 0 40 40" width="38" height="38"><circle cx="20" cy="20" r="18" fill="rgba(255,255,255,.85)" stroke="rgba(29,29,29,.25)"/><path d="M20 6l5 14h-10z" fill="#c9503a"/><path d="M20 34l-5-14h10z" fill="#8a8a8a"/></svg><b>U</b></div>`;
   return r;
 }
@@ -345,7 +345,7 @@ function buka(ctx) {
 function tampil(on) { if (!A.root) return; A.root.style.display = on ? "" : "none"; A.terlihat = on; if (on) { sentuhUser(); jadwal(); } else { cancelAnimationFrame(A.raf); A.raf = 0; } }
 function jeda() { tampil(false); }
 function tutup() {
-  A.tok++; cancelAnimationFrame(A.raf); A.ro?.disconnect(); document.removeEventListener("visibilitychange", A.vis); A.controls?.dispose();
+  A.tok++; cancelAnimationFrame(A.raf); A.ro?.disconnect(); document.removeEventListener("visibilitychange", A.vis); document.removeEventListener("keydown", A.esc); A.rtP?.dispose(); A.matIR?.dispose(); A.controls?.dispose();
   A.scene?.traverse(o => { o.geometry?.dispose(); o.dispose?.(); const m = o.material; for (const x of Array.isArray(m) ? m : m ? [m] : []) { for (const k in x) if (x[k]?.isTexture) x[k].dispose(); x.dispose(); } });
   A.texT?.dispose(); A.composer?.dispose?.(); A.r?.dispose(); A.r?.forceContextLoss(); A.root?.remove();
   for (const k of Object.keys(A)) if (k !== "tok") delete A[k];
@@ -412,7 +412,7 @@ async function bangun(tok) {
       const pita = (arr, warna, kali, yoff, ru, me) => { const geo = geomPita(T, M, arr, kali, yoff, st); if (!geo) return; const mm = new T.Mesh(geo, new T.MeshStandardMaterial({color: warna, roughness: ru, metalness: me, polygonOffset: true, polygonOffsetFactor: -2, polygonOffsetUnits: -2}));
         mm.receiveShadow = true; mm.frustumCulled = false; scene.add(mm); };
       const mn = (arr, m) => arr.map(g => ({...g, lebar: Math.max(g.lebar, m)})); /* lebar dunia adaptif: minimal ~2-3 piksel dari jarak pandang awal */
-      pita(mn(garis.filter(g => g.tipe === 2), Wm * .0012), "#6e5a3b", 2.4, 3, 1, 0); pita(mn(garis.filter(g => g.tipe <= 2), Wm * .0016), "#4d8aa8", 1, 5, .25, .15); pita(mn(garis.filter(g => g.tipe === 3), Wm * .0011), "#5b5d60", 1, 4, .9, 0); pita(mn(garis.filter(g => g.tipe === 4), Wm * .0008), "#b8a072", 1, 4, 1, 0); }
+      pita(mn(garis.filter(g => g.tipe === 2), Wm * .0012), "#6e5a3b", 2.4, 3, 1, 0); pita(mn(garis.filter(g => g.tipe <= 2), Wm * .0016), "#3f7390", 1, 5, .6, 0); pita(mn(garis.filter(g => g.tipe === 3), Wm * .0011), "#5b5d60", 1, 4, .9, 0); pita(mn(garis.filter(g => g.tipe === 4), Wm * .0008), "#b8a072", 1, 4, 1, 0); }
     A.root.querySelector(".sa-attr").textContent = `Medan © Mapzen, SRTM · ${A.sumber.vektor.startsWith("OSM") ? "Sungai, kanal, jalan © OpenStreetMap · " : "Jalan/sungai situs, kanal perkiraan · "}Gambut, konsesi, kawasan hutan: data situs${A.sumber.hilang ? " · Hutan hilang: GFW" : ""} · Adegan bergaya, bukan citra`;
     /* --- kamera, kendali, komposer --- */
     const cam = A.cam = new T.PerspectiveCamera(hp ? 52 : 45, 1, 30, 130000);
@@ -420,7 +420,8 @@ async function bangun(tok) {
     Object.assign(ctl, {enableDamping: true, dampingFactor: .08, minDistance: 250, maxDistance: W * 2.2, maxPolarAngle: 1.43, minPolarAngle: .12, screenSpacePanning: false, zoomSpeed: .9});
     ctl.target.set(rc.tx, tinggiDi(M, rc.tx, rc.tz), rc.tz);
     ctl.addEventListener("change", () => { const c = ctl.target; c.x = klem(c.x, -W / 2, W / 2); c.z = klem(c.z, -W / 2, W / 2); const h = tinggiDi(M, cam.position.x, cam.position.z) + 60; if (cam.position.y < h) cam.position.y = h; A.kotor = true; jadwal(); });
-    ctl.addEventListener("start", () => { A.terbang = null; sentuhUser(); });
+    ctl.addEventListener("start", () => { A.terbang = null; A.ikut = null; sentuhUser(); });
+    pasangKlik(cv);
     for (const ev of ["pointerdown", "wheel", "keydown"]) cv.addEventListener(ev, () => { sentuhUser(); jadwal(); }, {passive: true});
     const hdr = r.extensions.has("EXT_color_buffer_float") || r.extensions.has("EXT_color_buffer_half_float");
     if (hdr) { try { const rt = new T.WebGLRenderTarget(4, 4, {type: T.HalfFloatType, samples: hp ? 0 : 4}), cp = A.composer = new EffectComposer(r, rt); cp.addPass(new RenderPass(scene, cam));
@@ -505,7 +506,7 @@ async function muatHilang(K, vt) {
 /* ---------- pohon ---------- */
 const SKALA = [s => 150 + 90 * s, s => 55 + 35 * s, s => 60 + 16 * s, s => 90 + 25 * s, s => 45 + 25 * s]; /* tinggi visual (m), dibesarkan supaya terbaca pada kotak 24 km */
 function warnaPohon(c, t, R) { /* HSL per tipe */
-  if (t === 0) c.setHSL(.29 + .05 * R(), .34 + .14 * R(), .09 + .07 * R()); else if (t === 1) c.setHSL(.2 + .05 * R(), .36 + .1 * R(), .2 + .09 * R());
+  if (t === 0) c.setHSL(.29 + .05 * R(), .34 + .14 * R(), .09 + .07 * R()); else if (t === 1) c.setHSL(.2 + .05 * R(), .36 + .1 * R(), .11 + .08 * R());
   else if (t === 2) c.setHSL(.26 + .03 * R(), .5, .2 + .06 * R()); else if (t === 3) c.setHSL(.24 + .03 * R(), .3, .26 + .07 * R()); else c.setHSL(.08, .15 + .1 * R(), .13 + .05 * R());
 }
 const tandaiPohon = () => { for (const m of A.mesh) { m.instanceMatrix.needsUpdate = true; if (m.instanceColor) m.instanceColor.needsUpdate = true; } };
@@ -553,9 +554,6 @@ function bangunOverlay(T) {
     bola.position.set(a0.x, y + 30, a0.z); cincin.position.set(a0.x, y + 25, a0.z); for (const o of [bola, cincin]) { o.frustumCulled = false; A.scene.add(o); A.ov.push(o); } A.ign = {bola, cincin, r: Math.max(40, W * .0028)}; }
   const ip = M.ipuncak, gx = ip % M.g, gz = (ip / M.g) | 0, px = (gx / (M.g - 1) - .5) * W, pz = -(gz / (M.g - 1) - .5) * W;
   label(px, M.Y[ip] + 120, pz, `<span class="sa-pk">▲ Puncak · ${idr(M.puncak)} m</span>`, -1);
-  /* unit drone dari sim_armada (tab Drones aktif) */
-  A.unit = []; const inti = window.SimArmada?.inti;
-  if (inti?.DR) for (let i = 0; i < inti.DR.length; i++) { const o = new T.Mesh(new T.OctahedronGeometry(Math.max(45, W * .0026)), new T.MeshBasicMaterial({color: new T.Color(.3, 1.6, 2.2)})); o.visible = false; o.frustumCulled = false; A.scene.add(o); A.unit.push(o); A.ov.push(o); }
   A.kotor = true;
 }
 function bangunPartikel(T) {
@@ -565,7 +563,110 @@ function bangunPartikel(T) {
       vertexShader: "attribute float aSize; attribute float aA; uniform float uPx; varying float vA; void main(){ vA = aA; vec4 mv = modelViewMatrix * vec4(position, 1.); gl_PointSize = clamp(aSize * uPx / -mv.z, 0., 96.); gl_Position = projectionMatrix * mv; }",
       fragmentShader: "uniform vec3 uCol; uniform float uAmt; varying float vA; void main(){ float d = length(gl_PointCoord - .5); float a = smoothstep(.5, .12, d) * vA; if (a < .01) discard; gl_FragColor = vec4(uCol, a * uAmt); }"});
     const pt = new T.Points(geo, mat); pt.frustumCulled = false; A.scene.add(pt); return {p, geo, mat, pt}; };
-  A.partikel = {asap: buat(hp ? 400 : 1100, [.3, .29, .28], false, .5), bara: buat(hp ? 150 : 420, [3.2, 1, .25], true, 1)}; A.partikel.sistem = [A.partikel.asap, A.partikel.bara]; A.partikel.sisa = 0;
+  A.partikel = {asap: buat(hp ? 400 : 1100, [.3, .29, .28], false, .5), bara: buat(hp ? 150 : 420, [3.2, 1, .25], true, 1)}; A.partikel.tirai = [buat(hp ? 300 : 700, [.9, .2, .15], false, .75), buat(hp ? 300 : 700, [.3, .55, .9], false, .75)]; A.partikel.sistem = [A.partikel.asap, A.partikel.bara, ...A.partikel.tirai]; A.partikel.sisa = 0;
+}
+
+/* ---------- unit armada 3D (posisi dari SimArmada.unit; model prosedural low-poly, tanpa glTF) ---------- */
+const SKU = {quad: 160, vtol: 90, heli: 32, AT: 24, H: 32, E: 34, WT: 34, DZ: 34, C: 55}; /* pembesaran visual: kotak 24 km */
+const WARNA_U = {putih: 0xf1f1ee, merah: 0xc8352b, abu: 0x3a3d42, kuning: 0xe8b923, biru: 0x4f7a99, oranye: 0xe8762b, kulit: 0xd9a77c, hitam: 0x16171a, terang: 0xdfe6ea};
+function modelUnit(T, jenis) { /* grup + daftar bagian berputar; depan = -Z */
+  const g = new T.Group(), spin = [], mats = {};
+  const mat = c => mats[c] ||= new T.MeshStandardMaterial({color: c, roughness: .65, metalness: .1, flatShading: true});
+  const box = (w, h, d, c, x = 0, y = 0, z = 0) => { const m = new T.Mesh(new T.BoxGeometry(w, h, d), mat(c)); m.position.set(x, y, z); m.castShadow = true; g.add(m); return m; };
+  const cyl = (r, h, c, x = 0, y = 0, z = 0, rx = 0, rz = 0, sg = 10) => { const m = new T.Mesh(new T.CylinderGeometry(r, r, h, sg), mat(c)); m.position.set(x, y, z); m.rotation.set(rx, 0, rz); m.castShadow = true; g.add(m); return m; };
+  const rotor = (r, x, y, z, v = 40) => { const m = new T.Mesh(new T.CylinderGeometry(r, r, .02, 14), new T.MeshBasicMaterial({color: 0xcfd6db, transparent: true, opacity: .45})); m.position.set(x, y, z); g.add(m); spin.push([m, v]); return m; };
+  const W = WARNA_U;
+  if (jenis === "quad") { box(.5, .14, .5, W.abu, 0, 0, 0); for (const [a, b] of [[1, 1], [-1, 1], [1, -1], [-1, -1]]) { box(.5, .04, .05, W.abu, a * .27, .02, b * .27).rotation.y = a * b * .785; cyl(.03, .1, W.hitam, a * .38, .06, b * .38); rotor(.24, a * .38, .12, b * .38); } box(.12, .12, .12, W.hitam, 0, -.12, -.2); }
+  else if (jenis === "vtol") { box(.3, .26, 2.4, W.putih, 0, 0, 0); box(3.4, .05, .42, W.putih, 0, .1, -.2); box(.05, .5, .4, W.merah, 0, .3, 1.0); box(1.2, .05, .3, W.putih, 0, .1, 1.05); for (const x of [-1, 1]) { box(.06, .06, 1.6, W.abu, x * 1, .12, .2); rotor(.3, x * 1, .17, -.55, 50); rotor(.3, x * 1, .17, .95, 50); } }
+  else if (jenis === "heli" || jenis === "H") { const b = new T.Mesh(new T.SphereGeometry(1, 10, 8), mat(W.merah)); b.scale.set(1.15, 1.05, 2.4); b.castShadow = true; g.add(b); box(.35, .35, 3.6, W.putih, 0, .25, 3.2); box(.1, 1.1, .8, W.merah, 0, .8, 4.8); box(.1, .9, .1, W.abu, 0, 1.15, 0);
+    const r = new T.Group(); r.position.y = 1.5; for (const a of [0, 1.5708]) { const m = new T.Mesh(new T.BoxGeometry(9.5, .05, .3), mat(W.hitam)); m.rotation.y = a; r.add(m); } g.add(r); spin.push([r, 30]); box(.1, .1, 3, W.abu, -.9, -1.1, 0); box(.1, .1, 3, W.abu, .9, -1.1, 0);
+    cyl(.8, 1.4, W.biru, 0, -1.25, 0, 0, 0, 8); rotor(.9, 0, 1.45, 4.6, 40).rotation.z = 1.5708; }
+  else if (jenis === "AT") { cyl(.75, 9, W.putih, 0, 0, 0, 1.5708, 0, 10); const nose = new T.Mesh(new T.ConeGeometry(.75, 1.6, 10), mat(W.putih)); nose.rotation.x = -1.5708; nose.position.z = -5.2; g.add(nose); box(14, .25, 1.9, W.putih, 0, 1.0, -.6); box(2.2, .26, 1.9, W.merah, -6, 1.0, -.6); box(2.2, .26, 1.9, W.merah, 6, 1.0, -.6);
+    box(4.6, .18, 1.3, W.putih, 0, .3, 4.3); box(.2, 2.2, 1.6, W.merah, 0, 1.4, 4.3); for (const x of [-2.6, 2.6]) cyl(.4, 2.2, W.abu, x, .25, -1.4, 1.5708, 0, 8); rotor(1.5, 0, 0, -6.2, 60).rotation.x = 1.5708; box(.9, .5, .9, W.merah, 0, -.9, -.6); }
+  else if (jenis === "E") { box(2.5, 1.9, 5.6, W.merah, 0, 1.2, .4); box(2.4, 1.6, 1.8, W.merah, 0, 1.0, -3.3); box(2.5, .25, 5.8, W.putih, 0, 1.2, .4); box(2.2, .5, .9, W.terang, 0, 1.7, -3.9); for (const [x, z] of [[-1.2, -3], [1.2, -3], [-1.2, 2.4], [1.2, 2.4]]) cyl(.55, .4, W.hitam, x, .55, z, 0, 1.5708, 8); box(.3, .2, 5, W.abu, 0, 2.3, .6); }
+  else if (jenis === "WT") { box(2.5, .5, 8, W.hitam, 0, .75, 0); cyl(1.2, 6.2, W.biru, 0, 1.9, 1, 1.5708, 0, 12); box(2.4, 1.9, 1.8, W.merah, 0, 1.4, -3.4); for (const z of [-3.2, 1.4, 3.2]) for (const x of [-1.25, 1.25]) cyl(.55, .4, W.hitam, x, .55, z, 0, 1.5708, 8); }
+  else if (jenis === "DZ") { for (const x of [-1.35, 1.35]) box(.95, .95, 4.2, W.hitam, x, .5, 0); box(2.4, 1.3, 3.4, W.kuning, 0, 1.3, .2); box(1.6, 1.3, 1.5, W.kuning, 0, 2.3, .6); box(3.9, 1.3, .3, W.kuning, 0, .9, -2.4); box(.2, .2, .2, W.merah, 0, 3.1, .6); }
+  else { for (const [x, z] of [[-.7, 0], [.6, .3], [-.2, .9], [.9, -.6], [-.9, -.8]]) { cyl(.22, .9, W.oranye, x, .75, z, 0, 0, 6); const h = new T.Mesh(new T.SphereGeometry(.2, 6, 5), mat(W.kulit)); h.position.set(x, 1.4, z); g.add(h); box(.14, .7, .14, W.abu, x, .35, z); } }
+  const s = SKU[jenis] || 14; g.scale.setScalar(s); g.traverse(o => { if (o.isMesh) o.frustumCulled = false; }); g.userData.spin = spin; return g;
+}
+const JENIS_UNIT = u => u.grup === "drone" ? u.jenis : u.jenis === "H" ? "heli" : u.jenis; /* jenis model */
+const udara = u => u.grup === "drone" || u.jenis === "H" || u.jenis === "AT";
+function segarUnit(sec) {
+  const SA = window.SimArmada, tab = SF().aktif, ada = A.units || (A.units = new Map()), lbu = A.root.querySelector(".sa-lbu");
+  const ok = (tab === "drones" || tab === "resources") && SA?.unit; let L = [];
+  if (ok) { try { L = SA.unit(SF().ctx(), A.t, sec, tab) || []; } catch (e) { console.warn("Adegan: unit gagal", e); } }
+  const lihat = new Set(), M = A.M, K = A.K, vt = A.vt;
+  for (const u of L) { const q = keDunia(K, vt, u.lon, u.lat); if (Math.abs(q.x) > M.W / 2 || Math.abs(q.z) > M.W / 2) continue; lihat.add(u.kode);
+    let e = ada.get(u.kode); if (!e) { const jm = JENIS_UNIT(u), g = modelUnit(A.T, jm); g.userData.kode = u.kode; A.scene.add(g); const el = document.createElement("button"); el.type = "button"; el.className = "sa-un"; el.textContent = u.kode; el.addEventListener("click", ev => { ev.stopPropagation(); pilihUnit(u.kode); }); lbu.append(el);
+      e = {g, el, p: new A.T.Vector3(), jm}; ada.set(u.kode, e); }
+    const y = tinggiDi(M, q.x, q.z) + (udara(u) ? Math.max(u.alt, 0) + 30 : 6); e.g.position.set(q.x, y, q.z); e.g.rotation.y = -(u.arah ?? 0) * Math.PI / 180; e.g.visible = true; e.u = u; e.p.set(q.x, y + (SKU[e.jm] || 14) * 1.6 + 40, q.z); e.el.classList.toggle("on", !!u.terpilih || A.ikut === u.kode); e.el.title = `${u.kode} · ${u.status}`; }
+  for (const [k, e] of ada) { const on = lihat.has(k); e.g.visible = on; e.el.style.display = on ? "" : "none"; e.vis = on; }
+  A.unitL = L; if (A.ikut && !lihat.has(A.ikut)) A.ikut = null;
+}
+function pilihUnit(kode) { window.SimArmada?.pilih?.(kode); A.ikut = kode; A.terbang = null; sentuhUser(); A.unitSegar = true; jadwal(); }
+function ikutiKamera(dt) { /* kamera di belakang-atas unit, mulus; geser/Esc melepas */
+  const e = A.ikut && A.units?.get(A.ikut); if (!e || !e.vis) return false; const a = -e.g.rotation.y, f = new A.T.Vector3(Math.sin(a), 0, -Math.cos(a)), s = SKU[e.jm] || 14, jr = udara(e.u) ? s * 38 : s * 22, tg = e.g.position;
+  const want = new A.T.Vector3(tg.x - f.x * jr, tg.y + jr * .42 + 40, tg.z - f.z * jr), k = 1 - Math.exp(-dt * 3);
+  A.controls.target.lerp(tg, k); A.cam.position.lerp(want, k); return true;
+}
+/* jejak siraman: noda di medan (dari SimArmada.jejak) yang memudar menurut umur; tirai partikel dari pesawat saat status "Siram" */
+function segarNoda() {
+  const SA = window.SimArmada, tab = SF().aktif, ada = A.noda || (A.noda = new Map()); let L = [];
+  if (tab === "resources" && SA?.jejak) { try { L = SA.jejak(SF().ctx(), A.t) || []; } catch (e) { console.warn("Adegan: jejak gagal", e); } }
+  const lihat = new Set(), K = A.K, vt = A.vt, M = A.M, T = A.T;
+  for (const e of L) { const key = e.kode + "|" + e.tj; lihat.add(key); let n = ada.get(key);
+    if (!n) { const p = []; for (const [lo, la] of e.pts) { const q = keDunia(K, vt, lo, la); p.push(q.x, q.z); } const pp = dalamKotak(p, M.W / 2)[0]; if (!pp) continue;
+      const geo = geomPita(T, M, [{p: pp, lebar: Math.max(30, M.W * .0018), tipe: 9}], 1, 6, 30); if (!geo) continue; const mm = new T.Mesh(geo, new T.MeshBasicMaterial({color: e.jenis === "AT" ? 0xe5483b : 0x4f8fc4, transparent: true, depthWrite: false, polygonOffset: true, polygonOffsetFactor: -3, polygonOffsetUnits: -3}));
+      mm.frustumCulled = false; A.scene.add(mm); n = {mm}; ada.set(key, n); }
+    n.mm.visible = true; n.mm.material.opacity = .75 * Math.max(.1, 1 - (A.t - e.tj) / 48); }
+  for (const [k, n] of ada) if (!lihat.has(k)) n.mm.visible = false;
+  A.kotor = true;
+}
+function tirai(dt) { /* partikel merah (retardan) / biru (air) jatuh dari pesawat yang menyiram */
+  const P = A.partikel; if (!P?.tirai) return;
+  for (const e of A.units?.values() || []) { if (!e.vis || !e.u || e.u.status !== "Siram" || !udara(e.u)) continue; const sy = P.tirai[e.u.jenis === "AT" ? 0 : 1], n = Math.ceil(dt * 120), h = e.g.position.y - tinggiDi(A.M, e.g.position.x, e.g.position.z);
+    for (let i = 0; i < n; i++) sy.p.emit(e.g.position.x + (Math.random() - .5) * 40, e.g.position.y - 20, e.g.position.z + (Math.random() - .5) * 40, (Math.random() - .5) * 8, -Math.max(60, h / 1.6), (Math.random() - .5) * 8, 1.5 + Math.random() * .5, 50 + Math.random() * 40, .7); }
+}
+/* klik unit di adegan (raycast), Esc melepas kamera */
+function pasangKlik(cv) {
+  const T = A.T, ray = new T.Raycaster(), v = new T.Vector2(); let d0 = null;
+  cv.addEventListener("pointerdown", e => { d0 = {x: e.clientX, y: e.clientY, t: performance.now()}; });
+  cv.addEventListener("pointerup", e => { if (!d0 || Math.hypot(e.clientX - d0.x, e.clientY - d0.y) > 5 || performance.now() - d0.t > 500 || !A.units?.size) return; const r = cv.getBoundingClientRect();
+    v.set((e.clientX - r.left) / r.width * 2 - 1, -((e.clientY - r.top) / r.height) * 2 + 1); ray.setFromCamera(v, A.cam); const hit = ray.intersectObjects([...A.units.values()].filter(x => x.vis).map(x => x.g), true)[0];
+    let o = hit?.object; while (o && !o.userData.kode) o = o.parent; if (o) pilihUnit(o.userData.kode); });
+  A.esc = e => { if (e.key === "Escape" && A.ikut) { A.ikut = null; A.unitSegar = true; jadwal(); } }; document.addEventListener("keydown", A.esc);
+}
+
+/* ---------- kamera drone di adegan: PIP dirender dari adegan YANG SAMA ke render target kecil (EO = warna, IR = termal dari tekstur jam tiba) ---------- */
+const GLSL_IR_V = "varying vec3 vWp; void main(){ vec4 mv = modelViewMatrix * vec4(position, 1.);\n#ifdef USE_INSTANCING\n mv = modelViewMatrix * instanceMatrix * vec4(position, 1.);\n#endif\n vWp = (inverse(viewMatrix) * mv).xyz; gl_Position = projectionMatrix * mv; }";
+const GLSL_IR_F = `uniform float uT; uniform float uTc; uniform float uW; uniform sampler2D uTT; varying vec3 vWp;${GLSL_NOISE}
+void main(){ vec2 uv = vec2(vWp.x / uW + .5, .5 - vWp.z / uW); bool dlm = abs(uv.x - .5) < .5 && abs(uv.y - .5) < .5; vec2 tg = texture2D(uTT, uv).rg; float ins = dlm ? smoothstep(.3, .62, tg.g) : 0.;
+  float Tm = tg.r / max(tg.g, .05), umur = uT - Tm; vec3 n = normalize(cross(dFdx(vWp), dFdy(vWp))); float temp = uTc + 1.5 + 6. * abs(n.y) + 4. * fbm(vWp.xz * .01);
+  if (ins > .01 && umur >= 0.) { float t1 = umur < 1. ? 1000. - 400. * umur : uTc + (600. - uTc) * exp(-(umur - 1.) / 3.); temp = mix(temp, t1 * (.9 + .2 * fbm(vWp.xz * .05)), ins); }
+  float lo = uTc - 8.; float v = pow(clamp((temp - lo) / (1000. - lo), 0., 1.), .45); gl_FragColor = vec4(vec3(v), 1.); }`;
+const GAMMA = Uint8Array.from({length: 256}, (_, i) => Math.round(255 * Math.pow(i / 255, 1 / 2.2)));
+function kameraPIP(el, d, mode, pal) {
+  if (!A.siap || !A.r || !A.U || !A.M) return false;
+  try {
+    const T = A.T, M = A.M, K = A.K, vt = A.vt, W = mode === "ir" ? 360 : 480, H = mode === "ir" ? 240 : 270;
+    let cv = el; if (el.tagName !== "CANVAS") { cv = el.querySelector("canvas.sa-eo"); if (!cv) { cv = document.createElement("canvas"); cv.className = "sa-eo"; el.replaceChildren(cv); } }
+    if (cv.width !== W || cv.height !== H) { cv.width = W; cv.height = H; }
+    const p = keDunia(K, vt, d.lon, d.lat), q = keDunia(K, vt, d.tlon, d.tlat); if (Math.abs(p.x) > M.W / 2 || Math.abs(p.z) > M.W / 2) return false;
+    const cam = A.camP ||= new T.PerspectiveCamera(42, W / H, 5, 130000); cam.fov = 2 * Math.atan(Math.tan(d.fov * Math.PI / 360) / Math.max(1, d.zoom || 1)) * 180 / Math.PI; cam.aspect = W / H; cam.updateProjectionMatrix();
+    cam.position.set(p.x, tinggiDi(M, p.x, p.z) + Math.max(d.alt, 20) + 20, p.z); cam.lookAt(q.x, tinggiDi(M, q.x, q.z), q.z);
+    const rt = A.rtP ||= new T.WebGLRenderTarget(W, H, {depthBuffer: true}); if (rt.width !== W || rt.height !== H) rt.setSize(W, H);
+    const r = A.r, sc = A.scene, vis = [A.langit.visible, A.partikel ? A.partikel.sistem.map(s => s.pt.visible) : null]; let lut = null;
+    if (mode === "ir") { lut = window.SimArmada?.inti?.LUT?.[pal === "white" ? "white" : "ironbow"]; if (!lut) return false;
+      const m = A.matIR ||= new T.ShaderMaterial({uniforms: {uT: A.U.uT, uTT: A.U.uTT, uTc: {value: 28}, uW: {value: M.W}}, vertexShader: GLSL_IR_V, fragmentShader: GLSL_IR_F, extensions: {derivatives: true}});
+      m.uniforms.uTc.value = A.H.W?.tc?.[Math.min(72, Math.floor(A.t))] ?? 28; sc.overrideMaterial = m; A.langit.visible = false; if (A.partikel) for (const s of A.partikel.sistem) s.pt.visible = false; for (const e of A.units?.values() || []) e.g.visible = false; if (A.ign) { A.ign.bola.visible = A.ign.cincin.visible = false; } }
+    r.setRenderTarget(rt); r.setClearColor(0x000000, 1); r.render(sc, cam); r.setRenderTarget(null); sc.overrideMaterial = null; A.langit.visible = vis[0]; if (A.partikel) A.partikel.sistem.forEach((s, i) => { s.pt.visible = vis[1][i]; });
+    if (mode === "ir") { for (const e of A.units?.values() || []) e.g.visible = !!e.vis; if (A.ign) A.ign.bola.visible = A.ign.cincin.visible = true; }
+    const buf = A.bufP && A.bufP.length === W * H * 4 ? A.bufP : A.bufP = new Uint8Array(W * H * 4); r.readRenderTargetPixels(rt, 0, 0, W, H, buf);
+    const g = cv.getContext("2d"), img = A.imgP && A.imgP.width === W ? A.imgP : A.imgP = g.createImageData(W, H), px = img.data;
+    for (let y = 0; y < H; y++) { const so = (H - 1 - y) * W * 4, dO = y * W * 4; for (let x = 0; x < W; x++) { const s = so + x * 4, o = dO + x * 4;
+      if (lut) { const i = buf[s] * 3; px[o] = lut[i]; px[o + 1] = lut[i + 1]; px[o + 2] = lut[i + 2]; } else { px[o] = GAMMA[buf[s]]; px[o + 1] = GAMMA[buf[s + 1]]; px[o + 2] = GAMMA[buf[s + 2]]; } px[o + 3] = 255; } }
+    g.putImageData(img, 0, 0); A.kotor = true; return true;
+  } catch (e) { console.warn("Adegan: kamera drone gagal", e); A.r.setRenderTarget(null); A.scene.overrideMaterial = null; A.langit.visible = true; return false; }
 }
 
 /* ---------- waktu & ganti hasil ---------- */
@@ -574,7 +675,7 @@ function waktu(t) {
   if (A.P && A.tPohon !== undefined) { perbaruiPohon(lama, t); A.tPohon = t; }
   if (A.tube) { const s = sJam(A.jl, A.tube.sTitik, t); A.tube.tb.material.uniforms.uS.value = s; const k = A.tube.kurva, p = k.getPointAt(Math.min(1, Math.max(0, s))), tg = k.getTangentAt(Math.min(1, Math.max(0, s)));
     A.tube.kep.position.copy(p); A.tube.kep.quaternion.setFromUnitVectors(A.tube.up, tg); }
-  A.unitSegar = true; A.kotor = true; jadwal();
+  A.unitSegar = true; segarNoda(); A.kotor = true; jadwal();
 }
 function ganti() { /* hasil baru pada kisi yang sama (skenario lain / jalankan ulang): perbarui api, pohon, jalur; medan tetap */
   if (!A.texT) return; isiTekstur(); const t = +SF().ctx().t;
@@ -582,22 +683,18 @@ function ganti() { /* hasil baru pada kisi yang sama (skenario lain / jalankan u
     tandaiPohon(); A.tPohon = t; }
   if (A.ov) bangunOverlay(A.T); waktu(t);
 }
-function segar() { A.unitSegar = true; A.kotor = true; sentuhUser(); jadwal(); }
+function segar() { A.unitSegar = true; if (A.siap) segarNoda(); A.kotor = true; sentuhUser(); jadwal(); }
 
 /* ---------- loop: render on demand; animasi (asap, denyut) hanya 30 dtk sesudah interaksi terakhir ---------- */
-function perbaruiUnit(t) {
-  const inti = window.SimArmada?.inti, c = SF().ctx(), on = SF().aktif === "drones" && inti;
-  A.unit?.forEach((o, i) => { if (!on) return void (o.visible = false); const p = inti.dronePos(c.K, c.H, i, t, 0); if (!p.udara) return void (o.visible = false);
-    const x = (p.x / c.K.d - A.vt.i0 - A.vt.w / 2) * A.vt.d, z = -((p.y / c.K.d - A.vt.j0 - A.vt.w / 2) * A.vt.d); if (Math.abs(x) > A.M.W / 2 || Math.abs(z) > A.M.W / 2) return void (o.visible = false);
-    o.position.set(x, tinggiDi(A.M, x, z) + klem(p.alt * .6, 150, 500), z); o.visible = true; });
-}
 function lup(ts) {
   A.raf = 0; if (!A.siap || !A.terlihat || document.hidden || !A.root.offsetParent) return;
   const dt = Math.min(.1, (ts - (A.ultimo || ts)) / 1000); A.ultimo = ts; const aktif = ts < A.aktifSampai && !gerakKurang(); let lagi = false;
   if (A.terbang) { const f = klem((performance.now() - A.terbang.t0) / A.terbang.dur), e = f * f * (3 - 2 * f), a = A.terbang.dari, b = A.terbang.ke;
     A.cam.position.set(...A.posKam(mix(a.d, b.d, e), mix(a.ph, b.ph, e), mix(a.az, b.az, e))); A.kotor = true; if (f >= 1) A.terbang = null; lagi = true; }
   if (A.controls.update()) { A.kotor = true; lagi = true; }
-  if (A.unitSegar) { A.unitSegar = false; perbaruiUnit(A.t); }
+  const tabU = SF().aktif === "drones" || SF().aktif === "resources";
+  if (A.unitSegar || (tabU && ts - (A.tUnit || 0) > 50 && ts < A.aktifSampai)) { A.unitSegar = false; A.tUnit = ts; segarUnit(ts / 1000); A.kotor = true; if (tabU) lagi = true; }
+  if (A.ikut && ikutiKamera(dt)) { A.kotor = true; lagi = true; }
   let anim = false;
   if (aktif) { anim = true; A.U.uTime.value = ts / 1000;
     if (A.ign) { const s = 1 + .22 * Math.sin(ts / 190), q = (ts % 1600) / 1600; A.ign.bola.scale.setScalar(s); A.ign.cincin.scale.setScalar(A.ign.r * (2 + q * 5)); A.ign.cincin.material.opacity = .85 * (1 - q); }
@@ -606,8 +703,9 @@ function lup(ts) {
       if (b > a) while (n-- > 0) { const c = U.sel[a + Math.floor(Math.random() * (b - a))], x = ((c % vt.w) + Math.random() - vt.w / 2) * vt.d, z = -(((c / vt.w | 0) + Math.random() - vt.w / 2) * vt.d), y = tinggiDi(M, x, z);
         A.partikel.asap.p.emit(x, y + 20, z, wx * (.6 + Math.random() * .5), 22 + Math.random() * 30, wz * (.6 + Math.random() * .5), 6 + Math.random() * 4, 170 + Math.random() * 120, .55);
         if (Math.random() < .35) A.partikel.bara.p.emit(x + (Math.random() - .5) * 60, y + 10, z + (Math.random() - .5) * 60, wx * .5 + (Math.random() - .5) * 20, 30 + Math.random() * 50, wz * .5 + (Math.random() - .5) * 20, 1.4 + Math.random() * 1.6, 28 + Math.random() * 22, 1); }
-      let hidup = 0; for (const s of A.partikel.sistem) { hidup += s.p.maju(dt, s === A.partikel.asap ? 2.5 : .4); s.geo.attributes.position.needsUpdate = s.geo.attributes.aSize.needsUpdate = s.geo.attributes.aA.needsUpdate = true; } anim = anim || hidup > 0; }
-    A.kotor = true; lagi = true; }
+      let hidup = 0; for (const s of A.partikel.sistem) { hidup += s.p.maju(dt, s === A.partikel.asap ? 2.5 : s === A.partikel.bara ? .4 : .6); s.geo.attributes.position.needsUpdate = s.geo.attributes.aSize.needsUpdate = s.geo.attributes.aA.needsUpdate = true; } anim = anim || hidup > 0; }
+    for (const e of A.units?.values() || []) for (const [m, v] of e.g.userData.spin) m.rotation.y += v * dt;
+    tirai(dt); A.kotor = true; lagi = true; }
   if (A.kotor) { render(ts); A.kotor = false; }
   if (lagi || anim) jadwal();
 }
@@ -619,6 +717,7 @@ function render(ts) {
   const w = A.root.clientWidth, h = A.root.clientHeight, v = A.v3 ||= new A.T.Vector3();
   for (const l of A.lb || []) { v.copy(l.p).project(cam); const ok = v.z < 1 && Math.abs(v.x) < 1.15 && Math.abs(v.y) < 1.15; l.e.style.display = ok ? "" : "none"; if (!ok) continue;
     l.e.style.transform = `translate(${((v.x + 1) / 2 * w).toFixed(1)}px,${((1 - v.y) / 2 * h).toFixed(1)}px)`; l.e.classList.toggle("sa-fut", l.jam > A.t); }
+  for (const e of A.units?.values() || []) { if (!e.vis) continue; v.copy(e.p).project(cam); const ok = v.z < 1 && Math.abs(v.x) < 1.15 && Math.abs(v.y) < 1.15; e.el.style.display = ok ? "" : "none"; if (ok) e.el.style.transform = `translate(${((v.x + 1) / 2 * w).toFixed(1)}px,${((1 - v.y) / 2 * h).toFixed(1)}px) translate(-50%,-100%)`; }
   const kmp = A.root.querySelector(".sa-kmp"); if (kmp) kmp.style.transform = `rotate(${(c.getAzimuthalAngle() * 180 / Math.PI).toFixed(1)}deg)`;
 }
 function turunMutu() {
@@ -628,8 +727,9 @@ function turunMutu() {
 
 /* ====================== 4. REGISTRASI ====================== */
 export const adegan = {get tersedia() { return punyaGL(); }, buka, jeda, tutup, waktu, segar, get terbuka() { return !!A.root; },
+  ikuti(kode) { A.ikut = kode || null; A.terbang = null; A.unitSegar = true; sentuhUser(); jadwal(); },
   lihat({x = 0, z = 0, jarak = 4000, polar = 62, az = 0} = {}) { /* pembantu uji/foto: arahkan kamera ke (x,z) dunia */
     if (!A.siap) return false; A.terbang = null; const ty = tinggiDi(A.M, x, z), ph = polar * Math.PI / 180; A.controls.target.set(x, ty, z); A.cam.position.set(x + jarak * Math.sin(ph) * Math.sin(az), ty + jarak * Math.cos(ph), z + jarak * Math.sin(ph) * Math.cos(az));
     A.controls.update(); A.kotor = true; sentuhUser(); jadwal(); return true; },
   get info() { const g = A.garis || [], t = [0, 0, 0, 0, 0]; for (const x of g) t[x.tipe]++; return {garisPerTipe: t, sumber: A.sumber, pohon: A.P && A.P.off.slice(1).map((v, i) => v - A.P.off[i]), ex: A.M?.ex, contoh: A.garis?.[0] && {x: A.garis[0].p[0], z: A.garis[0].p[1], tipe: A.garis[0].tipe}, W: A.M?.W, tanpaDem: A.tanpaDem, msF: A.msF}; }};
-if (typeof window !== "undefined" && window.SimFT) { window.SimFT.adegan = adegan; window.SimFT.segarAdegan?.(); }
+if (typeof window !== "undefined" && window.SimFT) { window.SimFT.adegan = adegan; window.SimFT.adeganIR = (cv, d, pal) => kameraPIP(cv, d, "ir", pal); window.SimFT.adeganEO = (el, d) => kameraPIP(el, d, "eo"); window.SimFT.segarAdegan?.(); }

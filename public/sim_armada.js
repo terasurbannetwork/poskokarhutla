@@ -327,7 +327,7 @@ function dBuka(ctx) {
     else if (a === "zp") D.zoom = Math.min(8, D.zoom * 1.5); else if (a === "zm") D.zoom = Math.max(1, D.zoom / 1.5);
     else if (a === "full") { D.full = !D.full; D.pip.classList.toggle("pen", D.full); D.eo?.resize(); } else if (a === "tutup") D.pip.hidden = true;
     D.last = 0; });
-  D.root.addEventListener("click", e => { const r = e.target.closest("[data-i]"); if (r) { D.sel = +r.dataset.i; D.pip.hidden = false; D.last = 0; D.panel = 0; }
+  D.root.addEventListener("click", e => { const r = e.target.closest("[data-i]"); if (r) { D.sel = +r.dataset.i; D.pip.hidden = false; D.last = 0; D.panel = 0; ikutiAdegan(DR[D.sel].kode); }
     const b = e.target.closest("[data-a]"); if (!b) return; if (b.dataset.a === "kamera") { D.pip.hidden = false; D.full = true; D.pip.classList.add("pen"); D.eo?.resize(); } else if (b.dataset.a === "termal") { D.mode = "IR"; dEoMati(); D.pip.hidden = false; }
     D.last = 0; D.panel = 0; });
   D.mk = DR.map((c, i) => { const el = nodeDari(`<button type="button" class="sf-pl sf-pl-d">${IKN.drone}<span></span></button>`); el.addEventListener("click", ev => { ev.stopPropagation(); D.sel = i; D.pip.hidden = false; D.last = 0; D.panel = 0; });
@@ -349,7 +349,9 @@ function dLoop(ts) {
   const pip = D.pip; if (!pip.hidden) {
     const ir = pip.querySelector("#sfIr"), eoEl = pip.querySelector("#sfEo"), tgt = g.ll(p.tx, p.ty), jr = Math.max(60, Math.hypot(p.tx - p.x, p.ty - p.y));
     ir.style.display = D.mode === "IR" ? "" : "none"; eoEl.style.display = D.mode === "EO" ? "" : "none";
-    if (D.mode === "IR") gambarIR(ir, K, H, t, p, pan, p.gim, D.pal, D.zoom);
+    const cam3 = {kode: DR[sel].kode, lon: g.ll(p.x, p.y)[0], lat: g.ll(p.x, p.y)[1], alt: p.alt, tlon: tgt[0], tlat: tgt[1], gim: p.gim, pitch: p.pitch, zoom: D.zoom, fov: A.FOV, t};
+    if (D.mode === "IR") { if (!window.SimFT?.adeganIR?.(ir, cam3, D.pal)) gambarIR(ir, K, H, t, p, pan, p.gim, D.pal, D.zoom); }
+    else if (window.SimFT?.adeganEO?.(eoEl, cam3)) dEoMati();
     else dEo(ctx, p, tgt, jr, H, t);
     pip.querySelectorAll(".sf-seg button").forEach(b => b.classList.toggle("on", b.dataset.a.toUpperCase() === D.mode)); pip.querySelector("[data-a=pal]").textContent = D.mode === "IR" ? (D.pal === "ironbow" ? "Ironbow" : "White-hot") : "Citra";
     pip.querySelector("#sfZm").textContent = n1(D.zoom) + "×"; pip.querySelector("#sfPipN").textContent = `${DR[sel].kode} ${DR[sel].nama}`;
@@ -419,7 +421,7 @@ function rBuka(ctx) {
   R.root = nodeDari(`<div class="sf-kn" id="sfRsKn"></div>`); ctx.el.kanan.append(R.root);
   R.bawah = nodeDari(`<div class="sf-bw sf-bw-r"><div class="sf-gr" id="sfRsGr"></div><div class="sf-det"><div class="sf-fh"><span class="sf-pill">Log operasi udara</span><em id="sfLogN"></em></div><div id="sfLog" class="sf-dl"></div></div></div>`); ctx.el.bawah.append(R.bawah);
   R.kartu = nodeDari(`<div class="sf-kartu" id="sfKartu" hidden></div>`); ctx.el.peta.append(R.kartu);
-  const pilih = e => { const r = e.target.closest("[data-u]"); if (r) { R.sel = r.dataset.u; R.follow = r.dataset.u; R.kotor = true; rDraw(); } const b = e.target.closest("[data-a=lepas]"); if (b) { R.follow = null; R.kartu.hidden = true; } };
+  const pilih = e => { const r = e.target.closest("[data-u]"); if (r) { R.sel = r.dataset.u; R.follow = r.dataset.u; R.kotor = true; rDraw(); ikutiAdegan(r.dataset.u); } const b = e.target.closest("[data-a=lepas]"); if (b) { R.follow = null; R.kartu.hidden = true; } };
   R.root.addEventListener("click", pilih); R.kartu.addEventListener("click", pilih);
   ctx.peta.on("dragstart", rDrag); R.drag = rDrag; R.kotor = true; rDraw();
 }
@@ -479,7 +481,29 @@ const TAB_R = {id: "resources", nama: "Resources", ikon: IKN.engine,
 /* ============ pendaftaran ke cangkang (bisa belum ada saat dimuat) ============ */
 let done = false;
 function coba() { if (done) return true; if (!window.SimFT?.daftar) return false; done = true; window.SimFT.daftar(TAB_D); window.SimFT.daftar(TAB_R); return true; }
-window.SimArmada = {inti: {A, DR, geo, peri, at, seg, plen, suhu, dronePos, gerakDrone, pandang, deteksi, susun, siapUdara, unitKe, volumeSd, deret, jendela, pangkalan, gambarIR, LUT, norm}};
+/* ============ kait untuk Adegan 3D (sim_adegan.js): posisi unit & jejak siraman, fungsi murni; pilih() menyamakan pilihan panel ============ */
+const arahTerakhir = {};
+function unitAdegan(ctx, t, sec = 0, tab = "drones") {
+  const {K, H} = ctx; if (!K || !H) return []; const g = geo(K), out = [];
+  if (tab === "drones") DR.forEach((c, i) => { const p = gerakDrone(K, H, i, t, sec); if (!p.udara) return; const ll = g.ll(p.x, p.y);
+    out.push({kode: c.kode, jenis: /sayap tetap/i.test(c.jenis) ? "vtol" : "quad", grup: "drone", lon: ll[0], lat: ll[1], alt: p.alt, arah: p.arah, status: p.st, terpilih: i === D.sel, tlon: g.ll(p.tx, p.ty)[0], tlat: g.ll(p.tx, p.ty)[1]}); });
+  else { const U = rUnits(ctx); U.forEach(u => { const s = unitKe(K, H, U, u, t), ll = g.ll(s.x, s.y), gk = gerakUnit(K, H, U, u, t); if (gk.kmj > .5) arahTerakhir[u.kode] = gk.arah;
+    out.push({kode: u.kode, jenis: u.jenis, grup: u.grup, lon: ll[0], lat: ll[1], alt: s.alt || 0, arah: arahTerakhir[u.kode] ?? 0, status: s.st, load: s.load, kap: u.kap, terpilih: R.sel === u.kode}); }); }
+  return out;
+}
+function jejakAdegan(ctx, t) { /* jatuhan siram sampai jam t: {kode, jenis, tj, pts:[[lon,lat]]} */
+  const {K, H} = ctx; if (!K || !H) return []; const g = geo(K), U = rUnits(ctx), out = [];
+  for (const u of U) for (const e of u.ev || []) { if (e.tj > t) break; if (t - e.tj > A.JEJAK_JAM) continue; out.push({kode: u.kode, jenis: u.jenis, tj: e.tj, pts: e.pts.map(([x, y]) => g.ll(x, y))}); }
+  return out;
+}
+function pilihAdegan(kode) {
+  const i = DR.findIndex(c => c.kode === kode);
+  if (i >= 0) { D.sel = i; if (D.pip) D.pip.hidden = false; D.last = 0; D.panel = 0; return; }
+  R.sel = kode; R.kotor = true; if (R.on) rJadwal();
+}
+const ikutiAdegan = kode => window.SimFT?.adegan?.ikuti?.(kode);
+
+window.SimArmada = {unit: unitAdegan, jejak: jejakAdegan, pilih: pilihAdegan, inti: {A, DR, geo, peri, at, seg, plen, suhu, dronePos, gerakDrone, pandang, deteksi, susun, siapUdara, unitKe, volumeSd, deret, jendela, pangkalan, gambarIR, LUT, norm}};
 if (typeof document !== "undefined" && !coba()) {
   let n = 0; const ulang = () => { if (coba() || ++n > 600) return; requestAnimationFrame(ulang); };
   document.addEventListener("DOMContentLoaded", coba); window.addEventListener("load", coba); requestAnimationFrame(ulang); setTimeout(coba, 1500); setTimeout(coba, 4000);

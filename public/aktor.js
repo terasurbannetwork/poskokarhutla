@@ -45,8 +45,8 @@
   Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "peta", akTurun: true});
   Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke", aktorTokoh: "Tokoh politik"});
   ["aktor", "aktorNegara"].forEach(k => Insight.PENUH.add(k));
-  const i0 = Insight.EX.indexOf("nasional");
-  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0, 0, "aktor", "aktorNegara", "aktorGrup");   /* aktorPsn dan aktorTokoh disembunyikan (pemilik, 17 Okt 2026); fungsinya tetap ada */
+  const i0 = Insight.EX.indexOf("bnpb");
+  Insight.EX.splice(i0 < 0 ? Insight.EX.length : i0 + 1, 0, "aktor", "aktorNegara", "aktorGrup");   /* aktorPsn dan aktorTokoh disembunyikan (pemilik, 17 Okt 2026); fungsinya tetap ada */
 
   /* ---------- 1. daftar perusahaan ---------- */
   const PER = 10;

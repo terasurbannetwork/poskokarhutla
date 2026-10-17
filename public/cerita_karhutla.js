@@ -1,4 +1,4 @@
-/* cerita_karhutla.js — cerita data di bagian bawah tab Insight. Kartu berurutan: penempatan regu ·
+/* cerita_karhutla.js — cerita data di bagian bawah tab Insight. Kartu berurutan:
    25 tahun · musim 2026 (video sebaran: label provinsi muncul sesuai tanggal, kartu samping, kontrol di dasar peta, putar ulang peristiwa) ·
    pendorong (coming soon) · model sebaran (coming soon) · uji model (tersembunyi bila sebaran_kasus.json tidak ada).
    Semua angka dibaca dari berkas data (tren_karhutla, musim_awal, sebaran_cerita, sebaran_kasus, model_sebaran);
@@ -93,7 +93,7 @@ const Cerita = {
     el.innerHTML = `<div class="ct-muat">Menyiapkan cerita…</div>`;
     try { await this.muat(); } catch (e) { el.innerHTML = `<div class="ct-muat">Data cerita belum tersedia (${es(e.message)}).</div>`; return; }
     this.el = el;
-    el.innerHTML = `<article class="cerita">${this.regu()}${this.musim()}${this.bab4()}${""/* bab6 "Uji model" disembunyikan dulu (pemilik, 14 Okt 2026) */}</article>`;
+    el.innerHTML = `<article class="cerita">${this.musim()}${this.bab4()}${""/* bab6 "Uji model" disembunyikan dulu (pemilik, 14 Okt 2026) */}</article>`;
     el.onclick = e => this.klik(e);
     el.oninput = e => this.ubah(e);
     el.onchange = e => this.ubah(e);
@@ -220,7 +220,8 @@ const Cerita = {
       + chip("teramati 24/48/72 jam", c.obs_ha.map(v => nf(v)).join(" / ") + " ha") + chip("ramalan median", c.pred_ha.map(v => nf(v[1])).join(" / ") + " ha") + chip(`P(lolos) → ${c.lepas ? "memang lolos" : "tetap kecil"} ${c.lepas_benar ? "(benar)" : "(salah)"}`, pc(c.p_lepas));
   },
 
-  /* ---------- penempatan regu (kartu pertama) ---------- */
+  /* ---------- penempatan regu: tampil di tab Tren, bukan di cerita Insight (pemilik, 17 Okt 2026) ---------- */
+  async reguKartu() { await this.muat(); return this.regu(); },
   regu() {
     const kab = [...this.D.c.kab].sort((a, b) => b.n - a.n), top = kab.slice(0, 12), k0 = kab[0], k1 = kab[1];
     const W = 940, rh = 30, L = 300, H = top.length * rh + 4, maks = top[0].n, X = v => L + (W - L - 70) * v / maks;
@@ -433,7 +434,7 @@ if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.i
 /* bagikan bab cerita (peta bergerak tidak bisa jadi gambar): lembar bagikan tautan ke bab itu */
 document.addEventListener("click", e => { const b = e.target.closest?.("[data-ctbagi]"); if (!b) return;
   const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || "Pantau Bencana";
-  const url = location.origin + "/insight#ct-" + b.dataset.ctbagi;
+  const url = location.origin + (b.closest("#tren") ? "/tren" : "/insight") + "#ct-" + b.dataset.ctbagi;
   if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:"), url, kampanye: "cerita"});
   else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });
 

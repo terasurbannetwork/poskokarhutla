@@ -18,3 +18,7 @@
 #p-sim.s3-ad .maplibregl-ctrl-top-left,#p-sim.s3-ad .maplibregl-ctrl-scale,#p-sim.s3-ad .s3-zm{display:none}
 @media (max-width:900px){.sa-lb{font-size:10.5px}.sa-attr{max-width:70%}}
 @media (prefers-reduced-motion:reduce){.sa-kmp{transition:none}}
+.sa-lbu{position:absolute;inset:0;pointer-events:none;overflow:hidden}
+.sa-un{position:absolute;left:0;top:0;pointer-events:auto;cursor:pointer;height:18px;padding:0 7px;border-radius:999px;border:1px solid rgba(29,29,29,.35);background:rgba(255,255,255,.94);color:#1d1d1d;font:inherit;font-size:10.5px;font-weight:700;white-space:nowrap;will-change:transform}
+.sa-un.on{background:#ffd24a;border-color:#b8860b}
+.sa-eo{display:block;width:100%;height:100%;object-fit:cover}
