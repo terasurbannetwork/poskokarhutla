@@ -36,17 +36,6 @@ GRUP_NEGARA = {"Sinar Mas": "SG", "APP/Sinar Mas": "SG", "Wilmar": "SG", "Sime D
                "Salim Group": "SG", "Jcorp": "MY", "Synergy Drive": "MY", "Goodhope Asia Holdings": "SG"}
 # nama grup di peta (GFW/Trase) yang sama dengan grup Tabel 4: poligon di luar daftar WALHI ikut berbendera negara induk grupnya
 GRUP_PETA = {"Royal Golden Eagle": "SG", "RGE Group": "SG", "Goodhope Asia Holdings": "SG"}
-# nama grup peta yang sama dengan grup WALHI walau ejaannya lain; selain ini, grup peta yang beda ditampilkan berdampingan
-SAMA_GRUP = {"Royal Golden Eagle": "RGE/APRIL", "RGE Group": "RGE/APRIL"}
-
-
-def grup_beda(walhi, peta):
-    """Grup pemegang menurut peta konsesi yang TIDAK sama dengan grup menurut WALHI (layar menampilkan keduanya bersumber)."""
-    w = [x.lower() for x in walhi]
-    return [g for g in peta if walhi and SAMA_GRUP.get(g, g).lower() not in w
-            and not any(x.startswith(g.lower().split(" (")[0]) or g.lower().startswith(x.split("/")[0]) for x in w)]
-
-
 TABEL4 = [("Sinar Mas (termasuk APP)", "SG", 26), ("Wilmar", "SG", 21), ("Sime Darby", "MY", 9), ("Genting Group", "MY", 8),
           ("BHD Group", "MY", 6), ("Musim Mas", "SG", 6), ("RGE/APRIL", "SG", 5), ("Lion Group", "MY", 2),
           ("First Resources", "SG", 2), ("Salim Group", "SG", 2), ("Jcorp", "MY", 1), ("Synergy Drive", "MY", 1),
@@ -459,7 +448,6 @@ def tulis(P, fitur, viirs_baru, acuan=None):
             q.setdefault("harian", [])
             q.setdefault("titik", [])
             q.setdefault("kompleks", [])
-        q["grup_peta_beda"] = grup_beda(q["grup"], q["cek"].get("grup_peta") or [])
         q["peringkat"] = max(p["titik_agu"] or 0, p["titik_sep"] or 0)
         q["industri"] = industri(q)
         daf.append(q)
@@ -497,8 +485,6 @@ def uji():
     assert q["PT Bumi Mekar Hijau"]["titik_agu"] == 552 and q["PT Bumi Mekar Hijau"]["titik_sep"] == 601
     assert q["PT Sepanjang Inti Surya Utama"]["titik_sep"] == 13 + 7 + 10, "blok lampiran tidak dijumlah"
     assert len(q["PT Kiani Lestari"]["tokoh"]) == 3
-    assert q["PT Kayung Agro Lestari"]["grup_peta_beda"] == ["PT Austindo Nusantara Jaya (ANJA)"], "grup peta beda"
-    assert q["PT Mayawana Persada"]["grup_peta_beda"] == [] and q["PT Bumi Mekar Hijau"]["grup_peta_beda"] == [], "alias grup"
     assert q["PT Mayawana Persada"]["industri"] == "Hutan tanaman (pulp)" and q["PT Kayung Agro Lestari"]["industri"] == "Kelapa sawit"
     assert q["PT Grace Putri Perdana"]["cek"].get("lokasi") == "beda" and q["PT Grace Putri Perdana"]["cek"].get("prov_peta") == "Kalimantan Tengah" and q["PT Mayawana Persada"]["cek"].get("lokasi") == "cocok", "cek lokasi"
     assert q["PT Grace Putri Perdana"]["harian"], "lokasi beda tetap punya titik harian"

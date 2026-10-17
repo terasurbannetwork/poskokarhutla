@@ -34,12 +34,9 @@
   const titik = p => p.titik_agu ?? p.titik_sep;
   const titikPil = p => p.cek?.poligon && p.cek.lokasi !== "beda" ? `<span class="ak-tj" data-tip="Titik panas VIIRS di konsesi, Jan–Agu 2026">${fmt(p.cek.titik_viirs ?? 0)} titik</span>` : "";
   const tunggu = () => { A.muat(); return `<article class="ex"><div class="kosong"><div class="spin"></div>Memuat data perusahaan…</div></article>`; };
-  /* grup pemegang: WALHI dan peta konsesi bisa menyebut grup berbeda; keduanya tampil dengan sumbernya (pemilik, 17 Okt 2026) */
-  A.grupHtml = p => { const b = p.grup_peta_beda || []; return b.length ? `<span class="ak-g1" data-tip="${esc(A.grupTeks(p))}"><i>WALHI</i> ${esc(p.grup.join(", "))}</span><span class="ak-g1" data-tip="${esc(A.grupTeks(p))}"><i>Peta</i> ${esc(b.join(", "))}</span>` : esc(p.grup.join(", ")); };
-  A.grupTeks = p => { const w = p.grup.join(", "), b = p.grup_peta_beda || []; return b.length ? `${w} (WALHI) · ${b.join(", ")} (peta konsesi)` : w; };
   /* tooltip perusahaan (kartu rata kiri): logo + nama + grup, ubin titik panas di konsesi, pemegang saham asing, catatan */
   A.tip = p => { const ok = p.cek?.poligon && p.cek.lokasi !== "beda", ps = (p.pemegang || []).filter(x => x.negara !== "ID");
-    return `<div class="tp2-h ak-tch">${A.logo(p.grup[0] || p.nama, 26)}<span><b>${esc(p.nama)}</b><small>${esc([A.grupTeks(p), p.prov].filter(Boolean).join(" · "))}</small></span></div>`
+    return `<div class="tp2-h ak-tch">${A.logo(p.grup[0] || p.nama, 26)}<span><b>${esc(p.nama)}</b><small>${esc([p.grup.join(", "), p.prov].filter(Boolean).join(" · "))}</small></span></div>`
       + (ok ? `<div class="ak-tcs"><span><b>${fmt(p.cek.titik_viirs ?? 0)}</b>titik panas Jan–Agu</span>${p.cek.titik_terkini != null ? `<span${p.cek.titik_terkini ? ' class="ak-tck"' : ""}><b>${fmt(p.cek.titik_terkini)}</b>titik terkini</span>` : ""}</div>`
         : `<div class="ak-tcm">${!p.cek?.poligon ? "Tidak ada di peta konsesi" : "Poligon senama di peta ada di provinsi lain"}</div>`)
       + (ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : "")
@@ -67,7 +64,7 @@
     const tabel = `<div class="tw ak-tw"><table><thead><tr><th class="n">No</th>${th("nama", "Perusahaan")}${th("negara", "Negara")}${th("grup", "Grup")}<th>Industri</th>${th("prov", "Provinsi")}${th("peta", "Peta Jan–Agu", 1)}${th("kini", lbKini, 1)}</tr></thead>
       <tbody>${hal.map((p, i) => `<tr data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}">
         <td class="n">${st.akHal * PER + i + 1}</td><td class="ak-nm">${esc(p.nama)}</td>
-        <td class="ak-ng">${benderaDaf(p.negara, 14) || `<span class="ak-mt">–</span>`}</td><td class="ak-gr">${A.grupHtml(p) || "–"}</td><td>${indPil(p.industri)}</td><td>${esc(p.prov)}</td>
+        <td class="ak-ng">${benderaDaf(p.negara, 14) || `<span class="ak-mt">–</span>`}</td><td class="ak-gr">${esc(p.grup.join(", ") || "–")}</td><td>${indPil(p.industri)}</td><td>${esc(p.prov)}</td>
         <td class="n">${!p.cek?.poligon ? `<span class="ak-mt" data-tip="Nama ini tidak ada di peta konsesi GFW/Trase">tidak di peta</span>`
           : p.cek.lokasi === "beda" ? `<span class="ak-pl ak-pl3" data-tip="Poligon senama di peta berada di provinsi lain dari yang tercatat; ${fmt(p.cek.titik_viirs)} titik VIIRS di poligon itu">lokasi beda</span>`
           : `<span class="ak-pl ak-pl2">${fmt(p.cek.titik_viirs ?? 0)}</span>`}</td>
@@ -163,7 +160,7 @@
   const hariIniWIB = () => { const d = new Date(Date.now() + 7 * 36e5); return Math.floor(d.getTime() / 864e5); };
   const barisTitik = (t, i) => `<tr data-lat="${t[0]}" data-lon="${t[1]}" tabindex="0"><td class="n">${i + 1}</td><td>${tgl(t[2])} ${t[2].slice(11, 16)} WIB</td><td class="n">${fmt(Math.round(t[3]))}</td><td class="ak-mt">${esc(t[4] === "SNPP" ? "S-NPP" : t[4] || "")}</td></tr>`;
   A.isiLaci = p => {
-    const bendera_ = benderaDaf(p.negara, 14), grup = A.grupTeks(p);
+    const bendera_ = benderaDaf(p.negara, 14), grup = p.grup.join(", ");
     let isi;
     if (p.kosong || !p.cek?.poligon) isi = `<p class="fnd">Tidak ada di peta konsesi.</p>`;
     else {
@@ -178,7 +175,7 @@
       isi = lipatA("Linimasa titik panas 2026", lini) + lipatA("Kompleks api 7 hari", kom) + lipatA("Titik panas terbaru", tp);
     }
     return `<div class="hd"><div class="hd-isi"><span class="hd-ey">Perusahaan</span><h2 title="${esc(p.nama)}">${esc(p.nama)}</h2>
-      <div class="hd-meta">${bendera_}${grup ? `<span class="ak-gr" data-tip="${esc(grup)}">${A.grupHtml(p)}</span>` : ""}<span>${esc(p.prov || "")}</span>${indPil(p.industri)}</div></div>
+      <div class="hd-meta">${bendera_}${grup ? `<span class="ak-gr" data-tip="${esc(grup)}">${esc(grup)}</span>` : ""}<span>${esc(p.prov || "")}</span>${indPil(p.industri)}</div></div>
       <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">${isi}</div>`; };
   let denyut = null;
@@ -228,8 +225,8 @@
   /* tooltip poligon konsesi (konsesi.js memanggil ini): logo grup (kalau ada), nama pemegang, grup, bendera, titik panas VIIRS */
   A.kartuPoligon = p => {
     const w = A.d && !A.d.gagal ? A.per[A.d.poligon[p.id]] : null, ng = w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean);
-    const beda = w && p.grup && (w.grup_peta_beda || []).includes(p.grup);
-    const sub = [beda ? `${p.grup} (peta konsesi) · ${w.grup.join(", ")} (WALHI)` : p.grup, p.kab].filter(Boolean).map(esc).join(" · ");
-    return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(p.grup, 20)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
+    const gr = w?.grup?.length ? w.grup.join(", ") : p.grup;   /* poligon milik perusahaan WALHI: grup menurut WALHI, bukan peta (pemilik, 17 Okt 2026) */
+    const sub = [gr, p.kab].filter(Boolean).map(esc).join(" · ");
+    return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(w?.grup?.[0] || p.grup, 20)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
   A.muat();
 })();
