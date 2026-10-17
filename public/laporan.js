@@ -501,7 +501,7 @@ function kartuRiwayat() {
         : `<text x="${L + w + 8}" y="${y + 17}" font-size="12" font-weight="800" style="fill:${r.v >= 1e6 ? MERAH : "currentColor"}">${lbl(r)}</text>`
           + (r.ini ? `<text x="${L + w + 8 + lbl(r).length * 6.4 + 6}" y="${y + 17}" font-size="11" font-weight="700" style="fill:#b07a1e">perkiraan satelit, s.d. ${tgl(tb.sd)}</text>` : "")); });
   const ini = rows.at(-1), lalu = rows.filter(r => !r.ini && r.n !== "1997–1998"), lebih = lalu.filter(r => r.v > ini.v).map(r => r.n);
-  const j = `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + fmt(Math.round(ini.v / 1e4) / 100) + " juta ha")} hingga ${tgl(tb.sd)}${lebih.length ? `, tertinggi ke-${lebih.length + 1} sejak 2015 (di bawah ${lebih.map(n => `${n}: ${fmt(Math.round(rows.find(r => r.n === n).v / 1e4) / 100)} juta ha`).join(", ")})` : ", tertinggi sejak 2015"}`;
+  const j = `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + fmt(Math.round(ini.v / 1e4) / 100) + " juta ha")} hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`;
   return Kartu.kartu("Riwayat nasional", j, `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Luas terbakar Indonesia per tahun 1997–${th}">${g}</svg>`,
     `${th}: perkiraan Centurisk97 dari titik VIIRS S-NPP x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi; 1997–${+th - 1}: BNPB via ${f.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
     "", [[MERAH, "di atas 1 juta ha"], [NAVY, "di bawah 1 juta ha"], ["#d98b7c", `${th}, perkiraan satelit (sementara)`]]);

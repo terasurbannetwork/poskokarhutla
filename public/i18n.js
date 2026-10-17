@@ -41,7 +41,7 @@
     if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; });
   const kapital = s => s.charAt(0).toUpperCase() + s.slice(1);
 
-  function cari(t) {
+  function cari(t, pecah = true) {
     let v = KAMUS[t]; if (v != null) return v;
     const tok = []; const kunci = t.replace(ANGKA, m => (tok.push(m), "{" + (tok.length - 1) + "}"));
     if (tok.length && (v = KAMUS[kunci]) != null) return isi(v, tok);
@@ -52,6 +52,12 @@
     const kc = t.charAt(0).toLowerCase() + t.slice(1);
     if (kc !== t && (v = KAMUS[kc] ?? (tok.length ? KAMUS[kunci.charAt(0).toLowerCase() + kunci.slice(1)] : null)) != null) return kapital(tok.length ? isi(v, tok) : v);
     if (t.length > 1 && t === t.toUpperCase() && /[A-Z]{3}/.test(t)) { const k2 = kapital(t.toLowerCase()); if (k2 !== t) { const r = terj(k2, false); if (r !== k2) return r.toUpperCase(); } }
+    /* sumber gabungan "A; B; C": tiap potongan diterjemahkan sendiri, rangkaian potongan terpanjang yang dikenal didahulukan */
+    if (pecah && t.includes("; ")) { const sg = t.split("; "), out = [];
+      for (let i = 0; i < sg.length;) { let j = sg.length, r = null;
+        for (; j > i; j--) { if (j - i === sg.length) continue; r = cari(sg.slice(i, j).join("; "), false); if (r != null) break; }
+        if (r == null) { out.length = 0; break; } out.push(r); i = j; }
+      if (out.length) return out.join("; "); }
     /* tanda baca ujung: "Sumber:" -> "Source:", "· Data" , "(perkiraan)" */
     const m = t.match(/^([·•(\[–—:\s]*)(.*?)([:.,;·•)\]–—\s…]*)$/s);
     if (m && (m[1] || m[3]) && m[2]) { const r = terj(m[2], false); if (r !== m[2]) return m[1] + r + m[3]; }
