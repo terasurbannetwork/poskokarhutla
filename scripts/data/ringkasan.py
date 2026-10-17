@@ -75,6 +75,12 @@ def main():
     with open(os.path.join(DATA, "ringkasan.json"), "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print("ringkasan.json:", sorted(out), os.path.getsize(os.path.join(DATA, "ringkasan.json")), "byte")
+    try:  # laporan harian untuk Presiden; galat tidak boleh menggagalkan ringkasan
+        sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+        import laporan
+        laporan.main()
+    except BaseException as e:
+        print("laporan.py gagal:", repr(e), file=sys.stderr)
 
 
 def uji():
@@ -92,6 +98,9 @@ def uji():
     hs = {"acuan": "A", "sensor_utama": ["N"], "wilayah": ["14|x|y", "99|x|y"],
           "baris": [[0, 0, -1, "N", 0, 0, 0, ""], [0, 0, -25, "N", 0, 0, 0, ""], [0, 0, -30, "M", 0, 0, 0, ""], [0, 0, -2, "N", 0, 0, 1, ""], [0, 0, -72, "N", 0, 0, 0, ""]]}
     assert titik_hari(hs, {"14": "Riau"}) == {"acuan": "A", "v": [1, 1, 1]}, titik_hari(hs, {"14": "Riau"})
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import laporan
+    laporan.uji()
     print("ringkasan uji: lolos")
 
 

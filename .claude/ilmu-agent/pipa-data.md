@@ -58,3 +58,5 @@ Semua keluaran ke `public/data/*.json` (kontrak dengan layar). Berkas besar/pera
 
 - 2026-10-15 · Ilmu awal diisi dari kode: docstring skrip di scripts/data, scrape, geo; data.yml, titik.yml, statis.yml; git log (b6f645f, 3b90271, ec6fd99, dd0f47c, 5c6e8ca).
 - 2026-10-16 · GWIS Country Profile (Mei-Okt 2026) belum punya tahun 2026 dan Des 2025 masih 0 semua provinsi; luas 2026 hanya dari SiPongi (last Juli 2026). Cek: banf yearTo=2026 hanya mengembalikan 2025.
+- 2026-10-17 · laporan.py membaca hotspot.json (jam relatif acuan, tgl_wib tanpa tahun: tahun diturunkan dari acuan, mundur setahun bila melampaui); laporan.json memakai arsip sendiri (_konteks) sehingga baru/titik tanggal tertua jendela tidak turun saat jendela bergulir; dipanggil dari ringkasan.py supaya CI tanpa scope workflow tetap menjalankannya
+- 2026-10-17 · wt PFVI hanya ada di keadaan_pf (H-2), bukan di hari grid; harian.py kini mengekspos grid[i]['wt'] dan fwi.json menyimpannya supaya jalur FWI=0 (3-jam) tetap punya wt. Konstanta gambut repo: dampak.py (CO2 1,703, CH4 0,021, konsumsi 170-536 t/ha); brief 1,701 diabaikan.

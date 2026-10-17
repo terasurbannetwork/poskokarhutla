@@ -421,6 +421,7 @@ export const HTML_RUTE = [
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
   [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
+  [/^\/laporan\/?$/, "/laporan.html", "/laporan"],   // laporan harian karhutla (public/laporan.*)
 ];
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));

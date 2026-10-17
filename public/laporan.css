@@ -1,0 +1,68 @@
+/* laporan.css: halaman /laporan. Dasar kartu/tabel/tooltip dari public/inti; di sini hanya pita kepala, pil, tabel laporan, dan cetak. */
+#insight.lp{max-width:none;gap:12px}
+#p-laporan.scroll{padding:14px 12px 48px}
+.lp-kep{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
+.lp-jd h1{font-size:clamp(22px,3vw,30px);line-height:1.15;color:#fff}
+.lp-jd h1{margin-bottom:10px}
+.lp-pils{display:flex;flex-wrap:wrap;gap:6px}
+.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
+.lp-pil.ok{background:#2b8c86}.lp-pil.sm{background:#c9503a}
+.lp-aksi{display:flex;align-items:center;gap:10px;max-width:100%;min-width:0}
+.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.lp-cetak:hover{background:oklch(100% 0 0 / .26)}
+.lp-cetak svg{width:17px;height:17px}
+.lp-kep .seg{border-color:transparent}
+.lp-kep .kosong{color:#fff}
+.lp-gr{overflow-x:auto;scrollbar-width:thin}
+.lp-gr svg{min-width:640px}
+.lp-gr-h svg{min-width:900px}
+.naik{color:#b8392b;font-weight:700}
+.turun{color:#2b8c86;font-weight:700}
+:root[data-theme="dark"] .naik{color:#ef8a78}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .naik{color:#ef8a78}}
+.ex h3 .naik,.ex h3 .turun{font-weight:800}
+.lp-cari{height:34px;min-width:200px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 14px;font:600 12.5px var(--font)}
+.ex-jd > .pc{margin-left:auto}
+/* tabel: kolom teks rata kiri, angka kanan, sel satu baris, gulir horizontal di dalam kartunya */
+.lp-tb th.n,.lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
+.lp-tb tbody td:first-child{font-weight:600}
+.lp-tb tfoot td{padding:10px 14px}
+.lp-tb thead th{text-transform:none;font-size:11.5px;letter-spacing:0}
+.lp-tb thead th button i{margin-left:2px}
+.lp-lv{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;color:#fff}
+.lv0{background:#6b7f99}.lv1{background:#b08a1e}.lv2{background:#d2772c}.lv3{background:#c9503a}
+.lp-tb-s td:first-child{width:1%;white-space:nowrap}
+.lp-cetak-n{margin:10px 0 0;font-size:11.5px;color:var(--ink2)}
+.kosong{padding:22px;text-align:center;color:var(--ink2)}
+@media (max-width:700px){
+  .lp-kep{padding:14px}
+  .lp-tb-s tbody td{white-space:normal}
+  .lp-cari{min-width:0;flex:1 1 100%}
+  .lp-aksi{width:100%}
+  .lp-aksi .seg{flex:1;min-width:0}
+  #insight .ex-jd{flex-wrap:wrap}
+  #insight .ex-jd > .pc{margin-left:0;flex:1 1 100%}
+}
+@page{size:A4 landscape;margin:10mm}
+@media print{
+  header.top,.lp-aksi,.ex .ctl,.ex-jd > .pc,.ex-jd > select,.pgn,#tip{display:none!important}
+  :root{--shadow:none}
+  body,html{height:auto;background:#fff}
+  main{position:static;inset:auto}
+  .page{position:static;display:block;overflow:visible}
+  .scroll{overflow:visible;padding:0}
+  #insight.lp{display:block}
+  #insight .ex{break-inside:avoid;margin-bottom:10px;border-radius:8px}
+  #insight .ex:has(#lpKab),#insight .ex:has(#lpProv){break-inside:auto}
+  .lp-tb tr{break-inside:avoid}
+  .lp-tb thead{display:table-header-group}
+  .lp-tb{font-size:9px}
+  .lp-tb tbody td,.lp-tb thead th{padding:4px 6px}
+  .tw{overflow:visible}
+  .lp-gr svg{min-width:0;width:100%}
+  .lp-kep{print-color-adjust:exact;-webkit-print-color-adjust:exact;border-radius:8px}
+  thead th,tfoot td,.lp-lv,.lp-pil,rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+}
+
+#insight .ex-bd .tw table.lp-tb tbody td,#insight .ex-bd .tw table.lp-tb thead th{padding:9px 10px}
