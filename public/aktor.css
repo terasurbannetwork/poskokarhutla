@@ -87,9 +87,10 @@
 .ak-gd>summary:hover,.ak-gd>summary:focus-visible{background:oklch(42% .11 255 / .06)}
 .ak-gd[open]>summary .ak-bl{color:var(--brand2)}
 .ak-gd ul{list-style:none;margin:2px 0 8px 28px;padding:4px 0;border-left:2px solid var(--line)}
-.ak-gd li{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr) auto auto;gap:10px;align-items:center;padding:5px 10px;font-size:12px;cursor:pointer;border-radius:6px}
+.ak-gd li{display:grid;grid-template-columns:minmax(0,1.3fr) minmax(0,1fr) 150px 76px;text-align:left;gap:10px;align-items:center;padding:5px 10px;font-size:12px;cursor:pointer;border-radius:6px}
 .ak-gd li:hover,.ak-gd li:focus-visible{background:oklch(42% .11 255 / .06)}
 .ak-gd li b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ak-gd li .ak-mt{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ak-gs{margin:0 0 8px 40px;font-size:11px;color:var(--ink2)}
-@media (max-width:640px){.ak-gd li{grid-template-columns:minmax(0,1fr) auto}.ak-gd li>.ak-mt:nth-child(2){display:none}}
+@media (max-width:640px){.ak-gd li{grid-template-columns:minmax(0,1fr) auto auto}.ak-gd li>.ak-mt:nth-child(2){display:none}}
+.ak-gd li>:last-child{justify-self:end}
