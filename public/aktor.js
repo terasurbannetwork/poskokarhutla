@@ -32,6 +32,7 @@
   A.logo = (nama, h = 22) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
     return f ? `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">` : ""; };
   const titik = p => p.titik_agu ?? p.titik_sep;
+  const titikPil = p => p.cek?.poligon && p.cek.lokasi !== "beda" ? `<span class="ak-tj" data-tip="Titik panas VIIRS di konsesi, Jan–Agu 2026">${fmt(p.cek.titik_viirs ?? 0)} titik</span>` : "";
   const tunggu = () => { A.muat(); return `<article class="ex"><div class="kosong"><div class="spin"></div>Memuat data perusahaan…</div></article>`; };
   /* tooltip perusahaan (kartu rata kiri): logo + nama + grup, ubin titik panas di konsesi, pemegang saham asing, catatan */
   A.tip = p => { const ok = p.cek?.poligon && p.cek.lokasi !== "beda", ps = (p.pemegang || []).filter(x => x.negara !== "ID");
@@ -84,7 +85,7 @@
     /* satu baris per perusahaan: logo pemegang | nama | industri | ← pemegang. Negara terbanyak selebar kartu (daftar 4 kolom),
        negara lain sebaris di bawahnya (pemilik, 17 Okt 2026) */
     const kotak = ([k, rs], lebar) => `<section class="ak-nk${lebar ? " ak-nk-lebar" : ""}"><header>${bendera(k, 18)}<b>${esc(NEG()[k] || k)}</b><span class="ak-pl">${rs.length}</span></header>
-      <ul>${rs.map(([p, x]) => `<li data-ak="${esc(p.nama)}" data-tip="${esc(A.tip(p))}">${A.logo(x.nama, 28)}<span class="ak-li"><span class="ak-lb"><b>${esc(p.nama)}</b><span class="ak-ph">← ${esc(x.nama)}</span></span>${indPil(p.industri)}</span></li>`).join("")}</ul></section>`;
+      <ul>${rs.map(([p, x]) => `<li data-ak="${esc(p.nama)}" data-tip="${esc(A.tip(p))}">${A.logo(x.nama, 28)}<span class="ak-li"><span class="ak-lb"><b>${esc(p.nama)}</b><span class="ak-ph">← ${esc(x.nama)}</span></span><span class="ak-lf">${indPil(p.industri)}${titikPil(p)}</span></span></li>`).join("")}</ul></section>`;
     const [besar, ...lain] = urut, lebar = besar && besar[1].length >= 4;
     const isi = `<div class="ak-ngr">${lebar ? kotak(besar, 1) : ""}<div class="ak-ngr-lain" style="--n:${Math.max(1, Math.min(5, (lebar ? lain : urut).length))}">${(lebar ? lain : urut).map(r => kotak(r)).join("")}</div></div>`;
     return this.ex(`${this.hl(nP + " perusahaan")} dengan titik panas terbanyak dimiliki pemegang saham di ${this.hl(urut.length + " negara")}, termasuk yurisdiksi rahasia BVI dan Samoa`, "", "", isi,
@@ -95,8 +96,17 @@
     if (!A.d) return tunggu(); if (A.d.gagal) return "";
     const G = A.d.grup, mx = Math.max(...G.map(x => x.jumlah)), tot = G.reduce((a, x) => a + x.jumlah, 0);
     const per = k => G.filter(x => x.negara === k).reduce((a, x) => a + x.jumlah, 0);
-    const isi = `<div class="ak-bar">${G.map(x => `<div class="ak-br" data-tip="<b>${esc(x.grup)}</b><br>${esc(NEG()[x.negara])}<br>${x.jumlah} perusahaan terindikasi karhutla">
-      <span class="ak-bl">${A.logo(x.grup, 18)}${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></div>`).join("")}</div>`;
+    /* klik baris grup: rincian perusahaannya terbuka di bawah (pemilik, 17 Okt 2026). Kajian sumber menghitung sebagian
+       perusahaan yang tidak ada di data rincian; selisihnya disebut, tidak dikarang */
+    const anak = g => { const k = g.split(" (")[0].toLowerCase(); return A.d.perusahaan.filter(p => p.grup.some(x => x.toLowerCase().startsWith(k)) || (p.pemegang || []).some(x => x.nama.toLowerCase().includes(k))); };
+    const tipG = (x, ps) => { const ok = ps.filter(p => p.cek?.poligon && p.cek.lokasi !== "beda"), t = ok.reduce((a, p) => a + (p.cek.titik_viirs || 0), 0);
+      return `<div class="tp2-h ak-tch">${A.logo(x.grup, 26)}<span><b>${esc(x.grup)}</b><small>${bendera(x.negara, 10)}${esc(NEG()[x.negara] || x.negara)}</small></span></div>`
+        + `<div class="ak-tcs"><span><b>${fmt(x.jumlah)}</b>perusahaan terindikasi</span>${ok.length ? `<span><b>${fmt(t)}</b>titik panas Jan–Agu</span>` : ""}</div><div class="ak-tcm">Klik untuk rincian perusahaan</div>`; };
+    const isi = `<div class="ak-bar">${G.map(x => { const ps = anak(x.grup).sort((a, b) => (b.cek?.titik_viirs || 0) - (a.cek?.titik_viirs || 0)), sisa = x.jumlah - ps.length;
+      return `<details class="ak-gd"><summary class="ak-br" data-tip="${esc(tipG(x, ps))}">
+      <span class="ak-bl">${A.logo(x.grup, 18)}${bendera(x.negara, 12)}${esc(x.grup)}</span><i><b style="width:${x.jumlah / mx * 100}%;background:${x.negara === "MY" ? "#2f6f8f" : "#c9503a"}"></b></i><span class="ak-pl">${x.jumlah}</span></summary>
+      <ul>${ps.map(p => `<li data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}"><b>${esc(p.nama)}</b><span class="ak-mt">${esc([p.kab, p.prov].filter(Boolean).join(", "))}</span>${indPil(p.industri)}${titikPil(p) || `<span class="ak-mt">tidak di peta</span>`}</li>`).join("")}</ul>
+      ${sisa > 0 ? `<p class="ak-gs">${sisa} perusahaan lain tercatat di kajian sumber tanpa rincian nama</p>` : ""}</details>`; }).join("")}</div>`;
     Insight.leg([["#c9503a", `Singapura (${per("SG")})`], ["#2f6f8f", `Malaysia (${per("MY")})`]]);
     return this.ex(`${this.hl(tot + " perusahaan")} terindikasi karhutla terafiliasi grup asal Singapura dan Malaysia; ${this.hl("Sinar Mas")} dan ${this.hl("Wilmar")} terbanyak`, "", "", isi,
       ""   /* nama kajian sumber tidak ditampilkan (pemilik, 17 Okt 2026) */); };
@@ -148,7 +158,7 @@
       .map(([b, i]) => `<span style="left:${i / n * 100}%">${b}</span>`).join("");
     return `<svg viewBox="0 0 ${n * W} ${H}" preserveAspectRatio="none" width="100%" height="64" role="img" aria-label="Titik panas harian">${bar}</svg><div class="ak-bln">${bln}</div>`; };
   const hariIniWIB = () => { const d = new Date(Date.now() + 7 * 36e5); return Math.floor(d.getTime() / 864e5); };
-  const barisTitik = t => `<button type="button" class="ak-lr" data-lat="${t[0]}" data-lon="${t[1]}"><span>${tgl(t[2])} ${t[2].slice(11, 16)} WIB</span><b>${fmt(Math.round(t[3]))} MW</b><span class="ak-mt">${esc(t[4] === "SNPP" ? "S-NPP" : t[4] || "")}</span></button>`;
+  const barisTitik = (t, i) => `<tr data-lat="${t[0]}" data-lon="${t[1]}" tabindex="0"><td class="n">${i + 1}</td><td>${tgl(t[2])} ${t[2].slice(11, 16)} WIB</td><td class="n">${fmt(Math.round(t[3]))}</td><td class="ak-mt">${esc(t[4] === "SNPP" ? "S-NPP" : t[4] || "")}</td></tr>`;
   A.isiLaci = p => {
     const bendera_ = benderaDaf(p.negara, 14), grup = p.grup.join(", ");
     let isi;
@@ -157,10 +167,10 @@
       const har = p.harian || [], tot = har.reduce((a, x) => a + x[1], 0), puncak = har.reduce((a, x) => x[1] > (a?.[1] || 0) ? x : a, null);
       const lini = har.length ? `<div class="ak-ml"><span class="ak-pl">${fmt(tot)}</span> titik panas${puncak ? ` · puncak <b>${tgl(puncak[0])}</b> (${fmt(puncak[1])})` : ""}</div>${A.grafikHarian(har, Math.max(hariIniWIB(), hariKe(har[har.length - 1][0])))}`
         : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
-      const kom = (p.kompleks || []).length ? `<div class="ak-ls">${p.kompleks.map(k => `<button type="button" class="ak-lr" data-kom="${esc(k.id)}"><span>${esc(k.id)}</span><b>${fmt(k.n)} titik</b><span class="ak-mt">${rentang(k.dari, k.sampai)}</span></button>`).join("")}</div>`
+      const kom = (p.kompleks || []).length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Kompleks</th><th class="n">Titik panas</th><th>Rentang</th></tr></thead><tbody>${p.kompleks.map((k, i) => `<tr data-kom="${esc(k.id)}" tabindex="0"><td class="n">${i + 1}</td><td>${esc(k.id)}</td><td class="n">${fmt(k.n)}</td><td class="ak-mt">${rentang(k.dari, k.sampai)}</td></tr>`).join("")}</tbody></table></div>`
         : `<p class="fnd">Tidak ada kompleks api aktif di konsesi ini dalam 7 hari terakhir.</p>`;
       const tt = p.titik || [];
-      const tp = tt.length ? `<div class="ak-ls" data-tt>${tt.slice(0, AWAL_TITIK).map(barisTitik).join("")}</div>${tt.length > AWAL_TITIK ? `<button type="button" class="btn" data-semua-tt>Tampilkan semua (${fmt(tt.length)})</button>` : ""}`
+      const tp = tt.length ? `<div class="tw ak-tw ak-kt"><table><thead><tr><th class="n">No</th><th>Waktu</th><th class="n">Daya api (MW)</th><th>Satelit</th></tr></thead><tbody data-tt>${tt.slice(0, AWAL_TITIK).map(barisTitik).join("")}</tbody></table></div>${tt.length > AWAL_TITIK ? `<button type="button" class="btn" data-semua-tt>Tampilkan semua (${fmt(tt.length)})</button>` : ""}`
         : `<p class="fnd">Belum ada titik panas di konsesi ini sepanjang 2026.</p>`;
       isi = lipatA("Linimasa titik panas 2026", lini) + lipatA("Kompleks api 7 hari", kom) + lipatA("Titik panas terbaru", tp);
     }
@@ -175,6 +185,7 @@
     if (!p) return;
     const dl = $("#dlgLaci"); if (dl?.open) dl.close();                                  /* laci kompleks mode pop-up: kembalikan #laci ke peta */
     const el = $("#laci"); el.innerHTML = A.isiLaci(p); el.classList.add("on");
+    if (el._tarik) el.appendChild(el._tarik);                                            /* pegangan lebar ikut terhapus innerHTML */
     const bd = el.querySelector(".bd");
     el.querySelector(".tutup").onclick = () => { el.classList.remove("on"); lepasDenyut(); };
     bd.onclick = e => {
@@ -183,7 +194,8 @@
         requestAnimationFrame(() => { peta.flyTo({center: [lon, lat], zoom: 13, duration: 900});
           const m = document.createElement("div"); m.className = "ak-dn"; denyut = new maplibregl.Marker({element: m}).setLngLat([lon, lat]).addTo(peta); }); return; }
       if (e.target.closest("[data-semua-tt]")) { const b = e.target.closest("[data-semua-tt]"); b.remove();
-        nanti(() => bd.querySelector("[data-tt]").insertAdjacentHTML("beforeend", p.titik.slice(AWAL_TITIK).map(barisTitik).join(""))); } };
+        nanti(() => bd.querySelector("[data-tt]").insertAdjacentHTML("beforeend", p.titik.slice(AWAL_TITIK).map((t, i) => barisTitik(t, AWAL_TITIK + i)).join(""))); } };
+    bd.onkeydown = e => { if (e.key === "Enter" && e.target.matches("tr[data-kom],tr[data-lat]")) e.target.click(); };
   };
 
   /* ---------- peta ---------- */
@@ -196,41 +208,19 @@
     bukaTab("peta"); nyalaKonsesi();
     const fs = (await geo()).features.filter(f => ids.includes(f.properties.id)), b = new maplibregl.LngLatBounds();
     fs.forEach(f => { const [x0, y0, x1, y1] = kotak(f.geometry); b.extend([x0, y0]); b.extend([x1, y1]); });
-    nanti(() => { peta.fitBounds(b, {padding: kiriPad(), maxZoom: 10, duration: 900}); pasangPenanda(nama); if (typeof toast === "function" && p) toast(`${p.nama}: ${fmt(p.cek?.titik_viirs ?? 0)} titik panas di konsesi Jan–Agu (VIIRS)`); });
+    nanti(() => { peta.fitBounds(b, {padding: kiriPad(), maxZoom: 10, duration: 900}); if (typeof toast === "function" && p) toast(`${p.nama}: ${fmt(p.cek?.titik_viirs ?? 0)} titik panas di konsesi Jan–Agu (VIIRS)`); });
   };
-  /* poligon perusahaan WALHI: garis merah tebal (hanya saat lapisan Konsesi menyala); pil bendera negara afiliasi
-     baru muncul saat poligonnya diklik atau barisnya dipilih, satu perusahaan sekali tampil (pemilik, 17 Okt 2026) */
-  let penanda = null;
-  const lepas = () => { penanda?.remove(); penanda = null; };
+  /* poligon perusahaan WALHI: garis merah tebal, hanya saat lapisan Konsesi menyala. Pil bendera di peta dibuang
+     (pemilik, 17 Okt 2026): negara afiliasi cukup di tooltip poligon dan laci Aktor */
   function pasangPeta() {
     if (typeof peta === "undefined" || !peta?.getLayer) return setTimeout(pasangPeta, 1500);
     const ids = Object.keys(A.d.poligon);
     const garis = () => { if (!peta.getLayer("konsesi") || peta.getLayer("konsesi-walhi")) return;
       peta.addLayer({id: "konsesi-walhi", type: "line", source: "konsesi", filter: ["in", ["get", "id"], ["literal", ids]], paint: {"line-color": "#c9503a", "line-width": 2.4}}, "wil-line");
       sinkron(); };
-    const sinkron = () => { const on = Peta.lihat("konsesi") && !!peta.getLayer("konsesi");
-      if (peta.getLayer("konsesi-walhi")) peta.setLayoutProperty("konsesi-walhi", "visibility", on ? "visible" : "none");
-      if (!on) lepas(); };
+    const sinkron = () => { if (peta.getLayer("konsesi-walhi")) peta.setLayoutProperty("konsesi-walhi", "visibility", Peta.lihat("konsesi") && peta.getLayer("konsesi") ? "visible" : "none"); };
     peta.on("styledata", () => nanti(garis)); garis();
-    peta.on("click", e => { if (!peta.getLayer("konsesi") || !Peta.lihat("konsesi")) return;
-      /* klik yang kena titik panas atau kompleks milik pop-up/laci lain: bendera tidak ikut menumpuk di atasnya */
-      const pas = (l, r) => { const ls = l.filter(x => peta.getLayer(x)); return ls.length && peta.queryRenderedFeatures([[e.point.x - r, e.point.y - r], [e.point.x + r, e.point.y + r]], {layers: ls}).length; };
-      if (pas(["titik"], 0) || pas(["kl-pt3", "kl-pt", "kl-line", "kl-fill"], 6)) return lepas();
-      const f = peta.queryRenderedFeatures(e.point, {layers: ["konsesi"]}).find(f => A.d.poligon[f.properties.id]);
-      f ? pasangPenanda(A.d.poligon[f.properties.id]) : lepas(); });
     $("#lapis")?.addEventListener("change", e => { if (e.target.dataset?.l === "konsesi") setTimeout(() => { garis(); sinkron(); }, 400); });
-  }
-  async function pasangPenanda(nama) {
-    const p = A.per[nama]; lepas();
-    if (!p || !p.negara.some(k => k !== "ID") || !A.poli[nama]) return;
-    const by = {}; (await geo()).features.forEach(f => { by[f.properties.id] = f; });
-    const fs = A.poli[nama].map(i => by[i]).filter(Boolean); if (!fs.length) return;
-    const besar = fs.reduce((a, f) => (f.properties.luas_peta_ha || 0) > (a.properties.luas_peta_ha || 0) ? f : a), [x0, y0, x1, y1] = kotak(besar.geometry);
-    const el = document.createElement("button"); el.type = "button"; el.className = "ak-mk"; el.innerHTML = benderaDaf(p.negara, 11); el.setAttribute("aria-label", p.nama);
-    el.onmouseenter = ev => { tampilTip(A.tip(p), ev); $("#tip")?.classList.remove("kartu"); };
-    el.onmouseleave = () => $("#tip")?.classList.remove("on");
-    el.onclick = ev => { ev.stopPropagation(); A.tunjuk(p.nama); };
-    penanda = new maplibregl.Marker({element: el}).setLngLat([(x0 + x1) / 2, (y0 + y1) / 2]).addTo(peta);
   }
   /* tooltip poligon konsesi (konsesi.js memanggil ini): logo grup (kalau ada), nama pemegang, grup, bendera, titik panas VIIRS */
   A.kartuPoligon = p => {

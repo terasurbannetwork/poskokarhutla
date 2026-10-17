@@ -5,7 +5,8 @@
 (() => {
   const JAM = 36e5, ISPU_TS = 55.4, ISPU_PM10 = 150, {hariIni, sudah, ik, kartu} = SapaInti;
   /* muncul di halaman depan dan /peta (pemilik, 15 Okt 2026); tautan khusus (?wil=…, /k/…) tetap dilewati */
-  if (sudah() || /[?&](wil|k|kl|f)=/.test(location.search) || !["", "/peta"].includes(location.pathname.replace(/\/+$/, ""))) return;
+  /* gerbang ini hanya untuk tampil otomatis; tombol "!" di header tetap membuka pop-up */
+  const otomatis = !(sudah() || /[?&](wil|k|kl|f)=/.test(location.search) || !["", "/peta"].includes(location.pathname.replace(/\/+$/, "")));
 
   const R_API = /angin|asap|kabut|kebakaran|kering|panas|debu|jarak pandang/i;
   const topKab = (xs, n = 4) => { const m = new Map(); for (const p of xs) { const k = `${p.kab}|${p.prov}`; m.set(k, (m.get(k) || 0) + 1); }
@@ -125,7 +126,7 @@
 
   SapaInti.css();
 
-  SapaInti.mulai(() => tampil());
+  if (otomatis) SapaInti.mulai(() => tampil());
   let muat = 0;
   /* tombol "!" di header membuka pop-up ini kapan saja, tanpa kunci sekali-per-hari */
   document.getElementById("sapaBuka")?.addEventListener("click", async () => { if (muat || document.querySelector("dialog.sp[open]")) return; muat = 1; try { await tampil(true); } finally { muat = 0; } });
