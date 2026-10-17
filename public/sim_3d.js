@@ -10,7 +10,7 @@ const JAM = [0, 6, 12, 24, 36, 48, 60, 72];
    Cuaca per jam tetap dari Open-Meteo; ini hanya FFMC awal, BUI, DC, dan cadangan bila prakiraan gagal. */
 const CAD = {prov: "", ffmc: 85, bui: 40, dc: 300, isi: 5, ws: 10, wd: 90, rh: 60, t: 30};
 const TG = {on: false, f: null, dataMati: false, dataAsal: true};
-const T3 = {d3: false, citra: false};
+const T3 = {d3: false, citra: true}; /* 3D = citra satelit + medan seperti FireTrace; pill Citra mematikannya */
 const D = {H: null, t: 72, buka: null, cv: null, img: null, jalur: new WeakMap()};
 const ikon = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const IK = {tengah: ikon('<circle cx="12" cy="12" r="7"/><path d="M12 2v4M12 18v4M2 12h4M18 12h4"/>'), grafik: ikon('<path d="M3 3v18h18"/><path d="M7 15l4-5 3 3 5-7"/>'), api: ikon('<path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/>')};
@@ -80,6 +80,7 @@ function atur3D(S) {
     if (m.getTerrain()) m.setTerrain(null);
     if (m.getSource("s3-dem")) m.removeSource("s3-dem");
     if (m.getSource("s3-sat")) m.removeSource("s3-sat");
+    if (m.getLayer("sim-img")) { m.setPaintProperty("sim-img", "raster-brightness-max", 1); m.setPaintProperty("sim-img", "raster-opacity", .8); }
     return;
   }
   if (!m.getSource("s3-dem")) m.addSource("s3-dem", {type: "raster-dem", tiles: ["https://s3.amazonaws.com/elevation-tiles-prod/terrarium/{z}/{x}/{y}.png"], encoding: "terrarium", tileSize: 256, maxzoom: 15,
@@ -90,6 +91,8 @@ function atur3D(S) {
     "hillshade-shadow-color": gelap() ? "#000000" : "#473b24", "hillshade-highlight-color": gelap() ? "#5a6a85" : "#ffffff"}}, sebelum);
   m.setPaintProperty("s3-hill", "hillshade-exaggeration", T3.citra ? .25 : .45);
   if (!m.getTerrain()) m.setTerrain({source: "s3-dem", exaggeration: 1.5});
+  /* area yang sudah terbakar digelapkan jadi bekas bakar; garis depan (sim-depan) tetap menyala */
+  if (m.getLayer("sim-img")) { m.setPaintProperty("sim-img", "raster-brightness-max", .5); m.setPaintProperty("sim-img", "raster-opacity", .85); }
 }
 function mode(d3, citra) {
   if (d3 != null) T3.d3 = d3; if (citra != null) T3.citra = citra;
@@ -125,20 +128,20 @@ function hitungJalur(S, H) {
     let b = 0; while (JAM[b] < t) b++;
     if (d > best[b].d) best[b] = {d, k}; }
   const out = []; let cur = {d: -1, k: -1};
-  JAM.forEach((jam, b) => { if (best[b].d > cur.d) cur = best[b]; const k = jam === 0 ? B[0] : cur.k; if (k < 0 || (out.length && out[out.length - 1].k === k)) return;
+  JAM.forEach((jam, b) => { if (best[b].d > cur.d) cur = best[b]; const k = jam === 0 ? B[0] : cur.k; const q = out[out.length - 1]; if (k < 0 || (q && Math.hypot(k % n - q.k % n, ((k / n) | 0) - ((q.k / n) | 0)) < 4)) return;
     out.push({jam, k, lon: K.x0 + ((k % n) + .5) / n * (K.x1 - K.x0), lat: K.y0 + (((k / n) | 0) + .5) / n * (K.y1 - K.y0)}); });
   return out;
 }
 function pasangJalur(S) {
   const m = S.peta, H = S.hasil?.[S.lihat]; if (!m || !H || !S.K || !m.getLayer("sim-k")) return;
   let pts = D.jalur.get(H); if (!pts) D.jalur.set(H, pts = hitungJalur(S, H));
-  const fs = pts.map(p => ({type: "Feature", geometry: {type: "Point", coordinates: [p.lon, p.lat]}, properties: {jam: p.jam, lbl: (p.jam === 0 ? "Penyulutan" : `+${p.jam} j`) + "\n" + wib(S, p.jam) + " WIB"}}));
+  const fs = pts.map(p => ({type: "Feature", geometry: {type: "Point", coordinates: [p.lon, p.lat]}, properties: {jam: p.jam, lbl: (p.jam === 0 ? "Penyulutan\n" : "") + wib(S, p.jam)}}));
   m.addSource("s3-jalur", {type: "geojson", data: {type: "FeatureCollection", features: [...(pts.length > 1 ? [{type: "Feature", geometry: {type: "LineString", coordinates: pts.map(p => [p.lon, p.lat])}, properties: {}}] : []), ...fs]}});
   m.addLayer({id: "s3-jalur-bg", type: "line", source: "s3-jalur", filter: ["==", ["geometry-type"], "LineString"], paint: {"line-color": gelap() ? "#0b1424" : "#1d1d1d", "line-width": 5, "line-opacity": .55}, layout: {"line-cap": "round", "line-join": "round"}});
   m.addLayer({id: "s3-jalur", type: "line", source: "s3-jalur", filter: ["==", ["geometry-type"], "LineString"], paint: {"line-color": "#ffd24a", "line-width": 2.5}, layout: {"line-cap": "round", "line-join": "round"}});
   m.addLayer({id: "s3-jalur-t", type: "circle", source: "s3-jalur", filter: ["==", ["geometry-type"], "Point"], paint: {"circle-radius": 5, "circle-color": "#ffd24a", "circle-stroke-color": gelap() ? "#0b1424" : "#1d1d1d", "circle-stroke-width": 1.6}});
-  m.addLayer({id: "s3-jalur-l", type: "symbol", source: "s3-jalur", filter: ["==", ["geometry-type"], "Point"], layout: {"text-field": ["get", "lbl"], "text-size": 11, "text-offset": [0, .9], "text-anchor": "top", "text-font": ["Noto Sans Bold"], "symbol-sort-key": ["get", "jam"]},
-    paint: {"text-color": gelap() ? "#ffe9a8" : "#5a3a00", "text-halo-color": gelap() ? "#0b1424" : "#fff", "text-halo-width": 1.6}});
+  m.addLayer({id: "s3-jalur-l", type: "symbol", source: "s3-jalur", filter: ["==", ["geometry-type"], "Point"], layout: {"text-field": ["get", "lbl"], "text-size": 11.5, "text-offset": [.9, 0], "text-anchor": "left", "text-justify": "left", "text-font": ["Noto Sans Bold"], "symbol-sort-key": ["get", "jam"]},
+    paint: {"text-color": "#fff", "text-halo-color": "rgba(29,29,29,.82)", "text-halo-width": 3}}); /* kotak label gelap ala FireTrace */
   redupJalur(S, D.t);
 }
 function redupJalur(S, t) { /* titik di masa depan (> jam geser) dipudarkan; murah, hanya paint */
