@@ -22,6 +22,8 @@ Pakai:  python3 scripts/data/laporan.py  |  ... uji
 """
 import datetime as dt, json, math, os, sys
 
+sys.path.insert(0, os.path.dirname(__file__))
+
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -259,7 +261,74 @@ def kompleks(kl):
     return r
 
 
-def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None, titik_tahun=None):
+GABUNG = {"64": ["64", "65"], "91": ["91", "93", "94", "95"], "92": ["92", "96"]}   # GWIS: kunci "64", "91+93+94+95", "92+96"
+
+
+def luas_banding(sejarah, sat, resmi, tb, hari_iso, prov, tahun):
+    """Tiga sumber luas terbakar berdampingan per tahun (2018-tahun berjalan), nasional dan per provinsi. Hilang = None, bukan 0.
+    perkiraan = titik S-NPP sejarah.json x HA_TITIK (tahun berjalan: tahun_berjalan + luas harian laporan per provinsi);
+    gwis = luas_satelit.json (nilai gabungan tersimpan di kode pertama grup, anggota lain None); sipongi = luas_resmi.json."""
+    ths = [str(y) for y in range(2018, int(tahun) + 1)]
+    jml = lambda d: None if not d or all(v is None for v in d.values()) else round(sum(v for v in d.values() if v is not None))
+    # perkiraan
+    pk, pk_p, sd_pk = {}, {}, {}
+    sj = sejarah or {}
+    batas = (dt.date.fromisoformat(sj["dibuat"][:10]) - dt.timedelta(days=1)).isoformat() if sj.get("dibuat") else None
+    for y in ths:
+        if y not in sj.get("tahun", []):
+            continue
+        for p, v in sj["prov"].items():
+            if y in v:
+                pk_p.setdefault(p, {})[y] = round(sum(v[y]) * HA_TITIK)
+        if y != tahun:
+            pk[y] = round(sum(sum(v.get(y) or [0]) for v in sj["prov"].values()) * HA_TITIK)
+    if tb:
+        pk[tahun], sd_pk[tahun] = tb["ha"], tb["sd"]
+        for p, v in prov.items():   # harian laporan sesudah batas sejarah.json
+            tambah = sum(l for d, l in zip(hari_iso, v["luas"]) if batas and batas < d and d.startswith(tahun))
+            if tahun in pk_p.get(p, {}) or tambah:
+                pk_p.setdefault(p, {})[tahun] = round(pk_p.get(p, {}).get(tahun, 0) + tambah)
+    # gwis
+    gw, gw_p, sd_gw = {}, {}, dict((sat or {}).get("sampai") or {})
+    for k, arr in ((sat or {}).get("ha") or {}).items():
+        lead = k.split("+")[0]
+        for i, y in enumerate(sat["tahun"]):
+            if y in ths:
+                gw_p.setdefault(lead, {})[y] = arr[i]
+    for y in ths:
+        if sat and y in sat["tahun"]:
+            gw[y] = round(sum(v[y] for v in gw_p.values() if y in v))
+    # sipongi
+    sp, sp_p = {}, {}
+    for p, arr in ((resmi or {}).get("ha") or {}).items():
+        for i, y in enumerate(resmi["tahun"]):
+            if y in ths:
+                sp_p.setdefault(p, {})[y] = arr[i]
+    for y in ths:
+        if resmi and y in resmi["tahun"]:
+            sp[y] = round(sum(v[y] for v in sp_p.values() if y in v))
+    isi = lambda d: {y: d.get(y) for y in ths}   # tahun tanpa data = None
+    kodep = sorted(set(pk_p) | set(gw_p) | set(sp_p))
+    return {
+        "tahun": ths,
+        "sumber": [
+            {"kode": "perkiraan", "nama": "Perkiraan satelit (titik VIIRS S-NPP x 4,3 ha)",
+             "metode": "Titik VIIRS S-NPP keyakinan sedang/tinggi per tahun x 4,3 ha per titik (median ha resmi per titik 2015-2025). Tahun berjalan: sejarah.json + perkiraan harian laporan. Bukan pengukuran citra; kuartil 3,2-4,6 ha per titik.",
+             "ha": isi(pk), "sd": sd_pk},
+            {"kode": "gwis", "nama": "GWIS MODIS MCD64A1 (EU JRC)",
+             "metode": "Luas bekas bakar dari citra MODIS MCD64A1 C6.1 (resolusi 500 m), GWIS Country Profile per provinsi (GADM 3.6). 2025 terisi s.d. November; Desember belum diproses GWIS. Tahun berjalan belum dirilis (None).",
+             "catatan": "Kaltara (65) dihitung di Kaltim (64); Papua lama (91+93+94+95) dan Papua Barat lama (92+96) tak dipisah: nilai gabungan ada di kode pertama grup (64, 91, 92), anggota lain None. Lihat 'gabung'.",
+             "ha": isi(gw), "sd": {y: v for y, v in sd_gw.items() if y in ths}},
+            {"kode": "sipongi", "nama": "KLHK SiPongi (indikasi luas)",
+             "metode": "Indikasi luas kebakaran per provinsi dari titik panas + verifikasi KLHK (bukan citra). 2026 baru s.d. Juli.",
+             "ha": isi(sp), "sd": {y: v for y, v in ((resmi or {}).get("sampai") or {}).items() if y in ths}},
+        ],
+        "gabung": GABUNG,
+        "prov": {p: {"perkiraan": isi(pk_p.get(p, {})), "gwis": isi(gw_p.get(p, {})), "sipongi": isi(sp_p.get(p, {}))} for p in kodep},
+    }
+
+
+def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None, titik_tahun=None, luas_sat=None):
     acuan, akhir, t, s = hitung(hs)
     porsi, taksir = isi_celah(t, s)
     hari, out, konteks = seri(t, s)
@@ -299,6 +368,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         kab.append({"prov": k[0], "nama": k[1], **ser[k], "kompleks": v[0], "luas_kompleks": round(v[1]), "level": v[2], "fwi_maks": None if v[3] is None else round(v[3])})
     per = dt.date.fromisoformat(operasi["per"]) if operasi and operasi.get("per") else None
     bn = f"Rekap BNPB operasi karhutla {akhir.year} s.d. {per.day} {BULAN[per.month - 1]} {per.year}, belum diverifikasi ke dokumen resmi BNPB" if per else None
+    tb = tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun, titik_tahun, nas["titik"])
     return {
         "dibuat": dibuat.astimezone(WIB).isoformat(timespec="minutes"),
         "cutoff": acuan.isoformat(timespec="minutes"),
@@ -310,7 +380,8 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "luas_v": LUAS_V,
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
-        "tahun_berjalan": tahun_berjalan(sejarah, hari_iso, nas["luas"], tahun, titik_tahun, nas["titik"]),
+        "tahun_berjalan": tb,
+        "luas_banding": luas_banding(sejarah, luas_sat, luas_resmi, tb, hari_iso, prov, tahun),
         "sumber": {
             "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
             "luas": "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) x 4,3 ha, dikalibrasi ke luas terbakar resmi tahunan 2015-2025 (SiPongi KLHK); kuartil 3,2-4,6 ha per titik; uji balik tahunan meleset sampai +101%/-35%; angka harian dan per wilayah indikatif; bukan pengukuran citra",
@@ -333,12 +404,24 @@ def main():
     if not hs:
         sys.exit("hotspot.json tidak ada")
     lap = build(hs, baca("kluster.json"), baca("meta.json"), baca("luas_resmi.json"), baca("operasi_resmi.json"), baca("laporan.json"),
-                sejarah=baca("sejarah.json"), h30=baca("harian30.json"), titik_tahun=baca("titik_tahun.json"))
+                sejarah=baca("sejarah.json"), h30=baca("harian30.json"), titik_tahun=baca("titik_tahun.json"), luas_sat=baca("luas_satelit.json"))
     jalur = os.path.join(DATA, "laporan.json")
     with open(jalur, "w") as f:
         json.dump(lap, f, ensure_ascii=False, separators=(",", ":"))
     n = lap["nasional"]
+    gagal = None   # kurva musim memakai hari arsip yang sama; laporan.json tetap ditulis, tapi keluar != 0 supaya CI menampilkan peringatan
+    try:
+        import musim_harian
+        m = musim_harian.perbarui(lap)
+        if m is None:
+            gagal = "musim_harian.json dasar tidak ada (tidak ada di repo/cache)"
+        else:
+            print(f"musim_harian.json: {os.path.getsize(musim_harian.JALUR)} byte, sd {m['sd']}")
+    except Exception as e:
+        gagal = repr(e)
     print(f"laporan.json: {os.path.getsize(jalur)} byte, {len(lap['hari'])} hari, {len(lap['prov'])} prov, {len(lap['kab'])} kab, lengkap {lap['hari_lengkap']}")
+    if gagal:
+        sys.exit(f"musim_harian.json TIDAK diperbarui: {gagal}")
 
 
 def uji():
@@ -408,6 +491,33 @@ def uji():
                 assert tt.get(dd, {}).get((p,), 0) == c, (p, tg, tt.get(dd, {}).get((p,), 0), c)
                 n += 1
         print(f"  titik cocok wilayah.json: {n} sel prov x hari")
+    # luas_banding: sumber tanpa data suatu tahun = None (bukan 0); GWIS digabung di kode pertama grup
+    sj2 = {"tahun": ["2025", "2026"], "dibuat": "2026-01-02", "prov": {"14": {"2025": [100] + [0] * 11, "2026": [10] + [0] * 11}}}
+    tb2 = tahun_berjalan(sj2, ["2026-01-02"], [7], "2026")
+    sat = {"tahun": ["2025"], "sampai": {"2025": "2025-11"}, "ha": {"14": [50], "64": [30], "91+93+94+95": [0]}}
+    res = {"tahun": ["2025", "2026"], "sampai": {"2026": "2026-07"}, "ha": {"14": [80.0, 5.0], "65": [0.0, 1.0]}}
+    lb = luas_banding(sj2, sat, res, tb2, ["2026-01-02"], {"14": {"luas": [7]}}, "2026")
+    src = {x["kode"]: x for x in lb["sumber"]}
+    assert lb["tahun"][0] == "2018" and lb["tahun"][-1] == "2026"
+    assert src["gwis"]["ha"]["2026"] is None and src["gwis"]["ha"]["2025"] == 80 and src["gwis"]["ha"]["2018"] is None, src["gwis"]["ha"]
+    assert src["perkiraan"]["ha"]["2018"] is None and src["perkiraan"]["ha"]["2025"] == round(100 * HA_TITIK), src["perkiraan"]["ha"]
+    assert src["perkiraan"]["ha"]["2026"] == tb2["ha"] and src["perkiraan"]["sd"]["2026"] == tb2["sd"]
+    assert src["sipongi"]["ha"]["2026"] == 6 and src["sipongi"]["sd"] == {"2026": "2026-07"} and src["sipongi"]["ha"]["2019"] is None
+    assert lb["prov"]["91"]["gwis"]["2025"] == 0 and lb["prov"]["65"]["gwis"]["2025"] is None and lb["prov"]["14"]["gwis"]["2026"] is None
+    assert lb["prov"]["14"]["perkiraan"]["2026"] == round(10 * HA_TITIK + 7), lb["prov"]["14"]["perkiraan"]
+    for x in lb["sumber"]:   # 0 hanya bila sumbernya memang memuat tahun itu
+        for y, v in x["ha"].items():
+            assert v != 0 or (y in {"gwis": ["2025"], "sipongi": ["2025", "2026"], "perkiraan": ["2025", "2026"]}[x["kode"]]), f"{x['kode']} {y}: 0 untuk data hilang"
+    r = baca("laporan.json")
+    if r and r.get("luas_banding"):   # berkas nyata: tahun di luar cakupan sumber tidak boleh 0
+        rb = {x["kode"]: x for x in r["luas_banding"]["sumber"]}
+        lsat, lres = baca("luas_satelit.json"), baca("luas_resmi.json")
+        for y, v in rb["gwis"]["ha"].items():
+            assert (v is None) == (y not in lsat["tahun"]), f"gwis {y}: {v}, tahun GWIS {lsat['tahun'][-1]}"
+        for y, v in rb["sipongi"]["ha"].items():
+            assert (v is None) == (y not in lres["tahun"]), f"sipongi {y}: {v}"
+    import musim_harian
+    musim_harian.uji()
     print("laporan uji: lolos")
 
 

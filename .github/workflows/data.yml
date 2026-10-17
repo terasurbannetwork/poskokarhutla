@@ -45,8 +45,15 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/lahan public/data/osm)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
           [ -z "$f" ] || git checkout HEAD -- $f
+
+      # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
+      # Cache sudah bermedian -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache bermedian.
+      - name: Pulihkan musim_harian dari repo bila latar cache bukan median
+        run: |
+          python3 -c "import json,sys; sys.exit(0 if json.load(open('public/data/musim_harian.json'))['latar']['stat']=='median' else 1)" 2>/dev/null \
+            || { f=$(git ls-files public/data/musim_harian.json); [ -z "$f" ] || git checkout HEAD -- $f; }
 
       - name: Titik panas, kompleks, FWI, BNPB
         env:
@@ -263,6 +270,20 @@ jobs:
       - name: Ringkasan ringan (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/ringkasan.py
+
+      # laporan harian + kurva musim (musim_harian.json ditimpa perbarui() di dalamnya). musim_harian.json SENGAJA tidak di daftar
+      # git checkout HEAD: ia bergulir lewat cache data-; versi repo hanya dasar saat cache kosong.
+      - name: Laporan harian & kurva musim (boleh gagal)
+        id: laporan
+        continue-on-error: true
+        run: python3 scripts/data/laporan.py
+
+      - name: Laporan harian gagal (peringatan)
+        if: steps.laporan.outcome == 'failure'
+        run: |
+          echo "::error title=Laporan harian gagal::scripts/data/laporan.py gagal; laporan.json dan musim_harian.json tidak diperbarui di run ini (deploy data lain tetap jalan)"
+          echo "### Laporan harian GAGAL" >> "$GITHUB_STEP_SUMMARY"
+          echo "laporan.py gagal di run ini. laporan.json dan musim_harian.json memakai versi sebelumnya (cache). Lihat log langkah 'Laporan harian & kurva musim'." >> "$GITHUB_STEP_SUMMARY"
 
       - name: Uji aturan
         run: |

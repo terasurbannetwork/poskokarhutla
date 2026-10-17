@@ -40,7 +40,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/lahan public/data/osm)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       # aktor_karhutla.json dari repo menunjuk ID kompleks saat dibuat; samakan dengan kluster.json cache yang ikut terbit
