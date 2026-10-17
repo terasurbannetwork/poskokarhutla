@@ -3293,7 +3293,7 @@ const Insight = {
   data: {},
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
   /* ytd, tahun, kec dibuang (sudah ada di Tren); kartu riwayat panjang pindah ke Tren lewat TREN (pemilik, 17 Okt 2026) */
-  EX: ["harian", "musim", "cuaca", "paparan", "bnpb"],
+  EX: ["harian", "musim", "cuaca", "paparan", "bnpb", "penanganan"],
   TREN: ["luasTahun", "luas", "nasional", "dunia"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
@@ -3503,7 +3503,7 @@ const Insight = {
         ${r.v > mx ? `<path d="M${L + w - 14},${y + 4} l6,${rh - 8} M${L + w - 8},${y + 4} l6,${rh - 8}" stroke="var(--card)" stroke-width="3"/>` : ""}
         <g class="gf" style="--i:${i}">${pil(L + w + 8, y + 6, r.lbl, wr, "#fff", 12)[0]}</g>`; });
     return [g, rows.length * rh]; },
-  /* disembunyikan atas permintaan pemilik 15 Okt 2026; hidupkan lagi dengan menaruh "penanganan" di EX */
+  /* sempat disembunyikan 15 Okt 2026, dipulihkan atas permintaan pemilik 17 Okt 2026 */
   exPenanganan() {
     const f = this.data.fs; if (!f) return "";
     const pv = Object.entries(f.personel_prov).map(([k, v]) => ({n: namaProv(k), k, v, lbl: fmt(v) + " personel"})).sort((a, b) => b.v - a.v);
