@@ -389,7 +389,10 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
     kp = Kompleks(os.path.join(AKAR, "public/data/kluster.json"))
     t0 = dt.datetime.fromisoformat(h["acuan"])
     kom = {k: {} for k in P}
-    for r in h["baris"]:
+    c = {k: i for i, k in enumerate(h["kolom"])}
+    # saringan sama dengan konsesi_kompleks.py (tanpa MODIS, keyakinan >= nominal, 7 hari): angka terkini Aktor = lapisan konsesi
+    baris = [r for r in h["baris"] if r[c["sensor"]] != "M" and r[c["keyakinan"]] >= 1 and r[c["jam"]] >= -168]
+    for r in baris:
         ks = set()
         for q in ix.cari(r[io], r[il]):
             ks |= milik[pakai[q]]
@@ -405,7 +408,7 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
         if p["_poli"]:
             p["cek"]["titik_terkini"] = per[k]
             p["kompleks"] = sorted(kom[k].values(), key=lambda e: -e["n"])
-    tgl = sorted({r[h["kolom"].index("tgl_wib")] for r in h["baris"]})
+    tgl = sorted({r[c["tgl_wib"]] for r in baris})
     return {"acuan": h["acuan"], "dari": tgl[0] if tgl else "", "sampai": tgl[-1] if tgl else ""}
 
 
@@ -431,7 +434,7 @@ def tulis(P, fitur, viirs_baru, acuan=None):
     for p in P.values():
         q = {k: v for k, v in p.items() if not k.startswith("_")}
         if not viirs_baru:
-            for c in ("titik_viirs", "lokasi"):
+            for c in ("titik_viirs", "lokasi", "prov_peta"):  # semua kunci yang hanya diisi cek_silang dari arsip
                 if c in lama.get(q["nama"], {}).get("cek", {}):
                     q["cek"][c] = lama[q["nama"]]["cek"][c]
             for c in ("harian", "titik"):  # tanpa arsip VIIRS: pertahankan yang lama
