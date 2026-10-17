@@ -1,0 +1,48 @@
+/* sim_3d.css — tampilan FireTrace di tab Simulasi (3D, dasbor bawah, titik pilihan). Warna lewat token tema. */
+.s3-pill{display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;white-space:nowrap;cursor:pointer}
+.s3-pill[aria-pressed="true"]{background:var(--brand);border-color:var(--brand);color:var(--card)}
+.s3-pill:focus-visible,.s3-mode button:focus-visible,.s3-kjb:focus-visible,.s3-mk:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.s3-jdl{cursor:default;height:22px;font-size:11px;margin-bottom:4px}
+.s3-sim{background:var(--warn);border-color:var(--warn);color:oklch(25.5% .075 256);cursor:default}
+.s3-mode{position:absolute;z-index:6;top:12px;right:12px;display:flex;gap:2px;padding:3px;border-radius:999px;background:var(--card);border:1px solid var(--line)}
+.s3-mode button{height:26px;min-width:40px;padding:0 11px;border:0;border-radius:999px;background:transparent;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.s3-mode button[aria-pressed="true"]{background:var(--brand);color:var(--card)}
+.s3-mode button[hidden]{display:none}
+.s3-label{position:absolute;z-index:6;top:12px;left:12px}
+.s3-label[hidden]{display:none}
+@media (min-width:901px){.s3-label{left:404px}#simWaktu.s3{left:calc(50% + 196px);width:min(1040px,calc(100% - 420px))}}
+/* lintasan waktu: slider + penanda kejadian + label per 12 jam */
+.s3-lintas{flex:1;min-width:0;position:relative}
+.s3-lintas input[type=range]{width:100%;margin:0;display:block}
+.s3-tks{position:relative;height:40px;margin:0 8px}
+.s3-tk{position:absolute;top:14px;left:calc(var(--f) * 100%);transform:translateX(-50%);display:flex;flex-direction:column;align-items:center;font-size:10px;line-height:1.25;color:var(--ink2);white-space:nowrap;pointer-events:none}
+.s3-tk:first-of-type{transform:none;align-items:flex-start}
+.s3-tk:last-child{transform:translateX(-100%);align-items:flex-end}
+.s3-tk em{font-style:normal;font-weight:700;color:var(--ink)}
+.s3-tk small{font-size:9.5px}
+.s3-mk{position:absolute;top:0;left:calc(var(--f) * 100%);width:12px;height:12px;margin-left:-6px;padding:0;border-radius:50%;border:2px solid var(--card);background:var(--w);cursor:pointer;box-shadow:0 0 0 1px var(--line);z-index:1}
+/* dasbor */
+.s3-dash{flex-basis:100%;display:grid;grid-template-columns:minmax(0,3fr) minmax(190px,1fr);gap:10px 14px;max-height:min(44vh,330px);overflow:auto;padding-top:8px;border-top:1px solid var(--line)}
+.s3-dash[hidden]{display:none}
+.s3-gr{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}
+.s3-fig{margin:0;min-width:0}
+.s3-g{width:100%;height:auto;display:block}
+.s3-g line{stroke:var(--line)}
+.s3-g text{font-size:8.5px;font-family:var(--font)}
+.s3-g text:not([fill]){fill:var(--ink2)}
+.s3-g text.v{font-weight:700}
+.s3-g text.v:not([fill]){fill:var(--ink)}
+.s3-g line.s3-kursor{stroke:var(--ink2);stroke-dasharray:3 3}
+.s3-kj{display:flex;flex-direction:column;gap:5px;min-width:0}
+.s3-kjb{display:grid;grid-template-columns:10px 1fr;column-gap:7px;text-align:left;padding:6px 9px;border:1px solid var(--line);border-left:3px solid var(--w);border-radius:10px;background:var(--surface);color:var(--ink);font:inherit;cursor:pointer}
+.s3-kjb i{grid-row:1/4;align-self:center;width:8px;height:8px;border-radius:50%;background:var(--w)}
+.s3-kn{font-size:12px;font-weight:700}
+.s3-kd{font-size:10.5px;color:var(--ink2)}
+.s3-kv{font-size:11px;color:var(--ink);overflow-wrap:anywhere}
+.s3-kjb:hover{background:var(--card)}
+@media (max-width:900px){
+  .s3-dash{grid-template-columns:1fr}
+  .s3-gr{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;padding-bottom:4px}
+  .s3-fig{flex:0 0 min(78%,260px);scroll-snap-align:start}
+  .s3-tk.s{display:none}
+}
