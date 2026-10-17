@@ -194,6 +194,7 @@
 .lp-bf{display:inline-block;vertical-align:middle;padding:2px 8px;border-radius:999px;font:800 10.5px var(--font);background:#c9503a;color:#fff;white-space:nowrap}
 /* baris hari berjalan (belum final) di tabel harian: latar oranye pucat + pil */
 .lp-tb tr.lp-sm td{background:oklch(85% .1 75 / .28)}
+.lp-tb tr.lp-tot td{font-weight:800;color:var(--ink);border-top:2px solid var(--line);background:oklch(55% .12 250 / .06)}
 .lp-tb tr.lp-sm td:first-child{box-shadow:inset 4px 0 0 #d2772c}
 .lp-tb tr.lp-sm .lp-bf{font-style:normal;margin-left:6px}
 /* kolom titik hari berjalan (belum final): oranye pucat seperti baris belum final */

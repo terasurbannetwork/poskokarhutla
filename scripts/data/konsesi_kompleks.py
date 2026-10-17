@@ -116,7 +116,7 @@ def hitung(kluster, titik, tgl, konsesi, kawasan, gambut, lama=None, acuan=None)
     for (j, t), n in hari_ini.items():
         harian.setdefault(j, {})[t] = n
 
-    keluar, rangk, prov = {}, {}, {}
+    keluar, rangk, prov, gambut = {}, {}, {}, {}
     for f in kluster:
         p = f["properties"]
         k = K.get(p["id"])
@@ -125,6 +125,7 @@ def hitung(kluster, titik, tgl, konsesi, kawasan, gambut, lama=None, acuan=None)
         o = prov.setdefault(p.get("prov") or "?", [0, 0])  # [titik di kompleks, titik di konsesi (unik)]: penyebut porsi per provinsi
         o[0] += k["n"]
         o[1] += k["n"] - k["luar"]
+        gambut[p.get("prov") or "?"] = gambut.get(p.get("prov") or "?", 0) + k["gb"]  # titik di gambut per provinsi (laporan harian)
         if not k["jn"] and not k["gb"] and not k["kw"]:
             continue  # di luar konsesi, kawasan, gambut: tidak perlu dicatat (UI: tidak ada entri = 100% di luar konsesi)
         keluar[p["id"]] = {"lat": p["lat"], "lon": p["lon"], "n": k["n"], "luar": round(k["luar"] / k["n"], 3),
@@ -149,7 +150,7 @@ def hitung(kluster, titik, tgl, konsesi, kawasan, gambut, lama=None, acuan=None)
         a["musim"] = sum(harian.get(j, {}).values())
         per.append(a)
     per.sort(key=lambda a: (-a["n"], -a["musim"]))
-    total = {"n": sum(k["n"] for k in K.values()), "konsesi": n_kons, "kompleks": len(K), "prov": prov}
+    total = {"n": sum(k["n"] for k in K.values()), "konsesi": n_kons, "kompleks": len(K), "prov": prov, "gambut": gambut}
     return {"kompleks": keluar, "jenis": per, "total": total, "harian": harian}
 
 
@@ -208,7 +209,7 @@ def uji():
     assert r0["jenis"] == "sawit" and r0["n"] == 4 and r0["kompleks"] == 1 and r0["prov"] == {"14": 4}, r0
     assert r0["musim"] == 15, r0["musim"]  # 10 + 1 (Jan 2026, tali lama dua kunci bernama dijumlah) + 4 hari ini; Des 2025 di luar
     assert set(h["harian"]) <= {"sawit", "hti", "hph", "tambang"}, h["harian"]  # kunci per jenis, bukan nama
-    assert h["total"] == {"n": 8, "konsesi": 6, "kompleks": 1, "prov": {"14": [8, 6]}}, h["total"]
+    assert h["total"] == {"n": 8, "konsesi": 6, "kompleks": 1, "prov": {"14": [8, 6]}, "gambut": {"14": 1}}, h["total"]
     # jalan kedua di hari yang sama tidak menggandakan tali musim
     h2 = hitung(kl, t, ["2026-10-12"] * len(t), ks, kw, gb, h, "2026-10-12")
     assert h2["jenis"][0]["musim"] == 15, h2["jenis"][0]["musim"]
