@@ -203,7 +203,7 @@
   /* ---------- peta ---------- */
   const kotak = g => { let x0 = 180, y0 = 90, x1 = -180, y1 = -90; (g.type === "MultiPolygon" ? g.coordinates : [g.coordinates]).forEach(p => p[0].forEach(([x, y]) => { x0 = Math.min(x0, x); y0 = Math.min(y0, y); x1 = Math.max(x1, x); y1 = Math.max(y1, y); })); return [x0, y0, x1, y1]; };
   const nyalaKonsesi = () => { const i = $('#lapis input[data-l="konsesi"]'); if (i && !i.checked) { i.checked = true; i.dispatchEvent(new Event("change", {bubbles: true})); } };
-  async function geo() { return Lapis.cache.konsesi ||= await muatJSON("data/lahan/konsesi.geojson"); }
+  async function geo() { return await (Lapis.cache.konsesiP ||= muatJSON("data/lahan/konsesi.geojson").then(d => Lapis.cache.konsesi = d)); }
   A.tunjuk = async nama => {
     const p = A.per[nama], ids = A.poli[nama] || [];
     if (!ids.length) { if (typeof toast === "function") toast(`${nama} tidak ada di peta konsesi`); return; }

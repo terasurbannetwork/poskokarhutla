@@ -1452,6 +1452,12 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
       </button>
+      <button class="iconbtn" id="bdBuka" type="button" aria-pressed="false" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Banding peta, bandingkan dua citra" title="Banding">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M8 10l-2 2 2 2M16 10l2 2-2 2"/></svg>
+      </button>
+      <button class="iconbtn" id="tlBuka" type="button" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Timelapse citra harian area ini (GIF)" title="Timelapse">
+        <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>
+      </button>
       <div class="box lapis" id="lapis">
         <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Api & respons</summary>
@@ -1995,7 +2001,7 @@ const Lapis = {
       hujan: async () => { const g = gambarHujan();
         peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
         peta.addLayer({id: "hujan", type: "raster", source: "hujan", paint: {"raster-opacity": .7, "raster-resampling": "linear", "raster-fade-duration": 0}}, Peta.lapisAwal()); },
-      konsesi: async () => { const d = this.cache.konsesi ||= await muatJSON("data/lahan/konsesi.geojson");
+      konsesi: async () => { const d = await (this.cache.konsesiP ||= muatJSON("data/lahan/konsesi.geojson").then(d => this.cache.konsesi = d));
         const w = ["match", ["get", "jenis"], "sawit", "#c98a3c", "hph", "#2f6f8f", "#888"];
         peta.addSource("konsesi", {type: "geojson", data: d}); peta.addLayer({id: "konsesi", type: "fill", source: "konsesi", paint: {"fill-color": w, "fill-opacity": .18}}, "wil-line");
         peta.addLayer({id: "konsesi-line", type: "line", source: "konsesi", paint: {"line-color": w, "line-width": 1.2, "line-dasharray": [2, 1]}}, "wil-line"); },
@@ -2236,10 +2242,17 @@ function grafikTren(kunci) { const sr = seriHarian(kunci, Math.max(7, S.trenN)),
   const kini = hariIniWil(kunci), N = n + (kini == null ? 0 : 1), W = 260, H = 46, m = Math.max(1, ...sr.v, kini || 0), bw = W / N,
     rr = sr.v.map((_, i) => { const a = sr.v.slice(Math.max(0, i - 6), i + 1); return a.reduce((x, y) => x + y, 0) / a.length; }), tg = d => new Date(d + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
   const vonis = t.d == null ? ["Titik sedikit", "#8a94a6"] : [["Membaik", "Stabil", "Memburuk"][t.arah + 1] + ` ${t.d > 0 ? "+" : ""}${fmt(Math.round(t.d * 100))}%`, WARNA_TREN[t.arah]];
+  /* persen harian vs hari sebelumnya, baris kecil di bawah batang (hanya bila batang cukup lebar); batang pertama memakai hari sebelum jendela bila datanya ada */
+  const sp = kunci.split("|").length < 3 ? seriHarian(kunci, Math.max(7, S.trenN) + 1) : null, awal = sp && sp.v.length === n + 1 && sp.hari[1] === sr.hari[0] ? sp.v[0] : null;
+  const seri = [awal, ...sr.v, ...(kini == null ? [] : [kini])], pf = N <= 7 ? 9.5 : N <= 9 ? 8 : 6.5;
+  const persen = (i, op) => { if (N > 14) return ""; const a = seri[i], c = seri[i + 1]; let t = "", w = "#8a94a6";
+    if (a > 0) { const d = Math.round((c - a) / a * 100); t = d > 0 ? `▲${d >= 1000 ? "999%+" : d + "%"}` : d < 0 ? `▼${-d}%` : "0%"; w = d > 0 ? "#c9503a" : d < 0 ? "#2b8c86" : "#8a94a6"; }
+    else if (c > 0) t = "baru";
+    return t ? `<text x="${(i + .5) * bw}" y="${H + 9}" text-anchor="middle" font-size="${pf}" font-weight="800" fill="${w}" opacity="${op}">${t}</text>` : ""; };
   /* angka di atas tiap batang (dilewati bila batang terlalu rapat) */
   const bar = (x, i, warna, op) => `<rect x="${i * bw + .5}" y="${H - x / m * (H - 14)}" width="${Math.max(1, bw - 1.5)}" height="${Math.max(.8, x / m * (H - 14))}" rx="1.5" fill="${warna}" opacity="${op}"/>${N <= 14 ? `<text x="${(i + .5) * bw}" y="${H - x / m * (H - 14) - 3}" text-anchor="middle" font-size="${N > 9 ? 7.5 : 9}" font-weight="700" fill="var(--ink2)">${x >= 1000 ? (Math.round(x / 100) / 10 + "rb").replace(".", ",") : x}</text>` : ""}`;
   return `<div class="tp-tr"><div class="tp-tr-h"><span>${n} hari penuh terakhir</span><span class="tp-pl" style="background:${vonis[1]}">${vonis[0]}</span></div>
-    <svg viewBox="0 0 ${W} ${H}" width="100%" aria-hidden="true">${sr.v.map((x, i) => bar(x, i, i >= n - t.w ? vonis[1] : "#e58a45", i >= n - t.w ? 1 : .4)).join("")}${kini == null ? "" : bar(kini, n, "#8a94a6", .35)}
+    <svg viewBox="0 0 ${W} ${N <= 14 ? H + 12 : H}" width="100%" aria-hidden="true">${sr.v.map((x, i) => bar(x, i, i >= n - t.w ? vonis[1] : "#e58a45", i >= n - t.w ? 1 : .4) + persen(i, i >= n - t.w ? 1 : .4)).join("")}${kini == null ? "" : bar(kini, n, "#8a94a6", .35) + persen(n, .35)}
     <polyline points="${rr.map((v, i) => `${(i + .5) * bw},${H - v / m * (H - 14)}`).join(" ")}" fill="none" stroke="var(--ink)" stroke-width="1.3" opacity=".6"/></svg>
     <div class="tp-tr-x"><span>${tg(sr.hari[0])}</span><span>${t.w} hari terakhir vs ${t.w} sebelumnya</span><span>${kini == null ? tg(sr.hari[n - 1]) : "hari ini*"}</span></div></div>`; }
 function renderDaftar() {
@@ -2411,7 +2424,7 @@ function muatTitik(jam = typeof S.rentang === "number" ? S.rentang : 48) {
     if (S.titikPenuh || (hs.jam_maks || 168) <= S.jamTitik) return;
     S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
     S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168;
-    hitung(); peta?.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan?.();
+    hitung(); peta?.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan?.(); window.Cari?.segar();
   }).catch(e => { muatTitik._p = null; muatTitik._jam = 0; console.warn("titik", e); });
 }
 /* rentang & mode */
@@ -2426,7 +2439,7 @@ $("#rentang").addEventListener("click", e => { const b = e.target.closest("butto
   if (S.rentang === 168 && !S.titikPenuh) toast("Memuat titik 7 hari…");
   muatTitik();
   $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); }); });
+  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); window.Cari?.segar(); }); });
 
 /* panel Overlay bergaya Windy: tiap kotak centang jadi ubin bergambar (latar panel tetap putih).
    Kotak dari lapisan5.js disisipkan belakangan, jadi pengamat menghias label baru begitu muncul. */
@@ -2559,15 +2572,17 @@ function bangunIndeks() {
 $("#cari").addEventListener("input", e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil");
   if (q.length < 2) { h.hidden = true; return; }
-  const hasil = indeksCari.filter(i => i.nama.toLowerCase().includes(q)).sort((a, b) => a.nama.toLowerCase().indexOf(q) - b.nama.toLowerCase().indexOf(q)).slice(0, 12);
+  const hasil = (indeksCari || []).filter(i => i.nama.toLowerCase().includes(q)).sort((a, b) => a.nama.toLowerCase().indexOf(q) - b.nama.toLowerCase().indexOf(q)).slice(0, 12);
   /* dikelompokkan: Wilayah lalu Kompleks; baris = nama · chip induk · lencana tingkat */
   const grup = [["Wilayah", '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', hasil.filter(i => !i.kl)], ["Kompleks", IKON.api, hasil.filter(i => i.kl)]];
   /* judul grup (Wilayah/Kompleks) disembunyikan (pemilik, 14 Okt 2026); lencana tingkat di tiap baris sudah cukup */
-  h.innerHTML = hasil.length ? grup.filter(g => g[2].length).map(([n, ik, xs]) => xs.map(i => `<button data-k="${esc(i.kunci)}" ${i.kl ? "data-kl=1" : ""}><b>${esc(i.nama)}</b><span class="hs-in">${i.induk ? `<i>${esc(i.induk)}</i>` : ""}</span><span class="hs-lv hs-${i.lv}">${i.lv}</span></button>`).join("")).join("")
+  const lain = window.Cari?.html(e.target.value.trim(), hasil.length) || "";
+  h.innerHTML = !hasil.length && lain ? lain : hasil.length ? grup.filter(g => g[2].length).map(([n, ik, xs]) => xs.map(i => `<button data-k="${esc(i.kunci)}" ${i.kl ? "data-kl=1" : ""}><b>${esc(i.nama)}</b><span class="hs-in">${i.induk ? `<i>${esc(i.induk)}</i>` : ""}</span><span class="hs-lv hs-${i.lv}">${i.lv}</span></button>`).join("")).join("")
     : `<div class="kosong" style="padding:12px">Tidak ditemukan.</div>`;
+  if (hasil.length) h.insertAdjacentHTML("beforeend", lain);
   h.hidden = false;
 });
-$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = "";
+$("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (window.Cari?.klik(b) !== null) return; $("#hasil").hidden = true; $("#cari").value = "";
   if (b.dataset.kl) return Laci.buka(b.dataset.k);
   const p = b.dataset.k.split("|"); turun(p.slice(0, 2).join("|"));
   if (p.length === 3) setTimeout(async () => { const kec = S.geo.kec[p[0]] ||= await muatJSON(`geo/kecamatan/${p[0]}.json`);
@@ -6222,6 +6237,12 @@ function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingC
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 <script src="lapisan5.js"></script>
+<link rel="stylesheet" href="banding.css">
+<link rel="stylesheet" href="cari.css">
+<script src="cari.js"></script>
+<link rel="stylesheet" href="timelapse.css">
+<script src="timelapse.js"></script>
+<script src="banding.js"></script>
 <script src="dampak.js"></script>
 <script src="sim_perlakuan.js"></script>
 <script src="sebaran_model.js"></script>

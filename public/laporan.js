@@ -288,7 +288,7 @@ function kartuLuas() {
     return prov() ? "" : riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i])]); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
-  const tb = prov() ? null : D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 1});
+  const tb = prov() ? null : D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
     + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
@@ -413,7 +413,7 @@ const keAsli = (y, l) => kabisat(y) || l < 59 ? l : l - 1;   /* indeks kabisat -
 const keKabisat = (y, j) => kabisat(y) || j < 59 ? j : j + 1;
 const mhSeri = y => prov() ? X.mh.prov[prov()]?.[y] : X.mh.nasional[y];
 const mhLatar = () => prov() ? X.mh.latar.prov[prov()] : X.mh.latar.nasional;
-const ratio = x => x.toLocaleString("id-ID", {maximumFractionDigits: 1}) + "×";
+const ratio = x => x.toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + "×";
 const ikaLatar = () => { const t = X.mh.latar.tahun; return t[0] + "–" + t.at(-1); };
 
 function kartuKurva() {
@@ -644,7 +644,7 @@ function kartuRiwayat() {
   const MERAH = "#c9503a", NAVY = "#0b2545", ORANYE = "#e08a3c", W = 940, L = 92, TB = 170, A0 = L + TB + 92, RK = 62, RW = 200, rh = 30, T = 24;
   const MX = 2.8e6, MXT = Math.max(1, ...rows.map(r => r.t || 0)), bw = W - A0 - RW - RK, H = T + 10 + rows.length * rh + 22, X1 = A0 + 1e6 / MX * bw;
   const lbl = r => r.v > MX ? "±" + fmt(Math.round(r.v / 1e5) / 10) + " juta ha" : fmt(r.v) + " ha";
-  const rasio = r => r.t && !r.ini && r.n !== "1997–1998" ? (r.v / r.t).toLocaleString("id-ID", {maximumFractionDigits: 1}) : "–";
+  const rasio = r => r.t && !r.ini && r.n !== "1997–1998" ? (r.v / r.t).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) : "–";
   let g = `<defs><pattern id="lpArsir" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${MERAH}" opacity=".35"/><rect width="3" height="6" fill="${MERAH}"/></pattern>`
     + `<pattern id="lpArsirT" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${ORANYE}" opacity=".35"/><rect width="3" height="6" fill="${ORANYE}"/></pattern></defs>`
     + `<text x="${L}" y="14" font-size="11" font-weight="700" opacity=".65">Titik panas</text><text x="${A0}" y="14" font-size="11" font-weight="700" opacity=".65">Luas terbakar</text><text x="${W}" y="14" text-anchor="end" font-size="11" font-weight="700" opacity=".65">ha per titik</text>`
