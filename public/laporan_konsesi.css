@@ -196,8 +196,13 @@ main.kn{position:static;inset:auto}
 .kn-tk-kab .kn-gr{font-weight:600;color:var(--ink)}
 .kn-tb tr.kn-pk td{background:color-mix(in oklch,var(--bad) 12%,transparent)}
 .kn-hr-k{font-size:11.5px;margin:6px 0 0}
-.kn-ket{display:grid;grid-template-columns:max-content 1fr;gap:6px 14px;margin:10px 0 0;padding:10px 14px;border:1px solid var(--line);border-left:4px solid #1d4e89;border-radius:10px;background:var(--surface);font-size:12px;line-height:1.45}
-.kn-ket dt{font-weight:800;color:var(--ink)}
+.kn-ket{margin:10px 0 0;padding:10px 12px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:12px;line-height:1.45}
+.kn-ket-h{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+.kn-ket-h i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1d4e89;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-ket dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:0}
+.kn-ket dl>div{padding:8px 10px;border-radius:9px;background:var(--card);border:1px solid var(--line);border-top:3px solid #6b9bd6}
+.kn-ket dl>div:has(.kn-ket-ps){grid-column:1/-1}
+.kn-ket dt{font-weight:800;color:var(--ink);margin-bottom:2px}
 .kn-ket dd{margin:0;color:var(--ink2)}
 .kn-ket dd small{display:block;margin-top:4px;font-size:11px}
 .kn-ket-ps{display:flex;flex-wrap:wrap;gap:6px 14px}
@@ -389,7 +394,7 @@ main.kn{position:static;inset:auto}
   .kn-hr-tb .kn-tb td,.kn-hr-tb .kn-tb th{padding:.6px 5px;font-size:7px;line-height:1.15}
   .kn-hr-tb .kn-bt{height:5px}
   .kn-hr-k{font-size:8px}
-  .kn-ket{font-size:7.5px;gap:2px 8px;padding:4px 8px;margin-top:4px;border-left-width:3px;break-inside:avoid}.kn-ket .kn-pr{font-size:6.5px;padding:0 5px}.kn-ket dd small{font-size:7px;margin-top:1px}
+  .kn-ket{font-size:7.5px;padding:4px 6px;margin-top:4px;break-inside:avoid}.kn-ket-h{font-size:7px;margin-bottom:3px}.kn-ket-h i{width:12px;height:12px}.kn-ket-h svg{width:8px;height:8px}.kn-ket dl{gap:4px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.kn-ket dl>div{padding:3px 6px;border-top-width:2px}.kn-ket .kn-pr{font-size:6.5px;padding:0 5px}.kn-ket dd small{font-size:7px;margin-top:1px}
   .kn-kanan .kn-peta2{grid-template-columns:1fr!important}
   .kn-kanan .kn-img{height:52mm}
   .kn-tgl{font-size:8px;gap:3px}

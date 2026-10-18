@@ -213,7 +213,8 @@
   const parah = k => k[3] >= 100 || (k[6] >= 5 && k[7] >= 50) ? ["Sangat tinggi", "#8f1d14"] : k[3] >= 20 || k[6] >= 4 ? ["Tinggi", "#c9503a"] : k[3] >= 5 ? ["Sedang", "#d2772c"] : ["Rendah", "#8a94a6"];
   const PARAH_URUT = ["Rendah", "Sedang", "Tinggi", "Sangat tinggi"];
   /* kotak keterangan di bawah tabel: istilah tebal di kiri, arti di kanan; keparahan sebagai pil berwarna */
-  const keterangan = (rows, catatan = "") => `<dl class="kn-ket">${rows.map(([l, v]) => `<dt>${l}</dt><dd>${v}</dd>`).join("")}</dl>${catatan}`;
+  const IK_INFO = '<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg>';
+  const keterangan = (rows, catatan = "") => `<div class="kn-ket"><span class="kn-ket-h"><i aria-hidden="true">${IK_INFO}</i>Keterangan</span><dl>${rows.map(([l, v]) => `<div><dt>${l}</dt><dd>${v}</dd></div>`).join("")}</dl></div>${catatan}`;
   const pilParah = (n, w, v) => `<span class="kn-ket-p"><span class="kn-pr" style="--w:${w}">${n}</span>${v}</span>`;
   const KET_PARAH = ["Keparahan", `<span class="kn-ket-ps">${pilParah("Sangat tinggi", "#8f1d14", "≥ 100 titik, atau ≥ 5 hari dengan FRP ≥ 50 MW")}${pilParah("Tinggi", "#c9503a", "≥ 20 titik atau ≥ 4 hari")}${pilParah("Sedang", "#d2772c", "≥ 5 titik")}${pilParah("Rendah", "#8a94a6", "di bawah itu")}</span>`];
   const lamaBerturut = (r, d) => { const tg = new Set(r.harian.map(h => h[0])), g = (x, k) => new Date(Date.parse(x) + k * 864e5).toISOString().slice(0, 10);
