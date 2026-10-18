@@ -285,16 +285,19 @@ function kartuLuas() {
   /* kumulatif sejak 1 Januari = total tahun berjalan dikurangi luas hari-hari sesudahnya */
   const kum = i => fmt(tb ? tb.ha - n.luas.slice(i + 1).reduce((a, v) => a + v, 0) : sum(prov() ? n.baru : n.luas, i))   /* provinsi: seri "baru" = kolom Kumulatif di tabel kab/kota */;
   const triwulan = () => { let c = 0; const kum = (D.tahun_berjalan?.triwulan || []).map(q => c += q.ha);
-    return prov() ? "" : riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i])]); };
+    return prov() ? "" : riwayatTw((q, p, i) => [fmt(q.ha), p ? ubah(q.ha, p.ha) : "–", fmt(kum[i]), "–"]); };
   /* hari yang titik S-NPP-nya ditaksir (celah FIRMS atau arsip rumus lama) diberi "~" */
   const lt = i => (D.luas_taksir || []).includes(D.hari[i]) ? `<span title="taksiran">~</span>${fmt(n.luas[i])}` : fmt(n.luas[i]);
   const tb = prov() ? null : D.tahun_berjalan, jt = v => (v / 1e6).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
+  /* luas terdampak = piksel VIIRS bertitik x 14,06 ha, harian saja (piksel sama terdampak berhari-hari, tidak dijumlah); arsip lama = null */
+  const dp = i => n.dampak?.[i] ?? null;
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
+    + (dp(i) != null ? `; luas terdampak ${Kartu.hl(fmt(dp(i)))} ha` : "")
     + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, pasCetak(batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}), tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
-    [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–"],
-    tb ? [`Grand total s.d. ${tgl(tb.sd)} ${tb.sd.slice(0, 4)}`, fmt(tb.ha), "–", fmt(tb.ha)] : null)), tt(D.sumber.luas) + ((D.luas_taksir || []).length ? "; ~ = hari dengan titik S-NPP ditaksir" : ""), segRentang());
+    [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1], ["Luas terdampak (ha)", i => fmt(dp(i)), 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–", "–"],
+    tb ? [`Grand total s.d. ${tgl(tb.sd)} ${tb.sd.slice(0, 4)}`, fmt(tb.ha), "–", fmt(tb.ha), "–"] : null)), tt([D.sumber.luas, D.sumber.dampak].filter(Boolean).join("; ")) + ((D.luas_taksir || []).length ? "; ~ = hari dengan titik S-NPP ditaksir" : ""), segRentang());
 }
 
 /* teks kepala juga disalin ke span cetak: Chrome tidak menggambar tombol di kepala tabel yang diulang tiap halaman kertas */

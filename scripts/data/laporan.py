@@ -7,6 +7,10 @@ Definisi angka:
   titik  = sensor M, N, N20 (hotspot.json sensor_utama), semua keyakinan, hari kalender WIB (== wilayah.json harian)
   luas   = PERKIRAAN luas terbakar = titik VIIRS S-NPP (N) keyakinan >= 1 hari itu x HA_TITIK (4,3 ha)
   baru   = sama dengan luas (tiap deteksi harian menyumbang luas baru); kumulatif = jumlah luas harian
+  dampak = luas TERDAMPAK = sel kisi 375 m (1 piksel VIIRS) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan >= 1 hari itu
+           x 14,06 ha, minimal sama dengan luas. Area di dalam piksel yang menyala: memuat api, asap panas, dan lahan belum
+           terbakar di piksel yang sama, jadi selalu >= luas terbakar. Harian saja: sel yang sama terdampak berhari-hari, jadi
+           tidak dijumlahkan jadi kumulatif. Hari arsip sebelum kolom ini ada = None.
   Kalibrasi HA_TITIK: luas terbakar resmi per tahun (seri Bakom/BNPB = SiPongi KLHK 2015-2025) dibagi titik VIIRS S-NPP
   tahun yang sama (sejarah.json): median 4,30 ha/titik, kuartil 3,22-4,59, min-maks 2,15-6,54. Uji balik tinggalkan-satu-tahun
   (rasio median tahun lain) pada seri 2015-2025: 6 dari 11 tahun meleset <= 15%; terburuk +101% (2017) dan -35% (2021).
@@ -28,6 +32,7 @@ AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "../.."))
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
 HA_TITIK, HA_RENDAH, HA_TINGGI = 4.30, 3.22, 4.59   # ha per titik S-NPP; lihat docstring
+HA_PIKSEL, SEL = 14.06, 0.375 / 111.32   # 1 piksel VIIRS 375 m; sel kisi dalam derajat lintang
 LUAS_V = 2
 ARSIP_HARI = 90
 TUTUP_JAM = 21
@@ -58,12 +63,13 @@ def hari_status(dibuat, hari_akhir):
 
 
 def hitung(hs, sensor_utama=None):
-    """Titik panas -> t[hari][kunci] = titik sensor utama, s[hari][kunci] = titik S-NPP keyakinan >= 1. Kunci: (), (prov,), (prov,kab)."""
+    """Titik panas -> t[hari][kunci] = titik sensor utama, s[hari][kunci] = titik S-NPP keyakinan >= 1,
+    c[hari][kunci] = set sel kisi 375 m bertitik VIIRS (N, N20) keyakinan >= 1. Kunci: (), (prov,), (prov,kab)."""
     acuan = dt.datetime.fromisoformat(hs["acuan"]).astimezone(WIB)
     akhir = acuan.date()
     utama = set(sensor_utama or hs.get("sensor_utama") or ["M", "N", "N20"])
     tabel = [tuple(w.split("|")[:2]) for w in hs["wilayah"]]
-    t, s = {}, {}
+    t, s, c = {}, {}, {}
     for lat, lon, _j, sen, _f, yak, w, tg in hs["baris"]:
         d = tanggal(tg, akhir)
         prov, kab = tabel[w]
@@ -75,20 +81,26 @@ def hitung(hs, sensor_utama=None):
             for k in ((), (prov,), (prov, kab)):
                 a = s.setdefault(d, {})
                 a[k] = a.get(k, 0) + 1
-    return acuan, akhir, t, s
+        if sen in ("N", "N20") and yak >= 1:
+            sel = (math.floor(lat / SEL), math.floor(lon * math.cos(math.radians(lat)) / SEL))
+            for k in ((), (prov,), (prov, kab)):
+                c.setdefault(d, {}).setdefault(k, set()).add(sel)
+    return acuan, akhir, t, s, c
 
 
-def seri(t, s):
-    """-> hari terurut, {kunci: {'titik':[], 'luas':[], 'baru':[]}}, konteks {hari:int}."""
-    hari = sorted(set(t) | set(s))
-    kunci = {k for d in hari for k in list(t.get(d, {})) + list(s.get(d, {}))}
-    out = {k: {"titik": [], "luas": [], "baru": []} for k in kunci}
+def seri(t, s, c=None):
+    """-> hari terurut, {kunci: {'titik':[], 'luas':[], 'baru':[], 'dampak':[]}}, konteks {hari:int}."""
+    c = c or {}
+    hari = sorted(set(t) | set(s) | set(c))
+    kunci = {k for d in hari for k in list(t.get(d, {})) + list(s.get(d, {})) + list(c.get(d, {}))}
+    out = {k: {"titik": [], "luas": [], "baru": [], "dampak": []} for k in kunci}
     for d in hari:
         for k in kunci:
             ha = round(s.get(d, {}).get(k, 0) * HA_TITIK)
             out[k]["titik"].append(t.get(d, {}).get(k, 0))
             out[k]["luas"].append(ha)
             out[k]["baru"].append(ha)
+            out[k]["dampak"].append(max(ha, round(len(c.get(d, {}).get(k, ())) * HA_PIKSEL)))
     return hari, out, {d.isoformat(): i for i, d in enumerate(hari)}
 
 
@@ -110,13 +122,16 @@ def gabung(arsip, hari, out, konteks, tertua):
     hasil = {}
     for k in set(out) | set(lama):
         n, o = out.get(k), lama.get(k)
-        r = {"titik": [], "luas": [], "baru": []}
+        r = {"titik": [], "luas": [], "baru": [], "dampak": []}
         for d in semua:
             ada_l = o is not None and d in lama_h
             ada_b = n is not None and d in baru_h
             pakai_lama = ada_l and (not ada_b or d == tertua or d not in baru_h)
             for f in ("titik", "luas"):
                 r[f].append(o[f][lama_h.index(d)] if pakai_lama else (n[f][baru_h.index(d)] if ada_b else 0))
+            # dampak: arsip sebelum kolom ini ada = None (tidak diketahui), bukan 0
+            od = (o.get("dampak") or [None] * len(lama_h))[lama_h.index(d)] if ada_l else None
+            r["dampak"].append(od if pakai_lama else (n["dampak"][baru_h.index(d)] if ada_b else (0 if not ada_l else od)))
             if ada_b and konteks.get(d, -1) >= lama_ctx.get(d, -1) or not ada_l:
                 r["baru"].append(n["baru"][baru_h.index(d)] if ada_b else 0)
             else:
@@ -132,11 +147,11 @@ def arsip_seri(arsip):
     o = {}
     n = arsip.get("nasional")
     if n:
-        o[()] = {f: n[f] for f in ("titik", "luas", "baru")}
+        o[()] = {f: n.get(f) for f in ("titik", "luas", "baru", "dampak")}
     for p, v in (arsip.get("prov") or {}).items():
-        o[(p,)] = {f: v[f] for f in ("titik", "luas", "baru")}
+        o[(p,)] = {f: v.get(f) for f in ("titik", "luas", "baru", "dampak")}
     for v in arsip.get("kab") or []:
-        o[(v["prov"], v["nama"])] = {f: v[f] for f in ("titik", "luas", "baru")}
+        o[(v["prov"], v["nama"])] = {f: v.get(f) for f in ("titik", "luas", "baru", "dampak")}
     return o
 
 
@@ -183,7 +198,7 @@ def isi_mundur(arsip, h30, porsi):
     def sambung(lama, baru):  # baru: seri isi mundur, lama: seri arsip (boleh None)
         n = len(arsip["hari"])
         lama = lama or {"titik": [0] * n, "luas": [0] * n, "baru": [0] * n}
-        return {f: baru[f] + lama[f] for f in ("titik", "luas", "baru")}
+        return {**{f: baru[f] + lama[f] for f in ("titik", "luas", "baru")}, "dampak": [None] * len(hs) + (lama.get("dampak") or [None] * n)}
     nas = [sum(v[i] for v in h30["prov"].values()) for i in range(len(h30["hari"]))]
     a["nasional"] = {**sambung(a.get("nasional"), ser(nas)), "kab": [sum(1 for v in h30["kab"].values() if v[i] > 0) for i in ix] + (a.get("nasional") or {}).get("kab", [0] * len(arsip["hari"]))}
     for p, v in h30["prov"].items():
@@ -194,7 +209,7 @@ def isi_mundur(arsip, h30, porsi):
         kab[pk] = {**(kab.get(pk) or {"prov": pk[0], "nama": pk[1]}), **sambung(kab.get(pk), ser(v))}
     for k, v in kab.items():
         if len(v["titik"]) == len(arsip["hari"]):   # kab tanpa riwayat harian30: nol di depan
-            v.update({f: [0] * len(hs) + v[f] for f in ("titik", "luas", "baru")})
+            v.update({f: [0] * len(hs) + v[f] for f in ("titik", "luas", "baru")}, dampak=[None] * len(hs) + (v.get("dampak") or [None] * len(arsip["hari"])))
     a["kab"] = list(kab.values())
     a["hari"] = hs + arsip["hari"]
     a["luas_taksir"] = sorted(set(hs) | set(arsip.get("luas_taksir") or []))
@@ -330,9 +345,9 @@ def luas_banding(sejarah, sat, resmi, tb, hari_iso, prov, tahun):
 
 
 def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None, h30=None, titik_tahun=None, luas_sat=None):
-    acuan, akhir, t, s = hitung(hs)
+    acuan, akhir, t, s, c = hitung(hs)
     porsi, taksir = isi_celah(t, s)
-    hari, out, konteks = seri(t, s)
+    hari, out, konteks = seri(t, s, c)
     arsip = isi_mundur(konversi_arsip(arsip, porsi), h30, porsi)
     dibuat = sekarang or (dt.datetime.fromisoformat(meta["dibuat"]) if meta and meta.get("dibuat") else dt.datetime.now(WIB))
     if dibuat.tzinfo is None:
@@ -344,7 +359,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
     tahun = str(akhir.year)
 
     def nol():
-        return {"titik": [0] * len(hari_iso), "luas": [0] * len(hari_iso), "baru": [0] * len(hari_iso)}
+        return {"titik": [0] * len(hari_iso), "luas": [0] * len(hari_iso), "baru": [0] * len(hari_iso), "dampak": [0] * len(hari_iso)}
 
     nas = dict(ser.get((), nol()))
     kabs = [k for k in ser if len(k) == 2]
@@ -385,6 +400,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "luas_banding": luas_banding(sejarah, luas_sat, luas_resmi, tb, hari_iso, prov, tahun),
         "sumber": {
             "titik": "NASA FIRMS NRT: MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20",
+            "dampak": "Luas terdampak: sel 375 m (1 piksel VIIRS, 14,06 ha) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan sedang/tinggi hari itu; memuat lahan belum terbakar di piksel yang sama, jadi selalu lebih luas dari luas terbakar; harian, tidak dijumlahkan",
             "luas": "Perkiraan: titik VIIRS S-NPP (NASA FIRMS) × 4,3 ha, dikalibrasi ke luas terbakar resmi tahunan 2015–2025 (SiPongi KLHK); kuartil 3,2–4,6 ha per titik; uji balik tahunan meleset sampai +101%/−35%; angka harian dan per wilayah indikatif; bukan pengukuran citra",
             "kompleks": "Kejadian api: titik VIIRS yang berdekatan (1,5 km, 7 hari); status dihitung dari aturan Centurisk97",
             "wilayah": "Badan Informasi Geospasial (BIG), batas wilayah administrasi edisi Juni 2026",
@@ -436,9 +452,12 @@ def uji():
                     b(L(0.6, 101.6), "N21", 2, 0, "01-01"),                                     # N21: bukan titik, bukan luas
                     b(L(0.7, 101.7), "M", 2, 1, "01-02"), b(L(0.8, 101.8), "N", 0, 1, "01-02"),  # M: titik tanpa luas; yak 0: titik tanpa luas
                     b(L(0.9, 101.9), "N20", 1, 1, "01-02")]}
-    acu, akhir, t, s = hitung(hs)
+    acu, akhir, t, s, c = hitung(hs)
     assert akhir == dt.date(2026, 1, 2) and dt.date(2025, 12, 31) in t, (akhir, list(t))
-    hari, o, ctx = seri(t, s)
+    hari, o, ctx = seri(t, s, c)
+    # dampak: 12-31 dua titik S-NPP satu piksel -> 1 sel x 14,06; 01-02 N20 satu sel, N yak 0 tidak dihitung
+    assert o[()]["dampak"] == [14, 14, 14], o[()]["dampak"]
+    assert all(d >= l for d, l in zip(o[()]["dampak"], o[()]["luas"]))
     assert [d.isoformat() for d in hari] == ["2025-12-31", "2026-01-01", "2026-01-02"]
     assert o[()]["titik"] == [2, 1, 3], o[()]
     assert o[()]["luas"] == [9, 4, 0], o[()]["luas"]  # 2 / 1 / 0 titik S-NPP keyakinan >= 1, x 4,3 ha
@@ -457,6 +476,7 @@ def uji():
     # porsi median S-NPP = 1 (2/2, 1/1, 0/3); 01-02 tanpa S-NPP = celah -> 3 x 1 x 4,3. Arsip lama dikonversi titik x 1 x 4,3
     assert n["titik"] == [5, 9, 1, 3] and n["luas"] == [22, 39, 4, 13], n  # tertua jendela (12-31) dari arsip
     assert n["baru"] == n["luas"], n
+    assert n["dampak"][:2] == [None, None] and n["dampak"][2:] == [14, 14], n["dampak"]   # arsip tanpa kolom dampak = None
     assert lap["luas_v"] == LUAS_V and konversi_arsip(lap, 0.1) is lap  # arsip baru tidak dikonversi ulang
     assert lap["awal_arsip"] == "2025-12-30" and n["kab"][2] == 1 and lap["prov"]["14"]["nama"] == "Riau"
     # arsip kosong: semua dari jendela
@@ -484,7 +504,7 @@ def uji():
     # (a) titik per prov per hari == wilayah.json harian (berkas lokal)
     hl, wl = baca("hotspot.json"), baca("wilayah.json")
     if hl and wl:
-        _, _, tt, _ = hitung(hl)
+        _, _, tt, _, _ = hitung(hl)
         n = 0
         for p, v in wl.items():
             for tg, c in v["harian"].items():
