@@ -44,10 +44,10 @@ tr.sm-tidak td:last-child small{color:#a8402c;font-weight:700}
 .sm-leg.row{flex-direction:row;flex-wrap:wrap;gap:4px 14px;font-size:11.5px}
 .sm-leg .sw{vertical-align:middle}
 @media (max-width:900px){
-  #sim .simpanel{top:auto;bottom:118px;left:8px;right:8px;width:auto;max-height:42%;padding:10px 14px 14px;transition:max-height .25s}
+  #sim .simpanel{top:auto;bottom:146px;left:8px;right:8px;width:auto;max-height:42%;padding:10px 14px 14px;transition:max-height .25s}
   #sim .simpanel.lipat{max-height:64px;overflow:hidden}
   .sm-gagang{display:block;width:44px;height:5px;border:0;border-radius:3px;background:var(--line);margin:0 auto 8px;cursor:pointer;padding:0}
-  #simWaktu{bottom:10px;padding:8px 10px}
+  #simWaktu{bottom:10px;padding:8px 10px;left:8px;right:72px;width:auto;transform:none} /* kanan dikosongkan untuk tombol obrolan melayang */
   #simWaktu b{min-width:0;font-size:12.5px}
   #smMiring{display:none!important}
   #simWaktu{gap:6px 8px}

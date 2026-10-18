@@ -72,3 +72,5 @@ const Guncang = {
     try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
 };
 const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";
+/* waktu tiba tsunami: "langsung" di atas bidang patahan, "kurang dari 5 menit", selebihnya "sekitar N menit" kelipatan 5 (sama dengan sim.js) */
+const waktuTiba = m => m < 1 ? "langsung" : m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
