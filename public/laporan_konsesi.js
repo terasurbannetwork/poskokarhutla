@@ -163,12 +163,8 @@
   const tampilProfil = r => r._top <= S.profil || BUKA.has(r.id);
   const BUKA = new Set();
 
-  const tabelUsaha = rs => `<div class="tw"><table class="kn-tb kn-rk"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Kecamatan</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik</th><th class="r">Terbakar (ha)</th><th>Periode api</th><th class="r">Hari dengan hotspot</th><th class="r">7 hari</th></tr></thead><tbody>
-    ${rs.map((r, j) => `<tr><td>${j + 1}</td><td><a href="#p${r._i}" class="kn-nm" data-buka="${r._i}">${esc(r.nama)}</a>${r.grup ? `<small>${bendera(r.negara?.[0], 10)}${esc(r.grup)}</small>` : ""}</td><td>${jenisPil(r.jenis)}</td>
-      <td>${esc(r.kec.slice(0, 2).map(k => k.split(",")[0]).join(", ") || "–")}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td>
-      <td class="r">${ha(r.luas_bakar_ha)}<small>${pct(r.persen_bakar)}</small></td><td>${rentang(r.pertama, r.terakhir)}</td><td class="r">${fmt(r.hari_aktif)}</td>
-      <td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : "–"}</td></tr>`).join("")}
-    </tbody></table></div>`;
+  const tabelUsaha = rs => `<div class="tw"><table class="kn-tb kn-dft">${KEPALA}<tbody>${rs.map(r => baris(r)).join("")}</tbody>
+    <tfoot><tr class="kn-tot"><td colspan="2">Jumlah</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="3"></td>${selJml(rs)}</tr></tfoot></table></div>`;
 
   /* r.rspo = {grup, sertifikat, sejak} dari data RSPO 2020 (GFW), dicocokkan lewat nama; tak cocok bukan berarti bukan anggota, jadi "–".
      HGU tidak ada di data (peta izin KLHK, bukan HGU ATR/BPN): r.hgu_ha bila kelak ada */
@@ -182,24 +178,26 @@
   const ringkas = (ks, n) => !ks.length ? "–" : ks.length <= n ? esc(ks.join(", ")) : `<span title="${esc(ks.join(", "))}">${esc(ks.slice(0, n).join(", "))} <span class="kn-mt">+${ks.length - n}</span></span>`;
   /* tabel daftar perusahaan dikelompokkan per kab/kota (pemilik 19 Okt 2026): baris kab bisa dibuka-tutup, isinya PT yang titiknya
      terbanyak di kab itu; baris PT bisa diklik/Enter, menggulir ke profil (dibuka bila belum tampil). KAB_BUKA bertahan lintas render. */
+  /* kolom & baris PT dipakai bersama oleh daftar perusahaan dan tabel tiap kab/kota (pemilik 19 Okt 2026: datanya disamakan) */
+  const jml = (g, f) => g.reduce((t, r) => t + (f(r) || 0), 0);
+  const selJml = g => `<td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td><td class="r kn-mt">${pct(jml(g, r => r.luas_ha) ? jml(g, r => r.luas_bakar_ha) / jml(g, r => r.luas_ha) : 0)}</td>`;
+  const baris = r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td><td>${r.grup ? `<span class="kn-gr">${logo(r.unit || r.grup, 16)}${esc(r.grup)}</span>` : NA}</td>
+        <td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td>
+        <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`;
+  const KEPALA = `<thead><tr><th>No</th><th>Nama PT</th><th>Kecamatan</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>`;
   const KAB_BUKA = new Set();
   function tabelDaftar(rs) {
     const grup = new Map();
     for (const r of rs.slice().sort((a, b) => a._rp - b._rp)) { const k = r.kabU || kabUtama(r); if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
-    const jml = (g, f) => g.reduce((t, r) => t + (f(r) || 0), 0);
     const kel = [...grup].sort((a, b) => jml(b[1], r => r.titik) - jml(a[1], r => r.titik));
-    const sel = g => `<td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td><td class="r kn-mt">${pct(jml(g, r => r.luas_ha) ? jml(g, r => r.luas_bakar_ha) / jml(g, r => r.luas_ha) : 0)}</td>`;
-    const baris = r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td><td>${r.grup ? `<span class="kn-gr">${logo(r.unit || r.grup, 16)}${esc(r.grup)}</span>` : NA}</td>
-        <td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td>
-        <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`;
-    return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th>Kecamatan</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>
+    return `<div class="tw"><table class="kn-tb kn-dft">${KEPALA}
       ${kel.map(([k, g]) => { const buka = KAB_BUKA.has(k);
         /* di layar jumlahnya di baris kab; di PDF baris kab jadi judul dan jumlahnya turun ke baris subtotal di bawah PT-nya */
-        const sub = sel(g);
+        const sub = selJml(g);
         return `<tbody><tr class="kn-kab" data-kab="${esc(k)}"><td colspan="2"><button type="button" class="kn-kab-b" aria-expanded="${buka}"><span class="kn-kab-i" aria-hidden="true">▸</span>${esc(k)}</button></td><td><span class="kn-jml">${fmt(g.length)} PT</span></td><td colspan="3"></td>${sub}</tr>
         ${g.map(r => baris(r).replace("<tr ", `<tr${buka ? "" : " hidden"} `)).join("")}
         <tr class="kn-sub kn-subkab"><td colspan="6">Subtotal ${esc(k)}</td>${sub}</tr></tbody>`; }).join("")}
-      <tfoot><tr class="kn-tot"><td colspan="2">Grand total</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="3"></td>${sel(rs)}</tr></tfoot></table></div>`;
+      <tfoot><tr class="kn-tot"><td colspan="2">Grand total</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="3"></td>${selJml(rs)}</tr></tfoot></table></div>`;
   }
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
   function top5Hari(r) {
