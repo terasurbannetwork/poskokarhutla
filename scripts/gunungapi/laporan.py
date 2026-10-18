@@ -95,29 +95,26 @@ def bangun(st, abu, lama, cari):
             hit[j] += 1
     naik = [p for p in st.get("perubahan", []) if p["ke"] > p["dari"]]
 
-    def seri(filter_g, filter_l, filter_n, bd):
-        s = {k: [None] * n for k in ks}
-        for h, i in idx.items():
-            if h in ri and not filter_g[0]:
-                lv = {int(a): b for a, b in ri[h]["level"].items()}
-                s["siaga_awas"][i] = lv.get(3, 0) + lv.get(4, 0)
-                s["waspada_ke_atas"][i] = lv.get(2, 0) + lv.get(3, 0) + lv.get(4, 0)
-        gs = [g for g in gun if filter_g[1](g)]
-        s["siaga_awas"][today] = sum(g["level"] >= 3 for g in gs)
-        s["waspada_ke_atas"][today] = sum(g["level"] >= 2 for g in gs)
-        return s
-
     def hitung(nas, kode):
         ok = (lambda g: True) if nas else (lambda g: g["_p"] == kode)
-        s = seri((not nas, ok), None, None, None)
-        nm = {g["nama"] for g in gun if ok(g)}
+        s = {k: [None] * n for k in ks}
+        if nas:  # riwayat hanya menyimpan jumlah per level nasional
+            for h, i in idx.items():
+                if h in ri:
+                    lv = {int(a): b for a, b in ri[h]["level"].items()}
+                    s["siaga_awas"][i] = lv.get(3, 0) + lv.get(4, 0)
+                    s["waspada_ke_atas"][i] = lv.get(2, 0) + lv.get(3, 0) + lv.get(4, 0)
+        gs = [g for g in gun if ok(g)]
+        s["siaga_awas"][today] = sum(g["level"] >= 3 for g in gs)
+        s["waspada_ke_atas"][today] = sum(g["level"] >= 2 for g in gs)
+        nm = {g["nama"] for g in gs}
         for i in range(n):
             if tutup(i):
                 s["erupsi"][i] = sum(1 for x, t in zip(let, tl) if x["gunung"] in nm and iso(t.astimezone(WIB).date()) == hari[i])
-            if hari[i] in ri or hari[i] == iso(hr):
+            if hari[i] in ri or i == today:
                 s["kenaikan"][i] = sum(1 for p in naik if p["tgl"] == hari[i] and p["nama"] in nm)
         if ada_abu:
-            ids = {slug(g["nama"]) for g in gun if ok(g)}
+            ids = {slug(g["nama"]) for g in gs}
             s["bandara_abu"][today] = len({b["icao"] for b in abu.get("bandara_terdampak", []) if b["gunung"] in ids})
         return s
 
