@@ -198,7 +198,7 @@ main.kn{position:static;inset:auto}
   .kn-ph h2{font-size:16px}
   .kn-no{width:26px;height:26px;font-size:12px;border-radius:7px}
   .kn-grp{padding:1px 8px 1px 3px;border-width:1.5px}
-  .kn-ubin{grid-template-columns:repeat(5,1fr);gap:6px;margin-bottom:6px}
+  .kn-ubin{grid-template-columns:repeat(4,1fr);gap:6px;margin-bottom:6px}
   .kn-ubin div{padding:5px 8px;border-radius:8px}
   .kn-ubin b{font-size:14px}
   .kn-ubin span{font-size:8px}

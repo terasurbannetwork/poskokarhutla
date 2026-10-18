@@ -259,7 +259,6 @@
         <div><b>${ha(r.luas_bakar_ha)} ha</b><span>indikasi terbakar (${pct(r.persen_bakar)} konsesi)</span></div>
         <div><b>${fmt(r.hari_aktif)} hari</b><span>bertitik panas, ${r.kejadian.length} kejadian</span></div>
         <div><b>${fmt(r.titik_7h)}</b><span>titik 7 hari terakhir</span></div>
-        ${r.walhi_titik ? `<div><b>${fmt(r.walhi_titik)}</b><span>titik versi WALHI (${esc((r.walhi_tabel || [])[0] || "")})</span></div>` : ""}
       </div>
       <div class="kn-dua">
         <dl class="kn-id">
