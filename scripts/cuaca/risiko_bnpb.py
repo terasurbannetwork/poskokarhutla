@@ -7,6 +7,7 @@ Sumber (docs/multi-bencana/SUMBER-BNPB.md, lisensi tidak tertulis: sebut "Sumber
   /apiv4/data-irbi-full                 NDJSON, indeks risiko (IRBI) per kab per tahun 2015-2025; kolom cuaca_ekstrem, abrasi, status
   /apiv4/get-infra-risk/{kab}/{bahaya}  sarana & penduduk per kelas aman/rendah/sedang/tinggi
 Hasil curl nyata (18 Okt 2026):
+  * kab yang belum dihitung server dibalas {"status":"pending"} (240 dari 514 pada panggilan pertama): tidak disimpan; jalankan --bangun lagi sampai infra_gagal 0.
   * nama bahaya yang benar: "cuaca-ekstrim" dan "gelombang-ekstrim-dan-abrasi" (ejaan "ekstrim", tanda minus).
   * ALL/{bahaya} BUKAN jumlah nasional (penduduk kelas tinggi cuaca = 303 rb, padahal Makassar saja 550 rb): dipakai jumlah per kab.
   * gelombang-ekstrim-dan-abrasi mengembalikan nol di kab pesisir yang dicoba; bila nol di SEMUA kab, bagiannya dibuang.
@@ -150,6 +151,9 @@ def bangun():
             o = json.loads(ambil(f"{BASE}get-infra-risk/{k}/{BAHAYA[h]}"))
         except Exception as e:
             print(f"gagal {h} {k}: {e}", file=sys.stderr)
+            return hk, None
+        if isinstance(o, dict) and o.get("status") == "pending":   # server menghitung dulu (dibalas {status:pending}); jangan simpan, ulangi jalankan --bangun
+            time.sleep(JEDA)
             return hk, None
         json.dump(o, open(jc, "w"))
         time.sleep(JEDA)

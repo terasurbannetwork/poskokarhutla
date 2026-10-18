@@ -20,7 +20,7 @@ const Metode = {
       ["Riwayat harian (Tren)", "Open-Meteo, analisis dan prakiraan model", "Satu titik per hari, tumbuh tiap jalan; hari lampau = analisis model, bukan alat ukur"],
       ["Penduduk di area hujan lebat (Dampak)", "WorldPop 2026 dan Open-Meteo", "Jiwa di kotak prakiraan 50 mm atau lebih; prakiraan, bukan jiwa yang sudah terdampak"],
       ["Kejadian dan korban tahunan (Tren, Dampak)", "BNPB dan DIBI BNPB", "Hanya angka yang tercatat"],
-      ["Risiko cuaca ekstrem dan sarana kelas bahaya tinggi (Dampak)", "InaRISK BNPB: indeks risiko IRBI per kabupaten dan kota (2015 sampai 2025) dan sarana per kelas bahaya (infra-risk)", "Indeks risiko adalah penilaian potensi, bukan catatan kejadian. Skala 2025 berbeda dari 2015 sampai 2024, jadi perubahan dihitung 2015 ke 2024. Diperbarui tangan; lisensi data tidak tertulis, sumber selalu disebut"],
+      ["Risiko cuaca ekstrem dan sarana kelas bahaya tinggi (Dampak)", "InaRISK BNPB: indeks risiko IRBI per kabupaten dan kota (2015 sampai 2025) dan sarana per kelas bahaya (infra-risk)", "Indeks risiko adalah penilaian potensi, bukan catatan kejadian. Skala 2025 berbeda dari 2015 sampai 2024, jadi perubahan dihitung 2015 ke 2024. <span id='mtRisiko'>Data InaRISK diambil berkala</span>; lisensi data tidak tertulis, sumber selalu disebut"],
       ["Status kecamatan 72 jam: hujan", "Open-Meteo, ambang kelas BMKG (50, 100, 150 mm per hari)", "Normal, Waspada, Siaga, Awas per kecamatan, tiga hari; dihitung dari prakiraan, bukan pernyataan resmi"],
       ["Status kecamatan 72 jam: gelombang", "Open-Meteo Marine, ambang kelas BMKG Maritim (2,5; 4; 6 m)", "Tinggi gelombang tertinggi sehari di titik pesisir terdekat"],
       ["Status kecamatan 72 jam: embusan", "Open-Meteo, ambang hipotesis Pantau Bencana (54, 72, 90 km/jam)", "Belum dikunci uji balik"],
@@ -42,5 +42,6 @@ const Metode = {
       <li>Gelombang di bawah siklon memakai Pierson dan Moskowitz (1964), Hs = 0,21 U kuadrat / g. Ini batas atas laut berkembang penuh, jadi perkiraan atas, bukan prakiraan.</li>
       <li>Pelabuhan: terganggu bila Hs 1,5 m atau lebih, atau angin 16 kt atau lebih; tutup bila Hs 2,5 m atau lebih, atau angin 21 kt atau lebih. Bandara: terganggu bila embusan 54 km/jam atau lebih, atau hujan 10 mm/jam atau lebih; tutup bila embusan 72 km/jam atau lebih. Semua ini hipotesis berdasar kriteria risiko BMKG, bukan keputusan syahbandar atau otoritas bandara.</li></ul>`;
     $("#metode").innerHTML = lain + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Pantau Bencana").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi();
+    (typeof Dampak !== "undefined" ? Dampak.dibuat() : Promise.resolve(null)).then(d => { const e = $("#mtRisiko"); if (d && e) e.textContent = "Data InaRISK dibuat " + tglPendek(d.slice(0, 10)); });
   },
 };
