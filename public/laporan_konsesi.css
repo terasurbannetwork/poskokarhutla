@@ -70,7 +70,7 @@ main.kn{position:static;inset:auto}
 .kn-grp em{font-style:normal;font-size:.85em;font-weight:700;color:var(--ink2);padding-left:8px;margin-left:2px;border-left:1px solid var(--line)}
 .kn-ng{white-space:nowrap}
 .kn-peta{height:520px;border-radius:12px;overflow:hidden;border:1px solid var(--line)}
-.kn-leg{display:flex;gap:16px;flex-wrap:wrap;font-size:12px;color:var(--ink2);margin-top:8px}
+.kn-leg{display:flex;gap:16px;flex-wrap:wrap;justify-content:center;font-size:12px;color:var(--ink2);margin-top:8px}
 .kn-leg span{display:inline-flex;align-items:center;gap:6px}
 .kn-lg-p{width:16px;height:10px;border:2px solid #00b8cc;background:#00e5ff22}
 .kn-lg-t{width:10px;height:10px;border-radius:50%;border:1px solid #3a0a00;print-color-adjust:exact;-webkit-print-color-adjust:exact}
@@ -89,6 +89,19 @@ main.kn{position:static;inset:auto}
 .kn-sek .tw{border-radius:0 0 10px 10px;border-top:0}
 .kn-sek .kn-tb th{background:#1d4e89;border-bottom:0}
 .kn-sl{display:inline-block;padding:2px 9px;border-radius:999px;font:800 11px var(--font);background:var(--surface);color:var(--ink2);white-space:nowrap}
+.kn-sta{display:inline-flex;align-items:center;gap:7px;height:28px;padding:0 12px 0 10px;border-radius:999px;background:#fff;color:#1f7a5c;font:800 12px var(--font);white-space:nowrap}
+.kn-sta i{width:9px;height:9px;border-radius:50%;background:currentColor;box-shadow:0 0 0 3px color-mix(in oklch,currentColor 22%,transparent)}
+.kn-sta-a{color:#b3261e}
+.kn-sta-a i{animation:kn-denyut 1.6s ease-in-out infinite}
+.kn-sta b{font:800 15px var(--display);color:#b3261e}
+.kn-sta small{font-weight:700;color:var(--ink2);font-size:11px}
+@keyframes kn-denyut{50%{box-shadow:0 0 0 6px color-mix(in oklch,currentColor 10%,transparent)}}
+@media (prefers-reduced-motion:reduce){.kn-sta-a i{animation:none}}
+.kn-isi{display:inline-flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.kn-ngp{display:inline-flex;align-items:center;gap:5px;padding:2px 9px 2px 6px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:11.5px;font-weight:600;white-space:nowrap}
+.kn-ngp .kn-bd{margin-right:0}
+.kn-ngp-j{padding-left:9px;color:var(--ink2)}
+.kn-it .kn-gr b{font-weight:800}
 .kn-ok{display:inline-block;padding:2px 9px;border-radius:999px;font:800 11px var(--font);background:#2b8c86;color:#fff;white-space:nowrap}
 .kn-kpi-p{margin-bottom:14px}
 .kn-kpi-p b{font-size:24px}
@@ -155,12 +168,20 @@ main.kn{position:static;inset:auto}
 .kn-hr-tb .kn-tb th{font-size:9px}
 .kn-tb tr.kn-pita td{background:#1d4e89;color:#fff;font-weight:800;padding:5px 10px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-tb tr.kn-pita span{font-weight:600;opacity:.85;margin-left:10px;font-size:11px}
+.kn-tb tr.kn-pita-i td{background:#0b2545;font-size:13px;padding:7px 10px}
+.kn-tb tr.kn-pita a{color:#fff;text-decoration:none}
+.kn-tk-kab .kn-gr{font-weight:600;color:var(--ink)}
 .kn-tb tr.kn-pk td{background:color-mix(in oklch,var(--bad) 12%,transparent)}
 .kn-hr-k{font-size:11.5px;margin:6px 0 0}
 .kn-tb td.kn-rs{vertical-align:top;border-right:1px solid var(--line);background:var(--card)}
 .kn-tb tr.kn-sub td{background:#eef2f8;font-weight:800;color:#0b2545;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-tk-kab .kn-gr{font-size:11.5px;color:var(--ink2)}
 .kn-sampul{display:none}
+.kn-nomor{list-style:none;margin:10px 0 0;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:4px 14px;font-size:12px}
+.kn-nomor li{display:flex;align-items:center;gap:7px;min-width:0}
+.kn-nomor i{flex:none;width:20px;height:20px;border-radius:50%;background:#0b2545;color:#fff;font:800 10px var(--font);display:grid;place-items:center;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-nomor a{color:var(--ink);text-decoration:none;font-weight:600;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.kn-nomor em{font-style:normal;font-weight:800;color:#c9503a;margin-left:auto}
 .kn-sb{font-size:9.5px}
 .kn-jn small{grid-column:2;display:block;color:var(--ink2);font-size:11.5px}
 .kn-cb{min-width:180px}
@@ -237,6 +258,10 @@ main.kn{position:static;inset:auto}
   .kn-img-l{width:auto;height:112mm;aspect-ratio:720/460;margin:0 auto}
   .kn-img-l img{object-fit:contain}
   .kn-leg{font-size:8px;margin-top:4px}
+  .kn-nomor{font-size:8px;grid-template-columns:repeat(4,1fr);gap:1px 10px}
+  .kn-nomor i{width:13px;height:13px;font-size:7px}
+  .kn-img-l{height:118mm}
+  .kn-pv figcaption{font-size:8px;text-align:center}
   /* profil perusahaan: halaman 1 = identitas + grafik + dua peta; halaman 2 = kejadian, tanggal, titik terbaru */
   .kn-prof{padding:8px 12px}
   .kn-ph{margin:-8px -12px 6px;padding:8px 12px;border-radius:8px 8px 0 0}
@@ -295,3 +320,4 @@ main.kn{position:static;inset:auto}
   .kn-metode ul{font-size:9px;gap:3px}
 }
 .kn-nw{white-space:nowrap}
+@media screen{.kn-pvk{display:none}}

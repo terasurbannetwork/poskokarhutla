@@ -179,13 +179,15 @@
 
   function tabelKab(p) {
     const T = jumlah(p.rs);
-    return `<div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>No</th><th>Kabupaten/kota</th><th>Perusahaan</th><th>Jenis</th><th>Grup</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th>Periode api</th><th class="r">7 hari</th></tr></thead><tbody>
+    return `<div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Grup</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">% konsesi</th><th>Periode api</th><th class="r">7 hari</th></tr></thead><tbody>
       ${p.kab.map(([kb, rs], j) => { const x = jumlah(rs);
-        return rs.map((r, m) => `<tr>${m ? "" : `<td rowspan="${rs.length + 1}" class="kn-rs">${j + 1}</td><td rowspan="${rs.length + 1}" class="kn-rs"><a class="kn-nm" href="#v${p.k}-${j}">${esc(kb)}</a><small>${fmt(rs.length)} perusahaan</small></td>`}
-          <td><a href="#p${r._i}" data-buka="${r._i}" class="kn-nm">${esc(r.nama)}</a></td><td>${jenisPil(r.jenis)}</td><td>${r.grup ? `<span class="kn-gr">${bendera(r.negara?.[0], 10)}${esc(r.grup)}</span>` : `<span class="kn-mt">–</span>`}</td>
-          <td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${ha(r.luas_bakar_ha)}<small>${pct(r.persen_bakar)} konsesi</small></td><td>${rentang(r.pertama, r.terakhir)}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : "–"}</td></tr>`).join("")
-          + `<tr class="kn-sub"><td colspan="3">Subtotal ${esc(kb)}</td><td class="r">${ha(x.k)}</td><td class="r">${fmt(x.t)}</td><td class="r">${ha(x.l)}</td><td></td><td class="r">${fmt(x.a)} konsesi</td></tr>`; }).join("")}
-      <tr class="kn-tot"><td colspan="5">Jumlah ${esc(namaProv(p.k))}</td><td class="r">${ha(T.k)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td></td><td class="r">${fmt(T.a)}</td></tr></tbody></table></div>`;
+        return `<tr class="kn-pita kn-pita-i"><td colspan="10"><a href="#v${p.k}-${j}">${j + 1}. ${esc(kb)}</a><span>${fmt(rs.length)} perusahaan · ${fmt(x.t)} titik · ${ha(x.l)} ha indikasi terbakar${x.a ? ` · ${fmt(x.a)} masih ada api` : ""}</span></td></tr>`
+          + rs.map((r, m) => `<tr><td class="kn-mt">${m + 1}</td><td><a href="#p${r._i}" data-buka="${r._i}" class="kn-nm">${esc(r.nama)}</a></td><td>${jenisPil(r.jenis)}</td>
+          <td class="kn-nw">${r.grup ? `<span class="kn-gr">${logo(r.unit || r.grup, 18)}${esc(r.grup)}</span>` : `<span class="kn-mt">–</span>`}</td>
+          <td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td>
+          <td class="kn-nw">${rentang(r.pertama, r.terakhir)}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : `<span class="kn-mt">–</span>`}</td></tr>`).join("")
+          + (rs.length > 1 ? `<tr class="kn-sub"><td></td><td colspan="3">Subtotal ${esc(kb)}</td><td class="r">${ha(x.k)}</td><td class="r">${fmt(x.t)}</td><td class="r">${ha(x.l)}</td><td class="r">${pct(x.k ? x.l / x.k : 0)}</td><td></td><td class="r">${fmt(x.a)}</td></tr>` : ""); }).join("")}
+      <tr class="kn-tot"><td></td><td colspan="3">Jumlah ${esc(namaProv(p.k))}</td><td class="r">${ha(T.k)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${pct(T.k ? T.l / T.k : 0)}</td><td></td><td class="r">${fmt(T.a)}</td></tr></tbody></table></div>`;
   }
 
   function tabelGrup(rs) {
@@ -215,15 +217,17 @@
         ${SUSUN.map(p => { const t = jumlah(p.rs); return `<tr><td><a class="kn-nm" href="#v${p.k}">${esc(namaProv(p.k))}</a></td><td class="r">${fmt(p.rs.length)}</td><td class="r">${fmt(t.t)}</td><td class="r">${ha(t.l)}</td><td class="r">${fmt(t.a)}</td><td><button type="button" class="kn-mini" data-pdf="${p.k}">Unduh PDF</button></td></tr>`; }).join("")}
         <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(daftar.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td><td></td></tr></tbody></table></div></section>` : ""}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${tabelGrup(daftar)}</section>` : ""}
-      <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}</section>
+      <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}
+        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
         <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
         ${kpi(p.rs)}
-        <section class="kn-kartu"><h2>Per kabupaten/kota</h2>${tabelKab(p)}
-          <h3>Per jenis usaha</h3>${tabelJenis(p.rs)}${tabelGrup(p.rs)}
-          <h3>Peta provinsi</h3><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}</figcaption></figure>${legenda()}
+        <section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(p.rs)}</section>
+        <section class="kn-kartu kn-pvk"><h2>Peta provinsi</h2><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}. Angka = nomor perusahaan.</figcaption></figure>${legenda()}
+          <ol class="kn-nomor">${p.rs.slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${fmt(r.titik)}</em></li>`).join("")}</ol>
         </section>
+        <section class="kn-kartu"><h2>Per kabupaten/kota</h2>${tabelKab(p)}${tabelGrup(p.rs)}</section>
         ${p.kab.map(([kb, rs], j) => `<section class="kn-kabsek" id="v${p.k}-${j}">${sampulKab(p.k, kb, rs)}
           <section class="kn-kartu"><div class="kn-kabh"><span class="lbl">${esc(namaProv(p.k))} · Kabupaten/kota</span><h2>${esc(kb)}</h2>
             <p class="kn-mt">${fmt(rs.length)} perusahaan · ${fmt(jumlah(rs).t)} titik panas · ${ha(jumlah(rs).l)} ha indikasi terbakar</p></div>
@@ -326,7 +330,7 @@
         <span class="kn-no">${r._rp}</span>
         <div class="kn-ph-t"><span class="kn-ph-ey">${esc(r.kabU)}, ${esc(namaProv(r.prov))}</span><h2>${esc(r.nama)}</h2></div>
         <div class="kn-ph-m">${jenisPil(r.jenis)}${r.grup ? `<span class="kn-grp">${logo(r.unit || r.grup, 20)}${(r.negara || []).map(k => bendera(k, 14)).join("")}<b>${esc(r.grup)}</b>${r.unit ? `<em>${esc(r.unit)}</em>` : ""}</span>` : ""}
-          ${r.titik_7h ? `<span class="kn-ak">Masih ada api · ${fmt(r.titik_7h)} titik 7 hari</span>` : `<span class="kn-ok">Tanpa hotspot 7 hari terakhir</span>`}</div>
+          ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i></i><span>Masih ada api</span><b>${fmt(r.titik_7h)}</b><small>titik · 7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
       </header>
       <section class="kn-kpi kn-kpi-p">
         <div><span class="kn-kpi-l">Titik panas 2026</span><b>${fmt(r.titik)}</b><small>puncak ${tgl(r.puncak[0])} (${fmt(r.puncak[1])} titik)</small></div>
@@ -338,8 +342,8 @@
         <div class="kn-info">
           ${blokInfo("Identitas", [
             ["Jenis usaha", `${jenisPil(r.jenis)} ${JN[r.jenis]?.[2] || r.jenis}`],
-            ["Grup usaha", r.grup ? `<span class="kn-gr">${logo(r.grup, 18)}<b>${esc(r.grup)}</b></span>${(r.negara || []).length ? ` <span class="kn-ng">· ${r.negara.map(k => `${bendera(k, 11)}${NEG[k] || k}`).join(", ")}</span>` : ""}` : `<span class="kn-mt">Belum teridentifikasi</span>`],
-            ...(r.unit ? [["Unit usaha", `<span class="kn-gr">${logo(r.unit, 18)}<b>${esc(r.unit)}</b></span>`]] : []),
+            ["Grup usaha", r.grup ? `<span class="kn-isi"><span class="kn-gr">${logo(r.grup, 20)}<b>${esc(r.grup)}</b></span>${(r.negara || []).map(k => `<span class="kn-ngp">${bendera(k, 12)}${NEG[k] || k}</span>`).join("")}</span>` : `<span class="kn-mt">Belum teridentifikasi</span>`],
+            ...(r.unit ? [["Unit usaha", `<span class="kn-isi"><span class="kn-gr">${logo(r.unit, 20)}<b>${esc(r.unit)}</b></span><span class="kn-ngp kn-ngp-j">${JN[r.jenis][0]}</span></span>`]] : []),
             ...(ps.length ? [["Pemegang saham", ps.map(x => `<span class="kn-ps">${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")]] : []),
             ...((r.tokoh || []).length ? [["Tokoh terkait", r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b> · ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")]] : []),
             ["Luas konsesi", `<b>${ha(r.luas_ha)} ha</b> <small>${r.blok} blok · peta ${r.tahun_data || "–"}</small>`],
@@ -386,17 +390,16 @@
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
     return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || p[2].startsWith(hari)).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
-  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice(0, lab).map(r => ({type: "Feature", properties: {n: `${r._rp}. ${r.nama.replace(/^PT\.?\s+/i, "PT ")}`, t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
+  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
     sources: {d: {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
     layers: [{id: "d", type: "raster", source: "d"},
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
       {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}},
-      {id: "lt", type: "circle", source: "l", paint: {"circle-radius": 3.5, "circle-color": "#fff", "circle-stroke-color": "#0b2545", "circle-stroke-width": 1.5}},
-      {id: "lb", type: "symbol", source: "l", layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Bold"], "text-size": 11.5, "symbol-sort-key": ["-", 0, ["get", "t"]],
-        "text-variable-anchor": ["left", "right", "top", "bottom", "top-left", "bottom-right"], "text-radial-offset": .7, "text-justify": "auto", "text-max-width": 14},
-        paint: {"text-color": "#0b2545", "text-halo-color": "#ffffff", "text-halo-width": 2.4, "text-halo-blur": .2}}]});
+      {id: "lt", type: "circle", source: "l", paint: {"circle-radius": 10, "circle-color": "#0b2545", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2}},
+      {id: "lb", type: "symbol", source: "l", layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Bold"], "text-size": 11, "text-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "t"]]},
+        paint: {"text-color": "#ffffff"}}]});
   const bbox = rs => { let a = [180, 90, -180, -90]; const ad = ([x, y]) => { a = [Math.min(a[0], x), Math.min(a[1], y), Math.max(a[2], x), Math.max(a[3], y)]; };
     rs.forEach(r => { r.geom.forEach(g => (g.type === "MultiPolygon" ? g.coordinates.flat(2) : g.coordinates.flat(1)).forEach(ad)); r.pt.forEach(p => ad([p[1], p[0]])); }); return [[a[0], a[1]], [a[2], a[3]]]; };
 
@@ -404,7 +407,7 @@
   function petaUtama() {
     if (peta) { peta.remove(); peta = null; }
     const rs = daftar.slice(0, 300);   // ponytail: peta utama dibatasi 300 konsesi teratas supaya ringan
-    peta = new maplibregl.Map({container: "knPeta", style: gaya(DASAR[S.dasar], rs, null, ["interpolate", ["linear"], ["zoom"], 5, 1.6, 10, 4], 300), bounds: bbox(rs), fitBoundsOptions: {padding: 30},
+    peta = new maplibregl.Map({container: "knPeta", style: gaya(DASAR[S.dasar], rs, null, ["interpolate", ["linear"], ["zoom"], 5, 1.6, 10, 4], SUSUN.length === 1 ? 25 : 0), bounds: bbox(rs), fitBoundsOptions: {padding: 30},
       attributionControl: {compact: true}, canvasContextAttributes: {preserveDrawingBuffer: true}, preserveDrawingBuffer: true});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}));
     peta.on("click", "pf", e => { const p = e.features[0].properties;
