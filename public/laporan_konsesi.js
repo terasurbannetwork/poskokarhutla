@@ -73,7 +73,9 @@
   let IDX = null; const DATA = {}; let daftar = [];
   const gambar = new Map();   // id + dasar -> [citra, viirs]
 
-  let CIT = {}; const janjiCit = fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {});
+  let CIT = {}, CITJ = {};
+  const janjiCit = Promise.all([fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {}),
+    fetch("/data/konsesi2026/citra_jelas.json").then(r => r.ok ? r.json() : {}).then(d => { CITJ = d; }).catch(() => {})]);
   fetch("/data/konsesi2026/index.json").then(r => r.json()).then(d => { IDX = d; gambarKendali(); muat(); })
     .catch(() => { $("#knIsi").innerHTML = `<div class="kosong">Data laporan belum tersedia.</div>`; });
 
@@ -122,7 +124,7 @@
   function muat() {
     const perlu = [...S.prov].filter(k => !DATA[k]);
     status(perlu.length ? "Memuat data provinsi…" : "");
-    Promise.all(perlu.map(k => fetch(`/data/konsesi2026/${k}.json`).then(r => r.json()).then(d => { d.perusahaan.forEach(rapikan); DATA[k] = d; }))).then(() => { status(""); render(); })
+    Promise.all([janjiCit, ...perlu.map(k => fetch(`/data/konsesi2026/${k}.json`).then(r => r.json()).then(d => { d.perusahaan.forEach(rapikan); DATA[k] = d; }))]).then(() => { status(""); render(); })
       .catch(e => { console.error(e); status("Sebagian data provinsi gagal dimuat."); });
   }
   const status = t => { $("#knStatus").textContent = t; };
@@ -387,10 +389,10 @@
         <div class="kn-kanan"><figure><div class="kn-img" data-k="0">${g ? `<img src="${g[0]}" alt="">` : `<span>Menggambar peta…</span>`}</div>
           <figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra satelit Esri" : "Peta jalan OpenStreetMap"}: batas konsesi dan ${fmt(r.titik)} titik panas 2026</figcaption></figure>${legenda()}</div>
       </div>
-      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra 4 hari dengan titik terbanyak</b><span>kiri citra dasar + titik hari itu · kanan SWIR Sentinel-2 20 m terdekat</span></div>
-        <div class="kn-ps-grid">${hariTop(r).map(([d, n], j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}</b><span>${API}${fmt(n)} titik</span></div>
-          <figure><div class="kn-img" data-k="${1 + 2 * j}">${g ? `<img src="${g[1 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "Peta jalan"} + titik ${tgl(d)}</figcaption></figure>
-          <figure><div class="kn-img" data-k="${2 + 2 * j}">${g ? `<img src="${g[2 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${(c => c ? `SWIR ${esc(c.satelit)} ${tgl(c.tgl)} · awan ${c.awan}%` : "SWIR VIIRS (Sentinel-2 belum ada)")(CIT[r.id]?.[d])}</figcaption></figure></div>`).join("")}</div>
+      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra Sentinel-2 paling jelas: api &amp; bekas bakar</b><span>kiri citra dasar + titik 5 hari sebelumnya · kanan SWIR Sentinel-2 20 m</span></div>
+        <div class="kn-ps-grid">${pasangan(r).map(({d, n, c, jelas}, j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}${jelas ? ' <span class="kn-jl">Jelas</span>' : ""}</b><span>${API}${fmt(n)} titik${jelas ? " · 5 hari" : ""}</span></div>
+          <figure><div class="kn-img" data-k="${1 + 2 * j}">${g ? `<img src="${g[1 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "Peta jalan"} + titik ${jelas ? `s.d. ${tgl(d)}` : tgl(d)}</figcaption></figure>
+          <figure><div class="kn-img" data-k="${2 + 2 * j}">${g ? `<img src="${g[2 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${c ? `SWIR ${esc(c.satelit)} ${tgl(c.tgl)} · awan ${c.awan}%${c.bakar_pct != null ? ` · lahan hangus ${fmt(c.bakar_pct)}%` : ""}` : "SWIR VIIRS (Sentinel-2 belum ada)"}</figcaption></figure></div>`).join("")}</div>
         ${LEG_SWIR}
       </section>
       ${harian(r)}
@@ -413,7 +415,7 @@
   const batasTujuh = () => { const b = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5).toISOString().slice(5, 10); return b; };
   const fiturPoli = rs => ({type: "FeatureCollection", features: rs.flatMap((r, i) => r.geom.map(g => ({type: "Feature", properties: {i, nama: r.nama, w: JN[r.jenis]?.[1]}, geometry: g})))});
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
-    return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || p[2].startsWith(hari)).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
+    return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || (Array.isArray(hari) ? hari.includes(p[2].slice(0, 5)) : p[2].startsWith(hari))).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
   const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
@@ -496,6 +498,13 @@
   const gelap = src => new Promise(ok => { if (!src) return ok(true); const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = 48; c.height = 32;
     const x = c.getContext("2d"); x.drawImage(im, 0, 0, 48, 32); const d = x.getImageData(0, 0, 48, 32).data; let h = 0; for (let i = 0; i < d.length; i += 4) h += d[i] + d[i + 1] + d[i + 2] < 30;
     ok(h / (d.length / 4) > .35); }; im.onerror = () => ok(true); im.src = src; });
+  /* pasangan citra: adegan Sentinel-2 paling jelas (citra_jelas.json) dulu, sisanya hari dengan titik terbanyak */
+  const hariSebelum = (t, k) => Array.from({length: k + 1}, (_, i) => new Date(Date.parse(t) - i * 864e5).toISOString().slice(5, 10));
+  const pasangan = r => {
+    const j = (CITJ[r.id] || []).map(c => { const h = hariSebelum(c.tgl, 5); return {d: c.tgl, c, jelas: true, hari: h, n: r.pt.filter(p => h.includes(p[2].slice(0, 5))).length}; });
+    const sisa = hariTop(r).filter(([d]) => !j.some(x => x.d === d)).map(([d, n]) => ({d, n, hari: [d.slice(5)], c: CIT[r.id]?.[d]}));
+    return [...j, ...sisa].slice(0, 4).sort((a, b) => a.d.localeCompare(b.d));
+  };
   /* 4 hari dengan titik terbanyak, urut tanggal */
   const hariTop = r => r.harian.slice().sort((a, b) => b[1] - a[1]).slice(0, 4).sort((a, b) => a[0].localeCompare(b[0]));
   function gambarProfil(i) {
@@ -504,14 +513,13 @@
     return antre = antre.then(async () => {
       if (gambar.has(kunci)) return;
       const out = [await potret(DASAR[S.dasar], [r], null)];
-      for (const [d] of hariTop(r)) {
-        out.push(await potret(DASAR[S.dasar], [r], d.slice(5)));
-        /* celah lintasan VIIRS = citra hitam: coba satelit kembar NOAA-20 lalu NOAA-21 */
-        await janjiCit;
-        const c = CIT[r.id]?.[d];
+      await janjiCit;
+      for (const {d, c, hari} of pasangan(r)) {
+        out.push(await potret(DASAR[S.dasar], [r], hari));
         let sw = "";
-        if (c) sw = await potret({img: "/data/" + c.f, bb: c.bbox}, [r], d.slice(5));
-        else for (const sat of ["SNPP", "NOAA20", "NOAA21"]) { sw = await potret(gibs(d, sat), [r], d.slice(5)); if (!(await gelap(sw))) break; }
+        if (c) sw = await potret({img: "/data/" + c.f, bb: c.bbox}, [r], hari);
+        /* celah lintasan VIIRS = citra hitam: coba satelit kembar NOAA-20 lalu NOAA-21 */
+        else for (const sat of ["SNPP", "NOAA20", "NOAA21"]) { sw = await potret(gibs(d, sat), [r], hari); if (!(await gelap(sw))) break; }
         out.push(sw);
       }
       gambar.set(kunci, out);
