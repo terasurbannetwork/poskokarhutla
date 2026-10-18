@@ -26,6 +26,7 @@
     "POST /:id/admin": "admin: tanpa token ditolak",
     "admin hapus_pengirim": "hapus_pengirim wajib konfirmasi",
     "GET /api/status": "status: 200 bila semua sumber segar",
+    "GET /ubin/:nama.pmtiles": "ubin: 200 penuh",
     "table audit_moderasi": "audit moderasi hanya bisa ditambah",
     "trigger audit_tetap_ubah": "audit moderasi hanya bisa ditambah",
     "trigger audit_tetap_hapus": "audit moderasi hanya bisa ditambah",
