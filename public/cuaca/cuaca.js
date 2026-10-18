@@ -34,8 +34,13 @@ const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hu
 let TINGKAT = [["Normal", "#9aa4b2"], ["Waspada", "#e0b400"], ["Siaga", "#e8743b"], ["Awas", "#d64545"]];
 const warnaT = t => TINGKAT[t]?.[1] || TINGKAT[0][1], namaT = t => TINGKAT[t]?.[0] || "";
 const pilT = t => `<span class="pl" style="--w:${warnaT(t)}">${namaT(t)}</span>`;
-const lbl3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); return n === 0 ? "Hari ini" : n === 1 ? "Besok" : n === 2 ? "Lusa" : tglPendek(h); };
+const lbl3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); if (basi()) return "prakiraan " + tglSgk(h); return n === 0 ? "Hari ini" : n === 1 ? "Besok" : n === 2 ? "Lusa" : tglPendek(h); };
+/* kata keterangan waktu dalam kalimat: hari ini, besok, lusa, atau "pada 13 Okt" */
+const kapan3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); return basi() || n < 0 || n > 2 ? "pada " + tglSgk(h) : ["hari ini", "besok", "lusa"][n]; };
 const kIdx = () => S.kec ? S.kec.hari.indexOf(S.pr.hari[S.hari]) : -1;   /* hari terpilih di kontrak 72 jam; -1 = di luar 3 hari */
+const tglSgk = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
+/* prakiraan dibuat bukan pada hari WIB ini: "Hari ini/Besok" diganti tanggal */
+const basi = () => !!S.meta && tglWIB(Date.parse(S.meta.dibuat)) !== tglWIB(SEKARANG());
 const pct = (a, b) => b ? Math.round(a / b * 100) : null;
 const namaProv = k => S.meta?.prov?.[k] ?? k;
 const AMB = () => S.meta.ambang;
@@ -109,5 +114,5 @@ function olahPeringatan() {
 }
 /* hari-hari yang ditampilkan: hari ini sampai 6 hari ke depan (yang tersedia) */
 const hariTampil = () => { const a = []; for (let i = S.h0; i < Math.min(S.pr.hari.length, S.h0 + 7); i++) a.push(i); return a; };
-const labelHari = i => i === S.h0 ? "Hari ini" : i === S.h0 + 1 ? "Besok" : tglPendek(S.pr.hari[i]);
+const labelHari = i => basi() ? tglSgk(S.pr.hari[i]) : i === S.h0 ? "Hari ini" : i === S.h0 + 1 ? "Besok" : tglPendek(S.pr.hari[i]);
 const waktuBerlaku = (a, b) => { const d = x => new Date(x).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", ""); return `${d(a)} sampai ${d(b)} WIB`; };

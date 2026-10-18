@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/cuaca/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Simulasi Cuaca 72 Jam · Pantau Bencana</title>
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<meta name="theme-color" content="#0b2545">
+<meta name="description" content="Simulasi tiga dimensi cuaca ekstrem 72 jam: arah angin, hujan, embusan, gelombang laut, dan siklon dari prakiraan model.">
+<link rel="canonical" href="https://pantau.terasurban.com/cuaca/simulasi.html">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<link rel="stylesheet" href="../inti/tema.css">
+<link rel="stylesheet" href="../inti/gaya.css">
+<link rel="stylesheet" href="../inti/peta.css">
+<link rel="stylesheet" href="sim_cuaca.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a>
+    <b>Cuaca Ekstrem</b>
+  </div>
+  <nav class="tabs" aria-label="Menu"><a class="sc-balik" href="/cuaca/">Kembali ke peta cuaca</a></nav>
+  <div class="stat">
+    <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+<main>
+  <section class="page on" aria-label="Simulasi cuaca">
+    <div id="peta"></div>
+    <div class="muat" id="muat"><div><div class="spin"></div>Memuat medan prakiraan…</div></div>
+    <aside class="card simpanel" id="panel" aria-label="Kendali simulasi">
+      <h2>Simulasi cuaca 72 jam</h2>
+      <p class="sc-kal">Geser waktu atau tekan putar untuk melihat angin, hujan, dan gelombang bergerak jam demi jam.</p>
+      <div id="isi"></div>
+    </aside>
+    <div class="dok" id="dok"><div class="box" id="legenda"></div></div>
+  </section>
+</main>
+<script src="../inti/format.js"></script>
+<script src="sim_data.js"></script>
+<script src="sim_layar.js"></script>
+<script src="sim_skenario.js"></script>
+<script src="sim_grafik.js"></script>
+</body>
+</html>

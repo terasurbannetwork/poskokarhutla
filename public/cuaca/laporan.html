@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Laporan Harian Cuaca Ekstrem · Centurisk97</title>
+<meta name="theme-color" content="#0b2545">
+<script src="/i18n.js"></script>
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/inti/tabel.css">
+<link rel="stylesheet" href="/inti/insight.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/inti/laporan.css">
+</head>
+<body>
+<div id="tip" role="tooltip"></div>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="cuaca" data-tentang data-tanpa-segera><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Cuaca Ekstrem</summary><div class="menu"></div></details>
+  </div>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <button class="iconbtn" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="page on scroll" id="p-laporan" aria-label="Laporan harian">
+    <div id="laporan"></div>
+  </section>
+</main>
+
+<script src="/inti/format.js"></script>
+<script src="/inti/kartu.js"></script>
+<script src="/inti/pilih.js"></script>
+<script src="/inti/tip.js"></script>
+<script src="/inti/tabel.js"></script>
+<script src="/inti/laporan.js"></script>
+<script>Laporan.pasang({id: "cuaca", url: "/banjir/data/cuaca_laporan.json"});</script>
+<script type="module" src="/inti/kepala.js"></script>
+</body>
+</html>

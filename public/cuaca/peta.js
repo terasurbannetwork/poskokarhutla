@@ -19,6 +19,7 @@ const pilGel = i => `<span class="pl" style="--w:${GEL[i][3]}">${GEL[i][1]}</spa
 const Peta = {
   async init() {
     document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css"><link rel="stylesheet" href="../inti/peta/legenda.css">');
+    Status.kontrol();   /* mode dan overlay Status 72 jam, hanya bila datanya ada */
     PI = await import("../inti/peta/lapis.js").catch(() => null);
     PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     LG = await import("../inti/peta/legenda.js").catch(() => null);
@@ -53,7 +54,7 @@ const Peta = {
     peta.addLayer({id: "ens", type: "circle", source: "ens", layout: {visibility: S.mode === "ens" ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
-    this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
+    Status.pasang(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
   gambarMedan() {
@@ -71,16 +72,17 @@ const Peta = {
   geoEns() { const i = S.hari;
     return {type: "FeatureCollection", features: S.pr.ens.filter(r => (r[3][i] || 0) >= .1).map(r => ({type: "Feature", geometry: {type: "Point", coordinates: [r[1], r[0]]}, properties: {k: Math.round(r[0]) + "," + Math.round(r[1]), p: r[3][i]}}))}; },
   sesuaikanMode() { if (!peta.getLayer("medan")) return;
-    peta.setLayoutProperty("medan", "visibility", S.mode === "ens" ? "none" : "visible"); peta.setLayoutProperty("ens", "visibility", S.mode === "ens" ? "visible" : "none"); },
+    peta.setLayoutProperty("medan", "visibility", S.mode === "hujan" || S.mode === "angin" ? "visible" : "none"); peta.setLayoutProperty("ens", "visibility", S.mode === "ens" ? "visible" : "none"); Status.segarkan(); },
   segarkan() {
     if (!peta?.getSource("medan")) return;
-    this.gambarMedan(); const m = peta.getSource("medan"); m.play(); m.pause(); peta.getSource("ens").setData(this.geoEns()); this.sesuaikanMode(); renderLegenda(); },
+    if (S.mode !== "status") { this.gambarMedan(); const m = peta.getSource("medan"); m.play(); m.pause(); peta.getSource("ens").setData(this.geoEns()); }
+    this.sesuaikanMode(); renderLegenda(); },
   /* kartu hover satu baris berikon: sel terdekat (hujan, embusan, peluang ansambel) */
   kartuSel(r) { const i = S.hari, p = S.ensK.get(Math.round(r[0]) + "," + Math.round(r[1])), pe = p?.[3][i];
     return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(r[2]))}</span>`, stat: [["hujan", fmt(Math.round(r[3][i] || 0)) + " mm", "hujan", "#3f7fb8", tingkat(r[3][i], AMB().hujan) > 0],
       ["angin", fmt(Math.round(r[4][i] || 0)) + " km/jam", "embusan", "#2b8c86", tingkat(r[4][i], AMB().angin_kmj) > 0], ...(pe != null ? [["rasio", Math.round(pe * 100) + "%", "peluang ≥ 50 mm", "#7a4fc4", pe >= .5]] : [])]}); },
   kartuProv(o) { return PI.kartuTip({judul: `<span translate="no">${esc(namaProv(o.prov))}</span>`, stat: [["ombak", GEL[o.lv - 1][1], "gelombang", GEL[o.lv - 1][3], o.lv >= 2], ["peringatan", o.total, "perairan", "#3f7fb8"]]}); },
-  kartuBmkg(a) { return PI.kartuTip({judul: `<span translate="no">${esc(a.event)}</span>`, stat: [["peringatan", a.severity, "BMKG", sevWarna(a.severity), a.severity === "Severe" || a.severity === "Extreme"], ["mata", a.n, "kecamatan", "#3f7fb8"]]}); },
+  kartuBmkg(a) { return PI.kartuTip({judul: `<span translate="no">${esc(a.event)}</span>`, stat: [["peringatan", a.severity, "BMKG", sevWarna(a.severity), a.severity === "Severe" || a.severity === "Extreme"], ["mata", fmt(a.n), "kecamatan", "#3f7fb8"]]}); },
   /* laci rincian di kanan (sama dengan laci karhutla dan banjir): satu peringatan nowcast atau satu provinsi bergelombang */
   laciBmkg(i) { const a = S.nc[i]; if (!a) return;
     Laci.buka("Nowcast BMKG", `<span translate="no">${esc(a.event)}</span>`, `${pilSev(a.severity)} · ${fmt(a.n)} kecamatan`,
@@ -102,16 +104,20 @@ const Peta = {
   interaksi() {
     if (this._ia) return; this._ia = true;
     const tip = () => PI?.sembunyiTip();
-    peta.on("mousemove", e => { if (!PI) return;
+    let rf = 0, ev = null;
+    peta.on("mousemove", e => { if (!PI) return; ev = e; if (rf) return; rf = requestAnimationFrame(() => { rf = 0; geser(ev); }); });
+    const geser = e => {
+      if (Status.hover(e)) return;
       const ada = id => peta.getLayer(id) && peta.queryRenderedFeatures(e.point, {layers: [id]})[0];
       const b = this.lihat("bmkg") && ada("bmkg-fill"), gl = !b && this.lihat("gelombang") && ada("gelombang");
       peta.getCanvas().style.cursor = b || gl ? "pointer" : "";
       if (b) return PI.tampilTip(this.kartuBmkg(S.nc[b.properties.i]), e.originalEvent);
       if (gl) return PI.tampilTip(this.kartuProv(S.gl.find(o => o.prov === gl.properties.kode)), e.originalEvent);
       const { lng, lat } = e.lngLat, r = S.sel.get((Math.floor(lat / .25) * .25 + .125).toFixed(3) + "," + (Math.floor(lng / .25) * .25 + .125).toFixed(3));
-      r ? PI.tampilTip(this.kartuSel(r), e.originalEvent) : tip(); });
-    peta.getCanvas().addEventListener("mouseleave", tip);
+      r ? PI.tampilTip(this.kartuSel(r), e.originalEvent) : tip(); };
+    peta.getCanvas().addEventListener("mouseleave", () => { cancelAnimationFrame(rf); rf = 0; tip(); });
     peta.on("click", e => {
+      if (Status.klik(e)) return;
       const b = this.lihat("bmkg") && peta.queryRenderedFeatures(e.point, {layers: ["bmkg-fill"]})[0];
       if (b) return this.fokus("nc", b.properties.i);
       const gl = this.lihat("gelombang") && peta.queryRenderedFeatures(e.point, {layers: ["gelombang"]})[0];
@@ -134,22 +140,23 @@ function renderCrumb() {
   const p = S.pilih, nama = !p ? "" : p.jenis === "nc" ? S.nc[p.k]?.event : namaProv(p.k);
   $("#crumb").innerHTML = `<button data-n="0">Indonesia</button>` + (nama ? `<button data-n="1" translate="no">${esc(nama)}</button><button class="cr-rinci" data-rinci title="Rincian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>` : ""); }
 $("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const p = S.pilih;
-  if (b.dataset.rinci != null) return p && (p.jenis === "nc" ? Peta.laciBmkg(p.k) : Peta.laciProv(S.gl.find(o => o.prov === p.k)));
+  if (b.dataset.rinci != null) return p && (p.jenis === "st" ? Status.laciProv(p.k) : p.jenis === "nc" ? Peta.laciBmkg(p.k) : Peta.laciProv(S.gl.find(o => o.prov === p.k)));
   if (b.dataset.n === "0") { Laci.tutup(); peta?.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); } });
 function renderPanel() {
   const q = ($("#cari").value || "").trim().toLowerCase(), rows = $("#rows"),
     nc = S.nc.map((a, i) => ({a, i})).filter(({a}) => !q || (a.wilayah + " " + a.headline + " " + a.event).toLowerCase().includes(q)),
     gl = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).filter(o => !q || namaProv(o.prov).toLowerCase().includes(q));
-  $("#panelMode").innerHTML = `<button data-m="nc" aria-pressed="${panelMode === "nc"}">Nowcast · ${fmt(nc.length)} wilayah</button><button data-m="gl" aria-pressed="${panelMode === "gl"}">Gelombang · ${fmt(gl.length)} provinsi</button>`;
+  $("#panelMode").innerHTML = `<button data-m="nc" aria-pressed="${panelMode === "nc"}">Nowcast · ${fmt(nc.length)}${S.kec ? "" : " wilayah"}</button><button data-m="gl" aria-pressed="${panelMode === "gl"}">Gelombang · ${fmt(gl.length)}${S.kec ? "" : " provinsi"}</button>${Status.tabPanel()}`;
+  if (panelMode === "st") return void (rows.innerHTML = Status.barisPanel(q));
   rows.innerHTML = panelMode === "nc"
     ? nc.map(({a, i}) => `<button class="rw" data-nc="${i}"><span class="rw-hd">${pilSev(a.severity)}<b translate="no">${esc(a.event)}</b></span><span class="rw-wil" translate="no">${esc(a.wilayah)}</span><span class="rw-jam">${waktuBerlaku(a.mulai, a.selesai)}</span></button>`).join("")
     : gl.map(o => `<button class="rw" data-gl="${o.prov}"><span class="rw-hd">${pilGel(o.lv - 1)}<b translate="no">${esc(namaProv(o.prov))}</b></span><span class="rw-wil">${fmt(o.total)} perairan</span></button>`).join("");
   /* tanpa peringatan berlaku: sebut terbitan BMKG yang dipakai, supaya bukan terbaca "BMKG menyatakan aman" (berkasnya terbit berkala, nowcast hidup 2-3 jam) */
   if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(panelMode === "nc" ? (S.ncDibuat ?? S.per.dibuat) : S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
 }
-$("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; renderPanel(); });
-$("#cari").addEventListener("input", renderPanel);
-$("#rows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.nc != null) Peta.fokus("nc", +b.dataset.nc); else if (b.dataset.gl) Peta.fokus("gl", b.dataset.gl); });
+$("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(renderPanel); });
+{ let td; $("#cari").addEventListener("input", () => { clearTimeout(td); td = setTimeout(renderPanel, 150); }); }
+$("#rows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.nc != null) Peta.fokus("nc", +b.dataset.nc); else if (b.dataset.gl) Peta.fokus("gl", b.dataset.gl); else if (b.dataset.st) Status.fokusProv(b.dataset.st); });
 
 /* ================================================================ legenda dok */
 const bar = (st, nilai) => `<div class="legscale">${nilai.map(v => `<i style="background:rgba(${gradasi(st, v).slice(0, 3).join(",")},1)"></i>`).join("")}</div><div class="legnum">${nilai.map(v => `<span>${v}</span>`).join("")}</div>`;
@@ -159,6 +166,7 @@ function renderLegenda() {
     ${S.mode === "hujan" ? `<div class="lbl">Hujan harian (mm)</div>${bar(ST_HUJAN, [1, 20, 50, 100, 150, 250])}` : ""}
     ${S.mode === "angin" ? `<div class="lbl">Embusan angin (km/jam)</div>${bar(ST_ANGIN, [25, 40, 54, 72, 90, 130])}` : ""}
     ${S.mode === "ens" ? `<div class="lbl">Peluang hujan ≥ 50 mm (ansambel)</div><div class="legscale">${["#bcd6f0", "#6aa7e3", "#7a4fc4", "#c9503a"].map(c => `<i style="background:${c}"></i>`).join("")}</div><div class="legnum"><span>10%</span><span>25%</span><span>50%</span><span>80%</span></div>` : ""}
+    ${Status.legenda()}
     ${T("bmkg") && S.nc.length ? `<div class="lbl">Peringatan nowcast BMKG</div><div class="leg" style="margin:4px 0 8px">${Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => `<span><i class="sw" style="background:${w}"></i><span translate="no">${k}</span></span>`).join("")}</div>` : ""}
     ${T("gelombang") && S.gl.length ? `<div class="lbl">Gelombang BMKG Maritim</div><div class="leg" style="margin:4px 0 8px">${GEL.map((k, i) => S.gl.some(o => o.lv === i + 1) ? `<span><i class="sw" style="background:${k[3]}"></i>${k[1]} (${k[2]})</span>` : "").join("")}</div>` : ""}
     </div></details>`;
@@ -167,11 +175,11 @@ function renderLegenda() {
 /* ================================================================ kontrol */
 const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"});
 function renderHari() {
-  $("#hariSeg").innerHTML = `<div class="seg penuh" role="group" style="box-shadow:none">${hariTampil().slice(0, 4).map(i => `<button data-h="${i}" aria-pressed="${i === S.hari}">${i === S.h0 ? "Hari ini" : tglSingkat(S.pr.hari[i])}</button>`).join("")}</div>`; }
+  $("#hariSeg").innerHTML = `<div class="seg penuh" role="group" style="box-shadow:none">${hariTampil().slice(0, 4).map(i => `<button data-h="${i}" aria-pressed="${i === S.hari}">${i === S.h0 && !basi() ? "Hari ini" : basi() ? tglSgk(S.pr.hari[i]) : tglSingkat(S.pr.hari[i])}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.h;
-  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => Peta.segarkan()); });
+  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); if (S.kec) renderPanel(); }); });
 $("#modePeta").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.mode = b.dataset.mp;
-  $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => Peta.segarkan()); });
+  $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); Status.modeBerubah?.(); nanti(() => Peta.segarkan()); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input[data-l]"); if (!i || !peta) return; const k = i.dataset.l;
   const ids = {bmkg: ["bmkg-fill", "bmkg-line"], gelombang: ["gelombang"], satelit: ["satelit"]}[k] || [];
   ids.forEach(id => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", i.checked ? "visible" : "none")); renderLegenda(); });

@@ -50,6 +50,8 @@
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
+    <a class="iconbtn" href="/cuaca/simulasi.html" aria-label="Simulasi cuaca" title="Simulasi cuaca"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 5v14l11-7z"/></svg></a>
+    <a class="iconbtn" href="/cuaca/laporan.html" aria-label="Laporan harian" title="Laporan harian"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg></a>
     <a class="iconbtn" href="/peringatan" aria-label="Peringatan Dini" title="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
@@ -60,6 +62,7 @@
 <main>
   <section class="page on" id="p-peta" aria-label="Peta pemantauan">
     <div id="peta"></div>
+    <div class="pil-sik" id="pilSiklon"></div>
     <div class="muat" id="muat"><div><div class="spin"></div>Memuat peringatan dan prakiraan cuaca…</div></div>
     <div class="panel" id="panel">
       <nav class="crumb" id="crumb" aria-label="Tingkat wilayah"></nav>
@@ -112,6 +115,7 @@
 <script src="../inti/tip.js"></script>
 <script src="../inti/tabel.js"></script>
 <script src="cuaca.js"></script>
+<script src="status.js"></script>
 <script src="peta.js"></script>
 <script src="insight.js"></script>
 <script src="metode.js"></script>

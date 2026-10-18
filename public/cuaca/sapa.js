@@ -5,6 +5,7 @@
 (() => {
   Sapa.daftar("cuaca", {
     ikon: {hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
+      siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>',
       ombak: '<path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"/>'},
     siap: () => !!(S.pr && S.meta && typeof Insight !== "undefined"),
     hitung() {
@@ -15,13 +16,17 @@
       return {h, a, prov, nc: S.nc.map((x, i) => ({...x, i})).sort((x, y) => y.n - x.n).slice(0, 4), gl: [...S.gl].sort((x, y) => y.lv - x.lv || y.total - x.total)};
     },
     html(h) {
-      const prov = namaProv, mm = v => fmt(Math.round(v)), kec = S.nc.reduce((s, x) => s + x.n, 0);
-      const perhatian = [h.gl.length && Sapa.kartu("ombak", GEL[h.gl[0].lv - 1][3], "Gelombang tinggi", `<b>${fmt(h.gl.length)}</b> provinsi dalam peringatan BMKG Maritim; tertinggi: <span translate="no">${esc(prov(h.gl[0].prov))} (${GEL[h.gl[0].lv - 1][1].toLowerCase()})</span>`),
+      const ini = basi() ? "pada " + tglSgk(S.pr.hari[S.h0]) : "hari ini", prov = namaProv, mm = v => fmt(Math.round(v)), kec = S.nc.reduce((s, x) => s + x.n, 0);
+      /* wilayah Siaga/Awas besok (deteksi Pantau Bencana, cuaca_kec.json) dan siklon aktif; keduanya dibuang bila datanya tak ada */
+      const jb = S.kec ? S.kec.hari.indexOf(S.pr.hari[S.h0 + 1]) : -1, bs = jb < 0 ? [] : Object.entries(S.kec.prov).map(([k, o]) => [k, o.n[jb][1] + o.n[jb][2]]).filter(x => x[1]).sort((a, b) => b[1] - a[1]),
+        besok = bs.length && Sapa.kartu("hujan", warnaT(2), lbl3(1), `<b>${fmt(bs.reduce((a, x) => a + x[1], 0))}</b> kecamatan diprakirakan Siaga atau Awas, terbanyak di <span translate="no">${esc(prov(bs[0][0]))}</span>`),
+        sik = S.sik?.aktif?.length && Sapa.kartu("siklon", "#7a1f2b", "Siklon tropis", S.sik.aktif.slice(0, 2).map(c => `<span translate="no">${esc(c.nama || c.id)}</span>${c.angin_kt != null ? ` (angin ${fmt(Math.round(c.angin_kt * 1.852))} km/jam)` : ""}`).join(", "));
+      const perhatian = [besok, sik, h.gl.length && Sapa.kartu("ombak", GEL[h.gl[0].lv - 1][3], "Gelombang tinggi", `<b>${fmt(h.gl.length)}</b> provinsi dalam peringatan BMKG Maritim; tertinggi: <span translate="no">${esc(prov(h.gl[0].prov))} (${GEL[h.gl[0].lv - 1][1].toLowerCase()})</span>`),
         ...S.nc.filter(x => x.severity === "Severe" || x.severity === "Extreme").slice(0, 2).map(x => Sapa.kartu("awas", sevWarna(x.severity), "Peringatan BMKG", `<span translate="no">${esc(x.headline || x.event)}</span>`))].filter(Boolean).join("");
-      return Sapa.rangka({ikon: "hujan", eyebrow: "Situasi cuaca ekstrem hari ini",
-        judul: h.h.v >= AMB().hujan[0] ? `Hujan ${KELAS_HUJAN[tingkat(h.h.v, AMB().hujan)]} <b>${mm(h.h.v)} mm</b> diprakirakan di <span translate="no">${esc(prov(h.h.r[2]))}</span> hari ini`
-          : `Hujan terlebat hari ini <b>${mm(h.h.v)} mm</b> <span translate="no">(${esc(prov(h.h.r[2]))})</span>, belum mencapai kelas lebat`,
-        chips: [["angin", `embusan terkuat ${mm(h.a.v)} km/jam`], S.nc.length && ["awas", `${fmt(S.nc.length)} nowcast · ${fmt(kec)} kecamatan`]],
+      return Sapa.rangka({ikon: "hujan", eyebrow: basi() ? "Prakiraan cuaca ekstrem " + tglSgk(S.pr.hari[S.h0]) : "Situasi cuaca ekstrem hari ini",
+        judul: h.h.v >= AMB().hujan[0] ? `Hujan ${KELAS_HUJAN[tingkat(h.h.v, AMB().hujan)]} <b>${mm(h.h.v)} mm</b> diprakirakan di <span translate="no">${esc(prov(h.h.r[2]))}</span> ${ini}`
+          : `Hujan terlebat ${ini} <b>${mm(h.h.v)} mm</b> <span translate="no">(${esc(prov(h.h.r[2]))})</span>, belum mencapai kelas lebat`,
+        chips: [["angin", `embusan terkuat ${mm(h.a.v)} km/jam`], S.nc.length && ["awas", `${fmt(S.nc.length)} peringatan nowcast · ${fmt(kec)} kecamatan`]],
         bagian: [
           h.prov.length && ["Provinsi perlu perhatian", "ps", h.prov.map(p => Sapa.provBaris(esc(prov(p.k)), [Sapa.pil(`${mm(p.hujan)} mm`, p.hujan >= 100 ? "merah" : p.hujan >= 50 ? "oranye" : "prov", "hujan"),
             Sapa.pil(`${mm(p.angin)} km/jam`, p.angin >= 72 ? "oranye" : "prov", "angin"), ...(p.nc ? [Sapa.pil(`${fmt(p.nc)} kecamatan nowcast`, "oranye")] : [])])).join("")],

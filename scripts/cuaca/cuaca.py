@@ -22,12 +22,20 @@ Ambang dari docs/multi-bencana/bencana/cuaca.md §4 (hipotesis awal, belum dikun
 Badai guntur (CAPE dan LI) tidak ditampilkan: indeks angkat (LI) tidak ada di sumber, dibuang (A18).
 
 Pakai:  python3 scripts/cuaca/cuaca.py   |   python3 scripts/cuaca/cuaca.py uji
+Rantai 72 jam (masing-masing gagal sendiri tanpa menjatuhkan yang lain; modul di scripts/cuaca/): sarana (sekali), gelombang, prakiraan_kec,
+dampak_cuaca, medan, siklon, verifikasi (arsip BMKG + skor), laporan_cuaca. Masukan boleh dialihkan: CUACA_MASUKAN=<folder berisi hujan.json dst>.
+Kuota Open-Meteo harian (bobot = variabel/10 x hari/14, minimum 1 per lokasi; 10.000/hari dibagi dengan banjir):
+  gelombang (Marine, 72 jam, ~320 titik pelabuhan+rob, 50 titik/panggilan)  ~320
+  medan (Forecast, kisi 1,5 derajat 13x32 = 416 titik, 4 variabel jam, 3 hari)  ~416
+  prakiraan_kec, dampak, siklon, laporan  0 (membaca masukan banjir; siklon: JTWC + GDACS, bukan Open-Meteo)
+  verifikasi harian (Previous Runs, API terpisah, 349 titik, 1 hari)  ~349; sekali `--isi 365` ~2.800
+  jumlah cuaca harian ~1.085 (anggaran <= 2.000). Embusan tanpa ansambel (GFS ensemble ~370 bobot) karena kuota bersama banjir.
 Jalankan sesudah hujan.py dan ansambel_hujan.py (dirantai di akhir scripts/banjir/posko.py).
 """
 import os, sys
 
-sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../banjir"))
-from umum import KELUAR as BANJIR, baca, simpan
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+from dasar import AMBANG_ANSAMBEL, KELUAR as BANJIR, MASUKAN, baca, simpan
 
 HUJAN = (50, 100, 150)
 ANGIN = (54, 72, 90)
@@ -66,7 +74,7 @@ def olah(hujan, ans, prov):
     pakai = {r[2] for r in sel} | {r[2] for r in ens}
     return {"hari": hari, "hari_ini": hujan["hari_ini"], "sel": sel, "ens": ens}, {
         "hari": hari, "hari_ini": hujan["hari_ini"], "i0": i0, "sel": hujan["sel"],
-        "ambang": {"hujan": list(HUJAN), "angin_kmj": list(ANGIN)},
+        "ambang": {"hujan": list(HUJAN), "angin_kmj": list(ANGIN), "ansambel_hipotesis": AMBANG_ANSAMBEL},
         "prov": {k: v for k, v in prov.items() if k in pakai},
         "hitung": hitung(sel, ens, len(hari)),
         "sumber": {"hujan": "Open-Meteo (model terbaik per lokasi), kisi 0,25 derajat",
@@ -102,27 +110,54 @@ def riwayat(lama, sel, hari, hari_ini, hitung_hari):
     return rw
 
 
+LANGKAH = [("sarana", lambda m, pr, meta: m.main()), ("gelombang", lambda m, pr, meta: m.main()), ("prakiraan_kec", lambda m, pr, meta: m.main()),
+           ("dampak_cuaca", lambda m, pr, meta: m.main(pr, meta)), ("medan", lambda m, pr, meta: m.main()), ("siklon", lambda m, pr, meta: m.main()),
+           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main())]
+
+
+def ringkas(kec, siklon):
+    """Kunci meta untuk pop-up: besok = {hari, n_kec (t >= 2 hari ke-2), prov {kode: jumlah kecamatan t >= 2}, t_maks}; siklon = daftar ringkas posisi terakhir."""
+    out = {}
+    if kec and len(kec.get("hari", [])) > 1:
+        prov = {k: v["n"][1][1] + v["n"][1][2] for k, v in sorted(kec["prov"].items()) if v["n"][1][1] + v["n"][1][2]}
+        out["besok"] = {"hari": kec["hari"][1], "n_kec": sum(prov.values()), "prov": prov, "t_maks": max([v["t"][1] for v in kec["prov"].values()] or [0])}
+    if siklon is not None:
+        out["siklon"] = [{"id": s["id"], "nama": s["nama"], "kategori": s["kategori"], "angin_kt": s["angin_kt"], "lat": (a := next((p for p in s["lintasan"] if p[4] == "amatan"), s["lintasan"][0]))[1], "lon": a[2]}
+                         for s in siklon.get("aktif", []) if s.get("lintasan")]
+    return out
+
+
 def main():
-    hujan = baca(os.path.join(BANJIR, "hujan.json"))
+    hujan = baca(os.path.join(MASUKAN, "hujan.json"))
     if not hujan:
         print("hujan.json tidak ada: cuaca dilewati", file=sys.stderr)
         sys.exit(1)
-    ans = baca(os.path.join(BANJIR, "hujan_ansambel.json"))
+    ans = baca(os.path.join(MASUKAN, "hujan_ansambel.json"))
     if ans and ans["hari"][0] < hujan["hari_ini"]:
         ans = None  # ansambel basi (hari pertamanya sudah lewat) dibuang, bukan ditampilkan salah hari
-    prov = (baca(os.path.join(BANJIR, "meta.json")) or {}).get("provinsi", {})
+    prov = (baca(os.path.join(MASUKAN, "meta.json")) or {}).get("provinsi", {})
     pr, meta = olah(hujan, ans, prov)
-    pr["dibuat"] = meta["dibuat"] = (baca(os.path.join(BANJIR, "meta.json")) or {}).get("dibuat")
+    pr["dibuat"] = meta["dibuat"] = (baca(os.path.join(MASUKAN, "meta.json")) or {}).get("dibuat")
     simpan(os.path.join(BANJIR, "cuaca_prakiraan.json"), pr)
     simpan(os.path.join(BANJIR, "cuaca_meta.json"), meta)
     simpan(os.path.join(BANJIR, "cuaca_riwayat.json"), riwayat(baca(os.path.join(BANJIR, "cuaca_riwayat.json")), pr["sel"], pr["hari"], pr["hari_ini"], meta["hitung"]))
+    gagal = []
+    for nama, fn in LANGKAH:
+        try:
+            m = __import__(nama)
+            fn(m, pr, meta)
+        except BaseException as e:  # satu langkah gagal tidak boleh menjatuhkan yang lain (SystemExit dari sub-modul ikut ditangkap)
+            gagal.append(nama)
+            print(f"::warning title=cuaca {nama}::{e}", file=sys.stderr)
     try:
-        import dampak_cuaca as dampak
-        dampak.main(pr, meta)
-    except Exception as e:  # dampak tak boleh menjatuhkan prakiraan
-        print(f"::warning title=cuaca dampak::{e}", file=sys.stderr)
+        meta.update(ringkas(baca(os.path.join(BANJIR, "cuaca_kec.json")), baca(os.path.join(BANJIR, "cuaca_siklon.json"))))
+        simpan(os.path.join(BANJIR, "cuaca_meta.json"), meta)
+    except Exception as e:
+        print(f"::warning title=cuaca meta::{e}", file=sys.stderr)
     h = meta["hitung"][meta["i0"]]
-    print(f"cuaca: {len(pr['sel'])} sel, {len(pr['ens'])} titik ansambel; hari ini hujan lebat+ {sum(h['hujan'])} sel, embusan >= 54 km/jam {sum(h['angin'])} sel")
+    print(f"cuaca: {len(pr['sel'])} sel, {len(pr['ens'])} titik ansambel; hari ini hujan lebat+ {sum(h['hujan'])} sel, embusan >= 54 km/jam {sum(h['angin'])} sel"
+          + (f"; LANGKAH GAGAL: {', '.join(gagal)}" if gagal else ""))
+    return gagal
 
 
 if __name__ == "__main__":
@@ -144,6 +179,12 @@ if __name__ == "__main__":
         assert rw["prov"]["11"]["b"] == [120, 80] and rw["prov"]["12"]["a"] == [60, 55]
         hj["hari"].append("c"); hj2 = riwayat(rw, [[1, 2, "11", [0, 120, 999], [10, 80, 99]]], ["a", "b", "c"], "b", [{"hujan": [0, 0, 0], "angin": [0, 0, 0]}] * 3)
         assert "c" not in hj2["tgl"] and hj2["tgl"]["a"][6] == 0 and hj2["prov"]["12"]["a"] == [60, 55]  # hari depan tak dicatat; hari lampau diperbarui, prov lain utuh
+        kc = {"hari": ["a", "b", "c"], "prov": {"11": {"t": [1, 2, 0], "n": [[1, 0, 0], [0, 2, 1], [0, 0, 0]]}, "12": {"t": [0, 1, 0], "n": [[0, 0, 0], [3, 0, 0], [0, 0, 0]]}}}
+        sk = {"aktif": [{"id": "x", "nama": "N", "kategori": "K", "angin_kt": 50, "lintasan": [["i", 1, 2, 50, "prakiraan"], ["i", 3, 4, 40, "amatan"]]}]}
+        assert ringkas(kc, sk) == {"besok": {"hari": "b", "n_kec": 3, "prov": {"11": 3}, "t_maks": 2}, "siklon": [{"id": "x", "nama": "N", "kategori": "K", "angin_kt": 50, "lat": 3, "lon": 4}]}
+        assert ringkas(None, {"aktif": []}) == {"siklon": []} and ringkas({"hari": ["a"]}, None) == {}
+        for nama, _ in LANGKAH:
+            __import__(nama).uji()  # self-check tiap modul 72 jam: tanpa jaringan
         print("ok")
     else:
         main()

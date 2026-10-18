@@ -1,0 +1,83 @@
+/* Simulasi cuaca 3D: rupa sama dengan banjir/sim.css (panel kiri kartu, dok legenda bawah). Dimuat simulasi.html. */
+.tabs{display:flex;gap:6px;flex:1;min-width:0}
+.sc-balik{color:#fff;opacity:.85;font-size:13px;font-weight:600;text-decoration:none;padding:6px 10px;border-radius:10px;white-space:nowrap}
+.sc-balik:hover{background:oklch(100% 0 0 / .14);opacity:1}
+.simpanel{position:absolute;z-index:5;top:12px;left:12px;width:380px;max-height:calc(100% - 24px);overflow-y:auto;padding:16px 16px 14px;border-radius:18px;background:linear-gradient(180deg,var(--surface) 0,var(--card) 96px)}
+.simpanel h2{margin:0;font-family:var(--display);font-size:20px;letter-spacing:-.02em}
+.sc-kal{margin:4px 0 12px;font-size:13px;line-height:1.5;color:var(--ink2)}
+.sc-jam{font-family:var(--display);font-size:18px;font-weight:800;letter-spacing:-.01em;font-variant-numeric:tabular-nums}
+.sc-bar{display:grid;grid-template-columns:42px 1fr;gap:10px;align-items:center;margin:8px 0}
+.sc-main{width:42px;height:42px;border-radius:50%;border:0;background:var(--brand);color:#fff;display:grid;place-items:center;cursor:pointer}
+:root[data-theme="dark"] .sc-main{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sc-main{color:oklch(18% .035 256)}}
+.sc-bar input{width:100%;accent-color:var(--brand2)}
+.sc-hari{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:6px 0}
+.sc-hari button,.sc-cip button{border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;height:34px;cursor:pointer;min-width:0}
+.sc-hari button[aria-pressed="true"],.sc-cip button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.sc-cip{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin-top:6px}
+.sc-cip button{display:inline-flex;align-items:center;gap:7px;padding:0 12px;height:38px}
+.sc-cip i{width:9px;height:9px;border-radius:50%;flex:none;background:var(--w);opacity:.5}
+.sc-cip button[aria-pressed="true"] i{opacity:1;box-shadow:0 0 0 2px var(--card)}
+.sc-kv{display:grid;grid-template-columns:repeat(3,1fr);margin:12px 0 4px}
+.sc-kv div{border-left:1px solid var(--line);padding:2px 12px;display:flex;flex-direction:column;gap:3px;min-width:0}
+.sc-kv div:first-child{border-left:0;padding-left:0}
+.sc-kv b{font-family:var(--display);font-size:21px;font-weight:800;line-height:1.1;letter-spacing:-.02em;font-variant-numeric:tabular-nums;color:var(--c,var(--ink))}
+.sc-kv span{font-size:11.5px;color:var(--ink2);line-height:1.3}
+.sc-kosong{padding:14px;border-radius:14px;background:var(--surface);font-size:13px;line-height:1.5}
+.sc-sumber{margin:10px 0 0;font-size:11.5px;color:var(--ink2);line-height:1.45}
+.dok{position:absolute;z-index:4;left:404px;right:12px;bottom:12px;pointer-events:none}
+.dok .box{width:fit-content;max-width:100%;pointer-events:auto;padding:8px 14px}
+.dok .lbl{margin:0 0 4px}
+.dok .leg.row{flex-direction:row;flex-wrap:wrap;gap:4px 14px}
+.dok .sc-lg{display:flex;flex-wrap:wrap;gap:6px 24px}
+.dok .sc-lg > div{min-width:0}
+canvas.sc-angin{position:absolute;inset:0;pointer-events:none;z-index:2}
+.maplibregl-popup-content{font:13px/1.45 var(--font);border-radius:12px;padding:10px 14px;color:#10213d}
+.maplibregl-popup-content b{font-family:var(--display)}
+@media (max-width:900px){
+  .simpanel{top:8px;left:8px;right:8px;width:auto;max-height:46%}
+  .dok{left:8px;right:8px;bottom:8px;max-height:30%;overflow:auto}
+  .tabs{display:none}
+}
+[hidden]{display:none!important}
+.sc-tab{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 10px}
+.sc-tab button,.sc-sw,.sc-reset,.sc-prov button{border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;height:36px;cursor:pointer;min-width:0}
+.sc-tab button[aria-pressed="true"],.sc-sw[aria-pressed="true"],.sc-prov button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+.sc-k{margin:0 0 10px;padding:12px 14px;border-radius:16px;background:var(--surface)}
+.sc-k h3{display:flex;align-items:center;gap:8px;margin:0;font-family:var(--display);font-size:14.5px;font-weight:800;letter-spacing:-.01em}
+.sc-ik{display:inline-grid;place-items:center;width:26px;height:26px;border-radius:999px;background:var(--card);color:var(--brand2);flex:none}
+.sc-k p{margin:6px 0 8px;font-size:13px;line-height:1.5;color:var(--ink2)}
+.sc-k a{color:var(--brand2);font-weight:700}
+.sc-gs{display:grid;grid-template-columns:128px 1fr 64px;gap:8px;align-items:center;font-size:12px;margin:6px 0}
+.sc-gs input{width:100%;min-width:0;accent-color:var(--brand2)}
+.sc-gs b{text-align:right;font-size:12px;font-variant-numeric:tabular-nums}
+.sc-sw{display:inline-flex;align-items:center;justify-content:center;gap:6px;padding:0 12px;width:100%}
+.sc-cip3{display:grid;grid-template-columns:1fr 1fr;gap:6px;margin:8px 0}
+.sc-prov button{display:flex;flex-direction:column;align-items:flex-start;justify-content:center;height:auto;min-height:38px;padding:4px 10px;text-align:left;font-size:12px}
+.sc-prov button small{font-size:10.5px;opacity:.75;font-weight:500}
+.sc-reset{width:100%;margin-top:2px;background:var(--card);border:1px solid var(--line)}
+.sc-lbl{margin:10px 0 2px;font-size:12px;font-weight:700}
+.sc-tb{width:100%;border-collapse:collapse;font-size:12px;margin-top:6px}
+.sc-tb th{text-align:left;font-weight:600;color:var(--ink2);font-size:11px;padding:4px 6px 4px 0}
+.sc-tb td{padding:6px 6px 6px 0;border-top:1px solid var(--line);vertical-align:top}
+.sc-tb .n{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.sc-tb small{display:block;color:var(--ink2);font-size:10.5px}
+.sc-tb tr[data-i]{cursor:pointer}.sc-tb tr[data-i]:hover td{background:color-mix(in oklch,var(--ink) 6%,transparent)}
+.sc-pil{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:700;background:color-mix(in oklch,var(--w) 16%,var(--card));color:color-mix(in oklch,var(--w) 70%,var(--ink));white-space:nowrap}
+.sc-cat{margin:8px 0 0;font-size:11.5px;line-height:1.45;color:var(--ink2)}
+.sc-asumsi summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--brand2)}
+.sc-asumsi ul{margin:8px 0 0;padding-left:16px;font-size:12px;line-height:1.5;color:var(--ink2)}
+.simgraf{position:absolute;z-index:5;top:12px;right:12px;width:340px;max-height:calc(100% - 24px);overflow:auto;padding:12px 14px;border-radius:18px}
+.sg-hd{display:flex;justify-content:space-between;gap:8px;align-items:flex-start}
+.sg-hd h2{margin:0 0 4px;font-family:var(--display);font-size:16px;letter-spacing:-.01em}
+.sg-x{border:0;background:var(--surface);color:var(--ink);width:30px;height:30px;border-radius:999px;display:grid;place-items:center;cursor:pointer;flex:none}
+.sg-t{display:flex;align-items:baseline;gap:6px;font-size:12px;margin-top:8px}.sg-t span{color:var(--ink2);font-size:11px}.sg-t em{margin-left:auto;font-style:normal;font-weight:700;font-variant-numeric:tabular-nums}
+.simgraf canvas{display:block;width:100%;height:96px;cursor:ew-resize;touch-action:none}
+.sg-st{display:grid;grid-template-columns:repeat(72,1fr);height:10px;border-radius:5px;overflow:hidden;margin-top:10px}.sg-st i{display:block}
+.sg-lg{display:flex;gap:12px;font-size:11px;color:var(--ink2);margin-top:4px}.sg-lg i{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}
+@media (max-width:900px){
+  .simgraf{top:8px;right:8px;left:8px;width:auto;max-height:30%}
+  .simpanel{top:auto;bottom:8px;max-height:42%}
+  .dok{bottom:auto;top:8px;max-height:24%;pointer-events:none}
+  .simgraf:not([hidden]) ~ .dok{display:none}
+}
