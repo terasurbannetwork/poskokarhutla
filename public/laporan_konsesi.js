@@ -184,23 +184,22 @@
      terbanyak di kab itu; baris PT bisa diklik/Enter, menggulir ke profil (dibuka bila belum tampil). KAB_BUKA bertahan lintas render. */
   const KAB_BUKA = new Set();
   function tabelDaftar(rs) {
-    const kabUtama = r => (r.kab_titik?.length ? r.kab_titik : r.kab)[0] || "–";
     const grup = new Map();
-    for (const r of rs.slice().sort((a, b) => a._rp - b._rp)) { const k = kabUtama(r); if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
+    for (const r of rs.slice().sort((a, b) => a._rp - b._rp)) { const k = r.kabU || kabUtama(r); if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
     const jml = (g, f) => g.reduce((t, r) => t + (f(r) || 0), 0);
     const kel = [...grup].sort((a, b) => jml(b[1], r => r.titik) - jml(a[1], r => r.titik));
-    const sel = g => `<td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td>`;
-    const baris = r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td>
+    const sel = g => `<td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td><td class="r kn-mt">${pct(jml(g, r => r.luas_ha) ? jml(g, r => r.luas_bakar_ha) / jml(g, r => r.luas_ha) : 0)}</td>`;
+    const baris = r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td><td>${r.grup ? `<span class="kn-gr">${logo(r.unit || r.grup, 16)}${esc(r.grup)}</span>` : NA}</td>
         <td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td>
-        <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td></tr>`;
-    return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th>Kecamatan</th><th>Jenis</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th></tr></thead>
+        <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`;
+    return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th>Kecamatan</th><th>Jenis</th><th>Grup</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead>
       ${kel.map(([k, g]) => { const buka = KAB_BUKA.has(k);
         /* di layar jumlahnya di baris kab; di PDF baris kab jadi judul dan jumlahnya turun ke baris subtotal di bawah PT-nya */
         const sub = sel(g);
-        return `<tbody><tr class="kn-kab" data-kab="${esc(k)}"><td colspan="2"><button type="button" class="kn-kab-b" aria-expanded="${buka}"><span class="kn-kab-i" aria-hidden="true">▸</span>${esc(k)}</button></td><td><span class="kn-jml">${fmt(g.length)} PT</span></td><td colspan="2"></td>${sub}</tr>
+        return `<tbody><tr class="kn-kab" data-kab="${esc(k)}"><td colspan="2"><button type="button" class="kn-kab-b" aria-expanded="${buka}"><span class="kn-kab-i" aria-hidden="true">▸</span>${esc(k)}</button></td><td><span class="kn-jml">${fmt(g.length)} PT</span></td><td colspan="3"></td>${sub}</tr>
         ${g.map(r => baris(r).replace("<tr ", `<tr${buka ? "" : " hidden"} `)).join("")}
-        <tr class="kn-sub kn-subkab"><td colspan="5">Subtotal ${esc(k)}</td>${sub}</tr></tbody>`; }).join("")}
-      <tfoot><tr class="kn-tot"><td colspan="2">Grand total</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="2"></td>${sel(rs)}</tr></tfoot></table></div>`;
+        <tr class="kn-sub kn-subkab"><td colspan="6">Subtotal ${esc(k)}</td>${sub}</tr></tbody>`; }).join("")}
+      <tfoot><tr class="kn-tot"><td colspan="2">Grand total</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="3"></td>${sel(rs)}</tr></tfoot></table></div>`;
   }
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
   function top5Hari(r) {
@@ -256,21 +255,6 @@
       <div class="kn-sp-d">${rs.map(r => `<span><i style="background:${JN[r.jenis][1]}"></i>${esc(r.nama)} <em>${fmt(r.titik)}</em></span>`).join("")}</div></div>`;
   }
 
-  /* titik 3 hari terakhir (hari WIB, termasuk hari data terakhir) */
-  const t3 = r => { if (r._t3 == null) { const b = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 2 * 864e5).toISOString().slice(5, 10); r._t3 = r.pt.filter(p => p[2].slice(0, 5) >= b).length; } return r._t3; };
-  function tabelKab(p) {
-    const T = jumlah(p.rs);
-    return `<div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Grup</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r">% konsesi</th><th>Periode api</th><th class="r">3 hari</th><th class="r">7 hari</th></tr></thead><tbody>
-      ${p.kab.map(([kb, rs], j) => { const x = jumlah(rs);
-        return `<tr class="kn-pita kn-pita-i"><td colspan="11"><a href="#v${p.k}-${j}">${j + 1}. ${esc(kb)}</a></td></tr>`
-          + rs.map((r, m) => `<tr><td class="kn-mt">${m + 1}</td><td><a href="#p${r._i}" data-buka="${r._i}" class="kn-nm">${esc(r.nama)}</a></td><td>${jenisPil(r.jenis)}</td>
-          <td class="kn-nw">${r.grup ? `<span class="kn-gr">${logo(r.unit || r.grup, 18)}${esc(r.grup)}</span>` : `<span class="kn-mt">–</span>`}</td>
-          <td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td>
-          <td class="kn-nw">${rentang(r.pertama, r.terakhir)}</td><td class="r">${t3(r) ? `<span class="kn-ak">${fmt(t3(r))}</span>` : `<span class="kn-mt">–</span>`}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : `<span class="kn-mt">–</span>`}</td></tr>`).join("")
-          + (rs.length > 1 ? `<tr class="kn-sub"><td></td><td colspan="3">Subtotal ${esc(kb)}</td><td class="r">${ha(x.k)}</td><td class="r">${fmt(x.t)}</td><td class="r">${ha(x.l)}</td><td class="r">${pct(x.k ? x.l / x.k : 0)}</td><td></td><td class="r">${fmt(rs.reduce((a, r) => a + t3(r), 0))}</td><td class="r">${fmt(rs.reduce((a, r) => a + r.titik_7h, 0))}</td></tr>` : ""); }).join("")}
-      <tr class="kn-tot"><td></td><td colspan="3">Jumlah ${esc(namaProv(p.k))}</td><td class="r">${ha(T.k)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${pct(T.k ? T.l / T.k : 0)}</td><td></td><td class="r">${fmt(p.rs.reduce((a, r) => a + t3(r), 0))}</td><td class="r">${fmt(p.rs.reduce((a, r) => a + r.titik_7h, 0))}</td></tr></tbody></table></div>`;
-  }
-
   function tabelGrup(rs) {
     const grup = {}; rs.forEach(r => { if (r.grup) (grup[r.grup] ||= []).push(r); });
     const u = Object.entries(grup).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
@@ -308,7 +292,6 @@
         <section class="kn-kartu kn-pvk"><h2>Peta provinsi</h2><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}. Angka = nomor perusahaan.</figcaption></figure>${legenda()}
         </section>
         <section class="kn-kartu"><h2>Daftar perusahaan</h2>${tabelDaftar(p.rs)}</section>
-        <section class="kn-kartu"><h2>Per kabupaten/kota</h2>${tabelKab(p)}</section>
         ${tabelGrup(p.rs) ? `<section class="kn-kartu kn-grk"><h2>Grup perusahaan</h2>${tabelGrup(p.rs).replace("<h3>Grup perusahaan</h3>", "")}</section>` : ""}
         ${p.kab.map(([kb, rs], j) => `<section class="kn-kabsek" id="v${p.k}-${j}">${sampulKab(p.k, kb, rs)}
           <section class="kn-kartu"><div class="kn-kabh"><span class="lbl">${esc(namaProv(p.k))} · Kabupaten/kota</span><h2>${esc(kb)}</h2>

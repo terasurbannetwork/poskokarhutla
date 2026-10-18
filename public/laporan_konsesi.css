@@ -385,7 +385,8 @@ main.kn{position:static;inset:auto}
 .kn-tk-kab td.kn-nw{white-space:normal}
 .kn-dft .kn-c{text-align:center}
 .kn-cek{color:var(--ink);font-weight:800;font-size:14px}
-.kn-dft{table-layout:fixed}.kn-dft th:nth-child(1){width:4%}.kn-dft th:nth-child(2){width:22%}.kn-dft th:nth-child(3){width:15%}.kn-dft th:nth-child(4){width:7%}.kn-dft th:nth-child(5){width:6%}.kn-dft th:nth-child(6){width:9%}.kn-dft th:nth-child(7){width:8%}.kn-dft th:nth-child(8){width:7%}.kn-dft th:nth-child(9){width:6%}.kn-dft th:nth-child(10){width:7%}.kn-dft th:nth-child(11){width:9%}
+.kn-dft{table-layout:fixed}.kn-dft th:nth-child(1){width:3%}.kn-dft th:nth-child(2){width:17%}.kn-dft th:nth-child(3){width:11%}.kn-dft th:nth-child(4){width:6%}.kn-dft th:nth-child(5){width:12%}.kn-dft th:nth-child(6){width:5%}.kn-dft th:nth-child(7){width:8%}.kn-dft th:nth-child(8){width:7%}.kn-dft th:nth-child(9){width:6%}.kn-dft th:nth-child(10){width:5%}.kn-dft th:nth-child(11){width:6%}.kn-dft th:nth-child(12){width:8%}.kn-dft th:nth-child(13){width:6%}
+.kn-dft .kn-gr{font-size:10px;color:var(--ink2);gap:4px}
 .kn-tb tr.kn-kab td{background:var(--surface);font-weight:700;border-top:1px solid var(--line)}
 .kn-kab-b{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--ink)}
 .kn-kab-b:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
