@@ -228,14 +228,14 @@
         <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(daftar.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td><td></td></tr></tbody></table></div></section>` : ""}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${tabelGrup(daftar)}</section>` : ""}
       <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}
-        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
+        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._rp - b._rp).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
         <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
         ${kpi(p.rs)}
         <section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(p.rs)}</section>
         <section class="kn-kartu kn-pvk"><h2>Peta provinsi</h2><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}. Angka = nomor perusahaan.</figcaption></figure>${legenda()}
-          <ol class="kn-nomor">${p.rs.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>
+          <ol class="kn-nomor">${p.rs.slice().sort((a, b) => a._rp - b._rp).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>
         </section>
         <section class="kn-kartu"><h2>Per kabupaten/kota</h2>${tabelKab(p)}</section>
         ${tabelGrup(p.rs) ? `<section class="kn-kartu kn-grk"><h2>Grup perusahaan</h2>${tabelGrup(p.rs).replace("<h3>Grup perusahaan</h3>", "")}</section>` : ""}
@@ -427,7 +427,7 @@
   function petaUtama() {
     if (peta) { peta.remove(); peta = null; }
     const rs = daftar.slice(0, 300);   // ponytail: peta utama dibatasi 300 konsesi teratas supaya ringan
-    peta = new maplibregl.Map({container: "knPeta", style: gaya(DASAR[S.dasar], rs, null, ["interpolate", ["linear"], ["zoom"], 5, 1.6, 10, 4], SUSUN.length === 1 ? 25 : 0), bounds: bbox(rs), fitBoundsOptions: {padding: 30},
+    peta = new maplibregl.Map({container: "knPeta", style: gaya(DASAR[S.dasar], rs, null, ["interpolate", ["linear"], ["zoom"], 5, 1.6, 10, 4], SUSUN.length === 1 ? 300 : 0), bounds: bbox(rs), fitBoundsOptions: {padding: 30},
       attributionControl: {compact: true}, canvasContextAttributes: {preserveDrawingBuffer: true}, preserveDrawingBuffer: true});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}));
     peta.on("click", "pf", e => { const p = e.features[0].properties;
@@ -489,7 +489,7 @@
     const kunci = k + S.dasar + S.jenis.size + S.cari;
     if (gambarPv.has(kunci)) { tulisPv(k, gambarPv.get(kunci)); return Promise.resolve(); }
     const rs = SUSUN.find(p => p.k === k)?.rs || [];
-    return antre = antre.then(async () => { const g = await potret(DASAR[S.dasar], rs.slice(0, 300), null, 25, [1700, 800]); gambarPv.set(kunci, g); tulisPv(k, g); });
+    return antre = antre.then(async () => { const g = await potret(DASAR[S.dasar], rs.slice(0, 300), null, 300, [1700, 800]); gambarPv.set(kunci, g); tulisPv(k, g); });
   }
   const tulisPv = (k, g) => { const d = document.querySelector(`[data-pv="${k}"]`); if (d) d.innerHTML = g ? `<img src="${g}" alt="">` : `<span>Peta gagal digambar</span>`; };
 
