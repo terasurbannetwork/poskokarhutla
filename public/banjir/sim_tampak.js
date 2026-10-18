@@ -74,7 +74,7 @@ function luapan(sg) {
 function siapkan(dem) {
   const {nx, ny, dx} = dem, z0 = dem.z;
   const N = nx * ny, laut = SG.topengLaut(z0, nx, ny), benih = SG.benihTepi(nx, ny, laut);
-  const f0 = SG.isiCekungan(z0, nx, ny, benih), z = SG.batasiCekungan(z0, f0, SG.ASUMSI.CEKUNGAN_MAKS);
+  const z = SG.siapkanDEM(z0, nx, ny, benih);
   const f = SG.isiCekungan(z, nx, ny, benih), arah = SG.arahD8(f, nx, ny, benih), acc = SG.akumulasi(f, arah), lr = SL.lereng(z0, nx, ny, dx);
   let kel = -1; for (let k = 0; k < N; k++) { const i = k % nx, j = (k / nx) | 0; if ((!i || !j || i === nx - 1 || j === ny - 1) && !laut[k] && (kel < 0 || acc[k] > acc[kel])) kel = k; }
   const pintu = new Uint8Array(N), ki = kel % nx, kj = (kel / nx) | 0;

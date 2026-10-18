@@ -354,6 +354,8 @@ def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=25):
     mnt, km, prev, akar = dijkstra(adj, sumber)
     cand = [d for d in poi["desa"] if d["nama"] and (d["zona"] in ("III", "II") or d["km"] <= rek)]
     cand.sort(key=lambda d: (-(RANK.get(d["zona"], 0)), d["km"]))
+    if not cand:   # tak ada desa di zona III/II: desa KRB I terdekat (peringatan dini), bukan daftar kosong
+        cand = sorted((d for d in poi["desa"] if d["nama"] and d["zona"] == "I"), key=lambda d: d["km"])[:10]
     ev, rt = [], []
     for d in cand:
         if len(ev) >= maks:

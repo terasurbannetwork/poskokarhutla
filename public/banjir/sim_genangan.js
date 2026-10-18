@@ -66,6 +66,9 @@ function isiCekungan(z, nx, ny, benih, eps = 1e-5, tetangga = 8) {
 /* angkat dasar cekungan sehingga tidak lebih dari dmaks di bawah ambang luap (f = hasil isiCekungan) */
 function batasiCekungan(z, f, dmaks) { (dmaks >= 0) || salah(`kedalaman cekungan maks ${dmaks} tidak sah`);
   const o = Float64Array.from(z); for (let k = 0; k < o.length; k++) if (f[k] - o[k] > dmaks) o[k] = f[k] - dmaks; return o; }
+/* DEM siap mesin: cekungan 4-tetangga (mesin aliran hanya lewat 4 sisi) dibatasi ASUMSI.CEKUNGAN_MAKS. Satu pintu dipakai layar
+   dan uji, supaya layar tidak bisa diam-diam kembali ke 8-tetangga (pernah terjadi: kolam 7-8 m di Sukajaya tak pernah surut). */
+function siapkanDEM(z, nx, ny, benih, dmaks = ASUMSI.CEKUNGAN_MAKS) { return batasiCekungan(z, isiCekungan(z, nx, ny, benih, 1e-5, 4), dmaks); }
 /* D8 (O'Callaghan & Mark 1984): penerima = tetangga dengan turunan terbesar; -1 = benih/keluaran */
 function arahD8(f, nx, ny, benih) {
   const N = nx * ny, a = new Int32Array(N).fill(-1);
@@ -281,7 +284,7 @@ async function ambilDEM(lat, lon, sisi, n, ambil) {
 const keSel = (K, lon, lat) => { const [x, y] = keDunia(lon, lat, K.zoom); return [(x - K.x0) / K.s - .5, (y - K.y0) / K.s - .5]; };
 const dariSel = (K, i, j) => dariDunia(K.x0 + (i + .5) * K.s, K.y0 + (j + .5) * K.s, K.zoom);
 
-const API = {ASUMSI, isiCekungan, batasiCekungan, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, pasang, topengLaut, garisSel, naikkan, jalankan,
+const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, pasang, topengLaut, garisSel, naikkan, jalankan,
   rencanaKisi, ambilDEM, keSel, dariSel, terrarium};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimGenangan = API;
 })(typeof self !== "undefined" ? self : globalThis);

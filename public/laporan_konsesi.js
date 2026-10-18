@@ -532,7 +532,13 @@
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
     return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || (Array.isArray(hari) ? hari.includes(p[2].slice(0, 5)) : p[2].startsWith(hari))).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
-  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
+  /* letak label nomor: rata-rata titik di sel ~5 km yang paling padat. Titik tengah semua api bisa jatuh di antara dua kab/kota
+     (mis. Inhutani I di Kotabaru + Tanah Laut) sehingga nomornya terlihat salah tempat. Disimpan di r._lab. */
+  const letakLabel = r => { if (r._lab) return r._lab; if (!r.pt?.length) return (r._lab = r.pusat);
+    const g = {}; r.pt.forEach(p => { const k = Math.round(p[0] / .05) + "," + Math.round(p[1] / .05); (g[k] ||= []).push(p); });
+    const ps = Object.values(g).sort((a, b) => b.length - a.length)[0];
+    return (r._lab = [ps.reduce((a, p) => a + p[0], 0) / ps.length, ps.reduce((a, p) => a + p[1], 0) / ps.length]); };
+  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [letakLabel(r)[1], letakLabel(r)[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
     sources: {...(dasar.img ? {d0: {type: "raster", tileSize: 256, ...DASAR.google}} : {}), d: dasar.img ? {type: "image", url: dasar.img, coordinates: [[dasar.bb[0], dasar.bb[3]], [dasar.bb[2], dasar.bb[3]], [dasar.bb[2], dasar.bb[1]], [dasar.bb[0], dasar.bb[1]]]} : {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
     layers: [{id: "bg", type: "background", paint: {"background-color": "#10202f"}},
@@ -580,7 +586,7 @@
     }
     return L;
   }
-  const labelDari = (rs, lab) => rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({n: String(r._rp), t: r.titik, lon: r.pusat[1], lat: r.pusat[0]}));
+  const labelDari = (rs, lab) => rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({n: String(r._rp), t: r.titik, lon: letakLabel(r)[1], lat: letakLabel(r)[0]}));
   /* gambar callout di atas gambar peta (kanvas 2D), dipakai untuk potret/cetak */
   function callout2d(m, rs, lab) {
     const src = m.getCanvas(), c = document.createElement("canvas"); c.width = src.width; c.height = src.height;

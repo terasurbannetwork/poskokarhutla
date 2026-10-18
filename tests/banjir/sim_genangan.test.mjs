@@ -128,6 +128,23 @@ test("longsor monoton terhadap hujan (kejenuhan) dan kemiringan; datar = 0", () 
   assert.ok(Math.abs(lr[55] - 45) < 1e-6, `lereng 1:1 harus 45 derajat, dapat ${lr[55]}`);
 });
 
+test("DEM siap mesin: lubang yang hanya bocor diagonal tidak menjadi perangkap air", () => {
+  /* lubang 8 m di tengah, satu-satunya jalan keluar lewat sudut diagonal ke tepi rendah. Dengan Priority-Flood 8-tetangga lubang
+     ini dianggap mengalir dan air tertahan 8 m selamanya; siapkanDEM (4-tetangga) membatasinya 0,5 m */
+  const n = 7, z = new Float64Array(n * n).fill(10), c = 3 * n + 3; z[c] = 2; z[2 * n + 2] = 1; z[n + 1] = 0; z[0] = -1;
+  const b = tepiSemua(n, n), zs = SG.siapkanDEM(z, n, n, b);
+  assert.ok(Math.abs(zs[c] - (10 - SG.ASUMSI.CEKUNGAN_MAKS)) < 1e-3, `dasar lubang ${zs[c]} m, harus ${10 - SG.ASUMSI.CEKUNGAN_MAKS} m`);
+  const J = 6; /* tepi terbuka bawaan; hujan 100 mm jam pertama */
+  const r = SG.jalankan({nx: n, ny: n, dx: 30, z: zs, jam: J, hujan: jam(J, t => t === 0 ? 100 : 0)});
+  /* invarian: muka air di lubang tidak di atas ambang luap 10 m lebih dari lapisan aliran tipis (1 cm); tanpa perbaikan muka
+     air tertahan di ~10 m dengan dasar 2 m (kedalaman 8 m) */
+  const muka = zs[c] + r.kedalaman[J * n * n + c];
+  assert.ok(muka <= 10.01, `muka air di lubang ${muka.toFixed(4)} m di atas ambang luap 10 m`);
+  assert.ok(r.kedalaman[J * n * n + c] < 1, `air di lubang ${r.kedalaman[J * n * n + c]} m: lubang menjadi perangkap`);
+  const r8 = SG.jalankan({nx: n, ny: n, dx: 30, z: SG.batasiCekungan(z, SG.isiCekungan(z, n, n, b), .5), jam: J, hujan: jam(J, t => t === 0 ? 100 : 0)});
+  assert.ok(r8.kedalaman[J * n * n + c] > 1, "pembanding 8-tetangga harus menampakkan perangkap (uji ini bermakna)");
+});
+
 test("masukan rusak ditolak", () => {
   const z = new Float64Array(16), ok = {nx: 4, ny: 4, dx: 10, z, jam: 2};
   const tolak = (cfg, pola) => assert.throws(() => SG.jalankan(cfg), pola);
