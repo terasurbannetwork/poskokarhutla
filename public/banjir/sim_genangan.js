@@ -95,9 +95,10 @@ function hietograf(hari, jamPuncak = ASUMSI.JAM_PUNCAK) {
     for (let q = 0; q < n; q++) o[i * 24 + a + q] = n === 1 ? p : q === Math.floor(n / 2) ? pk : (p - pk) / (n - 1); });
   return o;
 }
-/* kelas kelembapan anteseden SCS (Chow, Maidment, Mays 1988 tabel 5.5.1; hujan 5 hari musim tumbuh <36, 36-53, >53 mm);
-   di sini a7 = hujan 7 hari (asumsi: setara) atau sm >= 0,45 = jenuh */
-const kelasAMC = (a7, sm) => (sm != null && sm >= .45) || a7 > 53 ? 3 : a7 < 36 ? 1 : 2;
+/* kelas kelembapan anteseden SCS (Chow, Maidment, Mays 1988 tabel 5.5.1). Basah (AMC III) = definisi "jenuh" status.py
+   (sm >= 0,45 dan a7 >= 25 mm; tanpa sm: a7 >= 150 mm) supaya tab status dan genangan tidak berbeda menilai tanah;
+   kering (AMC I) = hujan 7 hari < 36 mm (batas 5 hari SCS, asumsi setara) */
+const kelasAMC = (a7, sm) => (sm != null ? sm >= .45 && a7 >= 25 : a7 >= 150) ? 3 : a7 < 36 ? 1 : 2;
 const cnAMC = (cn, amc) => amc === 1 ? 4.2 * cn / (10 - .058 * cn) : amc === 3 ? 23 * cn / (10 + .13 * cn) : cn;
 /* SCS-CN kumulatif: Q = (P - 0,2S)^2 / (P + 0,8S), S = 25400/CN - 254 mm. Kembali limpasan efektif & resapan kumulatif per jam */
 function limpasan(hujan, cn, amc = 2) {
@@ -155,10 +156,12 @@ function jalankan(cfg, kabar) {
   const aturPompa = s => { pq.fill(0); for (const p of pompa) if ((p.mulai || 0) * 3600 <= s + 1e-9) pq[p.k] += p.q; };
 
   const h = new Float64Array(N), hmaks = new Float64Array(N), qx = new Float64Array((nx - 1) * ny), qy = new Float64Array(nx * (ny - 1)), sk = new Float64Array(N);
-  let nDarat = 0; for (let k = 0; k < N; k++) if (!laut[k]) nDarat++;
+  /* hujan jatuh di sel darat yang bukan pintu tertutup (sel tertutup = dinding: kalau ikut menerima hujan airnya terkurung di sana) */
+  const kena = new Uint8Array(N); let nDarat = 0; for (let k = 0; k < N; k++) if (!laut[k] && !tutup[k]) { kena[k] = 1; nDarat++; }
   /* tepi terbuka: aliran normal Manning q = h^(5/3) sqrt(S)/n, S = max(LERENG_TEPI, lereng dasar ke arah luar) */
   const ek = [], es = [];
-  const tepi = (k, kd) => { if (laut[k] || tutup[k]) return; ek.push(k); es.push(Math.sqrt(Math.max(ASUMSI.LERENG_TEPI, (z[kd] - z[k]) / dx))); };
+  const sudah = new Uint8Array(N); /* sel sudut cukup satu sisi keluar, tidak dihitung dua kali */
+  const tepi = (k, kd) => { if (laut[k] || tutup[k] || sudah[k]) return; sudah[k] = 1; ek.push(k); es.push(Math.sqrt(Math.max(ASUMSI.LERENG_TEPI, (z[kd] - z[k]) / dx))); };
   for (let i = 0; i < nx; i++) { tepi(i, i + nx); tepi((ny - 1) * nx + i, (ny - 2) * nx + i); }
   for (let j = 0; j < ny; j++) { tepi(j * nx, j * nx + 1); tepi(j * nx + nx - 1, j * nx + nx - 2); }
   const nE = ek.length, qe = new Float64Array(nE), eo = new Float64Array(N);
@@ -173,11 +176,14 @@ function jalankan(cfg, kabar) {
   const debit = (m, s) => { const a = Math.min(J, Math.floor(s / 3600)), b = Math.min(J, a + 1), f = s / 3600 - a; return m.q[a] + (m.q[b] - m.q[a]) * f; };
   let hAkhir = 0;
   while (t < Tend - 1e-9) {
-    let hm = Math.max(.01, hAkhir); /* maks kedalaman langkah lalu + masukan langkah ini (hujan/sungai) dinaikkan di bawah */
+    /* CFL dari kedalaman maks langkah lalu, ditambah perkiraan masukan sungai langkah ini (debit x DT_MAKS / luas sel, batas atas)
+       karena air sungai disuntik SEBELUM fluks dihitung; hujan per langkah <= mm, diabaikan */
+    let hm = Math.max(.01, hAkhir);
+    for (const m of masuk) { const d = h[m.k] + debit(m, t) * ASUMSI.DT_MAKS / A; if (d > hm) hm = d; }
     const es0 = adaLaut ? etaLaut(t) : 0; if (adaLaut && es0 - zPantai > hm) hm = es0 - zPantai;
     const dt = Math.min(ASUMSI.DT_MAKS, (cfg.alfa ?? ASUMSI.ALFA) * dx / Math.sqrt(G * hm), simpanBerikut - t);
     const jam = Math.min(J - 1, Math.floor(t / 3600)), r = hujan[jam] / 1000 / 3600 * dt;
-    if (r > 0) { for (let k = 0; k < N; k++) if (!laut[k]) h[k] += r; V.hujan += r * A * nDarat; }
+    if (r > 0) { for (let k = 0; k < N; k++) if (kena[k]) h[k] += r; V.hujan += r * A * nDarat; }
     for (const m of masuk) { const v = debit(m, t + dt / 2) * dt; h[m.k] += v / A; V.sungai += v; }
     const eta = adaLaut ? etaLaut(t + dt / 2) : 0; if (pompa.length) aturPompa(t);
     hAkhir = langkahAir(K, dt, eta);
@@ -246,6 +252,21 @@ function langkahAir(K, dt, eta) {
   return hm;
 }
 
+/* ---------- penyiapan area (dijalankan di Web Worker; murni) ----------
+   dem dari ambilDEM; lereng = SimLongsor.lereng (dioper supaya berkas ini tetap tanpa ketergantungan). Hasil: z siap mesin, topeng
+   laut, akumulasi D8, lereng, sel keluaran utama + sel pintu air, relief, jumlah sel yang didangkalkan. */
+function siapkanArea(dem, lereng) {
+  const {nx, ny, dx} = dem, z0 = dem.z, N = nx * ny, laut = topengLaut(z0, nx, ny), benih = benihTepi(nx, ny, laut), z = siapkanDEM(z0, nx, ny, benih);
+  const f = isiCekungan(z, nx, ny, benih), acc = akumulasi(f, arahD8(f, nx, ny, benih)), lr = lereng ? lereng(z0, nx, ny, dx) : new Float32Array(N);
+  const tepiK = k => { const i = k % nx, j = (k / nx) | 0; return !i || !j || i === nx - 1 || j === ny - 1; };
+  let kel = -1; for (let k = 0; k < N; k++) if (tepiK(k) && !laut[k] && (kel < 0 || acc[k] > acc[kel])) kel = k;
+  const pintu = new Uint8Array(N), ki = kel % nx, kj = (kel / nx) | 0;
+  for (let k = 0; k < N; k++) if (laut[k] || (kel >= 0 && tepiK(k) && Math.abs(k % nx - ki) <= 3 && Math.abs(((k / nx) | 0) - kj) <= 3)) pintu[k] = 1;
+  const dar = []; let isi = 0, nLaut = 0; for (let k = 0; k < N; k++) { if (laut[k]) nLaut++; else dar.push(z[k]); if (z[k] > z0[k]) isi++; }
+  dar.sort((a, b) => a - b); const relief = dar.length ? dar[Math.floor(dar.length * .95)] - dar[Math.floor(dar.length * .05)] : 0;
+  return {z, isi, laut, acc, lr, kel, pintu, relief: Math.max(1, relief), nLaut};
+}
+
 /* ---------- DEM: ubin Terrarium (s3 elevation-tiles-prod, ber-CORS, sumber medan 3D MapLibre di sim_3d) ----------
    Kisi persegi nxn berpusat (lat, lon), sisi `sisi` m, dicuplik bilinear dalam ruang Mercator di zoom paling kasar yang
    pikselnya <= ukuran sel (z 10-13; sumber SRTM ~30 m di Indonesia). */
@@ -284,7 +305,7 @@ async function ambilDEM(lat, lon, sisi, n, ambil) {
 const keSel = (K, lon, lat) => { const [x, y] = keDunia(lon, lat, K.zoom); return [(x - K.x0) / K.s - .5, (y - K.y0) / K.s - .5]; };
 const dariSel = (K, i, j) => dariDunia(K.x0 + (i + .5) * K.s, K.y0 + (j + .5) * K.s, K.zoom);
 
-const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, pasang, topengLaut, garisSel, naikkan, jalankan,
+const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, siapkanArea, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, pasang, topengLaut, garisSel, naikkan, jalankan,
   rencanaKisi, ambilDEM, keSel, dariSel, terrarium};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimGenangan = API;
 })(typeof self !== "undefined" ? self : globalThis);

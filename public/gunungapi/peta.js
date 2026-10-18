@@ -2,8 +2,14 @@
 /* Peta gunung api: segitiga berwarna level PVMBG, cincin radius rekomendasi, daftar kiri, legenda dok bawah, pop-up detail. */
 let peta = null, PI = null, LG = null, legBuka = innerWidth > 900;
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
-const UBIN = {gunung: ["#7a2e1d", "#e58a45", "peringatan"], radius: ["#7a3b0b", "#f2b544", "perisai"], nama: ["#1f3a5f", "#6d8fc0", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
-const UBIN_PENDEK = {gunung: "Gunung", radius: "Radius", nama: "Nama", satelit: "Satelit"};
+const UBIN = {gunung: ["#7a2e1d", "#e58a45", "peringatan"], radius: ["#7a3b0b", "#f2b544", "perisai"], nama: ["#1f3a5f", "#6d8fc0", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"],
+  abu: ["#4b4038", "#a39382", "angin"], bandara: ["#1f3a5f", "#6d8fc0", "pesawat"], krb: ["#7a2e1d", "#e8743b", "krb"], rute: ["#14532d", "#4ade80", "rute"], sekolah: ["#1e3a8a", "#60a5fa", "sekolah"], tambang: ["#5b3a1a", "#c08a4f", "tambang"]};
+const UBIN_PENDEK = {gunung: "Gunung", radius: "Radius", nama: "Nama", satelit: "Satelit", abu: "Abu", bandara: "Bandara", krb: "KRB", rute: "Evakuasi", sekolah: "Sekolah", tambang: "Tambang"};
+/* ikon garis tambahan untuk ubin Overlay (IKON inti/peta/lapis.js tak punya pesawat dll.; objeknya bisa ditambah dari sini) */
+const IKON_BARU = {pesawat: '<path d="M2 14l8-2.5V5.5a2 2 0 0 1 4 0v6.5l8 2.5v2.5l-8-2v4l2.5 1.5V22L12 21l-4.5 1v-1.5L10 19v-4l-8 2z"/>', krb: '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="5"/><circle cx="12" cy="12" r="1.5"/>',
+  rute: '<circle cx="6" cy="19" r="2"/><circle cx="18" cy="5" r="2"/><path d="M8 19h5a4 4 0 0 0 0-8h-2a4 4 0 0 1 0-8h5"/>', sekolah: '<path d="M3 10l9-5 9 5-9 5z"/><path d="M7 12v5c3 2 7 2 10 0v-5"/>', tambang: '<path d="M4 20 9 11l3 5 3-4 5 8z"/>'};
+const KEL = ["abu", "bandara", "krb", "rute", "sekolah", "tambang"];   /* lapisan baru, dimuat malas: sumbernya dari berkas turunan, bukan status */
+S.jamAbu = 24;
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
@@ -21,6 +27,7 @@ const Peta = {
   async init() {
     document.head.insertAdjacentHTML("beforeend", '<link rel="stylesheet" href="../inti/peta/lapis.css"><link rel="stylesheet" href="../inti/peta/legenda.css">');
     PI = await import("../inti/peta/lapis.js").catch(() => null);
+    if (PI?.IKON) Object.assign(PI.IKON, IKON_BARU);
     PI?.ubinLapis($("#lapis"), {katalog: UBIN, pendek: UBIN_PENDEK});
     LG = await import("../inti/peta/legenda.js").catch(() => null);
     const lebar = () => { const w = $(".panel")?.getBoundingClientRect().width, t = $(".tools")?.getBoundingClientRect().width, p = $("#p-peta");
@@ -51,6 +58,7 @@ const Peta = {
     peta.addLayer({id: "nama", type: "symbol", source: "titik", minzoom: 5, layout: {...vis("nama"), "text-field": ["get", "nama"], "text-font": ["Noto Sans Regular"], "text-size": 11, "text-offset": [0, 1.3], "text-anchor": "top", "text-optional": true},
       paint: {"text-color": gelap() ? "#e6edf7" : "#1b2740", "text-halo-color": gelap() ? "#0b1220" : "#fff", "text-halo-width": 1.4}});
     if (this.lihat("satelit")) this.satelit();
+    KEL.forEach(k => { if (this.lihat(k)) nanti(() => Lapis.tambah(k)); });
     this.interaksi(); renderLegenda(); },
   satelit() {
     if (peta.getSource("satelit")) return;
@@ -70,9 +78,85 @@ const Peta = {
     document.querySelector("#lapis").addEventListener("change", e => { const k = e.target.dataset.l; if (!k) return;
       if (k === "satelit") this.satelit();
       const ids = {gunung: ["titik"], radius: ["radius-isi", "radius-garis"], nama: ["nama"], satelit: ["satelit"]}[k] || [];
-      ids.forEach(id => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", e.target.checked ? "visible" : "none")); renderLegenda(); });
+      ids.forEach(id => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", e.target.checked ? "visible" : "none"));
+      if (KEL.includes(k)) nanti(() => Lapis.nyala(k, e.target.checked));
+      renderLegenda(); });
   },
   terbang(g) { peta.flyTo({center: [g.lon, g.lat], zoom: Math.max(peta.getZoom(), g.radius_km ? 9 : 8), duration: 700}); },
+};
+
+/* ---------- lapisan paparan dan abu (dimuat malas) ---------- */
+const JAM_ABU = [6, 12, 24, 48, 72];
+const W_ABU = "#8a7a6b", W_SEK = "#3b82f6", W_FAS = "#e11d6b", W_TAMB = "#8a5a2b", W_RUTE = "#2fb36a", W_KENA = "#d64545", W_BAND = "#6d7b91";
+const LAPIS_ID = {abu: ["abu-isi", "abu-garis"], bandara: ["bandara-titik", "bandara-l"], krb: ["krb-isi", "krb-garis"], rute: ["rute-garis"], sekolah: ["sekolah-titik"], tambang: ["tambang-titik"]};
+const URUT_LAPIS = ["krb", "abu", "rute", "tambang", "sekolah", "bandara"];   /* dasar -> atas; semuanya di bawah segitiga gunung */
+const FC = f => ({type: "FeatureCollection", features: f});
+const dalamZona = x => x.zona && WARNA_ZONA[x.zona];
+const Lapis = {
+  p: {}, ia: {}, info: null,
+  sudah: k => !!peta?.getSource(k),
+  /* jejak abu berambang pada jam S.jamAbu: poligon kosong = di bawah ambang penerbangan 2 mg/m3, BUKAN tanpa abu */
+  abuGeo(a) {
+    const f = [];
+    for (const ga of a.gunung) { const j = ga.jejak.find(x => x.jam === S.jamAbu); if (!jejakOk(j)) continue;
+      const r = j.poligon.slice(); const [x0, y0] = r[0], [x1, y1] = r.at(-1); if (x0 !== x1 || y0 !== y1) r.push(r[0]);
+      f.push({type: "Feature", geometry: {type: "Polygon", coordinates: [r]}, properties: {id: ga.id, nama: ga.nama, jam: j.jam, km: j.jangkau_km, arah: j.arah_deg}}); }
+    const mk = f.reduce((m, x) => !m || x.properties.km > m.km ? x.properties : m, null);
+    this.info = {n: f.length, maks: mk}; return FC(f); },
+  async geo(k) {
+    if (k === "abu") { const a = await Data.abu(); return a && this.abuGeo(a); }
+    if (k === "bandara") { const [b, a] = await Promise.all([Data.bandara(), Data.abu()]); if (!b?.length) return null;
+      const kena = new Map((a?.bandara_terdampak || []).map(x => [x.icao, x]));
+      return FC(b.map(x => { const t = kena.get(x.icao); return {type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {icao: x.icao, iata: x.iata || x.icao, nama: x.nama, kena: t ? 1 : 0, jam: t?.jam_tiba ?? null, gn: t?.gunung || ""}}; })); }
+    if (k === "krb" || k === "rute") { const G = await Data.geo(); if (!G) return null; const f = [];
+      for (const [id, v] of Object.entries(G)) {
+        if (k === "krb") for (const z of ["I", "II", "III"]) { if (v.zona?.[z]) f.push({type: "Feature", geometry: v.zona[z], properties: {id, zona: z}}); }
+        else if (v.rute?.length) f.push({type: "Feature", geometry: {type: "MultiLineString", coordinates: v.rute}, properties: {id}}); }
+      return f.length ? FC(f) : null; }
+    const P = await Data.pap(); if (!P) return null; const f = [];
+    for (const g of P.gunung) {
+      if (k === "sekolah") { for (const [jn, L] of [["sekolah", g.sekolah], ["faskes", g.faskes]]) for (const x of L || []) if (dalamZona(x)) f.push({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {nama: x.nama, jenis: jn, zona: x.zona, km: x.km, gn: g.nama}}); }
+      else for (const x of g.tambang || []) if (dalamZona(x)) f.push({type: "Feature", geometry: {type: "Point", coordinates: [x.lon, x.lat]}, properties: {nama: x.nama, kom: x.komoditas || "", zona: x.zona, gn: g.nama}}); }
+    return f.length ? FC(f) : null; },
+  /* layer pertama yang sudah ada di atas k dalam urutan tumpukan; kalau belum ada, tepat di bawah segitiga gunung */
+  batas(k) { for (const n of URUT_LAPIS.slice(URUT_LAPIS.indexOf(k) + 1)) { const id = LAPIS_ID[n].find(i => peta.getLayer(i)); if (id) return id; } return peta.getLayer("titik") ? "titik" : undefined; },
+  tambah(k) {
+    if (this.sudah(k)) return Promise.resolve(true);
+    return this.p[k] ||= (async () => { try {
+      const gj = await this.geo(k); if (!gj || !peta) return false; if (this.sudah(k)) return true;
+      const vis = {visibility: Peta.lihat(k) ? "visible" : "none"}, b = this.batas(k), gelapIni = gelap();
+      peta.addSource(k, {type: "geojson", data: gj});
+      const L = {
+        abu: [{id: "abu-isi", type: "fill", paint: {"fill-color": W_ABU, "fill-opacity": .38}}, {id: "abu-garis", type: "line", paint: {"line-color": gelapIni ? "#d6c7b5" : "#5c4f43", "line-width": 1.6, "line-dasharray": [3, 2]}}],
+        krb: [{id: "krb-isi", type: "fill", paint: {"fill-color": ["match", ["get", "zona"], "III", WARNA_ZONA.III, "II", WARNA_ZONA.II, WARNA_ZONA.I], "fill-opacity": ["match", ["get", "zona"], "III", .34, "II", .26, .18]}},
+          {id: "krb-garis", type: "line", paint: {"line-color": ["match", ["get", "zona"], "III", WARNA_ZONA.III, "II", WARNA_ZONA.II, WARNA_ZONA.I], "line-width": .8, "line-opacity": .8}}],
+        rute: [{id: "rute-garis", type: "line", layout: {"line-cap": "round", "line-join": "round"}, paint: {"line-color": W_RUTE, "line-width": ["interpolate", ["linear"], ["zoom"], 6, 1, 12, 3], "line-opacity": .9}}],
+        sekolah: [{id: "sekolah-titik", type: "circle", minzoom: 7, paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 2.5, 13, 5], "circle-color": ["match", ["get", "jenis"], "faskes", W_FAS, W_SEK], "circle-stroke-color": "#fff", "circle-stroke-width": 1}}],
+        tambang: [{id: "tambang-titik", type: "circle", minzoom: 7, paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 7, 3, 13, 6], "circle-color": W_TAMB, "circle-stroke-color": "#fff", "circle-stroke-width": 1.2}}],
+        bandara: [{id: "bandara-titik", type: "circle", paint: {"circle-radius": ["case", ["==", ["get", "kena"], 1], 7, ["interpolate", ["linear"], ["zoom"], 4, 2.5, 9, 5]], "circle-color": ["case", ["==", ["get", "kena"], 1], W_KENA, W_BAND], "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}},
+          {id: "bandara-l", type: "symbol", layout: {"text-field": ["step", ["zoom"], ["case", ["==", ["get", "kena"], 1], ["get", "iata"], ""], 7, ["get", "iata"]], "text-font": ["Noto Sans Bold"], "text-size": 10.5, "text-offset": [0, 1.2], "text-anchor": "top", "text-optional": true},
+            paint: {"text-color": gelapIni ? "#e6edf7" : "#1b2740", "text-halo-color": gelapIni ? "#0b1220" : "#fff", "text-halo-width": 1.3}}],
+      }[k];
+      L.forEach(l => peta.addLayer({source: k, ...l, layout: {...vis, ...(l.layout || {})}}, b));
+      this.pasangIa(k); if (k === "abu" || k === "bandara") renderLegenda(); return true;
+    } catch (e) { console.error("lapisan " + k, e); return false; } finally { delete this.p[k]; } })(); },
+  async nyala(k, on) { if (on && !this.sudah(k)) await this.tambah(k);
+    LAPIS_ID[k].forEach(id => peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", on ? "visible" : "none")); renderLegenda(); },
+  async setJam(j) { S.jamAbu = j; const a = await Data.abu(); if (a) peta.getSource("abu")?.setData(this.abuGeo(a)); renderLegenda(); },
+  /* kartu hover satu baris berikon + klik; didaftarkan sekali per lapisan (pendengar terikat id lapisan dan ikut bertahan walau gaya diganti) */
+  pasangIa(k) {
+    if (this.ia[k]) return; this.ia[k] = 1;
+    const T = {
+      "abu-isi": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>Skenario jam ke-${p.jam}, bukan VAAC</small>`, stat: [["angin", fmt(p.km) + " km", "jangkauan"], ["mata", arahMata(p.arah), "ke arah"]]}),
+      "bandara-titik": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>${esc(p.iata)} · ${esc(p.icao)}</small>`, stat: p.kena ? [["bel", "jam ke-" + p.jam, "abu tiba (skenario)", W_KENA, true]] : []}),
+      "sekolah-titik": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>${p.jenis === "faskes" ? "Fasilitas kesehatan" : "Sekolah"} · KRB ${esc(p.zona)} · ${esc(p.gn)}</small>`, stat: p.km != null ? [["peringatan", fmt(p.km) + " km", "dari kawah"]] : []}),
+      "tambang-titik": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>${esc(p.kom)} · KRB ${esc(p.zona)} · ${esc(p.gn)}</small>`, stat: []}),
+    };
+    for (const [id, f] of Object.entries(T)) { if (!LAPIS_ID[k].includes(id)) continue;
+      peta.on("mousemove", id, e => { const pr = e.features?.[0]?.properties; if (!pr) return; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(PI.kartuTip(f(pr)), e.originalEvent); });
+      peta.on("mouseleave", id, () => { peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); }); }
+    if (k === "abu") peta.on("click", "abu-isi", e => { const g = S.st.gunung.find(x => idGn(x.nama) === e.features?.[0]?.properties?.id); g && Detail.buka(g); });
+  },
 };
 
 /* ---------- daftar kiri ---------- */
@@ -95,14 +179,31 @@ $("#levelSeg").addEventListener("click", e => { const b = e.target.closest("butt
 $("#cari").addEventListener("input", e => { S.q = e.target.value; nanti(() => Peta.segarkan()); });
 
 /* ---------- legenda dok ---------- */
+const sw = (w, bulat) => `<i class="sw" style="background:${w}${bulat ? ";border-radius:50%" : ""}"></i>`;
+function legendaBaru() {
+  const L = k => Peta.lihat(k); let h = "";
+  if (L("abu")) { const f = Lapis.info, j = S.jamAbu;
+    const ket = !f ? "memuat…" : f.n ? `${fmt(f.n)} gunung: awan di atas ambang menjangkau ${fmt(f.maks.km)} km ke arah ${arahMata(f.maks.arah)}` : `Tidak ada awan di atas ambang penerbangan 2 mg/m³ pada jam ke-${j}`;
+    h += `<div class="lbl">Jejak abu 2 mg/m³ <span class="pl" style="--w:${W_ABU}">skenario Pantau Bencana, bukan VAAC</span></div>
+      <div class="seg penuh" role="group" aria-label="Jam sejak erupsi" id="jamSeg" style="box-shadow:none;margin:4px 0">${JAM_ABU.map(x => `<button data-jam="${x}" aria-pressed="${x === j}">${x} jam</button>`).join("")}</div>
+      <div class="leg" style="margin:4px 0 8px"><span>${sw(W_ABU)}${ket}</span></div>`; }
+  if (L("bandara")) h += `<div class="lbl">Bandara</div><div class="leg" style="margin:4px 0 8px"><span>${sw(W_KENA, 1)}di jalur abu</span><span>${sw(W_BAND, 1)}lainnya</span></div>`;
+  if (L("krb")) h += `<div class="lbl">Zona KRB PVMBG</div><div class="leg" style="margin:4px 0 8px">${["III", "II", "I"].map(z => `<span>${sw(WARNA_ZONA[z])}KRB ${z}</span>`).join("")}</div>`;
+  const lain = [L("rute") && `<span>${sw(W_RUTE)}rute evakuasi</span>`, L("sekolah") && `<span>${sw(W_SEK, 1)}sekolah</span><span>${sw(W_FAS, 1)}faskes</span>`, L("tambang") && `<span>${sw(W_TAMB, 1)}izin tambang</span>`].filter(Boolean);
+  if (lain.length) h += `<div class="lbl">Paparan</div><div class="leg" style="margin:4px 0 8px">${lain.join("")}</div>`;
+  return h; }
 function renderLegenda() {
   const ada = l => S.n[l] > 0;
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${Peta.lihat("gunung") ? `<div class="lbl">Level resmi PVMBG</div><div class="leg" style="margin:4px 0 8px">${[4, 3, 2, 1].filter(ada).map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> Level ${LEVEL[l][0]} ${LEVEL[l][1]} · ${S.n[l]}</span>`).join("")}</div>` : ""}
-    ${Peta.lihat("radius") ? `<div class="lbl">Radius rekomendasi</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw ring"></i>lingkaran putus-putus</span></div>` : ""}</div></details>`;
+    ${Peta.lihat("radius") ? `<div class="lbl">Radius rekomendasi</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw ring"></i>lingkaran putus-putus</span></div>` : ""}${legendaBaru()}</div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
+$("#legenda").addEventListener("click", e => { const b = e.target.closest("[data-jam]"); if (b && +b.dataset.jam !== S.jamAbu) nanti(() => Lapis.setJam(+b.dataset.jam)); });
 
-/* ---------- pop-up detail ---------- */
+/* ---------- pop-up detail (laci gunung) ---------- */
+const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "short", year: "numeric"});
+const median = a => { const s = [...a].sort((x, y) => x - y), n = s.length; return n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2; };
+const lipat = (judul, isi) => `<details class="lipat" open><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
 const Detail = {
   buka(g) {
     const ev = letusanDari(g.nama).slice(0, 3), kv = (v, l) => !v ? "" : `<div><b>${v}</b><span>${l}</span></div>`;
@@ -111,11 +212,46 @@ const Detail = {
       <div class="db">${kot ? `<div class="kv gn-kv">${kot}</div>` : ""}
       ${g.rekomendasi ? `<details class="lipat" open><summary>Rekomendasi PVMBG</summary><div class="isi"><p class="rek-teks" translate="no" lang="id">${esc(g.rekomendasi)}</p><p class="rek-sumber">${g.periode ? `<span translate="no" lang="id">${esc(g.periode)}</span> · ` : ""}MAGMA Indonesia</p></div></details>` : ""}
       ${ev.length ? `<details class="lipat" open><summary>Erupsi terbaru</summary><div class="isi"><ul class="ev">${ev.map(x => `<li><b>${tglJam(x.waktu)}</b>${x.tinggi_m ? ` <span class="pl" style="--w:#b5523b">kolom abu ${fmt(x.tinggi_m)} m</span>` : ""}<br><span translate="no" lang="id">${esc(x.ket)}</span></li>`).join("")}</ul></div></details>` : ""}
-      <div class="dk"><a class="btn sec" href="${escUrl(g.laporan)}" target="_blank" rel="noopener">Laporan lengkap di MAGMA</a>
+      <div id="dlgLanjut"></div>
+      <div class="dk"><button class="btn" type="button" data-sim><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg> Simulasi</button>
+      <a class="btn sec" href="${escUrl(g.laporan)}" target="_blank" rel="noopener">Laporan lengkap di MAGMA</a>
       <button class="btn sec" type="button" data-bagi aria-label="Bagikan" title="Bagikan"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="2.6"/><circle cx="6" cy="12" r="2.6"/><circle cx="18" cy="19" r="2.6"/><path d="m8.3 10.7 7.4-4.3M8.3 13.3l7.4 4.3"/></svg></button></div></div>`;
-    const d = $("#dlg"); d.querySelector("[data-tutup]").onclick = () => d.close();
+    const d = $("#dlg"); d._g = g; d.querySelector("[data-tutup]").onclick = () => d.close();
+    d.querySelector("[data-sim]").onclick = () => { d.close(); bukaTab("simulasi", true, idGn(g.nama)); };
     d.querySelector("[data-bagi]").onclick = () => Bagikan.bagi({...Bagikan.konteks("gunung", g), lainnya: () => Bagikan.buka()});
     d.onclick = e => { if (e.target === d) d.close(); };
     if (!d.open) d.showModal();
+    this.lanjut(g);
   },
+  /* bagian yang bergantung pada berkas turunan diisi sesudah dialog tampil (klik tidak menunggu jaringan); bagian tanpa data dibuang */
+  async lanjut(g) {
+    const id = idGn(g.nama), [abu, pg] = await Promise.all([Data.abu(), Data.pg(id)]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;
+    el.innerHTML = [this.sAbu(abu?.gunung?.find(x => x.id === id)), this.sPaparan(pg), this.sEvak(pg), this.sCitra(pg)].join(""); },
+  /* satu kalimat berangka; jejak kosong = di bawah ambang penerbangan, bukan tanpa abu */
+  sAbu(ga) {
+    if (!ga?.jejak) return "";
+    const J = ga.jejak.filter(jejakOk).sort((a, b) => b.jangkau_km - a.jangkau_km)[0], B = (ga.bandara || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba);
+    const awan = J ? `awan abu di atas ambang penerbangan 2 mg/m³ menjangkau ${Kartu.hl(fmt(J.jangkau_km) + " km")} ke arah ${arahMata(J.arah_deg)} (paling jauh pada jam ke-${J.jam})` : `abu tetap ${Kartu.hl("di bawah ambang penerbangan 2 mg/m³")} selama 72 jam, bukan berarti tanpa abu`;
+    const band = B.length ? `bandara di jalurnya: ${B.slice(0, 3).map(b => `<span translate="no">${esc(b.nama)}</span> (${esc(b.iata || b.icao)}) tiba jam ke-${Kartu.hl(fmt(b.jam_tiba))}`).join(", ")}` : J ? "tidak ada bandara di jalurnya" : "";
+    return lipat("Skenario abu 72 jam", `<p><span class="pl" style="--w:${W_ABU}">skenario Pantau Bencana, bukan VAAC</span></p><p class="dl-kal">Bila meletus sekarang dengan kolom ${fmt(ga.kolom_m / 1000)} km di atas puncak, ${awan}${band ? "; " + band : ""}.</p>
+      <p class="rek-sumber">Tinggi kolom: ${esc(ga.kolom_sumber || "asumsi")} · angin ECMWF IFS lewat Open-Meteo</p>`); },
+  sPaparan(pg) {
+    if (!pg) return "";
+    const Z = ["III", "II", "I"].map(z => [z, pg.zona?.[z]]).filter(([, v]) => v && (v.penduduk || v.sekolah || v.faskes || v.desa || v.tambang)), C = pg.cincin || [];
+    if (!Z.length && !C.some(c => c.penduduk > 0)) return "";
+    const tb = Z.length ? `<div class="tw"><table><thead><tr><th>Zona</th><th class="n">Jiwa</th><th class="n">Desa</th><th class="n">Sekolah</th><th class="n">Faskes</th><th class="n">Izin tambang</th></tr></thead><tbody>${Z.map(([z, v]) => `<tr><td>${pilZona(z)}</td><td class="n">±${rb(v.penduduk)}</td><td class="n">${fmt(v.desa)}</td><td class="n">${fmt(v.sekolah)}</td><td class="n">${fmt(v.faskes)}</td><td class="n">${fmt(v.tambang)}</td></tr>`).join("")}</tbody></table></div>` : "";
+    const kv = C.some(c => c.penduduk > 0) ? `<div class="kv gn-kv">${C.map(c => `<div><b>±${rb(c.penduduk)}</b><span>jiwa dalam ${fmt(c.km)} km</span></div>`).join("")}</div>` : "";
+    return lipat("Paparan per zona KRB", `${tb}${kv}<p class="rek-sumber">${pg.zona_sumber && pg.zona_sumber !== "KRB PVMBG" ? `Zona: ${esc(pg.zona_sumber)} · ` : ""}Sumber: KRB PVMBG 2018, WorldPop 1 km, OpenStreetMap, WIUP ESDM</p>`); },
+  sEvak(pg) {
+    const r = evakRingkas(pg); if (!r) return "";
+    const E = evakZona(pg), tl = evakTerlama(pg), tk = new Map();
+    E.forEach(e => e.titik_kumpul && tk.set(e.titik_kumpul, (tk.get(e.titik_kumpul) || 0) + 1));
+    const titik = [...tk].sort((a, b) => b[1] - a[1]).slice(0, 3).map(x => x[0]);
+    return lipat("Evakuasi", `<p class="dl-kal">${Kartu.hl(fmt(r.n) + " desa")} di KRB III dan II punya rute evakuasi lewat jalan raya; ${r.label || "waktu tempuh arus bebas"} median ${Kartu.hl(fmt(r.median_menit) + " menit")}, terlama ${Kartu.hl(fmt(r.maks_menit) + " menit")}${tl ? ` dari <span translate="no">${esc(tl.desa)}</span>` : ""}.</p>
+      <p class="rek-sumber">Tanpa antrean evakuasi massal${titik.length ? ` · Titik kumpul: <span translate="no" lang="id">${titik.map(esc).join(", ")}</span>` : ""}</p>`); },
+  sCitra(pg) {
+    const c = pg?.citra || [], sb = c.find(x => x.fase === "sebelum"), ss = sb && c.find(x => x.fase === "sesudah" && x.tgl > sb.tgl); if (!sb || !ss) return "";
+    const fig = (x, n, w) => `<figure><img src="${esc(x.berkas)}" alt="Citra Sentinel-2 ${esc(n)} ${esc(tglPendek(x.tgl))}" loading="lazy" decoding="async"><figcaption><span class="pl" style="--w:${w}">${n}</span> ${tglPendek(x.tgl)}</figcaption></figure>`;
+    return lipat("Citra satelit sebelum dan sesudah", `<div class="cit">${fig(sb, "Sebelum", "#6b7a90")}${fig(ss, "Sesudah", "#b5523b")}</div>
+      <p class="rek-sumber"><span translate="no" lang="id">${esc(String(sb.keterangan || "").split(":")[0])}</span> · Sumber: Sentinel-2, Copernicus/ESA</p>`); },
 };

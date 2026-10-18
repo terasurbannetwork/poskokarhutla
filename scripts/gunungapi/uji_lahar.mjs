@@ -1,5 +1,5 @@
 /* Uji fungsi murni public/gunungapi/sim_lahar.js tanpa peramban: node scripts/gunungapi/uji_lahar.mjs
-   DEM sintetis: kerucut + satu lembah terkarang ke timur + dataran 30 m di luar kerucut. */
+   DEM sintetis: kerucut + satu lembah terkarang ke timur + dataran 100 m di luar kerucut. */
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 /* package.json "type":"module" membuat require() memperlakukan .js sebagai ESM; skrip peramban ini dijalankan sebagai CommonJS lewat Function */
@@ -54,8 +54,8 @@ uji("isi sink: mangkuk berbibir tinggi dan dataran rata tidak membuat putaran ta
 /* ---- 3. kerucut + lembah ---- */
 const N = 401, C = 200, LAT = 0, Z = 12, PUNCAK = 2000;
 const kerucut = jml(N, N, (x, y) => {
-  const r = Math.hypot(x - C, y - C); let z = Math.max(30, PUNCAK - 12 * r);
-  if (x > C) z -= 80 * Math.exp(-(((y - C) / 3) ** 2)) * Math.min(1, (x - C) / 3); /* lembah ke timur, mulai dari bukaan kawah */
+  const r = Math.hypot(x - C, y - C); let z = Math.max(100, PUNCAK - 12 * r);
+  if (x > C) z -= 40 * Math.exp(-(((y - C) / 5) ** 2)) * Math.min(1, (x - C) / 3); /* lembah ke timur, mulai dari bukaan kawah */
   return z;
 });
 const jalan = (V, hl, maxJalur = 1) => L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V, hl, maxJalur});
@@ -68,7 +68,7 @@ uji("jalur utama mengikuti lembah", () => {
   assert.ok(sim <= 4, `jalur menyimpang ${sim} sel dari sumbu lembah (batas 4)`);
 });
 uji("lahar: luas planimetrik ~ B LAHARZ dan menyempit di lembah", () => {
-  for (const V of [1e5, 3e5]) {
+  for (const V of [3e4, 1e5]) {
     const r = jalan(V, 0.3), {B} = L.laharz(V), luas = r.ringkas.lahar_km2 * 1e6;
     assert.ok(luas >= B * 0.8 && luas <= B * 1.3, `V=${V}: luas ${Math.round(luas)} m2 di luar 0,8-1,3 x B (${Math.round(B)})`);
     const lebar = new Map(); for (const i of r.lahar.idx) { const x = i % N; if (x > C + 30) lebar.set(x, (lebar.get(x) || 0) + 1); }
@@ -76,12 +76,38 @@ uji("lahar: luas planimetrik ~ B LAHARZ dan menyempit di lembah", () => {
     const ys = [...r.lahar.idx].filter(i => i % N > C + 30).map(i => Math.abs(((i / N) | 0) - C)); assert.ok(Math.max(...ys) <= 15, `lahar keluar lembah sejauh ${Math.max(...ys)} sel`);
   }
 });
-uji("lahar berhenti di dataran sesuai volume: volume besar lebih jauh, tidak melewati batas peta", () => {
-  const a = panjangPx(jalan(1e5, 0.3)), b = panjangPx(jalan(3e5, 0.3));
-  assert.ok(b > a, `3e5 m3 (${b} sel) harus lebih jauh dari 1e5 m3 (${a} sel)`);
-  assert.ok(b < N - 6 - C, `lahar 3e5 sampai tepi peta (${b} sel), uji tak memisahkan 'berhenti' dari 'habis peta'`);
-  const r = jalan(3e5, 0.3), maks = Math.max(...r.lahar.s); assert.ok(Math.abs(maks - r.ringkas.lahar_km * 1000) < 1e-3 * 1e3 + 100, "jarak depan lahar harus cocok dgn ringkasan");
-  const urut = r.lahar.s.every((v, i, s) => !i || s[i - 1] <= v); assert.ok(urut, "sel lahar harus terurut menurut jarak (untuk animasi maju)");
+uji("penampang LAHARZ A = 0,05 V^(2/3) dipakai di jalur (A terukur ~ A)", () => {
+  for (const V of [3e4, 1e5]) {
+    const i = jalan(V, 0.3).info[0], A = L.laharz(V).A;
+    assert.ok(Math.abs(i.A_m2 - A) < 1e-9, `V=${V}: A=${i.A_m2} bukan 0,05 V^(2/3)=${A}`);
+    assert.ok(i.A_ukur_m2 > 0, `V=${V}: tak ada langkah penampang yang terukur`);
+    assert.ok(Math.abs(i.A_ukur_m2 / A - 1) < 0.1, `V=${V}: penampang terukur rata-rata ${Math.round(i.A_ukur_m2)} m2 menyimpang >10% dari A=${Math.round(A)}`);
+  }
+});
+uji("volume terjaga: luas total semua jalur ~ B(V), bukan jumlah B per bagian volume", () => {
+  const V = 1e5, B = L.laharz(V).B, r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V, hl: 0.3}), luas = r.ringkas.lahar_km2 * 1e6;
+  assert.ok(r.info.length > 1, "uji ini butuh lebih dari satu jalur, ada " + r.info.length);
+  assert.ok(luas <= B * 1.15, `luas total ${Math.round(luas)} m2 melebihi 1,15 x B(V)=${Math.round(B)} (rasio ${(luas / B).toFixed(2)}); pembagian volume menggelembungkan luas`);
+  const jumlahB = r.info.reduce((a, i) => a + i.B_m2, 0); assert.ok(Math.abs(jumlahB / B - 1) < 1e-9, `jumlah B per jalur ${jumlahB} != B(V) ${B}`);
+});
+const laut = jml(N, N, (x, y) => x > C + 120 ? 0 : kerucut[y * N + x]); /* sama dengan kerucut, tetapi pantai di x > C+120 */
+uji("lahar berhenti sesuai volume: jarak(1e5) > jarak(3e4) > jarak(1e4), berhenti karena B, bukan tepi", () => {
+  const Vs = [1e4, 3e4, 1e5], r = Vs.map(V => jalan(V, 0.3)), px = r.map(panjangPx);
+  console.log("        jarak lahar (sel / km):", Vs.map((V, i) => `${V}: ${px[i]} / ${r[i].ringkas.lahar_km.toFixed(2)}`).join("  |  "));
+  r.forEach((x, i) => assert.equal(x.info[0].berhenti, "B", `V=${Vs[i]}: berhenti oleh '${x.info[0].berhenti}', seharusnya 'B' (lembah cukup panjang)`));
+  for (let i = 1; i < px.length; i++) assert.ok(px[i] > px[i - 1], `jarak tidak bertambah: V=${Vs[i]} (${px[i]} sel) <= V=${Vs[i - 1]} (${px[i - 1]} sel)`);
+  assert.ok(px[2] < N - 1 - C - 10, `lahar 1e5 sampai tepi peta (${px[2]} sel)`);
+  const rr = r[2], maks = Math.max(...rr.lahar.s); assert.ok(Math.abs(maks - rr.ringkas.lahar_km * 1000) < 100, "jarak depan lahar harus cocok dgn ringkasan");
+  assert.ok(rr.lahar.s.every((v, i, s) => !i || s[i - 1] <= v), "sel lahar harus terurut menurut jarak (untuk animasi maju)");
+});
+uji("penyebab berhenti tercatat di info: B, tepi, laut", () => {
+  const ada = new Set(["B", "tepi", "laut", "sink", "tak ada zona lahar"]);
+  const opsi = dem => ({dem, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], hl: 0.3, maxJalur: 1});
+  const b = L.simulasi({...opsi(kerucut), V: 1e5}).info[0].berhenti, tepi = L.simulasi({...opsi(kerucut), V: 1e8}).info[0].berhenti, lt = L.simulasi({...opsi(laut), V: 1e8}).info[0].berhenti;
+  assert.ok([b, tepi, lt].every(x => ada.has(x)), `penyebab di luar daftar: ${[b, tepi, lt]}`);
+  assert.equal(b, "B", "volume kecil di lembah panjang harus berhenti karena B");
+  assert.equal(tepi, "tepi", "volume sangat besar di lembah yang berakhir di tepi peta harus 'tepi'");
+  assert.equal(lt, "laut", "volume sangat besar di lembah yang bermuara ke laut harus 'laut'");
 });
 uji("awan panas: H/L kecil lebih jauh, tidak melewati kerucut energi, ikut lembah", () => {
   const dx = L.mPerPx(LAT, Z);

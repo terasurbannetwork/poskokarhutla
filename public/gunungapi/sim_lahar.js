@@ -64,21 +64,44 @@ function potong(z, n, m, P, i, bed, W, tinggiMaks) {
       const idx = y * n + x, dz = z[idx] - bed; if (dz >= tinggiMaks) break; sisi[s].push([idx, dz]); } }
   return sisi;
 }
-/* luas penampang untuk muka air h di atas dasar: hanya sel kontigu dari tengah (dz < h) */
-function luasPenampang(sisi, h, dx) { let a = h * dx; for (const s of sisi) for (const [, dz] of s) { if (dz >= h) break; a += (h - dz) * dx; } return a; }
+/* profil penampang berurutan kiri ke kanan: [[posisi (sel), dz, idx]]; sisi[0] = kanan sumbu, sisi[1] = kiri. dz relatif terhadap dasar (thalweg) */
+function susunProfil(sisi, tengahDz, tengahIdx) {
+  const pts = []; for (let k = sisi[1].length - 1; k >= 0; k--) pts.push([-(k + 1), sisi[1][k][1], sisi[1][k][0]]);
+  pts.push([0, tengahDz, tengahIdx]); for (let k = 0; k < sisi[0].length; k++) pts.push([k + 1, sisi[0][k][1], sisi[0][k][0]]); return pts;
+}
+/* penampang basah pada muka air h: satu lajur kontigu yang memuat titik terendah dekat sumbu. Tepi diinterpolasi linier (bukan per sel utuh),
+   jadi luas dan lebar menerus terhadap h dan lebar tak terkuantisasi 1, 3, 5 sel. Kembali {area (m2), lebar (m), a, b (rentang indeks)} */
+function tampang(pts, h, dx) {
+  let t = -1, mn = Infinity; for (let k = 0; k < pts.length; k++) if (Math.abs(pts[k][0]) <= 4 && pts[k][1] < mn) { mn = pts[k][1]; t = k; }
+  if (t < 0 || pts[t][1] >= h) return {area: 0, lebar: 0, a: t, b: t - 1};
+  let a = t, b = t, area = 0, lebar = 0;
+  while (b + 1 < pts.length) { const p = pts[b], q = pts[b + 1]; if (q[1] < h) { area += ((h - p[1]) + (h - q[1])) / 2; lebar += 1; b++; } else { const f = (h - p[1]) / (q[1] - p[1]); area += .5 * (h - p[1]) * f; lebar += f; break; } }
+  while (a - 1 >= 0) { const p = pts[a], q = pts[a - 1]; if (q[1] < h) { area += ((h - p[1]) + (h - q[1])) / 2; lebar += 1; a--; } else { const f = (h - p[1]) / (q[1] - p[1]); area += .5 * (h - p[1]) * f; lebar += f; break; } }
+  return {area: area * dx, lebar: Math.max(1, lebar) * dx, a, b}; /* lebar minimal 1 sel: sumbu selalu basah */
+}
 
-function laharAlur(z, n, m, P, S, Vp, dx, stamp, mulai, W) {
-  const {A, B} = laharz(Vp); let luas = 0, s1 = 0, tinggi = 0;
-  for (let i = mulai; i < P.length && luas < B; i++) {
-    if (z[P[i]] <= 0.5) break;
-    const sisi = potong(z, n, m, P, i, z[P[i]], W, 400);
-    let lo = 0, hi = 400; for (let k = 0; k < 28; k++) { const h = (lo + hi) / 2; if (luasPenampang(sisi, h, dx) < A) lo = h; else hi = h; }
-    const h = hi; tinggi = Math.max(tinggi, h);
-    const tandai = idx => { if (stamp[idx] < 0) { stamp[idx] = S[i]; luas += dx * dx; } };
-    tandai(P[i]); for (const s of sisi) for (const [idx, dz] of s) { if (dz >= h) break; tandai(idx); }
+/* A = 0,05 Vp^(2/3) memakai volume jalur ini; B (luas planimetrik) diberikan pemanggil: B(V total) x bobot, jadi luas semua jalur = B(V)
+   (volume terjaga; V^(2/3) sublinear, membagi V lalu menghitung B per jalur akan menggelembungkan total jadi ~1,6 x B(V)).
+   Luas planimetrik = lebar basah x panjang langkah (menerus); sel raster ditandai untuk gambar. Penyebab berhenti dicatat: "B", "laut", "tepi", "sink". */
+function laharAlur(z, n, m, P, S, Vp, Bp, dx, stamp, mulai, W) {
+  const A = laharz(Vp).A, B = Bp; let luas = 0, s1 = 0, tinggi = 0, sumA = 0, nA = 0, berhenti = "";
+  for (let i = mulai; i < P.length; i++) {
+    if (luas >= B) { berhenti = "B"; break; }
+    if (z[P[i]] <= 0.5) { berhenti = "laut"; break; }
+    let sisi = potong(z, n, m, P, i, z[P[i]], W, 400), c0 = 0;
+    /* dasar penampang = titik terendah di sekitar sumbu (thalweg), bukan sel jalur: sel jalur D8 bisa sedikit di atas dasar lembah */
+    for (const sd of sisi) for (let q = 0; q < Math.min(4, sd.length); q++) c0 = Math.min(c0, sd[q][1]);
+    if (c0 < 0) sisi = sisi.map(sd => sd.map(([idx, dz]) => [idx, dz - c0]));
+    const pts = susunProfil(sisi, -c0, P[i]), luasA = h => tampang(pts, h, dx).area;
+    let lo = 0, hi = 400; for (let k = 0; k < 28; k++) { const h = (lo + hi) / 2; if (luasA(h) < A) lo = h; else hi = h; }
+    /* luas penampang melompat bila muka air melewati punggung dan membanjiri cekungan di baliknya (tak ada LAHARZ di sana): pilih sisi bawah lompatan */
+    const h = luasA(hi) > 1.2 * A ? lo : hi, T = tampang(pts, h, dx); tinggi = Math.max(tinggi, h); if (h < 399) { sumA += T.area; nA++; }
+    const ds = i > mulai ? S[i] - S[i - 1] : dx; luas = Math.min(B, luas + T.lebar * ds); /* langkah terakhir dipotong di B: total tak melampaui B */
+    for (let k = T.a; k <= T.b; k++) if (pts[k][1] < h || pts[k][0] === 0) { const idx = pts[k][2]; if (stamp[idx] < 0) stamp[idx] = S[i]; }
     s1 = S[i];
   }
-  return {luas, panjang: s1, tinggi};
+  if (!berhenti) berhenti = luas >= B ? "B" : (() => { const e = P[P.length - 1]; return z[e] <= 0.5 ? "laut" : (e % n === 0 || e % n === n - 1 || ((e / n) | 0) === 0 || ((e / n) | 0) === m - 1) ? "tepi" : "sink"; })();
+  return {luas, panjang: s1, tinggi, A, B, A_ukur: nA ? sumA / nA : 0, berhenti};
 }
 
 /* awan panas: sel masuk bila di dalam kerucut energi (z0 - z)/jarak >= HL dan di lembah (sampai `tebal` m di atas dasar jalur) */
@@ -124,9 +147,9 @@ function simulasi(o) {
   jalur.forEach((j, k) => {
     let mulai = 0; /* mulai lahar di batas zona proksimal: H/L terhadap puncak turun ke 0,3 */
     while (mulai < j.P.length - 1 && (z0 - zf[j.P[mulai]]) / Math.max(dx, Math.hypot(j.P[mulai] % n - px0, ((j.P[mulai] / n) | 0) - py0) * dx) > 0.3) mulai++;
-    const Vp = o.V * bobot[k], lz = mulai < j.P.length - 1 && Vp > 0 ? laharAlur(zf, n, m, j.P, j.S, Vp, dx, stL, mulai, W) : {luas: 0, panjang: 0, tinggi: 0};
+    const Vp = o.V * bobot[k], lz = mulai < j.P.length - 1 && Vp > 0 ? laharAlur(zf, n, m, j.P, j.S, Vp, laharz(o.V).B * bobot[k], dx, stL, mulai, W) : {luas: 0, panjang: 0, tinggi: 0, A: 0, B: 0, A_ukur: 0, berhenti: "tak ada zona lahar"};
     const pd = awanPanasAlur(zf, n, m, j.P, j.S, z0, px0, py0, o.hl, dx, stP, o.tebalPdc || 15, W);
-    infoJ.push({utama: j.utama, bobot: bobot[k], V: Vp, lahar_km: lz.panjang / 1000, lahar_km2: lz.luas / 1e6, tinggi_m: lz.tinggi, pdc_km: pd.panjang / 1000, pdc_km2: pd.luas / 1e6});
+    infoJ.push({utama: j.utama, bobot: bobot[k], V: Vp, A_m2: lz.A, A_ukur_m2: lz.A_ukur, B_m2: lz.B, berhenti: lz.berhenti, lahar_km: lz.panjang / 1000, lahar_km2: lz.luas / 1e6, tinggi_m: lz.tinggi, pdc_km: pd.panjang / 1000, pdc_km2: pd.luas / 1e6});
   });
   const rakit = st => { const id = []; for (let i = 0; i < N; i++) if (st[i] >= 0) id.push(i); id.sort((a, b) => st[a] - st[b]); const idx = Uint32Array.from(id), s = new Float32Array(id.length); id.forEach((v, q) => { s[q] = st[v]; }); return {idx, s}; };
   const lahar = rakit(stL), pdc = rakit(stP);

@@ -47,6 +47,7 @@
 <link rel="stylesheet" href="../foto.css">
 <link rel="stylesheet" href="gunungapi.css">
 <link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="sim.css">
 </head>
 <body>
 <div id="tip" role="tooltip"></div>
@@ -59,6 +60,7 @@
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
+    <a class="iconbtn" href="/gunungapi/laporan.html" aria-label="Laporan harian" title="Laporan harian"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg></a>
     <a class="iconbtn" href="/peringatan" aria-label="Peringatan Dini" title="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
@@ -94,6 +96,14 @@
           <label><input type="checkbox" data-l="radius" checked> Radius rekomendasi</label>
           <label><input type="checkbox" data-l="nama" checked> Nama gunung</label>
         </details>
+        <details open><summary>Bahaya dan paparan</summary>
+          <label><input type="checkbox" data-l="abu" checked> Jejak abu skenario</label>
+          <label><input type="checkbox" data-l="bandara" checked> Bandara</label>
+          <label><input type="checkbox" data-l="krb"> Zona KRB I, II, III</label>
+          <label><input type="checkbox" data-l="rute"> Rute evakuasi</label>
+          <label><input type="checkbox" data-l="sekolah"> Sekolah dan faskes di zona</label>
+          <label><input type="checkbox" data-l="tambang"> Izin tambang di zona</label>
+        </details>
         <details open><summary>Peta dasar</summary>
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
         </details>
@@ -108,6 +118,7 @@
   <section class="page scroll" id="p-berita" aria-label="Berita gunung api"><div class="wrap" id="berita"></div></section>
   <section class="page scroll" id="p-tren" aria-label="Tren gunung api"><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak gunung api"><div class="wrap" id="dampak"></div></section>
+  <section class="page" id="p-simulasi" aria-label="Simulasi erupsi"><div id="sim-akar"></div></section>
   <section class="page scroll" id="p-foto" aria-label="Foto warga"><div id="foto"></div></section>
   <section class="page scroll" id="p-metode" aria-label="Metode dan data"><div class="wrap" id="metode"></div></section>
   <section class="page" id="p-tentang" aria-label="Tentang Pantau Bencana"><iframe id="tentangBingkai" title="Tentang Pantau Bencana" style="width:100%;height:100%;border:0;display:block;opacity:0;transition:opacity .5s cubic-bezier(.16,1,.3,1)" onload="this.style.opacity=1" loading="lazy"></iframe></section>

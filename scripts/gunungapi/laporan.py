@@ -44,8 +44,9 @@ def baca(jalur, bawaan=None):
         return bawaan
 
 
-def slug(n):
-    return re.sub(r"\s+", "-", re.sub(r"[^a-z0-9 ]", "", n.lower())).strip("-")
+SEL_MIN = 5   # jejak berambang dengan sel_n < 5 dianggap derau = di bawah ambang penerbangan (selaras abu.py)
+# slug SATU aturan dengan abu.id_gunung (Lewotobi Laki-laki = lewotobi-laki-laki), supaya cocok dengan id di abu_gunungapi.json dan paparan.json
+slug = _muat("abu_gunungapi_laporan", "scripts/gunungapi/abu.py").id_gunung
 
 
 def waktu(iso):
@@ -165,8 +166,8 @@ def bangun(st, abu, lama, cari):
         for b in abu.get("bandara_terdampak", [])[:3]:
             g = next((g for g in gun if slug(g["nama"]) == b["gunung"]), None)
             jam = f"sekitar {b['jam_tiba']} jam lagi" if b.get("jam_tiba") is not None else "dalam 72 jam"
-            sorot.append({"tingkat": "waspada", "judul": f"Abu G. {g['nama'] if g else b['gunung']} berpotensi tiba di {b.get('iata') or b['icao']}",
-                          "teks": f"{b['nama']}: perkiraan abu tiba {jam}. Perkiraan Pantau Bencana, bukan VAAC.", "prov": g and g["_p"], "tautan": "/gunungapi/"})
+            sorot.append({"tingkat": "waspada", "judul": f"Skenario: abu G. {g['nama'] if g else b['gunung']} bisa tiba di {b.get('iata') or b['icao']}",
+                          "teks": f"{b['nama']}: pada skenario bila gunung meletus sekarang, abu di atas ambang penerbangan 2 mg/m³ tiba {jam}. Skenario Pantau Bencana, bukan prakiraan letusan dan bukan VAAC.", "prov": g and g["_p"], "tautan": "/gunungapi/"})
     sorot.sort(key=lambda s: URUT[s["tingkat"]])
     sorot = sorot[:8]
 
@@ -175,13 +176,14 @@ def bangun(st, abu, lama, cari):
     if ada_abu:
         baris = []
         for a in abu.get("gunung", []):
-            jk = {j["jam"]: j.get("jangkau_km") for j in a.get("jejak", [])}
+            # jejak dengan sel_n < SEL_MIN dianggap derau = di bawah ambang penerbangan: null, bukan 0
+            jk = {j["jam"]: (j.get("jangkau_km") if j.get("jangkau_km") and j.get("sel_n", SEL_MIN) >= SEL_MIN else None) for j in a.get("jejak", [])}
             nilai = [jk.get(24), jk.get(48), jk.get(72)]
             g = next((g for g in gun if slug(g["nama"]) == a["id"]), None)
             if any(v is not None for v in nilai):
                 baris.append({"label": f"G. {a['nama']}", "prov": g and g["_p"], "nilai": [None if v is None else round(v) for v in nilai], "satuan": "km"})
         if baris:
-            prak = {"judul": "Jangkauan abu 72 jam (km dari puncak, perkiraan Pantau Bencana, bukan VAAC)",
+            prak = {"judul": "Skenario bila meletus sekarang (kolom asumsi per level): jangkauan abu di atas ambang penerbangan 2 mg/m³, km dari puncak, bukan VAAC; kosong = di bawah ambang penerbangan",
                     "hari": [iso(hr + dt.timedelta(days=d)) for d in (1, 2, 3)], "baris": sorted(baris, key=lambda b: -(b["nilai"][2] or 0))[:12]}
 
     tambahan = []
@@ -196,7 +198,7 @@ def bangun(st, abu, lama, cari):
 
     sumber = [{"nama": "MAGMA Indonesia, PVMBG (Badan Geologi)", "url": "https://magma.esdm.go.id/", "catatan": "level, radius rekomendasi, erupsi"}]
     if ada_abu:
-        sumber.append({"nama": "Open-Meteo", "url": "https://open-meteo.com/", "catatan": "angin untuk perkiraan jangkauan abu (Pantau Bencana, bukan VAAC)"})
+        sumber.append({"nama": "Open-Meteo", "url": "https://open-meteo.com/", "catatan": "angin untuk skenario jangkauan abu (Pantau Bencana, bukan VAAC)"})
     for g in gun:
         g.pop("_p", None)
     return U.susun("gunungapi", "Laporan Harian Gunung Api", hari, metrik, nasional, prov, [], cutoff=now.strftime("%Y-%m-%dT%H:%M+07:00"),

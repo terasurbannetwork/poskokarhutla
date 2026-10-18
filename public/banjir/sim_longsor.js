@@ -2,10 +2,13 @@
 /* sim_longsor.js: peluang longsor dangkal per sel dari kemiringan DEM + kejenuhan tanah akibat hujan. Murni (tanpa DOM).
    Model lereng tak-hingga (Hammond dkk. 1992 LISA; Pack, Tarboton, Goodwin 1998 SINMAP; Montgomery & Dietrich 1994):
      FS = [c' + (gs - m gw) z cos^2 b tan(phi)] / (gs z sin b cos b)
-   m = tinggi muka air relatif di kolom tanah = (theta0 z + resapan) / (n z), dipotong 0..1 (tanpa drainase: arah aman).
+   m = tinggi muka air relatif = kelebihan air di atas kapasitas lapang / ruang pori di atas kapasitas lapang
+     = (theta0 - theta_fc + resapan/z) / (n - theta_fc), dipotong 0..1 (tanpa drainase: arah aman). Air di bawah kapasitas lapang
+     ditahan kapiler dan tidak menekan pori; jadi tanpa hujan tanah lembap biasa tidak dianggap jenuh.
    Kohesi c' (tanah + akar) dan sudut gesek phi tidak diketahui per sel, jadi seragam pada rentang ASUMSI; peluang = bagian
    ruang (c', phi) dengan FS < 1, dihitung tepat untuk c' (linier) dan titik tengah 32 nilai phi. Lereng > BETA_MAKS diperlakukan
-   BETA_MAKS: di atas ~45 derajat tanah biasanya tipis/batuan dan suku kohesi rumus ini malah naik lagi. */
+   BETA_MAKS: di atas ~45 derajat tanah biasanya tipis/batuan dan suku kohesi rumus ini malah naik lagi.
+   Hasilnya INDEKS KERAWANAN RELATIF dari rentang parameter, bukan peluang kejadian dan bukan prakiraan teruji. */
 (function (akar) {
 const ASUMSI = {
   GS: 19, GW: 9.81,      /* kN/m3 berat isi tanah jenuh & air */
@@ -14,7 +17,8 @@ const ASUMSI = {
   C: [2, 10],            /* kPa kohesi efektif + akar (Pack dkk. 1998, Hammond dkk. 1992: rentang tanah residual) */
   PHI: [26, 36],         /* derajat sudut gesek dalam */
   BETA_MAKS: 45,
-  THETA0: 0.3,           /* m3/m3 kadar air awal bila sm hujan.json tidak ada */
+  THETA_FC: 0.3,         /* m3/m3 kapasitas lapang tanah lempung-lanau tropis (asumsi; Saxton & Rawls 2006: 0,25-0,38) */
+  THETA0: 0.3,           /* m3/m3 kadar air awal bila sm hujan.json tidak ada (= kapasitas lapang) */
 };
 const salah = m => { throw new Error("SimLongsor: " + m); };
 const NPHI = 32;
@@ -32,7 +36,7 @@ function peluang(beta, m, a = ASUMSI) {
 function kejenuhan(theta0, resapMm, a = ASUMSI) {
   (Number.isFinite(theta0) && Number.isFinite(resapMm)) || salah(`kadar air/resapan bukan angka (${theta0}, ${resapMm})`);
   (theta0 >= 0 && resapMm >= 0) || salah(`kadar air ${theta0} atau resapan ${resapMm} negatif`);
-  return Math.max(0, Math.min(1, (theta0 * a.TEBAL + resapMm / 1000) / (a.PORI * a.TEBAL)));
+  return Math.max(0, Math.min(1, (theta0 - a.THETA_FC + resapMm / 1000 / a.TEBAL) / (a.PORI - a.THETA_FC)));
 }
 /* kemiringan (derajat) metode Horn 1981, tepi memakai sel tepi sendiri */
 function lereng(z, nx, ny, dx) {

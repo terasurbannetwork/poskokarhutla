@@ -6,7 +6,7 @@
   var R = 6371000, KH = 1000, A = 4, K = 5, NB = 100;
   var KELAS = [[0.40, 0.008], [0.30, 0.07], [0.20, 0.5], [0.10, 1.5]];
   var DEG = Math.PI / 180;
-  var SEL = 0.1, AMBANG = 2.0, TEBAL = 2000, RHO = 2500;  // ambang beban kolom (docstring abu.py): 2 mg/m3 x tebal 2 km, sel 0,1 derajat, MER Mastin dkk. 2009
+  var MIN_SEL = 5, SEL = 0.1, AMBANG = 2.0, TEBAL = 2000, RHO = 2500;  // ambang beban kolom (docstring abu.py): 2 mg/m3 x tebal 2 km, sel 0,1 derajat, MER Mastin dkk. 2009
 
   function mulberry32(seed) {
     var a = seed | 0;
@@ -50,8 +50,9 @@
 
   function merKgS(kolom) { return RHO * Math.pow(Math.max(kolom, 0) / 1000 / 2, 1 / 0.241); }
 
-  /* jalankan({lat, lon, puncak_m, kolom_m, durasi_jam=3, angin, jam=72, n=2000, seed=1, dt_menit=15, kh=1000})
-     -> {jam:[0..J], snap:[{jam, lon, lat, z (Float32Array), aktif, darat (Uint8Array)}], lepas:[jam lepas tiap partikel], vent} */
+  /* Cuplikan lon/lat disimpan Float64Array (bukan Float32): sel kisi 0,1 derajat harus sama persis dengan Python; Float32 membalik sel untuk partikel dekat batas.
+     jalankan({lat, lon, puncak_m, kolom_m, durasi_jam=3, angin, jam=72, n=2000, seed=1, dt_menit=15, kh=1000})
+     -> {jam:[0..J], snap:[{jam, lon, lat, z (Float64Array), aktif, darat (Uint8Array)}], lepas:[jam lepas tiap partikel], vent} */
   function jalankan(o) {
     var jam = o.jam == null ? 72 : o.jam, n = o.n || 2000, dtm = o.dt_menit || 15, kh = o.kh == null ? KH : o.kh;
     var durasi = o.durasi_jam == null ? 3 : o.durasi_jam, seed = o.seed == null ? 1 : o.seed;
@@ -69,7 +70,7 @@
     for (step = 0; step <= jam * spj; step++) {
       while (nxt < n && rel[nxt] === step) { st[nxt] = 1; nxt++; }
       if (step % spj === 0) {
-        s = { jam: step / spj, lon: new Float32Array(px), lat: new Float32Array(py), z: new Float32Array(z), aktif: new Uint8Array(n), darat: new Uint8Array(n) };
+        s = { jam: step / spj, lon: new Float64Array(px), lat: new Float64Array(py), z: new Float64Array(z), aktif: new Uint8Array(n), darat: new Uint8Array(n) };
         for (i = 0; i < n; i++) { s.aktif[i] = st[i] === 1 ? 1 : 0; s.darat[i] = st[i] === 2 ? 1 : 0; }
         snaps.push(s); jamL.push(s.jam);
       }
@@ -129,14 +130,14 @@
   /* jejak(hasil, jam) -> {poligon:[[lon,lat]], arah_deg, jangkau_km, sel_n}; BERAMBANG, nilai mentah (tanpa pembulatan) */
   function jejak(hasil, jam) {
     var sel = selBerambang(hasil, jam), v = hasil.vent, kk = proyeksi(v), kx = kk[0], ky = kk[1], pts = [], tot = 0, mx = 0, my = 0, jmax = 0, i, a, b, x, y, c;
-    if (!sel.length) return { poligon: [], arah_deg: null, jangkau_km: 0, sel_n: 0 };
+    if (sel.length < MIN_SEL) return { poligon: [], arah_deg: null, jangkau_km: 0, sel_n: sel.length, di_bawah_ambang: true };
     for (i = 0; i < sel.length; i++) {
       c = sel[i];
       for (a = 0; a < 2; a++) for (b = 0; b < 2; b++) pts.push([((c[0] + a) * SEL - v.lon) * kx, ((c[1] + b) * SEL - v.lat) * ky]);
       x = ((c[0] + 0.5) * SEL - v.lon) * kx; y = ((c[1] + 0.5) * SEL - v.lat) * ky;
       tot += c[2]; mx += c[2] * x; my += c[2] * y; jmax = Math.max(jmax, Math.hypot(x, y));
     }
-    return { poligon: selubung(pts).map(function (q) { return [v.lon + q[0] / kx, v.lat + q[1] / ky]; }), arah_deg: (Math.atan2(mx / tot, my / tot) / DEG + 360) % 360, jangkau_km: jmax, sel_n: sel.length };
+    return { poligon: selubung(pts).map(function (q) { return [v.lon + q[0] / kx, v.lat + q[1] / ky]; }), arah_deg: (Math.atan2(mx / tot, my / tot) / DEG + 360) % 360, jangkau_km: jmax, sel_n: sel.length, di_bawah_ambang: false };
   }
 
   /* jejakTipis(hasil, jam) -> sebaran MENTAH tanpa ambang (persentil 90 jarak), untuk animasi; bukan area dampak */

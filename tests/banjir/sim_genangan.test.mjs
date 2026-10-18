@@ -145,6 +145,39 @@ test("DEM siap mesin: lubang yang hanya bocor diagonal tidak menjadi perangkap a
   assert.ok(r8.kedalaman[J * n * n + c] > 1, "pembanding 8-tetangga harus menampakkan perangkap (uji ini bermakna)");
 });
 
+test("longsor: tanpa hujan di lereng 30 derajat indeks 0; kejenuhan dihitung di atas kapasitas lapang", () => {
+  const a = SL.ASUMSI, m0 = SL.kejenuhan(a.THETA0, 0);
+  assert.equal(m0, 0, `tanah pada kapasitas lapang tanpa hujan harus m = 0, dapat ${m0}`);
+  assert.equal(SL.peluang(30, m0), 0, `hujan 0 mm di lereng 30 derajat harus 0, dapat ${SL.peluang(30, m0)}`);
+  assert.equal(SL.kejenuhan(.1, 50), 0, "tanah kering + 50 mm belum melewati kapasitas lapang");
+  const isi = (a.PORI - a.THETA_FC) * a.TEBAL * 1000; /* mm untuk jenuh penuh dari kapasitas lapang */
+  assert.ok(Math.abs(SL.kejenuhan(a.THETA_FC, isi) - 1) < 1e-12 && Math.abs(SL.kejenuhan(a.THETA_FC, isi / 2) - .5) < 1e-12, "kejenuhan linier terhadap resapan");
+});
+
+test("sungai: debit besar tetap stabil dan tak bergantung alfa (CFL memuat suntikan)", () => {
+  const nx = 20, ny = 12, z = new Float64Array(nx * ny);
+  for (let k = 0; k < z.length; k++) z[k] = (k % nx) * .05 + Math.abs(((k / nx) | 0) - 6) * .3;
+  const J = 6, q = new Float64Array(J + 1).fill(400), cfg = {nx, ny, dx: 50, z, jam: J, masuk: [{k: 6 * nx + 18, q}]};
+  const a = SG.jalankan(cfg), b = SG.jalankan({...cfg, alfa: .35});
+  for (const r of [a, b]) { assert.ok(r.neraca.galat < 1e-9, `galat ${r.neraca.galat}`); assert.ok(r.hmaks.every(Number.isFinite), "kedalaman tak hingga"); }
+  const ma = Math.max(...a.hmaks), mb = Math.max(...b.hmaks), la = a.luas[J], lb = b.luas[J];
+  assert.ok(Math.abs(ma - mb) / mb < .1, `kedalaman maks alfa 0,7 ${ma.toFixed(2)} m vs alfa 0,35 ${mb.toFixed(2)} m beda > 10 %`);
+  assert.ok(Math.abs(la - lb) / lb < .1, `luas jam 6 beda > 10 %: ${la} vs ${lb}`);
+});
+
+test("pintu tertutup tidak menampung hujan; sel sudut tidak membuang dua kali", () => {
+  const n = 6, z = new Float64Array(n * n), tutup = new Uint8Array(n * n); tutup[0] = 1;
+  const r = SG.jalankan({nx: n, ny: n, dx: 10, z, tutup, jam: 2, hujan: new Float64Array([50, 0])});
+  assert.equal(r.kedalaman[2 * n * n], 0, "sel pintu tertutup harus kering");
+  assert.ok(Math.abs(r.neraca.hujan - .05 * 100 * (n * n - 1)) < 1e-6, `hujan hanya di ${n * n - 1} sel: ${r.neraca.hujan}`);
+  /* sel sudut dan sel tepi biasa, masing-masing terkurung dinding (pintu tertutup) di dalam: hanya keluar lewat tepi kisi.
+     Bila sudut dihitung dua kali ia kosong dua kali lebih cepat */
+  const w = new Uint8Array(n * n).fill(1), sd = n * n - 1, tp = (n - 1) * n + 2; w[sd] = 0; w[tp] = 0;
+  const s = SG.jalankan({nx: n, ny: n, dx: 10, z, tutup: w, jam: 2, hujan: new Float64Array([100, 0]), manning: .3});
+  const kd = s.kedalaman.subarray(2 * n * n);
+  assert.ok(kd[tp] > .001 && Math.abs(kd[sd] - kd[tp]) / kd[tp] < .02, `sudut ${kd[sd]} m vs tepi ${kd[tp]} m: sudut dihitung dua kali`);
+});
+
 test("masukan rusak ditolak", () => {
   const z = new Float64Array(16), ok = {nx: 4, ny: 4, dx: 10, z, jam: 2};
   const tolak = (cfg, pola) => assert.throws(() => SG.jalankan(cfg), pola);

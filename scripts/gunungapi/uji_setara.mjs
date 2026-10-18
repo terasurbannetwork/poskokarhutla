@@ -52,5 +52,22 @@ for (let i = 0; i < py.pos24.lon.length; i++) {
 const e = A.endapan(h, { titik: py.titik, radius_km: 10 });
 e.forEach((v, i) => { maks.endapan = Math.max(maks.endapan, Math.abs(v - py.endapan[i])); cek(Math.abs(v - py.endapan[i]) < 0.02, `endapan titik ${i}: JS ${v} vs Py ${py.endapan[i]}`); });
 
+// kasus dekat ambang: sel mentah (indeks + jumlah partikel) dan keabsahan harus sama persis pada SEMUA jam 0..72
+let selBeda = 0, selTotal = 0, flipF32 = 0, jamDekat = 0;
+for (const [k, kasus] of py.dekat.entries()) {
+  const hk = A.jalankan(kasus.masukan);
+  for (let j = 0; j <= 72; j++) {
+    const js = A.selBerambang(hk, j).map((c) => [...c]).sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
+    const pj = kasus.sel[String(j)].sort((a, b) => a[0] - b[0] || a[1] - b[1] || a[2] - b[2]);
+    selTotal += js.length; if (js.length && js.length < 15) jamDekat++;
+    if (JSON.stringify(js) !== JSON.stringify(pj)) { selBeda++; cek(false, `dekat[${k}] jam ${j}: sel JS ${JSON.stringify(js).slice(0, 120)} vs Py ${JSON.stringify(pj).slice(0, 120)}`); }
+    cek((A.jejak(hk, j).di_bawah_ambang === false) === kasus.sah[String(j)], `dekat[${k}] jam ${j}: keabsahan JS beda dari Py`);
+    // kontrol negatif: andai posisi dibulatkan Float32, berapa partikel pindah sel? (membuktikan uji ini mampu menangkap pembalikan)
+    const s = hk.snap[j];
+    for (let i = 0; i < s.lon.length; i++) if (s.aktif[i] && (Math.floor(s.lon[i] / 0.1) !== Math.floor(Math.fround(s.lon[i]) / 0.1) || Math.floor(s.lat[i] / 0.1) !== Math.floor(Math.fround(s.lat[i]) / 0.1))) flipF32++;
+  }
+}
+cek(selTotal > 0 && jamDekat >= 10, `kasus dekat ambang tak bermakna: hanya ${jamDekat} jam dengan 1-14 sel`);
+
 if (gagal.length) { console.error('GAGAL:\n' + gagal.join('\n')); process.exit(1); }
-console.log(`ok (${n} jejak dibandingkan). selisih maks: posisi ${maks.deg.toExponential(2)} derajat (toleransi ${TOL_DEG}), z ${maks.z.toFixed(3)} m (${TOL_Z}), arah ${maks.arah.toExponential(2)} derajat (${TOL_ARAH}), jangkau ${maks.km.toExponential(2)} km (${TOL_KM}), luas ${(maks.luas * 100).toExponential(2)}% (${TOL_LUAS * 100}%), endapan ${maks.endapan.toExponential(2)} (0,02)`);
+console.log(`ok (${n} jejak dibandingkan; kasus dekat ambang: 2 skenario x 73 jam, ${jamDekat} jam bersel 1-14, ${selBeda} beda; kontrol negatif Float32: ${flipF32} partikel-jam akan pindah sel). selisih maks: posisi ${maks.deg.toExponential(2)} derajat (toleransi ${TOL_DEG}), z ${maks.z.toFixed(3)} m (${TOL_Z}), arah ${maks.arah.toExponential(2)} derajat (${TOL_ARAH}), jangkau ${maks.km.toExponential(2)} km (${TOL_KM}), luas ${(maks.luas * 100).toExponential(2)}% (${TOL_LUAS * 100}%), endapan ${maks.endapan.toExponential(2)} (0,02)`);

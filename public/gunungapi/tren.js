@@ -38,8 +38,22 @@ const Tren = {
     return this.kartu("Erupsi harian", `${Kartu.hl(fmt(v.at(-1).n) + " erupsi")} dalam 24 jam terakhir; terbanyak ${Kartu.hl(fmt(v[pk].n))} pada ${v[pk].t}`,
       this.batang(v, {warna: BATA}), "MAGMA Indonesia, informasi letusan; dicatat Pantau Bencana tiap pembaruan", [[BATA, "erupsi dalam 24 jam"], ["#c9503a", "terbanyak"]]); },
 
+  /* 4. gunung naik atau turun level per hari (perubahan yang dicatat Pantau Bencana + tren di abu_gunungapi.json); dibuang bila belum ada perubahan */
+  kNaik() {
+    const ev = new Map(), tambah = (nm, tgl, dari, ke) => ev.set(nm + tgl + dari + ke, {nm, tgl, dari, ke});
+    (S.st?.perubahan || []).forEach(p => tambah(p.nama, p.tgl, p.dari, p.ke));
+    (this.abu?.tren || []).forEach(t => tambah(t.nama, new Date(t.waktu).toLocaleDateString("en-CA", WIB), t.dari, t.ke));
+    const E = [...ev.values()]; if (!E.length) return "";
+    const hari = [...new Set([...(S.st?.riwayat || []).map(r => r.tgl), ...E.map(e => e.tgl)])].sort(); if (hari.length < 2) return "";
+    const naik = E.filter(e => e.ke > e.dari).length, turun = E.length - naik;
+    const v = hari.map(t => { const d = E.filter(e => e.tgl === t), n = d.filter(e => e.ke > e.dari).length;
+      return {n: d.length, n2: n, t: this.tgl(t), tip: `<b>${this.tgl(t)}</b><br>Naik level: ${fmt(n)} gunung<br>Turun level: ${fmt(d.length - n)} gunung${d.length ? "<br>" + esc(d.map(e => e.nm).join(", ")) : ""}`}; });
+    return this.kartu("Naik turun level", `${Kartu.hl(fmt(naik) + " gunung")} naik level dan ${Kartu.hl(fmt(turun) + " gunung")} turun dalam ${fmt(hari.length)} hari terakhir`,
+      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[4], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan", [[WARNA_LV[2], "perubahan level"], [WARNA_LV[4], "naik"]]); },
+
   async render() {
     const el = $("#tren"); if (!el) return;
     if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; this.D = await muatJSON("data/dampak.json").catch(() => null); }
-    el.innerHTML = [this.kTahun, this.kLevel, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    this.abu = await Data.abu();
+    el.innerHTML = [this.kTahun, this.kLevel, this.kNaik, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

@@ -14,7 +14,7 @@ Pakai:  python3 scripts/gunungapi/paparan.py          tulis berkas
         python3 scripts/gunungapi/paparan.py unduh    hanya mengisi cache mentah
         python3 scripts/gunungapi/paparan.py uji      self-check dari contoh/paparan_contoh.json
 """
-import datetime as dt, heapq, json, math, os, re, sys, time, urllib.parse, urllib.request
+import datetime as dt, heapq, json, math, os, re, statistics, sys, time, urllib.parse, urllib.request
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 MENTAH = os.path.join(AKAR, "data/raw/gunungapi")
@@ -30,7 +30,7 @@ UA_OSM = "poskokarhutla/1.0 (+github.com/pangantara/poskokarhutla)"   # UA peram
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
             "https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
 TIFF = os.path.join(AKAR, "data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif")
-TAMBAH = ("Merapi", "Semeru", "Kelud", "Agung")
+TAMBAH = ("Merapi", "Semeru", "Kelud", "Agung", "Ruang")   # Ruang: citra erupsi Apr 2024
 R_CARI = 20.0          # km, desa/sekolah/faskes/tambang
 CINCIN = (3, 5, 10, 15)
 RANK = {"III": 3, "II": 2, "I": 1}
@@ -40,7 +40,7 @@ KECEPATAN = {"motorway": 50, "trunk": 40, "primary": 35, "secondary": 30, "terti
 KELAS_AMAN = {"motorway", "trunk", "primary", "secondary", "tertiary"}   # titik kumpul hanya di jalan kelas ini
 ALIAS = {"ililewotolok": {"lewotolo"}, "lewotobilakilaki": {"lewotobilakilaki", "lewotobilakilakidanperempuan"}}
 BADAN_OK = {"PT", "CV", "PD", "KSU", "KUD", "KOPERASI", "FIRMA"}
-BATAS = {"desa": 90, "sekolah": 40, "faskes": 40, "tambang": 25, "evakuasi": 25}   # per gunung; diturunkan bila berkas > batas ukuran
+BATAS = {"desa": 90, "sekolah": 40, "faskes": 40, "tambang": 25, "evakuasi": 60}   # per gunung; diturunkan bila berkas > batas ukuran
 MAKS_JSON, MAKS_GEO = 400_000, 1_500_000
 
 
@@ -329,11 +329,13 @@ def hitung_tambang(fitur, g, zon):
     return sorted(out, key=lambda t: (-RANK[t["zona"]], haversine(g["lat"], g["lon"], t["lat"], t["lon"])))
 
 
-def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=25):
-    """-> (evakuasi[], rute[]) ; desa berzona III/II atau dalam radius rekomendasi; titik aman = jalan tertier+ di luar III/II dan > radius+2 km"""
+def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=60):
+    """-> (evakuasi[], rute[], ringkas, alasan). Kandidat: desa berzona III/II atau dalam radius rekomendasi; bila tak ada, desa KRB I terdekat
+    (ditandai zona_desa 'I', DIKECUALIKAN dari ringkasan: sudah di luar zona bahaya). Titik aman = jalan tertier+ di luar III/II dan > radius+2 km.
+    ringkas dihitung dari SEMUA desa III/II yang punya rute (sebelum daftar dipotong ke maks); alasan = penjelasan jujur bila kosong."""
     adj, pos, aman, nama = bangun_graf(jalan)
     if not adj:
-        return [], []
+        return [], [], None, "tidak ada jalan OSM terbaca di sekitar gunung", 0
     idx = Indeks(pos)
     rek = g.get("radius_km") or 3.0
     sumber, kumpul_nama = {}, {}
@@ -350,7 +352,7 @@ def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=25):
             continue
         sumber[n] = 10.0
     if not sumber:
-        return [], []
+        return [], [], None, "tidak ada jalan tertier ke atas di luar zona bahaya dalam jangkauan jalan OSM", 0
     mnt, km, prev, akar = dijkstra(adj, sumber)
     cand = [d for d in poi["desa"] if d["nama"] and (d["zona"] in ("III", "II") or d["km"] <= rek)]
     cand.sort(key=lambda d: (-(RANK.get(d["zona"], 0)), d["km"]))
@@ -358,8 +360,6 @@ def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=25):
         cand = sorted((d for d in poi["desa"] if d["nama"] and d["zona"] == "I"), key=lambda d: d["km"])[:10]
     ev, rt = [], []
     for d in cand:
-        if len(ev) >= maks:
-            break
         n, jd = idx.terdekat(d["lat"], d["lon"], 2.0)
         if n is None or n not in mnt:
             continue
@@ -367,10 +367,17 @@ def hitung_evakuasi(jalan, poi, g, zon, jiwa_desa=None, maks=25):
         ujung = pos[a]
         label = kumpul_nama.get(a) or (nama[a] if nama.get(a) else "jalan aman di luar zona")
         garis = [[round(d["lon"], 4), round(d["lat"], 4)]] + [[round(pos[i][1], 5), round(pos[i][0], 5)] for i in rute(prev, n)]
-        ev.append({"desa": d["nama"], "dari": [d["lon"], d["lat"]], "ke": [round(ujung[1], 4), round(ujung[0], 4)], "titik_kumpul": label,
-                   "km": round(km[n] + jd, 1), "menit": max(1, round(mnt[n] - sumber[a] + jd / 15 * 60))})
+        ev.append({"desa": d["nama"], "zona_desa": d["zona"] or "radius", "dari": [d["lon"], d["lat"]], "ke": [round(ujung[1], 4), round(ujung[0], 4)],
+                   "titik_kumpul": label, "km": round(km[n] + jd, 1), "menit": max(1, round(mnt[n] - sumber[a] + jd / 15 * 60))})
         rt.append([[round(x, 4), round(y, 4)] for x, y in dp(garis, 0.0004)])
-    return ev, rt
+    bahaya = sorted(e["menit"] for e in ev if e["zona_desa"] in ("III", "II"))
+    ringkas = {"n": len(bahaya), "median_menit": round(statistics.median(bahaya)), "maks_menit": bahaya[-1],
+               "label": "waktu tempuh arus bebas"} if bahaya else None
+    alasan = None
+    if not ev:
+        alasan = "tidak ada desa OSM berzona III/II atau dalam radius rekomendasi yang tersambung ke jalan" if not cand else \
+                 "desa kandidat tidak berjarak <= 2 km dari jalan OSM yang tersambung ke titik aman"
+    return ev[:maks], rt[:maks], ringkas, alasan, len(ev)
 
 
 def ringkas_zona(g, zon, poi, tambang, piksel):
@@ -397,7 +404,7 @@ def susun(g, zon, zona_sumber, poi, piksel, tambang, jalan):
     jiwa = alokasi_desa(piksel, poi["desa"])
     for d, v in zip(poi["desa"], jiwa):
         d["penduduk"] = round(v)
-    ev, rt = hitung_evakuasi(jalan, poi, g, zon, maks=BATAS["evakuasi"])
+    ev, rt, ering, alasan, n_ev = hitung_evakuasi(jalan, poi, g, zon, maks=BATAS["evakuasi"])
     e = {"id": slug(g["nama"]), "nama": g["nama"], "zona_sumber": zona_sumber,
          "cincin": penduduk_cincin(piksel, g), "zona": ringkas_zona(g, zon, poi, tambang, piksel)}
     zrank = lambda o: (-RANK.get(o["zona"], 0), o["km"])
@@ -408,6 +415,10 @@ def susun(g, zon, zona_sumber, poi, piksel, tambang, jalan):
         e[j] = sorted((o for o in lis if o["zona"] in ("III", "II") or j == "desa"), key=zrank)
     e["tambang"] = tambang
     e["evakuasi"] = ev
+    e["evakuasi_ringkas"] = ering
+    e["evakuasi_total"] = n_ev
+    if alasan:
+        e["catatan"] = "jalur evakuasi tidak terhitung: " + alasan
     e["citra"] = []
     geo = {"zona": {z: {"type": "MultiPolygon", "coordinates": [p[1] for p in zon[z]]} for z in ("III", "II", "I") if zon.get(z)}, "rute": rt}
     return e, geo
@@ -598,7 +609,7 @@ def tulis(unduh_saja=False):
         if not tambang_ok:
             cat.append("WIUP ESDM tidak terjangkau")
         if cat:
-            e["catatan"] = "; ".join(cat)
+            e["catatan"] = "; ".join(cat + ([e["catatan"]] if e.get("catatan") else []))
         e["citra"] = citra_lama.get(id_, [])
         hasil.append(e)
         geo[id_] = ge
@@ -623,6 +634,10 @@ def cetak(hasil, geo):
             c = dict(e)
             for k, m in BATAS.items():
                 c[k] = e[k][:max(3, int(m * skala))]
+            tot = e.get("evakuasi_total", 0)
+            c["evakuasi_catatan"] = (f"Memuat semua {tot} desa yang punya rute." if len(c["evakuasi"]) >= tot else
+                                     f"Memuat {len(c['evakuasi'])} dari {tot} desa yang punya rute: urut zona III, lalu II, lalu terdekat kawah, dipotong setelahnya. Bukan sampel acak. "
+                                     "Ringkasan waktu dihitung dari semua desa III/II, bukan hanya yang tampil.")
             h.append(c)
         isi = {"v": 1, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "sumber": sumber, "gunung": h}
         b = json.dumps(isi, ensure_ascii=False, separators=(",", ":"))
@@ -680,6 +695,15 @@ def uji():
     assert [t["nama"] for t in e["tambang"]] == ["CV Batu Kali"], "perorangan dan di luar zona harus dibuang"
     assert e["zona"]["III"]["sekolah"] == 1 and e["zona"]["III"]["faskes"] >= 1
     assert len(e["evakuasi"]) == len(ge["rute"]) >= 1
+    er = e["evakuasi_ringkas"]
+    assert er["n"] == 2 and er["median_menit"] == 16 and er["maks_menit"] == 21 and er["label"] == "waktu tempuh arus bebas", er   # Desa A 21, Dusun B 11 menit
+    assert all(x["zona_desa"] in ("III", "II", "radius", "I") for x in e["evakuasi"])
+    # desa KRB I sebagai cadangan tidak boleh masuk ringkasan: geser semua desa ke luar zona III/II
+    poi2 = hitung_poi(c["poi"], g, zon)
+    for d in poi2["desa"]:
+        d["zona"] = "I" if d["zona"] else None
+    ev2, _, er2, _, _ = hitung_evakuasi(c["jalan"], poi2, g, zon)
+    assert ev2 and all(x["zona_desa"] == "I" for x in ev2) and er2 is None, "fallback KRB I masuk ringkasan"
     ev = e["evakuasi"][0]
     assert ev["menit"] > 0 and ev["km"] > 0 and ev["titik_kumpul"] and ge["rute"][0][-1] == ev["ke"], "rute harus berujung di titik kumpul"
     assert e["desa"] and all({"nama", "lat", "lon", "penduduk", "zona", "km"} <= set(d) for d in e["desa"])
@@ -691,7 +715,12 @@ def uji():
         j = json.load(open(KELUAR))
         assert j["v"] == 1 and j["gunung"]
         for x in j["gunung"]:
-            assert {"id", "nama", "zona_sumber", "cincin", "zona", "desa", "sekolah", "faskes", "tambang", "evakuasi", "citra"} <= set(x), x["id"]
+            assert {"id", "nama", "zona_sumber", "cincin", "zona", "desa", "sekolah", "faskes", "tambang", "evakuasi", "citra", "evakuasi_ringkas", "evakuasi_catatan"} <= set(x), x["id"]
+            if x["evakuasi_ringkas"]:
+                bahaya = [v["menit"] for v in x["evakuasi"] if v["zona_desa"] in ("III", "II")]
+                assert x["evakuasi_ringkas"]["n"] >= len(bahaya) and x["evakuasi_ringkas"]["label"] == "waktu tempuh arus bebas", x["id"]
+            if not x["evakuasi"]:
+                assert x.get("catatan"), f"{x['id']}: evakuasi kosong tanpa catatan"
             assert x["zona_sumber"] in ("KRB PVMBG", "InaRISK bahaya gunung api (proksi KRB)", "radius rekomendasi (proksi)")
     print("paparan uji: ok")
 

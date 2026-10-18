@@ -54,6 +54,7 @@ const Simulasi = {
     if (!Object.keys(S.bahaya).length) S.bahaya = (await muatJSON("data/bahaya.json")).kec || {};
     if (!S.kejadian) S.kejadian = await muatJSON("data/kejadian.json").catch(() => null);
     if (this.ens === undefined) this.ens = await muatJSON("data/hujan_ansambel.json").catch(() => null);
+    if (this.val === undefined) this.val = await muatJSON("data/validasi.json").catch(() => null);
     const E = this.ens && this.ens.hari.includes(S.hujan.hari_ini) ? this.ens : null;
     const H = S.hujan, sel = H.sel, petak = this.petak ||= new Map(H.grid.map(g => [Math.floor(g.lat / sel) + "," + Math.floor(g.lon / sel), g]));
     const selTerdekat = (la, lo) => { const gy = Math.floor(la / sel), gx = Math.floor(lo / sel), d2 = g => (g.lat - la) ** 2 + (g.lon - lo) ** 2;
@@ -210,9 +211,10 @@ const Simulasi = {
       <div class="lbl" style="margin-top:12px">Perkiraan orang terpapar <span class="pill l3" style="height:17px;font-size:9.5px">asumsi</span></div>
       <table class="tb2" style="margin-top:4px"><tbody>
         <tr><td>Kabupaten/kota dengan kecamatan Siaga/Awas</td><td class="n">${fmt(kb0)} → ${fmt(kb1)}</td></tr>
-        <tr><td>Pengungsi per kejadian (median, P25–P75)</td><td class="n">${rb(pk.mengungsi[1])}<small style="display:block;color:var(--ink2);font-weight:500">${rb(pk.mengungsi[0])}–${rb(pk.mengungsi[2])}</small></td></tr>
-        <tr><td>Perkiraan mengungsi, skenario</td><td class="n">${rb(orang(kb1)[0])}–${rb(orang(kb1)[2])}</td></tr>
-        <tr><td>Perkiraan terdampak, skenario</td><td class="n">${rb(kb1 * pk.terdampak[0])}–${rb(kb1 * pk.terdampak[2])}</td></tr></tbody></table>
+        <tr><td>Pengungsi per kejadian (median, P25–P75)</td><td class="n">${fmt(Math.round(pk.mengungsi[1]))}<small style="display:block;color:var(--ink2);font-weight:500">${fmt(Math.round(pk.mengungsi[0]))}–${fmt(Math.round(pk.mengungsi[2]))}</small></td></tr>
+        <tr><td>Mengungsi bila tiap kabupaten itu mengalami satu kejadian</td><td class="n">${fmt(Math.round(orang(kb1)[0]))}–${fmt(Math.round(orang(kb1)[2]))}</td></tr>
+        <tr><td>Terdampak bila tiap kabupaten itu mengalami satu kejadian</td><td class="n">${fmt(Math.round(kb1 * pk.terdampak[0]))}–${fmt(Math.round(kb1 * pk.terdampak[2]))}</td></tr></tbody></table>
+      ${(() => { const v = this.val?.[this.b === "b" ? "banjir" : "longsor"]?.waspada; return v ? `<p class="fnd" style="margin-top:6px">Sebagian besar peringatan tidak diikuti kejadian: ${fmt(Math.round(v.far * 100))} % status Waspada ${nm} tanpa kejadian tercatat (uji balik ${esc(this.val.periode_uji)}).</p>` : ""; })()}
       <p class="fnd" style="margin-top:8px"><b>Uji:</b> ${fmt(this.cek.n - this.cek.beda.length)} dari ${fmt(this.cek.n)} kecamatan sama dengan status.json</p>
       <button class="btn sec" id="simUtama" style="margin-top:8px;width:100%">Tampilkan di peta utama</button>`; },
   /* peta penuh halaman: kecamatan provinsi/kabupaten terpilih, warna = level skenario yang dilihat, garis tebal = berubah dari prakiraan */

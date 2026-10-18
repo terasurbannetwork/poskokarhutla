@@ -14,13 +14,15 @@ sebelum sekitar awal 2024 (7 dari 36 gugur); periode efektif Apr 2024 - Okt 2026
 Pakai:  python3 scripts/gunungapi/uji_abu.py        (jaringan; ~5-10 menit, cache di scripts/gunungapi/contoh/)
         python3 scripts/gunungapi/uji_abu.py uji    (self-check murni)
 """
-import datetime as dt, json, os, re, statistics, sys, time, urllib.request
+import datetime as dt, json, math, os, re, statistics, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import abu
 
 CACHE = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contoh", "vona_cache.json")
 DETAIL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contoh", "uji_balik_detail.json")
+ANGIN = os.path.join(os.path.dirname(os.path.abspath(__file__)), "contoh", "angin_historis.json")  # angin historis yang dipakai: uji bisa diulang luring
+JAM_NILAI = 3   # jam penilaian, ditetapkan SEBELUM melihat hasil: akhir pelepasan 3 jam (parameter produksi), bukan hasil pemilihan
 KODE = {"Semeru": "SMR", "Merapi": "MER", "Ruang": "RUA", "Lewotobi Laki-laki": "LWK", "Marapi": "MAR", "Ibu": "IBU"}
 MATA = {"north": 0, "northeast": 45, "east": 90, "southeast": 135, "south": 180, "southwest": 225, "west": 270, "northwest": 315}
 AWAL = dt.datetime(2023, 3, 1, tzinfo=dt.timezone.utc)
@@ -86,11 +88,13 @@ def pilih(ev):
     return [uniq[round(i * (len(uniq) - 1) / (MAKS_KEJADIAN - 1))] for i in range(MAKS_KEJADIAN)]
 
 
-def model_arah(g, e):
-    """((arah mentah, arah berambang|None, jam berambang), "") atau (None, alasan)."""
+def angin_historis(g, e, cache):
+    """Angin 12 jam mulai jam letusan: dari cache luring bila ada, selain itu Open-Meteo historical-forecast-api (lalu disimpan). (angin|None, alasan)."""
+    kunci = f"{g['nama']}|{e['waktu']}"
+    if kunci in cache:
+        return cache[kunci], ""
     t = dt.datetime.fromisoformat(e["waktu"].replace("Z", "+00:00"))
-    d0, d1 = t.date().isoformat(), (t.date() + dt.timedelta(days=1)).isoformat()
-    url = abu.url_angin([(g["lat"], g["lon"])], HIST, {"start_date": d0, "end_date": d1})
+    url = abu.url_angin([(g["lat"], g["lon"])], HIST, {"start_date": t.date().isoformat(), "end_date": (t.date() + dt.timedelta(days=1)).isoformat()})
     try:
         r = abu.ambil_json(url, coba=2)
     except RuntimeError as ex:
@@ -101,21 +105,38 @@ def model_arah(g, e):
     a = abu.angin_dari_respon(r, tm.index(kini), 12) if kini in tm else None
     if not a:
         return None, "angin historis kosong"
-    h = abu.jalankan(g["lat"], g["lon"], g.get("tinggi") or 0, e["kolom_m"], a, durasi_jam=1, jam=3, n=600, seed=1)
-    # (arah sebaran mentah jam 2, arah berambang di jam pertama dari 2/1/3 yang punya sel di atas ambang | None, jam itu)
-    br = next(((abu.jejak(h, j)["arah_deg"], j) for j in (2, 1, 3) if abu.jejak(h, j)["sel_n"]), (None, None))
-    return (abu.jejak_tipis(h, 2)["arah_deg"], br[0], br[1]), ""
+    cache[kunci] = a
+    abu.simpan(ANGIN, cache)
+    return a, ""
+
+
+def model_arah(g, e, cache):
+    """((arah sebaran mentah, arah berambang|None), "") atau (None, alasan); parameter produksi, jam penilaian JAM_NILAI."""
+    a, alasan = angin_historis(g, e, cache)
+    if not a:
+        return None, alasan
+    h = abu.jalankan(g["lat"], g["lon"], g.get("tinggi") or 0, e["kolom_m"], a, durasi_jam=abu.DURASI_LEPAS_JAM, jam=JAM_NILAI, n=abu.N_PRODUKSI, seed=1)
+    jb = abu.jejak(h, JAM_NILAI)
+    return (abu.jejak_tipis(h, JAM_NILAI)["arah_deg"], None if jb["di_bawah_ambang"] else jb["arah_deg"]), ""
+
+
+def p_binomial(k, n, p=0.25):
+    """P(X >= k) bila setiap kejadian 'dalam 45 derajat' hanya kebetulan (peluang p = 90/360 untuk arah acak seragam)."""
+    return sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(k, n + 1))
 
 
 def ringkas(baris, periode, catatan):
     s = [selisih(b["model_deg"], MATA[b["arah_vona"]]) for b in baris]
-    return {"n": len(s), "median_selisih_deg": round(statistics.median(s), 1), "persen_dalam_45deg": round(100 * sum(x <= 45 for x in s) / len(s)),
+    k = sum(x <= 45 for x in s)
+    return {"n": len(s), "median_selisih_deg": round(statistics.median(s), 1), "persen_dalam_45deg": round(100 * k / len(s)),
+            "acak_persen": 25, "p_binomial": float(f"{p_binomial(k, len(s)):.3g}"),
             "periode": periode, "sumber": "VONA PVMBG (magma.esdm.go.id/v1/vona) vs Open-Meteo historical-forecast-api (ECMWF IFS 0,25)", "catatan": catatan}
 
 
 def jalan():
     status = {g["nama"]: g for g in abu.baca(abu.STATUS, {}).get("gunung", [])}
     cache = kumpul_vona()
+    angin_c = abu.baca(ANGIN, {})
     baris, gagal = [], []
     for nama in KODE:
         g = status.get(nama)
@@ -123,16 +144,15 @@ def jalan():
             gagal.append(f"{nama}: tak ada di gunungapi_status.json")
             continue
         for e in pilih(cache.get(nama, [])):
-            a, alasan = model_arah(g, e)
+            a, alasan = model_arah(g, e, angin_c)
             if a is None:
                 gagal.append(f"{nama} {e['waktu']}: {alasan}")
                 if "429" in alasan:
                     break
                 continue
             baris.append({**e, "model_deg": round(a[0], 1), "selisih_deg": round(selisih(a[0], MATA[e["arah_vona"]]), 1),
-                          "berambang_deg": None if a[1] is None else round(a[1], 1), "berambang_jam": a[2],
+                          "berambang_deg": None if a[1] is None else round(a[1], 1),
                           "selisih_berambang_deg": None if a[1] is None else round(selisih(a[1], MATA[e["arah_vona"]]), 1)})
-            time.sleep(.5)
     abu.simpan(DETAIL, {"kejadian": baris, "gagal": gagal})
     o = abu.baca(abu.KELUAR, None)
     if o is None:
@@ -142,22 +162,22 @@ def jalan():
         per = f"{min(b['waktu'] for b in baris)[:10]} s.d. {max(b['waktu'] for b in baris)[:10]}"
         dasar = ("Arah VONA 8 mata angin (resolusi 45 derajat). Tumpang tindih jangkauan tidak diukur: VONA tanpa jarak dan arsip VAAC Darwin tidak tersedia. "
                  f"Sampel disebar di arsip, maks. 8 kejadian per gunung ({', '.join(sorted({b['gunung'] for b in baris}))}). Gagal/dilewati: {len(gagal)}.")
-        o["uji_balik_tipis"] = ringkas(baris, per, "Model = arah titik tengah SEBARAN MENTAH partikel jam ke-2 (tanpa ambang). " + dasar)
+        o["uji_balik_tipis"] = ringkas(baris, per, f"Parameter produksi (pelepasan {abu.DURASI_LEPAS_JAM} jam, n={abu.N_PRODUKSI}, seed 1), jam penilaian {JAM_NILAI} (ditetapkan di muka). Model = arah titik tengah SEBARAN MENTAH partikel (tanpa ambang). " + dasar)
         br = [{**b, "model_deg": b["berambang_deg"]} for b in baris if b["berambang_deg"] is not None]
         if br:
-            o["uji_balik"] = ringkas(br, per, f"Model = arah titik tengah sel di atas ambang penerbangan (jam pertama 1-3 yang punya sel). Hanya {len(br)} dari {len(baris)} kejadian "
-                                              "punya sel di atas ambang (kolom VONA kecil, massa terlepas kecil); sisanya tidak bisa dinilai berambang. " + dasar)
+            o["uji_balik"] = ringkas(br, per, f"Parameter produksi (pelepasan {abu.DURASI_LEPAS_JAM} jam, n={abu.N_PRODUKSI}, seed 1), jam penilaian {JAM_NILAI} (ditetapkan di muka). Model = arah titik tengah sel di atas ambang penerbangan, sah bila >= {abu.MIN_SEL} sel. "
+                                              f"Hanya {len(br)} dari {len(baris)} kejadian punya jejak sah (kolom VONA kecil, massa terlepas kecil); sisanya tidak bisa dinilai berambang. Pembanding acak: arah acak seragam dalam 45 derajat = 25%; p_binomial = P(>= k kejadian dalam 45 derajat | 25%). " + dasar)
             o.pop("uji_balik_catatan", None)
         else:
             o["uji_balik"] = None
-            o["uji_balik_catatan"] = f"Tidak satu pun dari {len(baris)} kejadian VONA beraraah punya sel di atas ambang penerbangan (kolom 100-700 m terlalu kecil); uji berambang tak bisa dihitung. Uji sebaran mentah ada di uji_balik_tipis. " + dasar
+            o["uji_balik_catatan"] = f"Tidak satu pun dari {len(baris)} kejadian VONA beraraah punya sel di atas ambang penerbangan (jejak tidak sah: < 5 sel lolos); uji berambang tak bisa dihitung. Uji sebaran mentah ada di uji_balik_tipis. " + dasar
     else:
         o["uji_balik"] = None
         o["uji_balik_catatan"] = "Tidak ada kejadian VONA beraraah yang bisa dibandingkan; yang dicoba: " + "; ".join(gagal[:5])
     abu.simpan(abu.KELUAR, o)
     print(json.dumps({"berambang": o["uji_balik"], "tipis": o.get("uji_balik_tipis")}, ensure_ascii=False), file=sys.stderr)
     for b in baris:
-        print(f"  {b['gunung']:20s} {b['waktu']} vona {b['arah_vona']:10s} model {b['model_deg']:6.1f} selisih {b['selisih_deg']} | berambang {b['berambang_deg']} (jam {b['berambang_jam']}) selisih {b['selisih_berambang_deg']}", file=sys.stderr)
+        print(f"  {b['gunung']:20s} {b['waktu']} vona {b['arah_vona']:10s} model {b['model_deg']:6.1f} selisih {b['selisih_deg']} | berambang {b['berambang_deg']} selisih {b['selisih_berambang_deg']}", file=sys.stderr)
     print(f"gagal: {len(gagal)}", gagal[:8], file=sys.stderr)
 
 
@@ -170,7 +190,9 @@ def uji():
     ev = [{"gunung": "X", "waktu": f"2024-{m:02d}-01T00:00:00Z", "kolom_m": 500, "arah_vona": "east"} for m in range(1, 13)] * 2
     assert len(pilih(ev)) == MAKS_KEJADIAN
     r = ringkas([{"model_deg": 90, "arah_vona": "east"}, {"model_deg": 10, "arah_vona": "east"}, {"model_deg": 80, "arah_vona": "east"}], "p", "c")
-    assert r["n"] == 3 and r["median_selisih_deg"] == 10 and r["persen_dalam_45deg"] == 67, r
+    assert r["n"] == 3 and r["median_selisih_deg"] == 10 and r["persen_dalam_45deg"] == 67 and r["acak_persen"] == 25, r
+    assert abs(p_binomial(0, 5) - 1) < 1e-12 and abs(p_binomial(5, 5) - 0.25 ** 5) < 1e-12 and abs(p_binomial(1, 2) - (1 - 0.75 ** 2)) < 1e-12
+    assert r["p_binomial"] == float(f"{3 * .25 ** 2 * .75 + .25 ** 3:.3g}"), r  # k=2 dari 3
     print("ok")
 
 

@@ -10,7 +10,8 @@ const KOLOM = [1, 3, 5, 10, 15], DURASI = [1, 3, 6, 12, 24], VOL = [1e5, 1e6, 1e
 const V_PDC = 20, V_LAHAR = 6, T_LAHAR = 1;  /* m/dtk dan jam mulai lahar: ilustrasi, bukan hasil model */
 const KM_JAM_EVAKUASI = 25;                  /* kecepatan kendaraan di jalan evakuasi (asumsi) */
 const WARNA = {abu: "#8a7a6b", lahar: "#3f7cc4", pdc: "#d64545", tebal: "#6b4a1f", sedang: "#b08a4f", tipis: "#dcc99b"};
-const slug = n => String(n).toLowerCase().replace(/[^a-z0-9 ]/g, "").trim().replace(/\s+/g, "-");
+/* SATU aturan dengan abu.id_gunung (scripts/gunungapi/abu.py): "Lewotobi Laki-laki" = lewotobi-laki-laki */
+const slug = n => String(n).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "").split(/\s+/).filter(Boolean).join("-");
 const R_BUMI = 6371;
 const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(y / 2) ** 2 + Math.cos(b * r) * Math.cos(d * r) * Math.sin(x / 2) ** 2; return 2 * R_BUMI * Math.asin(Math.sqrt(h)); };
 const ambil = async u => { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); };
@@ -265,8 +266,8 @@ function petaBaru() {
     m.addSource("jalur", {type: "geojson", data: kosongFC()}); m.addSource("radius", {type: "geojson", data: kosongFC()}); m.addSource("rute", {type: "geojson", data: kosongFC(), promoteId: "i"});
     m.addSource("desa", {type: "geojson", data: kosongFC()});
     m.addSource("puncak", {type: "geojson", data: {type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {nama: g.nama}}});
-    m.addLayer({id: "endap", type: "fill", source: "endap", paint: {"fill-color": ["step", ["get", "r"], WARNA.tipis, .1, WARNA.sedang, .5, WARNA.tebal], "fill-opacity": ["interpolate", ["linear"], ["get", "r"], .01, .15, 1, .6]}});
-    m.addLayer({id: "jalur", type: "line", source: "jalur", paint: {"line-color": "#ffffff", "line-width": ["case", ["==", ["get", "utama"], 1], 2, 1], "line-opacity": .55, "line-dasharray": [2, 2]}});
+    m.addLayer({id: "endap", type: "fill", source: "endap", paint: {"fill-color": ["step", ["get", "r"], WARNA.tipis, .1, WARNA.sedang, .5, WARNA.tebal], "fill-opacity": ["interpolate", ["linear"], ["get", "r"], .01, 0, .06, .14, .5, .45, 1, .6], "fill-antialias": false}});
+    m.addLayer({id: "jalur", type: "line", source: "jalur", paint: {"line-color": "#5aa2ea", "line-width": ["case", ["==", ["get", "utama"], 1], 3, 1.6], "line-opacity": .9, "line-dasharray": [2, 1.5]}});
     m.addLayer({id: "radius-f", type: "fill", source: "radius", paint: {"fill-color": "#e8743b", "fill-opacity": .1}});
     m.addLayer({id: "radius-l", type: "line", source: "radius", paint: {"line-color": "#e8743b", "line-width": 2.5, "line-dasharray": [3, 2]}});
     m.addLayer({id: "rute", type: "line", source: "rute", layout: {"line-cap": "round", "line-join": "round"}, paint: {"line-color": ["case", ["==", ["get", "tutup"], 1], "#d64545", "#2fb36a"], "line-width": ["case", ["==", ["get", "tutup"], 1], 5, 3.5], "line-opacity": .95, "line-dasharray": [1]}});
@@ -351,7 +352,10 @@ function evakuasi() {
   const dalam = s.desa.filter(d => d.km <= s.p.radius), luar = s.desa.filter(d => d.km > s.p.radius), jiwa = a => a.reduce((x, d) => x + (d.penduduk || 0), 0);
   const kena = luar.filter(d => d.lahar || d.pdc), abuTebal = luar.filter(d => (d.abu || 0) >= .5 && !d.lahar && !d.pdc);
   const hl = Kartu.hl;
-  el.innerHTML = `<p class="sm-msg">${hl(fmt(dalam.length) + " desa")} (${fmt(jiwa(dalam))} jiwa) ada di dalam radius dan harus dievakuasi; ${hl(fmt(kena.length) + " desa")} (${fmt(jiwa(kena))} jiwa) di luar radius tetapi kena lahar atau awan panas; ${hl(fmt(abuTebal.length) + " desa")} (${fmt(jiwa(abuTebal))} jiwa) di luar radius dengan hujan abu tebal.</p>`;
+  /* jiwa dalam radius = cincin WorldPop 1 km (3/5/10/15 km) diinterpolasi linear di antaranya; jumlah desa terdaftar jauh lebih kecil dari penduduk sebenarnya */
+  const C = [[0, 0], ...(s.pg.cincin || []).map(c => [c.km, c.penduduk])], r = Math.min(s.p.radius, C.at(-1)[0]);
+  let jr = null; if (C.length > 1) { const k = C.findIndex(c => c[0] >= r); jr = k <= 0 ? 0 : C[k - 1][1] + (C[k][1] - C[k - 1][1]) * (r - C[k - 1][0]) / (C[k][0] - C[k - 1][0]); }
+  el.innerHTML = `<p class="sm-msg">${jr != null ? `${hl("±" + rb(jr) + " jiwa")} tinggal dalam radius ${fmt(s.p.radius)} km (perkiraan WorldPop 1 km${s.p.radius > C.at(-1)[0] ? `, dihitung sampai ${C.at(-1)[0]} km` : ""}), ${hl(fmt(dalam.length) + " desa")} terdaftar di dalamnya terdampak pada skenario ini; ` : `${hl(fmt(dalam.length) + " desa")} (${fmt(jiwa(dalam))} jiwa di desa terdaftar) ada di dalam radius dan terdampak pada skenario ini; `}${hl(fmt(kena.length) + " desa")} (${fmt(jiwa(kena))} jiwa) di luar radius tetapi kena lahar atau awan panas; ${hl(fmt(abuTebal.length) + " desa")} (${fmt(jiwa(abuTebal))} jiwa) di luar radius dengan hujan abu tebal.</p>`;
 }
 /* Dijkstra kecil: rute = polilinea, simpul dibulatkan 1e-4 derajat; tujuan = titik kumpul dari paparan.evakuasi */
 function rute() {

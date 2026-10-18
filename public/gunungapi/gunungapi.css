@@ -26,3 +26,14 @@ ul.ev{list-style:none;margin:0;padding:0;display:grid;gap:10px;font-size:13px;li
 .dk{display:flex;gap:8px;align-items:center}
 .dk .btn{text-decoration:none}
 details.lipat>.isi{padding:2px 14px 12px}
+/* laci gunung: kalimat skenario, citra sebelum/sesudah, ubin legenda dok */
+.dl-kal{margin:0;font-size:13.5px;line-height:1.55}
+.dl-kal .hl{color:var(--bad);font-weight:700}
+.dlg .isi>p{margin:0 0 8px}
+.dlg .isi>p:last-child{margin-bottom:0}
+.cit{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+.cit figure{margin:0;display:grid;gap:6px}
+.cit img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;background:var(--surface)}
+.cit figcaption{font-size:12px;color:var(--ink2)}
+#legenda .seg.penuh{display:flex;width:100%}
+#legenda .seg.penuh button{flex:1;text-align:center}
