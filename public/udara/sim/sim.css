@@ -43,8 +43,11 @@
 .su-lis button{appearance:none;width:100%;display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:1px solid var(--su-line);background:var(--su-card);color:var(--su-ink);border-radius:12px;padding:10px;cursor:pointer;font:600 13px var(--font,Inter,sans-serif);min-height:44px}
 .su-lis button[aria-pressed=true]{border-color:var(--su-brand);background:var(--su-surf)}
 .su-lis .no{color:var(--su-ink2);font-variant-numeric:tabular-nums}
-.su-lis .n{font-variant-numeric:tabular-nums;color:var(--ok,#2a8a52);white-space:nowrap}
+.su-lis .n{font-variant-numeric:tabular-nums;color:var(--ok,#2a8a52);min-width:0;overflow-wrap:anywhere}
+.su-lis li{min-width:0}
 .su-lis svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .su-batas{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--su-ink2)}
 .su-kosong{padding:24px;text-align:center;color:var(--su-ink2)}
-@media (max-width:640px){.su-kartu{padding:12px}.su-tahap{height:min(58vh,420px);min-height:280px}.su-tb th,.su-tb td{padding:7px 5px;font-size:12px}.su-lis button{grid-template-columns:20px minmax(0,1fr);}.su-lis .n{grid-column:2}}
+@media (max-width:640px){.su-leg span{font-size:9px;height:17px;padding:0 6px}.su-leg{gap:3px}.su-kartu{padding:12px}.su-tahap{height:min(58vh,420px);min-height:280px}.su-tb th,.su-tb td{padding:7px 5px;font-size:12px}.su-lis button{grid-template-columns:20px minmax(0,1fr);}.su-lis .n{grid-column:2}}
+
+.su-sat{text-transform:none}
