@@ -133,16 +133,19 @@
       const rs = (DATA[k]?.perusahaan || []).filter(r => S.jenis.has(r.jenis) && (!S.cari || (r.nama + " " + r.grup).toLowerCase().includes(S.cari)))
         .map(r => Object.assign(r, {prov: k, kabU: kabUtama(r)})).sort(urut);
       if (!rs.length) continue;
-      rs.forEach((r, j) => { r._rp = j + 1; });
+      rs.forEach((r, j) => { r._top = j + 1; });
       const kab = {}; rs.forEach(r => (kab[r.kabU] ||= []).push(r));
-      SUSUN.push({k, rs, kab: Object.entries(kab).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t)});
+      const kb = Object.entries(kab).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
+      /* nomor = <urut kab/kota>.<urut di kab/kota>, sama dengan pita tabel kab/kota dan urutan profil */
+      kb.forEach(([, xs], ki) => xs.forEach((r, ri) => { r._rp = `${ki + 1}.${ri + 1}`; }));
+      SUSUN.push({k, rs, kab: kb});
     }
     SUSUN.sort((a, b) => jumlah(b.rs).t - jumlah(a.rs).t);
     const out = [];
     SUSUN.forEach(p => p.kab.forEach(([, rs]) => rs.forEach(r => { r._i = out.length; out.push(r); })));
     return out;
   }
-  const tampilProfil = r => r._rp <= S.profil || BUKA.has(r.id);
+  const tampilProfil = r => r._top <= S.profil || BUKA.has(r.id);
   const BUKA = new Set();
 
   const tabelUsaha = rs => `<div class="tw"><table class="kn-tb kn-rk"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Kecamatan</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik</th><th class="r">Terbakar (ha)</th><th>Periode api</th><th class="r">Hari dengan hotspot</th><th class="r">7 hari</th></tr></thead><tbody>
@@ -226,7 +229,7 @@
         <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(daftar.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td><td></td></tr></tbody></table></div></section>` : ""}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${tabelGrup(daftar)}</section>` : ""}
       <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}
-        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
+        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._top - b._top).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
         <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
@@ -406,7 +409,7 @@
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
     return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || p[2].startsWith(hari)).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
-  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
+  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._top - b._top).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
     sources: {...(dasar.img ? {d0: {type: "raster", tileSize: 256, ...DASAR.google}} : {}), d: dasar.img ? {type: "image", url: dasar.img, coordinates: [[dasar.bb[0], dasar.bb[3]], [dasar.bb[2], dasar.bb[3]], [dasar.bb[2], dasar.bb[1]], [dasar.bb[0], dasar.bb[1]]]} : {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
     layers: [{id: "bg", type: "background", paint: {"background-color": "#10202f"}},
@@ -415,8 +418,8 @@
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
       {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}},
-      {id: "lt", type: "circle", source: "l", paint: {"circle-radius": 10, "circle-color": "#0b2545", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2}},
-      {id: "lb", type: "symbol", source: "l", layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Bold"], "text-size": 11, "text-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "t"]]},
+      {id: "lt", type: "circle", source: "l", paint: {"circle-radius": 12, "circle-color": "#0b2545", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2}},
+      {id: "lb", type: "symbol", source: "l", layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "t"]]},
         paint: {"text-color": "#ffffff"}}]});
   const bbox = rs => { let a = [180, 90, -180, -90]; const ad = ([x, y]) => { a = [Math.min(a[0], x), Math.min(a[1], y), Math.max(a[2], x), Math.max(a[3], y)]; };
     rs.forEach(r => { r.geom.forEach(g => (g.type === "MultiPolygon" ? g.coordinates.flat(2) : g.coordinates.flat(1)).forEach(ad)); r.pt.forEach(p => ad([p[1], p[0]])); }); return [[a[0], a[1]], [a[2], a[3]]]; };
