@@ -129,6 +129,31 @@ def kejadian(harian):
     return ep
 
 
+def luas_gambut(geoms, luas, gambut):
+    """Luas konsesi di atas gambut (ha): sampel grid ~1.500 titik di kotak pembatas blok, porsi yang jatuh di gambut x luas.
+    ponytail: sampel grid, galat ~1-3 % luas; ganti irisan poligon kalau butuh angka resmi."""
+    if not luas:
+        return 0
+    bb = [(min(x for r in cincin(g) for x, _ in r[0]), min(y for r in cincin(g) for _, y in r[0]),
+           max(x for r in cincin(g) for x, _ in r[0]), max(y for r in cincin(g) for _, y in r[0])) for g in geoms]
+    lb = sum((b[2] - b[0]) * (b[3] - b[1]) for b in bb)
+    if not lb:
+        return 0
+    st = max(math.sqrt(lb / 1500), 0.0005)
+    isi = gb = 0
+    for g, (x0, y0, x1, y1) in zip(geoms, bb):
+        y = y0 + st / 2
+        while y < y1:
+            x = x0 + st / 2
+            while x < x1:
+                if any(di_dalam(x, y, r) for r in cincin(g)):
+                    isi += 1
+                    gb += any(True for _ in gambut.cari(x, y))
+                x += st
+            y += st
+    return round(luas * gb / isi) if isi else 0
+
+
 def bangun():
     fitur = json.load(open(os.path.join(LAHAN, "konsesi.geojson")))["features"]
     sumber = json.load(open(os.path.join(LAHAN, "konsesi.geojson"))).get("sumber", {})
@@ -175,6 +200,8 @@ def bangun():
         hr = {}
         sel = set()
         gb = 0
+        gbh = {}  # hari -> titik di gambut
+        gbsel = set()
         kw = {}
         kec = {}
         kab = {}
@@ -195,7 +222,10 @@ def bangun():
             d = (w + WIB).date().isoformat()
             hr[d] = hr.get(d, 0) + 1
             sel.add((math.floor(la / PIKSEL), math.floor(lo / PIKSEL)))
-            gb += any(True for _ in gambut.cari(lo, la))
+            if any(True for _ in gambut.cari(lo, la)):
+                gb += 1
+                gbh[d] = gbh.get(d, 0) + 1
+                gbsel.add((math.floor(la / PIKSEL), math.floor(lo / PIKSEL)))
             f = next((kws[j]["properties"]["fungsi"] for j in ikws.cari(lo, la)), None)
             if f:
                 kw[f] = kw.get(f, 0) + 1
@@ -205,6 +235,7 @@ def bangun():
                 kab[c[1]] = kab.get(c[1], 0) + 1
         harian = sorted(hr.items())
         luas = sum(p.get("luas_peta_ha") or 0 for p in ps)
+        gha = luas_gambut([fitur[i]["geometry"] for i in idx], luas, gambut)
         nama = ps[0]["nama"] or "(tanpa nama)"
         wl = walhi.get(kunci(nama))
         rs = rspo.get(kunci(nama)) if k[1] == "sawit" else None
@@ -239,7 +270,10 @@ def bangun():
             "titik_7h": t7, "puncak": list(max(harian, key=lambda x: x[1])),
             "luas_bakar_ha": round(min(luas or 1e12, len(sel) * HA_PIKSEL)), "piksel": len(sel),
             "frp_maks": round(max(frp), 1), "frp_total": round(sum(frp)),
-            "gambut": round(gb / n, 3), "kawasan": {f: round(c / n, 3) for f, c in sorted(kw.items(), key=lambda x: -x[1])},
+            "gambut": round(gb / n, 3),
+            # gambut: luas konsesi di gambut (sampel grid), titik & indikasi bakar di gambut, kejadian [mulai, selesai, hari, titik]
+            "gambut_ha": gha, "gambut_titik": gb, "gambut_bakar_ha": round(min(gha or 1e12, len(gbsel) * HA_PIKSEL)),
+            "gambut_kejadian": kejadian(sorted(gbh.items())), "kawasan": {f: round(c / n, 3) for f, c in sorted(kw.items(), key=lambda x: -x[1])},
             "kec": [a for a, _ in sorted(kec.items(), key=lambda x: -x[1])[:6]],
             "harian": harian, "kejadian": kejadian(harian),
             "walhi": bool(wl), "walhi_ket": (wl or {}).get("catatan", ""),
@@ -286,6 +320,8 @@ def uji():
             lalu = sum(k[3] for k in r["kompleks_lalu"]) + ((r["kompleks_lalu_sisa"] or [0, 0])[1])
             assert lalu + sum(k[3] for k in r["kompleks"]) <= r["titik"], f"{r['nama']}: titik kompleks {lalu} melebihi titik"
             assert all(k[4] <= k[5] for k in r["kompleks_lalu"]), f"{r['nama']}: rentang kompleks lampau terbalik"
+            assert r["gambut_titik"] == sum(e[3] for e in r["gambut_kejadian"]) <= r["titik"], f"{r['nama']}: titik gambut tidak cocok"
+            assert r["gambut_bakar_ha"] <= r["luas_bakar_ha"] and r["gambut_ha"] <= (r["luas_ha"] or r["gambut_ha"]), f"{r['nama']}: luas gambut"
             assert r["pertama"] >= "2026-01-01" and r["pertama"] <= r["terakhir"], f"{r['nama']}: tanggal {r['pertama']}..{r['terakhir']}"
     print("uji konsesi2026: lolos", file=sys.stderr)
 

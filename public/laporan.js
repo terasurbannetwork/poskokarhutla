@@ -51,7 +51,6 @@ const kabProv = (P = provKepala()) => P.length ? D.kab.filter(o => P.includes(o.
 const NAS = new Set(["naikp", "riwayat", "tren", "musim", "cuaca", "konsesi"]);
 const namaWil = (P = provKepala()) => !P.length ? "Indonesia" : P.length <= 3 ? (n => n.length > 1 ? n.slice(0, -1).join(", ") + " dan " + n.at(-1) : n[0])(P.map(k => D.prov[k].nama)) : fmt(P.length) + " provinsi";
 const tglP = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
-const JUDUL0 = document.title;
 /* hari terbaru langsung jadi laporan utama dan dianggap final per cut-off data satelit terakhir (pemilik, 17 Okt 2026);
    tidak ada lagi label "sementara/belum final" atau panel hari berjalan terpisah */
 const sementara = () => false;
@@ -469,7 +468,7 @@ function kartuKurva() {
 function kepala() {
   const hs = D.hari.slice(-7), sm = sementara();
   const opsi = hs.map(h => [h, tgl(h)]);
-  document.title = provKepala().length ? `Laporan Karhutla ${namaWil()} ${tglP(st.hari)}` : JUDUL0;   /* nama berkas bawaan "Simpan sebagai PDF" */
+  document.title = `Laporan Karhutla ${namaWil()} ${tglP(st.hari)}`;   /* nama berkas bawaan "Simpan sebagai PDF" */
   const fokus = document.activeElement?.closest?.("#lpKepala") ? document.activeElement : null, fk = fokus?.classList.contains("pc-btn") ? ".pc-btn" : "";   /* innerHTML membuang fokus: kembalikan di bawah */
   $("#lpKepala").innerHTML = `<div class="lp-jd"><h1>Laporan Harian Karhutla${provKepala().length ? " · " + esc(namaWil()) : ""}</h1>
     <div class="lp-pils"><span class="lp-pil">${tglPanjang(st.hari)}</span><span class="lp-pil ${sm ? "sm" : "ok"}">Cut-off ${cutoff(st.hari)}</span>${!sm && iB() > 0 ? `<span class="lp-pil sm">Cut-off ${cutoff(D.hari[iB()])}</span>` : ""}</div></div>

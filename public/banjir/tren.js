@@ -5,6 +5,9 @@
 const F2 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
 const Tren = {
   jenis: "banjir", prov: "", seri: undefined, rows: {}, c: null,
+  /* prov = kode dipisah koma (pemilih provinsi ganda, pemilik 18 Okt 2026); "" = Indonesia */
+  get PV() { return this.prov ? this.prov.split(",") : []; },
+  get nmPv() { const P = this.PV; return P.length > 3 ? P.length + " provinsi" : P.map(namaProv).join(", "); },
   T: {periode: {mMode: "semua"}, risiko: {rt: "kab", rprov: "", urut: "skor", turun: true, hal: 0}, langganan: {urut: "tahun", turun: true, hal: 0}, prov: {urut: "n", turun: true, hal: 0}, posko: {urut: "kejadian", turun: true, hal: 0}},
   get rj() { return ["banjir", "longsor", "rob"].includes(this.jenis) ? this.jenis : null; },
   /* periode siaga: busur terpendek yang memuat semua dasarian berpeluang >= 30%. Musim hujan melintasi tahun baru
@@ -39,10 +42,10 @@ const Tren = {
     const T = this.T.periode, kunci = {semua: "p_semua", la_nina: "p_la_nina", biasa: "p_biasa"}[T.mMode], kini = dasKini(), rentang = Riwayat.R.musim[j + "_tahun"];
     const ks = Object.keys(M).sort((a, b) => namaProv(a).localeCompare(namaProv(b))), nRawan = ks.filter(k => M[k][kunci][kini] >= .3).length;
     const baris = ks.map(k => { const o = M[k], pp = o[kunci], sg = this.siaga(pp);
-      return `<div class="nm" data-mp="${k}" aria-current="${k === this.prov}">${esc(namaProv(k))}</div>`
+      return `<div class="nm" data-mp="${k}" aria-current="${this.PV.includes(k)}">${esc(namaProv(k))}</div>`
         + pp.map((v, i) => `<div class="c${i === kini ? " kini" : ""}" style="background:${warnaMusim(v)}" data-tip="<b>${esc(namaProv(k))} · ${DAS(i)}</b><br>Peluang: ${Math.round(v * 100)}%<br>La Niña: ${Math.round(o.p_la_nina[i] * 100)}%<br>Biasa: ${Math.round(o.p_biasa[i] * 100)}%<br>Rata-rata: ${fmt(o.rata[i])} kejadian"></div>`).join("")
         + `<div class="sg num">${sg === "tidak ada" ? `<em class="br-lb" style="--w:#8a96a8">tidak ada</em>` : `<em class="br-lb" style="--w:#1d4e89">${sg.replace(" – ", " → ")}</em>`}</div>`; }).join("");
-    const o = this.prov && M[this.prov], judul = o ? `${this.c.nmK}, ${esc(namaProv(this.prov))}: periode rawan ${Kartu.hl(this.siaga(o[kunci]))}, puncak ${Kartu.hl(DAS(o.puncak))}`
+    const o = this.PV.length === 1 && M[this.prov], judul = o ? `${this.c.nmK}, ${esc(namaProv(this.prov))}: periode rawan ${Kartu.hl(this.siaga(o[kunci]))}, puncak ${Kartu.hl(DAS(o.puncak))}`
       : nRawan ? `${this.c.nmK}: ${Kartu.hl(fmt(nRawan) + " provinsi")} sedang di periode rawan` : `${this.c.nmK}: belum ada provinsi di periode rawan`;
     return this.kartu("Periode rawan", judul, `<div class="tw" style="border:0;box-shadow:none"><div class="kal"><div></div>${BLN.map(b => `<div class="bl">${b}</div>`).join("")}<div class="bl" style="grid-column:auto;justify-content:flex-start;padding-left:10px">Siaga (≥ 30%)</div>${baris}</div></div>`,
       `DIBI BNPB ${rentang[0]}–${rentang[1]}, ONI NOAA`, Kartu.seg("mMode", [["semua", "Semua tahun"], ["la_nina", "Tahun La Niña"], ["biasa", "Tahun biasa"]], T),
@@ -91,7 +94,7 @@ const Tren = {
   kLangganan() {
     const j = this.rj; if (!j) return "";
     const J = Riwayat.R.jenis[j], n = J.tahun_cakup.length, batas = Math.ceil(n * 2 / 3), iA = Riwayat.R.tahun.length - 1, ini = this.c.ini;
-    const lg = Object.keys(J.kab).map(k => Riwayat.rec(k, j)).filter(r => r.tahun >= batas && (!this.prov || r.prov === this.prov)); if (!lg.length) return "";
+    const lg = Object.keys(J.kab).map(k => Riwayat.rec(k, j)).filter(r => r.tahun >= batas && (!this.prov || this.PV.includes(r.prov))); if (!lg.length) return "";
     const kol = [{k: "no", h: "#", n: 1, s: (r, i) => `<span class="kl-no">${i + 1}</span>`},
       {k: "nama", h: "Kab/Kota", l: 1, v: r => r.nama, s: r => `<b>${esc(r.nama)}</b>`},
       {k: "prov", h: "Provinsi", l: 1, v: r => namaProv(r.prov), s: r => esc(namaProv(r.prov))},
@@ -114,16 +117,16 @@ const Tren = {
       {k: "n", h: "Kejadian", n: 1, v: r => r.n, s: r => fmt(r.n)}, {k: "m", h: "Meninggal", n: 1, v: r => r.m, s: r => fmt(r.m)}, {k: "d", h: "Terdampak", n: 1, v: r => r.d, s: r => rb(r.d)},
       {k: "pola", h: `Pola ${th[0]}–${ini}`, s: r => this.pola(r.v, k => k === th.length - 1 ? "#9aa8b8" : LN.has(th[k]) ? "#1d4e89" : "#5b8fc7")}];
     return this.kartu("Per provinsi", `${this.c.nmK} terbanyak di ${Kartu.hl(esc(namaProv(top.k)))}: ${Kartu.hl(fmt(top.n) + " kejadian")} ${th[0]}–${ini}`,
-      this.tb("prov", kol, rows, 10, "provinsi", r => `data-pv="${r.k}"${r.k === this.prov ? ' style="background:var(--surface)"' : ""}`), "BNPB dan DIBI"); },
+      this.tb("prov", kol, rows, 10, "provinsi", r => `data-pv="${r.k}"${this.PV.includes(r.k) ? ' style="background:var(--surface)"' : ""}`), "BNPB dan DIBI"); },
 
   /* rekomendasi posko permanen banjir. DISEMBUNYIKAN (A24, seperti Posko ajuan karhutla): tidak ada di urutan kartu render(); pulihkan dengan menambahkannya di sana */
   kPosko() {
     if (this.jenis !== "banjir") return "";
-    const perm = (S.posko?.permanen || []).filter(x => !this.prov || x.prov === this.prov); if (!perm.length) return "";
+    const perm = (S.posko?.permanen || []).filter(x => !this.prov || this.PV.includes(x.prov)); if (!perm.length) return "";
     const kol = [{k: "id", h: "Kode", v: r => r.id, s: r => `<b>${r.id}</b>`}, {k: "kec", h: "Kecamatan", l: 1, v: r => r.kec, s: r => esc(r.kec)}, {k: "kab", h: "Kab/Kota", l: 1, v: r => r.kab, s: r => esc(r.kab)},
       {k: "prov", h: "Provinsi", l: 1, v: r => namaProv(r.prov), s: r => esc(namaProv(r.prov))}, {k: "kejadian", h: "Kejadian banjir kab", n: 1, v: r => r.kejadian, s: r => fmt(r.kejadian)},
       {k: "bahaya", h: "Bahaya InaRISK", n: 1, v: r => r.bahaya, s: r => fmt(r.bahaya)}, {k: "peta", h: "", s: r => `<button class="link" data-lp="${r.id}">Peta</button>`}];
-    return this.kartu("Posko", `${Kartu.hl(fmt(perm.length) + " lokasi")} diusulkan untuk posko permanen banjir${this.prov ? " di " + esc(namaProv(this.prov)) : ""}`,
+    return this.kartu("Posko", `${Kartu.hl(fmt(perm.length) + " lokasi")} diusulkan untuk posko permanen banjir${this.prov ? " di " + esc(this.nmPv) : ""}`,
       this.tb("posko", kol, perm, 10, "lokasi", r => `data-pp="${r.id}"`), "BNPB, DIBI, InaRISK"); },
 
   hubung(box) { box.querySelectorAll("thead").forEach(th => { const kt = th.closest("[data-kt]")?.dataset.kt; if (kt) pengurutKepala(this.T[kt], th, () => this.ulang(kt)); }); },
@@ -247,10 +250,10 @@ const Tren = {
     const pv = Object.keys(K.prov || {}).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     const nmK = this.jn((JENIS.find(x => x[0] === j) || ["", j])[1]);
     this.c = {K, th, ini, pv, nmJ, nmK};
-    const wil = this.prov ? [this.prov] : pv, nmP = this.prov ? esc(namaProv(this.prov)) : "Indonesia", LN = new Set(Riwayat.R.la_nina.map(String));
+    const wil = this.prov ? this.PV : pv, nmP = this.prov ? esc(this.nmPv) : "Indonesia", LN = new Set(Riwayat.R.la_nina.map(String));
     const tot = th.map(t => sumA(wil.map(k => this.nil(k, t)))), totM = th.map(t => sumA(wil.map(k => this.nil(k, t, "meninggal")))), mx = Math.max(1, ...tot);
     const lalu = th.slice(0, -1), rata = sumA(tot.slice(0, -1)) / Math.max(1, lalu.length), rank = [...tot].sort((a, b) => b - a).indexOf(tot.at(-1)) + 1;
-    const hl = Kartu.hl, pil = Kartu.pil.bind(Kartu), kontrolProv = `<select data-set="prov" aria-label="Provinsi"><option value="">Indonesia</option>${pv.map(k => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`;
+    const hl = Kartu.hl, pil = Kartu.pil.bind(Kartu), kontrolProv = `<select data-set="prov" multiple aria-label="Provinsi"><option value="" ${this.prov ? "" : "selected"}>Indonesia</option>${pv.map(k => `<option value="${k}" ${this.PV.includes(k) ? "selected" : ""}>${esc(namaProv(k))}</option>`).join("")}</select>`;
     const W = 940, L = 46, kartuA = (() => {
       /* per tahun: semua batang berlabel, dua garis rata-rata berpil di luar area batang */
       const H = 300, RM = 130, B = 262, T = 30, gp = (W - L - RM) / th.length, bw = gp * .68, Yt = v => B - v / mx * (B - T), buruk = th[tot.indexOf(mx)];
@@ -268,10 +271,10 @@ const Tren = {
         `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Kejadian per tahun">${g}</svg>`, "BNPB (data.bnpb.go.id) dan DIBI", kontrolProv, [["#1d4e89", "tahun La Niña"], ["#5b8fc7", "tahun biasa"], ["#9aa8b8", ini + " (berjalan)"]]); })();
 
     /* per bulan: rata-rata DIBI vs tahun berjalan (hanya banjir, longsor, rob) */
-    const M = rj && Riwayat.R.musim[rj], mp = M ? (this.prov ? [this.prov] : Object.keys(M)).filter(k => M[k]) : [];
+    const M = rj && Riwayat.R.musim[rj], mp = M ? (this.prov ? this.PV : Object.keys(M)).filter(k => M[k]) : [];
     const kartuB = (() => { if (!mp.length) return "";
       const rg = Riwayat.R.musim[rj + "_tahun"], iklim = BLN.map((_, b) => sumA(mp.map(k => sumA(M[k].rata.slice(b * 3, b * 3 + 3))))), kini = BLN.map(() => 0);
-      for (const x of K.kejadian_dibi || []) if (x.tanggal.startsWith(ini) && x.jenis.split("_").includes(rj) && (!this.prov || x.prov === this.prov)) kini[+x.tanggal.slice(5, 7) - 1]++;
+      for (const x of K.kejadian_dibi || []) if (x.tanggal.startsWith(ini) && x.jenis.split("_").includes(rj) && (!this.prov || this.PV.includes(x.prov))) kini[+x.tanggal.slice(5, 7) - 1]++;
       const das = dasKini(), bln = Math.floor(das / 3), sdIni = sumA(kini.slice(0, bln + 1)), sdRata = sumA(mp.map(k => sumA(M[k].rata.slice(0, das + 1)))), beda = sdRata ? Math.round((sdIni / sdRata - 1) * 100) : null;
       const mi = Math.max(1, ...iklim, ...kini), pBln = iklim.indexOf(Math.max(...iklim)), H = 300, B = 260, T = 52, gp = (W - L - 20) / 12, bw = gp * .3, Y = v => B - v / mi * (B - T);
       let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 20}" y1="${Y(mi * f)}" y2="${Y(mi * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mi * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(mi * f)}</text>`).join("");
@@ -287,7 +290,7 @@ const Tren = {
     /* status harian aktual dari seri_status.json (bergulir); tanpa berkas itu kartunya tidak tampil */
     const sr = this.seri, bj = j === "banjir" ? 0 : j === "longsor" ? 3 : null;
     const kartuC = (() => { if (!sr || bj == null || (sr.hari || []).length < 2) return "";
-      const hr = sr.hari.slice(-30), ambil = d => { const v = this.prov ? sr.prov?.[this.prov]?.[d] : sr.nas?.[d]; return v ? v.slice(bj, bj + 3) : null; }, data = hr.map(ambil), last = data.at(-1), prev = data.at(-2);
+      const hr = sr.hari.slice(-30), ambil = d => { const vs = (this.prov ? this.PV.map(k => sr.prov?.[k]?.[d]) : [sr.nas?.[d]]).filter(Boolean); return vs.length ? [0, 1, 2].map(i => vs.reduce((a, v) => a + (v[bj + i] || 0), 0)) : null; }, data = hr.map(ambil), last = data.at(-1), prev = data.at(-2);
       if (!last) return "";
       const H = 300, B = 250, T = 30, jum = a => a ? sumA(a) : 0, m = Math.max(1, ...data.map(jum)), gp = (W - L - 10) / hr.length, bw = gp * .68, Y = v => B - v / m * (B - T), WR = [WARNA_LV[1], WARNA_LV[2], WARNA_LV[3]];
       let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - 8}" y1="${Y(m * f)}" y2="${Y(m * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(m * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${rb(m * f)}</text>`).join("");
@@ -315,6 +318,6 @@ const Tren = {
       if (m) { const box = m.closest(".pm-menu"), kt = m.closest("[data-kt]").dataset.kt, o = this.T[kt];
         if (!m.value) box.querySelectorAll("input:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
         o[m.dataset.multi] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); Kartu._bukaMulti = m.dataset.multi; o.hal = 0; return this.ulang(kt); }
-      const s = e.target.closest("select[data-set]"); if (s) { this[s.dataset.set] = s.value; this.reset(); this.ulang(); } };
+      const s = e.target.closest("select[data-set]"); if (s) { this[s.dataset.set] = s.multiple ? PilihCantik.nilai(s).join(",") : s.value; this.reset(); this.ulang(); } };
   },
 };

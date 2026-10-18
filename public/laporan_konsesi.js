@@ -82,28 +82,34 @@
 
   /* pemilih provinsi bercari: rupa PilihCantik (kartu.css .pc/.pc-menu) + kotak cari di atas daftar */
   const GAB = [["bnpb", "6 provinsi BNPB"], ["9", "9 provinsi prioritas"], ["semua", "Semua provinsi"]];
+  /* pilihProv = kunci GAB (pilihan jadi), atau kode provinsi dipisah koma (centang beberapa, pemilik 18 Okt 2026) */
   let pilihProv = "bnpb", menuP = null;
+  const grup = () => GAB.some(g => g[0] === pilihProv), dipilih = v => grup() ? v === pilihProv : pilihProv.split(",").includes(v);
   const opsiProv = () => [...GAB.map(([v, n]) => ({v, n, g: 1})), ...IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama, "id")).map(p => ({v: p.kode, n: p.nama, t: p.perusahaan}))];
-  function gambarKendali() { $("#knProv span").textContent = GAB.find(g => g[0] === pilihProv)?.[1] || namaProv(pilihProv); }
+  function gambarKendali() { const P = pilihProv.split(","); $("#knProv span").textContent = GAB.find(g => g[0] === pilihProv)?.[1] || (P.length === 1 ? namaProv(P[0]) : P.length + " provinsi"); }
   const tutupProv = () => { menuP?.remove(); menuP = null; $(".kn-pp").classList.remove("on"); };
   function bukaProv() {
     if (menuP) return tutupProv();
     const w = $(".kn-pp"), r = w.getBoundingClientRect(); w.classList.add("on");
-    menuP = document.createElement("div"); menuP.className = "pc-menu kn-pp-menu"; menuP.setAttribute("role", "listbox");
+    menuP = document.createElement("div"); menuP.className = "pc-menu multi kn-pp-menu"; menuP.setAttribute("role", "listbox"); menuP.setAttribute("aria-multiselectable", "true");
     menuP.innerHTML = `<input type="search" placeholder="Cari provinsi…" aria-label="Cari provinsi"><div class="kn-pp-daf"></div>`;
     document.body.append(menuP);
     Object.assign(menuP.style, {left: r.left + "px", width: Math.max(r.width, 260) + "px", top: r.bottom + 6 + "px"});
     const daf = menuP.querySelector(".kn-pp-daf"), cari = menuP.querySelector("input");
     const isi = q => { const o = opsiProv().filter(x => !q || x.n.toLowerCase().includes(q));
-      daf.innerHTML = o.map((x, i) => `${i && o[i - 1].g && !x.g ? '<hr>' : ""}<button type="button" role="option" data-v="${x.v}" aria-selected="${x.v === pilihProv}">${esc(x.n)}${x.t ? `<em>${fmt(x.t)}</em>` : ""}</button>`).join("") || `<p class="kn-mt">Tidak ada provinsi "${esc(q)}"</p>`; };
+      daf.innerHTML = o.map((x, i) => `${i && o[i - 1].g && !x.g ? '<hr>' : ""}<button type="button" role="option" data-v="${x.v}" aria-selected="${dipilih(x.v)}">${esc(x.n)}${x.t ? `<em>${fmt(x.t)}</em>` : ""}</button>`).join("") || `<p class="kn-mt">Tidak ada provinsi "${esc(q)}"</p>`; };
     isi(""); cari.focus();
     cari.addEventListener("input", () => isi(cari.value.trim().toLowerCase()));
     cari.addEventListener("keydown", e => { if (e.key === "Enter") daf.querySelector("button")?.click(); if (e.key === "Escape") { tutupProv(); $("#knProv").focus(); } if (e.key === "ArrowDown") { e.preventDefault(); daf.querySelector("button")?.focus(); } });
     daf.addEventListener("keydown", e => { const bs = [...daf.querySelectorAll("button")], i = bs.indexOf(document.activeElement);
       if (e.key === "ArrowDown") { e.preventDefault(); bs[i + 1]?.focus(); } else if (e.key === "ArrowUp") { e.preventDefault(); (bs[i - 1] || cari).focus(); } else if (e.key === "Escape") { tutupProv(); $("#knProv").focus(); } });
     daf.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return;
-      pilihProv = b.dataset.v; tutupProv(); gambarKendali();
-      S.prov = new Set(pilihProv === "bnpb" ? BNPB : pilihProv === "9" ? PRIO : pilihProv === "semua" ? IDX.prov.map(p => p.kode) : [pilihProv]);
+      const v = b.dataset.v;
+      if (GAB.some(g => g[0] === v)) { pilihProv = v; tutupProv(); }   /* pilihan jadi: langsung tutup */
+      else { const P = grup() ? [] : pilihProv.split(","), i = P.indexOf(v); i < 0 ? P.push(v) : P.splice(i, 1); pilihProv = P.join(",") || "bnpb";
+        daf.querySelectorAll("[data-v]").forEach(x => x.setAttribute("aria-selected", dipilih(x.dataset.v))); }   /* provinsi: menu tetap terbuka, centang beberapa */
+      gambarKendali();
+      S.prov = new Set(pilihProv === "bnpb" ? BNPB : pilihProv === "9" ? PRIO : pilihProv === "semua" ? IDX.prov.map(p => p.kode) : pilihProv.split(","));
       setTimeout(muat); });
   }
   $("#knProv").addEventListener("click", e => { e.stopPropagation(); bukaProv(); });
@@ -390,7 +396,16 @@
       <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Waktu</th><th>Koordinat</th><th class="r">Daya api (MW)</th></tr></thead><tbody>
       ${r.pt.slice(-12).reverse().map((p, j) => `<tr><td>${j + 1}</td><td class="kn-nw"><b>${tgl("2026-" + p[2].slice(0, 5))}</b> ${p[2].slice(6)} WIB</td><td class="num kn-nw">${p[0].toFixed(4)}, ${p[1].toFixed(4)}</td><td class="r">${fmt(p[3])}</td></tr>`).join("")}
       </tbody></table></div></section>`;
-    return `<div class="kn-dua kn-dua-b"><div>${kj}</div><div>${tt}</div></div>${kp}`;
+    /* kebakaran di gambut: kejadian yang titiknya jatuh di lahan gambut (jeda sama dengan kejadian umum) */
+    const gk = r.gambut_kejadian || [];
+    const gm = gk.length ? (() => { const mL = Math.max(...gk.map(e => e[2])), mT = Math.max(...gk.map(e => e[3]));
+      return `<section class="kn-sek"><div class="kn-band"><b>Kebakaran di lahan gambut</b><span>${fmt(r.gambut_ha)} ha gambut di konsesi · ${fmt(r.gambut_titik)} titik · indikasi terbakar ${ha(r.gambut_bakar_ha)} ha · ${gk.length} kejadian</span></div>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="kn-cb">Lama</th><th class="kn-cb">Titik di gambut</th><th>Status</th></tr></thead><tbody>
+      ${gk.map((e, j) => `<tr${e[3] === mT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
+        <td class="kn-cb"><span class="kn-cbi">${batang(e[2], mL, "#6b4a2b")}<b class="num">${fmt(e[2])} hari</b></span></td><td class="kn-cb"><span class="kn-cbi">${batang(e[3], mT, "#6b4a2b")}<b class="num">${fmt(e[3])}</b></span></td>
+        <td>${e[1] >= b7 ? '<span class="kn-ak">Masih berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
+      </tbody></table></div></section>`; })() : "";
+    return `<div class="kn-dua kn-dua-b"><div>${kj}</div><div>${tt}</div></div>${gm}${kp}`;
   }
 
   const blokInfo = (judul, rows) => `<table class="kn-it"><thead><tr><th colspan="2">${judul}</th></tr></thead><tbody>${rows.map(([l, v]) => `<tr><td>${l}</td><td>${v}</td></tr>`).join("")}</tbody></table>`;
@@ -435,7 +450,9 @@
           ${blokInfo("Kebakaran", [
             ["Periode api", `<b>${tglT(r.pertama)} – ${tglT(r.terakhir)}</b> <small>rentang ${fmt(r.rentang_hari)} hari</small>`],
             ["Kejadian terlama", `<b>${rentang(terlama[0], terlama[1])}</b> <small>${fmt(terlama[2])} hari · ${fmt(terlama[3])} titik</small>`],
-            ["Lahan gambut", `${batang(r.gambut, 1, "#6b4a2b")} <b>${pct(r.gambut)}</b> <small>titik di gambut</small>`],
+            ["Lahan gambut", r.gambut_ha == null ? `${batang(r.gambut, 1, "#6b4a2b")} <b>${pct(r.gambut)}</b> <small>titik di gambut</small>`
+              : `<b>${ha(r.gambut_ha)} ha</b> <small>${pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null)} konsesi</small>`],
+            ...(r.gambut_titik ? [["Api di gambut", `<b>${fmt(r.gambut_titik)} titik</b> <small>${pct(r.gambut)} titik · indikasi terbakar ${ha(r.gambut_bakar_ha)} ha · ${r.gambut_kejadian.length} kejadian, terlama ${fmt(Math.max(...r.gambut_kejadian.map(e => e[2])))} hari</small>`]] : []),
             ["Status kawasan", esc(kw)],
             ["Daya api (FRP)", `<b>maks ${fmt(r.frp_maks)} MW</b> <small>total ${fmt(r.frp_total)} MW</small>`]])}
         </div>

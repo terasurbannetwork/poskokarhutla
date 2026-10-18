@@ -329,7 +329,7 @@ const Posko = {
   /* ---------- tab Posko ---------- */
   async render() {
     const el = $("#posko"); if (!S.semuaPosko) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat posko…</div>`; try { await this.muat(); } catch (e) { el.innerHTML = `<div class="kosong">Data posko belum tersedia.</div>`; return; } }
-    const A = ASUMSI, semua = [...S.semuaPosko.values()], diProv = semua.filter(x => !this.prov || x.prov === this.prov);
+    const A = ASUMSI, semua = [...S.semuaPosko.values()], PV = this.prov ? this.prov.split(",") : [], nmPv = PV.length > 3 ? PV.length + " provinsi" : PV.map(namaProv).join(", "), diProv = semua.filter(x => !PV.length || PV.includes(x.prov));
     const daftar = diProv.filter(x => this.tingkat === "semua" || ["provinsi", "kabupaten", "lapangan"][x.tingkat] === this.tingkat)
       .sort((p, q) => p.tingkat - q.tingkat || lvPosko(q) - lvPosko(p) || p.id.localeCompare(q.id));
     const per = 40, jml = Math.ceil(daftar.length / per), hal = daftar.slice(this.hal * per, (this.hal + 1) * per);
@@ -348,7 +348,7 @@ const Posko = {
     const F = [["hari", "Lama operasi tanggap darurat (hari)"], ["hariSiaga", "Lama siaga posko permanen (hari)"], ["adaAlat", "Alat yang sudah ada (%)"], ["orangRegu", "Orang per regu SAR"], ["porsiBKO", "Porsi personel BKO (0–1)"],
       ["honorRelawan", "Uang saku relawan / hari (Rp)"], ["konsumsi", "Konsumsi / orang / hari (Rp)"], ["sewaMobil", "Sewa kendaraan / hari (Rp)"], ["faktorUngsi", "Pengali perkiraan pengungsi"], ["minUngsi", "Pengungsi minimal / posko"],
       ["hariUngsi", "Lama mengungsi (hari)"], ["biayaUngsi", "Biaya pengungsi / orang / hari (Rp)"], ["heliUnit", "Helikopter BNPB / provinsi"], ["heliJamHari", "Jam terbang / heli / hari"], ["hariDarurat", "Hari status tanggap darurat"]];
-    const ang = `<div class="head"><div><h2>Anggaran ${this.prov ? esc(namaProv(this.prov)) : "nasional"}</h2><p>Kebutuhan dana per tingkat posko, dipisah menurut sumber dananya. Posko aktif ${A.hari} hari, posko permanen ${A.hariSiaga} hari.</p></div>
+    const ang = `<div class="head"><div><h2>Anggaran ${this.prov ? esc(nmPv) : "nasional"}</h2><p>Kebutuhan dana per tingkat posko, dipisah menurut sumber dananya. Posko aktif ${A.hari} hari, posko permanen ${A.hariSiaga} hari.</p></div>
       <button class="btn sec" id="pbReset">Kembalikan asumsi bawaan</button></div>
       <div class="card pad" style="display:flex;gap:12px;flex-wrap:wrap;align-items:flex-end;margin-bottom:12px" id="asumsiB">
         ${F.map(([k, n]) => `<label class="fld" style="margin:0"><span class="lbl">${n}</span><input type="number" min="0" step="any" data-a="${k}" value="${A[k]}" style="width:150px"></label>`).join("")}
@@ -358,11 +358,11 @@ const Posko = {
         <tfoot><tr><td>Total APBD / instansi</td><td class="n num">${fmt(J.reduce((s, j) => s + j.n, 0))}</td><td class="n num">${fmt(J.reduce((s, j) => s + j.org, 0))}</td><td class="n num">${rpc(J.reduce((s, j) => s + j.alat, 0))}</td><td class="n num">${rpc(J.reduce((s, j) => s + j.op, 0))}</td><td class="n num">${rpc(J.reduce((s, j) => s + j.lg, 0))}</td><td class="n num">${rpc(T)}</td></tr></tfoot></table></div>
       <div class="grid g2" style="margin-bottom:18px"><div class="kpi" style="text-align:left"><span class="lbl">Dana Siap Pakai BNPB (terpisah)</span><b style="padding-left:12px">${rp(DSP)}</b><small style="padding-left:12px">${A.heliUnit} heli × ${A.heliJamHari} jam × ${A.hariDarurat} hari per provinsi yang punya posko siaga/awas</small></div>
         <div class="kpi" style="text-align:left"><span class="lbl">Catatan</span><b style="padding-left:12px;font-size:14px">Logistik pengungsi biasanya dari Kemensos (buffer stock) dan BPBD</b><small style="padding-left:12px">Uang harian SBM 2026 · stimulan rumah tidak dihitung di sini (biaya pemulihan, bukan posko)</small></div></div>`;
-    const ringkas = `<div class="grid g4" style="margin-bottom:14px">${[["Pos komando provinsi", fmt(J[0].n), this.prov ? esc(namaProv(this.prov)) : "ibu kota provinsi"], ["Pos komando kabupaten", fmt(J[1].n), "kantor BPBD bila diketahui"],
+    const ringkas = `<div class="grid g4" style="margin-bottom:14px">${[["Pos komando provinsi", fmt(J[0].n), this.prov ? esc(nmPv) : "ibu kota provinsi"], ["Pos komando kabupaten", fmt(J[1].n), "kantor BPBD bila diketahui"],
       ["Pos lapangan", fmt(J[2].n + J[3].n), `${fmt(J[2].n)} permanen · ${fmt(nAktif)} aktif`], ["Anggaran APBD / instansi", rp(T), DSP ? "+ DSP BNPB " + rp(DSP) : "tanpa DSP"]].map(([l, v, s]) => kot(l, v, s)).join("")}</div>`;
     const nmT = {semua: "Semua tingkat", provinsi: "Provinsi", kabupaten: "Kabupaten/kota", lapangan: "Lapangan"};
     el.innerHTML = `<div class="head"><div><h2>Posko banjir, longsor & rob</h2><p>Pos lapangan permanen pra-musim di kabupaten paling sering banjir, ditambah pos lapangan aktif untuk kecamatan siaga 4 hari ke depan.</p></div>
-      <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="pkProv" class="btn sec" aria-label="Pilih provinsi"><option value="">Semua provinsi (${fmt(semua.length)})</option>${provs.map(k => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(namaProv(k))} (${semua.filter(x => x.prov === k).length})</option>`).join("")}</select>
+      <div style="display:flex;gap:8px;flex-wrap:wrap"><select id="pkProv" multiple class="btn sec" aria-label="Pilih provinsi"><option value="" ${PV.length ? "" : "selected"}>Semua provinsi (${fmt(semua.length)})</option>${provs.map(k => `<option value="${k}" ${PV.includes(k) ? "selected" : ""}>${esc(namaProv(k))} (${semua.filter(x => x.prov === k).length})</option>`).join("")}</select>
       <select id="pkTk" class="btn sec" aria-label="Pilih tingkat">${Object.entries(nmT).map(([k, n]) => `<option value="${k}" ${k === this.tingkat ? "selected" : ""}>${n}</option>`).join("")}</select>
       <button class="btn sec" id="pkCsv">Unduh CSV</button></div></div>
       ${ringkas}${sel ? this.rinciHTML(sel) : ""}
@@ -380,7 +380,7 @@ const Posko = {
     el.querySelector("#asumsiB").addEventListener("change", e => { const i = e.target.closest("[data-a]"); if (!i) return;
       ASUMSI[i.dataset.a] = i.type === "checkbox" ? i.checked : Math.max(0, +i.value); simpanLokal("pb-asumsi", ASUMSI); nanti(() => this.render()); });
     $("#pbReset").onclick = () => { simpanLokal("pb-asumsi", {}); Object.assign(ASUMSI, ASUMSI_BAWAAN); nanti(() => this.render()); };
-    $("#pkProv").onchange = e => { this.prov = e.target.value; this.hal = 0; nanti(() => this.render()); };
+    $("#pkProv").onchange = e => { this.prov = PilihCantik.nilai(e.target).join(","); this.hal = 0; nanti(() => this.render()); };
     $("#pkTk").onchange = e => { this.tingkat = e.target.value; this.hal = 0; nanti(() => this.render()); };
     el.querySelector(".pager").onclick = e => { const b = e.target.closest("button"); if (b) { this.hal = +b.dataset.h; nanti(() => this.render()); } };
     $("#pkCsv").onclick = () => unduh("rekomendasi-posko-banjir.csv", csv([["Posko", "Tingkat", "Jenis", "Provinsi", "Kab/Kota", "Kecamatan", "Desa", "Lintang", "Bujur", "Status", "Kecamatan dilayani", "Regu", "Personel", "Pengungsi", "Alat kurang (Rp)", "Operasional/hari (Rp)", "Hari", "Logistik pengungsi (Rp)", "Total APBD (Rp)", "DSP BNPB (Rp)", "Induk", "Jarak induk km", "Waktu induk jam"],
