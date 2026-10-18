@@ -231,6 +231,9 @@
     return Object.values(g);
   }
   /* keparahan satu titik = keparahan kompleks api tempat titik itu berada pada harinya */
+  /* daya api tertinggi di konsesi selama satu periode, dan keparahan kejadiannya (aturan parah: titik, lama, FRP maks) */
+  const frpPeriode = (r, a, b) => r.pt.reduce((m, p) => { const d = "2026-" + p[2].slice(0, 5); return d >= a && d <= b ? Math.max(m, p[3]) : m; }, 0);
+  const selFrpParah = (r, e) => { const f = frpPeriode(r, e[0], e[1]), [n, w] = parah([0, 0, "", e[3], e[0], e[1], e[2], f]); return `<td class="r">${fmt(f)}</td><td><span class="kn-pr" style="--w:${w}">${n}</span></td>`; };
   const parahTitik = (r, p) => { const d = "2026-" + p[2].slice(0, 5), k = kompleksHari(r, d).find(c => c[2].includes(p)); return parah([0, 0, "", k[0], d, d, lamaBerturut(r, d), k[1]]); };
   /* angka ringkas di pita navy: tiap bagian jadi chip, angka tebal */
   const pitaStat = xs => `<span class="kn-band-s">${xs.filter(Boolean).map(x => `<span>${x}</span>`).join("")}</span>`;
@@ -413,9 +416,9 @@
     const b7 = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5).toISOString().slice(0, 10);
     const mxT = Math.max(...r.kejadian.map(e => e[3]));
     const kj = `<section class="kn-sek"><div class="kn-band"><b>Kejadian kebakaran</b><span>${r.kejadian.length} kejadian · jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot dihitung satu kejadian</span></div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik panas</th><th>Status</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb kn-kj"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik panas</th><th class="r" title="Daya api (FRP) tertinggi selama periode itu">FRP maks (MW)</th><th>Keparahan</th><th>Status</th></tr></thead><tbody>
       ${r.kejadian.map((e, j) => `<tr${e[3] === mxT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
-        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>
+        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>${selFrpParah(r, e)}
         <td>${e[1] >= b7 ? '<span class="kn-ak" title="Masih berlangsung: ada hotspot dalam 7 hari terakhir">Berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
       </tbody></table></div></section>`;
     /* keparahan kompleks: titik, lama (hari dengan hotspot), daya api maksimum */
@@ -442,9 +445,9 @@
     const gk = r.gambut_kejadian || [];
     const gm = gk.length ? (() => { const mT = Math.max(...gk.map(e => e[3]));
       return `<section class="kn-sek"><div class="kn-band"><b>Kebakaran di lahan gambut</b>${pitaStat([`<b>${fmt(r.gambut_ha)}</b> ha gambut di konsesi`, `<b>${fmt(r.gambut_titik)}</b> titik`, `<b>${ha(r.gambut_bakar_ha)}</b> ha terbakar`, `<b>${fmt(gk.length)}</b> kejadian`])}</div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik di gambut</th><th>Status</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb kn-kj"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik di gambut</th><th class="r" title="Daya api (FRP) tertinggi di konsesi selama periode itu">FRP maks (MW)</th><th>Keparahan</th><th>Status</th></tr></thead><tbody>
       ${gk.map((e, j) => `<tr${e[3] === mT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
-        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>
+        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>${selFrpParah(r, e)}
         <td>${e[1] >= b7 ? '<span class="kn-ak" title="Masih berlangsung: ada hotspot dalam 7 hari terakhir">Berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
       </tbody></table></div></section>`; })() : "";
     return `<div class="kn-dua kn-dua-b"><div>${kj}</div><div>${tt}</div></div>${gm}${kp}`;

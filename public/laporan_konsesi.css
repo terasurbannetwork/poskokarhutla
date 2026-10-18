@@ -204,11 +204,10 @@ main.kn{position:static;inset:auto}
 .kn-ket{margin:10px 0 0;padding:10px 12px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:12px;line-height:1.45}
 .kn-ket-h{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
 .kn-ket-h i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1d4e89;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-ket dl{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:8px;margin:0}
-.kn-ket dl>div{padding:8px 10px;border-radius:9px;background:var(--card);border:1px solid var(--line);border-top:3px solid #6b9bd6}
-.kn-ket dl>div:has(.kn-ket-ps){grid-column:1/-1}
-.kn-ket dt{font-weight:800;color:var(--ink);margin-bottom:2px}
-.kn-ket dd{margin:0;color:var(--ink2)}
+.kn-ket dl{display:grid;gap:4px;margin:0}
+.kn-ket dl>div{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:8px;background:var(--card);border:1px solid var(--line);border-left:3px solid #6b9bd6}
+.kn-ket dt{flex:none;width:118px;font-weight:800;color:var(--ink)}
+.kn-ket dd{margin:0;color:var(--ink2);flex:1;min-width:0}
 .kn-ket dd small{display:block;margin-top:4px;font-size:11px}
 .kn-ket-ps{display:flex;flex-wrap:wrap;gap:6px 14px}
 .kn-ket-p{display:inline-flex;align-items:center;gap:6px}
@@ -406,7 +405,7 @@ main.kn{position:static;inset:auto}
   .kn-hr-tb .kn-tb td,.kn-hr-tb .kn-tb th{padding:.6px 5px;font-size:7px;line-height:1.15}
   .kn-hr-tb .kn-bt{height:5px}
   .kn-hr-k{font-size:8px}
-  .kn-ket{font-size:7.5px;padding:4px 6px;margin-top:4px;break-inside:avoid}.kn-ket-h{font-size:7px;margin-bottom:3px}.kn-ket-h i{width:12px;height:12px}.kn-ket-h svg{width:8px;height:8px}.kn-ket dl{gap:4px;grid-template-columns:repeat(auto-fit,minmax(140px,1fr))}.kn-ket dl>div{padding:3px 6px;border-top-width:2px}.kn-ket .kn-pr{font-size:6.5px;padding:0 5px}.kn-ket dd small{font-size:7px;margin-top:1px}
+  .kn-ket{font-size:7.5px;padding:4px 6px;margin-top:4px;break-inside:avoid}.kn-ket-h{font-size:7px;margin-bottom:3px}.kn-ket-h i{width:12px;height:12px}.kn-ket-h svg{width:8px;height:8px}.kn-ket dl{gap:3px}.kn-ket dl>div{padding:2px 6px;border-left-width:2px;gap:6px}.kn-ket dt{width:70px}.kn-ket .kn-pr{font-size:6.5px;padding:0 5px}.kn-ket dd small{font-size:7px;margin-top:1px}
   .kn-kanan .kn-peta2{grid-template-columns:1fr!important}
   .kn-kanan .kn-img{height:52mm}
   .kn-tgl{font-size:8px;gap:3px}
@@ -428,6 +427,7 @@ main.kn{position:static;inset:auto}
 .kn-dft th,.kn-tk-kab th{white-space:normal;font-size:8.5px;padding:6px 3px;vertical-align:bottom;letter-spacing:.01em}
 .kn-tb.kn-tb th{text-align:center;vertical-align:middle}
 .kn-tb.kn-dft th{white-space:normal}
+.kn-tb.kn-kj th{white-space:normal;padding-left:4px;padding-right:4px}.kn-kj td{padding-left:5px;padding-right:5px}.kn-kj .kn-pr{padding:1px 7px;font-size:10px}
 .kn-dft .kn-j{padding-left:6px;padding-right:6px;font-size:10px}
 .kn-dft td,.kn-tk-kab td{padding:4px}
 .kn-dft td.kn-nw{white-space:nowrap}
