@@ -191,28 +191,50 @@ def jalan():
         a = lv_lama.get(o["nama"])
         if a and a != o["level"]:
             perubahan.append({"nama": o["nama"], "dari": a, "ke": o["level"], "tgl": sekarang.date().isoformat()})
+    letusan, cak = lama.get("letusan", []), lama.get("letusan_cakupan")   # gagal baca: daftar lama tampil, tapi cakupannya TIDAK diperpanjang
+    h, baru = "", []
     try:
-        h, letusan = "", []
         for hal in range(1, 9):  # halaman 1 memuat ±15 letusan (Ibu bisa belasan per hari): ambil mundur sampai melewati 24 jam, paling banyak 8 halaman
             h += ambil(f"/v1/gunung-api/informasi-letusan?page={hal}")  # digabung dulu: tanggal hanya ditulis di awal tiap hari, kadang tak ikut di awal halaman berikut
-            letusan = urai_letusan(h)
-            if not letusan or dt.datetime.fromisoformat(letusan[-1]["waktu"]) < sekarang - dt.timedelta(hours=24):
+            baru = urai_letusan(h)
+            if not baru or dt.datetime.fromisoformat(baru[-1]["waktu"]) < sekarang - dt.timedelta(hours=24):
                 break
             time.sleep(.4)
-    except RuntimeError as e:
+    except RuntimeError as e:   # halaman yang sudah terbaca tetap dipakai (cakupannya sampai letusan tertua yang terbaca saja)
         print(f"  letusan gagal: {e}", file=sys.stderr)
-        letusan = lama.get("letusan", [])
+    letusan, cak = gabung_letusan(baru, lama.get("letusan", []), lama.get("letusan_cakupan"), sekarang)
     simpan(KATALOG, dict(sorted(kat.items())))
     n_lv = {l: sum(1 for o in gunung if o["level"] == l) for l in (1, 2, 3, 4)}
     # riwayat harian (satu baris per tanggal WIB, diganti bila jalan lagi di hari sama): jumlah gunung per level + erupsi 24 jam; layar Tren menggambarnya setelah >= 2 hari
     r24 = sum(1 for x in letusan if dt.datetime.fromisoformat(x["waktu"]) >= sekarang - dt.timedelta(hours=24))
     batas_r = (sekarang - dt.timedelta(days=365)).date().isoformat()
     riwayat = [r for r in lama.get("riwayat", []) if r["tgl"] >= batas_r and r["tgl"] != sekarang.date().isoformat()]
-    lengkap = bool(letusan) and dt.datetime.fromisoformat(letusan[-1]["waktu"]) < sekarang - dt.timedelta(hours=24)   # daftar MAGMA dibaca mundur terbatas: bila tak mencapai 24 jam, hitungannya batas bawah dan tidak disimpan
+    lengkap = bool(cak) and dt.datetime.fromisoformat(cak["dari"]) <= sekarang - dt.timedelta(hours=24) and dt.datetime.fromisoformat(cak["sampai"]) >= sekarang - dt.timedelta(minutes=30)   # hanya bila cakupan yang TERBUKTI (bukan daftar lama) meliputi 24 jam terakhir
     riwayat.append({"tgl": sekarang.date().isoformat(), "level": {str(l): n for l, n in n_lv.items()}, **({"erupsi": r24} if lengkap else {})})
     simpan(KELUAR, {"sumber": "MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "dibuat": sekarang.isoformat(timespec="seconds"),
-                    "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan[:150], "riwayat": riwayat})
+                    "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan, **({"letusan_cakupan": cak} if cak else {}), "riwayat": riwayat})
     print(f"{len(gunung)} gunung; level {n_lv}; letusan {len(letusan)}; perubahan {len(perubahan)}", file=sys.stderr)
+
+
+def gabung_letusan(baru, lama, cak_lama, sekarang):
+    """Letusan hasil baca sekarang + letusan lama (bila cakupan lama bersambung) -> (daftar maks 150, cakupan {dari, sampai}).
+    Cakupan = rentang yang TERBUKTI terbaca: dari = letusan tertua halaman, sampai = sekarang. Tanpa letusan terbaca, tak ada bukti: lama dipertahankan."""
+    if not baru:
+        return lama, cak_lama
+    dari = baru[-1]["waktu"]
+    sam = sekarang.isoformat(timespec="minutes")
+    if cak_lama and cak_lama["sampai"] >= dari:   # lama bersambung dengan yang baru: cakupan melebar ke belakang
+        dari = min(dari, cak_lama["dari"])
+        baru = baru + [x for x in lama if x["waktu"] >= dari]
+    lihat, uniq = set(), []
+    for x in sorted(baru, key=lambda x: x["waktu"], reverse=True):
+        k = (x["gunung"], x["waktu"], x["ket"][:60])
+        if k not in lihat:
+            lihat.add(k); uniq.append(x)
+    if len(uniq) > 150:
+        uniq = uniq[:150]
+        dari = max(dari, uniq[-1]["waktu"])
+    return uniq, {"dari": dari, "sampai": sam}
 
 
 def uji():
@@ -243,6 +265,18 @@ def uji():
            '<div class="timeline-item"><small>23:42 WIB </small><p class="timeline-title"><a href="#">Semeru</a></p><p class="timeline-text"> Erupsi B. </p></div>')
     d2 = urai_letusan(dua)   # judul hari dengan akhiran "N hari yang lalu" tetap terbaca; halaman tumpang tindih tidak menggandakan
     assert [x["waktu"] for x in d2] == ["2026-10-16T10:00+07:00", "2026-10-15T23:42+07:00"], d2
+    live = urai_letusan(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "contoh/informasi_letusan_20261019.html"), encoding="utf-8").read())   # halaman live 19 Okt 02.30 WIB (halaman 1-3)
+    per_hari = {}
+    for x in live:
+        per_hari[x["waktu"][:10]] = per_hari.get(x["waktu"][:10], 0) + 1
+    assert per_hari == {"2026-10-17": 15, "2026-10-18": 13, "2026-10-19": 2}, per_hari   # letusan 18 Okt ("Minggu, 18 Oktober 2026, 1 hari yang lalu") wajib terbaca
+    now = dt.datetime.fromisoformat("2026-10-19T02:39+07:00")
+    lamax = [{"gunung": "Semeru", "waktu": "2026-10-15T10:00+07:00", "ket": "lama"}]
+    ls, ck = gabung_letusan(live, lamax, {"dari": "2026-10-14T00:00+07:00", "sampai": "2026-10-18T00:00+07:00"}, now)
+    assert ck == {"dari": "2026-10-14T00:00+07:00", "sampai": "2026-10-19T02:39+07:00"} and len(ls) == 31, ck   # lama bersambung: cakupan melebar
+    ls, ck = gabung_letusan(live, lamax, {"dari": "2026-10-10T00:00+07:00", "sampai": "2026-10-12T00:00+07:00"}, now)
+    assert ck["dari"] == live[-1]["waktu"] and len(ls) == 30, ck   # lama terputus: dibuang, cakupan hanya yang terbukti
+    assert gabung_letusan([], lamax, {"dari": "a", "sampai": "b"}, now) == (lamax, {"dari": "a", "sampai": "b"})   # gagal baca: cakupan tidak diperpanjang
     merapi = [{"km": 3, "penduduk": 40}, {"km": 5, "penduduk": 15122}, {"km": 10, "penduduk": 184363}, {"km": 15, "penduduk": 570744}]  # cincin nyata paparan.json
     assert penduduk_cincin(merapi, 3) == 40 and penduduk_cincin(merapi, 5) == 15100, "Merapi 3/5 km harus tepat cincin"   # puluhan, bukan 30.400 (kisi 25 km)
     assert penduduk_cincin(merapi, 1.5) == 10 and penduduk_cincin(merapi, 4) < 15122 and 15122 < penduduk_cincin(merapi, 7) < 184363
