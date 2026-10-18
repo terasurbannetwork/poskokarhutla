@@ -27,10 +27,10 @@ _s.loader.exec_module(LAP)
 N = 14
 SIAGA = 2
 METRIK = [
-    {"k": "banjir_sa", "label": "Kecamatan siaga atau awas banjir", "satuan": "kecamatan", "utama": True, "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
-    {"k": "longsor_sa", "label": "Kecamatan siaga atau awas longsor", "satuan": "kecamatan", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
-    {"k": "rob_siaga", "label": "Titik rob siaga", "satuan": "titik", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
-    {"k": "penduduk", "label": "Penduduk terpapar banjir", "satuan": "jiwa", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "banjir_sa", "label": "Siaga atau awas banjir", "satuan": "kecamatan", "utama": True, "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "longsor_sa", "label": "Siaga atau awas longsor", "satuan": "kecamatan", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "rob_siaga", "label": "Rob siaga", "satuan": "titik", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
+    {"k": "penduduk", "label": "Terpapar banjir", "satuan": "jiwa", "agregat": "maks", "arah": "naik_buruk", "desimal": 0},
 ]
 KUNCI = [m["k"] for m in METRIK]
 NAMA_PROV = {v.lower(): k for k, v in PROVINSI.items()}
