@@ -100,7 +100,7 @@ main.kn{position:static;inset:auto}
 .kn-sta-a i svg{width:14px;height:14px}
 .kn-sta.kn-sta-a b{color:#fff;font-size:16px}
 .kn-sta.kn-sta-a small{color:rgba(255,255,255,.85)}
-.kn-kabh{display:flex;align-items:flex-end;justify-content:space-between;gap:12px 20px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line)}
+.kn-kabh{display:flex;align-items:flex-end;justify-content:space-between;column-gap:12px;gap:12px 20px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line)}
 .kn-kabh h2{font-size:22px;margin:2px 0 0}
 .kn-chips{display:flex;flex-wrap:wrap;gap:8px}
 .kn-chip{display:inline-flex;align-items:center;gap:6px;padding:5px 12px 5px 5px;border-radius:999px;background:var(--surface);border:1px solid var(--line);font-size:12px;color:var(--ink2);white-space:nowrap}
@@ -126,7 +126,7 @@ main.kn{position:static;inset:auto}
 .kn-it td{padding:6px 12px;border-top:1px solid var(--line);vertical-align:middle}
 .kn-it tbody tr:first-child td{border-top:0}
 .kn-it td:first-child{width:128px;color:var(--ink2);font-weight:700;font-size:11.5px;background:var(--surface);print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-it small{display:block;margin-top:2px;color:var(--ink2);font-size:11px;line-height:1.4}
+.kn-it small{margin-left:4px;color:var(--ink2);font-size:11px;line-height:1.4}
 .kn-it small b{color:var(--ink);font-weight:800}
 .kn-it td:last-child>b{font:800 13.5px var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
 .kn-it .kn-bt{display:inline-block;width:70px;vertical-align:middle;margin-right:4px}
@@ -267,8 +267,15 @@ main.kn{position:static;inset:auto}
 .kn-sb{display:inline-block;padding:1px 8px;border-radius:6px;background:#e0ecfa;color:#0b2545;font:800 10.5px var(--font);white-space:nowrap}
 .kn-metode .tw{margin-bottom:10px}
 .kn-provsek{margin-top:28px}
-.kn-provh{display:flex;justify-content:space-between;align-items:flex-end;gap:12px;flex-wrap:wrap;border-bottom:3px solid var(--brand);padding-bottom:8px;margin-bottom:14px}
-.kn-provh h2{font-size:26px;font-weight:800}
+.kn-provh{display:flex;align-items:center;gap:14px;flex-wrap:wrap;margin-bottom:14px;padding:16px 18px;border-radius:16px;background:linear-gradient(135deg,#1d4e89,#0b2545);color:#fff;border-bottom:4px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-provh-lg{width:52px;height:52px;padding:4px;border-radius:12px;background:#fff;object-fit:contain;flex:none}
+.kn-kabh-lg{width:40px;height:40px;object-fit:contain;flex:none;align-self:center}
+.kn-kabh-t{flex:1 1 auto;min-width:240px}
+.kn-provh-t{flex:1;min-width:0}
+.kn-provh .lbl{color:rgba(255,255,255,.7)}
+.kn-provh h2{font-size:26px;font-weight:800;color:#fff;margin:1px 0}
+.kn-provh small{font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
+.kn-provh .kn-utama{background:#fff;color:#0b2545;border-color:#fff}
 .kn-mini{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:600;font-size:12px;cursor:pointer;color:var(--ink)}
 .kn-mini.kn-utama{background:var(--brand);color:#fff;border-color:var(--brand);padding:8px 16px;font-size:13px}
 .kn-mini:disabled{opacity:.6;cursor:progress}
@@ -315,7 +322,7 @@ main.kn{position:static;inset:auto}
   /* susunan halaman: tiap provinsi, kabupaten/kota, dan profil mulai di halaman baru */
   .kn-provsek,.kn-kabsek,.kn-prof,.kn-metode{break-before:page}
   .kn-provsek{margin-top:0}
-  .kn-provh{padding-bottom:4px;margin-bottom:8px;border-bottom-width:2px}
+  .kn-provh{padding:8px 10px;margin-bottom:8px;border-bottom-width:2px;border-radius:8px}.kn-provh-lg{width:28px;height:28px;padding:3px}.kn-provh small{font-size:8px}.kn-provh .kn-utama{display:none}
   .kn-provh h2{font-size:20px}
   .kn-kabh h2{font-size:16px}.kn-chip{font-size:9px;padding:2px 8px 2px 2px}.kn-chip i{width:16px;height:16px}.kn-chip i svg{width:9px;height:9px}.kn-chip b{font-size:10px}
   body[data-cetak] .kn-nas,body[data-cetak] .kn-provsek:not(.kn-ini){display:none!important}

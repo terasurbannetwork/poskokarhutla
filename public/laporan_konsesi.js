@@ -82,7 +82,10 @@
   let CIT = {}, CITJ = {};
   const janjiCit = Promise.all([fetch("/data/konsesi2026/citra.json").then(r => r.ok ? r.json() : {}).then(d => { CIT = d; }).catch(() => {}),
     fetch("/data/konsesi2026/citra_jelas.json").then(r => r.ok ? r.json() : {}).then(d => { CITJ = d; }).catch(() => {})]);
-  fetch("/data/konsesi2026/index.json").then(r => r.json()).then(d => { IDX = d; gambarKendali(); muat(); })
+  /* lambang kab/kota: "kodeProv|Nama" -> berkas di /lambang/kabkota (sama dengan index.html); gagal = tanpa lambang */
+  let LAMBANG = {};
+  Promise.all([fetch("/data/konsesi2026/index.json").then(r => r.json()), fetch("/lambang/kabkota.json").then(r => r.json()).catch(() => ({}))])
+    .then(([d, l]) => { LAMBANG = l; IDX = d; gambarKendali(); muat(); })
     .catch(() => { $("#knIsi").innerHTML = `<div class="kosong">Data laporan belum tersedia.</div>`; });
 
   /* pemilih provinsi bercari: rupa PilihCantik (kartu.css .pc/.pc-menu) + kotak cari di atas daftar */
@@ -245,9 +248,14 @@
   function kepalaKab(k, kb, rs) {
     const x = jumlah(rs);
     const chip = (ik, v, l, cls = "") => `<span class="kn-chip ${cls}"><i aria-hidden="true">${IKON_KPI[ik]}</i><b>${v}</b>${l}</span>`;
-    return `<div class="kn-kabh"><div><span class="lbl">${esc(namaProv(k))} · Kabupaten/kota</span><h2>${esc(kb)}</h2></div>
+    const lb = LAMBANG[`${k}|${kb}`];
+    return `<div class="kn-kabh">${lb ? `<img class="kn-kabh-lg" src="/lambang/kabkota/${lb}.png" alt="Lambang ${esc(kb)}" width="40" height="40">` : ""}<div class="kn-kabh-t"><span class="lbl">${esc(namaProv(k))} · Kabupaten/kota</span><h2>${esc(kb)}</h2></div>
       <div class="kn-chips">${chip("konsesi", fmt(rs.length), "perusahaan")}${chip("titik", fmt(x.t), "titik panas")}${chip("luas", ha(x.l), "ha terbakar")}${x.a ? chip("api", fmt(x.a), "masih ada api", "kn-chip-a") : ""}</div></div>`;
   }
+  /* kepala bagian provinsi: kartu navy berlogo; satu provinsi = tampil di atas ringkasan & peta */
+  const kepalaProv = k => `<header class="kn-provh"><img class="kn-provh-lg" src="/lambang/provinsi/${k}.png" alt="Lambang ${esc(namaProv(k))}" width="44" height="44" onerror="this.src='/img/logo.svg?v=2'">
+    <div class="kn-provh-t"><span class="lbl">Provinsi</span><h2>${esc(namaProv(k))}</h2><small>Laporan Konsesi Terbakar 2026 · data s.d. ${tglT(IDX.sampai.slice(0, 10))}</small></div>
+    <button type="button" class="kn-mini kn-utama" data-pdf="${k}">Unduh PDF ${esc(namaProv(k))}</button></header>`;
   function kpi(rs) {
     const T = jumlah(rs), t7 = rs.reduce((a, r) => a + r.titik_7h, 0), top = rs.reduce((a, r) => r.titik > a.titik ? r : a, rs[0]);
     const pj = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j).length]).filter(([, n]) => n);
@@ -300,19 +308,20 @@
     const T = jumlah(daftar);
     $("#knIsi").innerHTML = `
       <div class="kn-nas">
+      ${SUSUN.length === 1 ? kepalaProv(SUSUN[0].k) : ""}
       ${kpi(daftar)}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Ringkasan per provinsi</h2>
         <div class="tw"><table class="kn-tb"><thead><tr><th>Provinsi</th><th class="r">Perusahaan</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">Masih ada api</th><th>PDF</th></tr></thead><tbody>
         ${SUSUN.map(p => { const t = jumlah(p.rs); return `<tr><td><a class="kn-nm" href="#v${p.k}">${esc(namaProv(p.k))}</a></td><td class="r">${fmt(p.rs.length)}</td><td class="r">${fmt(t.t)}</td><td class="r">${ha(t.l)}</td><td class="r">${fmt(t.a)}</td><td><button type="button" class="kn-mini" data-pdf="${p.k}">Unduh PDF</button></td></tr>`; }).join("")}
         <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(daftar.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td><td></td></tr></tbody></table></div></section>` : ""}
-      ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${tabelGrup(daftar)}</section>` : ""}
+      <section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${SUSUN.length > 1 ? tabelGrup(daftar) : ""}</section>
       <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}
         </section>${SUSUN.length === 1 ? `<section class="kn-kartu"><h2>Daftar perusahaan</h2>${tabelDaftar(daftar)}</section>` : ""}
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
-        <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
+        ${SUSUN.length === 1 ? `<div class="kn-dobel">${kepalaProv(p.k)}</div>` : kepalaProv(p.k)}
         ${SUSUN.length === 1 ? `<div class="kn-dobel">${kpi(p.rs)}</div>` : kpi(p.rs)}
-        <section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(p.rs)}</section>
+        <section class="kn-kartu${SUSUN.length === 1 ? " kn-dobel" : ""}"><h2>Per jenis usaha</h2>${tabelJenis(p.rs)}</section>
         <section class="kn-kartu kn-pvk"><h2>Peta provinsi</h2><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}. Angka = nomor perusahaan.</figcaption></figure>${legenda()}
         </section>
         <section class="kn-kartu${SUSUN.length === 1 ? " kn-dobel" : ""}"><h2>Daftar perusahaan</h2>${tabelDaftar(p.rs)}</section>
@@ -481,9 +490,9 @@
           ${blokInfo("Kebakaran", [
             ["Periode api", `<b>${tglT(r.pertama)} – ${tglT(r.terakhir)}</b> <small>rentang ${fmt(r.rentang_hari)} hari</small>`],
             ["Kejadian terlama", `<b>${rentang(terlama[0], terlama[1])}</b> <small>${fmt(terlama[2])} hari · ${fmt(terlama[3])} titik</small>`],
-            ["Lahan gambut", r.gambut_ha == null ? `${batang(r.gambut, 1, "#6b4a2b")} <b>${pct(r.gambut)}</b> <small>titik di gambut</small>`
-              : `${batang(r.luas_ha ? r.gambut_ha / r.luas_ha : 0, 1, "#6b4a2b")} <b>${ha(r.gambut_ha)} ha</b> <small><b>${pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null)}</b> luas konsesi berada di gambut</small>`],
-            ...(r.gambut_titik ? [["Api di gambut", `${batang(r.gambut, 1, "#c9503a")} <b>${fmt(r.gambut_titik)} titik</b> <small><b>${pct(r.gambut)}</b> dari semua titik · terbakar ${ha(r.gambut_bakar_ha)} ha (<b>${pct(r.luas_bakar_ha ? r.gambut_bakar_ha / r.luas_bakar_ha : null)}</b> dari indikasi terbakar) · ${r.gambut_kejadian.length} kejadian, terlama ${fmt(Math.max(...r.gambut_kejadian.map(e => e[2])))} hari</small>`]] : []),
+            ["Lahan gambut", r.gambut_ha == null ? `<b>${pct(r.gambut)}</b> <small>titik di gambut</small>`
+              : `<b>${ha(r.gambut_ha)} ha</b> <small><b>${pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null)}</b> luas konsesi</small>`],
+            ...(r.gambut_titik ? [["Api di gambut", `<b>${fmt(r.gambut_titik)} titik</b> <small><b>${pct(r.gambut)}</b> titik · ${ha(r.gambut_bakar_ha)} ha terbakar (<b>${pct(r.luas_bakar_ha ? r.gambut_bakar_ha / r.luas_bakar_ha : null)}</b>)</small>`]] : []),
             ["Status kawasan", esc(kw)],
             ["Daya api (FRP)", `<b>maks ${fmt(r.frp_maks)} MW</b> <small>total ${fmt(r.frp_total)} MW</small>`]])}
         </div>
