@@ -258,7 +258,7 @@
   /* kepala bagian provinsi: kartu navy berlogo; satu provinsi = tampil di atas ringkasan & peta */
   const kepalaProv = k => `<header class="kn-provh"><img class="kn-provh-lg" src="/lambang/provinsi/${k}.png" alt="Lambang ${esc(namaProv(k))}" width="44" height="44" onerror="this.src='/img/logo.svg?v=2'">
     <div class="kn-provh-t"><span class="lbl">Provinsi</span><h2>${esc(namaProv(k))}</h2><small>Laporan Konsesi Terbakar 2026 · data s.d. ${tglT(IDX.sampai.slice(0, 10))}</small></div>
-    <button type="button" class="kn-mini kn-utama" data-pdf="${k}">Unduh PDF ${esc(namaProv(k))}</button></header>`;
+    <button type="button" class="kn-mini kn-utama" data-pdf="${k}"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11M7 10l5 5 5-5M5 20h14"/></svg>Unduh PDF ${esc(namaProv(k))}</button></header>`;
   function kpi(rs) {
     const T = jumlah(rs), t7 = rs.reduce((a, r) => a + r.titik_7h, 0), top = rs.reduce((a, r) => r.titik > a.titik ? r : a, rs[0]);
     const pj = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j).length]).filter(([, n]) => n);

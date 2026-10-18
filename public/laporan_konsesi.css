@@ -274,7 +274,9 @@ main.kn{position:static;inset:auto}
 .kn-provh .lbl{color:rgba(255,255,255,.7)}
 .kn-provh h2{font-size:26px;font-weight:800;color:#fff;margin:1px 0}
 .kn-provh small{font-size:12px;color:rgba(255,255,255,.75);font-weight:600}
-.kn-provh .kn-utama{background:#fff;color:#0b2545;border-color:#fff}
+.kn-provh .kn-mini.kn-utama{display:inline-flex;align-items:center;gap:8px;background:#fff;color:#0b2545;border-color:#fff;box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.kn-provh .kn-mini.kn-utama:hover{background:#eef3fb}
+.kn-provh .kn-mini.kn-utama svg{flex:none}
 .kn-mini{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:5px 12px;font-weight:600;font-size:12px;cursor:pointer;color:var(--ink)}
 .kn-mini.kn-utama{background:var(--brand);color:#fff;border-color:var(--brand);padding:8px 16px;font-size:13px}
 .kn-mini:disabled{opacity:.6;cursor:progress}
