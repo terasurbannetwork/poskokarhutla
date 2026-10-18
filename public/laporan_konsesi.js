@@ -164,20 +164,23 @@
       <td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : "–"}</td></tr>`).join("")}
     </tbody></table></div>`;
 
-  /* data tidak punya RSPO dan HGU (peta izin KLHK, bukan HGU ATR/BPN): kolomnya terbaca dari r.rspo / r.hgu_ha bila kelak ada, selain itu "–" */
-  const rspoTeks = r => r.jenis !== "sawit" ? "–" : r.rspo === true ? "Ya" : r.rspo === false ? "Tidak" : "–";
-  const rspoPil = r => r.jenis === "sawit" && r.rspo === true ? ' <span class="kn-rspo" title="Anggota RSPO">RSPO</span>' : "";
+  /* r.rspo = {grup, sertifikat, sejak} dari data RSPO 2020 (GFW), dicocokkan lewat nama; tak cocok bukan berarti bukan anggota, jadi "–".
+     HGU tidak ada di data (peta izin KLHK, bukan HGU ATR/BPN): r.hgu_ha bila kelak ada */
+  const rspoTeks = r => r.jenis !== "sawit" || !r.rspo ? "–" : r.rspo.sertifikat ? "Bersertifikat" : "Anggota";
+  const rspoPil = r => r.jenis === "sawit" && r.rspo ? ` <span class="kn-rspo" title="Anggota RSPO lewat ${esc(r.rspo.grup)} (data RSPO 2020)">RSPO</span>` : "";
   /* titik yang bertahan > 2 hari = titik panas dalam kejadian (rangkaian hari ber-hotspot, jeda dihitung) yang lamanya lebih dari 2 hari */
   const titikLama = r => r.kejadian.reduce((a, e) => a + (e[2] > 2 ? e[3] : 0), 0);
   const kecDari = r => [...new Set(r.kec.map(k => k.split(",")[0].trim()))];
   const NA = '<span class="kn-mt">–</span>';
+  /* daftar wilayah satu baris: n pertama, sisanya "+n" dengan daftar lengkap di title */
+  const ringkas = (ks, n) => !ks.length ? "–" : ks.length <= n ? esc(ks.join(", ")) : `<span title="${esc(ks.join(", "))}">${esc(ks.slice(0, n).join(", "))} <span class="kn-mt">+${ks.length - n}</span></span>`;
   /* tabel daftar perusahaan: menggantikan daftar bernomor; baris bisa diklik/Enter, menggulir ke profil (dibuka bila belum tampil) */
   function tabelDaftar(rs) {
     const urutR = rs.slice().sort((a, b) => a._rp - b._rp);
-    return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th class="r">Luas konsesi (ha)</th><th>Jenis</th><th>RSPO</th><th class="r">Luas HGU (ha)</th><th class="r">Titik panas</th><th class="r">Kompleks api (kejadian)</th><th class="r">Indikasi terbakar (ha)</th><th class="r">Titik bertahan &gt; 2 hari</th><th class="r">Aktif 7 hari terakhir</th><th>Kecamatan</th><th>Kab/kota</th></tr></thead><tbody>
-      ${urutR.map(r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td class="kn-nw"><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="r">${ha(r.luas_ha)}</td><td>${jenisPil(r.jenis)}</td>
-        <td>${rspoTeks(r) === "–" ? NA : rspoTeks(r)}</td><td class="r">${r.hgu_ha != null ? ha(r.hgu_ha) : NA}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td>
-        <td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td><td>${esc(kecDari(r).slice(0, 3).join(", ") || "–")}</td><td>${esc((r.kab_titik?.length ? r.kab_titik : r.kab).join(", ") || "–")}</td></tr>`).join("")}
+    return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th>Kab/kota</th><th>Kecamatan</th><th>Jenis</th><th>RSPO</th><th class="r">Konsesi (ha)</th><th class="r">HGU (ha)</th><th class="r">Titik panas</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th></tr></thead><tbody>
+      ${urutR.map(r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td class="kn-nw"><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(r.kab_titik?.length ? r.kab_titik : r.kab, 1)}</td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td>
+        <td>${rspoTeks(r) === "–" ? NA : rspoTeks(r)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r">${r.hgu_ha != null ? ha(r.hgu_ha) : NA}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td>
+        <td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td></tr>`).join("")}
       </tbody></table></div>`;
   }
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
@@ -238,7 +241,7 @@
   const t3 = r => { if (r._t3 == null) { const b = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 2 * 864e5).toISOString().slice(5, 10); r._t3 = r.pt.filter(p => p[2].slice(0, 5) >= b).length; } return r._t3; };
   function tabelKab(p) {
     const T = jumlah(p.rs);
-    return `<div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Grup</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">% konsesi</th><th>Periode api</th><th class="r">3 hari</th><th class="r">7 hari</th></tr></thead><tbody>
+    return `<div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>No</th><th>Perusahaan</th><th>Jenis</th><th>Grup</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th><th class="r">% konsesi</th><th>Periode api</th><th class="r">3 hari</th><th class="r">7 hari</th></tr></thead><tbody>
       ${p.kab.map(([kb, rs], j) => { const x = jumlah(rs);
         return `<tr class="kn-pita kn-pita-i"><td colspan="11"><a href="#v${p.k}-${j}">${j + 1}. ${esc(kb)}</a></td></tr>`
           + rs.map((r, m) => `<tr><td class="kn-mt">${m + 1}</td><td><a href="#p${r._i}" data-buka="${r._i}" class="kn-nm">${esc(r.nama)}</a></td><td>${jenisPil(r.jenis)}</td>

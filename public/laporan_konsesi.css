@@ -49,12 +49,12 @@ main.kn{position:static;inset:auto}
 .kn-kartu h2{font-size:18px;font-weight:800;margin-bottom:10px}
 .kn-kartu h3{font:800 13px var(--display);margin:14px 0 6px;color:var(--ink)}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
-.kn-tb{width:100%;border-collapse:collapse;font-size:12.5px}
-.kn-tb th{background:#0b2545;color:#fff;text-align:left;font:800 10.5px var(--font);letter-spacing:.06em;text-transform:uppercase;padding:9px 10px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-tb td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
+.kn-tb{width:100%;border-collapse:collapse;font-size:11.5px;line-height:1.35}
+.kn-tb th{background:#0b2545;color:#fff;text-align:left;font:800 9.5px var(--font);letter-spacing:.04em;text-transform:uppercase;padding:7px 7px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-tb td{padding:5px 7px;border-top:1px solid var(--line);vertical-align:top}
 .kn-tb tbody tr:not(.kn-tot):hover td{background:var(--surface)}
 .kn-tb .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.kn-tb small{display:block;color:var(--ink2);font-size:11px}
+.kn-tb small{display:block;color:var(--ink2);font-size:10.5px}
 .kn-tb tr.kn-tot td{font-weight:800;background:#0b2545;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-nm{color:var(--ink);font-weight:700;text-decoration:none}
 .kn-nm:hover{text-decoration:underline}
@@ -376,9 +376,9 @@ main.kn{position:static;inset:auto}
 /* tabel daftar perusahaan, tabel lebar, top 5 hari, RSPO */
 .kn-kartu,.kn-provsek,.kn-kabsek{min-width:0;max-width:100%}
 .tw{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.kn-dft{min-width:1180px}
-.kn-tk-kab{min-width:980px}
-.kn-dft td.kn-nw,.kn-dft td .kn-nm{white-space:nowrap}
+.kn-dft{min-width:1000px}
+.kn-tk-kab{min-width:860px}
+.kn-dft td.kn-nw,.kn-dft td .kn-nm,.kn-tk-kab td:nth-child(2){white-space:nowrap}
 .kn-baris{cursor:pointer}
 .kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
