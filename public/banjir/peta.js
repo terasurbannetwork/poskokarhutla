@@ -34,7 +34,9 @@ const Pra72 = {
   teks(k) { return this.d?.anggota == null ? "" : this.kec(k) ? this.pct(this.siaga(k)) : this.KURANG; },
   /* isi lipatan prakiraan satu kecamatan */
   isi(k) {
-    const D = this.d; if (!D) return ""; const r = this.kec(k) || {b: [0, 0, 0, 0], l: [0, 0, 0, 0]}, ada = D.anggota != null, tak = !this.kec(k), K = esc(this.KURANG);
+    const D = this.d; if (!D) return "";
+    if (D.anggota == null) return `<p class="fnd">Peluang belum tersedia: ansambel ECMWF belum jalan hari ini. Status per hari di atas tetap dari model utama.</p>`;
+    const r = this.kec(k) || {b: [0, 0, 0, 0], l: [0, 0, 0, 0]}, ada = D.anggota != null, tak = !this.kec(k), K = esc(this.KURANG);
     const pc = v => tak ? K : this.pct(v);
     const sel = (lv, p) => `${pill(lv || 0)}${ada ? ` <small>${pc(p)}</small>` : ""}`;
     const baris = D.hari.map((t, h) => `<tr><td><b>${labelHari(t)}</b></td><td>${sel(r.b[h], r.pb?.[h]?.[1])}</td><td>${sel(r.l[h], r.pl?.[h]?.[1])}</td></tr>`).join("");

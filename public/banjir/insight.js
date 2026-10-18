@@ -160,7 +160,8 @@ const Insight = {
 
   /* 6b. peluang 3 hari: kecamatan dengan peluang Siaga tertinggi (ansambel ECMWF 51 anggota, jalur hujan), status.py -> prakiraan72.json */
   exPeluang() {
-    const D = Pra72.d; if (!D || D.anggota == null) return "";
+    const D = Pra72.d; if (!D) return "";
+    if (D.anggota == null) return this.ex("Peluang belum tersedia: ansambel ECMWF belum jalan", "", "", `<p class="kosong">Peluang muncul setelah ansambel hujan diambil. Status per hari tetap tampil di kartu lain.</p>`, `Sumber: ECMWF IFS ansambel lewat Open-Meteo`);
     const b = this.st.pel, q = b === "b" ? "hb" : "hl", nama = NAMA_B[b], J = Pra72.jendela();
     const semua = Object.entries(D.kec).filter(([, v]) => v[q]).map(([k, v]) => { const [p, kb, kc] = k.split("|"), lv = v[b], pk = v[q].map(x => x[1]); return {k, p, kb, kc, lv, pk, pu: v[q].map(x => x[2]), h3: S.st.kec[k]?.h3}; });
     if (!semua.length) return "";

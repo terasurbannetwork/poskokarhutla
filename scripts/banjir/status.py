@@ -263,10 +263,10 @@ def main():
     rb = rob_pesisir(rob, hari, kode)
     simpan(os.path.join(KELUAR, "prakiraan72.json"), {
         "dibuat": sekarang.isoformat(timespec="minutes"), "hari": hari, "horizon_hari": list(HORIZON),
-        "anggota": ens["anggota"] if pe else None, "kec_dihitung": n_pe, "kec": pra,
+        "anggota": ens["anggota"] if pe else None, "kec_dihitung": n_pe, "kec": pra if pe else {},  # tanpa ansambel: berkas kosong sah (level deterministik ada di status.json)
         "rob": {"kec": rb, "validasi": {"persentil": (rob or {}).get("validasi", {}).get("persentil", {}).get("p95"),
                                         "kejadian_diuji": (rob or {}).get("validasi", {}).get("kejadian_diuji")}},
-        "catatan": "kec: b/l = level deterministik 4 hari (0 Normal..3 Awas); pb/pl = peluang % jalur hujan mencapai Waspada/Siaga/Awas per hari; "
+        "catatan": ("belum ada jalan ensemble: peluang belum tersedia, kec kosong. " if not pe else "") + "kec: b/l = level deterministik 4 hari (0 Normal..3 Awas); pb/pl = peluang % jalur hujan mencapai Waspada/Siaga/Awas per hari; "
                    "hb/hl = peluang pada salah satu hari dalam jendela hari ke-0, ke-0..1, ke-0..2 (bukan jam). Peluang belum diuji balik, kalibrasinya belum diketahui. Hanya kecamatan berstatus atau berpeluang Siaga/Awas >= 10%. "
                    "Jalur sungai dan intensitas tidak punya sebaran, jadi tidak masuk peluang. rob terpisah dari banjir (validasinya sendiri)."})
     simpan(os.path.join(KELUAR, "meta.json"), {

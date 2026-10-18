@@ -18,6 +18,7 @@ for (const s of ["status", "ansambel_hujan", "prospektif", "uji_balik", "seri_st
 test("prakiraan72.json: peluang 0..100, W >= S >= A, horizon tak turun, level sejajar status.json", { skip: !existsSync(D + "prakiraan72.json") }, () => {
   const P = baca("prakiraan72.json"), st = baca("status.json");
   assert.equal(P.hari.length, 4);
+  if (P.anggota == null) { assert.deepEqual(P.kec, {}, "tanpa ansambel berkas harus kosong-sah (kec kosong)"); assert.match(P.catatan, /belum ada jalan ensemble/); }
   assert.deepEqual(P.hari, st.hari, "hari prakiraan72 beda dengan status.json: dibuat oleh jalan status.py yang sama");
   for (const [k, v] of Object.entries(P.kec)) {
     if (!st.kec[k]) assert.ok(["pb", "pl", "hb", "hl"].some((q) => (v[q] || []).some((h) => h.slice(1).some((x) => x >= 10))), `${k}: kecamatan tanpa status harus punya peluang Siaga/Awas >= 10% (hari atau jendela)`);
