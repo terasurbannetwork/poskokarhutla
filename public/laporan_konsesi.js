@@ -408,8 +408,10 @@
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
   const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
-    sources: {d: dasar.img ? {type: "image", url: dasar.img, coordinates: [[dasar.bb[0], dasar.bb[3]], [dasar.bb[2], dasar.bb[3]], [dasar.bb[2], dasar.bb[1]], [dasar.bb[0], dasar.bb[1]]]} : {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
-    layers: [{id: "bg", type: "background", paint: {"background-color": "#10202f"}}, {id: "d", type: "raster", source: "d", paint: dasar.img ? {"raster-fade-duration": 0} : {}},
+    sources: {...(dasar.img ? {d0: {type: "raster", tileSize: 256, ...DASAR.google}} : {}), d: dasar.img ? {type: "image", url: dasar.img, coordinates: [[dasar.bb[0], dasar.bb[3]], [dasar.bb[2], dasar.bb[3]], [dasar.bb[2], dasar.bb[1]], [dasar.bb[0], dasar.bb[1]]]} : {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
+    layers: [{id: "bg", type: "background", paint: {"background-color": "#10202f"}},
+      ...(dasar.img ? [{id: "d0", type: "raster", source: "d0", paint: {"raster-saturation": -.6, "raster-brightness-max": .75}}] : []),
+      {id: "d", type: "raster", source: "d", paint: dasar.img ? {"raster-fade-duration": 0} : {}},
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
       {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}},
