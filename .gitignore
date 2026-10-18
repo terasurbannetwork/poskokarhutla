@@ -60,3 +60,6 @@ data/raw/sebaran/prospektif/jejak_cuaca/
 
 # keluaran CI harian (scripts/sebaran/jejak.py), terbit lewat cache data- di titik.yml, bukan git
 public/data/jejak_api.json
+
+# PMTiles tahap 2 (diunggah ke R2, tidak di-commit)
+data/ubin/*.pmtiles
