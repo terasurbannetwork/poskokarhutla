@@ -350,19 +350,23 @@
   /* grafik harian: lebar tetap (teks tidak melar), garis bantu sumbu Y, penanda puncak, jumlah per bulan di bawah label bulan */
   function grafik(r) {
     const a = Date.parse("2026-01-01"), b = Date.parse(IDX.sampai.slice(0, 10)), hari = Math.round((b - a) / 864e5) + 1;
-    const W = 1000, H = 200, L = 48, R = 10, T = 24, B = 48, iw = W - L - R, ih = H - T - B, bw = iw / hari;
+    const W = 1000, H = 220, L = 48, R = 10, T = 24, B = 68, iw = W - L - R, ih = H - T - B, bw = iw / hari;
     const mx = Math.max(...r.harian.map(x => x[1])), langkah = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000].find(v => mx / v <= 4) || 1000, top = Math.ceil(mx / langkah) * langkah;
     const y = v => T + ih - v / top * ih, x = d => L + (Date.parse(d) - a) / 864e5 * bw, b7 = Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5;
     const grid = Array.from({length: top / langkah + 1}, (_, i) => i * langkah).map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="kn-gd"/><text x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end" class="kn-yl">${fmt(v)}</text>`).join("");
     const bar = r.harian.map(([d, n]) => `<rect x="${x(d).toFixed(1)}" y="${y(n).toFixed(1)}" width="${Math.max(1.6, bw * .78).toFixed(1)}" height="${(T + ih - y(n)).toFixed(1)}" rx="${bw > 4 ? 1 : 0}" class="${Date.parse(d) >= b7 ? "kn-b7" : ""}"><title>${tgl(d)}: ${fmt(n)} titik</title></rect>`).join("");
     const bul = {}; r.harian.forEach(([d, n]) => { bul[+d.slice(5, 7)] = (bul[+d.slice(5, 7)] || 0) + n; });
     const nb = new Date(b).getUTCMonth() + 1;
+    /* tiap bulan: titik panas (titik merah) dan kompleks api = kejadian yang menyala di bulan itu (cincin), sama dengan kolom Kompleks di daftar */
+    const kjB = m => { const m0 = `2026-${String(m).padStart(2, "0")}-01`, m1 = `2026-${String(m).padStart(2, "0")}-31`; return r.kejadian.filter(e => e[0] <= m1 && e[1] >= m0).length; };
+    const nilaiB = (xm, yy, v, jenis) => { const t = v ? fmt(v) : "–", w = t.length * 7.4, cx = xm - w / 2 - 6;
+      return `${jenis === "t" ? `<circle cx="${cx}" cy="${yy - 4.5}" r="3.6" class="kn-mi-t"/>` : `<circle cx="${cx}" cy="${yy - 4.5}" r="3.4" class="kn-mi-k"/>`}<text x="${xm + 4}" y="${yy}" text-anchor="middle" class="${jenis === "t" ? "kn-mv" : "kn-mk"}${v ? "" : " kn-m0"}">${t}</text>`; };
     const blabel = Array.from({length: nb}, (_, i) => { const x0 = L + (Date.parse(`2026-${String(i + 1).padStart(2, "0")}-01`) - a) / 864e5 * bw, x1 = i + 1 < nb ? L + (Date.parse(`2026-${String(i + 2).padStart(2, "0")}-01`) - a) / 864e5 * bw : W - R, xm = (x0 + x1) / 2;
-      return `<line x1="${x0}" x2="${x0}" y1="${T + ih}" y2="${T + ih + 5}" class="kn-ax"/><text x="${xm}" y="${T + ih + 19}" text-anchor="middle" class="kn-ml">${BLN[i]}</text><text x="${xm}" y="${T + ih + 38}" text-anchor="middle" class="kn-mv${bul[i + 1] ? "" : " kn-m0"}">${bul[i + 1] ? fmt(bul[i + 1]) : "–"}</text>`; }).join("");
+      return `<line x1="${x0}" x2="${x0}" y1="${T + ih}" y2="${T + ih + 5}" class="kn-ax"/><text x="${xm}" y="${T + ih + 19}" text-anchor="middle" class="kn-ml">${BLN[i]}</text>${nilaiB(xm, T + ih + 38, bul[i + 1], "t")}${nilaiB(xm, T + ih + 58, kjB(i + 1), "k")}`; }).join("");
     const px = x(r.puncak[0]) + bw * .39, py = y(r.puncak[1]), kiri = px > W - 170;
     const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])} · ${fmt(r.puncak[1])} titik</text>`;
     return `<svg class="kn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian 2026, puncak ${tgl(r.puncak[0])}">${grid}<line x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}" class="kn-ax"/><g class="kn-br">${bar}</g>${pk}${blabel}</svg>
-      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span>Angka di bawah bulan = jumlah titik sebulan</span></div>`;
+      <div class="kn-leg"><span><i class="kn-lg-t" style="background:#d9534f;border-radius:2px"></i>Titik panas per hari</span><span><i class="kn-lg-t" style="background:#8f1d14;border-radius:2px"></i>7 hari terakhir</span><span><i class="kn-lg-mt"></i>titik panas sebulan</span><span><i class="kn-lg-mk"></i>kompleks api (kejadian) yang menyala di bulan itu</span></div>`;
   }
 
   /* bagian titik panas harian: grafik selebar kartu + tabel lengkap tiap hari dengan hotspot (dibagi 3 lajur) */
@@ -396,12 +400,12 @@
   /* kejadian kebakaran (urut waktu) + kompleks api 7 hari + titik terbaru, tiap bagian berpita navy */
   function kejadianTabel(r) {
     const b7 = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5).toISOString().slice(0, 10);
-    const mxL = Math.max(...r.kejadian.map(e => e[2])), mxT = Math.max(...r.kejadian.map(e => e[3]));
+    const mxT = Math.max(...r.kejadian.map(e => e[3]));
     const kj = `<section class="kn-sek"><div class="kn-band"><b>Kejadian kebakaran</b><span>${r.kejadian.length} kejadian · jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot dihitung satu kejadian</span></div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="kn-cb">Lama</th><th class="kn-cb">Titik panas</th><th>Status</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik panas</th><th>Status</th></tr></thead><tbody>
       ${r.kejadian.map((e, j) => `<tr${e[3] === mxT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
-        <td class="kn-cb"><span class="kn-cbi">${batang(e[2], mxL, "#1d4e89")}<b class="num">${fmt(e[2])} hari</b></span></td><td class="kn-cb"><span class="kn-cbi">${batang(e[3], mxT)}<b class="num">${fmt(e[3])}</b></span></td>
-        <td>${e[1] >= b7 ? '<span class="kn-ak">Masih berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
+        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>
+        <td>${e[1] >= b7 ? '<span class="kn-ak" title="Masih berlangsung: ada hotspot dalam 7 hari terakhir">Berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
       </tbody></table></div></section>`;
     /* keparahan kompleks: titik, lama (hari dengan hotspot), daya api maksimum */
     /* tabel kompleks: 10 terbesar + satu baris ringkasan sisanya; lain = [jumlah, titik, titik maks] di luar daftar */
@@ -409,11 +413,11 @@
       const sisa = ks.slice(10), nS = sisa.length + (lain ? lain[0] : 0), tS = sisa.reduce((a, k) => a + k[3], 0) + (lain ? lain[1] : 0),
         mS = Math.max(0, ...sisa.map(k => k[3]), lain ? lain[2] : 0), nT = ks.length + (lain ? lain[0] : 0);
       return `<section class="kn-sek"><div class="kn-band"><b>${judul}</b><span>${fmt(nT)} kompleks · ${catatan}</span></div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Lokasi</th><th>Koordinat</th><th class="r">Titik</th><th class="r">Hari</th><th>Rentang</th><th class="r">FRP maks (MW)</th><th>Keparahan</th></tr></thead><tbody>
-      ${ks.slice(0, 10).map((k, j) => { const [n, w] = parah(k); return `<tr><td>${j + 1}</td><td class="kn-nw"><b>${esc(k[2].split(",")[0] || "–")}</b>, ${esc((k[2].split(",")[1] || "").trim())}</td>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Kecamatan</th><th>Kabupaten/kota</th><th>Koordinat</th><th class="r">Titik</th><th class="r">Hari</th><th>Rentang</th><th class="r">FRP maks (MW)</th><th>Keparahan</th></tr></thead><tbody>
+      ${ks.slice(0, 10).map((k, j) => { const [n, w] = parah(k); return `<tr><td>${j + 1}</td><td><b>${esc(k[2].split(",")[0] || "–")}</b></td><td>${esc((k[2].split(",")[1] || "").trim() || "–")}</td>
         <td class="num kn-nw"><a class="kn-ln" href="https://www.google.com/maps/dir/?api=1&destination=${k[0]},${k[1]}" target="_blank" rel="noopener">${k[0].toFixed(4)}, ${k[1].toFixed(4)}</a></td>
         <td class="r"><b>${fmt(k[3])}</b></td><td class="r">${fmt(k[6])}</td><td class="kn-nw">${rentang(k[4], k[5])}</td><td class="r">${fmt(k[7])}</td><td><span class="kn-pr" style="--w:${w}">${n}</span></td></tr>`; }).join("")}
-      ${nS ? `<tr class="kn-sub"><td></td><td colspan="2">${fmt(nS)} kompleks kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
+      ${nS ? `<tr class="kn-sub"><td></td><td colspan="3">${fmt(nS)} kompleks kecil lain</td><td class="r">${fmt(tS)}</td><td colspan="4" class="kn-mt">masing-masing ≤ ${fmt(mS)} titik</td></tr>` : ""}
       </tbody></table></div></section>`; };
     const kl = r.kompleks_lalu || [];
     const kp = (r.kompleks?.length ? tabelK("Kompleks api 7 hari terakhir", r.kompleks, null, "titik berdekatan ≤ 1,5 km") : "")
@@ -425,12 +429,12 @@
       </tbody></table></div></section>`;
     /* kebakaran di gambut: kejadian yang titiknya jatuh di lahan gambut (jeda sama dengan kejadian umum) */
     const gk = r.gambut_kejadian || [];
-    const gm = gk.length ? (() => { const mL = Math.max(...gk.map(e => e[2])), mT = Math.max(...gk.map(e => e[3]));
+    const gm = gk.length ? (() => { const mT = Math.max(...gk.map(e => e[3]));
       return `<section class="kn-sek"><div class="kn-band"><b>Kebakaran di lahan gambut</b>${pitaStat([`<b>${fmt(r.gambut_ha)}</b> ha gambut di konsesi`, `<b>${fmt(r.gambut_titik)}</b> titik`, `<b>${ha(r.gambut_bakar_ha)}</b> ha terbakar`, `<b>${fmt(gk.length)}</b> kejadian`])}</div>
-      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="kn-cb">Lama</th><th class="kn-cb">Titik di gambut</th><th>Status</th></tr></thead><tbody>
+      <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Periode</th><th class="r">Lama</th><th class="r">Titik di gambut</th><th>Status</th></tr></thead><tbody>
       ${gk.map((e, j) => `<tr${e[3] === mT ? ' class="kn-pk"' : ""}><td>${j + 1}</td><td class="kn-nw"><b>${rentang(e[0], e[1])}</b></td>
-        <td class="kn-cb"><span class="kn-cbi">${batang(e[2], mL, "#6b4a2b")}<b class="num">${fmt(e[2])} hari</b></span></td><td class="kn-cb"><span class="kn-cbi">${batang(e[3], mT, "#6b4a2b")}<b class="num">${fmt(e[3])}</b></span></td>
-        <td>${e[1] >= b7 ? '<span class="kn-ak">Masih berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
+        <td class="r">${fmt(e[2])} hari</td><td class="r"><b>${fmt(e[3])}</b></td>
+        <td>${e[1] >= b7 ? '<span class="kn-ak" title="Masih berlangsung: ada hotspot dalam 7 hari terakhir">Berlangsung</span>' : '<span class="kn-sl">Selesai</span>'}</td></tr>`).join("")}
       </tbody></table></div></section>`; })() : "";
     return `<div class="kn-dua kn-dua-b"><div>${kj}</div><div>${tt}</div></div>${gm}${kp}`;
   }
