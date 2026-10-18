@@ -1,42 +1,53 @@
-"""Peluang cekaman air padi (penanda risiko gagal panen) per kabupaten -> public/data/kekeringan_padi.json
+"""Cekaman air padi tadah hujan (penanda risiko gagal panen) per kabupaten -> public/data/kekeringan_padi.json
 
 INI INDIKATOR CEKAMAN AIR, BUKAN DATA PUSO. Kementan menetapkan puso dari pengamatan lapangan (kerusakan > 75%); model ini hanya menghitung
 seberapa sering skenario ensemble membuat padi tadah hujan kekurangan air. Sawah beririgasi, pompa, dan genangan sawah tidak dimodelkan, jadi
 angka lebih tinggi dari kenyataan di daerah beririgasi. Repo tidak punya data luas sawah: bobot kabupaten = penduduk (bukan luas sawah) dan
-semua kabupaten ditandai `data_sawah: false`.
+semua kabupaten ditandai `data_sawah: false`. JANGAN diperingkat lintas wilayah: tanah, hujan, dan tanam beda tiap wilayah; yang bermakna adalah
+`selisih` = penurunan hasil skenario ensemble dikurangi penurunan hasil di wilayah yang sama bila hujan sama dengan klimatologi (Normal).
 
-Model (FAO-56 bab 8 neraca air tanaman tunggal + FAO-33 penurunan hasil), per anggota SEAS5 di tiap titik 2 derajat (musiman.json):
-  Asumsi tanam   : 15 November (awal musim hujan; tahun El Nino bisa mundur), umur 120 hari, tanah mulai kapasitas lapang (sawah dilumpurkan).
-  Fase (hari)    : awal 20, vegetatif 30, generatif 40, pemasakan 30 (FAO-56 Tabel 11, padi 30/30/60/30 hari, diringkas ke varietas 120 hari).
-  Kc             : 1,05 awal; naik linear ke 1,20 selama vegetatif; 1,20 generatif; turun linear ke 0,75 selama pemasakan (FAO-56 Tabel 12 padi:
-                   ini 1,05, tengah 1,20, akhir 0,90-0,60; dipakai titik tengah 0,75).
-  Tanah          : air tersedia total TAW = 100 mm (zona akar 0,5 m x 0,20 m/m, lempung berat; FAO-56 Tabel 19), fraksi p = 0,20 (FAO-56 Tabel 22 padi),
-                   stres Ks = (TAW - Dr) / ((1 - p) TAW) bila Dr > p TAW; kelebihan hujan dibuang (tanpa genangan sawah).
+Model (FAO-56 bab 8 neraca air tanaman tunggal + FAO-33 penurunan hasil), per sel 0,5 derajat dan per anggota SEAS5 titik 2 derajatnya (musiman.json).
+Konstanta tanaman dan tanah dari scripts/kekeringan/fao.py (dicocokkan ke teks FAO-56 oleh pengerja neraca):
+  Fase (hari)    : awal 30, perkembangan 30, tengah 60, akhir 30 = 150 hari (FAO-56 Tabel 11, padi tropis).
+  Kc             : 1,05 awal, naik linear ke 1,20 selama perkembangan, 1,20 tengah, turun linear ke 0,90 selama akhir (Tabel 12).
+  Tanah          : TAW = 1000 (qFC - qWP) Zr = 65 mm (lempung Tabel 19, Zr 0,5 m Tabel 22), p = 0,20 (Tabel 22). Ks = (TAW - Dr) / ((1 - p) TAW)
+                   bila Dr > p TAW; kelebihan hujan dibuang (tanpa genangan sawah); tanah mulai kapasitas lapang saat tanam (sawah dilumpurkan).
   ETa            : Ks x Kc x ET0 harian (ET0 = rerata anggota SEAS5 di blok 4 derajat).
-  Hasil          : Ya/Ym = 1 - Ky (1 - sum ETa / sum ETc), Ky = 1,09 untuk padi seluruh musim (Doorenbos & Kassam 1979, FAO-33).
-                   Ky per fase tidak dipakai (nilainya tidak saya verifikasi ke sumber), jadi hanya defisit per fase yang dilaporkan.
-  Gagal panen    : penurunan hasil >= 50% (AMBANG_GAGAL). Tahap kedua: penurunan >= 25% (AMBANG_TURUN). Ambang ini pilihan kami, bukan definisi resmi.
+  Hasil          : Ya/Ym = 1 - Ky (1 - sum ETa / sum ETc), Ky = 1,09 padi seluruh musim (Doorenbos & Kassam 1979, FAO-33). Ky per fase tidak dipakai.
+  Gagal panen    : penurunan hasil >= 50% (AMBANG_GAGAL), tahap kedua >= 25% (AMBANG_TURUN). Ambang pilihan kami, bukan definisi resmi.
+  Tanam per sel  : ONSET hujan klimatologi POWER 1991-2020 sel itu: bulan pertama (urutan Sep, Okt, Nov, Des, Jan, Feb, Mar) yang jumlah hujan
+                   klimatologinya >= 150 mm DAN bulan berikutnya juga >= 150 mm (setara awal musim hujan BMKG 50 mm/dasarian, tiga dasarian berturut-turut).
+                   Tanpa bulan seperti itu (wilayah kering): bulan pertama >= 100 mm, atau bulan terbasah. Tanam = tanggal 15 bulan itu, tidak sebelum
+                   tanggal terbit prakiraan.
+  Di luar prakiraan : musim 150 hari melewati ujung prakiraan (~150 hari); sisanya diisi hujan klimatologi bulanan. Bagian itu dilaporkan (`klim_pct`).
+  Normal         : model yang sama dijalankan dengan hujan harian = rerata klimatologi bulan itu (konstan per hari) sepanjang musim. SEAS5 mentah di bulan +2/+3
+                   membawa bias (median anggota 1,1 sampai 1,2 kali klimatologi), jadi selisih sebagian mencerminkan bias itu.
 
 Pakai:  python3 scripts/kekeringan/padi.py      |  python3 scripts/kekeringan/padi.py uji
 """
-import datetime as dt, json, os, statistics, sys, time
+import calendar, datetime as dt, json, os, statistics, sys, time
 
 AB = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AB)
 sys.path.insert(1, os.path.join(AB, "..", "banjir"))
 from umum import baca, simpan
+import fao
 import hth as H
+import spi as SPI
 
-TANAM = (11, 15)
-FASE = (("awal", 20), ("vegetatif", 30), ("generatif", 40), ("pemasakan", 30))
-KC_AWAL, KC_TENGAH, KC_AKHIR = 1.05, 1.20, 0.75
-TAW = 100.0
-P_DEPLESI = 0.20
+FASE = tuple(zip(("awal", "perkembangan", "tengah", "akhir"), fao.FASE_PADI))
+KC_AWAL, KC_TENGAH, KC_AKHIR = fao.KC_PADI
+TAW = fao.TAW_MINERAL
+P_DEPLESI = fao.P_PADI
 KY = 1.09
 AMBANG_GAGAL = 0.50
 AMBANG_TURUN = 0.25
 ANGGOTA = 51
 UMUR = sum(h for _, h in FASE)
+ONSET_BULAN = (9, 10, 11, 12, 1, 2, 3)
+ONSET_MM = 150.0
+ONSET_LONGGAR_MM = 100.0
+TANGGAL_TANAM = 15
 
 
 def jadwal_kc():
@@ -87,68 +98,122 @@ def penurunan(eta, etc):
     return min(1.0, max(0.0, KY * (1 - sum(eta) / tc)))
 
 
-def indeks_tanam(tgl, terbit):
-    """Indeks hari tanam di tgl (ISO); tanam tahun terbit atau berikutnya bila sudah lewat. None bila prakiraan tak mencakup masa tanam penuh."""
-    t = dt.date.fromisoformat(terbit)
-    d = dt.date(t.year, *TANAM)
-    if d < t:
-        d = dt.date(t.year + 1, *TANAM)
-    s = d.isoformat()
-    if s not in tgl or tgl.index(s) + UMUR > len(tgl):
+def klim_bulanan(pow_):
+    """{bulan 1..12: (mm/hari, mm/bulan)} rata-rata POWER 1991-2020; bulan tanpa data diabaikan."""
+    out = {}
+    for m in range(1, 13):
+        v = [pow_.get(f"{y}{m:02d}") for y in range(SPI.DASAR[0], SPI.DASAR[1] + 1)]
+        v = [x for x in v if x is not None]
+        if len(v) >= 20:
+            r = sum(v) / len(v)
+            out[m] = (r, r * 30.4)
+    return out
+
+
+def bulan_onset(klim):
+    """Bulan onset hujan (1..12) dari klimatologi bulanan, aturan di docstring; None bila klimatologi tak lengkap."""
+    for b, nb in zip(ONSET_BULAN, ONSET_BULAN[1:] + ONSET_BULAN[:1]):
+        if b in klim and nb in klim and klim[b][1] >= ONSET_MM and klim[nb][1] >= ONSET_MM:
+            return b
+    for b in ONSET_BULAN:
+        if b in klim and klim[b][1] >= ONSET_LONGGAR_MM:
+            return b
+    cand = [(klim[b][1], b) for b in ONSET_BULAN if b in klim]
+    return max(cand)[1] if cand else None
+
+
+def tanggal_tanam(bulan, terbit):
+    """Tanggal 15 `bulan` pada musim berjalan (Sep-Des tahun terbit, Jan-Mar tahun berikutnya); tidak lebih awal dari tanggal terbit."""
+    th = terbit.year if bulan >= 7 else terbit.year + 1
+    return max(dt.date(th, bulan, TANGGAL_TANAM), terbit)
+
+
+def seri_musim(tanam, tgl_fc, anggota_p, et0_fc, klim):
+    """Hujan dan ET0 UMUR hari sejak `tanam`: anggota SEAS5 (anggota_p[hari]) di dalam prakiraan, klimatologi bulanan di luarnya.
+    Mengembalikan (hujan, et0, jumlah hari terisi klimatologi)."""
+    idx = {d: i for i, d in enumerate(tgl_fc)}
+    ekor = sum(et0_fc[-14:]) / len(et0_fc[-14:])
+    p, e, kl = [], [], 0
+    for k in range(UMUR):
+        d = tanam + dt.timedelta(days=k)
+        i = idx.get(d)
+        if i is not None:
+            p.append(max(0.0, anggota_p(i)))
+            e.append(et0_fc[i])
+        else:
+            p.append(klim[d.month][0])
+            e.append(ekor)
+            kl += 1
+    return p, e, kl
+
+
+def hasil_sel(pow_, v, tgl_fc, terbit):
+    """Satu sel: v = {'p': [hari][anggota], 'et0': [hari]} titik induknya -> dict penurunan per anggota, Normal, tanam, bagian klimatologi. None bila klimatologi kurang."""
+    klim = klim_bulanan(pow_)
+    b = bulan_onset(klim)
+    if b is None or len(klim) < 12:
         return None
-    return tgl.index(s)
-
-
-def jalankan_titik(v, i0):
-    """Satu titik: v = {'p': [hari][anggota], 'et0': [hari]} -> list penurunan hasil per anggota + defisit fase rata-rata."""
-    et0 = v["et0"][i0:i0 + UMUR]
-    reds, fase_def = [], [0.0] * 4
+    tanam = tanggal_tanam(b, terbit)
+    reds, fd, kl = [], [0.0] * 4, 0
     for j in range(ANGGOTA):
-        eta, etc = neraca([max(0.0, row[j]) for row in v["p"][i0:i0 + UMUR]], et0)   # SEAS5 kadang -0,1 mm: artefak model, dianggap 0
+        p, e, kl = seri_musim(tanam, tgl_fc, lambda i: v["p"][i][j], v["et0"], klim)
+        eta, etc = neraca(p, e)
         reds.append(penurunan(eta, etc))
         for f in range(4):
-            fase_def[f] += (1 - eta[f] / etc[f]) / ANGGOTA
-    return reds, fase_def
+            fd[f] += (1 - eta[f] / etc[f]) / ANGGOTA if etc[f] > 0 else 0
+    # Normal: hujan harian = rerata klimatologi bulan itu sepanjang musim; ET0 sama dengan skenario ensemble
+    _, e, _ = seri_musim(tanam, tgl_fc, lambda i: 0.0, v["et0"], klim)
+    pn = [klim[(tanam + dt.timedelta(days=k)).month][0] for k in range(UMUR)]
+    normal = penurunan(*neraca(pn, e))
+    return {"reds": reds, "fase": fd, "normal": normal, "tanam": tanam, "klim_pct": 100 * kl / UMUR}
 
 
-def bangun(musiman, penduduk, pusat, sekarang):
+def bangun(musiman, pow_sel, penduduk, pusat, sekarang):
     if not musiman or not musiman.get("titik"):
         raise ValueError("musiman.json kosong")
-    i0 = indeks_tanam(musiman["tgl"], musiman["terbit"])
-    if i0 is None:
-        raise ValueError(f"prakiraan {musiman['tgl'][0]}..{musiman['tgl'][-1]} tidak mencakup tanam {TANAM} + {UMUR} hari")
-    hasil = {}
-    for k, v in musiman["titik"].items():
-        if v.get("p") is None or v.get("et0") is None:
-            continue
-        reds, fd = jalankan_titik(v, i0)
-        hasil[k] = {"gagal": 100 * sum(1 for r in reds if r >= AMBANG_GAGAL) / ANGGOTA, "turun25": 100 * sum(1 for r in reds if r >= AMBANG_TURUN) / ANGGOTA,
-                    "med": 100 * statistics.median(reds), "p90": 100 * sorted(reds)[int(.9 * (ANGGOTA - 1))], "fase": fd}
-    if not hasil:
-        raise ValueError("tak satu titik pun punya hujan dan ET0")
-    peta = H.peta_kec(penduduk, pusat, musiman["anak"])
+    terbit = dt.date.fromisoformat(musiman["terbit"])
+    tgl_fc = [dt.date.fromisoformat(t) for t in musiman["tgl"]]
+    if len(tgl_fc) < 60:
+        raise ValueError(f"prakiraan hanya {len(tgl_fc)} hari")
+    sel = {}
+    for c, t in musiman["anak"].items():
+        v = musiman["titik"].get(t)
+        if v and v.get("p") is not None and v.get("et0") is not None and c in pow_sel:
+            r = hasil_sel(pow_sel[c], v, tgl_fc, terbit)
+            if r:
+                reds = r["reds"]
+                sel[c] = {"gagal": 100 * sum(1 for x in reds if x >= AMBANG_GAGAL) / ANGGOTA, "turun25": 100 * sum(1 for x in reds if x >= AMBANG_TURUN) / ANGGOTA,
+                          "med": 100 * statistics.median(reds), "p90": 100 * sorted(reds)[int(.9 * (ANGGOTA - 1))], "normal": 100 * r["normal"], "fase": r["fase"],
+                          "tanam": r["tanam"], "klim_pct": r["klim_pct"]}
+    if not sel:
+        raise ValueError("tak satu sel pun punya hujan, ET0, dan klimatologi")
+    peta = H.peta_kec(penduduk, pusat, sel)
     kode = H.kode_kab(penduduk)
     per_kab = {}
     for prov, kab, jiwa, c in peta:
-        t = musiman["anak"].get(c)
-        if t in hasil:
-            per_kab.setdefault(kab, []).append((jiwa, hasil[t]))
+        per_kab.setdefault(kab, []).append((jiwa, sel[c]))
 
     def rata(d, f):
         return sum(w * f(r) for w, r in d) / sum(w for w, _ in d)
     kab = {}
     for k, d in per_kab.items():
         fd = [rata(d, lambda r, f=f: r["fase"][f]) for f in range(4)]
+        med, normal = rata(d, lambda r: r["med"]), rata(d, lambda r: r["normal"])
+        tanam = sorted(r["tanam"] for _, r in d)[len(d) // 2]
         kab[k] = {"kode": kode.get(k), "prov": k.split("|")[0], "gagal": round(rata(d, lambda r: r["gagal"])), "turun25": round(rata(d, lambda r: r["turun25"])),
-                  "turun_med": round(rata(d, lambda r: r["med"])), "turun_p90": round(rata(d, lambda r: r["p90"])),
+                  "turun_med": round(med), "turun_p90": round(rata(d, lambda r: r["p90"])), "turun_normal": round(normal), "selisih": round(med - normal),
+                  "tanam": tanam.isoformat(), "klim_pct": round(rata(d, lambda r: r["klim_pct"])),
                   "fase_terberat": FASE[max(range(4), key=lambda f: fd[f])][0], "defisit_fase": [round(100 * x) for x in fd], "data_sawah": False}
+    tg = sorted(r["tanam"] for r in sel.values())
     return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Pantau Bencana", "terbit": musiman["terbit"],
-            "tanam": musiman["tgl"][i0], "panen": musiman["tgl"][i0 + UMUR - 1], "fase": [{"nama": n, "hari": h} for n, h in FASE],
+            "tanam": {"rentang": [tg[0].isoformat(), tg[-1].isoformat()], "definisi": f"onset hujan klimatologi POWER 1991-2020 per sel: bulan pertama dengan hujan >= {ONSET_MM:g} mm dan bulan berikutnya juga; tanam tanggal {TANGGAL_TANAM} bulan itu, paling awal tanggal terbit"},
+            "fase": [{"nama": n, "hari": h} for n, h in FASE], "umur": UMUR,
             "ambang": {"gagal_pct": int(100 * AMBANG_GAGAL), "turun_pct": int(100 * AMBANG_TURUN)},
             "catatan": "Indikator cekaman air padi tadah hujan, BUKAN data puso: Kementan menetapkan puso dari pengamatan lapangan. Irigasi, pompa, dan genangan sawah "
-                       "tidak dimodelkan, jadi angka di daerah beririgasi terlalu tinggi. Tanam diasumsikan 15 November dan bobot kabupaten memakai penduduk karena "
-                       "data luas sawah belum ada. Hujan ensemble tanpa koreksi bias.",
-            "model": {"ky": KY, "taw_mm": TAW, "p_deplesi": P_DEPLESI, "kc": [KC_AWAL, KC_TENGAH, KC_AKHIR], "sumber": "FAO-56 (Allen 1998) bab 8; FAO-33 (Doorenbos & Kassam 1979)"},
+                       "tidak dimodelkan, jadi angka di daerah beririgasi terlalu tinggi. Tanam mengikuti onset hujan klimatologi tiap sel dan bobot kabupaten memakai penduduk karena "
+                       "data luas sawah belum ada. Jangan diperingkat antarwilayah; bacalah selisih terhadap Normal (hujan klimatologi) di wilayah yang sama. "
+                       "Hujan ensemble tanpa koreksi bias, dan bagian musim di luar prakiraan (klim_pct) memakai hujan klimatologi.",
+            "model": {"ky": KY, "taw_mm": TAW, "p_deplesi": P_DEPLESI, "kc": [KC_AWAL, KC_TENGAH, KC_AKHIR], "sumber": "FAO-56 (Allen 1998) bab 8 lewat fao.py; FAO-33 (Doorenbos & Kassam 1979)"},
             "kab": kab}
 
 
