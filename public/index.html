@@ -1489,6 +1489,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
         </details>
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
+          <label><input type="checkbox" data-l="khg"> Kesatuan Hidrologis Gambut (KHG)</label>
           <label hidden><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label><!-- kotak asli; dikendalikan pil "Batas izin" di ubin Konsesi (lapisan5.js SUB.konsesig) -->
           <label hidden><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label><!-- peta 2017 disembunyikan: diganti kwskemenhut; input dipertahankan karena Peta.pasang() membacanya -->
         </details>
@@ -1738,7 +1739,7 @@ const Peta = {
   lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("titik")) return;
-    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "kawasan", "konsesi", "udara", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
+    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "khg", "kawasan", "konsesi", "udara", "metar"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
     const bawahLabel = this.lapisAwal();
     peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
@@ -1963,6 +1964,14 @@ const Lapis = {
     const bawahLabel = Peta.lapisAwal(), gaya = {
       gambut: async () => { const d = this.cache.gambut ||= await muatJSON("data/lahan/gambut.geojson");
         peta.addSource("gambut", {type: "geojson", data: d}); peta.addLayer({id: "gambut", type: "fill", source: "gambut", paint: {"fill-color": "#6b4a2b", "fill-opacity": .38}}, "wil-line"); },
+      /* batas KHG (BRGM PRIMS): garis putus-putus + nama mulai zoom 8; satu KHG = satu bentang hidrologis yang dikelola utuh */
+      khg: async () => { const d = this.cache.khg ||= await muatJSON("data/lahan/khg.geojson"), lb = ["interpolate", ["linear"], ["zoom"], 5, .8, 10, 2.2];
+        peta.addSource("khg", {type: "geojson", data: d});
+        /* sarung gelap di bawah garis kuning putus-putus: tetap terbaca di citra satelit maupun peta terang */
+        peta.addLayer({id: "khg-sar", type: "line", source: "khg", paint: {"line-color": "#2a1a0c", "line-opacity": .55, "line-width": ["interpolate", ["linear"], ["zoom"], 5, 2.4, 10, 3.8]}}, "wil-line");
+        peta.addLayer({id: "khg", type: "line", source: "khg", paint: {"line-color": "#f2c879", "line-width": lb, "line-dasharray": [3, 2]}}, "wil-line");
+        peta.addLayer({id: "khg-lbl", type: "symbol", source: "khg", minzoom: 8, layout: {"text-field": ["get", "nama"], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-max-width": 12},
+          paint: {"text-color": "#f7dca6", "text-halo-color": "#2a1a0c", "text-halo-width": 1.6}}); },
       kawasan: async () => { const d = this.cache.kawasan ||= await muatJSON("data/lahan/kawasan.geojson");
         const w = ["match", ["get", "fungsi"], "HK", "#1f7a3a", "THR", "#1f7a3a", "HL", "#5a9e74", "HP", "#9ccc65", "HPT", "#c5e1a5", "HPK", "#e6ee9c", "#cccccc"];
         peta.addSource("kawasan", {type: "geojson", data: d}); peta.addLayer({id: "kawasan", type: "fill", source: "kawasan", paint: {"fill-color": w, "fill-opacity": .35}}, "wil-line");
@@ -2468,12 +2477,12 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
   fwi: ["#5a9e74", "#c9503a", "api"], pfvi: ["#4a3426", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
   hutan: ["#1f5a3a", "#5fae6e", "hutan"], konsesig: ["#7a4bb0", "#e58a45", "pabrik"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
-  gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
+  gambut: ["#4a3426", "#a0764f", "daun"], khg: ["#5a3a1c", "#c9a27a", "kanal"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
 const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
+  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
@@ -2492,7 +2501,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   if (li?.checked) { li.checked = false; li.dispatchEvent(new Event("change", {bubbles: true})); }
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], gambut: ["gambut"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
@@ -2548,6 +2557,7 @@ function renderLegenda() {
     <div class="leg" style="margin-top:4px">${S.meta.status.map((s, i) => i === 0 || (i < 3 && z < 6) ? "" : `<span><i class="sw" style="background:${["#5a9e74", "#4f8fc4", "#e58a45", "#c9503a"][i]}"></i>${s}</span>`).join("")}</div>
 `}
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
+    ${Peta.lihat("khg") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:none;border-top:2px dashed #e0a94a;height:0;margin-top:6px"></i>Batas KHG (BRGM PRIMS)</span></div>` : ""}
     ${Peta.lihat("kawasan") ? `<div class="lbl" style="margin-top:8px">Kawasan hutan</div><div class="leg" style="margin-top:4px">${[["#1f7a3a", "Konservasi / Tahura (BKSDA, Taman Nasional)"], ["#5a9e74", "Hutan lindung (pemda)"], ["#9ccc65", "Hutan produksi (pemegang PBPH)"], ["#c5e1a5", "Produksi terbatas"], ["#e6ee9c", "Produksi dapat dikonversi"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data ± 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#c98a3c"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#2f6f8f"></i>HPH (hutan alam)</span></div>` : ""}
     ${Peta.lihat("udara") ? `<div class="lbl" style="margin-top:8px">Dukungan udara</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:#d06a33;border:2px solid #fff"></i>Pangkalan helikopter (lingkar 100 km)</span><span><i class="sw dot" style="background:#fff;border:2px solid #d06a33"></i>Pangkalan aju helikopter</span><span><i class="sw dot" style="background:#2f6f8f;border:2px solid #fff"></i>Pangkalan modifikasi cuaca</span></div>` : ""}
@@ -5619,6 +5629,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Bandara, landasan, helipad", "OurAirports + OpenStreetMap", "domain publik; ODbL", "titik", "manual", "udara.json"],
       ["METAR", "aviationweather.gov (NOAA)", "tidak dicantumkan", "25 bandara", "harian", "metar.json"],
       ["Gambut", "GFW Global peatland extent v20230315 (Miettinen dkk. 2016 + Gumbricht dkk. 2017)", "CC BY 4.0", "ubin z8 ± 600 m, sel 2 × 2 piksel ± 1,2 km (gambut bila ≥ 2 dari 4 piksel)", "manual", "lahan/gambut.geojson"],
+      ["Kesatuan Hidrologis Gambut (KHG)", "BRGM, PRIMS (prims.brgm.go.id), GeoServer WFS prims:khg", "boleh di luar PRIMS dengan tautan ke wali data; non-komersial", "518 KHG, poligon disederhanakan ± 220 m", "manual", "lahan/khg.geojson"],
       ["Konsesi sawit, HTI, HPH, tambang", "GFW (data KLHK; sawit & HPH ± 2014), Trase (HTI 2020–2022, CC BY 4.0), Kemenhut PPKH (tambang Jan 2026)", "Indonesia dikecualikan dari CC BY 4.0", "poligon disederhanakan", "manual", "lahan/konsesi.geojson"],
       ["Kawasan hutan", "KLHK versi 2017 lewat akun GFW di ArcGIS Online", "tidak dicantumkan", "poligon disederhanakan", "manual", "lahan/kawasan.geojson"],
       ["Luas terbakar resmi 2018–2026", "KLHK SiPongi (2018–2023 sama dengan kutipan Tulisan Hukum JDIH BPK 2024)", "tidak dicantumkan", "per provinsi per tahun", "tetap", "luas_resmi.json"],
