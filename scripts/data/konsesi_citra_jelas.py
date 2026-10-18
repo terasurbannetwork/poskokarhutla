@@ -132,7 +132,7 @@ def main():
     jalur = os.path.join(DIR, "citra_jelas.json")
     hasil = json.load(open(jalur)) if os.path.exists(jalur) else {}
     rs = [r for k in PROV if os.path.exists(os.path.join(DIR, f"{k}.json"))
-          for r in json.load(open(os.path.join(DIR, f"{k}.json")))["perusahaan"][:TOP] if os.environ.get("KONSESI_ULANG") or r["id"] not in hasil]
+          for r in json.load(open(os.path.join(DIR, f"{k}.json")))["perusahaan"][:TOP] if os.environ.get("KONSESI_ULANG") or not hasil.get(r["id"])]
     print(f"{len(rs)} konsesi", file=sys.stderr)
 
     def jalan(r):
