@@ -4,7 +4,9 @@
 (function (root) {
   const POTONG = [55.4, 150.4, 250.4];
   const ST = ["normal", "waspada", "siaga", "awas"];
-  const ST_NAMA = {normal: "Normal", waspada: "Waspada", siaga: "Siaga", awas: "Awas"};
+  /* dua skala berdampingan (docs/multi-bencana/bencana/udara.md §2): tingkat Pantau Bencana + kategori ISPU. Provinsi tetap kategori ISPU saja. */
+  const ST_NAMA = {normal: "Normal (Baik/Sedang)", waspada: "Waspada (Tidak sehat)", siaga: "Siaga (Sangat tidak sehat)", awas: "Awas (Berbahaya)"};
+  const labelStatus = s => ST_NAMA[s] || "–";
   const ST_WARNA = {normal: "#5a9e74", waspada: "#e8743b", siaga: "#d64545", awas: "#8a2be2"};
   const statusDari = v => ST[POTONG.reduce((n, b) => n + (v > b), 0)];
   const rank = s => ST.indexOf(s);
@@ -35,6 +37,6 @@
     else t.push(`Dikoreksi memakai ${koreksi.n_stasiun} stasiun (${koreksi.metode}).`);
     return t; };
   const kataJam = (iso, tz = "Asia/Jakarta") => new Date(iso).toLocaleString("id-ID", {timeZone: tz, weekday: "short", hour: "2-digit", minute: "2-digit"}).replace(/\./g, ":") + " WIB";
-  const api = {POTONG, ST, ST_NAMA, ST_WARNA, statusDari, rank, rata24, statusJam, statusHari, terburuk, indeksJam, banding, hitungStatus, normBagian, garisLintasan, lapisAda, persen, desimal, ringkasGalat, kataJam};
+  const api = {POTONG, ST, ST_NAMA, labelStatus, ST_WARNA, statusDari, rank, rata24, statusJam, statusHari, terburuk, indeksJam, banding, hitungStatus, normBagian, garisLintasan, lapisAda, persen, desimal, ringkasGalat, kataJam};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.Murni = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -41,6 +41,11 @@ test("garisLintasan: hanya lapis terpilih, koordinat tanpa jam", () => {
   const g = M.garisLintasan(l, "850hPa"); assert.equal(g.features.length, 1); assert.deepEqual(g.features[0].geometry.coordinates, [[100, -2], [101, -2.5]]);
   assert.deepEqual(M.lapisAda(l).sort(), ["10m", "850hPa"]); assert.equal(M.garisLintasan(null, "10m").features.length, 0);
 });
+test("labelStatus: dua skala berdampingan, tak dikenal jadi tanda hubung", () => {
+  assert.equal(M.labelStatus("normal"), "Normal (Baik/Sedang)"); assert.equal(M.labelStatus("waspada"), "Waspada (Tidak sehat)");
+  assert.equal(M.labelStatus("siaga"), "Siaga (Sangat tidak sehat)"); assert.equal(M.labelStatus("awas"), "Awas (Berbahaya)");
+  assert.equal(M.labelStatus(null), "–"); M.ST.forEach(s => assert.ok(M.labelStatus(s).includes("(")));
+});
 test("format Indonesia: persen dan desimal bertanda koma, null jadi tanda hubung", () => {
   assert.equal(M.persen(0.71), "71%"); assert.equal(M.persen(null), "–"); assert.equal(M.desimal(null), "–");
   assert.ok(!/—/.test(M.ST.join(""))); assert.match(M.desimal(1.5, 1), /^1[,.]5$/);
