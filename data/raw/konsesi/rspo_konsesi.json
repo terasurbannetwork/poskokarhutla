@@ -1,0 +1,4278 @@
+{
+"sumber": "RSPO member concessions via Global Forest Watch (dataset rspo_oil_palm v20200401, data RSPO 2020), negara Indonesia",
+"url": "https://data.globalforestwatch.org/",
+"unit": [
+{
+"grup": "Asosiasi Petani Sawit Swadaya Amanah",
+"perusahaan": "Fakhrudin",
+"kebun": "Bina Eka",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Ivesta Karya Bakti",
+"kebun": "PT IKB",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Karya Bakti Agro Sejahtera",
+"kebun": "PT KBAS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Karya Makmur Bahagia",
+"kebun": "PT KMB",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Karya Makmur Langgeng",
+"kebun": "PT KML",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Agro Manunggal Sawitindo",
+"kebun": "PT AMS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Agro Sejati Manunggal",
+"kebun": "PT ASM",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Andalan Sukses Makmur",
+"kebun": "PT ASMR",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Bumitama Gunajaya Abadi",
+"kebun": "PT BGB",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Gemilang Makmur Subur",
+"kebun": "PT GMS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Gunajaya Harapan Lestari",
+"kebun": "PT GHL",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Gunajaya Karya Gemilang",
+"kebun": "PT GKG",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Gunajaya Ketapang Sentosa",
+"kebun": "PT GKS",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Ladang Sawit Mas",
+"kebun": "PT LSM",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Langgeng Makmur Sejahtera",
+"kebun": "PT LMS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Lestari Gemilang Intisawit",
+"kebun": "PT LGI",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Masuba Citra Mandiri",
+"kebun": "PT MCM",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Riau"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Nabatindo Agro Subur",
+"kebun": "PT NAS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Nabatindo Karya Utama",
+"kebun": "PT NKU",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Agri Plus",
+"kebun": "PT AGP",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Damai Agro Sejahtera",
+"kebun": "PT DAS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Fajar Bumi Nabati",
+"kebun": "PT FBI",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Gemilang Subur Maju",
+"kebun": "PT GSM",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Hungarindo Persada",
+"kebun": "PT HPD",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Raya Sawit Manunggal",
+"kebun": "PT RSM",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Wahana Hijau Indah",
+"kebun": "PT SPA",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "PT Wahana Hijau Indah",
+"kebun": "PT WHI",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimanatan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Sejahtera Sawit Lestari",
+"kebun": "PT SSL",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Barat"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Tanah Tani Lestari",
+"kebun": "PT TTL",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Windu Nabati Sejahtera",
+"kebun": "PT WNS",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Windu Nabatindo Abadi",
+"kebun": "PT WNA",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Bumitama Agri Limited",
+"perusahaan": "Windu Nabatindo Lestari",
+"kebun": "PT WNL",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "Kalimantan Tengah"
+},
+{
+"grup": "Cargill Incorporated",
+"perusahaan": "PT Bilah Plantindo",
+"kebun": "Bilah Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "Cargill Incorporated",
+"perusahaan": "PT Pangkatan Indonesia",
+"kebun": "Pangkatan Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "Cargill Incorporated",
+"perusahaan": "PT Prima Mitrajaya Mandiri",
+"kebun": "Prima Mitrajaya Mandiri",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "Cargill Incorporated",
+"perusahaan": "PT Sembada Sennah Maju",
+"kebun": "Sennah Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "IOI Corporation Bhd",
+"perusahaan": "IOI Corporation Bhd",
+"kebun": "SKS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Limpah Sejahtera",
+"kebun": "Limpah Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "FELDA Global Ventures Holdings Berhad",
+"perusahaan": "FELDA Global Ventures Holdings Berhad",
+"kebun": "PT CNP",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "FELDA Global Ventures Holdings Berhad",
+"perusahaan": "FELDA Global Ventures Holdings Berhad",
+"kebun": "PT TAA",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Arindo Tri Sejahtera",
+"kebun": "Arindo Tri Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Borneo Ketapang Permai",
+"kebun": "Borneo Ketapang Permai",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Ciliandra Perkasa",
+"kebun": "Ciliandra Perkasa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Citra Agro Kencana",
+"kebun": "Citra Agro Kencana",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Falcon Agri Persada",
+"kebun": "Falcon Agri Persada",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Gerbang Sawit Indah",
+"kebun": "Gerbang Sawit Indah",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Meridan Sejati Surya Plantation",
+"kebun": "Meridan Sejati Surya Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Mitra Karya Sentosa Ketapang Sanggau",
+"kebun": "Mitra Karya Sentosa Ketapang Sanggau",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Muriniwood Indah Industry",
+"kebun": "Muriniwood Indah Industry",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Panca Surya Agrindo",
+"kebun": "Panca Surya Agrindo",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Perdana Intisawit Perkasa",
+"kebun": "Sei Air Hitam",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Perdana Intisawit Perkasa",
+"kebun": "Sei Rokan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Priatama Riau",
+"kebun": "Priatama Riau",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Pulau Tiga Lestari Jaya",
+"kebun": "Pulau Tiga Lestari Jaya",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Subur Arummakmur Semanenek",
+"kebun": "Subur Arummakmur Semanenek",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Surya Dumai Agrindo",
+"kebun": "Surya Dumai Agrindo",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Surya Intisari Raya Lukut",
+"kebun": "Surya Intisari Raya Lukut",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Surya Intisari Raya Mandau",
+"kebun": "Surya Intisari Raya Mandau",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Swadaya Mukti Prakarsa",
+"kebun": "Swadaya Mukti Prakarsa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "First Resources Limited",
+"perusahaan": "Umekah Sari Pratama",
+"kebun": "Umekah Sari Pratama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "Forum Petani Swadaya Merlung Renah Mendaluh (FPS-MRM)",
+"perusahaan": "Lubuk Terap",
+"kebun": "Busro",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Gapoktan Tanjung Sehati",
+"perusahaan": "Gapoktan Tanjung Sehati",
+"kebun": "Imam Ghozali",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Mitra Karya Agroindo",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT MP Leidong West Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Bangka"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT MP Leidong West Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Sumut"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Paramitra Internusa Pratama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "Genting Plantations Berhad",
+"kebun": "PTPSM Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Citra Sawit Cemerlang",
+"kebun": "CSC Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Dwie Warna Karya",
+"kebun": "DWK Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Genting Plantations Nusantara",
+"kebun": "SMA Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Glolablindo Agung Lestari",
+"kebun": "GAL Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Kapuas Maju Jaya",
+"kebun": "KMJ Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Kharisma Inti Usaha",
+"kebun": "KIU Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Sepanjang Intisurya Mulia",
+"kebun": "SISM Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Surya Agro Palma",
+"kebun": "SAP Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT Susantri Permai",
+"kebun": "SP Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Persada Graha Mandiri",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT PP Panigoran",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Sumut"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Ramajaya Pramukti",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kampar Rama"
+},
+{
+"grup": "Genting Plantations Berhad",
+"perusahaan": "PT United Agro Indonesia",
+"kebun": "UAI Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Global Palm Resource Holding Ltd.",
+"perusahaan": "PT Prakarsa Tani Sejati",
+"kebun": "Sei Laur",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Aditunggal Mahajaya",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Agrokarya Primalestari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Agrolestari Mandiri",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Ketapang 1"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Agrolestari Sentosa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Bangun Nusa Mandiri",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Binasawit Abadipratama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Buana Adhitama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Buana Artha Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalteng"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Buana Wiralestari Mas",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kampar Buana"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Bumi Palma Lestari Persada",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Indragiri"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Bumi Permai Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Bangka"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Bumi Sawit Permai",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Sumsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Cahaya Nusa Gemilang",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Djuanda Sawit Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Sumsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Foresta Lestari Dwikarya",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Belitung"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Ivo Mas Tunggal",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Siak"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Kartika Prima Cipta",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Kencana Graha Permai Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kalbar"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Kresna Duta Agroindo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Kresna Duta Agroindo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kaltim"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Meganusa Intisawit",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Indragiri"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Satya Kisma Usaha",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sawit Mas Sejahtera",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Sumsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sawita Karya Manunggul",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sinar Kencana Inti Perkasa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Kalsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sinar Kencana Inti Perkasa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Papua"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Smart Tbk",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kalsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Smart Tbk",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Sumut"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sumber Indah Perkasa",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Lampung"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Sumber Indah Perkasa",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Papua"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Tapian Nadenggan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kalsel"
+},
+{
+"grup": "Golden Agri-Resources Ltd",
+"perusahaan": "Golden Agri-Resources Ltd",
+"kebun": "PT Tapian Nadenggan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kaltim"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Agrajaya Baktitama",
+"kebun": "Agrajaya Baktitama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Agro Bukit CK",
+"kebun": "Agro Bukit CK",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Agro Indomas CK",
+"kebun": "Agro Indomas CK",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Agro Indomas EK",
+"kebun": "Agro Indomas EK",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Agro Wana Lestari",
+"kebun": "Agro Wana Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Batu Mas Sejahtera",
+"kebun": "Batu Mas Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Karya Makmur Sejahtera",
+"kebun": "Karya Makmur Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Nabire Baru",
+"kebun": "Nabire Baru",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Papua"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "RIM Capital CK",
+"kebun": "RIM Capital CK",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Sariwana Adi Perkasa",
+"kebun": "Sariwana Adi Perkasa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Papua"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Sawit Makmur Sejahtera",
+"kebun": "Sawit Makmur Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Sinar Sawit Andalan",
+"kebun": "Sinar Sawit Andalan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Goodhope Asia Holdings",
+"perusahaan": "Sumber Hasil Prima",
+"kebun": "Sumber Hasil Prima",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "IOI Corporation Bhd",
+"perusahaan": "IOI Corporation Bhd",
+"kebun": "BNS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "IOI Corporation Bhd",
+"perusahaan": "IOI Corporation Bhd",
+"kebun": "BSS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "IOI Corporation Bhd",
+"perusahaan": "IOI Corporation Bhd",
+"kebun": "KPAM",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "Koperasi Unit Desa (KUD) Teratai Biru",
+"perusahaan": "Koperasi Unit Desa (KUD) Teratai Biru",
+"kebun": "Kel.4 Mekar Sari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Adei (Mandau)",
+"kebun": "PT Adei (Mandau)",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Adei (Nilo)",
+"kebun": "PT Adei (Nilo)",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Hutan Hijau Mas",
+"kebun": "PT Hutan Hijau Mas",
+"sertifikat": false,
+"anggota_sejak": "2004",
+"prov": "East Kalimantan"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Jabontara Eka Karsa",
+"kebun": "PT Jabontara Eka Karsa",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "East Kalimantan"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Karya Makmur Abadi",
+"kebun": "PT Karya Makmur Abadi",
+"sertifikat": false,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Langkat Nusantara Kepong",
+"kebun": "PT Langkat Nusantara Kepong",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "North Sumatra"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Malindomas Perkebunan",
+"kebun": "PT Malindomas Perkebunan",
+"sertifikat": false,
+"anggota_sejak": "2004",
+"prov": "East Kalimantan"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Mulia Agro Permai",
+"kebun": "PT Mulia Agro Permai",
+"sertifikat": false,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Parit Sembada",
+"kebun": "PT Parit Sembada",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Bangka-Belitung Islands"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Sekarbumi Alamlestari",
+"kebun": "PT Sekarbumi Alamlestari",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Kuala Lumpur Kepong Berhad",
+"perusahaan": "PT Steelindo Wahana Perkasa",
+"kebun": "PT Steelindo Wahan Perkasa",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Bangka-Belitung Islands"
+},
+{
+"grup": "KUD Tani Subur",
+"perusahaan": "Pangkalan Tiga",
+"kebun": "Marmo Rejo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "KUD Tuhu Asih",
+"perusahaan": "KUD Tuhu Asih",
+"kebun": "Kel.06 Handayani",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Bilah Plantindo",
+"kebun": "Bilah Estate",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "Sumatera Utara"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Evans Lestari",
+"kebun": "Evans Lestari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Evans Lestari",
+"kebun": "PT Evans Lestari",
+"sertifikat": false,
+"anggota_sejak": "2006",
+"prov": "Sumatera Selatan"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Gunung Pelawan Lestari",
+"kebun": "Gunung Pelawan Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Bangka-Belitung Islands"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Gunung Pelawan Lestari",
+"kebun": "PT Gunung Pelawan Lestari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Kepulauan Bangka Belitung"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Pangkatan Indonesia",
+"kebun": "Pangkatan Estate",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "Sumatera Utara"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Prima Mitrajaya Mandiri",
+"kebun": "PT Prima Mitrajaya Mandiri",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "Kalimantan Timur"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Sembada Sennah Maju",
+"kebun": "Sennah Estate",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "Sumatera Utara"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Simpang Kiri Plantation Indonesia",
+"kebun": "Simpang Kiri",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Aceh"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Simpang Kiri Plantation Indonesia",
+"kebun": "Simpang Kiri Estate",
+"sertifikat": false,
+"anggota_sejak": "2006",
+"prov": "Aceh"
+},
+{
+"grup": "M.P. Evans Group PLC",
+"perusahaan": "PT Teguh Jayaprima Abadi",
+"kebun": "PT Teguh Jayaprima Abadi",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "Kalimantan Timur"
+},
+{
+"grup": "Noble Plantation Pte Ltd",
+"perusahaan": "PT Henrison Inti Persada",
+"kebun": "Klamono Estate",
+"sertifikat": false,
+"anggota_sejak": "2011",
+"prov": "West Papua"
+},
+{
+"grup": "Noble Plantation Pte Ltd",
+"perusahaan": "PT Henrison Inti Persada",
+"kebun": "Klasafet Estate, Klawilis Estate",
+"sertifikat": false,
+"anggota_sejak": "2011",
+"prov": "West Papua"
+},
+{
+"grup": "Noble Plantation Pte Ltd",
+"perusahaan": "PT Henrison Inti Persada",
+"kebun": "PT Henrison Inti Persada",
+"sertifikat": false,
+"anggota_sejak": "2011",
+"prov": "West Papua"
+},
+{
+"grup": "Noble Plantation Pte Ltd",
+"perusahaan": "PT Pusaka Agro Lestari",
+"kebun": "Iwaka District",
+"sertifikat": false,
+"anggota_sejak": "2011",
+"prov": "Papua"
+},
+{
+"grup": "Noble Plantation Pte Ltd",
+"perusahaan": "PT Pusaka Agro Lestari",
+"kebun": "PAL",
+"sertifikat": false,
+"anggota_sejak": "2011",
+"prov": "Papua"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Agrowiratama",
+"kebun": "Estate Sei Aur",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Globalindo Alam Perkasa",
+"kebun": "Alam Sahara Estate, Alam Murni Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Maju Aneka Sawit",
+"kebun": "Tanah Mas Estate, Sari Mas Estate, Bakung Mas Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Mulia Indah",
+"kebun": "PT Mulia Indah",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Multipersada Gatramegah",
+"kebun": "Estate I",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Sarana Esa Cita",
+"kebun": "PT Sarana Esa Cita",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Agrowiratama",
+"perusahaan": "PT Sukajadi Sawit Mekar",
+"kebun": "Bukit Linang, Bukit Limas, Sebabi, Seranau Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJ Tbk",
+"kebun": "PT ANJ Tbk",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Papua"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT ANJ Tbk",
+"kebun": "PT GSB",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT ANJ Tbk",
+"kebun": "PT PMP",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Papua"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT ANJ Tbk",
+"kebun": "PT PPM",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Papua"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT ANJ Tbk",
+"kebun": "PT SMM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Bangka-Belitung Islands"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT SMM",
+"kebun": "PT ANJA Siais",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJA & PT SMM",
+"kebun": "PT KAL",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Austindo Nusantara Jaya Agri",
+"perusahaan": "PT ANJT & Thomas Andrew M",
+"kebun": "PT ANJA",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Bakrie Sumatera Plantations TBK",
+"perusahaan": "PT Agrowiyana",
+"kebun": "Agrowiyana",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Bakrie Sumatera Plantations TBK",
+"perusahaan": "PT Bakrie Pasaman Plantation",
+"kebun": "Air Balam",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Bakrie Sumatera Plantations TBK",
+"perusahaan": "PT Bakrie Pasaman Plantation",
+"kebun": "Sei Aur",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Barumun Agro Sentosa",
+"perusahaan": "PT Barumun Agro Sentosa",
+"kebun": "Desa Ujung Gading Jae,Kec.Simangambat,Kab.Paluta,Sumut",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Berkat Sawit Sejati",
+"perusahaan": "PT Berkat Sawit Sejati",
+"kebun": "Sei Tungkal Estate, Sei Berau Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Berkat Sawit Sejati",
+"perusahaan": "PT Guntung Idamannusa",
+"kebun": "Estate I, Estate II, Estate III",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Brahma Binabakti",
+"perusahaan": "PT Brahma Binabakti",
+"kebun": "BBB-INTI",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Brahma Binabakti",
+"perusahaan": "PT Brahma Binabakti",
+"kebun": "Pemayung",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Brahma Binabakti",
+"perusahaan": "PT Brahma Binabakti",
+"kebun": "PT Brahma Binabakti",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Cipta Usaha Sejati",
+"perusahaan": "PT Cipta Usaha Sejati",
+"kebun": "PT Cipta Usaha Sejati",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Agro Andalan",
+"kebun": "PT Agro Andalan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Dewata Sawit Nusantara",
+"kebun": "PT Dewata Sawit Nusantara",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Dharma Agrotama Nusantara",
+"kebun": "PT Dharma Agrotama Nusantara",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Dharma Intisawit Lestari",
+"kebun": "PT Dharma Intisawit Lestari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Dharma Intisawit Nugraha",
+"kebun": "PT Dharma Intisawit Nugraha",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Dharma Persada Sejahtera",
+"kebun": "PT Dharma Persada Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Karya Prima Agro Sejahtera",
+"kebun": "PT Karya Prima Agro Sejahtera",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Kencana Alam Permai",
+"kebun": "PT Kencana Alam Permai",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Pilar Wanapersada",
+"kebun": "PT Pilar Wanapersada",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Prima Sawit Andalan",
+"kebun": "PT Prima Sawit Andalan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Putra Utama Lestari",
+"kebun": "PT Putra Utama Lestari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Dharma Satya Nusantara",
+"perusahaan": "PT Swakarsa Sinarsentosa",
+"kebun": "PT Swakarsa Sinarsentosa",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": null,
+"kebun": "ILl AMS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "Inti",
+"kebun": "ISA 1",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "Inti",
+"kebun": "ISA 2",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "Plasma",
+"kebun": "ISA 1",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "Plasma",
+"kebun": "ISA 2",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "PT Gawi Makmur Kalimantan Paser",
+"kebun": "GMK Paser",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "PT Gawi Makmur Kalimantan Paser",
+"kebun": "PT Gawi Makmur Kalimantan Paser",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "PT GMK Site Jorong",
+"kebun": "Jorong",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "PT GMK Site Kintap",
+"kebun": "Kintap",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "PT Gawi Makmur Kalimantan",
+"perusahaan": "PT GMK Site Satui",
+"kebun": "Satui",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "PT Hilton Duta Lestari",
+"perusahaan": "PT Hilton Duta Lestari",
+"kebun": "PT Hilton Duta Lestari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "Plasma Muara Bulian",
+"kebun": "KLM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "Bungo Tebo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "DAS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "GM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "HSJ",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "IIS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KAK",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KAN",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KBL",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KBN",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KKPA Buatan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KLB",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KLO",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KLP",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KLT",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KLU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KMB",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KPM",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KPN",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KPT",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KTD",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KTS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KTU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Inti Indosawit Subur",
+"perusahaan": "PT Inti Indosawit Subur",
+"kebun": "KTZ",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Mentari Pratama",
+"perusahaan": "PT Mentari Pratama",
+"kebun": "PT Mentari Pratama",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Musim Mas",
+"perusahaan": "PT Lestari Abadi Perkasa",
+"kebun": "PT Lestari Abadi Perkasa",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Musim Mas",
+"perusahaan": "PT Musim Mas",
+"kebun": "Estate I - V",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Musim Mas",
+"perusahaan": "PT Unggul Lestari",
+"kebun": "Estate I, Estate II",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Parna Agromas",
+"perusahaan": "PT Parna Agromas",
+"kebun": "PT Parna Agromas",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "AEK Nabara Selatan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "AEK Nabara Utara",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "AEK Raso",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "AEK Torop",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Ambalutu",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Bandar Betsy",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Bandar Selamat",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Bangun",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Baruhur",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Batang Toru",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Bukit Tujuh",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Dadap",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Dusun Hulu A",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Dusun Hulu B",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Dusun Hulu C",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Gunung Monako",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Gunung Pamela",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Gunung Para",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Hapesong",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Huta Padang",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Labuhan Haji",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Membang Muda",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Merbau Selatan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Pulau Mandi",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Rambutan A",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Rambutan B",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Rantau Prapat",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sarang Giting",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sei Daun",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sei Kebara",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sei Meranti",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sei Putih",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sei Silau",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Silau Dunia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Sisumut",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Tanah Raja",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara III",
+"perusahaan": "PT Perkebunan Nusantara III",
+"kebun": "Torgamba",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "ABA",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "AJA",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "BAJ",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "BAL",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "Dolok Ilir (DOI)",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "DOS",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "GUB",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "Laras (LAR)",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "MAR",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "MAT",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "MAY",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "MEP",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "Pabatu (PAB)",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "PAM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "PDM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "SKO",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "TIM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara IV",
+"perusahaan": "PT Perkebunan Nusantara IV",
+"kebun": "ULU",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Air Molek II",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Binio",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Bukit Selasih",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Lubuk Dalam",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "PT Perkebunan Nusantara V",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Rimpian",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Buatan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Galuh",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Garo",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Intan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Kencana",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Lindai",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Pagar",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Rokan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Sei Tapung",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Ser Berlian",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Siasam",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Tamora",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Tanah Putih",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Tandun",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Tanjung Medan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara V",
+"perusahaan": "PT Perkebunan Nusantara V",
+"kebun": "Terantam",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Batang Hari",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Bukit Cermin",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Bunut",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Durian Luncuk",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Ophir",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Pangkalan Lima Puluh Kota",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Rimbo Dua",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Rimbo satu",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Solok Selatan",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "PT Perkebunan Nusantara VI",
+"perusahaan": "PT Perkebunan Nusantara VI",
+"kebun": "Tanjung Lebar",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Rimba Mujur Mahkota",
+"perusahaan": "PT Rimba Mujur Mahkota",
+"kebun": "PT Rimba Mujur Mahkota",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Aek Tarum",
+"kebun": "Belida",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Aek Tarum",
+"kebun": "Mesuji",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Binasawit Makmur",
+"kebun": "Surya Adi",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Gunung Tua Abadi",
+"kebun": "Sumber Sawit",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Mutiara Bunda Jaya",
+"kebun": "Inti Permata Bunda Dua",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Mutiara Bunda Jaya",
+"kebun": "Inti Permata Bunda Satu",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Mutiara Bunda Jaya",
+"kebun": "Mega Terang",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Mutiara Bunda Jaya",
+"kebun": "Tanjung Sari",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "PT Sampoerna Agro TBK",
+"perusahaan": "PT Sampoerna Agro",
+"kebun": "Gading Jaya",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Cipta Davia Mandiri",
+"kebun": "Temaring Estate",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Kartanegara Kumala Sakti",
+"kebun": "Kartanegara Kumala Sakti",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Sawit Sumbermas Sarana",
+"perusahaan": "PT Sawit Sumbermas Sarana",
+"kebun": "HGU 1",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Sawit Sumbermas Sarana",
+"perusahaan": "PT Sawit Sumbermas Sarana",
+"kebun": "HGU 2",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Sawit Sumbermas Sarana",
+"perusahaan": "PT Sawit Sumbermas Sarana",
+"kebun": "HGU 3",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Siringo Ringo",
+"perusahaan": "PT Siringo Ringo (Sumatera Utara)",
+"kebun": "Siringo-Ringo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Kresna Duta Agroindo",
+"kebun": "PT Kresna Duta Agroindo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Kresna Duta Agroindo",
+"kebun": "PT Kresna Duta Agroindo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT MP Leidong West Indonesia",
+"kebun": "PT MP Leidong West Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Bangka-Belitung Islands"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT MP Leidong West Indonesia",
+"kebun": "PT MP Leidong West Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Satya Kisma Usaha",
+"kebun": "PT Satya Kisma Usaha",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Jambi"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Smart Tbk",
+"kebun": "PT Smart Tbk",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Smart Tbk",
+"kebun": "PT Smart Tbk",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Tapian Nadenggan",
+"kebun": "PT Tapian Nadenggan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "PT Smart Tbk",
+"perusahaan": "PT Tapian Nadenggan",
+"kebun": "PT Tapian Nadenggan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Kalimantan"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "AL",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "BB",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "LB",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Aceh"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "LP",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "MP",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "NL",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "SG",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Aceh"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "SL",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Aceh"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "SL",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "SY",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Aceh"
+},
+{
+"grup": "PT Socfin Indonesia",
+"perusahaan": "PT Socfin Indonesia",
+"kebun": "TG",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "PT Tri Bakti Sarimas",
+"perusahaan": "KUD Prima Sehati",
+"kebun": "KUD Prima Sehati",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Tri Bakti Sarimas",
+"perusahaan": "PT Tri Bakti Sarimas",
+"kebun": "Tri Bakti Sarimas",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "PT Triputra Agro Persada",
+"perusahaan": "PT First Lamandau Timber International",
+"kebun": "PT First Lamandau Timber International",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Triputra Agro Persada",
+"perusahaan": "PT Gawi Bahandep Sawit Mekar",
+"kebun": "GBSM",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "PT Tunas Baru Lampung",
+"perusahaan": "PT Tunas Baru Lampung",
+"kebun": "PT Tunas Baru Lampung",
+"sertifikat": true,
+"anggota_sejak": "2006",
+"prov": "South Sumatra"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Cipta Davia Mandiri",
+"kebun": "Long Mesangat Estate",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Kutai Mitra Sejahtera",
+"kebun": "Kedaron Estate",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Persada Bangun Jaya",
+"kebun": "IUP PBJ 2 Kaltim",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Persada Bangun Jaya",
+"kebun": "IUP PBJ 2 Satria",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Prasetia Utama",
+"kebun": "Prasetia Utama",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Putra Bongan Jaya",
+"kebun": "Izin Lokasi PBJ Bongan",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Putra Bongan Jaya",
+"kebun": "Muara Kedang Estate",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Berkat Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Cakra Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Damai Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Lestari Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Perdana Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Rea Kaltim Plantations",
+"kebun": "Sentekan Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Sasana Yudha Bhakti",
+"kebun": "Satria Estate",
+"sertifikat": false,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "REA Holdings Plc.",
+"perusahaan": "PT Sasana Yudha Bhakti",
+"kebun": "Tepian Estate",
+"sertifikat": true,
+"anggota_sejak": "2007",
+"prov": "East Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "AIP Aneka Inti Persada",
+"kebun": "E.Aneka Persada",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "AIP Aneka Inti Persada",
+"kebun": "E.Pinang Sebatang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "AIP Aneka Inti Persada",
+"kebun": "E.Teluk Siak",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BAL Budidaya Agrolestari",
+"kebun": "E.Beturus",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BAL Budidaya Agrolestari",
+"kebun": "E.Pelanjau",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BAL Budidaya Agrolestari",
+"kebun": "E.Sg.Putih",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BGR Bahari Gembira Ria",
+"kebun": "E.Ladang Panjang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BNS Bhumireksa Nusasejati",
+"kebun": "E.Mandah",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BNS Bhumireksa Nusasejati",
+"kebun": "E.Nusa Lestari",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BNS Bhumireksa Nusasejati",
+"kebun": "E.Nusa Perkasa",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BNS Bhumireksa Nusasejati",
+"kebun": "E.Rotan Semulur",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BNS Bhumireksa Nusasejati",
+"kebun": "E.Teluk Bakau",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSC Bina Sains Cemerlang",
+"kebun": "E.Bukit Pinang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSC Bina Sains Cemerlang",
+"kebun": "E.Sg. Pinang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSS Bersama SejahteraSakti",
+"kebun": "E.Gunung Aru",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSS Bersama SejahteraSakti",
+"kebun": "E.Gunung Kemasan",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSS Bersama SejahteraSakti",
+"kebun": "E.Laut Timur",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "BSS Bersama SejahteraSakti",
+"kebun": "E.Pantai Timur",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "GPI Guthrie Pecconnina Indonesia",
+"kebun": "E.Bumi Ayu",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "GPI Guthrie Pecconnina Indonesia",
+"kebun": "E.Karang Ringin",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "GPI Guthrie Pecconnina Indonesia",
+"kebun": "E.Mangun Jaya",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "GPI Guthrie Pecconnina Indonesia",
+"kebun": "E.Napal",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "GPI Guthrie Pecconnina Indonesia",
+"kebun": "E.Rantau Panjang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Sumatra"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "ITH Indotruba Tengah",
+"kebun": "E.Sekunyir",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "ITH Indotruba Tengah",
+"kebun": "E.Seruyan",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "KLR Kridatama Lancar",
+"kebun": "E.Baras Danum",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "KLR Kridatama Lancar",
+"kebun": "E.Kuala Kuayan",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "KLR Kridatama Lancar",
+"kebun": "E.Sapiri",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "KLR Kridatama Lancar",
+"kebun": "E.Sukamandang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMI Laguna Mandiri",
+"kebun": "E.Betung",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMI Laguna Mandiri",
+"kebun": "E.Matalok",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMI Laguna Mandiri",
+"kebun": "E.Rantau",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMI Laguna Mandiri",
+"kebun": "E.Sekayu",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMR Langgeng Muara Makmur",
+"kebun": "E.Bakau",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMR Langgeng Muara Makmur",
+"kebun": "E.Bebunga",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LMR Langgeng Muara Makmur",
+"kebun": "E.Sg. Cengal",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LSI Ladangrumpun Suburabadi",
+"kebun": "E.Angsana",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LSI Ladangrumpun Suburabadi",
+"kebun": "E.Gunung Sari",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LSI Ladangrumpun Suburabadi",
+"kebun": "E.Pantai Bonati",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "LTS Lahan Tani Sakti",
+"kebun": "E.Alur Dumai",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PPP Padang Palma Permai",
+"kebun": "E.Blang Simpo-1",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Aceh"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PPP Padang Palma Permai",
+"kebun": "E.Blang Simpo-2",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Aceh"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSA Paripurna Swakarsa",
+"kebun": "E.Binturung",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSA Paripurna Swakarsa",
+"kebun": "E.Pondok Labu",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSA Paripurna Swakarsa",
+"kebun": "E.Rampa",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSA Paripurna Swakarsa",
+"kebun": "E.Sesulung",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": null
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSK Perusahaan Sri Kuala",
+"kebun": "E.Batang Ara",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Aceh"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "PSS Perkasa Subur Sakti",
+"kebun": "E.Tamiang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Aceh"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SAA Swadaya Andika",
+"kebun": "E.Lanting",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SAA Swadaya Andika",
+"kebun": "E.Randi",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SAA Swadaya Andika",
+"kebun": "E.Sangkoh",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SAA Swadaya Andika",
+"kebun": "E.Selabak",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SHE Sajang Heulang",
+"kebun": "E.Mustika",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "South Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SIA Sime Indo Agro",
+"kebun": "E.East",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SIA Sime Indo Agro",
+"kebun": "E.Sei Mawang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SIA Sime Indo Agro",
+"kebun": "E.West",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SNP Sandika Natapalma",
+"kebun": "E.Awatan",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SNP Sandika Natapalma",
+"kebun": "E.Karya Palma",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "SNP Sandika Natapalma",
+"kebun": "E.Lembiru",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "West Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TGK Tamaco Graha Krida",
+"kebun": "E.Ungkaya",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Sulawesi"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TMP Tunggal Mitra Plantations",
+"kebun": "E.Manggala-1",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TMP Tunggal Mitra Plantations",
+"kebun": "E.Manggala-2",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TMP Tunggal Mitra Plantations",
+"kebun": "E.Manggala-3",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Riau"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TSA Teguh Sempurna",
+"kebun": "E.Batang Garing",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TSA Teguh Sempurna",
+"kebun": "E.Hatantiring",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TSA Teguh Sempurna",
+"kebun": "E.Kawan Batu",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Sime Darby Plantation Berhad",
+"perusahaan": "TSA Teguh Sempurna",
+"kebun": "E.Pemantang",
+"sertifikat": true,
+"anggota_sejak": "2004",
+"prov": "Central Kalimantan"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Rawas Ulu",
+"kebun": "Agro Rawas Ulu East Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Rawas Ulu",
+"kebun": "Agro Rawas Ulu West Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Citra Sawit Mandiri",
+"kebun": "Citra Sawit Mandiri Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Dendymarker Indah Lestari",
+"kebun": "Sei Liam Estate",
+"sertifikat": true,
+"anggota_sejak": "2015",
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Dendymarker Indah Lestari",
+"kebun": "Sei Mandang Estate",
+"sertifikat": true,
+"anggota_sejak": "2015",
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Eastern Sumatra Indonesia",
+"kebun": "Bukit Maradja Estate",
+"sertifikat": true,
+"anggota_sejak": "2010",
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Kati Lama",
+"kebun": "Agro Kati Lama North Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Kati Lama",
+"kebun": "Agro Kati Lama South Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muara Rupit",
+"kebun": "Agro Muara Rupit East Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muara Rupit",
+"kebun": "Agro Muara Rupit West Estate",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Air Bikuk Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Air Buluh Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Bunga Tanjung Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Muko Muko Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "PT Agro Muko",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Sei Betung Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Sungai Kiang Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Talang Petai Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Agro Muko",
+"kebun": "Tanah Rekah Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Kerasaan Indonesia",
+"kebun": "Kerasaan Estate",
+"sertifikat": true,
+"anggota_sejak": "2010",
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Muko Muko Agro Sejahtera",
+"kebun": "Air Majunto Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Muko Muko Agro Sejahtera",
+"kebun": "Malin Deman Estate",
+"sertifikat": true,
+"anggota_sejak": "2011",
+"prov": "Bengkulu"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Tolan Tiga Indonesia",
+"kebun": "Perlabian Estate",
+"sertifikat": true,
+"anggota_sejak": "2010",
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Tolan Tiga Indonesia",
+"kebun": "Tolan Estate",
+"sertifikat": true,
+"anggota_sejak": "2010",
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Toton Usaha Mandiri",
+"kebun": "Toton Usaha Mandiri Estate",
+"sertifikat": true,
+"anggota_sejak": "2015",
+"prov": "North Sumatra"
+},
+{
+"grup": "SIPEF Group",
+"perusahaan": "PT Umbul Mas Wisesa",
+"kebun": "Umbul Mas Wisesa South Estate",
+"sertifikat": true,
+"anggota_sejak": "2015",
+"prov": "North Sumatra"
+},
+{
+"grup": "TDM Plantation Sdn Bhd",
+"perusahaan": "PT RKA",
+"kebun": "ESTATE S2",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "TDM Plantation Sdn Bhd",
+"perusahaan": "PT SRA",
+"kebun": "ESTATE I",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "TDM Plantation Sdn Bhd",
+"perusahaan": "PT SRA",
+"kebun": "ESTATE II",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": null
+},
+{
+"grup": "United Plantations Berhad",
+"perusahaan": "PT Surya Sawit Sejati",
+"kebun": "Arut - Plasma",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "AWB",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "AWS",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "BCAP HGU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "North Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "FDB HGU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "LIN HGU",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "MJC",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "MWJP HGU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "PSM",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "SPMN HGU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "TSH Resources Berhad",
+"perusahaan": "TSH Resources Berhad",
+"kebun": "TSS HGU",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "East Kalimantan"
+},
+{
+"grup": "UD Lestari",
+"perusahaan": "Surip Ngatimin",
+"kebun": "Surip Ngatimin",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "United Plantations Berhad",
+"perusahaan": "PT Surya Sawit Sejati",
+"kebun": "Kumai - Plasma",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "United Plantations Berhad",
+"perusahaan": "PT Surya Sawit Sejati",
+"kebun": "Lada Estate",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "United Plantations Berhad",
+"perusahaan": "PT Surya Sawit Sejati",
+"kebun": "Runtu",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Agro Wira Masang",
+"kebun": "KUD Agro Wira Masang",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Bita Maju Bersama",
+"kebun": "KUD Bita Maju Bersama",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Bukit Sanding Tigo",
+"kebun": "KUD Bukit Sanding Tigo",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Bumi Jaya",
+"kebun": "KUD Bumi Jaya",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Dwi Tunggal",
+"kebun": "KUD Dwi Tunggal",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Agro Palindo Sakti - Sanggau",
+"kebun": "PT Agro Palindo Sakti - Sanggau",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Agro Palindo Sakti Sumsel",
+"kebun": "PT Agro Palindo Sakti Sumsel",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Agronusa Investama - Pahauman",
+"kebun": "PT Agronusa Investama - Pahauman",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Agronusa Investama - Sambas",
+"kebun": "PT Agronusa Investama - Sambas",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT AMP Plantation",
+"kebun": "PT AMP Plantation",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Buluh Cawang Plantation",
+"kebun": "PT Buluh Cawang Plantation",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Maju Jaya(SP7)",
+"kebun": "KUD Maju Jaya(SP7)",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Mutiara Sawit Jaya Kinali",
+"kebun": "KUD Mutiara Sawit Jaya Kinali",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Mutiara Sawit Jaya Lokasi Limpato",
+"kebun": "KUD Mutiara Sawit Jaya Lokasi Limpato",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Patwa Usaha Mandiri",
+"kebun": "KUD Patwa Usaha Mandiri",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Sei Kunyit",
+"kebun": "KUD Sei Kunyit",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Sinar Sawit Bahagia",
+"kebun": "KUD Sinar Sawit Bahagia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Talao",
+"kebun": "KUD Talao",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Tani Mandiri",
+"kebun": "KUD Tani Mandiri",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Tompek Tapian Kandis",
+"kebun": "KUD Tompek Tapian Kandis",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "KUD Tunggal Mulya",
+"kebun": "KUD Tunggal Mulya",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Buluh Cawang Plantation - Sambas",
+"kebun": "PT Buluh Cawang Plantation - Sambas",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Bumi Pratama Khatulistiwa",
+"kebun": "PT Bumi Pratama Khatulistiwa",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Bumi Sawit Kencana",
+"kebun": "PT Bumi Sawit Kencana",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Daya Labuhan Indah",
+"kebun": "PT Daya Labuhan Indah",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Daya Landak Plantation",
+"kebun": "PT Daya Landak Plantation",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Gersindo Minang Plantation",
+"kebun": "PT Gersindo Minang Plantation",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Indoresin Putra Mandiri",
+"kebun": "PT Indoresin Putra Mandiri",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Karunia Kencana Permaisejati",
+"kebun": "PT Karunia Kencana Permaisejati",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Kencana Sawit Indonesia",
+"kebun": "PT Kencana Sawit Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Kerry Sawit Indonesia",
+"kebun": "PT Kerry Sawit Indonesia",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Mentaya Sawit Mas",
+"kebun": "PT Mentaya Sawit Mas",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Murini Samsam",
+"kebun": "PT Murini Samsam",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Musi Banyuasin Indah",
+"kebun": "PT Musi Banyuasin Indah",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Mustika Sembuluh",
+"kebun": "PT Mustika Sembuluh",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Perkebunan Milano",
+"kebun": "PT Perkebunan Milano",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "North Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Permata Hijau Pasaman",
+"kebun": "PT Permata Hijau Pasaman",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Pratama Prosentindo",
+"kebun": "PT Pratama Prosentindo",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Primatama Mulia Jaya",
+"kebun": "PT Primatama Mulia Jaya",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "West Sumatra"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Putra Indotropical",
+"kebun": "PT Putra Indotropical",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "West Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Rimba Harapan Sakti",
+"kebun": "PT Rimba Harapan Sakti",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Sarana Titian Permata",
+"kebun": "PT Sarana Titian Permata",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "Central Kalimantan"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Sinarsiak Dian Permai",
+"kebun": "PT Sinarsiak Dian Permai",
+"sertifikat": false,
+"anggota_sejak": null,
+"prov": "Riau"
+},
+{
+"grup": "Wilmar International Limited",
+"perusahaan": "PT Tania Selatan",
+"kebun": "PT Tania Selatan",
+"sertifikat": true,
+"anggota_sejak": null,
+"prov": "South Sumatra"
+}
+]
+}
