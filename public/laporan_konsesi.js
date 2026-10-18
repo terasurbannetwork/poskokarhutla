@@ -59,7 +59,7 @@
   const API = '<svg class="kn-api" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z" fill="#f08a3c"/><path d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z" fill="#ffd36b"/></svg>';
   /* kunci warna SWIR (sama dengan citra.js) */
   const LEG_SWIR = `<div class="kn-leg kn-leg-sw">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"], ["#e8b98a", "Tanah terbuka"], ["#b9d3e6", "Asap tebal"], ["#fff", "Awan"]]
-    .map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}</div>`;
+    .map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("")}<span><i style="background:transparent;border:1.5px solid #e0b800;border-radius:50%"></i>Lokasi titik panas</span></div>`;
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const tgl = d => d ? `${+d.slice(8, 10)} ${BLN[+d.slice(5, 7) - 1]}` : "–";
   const tglT = d => d ? `${tgl(d)} 2026` : "–";
@@ -409,7 +409,7 @@
     esri: {tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar", maxzoom: 18},
     osm: {tiles: ["https://tile.openstreetmap.org/{z}/{x}/{y}.png"], attribution: "© OpenStreetMap", maxzoom: 19},
   };
-  const gibs = (d, sat = "SNPP") => ({tiles: [`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_${sat}_CorrectedReflectance_BandsM11-I2-I1/default/${d}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`], attribution: "NASA GIBS / VIIRS S-NPP SWIR", maxzoom: 9});
+  const gibs = (d, sat = "SNPP") => ({tiles: [`https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/VIIRS_${sat}_CorrectedReflectance_BandsM11-I2-I1/default/${d}/GoogleMapsCompatible_Level9/{z}/{y}/{x}.jpg`], attribution: "NASA GIBS / VIIRS S-NPP SWIR", maxzoom: 9, swir: true});
   const batasTujuh = () => { const b = new Date(Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5).toISOString().slice(5, 10); return b; };
   const fiturPoli = rs => ({type: "FeatureCollection", features: rs.flatMap((r, i) => r.geom.map(g => ({type: "Feature", properties: {i, nama: r.nama, w: JN[r.jenis]?.[1]}, geometry: g})))});
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
@@ -423,6 +423,8 @@
       {id: "d", type: "raster", source: "d", paint: dasar.img ? {"raster-fade-duration": 0} : {}},
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
+      /* di citra SWIR titik hanya cincin tipis, supaya bekas bakar di bawahnya tetap terlihat (pemilik, 18 Okt 2026) */
+      dasar.img || dasar.swir ? {id: "t", type: "circle", source: "t", paint: {"circle-radius": 4.5, "circle-opacity": 0, "circle-stroke-color": "#ffe14d", "circle-stroke-width": 1.1, "circle-stroke-opacity": .9}} :
       {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}}]});
   const bbox = rs => { let a = [180, 90, -180, -90]; const ad = ([x, y]) => { a = [Math.min(a[0], x), Math.min(a[1], y), Math.max(a[2], x), Math.max(a[3], y)]; };
     rs.forEach(r => { r.geom.forEach(g => (g.type === "MultiPolygon" ? g.coordinates.flat(2) : g.coordinates.flat(1)).forEach(ad)); r.pt.forEach(p => ad([p[1], p[0]])); }); return [[a[0], a[1]], [a[2], a[3]]]; };
