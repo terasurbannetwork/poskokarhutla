@@ -45,6 +45,7 @@ Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/gempa/**`
 - `public/gempa/**`
+- `tests/gempa/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

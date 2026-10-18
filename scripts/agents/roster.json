@@ -67,6 +67,7 @@
       "milik": [
         "scripts/banjir/**",
         "public/banjir/**",
+        "tests/banjir/**",
         ".github/workflows/banjir.yml"
       ]
     },
@@ -86,7 +87,8 @@
       "tidak": "worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows",
       "milik": [
         "scripts/gempa/**",
-        "public/gempa/**"
+        "public/gempa/**",
+        "tests/gempa/**"
       ]
     },
     {
@@ -366,7 +368,9 @@
         "scripts/cuaca/**",
         "scripts/udara/**",
         "public/cuaca/**",
-        "public/udara/**"
+        "public/udara/**",
+        "tests/cuaca/**",
+        "tests/udara/**"
       ]
     },
     {
@@ -387,7 +391,9 @@
         "scripts/gunungapi/**",
         "scripts/kekeringan/**",
         "public/gunungapi/**",
-        "public/kekeringan/**"
+        "public/kekeringan/**",
+        "tests/gunungapi/**",
+        "tests/kekeringan/**"
       ]
     }
   ]

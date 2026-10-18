@@ -45,6 +45,7 @@ Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/banjir/**`
 - `public/banjir/**`
+- `tests/banjir/**`
 - `.github/workflows/banjir.yml`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya

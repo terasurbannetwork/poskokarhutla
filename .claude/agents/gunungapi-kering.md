@@ -47,6 +47,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/kekeringan/**`
 - `public/gunungapi/**`
 - `public/kekeringan/**`
+- `tests/gunungapi/**`
+- `tests/kekeringan/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.
