@@ -136,8 +136,7 @@
       rs.forEach((r, j) => { r._top = j + 1; });
       const kab = {}; rs.forEach(r => (kab[r.kabU] ||= []).push(r));
       const kb = Object.entries(kab).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
-      /* nomor = <urut kab/kota>.<urut di kab/kota>, sama dengan pita tabel kab/kota dan urutan profil */
-      kb.forEach(([, xs], ki) => xs.forEach((r, ri) => { r._rp = `${ki + 1}.${ri + 1}`; }));
+            let no = 0; kb.forEach(([, xs]) => xs.forEach(r => { r._rp = ++no; }));   /* nomor urut tampil: 1, 2, 3 … mengikuti urutan kab/kota */
       SUSUN.push({k, rs, kab: kb});
     }
     SUSUN.sort((a, b) => jumlah(b.rs).t - jumlah(a.rs).t);
@@ -229,14 +228,14 @@
         <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(daftar.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td><td></td></tr></tbody></table></div></section>` : ""}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(daftar)}${tabelGrup(daftar)}</section>` : ""}
       <section class="kn-kartu kn-pt"><h2>Peta sebaran</h2><div id="knPeta" class="kn-peta"></div>${legenda()}
-        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._top - b._top).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
+        ${SUSUN.length === 1 ? `<ol class="kn-nomor">${daftar.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>` : ""}</section>
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
         <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
         ${kpi(p.rs)}
         <section class="kn-kartu"><h2>Per jenis usaha</h2>${tabelJenis(p.rs)}</section>
         <section class="kn-kartu kn-pvk"><h2>Peta provinsi</h2><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi dengan hotspot dan titik panas 2026 di ${esc(namaProv(p.k))}. Angka = nomor perusahaan.</figcaption></figure>${legenda()}
-          <ol class="kn-nomor">${p.rs.slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>
+          <ol class="kn-nomor">${p.rs.slice().sort((a, b) => a._rp - b._rp).slice(0, 25).map(r => `<li><i>${r._rp}</i><a href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a><em>${API}${fmt(r.titik)}</em></li>`).join("")}</ol>
         </section>
         <section class="kn-kartu"><h2>Per kabupaten/kota</h2>${tabelKab(p)}</section>
         ${tabelGrup(p.rs) ? `<section class="kn-kartu kn-grk"><h2>Grup perusahaan</h2>${tabelGrup(p.rs).replace("<h3>Grup perusahaan</h3>", "")}</section>` : ""}
@@ -409,7 +408,7 @@
   const fiturTitik = (rs, hari) => { const b7 = batasTujuh();
     return {type: "FeatureCollection", features: rs.flatMap(r => r.pt.filter(p => !hari || p[2].startsWith(hari)).map(p => ({type: "Feature", properties: {b: p[2].slice(0, 5) >= b7 ? 1 : 0}, geometry: {type: "Point", coordinates: [p[1], p[0]]}})))}; };
   /* label nama perusahaan di titik tengah apinya (callout); lab = jumlah label teratas, 0 = tanpa label */
-  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._top - b._top).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
+  const fiturLabel = (rs, lab) => ({type: "FeatureCollection", features: rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({type: "Feature", properties: {n: String(r._rp), t: r.titik}, geometry: {type: "Point", coordinates: [r.pusat[1], r.pusat[0]]}}))});
   const gaya = (dasar, rs, hari, rad, lab = 0) => ({version: 8, glyphs: "https://tiles.openfreemap.org/fonts/{fontstack}/{range}.pbf",
     sources: {...(dasar.img ? {d0: {type: "raster", tileSize: 256, ...DASAR.google}} : {}), d: dasar.img ? {type: "image", url: dasar.img, coordinates: [[dasar.bb[0], dasar.bb[3]], [dasar.bb[2], dasar.bb[3]], [dasar.bb[2], dasar.bb[1]], [dasar.bb[0], dasar.bb[1]]]} : {type: "raster", tileSize: 256, ...dasar}, p: {type: "geojson", data: fiturPoli(rs)}, t: {type: "geojson", data: fiturTitik(rs, hari)}, l: {type: "geojson", data: fiturLabel(rs, lab)}},
     layers: [{id: "bg", type: "background", paint: {"background-color": "#10202f"}},

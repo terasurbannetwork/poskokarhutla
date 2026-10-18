@@ -22,6 +22,7 @@ PROV = os.environ.get("KONSESI_PROV", "14,15,16,61,62,63,64,93,53").split(",")
 TOP = int(os.environ.get("KONSESI_TOP", 20))
 PX = 500
 MAKS_KM = 40
+SEBELUM = 5  # hari sebelum tanggal titik juga dicari (citra kosong = VIIRS kasar, lebih buruk)
 SESUDAH = 8  # hari; adegan terdekat dengan hari titik diutamakan (api aktif), bukan yang paling bersih
 
 
@@ -73,12 +74,10 @@ def satu(r, d, n):
     bb = C.kotak(lat, lon, km)
     d0 = dt.date.fromisoformat(d)
     q = {"collections": ["sentinel-2-l2a"], "bbox": C.kotak(lat, lon, 2), "limit": 20,
-         "datetime": f"{d0.isoformat()}T00:00:00Z/{(d0 + dt.timedelta(days=SESUDAH)).isoformat()}T23:59:59Z",
+         "datetime": f"{(d0 - dt.timedelta(days=SEBELUM)).isoformat()}T00:00:00Z/{(d0 + dt.timedelta(days=SESUDAH)).isoformat()}T23:59:59Z",
          "sortby": [{"field": "properties.datetime", "direction": "asc"}]}
     kand = []
     for it in json.loads(C.ambil(C.STAC, data=json.dumps(q).encode()))["features"]:
-        if not C.menutup(it["geometry"], C.kotak(lat, lon, km * 1.02)):
-            continue
         tgl = it["properties"]["datetime"][:10]
         if any(k[1] == tgl for k in kand):
             continue
@@ -87,14 +86,14 @@ def satu(r, d, n):
         except Exception as e:
             print("  scl gagal", it["id"], e, file=sys.stderr)
             continue
-        if ksg <= 5:
-            kand.append((it, tgl, aw))
+        if ksg <= 30:   # tepi tile: bagian kosong sampai 30% masih lebih berguna daripada VIIRS 375 m
+            kand.append((it, tgl, aw, ksg))
         if aw <= 15 and tgl == d:
             break
     if not kand:
         return None
     # api terlihat hanya di adegan yang dekat dengan hari titik: tiap hari geser = 8 poin awan
-    it, tgl, aw = min(kand, key=lambda k: (dt.date.fromisoformat(k[1]) - d0).days * 8 + k[2])
+    it, tgl, aw, _ = min(kand, key=lambda k: abs((dt.date.fromisoformat(k[1]) - d0).days) * 8 + k[2] + k[3])
     f = f"{r['id']}_{d.replace('-', '')}.png"
     if not os.path.exists(os.path.join(KELUAR, f)):
         swir(it, lat, lon, km, os.path.join(KELUAR, f))
@@ -114,7 +113,7 @@ def main():
         for r in json.load(open(f))["perusahaan"][:TOP]:
             top = sorted(sorted(r["harian"], key=lambda x: -x[1])[:4])
             for d, n in top:
-                if d not in hasil.get(r["id"], {}):
+                if not hasil.get(r["id"], {}).get(d):   # belum ada atau dulu gagal: coba lagi
                     kerja.append((r, d, n))
     print(f"{len(kerja)} potongan", file=sys.stderr)
 
