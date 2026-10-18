@@ -189,14 +189,18 @@
     for (const r of rs.slice().sort((a, b) => a._rp - b._rp)) { const k = kabUtama(r); if (!grup.has(k)) grup.set(k, []); grup.get(k).push(r); }
     const jml = (g, f) => g.reduce((t, r) => t + (f(r) || 0), 0);
     const kel = [...grup].sort((a, b) => jml(b[1], r => r.titik) - jml(a[1], r => r.titik));
+    const sel = g => `<td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td>`;
     const baris = r => `<tr class="kn-baris" tabindex="0" role="link" data-gulir="${r._i}" aria-label="Buka profil ${esc(r.nama)}"><td>${r._rp}</td><td><a class="kn-nm" href="#p${r._i}" data-buka="${r._i}">${esc(r.nama)}</a></td><td class="kn-nw">${ringkas(kecDari(r), 1)}</td><td>${jenisPil(r.jenis)}</td>
         <td class="kn-c">${rspoTeks(r) === "–" ? NA : rspoTeks(r) === "Bersertifikat" ? '<span class="kn-cek" title="Bersertifikat RSPO" aria-label="Bersertifikat RSPO">✓</span>' : rspoTeks(r)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${titikLama(r) ? fmt(titikLama(r)) : NA}</td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td>
         <td class="r">${fmt(r.kejadian.length)}</td><td class="r">${ha(r.luas_bakar_ha)}</td></tr>`;
     return `<div class="tw"><table class="kn-tb kn-dft"><thead><tr><th>No</th><th>Nama PT</th><th>Kecamatan</th><th>Jenis</th><th class="kn-c">RSPO</th><th class="r">Konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik bertahan lebih dari 2 hari">&gt; 2 hari</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r" title="Kompleks api (kejadian)">Kompleks</th><th class="r" title="Indikasi terbakar (ha)">Terbakar (ha)</th></tr></thead>
-      ${kel.map(([k, g]) => { const buka = KAB_BUKA.has(k); return `<tbody><tr class="kn-kab"><td colspan="5"><button type="button" class="kn-kab-b" data-kab="${esc(k)}" aria-expanded="${buka}"><span class="kn-kab-i" aria-hidden="true">▸</span>${esc(k)} <span class="kn-mt">${fmt(g.length)} PT</span></button></td>
-        <td class="r">${ha(jml(g, r => r.luas_ha))}</td><td class="r"><b>${fmt(jml(g, r => r.titik))}</b></td><td class="r">${fmt(jml(g, titikLama))}</td><td class="r">${fmt(jml(g, r => r.titik_7h))}</td><td class="r">${fmt(jml(g, r => r.kejadian.length))}</td><td class="r">${ha(jml(g, r => r.luas_bakar_ha))}</td></tr>
-        ${g.map(r => baris(r).replace("<tr ", `<tr${buka ? "" : " hidden"} `)).join("")}</tbody>`; }).join("")}
-      </table></div>`;
+      ${kel.map(([k, g]) => { const buka = KAB_BUKA.has(k);
+        /* di layar jumlahnya di baris kab; di PDF baris kab jadi judul dan jumlahnya turun ke baris subtotal di bawah PT-nya */
+        const sub = sel(g);
+        return `<tbody><tr class="kn-kab" data-kab="${esc(k)}"><td colspan="2"><button type="button" class="kn-kab-b" aria-expanded="${buka}"><span class="kn-kab-i" aria-hidden="true">▸</span>${esc(k)}</button></td><td><span class="kn-jml">${fmt(g.length)} PT</span></td><td colspan="2"></td>${sub}</tr>
+        ${g.map(r => baris(r).replace("<tr ", `<tr${buka ? "" : " hidden"} `)).join("")}
+        <tr class="kn-sub kn-subkab"><td colspan="5">Subtotal ${esc(k)}</td>${sub}</tr></tbody>`; }).join("")}
+      <tfoot><tr class="kn-tot"><td colspan="2">Grand total</td><td><span class="kn-jml">${fmt(rs.length)} PT</span></td><td colspan="2"></td>${sel(rs)}</tr></tfoot></table></div>`;
   }
   /* 5 hari titik panas tertinggi: kompleks hari itu + lama rangkaian hari berturut-turut (harian) yang memuat tanggal itu */
   function top5Hari(r) {
@@ -657,7 +661,7 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
   $("#knIsi").addEventListener("keydown", e => { const br = e.target.closest?.("[data-gulir]"); if (br && e.target === br && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); naik(+br.dataset.gulir); } });
   $("#knIsi").addEventListener("click", e => {
     const kb = e.target.closest("[data-kab]");
-    if (kb) { const k = kb.dataset.kab, buka = !KAB_BUKA.has(k); buka ? KAB_BUKA.add(k) : KAB_BUKA.delete(k); kb.setAttribute("aria-expanded", buka);
+    if (kb) { const k = kb.dataset.kab, buka = !KAB_BUKA.has(k); buka ? KAB_BUKA.add(k) : KAB_BUKA.delete(k); kb.querySelector("button").setAttribute("aria-expanded", buka);
       kb.closest("tbody").querySelectorAll(".kn-baris").forEach(tr => tr.hidden = !buka); return; }
     const br = e.target.closest("[data-gulir]");
     if (br && !e.target.closest("a")) { e.preventDefault(); naik(+br.dataset.gulir); return; }

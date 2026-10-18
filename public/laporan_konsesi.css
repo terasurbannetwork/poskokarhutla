@@ -391,7 +391,11 @@ main.kn{position:static;inset:auto}
 .kn-kab-b:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .kn-kab-i{display:inline-block;transition:transform .15s}
 .kn-kab-b[aria-expanded="true"] .kn-kab-i{transform:rotate(90deg)}
-@media print{.kn-dft tr.kn-baris[hidden]{display:table-row}.kn-kab-i{display:none}}
+.kn-kab{cursor:pointer}
+.kn-tot .kn-jml{color:#fff;border-color:rgba(255,255,255,.5)}
+.kn-jml{display:inline-block;padding:1px 8px;border-radius:999px;border:1px solid var(--line);font:700 10px var(--font);color:var(--ink2);white-space:nowrap;font-variant-numeric:tabular-nums}
+.kn-subkab{display:none}
+@media print{.kn-dft tr.kn-baris[hidden]{display:table-row}.kn-kab-i{display:none}.kn-dft tr.kn-subkab{display:table-row}.kn-dft tr.kn-kab td:nth-child(n+4){color:transparent}.kn-dft tr.kn-kab td:nth-child(n+4) *{color:transparent}}
 .kn-baris{cursor:pointer}
 .kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
