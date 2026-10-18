@@ -359,7 +359,7 @@
   /* grafik harian: lebar tetap (teks tidak melar), garis bantu sumbu Y, penanda puncak, jumlah per bulan di bawah label bulan */
   function grafik(r) {
     const a = Date.parse("2026-01-01"), b = Date.parse(IDX.sampai.slice(0, 10)), hari = Math.round((b - a) / 864e5) + 1;
-    const W = 1000, H = 220, L = 48, R = 10, T = 24, B = 68, iw = W - L - R, ih = H - T - B, bw = iw / hari;
+    const W = 1000, H = 200, L = 48, R = 10, T = 24, B = 48, iw = W - L - R, ih = H - T - B, bw = iw / hari;
     const mx = Math.max(...r.harian.map(x => x[1])), langkah = [1, 2, 5, 10, 20, 25, 50, 100, 200, 250, 500, 1000].find(v => mx / v <= 4) || 1000, top = Math.ceil(mx / langkah) * langkah;
     const y = v => T + ih - v / top * ih, x = d => L + (Date.parse(d) - a) / 864e5 * bw, b7 = Date.parse(IDX.sampai.slice(0, 10)) - 6 * 864e5;
     const grid = Array.from({length: top / langkah + 1}, (_, i) => i * langkah).map(v => `<line x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}" class="kn-gd"/><text x="${L - 6}" y="${y(v) + 3.5}" text-anchor="end" class="kn-yl">${fmt(v)}</text>`).join("");
@@ -368,10 +368,12 @@
     const nb = new Date(b).getUTCMonth() + 1;
     /* tiap bulan: titik panas (titik merah) dan kompleks api = kejadian yang menyala di bulan itu (cincin), sama dengan kolom Kompleks di daftar */
     const kjB = m => { const m0 = `2026-${String(m).padStart(2, "0")}-01`, m1 = `2026-${String(m).padStart(2, "0")}-31`; return r.kejadian.filter(e => e[0] <= m1 && e[1] >= m0).length; };
-    const nilaiB = (xm, yy, v, jenis) => { const t = v ? fmt(v) : "–", w = t.length * 7.4, cx = xm - w / 2 - 6;
-      return `${jenis === "t" ? `<circle cx="${cx}" cy="${yy - 4.5}" r="3.6" class="kn-mi-t"/>` : `<circle cx="${cx}" cy="${yy - 4.5}" r="3.4" class="kn-mi-k"/>`}<text x="${xm + 4}" y="${yy}" text-anchor="middle" class="${jenis === "t" ? "kn-mv" : "kn-mk"}${v ? "" : " kn-m0"}">${t}</text>`; };
+    /* satu baris di bawah nama bulan: [titik merah] jumlah titik  [cincin] jumlah kompleks, dipusatkan bersama */
+    const nilaiB = (xm, yy, vt, vk) => { const tt = vt ? fmt(vt) : "–", tk = vk ? fmt(vk) : "–", wt = tt.length * 7.4, wk = tk.length * 7, lebar = 10 + wt + 12 + 10 + wk, x0 = xm - lebar / 2;
+      return `<circle cx="${x0 + 3.6}" cy="${yy - 4.5}" r="3.6" class="kn-mi-t"/><text x="${x0 + 10}" y="${yy}" class="kn-mv${vt ? "" : " kn-m0"}">${tt}</text>`
+        + `<circle cx="${x0 + 10 + wt + 12 + 3.4}" cy="${yy - 4.5}" r="3.4" class="kn-mi-k"/><text x="${x0 + 10 + wt + 12 + 10}" y="${yy}" class="kn-mk${vk ? "" : " kn-m0"}">${tk}</text>`; };
     const blabel = Array.from({length: nb}, (_, i) => { const x0 = L + (Date.parse(`2026-${String(i + 1).padStart(2, "0")}-01`) - a) / 864e5 * bw, x1 = i + 1 < nb ? L + (Date.parse(`2026-${String(i + 2).padStart(2, "0")}-01`) - a) / 864e5 * bw : W - R, xm = (x0 + x1) / 2;
-      return `<line x1="${x0}" x2="${x0}" y1="${T + ih}" y2="${T + ih + 5}" class="kn-ax"/><text x="${xm}" y="${T + ih + 19}" text-anchor="middle" class="kn-ml">${BLN[i]}</text>${nilaiB(xm, T + ih + 38, bul[i + 1], "t")}${nilaiB(xm, T + ih + 58, kjB(i + 1), "k")}`; }).join("");
+      return `<line x1="${x0}" x2="${x0}" y1="${T + ih}" y2="${T + ih + 5}" class="kn-ax"/><text x="${xm}" y="${T + ih + 19}" text-anchor="middle" class="kn-ml">${BLN[i]}</text>${nilaiB(xm, T + ih + 38, bul[i + 1], kjB(i + 1))}`; }).join("");
     const px = x(r.puncak[0]) + bw * .39, py = y(r.puncak[1]), kiri = px > W - 170;
     const pk = `<circle cx="${px}" cy="${py - 4}" r="3" class="kn-pkc"/><text x="${kiri ? px - 8 : px + 8}" y="${py - 1}" text-anchor="${kiri ? "end" : "start"}" class="kn-pkt">Puncak ${tgl(r.puncak[0])} · ${fmt(r.puncak[1])} titik</text>`;
     return `<svg class="kn-svg" viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas harian 2026, puncak ${tgl(r.puncak[0])}">${grid}<line x1="${L}" x2="${W - R}" y1="${T + ih}" y2="${T + ih}" class="kn-ax"/><g class="kn-br">${bar}</g>${pk}${blabel}</svg>
