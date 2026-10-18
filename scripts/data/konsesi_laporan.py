@@ -134,9 +134,13 @@ def bangun():
                 q = kp.cari(lo, la)
                 if q:
                     d = (w + WIB).date().isoformat()
-                    e = kom.setdefault(q, [q, 0, d, d])
-                    e[1] += 1
-                    e[2], e[3] = min(e[2], d), max(e[3], d)
+                    e = kom.setdefault(q, {"n": 0, "a": d, "b": d, "h": set(), "la": 0.0, "lo": 0.0, "frp": 0.0})
+                    e["n"] += 1
+                    e["a"], e["b"] = min(e["a"], d), max(e["b"], d)
+                    e["h"].add(d)
+                    e["la"] += la
+                    e["lo"] += lo
+                    e["frp"] = max(e["frp"], fr)
             d = (w + WIB).date().isoformat()
             hr[d] = hr.get(d, 0) + 1
             sel.add((math.floor(la / PIKSEL), math.floor(lo / PIKSEL)))
@@ -162,7 +166,10 @@ def bangun():
             "pemegang": (wl or {}).get("pemegang") or [], "tokoh": (wl or {}).get("tokoh") or [],
             "walhi_titik": (wl or {}).get("titik_agu") or (wl or {}).get("titik_sep"), "walhi_tabel": (wl or {}).get("tabel") or [],
             "kab_titik": [a for a, _ in sorted(kab.items(), key=lambda x: -x[1])],
-            "kompleks": sorted(kom.values(), key=lambda e: -e[1]), "jenis": k[1],
+            # kompleks api 7 hari: [lat, lon, kecamatan, titik, mulai, akhir, hari bertitik, FRP maks]
+            "kompleks": [[round(e["la"] / e["n"], 4), round(e["lo"] / e["n"], 4),
+                          (lambda c: f"{c[2]}, {c[1]}" if c else "")(wil.cari(e["lo"] / e["n"], e["la"] / e["n"])),
+                          e["n"], e["a"], e["b"], len(e["h"]), round(e["frp"], 1)] for e in sorted(kom.values(), key=lambda e: -e["n"])], "jenis": k[1],
             "kab": sorted({p.get("kab") or "" for p in ps} - {""}), "luas_ha": round(luas),
             "tahun_data": ps[0].get("tahun_data"), "blok": len(idx), "blok_terbakar": len(u["i"]),
             "titik": n, "hari_aktif": len(harian), "pertama": harian[0][0], "terakhir": harian[-1][0],
