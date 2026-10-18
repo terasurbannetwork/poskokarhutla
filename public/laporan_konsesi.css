@@ -379,6 +379,7 @@ main.kn{position:static;inset:auto}
 /* muat selebar kartu, tanpa geser ke samping (pemilik 19 Okt 2026): judul kolom & nama PT boleh patah baris */
 .kn-dft,.kn-tk-kab{min-width:0;font-size:10.5px}
 .kn-dft th,.kn-tk-kab th{white-space:normal;font-size:8.5px;padding:6px 4px;vertical-align:bottom}
+.kn-tb.kn-dft th{text-align:center;vertical-align:middle}
 .kn-dft td,.kn-tk-kab td{padding:4px}
 .kn-dft td.kn-nw{white-space:nowrap}
 .kn-tk-kab td.kn-nw{white-space:normal}
