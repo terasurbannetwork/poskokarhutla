@@ -5,13 +5,24 @@
    peramban ~16), jadi profil berapa pun bisa dicetak. Titik di areal konsesi bukan bukti siapa yang membakar. */
 (() => {
   const situsW = document.documentElement.dataset.situs === "w" || /^(localhost|127\.0\.0\.1)$/.test(location.hostname);
-  if (!situsW) { $("#knIsi").innerHTML = `<div class="kosong">Halaman ini tidak tersedia.</div>`; $(".kn-kendali").remove(); $("#knSub").textContent = ""; return; }
+  if (!situsW) { $("#knIsi").innerHTML = `<div class="kosong">Halaman ini tidak tersedia.</div>`; document.querySelectorAll(".kn-saring,.lp-aksi").forEach(x => x.remove()); return; }
 
   const JN = {sawit: ["Sawit", "#c98a3c", "Perkebunan kelapa sawit (HGU/IUP)"], hti: ["HTI", "#6b8e3a", "Hutan tanaman industri (PBPH-HT, pulp & kertas)"],
     hph: ["HPH", "#2f6f8f", "Hutan alam (PBPH-HA, penebangan kayu)"], tambang: ["Tambang", "#7a5c99", "Izin pinjam pakai kawasan hutan untuk tambang (PPKH)"]};
+  /* instansi pemilik peta batas per jenis (scripts/scrape/lahan.py, konsesi.geojson "sumber"). Bukan ATR/BPN: HGU tidak dipakai */
+  const SB = {sawit: ["KLHK", "Peta izin perkebunan sawit KLHK (data 2012, diperbarui 2014), diunduh lewat Global Forest Watch"],
+    hti: ["KLHK / Kemenhut", "Izin PBPH-HT KLHK/Kemenhut, dihimpun Trase 2026 (Indonesia wood pulp concessions v3)"],
+    hph: ["KLHK", "Peta izin PBPH-HA (HPH) KLHK 2014, diunduh lewat Global Forest Watch"],
+    tambang: ["Kemenhut", "PPKH Ditjen Planologi Kehutanan, Kementerian Kehutanan (Jan 2026)"]};
+  const SB_LAIN = [["Titik panas", "NASA FIRMS", "VIIRS S-NPP 375 m, keyakinan nominal/tinggi (arsip SP + NRT)"],
+    ["Kawasan hutan", "KLHK", "Peta kawasan hutan KLHK versi 2017, lewat Global Forest Watch"],
+    ["Lahan gambut", "CIFOR", "Miettinen dkk. 2016 + Gumbricht dkk. 2017, lewat Global Forest Watch"],
+    ["Batas wilayah", "Kemendagri", "Kode dan batas provinsi, kabupaten/kota, kecamatan Kemendagri"],
+    ["Grup & pemegang saham", "WALHI", "Kajian Eksekutif Nasional WALHI 2026 \"Siapa di Balik Api?\""],
+    ["Citra peta", "Google, Esri, NASA GIBS", "Citra satelit dasar; VIIRS S-NPP warna asli dari NASA GIBS"]];
   const KWS = {HK: "Hutan konservasi", HL: "Hutan lindung", HP: "Hutan produksi", HPT: "Hutan produksi terbatas", HPK: "Hutan produksi konversi",
     KSA: "Kawasan suaka alam", KPA: "Kawasan pelestarian alam", THR: "Taman hutan raya", APL: "Areal penggunaan lain"};
-  const NEG = {ID: "Indonesia", SG: "Singapura", MY: "Malaysia", IN: "India", KR: "Korea Selatan", KY: "Kep. Cayman", VG: "Kep. Virgin Britania", WS: "Samoa"};
+  const NEG = {ID: "Indonesia", SG: "Singapura", MY: "Malaysia", JP: "Jepang", US: "Amerika Serikat", TH: "Thailand", GB: "Inggris", IN: "India", KR: "Korea Selatan", KY: "Kep. Cayman", VG: "Kep. Virgin Britania", WS: "Samoa"};
   const BNPB = ["14", "15", "16", "61", "62", "63"], PRIO = [...BNPB, "93", "64", "53"];
   /* logo grup: sama dengan aktor.js (favicon resmi di img/logo-grup) */
   const LOGO = [[/Nordic Forest|Stora Enso/i, "stora-enso"], [/Salween|GIC/i, "gic"], [/Gochean|TPG/i, "tpg"], [/Sampoerna|AGPA/i, "sampoerna-agro"], [/POSCO/i, "posco"],
@@ -19,8 +30,19 @@
     [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"],
     [/Salim|Indofood/i, "salim"], [/London Sumatra|Lonsum/i, "lonsum"], [/Medco/i, "medco"], [/Perkebunan Nusantara|PTPN/i, "ptpn"], [/Goodhope/i, "goodhope"],
     [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"]];
-  const logo = (n, h = 22) => { const f = LOGO.find(([re]) => re.test(n || ""))?.[1]; return f ? `<img class="kn-lg" src="/img/logo-grup/${f}.png" alt="" width="${h}" height="${h}">` : ""; };
+  const logo = (n, h = 22) => { const f = LOGO.find(([re]) => re.test(n || ""))?.[1]; return f ? `<img class="kn-lg" src="/img/logo-grup/${f}.png" alt="" width="${h}" height="${h}">`
+    : n ? `<span class="kn-lg kn-lg-i" style="width:${h}px;height:${h}px;font-size:${Math.round(h * .42)}px" aria-hidden="true">${esc(n.replace(/^(PT|Grup)\s+/i, "").split(/[\s/,()-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase())}</span>` : ""; };
   const bendera = (k, h = 14) => k && NEG[k] ? `<img class="kn-bd" src="/img/bendera/${k.toLowerCase()}.svg" alt="${NEG[k]}" title="${NEG[k]}" width="${Math.round(h * 4 / 3)}" height="${h}">` : "";
+  /* grup di peta konsesi yang tidak ada di kajian WALHI: nama rapi + negara induk (kantor pusat grup) */
+  const GRUP_RAPI = {"Adr": "ADR Group", "Government": "BUMN (Perhutani/Inhutani)", "RGE Group": "Royal Golden Eagle", "Sime Darby, Synergy Drive": "Sime Darby"};
+  const NEG_GRUP = {"Marubeni": "JP", "Sumitomo": "JP", "Cargill": "US", "Charoen Pokphand": "TH", "MP Evans Group PLC (MPE)": "GB", "PTT Green Energy Pte Ltd (PTTGE)": "TH",
+    "Wilmar": "SG", "Musim Mas": "SG", "First Resources": "SG", "Royal Golden Eagle": "SG", "RGE/APRIL": "SG", "Sinar Mas": "SG", "Salim Group": "SG", "Goodhope Asia Holdings": "SG",
+    "Sime Darby": "MY", "Genting Group": "MY", "BHD Group": "MY", "Lion Group": "MY", "Sampoerna Agro/POSCO": "ID", "Sampoerna Agro": "ID",
+    "Astra International": "ID", "Duta Palma Group": "ID", "Surya Dumai Group": "ID", "Incasi Raya": "ID", "Lyman Group": "ID", "Ganda Group": "ID", "Perkebunan Nusantara": "ID",
+    "Barito Pacific": "ID", "Bakrie Group": "ID", "Medco Group": "ID", "Djarum Group": "ID", "Sambu Group": "ID", "Rokan Group": "ID", "Berca Group": "ID", "Wings": "ID",
+    "Sungai Budi Group": "ID", "Media Group": "ID", "ADR Group": "ID", "BUMN (Perhutani/Inhutani)": "ID", "Borneo Group": "ID", "Kaestindo Group": "ID", "SIMP": "ID"};
+  const rapikan = r => { if (r._rapi) return r; r._rapi = 1; r.grup = GRUP_RAPI[r.grup] ?? r.grup;
+    if (!(r.negara || []).length && NEG_GRUP[r.grup]) r.negara = [NEG_GRUP[r.grup]]; return r; };
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const tgl = d => d ? `${+d.slice(8, 10)} ${BLN[+d.slice(5, 7) - 1]}` : "–";
   const tglT = d => d ? `${tgl(d)} 2026` : "–";
@@ -36,26 +58,52 @@
   fetch("/data/konsesi2026/index.json").then(r => r.json()).then(d => { IDX = d; gambarKendali(); muat(); })
     .catch(() => { $("#knIsi").innerHTML = `<div class="kosong">Data laporan belum tersedia.</div>`; });
 
-  function gambarKendali() {
-    const grup = [["bnpb", "6 provinsi BNPB"], ["9", "9 provinsi prioritas"], ["semua", "Semua provinsi"]];
-    $("#knProv").innerHTML = `<optgroup label="Gabungan">${grup.map(([v, n]) => `<option value="${v}"${v === "bnpb" ? " selected" : ""}>${n}</option>`).join("")}</optgroup>
-      <optgroup label="Satu provinsi">${IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(p => `<option value="${p.kode}">${esc(p.nama)} (${fmt(p.perusahaan)} konsesi)</option>`).join("")}</optgroup>`;
-    $("#knJenis").innerHTML = Object.entries(JN).map(([j, [n, w]]) =>
-      `<label class="kn-chip kn-chip-j" style="--w:${w}"><input type="checkbox" value="${j}" checked><span>${n}</span></label>`).join("");
+  /* pemilih provinsi bercari: rupa PilihCantik (kartu.css .pc/.pc-menu) + kotak cari di atas daftar */
+  const GAB = [["bnpb", "6 provinsi BNPB"], ["9", "9 provinsi prioritas"], ["semua", "Semua provinsi"]];
+  let pilihProv = "bnpb", menuP = null;
+  const opsiProv = () => [...GAB.map(([v, n]) => ({v, n, g: 1})), ...IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama, "id")).map(p => ({v: p.kode, n: p.nama, t: p.perusahaan}))];
+  function gambarKendali() { $("#knProv span").textContent = GAB.find(g => g[0] === pilihProv)?.[1] || namaProv(pilihProv); }
+  const tutupProv = () => { menuP?.remove(); menuP = null; $(".kn-pp").classList.remove("on"); };
+  function bukaProv() {
+    if (menuP) return tutupProv();
+    const w = $(".kn-pp"), r = w.getBoundingClientRect(); w.classList.add("on");
+    menuP = document.createElement("div"); menuP.className = "pc-menu kn-pp-menu"; menuP.setAttribute("role", "listbox");
+    menuP.innerHTML = `<input type="search" placeholder="Cari provinsi…" aria-label="Cari provinsi"><div class="kn-pp-daf"></div>`;
+    document.body.append(menuP);
+    Object.assign(menuP.style, {left: r.left + "px", width: Math.max(r.width, 260) + "px", top: r.bottom + 6 + "px"});
+    const daf = menuP.querySelector(".kn-pp-daf"), cari = menuP.querySelector("input");
+    const isi = q => { const o = opsiProv().filter(x => !q || x.n.toLowerCase().includes(q));
+      daf.innerHTML = o.map((x, i) => `${i && o[i - 1].g && !x.g ? '<hr>' : ""}<button type="button" role="option" data-v="${x.v}" aria-selected="${x.v === pilihProv}">${esc(x.n)}${x.t ? `<em>${fmt(x.t)}</em>` : ""}</button>`).join("") || `<p class="kn-mt">Tidak ada provinsi "${esc(q)}"</p>`; };
+    isi(""); cari.focus();
+    cari.addEventListener("input", () => isi(cari.value.trim().toLowerCase()));
+    cari.addEventListener("keydown", e => { if (e.key === "Enter") daf.querySelector("button")?.click(); if (e.key === "Escape") { tutupProv(); $("#knProv").focus(); } if (e.key === "ArrowDown") { e.preventDefault(); daf.querySelector("button")?.focus(); } });
+    daf.addEventListener("keydown", e => { const bs = [...daf.querySelectorAll("button")], i = bs.indexOf(document.activeElement);
+      if (e.key === "ArrowDown") { e.preventDefault(); bs[i + 1]?.focus(); } else if (e.key === "ArrowUp") { e.preventDefault(); (bs[i - 1] || cari).focus(); } else if (e.key === "Escape") { tutupProv(); $("#knProv").focus(); } });
+    daf.addEventListener("click", e => { const b = e.target.closest("[data-v]"); if (!b) return;
+      pilihProv = b.dataset.v; tutupProv(); gambarKendali();
+      S.prov = new Set(pilihProv === "bnpb" ? BNPB : pilihProv === "9" ? PRIO : pilihProv === "semua" ? IDX.prov.map(p => p.kode) : [pilihProv]);
+      setTimeout(muat); });
   }
+  $("#knProv").addEventListener("click", e => { e.stopPropagation(); bukaProv(); });
+  document.addEventListener("click", e => { if (menuP && !e.target.closest(".kn-pp-menu")) tutupProv(); });
+  addEventListener("resize", tutupProv);
+  addEventListener("scroll", e => { if (menuP && !e.target.closest?.(".kn-pp-menu")) tutupProv(); }, true);
   const tunda = (f, ms = 250) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
-  $("#knProv").addEventListener("change", e => { const v = e.target.value;
-    S.prov = new Set(v === "bnpb" ? BNPB : v === "9" ? PRIO : v === "semua" ? IDX.prov.map(p => p.kode) : [v]); muat(); });
   $("#knCari").addEventListener("input", tunda(e => { S.cari = e.target.value.trim().toLowerCase(); render(); }));
-  $("#knProfil").addEventListener("change", e => { S.profil = +e.target.value; render(); });
-  $("#knUrut").addEventListener("change", e => { S.urut = e.target.value; render(); });
-  $("#knDasar").addEventListener("change", e => { S.dasar = e.target.value; render(); });
+  document.querySelector(".kn-saring").addEventListener("click", e => {
+    const b = e.target.closest(".seg button"); if (!b) return;
+    const g = b.parentElement.dataset.grup, v = b.dataset.v;
+    b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
+    if (g === "jenis") S.jenis = new Set(v === "semua" ? Object.keys(JN) : [v]);
+    else if (g === "profil") S.profil = +v; else S[g] = v;
+    setTimeout(render);   /* gambar ulang di luar jalur klik (INP) */
+  });
   $("#tema").addEventListener("click", () => { const d = document.documentElement, t = d.dataset.theme === "dark" ? "light" : "dark"; d.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {} });
 
   function muat() {
     const perlu = [...S.prov].filter(k => !DATA[k]);
     status(perlu.length ? "Memuat data provinsi…" : "");
-    Promise.all(perlu.map(k => fetch(`/data/konsesi2026/${k}.json`).then(r => r.json()).then(d => { DATA[k] = d; }))).then(() => { status(""); render(); })
+    Promise.all(perlu.map(k => fetch(`/data/konsesi2026/${k}.json`).then(r => r.json()).then(d => { d.perusahaan.forEach(rapikan); DATA[k] = d; }))).then(() => { status(""); render(); })
       .catch(() => status("Sebagian data provinsi gagal dimuat."));
   }
   const status = t => { $("#knStatus").textContent = t; };
@@ -92,35 +140,45 @@
       <td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : "–"}</td></tr>`).join("")}
     </tbody></table></div>`;
 
-  const kpi = (n, T) => `<section class="kn-kpi">
-      <div><b>${fmt(n)}</b><span>areal konsesi bertitik panas</span></div>
-      <div><b>${fmt(T.t)}</b><span>titik panas di dalam konsesi</span></div>
-      <div><b>${ha(T.l)} ha</b><span>indikasi luas terbakar</span></div>
-      <div class="kn-kpi-a"><b>${fmt(T.a)}</b><span>masih ada api 7 hari terakhir</span></div></section>`;
+  function kpi(rs) {
+    const T = jumlah(rs), t7 = rs.reduce((a, r) => a + r.titik_7h, 0), top = rs.reduce((a, r) => r.titik > a.titik ? r : a, rs[0]);
+    const pj = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j).length]).filter(([, n]) => n);
+    const ubin = (lbl, nilai, ket, cls = "") => `<div class="${cls}"><span class="kn-kpi-l">${lbl}</span><b>${nilai}</b><small>${ket}</small></div>`;
+    return `<section class="kn-kpi">
+      ${ubin("Konsesi terbakar", fmt(rs.length), pj.map(([j, n]) => `${JN[j][0]} ${fmt(n)}`).join(" · "))}
+      ${ubin("Titik panas", fmt(T.t), `terbanyak di ${esc(top.nama)} (${fmt(top.titik)})`)}
+      ${ubin("Indikasi luas terbakar", `${ha(T.l)}<em> ha</em>`, `${pct(T.k ? T.l / T.k : 0)} dari ${ha(T.k)} ha luas konsesi`)}
+      ${ubin("Masih ada api", fmt(T.a), `konsesi · ${fmt(t7)} titik 7 hari terakhir`, "kn-kpi-a")}</section>`;
+  }
+  const batang = (v, mx, w = "#d9534f") => `<span class="kn-bt"><i style="width:${mx ? Math.max(2, v / mx * 100) : 0}%;background:${w}"></i></span>`;
   function tabelJenis(rs) {
-    const T = jumlah(rs), perJ = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j)]).filter(([, x]) => x.length);
-    return `<div class="tw"><table class="kn-tb"><thead><tr><th>Jenis</th><th>Keterangan</th><th class="r">Perusahaan</th><th class="r">Titik panas</th><th class="r">Luas konsesi (ha)</th><th class="r">Indikasi terbakar (ha)</th></tr></thead><tbody>
-      ${perJ.map(([j, x]) => { const t = jumlah(x); return `<tr><td>${jenisPil(j)}</td><td class="kn-mt">${JN[j][2]}</td><td class="r">${fmt(x.length)}</td><td class="r">${fmt(t.t)}</td><td class="r">${ha(t.k)}</td><td class="r">${ha(t.l)}</td></tr>`; }).join("")}
-      <tr class="kn-tot"><td colspan="2">Jumlah</td><td class="r">${fmt(rs.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.k)}</td><td class="r">${ha(T.l)}</td></tr></tbody></table></div>`;
+    const T = jumlah(rs), perJ = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j), jumlah(rs.filter(r => r.jenis === j))]).filter(([, x]) => x.length);
+    const mx = Math.max(...perJ.map(x => x[2].t));
+    return `<div class="tw"><table class="kn-tb kn-tj"><thead><tr><th>Jenis usaha</th><th class="r">Perusahaan</th><th class="kn-cb">Titik panas</th><th class="r">Luas konsesi (ha)</th><th class="r">Indikasi terbakar (ha)</th></tr></thead><tbody>
+      ${perJ.map(([j, x, t]) => `<tr><td><span class="kn-jn"><i style="background:${JN[j][1]}"></i><b>${JN[j][0]} <span class="kn-sb" title="Sumber peta batas">${SB[j][0]}</span></b><small>${JN[j][2]}</small></span></td>
+        <td class="r">${fmt(x.length)}</td><td class="kn-cb"><span class="kn-cbi">${batang(t.t, mx, JN[j][1])}<b class="num">${fmt(t.t)}</b></span></td><td class="r">${ha(t.k)}</td><td class="r">${ha(t.l)}</td></tr>`).join("")}
+      <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(rs.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.k)}</td><td class="r">${ha(T.l)}</td></tr></tbody></table></div>`;
   }
   function tabelGrup(rs) {
     const grup = {}; rs.forEach(r => { if (r.grup) { const g = grup[r.grup] ||= {n: 0, t: 0, l: 0, neg: r.negara}; g.n++; g.t += r.titik; g.l += r.luas_bakar_ha; } });
-    const u = Object.entries(grup).sort((a, b) => b[1].t - a[1].t).slice(0, 15);
-    return u.length ? `<h3>Grup perusahaan</h3><div class="tw"><table class="kn-tb"><thead><tr><th>Grup</th><th>Negara induk</th><th class="r">Perusahaan</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th></tr></thead><tbody>
-      ${u.map(([g, v]) => `<tr><td><span class="kn-gr">${logo(g, 20)}<b>${esc(g)}</b></span></td><td>${(v.neg || []).map(k => `<span class="kn-ng">${bendera(k)}${NEG[k] || k}</span>`).join(" ") || "–"}</td><td class="r">${fmt(v.n)}</td><td class="r">${fmt(v.t)}</td><td class="r">${ha(v.l)}</td></tr>`).join("")}
+    const u = Object.entries(grup).sort((a, b) => b[1].t - a[1].t).slice(0, 15), mx = u[0]?.[1].t || 1;
+    return u.length ? `<h3>Grup perusahaan</h3><div class="tw"><table class="kn-tb"><thead><tr><th>Grup</th><th>Negara induk</th><th class="r">Perusahaan</th><th class="kn-cb">Titik panas</th><th class="r">Indikasi terbakar (ha)</th></tr></thead><tbody>
+      ${u.map(([g, v]) => `<tr><td><span class="kn-gr">${logo(g, 22)}<b>${esc(g)}</b></span></td><td>${(v.neg || []).map(k => `<span class="kn-ng">${bendera(k, 13)}${NEG[k] || k}</span>`).join(" ") || `<span class="kn-mt">Belum diketahui</span>`}</td>
+        <td class="r">${fmt(v.n)}</td><td class="kn-cb"><span class="kn-cbi">${batang(v.t, mx, "#0b2545")}<b class="num">${fmt(v.t)}</b></span></td><td class="r">${ha(v.l)}</td></tr>`).join("")}
       </tbody></table></div>` : "";
   }
 
   function render() {
     daftar = saring();
     const P = [...S.prov].map(namaProv);
-    $("#knSub").innerHTML = `Titik panas VIIRS 1 Januari – ${tglT(IDX.sampai.slice(0, 10))} pukul ${esc(IDX.sampai.slice(11))} · ${P.length ? esc(P.length > 6 ? `${P.length} provinsi` : P.join(", ")) : "pilih provinsi"}`;
+    $("#knJudul").textContent = "Laporan Konsesi Terbakar 2026" + (P.length === 1 ? " · " + P[0] : "");
+    $("#knPils").innerHTML = `<span class="lp-pil">1 Jan – ${tglT(IDX.sampai.slice(0, 10))}</span><span class="lp-pil ok">Data s.d. ${esc(IDX.sampai.slice(11))}</span>${P.length > 1 ? `<span class="lp-pil">${fmt(P.length)} provinsi</span>` : ""}`;
     document.title = `Laporan Konsesi Terbakar 2026 ${P.length === 1 ? P[0] : ""}`.trim();
     if (!daftar.length) { $("#knIsi").innerHTML = `<div class="kosong">${S.prov.size ? "Tidak ada areal konsesi bertitik panas untuk pilihan ini." : "Pilih minimal satu provinsi."}</div>`; return; }
     const T = jumlah(daftar);
     $("#knIsi").innerHTML = `
       <div class="kn-nas">
-      ${kpi(daftar.length, T)}
+      ${kpi(daftar)}
       ${SUSUN.length > 1 ? `<section class="kn-kartu"><h2>Ringkasan per provinsi</h2>
         <div class="tw"><table class="kn-tb"><thead><tr><th>Provinsi</th><th class="r">Perusahaan</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">Masih ada api</th><th>PDF</th></tr></thead><tbody>
         ${SUSUN.map(p => { const t = jumlah(p.rs); return `<tr><td><a class="kn-nm" href="#v${p.k}">${esc(namaProv(p.k))}</a></td><td class="r">${fmt(p.rs.length)}</td><td class="r">${fmt(t.t)}</td><td class="r">${ha(t.l)}</td><td class="r">${fmt(t.a)}</td><td><button type="button" class="kn-mini" data-pdf="${p.k}">Unduh PDF</button></td></tr>`; }).join("")}
@@ -130,10 +188,11 @@
       </div>
       ${SUSUN.map(p => { const t = jumlah(p.rs); return `<section class="kn-provsek" id="v${p.k}" data-prov="${p.k}">
         <header class="kn-provh"><div><span class="lbl">Provinsi</span><h2>${esc(namaProv(p.k))}</h2></div><button type="button" class="kn-mini kn-utama" data-pdf="${p.k}">Unduh PDF ${esc(namaProv(p.k))}</button></header>
-        ${kpi(p.rs.length, t)}
+        ${kpi(p.rs)}
         <section class="kn-kartu"><h2>Per kabupaten/kota</h2>
-          <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Kabupaten/kota</th><th class="r">Perusahaan</th><th>Terbanyak titik</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">Masih ada api</th></tr></thead><tbody>
-          ${p.kab.map(([kb, rs], j) => { const x = jumlah(rs); return `<tr><td>${j + 1}</td><td><a class="kn-nm" href="#v${p.k}-${j}">${esc(kb)}</a></td><td class="r">${fmt(rs.length)}</td><td>${esc(rs[0].nama)}</td><td class="r">${fmt(x.t)}</td><td class="r">${ha(x.l)}</td><td class="r">${fmt(x.a)}</td></tr>`; }).join("")}
+          <div class="tw"><table class="kn-tb"><thead><tr><th>No</th><th>Kabupaten/kota</th><th>Perusahaan di wilayah ini</th><th class="r">Titik panas</th><th class="r">Indikasi terbakar (ha)</th><th class="r">Masih ada api</th></tr></thead><tbody>
+          ${p.kab.map(([kb, rs], j) => { const x = jumlah(rs); return `<tr><td>${j + 1}</td><td><a class="kn-nm" href="#v${p.k}-${j}">${esc(kb)}</a><small>${fmt(rs.length)} perusahaan</small></td>
+            <td><span class="kn-pl">${rs.map(r => `<a href="#p${r._i}" data-buka="${r._i}" class="kn-pli"><i style="background:${JN[r.jenis][1]}"></i>${esc(r.nama)}<em>${fmt(r.titik)}</em></a>`).join("")}</span></td><td class="r">${fmt(x.t)}</td><td class="r">${ha(x.l)}</td><td class="r">${fmt(x.a)}</td></tr>`; }).join("")}
           </tbody></table></div>
           <h3>Per jenis usaha</h3>${tabelJenis(p.rs)}${tabelGrup(p.rs)}
           <h3>Peta provinsi</h3><figure class="kn-pv"><div class="kn-img kn-img-l" data-pv="${p.k}"><span>Menggambar peta…</span></div><figcaption>Batas konsesi bertitik panas dan titik panas 2026 di ${esc(namaProv(p.k))}</figcaption></figure>${legenda()}
@@ -147,9 +206,13 @@
       </section>`; }).join("")}
       <section class="kn-kartu kn-metode">
         <h2>Sumber dan cara hitung</h2>
+        <div class="tw"><table class="kn-tb"><thead><tr><th>Data</th><th>Instansi</th><th>Rincian</th></tr></thead><tbody>
+          ${Object.entries(SB).map(([j, [i, t]]) => `<tr><td>Batas konsesi ${JN[j][0]}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${t}</td></tr>`).join("")}
+          ${SB_LAIN.map(([d, i, t]) => `<tr><td>${d}</td><td><span class="kn-sb">${i}</span></td><td class="kn-mt">${esc(t)}</td></tr>`).join("")}
+        </tbody></table></div>
         <ul>
           <li><b>Titik panas:</b> ${esc(IDX.sumber_titik)}. Hari dihitung kalender WIB. ${esc(IDX.celah)}, jadi angka Mei–Juni lebih rendah dari kenyataan.</li>
-          <li><b>Batas konsesi:</b> sawit: ${esc(IDX.sumber_konsesi.sawit || "")}; HTI: ${esc(IDX.sumber_konsesi.hti || "")}; HPH: ${esc(IDX.sumber_konsesi.hph || "")}; tambang: ${esc(IDX.sumber_konsesi.tambang || "")}. Batas berumur dan bisa sudah berubah.</li>
+          <li><b>Batas konsesi:</b> peta izin, bukan sertifikat HGU ATR/BPN; batas berumur dan bisa sudah berubah.</li>
           <li><b>Kabupaten/kota perusahaan:</b> wilayah tempat titik panas terbanyak di konsesinya jatuh (batas Kemendagri).</li>
           <li><b>Indikasi luas terbakar:</b> jumlah piksel VIIRS 375 m yang kemasukan titik × ${fmt(IDX.ha_piksel)} ha, paling besar seluas konsesi. Bukan peta luas bakar resmi; piksel bisa terbakar sebagian.</li>
           <li><b>Kejadian:</b> rangkaian hari bertitik panas dengan jeda paling lama ${IDX.jeda_kejadian} hari tanpa titik.</li>
@@ -205,6 +268,7 @@
           <dt>Grup usaha</dt><dd>${r.grup ? `<span class="kn-grp">${logo(r.grup, 18)}${esc(r.grup)}</span>${(r.negara || []).length ? `<small>${r.negara.map(k => `${bendera(k, 12)} ${NEG[k] || k}`).join(", ")}</small>` : ""}` : "Belum teridentifikasi"}</dd>
           ${ps.length ? `<dt>Pemegang saham</dt><dd>${ps.map(x => `<span class="kn-ps">${bendera(x.negara, 12)}${esc(x.nama)}</span>`).join("")}</dd>` : ""}
           ${(r.tokoh || []).length ? `<dt>Tokoh terkait</dt><dd>${r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b> · ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")}</dd>` : ""}
+          <dt>Sumber data batas</dt><dd><span class="kn-sb">${SB[r.jenis]?.[0] || "–"}</span><small>${SB[r.jenis]?.[1] || ""}</small></dd>
           <dt>Luas konsesi</dt><dd>${ha(r.luas_ha)} ha <small>${r.blok} blok, peta ${r.tahun_data || "–"}</small></dd>
           <dt>Provinsi</dt><dd>${esc(namaProv(r.prov))}</dd>
           <dt>Kabupaten/kota</dt><dd>${esc((r.kab_titik?.length ? r.kab_titik : r.kab).join(", ") || "–")}</dd>
@@ -348,24 +412,39 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
     if (c) { const r = daftar[+c.dataset.csv];
       unduh(`${berkas(r.nama)}_titik_2026.csv`, "﻿lintang,bujur,waktu_wib,frp_mw,satelit\n" + r.pt.map(p => [p[0], p[1], `2026-${p[2]}`, p[3], "VIIRS S-NPP"].join(",")).join("\n"), "text/csv"); }
   });
-  $("#knKml").addEventListener("click", () => daftar.length && unduh(`konsesi_terbakar_2026.kml`, kml(daftar.slice(0, 300), "Konsesi terbakar 2026"), "application/vnd.google-earth.kml+xml"));
-  $("#knCsv").addEventListener("click", () => {
-    const kol = ["no", "perusahaan", "grup", "negara_grup", "jenis", "provinsi", "kabupaten_kota", "kecamatan", "luas_konsesi_ha", "titik_panas_2026", "indikasi_terbakar_ha", "persen_konsesi_terbakar",
-      "tanggal_pertama", "tanggal_terakhir", "rentang_hari", "hari_bertitik", "jumlah_kejadian", "titik_7_hari", "puncak_tanggal", "puncak_titik", "persen_titik_gambut", "frp_maks_mw", "lintang_tengah", "bujur_tengah", "disebut_walhi"];
-    unduh("konsesi_terbakar_2026.csv", "﻿" + kol.join(",") + "\n" + daftar.map((r, i) => [i + 1, r.nama, r.grup, (r.negara || []).map(k => NEG[k] || k).join("/"), JN[r.jenis]?.[0], namaProv(r.prov),
-      (r.kab_titik?.length ? r.kab_titik : r.kab).join("; "), r.kec.join("; "), r.luas_ha, r.titik, r.luas_bakar_ha, r.persen_bakar == null ? "" : Math.round(r.persen_bakar * 1000) / 10,
-      r.pertama, r.terakhir, r.rentang_hari, r.hari_aktif, r.kejadian.length, r.titik_7h, r.puncak[0], r.puncak[1], Math.round(r.gambut * 100), r.frp_maks, r.pusat[0], r.pusat[1], r.walhi ? "ya" : ""].map(sel).join(",")).join("\n"), "text/csv");
-  });
+  /* kop & kaki kertas cetak = kotak margin @page (standar Laporan Harian laporan.js: SVG berukuran tetap, bukan elemen fixed) */
+  let LOGO_SVG = ""; fetch("/img/logo.svg?v=2").then(r => r.text()).then(t => { LOGO_SVG = t.replace(/<title>.*?<\/title>/, ""); }).catch(() => {});
+  function halaman(k) {
+    const xe = t => String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;");
+    const wil = k ? namaProv(k) : [...S.prov].length === 1 ? namaProv([...S.prov][0]) : "";
+    const kiri = `<svg xmlns="http://www.w3.org/2000/svg" width="380" height="26" viewBox="0 0 380 26">${LOGO_SVG.replace("<svg ", '<svg x="0" y="1" width="24" height="24" ')}`
+      + `<g font-family="Inter,system-ui,sans-serif" fill="#0b2545"><text x="31" y="11" font-size="10.5" font-weight="800">Centurisk97</text>`
+      + `<text x="31" y="22" font-size="8" font-weight="700">Laporan Konsesi Terbakar 2026${wil ? ` · <tspan fill="#c9503a">${xe(wil)}</tspan>` : ""}</text></g></svg>`;
+    const cetakTgl = tglT(new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10)), pil = `Data s.d. ${tglT(IDX.sampai.slice(0, 10))} ${IDX.sampai.slice(11)}`, lw = pil.length * 4.3 + 12;
+    const kanan = `<svg xmlns="http://www.w3.org/2000/svg" width="380" height="26" viewBox="0 0 380 26"><g font-family="Inter,system-ui,sans-serif">`
+      + `<text x="380" y="9" font-size="8.5" font-weight="800" fill="#0b2545" text-anchor="end">Dicetak ${xe(cetakTgl)}</text>`
+      + `<rect x="${380 - lw}" y="13" width="${lw}" height="12" rx="6" fill="#2b8c86"/><text x="${380 - lw / 2}" y="21.5" font-size="7" font-weight="700" fill="#fff" text-anchor="middle">${xe(pil)}</text></g></svg>`;
+    const uri = t => `url("data:image/svg+xml;charset=utf-8,${encodeURIComponent(t)}")`, garis = "vertical-align:bottom;padding-bottom:2.5mm;border-bottom:1.5px solid #0b2545;margin-bottom:5mm";
+    const f = "font:600 8.5px Inter,system-ui,sans-serif;color:#5b6b82;border-top:1px solid #c9d3e0;vertical-align:top;padding-top:3mm";
+    $("#knHalaman").textContent = `@page{size:A4 landscape;margin:22mm 10mm 14mm;
+      @top-left{content:${uri(kiri)};${garis};text-align:left}@top-center{content:" ";${garis}}@top-right{content:${uri(kanan)};${garis};text-align:right}
+      @bottom-left{content:"Sumber: NASA FIRMS; batas konsesi KLHK/Kemenhut (GFW, Trase); kawasan hutan KLHK; wilayah Kemendagri; olahan Centurisk97";${f}}
+      @bottom-right{content:"Halaman " counter(page) " dari " counter(pages);${f}}}`;
+  }
+  addEventListener("beforeprint", () => { if (IDX) halaman(document.body.dataset.cetak || ""); });
+
   /* PDF: gambar semua peta dulu, baru dialog cetak (Simpan sebagai PDF). k = satu provinsi, kosong = semua yang dipilih */
   async function cetak(k) {
     const rs = daftar.filter(r => (!k || r.prov === k) && document.getElementById("p" + r._i));
     const pv = SUSUN.filter(p => !k || p.k === k);
     document.querySelectorAll("[data-pdf],#knPdf").forEach(b => { b.disabled = true; });
+    if (k === "" && SUSUN.length === 1) k = SUSUN[0].k;
     let n = 0; const tot = rs.length + pv.length;
     for (const p of pv) { status(`Menyiapkan peta ${++n} dari ${tot}…`); await gambarProv(p.k); }
     for (const r of rs) { status(`Menyiapkan peta ${++n} dari ${tot}…`); await gambarProfil(r._i); }
     status(""); document.querySelectorAll("[data-pdf],#knPdf").forEach(b => { b.disabled = false; });
     const judul = document.title;
+    halaman(k);
     if (k) { document.body.dataset.cetak = k; document.querySelector(`.kn-provsek[data-prov="${k}"]`)?.classList.add("kn-ini"); document.title = `Laporan Konsesi Terbakar 2026 ${namaProv(k)}`; }
     print();
   }

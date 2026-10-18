@@ -17,7 +17,9 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/inti/kartu.css">
 <link rel="stylesheet" href="/laporan_konsesi.css">
+<style id="knHalaman"></style>
 </head>
 <body>
 <header class="top">
@@ -32,34 +34,19 @@
 </header>
 
 <main class="kn">
-  <section class="kn-kop">
-    <img src="/img/logo.svg?v=2" alt="" width="44" height="44">
-    <div>
-      <b>Centurisk97</b>
-      <h1>Laporan Konsesi Terbakar 2026</h1>
-      <p id="knSub">Memuat data…</p>
-    </div>
+  <section class="lp-kep kn-kep">
+    <div class="lp-jd"><h1 id="knJudul">Laporan Konsesi Terbakar 2026</h1><div class="lp-pils" id="knPils"></div></div>
+    <div class="lp-aksi"><button class="lp-cetak" type="button" id="knPdf" aria-label="Unduh PDF" title="Unduh PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 9V3.5h10V9M7 17H4.5v-7h15v7H17M7 14h10v6.5H7z"/></svg></button></div>
   </section>
 
-  <section class="kn-kendali" aria-label="Pilihan laporan">
-    <div class="kn-baris kn-alat">
-      <label><span class="lbl">Provinsi</span><select id="knProv"></select></label>
-      <label><span class="lbl">Jenis</span>
-        <span class="kn-jenis" id="knJenis"></span></label>
-      <label><span class="lbl">Cari perusahaan</span><input id="knCari" type="search" placeholder="Nama PT atau grup"></label>
-      <label><span class="lbl">Profil lengkap per provinsi</span>
-        <select id="knProfil"><option value="10">10 teratas</option><option value="20" selected>20 teratas</option><option value="50">50 teratas</option><option value="9999">Semua</option></select></label>
-      <label><span class="lbl">Peta dasar</span>
-        <select id="knDasar"><option value="google">Google Satelit</option><option value="esri">Citra Esri</option><option value="osm">Peta jalan</option></select></label>
-      <label><span class="lbl">Urut</span>
-        <select id="knUrut"><option value="titik">Titik panas</option><option value="luas_bakar_ha">Luas terbakar</option><option value="titik_7h">7 hari terakhir</option><option value="persen_bakar">% konsesi terbakar</option><option value="hari_aktif">Hari bertitik</option></select></label>
-    </div>
-    <div class="kn-baris kn-tombol">
-      <button type="button" class="kn-utama" id="knPdf">Unduh PDF</button>
-      <button type="button" id="knCsv">Unduh tabel (CSV)</button>
-      <button type="button" id="knKml">Semua poligon + titik (KML Google Earth)</button>
-      <span id="knStatus" class="kn-status" aria-live="polite"></span>
-    </div>
+  <section class="kn-saring" aria-label="Saring laporan">
+    <div class="kn-f"><span class="lbl">Provinsi</span><div class="pc kn-pp"><button type="button" class="pc-btn" id="knProv" aria-haspopup="listbox" aria-label="Pilih provinsi"><span>6 provinsi BNPB</span><i></i></button></div></div>
+    <div class="kn-f"><span class="lbl">Jenis usaha</span><div class="seg penuh" data-grup="jenis"><button data-v="semua" aria-pressed="true">Semua</button><button data-v="sawit" aria-pressed="false">Sawit</button><button data-v="hti" aria-pressed="false">HTI</button><button data-v="hph" aria-pressed="false">HPH</button><button data-v="tambang" aria-pressed="false">Tambang</button></div></div>
+    <div class="kn-f"><span class="lbl">Urutkan menurut</span><div class="seg penuh" data-grup="urut"><button data-v="titik" aria-pressed="true">Titik panas</button><button data-v="luas_bakar_ha" aria-pressed="false">Luas terbakar</button><button data-v="titik_7h" aria-pressed="false">7 hari terakhir</button><button data-v="persen_bakar" aria-pressed="false">% konsesi</button></div></div>
+    <div class="kn-f"><span class="lbl">Peta dasar</span><div class="seg penuh" data-grup="dasar"><button data-v="google" aria-pressed="true">Google Satelit</button><button data-v="esri" aria-pressed="false">Citra Esri</button><button data-v="osm" aria-pressed="false">Peta jalan</button></div></div>
+    <div class="kn-f"><span class="lbl">Profil lengkap per provinsi</span><div class="seg penuh" data-grup="profil"><button data-v="10" aria-pressed="false">10 teratas</button><button data-v="20" aria-pressed="true">20 teratas</button><button data-v="50" aria-pressed="false">50 teratas</button><button data-v="9999" aria-pressed="false">Semua</button></div></div>
+    <div class="kn-f kn-cari"><span class="lbl">Cari perusahaan</span><input id="knCari" type="search" placeholder="Nama PT atau grup" aria-label="Cari perusahaan"></div>
+    <div class="kn-f kn-st"><span id="knStatus" class="kn-status" aria-live="polite"></span></div>
   </section>
 
   <section id="knIsi"><div class="kosong">Memuat…</div></section>
