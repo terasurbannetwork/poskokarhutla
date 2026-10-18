@@ -301,19 +301,20 @@
   function harian(r) {
     const frp = {}, jam = {}, ke = {};
     r.pt.forEach(p => { const d = "2026-" + p[2].slice(0, 5); frp[d] = Math.max(frp[d] || 0, p[3]); (jam[d] ||= new Set()).add(p[2].slice(6)); });
-    r.kejadian.forEach((e, j) => r.harian.forEach(([d]) => { if (d >= e[0] && d <= e[1]) ke[d] = j + 1; }));
+    const lama = {};  /* api bertahan: hari ke-berapa dalam kejadiannya, dari lama kejadian itu */
+    r.kejadian.forEach((e, j) => r.harian.forEach(([d]) => { if (d >= e[0] && d <= e[1]) { ke[d] = j + 1; lama[d] = [(Date.parse(d) - Date.parse(e[0])) / 864e5 + 1, e[2]]; } }));
     const HR = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], mx = Math.max(...r.harian.map(x => x[1]));
     const BLN_P = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
     const perB = {}; r.harian.forEach(h => (perB[h[0].slice(5, 7)] ||= []).push(h));
     let kum = 0;
     const isi = Object.keys(perB).sort().map(m => { const xs = perB[m], t = xs.reduce((a, x) => a + x[1], 0);
       return xs.map(([d, n]) => { kum += n; return `<tr${d === r.puncak[0] ? ' class="kn-pk"' : ""}><td><b>${tgl(d)}</b></td><td class="kn-mt">${HR[new Date(d + "T00:00:00Z").getUTCDay()]}</td>
-          <td class="kn-cb"><span class="kn-cbi">${batang(n, mx)}<b class="num">${fmt(n)}</b></span></td><td class="r">${fmt(kum)}</td><td class="r">${fmt(frp[d])}</td><td class="r">${[...jam[d]].length}</td><td class="r">${ke[d]}</td></tr>`; }).join("")
-        + (xs.length > 1 ? `<tr class="kn-sub"><td colspan="2">Subtotal ${BLN_P[+m - 1]}</td><td class="r">${fmt(t)} titik</td><td class="r">${fmt(kum)}</td><td colspan="3" class="kn-mt">${fmt(xs.length)} hari dengan hotspot</td></tr>` : ""); }).join("");
+          <td class="kn-cb"><span class="kn-cbi">${batang(n, mx)}<b class="num">${fmt(n)}</b></span></td><td class="r">${fmt(kum)}</td><td class="r">${fmt(frp[d])}</td><td class="r">${[...jam[d]].length}</td><td class="r" style="white-space:nowrap">${lama[d][1] > 1 ? `hari ke-${fmt(lama[d][0])}<span class="kn-mt"> / ${fmt(lama[d][1])}</span>` : "1 hari"}</td><td class="r">${ke[d]}</td></tr>`; }).join("")
+        + (xs.length > 1 ? `<tr class="kn-sub"><td colspan="2">Subtotal ${BLN_P[+m - 1]}</td><td class="r">${fmt(t)} titik</td><td class="r">${fmt(kum)}</td><td colspan="4" class="kn-mt">${fmt(xs.length)} hari dengan hotspot</td></tr>` : ""); }).join("");
     return `<section class="kn-harian"><div class="kn-band"><b>Titik panas harian 2026</b><span>${fmt(r.titik)} titik · ${fmt(r.hari_aktif)} hari dengan hotspot · puncak ${tgl(r.puncak[0])} (${fmt(r.puncak[1])})</span></div>${grafik(r)}
-      <div class="tw kn-hr-tb"><table class="kn-tb"><thead><tr><th>Tanggal</th><th>Hari</th><th class="kn-cb">Titik panas</th><th class="r">Kumulatif</th><th class="r">FRP maks (MW)</th><th class="r">Lintasan satelit</th><th class="r">Kejadian ke-</th></tr></thead>
-      <tbody>${isi}<tr class="kn-tot"><td colspan="2">Jumlah</td><td class="r">${fmt(r.titik)}</td><td class="r">${fmt(r.titik)}</td><td class="r">${fmt(r.frp_maks)}</td><td></td><td class="r">${fmt(r.kejadian.length)}</td></tr></tbody></table></div>
-      <p class="kn-mt kn-hr-k">${fmt(r.hari_aktif)} hari dengan hotspot, ${fmt(r.titik)} titik. Baris berwarna = hari puncak. Lintasan = jumlah lewatan satelit S-NPP yang menangkap api hari itu.</p></section>`;
+      <div class="tw kn-hr-tb"><table class="kn-tb"><thead><tr><th>Tanggal</th><th>Hari</th><th class="kn-cb">Titik panas</th><th class="r">Kumulatif</th><th class="r">FRP maks (MW)</th><th class="r">Lintasan satelit</th><th class="r">Api bertahan</th><th class="r">Kejadian ke-</th></tr></thead>
+      <tbody>${isi}<tr class="kn-tot"><td colspan="2">Jumlah</td><td class="r">${fmt(r.titik)}</td><td class="r">${fmt(r.titik)}</td><td class="r">${fmt(r.frp_maks)}</td><td></td><td class="r">terlama ${fmt(Math.max(...r.kejadian.map(e => e[2])))} hari</td><td class="r">${fmt(r.kejadian.length)}</td></tr></tbody></table></div>
+      <p class="kn-mt kn-hr-k">${fmt(r.hari_aktif)} hari dengan hotspot, ${fmt(r.titik)} titik. Baris berwarna = hari puncak. Lintasan = jumlah lewatan satelit S-NPP yang menangkap api hari itu. Api bertahan = hari ke-berapa dalam kejadiannya, dari lama kejadian itu (jeda ≤ ${IDX.jeda_kejadian} hari tanpa hotspot tetap satu kejadian).</p></section>`;
   }
 
   /* kejadian kebakaran (urut waktu) + kompleks api 7 hari + titik terbaru, tiap bagian berpita navy */
@@ -449,19 +450,23 @@
   let kanvas = null, antre = Promise.resolve();
   const siapKanvas = () => kanvas ||= new maplibregl.Map({container: "knKanvas", style: {version: 8, sources: {}, layers: []}, interactive: false, attributionControl: false,
     preserveDrawingBuffer: true, canvasContextAttributes: {preserveDrawingBuffer: true}, fadeDuration: 0});
-  /* ---------- callout bernomor: penanda yang bertumpuk disebar menjauh, garis penunjuk ke titik tengah apinya ---------- */
+  /* ---------- callout bernomor: ditaruh berurut nomor, tiap penanda mencoba titik tengah apinya lalu cincin di sekitarnya;
+     yang tak kebagian tempat tidak digambar (muncul saat diperbesar). Dulu disebar paksa semuanya, hasilnya gumpalan
+     sarang lebah yang menutupi peta saat zoom jauh (pemilik, 18 Okt 2026) ---------- */
   function tataCallout(ps, w, h, r = 11) {
-    const L = ps.map(p => ({...p, lx: p.x, ly: p.y}));
-    for (let it = 0; it < 220; it++) {
-      for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {
-        const a = L[i], b = L[j], dx = b.lx - a.lx, dy = b.ly - a.ly, d = Math.hypot(dx, dy) || .01, min = r * 2 + 3;
-        if (d < min) { const k = (min - d) / 2, ux = dx / d || Math.cos(i), uy = dy / d || Math.sin(i); a.lx -= ux * k; a.ly -= uy * k; b.lx += ux * k; b.ly += uy * k; }
-      }
-      L.forEach(p => { p.lx += (p.x - p.lx) * .02; p.ly += (p.y - p.ly) * .02; p.lx = Math.max(r + 2, Math.min(w - r - 2, p.lx)); p.ly = Math.max(r + 2, Math.min(h - r - 2, p.ly)); });
+    const min = r * 2 + 3, L = [], xs = ps.map(p => p.x), ys = ps.map(p => p.y);
+    /* label paling banyak menutup ~1/4 kotak sebaran api (+ satu cincin), prioritas titik panas terbanyak */
+    const maks = Math.max(8, Math.floor((Math.max(...xs) - Math.min(...xs) + min * 2) * (Math.max(...ys) - Math.min(...ys) + min * 2) / (min * min * 4)));
+    ps = ps.slice().sort((a, b) => b.t - a.t);
+    const arah = [0, 1, 2, 3, 4, 5, 6, 7].map(i => [Math.cos(i * Math.PI / 4), Math.sin(i * Math.PI / 4)]);
+    for (const p of ps) {
+      const calon = [[p.x, p.y], ...[min, min * 1.8].flatMap(d => arah.map(([ux, uy]) => [p.x + ux * d, p.y + uy * d]))];
+      const ok = calon.find(([lx, ly]) => lx > r && ly > r && lx < w - r && ly < h - r && L.every(q => Math.hypot(q.lx - lx, q.ly - ly) >= min));
+      if (ok && L.push({...p, lx: ok[0], ly: ok[1]}) >= maks) break;
     }
     return L;
   }
-  const labelDari = (rs, lab) => rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({n: String(r._rp), lon: r.pusat[1], lat: r.pusat[0]}));
+  const labelDari = (rs, lab) => rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({n: String(r._rp), t: r.titik, lon: r.pusat[1], lat: r.pusat[0]}));
   /* gambar callout di atas gambar peta (kanvas 2D), dipakai untuk potret/cetak */
   function callout2d(m, rs, lab) {
     const src = m.getCanvas(), c = document.createElement("canvas"); c.width = src.width; c.height = src.height;
