@@ -26,13 +26,15 @@
   ];
   /* lapisan ubin pasif (config + legenda di data/lapisan_tambahan.json): satu sumber ditambah hanya saat dinyalakan */
   const UBIN = [["jrc", "Tutupan pohon"], ["primer", "Hutan primer"], ["mangrove", "Mangrove"], ["tanaman", "Tanaman & kebun"], ["tambang", "Tambang"], ["plkemenhut", "Tutupan lahan 2025 (Kemenhut, 11 kelas)"], ["kwskemenhut", "Kawasan hutan"]];
-  /* grup ubin dengan sub-pilihan: satu ubin + deretan pil (kotak centang data-l = kunci ubin di atas). Sumber baru fase 2 (PMTiles:
-     sawit industri, sawit rakyat, kelapa, kawasan terbangun, jalan logging) cukup: entri di UBIN + baris di isi + config di lapisan_tambahan.json. */
-  const SUB = {hutan: {nama: "Hutan", awal: "primer", isi: [["jrc", "Tutupan pohon 2020"], ["primer", "Hutan primer 2025"], ["mangrove", "Mangrove"]]},
-    kebun: {nama: "Kebun & tambang", awal: "tanaman", isi: [["tanaman", "Hutan tanaman & kebun"], ["tambang", "Area tambang"]]}};
-  const LAHAN = [["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"], ["hutan", "Hutan (primer, tutupan pohon, mangrove)"], UBIN[5], ["kebun", "Kebun & tambang (tanaman, tambang)"]];
+  /* grup ubin dengan sub-pilihan: satu ubin + deretan pil. Pil sumber l5 membawa data-l = kunci UBIN; pil "proxy" (konsesi, milik skrip
+     utama) membawa data-px dan menggerakkan kotak aslinya (tersembunyi di index.html), jadi popup/legenda/cari.js/aktor.js tak berubah.
+     Fase 2 (PMTiles: sawit industri, sawit rakyat, kelapa, kawasan terbangun, jalan logging): tambah entri di UBIN + satu baris di
+     SUB.konsesig.isi + config di lapisan_tambahan.json. Isi: [kunci, label pil, proxy?]. */
+  const SUB = {hutan: {nama: "Hutan", awal: "kwskemenhut", isi: [["kwskemenhut", "Kawasan hutan 2026 (status)"], ["plkemenhut", "Tutupan lahan 2025"], ["jrc", "Tutupan pohon 2020"], ["primer", "Hutan primer 2025"], ["mangrove", "Mangrove"]]},
+    konsesig: {nama: "Konsesi", awal: "konsesi", isi: [["konsesi", "Batas izin", 1], ["tanaman", "Hutan tanaman & kebun"], ["tambang", "Area tambang"]]}};
+  const LAHAN = [["hutan", "Hutan (status, tutupan lahan, pohon, primer, mangrove)"], ["konsesig", "Konsesi (batas izin, kebun, tambang)"], ["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"]];
   const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0]), ...UBIN.map(x => x[0])]);
-  const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>` + (SUB[k] ? `<div class="ub-chip" data-g="${k}" hidden>${SUB[k].isi.map(([s, t]) => `<label><input type="checkbox" data-l="${s}"><span>${t}</span></label>`).join("")}</div>` : "");
+  const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>` + (SUB[k] ? `<div class="ub-chip" data-g="${k}" hidden><b class="ub-jd">${SUB[k].nama}</b>${SUB[k].isi.map(([s, t, px]) => `<label><input type="checkbox" data-${px ? "px" : "l"}="${s}"><span>${t}</span></label>`).join("")}</div>` : "");
   function sisipKotak() {
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan" || d.querySelector("summary")?.textContent.trim() === window.T?.("Lahan"));
@@ -45,7 +47,9 @@
   }
   /* ubin grup menyala bila ada sub yang menyala; deretan pil hanya tampil saat grup menyala */
   const sinkron = () => { for (const g in SUB) { const on = SUB[g].isi.some(([s]) => nyala(s)), i = document.querySelector(`#lapis input[data-l="${g}"]`), c = document.querySelector(`#lapis .ub-chip[data-g="${g}"]`);
-    if (i) i.checked = on; if (c) c.hidden = !on; } };
+    if (i) i.checked = on; if (c) { c.hidden = !on; c.querySelectorAll("[data-px]").forEach(x => x.checked = nyala(x.dataset.px)); } } };
+  /* kotak asli milik skrip utama (konsesi): ubah lewat kejadian change supaya penangan lamanya (peta, legenda) jalan */
+  const setPx = (k, on) => { const x = document.querySelector(`#lapis input[data-l="${k}"]`); if (x && x.checked !== on) { x.checked = on; x.dispatchEvent(new Event("change", {bubbles: true})); } };
   const nyala = k => !!document.querySelector(`#lapis input[data-l="${k}"]:checked`);
   const LAYER = {penduduk: ["l5-penduduk"], fasilitas: ["l5-fasilitas"], jalan: ["l5-jalan", "l5-sungai"],
     hilang: ["l5-hilang", "l5-hilang_api"], satelit: ["l5-satelit"], peringatan: ["l5-peringatan"], kanal: ["l5-kanal"]};
@@ -151,13 +155,17 @@
   function hubungkan() {
     sisipKotak();
     /* fase tangkap: kunci baru tidak diteruskan ke penangan lama (petanya tidak mengenal kunci ini) */
-    $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !KUNCI.has(i.dataset.l)) return;
+    $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i) return;
+      if (i.dataset.px) { e.stopImmediatePropagation(); setPx(i.dataset.px, i.checked); sinkron(); return; }
+      if (!KUNCI.has(i.dataset.l)) return;
       e.stopImmediatePropagation(); if (!peta) return;
       const g = SUB[i.dataset.l]; /* ubin grup: nyalakan sub bawaan / matikan semua sub; chrome langsung, sumber dimuat malas oleh lihat() */
-      if (g) { if (i.checked) { if (!g.isi.some(([s]) => nyala(s))) { document.querySelector(`#lapis input[data-l="${g.awal}"]`).checked = true; lihat(g.awal, true); } }
-        else g.isi.forEach(([s]) => { const x = document.querySelector(`#lapis input[data-l="${s}"]`); if (x?.checked) { x.checked = false; lihat(s, false); } });
+      if (g) { const kotakAsli = k => document.querySelector(`#lapis input[data-l="${k}"]`);
+        if (i.checked) { if (!g.isi.some(([s]) => nyala(s))) { const [a, , px] = g.isi.find(x => x[0] === g.awal); if (px) setPx(a, true); else { kotakAsli(a).checked = true; lihat(a, true); } } }
+        else { g.isi.filter(x => !x[2]).forEach(([s]) => { const x = kotakAsli(s); if (x?.checked) { x.checked = false; lihat(s, false); } }); g.isi.filter(x => x[2]).forEach(([s]) => setPx(s, false)); }
         sinkron(); return; }
       lihat(i.dataset.l, i.checked); sinkron(); garisWaktu(); garis(); }, true);
+    $("#lapis").addEventListener("change", () => sinkron()); /* bubble: kotak konsesi bisa dinyalakan skrip lain (aktor.js, cari.js) */
     $("#lapis").addEventListener("change", garis); /* setelah penangan lama: jangan sembunyikan garis waktu saat penduduk menyala */
     $("#fwiHari")?.addEventListener("click", () => requestAnimationFrame(async () => { const s = peta?.getSource("l5-penduduk"); if (!s) return;
       const [pen, a] = await Promise.all([muat("penduduk", "data/penduduk.json"), muat("asap", "data/asap.json")]); s.setData(geoPenduduk(pen, a)); }));

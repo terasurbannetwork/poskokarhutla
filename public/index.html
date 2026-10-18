@@ -1267,6 +1267,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 /* sub-pilihan grup (Hutan, Kebun & tambang): deretan pil lebar penuh di bawah kisi ubin; kotak centangnya yang membawa data-l */
 .lapis .ub-chip{display:flex;flex-wrap:wrap;gap:4px;padding:0 0 6px}
 .lapis .ub-chip[hidden]{display:none}
+.lapis .ub-chip .ub-jd{flex:0 0 100%;font-size:9.5px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:2px 2px 0}
 .lapis .ub-chip label{flex:1 1 auto;display:block;position:relative;padding:0;text-align:center;cursor:pointer}
 .lapis .ub-chip label span{display:block;padding:4px 8px;border-radius:99px;background:oklch(50% .02 256 / .1);color:var(--ink2);font-size:10.5px;font-weight:600;line-height:1.3;white-space:nowrap}
 .lapis .ub-chip label input{position:absolute;opacity:0;pointer-events:none}
@@ -1487,8 +1488,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
         </details>
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
-          <label><input type="checkbox" data-l="kwskemenhut"> Kawasan hutan (Kemenhut 2026)</label>
-          <label><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label>
+          <label hidden><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label><!-- kotak asli; dikendalikan pil "Batas izin" di ubin Konsesi (lapisan5.js SUB.konsesig) -->
           <label hidden><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label><!-- peta 2017 disembunyikan: diganti kwskemenhut; input dipertahankan karena Peta.pasang() membacanya -->
         </details>
         <details open><summary>Infrastruktur</summary>
@@ -2466,12 +2466,12 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
   gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>', peringatan: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'};
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
   fwi: ["#5a9e74", "#c9503a", "api"], pfvi: ["#4a3426", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
-  hutan: ["#1f5a3a", "#5fae6e", "hutan"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
+  hutan: ["#1f5a3a", "#5fae6e", "hutan"], konsesig: ["#7a4bb0", "#e58a45", "pabrik"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
   gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", kebun: "Kebun & tambang", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
