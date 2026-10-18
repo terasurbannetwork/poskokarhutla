@@ -10,13 +10,13 @@ Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kecamatan|kejadian|mm))$/;   /* 
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 
 const Insight = {
-  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
+  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", pel: "b", ub: "banjir", pulau: "", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
   /* urutan kartu; tabel kecamatan dan provinsi ikut sebagai kartu terakhir. musim/dampak/kab sengaja tidak di sini (disembunyikan, A24) */
-  EX: ["kejadian", "status", "hujan", "sungai", "rob", "tren", "prakiraan", "kecamatan", "provinsi"],
-  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
+  EX: ["kejadian", "status", "hujan", "sungai", "rob", "tren", "prakiraan", "peluang", "ujibalik", "kecamatan", "provinsi"],
+  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", peluang: "Peluang 3 hari", ujibalik: "Ketepatan status", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
     musim: "Musim", dampak: "Dampak", kab: "Langganan"},
   /* status tabel (urut, arah, halaman) per kartu bertabel */
-  T: {kejadian: {urut: "_", turun: true, hal: 0}, kecamatan: {urut: "_", turun: true, hal: 0}, provinsi: {urut: "_", turun: true, hal: 0}},
+  T: {kejadian: {urut: "_", turun: true, hal: 0}, peluang: {urut: "_", turun: true, hal: 0}, kecamatan: {urut: "_", turun: true, hal: 0}, provinsi: {urut: "_", turun: true, hal: 0}},
   /* penghubung ke inti/kartu.js */
   ex: (...a) => Kartu.ex(...a),
   hl: Kartu.hl,
@@ -158,6 +158,38 @@ const Insight = {
       baris.length ? `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Prakiraan status per provinsi">${g}</svg>` : `<p class="kosong">Semua kecamatan normal.</p>`, `Sumber: Open-Meteo, GloFAS, InaRISK`,
       this.seg("prak", [["b", "Banjir"], ["l", "Longsor"]])); },
 
+  /* 6b. peluang 3 hari: kecamatan dengan peluang Siaga tertinggi (ansambel ECMWF 51 anggota, jalur hujan), status.py -> prakiraan72.json */
+  exPeluang() {
+    const D = Pra72.d; if (!D || D.anggota == null) return "";
+    const b = this.st.pel, q = b === "b" ? "hb" : "hl", nama = NAMA_B[b], J = Pra72.jendela();
+    const semua = Object.entries(D.kec).filter(([, v]) => v[q]).map(([k, v]) => { const [p, kb, kc] = k.split("|"), lv = v[b], pk = v[q].map(x => x[1]); return {k, p, kb, kc, lv, pk, pu: v[q].map(x => x[2]), h3: S.st.kec[k]?.h3}; });
+    if (!semua.length) return "";
+    const tinggi = [...semua].sort((a, c) => c.pk[2] - a.pk[2])[0], n50 = semua.filter(r => r.pk[2] >= 50).length;
+    const pc = v => this.pl(fmt(Math.round(v)) + "%", v >= 50 ? WARNA_LV[3] : v >= 25 ? WARNA_LV[2] : v >= 10 ? "#c99a1e" : BIRU);
+    const kol = [{k: "kc", n: "Kecamatan", v: r => r.kc, h: r => `<b translate="no">${esc(r.kc)}</b>`}, {k: "kb", n: "Kab/Kota", v: r => r.kb, h: r => `<span translate="no">${esc(r.kb)}</span>`}, {k: "p", n: "Provinsi", v: r => namaProv(r.p), h: r => esc(namaProv(r.p))},
+      {k: "l0", n: `Status ${labelHari(D.hari[0]).toLowerCase()}`, v: r => r.lv[0], h: r => r.lv[0] ? pill(r.lv[0]) : "–"},
+      ...J.map((j, i) => ({k: "j" + i, n: `Peluang Siaga ${j}`, num: 1, v: r => r.pk[i], h: r => pc(r.pk[i])})),
+      {k: "aw", n: `Peluang Awas ${J[2]}`, num: 1, v: r => r.pu[2], h: r => r.pu[2] ? pc(r.pu[2]) : "–"},
+      {k: "h3", n: "Hujan 3 hari", num: 1, v: r => r.h3 ?? -1, h: r => r.h3 != null ? this.pl(fmt(Math.round(r.h3)) + " mm", this.warnaHujan(r.h3)) : "–"}];
+    const judul = n50 ? `${this.hl(fmt(n50) + " kecamatan")} punya peluang 50% atau lebih mencapai siaga ${nama} sampai ${tglPendek(D.hari[2])}`
+      : `Peluang siaga ${nama} tertinggi sampai ${tglPendek(D.hari[2])} ${this.hl(fmt(Math.round(tinggi.pk[2])) + "%")}, di <span translate="no">${esc(tinggi.kc)}</span>`;
+    return this.ex(judul, "", "", this.tabel("peluang", kol, semua, r => `data-kec="${esc(r.k)}"`, 10, "kecamatan", r => r.pk[2] * 1e3 + r.lv[0]),
+      `Sumber: ECMWF IFS ansambel ${fmt(D.anggota)} anggota lewat Open-Meteo, InaRISK. Peluang jalur hujan saja; belum diuji balik, kalibrasinya belum diketahui`, this.seg("pel", [["b", "Banjir"], ["l", "Longsor"]])); },
+
+  /* 6c. uji balik: seberapa tepat status ini (validasi.json, uji_balik.py); angka apa adanya, termasuk yang buruk */
+  exUjibalik() {
+    const V = S.validasi; if (!V) return "";
+    const j = this.st.ub, nama = j, P = this.st.pulau, Z = V[j]; if (!Z) return "";
+    const pulau = Object.keys(Z.pulau || {}), sumber = P && Z.pulau?.[P] ? Z.pulau[P] : Z, ada = sumber === Z ? "" : P;
+    const T = [["waspada", "Waspada", 1], ["siaga", "Siaga", 2], ["awas", "Awas", 3]].map(([k, n, l]) => ({k, n, l, r: sumber[k]})).filter(x => x.r);
+    const sg = sumber.siaga, pc = v => v == null ? "–" : fmt(Math.round(v * 100)) + "%", nKej = r => r.n.a + r.n.c;
+    const ci = (r, m) => r[m] == null ? "–" : `${pc(r[m])}${r.ci?.[m] ? `<small style="display:block;opacity:.7">(${fmt(Math.round(r.ci[m][0] * 100))}–${fmt(Math.round(r.ci[m][1] * 100))}%)</small>` : ""}`;
+    const tb = `<div class="tw"><table><thead><tr><th>Tingkat</th><th class="n">Kejadian tertangkap</th><th class="n">Peringatan tanpa kejadian</th><th class="n">Ketepatan gabungan</th><th class="n">Jumlah kejadian</th></tr></thead><tbody>${T.map(x => `<tr><td>${pill(x.l)}</td><td class="n num">${ci(x.r, "pod")}</td><td class="n num">${ci(x.r, "far")}</td><td class="n num">${ci(x.r, "csi")}</td><td class="n num">${fmt(nKej(x.r))}</td></tr>`).join("")}</tbody></table></div>`;
+    const judul = sg && sg.pod != null ? `Status ${nama} siaga menangkap ${this.hl(pc(sg.pod))} kejadian${ada ? ` di <span translate="no">${esc(ada)}</span>` : ""}, tetapi ${this.hl(pc(sg.far))} peringatannya tidak diikuti kejadian tercatat`
+      : `Belum ada kejadian ${nama} yang cukup untuk menguji status siaga${ada ? ` di <span translate="no">${esc(ada)}</span>` : ""}`;
+    return this.ex(judul, "", "", tb, `Sumber: DIBI BNPB ${V.periode_uji}, per kabupaten-hari; rentang 95% dari 1.000 ulangan acak. Hujan ERA5 dipakai sebagai prakiraan sempurna, jadi ini batas atas. Hanya jalur hujan, intensitas, dan tanah yang diuji; sungai dan ansambel tidak. ${j === "longsor" ? "Longsor 2024 dikecualikan. " : ""}Kejadian kecil sering tidak tercatat, jadi peringatan tanpa kejadian bisa tampak lebih banyak`,
+      this.selJenis("pulau", [["", "Semua pulau"], ...pulau.map(g => [g, g])], "Pulau") + this.seg("ub", [["banjir", "Banjir"], ["longsor", "Longsor"]])); },
+
   /* 7. tabel kecamatan siaga atau awas 4 hari ke depan (dari Daftar); tanpa satu pun, daftar waspada */
   exKecamatan() {
     const P = Kartu.provDipilih("provKec", this.st), hari = S.st.hari;
@@ -239,19 +271,23 @@ const Insight = {
   /* kepala kolom bisa diurut: pasang ulang tiap kartu bertabel digambar ulang */
   pasangUrut(box) { if (box.dataset.ex === "tren") { const w = box.querySelector(".tw.sk"); if (w) w.scrollLeft = w.scrollWidth; } /* tahun terbaru di kanan: tampil dulu */
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
-  ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
+  ulang(box, sesudah) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); if (sesudah) nanti(sesudah); }); },
   async render() {
-    if (!S.kejadian) S.kejadian = await muatJSON("data/kejadian.json").catch(() => null);
-    if (this.aktif === undefined) this.aktif = await muatJSON("data/kejadian_aktif_awal.json").catch(() => null);
+    const [kej, val, , akt] = await Promise.all([S.kejadian || muatJSON("data/kejadian.json").catch(() => null), S.validasi || muatJSON("data/validasi.json").catch(() => null), Pra72.muat(),
+      this.aktif === undefined ? muatJSON("data/kejadian_aktif_awal.json").catch(() => null) : this.aktif]);
+    S.kejadian ||= kej; S.validasi ||= val; if (this.aktif === undefined) this.aktif = akt;
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     el.onchange = e => { const m = e.target.closest("input[data-multi]");
       if (m) { const k = m.dataset.multi, box = m.closest(".pm-menu"); if (!m.value) box.querySelectorAll("input[value]:not([value=''])").forEach(x => x.checked = false); else box.querySelector("input[value='']").checked = false;
         this.st[k] = [...box.querySelectorAll("input:checked")].map(x => x.value).filter(Boolean).join(","); Kartu._bukaMulti = k; Object.values(this.T).forEach(t => t.hal = 0); return this.ulang(m.closest("[data-ex]")); }
-      const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };
+      const s = e.target.closest("select[data-set]"); if (s) { const key = s.dataset.set, box = s.closest("[data-ex]"); this.st[key] = s.value;
+        this.ulang(box, () => { const n = box.querySelector(`select[data-set="${key}"]`); (n?.parentElement?.querySelector(".pc-btn") || n)?.focus({preventScroll: true}); }); } };
     el.onclick = e => {
-      const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
+      const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { const key = s.dataset.set, v = s.dataset.v, box = s.closest("[data-ex]"); this.st[key] = v;
+        s.parentElement.querySelectorAll("[data-set]").forEach(x => x.setAttribute("aria-pressed", x === s));  /* tanggapan langsung; gambar ulang menyusul */
+        return this.ulang(box, () => box.querySelector(`[data-set="${key}"][data-v="${v}"]`)?.focus({preventScroll: true})); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); return turun(pv.dataset.prov); }
       const sg = e.target.closest("[data-sg]"); if (sg && +sg.dataset.sg >= 0) return Analisa.sungai(+sg.dataset.sg);

@@ -185,3 +185,28 @@ Lima catatan per wilayah:
 - **Sampel baru.** Bila sampel berubah (dibi_tanggal.json baru), hanya sel baru yang diunduh.
 - **Pembanding otomatis.** `BERLAKU` di uji_balik.py dibaca dari konstanta `status.py`, dan `SEBELUM` menyimpan aturan
   lama. Tiap jalan ulang selalu membandingkan keduanya dan melaporkan bila ada usul baru yang melampaui derau.
+
+## Waktu-tunda (d0 vs d1..d3) dan catatan prospektif (18 Okt 2026)
+
+- **Uji balik per waktu-tunda tidak bisa dihitung dari data mentah yang ada.** Hujan ERA5 adalah "prakiraan sempurna":
+  status hari d memakai hujan d-1..d+1 yang sama di semua waktu-tunda, jadi d0, d1, d2, d3 identik menurut
+  konstruksi. Skill nyata menurun untuk d1..d3 (galat prakiraan membesar), dan angka di `validasi.json` adalah batas atas
+  untuk semuanya. Layar menulis ini di baris "Sumber" kartu "Seberapa tepat status ini".
+- **Cara mengukurnya:** `prospektif.py` mencatat tiap hari level kabupaten-hari (dan peluang Siaga) untuk hari ke-0..3
+  (`prospektif.json`, append-only). Saat DIBI terbit untuk tanggal sasaran, `python3 scripts/banjir/prospektif.py nilai`
+  menghitung POD/FAR/CSI >= Siaga per waktu-tunda dari prakiraan yang benar-benar terbit. Alternatif tanpa menunggu:
+  Open-Meteo previous-runs API (panggilan besar; belum dijalankan, kuota dibagi).
+- **Peluang (prakiraan72.json) belum diuji balik, dan dari `prospektif.json` pun BELUM bisa dikalibrasi.** Peluang jalur
+  hujan dari 51 anggota ECMWF memakai ambang H3 yang sama dengan `status.py` (disapu pada uji), tetapi `prospektif.json`
+  hanya mencatat kabupaten berstatus atau berpeluang Siaga >= 10%; tanpa peluang kabupaten lain (batas bawah 10%) kurva
+  kalibrasi (apakah 30% berarti 30%) tidak bisa dihitung. Yang bisa dinilai hanya status deterministik per waktu-tunda.
+  Kalibrasi baru mungkin bila pencatatan diubah memuat peluang semua kabupaten (berkas jauh lebih besar). Titik ansambel
+  mewakili kotak 1 derajat, bukan sel kecamatan; ansambel cenderung meratakan ekstrem lokal.
+- **Jendela peluang adalah hari status, bukan jam.** "Hari pertama / sampai hari kedua / sampai hari ketiga": H3 hari ke-0
+  memuat hujan kemarin dan hari status mengikuti tanggal WIB `hujan.json`, jadi bukan 24/48/72 jam sejak waktu terbit.
+- **Penilaian prospektif** memakai tanggal sasaran sampai (tanggal DIBI terakhir - 14 hari): kejadian DIBI dilaporkan
+  menyusul, jadi tanggal terakhirnya belum lengkap dan akan membuat FAR tampak lebih buruk.
+- **Rob** memiliki validasinya sendiri (rob.json `validasi`, p95: 19 dari 26 kejadian DIBI tertangkap dengan selisih sampai
+  1 hari, 17 dari 26 pada hari yang sama, FAR 0,98; sampel kecil, ambang dari data yang sama = dalam sampel) dan ditampilkan
+  terpisah dari status banjir.
+- **Desa** tidak ada: repo hanya memuat batas sampai kecamatan (`public/geo/kecamatan`), jadi prakiraan berhenti di kecamatan.

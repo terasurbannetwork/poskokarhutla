@@ -53,7 +53,7 @@ jobs:
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat; do python3 scripts/banjir/$s.py uji; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah.
@@ -98,6 +98,18 @@ jobs:
         run: |
           python3 scripts/banjir/status.py
           python3 scripts/banjir/posko.py
+
+      # Sesudah status.py: seri harian, kejadian aktif, catatan prospektif (append-only), lalu dampak dan laporan bila skripnya ada.
+      # Boleh gagal: data utama sudah jadi; prospektif tidak menimpa berkas yang rusak atau menyusut.
+      - name: Seri status, kejadian aktif, prospektif, dampak, laporan (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/banjir/seri_status.py
+          python3 scripts/banjir/kejadian_aktif.py
+          python3 scripts/banjir/prospektif.py
+          [ -f scripts/banjir/dampak.py ] && python3 scripts/banjir/dampak.py
+          [ -f scripts/banjir/laporan_banjir.py ] && python3 scripts/banjir/laporan_banjir.py
+          true
 
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()

@@ -97,7 +97,14 @@ def level_longsor(h3, a7, bahaya, sm=None, imax=None, *, k=K_LONGSOR, sm_jenuh=S
     return 0
 
 
-HORIZON = (1, 2, 3)  # 24/48/72 jam = hari ke-0, ke-0..1, ke-0..2 (hari ke-3 = ufuk keempat, di luar 72 jam)
+# Jendela peluang dalam HARI status: hari ke-0, ke-0..1, ke-0..2 ("hari pertama", "sampai hari kedua", "sampai hari ketiga").
+# Bukan 24/48/72 jam: H3 hari ke-0 sudah memuat hujan kemarin, dan hari status mengikuti tanggal WIB hujan.json. Hari ke-3 = ufuk keempat.
+HORIZON = (1, 2, 3)
+
+
+def layak(r72):
+    """Kecamatan masuk prakiraan72.json bila berstatus > 0 atau peluang Siaga/Awas >= 10% di hari mana pun ATAU jendela mana pun (hb/hl)."""
+    return bool(max(r72["b"]) or max(r72["l"]) or any(v >= 10 for q in ("pb", "pl", "hb", "hl") for h in r72.get(q, []) for v in h[1:]))
 
 
 def ambang_hujan(jenis, bahaya, jenuh_=False, k=None):
@@ -237,7 +244,7 @@ def main():
             if pk:
                 n_pe += 1
                 r72.update({"pb": pk["b"], "pl": pk["l"], "hb": pk["hb"], "hl": pk["hl"]})
-        if max(lb) or max(ll) or any(v >= 5 for q in ("pb", "pl") for h in r72.get(q, []) for v in h[1:]):
+        if layak(r72):
             pra[k] = r72
         lama_b, lama_l = level_banjir(h3s[0], b.get("banjir", 0), rks[0], k=1), level_longsor(h3s[0], a7, b.get("longsor", 0), k=1)
         if lb[0] != lama_b:
@@ -255,12 +262,12 @@ def main():
     kode = {n: k for k, n in PROVINSI.items()}
     rb = rob_pesisir(rob, hari, kode)
     simpan(os.path.join(KELUAR, "prakiraan72.json"), {
-        "dibuat": sekarang.isoformat(timespec="minutes"), "hari": hari, "horizon_jam": [24 * h for h in HORIZON],
+        "dibuat": sekarang.isoformat(timespec="minutes"), "hari": hari, "horizon_hari": list(HORIZON),
         "anggota": ens["anggota"] if pe else None, "kec_dihitung": n_pe, "kec": pra,
         "rob": {"kec": rb, "validasi": {"persentil": (rob or {}).get("validasi", {}).get("persentil", {}).get("p95"),
                                         "kejadian_diuji": (rob or {}).get("validasi", {}).get("kejadian_diuji")}},
         "catatan": "kec: b/l = level deterministik 4 hari (0 Normal..3 Awas); pb/pl = peluang % jalur hujan mencapai Waspada/Siaga/Awas per hari; "
-                   "hb/hl = peluang pada salah satu hari dalam 24/48/72 jam. Hanya kecamatan berstatus atau berpeluang Siaga/Awas >= 5%. "
+                   "hb/hl = peluang pada salah satu hari dalam jendela hari ke-0, ke-0..1, ke-0..2 (bukan jam). Peluang belum diuji balik, kalibrasinya belum diketahui. Hanya kecamatan berstatus atau berpeluang Siaga/Awas >= 10%. "
                    "Jalur sungai dan intensitas tidak punya sebaran, jadi tidak masuk peluang. rob terpisah dari banjir (validasinya sendiri)."})
     simpan(os.path.join(KELUAR, "meta.json"), {
         "dibuat": sekarang.isoformat(timespec="minutes"), "hari_wib": hujan["hari_ini"], "hari": hari,
@@ -317,6 +324,12 @@ def uji():
                 for lv in range(3):
                     assert (level_longsor(h3, a7, bh, 0.5) >= lv + 1) == (th[lv] is not None and h3 >= th[lv]), ("longsor", h3, bh, jn, lv)
     assert jenuh(25, .45) and not jenuh(24.9, .45) and jenuh(150) and not jenuh(149)
+    # penyaring: peluang Siaga hanya di jendela (hb/hl) tetap masuk; 9% tak masuk
+    nol = [[0, 0, 0]] * 4
+    assert layak({"b": [0] * 4, "l": [0] * 4, "pb": nol, "pl": nol, "hb": [[0, 0, 0], [0, 10, 0], [0, 0, 0]], "hl": nol[:3]})
+    assert layak({"b": [0] * 4, "l": [0] * 4, "pb": nol, "pl": nol, "hb": nol[:3], "hl": [[0, 0, 0], [0, 0, 0], [0, 0, 10]]})
+    assert not layak({"b": [0] * 4, "l": [0] * 4, "pb": nol, "pl": nol, "hb": [[99, 9, 9]] * 3, "hl": nol[:3]})  # Waspada tinggi saja tak cukup
+    assert layak({"b": [0, 1, 0, 0], "l": [0] * 4})
     # peluang_kec: 4 anggota, hari 0..3; anggota 3 tak lengkap pada hari 2 dibuang dari semua
     h3a = [[10, 50, 90, 130], [10, 10, 10, 10], [85, 10, 10, 90], [10, 10, None, 10]]  # baris = hari, kolom = anggota
     pk = peluang_kec(h3a, .5, .7, [True] * 4)  # anggota 2 dibuang (None di hari 3): sisa 3 anggota
