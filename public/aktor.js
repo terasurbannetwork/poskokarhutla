@@ -33,7 +33,7 @@
     [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"], [/Royal Golden Eagle/i, "rge"],
     [/Kuala Lumpur Kepong|\bKLK\b/i, "klk"], [/Triputra/i, "tap"], [/Bumitama/i, "bumitama"], [/MP Evans/i, "mp-evans"], [/Astra/i, "astra"],
     [/REA Holdings/i, "rea"], [/Dharma Satya/i, "dsn"], [/United Plantations/i, "united-plantations"], [/Sawit Sumbermas/i, "ssms"], [/Korindo/i, "korindo"],
-    [/^SIMP$/i, "salim"], [/^Smart$/i, "sinar-mas"]];
+    [/^SIMP$/i, "salim"], [/^Smart$/i, "sinar-mas"], [/^BUMN$/i, "bumn"]];
   A.logo = (nama, h = 22) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
     return f ? `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">` : ""; };
   const titik = p => p.titik_agu ?? p.titik_sep;
