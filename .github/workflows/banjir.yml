@@ -104,12 +104,15 @@ jobs:
       - name: Seri status, kejadian aktif, prospektif, dampak, laporan (boleh gagal)
         continue-on-error: true
         run: |
-          python3 scripts/banjir/seri_status.py
-          python3 scripts/banjir/kejadian_aktif.py
-          python3 scripts/banjir/prospektif.py
-          [ -f scripts/banjir/dampak.py ] && python3 scripts/banjir/dampak.py
-          [ -f scripts/banjir/laporan_banjir.py ] && python3 scripts/banjir/laporan_banjir.py
-          true
+          python3 scripts/banjir/seri_status.py || echo "::warning::seri_status gagal"
+          python3 scripts/banjir/kejadian_aktif.py || echo "::warning::kejadian_aktif gagal"
+          python3 scripts/banjir/prospektif.py || echo "::warning::prospektif gagal"
+          # laporan_banjir membaca keluaran dampak: dilewati bila dampak gagal
+          if [ -f scripts/banjir/dampak.py ]; then
+            python3 scripts/banjir/dampak.py && { [ ! -f scripts/banjir/laporan_banjir.py ] || python3 scripts/banjir/laporan_banjir.py || echo "::warning::laporan_banjir gagal"; } || echo "::warning::dampak gagal, laporan_banjir dilewati"
+          elif [ -f scripts/banjir/laporan_banjir.py ]; then
+            python3 scripts/banjir/laporan_banjir.py || echo "::warning::laporan_banjir gagal"
+          fi
 
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
