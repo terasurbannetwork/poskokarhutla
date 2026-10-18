@@ -25,7 +25,7 @@
       const ubah = h.ubah.map(p => Sapa.kartu("jam", p.ke > p.dari ? "#b5412c" : "#2f7d4f", `<span translate="no">${esc(p.nama)}</span> ${p.ke > p.dari ? "naik" : "turun"} status`,
         `Dari Level ${LEVEL[p.dari][0]} ${LEVEL[p.dari][1]} ke <b>Level ${LEVEL[p.ke][0]} ${LEVEL[p.ke][1]}</b>, tercatat ${esc(p.tgl)}`)).join("");
       const abu = h.bandara.slice(0, 4).map(b => Sapa.kartu("asap", "#8a5a3c", `${esc(b.iata || b.icao)} ${esc(b.nama)}`,
-        `Abu dari <span translate="no">${esc(b.gunung)}</span> diperkirakan tiba ${b.jam_tiba != null ? `sekitar <b>${fmt(b.jam_tiba)}</b> jam lagi` : "dalam 72 jam"}. Perkiraan Pantau Bencana, bukan VAAC`)).join("");
+        `Skenario bila <span translate="no">${esc(S.st.gunung.find(g => idGn(g.nama) === b.gunung)?.nama || b.gunung)}</span> meletus sekarang: abu di atas ambang penerbangan tiba ${b.jam_tiba != null ? `sekitar <b>${fmt(b.jam_tiba)}</b> jam lagi` : "dalam 72 jam"}. Skenario Pantau Bencana, bukan VAAC`)).join("");
       const siaga = h.tinggi.filter(g => g.level >= 3), daftar = (siaga.length ? siaga : h.tinggi).slice(0, 6);
       return Sapa.rangka({ikon: "gunung", eyebrow: "Situasi gunung api hari ini",
         judul: `<b>${fmt(h.tinggi.length)}</b> gunung api berstatus Waspada ke atas dari ${fmt(g0.length)} yang dipantau`,

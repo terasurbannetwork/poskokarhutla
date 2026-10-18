@@ -9,7 +9,9 @@ const NAVY = "oklch(25.5% .075 256)", BATA = "#b5523b";
 
 /* uji kecocokan arah vs acak: peluang kebetulan mendapat >= k cocok dari n bila tiap kejadian cocok dengan peluang p (acak: 90 dari 360 derajat = 25%) */
 const ACAK_45 = .25;
-const pAcak = (n, persen, p = ACAK_45) => { const k = Math.round(persen * n / 100); let t = 0, c = 1; for (let i = 0; i <= n; i++) { if (i > 0) c = c * (n - i + 1) / i; if (i >= k) t += c * p ** i * (1 - p) ** (n - i); } return t; };
+const pAcak0 = (n, persen, p = ACAK_45) => { const k = Math.round(persen * n / 100); let t = 0, c = 1; for (let i = 0; i <= n; i++) { if (i > 0) c = c * (n - i + 1) / i; if (i >= k) t += c * p ** i * (1 - p) ** (n - i); } return t; };
+/* angka dari berkas bila ada (acak_persen, p_binomial), kalau tidak dihitung */
+const pAcak = (d) => d.p_binomial ?? pAcak0(d.n, d.persen_dalam_45deg, (d.acak_persen ?? 25) / 100), acakDari = d => d.acak_persen ?? ACAK_45 * 100;
 const fmtP = x => x < .001 ? "< 0,001" : "≈ " + x.toFixed(2).replace(".", ",");
 const Insight = {
   EX: ["status", "letusan", "perubahan", "bandara", "krb", "tambang", "kinerja", "daftar"],
@@ -107,16 +109,16 @@ const Insight = {
   exKinerja() {
     const a = this.abu?.uji_balik, b = this.abu?.uji_balik_tipis; if (!a?.n) return "";
     const R = [[`Berambang (n = ${fmt(a.n)})`, a, "#c9503a"], ...(b?.n ? [[`Tanpa ambang (n = ${fmt(b.n)})`, b, "#e58a45"]] : [])], U = this.uk(), L = U.L + 30, X = v => v / 100 * (U.W - L - 290), pw = t => t.length * 7.2 + 22;
-    const ket = d => { const p = pAcak(d.n, d.persen_dalam_45deg); return [p, p < .05 ? "di atas acak" : "tidak beda dari acak"]; };
+    const ket = d => { const p = pAcak(d); return [p, p < .05 ? "di atas acak" : "belum terbukti"]; };
     const g = R.map(([nm, d, w], i) => { const y = i * (U.rh + 8), x = Math.max(3, X(d.persen_dalam_45deg)), [p, kt] = ket(d), t1 = fmt(d.persen_dalam_45deg) + "% dalam 45°", t2 = "median " + fmt(d.median_selisih_deg) + "°", t3 = "P " + fmtP(p) + ", " + kt,
-        tip = `<b>${nm}</b><br>${t1} dari laporan PVMBG<br>${t2}<br>Acak: ${fmt(ACAK_45 * 100)}%; ${t3}`;
+        tip = `<b>${nm}</b><br>${t1} dari laporan PVMBG<br>${t2}<br>Acak: ${fmt(acakDari(d))}%; ${t3}`;
       return `<g><text x="${L - 10}" y="${y + 21}" text-anchor="end" font-size="${U.fs}" font-weight="600">${nm}</text><rect class="gx" x="${L}" y="${y + 6}" width="${x}" height="${U.rh - 12}" rx="5" fill="${w}" data-tip="${tip}"/>
         <g class="gf">${this.p(L + x + 8, y + 7, t1, w)[0]}${this.p(L + x + 8 + pw(t1), y + 7, t2, "#6b7a90")[0]}${this.p(L + x + 8 + pw(t1) + pw(t2), y + 7, t3, p < .05 ? "#2f7d4f" : "#8a6d1f")[0]}</g></g>`; }).join("");
-    const H = R.length * (U.rh + 8) + 4, xa = L + X(ACAK_45 * 100);
-    const acak = `<line x1="${xa}" x2="${xa}" y1="0" y2="${H - 4}" stroke="currentColor" stroke-dasharray="4 3" opacity=".55"/><text x="${xa}" y="${H + 10}" text-anchor="middle" font-size="11" opacity=".7">acak ${fmt(ACAK_45 * 100)}%</text>`;
+    const H = R.length * (U.rh + 8) + 4, xa = L + X(acakDari(a));
+    const acak = `<line x1="${xa}" x2="${xa}" y1="0" y2="${H - 4}" stroke="currentColor" stroke-dasharray="4 3" opacity=".55"/><text x="${xa}" y="${H + 10}" text-anchor="middle" font-size="11" opacity=".7">acak ${fmt(acakDari(a))}%</text>`;
     const [pa, ka] = ket(a), pb = b?.n ? ket(b) : null;
     return this.ex(`Arah awan abu skenario cocok dalam 45° dengan laporan PVMBG pada ${this.hl(fmt(a.persen_dalam_45deg) + "%")} dari ${this.hl(fmt(a.n) + " kejadian")} berambang, ${ka} (P ${fmtP(pa)})${pb ? `; ${this.hl(fmt(b.persen_dalam_45deg) + "%")} dari ${fmt(b.n)} kejadian tanpa ambang, ${pb[1]} (P ${fmtP(pb[0])})` : ""}`, "", "",
-      `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${acak}</svg>`, `Pembanding acak: arah acak jatuh dalam 45° pada 25% kejadian. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
+      `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${acak}</svg>`, `Pembanding acak: arah acak jatuh dalam 45° pada ${fmt(acakDari(a))}% kejadian. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
 
   /* 8. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
   exDaftar() {

@@ -33,7 +33,7 @@ const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap
 const ARAH8 = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
 const arahMata = d => ARAH8[Math.round(d / 45) % 8];
 /* jejak berambang dengan sel_n < 5 dianggap derau = di bawah ambang penerbangan (selaras abu.py / laporan.py) */
-const SEL_MIN = 5, jejakOk = j => !!j?.poligon?.length && (j.sel_n ?? SEL_MIN) >= SEL_MIN;
+const SEL_MIN = 5, jejakOk = j => !!j?.poligon?.length && !j.di_bawah_ambang && (j.sel_n ?? SEL_MIN) >= SEL_MIN;
 /* evakuasi desa KRB III/II saja, waktu tempuh arus bebas: ringkasan dari paparan.evakuasi_ringkas {n, median_menit, maks_menit} (dihitung dari SEMUA desa III/II, daftar evakuasi bisa dipotong);
    daftar desa yang tampil = entri berzona_desa III/II (I hanya fallback, tidak masuk) */
 const evakZona = pg => (pg?.evakuasi || []).filter(e => e.menit > 0 && ["III", "II"].includes(e.zona_desa));

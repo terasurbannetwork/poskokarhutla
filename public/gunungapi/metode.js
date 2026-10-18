@@ -11,8 +11,8 @@ const Metode = {
     const a = await Data.abu(), P = a?.parameter || {}, UB = a?.uji_balik, UT = a?.uji_balik_tipis, amb = P.ambang || {}, kb = P.kelas_butir || [];
     const kh = P.kh_m2s ?? 1000, lepas = P.durasi_lepas_jam ?? 3, nP = P.n_partikel ?? 1500;
     const butir = kb.length ? kb.map(k => `${fmt(Math.round(k.massa * 100))}% jatuh ${fmt(k.kec_jatuh_ms)} m/dtk`).join(", ") : "40% jatuh 0,008 m/dtk, 30% 0,07 m/dtk, 20% 0,5 m/dtk, 10% 1,5 m/dtk";
-    const uji = (u, nama) => { if (!u?.n) return ""; const p = pAcak(u.n, u.persen_dalam_45deg);
-      return `${nama}: ${fmt(u.n)} kejadian, ${fmt(u.persen_dalam_45deg)}% arahnya dalam 45° dari laporan PVMBG, median selisih ${fmt(u.median_selisih_deg)}°; pembanding acak ${fmt(ACAK_45 * 100)}%, peluang kebetulan P ${fmtP(p)}, jadi ${p < .05 ? "di atas acak" : "tidak berbeda dari acak"}`; };
+    const uji = (u, nama) => { if (!u?.n) return ""; const p = pAcak(u);
+      return `${nama}: ${fmt(u.n)} kejadian, ${fmt(u.persen_dalam_45deg)}% arahnya dalam 45° dari laporan PVMBG, median selisih ${fmt(u.median_selisih_deg)}°; pembanding acak ${fmt(acakDari(u))}%, peluang kebetulan P ${fmtP(p)}, jadi ${p < .05 ? "di atas acak" : "belum terbukti"}`; };
     $("#metode").innerHTML = [
       this.daftar("Level gunung api memakai status resmi PVMBG tanpa diubah", [4, 3, 2, 1].map(l => [pilLv(l), esc(this.ARTI[l])]), "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "Level"),
       this.daftar("Angka dan peta diambil dari halaman publik MAGMA Indonesia", [
