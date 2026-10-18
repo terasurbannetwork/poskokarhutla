@@ -384,7 +384,7 @@ main.kn{position:static;inset:auto}
 .kn-dft td.kn-nw{white-space:nowrap}
 .kn-tk-kab td.kn-nw{white-space:normal}
 .kn-dft .kn-c{text-align:center}
-.kn-ok{color:#2b8c86;font-weight:800;font-size:13px}
+.kn-cek{color:var(--ink);font-weight:800;font-size:14px}
 .kn-dft{table-layout:fixed}.kn-dft th:nth-child(1){width:4%}.kn-dft th:nth-child(2){width:22%}.kn-dft th:nth-child(3){width:15%}.kn-dft th:nth-child(4){width:7%}.kn-dft th:nth-child(5){width:6%}.kn-dft th:nth-child(6){width:9%}.kn-dft th:nth-child(7){width:8%}.kn-dft th:nth-child(8){width:7%}.kn-dft th:nth-child(9){width:6%}.kn-dft th:nth-child(10){width:7%}.kn-dft th:nth-child(11){width:9%}
 .kn-tb tr.kn-kab td{background:var(--surface);font-weight:700;border-top:1px solid var(--line)}
 .kn-kab-b{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--ink)}
