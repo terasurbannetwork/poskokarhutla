@@ -370,3 +370,5 @@ main.kn{position:static;inset:auto}
 @media screen{.kn-pvk{display:none}}
 @media print{.kn-pvk .kn-leg{margin-top:2px}.kn-pvk figcaption{margin-top:1px}}
 @media print{.kn-tk-kab .kn-gr{font-size:inherit}.kn-tb .kn-lg{width:12px;height:12px}.kn-tb .kn-lg-i{font-size:6px!important}}
+@media print{.kn-ngp{font-size:7.5px;padding:0 6px 0 4px}.kn-it .kn-lg{width:13px;height:13px}.kn-kanan figcaption{font-size:8px}.kn-ph .kn-grp{font-size:10px}.kn-jl{font-size:7.5px}}
+@media print{.kn-it .kn-sb{font-size:7px;padding:0 5px}}

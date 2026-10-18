@@ -389,8 +389,8 @@
         <div class="kn-kanan"><figure><div class="kn-img" data-k="0">${g ? `<img src="${g[0]}" alt="">` : `<span>Menggambar peta…</span>`}</div>
           <figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra satelit Esri" : "Peta jalan OpenStreetMap"}: batas konsesi dan ${fmt(r.titik)} titik panas 2026</figcaption></figure>${legenda()}</div>
       </div>
-      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra Sentinel-2 paling jelas: api &amp; bekas bakar</b><span>kiri citra dasar + titik 5 hari sebelumnya · kanan SWIR Sentinel-2 20 m</span></div>
-        <div class="kn-ps-grid">${pasangan(r).map(({d, n, c, jelas}, j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}${jelas ? ' <span class="kn-jl">Jelas</span>' : ""}</b><span>${API}${fmt(n)} titik${jelas ? " · 5 hari" : ""}</span></div>
+      <section class="kn-sek kn-pasang"><div class="kn-band"><b>Citra Sentinel-2 paling jelas: api &amp; bekas bakar</b><span>kiri citra dasar + titik 14 hari sebelumnya · kanan SWIR Sentinel-2 20 m</span></div>
+        <div class="kn-ps-grid">${pasangan(r).map(({d, n, c, jelas}, j) => `<div class="kn-ps-row"><div class="kn-ps-h"><b>${tglT(d)}${jelas ? ' <span class="kn-jl">Jelas</span>' : ""}</b><span>${API}${fmt(n)} titik${jelas ? " · 14 hari" : ""}</span></div>
           <figure><div class="kn-img" data-k="${1 + 2 * j}">${g ? `<img src="${g[1 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${S.dasar === "google" ? "Google Satelit" : S.dasar === "esri" ? "Citra Esri" : "Peta jalan"} + titik ${jelas ? `s.d. ${tgl(d)}` : tgl(d)}</figcaption></figure>
           <figure><div class="kn-img" data-k="${2 + 2 * j}">${g ? `<img src="${g[2 + 2 * j]}" alt="">` : `<span>Menggambar…</span>`}</div><figcaption>${c ? `SWIR ${esc(c.satelit)} ${tgl(c.tgl)} · awan ${c.awan}%${c.bakar_pct != null ? ` · lahan hangus ${fmt(c.bakar_pct)}%` : ""}` : "SWIR VIIRS (Sentinel-2 belum ada)"}</figcaption></figure></div>`).join("")}</div>
         ${LEG_SWIR}
@@ -426,7 +426,7 @@
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
       /* di citra SWIR titik hanya cincin tipis, supaya bekas bakar di bawahnya tetap terlihat (pemilik, 18 Okt 2026) */
-      dasar.img || dasar.swir ? {id: "t", type: "circle", source: "t", paint: {"circle-radius": 4.5, "circle-opacity": 0, "circle-stroke-color": "#ffe14d", "circle-stroke-width": 1.1, "circle-stroke-opacity": .9}} :
+      dasar.img || dasar.swir ? {id: "t", type: "circle", source: "t", paint: {"circle-radius": 3, "circle-opacity": 0, "circle-stroke-color": "#ffe14d", "circle-stroke-width": .8, "circle-stroke-opacity": .85}} :
       {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}}]});
   const bbox = rs => { let a = [180, 90, -180, -90]; const ad = ([x, y]) => { a = [Math.min(a[0], x), Math.min(a[1], y), Math.max(a[2], x), Math.max(a[3], y)]; };
     rs.forEach(r => { r.geom.forEach(g => (g.type === "MultiPolygon" ? g.coordinates.flat(2) : g.coordinates.flat(1)).forEach(ad)); r.pt.forEach(p => ad([p[1], p[0]])); }); return [[a[0], a[1]], [a[2], a[3]]]; };
@@ -494,6 +494,12 @@
     const ambil = () => { if (selesai) return; if (!m.areTilesLoaded() && Date.now() - t0 < 12000) return void m.once("idle", ambil); selesai = true; try { ok(lab ? callout2d(m, rs, lab) : m.getCanvas().toDataURL("image/jpeg", .86)); } catch (e) { ok(""); } };
     m.once("idle", ambil); setTimeout(ambil, 15000);
   });
+  /* piksel hitam (di luar cakupan adegan Sentinel) jadi transparan, supaya citra dasar di bawahnya terlihat */
+  const bening = new Map();
+  const transparan = url => bening.get(url) || bening.set(url, new Promise(ok => { const im = new Image(); im.crossOrigin = "anonymous";
+    im.onload = () => { const c = document.createElement("canvas"); c.width = im.width; c.height = im.height; const x = c.getContext("2d"); x.drawImage(im, 0, 0);
+      const d = x.getImageData(0, 0, c.width, c.height); for (let i = 0; i < d.data.length; i += 4) if (d.data[i] + d.data[i + 1] + d.data[i + 2] < 12) d.data[i + 3] = 0;
+      x.putImageData(d, 0, 0); ok(c.toDataURL("image/png")); }; im.onerror = () => ok(url); im.src = url; })).get(url);
   /* porsi piksel hampir hitam di gambar (celah data VIIRS) */
   const gelap = src => new Promise(ok => { if (!src) return ok(true); const im = new Image(); im.onload = () => { const c = document.createElement("canvas"); c.width = 48; c.height = 32;
     const x = c.getContext("2d"); x.drawImage(im, 0, 0, 48, 32); const d = x.getImageData(0, 0, 48, 32).data; let h = 0; for (let i = 0; i < d.length; i += 4) h += d[i] + d[i + 1] + d[i + 2] < 30;
@@ -501,7 +507,7 @@
   /* pasangan citra: adegan Sentinel-2 paling jelas (citra_jelas.json) dulu, sisanya hari dengan titik terbanyak */
   const hariSebelum = (t, k) => Array.from({length: k + 1}, (_, i) => new Date(Date.parse(t) - i * 864e5).toISOString().slice(5, 10));
   const pasangan = r => {
-    const j = (CITJ[r.id] || []).map(c => { const h = hariSebelum(c.tgl, 5); return {d: c.tgl, c, jelas: true, hari: h, n: r.pt.filter(p => h.includes(p[2].slice(0, 5))).length}; });
+    const j = (CITJ[r.id] || []).map(c => { const h = hariSebelum(c.tgl, 14); return {d: c.tgl, c, jelas: true, hari: h, n: r.pt.filter(p => h.includes(p[2].slice(0, 5))).length}; });
     const sisa = hariTop(r).filter(([d]) => !j.some(x => x.d === d)).map(([d, n]) => ({d, n, hari: [d.slice(5)], c: CIT[r.id]?.[d]}));
     return [...j, ...sisa].slice(0, 4).sort((a, b) => a.d.localeCompare(b.d));
   };
@@ -517,7 +523,7 @@
       for (const {d, c, hari} of pasangan(r)) {
         out.push(await potret(DASAR[S.dasar], [r], hari));
         let sw = "";
-        if (c) sw = await potret({img: "/data/" + c.f, bb: c.bbox}, [r], hari);
+        if (c) sw = await potret({img: await transparan("/data/" + c.f), bb: c.bbox}, [r], hariSebelum(c.tgl, 1));   /* di SWIR hanya api saat citra diambil */
         /* celah lintasan VIIRS = citra hitam: coba satelit kembar NOAA-20 lalu NOAA-21 */
         else for (const sat of ["SNPP", "NOAA20", "NOAA21"]) { sw = await potret(gibs(d, sat), [r], hari); if (!(await gelap(sw))) break; }
         out.push(sw);
