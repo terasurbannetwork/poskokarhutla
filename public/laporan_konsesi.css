@@ -287,12 +287,13 @@ main.kn{position:static;inset:auto}
   .kn-img-l{width:auto;height:112mm;aspect-ratio:720/460;margin:0 auto}
   .kn-img-l img{object-fit:contain}
   .kn-leg{font-size:8px;margin-top:4px}
-  .kn-nomor{font-size:8px;columns:4;column-gap:10px}
-  .kn-nomor li{margin-bottom:1px}
+  .kn-nomor{font-size:7px;columns:5;column-gap:8px;margin-top:4px}
+  .kn-nomor li{margin-bottom:0;line-height:1.25}
+  .kn-nomor .kn-api{width:8px;height:8px}
   .kn-nomor i{width:13px;height:13px;font-size:7px}
   .kn-pvk{break-before:page;break-after:page;border:0;padding:0}
   .kn-pvk h2{font-size:15px}
-  .kn-img.kn-img-l{width:100%;height:132mm;aspect-ratio:auto;margin:0}
+  .kn-img.kn-img-l{width:100%;height:104mm;aspect-ratio:auto;margin:0}
   .kn-img.kn-img-l img{object-fit:cover}
   .kn-pv figcaption{font-size:8px;text-align:center}
   /* profil perusahaan: halaman 1 = identitas + grafik + dua peta; halaman 2 = kejadian, tanggal, titik terbaru */
@@ -355,7 +356,8 @@ main.kn{position:static;inset:auto}
   .kn-sp-d em{font-style:normal;font-weight:800;color:#c9503a}
   .kn-kabsek{break-before:page}
   .kn-harian{break-before:page;border-top:0;padding-top:0}
-  .kn-hr-tb .kn-tb td,.kn-hr-tb .kn-tb th{padding:1.5px 5px;font-size:7.5px}
+  .kn-hr-tb .kn-tb td,.kn-hr-tb .kn-tb th{padding:.6px 5px;font-size:7px;line-height:1.15}
+  .kn-hr-tb .kn-bt{height:5px}
   .kn-hr-k{font-size:8px}
   .kn-kanan .kn-peta2{grid-template-columns:1fr!important}
   .kn-kanan .kn-img{height:52mm}
@@ -365,3 +367,5 @@ main.kn{position:static;inset:auto}
 }
 .kn-nw{white-space:nowrap}
 @media screen{.kn-pvk{display:none}}
+@media print{.kn-pvk .kn-leg{margin-top:2px}.kn-pvk figcaption{margin-top:1px}}
+@media print{.kn-tk-kab .kn-gr{font-size:inherit}.kn-tb .kn-lg{width:12px;height:12px}.kn-tb .kn-lg-i{font-size:6px!important}}
