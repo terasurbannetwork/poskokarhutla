@@ -60,6 +60,10 @@
 .pc-menu button[aria-selected="true"]{background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));color:#fff}
 .pc-menu button[aria-selected="true"]::after{content:"✓";margin-left:auto;font-weight:800}
 .ex-jd > .pc{flex:none;margin-top:2px;min-width:180px}
+/* pemilih provinsi ganda (pemilik, 18 Okt 2026): rupa sama dengan .pc-menu, ✓ diganti kotak centang di kanan; pil sedikit lebih lebar */
+.pc.pc-multi{min-width:230px}
+.pc-menu.multi button::after,.pmulti .pm-menu label::after{content:"";flex:none;margin-left:auto;width:16px;height:16px;box-sizing:border-box;border:1.5px solid color-mix(in oklch,var(--ink2) 45%,var(--line));border-radius:5px;background:var(--card);display:grid;place-items:center;font:800 11px/1 var(--font);color:oklch(25% .08 256)}
+.pc-menu.multi button[aria-selected="true"]::after,.pmulti .pm-menu label:has(input:checked)::after{content:"✓";border-color:#fff;background:#fff}
 .pgn{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:8px;border-top:1px solid var(--line);padding-top:12px;margin-top:14px}
 .pgn p{margin:0;font-size:11.5px;font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
 .pgn > div{display:flex;flex-wrap:wrap;align-items:center;gap:4px}

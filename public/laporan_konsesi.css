@@ -22,7 +22,7 @@ main.kn{position:static;inset:auto}
 .kn-pp-daf hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
 .kn-pp-daf em{font-style:normal;margin-left:auto;font-size:11px;color:var(--ink2);font-weight:700}
 .kn-pp-daf button[aria-selected="true"] em{color:#fff;opacity:.8}
-.kn-pp-daf button[aria-selected="true"]::after{margin-left:8px}
+.pc-menu.multi .kn-pp-daf button:has(em)::after{margin-left:8px}
 .kn-pp-daf p{margin:8px;font-size:12px}
 .lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}
@@ -49,12 +49,12 @@ main.kn{position:static;inset:auto}
 .kn-kartu h2{font-size:18px;font-weight:800;margin-bottom:10px}
 .kn-kartu h3{font:800 13px var(--display);margin:14px 0 6px;color:var(--ink)}
 .tw{overflow-x:auto;border:1px solid var(--line);border-radius:12px}
-.kn-tb{width:100%;border-collapse:collapse;font-size:12.5px}
-.kn-tb th{background:#0b2545;color:#fff;text-align:left;font:800 10.5px var(--font);letter-spacing:.06em;text-transform:uppercase;padding:9px 10px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-tb td{padding:7px 10px;border-top:1px solid var(--line);vertical-align:top}
+.kn-tb{width:100%;border-collapse:collapse;font-size:11.5px;line-height:1.35}
+.kn-tb th{background:#0b2545;color:#fff;text-align:left;font:800 9.5px var(--font);letter-spacing:.04em;text-transform:uppercase;padding:7px 6px;white-space:nowrap;border-bottom:3px solid #6b9bd6;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+.kn-tb td{padding:5px 6px;border-top:1px solid var(--line);vertical-align:top}
 .kn-tb tbody tr:not(.kn-tot):hover td{background:var(--surface)}
 .kn-tb .r{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
-.kn-tb small{display:block;color:var(--ink2);font-size:11px}
+.kn-tb small{display:block;color:var(--ink2);font-size:10.5px}
 .kn-tb tr.kn-tot td{font-weight:800;background:#0b2545;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-nm{color:var(--ink);font-weight:700;text-decoration:none}
 .kn-nm:hover{text-decoration:underline}
@@ -372,3 +372,25 @@ main.kn{position:static;inset:auto}
 @media print{.kn-tk-kab .kn-gr{font-size:inherit}.kn-tb .kn-lg{width:12px;height:12px}.kn-tb .kn-lg-i{font-size:6px!important}}
 @media print{.kn-ngp{font-size:7.5px;padding:0 6px 0 4px}.kn-it .kn-lg{width:13px;height:13px}.kn-kanan figcaption{font-size:8px}.kn-ph .kn-grp{font-size:10px}.kn-jl{font-size:7.5px}}
 @media print{.kn-it .kn-sb{font-size:7px;padding:0 5px}}
+
+/* tabel daftar perusahaan, tabel lebar, top 5 hari, RSPO */
+.kn-kartu,.kn-provsek,.kn-kabsek{min-width:0;max-width:100%}
+.tw{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
+.kn-dft{min-width:1000px}
+.kn-tk-kab{min-width:860px}
+.kn-dft td.kn-nw,.kn-dft td .kn-nm,.kn-tk-kab td:nth-child(2){white-space:nowrap}
+.kn-baris{cursor:pointer}
+.kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
+.kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
+.kn-baris:hover .kn-nm{text-decoration:underline}
+.kn-rspo{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:5px;font:800 10px var(--font);background:#2b8c86;color:#fff;vertical-align:1px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
+@keyframes kn-sorot{0%,40%{box-shadow:0 0 0 3px var(--brand2)}100%{box-shadow:0 0 0 3px transparent}}
+.kn-sorot{animation:kn-sorot 1.8s ease-out}
+@media (prefers-reduced-motion:reduce){.kn-sorot{animation:none;outline:2px solid var(--brand2)}}
+.kn-prof{scroll-margin-top:calc(var(--top) + 12px)}
+.kn-top5{margin:12px 0}
+.kn-top5 .tw{border-radius:0 0 10px 10px;border-top:0}
+.kn-top5 .kn-tb th{background:#1d4e89;border-bottom:0}
+@media print{.kn-dft,.kn-tk-kab{min-width:0}.kn-dft td,.kn-dft th{padding:2px 4px}}
+.kn-dua>*,.kn-kpi>div,.kn-sek{min-width:0}
+.kn-saring .seg{max-width:100%;overflow-x:auto}
