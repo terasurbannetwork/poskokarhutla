@@ -376,9 +376,14 @@ main.kn{position:static;inset:auto}
 /* tabel daftar perusahaan, tabel lebar, top 5 hari, RSPO */
 .kn-kartu,.kn-provsek,.kn-kabsek{min-width:0;max-width:100%}
 .tw{max-width:100%;overflow-x:auto;-webkit-overflow-scrolling:touch}
-.kn-dft{min-width:1000px}
-.kn-tk-kab{min-width:860px}
-.kn-dft td.kn-nw,.kn-dft td .kn-nm,.kn-tk-kab td:nth-child(2){white-space:nowrap}
+/* muat selebar kartu, tanpa geser ke samping (pemilik 19 Okt 2026): judul kolom & nama PT boleh patah baris */
+.kn-dft,.kn-tk-kab{min-width:0;font-size:10.5px}
+.kn-dft th,.kn-tk-kab th{white-space:normal;font-size:8.5px;padding:6px 4px;vertical-align:bottom}
+.kn-dft td,.kn-tk-kab td{padding:4px}
+.kn-dft td.kn-nw{white-space:nowrap}
+.kn-tk-kab td.kn-nw{white-space:normal}
+.kn-dft .kn-c{text-align:center}
+.kn-ok{color:#2b8c86;font-weight:800;font-size:13px}
 .kn-baris{cursor:pointer}
 .kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
