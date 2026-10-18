@@ -44,10 +44,11 @@ const sel = (la, lo) => S.sel.get((Math.floor(la) + .5) + "," + (Math.floor(lo) 
 const ROW = {maks: 2, rata: 6, pm10: 7};
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
+  simulasi: '<path d="M4 4v16h16"/><path d="M7 15c3-1 3-8 6-8s3 7 7 6"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', metode: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
   if (!TABS.some(t => t[0] === id)) id = "peta";
@@ -56,7 +57,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/udara/" + id);   /* tautan bersih tanpa tagar; worker melayani index.html untuk jalur ini */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
+    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
@@ -76,6 +77,10 @@ async function muatData() {
   /* METAR dan riwayat boleh tidak ada: kartu dan lapisannya dibuang */
   S.metar = await muatJSON("../data/metar.json").catch(() => []);
   S.rw = await muatJSON("../data/udara_kualitas_riwayat.json").catch(() => null);
+  /* keluaran prakiraan 72 jam (pipeline udara): boleh tidak ada, kartu dan lapisannya dibuang (A18) */
+  const dp = n => muatJSON("/udara/data/" + n + ".json").catch(() => null);
+  const [prak, lin, atr, ren] = await Promise.all([dp("prakiraan"), dp("lintasan"), dp("atribusi"), dp("rentan")]);
+  Object.assign(S, {prak: prak?.kota?.length ? prak : null, lin, atr, ren});
   $("#upd").textContent = "Data " + jamWIB(uk.dibuat);
 }
 /* stasiun METAR segar (laporan <= maksJam jam, jarak pandang terbaca) */

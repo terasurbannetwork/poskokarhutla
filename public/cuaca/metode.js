@@ -20,6 +20,7 @@ const Metode = {
       ["Riwayat harian (Tren)", "Open-Meteo, analisis dan prakiraan model", "Satu titik per hari, tumbuh tiap jalan; hari lampau = analisis model, bukan alat ukur"],
       ["Penduduk di area hujan lebat (Dampak)", "WorldPop 2026 dan Open-Meteo", "Jiwa di kotak prakiraan 50 mm atau lebih; prakiraan, bukan jiwa yang sudah terdampak"],
       ["Kejadian dan korban tahunan (Tren, Dampak)", "BNPB dan DIBI BNPB", "Hanya angka yang tercatat"],
+      ["Risiko cuaca ekstrem dan sarana kelas bahaya tinggi (Dampak)", "InaRISK BNPB: indeks risiko IRBI per kabupaten dan kota (2015 sampai 2025) dan sarana per kelas bahaya (infra-risk)", "Indeks risiko adalah penilaian potensi, bukan catatan kejadian. Skala 2025 berbeda dari 2015 sampai 2024, jadi perubahan dihitung 2015 ke 2024. Diperbarui tangan; lisensi data tidak tertulis, sumber selalu disebut"],
       ["Status kecamatan 72 jam: hujan", "Open-Meteo, ambang kelas BMKG (50, 100, 150 mm per hari)", "Normal, Waspada, Siaga, Awas per kecamatan, tiga hari; dihitung dari prakiraan, bukan pernyataan resmi"],
       ["Status kecamatan 72 jam: gelombang", "Open-Meteo Marine, ambang kelas BMKG Maritim (2,5; 4; 6 m)", "Tinggi gelombang tertinggi sehari di titik pesisir terdekat"],
       ["Status kecamatan 72 jam: embusan", "Open-Meteo, ambang hipotesis Pantau Bencana (54, 72, 90 km/jam)", "Belum dikunci uji balik"],

@@ -6,9 +6,9 @@
    Kerugian ekonomi (rupiah) belum ada asumsi bernama yang bersumber kuat, jadi tidak ditampilkan. Penduduk = prakiraan, BUKAN jiwa yang sudah terdampak. */
 const Dampak = (() => {
   const W = {merah: "#c9503a", oranye: "#e58a45", abu: "#7d8ca3"};
-  const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8", hist: "M12 3 2 20h20zM12 10v4M12 17v.5", zona: "M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9M8 17v3M12 16v4M16 17v3", sarana: "M4 20V9l8-5 8 5v11H4ZM10 20v-6h4v6", pesisir: "M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"};
-  const BAG = {pend: ["Penduduk di area hujan lebat", W.merah], zona: ["Zona hujan lebat 72 jam", W.merah], sarana: ["Pelabuhan dan bandara", W.oranye], pesisir: ["Penduduk pesisir, gelombang tinggi", "#3f7fb8"], hist: ["Korban dan kerugian", W.oranye]};
-  let D = null; const st = {k: "terdampak", hari: "", zm: "jiwa", sh: 0};
+  const IKON = {pend: "M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8", hist: "M12 3 2 20h20zM12 10v4M12 17v.5", risiko: "M4 20V10M10 20V4M16 20v-7M22 20H2", sarbnpb: "M12 3 4 6v6c0 4.5 3.4 8 8 9 4.6-1 8-4.5 8-9V6l-8-3Z", zona: "M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9M8 17v3M12 16v4M16 17v3", sarana: "M4 20V9l8-5 8 5v11H4ZM10 20v-6h4v6", pesisir: "M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"};
+  const BAG = {pend: ["Penduduk di area hujan lebat", W.merah], zona: ["Zona hujan lebat 72 jam", W.merah], sarana: ["Pelabuhan dan bandara", W.oranye], pesisir: ["Penduduk pesisir, gelombang tinggi", "#3f7fb8"], hist: ["Korban dan kerugian", W.oranye], risiko: ["Risiko menurut BNPB", "#8a5fb0"], sarbnpb: ["Sarana di bahaya tinggi", W.oranye]};
+  let D = null, RB = null; const st = {k: "terdampak", hari: "", zm: "jiwa", sh: 0, rk: "cuaca", sb: "cuaca", rt: {urut: "i", turun: true, hal: 0}};
   const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
   const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">BNPB</a>", dibi: "<a href=\"https://dibi.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">DIBI BNPB</a>"};
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
@@ -64,16 +64,45 @@ const Dampak = (() => {
     const v = D.pesisir?.jiwa; if (!v || !D.hari || !v.some(x => x > 0)) return ""; const mx = v.indexOf(Math.max(...v));
     return bag("pesisir", `${Kartu.hl(jt(v[mx]) + " jiwa")} tinggal di kecamatan pesisir dengan gelombang 2,5 m atau lebih ${kapan3(mx)}`,
       hbar(v.map((x, i) => ({n: lbl3(i), v: x, txt: rb(x) + " jiwa", tip: `<b>${lbl3(i)}</b><br>${fmt(x)} jiwa`})), "#3f7fb8"), `Prakiraan, bukan yang sudah terdampak. Sumber: Open-Meteo Marine; penduduk WorldPop 2026`); }
-  const gambar = () => [zona(), sarana(), pesisir(), pend(), hist()].filter(Boolean).join("");
+  /* InaRISK BNPB (scripts/cuaca/risiko_bnpb.py -> cuaca_risiko_bnpb.json): indeks risiko = potensi, BUKAN kejadian. Berkas hilang atau kosong = bagian dibuang (A18). Teks dari BNPB lewat esc. */
+  const HZ = {cuaca: ["Cuaca ekstrem", "cuaca ekstrem"], gelombang: ["Abrasi", "gelombang ekstrem dan abrasi"]}, SRC = "Sumber: InaRISK BNPB";
+  const JN = {penduduk: "Penduduk (jiwa)", sekolah: "Sekolah", faskes: "Fasilitas kesehatan", bandara: "Bandara", pelabuhan: "Pelabuhan"};
+  const hz = pre => ["cuaca", "gelombang"].filter(h => RB?.[pre + h]);
+  function risiko() {
+    const ada = hz("indeks_"); if (!ada.length) return ""; if (!ada.includes(st.rk)) st.rk = ada[0];
+    const T = st.rt, per = 10, R = RB["indeks_" + st.rk].baris.map(r => ({n: r[1], p: namaProv(r[2]), i: r[3].at(-1), d: r[3][9] != null && r[3][0] != null ? Math.round((r[3][9] - r[3][0]) * 10) / 10 : null}));
+    const kol = [{k: "n", n: "Kabupaten atau kota", v: r => r.n, h: r => `<span translate="no">${esc(r.n)}</span>`}, {k: "p", n: "Provinsi", v: r => r.p, h: r => `<span translate="no">${esc(r.p)}</span>`},
+      {k: "i", n: "Indeks 2025", num: 1, v: r => r.i, h: r => fmt(r.i)}, {k: "d", n: "Perubahan 2015 ke 2024", num: 1, v: r => r.d ?? -1e9, h: r => r.d == null ? "–" : r.d === 0 ? "tetap" : `<span class="pl" style="--w:${r.d > 0 ? W.merah : "#3f7fb8"}">${r.d > 0 ? "naik " : "turun "}${fmt(Math.abs(r.d))}</span>`}];
+    const kk = kol.find(c => c.k === T.urut) || kol[2], z = T.turun ? -1 : 1; R.sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y, "id") : x - y) * z || a.n.localeCompare(b.n, "id"); });
+    T.hal = Math.min(T.hal, Math.max(0, Math.ceil(R.length / per) - 1));
+    const mx = Math.max(...R.map(r => r.i)), top = R.filter(r => r.i === mx), nm = HZ[st.rk][1];
+    const judul = top.length === 1 ? `${Kartu.hl(top[0].n)} memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}` : `${Kartu.hl(fmt(top.length) + " kabupaten dan kota")} sama-sama memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}`;
+    const tab = `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (T.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (T.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead><tbody>${R.slice(T.hal * per, (T.hal + 1) * per).map(r => `<tr>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(T.hal, R.length, per, "kabupaten dan kota")}`;
+    const ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(h => `<button data-dks="rk" data-v="${h}" aria-pressed="${st.rk === h}">${HZ[h][0]}</button>`).join("")}</div>` : "";
+    return bag("risiko", judul, tab, `Indeks risiko adalah penilaian potensi, bukan catatan kejadian. ${SRC}`, ctl); }
+  function sarbnpb() {
+    const ada = hz("sarana_"); if (!ada.length) return ""; if (!ada.includes(st.sb)) st.sb = ada[0];
+    const N = RB["sarana_" + st.sb].nasional, J = Object.keys(JN).filter(j => N[j] && N[j].some(v => v > 0)); if (!J.length) return "";
+    const t = j => N[j]?.[3] ?? 0, nm = HZ[st.sb][1];
+    const bagian = [["penduduk", v => jt(v) + " jiwa"], ["sekolah", v => fmt(v) + " sekolah"], ["faskes", v => fmt(v) + " fasilitas kesehatan"], ["bandara", v => fmt(v) + " bandara"], ["pelabuhan", v => fmt(v) + " pelabuhan"]].filter(([j]) => J.includes(j) && t(j) > 0).map(([j, f]) => Kartu.hl(f(t(j))));
+    if (!bagian.length) return "";
+    const tab = `<div class="tw"><table><thead><tr><th>Jenis</th><th class="n">Tinggi</th><th class="n">Sedang</th><th class="n">Rendah</th><th class="n">Aman</th><th class="n">Porsi tinggi</th></tr></thead><tbody>${J.map(j => { const a = N[j], tot = a.reduce((x, y) => x + y, 0);
+      return `<tr><td>${JN[j]}</td><td class="n"><span class="pl" style="--w:${W.merah}">${fmt(a[3])}</span></td><td class="n">${fmt(a[2])}</td><td class="n">${fmt(a[1])}</td><td class="n">${fmt(a[0])}</td><td class="n">${tot ? fmt(Math.round(a[3] / tot * 1000) / 10) + "%" : "–"}</td></tr>`; }).join("")}</tbody></table></div>`;
+    const ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(h => `<button data-dks="sb" data-v="${h}" aria-pressed="${st.sb === h}">${HZ[h][0]}</button>`).join("")}</div>` : "";
+    return bag("sarbnpb", `${bagian.slice(0, 3).join(", ")}, dan sarana lain berada di kelas bahaya ${nm} tinggi`, tab, `Kelas bahaya menurut peta InaRISK, bukan kejadian. ${SRC}`, ctl); }
+  const gambar = () => [zona(), sarana(), pesisir(), pend(), hist(), risiko(), sarbnpb()].filter(Boolean).join("");
   async function render() {
     const el = $("#dampak"); if (!el) return;
     if (!el._dk) { el._dk = 1;
       el.addEventListener("click", e => {
-        const s = e.target.closest("[data-dks]"); if (s) { st[s.dataset.dks] = s.dataset.dks === "sh" ? +s.dataset.v : s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); const id = {hari: "pend", k: "hist", zm: "zona", sh: "sarana"}[s.dataset.dks], b = el.querySelector("#dk-" + id), f = {pend, hist, zona, sarana}[id]; if (b) nanti(() => { const b2 = el.querySelector("#dk-" + id); if (b2) b2.outerHTML = f(); }); return; }
+        const s = e.target.closest("[data-dks]"); if (s) { st[s.dataset.dks] = s.dataset.dks === "sh" ? +s.dataset.v : s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); if (s.dataset.dks === "rk") st.rt.hal = 0; const id = {hari: "pend", k: "hist", zm: "zona", sh: "sarana", rk: "risiko", sb: "sarbnpb"}[s.dataset.dks], b = el.querySelector("#dk-" + id), f = {pend, hist, zona, sarana, risiko, sarbnpb}[id]; if (b) nanti(() => { const b2 = el.querySelector("#dk-" + id); if (b2) b2.outerHTML = f(); }); return; }
+        const th = e.target.closest("#dk-risiko th button[data-k]"), pg = e.target.closest("#dk-risiko .pgn-b[data-h]");
+        if (th || pg) { if (th) { st.rt.turun = st.rt.urut === th.dataset.k ? !st.rt.turun : true; st.rt.urut = th.dataset.k; st.rt.hal = 0; } else if (!pg.disabled) st.rt.hal = +pg.dataset.h; nanti(() => { const b2 = el.querySelector("#dk-risiko"); if (b2) b2.outerHTML = risiko(); }); return; }
         const nav = e.target.closest("[data-ke]"); if (nav) el.querySelector("#dk-" + nav.dataset.ke)?.scrollIntoView({behavior: "smooth", block: "start"}); });
       let rf = 0; document.addEventListener("scroll", () => { if (rf) return; rf = requestAnimationFrame(() => { rf = 0; let a = ""; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = b.dataset.bag; });
         el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", b.dataset.ke === a)); }); }, {capture: true, passive: true}); }
     if (!D && S.dmp) D = S.dmp;
+    if (RB === null) RB = await muatJSON("../banjir/data/cuaca_risiko_bnpb.json").catch(() => false);   /* false = tak ada, jangan coba lagi */
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak cuaca…</div>`;
       try { D = await muatJSON("../banjir/data/cuaca_dampak.json"); } catch (e) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; } }
     const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }

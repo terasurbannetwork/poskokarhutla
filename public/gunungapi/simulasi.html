@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/gunungapi/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Simulasi erupsi gunung api · Pantau Bencana</title>
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<script src="../i18n.js"></script>
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<link rel="stylesheet" href="../inti/kepala.css">
+<link rel="stylesheet" href="../inti/tema.css">
+<link rel="stylesheet" href="../inti/gaya.css">
+<link rel="stylesheet" href="../inti/peta.css">
+<link rel="stylesheet" href="../inti/tabel.css">
+<link rel="stylesheet" href="../inti/insight.css">
+<link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="gunungapi.css">
+<link rel="stylesheet" href="sim.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="gunungapi"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a><a href="../gunungapi/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/></svg>Letusan Gunung Api</a></div></details>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Menu utama"><a class="tab-ln" href="/gunungapi/">Peta</a><a class="tab-ln" href="/gunungapi/simulasi" style="opacity:1;background:oklch(100% 0 0 / .16)">Simulasi</a></nav>
+  <div class="stat"><button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button></div>
+</header>
+<main><section class="page on" id="p-sim" aria-label="Simulasi erupsi"><div id="sim-akar"></div></section></main>
+<div class="toast" id="toast" role="status"></div>
+<script src="../inti/format.js"></script>
+<script src="../inti/kartu.js"></script>
+<script src="../inti/tabel.js"></script>
+<script src="abu_model.js"></script>
+<script src="sim_lahar.js"></script>
+<script src="sim.js"></script>
+<script>
+{ const t = (() => { try { return JSON.parse(localStorage.getItem("pb-tema")); } catch (e) { return null; } })(); if (t) document.documentElement.dataset.theme = t;
+  $("#tema").onclick = () => { const g = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, n = g ? "light" : "dark";
+    document.documentElement.dataset.theme = n; try { localStorage.setItem("pb-tema", JSON.stringify(n)); } catch (e) {} Sim.tema?.(); };
+  Sim.buka({id: new URLSearchParams(location.search).get("g") || "semeru"}); }
+</script>
+<script type="module" src="../inti/kepala.js"></script>
+</body>
+</html>

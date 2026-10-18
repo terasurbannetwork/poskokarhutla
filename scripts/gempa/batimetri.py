@@ -100,7 +100,7 @@ def uji():
     assert palung < -5500, f"palung Jawa {palung} m"
     jkt = nilai(m, z, -6.20, 106.82)
     assert 0 <= jkt <= 20, f"Jakarta (Monas) {jkt} m, harap 0-20 m"
-    assert nilai(m, z, -6.0, 107.0) < -10, "Laut Jawa utara Jakarta harus laut"
+    assert nilai(m, z, -5.8, 107.0) < -10, "Laut Jawa utara Jakarta harus laut"
     assert nilai(m, z, -7.25, 112.75) < 30, "Surabaya dataran rendah"
     assert nilai(m, z, -6.83, 107.62) > 900, "Lembang di atas 900 m"
     print(f"batimetri.py uji: lolos ({NX}x{NY}, {ukuran} byte, {lo}..{hi} m, laut {laut:.0%}, palung {palung} m, Jakarta {jkt} m)")

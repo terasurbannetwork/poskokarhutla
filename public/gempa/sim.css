@@ -1,0 +1,61 @@
+/* Simulasi gempa & tsunami (sim.js): peta penuh + panel kiri + bilah waktu; di HP panel jadi lembar bawah. Dasar .simpanel/.waktu/.fld dari inti/tabel.css. */
+#sim{position:absolute;inset:0;overflow:hidden}
+#simPeta{position:absolute;inset:0}
+#sim .simpanel{width:380px;border-radius:18px;background:linear-gradient(180deg,var(--surface) 0,var(--card) 96px);max-height:calc(100% - 24px)}
+#sim .simpanel h2{font-size:19px;letter-spacing:-.02em;margin:8px 0 2px}
+#sim .simpanel .lbl{text-transform:none;letter-spacing:0;font-size:12.5px;font-weight:700;color:var(--ink)}
+.sm-pita{display:flex}
+.sm-bukan{background:color-mix(in oklch,#c9503a 14%,var(--card));color:#a8402c;font-size:11.5px}
+.sm-gagang{display:none}
+.simgeser{display:grid;grid-template-columns:84px 1fr 64px;gap:8px;align-items:center;font-size:12.5px;margin:6px 0}
+.simgeser input{width:100%;min-width:0;accent-color:var(--ink)}
+.simgeser b{text-align:right;font-size:12.5px;font-weight:800;white-space:nowrap}
+#smHasil{display:grid;gap:10px;margin-top:10px}
+.sm-kartu{border:1px solid var(--line);border-radius:14px;background:var(--card);padding:10px 12px;min-width:0}
+.sm-kartu h3{font-size:14px;line-height:1.4;margin:6px 0 6px;font-weight:700}
+.sm-kartu .hl{color:#c9503a;font-weight:800}
+.sm-p{background:color-mix(in oklch,var(--w) 15%,transparent);color:var(--w);height:20px;font-size:10.5px}
+.sm-kaki{margin:6px 0 0;font-size:11px;color:var(--ink2);line-height:1.4}
+.sm-1{margin:0;font-size:12.5px;color:var(--ink2)}
+.sm-mmi{display:inline-grid;place-items:center;min-width:30px;height:19px;padding:0 6px;border-radius:999px;background:var(--w);font-size:10.5px;font-weight:800}
+.sm-batang{display:grid;gap:4px}
+.sm-batang div{display:grid;grid-template-columns:38px 1fr 64px;gap:8px;align-items:center;font-size:12px}
+.sm-batang i{display:block;height:9px;border-radius:5px;background:var(--surface);overflow:hidden}
+.sm-batang i b{display:block;height:100%;border-radius:5px}
+.sm-batang span{text-align:right;font-weight:700}
+#sim table.tb3 td{white-space:normal}
+#sim table.tb3 td.n{white-space:nowrap}
+#sim table.tb3 button.link{font:inherit;font-weight:600;color:var(--brand2);text-align:left}
+tr.sm-tidak td{background:color-mix(in oklch,#c9503a 9%,transparent)}
+tr.sm-tidak td:last-child small{color:#a8402c;font-weight:700}
+.sm-metode{margin-top:4px}
+.sm-metode a{color:var(--brand2);font-weight:600}
+#simWaktu{gap:6px 10px;flex-wrap:wrap}
+#simWaktu .iconbtn{background:var(--surface);color:var(--ink);width:36px;height:36px}
+#simWaktu .iconbtn[aria-pressed="true"]{background:var(--ink);color:var(--card)}
+#simWaktu input[type=range]{min-width:80px}
+#simWaktu b{min-width:84px;font-size:14px}
+.sm-laju{display:inline-flex;background:var(--surface);border-radius:10px;padding:2px}
+.sm-laju button{border:0;background:none;color:var(--ink2);font:inherit;font-size:12px;font-weight:700;height:30px;padding:0 10px;border-radius:8px;cursor:pointer}
+.sm-laju button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:var(--shadow)}
+.sm-fase{font-size:11.5px;font-weight:700;color:var(--ink2);margin-left:auto}
+#simDok{position:absolute;z-index:4;top:12px;right:12px;width:auto;max-width:min(420px,calc(100% - 420px))}
+#simLegenda{padding:8px 12px}
+.sm-leg.row{flex-direction:row;flex-wrap:wrap;gap:4px 14px;font-size:11.5px}
+.sm-leg .sw{vertical-align:middle}
+@media (max-width:900px){
+  #sim .simpanel{top:auto;bottom:118px;left:8px;right:8px;width:auto;max-height:42%;padding:10px 14px 14px;transition:max-height .25s}
+  #sim .simpanel.lipat{max-height:64px;overflow:hidden}
+  .sm-gagang{display:block;width:44px;height:5px;border:0;border-radius:3px;background:var(--line);margin:0 auto 8px;cursor:pointer;padding:0}
+  #simWaktu{bottom:10px;padding:8px 10px}
+  #simWaktu b{min-width:0;font-size:12.5px}
+  #smMiring{display:none!important}
+  #simWaktu{gap:6px 8px}
+  #simWaktu input[type=range]{flex-basis:100%;order:9}
+  .sm-fase{display:none}
+  #simDok{top:8px;right:8px;left:8px;max-width:none}
+  #simLegenda{padding:6px 10px}
+  .sm-leg.row{gap:2px 10px;font-size:10px}
+  #simWaktu .sm-laju button{padding:0 6px;font-size:11.5px}
+  #simWaktu .sm-laju{margin-left:auto}
+}

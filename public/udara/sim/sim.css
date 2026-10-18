@@ -1,0 +1,50 @@
+/* sim.css — tab Simulasi udara. Token dari ../../inti/tema.css bila ada; cadangan supaya coba.html tetap terbaca sendiri. */
+.su{--su-card:var(--card,#fff);--su-ink:var(--ink,#16233f);--su-ink2:var(--ink2,#5b6784);--su-line:var(--line,#e2e6ee);--su-surf:var(--surface,#f1f3f8);--su-brand:var(--brand,#16233f);
+  display:grid;gap:14px;max-width:1100px;margin:0 auto;color:var(--su-ink);font-family:var(--font,Inter,system-ui,sans-serif);font-size:14px}
+.su *{box-sizing:border-box}
+.su-kartu{background:var(--su-card);border:1px solid var(--su-line);border-radius:var(--r,16px);box-shadow:var(--shadow,0 2px 14px rgba(20,30,60,.08));padding:14px;min-width:0}
+.su-hd{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:10px}
+.su-hd h3{margin:0;font:700 17px/1.25 var(--display,var(--font,Inter,sans-serif))}
+.su-pil{display:inline-flex;align-items:center;gap:5px;height:22px;padding:0 10px;border-radius:999px;background:var(--su-surf);color:var(--su-ink2);font-size:11px;font-weight:700;white-space:nowrap}
+.su-pil svg{width:12px;height:12px}
+.su-kal{margin:0 0 10px;color:var(--su-ink);font-weight:600}
+.su-kal b{color:var(--bad,#d64545)}
+.su-seg{display:grid;grid-auto-flow:column;grid-auto-columns:1fr;gap:0;width:100%;border:1px solid var(--su-line);border-radius:999px;overflow:hidden;background:var(--su-surf)}
+.su-seg.baris{grid-auto-flow:row;grid-template-columns:repeat(auto-fit,minmax(112px,1fr));border-radius:14px}
+.su-seg button{appearance:none;border:0;background:transparent;color:var(--su-ink2);font:600 13px var(--font,Inter,sans-serif);padding:9px 6px;cursor:pointer;min-height:40px;line-height:1.2}
+.su-seg button[aria-pressed=true]{background:var(--su-brand);color:#fff}
+.su-seg button:focus-visible,.su-main:focus-visible,.su-lis button:focus-visible,.su-pilih:focus-visible{outline:2px solid var(--brand2,#3b6cc4);outline-offset:-2px}
+.su-tahap{position:relative;width:100%;height:min(62vh,560px);min-height:300px;margin-top:10px;border-radius:12px;overflow:hidden;background:#cfd8e3;contain:layout paint}
+.su-tahap > div{position:absolute;inset:0}
+.su-tahap > div[hidden]{display:none}
+.su-kanvas{display:block;width:100%;height:100%;cursor:grab}
+.su-muat{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;background:rgba(15,25,45,.45);color:#fff;font-weight:700;z-index:3;text-align:center;padding:16px}
+.su-muat[hidden]{display:none}
+.su-muat i{display:block;height:4px;border-radius:2px;background:rgba(255,255,255,.3);margin:10px auto 0;width:180px;overflow:hidden}
+.su-muat i b{display:block;height:100%;background:#fff;width:0}
+.su-leg{position:absolute;left:8px;bottom:8px;z-index:2;display:flex;flex-wrap:wrap;gap:4px;max-width:calc(100% - 16px);pointer-events:none}
+.su-leg span{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;border-radius:999px;background:rgba(255,255,255,.92);color:#1f2937;font-size:10.5px;font-weight:700}
+.su-leg i{width:8px;height:8px;border-radius:50%;background:var(--c)}
+.su-waktu{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;align-items:center;margin-top:10px}
+.su-waktu output{grid-column:1/-1;font-weight:700;font-variant-numeric:tabular-nums}
+.su-main{appearance:none;border:0;width:44px;height:44px;border-radius:50%;background:var(--su-brand);color:#fff;display:grid;place-items:center;cursor:pointer}
+.su-main svg{width:18px;height:18px;fill:currentColor}
+.su-waktu input[type=range]{width:100%;margin:0;accent-color:var(--su-brand);height:32px}
+.su-tik{display:flex;justify-content:space-between;color:var(--su-ink2);font-size:11px;font-variant-numeric:tabular-nums;grid-column:2}
+.su-kontrol{display:flex;gap:8px;flex-wrap:wrap;margin-top:10px;align-items:center}
+.su-pilih{width:100%;min-height:40px;border:1px solid var(--su-line);border-radius:10px;background:var(--su-card);color:var(--su-ink);font:600 13px var(--font,Inter,sans-serif);padding:0 10px}
+.su-tb{width:100%;border-collapse:collapse;margin-top:12px;font-variant-numeric:tabular-nums}
+.su-tb th{background:var(--su-brand);color:#fff;font-size:11px;text-align:right;padding:8px;font-weight:700}
+.su-tb th:first-child,.su-tb td:first-child{text-align:left}
+.su-tb td{padding:8px;border-bottom:1px solid var(--su-line);text-align:right;font-size:13px}
+.su-tb td:first-child{font-weight:600;overflow-wrap:anywhere}
+.su-tb .kt{display:inline-block;padding:1px 8px;border-radius:999px;font-size:11px;font-weight:700;background:var(--c);color:var(--f)}
+.su-lis{display:grid;gap:6px;margin:0;padding:0;list-style:none}
+.su-lis button{appearance:none;width:100%;display:grid;grid-template-columns:24px minmax(0,1fr) auto;gap:8px;align-items:center;text-align:left;border:1px solid var(--su-line);background:var(--su-card);color:var(--su-ink);border-radius:12px;padding:10px;cursor:pointer;font:600 13px var(--font,Inter,sans-serif);min-height:44px}
+.su-lis button[aria-pressed=true]{border-color:var(--su-brand);background:var(--su-surf)}
+.su-lis .no{color:var(--su-ink2);font-variant-numeric:tabular-nums}
+.su-lis .n{font-variant-numeric:tabular-nums;color:var(--ok,#2a8a52);white-space:nowrap}
+.su-lis svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
+.su-batas{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--su-ink2)}
+.su-kosong{padding:24px;text-align:center;color:var(--su-ink2)}
+@media (max-width:640px){.su-kartu{padding:12px}.su-tahap{height:min(58vh,420px);min-height:280px}.su-tb th,.su-tb td{padding:7px 5px;font-size:12px}.su-lis button{grid-template-columns:20px minmax(0,1fr);}.su-lis .n{grid-column:2}}

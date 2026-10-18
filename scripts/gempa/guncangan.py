@@ -9,7 +9,7 @@ Jarak sumber: gempa titik diubah ke jarak patahan hingga memakai panjang rupture
 (log10 L = -2.44 + 0.59 M); Rjb = max(0, Repi - L/4). Itu heuristik tanpa arah patahan.
 
 Koefisien BSSA14 (PGA) dan Zhao 2006 (PGA) dicocokkan ke OpenQuake (boore_2014.py, zhao_2006.py) 16 Okt 2026; Worden 2012 dicocokkan manual (tak terverifikasi daring).
-Zhao: magnitudo dipotong 7,8 (np.clip(mag, 0, 7.8) seperti OpenQuake), suku kedalaman e*(min(h,125)-hc), suku kuadrat magnitudo
+Zhao: magnitudo INTRASLAB dipotong 7,8 (np.clip seperti ZhaoEtAl2006SSlabNSHMP2014 di OpenQuake); antarmuka TIDAK dipotong (ZhaoEtAl2006SInter tanpa klip; perbaikan 18 Okt 2026), suku kedalaman e*(min(h,125)-hc), suku kuadrat magnitudo
 slab P*(M-Mc)+Q*(M-Mc)^2+W (Mc 6,5); antarmuka Mc 7,1 dengan P/Q/W = 0 untuk PGA. BSSA14 tidak dipotong.
 Jenis: gempa dangkal (15-50 km) M >= 7 butuh jenis eksplisit, atau ditebak "antarmuka" bila <= 200 km dari segmen subduksi (param "palung", PB2002 batas_lempeng); tidak pernah diam-diam BSSA14 untuk megathrust.
 Hanya mean (tanpa sigma). Vs30 seragam 400 m/s (belum ada peta Vs30 di repo). Tsunami TIDAK dibahas di sini.
@@ -30,7 +30,7 @@ JENIS = ("kerak", "antarmuka", "intraslab")
 PARAM = {
     "bssa14_pga": {"e0": 0.4473, "e4": 1.431, "e5": 0.05053, "e6": -0.1662, "Mh": 5.5, "c1": -1.134, "c2": 0.1917, "c3": -0.008088,
                    "h": 4.5, "clin": -0.6, "Vc": 1500.0, "Vref": 760.0, "f1": 0.0, "f3": 0.1, "f4": -0.15, "f5": -0.00701},
-    "zhao06_pga": {"a": 1.101, "b": -0.00564, "c": 0.0055, "d": 1.080, "e": 0.01412, "hc": 15.0, "mag_maks": 7.8, "h_maks": 125.0, "SI": 0.0, "SS": 2.607, "SSL": -0.528,
+    "zhao06_pga": {"a": 1.101, "b": -0.00564, "c": 0.0055, "d": 1.080, "e": 0.01412, "hc": 15.0, "mag_maks_intraslab": 7.8, "h_maks": 125.0, "SI": 0.0, "SS": 2.607, "SSL": -0.528,
                    "MCI": 7.1, "PI": 0.0, "QI": 0.0, "WI": 0.0, "MCS": 6.5, "PS": 0.1392, "QS": 0.1584, "WS": -0.0529,
                    "C": {"I": 1.111, "II": 1.344, "III": 1.355, "IV": 1.420}},
     "worden12_pga": {"c1": 1.78, "c2": 1.55, "c3": -1.60, "c4": 3.70, "t1": 1.57},
@@ -88,7 +88,9 @@ def _bssa_pga_g(m, rjb, vs30, c):
 
 
 def _zhao_pga_cms2(m, x, h, jenis, vs30, c):
-    m = min(max(m, 0.0), c["mag_maks"])  # np.clip(mag, 0, 7.8) di OpenQuake: M9 diperlakukan M7,8
+    m = max(m, 0.0)
+    if jenis == "intraslab":  # klip hanya untuk slab (OpenQuake ZhaoEtAl2006SSlabNSHMP2014); antarmuka tanpa klip
+        m = min(m, c["mag_maks_intraslab"])
     h = min(h, c["h_maks"])
     r = x + c["c"] * math.exp(c["d"] * m)
     ln = c["a"] * m + c["b"] * x - math.log(r) + (c["e"] * (h - c["hc"]) if h >= c["hc"] else 0.0) + c["C"][kelas_zhao(vs30)]
@@ -178,7 +180,7 @@ def ekspor():
                     "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
                     "Jenis tektonik ditebak dari kedalaman (>= 50 km intraslab, selain itu kerak); gempa dangkal 15-50 km M>=7 butuh jenis eksplisit atau ditebak antarmuka bila <= 200 km dari segmen subduksi PB2002.",
                     "Gempa titik diubah ke Rjb lewat Rjb = max(0, Repi - L/4), L Wells & Coppersmith: tanpa arah patahan, mengabaikan efek direktivitas.",
-                    "Zhao 2006: magnitudo dipotong 7,8 (seperti OpenQuake) sehingga M9 dihitung sebagai M7,8 (cenderung terlalu rendah di dekat sumber), tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
+                    "Zhao 2006: magnitudo intraslab dipotong 7,8 (seperti OpenQuake SSlabNSHMP2014); antarmuka tidak dipotong (perbaikan 18 Okt 2026: sebelumnya M8,5 selatan Jawa memberi MMI permukiman terkuat 5,49, kini sekitar 6,4); jarak x = sqrt(Rjb^2 + h^2) dipakai sebagai perkiraan Rrup; tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
                     "Jendela hitung dibatasi 400 km dari pusat gempa.",
                     "Bukan prakiraan gempa utama dan tidak memuat status tsunami (kosakata terpisah, sumber BMKG/PTWC)."],
         "prospektif": "prospektif_guncangan.json",
@@ -209,7 +211,9 @@ def uji():
         raise SystemExit("megathrust M8 tanpa jenis/lokasi diterima")
     except ValueError:
         pass
-    assert _zhao_pga_cms2(9.1, 100, 30, "antarmuka", 400, PARAM["zhao06_pga"]) == _zhao_pga_cms2(7.8, 100, 30, "antarmuka", 400, PARAM["zhao06_pga"])  # klip M7,8 (Rjb tetap memakai M asli)
+    z = PARAM["zhao06_pga"]
+    assert _zhao_pga_cms2(9.1, 100, 30, "antarmuka", 400, z) > _zhao_pga_cms2(7.8, 100, 30, "antarmuka", 400, z)  # antarmuka tanpa klip
+    assert _zhao_pga_cms2(9.1, 100, 80, "intraslab", 400, z) == _zhao_pga_cms2(7.8, 100, 80, "intraslab", 400, z)  # slab dipotong 7,8
     assert pga_cms2(9.1, 100, 30, "kerak") > pga_cms2(7.8, 100, 30, "kerak")  # BSSA14 tak dipotong
     assert ekstrapolasi(2.5) and ekstrapolasi(8.5) and not ekstrapolasi(5)
     assert PARAM["jendela_maks_km"] == 400.0

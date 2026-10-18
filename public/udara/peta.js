@@ -5,8 +5,8 @@
 let peta = null, PI = null, LG = null, legBuka = innerWidth > 900;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
-const UBIN = {pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
-const UBIN_PENDEK = {pm25: "PM2,5", metar: "Jarak pandang", satelit: "Satelit"};
+const UBIN = {kota: ["#c9503a", "#f0a05f", "perisai"], lintasan: ["#e8743b", "#f5c28b", "angin"], pm25: ["#3b6e5a", "#e8743b", "angin"], metar: ["#1f5f8b", "#9fb3d1", "mata"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
+const UBIN_PENDEK = {kota: "Status kota", lintasan: "Lintasan asap", pm25: "PM2,5", metar: "Jarak pandang", satelit: "Satelit"};
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
@@ -48,6 +48,7 @@ const Peta = {
     peta.addSource("metar", {type: "geojson", data: m});
     peta.addLayer({id: "metar", type: "circle", source: "metar", layout: {...vis(this.lihat("metar")), "circle-sort-key": ["-", 0, ["get", "k"]]},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 6, 9, 11], "circle-color": ["match", ["get", "k"], 3, JP[3].w, 2, JP[2].w, 1, JP[1].w, JP[0].w], "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
+    Prak.pasangPeta();
     if (S.pilih) peta.setFeatureState({source: "prov", id: S.pilih}, {pilih: true});
     this.interaksi(); },
   /* PM2,5 rata-rata 24 jam hari aktif sebagai gambar: satu piksel per sel, diperbesar 8x dengan penghalusan supaya tepi sel tidak kotak */
@@ -62,7 +63,7 @@ const Peta = {
     return {url: bs.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
   geoMetar() { return {type: "FeatureCollection", features: metarSegar().map((m, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [m.lon, m.lat]}, properties: {i, k: kelasJP(m.vis_m)}}))}; },
   terlihat(k) { return this.lihat(k); },
-  segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); },
+  segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); Prak.segarkan(); },
   kartuSel(la, lo) { const r = sel(la, lo); if (!r) return ""; const v = r[ROW.rata][S.hari], mk = r[ROW.maks][S.hari]; if (v == null) return "";
     const c = kat(v);
     return PI.kartuTip({judul: `${KAT[c].n}`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]]}); },
@@ -87,11 +88,12 @@ const Peta = {
     if (this._ia) return; this._ia = true; let diTitik = false;
     peta.on("mousemove", "metar", e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; PI?.tampilTip(this.kartuMetar(e.features[0].properties.i), e.originalEvent); });
     peta.on("mouseleave", "metar", () => { diTitik = false; peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); });
-    peta.on("mousemove", e => { if (diTitik || !PI || !this.lihat("pm25")) return;
+    peta.on("mousemove", e => { if (diTitik || this._diKota || !PI || !this.lihat("pm25")) return;
       const ada = peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]}).length; peta.getCanvas().style.cursor = ada ? "pointer" : "";
       const h = ada ? this.kartuSel(e.lngLat.lat, e.lngLat.lng) : ""; h ? PI.tampilTip(h, e.originalEvent) : PI.sembunyiTip(); });
     peta.getCanvas().addEventListener("mouseleave", () => PI?.sembunyiTip());
-    peta.on("click", e => { const f = peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]})[0]; if (f) this.pilihProv(f.properties.kode); }); },
+    peta.on("click", e => { if (peta.getLayer("kota")) { const kk = peta.queryRenderedFeatures(e.point, {layers: ["kota"]})[0]; if (kk) return Prak.laciKota(kk.properties.i); }
+      const f = peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]})[0]; if (f) this.pilihProv(f.properties.kode); }); },
 };
 
 /* ---------- panel ---------- */
@@ -142,15 +144,16 @@ const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-I
 function renderHari() {
   $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${hariTampil().map(i => `<button data-i="${i}" aria-pressed="${S.hari === i}">${labelHari(i) === "Hari ini" ? "Hari ini" : tglSingkat(S.uk.hari[i])}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.i;
-  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Peta.segarkan(); renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); });
+  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); Prak.st.jam = null; nanti(() => { Peta.segarkan(); renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l;
-  const id = {pm25: "pm", metar: "metar", satelit: "satelit"}[k]; peta.getLayer(id) && peta.setLayoutProperty(id, "visibility", i.checked ? "visible" : "none");
-  renderLegenda(); });
+  const id = {pm25: "pm", metar: "metar", satelit: "satelit", kota: "kota", lintasan: ["lin", "lin-k"]}[k]; [].concat(id).forEach(x => peta.getLayer(x) && peta.setLayoutProperty(x, "visibility", i.checked ? "visible" : "none"));
+  Prak.hiasKontrol(); renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
   const adaMetar = metarSegar().length > 0;   /* tanpa stasiun segar, keterangannya dibuang (A18) */
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${Peta.terlihat("pm25") ? `<div class="lbl">PM2,5 rata-rata 24 jam <span style="text-transform:none">(µg/m³)</span></div><div class="leg" style="margin:4px 0 8px">${KAT.map(k => `<span><i class="sw" style="background:${k.w}"></i>${k.n} · ${k.r}</span>`).join("")}</div>` : ""}
+    ${S.prak && Peta.terlihat("kota") ? `<div class="lbl">Status kota (rata-rata 24 jam)</div><div class="leg" style="margin:4px 0 8px">${Murni.ST.map(k => `<span><i class="sw dot" style="background:${Murni.ST_WARNA[k]}"></i>${Murni.ST_NAMA[k]}</span>`).join("")}</div>` : ""}
     ${adaMetar && Peta.terlihat("metar") ? `<div class="lbl">Jarak pandang bandara (METAR)</div><div class="leg" style="margin:4px 0 8px">${JP.map(j => `<span><i class="sw dot" style="background:${j.w}"></i>${j.n}</span>`).join("")}</div>` : ""}
   </div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: v => legBuka = v}); }

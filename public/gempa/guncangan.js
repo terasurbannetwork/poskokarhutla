@@ -50,7 +50,7 @@
 
     function zhao(m, x, h, jenis, vs30) {
       var c = P.zhao06_pga;
-      m = Math.min(Math.max(m, 0), c.mag_maks); h = Math.min(h, c.h_maks);
+      m = Math.max(m, 0); if (jenis === "intraslab") m = Math.min(m, c.mag_maks_intraslab); h = Math.min(h, c.h_maks); /* klip hanya slab (OpenQuake SSlabNSHMP2014); antarmuka tanpa klip */
       var r = x + c.c * Math.exp(c.d * m);
       var ln = c.a * m + c.b * x - Math.log(r) + (h >= c.hc ? c.e * (h - c.hc) : 0) + c.C[kelasZhao(vs30)];
       if (jenis === "antarmuka") ln += c.SI + c.PI * (m - c.MCI) + c.QI * Math.pow(m - c.MCI, 2) + c.WI;

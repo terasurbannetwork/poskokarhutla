@@ -24,9 +24,24 @@ const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID
 /* Tingkat mengikuti istilah BNPB/BPBD; "Awas" di halaman ini disebut Awas (bukan "kering ekstrem": itu kategori SPI) */
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"], WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"], FG_LV = ["#fff", "#3b2e00", "#fff", "#fff"];
 const NAVY = "oklch(25.5% .075 256)", MERAH = "#c9503a", JINGGA = "#e58a45", KUNING = "#e3b94e", BIRU = "#4f8fc4";
-const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: [], urut: null};
+const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: [], urut: null,
+  hth: null, prak: null, padi: null, uji: null, bukti: null, resmi: null, bnpb: null, bln: 0};
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 /* jumlah wilayah per tingkat TEPAT (kab_n di berkas kumulatif: >= waspada, >= siaga, >= awas) */
+/* ---------- data baru (HTH, prakiraan SEAS5, padi, uji balik, bukti, SK resmi); dibaca defensif, yang tak ada = null lalu dibuang dari layar */
+const BASELINE_PRAK = (k = "pk1", m = 0) => { const b = S.prak?.baseline; if (b == null) return null; if (typeof b === "number") return k === "pk1" ? b : null;
+  let v = b[k] ?? b[k + "_pct"] ?? b.klim?.[k]; if (Array.isArray(v)) v = v[m]; return typeof v === "number" ? v : null; };
+const selisihTxt = (v, b) => b == null ? "" : (v - b >= 0 ? "+" : "−") + fmt(Math.round(Math.abs(v - b))) + " poin";
+const BLN_PRAK = () => (S.prak?.bulan || []).map(ym => bulanPanjang(ym));
+const prakAda = o => o && !o.satu_titik && Array.isArray(o.lead);
+const BELUM_UJI = "Belum diuji balik";
+/* nama provinsi pada SK BNPB -> kode */
+const PROV_KODE = (() => { let m = null; return n => { if (!m) { m = {}; for (const [k, v] of Object.entries(S.meta.provinsi)) m[v.toLowerCase()] = k; m["daerah istimewa yogyakarta"] = "34"; m["dki jakarta"] = "31"; } return m[String(n).toLowerCase()]; }; })();
+const skPer = () => { if (S._sk) return S._sk; const o = {kab: {}, prov: {}}; for (const s of S.resmi?.sk || []) { const p = PROV_KODE(s.prov); if (!p) continue;
+    if (s.kab) (o.kab[p + "|" + s.kab.toLowerCase()] ||= []).push(s); else (o.prov[p] ||= []).push(s); } return S._sk = o; };
+const skKab = kunci => { const p = kunci.split("|"); return skPer().kab[p[0] + "|" + (p[1] || "").toLowerCase()] || []; };
+const irbiKab = kunci => { if (!S.bnpb?.irbi) return null; if (!S._irbi) { S._irbi = {}; for (const [kd, v] of Object.entries(S.bnpb.irbi)) S._irbi[kd.slice(0, 2) + "|" + v.nama.toLowerCase()] = v; }
+  const p = kunci.split("|"); return S._irbi[p[0] + "|" + (p[1] || "").toLowerCase()] || null; };
 const tepat = n => [n[0] - n[1], n[1] - n[2], n[2]];   /* [waspada, siaga, awas] */
 const pill = l => `<span class="pill l${l}">${LEVEL[l]}</span>`;
 
@@ -59,9 +74,11 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 
 /* ---------- data */
 async function muatData() {
-  const [meta, grid, wil, tren, prov] = await Promise.all([muatJSON("../data/kekeringan_meta.json"), muatJSON("../data/kekeringan_grid.json"), muatJSON("../data/kekeringan_wilayah.json"),
-    muatJSON("../data/kekeringan_tren.json").catch(() => null), muatJSON("../geo/provinsi.json")]);
-  Object.assign(S, {meta, grid, wil, tren}); S.geo.prov = prov;
+  const lain = n => muatJSON("../data/" + n + ".json").catch(() => null);
+  const [meta, grid, wil, tren, prov, hth, prak, padi, uji, bukti, resmi, bnpb] = await Promise.all([muatJSON("../data/kekeringan_meta.json"), muatJSON("../data/kekeringan_grid.json"), muatJSON("../data/kekeringan_wilayah.json"),
+    muatJSON("../data/kekeringan_tren.json").catch(() => null), muatJSON("../geo/provinsi.json"),
+    lain("kekeringan_hth"), lain("kekeringan_prakiraan"), lain("kekeringan_padi"), lain("kekeringan_ujibalik"), lain("kekeringan_bukti"), lain("kekeringan_resmi"), lain("kekeringan_bnpb")]);
+  Object.assign(S, {meta, grid, wil, tren, hth, prak: prak?.lengkap === false ? null : prak, padi, uji, bukti, resmi, bnpb}); S.geo.prov = prov;
   muatJSON("../data/iklim.json").then(d => { S.iklim = d; if ($("#p-insight").classList.contains("on")) Insight.render(); }).catch(() => {});
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
   /* lencana ENSO di kepala, sama dengan karhutla (lapisan5.js lencanaIklim): El Niño = kemarau lebih kering */

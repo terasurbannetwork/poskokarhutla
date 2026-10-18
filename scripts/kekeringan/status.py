@@ -202,6 +202,37 @@ def main():
     n = meta["nasional"]
     print(f"kekeringan: {n['sel']} sel bertingkat (SPI {meta['spi'] and meta['spi']['sel']}, tanah {meta['tanah']['sel']}); {n['kab_n']} kab >= waspada/siaga/awas; "
           f"{n['jiwa']} jiwa; {time.time() - t0:.0f} dtk", file=sys.stderr)
+    sys.exit(0 if not rantai() else 1)
+
+
+# Turunan kekeringan, urut ketergantungan (workflow tidak bisa disunting dari mesin agent, jadi dirantai di sini).
+# Tiap langkah proses terpisah dengan batas waktu; langkah yang bahannya gagal dilewati (bukan dijalankan di atas berkas lama).
+RANTAI = ("hth", "prakiraan", "padi", "ujibalik", "laporan", "neraca", "resmi", "bukti", "dampak")
+BUTUH = {"padi": ("prakiraan",), "laporan": ("hth",), "neraca": ("hth",), "bukti": ("resmi",)}
+BATAS_DTK = 1800
+
+
+def rantai(jalan=None):
+    """Kembalikan daftar langkah yang gagal atau dilewati. `jalan(nama) -> bool` bisa diganti untuk uji."""
+    import subprocess
+    if jalan is None:
+        def jalan(nama):
+            f = os.path.join(AB, f"{nama}.py")
+            if not os.path.exists(f):
+                return True
+            try:
+                return subprocess.call([sys.executable, f], timeout=BATAS_DTK) == 0
+            except subprocess.TimeoutExpired:
+                return False
+    gagal = []
+    for nama in RANTAI:
+        if any(b in gagal for b in BUTUH.get(nama, ())):
+            print(f"::warning title=kekeringan {nama}::dilewati karena bahannya gagal; berkas lamanya dibiarkan", file=sys.stderr)
+            gagal.append(nama)
+        elif not jalan(nama):
+            print(f"::warning title=kekeringan {nama}::{nama}.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+            gagal.append(nama)
+    return gagal
 
 
 def uji():
@@ -225,6 +256,10 @@ def uji():
     assert tren["dasarian"][-1]["id"] == "2026-28" and tren["dc_harian"][0]["med"] == 500 and tren["spi_bulanan"][-1]["bln"] == "2026-08"
     _, _, _, t2 = bangun(tanah, fwi, {"kec": {}}, {}, {}, {}, dt.date(2026, 10, 17), tren)
     assert len(t2["dasarian"]) == 1                                                                                              # dasarian sama: diganti, bukan ditambah
+    assert all(RANTAI.index(b) < RANTAI.index(n) for n, bs in BUTUH.items() for b in bs) and RANTAI.index("bukti") < RANTAI.index("dampak")
+    dicoba = []
+    assert rantai(lambda n: dicoba.append(n) or n != "prakiraan") == ["prakiraan", "padi"] and "padi" not in dicoba   # padi tak dijalankan di atas prakiraan lama
+    assert rantai(lambda n: True) == []
     print("ok status")
 
 

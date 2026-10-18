@@ -1,0 +1,57 @@
+name: Perbarui data gempa
+
+# Sekali sehari 08.10 WIB: catatan prospektif susulan (append-only) dan laporan harian gempa (USGS FDSN tanpa kunci;
+# arsip BMKG pantau.terasurban.com boleh gagal di dalam skripnya).
+# Keluaran di-commit ke main. TIDAK deploy: titik.yml/terbit.yml mengambil public/gempa/data dari checkout (= main),
+# karena tidak ada workflow yang memulihkan atau menimpa folder itu dari cache.
+on:
+  schedule:
+    - cron: "10 1 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  perbarui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji aturan
+        run: |
+          for s in susulan laporan_gempa guncangan; do python3 scripts/gempa/$s.py uji; done
+          if command -v node >/dev/null; then
+            python3 scripts/gempa/uji_js_susulan.py
+            python3 scripts/gempa/uji_js_guncangan.py
+          fi
+
+      # append-only: gabung_prospektif menolak entri lama yang hilang atau berubah
+      - name: Catatan prospektif susulan
+        run: python3 scripts/gempa/susulan.py prospektif
+
+      - name: Laporan harian gempa
+        run: python3 scripts/gempa/laporan_gempa.py
+
+      - name: Commit data gempa ke main
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json"
+          git add $B
+          git diff --cached --quiet -- $B && { echo "data gempa tidak berubah"; exit 0; }
+          git commit -q -m "data: gempa harian $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push data gempa gagal::git push ke main gagal 3x (bentrok atau token tanpa contents:write)"
+          exit 1

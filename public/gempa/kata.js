@@ -28,3 +28,47 @@ const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa ber
 const ROMAWI = ["", "I", "II", "III", "IV", "V", "VI", "VII", "VIII", "IX", "X", "XI", "XII"];
 /* waktu gempa: "12 Okt 04.34 WIB" (jamWIB dari inti/format.js) */
 const waktuGempa = iso => jamWIB(iso);
+
+/* ================================================================ peluang susulan dan paparan guncangan (dipakai Sapa, Laci, Insight, Dampak) */
+/* peluang tampil sebagai angka langsung + rentang (A17); r = {p, lo, hi} pecahan 0..1 dari Susulan.peluang */
+const pctTeks = p => p < .005 ? "<1%" : p > .995 ? ">99%" : Math.round(p * 100) + "%";
+const peluangTeks = r => !r ? "" : `${pctTeks(r.p)}${r.lo != null && r.hi != null ? ` (${Math.round(r.lo * 100)} sampai ${Math.round(r.hi * 100)}%)` : ""}`;
+const Sus = {
+  _m: null, _kej: {}, _daftar: null,
+  siap() { if (typeof Susulan === "undefined") return Promise.resolve(false); return this._m ||= Susulan.muat().then(() => true, () => false); },
+  /* kejadian G aktif 30 hari; null bila tabel belum ada */
+  async daftar() { if (this._daftar && Date.now() - this._daftar.t < 120e3) return this._daftar.v;
+    const v = await fetch("/api/gempa/kejadian").then(r => r.ok ? r.json() : null).then(d => d?.kejadian || null).catch(() => null); this._daftar = {t: Date.now(), v}; return v; },
+  async kej(kode) { const c = this._kej[kode]; if (c && Date.now() - c.t < 120e3) return c.v;
+    const v = await fetch("/api/gempa/kejadian/" + encodeURIComponent(kode)).then(r => r.ok ? r.json() : null).catch(() => null); this._kej[kode] = {t: Date.now(), v}; return v; },
+  /* {m, n (susulan teramati), baris: [{label, r}]}; peluang M>=5 dan M>=Mutama-1 dalam 7 hari ke depan, disesuaikan dengan susulan teramati. null bila model/kejadian belum ada */
+  async peluang(kode) {
+    const k = await this.kej(kode); if (!k?.gempa || !(await this.siap())) return null;
+    const t0 = Date.parse(k.mulai), kini = Math.max(0, (Date.now() - t0) / 864e5), M = k.m;
+    const sus = k.gempa.filter(x => x.id !== k.utama_id).map(x => ({t_hari: (Date.parse(x.waktu) - t0) / 864e5, m: x.m})).filter(x => x.t_hari > 0);
+    /* hanya target yang terbit (Susulan.terbit, dari terbit_target model_susulan.json); target yang kalah dari pembanding dibuang (A18) */
+    try { /* penyesuaian hanya bila model menyatakan terbit_sesuaikan === true */ const P = Susulan.model?.terbit_sesuaikan === true ? Susulan.sesuaikan(M, sus, kini) : undefined, T = Susulan.terbit || {}, mm = Math.round((M - 1) * 10) / 10, baris = [];
+      if (T.m5) baris.push(["M 5 atau lebih", Susulan.peluang(M, kini, 7, 5, P)]);
+      if (T.m6) baris.push(["M 6 atau lebih", Susulan.peluang(M, kini, 7, 6, P)]);
+      if (T.m_1 && mm >= Susulan.param.mc && mm !== 5 && mm !== 6) baris.push([`${mTulis(mm)} atau lebih`, Susulan.peluang(M, kini, 7, mm, P)]);
+      /* rentang 10-90% (keragaman antar-rangkaian) hanya sampai rentang_maks_mu; di atasnya angka tengah saja */
+      if (M > (Susulan.model?.rentang_maks_mu ?? 5.5)) baris.forEach(b => { b[1] = {p: b[1].p}; });
+      if (!baris.length) return null;
+      return {m: M, n: sus.length, baris, m5: baris.find(b => b[0] === "M 5 atau lebih")?.[1] || null, k}; } catch (e) { console.error(e); return null; } },
+};
+const Guncang = {
+  _p: null, _c: new Map(),
+  /* paparan + fasilitas satu gempa, dihitung sekali per g.id dan di luar tugas klik (nanti); dipakai laci dan Dampak */
+  hitung(g) { let c = this._c.get(g.id); if (c) return c;
+    c = new Promise(res => nanti(async () => { const P = await this.paparan(g); await new Promise(r => nanti(r));
+      const b = typeof Bukti !== "undefined" ? await Bukti.muat().catch(() => null) : null; res({P, F: b ? await this.fasilitas(g, b) : null}); }));
+    this._c.set(g.id, c); if (this._c.size > 30) this._c.delete(this._c.keys().next().value); return c; },
+  muat() { return this._p ||= Promise.all([muatJSON("data/model_guncangan.json"), muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json")])
+    .then(([m, pusat, d]) => ({M: GempaGuncangan.pasang(m), pusat, pend: d.kec})).catch(() => { this._p = null; return null; }); },
+  /* {per: {kelasMMI: jiwa}, total, tanpa} untuk satu gempa */
+  async paparan(g) { const X = await this.muat(); if (!X) return null;
+    try { return GempaGuncangan.paparan(X.M.kecamatan({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, X.pusat), X.pend); } catch (e) { console.error(e); return null; } },
+  async fasilitas(g, bukti) { const X = await this.muat(); if (!X || !bukti?.fasilitas?.length) return null;
+    try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
+};
+const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";

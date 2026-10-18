@@ -44,3 +44,13 @@
 #simLegenda .lbl{margin:0 0 4px}
 #simLegenda .leg.row{flex-direction:row;flex-wrap:wrap;gap:4px 14px}
 @media (max-width:900px){.simpanel{top:auto;bottom:112px;left:8px;right:8px;width:auto;max-height:44%}.simgeser{grid-template-columns:96px 1fr 64px}}
+/* mode Genangan 3D (sim_tampak.js) */
+#simPeta3{position:absolute;inset:0}
+.simmode{margin-top:10px}
+.gn-waktu{display:grid;grid-template-columns:34px minmax(160px,1fr) auto;gap:10px;align-items:center;min-width:min(520px,80vw)}
+.gn-waktu input{width:100%;accent-color:var(--brand2,#1d6fd1)}
+.gn-waktu b{font-size:12px;white-space:nowrap}
+.gn-ib{width:34px;height:34px;border-radius:50%;border:0;background:var(--ink);color:var(--card);display:inline-flex;align-items:center;justify-content:center;cursor:pointer}
+#simLegenda .leg.row .num{font-weight:700}
+@media (max-width:900px){.gn-waktu{min-width:0;grid-template-columns:30px 1fr;gap:6px}.gn-waktu b{grid-column:1/-1;font-size:11px}.gn-ib{width:30px;height:30px}
+  #p-sim.gn .simpanel{bottom:8px;max-height:40%}#p-sim.gn #simLegenda{padding:6px 10px}#p-sim.gn #simLegenda .leg.row{font-size:10.5px;gap:2px 8px}}

@@ -1,0 +1,47 @@
+import test from "node:test";
+import assert from "node:assert/strict";
+await import("../../public/udara/murni.js");   /* skrip klasik: memasang globalThis.Murni */
+const M = globalThis.Murni;
+
+test("statusDari: titik potong P.14/2020 inklusif di batas atas", () => {
+  assert.equal(M.statusDari(55.4), "normal"); assert.equal(M.statusDari(55.5), "waspada");
+  assert.equal(M.statusDari(150.4), "waspada"); assert.equal(M.statusDari(150.5), "siaga");
+  assert.equal(M.statusDari(250.4), "siaga"); assert.equal(M.statusDari(250.5), "awas");
+});
+test("rata24: jendela terpotong di awal dan abaikan null", () => {
+  assert.equal(M.rata24([10, 20, 30], 2), 20);
+  const pm = Array.from({length: 48}, (_, i) => i < 24 ? 0 : 100);
+  assert.equal(M.rata24(pm, 47), 100); assert.equal(M.rata24(pm, 23), 0);
+  assert.equal(M.rata24([null, 40], 1), 40);
+});
+test("terburuk: kota dengan r24 tertinggi di hari itu", () => {
+  const k = [{nama: "A", r24: [10, 90]}, {nama: "B", r24: [50, 20]}, {nama: "C"}];
+  assert.equal(M.terburuk(k, 0).nama, "B"); assert.equal(M.terburuk(k, 1).nama, "A"); assert.equal(M.terburuk([{nama: "C"}], 0), null);
+});
+test("banding: naik/turun/sama dengan toleransi, null bila tak ada pembanding", () => {
+  assert.deepEqual(M.banding(120, 100), {arah: "naik", persen: 20});
+  assert.deepEqual(M.banding(80, 100), {arah: "turun", persen: 20});
+  assert.equal(M.banding(102, 100).arah, "sama");
+  assert.equal(M.banding(50, 0), null); assert.equal(M.banding(50, null), null);
+});
+test("indeksJam: jam terakhir yang belum lewat", () => {
+  const j = ["2026-10-18T00:00Z", "2026-10-18T01:00Z", "2026-10-18T02:00Z"];
+  assert.equal(M.indeksJam(j, Date.parse("2026-10-18T01:30Z")), 1); assert.equal(M.indeksJam(j, Date.parse("2026-10-17T00:00Z")), 0);
+});
+test("hitungStatus dan statusHari: pakai st bila ada, jatuh ke r24", () => {
+  const k = [{st: ["awas"]}, {r24: [100]}, {r24: [10]}];
+  assert.deepEqual(M.hitungStatus(k, 0), {normal: 1, waspada: 1, siaga: 0, awas: 1});
+});
+test("normBagian: jumlah lebar 100, urut turun, buang nol", () => {
+  const b = M.normBagian([{persen: 20}, {persen: 0}, {persen: 60}, {persen: 40}]);
+  assert.equal(b.length, 3); assert.equal(b[0].persen, 60); assert.ok(Math.abs(b.reduce((a, x) => a + x.lebar, 0) - 100) < 1e-9);
+});
+test("garisLintasan: hanya lapis terpilih, koordinat tanpa jam", () => {
+  const l = {kompleks: [{id: "K1", jalur: [{lapis: "850hPa", t: [[100, -2, 0], [101, -2.5, 3]]}, {lapis: "10m", t: [[1, 1, 0], [2, 2, 3]]}]}]};
+  const g = M.garisLintasan(l, "850hPa"); assert.equal(g.features.length, 1); assert.deepEqual(g.features[0].geometry.coordinates, [[100, -2], [101, -2.5]]);
+  assert.deepEqual(M.lapisAda(l).sort(), ["10m", "850hPa"]); assert.equal(M.garisLintasan(null, "10m").features.length, 0);
+});
+test("format Indonesia: persen dan desimal bertanda koma, null jadi tanda hubung", () => {
+  assert.equal(M.persen(0.71), "71%"); assert.equal(M.persen(null), "–"); assert.equal(M.desimal(null), "–");
+  assert.ok(!/—/.test(M.ST.join(""))); assert.match(M.desimal(1.5, 1), /^1[,.]5$/);
+});

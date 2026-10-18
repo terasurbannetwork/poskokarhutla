@@ -1,6 +1,6 @@
 {
  "versi": 1,
- "dibuat": "2026-10-16T10:43Z",
+ "dibuat": "2026-10-18T11:55Z",
  "jenis": "guncangan_gmpe_gmice",
  "param": {
   "bssa14_pga": {
@@ -28,7 +28,7 @@
    "d": 1.08,
    "e": 0.01412,
    "hc": 15.0,
-   "mag_maks": 7.8,
+   "mag_maks_intraslab": 7.8,
    "h_maks": 125.0,
    "SI": 0.0,
    "SS": 2.607,
@@ -904,7 +904,7 @@
   "Hanya nilai rata-rata, tanpa sigma; Vs30 seragam 400 m/s karena belum ada peta Vs30 di repo (efek tapak diabaikan).",
   "Jenis tektonik ditebak dari kedalaman (>= 50 km intraslab, selain itu kerak); gempa dangkal 15-50 km M>=7 butuh jenis eksplisit atau ditebak antarmuka bila <= 200 km dari segmen subduksi PB2002.",
   "Gempa titik diubah ke Rjb lewat Rjb = max(0, Repi - L/4), L Wells & Coppersmith: tanpa arah patahan, mengabaikan efek direktivitas.",
-  "Zhao 2006: magnitudo dipotong 7,8 (seperti OpenQuake) sehingga M9 dihitung sebagai M7,8 (cenderung terlalu rendah di dekat sumber), tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
+  "Zhao 2006: magnitudo intraslab dipotong 7,8 (seperti OpenQuake SSlabNSHMP2014); antarmuka tidak dipotong (perbaikan 18 Okt 2026: sebelumnya M8,5 selatan Jawa memberi MMI permukiman terkuat 5,49, kini sekitar 6,4); jarak x = sqrt(Rjb^2 + h^2) dipakai sebagai perkiraan Rrup; tanpa koreksi regional; MMI dipotong di 1 sampai 10, di luar 3 sampai 8 ditandai ekstrapolasi.",
   "Jendela hitung dibatasi 400 km dari pusat gempa.",
   "Bukan prakiraan gempa utama dan tidak memuat status tsunami (kosakata terpisah, sumber BMKG/PTWC)."
  ],

@@ -64,3 +64,4 @@ Standar pemilik: `~/.claude/INP.md` (26 Agu 2026). Klik tidak boleh membekukan l
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode `public/index.html` (nanti, bukaTab, hitung, muatTitik, Angin, handler klik/peta) dan modul `public/*.js`, plus `~/.claude/INP.md`. Dicatat: `nanti()` (2 rAF + setTimeout 120 ms) adalah satu-satunya rumah deferral; belum ada gerbang mekanis INP di repo; titik rawan terbesar `hitung()`/`geoTitik()` atas `hotspot.json` ~10,7 MB.
+- 2026-10-18 · Laci/Sim gempa: mikrotugas sesudah klik (Promise cache hangat -> .then/await) berjalan SEBELUM cat; kerja berat di .then Tsunami.muat()/Guncang.muat() tetap membekukan klik kedua. Cek: ukur di node dengan vm (tsunami.js UMD), waktuTiba 210-490ms, swe init 90-450ms. Nanti() wajib di dalam .then, bukan hanya di handler.

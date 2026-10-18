@@ -37,6 +37,11 @@ const SKEN = [{id: "dasar", n: "Prakiraan", w: "#5f6fb0"}, {id: "hujan", n: "Huj
 const Simulasi = {
   prov: "32", kab: "", b: "b", hari: "maks", lihat: "dasar", dom: false, basi: false, hasilSk: null, on: new Set(["hujan", "ekstrem", "jenuh", "sungai", "pasang"]), op: {x: 1.5, ekstrem: 100, sungai: 2},
   kec: null, kode: null, dasar: null, aktif: false, peta: null, JENUH: 200, PANTAI_KM: 15,
+  /* mode "genangan" = sim_tampak.js (DEM, genangan 72 jam 3D, longsor, perlakuan); /banjir/sim?sim=genangan membukanya langsung */
+  mode: new URLSearchParams(location.search).get("sim") === "genangan" ? "genangan" : "status",
+  modeHtml() { return `<div class="simchips simmode" role="group" aria-label="Jenis simulasi">${[["status", "Status kecamatan"], ["genangan", "Genangan 3D"]].map(([v, n]) => `<button type="button" data-mode="${v}" aria-pressed="${this.mode === v}">${n}</button>`).join("")}</div>`; },
+  gantiMode(m) { if (m === this.mode || (m === "genangan" && !window.SimTampak)) return; this.mode = m;
+    document.querySelectorAll(".simmode button").forEach(x => x.setAttribute("aria-pressed", x.dataset.mode === m)); nanti(() => this.render()); },
   get hasil() { return this.hasilSk?.[this.lihat] || this.dasar; },
   sentroid(ring) { let a = 0, cx = 0, cy = 0; const n = ring.length;
     for (let i = 0; i < n; i++) { const [x1, y1] = ring[i], [x2, y2] = ring[(i + 1) % n], c = x1 * y2 - x2 * y1; a += c; cx += (x1 + x2) * c; cy += (y1 + y2) * c; }
@@ -114,7 +119,8 @@ const Simulasi = {
     if (!this.dom) { p.classList.remove("scroll"); this.dom = true;
       p.innerHTML = `<div id="simPeta" role="img" aria-label="Peta status kecamatan skenario"></div><div class="card simpanel" id="simPanel"></div><div class="dok" id="simDok"><div class="box" id="simLegenda"></div></div>`; }
     if (!S.st || !S.hujan) { $("#simPanel").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat data…</div>`; return; }
-    this.muat(); },
+    if (this.mode === "genangan" && window.SimTampak) return SimTampak.render();
+    window.SimTampak?.lepas(); this.muat(); },
   async muat() {
     if (this.kode !== this.prov) { $("#simPanel").innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan kecamatan…</div>`; await this.siapkan(this.prov); }
     this.panel(); this.peta2(true); },
@@ -141,6 +147,7 @@ const Simulasi = {
     const hariOpt = [["maks", "4 hari ke depan"], ...S.st.hari.map((t, i) => [i, tglPendek(t)])];
     el.innerHTML = `<div class="lbl">Simulasi skenario 4 hari · model</div><h2>${esc(wil)}</h2>
       <div style="font-size:12.5px;color:var(--ink2)">${this.kab ? esc(namaProv(this.kode)) : esc(fmt(kabs.length) + " kabupaten/kota")} · <span class="pill l${tinggi}">${LEVEL[tinggi]}</span></div>
+      ${window.SimTampak ? this.modeHtml() : ""}
       <label class="fld"><span class="lbl">Provinsi</span><select id="smProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
       <label class="fld"><span class="lbl">Kabupaten/kota</span><select id="smKab" aria-label="Kabupaten"><option value="">Semua kabupaten/kota</option>${kabs.map(k => `<option ${k === this.kab ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label>
       <div class="kv">${[[3, "Awas"], [2, "Siaga"], [1, "Waspada"]].map(([i, n]) => `<div><b>${fmt(n1[i])}</b><span>Kecamatan ${n}${ada ? `<em>prakiraan ${fmt(n0[i])}</em>` : ""}</span></div>`).join("")}</div>
@@ -156,6 +163,7 @@ const Simulasi = {
       <div id="simHasil">${ada ? this.hasilHtml(ks) : ""}</div>`;
     el.onclick = e => { const b = e.target.closest("button"); if (!b) return;
       const tekan = () => b.setAttribute("aria-pressed", "true"), segar = peta => nanti(() => { this.panel(); if (peta) this.peta2(false); });
+      if (b.dataset.mode) return this.gantiMode(b.dataset.mode);
       if (b.dataset.sk) { const i = b.dataset.sk; const on = !this.on.has(i); on ? this.on.add(i) : this.on.delete(i); b.setAttribute("aria-pressed", on); if (this.hasilSk) this.basi = true; segar(false); }
       else if (b.dataset.b) { this.b = b.dataset.b; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); segar(true); }
       else if (b.dataset.lihat) { this.lihat = b.dataset.lihat; tekan(); segar(true); }
@@ -209,6 +217,7 @@ const Simulasi = {
       <button class="btn sec" id="simUtama" style="margin-top:8px;width:100%">Tampilkan di peta utama</button>`; },
   /* peta penuh halaman: kecamatan provinsi/kabupaten terpilih, warna = level skenario yang dilihat, garis tebal = berubah dari prakiraan */
   async peta2(terbang) {
+    if (this.mode !== "status") return;
     const R = this.hasil, fc = {type: "FeatureCollection", features: (S.geo.kec[this.kode]?.features || []).filter(f => !this.kab || f.properties.kab === this.kab).map((f, i) => {
       const k = `${this.kode}|${f.properties.kab}|${f.properties.kec}`, a = this.lv(this.dasar, k), z = this.lv(R, k);
       return {type: "Feature", geometry: f.geometry, properties: {i, k, nama: f.properties.kec, kab: f.properties.kab, lv: z, lv0: a, beda: a !== z ? 1 : 0}}; })};
@@ -228,6 +237,7 @@ const Simulasi = {
       terbang = true; }
     else if (!this.peta.getSource("sm")) return;
     else this.peta.getSource("sm").setData(fc);
+    if (this.mode !== "status") return; /* pindah ke Genangan 3D selagi peta memuat: wadah tersembunyi, jangan fitBounds */
     this.peta.resize();
     if (terbang && this._fc.features.length) { const hp = innerWidth <= 900; this.peta.fitBounds(kotak(this._fc.features), {padding: hp ? {top: 20, left: 20, right: 20, bottom: innerHeight * .5} : {top: 30, left: 420, right: 60, bottom: 100}, duration: 0}); } },
 };

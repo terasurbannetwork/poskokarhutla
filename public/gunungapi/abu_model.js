@@ -6,6 +6,7 @@
   var R = 6371000, KH = 1000, A = 4, K = 5, NB = 100;
   var KELAS = [[0.40, 0.008], [0.30, 0.07], [0.20, 0.5], [0.10, 1.5]];
   var DEG = Math.PI / 180;
+  var SEL = 0.1, AMBANG = 2.0, TEBAL = 2000, RHO = 2500;  // ambang beban kolom (docstring abu.py): 2 mg/m3 x tebal 2 km, sel 0,1 derajat, MER Mastin dkk. 2009
 
   function mulberry32(seed) {
     var a = seed | 0;
@@ -47,6 +48,8 @@
     o[0] = p[p.length - 1][1]; o[1] = p[p.length - 1][2];
   }
 
+  function merKgS(kolom) { return RHO * Math.pow(Math.max(kolom, 0) / 1000 / 2, 1 / 0.241); }
+
   /* jalankan({lat, lon, puncak_m, kolom_m, durasi_jam=3, angin, jam=72, n=2000, seed=1, dt_menit=15, kh=1000})
      -> {jam:[0..J], snap:[{jam, lon, lat, z (Float32Array), aktif, darat (Uint8Array)}], lepas:[jam lepas tiap partikel], vent} */
   function jalankan(o) {
@@ -84,7 +87,7 @@
         if (z[i] <= 0) { z[i] = 0; st[i] = 2; }
       }
     }
-    return { jam: jamL, snap: snaps, lepas: lepas, vent: { lat: o.lat, lon: o.lon } };
+    return { jam: jamL, snap: snaps, lepas: lepas, vent: { lat: o.lat, lon: o.lon }, massa_kg: merKgS(o.kolom_m) * durasi * 3600, n: n };
   }
 
   function proyeksi(v) { var ky = DEG * R / 1000; return [ky * Math.cos(v.lat * DEG), ky]; }
@@ -101,8 +104,43 @@
     return lo.concat(up);
   }
 
-  /* jejak(hasil, jam) -> {poligon:[[lon,lat]], arah_deg, jangkau_km}; nilai mentah (tanpa pembulatan) */
+  function snapJam(hasil, jam) {
+    for (var i = 0; i < hasil.snap.length; i++) if (hasil.snap[i].jam === jam) return hasil.snap[i];
+    throw new Error('jam ' + jam + ' tidak ada');
+  }
+
+  /* selBerambang(hasil, jam, maksZ) -> [[i, j, jumlah]] sel kisi 0,1 derajat yang bebannya >= 2 mg/m3 x 2 km (lihat abu.py sel_berambang) */
+  function selBerambang(hasil, jam, maksZ) {
+    var s = snapJam(hasil, jam), w = hasil.massa_kg / hasil.n, cnt = new Map(), i, key, e, out = [], sisi = DEG * R, luas;
+    for (i = 0; i < s.lon.length; i++) {
+      if (s.aktif[i] && (maksZ == null || s.z[i] <= maksZ)) {
+        key = Math.floor(s.lon[i] / SEL) + ',' + Math.floor(s.lat[i] / SEL) ;
+        e = cnt.get(key);
+        if (e) e[2]++; else cnt.set(key, [Math.floor(s.lon[i] / SEL), Math.floor(s.lat[i] / SEL), 1]);
+      }
+    }
+    cnt.forEach(function (c) {
+      luas = SEL * SEL * sisi * sisi * Math.cos((c[1] + 0.5) * SEL * DEG);
+      if (c[2] * w >= AMBANG * 1e-6 * TEBAL * luas) out.push(c);
+    });
+    return out;
+  }
+
+  /* jejak(hasil, jam) -> {poligon:[[lon,lat]], arah_deg, jangkau_km, sel_n}; BERAMBANG, nilai mentah (tanpa pembulatan) */
   function jejak(hasil, jam) {
+    var sel = selBerambang(hasil, jam), v = hasil.vent, kk = proyeksi(v), kx = kk[0], ky = kk[1], pts = [], tot = 0, mx = 0, my = 0, jmax = 0, i, a, b, x, y, c;
+    if (!sel.length) return { poligon: [], arah_deg: null, jangkau_km: 0, sel_n: 0 };
+    for (i = 0; i < sel.length; i++) {
+      c = sel[i];
+      for (a = 0; a < 2; a++) for (b = 0; b < 2; b++) pts.push([((c[0] + a) * SEL - v.lon) * kx, ((c[1] + b) * SEL - v.lat) * ky]);
+      x = ((c[0] + 0.5) * SEL - v.lon) * kx; y = ((c[1] + 0.5) * SEL - v.lat) * ky;
+      tot += c[2]; mx += c[2] * x; my += c[2] * y; jmax = Math.max(jmax, Math.hypot(x, y));
+    }
+    return { poligon: selubung(pts).map(function (q) { return [v.lon + q[0] / kx, v.lat + q[1] / ky]; }), arah_deg: (Math.atan2(mx / tot, my / tot) / DEG + 360) % 360, jangkau_km: jmax, sel_n: sel.length };
+  }
+
+  /* jejakTipis(hasil, jam) -> sebaran MENTAH tanpa ambang (persentil 90 jarak), untuk animasi; bukan area dampak */
+  function jejakTipis(hasil, jam) {
     var s = null, i, v = hasil.vent, kk = proyeksi(v), kx = kk[0], ky = kk[1], xy = [], d, thr, kept = [], mx = 0, my = 0, hull;
     for (i = 0; i < hasil.snap.length; i++) if (hasil.snap[i].jam === jam) s = hasil.snap[i];
     if (!s) throw new Error('jam ' + jam + ' tidak ada');
@@ -127,7 +165,7 @@
     return jml.map(function (x) { return m ? x / m : 0; });
   }
 
-  var API = { jalankan: jalankan, jejak: jejak, endapan: endapan, mulberry32: mulberry32 };
+  var API = { jalankan: jalankan, jejak: jejak, jejakTipis: jejakTipis, selBerambang: selBerambang, merKgS: merKgS, endapan: endapan, mulberry32: mulberry32 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   akar.AbuModel = API;
 })(typeof window !== 'undefined' ? window : globalThis);

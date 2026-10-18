@@ -24,3 +24,12 @@
 /* kolom panel: nomor, provinsi, µg/m³, jiwa, tren, kategori; layar sempit membuang Tren supaya nama provinsi terbaca */
 #rows .tb{grid-template-columns:20px minmax(0,1fr) 50px 46px 74px 112px}
 @media (max-width:640px){#rows .tb{grid-template-columns:20px minmax(0,1fr) 46px 44px 108px}#rows .tb > :nth-child(5){display:none}}
+/* prakiraan 72 jam: kartu jam di kolom kanan, laci kota, tabel dampak */
+#jamKota{flex-wrap:wrap;gap:6px 10px;align-items:center}
+#jamKota[hidden]{display:none}
+#jamKota input[type=range]{flex:1;min-width:120px;accent-color:#e8743b}
+#jamKota b{font-size:11px;white-space:nowrap;min-width:78px;text-align:right}
+#jamKota .seg{width:100%;flex-basis:100%}
+.laci svg{max-width:100%;height:auto}
+#dampak .tw{box-shadow:none}
+.dk-peta{height:320px;border-radius:12px;overflow:hidden;margin-top:12px;border:1px solid var(--line)}

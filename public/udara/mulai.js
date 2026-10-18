@@ -5,7 +5,9 @@ PilihCantik.pasang();   /* <select> jadi pil, seperti karhutla */
 (async () => {
   try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
   if (!metarSegar().length) document.querySelector('#lapis [data-l="metar"]')?.closest("label").remove();   /* tanpa laporan segar, ubinnya dibuang (A18) */
-  renderHari(); renderDaftar(); renderCrumb(); await Peta.init(); renderLegenda();
+  if (!S.prak) document.querySelector('#lapis [data-l="kota"]')?.closest("label").remove();   /* tanpa prakiraan 72 jam, lapisannya dibuang (A18) */
+  if (!S.lin?.kompleks?.length) document.querySelector('#lapis [data-l="lintasan"]')?.closest("label").remove();
+  renderHari(); renderDaftar(); renderCrumb(); await Peta.init(); Prak.kontrol(); renderLegenda();
   $("#muat").classList.add("hilang");
   const t = location.pathname.replace(/\/$/, "").split("/").pop();
   bukaTab(TABS.some(x => x[0] === t) ? t : "peta", false);

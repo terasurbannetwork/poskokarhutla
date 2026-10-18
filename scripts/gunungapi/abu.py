@@ -23,17 +23,27 @@ Model (dt 15 menit, RNG mulberry32 seed tetap; port JS setara: public/gunungapi/
     non-Stokes secara kasar): 10 um 0,008 m/s (40%), 30 um 0,07 (30%), 100 um 0,5 (20%), 250 um 1,5 (10%).
     Pecahan massa kelas ASUMSI. Mendarat bila z <= 0 (muka laut; ponytail: tanpa DEM, tanah dianggap 0 m).
   - tanpa gerak vertikal angin, tanpa hujan/pencucian, tanpa agregasi abu. Hasil = bentuk kasar, bukan konsentrasi.
-Jejak per jam 6/12/24/48/72: partikel MELAYANG pada jam itu, dipangkas ke persentil 90 jarak dari kawah, poligon =
-selubung cembung; arah_deg = arah titik tengah partikel itu dari kawah (0 = utara, searah jarum jam); jangkau_km =
-jarak persentil 90.
-Bandara: jam_tiba = jam pertama (cuplikan per jam) ada partikel melayang <= FL350 (10.668 m) dalam 25 km bandara.
-  Batas: partikel bergerak > 50 km/jam bisa lolos di antara dua cuplikan jika awannya sangat tipis.
+Ambang beban kolom (menjawab: "seberapa pekat sampai berbahaya bagi penerbangan"):
+  - massa terlepas M = MER x durasi; MER = 2500 x (H_km/2)^(1/0,241) kg/s (Mastin dkk. 2009: H = 2,00 V^0,241, H km di atas
+    kawah, V laju volume DRE m3/s, 2500 kg/m3). Contoh: H 1 km = 141 kg/s, 2 km = 2.500, 5 km ~ 1,1e5, 10 km ~ 1,5e6.
+    Asumsi: MER tetap selama durasi 3 jam, seluruh massa dianggap abu halus terbawa (tanpa agregasi/pencucian).
+  - tiap partikel melayang membawa M/n. Per jam, massa dijumlah per sel kisi 0,1 derajat. Sel LOLOS bila massa sel >=
+    2 mg/m3 x 2000 m x luas sel (2 mg/m3 = batas bawah "kontaminasi sedang" pedoman ICAO/CAA; tebal awan 2 km ASUMSI).
+  - konsekuensi jujur: letusan kecil (kolom <~ 1 km, M ~ 1e6 kg) hampir tidak pernah punya sel lolos -> jejak kosong. Itu
+    artinya "tidak mencapai ambang penerbangan", BUKAN "tidak ada abu". Resolusi: n=1500 partikel, sehingga ambang diukur
+    dalam kelipatan massa M/n; derau sampling besar di dekat ambang.
+Jejak per jam 6/12/24/48/72 (`jejak`, berambang): poligon = selubung cembung sudut-sudut sel lolos; arah_deg = arah titik tengah
+sel lolos (berbobot jumlah partikel) dari kawah (0 = utara, searah jarum jam); jangkau_km = jarak terjauh pusat sel lolos.
+`jejak_tipis` = sebaran mentah tanpa ambang (partikel melayang, persentil 90 jarak): hanya untuk simulasi/animasi.
+Bandara: jam_tiba = jam pertama (cuplikan per jam) ada sel lolos (partikel <= FL350 = 10.668 m saja) yang pusatnya dalam 25 km
+  bandara. Batas: awan yang melintas < 1 jam di antara dua cuplikan bisa terlewat.
 
 Pakai:  python3 scripts/gunungapi/abu.py          (jalan sungguhan; butuh jaringan)
+        python3 scripts/gunungapi/abu.py ulang    (hitung ulang dari angin tersimpan, tanpa jaringan)
         python3 scripts/gunungapi/abu.py uji      (self-check murni)
         python3 scripts/gunungapi/abu.py bandara  (bangun public/gunungapi/data/bandara.json dari OurAirports)
 """
-import csv, datetime as dt, io, json, math, os, sys, time, urllib.parse, urllib.request
+import csv, datetime as dt, io, json, math, os, sys, time, urllib.error, urllib.parse, urllib.request
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", ".."))
 KELUAR = os.path.join(AKAR, "public/banjir/data/abu_gunungapi.json")
@@ -53,6 +63,10 @@ DURASI_LEPAS_JAM = 3
 FL350_M = 10668.0
 RADIUS_BANDARA_KM = 25.0
 JAM_JEJAK = (6, 12, 24, 48, 72)
+SEL_DEG = 0.1            # kisi beban kolom
+AMBANG_MGM3 = 2.0        # mg/m3: ambang abu penerbangan (batas bawah "kontaminasi sedang" ICAO/CAA; ASUMSI pilihan)
+TEBAL_AWAN_M = 2000.0    # ketebalan efektif awan untuk mengubah massa per luas menjadi konsentrasi (ASUMSI)
+RHO_DRE = 2500.0         # kg/m3, massa jenis batuan padat (DRE) pada Mastin dkk. 2009
 OPENMETEO = "https://api.open-meteo.com/v1/forecast"
 SUMBER = [
     {"nama": "Open-Meteo (ECMWF IFS 0,25) angin lapisan tekanan 850-200 hPa", "url": "https://open-meteo.com/en/docs/ecmwf-api"},
@@ -132,6 +146,12 @@ def suzuki_s(u, d, c):
     return 1.0
 
 
+def mer_kg_s(kolom_m):
+    """Laju lepas massa (kg/s) dari tinggi kolom di atas kawah: Mastin dkk. 2009, H = 2,00 V^0,241 (H km, V m3/s DRE)
+    -> V = (H/2)^(1/0,241); MER = V * 2500. H = 1 km ~ 141 kg/s; 2 km = 2.500; 5 km ~ 1,1e5; 10 km ~ 1,5e6 kg/s."""
+    return RHO_DRE * (max(kolom_m, 0.0) / 1000.0 / 2.0) ** (1.0 / 0.241)
+
+
 def jalankan(lat, lon, puncak_m, kolom_m, angin, durasi_jam=DURASI_LEPAS_JAM, jam=72, n=2000, seed=1, dt_menit=15, kh=KH_M2S):
     """Kembaran abu_model.js jalankan(). Mengembalikan {jam, snap[{jam, lon, lat, z, aktif, darat}], lepas, vent}."""
     assert 60 % dt_menit == 0, "dt_menit harus pembagi 60"
@@ -180,7 +200,8 @@ def jalankan(lat, lon, puncak_m, kolom_m, angin, durasi_jam=DURASI_LEPAS_JAM, ja
             z[i] -= vt[i] * dt_s
             if z[i] <= 0:
                 z[i], st[i] = 0.0, 2
-    return {"jam": list(range(jam + 1)), "snap": snaps, "lepas": [r * dt_s / 3600.0 for r in rel], "vent": {"lat": lat, "lon": lon}}
+    return {"jam": list(range(jam + 1)), "snap": snaps, "lepas": [r * dt_s / 3600.0 for r in rel], "vent": {"lat": lat, "lon": lon},
+            "massa_kg": mer_kg_s(kolom_m) * durasi_jam * 3600.0, "n": n}
 
 
 def _proyeksi(vent):
@@ -208,8 +229,53 @@ def selubung(pts):
     return bwh[:-1] + ats[:-1]
 
 
+def sel_berambang(hasil, jam, maks_z=None):
+    """Sel kisi SEL_DEG yang beban kolomnya melampaui ambang AMBANG_MGM3 pada jam itu: [(i, j, jumlah partikel)].
+    Tiap partikel melayang membawa massa_kg/n (massa total lepas = MER Mastin x durasi). Ambang massa sel =
+    AMBANG_MGM3 mg/m3 x TEBAL_AWAN_M x luas sel (luas memakai lintang pusat sel). Dinormalkan terhadap massa terlepas:
+    sel lolos bila jumlah_partikel x massa_kg/n >= ambang massa sel. maks_z: hanya partikel setinggi itu ke bawah (bandara)."""
+    s = next(x for x in hasil["snap"] if x["jam"] == jam)
+    w = hasil["massa_kg"] / hasil["n"]
+    cnt = {}
+    for i in range(len(s["lon"])):
+        if s["aktif"][i] and (maks_z is None or s["z"][i] <= maks_z):
+            k = (math.floor(s["lon"][i] / SEL_DEG), math.floor(s["lat"][i] / SEL_DEG))
+            cnt[k] = cnt.get(k, 0) + 1
+    sisi = math.radians(SEL_DEG) * R_BUMI
+    out = []
+    for (ci, cj), c in cnt.items():
+        luas = sisi * sisi * math.cos(math.radians((cj + .5) * SEL_DEG))
+        if c * w >= AMBANG_MGM3 * 1e-6 * TEBAL_AWAN_M * luas:
+            out.append((ci, cj, c))
+    return out
+
+
 def jejak(hasil, jam):
-    """{poligon [[lon,lat]], arah_deg, jangkau_km} untuk partikel melayang pada jam itu (nilai mentah, belum dibulatkan)."""
+    """Jejak BERAMBANG: {poligon [[lon,lat]], arah_deg, jangkau_km, sel_n}. Poligon = selubung cembung sudut-sudut sel di atas
+    ambang; arah_deg = arah titik tengah sel (berbobot jumlah partikel) dari kawah; jangkau_km = jarak terjauh pusat sel dari kawah.
+    Tanpa sel di atas ambang: poligon [], arah None, jangkau 0 (awan ada tetapi terlalu encer untuk dianggap berbahaya)."""
+    sel = sel_berambang(hasil, jam)
+    v = hasil["vent"]
+    if not sel:
+        return {"poligon": [], "arah_deg": None, "jangkau_km": 0.0, "sel_n": 0}
+    kx, ky = _proyeksi(v)
+    pts, tot, mx, my, jmax = [], 0, 0.0, 0.0, 0.0
+    for ci, cj, c in sel:
+        for a in (0, 1):
+            for b in (0, 1):
+                pts.append((((ci + a) * SEL_DEG - v["lon"]) * kx, ((cj + b) * SEL_DEG - v["lat"]) * ky))
+        x, y = ((ci + .5) * SEL_DEG - v["lon"]) * kx, ((cj + .5) * SEL_DEG - v["lat"]) * ky
+        tot += c
+        mx += c * x
+        my += c * y
+        jmax = max(jmax, math.hypot(x, y))
+    arah = (math.degrees(math.atan2(mx / tot, my / tot)) + 360.0) % 360.0
+    return {"poligon": [[v["lon"] + x / kx, v["lat"] + y / ky] for x, y in selubung(pts)], "arah_deg": arah, "jangkau_km": jmax, "sel_n": len(sel)}
+
+
+def jejak_tipis(hasil, jam):
+    """Sebaran MENTAH tanpa ambang konsentrasi (versi awal): {poligon, arah_deg, jangkau_km} partikel melayang pada jam itu,
+    dipangkas ke persentil 90 jarak dari kawah. Hanya untuk simulasi/animasi; BUKAN area dampak."""
     s = next(x for x in hasil["snap"] if x["jam"] == jam)
     v = hasil["vent"]
     kx, ky = _proyeksi(v)
@@ -258,19 +324,17 @@ def dampak_bandara(hasil, bandara, maks_dekat_km=150.0):
         jr, ar = jarak_arah(v["lat"], v["lon"], b["lat"], b["lon"])
         if jr <= 2500:
             cand.append({"b": b, "jr": jr, "ar": ar, "tiba": None})
-    for s in hasil["snap"]:
-        pts = [(s["lon"][i], s["lat"][i]) for i in range(len(s["lon"])) if s["aktif"][i] and s["z"][i] <= FL350_M]
-        if not pts:
+    for s in hasil["snap"]:  # ambang SAMA dengan jejak, tetapi hanya partikel <= FL350; pusat sel dalam 25 km bandara
+        sel = sel_berambang(hasil, s["jam"], FL350_M)
+        if not sel:
             continue
-        x0, x1 = min(p[0] for p in pts) - .4, max(p[0] for p in pts) + .4
-        y0, y1 = min(p[1] for p in pts) - .4, max(p[1] for p in pts) + .4
+        pusat = [((ci + .5) * SEL_DEG * kx, (cj + .5) * SEL_DEG * ky) for ci, cj, _ in sel]
         for cd in cand:
             b = cd["b"]
-            if cd["tiba"] is not None or not (x0 <= b["lon"] <= x1 and y0 <= b["lat"] <= y1):
-                continue
-            bx, by = b["lon"] * kx, b["lat"] * ky
-            if any(math.hypot(px * kx - bx, py * ky - by) <= RADIUS_BANDARA_KM for px, py in pts):
-                cd["tiba"] = s["jam"]
+            if cd["tiba"] is None:
+                bx, by = b["lon"] * kx, b["lat"] * ky
+                if any(math.hypot(px - bx, py - by) <= RADIUS_BANDARA_KM for px, py in pusat):
+                    cd["tiba"] = s["jam"]
     out = []
     for cd in sorted(cand, key=lambda c: c["jr"]):
         if cd["jr"] <= maks_dekat_km or cd["tiba"] is not None:
@@ -286,7 +350,12 @@ def ambil_json(url, coba=3):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=60) as r:
                 return json.loads(r.read())
-        except Exception as e:  # jaringan/429: ulang dengan jeda
+        except urllib.error.HTTPError as e:
+            if e.code == 429:  # batas per jam Open-Meteo: mengulang hanya memperpanjang blokir
+                raise RuntimeError(f"HTTP 429 {url[:60]}")
+            gal = e
+            time.sleep(3 * (k + 1))
+        except Exception as e:  # jaringan: ulang dengan jeda
             gal = e
             time.sleep(3 * (k + 1))
     raise RuntimeError(f"gagal {url[:90]}: {gal}")
@@ -295,7 +364,7 @@ def ambil_json(url, coba=3):
 def url_angin(titik, base=OPENMETEO, ekstra=None):
     h = ",".join(f"{v}_{p}hPa" for p in HPA for v in ("wind_speed", "wind_direction", "geopotential_height"))
     q = {"latitude": ",".join(f"{t[0]:.3f}" for t in titik), "longitude": ",".join(f"{t[1]:.3f}" for t in titik), "hourly": h,
-         "models": "ecmwf_ifs025", "wind_speed_unit": "ms", "timezone": "UTC", **(ekstra or {"forecast_days": 5})}
+         "models": "ecmwf_ifs025", "wind_speed_unit": "ms", "timezone": "UTC", **(ekstra or {"forecast_days": 4})}
     return base + "?" + urllib.parse.urlencode(q, safe=",")
 
 
@@ -313,7 +382,7 @@ def angin_dari_respon(r, i0, jam):
 
 
 def id_gunung(nama):
-    return "-".join("".join(ch for ch in nama.lower() if ch.isalnum() or ch == " ").split())
+    return "-".join("".join(ch for ch in nama.lower() if ch.isalnum() or ch in " -").split())
 
 
 def kolom_untuk(g, letusan, sekarang):
@@ -351,7 +420,8 @@ def baca(jalur, ganti):
 
 def bulat_jejak(j, jam):
     return {"jam": jam, "poligon": [[round(a, 3), round(b, 3)] for a, b in j["poligon"]],
-            "arah_deg": None if j["arah_deg"] is None else round(j["arah_deg"]), "jangkau_km": round(j["jangkau_km"], 1)}
+            "arah_deg": None if j["arah_deg"] is None else round(j["arah_deg"]), "jangkau_km": round(j["jangkau_km"], 1),
+            **({"sel_n": j["sel_n"]} if "sel_n" in j else {})}
 
 
 def jalan(n=1500):
@@ -385,36 +455,62 @@ def jalan(n=1500):
         time.sleep(1.5)
     if not angin:
         raise RuntimeError("tidak ada angin yang terambil; berkas lama dibiarkan")
-    out_g, terdampak = [], []
+    rek = []
     for g in daftar:
-        a = angin.get(g["nama"])
-        if not a:
-            continue
-        kol, kol_s = kolom_untuk(g, status.get("letusan", []), sekarang)
-        puncak = g.get("tinggi") or 0
-        h = jalankan(g["lat"], g["lon"], puncak, kol, a, n=n)
-        gid = id_gunung(g["nama"])
-        bd = dampak_bandara(h, bandara) if bandara else []
-        for b in bd:
-            if b["jam_tiba"] is not None:
-                terdampak.append({"icao": b["icao"], "iata": b["iata"], "nama": b["nama"], "gunung": gid, "jam_tiba": b["jam_tiba"]})
-        out_g.append({"id": gid, "nama": g["nama"], "level": g["level"], "lat": g["lat"], "lon": g["lon"], "puncak_m": puncak,
-                      "kolom_m": kol, "kolom_sumber": kol_s, "angin": a,
-                      "jejak": [bulat_jejak(jejak(h, j), j) for j in JAM_JEJAK], "bandara": bd})
-        print(f"  {g['nama']}: kolom {kol} m ({kol_s}); 72 jam {out_g[-1]['jejak'][-1]['jangkau_km']} km arah {out_g[-1]['jejak'][-1]['arah_deg']}", file=sys.stderr)
+        if g["nama"] in angin:
+            kol, kol_s = kolom_untuk(g, status.get("letusan", []), sekarang)
+            rek.append(({"nama": g["nama"], "level": g["level"], "lat": g["lat"], "lon": g["lon"], "puncak_m": g.get("tinggi") or 0}, angin[g["nama"]], kol, kol_s))
+    tulis(rek, bandara, n, tren_dari(status))
+
+
+def hitung_gunung(r, a, kol, kol_s, bandara, n):
+    """Satu gunung -> (rekaman keluaran, [bandara terdampak])."""
+    h = jalankan(r["lat"], r["lon"], r["puncak_m"], kol, a, n=n)
+    gid = id_gunung(r["nama"])
+    bd = dampak_bandara(h, bandara) if bandara else []
+    ter = [{"icao": b["icao"], "iata": b["iata"], "nama": b["nama"], "gunung": gid, "jam_tiba": b["jam_tiba"]} for b in bd if b["jam_tiba"] is not None]
+    rec = {"id": gid, "nama": r["nama"], "level": r["level"], "lat": r["lat"], "lon": r["lon"], "puncak_m": r["puncak_m"],
+           "kolom_m": kol, "kolom_sumber": kol_s, "massa_lepas_kg": round(h["massa_kg"], -3), "angin": a,
+           "jejak": [bulat_jejak(jejak(h, j), j) for j in JAM_JEJAK],
+           "jejak_tipis": [bulat_jejak(jejak_tipis(h, j), j) for j in JAM_JEJAK], "bandara": bd}
+    return rec, ter
+
+
+def tulis(rek, bandara, n, tren, dibuat=None):
+    """rek = [(rekaman gunung {nama, level, lat, lon, puncak_m}, angin, kolom_m, kolom_sumber)] -> tulis abu_gunungapi.json."""
+    out_g, terdampak = [], []
+    for r, a, kol, kol_s in rek:
+        rec, ter = hitung_gunung(r, a, kol, kol_s, bandara, n)
+        out_g.append(rec)
+        terdampak += ter
+        j = rec["jejak"]
+        print(f"  {r['nama']}: kolom {kol} m ({kol_s}); jangkau 24 jam {j[2]['jangkau_km']} km, 72 jam {j[4]['jangkau_km']} km arah {j[4]['arah_deg']}", file=sys.stderr)
     terdampak.sort(key=lambda x: (x["jam_tiba"], x["icao"]))
     lama = baca(KELUAR, {})
-    out = {"v": 1, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "model": "lagrangian-v1",
-           "skenario": "Gunung level II ke atas diandaikan meletus sekarang dengan tinggi kolom di kolom_m; bukan peramalan letusan dan bukan advisory VAAC.",
+    out = {"v": 1, "dibuat": dibuat or dt.datetime.now(WIB).isoformat(timespec="seconds"), "model": "lagrangian-v1",
+           "skenario": "Gunung level II ke atas diandaikan meletus sekarang dengan tinggi kolom di kolom_m; bukan peramalan letusan dan bukan advisory VAAC. "
+                       "jejak = hanya area yang bebannya melampaui ambang penerbangan (lihat parameter.ambang); jejak_tipis = sebaran partikel mentah tanpa ambang, untuk simulasi, bukan area dampak.",
            "parameter": {"n_partikel": n, "seed": 1, "dt_menit": 15, "kh_m2s": KH_M2S, "durasi_lepas_jam": DURASI_LEPAS_JAM,
-                         "suzuki": {"A": SUZUKI_A, "k": SUZUKI_K}, "kelas_butir": [{"massa": f, "kec_jatuh_ms": v} for f, v in KELAS], "ambang_bandara_m": FL350_M, "radius_bandara_km": RADIUS_BANDARA_KM},
-           "sumber": SUMBER, "gunung": out_g, "bandara_terdampak": terdampak, "tren": tren_dari(status),
-           "uji_balik": lama.get("uji_balik")}
+                         "suzuki": {"A": SUZUKI_A, "k": SUZUKI_K}, "kelas_butir": [{"massa": f, "kec_jatuh_ms": v} for f, v in KELAS], "ambang_bandara_m": FL350_M, "radius_bandara_km": RADIUS_BANDARA_KM,
+                         "ambang": {"konsentrasi_mg_m3": AMBANG_MGM3, "tebal_awan_m": TEBAL_AWAN_M, "sel_deg": SEL_DEG,
+                                    "rumus": "sel lolos bila (jumlah partikel x massa_lepas_kg / n) >= konsentrasi x tebal x luas sel; massa_lepas_kg = MER x durasi; MER = 2500 x (H_km/2)^(1/0,241) kg/s (Mastin dkk. 2009)",
+                                    "asumsi": "2 mg/m3 = batas bawah kontaminasi sedang ICAO/CAA; tebal awan 2 km; MER tetap selama durasi; semua massa dianggap abu halus yang terbawa (tidak ada agregasi)"}},
+           "sumber": SUMBER, "gunung": out_g, "bandara_terdampak": terdampak, "tren": tren,
+           "uji_balik": lama.get("uji_balik"), **{k: lama[k] for k in ("uji_balik_catatan", "uji_balik_tipis") if lama.get(k)}}
     err = validasi(out)
     if err:
         raise RuntimeError("keluaran tidak valid: " + err)
     simpan(KELUAR, out)
     print(f"{len(out_g)} gunung; bandara terdampak {len(terdampak)}; {os.path.getsize(KELUAR) // 1024} KB", file=sys.stderr)
+
+
+def ulang(n=1500):
+    """Hitung ulang model dari angin, kolom, dan bandara yang SUDAH tersimpan (tanpa jaringan; dipakai bila Open-Meteo 429 atau ambang diubah)."""
+    lama = baca(KELUAR, None)
+    if not lama:
+        raise RuntimeError("abu_gunungapi.json belum ada")
+    rek = [({k: g[k] for k in ("nama", "level", "lat", "lon", "puncak_m")}, g["angin"], g["kolom_m"], g["kolom_sumber"]) for g in lama["gunung"]]
+    tulis(rek, baca(BANDARA, []), n, lama.get("tren", []), dibuat=lama["dibuat"])  # waktu `dibuat` = waktu angin, tidak berubah
 
 
 def validasi(o):
@@ -439,9 +535,13 @@ def validasi(o):
 
 
 # ---------- bandara.json ----------
-def bangun_bandara():
-    with urllib.request.urlopen(urllib.request.Request("https://davidmegginson.github.io/ourairports-data/airports.csv", headers={"User-Agent": UA}), timeout=120) as r:
-        teks = r.read().decode("utf-8")
+def bangun_bandara(berkas=None):
+    """berkas = salinan lokal airports.csv (server OurAirports lambat, ~60 KB/dtk); tanpa itu diunduh langsung."""
+    if berkas:
+        teks = open(berkas, encoding="utf-8").read()
+    else:
+        with urllib.request.urlopen(urllib.request.Request("https://davidmegginson.github.io/ourairports-data/airports.csv", headers={"User-Agent": UA}), timeout=600) as r:
+            teks = r.read().decode("utf-8")
     metar = {m["icao"]: m for m in baca(METAR, [])}
     out = {}
     for row in csv.DictReader(io.StringIO(teks)):
@@ -450,7 +550,7 @@ def bangun_bandara():
         icao = (row.get("icao_code") or row.get("gps_code") or row["ident"]).strip()
         if len(icao) != 4 or not icao.isalpha():
             continue
-        if row["type"] in ("large_airport", "medium_airport") or icao in metar:
+        if row["type"] in ("large_airport", "medium_airport") or icao in metar or (row["type"] == "small_airport" and row["scheduled_service"] == "yes"):  # bandara kecil hanya yang berpenerbangan terjadwal
             out[icao] = {"icao": icao, "iata": row["iata_code"] or None, "nama": row["name"], "lat": round(float(row["latitude_deg"]), 4),
                          "lon": round(float(row["longitude_deg"]), 4), "prov": row["iso_region"]}
     for ic, m in metar.items():  # bandara METAR yang tak ada di CSV: pakai data METAR
@@ -483,8 +583,8 @@ def setara():
     h = jalankan(m["lat"], m["lon"], m["puncak_m"], m["kolom_m"], m["angin"], m["durasi_jam"], m["jam"], m["n"], m["seed"], m["dt_menit"])
     titik = [{"lat": -8.2, "lon": 113.1}, {"lat": -8.3, "lon": 113.3}, {"lat": -8.108, "lon": 112.92}]
     s24 = h["snap"][24]
-    print(json.dumps({"masukan": m, "titik": titik, "mulberry_seed1": [mulberry32(1)() for _ in range(3)],
-                      "jejak": {str(j): jejak(h, j) for j in JAM_JEJAK}, "endapan": endapan(h, titik, 10.0),
+    print(json.dumps({"masukan": m, "titik": titik, "mulberry_seed1": (lambda g: [g() for _ in range(3)])(mulberry32(1)),
+                      "jejak": {str(j): jejak(h, j) for j in JAM_JEJAK}, "jejak_tipis": {str(j): jejak_tipis(h, j) for j in JAM_JEJAK}, "massa_kg": h["massa_kg"], "endapan": endapan(h, titik, 10.0),
                       "pos24": {"lon": s24["lon"][:40], "lat": s24["lat"][:40], "z": s24["z"][:40]}}))
 
 
@@ -521,17 +621,28 @@ def uji():
     # jejak: angin dari barat -> awan ke timur; dari selatan -> ke utara; jangkau > 0 dan poligon tertutup oleh >= 3 titik
     for (uu, vv, tgt) in ((10, 0, 90), (0, 10, 0), (-10, 0, 270)):
         h = jalankan(-7.5, 110.4, 2900, 3000, angin_contoh(uu, vv), jam=12, n=400, seed=3)
-        j = jejak(h, 12)
+        j = jejak_tipis(h, 12)
         d = abs((j["arah_deg"] - tgt + 180) % 360 - 180)
         assert d < 5 and j["jangkau_km"] > 100 and len(j["poligon"]) >= 3, (uu, vv, j["arah_deg"], j["jangkau_km"])
+    # ambang: MER Mastin (H=2 km -> V=1 m3/s -> 2500 kg/s), kolom kecil -> tak ada sel lolos, kolom besar -> ada, dan tidak melewati jarak tempuh angin
+    assert abs(mer_kg_s(2000) - 2500.0) < 1e-6 and 100 < mer_kg_s(1000) < 200 and mer_kg_s(0) == 0
+    kecil = jalankan(-7.5, 110.4, 2900, 500, angin_contoh(10, 0), jam=12, n=400, seed=3)
+    assert jejak(kecil, 12) == {"poligon": [], "arah_deg": None, "jangkau_km": 0.0, "sel_n": 0} and jejak_tipis(kecil, 12)["jangkau_km"] > 100
+    besar = jalankan(-7.5, 110.4, 2900, 9000, angin_contoh(10, 0), jam=12, n=400, seed=3)
+    jb, jt = jejak(besar, 12), jejak_tipis(besar, 12)
+    assert jb["sel_n"] > 0 and abs(jb["arah_deg"] - 90) < 5 and 0 < jb["jangkau_km"] < 12 * 36 + 30 and len(jb["poligon"]) >= 3, (jb["arah_deg"], jb["jangkau_km"], jt["jangkau_km"])
+    # ambang bergantung massa: per sel, c partikel x massa/n >= 2 mg/m3 x 2 km x luas sel; menaikkan massa 10x tidak boleh mengurangi sel lolos
+    assert len(sel_berambang(besar, 12)) >= len(sel_berambang(jalankan(-7.5, 110.4, 2900, 6000, angin_contoh(10, 0), jam=12, n=400, seed=3), 12))
     # endapan: titik di bawah awan yang mendarat > 0; titik jauh = 0
     h = jalankan(0.0, 100.0, 0, 1000, angin_contoh(5, 0), durasi_jam=1, jam=72, n=300, seed=2)
     e = endapan(h, [{"lat": 0.0, "lon": 100.0 + 0.0001}, {"lat": 40.0, "lon": 10.0}], 2000.0)
     assert e[1] == 0 and max(e) <= 1, e
     # bandara: awan ke timur 10 m/s dari kawah, bandara 50 km di timur kena sebelum jam 6 (dilepas 1 jam, ketinggian < FL350)
-    h = jalankan(0.0, 100.0, 2000, 1000, angin_contoh(10, 0), durasi_jam=1, jam=24, n=300, kh=0)
+    h = jalankan(0.0, 100.0, 2000, 8000, angin_contoh(10, 0), durasi_jam=1, jam=24, n=300, kh=0)
     bd = dampak_bandara(h, [{"icao": "XXXA", "iata": None, "nama": "Dekat", "lat": 0.0, "lon": 100.45}, {"icao": "XXXB", "iata": None, "nama": "Barat", "lat": 0.0, "lon": 99.0}])
-    assert bd[0]["icao"] == "XXXA" and bd[0]["jam_tiba"] in (1, 2), bd
+    assert bd[0]["icao"] == "XXXA" and bd[0]["jam_tiba"] in (1, 2, 3), bd
+    kecil = jalankan(0.0, 100.0, 2000, 800, angin_contoh(10, 0), durasi_jam=1, jam=24, n=300, kh=0)  # kolom kecil: awan ada tetapi di bawah ambang -> tak ada bandara terdampak
+    assert all(b["jam_tiba"] is None for b in dampak_bandara(kecil, [{"icao": "XXXA", "iata": None, "nama": "Dekat", "lat": 0.0, "lon": 100.45}]))
     assert all(b["icao"] != "XXXB" or b["jam_tiba"] is None for b in bd), bd
     # kolom: letusan baru dipakai, lama jatuh ke asumsi level
     sk = dt.datetime(2026, 10, 18, 12, 0, tzinfo=dt.timezone.utc)
@@ -542,7 +653,7 @@ def uji():
     # skema + ukuran: satu gunung sintetis penuh; peringatan bila berkas nyata ada
     hh = jalankan(-8.108, 112.92, 3676, 2000, angin_geser(), jam=72, n=200)
     gg = {"id": "semeru", "nama": "Semeru", "level": 3, "lat": -8.108, "lon": 112.92, "puncak_m": 3676, "kolom_m": 2000, "kolom_sumber": "asumsi level 3",
-          "angin": angin_geser(), "jejak": [bulat_jejak(jejak(hh, j), j) for j in JAM_JEJAK], "bandara": []}
+          "angin": angin_geser(), "jejak": [bulat_jejak(jejak(hh, j), j) for j in JAM_JEJAK], "jejak_tipis": [bulat_jejak(jejak_tipis(hh, j), j) for j in JAM_JEJAK], "bandara": []}
     o = {"v": 1, "dibuat": "x", "model": "lagrangian-v1", "sumber": SUMBER, "gunung": [gg], "bandara_terdampak": [], "tren": []}
     assert validasi(o) == "", validasi(o)
     o["gunung"][0]["jejak"].pop()
@@ -557,10 +668,12 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if a == ["uji"]:
         uji()
+    elif a == ["ulang"]:
+        ulang()
     elif a == ["setara"]:
         setara()
-    elif a == ["bandara"]:
-        bangun_bandara()
+    elif a[:1] == ["bandara"]:
+        bangun_bandara(a[1] if len(a) > 1 else None)
     else:
         try:
             jalan()

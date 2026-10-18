@@ -97,6 +97,7 @@ const Insight = {
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
+    else el.insertAdjacentHTML("beforeend", `<a href="simulasi.html" style="display:flex;justify-content:center;padding:13px 18px;margin:4px auto 20px;max-width:420px;border-radius:999px;background:var(--brand);color:var(--card);font-weight:700;text-decoration:none">Simulasi neraca air 180 hari</a>`);
     el.onclick = e => {
       const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; box.querySelectorAll(".pgn-b[data-h]").forEach(x => { const on = x === pg; if (!x.textContent.match(/[‹›]/)) { x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); } }); this.ulang(box); } return; }
