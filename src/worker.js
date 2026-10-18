@@ -421,7 +421,8 @@ export const HTML_RUTE = [
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
   [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
-  [/^\/laporan\/?$/, "/laporan.html", "/laporan"],   // laporan harian karhutla (public/laporan.*)
+  [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
+  [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
 ];
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
@@ -430,6 +431,8 @@ async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
   const cocok = HTML_RUTE.find(([re]) => re.test(url.pathname)); if (!cocok) return null;
   const jalur = cocok[2] || url.pathname.replace(/\/+$/, "");
+  /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
+  if (jalur === "/laporan-konsesi" && !url.hostname.endsWith(".workers.dev") && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
   const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
   if (!aset.ok || req.method === "HEAD") return aset;

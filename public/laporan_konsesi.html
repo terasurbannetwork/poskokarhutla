@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Laporan Konsesi Terbakar 2026 · Centurisk97</title>
+<meta name="description" content="Areal konsesi sawit, HTI, HPH, dan tambang yang kemasukan titik panas VIIRS sepanjang 2026: luas, wilayah, tanggal, lama kejadian, dan peta bukti per perusahaan.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/laporan_konsesi.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Beranda"><img src="/img/logo.svg?v=2" alt="" width="30" height="30"></a>
+    <div><b>Laporan Konsesi Terbakar 2026</b><small>Centurisk97</small></div>
+  </div>
+  <div class="stat">
+    <a class="kn-tautan" href="/laporan">Laporan harian</a>
+    <button class="iconbtn" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+
+<main class="kn">
+  <section class="kn-kop">
+    <img src="/img/logo.svg?v=2" alt="" width="44" height="44">
+    <div>
+      <b>Centurisk97</b>
+      <h1>Laporan Konsesi Terbakar 2026</h1>
+      <p id="knSub">Memuat data…</p>
+    </div>
+  </section>
+
+  <section class="kn-kendali" aria-label="Pilihan laporan">
+    <div class="kn-baris">
+      <span class="lbl">Provinsi</span>
+      <div class="kn-cepat"><button type="button" data-cepat="bnpb">6 provinsi BNPB</button><button type="button" data-cepat="9">9 prioritas</button><button type="button" data-cepat="semua">Semua</button><button type="button" data-cepat="kosong">Kosongkan</button></div>
+    </div>
+    <div class="kn-prov" id="knProv"></div>
+    <div class="kn-baris kn-alat">
+      <label><span class="lbl">Jenis</span>
+        <span class="kn-jenis" id="knJenis"></span></label>
+      <label><span class="lbl">Cari perusahaan</span><input id="knCari" type="search" placeholder="Nama PT atau grup"></label>
+      <label><span class="lbl">Profil lengkap per provinsi</span>
+        <select id="knProfil"><option value="10">10 teratas</option><option value="20" selected>20 teratas</option><option value="50">50 teratas</option><option value="9999">Semua</option></select></label>
+      <label><span class="lbl">Peta dasar</span>
+        <select id="knDasar"><option value="google">Google Satelit</option><option value="esri">Citra Esri</option><option value="osm">Peta jalan</option></select></label>
+      <label><span class="lbl">Urut</span>
+        <select id="knUrut"><option value="titik">Titik panas</option><option value="luas_bakar_ha">Luas terbakar</option><option value="titik_7h">7 hari terakhir</option><option value="persen_bakar">% konsesi terbakar</option><option value="hari_aktif">Hari bertitik</option></select></label>
+    </div>
+    <div class="kn-baris kn-tombol">
+      <button type="button" class="kn-utama" id="knPdf">Unduh PDF</button>
+      <button type="button" id="knCsv">Unduh tabel (CSV)</button>
+      <button type="button" id="knKml">Semua poligon + titik (KML Google Earth)</button>
+      <span id="knStatus" class="kn-status" aria-live="polite"></span>
+    </div>
+  </section>
+
+  <section id="knIsi"><div class="kosong">Memuat…</div></section>
+</main>
+<div id="knKanvas" aria-hidden="true"></div>
+
+<script src="/inti/format.js"></script>
+<script src="/laporan_konsesi.js"></script>
+</body>
+</html>
