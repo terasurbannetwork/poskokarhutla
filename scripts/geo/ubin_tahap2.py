@@ -58,27 +58,6 @@ def hex_rgb(h):
     return int(h[1:3], 16), int(h[3:5], 16), int(h[5:7], 16)
 
 
-def selaras(zoom):
-    """Ekstent 3857 selaras ubin pada zoom: (xmin, ymin, xmax, ymax, resolusi m/px, jumlah px lebar, tinggi)."""
-    n = 2 ** zoom
-    res = 2 * ORIGIN / (n * TILE_PX)
-
-    def tx(lon):
-        return int(math.floor((lon + 180) / 360 * n))
-
-    def ty(lat):
-        y = (1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n
-        return int(math.floor(y))
-
-    x0, x1 = tx(BBOX[0]), tx(BBOX[2])
-    y0, y1 = ty(BBOX[3]), ty(BBOX[1])
-    xmin = -ORIGIN + x0 * TILE_PX * res
-    xmax = -ORIGIN + (x1 + 1) * TILE_PX * res
-    ymax = ORIGIN - y0 * TILE_PX * res
-    ymin = ORIGIN - (y1 + 1) * TILE_PX * res
-    return xmin, ymin, xmax, ymax, res, (x1 - x0 + 1) * TILE_PX, (y1 - y0 + 1) * TILE_PX
-
-
 def pasang_palet(vrt_masuk, vrt_keluar, entri):
     """Sisipkan ColorTable (RGBA per nilai) ke VRT satu-pita lalu -expand rgba (lazy, tanpa materialisasi)."""
     xml = open(vrt_masuk, encoding="utf-8").read()
@@ -90,15 +69,30 @@ def pasang_palet(vrt_masuk, vrt_keluar, entri):
     jalan("gdal_translate", "-q", "-of", "VRT", "-expand", "rgba", tmp, vrt_keluar)
 
 
-def ke_pmtiles(nama, rgba_vrt, cfg, level_addo):
+def ke_pmtiles(nama, rgba_vrt, cfg, resample):
+    """RGBA VRT -> `gdal raster tile` (PNG, lewati ubin kosong, paralel) -> MBTiles (sqlite3) -> pmtiles convert."""
+    import sqlite3
     os.makedirs(UBIN, exist_ok=True)
+    dirt = os.path.join(RAW, nama + "_tiles")
+    jalan("gdal", "raster", "tile", "-q", "--skip-blank", "--min-zoom", str(cfg["minzoom"]), "--max-zoom", str(cfg["maxzoom"]),
+          "-r", resample, "--overview-resampling", "average", "--num-threads", "ALL_CPUS", "--resume", rgba_vrt, dirt)
     mb = os.path.join(RAW, nama + ".mbtiles")
     if os.path.exists(mb):
         os.remove(mb)
-    xmin, ymin, xmax, ymax, res, w, h = selaras(cfg["maxzoom"])
-    jalan("gdal_translate", "-q", "-of", "MBTiles", "-co", "TILE_FORMAT=PNG", "-co", "ZOOM_LEVEL_STRATEGY=UPPER",
-          "-co", "NAME=" + nama, "-co", "BOUNDS=%s,%s,%s,%s" % BBOX, rgba_vrt, mb)
-    jalan("gdaladdo", "-r", "average", mb, *[str(2 ** i) for i in range(1, cfg["maxzoom"] - cfg["minzoom"] + 1)])
+    db = sqlite3.connect(mb)
+    db.executescript("CREATE TABLE metadata(name TEXT, value TEXT); CREATE TABLE tiles(zoom_level INTEGER, tile_column INTEGER, "
+                     "tile_row INTEGER, tile_data BLOB); CREATE UNIQUE INDEX tile_index ON tiles(zoom_level, tile_column, tile_row);")
+    db.executemany("INSERT INTO metadata VALUES(?,?)", [
+        ("name", nama), ("format", "png"), ("type", "overlay"), ("version", "1"), ("minzoom", str(cfg["minzoom"])),
+        ("maxzoom", str(cfg["maxzoom"])), ("bounds", "%s,%s,%s,%s" % BBOX), ("attribution", cfg["atribusi"])])
+    n = 0
+    for f in glob.glob(os.path.join(dirt, "*", "*", "*.png")):
+        z, x, y = (int(v) for v in f[len(dirt) + 1:-4].split(os.sep))
+        db.execute("INSERT INTO tiles VALUES(?,?,?,?)", (z, x, (1 << z) - 1 - y, open(f, "rb").read()))
+        n += 1
+    db.commit()
+    db.close()
+    print(nama, n, "ubin")
     out = os.path.join(UBIN, nama + ".pmtiles")
     if os.path.exists(out):
         os.remove(out)
@@ -120,17 +114,6 @@ def buka_zip(zp, tujuan, pola="*.tif"):
     return sorted(glob.glob(os.path.join(tujuan, "**", pola), recursive=True))
 
 
-def warp_vrt(nama, sumber_vrt, cfg, resample, tipe, nodata_src=None):
-    xmin, ymin, xmax, ymax, res, w, h = selaras(cfg["maxzoom"])
-    out = os.path.join(RAW, nama + "_3857.vrt")
-    cmd = ["gdalwarp", "-q", "-of", "VRT", "-t_srs", "EPSG:3857", "-te", str(xmin), str(ymin), str(xmax), str(ymax),
-           "-tr", str(res), str(res), "-r", resample, "-ot", tipe, "-multi", "-overwrite"]
-    if nodata_src is not None:
-        cmd += ["-srcnodata", str(nodata_src)]
-    jalan(*cmd, sumber_vrt, out)
-    return out
-
-
 def bangun_biner(nama, zip_rel, palet):
     """sawit/kelapa: kelas byte (0 = lain) -> palet RGBA -> MBTiles -> PMTiles."""
     cfg = LAPISAN[nama]
@@ -138,11 +121,10 @@ def bangun_biner(nama, zip_rel, palet):
     lst = os.path.join(RAW, nama + "_daftar.txt")
     open(lst, "w").write("\n".join(tifs))
     src = os.path.join(RAW, nama + "_src.vrt")
-    jalan("gdalbuildvrt", "-q", "-input_file_list", lst, src)
-    wv = warp_vrt(nama, src, cfg, "mode", "Byte")
+    jalan("gdalbuildvrt", "-q", "-te", *[str(v) for v in BBOX], "-input_file_list", lst, src)
     rgba = os.path.join(RAW, nama + "_rgba.vrt")
-    pasang_palet(wv, rgba, palet)
-    ke_pmtiles(nama, rgba, cfg, None)
+    pasang_palet(src, rgba, palet)
+    ke_pmtiles(nama, rgba, cfg, "average")
 
 
 def bangun_terbangun():
@@ -153,18 +135,17 @@ def bangun_terbangun():
     lst = os.path.join(RAW, "terbangun_daftar.txt")
     open(lst, "w").write("\n".join(t for t in tifs if t.endswith(".tif")))
     src = os.path.join(RAW, "terbangun_src.vrt")
-    jalan("gdalbuildvrt", "-q", "-input_file_list", lst, src)
-    wv = warp_vrt("terbangun", src, cfg, "bilinear", "UInt16", nodata_src=65535)
+    jalan("gdalbuildvrt", "-q", "-te", *[str(v) for v in BBOX], "-input_file_list", lst, src)
     # m2 bangunan per sel 100 m (0..10000) -> byte 0..255 (lazy) -> palet beralfa menurut kepadatan
     b = os.path.join(RAW, "terbangun_byte.vrt")
-    jalan("gdal_translate", "-q", "-of", "VRT", "-ot", "Byte", "-scale", "0", "10000", "0", "255", wv, b)
+    jalan("gdal_translate", "-q", "-of", "VRT", "-ot", "Byte", "-scale", "0", "10000", "0", "255", src, b)
     r, g, bl = hex_rgb("#e8743b")
     entri = [(r, g, bl, 0)]
     for v in range(1, 256):
         entri.append((r, g, bl, min(255, int(70 + 185 * math.sqrt(v / 255)))))
     rgba = os.path.join(RAW, "terbangun_rgba.vrt")
     pasang_palet(b, rgba, entri)
-    ke_pmtiles("terbangun", rgba, cfg, None)
+    ke_pmtiles("terbangun", rgba, cfg, "bilinear")
 
 
 # ---- uji ----

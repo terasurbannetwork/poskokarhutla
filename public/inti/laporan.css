@@ -1,0 +1,116 @@
+/* laporan.css (public/inti): mesin laporan harian generik. Dasar kartu/tabel/tooltip/pemilih dari tema.css, gaya.css, tabel.css, insight.css, kartu.css.
+   Di sini hanya pita kepala, pil, tabel laporan, grafik batang, dan cetak A4. Semua dibatasi di #laporan supaya tak bocor ke halaman lain. */
+#p-laporan.scroll{padding:14px 12px 48px}
+#laporan{max-width:1180px;margin:0 auto;min-width:0}
+#laporan #insight.lp{max-width:none;gap:12px}
+#laporan .kosong{padding:22px;text-align:center;color:var(--ink2)}
+
+/* pita kepala */
+.lp-kep{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
+.lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;min-width:0}
+.lp-jd h1{margin:0;font-size:clamp(20px,3vw,28px);line-height:1.15;color:#fff}
+.lp-pils{display:flex;flex-wrap:wrap;gap:6px}
+.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
+.lp-pil.ok{background:#2b8c86}.lp-pil.sm{background:#c9503a}
+.lp-aksi{display:flex;align-items:center;flex-wrap:wrap;gap:10px;max-width:100%;min-width:0}
+.lp-aksi .pc{flex:0 1 220px}
+.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
+.lp-cetak:hover{background:oklch(100% 0 0 / .26)}
+.lp-cetak svg{width:17px;height:17px}
+
+/* kop cetak: hanya di kertas */
+.lp-kop,.lp-kop-garis{display:none}
+
+/* tabel: kolom teks rata kiri, angka kanan, gulir horizontal di dalam kartunya */
+.lp-tb td.n,.lp-tb th.n{text-align:right;font-variant-numeric:tabular-nums}
+#laporan .lp-tb thead th{text-transform:none;font-size:11.5px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
+#laporan .lp-tb thead th button{display:inline-flex;white-space:normal;text-align:inherit}
+#laporan .lp-tb thead th.n button{justify-content:flex-end}
+.lp-tb tbody td:first-child{font-weight:600}
+.lp-tb small{color:var(--ink2);font-weight:500}
+.lp-tb tfoot td{padding:10px 14px}
+.lp-tb tr.lp-grp td{background:oklch(42% .11 255 / .09);font-weight:800;border-top:2px solid oklch(42% .11 255 / .35)}
+.lp-tb td.lp-kab{padding-left:26px!important;font-weight:500!important}
+.lp-tb .kosong{white-space:normal}
+.lp-bf{display:inline-block;vertical-align:middle;padding:1px 7px;border-radius:999px;font:800 10px var(--font);background:#d2772c;color:#fff;white-space:nowrap}
+.naik{color:#b8392b;font-weight:700}
+.turun{color:#2b8c86;font-weight:700}
+:root[data-theme="dark"] .naik{color:#ef8a78}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .naik{color:#ef8a78}}
+.lp-tb tfoot .naik{color:#ff9d8c}.lp-tb tfoot .turun{color:#7fe3cf}
+.lp-cat{margin:10px 2px 0;font-size:12px;color:var(--ink2)}
+
+/* perlu perhatian */
+.lp-lv{display:inline-block;padding:2px 9px;border-radius:999px;font-size:10.5px;font-weight:800;color:#fff;white-space:nowrap}
+.lv0{background:#6b7f99}.lv1{background:#b08a1e}.lv2{background:#d2772c}.lv3{background:#c9503a}
+.lp-so,.lp-sl{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.lp-so li{display:flex;align-items:flex-start;gap:10px;padding:10px 12px;border-radius:12px;background:oklch(42% .11 255 / .05)}
+.lp-so li div{flex:1;min-width:0;display:flex;flex-direction:column;gap:2px;overflow-wrap:anywhere}
+.lp-so li span:not(.lp-lv){font-size:12.5px;color:var(--ink2)}
+.lp-so a,.lp-sl a{color:var(--brand2);font-weight:700}
+.lp-so a{flex:none;display:inline-flex;align-items:center}
+.lp-sl li{font-size:13px;overflow-wrap:anywhere}
+.lp-sl li span{color:var(--ink2)}
+
+/* grafik batang */
+.lp-gr{overflow-x:auto;scrollbar-width:thin}
+.lp-gr svg{min-width:560px}
+.lp-gr svg text{font-family:var(--font)}
+.lp-gr svg text.lp-sb{fill:var(--ink2);font-weight:600;font-variant-numeric:tabular-nums}
+.lp-gr svg text.lp-sb.on{fill:var(--ink);font-weight:800}
+.lp-gr svg text.lp-gp{fill:var(--ink2)}
+.lp-gl{stroke:var(--line);stroke-width:1}
+.lp-bar{fill:var(--brand2);opacity:.55}
+.lp-bar.on{fill:var(--brand);opacity:1}
+.lp-bar.lp-sm{fill:url(#lpHatch);stroke:#d2772c;stroke-width:1;opacity:1}
+
+/* HP: target sentuh >= 44 px, tanpa gulir horizontal halaman */
+@media (pointer:coarse),(max-width:700px){
+  #laporan .ex .ctl .seg{height:auto;min-height:44px}
+  #laporan .seg button,#laporan .pc-btn,#laporan thead th button,#laporan .lp-so a,#laporan .pgn-b{min-height:44px}
+  #laporan .lp-cetak{width:44px;height:44px}
+  #laporan thead th button{min-width:44px}
+}
+@media (max-width:700px){
+  .lp-kep{padding:14px}
+  .lp-aksi{width:100%}
+  .lp-aksi .pc{flex:1 1 100%}
+  #laporan #insight .ex-hd{padding:14px}
+  #laporan #insight .ex-bd{padding:12px 10px 8px}
+  #laporan #insight .ex-ft{padding:10px 14px 14px}
+  #laporan #insight .ex h3{font-size:17px}
+  #laporan #insight .ex-bd .tw table thead th,#laporan #insight .ex-bd .tw table tbody td{padding:9px 10px}
+}
+
+/* cetak A4: kop berlogo di awal, kontrol disembunyikan, kartu tidak terpotong */
+@page{size:A4;margin:12mm}
+@media print{
+  header.top,#tip,.lp-aksi,.ex .ctl,.pgn,.pc,thead th button i{display:none!important}
+  :root{--shadow:none}
+  html,body{height:auto;background:#fff}
+  main{position:static;inset:auto}
+  .page,.scroll,#p-laporan.scroll{position:static;display:block;overflow:visible;padding:0}
+  #laporan #insight.lp{display:block}
+  #laporan #insight .ex{margin:0 0 10px;border-radius:8px;break-inside:avoid;overflow:visible}
+  #laporan #insight .ex-hd{break-after:avoid}
+  .lp-kop{display:flex;align-items:center;gap:10px;margin-bottom:6px}
+  .lp-kop img{width:40px;height:40px}
+  .lp-kop div{display:flex;flex-direction:column;line-height:1.25}
+  .lp-kop b{font:800 15px var(--display)}
+  .lp-kop span{font-size:11px;font-weight:700}
+  .lp-kop small{font-size:9px;color:#5b6b82}
+  .lp-kop-garis{display:block;height:2.5px;background:#0b2545;margin:0 0 10px}
+  .lp-kep{margin-bottom:10px;padding:12px 16px;border-radius:8px}
+  .lp-kep h1{font-size:18px}
+  .lp-gr{break-inside:avoid;text-align:center}
+  .lp-gr svg{min-width:0;width:100%;max-height:64mm}
+  .tw{overflow:visible}
+  .lp-tb{font-size:9px}
+  #laporan #insight .ex-bd .tw table thead th,#laporan #insight .ex-bd .tw table tbody td,.lp-tb tfoot td{padding:3px 6px}
+  .lp-tb tr{break-inside:avoid}
+  .lp-tb thead{display:table-header-group}
+  .lp-tb thead th{position:static}
+  .lp-kep,.lp-tb thead th,.lp-tb tfoot td,.lp-tb tr.lp-grp td,.lp-pil,.lp-lv,.lp-bf,.lp-bar,.lp-gr rect{print-color-adjust:exact;-webkit-print-color-adjust:exact}
+  [data-ex="prov"],[data-ex="kab"]{break-before:page}
+}
