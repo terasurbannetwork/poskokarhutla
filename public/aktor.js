@@ -30,7 +30,10 @@
     [/Musim Mas/i, "musim-mas"], [/^Wilmar/i, "wilmar"], [/APP|Asia Pulp/i, "app"], [/Sinar Mas/i, "sinar-mas"], [/APRIL/i, "april"], [/RGE|Royal Golden/i, "rge"],
     [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"],
     [/Salim|Indofood/i, "salim"], [/London Sumatra|Lonsum/i, "lonsum"], [/Medco/i, "medco"], [/Perkebunan Nusantara|PTPN/i, "ptpn"], [/Goodhope/i, "goodhope"],
-    [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"], [/Royal Golden Eagle/i, "rge"]];
+    [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"], [/Royal Golden Eagle/i, "rge"],
+    [/Kuala Lumpur Kepong|\bKLK\b/i, "klk"], [/Triputra/i, "tap"], [/Bumitama/i, "bumitama"], [/MP Evans/i, "mp-evans"], [/Astra/i, "astra"],
+    [/REA Holdings/i, "rea"], [/Dharma Satya/i, "dsn"], [/United Plantations/i, "united-plantations"], [/Sawit Sumbermas/i, "ssms"], [/Korindo/i, "korindo"],
+    [/^SIMP$/i, "salim"], [/^Smart$/i, "sinar-mas"]];
   A.logo = (nama, h = 22) => { const f = LOGO.find(([re]) => re.test(nama || ""))?.[1];
     return f ? `<img class="ak-lg" src="img/logo-grup/${f}.png" alt="" width="${h}" height="${h}" loading="lazy">` : ""; };
   const titik = p => p.titik_agu ?? p.titik_sep;

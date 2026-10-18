@@ -29,7 +29,10 @@
     [/Musim Mas/i, "musim-mas"], [/^Wilmar/i, "wilmar"], [/APP|Asia Pulp/i, "app"], [/Sinar Mas/i, "sinar-mas"], [/APRIL/i, "april"], [/RGE|Royal Golden/i, "rge"],
     [/Sime Darby|Synergy Drive/i, "sime-darby"], [/Genting/i, "genting"], [/Jcorp/i, "jcorp"], [/Lion Group/i, "lion"],
     [/Salim|Indofood/i, "salim"], [/London Sumatra|Lonsum/i, "lonsum"], [/Medco/i, "medco"], [/Perkebunan Nusantara|PTPN/i, "ptpn"], [/Goodhope/i, "goodhope"],
-    [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"]];
+    [/Cargill/i, "cargill"], [/Barito/i, "barito"], [/Charoen Pokphand/i, "cp"], [/Sumitomo/i, "sumitomo"],
+    [/Kuala Lumpur Kepong|\bKLK\b/i, "klk"], [/Triputra/i, "tap"], [/Bumitama/i, "bumitama"], [/MP Evans/i, "mp-evans"], [/Astra/i, "astra"],
+    [/REA Holdings/i, "rea"], [/Dharma Satya/i, "dsn"], [/United Plantations/i, "united-plantations"], [/Sawit Sumbermas/i, "ssms"], [/Korindo/i, "korindo"],
+    [/^SIMP$/i, "salim"], [/^Smart$/i, "sinar-mas"]];
   /* logo PT: logo anak usaha kalau ada berkasnya, selain itu logo grup induk (inisial anak usaha membingungkan) */
   const logoPT = (r, h) => logo(LOGO.some(([re]) => re.test(r.unit || "")) ? r.unit : r.grup, h);
   const logo = (n, h = 22) => { const f = LOGO.find(([re]) => re.test(n || ""))?.[1]; return f ? `<img class="kn-lg" src="/img/logo-grup/${f}.png" alt="" width="${h}" height="${h}">`
@@ -258,10 +261,10 @@
   function tabelJenis(rs) {
     const T = jumlah(rs), perJ = Object.keys(JN).map(j => [j, rs.filter(r => r.jenis === j), jumlah(rs.filter(r => r.jenis === j))]).filter(([, x]) => x.length);
     const mx = Math.max(...perJ.map(x => x[2].t));
-    return `<div class="tw"><table class="kn-tb kn-tj"><thead><tr><th>Jenis usaha</th><th class="r">Perusahaan</th><th class="kn-cb">Titik panas</th><th class="r">Luas konsesi (ha)</th><th class="r">Indikasi terbakar (ha)</th></tr></thead><tbody>
+    return `<div class="tw"><table class="kn-tb kn-tj"><thead><tr><th>Jenis usaha</th><th class="r">Perusahaan</th><th class="kn-cb">Titik panas</th><th class="r">Luas konsesi (ha)</th><th class="r">Indikasi terbakar (ha)</th><th class="r" title="Perusahaan dengan titik panas dalam 7 hari terakhir">Masih ada api</th></tr></thead><tbody>
       ${perJ.map(([j, x, t]) => `<tr><td><span class="kn-jn"><i style="background:${JN[j][1]}"></i><b>${JN[j][0]} <span class="kn-sb" title="Sumber peta batas">${SB[j][0]}</span></b><small>${JN[j][2]}</small></span></td>
-        <td class="r">${fmt(x.length)}</td><td class="kn-cb"><span class="kn-cbi">${batang(t.t, mx, JN[j][1])}<b class="num">${fmt(t.t)}</b></span></td><td class="r">${ha(t.k)}</td><td class="r">${ha(t.l)}</td></tr>`).join("")}
-      <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(rs.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.k)}</td><td class="r">${ha(T.l)}</td></tr></tbody></table></div>`;
+        <td class="r">${fmt(x.length)}</td><td class="kn-cb"><span class="kn-cbi">${batang(t.t, mx, JN[j][1])}<b class="num">${fmt(t.t)}</b></span></td><td class="r">${ha(t.k)}</td><td class="r">${ha(t.l)}</td><td class="r">${t.a ? `<span class="kn-ak">${fmt(t.a)}</span>` : NA}</td></tr>`).join("")}
+      <tr class="kn-tot"><td>Jumlah</td><td class="r">${fmt(rs.length)}</td><td class="r">${fmt(T.t)}</td><td class="r">${ha(T.k)}</td><td class="r">${ha(T.l)}</td><td class="r">${fmt(T.a)}</td></tr></tbody></table></div>`;
   }
   /* satu perusahaan satu baris, sel kab/kota digabung ke bawah, subtotal per kab/kota (model ekspor KDMP Pangantara) */
   /* halaman pemisah tiap kab/kota di kertas cetak (model sampul ekspor KDMP Pangantara): logo, merek, provinsi, nama besar, kotak navy */
@@ -442,7 +445,7 @@
       <header class="kn-ph">
         <span class="kn-no">${r._rp}</span>
         <div class="kn-ph-t"><span class="kn-ph-ey">${esc(r.kabU)}, ${esc(namaProv(r.prov))}</span><h2>${esc(r.nama)}</h2></div>
-        <div class="kn-ph-m">${jenisPil(r.jenis)}${r.rspo ? `<span class="kn-j" style="--w:#2f7d4f" title="Anggota RSPO (data RSPO 2020)">RSPO</span>` : ""}${r.grup ? `<span class="kn-grp">${logoPT(r, 20)}${(r.negara || []).map(k => bendera(k, 14)).join("")}<b>${esc(r.grup)}</b>${r.unit ? `<em>${esc(r.unit)}</em>` : ""}</span>` : ""}
+        <div class="kn-ph-m">${jenisPil(r.jenis)}${r.jenis === "sawit" && r.rspo ? `<span class="kn-sert" title="${r.rspo.sertifikat ? "Bersertifikat" : "Anggota"} RSPO lewat ${esc(r.rspo.grup)} (data RSPO 2020)"><i aria-hidden="true">✓</i>RSPO<em>${r.rspo.sertifikat ? "bersertifikat" : "anggota"}</em></span>` : ""}${r.grup ? `<span class="kn-grp">${logoPT(r, 20)}${(r.negara || []).map(k => bendera(k, 14)).join("")}<b>${esc(r.grup)}</b>${r.unit ? `<em>${esc(r.unit)}</em>` : ""}</span>` : ""}
           ${r.titik_7h ? `<span class="kn-sta kn-sta-a"><i aria-hidden="true">${IKON_KPI.api}</i><span>Masih ada api</span><b>${fmt(r.titik_7h)}</b><small>titik${r.kompleks?.length ? ` · ${fmt(r.kompleks.length)} kompleks` : ""} · 7 hari</small></span>` : `<span class="kn-sta"><i></i><span>Tanpa hotspot 7 hari terakhir</span></span>`}</div>
       </header>
       <section class="kn-kpi kn-kpi-p">
@@ -474,8 +477,8 @@
             ["Periode api", `<b>${tglT(r.pertama)} – ${tglT(r.terakhir)}</b> <small>rentang ${fmt(r.rentang_hari)} hari</small>`],
             ["Kejadian terlama", `<b>${rentang(terlama[0], terlama[1])}</b> <small>${fmt(terlama[2])} hari · ${fmt(terlama[3])} titik</small>`],
             ["Lahan gambut", r.gambut_ha == null ? `${batang(r.gambut, 1, "#6b4a2b")} <b>${pct(r.gambut)}</b> <small>titik di gambut</small>`
-              : `<b>${ha(r.gambut_ha)} ha</b> <small>${pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null)} konsesi</small>`],
-            ...(r.gambut_titik ? [["Api di gambut", `<b>${fmt(r.gambut_titik)} titik</b> <small>${pct(r.gambut)} titik · indikasi terbakar ${ha(r.gambut_bakar_ha)} ha · ${r.gambut_kejadian.length} kejadian, terlama ${fmt(Math.max(...r.gambut_kejadian.map(e => e[2])))} hari</small>`]] : []),
+              : `${batang(r.luas_ha ? r.gambut_ha / r.luas_ha : 0, 1, "#6b4a2b")} <b>${ha(r.gambut_ha)} ha</b> <small><b>${pct(r.luas_ha ? r.gambut_ha / r.luas_ha : null)}</b> luas konsesi berada di gambut</small>`],
+            ...(r.gambut_titik ? [["Api di gambut", `${batang(r.gambut, 1, "#c9503a")} <b>${fmt(r.gambut_titik)} titik</b> <small><b>${pct(r.gambut)}</b> dari semua titik · terbakar ${ha(r.gambut_bakar_ha)} ha (<b>${pct(r.luas_bakar_ha ? r.gambut_bakar_ha / r.luas_bakar_ha : null)}</b> dari indikasi terbakar) · ${r.gambut_kejadian.length} kejadian, terlama ${fmt(Math.max(...r.gambut_kejadian.map(e => e[2])))} hari</small>`]] : []),
             ["Status kawasan", esc(kw)],
             ["Daya api (FRP)", `<b>maks ${fmt(r.frp_maks)} MW</b> <small>total ${fmt(r.frp_total)} MW</small>`]])}
         </div>
