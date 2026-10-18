@@ -71,8 +71,8 @@ const Laporan = (() => {
   /* ---- grafik batang metrik utama ---- */
   function batang(c, dari) {
     const {D, S, u} = c, v = A(c.sr, u.k, c.n), W = 720, H = 230, pl = 44, pr = 10, pt = 22, pb = 34, n = c.n - dari, d = u.desimal | 0;
-    const mx = Math.max(1e-9, ...v.slice(dari).filter(ada)), e = 10 ** Math.floor(Math.log10(mx)), f = mx / e, top = (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e;
-    const slot = (W - pl - pr) / n, bw = Math.max(2, slot * .7), ya = x => pt + (H - pt - pb) * (1 - x / top), step = Math.ceil(n / 9), td = top < 4 && !d ? 1 : d;
+    const mx = Math.max(1e-9, ...v.slice(dari).filter(ada)), e = 10 ** Math.floor(Math.log10(mx)), f = mx / e, top = d === 0 && mx <= 40 ? Math.max(4, Math.ceil(mx / 4) * 4) : (f <= 1 ? 1 : f <= 2 ? 2 : f <= 5 ? 5 : 10) * e;
+    const slot = (W - pl - pr) / n, bw = Math.max(2, slot * .7), ya = x => pt + (H - pt - pb) * (1 - x / top), step = Math.ceil(n / 9), td = d;
     let s = `<defs><pattern id="lpHatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="#d2772c" fill-opacity=".25"/><line x1="0" y1="0" x2="0" y2="6" stroke="#d2772c" stroke-width="3"/></pattern></defs>`;
     for (let k = 0; k <= 4; k++) { const x = top * k / 4, y = ya(x); s += `<line class="lp-gl" x1="${pl}" x2="${W - pr}" y1="${y}" y2="${y}"/><text class="lp-gp" x="${pl - 6}" y="${y + 4}" text-anchor="end" font-size="11">${angka(x, td)}</text>`; }
     for (let j = dari; j < c.n; j++) { const h = D.hari[j], x = pl + (j - dari) * slot, val = v[j], brj = c.brj(h), on = h === S.hari;
@@ -98,7 +98,7 @@ const Laporan = (() => {
       const judul = `${esc(u.label)} ${esc(tgl(S.hari))}${dgn(c)}: ${Kartu.hl(angka(s[i], u.desimal | 0))} ${esc(u.satuan || "")}${ub.k ? ", " + esc(ub.k) : ""}`;
       const bln = D.hari[i].slice(0, 7), baris = c.ms.map(m => { const a = A(c.sr, m.k, n), d = m.desimal | 0, x = a[i], y = i > 0 ? a[i - 1] : null;
         const w7 = gabung(m, a.slice(Math.max(0, i - 6), i + 1)), bl = gabung(m, a.slice(0, i + 1).filter((_, j) => D.hari[j].slice(0, 7) === bln));
-        return `<tr><td>${esc(m.label)}${m.satuan ? ` <small>${esc(m.satuan)}</small>` : ""}${m.agregat && m.agregat !== "jumlah" ? ` <small>(${esc(m.agregat)})</small>` : ""}</td><td class="n">${angka(x, d)}</td><td class="n">${angka(y, d)}</td><td class="n">${sp(ubah(m, x, y))}</td><td class="n">${angka(w7, d)}</td><td class="n">${angka(bl, d)}</td></tr>`; }).join("");
+        return `<tr><td>${esc(m.label)}${m.satuan && m.satuan.toLowerCase() !== String(m.label).toLowerCase() ? ` <small>${esc(m.satuan)}</small>` : ""}${m.agregat && m.agregat !== "jumlah" ? ` <small>(${esc(m.agregat)})</small>` : ""}</td><td class="n">${angka(x, d)}</td><td class="n">${angka(y, d)}</td><td class="n">${sp(ubah(m, x, y))}</td><td class="n">${angka(w7, d)}</td><td class="n">${angka(bl, d)}</td></tr>`; }).join("");
       return kartu("Ringkasan", judul, `<div class="tw"><table class="lp-tb"><thead><tr><th>Metrik</th><th class="n">${esc(tgl(S.hari))}${c.brj(S.hari) ? ' <span class="lp-bf">berjalan</span>' : ""}</th><th class="n">${b ? esc(tgl(b)) : "Kemarin"}</th><th class="n">Ubah</th><th class="n">7 hari</th><th class="n">Bulan ini</th></tr></thead><tbody>${baris}</tbody></table></div>`, D); },
     tren(c) {
       const r = +c.S.rentang, dari = r > 0 ? Math.max(0, c.n - r) : 0;
