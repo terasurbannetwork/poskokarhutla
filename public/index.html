@@ -290,6 +290,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .tools{max-height:calc(100% - 24px);overflow-y:auto;scrollbar-width:thin}
 @media (min-width:901px){.tools #lapis{display:block}#lapisBtn{display:none!important}}
 @media (max-width:900px){.tools #lapis{display:none}.tools #lapis.buka{display:block}}
+@media (max-width:900px){body:has(#lapis.buka) .ps-fab{display:none}} /* Chat Admin menutupi pil terbawah panel Overlay; sama seperti kartu cari */
 #lapisBtn{align-self:flex-end}
 #legenda summary{cursor:pointer;list-style:none}
 .lapis input{accent-color:var(--brand2);width:15px;height:15px}

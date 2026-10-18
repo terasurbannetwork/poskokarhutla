@@ -1,0 +1,89 @@
+name: Perbarui kualitas udara
+
+# Dua kali sehari: 06.40 dan 18.40 UTC, sesudah jalan CAMS 00 dan 12 UTC tersedia di Open-Meteo.
+# Masukan karhutla (kluster, kompleks, metar, riwayat udara) dipulihkan dari cache data-, dibuat data.yml/titik.yml.
+# Keluaran SELALU di-commit ke main (public/udara/data) supaya deploy workflow lain, yang mengambil isi main, ikut membawanya.
+on:
+  schedule:
+    - cron: "40 6,18 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  perbarui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan arsip udara sebelumnya
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/udara/data
+            data/raw/udara
+          key: udara-${{ github.run_id }}
+          restore-keys: udara-
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      # berkas statis yang di-commit jangan digantikan versi cache (pola banjir.yml); pltu.json statis di public/udara/data
+      - name: Pakai lapisan statis dari repo, bukan dari cache
+        run: |
+          f=$(git ls-files public/data/penduduk.json public/data/sekolah.json public/udara/data/pltu.json)
+          [ -z "$f" ] || git checkout HEAD -- $f
+
+      - name: Uji aturan
+        run: |
+          for s in scripts/udara/*.py; do
+            grep -q "def uji" "$s" || continue
+            python3 "$s" uji || { echo "::error title=Uji udara gagal::$s uji gagal; data udara tidak diperbarui"; exit 1; }
+          done
+
+      - name: Jalankan pipeline udara
+        env:
+          WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
+        run: python3 scripts/udara/jalan.py || { echo "::error title=Pipeline udara gagal::scripts/udara/jalan.py gagal; public/udara/data tidak diperbarui di run ini"; exit 1; }
+
+      - name: Simpan arsip udara untuk jalan berikutnya
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/udara/data
+            data/raw/udara
+          key: udara-${{ github.run_id }}
+
+      # selalu, dengan atau tanpa token Cloudflare: main jadi sumber data udara bagi deploy data/titik/banjir/terbit
+      - name: Commit data udara ke main
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/udara/data
+          git diff --cached --quiet -- public/udara/data && { echo "data udara tidak berubah"; exit 0; }
+          git commit -q -m "data: udara $(TZ=Asia/Jakarta date '+%F %H:%M') WIB" -- public/udara/data
+          git pull -q --rebase --autostash && git push -q || { echo "::error title=Push data udara gagal::git push ke main gagal (bentrok atau token tanpa scope workflow/contents:write); data udara belum masuk main"; exit 1; }
+
+      - name: Terbitkan ke Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "tanpa token Cloudflare: terbit lewat build lain"; exit 0; }
+          git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!public/udara/data' ':!data/raw'
+          python3 scripts/terbit/versi.py || { echo "::error title=Versi gagal::scripts/terbit/versi.py gagal"; exit 1; }
+          npx --yes wrangler@3 deploy || { echo "::error title=Deploy gagal::wrangler deploy gagal"; exit 1; }

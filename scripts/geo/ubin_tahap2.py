@@ -69,13 +69,64 @@ def pasang_palet(vrt_masuk, vrt_keluar, entri):
     jalan("gdal_translate", "-q", "-of", "VRT", "-expand", "rgba", tmp, vrt_keluar)
 
 
-def ke_pmtiles(nama, rgba_vrt, cfg, resample):
+def blok_z8(tifs):
+    """Blok ubin z8 (x, y) di dalam BBOX yang tumpang-tindih footprint (WGS84) salah satu tif."""
+    n = 2 ** 8
+    def tx(lon):
+        return min(n - 1, max(0, int((lon + 180) / 360 * n)))
+    def ty(lat):
+        lat = max(-85.05, min(85.05, lat))
+        return min(n - 1, max(0, int((1 - math.asinh(math.tan(math.radians(lat))) / math.pi) / 2 * n)))
+    bx0, bx1, by0, by1 = tx(BBOX[0]), tx(BBOX[2]), ty(BBOX[3]), ty(BBOX[1])
+    ada = set()
+    for t in tifs:
+        info = json.loads(subprocess.run(["gdalinfo", "-json", t], capture_output=True, check=True).stdout)
+        pts = info["wgs84Extent"]["coordinates"][0]
+        lo, la = [p[0] for p in pts], [p[1] for p in pts]
+        for x in range(max(bx0, tx(min(lo))), min(bx1, tx(max(lo))) + 1):
+            for y in range(max(by0, ty(max(la))), min(by1, ty(min(la))) + 1):
+                ada.add((x, y))
+    return sorted(ada)
+
+
+def blok_ekstent(blok, zb):
+    """Ekstent 3857 (xmin, ymin, xmax, ymax) yang memuat semua blok."""
+    res = 2 * ORIGIN / (2 ** zb)
+    xs = [b[0] for b in blok]
+    ys = [b[1] for b in blok]
+    return -ORIGIN + min(xs) * res, ORIGIN - (max(ys) + 1) * res, -ORIGIN + (max(xs) + 1) * res, ORIGIN - min(ys) * res
+
+
+def ke_pmtiles(nama, rgba_vrt, cfg, resample, sumber_tif):
     """RGBA VRT -> `gdal raster tile` (PNG, lewati ubin kosong, paralel) -> MBTiles (sqlite3) -> pmtiles convert."""
     import sqlite3
     os.makedirs(UBIN, exist_ok=True)
     dirt = os.path.join(RAW, nama + "_tiles")
-    jalan("gdal", "raster", "tile", "-q", "--skip-blank", "--min-zoom", str(cfg["minzoom"]), "--max-zoom", str(cfg["maxzoom"]),
-          "-r", resample, "--overview-resampling", "average", "--num-threads", "ALL_CPUS", "--resume", rgba_vrt, dirt)
+    # ponytail: satu `gdal raster tile` atas seluruh bbox mengunjungi ratusan ribu ubin laut (jam-jaman); jadi z8..maks
+    # dikerjakan per blok z8 yang tumpang-tindih footprint sumber (blok selaras ubin z8 -> piramida tak retak),
+    # z4..7 dari raster 3857 kasar hasil gdalwarp rata-rata.
+    zb = 8
+    blok = blok_z8(sumber_tif)
+    print(nama, len(blok), "blok z8", flush=True)
+    k = 2 ** (cfg["maxzoom"] - zb)
+
+    def satu(bl):
+        x, y = bl
+        subprocess.run(["gdal", "raster", "tile", "-q", "--skip-blank", "--min-zoom", str(zb), "--max-zoom", str(cfg["maxzoom"]),
+                        "--min-x", str(x * k), "--max-x", str((x + 1) * k - 1), "--min-y", str(y * k), "--max-y", str((y + 1) * k - 1),
+                        "-r", resample, "--overview-resampling", "average", "--num-threads", "1", "--resume", rgba_vrt, dirt],
+                       check=True)
+    from concurrent.futures import ThreadPoolExecutor
+    with ThreadPoolExecutor(6) as ex:
+        list(ex.map(satu, blok))
+    n7 = 2 ** 7
+    res7 = 2 * ORIGIN / (n7 * TILE_PX)
+    w, s_, e, n_ = (lambda t: t)(blok_ekstent(blok, zb))
+    kasar = os.path.join(RAW, nama + "_z7.tif")
+    jalan("gdalwarp", "-q", "-overwrite", "-t_srs", "EPSG:3857", "-te", str(w), str(s_), str(e), str(n_), "-tr", str(res7), str(res7),
+          "-r", "average", "-dstalpha", "-co", "COMPRESS=DEFLATE", "-multi", "-wo", "NUM_THREADS=ALL_CPUS", rgba_vrt, kasar)
+    jalan("gdal", "raster", "tile", "-q", "--skip-blank", "--min-zoom", str(cfg["minzoom"]), "--max-zoom", "7",
+          "-r", "average", "--overview-resampling", "average", "--num-threads", "ALL_CPUS", "--resume", kasar, dirt)
     mb = os.path.join(RAW, nama + ".mbtiles")
     if os.path.exists(mb):
         os.remove(mb)
@@ -124,7 +175,7 @@ def bangun_biner(nama, zip_rel, palet):
     jalan("gdalbuildvrt", "-q", "-te", *[str(v) for v in BBOX], "-input_file_list", lst, src)
     rgba = os.path.join(RAW, nama + "_rgba.vrt")
     pasang_palet(src, rgba, palet)
-    ke_pmtiles(nama, rgba, cfg, "average")
+    ke_pmtiles(nama, rgba, cfg, "average", tifs)
 
 
 def bangun_terbangun():
@@ -145,7 +196,7 @@ def bangun_terbangun():
         entri.append((r, g, bl, min(255, int(70 + 185 * math.sqrt(v / 255)))))
     rgba = os.path.join(RAW, "terbangun_rgba.vrt")
     pasang_palet(b, rgba, entri)
-    ke_pmtiles("terbangun", rgba, cfg, "bilinear")
+    ke_pmtiles("terbangun", rgba, cfg, "bilinear", [t for t in tifs if t.endswith(".tif")])
 
 
 # ---- uji ----
