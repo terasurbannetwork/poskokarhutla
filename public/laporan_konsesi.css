@@ -385,6 +385,13 @@ main.kn{position:static;inset:auto}
 .kn-tk-kab td.kn-nw{white-space:normal}
 .kn-dft .kn-c{text-align:center}
 .kn-ok{color:#2b8c86;font-weight:800;font-size:13px}
+.kn-dft{table-layout:fixed}.kn-dft th:nth-child(1){width:4%}.kn-dft th:nth-child(2){width:22%}.kn-dft th:nth-child(3){width:15%}.kn-dft th:nth-child(4){width:7%}.kn-dft th:nth-child(5){width:6%}.kn-dft th:nth-child(6){width:9%}.kn-dft th:nth-child(7){width:8%}.kn-dft th:nth-child(8){width:7%}.kn-dft th:nth-child(9){width:6%}.kn-dft th:nth-child(10){width:7%}.kn-dft th:nth-child(11){width:9%}
+.kn-tb tr.kn-kab td{background:var(--surface);font-weight:700;border-top:1px solid var(--line)}
+.kn-kab-b{all:unset;cursor:pointer;display:inline-flex;align-items:center;gap:8px;font-weight:800;color:var(--ink)}
+.kn-kab-b:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
+.kn-kab-i{display:inline-block;transition:transform .15s}
+.kn-kab-b[aria-expanded="true"] .kn-kab-i{transform:rotate(90deg)}
+@media print{.kn-dft tr.kn-baris[hidden]{display:table-row}.kn-kab-i{display:none}}
 .kn-baris{cursor:pointer}
 .kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
