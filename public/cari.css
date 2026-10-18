@@ -11,4 +11,12 @@
 .ck-t{width:100%;border-collapse:collapse;font-size:11.5px}.ck-t th,.ck-t td{padding:4px 6px;text-align:right;border-top:1px solid var(--line)}.ck-t th:first-child{text-align:left}.ck-t thead th{font-size:10px;color:var(--ink2);border-top:0}
 .ck-n{font-size:10.5px;color:var(--ink2);margin:6px 0 0}
 @media (max-width:900px){#cariKartu{left:8px;right:8px;top:auto;bottom:8px;width:auto;max-height:38%}}
+.ck-x{display:none}
+/* lembar bawah di layar sempit: di atas panel bawah (z 5) dan tombol Chat Admin disembunyikan selama terbuka */
+@media (max-width:640px){#cariKartu{left:0;right:0;bottom:0;max-height:55vh;border-radius:16px 16px 0 0;z-index:30;padding-top:0;padding-bottom:max(10px,env(safe-area-inset-bottom))}
+.ck-h{position:sticky;top:0;z-index:1;background:var(--card);margin:0 -12px 6px;padding:10px 12px 6px;border-bottom:1px solid var(--line)}
+.ck-h button{width:32px;height:32px;padding:0;font-size:20px;line-height:1}
+.ck-tx{display:none}.ck-x{display:inline}
+body:has(#cariKartu:not([hidden])) .ps-fab{display:none}}
 .ck-tl{width:100%;margin-top:8px;border:0;border-radius:999px;background:var(--surface);color:var(--ink);font:inherit;font-size:11.5px;font-weight:700;padding:8px;min-height:36px;cursor:pointer}
+.ck-t th,.ck-t td{white-space:normal;vertical-align:top}.ck-t thead th{line-height:1.25}

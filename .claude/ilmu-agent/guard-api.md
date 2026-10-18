@@ -74,3 +74,4 @@ Rute/pola yang KURANG gerbang saat ini (jadikan temuan bila disentuh):
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode (matriks rute -> gerbang dari src/worker.js, foto.js, statistik.js, publik.js). Rute tanpa gerbang penuh: /api/jejak (laju mudah diakali), token admin via header tanpa laju, suka/aduan foto tanpa Turnstile, metode tak dikenal tidak 405.
+- 2026-10-18 · Rute /ubin/*.pmtiles (publik, R2 MEDIA) tanpa laju: tiap GET tak ter-cache = HEAD+GET Class B. Gerbang laju D1 (cekLaju) JANGAN dipakai untuk tile (tulis D1 per request). Pakai WAF rate limit di dasbor atau cache.default untuk meta/200. Verifikasi cf-cache-status setelah deploy.

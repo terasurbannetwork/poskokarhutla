@@ -5,7 +5,7 @@
   const GIBS = (lap, tgl, fmt = "jpg", lv = 9) => `https://gibs.earthdata.nasa.gov/wmts/epsg3857/best/${lap}/default/${tgl}/GoogleMapsCompatible_Level${lv}/{z}/{y}/{x}.${fmt}`;
   const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
   const GFW = {hilang: "umd_tree_cover_loss", api: "umd_tree_cover_loss_from_fires"};
-  const TH0 = 2001, TH1 = 2025;   /* ponytail: akhir data GFW v1.13 ditulis tangan; naikkan tiap rilis tahunan */
+  const TH0 = 2001, TH1 = new Date().getUTCFullYear() - 1;   /* ponytail: GFW merilis tahunan; tahun rilis terakhir diperkirakan tahun berjalan - 1, bila rilis terlambat tahun itu ubin kosong (turunkan manual) */
   const hariKemarin = () => new Date(Date.now() - 864e5).toISOString().slice(0, 10);
   const bulan = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const tglPendek = t => `${+t.slice(8)} ${bulan[+t.slice(5, 7) - 1]} ${t.slice(0, 4)}`;
@@ -23,8 +23,8 @@
   const yk = () => hariKemarin();
   const PRESET = [
     ["Citra 2019 vs 2026 (tanggal sama)", "Citra harian, tanggal kalender yang sama", () => [{j: "sat", tgl: "2019" + yk().slice(4)}, {j: "sat", tgl: yk()}]],
-    ["Hutan hilang s.d. 2010 vs s.d. 2025", "Hutan hilang kumulatif sejak 2001", () => [{j: "hilang", th: 2010}, {j: "hilang", th: TH1}]],
-    ["Hutan hilang akibat api s.d. 2015 vs s.d. 2025", "Hutan hilang akibat kebakaran kumulatif sejak 2001", () => [{j: "api", th: 2015}, {j: "api", th: TH1}]],
+    [`Hutan hilang s.d. 2010 vs s.d. ${TH1}`, "Hutan hilang kumulatif sejak 2001", () => [{j: "hilang", th: 2010}, {j: "hilang", th: TH1}]],
+    [`Hutan hilang akibat api s.d. 2015 vs s.d. ${TH1}`, "Hutan hilang akibat kebakaran kumulatif sejak 2001", () => [{j: "api", th: 2015}, {j: "api", th: TH1}]],
   ];
   let cfgGFW = null, terbuka = false, membuka = false, dibuat = false, p = 50, rafP = 0, kunci = false;
   const sisi = [{j: "sat", tgl: "2019" + yk().slice(4)}, {j: "sat", tgl: yk()}];

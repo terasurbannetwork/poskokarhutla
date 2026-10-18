@@ -137,7 +137,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .garis-waktu{width:min(620px,100%);padding:8px 10px;display:none;align-items:center;gap:10px}
 #legenda{width:100%;max-width:100%;padding:6px 14px 8px;position:relative}
 #legenda summary{display:flex;justify-content:center;gap:6px;text-align:center}
-.lg-isi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 22px;align-items:start;max-height:var(--tl, 150px);overflow:auto;margin-top:6px}
+.lg-isi{display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:8px 22px;align-items:start;max-height:var(--tl, min(34vh, 320px));overflow:auto;overscroll-behavior:contain;margin-top:6px}
 .lg-g{min-width:0}
 .tarik-v{position:absolute;top:-6px;left:50%;width:56px;height:12px;margin-left:-28px;cursor:row-resize;touch-action:none}
 .tarik-v::after{content:"";position:absolute;left:12px;right:12px;top:4px;height:4px;border-radius:4px;background:var(--line)}
@@ -147,7 +147,7 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 @media (min-width:901px){#legenda .lg-isi{display:grid!important;gap:12px 28px;align-items:start}#legenda .lg-isi > .leg-cats{grid-column:1/-1}}
 /* skala warna dan deret angkanya selalu sama lebar supaya angka tepat di bawah warnanya */
 .lg-g .legscale,.lg-g .legnum{width:100%;max-width:280px}
-@media (max-width:900px){.dok{left:12px;bottom:auto;top:112px}.lg-isi{max-height:40vh}}
+@media (max-width:900px){.dok{left:12px;right:60px;bottom:auto;top:164px}.lg-isi{max-height:max(100px, min(40vh, calc(54vh - 270px)))}}   /* berhenti di atas panel bawah (46% layar); gulir di dalam, kepala "Legenda" tetap terlihat */
 .garis-waktu.on{display:flex}
 .garis-waktu .skala{display:flex;height:8px;border-radius:4px;overflow:hidden;width:110px;flex:none}
 @media (max-width:900px){.garis-waktu{width:100%;min-width:0}.garis-waktu > .lbl{display:none}}

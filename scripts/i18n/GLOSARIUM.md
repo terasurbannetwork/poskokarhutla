@@ -118,3 +118,21 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 - Teks yang dipotong (…) diterjemahkan dulu baru dipotong; kalimat bagikan dirakit dari bagian yang masing-masing lewat T().
 - Judul berita, isi laporan warga, nama tempat, nama perusahaan, isi pesan, rumus (`.rumus`), judul publikasi dan jabatan tim TIDAK diterjemahkan.
 - ID: pakai padanan baku (dasbor, wawasan, prakiraan, area terbakar); istilah teknis Inggris hanya sebagai keterangan dalam kurung.
+
+## Cari, Banding, Timelapse, lapisan ubin (18 Okt 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| pabrik sawit | oil palm mill | kapasitas "ton TBS/jam" = t FFB/hour (TBS = tandan buah segar = fresh fruit bunches) |
+| buffer / radius | buffer / radius | kartu pabrik: 10/25/50 km |
+| Hapus buffer | Clear buffer | |
+| Banding (peta dibelah dua) | Compare | geser pembatas; "Tutup banding" = Close comparison |
+| Timelapse citra harian | Daily imagery timelapse | GIF; SWIR (api aktif) = SWIR (active fire); Warna asli = True colour |
+| hutan hilang s.d. tahun | forest loss up to year | kumulatif sejak 2001; "akibat api/kebakaran" = from fires |
+| Hutan tanaman & kebun (semua jenis) | Planted forests & plantations (all types) | SDPT v2 (WRI/GFW): ubin tidak membedakan jenis |
+| Kemenhut | Ministry of Forestry | "Penutupan lahan Kemenhut" = Land cover, Ministry of Forestry |
+| hutan produksi terbatas / konversi | limited / convertible production forest | |
+| hutan primer / sekunder | primary / secondary forest | |
+| semak/belukar | shrubland | |
+| sawah | rice paddy | |
+| latar (laporan) | baseline | "Percepatan api 2 hari" = 2-day fire acceleration |

@@ -116,13 +116,13 @@
     k.querySelector(".ck-b").innerHTML = bd; }
   function bukaKartu(judul, baris, atr) {
     const k = kartu(); k.hidden = false;
-    k.innerHTML = `<div class="ck-h"><b>${esc(judul)}</b><button type="button" data-hapus aria-label="Hapus buffer dan tutup" title="${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}">${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}</button></div>`
+    k.innerHTML = `<div class="ck-h"><b>${esc(judul)}</b><button type="button" data-hapus aria-label="Hapus buffer dan tutup" title="${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}"><span class="ck-tx">${terpilih.i.t === "pabrik" ? "Hapus buffer" : "Tutup"}</span><span class="ck-x" aria-hidden="true">&times;</span></button></div>`
       + `<dl class="ck-d">${baris.filter(r => r[1]).map(([a, b]) => `<dt>${a}</dt><dd>${esc(String(b))}</dd>`).join("")}</dl><div class="ck-b"></div><button type="button" class="ck-tl" data-timelapse>Timelapse citra harian</button><div class="hs-atr">${atr}</div>`; }
 
   async function pilih(i) {
     $("#hasil").hidden = true; $("#cari").value = ""; terpilih = {i};
     if (!terikat) { terikat = true; peta.on("style.load", gambar); }
-    lapis();
+    try { lapis(); } catch (e) { /* gaya belum siap: style.load memanggil gambar() */ }
     if (i.t === "pabrik") {
       kartuMuat(i);
       pabrik ||= await muatJSON("data/pabrik_sawit.json").then(d => new Map(d.pabrik.map(p => [p.id, p])));
