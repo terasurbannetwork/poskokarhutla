@@ -243,6 +243,12 @@ def agregat_harian(seri_p, seri_h, peta, n):
     return {"kab": {k: rapi(w) for k, w in tab["kab"].items()}, "prov": {k: rapi(w) for k, w in tab["prov"].items()}, "nas": rapi(tab["nas"])}
 
 
+def urut_terpanjang(daftar):
+    """Aturan bersama HTH terpanjang (laporan dan layar): HTH terbesar, seri -> penduduk (total) terbanyak, lalu nama.
+    daftar = [('prov|Nama kab', hth, total_penduduk)] -> daftar terurut."""
+    return sorted(daftar, key=lambda x: (-x[1], -x[2], x[0].split("|", 1)[1]))
+
+
 def hitung(harian, penduduk, pusat, lama=LAMA_SERI):
     """Murni (tanpa jaringan): harian.json + penduduk -> (isi kekeringan_hth.json, agregat_harian lengkap untuk laporan)."""
     validasi_harian(harian)
@@ -268,6 +274,9 @@ def hitung(harian, penduduk, pusat, lama=LAMA_SERI):
         h = seri_h[k][-1]
         if h is not None:
             sel.append([float(a), float(o), h, kelas(h), seri_h[k]])
+    urut = urut_terpanjang([(k, v["maks"], v["total"]) for k, v in kab.items()])
+    terpanjang = {"kab": urut[0][0], "kode": kab[urut[0][0]]["kode"], "nama": urut[0][0].split("|", 1)[1], "hari": urut[0][1],
+                  "n_seri": sum(1 for u in urut if u[1] == urut[0][1])} if urut else None
     nas = ag["nas"]
     kab_terdampak = [sum(1 for w in ag["kab"].values() if w["total"] and w["j31"][d] / w["total"] >= BATAS_WIL) for d in range(lama)]
     ag["kab31"] = kab_terdampak
@@ -275,7 +284,7 @@ def hitung(harian, penduduk, pusat, lama=LAMA_SERI):
            "batas_kelas": list(BATAS_KELAS), "kelas": list(NAMA_KELAS), "label": "Deteksi Pantau Bencana",
            "catatan": f"HTH = hari berturut-turut terakhir dengan hujan < {AMBANG_MM:g} mm sampai kemarin; data 92 hari ke belakang, jadi nilai terbesar 93. "
                       "Hujan: Open-Meteo (model gabungan), bukan pos BMKG; hasilnya bisa beda dari peta HTH BMKG.",
-           "nasional": {"total": nas["total"], "maks": nas["maks"][-1], "pop": nas["pop"][-1], "j31": nas["j31"][-1], "j61": nas["j61"][-1], "kab31": kab_terdampak[-1],
+           "terpanjang": terpanjang, "nasional": {"total": nas["total"], "maks": nas["maks"][-1], "pop": nas["pop"][-1], "j31": nas["j31"][-1], "j61": nas["j61"][-1], "kab31": kab_terdampak[-1],
                         "seri": {"maks": nas["maks"], "j31": nas["j31"], "j61": nas["j61"], "kab31": kab_terdampak, "hujan": nas["hujan"]}},
            "prov": prov, "kab": kab, "kolom": ["lat", "lon", "hth", "kelas", "seri30"], "sel": sel}
     return isi, ag
@@ -349,6 +358,8 @@ def uji():
     assert isi["prov"]["11"]["j31"] == 3000 and len(isi["tgl30"]) == 30 and isi["tgl30"][-1] == "2026-10-17"
     assert len(ag["nas"]["j31"]) == 30 and ag["nas"]["maks"][-1] == 40 and abs(ag["nas"]["pop"][-1] - 40 * 3010 / 4010) < .06
     assert len(json.dumps(isi)) < 300_000
+    assert isi["terpanjang"] == {"kab": "11|Alfa", "kode": "1101", "nama": "Alfa", "hari": 40, "n_seri": 2}, isi["terpanjang"]      # Alfa dan Beta (72) seri 40; Alfa penduduk lebih banyak
+    assert urut_terpanjang([("a|Zed", 62, 100), ("a|Abu", 62, 100), ("b|Besar", 62, 900), ("c|Kecil", 61, 9999)]) == [("b|Besar", 62, 900), ("a|Abu", 62, 100), ("a|Zed", 62, 100), ("c|Kecil", 61, 9999)]
     short = fixture()
     short["hari_ini"] = short["tgl"][10]
     try:

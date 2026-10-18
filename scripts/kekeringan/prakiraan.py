@@ -233,6 +233,28 @@ def hth_ke_depan(p_hari, n0):
     return mx
 
 
+def pasangan_hth(p_hari):
+    """(kering awal, deret terpanjang sesudahnya) dalam JENDELA_HTH hari pertama satu anggota. Deret awal bersambung dengan HTH sel hari ini (n0), jadi
+    deret terpanjang anggota itu di sel mana pun = max(n0 + awal, sesudahnya); pasangan ini tidak bergantung pada n0."""
+    awal, mx, n, kering_terus = 0, 0, 0, True
+    for v in p_hari[:JENDELA_HTH]:
+        if v < H.AMBANG_MM:
+            n += 1
+            if kering_terus:
+                awal += 1
+        else:
+            kering_terus = False
+            n = 0
+        if not kering_terus:
+            mx = max(mx, n)
+    return awal, mx
+
+
+def peluang_hth(pasangan, n0, ambang):
+    """Persen anggota yang deret keringnya (disambung dari n0) mencapai `ambang` hari dalam JENDELA_HTH hari. n0 >= ambang -> 100."""
+    return round(100 * sum(1 for awal, mx in pasangan if max(n0 + awal, mx) >= ambang) / len(pasangan))
+
+
 def kuantil(a, q):
     a = sorted(a)
     i = q * (len(a) - 1)
@@ -293,8 +315,8 @@ def ringkas_titik(pow_, obs, tgl_fc, p_fc, terbit, n0, lead=LEAD):
         out.append([round(statistics.median(s3), 2), round(kuantil(s3, .1), 2), round(kuantil(s3, .9), 2)] + [pct(s3, th) for th in AMBANG_SPI]
                    + [round(statistics.median(s1), 2), round(kuantil(s1, .1), 2), round(kuantil(s1, .9), 2)])
         bln.append(f"{y}-{m:02d}")
-    mxs = [hth_ke_depan([p_fc[i][j] for i in range(min(JENDELA_HTH, len(p_fc)))], n0) for j in range(ANGGOTA)]
-    return {"bulan": bln, "lead": out, "p31": round(100 * sum(1 for v in mxs if v >= 31) / ANGGOTA), "p61": round(100 * sum(1 for v in mxs if v >= 61) / ANGGOTA), "rasio": rasio, "base": base}
+    pas = [pasangan_hth([max(0.0, p_fc[i][j]) for i in range(min(JENDELA_HTH, len(p_fc)))]) for j in range(ANGGOTA)]
+    return {"bulan": bln, "lead": out, "p31": peluang_hth(pas, n0, 31), "p61": peluang_hth(pas, n0, 61), "rasio": rasio, "base": base, "hth_pasangan": pas}
 
 
 # ---------- cadangan bersyarat ENSO ----------
@@ -412,7 +434,9 @@ def bangun(pow_sel, harian, musiman, iklim, oni, penduduk, pusat, sekarang):
         t = anak.get(k)
         if t:
             r = titik_hasil[t]
-            return [x for l, b in zip(r["lead"], r["base"]) for x in (l[3], l[4], l[5], l[0], l[6], *b)] + [r["p31"], r["p61"]]
+            n0 = H.hth(harian["sel"][k]["p"], t_kemarin) if k in harian["sel"] else None
+            p31, p61 = (peluang_hth(r["hth_pasangan"], n0, 31), peluang_hth(r["hth_pasangan"], n0, 61)) if n0 is not None else (r["p31"], r["p61"])   # n0 sel anak, bukan titik
+            return [x for l, b in zip(r["lead"], r["base"]) for x in (l[3], l[4], l[5], l[0], l[6], *b)] + [p31, p61]
         if k in cad:
             return [x for l in cad[k] for x in (l[0], l[1], l[2], None, None, l[3], l[4], l[5])] + [None, None]
         return None
@@ -731,6 +755,19 @@ def uji():
             raise SystemExit("berkas prospektif rusak harus menghentikan")
         except ValueError:
             pass
+    # peluang HTH per sel anak: n0 sel itu sendiri, bukan n0 titik; sel yang sudah HTH >= ambang pasti 100
+    assert pasangan_hth([0.0] * 100) == (90, 0) and pasangan_hth([5, 0, 0, 5, 0]) == (0, 2) and pasangan_hth([0, 0, 5, 0]) == (2, 1)
+    assert peluang_hth([(0, 0)] * 51, 62, 31) == 100 and peluang_hth([(0, 0)] * 51, 62, 61) == 100 and peluang_hth([(0, 0)] * 51, 0, 31) == 0
+    assert peluang_hth([(10, 0)] * 30 + [(0, 0)] * 21, 25, 31) == 59 and peluang_hth([(0, 40)] * 51, 0, 31) == 100
+    import random as _r
+    rg = _r.Random(7)
+    for _ in range(200):
+        x = [0.0 if rg.random() < .8 else 5.0 for _ in range(90)]
+        n0_ = rg.randrange(0, 40)
+        assert (hth_ke_depan(x, n0_) >= 31) == (peluang_hth([pasangan_hth(x)], n0_, 31) == 100)          # sama dengan hitungan langsung
+    mus2 = {**mus, "titik": {k1: {"p": [[0.0 if j < 25 else 10.0 for j in range(51)] for _ in range(150)], "et0": [4.0] * 150}}}
+    i2 = bangun(pw, h, mus2, iklim, {}, pend, pusat, dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB))
+    assert i2["kab"]["11|Alfa"]["p31"] == 100 and 40 <= i2["kab"]["11|Zeta"]["p31"] <= 60, (i2["kab"]["11|Alfa"]["p31"], i2["kab"]["11|Zeta"]["p31"])   # Alfa HTH 40 sudah >= 31; Zeta HTH 0 menunggu anggota kering
     # penjaga: berkas segar+lengkap dilewati; basi, separuh, atau cache lokal lebih baru -> jalan; separuh tak menimpa lengkap
     now = dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB)
     segar = {"dibuat": "2026-10-15T07:00+07:00", "lengkap": True}

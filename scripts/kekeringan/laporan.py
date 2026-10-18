@@ -80,7 +80,7 @@ def sorot(ag, kab_seri, wilayah, n):
             top = ", ".join(nama_kab(k) for _, k in ks[:3])
             out.append({"tingkat": tingkat, "judul": f"{len(ks)} kabupaten berstatus {nama}",
                         "teks": f"Terbanyak penduduknya: {top}. Status gabungan SPI-3 dan kelembapan tanah, deteksi Pantau Bencana.", "prov": ks[0][1].split("|")[0]})
-    maks = sorted(((w["maks"][-1], k) for k, w in ag["kab"].items() if w["maks"][-1] is not None), reverse=True)[:3]
+    maks = [(h, k) for k, h, _ in H.urut_terpanjang([(k, w["maks"][-1], w["total"]) for k, w in ag["kab"].items() if w["maks"][-1] is not None])[:3]]   # aturan seri bersama dengan layar
     if maks and maks[0][0] >= 1:
         out.append({"tingkat": "waspada" if maks[0][0] >= 31 else "info", "judul": f"HTH terpanjang {maks[0][0]} hari di {nama_kab(maks[0][1])}",
                     "teks": "Berikutnya: " + ", ".join(f"{nama_kab(k)} {h} hari" for h, k in maks[1:]) + "." if len(maks) > 1 else "Hujan di bawah 1 mm per hari tanpa putus.",
@@ -225,6 +225,8 @@ def uji():
     pr = d["prakiraan"]
     assert pr["judul"].startswith("Hujan 7 hari ke depan paling sedikit di ") and "Open-Meteo, belum diuji balik" in pr["catatan"]
     assert ribu(14945552) == "14.946 ribu" and ribu(15124) == "15 ribu" and ribu(499) == "0 ribu"
+    seri = {"kab": {"35|Sumenep": {"maks": [62], "total": 1000}, "32|Indramayu": {"maks": [62], "total": 5000}, "35|Bondowoso": {"maks": [62], "total": 800}}, "nas": {"j31": [0]}}
+    assert sorot(seri, None, None, 1)[0]["judul"] == "HTH terpanjang 62 hari di Indramayu"        # seri -> penduduk terbanyak (bukan abjad terbalik)
     sj = sorot({"kab": {}, "nas": {"j31": [14960676] * 23 + [14945552] * 7}}, None, None, 30)[0]
     assert sj["judul"] == "Penduduk di HTH 31 hari atau lebih berkurang sekitar 15 ribu jiwa sepekan ini" and sj["teks"] == "Sekarang 14,95 juta jiwa, pekan lalu 14,96 juta jiwa."
     assert "nyaris tidak berubah" in sorot({"kab": {}, "nas": {"j31": [1000] * 30}}, None, None, 30)[0]["judul"]

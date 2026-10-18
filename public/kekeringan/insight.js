@@ -158,20 +158,20 @@ const Insight = {
     Kartu.leg([["#7a4a2c", "kompleks konsesi berlahan gambut di sel Siaga atau Awas"]]);
     const dcMaks = Math.max(0, ...R.map(r => r.dc || 0));
     return this.ex(`${this.hl(fmt(G.n_kering) + " dari " + fmt(G.n_gambut) + " kompleks konsesi")} berlahan gambut berada di sel kekeringan Siaga atau Awas${dcMaks ? `, DC tertinggi ${this.hl(fmt(dcMaks))}` : ""}`, "", "",
-      `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Konsesi gambut mengering per provinsi">${g}</svg>` + (R.length ? this.tabel("gambut", kol, R, r => `data-prov="${esc(r.prov)}"`, 8, "kompleks") : "") + `<p style="margin:12px 2px 0"><a href="../">Lihat titik panas dan konsesi di halaman Karhutla</a></p>`,
+      `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Konsesi gambut mengering per provinsi">${g}</svg>` + (R.length ? this.tabel("gambut", kol, R, r => `data-prov="${esc(r.prov)}"`, 8, `kompleks teratas (dari ${fmt(G.n_kering)} di sel Siaga atau Awas)`) : "") + `<p style="margin:12px 2px 0"><a href="../">Lihat titik panas dan konsesi di halaman Karhutla</a></p>`,
       `Indikator kasar per sel 0,5°, tanpa data tinggi muka air gambut; kompleks tanpa nama. Sumber: Pantau Bencana, konsesi dan titik panas dari halaman Karhutla`); },
 
   /* 9. kabupaten kandidat sering kering: temuan jujur, tanpa menyebut satu pun "berulang" bila ujinya tak lolos */
   exBerulang() {
-    const B = S.bukti?.berulang, R = (B?.daftar || []).map(d => ({...d, nm: d.kab.split("|")[1], p: d.kab.split("|")[0]})); if (!B || !R.length) return "";
+    const B = S.bukti?.berulang, R = (B?.daftar || []).map(d => ({...d, nm: d.kab.split("|")[1], pv: d.kab.split("|")[0]})); if (!B || !R.length) return "";
     const nT = +String(B.tahun || "").split("-")[1] - +String(B.tahun).split("-")[0] + 1 || 35, nb = B.n_berulang ?? R.filter(r => r.berulang).length, cek = B.n_cek_lapangan ?? R.filter(r => r.cek_lapangan).length;
-    const kol = [{k: "nm", h: "Kabupaten/kota", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.p), s: r => `<span translate="no">${esc(namaProv(r.p))}</span>`},
+    const kol = [{k: "nm", h: "Kabupaten/kota", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.pv), s: r => `<span translate="no">${esc(namaProv(r.pv))}</span>`},
       {k: "tahun", h: `Tahun kering (dari ${nT})`, n: 1, v: r => r.tahun, s: r => `${fmt(r.tahun)}${r.berulang ? ' <em class="pill l3">melebihi acak</em>' : ""}`}, ...(R.some(r => r.p != null) ? [{k: "p", h: "p (acak)", n: 1, v: r => r.p, s: r => r.p != null ? F3(r.p) : "–"}] : []),
       {k: "emb", h: "Tampungan OSM per 100.000 jiwa", n: 1, v: r => r.per100rb, s: r => r.per100rb != null ? `${F1(r.per100rb)}${r.cek_lapangan ? " <small>cek lapangan</small>" : ""}` : "–"},
       ...(R.some(r => r.irbi != null) ? [{k: "irbi", h: "IRBI 2025", n: 1, v: r => r.irbi, s: r => r.irbi != null ? `${fmt(r.irbi)}${r.irbi_arah ? ` <small>${esc(r.irbi_arah)}</small>` : ""}` : "–"}] : [])];
     return this.ex(`${this.hl(fmt(nb) + " kabupaten")} kering lebih sering dari peluang acak di antara ${fmt(B.n_kab ?? R.length)} kandidat yang SPI-3 ${esc(B.jendela || "")} ≤ ${F1(B.ambang_spi3).replace("-", "−")} pada ${fmt(B.min_tahun)} tahun atau lebih (${esc(B.tahun || "")})${cek ? `; ${fmt(cek)} kandidat bertampungan OSM sedikit, perlu cek lapangan` : ""}`, "", "",
       this.tabel("berulang", kol, R, r => `data-kab="${esc(r.kab)}"`, 10, "kabupaten/kota"),
-      `${esc(B.catatan || "")} Sumber: Pantau Bencana (NASA POWER), OpenStreetMap (ODbL), InaRISK BNPB`); },
+      `Kandidat = kering ${fmt(B.min_tahun)} tahun atau lebih; "melebihi acak" bila jumlah tahun keringnya lebih banyak dari dugaan peluang acak${B.alfa != null ? ` (p di bawah ${F3(B.alfa)})` : ""}. Tampungan OSM kasar dan tidak lengkap, jadi nol bukan bukti kekurangan; rincian di Metode. Sumber: Pantau Bencana (NASA POWER), OpenStreetMap (ODbL), InaRISK BNPB`); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
     try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },

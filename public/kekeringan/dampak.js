@@ -25,7 +25,7 @@ const Dampak = (() => {
     const awas = st.tingkat === "awas", f = awas ? "jiwa_awas" : "jiwa_siaga", kf = awas ? "kab_awas" : "kab_siaga", w = WARNA_LV[awas ? 3 : 2];
     const R = Object.entries(T.prov).filter(([, o]) => o[f]).sort((a, b) => b[1][f] - a[1][f]).slice(0, 12); if (!R.length) return "";
     const ctl = Kartu.seg("tingkat", [["awas", "Awas"], ["siaga", "Siaga atau Awas"]], st);
-    return bag("pend", `${Kartu.hl(jt(T[f]) + " jiwa")} tinggal di kecamatan berstatus ${awas ? "Awas" : "Siaga atau Awas"} kekeringan, ${fmt(T[kf])} kabupaten/kota di ${fmt(Object.values(T.prov).filter(o => o[f]).length)} provinsi`,
+    return bag("pend", `${Kartu.hl(jt(T[f]) + " jiwa")} tinggal di kecamatan berstatus ${awas ? "Awas" : "Siaga atau Awas"} kekeringan, ${fmt(T[kf])} kabupaten/kota di ${fmt(Object.values(T.prov).filter(o => o[kf]).length)} provinsi`,
       hbar(R.map(([k, o]) => ({n: namaProv(k), v: o[f], txt: rb(o[f]), w, tip: `<b>${esc(namaProv(k))}</b><br>Jiwa di kecamatan ${awas ? "Awas" : "Siaga atau Awas"}: ${fmt(o[f])}<br>Kabupaten/kota: ${fmt(o[kf])}<br>Penduduk provinsi: ${fmt(o.total)}`}))),
       `Penduduk = semua penghuni kecamatan berstatus, bukan hanya yang kehilangan air. Sumber: ${esc(D.sumber.terpapar)}`, ctl); }
   function hist() {
@@ -52,7 +52,7 @@ const Dampak = (() => {
     g += th.map((t, i) => { const y = Y(v(t));
       return `<g class="gy" style="--i:${i}" data-tip="<b>${esc(t)}</b><br>Sawah rusak: ${fmt(v(t))} ha"><rect x="${X(i) - bw / 2}" y="${y}" width="${bw}" height="${Math.max(1, B - y)}" rx="3" fill="${t === pk ? "#c9503a" : "#7a9a4a"}" opacity=".92"/><rect x="${X(i) - gap / 2}" y="${T}" width="${gap}" height="${B - T}" fill="transparent"/></g><text x="${X(i)}" y="${y - 5}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".75">${rb(v(t))}</text><text x="${X(i)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity=".65">${t}</text>`; }).join("");
     return bag("sawah", `${Kartu.hl(jt(v(pk)) + " ha")} sawah rusak akibat kekeringan pada ${Kartu.hl(pk)}, tertinggi sejak ${th[0]}; ${fmt(ada)} dari ${fmt(th.length)} tahun tercatat di atas nol`,
-      `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="Sawah rusak per tahun">${g}</svg>`, `${esc(Sw.catatan || "Seri pelaporan BNPB, bukan ukuran dampak")}. Sumber: ${sumber.BNPB}, ${esc(Sw.sumber || "")}`); }
+      `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="Sawah rusak per tahun">${g}</svg>`, `${esc(Sw.catatan || "Seri pelaporan BNPB, bukan ukuran dampak")}. Sumber: ${sumber.BNPB}${/^BNPB/i.test(Sw.sumber || "") ? esc(Sw.sumber.replace(/^BNPB/i, "")) : Sw.sumber ? ", " + esc(Sw.sumber) : ""}`); }
   /* SK status darurat BNPB 2025: riwayat, bukan status berlaku */
   function sk() {
     const R = S.resmi; if (!R?.sk?.length) return "";

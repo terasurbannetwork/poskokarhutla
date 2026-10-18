@@ -12,7 +12,8 @@
         .sort((a, b) => b.n[0] - a.n[0] || b.n[1] - a.n[1] || b.jiwa - a.jiwa).slice(0, 5);
       const kab = Object.entries(S.wil.kab).filter(([, v]) => v.lv >= 2).map(([k, v]) => ({k, ...v})).sort((a, b) => b.lv - a.lv || b.jiwa[2] - a.jiwa[2]).slice(0, 4);
       /* HTH terpanjang (kab + hari), perubahan pekan ini (jiwa HTH 31 hari atau lebih sekarang vs 7 hari lalu), peluang kering bulan depan: semua dibuang bila datanya tak ada */
-      const H = S.hth, hk = H && Object.entries(H.kab).filter(([, v]) => v.maks > 0).sort((a, b) => b[1].maks - a[1].maks || b[1].j31 - a[1].j31)[0];
+      const H = S.hth, T = H?.terpanjang, kT = T && (H.kab[T.kab] ? T.kab : Object.keys(H.kab).find(k => H.kab[k].kode === T.kab));   /* medan terpanjang dari pipeline (seri -> penduduk terbanyak); cadangan: maks lalu jiwa */
+      const hk = kT ? [kT, {maks: T.hari}, Math.max(0, (T.n_seri || 1) - 1)] : H && Object.entries(H.kab).filter(([, v]) => v.maks > 0).sort((a, b) => b[1].maks - a[1].maks || b[1].j31 - a[1].j31)[0];
       const sr = H?.nasional?.seri?.j31, minggu = sr && sr.length > 7 ? {kini: sr.at(-1), lalu: sr.at(-8)} : null;
       const P = prakAda(S.prak?.nasional) ? S.prak.nasional : null;
       return {N, tp: tepat(N.kab_n).reverse(), prov, kab, enso: S.meta.enso, hk, hmaks: H?.nasional?.maks, hj31: H?.nasional?.j31, minggu, P};
@@ -20,7 +21,7 @@
     html(h) {
       const e = h.enso, perhatian = e && /El Ni|La Ni/i.test(e.status) && Sapa.kartu("musim", "#c9503a", `<span translate="no">${esc(e.status)}</span> berlangsung`, `Peluang bertahan <b>${fmt(e.peluang)}%</b>; <span translate="no">hingga ${esc(e.hingga)}${e.iod ? `, ${esc(e.iod)}` : ""}</span>`);
       const hk = h.hk && h.hk[1], mg = h.minggu, P = h.P, bs = BASELINE_PRAK("pk1", 0), pk = P && P.lead[0]?.pk1;
-      const hthKartu = hk && Sapa.kartu("hth", "#c9503a", "Hari tanpa hujan", `Terpanjang <b>${fmt(hk.maks)} hari</b> di <span translate="no">${esc(h.hk[0].split("|")[1])}</span>, ${namaProv(h.hk[0].split("|")[0]) ? esc(namaProv(h.hk[0].split("|")[0])) : ""}; <b>${jt(h.hj31)} jiwa</b> tinggal di wilayah HTH 31 hari atau lebih`);
+      const hthKartu = hk && Sapa.kartu("hth", "#c9503a", "Hari tanpa hujan", `Terpanjang <b>${fmt(hk.maks)} hari</b> di <span translate="no">${esc(h.hk[0].split("|")[1])}</span>${h.hk[2] ? ` dan ${fmt(h.hk[2])} kabupaten/kota lain` : ""}, ${namaProv(h.hk[0].split("|")[0]) ? esc(namaProv(h.hk[0].split("|")[0])) : ""}; <b>${jt(h.hj31)} jiwa</b> tinggal di wilayah HTH 31 hari atau lebih`);
       const dm = mg && mg.kini - mg.lalu, pekan = mg && Sapa.kartu("kering", dm > 0 ? "#c9503a" : "#2f7d4f", "Perubahan pekan ini", dm === 0 ? `Jiwa di wilayah HTH 31 hari atau lebih tetap <b>${jt(mg.kini)}</b> sejak 7 hari lalu` : `Jiwa di wilayah HTH 31 hari atau lebih <b>${dm > 0 ? "naik" : "turun"} ${jt(Math.abs(dm))} jiwa</b> sejak 7 hari lalu, kini ${jt(mg.kini)}`);
       const depan = pk != null && Sapa.kartu("musim", "#1d4e89", `Prakiraan bulan depan <span translate="no">(${esc(BELUM_UJI.toLowerCase())})</span>`, `Peluang SPI-3 ≤ −1 rerata <b>${fmt(Math.round(pk))}%</b>${bs != null ? ` (baseline ${fmt(Math.round(bs))}%)` : ""}; <b>${jt(P.jiwa_pk1_50?.[0] || 0)} jiwa</b> tinggal di wilayah berpeluang 50% atau lebih`);
       const lap = Sapa.kartu("laporan", "#1d4e89", "Laporan harian", `<a href="/kekeringan/laporan.html" style="color:inherit;text-decoration:underline">Buka laporan harian kekeringan</a>`);
