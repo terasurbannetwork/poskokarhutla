@@ -220,7 +220,9 @@ const hasilLihat = () => T.hasil && (T.lihat === "dengan" && T.hasil.dengan ? T.
 const RAMP = [[.02, [170, 215, 255, 60]], [.1, [120, 190, 250, 150]], [.5, [60, 140, 230, 190]], [1, [30, 95, 200, 210]], [2, [15, 55, 150, 225]], [4, [8, 25, 90, 235]]];
 function warnaAir(d) { if (d < RAMP[0][0]) return null; for (let q = 1; q < RAMP.length; q++) if (d <= RAMP[q][0]) { const [a, ca] = RAMP[q - 1], [b, cb] = RAMP[q], f = (d - a) / (b - a); return ca.map((c, i) => c + (cb[i] - c) * f); } return RAMP[RAMP.length - 1][1]; }
 const warnaLongsor = p => p < .05 ? null : p < .2 ? [242, 200, 75, 120] : p < .4 ? [229, 138, 69, 165] : [201, 80, 58, 200];
-const mJam = t => { const X = T.hasil.X; return SL.kejenuhan(X.M.sm ?? SL.ASUMSI.THETA0, X.resap[Math.min(J, Math.round(t))]); };
+/* ember: hujan 7 hari lalu yang tersimpan + resapan; sm hanya penanda "jenuh" seperti status.py (sim_longsor.js) */
+const basahStatus = M => M.sm != null ? M.sm >= .45 && M.a7 >= 25 : M.a7 >= 150;
+const mJam = t => { const X = T.hasil.X; return SL.kejenuhan(X.M.a7, X.resap[Math.min(J, Math.round(t))], basahStatus(X.M)); };
 const petaLongsor = t => SL.peta(T.prep.lr, mJam(t));
 /* kanvas berubah -> unggah tekstur: sumber kanvas MapLibre hanya mengunggah ulang saat "play"; jeda lagi sesudahnya */
 function segarKanvas(id) { const s = T.peta.getSource(id); if (!s) return; s.play(); clearTimeout(T.jedaK?.[id]); (T.jedaK ||= {})[id] = setTimeout(() => s.pause(), 120); }
@@ -384,7 +386,7 @@ function hasilHtml() {
   const persen = x => x < 1e-4 ? "< 0,01 %" : F2(x * 100) + " %";
   const tot = X.hari.reduce((s, x) => s + x.p, 0), M = X.M, ens = T.sk === "ansambel";
   const nL = (() => { const L = petaLongsor(J); let c = 0; for (let k = 0; k < L.length; k++) if (L[k] >= .4 && !T.prep.laut[k]) c++; return c * T.dem.dx ** 2; })();
-  const sel = (x, p) => (x > 0 ? "+" : "") + (p ? angka1(x) : bulat(x));
+  const sel = (x, p) => { const r = p ? Math.round(x * 10) / 10 : Math.round(x); return r === 0 ? "0" : (r > 0 ? "+" : "") + (p ? angka1(r) : fmt(r)); }; /* tanpa "-0" */
   const baris = (nm, f, sat, p) => `<tr><td>${nm}</td><td class="n num">${p ? angka1(f(a)) : bulat(f(a))}${sat}</td><td class="n num">${p ? angka1(f(b)) : bulat(f(b))}${sat}</td><td class="n num">${sel(f(b) - f(a), p)}${sat}</td></tr>`;
   const sb = (t, s) => `<p class="fnd" style="margin-top:4px">Sumber: ${t}${s ? `, data s.d. ${s}` : ""}</p>`;
   const v = `<p class="fnd" style="margin-top:12px"><span class="pill l3" style="height:17px;font-size:9.5px">eksperimental</span> Model eksperimental. Belum divalidasi terhadap peta genangan nyata. DEM permukaan SRTM ~30 m (tajuk/atap ikut terukur), tanpa drainase kota, ${fmt(T.prep.isi)} sel cekungan didangkalkan.</p>

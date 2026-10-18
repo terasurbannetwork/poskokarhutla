@@ -2,9 +2,11 @@
 /* sim_longsor.js: peluang longsor dangkal per sel dari kemiringan DEM + kejenuhan tanah akibat hujan. Murni (tanpa DOM).
    Model lereng tak-hingga (Hammond dkk. 1992 LISA; Pack, Tarboton, Goodwin 1998 SINMAP; Montgomery & Dietrich 1994):
      FS = [c' + (gs - m gw) z cos^2 b tan(phi)] / (gs z sin b cos b)
-   m = tinggi muka air relatif = kelebihan air di atas kapasitas lapang / ruang pori di atas kapasitas lapang
-     = (theta0 - theta_fc + resapan/z) / (n - theta_fc), dipotong 0..1 (tanpa drainase: arah aman). Air di bawah kapasitas lapang
-     ditahan kapiler dan tidak menekan pori; jadi tanpa hujan tanah lembap biasa tidak dianggap jenuh.
+   m = tinggi muka air relatif, model ember: air bebas di atas kapasitas lapang / ruang pori di atas kapasitas lapang
+     = (A + resapan) / (z (n - theta_fc)), dipotong 0..1 (tanpa drainase selama 72 jam: arah aman).
+     A = hujan anteseden 7 hari (a7) yang masih tersimpan = a7 x (1 - HILANG); tanah "jenuh" menurut status.py (sm >= 0,45 dan
+     a7 >= 25 mm) dianggap tidak kehilangan apa-apa (A = a7). sm (lapisan 3-27 cm) TIDAK dipakai sebagai kadar air kolom 1,5 m:
+     itu pernah membuat lereng merah di jam 0 dengan hujan 5 mm (sm 0,43 -> m 0,86).
    Kohesi c' (tanah + akar) dan sudut gesek phi tidak diketahui per sel, jadi seragam pada rentang ASUMSI; peluang = bagian
    ruang (c', phi) dengan FS < 1, dihitung tepat untuk c' (linier) dan titik tengah 32 nilai phi. Lereng > BETA_MAKS diperlakukan
    BETA_MAKS: di atas ~45 derajat tanah biasanya tipis/batuan dan suku kohesi rumus ini malah naik lagi.
@@ -18,7 +20,7 @@ const ASUMSI = {
   PHI: [26, 36],         /* derajat sudut gesek dalam */
   BETA_MAKS: 45,
   THETA_FC: 0.3,         /* m3/m3 kapasitas lapang tanah lempung-lanau tropis (asumsi; Saxton & Rawls 2006: 0,25-0,38) */
-  THETA0: 0.3,           /* m3/m3 kadar air awal bila sm hujan.json tidak ada (= kapasitas lapang) */
+  HILANG: 0.5,           /* bagian hujan 7 hari lalu yang sudah hilang lewat evapotranspirasi dan aliran (asumsi) */
 };
 const salah = m => { throw new Error("SimLongsor: " + m); };
 const NPHI = 32;
@@ -32,11 +34,13 @@ function peluang(beta, m, a = ASUMSI) {
   for (let q = 0; q < NPHI; q++) { const t = Math.tan((p0 + (p1 - p0) * (q + .5) / NPHI) * Math.PI / 180), x = (B - Ak * t - c0) / (c1 - c0); P += x <= 0 ? 0 : x >= 1 ? 1 : x; }
   return P / NPHI;
 }
-/* kejenuhan relatif dari kadar air awal + resapan kumulatif (mm) */
-function kejenuhan(theta0, resapMm, a = ASUMSI) {
-  (Number.isFinite(theta0) && Number.isFinite(resapMm)) || salah(`kadar air/resapan bukan angka (${theta0}, ${resapMm})`);
-  (theta0 >= 0 && resapMm >= 0) || salah(`kadar air ${theta0} atau resapan ${resapMm} negatif`);
-  return Math.max(0, Math.min(1, (theta0 - a.THETA_FC + resapMm / 1000 / a.TEBAL) / (a.PORI - a.THETA_FC)));
+/* kejenuhan relatif (ember): a7 = hujan 7 hari lalu (mm), resapMm = resapan kumulatif sejak jam 0 (mm), basah = penanda jenuh status.py */
+function kejenuhan(a7, resapMm, basah = false, a = ASUMSI) {
+  (Number.isFinite(a7) && Number.isFinite(resapMm)) || salah(`hujan anteseden/resapan bukan angka (${a7}, ${resapMm})`);
+  (a7 >= 0 && resapMm >= 0) || salah(`hujan anteseden ${a7} atau resapan ${resapMm} negatif`);
+  const A = basah ? a7 : a7 * (1 - a.HILANG);
+  const isi = (a.PORI - a.THETA_FC) * a.TEBAL * 1000; /* mm air bebas sampai jenuh penuh (225 mm bawaan) */
+  return Math.max(0, Math.min(1, (A + resapMm) / isi));
 }
 /* kemiringan (derajat) metode Horn 1981, tepi memakai sel tepi sendiri */
 function lereng(z, nx, ny, dx) {

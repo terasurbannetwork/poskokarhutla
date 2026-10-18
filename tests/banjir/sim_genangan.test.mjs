@@ -123,7 +123,7 @@ test("longsor monoton terhadap hujan (kejenuhan) dan kemiringan; datar = 0", () 
     assert.ok(SL.peluang(b, m + .1 > 1 ? 1 : m + .1) >= SL.peluang(b, m) - 1e-12, `tidak monoton kejenuhan di ${b} derajat, m ${m}`);
     assert.ok(SL.peluang(b + 2.5, m) >= SL.peluang(b, m) - 1e-12, `tidak monoton lereng di ${b} derajat, m ${m}`); }
   assert.ok(SL.peluang(40, 1) > .5 && SL.peluang(15, 1) === 0, `nilai ujung tak masuk akal: ${SL.peluang(40, 1)}, ${SL.peluang(15, 1)}`);
-  let m0 = 0; for (const r of [0, 20, 60, 150, 400]) { const m = SL.kejenuhan(.25, r); assert.ok(m >= m0 && m <= 1); m0 = m; }
+  let m0 = 0; for (const r of [0, 20, 60, 150, 400]) { const m = SL.kejenuhan(30, r); assert.ok(m >= m0 && m <= 1); m0 = m; }
   const n = 10, z = Float64Array.from({length: n * n}, (_, k) => (k % n) * 10), lr = SL.lereng(z, n, n, 10);
   assert.ok(Math.abs(lr[55] - 45) < 1e-6, `lereng 1:1 harus 45 derajat, dapat ${lr[55]}`);
 });
@@ -146,12 +146,28 @@ test("DEM siap mesin: lubang yang hanya bocor diagonal tidak menjadi perangkap a
 });
 
 test("longsor: tanpa hujan di lereng 30 derajat indeks 0; kejenuhan dihitung di atas kapasitas lapang", () => {
-  const a = SL.ASUMSI, m0 = SL.kejenuhan(a.THETA0, 0);
+  /* model ember (keputusan orkestrator): kejenuhan(a7 mm, resapan mm, basah); sm tidak lagi kadar air kolom */
+  const a = SL.ASUMSI, m0 = SL.kejenuhan(0, 0);
   assert.equal(m0, 0, `tanah pada kapasitas lapang tanpa hujan harus m = 0, dapat ${m0}`);
   assert.equal(SL.peluang(30, m0), 0, `hujan 0 mm di lereng 30 derajat harus 0, dapat ${SL.peluang(30, m0)}`);
-  assert.equal(SL.kejenuhan(.1, 50), 0, "tanah kering + 50 mm belum melewati kapasitas lapang");
+  assert.equal(SL.kejenuhan(0, 0, true), 0, "penanda basah tanpa hujan anteseden tetap 0");
   const isi = (a.PORI - a.THETA_FC) * a.TEBAL * 1000; /* mm untuk jenuh penuh dari kapasitas lapang */
-  assert.ok(Math.abs(SL.kejenuhan(a.THETA_FC, isi) - 1) < 1e-12 && Math.abs(SL.kejenuhan(a.THETA_FC, isi / 2) - .5) < 1e-12, "kejenuhan linier terhadap resapan");
+  assert.ok(Math.abs(SL.kejenuhan(0, isi) - 1) < 1e-12 && Math.abs(SL.kejenuhan(0, isi / 2) - .5) < 1e-12, "kejenuhan linier terhadap resapan");
+});
+
+test("longsor (ember): a7 tersimpan sebagian; hujan 5 mm + a7 kecil rendah di jam 0; hujan 250 mm naik monoton", () => {
+  const a = SL.ASUMSI, isi = (a.PORI - a.THETA_FC) * a.TEBAL * 1000;
+  assert.equal(SL.kejenuhan(100, 0), 100 * (1 - a.HILANG) / isi, "a7 hanya tersimpan sebagian (1 - HILANG)");
+  assert.equal(SL.kejenuhan(100, 0, true), 100 / isi, "penanda jenuh status.py: a7 tersimpan penuh");
+  const a7 = 10, hari = h => [{p: h * .7, jam: 6, imax: h * .2}, {p: h * .2, jam: 6, imax: h * .06}, {p: h * .1, jam: 6, imax: h * .03}];
+  const kecil = SG.limpasan(SG.hietograf(hari(5)), 80, SG.kelasAMC(a7, .3));
+  const i0 = SL.peluang(35, SL.kejenuhan(a7, kecil.resap[0])), i72 = SL.peluang(35, SL.kejenuhan(a7, kecil.resap[72]));
+  assert.ok(i0 < .4 && i72 < .4, `hujan 5 mm: indeks lereng 35 derajat jam 0 ${i0.toFixed(2)}, jam 72 ${i72.toFixed(2)} harus < 0,4 (ambang merah)`);
+  /* hujan 250 mm sesudah minggu basah biasa (a7 30 mm): naik monoton, jam 0 rendah, akhir di atas ambang merah */
+  const a7b = 30, besar = SG.limpasan(SG.hietograf(hari(250)), 80, SG.kelasAMC(a7b, .3)); let lalu = -1;
+  for (let t = 0; t <= 72; t++) { const v = SL.peluang(35, SL.kejenuhan(a7b, besar.resap[t])); assert.ok(v >= lalu - 1e-12, `indeks turun di jam ${t}`); lalu = v; }
+  assert.ok(SL.peluang(35, SL.kejenuhan(a7b, 0)) < .4, "jam 0 sebelum hujan harus di bawah ambang merah");
+  assert.ok(lalu >= .4, `hujan 250 mm harus mencapai ambang merah di lereng 35 derajat, dapat ${lalu.toFixed(2)}`);
 });
 
 test("sungai: debit besar tetap stabil dan tak bergantung alfa (CFL memuat suntikan)", () => {
