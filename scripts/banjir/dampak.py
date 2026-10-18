@@ -105,58 +105,67 @@ def main():
     st = baca(a.status)
     if not st:
         sys.exit("status.json belum ada")
-    d = a.hari
-    hari = st["hari"][d]
-    per_hari = {i: sorted(k for k, v in st["kec"].items() if v["b"][i] >= SIAGA) for i in range(d, len(st["hari"]))}
-    kunci = set().union(*per_hari.values())
-    out = {"hari": hari, "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "hari_semua": st["hari"][d:], "sumber": {}}
+    d0 = a.hari
+    hari = st["hari"][d0]
+    semua = {i: sorted(k for k, v in st["kec"].items() if v["b"][i] >= SIAGA) for i in range(d0, len(st["hari"]))}
+    out = {"hari": hari, "hari_semua": st["hari"][d0:], "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "sumber": {}}
     prov_ada = set()
+    kunci = set().union(*semua.values())
     if kunci:
         pend_j = baca(os.path.join(AKAR, "public/data/penduduk.json"))
         pend = {k: v for k, v in (pend_j or {}).get("kec", {}).items() if k in kunci}
         sk_j = baca(os.path.join(AKAR, "public/data/sekolah.json"))
-        sekolah, cak = {}, {}
+        sekolah, prov_sek = defaultdict(lambda: (0, 0)), set()
         if sk_j:
-            semua, cocok, ps = (pend_j or {}).get("kec", {}), 0, set()
+            semua_kec, cocok = (pend_j or {}).get("kec", {}), 0
             for r in sk_j["baris"]:
                 k = f"{r[5]}|{r[6]}|{r[7]}"
-                cocok += k in semua
-                ps.add(r[5])
+                prov_sek.add(r[5])
+                cocok += k in semua_kec
                 if k in kunci:
-                    n, s = sekolah.get(k, (0, 0))
+                    n, s = sekolah[k]
                     sekolah[k] = (n + 1, s + (r[4] or 0))
-            # kecamatan di provinsi yang tercakup tetapi tanpa sekolah cocok = 0 yang sah; di luar provinsi = dibuang
-            sekolah = {k: sekolah.get(k, (0, 0)) for k in kunci if k.split("|")[0] in ps}
-            cak = {"sekolah_cocok": round(cocok / len(sk_j["baris"]), 3), "prov_sekolah": sorted(ps)}  # sisanya namanya tak cocok: tak terhitung
+            out["cakupan"] = {"sekolah_cocok": round(cocok / len(sk_j["baris"]), 3)}  # sisanya namanya tak cocok: tak terhitung
         fas_j = baca(os.path.join(AKAR, "public/data/fasilitas.json"))
-        fas = {}
-        from wilayah import Wilayah
-        w = Wilayah()
-
-        def cari(x, y):
-            m = w.cari(x, y)
-            return f"{m[0]}|{m[1]}|{m[2]}" if m else None
+        fas, prov_fas = defaultdict(lambda: (0, 0)), set()
+        w = None
         if fas_j:
-            pf = {f.get("prov") for f in fas_j if f["t"] in ("faskes", "rs")}
+            from wilayah import Wilayah
+            w = Wilayah()
+            pk = {k.split("|")[0] for k in kunci}
             for f in fas_j:
-                if f["t"] in ("faskes", "rs") and f.get("prov") in {k.split("|")[0] for k in kunci}:
-                    k = cari(f["lon"], f["lat"])
+                prov_fas.add(f.get("prov"))
+                if f["t"] in ("faskes", "rs") and f.get("prov") in pk:
+                    adm = w.cari(f["lon"], f["lat"])
+                    k = f"{adm[0]}|{adm[1]}|{adm[2]}" if adm else None
                     if k in kunci:
-                        x, y = fas.get(k, (0, 0))
+                        x, y = fas[k]
                         fas[k] = (x + (f["t"] == "faskes"), y + (f["t"] == "rs"))
-            fas = {k: fas.get(k, (0, 0)) for k in kunci if k.split("|")[0] in pf}
-            cak["prov_faskes"] = sorted(pf - {None})
-        # jalan berisiko terputus: hanya kecamatan Siaga/Awas dengan bahaya banjir tinggi yang perlu dihitung km-nya
-        bahaya = {k: v["banjir"] for k, v in (baca(os.path.join(a.keluar, "bahaya.json"), {}) or {}).get("kec", {}).items()
-                  if k in kunci and v.get("banjir") is not None}
+        # kecamatan di provinsi cakupan tanpa catatan = 0 sungguhan; di luar cakupan = dibuang (bukan 0)
+        sekolah = {k: sekolah.get(k, (0, 0)) for k in kunci if k.split("|")[0] in prov_sek}
+        fas = {k: fas.get(k, (0, 0)) for k in kunci if k.split("|")[0] in prov_fas}
+        # jalan berisiko terputus: hanya kecamatan Siaga/Awas dengan bahaya banjir tinggi
+        bj = (baca(os.path.join(a.keluar, "bahaya.json")) or {}).get("kec", {})
+        bahaya = {k: bj[k].get("banjir") for k in kunci if k in bj and bj[k].get("banjir") is not None}
         tinggi = {k for k, v in bahaya.items() if v >= TINGGI}
         jalan, prov_jalan = {}, set()
-        gj = baca(os.path.join(AKAR, "public/data/jalan.geojson"))
-        if gj:
-            garis = [(f["properties"]["k"], ruas) for f in gj["features"] if f["properties"].get("k") in KELAS_JALAN for ruas in f["geometry"]["coordinates"]]
-            prov_jalan = {(cari(*r[len(r) // 2]) or "|").split("|")[0] for _, r in garis[::40]} - {""}  # contoh titik: provinsi yang punya jalan
-            jalan = jalan_per_kec([g for g in garis if g[1]], cari, tinggi) if tinggi else {}
-            cak["prov_jalan"] = sorted(prov_jalan)
+        jg = baca(os.path.join(AKAR, "public/data/jalan.geojson"))
+        if jg and w is None:
+            from wilayah import Wilayah
+            w = Wilayah()
+        if jg:
+            garis = [(f["properties"]["k"], l) for f in jg["features"] if f["properties"]["k"] in KELAS_JALAN for l in f["geometry"]["coordinates"]]
+            def cari(x, y):
+                r = w.cari(x, y)
+                return f"{r[0]}|{r[1]}|{r[2]}" if r else None
+            for _, l in garis[::40]:  # cakupan provinsi: contoh tiap 40 garis
+                r = w.cari(*l[len(l) // 2])
+                if r:
+                    prov_jalan.add(r[0])
+            jalan = jalan_per_kec(garis, cari, tinggi)
+        if out.get("cakupan") is None:
+            out["cakupan"] = {}
+        out["cakupan"].update(prov_sekolah=sorted(prov_sek), prov_faskes=sorted(p for p in prov_fas if p), prov_jalan=sorted(prov_jalan))
 
         def blok(ks):
             t = hitung(ks, pend, sekolah, fas)
@@ -170,23 +179,23 @@ def main():
                 pv[k.split("|")[0]].append(k)
             t["prov"] = {p: blok(x) for p, x in sorted(pv.items())}
             return t, set(pv)
-        for i, ks in per_hari.items():
-            if not ks:
-                continue
-            t, pa = lengkap(ks)
-            prov_ada |= pa
-            if i == d:
-                ka = baca(os.path.join(a.keluar, "kejadian_aktif_awal.json"), {})
-                if ka.get("hari") == hari and ka.get("kejadian"):
-                    t["kejadian"] = {e["kode"]: blok(e["kec"]) for e in ka["kejadian"]}
-                out["terpapar"] = t
-            else:
-                out.setdefault("prakiraan", {})[st["hari"][i]] = t
-        if cak:
-            out["cakupan"] = cak
-        out["sumber"]["terpapar"] = ("status.json (Siaga/Awas banjir); penduduk WorldPop; sekolah Dapodik/EMIS; faskes OSM; jalan OSM kelas 1-3 dan bahaya banjir InaRISK. "
-                                     "Penduduk total kecamatan, bukan area tergenang; sekolah dan faskes hanya yang tercatat dan cocok, bisa kurang; "
-                                     "jalan = berisiko terputus (zona bahaya tinggi di kecamatan Siaga/Awas), bukan jalan yang pasti tergenang")
+
+        if semua[d0]:
+            t, prov_ada = lengkap(semua[d0])
+            ka = baca(os.path.join(a.keluar, "kejadian_aktif_awal.json"), {})
+            if ka.get("hari") == hari and ka.get("kejadian"):
+                t["kejadian"] = {e["kode"]: blok(e["kec"]) for e in ka["kejadian"]}
+            out["terpapar"] = t
+        pr = {}
+        for i, ks in semua.items():
+            if i != d0 and ks:
+                pr[st["hari"][i]], pv = lengkap(ks)
+                prov_ada |= pv
+        if pr:
+            out["prakiraan"] = pr
+        out["sumber"]["terpapar"] = ("status.json (Siaga/Awas banjir); penduduk WorldPop; sekolah Dapodik/EMIS; faskes dan jalan OSM; bahaya InaRISK. "
+            "Penduduk total kecamatan, bukan area tergenang; sekolah dan faskes hanya yang tercatat dan cocok, bisa kurang; "
+            "jalan berisiko terputus = jalan di kecamatan Siaga/Awas berbahaya banjir tinggi, bukan jalan yang pasti tergenang")
     kj = baca(os.path.join(KELUAR, "kejadian.json"))
     if kj:
         nas = tahunan(kj.get("nasional", {}).get("banjir"))
@@ -203,8 +212,7 @@ def main():
     simpan(os.path.join(a.keluar, "dampak.json"), out)
     tp = out.get("terpapar")
     print(f"dampak: hari {hari}: " + (f"{tp['kec']} kec Siaga/Awas, penduduk {tp.get('penduduk')}, sekolah {tp.get('sekolah')}, "
-                                    f"siswa {tp.get('siswa')}, faskes {tp.get('faskes')}, rs {tp.get('rs')}, jalan berisiko {tp.get('jalan_km')} km "
-                                    f"({tp.get('kec_bahaya_tinggi')} kec bahaya tinggi)" if tp else "tidak ada kecamatan Siaga/Awas, bagian terpapar dibuang")
+                                    f"siswa {tp.get('siswa')}, faskes {tp.get('faskes')}, rs {tp.get('rs')}, jalan_km {tp.get('jalan_km')}" if tp else "tidak ada kecamatan Siaga/Awas, bagian terpapar dibuang")
           + f"; prakiraan {list(out.get('prakiraan', {}))}; tahunan {list(out.get('tahunan', {}))}", file=sys.stderr)
 
 
@@ -218,6 +226,14 @@ def uji():
     assert t == {"kec": 2, "sekolah": 0, "siswa": 0, "kec_tercakup_sekolah": 1}, t
     assert tahunan({"2024": {"kejadian": 3, "meninggal": None}, "2023": {}}) == {"2024": {"kejadian": 3}}
     assert tahunan(None) == {}
+    # jalan: ruas masuk kecamatan titik tengahnya; hanya kelas dihitung; kecamatan bahaya rendah/di luar cakupan tidak dihitung
+    cari = lambda x, y: k1 if x < 1 else k2
+    j = jalan_per_kec([(1, [[0.0, 0.0], [0.5, 0.0]]), (3, [[0.0, 0.0], [0.0, 0.1]]), (1, [[2.0, 0.0], [2.5, 0.0]])], cari, {k1})
+    assert set(j) == {k1} and set(j[k1]) == {1, 3} and abs(j[k1][1] - 55.66) < 0.1, j
+    h = hitung_jalan([k1, k2, "9|x|y"], {k1: 0.8, k2: 0.2}, {k1: {1: 55.66, 3: 11.06}}, {"1"})
+    assert h == {"kec_bahaya_tinggi": 1, "jalan_km": 67, "jalan_nas_km": 56, "kec_tercakup_jalan": 2}, h
+    assert hitung_jalan(["9|x|y"], {}, {}, {"1"}) == {}                 # di luar cakupan: dibuang, bukan 0
+    assert hitung_jalan([k1], {}, {}, {"1"})["kec_tanpa_bahaya"] == 1    # tanpa nilai bahaya dilaporkan
     # jalan: ruas dibagi ke kecamatan titik tengahnya; hanya kecamatan `boleh`
     cari = lambda x, y: "1|a|a" if x < 1 else "1|a|b" if x < 2 else None
     j = jalan_per_kec([(1, [[0, 0], [0.5, 0], [1.5, 0]]), (3, [[0.2, 0], [0.4, 0]]), (1, [[5, 0], [6, 0]])], cari, {"1|a|a", "1|a|b"})
