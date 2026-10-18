@@ -1263,6 +1263,15 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .lapis .ub-gr{display:grid!important;grid-template-columns:repeat(5,minmax(0,1fr));gap:7px 4px!important}  /* kisi 5 kolom tetap: tiap kolom lurus ke bawah antar grup (pemilik, 15 Okt 2026) */
 .lapis .ub-gr > .ubin{min-width:0}
 .lapis label.ubin{display:flex;flex-direction:column;align-items:center;gap:4px;padding:0;cursor:pointer;position:relative;text-align:center;line-height:1.2}
+.lapis label[hidden]{display:none!important}
+/* sub-pilihan grup (Hutan, Kebun & tambang): deretan pil lebar penuh di bawah kisi ubin; kotak centangnya yang membawa data-l */
+.lapis .ub-chip{display:flex;flex-wrap:wrap;gap:4px;padding:0 0 6px}
+.lapis .ub-chip[hidden]{display:none}
+.lapis .ub-chip label{flex:1 1 auto;display:block;position:relative;padding:0;text-align:center;cursor:pointer}
+.lapis .ub-chip label span{display:block;padding:4px 8px;border-radius:99px;background:oklch(50% .02 256 / .1);color:var(--ink2);font-size:10.5px;font-weight:600;line-height:1.3;white-space:nowrap}
+.lapis .ub-chip label input{position:absolute;opacity:0;pointer-events:none}
+.lapis .ub-chip label:has(input:checked) span{background:oklch(25.5% .075 256);color:#fff;font-weight:800}
+.lapis .ub-chip label:has(input:focus-visible) span{outline:2px solid var(--brand2);outline-offset:2px}
 .lapis label.ubin input{position:absolute;opacity:0;pointer-events:none}
 .lapis .ub-th{display:grid;place-items:center;width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--a),var(--b));color:#fff;box-shadow:inset 0 0 0 1px oklch(0% 0 0 / .08);transition:box-shadow .15s,transform .15s}
 .lapis .ub-th svg{width:15px;height:15px;filter:drop-shadow(0 1px 1px oklch(0% 0 0 / .35))}
@@ -1478,8 +1487,9 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
         </details>
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
-          <label><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label>
+          <label><input type="checkbox" data-l="kwskemenhut"> Kawasan hutan (Kemenhut 2026)</label>
           <label><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label>
+          <label hidden><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label><!-- peta 2017 disembunyikan: diganti kwskemenhut; input dipertahankan karena Peta.pasang() membacanya -->
         </details>
         <details open><summary>Infrastruktur</summary>
           <label style="display:none"><input type="checkbox" data-l="posko"> Posko</label>
@@ -2451,14 +2461,17 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
   pabrik: '<path d="M3 21V11l6 4v-4l6 4V5h6v16z"/>', hilang: '<path d="M12 3 5 13h4l-3 5h12l-3-5h4z"/><path d="M4 4l16 16"/>', kanal: '<path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>',
   jalan: '<path d="M8 3 4 21M16 3l4 18M12 5v3M12 11v3M12 17v3"/>', satelit: '<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M3 3l5 5M16 16l5 5M9 12H3M21 12h-6M12 9V3M12 21v-6"/>',
   posko: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', perisai: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>', orang: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.5-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
+  hutan: '<path d="M8 3 3 11h3l-3 5h10l-3-5h3z"/><path d="M8 16v4"/><path d="M17 9l-3.5 5H15l-2.5 4H21l-2.5-4H20z"/><path d="M17 18v2"/>', lapisan: '<rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/>',
+  kebun: '<path d="M12 8 7 21"/><path d="M4 11c4-6 12-6 16 0"/><path d="M4 11c1 2 2 3 3.5 3M20 11c-1 2-2 3-3.5 3"/>',
   gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>', peringatan: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', kamera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>'};
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"],
   fwi: ["#5a9e74", "#c9503a", "api"], pfvi: ["#4a3426", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
+  hutan: ["#1f5a3a", "#5fae6e", "hutan"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
   gambut: ["#4a3426", "#a0764f", "daun"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"]};
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
-const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", konsesi: "Konsesi", hilang: "Hutan hilang",
+const UBIN_PENDEK = {aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", kebun: "Kebun & tambang", konsesi: "Konsesi", hilang: "Hutan hilang",
   kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Kompleks", wilayah: "Wilayah", gambut: "Gambut", satelit: "Satelit"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;

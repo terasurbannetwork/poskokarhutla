@@ -55,7 +55,7 @@
    "pembaruan": "harian"
   },
   "jrc": {
-   "nama": "Tutupan pohon 2020 (JRC GFC2020)",
+   "nama": "Tutupan pohon 2020 · JRC",
    "tiles": [
     "https://tiles.globalforestwatch.org/jrc_global_forest_cover/v2020.3/default/{z}/{x}/{y}.png"
    ],
@@ -75,7 +75,7 @@
    "catatan": "Dasar pembanding EUDR, bukan data kebakaran"
   },
   "primer": {
-   "nama": "Hutan primer (Kemenhut 2025)",
+   "nama": "Hutan primer 2025 · Kemenhut",
    "tiles": [
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image&layers=show:0&layerDefs=%7B%220%22%3A%22PL2025_ID_50K%20IN%20(2001%2C2004%2C2005)%22%7D"
    ],
@@ -100,7 +100,7 @@
    "catatan": "Data pemerintah, publik"
   },
   "mangrove": {
-   "nama": "Mangrove (Global Mangrove Watch v3)",
+   "nama": "Mangrove · Global Mangrove Watch v3",
    "tiles": [
     "https://tiles.globalforestwatch.org/gmw_global_mangrove_extent/v3/default/{z}/{x}/{y}.png"
    ],
@@ -119,7 +119,7 @@
    ]
   },
   "tanaman": {
-   "nama": "Hutan tanaman & kebun (SDPT v2)",
+   "nama": "Hutan tanaman & kebun · SDPT v2",
    "tiles": [
     "https://tiles.globalforestwatch.org/gfw_planted_forests/v20231128/default/{z}/{x}/{y}.png"
    ],
@@ -139,7 +139,7 @@
    "catatan": "Jenis tidak dipisah di ubin; tahun data beragam"
   },
   "tambang": {
-   "nama": "Area tambang (Maus dkk. v2)",
+   "nama": "Area tambang · Maus dkk. v2",
    "jenis": "vector",
    "tiles": [
     "https://tiles.globalforestwatch.org/pangaea_global_mining/v2/dynamic/{z}/{x}/{y}.pbf"
@@ -160,7 +160,7 @@
    ]
   },
   "plkemenhut": {
-   "nama": "Penutupan lahan Kemenhut 2025 (1:50.000)",
+   "nama": "Tutupan lahan 2025 · Kemenhut (1:50.000)",
    "tiles": [
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/PL_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
    ],
@@ -221,7 +221,7 @@
    "catatan": "Data pemerintah, publik; server lambat"
   },
   "kwskemenhut": {
-   "nama": "Kawasan hutan Kemenhut 2026",
+   "nama": "Kawasan hutan 2026 · Kemenhut",
    "tiles": [
     "https://geoportal.planologi.kehutanan.go.id/server/rest/services/Peta_Interaktif_2026/KWSHUTAN_AR_250K/MapServer/export?bbox={bbox-epsg-3857}&bboxSR=3857&imageSR=3857&size=512,512&format=png32&transparent=true&f=image"
    ],
