@@ -301,7 +301,7 @@ function kartuLuas() {
   const dp = i => n.dampak?.[i] ?? null;
   const j = `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[i]))} ha pada ${tgl(st.hari)}${i > 0 ? `, ${ubah(n.luas[i], n.luas[i - 1])}` : ""}`
     + (dp(i) != null ? `; luas terdampak ${Kartu.hl(fmt(dp(i)))} ha` : "")
-    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha` : "");
+    + (tb ? `; sepanjang ${st.hari.slice(0, 4)} ~${Kartu.hl(jt(tb.ha) + " juta")} ha (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta)` : "");
   const j2 = poinBerjalan(j, b => `Perkiraan luas terbakar ${Kartu.hl(fmt(n.luas[b]))} ha pada ${tgl(D.hari[b])}, ${ubah(n.luas[b], n.luas[b - 1])} dibanding ${tgl(D.hari[b - 1])}`);
   return Kartu.kartu("Perkiraan luas terbakar", j2, pasCetak(batang(hs, hs.map(x => n.luas[D.hari.indexOf(x)]), st.hari, {nama: "Perkiraan luas", u: "ha", arr: n.luas}), tabelHarian([["Perkiraan luas (ha)", lt, 1], ["Perubahan luas", i => i > 0 ? ubah(n.luas[i], n.luas[i - 1]) : "–", 1],
     [tb ? `Kumulatif ${st.hari.slice(0, 4)} (ha)` : `Kumulatif sejak ${tgl(D.awal_arsip)} (ha)`, kum, 1], ["Luas terdampak (ha)", i => fmt(dp(i)), 1]], triwulan(), ix => [fmt(ix.reduce((a, i) => a + (n.luas[i] || 0), 0)), "–", "–", "–"],
@@ -603,6 +603,7 @@ function kartuRiwayat() {
   const MERAH = "#c9503a", NAVY = "#0b2545", ORANYE = "#e08a3c", W = 940, L = 92, TB = 170, A0 = L + TB + 92, RK = 62, RW = 200, rh = 30, T = 24;
   const MX = 2.8e6, MXT = Math.max(1, ...rows.map(r => r.t || 0)), bw = W - A0 - RW - RK, H = T + 10 + rows.length * rh + 22, X1 = A0 + 1e6 / MX * bw;
   const lbl = r => r.v > MX ? "±" + fmt(Math.round(r.v / 1e5) / 10) + " juta ha" : fmt(r.v) + " ha";
+  const jt = v => fmt(Math.round(v / 1e5) / 10);
   const rasio = r => r.t && !r.ini && r.n !== "1997–1998" ? (r.v / r.t).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) : "–";
   let g = `<defs><pattern id="lpArsir" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${MERAH}" opacity=".35"/><rect width="3" height="6" fill="${MERAH}"/></pattern>`
     + `<pattern id="lpArsirT" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="6" height="6" fill="${ORANYE}" opacity=".35"/><rect width="3" height="6" fill="${ORANYE}"/></pattern></defs>`
@@ -615,10 +616,10 @@ function kartuRiwayat() {
       + `<rect x="${A0}" y="${y + 5}" width="${w}" height="${rh - 12}" rx="3" fill="${r.ini ? "url(#lpArsir)" : wr}"/>`
       + (r.v > MX ? `<path d="M${A0 + w - 112} ${y + 3}l-6 ${rh - 8}M${A0 + w - 104} ${y + 3}l-6 ${rh - 8}" stroke="#fff" stroke-width="3"/><text x="${A0 + w - 8}" y="${y + 17}" text-anchor="end" font-size="12" font-weight="800" style="fill:#fff">${lbl(r)}</text>`
         : `<text x="${A0 + w + 8}" y="${y + 17}" font-size="12" font-weight="800" style="fill:${r.v >= 1e6 ? MERAH : "currentColor"}">${lbl(r)}</text>`
-          + (r.ini ? `<text x="${A0 + w + 8 + lbl(r).length * 6.4 + 6}" y="${y + 17}" font-size="11" font-weight="700" style="fill:#b07a1e">perkiraan, s.d. ${tgl(tb.sd)}</text>` : ""))
+          + (r.ini ? `<text x="${A0 + w + 8 + lbl(r).length * 6.4 + 6}" y="${y + 17}" font-size="11" font-weight="700" style="fill:#b07a1e">perkiraan ${jt(tb.rendah)}–${jt(tb.tinggi)} juta, s.d. ${tgl(tb.sd)}</text>` : ""))
       + `<text x="${W}" y="${y + 17}" text-anchor="end" font-size="12" font-weight="700" opacity="${r.ini ? .45 : .85}">${rasio(r)}</text>`; });
   const ini = rows.at(-1), lalu = rows.filter(r => !r.ini && r.n !== "1997–1998"), lebih = lalu.filter(r => r.v > ini.v).map(r => r.n);
-  const j = `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + fmt(Math.round(ini.v / 1e4) / 100) + " juta ha")} hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`;
+  const j = `Perkiraan luas terbakar ${th} sudah ${Kartu.hl("±" + jt(ini.v) + " juta ha")} (rentang ${jt(tb.rendah)}–${jt(tb.tinggi)} juta) hingga ${tgl(tb.sd)}, tertinggi ${lebih.length ? `ke-${lebih.length + 1} ` : ""}sejak 2015`;
   return Kartu.kartu("Riwayat nasional", j, `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Titik panas dan luas terbakar Indonesia per tahun 1997–${th}">${g}</svg>`,
     `Titik: NASA FIRMS VIIRS S-NPP keyakinan sedang/tinggi, setahun penuh (satelit mulai 2012, jadi 1997–1998 tidak ada); ${th}: perkiraan ${MEREK} dari titik x ${fmt(tb.ha_titik)} ha (rentang ${fmt(Math.round(tb.rendah / 1e3))}–${fmt(Math.round(tb.tinggi / 1e3))} ribu ha), bukan angka resmi, jadi ha per titiknya tidak dihitung; 1997–${+th - 1}: luas BNPB via ${f.sumber.split(",")[0]}; 1997–1998 estimasi kumulatif dua tahun, digambar terpotong`,
     "", [[ORANYE, "titik panas setahun"], [MERAH, "luas di atas 1 juta ha"], [NAVY, "luas di bawah 1 juta ha"], ["#d98b7c", `${th}, perkiraan satelit (sementara)`]]);
