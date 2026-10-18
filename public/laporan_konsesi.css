@@ -383,6 +383,7 @@ main.kn{position:static;inset:auto}
 .kn-dft td,.kn-tk-kab td{padding:4px}
 .kn-dft td.kn-nw{white-space:nowrap}
 .kn-tk-kab td.kn-nw{white-space:normal}
+.kn-tk-kab td.kn-rs{width:20%}.kn-tk-kab .kn-gr-n{white-space:normal;flex-wrap:wrap}
 .kn-dft .kn-c{text-align:center}
 .kn-cek{color:var(--ink);font-weight:800;font-size:14px}
 .kn-dft{table-layout:fixed}.kn-dft th:nth-child(1){width:3%}.kn-dft th:nth-child(2){width:17%}.kn-dft th:nth-child(3){width:11%}.kn-dft th:nth-child(4){width:6%}.kn-dft th:nth-child(5){width:12%}.kn-dft th:nth-child(6){width:5%}.kn-dft th:nth-child(7){width:8%}.kn-dft th:nth-child(8){width:7%}.kn-dft th:nth-child(9){width:6%}.kn-dft th:nth-child(10){width:5%}.kn-dft th:nth-child(11){width:6%}.kn-dft th:nth-child(12){width:8%}.kn-dft th:nth-child(13){width:6%}
@@ -401,7 +402,6 @@ main.kn{position:static;inset:auto}
 .kn-baris:focus-visible{outline:2px solid var(--brand2);outline-offset:-2px}
 .kn-dft .kn-nm{font-weight:700;color:var(--ink);text-decoration:none}
 .kn-baris:hover .kn-nm{text-decoration:underline}
-.kn-rspo{display:inline-block;margin-left:4px;padding:1px 7px;border-radius:5px;font:800 10px var(--font);background:#2b8c86;color:#fff;vertical-align:1px;print-color-adjust:exact;-webkit-print-color-adjust:exact}
 @keyframes kn-sorot{0%,40%{box-shadow:0 0 0 3px var(--brand2)}100%{box-shadow:0 0 0 3px transparent}}
 .kn-sorot{animation:kn-sorot 1.8s ease-out}
 @media (prefers-reduced-motion:reduce){.kn-sorot{animation:none;outline:2px solid var(--brand2)}}
