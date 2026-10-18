@@ -13,6 +13,7 @@ main.kn{position:static;inset:auto}
 .kn-baris{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;justify-content:space-between}
 .kn-alat{justify-content:flex-start;align-items:flex-end}
 .kn-alat label{display:grid;gap:4px}
+.kn-alat #knProv{min-width:260px}
 .kn-alat input,.kn-alat select{border:1px solid var(--line);background:var(--surface);border-radius:10px;padding:7px 10px;min-width:150px}
 .kn-cepat{display:flex;gap:6px;flex-wrap:wrap}
 .kn-cepat button,.kn-tombol button,.kn-aksi button,.kn-aksi a{border:1px solid var(--line);background:var(--surface);border-radius:999px;padding:7px 14px;font-weight:600;font-size:13px;cursor:pointer;color:var(--ink);text-decoration:none}

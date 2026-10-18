@@ -37,19 +37,15 @@
     .catch(() => { $("#knIsi").innerHTML = `<div class="kosong">Data laporan belum tersedia.</div>`; });
 
   function gambarKendali() {
-    $("#knProv").innerHTML = IDX.prov.slice().sort((a, b) => b.titik - a.titik).map(p =>
-      `<label class="kn-chip"><input type="checkbox" value="${p.kode}" ${S.prov.has(p.kode) ? "checked" : ""}><span>${esc(p.nama)} <em>${fmt(p.perusahaan)}</em></span></label>`).join("");
+    const grup = [["bnpb", "6 provinsi BNPB"], ["9", "9 provinsi prioritas"], ["semua", "Semua provinsi"]];
+    $("#knProv").innerHTML = `<optgroup label="Gabungan">${grup.map(([v, n]) => `<option value="${v}"${v === "bnpb" ? " selected" : ""}>${n}</option>`).join("")}</optgroup>
+      <optgroup label="Satu provinsi">${IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(p => `<option value="${p.kode}">${esc(p.nama)} (${fmt(p.perusahaan)} konsesi)</option>`).join("")}</optgroup>`;
     $("#knJenis").innerHTML = Object.entries(JN).map(([j, [n, w]]) =>
       `<label class="kn-chip kn-chip-j" style="--w:${w}"><input type="checkbox" value="${j}" checked><span>${n}</span></label>`).join("");
   }
   const tunda = (f, ms = 250) => { let t; return (...a) => { clearTimeout(t); t = setTimeout(() => f(...a), ms); }; };
-  $("#knProv").addEventListener("change", e => { e.target.checked ? S.prov.add(e.target.value) : S.prov.delete(e.target.value); muat(); });
-  $("#knJenis").addEventListener("change", e => { e.target.checked ? S.jenis.add(e.target.value) : S.jenis.delete(e.target.value); render(); });
-  document.querySelector(".kn-cepat").addEventListener("click", e => {
-    const c = e.target.closest("[data-cepat]")?.dataset.cepat; if (!c) return;
-    S.prov = new Set(c === "bnpb" ? BNPB : c === "9" ? PRIO : c === "semua" ? IDX.prov.map(p => p.kode) : []);
-    document.querySelectorAll("#knProv input").forEach(i => { i.checked = S.prov.has(i.value); }); muat();
-  });
+  $("#knProv").addEventListener("change", e => { const v = e.target.value;
+    S.prov = new Set(v === "bnpb" ? BNPB : v === "9" ? PRIO : v === "semua" ? IDX.prov.map(p => p.kode) : [v]); muat(); });
   $("#knCari").addEventListener("input", tunda(e => { S.cari = e.target.value.trim().toLowerCase(); render(); }));
   $("#knProfil").addEventListener("change", e => { S.profil = +e.target.value; render(); });
   $("#knUrut").addEventListener("change", e => { S.urut = e.target.value; render(); });
