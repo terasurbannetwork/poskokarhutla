@@ -140,6 +140,16 @@
     return { poligon: selubung(pts).map(function (q) { return [v.lon + q[0] / kx, v.lat + q[1] / ky]; }), arah_deg: (Math.atan2(mx / tot, my / tot) / DEG + 360) % 360, jangkau_km: jmax, sel_n: sel.length, di_bawah_ambang: false };
   }
 
+  /* jejakMaks(hasil) -> {jam, jangkau_km, arah_deg, sel_n} jejak berambang sah terjauh atas semua jam, atau null (seri: jam paling awal) */
+  function jejakMaks(hasil) {
+    var best = null, i, k;
+    for (i = 0; i < hasil.jam.length; i++) {
+      k = jejak(hasil, hasil.jam[i]);
+      if (!k.di_bawah_ambang && (best === null || k.jangkau_km > best.jangkau_km)) best = { jam: hasil.jam[i], jangkau_km: k.jangkau_km, arah_deg: k.arah_deg, sel_n: k.sel_n };
+    }
+    return best;
+  }
+
   /* jejakTipis(hasil, jam) -> sebaran MENTAH tanpa ambang (persentil 90 jarak), untuk animasi; bukan area dampak */
   function jejakTipis(hasil, jam) {
     var s = null, i, v = hasil.vent, kk = proyeksi(v), kx = kk[0], ky = kk[1], xy = [], d, thr, kept = [], mx = 0, my = 0, hull;
@@ -166,7 +176,7 @@
     return jml.map(function (x) { return m ? x / m : 0; });
   }
 
-  var API = { jalankan: jalankan, jejak: jejak, jejakTipis: jejakTipis, selBerambang: selBerambang, merKgS: merKgS, endapan: endapan, mulberry32: mulberry32 };
+  var API = { jalankan: jalankan, jejak: jejak, jejakTipis: jejakTipis, jejakMaks: jejakMaks, selBerambang: selBerambang, merKgS: merKgS, endapan: endapan, mulberry32: mulberry32 };
   if (typeof module !== 'undefined' && module.exports) module.exports = API;
   akar.AbuModel = API;
 })(typeof window !== 'undefined' ? window : globalThis);

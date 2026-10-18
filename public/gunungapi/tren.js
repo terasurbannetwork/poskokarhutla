@@ -20,7 +20,7 @@ const Tren = {
   kTahun() {
     const T = this.D?.tahunan, th = Object.keys(T || {}).sort().filter(t => T[t].kejadian != null); if (th.length < 3) return "";
     const v = th.map(t => ({n: T[t].kejadian, t: t.slice(2), tip: `<b>${t}</b><br>Kejadian erupsi gunung api: ${fmt(T[t].kejadian)}`})), pk = th.reduce((a, t) => T[t].kejadian > T[a].kejadian ? t : a, th[0]), akhir = th.at(-1);
-    return this.kartu("Per tahun", `${Kartu.hl(fmt(T[akhir].kejadian) + " kejadian")} erupsi gunung api tercatat BNPB pada ${akhir}; tertinggi ${Kartu.hl(pk)} dengan ${fmt(T[pk].kejadian)}`,
+    return this.kartu("Per tahun", `${Kartu.hl(fmt(T[akhir].kejadian) + " kejadian")} erupsi gunung api tercatat BNPB pada ${akhir}; tertinggi ${Kartu.hl(pk)} dengan ${fmt(T[pk].kejadian)} kejadian`,
       this.batang(v, {warna: "#e58a45"}), "BNPB, Data Bencana Indonesia 2010–" + akhir, [["#e58a45", "kejadian erupsi gunung api"], ["#c9503a", "tertinggi"]]); },
 
   /* 2. gunung berstatus Waspada ke atas per hari (riwayat harian magma.py) */
@@ -28,14 +28,14 @@ const Tren = {
     const r = S.st?.riwayat || []; if (r.length < 2) return "";
     const v = r.map(x => { const n = x.level; return {n: (n[2] || 0) + (n[3] || 0) + (n[4] || 0), n2: (n[3] || 0) + (n[4] || 0), t: this.tgl(x.tgl),
       tip: `<b>${this.tgl(x.tgl)}</b><br>Waspada ke atas: ${fmt((n[2] || 0) + (n[3] || 0) + (n[4] || 0))} gunung<br>Siaga atau Awas: ${fmt((n[3] || 0) + (n[4] || 0))} gunung`}; }), a = v.at(-1), b = v[0];
-    return this.kartu("Status harian", `${Kartu.hl(fmt(a.n) + " gunung")} berstatus Waspada ke atas pada ${a.t}, ${a.n > b.n ? "naik" : a.n < b.n ? "turun" : "sama"} ${a.n === b.n ? "dengan" : "dari"} ${fmt(b.n)} pada ${b.t}`,
+    return this.kartu("Status harian", `${Kartu.hl(fmt(a.n) + " gunung")} berstatus Waspada ke atas pada ${a.t}, ${a.n > b.n ? "naik" : a.n < b.n ? "turun" : "sama"} ${a.n === b.n ? "dengan" : "dari"} ${fmt(b.n)} gunung pada ${b.t}`,
       this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[3], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan", [[WARNA_LV[2], "Waspada ke atas"], [WARNA_LV[3], "Siaga atau Awas"]]); },
 
   /* 3. erupsi 24 jam per hari (hanya hari dengan daftar MAGMA yang mencapai 24 jam) */
   kErupsi() {
     const r = (S.st?.riwayat || []).filter(x => x.erupsi != null); if (r.length < 2) return "";
     const v = r.map(x => ({n: x.erupsi, t: this.tgl(x.tgl), tip: `<b>${this.tgl(x.tgl)}</b><br>Erupsi 24 jam: ${fmt(x.erupsi)}`})), pk = v.reduce((a, x, i) => x.n > v[a].n ? i : a, 0);
-    return this.kartu("Erupsi harian", `${Kartu.hl(fmt(v.at(-1).n) + " erupsi")} dalam 24 jam terakhir; terbanyak ${Kartu.hl(fmt(v[pk].n))} pada ${v[pk].t}`,
+    return this.kartu("Erupsi harian", `${Kartu.hl(fmt(v.at(-1).n) + " erupsi")} dalam 24 jam terakhir; terbanyak ${Kartu.hl(fmt(v[pk].n) + " erupsi")} pada ${v[pk].t}`,
       this.batang(v, {warna: BATA}), "MAGMA Indonesia, informasi letusan; dicatat Pantau Bencana tiap pembaruan", [[BATA, "erupsi dalam 24 jam"], ["#c9503a", "terbanyak"]]); },
 
   /* 4. gunung naik atau turun level per hari (perubahan yang dicatat Pantau Bencana + tren di abu_gunungapi.json); dibuang bila belum ada perubahan */

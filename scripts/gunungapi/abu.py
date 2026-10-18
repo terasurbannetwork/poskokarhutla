@@ -51,7 +51,12 @@ KELUAR = os.path.join(AKAR, "public/banjir/data/abu_gunungapi.json")
 STATUS = os.path.join(AKAR, "public/banjir/data/gunungapi_status.json")
 BANDARA = os.path.join(AKAR, "public/gunungapi/data/bandara.json")
 METAR = os.path.join(AKAR, "public/data/metar.json")
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+# UA jujur. Dicoba 19 Okt 2026 dengan curl: api.open-meteo.com, historical-forecast-api.open-meteo.com, magma.esdm.go.id/v1/vona, davidmegginson.github.io
+# (OurAirports) semuanya menjawab 200/206 untuk UA ini, jadi tak ada host yang perlu menyamar sebagai peramban.
+UA = "poskokarhutla/1.0 (+https://github.com/terasurbannetwork/poskokarhutla)"
+MAKS_JSON = 8 * 1024 * 1024    # batas baca respons Open-Meteo (9 lokasi x 24 variabel x 96 jam ~ 150 KB)
+MAKS_CSV = 32 * 1024 * 1024    # airports.csv OurAirports ~ 12,7 MB
+MAKS_HTML = 4 * 1024 * 1024    # halaman daftar VONA ~ 50 KB
 WIB = dt.timezone(dt.timedelta(hours=7))
 M32 = 0xFFFFFFFF
 R_BUMI = 6371000.0
@@ -277,6 +282,17 @@ def jejak(hasil, jam):
     return {"poligon": [[v["lon"] + x / kx, v["lat"] + y / ky] for x, y in selubung(pts)], "arah_deg": arah, "jangkau_km": jmax, "sel_n": len(sel), "di_bawah_ambang": False}
 
 
+def jejak_maks(hasil):
+    """Jejak berambang SAH dengan jangkau_km terbesar atas SEMUA jam 0..J (lima potret 6/12/24/48/72 melewatkan puncak di antaranya):
+    {jam, jangkau_km, arah_deg, sel_n} atau None bila tak satu jam pun sah. Seri: jam paling awal."""
+    best = None
+    for j in hasil["jam"]:
+        k = jejak(hasil, j)
+        if not k["di_bawah_ambang"] and (best is None or k["jangkau_km"] > best["jangkau_km"]):
+            best = {"jam": j, "jangkau_km": k["jangkau_km"], "arah_deg": k["arah_deg"], "sel_n": k["sel_n"]}
+    return best
+
+
 def jejak_tipis(hasil, jam):
     """Sebaran MENTAH tanpa ambang konsentrasi (versi awal): {poligon, arah_deg, jangkau_km} partikel melayang pada jam itu,
     dipangkas ke persentil 90 jarak dari kawah. Hanya untuk simulasi/animasi; BUKAN area dampak."""
@@ -348,12 +364,20 @@ def dampak_bandara(hasil, bandara, maks_dekat_km=150.0):
 
 
 # ---------- masukan ----------
+def ambil_byte(url, maks, timeout=60):
+    """Baca paling banyak `maks` byte; lebih dari itu ditolak (RuntimeError), bukan dipotong diam-diam."""
+    with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=timeout) as r:
+        b = r.read(maks + 1)
+    if len(b) > maks:
+        raise RuntimeError(f"respons {url[:60]} lebih dari {maks} byte: ditolak")
+    return b
+
+
 def ambil_json(url, coba=3):
     gal = None
     for k in range(coba):
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=60) as r:
-                return json.loads(r.read())
+            return json.loads(ambil_byte(url, MAKS_JSON))
         except urllib.error.HTTPError as e:
             if e.code == 429:  # batas per jam Open-Meteo: mengulang hanya memperpanjang blokir
                 raise RuntimeError(f"HTTP 429 {url[:60]}")
@@ -428,6 +452,10 @@ def bulat_jejak(j, jam):
             **({"sel_n": j["sel_n"], "di_bawah_ambang": j["di_bawah_ambang"]} if "sel_n" in j else {})}
 
 
+def bulat_maks(m):
+    return None if m is None else {"jam": m["jam"], "jangkau_km": round(m["jangkau_km"], 1), "arah_deg": round(m["arah_deg"]), "sel_n": m["sel_n"]}
+
+
 def jalan(n=N_PRODUKSI):
     status = baca(STATUS, None)
     if not status or not status.get("gunung"):
@@ -476,6 +504,7 @@ def hitung_gunung(r, a, kol, kol_s, bandara, n):
     rec = {"id": gid, "nama": r["nama"], "level": r["level"], "lat": r["lat"], "lon": r["lon"], "puncak_m": r["puncak_m"],
            "kolom_m": kol, "kolom_sumber": kol_s, "massa_lepas_kg": round(h["massa_kg"], -3), "angin": a,
            "jejak": [bulat_jejak(jejak(h, j), j) for j in JAM_JEJAK],
+           "jejak_maks": bulat_maks(jejak_maks(h)),
            "jejak_tipis": [bulat_jejak(jejak_tipis(h, j), j) for j in JAM_JEJAK], "bandara": bd}
     return rec, ter
 
@@ -544,8 +573,7 @@ def bangun_bandara(berkas=None):
     if berkas:
         teks = open(berkas, encoding="utf-8").read()
     else:
-        with urllib.request.urlopen(urllib.request.Request("https://davidmegginson.github.io/ourairports-data/airports.csv", headers={"User-Agent": UA}), timeout=600) as r:
-            teks = r.read().decode("utf-8")
+        teks = ambil_byte("https://davidmegginson.github.io/ourairports-data/airports.csv", MAKS_CSV, 600).decode("utf-8")
     metar = {m["icao"]: m for m in baca(METAR, [])}
     out = {}
     for row in csv.DictReader(io.StringIO(teks)):
@@ -600,7 +628,7 @@ def setara():
     titik = [{"lat": -8.2, "lon": 113.1}, {"lat": -8.3, "lon": 113.3}, {"lat": -8.108, "lon": 112.92}]
     s24 = h["snap"][24]
     print(json.dumps({"masukan": m, "titik": titik, "mulberry_seed1": (lambda g: [g() for _ in range(3)])(mulberry32(1)),
-                      "jejak": {str(j): jejak(h, j) for j in JAM_JEJAK}, "jejak_tipis": {str(j): jejak_tipis(h, j) for j in JAM_JEJAK}, "massa_kg": h["massa_kg"], "endapan": endapan(h, titik, 10.0),
+                      "jejak": {str(j): jejak(h, j) for j in JAM_JEJAK}, "jejak_tipis": {str(j): jejak_tipis(h, j) for j in JAM_JEJAK}, "massa_kg": h["massa_kg"], "maks": jejak_maks(h), "endapan": endapan(h, titik, 10.0),
                       "pos24": {"lon": s24["lon"][:40], "lat": s24["lat"][:40], "z": s24["z"][:40]}, "dekat": dekat_ambang()}))
 
 
@@ -649,6 +677,25 @@ def uji():
     assert jb["sel_n"] >= MIN_SEL and not jb["di_bawah_ambang"] and abs(jb["arah_deg"] - 90) < 5 and 0 < jb["jangkau_km"] < 12 * 36 + 30 and len(jb["poligon"]) >= 3, (jb["arah_deg"], jb["jangkau_km"], jt["jangkau_km"])
     # ambang bergantung massa: per sel, c partikel x massa/n >= 2 mg/m3 x 2 km x luas sel; menaikkan massa 10x tidak boleh mengurangi sel lolos
     assert len(sel_berambang(besar, 12)) >= len(sel_berambang(jalankan(-7.5, 110.4, 2900, 6000, angin_contoh(10, 0), jam=12, n=400, seed=3), 12))
+    # jejak_maks: puncak atas semua jam, tidak lebih kecil dari potret jam 12, dan None untuk gunung yang tak pernah melewati ambang
+    mk = jejak_maks(besar)
+    assert mk and mk["jangkau_km"] >= jejak(besar, 12)["jangkau_km"] and 0 <= mk["jam"] <= 12 and mk["sel_n"] >= MIN_SEL, mk
+    assert jejak_maks(kecil) is None
+    # ambil_byte menolak respons melebihi batas
+    import http.server, threading
+    class H(http.server.BaseHTTPRequestHandler):
+        def do_GET(self):
+            self.send_response(200); self.end_headers(); self.wfile.write(b"x" * 100)
+        def log_message(self, *a):
+            pass
+    srv = http.server.HTTPServer(("127.0.0.1", 0), H)
+    threading.Thread(target=srv.handle_request, daemon=True).start()
+    try:
+        ambil_byte(f"http://127.0.0.1:{srv.server_port}/", 50)
+        raise AssertionError("respons 100 byte lolos batas 50")
+    except RuntimeError:
+        pass
+    srv.server_close()
     # keabsahan: 4 sel lolos -> kosong + di_bawah_ambang; 5 sel -> sah
     def sintetis(k):
         return {"vent": {"lat": 0.0, "lon": 100.0}, "massa_kg": 1e12, "n": 10,

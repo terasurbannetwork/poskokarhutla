@@ -49,6 +49,18 @@ SEL_MIN = 5   # jejak berambang dengan sel_n < 5 dianggap derau = di bawah amban
 slug = _muat("abu_gunungapi_laporan", "scripts/gunungapi/abu.py").id_gunung
 
 
+def potong_kalimat(t, maks):
+    """potong di batas kalimat terakhir yang muat; tanpa batas kalimat: di kata terakhir, dengan elipsis"""
+    t = t.strip()
+    if len(t) <= maks:
+        return t
+    kep = t[:maks]
+    i = max(kep.rfind(". "), kep.rfind("! "), kep.rfind("? "))
+    if i >= maks // 3:
+        return kep[:i + 1].strip()
+    return kep.rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
+
 def waktu(iso):
     t = dt.datetime.fromisoformat(iso).astimezone(WIB)
     return f"{t.day} {BLN[t.month - 1]} {t:%H.%M}"
@@ -145,7 +157,7 @@ def bangun(st, abu, lama, cari):
             rk = re.split(r"\s2\.\s", g.get("rekomendasi") or "")[0].replace("1. ", "", 1).strip()
             rad = f" Radius larangan {str(g['radius_km']).replace('.', ',').rstrip('0').rstrip(',')} km dari pusat erupsi." if g.get("radius_km") else ""
             sorot.append({"tingkat": "awas" if g["level"] == 4 else "siaga", "judul": f"G. {g['nama']} berstatus Level {LV[g['level']]}",
-                          "teks": f"Status resmi PVMBG, periode {g.get('periode', 'terbaru')}.{rad} {rk}"[:520].strip(),
+                          "teks": potong_kalimat(f"Status resmi PVMBG, periode {g.get('periode', 'terbaru')}.{rad} {rk}", 520),
                           "prov": g["_p"], "tautan": "/gunungapi/"})
     for p in [p for p in naik if p["tgl"] == iso(hr)][:3]:
         g = next((g for g in gun if g["nama"] == p["nama"]), None)
@@ -163,9 +175,9 @@ def bangun(st, abu, lama, cari):
                       "teks": f"Gunung dengan erupsi terbanyak. Kolom abu tertinggi {tg} m di atas puncak." if tg else "Gunung dengan erupsi terbanyak.",
                       "prov": g and g["_p"], "tautan": "/gunungapi/"})
     if ada_abu:
-        for b in abu.get("bandara_terdampak", [])[:3]:
+        for b in [x for x in abu.get("bandara_terdampak", []) if x.get("jam_tiba") is not None][:3]:
             g = next((g for g in gun if slug(g["nama"]) == b["gunung"]), None)
-            jam = f"sekitar {b['jam_tiba']} jam lagi" if b.get("jam_tiba") is not None else "dalam 72 jam"
+            jam = f"sekitar {b['jam_tiba']} jam lagi"
             sorot.append({"tingkat": "waspada", "judul": f"Skenario: abu G. {g['nama'] if g else b['gunung']} bisa tiba di {b.get('iata') or b['icao']}",
                           "teks": f"{b['nama']}: pada skenario bila gunung meletus sekarang, abu di atas ambang penerbangan 2 mg/m³ tiba {jam}. Skenario Pantau Bencana, bukan prakiraan letusan dan bukan VAAC.", "prov": g and g["_p"], "tautan": "/gunungapi/"})
     sorot.sort(key=lambda s: URUT[s["tingkat"]])
@@ -183,7 +195,8 @@ def bangun(st, abu, lama, cari):
             if any(v is not None for v in nilai):
                 baris.append({"label": f"G. {a['nama']}", "prov": g and g["_p"], "nilai": [None if v is None else round(v) for v in nilai], "satuan": "km"})
         if baris:
-            prak = {"judul": "Skenario bila meletus sekarang (kolom asumsi per level): jangkauan abu di atas ambang penerbangan 2 mg/m³, km dari puncak, bukan VAAC; kosong = di bawah ambang penerbangan",
+            prak = {"judul": "Skenario jangkauan abu pada jam ke-24, 48, dan 72 (km dari puncak, bukan VAAC)",
+                    "label_kolom": ["jam ke-24", "jam ke-48", "jam ke-72"],
                     "hari": [iso(hr + dt.timedelta(days=d)) for d in (1, 2, 3)], "baris": sorted(baris, key=lambda b: -(b["nilai"][2] or 0))[:12]}
 
     tambahan = []

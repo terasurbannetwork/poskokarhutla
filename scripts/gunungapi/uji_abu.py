@@ -1,15 +1,21 @@
 """Uji balik model abu (abu.py) terhadap arah awan abu yang TERTULIS di VONA PVMBG (MAGMA, arsip per gunung).
 
 Yang diukur: selisih sudut antara arah gerak awan abu pada VONA ("Ash cloud moving to northeast") dan arah titik tengah
-partikel model pada jam ke-2 setelah letusan (pelepasan 1 jam, tinggi kolom = tinggi di VONA, angin = prakiraan ECMWF IFS
-0,25 historis dari Open-Meteo historical-forecast-api). Arah VONA hanya 8 mata angin (resolusi 45 derajat), jadi selisih
+partikel model pada jam ke-3 setelah letusan (parameter produksi abu.py: pelepasan 3 jam, n=5000, seed 1; tinggi kolom = tinggi di
+VONA; angin = prakiraan ECMWF IFS 0,25 historis dari Open-Meteo historical-forecast-api, disimpan di contoh/angin_historis.json
+sehingga uji bisa diulang luring). Jam penilaian (JAM_NILAI = 3) ditetapkan sebelum hasil dilihat. Arah VONA hanya 8 mata angin (resolusi 45 derajat), jadi selisih
 < 22,5 derajat sudah "tepat" dan 45 derajat "tetangga".
 Yang TIDAK bisa diukur: tumpang tindih jangkauan. VONA tidak memuat luas/jarak awan; arsip advisory VAAC Darwin tidak
 ditemukan (bom.gov.au/aviation/volcanic-ash hanya menampilkan advisory aktif: darwin-va-advisory.shtml, tanpa arsip; jalur
 /aviation/data/volcanic-ash/ = 404). Jadi tidak ada angka jangkauan dan tidak ada yang dikarang.
 Sampel: halaman arsip VONA disebar rata di sepanjang arsip (bukan seluruhnya) lalu diambil maksimal 8 kejadian per gunung yang
 menulis arah DAN tinggi kolom, sejak Maret 2023. Kejadian 2023 gugur: angin tekanan historis ECMWF kosong (null) di Open-Meteo
-sebelum sekitar awal 2024 (7 dari 36 gugur); periode efektif Apr 2024 - Okt 2026. Hasil ditulis ke abu_gunungapi.json kunci `uji_balik`.
+sebelum sekitar awal 2024 (7 dari 36 gugur); periode efektif Apr 2024 - Okt 2026. Hasil ditulis ke abu_gunungapi.json kunci `uji_balik` (berambang) dan `uji_balik_tipis` (sebaran mentah).
+Pembanding: (1) acak: arah seragam acak jatuh dalam 45 derajat 25% waktu, p_binomial = P(>= k | 25%); (2) klimatologi: untuk tiap kejadian,
+arah VONA TERBANYAK pada gunung yang sama dari SEMUA kejadian beraraah lain di vona_cache (leave-one-out; kejadian pada tanggal yang sama
+dengan kejadian uji ikut dikeluarkan), dipakai sebagai "prakiraan" dan dinilai dengan aturan 45 derajat yang sama
+(`klimatologi_persen`, `n_klimatologi`). CATATAN: p_binomial mengandaikan kejadian saling bebas; letusan berurutan pada gunung yang sama
+berbagi angin dan musim, jadi p kecil terlalu optimistis, dan pembanding klimatologi lebih jujur untuk ditakar.
 
 Pakai:  python3 scripts/gunungapi/uji_abu.py        (jaringan; ~5-10 menit, cache di scripts/gunungapi/contoh/)
         python3 scripts/gunungapi/uji_abu.py uji    (self-check murni)
@@ -49,8 +55,7 @@ def urai_vona(h, nama):
 def ambil(url):
     for k in range(3):
         try:
-            with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": abu.UA}), timeout=60) as r:
-                return r.read().decode("utf-8", "replace")
+            return abu.ambil_byte(url, abu.MAKS_HTML).decode("utf-8", "replace")
         except Exception:
             time.sleep(3 * (k + 1))
     return ""
@@ -125,10 +130,22 @@ def p_binomial(k, n, p=0.25):
     return sum(math.comb(n, i) * p ** i * (1 - p) ** (n - i) for i in range(k, n + 1))
 
 
+def klimatologi(nama, waktu, cache):
+    """Arah VONA terbanyak (derajat) gunung itu dari kejadian beraraah lain di cache, tanpa kejadian tanggal yang sama; None bila tak ada data."""
+    n = {}
+    for e in cache.get(nama, []):
+        if e["waktu"][:10] != waktu[:10]:
+            n[e["arah_vona"]] = n.get(e["arah_vona"], 0) + 1
+    if not n:
+        return None
+    return MATA[max(sorted(n), key=lambda k: n[k])]   # seri: urutan abjad, supaya deterministik
+
+
 def ringkas(baris, periode, catatan):
     s = [selisih(b["model_deg"], MATA[b["arah_vona"]]) for b in baris]
     k = sum(x <= 45 for x in s)
-    return {"n": len(s), "median_selisih_deg": round(statistics.median(s), 1), "persen_dalam_45deg": round(100 * k / len(s)),
+    kl = [selisih(b["klim_deg"], MATA[b["arah_vona"]]) <= 45 for b in baris if b.get("klim_deg") is not None]
+    return {**({"klimatologi_persen": round(100 * sum(kl) / len(kl)), "n_klimatologi": len(kl)} if kl else {}),"n": len(s), "median_selisih_deg": round(statistics.median(s), 1), "persen_dalam_45deg": round(100 * k / len(s)),
             "acak_persen": 25, "p_binomial": float(f"{p_binomial(k, len(s)):.3g}"),
             "periode": periode, "sumber": "VONA PVMBG (magma.esdm.go.id/v1/vona) vs Open-Meteo historical-forecast-api (ECMWF IFS 0,25)", "catatan": catatan}
 
@@ -150,7 +167,7 @@ def jalan():
                 if "429" in alasan:
                     break
                 continue
-            baris.append({**e, "model_deg": round(a[0], 1), "selisih_deg": round(selisih(a[0], MATA[e["arah_vona"]]), 1),
+            baris.append({**e, "klim_deg": klimatologi(nama, e["waktu"], cache), "model_deg": round(a[0], 1), "selisih_deg": round(selisih(a[0], MATA[e["arah_vona"]]), 1),
                           "berambang_deg": None if a[1] is None else round(a[1], 1),
                           "selisih_berambang_deg": None if a[1] is None else round(selisih(a[1], MATA[e["arah_vona"]]), 1)})
     abu.simpan(DETAIL, {"kejadian": baris, "gagal": gagal})
@@ -191,6 +208,10 @@ def uji():
     assert len(pilih(ev)) == MAKS_KEJADIAN
     r = ringkas([{"model_deg": 90, "arah_vona": "east"}, {"model_deg": 10, "arah_vona": "east"}, {"model_deg": 80, "arah_vona": "east"}], "p", "c")
     assert r["n"] == 3 and r["median_selisih_deg"] == 10 and r["persen_dalam_45deg"] == 67 and r["acak_persen"] == 25, r
+    kc = {"X": [{"waktu": "2024-01-01T00:00:00Z", "arah_vona": "west"}, {"waktu": "2024-01-02T00:00:00Z", "arah_vona": "west"}, {"waktu": "2024-01-03T00:00:00Z", "arah_vona": "east"}]}
+    assert klimatologi("X", "2024-01-03T05:00:00Z", kc) == 270 and klimatologi("X", "2024-01-01T09:00:00Z", kc) == 90 and klimatologi("Y", "2024-01-01T00:00:00Z", kc) is None
+    rk = ringkas([{"model_deg": 90, "arah_vona": "east", "klim_deg": 270}, {"model_deg": 90, "arah_vona": "east", "klim_deg": 90}], "p", "c")
+    assert rk["klimatologi_persen"] == 50 and rk["n_klimatologi"] == 2, rk
     assert abs(p_binomial(0, 5) - 1) < 1e-12 and abs(p_binomial(5, 5) - 0.25 ** 5) < 1e-12 and abs(p_binomial(1, 2) - (1 - 0.75 ** 2)) < 1e-12
     assert r["p_binomial"] == float(f"{3 * .25 ** 2 * .75 + .25 ** 3:.3g}"), r  # k=2 dari 3
     print("ok")

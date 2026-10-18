@@ -22,11 +22,14 @@ STATUS = os.path.join(AKAR, "public/banjir/data/gunungapi_status.json")
 KELUAR = os.path.join(AKAR, "public/gunungapi/data/paparan.json")
 KELUAR_GEO = os.path.join(AKAR, "public/gunungapi/data/paparan_geo.json")
 WIB = dt.timezone(dt.timedelta(hours=7))
-UA = "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
+# UA jujur untuk semua host. Dibuktikan 19 Okt 2026 dengan curl -A: geoportal.esdm.go.id (gis4, gis1), gis.bnpb.go.id, earth-search, maps.mail.ru menjawab 200.
+# UA peramban penuh malah ditolak overpass-api.de (406), jadi tidak ada host yang membutuhkannya.
+UA = "poskokarhutla/1.0 (+https://github.com/terasurbannetwork/poskokarhutla)"
+MAKS_RESPON = 120_000_000   # byte; jalan Merapi 20 km ~35 MB
 KRB_URL = "https://geoportal.esdm.go.id/gis4/rest/services/BGV_GA/KRB_Gunung_Api_Area/MapServer/0"
 WIUP_URL = "https://geoportal.esdm.go.id/gis1/rest/services/Overlay_WIUP_vs_Kawasan_Hutan/MapServer/0"
 INARISK = "https://gis.bnpb.go.id/server/rest/services/inarisk/INDEKS_BAHAYA_GUNUNGAPI/ImageServer"
-UA_OSM = "poskokarhutla/1.0 (+github.com/pangantara/poskokarhutla)"   # UA peramban penuh ditolak overpass-api.de (406)
+UA_OSM = UA
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
             "https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
 TIFF = os.path.join(AKAR, "data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif")
@@ -405,6 +408,8 @@ def susun(g, zon, zona_sumber, poi, piksel, tambang, jalan):
     for d, v in zip(poi["desa"], jiwa):
         d["penduduk"] = round(v)
     ev, rt, ering, alasan, n_ev = hitung_evakuasi(jalan, poi, g, zon, maks=BATAS["evakuasi"])
+    if ev and not ering:
+        alasan = "Tidak ada desa di KRB III/II yang tersambung ke jalan; rute dari desa KRB I terdekat"
     e = {"id": slug(g["nama"]), "nama": g["nama"], "zona_sumber": zona_sumber,
          "cincin": penduduk_cincin(piksel, g), "zona": ringkas_zona(g, zon, poi, tambang, piksel)}
     zrank = lambda o: (-RANK.get(o["zona"], 0), o["km"])
@@ -418,7 +423,7 @@ def susun(g, zon, zona_sumber, poi, piksel, tambang, jalan):
     e["evakuasi_ringkas"] = ering
     e["evakuasi_total"] = n_ev
     if alasan:
-        e["catatan"] = "jalur evakuasi tidak terhitung: " + alasan
+        e["catatan"] = alasan if ev else "jalur evakuasi tidak terhitung: " + alasan
     e["citra"] = []
     geo = {"zona": {z: {"type": "MultiPolygon", "coordinates": [p[1] for p in zon[z]]} for z in ("III", "II", "I") if zon.get(z)}, "rute": rt}
     return e, geo
@@ -429,7 +434,11 @@ def ambil(url, data=None, coba=3, timeout=120, ua=UA):
     for i in range(coba):
         try:
             h = {"User-Agent": ua, "Accept": "*/*"}
-            return urllib.request.urlopen(urllib.request.Request(url, data=data, headers=h), timeout=timeout).read()
+            with urllib.request.urlopen(urllib.request.Request(url, data=data, headers=h), timeout=timeout) as r:
+                b = r.read(MAKS_RESPON + 1)
+            if len(b) > MAKS_RESPON:
+                raise ValueError(f"respons > {MAKS_RESPON} byte: ditolak")
+            return b
         except Exception as e:
             if i == coba - 1:
                 raise
@@ -704,6 +713,11 @@ def uji():
         d["zona"] = "I" if d["zona"] else None
     ev2, _, er2, _, _ = hitung_evakuasi(c["jalan"], poi2, g, zon)
     assert ev2 and all(x["zona_desa"] == "I" for x in ev2) and er2 is None, "fallback KRB I masuk ringkasan"
+    poi3 = hitung_poi(c["poi"], g, zon)
+    for d in poi3["desa"]:
+        d["zona"] = "I" if d["zona"] else None
+    e3, _ = susun(g, zon, "KRB PVMBG", poi3, c["piksel"], [], c["jalan"])
+    assert e3["evakuasi"] and e3["evakuasi_ringkas"] is None and "KRB I terdekat" in e3.get("catatan", ""), "kasus cadangan KRB I tanpa catatan"
     ev = e["evakuasi"][0]
     assert ev["menit"] > 0 and ev["km"] > 0 and ev["titik_kumpul"] and ge["rute"][0][-1] == ev["ke"], "rute harus berujung di titik kumpul"
     assert e["desa"] and all({"nama", "lat", "lon", "penduduk", "zona", "km"} <= set(d) for d in e["desa"])
@@ -719,6 +733,8 @@ def uji():
             if x["evakuasi_ringkas"]:
                 bahaya = [v["menit"] for v in x["evakuasi"] if v["zona_desa"] in ("III", "II")]
                 assert x["evakuasi_ringkas"]["n"] >= len(bahaya) and x["evakuasi_ringkas"]["label"] == "waktu tempuh arus bebas", x["id"]
+            if x["evakuasi"] and not x["evakuasi_ringkas"]:
+                assert "KRB I" in x.get("catatan", ""), f"{x['id']}: rute cadangan KRB I tanpa catatan"
             if not x["evakuasi"]:
                 assert x.get("catatan"), f"{x['id']}: evakuasi kosong tanpa catatan"
             assert x["zona_sumber"] in ("KRB PVMBG", "InaRISK bahaya gunung api (proksi KRB)", "radius rekomendasi (proksi)")

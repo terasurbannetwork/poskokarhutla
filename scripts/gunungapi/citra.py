@@ -15,6 +15,7 @@ AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)),
 KELUAR = os.path.join(AKAR, "public/gunungapi/data/citra")
 PAPARAN = os.path.join(AKAR, "public/gunungapi/data/paparan.json")
 SEBELUM, SESUDAH = 150, 75    # hari jendela cari (sebelum diperlebar: musim hujan Indonesia sering menutup 60 hari penuh)
+UA = "poskokarhutla/1.0 (+https://github.com/terasurbannetwork/poskokarhutla)"
 MAKS_AWAN, MAKS_AWAN_LONGGAR, MAKS_KOSONG = 35, 55, 25
 # id gunung, tanggal peristiwa, pusat kotak (aliran), sisi km, nama peristiwa
 PERISTIWA = [
@@ -84,6 +85,7 @@ def mesin():
         sp.loader.exec_module(m)
         hasil.append(m)
     sys.modules.pop("citra", None)
+    hasil[0].UA["User-Agent"] = UA   # UA jujur untuk STAC/COG (earth-search menjawab 200, dicek curl 19 Okt 2026)
     _M.extend(hasil)
     return _M
 

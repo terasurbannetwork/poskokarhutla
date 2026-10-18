@@ -70,7 +70,7 @@ uji("jalur utama mengikuti lembah", () => {
 uji("lahar: luas planimetrik ~ B LAHARZ dan menyempit di lembah", () => {
   for (const V of [3e4, 1e5]) {
     const r = jalan(V, 0.3), {B} = L.laharz(V), luas = r.ringkas.lahar_km2 * 1e6;
-    assert.ok(luas >= B * 0.8 && luas <= B * 1.3, `V=${V}: luas ${Math.round(luas)} m2 di luar 0,8-1,3 x B (${Math.round(B)})`);
+    assert.ok(luas >= B * 0.8 && luas <= B * 1.0001, `V=${V}: luas ${Math.round(luas)} m2 di luar 0,8-1,0001 x B (${Math.round(B)}); luas dipotong tepat di B`);
     const lebar = new Map(); for (const i of r.lahar.idx) { const x = i % N; if (x > C + 30) lebar.set(x, (lebar.get(x) || 0) + 1); }
     assert.ok(Math.max(...lebar.values()) <= 30, `V=${V}: lahar melebar ${Math.max(...lebar.values())} sel pada satu kolom, harus tetap di lembah`);
     const ys = [...r.lahar.idx].filter(i => i % N > C + 30).map(i => Math.abs(((i / N) | 0) - C)); assert.ok(Math.max(...ys) <= 15, `lahar keluar lembah sejauh ${Math.max(...ys)} sel`);
@@ -87,7 +87,8 @@ uji("penampang LAHARZ A = 0,05 V^(2/3) dipakai di jalur (A terukur ~ A)", () => 
 uji("volume terjaga: luas total semua jalur ~ B(V), bukan jumlah B per bagian volume", () => {
   const V = 1e5, B = L.laharz(V).B, r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V, hl: 0.3}), luas = r.ringkas.lahar_km2 * 1e6;
   assert.ok(r.info.length > 1, "uji ini butuh lebih dari satu jalur, ada " + r.info.length);
-  assert.ok(luas <= B * 1.15, `luas total ${Math.round(luas)} m2 melebihi 1,15 x B(V)=${Math.round(B)} (rasio ${(luas / B).toFixed(2)}); pembagian volume menggelembungkan luas`);
+  assert.ok(luas <= B * 1.0001, `luas total ${Math.round(luas)} m2 melebihi B(V)=${Math.round(B)} (rasio ${(luas / B).toFixed(4)}); pembagian volume menggelembungkan luas`);
+  for (const i of r.info) assert.ok(i.lahar_km2 * 1e6 <= i.B_m2 * 1.0001, `jalur bobot ${i.bobot}: luas ${Math.round(i.lahar_km2 * 1e6)} m2 melebihi B jalur ${Math.round(i.B_m2)}`);
   const jumlahB = r.info.reduce((a, i) => a + i.B_m2, 0); assert.ok(Math.abs(jumlahB / B - 1) < 1e-9, `jumlah B per jalur ${jumlahB} != B(V) ${B}`);
 });
 const laut = jml(N, N, (x, y) => x > C + 120 ? 0 : kerucut[y * N + x]); /* sama dengan kerucut, tetapi pantai di x > C+120 */
@@ -116,6 +117,27 @@ uji("awan panas: H/L kecil lebih jauh, tidak melewati kerucut energi, ikut lemba
     for (const i of r.pdc.idx) { const d = Math.hypot(i % N - C, ((i / N) | 0) - C) * dx; assert.ok((PUNCAK - kerucut[i]) / d >= hl - 1e-6, `sel ${i} di luar kerucut energi`); } }
   assert.ok(jauh[0.2] > jauh[0.35], `H/L 0,2 (${jauh[0.2]} km) harus lebih jauh dari 0,35 (${jauh[0.35]} km)`);
   const r = jalan(1e5, 0.2); const ys = [...r.pdc.idx].filter(i => i % N > C + 30).map(i => Math.abs(((i / N) | 0) - C)); assert.ok(!ys.length || Math.max(...ys) <= 12, "awan panas menyebar keluar lembah");
+});
+/* kelas bug "pita/kipas lurus": tebal tetap 15 m disapukan sepanjang garis kontur di lereng terbuka (hasil nyata Semeru: 11.157 sel awan panas, satu jalur) */
+const tetangga4 = (set, i) => set.has(i - 1) || set.has(i + 1) || set.has(i - N) || set.has(i + N);
+uji("awan panas: >= 80% sel di dalam lembah, tanpa kipas dan tanpa pola sel berselang", () => {
+  const r = jalan(1e5, 0.2), sel = [...r.pdc.idx], himp = new Set(sel);
+  const dalam = sel.filter(i => Math.abs(((i / N) | 0) - C) <= 10).length;
+  assert.ok(sel.length > 50, "terlalu sedikit sel awan panas: " + sel.length);
+  assert.ok(dalam / sel.length >= 0.8, `hanya ${(100 * dalam / sel.length).toFixed(0)}% sel awan panas dalam +-10 sel dari sumbu lembah (butuh >= 80%)`);
+  const bertetangga = sel.filter(i => tetangga4(himp, i)).length;
+  assert.ok(bertetangga / sel.length >= 0.95, `${sel.length - bertetangga} dari ${sel.length} sel awan panas terisolasi (tanpa tetangga 4-arah): pola garis berselang`);
+});
+uji("awan panas di lereng terbuka (tanpa lembah) hanya melebar secara kerucut, bukan menyapu garis kontur", () => {
+  const polos = jml(N, N, (x, y) => Math.max(100, PUNCAK - 12 * Math.hypot(x - C, y - C)));
+  const r = L.simulasi({dem: polos, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V: 1e5, hl: 0.2}), dx = L.mPerPx(LAT, Z);
+  const batas = r.info.reduce((a, i) => a + 0.3 * (i.pdc_km * 1000 / dx) ** 2, 0) + 50 * r.info.length;
+  assert.ok(r.pdc.idx.length > 0 && r.pdc.idx.length <= batas, `${r.pdc.idx.length} sel awan panas di lereng terbuka melebihi batas lidah ${Math.round(batas)} (menyapu kontur?)`);
+});
+uji("indeks sel <-> lon/lat konsisten: puncak = sel tertinggi dan pusat sel bolak-balik", () => {
+  const r = jalan(1e5, 0.3), [px, py] = r.puncak, i = py * N + px; assert.equal(kerucut[i], kerucut.reduce((a, v) => Math.max(a, v), 0), "sel puncak bukan sel tertinggi");
+  for (const idx of [...r.pdc.idx.slice(0, 50), ...r.lahar.idx.slice(0, 50)]) { const x = idx % N, y = (idx / N) | 0, [lon, lat] = L.pxKeLL(Z, 1000 + x + .5, 2000 + y + .5), [gx, gy] = L.llKePx(Z, lon, lat);
+    assert.ok(Math.abs(gx - 1000 - x - .5) < 1e-6 && Math.abs(gy - 2000 - y - .5) < 1e-6, `sel ${x},${y} tidak bolak-balik: ${gx - 1000},${gy - 2000}`); }
 });
 uji("simulasi lima jalur selesai cepat dan tiap jalur berbobot", () => {
   const t0 = Date.now(), r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V: 1e6, hl: 0.3});

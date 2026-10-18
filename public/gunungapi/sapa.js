@@ -14,7 +14,7 @@
       const batas = new Date(Date.now() - 2 * 24 * H).toLocaleDateString("en-CA", {timeZone: "Asia/Jakarta"});   /* 72 jam = hari ini + 2 hari sebelumnya (perubahan hanya bertanggal) */
       const ubah = (S.st.perubahan || []).filter(p => p.tgl >= batas).sort((a, b) => b.tgl.localeCompare(a.tgl));
       let bandara = [];   /* abu_gunungapi.json opsional: tanpa berkas, bagian abu tidak tampil */
-      try { const r = await fetch("/banjir/data/abu_gunungapi.json"); if (r.ok) { const a = await r.json(); bandara = a.bandara_terdampak || []; } } catch (e) {}
+      try { const r = await fetch("/banjir/data/abu_gunungapi.json"); if (r.ok) { const a = await r.json(); bandara = (a.bandara_terdampak || []).filter(b => b.jam_tiba != null); } } catch (e) {}
       return {tinggi, erupsi, per: [...per].sort((a, b) => b[1] - a[1]).slice(0, 4), ubah, bandara};
     },
     html(h) {
@@ -23,19 +23,19 @@
         const kol = Math.max(0, ...h.erupsi.filter(x => x.gunung === nm).map(x => x.tinggi_m || 0));
         return Sapa.kartu("erupsi", WARNA_LV[g?.level || 2], `Erupsi <span translate="no">${esc(nm)}</span>`, `<b>${fmt(c)}</b> erupsi dalam 24 jam${kol ? `, kolom abu tertinggi <b>${fmt(kol)}</b> m di atas puncak` : ""}, terakhir <span translate="no">${esc(tglJam(e.waktu))}</span>`); }).join("");
       const ubah = h.ubah.map(p => Sapa.kartu("jam", p.ke > p.dari ? "#b5412c" : "#2f7d4f", `<span translate="no">${esc(p.nama)}</span> ${p.ke > p.dari ? "naik" : "turun"} status`,
-        `Dari Level ${LEVEL[p.dari][0]} ${LEVEL[p.dari][1]} ke <b>Level ${LEVEL[p.ke][0]} ${LEVEL[p.ke][1]}</b>, tercatat ${esc(p.tgl)}`)).join("");
+        `Dari Level ${LEVEL[p.dari][0]} ${LEVEL[p.dari][1]} ke <b>Level ${LEVEL[p.ke][0]} ${LEVEL[p.ke][1]}</b>, tercatat ${esc(tglPdk(p.tgl))}`)).join("");
       const abu = h.bandara.slice(0, 4).map(b => Sapa.kartu("asap", "#8a5a3c", `${esc(b.iata || b.icao)} ${esc(b.nama)}`,
-        `Skenario bila <span translate="no">${esc(S.st.gunung.find(g => idGn(g.nama) === b.gunung)?.nama || b.gunung)}</span> meletus sekarang: abu di atas ambang penerbangan tiba ${b.jam_tiba != null ? `sekitar <b>${fmt(b.jam_tiba)}</b> jam lagi` : "dalam 72 jam"}. Skenario Pantau Bencana, bukan VAAC`)).join("");
+        `Skenario bila <span translate="no">${esc(S.st.gunung.find(g => idGn(g.nama) === b.gunung)?.nama || b.gunung)}</span> meletus sekarang: abu di atas ambang penerbangan tiba sekitar <b>${fmt(b.jam_tiba)}</b> jam lagi. Skenario Pantau Bencana, bukan VAAC`)).join("");
       const siaga = h.tinggi.filter(g => g.level >= 3), daftar = (siaga.length ? siaga : h.tinggi).slice(0, 6);
-      return Sapa.rangka({ikon: "gunung", eyebrow: "Situasi gunung api hari ini",
+      return Sapa.rangka({ikon: "gunung", eyebrow: "Situasi gunung api " + labelHari(S.st.dibuat),
         judul: `<b>${fmt(h.tinggi.length)}</b> gunung api berstatus Waspada ke atas dari ${fmt(g0.length)} yang dipantau`,
-        chips: [["awas", `${fmt(n[4])} Awas · ${fmt(n[3])} Siaga`], ["erupsi", `${fmt(h.erupsi.length)} erupsi · 24 jam`], h.ubah.length && ["jam", `${fmt(h.ubah.length)} perubahan status · 72 jam`], h.bandara.length && ["asap", `${fmt(h.bandara.length)} bandara di jalur abu`]],
+        chips: [["awas", `${fmt(n[4])} Awas · ${fmt(n[3])} Siaga`], ["erupsi", `${fmt(h.erupsi.length)} erupsi · 24 jam`], h.ubah.length && ["jam", `${fmt(h.ubah.length)} perubahan status · 72 jam`], h.bandara.length && ["asap", `skenario: ${fmt(h.bandara.length)} bandara di jalur abu`]],
         bagian: [
           ["Perubahan status 72 jam", "cs", ubah],
           [siaga.length ? "Gunung Siaga dan Awas" : "Gunung berstatus tertinggi", "ks", daftar.map((g, i) => Sapa.item(esc(g.nama), i + 1, esc(g.nama), esc(g.prov),
             `<em class="sp-p ${g.level >= 4 ? "merah" : g.level === 3 ? "oranye" : "prov"}">${lv(g)}</em>`, g.radius_km ? `<em class="sp-p prov">Radius ${fmt(g.radius_km)} km</em>` : (g.tinggi ? `<em class="sp-p prov">${fmt(g.tinggi)} m</em>` : ""))).join("")],
           perhatian && ["Erupsi 24 jam", "cs", perhatian],
-          abu && ["Abu ke bandara", "cs", abu],
+          abu && ["Skenario abu ke bandara", "cs", abu],
           ["Laporan", "cs", Sapa.kartu("api", "#1d4e89", `<a href="/gunungapi/laporan.html" style="color:inherit;text-decoration:underline">Laporan harian gunung api</a>`, "Tren, sorotan, dan daftar erupsi")]],
         sumber: "PVMBG (MAGMA Indonesia)"});
     },

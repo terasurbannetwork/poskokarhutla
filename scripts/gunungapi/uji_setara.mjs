@@ -38,6 +38,10 @@ const bandingJejak = (nama, JS, fnJS) => {
 let n = 0;
 cek(Math.abs(h.massa_kg - py.massa_kg) / py.massa_kg < 1e-12, `massa_kg JS ${h.massa_kg} vs Py ${py.massa_kg}`);
 bandingJejak('jejak', py.jejak, A.jejak);
+{ const m = A.jejakMaks(h), pm = py.maks;   // puncak atas semua jam, bukan hanya 5 potret
+  cek((m === null) === (pm === null), 'jejak_maks: kosong di satu sisi saja');
+  if (m && pm) { cek(m.jam === pm.jam && m.sel_n === pm.sel_n, `jejak_maks: jam/sel JS ${m.jam}/${m.sel_n} vs Py ${pm.jam}/${pm.sel_n}`); cek(Math.abs(m.jangkau_km - pm.jangkau_km) < TOL_KM && Math.abs(m.arah_deg - pm.arah_deg) < TOL_ARAH, 'jejak_maks: jangkau/arah beda'); }
+  cek(pm !== null, 'uji tak bermakna: jejak_maks kosong'); }
 bandingJejak('jejak_tipis', py.jejak_tipis, A.jejakTipis);
 cek(Object.values(py.jejak).some((j) => j.sel_n > 0), 'uji tak bermakna: tak ada sel berambang pada masukan uji');
 

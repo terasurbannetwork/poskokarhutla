@@ -1,7 +1,7 @@
 """Dampak gunung api -> public/banjir/data/dampak_gunungapi.json
 
   terpapar  jiwa dalam radius rekomendasi PVMBG tiap gunung berstatus Level II ke atas (penduduk_radius di public/banjir/data/gunungapi_status.json,
-            WorldPop kisi 25 km, jadi ORDE BESAR, bukan hitungan desa), per gunung dan per level. Tanpa jaringan.
+            interpolasi cincin paparan WorldPop 1 km 3/5/10/15 km menurut r^2, dihitung magma.py; gunung tanpa cincin = null dan dilewati), per gunung dan per level. Tanpa jaringan.
   tahunan   kejadian erupsi dan korbannya per tahun 2010-2024 (BNPB, data.bnpb.go.id, jenis "ERUPSI GUNUNG API"): kejadian, meninggal, terdampak,
             mengungsi, rumah rusak. Hanya angka yang tercatat; bila BNPB tak bisa diakses dan belum ada berkas lama, bagian ini tidak ada (A18).
             DIBI BNPB tidak dipakai: dasbor Superset-nya tak menjawab dari luar peramban (dicek 16 Okt 2026).
@@ -23,7 +23,7 @@ KELUAR = os.path.join(AKAR, "public/banjir/data/dampak_gunungapi.json")
 
 def terpapar(gunung):
     """[{nama, prov, level, radius_km, penduduk_radius}] -> {jiwa, gunung, per_level, daftar}. Hanya gunung berradius dan berpenduduk > 0."""
-    d = sorted((g for g in gunung if g.get("radius_km") and g.get("penduduk_radius", 0) > 0), key=lambda g: -g["penduduk_radius"])
+    d = sorted((g for g in gunung if g.get("radius_km") and (g.get("penduduk_radius") or 0) > 0), key=lambda g: -g["penduduk_radius"])
     per = {}
     for g in d:
         o = per.setdefault(str(g["level"]), {"gunung": 0, "jiwa": 0}); o["gunung"] += 1; o["jiwa"] += g["penduduk_radius"]
@@ -82,7 +82,7 @@ def tulis():
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "status_dibuat": st["dibuat"], "terpapar": terpapar(st["gunung"])}
     if th:
         out["tahunan"] = th
-    out["sumber"] = {"terpapar": "MAGMA Indonesia, PVMBG (radius rekomendasi); WorldPop 2026 (penduduk, kisi 25 km)", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)"}
+    out["sumber"] = {"terpapar": "MAGMA Indonesia, PVMBG (radius rekomendasi); WorldPop 1 km (cincin paparan 3/5/10/15 km, interpolasi r^2)", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)"}
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     with open(KELUAR, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
@@ -92,7 +92,7 @@ def tulis():
 
 def uji():
     t = terpapar([{"nama": "A", "prov": "X", "level": 3, "radius_km": 5, "penduduk_radius": 1000}, {"nama": "B", "prov": "Y", "level": 2, "radius_km": 2, "penduduk_radius": 300},
-                  {"nama": "C", "prov": "Z", "level": 3, "radius_km": 5, "penduduk_radius": 0}, {"nama": "D", "prov": "Z", "level": 1}])
+                  {"nama": "C", "prov": "Z", "level": 3, "radius_km": 5, "penduduk_radius": 0}, {"nama": "D", "prov": "Z", "level": 1}, {"nama": "E", "prov": "Z", "level": 3, "radius_km": 5, "penduduk_radius": None}])
     assert t["jiwa"] == 1300 and t["gunung"] == 2 and t["per_level"]["3"] == {"gunung": 1, "jiwa": 1000} and t["daftar"][0]["nama"] == "A", t
     print("dampak gunungapi: ok")
 

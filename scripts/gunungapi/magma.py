@@ -116,24 +116,27 @@ def urai_letusan(h):
     return uniq
 
 
-def km(a, b, c, d):
-    r = math.pi / 180
-    x = math.sin((c - a) * r / 2) ** 2 + math.cos(a * r) * math.cos(c * r) * math.sin((d - b) * r / 2) ** 2
-    return 12742 * math.asin(math.sqrt(x))
+PAPARAN = os.path.join(AKAR, "public/gunungapi/data/paparan.json")
+PENDUDUK_SUMBER = "WorldPop 1 km (cincin paparan)"
 
 
-def penduduk_radius(grid, lat, lon, r_km, sel=0.25, n=12):
-    """Perkiraan jiwa dalam lingkaran r_km: tiap sel kisi dihitung sebesar bagian luasnya yang tercakup (contoh n x n titik, penduduk dianggap merata di sel).
-    ponytail: sel 0,25 derajat (~28 km) jauh lebih kasar dari radius 2-13 km, jadi angka ini orde besar, bukan hitungan desa; naikkan dengan penduduk per kecamatan bila perlu."""
-    dlat = r_km / 111.2 + sel
-    dlon = r_km / (111.2 * max(.2, math.cos(math.radians(lat)))) + sel
-    tot = 0.0
-    for g_lat, g_lon, p, _ in grid:
-        if abs(g_lat - lat) > dlat or abs(g_lon - lon) > dlon or not p:
-            continue
-        dalam = sum(km(lat, lon, g_lat + sel * ((i + .5) / n - .5), g_lon + sel * ((j + .5) / n - .5)) <= r_km for i in range(n) for j in range(n))
-        tot += p * dalam / (n * n)
-    return int(round(tot, -2)) if tot >= 100 else int(round(tot))
+def penduduk_cincin(cincin, r_km):
+    """Jiwa dalam radius r_km dari cincin paparan.json [{km, penduduk}] (3/5/10/15 km, WorldPop 1 km): interpolasi linear menurut r^2 (luas)
+    di antara dua cincin; r < 3 km = skala r^2/9 dari cincin 3 km. None bila tak ada cincin atau r > cincin terluar (tidak diekstrapolasi).
+    Menggantikan kisi WorldPop 25 km yang melebih-lebihkan sampai 760x pada radius kecil."""
+    c = sorted((x["km"], x["penduduk"]) for x in cincin or [])
+    if not c or r_km is None or r_km > c[-1][0]:
+        return None
+    if r_km <= c[0][0]:
+        v = c[0][1] * r_km ** 2 / c[0][0] ** 2
+    else:
+        (a, pa), (b, pb) = next(((c[i], c[i + 1]) for i in range(len(c) - 1) if c[i][0] <= r_km <= c[i + 1][0]))
+        v = pa + (pb - pa) * (r_km ** 2 - a ** 2) / (b ** 2 - a ** 2)
+    return int(round(v, -2)) if v >= 1000 else int(round(v))
+
+
+def slug(nama):
+    return "-".join("".join(ch for ch in nama.lower() if ch.isalnum() or ch in " -").split())
 
 
 def baca(jalur, bawaan=None):
@@ -176,10 +179,11 @@ def jalan():
         if g["level"] >= 2:  # radius hanya bermakna saat ada rekomendasi pembatasan
             o.update({x: lap[x] for x in ("radius_km", "sektor_km", "periode", "rekomendasi") if x in lap})
         gunung.append(o)
-    pend = baca(os.path.join(AKAR, "public/data/penduduk.json"), {}).get("grid", [])
+    cinc = {g["id"]: g.get("cincin") for g in (baca(PAPARAN, {}) or {}).get("gunung", [])}
     for o in gunung:
-        if o.get("radius_km") and pend:
-            o["penduduk_radius"] = penduduk_radius(pend, o["lat"], o["lon"], o["radius_km"])
+        if o.get("radius_km"):  # gunung tanpa cincin paparan: null (bukan angka kisi kasar)
+            o["penduduk_radius"] = penduduk_cincin(cinc.get(slug(o["nama"])), o["radius_km"])
+            o["penduduk_sumber"] = PENDUDUK_SUMBER
     # perubahan level: dibandingkan dengan berkas sebelumnya; riwayat dipertahankan 90 hari
     batas = (sekarang - dt.timedelta(days=90)).date().isoformat()
     perubahan = [p for p in lama.get("perubahan", []) if p["tgl"] >= batas]
@@ -239,10 +243,12 @@ def uji():
            '<div class="timeline-item"><small>23:42 WIB </small><p class="timeline-title"><a href="#">Semeru</a></p><p class="timeline-text"> Erupsi B. </p></div>')
     d2 = urai_letusan(dua)   # judul hari dengan akhiran "N hari yang lalu" tetap terbaca; halaman tumpang tindih tidak menggandakan
     assert [x["waktu"] for x in d2] == ["2026-10-16T10:00+07:00", "2026-10-15T23:42+07:00"], d2
-    grid = [[0.0, 0.0, 10000, ""]]
-    p_kecil, p_besar = penduduk_radius(grid, 0, 0, 3), penduduk_radius(grid, 0, 0, 200)
-    assert 0 < p_kecil < 10000 and p_besar == 10000, (p_kecil, p_besar)  # radius kecil mengambil sebagian sel; radius besar seluruhnya
-    assert penduduk_radius(grid, 5, 5, 10) == 0
+    merapi = [{"km": 3, "penduduk": 40}, {"km": 5, "penduduk": 15122}, {"km": 10, "penduduk": 184363}, {"km": 15, "penduduk": 570744}]  # cincin nyata paparan.json
+    assert penduduk_cincin(merapi, 3) == 40 and penduduk_cincin(merapi, 5) == 15100, "Merapi 3/5 km harus tepat cincin"   # puluhan, bukan 30.400 (kisi 25 km)
+    assert penduduk_cincin(merapi, 1.5) == 10 and penduduk_cincin(merapi, 4) < 15122 and 15122 < penduduk_cincin(merapi, 7) < 184363
+    assert penduduk_cincin(merapi, 4) == int(round(40 + (15122 - 40) * 7 / 16, -2)), penduduk_cincin(merapi, 4)   # interpolasi menurut r^2
+    assert penduduk_cincin(merapi, 20) is None and penduduk_cincin(None, 5) is None and penduduk_cincin([], 5) is None
+    assert slug("Lewotobi Laki-laki") == "lewotobi-laki-laki" and slug("Anak Krakatau") == "anak-krakatau"
     print("ok")
 
 

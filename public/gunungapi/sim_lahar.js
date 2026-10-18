@@ -10,6 +10,7 @@
   }
 })(typeof self !== "undefined" ? self : globalThis, function () {
 "use strict";
+const SEBAR_PDC = 0.2;                    /* pelebaran lateral awan panas di lereng terbuka: ~11 derajat tiap sisi */
 const EPS = 5e-4;                         /* kemiringan minimal buatan di dataran hasil isi sink (m per sel) */
 const TETANGGA = [[1, 0, 1], [-1, 0, 1], [0, 1, 1], [0, -1, 1], [1, 1, Math.SQRT2], [-1, 1, Math.SQRT2], [1, -1, Math.SQRT2], [-1, -1, Math.SQRT2]];
 
@@ -55,12 +56,12 @@ function alur(dir, mulai, maks) {
 const laharz = V => ({A: 0.05 * V ** (2 / 3), B: 200 * V ** (2 / 3)});
 
 /* garis potong tegak lurus jalur di indeks i: kembalikan sampel [{idx, dz}] dari tengah ke dua sisi, selama masih satu lembah (kontigu) */
-function potong(z, n, m, P, i, bed, W, tinggiMaks) {
+function potong(z, n, m, P, i, bed, W, tinggiMaks, langkah = 1) {
   const a = P[Math.max(0, i - 3)], b = P[Math.min(P.length - 1, i + 3)];
   let tx = (b % n) - (a % n), ty = ((b / n) | 0) - ((a / n) | 0); const pj = Math.hypot(tx, ty) || 1; tx /= pj; ty /= pj;
   const cx = P[i] % n, cy = (P[i] / n) | 0, nx = -ty, ny = tx, sisi = [[], []];
   for (let s = 0; s < 2; s++) { const arah = s ? -1 : 1;
-    for (let j = 1; j <= W; j++) { const x = Math.round(cx + nx * j * arah), y = Math.round(cy + ny * j * arah); if (x < 0 || y < 0 || x >= n || y >= m) break;
+    for (let j = 1; j * langkah <= W; j++) { const x = Math.round(cx + nx * j * langkah * arah), y = Math.round(cy + ny * j * langkah * arah); if (x < 0 || y < 0 || x >= n || y >= m) break;
       const idx = y * n + x, dz = z[idx] - bed; if (dz >= tinggiMaks) break; sisi[s].push([idx, dz]); } }
   return sisi;
 }
@@ -110,9 +111,11 @@ function awanPanasAlur(z, n, m, P, S, z0, px0, py0, hl, dx, stamp, tebal, W) {
   const dalam = idx => { const d = Math.hypot(idx % n - px0, ((idx / n) | 0) - py0) * dx; return d > 0 && (z0 - z[idx]) / d >= hl ? d : -1; };
   for (let i = 0; i < P.length; i++) {
     const d0 = dalam(P[i]); if (d0 < 0) { if (Math.hypot(P[i] % n - px0, ((P[i] / n) | 0) - py0) * dx > dx * 3) break; else continue; }
-    const sisi = potong(z, n, m, P, i, z[P[i]], W, tebal + 1);
+    /* garis potong tiap 0,5 sel (1 sel membolongi sel di jalur diagonal: pola "p p p"). Sisi yang tak ketemu dinding lembah dalam jendela W
+       = lereng terbuka, bukan lembah: awan panas di sana hanya selebar jalurnya (tanpa ini, tebal 15 m menyapu sepanjang garis kontur = kipas lurus) */
+    const sisi = potong(z, n, m, P, i, z[P[i]], W, tebal + 1, .5), penuh = Math.floor(W / .5);
     const tandai = idx => { const d = dalam(idx); if (d >= 0 && stamp[idx] < 0) { stamp[idx] = d; luas += dx * dx; } };
-    tandai(P[i]); for (const s of sisi) for (const [idx, dz] of s) { if (dz >= tebal) break; tandai(idx); }
+    tandai(P[i]); for (const sd of sisi) { const batas = sd.length >= penuh ? Math.max(2, Math.round(SEBAR_PDC * (d0 / dx) / .5)) : Infinity; /* lereng terbuka: lidah melebar SEBAR_PDC per jarak, bukan sepanjang kontur */ for (let q = 0; q < sd.length && q < batas; q++) { if (sd[q][1] >= tebal) break; tandai(sd[q][0]); } }
     s1 = Math.max(s1, d0);
   }
   return {luas, panjang: s1};

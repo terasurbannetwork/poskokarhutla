@@ -1,6 +1,5 @@
 "use strict";
 /* Kerangka halaman gunung api: util, state, tab, tema, muat data, bagikan. Format ($, fmt, esc, jamWIB, rb) dari inti/format.js. */
-const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600); };
 const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };
 const bacaLokal = (k, d) => { try { const v = localStorage.getItem(k); return v == null ? d : JSON.parse(v); } catch (e) { return d; } };
@@ -30,6 +29,8 @@ const sekali = (k, u) => DATA[k] ||= muatJSON(u).catch(() => { delete DATA[k]; r
 const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap: () => sekali("pap", "data/paparan.json"), geo: () => sekali("geo", "data/paparan_geo.json"), bandara: () => sekali("bandara", "data/bandara.json"),
   /* paparan per id gunung */
   async pg(id) { const p = await this.pap(); return p?.gunung?.find(x => x.id === id) || null; }};
+/* dibagikan ke sim.js (tab Simulasi memakai status dan loader yang sama, tanpa unduh ulang) */
+window.Pb = {Data, get st() { return S.st; }};
 const ARAH8 = ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"];
 const arahMata = d => ARAH8[Math.round(d / 45) % 8];
 /* jejak berambang dengan sel_n < 5 dianggap derau = di bawah ambang penerbangan (selaras abu.py / laporan.py) */

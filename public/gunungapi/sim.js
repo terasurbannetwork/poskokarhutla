@@ -15,6 +15,10 @@ const slug = n => String(n).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "").split
 const R_BUMI = 6371;
 const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (c - a) * r, y = (d - b) * r, h = Math.sin(y / 2) ** 2 + Math.cos(b * r) * Math.cos(d * r) * Math.sin(x / 2) ** 2; return 2 * R_BUMI * Math.asin(Math.sqrt(h)); };
 const ambil = async u => { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); };
+/* app.js (index.html) membagikan status dan loader berkas turunan lewat window.Pb; halaman mandiri simulasi.html mengambil sendiri */
+const Pb = window.Pb, mem = {}, muatS = (k, u) => mem[k] ||= ambil(u).catch(() => { delete mem[k]; return null; });
+const DT = {st: () => Pb?.st ? Promise.resolve(Pb.st) : ambil("../banjir/data/gunungapi_status.json"), abu: () => Pb ? Pb.Data.abu() : muatS("abu", "../banjir/data/abu_gunungapi.json"),
+  pap: () => Pb ? Pb.Data.pap() : muatS("pap", "data/paparan.json"), geo: () => Pb ? Pb.Data.geo() : muatS("geo", "data/paparan_geo.json")};
 const pil = (t, w) => `<span class="pl" style="--w:${w}">${t}</span>`;
 const kosongFC = () => ({type: "FeatureCollection", features: []});
 const BULAT = (x, d = 0) => fmt(Math.round(x * 10 ** d) / 10 ** d);
@@ -74,7 +78,7 @@ async function buka(o = {}) {
     <aside class="card sm-panel" id="smPanel"><div class="sm-hd"><h2 id="smJudul">Simulasi erupsi</h2><p>Ilustrasi bahaya, bukan prakiraan letusan.</p></div><div class="sm-bd" id="smBd"><p class="sm-msg">Memuat data gunung…</p></div></aside>
     <div class="box sm-waktu" id="smWaktu"></div></div>`;
   try {
-    const [st, abu, pap] = await Promise.all([ambil("../banjir/data/gunungapi_status.json"), ambil("../banjir/data/abu_gunungapi.json").catch(() => null), ambil("data/paparan.json").catch(() => null)]);
+    const [st, abu, pap] = await Promise.all([DT.st(), DT.abu(), DT.pap()]);
     if (S !== mine) return;
     mine.st = st; mine.abu = abu; mine.pap = pap;
     mine.g = st.gunung.find(g => slug(g.nama) === mine.id) || st.gunung.find(g => slug(g.nama) === "semeru") || st.gunung[0]; mine.id = slug(mine.g.nama);
@@ -84,14 +88,14 @@ async function buka(o = {}) {
     mine.desa = (mine.pg?.desa || []).map(d => ({...d, km: jarakKm(mine.g.lon, mine.g.lat, d.lon, d.lat)}));
     mine.demP = muatDem(mine.g.lat, mine.g.lon); mine.demP.catch(() => {}); /* mulai sebelum peta: ubin S3 bersaing dengan ubin peta untuk 6 sambungan */
     panel(); legenda(); waktu(); petaBaru();
-    ambil("data/paparan_geo.json").then(j => { if (S !== mine) return; mine.geo = j[mine.id] || null; rute(); }).catch(() => { if (S === mine) rute(); });
+    DT.geo().then(j => { if (S !== mine) return; mine.geo = j?.[mine.id] || null; rute(); });
     hitungAngin().then(() => { if (S === mine) { hitungAbu(); } });
     demDanLahar();
   } catch (e) { console.error("Sim:", e); if (S === mine) $("#smBd").innerHTML = `<p class="sm-msg">Simulasi belum bisa dimuat: ${esc(e.message)}</p>`; }
 }
 function tutup() {
   if (!S) return;
-  cancelAnimationFrame(S.raf); S.worker?.terminate(); try { S.peta?.remove(); } catch {} if (S.akar) S.akar.innerHTML = ""; S = null;
+  cancelAnimationFrame(S.raf); S.wA?.terminate(); S.wL?.terminate(); try { S.peta?.remove(); } catch {} if (S.akar) S.akar.innerHTML = ""; S = null;
 }
 
 /* ---------------------------------------------------------------- angin & abu */
@@ -101,31 +105,31 @@ async function hitungAngin() {
   if (!a) { try { a = await anginOpenMeteo(s.g.lat, s.g.lon); s.anginSumber = "angin prakiraan Open-Meteo (ECMWF IFS), diambil langsung"; } catch (e) { console.error("angin:", e); } }
   if (S === s) s.angin = a;
 }
+/* satu Worker per pekerjaan (sim_kerja.js); gagal dibuat = pesan, bukan hitung di utas utama (klik tak boleh membeku) */
+function bikinKerja(s, k) {
+  const f = k === "A" ? "wA" : "wL"; if (s[f] !== undefined) return s[f];
+  try { const w = new Worker("/gunungapi/sim_kerja.js"); w.onerror = e => { console.error("worker " + k, e.message); s[f] = null; w.terminate(); pesanKerja(s, k); }; return s[f] = w; } catch (e) { s[f] = null; return null; }
+}
+const pesanKerja = (s, k) => { if (S !== s) return; $("#smMuat")?.classList.remove("on"); const el = $(k === "A" ? "#smHasil" : "#smLahar"); if (el) el.innerHTML = `<p class="sm-msg">${k === "A" ? "Sebaran abu" : "Lahar dan awan panas"} belum bisa dihitung di perangkat ini (Web Worker tidak tersedia).</p>`; };
 function hitungAbu() {
   const s = S; if (!s) return;
   if (!s.angin || !window.AbuModel) { $("#smHasil").innerHTML = `<p class="sm-msg">Sebaran abu belum bisa dihitung: ${!window.AbuModel ? "mesin abu belum dimuat" : "angin prakiraan tidak terjangkau"}.</p>`; return; }
+  const w = bikinKerja(s, "A"); if (!w) return pesanKerja(s, "A");
   const seq = ++s.seq; $("#smMuat").classList.add("on");
-  setTimeout(() => { if (S !== s || seq !== s.seq) return;
-    const t0 = performance.now();
-    s.hasil = AbuModel.jalankan({lat: s.g.lat, lon: s.g.lon, puncak_m: s.g.tinggi, kolom_m: s.p.kolom * 1000, durasi_jam: s.p.durasi, angin: s.angin, jam: 72, n: 2000, seed: 1});
-    s.msAbu = Math.round(performance.now() - t0);
-    endapan(); $("#smMuat").classList.remove("on"); gambarKolom(); gambarAbu(); hasilKartu(); tabelDesa(); evakuasi(); }, 30);
+  w.onmessage = e => { const d = e.data; if (S !== s || d.seq !== seq) return;
+    $("#smMuat").classList.remove("on");
+    if (!d.ok) { console.error("abu:", d.galat); $("#smHasil").innerHTML = `<p class="sm-msg">Sebaran abu gagal dihitung.</p>`; return; }
+    s.hasil = d.r.hasil; s.maks = d.r.maks; s.msAbu = d.r.ms; s.kisiR = d.r.kisi; s.desa.forEach((x, i) => { x.abu = d.r.desaAbu[i]; });
+    hasilKartu();   /* ringan: kartu kalimat; sisanya sesudah paint */
+    nanti(() => { if (S !== s || s.seq !== seq) return; terapkanKisi(); gambarKolom(); gambarAbu(); tabelDesa(); evakuasi(); }); };
+  w.postMessage({tipe: "abu", seq, lat: s.g.lat, lon: s.g.lon, puncak: s.g.tinggi, kolom_m: s.p.kolom * 1000, durasi: s.p.durasi, angin: s.angin, desa: s.desa.map(d => ({lat: d.lat, lon: d.lon}))});
 }
-/* massa relatif di kisi + desa dalam SATU panggilan (normalisasi sama) */
-function endapan() {
-  const s = S, h = s.hasil, akhir = h.snap[h.snap.length - 1]; let w = 1e9, e = -1e9, so = 1e9, n = -1e9;
-  for (let i = 0; i < akhir.lon.length; i++) if (akhir.aktif[i] || akhir.darat[i]) { w = Math.min(w, akhir.lon[i]); e = Math.max(e, akhir.lon[i]); so = Math.min(so, akhir.lat[i]); n = Math.max(n, akhir.lat[i]); }
-  if (w > e) { s.kisi = null; return; }
-  const m = 0.15, c = 1.4; /* kisi dibatasi ~150 km dari kawah: lebih jauh dari itu abu terlalu tipis untuk dibedakan */
-  w = Math.max(w - m, s.g.lon - c); e = Math.min(e + m, s.g.lon + c); so = Math.max(so - m, s.g.lat - c); n = Math.min(n + m, s.g.lat + c); const K = 32, dw = (e - w) / K, dn = (n - so) / K, titik = [];
-  for (let j = 0; j < K; j++) for (let i = 0; i < K; i++) titik.push({lon: w + (i + .5) * dw, lat: so + (j + .5) * dn});
-  const radKisi = Math.max(1, Math.min(8, Math.hypot(dw * 111 * Math.cos(s.g.lat * Math.PI / 180), dn * 111) * .7));
-  const nK = titik.length; s.desa.forEach(d => titik.push({lat: d.lat, lon: d.lon}));
-  const rel = AbuModel.endapan(h, {titik, radius_km: radKisi});
-  const fs = []; for (let q = 0; q < nK; q++) if (rel[q] > 0.01) { const t = titik[q]; fs.push({type: "Feature", geometry: {type: "Polygon", coordinates: [[[t.lon - dw / 2, t.lat - dn / 2], [t.lon + dw / 2, t.lat - dn / 2], [t.lon + dw / 2, t.lat + dn / 2], [t.lon - dw / 2, t.lat + dn / 2], [t.lon - dw / 2, t.lat - dn / 2]]]}, properties: {r: rel[q]}}); }
-  s.kisi = {type: "FeatureCollection", features: fs};
-  s.desa.forEach((d, i) => { d.abu = rel[nK + i]; });
-  const src = s.peta?.getSource("endap"); src?.setData(s.kisi);
+/* kisi endapan dari Worker (massa relatif per sel) -> poligon sel; tepi dipudarkan lewat opacity peta */
+function terapkanKisi() {
+  const s = S, k = s.kisiR; if (!k) { s.kisi = null; return; }
+  const fs = []; for (let q = 0; q < k.rel.length; q++) if (k.rel[q] > 0.01) { const i = q % k.K, j = (q / k.K) | 0, x0 = k.w + i * k.dw, y0 = k.so + j * k.dn;
+    fs.push({type: "Feature", geometry: {type: "Polygon", coordinates: [[[x0, y0], [x0 + k.dw, y0], [x0 + k.dw, y0 + k.dn], [x0, y0 + k.dn], [x0, y0]]]}, properties: {r: k.rel[q]}}); }
+  s.kisi = {type: "FeatureCollection", features: fs}; s.peta?.getSource("endap")?.setData(s.kisi);
 }
 const kelasAbu = r => r >= .5 ? ["Tebal", WARNA.tebal] : r >= .1 ? ["Sedang", WARNA.sedang] : r >= .02 ? ["Tipis", "#a8946a"] : null;
 
@@ -135,45 +139,55 @@ async function demDanLahar() {
   try { s.dem = await s.demP; } catch (e) { console.error("DEM:", e); if (S === s) { $("#smLahar").innerHTML = `<p class="sm-msg">Lahar dan awan panas tidak bisa dihitung: ${esc(e.message)}.</p>`; } return; }
   if (S !== s) return;
   if (s.peta?.getSource("dem")) { try { s.peta.setTerrain({source: "dem", exaggeration: s.dem.ex}); } catch {} gambarKolom(); gambarAbu(); }
+  const w = bikinKerja(s, "L"); if (!w) return pesanKerja(s, "L");
+  /* DEM dikirim SEKALI (buffer dipindah); pesan berikutnya hanya V dan hl */
+  w.postMessage({tipe: "dem", dem: s.dem.dem, n: s.dem.n, z: Z, lat: s.g.lat, pusat: s.dem.pusat}, [s.dem.dem.buffer]); s.dem.dem = null;
   hitungLahar();
 }
 function hitungLahar() {
-  const s = S; if (!s?.dem) return; const seq = ++s.laharSeq || (s.laharSeq = 1); s.laharSeq = seq; $("#smMuat").classList.add("on");
-  const opsi = {dem: s.dem.dem, n: s.dem.n, m: s.dem.n, z: Z, lat: s.g.lat, pusat: s.dem.pusat, V: s.p.V, hl: s.p.hl};
-  const selesai = r => { if (S !== s || seq !== s.laharSeq) return; $("#smMuat").classList.remove("on"); s.lahar = r; terapkanLahar(); };
-  const gagal = e => { console.error("lahar:", e); if (S === s) { $("#smMuat").classList.remove("on"); $("#smLahar").innerHTML = `<p class="sm-msg">Lahar dan awan panas gagal dihitung.</p>`; } };
-  try {
-    s.worker ||= new Worker("/gunungapi/sim_lahar.js");
-    s.worker.onmessage = e => e.data.ok ? selesai(e.data.r) : gagal(e.data.galat);
-    s.worker.onerror = () => { s.worker.terminate(); s.worker = null; setTimeout(() => { try { selesai(Lahar.simulasi(opsi)); } catch (e) { gagal(e); } }, 30); }; /* worker gagal dimuat: hitung di utas utama */
-    s.worker.postMessage(opsi);
-  } catch { setTimeout(() => { try { selesai(Lahar.simulasi(opsi)); } catch (e) { gagal(e); } }, 30); }
+  const s = S; if (!s?.dem || !s.wL) return; const seq = s.laharSeq = (s.laharSeq || 0) + 1; $("#smMuat").classList.add("on");
+  s.wL.onmessage = e => { const d = e.data; if (S !== s || d.seq !== seq) return; $("#smMuat").classList.remove("on");
+    if (!d.ok) { console.error("lahar:", d.galat); $("#smLahar").innerHTML = `<p class="sm-msg">Lahar dan awan panas gagal dihitung.</p>`; return; }
+    s.lahar = d.r; terapkanLahar(); };
+  s.wL.postMessage({tipe: "lahar", seq, V: s.p.V, hl: s.p.hl});
 }
+/* urgent: hanya kartu ringkas; kanvas, lapisan, himpunan indeks, desa, tabel menyusul sesudah paint */
 function terapkanLahar() {
-  const s = S, r = s.lahar, d = s.dem, m = s.peta; if (!r || !s.siap) { s.laharTunda = true; return; }
-  s.laharTunda = false;
-  const [x0, y0, x1, y1] = r.bbox, w = x1 - x0 + 1, h = y1 - y0 + 1, gx = d.tx0 * 256, gy = d.ty0 * 256;
-  const ll = (x, y) => Lahar.pxKeLL(Z, gx + x, gy + y);
-  s.kanvas = {w, h, x0, y0, coords: [ll(x0, y0), ll(x1 + 1, y0), ll(x1 + 1, y1 + 1), ll(x0, y1 + 1)]};
-  for (const k of ["lahar", "pdc"]) { const c = document.createElement("canvas"); c.width = w; c.height = h; s.kanvas[k] = {c, g: c.getContext("2d"), data: null, ptr: 0}; s.kanvas[k].data = s.kanvas[k].g.createImageData(w, h); }
-  /* sumber canvas (bukan image + data URL: CSP halaman melarang connect-src data:); ukuran canvas tetap per hasil, jadi sumber dipasang ulang */
-  for (const k of ["pdc", "lahar"]) { const id = k + "-img"; if (m.getLayer(id)) m.removeLayer(id); if (m.getSource(id)) m.removeSource(id);
-    m.addSource(id, {type: "canvas", canvas: s.kanvas[k].c, coordinates: s.kanvas.coords, animate: false}); m.addLayer({id, type: "raster", source: id, paint: {"raster-fade-duration": 0, "raster-resampling": "nearest"}}, "jalur"); }
-  m.getSource("jalur").setData({type: "FeatureCollection", features: r.jalur.map(j => ({type: "Feature", geometry: {type: "LineString", coordinates: j.titik.map(([x, y]) => ll(x, y))}, properties: {utama: j.utama ? 1 : 0}}))});
-  s.laharIdx = new Set(r.lahar.idx); s.pdcIdx = new Set(r.pdc.idx);
-  desaTerpapar(); gambarLahar(true); hasilKartu(); tabelDesa(); evakuasi();
+  const s = S, r = s.lahar; if (!r || !s.siap) { s.laharTunda = true; return; }
+  s.laharTunda = false; hasilKartu();
+  nanti(() => { if (S !== s || s.lahar !== r) return; const d = s.dem, m = s.peta;
+    const [x0, y0, x1, y1] = r.bbox, w = x1 - x0 + 1, h = y1 - y0 + 1, gx = d.tx0 * 256, gy = d.ty0 * 256;
+    const ll = (x, y) => Lahar.pxKeLL(Z, gx + x, gy + y);
+    s.kanvas = {w, h, x0, y0, coords: [ll(x0, y0), ll(x1 + 1, y0), ll(x1 + 1, y1 + 1), ll(x0, y1 + 1)]};
+    /* tiap lapis: kanvas topeng w x h (satu piksel per sel DEM, tepi keras) + kanvas tampil 2w x 2h yang diburamkan, supaya tepi lembut dan tidak berpiksel */
+    for (const k of ["lahar", "pdc"]) { const c = document.createElement("canvas"), mk = document.createElement("canvas"); c.width = 2 * w; c.height = 2 * h; mk.width = w; mk.height = h;
+      s.kanvas[k] = {c, g: c.getContext("2d"), mk, gm: mk.getContext("2d"), data: null, ptr: 0}; s.kanvas[k].data = s.kanvas[k].gm.createImageData(w, h); }
+    /* sumber canvas (bukan image + data URL: CSP halaman melarang connect-src data:); ukuran canvas tetap per hasil, jadi sumber dipasang ulang */
+    for (const k of ["lahar", "pdc"]) { const id = k + "-img"; if (m.getLayer(id)) m.removeLayer(id); if (m.getSource(id)) m.removeSource(id);
+      m.addSource(id, {type: "canvas", canvas: s.kanvas[k].c, coordinates: s.kanvas.coords, animate: false}); m.addLayer({id, type: "raster", source: id, paint: {"raster-fade-duration": 0, "raster-resampling": "linear", "raster-opacity": .9}}, "jalur"); }
+    m.getSource("jalur").setData({type: "FeatureCollection", features: r.jalur.map(j => ({type: "Feature", geometry: {type: "LineString", coordinates: j.titik.map(([x, y]) => ll(x, y))}, properties: {utama: j.utama ? 1 : 0}}))});
+    gambarLahar(true);   /* piksel digambar SEGERA setelah sumber kanvas dipasang: tekstur pertama sudah berisi */
+    nanti(() => { if (S !== s || s.lahar !== r) return; s.laharIdx = new Set(r.lahar.idx); s.pdcIdx = new Set(r.pdc.idx); desaTerpapar(); tabelDesa(); evakuasi(); }); });
 }
+/* tekstur kanvas hanya diunggah ulang selama play: jeda sesudah 2 frame digambar (satu frame yang sedang berjalan belum tentu memuat piksel baru). "idle" tak cocok: sumber yang play membuat peta tak pernah idle. */
+/* tepi bergradasi: topeng diperbesar 2x lalu diburamkan, ditimpa inti yang lebih tajam (ctx.filter belum ada di Safari lama: di sana hanya diperhalus oleh skala) */
+function lembut(o) { const g = o.g, W = o.c.width, H = o.c.height; g.clearRect(0, 0, W, H); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
+  try { g.filter = "blur(4px)"; } catch {} g.drawImage(o.mk, 0, 0, W, H); g.filter = "none"; g.globalAlpha = .45; try { g.filter = "blur(1.2px)"; } catch {} g.drawImage(o.mk, 0, 0, W, H); g.filter = "none"; g.globalAlpha = 1; }
+function unggahKanvas(m, src) { src.play(); clearTimeout(src._tp); src._tp = setTimeout(() => { try { src.pause(); m.triggerRepaint(); } catch {} }, 400); } /* play lalu pause setelah jeda tetap: pause() mengunggah isi kanvas terakhir; hitungan event render tak andal saat peta lambat */
 /* gambar sel yang sudah dicapai muka aliran pada jam t; maju = hanya tambahan, mundur = ulang dari nol */
 function gambarLahar(paksa) {
   const s = S, r = s.lahar, K = s.kanvas, m = s.peta; if (!r || !K || !m?.getSource("lahar-img")) return;
-  const hit = (nama, tabel, front, rgb) => { const o = K[nama]; if (!o) return; let ptr = o.ptr;
+  const hit = (nama, tabel, front, rgb, rad) => { const o = K[nama]; if (!o) return; let ptr = o.ptr;
     if (paksa || (ptr > 0 && tabel.s[ptr - 1] > front)) { o.data.data.fill(0); ptr = 0; }
     const px = o.data.data, n = s.dem.n; let tambah = paksa || ptr === 0;
-    while (ptr < tabel.s.length && tabel.s[ptr] <= front) { const i = tabel.idx[ptr], x = (i % n) - K.x0, y = ((i / n) | 0) - K.y0; if (x >= 0 && y >= 0 && x < K.w && y < K.h) { const q = (y * K.w + x) * 4; px[q] = rgb[0]; px[q + 1] = rgb[1]; px[q + 2] = rgb[2]; px[q + 3] = 215; } ptr++; tambah = true; }
+    /* satu sel DEM (~38 m) kurang dari 1 piksel layar pada zoom 10-11: digambar membesar (rad sel ke tiap sisi) agar alur sempit tetap terbaca */
+    while (ptr < tabel.s.length && tabel.s[ptr] <= front) { const i = tabel.idx[ptr], x0 = (i % n) - K.x0, y0 = ((i / n) | 0) - K.y0;
+      for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) { const x = x0 + dx, y = y0 + dy; if (x >= 0 && y >= 0 && x < K.w && y < K.h) { const q = (y * K.w + x) * 4; px[q] = rgb[0]; px[q + 1] = rgb[1]; px[q + 2] = rgb[2]; px[q + 3] = 255; } }
+      ptr++; tambah = true; }
     if (!tambah && ptr === o.ptr) return;
-    o.ptr = ptr; o.g.putImageData(o.data, 0, 0); const src = m.getSource(nama + "-img"); src.play(); src.pause(); /* play+pause = unggah ulang tekstur sekali */ };
-  hit("pdc", r.pdc, s.t * 3600 * V_PDC, [214, 69, 69]);
-  hit("lahar", r.lahar, Math.max(-1, (s.t - T_LAHAR) * 3600 * V_LAHAR), [63, 124, 196]);
+    o.ptr = ptr; o.gm.putImageData(o.data, 0, 0); lembut(o); const src = m.getSource(nama + "-img"); unggahKanvas(m, src); };
+  hit("pdc", r.pdc, s.t * 3600 * V_PDC, [214, 69, 69], 1);
+  hit("lahar", r.lahar, Math.max(-1, (s.t - T_LAHAR) * 3600 * V_LAHAR), [63, 124, 196], 2);
 }
 /* desa yang titiknya (atau tetangga 1 piksel) kena lahar / awan panas */
 function desaTerpapar() {
@@ -221,7 +235,7 @@ function gambarKolom() {
   const mir = s.angin?.lapis?.[2], lean = mir ? [mir.u[0], mir.v[0]] : [0, 0], ln = Math.hypot(lean[0], lean[1]) || 1;
   for (let i = 0; i < N; i++) { const u = Math.pow(i / N, .85), umb = Math.max(0, (u - .78) / .22), r = H * (.025 + .05 * u) + H * .45 * Math.sin(Math.min(1, umb) * Math.PI / 2) * (umb > 0 ? 1 : 0);
     const a = rng() * 2 * Math.PI, rr = r * Math.sqrt(rng()), z = s.g.tinggi + u * H, bengkok = H * .12 * u * u;
-    tulisTitik(out, s.g.lon + (Math.cos(a) * rr + lean[0] / ln * bengkok) / kx, s.g.lat + (Math.sin(a) * rr + lean[1] / ln * bengkok) / 110570, z, Math.max(300, H * (.1 + .08 * u) * (umb > 0 ? 1.6 : 1)), umb > 0 ? .22 : .32, Math.min(1, z / 12000), ex); }
+    tulisTitik(out, s.g.lon + (Math.cos(a) * rr + lean[0] / ln * bengkok) / kx, s.g.lat + (Math.sin(a) * rr + lean[1] / ln * bengkok) / 110570, z, Math.max(700, H * (.1 + .08 * u) * (umb > 0 ? 1.6 : 1)), (umb > 0 ? .22 : .32) + (H < 3000 ? .15 : 0), Math.min(1, z / 12000), ex); }
   s.kolomBuf = out; awanSet();
 }
 function gambarAbu() {
@@ -236,7 +250,7 @@ function gambarAbu() {
 }
 function awanSet() {
   const s = S, l = s.peta?.getLayer("awan")?.implementation; if (!l) return;
-  const kol = s.t <= s.p.durasi ? (s.kolomBuf || []) : []; l.set(new Float32Array([...kol, ...(s.abuBuf || [])]));
+  const kol = s.t <= s.p.durasi ? (s.kolomBuf || []) : []; const ab = s.abuBuf || [], f = new Float32Array(kol.length + ab.length); f.set(kol); f.set(ab, kol.length); l.set(f);
 }
 function gambarRadius() {
   const s = S, m = s.peta; if (!m?.getSource("radius")) return;
@@ -266,7 +280,7 @@ function petaBaru() {
     m.addSource("jalur", {type: "geojson", data: kosongFC()}); m.addSource("radius", {type: "geojson", data: kosongFC()}); m.addSource("rute", {type: "geojson", data: kosongFC(), promoteId: "i"});
     m.addSource("desa", {type: "geojson", data: kosongFC()});
     m.addSource("puncak", {type: "geojson", data: {type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]}, properties: {nama: g.nama}}});
-    m.addLayer({id: "endap", type: "fill", source: "endap", paint: {"fill-color": ["step", ["get", "r"], WARNA.tipis, .1, WARNA.sedang, .5, WARNA.tebal], "fill-opacity": ["interpolate", ["linear"], ["get", "r"], .01, 0, .06, .14, .5, .45, 1, .6], "fill-antialias": false}});
+    m.addLayer({id: "endap", type: "fill", source: "endap", paint: {"fill-color": ["step", ["get", "r"], WARNA.tipis, .1, WARNA.sedang, .5, WARNA.tebal], "fill-opacity": ["interpolate", ["linear"], ["get", "r"], .01, 0, .1, .06, .3, .25, 1, .6], "fill-antialias": false}});
     m.addLayer({id: "jalur", type: "line", source: "jalur", paint: {"line-color": "#5aa2ea", "line-width": ["case", ["==", ["get", "utama"], 1], 3, 1.6], "line-opacity": .9, "line-dasharray": [2, 1.5]}});
     m.addLayer({id: "radius-f", type: "fill", source: "radius", paint: {"fill-color": "#e8743b", "fill-opacity": .1}});
     m.addLayer({id: "radius-l", type: "line", source: "radius", paint: {"line-color": "#e8743b", "line-width": 2.5, "line-dasharray": [3, 2]}});
@@ -322,12 +336,12 @@ function legenda() {
 function hasilKartu() {
   const s = S, h = $("#smHasil"), r = s.lahar?.ringkas, hs = s.hasil; if (!h) return;
   const hl = Kartu.hl; let abuTxt = "";
-  if (hs) { let terjauh = null; for (let j = 1; j <= 24; j++) { const x = AbuModel.jejak(hs, j); if (x.poligon.length && (!terjauh || x.jangkau_km > terjauh.x.jangkau_km)) terjauh = {x, j}; }
-    abuTxt = terjauh ? `abu di atas ambang penerbangan 2 mg/m³ menjangkau ${hl(BULAT(terjauh.x.jangkau_km) + " km")} ke arah ${arahMata(terjauh.x.arah_deg)} (paling jauh jam ${terjauh.j})`
-      : `abu tetap ${hl("di bawah ambang penerbangan 2 mg/m³")} selama 24 jam pertama`; }
+  if (hs) { const M = s.maks;   /* jejak terjauh dihitung SEKALI di Worker (AbuModel.jejakMaks) */
+    abuTxt = M ? `abu di atas ambang penerbangan 2 mg/m³ menjangkau sampai ${hl(km5(M.jangkau_km) + " km")} ke arah ${arahMata(M.arah_deg)} dalam 72 jam pertama`
+      : `abu tetap ${hl("di bawah ambang penerbangan 2 mg/m³")} selama 72 jam, bukan berarti tanpa abu`; }
   const bagian = [abuTxt, r ? `lahar menempuh ${hl(BULAT(r.lahar_km, 1) + " km")} di lembah` : "", r ? `awan panas sampai ${hl(BULAT(r.pdc_km, 1) + " km")}` : ""].filter(Boolean);
   if (!bagian.length) { h.innerHTML = `<p class="sm-msg">Menghitung…</p>`; return; }
-  const kal = bagian.join(", "), judul = kal.charAt(0).toUpperCase() + kal.slice(1) + ".";
+  const judul = "Skenario: " + bagian.join(", ") + ".";
   h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km². Putar waktunya di bawah peta.</p>` : "", "Model skenario Pantau Bencana (abu_model.js dan LAHARZ)");
 }
 const arahMata = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(d / 45) % 8];
@@ -340,7 +354,7 @@ function tabelDesa() {
   const urut = s.desa.filter(d => d.abu != null).sort((a, b) => { const x = nil[T.urut](a), y = nil[T.urut](b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * (T.turun ? -1 : 1); });
   const baris = urut.slice(T.hal * per, T.hal * per + per);
   el.innerHTML = `<div class="tw"><table><thead><tr><th><button data-k="nama">Desa<i></i></button></th><th class="n"><button data-k="penduduk">Jiwa<i></i></button></th><th class="n"><button data-k="km">Jarak<i></i></button></th><th><button data-k="abu">Hujan abu<i>${T.urut === "abu" ? (T.turun ? "↓" : "↑") : ""}</i></button></th><th>Lahar/awan panas</th></tr></thead><tbody>${baris.map(d => { const k = kelasAbu(d.abu || 0);
-    return `<tr><td>${esc(d.nama)}</td><td class="n">${fmt(d.penduduk)}</td><td class="n">${BULAT(d.km, 1)} km</td><td>${k ? pil(k[0], k[1]) : "–"}</td><td>${d.pdc ? pil("Awan panas", WARNA.pdc) + " " : ""}${d.lahar ? pil("Lahar", WARNA.lahar) : ""}${!d.pdc && !d.lahar ? "–" : ""}</td></tr>`; }).join("") || `<tr><td colspan="5" class="kosong">Belum ada hasil.</td></tr>`}</tbody></table></div>${paginasi(T.hal, urut.length, per, "desa")}`;
+    return `<tr><td>${esc(d.nama)}</td><td class="n">${jiwaTxt(d.penduduk)}</td><td class="n">${BULAT(d.km, 1)} km</td><td>${k ? pil(k[0], k[1]) : "–"}</td><td>${d.pdc ? pil("Awan panas", WARNA.pdc) + " " : ""}${d.lahar ? pil("Lahar", WARNA.lahar) : ""}${!d.pdc && !d.lahar ? "–" : ""}</td></tr>`; }).join("") || `<tr><td colspan="5" class="kosong">Belum ada hasil.</td></tr>`}</tbody></table></div>${paginasi(T.hal, urut.length, per, "desa")}`;
   pengurutKepala(T, el.querySelector("thead tr"), tabelDesa);
 }
 
@@ -348,39 +362,53 @@ function tabelDesa() {
 function evakuasi() {
   const s = S, el = $("#smEvak"); if (!el) return;
   gambarDesa();
-  if (!s.pg) { el.innerHTML = `<p class="sm-msg">${s.g.penduduk_radius ? `Menurut data resmi, sekitar <b>${fmt(s.g.penduduk_radius)}</b> jiwa tinggal dalam radius rekomendasi PVMBG ${fmt(s.g.radius_km)} km. ` : ""}Data desa per gunung ini belum tersedia, jadi penduduk dalam radius pilihanmu belum bisa dihitung.</p>`; return; }
+  if (!s.pg) { el.innerHTML = `<p class="sm-msg">${s.g.penduduk_radius ? `Sekitar <b>${jiwaTxt(s.g.penduduk_radius)}</b> jiwa tinggal dalam radius rekomendasi PVMBG ${fmt(s.g.radius_km)} km (perkiraan WorldPop 1 km). ` : ""}Data desa per gunung ini belum tersedia, jadi penduduk dalam radius pilihanmu belum bisa dihitung.</p>`; return; }
   const dalam = s.desa.filter(d => d.km <= s.p.radius), luar = s.desa.filter(d => d.km > s.p.radius), jiwa = a => a.reduce((x, d) => x + (d.penduduk || 0), 0);
   const kena = luar.filter(d => d.lahar || d.pdc), abuTebal = luar.filter(d => (d.abu || 0) >= .5 && !d.lahar && !d.pdc);
   const hl = Kartu.hl;
-  /* jiwa dalam radius = cincin WorldPop 1 km (3/5/10/15 km) diinterpolasi linear di antaranya; jumlah desa terdaftar jauh lebih kecil dari penduduk sebenarnya */
+  /* jiwa dalam radius = cincin WorldPop 1 km (3/5/10/15 km); di antara cincin diinterpolasi menurut LUAS (r kuadrat), bukan r: penduduk tersebar di bidang */
   const C = [[0, 0], ...(s.pg.cincin || []).map(c => [c.km, c.penduduk])], r = Math.min(s.p.radius, C.at(-1)[0]);
-  let jr = null; if (C.length > 1) { const k = C.findIndex(c => c[0] >= r); jr = k <= 0 ? 0 : C[k - 1][1] + (C[k][1] - C[k - 1][1]) * (r - C[k - 1][0]) / (C[k][0] - C[k - 1][0]); }
-  el.innerHTML = `<p class="sm-msg">${jr != null ? `${hl("±" + rb(jr) + " jiwa")} tinggal dalam radius ${fmt(s.p.radius)} km (perkiraan WorldPop 1 km${s.p.radius > C.at(-1)[0] ? `, dihitung sampai ${C.at(-1)[0]} km` : ""}), ${hl(fmt(dalam.length) + " desa")} terdaftar di dalamnya terdampak pada skenario ini; ` : `${hl(fmt(dalam.length) + " desa")} (${fmt(jiwa(dalam))} jiwa di desa terdaftar) ada di dalam radius dan terdampak pada skenario ini; `}${hl(fmt(kena.length) + " desa")} (${fmt(jiwa(kena))} jiwa) di luar radius tetapi kena lahar atau awan panas; ${hl(fmt(abuTebal.length) + " desa")} (${fmt(jiwa(abuTebal))} jiwa) di luar radius dengan hujan abu tebal.</p>`;
+  let jr = null; if (C.length > 1) { const k = C.findIndex(c => c[0] >= r); jr = k <= 0 ? 0 : C[k - 1][1] + (C[k][1] - C[k - 1][1]) * (r * r - C[k - 1][0] ** 2) / (C[k][0] ** 2 - C[k - 1][0] ** 2); }
+  el.innerHTML = `<p class="sm-msg">${jr != null ? `${hl(jiwaTxt(jr) + " jiwa")} tinggal dalam radius ${fmt(s.p.radius)} km (perkiraan WorldPop 1 km${s.p.radius > C.at(-1)[0] ? `, dihitung sampai ${C.at(-1)[0]} km` : ""}), ${hl(fmt(dalam.length) + " desa")} terdaftar di dalamnya terdampak pada skenario ini; ` : `${hl(fmt(dalam.length) + " desa")} (${jiwaTxt(jiwa(dalam))} jiwa di desa terdaftar) ada di dalam radius dan terdampak pada skenario ini; `}${hl(fmt(kena.length) + " desa")} (${jiwaTxt(jiwa(kena))} jiwa) di luar radius tetapi kena lahar atau awan panas; ${hl(fmt(abuTebal.length) + " desa")} (${jiwaTxt(jiwa(abuTebal))} jiwa) di luar radius dengan hujan abu tebal.</p>`;
 }
-/* Dijkstra kecil: rute = polilinea, simpul dibulatkan 1e-4 derajat; tujuan = titik kumpul dari paparan.evakuasi */
-function rute() {
-  const s = S, el = $("#smRute"); if (!el) return;
-  const R = s.geo?.rute;
-  if (!R?.length) { el.innerHTML = `<p class="sm-msg">Data rute evakuasi belum tersedia untuk gunung ini, jadi menutup jalan dan waktu tempuh belum bisa dihitung.</p>`; return; }
-  const m = s.peta; if (m?.getSource("rute")) m.getSource("rute").setData({type: "FeatureCollection", features: R.map((c, i) => ({type: "Feature", geometry: {type: "LineString", coordinates: c}, properties: {i, tutup: s.tutup.has(i) ? 1 : 0}}))});
+/* Graf jalan dibangun SEKALI per s.geo (simpul dibulatkan 1e-4 derajat; tujuan = titik kumpul dari paparan.evakuasi); desa dipasangkan ke simpul terdekat sekali.
+   Klik ruas hanya menjalankan satu Dijkstra (d0 tanpa ruas ditutup di-cache). */
+function siapGraf(s) {
+  if (s.graf !== undefined && s.grafGeo === s.geo) return s.graf; s.grafGeo = s.geo;
+  const R = s.geo?.rute; if (!R?.length || !s.pg) return s.graf = null;
   const kunci = p => Math.round(p[0] * 1e4) + "," + Math.round(p[1] * 1e4), id = new Map(), pos = [], adj = [];
   const simpul = p => { const k = kunci(p); let i = id.get(k); if (i == null) { i = pos.length; id.set(k, i); pos.push(p); adj.push([]); } return i; };
   R.forEach((c, ri) => { for (let q = 1; q < c.length; q++) { const a = simpul(c[q - 1]), b = simpul(c[q]), w = jarakKm(c[q - 1][0], c[q - 1][1], c[q][0], c[q][1]); adj[a].push([b, w, ri]); adj[b].push([a, w, ri]); } });
   const dekat = p => { let b = -1, bd = 3; for (let i = 0; i < pos.length; i++) { const d = jarakKm(p[0], p[1], pos[i][0], pos[i][1]); if (d < bd) { bd = d; b = i; } } return b < 0 ? null : [b, bd]; };
   const tujuan = [...new Map((s.pg.evakuasi || []).filter(e => e.ke).map(e => [kunci(e.ke), e.ke])).values()].map(dekat).filter(Boolean);
-  if (!tujuan.length) { el.innerHTML = `<p class="sm-msg">Titik kumpul evakuasi belum tersedia, jadi waktu tempuh belum bisa dihitung.</p>`; return; }
-  const dij = tutupSet => { const d = new Float64Array(pos.length).fill(Infinity), h = [];
-    const dorong = x => { h.push(x); let c = h.length - 1; while (c > 0) { const p = (c - 1) >> 1; if (h[p][0] <= x[0]) break; h[c] = h[p]; c = p; } h[c] = x; };
-    const ambilH = () => { const t = h[0], x = h.pop(); if (h.length) { let c = 0; for (;;) { let a = 2 * c + 1; if (a >= h.length) break; if (a + 1 < h.length && h[a + 1][0] < h[a][0]) a++; if (h[a][0] >= x[0]) break; h[c] = h[a]; c = a; } h[c] = x; } return t; };
-    for (const [i] of tujuan) { d[i] = 0; dorong([0, i]); }
-    while (h.length) { const [du, u] = ambilH(); if (du > d[u]) continue; for (const [v, w, ri] of adj[u]) { if (tutupSet.has(ri)) continue; if (du + w < d[v]) { d[v] = du + w; dorong([d[v], v]); } } }
-    return d; };
-  const d0 = dij(new Set()), d1 = dij(s.tutup);
-  const menit = (d, p) => { const n = dekat(p); return n && isFinite(d[n[0]]) ? Math.round((d[n[0]] + n[1]) / KM_JAM_EVAKUASI * 60) : null; };
-  const hasil = s.desa.map(d => ({d, a: menit(d0, [d.lon, d.lat]), b: menit(d1, [d.lon, d.lat])})).filter(x => x.a != null && (x.b == null || x.b !== x.a)).sort((x, y) => ((y.b ?? 9e3) - y.a) - ((x.b ?? 9e3) - x.a)).slice(0, 8);
-  const putus = s.desa.filter(d => { const a = menit(d0, [d.lon, d.lat]); return a != null && menit(d1, [d.lon, d.lat]) == null; }).length;
+  const G = {pos, adj, tujuan, dn: s.desa.map(d => dekat([d.lon, d.lat])), d0: null};
+  G.d0 = tujuan.length ? dijkstra(G, new Set()) : null; return s.graf = G;
+}
+function dijkstra(G, tutupSet) {
+  const d = new Float64Array(G.pos.length).fill(Infinity), h = [];
+  const dorong = x => { h.push(x); let c = h.length - 1; while (c > 0) { const p = (c - 1) >> 1; if (h[p][0] <= x[0]) break; h[c] = h[p]; c = p; } h[c] = x; };
+  const ambilH = () => { const t = h[0], x = h.pop(); if (h.length) { let c = 0; for (;;) { let a = 2 * c + 1; if (a >= h.length) break; if (a + 1 < h.length && h[a + 1][0] < h[a][0]) a++; if (h[a][0] >= x[0]) break; h[c] = h[a]; c = a; } h[c] = x; } return t; };
+  for (const [i] of G.tujuan) { d[i] = 0; dorong([0, i]); }
+  while (h.length) { const [du, u] = ambilH(); if (du > d[u]) continue; for (const [v, w, ri] of G.adj[u]) { if (tutupSet.has(ri)) continue; if (du + w < d[v]) { d[v] = du + w; dorong([d[v], v]); } } }
+  return d;
+}
+function gambarRute() {
+  const s = S, R = s.geo?.rute, m = s.peta; if (!R?.length || !m?.getSource("rute")) return;
+  m.getSource("rute").setData({type: "FeatureCollection", features: R.map((c, i) => ({type: "Feature", geometry: {type: "LineString", coordinates: c}, properties: {i, tutup: s.tutup.has(i) ? 1 : 0}}))});
+}
+function rute() {
+  const s = S, el = $("#smRute"); if (!el) return;
+  if (!s.geo?.rute?.length) { el.innerHTML = `<p class="sm-msg">Data rute evakuasi belum tersedia untuk gunung ini, jadi menutup jalan dan waktu tempuh belum bisa dihitung.</p>`; return; }
+  gambarRute();
+  const G = siapGraf(s);
+  if (!G?.d0) { el.innerHTML = `<p class="sm-msg">Titik kumpul evakuasi belum tersedia, jadi waktu tempuh belum bisa dihitung.</p>`; return; }
+  const d1 = s.tutup.size ? dijkstra(G, s.tutup) : G.d0;
+  const menit = (d, i) => { const n = G.dn[i]; return n && isFinite(d[n[0]]) ? Math.round((d[n[0]] + n[1]) / KM_JAM_EVAKUASI * 60) : null; };
+  const baris = s.desa.map((d, i) => ({d, a: menit(G.d0, i), b: menit(d1, i)}));
+  const hasil = baris.filter(x => x.a != null && (x.b == null || x.b !== x.a)).sort((x, y) => ((y.b ?? 9e3) - y.a) - ((x.b ?? 9e3) - x.a)).slice(0, 8);
+  const putus = baris.filter(x => x.a != null && x.b == null).length;
   el.innerHTML = `<p class="sm-msg">Klik ruas hijau di peta untuk menutup jalan. ${s.tutup.size ? `<b>${s.tutup.size} ruas</b> ditutup, <b>${fmt(putus)} desa</b> terputus.` : "Belum ada ruas yang ditutup."} ${s.tutup.size ? `<button type="button" class="btn sec" id="smBuka" style="height:28px;padding:0 10px">Buka semua</button>` : ""}</p>
-    ${hasil.length ? `<div class="tw"><table><thead><tr><th>Desa</th><th class="n">Sebelum</th><th class="n">Sesudah</th></tr></thead><tbody>${hasil.map(x => `<tr><td>${esc(x.d.nama)}</td><td class="n">${x.a} mnt</td><td class="n">${x.b == null ? pil("Terputus", WARNA.pdc) : x.b + " mnt"}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
+    ${hasil.length ? `<div class="tw"><table><thead><tr><th>Desa</th><th class="n">Sebelum</th><th class="n">Sesudah</th></tr></thead><tbody>${hasil.map(x => `<tr><td>${esc(x.d.nama)}</td><td class="n">${mnt5(x.a)}</td><td class="n">${x.b == null ? pil("Terputus", WARNA.pdc) : mnt5(x.b)}</td></tr>`).join("")}</tbody></table></div>` : ""}`;
   $("#smBuka")?.addEventListener("click", () => { s.tutup.clear(); rute(); });
 }
 

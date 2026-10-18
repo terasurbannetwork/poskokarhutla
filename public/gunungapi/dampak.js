@@ -15,22 +15,22 @@ const Dampak = (() => {
   let D = null, P = null, A = null; const st = {k: "mengungsi", sk: "zona", gn: ""};
   const lv = id => S.st.gunung.find(g => idGn(g.nama) === id)?.level || 1, KRB = () => (P?.gunung || []).filter(g => g.zona_sumber === "KRB PVMBG");
   const med = a => { const x = [...a].sort((p, q) => p - q), n = x.length; return n % 2 ? x[(n - 1) / 2] : (x[n / 2 - 1] + x[n / 2]) / 2; };
-  const jt = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
-  const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener\">BNPB</a>"};
+  const jt = jiwaAngka;
+  const sumber = {BNPB: "<a href=\"https://data.bnpb.go.id/\" target=\"_blank\" rel=\"noopener noreferrer\">BNPB</a>"};
   /* kartu: pita bagian + kartu Insight dengan pil = nama bagian */
   const bag = (id, judul, isi, catatan, ctl = "") => { const [nm, w] = BAG[id];
     return `<section class="dk-bag" id="dk-${id}" data-bag="${id}"><header class="dk-sh" style="--w:${w}"><span class="dk-sn"></span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[id]}"/></svg><h2>${nm}</h2></header>${Kartu.ex(judul, "", "", isi, catatan, ctl).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${nm}</span>`)}</section>`; };
   /* batang horizontal berlabel pil: rows [{n, v, txt, w, tip}] */
-  function hbar(rows, R = 80) {
-    const Wd = Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), L = Wd < 500 ? 100 : 160, rh = 26, m = Math.max(1, ...rows.map(r => r.v)), X = v => L + v / m * (Wd - L - R);
+  function hbar(rows, R = 140) {
+    const Wd = Math.min(940, Math.max(330, ($("#dampak")?.clientWidth || 680) - 44 - (($("#dampak")?.clientWidth || 0) >= 1100 ? 224 : 0))), L = Wd < 500 ? 100 : 160, rh = 26, m = Math.max(1, ...rows.map(r => r.v)), X = v => L + v / m * (Wd - L - Math.min(R, Wd - L - 80));
     return `<svg class="dk-svg" viewBox="0 0 ${Wd} ${rows.length * rh}" role="img">${rows.map((r, i) => { const y = i * rh, t = r.txt ?? fmt(r.v);
       return `<g><text x="${L - 8}" y="${y + rh / 2 + 4}" text-anchor="end" font-size="11.5" font-weight="600">${esc(r.n)}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(1.5, X(r.v) - L)}" height="${rh - 10}" rx="3" fill="${r.w}" data-tip="${r.tip || ""}"/>${Kartu.pil(X(r.v) + 5, y + 3, t, r.w, "#fff", 11)[0]}</g>`; }).join("")}</svg>`; }
   function terpapar() {
     const T = D?.terpapar; if (!T?.jiwa) return "";
-    const R = T.daftar.slice(0, 12), SM = "Sumber: MAGMA Indonesia (PVMBG), WorldPop 2026";
+    const R = T.daftar.slice(0, 12), SM = "Sumber: MAGMA Indonesia (PVMBG), WorldPop 2026 1 km";
     return bag("pend", `Sekitar ${Kartu.hl(jt(T.jiwa) + " jiwa")} tinggal dalam radius rekomendasi ${fmt(T.gunung)} gunung berstatus Waspada ke atas`,
-      hbar(R.map(r => ({n: r.nama, v: r.jiwa, txt: "±" + rb(r.jiwa), w: WARNA_LV[r.level], tip: `<b>${esc(r.nama)}</b><br>${esc(r.prov)}<br>Radius: ${fmt(r.radius_km)} km<br>Perkiraan penduduk: ± ${fmt(r.jiwa)} jiwa`}))),
-      `Perkiraan orde besar: kisi penduduk 25 km jauh lebih kasar daripada radius, bukan hitungan per desa. ${SM}`); }
+      hbar(R.map(r => ({n: r.nama, v: r.jiwa, txt: jiwaTxt(r.jiwa) + " jiwa", w: WARNA_LV[r.level], tip: `<b>${esc(r.nama)}</b><br>${esc(r.prov)}<br>Radius: ${fmt(r.radius_km)} km<br>Perkiraan penduduk: ${jiwaTxt(r.jiwa)} jiwa`}))),
+      `Perkiraan WorldPop 1 km, bukan hitungan per desa. ${SM}`); }
   function hist() {
     const N = D?.tahunan, th = Object.keys(N || {}).sort(); if (th.length < 2) return "";
     const ada = Object.keys(KUNCI).filter(k => th.some(t => N[t][k] != null)); if (!ada.length) return "";
@@ -42,7 +42,7 @@ const Dampak = (() => {
       return `<g class="gy" style="--i:${i}" data-tip="<b>${t}</b><br>${nm}: ${fmt(v(t))} ${sat}"><rect x="${X(i) - bw / 2}" y="${y}" width="${bw}" height="${B - y}" rx="3" fill="${t === pk ? "#c9503a" : W.oranye}" opacity=".92"/><rect x="${X(i) - gap / 2}" y="${T}" width="${gap}" height="${B - T}" fill="transparent"/></g>`
         + `<text x="${X(i)}" y="${y - 5}" text-anchor="middle" font-size="9.5" font-weight="700" opacity=".75">${lbl}</text><text x="${X(i)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity=".65">${t}</text>`; }).join("");
     const d = v(lalu) ? Math.round((v(akhir) / v(lalu) - 1) * 100) : null;
-    const judul = `${Kartu.hl(fmt(v(akhir)) + " " + sat)} ${nm.toLowerCase()} akibat letusan gunung api sepanjang ${akhir}${d != null ? `, ${Kartu.hl((d >= 0 ? "naik " : "turun ") + fmt(Math.abs(d)) + "%")} dari ${lalu}` : ""}; tertinggi pada ${Kartu.hl(pk)} dengan ${fmt(v(pk))}`;
+    const judul = `${Kartu.hl(fmt(v(akhir)) + " " + sat)} ${nm.toLowerCase()} akibat letusan gunung api sepanjang ${akhir}${d != null ? `, ${v(lalu) < 20 || v(akhir) < 20 ? `${Kartu.hl("dari " + fmt(v(lalu)) + " ke " + fmt(v(akhir)) + " " + sat)} sejak ${lalu}` : Kartu.hl((d >= 0 ? "naik " : "turun ") + fmt(Math.abs(d)) + "%") + " dari " + lalu}` : ""}; tertinggi pada ${Kartu.hl(pk)} dengan ${fmt(v(pk))} ${sat}`;
     const ctl = `<div class="seg" role="group">${ada.map(x => `<button data-dks="k" data-bg="hist" data-v="${x}" aria-pressed="${st.k === x}">${KUNCI[x][0]}</button>`).join("")}</div>`;
     return bag("hist", judul, `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="${nm} per tahun">${g}</svg>`, `Sumber: ${sumber.BNPB}, kejadian erupsi gunung api 2010–${akhir}; hanya angka yang tercatat`, ctl); }
   /* penduduk per zona KRB atau per cincin jarak, nasional atau satu gunung */
@@ -53,15 +53,15 @@ const Dampak = (() => {
     const zona = st.sk === "zona" || !PG.length;
     let R, judul;
     if (zona) { const z = k => jum(g => g.zona?.[k]?.penduduk || 0);
-      R = ["III", "II", "I"].map(k => ({n: "KRB " + k, v: z(k), txt: "±" + rb(z(k)), w: WARNA_ZONA[k], tip: `<b>KRB ${k}</b><br>± ${fmt(z(k))} jiwa`})).filter(r => r.v > 0);
+      R = ["III", "II", "I"].map(k => ({n: "KRB " + k, v: z(k), txt: jiwaTxt(z(k)) + " jiwa", w: WARNA_ZONA[k], tip: `<b>KRB ${k}</b><br>${jiwaTxt(z(k))} jiwa`})).filter(r => r.v > 0);
       judul = `Sekitar ${Kartu.hl(jt(z("III")) + " jiwa")} tinggal di KRB III ${nm}, ${jt(z("II"))} jiwa lagi di KRB II`; }
     else { const c = km => jum(g => g.cincin?.find(x => x.km === km)?.penduduk || 0), W4 = ["#d64545", "#e8743b", "#e0b400", "#9aa4b2"];
-      R = [3, 5, 10, 15].map((km, i) => ({n: "≤ " + km + " km", v: c(km), txt: "±" + rb(c(km)), w: W4[i], tip: `<b>Dalam ${km} km dari kawah</b><br>± ${fmt(c(km))} jiwa`})).filter(r => r.v > 0);
+      R = [3, 5, 10, 15].map((km, i) => ({n: "≤ " + km + " km", v: c(km), txt: jiwaTxt(c(km)) + " jiwa", w: W4[i], tip: `<b>Dalam ${km} km dari kawah</b><br>${jiwaTxt(c(km))} jiwa`})).filter(r => r.v > 0);
       judul = `Sekitar ${Kartu.hl(jt(c(10)) + " jiwa")} tinggal dalam 10 km dari ${nm}, ${jt(c(5))} jiwa dalam 5 km`; }
     if (!R.length) return "";
     const sel = `<select data-dkc="gn" aria-label="Gunung"><option value="">Semua gunung</option>${[...P.gunung].sort((a, b) => a.nama.localeCompare(b.nama)).map(g => `<option value="${esc(g.id)}"${g.id === st.gn ? " selected" : ""}>${esc(g.nama)}</option>`).join("")}</select>`;
     const seg = `<div class="seg" role="group">${[["zona", "Zona KRB"], ["cincin", "Jarak dari kawah"]].map(([v, n]) => `<button data-dks="sk" data-bg="krb" data-v="${v}" aria-pressed="${st.sk === v}">${n}</button>`).join("")}</div>`;
-    return bag("krb", judul, hbar(R), `Orde besar (piksel 1 km)${st.gn ? "" : ", dijumlah per gunung"}. Sumber: KRB PVMBG 2018 (ESDM), WorldPop 2026`, sel + seg); }
+    return bag("krb", judul, hbar(R, 140), `Perkiraan WorldPop 1 km${st.gn ? "" : ", dijumlah per gunung"}. Sumber: KRB PVMBG 2018 (ESDM), WorldPop 2026`, sel + seg); }
   /* sekolah dan faskes di KRB III + II */
   function fas() {
     const L = KRB().map(g => ({g, s: (g.zona?.III?.sekolah || 0) + (g.zona?.II?.sekolah || 0), f: (g.zona?.III?.faskes || 0) + (g.zona?.II?.faskes || 0)})).filter(x => x.s + x.f > 0).sort((a, b) => b.s + b.f - a.s - a.f);
@@ -74,19 +74,23 @@ const Dampak = (() => {
   function evak() {
     const L = P.gunung.map(g => ({g, r: evakRingkas(g)})).filter(x => x.r); if (!L.length) return "";
     const n = L.reduce((a, x) => a + x.r.n, 0), R = [...L].sort((a, b) => b.r.maks_menit - a.r.maks_menit), tl = evakTerlama(R[0].g);
-    return bag("evak", `${Kartu.hl(fmt(n) + " desa")} di KRB III dan II ${fmt(L.length)} gunung api punya rute evakuasi; waktu tempuh arus bebas terlama ${Kartu.hl(fmt(R[0].r.maks_menit) + " menit")}${tl ? ` dari ${esc(tl.desa)}` : ""} (${esc(R[0].g.nama)})`,
-      hbar(R.slice(0, 12).map(x => ({n: x.g.nama, v: x.r.maks_menit, txt: `terlama ${fmt(x.r.maks_menit)} · median ${fmt(x.r.median_menit)} mnt`, w: "#2fb36a", tip: `<b>${esc(x.g.nama)}</b><br>${fmt(x.r.n)} desa KRB III dan II<br>Median ${fmt(x.r.median_menit)} menit, terlama ${fmt(x.r.maks_menit)} menit`})), 200),
-      "Hanya desa di KRB III dan II. Waktu tempuh arus bebas kendaraan di jalan OpenStreetMap (tanpa antrean evakuasi massal), bukan jalan kaki. Sumber: OpenStreetMap, perhitungan Pantau Bencana"); }
+    return bag("evak", `${Kartu.hl(fmt(n) + " desa")} di KRB III dan II ${fmt(L.length)} gunung api punya rute evakuasi; waktu tempuh arus bebas terlama ${Kartu.hl(mnt5(R[0].r.maks_menit))}${tl ? ` dari ${esc(tl.desa)}` : ""} (${esc(R[0].g.nama)})`,
+      hbar(R.slice(0, 12).map(x => ({n: x.g.nama, v: x.r.maks_menit, txt: "terlama " + mnt5(x.r.maks_menit), w: "#2fb36a", tip: `<b>${esc(x.g.nama)}</b><br>${fmt(x.r.n)} desa KRB III dan II<br>Median ${mnt5(x.r.median_menit)}, terlama ${mnt5(x.r.maks_menit)}`})), 190),
+      "Hanya desa di KRB III dan II. Waktu tempuh arus bebas kendaraan di jalan OpenStreetMap (tanpa antrean evakuasi massal), dibulatkan ke 5 menit, bukan jalan kaki. Sumber: OpenStreetMap, perhitungan Pantau Bencana"); }
   /* bandara di jalur abu skenario */
   function band() {
-    const B = [...(A?.bandara_terdampak || [])].sort((a, b) => a.jam_tiba - b.jam_tiba); if (!B.length) return "";
+    const B = (A?.bandara_terdampak || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba); if (!B.length) return "";
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id)?.nama || id;
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
       hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao} · ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
       "Skenario Pantau Bencana, bukan advisory VAAC. Sumber: model abu Pantau Bencana, OurAirports"); }
   const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};
-  const ulang = id => { const b = $("#dampak")?.querySelector("#dk-" + id); if (b) b.outerHTML = BAGIAN[id]() || ""; };
+  /* kontrol (segmen, pilihan gunung) tetap di tempat: hanya judul, isi, dan kaki yang diganti; pekerjaan berat sesudah paint */
+  const ulang = id => { const b = $("#dampak")?.querySelector("#dk-" + id); if (!b) return;
+    b.querySelectorAll("[data-dks]").forEach(x => x.setAttribute("aria-pressed", String(st[x.dataset.dks] === x.dataset.v)));
+    nanti(() => { const t = document.createElement("div"); t.innerHTML = BAGIAN[id]() || ""; const n = t.firstElementChild; if (!n) { b.remove(); return; }
+      for (const q of ["h3", ".ex-bd", ".ex-ft"]) { const x = b.querySelector(q), y = n.querySelector(q); if (x && y) x.replaceWith(y); } }); };
   async function render() {
     const el = $("#dampak"); if (!el) return;
     if (!el._dk) { el._dk = 1;
@@ -94,7 +98,7 @@ const Dampak = (() => {
         const s = e.target.closest("[data-dks]"); if (s) { st[s.dataset.dks] = s.dataset.v; ulang(s.dataset.bg || "hist"); return; }
         const nav = e.target.closest("[data-ke]"); if (nav) el.querySelector("#dk-" + nav.dataset.ke)?.scrollIntoView({behavior: "smooth", block: "start"}); });
       el.addEventListener("change", e => { const c = e.target.closest("[data-dkc]"); if (c) { st[c.dataset.dkc] = c.value; ulang("krb"); } });
-      let rf = 0; document.addEventListener("scroll", () => { if (rf) return; rf = requestAnimationFrame(() => { rf = 0; let a = ""; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = b.dataset.bag; });
+      let rf = 0; document.addEventListener("scroll", () => { if (rf || !el.offsetParent) return; rf = requestAnimationFrame(() => { rf = 0; let a = ""; el.querySelectorAll(".dk-bag").forEach(b => { if (b.getBoundingClientRect().top <= 140) a = b.dataset.bag; });
         el.querySelectorAll(".dk-nav button").forEach(b => b.classList.toggle("on", b.dataset.ke === a)); }); }, {capture: true, passive: true}); }
     if (!D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat dampak gunung api…</div>`;
       [D, P, A] = await Promise.all([muatJSON("../banjir/data/dampak_gunungapi.json").catch(() => ({})), Data.pap(), Data.abu()]); }
