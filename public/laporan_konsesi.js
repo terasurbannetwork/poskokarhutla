@@ -354,6 +354,7 @@
       </section>`;
     petaUtama();
     pasangGambar();
+    siapUrut();
   }
 
   const wilayah = r => (r.kab_titik?.length ? r.kab_titik : r.kab).slice(0, 2).join(", ") || "–";
@@ -696,8 +697,34 @@ ${rs.map(r => `<Folder><name>${xml(r.nama)}</name><Placemark><name>${xml(r.nama)
     const el = document.getElementById("p" + i); if (!el) return;
     el.scrollIntoView({behavior: "smooth", block: "start"}); el.classList.remove("kn-sorot"); void el.offsetWidth; el.classList.add("kn-sorot");
   }
+  /* urut tabel: klik/Enter di judul kolom. Panah aria-sort dicat seketika (chrome), baris diurutkan sesudah satu frame
+     tercat (INP: dua rAF, setTimeout sebagai jaring tab tersembunyi). Baris pita/subtotal/kab tetap di tempatnya; tiap
+     potongan baris data di antaranya diurutkan sendiri, jadi grup kab/kota dan bulan tidak tercampur. */
+  const sesudahCat = fn => { let ok = false; const jalan = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(jalan)); setTimeout(jalan, 120); };
+  const BLN_K = {Jan: 1, Feb: 2, Mar: 3, Apr: 4, Mei: 5, Jun: 6, Jul: 7, Agu: 8, Sep: 9, Okt: 10, Nov: 11, Des: 12};
+  const nilaiSel = td => { const t = (td?.innerText || "").trim();
+    if (!t || t === "–") return null;
+    const pr = PARAH_URUT.indexOf(t); if (pr >= 0) return pr;
+    if (/^(<\s*)?-?[\d.]+(,\d+)?\s*(%|hari|ha|titik|MW|PT)?$/.test(t)) return parseFloat(t.replace(/^<\s*/, "").replace(/\./g, "").replace(",", "."));
+    const tg = t.match(/^(\d{1,2})\D.*?\b(Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Sep|Okt|Nov|Des)\b/); if (tg) return BLN_K[tg[2]] * 100 + +tg[1];
+    return t.toLocaleLowerCase("id"); };
+  const bukanData = tr => tr.matches(".kn-sub,.kn-tot,.kn-kab,.kn-pita,.kn-subkab");
+  function urutkan(th) {
+    const tb = th.closest("table"), i = th.cellIndex, n = th.parentElement.cells.length;
+    const arah = th.getAttribute("aria-sort") === "descending" ? "ascending" : "descending";
+    th.parentElement.querySelectorAll("th[aria-sort]").forEach(x => x.removeAttribute("aria-sort"));
+    th.setAttribute("aria-sort", arah);   /* chrome: urgent */
+    sesudahCat(() => { const k = arah === "ascending" ? 1 : -1;
+      tb.querySelectorAll("tbody").forEach(bd => { let pot = [];
+        const tuang = acuan => { if (pot.length > 1) { const urut = pot.map(tr => [tr, nilaiSel(tr.cells[i])]).sort((a, b) => a[1] == null ? 1 : b[1] == null ? -1 : (a[1] < b[1] ? -1 : a[1] > b[1] ? 1 : 0) * k).map(x => x[0]);
+          urut.forEach(tr => bd.insertBefore(tr, acuan)); } pot = []; };
+        [...bd.rows].forEach(tr => { if (bukanData(tr) || tr.cells.length !== n) tuang(tr); else pot.push(tr); }); tuang(null); }); });
+  }
+  function siapUrut() { document.querySelectorAll("#knIsi .kn-tb thead th").forEach(th => { th.tabIndex = 0; th.title ||= "Klik untuk mengurutkan"; }); }
+  $("#knIsi").addEventListener("keydown", e => { const th = e.target.closest?.(".kn-tb thead th"); if (th && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); urutkan(th); } });
   $("#knIsi").addEventListener("keydown", e => { const br = e.target.closest?.("[data-gulir]"); if (br && e.target === br && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); naik(+br.dataset.gulir); } });
   $("#knIsi").addEventListener("click", e => {
+    const thU = e.target.closest(".kn-tb thead th"); if (thU) { urutkan(thU); return; }
     const kb = e.target.closest("[data-kab]");
     if (kb) { const k = kb.dataset.kab, buka = !KAB_BUKA.has(k); buka ? KAB_BUKA.add(k) : KAB_BUKA.delete(k); kb.querySelector("button").setAttribute("aria-expanded", buka);
       kb.closest("tbody").querySelectorAll(".kn-baris").forEach(tr => tr.hidden = !buka); return; }
