@@ -34,22 +34,28 @@
     : n ? `<span class="kn-lg kn-lg-i" style="width:${h}px;height:${h}px;font-size:${Math.round(h * .42)}px" aria-hidden="true">${esc(n.replace(/^(PT|Grup)\s+/i, "").split(/[\s/,()-]+/).filter(Boolean).slice(0, 2).map(w => w[0]).join("").toUpperCase())}</span>` : ""; };
   const bendera = (k, h = 14) => k && NEG[k] ? `<img class="kn-bd" src="/img/bendera/${k.toLowerCase()}.svg" alt="${NEG[k]}" title="${NEG[k]}" width="${Math.round(h * 4 / 3)}" height="${h}">` : "";
   /* grup di peta konsesi tanpa negara induk tercatat: nama rapi + negara induk (kantor pusat grup) */
-  const GRUP_RAPI = {"Adr": "ADR Group", "Government": "BUMN (Perhutani/Inhutani)", "RGE Group": "Royal Golden Eagle", "Sime Darby, Synergy Drive": "Sime Darby"};
+  const GRUP_RAPI = {"Adr": "ADR Group", "Government": "Perum Perhutani", "RGE Group": "Royal Golden Eagle", "Sime Darby, Synergy Drive": "Sime Darby"};
   const NEG_GRUP = {"Marubeni": "JP", "Sumitomo": "JP", "Cargill": "US", "Charoen Pokphand": "TH", "MP Evans Group PLC (MPE)": "GB", "PTT Green Energy Pte Ltd (PTTGE)": "TH",
     "Wilmar": "SG", "Musim Mas": "SG", "First Resources": "SG", "Royal Golden Eagle": "SG", "RGE/APRIL": "SG", "Sinar Mas": "ID", "Salim Group": "SG", "Goodhope Asia Holdings": "SG",
     "Sime Darby": "MY", "Genting Group": "MY", "BHD Group": "MY", "Lion Group": "MY", "Sampoerna Agro/POSCO": "ID", "Sampoerna Agro": "ID",
     "Astra International": "ID", "Duta Palma Group": "ID", "Surya Dumai Group": "ID", "Incasi Raya": "ID", "Lyman Group": "ID", "Ganda Group": "ID", "Perkebunan Nusantara": "ID",
     "Barito Pacific": "ID", "Bakrie Group": "ID", "Medco Group": "ID", "Djarum Group": "ID", "Sambu Group": "ID", "Rokan Group": "ID", "Berca Group": "ID", "Wings": "ID",
-    "Sungai Budi Group": "ID", "Media Group": "ID", "ADR Group": "ID", "BUMN (Perhutani/Inhutani)": "ID", "Borneo Group": "ID", "Kaestindo Group": "ID", "SIMP": "ID"};
+    "Sungai Budi Group": "ID", "Media Group": "ID", "ADR Group": "ID", "Perum Perhutani": "ID", "Borneo Group": "ID", "Kaestindo Group": "ID", "SIMP": "ID"};
   /* unit usaha di bawah grup menurut jenis konsesi (mis. Sinar Mas di HTI = APP); logo ikut unitnya */
   const UNIT = {"Sinar Mas|hti": "Asia Pulp & Paper (APP)", "Sinar Mas|sawit": "Golden Agri-Resources (GAR)", "Royal Golden Eagle|hti": "APRIL (Asia Pacific Resources International)",
     "RGE/APRIL|hti": "APRIL (Asia Pacific Resources International)", "Royal Golden Eagle|sawit": "Asian Agri", "Salim Group|sawit": "Indofood Agri Resources (IndoAgri)",
     "Astra International|sawit": "Astra Agro Lestari", "Sime Darby|sawit": "SD Guthrie", "Wilmar|sawit": "Wilmar International", "Musim Mas|sawit": "Musim Mas Holdings",
     "Marubeni|hti": "Musi Hutan Persada (Marubeni Corp.)", "Perkebunan Nusantara|sawit": "PTPN (Holding Perkebunan Nusantara)", "Barito Pacific|hti": "Barito Pacific Timber"};
   const unitDari = r => UNIT[`${r.grup}|${r.jenis}`] || "";
+  /* BUMN: dikenali dari nama (bukan dari "d/h ..." yang menyebut pemilik lama). Patungan swasta (Silva Inhutani, Wono Inhutani) tidak ikut */
+  const BUMN = [[/^(PT\.?\s+)?Inhutani|^PT INHUTANI/i, "Perum Perhutani"], [/Perkebunan Nusantara|^Ptpn|PTP Nusantara|^PT PN [IVX]+/i, "Holding Perkebunan Nusantara (PTPN III)"],
+    [/Bukit Asam|Aneka Tambang/i, "MIND ID"], [/Semen Baturaja/i, "SIG (Semen Indonesia)"], [/Pertamina EP|PHE /i, "Pertamina"]];
+  const bumnDari = r => { const n = r.nama.replace(/\([^)]*\)/g, ""); return BUMN.find(([re]) => re.test(n))?.[1] || ""; };
   const rapikan = r => { if (r._rapi) return r; r._rapi = 1; r.grup = GRUP_RAPI[r.grup] ?? r.grup;
     if (/Sinar Mas/i.test(r.grup)) r.negara = ["ID"];   /* Sinar Mas = grup Indonesia (pemilik, 18 Okt 2026) */
-    if (!(r.negara || []).length && NEG_GRUP[r.grup]) r.negara = [NEG_GRUP[r.grup]]; r.unit = unitDari(r); return r; };
+    if (!(r.negara || []).length && NEG_GRUP[r.grup]) r.negara = [NEG_GRUP[r.grup]]; r.unit = unitDari(r);
+    r.bumn = bumnDari(r); if (r.bumn) { r.grup = "BUMN"; r.unit = r.bumn; r.negara = ["ID"]; }   /* grup ditulis BUMN, holding jadi unit usaha (pemilik, 18 Okt 2026) */
+    return r; };
   const API = '<svg class="kn-api" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z" fill="#f08a3c"/><path d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z" fill="#ffd36b"/></svg>';
   /* kunci warna SWIR (sama dengan citra.js) */
   const LEG_SWIR = `<div class="kn-leg kn-leg-sw">${[["#ff5a1f", "Api aktif / bara"], ["#5a3a24", "Bekas terbakar"], ["#3f9a3a", "Vegetasi hidup"], ["#e8b98a", "Tanah terbuka"], ["#b9d3e6", "Asap tebal"], ["#fff", "Awan"]]
@@ -60,6 +66,7 @@
   const rentang = (a, b) => a === b ? tgl(a) : a.slice(5, 7) === b.slice(5, 7) ? `${+a.slice(8)}–${tgl(b)}` : `${tgl(a)} – ${tgl(b)}`;
   const ha = n => fmt(Math.round(n));
   const pct = p => p == null ? "–" : p > 0 && p < .005 ? "< 1%" : Math.round(p * 100) + "%";
+  const bumnPil = r => r.bumn ? `<span class="kn-bumn" title="Badan Usaha Milik Negara · ${esc(r.bumn)}">BUMN</span>` : "";
   const jenisPil = j => `<span class="kn-j" style="--w:${JN[j]?.[1] || "#888"}">${JN[j]?.[0] || j}</span>`;
 
   const S = {prov: new Set(BNPB), jenis: new Set(Object.keys(JN)), cari: "", profil: 20, dasar: "google", urut: "titik"};
@@ -416,10 +423,7 @@
       {id: "d", type: "raster", source: "d", paint: dasar.img ? {"raster-fade-duration": 0} : {}},
       {id: "pf", type: "fill", source: "p", paint: {"fill-color": "#00e5ff", "fill-opacity": .08}},
       {id: "pl", type: "line", source: "p", paint: {"line-color": "#00e5ff", "line-width": 2.2}},
-      {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}},
-      {id: "lt", type: "circle", source: "l", paint: {"circle-radius": 12, "circle-color": "#0b2545", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2}},
-      {id: "lb", type: "symbol", source: "l", layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-allow-overlap": true, "symbol-sort-key": ["-", 0, ["get", "t"]]},
-        paint: {"text-color": "#ffffff"}}]});
+      {id: "t", type: "circle", source: "t", paint: {"circle-radius": rad, "circle-color": ["case", ["==", ["get", "b"], 1], "#ff2d2d", "#ffcc00"], "circle-stroke-color": "#3a0a00", "circle-stroke-width": .6, "circle-opacity": .92}}]});
   const bbox = rs => { let a = [180, 90, -180, -90]; const ad = ([x, y]) => { a = [Math.min(a[0], x), Math.min(a[1], y), Math.max(a[2], x), Math.max(a[3], y)]; };
     rs.forEach(r => { r.geom.forEach(g => (g.type === "MultiPolygon" ? g.coordinates.flat(2) : g.coordinates.flat(1)).forEach(ad)); r.pt.forEach(p => ad([p[1], p[0]])); }); return [[a[0], a[1]], [a[2], a[3]]]; };
 
@@ -430,6 +434,7 @@
     peta = new maplibregl.Map({container: "knPeta", style: gaya(DASAR[S.dasar], rs, null, ["interpolate", ["linear"], ["zoom"], 5, 1.6, 10, 4], SUSUN.length === 1 ? 300 : 0), bounds: bbox(rs), fitBoundsOptions: {padding: 30},
       attributionControl: {compact: true}, canvasContextAttributes: {preserveDrawingBuffer: true}, preserveDrawingBuffer: true});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}));
+    if (SUSUN.length === 1) { const tata = () => calloutSvg(peta, rs, 300); peta.on("load", tata); peta.on("moveend", tata); peta.on("resize", tata); }
     peta.on("click", "pf", e => { const p = e.features[0].properties;
       new maplibregl.Popup({closeButton: true}).setLngLat(e.lngLat).setHTML(`<b>${esc(p.nama)}</b><br>${+p.i < S.profil ? `<a href="#p${p.i}">Lihat profil</a>` : `peringkat ${+p.i + 1}`}`).addTo(peta); });
     peta.on("mouseenter", "pf", () => { peta.getCanvas().style.cursor = "pointer"; });
@@ -440,6 +445,41 @@
   let kanvas = null, antre = Promise.resolve();
   const siapKanvas = () => kanvas ||= new maplibregl.Map({container: "knKanvas", style: {version: 8, sources: {}, layers: []}, interactive: false, attributionControl: false,
     preserveDrawingBuffer: true, canvasContextAttributes: {preserveDrawingBuffer: true}, fadeDuration: 0});
+  /* ---------- callout bernomor: penanda yang bertumpuk disebar menjauh, garis penunjuk ke titik tengah apinya ---------- */
+  function tataCallout(ps, w, h, r = 11) {
+    const L = ps.map(p => ({...p, lx: p.x, ly: p.y}));
+    for (let it = 0; it < 220; it++) {
+      for (let i = 0; i < L.length; i++) for (let j = i + 1; j < L.length; j++) {
+        const a = L[i], b = L[j], dx = b.lx - a.lx, dy = b.ly - a.ly, d = Math.hypot(dx, dy) || .01, min = r * 2 + 3;
+        if (d < min) { const k = (min - d) / 2, ux = dx / d || Math.cos(i), uy = dy / d || Math.sin(i); a.lx -= ux * k; a.ly -= uy * k; b.lx += ux * k; b.ly += uy * k; }
+      }
+      L.forEach(p => { p.lx += (p.x - p.lx) * .02; p.ly += (p.y - p.ly) * .02; p.lx = Math.max(r + 2, Math.min(w - r - 2, p.lx)); p.ly = Math.max(r + 2, Math.min(h - r - 2, p.ly)); });
+    }
+    return L;
+  }
+  const labelDari = (rs, lab) => rs.slice().sort((a, b) => a._rp - b._rp).slice(0, lab).map(r => ({n: String(r._rp), lon: r.pusat[1], lat: r.pusat[0]}));
+  /* gambar callout di atas gambar peta (kanvas 2D), dipakai untuk potret/cetak */
+  function callout2d(m, rs, lab) {
+    const src = m.getCanvas(), c = document.createElement("canvas"); c.width = src.width; c.height = src.height;
+    const x = c.getContext("2d"), s = src.width / src.clientWidth; x.drawImage(src, 0, 0);
+    const L = tataCallout(labelDari(rs, lab).map(p => { const q = m.project([p.lon, p.lat]); return {...p, x: q.x * s, y: q.y * s}; }), c.width, c.height, 11 * s);
+    x.lineWidth = 1.6 * s; x.strokeStyle = "#ffffff";
+    L.forEach(p => { if (Math.hypot(p.lx - p.x, p.ly - p.y) > 4 * s) { x.beginPath(); x.moveTo(p.x, p.y); x.lineTo(p.lx, p.ly); x.stroke(); x.beginPath(); x.arc(p.x, p.y, 2.6 * s, 0, 7); x.fillStyle = "#fff"; x.fill(); } });
+    L.forEach(p => { x.beginPath(); x.arc(p.lx, p.ly, 11 * s, 0, 7); x.fillStyle = "#0b2545"; x.fill(); x.strokeStyle = "#fff"; x.lineWidth = 2 * s; x.stroke();
+      x.fillStyle = "#fff"; x.font = `800 ${(p.n.length > 2 ? 8.5 : 10) * s}px Inter, sans-serif`; x.textAlign = "center"; x.textBaseline = "middle"; x.fillText(p.n, p.lx, p.ly + .5 * s); });
+    return c.toDataURL("image/jpeg", .88);
+  }
+  /* callout di peta interaktif: SVG di atas peta, ditata ulang tiap selesai geser/zoom */
+  function calloutSvg(m, rs, lab) {
+    let svg = m.getContainer().querySelector(".kn-co");
+    if (!svg) { svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"); svg.setAttribute("class", "kn-co"); m.getContainer().append(svg); }
+    const w = m.getContainer().clientWidth, h = m.getContainer().clientHeight;
+    const L = tataCallout(labelDari(rs, lab).map(p => { const q = m.project([p.lon, p.lat]); return {...p, x: q.x, y: q.y}; }).filter(p => p.x > -20 && p.y > -20 && p.x < w + 20 && p.y < h + 20), w, h);
+    svg.setAttribute("viewBox", `0 0 ${w} ${h}`);
+    svg.innerHTML = L.map(p => Math.hypot(p.lx - p.x, p.ly - p.y) > 4 ? `<line x1="${p.x}" y1="${p.y}" x2="${p.lx}" y2="${p.ly}"/><circle class="a" cx="${p.x}" cy="${p.y}" r="2.6"/>` : "").join("")
+      + L.map(p => `<g><circle cx="${p.lx}" cy="${p.ly}" r="11"/><text x="${p.lx}" y="${p.ly + 3.6}" font-size="${p.n.length > 2 ? 8.5 : 10}">${p.n}</text></g>`).join("");
+  }
+
   /* uk = [lebar, tinggi] kanvas; peta provinsi digambar besar & mendatar supaya penuh satu halaman A4 */
   const potret = (dasar, rs, hari, lab = 0, uk = [720, 460]) => new Promise(ok => {
     const m = siapKanvas(), kv = $("#knKanvas");
@@ -447,7 +487,7 @@
     m.setStyle(gaya(dasar, rs, hari, lab ? 2.4 : 3.2, lab), {diff: false});
     m.fitBounds(dasar.img ? [[dasar.bb[0], dasar.bb[1]], [dasar.bb[2], dasar.bb[3]]] : bbox(rs), {padding: dasar.img ? 0 : 28, maxZoom: dasar.maxzoom === 9 ? 11 : 14, animate: false});
     let selesai = false; const t0 = Date.now();
-    const ambil = () => { if (selesai) return; if (!m.areTilesLoaded() && Date.now() - t0 < 12000) return void m.once("idle", ambil); selesai = true; try { ok(m.getCanvas().toDataURL("image/jpeg", .86)); } catch (e) { ok(""); } };
+    const ambil = () => { if (selesai) return; if (!m.areTilesLoaded() && Date.now() - t0 < 12000) return void m.once("idle", ambil); selesai = true; try { ok(lab ? callout2d(m, rs, lab) : m.getCanvas().toDataURL("image/jpeg", .86)); } catch (e) { ok(""); } };
     m.once("idle", ambil); setTimeout(ambil, 15000);
   });
   /* porsi piksel hampir hitam di gambar (celah data VIIRS) */
