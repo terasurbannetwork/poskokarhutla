@@ -29,7 +29,14 @@ const WARNA_SEV = {Minor: "#e3b94e", Moderate: "#e58a45", Severe: "#c9503a", Ext
 const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
 
 /* ================================================================ state */
-const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: []};
+const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sar: null, ver: null, dmp: null};
+/* tingkat Pantau Bencana (registry cuaca.tingkat); ganti dari /bencana.json bila terbaca */
+let TINGKAT = [["Normal", "#9aa4b2"], ["Waspada", "#e0b400"], ["Siaga", "#e8743b"], ["Awas", "#d64545"]];
+const warnaT = t => TINGKAT[t]?.[1] || TINGKAT[0][1], namaT = t => TINGKAT[t]?.[0] || "";
+const pilT = t => `<span class="pl" style="--w:${warnaT(t)}">${namaT(t)}</span>`;
+const lbl3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Math.round((Date.parse(h + "T12:00:00+07:00") - Date.parse(tglWIB(SEKARANG()) + "T12:00:00+07:00")) / 864e5); return n === 0 ? "Hari ini" : n === 1 ? "Besok" : n === 2 ? "Lusa" : tglPendek(h); };
+const kIdx = () => S.kec ? S.kec.hari.indexOf(S.pr.hari[S.hari]) : -1;   /* hari terpilih di kontrak 72 jam; -1 = di luar 3 hari */
+const pct = (a, b) => b ? Math.round(a / b * 100) : null;
 const namaProv = k => S.meta?.prov?.[k] ?? k;
 const AMB = () => S.meta.ambang;
 
@@ -59,7 +66,20 @@ const gelap = () => document.documentElement.dataset.theme ? document.documentEl
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
 
 /* ================================================================ data */
+/* berkas tambahan boleh hilang: kartu dan lapisan yang datanya tak ada dibuang (A18) */
+const opsi = u => muatJSON(u).catch(() => null);
+async function muatTambahan() {
+  const B = "../banjir/data/", [kec, gel, sik, sar, ver, dmp, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
+  const tg = reg?.bencana?.find(b => b.id === "cuaca")?.tingkat; if (tg?.length === 4) TINGKAT = tg.map(x => [x.nama, x.warna]);
+  if (kec?.kec?.length) { const pk = await opsi(B + "pusat_kec.json"); if (pk) Object.assign(S, {kec, kecKunci: Object.keys(pk), kecPusat: Object.values(pk)}); }
+  if (gel?.titik?.length) S.gel = gel;
+  if (sik?.aktif?.length) S.sik = sik;
+  if (sar && dmp && (dmp.pelabuhan?.length || dmp.bandara?.length)) S.sar = sar;
+  if (ver && (ver.bmkg || ver.kita)) S.ver = ver;
+  S.dmp = dmp;
+}
 async function muatData() {
+  const tambahan = muatTambahan();
   const [pr, meta, geo] = await Promise.all([muatJSON("../banjir/data/cuaca_prakiraan.json"), muatJSON("../banjir/data/cuaca_meta.json"), muatJSON("../geo/provinsi.json")]);
   Object.assign(S, {pr, meta, geo});
   /* nowcast: /api/cuaca/nowcast (Worker menarik BMKG tiap 10 menit) lebih dulu, lalu peringatan.json harian; gelombang selalu dari peringatan.json.
@@ -73,6 +93,7 @@ async function muatData() {
   S.sel = new Map(pr.sel.map(r => [r[0].toFixed(3) + "," + r[1].toFixed(3), r]));
   S.ensK = new Map(pr.ens.map(r => [Math.round(r[0]) + "," + Math.round(r[1]), r]));
   olahPeringatan();
+  await tambahan;
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
 }
 /* peringatan yang masih berlaku pada jam sekarang. Nowcast: satu CAP satu baris. Gelombang: satu provinsi satu baris (nama perairan dihitung per kelas);

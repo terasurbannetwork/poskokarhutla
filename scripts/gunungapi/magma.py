@@ -246,5 +246,19 @@ def uji():
     print("ok")
 
 
+def rantai():
+    """Sesudah status tertulis: abu.py (bila ada) lalu laporan.py. Gagal = peringatan, berkas lama dibiarkan, exit tetap 0."""
+    import subprocess
+    d = os.path.dirname(os.path.abspath(__file__))
+    for nama in ("abu.py", "laporan.py"):
+        s = os.path.join(d, nama)
+        if os.path.exists(s) and (subprocess.call([sys.executable, s, "uji"]) != 0 or subprocess.call([sys.executable, s]) != 0):
+            print(f"::warning title=gunungapi::{nama} gagal; berkas lamanya dibiarkan", file=sys.stderr)
+
+
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else jalan()
+    if sys.argv[1:] == ["uji"]:
+        uji()
+    else:
+        jalan()  # gagal membaca MAGMA = SystemExit, tanpa rantai
+        rantai()

@@ -102,10 +102,33 @@
       return out;
     }
 
-    return { mmi: mmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d, m), v == null ? vs0 : v); },
+    /* TAMBAHAN (fungsi murni, tidak mengubah angka di atas): fasilitas dari data/bukti.json ({fasilitas_kolom, fasilitas}) yang diperkirakan >= ambang MMI
+       (baku VI) oleh gempa gm; hanya fasilitas di daftar bukti, bukan semua sekolah/RS. */
+    function fasilitas(gm, bukti, ambang) {
+      var c = bukti.fasilitas_kolom, it = c.indexOf("t"), inm = c.indexOf("nama"), ila = c.indexOf("lat"), ilo = c.indexOf("lon"), amb = ambang == null ? 6 : ambang;
+      var jenis = gm.jenis || tebakJenis(gm.dalam, gm.m, gm.lat, gm.lon), win = jendelaKm(gm.m, gm.dalam, jenis, vs0), out = [];
+      (bukti.fasilitas || []).forEach(function (r) {
+        var d = jarakKm(gm.lat, gm.lon, r[ila], r[ilo]); if (d > win) return;
+        var v = mmi(gm.m, d, gm.dalam, jenis, vs0); if (v >= amb) out.push({ t: r[it], nama: r[inm], mmi: v });
+      });
+      return out;
+    }
+
+    return { fasilitas: fasilitas, mmi: mmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d, m), v == null ? vs0 : v); },
              jendelaKm: function (m, d, j, v) { return jendelaKm(m, d, j, v == null ? vs0 : v); },
              kecamatan: function (gm, p, v) { return kecamatan(gm, p, v == null ? vs0 : v); }, tebakJenis: tebakJenis, ekstrapolasi: ekstrapolasi };
   }
 
-  g.GempaGuncangan = { pasang: pasang };
+  /* TAMBAHAN: penduduk per kelas MMI bulat (1..12). hasil = keluaran M.kecamatan(), pend = {kunci kecamatan: jiwa} (data/penduduk.json "kec").
+     Kecamatan tanpa data penduduk dilewati dan dihitung di `tanpa`. */
+  function paparan(hasil, pend) {
+    var per = {}, total = 0, tanpa = 0;
+    for (var k in hasil) {
+      var j = pend[k]; if (!j) { tanpa++; continue; }
+      var kls = Math.min(12, Math.max(1, Math.round(hasil[k].mmi))); per[kls] = (per[kls] || 0) + j; total += j;
+    }
+    return { per: per, total: total, tanpa: tanpa };
+  }
+
+  g.GempaGuncangan = { pasang: pasang, paparan: paparan };
 })(typeof window !== "undefined" ? window : globalThis);

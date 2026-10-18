@@ -111,14 +111,13 @@ function simulasi(o) {
   for (let k = 0; k < 12; k++) { const a = k / 12 * 2 * Math.PI, x = Math.round(px0 + Math.cos(a) * rr), y = Math.round(py0 + Math.sin(a) * rr); if (x > 0 && y > 0 && x < n - 1 && y < m - 1) awal.push(y * n + x); }
   const jalur = [], titikJauh = []; /* titikJauh: sel pada ~2,5 km sepanjang jalur, dipakai membedakan lembah */
   for (const s0 of awal) {
-    const P = alur(dir, s0, N), S = new Float32Array(P.length); for (let i = 1; i < P.length; i++) S[i] = S[i - 1] + dx * (Math.abs((P[i] % n) - (P[i - 1] % n)) + Math.abs(((P[i] / n) | 0) - ((P[i - 1] / n) | 0)) === 2 ? Math.SQRT2 : 1);
+    const P = alur(dir, s0, N), S = new Float32Array(P.length); for (let i = 1; i < P.length; i++) { const diag = P[i] % n !== P[i - 1] % n && ((P[i] / n) | 0) !== ((P[i - 1] / n) | 0); S[i] = S[i - 1] + dx * (diag ? Math.SQRT2 : 1); }
     let q = P.length - 1; for (let i = 0; i < P.length; i++) if (Math.hypot(P[i] % n - px0, ((P[i] / n) | 0) - py0) * dx >= 2500) { q = i; break; }
     const kunci = [P[q] % n, (P[q] / n) | 0];
     if (P.length < 8) continue;
     if (s0 !== pi && titikJauh.some(t => Math.hypot(t[0] - kunci[0], t[1] - kunci[1]) < 8)) continue;
-    if (s0 !== pi) { const sama = jalur.find(j => j.P.includes(P[Math.min(P.length - 1, 10)]) && j.P.indexOf(P[Math.min(P.length - 1, 10)]) > 0 && false); if (sama) continue; }
     titikJauh.push(kunci); jalur.push({P, S, utama: s0 === pi});
-    if (jalur.length >= 5) break;
+    if (jalur.length >= (o.maxJalur || 5)) break;
   }
   const bobot = jalur.map((j, i) => jalur.length === 1 ? 1 : i === 0 ? 0.5 : 0.5 / (jalur.length - 1));
   const stL = new Float32Array(N).fill(-1), stP = new Float32Array(N).fill(-1), infoJ = [];

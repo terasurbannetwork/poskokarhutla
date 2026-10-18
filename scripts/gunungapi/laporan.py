@@ -64,7 +64,8 @@ def kode_prov(g, cari):
     if r:
         return r[0]
     n = g.get("prov", "").lower()
-    return next((k for k, v in PROVINSI.items() if v.lower() in n or n in v.lower()), None)
+    c = [(len(v), k) for k, v in PROVINSI.items() if v.lower() in n or n in v.lower()]
+    return max(c)[1] if c else None  # nama terpanjang menang ("Maluku Utara", bukan "Maluku")
 
 
 def bangun(st, abu, lama, cari):
@@ -246,7 +247,7 @@ def uji():
     assert nas["erupsi"][-1] == 1 and nas["erupsi"][0] is None, nas["erupsi"]  # null bukan 0
     assert nas["siaga_awas"][-1] == 1 and nas["siaga_awas"][-2] == 4 and nas["siaga_awas"][0] is None
     assert nas["bandara_abu"][-1] == 1 and nas["bandara_abu"][-2] is None and nas["kenaikan"][-1] == 1
-    assert set(d["prov"]) == {"35", "82", "34"} or set(d["prov"]) >= {"35", "82"}, set(d["prov"])
+    assert set(d["prov"]) >= {"35", "82"}, set(d["prov"])
     assert all(k in PROVINSI for k in d["prov"]) and d["kab"] == []
     t = [U.TINGKAT.index(s["tingkat"]) for s in d["sorot"]]
     assert t == sorted(t) and d["sorot"][0]["tingkat"] == "siaga", d["sorot"]

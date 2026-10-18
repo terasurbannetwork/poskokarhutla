@@ -78,19 +78,69 @@ def level_banjir(h3, bahaya, rk, imax=None, cape=None, p3=None, *, k=K_BANJIR):
     return 0
 
 
-def level_longsor(h3, a7, bahaya, sm=None, imax=None, *, k=K_LONGSOR, sm_jenuh=SM_JENUH, a7_basah=A7_BASAH):
-    """sm None -> jenuh = A7 >= 150 (aturan lama). k, sm_jenuh, a7_basah: kenop uji_balik.py, bawaan = aturan berlaku."""
+def jenuh(a7, sm=None, sm_jenuh=SM_JENUH, a7_basah=A7_BASAH):
     # sm saja berperilaku seperti penanda jenis tanah (tanah liat/organik basah sepanjang tahun), jadi wajib ada hujan nyata
     # 7 hari terakhir juga. Uji 13 Okt 2026: sm >= 0,45 saja menandai 154 kecamatan bahaya tinggi di musim kemarau.
-    jenuh = (sm >= sm_jenuh and a7 >= a7_basah) if sm is not None else a7 >= 150
+    return (sm >= sm_jenuh and a7 >= a7_basah) if sm is not None else a7 >= 150
+
+
+def level_longsor(h3, a7, bahaya, sm=None, imax=None, *, k=K_LONGSOR, sm_jenuh=SM_JENUH, a7_basah=A7_BASAH):
+    """sm None -> jenuh = A7 >= 150 (aturan lama). k, sm_jenuh, a7_basah: kenop uji_balik.py, bawaan = aturan berlaku."""
+    jenuh_ = jenuh(a7, sm, sm_jenuh, a7_basah)
     w, s, a = ambang(k)
-    if h3 >= a and jenuh and bahaya >= 0.66:
+    if h3 >= a and jenuh_ and bahaya >= 0.66:
         return 3
-    if (h3 >= s and jenuh and bahaya >= 0.66) or (h3 >= a and bahaya >= 0.33) or ((imax or 0) >= 20 and bahaya >= 0.66):
+    if (h3 >= s and jenuh_ and bahaya >= 0.66) or (h3 >= a and bahaya >= 0.33) or ((imax or 0) >= 20 and bahaya >= 0.66):
         return 2
     if h3 >= w and bahaya >= 0.33:
         return 1
     return 0
+
+
+HORIZON = (1, 2, 3)  # 24/48/72 jam = hari ke-0, ke-0..1, ke-0..2 (hari ke-3 = ufuk keempat, di luar 72 jam)
+
+
+def ambang_hujan(jenis, bahaya, jenuh_=False, k=None):
+    """Ambang H3 (mm) jalur hujan untuk [Waspada, Siaga, Awas]; None = jalur hujan tertutup (bahaya/kejenuhan kurang).
+    Cermin level_banjir/level_longsor tanpa jalur sungai (RK), intensitas (I) dan P3: diuji menyapu H3 di uji()."""
+    w, s, a = ambang(K_BANJIR if k is None else k) if jenis == "banjir" else ambang(K_LONGSOR if k is None else k)
+    if jenis == "banjir":
+        return [w, s if bahaya >= 0.33 else None, a if bahaya >= 0.66 else None]
+    siaga = [x for x in (a if bahaya >= 0.33 else None, s if jenuh_ and bahaya >= 0.66 else None) if x is not None]
+    return [w if bahaya >= 0.33 else None, min(siaga) if siaga else None, a if jenuh_ and bahaya >= 0.66 else None]
+
+
+def peluang_kec(h3a, bb, bl, jenuh_):
+    """Peluang (persen bulat) status jalur hujan dari anggota ansambel.
+    h3a[d][i] = H3 anggota i untuk hari d (None bila anggota tak lengkap); jenuh_[d] = tanah jenuh hari d (deterministik).
+    -> {"b","l": [[W,S,A] per hari]; "hb","hl": [[W,S,A] per horizon 24/48/72 jam]}, W/S/A = peluang mencapai >= tingkat itu
+    (horizon: pada SALAH SATU hari dalam jendela, dihitung per anggota). 0 bila jalur hujan tertutup. None bila tak ada anggota."""
+    ok = [i for i in range(len(h3a[0])) if all(h[i] is not None for h in h3a)]
+    if not ok:
+        return None
+    out = {}
+    for nama, jenis, bahaya in (("b", "banjir", bb), ("l", "longsor", bl)):
+        th = [ambang_hujan(jenis, bahaya, jenuh_[d]) for d in range(len(h3a))]
+
+        def p(hari, lv):
+            return round(100 * sum(any(th[d][lv] is not None and h3a[d][i] >= th[d][lv] for d in hari) for i in ok) / len(ok))
+        out[nama] = [[p([d], lv) for lv in range(3)] for d in range(len(h3a))]
+        out["h" + nama] = [[p(range(h), lv) for lv in range(3)] for h in HORIZON]
+    return out
+
+
+def rob_pesisir(rob, hari, kode_prov):
+    """Status rob TERPISAH dari banjir (rob.json: tinggi pasang prakiraan vs ambang persentil lokasi) untuk 4 hari status.
+    -> {"prov|kab|kec": {"lv": [4], "h": [4 m], "p95", "p99"}} hanya titik berambang; {} bila rob.json tak mencakup hari status."""
+    if not rob or hari[0] not in rob.get("hari", []):
+        return {}
+    j0, out = rob["hari"].index(hari[0]), {}
+    for t in rob["titik"]:
+        if t.get("p95") is None or t["prov"] not in kode_prov:
+            continue
+        sl = slice(j0, j0 + len(hari))
+        out[f"{kode_prov[t['prov']]}|{t['kab']}|{t['kec']}"] = {"lv": t["lv"][sl], "h": t["h"][sl], "p95": t["p95"], "p99": t.get("p99")}
+    return out
 
 
 def jendela(xs, mulai, n=3):
@@ -148,6 +198,15 @@ def main():
         e = min(ens["grid"], key=lambda g: (g["lat"] - la) ** 2 + (g["lon"] - lo) ** 2)
         return e["p3"] if abs(e["lat"] - la) <= 1 and abs(e["lon"] - lo) <= 1 else None
 
+    pe = e0 == 0 and ens["grid"] and "m2" in ens["grid"][0]  # peluang per anggota butuh ansambel yang mulai hari ini
+    if not pe:
+        print("hujan_ansambel.json tanpa sebaran anggota/basi: prakiraan72 tanpa peluang", file=sys.stderr)
+    pra, n_pe = {}, 0
+
+    def ens_terdekat(la, lo):
+        e = min(ens["grid"], key=lambda g: (g["lat"] - la) ** 2 + (g["lon"] - lo) ** 2)
+        return e if abs(e["lat"] - la) <= 1 and abs(e["lon"] - lo) <= 1 else None
+
     out, hitung = {}, {"banjir": [Counter() for _ in range(HARI)], "longsor": [Counter() for _ in range(HARI)]}
     beda = {"banjir": Counter(), "longsor": Counter()}  # hari ini: aturan baru vs lama
     for k, c in kecamatan().items():
@@ -168,6 +227,18 @@ def main():
         sm = g.get("sm") or []
         ll = [level_longsor(h3s[d], a7, b.get("longsor", 0), sm[i0 + d] if i0 + d < len(sm) else None,
                             puncak(g.get("imax"), i0 + d + GESER)) for d in range(HARI)]
+        r72 = {"b": lb, "l": ll}
+        e = ens_terdekat(c["lat"], c["lon"]) if pe else None
+        if e:  # H3 anggota: hari 0 = hujan teramati kemarin sel kecamatan + m2; hari d >= 1 = m3[d-1] (jendela d-1..d+1 seluruhnya prakiraan)
+            kemarin = (g["h"][i0 - 1] or 0) if i0 else 0
+            h3a = [[None if x is None else kemarin + x for x in e["m2"]]] + e["m3"]
+            pk = peluang_kec(h3a, b.get("banjir", 0), b.get("longsor", 0),
+                             [jenuh(a7, sm[i0 + d] if i0 + d < len(sm) else None) for d in range(HARI)])
+            if pk:
+                n_pe += 1
+                r72.update({"pb": pk["b"], "pl": pk["l"], "hb": pk["hb"], "hl": pk["hl"]})
+        if max(lb) or max(ll) or any(v >= 5 for q in ("pb", "pl") for h in r72.get(q, []) for v in h[1:]):
+            pra[k] = r72
         lama_b, lama_l = level_banjir(h3s[0], b.get("banjir", 0), rks[0], k=1), level_longsor(h3s[0], a7, b.get("longsor", 0), k=1)
         if lb[0] != lama_b:
             beda["banjir"][f"{STATUS[lama_b]}->{STATUS[lb[0]]}"] += 1
@@ -180,6 +251,17 @@ def main():
             out[k] = {"b": lb, "l": ll, "h3": max(h3s), "a7": a7, "sg": sg}
     simpan(os.path.join(KELUAR, "status.json"), {"hari": hari, "kec": out})
     sekarang = dt.datetime.now(WIB)
+    rob = baca(os.path.join(KELUAR, "rob.json"))
+    kode = {n: k for k, n in PROVINSI.items()}
+    rb = rob_pesisir(rob, hari, kode)
+    simpan(os.path.join(KELUAR, "prakiraan72.json"), {
+        "dibuat": sekarang.isoformat(timespec="minutes"), "hari": hari, "horizon_jam": [24 * h for h in HORIZON],
+        "anggota": ens["anggota"] if pe else None, "kec_dihitung": n_pe, "kec": pra,
+        "rob": {"kec": rb, "validasi": {"persentil": (rob or {}).get("validasi", {}).get("persentil", {}).get("p95"),
+                                        "kejadian_diuji": (rob or {}).get("validasi", {}).get("kejadian_diuji")}},
+        "catatan": "kec: b/l = level deterministik 4 hari (0 Normal..3 Awas); pb/pl = peluang % jalur hujan mencapai Waspada/Siaga/Awas per hari; "
+                   "hb/hl = peluang pada salah satu hari dalam 24/48/72 jam. Hanya kecamatan berstatus atau berpeluang Siaga/Awas >= 5%. "
+                   "Jalur sungai dan intensitas tidak punya sebaran, jadi tidak masuk peluang. rob terpisah dari banjir (validasinya sendiri)."})
     simpan(os.path.join(KELUAR, "meta.json"), {
         "dibuat": sekarang.isoformat(timespec="minutes"), "hari_wib": hujan["hari_ini"], "hari": hari,
         "provinsi": PROVINSI, "status": STATUS,
@@ -191,6 +273,7 @@ def main():
         "titik_sungai": len(titik), "titik_sungai_berambang": sum(1 for t in titik if t.get("q2"))})
     print(f"status.json: {len(out)} kec berstatus > 0 dari {sum(hitung['banjir'][0].values())}; hari ini banjir "
           f"{dict(hitung['banjir'][0])}, longsor {dict(hitung['longsor'][0])}", file=sys.stderr)
+    print(f"prakiraan72.json: {len(pra)} kec (peluang dihitung untuk {n_pe}), rob pesisir {len(rb)} titik", file=sys.stderr)
     print(f"hari ini, aturan baru vs lama: banjir {sum(beda['banjir'].values())} kec berubah {dict(beda['banjir'])}; "
           f"longsor {sum(beda['longsor'].values())} kec berubah {dict(beda['longsor'])}", file=sys.stderr)
 
@@ -222,6 +305,32 @@ def uji():
     assert kelas_sungai([0, 0, 90, 160, 120], 2, t) == 2 and kelas_sungai([None] * 5, 0, t) is None
     assert kelas_sungai([500], 0, {"q2": None}) is None
     assert abs(km(0, 0, 0, 1) - 111.19) < 0.1
+    # ambang_hujan = level_* pada jalur hujan saja: menyapu H3, bahaya dan kejenuhan; menyimpang = peluang bicara aturan lain
+    for h3 in [x / 2 for x in range(0, 400)]:
+        for bh in (0, .2, .33, .5, .66, 1):
+            th = ambang_hujan("banjir", bh)
+            for lv in range(3):
+                assert (level_banjir(h3, bh, None) >= lv + 1) == (th[lv] is not None and h3 >= th[lv]), ("banjir", h3, bh, lv)
+            for jn in (False, True):
+                th = ambang_hujan("longsor", bh, jn)
+                a7 = 100 if jn else 0
+                for lv in range(3):
+                    assert (level_longsor(h3, a7, bh, 0.5) >= lv + 1) == (th[lv] is not None and h3 >= th[lv]), ("longsor", h3, bh, jn, lv)
+    assert jenuh(25, .45) and not jenuh(24.9, .45) and jenuh(150) and not jenuh(149)
+    # peluang_kec: 4 anggota, hari 0..3; anggota 3 tak lengkap pada hari 2 dibuang dari semua
+    h3a = [[10, 50, 90, 130], [10, 10, 10, 10], [85, 10, 10, 90], [10, 10, None, 10]]  # baris = hari, kolom = anggota
+    pk = peluang_kec(h3a, .5, .7, [True] * 4)  # anggota 2 dibuang (None di hari 3): sisa 3 anggota
+    assert pk["b"][0] == [67, 33, 0], pk["b"]    # hari 0 = 10, 50, 130: >= 40 -> 2/3, >= 80 -> 1/3, awas butuh bahaya 0,66
+    assert pk["l"][0] == [67, 33, 33], pk["l"]   # longsor jenuh, bahaya 0,7: waspada 30, siaga min(60, 90) = 60, awas 90
+    assert pk["hb"][0] == pk["b"][0] and pk["hb"][2][1] == 67, pk["hb"]  # 72 jam: anggota 130 (hari 0) dan 85 (hari 2) lolos >= 80
+    assert peluang_kec([[None], [None], [None], [None]], .5, .5, [False] * 4) is None
+    z = peluang_kec([[500]] * 4, 0, 0, [True] * 4)  # bahaya 0: Siaga/Awas tertutup, Waspada banjir tak butuh bahaya, longsor butuh
+    assert all(h == [100, 0, 0] for h in z["b"]) and all(h == [0, 0, 0] for h in z["l"]), z
+    rob = {"hari": ["a", "b", "c", "d", "e"], "titik": [{"prov": "Jawa Barat", "kab": "K", "kec": "X", "p95": 1.5, "p99": 1.8, "lv": [0, 1, 2, 0, 0], "h": [1, 1.6, 1.9, 1, 1]},
+                                                       {"prov": "Jawa Barat", "kab": "K", "kec": "Y", "p95": None, "lv": [None] * 5, "h": [None] * 5}]}
+    r = rob_pesisir(rob, ["b", "c", "d", "e"], {"Jawa Barat": "32"})
+    assert list(r) == ["32|K|X"] and r["32|K|X"]["lv"] == [1, 2, 0, 0] and r["32|K|X"]["h"][0] == 1.6, r
+    assert rob_pesisir(rob, ["z"], {"Jawa Barat": "32"}) == {} and rob_pesisir(None, ["b"], {}) == {}
     print("ok status")
 
 
