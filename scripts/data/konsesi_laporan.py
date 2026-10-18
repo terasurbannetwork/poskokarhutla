@@ -11,7 +11,7 @@ Luas indikasi terbakar = jumlah piksel VIIRS 375 m unik yang kemasukan titik x 1
 piksel, bukan peta luas bakar resmi; satu piksel bisa terbakar sebagian. Kejadian = rangkaian hari bertitik dengan jeda <= 2 hari.
 Titik di dalam areal konsesi bukan bukti siapa yang membakar.
 """
-import bisect, csv, datetime as dt, io, json, math, os, pickle, sys, urllib.request
+import bisect, csv, datetime as dt, io, json, math, os, pickle, re, sys, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aktor_walhi import Indeks, Kompleks, cincin, di_dalam, kunci  # noqa: E402
@@ -28,6 +28,50 @@ PIKSEL = 0.375 / 111.32  # derajat
 HA_PIKSEL = 0.375 * 0.375 * 100  # 14,06 ha
 BBOX = "94,-11.5,141.5,6.5"
 JEDA = 2  # hari tanpa titik yang masih dihitung satu kejadian
+RSPO = os.path.join(AKAR, "data/raw/konsesi/rspo_konsesi.json")  # anggota RSPO 2020 via GFW (rspo_oil_palm v20200401)
+SANKSI = os.path.join(AKAR, "data/raw/konsesi/sanksi_karhutla.json")
+KOMP_KM = 1.5  # titik berdekatan <= 1,5 km dan selang <= 7 hari = satu kompleks (definisi sama dengan kluster 7 hari)
+KOMP_LALU_MAKS = 30
+
+
+def kompleks_lalu(ts, wil):
+    """Kompleks api sebelum jendela 7 hari: titik <= 1,5 km dan selang <= 7 hari tersambung (single linkage).
+    -> [[lat, lon, kecamatan, titik, mulai, akhir, hari bertitik, FRP maks]] urut titik terbanyak."""
+    sel = KOMP_KM / 111.32
+    induk = list(range(len(ts)))
+
+    def akar(i):
+        while induk[i] != i:
+            induk[i] = induk[induk[i]]
+            i = induk[i]
+        return i
+    grid = {}
+    for i, (w, la, lo, _) in enumerate(ts):
+        cx, cy = math.floor(lo / sel), math.floor(la / sel)
+        for a in (cx - 1, cx, cx + 1):
+            for b in (cy - 1, cy, cy + 1):
+                for j in grid.get((a, b), ()):
+                    w2, la2, lo2, _ = ts[j]
+                    if abs((w - w2).total_seconds()) <= 7 * 86400 and \
+                            math.hypot((la - la2) * 111.32, (lo - lo2) * 111.32 * math.cos(math.radians(la))) <= KOMP_KM:
+                        induk[akar(i)] = akar(j)
+        grid.setdefault((cx, cy), []).append(i)
+    kel = {}
+    for i, x in enumerate(ts):
+        kel.setdefault(akar(i), []).append(x)
+    out = []
+    for xs in kel.values():
+        hr = sorted({(w + WIB).date().isoformat() for w, *_ in xs})
+        la, lo = sum(x[1] for x in xs) / len(xs), sum(x[2] for x in xs) / len(xs)
+        c = wil.cari(lo, la)
+        out.append([round(la, 4), round(lo, 4), f"{c[2]}, {c[1]}" if c else "", len(xs), hr[0], hr[-1], len(hr), round(max(x[3] for x in xs), 1)])
+    return sorted(out, key=lambda k: (-k[3], k[4]))
+
+
+def grup_rapi(g):
+    """'PT Smart Tbk' -> 'Smart'; 'Wilmar International Limited' tetap (nama resmi grup RSPO)."""
+    g = re.sub(r"^PT\.?\s+|\s+Tbk\.?$", "", (g or "").strip())
+    return g
 
 
 def kunci_firms():
@@ -95,6 +139,13 @@ def bangun():
     walhi = {kunci(p["nama"]): p for p in aktor["perusahaan"]}
     gneg = aktor.get("grup_negara", {})
     wil = Wilayah()
+    rspo = {}
+    for x in json.load(open(RSPO))["unit"]:
+        rspo.setdefault(kunci(x["perusahaan"]), []).append(x)
+    sanksi = {}
+    for x in json.load(open(SANKSI))["kasus"]:
+        for nm in [x["nama"]] + (x.get("alias") or []):
+            sanksi.setdefault(kunci(nm), []).append(x)
     kp = Kompleks(os.path.join(AKAR, "public/data/kluster.json"))
     ix = Indeks(fitur)
     T, akhir = titik()
@@ -156,13 +207,21 @@ def bangun():
         luas = sum(p.get("luas_peta_ha") or 0 for p in ps)
         nama = ps[0]["nama"] or "(tanpa nama)"
         wl = walhi.get(kunci(nama))
-        grup = ", ".join((wl or {}).get("grup") or []) or ps[0].get("grup") or ""
+        rs = rspo.get(kunci(nama)) if k[1] == "sawit" else None
+        grup = ", ".join((wl or {}).get("grup") or []) or ps[0].get("grup") or (grup_rapi(rs[0]["grup"]) if rs else "")
+        neg = (wl or {}).get("negara") or [gneg.get(grup, "") or ("MY" if grup.endswith("Berhad") else "")]
         n = len(ts)
         frp = [x[3] for x in ts]
+        kl = kompleks_lalu([x for x in ts if x[0] < batas7], wil)
         t7 = sum(c for d, c in harian if (dt.date.fromisoformat(d) - (akhir + WIB).date()).days > -7)
         r = {
             "id": ps[0]["id"], "nama": nama, "grup": grup,
-            "negara": [x for x in ((wl or {}).get("negara") or [gneg.get(ps[0].get("grup") or "", "")]) if x],
+            "negara": [x for x in neg if x],
+            # anggota RSPO (data RSPO 2020): grup anggota, unit bersertifikat atau belum, tahun keanggotaan
+            "rspo": {"grup": rs[0]["grup"], "sertifikat": any(x["sertifikat"] for x in rs), "sejak": next((x["anggota_sejak"] for x in rs if x["anggota_sejak"]), None)} if rs else None,
+            "sanksi": [{"jenis": x["jenis"], "status": x["status"], "tahun": x.get("tahun_putusan") or x.get("tahun_kebakaran"),
+                        "nilai": x.get("nilai_rp") or x.get("nilai_gugatan_rp"), "perkara": x.get("perkara"), "url": x["sumber"][0]["url"]}
+                       for x in sanksi.get(kunci(nama), []) if x["prov"] == k[2]],
             "pemegang": (wl or {}).get("pemegang") or [], "tokoh": (wl or {}).get("tokoh") or [],
             "walhi_titik": (wl or {}).get("titik_agu") or (wl or {}).get("titik_sep"), "walhi_tabel": (wl or {}).get("tabel") or [],
             "kab_titik": [a for a, _ in sorted(kab.items(), key=lambda x: -x[1])],
@@ -170,6 +229,9 @@ def bangun():
             "kompleks": [[round(e["la"] / e["n"], 4), round(e["lo"] / e["n"], 4),
                           (lambda c: f"{c[2]}, {c[1]}" if c else "")(wil.cari(e["lo"] / e["n"], e["la"] / e["n"])),
                           e["n"], e["a"], e["b"], len(e["h"]), round(e["frp"], 1)] for e in sorted(kom.values(), key=lambda e: -e["n"])], "jenis": k[1],
+            # kompleks api sebelum 7 hari terakhir (bentuk sama), 30 terbesar + ringkasan sisanya [jumlah, titik, titik maks]
+            "kompleks_lalu": kl[:KOMP_LALU_MAKS],
+            "kompleks_lalu_sisa": [len(kl) - KOMP_LALU_MAKS, sum(x[3] for x in kl[KOMP_LALU_MAKS:]), kl[KOMP_LALU_MAKS][3]] if len(kl) > KOMP_LALU_MAKS else None,
             "kab": sorted({p.get("kab") or "" for p in ps} - {""}), "luas_ha": round(luas),
             "tahun_data": ps[0].get("tahun_data"), "blok": len(idx), "blok_terbakar": len(u["i"]),
             "titik": n, "hari_aktif": len(harian), "pertama": harian[0][0], "terakhir": harian[-1][0],
@@ -221,6 +283,9 @@ def uji():
             assert r["titik"] == len(r["pt"]) == sum(n for _, n in r["harian"]) == sum(e[3] for e in r["kejadian"]), \
                 f"{r['nama']}: titik {r['titik']} tidak sama dengan jumlah titik/harian/kejadian"
             assert not r["luas_ha"] or r["luas_bakar_ha"] <= r["luas_ha"], f"{r['nama']}: luas bakar {r['luas_bakar_ha']} > luas {r['luas_ha']}"
+            lalu = sum(k[3] for k in r["kompleks_lalu"]) + ((r["kompleks_lalu_sisa"] or [0, 0])[1])
+            assert lalu + sum(k[3] for k in r["kompleks"]) <= r["titik"], f"{r['nama']}: titik kompleks {lalu} melebihi titik"
+            assert all(k[4] <= k[5] for k in r["kompleks_lalu"]), f"{r['nama']}: rentang kompleks lampau terbalik"
             assert r["pertama"] >= "2026-01-01" and r["pertama"] <= r["terakhir"], f"{r['nama']}: tanggal {r['pertama']}..{r['terakhir']}"
     print("uji konsesi2026: lolos", file=sys.stderr)
 

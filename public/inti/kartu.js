@@ -30,7 +30,7 @@ const Kartu = {
   _pmTutup: document.addEventListener("click", e => document.querySelectorAll(".pmulti[open]").forEach(d => { if (!d.contains(e.target)) d.open = false; })),
   /* pilih beberapa provinsi untuk dibandingkan (pemilik, 14 Okt 2026): st[key] = kode dipisah koma, "" = semua */
   provDipilih(key, st = {}) { return String(st[key] || "").split(",").filter(Boolean); },
-  selProvMulti(key, daftar, nama, st = {}) { const P = this.provDipilih(key, st), lb = !P.length ? "Semua provinsi" : P.length === 1 ? nama(P[0]) : P.length + " provinsi";
+  selProvMulti(key, daftar, nama, st = {}, semua = "Semua provinsi") { const P = this.provDipilih(key, st), lb = !P.length ? semua : P.length === 1 ? nama(P[0]) : P.length + " provinsi";
     const buka = this._bukaMulti === key; this._bukaMulti = null;
     return `<details class="pmulti"${buka ? " open" : ""}><summary>${esc(lb)}</summary><div class="pm-menu"><label><input type="checkbox" data-multi="${key}" value="" ${P.length ? "" : "checked"}><span>Semua provinsi (${daftar.length})</span></label>${daftar.map(k => `<label><input type="checkbox" data-multi="${key}" value="${k}" ${P.includes(k) ? "checked" : ""}><span>${esc(nama(k))}</span></label>`).join("")}</div></details>`; },
   selProv(key, semua = "Semua provinsi", daftar, nama, st = {}) { return `<select data-set="${key}" aria-label="Provinsi"><option value="">${semua}</option>${daftar.map(k => `<option value="${k}" ${k === st[key] ? "selected" : ""}>${esc(nama(k))}</option>`).join("")}</select>`; },

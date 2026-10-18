@@ -258,9 +258,12 @@
 .lp-ksh span{font:800 9.5px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
 @media print{[data-ex="naikp"] .ex,[data-ex="riwayat"] .ex{break-inside:avoid}[data-ex="naikp"],[data-ex="riwayat"],[data-ex="tren"],[data-ex="musim"],[data-ex="cuaca"],[data-ex="konsesi"]{break-before:page}[data-ex="tren"] .ex,[data-ex="musim"] .ex,[data-ex="cuaca"] .ex{break-inside:avoid}}
 /* mode provinsi: pemilih wilayah di pita kepala; provinsi lain di peta diredupkan */
-.lp-aksi .pc{flex:0 0 220px}
+.lp-aksi .pc,.lp-aksi .pmulti{flex:0 0 220px}
+.lp-aksi .pmulti{color:var(--ink)}   /* pita kepala berhuruf putih; pemilih tetap kartu putih berhuruf gelap */
+.lp-aksi .pmulti > summary{height:40px;overflow:hidden;text-overflow:ellipsis}
+.lp-aksi .pmulti .pm-menu{left:0;right:auto}
 .lp-peta .pp.pp-d{fill:#eef1f6}
-@media (max-width:700px){.lp-aksi{flex-wrap:wrap}.lp-aksi .pc{flex:1 1 100%}}
+@media (max-width:700px){.lp-aksi{flex-wrap:wrap}.lp-aksi .pc,.lp-aksi .pmulti{flex:1 1 100%}.lp-aksi .pmulti .pm-menu{right:0}}
 /* kartu musim, percepatan, luas menurut sumber */
 .lp-tb td .lp-co{margin-right:6px;font-size:9.5px;padding:1px 6px}
 @media print{[data-ex="kurva"]{break-before:page}[data-ex="kurva"] .lp-gr svg{max-height:96mm}#insight [data-ex="kurva"] .ex{break-inside:avoid}}
