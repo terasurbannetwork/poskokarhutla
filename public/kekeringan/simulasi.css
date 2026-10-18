@@ -77,7 +77,7 @@
 .sm-dlg ul{padding-left:18px}
 .sm-dlg pre{background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;font-size:12px;line-height:1.5;margin:6px 0}
 .maplibregl-ctrl-top-left{margin-left:350px}
-@media (max-width:900px){
+@media (max-width:1180px){
   #sim{overflow:auto;display:flex;flex-direction:column;gap:10px;padding:0 0 18px}
   .sm-bawah,.sm-bagan,.sm-kiri{flex:none}
   .sm-bagan{overflow:visible}
@@ -95,3 +95,4 @@
   .sm-kembali{padding:0 10px}
 }
 @media (max-width:640px){.sm-kembali span{display:none}.sm-kembali{padding:0 9px}.mark{gap:8px}}
+.sm-cat{grid-column:1/-1;margin:0;font-size:11px;color:var(--ink2)}

@@ -18,7 +18,7 @@ const Tren = {
     const s = S.tren?.spi_bulanan; if (!s || s.length < 3) return "";
     const v = s.map(x => ({n: x.kering, n2: x.ekstrem, t: BLN[+x.bln.slice(5) - 1] + (x.bln.endsWith("-01") || x === s[0] ? " " + x.bln.slice(2, 4) : ""),
       tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 ≤ −1): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (curah hujan, ≤ −2): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
-    return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? ", tertinggi dalam 24 bulan" : ""}`,
+    return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? `, tertinggi dalam ${s.length} bulan` : ""}`,
       this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Pantau Bencana (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (curah hujan, ≤ −2)"]]); },
 
   /* 2. kode kekeringan (DC) harian: median dan persentil ke-90 seluruh sel */
@@ -35,6 +35,18 @@ const Tren = {
     return this.kartu("Dasarian", `${Kartu.hl(jt(a.jiwa[2]) + " jiwa")} di kecamatan Awas pada dasarian ${DAS(a.das)}, ${fmt(a.kab_n[2])} kabupaten/kota`,
       this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana", [[MERAH, "jiwa di kecamatan Awas"]]); },
 
+  /* 4-5. HTH 30 hari: jiwa di wilayah HTH 31 hari atau lebih, dan HTH terpanjang nasional */
+  kHth() {
+    const H = S.hth, r = H?.nasional?.seri, tg = H?.tgl30; if (!r?.j31?.length || r.j31.length !== tg?.length) return "";
+    const v = tg.map((t, i) => ({n: r.j31[i], t: tglPendek(t), tip: `<b>${tglPendek(t)}</b><br>${rb(r.j31[i])} jiwa di wilayah HTH 31 hari atau lebih<br>${fmt(r.kab31[i])} kabupaten/kota`})), n = v.length - 1, d = v[n].n - v[Math.max(0, n - 7)].n;
+    return this.kartu("HTH", `${Kartu.hl(jt(v[n].n) + " jiwa")} tinggal di wilayah HTH 31 hari atau lebih, ${d === 0 ? "sama dengan" : Kartu.hl((d > 0 ? "naik " : "turun ") + jt(Math.abs(d)) + " jiwa") + " dari"} 7 hari lalu`,
+      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana (hujan Open-Meteo, ambang " + fmt(H.ambang_mm) + " mm)", [[MERAH, "jiwa di wilayah HTH 31 hari atau lebih"]]); },
+  kHthMaks() {
+    const H = S.hth, r = H?.nasional?.seri, tg = H?.tgl30; if (!r?.maks?.length || r.maks.length !== tg?.length) return "";
+    const v = tg.map((t, i) => ({n: r.maks[i], t: tglPendek(t), tip: `<b>${tglPendek(t)}</b><br>HTH terpanjang: ${fmt(r.maks[i])} hari`})), a = v.at(-1).n;
+    return this.kartu("HTH terpanjang", `HTH terpanjang nasional ${Kartu.hl(fmt(a) + " hari")} pada ${tglPendek(tg.at(-1))}, kelas ${esc((KELAS_HTH()[klsHth(a)] || "").toLowerCase())} menurut BMKG`,
+      this.batang(v, {warna: JINGGA}), "Deteksi Pantau Bencana (hujan Open-Meteo; batas kelas BMKG, angka bukan peta BMKG)", [[JINGGA, "hari tanpa hujan berturut-turut, nilai terbesar di seluruh sel"]]); },
+
   render() {
-    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kHth, this.kHthMaks, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

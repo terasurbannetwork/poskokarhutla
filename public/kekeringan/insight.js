@@ -5,13 +5,14 @@
 Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kabupaten|jiwa|kecamatan))$/;
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 const SUMBER = "Deteksi Pantau Bencana (NASA POWER, ECMWF, ERA5-Land), penduduk WorldPop";
+const F3 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}).replace("-", "−");
 const tanda = v => (v > 0 ? "+" : v < 0 ? "−" : "") + F2(Math.abs(v));
 
 const Insight = {
   st: {jiwa: "3"},
-  EX: ["kabupaten", "jiwa", "enso", "tabel"],
-  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", enso: "El Niño", tabel: "Paling kering"},
-  T: {tabel: {urut: "_", turun: true, hal: 0}},
+  EX: ["kabupaten", "jiwa", "prakiraan", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel"],
+  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering"},
+  T: {tabel: {urut: "_", turun: true, hal: 0}, prakiraan: {urut: "nm", turun: false, hal: 0}, padi: {urut: "nm", turun: false, hal: 0}, gambut: {urut: "dc", turun: true, hal: 0}, berulang: {urut: "tahun", turun: true, hal: 0}},
   ex: (...a) => Kartu.ex(...a), hl: Kartu.hl, pil: Kartu.pil,
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
   nm: k => `<span translate="no">${esc(namaProv(k))}</span>`,
@@ -27,7 +28,7 @@ const Insight = {
     const {W, L, rh} = U, mx = Math.max(1, ...pv.map(x => x.n[0] + x.n[1] + x.n[2])), X = v => v / mx * (W - L - 70), t = tepat(N.kab_n);
     const g = pv.map((x, i) => { let acc = 0, y = i * rh, tot = x.n[0] + x.n[1] + x.n[2];
       const tip = `<b>${esc(namaProv(x.k))}</b><br>Awas: ${fmt(x.n[0])} kabupaten<br>Siaga: ${fmt(x.n[1])} kabupaten<br>Waspada: ${fmt(x.n[2])} kabupaten`;
-      return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>`
+      return `<g data-prov="${esc(x.k)}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>`
         + x.n.map((n, j) => { const bw = X(n); if (!bw) return ""; const s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="${WARNA_LV[3 - j]}" data-tip="${tip}"/>`; acc += bw; return s; }).join("")
         + `<g class="gf" style="--i:${i}">${this.p(L + acc + 8, y + 5, fmt(tot), WARNA_LV[x.n[0] ? 3 : x.n[1] ? 2 : 1], FG_LV[x.n[0] ? 3 : x.n[1] ? 2 : 1])[0]}</g></g>`; }).join("");
     Kartu.leg([[WARNA_LV[3], "Awas"], [WARNA_LV[2], "Siaga"], [WARNA_LV[1], "Waspada"]]);
@@ -42,7 +43,7 @@ const Insight = {
     if (!pv.length) return "";
     const {W, L, rh} = U, mx = Math.max(1, ...pv.map(x => x.n)), X = v => v / mx * (W - L - 90);
     const g = pv.map((x, i) => { const y = i * rh, tip = `<b>${esc(namaProv(x.k))}</b><br>${rb(x.n)} jiwa<br>${fmt(Math.round(x.n / x.t * 100))}% penduduk provinsi`;
-      return `<g data-prov="${x.k}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>
+      return `<g data-prov="${esc(x.k)}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(x.k))}</text>
         <rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(x.n))}" height="${rh - 10}" fill="${WARNA_LV[m]}" data-tip="${tip}"/>
         <g class="gf" style="--i:${i}">${this.p(L + X(x.n) + 8, y + 5, rb(x.n), WARNA_LV[m], FG_LV[m])[0]}</g></g>`; }).join("");
     const nama = ["Waspada kekeringan atau lebih", "Siaga kekeringan atau lebih", "Awas kekeringan"][m - 1];
@@ -65,7 +66,7 @@ const Insight = {
     if (E.iod) g += this.p(Lm, 2, `${E.iod}${E.dmi != null ? " · DMI " + tanda(E.dmi) : ""}`, E.dmi >= .4 ? "#a8671c" : "#5f6fb0")[0];
     const kuat = Math.abs(E.oni) >= 2 ? "sangat kuat" : Math.abs(E.oni) >= 1.5 ? "kuat" : Math.abs(E.oni) >= 1 ? "sedang" : "lemah";
     Kartu.leg([[MERAH, "El Niño (ONI ≥ +0,5)"], [BIRU, "La Niña (ONI ≤ −0,5)"], ["#9aa4b2", "Netral"]]);
-    return this.ex(`${E.status} ${kuat}: ONI ${this.hl(tanda(E.oni))} (${E.musim} ${E.tahun})${E.peluang && E.hingga ? `; NOAA: ${this.hl(E.peluang + "%")} bertahan hingga ${E.hingga}` : ""}`, "", "",
+    return this.ex(`${E.status} ${kuat}: ONI ${this.hl(tanda(E.oni))} (${E.musim} ${E.tahun})${E.peluang && E.hingga ? `; NOAA: ${this.hl(fmt(E.peluang) + "%")} bertahan hingga ${E.hingga}` : ""}`, "", "",
       `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:${W > 800 ? 0 : 700}px" role="img" aria-label="Indeks ONI">${g}</svg></div>`, `Sumber: NOAA CPC (ONI), NOAA PSL (IOD)`); },
 
   /* 4. tabel kabupaten/kota paling kering */
@@ -88,6 +89,90 @@ const Insight = {
     return this.ex(`${this.hl(fmt(R.length) + " kabupaten/kota")} berstatus Siaga atau Awas kekeringan, ${this.hl(jt(R.reduce((a, r) => a + r.jiwa[0], 0)) + " jiwa")} di kecamatan kering`, "", "",
       this.tabel("tabel", kol, R, r => `data-kab="${esc(r.k)}"`, 10, "kabupaten/kota"), `Sumber: ${SUMBER}`); },
 
+
+  /* 5. prakiraan SEAS5 1-3 bulan: nasional + tabel provinsi TANPA peringkat (urutan nama; pengguna boleh mengurutkan sendiri) */
+  exPrakiraan() {
+    const P = S.prak, L = P?.nasional?.lead; if (!L?.length) return "";
+    const bl = BLN_PRAK(), M = innerWidth < 640, W = M ? 700 : 940, H = 230, Lm = 20, B0 = 176, T0 = 40, gw = (W - Lm - 10) / L.length, bw = Math.min(70, gw / 4.2);
+    const mx = Math.max(25, ...L.flatMap(l => [l.pk1, l.pk15, l.pk2])), Y = v => B0 - v / mx * (B0 - T0), WR = [JINGGA, MERAH, "#8e2a1f"], NM = ["SPI-3 ≤ −1", "≤ −1,5", "≤ −2"];
+    let g = this.p(Lm, 2, BELUM_UJI + " · ECMWF SEAS5 tanpa koreksi bias", NAVY)[0];
+    g += L.map((l, i) => { const cx = Lm + gw * i + gw / 2, bs = BASELINE_PRAK("pk1", i);
+      const bars = [l.pk1, l.pk15, l.pk2].map((v, j) => { const x = cx + (j - 1) * (bw + 6) - bw / 2, h = Math.max(1, B0 - Y(v));
+        return `<rect class="gy" style="--i:${i * 3 + j}" x="${x}" y="${Y(v)}" width="${bw}" height="${h}" rx="3" fill="${WR[j]}" data-tip="<b>${esc(bl[i] || "")}</b><br>Peluang ${NM[j]}: ${fmt(v)}% (rerata nasional tertimbang penduduk)"/><text x="${x + bw / 2}" y="${Y(v) - 5}" text-anchor="middle" font-size="11" font-weight="800" opacity=".85" pointer-events="none">${fmt(Math.round(v))}%</text>`; }).join("");
+      const base = bs != null ? `<line x1="${cx - (bw + 6) - bw / 2 - 5}" x2="${cx - (bw + 6) + bw / 2 + 5}" y1="${Y(bs)}" y2="${Y(bs)}" stroke="currentColor" stroke-width="2" stroke-dasharray="4 3" opacity=".7"><title>baseline klimatologi</title></line>` : "";
+      return bars + base + `<text x="${cx}" y="${H - 6}" text-anchor="middle" font-size="12" font-weight="700">${esc(bl[i] || "")}${bs != null ? ` · garis putus = baseline ${fmt(Math.round(bs))}%` : ""}</text>`; }).join("");
+    Kartu.leg(WR.map((w, j) => [w, "Peluang " + NM[j]]));
+    const bs0 = BASELINE_PRAK("pk1", 0), jiwa = P.nasional.jiwa_pk1_50?.[0];
+    const rows = Object.entries(P.prov || {}).filter(([, o]) => prakAda(o)).map(([k, o]) => ({k, nm: namaProv(k), lead: o.lead}));
+    const kol = [{k: "nm", h: "Provinsi", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`},
+      ...L.map((_, i) => ({k: "b" + i, h: `${esc(bl[i] || "")} (%)`, n: 1, v: r => r.lead[i].pk1, s: r => { const bs = BASELINE_PRAK("pk1", i); return `${fmt(Math.round(r.lead[i].pk1))} ${bs != null ? `<small>${selisihTxt(r.lead[i].pk1, bs)}</small>` : ""}`; }}))];
+    return this.ex(`Peluang SPI-3 ≤ −1 bulan ${esc(bl[0] || "depan")} rerata ${this.hl(fmt(Math.round(L[0].pk1)) + "%")}${bs0 != null ? `, baseline klimatologi ${this.hl(fmt(Math.round(bs0)) + "%")} (${selisihTxt(L[0].pk1, bs0)})` : ""}${jiwa ? `; ${this.hl(jt(jiwa) + " jiwa")} di wilayah berpeluang 50% atau lebih` : ""}; belum diuji balik`, "", "",
+      `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:${M ? 700 : 0}px" role="img" aria-label="Peluang kering 1 sampai 3 bulan">${g}</svg></div>` + (rows.length ? this.tabel("prakiraan", kol, rows, r => `data-prov="${esc(r.k)}"`, 10, "provinsi") : ""),
+      `${esc(BIAS_TXT())}. Sumber: ${esc(P.sumber || "ECMWF SEAS5")} (Pantau Bencana, belum diuji balik)`); },
+
+  /* 6. padi tadah hujan: SATU besaran dibandingkan dengan Normal (padiBanding di app.js), bukan peringkat nilai mentah */
+  exPadi() {
+    const D = S.padi, K = Object.entries(D?.kab || {}).map(([k, o]) => ({k, o, b: padiBanding(o), nm: k.split("|")[1], p: k.split("|")[0]})).filter(r => r.b); if (!K.length) return "";
+    const j = K[0].b.j, bes = PADI_BESARAN(j), Bes = bes[0].toUpperCase() + bes.slice(1);
+    const pita = [["0 poin atau kurang", d => d <= 0, "#9ccfae"], ["1–9 poin", d => d >= 1 && d < 10, "#e3b94e"], ["10–24 poin", d => d >= 10 && d < 25, "#e58a45"], ["25 poin atau lebih", d => d >= 25, "#c9503a"]]
+      .map(([n, f, w]) => ({n, w, v: K.filter(r => f(Math.round(r.b.d))).length}));
+    const gagal = K.filter(r => r.o.gagal > 0), mxg = Math.max(0, ...K.map(r => r.o.gagal)), rows = K.filter(r => Math.round(r.b.d) >= 10);
+    const U = this.uk(), W = U.W, L = U.M ? 150 : 170, rh = 30, mx = Math.max(1, ...pita.map(p => p.v)), X = v => v / mx * (W - L - 90);
+    const g = pita.map((p, i) => { const y = i * rh;
+      return `<g><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${p.n}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(p.v))}" height="${rh - 10}" fill="${p.w}" data-tip="${fmt(p.v)} kabupaten, selisih ${bes} terhadap normal: ${p.n}"/><g class="gf" style="--i:${i}">${this.p(L + X(p.v) + 8, y + 5, fmt(p.v), p.w, p.w === "#e3b94e" ? "#3b2e00" : "#fff")[0]}</g></g>`; }).join("");
+    const pt = x => (Math.round(x) > 0 ? "+" : Math.round(x) < 0 ? "−" : "") + fmt(Math.abs(Math.round(x)));
+    const kol = [{k: "nm", h: "Kabupaten/kota", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.p), s: r => `<span translate="no">${esc(namaProv(r.p))}</span>`},
+      {k: "v", h: `${Bes} (%)`, n: 1, v: r => r.b.v, s: r => fmt(r.b.v)}, {k: "nrm", h: "Normal (%)", n: 1, v: r => r.b.n, s: r => fmt(r.b.n)}, {k: "sel", h: "Selisih (poin)", n: 1, v: r => r.b.d, s: r => pt(r.b.d)},
+      {k: "gagal", h: "Gagal panen (%)", n: 1, v: r => r.o.gagal, s: r => fmt(r.o.gagal)}];
+    Kartu.leg(pita.map(p => [p.w, "selisih " + p.n]));
+    return this.ex(`${j === "peluang" ? "Peluang hasil padi tadah hujan turun 25% atau lebih" : "Penurunan hasil padi tadah hujan (median)"} melampaui normal 10 poin atau lebih di ${this.hl(fmt(rows.length) + " dari " + fmt(K.length) + " kabupaten")}; peluang gagal panen di atas 0% di ${fmt(gagal.length)} kabupaten${mxg ? ` (setinggi ${fmt(mxg)}%)` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${pita.length * rh + 6}" role="img" aria-label="Kabupaten menurut selisih ${esc(bes)} terhadap normal">${g}</svg>` + (rows.length ? this.tabel("padi", kol, rows, r => `data-kab="${esc(r.k)}"`, 10, "kabupaten/kota") : ""),
+      `Indikator cekaman air, bukan data puso; tanam mengikuti onset hujan (asumsi), tanpa irigasi, tanpa data luas sawah; ${esc(BIAS_TXT())}. Sumber: Pantau Bencana (FAO-56, FAO-33)`); },
+
+  /* 7. seberapa tepat: uji balik apa adanya */
+  exUjibalik() {
+    const J = S.uji, Y = J?.aturan?.tahun; if (!Y || !J.aturan.netral?.bulan) return "";
+    const bl = Object.keys(J.aturan.netral.bulan).sort().at(-1), nt = J.aturan.netral.bulan[bl]?.sel_waspada, thn = Object.keys(Y).sort().filter(t => Y[t].bulan?.[bl]?.sel); if (!nt || !thn.length) return "";
+    const v = t => Y[t].bulan[bl].sel[0], men = thn.filter(t => v(t) > nt.maks), lain = thn.filter(t => !men.includes(t)), nm = BLN_PENUH[+bl - 1];
+    const rows = [...thn.map(t => ({n: t, v: v(t), w: men.includes(t) ? MERAH : "#9aa4b2", tip: `Tahun ${t}: ${fmt(v(t))}% sel Waspada ke atas pada ${nm}`})), {n: `Rerata ${fmt(J.aturan.netral.tahun.length)} tahun netral`, v: nt.rerata, w: BIRU, tip: `Rerata ${fmt(nt.rerata)}%, rentang ${fmt(nt.min)} sampai ${fmt(nt.maks)}%`}];
+    const U = this.uk(), W = U.W, L = U.M ? 150 : 190, rh = 30, mx = Math.max(1, ...rows.map(r => r.v)), X = x => x / mx * (W - L - 90);
+    const g = rows.map((r, i) => { const y = i * rh;
+      return `<g><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(r.n)}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(r.v))}" height="${rh - 10}" fill="${r.w}" data-tip="${esc(r.tip)}"/><g class="gf" style="--i:${i}">${this.p(L + X(r.v) + 8, y + 5, fmt(r.v) + "%", r.w)[0]}</g></g>`; }).join("");
+    const Q = J.prospek, A = Q?.semua, th = (a, b) => `<tr><td>${a}</td><td class="n num">${b}</td></tr>`;
+    const tb = A ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Model cadangan ENSO (bukan SEAS5), ${esc(Q.bulan_target || "")}</th><th class="n">Hasil</th></tr></thead><tbody>
+      ${th("Skor Brier relatif klimatologi (BSS), semua sel dan tahun", F3(A.bss))}${Q.bss_rerata_tahun != null ? th("BSS rerata per tahun", F3(Q.bss_rerata_tahun)) : ""}${Q.tahun_bss_positif != null ? th("Tahun dengan BSS positif", `${fmt(Q.tahun_bss_positif)} dari ${fmt(Q.n_tahun)}`) : ""}
+      ${A.tangkapan_pct != null ? th(`Kejadian tertangkap oleh alarm (ambang ${fmt(Q.ambang_alarm_pct)}%)`, fmt(A.tangkapan_pct) + "%") : ""}${A.alarm_palsu_pct != null ? th("Alarm yang palsu", fmt(A.alarm_palsu_pct) + "%") : ""}</tbody></table></div>` : "";
+    Kartu.leg([[MERAH, "tahun yang menonjol dari tahun netral"], ["#9aa4b2", "tahun tidak menonjol"], [BIRU, "rerata tahun netral"]]);
+    return this.ex(`Aturan SPI-3 hanya menonjol pada ${this.hl(men.length ? men.join(", ") : "tidak satu pun tahun")}: ${fmt(Math.round(men.length ? v(men[0]) : nt.rerata))}% sel Waspada ke atas pada ${nm}${lain.length ? `, sedangkan ${lain.map(t => `${t} hanya ${fmt(Math.round(v(t)))}%`).join(" dan ")}` : ""} (tahun netral rerata ${fmt(Math.round(nt.rerata))}%)${A ? `; model cadangan ENSO ${A.bss <= 0 ? "tanpa keterampilan" : "dengan keterampilan kecil"} (BSS ${this.hl(F3(A.bss))})` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Uji balik aturan SPI-3">${g}</svg>${tb}`,
+      `Uji ${esc((J.periode || []).join("–"))}, klimatologi ${esc((J.klimatologi || []).join("–"))}; prakiraan SEAS5 sendiri belum diuji (hindcast tidak tersedia). Sumber: Pantau Bencana`); },
+
+  /* 8. gambut konsesi mengering: penghubung ke Karhutla */
+  exGambut() {
+    const G = S.bukti?.gambut; if (!G?.n_kering) return "";
+    const pv = Object.entries(G.prov || {}).sort((a, b) => b[1] - a[1]), U = this.uk(), W = U.W, L = U.L, rh = 30, mx = Math.max(1, ...pv.map(x => x[1])), X = v => v / mx * (W - L - 80);
+    const g = pv.map(([k, n], i) => { const y = i * rh;
+      return `<g data-prov="${esc(k)}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${U.fs}" font-weight="600">${esc(U.nm(k))}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(n))}" height="${rh - 10}" fill="#7a4a2c" data-tip="<b>${esc(namaProv(k))}</b><br>${fmt(n)} kompleks konsesi berlahan gambut di sel Siaga atau Awas"/><g class="gf" style="--i:${i}">${this.p(L + X(n) + 8, y + 5, fmt(n), "#7a4a2c")[0]}</g></g>`; }).join("");
+    const R = (G.daftar || []).map(d => ({...d, nm: d.id})), kol = [{k: "nm", h: "Kompleks", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.prov), s: r => `<span translate="no">${esc(namaProv(r.prov))}</span>`},
+      {k: "lv", h: "Status", v: r => r.lv, s: r => pill(r.lv)}, {k: "dc", h: "DC", n: 1, v: r => r.dc, s: r => r.dc != null ? fmt(r.dc) : "–"}, {k: "spi", h: "SPI-3", n: 1, v: r => r.spi3, s: r => r.spi3 != null ? F2(r.spi3) : "–"}, {k: "titik", h: "Titik panas tercatat", n: 1, v: r => r.titik, s: r => fmt(r.titik)}];
+    Kartu.leg([["#7a4a2c", "kompleks konsesi berlahan gambut di sel Siaga atau Awas"]]);
+    const dcMaks = Math.max(0, ...R.map(r => r.dc || 0));
+    return this.ex(`${this.hl(fmt(G.n_kering) + " dari " + fmt(G.n_gambut) + " kompleks konsesi")} berlahan gambut berada di sel kekeringan Siaga atau Awas${dcMaks ? `, DC tertinggi ${this.hl(fmt(dcMaks))}` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Konsesi gambut mengering per provinsi">${g}</svg>` + (R.length ? this.tabel("gambut", kol, R, r => `data-prov="${esc(r.prov)}"`, 8, "kompleks") : "") + `<p style="margin:12px 2px 0"><a href="../">Lihat titik panas dan konsesi di halaman Karhutla</a></p>`,
+      `Indikator kasar per sel 0,5°, tanpa data tinggi muka air gambut; kompleks tanpa nama. Sumber: Pantau Bencana, konsesi dan titik panas dari halaman Karhutla`); },
+
+  /* 9. kabupaten kandidat sering kering: temuan jujur, tanpa menyebut satu pun "berulang" bila ujinya tak lolos */
+  exBerulang() {
+    const B = S.bukti?.berulang, R = (B?.daftar || []).map(d => ({...d, nm: d.kab.split("|")[1], p: d.kab.split("|")[0]})); if (!B || !R.length) return "";
+    const nT = +String(B.tahun || "").split("-")[1] - +String(B.tahun).split("-")[0] + 1 || 35, nb = B.n_berulang ?? R.filter(r => r.berulang).length, cek = B.n_cek_lapangan ?? R.filter(r => r.cek_lapangan).length;
+    const kol = [{k: "nm", h: "Kabupaten/kota", v: r => r.nm, s: r => `<b translate="no">${esc(r.nm)}</b>`}, {k: "prov", h: "Provinsi", v: r => namaProv(r.p), s: r => `<span translate="no">${esc(namaProv(r.p))}</span>`},
+      {k: "tahun", h: `Tahun kering (dari ${nT})`, n: 1, v: r => r.tahun, s: r => `${fmt(r.tahun)}${r.berulang ? ' <em class="pill l3">melebihi acak</em>' : ""}`}, ...(R.some(r => r.p != null) ? [{k: "p", h: "p (acak)", n: 1, v: r => r.p, s: r => r.p != null ? F3(r.p) : "–"}] : []),
+      {k: "emb", h: "Tampungan OSM per 100.000 jiwa", n: 1, v: r => r.per100rb, s: r => r.per100rb != null ? `${F1(r.per100rb)}${r.cek_lapangan ? " <small>cek lapangan</small>" : ""}` : "–"},
+      ...(R.some(r => r.irbi != null) ? [{k: "irbi", h: "IRBI 2025", n: 1, v: r => r.irbi, s: r => r.irbi != null ? `${fmt(r.irbi)}${r.irbi_arah ? ` <small>${esc(r.irbi_arah)}</small>` : ""}` : "–"}] : [])];
+    return this.ex(`${this.hl(fmt(nb) + " kabupaten")} kering lebih sering dari peluang acak di antara ${fmt(B.n_kab ?? R.length)} kandidat yang SPI-3 ${esc(B.jendela || "")} ≤ ${F1(B.ambang_spi3).replace("-", "−")} pada ${fmt(B.min_tahun)} tahun atau lebih (${esc(B.tahun || "")})${cek ? `; ${fmt(cek)} kandidat bertampungan OSM sedikit, perlu cek lapangan` : ""}`, "", "",
+      this.tabel("berulang", kol, R, r => `data-kab="${esc(r.kab)}"`, 10, "kabupaten/kota"),
+      `${esc(B.catatan || "")} Sumber: Pantau Bencana (NASA POWER), OpenStreetMap (ODbL), InaRISK BNPB`); },
+
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
     try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
   pasangUrut(box) { const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
@@ -97,11 +182,11 @@ const Insight = {
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
-    else el.insertAdjacentHTML("beforeend", `<a href="simulasi.html" style="display:flex;justify-content:center;padding:13px 18px;margin:4px auto 20px;max-width:420px;border-radius:999px;background:var(--brand);color:var(--card);font-weight:700;text-decoration:none">Simulasi neraca air 180 hari</a>`);
+    else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="simulasi.html">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);
     el.onclick = e => {
-      const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
+      const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; box.querySelectorAll(".pgn-b[data-h]").forEach(x => { const on = x === pg; if (!x.textContent.match(/[‹›]/)) { x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); } }); this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); return turun(pv.dataset.prov); }
-      const kb = e.target.closest("[data-kab]"); if (kb) { const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); return Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab)); } };
+      const kb = e.target.closest("[data-kab]"); if (kb) { const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab))); return; } };
   },
 };

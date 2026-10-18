@@ -9,7 +9,7 @@ IRBI: 2025 dihitung dengan metode baru (skala berbeda: 12 -> 7), jadi `arah` han
 get-infra-risk/{kab}/kekeringan dilewati: ~3,7 dtk per panggilan x 514 kab = ~32 menit, lisensi tak tertulis, belum ada layar yang memakainya.
 Pakai:  python3 scripts/kekeringan/resmi.py   |   python3 scripts/kekeringan/resmi.py uji
 """
-import datetime as dt, json, os, sys, time, urllib.parse, urllib.request
+import datetime as dt, json, os, re, sys, time, urllib.parse, urllib.request
 
 AB = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, os.path.join(AB, "..", "banjir"))
@@ -26,9 +26,14 @@ STATUS = {"Siaga Darurat", "Tanggap Darurat", "Transisi Darurat ke Pemulihan"}
 UMUR_IRBI_HARI = 25   # IRBI tahunan: tarik ulang paling sering sebulan sekali
 
 
+MAKS = 50_000_000  # byte; IRBI ~2 MB, CKAN jauh di bawahnya
+
+
 def ambil(url, teks=False):
     with urllib.request.urlopen(urllib.request.Request(url, headers=UA), timeout=60) as r:
-        b = r.read()
+        b = r.read(MAKS + 1)
+    if len(b) > MAKS:
+        raise RuntimeError(f"{url.split('?')[0]}: respons melebihi {MAKS // 1_000_000} MB")
     return b.decode() if teks else json.loads(b)
 
 
@@ -37,6 +42,11 @@ def ckan(rid):
     if not d.get("success"):
         raise RuntimeError(f"CKAN {rid}: {d}")
     return d["result"]["records"]
+
+
+def surat(u):
+    """Tautan surat hanya bila https Google Drive (tanpa spasi); selain itu None, supaya layar tak menautkan alamat sembarang."""
+    return u if isinstance(u, str) and re.match(r"^https://drive\.google\.com/\S+$", u) else None
 
 
 def sk_kekeringan(rec, hari):
@@ -58,7 +68,7 @@ def sk_kekeringan(rec, hari):
             continue
         out.append({"nomor": x.get("nomor_sk_status_keadaan_darurat"), "prov": x.get("provinsi"), "kab": x.get("kabupaten") or None, "id_kab": x.get("id_kab") or None,
                     "jenis": sk, "tipe": "khusus" if "kering" in sk.lower() else "multi", "status": x["status_keadaan_darurat"], "ket": x.get("keterangan_status"),
-                    "mulai": a.isoformat(), "akhir": b.isoformat(), "aktif": a <= hari <= b, "surat": x.get("tautan_surat")})
+                    "mulai": a.isoformat(), "akhir": b.isoformat(), "aktif": a <= hari <= b, "surat": surat(x.get("tautan_surat"))})
     out.sort(key=lambda r: (r["mulai"], r["nomor"] or ""), reverse=True)
     return out, buang
 
@@ -151,6 +161,8 @@ def uji():
     rec = [base, {**base, "nomor_sk_status_keadaan_darurat": "2", "jenis_bencana_sk": "Hidrometeorologi", "jenis_bencana": "Banjir,Kekeringan", "tgl_berakhir": "2025-08-15T00:00:00"},
            {**base, "jenis_bencana_sk": "Banjir", "jenis_bencana": "Banjir"}, {**base, "status_keadaan_darurat": "Aman"}, {**base, "tgl_berakhir": "2025-07-01T00:00:00"},
            {**base, "tgl_mulai": None}]
+    assert surat("https://drive.google.com/file/d/x/view") and surat("http://drive.google.com/x") is None and surat("javascript:alert(1)") is None \
+        and surat("https://drive.google.com.evil.com/x") is None and surat(None) is None and surat("https://drive.google.com/a b") is None
     sk, buang = sk_kekeringan(rec, H)
     assert [r["nomor"] for r in sk] == ["2", "1"] and buang == 3 and sk[1]["aktif"] and not sk[0]["aktif"] and sk[1]["tipe"] == "khusus" and sk[0]["tipe"] == "multi", (sk, buang)   # mulai sama: nomor menurun
     try:

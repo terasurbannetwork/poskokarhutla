@@ -70,32 +70,49 @@ const listSk = () => Object.entries(S.D.skenario).filter(([, x]) => x.mulai === 
 const tgl = (t, thn) => new Date(t0() + t * 864e5).toLocaleDateString("id-ID", {day: "numeric", month: "short", ...(thn ? {year: "numeric"} : {}), timeZone: "UTC"});
 const ik = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
 const listMulai = () => Object.entries(S.D.mulai).map(([k, x]) => [k, x.nama]);
-const seg = (el, opsi, aktif, kunci) => { el.innerHTML = opsi.map(([v, n]) => `<button data-v="${v}" aria-pressed="${String(v) === String(aktif)}">${n}</button>`).join(""); el.dataset.k = kunci; };
+const seg = (el, opsi, aktif, kunci) => {   /* daftar opsi tetap: hanya aria-pressed yang diubah (fokus keyboard tidak hilang); dibangun ulang bila daftar berubah */
+  el.dataset.k = kunci; const ada = [...el.children];
+  if (ada.length === opsi.length && ada.every((b, i) => b.dataset.v === String(opsi[i][0]) && b.textContent === opsi[i][1])) { ada.forEach(b => b.setAttribute("aria-pressed", b.dataset.v === String(aktif))); return; }
+  el.innerHTML = opsi.map(([v, n]) => `<button data-v="${v}" aria-pressed="${String(v) === String(aktif)}">${n}</button>`).join("");
+};
+/* tunda kerja berat sesudah frame berikutnya (sama dengan nanti() di app.js) supaya klik langsung terasa */
+const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 
 function siapkan(raw) {
   const c = raw.sel_data, n = c.lat.length;
   return {...raw, n, lat: c.lat, lon: c.lon, taw: c.taw, gb: c.gb, jiwa: c.jiwa, dr0: c.dr0, nol: c.dr0.map(() => 0),
-    km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180))};
+    km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), tot: c.lat.reduce((a, la) => a + 3098 * Math.cos(la * Math.PI / 180), 0)};
 }
 const cfgDasar = () => ({tanam: S.tanam, laju: 0, kap: 0, omc: 0});
 const cfgPerlakuan = () => { const c = cfgDasar(); if (S.pl === "pompa") { c.laju = S.par.laju * S.par.cak / 100; c.kap = S.par.kap * S.par.cak / 100; }   /* laju dan kapasitas = rata-rata sel: hanya sebagian lahan terjangkau */ else if (S.pl === "awal") c.tanam = Math.max(0, S.tanam - S.par.geser); else if (S.pl === "omc") c.omc = S.par.omc / 100; return c; };
 
 /* ---------- hitung ulang: dua jalan (tanpa perlakuan, dengan perlakuan); murah (~20 ms), digabung per frame ---------- */
 let antri = false;
-function jadwal() { if (antri) return; antri = true; requestAnimationFrame(() => { antri = false; hitung(); }); }
+function jadwal() { if (antri) return; antri = true; nanti(() => { antri = false; hitung(); }); }
+/* jalan tanpa perlakuan (A) dan Normal (N) dipakai ulang selama skenario, mulai, dan tanggal tanam sama: penggeser perlakuan hanya menjalankan satu jalan */
+const cache = new Map();
+function jalanCache(D, key, hj) { const ck = key + "|" + S.mulai + "|" + S.tanam; let r = cache.get(ck); if (!r) { r = jalankan(D, S.D.skenario[key], hj, cfgDasar()); cache.set(ck, r); if (cache.size > 10) cache.delete(cache.keys().next().value); } return r; }
+const pcOf = R => R.pct ||= Array.from(R.luas, v => v / S.D.tot * 100);
 function hitung() {
   const key = kunciSk(), sk = S.D.skenario[key]; S.hj[key] ||= hujanHarian(S.D, sk);
   const D = S.mulai === "kemarau" ? {...S.D, dr0: S.D.nol} : S.D;   /* awal kemarau: simpanan penuh (Dr = 0) */
-  S.A = jalankan(D, sk, S.hj[key], cfgDasar());
+  S.A = jalanCache(D, key, S.hj[key]);
   S.B = S.pl === "none" ? S.A : jalankan(D, sk, S.hj[key], cfgPerlakuan());
   const kn = "normal" + (S.mulai === "kemarau" ? "_k" : ""), skn = S.D.skenario[kn];   /* pembanding: Normal, tanggal mulai dan tanam sama, tanpa perlakuan */
-  if (S.sk !== "normal" && skn) { S.hj[kn] ||= hujanHarian(S.D, skn); S.N = jalankan(D, skn, S.hj[kn], cfgDasar()); } else S.N = null;
+  if (S.sk !== "normal" && skn) { S.hj[kn] ||= hujanHarian(S.D, skn); S.N = jalanCache(D, kn, S.hj[kn]); } else S.N = null;
+  S.pA = pcOf(S.A); S.pB = pcOf(S.B); S.pN = S.N ? pcOf(S.N) : null; S.mxA = Math.max(...S.pA); S.mxB = Math.max(...S.pB); S.mxN = S.pN ? Math.max(...S.pN) : 0;
   gambarSemua();
 }
 function gambarSemua() { renderSlider(); gambarSpark(); gambarGrafik(); segarHari(true); }
 
 /* ---------- peta ---------- */
 let peta, warnaLama = [];
+/* kamera = batas Indonesia dengan padding dari panel yang terukur (kiri, grafik kanan, bilah waktu + legenda); tata letak kolom di bawah 1181 px */
+function pasPeta() {
+  const kolom = matchMedia("(max-width:1180px)").matches, r = id => $(id).getBoundingClientRect(), m = peta.getContainer().getBoundingClientRect();
+  const pad = kolom ? {top: 8, left: 8, right: 8, bottom: 8} : {top: 16, left: r("#kiri").right - m.left + 20, right: m.right - r("#bagan").left + 16, bottom: m.bottom - r("#bawah").top + 52};
+  peta.resize(); peta.fitBounds([[95, -11], [141, 6]], {padding: pad, duration: 0});
+}
 function petaInit() {
   const D = S.D, fitur = D.lat.map((la, i) => { const lo = D.lon[i], h = D.sel / 2;
     return {type: "Feature", properties: {i}, geometry: {type: "Polygon", coordinates: [[[lo - h, la - h], [lo + h, la - h], [lo + h, la + h], [lo - h, la + h], [lo - h, la - h]]]}}; });
@@ -106,8 +123,8 @@ function petaInit() {
       layers: [{id: "bg", type: "background", paint: {"background-color": "#0b2545"}}, {id: "sat", type: "raster", source: "sat"}]}});
   peta.touchZoomRotate.disableRotation();
   peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "top-left");
-  const bate = innerWidth <= 900 ? {top: 10, left: 10, right: 10, bottom: 10} : {top: 20, left: 360, right: 470, bottom: 100};
-  peta.fitBounds([[94.5, -11.5], [141.5, 6.5]], {padding: bate, duration: 0});
+  peta.on("movestart", e => { if (e.originalEvent) S.sentuh = true; });
+  pasPeta(); addEventListener("resize", () => nanti(() => { if (!S.sentuh) pasPeta(); }));
   peta.on("load", () => {
     peta.addSource("sm", {type: "geojson", data: {type: "FeatureCollection", features: fitur}, promoteId: "i"});
     peta.addLayer({id: "sm-isi", type: "fill", source: "sm", paint: {"fill-color": ["coalesce", ["feature-state", "c"], "rgba(0,0,0,0)"], "fill-opacity": .8}});
@@ -155,11 +172,10 @@ function segarHari(penuh) {
   const umur = t - B.cfg.tanam, fs = fasePadi(umur, P), panen = B.cfg.tanam + P.fase.reduce((a, b) => a + b, 0);
   $("#fase").innerHTML = `<span class="sm-pil2" style="--w:${FASE_WARNA[fs]}">${fs}</span>` + (panen < H ? `<span>Panen ${tgl(panen, true)}</span>` : `<span>Panen sesudah ${tgl(H - 1, true)}</span>`);
   /* hasil nasional */
-  const tot = D.km2.reduce((x, y) => x + y, 0), pc = R => R.luas.map(v => v / tot * 100), pA = pc(A), pB = pc(B), pN = S.N ? pc(S.N) : null;
+  const pA = S.pA, pB = S.pB, pN = S.pN;
   const ds = (d, kata) => { const r = Math.round(d * 10) / 10; return `<small class="${r < 0 ? "baik" : r > 0 ? "buruk" : ""}">${r > 0 ? "+" : r < 0 ? "−" : ""}${fmt1(Math.abs(r))} poin ${kata}</small>`; };
-  const mx = a => Math.max(...a);
   const blok = (judul, nil, dA, dN) => `<div class="sm-h"><span class="sm-pil2">${judul}</span><b>${fmt1(nil)}<i>%</i></b>${sama ? "" : ds(nil - dA, "vs tanpa perlakuan")}${pN ? ds(nil - dN, "vs Normal") : ""}</div>`;
-  $("#hasil").innerHTML = blok("Luas hari ini", pB[t], pA[t], pN && pN[t]) + blok("Luas puncak", mx(pB), mx(pA), pN && mx(pN))
+  $("#hasil").innerHTML = `<p class="sm-cat">Porsi luas sel stres, termasuk lahan tanpa tanaman.</p>` + blok("Luas hari ini", pB[t], pA[t], pN && pN[t]) + blok("Luas puncak", S.mxB, S.mxA, S.mxN)
     + `<div class="sm-h sm-jw"><span class="sm-pil2">Jiwa di sel stres</span><b>${fmt(Math.round(B.jiwa[t]))}</b>` + (sama ? "" : `<small>${B.jiwa[t] - A.jiwa[t] < 0 ? "−" : "+"}${fmt(Math.abs(Math.round(B.jiwa[t] - A.jiwa[t])))} vs tanpa perlakuan</small>`) + (S.N ? `<small>${B.jiwa[t] - S.N.jiwa[t] < 0 ? "−" : "+"}${fmt(Math.abs(Math.round(B.jiwa[t] - S.N.jiwa[t])))} vs Normal</small>` : "") + `<small>Penduduk di sel stres, bukan jumlah petani.</small></div>`;
   /* sel terpilih */
   const taw = D.taw[i], sim = taw - B.dr[k], h0 = S.hj[kunciSk()][k] * (1 + (S.hj[kunciSk()][k] > 0 ? B.cfg.omc : 0));
@@ -225,7 +241,7 @@ function putar(on) {
   $("#play").setAttribute("aria-label", on ? "Jeda" : "Putar"); cancelAnimationFrame(rafId);
   if (!on) return; if (S.hari >= H - 1) S.hari = 0; terakhir = 0; sisa = 0;
   const langkahRaf = ts => {
-    if (!S.main) return; if (terakhir) { sisa += (ts - terakhir) / 1000 * S.kec; const n = Math.floor(sisa); if (n >= 1) { sisa -= n; S.hari = Math.min(H - 1, S.hari + n); segarHari(false); } }
+    if (!S.main) return; if (terakhir) { sisa += Math.min(ts - terakhir, 100) / 1000 * S.kec; const n = Math.floor(sisa); if (n >= 1) { sisa -= n; S.hari = Math.min(H - 1, S.hari + n); segarHari(false); } }
     terakhir = ts; if (S.hari >= H - 1) { putar(false); return; } rafId = requestAnimationFrame(langkahRaf); };
   rafId = requestAnimationFrame(langkahRaf);
 }
@@ -234,7 +250,7 @@ function putar(on) {
 function metode() {
   const P = S.D.param, f = fmt, d = $("#dlg");
   const dtanam = m => new Date(Date.parse(S.D.mulai[m].tgl + "T00:00:00Z") + S.D.mulai[m].tanam * 864e5).toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "UTC"});
-  const F = S.D.fao, aw = S.D.awal_dari, ec = S.D.ecmwf, e0 = S.D.et0_dari;
+  const bd = S.D.et0_banding, F = S.D.fao, aw = S.D.awal_dari, ec = S.D.ecmwf, e0 = S.D.et0_dari;
   d.innerHTML = `<div class="dh"><b>Metode dan batas model</b><button data-tutup aria-label="Tutup">×</button></div><div class="db">
   <h4>Rumus</h4><p>Bak air satu lapis FAO-56 (Allen dkk. 1998, Bab 8), satu langkah per hari untuk tiap sel:</p>
   <pre>TAW = 1000 × (KL − TL) × Zr           (pers. 82)
@@ -253,7 +269,7 @@ Dr' = Dr − hujan − irigasi + ETa      (pers. 85), dipotong ke 0 sampai TAW</
   <h4>Tanggal tanam dan metrik</h4>
   <ul><li>Bawaan tanam: ${dtanam("hariini")} untuk Hari ini (awal tanam musim hujan)${S.D.mulai.kemarau ? ` dan ${dtanam("kemarau")} untuk Awal kemarau (tanam gadu)` : ""}. Keduanya asumsi kami; semua sel ditanam serentak, padahal tanggal tanam nyata berbeda tiap daerah. Geser sendiri dengan penggeser Tanam padi.</li>
   <li>Padi tadah hujan yang ditanam di kemarau memang kekurangan air hampir tiap tahun; angka stres besar di skenario Awal kemarau, juga pada Normal, bukan berarti tahun itu luar biasa. Bandingkan dengan Normal lewat selisih "vs Normal".</li>
-  <li>Angka utama adalah luas sel yang sedang stres berat (Ks di bawah ${f(P.ambang_berat)}) dibanding luas seluruh sel, dalam persen. Semua sel dihitung, termasuk kota dan lahan bera, jadi ini ukuran kondisi tanah, bukan luas tanaman padi yang gagal.</li>
+  <li>Angka utama adalah porsi luas sel yang sedang stres berat (Ks di bawah ${f(P.ambang_berat)}) dari luas seluruh sel, dalam persen. Semua sel dihitung, termasuk kota, lahan bera, dan masa sebelum tanam, jadi ini ukuran kondisi tanah, bukan luas tanaman padi yang gagal.</li>
   <li>Jiwa di sel stres adalah penduduk seluruh sel itu (WorldPop), bukan jumlah petani atau korban.</li></ul>
   <h4>Titik mulai</h4>
   <ul><li>Awal kemarau: 1 Juni, simpanan penuh (kapasitas lapang di akhir musim hujan) di semua sel, dugaan sederhana. Hanya skenario iklim; Prakiraan ECMWF memang mulai hari ini.</li>
@@ -262,7 +278,7 @@ Dr' = Dr − hujan − irigasi + ETa      (pers. 85), dipotong ke 0 sampai TAW</
   <ul>${ec ? `<li>Prakiraan ECMWF (terbit ${esc(ec.terbit || "")}${ec.dari_lama ? `, dibawa dari ${ec.dari_lama} hari lalu karena data baru tak tersedia` : ""}): median anggota prakiraan musiman untuk ${ec.hari} hari pertama; sisa hari dilengkapi klimatologi Normal sel itu.${ec.et0_ecmwf ? "" : " ET0 memakai klimatologi karena prakiraan ET0 belum ada."}</li>` : ""}
   <li>El Niño kuat: rata-rata hujan bulanan NASA POWER tahun 1997, 2015, 2023 untuk bulan-bulan di tahun mulai, dan 1998, 2016, 2024 untuk bulan-bulan di tahun berikutnya.</li>
   <li>Normal: rata-rata 1991 sampai 2020.</li>
-  <li>ET0 skenario iklim: Penman-Monteith FAO-56 (${F.et0}) dari suhu maks/min, kelembapan, angin 2 m, dan radiasi matahari bulanan NASA POWER; pada ${f(e0.pm)} dari ${f(e0.pm + e0.hs)} deret sel memakai Penman-Monteith penuh, sisanya Hargreaves-Samani karena variabel POWER kurang. Elevasi dari POWER, G = 0. Dibandingkan dengan ET0 Open-Meteo Sep sampai Okt 2026 di 611 sel, PM POWER rata-rata 14% lebih rendah (rasio median 0,86), jadi skenario iklim mungkin terlalu ringan. El Niño memakai variabel tahun-tahun itu.</li>
+  <li>ET0 skenario iklim: Penman-Monteith FAO-56 (${F.et0}) dari suhu maks/min, kelembapan, angin 2 m, dan radiasi matahari bulanan NASA POWER; pada ${f(e0.pm)} dari ${f(e0.pm + e0.hs)} deret sel memakai Penman-Monteith penuh, sisanya Hargreaves-Samani karena variabel POWER kurang. Elevasi dari POWER, G = 0. ${bd ? `Dibandingkan dengan ET0 Open-Meteo (${esc(bd.jendela)}, ${f(bd.n)} sel), PM POWER rata-rata ${f(Math.abs(bd.selisih_pct))}% ${bd.selisih_pct < 0 ? "lebih rendah" : "lebih tinggi"} (rasio median ${f(bd.rasio_median)})${bd.selisih_pct < 0 ? ", jadi skenario iklim mungkin terlalu ringan" : ""}.` : ""} El Niño memakai variabel tahun-tahun itu.</li>
   <li>Hujan bulanan dibagi harian: jumlah hari hujan = total ÷ ${f(P.intensitas)} mm per hari hujan (asumsi), hari dipilih acak tetap dan dibagi bersama oleh sel sewilayah. Hasilnya skenario, bukan prakiraan hari tertentu.</li></ul>
   <h4>Perlakuan</h4>
   <ul><li>Pompa: menambah air saat Dr melewati RAW, sebesar laju yang kamu atur, selama musim tanam, sampai kapasitas habis. Laju dan kapasitas berlaku di lahan terjangkau; di tingkat sel dikalikan porsi lahan terjangkau. Semuanya angka pengaturan, bukan data pompa atau embung nyata.</li>

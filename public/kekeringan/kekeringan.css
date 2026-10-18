@@ -20,3 +20,17 @@
 .l5-iklim::before{content:"";width:7px;height:7px;border-radius:50%;background:#5a9e74}
 .l5-iklim.kering::before{background:#e58a45;box-shadow:0 0 0 3px rgb(229 138 69 / .3)}
 @media (max-width:640px){.l5-iklim{display:none}}
+/* blok tambahan di pop-up wilayah: HTH, prakiraan, padi, IRBI, SK resmi */
+.bk{margin-top:14px;padding-top:12px;border-top:1px solid var(--line)}
+.bk>h4{display:flex;align-items:center;flex-wrap:wrap;gap:8px;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.07em;color:var(--ink2);margin:0 0 8px}
+.bk .sp-p{text-transform:none;letter-spacing:0;background:color-mix(in oklch,#e8743b 14%,var(--card));color:#b8521f}
+.bk-t{display:grid;gap:6px}.bk-t>div{display:grid;grid-template-columns:110px 1.4fr 1.2fr 1fr;gap:10px;align-items:baseline;font-size:13px}.bk-t small{color:var(--ink2)}
+.sk{margin:0 0 14px;padding:12px 14px;border:1px solid var(--line);border-radius:12px}
+.sk-r{display:flex;flex-wrap:wrap;gap:4px 12px;align-items:baseline;padding:6px 0;border-top:1px solid var(--line);font-size:13px}.sk-r:first-of-type{border-top:0}.sk-r small{color:var(--ink2)}
+.kl-tautan{display:flex;flex-wrap:wrap;justify-content:center;gap:10px;margin:4px auto 20px}
+.kl-tautan a{display:flex;justify-content:center;padding:13px 22px;border-radius:999px;background:var(--brand);color:var(--card);font-weight:700;text-decoration:none}
+#blnPeta{margin-top:6px}
+@media (max-width:640px){.bk-t>div{grid-template-columns:1fr;gap:2px}}
+/* 7 mode peta: dua baris, selebar wadah */
+#modePeta.seg.penuh{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-radius:18px;overflow:visible}
+#modePeta button{padding:5px 3px;font-size:11.5px;min-width:0}

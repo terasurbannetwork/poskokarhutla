@@ -353,6 +353,32 @@ def skenario_ecmwf(mus, kunci, mulai, normal):
             "et0_ecmwf": bool(next(iter(mus["titik"].values())).get("et0"))}
 
 
+def banding_et0(harian, iklim, kunci, hari_ini, jendela=30):
+    """Bandingkan ET0 PM POWER (klimatologi bulan hari_ini) dengan ET0 Open-Meteo harian `jendela` hari terakhir (harian.json), per sel.
+    -> {'n','jendela','rasio_median','selisih_pct' (negatif = POWER lebih rendah),'pm_rata','om_rata'} atau None bila kurang dari 30 sel."""
+    tg = harian["tgl"]
+    if hari_ini.isoformat() not in tg:
+        return None
+    i1 = tg.index(hari_ini.isoformat())
+    i0 = max(0, i1 - jendela + 1)
+    r, pm_, om_ = [], [], []
+    for k in kunci:
+        v = harian["sel"].get(k)
+        c = iklim.get(k)
+        if not v or not c:
+            continue
+        e = [x for x in v["et0"][i0:i1 + 1] if x is not None]
+        pm, _, met = nilai_bulan(c, "normal", hari_ini, hari_ini.year, hari_ini.month)[1], 0, nilai_bulan(c, "normal", hari_ini, hari_ini.year, hari_ini.month)[2]
+        if len(e) >= jendela // 2 and met == "pm":
+            om = sum(e) / len(e)
+            r.append(pm / om); pm_.append(pm); om_.append(om)
+    if len(r) < 30:
+        return None
+    med = statistics.median(r)
+    return {"n": len(r), "jendela": f"{tg[i0]} sampai {tg[i1]}", "rasio_median": round(med, 2), "selisih_pct": round((med - 1) * 100),
+            "pm_rata": round(statistics.mean(pm_), 2), "om_rata": round(statistics.mean(om_), 2)}
+
+
 def bangun(tanah, pend, gb, iklim, hari_ini, harian=None, musiman=None, kemarau=True):
     """Susun keluaran. tanah = isi tanah.json; pend/gb = {kunci: nilai}; iklim = {kunci: ringkasan}. Sel tanpa iklim dibuang."""
     sel = []
@@ -408,7 +434,7 @@ def bangun(tanah, pend, gb, iklim, hari_ini, harian=None, musiman=None, kemarau=
             "sel": 0.5, "param": {k: v for k, v in PAR.items()}, "fao": SUMBER_FAO,
             "awal_dari": {"hariini": f"bak {int(statistics.mean(hari_bak)) if hari_bak else 0} hari dari hujan dan ET0 harian ({dari['bak']} sel); kelembapan tanah IFS ({dari['lembap']} sel)",
                           "kemarau": "simpanan penuh (kapasitas lapang) di semua sel"},
-            "et0_dari": metode, "ecmwf": ecmwf, "sel_data": cols, "skenario": sk,
+            "et0_dari": metode, "et0_banding": banding_et0(harian, iklim, kunci, hari_ini) if harian else None, "ecmwf": ecmwf, "sel_data": cols, "skenario": sk,
             "sumber": {"tanah": "ECMWF IFS 0,25 via Open-Meteo (tanah.json)", "iklim": "NASA POWER bulanan 1991-2025 (hujan PRECTOTCORR; suhu T2M_MAX/T2M_MIN; RH2M, WS2M, ALLSKY_SFC_SW_DWN)",
                        "gambut": "public/data/lahan/gambut.geojson", "penduduk": "WorldPop 2026 (penduduk.json)", "bak": "Allen dkk. 1998, FAO-56 Bab 8"}}
 
@@ -552,6 +578,13 @@ def uji():
     assert not pertahankan_ecmwf(lama, {"sel_data": o["sel_data"], "skenario": {}}, dt.date(2026, 11, 20))          # 50 hari: terlalu tua
     assert not pertahankan_ecmwf(lama, {"sel_data": {"lat": [1], "lon": [1]}, "skenario": {}}, dt.date(2026, 10, 18))  # kisi beda
     assert not pertahankan_ecmwf(None, b, dt.date(2026, 10, 18)) and not pertahankan_ecmwf({"skenario": {}}, b, dt.date(2026, 10, 18))
+    # banding ET0: POWER separuh dari Open-Meteo -> rasio 0,5 dan selisih -50%; kurang dari 30 sel -> None
+    ik = {f"{i},1": c for i in range(40)}
+    tgh = [(m - dt.timedelta(days=29 - i)).isoformat() for i in range(30)]
+    hh = {"tgl": tgh, "sel": {k: {"p": [0.0] * 30, "et0": [2 * nilai_bulan(c, "normal", m, 2026, 10)[1]] * 30} for k, c in ik.items()}}
+    bb = banding_et0(hh, ik, list(ik), m)
+    assert bb["n"] == 40 and bb["rasio_median"] == 0.5 and bb["selisih_pct"] == -50 and bb["jendela"] == f"{tgh[0]} sampai {tgh[-1]}", bb
+    assert banding_et0(hh, ik, list(ik)[:5], m) is None
     print("ok neraca")
 
 

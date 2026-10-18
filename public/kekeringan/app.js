@@ -29,11 +29,20 @@ const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {pro
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 /* jumlah wilayah per tingkat TEPAT (kab_n di berkas kumulatif: >= waspada, >= siaga, >= awas) */
 /* ---------- data baru (HTH, prakiraan SEAS5, padi, uji balik, bukti, SK resmi); dibaca defensif, yang tak ada = null lalu dibuang dari layar */
-const BASELINE_PRAK = (k = "pk1", m = 0) => { const b = S.prak?.baseline; if (b == null) return null; if (typeof b === "number") return k === "pk1" ? b : null;
-  let v = b[k] ?? b[k + "_pct"] ?? b.klim?.[k]; if (Array.isArray(v)) v = v[m]; return typeof v === "number" ? v : null; };
-const selisihTxt = (v, b) => b == null ? "" : (v - b >= 0 ? "+" : "−") + fmt(Math.round(Math.abs(v - b))) + " poin";
+const BASELINE_PRAK = (k = "pk1", m = 0) => { const L = S.prak?.nasional?.lead?.[m], v = L?.[k.replace("pk", "b")]; if (typeof v === "number") return v;   /* b1/b15/b2 per bulan, dihitung pipeline dari gamma baku */
+  const b = S.prak?.baseline; if (typeof b === "number") return k === "pk1" ? b : null; const w = b && typeof b === "object" ? b[k] ?? b[k + "_pct"] : null; return typeof (Array.isArray(w) ? w[m] : w) === "number" ? (Array.isArray(w) ? w[m] : w) : null; };
+const selisihTxt = (v, b) => { if (b == null) return ""; const d = Math.round(v - b); return d === 0 ? "setara baseline" : (d > 0 ? "+" : "−") + fmt(Math.abs(d)) + " poin"; };
 const BLN_PRAK = () => (S.prak?.bulan || []).map(ym => bulanPanjang(ym));
 const prakAda = o => o && !o.satu_titik && Array.isArray(o.lead);
+/* padi: SATU besaran yang dibandingkan dengan Normal. Bila turun25_normal ada: peluang vs peluang; selain itu median vs median (selisih = turun_med - turun_normal) */
+const padiBanding = o => !o ? null : o.turun25_normal != null ? {j: "peluang", v: o.turun25, n: o.turun25_normal, d: o.turun25 - o.turun25_normal}
+  : o.turun_normal != null ? {j: "median", v: o.turun_med, n: o.turun_normal, d: o.selisih ?? o.turun_med - o.turun_normal} : null;
+const padiJenis = () => padiBanding(Object.values(S.padi?.kab || {})[0])?.j || null;
+const PADI_BESARAN = j => j === "peluang" ? "peluang hasil turun 25% atau lebih" : "penurunan hasil median";
+const poinTxt = d => { const r = Math.round(d); return r === 0 ? "setara normal" : (r > 0 ? "+" : "−") + fmt(Math.abs(r)) + " poin"; };
+/* arah bias prakiraan dari pipeline (bias.label, bias.per_bulan), bukan cuma "tanpa koreksi bias" */
+const BIAS_TXT = () => S.prak?.bias?.label || "tanpa koreksi bias";
+const BIAS_BULAN = () => (S.prak?.bias?.per_bulan || []).map(x => `${bulanPanjang(x.bulan)}: ${x.kalimat}${x.rasio != null ? ` (hujan anggota ${F2(x.rasio)} kali klimatologi)` : ""}`);
 const BELUM_UJI = "Belum diuji balik";
 /* nama provinsi pada SK BNPB -> kode */
 const PROV_KODE = (() => { let m = null; return n => { if (!m) { m = {}; for (const [k, v] of Object.entries(S.meta.provinsi)) m[v.toLowerCase()] = k; m["daerah istimewa yogyakarta"] = "34"; m["dki jakarta"] = "31"; } return m[String(n).toLowerCase()]; }; })();

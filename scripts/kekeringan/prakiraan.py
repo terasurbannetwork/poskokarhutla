@@ -462,7 +462,7 @@ def bangun(pow_sel, harian, musiman, iklim, oni, penduduk, pusat, sekarang):
     return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Pantau Bencana", "terbit": musiman["terbit"] if musiman else None,
             "sumber": ("ECMWF SEAS5 (51 anggota) lewat Open-Meteo, bulan +1 sampai +3" if titik_hasil else "Prospek bersyarat fase ENSO 1991-2025 (cadangan)"),
             "bulan": bulan, "enso": enso, "tanah_musiman": {"ada": False, "alasan": "variabel soil_moisture_0_to_10cm_mean ada di daftar API seasonal tetapi nilainya kosong semua (dicek 18 Okt 2026)"},
-            "bias": {"rasio_hujan_klim": rasio, "label": label_bias(rasio),
+            "bias": {"rasio_hujan_klim": rasio, "label": label_bias(rasio, bulan), "per_bulan": bias_per_bulan(rasio, bulan),
                      "catatan": "rasio median hujan rerata anggota terhadap klimatologi POWER 1991-2020 per bulan; tidak dikoreksi karena rasio memuat sinyal ENSO dan hindcast tidak ada"},
             "baseline": "b1/b15/b2 = peluang klimatologi (%) SPI-3 <= -1 / -1,5 / -2 yang dihitung persis dari gamma baku 1991-2020 (sekitar 15,9% / 6,7% / 2,3% bila tanpa bulan nol hujan); "
                         "d1/d15/d2 = peluang prakiraan dikurangi baseline (poin persentase). Bacalah selisihnya, bukan peluang mentah.",
@@ -477,18 +477,29 @@ def bangun(pow_sel, harian, musiman, iklim, oni, penduduk, pusat, sekarang):
             "nasional": nas, "prov": prov, "kab": kab}
 
 
-def label_bias(rasio):
-    """Kalimat label bias dari rasio median hujan anggota/klimatologi per bulan (bulan +2/+3 bila ada)."""
-    nilai = [r for r in (rasio or [])[1:3] if r is not None]
-    if not nilai:
+def arah_bias(r):
+    """(arah, kalimat) dari rasio median hujan anggota / klimatologi satu bulan."""
+    if r is None:
+        return "tak_terukur", "bias tidak dapat diukur"
+    if r < 0.95:
+        return "kering", "bias kering, bisa melebihkan peluang kering"
+    if r > 1.05:
+        return "basah", "bias basah, kemungkinan meremehkan peluang kering"
+    return "netral", "dekat klimatologi"
+
+
+def bias_per_bulan(rasio, bulan):
+    return [{"bulan": b, "lead": i + 1, "rasio": r, "arah": arah_bias(r)[0], "kalimat": arah_bias(r)[1]} for i, (b, r) in enumerate(zip(bulan, rasio or [None] * len(bulan)))]
+
+
+def label_bias(rasio, bulan=None):
+    """Label bias per bulan sesuai arahnya masing-masing (bulan +1 bisa kering sementara +2/+3 basah)."""
+    if not rasio or all(r is None for r in rasio):
         return "belum diuji balik; bias hujan anggota tidak dapat diukur"
-    a, b = min(nilai), max(nilai)
     f = lambda x: f"{x:.2f}".replace(".", ",")
-    if a > 1.05:
-        return f"belum diuji balik; median hujan anggota {f(a)} sampai {f(b)} kali klimatologi di bulan +2/+3, kemungkinan meremehkan peluang kering"
-    if b < 0.95:
-        return f"belum diuji balik; median hujan anggota {f(a)} sampai {f(b)} kali klimatologi di bulan +2/+3, kemungkinan melebihkan peluang kering"
-    return f"belum diuji balik; median hujan anggota {f(a)} sampai {f(b)} kali klimatologi di bulan +2/+3"
+    bulan = bulan or [f"+{i + 1}" for i in range(len(rasio))]
+    bag = [f"bulan {b}: median hujan anggota {f(r)} kali klimatologi ({arah_bias(r)[1]})" for b, r in zip(bulan, rasio) if r is not None]
+    return "belum diuji balik; " + "; ".join(bag)
 
 
 # ---------- catatan prospektif (append-only) ----------
@@ -687,10 +698,13 @@ def uji():
     # baseline klimatologi: iklim basah -> sekitar Phi(-1)=15,87%; iklim dengan bulan nol hujan lebih sering daripada Phi(-1) -> 0
     assert base_klim((0.0, 4.0, 25.0)) == [15.9, 6.7, 2.3] and base_klim((0.2, 4.0, 25.0)) == [0.0, 0.0, 0.0] and base_klim((0.1, 4.0, 25.0)) == [15.9, 0.0, 0.0]
     assert abs(sum(1 for x in baku if spi_dari_fit(x, fit_gamma(baku)) <= -1) / len(baku) - .1587) < .06       # empiris di baku ~ baseline
-    assert "meremehkan peluang kering" in label_bias([0.9, 1.11, 1.19]) and "1,11 sampai 1,19" in label_bias([0.9, 1.11, 1.19]) and "tidak dapat diukur" in label_bias(None)
-    assert "melebihkan" in label_bias([1, 0.8, 0.9]) and "meremehkan" not in label_bias([1, 1.0, 1.0])
+    lb = label_bias([0.89, 1.11, 1.19], ["2026-11", "2026-12", "2027-01"])
+    assert "0,89 kali klimatologi (bias kering, bisa melebihkan peluang kering)" in lb and "1,19 kali klimatologi (bias basah, kemungkinan meremehkan peluang kering)" in lb and lb.startswith("belum diuji balik")
+    assert "tidak dapat diukur" in label_bias(None) and "dekat klimatologi" in label_bias([1.0, 1.0, 1.0]) and "meremehkan" not in label_bias([1.0, 1.0, 1.0])
+    pb = bias_per_bulan([0.89, 1.11, None], ["a", "b", "c"])
+    assert [x["arah"] for x in pb] == ["kering", "basah", "tak_terukur"] and pb[0]["lead"] == 1
     assert isi["nasional"]["lead"][0]["b1"] == 15.9 and isi["nasional"]["lead"][0]["d1"] == round(100 - 15.9, 1) and isi["kab"]["11|Alfa"]["satu_titik"] is True
-    assert "belum diuji balik" in isi["bias"]["label"] and "bulan +1 mencampur" in isi["catatan"]
+    assert "belum diuji balik" in isi["bias"]["label"] and len(isi["bias"]["per_bulan"]) == 3 and "bulan +1 mencampur" in isi["catatan"]
     # catatan prospektif: append-only, terbit pertama tidak ditimpa, berkas rusak berhenti, penilai mengisi hasil dari POWER setelah bulan target lewat
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:

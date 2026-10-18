@@ -20,12 +20,16 @@ Konstanta tanaman dan tanah dari scripts/kekeringan/fao.py (dicocokkan ke teks F
                    Tanpa bulan seperti itu (wilayah kering): bulan pertama >= 100 mm, atau bulan terbasah. Tanam = tanggal 15 bulan itu, tidak sebelum
                    tanggal terbit prakiraan.
   Di luar prakiraan : musim 150 hari melewati ujung prakiraan (~150 hari); sisanya diisi hujan klimatologi bulanan. Bagian itu dilaporkan (`klim_pct`).
-  Normal         : model yang sama dijalankan dengan hujan harian = rerata klimatologi bulan itu (konstan per hari) sepanjang musim. SEAS5 mentah di bulan +2/+3
-                   membawa bias (median anggota 1,1 sampai 1,2 kali klimatologi), jadi selisih sebagian mencerminkan bias itu.
+  Normal         : ANSAMBEL klimatologi, bukan hujan konstan: tiap anggota (51, sebanyak ensemble) adalah deret harian acak dengan rerata bulanan = klimatologi
+                   POWER sel itu, dibangkitkan pemecah bulanan ke harian (rantai Markov basah/kering, kemungkinan basah = rerata / 15 mm per hari hujan
+                   (fao.ASUMSI_INTENSITAS, sama dengan skenario neraca.py), hujan hari basah eksponensial, persistensi lag-1 0,3 (ASUMSI)). Hujan konstan membuat
+                   tanah tak pernah kering dan membuat selisih mengukur kejarangan hujan, bukan anomali. ET0 sama dengan skenario ensemble. Dari 51 deret itu diambil
+                   median penurunan hasil dan peluang turun >= 25% (`turun_normal`, `turun25_normal`) agar peluang bisa dibandingkan dengan peluang. SEAS5 mentah di
+                   bulan +2/+3 membawa bias (median anggota 1,1 sampai 1,2 kali klimatologi) dan hujan hariannya cenderung gerimis, jadi selisih bukan murni sinyal iklim.
 
 Pakai:  python3 scripts/kekeringan/padi.py      |  python3 scripts/kekeringan/padi.py uji
 """
-import calendar, datetime as dt, json, os, statistics, sys, time
+import calendar, datetime as dt, json, os, random, statistics, sys, time, zlib
 
 AB = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, AB)
@@ -48,6 +52,8 @@ ONSET_BULAN = (9, 10, 11, 12, 1, 2, 3)
 ONSET_MM = 150.0
 ONSET_LONGGAR_MM = 100.0
 TANGGAL_TANAM = 15
+INTENSITAS = fao.ASUMSI_INTENSITAS   # mm per hari hujan, sama dengan neraca.py
+PERSISTENSI = 0.3                   # ASUMSI: korelasi lag-1 basah/kering
 
 
 def jadwal_kc():
@@ -147,8 +153,21 @@ def seri_musim(tanam, tgl_fc, anggota_p, et0_fc, klim):
     return p, e, kl
 
 
-def hasil_sel(pow_, v, tgl_fc, terbit):
-    """Satu sel: v = {'p': [hari][anggota], 'et0': [hari]} titik induknya -> dict penurunan per anggota, Normal, tanam, bagian klimatologi. None bila klimatologi kurang."""
+def hujan_klim_acak(tanam, klim, rng):
+    """Satu deret harian UMUR hari beruntun (rantai Markov dua keadaan) dengan rerata bulanan = klimatologi `klim` ({bulan: (mm/hari, mm/bulan)}).
+    Kemungkinan hari basah pw = rerata / INTENSITAS (maks 0,9), jumlah hujan hari basah eksponensial dengan rerata rerata/pw, sehingga rerata terjaga."""
+    out, basah = [], rng.random() < 0.5
+    for k in range(UMUR):
+        r = klim[(tanam + dt.timedelta(days=k)).month][0]
+        pw = min(0.9, r / INTENSITAS) if r > 0 else 0.0
+        peluang = pw + PERSISTENSI * (1 - pw) if basah else pw * (1 - PERSISTENSI)
+        basah = pw > 0 and rng.random() < peluang
+        out.append(rng.expovariate(pw / r) if basah and r > 0 else 0.0)
+    return out
+
+
+def hasil_sel(pow_, v, tgl_fc, terbit, kunci=""):
+    """Satu sel (`kunci` = kunci sel, benih Normal): v = {'p': [hari][anggota], 'et0': [hari]} titik induknya -> dict penurunan per anggota, Normal, tanam, bagian klimatologi. None bila klimatologi kurang."""
     klim = klim_bulanan(pow_)
     b = bulan_onset(klim)
     if b is None or len(klim) < 12:
@@ -161,10 +180,10 @@ def hasil_sel(pow_, v, tgl_fc, terbit):
         reds.append(penurunan(eta, etc))
         for f in range(4):
             fd[f] += (1 - eta[f] / etc[f]) / ANGGOTA if etc[f] > 0 else 0
-    # Normal: hujan harian = rerata klimatologi bulan itu sepanjang musim; ET0 sama dengan skenario ensemble
+    # Normal: ansambel deret harian acak berklimatologi sama (benih tetap dari kunci sel agar keluaran stabil)
+    rng = random.Random(zlib.crc32(f"{kunci}|{terbit.isoformat()}".encode()))
     _, e, _ = seri_musim(tanam, tgl_fc, lambda i: 0.0, v["et0"], klim)
-    pn = [klim[(tanam + dt.timedelta(days=k)).month][0] for k in range(UMUR)]
-    normal = penurunan(*neraca(pn, e))
+    normal = [penurunan(*neraca(hujan_klim_acak(tanam, klim, rng), e)) for _ in range(ANGGOTA)]
     return {"reds": reds, "fase": fd, "normal": normal, "tanam": tanam, "klim_pct": 100 * kl / UMUR}
 
 
@@ -179,11 +198,12 @@ def bangun(musiman, pow_sel, penduduk, pusat, sekarang):
     for c, t in musiman["anak"].items():
         v = musiman["titik"].get(t)
         if v and v.get("p") is not None and v.get("et0") is not None and c in pow_sel:
-            r = hasil_sel(pow_sel[c], v, tgl_fc, terbit)
+            r = hasil_sel(pow_sel[c], v, tgl_fc, terbit, c)
             if r:
                 reds = r["reds"]
                 sel[c] = {"gagal": 100 * sum(1 for x in reds if x >= AMBANG_GAGAL) / ANGGOTA, "turun25": 100 * sum(1 for x in reds if x >= AMBANG_TURUN) / ANGGOTA,
-                          "med": 100 * statistics.median(reds), "p90": 100 * sorted(reds)[int(.9 * (ANGGOTA - 1))], "normal": 100 * r["normal"], "fase": r["fase"],
+                          "med": 100 * statistics.median(reds), "p90": 100 * sorted(reds)[int(.9 * (ANGGOTA - 1))], "normal": 100 * statistics.median(r["normal"]), "normal25": 100 * sum(1 for x in r["normal"] if x >= AMBANG_TURUN) / ANGGOTA,
+                          "normal_gagal": 100 * sum(1 for x in r["normal"] if x >= AMBANG_GAGAL) / ANGGOTA, "fase": r["fase"],
                           "tanam": r["tanam"], "klim_pct": r["klim_pct"]}
     if not sel:
         raise ValueError("tak satu sel pun punya hujan, ET0, dan klimatologi")
@@ -202,6 +222,7 @@ def bangun(musiman, pow_sel, penduduk, pusat, sekarang):
         tanam = sorted(r["tanam"] for _, r in d)[len(d) // 2]
         kab[k] = {"kode": kode.get(k), "prov": k.split("|")[0], "gagal": round(rata(d, lambda r: r["gagal"])), "turun25": round(rata(d, lambda r: r["turun25"])),
                   "turun_med": round(med), "turun_p90": round(rata(d, lambda r: r["p90"])), "turun_normal": round(normal), "selisih": round(med - normal),
+                  "turun25_normal": round(rata(d, lambda r: r["normal25"])), "gagal_normal": round(rata(d, lambda r: r["normal_gagal"])),
                   "tanam": tanam.isoformat(), "klim_pct": round(rata(d, lambda r: r["klim_pct"])),
                   "fase_terberat": FASE[max(range(4), key=lambda f: fd[f])][0], "defisit_fase": [round(100 * x) for x in fd], "data_sawah": False}
     tg = sorted(r["tanam"] for r in sel.values())
@@ -226,22 +247,28 @@ def main():
     if H.lewati(ada, sekarang, 7, musiman and musiman.get("dibuat")):
         print(f"padi: kekeringan_padi.json berumur {H.umur_hari(ada, sekarang):.1f} hari dan lengkap; dilewati", file=sys.stderr)
         return
+    kunci = [f"{g['lat']},{g['lon']}" for g in r("tanah.json")["grid"]]
     if not musiman:   # CI tidak membawa data/raw: coba ambil musiman dulu (prakiraan.muat_musiman melanjutkan/mengunduh, tahan 429)
         import prakiraan as PK
-        kunci = [f"{g['lat']},{g['lon']}" for g in r("tanah.json")["grid"]]
         musiman = PK.muat_musiman(kunci, sekarang)
     if not musiman or not musiman.get("titik"):
         print("::warning title=padi::musiman tidak tersedia; padi dilewati, keluaran lama dipertahankan", file=sys.stderr)
         return
     t0 = time.time()
-    isi = bangun(musiman, r("penduduk.json"), json.load(open(os.path.join(H.AKAR, "public/banjir/data/pusat_kec.json"))), sekarang)
+    pow_sel = SPI.hujan_bulanan([tuple(float(x) for x in k.split(",")) for k in kunci], sekarang.date())
+    isi = bangun(musiman, pow_sel, r("penduduk.json"), json.load(open(os.path.join(H.AKAR, "public/banjir/data/pusat_kec.json"))), sekarang)
     isi["lengkap"] = bool(musiman.get("lengkap"))
     if not H.boleh_timpa(ada, isi["lengkap"]):
         print("::warning title=padi::musiman baru sebagian (kuota); keluaran publik yang lengkap dipertahankan", file=sys.stderr)
         return
     simpan(jalur_out, isi)
-    top = sorted(isi["kab"].items(), key=lambda x: -x[1]["gagal"])[:3]
-    print(f"padi: {len(isi['kab'])} kab; teratas {[(k, v['gagal']) for k, v in top]}; {time.time() - t0:.0f} dtk", file=sys.stderr)
+    top = sorted(isi["kab"].items(), key=lambda x: -x[1]["selisih"])[:3]
+    print(f"padi: {len(isi['kab'])} kab; selisih terbesar vs Normal {[(k, v['selisih']) for k, v in top]}; {time.time() - t0:.0f} dtk", file=sys.stderr)
+
+
+def fixture_pow(basah=8.0, kering=3.0):
+    """Klimatologi sintetis: Nov-Mar basah, lainnya kering (mm/hari), 1991-2026 Agu."""
+    return {f"{y}{m:02d}": (basah if m in (11, 12, 1, 2, 3) else kering) for y in range(1991, 2027) for m in range(1, 13) if (y, m) <= (2026, 8)}
 
 
 def fixture_musiman(hujan, et0=4.0, hari=150):
@@ -251,21 +278,21 @@ def fixture_musiman(hujan, et0=4.0, hari=150):
 
 
 def uji():
-    assert len(KC) == UMUR == 120 and KC[0] == (0, 1.05) and KC[19][0] == 0 and KC[20][0] == 1 and KC[49] == (1, KC_TENGAH) and KC[50] == (2, KC_TENGAH) and KC[119] == (3, KC_AKHIR)
+    assert (UMUR, TAW, P_DEPLESI, KC_AKHIR) == (150, 65.0, 0.20, 0.90) and len(KC) == 150
+    assert KC[0] == (0, 1.05) and KC[29][0] == 0 and KC[30][0] == 1 and KC[59] == (1, KC_TENGAH) and KC[60] == (2, KC_TENGAH) and KC[119][0] == 2 and KC[120][0] == 3 and KC[149] == (3, KC_AKHIR)
     # hujan melimpah -> tanpa cekaman (ETa = ETc), tanah sudah di kapasitas lapang
-    eta, etc = neraca([20.0] * 120, [4.0] * 120)
+    eta, etc = neraca([20.0] * 150, [4.0] * 150)
     assert all(abs(a - c) < 1e-9 for a, c in zip(eta, etc)) and penurunan(eta, etc) == 0
-    # tanpa hujan sama sekali: cadangan TAW habis, ETa jauh di bawah ETc, penurunan besar tetapi terbatas 0..1
-    eta, etc = neraca([0.0] * 120, [4.0] * 120)
+    # tanpa hujan sama sekali: cadangan TAW (65 mm) habis, ETa jauh di bawah ETc
+    eta, etc = neraca([0.0] * 150, [4.0] * 150)
     red = penurunan(eta, etc)
-    assert sum(eta) < .3 * sum(etc) and .5 < red <= 1 and eta[0] > 0
-    # tanpa hujan: 20 hari awal menuntut 84 mm dari cadangan 100 mm, Ks mulai turun setelah 20 mm habis -> fase awal sebagian terpenuhi, fase akhir hampir nol
-    assert .6 < eta[0] / etc[0] < .9 and eta[3] / etc[3] < .1
+    assert sum(eta) < .3 * sum(etc) and .5 < red <= 1 and eta[0] > 0 and eta[3] / etc[3] < .1
+    assert .3 < eta[0] / etc[0] < .7        # 30 hari awal menuntut ~126 mm dari 65 mm; Ks turun setelah 13 mm habis
     # monoton: hujan makin sedikit -> penurunan tidak berkurang
-    r = [penurunan(*neraca([x] * 120, [4.0] * 120)) for x in (6.0, 4.0, 3.0, 2.0, 1.0, 0.0)]
+    r = [penurunan(*neraca([x] * 150, [4.0] * 150)) for x in (6.0, 4.0, 3.0, 2.0, 1.0, 0.0)]
     assert all(a <= b + 1e-12 for a, b in zip(r, r[1:])), r
     # masukan salah ditolak
-    for p, e in (([1.0] * 100, [4.0] * 120), ([1.0] * 119 + [None], [4.0] * 120), ([-1.0] * 120, [4.0] * 120), ([1.0] * 120, [4.0] * 119)):
+    for p, e in (([1.0] * 100, [4.0] * 150), ([1.0] * 149 + [None], [4.0] * 150), ([-1.0] * 150, [4.0] * 150), ([1.0] * 150, [4.0] * 149)):
         try:
             neraca(p, e)
             raise SystemExit("neraca harus menolak")
@@ -276,20 +303,55 @@ def uji():
         raise SystemExit("penurunan harus menolak ETc nol")
     except ValueError:
         pass
-    # indeks tanam: 15 Nov 2026 = hari ke-28 dari 18 Okt; prakiraan pendek ditolak
-    assert indeks_tanam(fixture_musiman(1)["tgl"], "2026-10-18") == 28 and indeks_tanam(fixture_musiman(1, hari=100)["tgl"], "2026-10-18") is None
+    # onset: Nov-Des >= 150 mm -> Nov; Okt-Nov basah -> Okt; wilayah kering -> bulan >= 100 mm; kering sekali -> bulan terbasah; klimatologi kosong -> None
+    kl = lambda d: {m: (d.get(m, 3.0), d.get(m, 3.0) * 30.4) for m in range(1, 13)}
+    assert bulan_onset(kl({11: 8, 12: 8, 1: 8})) == 11 and bulan_onset(kl({10: 8, 11: 8})) == 10 and bulan_onset(kl({1: 4.0})) == 1       # 4 x 30,4 = 122 mm saja (longgar)
+    assert bulan_onset({}) is None and bulan_onset(kl({11: 8})) == 11            # bulan tunggal tanpa pasangan basah: aturan longgar (>= 100 mm)
+    kering_total = {m: (2.0, 60.8) for m in range(1, 13)}
+    kering_total[3] = (3.2, 97.3)
+    assert bulan_onset(kering_total) == 3                                           # tak ada bulan >= 100 mm: bulan terbasah
+    t = dt.date(2026, 10, 18)
+    assert tanggal_tanam(10, t) == t and tanggal_tanam(9, t) == t and tanggal_tanam(11, t) == dt.date(2026, 11, 15) and tanggal_tanam(1, t) == dt.date(2027, 1, 15)
+    # seri_musim: ujung prakiraan (150 hari dari 18 Okt = 16 Mar) lalu klimatologi; tanam 15 Nov -> 28 hari terakhir musim di luar prakiraan
+    f = fixture_musiman(5.0)
+    tg = [dt.date.fromisoformat(x) for x in f["tgl"]]
+    p, e, k = seri_musim(dt.date(2026, 11, 15), tg, lambda i: 5.0, f["titik"]["0.25,0.25"]["et0"], {m: (1.5, 45.6) for m in range(1, 13)})
+    assert len(p) == 150 == len(e) and k == 28 and p[0] == 5.0 and p[-1] == 1.5
     pend = {"kec": {"11|Alfa|b": 3000, "11|Zeta|a": 1000}}
     pusat = {"11|Alfa|b": [.3, .3], "11|Zeta|a": [.3, 1.2]}
     now = dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB)
-    kering = bangun(fixture_musiman(0.0), pend, pusat, now)
-    basah = bangun(fixture_musiman(15.0), pend, pusat, now)
-    assert kering["kab"]["11|Alfa"]["gagal"] == 100 and basah["kab"]["11|Alfa"]["gagal"] == 0 and kering["tanam"] == "2026-11-15" and kering["panen"] == "2027-03-14"
-    assert kering["kab"]["11|Alfa"]["data_sawah"] is False and "BUKAN data puso" in kering["catatan"] and kering["kab"]["11|Alfa"]["kode"] == "1101"
-    try:
-        bangun({"titik": {}}, pend, pusat, now)
-        raise SystemExit("bangun harus menolak musiman kosong")
-    except ValueError:
-        pass
+    pw = {"0.25,0.25": fixture_pow()}
+    kering = bangun(fixture_musiman(0.0), pw, pend, pusat, now)
+    basah = bangun(fixture_musiman(15.0), pw, pend, pusat, now)
+    a, b = kering["kab"]["11|Alfa"], basah["kab"]["11|Alfa"]
+    assert a["gagal"] == 100 and b["gagal"] == 0 and a["tanam"] == "2026-11-15" and a["klim_pct"] == 19 and kering["tanam"]["rentang"] == ["2026-11-15", "2026-11-15"]
+    assert a["selisih"] > 20 and a["turun_normal"] < a["turun_med"] and b["selisih"] <= 0 and b["turun_med"] == 0       # selisih terhadap Normal, bukan peringkat
+    assert a["data_sawah"] is False and "BUKAN data puso" in kering["catatan"] and "peringkat" in kering["catatan"] and a["kode"] == "1101"
+    # pemecah hujan klimatologi: rerata terjaga, hujan berumpun (variansi jumlah 7 harian jauh di atas deret konstan), dan deterministik per benih
+    klm = {m: (4.0, 121.6) for m in range(1, 13)}
+    deret = [hujan_klim_acak(dt.date(2026, 11, 15), klm, random.Random(i)) for i in range(300)]
+    rerata = sum(sum(x) for x in deret) / (300 * UMUR)
+    assert abs(rerata - 4.0) < 0.25 and all(len(x) == UMUR and min(x) >= 0 for x in deret) and deret[0] == hujan_klim_acak(dt.date(2026, 11, 15), klm, random.Random(0))
+    mingguan = [sum(x[i:i + 7]) for x in deret for i in range(0, 140, 7)]
+    assert statistics.pstdev(mingguan) > 10 and sum(1 for v in deret[0] if v == 0) > 30            # konstan: pstdev 0, tanpa hari kering
+    assert hujan_klim_acak(dt.date(2026, 11, 15), {m: (0.0, 0.0) for m in range(1, 13)}, random.Random(1)) == [0.0] * UMUR
+    # TOTAL SAMA -> selisih ~0: anggota ensemble ditarik dari pemecah yang sama dengan Normal, benih berbeda
+    rng = random.Random(12345)
+    f = fixture_musiman(0.0)
+    f["titik"]["0.25,0.25"]["p"] = [[0.0] * ANGGOTA for _ in range(150)]
+    kl_pw = klim_bulanan(pw["0.25,0.25"])
+    for j in range(ANGGOTA):
+        x = hujan_klim_acak(dt.date(2026, 10, 18), kl_pw, rng)
+        for i in range(150):
+            f["titik"]["0.25,0.25"]["p"][i][j] = x[i]
+    sama = bangun(f, pw, pend, pusat, now)["kab"]["11|Alfa"]
+    assert abs(sama["selisih"]) <= 3 and abs(sama["turun25"] - sama["turun25_normal"]) <= 8 and "turun25_normal" in sama and "gagal_normal" in sama, sama
+    for jelek in (lambda: bangun({"titik": {}}, pw, pend, pusat, now), lambda: bangun(fixture_musiman(1.0), {"0.25,0.25": {"199101": 1.0}}, pend, pusat, now)):
+        try:
+            jelek()
+            raise SystemExit("bangun harus menolak masukan kurang")
+        except ValueError:
+            pass
     print("ok padi")
 
 

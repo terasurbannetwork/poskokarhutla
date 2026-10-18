@@ -15,6 +15,7 @@ SERVER = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.syst
 UA = {"User-Agent": "poskokarhutla/1.0 (karhutla public layer)"}
 Q = ('[out:json][timeout:240];area["ISO3166-1"="ID"]->.a;'
      '(way(area.a)["landuse"="reservoir"];way(area.a)["water"="reservoir"];way(area.a)["waterway"="dam"];relation(area.a)["water"="reservoir"];);out center;')
+MAKS = 100_000_000  # byte; 3.550 objek OSM ~1 MB, longgar untuk Overpass
 MAKS_JARAK_KM = 60  # titik yang jauh dari pusat kecamatan mana pun (laut, perbatasan) dibuang
 
 
@@ -23,7 +24,10 @@ def unduh():
     for url in SERVER:
         try:
             with urllib.request.urlopen(urllib.request.Request(url, data, UA), timeout=280) as r:
-                return json.loads(r.read())["elements"]
+                b = r.read(MAKS + 1)
+            if len(b) > MAKS:
+                raise RuntimeError(f"respons melebihi {MAKS // 1_000_000} MB")
+            return json.loads(b)["elements"]
         except Exception as e:
             print(f"  overpass {url}: {e}", file=sys.stderr)
             time.sleep(5)

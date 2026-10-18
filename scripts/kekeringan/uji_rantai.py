@@ -69,9 +69,11 @@ def main():
         assert mus["lengkap"], "cache musiman lengkap harus dipakai apa adanya"
         iklim = {"status": "El Niño", "oni_terakhir": {"musim": "JAS", "nilai": 2.0}}
         pra = PK.bangun(pow_sel, h, mus, iklim, {}, penduduk, pusat, sekarang)
+        pra["lengkap"] = True
         simpan(os.path.join(H.DIR_DATA, "kekeringan_prakiraan.json"), pra)
+        assert PK.catat_prospektif(pra, os.path.join(H.DIR_DATA, PK.JALUR_PROSPEKTIF)) is True
         # 3. padi
-        padi = PD.bangun(mus, penduduk, pusat, sekarang)
+        padi = PD.bangun(mus, {k: PD.fixture_pow() for k in pow_sel}, penduduk, pusat, sekarang)
         simpan(os.path.join(H.DIR_DATA, "kekeringan_padi.json"), padi)
         # 4. uji balik (butuh banyak sel dan ONI 25+ tahun)
         pw3 = {**pow_sel, "0.25,2.25": PK.fixture_pow(0.9)}
@@ -87,7 +89,7 @@ def main():
         semua = {n: json.load(open(os.path.join(H.DIR_DATA, f"kekeringan_{n}.json"))) for n in ("hth", "prakiraan", "padi", "ujibalik", "laporan")}
         for n, d in semua.items():
             cek_angka(d, n)
-            assert "—" not in json.dumps(d, ensure_ascii=False), f"{n}: em dash"
+            assert not any(c in json.dumps(d, ensure_ascii=False) for c in ("\u2014",)), f"{n}: em dash"
         kode = H.kode_kab(penduduk)
         for berkas, kabs in (("hth", semua["hth"]["kab"]), ("prakiraan", semua["prakiraan"]["kab"]), ("padi", semua["padi"]["kab"])):
             for k, v in kabs.items():
@@ -104,6 +106,9 @@ def main():
                 assert 0 <= l["pk2"] <= l["pk15"] <= l["pk1"] <= 100, (k, l)       # peluang <= -2 tak mungkin lebih besar dari <= -1
             assert 0 <= v["p61"] <= v["p31"] <= 100
         assert all(0 <= v["gagal"] <= v["turun25"] <= 100 for v in semua["padi"]["kab"].values()), "peluang turun >= 50% harus <= peluang turun >= 25%"
+        assert all(v["selisih"] == v["turun_med"] - v["turun_normal"] or abs(v["selisih"] - (v["turun_med"] - v["turun_normal"])) <= 1 for v in semua["padi"]["kab"].values())
+        assert all(0 <= l["pk1"] <= 100 and l["d1"] is None or abs(l["d1"] - (l["pk1"] - l["b1"])) < .11 for v in semua["prakiraan"]["kab"].values() for l in v["lead"])
+        assert semua["ujibalik"]["loo"] is True and semua["ujibalik"]["aturan"]["temuan"]["kalimat"].endswith(".")
         assert semua["padi"]["kab"]["11|Alfa"]["data_sawah"] is False and "BUKAN data puso" in semua["padi"]["catatan"]
         assert semua["ujibalik"]["prospek"]["semua"]["n"] > 0 and semua["ujibalik"]["bnpb"]["ada"] is False
         # satu berkas lain pun tidak muncul di public/ (kita hanya menulis ke direktori sementara)
@@ -127,7 +132,7 @@ def main():
         # masukan rusak membuat rantai gagal keras, bukan menghasilkan keluaran separuh
         rusak = json.loads(json.dumps(h))
         rusak["sel"]["0.25,0.25"]["p"].pop()
-        for f in (lambda: H.hitung(rusak, penduduk, pusat), lambda: PD.bangun({"titik": {}}, penduduk, pusat, sekarang)):
+        for f in (lambda: H.hitung(rusak, penduduk, pusat), lambda: PD.bangun({"titik": {}}, {}, penduduk, pusat, sekarang)):
             try:
                 f()
                 raise SystemExit("rantai harus menolak masukan rusak")

@@ -1,13 +1,39 @@
 "use strict";
 /* Tab Metode (tidak di menu, A24): cara status dihitung dan batasnya, ditulis dari angka berkas data supaya tidak basi. */
 const Metode = {
+  /* bagian dari data baru; angka dari berkas, bagian tanpa datanya dibuang */
+  baru(tabel, kartu) {
+    const H = S.hth, P = S.prak, D = S.padi, J = S.uji, B = S.bukti, R = S.resmi, N = S.bnpb, o = [], bs = BASELINE_PRAK("pk1", 0);
+    const F3m = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 3, maximumFractionDigits: 3}).replace("-", "−");
+    if (H) o.push(kartu("HTH", `Hari tanpa hujan (HTH): hujan di bawah ${Kartu.hl(fmt(H.ambang_mm) + " mm")} sehari dihitung kering`, tabel(["Bahan", "Keterangan"],
+      [["Hitungan", `hari kering berturut-turut terakhir sampai kemarin${(m => m ? `; data ${m[1]} hari ke belakang, jadi nilai terbesar ${+m[1] + 1}` : "")(/(\d+) hari ke belakang/.exec(H.catatan || ""))}`], ["Kelas BMKG", `${(H.kelas || []).map((k, i) => `${k} (${i === 0 ? "1–" + H.batas_kelas[0] : i < H.batas_kelas.length ? (H.batas_kelas[i - 1] + 1) + "–" + H.batas_kelas[i] : "> " + H.batas_kelas.at(-1)} hari)`).join(", ")}`],
+       ["Sumber hujan", "Open-Meteo (model gabungan), bukan pos BMKG; hasil bisa beda dari peta HTH BMKG"], ["Wilayah", "kabupaten/kota dihitung dari penduduk di sel HTH 31 hari atau lebih, sama dengan jiwa di wilayah"]]), "Open-Meteo; kelas HTH BMKG"));
+    if (P) o.push(kartu("Prakiraan", `Prakiraan 1–3 bulan dari ECMWF SEAS5: ${Kartu.hl(BELUM_UJI.toLowerCase())}, tanpa koreksi bias; arah bias tertulis di bawah`, tabel(["Bahan", "Keterangan"],
+      [["Model", `${esc(P.sumber || "ECMWF SEAS5, 51 anggota")}; titik 2 derajat, sel kisi memakai titik tempat ia berada`], ["Peluang", "porsi anggota ensemble dengan SPI-3 ≤ −1, ≤ −1,5, dan ≤ −2; HTH 31 dan 61 hari dihitung dari hujan harian anggota"],
+       ["Baseline", bs != null ? `peluang klimatologi ${fmt(Math.round(bs))}%; selisih dari baseline ditulis di tiap angka` : "belum tersedia di berkas data"], ["Arah bias", esc(BIAS_BULAN().join("; ") || BIAS_TXT())], ["Catatan bias", esc((P.bias?.catatan || "") + (P.catatan ? " " + P.catatan : ""))],
+       ["Uji balik", "belum ada: hindcast SEAS5 tidak tersedia lewat Open-Meteo, jadi kamu membacanya sebagai arah, bukan angka pasti"]]), "ECMWF SEAS5 lewat Open-Meteo"));
+    if (D) o.push(kartu("Padi", `Gagal panen padi tadah hujan: indikator cekaman air, ${Kartu.hl("bukan data puso")}`, tabel(["Bahan", "Keterangan"],
+      [["Neraca air", `FAO-56 (Allen 1998) bab 8; hasil lewat FAO-33 (Doorenbos dan Kassam 1979), ${D.model?.ky != null ? `Ky ${F2(D.model.ky)}, ` : ""}TAW ${fmt(D.model?.taw_mm)} mm`], ["Tanam", `${esc(D.tanam?.definisi || "asumsi")}; umur ${fmt(D.umur)} hari: ${(D.fase || []).map(f => `${esc(f.nama)} ${fmt(f.hari)} hari`).join(", ")}`], ["Normal", "hasil yang sama dihitung dari hujan klimatologi; angka dibaca sebagai selisih terhadap Normal pada satu besaran ("+PADI_BESARAN(padiJenis())+"), bukan peringkat antarwilayah"],
+       ["Ambang", `gagal panen = hasil turun ${fmt(D.ambang?.gagal_pct)}% atau lebih; turun ${fmt(D.ambang?.turun_pct)}% atau lebih ditampilkan terpisah`], ["Yang tidak ada", "data luas sawah (bobot kabupaten memakai penduduk); irigasi, pompa, dan genangan tidak dimodelkan, jadi daerah beririgasi terbaca terlalu tinggi"], ["Hujan", "ensemble SEAS5 tanpa koreksi bias, belum diuji balik"]]), "FAO-56; FAO-33; ECMWF SEAS5"));
+    const A = J?.prospek?.semua;
+    if (J?.aturan) o.push(kartu("Uji balik", `Uji balik ${esc((J.periode || []).join("–"))} apa adanya${A ? `: model cadangan ENSO BSS ${Kartu.hl(F3m(A.bss))}` : ""}`, tabel(["Bagian", "Hasil"],
+      [["Aturan SPI-3", "dibandingkan dengan tahun kering yang dikenal (2015, 2019, 2023) dan tahun netral; hanya tahun yang melebihi rentang tahun netral disebut menonjol"],
+       ...(A ? [["Model cadangan", `bersyarat fase ENSO, BSS ${F3m(A.bss)} (nol = sama dengan klimatologi); BSS rerata per tahun ${F3m(J.prospek.bss_rerata_tahun)}, positif pada ${fmt(J.prospek.tahun_bss_positif)} dari ${fmt(J.prospek.n_tahun)} tahun`]] : []),
+       ["Batas", esc(J.catatan || "")], ...(J.bnpb?.ada === false ? [["Kejadian BNPB", esc(J.bnpb.alasan || "")]] : []), ["SEAS5", "tidak termasuk dalam uji ini"]]), "Pantau Bencana"));
+    if (B) o.push(kartu("Bukti", "Bukti gambut dan kabupaten kandidat sering kering, beserta batasnya", tabel(["Bagian", "Keterangan"],
+      [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "kompleks konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
+       ...(B.berulang ? [["Sering kering", esc(B.berulang.catatan || "")], ["Tampungan", esc((B.berulang.embung_sumber || "") + ". Nol bukan bukti kekurangan karena peta OSM tidak lengkap")]] : [])]), "Pantau Bencana; OpenStreetMap; InaRISK BNPB"));
+    if (R || N) o.push(kartu("BNPB", "Sumber BNPB dan batasnya", tabel(["Data", "Keterangan"],
+      [...(R ? [["SK status darurat", `${fmt(R.n)} SK ${R.tahun_data} yang menyebut kekeringan dari ${fmt(R.n_sk_total)} SK; ${fmt(R.n_aktif)} berlaku sekarang. Tampil sebagai riwayat, bukan status berlaku; dicocokkan ke kabupaten lewat nama`]] : []),
+       ...(N ? [["IRBI", esc(N.irbi_catatan || "")], ["Sawah dan lahan rusak", "seri pelaporan BNPB per tahun, bukan ukuran dampak; tahun tanpa data tidak diisi"]] : [])]), "data.bnpb.go.id; InaRISK BNPB"));
+    return o.join(""); },
   render() {
     const M = S.meta, sp = M.spi, N = M.nasional;
     const tabel = (h, r, n = "") => `<div class="tw"><table class="kl-tb"><thead><tr>${h.map((x, i) => `<th class="${i ? n : ""}">${x}</th>`).join("")}</tr></thead><tbody>${r.map(c => `<tr>${c.map((x, i) => `<td class="${i ? n : ""}">${x}</td>`).join("")}</tr>`).join("")}</tbody></table></div>`;
     const kartu = (ey, judul, isi, sumber) => Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
     $("#metode").innerHTML =
       kartu("Status", `Status wilayah dihitung sendiri: ${Kartu.hl("Deteksi Pantau Bencana")}`, tabel(["Tingkat", "SPI-3", "Kelembapan tanah (persentil)"],
-        [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2 dan (tanah ≤ 10 atau SPI-6 ≤ −1,5)", "≤ 5"]], "n num"), "ambang Pantau Bencana, belum diuji balik") +
+        [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2, dan butuh penguat: tanah ≤ 10 atau SPI-6 ≤ −1,5", "≤ 10 (penguat)"]], "n num"), "ambang Pantau Bencana, belum diuji balik; tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga") +
       kartu("Hujan", `SPI-3 dari hujan bulanan 1991–2020${sp ? `, sampai ${bulanPanjang(sp.bulan)} di ${fmt(sp.sel)} sel` : ""}`, tabel(["Bahan", "Keterangan"],
         [["Hujan", "NASA POWER (MERRA-2), jumlah tiga bulan dibanding sebaran gamma 1991–2020"], ["Jeda data", "sekitar enam minggu; bulan terakhir yang terisi di hampir semua sel"], ["Dibuang", "sel yang rata-rata tiga bulannya di bawah 50 mm (SPI tak bermakna)"]]), "NASA POWER; McKee 1993; BMKG hanya menerbitkan peta gambar") +
       kartu("Tanah", `Kelembapan tanah 7–28 cm: ${Kartu.hl(fmt(M.tanah.sel))} sel sudah berpersentil`, tabel(["Bahan", "Keterangan"],
@@ -15,6 +41,6 @@ const Metode = {
       kartu("Kode DC", "Kode kekeringan (DC) hanya lapisan peta, tidak ikut menentukan status", tabel(["Kelas DC", "Nilai"],
         [["Rendah", "< 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "≥ 425"]], "n num"), "Canadian Forest Fire Danger Rating System") +
       kartu("Wilayah", `Kabupaten/kota naik tingkat bila ${Kartu.hl("30%")} penduduknya di kecamatan bertingkat itu`, tabel(["Bahan", "Keterangan"],
-        [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "tidak ada; BMKG tidak menerbitkan data terstruktur"]]), "WorldPop; BMKG");
+        [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu);
  },
 };
