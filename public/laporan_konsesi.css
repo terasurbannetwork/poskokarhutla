@@ -22,7 +22,7 @@ main.kn{position:static;inset:auto}
 .kn-pp-daf hr{border:0;border-top:1px solid var(--line);margin:4px 2px}
 .kn-pp-daf em{font-style:normal;margin-left:auto;font-size:11px;color:var(--ink2);font-weight:700}
 .kn-pp-daf button[aria-selected="true"] em{color:#fff;opacity:.8}
-.kn-pp-daf button[aria-selected="true"]::after{margin-left:8px}
+.pc-menu.multi .kn-pp-daf button:has(em)::after{margin-left:8px}
 .kn-pp-daf p{margin:8px;font-size:12px}
 .lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}

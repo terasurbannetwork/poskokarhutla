@@ -38,7 +38,7 @@ const PilihCantik = {
       if (e.key === "ArrowDown") { e.preventDefault(); bs[Math.min(bs.length - 1, i + 1)]?.focus(); } else if (e.key === "ArrowUp") { e.preventDefault(); bs[Math.max(0, i - 1)]?.focus(); }
       else if (e.key === "Escape") { this.tutup(); w.querySelector(".pc-btn").focus(); } });
     this.buka = m; },
-  pasang() {
+  pasang() { if (this._dipasang) return; this._dipasang = 1;   /* dua kali pasang = dua pendengar klik: menu buka lalu langsung tutup */
     const hiasSemua = () => document.querySelectorAll("main select:not([data-cantik])").forEach(x => this.hias(x));
     hiasSemua(); new MutationObserver(hiasSemua).observe(document.querySelector("main"), {childList: true, subtree: true});
     document.addEventListener("click", e => { const b = e.target.closest(".pc-btn"); if (b) { const w = b.parentElement; return w.classList.contains("on") ? this.tutup() : this.bukaMenu(w); } if (!e.target.closest(".pc-menu")) this.tutup(); });
