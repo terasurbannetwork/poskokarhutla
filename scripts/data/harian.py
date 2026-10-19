@@ -536,6 +536,7 @@ def main():
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
     simpan("kluster_geo.json", geo)
+    simpan("kejadian_karhutla_awal.json", kejadian_awal(fitur, sekarang))
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "pfvi": {"ambang": P.AMBANG_PG, "catatan": "Muka air tanah = perkiraan (proxy) dari hujan dan ET0, bukan pengukuran. Uji balik 2019+2023: scripts/sebaran/RISET-PFVI.md"}, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:], **({"wt": g["wt"]} if "wt" in g else {})} for g in grid]})
     simpan("wilayah.json", rek)
@@ -566,6 +567,23 @@ def pecah_kluster(fitur):
     return {"type": "FeatureCollection", "features": awal}, geo
 
 
+def kejadian_awal(fitur, kini):
+    """Ringkasan lintas bencana (/semua), bentuk sama dengan public/banjir/data/kejadian_<id>_awal.json: kompleks K#### level 3
+    (Prioritas, sama dengan layar karhutla), tanpa geometri. Semua kompleks di `fitur` sudah dalam jendela aktif (72/168 jam)."""
+    wib = lambda iso: dt.datetime.fromisoformat(iso).astimezone(WIB).date().isoformat()
+    rows = []
+    for f in fitur:
+        p = f["properties"]
+        if p["level"] != 3:
+            continue
+        rows.append({"kode": p["id"], "nama": f"{p['kab']}, {p['kec']}",
+                     "prov": [p["prov"]], "kab": [f"{p['prov']}|{p['kab']}"], "mulai": wib(p["awal"]), "terakhir": wib(p["akhir"]),
+                     "aktif": True, "besaran": {"nilai": 3, "satuan": "level", "ket": "Prioritas"},
+                     "pusat": [round(p["lat"], 3), round(p["lon"], 3)]})
+    return {"dibuat": kini.strftime("%Y-%m-%dT%H:%M%z")[:-2] + ":00", "hari": kini.astimezone(WIB).date().isoformat(), "bencana": "karhutla",
+            "awalan": "K", "kejadian": rows}
+
+
 def uji():
     sq = {"type": "Polygon", "coordinates": [[[1, 1], [2, 1], [2, 2], [1, 1]]]}
     F = [{"type": "Feature", "geometry": sq, "properties": {"id": "K1", "lat": 1.5, "lon": 1.6, "level": 3, "api24": [[1.5, 1.5]]}},
@@ -576,6 +594,12 @@ def uji():
     assert awal["features"][0]["geometry"]["coordinates"] == [1.6, 1.5] and awal["features"][0]["properties"]["level"] == 3
     assert geo == {"K1": [sq, [[1.5, 1.5]]]}, f"geo hanya untuk kompleks berpoligon/api24: {geo}"
     assert F[0]["properties"]["api24"] == [[1.5, 1.5]], "kluster.json lengkap tidak boleh ikut berubah"
+    P3 = {"id": "K7", "lat": -3.1, "lon": 112.1, "level": 3, "px24": 40, "prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir",
+          "awal": "2026-10-17T20:00:00+00:00", "akhir": "2026-10-19T03:00:00+00:00"}
+    K = kejadian_awal([{"properties": P3}, {"properties": {**P3, "id": "K8", "level": 2}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))
+    assert list(K)[0] == "dibuat" and K["bencana"] == "karhutla" and [r["kode"] for r in K["kejadian"]] == ["K7"], "hanya level 3, dibuat pertama"
+    r = K["kejadian"][0]
+    assert r["mulai"] == "2026-10-18" and r["terakhir"] == "2026-10-19" and r["aktif"] and r["kab"] == ["62|Seruyan"], r
     print("harian uji: pecah_kluster OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat

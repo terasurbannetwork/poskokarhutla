@@ -187,6 +187,10 @@ html.tertanam .hero{padding-top:clamp(32px,6vw,72px)}
 .lb-isi b{font:700 clamp(15px,1.5vw,19px)/1.15 var(--display);letter-spacing:-.02em;text-wrap:balance}
 .lb-isi small{font-size:12px;opacity:.75;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lb-st{justify-self:start;font-size:10.5px;font-weight:800;letter-spacing:.1em;text-transform:uppercase;padding:3px 9px;border-radius:999px;background:rgb(255 255 255 / .18);backdrop-filter:blur(6px)}
+a.lb-st{pointer-events:auto;position:relative;z-index:2;text-decoration:none;color:#fff}
+.bc-daftar{list-style:none;display:flex;flex-wrap:wrap;justify-content:flex-start;gap:8px;margin:22px 0 0;padding:0;max-width:62ch}
+.bc-daftar a{display:inline-block;padding:5px 12px;border-radius:999px;font-size:13px;font-weight:700;text-decoration:none;color:#fff;background:rgb(255 255 255 / .16);backdrop-filter:blur(6px)}
+.bc-daftar a:hover{background:rgb(255 255 255 / .28)}
 .lb-kol.aktif .lb-st{background:var(--aksen);color:#fff;text-decoration:none;pointer-events:auto;position:relative;z-index:2}
 @media (hover:hover) and (min-width:761px){.lb-grid:hover .lb-kol{flex-grow:.8}.lb-grid .lb-kol:hover{flex-grow:2.4}.lb-kol:hover img{transform:scale(1.06);filter:none}}
 .lb-kol:focus-visible{outline:3px solid var(--aksen);outline-offset:3px}
@@ -1001,32 +1005,33 @@ section[hidden],[hidden]{display:none!important}
 <!-- ============ 1. HERO ============ -->
 <section class="hero hero-foto" aria-labelledby="judul">
   <!-- latar: lima bencana berdampingan, hitam-putih, berwarna saat disorot (foto Wikimedia Commons, kredit di bawah hero & img/kredit.json) -->
-  <div class="lb-grid" aria-label="Lima jenis bencana yang dipantau">
+  <div class="lb-grid" aria-label="Jenis bencana yang dipantau">
     <div class="lb-kol aktif">
       <img src="/img/bencana-karhutla.jpg?v=4" alt="Kabut asap karhutla menutupi Tugu Talawang, Palangka Raya, Kalimantan Tengah, 2026" decoding="async" style="object-position:62% 50%">
       <span class="lb-isi"><a class="lb-st" href="/peta">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Karhutla</b><small>Palangka Raya, Kalimantan Tengah, 2026</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Talawang_Monumen_Palangka_Raya_Haze.jpg" target="_blank" rel="noopener">Foto: ParadoxP P · CC BY 4.0</a></span>
     </div>
     <div class="lb-kol">
       <img src="/img/bencana-rob.jpg?v=4" alt="Rumah yang tenggelam oleh rob dan abrasi di Desa Bedono, Demak, Jawa Tengah" decoding="async" style="object-position:42% 60%">
-      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Banjir, Longsor & Rob</b><small>Demak, Jawa Tengah</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg" target="_blank" rel="noopener">Foto: Tim LindungiHutan · CC BY 4.0</a></span>
+      <span class="lb-isi"><a class="lb-st" href="/banjir/">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#8a6d4e" d="M2 13h4l2-5 3 10 3-12 2 7h6v2h-7l-1-3-3 11-3-10-1 3H2z"/></svg>Banjir, Longsor & Rob</b><small>Demak, Jawa Tengah</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Rumah_Mak_Jah_di_Desa_Bedono_yang_Tenggelam_karena_abrasi.jpg" target="_blank" rel="noopener">Foto: Tim LindungiHutan · CC BY 4.0</a></span>
     </div>
     <div class="lb-kol">
       <img src="/img/bencana-gempa.jpg?v=3" alt="Puing bangunan setelah gempa dan tsunami Palu, Palu, Sulawesi Tengah, Oktober 2018" decoding="async" style="object-position:35% 50%">
-      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Gempa & Tsunami</b><small>Palu, Sulawesi Tengah, Oktober 2018</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg" target="_blank" rel="noopener">Foto: Ungkeito · CC BY-SA 4.0</a></span>
+      <span class="lb-isi"><a class="lb-st" href="/gempa/">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#7d8ca3" d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path fill="#e3b94e" d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/></svg>Gempa & Tsunami</b><small>Palu, Sulawesi Tengah, Oktober 2018</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg" target="_blank" rel="noopener">Foto: Ungkeito · CC BY-SA 4.0</a></span>
     </div>
     <div class="lb-kol">
       <img src="/img/bencana-cuaca.jpg?v=3" alt="Siklon Tropis Seroja dari satelit Aqua, Nusa Tenggara Timur, 5 April 2021" decoding="async" style="object-position:40% 30%">
-      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/></svg>Cuaca Ekstrem</b><small>Nusa Tenggara Timur, 5 April 2021</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Seroja_2021-04-05_0545Z.jpg" target="_blank" rel="noopener">Foto: NASA, LANCE / MODIS on Aqua · Public domain</a></span>
+      <span class="lb-isi"><a class="lb-st" href="/cuaca/">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#b5523b" d="M3 21 9 10h6l6 11z"/><path fill="#e58a45" d="M10 10l1-3h2l1 3z"/><path fill="none" stroke="#9aa3ad" stroke-width="1.6" stroke-linecap="round" d="M12 6c-1-1.5 0-3 1.5-3.5M14 5c1-1 2.5-1 3.5 0"/></svg>Cuaca Ekstrem</b><small>Nusa Tenggara Timur, 5 April 2021</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Seroja_2021-04-05_0545Z.jpg" target="_blank" rel="noopener">Foto: NASA, LANCE / MODIS on Aqua · Public domain</a></span>
     </div>
     <div class="lb-kol">
       <img src="/img/bencana-gunungapi.jpg?v=3" alt="Gunung Raung menyemburkan abu, dilihat dari Selat Bali, Banyuwangi, Jawa Timur, 2015" decoding="async" style="object-position:47% 40%">
-      <span class="lb-isi"><span class="lb-st">Segera</span><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Letusan Gunung Api</b><small>Banyuwangi, Jawa Timur, 2015</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg" target="_blank" rel="noopener">Foto: consigliere ivan from Bontang, Indonesia · CC BY 2.0</a></span>
+      <span class="lb-isi"><a class="lb-st" href="/gunungapi/">Aktif · buka peta →</a><b><svg class="lb-ik" viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Letusan Gunung Api</b><small>Banyuwangi, Jawa Timur, 2015</small><a class="lb-foto" href="https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg" target="_blank" rel="noopener">Foto: consigliere ivan from Bontang, Indonesia · CC BY 2.0</a></span>
     </div>
   </div>
   <div class="wrap">
     <a class="pb-merek masuk" style="--d:0" href="/peta" aria-label="Pantau Bencana: buka peta"><span class="pb-ik"><img src="/img/logo.svg?v=2" alt="" width="52" height="52"></span><span class="pb-nm"><span class="nm-id" translate="no">Pantau<b>Bencana</b></span><span class="nm-en" translate="no">Disaster<b>Monitoring</b></span></span></a>
     <h1 id="judul" class="masuk" style="--d:3">Pahami kondisi bencana<br class="lebar"> di Indonesia secara<br class="lebar"> <em>real time</em></h1>
     <p class="misi masuk" style="--d:2">Tim Pantau Bencana mengagregasi dan mengolah data untuk memberikan wawasan tentang kondisi terkini dan riwayat bencana di Indonesia.</p>
+    <ul class="bc-daftar masuk" style="--d:3" aria-label="Bencana yang dipantau"><li><a href="/">Karhutla</a></li><li><a href="/banjir/">Banjir, longsor &amp; rob</a></li><li><a href="/gempa/">Gempa &amp; tsunami</a></li><li><a href="/cuaca/">Cuaca ekstrem</a></li><li><a href="/udara/">Kualitas udara</a></li><li><a href="/gunungapi/">Gunung api</a></li><li><a href="/kekeringan/">Kekeringan</a></li></ul>
     <div class="aksi masuk" style="--d:3">
       <a class="tbl utama" href="/peta">Buka peta</a>
       <a class="tbl garis" href="#kontak">Hubungi kami</a>

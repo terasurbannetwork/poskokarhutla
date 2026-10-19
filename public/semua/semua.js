@@ -5,6 +5,7 @@ import {muatSemua} from "/inti/adapter.js";
 import {IKON} from "/inti/kepala.js";
 import {susunLegenda} from "/inti/peta/legenda.js";
 import {pasangAnalisis} from "/semua/analisis.js";
+import {pasangKejadian} from "/semua/kejadian.js";
 
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const bacaLokal = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -18,10 +19,8 @@ const gelap = () => document.documentElement.dataset.theme ? document.documentEl
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 
 /* ---------- data: registry lalu adaptor */
-const H = (async () => {
-  const reg = await (await fetch("/bencana.json")).json();
-  return muatSemua(reg);
-})().catch(() => []);
+const REG = fetch("/bencana.json").then(r => r.json());
+const H = REG.then(muatSemua).catch(() => []);
 const dipilih = new Set();
 
 /* ---------- peta */
@@ -52,7 +51,9 @@ const atur = (id, nyala) => {
   if (peta.getLayer("l-" + id)) peta.setLayoutProperty("l-" + id, "visibility", nyala ? "visible" : "none");
   document.querySelectorAll(`[data-h="${id}"]`).forEach(e => e.hidden = !nyala);
   $("#legenda").hidden = !dipilih.size;
+  kejadian?.saring(dipilih);
 };
+let kejadian;
 
 H.then(daftar => {
   if (!daftar.length) { $("#kartu").innerHTML = '<p class="kosong">Belum ada data bencana yang bisa ditampilkan. Coba lagi nanti.</p>'; $("#saring").hidden = true; $("#legenda").hidden = true; return; }
@@ -80,3 +81,4 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 
 /* ---------- outlook iklim, bahaya 12 bulan, bencana berantai: di bawah kartu situasi, dimuat setelah cat pertama */
 nanti(() => pasangAnalisis($("#analisis")));
+nanti(async () => { try { const r = await REG; await H; kejadian = await pasangKejadian($("#kejadian"), r.bencana.filter(b => b.status === "aktif")); kejadian?.saring(dipilih); } catch (e) {} });
