@@ -639,8 +639,8 @@ export default {
       "sumber_status": [
         [
           "kualitas",
-          "/data/udara_kualitas.json",
-          30
+          "/udara/data/prakiraan.json",
+          18
         ],
         [
           "berita_udara",
