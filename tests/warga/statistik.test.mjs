@@ -377,7 +377,10 @@ uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain l
     headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
   assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
   const kue = ok.headers.get("set-cookie").split(";")[0];
-  assert.equal((await buka("/peta", {cookie: kue})).status, 200, "sesi membuka halaman");
+  const hl = await buka("/peta", {cookie: kue}); assert.equal(hl.status, 200, "sesi membuka halaman");
+  /* centurisk97.id = situs Centurisk97 seperti *.workers.dev: data-situs=w (tanpa Tentang & Chat Admin, data perusahaan), judul tidak diganti (19 Okt 2026) */
+  const th = await hl.text(); assert.match(th, /<html[^>]* data-situs="w"/); assert.match(th, /<title>Centurisk97<\/title>/); assert.doesNotMatch(th, /<title>Pantau Bencana/);
+  assert.doesNotMatch(th, /<meta [^>]*content="[^"]*Pantau Bencana|alt="Pantau Bencana"|title="Pantau Bencana"/, "meta, logo: Centurisk97");
   for (const ke of ["//jahat.id", "/\\jahat.id", "https://jahat.id"]) {
     const x = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=" + encodeURIComponent(ke), {method: "POST", redirect: "manual", body: MASUK,
       headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded"}});

@@ -448,18 +448,18 @@ async function layaniHTML(req, env, ctx, url) {
   /* situs per alamat: *.workers.dev dan centurisk97.id = "w" (data perusahaan, tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]);
      pantau.terasurban.com tanpa atribut */
   const situsW = situsCenturisk(url.hostname);
-  /* merek: berkas HTML bermerek Centurisk97; selain *.workers.dev diganti "Pantau Bencana" di judul, meta, dan kop laporan */
-  const ganti = t => t.replace(/Centurisk97/g, "Pantau Bencana");
+  /* merek: situs Centurisk97 (*.workers.dev, centurisk97.id) semua "Centurisk97"; selain itu "Pantau Bencana" di judul, meta, logo, dan kop laporan */
+  const [dari, ke] = situsW ? ["Pantau Bencana", "Centurisk97"] : ["Centurisk97", "Pantau Bencana"];
+  const ganti = t => t.replaceAll(dari, ke);
   const rw = new HTMLRewriter().on("html", {element: el => {
     if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
     if (situsW) el.setAttribute("data-situs", "w");
   }});
-  if (!situsW) {
-    let buf = "";   // teks <title>/<b> bisa terpecah antar potongan: kumpulkan lalu tulis sekali di potongan terakhir
-    const teks = {text(t) { buf += t.text; if (t.lastInTextNode) { t.replace(ganti(buf), {html: true}); buf = ""; } else t.remove(); }};
-    rw.on("title", teks).on(".lp-kop b", teks)
-      .on("meta[content*=Centurisk97]", {element: el => el.setAttribute("content", ganti(el.getAttribute("content")))});
-  }
+  let buf = "";   // teks <title>/<b> bisa terpecah antar potongan: kumpulkan lalu tulis sekali di potongan terakhir
+  const teks = {text(t) { buf += t.text; if (t.lastInTextNode) { t.replace(ganti(buf), {html: true}); buf = ""; } else t.remove(); }};
+  const atr = n => ({element: el => el.setAttribute(n, ganti(el.getAttribute(n)))});
+  rw.on("title", teks).on(".lp-kop b", teks).on(`meta[content*="${dari}"]`, atr("content"))
+    .on(`[title*="${dari}"]`, atr("title")).on(`img[alt*="${dari}"]`, atr("alt")).on(`[aria-label*="${dari}"]`, atr("aria-label"));
   return rw.transform(aset);
 }
 

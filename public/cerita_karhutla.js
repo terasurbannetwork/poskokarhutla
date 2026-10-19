@@ -433,9 +433,10 @@ if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.i
 
 /* bagikan bab cerita (peta bergerak tidak bisa jadi gambar): lembar bagikan tautan ke bab itu */
 document.addEventListener("click", e => { const b = e.target.closest?.("[data-ctbagi]"); if (!b) return;
-  const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || "Pantau Bencana";
+  const merek = document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana";   /* situs Centurisk97 (pemilik, 19 Okt 2026) */
+  const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || merek;
   const url = location.origin + (b.closest("#tren") ? "/tren" : "/insight") + "#ct-" + b.dataset.ctbagi;
-  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:"), url, kampanye: "cerita"});
+  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:").replace("Pantau Bencana", merek), url, kampanye: "cerita"});
   else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });
 
 /* rekam bab peta bergerak (Musim 2026) jadi video 1080×1350: kanvas peta + tanggal, angka, judul, merek; diputar dari awal sampai selesai */
