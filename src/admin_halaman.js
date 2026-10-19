@@ -80,6 +80,7 @@ export const halamanPosko = () => halaman("posko", "Memuat Ruang Posko…", `<li
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = k => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
+<script src="/admin/bersama.js?v=1"></script>
 <script src="/admin/${k}.js?v=1"></script>`);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";

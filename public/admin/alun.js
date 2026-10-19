@@ -20,16 +20,7 @@
   const TABS = [["antrean", "Antrean moderasi"], ["utas", "Utas"], ["bantuan", "Butuh bantuan"], ["umum", "Pengumuman"]];
   let tab = "antrean", D = null, buka = null;
 
-  async function kirim(url, body) {
-    const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)});
-    return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))};
-  }
-  async function ambil(url) {
-    const r = await fetch(url);
-    if (r.status === 403) { location.href = "/admin/masuk"; throw new Error("perlu masuk"); }
-    if (r.status === 503) throw new Error("Alun-alun belum diaktifkan (migrasi 0024 belum dijalankan)");
-    return r.json();
-  }
+  const {kirim} = Admin, ambil = u => Admin.ambil(u, "Alun-alun");   // public/admin/bersama.js
   const pesan = (t, ok) => { const p = document.getElementById("axPesan"); if (p) { p.textContent = t || ""; p.className = "ax-pesan " + (ok ? "ok" : "galat"); } };
   const pil = (kls, t, ik) => h("span", {class: "ax-pil " + kls}, ik ? svg(ik) : null, t);
   const pilJenis = j => pil(j, JENIS[j], j);

@@ -18,7 +18,10 @@ function temukan() {
   if (/perbaruiTitik\(env\)/.test(w)) out.add("cron titik");
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
   const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8") + readFileSync(path.join(AKAR, "src/posko.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED + RUTE_POSKO digabung ke RUTE
-  for (const [, x] of (w + "\n" + f + "\n" + e).matchAll(/^\s*"((?:GET|POST) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan, foto)
+  /* Ruang Koordinasi BNPB: RUTE_BNPB, RUTE_RELAWAN, RUTE_ALUN, RUTE_RISET, RUTE_MEJA digabung ke RUTE */
+  const bn = ["bnpb", "relawan", "alun", "riset", "meja"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
+  if (/bersihkanBnpb\(env/.test(w)) out.add("cron bersihkanBnpb");
+  for (const [, x] of (w + "\n" + f + "\n" + e + "\n" + bn).matchAll(/^\s*"((?:GET|POST) \/[\w\/:]+)":/gm)) out.add(x);   // tabel RUTE (statistik, admin, pesan, foto)
   const gm = readFileSync(path.join(AKAR, "src/gempa.js"), "utf8");   // katalog gempa: rute baca + cron
   for (const [, x] of gm.matchAll(/j === "(\/api\/gempa\/\w+)"/g)) out.add("GET " + x);
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
