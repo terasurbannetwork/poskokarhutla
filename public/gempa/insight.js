@@ -11,8 +11,8 @@ const NAMA_M_STACK = ["M 5,0 sampai 5,9", "M 6,0 sampai 6,9", "M 7 atau lebih"];
 
 const Insight = {
   st: {terkini: "7", dirasakan: "7", prov: "2000", riwayat: "dasawarsa"},
-  EX: ["terkini", "dirasakan", "susulan", "peluang", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel"],
-  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan", peluang: "Peluang"},
+  EX: ["terkini", "dirasakan", "susulan", "peluang", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel", "cerita"],
+  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan", peluang: "Peluang", cerita: "Cerita"},
   d: undefined, dMuat: 0, R: undefined, P: undefined,
   /* data hidup 30 hari, disegarkan paling cepat tiap 5 menit */
   async muatHidup() {
@@ -109,6 +109,19 @@ const Insight = {
 
   /* 7. fasilitas rawan dari data/bukti.json (lewat bukti.js); data belum ada = dibuang */
   exBsesar: () => Bukti.kartu("sesar"), exBmmi: () => Bukti.kartu("mmi"), exBpesisir: () => Bukti.kartu("pesisir"), exBevakuasi: () => Bukti.kartu("evakuasi"), exBbnpb: () => Bukti.kartu("bnpb"), exBtabel: () => Bukti.tabel(),
+
+  /* 8. cerita (C16): gempa utama terbesar 30 hari terakhir dan susulannya hari demi hari sejak gempa utama; dari kejadian G (D1) saja. Tanpa susulan = dibuang. */
+  async exCerita() {
+    const kej = ((await Sus.daftar()) || []).filter(k => k.jumlah > 1).sort((a, b) => b.m - a.m || Date.parse(b.mulai) - Date.parse(a.mulai))[0]; if (!kej) return "";
+    const k = await Sus.kej(kej.kode); if (!k?.gempa) return "";   // peluang susulan sudah punya kartu sendiri: judul cerita tinggal satu temuan
+    const t0 = Date.parse(k.mulai), S = k.gempa.filter(x => x.id !== k.utama_id && Date.parse(x.waktu) > t0); if (!S.length) return "";
+    const hari = x => Math.floor((Date.parse(x.waktu) - t0) / 864e5), nH = Math.max(...S.map(hari)) + 1, nilai = Array.from({length: nH}, () => [0]), terbesar = S.reduce((a, x) => x.m > a.m ? x : a, S[0]);
+    for (const x of S) nilai[hari(x)][0]++;
+    const cat = nilai.map((_, i) => i ? "Hari " + i : "Hari 0"), nm = esc(wilayahPendek(k.nama || ""));
+    const judul = `Gempa utama ${Kartu.hl(mTulis(k.m))} di <span translate="no">${nm}</span> pada ${waktuGempa(t0)} disusul ${Kartu.hl(fmt(S.length) + " susulan")}, terbesar ${Kartu.hl(mTulis(terbesar.m))}`;
+    const gr = KG.kolom({cat, seri: [["Susulan", KG.TANAH]], nilai, aria: "Susulan per hari sejak gempa utama",
+      tip: i => `<b>${i ? `Hari ke-${i}` : "Hari gempa utama"}</b><br>Susulan: ${fmt(nilai[i][0])}`});
+    return Kartu.kartu(this.LABEL.cerita, judul, gr, "BMKG, USGS", "", [[KG.TANAH, "susulan per hari sejak gempa utama"]]); },
 
   /* sinkron atau janji (kartu yang butuh data tambahan) */
   gambar(id) { Kartu._leg = null;

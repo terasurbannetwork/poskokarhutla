@@ -76,6 +76,18 @@ const Guncang = {
   async fasilitas(g, bukti) { const X = await this.muat(); if (!X || !bukti?.fasilitas?.length) return null;
     try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
 };
+/* A35 bandara di zona guncangan: bandara.json (milik gunungapi, 140 bandara) dimasukkan ke model fasilitas yang sama (MMI VI atau lebih); bukan model baru */
+Guncang.bandara = async function (g) { const X = await this.muat(); if (!X) return null;
+  const B = await (this._b ||= muatJSON("../gunungapi/data/bandara.json").catch(() => (this._b = null))); if (!Array.isArray(B)) return null;
+  try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, {fasilitas_kolom: ["t", "nama", "lat", "lon"], fasilitas: B.map(b => ["bandara", b.nama, b.lat, b.lon])}, 6).sort((a, b) => b.mmi - a.mmi); } catch (e) { console.error(e); return null; } };
+/* A32 citra Sentinel-2 sebelum/sesudah (data/citra.json, scripts/gempa/citra.py) untuk gempa yang cocok: selisih waktu <= 10 menit dan <= 100 km */
+const Citra = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("data/citra.json").then(d => d.kejadian).catch(() => (this._p = null)); },
+  async untuk(g) { const K = await this.muat(); if (!K) return null; const t = g.t ?? Date.parse(g.waktu), rad = Math.PI / 180;
+    return K.find(k => { const dt = Math.abs(Date.parse(k.waktu_utc + "Z") - t), a = Math.sin((k.lat - g.lat) * rad / 2) ** 2 + Math.cos(g.lat * rad) * Math.cos(k.lat * rad) * Math.sin((k.lon - g.lon) * rad / 2) ** 2;
+      return dt <= 600e3 && 12742 * Math.asin(Math.sqrt(a)) <= 100; }) || null; },
+};
 const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";
 
 /* ================================================================ indeks risiko riwayat (data/risiko.json, scripts/gempa/riwayat.py) dan kontak BPBD (../data/bpbd.json) */
