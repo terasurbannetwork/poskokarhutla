@@ -1,6 +1,6 @@
 """Pemantauan lahan terbakar 2026 di konsesi: sebelum terbakar SUDAH sawit, atau BUKAN sawit lalu menunjukkan tanda penyiapan kebun?
 
-Pakai:  KONSESI_PROV=16 KONSESI_TOP=3 python3 scripts/data/sawit_pantau.py   # -> public/data/konsesi2026/sawit_pantau.json + citra/*_sebelum_*/_sesudah_*.png
+Pakai:  KONSESI_PROV=16 KONSESI_TOP=3 python3 scripts/data/sawit_pantau.py   # -> data/raw/sawit/hasil/sawit_pantau.json + citra/*_sebelum_*/_sesudah_*.png
         python3 scripts/data/sawit_pantau.py uji                              # swa-uji klasifikasi (tanpa jaringan)
 
 HASIL INI INDIKASI, BUKAN BUKTI. Per perusahaan (teratas menurut KONSESI_TOP, luas_bakar_ha > 0), kotak konsesi dibagi 80 x 80 sel:
@@ -164,7 +164,8 @@ def satu(r):
 
 def main():
     os.makedirs(KELUAR, exist_ok=True)
-    jalur = os.path.join(DIR, "sawit_pantau.json")
+    jalur = os.path.join(AKAR, "data/raw/sawit/hasil/sawit_pantau.json")   # bernama perusahaan: tidak terbit (pemilik 14 Okt 2026)
+    os.makedirs(os.path.dirname(jalur), exist_ok=True)
     ada = json.load(open(jalur)) if os.path.exists(jalur) else {}
     hasil = ada.get("perusahaan", {})
     rs = [r for k in PROV if os.path.exists(os.path.join(DIR, f"{k}.json"))

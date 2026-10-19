@@ -30,7 +30,7 @@ const NAMA_DIRI = /(?:Google|ANTARA|Yahoo|NST|Asia) News(?: RSS| \p{Lu}\p{L}+)?|
 export const NAV_SAH = new Set(["Dashboard", "Insight"]);
 export function kelas(t) {
   if (NAV_SAH.has(t.trim())) return {id: 0, en: 0};
-  const u = t.replace(NAMA_DIRI, " ").replace(/https?:\/\/\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:go\.id|co\.id|com|org|net|id)\/\S*|\S+@\S+|\S*\/\S*\.(?:json|js|csv|md|html|py|geojson)\b|\b[\w*-]+\.(?:json|js|csv|md|html|py|geojson)\b/g, " ").match(/(?<![\p{L}\d])\p{L}+(?:-\p{L}+)?/gu) || [];
+  const u = t.replace(/https?:\/\/\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:go\.id|co\.id|com|org|net|id)\/\S*|\S+@\S+|\S*\/\S*\.(?:json|js|csv|md|html|py|geojson)\b|\b[\w*-]+\.(?:json|js|csv|md|html|py|geojson)\b/g, " ").replace(NAMA_DIRI, " ").match(/(?<![\p{L}\d])\p{L}+(?:-\p{L}+)?/gu) || [];
   /* frasa pendek Bertajuk Kapital (≤ 4 kata) = nama tempat/lembaga ("Mekar Baru", "Pondok Tinggi", "ANTARA News"); singkatan kapital ≤ 3 huruf ("DI", "KE") bukan kata */
   if (u.length <= 4 && u.length > 1 && u.every(x => /^\p{Lu}/u.test(x)) && !KATA_ID.has(u[0].toLowerCase()) && !KATA_EN.has(u[0].toLowerCase())) return {id: 0, en: 0};
   const w = u.filter(x => !(x.length <= 3 && x === x.toUpperCase())).map(x => x.toLowerCase());

@@ -19,7 +19,7 @@ pengisian garis-sapu (scanline) pada kisi itu; lubang poligon ditangani aturan g
 Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015 dan 2019
         python3 scripts/data/sawit_retro.py analisis [--tahun 2015] [--tanpa-descals]
         python3 scripts/data/sawit_retro.py citra [--tahun 2019]
-        python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> public/data/sawit_retro.json
+        python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> data/raw/sawit/hasil/sawit_retro.json
         python3 scripts/data/sawit_retro.py unduh | uji
 """
 import csv, datetime as dt, json, math, mmap, os, struct, sys, time, urllib.request, zipfile
@@ -30,8 +30,9 @@ AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 DIR = os.path.join(AKAR, "data/raw/sawit")
 ANTARA = os.path.join(DIR, "antara")
-KELUAR = os.path.join(AKAR, "public/data/sawit_retro.json")
-CITRA_DIR = os.path.join(AKAR, "public/data/sawit_retro/citra")
+# bernama perusahaan: keputusan pemilik 14 Okt 2026, tidak terbit -> data/raw (di-ignore)
+KELUAR = os.path.join(AKAR, "data/raw/sawit/hasil/sawit_retro.json")
+CITRA_DIR = os.path.join(AKAR, "data/raw/sawit/hasil/citra")
 G = 0.001125                    # kisi sampel, derajat (~125 m)
 K = 1_000_000                   # kunci sel = iy * K + ix
 PULAU = ["Java", "Kalimantan", "Maluku", "Papua", "Sulawesi", "Sumatra"]
@@ -329,6 +330,7 @@ def tetapkan(rows, daftar, label=None):
 
 
 # ---------------------------------------------------------------- agregat
+ES_AWAL = dt.date(2017, 1, 1)   # Earth Search sentinel-2-l2a / c1-l2a: adegan Indonesia tertua ~Jan 2017 (diperiksa Okt 2026)
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 KELAS = ("bs", "bd", "st", "bk")   # bakar lalu sawit (Gaveau) | bakar lalu sawit 2019-2021 (Descals) | sawit terbakar | bukan sawit s.d. 2019
 
@@ -338,10 +340,6 @@ def kelas_sampel(k, gav, dsc):
     if h is None:
         return ("bd", None, dsc[k], None) if k in dsc else ("bk", None, None, None)
     return (h[0] if h[0] != "lain" else "bk", h[1], h[2], h[3])
-
-
-def kosong():
-    return {"ha": Counter(), "n": Counter()}
 
 
 def agregat(tahun, s, gav, dsc, ko, pko, kec, pkec):
@@ -518,15 +516,16 @@ def citra_satu(p, tahun):
     awal = dt.date(tahun, m, 1)
     akhir_bln = lambda d, n: (d.replace(day=1) + dt.timedelta(days=32 * n)).replace(day=1)
     plan = {
-        "sebelum": (dt.date(2015, 6, 27) if tahun == 2015 else dt.date(tahun, 1, 1), awal - dt.timedelta(days=1), "desc", "terakhir"),
+        "sebelum": (max(dt.date(tahun, 1, 1), ES_AWAL), awal - dt.timedelta(days=1), "desc", "terakhir"),
         "sesudah": (akhir_bln(awal, 1), akhir_bln(awal, 4) - dt.timedelta(days=1), "asc", "awal"),
         "plus2": (dt.date(tahun + 2, 6, 15), dt.date(tahun + 2, 10, 31), "asc", "bersih"),
     }
     os.makedirs(CITRA_DIR, exist_ok=True)
     hasil = {"bbox": __import__("citra").kotak(lat, lon, km), "pusat": [lat, lon], "bulan_api": bln}
     for nama, (d1, d2, urut, mode) in plan.items():
-        if d2 < d1:
+        if d2 < d1 or d2 < ES_AWAL:
             hasil[nama] = None
+            hasil.setdefault("catatan", []).append(f"{nama}: tidak ada citra (Earth Search memuat Sentinel-2 L2A sejak awal 2017 di Indonesia)")
             continue
         pil = pilih(lat, lon, km, d1, d2, urut, mode)
         if not pil:
@@ -570,7 +569,7 @@ CATATAN = [
     "Konsesi KLHK/GFW bertanggal ~2014-2019 dan tidak lengkap; izin berubah. 'Di luar konsesi terpetakan' bukan berarti tanpa izin. Konsesi yang tumpang-tindih: yang pertama menang (urutan sawit, hti, hph).",
     "Sampel dikelompokkan sebagai Forest/Non Forest/ITP menurut kelas lahan Gaveau pada tahun sebelum api; 'ITP' = hutan tanaman industri. Kelas 'bukan sawit' mencakup lahan yang tak pernah jadi sawit sampai 2019.",
     "Hanya deteksi VIIRS type 0 (api vegetasi) keyakinan nominal/tinggi; sumber api bukan vegetasi dan keyakinan rendah dibuang. Titik palsu statis tidak disaring tersendiri.",
-    "Citra bukti: Sentinel-2 SWIR (B12/B8A/B4; bekas bakar cokelat-merah, vegetasi hijau). Sentinel-2 baru ada sejak 27 Jun 2015, sehingga citra 'sebelum' 2015 sering tidak ada; adegan 2015-2016 diambil dari koleksi Collection-1 bila perlu.",
+    "Citra bukti: Sentinel-2 SWIR (B12/B8A/B4; bekas bakar cokelat-merah, vegetasi hijau). Katalog Earth Search (sentinel-2-l2a dan c1-l2a) baru memuat adegan Indonesia sejak awal 2017, sehingga untuk api 2015 citra 'sebelum' dan 'sesudah' tidak ada dan hanya 'dua tahun sesudah' (2017) yang tersedia.",
 ]
 
 
@@ -580,6 +579,12 @@ def tulis():
         p = os.path.join(ANTARA, f"agregat_{t}.json")
         if os.path.exists(p):
             ada_[str(t)] = json.load(open(p))
+    from wilayah import PROVINSI
+    for v in ada_.values():
+        for r in v["kabupaten"] + v["provinsi"]:
+            r["nama_prov"] = PROVINSI.get(r["prov"], r["prov"])
+        for r in v["perusahaan"]:
+            r["nama_prov"] = PROVINSI.get(r["prov"], r["prov"])
     desc = any(v["total"].get("descals") for v in ada_.values())
     out = {"dibuat": dt.date.today().isoformat(),
            "metode": "VIIRS 375 m dikisi ~125 m per tahun api; tiap sampel dicocokkan ke poligon sawit Gaveau 2022 (kelas lahan tahun sebelum api dan lima tahun sesudahnya), konsesi KLHK, dan kecamatan. 'bakar lalu sawit' = bukan sawit tahun sebelum api lalu sawit dalam 5 tahun (s.d. 2019); 'sawit terbakar' = sudah sawit tahun sebelum api.",

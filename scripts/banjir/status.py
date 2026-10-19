@@ -65,15 +65,16 @@ def ambang(k):
     return [round(t * k, 1) for t in (50, 100, 150)]
 
 
-def level_banjir(h3, bahaya, rk, imax=None, cape=None, p3=None, *, k=K_BANJIR):
-    """imax/cape/p3 None = jalur itu tidak dipakai (aturan lama). k = pengali ambang H3 (uji_balik.py menggesernya)."""
+def level_banjir(h3, bahaya, rk, imax=None, cape=None, p3=None, *, k=K_BANJIR, i_waspada=20):
+    """imax/cape/p3 None = jalur itu tidak dipakai (aturan lama). k = pengali ambang H3 (uji_balik.py menggesernya);
+    i_waspada = ambang jalur intensitas Waspada mm/jam (kenop ambang_wilayah.py; bawaan 20 = aturan berlaku)."""
     imax, cape, p3 = imax or 0, cape or 0, p3 or 0
     w, s, a = ambang(k)
     if rk == 3 or (h3 >= a and bahaya >= 0.66):
         return 3
     if rk == 2 or (bahaya >= 0.33 and (h3 >= s or imax >= 30 or p3 >= 0.5)):
         return 2
-    if rk == 1 or h3 >= w or imax >= 20 or (cape >= 2500 and h3 >= w):
+    if rk == 1 or h3 >= w or imax >= i_waspada or (cape >= 2500 and h3 >= w):
         return 1
     return 0
 

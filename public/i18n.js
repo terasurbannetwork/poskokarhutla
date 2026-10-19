@@ -30,6 +30,8 @@
   const HILANG = new Map();   // teks yang belum ada padanannya (dibaca scripts/i18n/kumpul.mjs)
   /* token angka: "Rp1,2 T", "12,3 rb", "45%", "2.345" (setelah tambalan locale, angka EN berformat 1,234.5) */
   const ANGKA = /(?:Rp\s?)?[−-]?\d[\d.,]*(?:\s?%)?(?:\s(?:rb|jt|M|T)(?![\w]))?/g;
+  /* varian tanpa koma/titik penutup menempel ("MCD64A1, CC BY" -> '1' bukan '1,'): kunci kamus ditulis dengan tanda baca di luar {n} */
+  const ANGKA2 = /(?:Rp\s?)?[−-]?\d(?:[\d.,]*\d)?(?:\s?%)?(?:\s(?:rb|jt|M|T)(?![\w]))?/g;
   const SKALA = {rb: ["k", " thousand"], jt: ["M", " million"], M: [" bn", " billion"], T: [" tn", " trillion"]};
   const angkaEN = t => { const rp = /^Rp\s?/.test(t), m = t.replace(/^Rp\s?/, "").match(/^(.*?)(?:\s(rb|jt|M|T))?$/), s = m[2];
     if (!rp && (s === "M" || s === "T")) return t;   // "5 M" tanpa Rp bisa berarti meter: biarkan
@@ -39,12 +41,16 @@
   /* token bisa membawa koma/titik penutup ("119," dari "di 119, mengecil"); bila terjemahan sudah memuat tanda yang sama, jangan digandakan */
   const isi = (tpl, tok) => tpl.replace(/\{(\d+)\}([.,]?)/g, (_, i, nx) => { if (tok[i] == null) return nx; let v = angkaEN(tok[i]);
     if (nx && v.endsWith(nx)) v = v.slice(0, -1); return v + nx; });
+  /* "minggu ke-42": hubung ordinal "ke-" ikut tertangkap sebagai minus; kunci kamus ("ke{0}") sudah menelannya, tokennya tidak boleh membawa "-" */
+  const ordinal = (t, m, o) => m[0] === "-" && /(?:^|\W)ke$/.test(t.slice(0, o)) ? m.slice(1) : m;
   const kapital = s => s.charAt(0).toUpperCase() + s.slice(1);
 
   function cari(t, pecah = true) {
     let v = KAMUS[t]; if (v != null) return v;
-    const tok = []; const kunci = t.replace(ANGKA, m => (tok.push(m), "{" + (tok.length - 1) + "}"));
+    const tok = []; const kunci = t.replace(ANGKA, (m, o) => (tok.push(ordinal(t, m, o)), "{" + (tok.length - 1) + "}"));
     if (tok.length && (v = KAMUS[kunci]) != null) return isi(v, tok);
+    if (tok.length) { const tk2 = [], k2 = t.replace(ANGKA2, (m, o) => (tk2.push(ordinal(t, m, o)), "{" + (tk2.length - 1) + "}"));
+      if (k2 !== kunci && (v = KAMUS[k2]) != null) return isi(v, tk2); }
     if (tok.length && !/\p{L}{2}/u.test(kunci.replace(/\{\d+\}/g, ""))) return isi(kunci, tok);   // hanya angka ("14,6 jt", "Rp3 M"): satuannya saja yang diganti
     /* sumber gabungan "A; B; C": tiap potongan diterjemahkan sendiri, rangkaian potongan terpanjang yang dikenal didahulukan */
     if (pecah && t.includes("; ")) { const sg = t.split("; "), out = [];

@@ -6,6 +6,9 @@ Skrip: `scripts/banjir/ambang_wilayah.py`. Keluaran: `public/banjir/data/ambang_
 
 ## Protokol (ditulis 19 Okt 2026, SEBELUM angka validasi dan uji dilihat)
 
+> Versi awal di bawah ini DIGANTI sebagian oleh bagian "Perubahan protokol sebelum latih". Bila keduanya berbeda,
+> bagian perubahan yang berlaku. Versi awal dibiarkan sebagai jejak.
+
 Bagian ini tidak boleh diubah setelah `buka` dijalankan. Perubahan protokol sesudah itu = eksperimen baru dengan
 periode uji baru (2026 ke atas), bukan perbaikan.
 
@@ -67,6 +70,64 @@ TIDAK LAYAK = status tidak diubah; hasil ditulis apa adanya di bab uji balik Met
   bawah 2023 dan 2025, itu dicatat sebagai keterbatasan, periode uji tidak diganti.
 - Tanggal DIBI bisa tanggal laporan, bukan tanggal kejadian.
 
+## Perubahan protokol sebelum latih (19 Okt, dari tinjauan validasi-model)
+
+Dibuat sebelum `latih` dijalankan sekali pun: belum ada angka latih, validasi, atau uji yang dilihat (data latih belum
+ada di mesin ini). Versi kode: `VERSI = "protokol-2026-10-19b"`.
+
+1. **Kebocoran di pemilihan sampel ditutup.** `uji_balik.pilih()` mengurutkan kabupaten menurut kejadian 2016-2025,
+   termasuk tahun uji. `pilih_latih()` memanggil pemilih yang sama dengan kejadian dipotong <= 2021-12-31. Akibatnya
+   sampel kabupaten bisa beda dari sampel `validasi.json`, sehingga angka "aturan sekarang" di sini tidak harus sama
+   dengan validasi.json. **Keterbatasan yang tidak bisa ditutup:** indeks bahaya InaRISK mungkin sebagian dibentuk dari
+   riwayat kejadian (termasuk 2022-2025). Itu bocoran lemah lewat jalur B >= 0,33/0,66, sama besar untuk kedua aturan.
+2. **Kriteria lama hampir mustahil dan diganti.** Dari validasi.json (Waspada 2022-2025: a 602, b 15.946, c 463), FAR
+   <= 0,864 dengan POD >= 0,515 berarti alarm turun ~76% sambil kehilangan paling banyak 54 kena. Dua periksa awal
+   dijalankan di `latih` dari data LATIH saja, sebelum memilih apa pun, dan dicatat di `ambang_wilayah.json.periksa`:
+   - (a) porsi hari alarm Waspada aturan sekarang yang H3-nya < 40 mm (dipicu `imax >= 20` saja). Bila > 0,50, kisi
+     ditambah kenop iw (ambang intensitas Waspada) in {20, 30, 40} mm/jam; selain itu iw tetap 20. Kenop per wilayah
+     menjadi pasangan (k, iw). `status.level_banjir` mendapat argumen `i_waspada` (bawaan 20 = aturan berlaku, tidak
+     mengubah status harian).
+   - (b) orakel in-sample: tiap kabupaten memilih kenop di latih (eps 0,05, tanpa penyusutan) dan dinilai di latih yang
+     sama. Ini batas atas yang optimistis. Bila orakel pun tidak mencapai dFAR -0,10, kriteria lama memang tak bermakna.
+   **Kriteria LAYAK baru** (>= Waspada, uji 2024-2025), semuanya wajib:
+   1. dCSI > 0 dan batas bawah CI95 > 0;
+   2. dETS Waspada > 0 dan batas bawah CI95 > 0;
+   3. dPOD >= -0,05 (titik);
+   4. dFAR <= -0,03 dan batas atas CI95 < 0 (dibaca relatif, dFAR/FAR_sekarang, bila butir 6 berlaku);
+   5. penjaga level atas: selisih ETS rata-rata tiga level >= 0 (titik), dipertahankan dari protokol awal supaya
+      Siaga/Awas tidak dikorbankan.
+   dFAR -0,10 bukan gerbang lagi. Kriteria "CSI > CI atas acak" dibuang: redundan dengan dETS (ETS sudah dikoreksi
+   untuk kena kebetulan) dan aturan sekarang sudah mengalahkan acak.
+3. **Uji benar-benar sekali.** Sidik = sha256 atas parameter terpilih + isi `ambang_wilayah.py`, `uji_balik.py`,
+   `status.py`, dan `dibi_tanggal.json`. `buka` menolak bila sidik tidak cocok dengan saat latih, dan menolak SAMA
+   SEKALI bila `dibuka` sudah ada. `latih` juga menolak setelah uji dibuka.
+4. **Selang kriteria = bootstrap blok pulau x tahun** (1.000 ulangan, berpasangan). Kabupaten x tahun tetap dilaporkan
+   sebagai pembanding, bukan gerbang. Di uji hanya ada 6 pulau x 2 tahun = 12 blok, jadi selangnya lebar; itu
+   disengaja (kejadian bergerombol per pulau-musim).
+5. **Alarm acak = nilai harapan analitik** per blok dan level (kena = m x e / n), bukan satu tarikan acak.
+6. **Pasang ulang final.** Setelah eps dan n_min dipilih di validasi, kenop dipasang ulang pada 2016-2023 dengan
+   eps/n_min itu; yang disidik dan diuji adalah kenop final. Angka latih/validasi di berkas memakai kenop yang
+   dipasang di latih saja. **FAR relatif:** bila hari kejadian 2024 di sampel < 70% rata 2023 dan 2025, kriteria 4
+   memakai dFAR/FAR_sekarang.
+7. **Kisi n_min = {80, 160, tak hingga}** (20 dan 40 dibuang: terlalu sedikit untuk satu kabupaten). Pemilihan hiper:
+   dFAR terkecil (3 desimal) di antara dPOD >= -0,05, pemutus seri dETS rata-rata tiga level terbesar.
+8. **Label wajib** (`ambang_wilayah.json.label`, dibawa ke `validasi.json`): hujan ERA5 sebagai prakiraan sempurna;
+   ambang menyerap bias ERA5 dan tidak langsung berlaku untuk hujan produksi (IFS); DIBI kurang lapor. `pakai`
+   tetap false; vonis LAYAK pun hanya membuka peninjauan validasi-model, bukan perubahan status otomatis.
+
+Proses latar penunggu DIBI hanya boleh menjalankan `ambil`; `latih` dan `buka` dijalankan tangan.
+
 ## Hasil
 
-Belum dijalankan.
+**Belum dijalankan (19 Okt 2026): data latih tidak ada di mesin mana pun yang terjangkau.**
+- `data/raw/banjir/dibi_tanggal.json` (tanggal DIBI 2008-2025) tidak ada di checkout lokal dan tidak di-commit
+  (`.gitignore` `data/raw/banjir/*`). `kejadian.json` hanya memuat baris harian 2023-2026 (11.374 baris: 2023 628,
+  2024 2.608, 2025 6.406, 2026 1.732), jadi tidak cukup untuk latih 2016-2021 maupun validasi 2022-2023.
+- API DIBI (`dibi.bnpb.go.id/api/v1/chart/data`) tidak menjawab dari lokal (timeout 60-300 dtk, 19.05-19.40 WIB) dan dari
+  CI hari yang sama (timeout, lalu HTTP 520). Salinan berkasnya hidup di cache Actions `banjir-*` (riwayat.py CI
+  mencetak "musim dari DIBI BNPB 2008-2025"), yang tidak bisa diunduh tanpa langkah workflow.
+- Cache ERA5 uji balik (`data/raw/banjir/uji_balik/`, ~28 MB) juga tidak ada lokal; `ambil` mengunduhnya (~8.200
+  panggilan berbobot, ~2,5 jam) setelah sampel bisa disusun dari DIBI.
+
+Urutan saat data ada: `ambang_wilayah.py ambil` -> `latih` (tulis hasil latih/validasi di sini) -> `buka` sekali.
+Uji 2024-2025 belum pernah dibuka; protokol di atas tetap berlaku.
