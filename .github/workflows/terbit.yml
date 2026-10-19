@@ -27,7 +27,7 @@ jobs:
       - uses: actions/checkout@v4
 
       # Gerbang uji node pertama di CI. Jalan di checkout bersih (keadaan yang ada di git), sebelum cache data dipulihkan.
-      # miniflare dari package-lock.json untuk uji worker; wrangler 3 untuk deploy tetap diunduh npx di langkah terbit.
+      # miniflare dari package-lock.json untuk uji worker; wrangler 4.42.0 untuk deploy tetap diunduh npx di langkah terbit.
       - uses: actions/setup-node@v4
         with:
           node-version: "22"
@@ -96,7 +96,7 @@ jobs:
         run: |
           python3 scripts/terbit/versi.py
           if [ "$GITHUB_REF_NAME" = main ]; then
-            npx --yes wrangler@3 deploy
+            npx --yes wrangler@4.42.0 deploy
           else
             npx --yes wrangler@4.42.0 versions upload --preview-alias staging --message "staging ${GITHUB_SHA::7}"
           fi

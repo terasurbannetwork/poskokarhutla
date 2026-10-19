@@ -5,9 +5,10 @@
   "name": "centurisk97",
   "main": "src/worker.js",
   "compatibility_date": "2026-10-01",
-  "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "none" },
-  // BELUM AKTIF (butuh wrangler >= 4.x di deploy; wrangler@3 terbaru, 3.114.17, menolak larik): tambahkan ke "assets" `"run_worker_first": ["/*.html"]`
-  // agar berkas .html dibuka langsung (/laporan.html, /index.html, ...) juga melewati gerbang centurisk97.id di src/worker.js (halamanTerkunci). Uji posko.test.mjs sudah menjaga sisi Worker.
+  "assets": { "directory": "./public", "binding": "ASSETS", "html_handling": "none", "run_worker_first": ["/*.html"] },
+  // run_worker_first larik (wrangler >= 4; wrangler@3 menolaknya, jadi SEMUA workflow deploy memakai wrangler@4.42.0): "*" mencocokkan
+  // dalam sampai subfolder, jadi hanya berkas .html yang lewat Worker (gerbang centurisk97.id, halamanTerkunci di src/worker.js);
+  // JS/CSS/JSON/gambar tetap dilayani aset tanpa memanggil Worker.
   "d1_databases": [
     { "binding": "DB", "database_name": "poskowarga", "database_id": "2357f51f-540c-482c-8bf1-3130ddb7f196", "migrations_dir": "migrations" }
   ],
