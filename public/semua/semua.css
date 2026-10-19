@@ -94,3 +94,12 @@ table.hm{border-collapse:separate;border-spacing:3px;width:100%;min-width:680px;
 @media (max-width:640px){.analisis{padding:0 12px 40px}.ex-hd{padding:14px 16px 12px}.ex-bd{padding:14px 12px 8px}.ex h3{font-size:18px}.ex-ft{padding:10px 16px 14px}}
 @media (max-width:900px){.dok{left:12px;right:12px;top:auto;bottom:8px}.lg-isi{max-height:90px}.peta-bagian{height:calc(100dvh - var(--top) - 80px);min-height:380px}}
 @media (max-width:640px){.saring{right:12px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.maplibregl-ctrl-top-right{top:52px}}
+/* laporan kejadian: tabel standar (kepala gelap, teks kiri, angka kanan), tanpa memuat inti/tabel.css yang global */
+.kj-tw{overflow-x:auto;border-radius:var(--r,12px);border:1px solid var(--line)}
+.kj-tb{border-collapse:collapse;width:100%;font-size:12.5px}
+.kj-tb thead th{background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:left;white-space:nowrap}
+:root[data-theme="dark"] .kj-tb thead th{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kj-tb thead th{color:oklch(18% .035 256)}}
+.kj-tb td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.kj-tb .n{text-align:right}
+.kj-tb a{color:var(--brand2);font-weight:700}

@@ -107,3 +107,11 @@ test("tabel bisa diurut: baris berubah menurut kolom dan arah", () => {
   assert.equal(nm(urut("nama", false)).join(), [...nm(urut("nama", false))].sort((a, b) => a.localeCompare(b, "id")).join());
   assert.equal(nm(urut("nama", true)).join(), nm(urut("nama", false)).reverse().join());
 });
+
+test("fokus (laporan kejadian satu kab/kota): ringkasan memakai seri kab, tabel provinsi dan kenaikan dilewati", () => {
+  const h = jalan(`(() => { const D = JSON.parse(__src); D.fokus = D.kab[0].kode; return Laporan.bangun(D, Laporan.awal(D, "")); })()`), nama = D.kab[0].nama;
+  assert.ok(h.ring.includes(nama) && h.tren.includes(nama), "ringkasan dan tren harus menyebut kab fokus");
+  assert.equal(h.prov, ""); assert.equal(h.naik, "");
+  assert.ok(!h.kepala.includes('data-set="prov"'), "pemilih provinsi disembunyikan saat fokus");
+  assert.ok(h.kab.includes(nama));
+});

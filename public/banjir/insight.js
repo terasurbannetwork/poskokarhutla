@@ -10,10 +10,10 @@ Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kecamatan|kejadian|mm))$/;   /* 
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 
 const Insight = {
-  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", pel: "b", pa: "pantura", ub: "banjir", pulau: "", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
+  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", pel: "b", pa: "pantura", ub: "banjir", hulu: "", hj: "lalu", pulau: "", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
   /* urutan kartu; tabel kecamatan dan provinsi ikut sebagai kartu terakhir. musim/dampak/kab sengaja tidak di sini (disembunyikan, A24) */
-  EX: ["kejadian", "status", "hujan", "sungai", "rob", "pasang", "tren", "prakiraan", "pelhujan", "peluang", "ujibalik", "kecamatan", "provinsi"],
-  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", pasang: "Kalender pasang", pelhujan: "Peluang hujan lebat", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", peluang: "Peluang 3 hari", ujibalik: "Ketepatan status", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
+  EX: ["kejadian", "status", "hujan", "sungai", "rob", "pasang", "tren", "prakiraan", "pelhujan", "peluang", "hulu", "ujibalik", "kecamatan", "provinsi"],
+  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", pasang: "Kalender pasang", pelhujan: "Peluang hujan lebat", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", peluang: "Peluang 3 hari", hulu: "Telusur hulu", ujibalik: "Ketepatan status", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
     musim: "Musim", dampak: "Dampak", kab: "Langganan"},
   /* status tabel (urut, arah, halaman) per kartu bertabel */
   T: {kejadian: {urut: "_", turun: true, hal: 0}, peluang: {urut: "_", turun: true, hal: 0}, kecamatan: {urut: "_", turun: true, hal: 0}, provinsi: {urut: "_", turun: true, hal: 0}},
@@ -204,6 +204,32 @@ const Insight = {
     return this.ex(judul, "", "", this.tabel("peluang", kol, semua, r => `data-kec="${esc(r.k)}"`, 10, "kecamatan", r => r.pk[2] * 1e3 + r.lv[0]),
       `Sumber: ECMWF IFS ansambel ${fmt(D.anggota)} anggota lewat Open-Meteo, InaRISK. Peluang jalur hujan saja; belum diuji balik, kalibrasinya belum diketahui`, this.seg("pel", [["b", "Banjir"], ["l", "Longsor"]])); },
 
+  /* 6b2. telusur hulu: porsi hujan per sub-DAS hulu daerah langganan/Siaga (scripts/banjir/hulu.py -> hulu.json, kontrak hulu/1) */
+  exHulu() {
+    const H = this.HU; if (!H?.daerah?.length) return "";
+    const d = H.daerah.find(x => x.slug === this.st.hulu) || H.daerah[0], w = this.st.hj === "depan" ? "depan" : "lalu", J = H.jendela[w];
+    if (!J) return "";
+    const U = this.uk(), {W, rh, fs} = U, L = U.M ? 190 : 300, R = U.M ? 70 : 210, tg = t => this.tgl(t), kapan = J[0].slice(0, 7) === J[1].slice(0, 7) ? `${+J[0].slice(8)} s.d. ${tg(J[1])}` : `${tg(J[0])} s.d. ${tg(J[1])}`;
+    const sub = d.subdas.filter(o => o[w + "_persen"] != null).sort((a, b) => b[w + "_persen"] - a[w + "_persen"]), top = sub.slice(0, 8), sisa = sub.slice(8);
+    const baris = sisa.length ? [...top, {label: `${fmt(sisa.length)} sub-DAS lain`, km2: sisa.reduce((a, o) => a + o.km2, 0), [w + "_persen"]: sisa.reduce((a, o) => a + o[w + "_persen"], 0), lain: 1}] : top;
+    const lv = d.status.maks, l0 = d.status.hari_ini, NL = ["", "", "siaga", "awas"], pc = (v, mm) => v > 0 && v < .05 || v === 0 && mm > 0 ? "<0,1%" : fmt(Math.round(v * 10) / 10) + "%", mx = Math.max(1, ...baris.map(o => o[w + "_persen"])), X = v => v / mx * (W - L - R);
+    const pendek = t => U.M && t.length > 22 ? t.slice(0, 21) + "…" : t;
+    const g = baris.map((o, i) => { const y = i * rh, v = o[w + "_persen"], bw = Math.max(2, X(v)), warna = o.titik_hilang ? MERAH : BIRU;
+      const tip = o.lain ? `<b>${esc(o.label)}</b><br>Luas: ${fmt(Math.round(o.km2))} km²<br>Porsi hujan: ${pc(v)}`
+        : `<b>Sekitar ${esc(o.label)}</b><br>Luas: ${fmt(Math.round(o.km2))} km²<br>Hujan rata-rata: ${o[w + "_mm"] == null ? "–" : fmt(o[w + "_mm"]) + " mm"}<br>Porsi hujan: ${pc(v)}${o.konsesi_ha ? `<br>Konsesi: ${fmt(o.konsesi_ha)} ha` : ""}${o.keluaran ? "<br>Sub-DAS keluaran" : ""}${o.titik_hilang ? "<br>Sel hutan hilang terbanyak sejak 2021" : ""}`;
+      const kons = o.konsesi_ha && !U.M ? this.p(W - R + 70, y + 5, `${fmt(o.konsesi_ha)} ha konsesi`, NAVY, "#fff", 11)[0] : "";
+      return `<g data-tip="${esc(tip)}"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${fs}" font-weight="600"><tspan translate="no">${esc(pendek(o.label))}</tspan></text>`
+        + `<rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${bw}" height="${rh - 10}" rx="3" fill="${warna}"/>`
+        + `<g class="gf" style="--i:${i}">${this.p(L + bw + 8, y + 5, pc(v, o[w + "_mm"]), warna, "#fff")[0]}</g>${kons}</g>`; }).join("");
+    const t = top[0], ket = w === "lalu" ? `hujan ${kapan}` : `prakiraan hujan ${kapan}`;
+    const judul = t ? `${this.hl(pc(t[w + "_persen"]))} ${ket} di hulu <span translate="no">${esc(d.kab)}</span> jatuh di sub-DAS sekitar <span translate="no">${esc(t.label)}</span>${l0 >= 2 ? `; status kab hari ini ${NL[l0]}` : lv >= 2 ? `; status kab diprakirakan ${NL[lv]} sampai ${tg(H.status_hari[1])}` : ""}`
+      : `Belum ada hujan tercatat di hulu <span translate="no">${esc(d.kab)}</span> untuk ${kapan}`;
+    const opsi = H.daerah.map(x => [esc(x.slug), `${esc(x.kab)}${x.status.maks >= 2 ? (x.status.maks === 3 ? " · Awas" : " · Siaga") : ""}`]);
+    Kartu.leg([[BIRU, "porsi hujan sub-DAS"], [MERAH, "memuat sel hutan hilang terbanyak sejak 2021"], ...(U.M ? [] : [[NAVY, "konsesi di sub-DAS"]])]);  /* layar sempit: konsesi cukup di tooltip */
+    return this.ex(judul, "", "", top.length ? `<svg viewBox="0 0 ${W} ${baris.length * rh + 6}" role="img" aria-label="Porsi hujan per sub-DAS hulu">${g}</svg>` : "",
+      `Sumber: hujan Open-Meteo kisi 0,25 derajat, batas HydroBASINS v1c; hutan hilang dan konsesi hulu di <a href="/banjir/laporan-das.html#${esc(d.slug)}">Bukti DAS hulu</a>. Porsi volume hujan, bukan debit sungai`,
+      this.selJenis("hulu", opsi, "Daerah") + this.seg("hj", [["lalu", "3 hari terakhir"], ["depan", "3 hari ke depan"]])); },
+
   /* 6c. uji balik: seberapa tepat status ini (validasi.json, uji_balik.py); angka apa adanya, termasuk yang buruk */
   exUjibalik() {
     const V = S.validasi; if (!V) return "";
@@ -307,6 +333,7 @@ const Insight = {
       this.aktif === undefined ? muatJSON("data/kejadian_aktif_awal.json").catch(() => null) : this.aktif,
       typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/pasang_astro.json").catch(() => null)]);
     this.PH = ph; this.PA = pa;
+    this.HU = await muatJSON("data/hulu.json").catch(() => null);
     S.kejadian ||= kej; S.validasi ||= val; if (this.aktif === undefined) this.aktif = akt;
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");

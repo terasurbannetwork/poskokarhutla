@@ -1,5 +1,5 @@
 "use strict";
-/* Tiga kartu Insight di bawah kartu situasi /semua: Outlook iklim, Bahaya 12 bulan, Bencana berantai.
+/* Kartu Insight di bawah kartu situasi /semua: Laporan kejadian, Outlook iklim, Bahaya 12 bulan, Bencana berantai.
    Data: /data/iklim_outlook.json (scripts/umum/iklim_outlook.py) dan /banjir/data/outlook12.json (scripts/umum/outlook12.py).
    Kartu yang datanya gagal dimuat dibuang diam-diam. Segmen urgent (aria-pressed), isi grafik menyusul lewat nanti(). */
 const BL = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], BP = BL.map(b => b.slice(0, 3).replace("Mei", "Mei").replace("Agu", "Agu"));
@@ -99,6 +99,22 @@ function kartuBerantai(O) {
   return Kartu.kartu("Bencana berantai", jd, svg, "DIBI BNPB tiga tahun terakhir", "", [[MERAH, "Disusul bencana kedua dalam 30 hari"], ["currentColor", "Peluang kebetulan"]]);
 }
 
+/* ---------- 3b. Laporan kejadian otomatis: kab/kota yang menembus Siaga (scripts/umum/laporan_kejadian.py, index kejadian/1 per modul) */
+const MODUL_KJ = {banjir: "Banjir dan longsor", cuaca: "Cuaca ekstrem", udara: "Kualitas udara"}, WARNA_B = {banjir: "#4f9be0", cuaca: "#7d8ca3", udara: "#4a9d9c"};
+const tglP = t => { const d = new Date(t + "T12:00:00Z"); return `${d.getUTCDate()} ${BP[d.getUTCMonth()]}`; };
+function kartuKejadian(L) {
+  const a = L.filter(e => e.aktif), arsip = L.length - a.length;
+  if (!L.length) return "";
+  /* kolom pembeda (bencana, status) di depan: tetap terlihat di layar sempit, provinsi di ujung */
+  const baris = L.map(e => `<tr><td><a href="${esc(e.url)}" translate="no">${esc(e.kab)}</a></td>
+    <td><span class="pl" style="--w:${WARNA_B[e.modul] || ABU}">${esc(MODUL_KJ[e.modul] || e.modul)}</span></td><td>${e.aktif ? `<span class="pl" style="--w:${MERAH}">Siaga</span>` : `<span class="pl" style="--w:${ABU}">Selesai</span>`}</td>
+    <td class="n">${esc(tglP(e.mulai))}</td><td class="n">${esc(tglP(e.terakhir))}</td><td>${esc(e.nilai)}</td><td>${esc(e.prov_nama || "")}</td></tr>`).join("");
+  const jd = a.length ? `${Kartu.hl(ang(a.length) + " kab/kota")} sedang Siaga dan punya laporan kejadian otomatis${arsip ? `, ${ang(arsip)} laporan lain sudah selesai` : ""}`
+    : `Tidak ada kab/kota Siaga hari ini; ${ang(arsip)} laporan kejadian terakhir masih bisa dibuka`;
+  return Kartu.kartu("Laporan kejadian", jd, `<div class="tw kj-tw"><table class="kj-tb"><thead><tr><th>Kab/kota</th><th>Bencana</th><th>Status</th><th class="n">Mulai</th><th class="n">Terakhir</th><th>Pemicu</th><th>Provinsi</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+    "laporan harian modul banjir, cuaca, dan kualitas udara Pantau Bencana");
+}
+
 /* ---------- 4. Cara hitung dan batasan: satu blok terlipat */
 const daftar = a => `<ul class="mt-ul">${(a || []).map(s => `<li>${esc(s)}</li>`).join("")}</ul>`;
 function cara(I, O) {
@@ -111,10 +127,12 @@ function cara(I, O) {
 
 /* ---------- pasang */
 export async function pasangAnalisis(el) {
-  const [I, O, LJ] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json")]);
+  const [I, O, LJ, KB, KU] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json"),
+    getJson("/banjir/data/kejadian/index.json"), getJson("/udara/data/kejadian/index.json")]);
+  const KJ = [KB, KU].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
   const iOk = I?.versi?.startsWith("iklim_outlook/") && I.prakiraan?.length, oOk = O?.versi?.startsWith("outlook12/") && O.tabel?.length;
   const st = {musim: ""};
-  const isi = [iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
+  const isi = [kartuKejadian(KJ), iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
   if (!isi.trim()) return;
   el.innerHTML = isi + cara(iOk ? I : null, oOk ? O : null);
   if (typeof pasangTip === "function") pasangTip();

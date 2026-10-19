@@ -40,3 +40,15 @@ tiap skrip punya `uji` luring, angka tanpa sumber tidak dikarang, batasan dituli
   kalimat vonis, rentang, daftar batasan; titik skenario bila berkas memuat anggota. Dipasang di tab Insight tiap bencana.
 - `/semua`: kartu outlook iklim + tabel bahaya 12 bulan + kombinasi berantai.
 - Fase 3: laporan kejadian otomatis (pola "Makalah"), telusur hulu banjir per DAS.
+
+## Fase 3 (19 Okt 2026): selesai
+
+| Bagian | Berkas | Keluaran | Jadwal |
+| --- | --- | --- | --- |
+| Telusur hulu per DAS | `scripts/banjir/bukti_das.py subdas` (manual, butuh zip HydroBASINS) lalu `scripts/banjir/hulu.py` | `public/banjir/data/bukti/<slug>.json` medan `subdas`; `public/banjir/data/hulu.json` (kontrak `hulu/1`) | `hulu.py` dipanggil `laporan_banjir.py` di `banjir.yml` harian |
+| Laporan kejadian | `scripts/umum/laporan_kejadian.py` (mesin `laporan.py` v1 + medan opsional `fokus`) | `public/{banjir,udara}/data/kejadian/<modul>-<kode>.json` + `index.json` (`kejadian/1`) | banjir dan cuaca lewat `laporan_banjir.py`; udara lewat `scripts/udara/jalan.py` |
+| Layar | `public/kejadian.html` (mesin `public/inti/laporan.js`), kartu "Telusur hulu" di Insight banjir, kartu "Laporan kejadian" di `/semua` | | |
+
+Persen hulu = bagian volume hujan (mm x km² irisan sub-DAS dengan sel 0,25 derajat), bukan debit. Laporan kejadian hanya
+merakit angka yang sudah terbit di modul (kronologi, asal, uji balik, jiwa) dan menulis bagian Batasan. Belum memicu laporan:
+gempa, gunung api, kekeringan, karhutla (belum ada status Siaga per kab/kota di `laporan.json` modulnya).
