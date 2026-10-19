@@ -11,6 +11,7 @@
 import {json, gagal, sha, acak, hex, ipHash, turnstileOK, bacaBody, cacheTepi} from "./worker.js";
 import {wilayah, cariWilayah, km, dalam} from "./titik.js";
 import {BENCANA, TINGKAT} from "../public/ews_tindakan.js";
+import {muatHimawari, tandaiBaru, saringIndonesia} from "./himawari.js";
 import {emailKonfirmasi, emailPeringatan, emailGempa, angka, kataPeluang} from "./ews_email.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
@@ -84,13 +85,14 @@ let DATA = null;
 export async function muatData(env, kini) {
   if (DATA && Math.abs(kini - DATA.kini) < CACHE_DATA) return DATA;
   const ambil = async p => { try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + p)); return r.ok ? await r.json() : null; } catch (e) { return null; } };
-  const [fwi, status, cuaca, rob, jejakMentah, titik] = await Promise.all([ambil("/data/fwi.json"), ambil("/banjir/data/status.json"), ambil("/data/peringatan.json"), ambil("/banjir/data/rob.json"), ambil("/data/jejak_api.json"),
-    env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first().then(r => r && JSON.parse(r.isi), () => null)]);
+  const [fwi, status, cuaca, rob, jejakMentah, titik, hw] = await Promise.all([ambil("/data/fwi.json"), ambil("/banjir/data/status.json"), ambil("/data/peringatan.json"), ambil("/banjir/data/rob.json"), ambil("/data/jejak_api.json"),
+    env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first().then(r => r && JSON.parse(r.isi), () => null), muatHimawari(env)]);
+  const hwBaru = tandaiBaru(hw, titik, kini, await saringIndonesia(env)).filter(r => r[9]).map(r => [r[0], r[1], r[2], r[3], r[4]]);   // api baru: Himawari ya, FIRMS (keyakinan apa pun) belum; aturan di src/himawari.js
   /* titik panas: hanya yang <= 24 jam dan keyakinan sedang ke atas (rendah = banyak alarm palsu). ponytail: pindai linear (~20 rb titik) per pelanggan; indeks grid bila pelanggan > ribuan */
   const acuan = titik ? Date.parse(titik.acuan) : 0, pts = [];
   if (titik) for (const [la, lo, jam, , , c] of titik.baris) { const t = acuan + jam * JAM; if (c >= 1 && t >= kini - TITIK_UMUR) pts.push([la, lo, t]); }
   const jejakAcuan = jejakMentah?.acuan, jejakStatus = jejakMentah?.status, jejak = jejakSegar({jejakAcuan, jejakStatus}, kini) ? indeksJejak(jejakMentah) : null;
-  return DATA = {kini, jejak, jejakAcuan, jejakStatus, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat};
+  return DATA = {kini, jejak, jejakAcuan, jejakStatus, fwi, status, cuaca: cuaca?.nowcast || [], cuacaDibuat: cuaca?.dibuat, rob, titik: pts, titikAcuan: titik?.acuan, titikDibuat: titik?.dibuat, hwBaru, hwAcuan: hw?.acuan};
 }
 export const jejakSegar = (d, kini) => d.jejakStatus === "ok" && kini - Date.parse(d.jejakAcuan) <= SIM_UMUR;
 /* sel simulasi diindeks ke grid per cakrawala sekali per muat, jadi tiap pelanggan hanya memeriksa 9 sel, bukan semua sel. ponytail: seluruh sel di memori isolat; kalau jejak_api.json membengkak (> ~100 rb sel) pangkas di jejak.py */
@@ -156,7 +158,17 @@ export function nilaiTitik(data, lat, lon, kecKunci, hariIni) {
   const dekat = titikTerdekat(data.titik || [], lat, lon);
   if (dekat <= TITIK_AWAS_KM) tambahkan("karhutla", 3, 0, "Titik panas sangat dekat", `Titik panas satelit terdeteksi ${angka(dekat, 1)} km dari lokasi Anda dalam 24 jam terakhir.`);
   else if (dekat <= TITIK_SIAGA_KM) tambahkan("karhutla", 2, 0, "Titik panas di sekitar Anda", `Titik panas satelit terdeteksi ${angka(dekat, 1)} km dari lokasi Anda dalam 24 jam terakhir.`);
-
+  /* karhutla: api baru Himawari-9 (belum tercatat FIRMS). Dilewati hanya bila titik FIRMS sendiri sudah memberi tingkat sama/lebih tinggi; kunci sendiri
+     (karhutla-hw) supaya FWI yang sudah terkirim hari ini tidak menelan kabar api baru, dan sumber_jenis membuatnya menang seri di pemadatan per hari */
+  if (data.hwBaru?.length) {
+    let d = 1e9, u = 0; for (const p of data.hwBaru) { const x = km(lat, lon, p[0], p[1]); if (x < d) { d = x; u = p[2]; } }
+    const t = d <= TITIK_AWAS_KM ? 3 : d <= TITIK_SIAGA_KM ? 2 : 0;
+    if (t && t > (dekat <= TITIK_AWAS_KM ? 3 : dekat <= TITIK_SIAGA_KM ? 2 : 0)) {
+      out.push({bencana: "karhutla", tingkat: t, hari: 0, judul: t === 3 ? "Api baru terdeteksi sangat dekat" : "Api baru terdeteksi di sekitar Anda",
+        rincian: `Satelit Himawari-9 (JAXA) mendeteksi api baru ${angka(d, 1)} km dari lokasi Anda, ${u} menit sebelum pukul ${jamWib(Date.parse(data.hwAcuan))} WIB; belum tercatat satelit NASA FIRMS.`,
+        sumber: BENCANA.karhutla.sumber + " dan satelit Himawari-9 (JAXA)", kunci: `karhutla-hw|${hari[0]}|${t}`, sumber_jenis: "himawari"});
+    }
+  }
   /* karhutla: simulasi penjalaran api. Cakrawala yang sudah lewat dilewati; sel kumulatif, jadi cakrawala lebih jauh hanya mengabari bila tingkatnya LEBIH tinggi dari yang sudah ada untuk kompleks yang sama.
      Label "dalam N jam" dari sisa waktu sampai akhir cakrawala (dibulatkan naik ke kelipatan 6 jam), bukan rentang, karena peluangnya kumulatif. */
   if (data.jejak) {

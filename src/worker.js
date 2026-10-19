@@ -2,6 +2,7 @@
    jadi situs tetap jalan seperti sebelumnya. Rahasia: IP_SALT (wajib untuk menulis), ADMIN_TOKEN, TURNSTILE_SECRET (opsional).
    Aturan privasi: IP mentah tidak pernah disimpan (SHA-256 bergaram), kontak WA tidak pernah ikut di daftar/rincian,
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
+import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
 import {perbaruiTitik, titikTerbaru} from "./titik.js";
 import * as St from "./statistik.js";
@@ -485,8 +486,7 @@ export default {
     if (url.pathname.startsWith("/ubin/")) return layaniUbin(req, env, ctx);   // ubin PMTiles dari R2 (src/ubin.js)
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
     if (url.pathname === "/api/himawari" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // hotspot Himawari: R2 data/himawari.json (diunggah Action 30 menit); hilang = kosong, bukan 500
-      const o = await env.MEDIA?.get("data/himawari.json");
-      return new Response(o ? o.body : '{"acuan":null,"baris":[]}', {headers: {"content-type": "application/json; charset=utf-8"}});
+      return new Response(JSON.stringify(await himawariRespons(env)), {headers: {"content-type": "application/json; charset=utf-8"}});
     });
     if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)

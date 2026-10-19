@@ -37,11 +37,14 @@ def parse(teks):
 
 def gabung(per_berkas):
     """per_berkas: daftar hasil parse(); -> (acuan, baris) dengan dedupe terbaru per grid."""
-    semua = {}
+    semua = {}  # grid -> (waktu_terbaru, frp, lv, rel, qf, n_pindai, waktu_pertama)
     for d in per_berkas:
         for g, v in d.items():
-            if g not in semua or v[0] > semua[g][0]:
-                semua[g] = v
+            if g not in semua:
+                semua[g] = v + (1, v[0])
+                continue
+            o = semua[g]
+            semua[g] = (v if v[0] > o[0] else o[:5]) + (o[5] + 1, min(o[6], v[0]))
     return semua
 
 
@@ -56,6 +59,9 @@ def uji():
     assert list(d) == [(-2.0, 110.0)], d
     w, frp, lv, rel, qf = d[(-2.0, 110.0)]
     assert (w.minute, frp, lv, rel, qf) == (10, 50.0, 2, 5, 1), d
+    awal = {(-2.0, 110.0): (dt.datetime(2026, 10, 19, 6, 0), 40.0, 3, 3, 0)}
+    g = gabung([awal, d, {}])[(-2.0, 110.0)]
+    assert (g[0].minute, g[1], g[5], g[6].minute) == (10, 50.0, 2, 0), g
     print("uji OK")
 
 
@@ -86,9 +92,11 @@ def main():
         f.retrbinary("RETR " + p, buf.write)
         hasil.append(parse(buf.getvalue().decode("utf-8", "replace")))
     f.quit()
-    baris = [[lat, lon, max(0, int((acuan - w).total_seconds() // 60)), frp, lv, rel, qf]
-             for (lat, lon), (w, frp, lv, rel, qf) in sorted(gabung(hasil).items())]
-    out = {"acuan": acuan.strftime("%Y-%m-%dT%H:%M:00Z"), "jam": jam, "sumber": SUMBER, "baris": baris}
+    mnt = lambda w: max(0, int((acuan - w).total_seconds() // 60))
+    baris = [[lat, lon, mnt(w), frp, lv, rel, qf, n, mnt(w0)]
+             for (lat, lon), (w, frp, lv, rel, qf, n, w0) in sorted(gabung(hasil).items())]
+    out = {"acuan": acuan.strftime("%Y-%m-%dT%H:%M:00Z"), "jam": jam, "sumber": SUMBER,
+           "kolom": ["lat", "lon", "u", "frp", "level", "rel", "qf", "n", "u0"], "baris": baris}
     with open(KELUAR, "w") as fh:
         json.dump(out, fh, separators=(",", ":"), ensure_ascii=False)
     print(f"himawari: {len(pilih)} CSV, {len(baris)} baris, acuan {out['acuan']}")
