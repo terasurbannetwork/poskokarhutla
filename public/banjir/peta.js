@@ -163,7 +163,7 @@ const Peta = {
       peta.on("mouseleave", id, () => { diTitik = false; peta.getCanvas().style.cursor = ""; tip(); }); }
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
-      if (!diTitik && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
+      if (!diTitik && !this.diKej && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
     /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
@@ -172,7 +172,7 @@ const Peta = {
     const AMBANG = () => ["wil-fill", "sungai", "rob", "hujan", "satelit"].flatMap(id => { const l = peta.getLayer(id); return l ? [l.minzoom, l.maxzoom].filter(z => z > 0 && z < 24) : []; }), tingkat = () => AMBANG().filter(a => peta.getZoom() >= a).length; let t0 = tingkat();
     peta.on("zoomend", () => { const t = tingkat(); if (t !== t0) { t0 = t; renderLegenda(); } });
     peta.on("click", e => {
-      const kj = KejAktif.hit(e.point); if (kj) return KejAktif.buka(kj);
+      const kj = KejAktif.hit(e.point); if (kj) return KejAktif.buka(kj);   /* pin kejadian menang; poligonnya sesudah posko/rob/sungai/riwayat */
       const pk = peta.getLayer("posko") && peta.queryRenderedFeatures(e.point, {layers: ["posko"]});
       if (pk && pk.length) return Posko.popup(pk[0].properties.id, pk[0].geometry.coordinates.slice());
       const rb_ = peta.getLayer("rob") && peta.queryRenderedFeatures(e.point, {layers: ["rob"]});
@@ -181,6 +181,7 @@ const Peta = {
       if (s && s.length) return Analisa.sungai(s[0].properties.i);
       const gb = S.mode === "riwayat" && peta.getLayer("riw-bubble") && peta.queryRenderedFeatures(e.point, {layers: ["riw-bubble"]});
       if (gb && gb.length) return Riwayat.buka(gb[0].properties.kunci);
+      const kp = KejAktif.hit(e.point, true); if (kp) return KejAktif.buka(kp);
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (!w.length) return;
       const k = w[0].properties.kunci;
