@@ -83,6 +83,8 @@
     "table pesan": "pesan: email, kategori, panjang",
     "klien persetujuan (DNT/GPC, tolak, terima)": "persetujuan: menolak tidak mengirim",
     "klien jejak (30 menit, kembali, slot, muatan)": "jejak: aturan 30 menit",
+    "table laporan_wilayah": "migrasi 0027 laporan_wilayah di atas 0001-0026",
+    "cron isiWilayahLaporan": "isi mundur: paling banyak 50 per panggilan",
     "table laporan_cad": "migrasi 0020: laporan multi-bahaya",
     "table kontak_cad": "migrasi 0020: laporan multi-bahaya",
     "table suara_cad": "migrasi 0020: laporan multi-bahaya",

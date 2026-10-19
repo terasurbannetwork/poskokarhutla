@@ -4,7 +4,7 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
-import {perbaruiTitik, titikTerbaru} from "./titik.js";
+import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
@@ -165,17 +165,28 @@ export async function turnstileOK(env, token, req) {
 }
 
 /* ---------------- baris -> GeoJSON (tanpa kontak, tanpa hash) ---------------- */
-const KOLOM = "l.id, l.jenis, l.sub, l.bahaya, l.lat, l.lon, l.teks, l.detail, l.jumlah, l.dibuat, l.kedaluwarsa, l.selesai, l.benar, l.salah, l.dekat_titik_panas, l.laci, l.induk, l.durasi_buruk";
+const KOLOM = "l.id, l.jenis, l.sub, l.bahaya, l.lat, l.lon, l.teks, l.detail, l.jumlah, l.dibuat, l.kedaluwarsa, l.selesai, l.benar, l.salah, l.dekat_titik_panas, l.laci, l.induk, l.durasi_buruk, w.prov, w.kab";
 const fitur = (r, kini) => ({type: "Feature", id: r.id, geometry: {type: "Point", coordinates: [r.lon, r.lat]},
   properties: {id: r.id, jenis: r.jenis, sub: r.sub, bahaya: r.bahaya, teks: r.teks, detail: JSON.parse(r.detail || "{}"), jumlah: r.jumlah,
     dibuat: r.dibuat, kedaluwarsa: r.kedaluwarsa, selesai: !!r.selesai, benar: r.benar, salah: r.salah, titik_panas: !!r.dekat_titik_panas,
-    laci: r.laci, induk: r.induk, durasi_buruk: r.durasi_buruk, kontak: !!r.ada_kontak, kedaluwarsa_lewat: r.kedaluwarsa <= kini}});
+    laci: r.laci, induk: r.induk, durasi_buruk: r.durasi_buruk, prov: r.prov ?? null, kab: r.kab ?? null, kontak: !!r.ada_kontak, kedaluwarsa_lewat: r.kedaluwarsa <= kini}});
 const ADA_KONTAK = kini => `EXISTS (SELECT 1 FROM kontak k WHERE k.laporan_id = l.id AND k.dibuat > ${Math.floor(kini - KONTAK_UMUR)}) AS ada_kontak`;
 
 async function rantai(env, id) {
   return (await env.DB.prepare(`WITH RECURSIVE r(id, induk, d) AS (SELECT id, induk, 0 FROM laporan WHERE id = ?
     UNION ALL SELECT l.id, l.induk, r.d + 1 FROM laporan l JOIN r ON l.id = r.induk WHERE r.d < 50)
     SELECT l.id, l.sub, l.dibuat, l.teks, l.disembunyikan, r.d FROM r JOIN laporan l ON l.id = r.id ORDER BY r.d`).bind(id).all()).results;
+}
+
+/* wilayah laporan (migrasi 0027). Worker bisa terbit SEBELUM migrasinya diterapkan di D1 produksi: tanpa tabel itu
+   Lapor Warga tetap jalan dengan prov/kab null (subkueri kosong menggantikan JOIN), bukan 500. */
+const GABUNG_WIL = "LEFT JOIN laporan_wilayah w ON w.laporan_id = l.id";
+async function denganWilayah(env, sql, ikat, cara) {
+  try { return await env.DB.prepare(sql).bind(...ikat)[cara](); }
+  catch (e) {
+    if (!/no such table: laporan_wilayah/i.test(String(e?.message || e))) throw e;
+    return env.DB.prepare(sql.replace(GABUNG_WIL, "LEFT JOIN (SELECT NULL laporan_id, NULL prov, NULL kab) w ON 0")).bind(...ikat)[cara]();
+  }
 }
 
 /* ================================================================ rute */
@@ -197,13 +208,17 @@ async function daftar(env, url, kini) {
     where += ` AND l.jenis IN (${js.map(() => "?").join(",")})`; ikat.push(...js);
   }
   if (q.get("bahaya")) { if (!BAHAYA[q.get("bahaya")]) return gagal(400, "bahaya tidak dikenal"); }
-  const r = await env.DB.prepare(`SELECT ${KOLOM}, ${ADA_KONTAK(kini)} FROM laporan l WHERE ${where} ORDER BY l.dibuat DESC LIMIT ${MAKS_DAFTAR + 1}`).bind(...ikat).all();
+  if (q.has("prov")) {
+    if (!/^\d{2}$/.test(q.get("prov"))) return gagal(400, "prov harus 2 digit kode provinsi");
+    where += " AND w.prov = ?"; ikat.push(q.get("prov"));
+  }
+  const r = await denganWilayah(env, `SELECT ${KOLOM}, ${ADA_KONTAK(kini)} FROM laporan l ${GABUNG_WIL} WHERE ${where} ORDER BY l.dibuat DESC LIMIT ${MAKS_DAFTAR + 1}`, ikat, "all");
   const rows = r.results;
   return json({type: "FeatureCollection", terpotong: rows.length > MAKS_DAFTAR, kini, features: rows.slice(0, MAKS_DAFTAR).map(x => fitur(x, kini))});
 }
 
 async function rincian(env, id, kini) {
-  const r = await env.DB.prepare(`SELECT ${KOLOM}, l.disembunyikan, ${ADA_KONTAK(kini)} FROM laporan l WHERE l.id = ?`).bind(id).first();
+  const r = await denganWilayah(env, `SELECT ${KOLOM}, l.disembunyikan, ${ADA_KONTAK(kini)} FROM laporan l ${GABUNG_WIL} WHERE l.id = ?`, [id], "first");
   if (!r || r.disembunyikan) return gagal(404, "laporan tidak ada atau disembunyikan");
   const f = fitur(r, kini);
   f.properties.riwayat = (await rantai(env, id)).filter(x => x.d > 0 && !x.disembunyikan).map(x => ({id: x.id, sub: x.sub, dibuat: x.dibuat, teks: x.teks}));
@@ -212,7 +227,7 @@ async function rincian(env, id, kini) {
   return json(f);
 }
 
-async function buat(env, req, url, kini) {
+async function buat(env, req, url, kini, ctx) {
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
   const o = b.o, J = JENIS[o.jenis];
   if (!J) return gagal(400, `jenis '${o.jenis}' tidak dikenal`);
@@ -283,7 +298,32 @@ async function buat(env, req, url, kini) {
     console.error("simpan laporan", bahaya, o.jenis, e?.message);
     return gagal(503, "Laporan belum bisa disimpan. Coba lagi beberapa menit lagi.", {"retry-after": "600"});
   }
+  // wilayah dihitung SESUDAH jawaban (poligon 700 KB di-parse sekali per isolat; di luar jalur kritis Workers Free 10 ms). Gagal = isi-mundur cron menyusul.
+  const wil = tulisWilayah(env, id, lat, lon, "masuk").catch(e => console.error("wilayah laporan", e?.message));
+  if (ctx?.waitUntil) ctx.waitUntil(wil); else await wil;
   return json({id, token, induk, durasi_buruk: durasi, titik_panas: !!api.dekat, laci: api.laci}, 201);
+}
+
+/* C5: prov/kab laporan dari poligon provinsi + kecamatan terdekat (titik.js). Di luar wilayah: buat() tak menulis baris; isi-mundur menulis penanda tak_ada. */
+async function tulisWilayah(env, id, lat, lon, sumber) {
+  const w = cariWilayah(await wilayah(env), lat, lon);   // "kodeProv|Kabupaten|Kecamatan"
+  if (!w) return false;
+  const [prov, kab] = w.split("|");
+  await env.DB.prepare("INSERT OR IGNORE INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES (?, ?, ?, ?)").bind(id, prov, kab || null, sumber).run();
+  return true;
+}
+
+/* Isi mundur (cron menit 17): paling banyak 50 laporan tanpa baris wilayah per panggilan, terbaru dulu. Titik di laut dapat penanda tak_ada agar tidak diulang. */
+export async function isiWilayahLaporan(env, kini = Date.now()) {
+  const r = (await env.DB.prepare(`SELECT l.id, l.lat, l.lon FROM laporan l WHERE NOT EXISTS (SELECT 1 FROM laporan_wilayah w WHERE w.laporan_id = l.id)
+    ORDER BY l.dibuat DESC LIMIT 50`).all()).results;
+  if (!r.length) return {diproses: 0, terisi: 0};
+  let terisi = 0;
+  for (const x of r) {
+    if (await tulisWilayah(env, x.id, x.lat, x.lon, "mundur")) terisi++;
+    else await env.DB.prepare("INSERT OR IGNORE INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES (?, NULL, NULL, 'tak_ada')").bind(x.id).run();
+  }
+  return {diproses: r.length, terisi};
 }
 
 async function suara(env, req, id, kelompok, kini) {
@@ -358,7 +398,7 @@ async function admin(env, req, url, id, kini) {
     if (url.searchParams.get("audit") === "1")
       return json((await env.DB.prepare("SELECT waktu, moderator, aksi, laporan_id, jumlah, alasan FROM audit_moderasi ORDER BY id DESC LIMIT 300").all()).results);
     const tersembunyi = url.searchParams.get("tersembunyi") === "1";
-    const r = await env.DB.prepare(`SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`).all();
+    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`, [], "all");
     return json(r.results.map(x => ({...x, detail: JSON.parse(x.detail)})));
   }
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
@@ -596,7 +636,7 @@ export default {
         if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
       }
       if (p.length === 0 && req.method === "GET") return cacheTepi(req, ctx, 30, () => daftar(env, url, kini));
-      if (p.length === 0 && req.method === "POST") return buat(env, req, url, kini);
+      if (p.length === 0 && req.method === "POST") return buat(env, req, url, kini, ctx);
       if (p[0] === "konfig" && req.method === "GET") return cacheTepi(req, ctx, 300, () => json({turnstile: env.TURNSTILE_SITEKEY || null, batas: BATAS}));
       if (p[0] === "admin" && p.length === 1 && req.method === "GET") return admin(env, req, url, null, kini);
       const id = p[0];
@@ -651,6 +691,7 @@ async function bersihSemua(env, sekarang) {
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
+    try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
