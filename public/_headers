@@ -12,8 +12,8 @@
 
 # Cache (dibaca Workers Static Assets; aturan yang cocok digabung dengan /* di atas).
 # Data diperbarui tiap 3 jam (titik.yml) / harian: 5 menit segar, sesudahnya disajikan lama sambil diperbarui di belakang.
-# JS/CSS: scripts/terbit/versi.py (dijalankan di Actions sebelum deploy) memberi ?v=<hash isi> dan menambah aturan immutable
-# per berkas di bawah blok ini; berkas tanpa versi tetap pakai bawaan Cloudflare (revalidasi ETag).
+# JS/CSS: scripts/terbit/versi.py (dijalankan di Actions sebelum deploy) memberi ?v=<hash isi> dan menambah blok di bawah ini
+# ("/*.js", "/*.css" immutable + pengecualian "! Cache-Control" untuk berkas yang juga dimuat tanpa ?v, "/*.html" no-cache); berkas tanpa versi tetap pakai bawaan Cloudflare (revalidasi ETag).
 /data/*
   Cache-Control: public, max-age=300, stale-while-revalidate=3600
 /banjir/data/*
