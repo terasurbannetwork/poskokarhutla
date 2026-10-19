@@ -44,13 +44,15 @@ const Tren = {
       KG.mendatar(rows, {akhir: 110}), `USGS, gempa M 5+ ${r.tahun[0]} sampai ${r.tahun[1]}. Bobot kekerapan 50%, besaran 30%, tren 20%.`, "", WARNA_RISIKO.map((w, i) => [w, r.kelas[i]])); },
 
   /* galeri kasus (B04): gempa merusak besar, kurasi tangan factsheet_gempa.json; tiap baris bersumber dan bertanggal */
+  /* nama situs dari URL sumber: usgs.gov jadi USGS, selain itu dua label terakhir hostname (jambi.antaranews.com jadi antaranews.com) */
+  situs(u) { try { const h = new URL(u).hostname.split(".").slice(-2).join("."); return h === "usgs.gov" ? "USGS" : h; } catch (e) { return String(u); } },
   async exKasus() {
     const F = await muatJSON("data/factsheet_gempa.json").catch(() => null), K = (F?.kasus || []).filter(k => k.meninggal > 0 && k.sumber && k.tanggal); if (!K.length) return "";
     const top = [...K].sort((a, b) => b.meninggal - a.meninggal)[0], th = k => k.tanggal.slice(0, 4);
-    const rows = [...K].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map(k => ({nama: esc(`${th(k)} ${k.nama.split(",")[0]}`), v: k.meninggal, teks: fmt(k.meninggal) + " jiwa", warna: KG.MERAH,
-      pil: [[mTulis(k.m), warnaM(k.m)], ...(k.tsunami ? [["Tsunami", KG.BIRU]] : [])], tip: `<b>${esc(k.nama)}</b><br>${KG.tgl(k.tanggal + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"})} · ${mTulis(k.m)}<br>Meninggal: ${fmt(k.meninggal)} jiwa<br>Sumber: ${esc(k.sumber)}`}));
+    const rows = [...K].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map(k => ({nama: esc(`${th(k)} ${k.nama.split(",")[0].replace(/^Kepulauan /, "").replace(/^Donggala dan /, "")}`), v: k.meninggal, teks: fmt(k.meninggal) + " jiwa", warna: KG.MERAH,
+      pil: [[mTulis(k.m), warnaM(k.m)], ...(k.tsunami ? [["Tsunami", KG.BIRU]] : [])], tip: `<b>${esc(k.nama)}</b><br>${KG.tgl(k.tanggal + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"})} · ${mTulis(k.m)}<br>Meninggal: ${fmt(k.meninggal)} jiwa<br>Sumber: ${esc(this.situs(k.sumber))}`}));
     return Kartu.kartu("Gempa merusak", `${Kartu.hl(fmt(top.meninggal) + " jiwa")} meninggal pada gempa ${Kartu.hl(mTulis(top.m))} ${esc(top.nama)} ${th(top)}, yang terbanyak dari ${Kartu.hl(K.length + " gempa merusak")} yang dikurasi sejak 2005`,
-      KG.mendatar(rows, {akhir: 130}), [...new Set(K.map(k => k.sumber))].join(", ")); },
+      KG.mendatar(rows, {akhir: 130}), [...new Set(K.map(k => this.situs(k.sumber)))].join(", ")); },
 
   gambar(id) { Kartu._leg = null;
     try { return this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""; } catch (e) { console.error(e); return ""; } },

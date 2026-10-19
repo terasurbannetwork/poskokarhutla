@@ -876,12 +876,14 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "posko",
         "foto",
         "tentang",
         "metode"
       ],
       "tab_sembunyi": [
-        "metode"
+        "metode",
+        "posko"
       ],
       "sumber_status": [
         [
