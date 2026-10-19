@@ -64,20 +64,27 @@ def jalan(akar=AKAR, maks=100):
     # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). Satu splat per pola (dokumen resmi: "/dir/*.js" sah).
     # Halaman: satu aturan "/*.html" (jalur "/x/" tanpa nama berkas tidak kena, sama seperti aturan per-berkas lama).
     # Immutable: pola "/folder/*.ext" dipakai bila SEMUA berkas berekstensi itu di bawah folder tsb memang immutable; kalau ada
-    # satu yang dinamis, folder itu turun ke aturan per berkas (cache-nya tetap sama persis, hanya aturannya lebih banyak).
+    # satu yang dinamis, pola dipersempit dengan awalan nama ("/folder/awal*.js"), terakhir per berkas (cache-nya tetap sama persis, hanya aturannya lebih banyak).
     semua = [("/" + os.path.relpath(os.path.join(d, f), akar).replace(os.sep, "/"))
              for d, _, fs in os.walk(akar) for f in fs]
     ada, pola_abadi, sisa_abadi = set(abadi), [], set(abadi)
     for web in sorted(abadi, key=lambda w: w.count("/")):
         if web not in sisa_abadi:
             continue
-        ujung, bagian = os.path.splitext(web)[1], web.split("/")[:-1]
-        for n in range(1, len(bagian) + 1):               # dari akar ke dalam: pola terluas yang sah menang
+        ujung, dir_, nama = os.path.splitext(web)[1], web.rsplit("/", 1)[0], web.rsplit("/", 1)[1]
+        bagian = dir_.split("/")
+        done = False
+        for n in range(1, len(bagian) + 1):               # dari akar ke dalam, awalan nama dari pendek: pola terluas yang sah menang
             dasar = "/".join(bagian[:n])
-            pola = f"{dasar}/*{ujung}"
-            kena = [w for w in semua if w.startswith(dasar + "/") and w.endswith(ujung)]
-            if all(w in ada for w in kena):
-                pola_abadi.append(pola); sisa_abadi -= set(kena)
+            sub = dir_[len(dasar):] + "/" if len(bagian) > n else ""
+            for k in range(0, len(nama) - len(ujung) + 1):
+                awal = (dir_[len(dasar) + 1:] + "/" if len(bagian) > n else "") + nama[:k]
+                pola = f"{dasar}/{awal}*{ujung}"
+                kena = [w for w in semua if w.startswith(f"{dasar}/{awal}") and w.endswith(ujung)]
+                if all(w in ada for w in kena):
+                    pola_abadi.append(pola); sisa_abadi -= set(kena); done = True
+                    break
+            if done:
                 break
     blok = [TANDA]
     for w in sorted(pola_abadi) + sorted(sisa_abadi):
@@ -113,10 +120,14 @@ def uji():
         assert h.count(TANDA) == 1 and h.startswith("/*\n  X: 1") and "/banjir/index.html\n  Cache-Control: no-cache" in h, h
         w("a.js", "x=2"); v2, _ = jalan(t)
         assert v2["/a.js"] != versi["/a.js"] and v2["/c.js"] == versi["/c.js"], "versi harus mengikuti isi berkas"
-        _, abadi = jalan(t, maks=4)                          # 1 dasar + 2 halaman -> jatah 1: yang terbesar (c.js) bertahan
-        h = open(os.path.join(t, "_headers")).read()
-        aturan = sum(1 for b in h.splitlines() if b.startswith("/"))
-        assert abadi == ["/c.js"] and aturan == 4, f"jatah aturan dilanggar: {aturan} aturan, abadi={abadi}"
+        assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/*.html\n  Cache-Control: no-cache" in h, h
+        w("d.js", "y=1"); w("e.html", '<script src="d.js"></script><script>"d.js"</script>')   # d.js juga dimuat tanpa ?v
+        jalan(t); h = open(os.path.join(t, "_headers")).read()
+        assert "/*.js" not in h and "/a*.js\n" in h and "/d" not in h.replace("/dibuat", ""), h  # tak seragam -> awalan nama
+        try:
+            jalan(t, maks=2); raise AssertionError("harus gagal bila aturan > maks")
+        except SystemExit:
+            pass
     print("versi uji: lolos")
 
 
