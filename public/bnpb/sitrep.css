@@ -5,6 +5,7 @@
 .sr-kartu h2 svg{width:18px;height:18px;color:var(--navy2)}
 .sr-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
 .sr-prov select{height:42px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:0 12px;font:600 14px var(--font);min-width:220px}
+.sr-prov select#tgl{min-width:150px}
 
 .sr-lap{display:grid;gap:14px}
 .sr-kop{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px 18px}
@@ -42,7 +43,7 @@
   .ad-tabel tr{break-inside:avoid}
 }
 @media (max-width:640px){
-  .sr-prov{flex:1 1 100%}.sr-prov select{width:100%}
+  .sr-prov{flex:1 1 100%}.sr-prov select,.sr-prov select#tgl{width:100%}
   .bn-judul .bn-aksi .bn-tombol{flex:1 1 auto;justify-content:center}
   .sr-kop .sr-pils{margin-left:0}
   .sr-grid>.sr-kartu{flex-basis:100%}

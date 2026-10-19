@@ -14,10 +14,11 @@ import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
+import {RUTE_SITREP, arsipkanSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
-import {RUTE_MEJA} from "./meja.js";
+import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
@@ -489,6 +490,7 @@ const RUTE = {
   ...RUTE_FOTO,
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
+  ...RUTE_SITREP,   // arsip sitrep harian (src/sitrep.js)
   ...RUTE_BNPB,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
   ...RUTE_RELAWAN,
   ...RUTE_ALUN,
@@ -665,6 +667,7 @@ export default {
       if (m === 15 && w.getUTCHours() % 3 === 0) try { console.log("titik", JSON.stringify(await perbaruiTitik(env))); } catch (e) { console.error("titik", e?.message); }
       /* antrean panggilan perusahaan: invokasi sendiri (menit 16, sesudah titik di menit 15) supaya parse konsesi2026/<prov>.json punya anggaran CPU sendiri */
       if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
+      if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -693,6 +696,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
+    try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan

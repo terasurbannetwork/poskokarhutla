@@ -17,9 +17,9 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["relawan", "alun", "riset", "meja", "gakkum"];
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum"];
 const subBnpb = aktif => BNPB.includes(aktif) ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${BNPB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
 const atas = aktif => `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>

@@ -1,4 +1,4 @@
-/* Laporan situasi harian (/sitrep, /sitrep?prov=NN). Tanpa input baru: semua angka dibaca dari berkas laporan tiap bencana dan endpoint ringkas
+/* Laporan situasi harian (/sitrep, /sitrep?prov=NN, /sitrep?tgl=YYYY-MM-DD untuk arsip). Tanpa input baru: semua angka dibaca dari berkas laporan tiap bencana dan endpoint ringkas
    yang sudah ada; halaman ini tidak menghitung ulang angka pipeline (hanya memilih hari, selisih, dan hitungan baris yang memang tidak disimpan).
    Semua teks dari data masuk lewat textContent. Endpoint yang belum aktif (404/503/galat) tampil "belum aktif", bukan rusak. */
 (() => {
@@ -32,7 +32,10 @@
   const wib = (t, opsi) => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", ...opsi});
   const tglPendek = iso => { const d = new Date(String(iso).slice(0, 10) + "T12:00:00Z"); return isNaN(d) ? "–" : d.toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}); };
   const jamWIB = iso => { const d = new Date(iso); return iso && !isNaN(d) ? wib(d, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB" : "–"; };
-  const ambil = u => fetch(u, {cache: "no-cache", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null).catch(() => null);
+  const ambilJaringan = u => fetch(u, {cache: "no-cache", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null).catch(() => null);
+  /* satu pintu ambil: dengan ?tgl= semua masukan dibaca dari arsip hari itu (src/sitrep.js), kunci = URL yang sama dengan yang diambil dari jaringan */
+  let ARSIP = null;
+  const ambil = u => ARSIP ? Promise.resolve(ARSIP.masukan[u] ?? null) : ambilJaringan(u);
   const nm = s => String(s || "").toLowerCase().replace(/^(di|daerah istimewa)\s+/, "").trim();
 
   /* bencana yang punya berkas laporan; t = cara membaca tingkat dari data yang sudah ada (bukan aturan baru) */
@@ -180,7 +183,7 @@
   }
   function sNeraca(N) {
     if (!prov) return kartu("Neraca Posko karhutla", "api", belum("Pilih satu provinsi untuk melihat neraca Posko."), "Posko karhutla, rakor dan regu lapangan");
-    if (!N) return kartu("Neraca Posko karhutla", "api", belum("Neraca belum aktif atau belum bisa dimuat."), "Posko karhutla");
+    if (!N) return kartu("Neraca Posko karhutla", "api", belum(ARSIP ? "Provinsi ini tidak punya neraca di arsip hari itu." : "Neraca belum aktif atau belum bisa dimuat."), "Posko karhutla");
     const t = N.total || {}, kab = N.kab || [];
     if (!kab.length) return kartu("Neraca Posko karhutla", "api", h("p", {class: "sr-belum", teks: "Belum ada neraca masuk untuk " + tglPendek(N.tgl) + "."}), "Posko karhutla");
     const kend = (t.kendala || []).map(k => pil(N.kendala_nama?.[k] || k, "segitiga", "var(--c2)"));
@@ -228,7 +231,7 @@
     if (m.relawan) L.push("", "*Relawan*", `- Siap tugas ${F(m.relawan.siap)}${prov ? " di " + PROV[prov] : ""}, bertugas sekarang ${F(m.relawan.bertugas)}`);
     if (m.meja) { L.push("", "*Logistik dan kaji cepat*"); for (const x of m.meja) L.push(`- ${x.nama}: ${F(x.n)} catatan, ${F(x.bahaya)} perlu perhatian`); }
     if (m.alun) L.push("", "*Alun-alun*", `- Permintaan bantuan terbuka ${F(m.alun.terbuka)}${m.alun.lebih ? "+" : ""}, ditangani ${F(m.alun.ditangani)}`);
-    L.push("", "Sumber: Pantau Bencana (BMKG, NASA FIRMS, PVMBG, Posko, Lapor Warga)", location.origin + "/sitrep" + (prov ? "?prov=" + prov : ""));
+    L.push("", "Sumber: Pantau Bencana (BMKG, NASA FIRMS, PVMBG, Posko, Lapor Warga)", location.origin + "/sitrep" + (ARSIP || prov ? "?" + [ARSIP ? "tgl=" + ARSIP.tgl : "", prov ? "prov=" + prov : ""].filter(Boolean).join("&") : ""));
     return L.join("\n").replace(/\u2014/g, "-");
   }
 
@@ -237,11 +240,11 @@
   async function render() {
     const id = ++gen, lap = $("lap");
     const N = await muatNeraca(); if (id !== gen) return;
-    model = {kini: Date.now(), kej: kejadian(), naik: wilayahNaik(), neraca: N, warga: wargaHitung(), relawan: relawanHitung(), meja: mejaHitung(), alun: alunHitung()};
+    model = {kini: ARSIP ? ARSIP.dibuat : Date.now(), kej: kejadian(), naik: wilayahNaik(), neraca: N, warga: wargaHitung(), relawan: relawanHitung(), meja: mejaHitung(), alun: alunHitung()};
     const dataTgl = model.kej.map(r => r.dibuat).filter(Boolean).sort().pop();
     const kop = h("header", {class: "sr-kop"}, h("img", {src: "/img/logo.svg?v=2", alt: "", width: 40, height: 40}),
       h("div", null, h("h2", {class: "sr-judul", teks: "Laporan situasi harian"}), h("p", {class: "bn-label", teks: "Pantau Bencana · Ruang Koordinasi"})),
-      h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
+      h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), ARSIP ? pil("Arsip " + tglPendek(ARSIP.tgl) + ", 07.00 WIB", "kotak", "var(--c2)") : pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
         dataTgl ? pil("Data terbaru " + jamWIB(dataTgl), null, "var(--c5)") : null));
     const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun));
     lap.replaceChildren(kop, sKejadian(model.kej), sNaik(model.naik), grid);
@@ -264,6 +267,17 @@
       try { await navigator.clipboard.writeText(teksWA(model)); pesan("Teks WhatsApp sudah disalin.", true); }
       catch (e) { pesan("Tidak bisa menyalin otomatis. Izinkan akses papan klip lalu coba lagi.", false); }
     });
+    /* pemilih tanggal: "Hari ini" + 60 hari arsip yang ada; memilih memuat ulang halaman (sumber masukan berganti total) */
+    const tgl = new URLSearchParams(location.search).get("tgl") || "", st = $("tgl");
+    const daftar = (await ambilJaringan("/api/sitrep/arsip/daftar"))?.tgl || [];
+    if (tgl && !daftar.includes(tgl)) daftar.push(tgl);
+    st.append(h("option", {value: "", teks: "Hari ini"}), ...daftar.sort().reverse().map(t => h("option", {value: t, teks: tglPendek(t)})));
+    st.value = tgl; st.hidden = daftar.length === 0;
+    st.addEventListener("change", () => { const u = new URL(location.href); st.value ? u.searchParams.set("tgl", st.value) : u.searchParams.delete("tgl"); location.assign(u); });
+    if (tgl) {
+      ARSIP = /^\d{4}-\d\d-\d\d$/.test(tgl) ? await ambilJaringan("/api/sitrep/arsip?tgl=" + tgl) : null;
+      if (!ARSIP?.masukan) { ARSIP = null; $("lap").replaceChildren(h("p", {class: "bn-pesan galat", role: "alert", teks: "Arsip tanggal itu tidak ada. Pilih tanggal lain atau kembali ke Hari ini."})); return; }
+    }
     await muatAwal();
     if (!D.reg) { $("lap").replaceChildren(h("p", {class: "bn-pesan galat", role: "alert", teks: "Daftar bencana belum bisa dimuat. Coba lagi nanti."})); return; }
     await render();

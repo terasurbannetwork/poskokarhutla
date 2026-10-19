@@ -58,4 +58,6 @@ export const RUTE_BNPB = {
   "GET /kebutuhan": (env, req, url) => halamanBnpbPublik(env, url, "kebutuhan"),
   /* berkas Gakkum konsesi: bahan awal, admin saja (data konsesi sendiri publik di /data/konsesi2026) */
   "GET /admin/gakkum": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("gakkum")),
+  /* Layar Pimpinan: satu layar lintas sistem untuk pimpinan, dirakit di peramban dari API admin yang sudah ada (tanpa rute data baru) */
+  "GET /admin/pimpinan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("pimpinan")),
 };

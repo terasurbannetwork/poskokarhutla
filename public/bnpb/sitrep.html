@@ -9,7 +9,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/sitrep.css?v=1" rel="stylesheet">
+<link href="/bnpb/sitrep.css?v=2" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -20,6 +20,7 @@
   <div class="bn-judul">
     <h1>Laporan situasi</h1>
     <div class="bn-aksi sr-kontrol">
+      <label class="sr-prov"><span class="sr-sr">Tanggal</span><select id="tgl" aria-label="Tanggal laporan" hidden></select></label>
       <label class="sr-prov"><span class="sr-sr">Cakupan</span><select id="prov" aria-label="Cakupan wilayah"></select></label>
       <button class="bn-tombol sekunder" id="salin" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/></svg><span>Salin teks WhatsApp</span></button>
       <button class="bn-tombol" id="cetak" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg><span>Cetak atau simpan PDF</span></button>
@@ -28,6 +29,6 @@
   <p id="pesan" class="bn-pesan" role="status"></p>
   <article id="lap" class="sr-lap" aria-live="polite"><p class="bn-pesan" role="status">Memuat laporan.</p></article>
 </main>
-<script src="/bnpb/sitrep.js?v=1"></script>
+<script src="/bnpb/sitrep.js?v=2"></script>
 </body>
 </html>

@@ -2,7 +2,7 @@
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
     "table gempa": "migrasi 0009 idempoten",
-    "cron arsipkanSitrep": "cron 07 WIB menulis arsip SEKALI per hari",
+    "cron arsipkanSitrep": "sitrep arsip: seed data pribadi",
     "GET /api/sitrep/arsip": "GET /api/sitrep/arsip sah",
     "GET /api/sitrep/arsip/daftar": "GET /api/sitrep/arsip/daftar: urut",
     "table gempa_kejadian": "kejadian G: susulan dalam jendela",
