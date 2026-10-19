@@ -197,7 +197,7 @@
     const d = await ambil(`${API}/penugasan`);
     isi.innerHTML = `<div class="rw-bar"><span class="rw-redup">Sesi check-in dan check-out relawan. Jam yang disahkan masuk angka publik dan rekap kampus.</span></div>${wadah("tJam")}`;
     Tabel(document.getElementById("tJam"), [{l: "Relawan", k: "nama"}, {l: "Masuk", k: "masuk", h: j => wkt(j.masuk)}, {l: "Keluar", k: "keluar", h: j => j.keluar ? wkt(j.keluar) : pil("p-hijau", "api", "Berjalan")}, {l: "Durasi", k: "menit", h: j => jamF(j.menit)},
-      {l: "Lokasi", u: false, h: j => j.lat == null ? "–" : `<a href="https://www.google.com/maps?q=${j.lat},${j.lon}" target="_blank" rel="noopener noreferrer">${(+j.lat).toLocaleString("id-ID", {maximumFractionDigits: 3})}, ${(+j.lon).toLocaleString("id-ID", {maximumFractionDigits: 3})}</a>`},
+      {l: "Lokasi", u: false, h: j => j.lat == null ? "–" : `<a href="https://www.google.com/maps?q=${+j.lat},${+j.lon}" target="_blank" rel="noopener noreferrer">${(+j.lat).toLocaleString("id-ID", {maximumFractionDigits: 3})}, ${(+j.lon).toLocaleString("id-ID", {maximumFractionDigits: 3})}</a>`},
       {l: "Validasi", v: j => j.sah, h: j => ps(SAH[j.sah])}, {l: "Aksi", u: false, h: j => j.keluar == null ? "" : `<div class="rw-aksi"><button class="ad-tombol kecil utama" data-jam="sah" data-id="${esc(j.id)}">Sahkan</button><button class="ad-tombol kecil bahaya" data-jam="tolak" data-id="${esc(j.id)}">Tolak</button></div>`}], d.jam, "Belum ada sesi jam kerja.");
   }
   async function tampilPenilaian(isi) {
