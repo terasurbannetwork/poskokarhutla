@@ -4,13 +4,13 @@
 const Metode = {
   bagian() {
     const kolKat = KAT.map((k, i) => `<tr><td>${pilKat(i)}</td><td class="n">${k.r}</td><td class="n">${["0 sampai 50", "51 sampai 100", "101 sampai 200", "201 sampai 300", "di atas 300"][i]}</td>
-      <td>${["Boleh beraktivitas di luar seperti biasa", "Kelompok sensitif kurangi aktivitas berat di luar", "Pakai masker, kurangi aktivitas di luar", "Tetap di dalam ruangan, pakai masker rapat", "Hindari aktivitas luar, cari ruang udara bersih"][i]}</td></tr>`).join("");
+</tr>`).join("");
     return [
       ["Tentang", `<p>Halaman ini menunjukkan perkiraan PM2,5 tiga hari ke depan, jarak pandang di bandara, dan berapa banyak orang yang menghirup udara tidak sehat. Angkanya perkiraan model, bukan ISPU resmi KLHK.</p>`],
-      ["Kategori udara", `<div class="tw"><table><thead><tr><th>Kategori</th><th class="n">PM2,5 24 jam <span style="text-transform:none">(µg/m³)</span></th><th class="n">ISPU</th><th>Yang disarankan</th></tr></thead><tbody>${kolKat}</tbody></table></div>
+      ["Kategori udara", `<div class="tw"><table><thead><tr><th>Kategori</th><th class="n">PM2,5 24 jam <span style="text-transform:none">(µg/m³)</span></th><th class="n">ISPU</th></tr></thead><tbody>${kolKat}</tbody></table></div>
         <p class="kecil">Titik potong mengikuti Permen LHK P.14/2020 untuk rata-rata 24 jam. Nilai per jam disebut PM2,5 per jam, bukan kategori.</p>`],
       ["Dari mana datanya", `<ul class="mt-daftar">
-        <li><b>PM2,5 dan PM10</b>: Copernicus CAMS (ECMWF) lewat Open-Meteo, satu titik per kabupaten/kota (514 titik), 72 jam ke depan. Diperbarui dua kali sehari.</li>
+        <li><b>PM2,5 dan PM10</b>: Copernicus CAMS (ECMWF) lewat Open-Meteo, satu titik per kabupaten/kota (${fmt(S.prak.kota.length)} titik), 72 jam ke depan. Diperbarui dua kali sehari.</li>
         <li><b>Jarak pandang bandara</b>: laporan METAR dari NOAA Aviation Weather. Laporan yang lebih tua dari ${MAKS_JAM_METAR} jam tidak ditampilkan.</li>
         <li><b>Penduduk</b>: WorldPop 2026, kotak 1 km dijumlahkan ke kabupaten/kota lewat pusat kecamatan (CC BY 4.0).</li>
         <li><b>Riwayat (Tren)</b>: hari lampau dari analisis CAMS lewat Open-Meteo, sesudahnya dari prakiraan terbaru; bukan alat ukur.</li>

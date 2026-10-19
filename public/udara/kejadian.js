@@ -20,7 +20,7 @@ const Kejadian = {
   ada: () => !!Kejadian.K?.length,
   nilai: (k, c) => c === "pm" || c === "tingkat" ? k.besaran?.nilai ?? 0 : c === "kab" ? k.n_kab : c === "jiwa" ? k.jiwa ?? 0 : c === "aktif" ? +k.aktif : c === "mulai" ? Date.parse(k.mulai) : k[c],
   sel: (k, c) => c === "kode" ? `<b translate="no">${esc(k.kode)}</b>` : c === "nama" ? `<span translate="no">${esc(k.nama)}</span>` : c === "tingkat" ? Kejadian.pilTingkat(k)
-    : c === "pm" ? fmt(k.besaran?.nilai ?? 0) : c === "kab" ? fmt(k.n_kab) : c === "jiwa" ? (k.jiwa ? "sekitar " + kr(k.jiwa) : "–") : c === "mulai" ? Kejadian.tgl(k.mulai) : Kejadian.status(k),
+    : c === "pm" ? fmt(Math.round(k.besaran?.nilai ?? 0)) : c === "kab" ? fmt(k.n_kab) : c === "jiwa" ? (k.jiwa ? "sekitar " + kr(k.jiwa) + " jiwa" : "–") : c === "mulai" ? Kejadian.tgl(k.mulai) : Kejadian.status(k),
   tabel() {
     const st = this.st, s = st.turun ? -1 : 1, R = [...this.K].sort((a, b) => { const x = this.nilai(a, st.urut), y = this.nilai(b, st.urut); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s || Date.parse(b.mulai) - Date.parse(a.mulai); });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));

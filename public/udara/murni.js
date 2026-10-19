@@ -46,11 +46,12 @@
     const nas = kosong(), prov = {}, kab = Array.from({length: H}, () => []), mk = {};
     for (const k of prak.kota) {
       if (!(k.jiwa > 0) || !k.r24) continue;
-      mk[k.kode] = prak.hari.map(t => Math.max(0, ...k.pm.filter((v, i) => v != null && hJam[i] === t)));
+      /* puncak per jam = max(jam yang ada di hari itu, r24 hari itu): hari ini k.pm hanya memuat jam sejak sekarang, r24 seluruh hari WIB, jadi puncak tak boleh di bawah rata-rata. Tanpa jam hari itu = null. */
+      mk[k.kode] = prak.hari.map((t, h) => { const a = k.pm.filter((v, i) => v != null && hJam[i] === t); return a.length ? Math.max(...a, k.r24[h] ?? 0) : null; });
       const P = prov[k.prov] ??= kosong();
       for (let h = 0; h < H; h++) {
         const v = k.r24[h]; if (v == null) continue;
-        for (const A of [nas[h], P[h]]) { A.j[katPM(v)] += k.jiwa; A.w += k.jiwa * v; A.t += k.jiwa; A.m = Math.max(A.m, mk[k.kode][h]); }
+        for (const A of [nas[h], P[h]]) { A.j[katPM(v)] += k.jiwa; A.w += k.jiwa * v; A.t += k.jiwa; A.m = Math.max(A.m, mk[k.kode][h] ?? 0); }
         kab[h].push([k.prov, k.nama, v, mk[k.kode][h], k.jiwa, v > BATAS_KAT[1] ? k.jiwa : 0]);
       }
     }

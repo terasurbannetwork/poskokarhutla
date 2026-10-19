@@ -72,7 +72,7 @@ const Tren = {
     const md = B.median, pk = md.indexOf(Math.max(...md)), th = B.tahun, cams = Object.fromEntries((this.M.cams || []).map(([b, n, r]) => [+b.slice(5) - 1, [b, r]])), c0 = this.M.cams?.[0];
     return this.kartu("Kalender musim asap", `${Kartu.hl(this.BLN_PENUH[pk])} bulan dengan titik panas terbanyak: median ${Kartu.hl(fmt(md[pk]) + " titik")} per bulan pada ${th[0]} sampai ${th.at(-1)}, kisaran ${fmt(B.min[pk])} sampai ${fmt(B.maks[pk])}`,
       Grafik.kolom({cat: this.BLN, seri: [["Titik panas", "#c9503a"]], nilai: md.map(v => [v]), aria: "Median titik panas nasional per bulan", fmtNilai: x => kr(Math.round(x)),
-        tip: i => `<b>${this.BLN_PENUH[i]}</b><br>Median titik panas: ${fmt(md[i])}<br>Kisaran: ${fmt(B.min[i])} sampai ${fmt(B.maks[i])}${cams[i] ? `<br>PM2,5 CAMS ${cams[i][0].slice(0, 4)}: ${fmt(cams[i][1])} µg/m³ (perkiraan model)` : ""}`}),
+        tip: i => `<b>${this.BLN_PENUH[i]}</b><br>Median titik panas: ${fmt(md[i])}<br>Kisaran: ${fmt(B.min[i])} sampai ${fmt(B.maks[i])}${cams[i] ? `<br>PM2,5 CAMS ${cams[i][0].slice(0, 4)}: ${fmt(cams[i][1])} µg/m³ (perkiraan model CAMS, belum dikoreksi)` : ""}`}),
       `NASA FIRMS, semua satelit, ${th[0]} sampai ${th.at(-1)}. Titik panas penanda musim bakar, bukan ukuran asap; ${c0 ? `PM2,5 CAMS baru ada sejak ${this.BLN_PENUH[+c0[0].slice(5) - 1]} ${c0[0].slice(0, 4)}, belum cukup untuk kalender PM2,5` : "PM2,5 CAMS belum cukup panjang untuk kalender PM2,5"}`, "", null, false); },
   /* ENSO: titik panas 1 Jan sampai tanggal data terakhir tiap tahun, diwarnai fase ENSO tahun itu (rata-rata ONI, NOAA CPC); hanya mempertemukan dua deret, tidak menilai sebab */
   exEnso() {
@@ -82,7 +82,7 @@ const Tren = {
     return this.kartu("ENSO", `${Kartu.hl(fmt(T[pk].n) + " titik panas")} sampai ${Kartu.hl(tg)} pada ${Kartu.hl(pk)} (${T[pk].fase}${T[pk].sementara ? ", ONI sementara" : ""}), tertinggi sejak ${th[0]}${K.status && o ? `; ENSO kini ${Kartu.hl(K.status)}, ONI ${f2(o.nilai)} (${o.musim} ${o.tahun})` : ""}`,
       Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Titik panas per tahun menurut fase ENSO", fmtNilai: x => kr(Math.round(x)),
         tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} titik panas (1 Jan sampai ${tg})<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}${T[th[i]].sementara ? " (sementara, tahun belum selesai)" : ""}`}),
-      `NASA FIRMS, 1 Jan sampai ${tg} tiap tahun; ONI NOAA CPC rata-rata setahun (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang). Hanya tujuh tahun data, titik panas bukan ukuran asap, dan tahun berjalan memakai data NRT`,
+      `NASA FIRMS, 1 Jan sampai ${tg} tiap tahun; ONI NOAA CPC rata-rata setahun (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang). Hanya ${fmt(th.length)} tahun data, titik panas bukan ukuran asap, dan tahun berjalan memakai data NRT`,
       "", FASE.map(([f, w]) => [w, f]), false); },
 
   IKON: {"Jiwa terpapar": "jiwa", "PM2,5": "pm", Provinsi: "prov", "Kalender musim asap": "musim", ENSO: "enso"},

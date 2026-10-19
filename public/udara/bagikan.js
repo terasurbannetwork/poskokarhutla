@@ -5,6 +5,7 @@
 (() => {
   const ts = p => p[2] + p[3] + p[4];
   const kj = v => Bagikan.en() ? Bagikan.jiwa(v) : kr(v);
+  const kk = v => Bagikan.en() ? Bagikan.jiwa(v) + " jiwa" : jiwa(v);   /* kalimat: "sekitar 7 juta jiwa", bukan "jt" */
   const nas = () => S.uk.nasional[S.h0].jiwa;
   Bagikan.tema.udara = {
     kata: "kualitas udara",
@@ -15,16 +16,16 @@
     titik: () => S.prak.kota.filter(k => (k.r24?.[S.h0] || 0) > 55.4).slice(0, 500).map(k => ({lat: k.lat, lon: k.lon, r: 3, w: Bagikan.LV[k.r24[S.h0] > 150.4 ? 3 : 2]})),
     teksWil() {
       const n = nas(), tg = Bagikan.tglPendek();
-      return `Perkiraan model CAMS: ${kj(ts(n))} jiwa terpapar udara tidak sehat hari ini, PM2,5 rata-rata ${Bagikan.n(Math.round(S.uk.nasional[S.h0].rata))} µg/m³ (${tg}).`;
+      return `Perkiraan model CAMS, belum dikoreksi: ${kk(ts(n))} terpapar udara tidak sehat hari ini, PM2,5 rata-rata ${Bagikan.n(Math.round(S.uk.nasional[S.h0].rata))} µg/m³ (${tg}).`;
     },
     keterangan(d, tg) { const K = d.kpi.map(q => q.v);
-      return `Kualitas udara di Indonesia, ${tg}. Perkiraan model CAMS: ${K[0]} jiwa terpapar udara tidak sehat, ${K[1]} di antaranya sangat tidak sehat atau berbahaya. PM2,5 rata-rata penduduk ${K[2]}, ${K[3]} provinsi punya penduduk terpapar. Angka perkiraan model, bukan ISPU resmi.`; },
+      return `Kualitas udara di Indonesia, ${tg}. Perkiraan model CAMS, belum dikoreksi: ${kk(ts(nas()))} terpapar udara tidak sehat, ${kk(nas()[3] + nas()[4])} di antaranya sangat tidak sehat atau berbahaya. PM2,5 rata-rata penduduk ${K[2]}, ${K[3]} provinsi punya penduduk terpapar. Angka perkiraan model, bukan ISPU resmi.`; },
     data() {
       const n = nas(), P = Object.entries(S.uk.prov).map(([k, hs]) => ({k, p: hs[S.h0], t: ts(hs[S.h0])})).filter(x => x.t > 0).sort((a, b) => b.t - a.t);
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Kualitas udara hari ini",
-        sub: `Indonesia · ${kj(ts(n))} jiwa terpapar udara tidak sehat (perkiraan model)`,
+        sub: `Indonesia · ${kj(ts(n))} jiwa terpapar udara tidak sehat (perkiraan model CAMS, belum dikoreksi)`,
         kpi: [
-          {l: "Jiwa terpapar udara tidak sehat", s: "Tidak sehat", v: kj(ts(n)), ket: "PM2,5 di atas batas tidak sehat", ks: "perkiraan model", w: Bagikan.LV[2]},
+          {l: "Jiwa terpapar udara tidak sehat", s: "Tidak sehat", v: kj(ts(n)), ket: "PM2,5 di atas batas tidak sehat", ks: "model CAMS, belum dikoreksi", w: Bagikan.LV[2]},
           {l: "Sangat tidak sehat atau berbahaya", s: "Sangat tidak sehat", v: kj(n[3] + n[4]), ket: "jiwa pada kategori terburuk", ks: "kategori terburuk", w: Bagikan.LV[3]},
           {l: "PM2,5 rata-rata penduduk", s: "PM2,5 rata-rata", v: Bagikan.n(Math.round(S.uk.nasional[S.h0].rata)) + " µg/m³", ket: "tertimbang jumlah penduduk", ks: "tertimbang penduduk", w: Bagikan.LV[1]},
           {l: "Provinsi berpenduduk terpapar", s: "Provinsi", v: Bagikan.n(P.length), ket: "punya penduduk di udara tidak sehat", ks: "hari ini", w: Bagikan.LV[2]}],

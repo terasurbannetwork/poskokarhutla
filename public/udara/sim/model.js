@@ -222,7 +222,7 @@ export const ASUMSI = [
   {nama: "Infiltrasi sekolah", nilai: `${SEKOLAH.luarS * 100}% waktu di luar, kelas ${SEKOLAH.fs}`, sumber: "Chen dan Zhao 2011, rasio dalam/luar ruang ventilasi alami; disesuaikan"},
   {nama: "Infiltrasi rumah (libur)", nilai: `${SEKOLAH.luarR * 100}% waktu di luar, rumah ${SEKOLAH.fr}`, sumber: "Chen dan Zhao 2011; disesuaikan"},
   {nama: "Usia sekolah", nilai: `${KONF.anak * 100}% penduduk`, sumber: "Struktur umur BPS, perkiraan kasar"},
-  {nama: "Ambang terpapar", nilai: `${KONF.ambang} ug/m3`, sumber: "Batas bawah Tidak sehat, PermenLHK P.14/2020"}
+  {nama: "Ambang terpapar", nilai: `${String(KONF.ambang).replace(".", ",")} µg/m³`, sumber: "Batas bawah Tidak sehat, PermenLHK P.14/2020"}
 ];
 const hariKerjaSekolah = (A, b) => { const w = new Date(A.t0 + b * 36e5 + 7 * 36e5), d = w.getUTCDay(), j = w.getUTCHours(); return d >= 1 && d <= 5 && j >= 7 && j < 14; };
 export function sekolahHindar(A, pm, jiwa) {
@@ -263,7 +263,7 @@ export const BATAS = [
   "Tinggi plume api dan PLTU diundi dari rentang tetap menurut jenis lahan dan besar api, tanpa daya apung yang dihitung.",
   "Hujan tidak dimodelkan khusus: hanya deposisi kering dan peluruhan umum 5 hari, jadi hari hujan deras akan terhitung terlalu pekat.",
   "Batas lapisan campuran dari blh prakiraan, minimum 150 m; asap di atasnya baru turun saat lapisan itu menebal.",
-  "Penduduk diambil dari kisi 0,25 derajat dan dibagi ke kota prakiraan terdekat, bukan batas administrasi; jiwa-jam memakai ambang 55,5 ug/m3 pada nilai per jam.",
+  "Penduduk diambil dari kisi 0,25 derajat dan dibagi ke kota prakiraan terdekat, bukan batas administrasi; jiwa-jam memakai ambang 55,5 µg/m³ pada nilai per jam.",
   "Skenario mengubah prakiraan terkoreksi di tiap kota menurut nisbah model; nilainya perkiraan, bukan nasihat medis.",
   "Sumber di luar 80 kompleks terbesar digabung per sel 1 derajat; kompleks dan PLTU di luar kisi angin dibuang."
 ];

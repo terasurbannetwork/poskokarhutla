@@ -60,3 +60,10 @@ test("satukan: prakiraan 514 kab -> ringkasan jiwa per kategori, prov, kab (satu
   assert.equal(uk.kab[0][0][1], "Kab. A"); assert.deepEqual(uk.kab[0][0], ["1", "Kab. A", 200, 300, 100, 100]); assert.equal(uk.kab[1][0][5], 300);
   assert.equal(mk.a[1], 10);
 });
+
+test("satukan: puncak per jam tak di bawah r24 (hari ini hanya jam tersisa) dan null tanpa jam", () => {
+  const jam = Array.from({length: 4}, (_, i) => new Date(Date.UTC(2026, 9, 19, 7 + i)).toISOString().slice(0, 16) + "Z");   /* semua hari WIB 19 Okt */
+  const prak = {hari: ["2026-10-19", "2026-10-20"], jam, dibuat: "x", kota: [{kode: "a", nama: "A", prov: "1", jiwa: 10, r24: [35, 20], pm: [17, 17, 17, 17]}]};
+  const {uk, mk} = M.satukan(prak);
+  assert.equal(mk.a[0], 35); assert.equal(mk.a[1], null); assert.equal(uk.prov["1"][0][6], 35); assert.equal(uk.kab[1][0][3], null);
+});

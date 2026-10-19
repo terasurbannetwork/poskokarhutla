@@ -26,8 +26,8 @@ const Dampak = (() => {
   const ket = "Sumber: perkiraan model CAMS, belum dikoreksi ke alat ukur; WorldPop, BPS";
   function kartuRentan() { if (!R() || !R().nasional) return "";
     const h = ri(), n = R().nasional, tg = "pada " + tglPendek(R().hari[h]), out = [], ctl = segR(), ms = h2 => (n.ispa?.[h2]) ;
-    if (n.balita?.[h] != null) { const rows = barisR(o => (o.balita?.[h] || 0) + (o.lansia?.[h] || 0)).map(x => ({n: nmP(x.k), v: x.v, txt: rb(x.v), tip: `<b>${esc(nmP(x.k))}</b><br>Balita: sekitar ${fmt(x.o.balita?.[h] || 0)}<br>Lansia: sekitar ${fmt(x.o.lansia?.[h] || 0)}`}));
-      out.push(bag("rent", `${Kartu.hl("sekitar " + jt(n.balita[h]))} balita dan ${Kartu.hl("sekitar " + jt(n.lansia[h]))} lansia berada di wilayah berudara tidak sehat ${tg}`, hbar(rows, W.merah), ket, ctl)); }
+    if (n.balita?.[h] != null) { const rows = barisR(o => (o.balita?.[h] || 0) + (o.lansia?.[h] || 0)).map(x => ({n: nmP(x.k), v: x.v, txt: kr(x.v) + " jiwa", tip: `<b>${esc(nmP(x.k))}</b><br>Balita: ${jiwa(x.o.balita?.[h] || 0)}<br>Lansia: ${jiwa(x.o.lansia?.[h] || 0)}`}));
+      out.push(bag("rent", `${Kartu.hl(jiwa(n.balita[h]))} balita dan ${Kartu.hl(jiwa(n.lansia[h]))} lansia berada di wilayah berudara tidak sehat ${tg}`, hbar(rows, W.merah), ket, ctl)); }
     if (ms(h)) { const rows = barisR(o => o.ispa?.[h]?.t || 0).map(x => ({n: nmP(x.k), v: x.v, txt: fmt(Math.round(x.v)), tip: `<b>${esc(nmP(x.k))}</b><br>Tambahan kasus ISPA per hari: ${fmt(Math.round(x.v))} (${fmt(Math.round(x.o.ispa[h].lo))} sampai ${fmt(Math.round(x.o.ispa[h].hi))})`}));
       out.push(bag("ispa", `Tambahan sekitar ${Kartu.hl(fmt(Math.round(ms(h).t)) + " kasus ISPA")} per hari ${tg} (${fmt(Math.round(ms(h).lo))} sampai ${fmt(Math.round(ms(h).hi))})`, hbar(rows, W.teal), ket, ctl)); }
     if (R().sekolah?.length) { const s = R().sekolah;

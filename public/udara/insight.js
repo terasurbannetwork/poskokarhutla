@@ -35,7 +35,7 @@ const Insight = {
         + [2, 3, 4].map(c => { const bw = X(x.p[c]); if (!bw) return ""; const s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="${KAT[c].w}" data-tip="${tip}"/>`; acc += bw; return s; }).join("")
         + `<g class="gf" style="--i:${i}">${Kartu.pil(L + acc + 8, y + 5, kr(x.ts), KAT[kt].w, KAT[kt].fg)[0]}</g></g>`; }).join("");
     Kartu.leg([2, 3, 4].map(c => [KAT[c].w, KAT[c].n]));
-    return this.exM("jiwa", "Jiwa terpapar", ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
+    return this.exM("jiwa", "Jiwa terpapar", ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55,4 µg/m³) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
       pv.length ? `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Jiwa terpapar udara tidak sehat per provinsi">${g}</svg>` : `<p class="kosong">Semua provinsi di kategori baik atau sedang.</p>`,
       "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("hari")); },
 
@@ -47,7 +47,7 @@ const Insight = {
       {k: "prov", n: "Provinsi", v: r => namaProv(r[0]), h: r => `<span translate="no">${esc(namaProv(r[0]))}</span>`},
       {k: "rata", n: "PM2,5 24 jam", num: 1, v: r => r[2], h: r => `<span class="kt" style="--c:${KAT[kat(r[2])].w};--f:${KAT[kat(r[2])].fg}">${fmt(Math.round(r[2]))} µg/m³</span>`},
       {k: "kat", n: "Kategori", v: r => kat(r[2]), h: r => pilKat(kat(r[2]))},
-      {k: "maks", n: "Puncak per jam", num: 1, v: r => r[3], h: r => fmt(Math.round(r[3])) + " µg/m³"},
+      {k: "maks", n: "Puncak per jam", num: 1, v: r => r[3], h: r => r[3] == null ? "–" : fmt(Math.round(r[3])) + " µg/m³"},
       {k: "ts", n: "Jiwa tidak sehat", num: 1, v: r => r[5], h: r => r[5] ? kr(r[5]) + " jiwa" : "–"}];
     return this.exM("kab", "Kabupaten/kota", `${this.hl(esc(top[1]))} paling tercemar ${this.kapan(h)}: PM2,5 ${this.hl(fmt(Math.round(top[2])) + " µg/m³")} rata-rata 24 jam${ts ? `, ${this.hl(jiwa(ts))} menghirup udara tidak sehat` : ""}`, "", "",
       this.tabel("kab", kol, R, r => `data-prov="${r[0]}"`, 10, "kabupaten/kota", r => r[2]), "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("kabHari")); },
