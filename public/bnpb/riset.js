@@ -61,7 +61,7 @@
   const KOLOM = [["judul", "Riset"], ["institusi", "Institusi"], ["bencana", "Bencana"], ["status", "Status"], ["luaran", "Luaran"], ["kebijakan", "Dipakai kebijakan"]];
   const nilai = (r, k) => k === "luaran" ? r.luaran.length : k === "status" ? ["berjalan", "laporan_akhir", "selesai"].indexOf(r.status) : k === "bencana" ? D.bencana[r.bencana] || r.bencana : r[k];
   function tautanLuaran(l) {
-    const url = l.tautan || (l.doi ? "https://doi.org/" + l.doi : null), isi = [svg("dokumen"), (JENIS_NAMA[l.jenis] || l.jenis) + ": " + l.judul];
+    const url = l.tautan || (l.doi ? "https://doi.org/" + l.doi : null), isi = [svg("dokumen"), (JENIS_NAMA[l.jenis] || l.jenis) + ": " + l.judul + (l.tautan && l.host ? " (" + l.host + ")" : "")];
     return url ? h("a", {class: "rs-chip", href: url, target: "_blank", rel: "noopener noreferrer"}, ...isi) : h("span", {class: "rs-chip"}, ...isi);
   }
   function tabelRiset() {

@@ -133,7 +133,7 @@
     if (u.status === "revisi") { const b = h("button", {class: "bn-tombol", type: "button"}, svg("edit"), "Revisi dan kirim ulang"); b.onclick = () => { dlg.close(); dialogUsulan(u); }; isi.push(h("div", {class: "mt-aksi"}, b)); }
     if (kem.length || u.status === "berjalan") isi.push(bagian("Laporan kemajuan", ...(kem.length ? [h("ul", {class: "mt-daftar"}, ...kem.map(k => h("li", null, h("b", {teks: (k.jenis === "akhir" ? "Laporan akhir" : "Kemajuan") + " · " + wkt(k.waktu)}), h("span", {teks: k.isi}), k.tautan ? tautan(k.tautan, "Dokumen") : null)))] : []), u.status === "berjalan" ? formKemajuan(u) : null));
     if (lua.length || ["berjalan", "laporan_akhir", "selesai"].includes(u.status)) isi.push(bagian("Luaran", ...(lua.length ? [h("ul", {class: "mt-daftar"}, ...lua.map(l => h("li", null, h("b", {teks: (JENIS[l.jenis] || l.jenis) + ": " + l.judul}),
-      l.tautan ? tautan(l.tautan, "Tautan") : null, l.doi ? h("span", {class: "rs-redup"}, "DOI ", tautan("https://doi.org/" + l.doi, l.doi)) : null)))] : []), formLuaran(u)));
+      h("span", {class: "rs-redup", teks: l.disetujui ? "Tampil di halaman publik" : "Menunggu persetujuan admin"}), l.tautan ? tautan(l.tautan, "Tautan") : null, l.doi ? h("span", {class: "rs-redup"}, "DOI ", tautan("https://doi.org/" + l.doi, l.doi)) : null)))] : []), formLuaran(u)));
     buka(u.judul, ...isi);
   }
   function formKemajuan(u) {

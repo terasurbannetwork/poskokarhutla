@@ -100,6 +100,7 @@ CREATE TABLE IF NOT EXISTS riset_luaran (
   tautan TEXT CHECK (tautan IS NULL OR (length(tautan) <= 300 AND (tautan LIKE 'http://_%' OR tautan LIKE 'https://_%') AND tautan NOT GLOB '*[ <>"]*')),
   doi TEXT CHECK (doi IS NULL OR (length(doi) BETWEEN 7 AND 120 AND doi GLOB '10.[0-9]*/*' AND doi NOT GLOB '*[ <>"]*')),
   waktu INTEGER NOT NULL,
+  disetujui INTEGER NOT NULL DEFAULT 0 CHECK (disetujui IN (0,1)),   -- tampil di halaman publik hanya bila admin menyetujui
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0,1))
 );
 CREATE INDEX IF NOT EXISTS riset_luaran_u ON riset_luaran (usulan_id, waktu);

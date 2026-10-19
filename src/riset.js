@@ -128,6 +128,7 @@ const tolakAdmin = () => gagal(403, "akses ditolak");
 const bacaObj = async (req, maks) => { const b = await bacaBody(req, maks); return b.galat ? {r: gagal(b.status || 400, b.galat)} : {o: b.o}; };
 
 /* ================================================================ publik */
+const hostDari = u => { try { return u ? new URL(u).hostname : null; } catch { return null; } };
 async function ringkas(env, dummy) {
   const sd = dummy ? "" : " AND dummy = 0", su = dummy ? "" : " AND u.dummy = 0";
   const q = sql => env.DB.prepare(sql).all().then(r => r.results);
@@ -135,18 +136,18 @@ async function ringkas(env, dummy) {
     env.DB.prepare(`SELECT (SELECT count(*) FROM mitra_riset WHERE dicabut IS NULL${sd}) mitra_aktif,
       (SELECT count(*) FROM riset_usulan WHERE status IN ('berjalan','laporan_akhir')${sd}) berjalan,
       (SELECT count(*) FROM riset_usulan WHERE status = 'selesai'${sd}) selesai,
-      (SELECT count(*) FROM riset_luaran WHERE 1${sd}) luaran,
-      (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE 1${sd.replace("dummy", "k.dummy")}) kebijakan`).first(),
+      (SELECT count(*) FROM riset_luaran WHERE disetujui = 1${sd}) luaran,
+      (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE l.disetujui = 1${sd.replace("dummy", "k.dummy")}) kebijakan`).first(),
     q(`SELECT judul, latar, bencana, tema, prioritas, luaran FROM riset_agenda WHERE status = 'buka'${sd} ORDER BY prioritas, dibuat DESC LIMIT 100`),
     q(`SELECT institusi, unit FROM mitra_riset WHERE dicabut IS NULL${sd} ORDER BY institusi LIMIT 200`),
     q(`SELECT u.id, u.judul, m.institusi, m.unit, u.bencana, u.wilayah, u.status, u.mulai, u.selesai,
-      (SELECT count(DISTINCT k.id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE l.usulan_id = u.id) kebijakan
+      (SELECT count(DISTINCT k.id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE l.usulan_id = u.id AND l.disetujui = 1) kebijakan
       FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id WHERE u.status IN ('berjalan','laporan_akhir','selesai')${su}
       ORDER BY CASE u.status WHEN 'selesai' THEN 1 ELSE 0 END, u.diubah DESC LIMIT 200`),
     q(`SELECT l.usulan_id, l.jenis, l.judul, l.tautan, l.doi FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id
-      WHERE u.status IN ('berjalan','laporan_akhir','selesai')${su} ORDER BY l.waktu LIMIT 1000`),
+      WHERE l.disetujui = 1 AND u.status IN ('berjalan','laporan_akhir','selesai')${su} ORDER BY l.waktu LIMIT 1000`),
   ]);
-  const per = new Map(); for (const l of luaran) (per.get(l.usulan_id) || per.set(l.usulan_id, []).get(l.usulan_id)).push({jenis: l.jenis, judul: l.judul, tautan: l.tautan, doi: l.doi});
+  const per = new Map(); for (const l of luaran) (per.get(l.usulan_id) || per.set(l.usulan_id, []).get(l.usulan_id)).push({jenis: l.jenis, judul: l.judul, tautan: l.tautan, host: hostDari(l.tautan), doi: l.doi});
   /* id usulan TIDAK keluar: hanya dipakai menyusun luaran per riset */
   return json({kartu, agenda, mitra, riset: riset.map(({id, ...r}) => ({...r, luaran: per.get(id) || []})), katalog: KATALOG, tema: TEMA, bencana: NAMA_BENCANA, jenis_luaran: JENIS_LUARAN, lisensi: LISENSI});
 }
@@ -169,7 +170,7 @@ async function mitraSaya(env, req) {
     q("SELECT id, agenda_id, judul, ketua, anggota, bencana, wilayah, metode, data_butuh, mulai, selesai, luaran_rencana, status, nomor_pks, catatan, dibuat, diubah FROM riset_usulan WHERE mitra_id = ? ORDER BY dibuat DESC LIMIT 100", m.id),
     q("SELECT j.usulan_id, j.dari, j.ke, substr(j.oleh, 1, instr(j.oleh || ':', ':') - 1) oleh, j.catatan, j.waktu FROM riset_jejak j JOIN riset_usulan u ON u.id = j.usulan_id WHERE u.mitra_id = ? ORDER BY j.id LIMIT 1000", m.id),
     q("SELECT k.id, k.usulan_id, k.jenis, k.isi, k.tautan, k.waktu FROM riset_kemajuan k JOIN riset_usulan u ON u.id = k.usulan_id WHERE u.mitra_id = ? ORDER BY k.waktu LIMIT 1000", m.id),
-    q("SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id WHERE u.mitra_id = ? ORDER BY l.waktu LIMIT 1000", m.id),
+    q("SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu, l.disetujui FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id WHERE u.mitra_id = ? ORDER BY l.waktu LIMIT 1000", m.id),
     q("SELECT id, usulan_id, dataset, tujuan, status, jalur, catatan, dibuat, diputus FROM riset_permintaan WHERE mitra_id = ? ORDER BY dibuat DESC LIMIT 200", m.id),
     q("SELECT id, judul, bencana, tema, prioritas FROM riset_agenda WHERE status = 'buka' AND dummy = 0 ORDER BY prioritas, dibuat DESC LIMIT 100"),
   ]);
@@ -266,7 +267,7 @@ async function permintaanBaru(env, req, kini) {
 
 /* ================================================================ admin */
 const SQL_PERMINTAAN = "SELECT p.id, p.dataset, p.tujuan, p.status, p.jalur, p.catatan, p.dibuat, p.diputus, p.usulan_id, m.institusi, p.dummy FROM riset_permintaan p JOIN mitra_riset m ON m.id = p.mitra_id";
-const SQL_LUARAN = `SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu, u.judul usulan, m.institusi, l.dummy,
+const SQL_LUARAN = `SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu, l.disetujui, u.judul usulan, m.institusi, l.dummy,
   (SELECT count(*) FROM riset_kebijakan k WHERE k.luaran_id = l.id) kebijakan FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id`;
 const SQL_KEBIJAKAN = "SELECT k.id, k.luaran_id, k.instansi, k.bentuk, k.tanggal, k.catatan, k.dibuat, k.dummy, l.judul luaran, u.judul usulan, m.institusi FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id";
 const SQL_USULAN = `SELECT u.id, u.mitra_id, u.agenda_id, u.judul, u.ketua, u.anggota, u.bencana, u.wilayah, u.metode, u.data_butuh, u.mulai, u.selesai, u.luaran_rencana, u.status, u.nomor_pks, u.catatan, u.dibuat, u.diubah, u.dummy,
@@ -286,7 +287,7 @@ async function adminSemua(env, req, kini) {
     q(`${SQL_KEBIJAKAN} ORDER BY k.tanggal DESC LIMIT 500`),
     env.DB.prepare(`SELECT (SELECT count(*) FROM mitra_riset WHERE dicabut IS NULL) mitra_aktif, (SELECT count(*) FROM riset_usulan WHERE status IN ('berjalan','laporan_akhir')) berjalan,
       (SELECT count(*) FROM riset_usulan WHERE status = 'selesai') selesai, (SELECT count(*) FROM riset_usulan WHERE status IN ('diajukan','ditelaah')) antre, (SELECT count(*) FROM riset_luaran) luaran,
-      (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id) kebijakan, (SELECT count(*) FROM riset_permintaan WHERE status = 'diminta') permintaan_antre`).first(),
+      (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id) kebijakan, (SELECT count(*) FROM riset_luaran WHERE disetujui = 0) luaran_antre, (SELECT count(*) FROM riset_permintaan WHERE status = 'diminta') permintaan_antre`).first(),
   ]);
   return json({agenda, mitra: mitra.map(m => ({...m, pks: statusPks(m.pks_sampai, kini)})), usulan: usulan.map(u => ({...u, data_butuh: JSON.parse(u.data_butuh)})), jejak, kemajuan, permintaan, luaran, kebijakan, kartu,
     enum: {tema: TEMA, status: STATUS, alur: ALUR, bencana: NAMA_BENCANA, jenis_luaran: JENIS_LUARAN, bentuk: BENTUK, katalog: KATALOG.map(({id, nama, jalur}) => ({id, nama, jalur}))}});
@@ -352,6 +353,15 @@ async function usulanTelaah(env, req, id, kini) {
     tulisJejak(env, id, u.status, ke, `admin:${adm}`, catatan, kini),
   ]);
   return r[0].meta.changes ? json({id, status: ke}) : gagal(409, "status usulan berubah; muat ulang halaman");
+}
+async function luaranPutus(env, req, id, kini) {
+  if (!await modOK(env, req)) return tolakAdmin();
+  const b = await bacaObj(req, 500); if (b.r) return b.r;
+  if (!RE_ID.test(id)) return gagal(404, "luaran tidak ditemukan");
+  if (b.o.aksi !== "setujui" && b.o.aksi !== "tolak") return gagal(400, "aksi harus setujui atau tolak");
+  const ya = b.o.aksi === "setujui" ? 1 : 0;
+  const r = await env.DB.prepare("UPDATE riset_luaran SET disetujui = ? WHERE id = ?").bind(ya, id).run();
+  return r.meta.changes ? json({id, disetujui: ya}) : gagal(404, "luaran tidak ditemukan");
 }
 async function permintaanPutus(env, req, id, kini) {
   const adm = await modOK(env, req); if (!adm) return tolakAdmin();
@@ -443,10 +453,10 @@ async function dummyIsi(env, kini) {
     if (u.s !== "berjalan") st.push(env.DB.prepare("INSERT INTO riset_kemajuan (id, usulan_id, jenis, isi, tautan, waktu, dummy) VALUES (?, ?, 'akhir', ?, NULL, ?, 1)").bind(id(), u.id, "Laporan akhir contoh: temuan utama dan rekomendasi.", hari(-10 + i)));
   });
   /* luaran: kelima jenis ada; kebijakan jatuh pada dua riset (laporan_akhir dan selesai), sehingga yang dipakai (2) < luaran */
-  const L = (u, jenis, judul, doi) => { const l = {id: id(), u: u.id}; st.push(env.DB.prepare("INSERT INTO riset_luaran (id, usulan_id, jenis, judul, tautan, doi, waktu, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, 1)")
-    .bind(l.id, u.id, jenis, judul, "https://contoh.invalid/" + jenis, doi, hari(-5))); return l; };
+  const L = (u, jenis, judul, doi, setuju = 1) => { const l = {id: id(), u: u.id}; st.push(env.DB.prepare("INSERT INTO riset_luaran (id, usulan_id, jenis, judul, tautan, doi, waktu, disetujui, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, 1)")
+    .bind(l.id, u.id, jenis, judul, "https://contoh.invalid/" + jenis, doi, hari(-5), setuju)); return l; };
   const [rBerjalan, rAkhir, rSelesai] = jalan;
-  L(rBerjalan, "model", "Model contoh peringatan dini", null);
+  L(rBerjalan, "model", "Model contoh peringatan dini", null, 0);   // belum disetujui: menunggu admin
   const lA = L(rAkhir, "prototipe", "Prototipe contoh dasbor posko", null);
   const lS1 = L(rSelesai, "artikel", "Artikel contoh jurnal kebencanaan", "10.1234/contoh.2026.001"), lS2 = L(rSelesai, "dataset", "Dataset contoh uji balik", null), lS3 = L(rSelesai, "policy_brief", "Policy brief contoh untuk BNPB", null);
   [[lS3, "Direktorat Contoh BNPB", "se", "Dipakai sebagai dasar surat edaran contoh."], [lS3, "Pusdalops Contoh", "juknis", null], [lS2, "Pusat Data Contoh", "materi_rakor", null],
@@ -493,6 +503,7 @@ export const RUTE_RISET = {
   "POST /api/riset/admin/mitra/:id": aman((env, req, url, kini, ctx, id) => mitraUbah(env, req, id, kini)),
   "POST /api/riset/admin/usulan/:id": aman((env, req, url, kini, ctx, id) => usulanTelaah(env, req, id, kini)),
   "POST /api/riset/admin/permintaan/:id": aman((env, req, url, kini, ctx, id) => permintaanPutus(env, req, id, kini)),
+  "POST /api/riset/admin/luaran/:id": aman((env, req, url, kini, ctx, id) => luaranPutus(env, req, id, kini)),
   "POST /api/riset/admin/kebijakan": aman((env, req, url, kini) => kebijakanTulis(env, req, null, kini)),
   "POST /api/riset/admin/kebijakan/:id": aman((env, req, url, kini, ctx, id) => kebijakanTulis(env, req, id, kini)),
   "POST /api/riset/dummy": aman((env, req, url, kini) => dummy(env, req, kini)),

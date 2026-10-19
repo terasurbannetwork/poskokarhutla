@@ -290,7 +290,8 @@
     "POST /api/relawan/admin/pelatihan/:id": "pelatihan: catat, kedaluwarsa",
     "POST /api/relawan/dummy": "dummy isi: rantai lengkap",
     "GET /sitrep": "halaman Ruang Koordinasi tanpa modul",
-    "GET /bnpb": "halaman Ruang Koordinasi tanpa modul"
+    "GET /bnpb": "halaman Ruang Koordinasi tanpa modul",
+    "POST /api/riset/admin/luaran/:id": "perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

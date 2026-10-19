@@ -41,7 +41,7 @@
   }
   function gambar() {
     const k = d.kartu, stat = [["jam", "Antre telaah", k.antre, k.antre ? "kuning" : "abu"], ["gedung", "Mitra aktif", k.mitra_aktif, "biru"], ["jam", "Berjalan", k.berjalan, "biru"], ["centang", "Selesai", k.selesai, "hijau"],
-      ["dokumen", "Luaran", k.luaran, "abu"], ["bendera", "Dipakai kebijakan", k.kebijakan, "hijau"], ["kirim", "Permintaan data", k.permintaan_antre, k.permintaan_antre ? "kuning" : "abu"]];
+      ["dokumen", "Luaran (menunggu: " + angka(k.luaran_antre) + ")", k.luaran, k.luaran_antre ? "kuning" : "abu"], ["bendera", "Dipakai kebijakan", k.kebijakan, "hijau"], ["kirim", "Permintaan data", k.permintaan_antre, k.permintaan_antre ? "kuning" : "abu"]];
     app.innerHTML = `<div class="rs-statbar">${stat.map(([i, l, n, w]) => `<div class="rs-stat">${pil(i, l, w)}<b>${angka(n)}</b></div>`).join("")}</div>
       <nav class="ad-tabs" aria-label="Riset">${TABS.map(([t, l]) => `<button type="button" data-tab="${t}" aria-pressed="${t === tab}">${l}</button>`).join("")}</nav>
       <p id="rsPesan" class="rs-pesan" role="status"></p><div class="rs-isi">${TAMPIL[tab]()}</div>`;
@@ -126,8 +126,8 @@
         ${isian("Tanggal", `<input type="date" name="tanggal" required max="${hariIni()}" value="${hariIni()}">`)}</div>${isian("Catatan", '<textarea name="catatan" rows="2" maxlength="600"></textarea>')}
         <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan pemanfaatan</button><button class="ad-tombol" type="button" data-aksi="batal-catat">Batal</button></div></form>`)(d.luaran.find(x => x.id === catat) || {}) : "";
       return `<div class="rs-bar"><b>Dipakai untuk kebijakan: ${angka(d.kartu.kebijakan)} riset dari ${angka(d.kartu.selesai + d.kartu.berjalan)} yang berjalan atau selesai</b><span class="rs-sp">${csv("luaran", "CSV luaran")} ${csv("kebijakan", "CSV pemanfaatan")}</span></div>${panel}
-        ${tabel(["Luaran", "Riset", "Institusi", "Dipakai", ""], d.luaran.map(l => `<tr data-id="${esc(l.id)}"><td>${pil("dokumen", JENIS[l.jenis] || l.jenis, "biru")}${dummyPil(l)}<br><b>${esc(l.judul)}</b><br>${l.tautan ? lnk(l.tautan, "tautan") : ""} ${l.doi ? lnk("https://doi.org/" + l.doi, "DOI " + l.doi) : ""}</td>
-          <td>${esc(l.usulan)}</td><td>${esc(l.institusi)}</td><td>${l.kebijakan ? pil("bendera", angka(l.kebijakan) + " pemanfaatan", "hijau") : '<span class="rs-redup">Belum</span>'}</td><td class="a"><button class="ad-tombol kecil" data-aksi="catat">Catat pemanfaatan</button></td></tr>`), "Belum ada luaran.")}
+        ${tabel(["Luaran", "Riset", "Institusi", "Tampil publik", "Dipakai", ""], d.luaran.map(l => `<tr data-id="${esc(l.id)}"><td>${pil("dokumen", JENIS[l.jenis] || l.jenis, "biru")}${dummyPil(l)}<br><b>${esc(l.judul)}</b><br>${l.tautan ? lnk(l.tautan, "tautan") : ""} ${l.doi ? lnk("https://doi.org/" + l.doi, "DOI " + l.doi) : ""}</td>
+          <td>${esc(l.usulan)}</td><td>${esc(l.institusi)}</td><td>${l.disetujui ? pil("centang", "Disetujui", "hijau") : pil("jam", "Menunggu", "kuning")}</td><td>${l.kebijakan ? pil("bendera", angka(l.kebijakan) + " pemanfaatan", "hijau") : '<span class="rs-redup">Belum</span>'}</td><td class="a"><button class="ad-tombol kecil" data-aksi="${l.disetujui ? "tolak-luaran" : "setujui-luaran"}">${l.disetujui ? "Cabut persetujuan" : "Setujui"}</button> <button class="ad-tombol kecil" data-aksi="catat">Catat pemanfaatan</button></td></tr>`), "Belum ada luaran.")}
         <h3 class="rs-sub">Pemanfaatan kebijakan</h3>
         ${tabel(["Tanggal", "Instansi / unit", "Bentuk", "Luaran", "Riset", "Catatan", ""], d.kebijakan.map(k => `<tr data-id="${esc(k.id)}"><td>${tgl(k.tanggal)}</td><td>${esc(k.instansi)}${dummyPil(k)}</td><td>${pil("bendera", BENTUK[k.bentuk] || k.bentuk, "hijau")}</td>
           <td>${esc(k.luaran)}</td><td>${esc(k.usulan)}<br><span class="rs-redup">${esc(k.institusi)}</span></td><td>${esc(k.catatan || "")}</td><td class="a"><button class="ad-tombol kecil bahaya" data-aksi="hapus-kebijakan">Hapus</button></td></tr>`), "Belum ada pemanfaatan kebijakan yang dicatat.")}`;
@@ -153,6 +153,7 @@
     if (a === "putus") { putus = {id, ke: t.dataset.ke}; gambar(); return document.getElementById("fPutus").scrollIntoView({behavior: "smooth"}); }
     if (a === "batal-putus") { putus = null; return gambar(); }
     if (a === "catat") { catat = id; gambar(); return document.getElementById("fKebijakan").scrollIntoView({behavior: "smooth"}); }
+    if (a === "setujui-luaran" || a === "tolak-luaran") { const r = await kirim(`${API}/admin/luaran/${id}`, {aksi: a === "setujui-luaran" ? "setujui" : "tolak"}); pesan(r.ok ? (a === "setujui-luaran" ? "Luaran disetujui dan tampil di halaman publik." : "Persetujuan dicabut.") : r.j.galat, r.ok); return r.ok && muat(); }
     if (a === "batal-catat") { catat = null; return gambar(); }
     if (a === "hapus-kebijakan") { if (!confirm("Hapus catatan pemanfaatan ini?")) return; const r = await kirim(`${API}/admin/kebijakan/${id}`, {aksi: "hapus"}); pesan(r.ok ? "Dihapus." : r.j.galat, r.ok); return r.ok && muat(); }
   });

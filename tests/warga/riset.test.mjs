@@ -244,6 +244,26 @@ uji("dipakai untuk kebijakan: admin mencatat pemanfaatan luaran; validasi; hapus
   assert.equal((await U.adm("POST", `/api/riset/admin/kebijakan/${r.j.id}`, {aksi: "lain"})).s, 400);
 });
 
+uji("perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui; mitra tidak bisa menyetujui", async () => {
+  const semua = (await U.adm("GET", "/api/riset/admin")).j.luaran, h = kode(A.kode);
+  assert.equal(semua.length, 7); assert.ok(semua.every(l => l.disetujui === 0), "luaran baru mulai belum disetujui");
+  const sebelum = (await U.api("GET", "/api/riset/ringkas")).j;
+  assert.equal(sebelum.kartu.luaran, 0); assert.equal(sebelum.riset[0].luaran.length, 0);
+  assert.equal(JSON.stringify(sebelum).includes("contoh.ac.id"), false, "tautan belum disetujui tidak bocor");
+  const art = semua.find(l => l.jenis === "artikel"), mod = (id, b, hh) => U.api("POST", `/api/riset/admin/luaran/${id}`, b, hh);
+  for (const hh of [{}, h, kode(B.kode)]) assert.equal((await mod(art.id, {aksi: "setujui"}, hh)).s, 403, "bukan admin");
+  assert.equal(await U.n("riset_luaran", "disetujui = 1"), 0);
+  assert.equal((await U.adm("POST", `/api/riset/admin/luaran/${art.id}`, {aksi: "lain"})).s, 400);
+  assert.equal((await U.adm("POST", `/api/riset/admin/luaran/${idHex()}`, {aksi: "setujui"})).s, 404);
+  assert.equal((await U.adm("POST", `/api/riset/admin/luaran/${art.id}`, {aksi: "setujui"})).s, 200);
+  const satu = (await U.api("GET", "/api/riset/ringkas")).j;
+  assert.equal(satu.kartu.luaran, 1); assert.deepEqual(satu.riset[0].luaran.map(l => [l.judul, l.host]), [["Luaran artikel", "contoh.ac.id"]]);
+  assert.equal((await U.api("GET", "/api/riset/mitra/saya", undefined, h)).j.luaran.filter(l => l.disetujui === 1).length, 1);
+  assert.equal((await U.adm("POST", `/api/riset/admin/luaran/${art.id}`, {aksi: "tolak"})).s, 200);
+  assert.equal((await U.api("GET", "/api/riset/ringkas")).j.kartu.luaran, 0, "persetujuan bisa dicabut");
+  for (const l of semua) assert.equal((await U.adm("POST", `/api/riset/admin/luaran/${l.id}`, {aksi: "setujui"})).s, 200);
+});
+
 uji("publik: ringkasan agregat tanpa kontak PIC, tanpa ketua, tanpa id; riset selesai tampil dengan luaran", async () => {
   const p = await U.api("GET", "/api/riset/ringkas");
   assert.equal(p.s, 200); assert.match(p.h.get("cache-control") || "", /no-store|max-age/);
@@ -310,6 +330,7 @@ uji("dummy: hanya Super Admin; rantai lengkap tiap status; publik tidak berubah;
   for (const s of STATUS_PERMINTAAN) assert.ok(dummy(a.permintaan).some(p => p.status === s), `permintaan dummy ${s}`);
   for (const t of Object.keys(TEMA)) assert.ok(dummy(a.agenda).some(x => x.tema === t), `agenda dummy tema ${t}`);
   for (const j of JENIS_LUARAN) assert.ok(dummy(a.luaran).some(x => x.jenis === j), `luaran dummy ${j}`);
+  assert.ok(dummy(a.luaran).some(x => x.disetujui === 1) && dummy(a.luaran).some(x => x.disetujui === 0), "luaran dummy: ada yang disetujui dan yang belum");
   for (const b of Object.keys(BENTUK)) assert.ok(dummy(a.kebijakan).some(x => x.bentuk === b), `kebijakan dummy ${b}`);
   assert.ok(dummy(a.agenda).some(x => x.status === "tutup") && dummy(a.agenda).some(x => x.status === "buka"));
   const pks = dummy(a.mitra).map(m => m.pks.s); for (const s of ["berlaku", "hampir", "kedaluwarsa"]) assert.ok(pks.includes(s), `PKS dummy ${s}`);

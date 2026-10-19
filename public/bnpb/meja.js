@@ -113,7 +113,7 @@
     const t = e.target.closest("button"); if (!t) return;
     const tr = t.closest("tr"), r = tr && daftar.find(x => x.id === tr.dataset.id);
     if (t.dataset.meja) { meja = t.dataset.meja; form = null; hal = 0; lapor("", true); return muat(); }
-    if (t.dataset.keluar) { localStorage.removeItem(KUNCI); location.reload(); return; }
+    if (t.dataset.keluar) { sessionStorage.removeItem(KUNCI); location.reload(); return; }
     if (t.dataset.urut) { arah = urut === t.dataset.urut ? -arah : 1; urut = t.dataset.urut; return gambar(); }
     if (t.dataset.hal) { hal += +t.dataset.hal; return gambar(); }
     if (t.dataset.baru) { form = {mode: "baru"}; return gambar(); }
@@ -139,11 +139,11 @@
   /* ---------- mulai ---------- */
   async function mulai() {
     const dariUrl = location.hash.match(/(?:^|[#&])k=([0-9a-fA-F]{26})(?:&|$)/);
-    if (dariUrl) { localStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
-    kode = localStorage.getItem(KUNCI) || "";
+    if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
+    kode = sessionStorage.getItem(KUNCI) || "";
     if (!kode) { app.innerHTML = '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
     const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()), api("GET", "/api/meja/saya")]);
-    if (!sy.ok || sy.j.peran !== "petugas") { localStorage.removeItem(KUNCI); app.innerHTML = `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
+    if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
     S = sp; saya = sy.j; meja = S.meja.find(m => saya.petugas.meja.includes(m.id))?.id;
     if (!meja) { app.innerHTML = '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }
     muat();
