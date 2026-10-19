@@ -17,7 +17,7 @@
   const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : ID.format(v);
   const umur = t => { const h = Math.floor((Date.now() - t) / 864e5); return h < 1 ? "hari ini" : `${ID.format(h)} hari lalu`; };
 
-  let S = null, tab = "kaji_cepat", F = {prov: "", kab: "", status: "", bahaya: false}, daftar = [], rekapD = null, urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), kodeBaru = null, dummyIkut = false;
+  let S = null, tab = "kaji_cepat", F = {prov: "", kab: "", status: "", bahaya: false}, daftar = [], rekapD = null, urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), kodeBaru = null, dummyIkut = false, gudangOps = [], E = {dari: "", sampai: ""};
 
   const kirim = async (u, b) => { const r = await Admin.kirim(u, b); return {...r, s: r.status}; };
   const ambilJ = async u => { const r = await fetch(u); if (r.status === 403) { location.href = "/admin/masuk"; throw new Error("perlu masuk"); } return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))}; };
@@ -28,6 +28,7 @@
   const nilaiF = (k, v) => {
     if (v == null || v === "") return "";
     if (k.tipe === "angka") return angkaF(k, v);
+    if (k.tipe === "gudang") return "gudang terpilih";
     if (k.tipe === "tanggal") return esc(tglF(v));
     if (k.tipe === "pilih") return esc(label(v));
     if (k.tipe === "multi") return esc(v.map(label).join(", "));
@@ -39,6 +40,7 @@
   const isian = k => {
     const n = esc(k.nama), l = esc(k.label) + (k.wajib ? " *" : "");
     if (k.tipe === "pilih") return `<label>${l}<select name="${n}"><option value="">Pilih…</option>${k.nilai.map(o => `<option value="${esc(o)}">${esc(label(o))}</option>`).join("")}</select></label>`;
+    if (k.tipe === "gudang") return `<label>${l}<select name="${n}"><option value="">Tanpa gudang (stok tidak berubah)</option>${gudangOps.map(g => `<option value="${esc(g.id)}">${esc(g.gudang)}: ${esc(label(g.barang))}, stok ${ID.format(g.stok)} ${esc(g.satuan)}</option>`).join("")}</select></label>`;
     if (k.tipe === "tanggal") return `<label>${l}<input type="date" name="${n}"></label>`;
     if (k.tipe === "tautan") return `<label>${l}<input type="url" name="${n}" maxlength="300" placeholder="https://"></label>`;
     if (k.tipe === "angka") return `<label>${l}<input name="${n}" inputmode="${k.desimal ? "decimal" : "numeric"}" autocomplete="off"></label>`;
@@ -51,13 +53,15 @@
   const barisT = r => {
     const m = M(), tanda = r.tanda.map(t => pil(t, m.bahaya[t] || label(t), "bahaya")).join("");
     const aksi = r.aksi.map(a => `<button class="mj-btn kecil utama" data-status="${esc(a.ke)}">${IK.maju}${esc(label(a.ke))}</button>`).join("");
+    const stokAksi = (r.aksi_stok || []).filter(a => a.boleh).map(a => `<button class="mj-btn kecil" data-stok="${esc(a.jenis)}">${IK.tambah}${esc(label(a.jenis))}</button>`).join("");
     const rin = buka.get(r.id);
     return `<tr class="${r.tanda.length ? "mj-bahaya" : ""}" data-id="${esc(r.id)}"><td><b>${esc(r.kab)}</b> <span class="mj-redup">prov ${esc(r.prov)}</span>${r.desa || r.kec ? `<br><span class="mj-redup">${esc([r.desa, r.kec].filter(Boolean).join(", "))}</span>` : ""}</td>
       <td>${ringkasIsi(r) || "–"}</td><td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? " " + pil(r.status) : ""}${r.dummy ? " " + pil("dummy", "DUMMY", "dummy") : ""}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
       <td>${esc(waktuF(r.diubah))}<br><span class="mj-redup">${esc(umur(r.diubah))}</span></td>
-      <td><div class="mj-aksi">${aksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Riwayat</button></div></td></tr>${rin ? rincian(r, rin) : ""}`;
+      <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Riwayat</button></div></td></tr>${rin ? rincian(r, rin) : ""}`;
   };
-  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b>`).join(" · ")}
+  const rincian = (r, d) => `<tr class="mj-rincian"><td colspan="5">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${k.tipe === "gudang" ? esc(r.gudang_asal_nama || "gudang") : nilaiF(k, r.data[k.nama])}</b>`).join(" · ")}${r.kaji_id ? ` · Kaji cepat induk: <b>${esc(r.kaji_id)}</b>` : ""}
+    ${d.transaksi ? `<ol>${d.transaksi.map(t => `<li>${esc(label(t.jenis))} ${ID.format(t.delta)} · saldo ${ID.format(t.saldo)} · ${esc(waktuF(t.waktu))} · ${esc(t.oleh || "")}${t.catatan ? ` · ${esc(t.catatan)}` : ""}</li>`).join("")}</ol>` : ""}
     <ol>${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""} · ${esc(waktuF(j.waktu))} · ${esc(j.oleh || "")}${j.catatan ? ` · ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
   function rekapHtml() {
     const m = M(), per = (rekapD?.per_kab?.[m.id]) || {}, ent = Object.entries(per);
@@ -69,7 +73,14 @@
     const tr = m.id === "renkon" ? Object.entries(rekapD?.tanpa_renkon || {}).map(([b, l]) => `<tr><td>${esc(label(b))}</td><td class="mj-angka">${ID.format(l.length)}</td><td>${l.length ? esc(l.map(x => x.split("|")[1]).join(", ")) : pil("ok", "Semua punya", "ok")}</td></tr>`).join("") : "";
     return kab + (tr ? `<div class="mj-wadah"><table class="mj-tabel"><thead><tr><th>Bencana</th><th>Kab tanpa renkon berlaku</th><th>Daftar</th></tr></thead><tbody>${tr}</tbody></table></div>` : "");
   }
+  function panelStok() {
+    const r = form.baris;
+    return `<form class="ad-kartu mj-form" id="mjStok" autocomplete="off" novalidate><h3>${esc(r.data.gudang)}: stok ${esc(label(r.data.barang).toLowerCase())}, ${esc(form.stok)}</h3>
+      <div class="mj-grid"><label>Jumlah${form.stok === "koreksi" ? " (boleh negatif)" : ""} *<input name="jumlah" inputmode="numeric" autocomplete="off"></label><label>Catatan (opsional)<input name="_catatan" maxlength="200"></label></div>
+      <div class="mj-aksi"><button class="mj-btn utama" type="submit">Simpan</button><button class="mj-btn" type="button" data-batal="1">Batal</button></div></form>`;
+  }
   function panelStatus() {
+    if (form.stok) return panelStok();
     const m = M(), kolom = m.kolom.filter(k => k.tahap === form.ke), r = form.baris;
     return `<form class="ad-kartu mj-form" id="mjForm" autocomplete="off" novalidate><h3>${esc(r.kab)}: pindah ke ${esc(label(form.ke).toLowerCase())}</h3>
       <div class="mj-grid">${kolom.map(isian).join("")}<label>Catatan (opsional)<input name="_catatan" maxlength="200"></label></div>
@@ -91,6 +102,8 @@
       <label>Status<select id="fStatus"><option value="">Semua</option>${sts.map(s => `<option value="${esc(s)}" ${F.status === s ? "selected" : ""}>${esc(label(s))}</option>`).join("")}</select></label>
       <label class="mj-cek"><input type="checkbox" id="fBahaya" ${F.bahaya ? "checked" : ""}>Tanda bahaya saja</label><span class="mj-redup">${n} dari ${daftar.length} catatan</span>
       <button class="mj-btn mj-ruang" data-csv="1">${IK.unduh}Ekspor CSV</button></div>
+      ${m.id === "kaji_cepat" ? `<div class="mj-bar"><label>Ekspor DIBI dari<input type="date" id="eDari" value="${esc(E.dari)}"></label><label>Sampai<input type="date" id="eSampai" value="${esc(E.sampai)}"></label>
+        <button class="mj-btn" data-dibi="csv">${IK.unduh}DIBI CSV</button><button class="mj-btn" data-dibi="json">${IK.unduh}DIBI JSON</button><span class="mj-redup">Kolom bergaya DIBI; kosongkan tanggal untuk semua.</span></div>` : ""}
       ${form ? panelStatus() : ""}
       <div class="mj-wadah"><table class="mj-tabel"><thead><tr>${th("wilayah", "Wilayah")}<th>Isi</th>${th("status", "Status")}${th("diubah", "Diubah")}<th>Aksi</th></tr></thead>
       <tbody>${n ? b.slice(h * HAL, h * HAL + HAL).map(barisT).join("") : `<tr><td colspan="5" class="mj-kosong">Belum ada catatan${daftar.length ? " yang cocok dengan filter" : ""}.</td></tr>`}</tbody></table></div>
@@ -106,6 +119,14 @@
     const isi = [kepala.map(sel).join(","), ...rows.map(r => [r.id, r.prov, r.kab, r.kec, r.desa, r.status, r.status_efektif, r.tanda.join("|"), new Date(r.dibuat).toISOString(), new Date(r.diubah).toISOString(), ...kolom.map(k => r.data[k.nama])].map(sel).join(","))].join("\r\n");
     const a = document.createElement("a"); a.href = URL.createObjectURL(new Blob(["﻿" + isi], {type: "text/csv;charset=utf-8"})); a.download = `meja-${m.id}-${new Date().toISOString().slice(0, 10)}.csv`; document.body.append(a); a.click(); a.remove();
     setTimeout(() => URL.revokeObjectURL(a.href), 4000);
+  }
+
+  /* ekspor DIBI dari server (sesi admin): unduh sebagai berkas */
+  async function dibi(fmt) {
+    const q = new URLSearchParams({meja: "kaji_cepat", format: fmt}); if (E.dari) q.set("dari", E.dari); if (E.sampai) q.set("sampai", E.sampai);
+    const res = await fetch(`${API}/ekspor?${q}`); if (!res.ok) { const j = await res.json().catch(() => ({})); return catat(j.galat || `Gagal (${res.status})`, false); }
+    const a = document.createElement("a"); a.href = URL.createObjectURL(await res.blob()); a.download = `dibi-kaji_cepat-${new Date().toISOString().slice(0, 10)}.${fmt}`; document.body.append(a); a.click(); a.remove();
+    setTimeout(() => URL.revokeObjectURL(a.href), 4000); catat(res.headers.get("x-ekspor-dipotong") ? "Diunduh, tetapi dipotong di 20.000 baris: persempit rentang tanggal." : "Diunduh.", true);
   }
 
   /* ---------- petugas ---------- */
@@ -170,9 +191,15 @@
     if (t.dataset.urut) { arah = urut === t.dataset.urut ? -arah : 1; urut = t.dataset.urut; return gambarTabel(); }
     if (t.dataset.hal) { hal += +t.dataset.hal; return gambarTabel(); }
     if (t.dataset.csv) return csv();
+    if (t.dataset.dibi) return dibi(t.dataset.dibi);
+    if (t.dataset.stok && r) { form = {baris: r, stok: t.dataset.stok}; return gambarTabel(); }
     if (t.dataset.batal) { form = null; return gambarTabel(); }
     if (t.dataset.status && r) {
       form = {baris: r, ke: t.dataset.status};
+      if (r.meja === "logistik" && form.ke === "dikirim") {   // pemilih gudang asal: gudang kabupaten yang sama dan barang yang sama
+        const g = await ambilJ(`${API}/catatan?meja=gudang&prov=${encodeURIComponent(r.prov)}&kab=${encodeURIComponent(r.kab)}`);
+        gudangOps = (g.j.catatan || []).filter(x => x.data.barang === r.data.barang).map(x => ({id: x.id, ...x.data}));
+      }
       if (!M().kolom.some(k => k.tahap === form.ke)) { const x = await kirim(`${API}/catatan/${r.id}`, {aksi: "status", ke: form.ke}); form = null; catat(x.ok ? "Status diubah." : (x.j.galat || `Gagal (${x.s})`), x.ok); return muat(); }   // tahap tanpa isian: langsung
       return gambarTabel();
     }
@@ -189,13 +216,18 @@
   app.addEventListener("change", e => {
     const i = e.target;
     if (i.id === "fProv" || i.id === "fKab") { F.prov = document.getElementById("fProv").value.trim(); F.kab = document.getElementById("fKab").value; hal = 0; return muat(); }
+    if (i.id === "eDari" || i.id === "eSampai") { E[i.id === "eDari" ? "dari" : "sampai"] = i.value; return; }
     if (i.id === "fStatus") { F.status = i.value; hal = 0; return gambarTabel(); }
     if (i.id === "fBahaya") { F.bahaya = i.checked; hal = 0; return gambarTabel(); }
     if (i.id === "rDummy") { dummyIkut = i.checked; return muat(); }
   });
   app.addEventListener("submit", async e => {
     e.preventDefault(); const f = e.target, tombol = f.querySelector('button[type="submit"]'); tombol.disabled = true; let r;
-    if (f.id === "mjForm") {
+    if (f.id === "mjStok") {
+      const j = angkaId(f.elements.jumlah.value.trim()), cat = f.elements._catatan.value.trim();
+      r = await kirim(`${API}/catatan/${form.baris.id}`, {aksi: "stok", jenis: form.stok, jumlah: j, ...(cat ? {catatan: cat} : {})});
+      if (r.ok) form = null;
+    } else if (f.id === "mjForm") {
       const data = {}; for (const k of M().kolom.filter(k => k.tahap === form.ke)) { const v = f.elements[k.nama].value.trim(); if (v !== "") data[k.nama] = k.tipe === "angka" ? angkaId(v) : v; }
       const cat = f.elements._catatan.value.trim();
       r = await kirim(`${API}/catatan/${form.baris.id}`, {aksi: "status", ke: form.ke, data, ...(cat ? {catatan: cat} : {})});

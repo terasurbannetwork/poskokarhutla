@@ -17,7 +17,7 @@
   const waktuF = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : ID.format(v);
 
-  let kode = "", S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true;
+  let kode = "", kajiOps = [], S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true;
   const api = async (m, u, b) => {
     const r = await fetch(u, {method: m, headers: {"x-kode": kode, ...(b ? {"content-type": "application/json"} : {})}, body: b ? JSON.stringify(b) : undefined});
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
@@ -27,6 +27,7 @@
   const nilaiF = (k, v) => {
     if (v == null || v === "") return "";
     if (k.tipe === "angka") return angkaF(k, v);
+    if (k.tipe === "gudang") return "gudang terpilih";
     if (k.tipe === "tanggal") return esc(tglF(v));
     if (k.tipe === "pilih") return esc(label(v));
     if (k.tipe === "multi") return esc(v.map(label).join(", "));
@@ -39,6 +40,7 @@
     if (k.tipe === "pilih") return `<label class="bn-isian">${l}<select name="${n}"><option value="">Pilih…</option>${k.nilai.map(o => `<option value="${esc(o)}" ${v === o ? "selected" : ""}>${esc(label(o))}</option>`).join("")}</select></label>`;
     if (k.tipe === "multi") return `<div class="bn-isian">${l}<div class="bn-pilihan">${k.nilai.map(o => `<label><input type="checkbox" name="${n}" value="${esc(o)}" ${(v || []).includes(o) ? "checked" : ""}>${esc(label(o))}</label>`).join("")}</div></div>`;
     if (k.tipe === "ya") return `<label class="bn-pilihan"><label><input type="checkbox" name="${n}" ${v ? "checked" : ""}>${l}</label></label>`;
+    if (k.tipe === "gudang") return "";   // dipilih admin saat mengirim
     if (k.tipe === "tanggal") return `<label class="bn-isian">${l}<input type="date" name="${n}" value="${esc(v ?? "")}"></label>`;
     if (k.tipe === "tautan") return `<label class="bn-isian">${l}<input type="url" name="${n}" maxlength="300" inputmode="url" placeholder="https://" value="${esc(v ?? "")}"></label>`;
     if (k.tipe === "angka") return `<label class="bn-isian">${l}<input name="${n}" inputmode="${k.desimal ? "decimal" : "numeric"}" autocomplete="off" value="${esc(v ?? "")}"></label>`;
@@ -49,6 +51,7 @@
   const ambil = (f, kolom) => {
     const o = {};
     for (const k of kolom) {
+      if (k.tipe === "gudang") continue;
       const e = f.elements[k.nama];
       if (k.tipe === "multi") o[k.nama] = [...f.querySelectorAll(`input[name="${k.nama}"]:checked`)].map(x => x.value);
       else if (k.tipe === "ya") o[k.nama] = !!e.checked;
@@ -69,21 +72,26 @@
   const baris = r => {
     const tanda = r.tanda.map(t => `<span class="mj-pil t-bahaya">${IK.bahaya}${esc(M().bahaya[t] || label(t))}</span>`).join("");
     const aksi = r.aksi.filter(a => a.boleh).map(a => `<button class="mj-btn kecil utama" data-status="${esc(a.ke)}">${IK.maju}${esc(label(a.ke))}</button>`).join("") + (r.bisa_ubah ? `<button class="mj-btn kecil" data-ubah="1">${IK.ubah}Ubah</button>` : "");
+    const stokAksi = (r.aksi_stok || []).filter(a => a.boleh).map(a => `<button class="mj-btn kecil" data-stok="${esc(a.jenis)}">${IK.tambah}${esc(label(a.jenis))}</button>`).join("");
     const lain = r.aksi.filter(a => !a.boleh).length ? `<span class="mj-redup">menunggu admin</span>` : "";
     const rin = buka.get(r.id);
     return `<tr data-id="${esc(r.id)}"><td><b>${wilayahF(r)}</b></td><td>${ringkasIsi(r) || "–"}${tanda ? `<div class="mj-tanda">${tanda}</div>` : ""}</td>
       <td>${pil(r.status_efektif)}${r.status_efektif !== r.status ? ` ${pil(r.status)}` : ""}</td><td>${esc(waktuF(r.diubah))}</td>
-      <td><div class="mj-aksi">${aksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Rincian</button>${lain}</div></td></tr>${rin ? rinci(r, rin) : ""}`;
+      <td><div class="mj-aksi">${aksi}${stokAksi}<button class="mj-btn kecil" data-rinci="1">${IK.riwayat}Rincian</button>${lain}</div></td></tr>${rin ? rinci(r, rin) : ""}`;
   };
   const rinci = (r, d) => `<tr><td colspan="5"><div class="mj-rincian">${M().kolom.filter(k => r.data[k.nama] != null && r.data[k.nama] !== "").map(k => `${esc(k.label)}: <b>${nilaiF(k, r.data[k.nama])}</b>`).join(" · ")}</div>
     <ol class="mj-jejak">${d.jejak.map(j => `<li>${esc(label(j.ke))}${j.dari ? ` (dari ${esc(label(j.dari))})` : ""} · ${esc(waktuF(j.waktu))}${j.catatan ? ` · ${esc(j.catatan)}` : ""}</li>`).join("")}</ol></td></tr>`;
   const panelForm = () => {
+    if (form.mode === "stok") return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(label(form.jenis))}: ${esc(form.baris.data.gudang)}, ${esc(label(form.baris.data.barang).toLowerCase())}</h2>
+      <div class="bn-baris"><label class="bn-isian">Jumlah *<input name="_jumlah" inputmode="numeric" autocomplete="off"></label><label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label></div>
+      <div class="mj-aksi"><button class="mj-btn utama" type="submit">Simpan</button><button class="mj-btn" type="button" data-batal="1">Batal</button></div></form>`;
     const m = M(), t = form.mode;
     const kolom = m.kolom.filter(k => (k.tahap ?? null) === (t === "status" ? form.ke : null)), r = form.baris;
     const wil = t === "status" ? "" : `<div class="bn-baris">${m.wilayah.desa || t === "ubah" && r.desa ? `<label class="bn-isian">Desa${m.wilayah.desa ? " *" : ""}<input name="_desa" maxlength="80" autocomplete="off" value="${esc(r?.desa ?? "")}"></label>` : ""}
       ${m.wilayah.kec ? `<label class="bn-isian">Kecamatan *<input name="_kec" maxlength="60" autocomplete="off" value="${esc(r?.kec ?? "")}"></label>` : ""}</div>`;
     const judul = t === "baru" ? `Tambah ${m.nama.toLowerCase()}` : t === "ubah" ? `Ubah ${m.nama.toLowerCase()}` : `Pindah ke ${label(form.ke).toLowerCase()}`;
     return `<form class="bn-blok mj-form" id="mjForm" autocomplete="off" novalidate><h2>${IK.tambah}${esc(judul)}</h2>${wil}
+      ${t === "baru" && m.tautKaji ? `<label class="bn-isian">Kaji cepat induk (sudah masuk JITUPASNA) *<select name="_kaji"><option value="">${kajiOps.length ? "Pilih kaji cepat…" : "Belum ada kaji cepat yang siap"}</option>${kajiOps.map(x => `<option value="${esc(x.id)}">${esc(x.desa || x.kab)}: ${esc(label(x.data.kejadian))}, ${esc(tglF(x.data.tanggal))}</option>`).join("")}</select></label>` : ""}
       <div class="bn-baris">${kolom.map(k => isian(k, r?.data?.[k.nama])).join("")}</div>
       ${t === "status" ? `<label class="bn-isian">Catatan (opsional)<input name="_catatan" maxlength="200" autocomplete="off"></label>` : ""}
       <div class="mj-aksi"><button class="mj-btn utama" type="submit">Simpan</button><button class="mj-btn" type="button" data-batal="1">Batal</button></div></form>`;
@@ -116,7 +124,15 @@
     if (t.dataset.keluar) { sessionStorage.removeItem(KUNCI); location.reload(); return; }
     if (t.dataset.urut) { arah = urut === t.dataset.urut ? -arah : 1; urut = t.dataset.urut; return gambar(); }
     if (t.dataset.hal) { hal += +t.dataset.hal; return gambar(); }
-    if (t.dataset.baru) { form = {mode: "baru"}; return gambar(); }
+    if (t.dataset.baru) {
+      form = {mode: "baru"};
+      if (M().tautKaji) {   // kaji cepat siap rehab yang belum punya catatan rehab
+        const [k, rh] = await Promise.all([api("GET", "/api/meja/catatan?meja=kaji_cepat&status=masuk_jitupasna&untuk=rehab"), api("GET", "/api/meja/catatan?meja=rehab")]);
+        const dipakai = new Set((rh.j.catatan || []).map(x => x.kaji_id)); kajiOps = (k.j.catatan || []).filter(x => !dipakai.has(x.id));
+      }
+      return gambar();
+    }
+    if (t.dataset.stok && r) { form = {mode: "stok", baris: r, jenis: t.dataset.stok}; return gambar(); }
     if (t.dataset.batal) { form = null; return gambar(); }
     if (t.dataset.ubah && r) { form = {mode: "ubah", baris: r}; return gambar(); }
     if (t.dataset.status && r) { form = {mode: "status", baris: r, ke: t.dataset.status}; return gambar(); }
@@ -127,9 +143,14 @@
   });
   app.addEventListener("submit", async e => {
     e.preventDefault(); const f = e.target, m = M(), tombol = f.querySelector('button[type="submit"]'); tombol.disabled = true;
+    if (form.mode === "stok") {
+      const r = await api("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "stok", jenis: form.jenis, jumlah: angkaId(f.elements._jumlah.value.trim()), ...(f.elements._catatan.value.trim() ? {catatan: f.elements._catatan.value.trim()} : {})});
+      if (!r.ok) { tombol.disabled = false; return salah(r, "Gagal menyimpan stok"); }
+      form = null; lapor("Stok tersimpan.", true); return muat();
+    }
     const kolom = m.kolom.filter(k => (k.tahap ?? null) === (form.mode === "status" ? form.ke : null)), data = ambil(f, kolom);
     const wil = {...(f.elements._desa ? {desa: f.elements._desa.value.trim() || undefined} : {}), ...(f.elements._kec ? {kec: f.elements._kec.value.trim() || undefined} : {})};
-    const r = form.mode === "baru" ? await api("POST", "/api/meja/catatan", {meja, ...wil, data})
+    const r = form.mode === "baru" ? await api("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji ? {kaji_id: f.elements._kaji.value} : {}), data})
       : form.mode === "ubah" ? await api("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "ubah", ...wil, data})
       : await api("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "status", ke: form.ke, data, ...(f.elements._catatan.value.trim() ? {catatan: f.elements._catatan.value.trim()} : {})});
     if (!r.ok) { tombol.disabled = false; return salah(r, "Gagal menyimpan"); }

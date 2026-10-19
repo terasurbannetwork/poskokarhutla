@@ -5,7 +5,7 @@ import {readFileSync} from "node:fs";
 import path from "node:path";
 import "../../src/worker.js";   // worker.js dulu: posko.js dan worker.js saling impor
 import {MEJA, DAFTAR_MEJA, PASANGAN, BARANG, BENCANA, AMBANG, RAPOR, validasi, statusEfektif, tandaBahaya} from "../../src/meja_spek.js";
-import {gabungSkor, skorRespons} from "../../src/meja.js";
+import {gabungSkor, skorRespons, DIBI_KOLOM, DIBI_JENIS, selCsv} from "../../src/meja.js";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
@@ -27,7 +27,7 @@ const mulai = async (id, h, r = {}) => DB.prepare("UPDATE meja_catatan SET dibua
 
 uji("migrasi idempoten: berkas 0026 jalan dua kali tanpa galat dan tanpa mengubah baris", async () => {
   const sql = pecah(readFileSync(path.join(AKAR, "migrations/0026_meja.sql"), "utf8"));
-  assert.ok(sql.length === 7);
+  assert.ok(sql.length === 19, 'jumlah pernyataan migrasi: ' + sql.length);
   await DB.batch(sql.map(s => DB.prepare(s)));
   await DB.batch(sql.map(s => DB.prepare(s)));
   assert.equal(await U.n("meja_catatan"), 0);
@@ -38,8 +38,12 @@ uji("CHECK dan trigger D1 sama persis dengan spek: pasangan meja x status, trans
   const semuaStatus = [...new Set(DAFTAR_MEJA.flatMap(m => MEJA[m].status)), "bogus"];
   const sisip = async (meja, status, over = {}) => {
     try {
-      await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, ?, '71', 'Kab Cek', ?, ?, ?, ?, 1, 1)")
-        .bind(over.id ?? hex(), meja, "Kec Cek", "Desa Cek", over.data ?? "{}", status).run(); return true;
+      let kaji = null;
+      if (meja === "rehab") {   // rehab butuh induk kaji cepat masuk_jitupasna di kab yang sama
+        kaji = hex(); await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, 'kaji_cepat', '71', 'Kab Cek', NULL, 'Desa Cek', '{}', 'masuk_jitupasna', 1, 1)").bind(kaji).run();
+      }
+      await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, kaji_id, stok) VALUES (?, ?, '71', 'Kab Cek', ?, ?, ?, ?, 1, 1, ?, ?)")
+        .bind(over.id ?? hex(), meja, "Kec Cek", "Desa Cek", over.data ?? "{}", status, kaji, meja === "gudang" ? 0 : null).run(); return true;
     } catch (e) { return false; }
   };
   for (const m of DAFTAR_MEJA) for (const s of semuaStatus) assert.equal(await sisip(m, s), MEJA[m].status.includes(s), `${m}:${s}`);
@@ -48,7 +52,7 @@ uji("CHECK dan trigger D1 sama persis dengan spek: pasangan meja x status, trans
   assert.equal(await sisip("kaji_cepat", "dilaporkan", {data: "[1]"}), false, "bukan objek");
   assert.equal(await sisip("kaji_cepat", "dilaporkan", {data: JSON.stringify({x: "a".repeat(6001)})}), false, "terlalu panjang");
   /* desa wajib untuk kaji cepat dan destana, kecamatan untuk destana */
-  const tanpa = async (meja, status, kec, desa) => { try { await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, ?, '71', 'Kab Cek', ?, ?, '{}', ?, 1, 1)").bind(hex(), meja, kec, desa, status).run(); return true; } catch (e) { return false; } };
+  const tanpa = async (meja, status, kec, desa) => { try { await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, stok) VALUES (?, ?, '71', 'Kab Cek', ?, ?, '{}', ?, 1, 1, ?)").bind(hex(), meja, kec, desa, status, meja === "gudang" ? 0 : null).run(); return true; } catch (e) { return false; } };
   assert.equal(await tanpa("kaji_cepat", "dilaporkan", null, null), false); assert.equal(await tanpa("destana", "tercatat", null, "Desa Cek"), false);
   assert.equal(await tanpa("logistik", "diminta", null, null), true);
   /* transisi: semua pasangan dari x ke */
@@ -367,8 +371,278 @@ uji("halaman /meja dan /admin/meja: 200 dengan CSP ketat; admin tanpa token 403;
   for (const f of ["public/bnpb/meja.js", "public/admin/meja.js"]) { const s = readFileSync(path.join(AKAR, f), "utf8"); assert.ok(!/style="/.test(s) && !/—/.test(s) && !/\son\w+="/.test(s), f + ": inline style/em dash/handler"); }
 });
 
+/* ============================================================ sempurna: rehab-rekon, stok gudang, agregat, ekspor */
+const SAH = (st, h, id, b) => api("POST", "/api/meja/catatan/" + id, {aksi: "status", ...b}, h);
+const rehabIsi = (o = {}) => ({rumah_rb: 2, rumah_rs: 3, rumah_rr: 5, tgl_jitupasna: hari(5), ...o});
+/* kaji cepat sampai masuk_jitupasna (petugas verifikasi, admin masukkan) */
+const kajiSiap = async (h, kab, prov = "71") => {
+  const c = (await (h ? baru(h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa " + kab}) : baru(ADMIN, "kaji_cepat", prov, kab, kaji(), {desa: "Desa " + kab}))).j.catatan;
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "diverifikasi"})).s, 200); assert.equal((await SAH(0, ADMIN, c.id, {ke: "masuk_jitupasna"})).s, 200);
+  return c.id;
+};
+
+uji("sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi; tautan kaji_id, saldo stok, dan transaksi dijaga D1", async () => {
+  const sql = readFileSync(path.join(AKAR, "migrations/0026_meja.sql"), "utf8");
+  assert.deepEqual(DAFTAR_MEJA, ["kaji_cepat", "logistik", "dsp", "renkon", "destana", "rehab", "gudang"]);
+  for (const m of ["rehab", "gudang"]) assert.ok(sql.includes(`'${m}'`));
+  for (const s of MEJA.rehab.status) assert.ok(sql.includes(`'${s}'`), "status rehab di migrasi: " + s);
+  assert.ok(PASANGAN.filter(x => x.startsWith("rehab:")).length === 6);
+  for (const x of PASANGAN.filter(x => x.startsWith("rehab:"))) assert.ok(sql.includes(`'${x}'`), "pasangan di trigger: " + x);
+  assert.deepEqual(MEJA.gudang.status, ["tercatat"]); assert.deepEqual(MEJA.rehab.transisi.usulan, {disetujui: "admin", ditolak: "admin"});
+  const coba = async (sqlText, ...a) => { try { await DB.prepare(sqlText).bind(...a).run(); return true; } catch (e) { return false; } };
+  const kj = async (status = "masuk_jitupasna", kab = "Kab Tautan", meja = "kaji_cepat") => { const id = hex(); await DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah) VALUES (?, ?, '71', ?, NULL, 'Desa D', '{}', ?, 1, 1)").bind(id, meja, kab, status).run(); return id; };
+  const rh = (id, kaji, kab = "Kab Tautan", dummy = 0) => coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, kaji_id, dummy) VALUES (?, 'rehab', '71', ?, '{}', 'jitupasna', 1, 1, ?, ?)", id, kab, kaji, dummy);
+  assert.equal(await rh(hex(), null), false, "rehab tanpa kaji_id");
+  assert.equal(await rh(hex(), hex()), false, "kaji_id liar");
+  assert.equal(await rh(hex(), await kj("diverifikasi")), false, "kaji belum masuk_jitupasna");
+  assert.equal(await rh(hex(), await kj("masuk_jitupasna", "Kab Lain")), false, "kaji kab lain");
+  assert.equal(await rh(hex(), await kj("diminta", "Kab Tautan", "logistik")), false, "induk bukan kaji cepat");
+  const ok = await kj(); assert.equal(await rh(hex(), ok), true); assert.equal(await rh(hex(), ok), false, "satu rehab per kaji cepat");
+  assert.equal(await rh(hex(), await kj(), "Kab Tautan", 1), false, "dummy tidak boleh menaut induk asli");
+  assert.equal(await coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, kaji_id) VALUES (?, 'logistik', '71', 'K Tautan', '{}', 'diminta', 1, 1, ?)", hex(), ok), false, "kaji_id hanya untuk rehab");
+  const rid = (await DB.prepare("SELECT id FROM meja_catatan WHERE kaji_id = ?").bind(ok).first()).id;
+  assert.equal(await coba("UPDATE meja_catatan SET kaji_id = ? WHERE id = ?", await kj(), rid), false, "kaji_id tidak bisa dipindah");
+  /* gudang: saldo tidak boleh minus, satu catatan per (kab, gudang, barang), transaksi hanya ditambah */
+  const gd = (id, data, stok = 5) => coba("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah, stok) VALUES (?, 'gudang', '71', 'Kab Tautan', ?, 'tercatat', 1, 1, ?)", id, JSON.stringify(data), stok);
+  const g = hex(); assert.equal(await gd(g, {gudang: "Utama", barang: "beras"}), true);
+  assert.equal(await gd(hex(), {gudang: "UTAMA", barang: "beras"}), false, "duplikat tanpa peduli huruf besar");
+  assert.equal(await gd(hex(), {gudang: "Utama", barang: "tenda"}), true); assert.equal(await gd(hex(), {gudang: "Utama", barang: "garam"}, -1), false, "stok minus");
+  assert.equal(await coba("UPDATE meja_catatan SET stok = -1 WHERE id = ?", g), false, "saldo minus ditolak CHECK");
+  assert.equal(await coba("UPDATE meja_catatan SET stok = NULL WHERE id = ?", g), false, "gudang wajib punya stok");
+  assert.equal(await coba("UPDATE meja_catatan SET stok = 1 WHERE id = ?", rid), false, "stok hanya untuk gudang");
+  const tr = (jenis, delta, gid = g, lid = null) => coba("INSERT INTO meja_stok (gudang_id, jenis, delta, saldo, logistik_id, waktu) VALUES (?, ?, ?, 5, ?, 1)", gid, jenis, delta, lid);
+  assert.equal(await tr("masuk", 3), true); assert.equal(await tr("keluar", -3), true); assert.equal(await tr("koreksi", -2), true);
+  assert.equal(await tr("masuk", -3), false, "masuk harus positif"); assert.equal(await tr("keluar", 3), false, "keluar harus negatif"); assert.equal(await tr("koreksi", 0), false); assert.equal(await tr("curi", 3), false);
+  assert.equal(await tr("masuk", 3, ok), false, "transaksi hanya untuk catatan gudang"); assert.equal(await tr("masuk", 3, hex()), false);
+  assert.equal(await coba("UPDATE meja_stok SET delta = 9 WHERE gudang_id = ?", g), false, "transaksi beku"); assert.equal(await coba("DELETE FROM meja_stok WHERE gudang_id = ?", g), false, "transaksi tak bisa dihapus");
+  assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('rehab', '71', 'K', 'macet', 0, 1, 2, '{}', 1)"), false, "bahaya <= n");
+  assert.equal(await coba("INSERT INTO meja_ringkas (meja, prov, kab, status, dummy, n, bahaya, jumlah, terbaru) VALUES ('liar', '71', 'K', 'macet', 0, 1, 0, '{}', 1)"), false);
+  /* petugas boleh memegang meja baru, larik tujuh meja */
+  const pet = async meja => coba("INSERT INTO meja_petugas (id, nama, prov, kab, meja, kode_sha, dibuat) VALUES (?, 'Uji Cek', '71', 'Kab Cek', ?, ?, 1)", hex(), meja, hex() + hex() + hex() + hex());
+  assert.equal(await pet(JSON.stringify(DAFTAR_MEJA)), true); assert.equal(await pet('["rehab","gudang"]'), true); assert.equal(await pet(JSON.stringify([...DAFTAR_MEJA, "kaji_cepat"])), false);
+});
+
+uji("sempurna: alur rehab-rekon, peran petugas/admin, aturan lintas kolom, tautan kaji_id sah dan liar, tanda macet 60 hari", async () => {
+  const p = await petugas("Kab Rehab", ["kaji_cepat", "rehab", "dsp"]), lain = await petugas("Kab Rehab Lain", ["rehab", "kaji_cepat"]);
+  const kj = await kajiSiap(p.h, "Kab Rehab"), kjLain = await kajiSiap(lain.h, "Kab Rehab Lain");
+  const mk = (h, kaji_id, data = rehabIsi(), extra = {}) => api("POST", "/api/meja/catatan", {meja: "rehab", kaji_id, data, ...extra}, h);
+  /* tautan liar */
+  assert.equal((await mk(p.h, undefined)).s, 400, "kaji_id wajib"); assert.equal((await mk(p.h, "bukan-hex")).s, 400); assert.equal((await mk(p.h, hex())).s, 400, "kaji tak ada");
+  const belum = (await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Belum"})).j.catatan.id; assert.equal((await mk(p.h, belum)).s, 400, "kaji belum masuk_jitupasna");
+  assert.equal((await mk(p.h, kjLain)).s, 400, "kaji kab lain (pesan sama dengan tak ada)"); assert.equal((await mk(p.h, kj, rehabIsi(), {kaji_id: kjLain})).s, 400, "kaji_id ganda tidak dipakai");
+  assert.equal((await api("POST", "/api/meja/catatan", {meja: "rehab", prov: "71", kab: "Kab Salah", kaji_id: kj, data: rehabIsi()}, ADMIN)).s, 400, "admin: kab berbeda dari kaji");
+  assert.equal((await api("POST", "/api/meja/catatan", {meja: "logistik", kaji_id: kj, data: logis()}, p.h)).s, 403, "meja tak diizinkan sebelum cek lain");
+  assert.equal((await baru(p.h, "dsp", undefined, undefined, dsp(), {kaji_id: kj})).s, 400, "kaji_id hanya untuk rehab");
+  assert.equal((await mk(p.h, kj, rehabIsi({rumah_rb: 0, rumah_rs: 0, rumah_rr: 0}))).s, 400, "total rumah 0"); assert.equal((await mk(p.h, kj, rehabIsi({tgl_jitupasna: hari(-30)}))).s, 400, "tanggal masa depan");
+  assert.equal((await mk(p.h, kj, rehabIsi({nilai_usulan: 5}))).s, 400, "kolom tahap lain");
+  const r = await mk(p.h, kj); assert.equal(r.s, 201, r.t); const c = r.j.catatan;
+  assert.equal(c.kaji_id, kj); assert.equal(c.status, "jitupasna"); assert.equal(c.desa, "Desa Kab Rehab", "wilayah disalin dari kaji cepat"); assert.deepEqual(c.aksi, [{ke: "usulan", peran: "petugas", boleh: true}]);
+  assert.equal((await mk(p.h, kj)).s, 409, "satu rehab per kaji cepat");
+  assert.equal((await api("GET", "/api/meja/catatan/" + c.id, undefined, lain.h)).s, 404, "kab lain tidak melihat");
+  /* pemilih kaji untuk petugas rehab tanpa meja kaji_cepat */
+  const hanyaRehab = await petugas("Kab Rehab", ["rehab"]);
+  assert.equal((await api("GET", "/api/meja/catatan?meja=kaji_cepat", undefined, hanyaRehab.h)).s, 403);
+  assert.equal((await api("GET", "/api/meja/catatan?meja=kaji_cepat&status=masuk_jitupasna&untuk=rehab", undefined, hanyaRehab.h)).j.catatan.map(x => x.id).includes(kj), true);
+  /* alur dan peran */
+  assert.equal((await SAH(0, p.h, c.id, {ke: "disetujui"})).s, 409, "loncat tahap");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "usulan", data: {nilai_usulan: 800, tgl_usulan: hari(6)}})).s, 400, "usulan sebelum JITUPASNA");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "usulan", data: {nilai_usulan: 800}})).s, 400, "tgl_usulan wajib");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "usulan", data: {nilai_usulan: 800000000, tgl_usulan: hari(2)}})).s, 200, "petugas mengusulkan");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "disetujui", data: {nilai_disetujui: 700, tgl_setuju: hari(1)}})).s, 403, "petugas tak boleh menyetujui");
+  assert.equal((await SAH(0, GERBANG, c.id, {ke: "disetujui", data: {nilai_disetujui: 700, tgl_setuju: hari(1)}})).s, 403);
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "disetujui", data: {nilai_disetujui: 900000000, tgl_setuju: hari(1)}})).s, 400, "disetujui > usulan");
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "disetujui", data: {nilai_disetujui: 700000000, tgl_setuju: hari(3)}})).s, 400, "tgl_setuju sebelum tgl_usulan");
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "disetujui", data: {nilai_disetujui: 700000000, tgl_setuju: hari(1)}})).s, 200);
+  assert.equal((await SAH(0, p.h, c.id, {ke: "cair", data: {nilai_cair: 1, tgl_cair: hari(0)}})).s, 403, "petugas tak boleh mencairkan");
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "cair", data: {nilai_cair: 700000001, tgl_cair: hari(0)}})).s, 400, "cair > disetujui");
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "cair", data: {nilai_cair: 700000000, tgl_cair: hari(0)}})).s, 200);
+  assert.equal((await SAH(0, p.h, c.id, {ke: "dibangun", data: {rumah_dibangun: 11, tgl_bangun: hari(0)}})).s, 400, "dibangun > total rumah (2+3+5=10)");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "dibangun", data: {rumah_dibangun: 10, tgl_bangun: hari(0)}})).s, 200, "petugas melapor dibangun, sama dengan total boleh");
+  assert.equal((await SAH(0, p.h, c.id, {ke: "selesai", data: {tgl_selesai: hari(0)}})).s, 403, "petugas tak boleh menutup");
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "selesai", data: {tgl_selesai: hari(0)}})).s, 200);
+  assert.equal((await SAH(0, ADMIN, c.id, {ke: "ditolak", data: {alasan: "x"}})).s, 409, "selesai terkunci");
+  const j = (await adm("GET", "/api/meja/catatan/" + c.id)).j; assert.deepEqual(j.jejak.map(x => x.ke), ["jitupasna", "usulan", "disetujui", "cair", "dibangun", "selesai"]);
+  assert.equal(j.catatan.data.nilai_cair, 700000000); assert.equal(j.catatan.data.rumah_dibangun, 10);
+  /* ditolak keluar dari usulan, alasan wajib; isi awal bisa diubah selama jitupasna */
+  const kj2 = await kajiSiap(p.h, "Kab Rehab"), c2 = (await mk(p.h, kj2)).j.catatan;
+  assert.equal((await api("POST", "/api/meja/catatan/" + c2.id, {aksi: "ubah", data: rehabIsi({rumah_rb: 4})}, p.h)).j.catatan.data.rumah_rb, 4);
+  assert.equal((await SAH(0, ADMIN, c2.id, {ke: "ditolak"})).s, 409, "ditolak hanya dari usulan"); await SAH(0, p.h, c2.id, {ke: "usulan", data: {nilai_usulan: 100, tgl_usulan: hari(1)}});
+  assert.equal((await SAH(0, ADMIN, c2.id, {ke: "ditolak"})).s, 400, "alasan wajib"); assert.equal((await SAH(0, ADMIN, c2.id, {ke: "ditolak", data: {alasan: "Berkas kurang"}})).s, 200);
+  assert.equal((await api("POST", "/api/meja/catatan/" + c2.id, {aksi: "ubah", data: rehabIsi()}, ADMIN)).s, 409, "isi terkunci");
+  /* tanda macet: tahap yang sama > 60 hari (fungsi murni di tepi, lalu lewat API) */
+  const kini = Date.parse("2026-10-19T05:00:00Z"), h = "2026-10-19", plus = n => wib(Date.parse(h + "T12:00:00Z") + n * HARI);
+  const rec = (status, data) => ({status, dibuat: kini, data: {rumah_rb: 1, ...data}});
+  assert.deepEqual(tandaBahaya("rehab", rec("usulan", {tgl_usulan: plus(-60)}), kini), [], "60 hari belum macet");
+  assert.deepEqual(tandaBahaya("rehab", rec("usulan", {tgl_usulan: plus(-61)}), kini), ["macet"]);
+  assert.deepEqual(tandaBahaya("rehab", rec("jitupasna", {tgl_jitupasna: plus(-61)}), kini), ["macet"]); assert.deepEqual(tandaBahaya("rehab", rec("dibangun", {tgl_bangun: plus(-61)}), kini), ["macet"]);
+  assert.deepEqual(tandaBahaya("rehab", rec("selesai", {tgl_selesai: plus(-300)}), kini), [], "selesai tidak macet"); assert.deepEqual(tandaBahaya("rehab", rec("ditolak", {}), kini), []);
+  const kj3 = await kajiSiap(p.h, "Kab Rehab"), tua = (await mk(p.h, kj3, rehabIsi({tgl_jitupasna: hari(61)}))).j.catatan; assert.deepEqual(tua.tanda, ["macet"]);
+  const kj4 = await kajiSiap(p.h, "Kab Rehab"), muda = (await mk(p.h, kj4, rehabIsi({tgl_jitupasna: hari(60)}))).j.catatan; assert.deepEqual(muda.tanda, []);
+  const rk = (await adm("GET", "/api/meja/rekap")).j.per_kab.rehab["71|Kab Rehab"]; assert.equal(rk.bahaya, 1); assert.equal(rk.n, 4); assert.equal(rk.status.selesai, 1); assert.equal(rk.jumlah.nilai_cair, 700000000);
+});
+
+uji("sempurna: stok gudang, transaksi, dikirim mengurangi stok atomik, 409 bila kurang, tidak pernah minus", async () => {
+  const p = await petugas("Kab Gudang", ["gudang", "logistik"]), lain = await petugas("Kab Gudang Lain", ["gudang", "logistik"]);
+  const gd = (h, data) => baru(h, "gudang", undefined, undefined, data), isi = (o = {}) => ({gudang: "Gudang Utama", barang: "beras", satuan: "kg", stok_awal: 100, ambang_min: 30, ...o});
+  const g = (await gd(p.h, isi())).j.catatan; assert.equal(g.data.stok, 100); assert.equal(g.status_efektif, "cukup"); assert.deepEqual(g.tanda, []);
+  assert.equal((await gd(p.h, isi({gudang: "GUDANG UTAMA"}))).s, 409, "duplikat (kab, gudang, barang)"); assert.equal((await gd(lain.h, isi())).s, 201, "kab lain boleh nama sama");
+  const g2 = (await gd(p.h, isi({barang: "selimut", satuan: "lembar", stok_awal: 10}))).j.catatan, gLain = (await gd(lain.h, isi({barang: "tenda", satuan: "unit"}))).j.catatan;
+  assert.equal((await gd(p.h, isi({barang: "emas"}))).s, 400); assert.equal((await gd(p.h, isi({stok_awal: -1}))).s, 400); assert.equal((await gd(p.h, isi({stok_awal: 1.5}))).s, 400);
+  const stok = (id, b, h = p.h) => api("POST", "/api/meja/catatan/" + id, {aksi: "stok", ...b}, h), saldo = async id => (await DB.prepare("SELECT stok FROM meja_catatan WHERE id = ?").bind(id).first()).stok;
+  assert.equal((await stok(g.id, {jenis: "keluar", jumlah: 30})).j.catatan.data.stok, 70);
+  const k = await stok(g.id, {jenis: "keluar", jumlah: 71}); assert.equal(k.s, 409); assert.match(k.j.galat, /tersisa 70/); assert.equal(await saldo(g.id), 70, "tidak minus");
+  assert.equal((await stok(g.id, {jenis: "masuk", jumlah: 5, catatan: "Pasokan"})).j.catatan.data.stok, 75);
+  assert.equal((await stok(g.id, {jenis: "koreksi", jumlah: -5})).s, 403, "koreksi hanya admin"); assert.equal((await stok(g.id, {jenis: "koreksi", jumlah: -5}, ADMIN)).j.catatan.data.stok, 70);
+  assert.equal((await stok(g.id, {jenis: "koreksi", jumlah: -71}, ADMIN)).s, 409, "koreksi melewati nol");
+  for (const b of [{jenis: "keluar", jumlah: 0}, {jenis: "keluar", jumlah: -3}, {jenis: "masuk", jumlah: 1.5}, {jenis: "masuk", jumlah: "7"}, {jenis: "masuk", jumlah: 1e8}, {jenis: "koreksi", jumlah: 0}, {jenis: "curi", jumlah: 1}, {jumlah: 1}]) assert.equal((await stok(g.id, b, ADMIN)).s, 400, JSON.stringify(b));
+  assert.equal((await stok(gLain.id, {jenis: "masuk", jumlah: 1})).s, 404, "gudang kab lain"); assert.equal((await stok(g.id, {jenis: "masuk", jumlah: 1}, {})).s, 403);
+  const kl = (await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa X"})); assert.equal(kl.s, 403, "petugas tanpa meja kaji"); 
+  assert.equal((await stok((await baru(ADMIN, "logistik", "71", "Kab Gudang", logis())).j.catatan.id, {jenis: "masuk", jumlah: 1}, ADMIN)).s, 409, "aksi stok hanya untuk gudang");
+  /* saldo = stok awal + jumlah transaksi, dan tiap baris mencatat saldo sesudahnya */
+  const tx = (await DB.prepare("SELECT jenis, delta, saldo FROM meja_stok WHERE gudang_id = ? ORDER BY id").bind(g.id).all()).results;
+  assert.deepEqual(tx.map(t => [t.jenis, t.delta, t.saldo]), [["keluar", -30, 70], ["masuk", 5, 75], ["koreksi", -5, 70]]);
+  const rin = (await api("GET", "/api/meja/catatan/" + g.id, undefined, p.h)).j; assert.equal(rin.transaksi.length, 3); assert.ok(rin.transaksi.every(t => !("oleh" in t)), "petugas tak melihat pelaku");
+  assert.ok((await adm("GET", "/api/meja/catatan/" + g.id)).j.transaksi.every(t => t.oleh));
+  /* logistik dikirim dari gudang */
+  const minta = async (jml, barang = "beras") => { const l = (await baru(p.h, "logistik", undefined, undefined, logis({barang, jumlah_diminta: jml}))).j.catatan; assert.equal((await SAH(0, ADMIN, l.id, {ke: "disetujui"})).s, 200); return l.id; };
+  const kirim = (id, gudang_asal, jml, extra = {}) => SAH(0, ADMIN, id, {ke: "dikirim", data: {jumlah_kirim: jml, tgl_kirim: hari(0), ...(gudang_asal ? {gudang_asal} : {}), ...extra}});
+  const l1 = await minta(40); assert.equal((await kirim(l1, g.id, 0)).s, 400, "jumlah 0 dengan gudang"); assert.equal((await kirim(l1, "zzzz", 5)).s, 400, "id gudang liar"); assert.equal((await kirim(l1, hex(), 5)).s, 400, "gudang tidak ada");
+  assert.equal((await kirim(l1, g2.id, 5)).s, 400, "gudang menyimpan barang lain"); assert.equal((await kirim(l1, gLain.id, 5)).s, 400, "gudang kab lain");
+  assert.equal(await saldo(g.id), 70);
+  const sendiri = await kirim(l1, g.id, 40); assert.equal(sendiri.s, 200, sendiri.t); assert.equal(sendiri.j.catatan.gudang_asal_nama, "Gudang Utama"); assert.equal(await saldo(g.id), 30);
+  const t1 = await DB.prepare("SELECT jenis, delta, saldo, logistik_id FROM meja_stok WHERE gudang_id = ? ORDER BY id DESC").bind(g.id).first(); assert.deepEqual({...t1}, {jenis: "keluar", delta: -40, saldo: 30, logistik_id: l1});
+  assert.equal((await adm("GET", "/api/meja/catatan/" + g.id)).j.catatan.status_efektif, "menipis", "stok 30 <= ambang 30"); assert.deepEqual((await adm("GET", "/api/meja/catatan/" + g.id)).j.catatan.tanda, ["stok_rendah"]);
+  /* diterima tidak mengubah stok asal */
+  assert.equal((await SAH(0, p.h, l1, {ke: "diterima", data: {jumlah_terima: 40, penerima: "Kepala Posko"}})).s, 200); assert.equal(await saldo(g.id), 30); assert.equal(await U.n("meja_stok", `logistik_id = '${l1}'`), 1);
+  /* kurang: 409, logistik tetap disetujui, stok utuh, tanpa transaksi */
+  const l2 = await minta(31), sebelum = await U.n("meja_stok"); const k2 = await kirim(l2, g.id, 31); assert.equal(k2.s, 409); assert.match(k2.j.galat, /tersisa 30/);
+  assert.equal((await adm("GET", "/api/meja/catatan/" + l2)).j.catatan.status, "disetujui"); assert.equal(await saldo(g.id), 30); assert.equal(await U.n("meja_stok"), sebelum);
+  /* kirim tanpa gudang asal tidak menyentuh stok */
+  assert.equal((await kirim(l2, null, 31)).s, 200); assert.equal(await saldo(g.id), 30);
+  /* dua pengiriman serentak untuk stok yang hanya cukup satu: tepat satu lolos, tidak minus */
+  const a = await minta(20), b = await minta(20); const [ra, rb] = await Promise.all([kirim(a, g.id, 20), kirim(b, g.id, 20)]);
+  assert.deepEqual([ra.s, rb.s].sort(), [200, 409], `${ra.t} | ${rb.t}`); assert.equal(await saldo(g.id), 10); assert.equal(await U.n("meja_stok", `gudang_id = '${g.id}'`), 5);
+  const kalah = ra.s === 409 ? a : b; assert.equal((await adm("GET", "/api/meja/catatan/" + kalah)).j.catatan.status, "disetujui", "yang kalah tetap disetujui");
+  /* ubah isi gudang: stok_awal dihitung ulang terhadap transaksi; nama/barang beku; tak boleh membuat saldo minus */
+  const ub = (data, h = p.h) => api("POST", "/api/meja/catatan/" + g.id, {aksi: "ubah", data}, h);
+  assert.equal((await ub(isi({stok_awal: 200}))).j.catatan.data.stok, 110, "200 + (-30+5-5-40-20)"); assert.equal((await ub(isi({barang: "tenda"}))).s, 409); assert.equal((await ub(isi({gudang: "Lain"}))).s, 409);
+  assert.equal((await ub(isi({stok_awal: 80}))).s, 409, "saldo akan minus (80 - 90)"); assert.equal(await saldo(g.id), 110);
+  /* ringkas dan rekap melihat gudang */
+  const gr = (await adm("GET", "/api/meja/rekap")).j.per_kab.gudang["71|Kab Gudang"]; assert.equal(gr.n, 2); assert.equal(gr.status.menipis ?? 0, 1, "selimut 10 <= ambang 30");
+});
+
+uji("sempurna: agregat meja_ringkas sama persis dengan hitung manual dari meja_catatan untuk data acak (tulis, ubah status, umur)", async () => {
+  let seed = 20261020; const rnd = n => { seed = (seed * 1664525 + 1013904223) >>> 0; return seed % n; }, pilih = l => l[rnd(l.length)];
+  const KAB = ["Kab Acak Satu", "Kab Acak Dua", "Kab Acak Tiga"], PV = ["55", "56"], ids = {};
+  const ke = (meja, id) => (ids[meja] ??= []).push(id);
+  const wil = () => [pilih(PV), pilih(KAB)];
+  for (let i = 0; i < 14; i++) { const [pv, kb] = wil(); const c = (await baru(ADMIN, "kaji_cepat", pv, kb, kaji({rumah_rb: rnd(9), rumah_rs: rnd(9), rumah_rr: rnd(9), kejadian: pilih(["banjir", "longsor", "karhutla"])}), {desa: "Desa " + i})).j.catatan; ke("kaji", c.id);
+    const n = rnd(3); if (n) await SAH(0, ADMIN, c.id, {ke: "diverifikasi"}); if (n > 1) { await SAH(0, ADMIN, c.id, {ke: "masuk_jitupasna"}); if (rnd(2)) await api("POST", "/api/meja/catatan", {meja: "rehab", prov: pv, kab: kb, kaji_id: c.id, data: rehabIsi({tgl_jitupasna: hari(rnd(100))})}, ADMIN); } }
+  for (let i = 0; i < 12; i++) { const [pv, kb] = wil(); const c = (await baru(ADMIN, "logistik", pv, kb, logis({barang: pilih(BARANG), kebutuhan_untuk: rnd(500)}))).j.catatan; ke("logistik", c.id); if (rnd(2)) await SAH(0, ADMIN, c.id, {ke: "disetujui"}); }
+  for (let i = 0; i < 6; i++) { const [pv, kb] = wil(); ke("dsp", (await baru(ADMIN, "dsp", pv, kb, dsp({nilai_diajukan: 1e6 * (1 + rnd(50))}))).j.catatan.id); }
+  for (let i = 0; i < 8; i++) { const [pv, kb] = wil(); ke("renkon", (await baru(ADMIN, "renkon", pv, kb, {bencana: pilih(["banjir", "karhutla", "gempa"]), judul: "R" + i, tgl_sah: hari(600), berlaku_sampai: wib(KINI + (rnd(300) - 100) * HARI), ...(rnd(2) ? {uji_terakhir: hari(rnd(500))} : {})})).j.catatan.id); }
+  for (let i = 0; i < 4; i++) { const [pv, kb] = wil(); ke("destana", (await baru(ADMIN, "destana", pv, kb, {kelas: "madya", tahun_dibentuk: 2020, ...(rnd(2) ? {kegiatan_terakhir: hari(rnd(700))} : {})}, {desa: "Desa T" + i, kec: "Kec T"})).j.catatan.id); }
+  for (let i = 0; i < 5; i++) { const [pv, kb] = wil(); const c = (await baru(ADMIN, "gudang", pv, kb, {gudang: "G" + i, barang: pilih(BARANG), satuan: "kg", stok_awal: 50 + rnd(100), ambang_min: rnd(120)})).j.catatan; ke("gudang", c.id); if (rnd(2)) await api("POST", "/api/meja/catatan/" + c.id, {aksi: "stok", jenis: "keluar", jumlah: 1 + rnd(40)}, ADMIN); }
+  /* umur acak lewat SQL (bukan lewat aplikasi), lalu paksa hitung ulang penuh */
+  for (const id of [...ids.kaji, ...ids.logistik]) if (rnd(2)) { const d = KINI - (1 + rnd(200)) * JAM; await DB.prepare("UPDATE meja_catatan SET dibuat = ?, diubah = ? WHERE id = ?").bind(d, Math.min(KINI, d + rnd(100) * JAM + 1), id).run(); }
+  const manual = async () => {
+    const kini = Date.now(), raw = (await DB.prepare("SELECT meja, prov, kab, status, data, dibuat, diubah, stok FROM meja_catatan WHERE dummy = 0").all()).results, e = {kab: {}, prov: {}};
+    for (const r of raw) {
+      const rc = {meja: r.meja, status: r.status, data: {...JSON.parse(r.data), ...(r.stok != null ? {stok: r.stok} : {})}, dibuat: r.dibuat, diubah: r.diubah}, se = statusEfektif(r.meja, rc, kini);
+      for (const [per, key] of [["kab", r.prov + "|" + r.kab], ["prov", r.prov]]) {
+        const a = ((e[per][r.meja] ??= {})[key] ??= {n: 0, status: {}, bahaya: 0, jumlah: Object.fromEntries(MEJA[r.meja].rekap.map(c => [c, 0])), terbaru: 0});
+        a.n++; a.status[se] = (a.status[se] || 0) + 1; if (tandaBahaya(r.meja, rc, kini).length) a.bahaya++; a.terbaru = Math.max(a.terbaru, r.diubah); for (const c of MEJA[r.meja].rekap) a.jumlah[c] += rc.data[c] || 0;
+      }
+    }
+    return e;
+  };
+  const banding = async ket => {
+    const e = await manual(), rk = (await adm("GET", "/api/meja/rekap")).j, pb = (await api("GET", "/api/meja/ringkas")).j;
+    assert.deepEqual(rk.per_kab, e.kab, ket + ": rekap per kab"); assert.deepEqual(pb.meja, e.prov, ket + ": ringkas per provinsi");
+    assert.ok(pb.dihitung > 0 && Date.now() - pb.dihitung < 60e3);
+  };
+  await DB.prepare("DELETE FROM meja_ringkas_meta").run(); await banding("hitung ulang penuh");
+  assert.ok(Object.keys((await adm("GET", "/api/meja/rekap")).j.per_kab).length === 7 && (await U.n("meja_ringkas")) > 20, "semua tujuh meja ada di tabel ringkas");
+  /* tulis lagi tanpa hitung ulang penuh: kelompok yang disentuh diperbarui di tulisan itu juga (n, status, bahaya) */
+  const [pv, kb] = [PV[0], KAB[0]];
+  for (let i = 0; i < 3; i++) await baru(ADMIN, "logistik", pv, kb, logis({kebutuhan_untuk: 7}));
+  const l = (await baru(ADMIN, "logistik", pv, kb, logis())).j.catatan; await SAH(0, ADMIN, l.id, {ke: "disetujui"});
+  const gdn = (await baru(ADMIN, "gudang", pv, kb, {gudang: "Gbaru", barang: "masker", satuan: "buah", stok_awal: 5, ambang_min: 9})).j.catatan; assert.equal(gdn.status_efektif, "menipis");
+  await banding("sesudah tulis bertahap");
+  /* tabel ringkas tidak memuat dummy; ringkas dummy=1 hanya admin */
+  assert.equal(await U.n("meja_ringkas", "dummy = 1"), 0); assert.equal((await api("GET", "/api/meja/ringkas?dummy=1")).s, 200);
+  /* penjelasan tanda berbasis waktu: tanpa tulis, bahaya baru terhitung saat tabel dibangun ulang (cron/jam atau lewat 2 jam) */
+  const basi = (await adm("POST", "/api/meja/catatan", {meja: "logistik", prov: "57", kab: "Kab Waktu", data: logis()})).j.catatan;
+  await DB.prepare("UPDATE meja_catatan SET dibuat = ?, diubah = ? WHERE id = ?").bind(KINI - 30 * JAM, KINI - 30 * JAM, basi.id).run();
+  assert.equal((await adm("GET", "/api/meja/rekap")).j.per_kab.logistik["57|Kab Waktu"].bahaya, 0, "tabel belum tahu karena tidak ada tulis");
+  await DB.prepare("UPDATE meja_ringkas_meta SET nilai = ?").bind(Date.now() - 3 * JAM).run();
+  assert.equal((await adm("GET", "/api/meja/rekap")).j.per_kab.logistik["57|Kab Waktu"].bahaya, 1, "dibaca lewat 2 jam: dibangun ulang, tanda > 24 jam terhitung");
+  /* lebih dari satu halaman pembacaan (>1000 baris) dan tanpa batas 20.000 */
+  await DB.batch(Array.from({length: 1100}, (_, i) => DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, data, status, dibuat, diubah) VALUES (?, 'logistik', '58', 'Kab Banyak', ?, 'diminta', ?, ?)").bind(hex(), JSON.stringify(logis()), KINI, KINI)));
+  await DB.prepare("DELETE FROM meja_ringkas_meta").run(); assert.equal((await adm("GET", "/api/meja/rekap")).j.per_kab.logistik["58|Kab Banyak"].n, 1100);
+});
+
+uji("sempurna: ekspor DIBI csv/json hanya admin, kolom DIBI, BOM, sel rumus dinetralkan, rentang tanggal", async () => {
+  assert.deepEqual(Object.keys(DIBI_JENIS).sort(), [...BENCANA].sort(), "tiap bencana punya nama DIBI"); assert.equal(DIBI_KOLOM.length, 19);
+  assert.equal(selCsv("=1+1"), `"'=1+1"`); assert.equal(selCsv("@x"), `"'@x"`); assert.equal(selCsv("-5a"), `"'-5a"`); assert.equal(selCsv('a"b,c\nd'), '"a""b,c\nd"'); assert.equal(selCsv(7), '"7"'); assert.equal(selCsv(null), '""');
+  const mk = (tgl, desa, o = {}, h = ADMIN) => baru(h, "kaji_cepat", "71", "Kab Ekspor", kaji({tanggal: tgl, ...o}), {desa});
+  await mk("2026-03-10", "=HYPERLINK(\"http://x\")", {meninggal: 2, hilang: 1, luka: 3, mengungsi: 40, rumah_rb: 4, rumah_rs: 5, rumah_rr: 6, sekolah: 1, faskes: 2, ibadah: 3, kejadian: "longsor"});
+  await mk("2026-03-20", 'Desa "Kutip", Baru', {kejadian: "karhutla"}); await mk("2026-04-02", "Desa Luar Rentang");
+  const pt = await petugas("Kab Ekspor", ["kaji_cepat"]); await baru(pt.h, "kaji_cepat", undefined, undefined, kaji({tanggal: "2026-03-15"}), {desa: "Desa Petugas"});
+  const url = f => `/api/meja/ekspor?meja=kaji_cepat&dari=2026-03-01&sampai=2026-03-31${f}`;
+  for (const [m, h] of [["tanpa token", {}], ["token salah", {"x-admin-token": "salah"}], ["petugas", pt.h], ["akun gerbang", {}]]) assert.equal((await api("GET", url("&format=csv"), undefined, h)).s, 403, m);
+  assert.equal((await api("GET", url("&format=xlsx"), undefined, ADMIN)).s, 400); assert.equal((await api("GET", "/api/meja/ekspor?meja=dsp", undefined, ADMIN)).s, 400);
+  assert.equal((await api("GET", "/api/meja/ekspor?dari=2026-13-40", undefined, ADMIN)).s, 400); assert.equal((await api("GET", "/api/meja/ekspor?dari=2026-05-01&sampai=2026-04-01", undefined, ADMIN)).s, 400);
+  const c = await api("GET", url("&format=csv"), undefined, ADMIN); assert.equal(c.s, 200, c.t);
+  assert.match(c.h.get("content-type"), /text\/csv; charset=utf-8/); assert.match(c.h.get("content-disposition"), /attachment; filename="dibi-kaji_cepat-\d{4}-\d{2}-\d{2}\.csv"/); assert.equal(c.h.get("cache-control"), "no-store");
+  const mentah = new Uint8Array(await (await U.mf.dispatchFetch("http://bnpb.lokal" + url("&format=csv"), {headers: ADMIN})).arrayBuffer());
+  assert.deepEqual([...mentah.slice(0, 3)], [0xef, 0xbb, 0xbf], "BOM UTF-8");   // fetch.text() membuang BOM, jadi byte dibaca langsung
+  assert.ok(c.t.startsWith(DIBI_KOLOM.map(k => `"${k}"`).join(",") + "\r\n"), "kepala DIBI");
+  const baris = c.t.split("\r\n"); assert.equal(baris.length, 1 + 3, "3 kaji dalam rentang, tanpa yang di luar rentang");
+  assert.ok(c.t.includes(`"'=HYPERLINK(""http://x"")"`), "sel berawalan = dinetralkan dan kutip digandakan"); assert.ok(!baris.some(b => b.includes(',"=HYPERLINK')), "tidak ada sel yang diawali ="); assert.ok(c.t.includes(`"Desa ""Kutip"", Baru"`));
+  assert.ok(!c.t.includes("Desa Luar Rentang"));
+  assert.ok(baris[1].includes('"TANAH LONGSOR"') && baris[1].includes('"2026-03-10"') && baris[1].includes('"Sulawesi Utara"') && baris[1].includes('"Kab Ekspor"') && baris[1].includes('"belum diverifikasi"'));
+  assert.ok(!c.t.includes("admin:") && !c.t.includes("petugas:"), "tidak membocorkan identitas pelaku");
+  const j = await api("GET", url("&format=json"), undefined, ADMIN); assert.equal(j.s, 200); assert.deepEqual(j.j.kolom, DIBI_KOLOM); assert.equal(j.j.baris.length, 3); assert.equal(j.j.dipotong, false);
+  const a = j.j.baris.find(x => x.desa.startsWith("=")); assert.deepEqual([a.jenis_bencana, a.tanggal, a.provinsi, a.kabupaten, a.meninggal, a.hilang, a.luka, a.mengungsi, a.rumah_rusak_berat, a.rumah_rusak_sedang, a.rumah_rusak_ringan, a.fasilitas_pendidikan, a.fasilitas_kesehatan, a.fasilitas_ibadah],
+    ["TANAH LONGSOR", "2026-03-10", "Sulawesi Utara", "Kab Ekspor", 2, 1, 3, 40, 4, 5, 6, 1, 2, 3]); assert.equal(a.sumber, "Admin pusat (Meja Kerja)"); assert.equal(a.desa, '=HYPERLINK("http://x")', "JSON apa adanya (bukan lembar kerja)");
+  assert.ok(j.j.baris.some(x => x.sumber === "BPBD kab/kota (Meja Kerja)" && x.desa === "Desa Petugas"));
+  assert.equal((await api("GET", "/api/meja/ekspor?dari=2026-04-01&sampai=2026-04-30", undefined, ADMIN)).t.split("\r\n").length, 2, "default csv, satu baris");
+  assert.equal((await adm("GET", "/api/meja/ekspor?sampai=2026-03-12&dari=2026-03-12&format=json")).j.baris.length, 0);
+});
+
+uji("sempurna: dummy mengisi tiap status rehab (satu macet), gudang di bawah ambang, transaksi lahir dari logistik dikirim, ringkas dan rapor bukan nol", async () => {
+  const asli = {ringkas: await U.n("meja_ringkas", "dummy = 0")};
+  const i = await adm("POST", "/api/meja/dummy", {aksi: "isi"}); assert.equal(i.s, 201, i.t); assert.ok(i.j.transaksi_stok >= 5);
+  const rh = (await adm("GET", "/api/meja/catatan?meja=rehab")).j.catatan.filter(x => x.dummy);
+  for (const s of MEJA.rehab.status) assert.ok(rh.some(x => x.status === s), "rehab tanpa status " + s);
+  assert.equal(rh.filter(x => x.tanda.includes("macet")).length, 1, "tepat satu rehab macet"); assert.equal(rh.find(x => x.tanda.includes("macet")).status, "usulan");
+  assert.ok(rh.every(x => x.kaji_id && x.desa), "tiap rehab tertaut ke kaji dummy"); assert.equal(new Set(rh.map(x => x.kaji_id)).size, rh.length);
+  for (const x of rh) { const k = await DB.prepare("SELECT meja, status, kab, dummy FROM meja_catatan WHERE id = ?").bind(x.kaji_id).first(); assert.deepEqual({...k}, {meja: "kaji_cepat", status: "masuk_jitupasna", kab: x.kab, dummy: 1}); }
+  const gd = (await adm("GET", "/api/meja/catatan?meja=gudang")).j.catatan.filter(x => x.dummy);
+  assert.ok(gd.some(x => x.status_efektif === "menipis" && x.tanda.includes("stok_rendah")) && gd.some(x => x.status_efektif === "cukup"));
+  assert.equal(gd.filter(x => x.status_efektif === "menipis").length, 1, "tepat satu di bawah ambang");
+  /* rantai: stok = stok awal + jumlah transaksi; tiap logistik dikirim/diterima ber-gudang_asal punya transaksi keluar sebesar jumlah_kirim */
+  for (const g of gd) {
+    const sum = (await DB.prepare("SELECT coalesce(sum(delta), 0) s, count(*) n FROM meja_stok WHERE gudang_id = ?").bind(g.id).first());
+    assert.equal(g.data.stok, g.data.stok_awal + sum.s, g.data.gudang + " " + g.data.barang); assert.ok(sum.n >= 1); assert.ok(g.data.stok >= 0);
+    const akhir = await DB.prepare("SELECT saldo FROM meja_stok WHERE gudang_id = ? ORDER BY waktu DESC, id DESC LIMIT 1").bind(g.id).first(); assert.equal(akhir.saldo, g.data.stok, "saldo transaksi terakhir = stok");
+  }
+  const lg = (await adm("GET", "/api/meja/catatan?meja=logistik")).j.catatan.filter(x => x.dummy && x.data.gudang_asal);
+  assert.ok(lg.length >= 3);
+  for (const l of lg) { const t = await DB.prepare("SELECT jenis, delta, gudang_id FROM meja_stok WHERE logistik_id = ?").bind(l.id).first(); assert.deepEqual({...t}, {jenis: "keluar", delta: -l.data.jumlah_kirim, gudang_id: l.data.gudang_asal}); assert.ok(l.gudang_asal_nama); }
+  assert.equal((await DB.prepare("SELECT count(*) n FROM meja_stok WHERE jenis = 'masuk'").first()).n >= 2, true); assert.equal((await DB.prepare("SELECT count(*) n FROM meja_stok WHERE jenis = 'koreksi'").first()).n >= 1, true);
+  /* ringkas dan rapor bukan nol */
+  const dum = (await adm("GET", "/api/meja/ringkas?dummy=1")).j.meja; assert.ok(dum.rehab["62"].n >= 9 && dum.rehab["62"].bahaya === 1 && dum.gudang["62"].n === 4 && dum.gudang["62"].bahaya === 1);
+  const rap = (await adm("GET", "/api/meja/rapor?dummy=1")).j.kab.find(k => k.kab === "Kab. Contoh Meja A"); assert.ok(rap.kelengkapan.meja.rehab.n >= 8 && rap.kelengkapan.meja.rehab.bahaya === 1 && rap.kelengkapan.meja.gudang.bahaya === 1 && rap.skor > 0);
+  assert.equal(await U.n("meja_ringkas", "dummy = 0"), asli.ringkas, "ringkas asli tak berubah");
+  const h = await adm("POST", "/api/meja/dummy", {aksi: "hapus"}); assert.equal(h.s, 200, h.t); assert.ok(h.j.transaksi_stok >= 5);
+  for (const t of ["meja_catatan", "meja_stok", "meja_jejak", "meja_ringkas", "meja_ringkas_bencana"]) assert.equal(await U.n(t, "dummy = 1"), 0, t);
+  assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "isi"})).s, 201, "bisa diisi lagi"); assert.equal((await adm("POST", "/api/meja/dummy", {aksi: "hapus"})).s, 200);
+});
+
 uji("tabel belum dimigrasi = 503 (bukan 500)", async () => {
-  await DB.batch([DB.prepare("DROP TABLE meja_jejak"), DB.prepare("DROP TABLE meja_catatan"), DB.prepare("DROP TABLE meja_petugas")]);
+  await DB.batch(["meja_stok", "meja_ringkas", "meja_ringkas_bencana", "meja_ringkas_meta", "meja_jejak", "meja_catatan", "meja_petugas"].map(t => DB.prepare("DROP TABLE " + t)));
   for (const [j, h] of [["/api/meja/petugas", ADMIN], ["/api/meja/catatan?meja=dsp", ADMIN], ["/api/meja/ringkas", {}], ["/api/meja/rapor/publik", {}], ["/api/meja/rekap", ADMIN]]) {
     const r = await api("GET", j, undefined, h); assert.equal(r.s, 503, `${j}: ${r.t}`); assert.match(r.j.galat, /belum diaktifkan/);
   }

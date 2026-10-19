@@ -1,4 +1,4 @@
-/* Meja Kerja: spesifikasi lima meja (kolom, status, transisi, tanda bahaya) + validasi + status turunan. Semua meja lewat SATU mesin di src/meja.js.
+/* Meja Kerja: spesifikasi tujuh meja (kolom, status, transisi, tanda bahaya) + validasi + status turunan. Semua meja lewat SATU mesin di src/meja.js.
    Daftar meja, status per meja, dan transisi HARUS sama dengan CHECK/trigger migrations/0026_meja.sql (dijaga tests/warga/meja.test.mjs).
    Impor lewat worker.js dulu bila dipakai sendirian (posko.js dan worker.js saling impor). */
 import {tx, num, tglSah, wib} from "./posko.js";
@@ -8,10 +8,11 @@ export const BENCANA = ["banjir", "longsor", "karhutla", "gempa", "tsunami", "gu
 export const BARANG = ["beras", "air_mineral", "makanan_siap_saji", "selimut", "tenda", "terpal", "family_kit", "hygiene_kit", "obat", "popok_bayi", "susu_bayi", "pembalut", "masker", "genset", "lainnya"];
 export const INDIKATOR_DESTANA = ["tim_siaga", "peta_risiko", "jalur_evakuasi", "rencana_kontinjensi_desa", "sistem_peringatan", "latihan_rutin"];
 /* ambang tanda bahaya dan status turunan (jam / hari / bulan) */
-export const AMBANG = {kaji_verifikasi_jam: 72, logistik_setuju_jam: 24, dsp_spj_hari: 30, renkon_segera_hari: 90, renkon_uji_hari: 365, destana_pasif_bulan: 12};
+export const AMBANG = {kaji_verifikasi_jam: 72, logistik_setuju_jam: 24, dsp_spj_hari: 30, renkon_segera_hari: 90, renkon_uji_hari: 365, destana_pasif_bulan: 12, rehab_macet_hari: 60};
 /* Rapor kinerja BPBD: indeks komposit, BOBOT SEMENTARA (belum diuji balik). Komponen tanpa data dilewati dan bobot sisanya dinormalkan ulang. */
 export const RAPOR = {bobot: {respons: 35, keaktifan: 25, kelengkapan: 40}, respons_terbaik_menit: 15, respons_terburuk_menit: 120, jendela_panggilan_hari: 30, jendela_regu_hari: 7};
 
+const URUT_TGL = ["tgl_jitupasna", "tgl_usulan", "tgl_setuju", "tgl_cair", "tgl_bangun", "tgl_selesai"];
 const k = (nama, label, tipe, o = {}) => ({nama, label, tipe, ...o});
 const angka = (nama, label, o = {}) => k(nama, label, "angka", {min: 0, maks: 1e6, wajib: true, ...o});
 const tgl = (nama, label, o = {}) => k(nama, label, "tanggal", o);
@@ -43,6 +44,7 @@ export const MEJA = {
       angka("kebutuhan_untuk", "Kebutuhan untuk (jiwa)"),
       angka("jumlah_kirim", "Jumlah dikirim", {maks: 1e7, tahap: "dikirim"}), tgl("tgl_kirim", "Tanggal kirim", {wajib: true, tahap: "dikirim"}),
       k("armada", "Armada", "teks", {maks: 60, tahap: "dikirim"}),
+      k("gudang_asal", "Gudang asal (stok berkurang otomatis)", "gudang", {tahap: "dikirim"}),
       angka("jumlah_terima", "Jumlah diterima", {maks: 1e7, tahap: "diterima"}), k("penerima", "Penerima", "teks", {wajib: true, maks: 80, tahap: "diterima"}),
     ],
     awal: "diminta", status: ["diminta", "disetujui", "dikirim", "diterima"],
@@ -51,6 +53,7 @@ export const MEJA = {
     bahaya: {belum_disetujui: `diminta lebih dari ${AMBANG.logistik_setuju_jam} jam belum disetujui`, selisih_terima: "jumlah diterima tidak sama dengan jumlah dikirim"},
   },
   dsp: {
+    jalurTolak: ["diajukan"],
     id: "dsp", nama: "Dana Siap Pakai", ikon: '<circle cx="12" cy="12" r="9"/><path d="M9 9.5c0-1.2 1.3-2 3-2s3 .8 3 2-1.3 1.8-3 2-3 .8-3 2 1.3 2 3 2 3-.8 3-2"/><path d="M12 6v1.5M12 16.5V18"/>',
     wilayah: {kec: false, desa: false},
     kolom: [
@@ -93,6 +96,48 @@ export const MEJA = {
     rekap: [],
     bahaya: {pasif: `tidak ada kegiatan lebih dari ${AMBANG.destana_pasif_bulan} bulan`},
   },
+  rehab: {
+    id: "rehab", nama: "Rehab-rekon", ikon: '<path d="m3 11 9-8 9 8"/><path d="M5 10v10h14V10"/><path d="M9 20v-5h6v5M12 6v3M10.5 7.5h3"/>',
+    wilayah: {kec: false, desa: false}, tautKaji: true,
+    kolom: [
+      angka("rumah_rb", "Rumah rusak berat diusulkan"), angka("rumah_rs", "Rumah rusak sedang diusulkan"), angka("rumah_rr", "Rumah rusak ringan diusulkan"),
+      tgl("tgl_jitupasna", "Tanggal masuk JITUPASNA", {wajib: true, maks: "hariini"}),
+      rupiah("nilai_usulan", "Nilai usulan stimulan", {tahap: "usulan"}), tgl("tgl_usulan", "Tanggal usulan", {wajib: true, maks: "hariini", tahap: "usulan"}),
+      rupiah("nilai_disetujui", "Nilai disetujui", {tahap: "disetujui"}), tgl("tgl_setuju", "Tanggal disetujui", {wajib: true, maks: "hariini", tahap: "disetujui"}),
+      rupiah("nilai_cair", "Nilai cair", {tahap: "cair"}), tgl("tgl_cair", "Tanggal cair", {wajib: true, maks: "hariini", tahap: "cair"}),
+      angka("rumah_dibangun", "Jumlah rumah dibangun", {tahap: "dibangun"}), tgl("tgl_bangun", "Tanggal pembangunan", {wajib: true, maks: "hariini", tahap: "dibangun"}),
+      tgl("tgl_selesai", "Tanggal selesai", {wajib: true, maks: "hariini", tahap: "selesai"}),
+      k("alasan", "Alasan ditolak", "teks", {wajib: true, maks: 200, tahap: "ditolak"}),
+    ],
+    awal: "jitupasna", status: ["jitupasna", "usulan", "disetujui", "cair", "dibangun", "selesai", "ditolak"],
+    transisi: {jitupasna: {usulan: "petugas"}, usulan: {disetujui: "admin", ditolak: "admin"}, disetujui: {cair: "admin"}, cair: {dibangun: "petugas"}, dibangun: {selesai: "admin"}},
+    jalurTolak: ["jitupasna", "usulan"],
+    rekap: ["rumah_rb", "rumah_rs", "rumah_rr", "nilai_usulan", "nilai_disetujui", "nilai_cair", "rumah_dibangun"],
+    bahaya: {macet: `tahap yang sama lebih dari ${AMBANG.rehab_macet_hari} hari (macet)`},
+    cek: d => {
+      const total = (d.rumah_rb || 0) + (d.rumah_rs || 0) + (d.rumah_rr || 0);
+      if (!total) return "total rumah yang diusulkan harus lebih dari 0";
+      if (d.nilai_disetujui > d.nilai_usulan) return "nilai disetujui tidak boleh melebihi nilai usulan";
+      if (d.nilai_cair > d.nilai_disetujui) return "nilai cair tidak boleh melebihi nilai disetujui";
+      if (d.rumah_dibangun > total) return "rumah dibangun tidak boleh melebihi total rumah yang diusulkan";
+      const t = URUT_TGL.filter(x => d[x]);
+      for (let i = 1; i < t.length; i++) if (d[t[i]] < d[t[i - 1]]) return `${t[i]} tidak boleh sebelum ${t[i - 1]}`;
+      return "";
+    },
+  },
+  gudang: {
+    id: "gudang", nama: "Stok gudang", ikon: '<path d="M3 10 12 4l9 6v10H3z"/><path d="M8 20v-6h8v6M8 17h8"/>',
+    wilayah: {kec: false, desa: false},
+    kolom: [
+      k("gudang", "Nama gudang", "teks", {wajib: true, maks: 60}), k("barang", "Barang", "pilih", {nilai: BARANG, wajib: true}),
+      angka("stok", "Stok sekarang", {tahap: "_baca", wajib: false}), k("satuan", "Satuan", "teks", {wajib: true, maks: 20}),
+      angka("ambang_min", "Ambang minimum"), angka("stok_awal", "Stok awal", {maks: 1e7}),
+    ],
+    awal: "tercatat", status: ["tercatat"], transisi: {}, turunan: ["cukup", "menipis"],
+    stokPeran: {masuk: "petugas", keluar: "petugas", koreksi: "admin"},
+    rekap: [],
+    bahaya: {stok_rendah: "stok sama dengan atau di bawah ambang minimum"},
+  },
 };
 export const DAFTAR_MEJA = Object.keys(MEJA);
 /* pasangan 'meja:dari>ke' sah; sama dengan trigger meja_catatan_ubah */
@@ -113,6 +158,7 @@ function satu(c, v, kini) {
   if (c.tipe === "angka") { const n = num(v, c.min ?? 0, c.maks ?? 1e9, !c.desimal); return Number.isNaN(n) ? {galat: `${c.label}: angka ${c.desimal ? "" : "bulat "}${c.min ?? 0} sampai ${c.maks ?? 1e9}`} : {v: c.desimal ? Math.round(n * 100) / 100 : n}; }
   if (c.tipe === "pilih") return typeof v === "string" && c.nilai.includes(v) ? {v} : {galat: `${c.label}: pilih salah satu dari ${c.nilai.join(", ")}`};
   if (c.tipe === "multi") return Array.isArray(v) && v.length <= c.nilai.length && v.every(x => typeof x === "string" && c.nilai.includes(x)) && new Set(v).size === v.length ? {v} : {galat: `${c.label}: pilihan tidak sah`};
+  if (c.tipe === "gudang") return typeof v === "string" && /^[0-9a-f]{16}$/.test(v) ? {v} : {galat: `${c.label}: pilih gudang dari daftar`};
   if (c.tipe === "ya") return typeof v === "boolean" ? {v} : {galat: `${c.label}: harus ya atau tidak`};
   if (c.tipe === "tanggal") {
     const maks = c.maks === "hariini" ? wib(kini + HARI) : c.maks ?? "2100-12-31";
@@ -140,9 +186,12 @@ export function statusEfektif(meja, rec, kini = Date.now()) {
     const sisa = selisihHari(d.berlaku_sampai, h);
     return sisa < 0 ? "kedaluwarsa" : sisa <= AMBANG.renkon_segera_hari ? "segera_habis" : !d.uji_terakhir || selisihHari(h, d.uji_terakhir) > AMBANG.renkon_uji_hari ? "belum_diuji" : "berlaku";
   }
+  if (meja === "gudang") return d.stok <= d.ambang_min ? "menipis" : "cukup";
   if (meja === "destana") return d.kegiatan_terakhir && d.kegiatan_terakhir >= mundurBulan(h, AMBANG.destana_pasif_bulan) ? "aktif" : "pasif";
   return rec.status;
 }
+/* tanggal masuknya catatan rehab ke tahap sekarang; dipakai tanda macet */
+const TGL_TAHAP = {jitupasna: "tgl_jitupasna", usulan: "tgl_usulan", disetujui: "tgl_setuju", cair: "tgl_cair", dibangun: "tgl_bangun"};
 /* daftar kode tanda bahaya yang sedang terpicu */
 export function tandaBahaya(meja, rec, kini = Date.now()) {
   const d = rec.data, out = [], h = wib(kini);
@@ -154,5 +203,8 @@ export function tandaBahaya(meja, rec, kini = Date.now()) {
   if (meja === "dsp" && rec.status === "cair" && selisihHari(h, d.tgl_cair) > AMBANG.dsp_spj_hari) out.push("spj_terlambat");
   if (meja === "renkon") { const s = statusEfektif(meja, rec, kini); if (s === "kedaluwarsa" || s === "belum_diuji") out.push(s); }
   if (meja === "destana" && statusEfektif(meja, rec, kini) === "pasif") out.push("pasif");
+  if (meja === "gudang" && statusEfektif(meja, rec, kini) === "menipis") out.push("stok_rendah");
+  const tg = meja === "rehab" && TGL_TAHAP[rec.status];
+  if (tg && d[tg] && selisihHari(h, d[tg]) > AMBANG.rehab_macet_hari) out.push("macet");
   return out;
 }
