@@ -1,6 +1,10 @@
-"""Analisis mundur kebakaran 2015 dan 2019: lahan terbakar mana yang SEBELUMNYA BUKAN sawit lalu MENJADI sawit
+"""Analisis mundur kebakaran 2015 (dan 2019, internal): lahan terbakar mana yang SEBELUMNYA BUKAN sawit lalu MENJADI sawit
 ("indikasi dibakar lalu jadi sawit"), dibedakan dari lahan yang SUDAH sawit saat terbakar ("sawit terbakar").
 INI INDIKASI, BUKAN BUKTI SIAPA MEMBAKAR: tumpang-tindih ruang dan waktu tidak menunjukkan pelaku.
+
+Keluaran: data/raw/sawit/hasil/sawit_retro.json (internal, dua tahun, ber-nama) dan, hanya tahun 2015 (2019: jendela 1 tahun,
+"tidak terbit"), public/data/konsesi2026/sawit_riwayat.json + citra/<id>_riwayat2015_<sebelum|sesudah|plus2>_<tgl>.png untuk
+halaman Laporan Konsesi (keputusan pemilik 17 Okt + 19 Okt 2026: halaman itu memang menampilkan nama perusahaan).
 
 Sumber:
 - Gaveau, D.L.A. dkk. 2022, "Industrial and Smallholder Oil Palm Plantation Expansion in Indonesia 2001-2019", PLOS ONE,
@@ -8,8 +12,9 @@ Sumber:
   Poligon sawit industri + rakyat per pulau; field F2000..F2019 = kelas lahan tiap tahun (IOPP, Smallholder,
   Non Forest, Forest, ITP). Poligon hanya ada untuk lahan yang jadi sawit s.d. 2019.
 - NASA FIRMS VIIRS S-NPP 375 m arsip tahunan (type 0, confidence n/h).
-- Descals dkk. 2024 (lewat sawit_peta.py), hanya tahun 2019, sebagai pengecekan silang di luar poligon Gaveau.
-- Konsesi KLHK ~2014 via GFW (public/data/lahan/konsesi.geojson: sawit, hph, hti).
+- Descals dkk. 2024 (lewat sawit_peta.py): pengecekan silang sampel "bakar lalu sawit" (YoP > 0) dan, 2019, di luar poligon Gaveau.
+- Konsesi KLHK ~2014 via GFW (public/data/lahan/konsesi.geojson: sawit, hph, hti); grup dari konsesi2026/*.json lalu grup_perusahaan.json.
+- Citra 2015: Landsat 8/7 Collection 2 Level-2 (Microsoft Planetary Computer, token anonim), Sentinel-2 L2A untuk 2017 (Earth Search).
 
 Metode ringkas: tiap deteksi VIIRS = jejak scan x track km; 3x3 titik sampel di jejaknya dibulatkan ke kisi 0,001125
 derajat (~125 m, ~1,56 ha) per tahun api supaya deteksi bertumpuk tidak ganda. Luas = "luas di bawah jejak titik VIIRS",
@@ -18,8 +23,8 @@ pengisian garis-sapu (scanline) pada kisi itu; lubang poligon ditangani aturan g
 
 Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015 dan 2019
         python3 scripts/data/sawit_retro.py analisis [--tahun 2015] [--tanpa-descals]
-        python3 scripts/data/sawit_retro.py citra [--tahun 2019]
-        python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> data/raw/sawit/hasil/sawit_retro.json
+        python3 scripts/data/sawit_retro.py citra            # hanya 2015, 15 teratas terbit
+        python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> hasil/sawit_retro.json + sawit_riwayat.json
         python3 scripts/data/sawit_retro.py unduh | uji
 """
 import csv, datetime as dt, json, math, mmap, os, struct, sys, time, urllib.request, zipfile
@@ -33,6 +38,15 @@ ANTARA = os.path.join(DIR, "antara")
 # bernama perusahaan: keputusan pemilik 14 Okt 2026, tidak terbit -> data/raw (di-ignore)
 KELUAR = os.path.join(AKAR, "data/raw/sawit/hasil/sawit_retro.json")
 CITRA_DIR = os.path.join(AKAR, "data/raw/sawit/hasil/citra")
+TERBIT = os.path.join(AKAR, "public/data/konsesi2026/sawit_riwayat.json")
+TERBIT_CITRA = os.path.join(AKAR, "public/data/konsesi2026/citra")
+TAHUN_TERBIT = 2015             # 2019 tidak terbit: jendela 1 tahun (hanya F2019)
+BS_MIN, PORSI_MIN, TOP_TERBIT = 50, .10, 15   # hipotesis, belum diuji balik: saring perusahaan terbit
+LUAS_RESMI_2015 = 2_610_000     # ha, luas terbakar resmi KLHK 2015
+MUDA = (2016, 2018)             # tahun-sawit yang lebih tak pasti (peta konsesi/Gaveau dekat akhir jendela)
+PC_STAC = "https://planetarycomputer.microsoft.com/api/stac/v1/search"
+PC_TOKEN = "https://planetarycomputer.microsoft.com/api/sas/v1/token/landsat-c2"
+MAKS_PNG = 150_000
 G = 0.001125                    # kisi sampel, derajat (~125 m)
 K = 1_000_000                   # kunci sel = iy * K + ix
 PULAU = ["Java", "Kalimantan", "Maluku", "Papua", "Sulawesi", "Sumatra"]
@@ -216,7 +230,7 @@ def shp_dbf(shp, dbf):
 
 
 def gaveau(rows, tahun):
-    """-> ({kunci: (kode, asal, tahun_sawit, pemilik)}, jumlah_sampel_tumpang_poligon)"""
+    """-> ({kunci: (kode, asal, tahun_sawit, pemilik, bukan_hutan_sejak_2000)}, jumlah_sampel_tumpang_poligon)"""
     hasil, tumpang, cache = {}, 0, {}
     for dasar, pem in JENIS:
         for pulau in PULAU:
@@ -229,9 +243,10 @@ def gaveau(rows, tahun):
                 ks = isi(cincin(c), rows)
                 if not ks:
                     continue
-                F = {y: nilai(idx, f"F{y}") for y in range(tahun - 1, min(tahun + JENDELA, BATAS) + 1)}
+                F = {y: nilai(idx, f"F{y}") for y in range(2000, min(tahun + JENDELA, BATAS) + 1)}
                 kode, asal, th = klasifikasi(F, tahun)
-                t = cache.setdefault((kode, asal, th, pem), (kode, asal, th, pem))
+                nh = kode == "bs" and all(F[y] == "Non Forest" for y in range(2000, tahun))   # tak pernah hutan sejak 2000
+                t = cache.setdefault((kode, asal, th, pem, nh), (kode, asal, th, pem, nh))
                 for k in ks:
                     if k in hasil:
                         tumpang += 1
@@ -338,23 +353,32 @@ KELAS = ("bs", "bd", "st", "bk")   # bakar lalu sawit (Gaveau) | bakar lalu sawi
 def kelas_sampel(k, gav, dsc):
     h = gav.get(k)
     if h is None:
-        return ("bd", None, dsc[k], None) if k in dsc else ("bk", None, None, None)
-    return (h[0] if h[0] != "lain" else "bk", h[1], h[2], h[3])
+        return ("bd", None, dsc[k], None, False) if k in dsc else ("bk", None, None, None, False)
+    return (h[0] if h[0] != "lain" else "bk", h[1], h[2], h[3], h[4])
 
 
-def agregat(tahun, s, gav, dsc, ko, pko, kec, pkec):
-    tot = {"ha": Counter(), "n": Counter(), "asal": Counter(), "th": Counter(), "pem": Counter(), "luar_ha": Counter()}
+def agregat(tahun, s, gav, dsc, ko, pko, kec, pkec, dcf=()):
+    """dcf = kunci sampel bs yang Descals YoP > 0"""
+    tot = {"ha": Counter(), "n": Counter(), "asal": Counter(), "th": Counter(), "pem": Counter(), "luar_ha": Counter(),
+           "lag": Counter(), "nh": 0., "muda": 0., "bs_n": 0, "dcf_n": 0}
     per, kab = {}, {}
     for k, v in s.items():
         iy, ix = divmod(k, K)
         a, n = luas_ha(iy), v >> 12
-        kl, asal, th, pem = kelas_sampel(k, gav, dsc)
+        kl, asal, th, pem, nh = kelas_sampel(k, gav, dsc)
         tot["ha"][kl] += a
         tot["n"][kl] += n
         if kl == "bs":
             tot["asal"][asal] += a
             tot["th"][th] += a
             tot["pem"][pem] += a
+            tot["lag"][th - tahun] += a
+            tot["bs_n"] += 1
+            tot["dcf_n"] += k in dcf
+            if nh:
+                tot["nh"] += a
+            if MUDA[0] <= th <= MUDA[1]:
+                tot["muda"] += a
         if kl == "bd":
             tot["th"][th] += a
         c = pko.get(k)
@@ -369,13 +393,20 @@ def agregat(tahun, s, gav, dsc, ko, pko, kec, pkec):
                 kb["luar_ha"][kl] += a
         if c is not None:
             p = per.setdefault(c, {"ha": Counter(), "n": Counter(), "asal": Counter(), "th": Counter(), "pem": Counter(),
-                                   "kab": Counter(), "klaster": {}})
+                                   "kab": Counter(), "klaster": {}, "lag": Counter(), "nh": 0., "muda": 0., "bs_n": 0, "dcf_n": 0})
             p["ha"][kl] += a
             p["n"][kl] += n
             if kl in ("bs", "bd"):
                 if kl == "bs":
                     p["asal"][asal] += a
                     p["pem"][pem] += a
+                    p["lag"][th - tahun] += a
+                    p["bs_n"] += 1
+                    p["dcf_n"] += k in dcf
+                    if nh:
+                        p["nh"] += a
+                    if MUDA[0] <= th <= MUDA[1]:
+                        p["muda"] += a
                 p["th"][th] += a
                 if e is not None:
                     p["kab"][e[1]] += a
@@ -397,6 +428,8 @@ def ringkas_perusahaan(daftar, per):
         if p["ha"]["bs"] + p["ha"]["bd"] < 10 and p["ha"]["st"] < 50:
             continue
         e = daftar[c]
+        jejak, titik = sum(p["ha"].values()), sum(p["n"].values())
+        bs = p["ha"]["bs"]
         kl = sorted(p["klaster"].values(), key=lambda q: -q[0])[:5]
         hasil.append({
             "id": e["id"], "nama": e["nama"], "grup": e["grup"], "jenis": e["jenis"], "prov": e["prov"],
@@ -404,6 +437,12 @@ def ringkas_perusahaan(daftar, per):
             "luas_konsesi_ha": e["luas_ha"],
             "ha": {x: round(p["ha"][x], 1) for x in KELAS},
             "titik": {x: p["n"][x] for x in KELAS},
+            "jejak_ha": round(jejak, 1), "bs_porsi": round(bs / jejak, 3) if jejak else 0,
+            "titik_total": titik, "ha_per_titik": round(jejak / titik, 2) if titik else None,
+            "lag_ha": {str(g): round(p["lag"][g], 1) for g in range(JENDELA + 1)},
+            "bukan_hutan_sejak_2000_ha": round(p["nh"], 1),
+            "muda_porsi": round(p["muda"] / bs, 3) if bs else 0,
+            "descals_konfirm": round(p["dcf_n"] / p["bs_n"], 3) if p["bs_n"] else None,
             "asal": {x: round(p["asal"][x], 1) for x in ASAL if p["asal"][x]},
             "tahun_sawit": {str(t): round(p["th"][t], 1) for t in sorted(p["th"])},
             "pemilik_kebun": {x: round(h, 1) for x, h in p["pem"].items()},
@@ -420,12 +459,15 @@ def analisis(tahun, descals_on=True):
     s = sampel(tahun)
     rows = baris(s)
     gav, tump_gav = gaveau(rows, tahun)
-    dsc = {}
-    if tahun == 2019 and descals_on:
+    dsc, dcf = {}, set()
+    if descals_on:
         try:
             import sawit_peta as S
             S.uji()
-            dsc = descals([k for k in s if k not in gav])
+            dcf = set(descals([k for k, h in gav.items() if h[0] == "bs" and k in s], 1, 9999))   # pengecekan silang, semua tahun
+            log(f"  descals konfirmasi bs: {len(dcf)} sampel")
+            if tahun == 2019:
+                dsc = descals([k for k in s if k not in gav])
         except Exception as e:
             log("  descals dilewati:", repr(e))
     ko = baca_konsesi()
@@ -433,7 +475,7 @@ def analisis(tahun, descals_on=True):
     kec = baca_kecamatan()
     pkec, _, _ = tetapkan(rows, [x[2] for x in kec])
     kec_ = [(x[0], x[1]) for x in kec]
-    tot, per, kab = agregat(tahun, s, gav, dsc, ko, pko, kec_, pkec)
+    tot, per, kab = agregat(tahun, s, gav, dsc, ko, pko, kec_, pkec, dcf)
     pr = ringkas_perusahaan(ko, per)
     kabl = []
     for (kode, nama), b in kab.items():
@@ -453,11 +495,15 @@ def analisis(tahun, descals_on=True):
                   "luar_konsesi_ha": {x: round(tot["luar_ha"][x], 1) for x in KELAS},
                   "asal_bs_ha": {x: round(tot["asal"][x], 1) for x in ASAL},
                   "tahun_sawit_ha": {str(t): round(h, 1) for t, h in sorted(tot["th"].items())},
+                  "jejak_ha": round(sum(tot["ha"].values()), 1), "lag_ha": {str(g): round(tot["lag"][g], 1) for g in range(JENDELA + 1)},
+                  "bukan_hutan_sejak_2000_ha": round(tot["nh"], 1), "muda_ha": round(tot["muda"], 1),
+                  "descals_konfirm": round(tot["dcf_n"] / tot["bs_n"], 3) if tot["bs_n"] else None,
                   "pemilik_bs_ha": {x: round(h, 1) for x, h in tot["pem"].items()},
                   "sampel": len(s), "deteksi": sum(v >> 12 for v in s.values()),
                   "tumpang_poligon_gaveau": tump_gav, "tumpang_konsesi": tump_ko,
                   "tumpang_pasangan": {f"{a}+{b}": n for (a, b), n in pasang.items()},
-                  "jendela_tahun": min(tahun + JENDELA, BATAS) - tahun + 1, "descals": bool(dsc)},
+                  "jendela_tahun": min(tahun + JENDELA, BATAS) - tahun + 1, "descals": bool(dsc),
+                  "descals_konfirm_aktif": bool(dcf)},
         "perusahaan": pr, "kabupaten": kabl, "provinsi": provl,
         "detik": round(time.time() - t0),
     }

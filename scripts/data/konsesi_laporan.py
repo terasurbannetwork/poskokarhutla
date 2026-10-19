@@ -163,6 +163,9 @@ def bangun():
     aktor = json.load(open(os.path.join(AKAR, "public/data/aktor_karhutla.json")))
     walhi = {kunci(p["nama"]): p for p in aktor["perusahaan"]}
     gneg = aktor.get("grup_negara", {})
+    gp_d = json.load(open(os.path.join(AKAR, "public/data/aktor_greenpeace.json")))  # titik sumber asap Greenpeace/Pantau Gambut, 8 Agu-1 Okt 2026
+    gp_nama = {p["nama"]: p for p in gp_d["perusahaan"]}
+    gp_poli = {i: gp_nama[n] for i, n in gp_d["poligon"].items()}  # per id poligon (kunci nama terlalu umum untuk Inhutani)
     wil = Wilayah()
     rspo = {}
     for x in json.load(open(RSPO))["unit"]:
@@ -239,14 +242,18 @@ def bangun():
         nama = ps[0]["nama"] or "(tanpa nama)"
         wl = walhi.get(kunci(nama))
         rs = rspo.get(kunci(nama)) if k[1] == "sawit" else None
+        gp = next((gp_poli[ps_i["id"]] for ps_i in ps if ps_i["id"] in gp_poli), None)
         grup = ", ".join((wl or {}).get("grup") or []) or ps[0].get("grup") or (grup_rapi(rs[0]["grup"]) if rs else "")
+        grup_asal = "walhi" if (wl or {}).get("grup") else "peta" if ps[0].get("grup") else "rspo" if grup else ""
+        if not grup and gp and (gp["grup"] or gp["grup_kaitan"]):
+            grup, grup_asal = gp["grup"] or gp["grup_kaitan"], "greenpeace"
         neg = (wl or {}).get("negara") or [gneg.get(grup, "") or ("MY" if grup.endswith("Berhad") else "")]
         n = len(ts)
         frp = [x[3] for x in ts]
         kl = kompleks_lalu([x for x in ts if x[0] < batas7], wil)
         t7 = sum(c for d, c in harian if (dt.date.fromisoformat(d) - (akhir + WIB).date()).days > -7)
         r = {
-            "id": ps[0]["id"], "nama": nama, "grup": grup,
+            "id": ps[0]["id"], "nama": nama, "grup": grup, "grup_asal": grup_asal,
             "negara": [x for x in neg if x],
             # anggota RSPO (data RSPO 2020): grup anggota, unit bersertifikat atau belum, tahun keanggotaan
             "rspo": {"grup": rs[0]["grup"], "sertifikat": any(x["sertifikat"] for x in rs), "sejak": next((x["anggota_sejak"] for x in rs if x["anggota_sejak"]), None)} if rs else None,
@@ -276,6 +283,9 @@ def bangun():
             "gambut_kejadian": kejadian(sorted(gbh.items())), "kawasan": {f: round(c / n, 3) for f, c in sorted(kw.items(), key=lambda x: -x[1])},
             "kec": [a for a, _ in sorted(kec.items(), key=lambda x: -x[1])[:6]],
             "harian": harian, "kejadian": kejadian(harian),
+            # Greenpeace & Pantau Gambut 2026: titik sumber asap (bukan titik panas) 8 Agu-1 Okt; tabel "Sawit #n"/"PBPH #n"/"PSN tebu"/"Kaitan SG/MY"
+            "gp": bool(gp), "gp_titik": (gp or {}).get("asap_titik") or ((gp or {}).get("kaitan") or {}).get("titik"), "gp_hari": (gp or {}).get("asap_hari") or ((gp or {}).get("kaitan") or {}).get("hari"),
+            "gp_tabel": (gp or {}).get("tabel") or [], "gp_ket": ((gp or {}).get("kaitan") or {}).get("ket") or (gp or {}).get("catatan") or "",
             "walhi": bool(wl), "walhi_ket": (wl or {}).get("catatan", ""),
             "pusat": [round(sum(x[1] for x in ts) / n, 4), round(sum(x[2] for x in ts) / n, 4)],
             # titik: [lat, lon, "MM-DD HH:MM" WIB, frp]
