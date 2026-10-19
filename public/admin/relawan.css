@@ -1,0 +1,27 @@
+/* Admin Relawan: formulir, ringkasan, tabel, dan pil. Token warna dan tabel dari admin.css; pil .bn-pil dari bnpb.css (diimpor di bawah). */
+@import url("/bnpb/bnpb.css");
+.rw-isi{display:grid;gap:14px;margin-top:14px}
+.rw-pesan{margin:10px 2px 0;font-weight:700;font-size:13px;min-height:1.2em}
+.rw-pesan.ok{color:var(--c4)}.rw-pesan.galat{color:var(--c1)}
+.rw-bar{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:end;font-size:13px}
+.rw-bar label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--ink2)}
+.rw-redup{color:var(--ink2);font-size:12px}
+.rw-ringkas{display:flex;flex-wrap:wrap;gap:8px 14px;align-items:center;font-size:13px}
+.rw-ringkas span{display:inline-flex;gap:6px;align-items:center}
+.rw-form{display:grid;gap:12px}
+.rw-form label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--ink2)}
+.rw-form input,.rw-form select,.rw-bar input,.rw-bar select,.rw-isian{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+.rw-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(200px,1fr))}
+.rw-butuh{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
+.rw-butuh legend{font-size:12px;font-weight:700;color:var(--ink2);padding:0 6px}
+.rw-aksi{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.rw-kode{box-shadow:0 0 0 2px var(--emas),var(--bayang);display:grid;gap:10px}
+.rw-panel{display:grid;gap:12px}
+.rw-kosong{padding:28px;text-align:center;color:var(--ink2);background:var(--card);border-radius:16px;box-shadow:var(--bayang);margin:0}
+.rw-kosong-baris{text-align:center;color:var(--ink2);padding:18px!important}
+.rw-urut{border:0;background:none;color:inherit;font:inherit;letter-spacing:inherit;text-transform:inherit;cursor:pointer;padding:0}
+.rw-urut:focus-visible{outline:2px solid var(--emas);outline-offset:2px}
+.rw-hal{display:flex;gap:12px;align-items:center;justify-content:center;padding:10px;font-size:12.5px;color:var(--ink2)}
+.rw-tabel .ad-tabel td{vertical-align:top}
+.p-biru{--pil:var(--c5)}.p-hijau{--pil:var(--c4)}.p-merah{--pil:var(--c1)}.p-kuning{--pil:var(--c3)}.p-abu{--pil:var(--ink3)}.p-ungu{--pil:var(--c7)}.p-oranye{--pil:var(--c2)}
+.bn-pil svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}

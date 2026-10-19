@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Jadi Relawan · Pantau Bencana</title>
+<meta name="description" content="Daftar jadi relawan kebencanaan: pilih keahlian dan ketersediaanmu, lalu admin mencocokkanmu dengan kebutuhan lapangan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/relawan.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Relawan</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul"><h1>Jadi relawan</h1><div class="bn-aksi"><a class="bn-tombol sekunder rl-tautan" href="/relawan/saya">Sudah daftar? Buka halamanmu</a></div></div>
+  <section id="ringkas" class="bn-grid" aria-label="Ringkasan relawan"></section>
+  <section class="bn-blok rl-mitra" id="kampusBlok" hidden aria-label="Kampus mitra"><h2 id="kampusJudul"></h2><div id="kampusDaftar" class="rl-pilgrup"></div></section>
+  <section id="sukses" class="bn-blok rl-sukses" hidden aria-live="polite"></section>
+  <form id="f" class="bn-form" novalidate autocomplete="off">
+    <section class="bn-blok">
+      <h2>Tentang kamu</h2>
+      <div class="bn-baris">
+        <label class="bn-isian">Nama lengkap<input name="nama" maxlength="80" required autocomplete="name"></label>
+        <label class="bn-isian">Nomor WhatsApp<input name="wa" inputmode="tel" maxlength="20" placeholder="0812xxxxxxxx" required autocomplete="tel"></label>
+        <label class="bn-isian">Email<input name="email" type="email" maxlength="254" required autocomplete="email"></label>
+      </div>
+      <div class="bn-baris">
+        <label class="bn-isian">Provinsi domisili<select name="prov" id="fProv" required></select></label>
+        <label class="bn-isian">Kabupaten atau kota<input name="kab" id="fKab" list="dKab" maxlength="60" required><datalist id="dKab"></datalist></label>
+        <label class="bn-isian">Golongan darah (boleh dikosongkan)<select name="gol_darah" id="fGol"></select></label>
+      </div>
+    </section>
+    <section class="bn-blok">
+      <h2>Jalur</h2>
+      <div class="bn-pilihan" id="fJalur" role="radiogroup" aria-label="Jalur pendaftaran"></div>
+      <div class="bn-baris">
+        <label class="bn-isian" id="bKampus" hidden>Kampus mitra<select name="kampus_id" id="fKampus"></select></label>
+        <label class="bn-isian" id="bOrg" hidden>Nama organisasi<input name="organisasi" maxlength="120"></label>
+      </div>
+    </section>
+    <section class="bn-blok">
+      <h2>Keahlian</h2>
+      <div class="bn-pilihan" id="fAhli" role="group" aria-label="Keahlian"></div>
+      <label class="bn-isian">Sertifikat atau pelatihan yang kamu punya (singkat)<input name="sertifikat" maxlength="300" placeholder="mis. BTCLS, Dasar SAR"></label>
+    </section>
+    <section class="bn-blok">
+      <h2>Ketersediaan</h2>
+      <div class="bn-baris">
+        <label class="bn-isian">Hari siap per minggu<input name="hari_per_minggu" type="number" min="1" max="7" value="3" inputmode="numeric" required></label>
+        <label class="bn-isian">Siap bertugas sampai (hari)<input name="maks_hari" type="number" min="1" max="365" value="14" inputmode="numeric" required></label>
+        <div class="bn-isian">Bersedia keluar provinsi<div class="bn-pilihan" role="radiogroup" aria-label="Bersedia keluar provinsi">
+          <label><input type="radio" name="luar_provinsi" value="ya"> Ya</label><label><input type="radio" name="luar_provinsi" value="tidak" checked> Tidak</label></div></div>
+      </div>
+    </section>
+    <section class="bn-blok">
+      <h2>Kontak darurat</h2>
+      <div class="bn-baris">
+        <label class="bn-isian">Nama<input name="darurat_nama" maxlength="80" required></label>
+        <label class="bn-isian">Nomor WhatsApp atau telepon<input name="darurat_wa" inputmode="tel" maxlength="20" required></label>
+      </div>
+    </section>
+    <section class="bn-blok">
+      <label class="bn-setuju"><input type="checkbox" name="setuju" id="fSetuju" required><span>Aku setuju datanya diproses untuk pengelolaan relawan sesuai UU Pelindungan Data Pribadi. Tanpa NIK dan tanpa unggah KTP. Kamu bisa menghapus datamu kapan saja dari halaman pribadimu.</span></label>
+      <div id="ts"></div>
+      <p id="pesan" class="bn-pesan" role="status"></p>
+      <div><button class="bn-tombol" id="kirim" type="submit">Daftar jadi relawan</button></div>
+    </section>
+  </form>
+</main>
+<script src="/bnpb/relawan.js?v=1" defer></script>
+</body>
+</html>

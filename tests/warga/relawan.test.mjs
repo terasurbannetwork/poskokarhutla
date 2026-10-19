@@ -1,0 +1,587 @@
+/* Relawan + kampus PTN (src/relawan.js, migrasi 0023) di atas worker utuh (Miniflare) dan D1 lokal sungguhan.
+   Dijaga: migrasi idempoten, CHECK menolak isian liar, enum JS == CHECK, pendaftaran sah/liar/duplikat/laju, kode pribadi, isolasi kampus dan relawan,
+   pencocokan, jam kerja dari check-in/out, MoU habis, cabut diri, data pribadi tidak bocor di rute publik, dummy isi/hapus, halaman + CSP. */
+import assert from "node:assert/strict";
+import {readFileSync} from "node:fs";
+import {randomBytes} from "node:crypto";
+import path from "node:path";
+import {AKAR, pecah} from "./_bantu.mjs";
+import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
+import "../../src/worker.js";
+import * as R from "../../src/relawan.js";
+
+const U = await siapkan("uji-relawan"), uji = berantai();
+const SQL = readFileSync(path.join(AKAR, "migrations/0023_relawan.sql"), "utf8");
+const JAM = 3600e3, HARI = 24 * JAM;
+const geser = h => new Date(Date.now() + 7 * JAM + h * HARI).toISOString().slice(0, 10);
+const id16 = () => randomBytes(8).toString("hex");
+let ipN = 0; const ipBaru = () => ({"cf-connecting-ip": `10.9.${Math.floor(++ipN / 250)}.${ipN % 250}`});
+let nWA = 0; const unik = () => { nWA++; return {wa: "08127" + String(nWA).padStart(6, "0"), email: `u${nWA}@contoh.id`, darurat_wa: "08139" + String(nWA).padStart(6, "0")}; };
+const form = (o = {}) => ({nama: "Budi Santoso", ...unik(), prov: "62", kab: "Pulang Pisau", jalur: "umum", keahlian: ["medis"], sertifikat: "BTCLS", hari_per_minggu: 3, maks_hari: 30,
+  luar_provinsi: false, gol_darah: "O+", darurat_nama: "Ibu Budi", setuju: true, ...o});
+const daftar = (o, h = ipBaru()) => U.api("POST", "/api/relawan/daftar", form(o), h);
+const idRelawan = async nama => (await U.DB.prepare("SELECT id FROM relawan WHERE nama = ?").bind(nama).first()).id;
+const K = kode => ({"x-kode": kode, ...ipBaru()});
+async function buatSiap(o) {
+  const r = await daftar(o); assert.equal(r.s, 201, r.t);
+  const id = await idRelawan(o.nama);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/relawan/${id}`, {aksi: "verifikasi"})).s, 200);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/relawan/${id}`, {aksi: "siap"})).s, 200);
+  return {id, kode: r.j.kode};
+}
+const sisip = (tabel, o) => { const k = Object.keys(o); return U.DB.prepare(`INSERT INTO ${tabel} (${k.join(", ")}) VALUES (${k.map(() => "?").join(", ")})`).bind(...k.map(x => o[x])).run(); };
+const mouBody = (o = {}) => ({nama: "Universitas Uji Satu", singkatan: "UUS", prov: "62", no_mou: "MoU/UJI/1/2026", mulai: geser(-100), berakhir: geser(200), pic_nama: "Dr. Rahasia PIC", pic_jabatan: "Wakil Rektor",
+  pic_email: "pic.rahasia@kampus-uji.ac.id", pic_wa: "081299990001", kuota: 50, catatan: "uji", ...o});
+const butuhBody = (o = {}) => ({judul: "Pos kesehatan uji", bencana: "karhutla", prov: "62", kab: "Pulang Pisau", butuh: [{keahlian: "medis", jumlah: 3}], mulai: geser(1), selesai: geser(10), ...o});
+
+const ADMIN_RUTE = [["GET", "/api/relawan/admin/relawan"], ["GET", "/api/relawan/admin/relawan/0123456789abcdef"], ["POST", "/api/relawan/admin/relawan/0123456789abcdef"], ["GET", "/api/relawan/admin/csv"],
+  ["GET", "/api/relawan/admin/kampus"], ["POST", "/api/relawan/admin/kampus"], ["POST", "/api/relawan/admin/kampus/0123456789abcdef"], ["GET", "/api/relawan/admin/permintaan"], ["POST", "/api/relawan/admin/permintaan"],
+  ["GET", "/api/relawan/admin/permintaan/0123456789abcdef"], ["POST", "/api/relawan/admin/permintaan/0123456789abcdef"], ["GET", "/api/relawan/admin/penugasan"], ["POST", "/api/relawan/admin/penugasan/0123456789abcdef"],
+  ["POST", "/api/relawan/admin/jam/0123456789abcdef"], ["GET", "/api/relawan/admin/pelatihan"], ["POST", "/api/relawan/admin/pelatihan"], ["POST", "/api/relawan/admin/pelatihan/0123456789abcdef"], ["POST", "/api/relawan/dummy"]];
+const KODE_RUTE = [["GET", "/api/relawan/saya"], ["POST", "/api/relawan/saya"], ["POST", "/api/relawan/saya/penugasan/0123456789abcdef"], ["GET", "/api/relawan/kampus/saya"], ["GET", "/api/relawan/kampus/csv"],
+  ["POST", "/api/relawan/kampus/relawan/0123456789abcdef"], ["POST", "/api/relawan/kampus/jam/0123456789abcdef"]];
+
+uji("migrasi 0023 relawan idempoten: jalan dua kali, data tetap", async () => {
+  await sisip("relawan_kampus", {id: id16(), nama: "Kampus Awal", prov: "62", no_mou: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", pic_nama: "PIC", kuota: 5, dibuat: 1, diubah: 1});
+  await U.DB.batch(pecah(SQL).map(s => U.DB.prepare(s)));
+  assert.equal(await U.n("relawan_kampus"), 1);
+  await U.DB.prepare("DELETE FROM relawan_kampus").run();
+});
+
+uji("enum JS sama persis dengan CHECK dan trigger migrasi 0023", async () => {
+  const dalam = [...SQL.matchAll(/IN \(([^)]*)\)/g)].map(m => m[1].split(",").map(s => s.trim().replace(/'/g, "")).join("|"));
+  for (const [nama, daftar] of [["STATUS", R.STATUS], ["JALUR", R.JALUR], ["GOL_DARAH", R.GOL_DARAH], ["STATUS_PENUGASAN", R.STATUS_PENUGASAN], ["ASURANSI", R.ASURANSI], ["STATUS_PERMINTAAN", R.STATUS_PERMINTAAN], ["KEAHLIAN", Object.keys(R.KEAHLIAN)]])
+    assert.ok(dalam.includes(daftar.join("|")), `${nama} tidak sama dengan CHECK/trigger di 0023`);
+  assert.equal(Object.keys(R.PROV).length, 38);
+});
+
+uji("CHECK menolak isian liar langsung di D1 (tanpa lewat worker)", async () => {
+  const dasar = () => ({id: id16(), nama: "Uji CHECK", wa: "628123450001", email: "x@y.id", prov: "62", kab: "Kab", jalur: "umum", hari_per_minggu: 3, maks_hari: 30, luar_provinsi: 0, setuju_pdp: 1, dibuat: 1, diubah: 1});
+  const dasarId = dasar().id; await sisip("relawan", {...dasar(), id: dasarId}); await U.DB.prepare("DELETE FROM relawan WHERE id = ?").bind(dasarId).run();   // kontrol: isian sah lolos
+  const liar = {status: "gaib", jalur: "bebas", wa: "08abc", prov: "6a", hari_per_minggu: 8, maks_hari: 0, luar_provinsi: 2, gol_darah: "Z", setuju_pdp: 0, anonim: 3, keahlian: "bukan json", nama: "x",
+    email: "tanpa-at", kampus_id: undefined};
+  for (const [k, v] of Object.entries(liar)) {
+    if (v === undefined) continue;
+    await assert.rejects(sisip("relawan", {...dasar(), [k]: v}), /CHECK|constraint|malformed JSON/i, `kolom ${k} liar lolos`);
+  }
+  await assert.rejects(sisip("relawan", {...dasar(), keahlian: '["medis","sulap"]'}), /keahlian tidak dikenal/);
+  await assert.rejects(sisip("relawan", {...dasar(), keahlian: '{"a":1}'}), /CHECK|keahlian tidak dikenal/i);
+  await assert.rejects(sisip("relawan", {...dasar(), jalur: "kampus"}), /CHECK/i, "jalur kampus tanpa kampus_id");
+  await assert.rejects(sisip("relawan", {...dasar(), anonim: 1}), /CHECK/i, "baris anonim tidak boleh menyimpan WA");
+  const a = dasar(); await sisip("relawan", a);
+  await assert.rejects(U.DB.prepare("UPDATE relawan SET keahlian = ? WHERE id = ?").bind('["sulap"]', a.id).run(), /keahlian tidak dikenal/);
+  await assert.rejects(sisip("relawan", {...dasar(), wa: a.wa, email: "lain@y.id"}), /UNIQUE/i, "WA aktif ganda");
+  await assert.rejects(sisip("relawan", {...dasar(), email: a.email}), /UNIQUE/i, "email aktif ganda");
+  await U.DB.prepare("UPDATE relawan SET status = 'ditolak' WHERE id = ?").bind(a.id).run();
+  await sisip("relawan", {...dasar(), wa: a.wa, email: a.email});   // yang ditolak boleh mendaftar ulang
+  await U.DB.prepare("DELETE FROM relawan").run();
+  const kdasar = {id: id16(), nama: "Kampus CHECK", prov: "62", no_mou: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", pic_nama: "PIC", kuota: 5, dibuat: 1, diubah: 1};
+  for (const [k, v] of Object.entries({mulai: "2026-1-1", berakhir: "2025-12-31", kuota: 0, prov: "x1", pic_wa: "12ab", kode_sha: "pendek"})) await assert.rejects(sisip("relawan_kampus", {...kdasar, [k]: v}), /CHECK/i, `kampus.${k}`);
+  const pdasar = {id: id16(), judul: "Judul uji", bencana: "banjir", prov: "62", kab: "Kab", butuh: "[]", mulai: "2026-01-01", selesai: "2026-01-02", dibuat: 1};
+  for (const [k, v] of Object.entries({butuh: "[]", status: "x", lat: 40, selesai: "2025-01-01"})) await assert.rejects(sisip("relawan_permintaan", {...pdasar, [k]: v}), /CHECK/i, `permintaan.${k}`);
+  for (const [k, v] of Object.entries({butuh: '{"a":1}'})) await assert.rejects(sisip("relawan_permintaan", {...pdasar, butuh: v}), /CHECK/i, `permintaan.${k}`);
+});
+
+uji("tanpa auth: tiap rute admin 403 (juga akun gerbang), tiap rute berkode 403, halaman admin dialihkan", async () => {
+  for (const [m, j] of ADMIN_RUTE) {
+    for (const h of [{}, GERBANG, {"x-admin-token": "salah"}]) {
+      const r = await U.api(m, j, m === "POST" ? {aksi: "x"} : undefined, {...h, ...ipBaru()});
+      assert.equal(r.s, 403, `${m} ${j} tanpa auth harus 403, dapat ${r.s}`);
+    }
+  }
+  for (const [m, j] of KODE_RUTE) assert.equal((await U.api(m, j, m === "POST" ? {aksi: "x"} : undefined, ipBaru())).s, 403, `${m} ${j} tanpa kode`);
+  const h = await U.api("GET", "/admin/relawan", undefined, ipBaru());
+  assert.ok(!h.t.includes("/admin/relawan.js"), "tanpa sesi: dialihkan ke halaman masuk, bukan halaman relawan");
+});
+
+uji("POST /api/relawan/daftar: sah 201, kode 26 hex tampil sekali dan hanya hash-nya yang tersimpan", async () => {
+  const wa = "0812-5550-0001", r = await daftar({nama: "Sah Pertama", wa, email: "Sah.Pertama@Contoh.ID"});
+  assert.equal(r.s, 201, r.t);
+  assert.match(r.j.kode, /^[0-9a-f]{26}$/);
+  assert.equal(r.j.tautan, `http://bnpb.lokal/relawan/saya#k=${r.j.kode}`);
+  const d = await U.DB.prepare("SELECT * FROM relawan WHERE nama = 'Sah Pertama'").first();
+  assert.equal(d.wa, "6281255500001"); assert.equal(d.email, "sah.pertama@contoh.id");
+  assert.equal(d.kode_sha, sha256(r.j.kode)); assert.equal(d.status, "terdaftar");
+  assert.ok(!JSON.stringify(d).includes(r.j.kode), "kode mentah tidak boleh tersimpan");
+  assert.ok(!Object.keys(d).some(k => /nik|ktp/i.test(k)), "tanpa NIK/KTP");
+});
+
+uji("POST /api/relawan/daftar: isian liar 400 dengan pesan jelas", async () => {
+  const liar = [{nama: ""}, {nama: "x".repeat(81)}, {wa: "12345"}, {wa: null}, {email: "bukan-email"}, {prov: "99"}, {prov: "constructor"}, {kab: ""}, {jalur: "bebas"}, {jalur: "kampus"}, {jalur: "kampus", kampus_id: "zzz"},
+    {jalur: "organisasi"}, {keahlian: []}, {keahlian: ["sulap"]}, {keahlian: ["medis", "medis"]}, {keahlian: "medis"}, {keahlian: ["constructor"]}, {sertifikat: "x".repeat(301)}, {hari_per_minggu: 0}, {hari_per_minggu: 8},
+    {hari_per_minggu: 2.5}, {maks_hari: 366}, {maks_hari: "abc"}, {luar_provinsi: "ya"}, {luar_provinsi: undefined}, {gol_darah: "Z"}, {darurat_nama: ""}, {darurat_wa: "1"}, {setuju: false}, {setuju: "true"}, {setuju: undefined}];
+  for (const o of liar) { const r = await daftar(o); assert.equal(r.s, 400, `${JSON.stringify(o)} -> ${r.s} ${r.t}`); assert.ok(r.j.galat); }
+  assert.equal((await U.api("POST", "/api/relawan/daftar", "{bukan json", ipBaru())).s, 400);
+  assert.equal((await U.api("POST", "/api/relawan/daftar", "[]", ipBaru())).s, 400);
+  assert.equal((await U.api("POST", "/api/relawan/daftar", JSON.stringify({nama: "x".repeat(20000)}), ipBaru())).s, 413);
+  assert.equal(await U.n("relawan", "nama IN ('', 'Budi Santoso')"), 0, "isian liar tidak boleh menulis");
+});
+
+uji("POST /api/relawan/daftar: WA atau email yang masih aktif ditolak 409 dengan pesan ramah", async () => {
+  const a = unik(); assert.equal((await daftar({...a, nama: "Duplikat Asli"})).s, 201);
+  const wa = await daftar({...unik(), wa: a.wa.replace("08127", "+628127"), nama: "Duplikat WA"});
+  assert.equal(wa.s, 409); assert.match(wa.j.galat, /sudah terdaftar/); assert.match(wa.j.galat, /admin/);
+  assert.equal((await daftar({...unik(), email: a.email.toUpperCase(), nama: "Duplikat Email"})).s, 409);
+  assert.equal(await U.n("relawan", "nama IN ('Duplikat WA', 'Duplikat Email')"), 0);
+});
+
+uji("POST /api/relawan/daftar: laju per IP 3 per jam, IP lain tidak ikut terkunci", async () => {
+  const ip = {"cf-connecting-ip": "10.77.0.1"};
+  for (let i = 0; i < 3; i++) assert.equal((await daftar({nama: `Laju ${i}`}, ip)).s, 201);
+  const r = await daftar({nama: "Laju 3"}, ip);
+  assert.equal(r.s, 429); assert.ok(r.h.get("retry-after"));
+  assert.equal((await daftar({nama: "Laju lain IP"}, {"cf-connecting-ip": "10.77.0.2"})).s, 201);
+  assert.equal(await U.n("relawan", "nama = 'Laju 3'"), 0);
+});
+
+uji("GET /api/relawan/saya: kode salah/format liar 403, kode benar hanya data diri sendiri tanpa WA atau email", async () => {
+  const a = await daftar({nama: "Saya Satu", sertifikat: "Sertifikat A"}), b = await daftar({nama: "Saya Dua", sertifikat: "Sertifikat B"});
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K("0".repeat(26)))).s, 403);
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K("bukan-kode"))).s, 403);
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(a.j.kode.toUpperCase().slice(0, 25)))).s, 403);
+  const s = await U.api("GET", "/api/relawan/saya", undefined, K(a.j.kode));
+  assert.equal(s.s, 200); assert.equal(s.j.relawan.nama, "Saya Satu"); assert.equal(s.j.relawan.status, "terdaftar");
+  assert.ok(!s.t.includes("Saya Dua") && !s.t.includes("Sertifikat B"), "relawan lain tidak boleh terlihat");
+  const w = await U.DB.prepare("SELECT wa, email, darurat_wa FROM relawan WHERE nama = 'Saya Satu'").first();
+  for (const x of Object.values(w)) assert.ok(!s.t.includes(x), `respons memuat data pribadi ${x}`);
+  assert.deepEqual(s.j.alur, ["terdaftar", "diverifikasi", "siap_tugas", "ditugaskan", "bertugas", "selesai"]);
+  assert.equal(s.h.get("cache-control"), "no-store");
+});
+
+uji("kode relawan tidak bisa dipakai di rute kampus; tebakan salah > 300 per jam dari satu IP memberi 429, IP lain tidak terkunci", async () => {
+  const a = await daftar({nama: "Silang Satu"});
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(a.j.kode))).s, 403);
+  const ip = "10.88.0.1", kunci = sha256("garam-uji|" + ip), kini = Date.now();
+  await U.DB.batch(Array.from({length: 300}, (_, i) => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'relawan.kode_gagal', ?)").bind(kunci, kini - i)));
+  const kena = await U.api("GET", "/api/relawan/saya", undefined, {"x-kode": a.j.kode, "cf-connecting-ip": ip});
+  assert.equal(kena.s, 429, "IP yang sudah banyak menebak ditolak walau kodenya benar");
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(a.j.kode))).s, 200);
+});
+
+/* ---------------- kampus ---------------- */
+let A, B, kA, kB;
+uji("POST /api/relawan/admin/kampus: validasi 400, sah 201 dengan kode koordinator sekali tampil", async () => {
+  for (const o of [{nama: "ab"}, {prov: "99"}, {no_mou: ""}, {mulai: "2026-13-40"}, {berakhir: geser(-200)}, {pic_nama: ""}, {pic_email: "x"}, {pic_wa: "12"}, {kuota: 0}, {kuota: 1.5}, {singkatan: "x"}]) {
+    const r = await U.adm("POST", "/api/relawan/admin/kampus", mouBody(o)); assert.equal(r.s, 400, JSON.stringify(o) + r.t);
+  }
+  assert.equal((await U.api("POST", "/api/relawan/admin/kampus", mouBody(), MOD2)).s, 201, "moderator boleh");
+  A = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Alfa Uji", singkatan: "UAU", kuota: 2}));
+  B = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", prov: "16"}));
+  assert.equal(A.s, 201); assert.match(A.j.kode, /^[0-9a-f]{26}$/); assert.equal(A.j.tautan, `http://bnpb.lokal/kampus#k=${A.j.kode}`);
+  assert.equal((await U.DB.prepare("SELECT kode_sha FROM relawan_kampus WHERE id = ?").bind(A.j.id).first()).kode_sha, sha256(A.j.kode));
+  kA = A.j.kode; kB = B.j.kode;
+});
+
+uji("pendaftaran jalur kampus: kampus mitra aktif diterima; kampus tak dikenal 404; kuota penuh 409", async () => {
+  assert.equal((await daftar({nama: "Mhs A1", jalur: "kampus", kampus_id: A.j.id})).s, 201);
+  assert.equal((await daftar({nama: "=Mhs A2", jalur: "kampus", kampus_id: A.j.id})).s, 201);
+  const penuh = await daftar({nama: "Mhs A3", jalur: "kampus", kampus_id: A.j.id});
+  assert.equal(penuh.s, 409); assert.match(penuh.j.galat, /kuota/);
+  assert.equal((await daftar({nama: "Mhs B1", jalur: "kampus", kampus_id: B.j.id})).s, 201);
+  assert.equal((await daftar({nama: "Mhs B2", jalur: "kampus", kampus_id: B.j.id})).s, 201);
+  assert.equal((await daftar({nama: "Mhs X", jalur: "kampus", kampus_id: id16()})).s, 404);
+  const org = await daftar({nama: "Org Satu", jalur: "organisasi", organisasi: "Komunitas Uji"}); assert.equal(org.s, 201);
+  assert.equal((await U.DB.prepare("SELECT organisasi FROM relawan WHERE nama = 'Org Satu'").first()).organisasi, "Komunitas Uji");
+});
+
+uji("isolasi kampus: koordinator A hanya melihat dan memverifikasi relawan kampusnya, bukan kampus B", async () => {
+  const a = await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kA));
+  assert.equal(a.s, 200); assert.equal(a.j.kampus.nama, "Universitas Alfa Uji");
+  assert.deepEqual(a.j.relawan.map(r => r.nama).sort(), ["=Mhs A2", "Mhs A1"]);
+  assert.ok(!a.t.includes("Mhs B"), "relawan kampus B bocor ke koordinator A");
+  const b = await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kB));
+  assert.deepEqual(b.j.relawan.map(r => r.nama).sort(), ["Mhs B1", "Mhs B2"]);
+  const idB1 = await idRelawan("Mhs B1"), idA1 = await idRelawan("Mhs A1");
+  for (const aksi of ["verifikasi", "tolak"]) assert.equal((await U.api("POST", `/api/relawan/kampus/relawan/${idB1}`, {aksi}, K(kA))).s, 404, "A tidak boleh memutus relawan B");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(idB1).first()).status, "terdaftar");
+  for (const w of await U.DB.prepare("SELECT wa, email, darurat_wa, darurat_nama FROM relawan WHERE kampus_id = ?").bind(A.j.id).all().then(x => x.results)) for (const v of Object.values(w)) assert.ok(!a.t.includes(v), `koordinator melihat data pribadi ${v}`);
+  assert.ok(!a.t.includes("pic.rahasia") && !a.t.includes("081299990001"), "PIC kampus tidak tampil di halaman koordinator");
+  const v = await U.api("POST", `/api/relawan/kampus/relawan/${idA1}`, {aksi: "verifikasi"}, K(kA));
+  assert.equal(v.s, 200); assert.equal(v.j.status, "diverifikasi");
+  assert.equal((await U.api("POST", `/api/relawan/kampus/relawan/${idA1}`, {aksi: "verifikasi"}, K(kA))).s, 409);
+  assert.equal((await U.api("POST", `/api/relawan/kampus/relawan/${idA1}`, {aksi: "hapus"}, K(kA))).s, 400);
+  assert.equal((await U.api("POST", `/api/relawan/kampus/relawan/${idA1}`, {aksi: "verifikasi"}, K(kB))).s, 404, "B tidak boleh menyentuh relawan A");
+  const tolak = await U.api("POST", `/api/relawan/kampus/relawan/${await idRelawan("Mhs B2")}`, {aksi: "tolak", alasan: "bukan mahasiswa"}, K(kB));
+  assert.equal(tolak.j.status, "ditolak");
+});
+
+uji("GET /api/relawan/kampus/csv: rekap hanya kampus sendiri, sel berawalan rumus dinetralkan, tanpa data pribadi", async () => {
+  const r = await U.api("GET", "/api/relawan/kampus/csv", undefined, K(kA));
+  assert.equal(r.s, 200); assert.match(r.h.get("content-type"), /text\/csv/); assert.match(r.h.get("content-disposition"), /rekap-relawan-uau-.*\.csv/);
+  assert.match(r.t, /nama,provinsi,kabupaten_kota,status,keahlian,sesi,jam_sah,jam_menunggu_validasi/);
+  assert.ok(r.t.includes("Mhs A1") && !r.t.includes("Mhs B1"));
+  assert.ok(/^'=Mhs A2,/m.test(r.t), "awalan = harus diberi tanda kutip tunggal");
+  assert.ok(!/(^|,)=Mhs/m.test(r.t), "sel tidak boleh berawalan rumus");
+  assert.ok(!/@contoh\.id|62812/.test(r.t), "CSV koordinator tanpa WA/email");
+});
+
+uji("MoU habis atau belum mulai menolak pendaftar kampus itu; MoU <= 60 hari ditandai segera_habis", async () => {
+  const habis = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Habis Uji", singkatan: "UHU", mulai: geser(-400), berakhir: geser(-1)}));
+  const belum = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Belum Uji", singkatan: "UBL", mulai: geser(5), berakhir: geser(300)}));
+  const segera = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Segera Uji", singkatan: "USU", mulai: geser(-300), berakhir: geser(40)}));
+  for (const k of [habis, belum]) { const r = await daftar({nama: "Mhs " + k.j.id, jalur: "kampus", kampus_id: k.j.id}); assert.equal(r.s, 409, r.t); assert.match(r.j.galat, /MoU/); }
+  assert.equal((await daftar({nama: "Mhs Segera", jalur: "kampus", kampus_id: segera.j.id})).s, 201, "segera habis masih menerima");
+  const l = (await U.adm("GET", "/api/relawan/admin/kampus")).j.kampus, per = nama => l.find(k => k.nama === nama);
+  assert.equal(per("Universitas Habis Uji").status, "habis"); assert.equal(per("Universitas Belum Uji").status, "belum");
+  assert.equal(per("Universitas Segera Uji").status, "segera_habis"); assert.equal(per("Universitas Segera Uji").sisa_hari, 40);
+  assert.equal(per("Universitas Alfa Uji").status, "aktif");
+  assert.equal(per("Universitas Alfa Uji").pic_nama, "Dr. Rahasia PIC", "admin melihat PIC");
+  const r = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
+  const nama = r.kampus.map(k => k.nama);
+  assert.ok(nama.includes("Universitas Alfa Uji") && nama.includes("Universitas Segera Uji"));
+  assert.ok(!nama.includes("Universitas Habis Uji") && !nama.includes("Universitas Belum Uji"), "MoU tidak berlaku tidak dipajang sebagai mitra aktif");
+});
+
+uji("kampus validasi jam: koordinator mengesahkan atau menolak jam relawan kampusnya saja, angka publik dan rekap hanya berubah untuk yang sah", async () => {
+  const idA1 = await idRelawan("Mhs A1"), pid = id16(), gid = id16(), j1 = id16(), j2 = id16(), kini = Date.now();
+  await sisip("relawan_permintaan", {id: pid, judul: "Uji jam kampus", bencana: "banjir", prov: "62", kab: "Kab", butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-5), selesai: geser(5), dibuat: kini});
+  await sisip("relawan_penugasan", {id: gid, permintaan_id: pid, relawan_id: idA1, status: "bertugas", dibuat: kini, diubah: kini});
+  await sisip("relawan_jam", {id: j1, relawan_id: idA1, penugasan_id: gid, masuk: kini - 5 * JAM, keluar: kini - 3 * JAM, menit: 120});
+  await sisip("relawan_jam", {id: j2, relawan_id: idA1, penugasan_id: gid, masuk: kini - 2 * JAM, keluar: kini - JAM, menit: 60});
+  const jamPublik = async () => (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.jam_kerja_jam;
+  const sahDb = async id => (await U.DB.prepare("SELECT sah FROM relawan_jam WHERE id = ?").bind(id).first()).sah;
+  const rekap = async () => (await U.api("GET", "/api/relawan/kampus/csv", undefined, K(kA))).t.match(/^Mhs A1,.*$/m)[0];
+  const p0 = await jamPublik();
+  assert.match(await rekap(), /,2,0,3$/, "sesi 2, jam sah 0, menunggu 3");
+  const url = id => `/api/relawan/kampus/jam/${id}`;
+  assert.equal((await U.api("POST", url(j1), {aksi: "sah"}, K("0".repeat(26)))).s, 403, "kode salah");
+  assert.equal((await U.api("POST", url(j1), {aksi: "sah"}, ipBaru())).s, 403, "tanpa kode");
+  for (const aksi of ["x", undefined, "SAH"]) assert.equal((await U.api("POST", url(j1), {aksi}, K(kA))).s, 400, `aksi ${aksi}`);
+  assert.equal((await U.api("POST", url(id16()), {aksi: "sah"}, K(kA))).s, 404, "id tak dikenal");
+  assert.equal((await U.api("POST", url(j1), {aksi: "sah"}, K(kB))).s, 404, "koordinator B tidak boleh menyentuh jam relawan kampus A");
+  assert.equal(await sahDb(j1), 0); assert.equal(await jamPublik(), p0);
+  assert.equal((await U.api("POST", url(j1), {aksi: "sah"}, K(kA))).j.sah, 1);
+  assert.equal(await sahDb(j1), 1);
+  assert.ok(Math.abs(await jamPublik() - p0 - 2) < 0.06, "angka publik naik 2 jam, hanya dari yang sah");
+  assert.match(await rekap(), /,2,2,1$/, "rekap: jam sah 2, menunggu 1");
+  assert.equal((await U.api("POST", url(j2), {aksi: "tolak"}, K(kA))).j.sah, 2);
+  assert.equal(await sahDb(j2), 2);
+  assert.ok(Math.abs(await jamPublik() - p0 - 2) < 0.06, "yang ditolak tidak menambah angka publik");
+  assert.match(await rekap(), /,2,2,0$/, "rekap: yang ditolak tidak lagi menunggu");
+});
+
+uji("POST /api/relawan/admin/kampus/:id: kode baru mencabut kode lama, cabut_kode menutup, ubah menyimpan", async () => {
+  const baru = await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "kode_baru"});
+  assert.equal(baru.s, 200); assert.notEqual(baru.j.kode, kB);
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kB))).s, 403, "kode lama harus mati");
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(baru.j.kode))).s, 200); kB = baru.j.kode;
+  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "cabut_kode"})).s, 200);
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kB))).s, 403);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "ubah", ...mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", kuota: 77, prov: "16"})})).s, 200);
+  assert.equal((await U.DB.prepare("SELECT kuota FROM relawan_kampus WHERE id = ?").bind(B.j.id).first()).kuota, 77);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${id16()}`, {aksi: "kode_baru"})).s, 404);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "x"})).s, 400);
+  const baru2 = await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "kode_baru"}); kB = baru2.j.kode;
+});
+
+/* ---------------- alur relawan: verifikasi, pencocokan, penugasan, jam ---------------- */
+let P, rA, rB, rC, rD, rE, rF;
+uji("POST /api/relawan/admin/relawan/:id: alur verifikasi, siap, tolak, aturan transisi, daftar hitam wajib alasan", async () => {
+  const a = await daftar({nama: "Alur Satu"}), id = await idRelawan("Alur Satu"), u = (aksi, x = {}) => U.adm("POST", `/api/relawan/admin/relawan/${id}`, {aksi, ...x});
+  assert.equal((await u("siap")).s, 409, "belum diverifikasi");
+  assert.equal((await u("verifikasi")).j.status, "diverifikasi");
+  assert.equal((await u("verifikasi")).s, 409);
+  assert.equal((await u("sulap")).s, 400);
+  assert.equal((await U.api("POST", `/api/relawan/admin/relawan/${id}`, {aksi: "siap"}, GERBANG)).s, 403);
+  assert.equal((await U.api("POST", `/api/relawan/saya`, {aksi: "siap"}, K(a.j.kode))).j.status, "siap_tugas", "relawan menyatakan siap sendiri");
+  assert.equal((await U.api("POST", `/api/relawan/saya`, {aksi: "istirahat"}, K(a.j.kode))).j.status, "diverifikasi");
+  assert.equal((await U.api("POST", `/api/relawan/saya`, {aksi: "istirahat"}, K(a.j.kode))).s, 409);
+  assert.equal((await u("daftar_hitam")).s, 400); assert.equal((await u("daftar_hitam", {alasan: "xx"})).s, 400);
+  assert.equal((await U.api("POST", `/api/relawan/admin/relawan/${id}`, {aksi: "daftar_hitam", alasan: "melanggar kesepakatan lapangan"}, MOD2)).j.status, "daftar_hitam");
+  assert.equal((await U.api("POST", `/api/relawan/saya`, {aksi: "siap"}, K(a.j.kode))).s, 403, "daftar hitam tidak bisa mengubah akun");
+  const ulang = await daftar({nama: "Alur Ulang", wa: (await U.DB.prepare("SELECT wa FROM relawan WHERE id = ?").bind(id).first()).wa});
+  assert.equal(ulang.s, 409, "daftar hitam tidak bisa mendaftar ulang dengan WA yang sama");
+  assert.equal((await u("pulihkan", {alasan: "banding diterima admin"})).j.status, "nonaktif");
+  const kb = await u("kode_baru"); assert.match(kb.j.kode, /^[0-9a-f]{26}$/);
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(a.j.kode))).s, 403, "kode lama mati sesudah kode_baru");
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(kb.j.kode))).s, 200);
+});
+
+uji("POST /api/relawan/admin/permintaan: validasi 400, sah 201", async () => {
+  for (const o of [{judul: "ab"}, {bencana: "Banjir!"}, {prov: "99"}, {kab: ""}, {butuh: []}, {butuh: [{keahlian: "sulap", jumlah: 1}]}, {butuh: [{keahlian: "medis", jumlah: 0}]},
+    {butuh: [{keahlian: "medis", jumlah: 1}, {keahlian: "medis", jumlah: 2}]}, {lat: -2}, {lat: 50, lon: 100}, {mulai: "2026-02-30"}, {selesai: geser(-5)}, {catatan: "x".repeat(501)}]) {
+    const r = await U.adm("POST", "/api/relawan/admin/permintaan", butuhBody(o)); assert.equal(r.s, 400, JSON.stringify(o) + r.t);
+  }
+  const r = await U.adm("POST", "/api/relawan/admin/permintaan", butuhBody({lat: -2.2, lon: 114, butuh: [{keahlian: "medis", jumlah: 3}, {keahlian: "perawat", jumlah: 2}]}));
+  assert.equal(r.s, 201); P = r.j.id;
+  assert.equal((await U.adm("GET", "/api/relawan/admin/permintaan")).j.permintaan.find(p => p.id === P).dibutuhkan, 5);
+});
+
+uji("GET /api/relawan/admin/permintaan/:id: pencocokan memilih kandidat yang benar dan mengurutkan dengan alasan", async () => {
+  rA = await buatSiap(form({nama: "Kand A Sama Kab", kab: "Pulang Pisau", keahlian: ["medis", "perawat"], maks_hari: 30}));
+  rB = await buatSiap(form({nama: "Kand B Sama Prov", kab: "Kapuas", keahlian: ["medis"], maks_hari: 30}));
+  rC = await buatSiap(form({nama: "Kand C Luar Bersedia", prov: "16", kab: "OKI", keahlian: ["medis"], luar_provinsi: true}));
+  rD = await buatSiap(form({nama: "Kand D Luar Menolak", prov: "16", kab: "OKI", keahlian: ["medis"], luar_provinsi: false}));
+  rE = await buatSiap(form({nama: "Kand E Salah Keahlian", kab: "Pulang Pisau", keahlian: ["bahasa_isyarat"]}));
+  rF = await buatSiap(form({nama: "Kand F Singkat", kab: "Pulang Pisau", keahlian: ["medis"], maks_hari: 2}));
+  const belumSiap = await daftar({nama: "Kand G Belum Siap", keahlian: ["medis"]});
+  const r = await U.adm("GET", `/api/relawan/admin/permintaan/${P}`);
+  assert.equal(r.s, 200);
+  const urut = r.j.kandidat.map(k => k.nama);
+  assert.deepEqual(urut, ["Kand A Sama Kab", "Kand F Singkat", "Kand B Sama Prov", "Kand C Luar Bersedia"].sort((x, y) => urut.indexOf(x) - urut.indexOf(y)), "urutan harus konsisten");
+  assert.equal(urut[0], "Kand A Sama Kab", "keahlian ganda + kabupaten sama + waktu cukup = teratas");
+  assert.ok(urut.indexOf("Kand B Sama Prov") < urut.indexOf("Kand C Luar Bersedia"), "satu provinsi mendahului luar provinsi");
+  assert.ok(urut.indexOf("Kand A Sama Kab") < urut.indexOf("Kand F Singkat"));
+  for (const nama of ["Kand D Luar Menolak", "Kand E Salah Keahlian", "Kand G Belum Siap"]) assert.ok(!urut.includes(nama), `${nama} tidak boleh jadi kandidat`);
+  const a = r.j.kandidat[0]; assert.deepEqual(a.cocok.sort(), ["medis", "perawat"]); assert.equal(a.wilayah, "sama_kab"); assert.equal(a.cukup_waktu, true);
+  assert.equal(r.j.kandidat.find(k => k.nama === "Kand F Singkat").cukup_waktu, false);
+  assert.equal(belumSiap.s, 201);
+});
+
+uji("hitungKandidat: beban 90 hari menurunkan peringkat, nama sebagai pemutus seri", async () => {
+  const p = {butuh: JSON.stringify([{keahlian: "medis", jumlah: 1}]), prov: "62", kab: "X", mulai: "2026-01-01", selesai: "2026-01-10"};
+  const c = (nama, beban) => ({id: nama, nama, prov: "62", kab: "Y", jalur: "umum", keahlian: '["medis"]', maks_hari: 30, luar_provinsi: 0, beban});
+  assert.deepEqual(R.hitungKandidat(p, [c("Bayu", 3), c("Citra", 0), c("Anto", 0)], Date.now()).map(k => k.nama), ["Anto", "Citra", "Bayu"]);
+});
+
+let G1;
+uji("POST /api/relawan/admin/permintaan/:id tugaskan: hanya siap_tugas, tidak ganda, relawan lain dummy ditolak", async () => {
+  const u = b => U.adm("POST", `/api/relawan/admin/permintaan/${P}`, b);
+  assert.equal((await u({aksi: "tugaskan"})).s, 400);
+  assert.equal((await u({aksi: "tugaskan", relawan_id: id16()})).s, 404);
+  const belum = await idRelawan("Kand G Belum Siap");
+  assert.equal((await u({aksi: "tugaskan", relawan_id: belum})).s, 409, "belum siap_tugas");
+  const t = await u({aksi: "tugaskan", relawan_id: rA.id}); assert.equal(t.s, 201); G1 = t.j.id;
+  assert.equal((await u({aksi: "tugaskan", relawan_id: rA.id})).s, 409, "relawan yang sama tidak bisa ditugaskan dua kali");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(rA.id).first()).status, "ditugaskan");
+  const k = (await U.adm("GET", `/api/relawan/admin/permintaan/${P}`)).j.kandidat.map(x => x.nama);
+  assert.ok(!k.includes("Kand A Sama Kab"), "yang sudah ditugaskan keluar dari kandidat");
+});
+
+uji("relawan melihat penugasan di /relawan/saya; relawan lain tidak bisa menyentuhnya (404)", async () => {
+  const s = await U.api("GET", "/api/relawan/saya", undefined, K(rA.kode));
+  assert.equal(s.j.relawan.status, "ditugaskan"); assert.equal(s.j.penugasan.length, 1); assert.equal(s.j.penugasan[0].status, "ditawarkan"); assert.equal(s.j.penugasan[0].judul, "Pos kesehatan uji");
+  const lain = await U.api("GET", "/api/relawan/saya", undefined, K(rB.kode)); assert.equal(lain.j.penugasan.length, 0);
+  assert.ok(!lain.t.includes("Pos kesehatan uji"));
+  for (const aksi of ["terima", "tolak", "masuk", "keluar"]) assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${G1}`, {aksi}, K(rB.kode))).s, 404, `relawan lain ${aksi}`);
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${G1}`, {aksi: "masuk"}, K(rA.kode))).s, 409, "belum diterima tidak bisa check-in");
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${G1}`, {aksi: "sulap"}, K(rA.kode))).s, 400);
+});
+
+uji("check-in dan check-out menghitung jam kerja; validasi sah masuk ringkasan publik", async () => {
+  const g = aksi => U.api("POST", `/api/relawan/saya/penugasan/${G1}`, aksi, K(rA.kode));
+  assert.equal((await g({aksi: "terima"})).j.status, "diterima");
+  assert.equal((await g({aksi: "masuk", lat: 99, lon: 0})).s, 400, "lokasi di luar Indonesia");
+  assert.equal((await g({aksi: "masuk", lat: -2.2})).s, 400, "lat tanpa lon");
+  assert.equal((await g({aksi: "keluar"})).s, 409, "check-out tanpa check-in");
+  assert.equal((await g({aksi: "masuk", lat: -2.2, lon: 114.0})).s, 200);
+  assert.equal((await g({aksi: "masuk"})).s, 409, "check-in ganda");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(rA.id).first()).status, "bertugas");
+  await U.DB.prepare("UPDATE relawan_jam SET masuk = masuk - ? WHERE relawan_id = ? AND keluar IS NULL").bind(3 * JAM + 30 * 60e3, rA.id).run();   // mundurkan: 3,5 jam lalu
+  const o = await g({aksi: "keluar"});
+  assert.equal(o.s, 200); assert.ok(Math.abs(o.j.menit - 210) <= 1, `menit ${o.j.menit}`);
+  const j = await U.DB.prepare("SELECT id, menit, sah FROM relawan_jam WHERE relawan_id = ?").bind(rA.id).first();
+  assert.equal(j.sah, 0);
+  /* sesi 20 jam yang lupa check-out dibatasi 16 jam */
+  assert.equal((await g({aksi: "masuk"})).s, 200);
+  await U.DB.prepare("UPDATE relawan_jam SET masuk = masuk - ? WHERE relawan_id = ? AND keluar IS NULL").bind(20 * JAM, rA.id).run();
+  assert.equal((await g({aksi: "keluar"})).j.menit, 960);
+  const sebelum = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.jam_kerja_jam;
+  assert.equal((await U.adm("POST", `/api/relawan/admin/jam/${j.id}`, {aksi: "sah"})).s, 200);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/jam/${j.id}`, {aksi: "x"})).s, 400);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/jam/${id16()}`, {aksi: "sah"})).s, 404);
+  const sesudah = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.jam_kerja_jam;
+  assert.ok(Math.abs(sesudah - sebelum - 3.5) < 0.06, `jam publik naik ${sesudah - sebelum}, harusnya 3,5`);
+  const s = await U.api("GET", "/api/relawan/saya", undefined, K(rA.kode)); assert.equal(s.j.relawan.status, "bertugas"); assert.equal(s.j.jam.length, 2);
+  assert.ok(Math.abs(s.j.jam_sah_menit - 210) <= 1);
+});
+
+uji("POST /api/relawan/admin/penugasan/:id: asuransi, selesai (butuh check-out), penilaian 1-5 hanya setelah selesai", async () => {
+  const u = b => U.adm("POST", `/api/relawan/admin/penugasan/${G1}`, b);
+  assert.equal((await u({aksi: "asuransi", asuransi: "kebal"})).s, 400);
+  assert.equal((await u({aksi: "asuransi", asuransi: "aktif", polis: "POL-1"})).j.asuransi, "aktif");
+  assert.equal((await u({aksi: "nilai", nilai: 5})).s, 409, "belum selesai");
+  await U.api("POST", `/api/relawan/saya/penugasan/${G1}`, {aksi: "masuk"}, K(rA.kode));
+  assert.equal((await u({aksi: "selesai"})).s, 409, "masih check-in");
+  await U.api("POST", `/api/relawan/saya/penugasan/${G1}`, {aksi: "keluar"}, K(rA.kode));
+  assert.equal((await u({aksi: "selesai"})).j.status, "selesai");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(rA.id).first()).status, "selesai");
+  for (const n of [0, 6, 2.5, "x"]) assert.equal((await u({aksi: "nilai", nilai: n})).s, 400, `nilai ${n}`);
+  assert.equal((await u({aksi: "nilai", nilai: 4, catatan: "tepat waktu"})).j.nilai, 4);
+  const l = (await U.adm("GET", "/api/relawan/admin/penugasan")).j.penugasan.find(p => p.id === G1);
+  assert.equal(l.nilai, 4); assert.equal(l.asuransi, "aktif"); assert.equal(l.nama, "Kand A Sama Kab");
+  assert.equal((await U.api("POST", `/api/relawan/saya`, {aksi: "siap"}, K(rA.kode))).j.status, "siap_tugas", "selesai bisa siap lagi");
+});
+
+uji("penugasan ditolak relawan mengembalikan siap_tugas; admin bisa membatalkan tawaran", async () => {
+  const t1 = await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: rB.id}), t2 = await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: rC.id});
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${t1.j.id}`, {aksi: "tolak"}, K(rB.kode))).j.status, "ditolak");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(rB.id).first()).status, "siap_tugas");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/penugasan/${t2.j.id}`, {aksi: "batalkan"})).j.status, "dibatalkan");
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan WHERE id = ?").bind(rC.id).first()).status, "siap_tugas");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/penugasan/${t2.j.id}`, {aksi: "batalkan"})).s, 409);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tutup"})).j.status, "ditutup");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: rD.id})).s, 409, "permintaan ditutup");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "buka"})).j.status, "buka");
+});
+
+uji("pelatihan: catat, kedaluwarsa ditandai, validasi 400, hapus", async () => {
+  const b = (o = {}) => ({relawan_id: rA.id, nama: "BTCLS", penyelenggara: "PMI", tgl: geser(-200), berlaku_sampai: geser(100), ...o});
+  for (const o of [{relawan_id: "x"}, {nama: ""}, {tgl: "2026-02-30"}, {berlaku_sampai: geser(-300)}, {penyelenggara: "x".repeat(121)}]) assert.equal((await U.adm("POST", "/api/relawan/admin/pelatihan", b(o))).s, 400, JSON.stringify(o));
+  assert.equal((await U.adm("POST", "/api/relawan/admin/pelatihan", b({relawan_id: id16()}))).s, 404);
+  const ok = await U.adm("POST", "/api/relawan/admin/pelatihan", b()), lama = await U.adm("POST", "/api/relawan/admin/pelatihan", b({nama: "SAR Dasar", tgl: geser(-500), berlaku_sampai: geser(-5)}));
+  assert.equal(ok.s, 201);
+  const l = (await U.adm("GET", "/api/relawan/admin/pelatihan")).j.pelatihan;
+  assert.equal(l.find(p => p.nama === "SAR Dasar").kedaluwarsa, true); assert.equal(l.find(p => p.nama === "BTCLS").kedaluwarsa, false);
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(rA.kode))).j.pelatihan.length, 2, "relawan melihat sertifikat pelatihannya");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/pelatihan/${lama.j.id}`, {aksi: "hapus"})).s, 200);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/pelatihan/${lama.j.id}`, {aksi: "hapus"})).s, 404);
+});
+
+uji("GET /api/relawan/admin/relawan: filter prov, keahlian, status, jalur; data pribadi tampil; CSV admin memuat WA", async () => {
+  const q = s => U.adm("GET", "/api/relawan/admin/relawan" + s);
+  const prov16 = (await q("?prov=16")).j.relawan; assert.ok(prov16.length >= 2 && prov16.every(r => r.prov === "16"));
+  const medis = (await q("?keahlian=medis&status=siap_tugas")).j.relawan; assert.ok(medis.length >= 3 && medis.every(r => r.keahlian.includes("medis") && r.status === "siap_tugas"));
+  assert.ok((await q("?jalur=kampus")).j.relawan.every(r => r.jalur === "kampus"));
+  assert.equal((await q("?q=Kand%20A")).j.relawan.length, 1);
+  for (const s of ["?status=x", "?prov=9", "?keahlian=sulap", "?jalur=x", "?q=" + "a".repeat(61)]) assert.equal((await q(s)).s, 400, s);
+  const a = (await q("?q=Kand%20A")).j.relawan[0];
+  assert.match(a.wa, /^628127/); assert.match(a.email, /@contoh\.id$/); assert.ok(a.darurat_nama); assert.equal(a.kampus, null);
+  assert.ok((await q("")).j.hitung.siap_tugas >= 3);
+  const rinci = await U.adm("GET", `/api/relawan/admin/relawan/${rA.id}`); assert.equal(rinci.j.penugasan.length, 1); assert.equal(rinci.j.jam.length, 3);
+  assert.equal((await U.adm("GET", `/api/relawan/admin/relawan/${id16()}`)).s, 404);
+  const c = await U.adm("GET", "/api/relawan/admin/csv?prov=62");
+  assert.equal(c.s, 200); assert.match(c.h.get("content-type"), /text\/csv/); assert.ok(c.t.includes(a.wa) && c.t.includes("Kand A Sama Kab"));
+});
+
+uji("POST /api/relawan/saya: ketersediaan divalidasi dan tersimpan", async () => {
+  const x = (o) => U.api("POST", "/api/relawan/saya", {aksi: "ketersediaan", hari_per_minggu: 5, maks_hari: 10, luar_provinsi: true, ...o}, K(rB.kode));
+  assert.equal((await x({hari_per_minggu: 9})).s, 400); assert.equal((await x({maks_hari: 0})).s, 400); assert.equal((await x({luar_provinsi: "ya"})).s, 400);
+  assert.equal((await x({})).s, 200);
+  const d = await U.DB.prepare("SELECT hari_per_minggu h, maks_hari m, luar_provinsi l FROM relawan WHERE id = ?").bind(rB.id).first();
+  assert.deepEqual({...d}, {h: 5, m: 10, l: 1});
+});
+
+uji("cabut diri: butuh konfirmasi HAPUS, data pribadi dikosongkan, kode mati, jam kerja tetap sebagai angka", async () => {
+  const r = await daftar({nama: "Cabut Diri", wa: "0812-5550-7777", email: "cabut@contoh.id", sertifikat: "rahasia sertifikat", jalur: "organisasi", organisasi: "Org Cabut"});
+  assert.equal((await U.api("POST", "/api/relawan/saya", {aksi: "cabut"}, K(r.j.kode))).s, 400);
+  assert.equal((await U.api("POST", "/api/relawan/saya", {aksi: "cabut", konfirmasi: "hapus"}, K(r.j.kode))).s, 400);
+  assert.equal(await U.n("relawan", "nama = 'Cabut Diri'"), 1);
+  assert.equal((await U.api("POST", "/api/relawan/saya", {aksi: "cabut", konfirmasi: "HAPUS"}, K(r.j.kode))).j.dihapus, true);
+  assert.equal(await U.n("relawan", "nama = 'Cabut Diri'"), 0);
+  const d = await U.DB.prepare("SELECT * FROM relawan WHERE wa IS NULL AND anonim = 1 AND nama = '(dihapus)' AND dibuat = (SELECT max(dibuat) FROM relawan WHERE anonim = 1)").first();
+  assert.ok(d, "baris anonim ada"); for (const k of ["wa", "email", "organisasi", "sertifikat", "gol_darah", "darurat_nama", "darurat_wa", "kode_sha"]) assert.equal(d[k], null, k);
+  assert.equal(d.status, "nonaktif"); assert.equal(d.keahlian, "[]");
+  assert.equal((await U.api("GET", "/api/relawan/saya", undefined, K(r.j.kode))).s, 403);
+  assert.equal((await daftar({nama: "Cabut Kembali", wa: "0812-5550-7777", email: "cabut@contoh.id"})).s, 201, "WA yang sama boleh mendaftar lagi");
+  /* sedang bertugas: sesi terbuka ikut ditutup, penugasan dibatalkan */
+  const b = await buatSiap(form({nama: "Cabut Bertugas", keahlian: ["medis"]}));
+  const t = await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: b.id});
+  await U.api("POST", `/api/relawan/saya/penugasan/${t.j.id}`, {aksi: "terima"}, K(b.kode)); await U.api("POST", `/api/relawan/saya/penugasan/${t.j.id}`, {aksi: "masuk"}, K(b.kode));
+  assert.equal(await U.n("relawan_jam", `relawan_id = '${b.id}' AND keluar IS NULL`), 1);
+  assert.equal((await U.api("POST", "/api/relawan/saya", {aksi: "cabut", konfirmasi: "HAPUS"}, K(b.kode))).s, 200);
+  assert.equal(await U.n("relawan_jam", `relawan_id = '${b.id}' AND keluar IS NULL`), 0);
+  assert.equal((await U.DB.prepare("SELECT status FROM relawan_penugasan WHERE id = ?").bind(t.j.id).first()).status, "dibatalkan");
+});
+
+uji("rute publik tidak memuat WA, email, kontak darurat, PIC, kode, atau nama relawan", async () => {
+  const sensitif = (await U.DB.prepare("SELECT wa, email, darurat_wa, darurat_nama, nama FROM relawan WHERE anonim = 0 AND dummy = 0").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
+  const kampus = (await U.DB.prepare("SELECT pic_nama, pic_email, pic_wa FROM relawan_kampus").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
+  assert.ok(sensitif.length > 20 && kampus.length >= 3);
+  for (const j of ["/api/relawan/ringkas", "/api/relawan/ringkas?dummy=1"]) {
+    const r = await U.api("GET", j, undefined, ipBaru()); assert.equal(r.s, 200);
+    for (const s of [...sensitif, ...kampus]) assert.ok(!r.t.includes(s), `${j} membocorkan ${s}`);
+    assert.ok(!/kode_sha|"kode"/.test(r.t));
+  }
+  const d = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
+  assert.ok(d.siap_tugas >= 3 && d.per_provinsi.length >= 2 && d.per_keahlian.length >= 2 && d.kampus.length >= 2);
+  assert.deepEqual(Object.keys(d.kampus[0]).sort(), ["id", "nama", "prov", "relawan", "singkatan"]);
+  assert.ok(d.konfig.keahlian.medis && d.konfig.provinsi["62"]);
+  for (const h of ["halaman", "kampus"]) { const x = await U.api("GET", h === "halaman" ? "/relawan" : "/kampus", undefined, ipBaru()); for (const s of sensitif) assert.ok(!x.t.includes(s)); }
+});
+
+/* ---------------- dummy ---------------- */
+let sebelum;
+uji("POST /api/relawan/dummy: hanya Super Admin; tanpa auth, moderator biasa, akun gerbang ditolak", async () => {
+  for (const h of [{}, MOD2, GERBANG]) assert.equal((await U.api("POST", "/api/relawan/dummy", {aksi: "isi"}, {...h, ...ipBaru()})).s, 403);
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "sulap"})).s, 400);
+  assert.equal(await U.n("relawan", "dummy = 1"), 0);
+});
+
+uji("dummy isi: rantai lengkap, tiap status minimal satu, MoU segera habis dan habis, angka admin bukan nol", async () => {
+  const snap = async () => Object.fromEntries(await Promise.all(["relawan_kampus", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"].map(async t => [t, await U.n(t, "dummy = 0")])));
+  sebelum = await snap();
+  const asli = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
+  const r = await U.adm("POST", "/api/relawan/dummy", {aksi: "isi"});
+  assert.equal(r.s, 201, r.t); assert.ok(r.j.kampus >= 3 && r.j.relawan >= 9 && r.j.permintaan >= 3 && r.j.penugasan >= 5 && r.j.jam >= 8 && r.j.pelatihan >= 4);
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "isi"})).s, 409, "gerbang sudah ada");
+  for (const s of R.STATUS) assert.ok(await U.n("relawan", `dummy = 1 AND status = '${s}'`) >= 1, `status ${s} tak terwakili`);
+  for (const s of R.STATUS_PENUGASAN.filter(x => ["ditawarkan", "diterima", "bertugas", "selesai"].includes(x))) assert.ok(await U.n("relawan_penugasan", `dummy = 1 AND status = '${s}'`) >= 1, `penugasan ${s}`);
+  for (const s of R.STATUS_PERMINTAAN) assert.ok(await U.n("relawan_permintaan", `dummy = 1 AND status = '${s}'`) >= 1, `permintaan ${s}`);
+  for (const j of [0, 1, 2]) assert.ok(await U.n("relawan_jam", `dummy = 1 AND sah = ${j} AND keluar IS NOT NULL`) >= 1, `jam sah=${j}`);
+  assert.ok(await U.n("relawan_jam", "dummy = 1 AND keluar IS NULL") >= 1, "satu sesi masih terbuka");
+  assert.ok(await U.n("relawan_penugasan", "dummy = 1 AND nilai IS NOT NULL") >= 3);
+  assert.equal(await U.n("relawan_jam", "dummy = 1 AND menit != min(960, round((keluar - masuk) / 60000.0))  AND keluar IS NOT NULL"), 0, "menit lahir dari check-in/out");
+  const mou = (await U.adm("GET", "/api/relawan/admin/kampus")).j.kampus.filter(k => k.dummy);
+  assert.deepEqual(mou.map(k => k.status).sort(), ["aktif", "habis", "segera_habis"]);
+  /* ringkasan admin: tiap angka berisi */
+  const a = (await U.api("GET", "/api/relawan/ringkas?dummy=1", undefined, ADMIN)).j;
+  assert.ok(a.relawan > asli.relawan && a.siap_tugas > asli.siap_tugas && a.bertugas >= 2 && a.jam_kerja_jam > asli.jam_kerja_jam && a.kampus.length > asli.kampus.length);
+  assert.ok(a.per_provinsi.length > 0 && a.per_keahlian.length > 0 && a.kampus.some(k => k.relawan > 0));
+  /* ringkasan publik tidak berubah */
+  const pub = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j, pub2 = (await U.api("GET", "/api/relawan/ringkas?dummy=1", undefined, ipBaru())).j;
+  for (const x of [pub, pub2]) { assert.equal(x.relawan, asli.relawan); assert.equal(x.siap_tugas, asli.siap_tugas); assert.equal(x.jam_kerja_jam, asli.jam_kerja_jam); assert.deepEqual(x.kampus.map(k => k.nama), asli.kampus.map(k => k.nama)); assert.ok(!x.kampus.some(k => /Contoh/.test(k.nama))); }
+  /* tiap daftar admin berisi */
+  assert.ok((await U.adm("GET", "/api/relawan/admin/relawan")).j.relawan.filter(r => r.dummy).length >= 9);
+  assert.ok((await U.adm("GET", "/api/relawan/admin/permintaan")).j.permintaan.filter(p => p.dummy && p.ditugaskan > 0).length >= 2);
+  assert.ok((await U.adm("GET", "/api/relawan/admin/penugasan")).j.penugasan.filter(p => p.dummy && p.jam_sah_menit > 0).length >= 2);
+  assert.ok((await U.adm("GET", "/api/relawan/admin/pelatihan")).j.pelatihan.some(p => p.dummy && p.kedaluwarsa));
+  const buka = (await U.adm("GET", "/api/relawan/admin/permintaan")).j.permintaan.find(p => p.dummy && p.status === "buka");
+  const kand = (await U.adm("GET", `/api/relawan/admin/permintaan/${buka.id}`)).j.kandidat;
+  assert.ok(kand.length >= 1 && kand.every(k => /Contoh/.test(k.nama)), "pencocokan dummy hanya memakai relawan dummy");
+  const asliP = (await U.adm("GET", `/api/relawan/admin/permintaan/${P}`)).j.kandidat;
+  assert.ok(asliP.every(k => !/Contoh/.test(k.nama)), "pencocokan asli tidak memakai relawan dummy");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: (await U.DB.prepare("SELECT id FROM relawan WHERE dummy = 1 AND status = 'siap_tugas'").first()).id})).s, 404, "relawan dummy tidak bisa ditugaskan ke permintaan asli");
+  assert.equal((await daftar({nama: "Daftar ke Dummy", jalur: "kampus", kampus_id: (await U.DB.prepare("SELECT id FROM relawan_kampus WHERE dummy = 1 LIMIT 1").first()).id})).s, 404, "pendaftar publik tidak bisa masuk kampus dummy");
+});
+
+uji("dummy hapus: bersih, data asli tidak tersentuh, bisa isi lagi", async () => {
+  const r = await U.adm("POST", "/api/relawan/dummy", {aksi: "hapus"});
+  assert.equal(r.s, 200); assert.ok(r.j.relawan >= 9 && r.j.kampus >= 3 && r.j.jam >= 8);
+  for (const t of ["relawan_kampus", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"]) {
+    assert.equal(await U.n(t, "dummy = 1"), 0, `${t} masih punya dummy`);
+    assert.equal(await U.n(t, "dummy = 0"), sebelum[t], `${t}: data asli berubah`);
+  }
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "hapus"})).j.relawan, 0);
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "isi"})).s, 201);
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "hapus"})).s, 200);
+});
+
+/* ---------------- halaman + CSP ---------------- */
+uji("GET /relawan, /relawan/saya, /kampus, /admin/relawan: 200 dengan CSP, tanpa skrip/gaya inline dan on*=", async () => {
+  const hal = [["/relawan", {}, false], ["/relawan/saya", {}, true], ["/kampus", {}, true], ["/admin/relawan", ADMIN, true]];
+  for (const [j, h, pribadi] of hal) {
+    const r = await U.api("GET", j, undefined, {...h, ...ipBaru()});
+    assert.equal(r.s, 200, j); assert.match(r.h.get("content-type"), /text\/html/);
+    assert.match(r.h.get("content-security-policy") || "", /script-src 'self'/, `${j} tanpa CSP`);
+    assert.ok(!/unsafe-inline/.test(r.h.get("content-security-policy")), `${j} CSP longgar`);
+    assert.ok(!/<script(?![^>]*\bsrc=)[^>]*>/i.test(r.t), `${j}: skrip inline`);
+    assert.ok(!/\son[a-z]+\s*=/i.test(r.t), `${j}: on*=`); assert.ok(!/\sstyle\s*=/i.test(r.t), `${j}: atribut style`); assert.ok(!/<style/i.test(r.t), `${j}: <style>`);
+    if (pribadi && j !== "/admin/relawan") { assert.equal(r.h.get("cache-control"), "no-store"); assert.match(r.h.get("x-robots-tag") || "", /noindex/); assert.equal(r.h.get("referrer-policy"), "no-referrer"); }
+  }
+  assert.equal((await U.api("GET", "/relawan", undefined, ipBaru())).h.get("x-robots-tag"), null, "pendaftaran publik boleh diindeks");
+  for (const berkas of ["/bnpb/relawan.js", "/bnpb/relawan.css", "/bnpb/relawan-saya.js", "/bnpb/kampus.js", "/admin/relawan.js", "/admin/relawan.css"]) assert.equal((await U.api("GET", berkas, undefined, ipBaru())).s, 200, berkas);
+  const js = ["public/bnpb/relawan.js", "public/bnpb/relawan-saya.js", "public/bnpb/kampus.js", "public/admin/relawan.js"].map(f => readFileSync(path.join(AKAR, f), "utf8")).join("\n");
+  assert.ok(!/—/.test(js), "em dash di teks layar"); assert.ok(!/\.style\.|style=/.test(js.replace(/\.style\.display/g, "")), "gaya inline lewat JS/atribut");
+});
+
+uji("tabel relawan belum dimigrasi: rute membalas 503 yang jelas, bukan 500", async () => {
+  await U.DB.prepare("ALTER TABLE relawan_jam RENAME TO relawan_jam_x").run();
+  try {
+    const r = await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru());
+    assert.equal(r.s, 503); assert.match(r.j.galat, /migrasi 0023/);
+    assert.equal((await U.adm("GET", "/api/relawan/admin/penugasan")).s, 503);
+  } finally { await U.DB.prepare("ALTER TABLE relawan_jam_x RENAME TO relawan_jam").run(); }
+  assert.equal((await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).s, 200);
+});
+
+uji("Turnstile aktif: pendaftaran tanpa token 403, halaman /relawan mengizinkan widget Cloudflare, halaman lain tidak", async () => {
+  const T = await siapkan("uji-relawan-ts", {ikat: {TURNSTILE_SITEKEY: "1x00000000000000000000AA", TURNSTILE_SECRET: "rahasia-ts"}});
+  const r = await T.api("POST", "/api/relawan/daftar", form(), ipBaru());
+  assert.equal(r.s, 403); assert.match(r.j.galat, /Turnstile/);
+  assert.equal(await T.n("relawan"), 0);
+  const h = await T.api("GET", "/relawan", undefined, ipBaru());
+  assert.match(h.h.get("content-security-policy"), /script-src 'self' https:\/\/challenges\.cloudflare\.com/); assert.match(h.h.get("content-security-policy"), /frame-src https:\/\/challenges\.cloudflare\.com/);
+  assert.ok(!/challenges/.test((await T.api("GET", "/relawan/saya", undefined, ipBaru())).h.get("content-security-policy")), "halaman berkode tidak dilonggarkan");
+  assert.equal((await T.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.konfig.turnstile, "1x00000000000000000000AA");
+});
