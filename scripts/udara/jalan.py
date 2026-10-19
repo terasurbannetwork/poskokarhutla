@@ -1,6 +1,6 @@
 """Jalankan pipeline udara berurutan; tiap langkah boleh gagal tanpa mematikan yang lain (langkah hilir memakai berkas jalan sebelumnya).
 
-Urutan: angin -> prakiraan -> lintasan -> atribusi -> rentan -> laporan_udara -> asal -> peluang_udara. pltu.py dan kota.py statis, dijalankan tangan.
+Urutan: angin -> prakiraan -> riwayat -> musim_asap -> lintasan -> atribusi -> rentan -> laporan_udara -> asal -> peluang_udara. pltu.py dan kota.py statis, dijalankan tangan.
 Keluar 1 hanya bila SEMUA langkah gagal (tidak ada yang layak di-commit).
 Pakai : python3 scripts/udara/jalan.py   (udara.yml)
 """
@@ -14,7 +14,7 @@ import traceback
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import alat
 
-LANGKAH = ["angin", "prakiraan", "lintasan", "atribusi", "rentan", "laporan_udara", "asal", "peluang_udara"]
+LANGKAH = ["angin", "prakiraan", "riwayat", "musim_asap", "lintasan", "atribusi", "rentan", "laporan_udara", "asal", "peluang_udara"]
 BATAS_KB = {"laporan.json": 400}
 
 

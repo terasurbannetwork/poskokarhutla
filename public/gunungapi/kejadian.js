@@ -31,10 +31,11 @@ const Kejadian = {
     this.gambarTabel(); },
   /* buka satu kejadian: peta terbang ke gunungnya + laci; dorong = ubah URL jadi /gunungapi/k/V0001 */
   async buka(kode, dorong = true) {
-    const n = this._n = (this._n || 0) + 1;
-    bukaTab("peta", false); await this.muat(); if (n !== this._n) return;
+    const n = this._n = (this._n || 0) + 1;   /* klik berurutan: hanya panggilan terakhir yang menang */
+    toast("Memuat kejadian…");   /* paint pertama murah; pindah tab (peta tampil) dan laci menyusul sesudahnya, bukan di dalam tugas klik */
+    await this.muat(); await new Promise(r => nanti(r)); if (n !== this._n) return;
     const k = this.K?.find(x => x.kode === kode);
     if (!k) { toast("Kejadian " + kode + " tidak ditemukan"); history.replaceState(null, "", "/gunungapi/kejadian"); return bukaTab("kejadian", false); }
-    if (dorong) history.replaceState(null, "", "/gunungapi/k/" + kode);
+    bukaTab("peta", false); if (dorong) history.replaceState(null, "", "/gunungapi/k/" + kode);
     nanti(() => { if (n !== this._n) return; Peta.terbang(k.g); Detail.buka(k.g); }); },
 };

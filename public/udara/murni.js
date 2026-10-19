@@ -35,6 +35,30 @@
     else t.push(`Dikoreksi memakai ${koreksi.n_stasiun} stasiun (${koreksi.metode}).`);
     return t; };
   const kataJam = (iso, tz = "Asia/Jakarta") => new Date(iso).toLocaleString("id-ID", {timeZone: tz, weekday: "short", hour: "2-digit", minute: "2-digit"}).replace(/\./g, ":") + " WIB";
-  const api = {POTONG, ST, ST_NAMA, ST_WARNA, statusDari, rank, rata24, statusJam, statusHari, terburuk, indeksJam, banding, hitungStatus, normBagian, garisLintasan, lapisAda, persen, desimal, ringkasGalat, kataJam};
+  /* Satu jalur data: prakiraan.json (514 kab/kota x 72 jam, tiap kota berjiwa) -> bentuk ringkasan yang dibaca Peta, Insight, Tren, bagikan, sapa:
+     {hari, dibuat, nasional[h]: {jiwa: [baik, sedang, tidak sehat, sangat tidak sehat, berbahaya], rata}, prov[kode][h]: [5 kategori jiwa, rata, maks], kab[h]: 30 kab/kota teratas [prov, nama, rata, maks, jiwa, jiwa tidak sehat]}.
+     Kategori memakai batas PM2,5 24 jam P.14/2020; rata = berbobot jiwa; maks = puncak per jam di hari WIB itu. Kota tanpa jiwa atau r24 dilewati. */
+  const BATAS_KAT = [15.5, 55.4, 150.4, 250.4];
+  const katPM = v => BATAS_KAT.reduce((n, b) => n + (v > b), 0);
+  const tglWIBjam = iso => new Date(Date.parse(iso) + 7 * 36e5).toISOString().slice(0, 10);
+  const satukan = prak => {
+    const H = prak.hari.length, hJam = prak.jam.map(tglWIBjam), kosong = () => Array.from({length: H}, () => ({j: [0, 0, 0, 0, 0], w: 0, t: 0, m: 0}));
+    const nas = kosong(), prov = {}, kab = Array.from({length: H}, () => []), mk = {};
+    for (const k of prak.kota) {
+      if (!(k.jiwa > 0) || !k.r24) continue;
+      mk[k.kode] = prak.hari.map(t => Math.max(0, ...k.pm.filter((v, i) => v != null && hJam[i] === t)));
+      const P = prov[k.prov] ??= kosong();
+      for (let h = 0; h < H; h++) {
+        const v = k.r24[h]; if (v == null) continue;
+        for (const A of [nas[h], P[h]]) { A.j[katPM(v)] += k.jiwa; A.w += k.jiwa * v; A.t += k.jiwa; A.m = Math.max(A.m, mk[k.kode][h]); }
+        kab[h].push([k.prov, k.nama, v, mk[k.kode][h], k.jiwa, v > BATAS_KAT[1] ? k.jiwa : 0]);
+      }
+    }
+    return {uk: {hari: prak.hari, dibuat: prak.dibuat,
+      nasional: nas.map(A => ({jiwa: A.j, rata: A.t ? A.w / A.t : 0})),
+      prov: Object.fromEntries(Object.entries(prov).map(([p, hs]) => [p, hs.map(A => [...A.j, A.t ? A.w / A.t : 0, A.m])])),
+      kab: kab.map(r => r.sort((a, b) => b[2] - a[2]).slice(0, 30))}, mk};
+  };
+  const api = {satukan, katPM, POTONG, ST, ST_NAMA, ST_WARNA, statusDari, rank, rata24, statusJam, statusHari, terburuk, indeksJam, banding, hitungStatus, normBagian, garisLintasan, lapisAda, persen, desimal, ringkasGalat, kataJam};
   if (typeof module !== "undefined" && module.exports) module.exports = api; else root.Murni = api;
 })(typeof window !== "undefined" ? window : globalThis);

@@ -31,22 +31,24 @@ const wxNama = w => (w || "").split(/\s+/).map(t => WX[t.replace(/^[+-]|^VC/, ""
 const MAKS_JAM_METAR = 12;   /* laporan METAR lebih tua dari ini dibuang (A18), bukan ditampilkan basi */
 
 /* ================================================================ state */
-const S = {uk: null, asap: null, metar: [], geo: null, hari: 0, h0: 0, sel: null, rw: null, bbProv: {}, maksJam: MAKS_JAM_METAR};
+const S = {uk: null, prak: null, metar: [], geo: null, hari: 0, h0: 0, rw: null, bbProv: {}, maksJam: MAKS_JAM_METAR};
 /* ?sekarang=2026-10-13T02:00:00+07:00 mengganti jam untuk menguji layar dengan data lama; tanpa itu jam peramban */
 const SEKARANG = () => { const q = new URLSearchParams(location.search).get("sekarang"), t = q && Date.parse(q); return t || Date.now(); };
 const tglWIB = t => new Date(t + 7 * 36e5).toISOString().slice(0, 10);
 /* indeks hari ini (WIB) di prakiraan; hari yang sudah lewat tidak ditawarkan. Data lebih tua dari hari ini: jatuh ke hari pertamanya dan diberi tanggal, bukan "Hari ini" (data basi tidak menyamar jadi hari ini). */
 const labelHari = i => S.uk.hari[i] === tglWIB(SEKARANG()) ? "Hari ini" : tglPendek(S.uk.hari[i]);
 const hariTampil = () => S.uk.hari.map((t, i) => i).filter(i => i >= S.h0);
-const namaProv = k => S.uk?.nama_prov?.[k] ?? k;
-/* indeks sel asap: "lat,lon" -> baris; rata/maks per hari */
-const sel = (la, lo) => S.sel.get((Math.floor(la) + .5) + "," + (Math.floor(lo) + .5));
-const ROW = {maks: 2, rata: 6, pm10: 7};
+/* kode Kemendagri -> nama provinsi (prakiraan.json hanya membawa kode) */
+const NAMA_PROV = {"11":"Aceh","12":"Sumatera Utara","13":"Sumatera Barat","14":"Riau","15":"Jambi","16":"Sumatera Selatan","17":"Bengkulu","18":"Lampung","19":"Kep. Bangka Belitung","21":"Kepulauan Riau","31":"DKI Jakarta","32":"Jawa Barat","33":"Jawa Tengah","34":"DI Yogyakarta","35":"Jawa Timur","36":"Banten","51":"Bali","52":"Nusa Tenggara Barat","53":"Nusa Tenggara Timur","61":"Kalimantan Barat","62":"Kalimantan Tengah","63":"Kalimantan Selatan","64":"Kalimantan Timur","65":"Kalimantan Utara","71":"Sulawesi Utara","72":"Sulawesi Tengah","73":"Sulawesi Selatan","74":"Sulawesi Tenggara","75":"Gorontalo","76":"Sulawesi Barat","81":"Maluku","82":"Maluku Utara","91":"Papua","92":"Papua Barat","93":"Papua Selatan","94":"Papua Tengah","95":"Papua Pegunungan","96":"Papua Barat Daya"};
+const namaProv = k => NAMA_PROV[k] ?? k;
+/* kab/kota prakiraan terdekat ke titik (derajat, bujur dikoreksi lintang); null bila lebih jauh dari maksDeg */
+const kotaTerdekat = (la, lo, maksDeg = 1.2) => { let b = null, bd = maksDeg * maksDeg, c = Math.cos(la * Math.PI / 180);
+  for (const k of S.prak.kota) { const d = (k.lat - la) ** 2 + ((k.lon - lo) * c) ** 2; if (d < bd) { bd = d; b = k; } } return b; };
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M4 4v16h16"/><path d="M7 15c3-1 3-8 6-8s3 7 7 6"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', metode: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
@@ -57,10 +59,14 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/udara/" + id);   /* tautan bersih tanpa tagar; worker melayani index.html untuk jalur ini */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi})[id]?.render(); });
+    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto, simulasi: Simulasi})[id]?.render(); });
 }
-{ const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;
-  $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
+/* tab Kejadian hanya ada bila ada kejadian segar (A18): dipanggil lagi sesudah berkasnya terbaca */
+const tbTab = ([k, n]) => `<button data-t="${k}" aria-current="${document.querySelector("#p-" + k)?.classList.contains("on") ? "page" : (k === "peta" ? "page" : "false")}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`;
+const isiTab = () => { const T = TABS.filter(t => !TAB_SEMBUNYI.has(t[0]) && (t[0] !== "kejadian" || (typeof Kejadian !== "undefined" && Kejadian.ada()))), el = $("#tabs");
+  if (el.children.length && [...el.children].map(b => b.dataset.t).join() === T.map(t => t[0]).join()) return;   /* himpunan tab sama: jangan tulis ulang (fokus dan menu tetap) */
+  el.innerHTML = T.map(tbTab).join(""); };
+{ isiTab();
   const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
   bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
@@ -70,18 +76,17 @@ const gelap = () => document.documentElement.dataset.theme ? document.documentEl
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; simpanLokal("pb-tema", t); nanti(() => peta && peta.setStyle(DASAR(), {diff: false})); };
 /* ================================================================ data */
 async function muatData() {
-  const [uk, asap, geo] = await Promise.all([muatJSON("../data/udara_kualitas.json"), muatJSON("../data/asap.json"), muatJSON("../geo/provinsi.json")]);
-  Object.assign(S, {uk, asap, geo});
-  S.h0 = S.hari = Math.max(0, uk.hari.indexOf(tglWIB(SEKARANG())));
-  S.sel = new Map(asap.grid.map(r => [r[0] + "," + r[1], r]));
-  /* METAR dan riwayat boleh tidak ada: kartu dan lapisannya dibuang */
-  S.metar = await muatJSON("../data/metar.json").catch(() => []);
-  S.rw = await muatJSON("../data/udara_kualitas_riwayat.json").catch(() => null);
-  /* keluaran prakiraan 72 jam (pipeline udara): boleh tidak ada, kartu dan lapisannya dibuang (A18) */
+  /* SATU jalur data: prakiraan.json (514 kab/kota, 72 jam, udara.yml 2x sehari) + rentan.json. Tanpa prakiraan halaman tidak bisa dibuka. */
   const dp = n => muatJSON("/udara/data/" + n + ".json").catch(() => null);
-  const [prak, lin, atr, ren] = await Promise.all([dp("prakiraan"), dp("lintasan"), dp("atribusi"), dp("rentan")]);
-  Object.assign(S, {prak: prak?.kota?.length ? prak : null, lin, atr, ren});
+  const [prak, geo, lin, atr, ren, rw] = await Promise.all([dp("prakiraan"), muatJSON("../geo/provinsi.json"), dp("lintasan"), dp("atribusi"), dp("rentan"), dp("riwayat")]);
+  if (!prak?.kota?.length || !prak.kota.some(k => k.jiwa > 0)) throw new Error("prakiraan.json belum tersedia");
+  const {uk, mk} = Murni.satukan(prak);
+  Object.assign(S, {uk, mk, prak, geo, lin, atr, ren, rw});
+  S.h0 = S.hari = Math.max(0, uk.hari.indexOf(tglWIB(SEKARANG())));
+  /* METAR boleh tidak ada: kartu dan lapisannya dibuang */
+  S.metar = await muatJSON("../data/metar.json").catch(() => []);
   $("#upd").textContent = "Data " + jamWIB(uk.dibuat);
+  await Kejadian.muatAwal(); isiTab();
 }
 /* stasiun METAR segar (laporan <= maksJam jam, jarak pandang terbaca) */
 const metarSegar = () => S.metar.filter(m => m.vis_m != null && (Date.now() - new Date(m.waktu)) / 36e5 <= S.maksJam);

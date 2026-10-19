@@ -1,6 +1,6 @@
 "use strict";
 /* Tab Tren gunung api: tiap blok = Kartu.ex (inti/kartu.js), sama dengan Tren karhutla/kekeringan. Kartu tanpa data dibuang (A18):
-   riwayat harian (jumlah gunung per level, erupsi 24 jam) baru muncul setelah >= 2 hari terkumpul oleh scripts/gunungapi/magma.py; kejadian per tahun dari BNPB (data/dampak.json). */
+   riwayat harian (jumlah gunung per level, erupsi 24 jam) baru muncul setelah >= 2 hari terkumpul oleh scripts/gunungapi/magma.py; kejadian per tahun dari BNPB (../banjir/data/dampak_gunungapi.json). */
 const Tren = {
   D: undefined,
   kartu(ey, judul, isi, sumber, leg) { Kartu.leg(leg); return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
@@ -35,10 +35,10 @@ const Tren = {
   kLevel() {
     const r0 = S.st?.riwayat || []; if (r0.length < 2) return "";
     const r = this.denganBolong(r0), bolong = r.filter(x => x.kosong).map(x => x.t);
-    const v = r.map(x => x.kosong ? x :  { const n = x.level; return {n: (n[2] || 0) + (n[3] || 0) + (n[4] || 0), n2: (n[3] || 0) + (n[4] || 0), t: this.tgl(x.tgl),
+    const v = r.map(x => { if (x.kosong) return x; const n = x.level; return {n: (n[2] || 0) + (n[3] || 0) + (n[4] || 0), n2: (n[3] || 0) + (n[4] || 0), t: this.tgl(x.tgl),
       tip: `<b>${this.tgl(x.tgl)}</b><br>Waspada ke atas: ${fmt((n[2] || 0) + (n[3] || 0) + (n[4] || 0))} gunung<br>Siaga atau Awas: ${fmt((n[3] || 0) + (n[4] || 0))} gunung`}; }), a = v.at(-1), b = v[0];
     return this.kartu("Status harian", `${Kartu.hl(fmt(a.n) + " gunung")} berstatus Waspada ke atas pada ${a.t}, ${a.n > b.n ? "naik" : a.n < b.n ? "turun" : "sama"} ${a.n === b.n ? "dengan" : "dari"} ${fmt(b.n)} gunung pada ${b.t}`,
-      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[3], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan", [[WARNA_LV[2], "Waspada ke atas"], [WARNA_LV[3], "Siaga atau Awas"]]); },
+      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[3], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan" + (bolong.length ? `. Tidak tercatat: ${bolong.join(" dan ")} (pekerjaan harian terhenti; arsip MAGMA hari itu tidak lengkap)` : ""), [[WARNA_LV[2], "Waspada ke atas"], [WARNA_LV[3], "Siaga atau Awas"]]); },
 
   /* 3. erupsi 24 jam per hari (hanya hari dengan daftar MAGMA yang mencapai 24 jam) */
   kErupsi() {
@@ -62,7 +62,7 @@ const Tren = {
 
   async render() {
     const el = $("#tren"); if (!el) return;
-    if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; this.D = await muatJSON("data/dampak.json").catch(() => null); }
+    if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; this.D = await muatJSON("../banjir/data/dampak_gunungapi.json").catch(() => null); }
     this.abu = await Data.abu();
     el.innerHTML = [this.kTahun, this.kLevel, this.kNaik, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

@@ -262,7 +262,7 @@ const Detail = {
     if (!Z.length && !C.some(c => c.penduduk > 0)) return "";
     const tb = Z.length ? `<div class="tw"><table><thead><tr><th>Zona</th><th class="n">Jiwa</th><th class="n">Desa</th><th class="n">Sekolah</th><th class="n">Faskes</th><th class="n">Izin tambang</th></tr></thead><tbody>${Z.map(([z, v]) => `<tr><td>${pilZona(z)}</td><td class="n">${jiwaTxt(v.penduduk)}</td><td class="n">${fmt(v.desa)}</td><td class="n">${fmt(v.sekolah)}</td><td class="n">${fmt(v.faskes)}</td><td class="n">${fmt(v.tambang)}</td></tr>`).join("")}</tbody></table></div>` : "";
     const kv = C.some(c => c.penduduk > 0) ? `<div class="kv gn-kv">${C.map(c => `<div><b>${jiwaTxt(c.penduduk)}</b><span>jiwa dalam ${fmt(c.km)} km</span></div>`).join("")}</div>` : "";
-    return lipat("Paparan per zona KRB", `${tb}${kv}<p class="rek-sumber">${pg.zona_sumber && pg.zona_sumber !== "KRB PVMBG" ? `Zona: ${esc(pg.zona_sumber)} · ` : ""}Perkiraan WorldPop 1 km. Sumber: KRB PVMBG 2018, WorldPop, OpenStreetMap, WIUP ESDM</p>`); },
+    return lipat(Z.length ? "Paparan per zona KRB" : "Penduduk di sekitar kawah", `${tb}${kv}<p class="rek-sumber">${pg.zona_sumber && pg.zona_sumber !== "KRB PVMBG" ? `Zona: ${esc(pg.zona_sumber)} · ` : ""}Perkiraan WorldPop 1 km. Sumber: ${Z.length ? "KRB PVMBG 2018, WorldPop, OpenStreetMap, WIUP ESDM" : "WorldPop"}</p>`); },
   sEvak(pg) {
     const r = evakRingkas(pg);
     if (!r) { const I = (pg?.evakuasi || []).filter(e => e.zona_desa === "I"); return I.length ? lipat("Evakuasi", `<p class="dl-kal">Tidak ada desa KRB III atau II yang tersambung ke jalan; rute cadangan dihitung dari ${Kartu.hl(fmt(I.length) + " desa KRB I")} terdekat dan tidak dirata-ratakan.</p>`) : ""; }

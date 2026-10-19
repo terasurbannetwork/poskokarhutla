@@ -12,7 +12,7 @@
     return {k, st: Murni.statusHari(k, h), banding: Murni.banding(skr, lalu), besok, bk, lintas: (S.lin?.lintas_batas || []).slice(0, 3), model: !terkoreksi()}; };
   Sapa.daftar("udara", {
     ikon: {udara: '<path d="M4 14h11a3 3 0 1 0-3-3M3 18h14a3 3 0 1 1-3 3M6 10h4"/>', kabut: '<path d="M4 9h16M6 13h12M4 17h16"/>'},
-    siap: () => !!(S.uk && S.asap && S.sel),
+    siap: () => !!(S.uk && S.prak),
     hitung() {
       const n0 = S.uk.nasional[S.h0].jiwa, n1 = S.uk.nasional[S.h0 + 1]?.jiwa; if (!ts(n0)) return null;
       const prov = Object.entries(S.uk.prov).map(([k, hs]) => ({k, p: hs[S.h0], t: ts(hs[S.h0])})).filter(x => x.t > 0).sort((a, b) => b.t - a.t).slice(0, 5);

@@ -1,18 +1,18 @@
 "use strict";
 /* Adaptor Bagikan untuk kualitas udara: mesin di public/bagikan.js; di sini hanya isi udara (jiwa terpapar, PM2,5, keterangan, tautan).
    Nama, sumber, tagar dari `bagikan` di public/bencana.json. Semua angka perkiraan model CAMS, bukan ISPU resmi.
-   Dimuat sesudah ../bagikan.js dan skrip halaman (butuh S, namaProv, ROW). */
+   Dimuat sesudah ../bagikan.js dan skrip halaman (butuh S, namaProv). */
 (() => {
   const ts = p => p[2] + p[3] + p[4];
   const kj = v => Bagikan.en() ? Bagikan.jiwa(v) : kr(v);
   const nas = () => S.uk.nasional[S.h0].jiwa;
   Bagikan.tema.udara = {
     kata: "kualitas udara",
-    siap: () => !!(S.uk && S.asap),
+    siap: () => !!(S.uk && S.prak),
     tanggal: () => S.uk.hari[S.h0],
     acuan: () => S.uk.dibuat,
     geo: () => S.geo?.features,
-    titik: () => S.asap.grid.filter(r => (r[ROW.maks][S.h0] || 0) >= 55.4).slice(0, 500).map(r => ({lat: r[0], lon: r[1], r: 3, w: Bagikan.LV[(r[ROW.maks][S.h0] || 0) >= 150 ? 3 : 2]})),
+    titik: () => S.prak.kota.filter(k => (k.r24?.[S.h0] || 0) > 55.4).slice(0, 500).map(k => ({lat: k.lat, lon: k.lon, r: 3, w: Bagikan.LV[k.r24[S.h0] > 150.4 ? 3 : 2]})),
     teksWil() {
       const n = nas(), tg = Bagikan.tglPendek();
       return `Perkiraan model CAMS: ${kj(ts(n))} jiwa terpapar udara tidak sehat hari ini, PM2,5 rata-rata ${Bagikan.n(Math.round(S.uk.nasional[S.h0].rata))} µg/m³ (${tg}).`;

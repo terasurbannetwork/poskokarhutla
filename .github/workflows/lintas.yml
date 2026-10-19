@@ -123,6 +123,13 @@ jobs:
             done
           done
 
+      # Kejadian berkode C (cuaca), U (udara), V (gunung api), D (kekeringan): SESUDAH semua modul masukan di atas.
+      # Menulis public/banjir/data/kejadian_<id>_{awal,geo,nomor}.json (ber-cache). Adaptor yang masukannya basi/hilang = tidak menulis apa pun.
+      - name: Kejadian berkode lintas bencana (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: python3 scripts/umum/kejadian.py uji && python3 scripts/umum/kejadian.py
+
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
         uses: actions/cache/save@v4
