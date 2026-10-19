@@ -120,7 +120,7 @@ uji("POST /api/relawan/daftar: isian liar 400 dengan pesan jelas", async () => {
 uji("POST /api/relawan/daftar: WA atau email yang masih aktif ditolak 409 dengan pesan ramah", async () => {
   const a = unik(); assert.equal((await daftar({...a, nama: "Duplikat Asli"})).s, 201);
   const wa = await daftar({...unik(), wa: a.wa.replace("08127", "+628127"), nama: "Duplikat WA"});
-  assert.equal(wa.s, 409); assert.match(wa.j.galat, /sudah terdaftar/); assert.match(wa.j.galat, /admin/);
+  assert.equal(wa.s, 409); assert.match(wa.j.galat, /admin/); assert.doesNotMatch(wa.j.galat, /whatsapp|email|nomor|sudah terdaftar/i, "pesan generik, tidak menyebut kolom yang bentrok");
   assert.equal((await daftar({...unik(), email: a.email.toUpperCase(), nama: "Duplikat Email"})).s, 409);
   assert.equal(await U.n("relawan", "nama IN ('Duplikat WA', 'Duplikat Email')"), 0);
 });
@@ -584,4 +584,115 @@ uji("Turnstile aktif: pendaftaran tanpa token 403, halaman /relawan mengizinkan 
   assert.match(h.h.get("content-security-policy"), /script-src 'self' https:\/\/challenges\.cloudflare\.com/); assert.match(h.h.get("content-security-policy"), /frame-src https:\/\/challenges\.cloudflare\.com/);
   assert.ok(!/challenges/.test((await T.api("GET", "/relawan/saya", undefined, ipBaru())).h.get("content-security-policy")), "halaman berkode tidak dilonggarkan");
   assert.equal((await T.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.konfig.turnstile, "1x00000000000000000000AA");
+});
+
+/* ---------------------------------------------------------------- perbaikan ulasan */
+uji("perbaikan ulasan: cabut diri mengosongkan semua kuasi-identifier (relawan, jam lat/lon, penugasan polis/catatan/oleh); D1 menjamin lewat CHECK", async () => {
+  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Anonim Uji", singkatan: "KAU", no_mou: "MoU/ANON/1"})); assert.equal(kp.s, 201, kp.t);
+  const b = await buatSiap(form({nama: "Anonim Penuh", jalur: "kampus", kampus_id: kp.j.id, organisasi: "Org X", keahlian: ["medis", "sar"], luar_provinsi: true, hari_per_minggu: 5, maks_hari: 90}));
+  await U.DB.prepare("UPDATE relawan SET oleh = 'admin-x', alasan = 'catatan' WHERE id = ?").bind(b.id).run();
+  await U.DB.prepare("INSERT INTO relawan_pelatihan (id, relawan_id, nama, tgl, dibuat) VALUES (?, ?, 'Latihan', '2026-01-01', 1)").bind(id16(), b.id).run();
+  const t = await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: b.id}); assert.equal(t.s, 201, t.t);
+  await U.adm("POST", `/api/relawan/admin/penugasan/${t.j.id}`, {aksi: "asuransi", asuransi: "aktif", polis: "POLIS-RAHASIA"});
+  await U.DB.prepare("UPDATE relawan_penugasan SET status = 'diterima', nilai_catatan = 'catatan nilai', oleh = 'admin-x' WHERE id = ?").bind(t.j.id).run();
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${t.j.id}`, {aksi: "masuk", lat: -2.2, lon: 114.0}, K(b.kode))).s, 200);
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${t.j.id}`, {aksi: "keluar"}, K(b.kode))).s, 200);
+  await U.DB.prepare("UPDATE relawan_jam SET oleh = 'kampus:abc' WHERE relawan_id = ?").bind(b.id).run();
+  assert.equal((await U.api("POST", "/api/relawan/saya", {aksi: "cabut", konfirmasi: "HAPUS"}, K(b.kode))).s, 200);
+  const r = await U.DB.prepare("SELECT * FROM relawan WHERE id = ?").bind(b.id).first();
+  for (const k of ["wa", "email", "organisasi", "sertifikat", "gol_darah", "darurat_nama", "darurat_wa", "kode_sha", "alasan", "kampus_id", "oleh", "diverifikasi", "wa_sha", "email_sha"]) assert.equal(r[k], null, k);
+  assert.deepEqual([r.nama, r.kab, r.keahlian, r.hari_per_minggu, r.maks_hari, r.luar_provinsi, r.anonim, r.prov], ["(dihapus)", "(dihapus)", "[]", 1, 1, 0, 1, "62"]);
+  const j = await U.DB.prepare("SELECT lat, lon, oleh, menit, sah FROM relawan_jam WHERE relawan_id = ?").bind(b.id).first();
+  assert.deepEqual([j.lat, j.lon, j.oleh], [null, null, null]); assert.ok(j.menit != null, "jam tetap sebagai angka");
+  const g = await U.DB.prepare("SELECT polis, nilai_catatan, oleh FROM relawan_penugasan WHERE id = ?").bind(t.j.id).first();
+  assert.deepEqual([g.polis, g.nilai_catatan, g.oleh], [null, null, null]);
+  assert.equal(await U.n("relawan_pelatihan", `relawan_id = '${b.id}'`), 0);
+  /* CHECK di D1: baris anonim tidak boleh menyimpan kuasi-identifier */
+  const dasar = {id: id16(), nama: "(dihapus)", kab: "(dihapus)", prov: "62", jalur: "umum", hari_per_minggu: 1, maks_hari: 1, luar_provinsi: 0, setuju_pdp: 1, anonim: 1, dibuat: 1, diubah: 1};
+  await sisip("relawan", dasar); await U.DB.prepare("DELETE FROM relawan WHERE id = ?").bind(dasar.id).run();
+  for (const [k, v] of Object.entries({organisasi: "Org", sertifikat: "s", gol_darah: "A+", alasan: "a", kampus_id: kp.j.id, oleh: "x", diverifikasi: 1, nama: "Budi", kab: "Kota", keahlian: '["medis"]', hari_per_minggu: 3, maks_hari: 9, luar_provinsi: 1, wa_sha: "a".repeat(64), email_sha: "b".repeat(64)}))
+    await assert.rejects(sisip("relawan", {...dasar, id: id16(), [k]: v}), /CHECK/i, `anonim menyimpan ${k}`);
+  await sisip("relawan", {...dasar, id: id16(), status: "daftar_hitam", wa_sha: "a".repeat(64)});   // hanya daftar_hitam boleh menyimpan hash
+});
+
+uji("perbaikan ulasan: aksi jam 'constructor'/'__proto__' ditolak 400, bukan 500 (kampus dan admin)", async () => {
+  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Proto Uji", singkatan: "KPU", no_mou: "MoU/PROTO/1"}));
+  const id = id16();
+  for (const aksi of ["constructor", "__proto__", "toString", "hasOwnProperty", 1, null, ["sah"]]) {
+    const k = await U.api("POST", `/api/relawan/kampus/jam/${id}`, {aksi}, K(kp.j.kode)); assert.equal(k.s, 400, `kampus ${String(aksi)} -> ${k.s} ${k.t}`);
+    const a = await U.api("POST", `/api/relawan/admin/jam/${id}`, {aksi}, ADMIN); assert.equal(a.s, 400, `admin ${String(aksi)} -> ${a.s} ${a.t}`);
+  }
+  assert.equal((await U.api("POST", `/api/relawan/kampus/jam/${id}`, {aksi: "sah"}, K(kp.j.kode))).s, 404, "aksi sah tetap jalan sampai pencarian sesi");
+});
+
+uji("perbaikan ulasan: laju IP dihitung sebelum Turnstile (IP yang sudah di batas tidak memanggil Turnstile lagi)", async () => {
+  const T = await siapkan("uji-relawan-ts2", {ikat: {TURNSTILE_SITEKEY: "1x00000000000000000000AA", TURNSTILE_SECRET: "rahasia-ts"}});
+  const ip = {"cf-connecting-ip": "10.88.0.1"};
+  for (let i = 0; i < 3; i++) assert.equal((await T.api("POST", "/api/relawan/daftar", form(), ip)).s, 403, "dalam batas: Turnstile menolak");
+  const r = await T.api("POST", "/api/relawan/daftar", form(), ip);
+  assert.equal(r.s, 429, "lewat batas: 429 sebelum Turnstile (bukan 403)");
+});
+
+uji("perbaikan ulasan: POST ber-kode dibatasi laju per pemegang kode (relawan 60/jam, koordinator 600/jam)", async () => {
+  const b = await buatSiap(form({nama: "Laju Kode"}));
+  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Laju Kode", singkatan: "KLK", no_mou: "MoU/LAJU/1"}));
+  const kini = Date.now();
+  await U.DB.batch([...Array(60)].map(() => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'relawan.ubah', ?)").bind(b.id, kini)));
+  const r = await U.api("POST", "/api/relawan/saya", {aksi: "istirahat"}, K(b.kode)); assert.equal(r.s, 429, r.t);
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${id16()}`, {aksi: "terima"}, K(b.kode))).s, 404, "aksi lain (relawan.penugasan) punya hitungan sendiri");
+  await U.DB.batch([...Array(60)].map(() => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'relawan.penugasan', ?)").bind(b.id, kini)));
+  assert.equal((await U.api("POST", `/api/relawan/saya/penugasan/${id16()}`, {aksi: "terima"}, K(b.kode))).s, 429);
+  for (const [aksi, j] of [["relawan.putus_relawan", `/api/relawan/kampus/relawan/${id16()}`], ["relawan.putus_jam", `/api/relawan/kampus/jam/${id16()}`]]) {
+    assert.notEqual((await U.api("POST", j, {aksi: "verifikasi"}, K(kp.j.kode))).s, 429);
+    await U.DB.batch([...Array(600)].map(() => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kp.j.id, aksi, kini)));
+    assert.equal((await U.api("POST", j, {aksi: "sah"}, K(kp.j.kode))).s, 429, aksi);
+  }
+});
+
+uji("perbaikan ulasan: duplikat dijawab pesan generik dan dibatasi 3 per hari per hash WA dan per hash email walau IP berganti, tanpa WA mentah di laju_bnpb", async () => {
+  const a = unik(); assert.equal((await daftar({...a, nama: "Oracle Asli"})).s, 201);
+  const gen = [];
+  for (let i = 0; i < 2; i++) gen.push(await daftar({...unik(), wa: a.wa, nama: "Oracle WA " + i}));   // WA sama, email lain
+  const em = await daftar({...unik(), email: a.email, nama: "Oracle Email"});
+  assert.ok([...gen, em].every(r => r.s === 409), "semua duplikat 409");
+  const pesanDup = new Set([...gen, em].map(r => r.j.galat));
+  assert.equal(pesanDup.size, 1, "pesan sama untuk WA bentrok dan email bentrok");
+  assert.doesNotMatch([...pesanDup][0], /whatsapp|email|nomor/i);
+  /* percobaan ke-4 pada WA yang sama dari IP baru = 429 (bukan 409) */
+  const ke4 = await daftar({...unik(), wa: a.wa, nama: "Oracle WA 4"}); assert.equal(ke4.s, 429, ke4.t);
+  assert.equal((await daftar({...unik(), email: a.email, nama: "Oracle Email 3"})).s, 409);   // ke-3 untuk email ini: masih dijawab
+  const em4 = await daftar({...unik(), email: a.email, nama: "Oracle Email 4"}); assert.equal(em4.s, 429, em4.t);
+  const kunci = (await U.DB.prepare("SELECT kunci FROM laju_bnpb WHERE aksi = 'relawan.daftar_kontak'").all()).results.map(r => r.kunci);
+  assert.ok(kunci.length >= 2 && kunci.every(k => /^[0-9a-f]{32}$/.test(k)), "kunci = 32 hex hash");
+  assert.ok(!kunci.some(k => k.includes(a.wa) || k.includes(a.email)), "WA/email mentah tidak disimpan di laju");
+  assert.ok(!kunci.includes(sha256(a.wa).slice(0, 32)), "hash bergaram, bukan sha polos");
+});
+
+uji("perbaikan ulasan: kode relawan dan koordinator di sessionStorage (bukan localStorage) dengan tombol Keluar", async () => {
+  for (const f of ["relawan-saya.js", "kampus.js"]) {
+    const js = readFileSync(path.join(AKAR, "public/bnpb", f), "utf8");
+    assert.ok(!/localStorage\.(set|get)Item/.test(js), `${f} tidak menyimpan kode di localStorage`);
+    assert.match(js, /sessionStorage\.setItem\(K/); assert.match(js, /data-keluar/); assert.match(js, /sessionStorage\.removeItem\(K\)/);
+  }
+  assert.match(readFileSync(path.join(AKAR, "public/bnpb/relawan-saya.js"), "utf8"), /tanpa identitas/, "teks hapus jujur: jam kerja tersisa sebagai angka tanpa identitas");
+});
+
+uji("perbaikan ulasan: bersihkanRelawan menganonimkan ditolak/nonaktif > 180 hari, daftar_hitam diminimalkan ke hash dan tetap menolak pendaftaran ulang", async () => {
+  const kini = Date.now(), lama = kini - 181 * HARI, baru = kini - 10 * HARI;
+  const mk = async (nama, status, diubah) => { const r = await daftar({nama}); assert.equal(r.s, 201, r.t); const id = await idRelawan(nama);
+    await U.DB.prepare("UPDATE relawan SET status = ?, diubah = ? WHERE id = ?").bind(status, diubah, id).run(); return id; };
+  const [tolakLama, nonLama, tolakBaru, hitamLama, hitamBaru, aktifLama] = [await mk("Ret Tolak Lama", "ditolak", lama), await mk("Ret Non Lama", "nonaktif", lama), await mk("Ret Tolak Baru", "ditolak", baru),
+    await mk("Ret Hitam Lama", "daftar_hitam", lama), await mk("Ret Hitam Baru", "daftar_hitam", baru), await mk("Ret Aktif Lama", "siap_tugas", lama)];
+  const hitam = await U.DB.prepare("SELECT wa FROM relawan WHERE id = ?").bind(hitamLama).first();
+  const n = await R.bersihkanRelawan({DB: U.DB}, kini); assert.equal(n, 3);
+  const ambil = id => U.DB.prepare("SELECT * FROM relawan WHERE id = ?").bind(id).first();
+  for (const id of [tolakLama, nonLama]) { const r = await ambil(id); assert.equal(r.anonim, 1); assert.equal(r.nama, "(dihapus)"); assert.equal(r.status, "nonaktif"); assert.deepEqual([r.wa, r.email, r.wa_sha, r.email_sha, r.kode_sha], [null, null, null, null, null]); }
+  const h = await ambil(hitamLama);
+  assert.equal(h.anonim, 1); assert.equal(h.status, "daftar_hitam"); assert.equal(h.nama, "(dihapus)"); assert.deepEqual([h.wa, h.email, h.darurat_wa, h.kode_sha], [null, null, null, null]);
+  assert.match(h.wa_sha, /^[0-9a-f]{64}$/); assert.match(h.email_sha, /^[0-9a-f]{64}$/);
+  for (const id of [tolakBaru, hitamBaru, aktifLama]) assert.equal((await ambil(id)).anonim, 0, "belum waktunya / bukan sasaran");
+  assert.equal(await R.bersihkanRelawan({DB: U.DB}, kini), 0, "idempoten");
+  /* daftar_hitam yang sudah diminimalkan masih menolak pendaftaran ulang dengan WA yang sama */
+  const ulang = await daftar({nama: "Ret Ulang", wa: hitam.wa}); assert.equal(ulang.s, 409, ulang.t);
+  assert.equal(await U.n("relawan", "nama = 'Ret Ulang'"), 0);
 });

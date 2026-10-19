@@ -4,12 +4,13 @@
    - TANPA NIK dan TANPA KTP. Akses tanpa akun: kode pribadi 26 hex (relawan) dan kode koordinator (kampus), hanya sha256-nya disimpan.
    - Data pribadi (WA, email, kontak darurat, PIC kampus) hanya lewat rute admin (modOK) atau kode pemiliknya; rute publik hanya agregat.
    - Koordinator kampus hanya melihat/memverifikasi relawan kampusnya sendiri. Relawan hanya melihat dirinya.
-   - Cabut diri = baris dianonimkan (hak UU PDP), bukan dihapus: jam kerja tetap sebagai angka tanpa nama.
+   - Cabut diri = baris dianonimkan (hak UU PDP), bukan dihapus: jam kerja tetap sebagai angka tanpa identitas (lihat anonimkan).
+   - Retensi: bersihkanRelawan (dipanggil cron) menganonimkan ditolak/nonaktif yang tak berubah 180 hari; daftar_hitam diminimalkan jadi hash WA/email saja.
    ponytail: pencocokan dihitung di JS atas <= 2000 kandidat siap tugas (cukup untuk ribuan relawan); bila jauh lebih besar, pindahkan penyaringan wilayah ke SQL.
    ponytail: pembatasan laju baca-lalu-tulis (src/bnpb.js); serentak bisa lolos satu-dua di atas batas. */
-import {json, gagal, acak, bacaBody, cacheTepi, normalWA, turnstileOK} from "./worker.js";
+import {json, gagal, acak, bacaBody, cacheTepi, normalWA, turnstileOK, sha} from "./worker.js";
 import {tx, num, wib, tglSah, RE_PROV, modOK, superOK} from "./posko.js";
-import {lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
+import {laju, lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 
@@ -40,6 +41,7 @@ const baris = r => r.results;
 const salahBody = b => gagal(b.status || 400, b.galat);
 const dalamBbox = (lat, lon) => lat >= BBOX.latMin && lat <= BBOX.latMaks && lon >= BBOX.lonMin && lon <= BBOX.lonMaks;
 const hariAntara = (a, b) => Math.round((Date.parse(b + "T00:00:00Z") - Date.parse(a + "T00:00:00Z")) / HARI);
+const hashKontak = (env, jenis, nilai) => sha(`${env.IP_SALT}|kontak|${jenis}|${nilai}`);
 const urai = s => { try { const a = JSON.parse(s); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
 const menitSesi = (masuk, keluar) => Math.max(0, Math.min(MAKS_SESI_MENIT, Math.round((keluar - masuk) / MENIT)));
 
@@ -86,8 +88,11 @@ async function daftar(env, req, url, kini) {
   const b = await bacaBody(req, 8192); if (b.galat) return salahBody(b);
   const c = cekDaftar(b.o); if (c.galat) return gagal(400, c.galat);
   const v = c.v;
+  const lj = await lajuIP(env, req, "relawan.daftar", [[JAM, 3], [HARI, 10]], kini); if (lj) return lj;   // laju dulu: Turnstile memanggil layanan luar
   if (!(await turnstileOK(env, b.o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
-  const lj = await lajuIP(env, req, "relawan.daftar", [[JAM, 3], [HARI, 10]], kini); if (lj) return lj;
+  /* batas per kontak (bukan hanya per IP): enumerasi satu nomor/email tidak lolos dengan ganti IP. Kunci = hash bergaram, WA/email mentah tidak masuk laju_bnpb */
+  const wa_sha = await hashKontak(env, "wa", v.wa), email_sha = await hashKontak(env, "email", v.email);
+  for (const h of [wa_sha, email_sha]) { const lk = await laju(env, h.slice(0, 32), "relawan.daftar_kontak", [[HARI, 3]], kini); if (lk) return lk; }
   if (v.kampus_id) {
     const k = await env.DB.prepare("SELECT id, mulai, berakhir, kuota FROM relawan_kampus WHERE id = ? AND dummy = 0").bind(v.kampus_id).first();
     if (!k) return gagal(404, "kampus mitra tidak ditemukan");
@@ -95,14 +100,17 @@ async function daftar(env, req, url, kini) {
     const n = (await env.DB.prepare(`SELECT count(*) n FROM relawan WHERE kampus_id = ? AND anonim = 0 AND status NOT IN ${AKTIF_PENDAFTAR}`).bind(k.id).first()).n;
     if (n >= k.kuota) return gagal(409, "kuota relawan kampus ini sudah penuh. Hubungi koordinator kampusmu atau daftar lewat jalur umum.");
   }
-  const ada = await env.DB.prepare(`SELECT 1 FROM relawan WHERE anonim = 0 AND status NOT IN ${AKTIF_PENDAFTAR} AND (wa = ? OR email = ?) LIMIT 1`).bind(v.wa, v.email).first();
-  const SUDAH = "Nomor WhatsApp atau email ini sudah terdaftar sebagai relawan. Kode pribadimu muncul sekali saat mendaftar; kalau hilang, hubungi admin untuk dibuatkan kode baru.";
+  /* daftar_hitam dicocokkan lewat hash juga (barisnya bisa sudah diminimalkan oleh bersihkanRelawan) */
+  const ada = await env.DB.prepare(`SELECT 1 FROM relawan WHERE (anonim = 0 AND status NOT IN ${AKTIF_PENDAFTAR} AND (wa = ?1 OR email = ?2)) OR (status = 'daftar_hitam' AND (wa_sha = ?3 OR email_sha = ?4)) LIMIT 1`)
+    .bind(v.wa, v.email, wa_sha, email_sha).first();
+  /* pesan generik: tidak menyebut kolom mana yang bentrok (oracle enumerasi) */
+  const SUDAH = "Pendaftaran tidak dapat diproses dengan data ini. Jika kamu pernah mendaftar, pakai tautan pribadimu; kalau hilang, hubungi admin.";
   if (ada) return gagal(409, SUDAH);
   const id = acak(8), {kode, kode_sha} = await kodeBaru();
   try {
     await env.DB.prepare(`INSERT INTO relawan (id, kode_sha, nama, wa, email, prov, kab, jalur, kampus_id, organisasi, keahlian, sertifikat, hari_per_minggu, maks_hari, luar_provinsi, gol_darah,
-      darurat_nama, darurat_wa, status, setuju_pdp, dibuat, diubah) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'terdaftar', 1, ?, ?)`)
-      .bind(id, kode_sha, v.nama, v.wa, v.email, v.prov, v.kab, v.jalur, v.kampus_id, v.organisasi, JSON.stringify(v.keahlian), v.sertifikat, v.hari, v.maks, v.luar, v.gol, v.dn, v.dw, kini, kini).run();
+      darurat_nama, darurat_wa, status, setuju_pdp, dibuat, diubah, wa_sha, email_sha) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'terdaftar', 1, ?, ?, ?, ?)`)
+      .bind(id, kode_sha, v.nama, v.wa, v.email, v.prov, v.kab, v.jalur, v.kampus_id, v.organisasi, JSON.stringify(v.keahlian), v.sertifikat, v.hari, v.maks, v.luar, v.gol, v.dn, v.dw, kini, kini, wa_sha, email_sha).run();
   } catch (e) { if (/UNIQUE/i.test(e?.message)) return gagal(409, SUDAH); throw e; }
   /* kode hanya ditampilkan SEKALI; di fragmen (#k=) supaya tidak masuk log server */
   return json({status: "terdaftar", kode, tautan: `${url.origin}/relawan/saya#k=${kode}`}, 201);
@@ -158,6 +166,7 @@ const batalkanTugas = (env, relawanId, kini) => env.DB.prepare("UPDATE relawan_p
 
 async function ubahSaya(env, req, kini) {
   const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
+  const lj = await laju(env, r.id, "relawan.ubah", [[JAM, 60]], kini); if (lj) return lj;
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
   const o = b.o;
   if (r.status === "daftar_hitam") return gagal(403, "akunmu tidak bisa diubah. Hubungi admin.");
@@ -181,16 +190,28 @@ async function ubahSaya(env, req, kini) {
   }
   return gagal(400, "aksi harus siap, istirahat, ketersediaan, atau cabut");
 }
-/* hak UU PDP: data pribadi dikosongkan; baris, penugasan, dan jam kerja tetap sebagai angka tanpa nama */
-const anonimkan = (env, id, kini) => env.DB.batch([
+/* hak UU PDP. Dikosongkan: semua identitas dan kuasi-identifier (nama, kontak, kab, organisasi, kampus_id, keahlian, ketersediaan, gol. darah, sertifikat, alasan, pembuat/pemverifikasi `oleh`,
+   tanggal verifikasi) di relawan; lat/lon check-in dan `oleh` di jam; polis, catatan nilai, `oleh` di penugasan; pelatihan dihapus. Yang TETAP: prov (agregat per provinsi), jalur, menit/sah jam kerja,
+   status/asuransi/nilai penugasan, dan stempel dibuat/diubah sebagai angka tanpa identitas. hash WA/email hanya dipertahankan untuk daftar_hitam (penolak pendaftaran ulang; hitam=true). */
+const anonimkan = (env, id, kini, hitam = false) => env.DB.batch([
   tutupJam(env, id, kini), batalkanTugas(env, id, kini),
   env.DB.prepare("DELETE FROM relawan_pelatihan WHERE relawan_id = ?").bind(id),
+  env.DB.prepare("UPDATE relawan_jam SET lat = NULL, lon = NULL, oleh = NULL WHERE relawan_id = ?").bind(id),
+  env.DB.prepare("UPDATE relawan_penugasan SET polis = NULL, nilai_catatan = NULL, oleh = NULL WHERE relawan_id = ?").bind(id),
   env.DB.prepare(`UPDATE relawan SET nama = '(dihapus)', wa = NULL, email = NULL, kab = '(dihapus)', organisasi = NULL, sertifikat = NULL, gol_darah = NULL, darurat_nama = NULL, darurat_wa = NULL,
-    keahlian = '[]', alasan = NULL, kode_sha = NULL, status = 'nonaktif', anonim = 1, diubah = ?, oleh = NULL WHERE id = ?`).bind(kini, id),
+    keahlian = '[]', alasan = NULL, kode_sha = NULL, kampus_id = NULL, hari_per_minggu = 1, maks_hari = 1, luar_provinsi = 0, diverifikasi = NULL, oleh = NULL,
+    wa_sha = CASE WHEN ?3 THEN wa_sha END, email_sha = CASE WHEN ?3 THEN email_sha END, status = CASE WHEN ?3 THEN 'daftar_hitam' ELSE 'nonaktif' END, anonim = 1, diubah = ?1 WHERE id = ?2`).bind(kini, id, hitam ? 1 : 0),
 ]);
+/* retensi (cron): ditolak/nonaktif tak berubah > 180 hari dianonimkan; daftar_hitam diminimalkan jadi hash WA/email. Mengembalikan jumlah baris. */
+export async function bersihkanRelawan(env, kini = Date.now()) {
+  const rows = baris(await env.DB.prepare("SELECT id, status FROM relawan WHERE anonim = 0 AND dummy = 0 AND status IN ('ditolak', 'nonaktif', 'daftar_hitam') AND diubah < ? ORDER BY diubah LIMIT 200").bind(kini - 180 * HARI).all());
+  for (const r of rows) await anonimkan(env, r.id, kini, r.status === "daftar_hitam");
+  return rows.length;
+}
 
 async function aksiPenugasanSaya(env, req, id, kini) {
   const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
+  const lj = await laju(env, r.id, "relawan.penugasan", [[JAM, 60]], kini); if (lj) return lj;
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
   const o = b.o;
   const g = await env.DB.prepare("SELECT id, status, permintaan_id FROM relawan_penugasan WHERE id = ? AND relawan_id = ?").bind(id, r.id).first();   // milik orang lain = tidak ada
@@ -249,6 +270,7 @@ async function kampusSaya(env, req, kini) {
 }
 async function putusKampus(env, req, id, kini) {
   const k = await dariKodeKampus(env, req, kini); if (k instanceof Response) return k;
+  const lj = await laju(env, k.id, "relawan.putus_relawan", [[JAM, 600]], kini); if (lj) return lj;   // koordinator memutus banyak mahasiswa: batas longgar
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
   const aksi = b.o.aksi, alasan = tx(b.o.alasan, 300);
   if (aksi !== "verifikasi" && aksi !== "tolak") return gagal(400, "aksi harus verifikasi atau tolak");
@@ -262,7 +284,7 @@ async function putusKampus(env, req, id, kini) {
 }
 async function putusJam(env, req, id, kini, kampus) {
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
-  const ke = {sah: 1, tolak: 2, menunggu: 0}[b.o.aksi];
+  const AKSI_JAM = {sah: 1, tolak: 2, menunggu: 0}, ke = typeof b.o.aksi === "string" && Object.hasOwn(AKSI_JAM, b.o.aksi) ? AKSI_JAM[b.o.aksi] : undefined;
   if (ke === undefined) return gagal(400, "aksi harus sah, tolak, atau menunggu");
   const oleh = kampus ? "kampus:" + kampus.id : "admin";
   const sql = `UPDATE relawan_jam SET sah = ?, oleh = ? WHERE id = ? AND keluar IS NOT NULL ${kampus ? "AND relawan_id IN (SELECT id FROM relawan WHERE kampus_id = ?)" : ""}`;
@@ -271,6 +293,7 @@ async function putusJam(env, req, id, kini, kampus) {
 }
 async function putusJamKampus(env, req, id, kini) {
   const k = await dariKodeKampus(env, req, kini); if (k instanceof Response) return k;
+  const lj = await laju(env, k.id, "relawan.putus_jam", [[JAM, 600]], kini); if (lj) return lj;
   return putusJam(env, req, id, kini, k);
 }
 /* sel CSV: awalan = + - @ diberi tanda kutip tunggal supaya tidak dibaca sebagai rumus oleh Excel */

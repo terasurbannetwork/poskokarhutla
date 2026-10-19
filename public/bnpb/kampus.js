@@ -2,7 +2,8 @@
    (untuk konversi SKS atau KKN tematik), unduh rekap CSV. Tanpa WA/email: data pribadi hanya untuk admin. CSP: tanpa inline. */
 (() => {
   "use strict";
-  const $ = id => document.getElementById(id), K = "pb_kode_kampus";
+  const $ = id => document.getElementById(id), K = "pb_kode_kampus";   // kode di sessionStorage (hilang saat tab ditutup); tombol Keluar menghapusnya
+  try { localStorage.removeItem(K); } catch (e) {}   // sisa versi lama
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const angka = n => Number(n || 0).toLocaleString("id-ID", {maximumFractionDigits: 1});
   const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "-";
@@ -20,8 +21,8 @@
   const sp = ([k, i, t]) => pil(k, i, t);
   const pesan = (t, ok) => { const p = $("pesan"); p.textContent = t || ""; p.className = "bn-pesan " + (t ? (ok ? "ok" : "galat") : ""); };
   let kode = (location.hash.match(/^#k=([0-9a-fA-F]{26})$/) || [])[1]?.toLowerCase() || null, nama = {};
-  if (kode) { try { localStorage.setItem(K, kode); } catch (e) {} try { history.replaceState(null, "", location.pathname); } catch (e) {} }
-  else { try { const b = localStorage.getItem(K); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; } catch (e) {} }
+  if (kode) { try { sessionStorage.setItem(K, kode); } catch (e) {} try { history.replaceState(null, "", location.pathname); } catch (e) {} }
+  else { try { const b = sessionStorage.getItem(K); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; } catch (e) {} }
   const api = async (metode, j, body) => { const r = await fetch(j, {method: metode, headers: {"x-kode": kode, ...(body ? {"content-type": "application/json"} : {})}, body: body ? JSON.stringify(body) : undefined}); return {ok: r.ok, s: r.status, r, j: r.headers.get("content-type")?.includes("json") ? await r.json().catch(() => ({})) : {}}; };
 
   function Tabel(el, kolom, rows, kosong, ukuran = 10) {
@@ -45,7 +46,7 @@
     const k = x.kampus, rel = x.relawan, sahMenit = rel.reduce((a, r) => a + r.jam_sah_menit, 0), menunggu = rel.reduce((a, r) => a + r.jam_menunggu_menit, 0);
     nama = Object.fromEntries(rel.map(r => [r.id, r.nama]));
     $("isi").hidden = false;
-    $("isi").innerHTML = `<div class="bn-judul"><h1>${esc(k.nama)}</h1><div class="bn-aksi">${sp(MOU[k.status])}<button class="bn-tombol sekunder" id="unduh" type="button">Unduh rekap CSV</button></div></div>
+    $("isi").innerHTML = `<div class="bn-judul"><h1>${esc(k.nama)}</h1><div class="bn-aksi">${sp(MOU[k.status])}<button class="bn-tombol sekunder" id="unduh" type="button">Unduh rekap CSV</button><button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>
       <p class="rl-kecil">${esc(k.no_mou)} · ${tgl(k.mulai)} sampai ${tgl(k.berakhir)}${k.status === "segera_habis" ? ` · berakhir ${angka(k.sisa_hari)} hari lagi` : ""}${k.status === "habis" ? ". Kampus tidak menerima pendaftar baru; relawan yang sudah ada tetap bisa kamu kelola." : ""}</p>
       <section class="bn-grid">${kartu("orang", `${angka(k.terisi)} / ${angka(k.kuota)}`, "Kuota terisi", "p-biru")}${kartu("jam", angka(rel.filter(r => r.status === "terdaftar").length), "Perlu diverifikasi", "p-kuning")}
         ${kartu("centang", jam(sahMenit), "Jam kerja tervalidasi", "p-hijau")}${kartu("jam", jam(menunggu), "Jam menunggu validasi", "p-oranye")}</section>
@@ -59,11 +60,12 @@
   }
   async function muat() {
     const r = await api("GET", "/api/relawan/kampus/saya");
-    if (!r.ok) { $("isi").hidden = true; if (r.s === 403) { $("tanpaKode").hidden = false; pesan("Tautan koordinatormu tidak berlaku (salah atau sudah dicabut). Minta tautan baru dari admin."); try { localStorage.removeItem(K); } catch (e) {} } else pesan(r.j.galat || "Halaman belum bisa dimuat."); return; }
+    if (!r.ok) { $("isi").hidden = true; if (r.s === 403) { $("tanpaKode").hidden = false; pesan("Tautan koordinatormu tidak berlaku (salah atau sudah dicabut). Minta tautan baru dari admin."); try { sessionStorage.removeItem(K); } catch (e) {} } else pesan(r.j.galat || "Halaman belum bisa dimuat."); return; }
     const kf = await (await fetch("/api/relawan/ringkas")).json().catch(() => ({}));
     $("tanpaKode").hidden = true; gambar({...r.j, keahlianNama: kf.konfig?.keahlian || {}});
   }
   $("isi").addEventListener("click", async e => {
+    if (e.target.closest("[data-keluar]")) { try { sessionStorage.removeItem(K); } catch (x) {} kode = null; $("isi").hidden = true; $("tanpaKode").hidden = false; return pesan("Kamu sudah keluar. Buka lagi tautan koordinator untuk masuk.", true); }
     if (e.target.closest("#unduh")) {
       const r = await api("GET", "/api/relawan/kampus/csv"); if (!r.ok) return pesan(r.j.galat || "Rekap gagal diunduh.");
       const b = await r.r.blob(), a = document.createElement("a"); a.href = URL.createObjectURL(b); a.download = (r.r.headers.get("content-disposition") || "").match(/filename="([^"]+)"/)?.[1] || "rekap-relawan.csv"; a.click(); setTimeout(() => URL.revokeObjectURL(a.href), 4000); return;

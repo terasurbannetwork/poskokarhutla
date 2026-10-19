@@ -1,4 +1,4 @@
-/* /relawan/saya: halaman pribadi relawan. Kode dari fragmen #k=… (tidak ikut ke server/log) disimpan di localStorage, dikirim lewat header x-kode.
+/* /relawan/saya: halaman pribadi relawan. Kode dari fragmen #k=… (tidak ikut ke server/log) disimpan di sessionStorage (hilang saat tab ditutup; tombol Keluar menghapusnya), dikirim lewat header x-kode.
    Status alur, penugasan (terima/tolak, check-in/out dengan lokasi opsional), jam kerja, pelatihan, ketersediaan, dan hapus data (hak UU PDP). CSP: tanpa inline. */
 (() => {
   "use strict";
@@ -20,9 +20,10 @@
   const SAH = {0: ["p-kuning", "jam", "Menunggu validasi"], 1: ["p-hijau", "centang", "Sah"], 2: ["p-merah", "x", "Ditolak"]};
   const sp = ([k, i, t]) => pil(k, i, t);
   const pesan = (t, ok) => { const p = $("pesan"); p.textContent = t || ""; p.className = "bn-pesan " + (t ? (ok ? "ok" : "galat") : ""); };
-  const baca = () => { try { return localStorage.getItem(K); } catch (e) { return null; } };
+  const baca = () => { try { return sessionStorage.getItem(K); } catch (e) { return null; } };
+  try { localStorage.removeItem(K); } catch (e) {}   // sisa versi lama: kode tidak lagi disimpan permanen
   let kode = (location.hash.match(/^#k=([0-9a-fA-F]{26})$/) || [])[1]?.toLowerCase() || null, d = null;
-  if (kode) { try { localStorage.setItem(K, kode); } catch (e) {} try { history.replaceState(null, "", location.pathname); } catch (e) {} }
+  if (kode) { try { sessionStorage.setItem(K, kode); } catch (e) {} try { history.replaceState(null, "", location.pathname); } catch (e) {} }
   else { const b = baca(); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
   async function api(metode, j, body) {
@@ -57,7 +58,7 @@
   function gambar(x) {
     const r = x.relawan, st = STATUS[r.status], idx = x.alur.indexOf(r.status), berhenti = idx < 0;
     $("isi").hidden = false;
-    $("isi").innerHTML = `<section class="bn-blok"><div class="bn-judul"><h1>${esc(r.nama)}</h1><div class="bn-aksi">${sp(st)}</div></div>
+    $("isi").innerHTML = `<section class="bn-blok"><div class="bn-judul"><h1>${esc(r.nama)}</h1><div class="bn-aksi">${sp(st)}<button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>
       <ol class="bn-alur" aria-label="Alur relawan">${x.alur.map((s, i) => `<li ${s === r.status ? 'aria-current="step"' : ""} class="${!berhenti && i < idx ? "lewat" : ""}">${NAMA_ALUR[s]}</li>`).join("")}</ol>
       ${r.alasan ? `<p>Catatan dari admin: ${esc(r.alasan)}</p>` : ""}
       <div class="rl-baris"><span class="rl-kecil">${esc(r.kab)}, ${esc(d.provinsi[r.prov] || r.prov)}</span>${r.kampus ? pil("p-kuning", "orang", r.kampus) : ""}
@@ -71,7 +72,7 @@
         <label class="bn-isian">Siap bertugas sampai (hari)<input name="maks_hari" type="number" min="1" max="365" value="${r.maks_hari}" required></label>
         <label class="bn-isian">Bersedia keluar provinsi<select name="luar_provinsi"><option value="ya" ${r.luar_provinsi ? "selected" : ""}>Ya</option><option value="tidak" ${r.luar_provinsi ? "" : "selected"}>Tidak</option></select></label></div>
         <div><button class="bn-tombol" type="submit">Simpan ketersediaan</button></div></form></section>
-      <section class="bn-blok rl-bahaya"><details><summary>Hapus datamu</summary><p>Datamu (nama, kontak, kontak darurat, sertifikat) dihapus permanen sesuai hak UU PDP. Jam kerja yang sudah tercatat tetap ada sebagai angka tanpa nama. Tautan ini tidak bisa dipakai lagi.</p>
+      <section class="bn-blok rl-bahaya"><details><summary>Hapus datamu</summary><p>Identitasmu (nama, WhatsApp, email, kota, kontak darurat, sertifikat, pelatihan, lokasi check-in) dihapus permanen sesuai hak UU PDP. Yang tersisa hanya angka tanpa identitas: total jam kerja, provinsi, dan status penugasan, untuk statistik. Tautan ini tidak bisa dipakai lagi.</p>
         <form id="fHapus" class="bn-baris"><label class="bn-isian">Ketik HAPUS untuk melanjutkan<input name="konfirmasi" autocomplete="off"></label><div><button class="bn-tombol sekunder" type="submit">Hapus dataku</button></div></form></details></section>`;
     Tabel($("tJam"), [{l: "Masuk", k: "masuk", h: j => wkt(j.masuk)}, {l: "Keluar", k: "keluar", h: j => j.keluar ? wkt(j.keluar) : pil("p-hijau", "api", "Sedang berjalan")}, {l: "Durasi", k: "menit", h: j => durasi(j.menit)},
       {l: "Tugas", k: "judul"}, {l: "Validasi", v: j => j.sah, h: j => sp(SAH[j.sah])}], x.jam, "Belum ada jam kerja.");
@@ -79,13 +80,14 @@
   }
   async function muat() {
     const r = await api("GET", "/api/relawan/saya");
-    if (!r.ok) { $("isi").hidden = true; if (r.s === 403) { $("tanpaKode").hidden = false; pesan("Tautan pribadimu tidak berlaku (salah atau sudah dicabut). Minta tautan baru dari admin."); try { localStorage.removeItem(K); } catch (e) {} } else pesan(r.j.galat || "Halaman belum bisa dimuat."); return; }
+    if (!r.ok) { $("isi").hidden = true; if (r.s === 403) { $("tanpaKode").hidden = false; pesan("Tautan pribadimu tidak berlaku (salah atau sudah dicabut). Minta tautan baru dari admin."); try { sessionStorage.removeItem(K); } catch (e) {} } else pesan(r.j.galat || "Halaman belum bisa dimuat."); return; }
     const k = await (await fetch("/api/relawan/ringkas")).json().catch(() => ({}));
     d = {provinsi: k.konfig?.provinsi || {}, keahlianNama: k.konfig?.keahlian || {}}; $("tanpaKode").hidden = true; gambar(r.j);
   }
   const lokasi = () => new Promise(ok => navigator.geolocation ? navigator.geolocation.getCurrentPosition(p => ok({lat: p.coords.latitude, lon: p.coords.longitude}), () => ok(null), {enableHighAccuracy: true, timeout: 15000}) : ok(null));
 
   $("isi").addEventListener("click", async e => {
+    if (e.target.closest("[data-keluar]")) { try { sessionStorage.removeItem(K); } catch (x) {} kode = null; $("isi").hidden = true; $("tanpaKode").hidden = false; return pesan("Kamu sudah keluar. Buka lagi tautan pribadimu untuk masuk.", true); }
     const t = e.target.closest("button[data-a], button[data-s]"); if (!t) return;
     t.disabled = true; pesan("");
     let r;
@@ -108,7 +110,7 @@
     if (f.id === "fHapus") {
       const r = await api("POST", "/api/relawan/saya", {aksi: "cabut", konfirmasi: new FormData(f).get("konfirmasi")});
       if (!r.ok) { tb.disabled = false; return pesan(r.j.galat || "Gagal menghapus."); }
-      try { localStorage.removeItem(K); } catch (x) {}
+      try { sessionStorage.removeItem(K); } catch (x) {}
       $("isi").hidden = true; pesan("Datamu sudah dihapus. Terima kasih sudah bersedia membantu.", true);
     }
   });

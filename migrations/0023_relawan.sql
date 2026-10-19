@@ -52,12 +52,20 @@ CREATE TABLE IF NOT EXISTS relawan (
   diverifikasi INTEGER,
   oleh TEXT CHECK (oleh IS NULL OR length(oleh) <= 64),
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
+  -- sha256 bergaram WA/email: dipakai menolak pendaftaran ulang daftar_hitam walau datanya sudah diminimalkan; NULL untuk yang lain setelah anonim
+  wa_sha TEXT CHECK (wa_sha IS NULL OR length(wa_sha) = 64),
+  email_sha TEXT CHECK (email_sha IS NULL OR length(email_sha) = 64),
   CHECK (jalur <> 'kampus' OR kampus_id IS NOT NULL OR anonim = 1),
-  CHECK (anonim = 0 OR (wa IS NULL AND email IS NULL AND darurat_wa IS NULL AND darurat_nama IS NULL AND kode_sha IS NULL))
+  -- anonim=1 (hak UU PDP): D1 menjamin identitas dan kuasi-identifier kosong. Tersisa prov, jalur, stempel dibuat/diubah. Hash kontak hanya boleh ada pada daftar_hitam.
+  CHECK (anonim = 0 OR (wa IS NULL AND email IS NULL AND darurat_wa IS NULL AND darurat_nama IS NULL AND kode_sha IS NULL AND organisasi IS NULL AND sertifikat IS NULL AND gol_darah IS NULL
+    AND alasan IS NULL AND kampus_id IS NULL AND oleh IS NULL AND diverifikasi IS NULL AND nama = '(dihapus)' AND kab = '(dihapus)' AND keahlian = '[]'
+    AND hari_per_minggu = 1 AND maks_hari = 1 AND luar_provinsi = 0 AND (status = 'daftar_hitam' OR (wa_sha IS NULL AND email_sha IS NULL))))
 );
 CREATE INDEX IF NOT EXISTS relawan_status ON relawan (status, prov);
 CREATE INDEX IF NOT EXISTS relawan_kampus_i ON relawan (kampus_id, status);
 CREATE UNIQUE INDEX IF NOT EXISTS relawan_wa_aktif ON relawan (wa) WHERE anonim = 0 AND status NOT IN ('ditolak', 'nonaktif');
+CREATE INDEX IF NOT EXISTS relawan_wa_sha ON relawan (wa_sha) WHERE wa_sha IS NOT NULL;
+CREATE INDEX IF NOT EXISTS relawan_email_sha ON relawan (email_sha) WHERE email_sha IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS relawan_email_aktif ON relawan (email) WHERE anonim = 0 AND status NOT IN ('ditolak', 'nonaktif');
 
 -- CHECK SQLite tidak boleh subquery: tiap butir keahlian dijaga trigger (daftar sama dengan KEAHLIAN di src/relawan.js).

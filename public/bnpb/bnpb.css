@@ -1,7 +1,7 @@
 /* Ruang Koordinasi BNPB: gaya bersama halaman publik (/bnpb, /relawan, /alun-alun, /riset, /risiko, /sitrep, /meja).
    Token, header, tabel, pil, tombol dari admin.css (satu bahasa visual dengan panel admin); di sini hanya tambahan halaman publik.
    Modul menambah gayanya di berkas .css sendiri, tidak menyalin isi berkas ini. */
-@import url("/admin/admin.css?v=4");
+@import url("/admin/admin.css?v=5");
 
 .bn-wrap{max-width:1440px;margin:0 auto;padding:20px 24px 48px}
 .bn-judul{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 16px}
