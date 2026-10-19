@@ -18,7 +18,7 @@
   const durasi = ms => { if (ms == null) return "belum ada"; const m = Math.round(ms / 60000); if (m < 60) return `${angka(m)} menit`; const j = Math.floor(m / 60); return j < 48 ? `${angka(j)} jam ${angka(m % 60)} menit` : `${angka(Math.round(j / 24))} hari`; };
   const umur = t => Math.floor((Date.now() - t) / 3600e3);
   const TABS = [["antrean", "Antrean moderasi"], ["utas", "Utas"], ["bantuan", "Butuh bantuan"], ["umum", "Pengumuman"]];
-  let tab = "antrean", D = null, buka = null;
+  let tab = "antrean", D = null, buka = null, teruskan = null;   // teruskan = {id, jenis} formulir Teruskan yang terbuka
 
   const {kirim} = Admin, ambil = u => Admin.ambil(u, "Alun-alun");   // public/admin/bersama.js
   const pesan = (t, ok) => { const p = document.getElementById("axPesan"); if (p) { p.textContent = t || ""; p.className = "ax-pesan " + (ok ? "ok" : "galat"); } };
@@ -51,14 +51,30 @@
     h("td", null, pilJenis(u.jenis)), h("td", null, h("div", {class: "ax-aksi"}, pil(u.moderasi, MOD[u.moderasi]), u.bantuan ? pil(u.bantuan, BANTUAN[u.bantuan]) : null, u.terjawab ? pil("selesai", "Terjawab", "centang") : null, u.sematan ? pil("pengumuman", "Tersemat") : null)),
     h("td", {class: "n", teks: angka(u.balasan)}), h("td", {class: "n", teks: angka(u.upvote)}), h("td", {class: "w", teks: jam(u.dibuat)}),
     h("td", {class: "a"}, tombol(buka === u.id ? "Tutup" : "Buka", {"data-aksi": "buka"}, "utama")))), "Belum ada utas."), h("div", {id: "axPanel", class: "ax-panel"}));
+  /* "Teruskan ke relawan/logistik": formulir ringkas; wilayah dan judul diambil server dari utas */
+  function formTeruskan() {
+    const u = D.bantuan.find(x => x.id === teruskan.id); if (!u) return null;
+    const r = teruskan.jenis === "relawan", hari = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    const f = (label, el) => h("label", null, label, el), inp = (name, att = {}) => h("input", {name, required: true, ...att});
+    const sel = (name, opsi) => h("select", {name, required: true}, ...opsi.map(([k, v]) => h("option", {value: k, teks: v})));
+    return h("form", {id: "axFormTeruskan", class: "ad-kartu ax-form"}, h("h3", {teks: `Teruskan ke ${r ? "relawan" : "logistik"}: ${u.judul}`}),
+      h("p", {class: "ax-meta", teks: `Wilayah: ${[u.kab, D.prov[u.prov]].filter(Boolean).join(", ") || "tidak ada"}`}),
+      r ? h("div", {class: "ax-baris"}, f("Keahlian", sel("keahlian", Object.entries(D.keahlian))), f("Jumlah orang", inp("jumlah", {type: "number", min: "1", max: "1000", value: "5"})), f("Mulai", inp("mulai", {type: "date", value: hari})), f("Selesai (opsional)", inp("selesai", {type: "date", required: false})))
+        : h("div", {class: "ax-baris"}, f("Barang", sel("barang", D.barang.map(b => [b, b.replace(/_/g, " ")]))), f("Jumlah", inp("jumlah", {type: "number", min: "1", value: "100"})), f("Satuan", inp("satuan", {maxlength: "20", placeholder: "kg"})),
+          f("Posko atau lokasi", inp("posko", {maxlength: "80"})), f("Kebutuhan untuk (jiwa)", inp("kebutuhan_untuk", {type: "number", min: "0", value: "0"}))),
+      h("div", {class: "ax-aksi"}, h("button", {class: "ad-tombol utama", type: "submit"}, "Buat dan tautkan"), tombol("Batal", {"data-aksi": "batal_teruskan"})));
+  }
   function tBantuan() {
+    return h("div", {class: "ax-isi"}, tabelBantuan(), teruskan ? formTeruskan() : null);
+  }
+  function tabelBantuan() {
     return tabel(["Utas", "Umur", "Status", "Teruskan", "Catatan", ""], D.bantuan.map(u => {
       const sel = h("select", {class: "ax-sel", "data-f": "status"}, ...Object.entries(BANTUAN).map(([k, v]) => h("option", {value: k, teks: v, selected: u.bantuan === k})));
       const ke = h("select", {class: "ax-sel", "data-f": "ke"}, h("option", {value: "", teks: "Tidak diteruskan"}), h("option", {value: "relawan", teks: "Relawan", selected: u.teruskan_ke === "relawan"}), h("option", {value: "logistik", teks: "Logistik", selected: u.teruskan_ke === "logistik"}));
       const cat = h("input", {class: "ax-sel", "data-f": "catatan", maxlength: "300", value: u.teruskan_catatan || "", placeholder: "Catatan untuk tim"});
       return h("tr", {"data-id": u.id, class: u.bantuan === "terbuka" && umur(u.dibuat) >= 24 ? "ax-tua" : ""},
-        h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", ")), u.dummy ? pil("dummy", "DUMMY") : null), h("td", {class: "n", teks: `${angka(umur(u.dibuat))} jam`}), h("td", null, sel), h("td", null, ke), h("td", null, cat),
-        h("td", {class: "a"}, tombol("Simpan", {"data-aksi": "simpan_bantuan"}, "utama")));
+        h("td", null, cuplik(u.judul, [u.kab, D.prov[u.prov]].filter(Boolean).join(", ")), u.dummy ? pil("dummy", "DUMMY") : null), h("td", {class: "n", teks: `${angka(umur(u.dibuat))} jam`}), h("td", null, sel), h("td", null, ke, h("div", {class: "ax-aksi"}, ...u.tautan.map(t => pil(t.tahap === "terpenuhi" || t.tahap === "diterima" ? "selesai" : "ditangani", t.label)))), h("td", null, cat),
+        h("td", {class: "a"}, h("div", {class: "ax-aksi"}, tombol("Simpan", {"data-aksi": "simpan_bantuan"}, "utama"), tombol("Relawan", {"data-aksi": "form_relawan"}), tombol("Logistik", {"data-aksi": "form_logistik"}))));
     }), "Tidak ada permintaan bantuan yang masih berjalan.");
   }
   function tUmum() {
@@ -106,6 +122,8 @@
     const b = e.target.closest("[data-aksi]"); if (!b) return;
     const baris = b.closest("[data-id]"), id = baris?.dataset.id, a = b.dataset.aksi;
     if (a === "buka") { buka = buka === id ? null : id; gambar(); return; }
+    if (a === "form_relawan" || a === "form_logistik") { teruskan = {id, jenis: a.slice(5)}; gambar(); return; }
+    if (a === "batal_teruskan") { teruskan = null; gambar(); return; }
     let r;
     if (a === "simpan_bantuan") {
       const f = n => baris.querySelector(`[data-f=${n}]`).value;
@@ -125,6 +143,12 @@
     if (f.id === "axFormUmum") {
       const d = Object.fromEntries(new FormData(f)), r = await kirim(API, {jenis: "pengumuman", judul: d.judul, teks: d.teks, bencana: d.bencana, prov: d.prov, kab: d.kab || null, sematan: d.sematan === "on"});
       pesan(r.ok ? "Pengumuman terbit." : r.j.galat || `Gagal (${r.status})`, r.ok); if (r.ok) await muat();
+    } else if (f.id === "axFormTeruskan") {
+      const d = Object.fromEntries(new FormData(f)), n = k => d[k] === "" || d[k] == null ? undefined : Number(d[k]);
+      const b = teruskan.jenis === "relawan" ? {aksi: "teruskan_relawan", keahlian: d.keahlian, jumlah: n("jumlah"), mulai: d.mulai, selesai: d.selesai || undefined}
+        : {aksi: "teruskan_logistik", barang: d.barang, jumlah: n("jumlah"), satuan: d.satuan, posko: d.posko, kebutuhan_untuk: n("kebutuhan_untuk")};
+      const r = await kirim(`${API}/admin/${teruskan.id}`, b);
+      pesan(r.ok ? "Diteruskan dan ditautkan." : r.j.galat || `Gagal (${r.status})`, r.ok); if (r.ok) { teruskan = null; await muat(); }
     } else if (f.id === "axFormBalas") {
       const r = await kirim(`${API}/balas/${buka}`, {teks: f.teks.value, petugas: true});
       pesan(r.ok ? "Balasan petugas terkirim." : r.j.galat || `Gagal (${r.status})`, r.ok); if (r.ok) await muat();

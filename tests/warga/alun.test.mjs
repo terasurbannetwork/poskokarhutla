@@ -15,7 +15,7 @@ const tulis = (b, h = ip(1)) => U.api("POST", "/api/alun", {...SAH, ...b}, h);
 const ID = /^[0-9a-f]{16}$/;
 const sql = async t => (await U.DB.prepare("SELECT sql FROM sqlite_master WHERE name = ?").bind(t).first()).sql;
 const enumSql = (s, kol) => [...s.match(new RegExp(`${kol} IN \\(([^)]*)\\)`))[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
-const DEPAN = {utas: null};
+const DEPAN = {utas: null}, S1 = {};
 
 uji("migrasi 0024 idempoten (dijalankan ulang tanpa merusak isi)", async () => {
   const f = readFileSync(path.join(AKAR, "migrations/0024_alun.sql"), "utf8");
@@ -336,4 +336,145 @@ uji("perbaikan ulasan: terjawab oleh pemilik dibatasi 30 per jam per kode", asyn
   const t = () => U.api("POST", "/api/alun/terjawab/" + u.id, {balasan_id: b}, {...ip(162), "x-kode": u.kode});
   for (let i = 0; i < 30; i++) assert.equal((await t()).s, 200, "ke-" + i);
   const r = await t(); assert.equal(r.s, 429); assert.ok(r.h.get("retry-after"));
+});
+
+/* ---------------- C1: Teruskan ke relawan / logistik (migrasi 0028, alun_tautan) ---------------- */
+const hari = d => new Date(Date.now() + 7 * 36e5 + d * 864e5).toISOString().slice(0, 10);
+const bantuan = async (n, o = {}) => (await tulis({jenis: "butuh_bantuan", judul: "Butuh tenaga medis dan beras", ...o}, ip(n))).j.id;
+const teruskan = (id, b, h = ADMIN) => U.api("POST", "/api/alun/admin/" + id, b, h);
+const FORM_R = {aksi: "teruskan_relawan", keahlian: "medis", jumlah: 5, mulai: hari(0), selesai: hari(3)};
+const FORM_L = {aksi: "teruskan_logistik", barang: "beras", jumlah: 500, satuan: "kg", posko: "Posko Balai Desa", kebutuhan_untuk: 120};
+const relawanUji = async n => {   // relawan siap tugas dengan data pribadi yang tidak boleh bocor ke publik
+  const id = `ab${String(n).padStart(14, "0")}`;
+  await U.DB.prepare("INSERT INTO relawan (id, nama, wa, email, prov, kab, jalur, keahlian, hari_per_minggu, maks_hari, luar_provinsi, status, setuju_pdp, dibuat, diubah) VALUES (?, ?, ?, ?, '33', 'Kabupaten Demak', 'umum', '[\"medis\"]', 3, 30, 0, 'siap_tugas', 1, 1, 1)")
+    .bind(id, "Siti Rahasia " + n, "62812000000" + String(n).padStart(2, "0"), `siti${n}@rahasia.id`).run();
+  return id;
+};
+const tugaskan = async (pid, n) => { const r = await relawanUji(n); await U.DB.prepare("INSERT INTO relawan_penugasan (id, permintaan_id, relawan_id, status, dibuat, diubah) VALUES (?, ?, ?, 'diterima', 1, 1)").bind(`cd${String(n).padStart(14, "0")}`, pid, r).run(); };
+const pil = async id => (await U.api("GET", "/api/alun/" + id)).j.tautan;
+
+uji("C1 teruskan ke relawan: membuat permintaan relawan SUNGGUHAN (wilayah dan judul dari utas), tautan dua arah, utas jadi ditangani", async () => {
+  const id = await bantuan(201, {kab: "Kabupaten Demak", lat: -6.912345, lon: 110.612399});
+  assert.equal(await U.n("alun_tautan"), 0);
+  const r = await teruskan(id, FORM_R); assert.equal(r.s, 201, r.t);
+  assert.match(r.j.tujuan_id, ID); assert.equal(r.j.jenis, "relawan");
+  const p = await U.DB.prepare("SELECT * FROM relawan_permintaan WHERE id = ?").bind(r.j.tujuan_id).first();
+  assert.equal(p.judul, "Butuh tenaga medis dan beras"); assert.equal(p.prov, "33"); assert.equal(p.kab, "Kabupaten Demak"); assert.equal(p.bencana, "banjir"); assert.equal(p.status, "buka");
+  assert.deepEqual(JSON.parse(p.butuh), [{keahlian: "medis", jumlah: 5}]); assert.equal(p.mulai, hari(0)); assert.equal(p.selesai, hari(3)); assert.equal(p.lat, -6.91); assert.equal(p.dummy, 0);
+  assert.match(p.catatan, new RegExp(id));
+  const t = await U.DB.prepare("SELECT utas_id, jenis, tujuan_id FROM alun_tautan").first(); assert.deepEqual({...t}, {utas_id: id, jenis: "relawan", tujuan_id: r.j.tujuan_id});
+  const u = await U.DB.prepare("SELECT teruskan_ke, bantuan FROM alun_utas WHERE id = ?").bind(id).first(); assert.deepEqual({...u}, {teruskan_ke: "relawan", bantuan: "ditangani"});
+  /* permintaan itu muncul di daftar admin relawan (rantai sungguhan, bukan salinan) */
+  const dr = await U.adm("GET", "/api/relawan/admin/permintaan"); assert.ok(dr.j.permintaan.some(x => x.id === r.j.tujuan_id), dr.t.slice(0, 200));
+  S1.relawan = {utas: id, pid: r.j.tujuan_id};
+});
+
+uji("C1 status relawan tampil di utas publik sebagai pil TANPA data pribadi: ditugaskan N dari M, ditutup, terpenuhi", async () => {
+  const {utas, pid} = S1.relawan;
+  assert.deepEqual(await pil(utas), [{jenis: "relawan", tahap: "buka", label: "Relawan ditugaskan 0 dari 5"}]);
+  for (let i = 1; i <= 3; i++) await tugaskan(pid, i);
+  const g = await U.api("GET", "/api/alun/" + utas);
+  assert.deepEqual(g.j.tautan, [{jenis: "relawan", tahap: "buka", label: "Relawan ditugaskan 3 dari 5"}]);
+  for (const s of ["Siti Rahasia", "rahasia.id", "6281200", pid, "relawan_permintaan"]) assert.ok(!g.t.includes(s), `bocor: ${s}`);
+  const dl = await U.api("GET", "/api/alun"); assert.ok(dl.j.utas.find(x => x.id === utas).tautan.length === 1, "pil juga di daftar publik");
+  for (const s of ["Siti Rahasia", pid]) assert.ok(!dl.t.includes(s), `bocor di daftar: ${s}`);
+  await U.DB.prepare("UPDATE relawan_permintaan SET status = 'ditutup' WHERE id = ?").bind(pid).run();
+  assert.equal((await pil(utas))[0].label, "Permintaan relawan ditutup");
+  await U.DB.prepare("UPDATE relawan_permintaan SET status = 'buka' WHERE id = ?").bind(pid).run();
+  for (let i = 4; i <= 5; i++) await tugaskan(pid, i);
+  assert.deepEqual(await pil(utas), [{jenis: "relawan", tahap: "terpenuhi", label: "Kebutuhan relawan terpenuhi"}]);
+  /* admin melihat id tujuan, publik tidak */
+  const a = await U.adm("GET", "/api/alun/admin"); assert.equal(a.j.bantuan.find(x => x.id === utas).tautan[0].id, pid);
+  assert.ok(a.j.keahlian.medis && a.j.barang.includes("beras"), "pilihan formulir dari daftar modul tujuan");
+});
+
+uji("C1 teruskan ke logistik: membuat catatan Meja Logistik berstatus diminta, pil mengikuti diminta, disetujui, dikirim, diterima", async () => {
+  const id = await bantuan(202, {kab: "Kabupaten Lebak"});
+  const r = await teruskan(id, FORM_L); assert.equal(r.s, 201, r.t);
+  const c = await U.DB.prepare("SELECT meja, prov, kab, status, data, dummy FROM meja_catatan WHERE id = ?").bind(r.j.tujuan_id).first();
+  assert.deepEqual({meja: c.meja, prov: c.prov, kab: c.kab, status: c.status, dummy: c.dummy}, {meja: "logistik", prov: "33", kab: "Kabupaten Lebak", status: "diminta", dummy: 0});
+  assert.deepEqual(JSON.parse(c.data), {barang: "beras", jumlah_diminta: 500, satuan: "kg", posko: "Posko Balai Desa", kebutuhan_untuk: 120});
+  assert.equal(await U.n("meja_jejak", `catatan_id = '${r.j.tujuan_id}'`), 1, "jejak status awal ikut tercatat");
+  assert.ok((await U.adm("GET", "/api/meja/catatan?meja=logistik")).j.catatan.some(x => x.id === r.j.tujuan_id), "tampil di Meja Kerja");
+  assert.deepEqual(await pil(id), [{jenis: "logistik", tahap: "diminta", label: "Bantuan diminta"}]);
+  for (const [ke, label] of [["disetujui", "Bantuan disetujui"], ["dikirim", "Bantuan dikirim"], ["diterima", "Bantuan diterima"]]) {
+    await U.DB.prepare("UPDATE meja_catatan SET status = ? WHERE id = ?").bind(ke, r.j.tujuan_id).run();
+    assert.equal((await pil(id))[0].label, label);
+  }
+  const g = await U.api("GET", "/api/alun/" + id); for (const s of [r.j.tujuan_id, "Posko Balai Desa", "meja_catatan"]) assert.ok(!g.t.includes(s), `bocor: ${s}`);
+  S1.logistik = id;
+});
+
+uji("C1 satu utas boleh banyak tautan (relawan dua kali, logistik sekali); semua tampil berurutan", async () => {
+  const id = await bantuan(203, {kab: "Kota Padang"});
+  for (const f of [FORM_R, {...FORM_R, keahlian: "sar", jumlah: 2}, FORM_L]) assert.equal((await teruskan(id, f)).s, 201);
+  assert.equal(await U.n("alun_tautan", `utas_id = '${id}'`), 3);
+  assert.deepEqual((await pil(id)).map(x => x.jenis), ["relawan", "relawan", "logistik"]);
+  assert.equal((await U.adm("GET", "/api/alun/admin")).j.bantuan.find(x => x.id === id).tautan.length, 3);
+  S1.banyak = id;
+});
+
+uji("C1 penolakan: utas tanpa kabupaten 400, bukan butuh_bantuan 400, formulir liar 400, tanpa token/gerbang 403, utas hilang 404 - dan tidak ada baris tujuan yatim", async () => {
+  const sebelum = [await U.n("relawan_permintaan"), await U.n("meja_catatan"), await U.n("alun_tautan")];
+  const tanpaKab = await bantuan(204, {kab: undefined});
+  for (const f of [FORM_R, FORM_L]) { const r = await teruskan(tanpaKab, f); assert.equal(r.s, 400, r.t); assert.match(r.j.galat, /kabupaten/); }
+  const tanya = (await tulis({}, ip(205))).j.id, ok = await bantuan(206);
+  for (const f of [FORM_R, FORM_L]) assert.equal((await teruskan(tanya, f)).s, 400, "hanya butuh_bantuan");
+  for (const f of [{...FORM_R, keahlian: "tukang_sulap"}, {...FORM_R, jumlah: 0}, {...FORM_R, jumlah: 1001}, {...FORM_R, mulai: "besok"}, {...FORM_R, selesai: hari(-5)}, {...FORM_R, keahlian: undefined},
+    {...FORM_L, barang: "emas"}, {...FORM_L, jumlah: 0}, {...FORM_L, satuan: undefined}, {...FORM_L, posko: undefined}, {...FORM_L, kebutuhan_untuk: undefined}, {...FORM_L, kebutuhan_untuk: -1}]) {
+    const r = await teruskan(ok, f); assert.equal(r.s, 400, JSON.stringify(f) + r.t);
+  }
+  for (const f of [FORM_R, FORM_L]) {
+    assert.equal((await teruskan(ok, f, {})).s, 403, "tanpa token"); assert.equal((await teruskan(ok, f, GERBANG)).s, 403, "akun gerbang situs");
+    assert.equal((await teruskan("0".repeat(16), f)).s, 404);
+  }
+  assert.deepEqual([await U.n("relawan_permintaan"), await U.n("meja_catatan"), await U.n("alun_tautan")], sebelum, "tidak ada tujuan yatim");
+  assert.equal((await U.DB.prepare("SELECT teruskan_ke, bantuan FROM alun_utas WHERE id = ?").bind(ok).first()).bantuan, "terbuka", "gagal = utas tidak berubah");
+  assert.equal((await teruskan(ok, FORM_R, MOD2)).s, 201, "moderator mana pun boleh");
+});
+
+uji("C1 menghapus utas ikut membuang tautannya (FK), tujuan tetap ada; utas tanpa tautan tidak punya pil", async () => {
+  const id = S1.banyak, tujuan = (await U.DB.prepare("SELECT tujuan_id FROM alun_tautan WHERE utas_id = ?").bind(id).all()).results.map(x => x.tujuan_id);
+  const h = await teruskan(id, {aksi: "hapus"}); assert.equal(h.s, 200, h.t);
+  assert.equal(await U.n("alun_tautan", `utas_id = '${id}'`), 0);
+  assert.equal(await U.n("relawan_permintaan", `id IN ('${tujuan.join("','")}')`) + await U.n("meja_catatan", `id IN ('${tujuan.join("','")}')`), 3, "permintaan dan catatan yang sudah dibuat tidak hilang diam-diam");
+  const polos = await bantuan(207); assert.deepEqual(await pil(polos), []);
+});
+
+uji("C1 dummy: urutan isi bebas (alun/relawan/meja) selalu berhasil; tautan hanya ke tujuan dummy yang sudah ada; 🧹 tiap modul tidak meninggalkan yatim berbahaya", async () => {
+  const isi = async (W, m) => { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.s} ${r.t}`); return r; };
+  const hapus = async (W, m) => { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "hapus"}); assert.equal(r.s, 200, `${m}: ${r.t}`); };
+  /* alun lebih dulu: tanpa tujuan, tanpa tautan; modul lain tetap bisa diisi */
+  const A = await siapkan("uji-alun-c1-a");
+  assert.equal((await isi(A, "alun")).j.tautan, 0);
+  await isi(A, "relawan"); await isi(A, "meja");
+  assert.equal(await A.n("alun_tautan"), 0);
+  /* relawan dan meja lebih dulu, alun sesudahnya: dua tautan ke tujuan dummy yang ada, tidak ada baris dummy baru di modul lain */
+  const W = await siapkan("uji-alun-c1-dummy");
+  await isi(W, "relawan"); await isi(W, "meja");
+  const sebelum = [await W.n("relawan_permintaan", "dummy = 1"), await W.n("meja_catatan", "dummy = 1")];
+  assert.equal((await isi(W, "alun")).j.tautan, 2);
+  assert.deepEqual([await W.n("relawan_permintaan", "dummy = 1"), await W.n("meja_catatan", "dummy = 1")], sebelum);
+  assert.equal(await W.n("alun_tautan", "dummy = 1"), 2);
+  const a = await W.adm("GET", "/api/alun/admin?dummy=1"), adaPil = a.j.bantuan.filter(x => x.tautan.length); assert.equal(adaPil.length, 2);
+  assert.deepEqual((await W.api("GET", "/api/alun")).j.utas.filter(x => x.tautan?.length), [], "dummy tidak tampil publik");
+  /* 🧹 modul tujuan lebih dulu: tautan dummy yang tersisa tidak tampil dan tidak merusak apa pun; 🧹 alun membersihkannya */
+  await hapus(W, "relawan"); await hapus(W, "meja");
+  assert.equal((await W.adm("GET", "/api/alun/admin?dummy=1")).s, 200);
+  assert.equal((await W.adm("GET", "/api/alun/admin?dummy=1")).j.bantuan.filter(x => x.tautan.length).length, 0, "tujuan hilang = pil hilang");
+  await hapus(W, "alun");
+  assert.equal(await W.n("alun_tautan"), 0); assert.equal(await W.n("alun_utas", "dummy = 1"), 0);
+  /* urutan lain: meja, alun, relawan, riset, lalu hapus alun dulu */
+  const Z = await siapkan("uji-alun-c1-z");
+  for (const m of ["meja", "alun", "relawan", "riset"]) await isi(Z, m);
+  assert.equal(await Z.n("alun_tautan", "dummy = 1"), 1, "hanya logistik yang sudah ada saat alun diisi");
+  await hapus(Z, "alun"); await hapus(Z, "meja"); await hapus(Z, "relawan"); await hapus(Z, "riset");
+  assert.equal(await Z.n("alun_tautan"), 0);
+  /* tanpa alun_tautan */
+  const X = await siapkan("uji-alun-c1-tanpa"); await X.DB.prepare("DROP TABLE alun_tautan").run();
+  const id = (await X.api("POST", "/api/alun", {...SAH, jenis: "butuh_bantuan"}, ip(210))).j.id;
+  const g = await X.api("GET", "/api/alun/" + id); assert.equal(g.s, 200); assert.deepEqual(g.j.tautan, []);
+  assert.equal((await X.api("GET", "/api/alun")).s, 200); assert.equal((await X.adm("GET", "/api/alun/admin")).s, 200);
+  const r = await X.api("POST", "/api/alun/admin/" + id, FORM_R, ADMIN); assert.equal(r.s, 503, r.t); assert.equal(await X.n("relawan_permintaan"), 0, "tidak ada tujuan yatim");
+  assert.equal((await X.api("POST", "/api/alun/admin/" + id, {aksi: "hapus"}, ADMIN)).s, 200, "menghapus utas tetap jalan");
 });

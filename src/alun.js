@@ -6,6 +6,9 @@ import {modOK, superOK, num} from "./posko.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {hidup} from "./bencana.js";
+import {sisipPermintaan, KEAHLIAN} from "./relawan.js";
+import {sisipLogistik} from "./meja.js";
+import {BARANG} from "./meja_spek.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 export const JENIS = ["tanya", "butuh_bantuan", "info_lapangan", "pengumuman"];
@@ -13,6 +16,7 @@ export const BANTUAN = ["terbuka", "ditangani", "selesai"];
 export const ALASAN = ["spam", "kasar", "hoaks", "data_pribadi", "lainnya"];
 export const MODERASI = ["tampil", "dilaporkan", "tersembunyi"];
 export const TERUSKAN = ["relawan", "logistik"];
+export const TAUTAN = TERUSKAN;   // alun_tautan.jenis (migrasi 0028) memakai daftar yang sama
 export const URUT = ["terbaru", "terpopuler", "belum_terjawab"];
 export const PROV = {"11": "Aceh", "12": "Sumatera Utara", "13": "Sumatera Barat", "14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "17": "Bengkulu", "18": "Lampung",
   "19": "Kepulauan Bangka Belitung", "21": "Kepulauan Riau", "31": "DKI Jakarta", "32": "Jawa Barat", "33": "Jawa Tengah", "34": "DI Yogyakarta", "35": "Jawa Timur", "36": "Banten",
@@ -50,10 +54,45 @@ const opsi = (v, maks, nama) => {   // teks opsional pendek: null bila kosong
   const r = bersihPanjang(v.trim(), maks); return r.galat ? {galat: `${nama}: ${r.galat}`} : r;
 };
 
+/* ---------------- tautan ke relawan / logistik (C1) ---------------- */
+/* tabel tautan (migrasi 0028) boleh belum ada: alun-alun tetap jalan tanpa pil */
+let ADA_TAUTAN = false;
+const adaTautan = async env => ADA_TAUTAN ||= !!(await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE name = 'alun_tautan'").first());
+const LOGISTIK = {diminta: "Bantuan diminta", disetujui: "Bantuan disetujui", dikirim: "Bantuan dikirim", diterima: "Bantuan diterima"};
+/* status tujuan -> pil publik. Hanya angka dan tahap; tidak ada nama, kontak, atau id relawan. admin menambah id tujuan. */
+export function labelTautan(t) {
+  if (t.jenis === "relawan") {
+    if (t.pstatus == null) return null;
+    let butuh = 0; try { butuh = JSON.parse(t.butuh).reduce((a, x) => a + (+x.jumlah || 0), 0); } catch (e) {}
+    if (butuh && t.ditugaskan >= butuh) return {tahap: "terpenuhi", label: "Kebutuhan relawan terpenuhi"};
+    return t.pstatus === "ditutup" ? {tahap: "ditutup", label: "Permintaan relawan ditutup"} : {tahap: "buka", label: `Relawan ditugaskan ${t.ditugaskan} dari ${butuh}`};
+  }
+  return t.mstatus == null ? null : {tahap: t.mstatus, label: LOGISTIK[t.mstatus]};
+}
+async function tautanUtas(env, ids, admin) {
+  const out = new Map();
+  if (!ids.length || !await adaTautan(env)) return out;
+  let rows;
+  try {
+    rows = (await env.DB.prepare(`SELECT t.id, t.utas_id, t.jenis, t.tujuan_id, t.dibuat, p.status pstatus, p.butuh,
+      (SELECT count(*) FROM relawan_penugasan g WHERE g.permintaan_id = p.id AND g.status IN ('ditawarkan', 'diterima', 'bertugas', 'selesai')) ditugaskan, m.status mstatus
+      FROM alun_tautan t LEFT JOIN relawan_permintaan p ON t.jenis = 'relawan' AND p.id = t.tujuan_id LEFT JOIN meja_catatan m ON t.jenis = 'logistik' AND m.id = t.tujuan_id
+      WHERE t.utas_id IN (SELECT value FROM json_each(?)) ORDER BY t.dibuat, t.id`).bind(JSON.stringify(ids)).all()).results;
+  } catch (e) { if (/no such table/i.test(String(e?.message || e))) return out; throw e; }   // modul tujuan (0023/0026) belum dimigrasi
+  for (const t of rows) {
+    const l = labelTautan(t); if (!l) continue;
+    if (!out.has(t.utas_id)) out.set(t.utas_id, []);
+    out.get(t.utas_id).push({jenis: t.jenis, ...l, ...(admin ? {id: t.tujuan_id, dibuat: t.dibuat} : {})});
+  }
+  return out;
+}
+const idBantuan = rs => rs.filter(r => r.jenis === "butuh_bantuan").map(r => r.id);
+
 /* ---------------- baca ---------------- */
 const KOLOM = "id, moderasi, aduan_n, dummy, jenis, judul, bencana, prov, kab, nama, sematan, bantuan, teruskan_ke, terjawab_id IS NOT NULL terjawab, balasan_n, upvote, dibuat";
-const baris = (r, admin) => ({id: r.id, jenis: r.jenis, judul: r.judul, bencana: r.bencana, prov: r.prov, prov_nama: PROV[r.prov] || null, kab: r.kab, nama: r.nama || null,
+const baris = (r, admin, tm) => ({id: r.id, jenis: r.jenis, judul: r.judul, bencana: r.bencana, prov: r.prov, prov_nama: PROV[r.prov] || null, kab: r.kab, nama: r.nama || null,
   resmi: r.jenis === "pengumuman", sematan: !!r.sematan, bantuan: r.bantuan, teruskan_ke: r.teruskan_ke, terjawab: !!r.terjawab, balasan: r.balasan_n, upvote: r.upvote, dibuat: r.dibuat,
+  ...(r.jenis === "butuh_bantuan" ? {tautan: tm?.get(r.id) || []} : {}),
   ...(admin ? {moderasi: r.moderasi, aduan: r.aduan_n, dummy: !!r.dummy} : {})});
 const sapaan = r => r.petugas ? "Petugas" : r.nama || null;
 
@@ -76,7 +115,8 @@ async function daftar(env, req, url, kini, ctx) {
     const sematan = mulai ? (await env.DB.prepare(`SELECT ${KOLOM} FROM alun_utas WHERE sematan = 1 AND moderasi <> 'tersembunyi' ${dummy ? "" : "AND dummy = 0"} ORDER BY dibuat DESC LIMIT ${MAKS_SEMATAN}`).all()).results : [];
     const susun = urut === "terpopuler" ? "upvote DESC, dibuat DESC" : urut === "belum_terjawab" ? "dibuat ASC" : "dibuat DESC";
     const rs = (await env.DB.prepare(`SELECT ${KOLOM} FROM alun_utas WHERE ${w.join(" AND ")} AND sematan = 0 ORDER BY ${susun}, id LIMIT ${HALAMAN + 1} OFFSET ${+kursor}`).bind(...b).all()).results;
-    return json({utas: rs.slice(0, HALAMAN).map(r => baris(r, dummy)), sematan: sematan.map(r => baris(r, dummy)), berikut: rs.length > HALAMAN ? String(+kursor + HALAMAN) : null});
+    const tm = await tautanUtas(env, idBantuan(rs.slice(0, HALAMAN)), false);
+    return json({utas: rs.slice(0, HALAMAN).map(r => baris(r, dummy, tm)), sematan: sematan.map(r => baris(r, dummy)), berikut: rs.length > HALAMAN ? String(+kursor + HALAMAN) : null});
   };
   return dummy ? buat() : cacheTepi(kunciDaftar(url, {jenis, bencana, prov, urut, kursor}), ctx, 10, buat);
 }
@@ -90,7 +130,8 @@ async function rincianBaca(env, id, admin, dummy) {
   const u = await env.DB.prepare(`SELECT ${KOLOM}, teks, lat, lon, teruskan_catatan, terjawab_id FROM alun_utas WHERE id = ?`).bind(id).first();
   if (!u || (u.moderasi === "tersembunyi" && !admin) || (u.dummy && !dummy)) return gagal(404, "utas tidak ada");
   const bs = (await env.DB.prepare(`SELECT id, teks, nama, petugas, moderasi, upvote, aduan_n, dibuat, dummy FROM alun_balas WHERE utas_id = ? ${admin ? "" : "AND moderasi <> 'tersembunyi'"} ORDER BY dibuat, id LIMIT 300`).bind(id).all()).results;
-  return json({...baris(u, !!admin), teks: u.teks, lat: u.lat, lon: u.lon, terjawab_id: u.terjawab_id, ...(admin ? {teruskan_catatan: u.teruskan_catatan} : {}),
+  const tm = await tautanUtas(env, idBantuan([u]), !!admin);
+  return json({...baris(u, !!admin, tm), teks: u.teks, lat: u.lat, lon: u.lon, terjawab_id: u.terjawab_id, ...(admin ? {teruskan_catatan: u.teruskan_catatan} : {}),
     balasan_daftar: bs.map(r => ({id: r.id, teks: r.teks, nama: sapaan(r), petugas: !!r.petugas, upvote: r.upvote, dibuat: r.dibuat, ...(admin ? {moderasi: r.moderasi, aduan: r.aduan_n, dummy: !!r.dummy} : {})}))});
 }
 
@@ -215,19 +256,42 @@ async function adminDaftar(env, req, url, kini) {
   const stat = await env.DB.prepare(`SELECT jenis, count(*) n FROM alun_utas WHERE ${ft} GROUP BY jenis`).all();
   const tj = await env.DB.prepare(`SELECT count(*) n, avg(terjawab_pada - dibuat) rata FROM alun_utas WHERE terjawab_id IS NOT NULL AND ${ft}`).first();
   const lama = (await env.DB.prepare(`SELECT count(*) n FROM alun_utas WHERE bantuan = 'terbuka' AND dibuat < ? AND ${ft}`).bind(kini - HARI).first()).n;
+  const tm = await tautanUtas(env, idBantuan(ut), true);
   return json({
     stat: {per_jenis: Object.fromEntries(JENIS.map(j => [j, stat.results.find(x => x.jenis === j)?.n || 0])), terjawab: tj.n, rata_terjawab_ms: tj.n ? Math.round(tj.rata) : null, bantuan_terbuka_24j: lama,
       antrean: antrean.length + rb.length},
     antrean: [...antrean.map(x => ({tipe: "utas", id: x.id, utas_id: x.id, judul: x.judul, teks: x.teks, moderasi: x.moderasi, aduan: x.aduan_n, alasan: alasan(x.id), dibuat: x.dibuat, dummy: !!x.dummy})),
       ...rb.map(x => ({tipe: "balasan", id: x.id, utas_id: x.utas_id, judul: x.judul, teks: x.teks, moderasi: x.moderasi, aduan: x.aduan_n, alasan: alasan(x.id), dibuat: x.dibuat, petugas: !!x.petugas, dummy: !!x.dummy}))]
       .sort((a, b) => b.aduan - a.aduan || b.dibuat - a.dibuat),
-    utas: ut.map(x => ({...baris(x, true), teruskan_catatan: x.teruskan_catatan})),
-    bantuan: ut.filter(x => x.bantuan && x.bantuan !== "selesai").sort((a, b) => a.dibuat - b.dibuat).map(x => ({...baris(x, true), teruskan_catatan: x.teruskan_catatan})),
-    prov: PROV, bencana: [...BENCANA()],
+    utas: ut.map(x => ({...baris(x, true, tm), teruskan_catatan: x.teruskan_catatan})),
+    bantuan: ut.filter(x => x.bantuan && x.bantuan !== "selesai").sort((a, b) => a.dibuat - b.dibuat).map(x => ({...baris(x, true, tm), teruskan_catatan: x.teruskan_catatan})),
+    prov: PROV, bencana: [...BENCANA()], keahlian: KEAHLIAN, barang: BARANG,
   });
 }
 
-const AKSI_ADMIN = ["tampilkan", "sembunyikan", "hapus", "sematkan", "lepas_sematan", "status", "teruskan"];
+const hapusTautan = async (env, where, ...b) => await adaTautan(env) ? [env.DB.prepare(`DELETE FROM alun_tautan WHERE ${where}`).bind(...b)] : [];
+/* "Teruskan ke relawan/logistik": membuat permintaan relawan atau catatan logistik SUNGGUHAN lewat validasi modul tujuan, lalu menautkannya (satu utas boleh banyak tautan).
+   Wilayah dan judul diisi dari utas, jadi utas tanpa kabupaten/kota tidak bisa diteruskan. Meneruskan menandai utas 'ditangani' bila masih 'terbuka'. */
+async function teruskanTautan(env, jenis, id, o, mod, kini) {
+  const u = await env.DB.prepare("SELECT jenis, judul, bencana, prov, kab, lat, lon, dummy FROM alun_utas WHERE id = ?").bind(id).first();
+  if (u.jenis !== "butuh_bantuan") return gagal(400, "teruskan hanya untuk utas butuh_bantuan");
+  if (!u.prov || !u.kab) return gagal(400, "utas ini tanpa provinsi atau kabupaten/kota, jadi belum bisa diteruskan; wilayah tujuan diambil dari utas");
+  if (!await adaTautan(env)) return gagal(503, "tautan belum diaktifkan (migrasi 0028_pengingat belum dijalankan)");
+  let r;
+  try {
+    r = jenis === "relawan"
+      ? await sisipPermintaan(env, {judul: u.judul, bencana: u.bencana, prov: u.prov, kab: u.kab, lat: u.lat, lon: u.lon, butuh: [{keahlian: o.keahlian, jumlah: o.jumlah}],
+        mulai: o.mulai, selesai: o.selesai ?? o.mulai, catatan: `Dari Alun-alun, utas ${id}`}, kini, mod, u.dummy)
+      : await sisipLogistik(env, {prov: u.prov, kab: u.kab, data: {barang: o.barang, jumlah_diminta: o.jumlah, satuan: o.satuan, posko: o.posko, kebutuhan_untuk: o.kebutuhan_untuk}}, kini, "admin:" + mod, u.dummy);
+  } catch (e) { if (/no such table/i.test(String(e?.message || e))) return gagal(503, `modul ${jenis} belum diaktifkan (migrasi belum dijalankan)`); throw e; }
+  if (r.galat) return gagal(400, r.galat);
+  const tid = acak(8);
+  await env.DB.batch([env.DB.prepare("INSERT INTO alun_tautan (id, utas_id, jenis, tujuan_id, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(tid, id, jenis, r.id, kini, mod, u.dummy),
+    env.DB.prepare("UPDATE alun_utas SET teruskan_ke = ?, bantuan = CASE WHEN bantuan = 'terbuka' THEN 'ditangani' ELSE bantuan END WHERE id = ?").bind(jenis, id)]);
+  return json({ok: true, jenis, tujuan_id: r.id}, 201);
+}
+
+const AKSI_ADMIN = ["tampilkan", "sembunyikan", "hapus", "sematkan", "lepas_sematan", "status", "teruskan", "teruskan_relawan", "teruskan_logistik"];
 async function adminAksi(env, req, id, kini) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -235,13 +299,14 @@ async function adminAksi(env, req, id, kini) {
   if (typeof aksi !== "string" || !AKSI_ADMIN.includes(aksi)) return gagal(400, "aksi harus " + AKSI_ADMIN.join(", "));
   const p = await cariPos(env, id); if (!p) return gagal(404, "konten tidak ada");
   const utas = p.tabel === "alun_utas";
-  if (["sematkan", "lepas_sematan", "status", "teruskan"].includes(aksi) && !utas) return gagal(400, "aksi ini hanya untuk utas");
+  if (["sematkan", "lepas_sematan", "status", "teruskan", "teruskan_relawan", "teruskan_logistik"].includes(aksi) && !utas) return gagal(400, "aksi ini hanya untuk utas");
+  if (aksi === "teruskan_relawan" || aksi === "teruskan_logistik") return teruskanTautan(env, aksi.slice(9), id, o, mod, kini);
   const dibatalkan = env.DB.prepare("UPDATE alun_utas SET terjawab_id = NULL, terjawab_pada = NULL WHERE terjawab_id = ?").bind(id);
   const sisa = utas ? [] : [hitungBalas(env, p.utas_id)];
   if (aksi === "tampilkan") await env.DB.batch([env.DB.prepare(`UPDATE ${p.tabel} SET moderasi = 'tampil', aduan_n = 0 WHERE id = ?`).bind(id), env.DB.prepare("DELETE FROM alun_suara WHERE pos_id = ? AND jenis = 'aduan'").bind(id), ...sisa]);
   else if (aksi === "sembunyikan") await env.DB.batch([env.DB.prepare(`UPDATE ${p.tabel} SET moderasi = 'tersembunyi' WHERE id = ?`).bind(id), dibatalkan, ...sisa]);
   else if (aksi === "hapus") await env.DB.batch(utas
-    ? [env.DB.prepare("DELETE FROM alun_suara WHERE pos_id = ?1 OR pos_id IN (SELECT id FROM alun_balas WHERE utas_id = ?1)").bind(id), env.DB.prepare("DELETE FROM alun_balas WHERE utas_id = ?").bind(id), env.DB.prepare("DELETE FROM alun_utas WHERE id = ?").bind(id)]
+    ? [...await hapusTautan(env, "utas_id = ?", id), env.DB.prepare("DELETE FROM alun_suara WHERE pos_id = ?1 OR pos_id IN (SELECT id FROM alun_balas WHERE utas_id = ?1)").bind(id), env.DB.prepare("DELETE FROM alun_balas WHERE utas_id = ?").bind(id), env.DB.prepare("DELETE FROM alun_utas WHERE id = ?").bind(id)]
     : [env.DB.prepare("DELETE FROM alun_suara WHERE pos_id = ?").bind(id), env.DB.prepare("DELETE FROM alun_balas WHERE id = ?").bind(id), dibatalkan, ...sisa]);
   else if (aksi === "sematkan" || aksi === "lepas_sematan") {
     if (p.jenis !== "pengumuman") return gagal(400, "hanya pengumuman yang bisa disematkan");
@@ -292,10 +357,12 @@ async function dummyIsi(env, kini) {
   if ((await env.DB.prepare("SELECT (SELECT count(*) FROM alun_utas WHERE dummy = 1) + (SELECT count(*) FROM alun_balas WHERE dummy = 1) n").first()).n) return gagal(409, "data dummy sudah ada; hapus dulu dengan 🧹");
   const st = [], suara = [], q = s => `'${String(s).replace(/'/g, "''")}'`;
   let nb = 0;
+  const diteruskan = [];
   for (const x of D) {
     const id = acak(8), dibuat = kini - x.jam * JAM, mod = x.mod || "tampil";
     const rs = x.r.map(r => ({id: acak(8), teks: r[0], petugas: r[1], up: r[2], waktu: dibuat + r[3] * JAM, jawab: r[4], mod: r[5] || "tampil"}));
     const jw = rs.find(r => r.jawab);
+    if (x.fw) diteruskan.push({id, jenis: x.fw[0], x});
     st.push(env.DB.prepare(`INSERT INTO alun_utas (id, jenis, judul, teks, bencana, prov, kab, nama, pemilik_sha, sematan, bantuan, teruskan_ke, teruskan_catatan, moderasi, terjawab_id, terjawab_pada,
       upvote, balasan_n, aduan_n, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)`)
       .bind(id, x.j, x.s, x.t, x.b, x.p, x.k, x.n, "0".repeat(64), x.sem || 0, x.bn || null, x.fw?.[0] || null, x.fw?.[1] || null, mod, jw?.id || null, jw ? jw.waktu + 30 * mnt : null,
@@ -311,11 +378,21 @@ async function dummyIsi(env, kini) {
     (x.ad || []).forEach((a, i) => suara.push(`('${id}', 'dummy-ad-${i + 1}', 'aduan', ${q(a)}, ${kini})`));
   }
   await env.DB.batch([...st, env.DB.prepare(`INSERT INTO alun_suara (pos_id, kunci, jenis, alasan, waktu) VALUES ${suara.join(", ")}`)]);
-  return json({ok: true, utas: D.length, balasan: nb, suara: suara.length});
+  /* rantai C1: utas yang diteruskan ditautkan ke tujuan dummy yang SUDAH ada di modul lain (relawan_permintaan / meja_catatan logistik dummy), tidak membuat baris dummy di tabel modul lain:
+     gerbang "dummy sudah ada" dan 🧹 modul itu tidak boleh terpengaruh, jadi urutan isi apa pun berhasil. Belum ada tujuan = utas terisi tanpa pil (isi dulu 🧪 modul itu, lalu 🧹+🧪 Alun-alun). */
+  let tautan = 0;
+  if (await adaTautan(env)) for (const d of diteruskan) {
+    let t;
+    try { t = await env.DB.prepare(d.jenis === "relawan" ? "SELECT id FROM relawan_permintaan WHERE dummy = 1 ORDER BY dibuat, id LIMIT 1" : "SELECT id FROM meja_catatan WHERE dummy = 1 AND meja = 'logistik' ORDER BY dibuat, id LIMIT 1").first(); }
+    catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }
+    if (t) { await env.DB.prepare("INSERT INTO alun_tautan (id, utas_id, jenis, tujuan_id, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, 'dummy', 1)").bind(acak(8), d.id, d.jenis, t.id, kini).run(); tautan++; }
+  }
+  return json({ok: true, utas: D.length, balasan: nb, suara: suara.length, tautan});
 }
 async function dummyHapus(env) {
   const hitung = async t => (await env.DB.prepare(`SELECT count(*) n FROM ${t} WHERE dummy = 1`).first()).n, n = {utas: await hitung("alun_utas"), balasan: await hitung("alun_balas")};
   await env.DB.batch([
+    ...await hapusTautan(env, "dummy = 1"),
     env.DB.prepare("DELETE FROM alun_suara WHERE pos_id IN (SELECT id FROM alun_utas WHERE dummy = 1 UNION SELECT id FROM alun_balas WHERE dummy = 1)"),
     env.DB.prepare("DELETE FROM alun_balas WHERE dummy = 1"), env.DB.prepare("DELETE FROM alun_utas WHERE dummy = 1")]);
   return json({ok: true, ...n});

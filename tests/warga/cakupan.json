@@ -310,7 +310,16 @@
     "POST /api/relawan/admin/institusi/:id": "POST /api/relawan/admin/institusi/:id: kode baru",
     "table institusi": "CHECK menolak isian liar langsung di D1 (tanpa lewat worker)",
     "table institusi_perjanjian": "CHECK menolak isian liar langsung di D1 (tanpa lewat worker)",
-    "GET /admin/pimpinan": "/admin/gakkum dan /admin/pimpinan: tanpa sesi"
+    "GET /admin/pimpinan": "/admin/gakkum dan /admin/pimpinan: tanpa sesi",
+    "table alun_tautan": "migrasi 0028 idempoten",
+    "table pengingat": "migrasi 0028 idempoten",
+    "GET /admin/pengingat": "gerbang: tanpa token 403",
+    "GET /api/pengingat/admin": "pendeteksi: tiap jenis terdeteksi tepat di tepi ambang",
+    "POST /api/pengingat/admin/periksa": "dedup: dua kali jalan tidak menambah",
+    "POST /api/pengingat/admin/kirim": "kirim: email hanya saat admin menekan",
+    "POST /api/pengingat/admin/:id": "dedup: dua kali jalan tidak menambah",
+    "POST /api/pengingat/dummy": "dummy: lahir dari rantai sumber dummy",
+    "cron buatPengingat": "pendeteksi: tiap jenis terdeteksi tepat di tepi ambang"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

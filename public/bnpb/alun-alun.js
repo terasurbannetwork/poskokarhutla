@@ -80,6 +80,7 @@
     if (u.resmi) kanan.append(pilTeks("resmi", "Resmi", "resmi"));
     if (u.terjawab) kanan.append(pilTeks("terjawab", "Terjawab", "centang"));
     if (u.bantuan) kanan.append(pilTeks(u.bantuan, BANTUAN[u.bantuan], "jam"));
+    for (const t of u.tautan || []) kanan.append(pilTeks("tautan", t.label, "teruskan"));   // status bantuan lanjutan (relawan/logistik), label dari server tanpa data pribadi
     const b = h("button", {class: "al-baris" + (u.sematan ? " al-sematan" : ""), type: "button", "data-id": u.id, "aria-current": String(u.id === S.aktif)},
       h("span", {class: "al-judul", teks: u.judul}), kanan,
       h("span", {class: "al-meta"}, pilJenis(u.jenis), h("span", {teks: wilayah(u) || "Wilayah belum disebut"}), h("span", {teks: relatif(u.dibuat)}),
@@ -130,6 +131,7 @@
     if (u.resmi) kepala.append(pilTeks("resmi", "Resmi", "resmi"));
     if (u.bantuan) kepala.append(pilTeks(u.bantuan, BANTUAN[u.bantuan], "jam"));
     if (u.teruskan_ke) kepala.append(pilTeks(u.teruskan_ke, TERUSKAN[u.teruskan_ke], "teruskan"));
+    for (const t of u.tautan || []) kepala.append(pilTeks("tautan", t.label, "teruskan"));
     if (u.terjawab) kepala.append(pilTeks("terjawab", "Terjawab", "centang"));
     const meta = h("div", {class: "al-meta"}, h("span", {teks: u.nama || "Warga"}), h("span", {teks: wilayah(u)}), h("span", {teks: relatif(u.dibuat)}));
     const aksi = h("div", {class: "al-bar"}, tombolUp(u.id, u.upvote),

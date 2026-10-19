@@ -60,7 +60,7 @@ async function arsip(env, req, url, kini, ctx) {
 }
 /* 60 hari terakhir yang tersedia, terbaru dulu. startAfter memotong daftar di R2 (tanpa itu list 1000 pertama = hari tertua). */
 async function daftar(env, req, url, kini, ctx) {
-  if (!env.MEDIA) return gagal(503, "penyimpanan arsip belum diaktifkan (R2 binding MEDIA)");
+  if (!env.MEDIA) return json({tgl: []});   // tanpa penyimpanan = belum ada arsip (bukan galat: halaman sitrep memanggil ini tiap dibuka)
   return cacheTepi(req, ctx, 600, async () => {
     const l = await env.MEDIA.list({prefix: "sitrep/", startAfter: kunciR2(wibTgl(kini - 61 * 86400e3)), limit: 200});
     const tgl = l.objects.map(o => /^sitrep\/(\d{4}-\d\d-\d\d)\.json\.gz$/.exec(o.key)?.[1]).filter(Boolean).sort().reverse().slice(0, 60);

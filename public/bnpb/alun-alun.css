@@ -72,3 +72,5 @@ button[data-jenis="tanya"]{--pil:var(--c5)}button[data-jenis="butuh_bantuan"]{--
   .al-dlg{padding:16px}
   .al-aksi-form .bn-tombol{flex:1;justify-content:center}
 }
+
+.bn-pil.tautan{--pil:var(--c4)}
