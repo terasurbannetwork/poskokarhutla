@@ -142,7 +142,7 @@ def main():
         except Exception as e:
             print("  gagal", r["nama"], e, file=sys.stderr)
             return r["id"], None
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(int(os.environ.get("KONSESI_UTAS", 4))) as ex:
         for i, (rid, h) in enumerate(ex.map(jalan, rs)):
             if h is not None:
                 hasil[rid] = h

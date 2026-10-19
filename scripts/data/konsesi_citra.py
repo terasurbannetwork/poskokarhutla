@@ -135,7 +135,7 @@ def main():
         except Exception as e:
             print("  gagal", r["nama"], d, e, file=sys.stderr)
             return r["id"], d, None
-    with ThreadPoolExecutor(6) as ex:
+    with ThreadPoolExecutor(int(os.environ.get("KONSESI_UTAS", 6))) as ex:
         for i, (rid, d, h) in enumerate(ex.map(jalan, kerja)):
             hasil.setdefault(rid, {})[d] = h
             if i % 20 == 0:
