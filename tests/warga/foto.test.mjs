@@ -259,6 +259,14 @@ uji("foto dummy: isi semua ember lewat pintunya, publik tidak melihatnya, admin 
   const d = (await panggil("GET", "/api/foto?dummy=1", null, "1.1.1.1", ADMIN)).j.foto.find(x => x.contoh);
   const m = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + d.id);
   assert.equal(m.status, 200, "thumbnail dummy dari aset contoh"); await m.arrayBuffer();
+  /* karhutla: 000..099.jpg cocok satu-satu dengan kredit.json, dan SEMUA thumbnail dummy 200 (bukan 404 abu-abu) */
+  const kr = JSON.parse(readFileSync(path.join(AKAR, "public/img/dummy/kredit.json"), "utf8"));
+  assert.deepEqual(kr.map(k => k.berkas), Array.from({length: 100}, (_, i) => String(i).padStart(3, "0") + ".jpg"), "kredit karhutla = 000..099.jpg berurutan");
+  for (const k of kr) { assert.ok(existsSync(path.join(AKAR, "public/img/dummy", k.berkas)), `${k.berkas} ada`); assert.ok(k.judul && k.pembuat && /^https:\/\/commons\.wikimedia\.org\//.test(k.sumber), `${k.berkas}: kredit lengkap`); }
+  for (const x of (await DB.prepare("SELECT id FROM foto WHERE dummy = 1 AND bencana = 'karhutla'").all()).results) {
+    const t = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + x.id, {headers: ADMIN}); await t.arrayBuffer();
+    assert.equal(t.status, 200, `thumbnail dummy ${x.id} (nomor ${parseInt(x.id.slice(-2), 16) % 100})`);
+  }
   const h = await panggil("POST", "/api/foto/dummy", {aksi: "hapus"}, "1.1.1.1", ADMIN);
   assert.equal(h.j.foto, 100);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n, 0);
