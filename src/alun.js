@@ -286,8 +286,14 @@ async function teruskanTautan(env, jenis, id, o, mod, kini) {
   } catch (e) { if (/no such table/i.test(String(e?.message || e))) return gagal(503, `modul ${jenis} belum diaktifkan (migrasi belum dijalankan)`); throw e; }
   if (r.galat) return gagal(400, r.galat);
   const tid = acak(8);
-  await env.DB.batch([env.DB.prepare("INSERT INTO alun_tautan (id, utas_id, jenis, tujuan_id, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(tid, id, jenis, r.id, kini, mod, u.dummy),
-    env.DB.prepare("UPDATE alun_utas SET teruskan_ke = ?, bantuan = CASE WHEN bantuan = 'terbuka' THEN 'ditangani' ELSE bantuan END WHERE id = ?").bind(jenis, id)]);
+  try {
+    await env.DB.batch([env.DB.prepare("INSERT INTO alun_tautan (id, utas_id, jenis, tujuan_id, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(tid, id, jenis, r.id, kini, mod, u.dummy),
+      env.DB.prepare("UPDATE alun_utas SET teruskan_ke = ?, bantuan = CASE WHEN bantuan = 'terbuka' THEN 'ditangani' ELSE bantuan END WHERE id = ?").bind(jenis, id)]);
+  } catch (e) {
+    /* tujuan sudah tersimpan di modul lain sebelum tautan: hapus lagi supaya tidak ada permintaan/logistik yatim tanpa utas asalnya */
+    await env.DB.prepare(jenis === "relawan" ? "DELETE FROM relawan_permintaan WHERE id = ?" : "DELETE FROM meja_catatan WHERE id = ?").bind(r.id).run().catch(() => {});
+    throw e;
+  }
   return json({ok: true, jenis, tujuan_id: r.id}, 201);
 }
 

@@ -14,7 +14,7 @@ import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
-import {RUTE_SITREP, arsipkanSitrep} from "./sitrep.js";
+import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
@@ -187,6 +187,7 @@ async function denganWilayah(env, sql, ikat, cara) {
   try { return await env.DB.prepare(sql).bind(...ikat)[cara](); }
   catch (e) {
     if (!/no such table: laporan_wilayah/i.test(String(e?.message || e))) throw e;
+    if (sql.includes("w.prov = ?")) return null;   // filter ?prov= tanpa tabel wilayah: pemanggil menjawab 503, bukan daftar kosong yang menyesatkan
     return env.DB.prepare(sql.replace(GABUNG_WIL, "LEFT JOIN (SELECT NULL laporan_id, NULL prov, NULL kab) w ON 0")).bind(...ikat)[cara]();
   }
 }
@@ -215,6 +216,7 @@ async function daftar(env, url, kini) {
     where += " AND w.prov = ?"; ikat.push(q.get("prov"));
   }
   const r = await denganWilayah(env, `SELECT ${KOLOM}, ${ADA_KONTAK(kini)} FROM laporan l ${GABUNG_WIL} WHERE ${where} ORDER BY l.dibuat DESC LIMIT ${MAKS_DAFTAR + 1}`, ikat, "all");
+  if (r === null) return gagal(503, "filter provinsi belum aktif (migrasi 0027_laporan_wilayah belum diterapkan)");
   const rows = r.results;
   return json({type: "FeatureCollection", terpotong: rows.length > MAKS_DAFTAR, kini, features: rows.slice(0, MAKS_DAFTAR).map(x => fitur(x, kini))});
 }
@@ -700,6 +702,7 @@ async function bersihSemua(env, sekarang) {
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
+    try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari
     try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan

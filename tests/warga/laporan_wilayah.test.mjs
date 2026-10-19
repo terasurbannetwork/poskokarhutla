@@ -119,6 +119,6 @@ uji("worker terbit sebelum migrasi 0027: tanpa tabel laporan_wilayah Lapor Warga
     assert.equal(d.status, 200, d.teks.slice(0, 120));
     const f = d.j.features.find(x => x.id === id); assert.ok(f); assert.equal(f.properties.prov, null);
     assert.equal((await panggil("GET", "/api/warga/" + id)).status, 200);
-    assert.equal((await panggil("GET", "/api/warga?prov=62")).status, 200);
+    assert.equal((await panggil("GET", "/api/warga?prov=62")).status, 503, "filter prov tanpa tabel: 503, bukan daftar kosong");
   } finally { await terapkan(DB, sqlMigrasi(f => f.startsWith("0027"))); }
 });
