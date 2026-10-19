@@ -90,6 +90,16 @@ uji("situs statis tetap dilayani lewat ASSETS", async () => {
   assert.match(r.teks, /export const JENIS/);
 });
 
+uji("situs Centurisk97 (*.workers.dev): semua halaman Tentang dialihkan ke peta; situs lain tetap melayaninya", async () => {
+  const buka = (asal, j) => mf.dispatchFetch(asal + j, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru()}});
+  for (const [j, ke] of [["/tentang", "/"], ["/tentang-halaman", "/"], ["/banjir/tentang", "/banjir/peta"], ["/gempa/tentang/", "/gempa/peta"], ["/kekeringan/tentang", "/kekeringan/peta"]]) {
+    const r = await buka("https://contoh.workers.dev", j); await r.text();
+    assert.equal(r.status, 302, `situs w GET ${j} = ${r.status}`); assert.equal(new URL(r.headers.get("location")).pathname, ke, `situs w ${j} -> ${ke}`);
+  }
+  for (const j of ["/tentang", "/banjir/tentang"]) { const r = await buka("http://warga.lokal", j); await r.text(); assert.equal(r.status, 200, `situs lain GET ${j} = ${r.status}`); }
+  const r = await buka("https://contoh.workers.dev", "/banjir/peta"); await r.text(); assert.equal(r.status, 200, "peta situs w tetap 200");
+});
+
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
   /* selain *.workers.dev, worker (layaniHTML) mengganti merek HANYA di <title>, meta content, title/alt/aria-label, .lp-kop b.
      Kata di komentar skrip/badan tidak disentuh, jadi uji meniru penggantian yang sama (bukan seluruh berkas). */
