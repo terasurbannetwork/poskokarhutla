@@ -104,14 +104,15 @@ def persen(p):
     return f"{round(p * 100)}%"
 
 
-def vonis(hari_list, ambang, i, kejadian, tempat):
+def vonis(hari_list, ambang, i, kejadian, tempat, n_hari=None):
     """Kalimat jawaban di atas angka, dari ambang ke-i. kejadian: frasa kata benda ("hujan 50 mm atau lebih"),
     tempat: "di Kabupaten X" / "di Indonesia". Contoh keluaran:
-    'Dalam 7 hari ke depan, hujan 50 mm atau lebih di Kota Bogor cukup mungkin terjadi: peluang tertinggi 55%, pada Rabu, 21 Oktober.'"""
+    'Dalam 7 hari ke depan, hujan 50 mm atau lebih di Kota Bogor cukup mungkin terjadi: peluang tertinggi 55%, pada Rabu, 21 Oktober.'
+    n_hari: horizon yang ditulis di kalimat bila pemanggil sudah membuang hari tak terpercaya dari hari_list."""
     hs = [h for h in hari_list if h["p"][i] is not None]
     if not hs:
         return ""
-    n = len(hari_list)
+    n = n_hari or len(hari_list)
     puncak = max(hs, key=lambda h: h["p"][i])
     p = puncak["p"][i]
     kata = next(k for b, k in KATA if p < b)
@@ -197,6 +198,7 @@ def uji():
     assert h[0]["p"] == [0.4, 0.2] and h[0]["p50"] == 10
     v = vonis(h, [50, 100], 0, "hujan 50 mm atau lebih", "di Kota Bogor")
     assert v == "Dalam 2 hari ke depan, hujan 50 mm atau lebih di Kota Bogor cukup mungkin terjadi: peluang tertinggi 40%, pada Selasa, 20 Oktober.", v
+    assert vonis(h[:1], [50, 100], 0, "x", "di y", n_hari=3).startswith("Dalam 3 hari")
     assert "tidak muncul" in vonis([h[1]], [50, 100], 0, "hujan lebat", "di sini")
     assert persen(0.004) == "<1%" and persen(0) == "0%" and persen(0.555) == "56%"
     am = [{"k": "lebat", "label": "Hujan 50 mm atau lebih", "nilai": 50}, {"k": "sl", "label": "Hujan 100 mm atau lebih", "nilai": 100}]

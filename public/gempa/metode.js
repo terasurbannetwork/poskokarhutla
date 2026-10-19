@@ -98,8 +98,8 @@ const Metode = (() => {
     const el = $("#metode"); if (!el || el.dataset.ok) return; el.dataset.ok = 1;
     el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div><div class="kosong"><div class="spin"></div></div>`;
     const j = u => muatJSON(u).catch(() => null);
-    const [M, MS, meta, bm, B] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null]);
-    const bagian = [guncangan(M), susulan(MS), tsunami(), evakuasi(), bukti(B), paparan(), laporan(), batas(), sumber(meta, bm)].filter(Boolean);
+    const [M, MS, meta, bm, B, PL] = await Promise.all([j("data/model_guncangan.json"), j("data/model_susulan.json"), j("data/meta.json"), j("data/bahaya_meta.json"), typeof Bukti !== "undefined" ? Bukti.muat() : null, typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null]);
+    const bagian = [guncangan(M), susulan(MS), tsunami(), evakuasi(), bukti(B), paparan(), laporan(), typeof Peluang !== "undefined" ? Peluang.batasan(PL) : "", batas(), sumber(meta, bm)].filter(Boolean);
     let n = 0; el.innerHTML = `<div class="head"><div><h2>Metode &amp; data</h2><p>Cara tiap angka gempa dan tsunami dihitung, berikut batasnya.</p></div></div>
       ${bagian.map(h => h.replace(/<b>0\. /, `<b>${++n}. `)).join("")}`;
     el.querySelector("details.mt-sek")?.setAttribute("open", "");

@@ -368,6 +368,11 @@ export default {
           "gempa_terbaru",
           "/api/gempa/terbaru",
           0.5
+        ],
+        [
+          "berita_gempa",
+          "/banjir/data/berita_gempa.json",
+          30
         ]
       ],
       "kejadian": {
@@ -502,12 +507,17 @@ export default {
         [
           "cuaca",
           "/banjir/data/cuaca_meta.json",
-          null
+          30
         ],
         [
           "cuaca_nowcast",
           "/api/cuaca/nowcast",
           2
+        ],
+        [
+          "berita_cuaca",
+          "/banjir/data/berita_cuaca.json",
+          30
         ]
       ],
       "kejadian": {
@@ -627,6 +637,11 @@ export default {
           "kualitas",
           "/data/udara_kualitas.json",
           30
+        ],
+        [
+          "berita_udara",
+          "/banjir/data/berita_udara.json",
+          30
         ]
       ],
       "kejadian": {
@@ -745,7 +760,12 @@ export default {
         [
           "gunungapi",
           "/banjir/data/gunungapi_status.json",
-          null
+          30
+        ],
+        [
+          "berita_gunungapi",
+          "/banjir/data/berita_gunungapi.json",
+          30
         ]
       ],
       "kejadian": {
@@ -864,6 +884,11 @@ export default {
         [
           "kekeringan",
           "/data/kekeringan_meta.json",
+          30
+        ],
+        [
+          "berita_kekeringan",
+          "/banjir/data/berita_kekeringan.json",
           30
         ]
       ],

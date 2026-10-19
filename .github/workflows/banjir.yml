@@ -55,7 +55,7 @@ jobs:
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah.
@@ -67,6 +67,13 @@ jobs:
       - name: Ansambel hujan ECMWF (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/ansambel_hujan.py
+
+      # tanpa kuota: peluang per wilayah dari hujan_ansambel.json + indeks pasang astronomi 12 bulan
+      - name: Peluang hujan lebat dan kalender pasang (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/banjir/peluang_banjir.py
+          python3 scripts/banjir/pasang_astro.py
 
       - name: Peringatan BMKG nowcast dan gelombang (boleh gagal)
         continue-on-error: true

@@ -111,7 +111,7 @@ def bangun(kota, prak, A, src, t0, arsip=None):
         if not hs:
             continue
         i = max((j for j in (0, 1, 2) if any(h["p"][j] and h["p"][j] >= 0.10 for h in hs)), default=0)
-        wil[k["kode"]] = {"nama": k["nama"], "tingkat": "kabupaten", "hari": hs, "vonis": P.vonis(hs, AMBANG, i, KEJADIAN[i], "di " + k["nama"])}
+        wil[k["kode"]] = {"nama": k["nama"], "tingkat": "kabupaten", "hari": hs, "vonis": P.vonis(hs, AMBANG, i, KEJADIAN[i], "di " + k["nama"], n_hari=len(prak["hari"]))}
     return wil, {"dipakai": dipakai, "ess": ess, "n_stasiun": pakai, "ess_min": ESS_MIN, "varian": n}
 
 

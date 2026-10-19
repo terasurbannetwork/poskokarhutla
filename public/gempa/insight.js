@@ -11,8 +11,8 @@ const NAMA_M_STACK = ["M 5,0 sampai 5,9", "M 6,0 sampai 6,9", "M 7 atau lebih"];
 
 const Insight = {
   st: {terkini: "7", dirasakan: "7", prov: "2000", riwayat: "dasawarsa"},
-  EX: ["terkini", "dirasakan", "susulan", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel"],
-  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan"},
+  EX: ["terkini", "dirasakan", "susulan", "peluang", "provinsi", "riwayat", "tsunami", "bsesar", "bmmi", "bpesisir", "bevakuasi", "bbnpb", "btabel"],
+  LABEL: {terkini: "Gempa terkini", dirasakan: "Dirasakan", provinsi: "Paling sering diguncang", riwayat: "Riwayat sejak 1900", tsunami: "Status tsunami BMKG", susulan: "Susulan", peluang: "Peluang"},
   d: undefined, dMuat: 0, R: undefined, P: undefined,
   /* data hidup 30 hari, disegarkan paling cepat tiap 5 menit */
   async muatHidup() {
@@ -104,6 +104,9 @@ const Insight = {
     const judul = jml ? `${Kartu.hl(fmt(jml) + " susulan")} tercatat dari ${Kartu.hl(fmt(kej.length) + " gempa utama")} yang masih aktif` : `${KG.awal(kej.length, "gempa utama")} M 5+ masih dipantau, belum ada susulan tercatat`;
     return Kartu.kartu(this.LABEL.susulan, judul, KG.mendatar(rows, {akhir: pel.some(Boolean) ? 190 : 60}), "BMKG, USGS, model susulan Reasenberg-Jones (peluang perkiraan, bukan prakiraan resmi)"); },
 
+  /* 6b. peluang gempa (data/peluang.json, kontrak peluang/1; mesin di public/inti/peluang.js). Tanpa mesin atau berkas = dibuang. */
+  async exPeluang() { if (typeof Peluang === "undefined") return ""; return Peluang.kartu(await Peluang.muat("data/peluang.json"), {ey: this.LABEL.peluang, st: this.st, kejadian: "gempa"}); },
+
   /* 7. fasilitas rawan dari data/bukti.json (lewat bukti.js); data belum ada = dibuang */
   exBsesar: () => Bukti.kartu("sesar"), exBmmi: () => Bukti.kartu("mmi"), exBpesisir: () => Bukti.kartu("pesisir"), exBevakuasi: () => Bukti.kartu("evakuasi"), exBbnpb: () => Bukti.kartu("bnpb"), exBtabel: () => Bukti.tabel(),
 
@@ -116,7 +119,8 @@ const Insight = {
   async render() {
     const el = $("#insight"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
-      el.addEventListener("click", e => { const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === s)); this.ulang(s.closest("[data-ex]")); } }); }
+      el.addEventListener("click", e => { const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === s)); this.ulang(s.closest("[data-ex]")); } });
+      el.addEventListener("change", e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } }); }
     if (!el.children.length) el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat insight gempa…</div>`;
     const [, R, P] = await Promise.all([this.muatHidup(), this.R ?? muatJSON("data/riwayat_m5.json").catch(() => null), this.P ?? muatJSON("data/riwayat_prov.json").catch(() => null)]);
     this.R = R; this.P = P;

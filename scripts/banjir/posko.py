@@ -287,6 +287,10 @@ if __name__ == "__main__":
         cuaca = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../cuaca/cuaca.py")
         if subprocess.call([sys.executable, cuaca, "uji"]) != 0 or subprocess.call([sys.executable, cuaca]) != 0:
             print("::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # peluang hujan ekstrem /cuaca/ (cuaca_peluang.json): dari hujan_ansambel.json; uji dulu, gagal = berkas lama dibiarkan
+        pel = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../cuaca/peluang_cuaca.py")
+        if subprocess.call([sys.executable, pel, "uji"]) != 0 or subprocess.call([sys.executable, pel]) != 0:
+            print("::warning title=peluang_cuaca::peluang_cuaca.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
         # gunung api (status MAGMA/PVMBG): dirantai di sini karena belum ada workflow sendiri; gagal tidak boleh menggagalkan banjir
         magma = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../gunungapi/magma.py")
         if subprocess.call([sys.executable, magma, "uji"]) != 0 or subprocess.call([sys.executable, magma]) != 0:

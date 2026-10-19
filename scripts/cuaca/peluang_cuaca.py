@@ -1,4 +1,4 @@
-"""Peluang hujan ekstrem per kabupaten/kota dan provinsi, 8 hari -> public/cuaca/data/peluang.json (kontrak peluang/1)
+"""Peluang hujan ekstrem per kabupaten/kota dan provinsi, 8 hari -> public/banjir/data/cuaca_peluang.json (kontrak peluang/1)
 
 Bukan model kedua: memakai peluang yang SUDAH dihitung ansambel ECMWF IFS 51 anggota (banjir/ansambel_hujan.py -> hujan_ansambel.json,
 dipakai juga cuaca_kec.json). Anggota per hari tidak disimpan di berkas itu, jadi p10/p50/p90 sengaja kosong (tidak dikarang).
@@ -10,9 +10,9 @@ Pakai: python3 scripts/cuaca/peluang_cuaca.py   |   python3 scripts/cuaca/peluan
 import importlib.util, json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from dasar import AKAR, HUJAN, JARAK_ANSAMBEL_KM, MASUKAN, PROVINSI, baca, simpan, titik_terdekat
+from dasar import AKAR, HUJAN, KELUAR, JARAK_ANSAMBEL_KM, MASUKAN, PROVINSI, baca, simpan, titik_terdekat
 
-OUT = os.path.join(AKAR, "public/cuaca/data")
+OUT = KELUAR   # public/banjir/data: hanya folder ini yang di-commit banjir.yml
 
 
 def _umum():
@@ -89,7 +89,7 @@ def main():
     k = [dict(zip(kota["kolom"], r)) for r in kota["baris"]]
     verif = baca(os.path.join(MASUKAN, "cuaca_verifikasi.json"))
     d = bangun(ans, k, verif)
-    print(f"peluang_cuaca: {len(d['wilayah'])} wilayah, {(simpan(os.path.join(OUT, 'peluang.json'), d), os.path.getsize(os.path.join(OUT, 'peluang.json')))[1]} B")
+    print(f"peluang_cuaca: {len(d['wilayah'])} wilayah, {(simpan(os.path.join(OUT, 'cuaca_peluang.json'), d), os.path.getsize(os.path.join(OUT, 'cuaca_peluang.json')))[1]} B")
 
 
 def uji():
