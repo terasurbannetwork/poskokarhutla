@@ -14,7 +14,7 @@
   const BANTUAN = {terbuka: "Terbuka", ditangani: "Ditangani", selesai: "Selesai"}, MOD = {tampil: "Tampil", dilaporkan: "Dilaporkan", tersembunyi: "Tersembunyi"};
   const ALASAN = {spam: "Spam", kasar: "Kasar", hoaks: "Hoaks", data_pribadi: "Data pribadi", lainnya: "Lainnya"};
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
-  const jam = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "-";
+  const jam = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "–";
   const durasi = ms => { if (ms == null) return "belum ada"; const m = Math.round(ms / 60000); if (m < 60) return `${angka(m)} menit`; const j = Math.floor(m / 60); return j < 48 ? `${angka(j)} jam ${angka(m % 60)} menit` : `${angka(Math.round(j / 24))} hari`; };
   const umur = t => Math.floor((Date.now() - t) / 3600e3);
   const TABS = [["antrean", "Antrean moderasi"], ["utas", "Utas"], ["bantuan", "Butuh bantuan"], ["umum", "Pengumuman"]];

@@ -5,9 +5,9 @@
   const $ = id => document.getElementById(id), K = "pb_kode_relawan";
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const angka = n => Number(n || 0).toLocaleString("id-ID", {maximumFractionDigits: 1});
-  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "-";
-  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "-";
-  const durasi = m => m == null ? "-" : `${angka(m / 60)} jam`;
+  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "–";
+  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–";
+  const durasi = m => m == null ? "–" : `${angka(m / 60)} jam`;
   const I = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   const IKON = {jam: I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'), centang: I('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>'), bolt: I('<path d="M13 3 5 14h6l-1 7 8-11h-6z"/>'), pin: I('<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
     bendera: I('<path d="M5 21V4m0 0h11l-2 4 2 4H5"/>'), x: I('<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>'), jeda: I('<circle cx="12" cy="12" r="9"/><path d="M10 9v6m4-6v6"/>'), larang: I('<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12"/>'),

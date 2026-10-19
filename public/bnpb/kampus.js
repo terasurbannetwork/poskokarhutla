@@ -6,9 +6,9 @@
   try { localStorage.removeItem(K); } catch (e) {}   // sisa versi lama
   const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const angka = n => Number(n || 0).toLocaleString("id-ID", {maximumFractionDigits: 1});
-  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "-";
-  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "-";
-  const jam = m => `${angka((m || 0) / 60)} jam`;
+  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "–";
+  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–";
+  const jam = m => m == null ? "–" : `${angka(m / 60)} jam`;
   const I = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   const IKON = {jam: I('<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/>'), centang: I('<circle cx="12" cy="12" r="9"/><path d="m8 12 3 3 5-6"/>'), bolt: I('<path d="M13 3 5 14h6l-1 7 8-11h-6z"/>'), x: I('<circle cx="12" cy="12" r="9"/><path d="m9 9 6 6m0-6-6 6"/>'),
     kampus: I('<path d="m3 9 9-5 9 5-9 5z"/><path d="M7 12v4c2 2 8 2 10 0v-4"/>'), orang: I('<circle cx="12" cy="8" r="3.5"/><path d="M5 20c1-4 4-6 7-6s6 2 7 6"/>'), pin: I('<path d="M12 21s7-6.2 7-11a7 7 0 0 0-14 0c0 4.8 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>'),
@@ -43,7 +43,7 @@
   const kartu = (i, n, l, w) => `<article class="bn-kartu"><div class="bn-angka">${n}</div><div class="bn-label">${pil(w, i, l)}</div></article>`;
 
   function gambar(x) {
-    const k = x.kampus, rel = x.relawan, sahMenit = rel.reduce((a, r) => a + r.jam_sah_menit, 0), menunggu = rel.reduce((a, r) => a + r.jam_menunggu_menit, 0);
+    const k = x.kampus, rel = x.relawan, jum = k => rel.every(r => r[k] == null) ? null : rel.reduce((a, r) => a + (r[k] || 0), 0), sahMenit = jum("jam_sah_menit"), menunggu = jum("jam_menunggu_menit");
     nama = Object.fromEntries(rel.map(r => [r.id, r.nama]));
     $("isi").hidden = false;
     $("isi").innerHTML = `<div class="bn-judul"><h1>${esc(k.nama)}</h1><div class="bn-aksi">${sp(MOU[k.status])}<button class="bn-tombol sekunder" id="unduh" type="button">Unduh rekap CSV</button><button class="bn-tombol sekunder" type="button" data-keluar>Keluar</button></div></div>

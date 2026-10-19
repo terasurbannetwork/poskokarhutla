@@ -4,8 +4,8 @@
   const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), API = "/api/riset";
   const {esc, kirim} = Admin;   // public/admin/bersama.js
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
-  const wkt = ms => ms ? new Date(ms).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "-";
-  const tgl = s => s ? new Date(s + "T00:00:00+07:00").toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "-";
+  const wkt = ms => ms ? new Date(ms).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "–";
+  const tgl = s => s ? new Date(s + "T00:00:00+07:00").toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "–";
   const hariIni = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
   const IKON = {
     topi: "M2 9l10-5 10 5-10 5z|M6 11v5c0 1.5 3 3 6 3s6-1.5 6-3v-5", jam: "M12 21a9 9 0 1 1 0-18 9 9 0 0 1 0 18z|M12 7v5l3 2", centang: "M5 12l5 5 9-10", silang: "M6 6l12 12|M18 6L6 18",
@@ -76,8 +76,8 @@
         <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Catat dan buat kode</button>${csv("mitra")}</div></form>
       ${tabel(["Institusi", "PIC (hanya admin)", "PKS", "Usulan", "Kode", ""], d.mitra.map(m => { const p = PKS[m.pks.s];
         return `<tr data-id="${esc(m.id)}"${m.dicabut ? ' class="rs-redam"' : ""}><td><b>${esc(m.institusi)}</b>${dummyPil(m)}<br><span class="rs-redup">${esc(m.unit || "")}</span></td>
-        <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "-")} · ${esc(m.pic_wa || "-")}</span></td>
-        <td>${esc(m.pks_nomor || "-")}<br>${pil(p[0], p[1] + (m.pks.sisa != null && m.pks.s !== "kedaluwarsa" ? ` (${angka(m.pks.sisa)} hari)` : ""), p[2])}<br><span class="rs-redup">${tgl(m.pks_mulai)} - ${tgl(m.pks_sampai)}</span></td>
+        <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "–")} · ${esc(m.pic_wa || "–")}</span></td>
+        <td>${esc(m.pks_nomor || "–")}<br>${pil(p[0], p[1] + (m.pks.sisa != null && m.pks.s !== "kedaluwarsa" ? ` (${angka(m.pks.sisa)} hari)` : ""), p[2])}<br><span class="rs-redup">${tgl(m.pks_mulai)}–${tgl(m.pks_sampai)}</span></td>
         <td>${angka(m.usulan)}</td><td>${m.dicabut ? pil("silang", "Dicabut " + wkt(m.dicabut), "abu") : pil("centang", "Aktif", "hijau")}</td>
         <td class="a"><button class="ad-tombol kecil" data-aksi="pks">Perbarui PKS</button>${m.dicabut ? "" : ' <button class="ad-tombol kecil bahaya" data-aksi="cabut">Cabut kode</button>'}</td></tr>`; }), "Belum ada mitra.")}`;
     },
@@ -94,8 +94,8 @@
       const baris = d.usulan.filter(cocok).map(u => { const s = STATUS[u.status], jj = d.jejak.filter(j => j.usulan_id === u.id), kk = d.kemajuan.filter(k => k.usulan_id === u.id);
         const aksi = Object.entries(d.enum.alur[u.status]).filter(([, p]) => p === "admin").map(([ke]) => `<button class="ad-tombol kecil ${ke === "disetujui" ? "utama" : ke === "ditolak" ? "bahaya" : ""}" data-aksi="telaah" data-ke="${ke}">${esc(AKSI_NAMA[ke])}</button>`).join(" ");
         return `<tr data-id="${esc(u.id)}"><td><details><summary><b>${esc(u.judul)}</b>${dummyPil(u)}</summary><div class="rs-detail">
-          <p><b>Metode:</b> ${esc(u.metode)}</p><p><b>Anggota:</b> ${esc(u.anggota || "-")}</p><p><b>Wilayah:</b> ${esc(u.wilayah)} · <b>Jadwal:</b> ${tgl(u.mulai)} - ${tgl(u.selesai)}</p>
-          <p><b>Agenda:</b> ${esc(u.agenda || "-")}</p><p><b>Data dibutuhkan:</b> ${esc(u.data_butuh.map(i => (d.enum.katalog.find(k => k.id === i) || {}).nama || i).join(", ") || "-")}</p><p><b>Luaran rencana:</b> ${esc(u.luaran_rencana)}</p>
+          <p><b>Metode:</b> ${esc(u.metode)}</p><p><b>Anggota:</b> ${esc(u.anggota || "–")}</p><p><b>Wilayah:</b> ${esc(u.wilayah)} · <b>Jadwal:</b> ${tgl(u.mulai)}–${tgl(u.selesai)}</p>
+          <p><b>Agenda:</b> ${esc(u.agenda || "–")}</p><p><b>Data dibutuhkan:</b> ${esc(u.data_butuh.map(i => (d.enum.katalog.find(k => k.id === i) || {}).nama || i).join(", ") || "–")}</p><p><b>Luaran rencana:</b> ${esc(u.luaran_rencana)}</p>
           ${u.catatan ? `<p><b>Catatan telaah:</b> ${esc(u.catatan)}</p>` : ""}
           ${kk.length ? `<p><b>Laporan:</b></p><ul>${kk.map(k => `<li>${wkt(k.waktu)} ${k.jenis === "akhir" ? "(akhir) " : ""}${esc(k.isi)} ${k.tautan ? lnk(k.tautan, "dokumen") : ""}</li>`).join("")}</ul>` : ""}
           <p><b>Riwayat:</b></p><ul>${jj.map(j => `<li>${wkt(j.waktu)}: ${esc((j.dari || "baru") + " ke " + j.ke)} oleh ${esc(j.oleh.split(":")[0])}${j.catatan ? " - " + esc(j.catatan) : ""}</li>`).join("")}</ul></div></details></td>
@@ -114,7 +114,7 @@
         <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan</button><button class="ad-tombol" type="button" data-aksi="batal-putus">Batal</button></div></form>`)(d.permintaan.find(x => x.id === putus.id) || {}) : "";
       return `<div class="rs-bar">${csv("permintaan")}</div>${panel}${tabel(["Mitra", "Data", "Tujuan", "Status", "Jalur", "Diminta", ""], d.permintaan.map(p => { const s = S[p.status];
         return `<tr data-id="${esc(p.id)}"><td>${esc(p.institusi)}${dummyPil(p)}</td><td><b>${esc(nama(p.dataset))}</b></td><td>${esc(p.tujuan)}${p.catatan ? `<br><span class="rs-redup">${esc(p.catatan)}</span>` : ""}</td>
-          <td>${pil(s[0], s[1], s[2])}</td><td>${p.jalur ? (p.jalur.startsWith("/") ? `<a href="${esc(p.jalur)}" target="_blank" rel="noopener noreferrer">${esc(p.jalur)}</a>` : lnk(p.jalur)) : "-"}</td><td>${wkt(p.dibuat)}</td>
+          <td>${pil(s[0], s[1], s[2])}</td><td>${p.jalur ? (p.jalur.startsWith("/") ? `<a href="${esc(p.jalur)}" target="_blank" rel="noopener noreferrer">${esc(p.jalur)}</a>` : lnk(p.jalur)) : "–"}</td><td>${wkt(p.dibuat)}</td>
           <td class="a">${p.status === "diminta" ? '<button class="ad-tombol kecil utama" data-aksi="putus" data-ke="disetujui">Setujui</button> <button class="ad-tombol kecil bahaya" data-aksi="putus" data-ke="ditolak">Tolak</button>' : ""}</td></tr>`; }), "Belum ada permintaan data.")}`;
     },
 

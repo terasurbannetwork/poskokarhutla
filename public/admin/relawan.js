@@ -5,9 +5,9 @@
   const app = document.getElementById("app"), aksiJudul = document.getElementById("aksiJudul"), API = "/api/relawan/admin";
   const {esc, kirim} = Admin, ambil = u => Admin.ambil(u, "Fitur relawan");
   const angka = n => Number(n ?? 0).toLocaleString("id-ID", {maximumFractionDigits: 1});
-  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "-";
-  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "-";
-  const jamF = m => `${angka((m || 0) / 60)} jam`;
+  const wkt = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "–";
+  const tgl = s => s ? new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–";
+  const jamF = m => m == null ? "–" : `${angka(m / 60)} jam`;
   const hariIni = () => new Date(Date.now() + 7 * 3600e3).toISOString().slice(0, 10);
   const geser = h => new Date(Date.now() + 7 * 3600e3 + h * 864e5).toISOString().slice(0, 10);
   const I = d => `<svg viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
@@ -90,7 +90,7 @@
   addEventListener("resize", () => tutupMenu());
   const kolomRelawan = () => [
     {l: "Nama", k: "nama", h: r => `<b>${esc(r.nama)}</b>${dummyPil(r.dummy)}<br><span class="rw-redup">${esc(r.gol_darah || "")}</span>`},
-    {l: "Kontak", u: false, h: r => `<span title="Kontak darurat: ${esc(r.darurat_nama || "-")} ${esc(r.darurat_wa || "")}">${esc(r.wa || "-")}<br><span class="rw-redup">${esc(r.email || "-")}</span></span>`},
+    {l: "Kontak", u: false, h: r => `<span title="Kontak darurat: ${esc(r.darurat_nama || "–")} ${esc(r.darurat_wa || "")}">${esc(r.wa || "–")}<br><span class="rw-redup">${esc(r.email || "–")}</span></span>`},
     {l: "Wilayah", v: r => r.prov + r.kab, h: r => `${esc(r.kab)}<br><span class="rw-redup">${esc(konfig.provinsi[r.prov] || r.prov)}</span>`},
     {l: "Jalur", k: "jalur", h: r => `${esc(r.jalur)}${r.kampus ? `<br><span class="rw-redup">${esc(r.kampus)}</span>` : ""}${r.organisasi ? `<br><span class="rw-redup">${esc(r.organisasi)}</span>` : ""}`},
     {l: "Keahlian", v: r => r.keahlian.join(","), h: r => pilKeahlian(r.keahlian) + (r.sertifikat ? `<br><span class="rw-redup">${esc(r.sertifikat)}</span>` : "")},
@@ -145,7 +145,7 @@
       {l: "Keahlian cocok", v: r => r.cocok.join(","), h: r => pilKeahlian(r.cocok)}, {l: "Wilayah", v: r => r.wilayah, h: r => `${esc(r.kab)} (${esc(konfig.provinsi[r.prov] || r.prov)})<br>${pil(r.wilayah === "luar" ? "p-oranye" : "p-hijau", "pin", {sama_kab: "Satu kabupaten", sama_prov: "Satu provinsi", luar: "Luar provinsi"}[r.wilayah])}`},
       {l: "Durasi", k: "maks_hari", h: r => `${angka(r.maks_hari)} hari ${r.cukup_waktu ? pil("p-hijau", "centang", "Cukup") : pil("p-oranye", "jam", "Kurang")}`}, {l: "Beban", k: "beban"},
       {l: "Aksi", u: false, h: r => `<button class="ad-tombol kecil utama" data-tugaskan="${esc(r.id)}" data-perm="${esc(id)}">Tugaskan</button>`}], d.kandidat, "Belum ada relawan siap tugas yang cocok.", 8);
-    Tabel(document.getElementById("tTugas"), [{l: "Relawan", k: "nama"}, {l: "Status", v: t => t.status, h: t => ps(PENUGASAN[t.status])}, {l: "Asuransi", v: t => t.asuransi, h: t => esc(ASURANSI[t.asuransi])}, {l: "Nilai", v: t => t.nilai ?? 0, h: t => t.nilai ?? "-"},
+    Tabel(document.getElementById("tTugas"), [{l: "Relawan", k: "nama"}, {l: "Status", v: t => t.status, h: t => ps(PENUGASAN[t.status])}, {l: "Asuransi", v: t => t.asuransi, h: t => esc(ASURANSI[t.asuransi])}, {l: "Nilai", v: t => t.nilai ?? 0, h: t => t.nilai ?? "–"},
       {l: "Aksi", u: false, h: t => ["ditawarkan", "diterima"].includes(t.status) ? `<button class="ad-tombol kecil bahaya" data-batal="${esc(t.id)}">Batalkan</button>` : ""}], d.penugasan, "Belum ada yang ditugaskan.", 8);
     el.scrollIntoView({behavior: "smooth", block: "nearest"});
   }
@@ -196,19 +196,19 @@
   async function tampilJam(isi) {
     const d = await ambil(`${API}/penugasan`);
     isi.innerHTML = `<div class="rw-bar"><span class="rw-redup">Sesi check-in dan check-out relawan. Jam yang disahkan masuk angka publik dan rekap kampus.</span></div>${wadah("tJam")}`;
-    Tabel(document.getElementById("tJam"), [{l: "Relawan", k: "nama"}, {l: "Masuk", k: "masuk", h: j => wkt(j.masuk)}, {l: "Keluar", k: "keluar", h: j => j.keluar ? wkt(j.keluar) : pil("p-hijau", "api", "Berjalan")}, {l: "Durasi", k: "menit", h: j => j.menit == null ? "-" : jamF(j.menit)},
-      {l: "Lokasi", u: false, h: j => j.lat == null ? "-" : `<a href="https://www.google.com/maps?q=${j.lat},${j.lon}" target="_blank" rel="noopener noreferrer">${(+j.lat).toFixed(3)}, ${(+j.lon).toFixed(3)}</a>`},
+    Tabel(document.getElementById("tJam"), [{l: "Relawan", k: "nama"}, {l: "Masuk", k: "masuk", h: j => wkt(j.masuk)}, {l: "Keluar", k: "keluar", h: j => j.keluar ? wkt(j.keluar) : pil("p-hijau", "api", "Berjalan")}, {l: "Durasi", k: "menit", h: j => jamF(j.menit)},
+      {l: "Lokasi", u: false, h: j => j.lat == null ? "–" : `<a href="https://www.google.com/maps?q=${j.lat},${j.lon}" target="_blank" rel="noopener noreferrer">${(+j.lat).toLocaleString("id-ID", {maximumFractionDigits: 3})}, ${(+j.lon).toLocaleString("id-ID", {maximumFractionDigits: 3})}</a>`},
       {l: "Validasi", v: j => j.sah, h: j => ps(SAH[j.sah])}, {l: "Aksi", u: false, h: j => j.keluar == null ? "" : `<div class="rw-aksi"><button class="ad-tombol kecil utama" data-jam="sah" data-id="${esc(j.id)}">Sahkan</button><button class="ad-tombol kecil bahaya" data-jam="tolak" data-id="${esc(j.id)}">Tolak</button></div>`}], d.jam, "Belum ada sesi jam kerja.");
   }
   async function tampilPenilaian(isi) {
     const [d, h] = await Promise.all([ambil(`${API}/penugasan`), ambil(`${API}/relawan?status=daftar_hitam`)]);
     isi.innerHTML = `<h3>Purna tugas dan penilaian</h3>${wadah("tNilai")}<h3>Daftar hitam</h3>${wadah("tHitam")}`;
     Tabel(document.getElementById("tNilai"), [{l: "Relawan", k: "nama", h: p => esc(p.nama) + dummyPil(p.dummy)}, {l: "Permintaan", k: "judul"}, {l: "Penugasan", v: p => p.status, h: p => ps(PENUGASAN[p.status])}, {l: "Jam sah", k: "jam_sah_menit", h: p => jamF(p.jam_sah_menit)},
-      {l: "Nilai (1-5)", v: p => p.nilai ?? 0, h: p => p.status === "selesai" ? `<select class="rw-isian" data-f="nilai"><option value="">Belum</option>${[1, 2, 3, 4, 5].map(n => `<option ${p.nilai === n ? "selected" : ""}>${n}</option>`).join("")}</select>` : "-"},
+      {l: "Nilai (1-5)", v: p => p.nilai ?? 0, h: p => p.status === "selesai" ? `<select class="rw-isian" data-f="nilai"><option value="">Belum</option>${[1, 2, 3, 4, 5].map(n => `<option ${p.nilai === n ? "selected" : ""}>${n}</option>`).join("")}</select>` : "–"},
       {l: "Catatan", u: false, h: p => p.status === "selesai" ? `<input class="rw-isian" data-f="catatan" maxlength="300" value="${esc(p.nilai_catatan || "")}">` : ""},
       {l: "Aksi", u: false, h: p => `<div class="rw-aksi">${p.status === "selesai" ? `<button class="ad-tombol kecil utama" data-simpan-nilai="${esc(p.id)}">Simpan nilai</button>` : ""}${["bertugas", "diterima"].includes(p.status) ? `<button class="ad-tombol kecil utama" data-selesai="${esc(p.id)}">Tandai selesai</button>` : ""}</div>`}],
       d.penugasan.filter(p => ["diterima", "bertugas", "selesai"].includes(p.status)), "Belum ada penugasan yang berjalan atau selesai.");
-    Tabel(document.getElementById("tHitam"), [{l: "Nama", k: "nama", h: r => esc(r.nama) + dummyPil(r.dummy)}, {l: "Kontak", u: false, h: r => `${esc(r.wa || "-")}<br><span class="rw-redup">${esc(r.email || "-")}</span>`}, {l: "Alasan", v: r => r.alasan || "", h: r => esc(r.alasan || "-")},
+    Tabel(document.getElementById("tHitam"), [{l: "Nama", k: "nama", h: r => esc(r.nama) + dummyPil(r.dummy)}, {l: "Kontak", u: false, h: r => `${esc(r.wa || "–")}<br><span class="rw-redup">${esc(r.email || "–")}</span>`}, {l: "Alasan", v: r => r.alasan || "", h: r => esc(r.alasan || "–")},
       {l: "Aksi", u: false, h: r => `<button class="ad-tombol kecil" data-r="pulihkan" data-id="${esc(r.id)}">Pulihkan</button>`}], h.relawan, "Tidak ada relawan dalam daftar hitam.");
   }
   const TAMPIL = {antrean: tampilAntrean, relawan: tampilRelawan, permintaan: tampilPermintaan, kampus: tampilKampus, pelatihan: tampilPelatihan, asuransi: tampilAsuransi, jam: tampilJam, penilaian: tampilPenilaian};

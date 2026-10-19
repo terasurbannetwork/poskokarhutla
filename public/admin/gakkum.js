@@ -16,7 +16,10 @@
   const fmt = (n, d = 0) => n == null || isNaN(n) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: d});
   const pct = v => v == null ? "–" : fmt(v * 100, 1) + "%";
   const tgl = s => s ? new Date(s + "T00:00:00").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric"}) : "–";
-  const wib = s => s ? new Date(s).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "long", year: "numeric", hour: "2-digit", minute: "2-digit"}).replace(" pukul", ",").replace(".", ":") + " WIB" : "–";
+  const wib = s => s ? new Date(s).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit"}).replace(" pukul", ",") + " WIB" : "–";
+  const sam = s => { const m = /^(\d{4}-\d\d-\d\d) (\d\d:\d\d)/.exec(s || ""); return m ? wib(`${m[1]}T${m[2]}:00+07:00`) : s ? String(s) : "–"; };   // "2026-10-19 14:46 WIB" -> "19 Okt 2026, 14.46 WIB"
+  const sumT = s => String(s || "").replace(/arsip SP \+ NRT/, "arsip dan hampir waktu nyata");
+  const kira = v => v == null || isNaN(v) ? "–" : v <= 0 ? "0" : "sekitar " + fmt(Math.max(10, Math.round(v / 10) * 10));   // satu piksel VIIRS ≈ 14 ha: tanpa presisi palsu
   const ambil = async u => { const r = await fetch(u); if (!r.ok) throw new Error(`${u} galat ${r.status}`); return r.json(); };
 
   let IDX, IDX_RIW = "", RIW = {}, CITJ = {}, prov = "", daftar = [], jenis = "", cari = "", hal = 0;
@@ -26,7 +29,7 @@
 
   /* ---------- daftar ---------- */
   function kerangka() {
-    aksiJudul.innerHTML = `<span class="gk-pil">${ikon("api")}Data sampai ${esc(IDX.sampai)}</span>`;
+    aksiJudul.innerHTML = `<span class="gk-pil">${ikon("api")}Data sampai ${esc(sam(IDX.sampai))}</span>`;
     app.innerHTML = `<section class="gk-kontrol">
         <label class="gk-isian">Provinsi<select id="gkProv">${IDX.prov.slice().sort((a, b) => a.nama.localeCompare(b.nama)).map(p => `<option value="${esc(p.kode)}">${esc(p.nama)} (${fmt(p.perusahaan)} konsesi)</option>`).join("")}</select></label>
         <div class="gk-pilpil" id="gkJenis" role="group" aria-label="Jenis izin"></div>
@@ -58,7 +61,7 @@
       <td data-label="Jenis"><span class="gk-pil">${esc(JENIS[r.jenis] || r.jenis)}</span></td>
       <td data-label="Kabupaten">${esc((r.kab || []).join(", ") || "–")}</td>
       <td class="n" data-label="Luas (ha)">${fmt(r.luas_ha)}</td><td class="n" data-label="Titik 2026">${fmt(r.titik)}</td><td class="n" data-label="Titik 7 hari">${fmt(r.titik_7h)}</td>
-      <td class="n" data-label="Terbakar (ha)">${fmt(r.luas_bakar_ha)}</td><td class="n" data-label="Terbakar (%)">${pct(r.persen_bakar)}</td>
+      <td class="n" data-label="Terbakar (ha)">${kira(r.luas_bakar_ha)}</td><td class="n" data-label="Terbakar (%)">${pct(r.persen_bakar)}</td>
       <td class="a"><button type="button" class="ad-tombol kecil utama" data-berkas="${esc(r.id)}">${ikon("berkas")}Berkas</button></td></tr>`).join("")
       : `<tr><td colspan="${KOLOM.length + 1}" class="gk-kosong">${daftar.length ? "Tidak ada konsesi yang cocok dengan penyaring." : "Provinsi ini belum punya konsesi dengan titik api 2026."}</td></tr>`;
     document.getElementById("gkPgn").innerHTML = `<p>${rs.length ? `Menampilkan ${fmt(hal * PER + 1)} sampai ${fmt(Math.min(rs.length, hal * PER + PER))} dari ${fmt(rs.length)} konsesi` : "0 konsesi"}</p>
@@ -89,7 +92,7 @@
     const sk = IDX.sumber_konsesi[r.jenis];
     return `<article class="gk-lembar" id="gkLembar">
       <header class="gk-kop"><div><p class="gk-kicker">Berkas indikasi karhutla · bahan awal</p><h2>${esc(r.nama)}</h2><p>${esc(JENIS[r.jenis] || r.jenis)} · ${esc((r.kab || []).join(", "))}, ${esc(IDX.prov.find(p => p.kode === prov)?.nama || "")}</p></div>
-        <div class="gk-cap"><b>Dibuat</b> ${esc(wib(new Date().toISOString()))}<br><b>Data titik</b> sampai ${esc(IDX.sampai)}</div></header>
+        <div class="gk-cap"><b>Dibuat</b> ${esc(wib(new Date().toISOString()))}<br><b>Data titik</b> sampai ${esc(sam(IDX.sampai))}</div></header>
       <p class="gk-catatan"><b>Bahan awal, bukan alat bukti sah tanpa verifikasi lapangan.</b> Tumpang tindih lokasi dan waktu tidak menunjukkan siapa yang membakar.</p>
       <h3>1. Identitas konsesi</h3>
       <table class="gk-kv"><tbody>${baris("Nama", esc(r.nama))}${baris("ID data", esc(r.id))}${baris("Jenis izin", esc(JENIS[r.jenis] || r.jenis))}${baris("Pemegang atau grup (catatan publik)", esc(pemegang))}
@@ -98,11 +101,11 @@
       <h3>2. Kronologi titik api 2026</h3>
       <table class="gk-kv"><tbody>${baris("Titik api pertama", esc(tgl(r.pertama)))}${baris("Titik api terakhir", esc(tgl(r.terakhir)))}${baris("Hari aktif", `${fmt(r.hari_aktif)} hari dalam rentang ${fmt(r.rentang_hari)} hari`)}
         ${baris("Total titik panas", `<b>${fmt(r.titik)}</b> titik (${fmt(r.titik_7h)} dalam 7 hari terakhir)`)}${baris("Hari puncak", r.puncak ? `${esc(tgl(r.puncak[0]))}: ${fmt(r.puncak[1])} titik` : "")}
-        ${baris("Daya api (FRP)", `maks ${fmt(r.frp_maks, 1)} MW · total ${fmt(r.frp_total)} MW`)}${baris("Keyakinan titik", esc(IDX.sumber_titik))}</tbody></table>
+        ${baris("Daya api (FRP)", `maks ${fmt(r.frp_maks, 1)} MW · total ${fmt(r.frp_total)} MW`)}${baris("Keyakinan titik", esc(sumT(IDX.sumber_titik)))}</tbody></table>
       ${kej.length ? `<table class="gk-tb"><thead><tr><th>Kejadian</th><th>Mulai</th><th>Selesai</th><th>Hari</th><th>Titik</th></tr></thead><tbody>${kej.map((k, i) => `<tr><td>${i + 1}</td><td>${esc(tgl(k[0]))}</td><td>${esc(tgl(k[1]))}</td><td>${fmt(k[2])}</td><td>${fmt(k[3])}</td></tr>`).join("")}</tbody></table>` : ""}
       ${harian.length ? `<p class="gk-sub">Jumlah titik per hari (tanggal: titik)</p><div class="gk-hari">${harian.map(h => `<span>${esc(tgl(h[0]).replace(/ \d{4}$/, ""))}<b>${fmt(h[1])}</b></span>`).join("")}</div>` : ""}
       <h3>3. Luas terbakar indikatif</h3>
-      <table class="gk-kv"><tbody>${baris("Luas terbakar indikatif", `<b>${fmt(r.luas_bakar_ha)} ha</b> (${pct(r.persen_bakar)} dari luas konsesi)`)}${baris("Dasar hitung", `${fmt(r.piksel)} piksel VIIRS 375 m berisi titik x ${fmt(IDX.ha_piksel, 2)} ha per piksel`)}
+      <table class="gk-kv"><tbody>${baris("Luas terbakar indikatif", `<b>${kira(r.luas_bakar_ha)} ha</b> (${pct(r.persen_bakar)} dari luas konsesi)`)}${baris("Dasar hitung", `${fmt(r.piksel)} piksel VIIRS 375 m berisi titik x ${fmt(IDX.ha_piksel, 2)} ha per piksel`)}
         ${baris("Di lahan gambut", r.gambut_bakar_ha ? `${fmt(r.gambut_bakar_ha)} ha (${fmt(r.gambut_titik)} titik)` : "")}</tbody></table>
       <p class="gk-sub">Luas piksel melebihi luas terbakar nyata; ini angka pembanding, bukan hasil ukur lapangan.</p>
       <h3>4. Citra satelit</h3>
@@ -112,7 +115,7 @@
         <div class="gk-citra gk-empat">${figur(e.citra?.sebelum, "Sebelum")}${figur(e.citra?.terbakar, "Terbakar")}${figur(e.citra?.kebun1, "Kebun")}${figur(e.citra?.kebun2, "Kebun")}</div>
         <p class="gk-sub">Indikasi dari tumpang tindih lokasi dan waktu (Gaveau dkk. 2022), bukan bukti siapa yang membakar atau menanam.</p>` : `<p class="gk-kosong">Tidak ada riwayat terbakar 2015 tercatat untuk konsesi ini.</p>`}
       <h3>6. Sumber data</h3>
-      <ul class="gk-sumber"><li>Titik panas: ${esc(IDX.sumber_titik)}, ${esc(tgl(IDX.dari))} sampai ${esc(IDX.sampai)}. Celah: ${esc(IDX.celah)}.</li>
+      <ul class="gk-sumber"><li>Titik panas: ${esc(sumT(IDX.sumber_titik))}, ${esc(tgl(IDX.dari))} sampai ${esc(sam(IDX.sampai))}. Celah: ${esc(IDX.celah)}.</li>
         <li>Batas konsesi: ${esc(sk || "tidak tercatat")}.</li>${e ? `<li>Riwayat 2015: ${esc(IDX_RIW)}</li>` : ""}
         <li>Citra: Sentinel-2 L2A (Copernicus), Landsat (USGS) bila ada.</li><li>Data diunduh dan dihitung: ${esc(wib(IDX.dibuat))}.</li></ul>
       <p class="gk-catatan"><b>Bahan awal, bukan alat bukti sah tanpa verifikasi lapangan.</b> Batas konsesi bertanggal sekitar 2014 dan bisa sudah berubah. Berkas ini tidak dikirim ke siapa pun; hanya dicetak atau disimpan sebagai PDF oleh petugas.</p>

@@ -59,11 +59,11 @@
       h("span", {class: "bn-aksi"}, h("button", {class: "bn-tombol", type: "button", id: "baru"}, svg("tambah"), "Ajukan usulan"), " ", h("button", {class: "bn-tombol sekunder", type: "button", id: "minta"}, svg("unduh"), "Minta data"))));
     const usulan = tabel(["Riset", "Status", "Jadwal", "Nomor PKS", ""], D.usulan.map(u => { const s = STATUS[u.status];
       return h("tr", null, h("td", {"data-label": "Riset", class: "rs-judul"}, h("b", {teks: u.judul}), h("span", {class: "rs-redup", teks: u.wilayah})), h("td", {"data-label": "Status"}, pil(s[0], s[1], s[2])),
-        h("td", {"data-label": "Jadwal"}, tgl(u.mulai) + " - " + tgl(u.selesai)), h("td", {"data-label": "Nomor PKS"}, u.nomor_pks || "-"),
+        h("td", {"data-label": "Jadwal"}, tgl(u.mulai) + "–" + tgl(u.selesai)), h("td", {"data-label": "Nomor PKS"}, u.nomor_pks || "–"),
         h("td", {class: "a"}, h("button", {class: "ad-tombol kecil", type: "button", "data-u": u.id}, svg("buka"), "Buka"))); }), "Kamu belum punya usulan.");
     const minta = tabel(["Data", "Tujuan", "Status", "Jalur", "Diminta"], D.permintaan.map(q => { const s = PERMINTAAN[q.status];
       return h("tr", null, h("td", {"data-label": "Data", class: "rs-judul"}, h("b", {teks: namaData[q.dataset] || q.dataset})), h("td", {"data-label": "Tujuan"}, q.tujuan, q.catatan ? h("span", {class: "rs-redup", teks: q.catatan}) : null),
-        h("td", {"data-label": "Status"}, pil(s[0], s[1], s[2])), h("td", {"data-label": "Jalur"}, q.jalur ? tautan(q.jalur, "Buka data", true) : "-"), h("td", {"data-label": "Diminta"}, wkt(q.dibuat))); }), "Belum ada permintaan data.");
+        h("td", {"data-label": "Status"}, pil(s[0], s[1], s[2])), h("td", {"data-label": "Jalur"}, q.jalur ? tautan(q.jalur, "Buka data", true) : "–"), h("td", {"data-label": "Diminta"}, wkt(q.dibuat))); }), "Belum ada permintaan data.");
     const pecah = (j, t) => h("section", {class: "mt-blok"}, h("h2", {class: "mt-kepala", teks: j}), t);
     app.replaceChildren(kep, pecah("Usulan riset", usulan), pecah("Permintaan data", minta));
     app.querySelector("#baru").onclick = () => dialogUsulan(null);
@@ -125,8 +125,8 @@
     const agenda = D.agenda.find(a => a.id === u.agenda_id);
     const isi = [h("div", {class: "mt-aksi"}, pil(s[0], s[1], s[2]), u.nomor_pks ? pil("dokumen", u.nomor_pks, "hijau") : null), alur,
       u.catatan && (u.status === "revisi" || u.status === "ditolak") ? h("p", {class: "mt-catatan", teks: "Catatan telaah: " + u.catatan}) : null,
-      h("div", {class: "mt-info"}, info("Ketua peneliti", u.ketua), info("Anggota", u.anggota || "-"), info("Bencana", D.bencana[u.bencana] || u.bencana), info("Wilayah", u.wilayah), info("Jadwal", tgl(u.mulai) + " - " + tgl(u.selesai)),
-        info("Agenda BNPB", agenda ? agenda.judul : u.agenda_id ? "Agenda sudah ditutup" : "-"), info("Data dibutuhkan", u.data_butuh.map(i => namaData[i] || i).join(", ") || "-"), info("Luaran rencana", u.luaran_rencana)),
+      h("div", {class: "mt-info"}, info("Ketua peneliti", u.ketua), info("Anggota", u.anggota || "–"), info("Bencana", D.bencana[u.bencana] || u.bencana), info("Wilayah", u.wilayah), info("Jadwal", tgl(u.mulai) + "–" + tgl(u.selesai)),
+        info("Agenda BNPB", agenda ? agenda.judul : u.agenda_id ? "Agenda sudah ditutup" : "–"), info("Data dibutuhkan", u.data_butuh.map(i => namaData[i] || i).join(", ") || "–"), info("Luaran rencana", u.luaran_rencana)),
       h("div", {class: "mt-info"}, info("Metode", u.metode)),
       bagian("Riwayat status", h("ul", {class: "mt-daftar"}, ...jejak.map(j => h("li", null, h("b", {teks: (j.dari ? STATUS[j.dari][1] + " ke " : "") + STATUS[j.ke][1]}), h("span", {class: "rs-redup", teks: wkt(j.waktu) + " oleh " + (j.oleh === "mitra" ? "kamu" : "admin") + (j.catatan ? ": " + j.catatan : "")}))))),
     ];
