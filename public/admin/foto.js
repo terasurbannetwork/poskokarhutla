@@ -53,7 +53,10 @@
     const d = e.target.closest("[data-dummy]");
     if (d) {
       if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA foto, suka, dan komentar dummy? Data asli tidak tersentuh.")) return;
-      const r = await kirim(`${API}/dummy`, {aksi: d.dataset.dummy});
+      /* halaman ini memuat foto SEMUA bencana: 🧪 mengisi tiap bencana (409 = sudah ada, dilewati); halaman bencana mengisi bencananya sendiri (public/foto.js) */
+      let r, n = 0;
+      if (d.dataset.dummy === "isi") { for (const b of Object.keys(KAT)) { const x = await kirim(`${API}/dummy`, {aksi: "isi", bencana: b}); if (x.ok) n += x.j.foto; else r = x; } r = n || !r ? {ok: true, j: {foto: n}} : r; }
+      else r = await kirim(`${API}/dummy`, {aksi: "hapus"});
       alert(r.ok ? (d.dataset.dummy === "isi" ? `${r.j.foto} foto dummy dibuat (menunggu, tayang, ditolak) beserta suka, komentar, dan aduan.` : `${r.j.foto} foto dan ${r.j.komentar} komentar dummy dihapus.`) : r.j.galat);
       return location.reload();   // muat ulang penuh (DUMMY.md syarat 6)
     }

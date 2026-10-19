@@ -207,7 +207,7 @@ def main():
 
 # Turunan kekeringan, urut ketergantungan (workflow tidak bisa disunting dari mesin agent, jadi dirantai di sini).
 # Tiap langkah proses terpisah dengan batas waktu; langkah yang bahannya gagal dilewati (bukan dijalankan di atas berkas lama).
-RANTAI = ("hth", "prakiraan", "padi", "ujibalik", "laporan", "neraca", "resmi", "bukti", "dampak")
+RANTAI = ("hth", "prakiraan", "padi", "ujibalik", "laporan", "neraca", "resmi", "bukti", "dampak", "posko", "riwayat")
 BUTUH = {"padi": ("prakiraan",), "laporan": ("hth",), "neraca": ("hth",), "bukti": ("resmi",)}
 BATAS_DTK = 1800
 
@@ -256,7 +256,7 @@ def uji():
     assert tren["dasarian"][-1]["id"] == "2026-28" and tren["dc_harian"][0]["med"] == 500 and tren["spi_bulanan"][-1]["bln"] == "2026-08"
     _, _, _, t2 = bangun(tanah, fwi, {"kec": {}}, {}, {}, {}, dt.date(2026, 10, 17), tren)
     assert len(t2["dasarian"]) == 1                                                                                              # dasarian sama: diganti, bukan ditambah
-    assert all(RANTAI.index(b) < RANTAI.index(n) for n, bs in BUTUH.items() for b in bs) and RANTAI.index("bukti") < RANTAI.index("dampak")
+    assert all(RANTAI.index(b) < RANTAI.index(n) for n, bs in BUTUH.items() for b in bs) and RANTAI.index("bukti") < RANTAI.index("dampak") < RANTAI.index("posko")
     dicoba = []
     assert rantai(lambda n: dicoba.append(n) or n != "prakiraan") == ["prakiraan", "padi"] and "padi" not in dicoba   # padi tak dijalankan di atas prakiraan lama
     assert rantai(lambda n: True) == []

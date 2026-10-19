@@ -20,13 +20,11 @@ Pakai:  python3 scripts/data/khg_prioritas.py        # tulis khg_prioritas.json 
 import csv, datetime as dt, io, json, math, os, sys, time
 
 sys.path.insert(0, os.path.dirname(__file__))
+from firms_sumber import FAMILI, csv_sah, muat_ketersediaan, nasional_harian, penuh, sumber_hari, unduh  # noqa: E402
 from wilayah import AKAR, PROVINSI, Poligon, Wilayah, _cincin, _di_dalam  # noqa: E402
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
-UTAMA = {"VIIRS_SNPP_NRT": "N", "VIIRS_NOAA20_NRT": "N20", "MODIS_NRT": "M"}
-SP = {"VIIRS_SNPP_SP": "N", "VIIRS_NOAA20_SP": "N20", "MODIS_SP": "M"}
-BATAS_NRT = 55      # hari; sama dengan harian30.py (FIRMS menyimpan NRT sekitar 2 bulan)
 MAKS_REQ = int(os.environ.get("KHG_MAKS_REQ", 45))       # permintaan FIRMS per jalan untuk isi mundur (3 sensor x 5 hari = 3 permintaan -> ~75 hari per jalan)
 LANGKAH_KAB = 0.04  # derajat (~4,4 km): jarak contoh untuk mencari kab/kota yang dilintasi KHG
 KAB_MAKS = 6
@@ -64,39 +62,9 @@ def perbarui_hari(hari, baru, batas_lengkap, akhir):
     return out
 
 
-FAMILI = ("VIIRS_SNPP", "VIIRS_NOAA20", "MODIS")
 VERSI_HARI = 2     # v1 memilih SP/NRT dari umur hari: SP VIIRS berakhir 30 Jun 2026, jadi Jul-Agu hanya terisi MODIS atau kosong
 MIGRASI_DARI = "2026-07-01"
 CURIGA_NAS = 300   # hari KHG kosong tetapi titik nasional (musim_harian.json) >= ini dianggap unduhan gagal, bukan nol sungguhan
-
-
-def muat_ketersediaan(kunci, ambil):
-    """FIRMS data_availability: {data_id: (tgl_min, tgl_maks)}. Arsip standar (SP) tertinggal ~3 bulan dari NRT; menebak sumber dari umur
-    hari membuat SP kosong diterima sebagai 'nol titik' (bug 19 Okt: 2-27 Agustus kosong)."""
-    ket = {}
-    for b in ambil(f"https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/{kunci}/ALL").splitlines()[1:]:
-        p = b.split(",")
-        if len(p) == 3:
-            ket[p[0]] = (dt.date.fromisoformat(p[1]), dt.date.fromisoformat(p[2]))
-    if not all(f + "_NRT" in ket for f in FAMILI):
-        raise RuntimeError(f"data_availability tak lengkap: {sorted(ket)}")
-    return ket
-
-
-def sumber_hari(fam, d, ket):
-    """SP bila d dalam jangkauannya, selain itu NRT bila d dalam jangkauannya, selain itu None (tak ada data = hari tak bisa selesai)."""
-    for sfx in ("_SP", "_NRT"):
-        r = ket.get(fam + sfx)
-        if r and r[0] <= d <= r[1]:
-            return fam + sfx
-    return None
-
-
-def csv_sah(teks):
-    """Balasan FIRMS yang sah selalu berawal header CSV; pesan galat (kunci, kuota) datang sebagai teks berstatus 200."""
-    if not teks.lstrip().startswith("latitude"):
-        raise ValueError("balasan FIRMS bukan CSV: " + teks.strip()[:80])
-    return csv.DictReader(io.StringIO(teks))
 
 
 def curiga(hari, awal, hari_ini, nasional, parsial=()):
@@ -110,15 +78,6 @@ def curiga(hari, awal, hari_ini, nasional, parsial=()):
     return out
 
 
-def nasional_harian(jalur, tahun):
-    """{tgl: titik nasional} dari musim_harian.json (hitungan setara; pembanding kewarasan saja)."""
-    if not os.path.exists(jalur):
-        return {}
-    m = json.load(open(jalur))
-    d0 = dt.date(int(tahun), 1, 1)
-    return {(d0 + dt.timedelta(days=i)).isoformat(): n for i, n in enumerate(m.get("nasional", {}).get(str(tahun), []))}
-
-
 def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS_REQ, parsial=None, ket=None):
     """Isi tanggal WIB `perlu` (list date) dari FIRMS (tanggal WIB D = UTC D-1 17:00 .. D 17:00, jadi butuh hari UTC D-1 dan D).
     Sumber per hari dipilih dari ketersediaan FIRMS; balasan bukan CSV = blok gagal. Hari baru ditandai selesai bila SEMUA famili
@@ -127,43 +86,22 @@ def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS
         return 0
     ket = ket or muat_ketersediaan(kunci, ambil)
     sasaran = sorted(perlu)[:(maks_req // 3) * 5 - 1]
-    u0, u1 = sasaran[0] - dt.timedelta(days=1), sasaran[-1]
-    blok = []   # (famili, hari_awal, n, sumber)
-    for fam in FAMILI:
-        d = u0
-        while d <= u1:
-            src = sumber_hari(fam, d, ket)
-            n = 1
-            while n < 5 and d + dt.timedelta(days=n) <= u1 and sumber_hari(fam, d + dt.timedelta(days=n), ket) == src:
-                n += 1
-            blok.append((fam, d, n, src))
-            d += dt.timedelta(days=n)
-    lihat, hitung, ok = set(), {}, {}   # ok[hari UTC] = famili yang sukses
-    for fam, d, n, src in blok:
-        if src is None:
-            continue   # tak ada data FIRMS untuk hari ini: tidak ditandai
-        try:
-            baris = list(csv_sah(ambil(f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{kunci}/{src}/{bbox}/{n}/{d}")))
-        except Exception as e:   # blok gagal: hari UTC-nya tidak ditandai, blok lain tetap dipakai
-            print("khg_prioritas: gagal", src, d, e, file=sys.stderr)
+    baris, ok = unduh(sasaran[0] - dt.timedelta(days=1), sasaran[-1], kunci, ambil, bbox, ket)
+    lihat, hitung = set(), {}
+    for src, r in baris:
+        jam = r["acq_time"].zfill(4)
+        t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
+        lat, lon = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4)
+        if (lat, lon, t, src) in lihat:
             continue
-        for i in range(n):
-            ok.setdefault(d + dt.timedelta(days=i), set()).add(fam)
-        for r in baris:
-            jam = r["acq_time"].zfill(4)
-            t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
-            lat, lon = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4)
-            if (lat, lon, t, src) in lihat:
-                continue
-            lihat.add((lat, lon, t, src))
-            if saring and saring(lat, lon):
-                continue
-            k = cari(lon, lat)
-            if k:
-                tg = t.astimezone(WIB).date().isoformat()
-                hitung.setdefault(tg, {})[k] = hitung.setdefault(tg, {}).get(k, 0) + 1
-    penuh = lambda d: ok.get(d, set()) == set(FAMILI)
-    selesai = [d for d in sasaran if penuh(d) and penuh(d - dt.timedelta(days=1))]
+        lihat.add((lat, lon, t, src))
+        if saring and saring(lat, lon):
+            continue
+        k = cari(lon, lat)
+        if k:
+            tg = t.astimezone(WIB).date().isoformat()
+            hitung.setdefault(tg, {})[k] = hitung.setdefault(tg, {}).get(k, 0) + 1
+    selesai = [d for d in sasaran if penuh(ok, d)]
     for d in selesai:
         hari[d.isoformat()] = hitung.get(d.isoformat(), {})
         if parsial is not None:
@@ -251,7 +189,7 @@ def main():
     # hari acuan baru terisi sebagian (jam acuan), hari sebelumnya di jendela sudah penuh
     parsial = {t for t in parsial if not (batas_lengkap <= t < akhir_acuan.isoformat())} | {akhir_acuan.isoformat()}
     awal = f"{hari_ini[:4]}-01-01"
-    nas = nasional_harian(os.path.join(DATA, "musim_harian.json"), hari_ini[:4])
+    nas = nasional_harian(os.path.join(DATA, "musim_harian.json"))
     if os.environ.get("FIRMS_MAP_KEY") or os.path.exists(os.path.join(AKAR, ".env")):
         try:
             import harian, titik_palsu as TP

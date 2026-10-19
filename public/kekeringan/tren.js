@@ -47,6 +47,28 @@ const Tren = {
     return this.kartu("HTH terpanjang", `HTH terpanjang nasional ${Kartu.hl(fmt(a) + " hari")} pada ${tglPendek(tg.at(-1))}, kelas ${esc((KELAS_HTH()[klsHth(a)] || "").toLowerCase())} menurut BMKG`,
       this.batang(v, {warna: JINGGA}), "Deteksi Pantau Bencana (hujan Open-Meteo; batas kelas BMKG, angka bukan peta BMKG)", [[JINGGA, "hari tanpa hujan berturut-turut, nilai terbesar di seluruh sel"]]); },
 
+  /* 6. kalender musim: curah hujan bulanan rata-rata 1991-2025, nasional dan musim kering per provinsi (riwayat.py) */
+  kKalender() {
+    const R = S.riw, N = R?.kalender?.nasional; if (!N?.mm?.every(x => x != null)) return "";
+    const v = N.mm.map((n, i) => ({n, n2: N.mm_elnino[i] ?? 0, t: BLN[i], tip: `<b>${BLN_PENUH[i]}</b><br>Rata-rata ${R.tahun[0]}–${R.tahun[1]}: ${fmt(n)} mm<br>Saat El Niño (${fmt(R.tahun_el_nino.length)} tahun): ${N.mm_elnino[i] != null ? fmt(N.mm_elnino[i]) + " mm" : "–"}<br>Tahun dengan bulan kering (< ${fmt(R.bulan_kering_mm)} mm): ${fmt(N.kering_pct[i])}%`}));
+    const k = N.mm.indexOf(Math.min(...N.mm)), rentang = a => { const m = a.map((x, i) => x ? i : -1).filter(i => i >= 0); if (!m.length) return "–"; const w = (m[0] === 0 && m.at(-1) === 11 && m.length < 12) ? [...m.filter(i => i > 5), ...m.filter(i => i <= 5)] : m; return m.length === 12 ? "sepanjang tahun" : w.length === 1 ? BLN[w[0]] : BLN[w[0]] + "–" + BLN[w.at(-1)]; };
+    const baris = Object.entries(R.kalender).filter(([g, o]) => g !== "nasional" && o.mm.every(x => x != null)).map(([g, o]) => ({g, o, kering: o.mm.map(x => x < R.bulan_kering_mm), mn: Math.min(...o.mm), i: o.mm.indexOf(Math.min(...o.mm))}))
+      .sort((a, b) => b.kering.filter(Boolean).length - a.kering.filter(Boolean).length || a.mn - b.mn).slice(0, 12);
+    const tb = baris.length ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Provinsi (musim kering = rata-rata di bawah ${fmt(R.bulan_kering_mm)} mm)</th><th>Bulan kering</th><th class="n">Bulan terkering</th><th class="n">Saat El Niño</th></tr></thead><tbody>${baris.map(b => `<tr><td><b translate="no">${esc(namaProv(b.g))}</b></td><td>${rentang(b.kering)}</td><td class="n num">${BLN[b.i]} ${fmt(b.mn)} mm</td><td class="n num">${b.o.mm_elnino[b.i] != null ? fmt(b.o.mm_elnino[b.i]) + " mm" : "–"}</td></tr>`).join("")}</tbody></table></div>` : "";
+    return this.kartu("Kalender musim", `${Kartu.hl(BLN_PENUH[k])} bulan terkering rata-rata nasional (${Kartu.hl(fmt(N.mm[k]) + " mm")}), turun ke ${Kartu.hl(N.mm_elnino[k] != null ? fmt(N.mm_elnino[k]) + " mm" : "–")} pada tahun El Niño`,
+      this.batang(v, {warna: BIRU, warna2: MERAH, w2: true, fmtN: x => fmt(Math.round(x))}) + tb, `Pantau Bencana (${esc(R.sumber)}); bulan kering menurut Schmidt-Ferguson`, [[BIRU, `curah hujan bulanan rata-rata ${R.tahun[0]}–${R.tahun[1]} (mm)`], [MERAH, "rata-rata pada tahun El Niño (ONI Jul–Sep ≥ +0,5)"]]); },
+
+  /* 7. indeks risiko riwayat 0-100 per kabupaten: 50% kekerapan, 30% besaran, 20% tren (pola risiko_riwayat karhutla) */
+  kRisiko() {
+    const R = S.riw, E = Object.entries(R?.kab || {}); if (E.length < 5) return "";
+    const T = E.map(([k, o]) => ({k, ...o})).sort((a, b) => b.risiko - a.risiko || b.bulan_siaga - a.bulan_siaga || a.k.localeCompare(b.k)), top = T.slice(0, 15), med = T[Math.floor(T.length / 2)].risiko;
+    const baris = top.map((o, i) => { const p = o.k.split("|"); return `<tr data-kab="${esc(o.k)}" style="cursor:pointer"><td class="n num">${i + 1}</td><td><b translate="no">${esc(p[1])}</b><br><small translate="no">${esc(namaProv(p[0]))}</small></td>
+      <td><span style="display:inline-block;height:9px;border-radius:3px;background:${MERAH};width:${Math.round(o.risiko * 1.1)}px;vertical-align:middle"></span> <b>${fmt(o.risiko)}</b></td><td class="n num">${fmt(o.bulan_siaga)}</td><td class="n num">${fmt(Math.round(o.kekerapan * 100))}%</td><td class="n num">${o.dibi ? fmt(o.dibi) : "–"}</td></tr>`; }).join("");
+    return this.kartu("Risiko riwayat", `${Kartu.hl(esc(top[0].k.split("|")[1]) + " " + fmt(top[0].risiko))} indeks risiko riwayat tertinggi dari 100, median ${fmt(med)} di ${fmt(T.length)} kabupaten/kota`,
+      `<div class="tw"><table class="kl-tb"><thead><tr><th class="n">#</th><th>Kabupaten/kota</th><th>Indeks 0–100</th><th class="n">Bulan Siaga atau lebih (${R.tahun[0]}–${R.tahun[1]})</th><th class="n">Tahun bersiaga</th><th class="n">Kejadian DIBI 2023–26</th></tr></thead><tbody>${baris}</tbody></table></div>`,
+      `Pantau Bencana (${esc(R.sumber)}). ${esc(R.catatan)}`, [[MERAH, "indeks: 50% kekerapan, 30% besaran, 20% tren"]]); },
+
   render() {
-    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kHth, this.kHthMaks, this.kDasarian].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    const el = $("#tren"); el.innerHTML = [this.kSpi, this.kDc, this.kHth, this.kHthMaks, this.kDasarian, this.kKalender, this.kRisiko].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`;
+    el.onclick = e => { const kb = e.target.closest("tr[data-kab]"); if (!kb) return; const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab))); }; },
 };

@@ -11,6 +11,8 @@ const mTulis = m => "M " + Number(m).toLocaleString("id-ID", {minimumFractionDig
 /* kelas kekuatan: warna pil (A3) dan batas; teks pil memakai warna tegas supaya terbaca di latar putih */
 const KELAS_M = [[7, "#c9503a"], [6, "#d4702a"], [5, "#a8780c"], [0, "#3f6fa8"]];
 const warnaM = m => (KELAS_M.find(k => m >= k[0]) || KELAS_M[3])[1];
+/* pil abu "perkiraan model" (pola inti/adapter.js) untuk angka hasil model, bukan pengukuran */
+const pilModel = `<span class="pill pm" style="--w:#6b7280">perkiraan model</span>`;
 const pilM = m => `<span class="pill pm" style="--w:${warnaM(m)}">${mTulis(m)}</span>`;
 /* kedalaman: dangkal < 60 km, menengah 60 sampai 300, dalam > 300 */
 const KELAS_DALAM = [["Dangkal", "#d4572f", "< 60 km"], ["Menengah", "#e8a33c", "60 sampai 300 km"], ["Dalam", "#3a5fa8", "> 300 km"]];
@@ -72,3 +74,20 @@ const Guncang = {
     try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
 };
 const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";
+
+/* ================================================================ indeks risiko riwayat (data/risiko.json, scripts/gempa/riwayat.py) dan kontak BPBD (../data/bpbd.json) */
+/* skor 0 sampai 100 per provinsi: bobot 50 kekerapan, 30 besaran, 20 tren dari gempa M 5+ 2000-2025; prov[k] = [skor, indeks kelas] */
+const WARNA_RISIKO = ["#d8c9a8", "#e3b94e", "#d4802f", "#a83a2a"];
+const Risiko = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("data/risiko.json").catch(() => (this._p = null)); },
+  async prov(k) { const r = await this.muat(), v = r?.prov?.[k]; return v ? {skor: v[0], kelas: r.kelas[v[1]], w: WARNA_RISIKO[v[1]], r} : null; },
+};
+const Kontak = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("../data/bpbd.json").then(d => d.kantor).catch(() => (this._p = null)); },
+  /* tiga kantor BPBD terdekat dari titik (lat, lon), dengan jarak km garis lurus; kantor tanpa nomor Pusdalops tetap dimuat */
+  async dekat(lat, lon, n = 3) { const K = await this.muat(); if (!K?.length) return [];
+    const rad = Math.PI / 180, jarak = b => { const a = Math.sin((b.lat - lat) * rad / 2) ** 2 + Math.cos(lat * rad) * Math.cos(b.lat * rad) * Math.sin((b.lon - lon) * rad / 2) ** 2; return 12742 * Math.asin(Math.sqrt(a)); };
+    return K.filter(b => b.lat && b.lon).map(b => ({...b, km: jarak(b)})).sort((a, b) => a.km - b.km).slice(0, n); },
+};

@@ -25,7 +25,7 @@ const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], gempa: ["#7a3b0b", "#e874
   bahaya: ["#0b2545", "#3b6fb0", "perisai"], lempeng: ["#5a4a3a", "#c9a26b", "lempeng"], sesar: ["#3b1f1f", "#d9534f", "lempeng"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {wilayah: "Wilayah", gempa: "Terkini", riwayat: "Sejak 1900", kekerapan: "Kekerapan", bahaya: "InaRISK", lempeng: "Lempeng", sesar: "Sesar", satelit: "Satelit"};
 /* urutan tumpukan lapisan, bawah ke atas */
-const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "riwayat", "gempa", "pilih"];
+const URUT = ["satelit", "kekerapan", "prov-fill", "prov-line", "bahaya", "lempeng", "sesar", "iso", "iso-garis", "riwayat", "susulan", "gempa", "pilih"];
 const LAPIS_PETA = {wilayah: ["prov-fill"], gempa: ["gempa"], riwayat: ["riwayat"], kekerapan: ["kekerapan"], bahaya: ["bahaya"], lempeng: ["lempeng"], sesar: ["sesar"], satelit: ["satelit"]};
 const WARNA_WIL = ["rgba(0,0,0,0)", "#fbe3c0", "#f4b97a", "#e6803f", "#c9503a"], BATAS_WIL = [1, 5, 20, 50];
 const RAMP_GRID = [[0.04, [253, 231, 160, 150]], [0.12, [248, 190, 95, 185]], [0.4, [238, 133, 58, 215]], [1, [212, 71, 47, 235]], [2.5, [143, 29, 43, 250]]];
@@ -83,7 +83,7 @@ const Peta = {
     this.aturWilayah(); this.interaksi();
     /* lapisan lain malas: dimuat saat dinyalakan, bukan saat buka halaman */
     ["lempeng", "sesar", "riwayat", "kekerapan", "bahaya", "satelit"].forEach(k => this.lihat(k) && nanti(() => this.pasangLapis(k)));
-    renderLegenda(); },
+    Kejadian.pasangLapis(); renderLegenda(); },
   geoGempa() { const kini = Date.now(), t0 = kini - S.rentang * 36e5;
     return {type: "FeatureCollection", features: S.gempa.map((g, i) => g.t < t0 ? null : ({type: "Feature", geometry: {type: "Point", coordinates: [g.lon, g.lat]},
       properties: {i, m: g.m, d: kelasDalam(g.dalam), u: (kini - g.t) / 36e5}})).filter(Boolean)}; },
@@ -149,6 +149,7 @@ const Peta = {
     peta.on("click", e => {
       const gm = peta.queryRenderedFeatures(e.point, {layers: ["gempa"]});
       if (gm.length) return this.pilih(S.gempa[gm[0].properties.i]);
+      const ss = peta.getLayer("susulan") && peta.queryRenderedFeatures(e.point, {layers: ["susulan"]}); if (ss?.length) return Kejadian.pilihSusulan(ss[0].properties.i);
       if (peta.getLayer("riwayat") && peta.queryRenderedFeatures(e.point, {layers: ["riwayat"]}).length) return;
       const w = peta.getLayer("prov-fill") && peta.queryRenderedFeatures(e.point, {layers: ["prov-fill"]});
       if (w?.length) turun(w[0].properties.kode); });
@@ -226,5 +227,7 @@ function renderLegenda() {
     ${T("bahaya") ? `<div class="lbl">Indeks bahaya gempa</div>${skala(RAMP_BAHAYA.map(r => r[0]), v => RAMP_BAHAYA.find(r => r[0] === v)[1])}<div class="legnum">${RAMP_BAHAYA.map(r => `<span>${fmt(r[0])}</span>`).join("")}</div>` : ""}
     ${T("lempeng") ? `<div class="lbl">Batas lempeng</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px dashed #b5523b;border-radius:0;background:none;vertical-align:3px"></i>pertemuan lempeng</span></div>` : ""}
     ${T("sesar") ? `<div class="lbl">Sesar aktif</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="height:0;border-top:3px solid #8f1d2b;border-radius:0;background:none;vertical-align:3px"></i>sesar aktif</span></div>` : ""}
+    ${Kejadian.aktif?.iso ? `<div class="lbl">Perkiraan guncangan (MMI) ${pilModel}</div><div class="leg" style="margin:4px 0 8px">${Kejadian.aktif.iso.slice().reverse().map(o => `<span><i class="sw" style="background:${MMI_WARNA[o.k]}"></i>${ROMAWI[o.k]}, sampai ${fmt(Math.round(o.r))} km</span>`).join("")}</div>` : ""}
+    ${Kejadian.aktif ? `<div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#5f6fb0"></i>susulan</span></div>` : ""}
     <div class="lbl">Sumber</div><div class="leg lg-sumber">${sumber}</div></div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }

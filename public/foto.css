@@ -398,3 +398,4 @@ form:not(.ada) .fl-lanjut{display:none}
   .fl-sheet header{margin:0 -14px 12px;padding:12px 14px}
   .fl-sheet [data-kirim-ok]{position:sticky;bottom:0;z-index:5;box-shadow:0 -14px 18px 4px var(--card)}
 }
+.fl-dummy{display:inline-flex;gap:8px;margin-left:auto}

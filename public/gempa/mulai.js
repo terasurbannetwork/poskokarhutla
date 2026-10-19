@@ -34,7 +34,9 @@ PilihCantik.pasang();
   $("#muat").classList.add("hilang");
   /* /gempa/<tab> bersih; tab tanpa isi jatuh ke Peta */
   const j = location.pathname.replace(/^\/gempa\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, "");
-  if (TABS.some(t => t[0] === j) && halamanAda(j)) bukaTab(j, false);
+  const kj = j.match(/^k\/(G\d+)$/);
+  if (kj) Kejadian.buka(kj[1], false);
+  else if (TABS.some(t => t[0] === j) && halamanAda(j)) bukaTab(j, false);
   else if (j) history.replaceState(null, "", "/gempa/peta");
   /* segarkan tiap 5 menit selama halaman terbuka (cron Worker mengisi D1 tiap menit) */
   setInterval(async () => { if (document.hidden) return; await muatData().catch(() => {}); Peta.segarkan(); renderDaftar(); renderPita(); }, 5 * 60e3);

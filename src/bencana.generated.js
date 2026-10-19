@@ -345,6 +345,7 @@ export default {
         "insight",
         "berita",
         "tren",
+        "kejadian",
         "dampak",
         "metode",
         "sim",
