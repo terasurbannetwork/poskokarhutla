@@ -27,6 +27,7 @@ Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015
         python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> hasil/sawit_retro.json + sawit_riwayat.json
         python3 scripts/data/sawit_retro.py unduh | uji
 """
+from array import array
 import csv, datetime as dt, json, math, mmap, os, struct, sys, time, urllib.request, zipfile
 from bisect import bisect_left
 from collections import Counter, defaultdict
@@ -552,54 +553,175 @@ def pilih(lat, lon, km, d1, d2, urut, mode):
     return None
 
 
-def citra_satu(p, tahun):
-    import konsesi_citra as KC
+# ---- Landsat 8/7 C2 L2 (Planetary Computer): satu-satunya citra 2015, Sentinel-2 belum ada di Indonesia
+_tok = {}
+
+
+def token_pc():
+    """token SAS anonim (tanpa akun), dipakai ulang; URL aset = href + '?' + token. Catatan: koleksi 'landsat-c2-l2', bukan 'landsat-c2'."""
+    if not _tok or time.time() - _tok["t"] > 1800:
+        _tok.update(t=time.time(), v=json.loads(__import__("citra").ambil(PC_TOKEN))["token"])
+    return "?" + _tok["v"]
+
+
+def jendela_ls(it, lat, lon, km):
+    """(x0, y0, res, kiri, atas) kotak km berpusat di titik, UTM adegan Landsat. Belahan selatan Landsat memakai zona UTM
+    UTARA (EPSG 326xx) dengan northing negatif, tanpa false northing 10.000 km: kurangkan hasil ke_utm."""
+    import citra as C
+    P = it["properties"]
+    epsg = P["proj:epsg"]
+    E, N = C.ke_utm(lat, lon, epsg % 100)
+    if lat < 0 and epsg < 32700:
+        N -= 10_000_000
+    tr = P["proj:transform"]
+    return tr[2], tr[5], tr[0], E - km * 500, N + km * 500
+
+
+def baca_ls(it, aset, lat, lon, km, n):
+    import citra as C
+    c = C.COG(it["assets"][aset]["href"] + token_pc())
+    x0, y0, r0, kiri, atas = jendela_ls(it, lat, lon, km)
+    return c, c.contoh(C.level_untuk(c, r0, max(r0, km * 1000 / n)), x0, y0, r0, kiri, atas, km * 1000, n)[0]
+
+
+def awan_ls(it, lat, lon, km):
+    """(% awan/bayangan/sirus/dilasi, % kosong) dalam kotak dari QA_PIXEL; kotak di luar adegan dihitung kosong"""
+    x0, y0, r0, kiri, atas = jendela_ls(it, lat, lon, km)
+    H, W = it["properties"]["proj:shape"]
+    if not (x0 <= kiri and kiri + km * 1000 <= x0 + W * r0 and y0 - H * r0 <= atas - km * 1000 and atas <= y0):
+        return 100, 100
+    _, q = baca_ls(it, "qa_pixel", lat, lon, km, 60)
+    kosong = sum(1 for v in q if v & 1)
+    sah = max(1, len(q) - kosong)
+    return round(100 * sum(1 for v in q if not v & 1 and v & 0b11110) / sah), round(100 * kosong / len(q))
+
+
+def adegan_ls(lat, lon, km, d1, d2):
+    """adegan Landsat bersih di kotak [(tgl, awan, kosong, item)], L8 didahulukan (L7 pasca-2003 bergaris SLC-off)"""
+    import citra as C
+    q = {"collections": ["landsat-c2-l2"], "intersects": {"type": "Point", "coordinates": [lon, lat]}, "limit": 60,
+         "datetime": f"{d1}T00:00:00Z/{d2}T23:59:59Z", "query": {"eo:cloud_cover": {"lte": 70}}}
+    hasil = []
+    for it in json.loads(C.ambil(PC_STAC, data=json.dumps(q).encode())).get("features", []):
+        if it["properties"]["platform"] not in ("landsat-8", "landsat-7"):
+            continue
+        try:
+            aw, ks = awan_ls(it, lat, lon, km)
+        except Exception as e:
+            log("   qa gagal", it["id"], repr(e)[:80])
+            continue
+        if aw <= 30 and ks <= 10:
+            hasil.append((it["properties"]["datetime"][:10], aw, ks, it))
+    return hasil
+
+
+def pilih_ls(lat, lon, km, d1, d2, mode):
+    """mode 'akhir' (adegan bersih paling akhir di jendela, L8 dulu) | 'awal'. 'Bersih' = awan lokal <= 30% (batas pilihan: <= 10 bila ada)"""
+    k = adegan_ls(lat, lon, km, d1, d2)
+    for pf in ("landsat-8", "landsat-7"):
+        c = [x for x in k if x[3]["properties"]["platform"] == pf]
+        c = [x for x in c if x[1] <= 10] or c
+        if c:
+            return sorted(c, key=lambda x: x[0])[-1 if mode == "akhir" else 0]
+    return None
+
+
+def rgb_png(kanal, n, berkas):
+    """3 array 0..255 (n*n) -> PNG <= MAKS_PNG; kurangi piksel (ambil tiap 5/6 dst.) bila masih lebih besar"""
+    import citra as C
+    for m in (n, n * 5 // 6, n * 2 // 3, n // 2):
+        rgb = kanal if m == n else [array("B", (a[min(n - 1, int(i * n / m)) * n + min(n - 1, int(j * n / m))]
+                                                for i in range(m) for j in range(m))) for a in kanal]
+        b = C.png(rgb, m, MAKS_PNG)
+        if len(b) <= MAKS_PNG:
+            break
+    open(berkas, "wb").write(b)
+    return len(b)
+
+
+def ke_byte(v, sk, of):
+    return array("B", (0 if d == 0 else max(0, min(255, int((d * sk + of) * 2.5 * 255))) for d in v))   # x2,5 gaya K.swir
+
+
+def swir_ls(it, lat, lon, km, berkas, n=360):
+    """komposit SWIR2/NIR/Red (L8: SR_B7/SR_B5/SR_B4; L7: SR_B7/SR_B4/SR_B3) setara gaya konsesi_citra.swir"""
+    ch = []
+    for k in ("swir22", "nir08", "red"):
+        rb = (it["assets"][k].get("raster:bands") or [{}])[0]
+        ch.append(ke_byte(baca_ls(it, k, lat, lon, km, n)[1], rb.get("scale", 2.75e-5), rb.get("offset", -.2)))
+    return rgb_png(ch, n, berkas)
+
+
+def swir_s2(it, lat, lon, km, berkas, n=360):
+    import citra as C, konsesi_citra as KC
+    ch = []
+    for k in ("swir22", "nir08", "red"):
+        c = C.COG(it["assets"][k]["href"])
+        x0, y0, r0, kiri, atas = KC.jendela(it, k, lat, lon, km)
+        rb = (it["assets"][k].get("raster:bands") or [{}])[0]
+        v = c.contoh(C.level_untuk(c, r0, max(20, km * 1000 / n)), x0, y0, r0, kiri, atas, km * 1000, n)[0]
+        ch.append(ke_byte(v, rb.get("scale", 1e-4), rb.get("offset", 0)))
+    return rgb_png(ch, n, berkas)
+
+
+def citra_satu(p):
+    """citra 2015 satu perusahaan: Landsat sebelum (Jan-Jul 2015, kemarau 2014 bila kosong) dan sesudah (Nov 2015-Mar 2016),
+    Sentinel-2 2017 (plus2). Berkas langsung ke public/data/konsesi2026/citra."""
     if not p["contoh"]:
         return None
     lat, lon, _, bln = p["contoh"][0]
     km = 6
     m = BULAN.index(bln) + 1 if bln else 9
-    awal = dt.date(tahun, m, 1)
-    akhir_bln = lambda d, n: (d.replace(day=1) + dt.timedelta(days=32 * n)).replace(day=1)
-    plan = {
-        "sebelum": (max(dt.date(tahun, 1, 1), ES_AWAL), awal - dt.timedelta(days=1), "desc", "terakhir"),
-        "sesudah": (akhir_bln(awal, 1), akhir_bln(awal, 4) - dt.timedelta(days=1), "asc", "awal"),
-        "plus2": (dt.date(tahun + 2, 6, 15), dt.date(tahun + 2, 10, 31), "asc", "bersih"),
-    }
-    os.makedirs(CITRA_DIR, exist_ok=True)
+    awal = dt.date(2015, m, 1)
+    sesudah_mulai = max(dt.date(2015, 11, 1), (awal.replace(day=1) + dt.timedelta(days=32)).replace(day=1))
     hasil = {"bbox": __import__("citra").kotak(lat, lon, km), "pusat": [lat, lon], "bulan_api": bln}
-    for nama, (d1, d2, urut, mode) in plan.items():
-        if d2 < d1 or d2 < ES_AWAL:
-            hasil[nama] = None
-            hasil.setdefault("catatan", []).append(f"{nama}: tidak ada citra (Earth Search memuat Sentinel-2 L2A sejak awal 2017 di Indonesia)")
-            continue
-        pil = pilih(lat, lon, km, d1, d2, urut, mode)
-        if not pil:
-            hasil[nama] = None
-            continue
-        tgl, aw, it, kol = pil
-        f = f"{p['id']}_{tahun}_{nama}_{tgl.replace('-', '')}.png"
-        jalur = os.path.join(CITRA_DIR, f)
-        if not os.path.exists(jalur):
-            KC.swir(it, lat, lon, km, jalur)
-        hasil[nama] = {"f": f"sawit_retro/citra/{f}", "tgl": tgl, "awan": aw, "koleksi": kol,
-                       "satelit": "Sentinel-" + it["properties"].get("platform", "sentinel-2?").split("-")[-1].upper()}
+    os.makedirs(TERBIT_CITRA, exist_ok=True)
+
+    def tulis_(nama, pil, it, satelit, fn):
+        tgl, aw = pil[0], pil[1]
+        f = f"{p['id']}_riwayat2015_{nama}_{tgl.replace('-', '')}.png"
+        if not os.path.exists(os.path.join(TERBIT_CITRA, f)):
+            fn(it, lat, lon, km, os.path.join(TERBIT_CITRA, f))
+        hasil[nama] = {"f": f"konsesi2026/citra/{f}", "tgl": tgl, "satelit": satelit(it), "awan": aw}
+    nama_ls = lambda it: "Landsat " + it["properties"]["platform"].split("-")[-1]
+    pil = None
+    if awal > dt.date(2015, 1, 15):
+        pil = pilih_ls(lat, lon, km, "2015-01-01", min(dt.date(2015, 7, 31), awal - dt.timedelta(days=1)).isoformat(), "akhir")
+    pil = pil or pilih_ls(lat, lon, km, "2014-06-01", "2014-10-31", "akhir")
+    if pil:
+        tulis_("sebelum", pil, pil[3], nama_ls, swir_ls)
+    else:
+        hasil["sebelum"] = None
+    pil = pilih_ls(lat, lon, km, sesudah_mulai.isoformat(), "2016-03-31", "awal")
+    if pil:
+        tulis_("sesudah", pil, pil[3], nama_ls, swir_ls)
+    else:
+        hasil["sesudah"] = None
+    pil = pilih(lat, lon, km, "2017-06-15", "2017-10-31", "asc", "bersih")
+    if pil:
+        tulis_("plus2", pil, pil[2], lambda it: "Sentinel-" + it["properties"].get("platform", "sentinel-2?").split("-")[-1].upper(), swir_s2)
+    else:
+        hasil["plus2"] = None
     return hasil
 
 
-def citra(tahun, top=10):
+def layak(p):
+    return p["ha"]["bs"] >= BS_MIN and p["bs_porsi"] >= PORSI_MIN
+
+
+def citra(tahun=TAHUN_TERBIT, top=TOP_TERBIT):
     from concurrent.futures import ThreadPoolExecutor
     jalur = os.path.join(ANTARA, f"agregat_{tahun}.json")
     h = json.load(open(jalur))
-    pilih_ = h["perusahaan"][:top]
+    pilih_ = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])[:top]
 
     def kerja(p):
         try:
-            return citra_satu(p, tahun)
+            return citra_satu(p)
         except Exception as e:
-            log("  citra gagal", p["nama"], repr(e)[:100])
+            log("  citra gagal", p["nama"], repr(e)[:120])
             return None
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(3) as ex:
         for p, c in zip(pilih_, ex.map(kerja, pilih_)):
             p["citra"] = c
             log(f"  citra {tahun} {p['nama']}: " + (", ".join(f"{k}={v['tgl'] if v else '-'}" for k, v in c.items() if k in ('sebelum', 'sesudah', 'plus2')) if c else "tidak ada"))
