@@ -233,5 +233,36 @@
     const gr = w?.grup?.length ? w.grup.join(", ") : p.grup;   /* poligon milik perusahaan WALHI: grup menurut WALHI, bukan peta (pemilik, 17 Okt 2026) */
     const sub = [gr, p.kab].filter(Boolean).map(esc).join(" · ");
     return `<div class="tp2-h tp2-only"><div class="tp2-hr">${A.logo(w?.grup?.[0] || p.grup, 20)}<b>${benderaDaf(ng, 11)}${esc(p.nama || "Areal konsesi")}</b></div><small>${sub}</small>${w && w.cek?.titik_viirs != null && w.cek.lokasi !== "beda" ? `<small class="ak-tw2">${fmt(w.cek.titik_viirs)} titik panas Jan–Agu 2026 (VIIRS)</small>` : ""}</div>`; };
+  /* perusahaan di kompleks api: poligon konsesi yang beririsan dengan poligon kompleks, dihitung di peramban
+     (kompleks_konsesi.json sengaja tanpa nama). Laci "Lahan & penanggung jawab" + tooltip kompleks (pemilik, 19 Okt 2026). */
+  const diDalam = ([x, y], r) => { let d = false; for (let i = 0, j = r.length - 1; i < r.length; j = i++) { const [xi, yi] = r[i], [xj, yj] = r[j];
+    if ((yi > y) !== (yj > y) && x < (xj - xi) * (y - yi) / (yj - yi) + xi) d = !d; } return d; };
+  const cincin = g => g.type === "MultiPolygon" ? g.coordinates.map(p => p[0]) : g.type === "Polygon" ? [g.coordinates[0]] : [];
+  const tumpang = (a, b) => a[0] <= b[2] && b[0] <= a[2] && a[1] <= b[3] && b[1] <= a[3];
+  const perK = {};
+  /* ponytail: irisan = titik sudut salah satu poligon ada di dalam poligon lain; irisan yang hanya bersilang sisi terlewat (jarang) */
+  A.perKompleks = id => perK[id] ||= geo().then(d => {
+    const k = S.kluster?.features.find(f => f.properties.id === id); if (!k) return [];
+    const rk = cincin(k.geometry), bk = kotak(k.geometry), hasil = new Map();
+    for (const f of d.features) {
+      const p = f.properties; if (!p.nama || hasil.has(p.nama)) continue;
+      const bf = f._kt ||= kotak(f.geometry); if (!tumpang(bk, bf)) continue;
+      const rf = cincin(f.geometry);
+      if (rk.some(a => a.some(t => rf.some(r => diDalam(t, r)))) || rf.some(a => a.some(t => rk.some(r => diDalam(t, r))))) hasil.set(p.nama, p);
+    }
+    return [...hasil.values()].sort((a, b) => (b.luas_peta_ha || 0) - (a.luas_peta_ha || 0));
+  }).catch(() => []);
+  const JNS = {sawit: "Sawit", hti: "HTI", hph: "HPH", tambang: "Tambang"};
+  const barisPer = p => { const w = A.per?.[p.nama], gr = w?.grup?.length ? w.grup.join(", ") : p.grup;
+    return `<div class="ak-kp"${w ? ` data-ak-buka="${esc(p.nama)}" tabindex="0" role="button"` : ""}>${A.logo(w?.grup?.[0] || p.grup, 18)}<span><b>${benderaDaf(w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean), 11)}${esc(p.nama)}</b><small>${esc([JNS[p.jenis] || p.jenis, gr].filter(Boolean).join(" · "))}</small></span></div>`; };
+  const _bukaLaci = Laci.buka.bind(Laci);
+  Laci.buka = function (id) { _bukaLaci(id); A.perKompleks(id).then(ps => {
+    if (S.pilihK !== id || $("#laci .ak-laci")) return;
+    const sek = [...document.querySelectorAll("#laci details.lipat")].find(d => (d.querySelector("summary")?.textContent || "").startsWith("Lahan & penanggung jawab"));
+    if (!sek) return;
+    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di kompleks ini</div>${ps.length ? ps.map(barisPer).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di kompleks ini.</p>`}</div>`);
+    sek.querySelector(".ak-laci").onclick = e => { const b = e.target.closest("[data-ak-buka]"); if (b) A.buka(b.dataset.akBuka); }; }); };
+  /* tooltip kompleks (konsesi.js): nama perusahaan, paling banyak 3 */
+  A.tipKompleks = id => A.perKompleks(id).then(ps => ps.length ? `<div class="ak-tkp"><small>Perusahaan</small>${ps.slice(0, 3).map(p => `<span>${benderaDaf(A.per?.[p.nama]?.negara, 11)}${esc(p.nama)}</span>`).join("")}${ps.length > 3 ? `<span class="ak-mt">+${ps.length - 3} lainnya</span>` : ""}</div>` : "");
   A.muat();
 })();

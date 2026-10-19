@@ -94,3 +94,14 @@
 .ak-gs{margin:0 0 8px 40px;font-size:11px;color:var(--ink2)}
 @media (max-width:640px){.ak-gd li{grid-template-columns:minmax(0,1fr) auto auto}.ak-gd li>.ak-mt:nth-child(2){display:none}}
 .ak-gd li>:last-child{justify-self:end}
+/* perusahaan di kompleks api: laci + tooltip (19 Okt 2026) */
+.ak-laci{margin-top:12px;display:grid;gap:6px}
+.ak-kp{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line,#e3e8ef);border-radius:8px}
+.ak-kp[data-ak-buka]{cursor:pointer}
+.ak-kp[data-ak-buka]:hover{background:var(--hover,#f3f6fa)}
+.ak-kp span{display:flex;flex-direction:column;min-width:0}
+.ak-kp b{display:flex;align-items:center;gap:4px;font-size:13px}
+.ak-kp small{color:var(--muted);font-size:11.5px}
+#tip .ak-tkp{display:flex;flex-direction:column;gap:3px;padding:6px 12px 0}
+#tip .ak-tkp small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+#tip .ak-tkp span{display:flex;align-items:center;gap:6px;font-weight:600}

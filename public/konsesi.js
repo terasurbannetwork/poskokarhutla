@@ -49,8 +49,8 @@
     const tip = $("#tip");
     const taruh = ev => { tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, ev.clientX + 14) + "px"; tip.style.top = Math.max(8, ev.clientY - tip.offsetHeight - 12) + "px"; };
     const lbl = (t, w) => `<span class="ks-lb"${w ? ` style="--w:${w}"` : ""}>${t}</span>`;
-    const kom = e => { const p = e.features[0].properties; muat().then(() => { const k = KK.kompleks[p.id], js = Object.entries(jenisDi(p.id));
-      const isi = js.length ? `<div class="tp-bd ks-tp"><div class="ks-tp-l">${js.map(([j, r]) => lbl(`${esc(jn(j)[2])} ${pct(r.porsi)}`, jn(j)[1])).join("")}${lbl("di luar " + pct(k.luar), "#2b8c86")}</div></div>` : "";
+    const kom = e => { const p = e.features[0].properties; muat().then(() => window.Aktor?.tipKompleks?.(p.id) || "").then(per => { const k = KK.kompleks[p.id], js = Object.entries(jenisDi(p.id));   /* per: nama perusahaan, aktor.js */
+      const isi = (js.length ? `<div class="tp-bd ks-tp"><div class="ks-tp-l">${js.map(([j, r]) => lbl(`${esc(jn(j)[2])} ${pct(r.porsi)}`, jn(j)[1])).join("")}${lbl("di luar " + pct(k.luar), "#2b8c86")}</div></div>` : "") + per;
       tip.innerHTML = kartuTip({judul: esc(p.id), kepala: ikon("api", "#c9503a"), sub: p.kec ? `<small class="tp-sub">${esc(p.kec)}</small>` : "",
         kaki: js.length ? "Porsi titik panas di areal konsesi" : KK.gagal ? "" : "Di luar areal konsesi"})
         .replace('<div class="tp-ft">', `${isi}<div class="tp-ft">`);

@@ -419,6 +419,8 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
+/* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
+export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
 export const HTML_RUTE = [
   ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
@@ -435,7 +437,7 @@ async function layaniHTML(req, env, ctx, url) {
   const cocok = HTML_RUTE.find(([re]) => re.test(url.pathname)); if (!cocok) return null;
   const jalur = cocok[2] || url.pathname.replace(/\/+$/, "");
   /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
-  if (jalur === "/laporan-konsesi" && !url.hostname.endsWith(".workers.dev") && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
+  if (jalur === "/laporan-konsesi" && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
   const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
   if (!aset.ok || req.method === "HEAD") return aset;
@@ -443,8 +445,9 @@ async function layaniHTML(req, env, ctx, url) {
   /* pil header "N online · N tampilan": angka ditaruh di atribut <html>, digambar public/persetujuan.js (tanpa panggilan API tambahan) */
   let a = null; try { a = await Pub.angkaPil(env); } catch (e) {}
   if (a && !a.online && !a.tampilan) a = null;
-  /* situs per alamat: *.workers.dev = "w" (tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]); domain utama tanpa atribut */
-  const situsW = url.hostname.endsWith(".workers.dev");
+  /* situs per alamat: *.workers.dev dan centurisk97.id = "w" (data perusahaan, tanpa Chat Admin & tab Tentang, lihat CSS html[data-situs=w]);
+     pantau.terasurban.com tanpa atribut */
+  const situsW = situsCenturisk(url.hostname);
   /* merek: berkas HTML bermerek Centurisk97; selain *.workers.dev diganti "Pantau Bencana" di judul, meta, dan kop laporan */
   const ganti = t => t.replace(/Centurisk97/g, "Pantau Bencana");
   const rw = new HTMLRewriter().on("html", {element: el => {
@@ -481,6 +484,10 @@ export default {
     const url = new URL(req.url);
     if (url.pathname.startsWith("/ubin/")) return layaniUbin(req, env, ctx);   // ubin PMTiles dari R2 (src/ubin.js)
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
+    if (url.pathname === "/api/himawari" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // hotspot Himawari: R2 data/himawari.json (diunggah Action 30 menit); hilang = kosong, bukan 500
+      const o = await env.MEDIA?.get("data/himawari.json");
+      return new Response(o ? o.body : '{"acuan":null,"baris":[]}', {headers: {"content-type": "application/json; charset=utf-8"}});
+    });
     if (url.pathname.startsWith("/api/cuaca/")) { const c = await layaniNowcast(req, env, ctx, url); if (c) return c; }   // nowcast BMKG D1 (src/nowcast.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
