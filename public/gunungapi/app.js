@@ -12,7 +12,7 @@ const FG_LV = {1: "#fff", 2: "#3b2e00", 3: "#fff", 4: "#fff"};
 const IK_GN = '<path d="M3 20 9 9h6l6 11z"/><path d="M12 9V6M9.5 5l-1-2M14.5 5l1-2"/>';
 /* label pil berwarna + ikon gunung (A3) */
 const pilLv = (l, pendek = false) => `<span class="pl lvp" style="--w:${WARNA_LV[l]}"><svg viewBox="0 0 24 24" aria-hidden="true">${IK_GN}</svg>${pendek ? LEVEL[l][1] : `Level ${LEVEL[l][0]} ${LEVEL[l][1]}`}</span>`;
-const tglJam = t => new Date(t).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "").replace(/\./g, ":") + " WIB";
+const tglJam = t => new Date(t).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
 
 const S = {st: null, level: 0, q: "", urut: {k: "lv", d: -1}, geo: {prov: null}};   /* level 0 = semua */
 /* kode provinsi BPS -> nama (Berita memberi kode); tabel administratif statis */
@@ -27,6 +27,7 @@ const idGn = nama => String(nama).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "")
 const DATA = {};
 const sekali = (k, u) => DATA[k] ||= muatJSON(u).catch(() => { delete DATA[k]; return null; });
 const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap: () => sekali("pap", "data/paparan.json"), geo: () => sekali("geo", "data/paparan_geo.json"), bandara: () => sekali("bandara", "data/bandara.json"),
+  fs: () => sekali("fs", "data/factsheet_gunungapi.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
   /* paparan per id gunung */
   async pg(id) { const p = await this.pap(); return p?.gunung?.find(x => x.id === id) || null; }};
 /* dibagikan ke sim.js (tab Simulasi memakai status dan loader yang sama, tanpa unduh ulang) */

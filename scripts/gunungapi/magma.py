@@ -292,10 +292,10 @@ def uji():
 
 
 def rantai():
-    """Sesudah status tertulis: abu.py (bila ada) lalu laporan.py. Gagal = peringatan, berkas lama dibiarkan, exit tetap 0."""
+    """Sesudah status tertulis: abu.py, prospektif.py (catatan append-only arah abu vs VONA, butuh abu_gunungapi.json baru), lalu laporan.py. Gagal = peringatan, berkas lama dibiarkan, exit tetap 0."""
     import subprocess
     d = os.path.dirname(os.path.abspath(__file__))
-    for nama in ("abu.py", "laporan.py"):
+    for nama in ("abu.py", "prospektif.py", "laporan.py"):
         s = os.path.join(d, nama)
         if os.path.exists(s) and (subprocess.call([sys.executable, s, "uji"]) != 0 or subprocess.call([sys.executable, s]) != 0):
             print(f"::warning title=gunungapi::{nama} gagal; berkas lamanya dibiarkan", file=sys.stderr)

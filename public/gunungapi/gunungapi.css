@@ -36,3 +36,11 @@ details.lipat>.isi{padding:2px 14px 12px}
 .cit figcaption{font-size:12px;color:var(--ink2)}
 #legenda .seg.penuh{display:flex;width:100%}
 #legenda .seg.penuh button{flex:1;text-align:center}
+
+/* kartu Cerita (insight.js exCerita): satu baris per fakta, pil di kiri */
+.cr{display:grid;gap:10px;padding:2px 0}
+.cr>div{display:flex;gap:10px;align-items:flex-start}
+.cr .pl{flex:none;min-width:96px;justify-content:center;margin-top:1px}
+.cr p{margin:0;font-size:14px;line-height:1.5}
+@media(max-width:640px){.cr>div{flex-direction:column;gap:4px}.cr .pl{min-width:0}}
+#tren .klik{cursor:pointer}

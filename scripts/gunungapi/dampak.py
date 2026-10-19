@@ -4,12 +4,16 @@
             interpolasi cincin paparan WorldPop 1 km 3/5/10/15 km menurut r^2, dihitung magma.py; gunung tanpa cincin = null dan dilewati), per gunung dan per level. Tanpa jaringan.
   tahunan   kejadian erupsi dan korbannya per tahun 2010-2024 (BNPB, data.bnpb.go.id, jenis "ERUPSI GUNUNG API"): kejadian, meninggal, terdampak,
             mengungsi, rumah rusak. Hanya angka yang tercatat; bila BNPB tak bisa diakses dan belum ada berkas lama, bagian ini tidak ada (A18).
+  tren      uji tren jangka panjang atas seri tahunan itu (Mann-Kendall + Theil-Sen, scripts/gunungapi/tren.py), p-value dan vonis naik/turun/tidak bermakna.
             DIBI BNPB tidak dipakai: dasbor Superset-nya tak menjawab dari luar peramban (dicek 16 Okt 2026).
 Sengaja tak ada sekolah dan fasilitas kesehatan dalam radius: public/data/sekolah.json dan fasilitas.json hanya mencakup provinsi prioritas karhutla, jadi angkanya akan kurang.
 Pakai:  python3 scripts/gunungapi/dampak.py        tulis berkas
         python3 scripts/gunungapi/dampak.py uji    self-check
 """
 import datetime as dt, json, os, re, sys, time, urllib.parse, urllib.request
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import tren
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -82,6 +86,7 @@ def tulis():
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "status_dibuat": st["dibuat"], "terpapar": terpapar(st["gunung"])}
     if th:
         out["tahunan"] = th
+        out["tren"] = tren.dari_tahunan(th)   # B06: Mann-Kendall + Theil-Sen per metrik (tren.py)
     out["sumber"] = {"terpapar": "MAGMA Indonesia, PVMBG (radius rekomendasi); WorldPop 1 km (cincin paparan 3/5/10/15 km, interpolasi r^2)", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)"}
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     with open(KELUAR, "w") as f:
@@ -94,6 +99,8 @@ def uji():
     t = terpapar([{"nama": "A", "prov": "X", "level": 3, "radius_km": 5, "penduduk_radius": 1000}, {"nama": "B", "prov": "Y", "level": 2, "radius_km": 2, "penduduk_radius": 300},
                   {"nama": "C", "prov": "Z", "level": 3, "radius_km": 5, "penduduk_radius": 0}, {"nama": "D", "prov": "Z", "level": 1}, {"nama": "E", "prov": "Z", "level": 3, "radius_km": 5, "penduduk_radius": None}])
     assert t["jiwa"] == 1300 and t["gunung"] == 2 and t["per_level"]["3"] == {"gunung": 1, "jiwa": 1000} and t["daftar"][0]["nama"] == "A", t
+    r = tren.dari_tahunan({str(2010 + i): {"kejadian": i * 2} for i in range(12)})
+    assert r["kejadian"]["vonis"] == "naik" and "terdampak" not in r, r
     print("dampak gunungapi: ok")
 
 

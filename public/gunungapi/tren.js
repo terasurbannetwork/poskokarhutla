@@ -1,6 +1,7 @@
 "use strict";
 /* Tab Tren gunung api: tiap blok = Kartu.ex (inti/kartu.js), sama dengan Tren karhutla/kekeringan. Kartu tanpa data dibuang (A18):
    riwayat harian (jumlah gunung per level, erupsi 24 jam) baru muncul setelah >= 2 hari terkumpul oleh scripts/gunungapi/magma.py; kejadian per tahun dari BNPB (../banjir/data/dampak_gunungapi.json). */
+const M_AKHIR = (a = 190) => innerWidth < 640 ? Math.min(a, 130) + 60 : a;   /* ruang kanan batang untuk deretan pil */
 const Tren = {
   D: undefined,
   kartu(ey, judul, isi, sumber, leg) { Kartu.leg(leg); return Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`); },
@@ -60,9 +61,56 @@ const Tren = {
     return this.kartu("Naik turun level", `${Kartu.hl(fmt(naik) + " gunung")} naik level dan ${Kartu.hl(fmt(turun) + " gunung")} turun dalam ${fmt(hari.length)} hari terakhir`,
       this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[4], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan", [[WARNA_LV[2], "perubahan level"], [WARNA_LV[4], "naik"]]); },
 
+  /* baris mendatar: rows [{nama, v, warna, pil: [[teks, bg, fg]], tip, gn?}]; batang sepanjang v, pil berderet sesudahnya (kartu Kartu.pil dari inti) */
+  mendatar(rows, akhir) {
+    const M = innerWidth < 640, Wd = M ? 520 : 940, L = M ? 118 : 190, rh = 30, fs = M ? 12 : 12.5, mx = Math.max(1, ...rows.map(r => r.v)), X = v => v / mx * (Wd - L - akhir);
+    return `<div class="tw sk"><svg viewBox="0 0 ${Wd} ${rows.length * rh + 4}" role="img" aria-label="Perbandingan">${rows.map((r, i) => { const y = i * rh, w = Math.max(2, X(r.v)); let px = L + w + 8;
+      const pil = r.pil.map(([t, bg, fg = "#fff"]) => { const [svg, pw] = Kartu.pil(px, y + 5, t, bg, fg, 11); px += pw + 5; return svg; }).join("");
+      return `<g${r.gn ? ` class="klik" data-gn="${esc(r.gn)}"` : ""}><text x="${L - 8}" y="${y + 19}" text-anchor="end" font-size="${fs}" font-weight="600">${esc(r.nama)}</text>
+        <rect class="gx" style="--i:${i}" x="${L}" y="${y + 6}" width="${w}" height="${rh - 12}" rx="4" fill="${r.warna}" data-tip="${r.tip}"/><g class="gf" style="--i:${i}" pointer-events="none">${pil}</g></g>`; }).join("")}</svg></div>`; },
+  p3: p => p < .001 ? "< 0,001" : p.toLocaleString("id-ID", {maximumFractionDigits: 3}),
+  situs(u) { try { const h = new URL(u).hostname; return /noaa\.gov$/.test(h) ? "NOAA NCEI" : /volcano\.si\.edu$/.test(h) ? "Smithsonian GVP" : /archive\.org$/.test(h) && /bnpb/.test(u) ? "BNPB" : h; } catch (e) { return String(u); } },
+
+  /* 5. tren jangka panjang (B06): Mann-Kendall + kemiringan Theil-Sen atas seri tahunan BNPB, dihitung scripts/gunungapi/tren.py */
+  kTrenJangka() {
+    const T = this.D?.tren, M = innerWidth < 640, SAT = {kejadian: ["Kejadian erupsi", "kejadian"], terdampak: ["Warga terdampak", "jiwa"], mengungsi: ["Warga mengungsi", "jiwa"], rumah_rusak: ["Rumah rusak", "rumah"]};
+    const ks = Object.keys(SAT).filter(k => T?.[k]); if (!ks.length) return "";
+    const WV = {naik: "#d64545", turun: "#2f8f83", "tidak bermakna": "#8a94a3"}, bermakna = ks.filter(k => T[k].vonis !== "tidak bermakna"), t0 = T[ks[0]];
+    const Wd = M ? 520 : 940, L = M ? 120 : 190, rh = 34;
+    const g = ks.map((k, i) => { const r = T[k], y = i * rh, sl = Math.abs(r.kemiringan) >= 10 ? fmt(Math.round(Math.abs(r.kemiringan))) : Math.abs(r.kemiringan).toLocaleString("id-ID", {maximumFractionDigits: 1}), tanda = r.kemiringan > 0 ? "+" : r.kemiringan < 0 ? "−" : "",
+      tip = `<b>${SAT[k][0]} ${r.dari} sampai ${r.sampai}</b><br>Uji Mann-Kendall: p = ${this.p3(r.p)} (n = ${r.n} tahun)<br>Kemiringan Theil-Sen: ${tanda}${sl} ${SAT[k][1]} per tahun`;
+      const [pv, pw] = Kartu.pil(L, y + 6, r.vonis === "tidak bermakna" ? r.vonis : "tren " + r.vonis, WV[r.vonis], "#fff", 11.5);
+      return `<g data-tip="${tip}"><rect x="0" y="${y}" width="${Wd}" height="${rh}" fill="transparent"/><text x="${L - 8}" y="${y + 21}" text-anchor="end" font-size="${M ? 12 : 12.5}" font-weight="600">${SAT[k][0]}</text>${pv}
+        <text x="${L + pw + 10}" y="${y + 21}" font-size="${M ? 11.5 : 12}" opacity=".8">p = ${this.p3(r.p)} · ${tanda}${sl} ${SAT[k][1]}/tahun</text></g>`; }).join("");
+    const judul = bermakna.length ? `${Kartu.hl(SAT[bermakna[0]][0])} menunjukkan ${Kartu.hl("tren " + T[bermakna[0]].vonis)} pada ${t0.dari} sampai ${t0.sampai} (p = ${this.p3(T[bermakna[0]].p)})`
+      : `${Kartu.hl("Tidak ada tren naik atau turun yang bermakna")} pada ${fmt(ks.length)} seri tahunan BNPB ${t0.dari} sampai ${t0.sampai} (semua p di atas 0,05)`;
+    return this.kartu("Tren jangka panjang", judul, `<div class="tw sk"><svg viewBox="0 0 ${Wd} ${ks.length * rh + 4}" role="img" aria-label="Uji tren jangka panjang">${g}</svg></div>`,
+      `BNPB. Uji Mann-Kendall, ${t0.n} tahun; bukan prakiraan letusan`, [["#d64545", "tren naik"], ["#2f8f83", "tren turun"], ["#8a94a3", "tidak bermakna"]]); },
+
+  /* 6. letusan besar yang dikurasi tangan (A36): factsheet_gunungapi.json, tiap angka bersumber URL-nya sendiri */
+  kKasus() {
+    const K = (this.F?.kasus || []).filter(k => k.meninggal > 0 && k.sumber?.meninggal && k.tanggal); if (!K.length) return "";
+    const top = [...K].sort((a, b) => b.meninggal - a.meninggal)[0], th = k => k.tanggal.slice(0, 4), WV = v => v >= 6 ? "#7a2e2e" : v >= 4 ? "#d64545" : "#e8743b";
+    const tglK = k => k.tanggal.length === 10 ? new Date(k.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"}) : th(k);
+    const rows = [...K].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map(k => ({nama: `${th(k)} ${k.gunung.replace(" Laki-laki", "")}`, v: k.meninggal, warna: "#b5523b",
+      pil: [[fmt(k.meninggal) + " jiwa", "#b5523b"], ...(k.vei != null ? [["VEI " + k.vei, WV(k.vei)]] : [])],
+      tip: `<b>${esc(k.nama)}</b><br>${tglK(k)}${k.vei != null ? " · VEI " + k.vei : ""}<br>Meninggal: ${fmt(k.meninggal)} jiwa${k.korban_ket ? " (" + esc(k.korban_ket) + ")" : ""}${k.pengungsi ? `<br>Pengungsi: ${fmt(k.pengungsi)} jiwa (${esc(k.pengungsi_ket)})` : ""}${k.rumah_hancur ? `<br>Rumah hancur: ${fmt(k.rumah_hancur)}` : ""}${k.vei_ket ? `<br>${esc(k.vei_ket)}` : ""}<br>Sumber: ${[...new Set(Object.values(k.sumber).map(u => this.situs(u)))].join(", ")}`}));
+    return this.kartu("Letusan merusak", `${Kartu.hl(fmt(top.meninggal) + " jiwa")} meninggal pada letusan ${Kartu.hl(top.gunung + " " + th(top))}${top.vei != null ? ` (VEI ${top.vei})` : ""}, yang terbanyak dari ${Kartu.hl(K.length + " letusan merusak")} yang dikurasi sejak ${th(K.reduce((a, k) => k.tanggal < a.tanggal ? k : a))}`,
+      this.mendatar(rows, M_AKHIR()), [...new Set(K.flatMap(k => Object.values(k.sumber).map(u => this.situs(u))))].join(", ") + (K.some(k => k.korban_ket) ? ". Total " + K.filter(k => k.korban_ket).map(k => k.gunung).join(" dan ") + " termasuk korban tidak langsung" : ""), [["#b5523b", "meninggal"], ["#d64545", "VEI 4 ke atas"], ["#e8743b", "VEI 3 ke bawah"]]); },
+
+  /* 7. indeks risiko riwayat letusan 0 sampai 100 per gunung (A15), scripts/gunungapi/risiko.py */
+  kRisiko() {
+    const r = this.Rk; if (!r?.gunung) return "";
+    const WK = ["#9aa4b2", "#e0b400", "#e8743b", "#d64545"], R = Object.entries(r.gunung).slice(0, 10); if (!R.length) return "";
+    const rows = R.map(([nm, [skor, ki, th, vm]]) => ({nama: nm, gn: nm, v: skor, warna: WK[ki], pil: [[String(skor), WK[ki], ki === 1 ? "#3b2e00" : "#fff"], [r.kelas[ki], WK[ki], ki === 1 ? "#3b2e00" : "#fff"]],
+      tip: `<b>${esc(nm)}</b><br>Indeks risiko riwayat: ${skor} dari 100 (${r.kelas[ki]})<br>Aktif ${fmt(th)} tahun sejak ${r.tahun[0]}<br>VEI tertinggi: ${vm}`}));
+    return this.kartu("Indeks risiko riwayat", `${R.filter(x => x[1][0] === R[0][1][0]).map(x => Kartu.hl(esc(x[0]))).join(", ").replace(/, ([^,]*)$/, " dan $1")} punya indeks risiko riwayat letusan tertinggi${R.filter(x => x[1][0] === R[0][1][0]).length > 1 ? " bersama" : ""}: ${Kartu.hl(R[0][1][0] + " dari 100")}, dari ${Kartu.hl(fmt(Object.keys(r.gunung).length) + " gunung")} yang dinilai`,
+      this.mendatar(rows, M_AKHIR(150)), `Smithsonian GVP. Riwayat ${r.tahun[0]} sampai ${r.tahun[1]}, bukan prakiraan letusan`, WK.map((w, i) => [w, r.kelas[i]])); },
+
   async render() {
     const el = $("#tren"); if (!el) return;
-    if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; this.D = await muatJSON("../banjir/data/dampak_gunungapi.json").catch(() => null); }
+    if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; [this.D, this.F, this.Rk] = await Promise.all([Data.dampak(), Data.fs(), Data.risiko()]); }
     this.abu = await Data.abu();
-    el.innerHTML = [this.kTahun, this.kLevel, this.kNaik, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    if (!el._klik) { el._klik = 1; el.addEventListener("click", e => { const gn = e.target.closest("[data-gn]"); if (!gn) return; const g = S.st.gunung.find(x => x.nama === gn.dataset.gn); if (g) { bukaTab("peta"); nanti(() => { Peta.terbang(g); Detail.buka(g); }); } }); }
+    el.innerHTML = [this.kTahun, this.kTrenJangka, this.kKasus, this.kRisiko, this.kLevel, this.kNaik, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

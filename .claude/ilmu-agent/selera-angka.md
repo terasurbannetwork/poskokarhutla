@@ -71,3 +71,4 @@ Vonis per berkas: `bersih`/`temuan`; catat lewat `node scripts/agents/ilmu.mjs c
 - 2026-10-19 · Headline terbanyak/tertinggi harus dari Math.max data, bukan elemen pertama array (posko: K[0] urut status, bukan tangki). Cara tahu: bandingkan klaim dengan max di JSON.
 - 2026-10-19 · Sumber footer diisi string JSON, jadi kata kebijakan lolos (sembilan provinsi prioritas). Cara tahu: grep prioritas di public/data/*.json, bukan hanya di kode.
 - 2026-10-19 · kelasHujan (ringan..ekstrem, ambang harian BMKG) dipakai ke h3_mm/3 di kejadian.js:68: 84-145 mm 3 hari terbaca 'sedang rata-rata'. Ambang harian dipakai pada rata-rata per hari tanpa satuan. Cara tahu: hitung h3_mm/3 untuk data contoh.
+- 2026-10-19 · Fungsi p-value dengan toLocaleString(maximumFractionDigits 3) menampilkan 0 untuk p di bawah 0,0005; pakai pola p < 0,001 seperti Tren.p3. Cara tahu: node -e (0.0004).toLocaleString('id-ID',{maximumFractionDigits:3}) menghasilkan '0'.
