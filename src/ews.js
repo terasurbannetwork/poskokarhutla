@@ -254,10 +254,10 @@ const tautanBerhenti = async (env, id) => `${ASAL_PUBLIK}/ews/berhenti?t=${await
 export async function kirimEws(env, kini = Date.now()) {
   if (!emailAktif(env)) return {lewat: ALASAN_MATI};
   if (!rahasiaAda(env)) return {lewat: "IP_SALT belum diset"};
-  const data = await muatData(env, kini), hariIni = wib(kini), maks = maksEmail(env), pn = await namaProv(env);
+  const data = await muatData(env, kini), hariIni = wib(kini), maks = maksEmail(env), pn = await namaProv(env), chunk = Number(env.EWS_CHUNK) || CHUNK;   // EWS_CHUNK hanya untuk uji
   const hasil = {diperiksa: 0, dikirim: 0, tertunda: 0, gagal: 0};
   for (let penuh = false; !penuh;) {
-    const kel = (await env.DB.prepare("SELECT id, email, lat, lon, prov, kab, kec, kec_kunci, bencana, waspada, kirim_terakhir FROM ews_langganan WHERE status = 'aktif' AND diperiksa < ? ORDER BY diperiksa, id LIMIT ?").bind(kini, CHUNK).all()).results;
+    const kel = (await env.DB.prepare("SELECT id, email, lat, lon, prov, kab, kec, kec_kunci, bencana, waspada, kirim_terakhir FROM ews_langganan WHERE status = 'aktif' AND diperiksa < ? ORDER BY diperiksa, id LIMIT ?").bind(kini, chunk).all()).results;
     if (!kel.length) break;
     const lalu = new Map();
     for (const r of (await env.DB.prepare("SELECT langganan_id i, kunci k FROM ews_terkirim WHERE langganan_id IN (SELECT value FROM json_each(?)) AND kunci NOT LIKE 'gempa|%' AND kunci NOT LIKE 'tsunami|%'").bind(JSON.stringify(kel.map(s => s.id))).all()).results)
