@@ -352,21 +352,23 @@
   const RIW_HAL = 8; let riwHal = 0;
   const riwDaftar = () => (SR?.perusahaan || []).filter(e => { const p = e.prov == null ? "" : String(e.prov).toLowerCase();
     return (!p || [...S.prov].some(k => k === p || namaProv(k).toLowerCase() === p)) && (!S.cari || (e.nama + " " + (e.grup || "")).toLowerCase().includes(S.cari)); }).sort((a, b) => (b.bs_ha || 0) - (a.bs_ha || 0));
-  const riwCitra = (c, jud) => { const f = c?.f, src = f && (/^(\/|https?:)/.test(f) ? f : "/data/" + f);
+  const riwCitra = (c, jud, api) => { const f = c?.f, src = f && (/^(\/|https?:)/.test(f) ? f : "/data/" + f);
     return `<figure><div class="kn-img kn-riw-im">${src ? `<img src="${esc(src)}" alt="${jud}, ${esc(tglY(c.tgl))}" loading="lazy" data-zoom="1" tabindex="0">` : `<span>tidak ada citra bersih</span>`}</div>
-      <figcaption><b>${jud}</b>${src ? ` ${esc(tglY(c.tgl))}${c.satelit ? ` · ${esc(c.satelit)}` : ""}` : ""}</figcaption></figure>`; };
+      <figcaption><b>${jud}</b>${api?.pertama ? ` ${esc(api.terakhir && api.terakhir !== api.pertama ? `${tgl(api.pertama)}–${tglY(api.terakhir)}` : tglY(api.pertama))}${api.titik != null ? ` (${fmt(api.titik)} titik)` : ""}` : src ? ` ${esc(tglY(c.tgl))}${c.satelit ? ` · ${esc(c.satelit)}` : ""}` : ""}</figcaption></figure>`; };
+  /* foto kebun: label = tahun dari tgl (tidak dipatok +1/+2); "sawit mulai tampak" bila tahun_sawit sama dengan tahun foto */
+  const kebunJud = c => { const y = c?.tgl?.slice(0, 4); return !y ? "Kebun" : c.tahun_sawit != null && String(c.tahun_sawit) === y ? `${y} · sawit mulai tampak` : y; };
   function riwItem(e, i) {
-    const L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0), A = e.asal_ha || {}, c = e.citra || {};
+    const L = e.lag_ha || {}, cepat = (L[0] || 0) + (L[1] || 0), lambat = (L[2] || 0) + (L[3] || 0) + (L[4] || 0), A = e.asal_ha || {}, c = e.citra || {}; const k1 = c.kebun1 || c.plus1, k2 = c.kebun2 || c.plus2;
     return `<article class="kn-riw-k" id="riw-${i}" data-id="${esc(e.id)}"${i >= RIW_HAL ? " hidden" : ""}>
       <header><b class="kn-riw-n">${esc(e.nama)}</b>${e.jenis ? jenisPilGP(e.jenis) : ""}${e.grup ? `<span class="kn-gr">${logo(e.grup, 16)}${esc(e.grup)}</span>` : ""}<span class="kn-mt">${esc([].concat(e.kab || []).join(", "))}</span></header>
       <p class="kn-riw-u">± <b>${bulat(e.bs_ha)} ha</b> jejak api yang lalu menjadi sawit <span class="kn-ak">${pct(e.bs_porsi)} dari jejak api di konsesinya</span></p>
       <dl class="kn-riw-d"><div><dt>Asal lahan</dt><dd>${bulat(A.Forest)} ha hutan pada 2014 · ${bulat(e.bukan_hutan_sejak_2000_ha)} ha bukan hutan sejak 2000</dd></div>
         <div><dt>Jeda jadi sawit</dt><dd>0–1 thn sesudah api ${bulat(cepat)} ha · 2–4 thn ${bulat(lambat)} ha</dd></div>
         ${e.descals_konfirm != null ? `<div><dt>Peta sawit lain</dt><dd>terkonfirmasi ${pct(e.descals_konfirm)}</dd></div>` : ""}</dl>
-      <div class="kn-riw-c">${riwCitra(c.sebelum, "Sebelum")}${riwCitra(c.sesudah, "Sesudah")}${riwCitra(c.plus2, "2 tahun kemudian")}</div></article>`;
+      <div class="kn-riw-c">${riwCitra(c.sebelum, "Sebelum")}${riwCitra(c.terbakar, "Terbakar", e.api)}${riwCitra(k1, kebunJud(k1))}${riwCitra(k2, kebunJud(k2))}</div></article>`;
   }
   function bagianRiwayat() {
-    const ds = riwDaftar(); if (!SR?.perusahaan) return "";
+    const ds = riwDaftar(); if (!SR?.perusahaan) return ""; riwHal = 0;
     const hal = Math.max(1, Math.ceil(ds.length / RIW_HAL));
     return `<section class="kn-kartu kn-rws" id="knRiw"><h2>Indikasi dibakar lalu jadi sawit (kebakaran 2015)</h2>
       <div class="kn-pilbaris">${hipPil("indikasi", "Tumpang-tindih ruang dan waktu, bukan bukti siapa membakar")}${SR.total2015 != null ? `<span class="lp-pil">${bulat(SR.total2015)} ha jejak api 2015</span>` : ""}</div>
@@ -390,7 +392,9 @@
   let dlgZ = null;
   function perbesar(img) {
     if (!dlgZ) { dlgZ = document.createElement("dialog"); dlgZ.className = "kn-zm"; dlgZ.innerHTML = `<img alt=""><button type="button" aria-label="Tutup">×</button>`; document.body.append(dlgZ); dlgZ.addEventListener("click", () => dlgZ.close()); }
-    const z = dlgZ.querySelector("img"); z.src = img.currentSrc || img.src; z.alt = img.alt; dlgZ.showModal();
+    // dialog dulu (urgent), gambar besar menyusul di frame berikutnya supaya klik tidak menunggu dekode (INP)
+    const z = dlgZ.querySelector("img"); z.removeAttribute("src"); z.alt = img.alt; dlgZ.showModal();
+    requestAnimationFrame(() => setTimeout(() => { z.decoding = "async"; z.src = img.currentSrc || img.src; }));
   }
 
   function render() {

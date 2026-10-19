@@ -4,11 +4,14 @@ Pakai:  KONSESI_PROV=16 KONSESI_TOP=3 python3 scripts/data/sawit_pantau.py   # -
         python3 scripts/data/sawit_pantau.py uji                              # swa-uji klasifikasi (tanpa jaringan)
 
 HASIL INI INDIKASI, BUKAN BUKTI. Per perusahaan (teratas menurut KONSESI_TOP, luas_bakar_ha > 0), kotak konsesi dibagi 80 x 80 sel:
-- tanggal bakar sel = adegan Sentinel-2 L2A pertama (sejak SAWIT_DARI) dengan dNBR > 0,27 (acuan NBR tertinggi adegan bersih sebelumnya)
-  DAN NBR < 0,2 (sama dengan konsesi_citra_jelas.py); sel di luar poligon konsesi diabaikan;
-- baseline: fraksi sawit 2021 per sel dari peta tahun tanam Descals dkk. 2024 (sawit_peta.py; "tahun tanam" = persiapan lahan terakhir,
+- tanggal bakar sel = adegan Sentinel-2 L2A pertama (sejak SAWIT_DARI) dengan dNBR > 0,27 (acuan NBR = persentil ke-75 adegan bersih
+  sebelumnya, bukan maksimum) DAN NBR < 0,2, WAJIB bertahan di adegan bersih berikutnya ATAU didukung penanda gosong di adegan itu
+  (logika konsesi_citra_jelas.sampel); sel di luar poligon konsesi diabaikan;
+- baseline (catatan: sawit yang dibuka 2022-2025 terbaca "bukan sawit"; peta berhenti 2021): fraksi sawit 2021 per sel dari peta tahun tanam Descals dkk. 2024 (sawit_peta.py; "tahun tanam" = persiapan lahan terakhir,
   replanting ikut; peta berhenti 2021): >= 0,5 "sawit sebelum", < 0,1 "bukan sawit", sisanya "campuran";
 - sel "bukan sawit": lintasan NDVI sesudah bakar -> status (lihat klasifikasi). Sel sawit/campuran hanya dihitung luasnya.
+  "hijau seragam" tidak bisa dibedakan dari pulih alami pada skala sel ini: semua label status adalah HIPOTESIS.
+- piksel gelap (red atau NIR < 0,03) dibuang; NDVI sebelum = median adegan sebelum bakar.
 Sumber citra: Contains modified Copernicus Sentinel data 2026. Peta sawit: Descals dkk. 2024 (ESSD 16:5111, CC BY 4.0).
 """
 import datetime as dt, json, os, statistics, sys
@@ -77,11 +80,53 @@ def di_konsesi(r, bb):
     return ada
 
 
+GELAP = .03             # hipotesis, belum diuji balik: pantulan red/NIR di bawah ini = bayangan/air, dibuang
+
+
 def ndvi_grid(it, lat, lon, km, nbr):
     red, nir = J.pita(it, "red", lat, lon, km), J.pita(it, "nir08", lat, lon, km)
-    # pantulan berosifset -0,1 bisa <= 0 pada piksel gelap (bayangan/air tipis): NDVI-nya ~1 palsu, dan "NDVI tertinggi" memperbesarnya -> dibuang
-    return [(b - a) / (b + a) if n is not None and a is not None and b is not None and a >= .01 and b >= .01 else None
+    # pantulan berosifset -0,1 bisa <= 0 pada piksel gelap (bayangan/air tipis): NDVI-nya ~1 palsu -> dibuang bila red atau NIR < GELAP
+    return [(b - a) / (b + a) if n is not None and a is not None and b is not None and a >= GELAP and b >= GELAP else None
             for n, a, b in zip(nbr, red, nir)]
+
+
+def persentil75(v):
+    v = sorted(v)
+    return v[min(len(v) - 1, int(.75 * len(v)))]
+
+
+def terbakar_ke(ref, v):
+    return ref - v > DNBR_BAKAR and v < NBR_BAKAR
+
+
+def deteksi_bakar(nbr, gos, ada):
+    """nbr/gos = per adegan (urut waktu) list per sel. -> indeks adegan bakar per sel (None = tak terdeteksi).
+    Acuan = persentil ke-75 NBR adegan bersih sebelum calon. Calon (dNBR > 0,27 & NBR < 0,2) disahkan bila adegan bersih BERIKUTNYA
+    juga memenuhinya terhadap acuan yang sama (2 adegan berturut), atau calon itu bertanda gosong. Calon yang gagal dibuang
+    (bukan masuk riwayat acuan); calon di adegan terakhir tanpa penanda gosong tidak disahkan."""
+    n = len(nbr[0]) if nbr else 0
+    riwayat, calon, bakar = [[] for _ in range(n)], [None] * n, [None] * n
+    for k in range(len(nbr)):
+        for i in range(n):
+            v = nbr[k][i]
+            if v is None or bakar[i] is not None:
+                continue
+            if calon[i] is not None:
+                k0, ref = calon[i]
+                if terbakar_ke(ref, v):
+                    bakar[i] = k0
+                    continue
+                calon[i] = None
+            if ada[i] and riwayat[i]:
+                ref = persentil75(riwayat[i])
+                if terbakar_ke(ref, v):
+                    if gos[k][i]:
+                        bakar[i] = k
+                    else:
+                        calon[i] = (k, ref)
+                    continue
+            riwayat[i].append(v)
+    return bakar
 
 
 def satu(r):
@@ -96,24 +141,16 @@ def satu(r):
         if tgl in lihat:
             continue
         try:
-            v = J.sampel(it, lat, lon, km)
+            v = J.sampel(it, lat, lon, km, rinci=True)
             if v:
-                adegan.append({"tgl": tgl, "it": it, "nbr": v[0], "aw": v[2], "ndvi": ndvi_grid(it, lat, lon, km, v[0])})
+                adegan.append({"tgl": tgl, "it": it, "nbr": v[0], "aw": v[2], "gos": v[5], "ndvi": ndvi_grid(it, lat, lon, km, v[0])})
                 lihat.add(tgl)
         except Exception as e:
             print("  gagal", it["id"], e, file=sys.stderr)
     ada = di_konsesi(r, bb)
     ha = (km * 1000 / N) ** 2 / 1e4
     # tanggal bakar per sel
-    acuan, bakar = [None] * (N * N), [None] * (N * N)   # bakar[i] = indeks adegan
-    for k, a in enumerate(adegan):
-        for i, v in enumerate(a["nbr"]):
-            if v is None:
-                continue
-            if bakar[i] is None and ada[i] and acuan[i] is not None and acuan[i] - v > DNBR_BAKAR and v < NBR_BAKAR:
-                bakar[i] = k
-            if acuan[i] is None or v > acuan[i]:
-                acuan[i] = v
+    bakar = deteksi_bakar([a["nbr"] for a in adegan], [a["gos"] for a in adegan], ada)   # bakar[i] = indeks adegan
     terbakar = [i for i in range(N * N) if bakar[i] is not None]
     import sawit_peta as S
     peta = S.tahun_tanam(*bb, N) if terbakar else []
@@ -129,7 +166,7 @@ def satu(r):
         k0 = bakar[i]
         pre = [adegan[k]["ndvi"][i] for k in range(k0) if adegan[k]["ndvi"][i] is not None]
         if pre:
-            nd_sebelum[kl].append(max(pre))
+            nd_sebelum[kl].append(statistics.median(pre))
         if kl != "bukan sawit":
             continue
         d0 = dt.date.fromisoformat(adegan[k0]["tgl"])
@@ -189,9 +226,10 @@ def main():
             json.dump({"dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="minutes"),
                        "sumber": ["Contains modified Copernicus Sentinel data 2026 (Sentinel-2 L2A)",
                                   "Descals, A. dkk. 2024, Global mapping of oil palm planting year 1990-2021, ESSD 16:5111, Zenodo 10.5281/zenodo.13379129, CC BY 4.0"],
-                       "catatan": "Indikasi, bukan bukti. Sawit sebelum = fraksi sawit 2021 >= 0,5 pada sel ~500 m; bukan sawit = < 0,1. Peta sawit berhenti 2021 dan 'tahun tanam' "
-                                  "= persiapan lahan terakhir (replanting ikut). Status 'tetap terbuka' / 'hijau seragam' pada sel bukan sawit hanya hipotesis penyiapan kebun; "
-                                  "ambang belum diuji balik.",
+                       "catatan": "Indikasi, bukan bukti. Sawit sebelum = fraksi sawit 2021 >= 0,5 pada sel 190-500 m (lihat sel_ha); bukan sawit = < 0,1. Baseline Descals 2021: sawit yang dibuka 2022-2025 terbaca 'bukan sawit'. "
+                                  "Peta sawit berhenti 2021 dan 'tahun tanam' = persiapan lahan terakhir (replanting ikut). Label status (tetap terbuka, hijau seragam, dst.) HIPOTESIS: "
+                                  "'hijau seragam' tidak bisa dibedakan dari pulih alami pada skala sel ini; ambang belum diuji balik. "
+                                  "Deteksi bakar: acuan NBR persentil ke-75, wajib bertahan 2 adegan bersih berturut atau didukung penanda gosong.",
                        "perusahaan": hasil}, open(jalur, "w"), separators=(",", ":"), ensure_ascii=False)
     print(f"sawit_pantau.json: {len(hasil)} perusahaan", file=sys.stderr)
 
@@ -203,6 +241,15 @@ def uji():
     assert status(90, .2, .01) == "tetap terbuka" and status(90, .4, .1) == "peralihan"
     assert status(90, .7, None) == "peralihan"
     assert kelas_sawit(.5) == "sawit sebelum" and kelas_sawit(.09) == "bukan sawit" and kelas_sawit(.3) == "campuran"
+    # deteksi bakar: 6 sel x 5 adegan, nilai dasar .7, terbakar -.1
+    nbr = [[.7] * 6 for _ in range(5)]
+    for k, i in ((2, 0), (3, 0), (1, 1), (1, 2), (4, 3), (2, 5), (3, 5)):
+        nbr[k][i] = -.1
+    gos = [[False] * 6 for _ in range(5)]
+    gos[1][2] = True
+    b = deteksi_bakar(nbr, gos, [True] * 5 + [False])
+    assert b == [2, None, 1, None, None, None], b   # menetap 2 adegan | tunggal pulih | tunggal+gosong | calon di adegan terakhir | tak terbakar | di luar konsesi
+    assert persentil75([.1, .5, .6, .7]) == .7 and persentil75([.2]) == .2
     g = [None] * (N * N)
     for k, v in enumerate((.5, .5, .5, .5, .5, .5, .5, .5, .5)):
         g[(k // 3) * N + k % 3] = v

@@ -49,8 +49,9 @@ def pita(item, k, lat, lon, km):
     return [None if d == 0 else d * sk + of for d in v]
 
 
-def sampel(item, lat, lon, km):
-    """NBR per piksel (None = awan/bayangan/kosong) + api aktif per piksel; None bila adegan tak terpakai"""
+def sampel(item, lat, lon, km, rinci=False):
+    """rinci=True menambah elemen ke-6: penanda gosong per piksel (list bool).
+    NBR per piksel (None = awan/bayangan/kosong) + api aktif per piksel; None bila adegan tak terpakai"""
     scl = C.COG(item["assets"]["scl"]["href"])
     x0, y0, r0, kiri, atas = K.jendela(item, "scl", lat, lon, km)
     s = scl.contoh(0, x0, y0, r0, kiri, atas, km * 1000, N)[0]
@@ -75,7 +76,8 @@ def sampel(item, lat, lon, km):
         api.append(ok and a > .30 and a > 1.2 * b)
         gosong.append(ok and a >= .85 * b and b < .2 and a > .06)   # SWIR >= NIR, NIR rendah: lahan hangus (tanpa acuan)
     n = sum(1 for v in nbr if v is not None)
-    return nbr, api, round(100 * awan), round(100 * kosong), (100 * sum(gosong) / n if n else 0)
+    r = (nbr, api, round(100 * awan), round(100 * kosong), (100 * sum(gosong) / n if n else 0))
+    return r + (gosong,) if rinci else r
 
 
 def satu(r):
