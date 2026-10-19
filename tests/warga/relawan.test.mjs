@@ -30,27 +30,30 @@ async function buatSiap(o) {
   return {id, kode: r.j.kode};
 }
 const sisip = (tabel, o) => { const k = Object.keys(o); return U.DB.prepare(`INSERT INTO ${tabel} (${k.join(", ")}) VALUES (${k.map(() => "?").join(", ")})`).bind(...k.map(x => o[x])).run(); };
-const mouBody = (o = {}) => ({nama: "Universitas Uji Satu", singkatan: "UUS", prov: "62", no_mou: "MoU/UJI/1/2026", mulai: geser(-100), berakhir: geser(200), pic_nama: "Dr. Rahasia PIC", pic_jabatan: "Wakil Rektor",
-  pic_email: "pic.rahasia@kampus-uji.ac.id", pic_wa: "081299990001", kuota: 50, catatan: "uji", ...o});
+/* institusi + MoU relawan (C7): argumen datar no_mou/mulai/berakhir/kuota dipetakan ke perjanjian bersarang */
+const mouBody = ({no_mou = "MoU/UJI/1/2026", mulai = geser(-100), berakhir = geser(200), kuota = 50, ...o} = {}) => ({nama: "Universitas Uji Satu", singkatan: "UUS", jenis: "ptn", prov: "62", pic_nama: "Dr. Rahasia PIC", pic_jabatan: "Wakil Rektor",
+  pic_email: "pic.rahasia@kampus-uji.ac.id", pic_wa: "081299990001", catatan: "uji", ...o, perjanjian: {jenis_perjanjian: "mou_relawan", nomor: no_mou, mulai, berakhir, kuota}});
 const butuhBody = (o = {}) => ({judul: "Pos kesehatan uji", bencana: "karhutla", prov: "62", kab: "Pulang Pisau", butuh: [{keahlian: "medis", jumlah: 3}], mulai: geser(1), selesai: geser(10), ...o});
 
 const ADMIN_RUTE = [["GET", "/api/relawan/admin/relawan"], ["GET", "/api/relawan/admin/relawan/0123456789abcdef"], ["POST", "/api/relawan/admin/relawan/0123456789abcdef"], ["GET", "/api/relawan/admin/csv"],
-  ["GET", "/api/relawan/admin/kampus"], ["POST", "/api/relawan/admin/kampus"], ["POST", "/api/relawan/admin/kampus/0123456789abcdef"], ["GET", "/api/relawan/admin/permintaan"], ["POST", "/api/relawan/admin/permintaan"],
+  ["GET", "/api/relawan/admin/institusi"], ["POST", "/api/relawan/admin/institusi"], ["POST", "/api/relawan/admin/institusi/0123456789abcdef"], ["GET", "/api/relawan/admin/permintaan"], ["POST", "/api/relawan/admin/permintaan"],
   ["GET", "/api/relawan/admin/permintaan/0123456789abcdef"], ["POST", "/api/relawan/admin/permintaan/0123456789abcdef"], ["GET", "/api/relawan/admin/penugasan"], ["POST", "/api/relawan/admin/penugasan/0123456789abcdef"],
   ["POST", "/api/relawan/admin/jam/0123456789abcdef"], ["GET", "/api/relawan/admin/pelatihan"], ["POST", "/api/relawan/admin/pelatihan"], ["POST", "/api/relawan/admin/pelatihan/0123456789abcdef"], ["POST", "/api/relawan/dummy"]];
 const KODE_RUTE = [["GET", "/api/relawan/saya"], ["POST", "/api/relawan/saya"], ["POST", "/api/relawan/saya/penugasan/0123456789abcdef"], ["GET", "/api/relawan/kampus/saya"], ["GET", "/api/relawan/kampus/csv"],
   ["POST", "/api/relawan/kampus/relawan/0123456789abcdef"], ["POST", "/api/relawan/kampus/jam/0123456789abcdef"]];
 
 uji("migrasi 0023 relawan idempoten: jalan dua kali, data tetap", async () => {
-  await sisip("relawan_kampus", {id: id16(), nama: "Kampus Awal", prov: "62", no_mou: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", pic_nama: "PIC", kuota: 5, dibuat: 1, diubah: 1});
+  const iid = id16();
+  await sisip("institusi", {id: iid, nama: "Kampus Awal", jenis: "pts", prov: "62", pic_nama: "PIC", dibuat: 1, diubah: 1});
+  await sisip("institusi_perjanjian", {id: id16(), institusi_id: iid, jenis_perjanjian: "mou_relawan", nomor: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", kuota: 5, dibuat: 1, diubah: 1});
   await U.DB.batch(pecah(SQL).map(s => U.DB.prepare(s)));
-  assert.equal(await U.n("relawan_kampus"), 1);
-  await U.DB.prepare("DELETE FROM relawan_kampus").run();
+  assert.equal(await U.n("institusi"), 1); assert.equal(await U.n("institusi_perjanjian"), 1);
+  await U.DB.batch([U.DB.prepare("DELETE FROM institusi_perjanjian"), U.DB.prepare("DELETE FROM institusi")]);
 });
 
 uji("enum JS sama persis dengan CHECK dan trigger migrasi 0023", async () => {
   const dalam = [...SQL.matchAll(/IN \(([^)]*)\)/g)].map(m => m[1].split(",").map(s => s.trim().replace(/'/g, "")).join("|"));
-  for (const [nama, daftar] of [["STATUS", R.STATUS], ["JALUR", R.JALUR], ["GOL_DARAH", R.GOL_DARAH], ["STATUS_PENUGASAN", R.STATUS_PENUGASAN], ["ASURANSI", R.ASURANSI], ["STATUS_PERMINTAAN", R.STATUS_PERMINTAAN], ["KEAHLIAN", Object.keys(R.KEAHLIAN)]])
+  for (const [nama, daftar] of [["STATUS", R.STATUS], ["JALUR", R.JALUR], ["GOL_DARAH", R.GOL_DARAH], ["STATUS_PENUGASAN", R.STATUS_PENUGASAN], ["ASURANSI", R.ASURANSI], ["STATUS_PERMINTAAN", R.STATUS_PERMINTAAN], ["KEAHLIAN", Object.keys(R.KEAHLIAN)], ["JENIS_INSTITUSI", R.JENIS_INSTITUSI], ["JENIS_PERJANJIAN", R.JENIS_PERJANJIAN]])
     assert.ok(dalam.includes(daftar.join("|")), `${nama} tidak sama dengan CHECK/trigger di 0023`);
   assert.equal(Object.keys(R.PROV).length, 38);
 });
@@ -75,8 +78,19 @@ uji("CHECK menolak isian liar langsung di D1 (tanpa lewat worker)", async () => 
   await U.DB.prepare("UPDATE relawan SET status = 'ditolak' WHERE id = ?").bind(a.id).run();
   await sisip("relawan", {...dasar(), wa: a.wa, email: a.email});   // yang ditolak boleh mendaftar ulang
   await U.DB.prepare("DELETE FROM relawan").run();
-  const kdasar = {id: id16(), nama: "Kampus CHECK", prov: "62", no_mou: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", pic_nama: "PIC", kuota: 5, dibuat: 1, diubah: 1};
-  for (const [k, v] of Object.entries({mulai: "2026-1-1", berakhir: "2025-12-31", kuota: 0, prov: "x1", pic_wa: "12ab", kode_sha: "pendek"})) await assert.rejects(sisip("relawan_kampus", {...kdasar, [k]: v}), /CHECK/i, `kampus.${k}`);
+  const kdasar = {id: id16(), nama: "Kampus CHECK", jenis: "pts", prov: "62", pic_nama: "PIC", dibuat: 1, diubah: 1};
+  for (const [k, v] of Object.entries({jenis: "bebas", prov: "x1", pic_wa: "12ab", kode_sha: "pendek", singkatan: "x"})) await assert.rejects(sisip("institusi", {...kdasar, [k]: v}), /CHECK/i, `institusi.${k}`);
+  await sisip("institusi", kdasar);   // kontrol: sah lolos (prov NULL juga sah: riset boleh belum mengisinya)
+  await sisip("institusi", {...kdasar, id: id16(), prov: null});
+  const pjdasar = {id: id16(), institusi_id: kdasar.id, jenis_perjanjian: "mou_relawan", nomor: "MoU/1", mulai: "2026-01-01", berakhir: "2026-12-31", kuota: 5, dibuat: 1, diubah: 1};
+  for (const [k, v] of Object.entries({mulai: "2026-1-1", berakhir: "2025-12-31", kuota: 0, jenis_perjanjian: "x", nomor: "ab"})) await assert.rejects(sisip("institusi_perjanjian", {...pjdasar, [k]: v}), /CHECK/i, `perjanjian.${k}`);
+  await assert.rejects(sisip("institusi_perjanjian", {...pjdasar, kuota: null}), /CHECK/i, "MoU relawan wajib berkuota");
+  await assert.rejects(sisip("institusi_perjanjian", {...pjdasar, jenis_perjanjian: "pks_riset"}), /CHECK/i, "PKS riset tanpa kuota");
+  await assert.rejects(sisip("institusi_perjanjian", {...pjdasar, institusi_id: id16()}), /FOREIGN/i, "perjanjian harus merujuk institusi");
+  await sisip("institusi_perjanjian", pjdasar);
+  await assert.rejects(sisip("institusi_perjanjian", {...pjdasar, id: id16()}), /UNIQUE/i, "nomor sama pada jenis sama");
+  await sisip("institusi_perjanjian", {...pjdasar, id: id16(), jenis_perjanjian: "pks_riset", kuota: null});   // jenis lain boleh bernomor sama: satu institusi, dua perjanjian
+  await U.DB.batch([U.DB.prepare("DELETE FROM institusi_perjanjian"), U.DB.prepare("DELETE FROM institusi")]);
   const pdasar = {id: id16(), judul: "Judul uji", bencana: "banjir", prov: "62", kab: "Kab", butuh: "[]", mulai: "2026-01-01", selesai: "2026-01-02", dibuat: 1};
   for (const [k, v] of Object.entries({butuh: "[]", status: "x", lat: 40, selesai: "2025-01-01"})) await assert.rejects(sisip("relawan_permintaan", {...pdasar, [k]: v}), /CHECK/i, `permintaan.${k}`);
   for (const [k, v] of Object.entries({butuh: '{"a":1}'})) await assert.rejects(sisip("relawan_permintaan", {...pdasar, butuh: v}), /CHECK/i, `permintaan.${k}`);
@@ -160,15 +174,15 @@ uji("kode relawan tidak bisa dipakai di rute kampus; tebakan salah > 300 per jam
 
 /* ---------------- kampus ---------------- */
 let A, B, kA, kB;
-uji("POST /api/relawan/admin/kampus: validasi 400, sah 201 dengan kode koordinator sekali tampil", async () => {
+uji("POST /api/relawan/admin/institusi: validasi 400, sah 201 dengan kode koordinator sekali tampil", async () => {
   for (const o of [{nama: "ab"}, {prov: "99"}, {no_mou: ""}, {mulai: "2026-13-40"}, {berakhir: geser(-200)}, {pic_nama: ""}, {pic_email: "x"}, {pic_wa: "12"}, {kuota: 0}, {kuota: 1.5}, {singkatan: "x"}]) {
-    const r = await U.adm("POST", "/api/relawan/admin/kampus", mouBody(o)); assert.equal(r.s, 400, JSON.stringify(o) + r.t);
+    const r = await U.adm("POST", "/api/relawan/admin/institusi", mouBody(o)); assert.equal(r.s, 400, JSON.stringify(o) + r.t);
   }
-  assert.equal((await U.api("POST", "/api/relawan/admin/kampus", mouBody(), MOD2)).s, 201, "moderator boleh");
-  A = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Alfa Uji", singkatan: "UAU", kuota: 2}));
-  B = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", prov: "16"}));
+  assert.equal((await U.api("POST", "/api/relawan/admin/institusi", mouBody(), MOD2)).s, 201, "moderator boleh");
+  A = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Alfa Uji", singkatan: "UAU", kuota: 2}));
+  B = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", prov: "16"}));
   assert.equal(A.s, 201); assert.match(A.j.kode, /^[0-9a-f]{26}$/); assert.equal(A.j.tautan, `http://bnpb.lokal/kampus#k=${A.j.kode}`);
-  assert.equal((await U.DB.prepare("SELECT kode_sha FROM relawan_kampus WHERE id = ?").bind(A.j.id).first()).kode_sha, sha256(A.j.kode));
+  assert.equal((await U.DB.prepare("SELECT kode_sha FROM institusi WHERE id = ?").bind(A.j.id).first()).kode_sha, sha256(A.j.kode));
   kA = A.j.kode; kB = B.j.kode;
 });
 
@@ -216,12 +230,12 @@ uji("GET /api/relawan/kampus/csv: rekap hanya kampus sendiri, sel berawalan rumu
 });
 
 uji("MoU habis atau belum mulai menolak pendaftar kampus itu; MoU <= 60 hari ditandai segera_habis", async () => {
-  const habis = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Habis Uji", singkatan: "UHU", mulai: geser(-400), berakhir: geser(-1)}));
-  const belum = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Belum Uji", singkatan: "UBL", mulai: geser(5), berakhir: geser(300)}));
-  const segera = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Universitas Segera Uji", singkatan: "USU", mulai: geser(-300), berakhir: geser(40)}));
+  const habis = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Habis Uji", singkatan: "UHU", mulai: geser(-400), berakhir: geser(-1)}));
+  const belum = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Belum Uji", singkatan: "UBL", mulai: geser(5), berakhir: geser(300)}));
+  const segera = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Segera Uji", singkatan: "USU", mulai: geser(-300), berakhir: geser(40)}));
   for (const k of [habis, belum]) { const r = await daftar({nama: "Mhs " + k.j.id, jalur: "kampus", kampus_id: k.j.id}); assert.equal(r.s, 409, r.t); assert.match(r.j.galat, /MoU/); }
   assert.equal((await daftar({nama: "Mhs Segera", jalur: "kampus", kampus_id: segera.j.id})).s, 201, "segera habis masih menerima");
-  const l = (await U.adm("GET", "/api/relawan/admin/kampus")).j.kampus, per = nama => l.find(k => k.nama === nama);
+  const l = (await U.adm("GET", "/api/relawan/admin/institusi")).j.institusi.map(k => ({...k, ...k.mou})), per = nama => l.find(k => k.nama === nama);
   assert.equal(per("Universitas Habis Uji").status, "habis"); assert.equal(per("Universitas Belum Uji").status, "belum");
   assert.equal(per("Universitas Segera Uji").status, "segera_habis"); assert.equal(per("Universitas Segera Uji").sisa_hari, 40);
   assert.equal(per("Universitas Alfa Uji").status, "aktif");
@@ -260,18 +274,20 @@ uji("kampus validasi jam: koordinator mengesahkan atau menolak jam relawan kampu
   assert.match(await rekap(), /,2,2,0$/, "rekap: yang ditolak tidak lagi menunggu");
 });
 
-uji("POST /api/relawan/admin/kampus/:id: kode baru mencabut kode lama, cabut_kode menutup, ubah menyimpan", async () => {
-  const baru = await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "kode_baru"});
+uji("POST /api/relawan/admin/institusi/:id: kode baru mencabut kode lama, cabut_kode menutup, ubah menyimpan", async () => {
+  const baru = await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "kode_baru"});
   assert.equal(baru.s, 200); assert.notEqual(baru.j.kode, kB);
   assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kB))).s, 403, "kode lama harus mati");
   assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(baru.j.kode))).s, 200); kB = baru.j.kode;
-  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "cabut_kode"})).s, 200);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "cabut_kode"})).s, 200);
   assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kB))).s, 403);
-  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "ubah", ...mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", kuota: 77, prov: "16"})})).s, 200);
-  assert.equal((await U.DB.prepare("SELECT kuota FROM relawan_kampus WHERE id = ?").bind(B.j.id).first()).kuota, 77);
-  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${id16()}`, {aksi: "kode_baru"})).s, 404);
-  assert.equal((await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "x"})).s, 400);
-  const baru2 = await U.adm("POST", `/api/relawan/admin/kampus/${B.j.id}`, {aksi: "kode_baru"}); kB = baru2.j.kode;
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "ubah", ...mouBody({nama: "Universitas Beta Uji", singkatan: "UBU", kuota: 77, prov: "16"})})).s, 200);
+  const pj = await U.DB.prepare("SELECT id, nomor FROM institusi_perjanjian WHERE institusi_id = ?").bind(B.j.id).first();
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "perjanjian", perjanjian_id: pj.id, ...mouBody({kuota: 77}).perjanjian})).s, 200, "perpanjang / ubah kuota lewat perjanjian");
+  assert.equal((await U.DB.prepare("SELECT kuota FROM institusi_perjanjian WHERE institusi_id = ?").bind(B.j.id).first()).kuota, 77);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${id16()}`, {aksi: "kode_baru"})).s, 404);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "x"})).s, 400);
+  const baru2 = await U.adm("POST", `/api/relawan/admin/institusi/${B.j.id}`, {aksi: "kode_baru"}); kB = baru2.j.kode;
 });
 
 /* ---------------- alur relawan: verifikasi, pencocokan, penugasan, jam ---------------- */
@@ -476,7 +492,7 @@ uji("cabut diri: butuh konfirmasi HAPUS, data pribadi dikosongkan, kode mati, ja
 
 uji("rute publik tidak memuat WA, email, kontak darurat, PIC, kode, atau nama relawan", async () => {
   const sensitif = (await U.DB.prepare("SELECT wa, email, darurat_wa, darurat_nama, nama FROM relawan WHERE anonim = 0 AND dummy = 0").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
-  const kampus = (await U.DB.prepare("SELECT pic_nama, pic_email, pic_wa FROM relawan_kampus").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
+  const kampus = (await U.DB.prepare("SELECT pic_nama, pic_email, pic_wa FROM institusi").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
   assert.ok(sensitif.length > 20 && kampus.length >= 3);
   for (const j of ["/api/relawan/ringkas", "/api/relawan/ringkas?dummy=1"]) {
     const r = await U.api("GET", j, undefined, ipBaru()); assert.equal(r.s, 200);
@@ -499,7 +515,7 @@ uji("POST /api/relawan/dummy: hanya Super Admin; tanpa auth, moderator biasa, ak
 });
 
 uji("dummy isi: rantai lengkap, tiap status minimal satu, MoU segera habis dan habis, angka admin bukan nol", async () => {
-  const snap = async () => Object.fromEntries(await Promise.all(["relawan_kampus", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"].map(async t => [t, await U.n(t, "dummy = 0")])));
+  const snap = async () => Object.fromEntries(await Promise.all(["institusi", "institusi_perjanjian", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"].map(async t => [t, await U.n(t, "dummy = 0")])));
   sebelum = await snap();
   const asli = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
   const r = await U.adm("POST", "/api/relawan/dummy", {aksi: "isi"});
@@ -512,8 +528,8 @@ uji("dummy isi: rantai lengkap, tiap status minimal satu, MoU segera habis dan h
   assert.ok(await U.n("relawan_jam", "dummy = 1 AND keluar IS NULL") >= 1, "satu sesi masih terbuka");
   assert.ok(await U.n("relawan_penugasan", "dummy = 1 AND nilai IS NOT NULL") >= 3);
   assert.equal(await U.n("relawan_jam", "dummy = 1 AND menit != min(960, round((keluar - masuk) / 60000.0))  AND keluar IS NOT NULL"), 0, "menit lahir dari check-in/out");
-  const mou = (await U.adm("GET", "/api/relawan/admin/kampus")).j.kampus.filter(k => k.dummy);
-  assert.deepEqual(mou.map(k => k.status).sort(), ["aktif", "habis", "segera_habis"]);
+  const mou = (await U.adm("GET", "/api/relawan/admin/institusi")).j.institusi.filter(k => k.dummy);
+  assert.deepEqual(mou.map(k => k.mou.status).sort(), ["aktif", "habis", "segera_habis"]);
   /* ringkasan admin: tiap angka berisi */
   const a = (await U.api("GET", "/api/relawan/ringkas?dummy=1", undefined, ADMIN)).j;
   assert.ok(a.relawan > asli.relawan && a.siap_tugas > asli.siap_tugas && a.bertugas >= 2 && a.jam_kerja_jam > asli.jam_kerja_jam && a.kampus.length > asli.kampus.length);
@@ -532,13 +548,13 @@ uji("dummy isi: rantai lengkap, tiap status minimal satu, MoU segera habis dan h
   const asliP = (await U.adm("GET", `/api/relawan/admin/permintaan/${P}`)).j.kandidat;
   assert.ok(asliP.every(k => !/Contoh/.test(k.nama)), "pencocokan asli tidak memakai relawan dummy");
   assert.equal((await U.adm("POST", `/api/relawan/admin/permintaan/${P}`, {aksi: "tugaskan", relawan_id: (await U.DB.prepare("SELECT id FROM relawan WHERE dummy = 1 AND status = 'siap_tugas'").first()).id})).s, 404, "relawan dummy tidak bisa ditugaskan ke permintaan asli");
-  assert.equal((await daftar({nama: "Daftar ke Dummy", jalur: "kampus", kampus_id: (await U.DB.prepare("SELECT id FROM relawan_kampus WHERE dummy = 1 LIMIT 1").first()).id})).s, 404, "pendaftar publik tidak bisa masuk kampus dummy");
+  assert.equal((await daftar({nama: "Daftar ke Dummy", jalur: "kampus", kampus_id: (await U.DB.prepare("SELECT id FROM institusi WHERE dummy = 1 LIMIT 1").first()).id})).s, 404, "pendaftar publik tidak bisa masuk kampus dummy");
 });
 
 uji("dummy hapus: bersih, data asli tidak tersentuh, bisa isi lagi", async () => {
   const r = await U.adm("POST", "/api/relawan/dummy", {aksi: "hapus"});
   assert.equal(r.s, 200); assert.ok(r.j.relawan >= 9 && r.j.kampus >= 3 && r.j.jam >= 8);
-  for (const t of ["relawan_kampus", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"]) {
+  for (const t of ["institusi", "institusi_perjanjian", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"]) {
     assert.equal(await U.n(t, "dummy = 1"), 0, `${t} masih punya dummy`);
     assert.equal(await U.n(t, "dummy = 0"), sebelum[t], `${t}: data asli berubah`);
   }
@@ -560,8 +576,8 @@ uji("GET /relawan, /relawan/saya, /kampus, /admin/relawan: 200 dengan CSP, tanpa
     if (pribadi && j !== "/admin/relawan") { assert.equal(r.h.get("cache-control"), "no-store"); assert.match(r.h.get("x-robots-tag") || "", /noindex/); assert.equal(r.h.get("referrer-policy"), "no-referrer"); }
   }
   assert.equal((await U.api("GET", "/relawan", undefined, ipBaru())).h.get("x-robots-tag"), null, "pendaftaran publik boleh diindeks");
-  for (const berkas of ["/bnpb/relawan.js", "/bnpb/relawan.css", "/bnpb/relawan-saya.js", "/bnpb/kampus.js", "/admin/relawan.js", "/admin/relawan.css"]) assert.equal((await U.api("GET", berkas, undefined, ipBaru())).s, 200, berkas);
-  const js = ["public/bnpb/relawan.js", "public/bnpb/relawan-saya.js", "public/bnpb/kampus.js", "public/admin/relawan.js"].map(f => readFileSync(path.join(AKAR, f), "utf8")).join("\n");
+  for (const berkas of ["/bnpb/relawan.js", "/bnpb/relawan.css", "/bnpb/relawan-saya.js", "/bnpb/kampus.js", "/admin/relawan.js", "/admin/relawan.css", "/admin/institusi.js", "/admin/institusi.css"]) assert.equal((await U.api("GET", berkas, undefined, ipBaru())).s, 200, berkas);
+  const js = ["public/bnpb/relawan.js", "public/bnpb/relawan-saya.js", "public/bnpb/kampus.js", "public/admin/relawan.js", "public/admin/institusi.js", "public/admin/riset.js"].map(f => readFileSync(path.join(AKAR, f), "utf8")).join("\n");
   assert.ok(!/—/.test(js), "em dash di teks layar"); assert.ok(!/\.style\.|style=/.test(js.replace(/\.style\.display/g, "")), "gaya inline lewat JS/atribut");
 });
 
@@ -588,7 +604,7 @@ uji("Turnstile aktif: pendaftaran tanpa token 403, halaman /relawan mengizinkan 
 
 /* ---------------------------------------------------------------- perbaikan ulasan */
 uji("perbaikan ulasan: cabut diri mengosongkan semua kuasi-identifier (relawan, jam lat/lon, penugasan polis/catatan/oleh); D1 menjamin lewat CHECK", async () => {
-  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Anonim Uji", singkatan: "KAU", no_mou: "MoU/ANON/1"})); assert.equal(kp.s, 201, kp.t);
+  const kp = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Kampus Anonim Uji", singkatan: "KAU", no_mou: "MoU/ANON/1"})); assert.equal(kp.s, 201, kp.t);
   const b = await buatSiap(form({nama: "Anonim Penuh", jalur: "kampus", kampus_id: kp.j.id, organisasi: "Org X", keahlian: ["medis", "sar"], luar_provinsi: true, hari_per_minggu: 5, maks_hari: 90}));
   await U.DB.prepare("UPDATE relawan SET oleh = 'admin-x', alasan = 'catatan' WHERE id = ?").bind(b.id).run();
   await U.DB.prepare("INSERT INTO relawan_pelatihan (id, relawan_id, nama, tgl, dibuat) VALUES (?, ?, 'Latihan', '2026-01-01', 1)").bind(id16(), b.id).run();
@@ -616,7 +632,7 @@ uji("perbaikan ulasan: cabut diri mengosongkan semua kuasi-identifier (relawan, 
 });
 
 uji("perbaikan ulasan: aksi jam 'constructor'/'__proto__' ditolak 400, bukan 500 (kampus dan admin)", async () => {
-  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Proto Uji", singkatan: "KPU", no_mou: "MoU/PROTO/1"}));
+  const kp = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Kampus Proto Uji", singkatan: "KPU", no_mou: "MoU/PROTO/1"}));
   const id = id16();
   for (const aksi of ["constructor", "__proto__", "toString", "hasOwnProperty", 1, null, ["sah"]]) {
     const k = await U.api("POST", `/api/relawan/kampus/jam/${id}`, {aksi}, K(kp.j.kode)); assert.equal(k.s, 400, `kampus ${String(aksi)} -> ${k.s} ${k.t}`);
@@ -635,7 +651,7 @@ uji("perbaikan ulasan: laju IP dihitung sebelum Turnstile (IP yang sudah di bata
 
 uji("perbaikan ulasan: POST ber-kode dibatasi laju per pemegang kode (relawan 60/jam, koordinator 600/jam)", async () => {
   const b = await buatSiap(form({nama: "Laju Kode"}));
-  const kp = await U.adm("POST", "/api/relawan/admin/kampus", mouBody({nama: "Kampus Laju Kode", singkatan: "KLK", no_mou: "MoU/LAJU/1"}));
+  const kp = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Kampus Laju Kode", singkatan: "KLK", no_mou: "MoU/LAJU/1"}));
   const kini = Date.now();
   await U.DB.batch([...Array(60)].map(() => U.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'relawan.ubah', ?)").bind(b.id, kini)));
   const r = await U.api("POST", "/api/relawan/saya", {aksi: "istirahat"}, K(b.kode)); assert.equal(r.s, 429, r.t);
@@ -695,4 +711,103 @@ uji("perbaikan ulasan: bersihkanRelawan menganonimkan ditolak/nonaktif > 180 har
   /* daftar_hitam yang sudah diminimalkan masih menolak pendaftaran ulang dengan WA yang sama */
   const ulang = await daftar({nama: "Ret Ulang", wa: hitam.wa}); assert.equal(ulang.s, 409, ulang.t);
   assert.equal(await U.n("relawan", "nama = 'Ret Ulang'"), 0);
+});
+
+/* ---------------- C3: kapasitas per kabupaten ---------------- */
+uji("sempurna: GET /api/relawan/kapasitas agregat per kabupaten cocok dengan hitung manual, tanpa string pribadi, dummy tersembunyi", async () => {
+  const kini = Date.now(), PROVK = "61", KABK = "Kab Kapasitas Uji";
+  let n = 0;
+  const rel = (status, keahlian, o = {}) => { n++; const id = id16(); return sisip("relawan", {id, nama: `Kap Orang ${n}`, wa: `62819${String(n).padStart(7, "0")}`, email: `kap${n}@rahasia-kapasitas.id`, prov: PROVK, kab: KABK, jalur: "umum", status,
+    keahlian: JSON.stringify(keahlian), hari_per_minggu: 3, maks_hari: 30, luar_provinsi: 0, setuju_pdp: 1, dibuat: kini, diubah: kini, dummy: 0, ...o}).then(() => id); };
+  const r1 = await rel("siap_tugas", ["medis", "sar"]), r2 = await rel("siap_tugas", ["medis", "logistik", "dapur_umum"]), r3 = await rel("bertugas", ["sar", "psikososial"]);
+  await rel("terdaftar", ["medis"]); await rel("diverifikasi", ["sar"]);   // belum siap: tidak dihitung
+  const r5 = await rel("nonaktif", ["medis"]);                              // tidak dihitung sebagai kapasitas, tetapi jam sahnya tetap
+  await rel("siap_tugas", ["gis_data"], {kab: KABK.toLowerCase()});         // huruf kecil = kabupaten yang sama; keahlian di luar lima utama
+  await rel("siap_tugas", ["medis"], {dummy: 1, kab: "Kab Kapasitas Dummy"});
+  const pid = id16(), gid = id16();
+  await sisip("relawan_permintaan", {id: pid, judul: "Uji kapasitas", bencana: "banjir", prov: PROVK, kab: KABK, butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-60), selesai: geser(60), dibuat: kini});
+  const tugas = {};
+  const jam = async (rid, masuk, menit, sah, o = {}) => { const g = tugas[rid] ||= id16(); if (!(await U.DB.prepare("SELECT 1 FROM relawan_penugasan WHERE id = ?").bind(g).first())) await sisip("relawan_penugasan", {id: g, permintaan_id: pid, relawan_id: rid, dibuat: kini, diubah: kini, dummy: o.dummy || 0});
+    await sisip("relawan_jam", {id: id16(), relawan_id: rid, penugasan_id: g, masuk: kini - masuk * HARI, keluar: kini - masuk * HARI + menit * 60e3, menit, sah, dummy: 0, ...o}); };
+  await jam(r1, 2, 120, 1); await jam(r1, 40, 300, 1);   // yang kedua di luar 30 hari
+  await jam(r1, 3, 60, 0); await jam(r1, 4, 90, 2);       // menunggu dan ditolak tidak sah
+  await jam(r3, 10, 150, 1); await jam(r5, 1, 60, 1);
+  const d = (await U.api("GET", "/api/relawan/kapasitas", undefined, ipBaru())).j;
+  assert.deepEqual(Object.keys(d).sort(), ["dibuat", "kab"]); assert.ok(Math.abs(d.dibuat - kini) < 60e3);
+  assert.deepEqual(d.kab[`${PROVK}|${KABK}`], {siap: 3, bertugas: 1, keahlian: {medis: 2, sar: 2, logistik: 1, dapur_umum: 1, psikososial: 1}, jam30: 5.5});
+  assert.ok(!(`${PROVK}|${KABK.toLowerCase()}` in d.kab), "huruf besar/kecil satu kabupaten");
+  assert.ok(!("61|Kab Kapasitas Dummy" in d.kab), "dummy tersembunyi dari publik");
+  /* hitung manual atas seluruh tabel (tanpa lewat SQL agregat endpoint) harus identik untuk tiap kabupaten */
+  const semua = (await U.DB.prepare("SELECT id, prov, kab, status, keahlian FROM relawan WHERE anonim = 0 AND dummy = 0").all()).results;
+  const jams = (await U.DB.prepare("SELECT j.menit, j.masuk, j.sah, j.keluar, r.prov, r.kab FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id WHERE r.anonim = 0 AND j.dummy = 0").all()).results;
+  const manual = {};
+  const sel = (p, k) => manual[`${p}|${k}`] ||= {siap: 0, bertugas: 0, keahlian: {medis: 0, sar: 0, logistik: 0, dapur_umum: 0, psikososial: 0}, menit: 0, nama: new Set()};
+  const kanon = (p, k) => { const c = semua.concat(jams).filter(x => x.prov === p && x.kab.trim().toLowerCase() === k.trim().toLowerCase()).map(x => x.kab).sort()[0]; return c; };   // tampilan = bentuk terkecil
+  for (const r of semua) if (["siap_tugas", "bertugas"].includes(r.status)) { const x = sel(r.prov, kanon(r.prov, r.kab)); x[r.status === "siap_tugas" ? "siap" : "bertugas"]++; for (const k of JSON.parse(r.keahlian)) if (k in x.keahlian) x.keahlian[k]++; }
+  for (const j of jams) if (j.sah === 1 && j.keluar != null && j.masuk >= kini - 30 * HARI) sel(j.prov, kanon(j.prov, j.kab)).menit += j.menit;
+  const harapan = Object.fromEntries(Object.entries(manual).map(([k, x]) => [k, {siap: x.siap, bertugas: x.bertugas, keahlian: x.keahlian, jam30: Math.round(x.menit / 60 * 10) / 10}]));
+  assert.deepEqual(d.kab, harapan, "angka endpoint = hitung manual");
+  assert.ok(Object.keys(d.kab).length >= 3, "beberapa kabupaten dari uji sebelumnya ikut terhitung");
+  /* tanpa data pribadi */
+  const pribadi = (await U.DB.prepare("SELECT nama, wa, email, darurat_wa, darurat_nama, id FROM relawan WHERE anonim = 0").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
+  const t = JSON.stringify(d);
+  assert.ok(pribadi.length > 40); for (const s of pribadi) assert.ok(!t.includes(String(s)), `kapasitas membocorkan ${s}`);
+  assert.ok(!/@|rahasia-kapasitas|Kap Orang/.test(t));
+  /* publik: tanpa auth; ?dummy=1 tanpa admin = publik; admin ?dummy=1 melihat dummy, tidak lewat cache tepi */
+  const pub = await U.api("GET", "/api/relawan/kapasitas", undefined, ipBaru());
+  assert.equal(pub.s, 200); assert.match(pub.h.get("cache-control"), /max-age=600/);
+  const tanpaAdmin = await U.api("GET", "/api/relawan/kapasitas?dummy=1", undefined, ipBaru());
+  assert.ok(!("61|Kab Kapasitas Dummy" in tanpaAdmin.j.kab), "?dummy=1 tanpa admin diabaikan");
+  const admin = await U.adm("GET", "/api/relawan/kapasitas?dummy=1");
+  assert.equal(admin.j.kab["61|Kab Kapasitas Dummy"].siap, 1); assert.doesNotMatch(admin.h.get("cache-control") || "", /max-age/);
+  assert.equal((await U.api("POST", "/api/relawan/kapasitas", {}, ipBaru())).s >= 400, true, "hanya GET");
+});
+
+/* ---------------- C7: institusi tunggal ---------------- */
+uji("sempurna: institusi punya beberapa perjanjian; jenis dan kuota divalidasi; tanpa MoU relawan bukan kampus mitra; satu daftar untuk dua tab", async () => {
+  const pjMou = (o = {}) => ({jenis_perjanjian: "mou_relawan", nomor: "MoU/SEM/1", mulai: geser(-20), berakhir: geser(400), kuota: 10, ...o});
+  const buat = (o = {}, h) => U.api("POST", "/api/relawan/admin/institusi", {nama: "Organisasi Sempurna Uji", singkatan: "OSU", jenis: "organisasi", prov: "13", pic_nama: "PIC Sempurna", ...o}, h || ADMIN);
+  /* validasi: jenis institusi, perjanjian rusak, PKS tidak berkuota, MoU wajib berkuota */
+  for (const o of [{jenis: "swasta"}, {jenis: 5}, {perjanjian: {}}, {perjanjian: "x"}, {perjanjian: pjMou({jenis_perjanjian: "lain"})}, {perjanjian: pjMou({kuota: undefined})}, {perjanjian: {...pjMou({jenis_perjanjian: "pks_riset"}), kuota: 5}},
+    {perjanjian: pjMou({berakhir: geser(-30)})}, {perjanjian: pjMou({nomor: "ab"})}, {prov: ""}, {pic_wa: "12"}]) {
+    const r = await buat(o); assert.equal(r.s, 400, `${JSON.stringify(o)} -> ${r.s} ${r.t}`);
+  }
+  assert.equal(await U.n("institusi", "nama = 'Organisasi Sempurna Uji'"), 0, "penolakan tidak menulis");
+  /* institusi tanpa perjanjian dan institusi dengan PKS riset saja: tidak punya kode koordinator, tidak bisa dipilih pendaftar kampus */
+  const polos = await buat({nama: "Institusi Polos Uji"}); assert.equal(polos.s, 201); assert.equal(polos.j.kode, undefined);
+  const pks = await buat({nama: "Institusi Riset Saja"}); assert.equal(pks.s, 201);
+  const tambah = await U.adm("POST", `/api/relawan/admin/institusi/${pks.j.id}`, {aksi: "perjanjian", ...pjMou({jenis_perjanjian: "pks_riset", nomor: "PKS/SEM/1", kuota: undefined})}); assert.equal(tambah.s, 201, tambah.t);
+  const d = await daftar({nama: "Mhs Riset Saja", jalur: "kampus", kampus_id: pks.j.id}); assert.equal(d.s, 404, "PKS riset bukan MoU relawan");
+  assert.equal((await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j.kampus.some(k => k.id === pks.j.id), false);
+  /* beberapa perjanjian di satu institusi; terpilih = yang berlaku; nomor ganda per jenis 409; ubah milik institusi lain 404 */
+  const o1 = await buat({perjanjian: pjMou()}); assert.equal(o1.s, 201, o1.t); assert.match(o1.j.kode, /^[0-9a-f]{26}$/);
+  const lama = await U.adm("POST", `/api/relawan/admin/institusi/${o1.j.id}`, {aksi: "perjanjian", ...pjMou({nomor: "MoU/SEM/LAMA", mulai: geser(-900), berakhir: geser(-500), kuota: 99})}); assert.equal(lama.s, 201, lama.t);
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${o1.j.id}`, {aksi: "perjanjian", ...pjMou({nomor: "MoU/SEM/LAMA"})})).s, 409, "nomor ganda pada jenis sama");
+  const hit = await daftar({nama: "Mhs Org Sempurna", jalur: "kampus", kampus_id: o1.j.id}); assert.equal(hit.s, 201, hit.t);
+  const baris = (await U.adm("GET", "/api/relawan/admin/institusi")).j.institusi, ini = baris.find(i => i.id === o1.j.id);
+  assert.equal(ini.perjanjian.length, 2); assert.equal(ini.mou.nomor, "MoU/SEM/1", "yang berlaku hari ini dipilih, bukan yang kuotanya besar"); assert.equal(ini.mou.status, "aktif");
+  assert.equal(baris.find(i => i.id === pks.j.id).mou, null); assert.equal(baris.find(i => i.id === pks.j.id).pks.nomor, "PKS/SEM/1");
+  const pid = ini.perjanjian.find(p => p.nomor === "MoU/SEM/LAMA").id;
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${pks.j.id}`, {aksi: "perjanjian", perjanjian_id: pid, ...pjMou()})).s, 404, "perjanjian milik institusi lain");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${o1.j.id}`, {aksi: "perjanjian", perjanjian_id: "zzz", ...pjMou()})).s, 400);
+  /* kolom Relawan dan Riset ada pada satu daftar */
+  for (const k of ["kode_aktif", "terisi", "antre", "mou", "kode_riset", "usulan", "pks", "perjanjian", "pic_email", "jenis"]) assert.ok(k in ini, k);
+  assert.equal(ini.terisi, 1); assert.equal(ini.kode_riset, 0);
+  /* publik tidak memuat PIC institusi */
+  const pub = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).t;
+  assert.ok(!pub.includes("PIC Sempurna") && !pub.includes("MoU/SEM"), "ringkasan publik tanpa PIC dan nomor perjanjian");
+});
+
+uji("sempurna: tab Institusi di /admin/relawan dan /admin/riset memakai SATU modul bersama (tanpa salinan), dan modul itu satu-satunya pembaca daftar institusi", async () => {
+  const baca = f => readFileSync(path.join(AKAR, f), "utf8"), rel = baca("public/admin/relawan.js"), ris = baca("public/admin/riset.js"), bersama = baca("public/admin/institusi.js"), css = baca("public/admin/institusi.css");
+  for (const [nama, js] of [["relawan", rel], ["riset", ris]]) {
+    assert.match(js, /import\("\/admin\/institusi\.js/, `${nama}.js memuat modul bersama`);
+    assert.ok(!js.includes("/api/relawan/admin/institusi"), `${nama}.js tidak membaca daftar institusi sendiri`);
+    assert.ok(!/no_mou|pic_jabatan|kode_aktif/.test(js), `${nama}.js tidak menyalin formulir/tabel institusi`);
+  }
+  assert.ok(bersama.includes("/api/relawan/admin/institusi") && /export (async )?function pasang/.test(bersama));
+  assert.ok(/data-urut/.test(bersama) && /data-hal/.test(bersama), "tabel standar: urut dan berhalaman");
+  assert.ok(bersama.includes("Relawan") && bersama.includes("Riset"), "kolom Relawan dan Riset");
+  assert.ok(!/—/.test(bersama + css) && !/\.style\.|style=/.test(bersama), "tanpa em dash dan gaya inline");
+  assert.ok(/stopPropagation/.test(bersama), "penangan induk (data-*) tidak ikut menangkap klik modul bersama");
 });

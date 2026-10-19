@@ -15,7 +15,6 @@
 .rw-butuh{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:grid;gap:8px;grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}
 .rw-butuh legend{font-size:12px;font-weight:700;color:var(--ink2);padding:0 6px}
 .rw-aksi{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
-.rw-kode{box-shadow:0 0 0 2px var(--emas),var(--bayang);display:grid;gap:10px}
 .rw-panel{display:grid;gap:12px}
 .rw-kosong{padding:28px;text-align:center;color:var(--ink2);background:var(--card);border-radius:16px;box-shadow:var(--bayang);margin:0}
 .rw-kosong-baris{text-align:center;color:var(--ink2);padding:18px!important}

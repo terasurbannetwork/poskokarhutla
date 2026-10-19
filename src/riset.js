@@ -2,7 +2,7 @@
    Rancangan: docs/bnpb/RENCANA-12-JAM.md R3. Skema: migrations/0025_riset.sql (daftar tetap di bawah HARUS sama dengan CHECK-nya; dijaga riset.test.mjs).
    - Mitra tanpa akun: admin mencatat institusi -> KODE 26 hex (hanya sha256 disimpan, bisa dicabut, tampil SEKALI di fragmen #k=). Halaman /riset/mitra.
    - Publik hanya agregat + riset berjalan/selesai TANPA kontak PIC dan tanpa nama ketua. Kontak PIC hanya admin (modOK) dan mitra itu sendiri.
-   - Tabel mitra_riset berdiri sendiri; penyatuan dengan kampus mitra modul relawan bisa dilakukan belakangan.
+   - Institusi tunggal (C7): identitas, PIC, dan PKS riset tinggal di institusi + institusi_perjanjian (migrasi 0023, kode di src/relawan.js); mitra_riset hanya menempelkan kode riset + unit ke institusi.
    ponytail: satu GET admin memuat semua tab (<= 500 baris per tabel); pecah per tab bila antrean melewati itu. */
 import {json, gagal, acak, bacaBody, cacheTepi} from "./worker.js";
 import REGISTRY from "./bencana.generated.js";
@@ -10,6 +10,7 @@ import {tx, tglSah, wib, modOK, superOK} from "./posko.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {laju, lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
+import {cekInstitusi, cekPerjanjian, sisipInstitusi, sisipPerjanjian, pilihPerjanjian, institusiDummy, hapusInstitusiYatim} from "./relawan.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 
@@ -60,9 +61,6 @@ export function tautanSah(v) {
   try { const u = new URL(v); return (u.protocol === "http:" || u.protocol === "https:") && u.hostname && !u.username && !u.password && u.href.length <= 300 ? u.href : undefined; } catch (e) { return undefined; }
 }
 export const doiSah = v => v == null || v === "" ? null : typeof v === "string" && /^10\.\d{4,9}\/[^\s<>"'\\]{1,100}$/.test(v) ? v : undefined;
-const emailSah = v => { const s = tx(v, 254); return s == null ? s : /^[^\s@<>"']+@[^\s@<>"']+\.[^\s@<>"']+$/.test(s) && s.length >= 5 ? s : undefined; };
-const waSah = v => { if (v == null || v === "") return null; if (typeof v !== "string") return undefined; const d = v.replace(/[\s\-().]/g, ""); return /^\+?\d{8,15}$/.test(d) ? d : undefined; };
-const tglOpsi = v => v == null || v === "" ? null : typeof v === "string" && tglSah(v) ? v : undefined;
 /* opsi: null bila kosong, undefined bila tidak sah (bukan teks, kepanjangan, atau lebih pendek dari min). teks: wajib, kosong = undefined */
 const opsi = (v, min, maks) => { const s = tx(v, maks); return s === undefined ? undefined : s == null ? null : s.length >= min ? s : undefined; };
 const teks = (v, min, maks) => opsi(v, min, maks) ?? undefined;
@@ -97,18 +95,6 @@ function usulanSah(o) {
   if (o.agenda_id != null && (typeof o.agenda_id !== "string" || !RE_ID.test(o.agenda_id))) return galatField("agenda_id", "tidak sah");
   return {v: {judul, ketua, anggota, bencana, wilayah, metode, data_butuh: d, mulai: o.mulai, selesai: o.selesai, luaran_rencana: luaran, agenda_id: o.agenda_id ?? null}};
 }
-function mitraSah(o) {
-  const institusi = teks(o.institusi, 3, 120), unit = opsi(o.unit, 2, 120), pic = teks(o.pic_nama, 2, 100), email = emailSah(o.pic_email), wa = waSah(o.pic_wa), pks = opsi(o.pks_nomor, 3, 80), a = tglOpsi(o.pks_mulai), b = tglOpsi(o.pks_sampai);
-  if (!institusi) return galatField("institusi", "3-120 karakter");
-  if (unit === undefined) return galatField("unit", "2-120 karakter");
-  if (!pic) return galatField("nama PIC", "2-100 karakter");
-  if (email === undefined) return galatField("email PIC", "tidak sah");
-  if (wa === undefined) return galatField("WhatsApp PIC", "harus 8-15 angka");
-  if (pks === undefined) return galatField("nomor PKS", "3-80 karakter");
-  if (a === undefined || b === undefined) return galatField("masa berlaku PKS", "harus YYYY-MM-DD");
-  if (a && b && b < a) return galatField("masa berlaku PKS", "sampai tidak boleh sebelum mulai");
-  return {v: {institusi, unit, pic_nama: pic, pic_email: email, pic_wa: wa, pks_nomor: pks, pks_mulai: a, pks_sampai: b}};
-}
 export function statusPks(sampai, kini) {
   if (!sampai) return {s: "tanpa", sisa: null};
   const sisa = Math.floor((Date.parse(sampai + "T23:59:59+07:00") - kini) / HARI);
@@ -130,7 +116,7 @@ const bacaObj = async (req, maks) => { const b = await bacaBody(req, maks); retu
 /* ================================================================ publik */
 const hostDari = u => { try { return u ? new URL(u).hostname : null; } catch { return null; } };
 async function ringkas(env, dummy) {
-  const sd = dummy ? "" : " AND dummy = 0", su = dummy ? "" : " AND u.dummy = 0";
+  const sd = dummy ? "" : " AND dummy = 0", su = dummy ? "" : " AND u.dummy = 0", sm = dummy ? "" : " AND m.dummy = 0";
   const q = sql => env.DB.prepare(sql).all().then(r => r.results);
   const [kartu, agenda, mitra, riset, luaran] = await Promise.all([
     env.DB.prepare(`SELECT (SELECT count(*) FROM mitra_riset WHERE dicabut IS NULL${sd}) mitra_aktif,
@@ -139,10 +125,10 @@ async function ringkas(env, dummy) {
       (SELECT count(*) FROM riset_luaran WHERE disetujui = 1${sd}) luaran,
       (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE l.disetujui = 1${sd.replace("dummy", "k.dummy")}) kebijakan`).first(),
     q(`SELECT judul, latar, bencana, tema, prioritas, luaran FROM riset_agenda WHERE status = 'buka'${sd} ORDER BY prioritas, dibuat DESC LIMIT 100`),
-    q(`SELECT institusi, unit FROM mitra_riset WHERE dicabut IS NULL${sd} ORDER BY institusi LIMIT 200`),
-    q(`SELECT u.id, u.judul, m.institusi, m.unit, u.bencana, u.wilayah, u.status, u.mulai, u.selesai,
+    q(`SELECT i.nama institusi, m.unit FROM mitra_riset m JOIN institusi i ON i.id = m.institusi_id WHERE m.dicabut IS NULL${sm} ORDER BY i.nama LIMIT 200`),
+    q(`SELECT u.id, u.judul, i.nama institusi, m.unit, u.bencana, u.wilayah, u.status, u.mulai, u.selesai,
       (SELECT count(DISTINCT k.id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id WHERE l.usulan_id = u.id AND l.disetujui = 1) kebijakan
-      FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id WHERE u.status IN ('berjalan','laporan_akhir','selesai')${su}
+      FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id JOIN institusi i ON i.id = m.institusi_id WHERE u.status IN ('berjalan','laporan_akhir','selesai')${su}
       ORDER BY CASE u.status WHEN 'selesai' THEN 1 ELSE 0 END, u.diubah DESC LIMIT 200`),
     q(`SELECT l.usulan_id, l.jenis, l.judul, l.tautan, l.doi FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id
       WHERE l.disetujui = 1 AND u.status IN ('berjalan','laporan_akhir','selesai')${su} ORDER BY l.waktu LIMIT 1000`),
@@ -158,8 +144,12 @@ async function ringkasPublik(env, req, url, kini, ctx) {
 }
 
 /* ================================================================ mitra (kode) */
-const mitraDari = (env, req) => pemegangKode(env, req, "riset", h => env.DB.prepare(
-  "SELECT id, institusi, unit, pic_nama, pks_nomor, pks_mulai, pks_sampai, dummy FROM mitra_riset WHERE kode_sha = ? AND dicabut IS NULL").bind(h).first());
+const pksInstitusi = async (env, institusiId, kini) => pilihPerjanjian((await env.DB.prepare("SELECT jenis_perjanjian, nomor, mulai, berakhir FROM institusi_perjanjian WHERE institusi_id = ? AND jenis_perjanjian = 'pks_riset' LIMIT 100").bind(institusiId).all()).results, "pks_riset", kini);
+const mitraDari = (env, req) => pemegangKode(env, req, "riset", async h => {
+  const m = await env.DB.prepare("SELECT m.id, m.institusi_id, i.nama institusi, m.unit, i.pic_nama, m.dummy FROM mitra_riset m JOIN institusi i ON i.id = m.institusi_id WHERE m.kode_sha = ? AND m.dicabut IS NULL").bind(h).first();
+  const pks = m && await pksInstitusi(env, m.institusi_id, Date.now());
+  return m && {...m, pks_nomor: pks?.nomor ?? null, pks_mulai: pks?.mulai ?? null, pks_sampai: pks?.berakhir ?? null};
+});
 /* jejak ditulis hanya bila pernyataan sebelumnya mengubah baris (changes() > 0): pembanding kondisi balapan */
 const tulisJejak = (env, usulan, dari, ke, oleh, catatan, kini) => env.DB.prepare("INSERT INTO riset_jejak (usulan_id, dari, ke, oleh, catatan, waktu) SELECT ?, ?, ?, ?, ?, ? WHERE changes() > 0").bind(usulan, dari, ke, oleh, catatan, kini);
 
@@ -174,7 +164,7 @@ async function mitraSaya(env, req) {
     q("SELECT id, usulan_id, dataset, tujuan, status, jalur, catatan, dibuat, diputus FROM riset_permintaan WHERE mitra_id = ? ORDER BY dibuat DESC LIMIT 200", m.id),
     q("SELECT id, judul, bencana, tema, prioritas FROM riset_agenda WHERE status = 'buka' AND dummy = 0 ORDER BY prioritas, dibuat DESC LIMIT 100"),
   ]);
-  const {dummy, ...mitra} = m;
+  const {dummy, institusi_id, ...mitra} = m;
   return json({mitra: {...mitra, pks: statusPks(m.pks_sampai, Date.now())}, usulan: usulan.map(u => ({...u, data_butuh: JSON.parse(u.data_butuh)})), jejak, kemajuan, luaran, permintaan, agenda,
     katalog: KATALOG, tema: TEMA, bencana: NAMA_BENCANA, jenis_luaran: JENIS_LUARAN, alur: ALUR});
 }
@@ -266,19 +256,19 @@ async function permintaanBaru(env, req, kini) {
 }
 
 /* ================================================================ admin */
-const SQL_PERMINTAAN = "SELECT p.id, p.dataset, p.tujuan, p.status, p.jalur, p.catatan, p.dibuat, p.diputus, p.usulan_id, m.institusi, p.dummy FROM riset_permintaan p JOIN mitra_riset m ON m.id = p.mitra_id";
-const SQL_LUARAN = `SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu, l.disetujui, u.judul usulan, m.institusi, l.dummy,
-  (SELECT count(*) FROM riset_kebijakan k WHERE k.luaran_id = l.id) kebijakan FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id`;
-const SQL_KEBIJAKAN = "SELECT k.id, k.luaran_id, k.instansi, k.bentuk, k.tanggal, k.catatan, k.dibuat, k.dummy, l.judul luaran, u.judul usulan, m.institusi FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id";
+const SQL_PERMINTAAN = "SELECT p.id, p.dataset, p.tujuan, p.status, p.jalur, p.catatan, p.dibuat, p.diputus, p.usulan_id, i.nama institusi, p.dummy FROM riset_permintaan p JOIN mitra_riset m ON m.id = p.mitra_id JOIN institusi i ON i.id = m.institusi_id";
+const SQL_LUARAN = `SELECT l.id, l.usulan_id, l.jenis, l.judul, l.tautan, l.doi, l.waktu, l.disetujui, u.judul usulan, i.nama institusi, l.dummy,
+  (SELECT count(*) FROM riset_kebijakan k WHERE k.luaran_id = l.id) kebijakan FROM riset_luaran l JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id JOIN institusi i ON i.id = m.institusi_id`;
+const SQL_KEBIJAKAN = "SELECT k.id, k.luaran_id, k.instansi, k.bentuk, k.tanggal, k.catatan, k.dibuat, k.dummy, l.judul luaran, u.judul usulan, i.nama institusi FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id JOIN riset_usulan u ON u.id = l.usulan_id JOIN mitra_riset m ON m.id = u.mitra_id JOIN institusi i ON i.id = m.institusi_id";
 const SQL_USULAN = `SELECT u.id, u.mitra_id, u.agenda_id, u.judul, u.ketua, u.anggota, u.bencana, u.wilayah, u.metode, u.data_butuh, u.mulai, u.selesai, u.luaran_rencana, u.status, u.nomor_pks, u.catatan, u.dibuat, u.diubah, u.dummy,
-  m.institusi, m.unit, (SELECT judul FROM riset_agenda a WHERE a.id = u.agenda_id) agenda FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id`;
+  i.nama institusi, m.unit, (SELECT judul FROM riset_agenda a WHERE a.id = u.agenda_id) agenda FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id JOIN institusi i ON i.id = m.institusi_id`;
 
 async function adminSemua(env, req, kini) {
   if (!await modOK(env, req)) return tolakAdmin();
   const q = sql => env.DB.prepare(sql).all().then(r => r.results);
-  const [agenda, mitra, usulan, jejak, kemajuan, permintaan, luaran, kebijakan, kartu] = await Promise.all([
+  const [agenda, mitra, usulan, jejak, kemajuan, permintaan, luaran, kebijakan, kartu, pks, institusi] = await Promise.all([
     q("SELECT id, judul, latar, bencana, tema, prioritas, luaran, status, dibuat, diubah, dummy, (SELECT count(*) FROM riset_usulan u WHERE u.agenda_id = riset_agenda.id) usulan FROM riset_agenda ORDER BY status, prioritas, dibuat DESC LIMIT 500"),
-    q("SELECT id, institusi, unit, pic_nama, pic_email, pic_wa, pks_nomor, pks_mulai, pks_sampai, dibuat, dicabut, dummy, (SELECT count(*) FROM riset_usulan u WHERE u.mitra_id = mitra_riset.id) usulan FROM mitra_riset ORDER BY dicabut IS NOT NULL, dibuat DESC LIMIT 500"),
+    q("SELECT m.id, m.institusi_id, i.nama institusi, m.unit, i.pic_nama, i.pic_email, i.pic_wa, m.dibuat, m.dicabut, m.dummy, (SELECT count(*) FROM riset_usulan u WHERE u.mitra_id = m.id) usulan FROM mitra_riset m JOIN institusi i ON i.id = m.institusi_id ORDER BY m.dicabut IS NOT NULL, m.dibuat DESC LIMIT 500"),
     q(`${SQL_USULAN} ORDER BY CASE u.status WHEN 'diajukan' THEN 0 WHEN 'ditelaah' THEN 1 WHEN 'laporan_akhir' THEN 2 WHEN 'revisi' THEN 4 ELSE 3 END, u.diubah DESC LIMIT 500`),
     q("SELECT usulan_id, dari, ke, oleh, catatan, waktu FROM riset_jejak ORDER BY id DESC LIMIT 2000"),
     q("SELECT usulan_id, jenis, isi, tautan, waktu FROM riset_kemajuan ORDER BY waktu DESC LIMIT 1000"),
@@ -288,8 +278,11 @@ async function adminSemua(env, req, kini) {
     env.DB.prepare(`SELECT (SELECT count(*) FROM mitra_riset WHERE dicabut IS NULL) mitra_aktif, (SELECT count(*) FROM riset_usulan WHERE status IN ('berjalan','laporan_akhir')) berjalan,
       (SELECT count(*) FROM riset_usulan WHERE status = 'selesai') selesai, (SELECT count(*) FROM riset_usulan WHERE status IN ('diajukan','ditelaah')) antre, (SELECT count(*) FROM riset_luaran) luaran,
       (SELECT count(DISTINCT l.usulan_id) FROM riset_kebijakan k JOIN riset_luaran l ON l.id = k.luaran_id) kebijakan, (SELECT count(*) FROM riset_luaran WHERE disetujui = 0) luaran_antre, (SELECT count(*) FROM riset_permintaan WHERE status = 'diminta') permintaan_antre`).first(),
+    q("SELECT institusi_id, jenis_perjanjian, nomor, mulai, berakhir FROM institusi_perjanjian WHERE jenis_perjanjian = 'pks_riset' LIMIT 3000"),
+    q("SELECT id, nama FROM institusi ORDER BY nama LIMIT 500"),   // pilihan institusi untuk mitra baru (daftar lengkapnya di tab Institusi)
   ]);
-  return json({agenda, mitra: mitra.map(m => ({...m, pks: statusPks(m.pks_sampai, kini)})), usulan: usulan.map(u => ({...u, data_butuh: JSON.parse(u.data_butuh)})), jejak, kemajuan, permintaan, luaran, kebijakan, kartu,
+  const pksDari = id => pilihPerjanjian(pks.filter(p => p.institusi_id === id), "pks_riset", kini);
+  return json({agenda, institusi, mitra: mitra.map(m => { const p = pksDari(m.institusi_id); return {...m, pks_nomor: p?.nomor ?? null, pks_mulai: p?.mulai ?? null, pks_sampai: p?.berakhir ?? null, pks: statusPks(p?.berakhir, kini)}; }), usulan: usulan.map(u => ({...u, data_butuh: JSON.parse(u.data_butuh)})), jejak, kemajuan, permintaan, luaran, kebijakan, kartu,
     enum: {tema: TEMA, status: STATUS, alur: ALUR, bencana: NAMA_BENCANA, jenis_luaran: JENIS_LUARAN, bentuk: BENTUK, katalog: KATALOG.map(({id, nama, jalur}) => ({id, nama, jalur}))}});
 }
 async function agendaTulis(env, req, id, kini) {
@@ -308,18 +301,36 @@ async function agendaTulis(env, req, id, kini) {
   await env.DB.prepare("UPDATE riset_agenda SET judul = ?, latar = ?, bencana = ?, tema = ?, prioritas = ?, luaran = ?, status = ?, diubah = ? WHERE id = ?").bind(v.judul, v.latar, v.bencana, v.tema, v.prioritas, v.luaran, v.status, kini, id).run();
   return json({id, status: v.status});
 }
+/* Mitra baru = institusi (yang sudah ada: institusi_id atau nama sama, jadi satu institusi tak pernah punya dua identitas) + kode riset + PKS riset opsional.
+   Bila institusi baru, identitas dan PIC divalidasi bersama modul relawan (cekInstitusi). PKS: nomor, mulai, sampai harus lengkap atau kosong semua. */
 async function mitraBuat(env, req, url, kini) {
   const adm = await modOK(env, req); if (!adm) return tolakAdmin();
   const b = await bacaObj(req, 3000); if (b.r) return b.r;
-  const s = mitraSah(b.o); if (s.g) return gagal(400, s.g);
-  const {kode, kode_sha} = await kodeBaru(), id = acak(8), v = s.v;
-  await env.DB.prepare("INSERT INTO mitra_riset (id, institusi, unit, pic_nama, pic_email, pic_wa, pks_nomor, pks_mulai, pks_sampai, kode_sha, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, v.institusi, v.unit, v.pic_nama, v.pic_email, v.pic_wa, v.pks_nomor, v.pks_mulai, v.pks_sampai, kode_sha, kini).run();
+  const o = b.o, unit = opsi(o.unit, 2, 120);
+  if (unit === undefined) return gagal(400, "unit 2-120 karakter");
+  const pakaiPks = ["pks_nomor", "pks_mulai", "pks_sampai"].some(k => o[k] != null && o[k] !== "");
+  const pks = pakaiPks ? cekPerjanjian({jenis_perjanjian: "pks_riset", nomor: o.pks_nomor, mulai: o.pks_mulai, berakhir: o.pks_sampai}) : null;
+  if (pks?.galat) return gagal(400, pks.galat.replace("perjanjian", "PKS"));
+  let id = o.institusi_id, nama, st = [];
+  if (id != null) {
+    if (typeof id !== "string" || !RE_ID.test(id)) return gagal(400, "institusi_id tidak sah");
+    nama = (await env.DB.prepare("SELECT nama FROM institusi WHERE id = ?").bind(id).first())?.nama;
+    if (!nama) return gagal(404, "institusi tidak ditemukan");
+  } else {
+    const c = cekInstitusi({...o, nama: o.institusi}, false); if (c.galat) return gagal(400, c.galat);
+    nama = c.v.nama;
+    id = (await env.DB.prepare("SELECT id FROM institusi WHERE lower(nama) = lower(?) AND dummy = 0 ORDER BY dibuat LIMIT 1").bind(nama).first())?.id;
+    if (!id) { id = acak(8); st.push(sisipInstitusi(env, id, c.v, null, kini, adm)); }
+  }
+  if (pks && !st.length && await env.DB.prepare("SELECT 1 FROM institusi_perjanjian WHERE institusi_id = ? AND jenis_perjanjian = 'pks_riset' AND nomor = ?").bind(id, pks.v.nomor).first()) return gagal(409, "nomor PKS ini sudah tercatat untuk institusi ini");
+  const {kode, kode_sha} = await kodeBaru(), mid = acak(8);
+  await env.DB.batch([...st, ...(pks ? [sisipPerjanjian(env, id, pks.v, kini, adm)] : []),
+    env.DB.prepare("INSERT INTO mitra_riset (id, institusi_id, unit, kode_sha, dibuat) VALUES (?, ?, ?, ?, ?)").bind(mid, id, unit, kode_sha, kini)]);
   /* kode hanya tampil SEKALI di sini; di fragmen (#k=) supaya tidak masuk log server */
-  return json({id, institusi: v.institusi, kode, tautan: `${url.origin}/riset/mitra#k=${kode}`}, 201);
+  return json({id: mid, institusi_id: id, institusi: nama, kode, tautan: `${url.origin}/riset/mitra#k=${kode}`}, 201);
 }
 async function mitraUbah(env, req, id, kini) {
-  if (!await modOK(env, req)) return tolakAdmin();
+  const adm = await modOK(env, req); if (!adm) return tolakAdmin();
   const b = await bacaObj(req, 3000); if (b.r) return b.r;
   if (!RE_ID.test(id)) return gagal(404, "mitra tidak ditemukan");
   if (b.o.aksi === "cabut") {
@@ -327,13 +338,14 @@ async function mitraUbah(env, req, id, kini) {
     if (r.meta.changes) return json({id, dicabut: kini});
     return await env.DB.prepare("SELECT 1 FROM mitra_riset WHERE id = ?").bind(id).first() ? gagal(409, "kode mitra ini sudah dicabut") : gagal(404, "mitra tidak ditemukan");
   }
-  if (b.o.aksi === "pks") {
-    const nomor = teks(b.o.pks_nomor, 3, 80), a = tglOpsi(b.o.pks_mulai), z = tglOpsi(b.o.pks_sampai);
-    if (!nomor) return gagal(400, "nomor PKS 3-80 karakter");
-    if (!a || !z) return gagal(400, "masa berlaku PKS harus YYYY-MM-DD (mulai dan sampai)");
-    if (z < a) return gagal(400, "sampai tidak boleh sebelum mulai");
-    const r = await env.DB.prepare("UPDATE mitra_riset SET pks_nomor = ?, pks_mulai = ?, pks_sampai = ? WHERE id = ?").bind(nomor, a, z, id).run();
-    return r.meta.changes ? json({id, pks_nomor: nomor, pks_sampai: z}) : gagal(404, "mitra tidak ditemukan");
+  if (b.o.aksi === "pks") {   // perbarui PKS terpilih institusinya (atau catat yang pertama)
+    const c = cekPerjanjian({jenis_perjanjian: "pks_riset", nomor: b.o.pks_nomor, mulai: b.o.pks_mulai, berakhir: b.o.pks_sampai}); if (c.galat) return gagal(400, c.galat.replace("perjanjian", "PKS"));
+    const m = await env.DB.prepare("SELECT institusi_id FROM mitra_riset WHERE id = ?").bind(id).first(); if (!m) return gagal(404, "mitra tidak ditemukan");
+    const ada = (await env.DB.prepare("SELECT id, jenis_perjanjian, mulai, berakhir FROM institusi_perjanjian WHERE institusi_id = ? AND jenis_perjanjian = 'pks_riset' LIMIT 100").bind(m.institusi_id).all()).results, cur = pilihPerjanjian(ada, "pks_riset", kini), v = c.v;
+    try {
+      await (cur ? env.DB.prepare("UPDATE institusi_perjanjian SET nomor = ?, mulai = ?, berakhir = ?, diubah = ?, oleh = ? WHERE id = ?").bind(v.nomor, v.mulai, v.berakhir, kini, adm, cur.id) : sisipPerjanjian(env, m.institusi_id, v, kini, adm)).run();
+    } catch (e) { if (/UNIQUE/i.test(e?.message)) return gagal(409, "nomor PKS ini sudah tercatat untuk institusi ini"); throw e; }
+    return json({id, pks_nomor: v.nomor, pks_sampai: v.berakhir});
   }
   return gagal(400, "aksi harus cabut atau pks");
 }
@@ -402,8 +414,10 @@ async function kebijakanTulis(env, req, id, kini) {
 /* ekspor CSV: sel berawalan = + - @ tab diberi apostrof (injeksi rumus di Excel/Sheets) */
 const CSV = {
   agenda: "SELECT id, judul, bencana, tema, prioritas, luaran, status, dibuat, dummy FROM riset_agenda ORDER BY dibuat",
-  mitra: "SELECT id, institusi, unit, pic_nama, pic_email, pic_wa, pks_nomor, pks_mulai, pks_sampai, dibuat, dicabut, dummy FROM mitra_riset ORDER BY dibuat",
-  usulan: "SELECT u.id, m.institusi, u.judul, u.ketua, u.bencana, u.wilayah, u.mulai, u.selesai, u.status, u.nomor_pks, u.dibuat, u.diubah, u.dummy FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id ORDER BY u.dibuat",
+  /* PKS = yang berakhir paling akhir (ekspor; tampilan memakai pilihPerjanjian: yang berlaku hari ini lebih dulu) */
+  mitra: `SELECT m.id, i.nama institusi, m.unit, i.pic_nama, i.pic_email, i.pic_wa, p.nomor pks_nomor, p.mulai pks_mulai, p.berakhir pks_sampai, m.dibuat, m.dicabut, m.dummy FROM mitra_riset m JOIN institusi i ON i.id = m.institusi_id
+    LEFT JOIN institusi_perjanjian p ON p.id = (SELECT id FROM institusi_perjanjian WHERE institusi_id = i.id AND jenis_perjanjian = 'pks_riset' ORDER BY berakhir DESC, id LIMIT 1) ORDER BY m.dibuat`,
+  usulan: "SELECT u.id, i.nama institusi, u.judul, u.ketua, u.bencana, u.wilayah, u.mulai, u.selesai, u.status, u.nomor_pks, u.dibuat, u.diubah, u.dummy FROM riset_usulan u JOIN mitra_riset m ON m.id = u.mitra_id JOIN institusi i ON i.id = m.institusi_id ORDER BY u.dibuat",
   permintaan: `${SQL_PERMINTAAN} ORDER BY p.dibuat`,
   luaran: `${SQL_LUARAN} ORDER BY l.waktu`,
   kebijakan: `${SQL_KEBIJAKAN} ORDER BY k.tanggal`,
@@ -428,10 +442,14 @@ async function dummyIsi(env, kini) {
   const agenda = Object.keys(TEMA).map((t, i) => ({id: id(), tema: t, bencana: BENCANA_SAH[i % BENCANA_SAH.length], p: i % 3 + 1, status: i === 8 ? "tutup" : "buka"}));
   agenda.forEach((a, i) => st.push(env.DB.prepare("INSERT INTO riset_agenda (id, judul, latar, bencana, tema, prioritas, luaran, status, dibuat, diubah, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
     .bind(a.id, `Contoh agenda: ${TEMA[a.tema].toLowerCase()} ${NAMA_BENCANA[a.bencana]}`, "Pertanyaan riset contoh untuk memeriksa tampilan; bukan agenda sungguhan.", a.bencana, a.tema, a.p, "Policy brief dan model yang bisa dipakai operasional", a.status, hari(-30 + i), hari(-30 + i))));
-  const mitra = [["Universitas Contoh Nusantara", "Pusat Studi Kebencanaan", tgl(hari(-200)), tgl(hari(400)), 0], ["Institut Teknologi Contoh Barat", "Fakultas Teknik", tgl(hari(-700)), tgl(hari(30)), 0],
-    ["Universitas Contoh Timur", "Pusat Riset Iklim", tgl(hari(-800)), tgl(hari(-10)), 0], ["Politeknik Contoh Selatan", null, tgl(hari(-300)), tgl(hari(60)), 1]].map((m, i) => ({id: id(), nama: m[0], unit: m[1], a: m[2], z: m[3], cabut: m[4], i}));
-  mitra.forEach(m => st.push(env.DB.prepare("INSERT INTO mitra_riset (id, institusi, unit, pic_nama, pic_email, pic_wa, pks_nomor, pks_mulai, pks_sampai, kode_sha, dibuat, dicabut, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 1)")
-    .bind(m.id, m.nama, m.unit, `PIC Contoh ${m.i + 1}`, `pic${m.i + 1}@contoh.invalid`, `62812000000${m.i + 1}`, `PKS/CONTOH/${m.i + 1}/2026`, m.a, m.z, "0".repeat(48) + acak(8), hari(-200), m.cabut ? hari(-5) : null)));
+  /* mitra = peran kode riset di institusi dummy yang dibagi dengan dummy relawan (nama sama dipakai ulang); PKS riset di institusi_perjanjian */
+  const M = [["Universitas Contoh Nusantara", "UCN", "ptn", "64", "Pusat Studi Kebencanaan", -200, 400, 0], ["Institut Teknologi Contoh Barat", "ITCB", "pts", "32", "Fakultas Teknik", -700, 30, 0],
+    ["Universitas Contoh Timur", "UCT", "ptn", "73", "Pusat Riset Iklim", -800, -10, 0], ["Politeknik Contoh Selatan", "PCS", "pts", "16", null, -300, 60, 1]];
+  const inst = await institusiDummy(env, M.map(([nama, singkatan, jenis, prov]) => [nama, singkatan, jenis, prov]), kini, "dummy");
+  st.push(...inst.stmts);
+  const mitra = M.map((m, i) => ({id: id(), iid: inst.ids[i], nama: m[0], unit: m[4], a: tgl(hari(m[5])), z: tgl(hari(m[6])), cabut: m[7], i}));
+  mitra.forEach(m => st.push(sisipPerjanjian(env, m.iid, {jenis_perjanjian: "pks_riset", nomor: `PKS/CONTOH/${m.i + 1}/2026`, mulai: m.a, berakhir: m.z}, hari(-200), "dummy", 1),
+    env.DB.prepare("INSERT INTO mitra_riset (id, institusi_id, unit, kode_sha, dibuat, dicabut, dummy) VALUES (?, ?, ?, ?, ?, ?, 1)").bind(m.id, m.iid, m.unit, "0".repeat(48) + acak(8), hari(-200), m.cabut ? hari(-5) : null)));
   /* satu usulan per status; jalur status = rantai transisi sah menuju status itu */
   const JALUR = {diajukan: ["diajukan"], ditelaah: ["diajukan", "ditelaah"], revisi: ["diajukan", "ditelaah", "revisi"], disetujui: ["diajukan", "ditelaah", "disetujui"], ditolak: ["diajukan", "ditelaah", "ditolak"],
     berjalan: ["diajukan", "ditelaah", "disetujui", "berjalan"], laporan_akhir: ["diajukan", "ditelaah", "disetujui", "berjalan", "laporan_akhir"], selesai: ["diajukan", "ditelaah", "disetujui", "berjalan", "laporan_akhir", "selesai"]};
@@ -472,7 +490,8 @@ async function dummyIsi(env, kini) {
 }
 async function dummyHapus(env) {
   const n = {}; for (const t of TABEL_DUMMY) n[t] = await hitungDummy(env, t);
-  await env.DB.batch(TABEL_DUMMY.map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`)));
+  await env.DB.batch([...TABEL_DUMMY.map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`)), env.DB.prepare("DELETE FROM institusi_perjanjian WHERE dummy = 1 AND jenis_perjanjian = 'pks_riset'")]);
+  await hapusInstitusiYatim(env);
   return json({ok: true, agenda: n.riset_agenda, mitra: n.mitra_riset, usulan: n.riset_usulan, kemajuan: n.riset_kemajuan, luaran: n.riset_luaran, permintaan: n.riset_permintaan, kebijakan: n.riset_kebijakan});
 }
 async function dummy(env, req, kini) {

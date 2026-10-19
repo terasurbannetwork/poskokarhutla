@@ -1,21 +1,19 @@
--- Relawan: rekrutmen, verifikasi, penugasan, jam kerja, relawan kampus lewat MoU PTN (docs/bnpb/RENCANA-12-JAM.md R1). Idempoten.
+-- Relawan: rekrutmen, verifikasi, penugasan, jam kerja, relawan kampus lewat MoU PTN (institusi tunggal, C7) (docs/bnpb/RENCANA-12-JAM.md R1). Idempoten.
 -- Tanpa NIK dan tanpa KTP (keputusan pemilik 19 Okt 2026). Akses tanpa akun: hanya sha256 kode pribadi (26 hex) yang disimpan.
 -- Enum di sini HARUS sama dengan daftar di src/relawan.js (dijaga tests/warga/relawan.test.mjs). Waktu = ms epoch UTC; tanggal = 'YYYY-MM-DD'.
 
--- Kampus mitra + MoU. kode_sha = kode koordinator; NULL = dicabut.
-CREATE TABLE IF NOT EXISTS relawan_kampus (
+-- Institusi tunggal (perguruan tinggi atau organisasi), dipakai bersama modul relawan (0023) dan riset (0025, mitra_riset.institusi_id).
+-- Identitas dan PIC hanya di sini. kode_sha = kode koordinator relawan (NULL = dicabut); kode mitra riset tetap di mitra_riset. prov NULL = belum diisi.
+CREATE TABLE IF NOT EXISTS institusi (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
   nama TEXT NOT NULL CHECK (length(nama) BETWEEN 3 AND 120),
   singkatan TEXT CHECK (singkatan IS NULL OR length(singkatan) BETWEEN 2 AND 20),
-  prov TEXT NOT NULL CHECK (length(prov) = 2 AND prov NOT GLOB '*[^0-9]*'),
-  no_mou TEXT NOT NULL CHECK (length(no_mou) BETWEEN 3 AND 80),
-  mulai TEXT NOT NULL CHECK (mulai GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]'),
-  berakhir TEXT NOT NULL CHECK (berakhir GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' AND berakhir >= mulai),
-  pic_nama TEXT NOT NULL CHECK (length(pic_nama) BETWEEN 2 AND 80),
+  jenis TEXT NOT NULL CHECK (jenis IN ('ptn', 'pts', 'organisasi')),
+  prov TEXT CHECK (prov IS NULL OR (length(prov) = 2 AND prov NOT GLOB '*[^0-9]*')),
+  pic_nama TEXT NOT NULL CHECK (length(pic_nama) BETWEEN 2 AND 100),
   pic_jabatan TEXT CHECK (pic_jabatan IS NULL OR length(pic_jabatan) <= 80),
   pic_email TEXT CHECK (pic_email IS NULL OR length(pic_email) <= 254),
-  pic_wa TEXT CHECK (pic_wa IS NULL OR (length(pic_wa) BETWEEN 10 AND 15 AND pic_wa NOT GLOB '*[^0-9]*')),
-  kuota INTEGER NOT NULL CHECK (kuota BETWEEN 1 AND 100000),
+  pic_wa TEXT CHECK (pic_wa IS NULL OR (length(pic_wa) BETWEEN 8 AND 15 AND pic_wa NOT GLOB '*[^0-9]*')),
   catatan TEXT CHECK (catatan IS NULL OR length(catatan) <= 500),
   kode_sha TEXT UNIQUE CHECK (kode_sha IS NULL OR length(kode_sha) = 64),
   dibuat INTEGER NOT NULL,
@@ -23,6 +21,24 @@ CREATE TABLE IF NOT EXISTS relawan_kampus (
   oleh TEXT CHECK (oleh IS NULL OR length(oleh) <= 64),
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1))
 );
+
+-- Perjanjian per institusi: MoU relawan (berkuota) dan/atau PKS riset (tanpa kuota). Satu institusi boleh punya beberapa.
+CREATE TABLE IF NOT EXISTS institusi_perjanjian (
+  id TEXT PRIMARY KEY CHECK (length(id) = 16),
+  institusi_id TEXT NOT NULL REFERENCES institusi (id),
+  jenis_perjanjian TEXT NOT NULL CHECK (jenis_perjanjian IN ('mou_relawan', 'pks_riset')),
+  nomor TEXT NOT NULL CHECK (length(nomor) BETWEEN 3 AND 80),
+  mulai TEXT NOT NULL CHECK (mulai GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]'),
+  berakhir TEXT NOT NULL CHECK (berakhir GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]' AND berakhir >= mulai),
+  kuota INTEGER CHECK (kuota IS NULL OR kuota BETWEEN 1 AND 100000),
+  dibuat INTEGER NOT NULL,
+  diubah INTEGER NOT NULL,
+  oleh TEXT CHECK (oleh IS NULL OR length(oleh) <= 64),
+  dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
+  CHECK ((jenis_perjanjian = 'mou_relawan') = (kuota IS NOT NULL)),
+  UNIQUE (institusi_id, jenis_perjanjian, nomor)
+);
+CREATE INDEX IF NOT EXISTS institusi_perjanjian_i ON institusi_perjanjian (institusi_id, jenis_perjanjian, berakhir);
 
 CREATE TABLE IF NOT EXISTS relawan (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
@@ -33,7 +49,7 @@ CREATE TABLE IF NOT EXISTS relawan (
   prov TEXT NOT NULL CHECK (length(prov) = 2 AND prov NOT GLOB '*[^0-9]*'),
   kab TEXT NOT NULL CHECK (length(kab) BETWEEN 2 AND 60),
   jalur TEXT NOT NULL CHECK (jalur IN ('umum', 'kampus', 'organisasi')),
-  kampus_id TEXT REFERENCES relawan_kampus (id),
+  kampus_id TEXT REFERENCES institusi (id),
   organisasi TEXT CHECK (organisasi IS NULL OR length(organisasi) BETWEEN 2 AND 120),
   keahlian TEXT NOT NULL DEFAULT '[]' CHECK (json_valid(keahlian) AND json_type(keahlian) = 'array' AND json_array_length(keahlian) <= 15),
   sertifikat TEXT CHECK (sertifikat IS NULL OR length(sertifikat) <= 300),

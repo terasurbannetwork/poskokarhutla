@@ -1,5 +1,7 @@
 /* Relawan: rekrutmen, verifikasi, penugasan, jam kerja, relawan kampus lewat MoU PTN. Skema: migrations/0023_relawan.sql.
    Rancangan: docs/bnpb/RENCANA-12-JAM.md R1, kontrak bersama docs/bnpb/ARSITEKTUR.md.
+   Institusi tunggal (C7): tabel institusi + institusi_perjanjian (MoU relawan / PKS riset) dipakai bersama modul riset; kode koordinator relawan menempel di institusi.
+   Kapasitas (C3): GET /api/relawan/kapasitas, agregat per kabupaten tanpa data pribadi, dibaca pipeline indeks risiko.
    Aturan pemilik (19 Okt 2026):
    - TANPA NIK dan TANPA KTP. Akses tanpa akun: kode pribadi 26 hex (relawan) dan kode koordinator (kampus), hanya sha256-nya disimpan.
    - Data pribadi (WA, email, kontak darurat, PIC kampus) hanya lewat rute admin (modOK) atau kode pemiliknya; rute publik hanya agregat.
@@ -94,8 +96,10 @@ async function daftar(env, req, url, kini) {
   const wa_sha = await hashKontak(env, "wa", v.wa), email_sha = await hashKontak(env, "email", v.email);
   for (const h of [wa_sha, email_sha]) { const lk = await laju(env, h.slice(0, 32), "relawan.daftar_kontak", [[HARI, 3]], kini); if (lk) return lk; }
   if (v.kampus_id) {
-    const k = await env.DB.prepare("SELECT id, mulai, berakhir, kuota FROM relawan_kampus WHERE id = ? AND dummy = 0").bind(v.kampus_id).first();
+    const inst = await env.DB.prepare("SELECT id FROM institusi WHERE id = ? AND dummy = 0").bind(v.kampus_id).first();
+    const k = inst && pilihPerjanjian(await perjanjianDari(env, inst.id), "mou_relawan", kini);   // institusi tanpa MoU relawan (mis. hanya PKS riset) bukan kampus mitra
     if (!k) return gagal(404, "kampus mitra tidak ditemukan");
+    k.id = inst.id;
     if (!menerima(statusMou(k, kini))) return gagal(409, "kerja sama (MoU) kampus ini sedang tidak berlaku, jadi belum menerima pendaftar. Kamu bisa mendaftar lewat jalur umum.");
     const n = (await env.DB.prepare(`SELECT count(*) n FROM relawan WHERE kampus_id = ? AND anonim = 0 AND status NOT IN ${AKTIF_PENDAFTAR}`).bind(k.id).first()).n;
     if (n >= k.kuota) return gagal(409, "kuota relawan kampus ini sudah penuh. Hubungi koordinator kampusmu atau daftar lewat jalur umum.");
@@ -126,7 +130,8 @@ async function hitungRingkas(env, kini, dummy) {
     env.DB.prepare("SELECT count(*) n FROM relawan WHERE status = 'bertugas' AND anonim = 0 AND dummy <= ?1").bind(d).first(),
     env.DB.prepare("SELECT coalesce(sum(menit), 0) m, count(*) sesi FROM relawan_jam WHERE sah = 1 AND dummy <= ?1").bind(d).first(),
     env.DB.prepare(`SELECT k.id, k.nama, k.singkatan, k.prov, (SELECT count(*) FROM relawan r WHERE r.kampus_id = k.id AND r.anonim = 0 AND r.status NOT IN ${AKTIF_PENDAFTAR}) relawan
-      FROM relawan_kampus k WHERE k.mulai <= ?2 AND k.berakhir >= ?2 AND k.dummy <= ?1 ORDER BY relawan DESC, k.nama LIMIT 200`).bind(d, h).all(),
+      FROM institusi k WHERE k.dummy <= ?1 AND EXISTS (SELECT 1 FROM institusi_perjanjian p WHERE p.institusi_id = k.id AND p.jenis_perjanjian = 'mou_relawan' AND p.mulai <= ?2 AND p.berakhir >= ?2)
+      ORDER BY relawan DESC, k.nama LIMIT 200`).bind(d, h).all(),
   ]);
   return {dibuat: kini, relawan: tot.n, siap_tugas: tot.siap ?? 0, bertugas: tugas.n, jam_kerja_jam: Math.round(jam.m / 60 * 10) / 10, sesi_sah: jam.sesi,
     per_provinsi: baris(prov).map(r => ({prov: r.prov, nama: PROV[r.prov] || r.prov, n: r.n})), per_keahlian: baris(ahli).map(r => ({keahlian: r.k, nama: KEAHLIAN[r.k] || r.k, n: r.n})),
@@ -138,6 +143,30 @@ async function ringkas(env, req, url, kini, ctx) {
   if (url.searchParams.get("dummy") === "1" && await modOK(env, req)) return json({...await hitungRingkas(env, kini, true), konfig});
   const kunci = new Request(new URL("/api/relawan/ringkas", url), {method: "GET"});
   return cacheTepi(kunci, ctx, 60, async () => json({...await hitungRingkas(env, kini, false), konfig}));
+}
+
+/* ================================================================ kapasitas per kabupaten (C3): dibaca pipeline indeks risiko dari produksi */
+export const KEAHLIAN_UTAMA = ["medis", "sar", "logistik", "dapur_umum", "psikososial"];
+const JENDELA_JAM = 30 * HARI;
+/* agregat murni: TANPA nama, kontak, atau id. Relawan siap_tugas + bertugas (bukan anonim) per (prov, kab); keahlian = berapa orang yang punya keahlian itu;
+   jam30 = jam kerja sah (check-out selesai, divalidasi) 30 hari terakhir. Kunci "<prov>|<kab>"; kab dikelompokkan tanpa beda huruf besar/kecil. */
+async function hitungKapasitas(env, kini, dummy) {
+  const d = dummy ? 1 : 0, kolom = KEAHLIAN_UTAMA.map(k => `sum(EXISTS (SELECT 1 FROM json_each(r.keahlian) WHERE value = '${k}')) ${k}`).join(", ");   // KEAHLIAN_UTAMA konstanta kode
+  const [orang, jam] = await Promise.all([
+    env.DB.prepare(`SELECT r.prov, min(r.kab) kab, sum(r.status = 'siap_tugas') siap, sum(r.status = 'bertugas') bertugas, ${kolom} FROM relawan r
+      WHERE r.anonim = 0 AND r.status IN ('siap_tugas', 'bertugas') AND r.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d).all().then(baris),
+    env.DB.prepare(`SELECT r.prov, min(r.kab) kab, sum(j.menit) menit FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id
+      WHERE j.sah = 1 AND j.keluar IS NOT NULL AND j.masuk >= ?2 AND r.anonim = 0 AND j.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d, kini - JENDELA_JAM).all().then(baris),
+  ]);
+  const kab = {}, ambil = r => kab[`${r.prov}|${r.kab}`] ||= {siap: 0, bertugas: 0, keahlian: Object.fromEntries(KEAHLIAN_UTAMA.map(k => [k, 0])), jam30: 0};
+  for (const r of orang) { const x = ambil(r); x.siap = r.siap; x.bertugas = r.bertugas; for (const k of KEAHLIAN_UTAMA) x.keahlian[k] = r[k]; }
+  for (const r of jam) ambil(r).jam30 = Math.round(r.menit / 60 * 10) / 10;
+  return {dibuat: kini, kab};
+}
+async function kapasitas(env, req, url, kini, ctx) {
+  /* ?dummy=1 hanya admin, tidak pernah lewat cache tepi; publik selalu tanpa dummy dan berkunci tetap */
+  if (url.searchParams.get("dummy") === "1" && await modOK(env, req)) return json(await hitungKapasitas(env, kini, true));
+  return cacheTepi(new Request(new URL("/api/relawan/kapasitas", url), {method: "GET"}), ctx, 600, async () => json(await hitungKapasitas(env, kini, false)));
 }
 
 /* ================================================================ relawan (kode pribadi) */
@@ -153,7 +182,7 @@ async function relawanSaya(env, req, kini) {
     env.DB.prepare(`SELECT j.id, j.masuk, j.keluar, j.menit, j.sah, p.judul FROM relawan_jam j JOIN relawan_penugasan g ON g.id = j.penugasan_id JOIN relawan_permintaan p ON p.id = g.permintaan_id
       WHERE j.relawan_id = ? ORDER BY j.masuk DESC LIMIT 100`).bind(r.id).all(),
     env.DB.prepare("SELECT nama, penyelenggara, tgl, berlaku_sampai FROM relawan_pelatihan WHERE relawan_id = ? ORDER BY tgl DESC LIMIT 50").bind(r.id).all(),
-    r.kampus_id ? env.DB.prepare("SELECT nama, singkatan FROM relawan_kampus WHERE id = ?").bind(r.kampus_id).first() : null,
+    r.kampus_id ? env.DB.prepare("SELECT nama, singkatan FROM institusi WHERE id = ?").bind(r.kampus_id).first() : null,
   ]);
   const jamRows = baris(jam), sah = jamRows.filter(j => j.sah === 1).reduce((a, j) => a + (j.menit || 0), 0);
   return json({relawan: {nama: r.nama, prov: r.prov, kab: r.kab, jalur: r.jalur, kampus: kampus?.nama ?? null, organisasi: r.organisasi, keahlian: urai(r.keahlian), sertifikat: r.sertifikat,
@@ -251,7 +280,12 @@ async function aksiPenugasanSaya(env, req, id, kini) {
 }
 
 /* ================================================================ koordinator kampus (kode kampus) */
-const cariKampus = env => h => env.DB.prepare("SELECT id, nama, singkatan, no_mou, mulai, berakhir, kuota, prov FROM relawan_kampus WHERE kode_sha = ?").bind(h).first();
+/* koordinator = institusi berkode dengan MoU relawan terpilih; tanpa MoU relawan kodenya tidak berlaku */
+const cariKampus = env => async h => {
+  const i = await env.DB.prepare("SELECT id, nama, singkatan, prov FROM institusi WHERE kode_sha = ?").bind(h).first();
+  const m = i && pilihPerjanjian(await perjanjianDari(env, i.id), "mou_relawan", Date.now());
+  return m ? {...i, no_mou: m.nomor, mulai: m.mulai, berakhir: m.berakhir, kuota: m.kuota} : null;
+};
 const dariKodeKampus = (env, req, kini) => pemegangKode(env, req, "kampus", cariKampus(env), kini);
 const SQL_KAMPUS_RELAWAN = `SELECT r.id, r.nama, r.prov, r.kab, r.keahlian, r.status, r.alasan, r.dibuat,
   (SELECT coalesce(sum(menit), 0) FROM relawan_jam j WHERE j.relawan_id = r.id AND j.sah = 1) jam_sah_menit,
@@ -323,7 +357,7 @@ const SQL_ADMIN_RELAWAN = `SELECT r.id, r.nama, r.wa, r.email, r.prov, r.kab, r.
   r.gol_darah, r.darurat_nama, r.darurat_wa, r.status, r.alasan, r.dibuat, r.diverifikasi, r.anonim, r.dummy,
   (SELECT coalesce(sum(menit), 0) FROM relawan_jam j WHERE j.relawan_id = r.id AND j.sah = 1) jam_sah_menit,
   (SELECT count(*) FROM relawan_penugasan g WHERE g.relawan_id = r.id) penugasan
-  FROM relawan r LEFT JOIN relawan_kampus k ON k.id = r.kampus_id`;
+  FROM relawan r LEFT JOIN institusi k ON k.id = r.kampus_id`;
 function saringRelawan(url) {
   const s = url.searchParams, w = ["r.anonim = 0"], p = [];
   const status = s.get("status"), prov = s.get("prov"), ahli = s.get("keahlian"), jalur = s.get("jalur"), q = s.get("q");
@@ -390,61 +424,111 @@ async function ubahAdmin(env, req, url, id, kini) {
   return json({id, status: t.ke});
 }
 
-/* ================================================================ admin: kampus + MoU */
-function cekKampus(o) {
-  const nama = tx(o.nama, 120), singkatan = tx(o.singkatan, 20), no_mou = tx(o.no_mou, 80), pic = tx(o.pic_nama, 80), jabatan = tx(o.pic_jabatan, 80), catatan = tx(o.catatan, 500);
+/* ================================================================ admin: institusi tunggal + perjanjian (C7) */
+/* Satu institusi (kampus atau organisasi) memegang identitas dan PIC; perjanjiannya berjenis MoU relawan (berkuota) dan/atau PKS riset.
+   Kode koordinator relawan ada di institusi.kode_sha; kode mitra riset di mitra_riset (src/riset.js). Daftar ini dibaca bersama oleh tab Institusi di /admin/relawan dan /admin/riset. */
+export const JENIS_INSTITUSI = ["ptn", "pts", "organisasi"];
+export const JENIS_PERJANJIAN = ["mou_relawan", "pks_riset"];
+/* perjanjian terpilih satu jenis: yang berlaku hari ini lebih dulu, lalu yang berakhir paling akhir. Satu-satunya aturan pemilihan (dipakai relawan dan riset). */
+export function pilihPerjanjian(daftar, jenis, kini) {
+  const h = wib(kini), ada = daftar.filter(p => p.jenis_perjanjian === jenis);
+  return ada.sort((a, b) => (b.mulai <= h && b.berakhir >= h) - (a.mulai <= h && a.berakhir >= h) || (a.berakhir < b.berakhir ? 1 : a.berakhir > b.berakhir ? -1 : 0))[0] || null;
+}
+const perjanjianDari = (env, institusiId) => env.DB.prepare("SELECT id, jenis_perjanjian, nomor, mulai, berakhir, kuota, dummy FROM institusi_perjanjian WHERE institusi_id = ? LIMIT 100").bind(institusiId).all().then(baris);
+
+/* identitas + PIC institusi. provWajib: modul relawan memajang provinsi; riset boleh mengosongkannya. Dipakai ulang oleh riset.js (mitra baru). */
+export function cekInstitusi(o, provWajib = true) {
+  const nama = tx(o.nama, 120), singkatan = tx(o.singkatan, 20), pic = tx(o.pic_nama, 100), jabatan = tx(o.pic_jabatan, 80), catatan = tx(o.catatan, 500);
   const email = o.pic_email == null || o.pic_email === "" ? null : typeof o.pic_email === "string" ? o.pic_email.trim().toLowerCase() : undefined;
-  const wa = o.pic_wa == null || o.pic_wa === "" ? null : normalWA(o.pic_wa), kuota = num(o.kuota, 1, 100000, true);
-  if (!nama || nama.length < 3) return {galat: "nama kampus 3-120 karakter"};
+  const wa = o.pic_wa == null || o.pic_wa === "" ? null : normalWA(o.pic_wa), jenis = o.jenis ?? "pts";
+  if (!nama || nama.length < 3) return {galat: "nama institusi 3-120 karakter"};
   if (singkatan === undefined || (singkatan && singkatan.length < 2)) return {galat: "singkatan 2-20 karakter"};
-  if (typeof o.prov !== "string" || !Object.hasOwn(PROV, o.prov)) return {galat: "provinsi kampus tidak dikenal"};
-  if (!no_mou || no_mou.length < 3) return {galat: "nomor MoU 3-80 karakter"};
-  if (typeof o.mulai !== "string" || !tglSah(o.mulai) || typeof o.berakhir !== "string" || !tglSah(o.berakhir)) return {galat: "tanggal mulai dan berakhir harus YYYY-MM-DD"};
-  if (o.berakhir < o.mulai) return {galat: "tanggal berakhir tidak boleh sebelum tanggal mulai"};
-  if (!pic || pic.length < 2) return {galat: "nama PIC 2-80 karakter"};
+  if (typeof jenis !== "string" || !JENIS_INSTITUSI.includes(jenis)) return {galat: `jenis harus salah satu dari ${JENIS_INSTITUSI.join(", ")}`};
+  const kosongProv = o.prov == null || o.prov === "";
+  if (kosongProv ? provWajib : (typeof o.prov !== "string" || !Object.hasOwn(PROV, o.prov))) return {galat: "provinsi institusi tidak dikenal"};
+  if (!pic || pic.length < 2) return {galat: "nama PIC 2-100 karakter"};
   if (jabatan === undefined) return {galat: "jabatan PIC maksimal 80 karakter"};
   if (email === undefined || (email && (email.length > 254 || !RE_EMAIL.test(email)))) return {galat: "email PIC tidak sah"};
   if (wa === null && o.pic_wa) return {galat: "WA PIC tidak sah"};
-  if (kuota == null || Number.isNaN(kuota)) return {galat: "kuota 1-100.000"};
   if (catatan === undefined) return {galat: "catatan maksimal 500 karakter"};
-  return {v: {nama, singkatan, prov: o.prov, no_mou, mulai: o.mulai, berakhir: o.berakhir, pic, jabatan, email, wa, kuota, catatan}};
+  return {v: {nama, singkatan, jenis, prov: kosongProv ? null : o.prov, pic, jabatan, email, wa, catatan}};
 }
-const SQL_KAMPUS = `SELECT k.id, k.nama, k.singkatan, k.prov, k.no_mou, k.mulai, k.berakhir, k.pic_nama, k.pic_jabatan, k.pic_email, k.pic_wa, k.kuota, k.catatan, k.dibuat, k.dummy, k.kode_sha IS NOT NULL kode_aktif,
-  (SELECT count(*) FROM relawan r WHERE r.kampus_id = k.id AND r.anonim = 0 AND r.status NOT IN ${AKTIF_PENDAFTAR}) terisi,
-  (SELECT count(*) FROM relawan r WHERE r.kampus_id = k.id AND r.anonim = 0 AND r.status = 'terdaftar') antre,
-  (SELECT coalesce(sum(j.menit), 0) FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id WHERE r.kampus_id = k.id AND j.sah = 1) jam_sah_menit
-  FROM relawan_kampus k`;
-async function daftarKampusAdmin(env, req, kini) {
+/* perjanjian: MoU relawan wajib berkuota, PKS riset tanpa kuota (CHECK di D1 menjaga hal yang sama) */
+export function cekPerjanjian(o) {
+  const nomor = tx(o.nomor, 80), kuota = o.kuota == null ? null : num(o.kuota, 1, 100000, true);
+  if (typeof o.jenis_perjanjian !== "string" || !JENIS_PERJANJIAN.includes(o.jenis_perjanjian)) return {galat: `jenis perjanjian harus salah satu dari ${JENIS_PERJANJIAN.join(", ")}`};
+  if (!nomor || nomor.length < 3) return {galat: "nomor perjanjian 3-80 karakter"};
+  if (typeof o.mulai !== "string" || !tglSah(o.mulai) || typeof o.berakhir !== "string" || !tglSah(o.berakhir)) return {galat: "tanggal mulai dan berakhir harus YYYY-MM-DD"};
+  if (o.berakhir < o.mulai) return {galat: "tanggal berakhir tidak boleh sebelum tanggal mulai"};
+  if (o.jenis_perjanjian === "mou_relawan" && (kuota == null || Number.isNaN(kuota))) return {galat: "kuota relawan 1-100.000"};
+  if (o.jenis_perjanjian === "pks_riset" && o.kuota != null) return {galat: "PKS riset tidak berkuota"};
+  return {v: {jenis_perjanjian: o.jenis_perjanjian, nomor, mulai: o.mulai, berakhir: o.berakhir, kuota}};
+}
+export const sisipInstitusi = (env, id, v, kode_sha, kini, oleh, dummy = 0) => env.DB.prepare(`INSERT INTO institusi (id, nama, singkatan, jenis, prov, pic_nama, pic_jabatan, pic_email, pic_wa, catatan, kode_sha, dibuat, diubah, oleh, dummy)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(id, v.nama, v.singkatan, v.jenis, v.prov, v.pic, v.jabatan, v.email, v.wa, v.catatan, kode_sha, kini, kini, oleh, dummy);
+export const sisipPerjanjian = (env, institusiId, p, kini, oleh, dummy = 0) => env.DB.prepare(`INSERT INTO institusi_perjanjian (id, institusi_id, jenis_perjanjian, nomor, mulai, berakhir, kuota, dibuat, diubah, oleh, dummy)
+  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(acak(8), institusiId, p.jenis_perjanjian, p.nomor, p.mulai, p.berakhir, p.kuota ?? null, kini, kini, oleh, dummy);
+
+/* hitungan riset (mitra_riset, riset_usulan) ada di 0025: bila belum diterapkan, kolom Riset kosong, bukan galat */
+async function hitungRiset(env) {
+  try {
+    return Object.fromEntries(baris(await env.DB.prepare(`SELECT m.institusi_id id, sum(m.dicabut IS NULL) kode_riset, (SELECT count(*) FROM riset_usulan u WHERE u.mitra_id IN (SELECT id FROM mitra_riset WHERE institusi_id = m.institusi_id)) usulan
+      FROM mitra_riset m GROUP BY m.institusi_id`).all()).map(r => [r.id, r]));
+  } catch (e) { if (/no such table/i.test(e?.message || "")) return {}; throw e; }
+}
+const SQL_INSTITUSI = `SELECT i.id, i.nama, i.singkatan, i.jenis, i.prov, i.pic_nama, i.pic_jabatan, i.pic_email, i.pic_wa, i.catatan, i.dibuat, i.dummy, i.kode_sha IS NOT NULL kode_aktif,
+  (SELECT count(*) FROM relawan r WHERE r.kampus_id = i.id AND r.anonim = 0 AND r.status NOT IN ${AKTIF_PENDAFTAR}) terisi,
+  (SELECT count(*) FROM relawan r WHERE r.kampus_id = i.id AND r.anonim = 0 AND r.status = 'terdaftar') antre,
+  (SELECT coalesce(sum(j.menit), 0) FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id WHERE r.kampus_id = i.id AND j.sah = 1) jam_sah_menit
+  FROM institusi i`;
+/* satu daftar untuk dua tab (/admin/relawan dan /admin/riset): kolom Relawan = MoU + kode koordinator + kuota terisi, kolom Riset = PKS + kode mitra + usulan */
+async function daftarInstitusi(env, req, kini) {
   if (!await adm(env, req)) return tolakMod();
-  return json({kampus: baris(await env.DB.prepare(`${SQL_KAMPUS} ORDER BY k.berakhir, k.nama LIMIT 500`).all()).map(k => ({...k, kode_aktif: !!k.kode_aktif, ...statusMou(k, kini)}))});
+  const [rows, pj, riset] = await Promise.all([env.DB.prepare(`${SQL_INSTITUSI} ORDER BY i.nama LIMIT 500`).all().then(baris),
+    env.DB.prepare("SELECT id, institusi_id, jenis_perjanjian, nomor, mulai, berakhir, kuota, dummy FROM institusi_perjanjian ORDER BY berakhir DESC LIMIT 3000").all().then(baris), hitungRiset(env)]);
+  const per = new Map(); for (const p of pj) (per.get(p.institusi_id) || per.set(p.institusi_id, []).get(p.institusi_id)).push({...p, ...statusMou(p, kini)});
+  return json({institusi: rows.map(i => { const daftar = per.get(i.id) || [], r = riset[i.id];
+    return {...i, kode_aktif: !!i.kode_aktif, perjanjian: daftar, mou: pilihPerjanjian(daftar, "mou_relawan", kini), pks: pilihPerjanjian(daftar, "pks_riset", kini), kode_riset: r?.kode_riset ?? 0, usulan: r?.usulan ?? 0}; }),
+    jenis: JENIS_INSTITUSI, jenis_perjanjian: JENIS_PERJANJIAN, provinsi: PROV});
 }
-async function buatKampus(env, req, url, kini) {
+async function buatInstitusi(env, req, url, kini) {
   const mod = await adm(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
-  const c = cekKampus(b.o); if (c.galat) return gagal(400, c.galat);
-  const v = c.v, id = acak(8), {kode, kode_sha} = await kodeBaru();
-  await env.DB.prepare(`INSERT INTO relawan_kampus (id, nama, singkatan, prov, no_mou, mulai, berakhir, pic_nama, pic_jabatan, pic_email, pic_wa, kuota, catatan, kode_sha, dibuat, diubah, oleh)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(id, v.nama, v.singkatan, v.prov, v.no_mou, v.mulai, v.berakhir, v.pic, v.jabatan, v.email, v.wa, v.kuota, v.catatan, kode_sha, kini, kini, mod).run();
-  return json({id, kode, tautan: `${url.origin}/kampus#k=${kode}`}, 201);   // kode koordinator sekali tampil
+  const c = cekInstitusi(b.o); if (c.galat) return gagal(400, c.galat);
+  const p = b.o.perjanjian == null ? null : cekPerjanjian(b.o.perjanjian && typeof b.o.perjanjian === "object" ? b.o.perjanjian : {}); if (p?.galat) return gagal(400, p.galat);
+  const id = acak(8), mou = p?.v.jenis_perjanjian === "mou_relawan", baru = mou ? await kodeBaru() : null;   // kode koordinator hanya bila ada MoU relawan
+  await env.DB.batch([sisipInstitusi(env, id, c.v, baru?.kode_sha ?? null, kini, mod), ...(p ? [sisipPerjanjian(env, id, p.v, kini, mod)] : [])]);
+  return json({id, ...(baru ? {kode: baru.kode, tautan: `${url.origin}/kampus#k=${baru.kode}`} : {})}, 201);   // kode koordinator sekali tampil
 }
-async function ubahKampus(env, req, url, id, kini) {
+async function ubahInstitusi(env, req, url, id, kini) {
   const mod = await adm(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
-  if (!await env.DB.prepare("SELECT 1 FROM relawan_kampus WHERE id = ?").bind(id).first()) return gagal(404, "kampus tidak ada");
+  const ada = await env.DB.prepare("SELECT prov FROM institusi WHERE id = ?").bind(id).first(); if (!ada) return gagal(404, "institusi tidak ada");
   if (b.o.aksi === "kode_baru") {
     const {kode, kode_sha} = await kodeBaru();
-    await env.DB.prepare("UPDATE relawan_kampus SET kode_sha = ?, diubah = ?, oleh = ? WHERE id = ?").bind(kode_sha, kini, mod, id).run();
+    await env.DB.prepare("UPDATE institusi SET kode_sha = ?, diubah = ?, oleh = ? WHERE id = ?").bind(kode_sha, kini, mod, id).run();
     return json({kode, tautan: `${url.origin}/kampus#k=${kode}`});
   }
-  if (b.o.aksi === "cabut_kode") { await env.DB.prepare("UPDATE relawan_kampus SET kode_sha = NULL, diubah = ?, oleh = ? WHERE id = ?").bind(kini, mod, id).run(); return json({id, kode_aktif: false}); }
+  if (b.o.aksi === "cabut_kode") { await env.DB.prepare("UPDATE institusi SET kode_sha = NULL, diubah = ?, oleh = ? WHERE id = ?").bind(kini, mod, id).run(); return json({id, kode_aktif: false}); }
   if (b.o.aksi === "ubah") {
-    const c = cekKampus(b.o); if (c.galat) return gagal(400, c.galat);
+    const c = cekInstitusi(b.o, ada.prov != null); if (c.galat) return gagal(400, c.galat);
     const v = c.v;
-    await env.DB.prepare(`UPDATE relawan_kampus SET nama = ?, singkatan = ?, prov = ?, no_mou = ?, mulai = ?, berakhir = ?, pic_nama = ?, pic_jabatan = ?, pic_email = ?, pic_wa = ?, kuota = ?, catatan = ?, diubah = ?, oleh = ? WHERE id = ?`)
-      .bind(v.nama, v.singkatan, v.prov, v.no_mou, v.mulai, v.berakhir, v.pic, v.jabatan, v.email, v.wa, v.kuota, v.catatan, kini, mod, id).run();
+    await env.DB.prepare(`UPDATE institusi SET nama = ?, singkatan = ?, jenis = ?, prov = ?, pic_nama = ?, pic_jabatan = ?, pic_email = ?, pic_wa = ?, catatan = ?, diubah = ?, oleh = ? WHERE id = ?`)
+      .bind(v.nama, v.singkatan, v.jenis, v.prov, v.pic, v.jabatan, v.email, v.wa, v.catatan, kini, mod, id).run();
     return json({id});
   }
-  return gagal(400, "aksi harus ubah, kode_baru, atau cabut_kode");
+  if (b.o.aksi === "perjanjian") {   // tambah, atau ubah bila perjanjian_id diberikan (perpanjangan MoU/PKS)
+    const c = cekPerjanjian(b.o); if (c.galat) return gagal(400, c.galat);
+    const v = c.v, pid = b.o.perjanjian_id;
+    try {
+      if (pid == null) { await sisipPerjanjian(env, id, v, kini, mod).run(); return json({id}, 201); }
+      if (typeof pid !== "string" || !RE_ID.test(pid)) return gagal(400, "perjanjian_id tidak sah");
+      const x = await env.DB.prepare("UPDATE institusi_perjanjian SET nomor = ?, mulai = ?, berakhir = ?, kuota = ?, diubah = ?, oleh = ? WHERE id = ? AND institusi_id = ? AND jenis_perjanjian = ?")
+        .bind(v.nomor, v.mulai, v.berakhir, v.kuota, kini, mod, pid, id, v.jenis_perjanjian).run();
+      return x.meta.changes ? json({id, perjanjian_id: pid}) : gagal(404, "perjanjian tidak ditemukan pada institusi ini");
+    } catch (e) { if (/UNIQUE/i.test(e?.message)) return gagal(409, "nomor perjanjian ini sudah tercatat untuk institusi dan jenis yang sama"); throw e; }
+  }
+  return gagal(400, "aksi harus ubah, perjanjian, kode_baru, atau cabut_kode");
 }
 
 /* ================================================================ admin: permintaan + pencocokan */
@@ -603,18 +687,35 @@ async function hapusPelatihan(env, req, id) {
 }
 
 /* ================================================================ dummy (DUMMY.md): satu halaman /admin/relawan = seluruh rantai, hulu ke hilir */
-const TABEL_DUMMY = ["relawan_kampus", "relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"];
+const TABEL_DUMMY = ["relawan", "relawan_permintaan", "relawan_penugasan", "relawan_jam", "relawan_pelatihan"];
+/* institusi dummy dibagi: dibuat sekali per nama lalu dipakai ulang oleh dummy relawan dan dummy riset (satu institusi, dua peran) */
+export async function institusiDummy(env, daftar, kini, mod) {   // daftar: [[nama, singkatan, jenis, prov]]
+  const ada = new Map(baris(await env.DB.prepare("SELECT id, nama FROM institusi WHERE dummy = 1").all()).map(r => [r.nama.toLowerCase(), r.id]));
+  const stmts = [], ids = daftar.map(([nama, singkatan, jenis, prov]) => {
+    let id = ada.get(nama.toLowerCase()); if (id) return id;
+    const n = ada.size + 1; id = acak(8); ada.set(nama.toLowerCase(), id);
+    stmts.push(sisipInstitusi(env, id, {nama, singkatan, jenis, prov, pic: `PIC Contoh ${n}`, jabatan: "Wakil Rektor III", email: `pic${n}@contoh.invalid`, wa: `62800001${String(n).padStart(4, "0")}`, catatan: "[Contoh] data dummy"}, null, kini, mod, 1));
+    return id;
+  });
+  return {ids, stmts};
+}
+/* institusi dummy yang tak lagi dirujuk perjanjian, relawan, atau mitra riset ikut hilang bersama dummy modul terakhir yang memakainya */
+export async function hapusInstitusiYatim(env) {
+  const sql = riset => `DELETE FROM institusi WHERE dummy = 1 AND NOT EXISTS (SELECT 1 FROM institusi_perjanjian p WHERE p.institusi_id = institusi.id) AND NOT EXISTS (SELECT 1 FROM relawan r WHERE r.kampus_id = institusi.id)${
+    riset ? " AND NOT EXISTS (SELECT 1 FROM mitra_riset m WHERE m.institusi_id = institusi.id)" : ""}`;
+  try { await env.DB.prepare(sql(true)).run(); } catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; await env.DB.prepare(sql(false)).run(); }
+}
+const hitungMou = async env => (await env.DB.prepare("SELECT count(*) n FROM institusi_perjanjian WHERE dummy = 1 AND jenis_perjanjian = 'mou_relawan'").first()).n;
 const tglGeser = (kini, hari) => wib(kini + hari * HARI);
 async function dummyIsi(env, kini, mod) {
-  const hidup = (await env.DB.prepare("SELECT (SELECT count(*) FROM relawan_kampus WHERE dummy = 1) + (SELECT count(*) FROM relawan WHERE dummy = 1) + (SELECT count(*) FROM relawan_permintaan WHERE dummy = 1) n").first()).n;
+  const hidup = (await env.DB.prepare("SELECT (SELECT count(*) FROM institusi_perjanjian WHERE dummy = 1 AND jenis_perjanjian = 'mou_relawan') + (SELECT count(*) FROM relawan WHERE dummy = 1) + (SELECT count(*) FROM relawan_permintaan WHERE dummy = 1) n").first()).n;
   if (hidup) return gagal(409, `data dummy relawan sudah ada (${hidup} baris hidup); hapus dulu dengan 🧹`);
   const st = [], p = (sql, ...a) => st.push(env.DB.prepare(sql).bind(...a));
   /* kampus: aktif panjang, MoU <= 60 hari habis, MoU sudah habis. kode_sha NULL: dummy tak bisa dipakai masuk */
-  const KAMPUS = [["Universitas Contoh Borneo", "UCB", "62", 300, 40], ["Institut Contoh Sumatera", "ICS", "16", 30, 25], ["Universitas Contoh Nusantara", "UCN", "64", -20, 15]];
-  const idK = KAMPUS.map(() => acak(8));
-  KAMPUS.forEach(([nama, singkatan, prov, selisih, kuota], i) => p(`INSERT INTO relawan_kampus (id, nama, singkatan, prov, no_mou, mulai, berakhir, pic_nama, pic_jabatan, pic_email, pic_wa, kuota, catatan, kode_sha, dibuat, diubah, oleh, dummy)
-    VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NULL, ?, ?, ?, 1)`, idK[i], nama, singkatan, prov, `MoU/CONTOH/${i + 1}/2026`, tglGeser(kini, selisih - 365), tglGeser(kini, selisih), `PIC Contoh ${i + 1}`, "Wakil Rektor III",
-    `pic${i + 1}@contoh.invalid`, `62800001${String(i).padStart(4, "0")}`, kuota, "[Contoh] data dummy", kini, kini, mod));
+  const KAMPUS = [["Universitas Contoh Borneo", "UCB", "62", 300, 40, "ptn"], ["Institut Contoh Sumatera", "ICS", "16", 30, 25, "pts"], ["Universitas Contoh Nusantara", "UCN", "64", -20, 15, "ptn"]];
+  const inst = await institusiDummy(env, KAMPUS.map(([nama, singkatan, prov, , , jenis]) => [nama, singkatan, jenis, prov]), kini, mod), idK = inst.ids;
+  st.push(...inst.stmts);
+  KAMPUS.forEach(([, , , selisih, kuota], i) => st.push(sisipPerjanjian(env, idK[i], {jenis_perjanjian: "mou_relawan", nomor: `MoU/CONTOH/${i + 1}/2026`, mulai: tglGeser(kini, selisih - 365), berakhir: tglGeser(kini, selisih), kuota}, kini, mod, 1)));
   /* relawan: tiap status minimal satu; jalur dan wilayah dibagi bergiliran */
   const SEBARAN = ["terdaftar", "terdaftar", "terdaftar", "diverifikasi", "diverifikasi", "siap_tugas", "siap_tugas", "siap_tugas", "siap_tugas", "siap_tugas", "ditugaskan", "ditugaskan", "bertugas", "bertugas",
     "selesai", "selesai", "selesai", "ditolak", "nonaktif", "daftar_hitam"];
@@ -663,8 +764,11 @@ async function dummyIsi(env, kini, mod) {
 async function dummyHapus(env) {
   const n = {};
   for (const t of TABEL_DUMMY) n[t] = (await env.DB.prepare(`SELECT count(*) n FROM ${t} WHERE dummy = 1`).first()).n;
-  await env.DB.batch(["relawan_jam", "relawan_pelatihan", "relawan_penugasan", "relawan_permintaan", "relawan", "relawan_kampus"].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`)));   // anak dulu
-  return json({ok: true, kampus: n.relawan_kampus, relawan: n.relawan, permintaan: n.relawan_permintaan, penugasan: n.relawan_penugasan, jam: n.relawan_jam, pelatihan: n.relawan_pelatihan});
+  n.mou = await hitungMou(env);
+  await env.DB.batch([...["relawan_jam", "relawan_pelatihan", "relawan_penugasan", "relawan_permintaan", "relawan"].map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`)),   // anak dulu
+    env.DB.prepare("DELETE FROM institusi_perjanjian WHERE dummy = 1 AND jenis_perjanjian = 'mou_relawan'")]);
+  await hapusInstitusiYatim(env);
+  return json({ok: true, kampus: n.mou, relawan: n.relawan, permintaan: n.relawan_permintaan, penugasan: n.relawan_penugasan, jam: n.relawan_jam, pelatihan: n.relawan_pelatihan});
 }
 async function dummy(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
@@ -697,6 +801,7 @@ export const RUTE_RELAWAN = lindungi({
   "GET /kampus": (env, req, url) => halamanBnpbPublik(env, url, "kampus", {pribadi: true}),
   "GET /admin/relawan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("relawan")),
   "GET /api/relawan/ringkas": (env, req, url, kini, ctx) => ringkas(env, req, url, kini, ctx),
+  "GET /api/relawan/kapasitas": (env, req, url, kini, ctx) => kapasitas(env, req, url, kini, ctx),
   "POST /api/relawan/daftar": (env, req, url, kini) => daftar(env, req, url, kini),
   "GET /api/relawan/saya": (env, req, url, kini) => relawanSaya(env, req, kini),
   "POST /api/relawan/saya": (env, req, url, kini) => ubahSaya(env, req, kini),
@@ -709,9 +814,9 @@ export const RUTE_RELAWAN = lindungi({
   "GET /api/relawan/admin/relawan/:id": (env, req, url, kini, ctx, id) => rincianAdmin(env, req, id),
   "POST /api/relawan/admin/relawan/:id": (env, req, url, kini, ctx, id) => ubahAdmin(env, req, url, id, kini),
   "GET /api/relawan/admin/csv": (env, req, url) => csvAdmin(env, req, url),
-  "GET /api/relawan/admin/kampus": (env, req, url, kini) => daftarKampusAdmin(env, req, kini),
-  "POST /api/relawan/admin/kampus": (env, req, url, kini) => buatKampus(env, req, url, kini),
-  "POST /api/relawan/admin/kampus/:id": (env, req, url, kini, ctx, id) => ubahKampus(env, req, url, id, kini),
+  "GET /api/relawan/admin/institusi": (env, req, url, kini) => daftarInstitusi(env, req, kini),
+  "POST /api/relawan/admin/institusi": (env, req, url, kini) => buatInstitusi(env, req, url, kini),
+  "POST /api/relawan/admin/institusi/:id": (env, req, url, kini, ctx, id) => ubahInstitusi(env, req, url, id, kini),
   "GET /api/relawan/admin/permintaan": (env, req) => daftarPermintaan(env, req),
   "POST /api/relawan/admin/permintaan": (env, req, url, kini) => buatPermintaan(env, req, kini),
   "GET /api/relawan/admin/permintaan/:id": (env, req, url, kini, ctx, id) => rincianPermintaan(env, req, id, kini),

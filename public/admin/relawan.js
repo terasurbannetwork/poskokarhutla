@@ -1,4 +1,4 @@
-/* Admin Relawan (/admin/relawan): antrean verifikasi, relawan, permintaan + pencocokan, kampus dan MoU, pelatihan, asuransi, jam kerja, penilaian + daftar hitam,
+/* Admin Relawan (/admin/relawan): antrean verifikasi, relawan, permintaan + pencocokan, institusi (kampus, MoU; modul bersama /admin/institusi.js), pelatihan, asuransi, jam kerja, penilaian + daftar hitam,
    ekspor CSV, dan tombol dummy. CSP admin: tanpa skrip/gaya inline; semua teks dari data lewat esc(). Data dari /api/relawan/admin/* (sesi admin). */
 (() => {
   "use strict";
@@ -23,8 +23,8 @@
   const ps = ([k, i, t]) => pil(k, i, t), dummyPil = d => d ? ' <span class="bn-pil p-ungu">Dummy</span>' : "";
   const ASURANSI = {belum: "Belum diurus", diajukan: "Diajukan", aktif: "Aktif", tidak_perlu: "Tidak perlu"};
   const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan"];
-  const TABS = [["antrean", "Antrean verifikasi"], ["relawan", "Relawan"], ["permintaan", "Permintaan"], ["kampus", "Kampus dan MoU"], ["pelatihan", "Pelatihan"], ["asuransi", "Asuransi"], ["jam", "Jam kerja"], ["penilaian", "Penilaian dan daftar hitam"]];
-  let tab = "antrean", konfig = null, saring = {}, terpilih = null, kodeBaru = null, formKampus = {};
+  const TABS = [["antrean", "Antrean verifikasi"], ["relawan", "Relawan"], ["permintaan", "Permintaan"], ["institusi", "Institusi"], ["pelatihan", "Pelatihan"], ["asuransi", "Asuransi"], ["jam", "Jam kerja"], ["penilaian", "Penilaian dan daftar hitam"]];
+  let tab = "antrean", konfig = null, saring = {}, terpilih = null;
 
   const catat = (t, ok) => { const p = document.getElementById("rwPesan"); if (p) { p.textContent = t || ""; p.className = "rw-pesan " + (t ? (ok ? "ok" : "galat") : ""); } };
   const kosong = t => `<p class="rw-kosong">${esc(t)}</p>`;
@@ -150,28 +150,10 @@
     el.scrollIntoView({behavior: "smooth", block: "nearest"});
   }
 
-  /* ================= kampus + MoU ================= */
-  async function tampilKampus(isi) {
-    const d = await ambil(`${API}/kampus`), f = formKampus;
-    isi.innerHTML = `${kodeBaru ? `<div class="rw-kode ad-kartu"><h3>Kode koordinator "${esc(kodeBaru.nama)}" tampil SEKALI</h3><p class="rw-redup">Kirim tautan ini ke PIC kampus. Server hanya menyimpan sidik jarinya, jadi tidak bisa ditampilkan lagi; hilang = buat kode baru.</p>
-        <input class="rw-isian" id="rwTautan" readonly value="${esc(kodeBaru.tautan)}"><div class="rw-aksi"><button class="ad-tombol utama" data-salin="1">Salin tautan</button></div></div>` : ""}
-      <form id="rwFormKampus" class="rw-form ad-kartu"><h3>${f.id ? "Ubah kampus mitra" : "Catat kampus mitra dan MoU"}</h3><div class="rw-grid">
-        <label>Nama kampus<input name="nama" required maxlength="120" value="${esc(f.nama || "")}"></label><label>Singkatan<input name="singkatan" maxlength="20" value="${esc(f.singkatan || "")}"></label>
-        <label>Provinsi<select name="prov">${opsi(urutProv(), f.prov || "62")}</select></label><label>Nomor MoU<input name="no_mou" required maxlength="80" value="${esc(f.no_mou || "")}"></label>
-        <label>Tanggal mulai<input name="mulai" type="date" required value="${esc(f.mulai || hariIni())}"></label><label>Tanggal berakhir<input name="berakhir" type="date" required value="${esc(f.berakhir || geser(365))}"></label>
-        <label>PIC nama<input name="pic_nama" required maxlength="80" value="${esc(f.pic_nama || "")}"></label><label>PIC jabatan<input name="pic_jabatan" maxlength="80" value="${esc(f.pic_jabatan || "")}"></label>
-        <label>PIC email<input name="pic_email" type="email" maxlength="254" value="${esc(f.pic_email || "")}"></label><label>PIC WhatsApp<input name="pic_wa" inputmode="tel" maxlength="20" value="${esc(f.pic_wa || "")}"></label>
-        <label>Kuota relawan<input name="kuota" type="number" min="1" max="100000" required value="${esc(f.kuota ?? 50)}"></label><label>Catatan<input name="catatan" maxlength="500" value="${esc(f.catatan || "")}"></label></div>
-        <div class="rw-aksi"><button class="ad-tombol utama" type="submit">${f.id ? "Simpan perubahan" : "Catat kampus dan buat kode"}</button>${f.id ? '<button class="ad-tombol" type="button" data-batal-ubah="1">Batal</button>' : ""}</div></form>
-      ${wadah("tKampus")}`;
-    Tabel(document.getElementById("tKampus"), [
-      {l: "Kampus", k: "nama", h: k => `<b>${esc(k.nama)}</b>${dummyPil(k.dummy)}<br><span class="rw-redup">${esc(k.singkatan || "")} · ${esc(konfig.provinsi[k.prov] || k.prov)}</span>`}, {l: "MoU", k: "no_mou", h: k => `${esc(k.no_mou)}<br><span class="rw-redup">${tgl(k.mulai)} sampai ${tgl(k.berakhir)}</span>`},
-      {l: "Status", v: k => k.sisa_hari, h: k => `${ps(MOU[k.status])}<br><span class="rw-redup">${k.status === "habis" ? `habis ${angka(-k.sisa_hari)} hari lalu` : `${angka(k.sisa_hari)} hari lagi`}</span>`},
-      {l: "Kuota", v: k => k.terisi, h: k => `${angka(k.terisi)} / ${angka(k.kuota)}<br><span class="rw-redup">${angka(k.antre)} antre verifikasi</span>`}, {l: "Jam sah", k: "jam_sah_menit", h: k => jamF(k.jam_sah_menit)},
-      {l: "PIC", u: false, h: k => `${esc(k.pic_nama)}<br><span class="rw-redup">${esc(k.pic_jabatan || "")}</span><br><span class="rw-redup">${esc(k.pic_email || "")} ${esc(k.pic_wa || "")}</span>`},
-      {l: "Kode", v: k => k.kode_aktif ? 1 : 0, h: k => k.kode_aktif ? pil("p-hijau", "centang", "Aktif") : pil("p-abu", "x", "Dicabut")},
-      {l: "Aksi", u: false, h: k => `<div class="rw-aksi"><button class="ad-tombol kecil" data-ubah-kampus="${esc(JSON.stringify(k))}">Ubah</button><button class="ad-tombol kecil" data-kode-kampus="kode_baru" data-id="${esc(k.id)}" data-nama="${esc(k.nama)}">Kode baru</button>${k.kode_aktif ? `<button class="ad-tombol kecil bahaya" data-kode-kampus="cabut_kode" data-id="${esc(k.id)}">Cabut kode</button>` : ""}</div>`}],
-      d.kampus, "Belum ada kampus mitra.", 10);
+  /* ================= institusi (kampus, organisasi, MoU relawan): satu modul dengan tab Institusi di /admin/riset ================= */
+  async function tampilInstitusi(isi) {
+    isi.innerHTML = '<div id="inRoot"></div>';
+    await (await import("/admin/institusi.js?v=1")).pasang(document.getElementById("inRoot"));
   }
 
   /* ================= pelatihan ================= */
@@ -211,16 +193,16 @@
     Tabel(document.getElementById("tHitam"), [{l: "Nama", k: "nama", h: r => esc(r.nama) + dummyPil(r.dummy)}, {l: "Kontak", u: false, h: r => `${esc(r.wa || "–")}<br><span class="rw-redup">${esc(r.email || "–")}</span>`}, {l: "Alasan", v: r => r.alasan || "", h: r => esc(r.alasan || "–")},
       {l: "Aksi", u: false, h: r => `<button class="ad-tombol kecil" data-r="pulihkan" data-id="${esc(r.id)}">Pulihkan</button>`}], h.relawan, "Tidak ada relawan dalam daftar hitam.");
   }
-  const TAMPIL = {antrean: tampilAntrean, relawan: tampilRelawan, permintaan: tampilPermintaan, kampus: tampilKampus, pelatihan: tampilPelatihan, asuransi: tampilAsuransi, jam: tampilJam, penilaian: tampilPenilaian};
+  const TAMPIL = {antrean: tampilAntrean, relawan: tampilRelawan, permintaan: tampilPermintaan, institusi: tampilInstitusi, pelatihan: tampilPelatihan, asuransi: tampilAsuransi, jam: tampilJam, penilaian: tampilPenilaian};
 
   /* ================= dummy (DUMMY.md) ================= */
   aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;
-    if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy relawan (kampus, relawan, permintaan, penugasan, jam kerja, pelatihan)? Data asli tidak tersentuh.")) return;
+    if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy relawan (MoU kampus, relawan, permintaan, penugasan, jam kerja, pelatihan)? Data asli tidak tersentuh.")) return;
     d.disabled = true;
     const r = await kirim("/api/relawan/dummy", {aksi: d.dataset.dummy}), j = r.j;
-    alert(r.ok ? `${d.dataset.dummy === "isi" ? "Dummy dibuat" : "Dummy dihapus"}: ${j.kampus} kampus, ${j.relawan} relawan, ${j.permintaan} permintaan, ${j.penugasan} penugasan, ${j.jam} sesi jam, ${j.pelatihan} pelatihan.` : j.galat || `Gagal (${r.status})`);
+    alert(r.ok ? `${d.dataset.dummy === "isi" ? "Dummy dibuat" : "Dummy dihapus"}: ${j.kampus} MoU kampus, ${j.relawan} relawan, ${j.permintaan} permintaan, ${j.penugasan} penugasan, ${j.jam} sesi jam, ${j.pelatihan} pelatihan.` : j.galat || `Gagal (${r.status})`);
     location.reload();   // muat ulang penuh (DUMMY.md syarat 6)
   });
 
@@ -248,16 +230,6 @@
     if (t.dataset.tutup) { const r = await kirim(`${API}/permintaan/${t.dataset.id}`, {aksi: t.dataset.tutup}); return r.ok ? muatLagi("Tersimpan.", true) : catat(r.j.galat, false); }
     if (t.dataset.tugaskan) { t.disabled = true; const r = await kirim(`${API}/permintaan/${t.dataset.perm}`, {aksi: "tugaskan", relawan_id: t.dataset.tugaskan}); if (!r.ok) { t.disabled = false; return catat(r.j.galat || "Gagal menugaskan.", false); } terpilih = t.dataset.perm; return muatLagi("Penawaran tugas dikirim. Relawan melihatnya di halaman pribadinya.", true); }
     if (t.dataset.batal) { const r = await kirim(`${API}/penugasan/${t.dataset.batal}`, {aksi: "batalkan"}); return r.ok ? muatLagi("Penugasan dibatalkan.", true) : catat(r.j.galat, false); }
-    if (t.dataset.salin) { const i = document.getElementById("rwTautan"); i.select(); try { await navigator.clipboard.writeText(i.value); catat("Tautan disalin.", true); } catch (x) { catat("Salin manual dengan Ctrl+C.", false); } return; }
-    if (t.dataset.ubahKampus) { formKampus = JSON.parse(t.dataset.ubahKampus); await muat(); return document.getElementById("rwFormKampus").scrollIntoView({behavior: "smooth"}); }
-    if (t.dataset.batalUbah) { formKampus = {}; return muat(); }
-    if (t.dataset.kodeKampus) {
-      const aksi = t.dataset.kodeKampus;
-      if (!confirm(aksi === "cabut_kode" ? "Cabut kode koordinator? Koordinator tidak bisa masuk lagi." : "Buat kode baru? Kode lama langsung mati.")) return;
-      const r = await kirim(`${API}/kampus/${t.dataset.id}`, {aksi}); if (!r.ok) return catat(r.j.galat, false);
-      if (aksi === "kode_baru") kodeBaru = {nama: t.dataset.nama, tautan: r.j.tautan};
-      return muatLagi(aksi === "kode_baru" ? "Kode baru dibuat. Salin tautannya di atas." : "Kode dicabut.", true);
-    }
     if (t.dataset.hapusLatih) { if (!confirm("Hapus catatan pelatihan ini?")) return; const r = await kirim(`${API}/pelatihan/${t.dataset.hapusLatih}`, {aksi: "hapus"}); return r.ok ? muatLagi("Dihapus.", true) : catat(r.j.galat, false); }
     if (t.dataset.simpanAsuransi) {
       const tr = t.closest("tr"), r = await kirim(`${API}/penugasan/${t.dataset.simpanAsuransi}`, {aksi: "asuransi", asuransi: tr.querySelector('[data-f="asuransi"]').value, polis: tr.querySelector('[data-f="polis"]').value || undefined});
@@ -279,10 +251,6 @@
     if (f.id === "rwFormPermintaan") {
       const butuh = [...f.querySelectorAll("[data-butuh]")].map(i => ({keahlian: i.dataset.butuh, jumlah: Number(i.value)})).filter(b => b.jumlah > 0), num = x => x === "" ? undefined : Number(String(x).replace(",", "."));
       r = await kirim(`${API}/permintaan`, {...kosongNull(v), lat: num(v.lat), lon: num(v.lon), butuh}); pesanOk = "Permintaan dibuat. Tekan Cocokkan untuk melihat kandidat.";
-    } else if (f.id === "rwFormKampus") {
-      const b = {...kosongNull(v), kuota: Number(v.kuota)};
-      if (formKampus.id) r = await kirim(`${API}/kampus/${formKampus.id}`, {aksi: "ubah", ...b}); else { r = await kirim(`${API}/kampus`, b); if (r.ok) kodeBaru = {nama: v.nama, tautan: r.j.tautan}; }
-      if (r.ok) formKampus = {}; pesanOk = "Kampus tersimpan.";
     } else if (f.id === "rwFormLatih") r = await kirim(`${API}/pelatihan`, kosongNull(v));
     if (tb) tb.disabled = false;
     if (!r.ok) return catat(r.j.galat || `Gagal (${r.status})`, false);

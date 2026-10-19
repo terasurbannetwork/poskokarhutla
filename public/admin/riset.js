@@ -21,7 +21,7 @@
     berjalan: ["jam", "Berjalan", "biru"], laporan_akhir: ["dokumen", "Laporan akhir", "ungu"], selesai: ["centang", "Selesai", "hijau"]};
   const AKSI_NAMA = {ditelaah: "Mulai telaah", revisi: "Minta revisi", disetujui: "Setujui", ditolak: "Tolak", berjalan: "Mulai berjalan", selesai: "Tutup selesai"};
   const PKS = {berlaku: ["centang", "Berlaku", "hijau"], hampir: ["peringatan", "Hampir habis", "kuning"], kedaluwarsa: ["silang", "Kedaluwarsa", "merah"], tanpa: ["jam", "Belum dicatat", "abu"]};
-  const TABS = [["agenda", "🎯 Agenda"], ["mitra", "🏛️ Mitra"], ["usulan", "📥 Usulan"], ["permintaan", "📂 Permintaan data"], ["luaran", "📈 Luaran dan kebijakan"]];
+  const TABS = [["agenda", "🎯 Agenda"], ["institusi", "🏫 Institusi"], ["mitra", "🏛️ Mitra"], ["usulan", "📥 Usulan"], ["permintaan", "📂 Permintaan data"], ["luaran", "📈 Luaran dan kebijakan"]];
   const JENIS = {artikel: "Artikel", dataset: "Dataset", model: "Model", policy_brief: "Policy brief", prototipe: "Prototipe"};
   let d = null, tab = "usulan", saring = "antre", kodeBaru = null, formAgenda = {}, pksId = null, telaah = null, putus = null, catat = null;
 
@@ -45,6 +45,7 @@
     app.innerHTML = `<div class="rs-statbar">${stat.map(([i, l, n, w]) => `<div class="rs-stat">${pil(i, l, w)}<b>${angka(n)}</b></div>`).join("")}</div>
       <nav class="ad-tabs" aria-label="Riset">${TABS.map(([t, l]) => `<button type="button" data-tab="${t}" aria-pressed="${t === tab}">${l}</button>`).join("")}</nav>
       <p id="rsPesan" class="rs-pesan" role="status"></p><div class="rs-isi">${TAMPIL[tab]()}</div>`;
+    if (tab === "institusi") import("/admin/institusi.js?v=1").then(m => m.pasang(document.getElementById("inRoot")));   // modul yang sama dengan tab Institusi di /admin/relawan
   }
 
   /* ================= agenda ================= */
@@ -62,6 +63,9 @@
         <td>${a.status === "buka" ? pil("centang", "Buka", "hijau") : pil("silang", "Tutup", "abu")}</td><td class="a"><button class="ad-tombol kecil" data-aksi="ubah-agenda">Ubah</button> <button class="ad-tombol kecil" data-aksi="ganti-agenda" data-ke="${a.status === "buka" ? "tutup" : "buka"}">${a.status === "buka" ? "Tutup" : "Buka lagi"}</button></td></tr>`), "Belum ada agenda.")}`;
     },
 
+    /* ================= institusi (bersama dengan /admin/relawan) ================= */
+    institusi: () => '<div id="inRoot"></div>',
+
     /* ================= mitra ================= */
     mitra() {
       const baru = kodeBaru ? `<div class="rs-kode ad-kartu"><h3>Kode mitra "${esc(kodeBaru.institusi)}": hanya tampil SEKALI</h3><p>Kirim tautan ini ke PIC. Server hanya menyimpan sidik jarinya; hilang berarti buat kode baru (cabut yang lama).</p>
@@ -69,11 +73,12 @@
       const pks = pksId ? (m => `<form id="fPks" class="rs-form ad-kartu"><h3>Perbarui PKS: ${esc(m.institusi)}</h3><div class="rs-grid">${isian("Nomor PKS", `<input name="pks_nomor" required minlength="3" maxlength="80" value="${esc(m.pks_nomor)}">`)}
         ${isian("Berlaku mulai", `<input type="date" name="pks_mulai" required value="${esc(m.pks_mulai || hariIni())}">`)}${isian("Berlaku sampai", `<input type="date" name="pks_sampai" required value="${esc(m.pks_sampai)}">`)}</div>
         <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Simpan PKS</button><button class="ad-tombol" type="button" data-aksi="batal-pks">Batal</button></div></form>`)(d.mitra.find(x => x.id === pksId) || {}) : "";
-      return `${baru}${pks}<form id="fMitra" class="rs-form ad-kartu"><h3>Catat institusi mitra</h3><div class="rs-grid">
-        ${isian("Institusi", '<input name="institusi" required minlength="3" maxlength="120" placeholder="mis. Universitas Contoh">')}${isian("Fakultas / pusat studi", '<input name="unit" maxlength="120">')}
-        ${isian("Nama PIC", '<input name="pic_nama" required minlength="2" maxlength="100">')}${isian("Email PIC", '<input name="pic_email" type="email" maxlength="254">')}${isian("WhatsApp PIC", '<input name="pic_wa" inputmode="tel" maxlength="20">')}
-        ${isian("Nomor PKS / MoU", '<input name="pks_nomor" maxlength="80">')}${isian("PKS berlaku mulai", '<input type="date" name="pks_mulai">')}${isian("PKS berlaku sampai", '<input type="date" name="pks_sampai">')}</div>
-        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Catat dan buat kode</button>${csv("mitra")}</div></form>
+      return `${baru}${pks}<form id="fMitra" class="rs-form ad-kartu"><h3>Buat kode mitra riset</h3><div class="rs-grid">
+        ${isian("Institusi terdaftar", `<select name="institusi_id"><option value="">Institusi baru (isi di bawah)</option>${d.institusi.map(i => `<option value="${esc(i.id)}">${esc(i.nama)}</option>`).join("")}</select>`)}
+        ${isian("Institusi baru", '<input name="institusi" minlength="3" maxlength="120" placeholder="mis. Universitas Contoh">')}${isian("Fakultas / pusat studi", '<input name="unit" maxlength="120">')}
+        ${isian("Nama PIC (institusi baru)", '<input name="pic_nama" minlength="2" maxlength="100">')}${isian("Email PIC", '<input name="pic_email" type="email" maxlength="254">')}${isian("WhatsApp PIC", '<input name="pic_wa" inputmode="tel" maxlength="20">')}
+        ${isian("Nomor PKS riset", '<input name="pks_nomor" maxlength="80">')}${isian("PKS berlaku mulai", '<input type="date" name="pks_mulai">')}${isian("PKS berlaku sampai", '<input type="date" name="pks_sampai">')}</div>
+        <div class="rs-aksi"><button class="ad-tombol utama" type="submit">Buat kode mitra</button>${csv("mitra")}</div></form>
       ${tabel(["Institusi", "PIC (hanya admin)", "PKS", "Usulan", "Kode", ""], d.mitra.map(m => { const p = PKS[m.pks.s];
         return `<tr data-id="${esc(m.id)}"${m.dicabut ? ' class="rs-redam"' : ""}><td><b>${esc(m.institusi)}</b>${dummyPil(m)}<br><span class="rs-redup">${esc(m.unit || "")}</span></td>
         <td>${esc(m.pic_nama)}<br><span class="rs-redup">${esc(m.pic_email || "–")} · ${esc(m.pic_wa || "–")}</span></td>
@@ -160,7 +165,10 @@
   app.addEventListener("submit", async e => {
     e.preventDefault(); const f = e.target, v = nilai(f), tombol = f.querySelector('button[type="submit"]'); tombol.disabled = true; let r, ok = "Tersimpan.";
     if (f.id === "fAgenda") { const b = {judul: v.judul, latar: v.latar, bencana: v.bencana, tema: v.tema, prioritas: +v.prioritas, luaran: v.luaran}; r = await kirim(formAgenda.id ? `${API}/admin/agenda/${formAgenda.id}` : `${API}/admin/agenda`, b); if (r.ok) formAgenda = {}; ok = "Agenda tersimpan."; }
-    else if (f.id === "fMitra") { r = await kirim(`${API}/admin/mitra`, Object.fromEntries(Object.entries(v).filter(([, x]) => x !== ""))); if (r.ok) { kodeBaru = {institusi: r.j.institusi, tautan: r.j.tautan}; ok = "Mitra dicatat. Salin tautan kodenya di atas."; } }
+    else if (f.id === "fMitra") {
+      const b = Object.fromEntries(Object.entries(v).filter(([, x]) => x !== "")); if (b.institusi_id) for (const k of ["institusi", "pic_nama", "pic_email", "pic_wa"]) delete b[k];   // institusi terdaftar: identitas dan PIC sudah ada
+      if (!b.institusi_id && !b.institusi) { tombol.disabled = false; return pesan("Pilih institusi terdaftar atau isi nama institusi baru.", false); }
+      r = await kirim(`${API}/admin/mitra`, b); if (r.ok) { kodeBaru = {institusi: r.j.institusi, tautan: r.j.tautan}; ok = "Mitra dicatat. Salin tautan kodenya di atas."; } }
     else if (f.id === "fPks") { r = await kirim(`${API}/admin/mitra/${pksId}`, {aksi: "pks", ...v}); if (r.ok) pksId = null; ok = "PKS diperbarui."; }
     else if (f.id === "fTelaah") { r = await kirim(`${API}/admin/usulan/${telaah.id}`, {ke: telaah.ke, catatan: v.catatan || undefined, nomor_pks: v.nomor_pks || undefined}); if (r.ok) telaah = null; ok = "Keputusan tersimpan dan masuk riwayat."; }
     else if (f.id === "fPutus") { r = await kirim(`${API}/admin/permintaan/${putus.id}`, {ke: putus.ke, jalur: v.jalur || undefined, catatan: v.catatan || undefined}); if (r.ok) putus = null; }

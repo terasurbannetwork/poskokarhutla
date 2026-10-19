@@ -1,6 +1,6 @@
 -- Kemitraan riset perguruan tinggi (docs/bnpb/RENCANA-12-JAM.md R3, docs/bnpb/ARSITEKTUR.md). Idempoten.
 -- Daftar tetap di CHECK HARUS sama dengan src/riset.js (dijaga tests/warga/riset.test.mjs).
--- Tabel mitra_riset berdiri sendiri (belum disatukan dengan kampus mitra modul relawan).
+-- Urutan: 0023 (institusi, institusi_perjanjian) dijalankan lebih dulu; mitra_riset merujuk institusi (C7).
 -- Waktu = ms epoch UTC; tanggal jadwal/PKS = teks YYYY-MM-DD; bencana = id registry atau 'lintas' (divalidasi JS, CHECK hanya bentuk).
 
 CREATE TABLE IF NOT EXISTS riset_agenda (
@@ -17,21 +17,17 @@ CREATE TABLE IF NOT EXISTS riset_agenda (
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0,1))
 );
 
+-- Mitra riset = peran kode riset yang menempel di institusi tunggal (0023). Identitas, PIC, dan PKS riset tinggal di institusi / institusi_perjanjian.
 CREATE TABLE IF NOT EXISTS mitra_riset (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),
-  institusi TEXT NOT NULL CHECK (length(institusi) BETWEEN 3 AND 120),
+  institusi_id TEXT NOT NULL REFERENCES institusi (id),
   unit TEXT CHECK (unit IS NULL OR length(unit) BETWEEN 2 AND 120),
-  pic_nama TEXT NOT NULL CHECK (length(pic_nama) BETWEEN 2 AND 100),
-  pic_email TEXT CHECK (pic_email IS NULL OR (length(pic_email) BETWEEN 5 AND 254 AND pic_email LIKE '%_@_%._%')),
-  pic_wa TEXT CHECK (pic_wa IS NULL OR length(pic_wa) BETWEEN 8 AND 20),
-  pks_nomor TEXT CHECK (pks_nomor IS NULL OR length(pks_nomor) BETWEEN 3 AND 80),
-  pks_mulai TEXT CHECK (pks_mulai IS NULL OR pks_mulai GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]'),
-  pks_sampai TEXT CHECK (pks_sampai IS NULL OR pks_sampai GLOB '[0-9][0-9][0-9][0-9]-[01][0-9]-[0-3][0-9]'),
   kode_sha TEXT NOT NULL UNIQUE CHECK (length(kode_sha) = 64),
   dibuat INTEGER NOT NULL,
   dicabut INTEGER,
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0,1))
 );
+CREATE INDEX IF NOT EXISTS mitra_riset_institusi ON mitra_riset (institusi_id);
 
 CREATE TABLE IF NOT EXISTS riset_usulan (
   id TEXT PRIMARY KEY CHECK (length(id) = 16),

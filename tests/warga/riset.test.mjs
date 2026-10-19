@@ -20,13 +20,20 @@ const usulanBody = (x = {}) => ({judul: "Peringatan dini asap berbasis ansambel"
 const buatMitra = async (institusi, x) => { const r = await U.adm("POST", "/api/riset/admin/mitra", mitraBody(institusi, x)); assert.equal(r.s, 201, r.t); return r.j; };
 const idHex = () => Array.from({length: 16}, () => "0123456789abcdef"[Math.floor(Math.random() * 16)]).join("");
 let A, B, usulanA, agendaId;
+/* mitra langsung di D1 (tanpa worker): institusi dulu, lalu peran kode riset yang menempel padanya */
+async function mitraSql(nama, shaHuruf) {
+  const iid = idHex(), mid = idHex();
+  await U.DB.batch([U.DB.prepare("INSERT INTO institusi (id, nama, jenis, pic_nama, dibuat, diubah) VALUES (?, ?, 'pts', 'PIC', 1, 1)").bind(iid, nama),
+    U.DB.prepare("INSERT INTO mitra_riset (id, institusi_id, kode_sha, dibuat) VALUES (?, ?, ?, 1)").bind(mid, iid, shaHuruf.repeat(64))]);
+  return {iid, mid};
+}
+const buangMitraSql = ({iid, mid}) => U.DB.batch([U.DB.prepare("DELETE FROM mitra_riset WHERE id = ?").bind(mid), U.DB.prepare("DELETE FROM institusi WHERE id = ?").bind(iid)]);
 
 uji("migrasi 0025 idempoten: jalan dua kali di atas data, baris utuh", async () => {
-  const dummyMitra = idHex();
-  await U.DB.prepare("INSERT INTO mitra_riset (id, institusi, pic_nama, kode_sha, dibuat) VALUES (?, 'Kampus Awal', 'PIC', ?, 1)").bind(dummyMitra, "a".repeat(64)).run();
+  const awal = await mitraSql("Kampus Awal", "a");
   await U.DB.batch(pecah(SQL).map(s => U.DB.prepare(s)));
   assert.equal(await U.n("mitra_riset"), 1);
-  await U.DB.prepare("DELETE FROM mitra_riset WHERE id = ?").bind(dummyMitra).run();
+  await buangMitraSql(awal);
 });
 
 uji("daftar tetap di JS sama persis dengan CHECK migrasi (tema, status, jenis, bentuk, permintaan, alur trigger)", async () => {
@@ -41,7 +48,7 @@ uji("daftar tetap di JS sama persis dengan CHECK migrasi (tema, status, jenis, b
   assert.deepEqual(enumDari("riset_kemajuan", "jenis"), ["kemajuan", "akhir"]);
   assert.deepEqual(BENCANA_SAH, [...REGISTRY.bencana.map(b => b.id), "lintas"]);
   /* trigger alur: tiap pasangan (dari, ke) diterima D1 tepat bila ada di ALUR */
-  const m = idHex(); await U.DB.prepare("INSERT INTO mitra_riset (id, institusi, pic_nama, kode_sha, dibuat) VALUES (?, 'Kampus Alur', 'PIC', ?, 1)").bind(m, "b".repeat(64)).run();
+  const alur = await mitraSql("Kampus Alur", "b"), m = alur.mid;
   for (const dari of STATUS) for (const ke of STATUS) {
     if (dari === ke) continue;
     const id = idHex();
@@ -50,7 +57,7 @@ uji("daftar tetap di JS sama persis dengan CHECK migrasi (tema, status, jenis, b
     const ok = await U.DB.prepare("UPDATE riset_usulan SET status = ? WHERE id = ?").bind(ke, id).run().then(() => true, e => { assert.match(String(e.message), /transisi status usulan tidak sah/); return false; });
     assert.equal(ok, !!ALUR[dari][ke], `${dari} -> ${ke}`);
   }
-  await U.DB.batch([U.DB.prepare("DELETE FROM riset_usulan WHERE mitra_id = ?").bind(m), U.DB.prepare("DELETE FROM mitra_riset WHERE id = ?").bind(m)]);
+  await U.DB.prepare("DELETE FROM riset_usulan WHERE mitra_id = ?").bind(m).run(); await buangMitraSql(alur);
 });
 
 uji("CHECK menolak isian liar langsung di D1 (tema, prioritas, tautan javascript:, DOI, sitasi, jalur //, status tanpa PKS)", async () => {
@@ -58,9 +65,9 @@ uji("CHECK menolak isian liar langsung di D1 (tema, prioritas, tautan javascript
   await gagalSql("INSERT INTO riset_agenda (id, judul, latar, bencana, tema, prioritas, luaran, dibuat, diubah) VALUES (?, 'Judul agenda', '', 'karhutla', 'sembarang', 1, '', 1, 1)", idHex());
   await gagalSql("INSERT INTO riset_agenda (id, judul, latar, bencana, tema, prioritas, luaran, dibuat, diubah) VALUES (?, 'Judul agenda', '', 'karhutla', 'logistik', 4, '', 1, 1)", idHex());
   await gagalSql("INSERT INTO riset_agenda (id, judul, latar, bencana, tema, prioritas, luaran, dibuat, diubah) VALUES (?, 'Judul agenda', '', 'Karhutla!', 'logistik', 1, '', 1, 1)", idHex());
-  const m = idHex(), u = idHex();
-  await U.DB.batch([U.DB.prepare("INSERT INTO mitra_riset (id, institusi, pic_nama, kode_sha, dibuat) VALUES (?, 'Kampus Cek', 'PIC', ?, 1)").bind(m, "c".repeat(64)),
-    U.DB.prepare(`INSERT INTO riset_usulan (id, mitra_id, judul, ketua, bencana, wilayah, metode, mulai, selesai, luaran_rencana, dibuat, diubah) VALUES (?, ?, 'Judul cek', 'Ketua', 'banjir', 'Jawa', 'metode sepuluh huruf', '2026-01-01', '2026-12-31', 'x luaran', 1, 1)`).bind(u, m)]);
+  const cek = await mitraSql("Kampus Cek", "c"), m = cek.mid, u = idHex();
+  await gagalSql("INSERT INTO mitra_riset (id, institusi_id, kode_sha, dibuat) VALUES (?, ?, ?, 1)", idHex(), idHex(), "d".repeat(64));   // institusi harus ada (FK)
+  await U.DB.batch([U.DB.prepare(`INSERT INTO riset_usulan (id, mitra_id, judul, ketua, bencana, wilayah, metode, mulai, selesai, luaran_rencana, dibuat, diubah) VALUES (?, ?, 'Judul cek', 'Ketua', 'banjir', 'Jawa', 'metode sepuluh huruf', '2026-01-01', '2026-12-31', 'x luaran', 1, 1)`).bind(u, m)]);
   const luaran = (tautan, doi) => ["INSERT INTO riset_luaran (id, usulan_id, jenis, judul, tautan, doi, waktu) VALUES (?, ?, 'artikel', 'Judul luaran', ?, ?, 1)", idHex(), u, tautan, doi];
   await gagalSql(...luaran("javascript:alert(1)", null)); await gagalSql(...luaran("ftp://x.id/a", null)); await gagalSql(...luaran("https://x.id/a b", null)); await gagalSql(...luaran(null, "bukan-doi"));
   const [qOk, ...bOk] = luaran("https://contoh.id/a", "10.1234/abc"); await U.DB.prepare(qOk).bind(...bOk).run();
@@ -71,7 +78,7 @@ uji("CHECK menolak isian liar langsung di D1 (tema, prioritas, tautan javascript
   await gagalSql("UPDATE riset_usulan SET status = 'selesai', nomor_pks = 'PKS/1' WHERE id = ?", u);
   await gagalSql("INSERT INTO riset_usulan (id, mitra_id, judul, ketua, bencana, wilayah, metode, data_butuh, mulai, selesai, luaran_rencana, dibuat, diubah) VALUES (?, ?, 'Judul cek', 'Ketua', 'banjir', 'Jawa', 'metode sepuluh huruf', 'bukan json', '2026-01-01', '2026-12-31', 'x luaran', 1, 1)", idHex(), m);
   await gagalSql("INSERT INTO riset_usulan (id, mitra_id, judul, ketua, bencana, wilayah, metode, mulai, selesai, luaran_rencana, dibuat, diubah) VALUES (?, ?, 'Judul cek', 'Ketua', 'banjir', 'Jawa', 'metode sepuluh huruf', '2026-12-31', '2026-01-01', 'x luaran', 1, 1)", idHex(), m);
-  await U.DB.batch([U.DB.prepare("DELETE FROM riset_luaran WHERE usulan_id = ?").bind(u), U.DB.prepare("DELETE FROM riset_usulan WHERE mitra_id = ?").bind(m), U.DB.prepare("DELETE FROM mitra_riset WHERE id = ?").bind(m)]);
+  await U.DB.batch([U.DB.prepare("DELETE FROM riset_luaran WHERE usulan_id = ?").bind(u), U.DB.prepare("DELETE FROM riset_usulan WHERE mitra_id = ?").bind(m)]); await buangMitraSql(cek);
   assert.equal(await U.n("riset_usulan"), 0);
 });
 
@@ -318,7 +325,7 @@ uji("halaman /riset, /riset/mitra, /admin/riset: 200 dengan CSP ketat, tanpa skr
 });
 
 uji("dummy: hanya Super Admin; rantai lengkap tiap status; publik tidak berubah; hapus bersih tanpa sentuh data asli", async () => {
-  const asli = {}; for (const t of ["riset_agenda", "mitra_riset", "riset_usulan", "riset_jejak", "riset_kemajuan", "riset_luaran", "riset_permintaan", "riset_kebijakan"]) asli[t] = await U.n(t);
+  const asli = {}; for (const t of ["institusi", "institusi_perjanjian", "riset_agenda", "mitra_riset", "riset_usulan", "riset_jejak", "riset_kemajuan", "riset_luaran", "riset_permintaan", "riset_kebijakan"]) asli[t] = await U.n(t);
   const publikSebelum = (await U.api("GET", "/api/riset/ringkas")).t;
   for (const h of [{}, GERBANG, MOD2]) assert.equal((await U.api("POST", "/api/riset/dummy", {aksi: "isi"}, h)).s, 403);
   assert.equal((await U.adm("POST", "/api/riset/dummy", {aksi: "lain"})).s, 400);
@@ -365,4 +372,57 @@ uji("tabel belum dimigrasi: semua rute riset membalas 503 (bukan 500), tetap ber
   assert.equal((await V.adm("POST", "/api/riset/dummy", {aksi: "isi"})).s, 503);
   assert.equal((await V.adm("POST", "/api/riset/admin/mitra", mitraBody("Kampus Tanpa Tabel"))).s, 503);
   assert.equal((await V.api("GET", "/riset")).s, 200, "halaman statis tidak butuh tabel");
+});
+
+/* ---------------- C7: institusi tunggal ---------------- */
+uji("sempurna: satu institusi memegang MoU relawan dan PKS riset; kode koordinator dan kode mitra terpisah; nama sama tidak membuat institusi ganda", async () => {
+  const mou = {jenis_perjanjian: "mou_relawan", nomor: "MoU/DWI/1/2026", mulai: tgl(-30), berakhir: tgl(300), kuota: 25};
+  const ins = await U.adm("POST", "/api/relawan/admin/institusi", {nama: "Universitas Dwi Peran", singkatan: "UDP", jenis: "ptn", prov: "62", pic_nama: PIC.nama, pic_email: PIC.email, pic_wa: PIC.wa, perjanjian: mou});
+  assert.equal(ins.s, 201, ins.t); assert.match(ins.j.kode, /^[0-9a-f]{26}$/);
+  const mitra = async (b, s = 201) => { const r = await U.adm("POST", "/api/riset/admin/mitra", b); assert.equal(r.s, s, r.t); return r.j; };
+  const m1 = await mitra({institusi_id: ins.j.id, unit: "Pusat Studi Satu", pks_nomor: "PKS/DWI/1/2026", pks_mulai: tgl(-10), pks_sampai: tgl(200)});
+  const m2 = await mitra(mitraBody("universitas dwi peran", {unit: "Pusat Studi Dua", pks_nomor: "PKS/DWI/2/2026"}));   // nama sama (beda huruf) = institusi yang sama
+  assert.equal(m1.institusi_id, ins.j.id); assert.equal(m2.institusi_id, ins.j.id);
+  assert.equal(await U.n("institusi", "lower(nama) = 'universitas dwi peran'"), 1, "tidak boleh ada institusi ganda");
+  assert.equal(await U.n("mitra_riset", `institusi_id = '${ins.j.id}'`), 2);
+  assert.equal(await U.n("institusi_perjanjian", `institusi_id = '${ins.j.id}'`), 3);
+  const daftar = (await U.adm("GET", "/api/relawan/admin/institusi")).j.institusi.find(i => i.id === ins.j.id);
+  assert.deepEqual([daftar.kode_aktif, daftar.kode_riset, daftar.mou.status, daftar.pks.status, daftar.perjanjian.length], [true, 2, "aktif", "aktif", 3]);
+  assert.deepEqual(daftar.perjanjian.map(p => p.jenis_perjanjian).sort(), ["mou_relawan", "pks_riset", "pks_riset"]);
+  const sisi = (await U.adm("GET", "/api/riset/admin")).j.mitra.filter(m => m.institusi_id === ins.j.id);
+  assert.equal(sisi.length, 2); assert.ok(sisi.every(m => m.institusi === "Universitas Dwi Peran" && m.pks_nomor && m.pic_nama === PIC.nama), "tab riset membaca institusi yang sama");
+  /* dua kode, dua peran, satu institusi */
+  const koor = await U.api("GET", "/api/relawan/kampus/saya", undefined, kode(ins.j.kode)), saya = await U.api("GET", "/api/riset/mitra/saya", undefined, kode(m1.kode));
+  assert.equal(koor.s, 200); assert.equal(saya.s, 200); assert.equal(saya.j.mitra.institusi, "Universitas Dwi Peran"); assert.equal(saya.j.mitra.pks_nomor, "PKS/DWI/2/2026", "PKS terpilih = yang berlaku dan berakhir paling akhir"); assert.ok(!("institusi_id" in saya.j.mitra));
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, kode(m1.kode))).s, 403, "kode mitra bukan kode koordinator");
+  assert.equal((await U.api("GET", "/api/riset/mitra/saya", undefined, kode(ins.j.kode))).s, 403, "kode koordinator bukan kode mitra");
+  assert.equal((await U.adm("POST", `/api/riset/admin/mitra/${m1.id}`, {aksi: "cabut"})).s, 200);
+  assert.equal((await U.api("GET", "/api/relawan/kampus/saya", undefined, kode(ins.j.kode))).s, 200, "mencabut kode riset tidak menyentuh koordinator");
+  assert.equal((await U.adm("POST", `/api/relawan/admin/institusi/${ins.j.id}`, {aksi: "cabut_kode"})).s, 200);
+  assert.equal((await U.api("GET", "/api/riset/mitra/saya", undefined, kode(m2.kode))).s, 200, "mencabut kode koordinator tidak menyentuh mitra");
+  /* masukan liar */
+  await mitra({institusi_id: ins.j.id, pks_nomor: "PKS/DWI/1/2026", pks_mulai: tgl(-10), pks_sampai: tgl(200)}, 409);   // nomor PKS ganda di institusi sama
+  await mitra({institusi_id: ins.j.id, pks_nomor: "PKS/DWI/9/2026"}, 400);   // PKS harus lengkap
+  await mitra({institusi_id: "zzz"}, 400); await mitra({institusi_id: idHex()}, 404); await mitra({institusi_id: ins.j.id, unit: "x"}, 400);
+  assert.equal(await U.n("mitra_riset", `institusi_id = '${ins.j.id}'`), 2, "penolakan tidak menulis");
+  const pub = (await U.api("GET", "/api/riset/ringkas")).t;
+  for (const s of [PIC.email, PIC.wa, PIC.nama, ins.j.kode, m1.kode]) assert.ok(!pub.includes(s), "publik tidak memuat data pribadi institusi");
+});
+
+uji("sempurna: dummy riset dan dummy relawan membagi satu institusi dummy; hapus modul terakhir menghapus institusinya", async () => {
+  const dasar = {}; for (const t of ["institusi", "institusi_perjanjian", "mitra_riset", "relawan"]) dasar[t] = await U.n(t, "dummy = 0");
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "isi"})).s, 201);
+  assert.equal((await U.adm("POST", "/api/riset/dummy", {aksi: "isi"})).s, 200);
+  assert.equal(await U.n("institusi", "dummy = 1 AND nama = 'Universitas Contoh Nusantara'"), 1, "satu institusi dummy untuk dua peran");
+  const ucn = (await U.adm("GET", "/api/relawan/admin/institusi")).j.institusi.find(i => i.dummy && i.nama === "Universitas Contoh Nusantara");
+  assert.deepEqual(ucn.perjanjian.map(p => p.jenis_perjanjian).sort(), ["mou_relawan", "pks_riset"]); assert.ok(ucn.kode_riset >= 1 && ucn.mou && ucn.pks, "kolom Relawan dan Riset sama-sama berisi");
+  assert.equal((await U.adm("POST", "/api/relawan/dummy", {aksi: "hapus"})).s, 200);
+  assert.equal(await U.n("institusi", "dummy = 1 AND nama = 'Universitas Contoh Nusantara'"), 1, "masih dirujuk riset");
+  assert.equal(await U.n("mitra_riset", "dummy = 1"), 4);
+  assert.equal((await U.adm("POST", "/api/riset/dummy", {aksi: "hapus"})).s, 200);
+  for (const t of ["institusi", "institusi_perjanjian"]) assert.equal(await U.n(t, "dummy = 1"), 0, `${t} dummy tersisa`);
+  for (const [t, n] of Object.entries(dasar)) assert.equal(await U.n(t, "dummy = 0"), n, `${t}: data asli berubah`);
+  assert.equal((await U.adm("POST", "/api/riset/dummy", {aksi: "isi"})).s, 200, "bisa isi lagi sendirian");
+  assert.equal((await U.adm("POST", "/api/riset/dummy", {aksi: "hapus"})).s, 200);
+  assert.equal(await U.n("institusi", "dummy = 1"), 0);
 });

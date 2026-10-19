@@ -17,7 +17,7 @@ Baca SEBELUM menulis kode. Pemilik keputusan: pemilik repo, disetujui 19 Okt 202
 | Modul | Worker (warga-api) | Migrasi | Layar publik (ruang-bnpb) | Admin | Uji |
 |---|---|---|---|---|---|
 | Bersama | `src/bnpb.js` | `0022_bnpb_bersama.sql` | `public/bnpb/bnpb.css` (gaya bersama) | — | `tests/warga/bnpb.test.mjs`, `_bnpb.mjs` |
-| Relawan + PTN | `src/relawan.js` | `0023_relawan.sql` | `public/bnpb/relawan*.{html,js,css}`, `kampus.*` | `public/admin/relawan.{js,css}` | `tests/warga/relawan.test.mjs` |
+| Relawan + PTN | `src/relawan.js` | `0023_relawan.sql` (institusi tunggal + perjanjian) | `public/bnpb/relawan*.{html,js,css}`, `kampus.*` | `public/admin/relawan.{js,css}`, `public/admin/institusi.{js,css}` (tab bersama relawan dan riset) | `tests/warga/relawan.test.mjs` |
 | Alun-alun | `src/alun.js` | `0024_alun.sql` | `public/bnpb/alun-alun.*` | `public/admin/alun.{js,css}` | `tests/warga/alun.test.mjs` |
 | Riset | `src/riset.js` | `0025_riset.sql` | `public/bnpb/riset.*`, `mitra.*` | `public/admin/riset.{js,css}` | `tests/warga/riset.test.mjs` |
 | Meja Kerja | `src/meja.js` | `0026_meja.sql` | `public/bnpb/meja.*` | `public/admin/meja.{js,css}` | `tests/warga/meja.test.mjs` |
