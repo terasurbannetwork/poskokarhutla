@@ -1,0 +1,49 @@
+/* Laporan situasi. Token dan komponen dasar dari bnpb.css. Tanpa gaya inline (CSP). */
+.bn-tombol{display:inline-flex;align-items:center;gap:7px}
+.bn-tombol svg,.sr-kartu h2 svg,.sr-belum svg,.sr-tren svg,.bn-pil svg{fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.bn-tombol svg{width:16px;height:16px}
+.sr-kartu h2 svg{width:18px;height:18px;color:var(--navy2)}
+.sr-sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+.sr-prov select{height:42px;border:1px solid var(--line);background:var(--card);color:var(--ink);border-radius:12px;padding:0 12px;font:600 14px var(--font);min-width:220px}
+
+.sr-lap{display:grid;gap:14px}
+.sr-kop{display:flex;align-items:center;gap:14px;flex-wrap:wrap;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px 18px}
+.sr-kop img{border-radius:10px}
+.sr-judul{font-size:18px;font-weight:800}
+.sr-kop .sr-pils{margin-left:auto}
+.sr-pils{display:flex;flex-wrap:wrap;gap:6px;align-items:center}
+.sr-grid{display:flex;flex-wrap:wrap;gap:14px}
+.sr-grid>.sr-kartu{flex:1 1 440px}
+.sr-isi{display:grid;gap:12px}
+.sr-ukurbaris{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr))}
+.sr-ukur{display:grid;gap:2px}
+.sr-sumber{margin:12px 0 0;font-weight:500}
+.sr-belum{display:flex;gap:8px;align-items:center;color:var(--ink2);font-weight:600;margin:0;padding:6px 0}
+.sr-belum svg{width:18px;height:18px}
+.sr-nama{display:inline-flex;align-items:center;gap:8px;font-weight:700}
+.sr-titik{width:10px;height:10px;border-radius:50%;background:var(--w,var(--c5));flex:none}
+.sr-angka b{font:800 15px var(--display)}.sr-angka small{color:var(--ink2);font-weight:600}
+.sr-tren{display:inline-flex;align-items:center;gap:4px;font-weight:700;white-space:nowrap}
+.sr-tren svg{width:14px;height:14px}
+.sr-tren.buruk{color:var(--c1)}.sr-tren.baik{color:var(--c4)}
+.sr-kartu .ad-tabel-wadah{padding:0;box-shadow:none;background:none}
+.sr-kartu .ad-tabel td{text-align:left}.sr-kartu .ad-tabel td.n{text-align:right}
+
+@media print{
+  @page{size:A4;margin:12mm}
+  body{background:#fff;font-size:11px}
+  .ad-top,.sr-kontrol,.bn-judul,#pesan{display:none!important}
+  .bn-wrap{padding:0;max-width:none}
+  .bn-kartu,.sr-kop{box-shadow:none;border:1px solid #cfd6e4;border-radius:8px;break-inside:avoid;padding:10px 12px}
+  .sr-lap{gap:8px}.sr-grid{gap:8px}.sr-grid>.sr-kartu{flex:1 1 45%;min-width:0}.sr-grid>.sr-kartu:first-child{flex-basis:100%}
+  .ad-tabel{font-size:10.5px}.ad-tabel th,.ad-tabel td{padding:4px 6px}
+  .ad-tabel thead tr,.bn-pil,.sr-titik{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .sr-kartu .ad-tabel-wadah{overflow:visible}
+  .ad-tabel tr{break-inside:avoid}
+}
+@media (max-width:640px){
+  .sr-prov{flex:1 1 100%}.sr-prov select{width:100%}
+  .bn-judul .bn-aksi .bn-tombol{flex:1 1 auto;justify-content:center}
+  .sr-kop .sr-pils{margin-left:0}
+  .sr-grid>.sr-kartu{flex-basis:100%}
+}

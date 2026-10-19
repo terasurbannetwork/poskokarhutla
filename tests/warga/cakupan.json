@@ -288,7 +288,9 @@
     "GET /api/relawan/admin/pelatihan": "pelatihan: catat, kedaluwarsa",
     "POST /api/relawan/admin/pelatihan": "pelatihan: catat, kedaluwarsa",
     "POST /api/relawan/admin/pelatihan/:id": "pelatihan: catat, kedaluwarsa",
-    "POST /api/relawan/dummy": "dummy isi: rantai lengkap"
+    "POST /api/relawan/dummy": "dummy isi: rantai lengkap",
+    "GET /sitrep": "halaman Ruang Koordinasi tanpa modul",
+    "GET /bnpb": "halaman Ruang Koordinasi tanpa modul"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

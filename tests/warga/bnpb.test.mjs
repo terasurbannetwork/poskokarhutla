@@ -49,7 +49,7 @@ uji("cron menit 17: laju_bnpb lebih tua dari 2 hari dibuang", async () => {
 });
 
 uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP ketat tanpa inline", async () => {
-  for (const j of ["/risiko"]) {   // /sitrep dan /bnpb menyusul saat halamannya jadi
+  for (const j of ["/risiko", "/sitrep", "/bnpb"]) {
     const r = await U.api("GET", j);
     assert.equal(r.s, 200, j + " " + r.t.slice(0, 80));
     const csp = r.h.get("content-security-policy");
