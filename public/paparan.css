@@ -35,3 +35,4 @@
 .sl-wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:6px;box-shadow:var(--shadow)}
 .sl-stage{position:absolute;left:0;top:0;width:1333px;height:750px;transform-origin:0 0;background:#fff;color:#1a1a1a;font-family:Roboto,Helvetica,Arial,sans-serif}
 @media (max-width:900px){.pp-badan{grid-template-columns:1fr}.pp-atur{position:static;max-height:none}.pp-grid{grid-template-columns:1fr}}
+.pp-draf{margin:0 0 8px;padding:6px 10px;border-radius:8px;background:#fbefe3;color:#8a4a08;font-size:11.5px;font-weight:600}

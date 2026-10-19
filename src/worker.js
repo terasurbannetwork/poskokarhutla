@@ -119,9 +119,30 @@ export function kunciIP(ip) {
 }
 export const ipHash = (env, req) => sha(env.IP_SALT + "|" + kunciIP(req.headers.get("cf-connecting-ip") || "lokal"));
 
+/* Body dibaca bertahap dan dihitung bytenya: lewat batas = berhenti membaca, galat status 413 (berlaku juga untuk body chunked tanpa Content-Length). */
+export async function bacaBytes(req, maks) {
+  /* kelebihan dibuang (dibaca tanpa disimpan, sampai 8x batas) supaya sambungan keep-alive klien tidak putus di tengah kirim; di atas itu dibatalkan */
+  const buang = async (rd, sudah) => { try { for (let n = sudah; n <= maks * 8;) { const {value, done} = await rd.read(); if (done) return; n += value.length; } await rd.cancel(); } catch (e) {} };
+  const cl = Number(req.headers.get("content-length"));
+  if (cl > maks) { if (req.body) await buang(req.body.getReader(), 0); return {galat: `body ${cl} byte, maksimal ${maks}`, status: 413}; }
+  const bagian = []; let n = 0;
+  if (req.body) {
+    const rd = req.body.getReader();
+    for (;;) {
+      const {value, done} = await rd.read(); if (done) break;
+      n += value.length;
+      if (n > maks) { await buang(rd, n); return {galat: `body lebih dari ${maks} byte`, status: 413}; }
+      bagian.push(value);
+    }
+  }
+  const b = new Uint8Array(n); let p = 0; for (const x of bagian) { b.set(x, p); p += x.length; }
+  return {b};
+}
 export async function bacaBody(req, maks = MAKS_BODY) {
-  const t = await req.text();
-  if (t.length > maks) return {galat: `body ${t.length} byte, maksimal ${maks}`};
+  const r = await bacaBytes(req, maks * 4);   // UTF-8 paling banyak 4 byte per huruf; jumlah huruf diperiksa di bawah
+  if (r.galat) return r;
+  const t = new TextDecoder().decode(r.b);
+  if (t.length > maks) return {galat: `body ${t.length} byte, maksimal ${maks}`, status: 413};
   try { const o = JSON.parse(t || "{}"); return o && typeof o === "object" && !Array.isArray(o) ? {o} : {galat: "body harus objek JSON"}; }
   catch (e) { return {galat: "body bukan JSON"}; }
 }
@@ -292,12 +313,31 @@ async function selesai(env, req, id, kini) {
 /* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator.
    Entri berbentuk "email:sandi" adalah akun untuk form /admin/masuk (sandi tanpa koma, tanpa spasi di ujung).
    Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
+const MAKS_GAGAL_ADMIN = 300;
+/* kegagalan autentikasi per kunci (hash IP bergaram) di tabel laju_posko (migrasi 0019); aksi: kode_gagal, admin_gagal, foto */
+export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
+  return (await env.DB.prepare("SELECT count(*) n FROM laju_posko WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
+}
+export const catatGagal = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini).run();
 export async function adminOK(env, req, kini = Date.now()) {
   const daftar = [env.ADMIN_TOKEN, env.AKUN_SITUS].filter(Boolean).join(",");   // AKUN_SITUS: akun "user:sandi" tambahan (gerbang centurisk97.id)
   if (!daftar) return null;
   const sah = await Promise.all(daftar.split(",").map(x => x.trim()).filter(Boolean).map(sha));
   const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
-  if (t != null) { const a = await sha(t.trim()); return sah.includes(a) ? a.slice(0, 12) : null; }
+  if (t != null) {
+    const a = await sha(t.trim()), ok = sah.includes(a);
+    /* RISIKO DITERIMA: IP bersama (CGNAT seluler, IPv6 /64 per pelanggan) berbagi satu hitungan, jadi satu penebak bisa mengunci admin sah dari IP yang sama
+       selama sejam (admin masuk lewat IP lain atau form /admin/masuk, yang tidak ikut terkunci). Tebakan token lewat header dihitung per IP (di atas MAKS_GAGAL_ADMIN per jam, token benar pun ditolak dari IP itu). Tanpa cf-connecting-ip
+       (panggilan internal seperti form masuk, yang punya batas sendiri) atau tanpa DB/IP_SALT: tidak dihitung. */
+    if (env.DB && env.IP_SALT && req.headers.get("cf-connecting-ip")) {
+      try {
+        const k = await ipHash(env, req);
+        if (await gagalSudahBanyak(env, k, "admin_gagal", MAKS_GAGAL_ADMIN, kini)) return null;
+        if (!ok) { await catatGagal(env, k, "admin_gagal", kini); return null; }
+      } catch (e) { if (!/no such table/i.test(String(e?.message || e))) console.error("adminOK laju", e?.message); }   // migrasi 0019 belum jalan = tanpa batas; galat lain tetap dicatat
+    }
+    return ok ? a.slice(0, 12) : null;
+  }
   return St.sesiOK(env, req, kini, sah.map(a => a.slice(0, 12)));
 }
 const AKSI_ADMIN = ["sembunyikan", "tampilkan", "hapus", "hapus_pengirim"];
@@ -401,9 +441,10 @@ const RUTE = {
   ...RUTE_POSKO,
 };
 let GABUNG = null;
+const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
 async function rute(env, req, url, ctx) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/", id = jalur.match(/\/([0-9a-f]{16})$/)?.[1];
-  const kunci = id ? jalur.slice(0, -16) + ":id" : jalur, tabel = (GABUNG ||= {...RUTE, ...Ews.RUTE_EWS});
+  const kunci = id ? jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
@@ -411,7 +452,7 @@ async function rute(env, req, url, ctx) {
   }
   if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
     const o = req.headers.get("origin");
-    if (o && o !== "null" && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
+    if (o && o !== "null" && (!URL.canParse(o) || new URL(o).host !== url.host)) return gagal(403, "origin lain ditolak");
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
   try { return await f(env, req, url, Date.now(), ctx, id); }
@@ -434,6 +475,19 @@ export const HTML_RUTE = [
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
 ];
+/* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
+   dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
+/* Cakupan: gerbang ini menutup CANGKANG HALAMAN (HTML, termasuk berkas .html yang dibuka langsung lewat run_worker_first di wrangler*.jsonc),
+   BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
+export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"]]);
+function halamanTerkunci(url) {
+  const jalur = url.pathname.replace(/\/+$/, "") || "/";
+  if (/\.html$/i.test(url.pathname)) return true;   // berkas HTML statis dibuka langsung lewat nama (Worker dipanggil hanya untuk pola ini)
+  if (PUBLIK_TANPA_SESI.has(jalur)) return false;
+  if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
+  const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
+  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin)(\/|$)/.test(jalur);
+}
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));
 }
@@ -504,8 +558,8 @@ export default {
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
-    if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD")
-      && (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) && !await adminOK(env, req))
+    if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
+    if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req))
       return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
     const r = await rute(env, req, url, ctx); if (r) return r;
     const h = await layaniHTML(req, env, ctx, url); if (h) return h;
@@ -514,7 +568,7 @@ export default {
     try {
       if (req.method === "POST") {
         const o = req.headers.get("origin");
-        if (o && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
+        if (o && (!URL.canParse(o) || new URL(o).host !== url.host)) return gagal(403, "origin lain ditolak");
         if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
       }
       if (p.length === 0 && req.method === "GET") return cacheTepi(req, ctx, 30, () => daftar(env, url, kini));

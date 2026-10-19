@@ -107,9 +107,9 @@
   async function tampilLaporan() {
     const d = await ambil(`${API}/lapangan?tgl=${tglLaporan}`);
     return `<div class="pk-bar"><label>Tanggal <input type="date" id="pkTglL" value="${esc(tglLaporan)}"></label><span class="pk-redup">${d.laporan.length} laporan</span></div>
-      ${tabel(["Waktu", "Regu", "Wilayah", "Kondisi", "Luas / padam", "Personel", "Kendala", "Air", "Catatan", "Foto", "Lokasi"], d.laporan.map(l => `<tr>
+      ${tabel(["Waktu", "Regu", "Wilayah", "Kondisi", "Luas / padam", "Personel", "Kendala", "Air", "Catatan", "Foto", "Lokasi"], d.laporan.map(l => `<tr data-id="${esc(l.id)}">
         <td>${jam(l.waktu)}</td><td>${esc(l.regu)}<br><span class="pk-redup">${esc(l.unsur)}</span>${l.dummy ? " " + pil("dummy", "DUMMY") : ""}</td><td>${esc(l.kab)}${l.kompleks_id ? `<br><span class="pk-redup">${esc(l.kompleks_id)}</span>` : ""}</td>
-        <td>${pil("l-" + l.status, STATUS_LAP[l.status])}</td><td>${l.luas_ha == null ? "–" : num(l.luas_ha)} / ${l.padam_ha == null ? "–" : num(l.padam_ha)}</td><td>${l.personel ?? "–"}</td>
+        <td>${pil("l-" + l.status, STATUS_LAP[l.status])}</td><td>${l.luas_ha == null ? "–" : num(l.luas_ha)} / ${l.padam_ha == null ? "–" : num(l.padam_ha)}${l.putusan === "tahan" ? `<br>${pil("l-menyala", "DITAHAN")} <span class="pk-redup">${esc(l.alasan_tahan)}</span><br><button class="ad-tombol kecil utama" data-putus="setuju">Setujui</button>` : l.putusan === "setuju" ? `<br>${pil("l-padam", "disetujui")} <button class="ad-tombol kecil" data-putus="tahan">Tahan</button>` : ""}</td><td>${l.personel ?? "–"}</td>
         <td>${esc(l.kendala.map(k => KENDALA[k] || k).join(", ")) || "–"}</td><td>${esc(l.sumber_air || "–")}</td><td>${esc(l.catatan || "")}${l.gps_curiga ? `<br><b class="pk-lewat">Curiga GPS: ${esc(l.gps_curiga)}</b>` : ""}</td>
         <td>${l.foto ? `<a href="${API}/foto/${esc(l.id)}" target="_blank" rel="noopener">Lihat</a>` : "–"}</td>
         <td><a href="https://www.google.com/maps?q=${l.lat},${l.lon}" target="_blank" rel="noopener noreferrer">${(+l.lat).toFixed(4)}, ${(+l.lon).toFixed(4)}</a> ±${Math.round(l.akurasi ?? 0)} m</td></tr>`), "Belum ada laporan regu untuk tanggal ini.")}`;
@@ -189,10 +189,11 @@
       let w = null; if (aksi === "wa") w = window.open("about:blank", "_blank");   // dibuka dulu, sinkron dengan klik, supaya tidak diblokir
       t.disabled = true; const r = await kirim(`${API}/panggilan/${id}`, body);
       if (!r.ok) { w?.close(); t.disabled = false; return catatPesan(r.j.galat || `Gagal (${r.status})`, false); }
-      if (aksi === "wa") { if (w) w.location = r.j.tautan; else catatPesan("Popup diblokir peramban: " + r.j.tautan, false); }
+      if (aksi === "wa") { if (w) { w.opener = null; w.location = r.j.tautan; } else catatPesan("Popup diblokir peramban: " + r.j.tautan, false); }
       catatPesan(aksi === "email" ? "Email terkirim. Hitung mundur 2 jam dimulai." : aksi === "wa" ? "WhatsApp dibuka. Hitung mundur 2 jam dimulai." : "Tersimpan.", true);
       return muat();
     }
+    if (t.dataset.putus && kartu) { const r = await kirim(`${API}/lapangan/${kartu.dataset.id}`, {aksi: t.dataset.putus}); catatPesan(r.ok ? (t.dataset.putus === "setuju" ? "Laporan disetujui; masuk neraca." : "Laporan ditahan; keluar dari neraca.") : r.j.galat, r.ok); return muat(); }
     if (t.dataset.salin) { formNeraca = JSON.parse(t.dataset.salin); return muat(); }
     if (t.dataset.hapusRakor) {
       const tr = t.closest("tr"); if (!confirm("Hapus isian Rakor ini? Angka agregat regu dipakai lagi.")) return;

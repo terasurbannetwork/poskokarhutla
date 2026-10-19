@@ -6,7 +6,7 @@
    - Kontak perusahaan diinput admin; tidak pernah ada di rute publik (publik hanya /api/neraca dan /api/paparan/templat).
    ponytail: buatAntrean mengurai konsesi2026/<prov>.json (~2,5 MB) per provinsi bertitik; di Workers Free (CPU 10 ms) bisa tak muat,
    karena itu ia jalan di invokasi cron SENDIRI (menit 16). Bila terpotong: pecah per provinsi atau indeks bbox statis. */
-import {json, gagal, acak, sha, adminOK, bacaBody, cacheTepi, normalWA, dekatApi} from "./worker.js";
+import {json, gagal, acak, sha, adminOK, bacaBody, bacaBytes, cacheTepi, normalWA, dekatApi, ipHash, gagalSudahBanyak, catatGagal} from "./worker.js";
 import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
@@ -22,7 +22,7 @@ export const KENDALA = {air_jauh: "Air jauh", akses_sulit_rawa: "Akses sulit di 
   asap_tebal: "Asap tebal", angin_kencang: "Angin kencang"};
 export const SUMBER_AIR = ["sungai", "kanal", "embung", "sumur_bor", "hidran", "mobil_tangki", "tidak_ada", "lainnya"];
 export const STATUS_PANGGILAN = ["baru", "dipanggil", "direspons", "dicek", "tindak_lanjut", "selesai", "abaikan"];
-const MAKS_FOTO = 1.5 * 1048576, MAKS_CSV = 65536, MAKS_TEMPLAT = 65536, LAJU_REGU = 60;   // laporan per regu per jam
+const MAKS_FOTO = 1.5 * 1048576, MAKS_HA = 5000, LAJU_KAB = 300, MAKS_GAGAL_KODE = 300, LAJU_FOTO = 30, RETENSI_NERACA_HARI = 400, MAKS_CSV = 65536, MAKS_TEMPLAT = 65536, LAJU_REGU = 60;   // laporan per regu per jam
 
 const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
@@ -36,20 +36,37 @@ const RE_PROV = /^\d{2}$/, RE_TGL = /^\d{4}-[01]\d-[0-3]\d$/, RE_PID = /^[A-Za-z
 const tglSah = t => RE_TGL.test(t) && !Number.isNaN(Date.parse(t + "T00:00:00Z")) && new Date(t + "T00:00:00Z").toISOString().slice(0, 10) === t;
 const kendalaSah = k => Array.isArray(k) && k.length <= 6 && k.every(x => typeof x === "string" && Object.hasOwn(KENDALA, x)) && new Set(k).size === k.length;
 const adm = async (env, req) => (await adminOK(env, req)) || null;
-const tolakAdmin = () => gagal(403, "token admin salah atau ADMIN_TOKEN belum diset");
+/* peran: adminOK mengembalikan 12 hex awal sha256 entri ADMIN_TOKEN/AKUN_SITUS yang cocok. Akun gerbang situs (AKUN_SITUS) boleh admin biasa,
+   tapi bukan kontak PT / kirim ke perusahaan (modOK). Super Admin = awalan yang tercantum di secret SUPER_ADMIN (koma); kosong = dummy tertutup. */
+const awalan = async d => new Set((await Promise.all(String(d || "").split(",").map(x => x.trim()).filter(Boolean).map(sha))).map(a => a.slice(0, 12)));
+const modOK = async (env, req) => {
+  const m = await adminOK(env, req); if (!m) return null;
+  return (await awalan(env.AKUN_SITUS)).has(m) && !(await awalan(env.ADMIN_TOKEN)).has(m) ? null : m;
+};
+const superOK = async (env, req) => {
+  const m = await modOK(env, req); if (!m) return null;
+  return new Set(String(env.SUPER_ADMIN || "").split(",").map(x => x.trim().toLowerCase()).filter(x => /^[0-9a-f]{12}$/.test(x))).has(m) ? m : null;
+};
+const tolakMod = () => gagal(403, "fitur ini hanya untuk moderator ke atas (bukan akun gerbang situs)");
+const tolakAdmin = () => gagal(403, "akses ditolak");
 
 /* ================================================================ regu (kode) */
-async function reguDari(env, req) {
+/* kembalikan baris regu, atau Response galat. Tebakan kode dihitung per IP (hash bergaram) SEBELUM lookup D1: > MAKS_GAGAL_KODE per jam = 429. */
+async function reguDari(env, req, kini = Date.now()) {
+  if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
+  const ip = await ipHash(env, req);
+  if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
   const k = (req.headers.get("x-kode-regu") || "").trim().toLowerCase();
-  if (!/^[0-9a-f]{26}$/.test(k)) return null;
-  const r = await env.DB.prepare("SELECT id, nama, unsur, prov, kab, perusahaan_id, dicabut FROM regu WHERE kode_sha = ?").bind(await sha(k)).first();
-  return r && !r.dicabut ? r : null;   // tidak dikenal dan dicabut dijawab sama: tidak membocorkan kode mana yang pernah sah
+  const r = /^[0-9a-f]{26}$/.test(k) ? await env.DB.prepare("SELECT id, nama, unsur, prov, kab, perusahaan_id, dicabut FROM regu WHERE kode_sha = ?").bind(await sha(k)).first() : null;
+  if (r && !r.dicabut) return r;
+  await catatGagal(env, ip, "kode_gagal", kini);
+  return kodeTolak();   // tidak dikenal dan dicabut dijawab sama: tidak membocorkan kode mana yang pernah sah
 }
 const kodeTolak = () => gagal(403, "kode regu tidak berlaku (salah atau sudah dicabut); minta tautan baru dari posko");
 
 async function buatRegu(env, req, url, kini) {
   const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const nama = tx(b.o.nama, 80), kab = tx(b.o.kab, 60), pid = tx(b.o.perusahaan_id, 80);
   if (!nama || nama.length < 2) return gagal(400, "nama regu 2-80 karakter");
   if (!UNSUR.includes(b.o.unsur)) return gagal(400, `unsur harus salah satu dari ${UNSUR.join(", ")}`);
@@ -70,7 +87,7 @@ async function daftarRegu(env, req) {
 }
 async function cabutRegu(env, req, id, kini) {
   if (!await adm(env, req)) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   if (b.o.aksi !== "cabut") return gagal(400, "aksi harus cabut");
   const r = await env.DB.prepare("UPDATE regu SET dicabut = ? WHERE id = ? AND dicabut IS NULL").bind(kini, id).run();
   if (r.meta.changes) return json({id, dicabut: kini});
@@ -79,10 +96,12 @@ async function cabutRegu(env, req, id, kini) {
 
 /* ================================================================ neraca (agregat regu dihitung ulang tiap laporan; rakor menang) */
 /* kabupaten yang punya laporan ASLI hanya menghitung yang asli (dummy tidak boleh mengotori angka sungguhan); tanpa itu baru dummy yang dihitung.
-   satu laporan terbaru per (regu, ~100 m): laporan susulan di titik yang sama mengganti, bukan menambah. personel = maks per regu, dijumlah antarregu.
+   satu laporan terbaru per (regu, sel ~1 km: lintang/bujur 2 desimal): laporan susulan di titik yang sama mengganti, bukan menambah. personel = maks per regu, dijumlah antarregu.
    fs = laporan selain tidak_ditemukan. HAVING: tanpa laporan tidak ada baris. */
-const SQL_AGREGAT = `WITH u AS (SELECT *, row_number() OVER (PARTITION BY regu_id, round(lat, 3), round(lon, 3) ORDER BY waktu DESC, dibuat DESC) rn
-    FROM lapangan WHERE tgl = ?1 AND prov = ?2 AND kab = ?3 AND dummy = (SELECT min(dummy) FROM lapangan WHERE tgl = ?1 AND prov = ?2 AND kab = ?3)),
+const SAH = "id NOT IN (SELECT lapangan_id FROM lapangan_tahan WHERE putusan = 'tahan')";   // laporan ditahan tidak ikut neraca
+const SQL_AGREGAT = `WITH u AS (SELECT *, row_number() OVER (PARTITION BY regu_id, round(lat, 2), round(lon, 2) ORDER BY waktu DESC, dibuat DESC) rn
+    FROM lapangan WHERE tgl = ?1 AND prov = ?2 AND kab = ?3 AND ${SAH}
+      AND dummy = (SELECT min(dummy) FROM lapangan WHERE tgl = ?1 AND prov = ?2 AND kab = ?3 AND ${SAH})),
   l AS (SELECT * FROM u WHERE rn = 1),
   p AS (SELECT sum(n) n FROM (SELECT max(personel) n FROM l GROUP BY regu_id))
 INSERT INTO neraca_harian (tgl, prov, kab, sumber, fs, luas_ha, padam_ha, sisa_ha, personel, kendala, diubah, dummy)
@@ -106,7 +125,7 @@ function jumlahNeraca(baris) {
 async function neracaPublik(env, req, url, kini, ctx) {
   const prov = url.searchParams.get("prov") || "", tgl = url.searchParams.get("tgl") || wib(kini), dummy = url.searchParams.get("dummy") === "1" && !!await adm(env, req);
   if (!RE_PROV.test(prov)) return gagal(400, "prov wajib: kode provinsi 2 digit, mis. ?prov=62");
-  if (!tglSah(tgl)) return gagal(400, "tgl harus YYYY-MM-DD yang sah");
+  if (!tglSah(tgl) || tgl < wib(kini - RETENSI_NERACA_HARI * HARI) || tgl > wib(kini + HARI)) return gagal(400, `tgl harus YYYY-MM-DD dalam jendela ${RETENSI_NERACA_HARI} hari terakhir (sama dengan retensi)`);
   const ambil = async () => {
     const baris = (await env.DB.prepare(`SELECT ${KOLOM_NERACA} FROM neraca_harian n WHERE tgl = ?1 AND prov = ?2 ${dummy ? "" : "AND dummy = 0"}
       AND (sumber = 'rakor' OR NOT EXISTS (SELECT 1 FROM neraca_harian r WHERE r.tgl = n.tgl AND r.prov = n.prov AND r.kab = n.kab AND r.sumber = 'rakor' ${dummy ? "" : "AND r.dummy = 0"}))
@@ -125,7 +144,7 @@ async function neracaAdmin(env, req, url, kini) {
 }
 async function simpanRakor(env, req, kini) {
   const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, kab0 = tx(o.kab, 60), catatan = tx(o.catatan, 500);
   if (typeof o.tgl !== "string" || !tglSah(o.tgl)) return gagal(400, "tgl harus YYYY-MM-DD yang sah");
   if (typeof o.prov !== "string" || !RE_PROV.test(o.prov)) return gagal(400, "prov harus kode provinsi 2 digit");
@@ -150,7 +169,7 @@ async function simpanRakor(env, req, kini) {
 }
 async function hapusRakor(env, req) {
   if (!await adm(env, req)) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   if (typeof b.o.tgl !== "string" || !tglSah(b.o.tgl) || typeof b.o.prov !== "string" || !RE_PROV.test(b.o.prov) || typeof b.o.kab !== "string") return gagal(400, "tgl, prov, kab wajib");
   const r = await env.DB.prepare("DELETE FROM neraca_harian WHERE tgl = ? AND prov = ? AND kab = ? AND sumber = 'rakor'").bind(b.o.tgl, b.o.prov, b.o.kab).run();
   return r.meta.changes ? json({ok: true}) : gagal(404, "isian rakor tidak ada");
@@ -159,50 +178,79 @@ async function hapusRakor(env, req) {
 /* ================================================================ laporan regu */
 const kunciIdem = s => typeof s === "string" && /^[A-Za-z0-9_-]{8,40}$/.test(s);
 async function lapor(env, req, url, kini) {
-  const regu = await reguDari(env, req); if (!regu) return kodeTolak();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const regu = await reguDari(env, req); if (regu instanceof Response) return regu;
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o;
   if (!kunciIdem(o.klien_id)) return gagal(400, "klien_id wajib: 8-40 huruf/angka/garis (kunci kirim ulang draf)");
   const ulang = async () => { const x = await env.DB.prepare("SELECT id FROM lapangan WHERE regu_id = ? AND klien_id = ?").bind(regu.id, o.klien_id).first(); return x && json({id: x.id, ulang: true}); };
   { const u = await ulang(); if (u) return u; }
   if (!STATUS_LAP.includes(o.status)) return gagal(400, `status harus ${STATUS_LAP.join("/")}`);
-  const lat = num(o.lat, BBOX.latMin, BBOX.latMaks), lon = num(o.lon, BBOX.lonMin, BBOX.lonMaks), akurasi = num(o.akurasi, 0, 1000), waktu = num(o.waktu_gps, kini - HARI, kini + MENIT);
+  const lat = num(o.lat, BBOX.latMin, BBOX.latMaks), lon = num(o.lon, BBOX.lonMin, BBOX.lonMaks), akurasi = num(o.akurasi, 0, 1000), waktu = num(o.waktu_gps, kini - 6 * JAM, kini + MENIT);
   if (lat == null || lon == null || akurasi == null || waktu == null || [lat, lon, akurasi, waktu].some(Number.isNaN))
-    return gagal(400, "lokasi GPS wajib di dalam Indonesia: lat, lon, akurasi <= 1000 m, waktu_gps maksimal 24 jam lalu");
-  const luas = num(o.luas_ha, 0, 100000), padam = num(o.padam_ha, 0, 100000), personel = num(o.personel, 0, 1000, true);
-  if ([luas, padam, personel].some(Number.isNaN)) return gagal(400, "luas_ha/padam_ha 0-100000 ha, personel bilangan bulat 0-1000");
+    return gagal(400, "lokasi GPS wajib di dalam Indonesia: lat, lon, akurasi <= 1000 m, waktu_gps maksimal 6 jam lalu");
+  const luas = num(o.luas_ha, 0, MAKS_HA), padam = num(o.padam_ha, 0, MAKS_HA), personel = num(o.personel, 0, 1000, true);
+  if ([luas, padam, personel].some(Number.isNaN)) return gagal(400, `luas_ha/padam_ha 0-${MAKS_HA} ha per laporan, personel bilangan bulat 0-1000`);
   if (padam != null && (luas == null || padam > luas)) return gagal(400, "dipadamkan wajib disertai luas dan tidak boleh melebihi luas");
   const kendala = o.kendala ?? [];
   if (!kendalaSah(kendala)) return gagal(400, `kendala harus larik dari: ${Object.keys(KENDALA).join(", ")}`);
   if (o.sumber_air != null && o.sumber_air !== "" && !SUMBER_AIR.includes(o.sumber_air)) return gagal(400, `sumber_air harus ${SUMBER_AIR.join("/")}`);
   const catatan = tx(o.catatan, 500); if (catatan === undefined) return gagal(400, "catatan maksimal 500 karakter");
-  if ((await env.DB.prepare("SELECT count(*) n FROM lapangan WHERE regu_id = ? AND dibuat > ?").bind(regu.id, kini - JAM).first()).n >= LAJU_REGU)
-    return gagal(429, `batas ${LAJU_REGU} laporan per jam untuk satu regu sudah tercapai`, {"retry-after": "600"});
   const sebelum = await env.DB.prepare("SELECT lat, lon, dibuat FROM lapangan WHERE regu_id = ? AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1").bind(regu.id, kini - HARI).first();
   const sampel = Array.isArray(o.sampel) ? JSON.stringify(o.sampel) : o.sampel;
   const gps = nilaiGps({negara: req.cf?.country, lat, lon, waktuGps: waktu, sampel, sebelum, kini});   // pola anti-palsu yang sama dengan foto warga
   if (gps.tolak) return gagal(400, gps.tolak);
   const k = cariWilayah(await wilayah(env), lat, lon), [prov, kab] = k ? k.split("|") : [regu.prov, regu.kab];   // di laut/perbatasan: wilayah regu
+  /* pencilan: luas > 10x median laporan kabupaten ini 7 hari (lantai 50 ha), atau > 1000 ha bila belum ada pembanding -> ditahan dari neraca sampai admin setuju */
+  let tahan = null;
+  if (luas != null) {
+    const ls = (await env.DB.prepare(`SELECT luas_ha FROM lapangan WHERE prov = ? AND kab = ? AND waktu > ? AND luas_ha IS NOT NULL AND dummy = 0 AND ${SAH} ORDER BY luas_ha LIMIT 500`).bind(prov, kab, kini - 7 * HARI).all()).results.map(x => x.luas_ha);
+    const med = ls.length ? (ls[(ls.length - 1) >> 1] + ls[ls.length >> 1]) / 2 : null, batas = med == null ? 1000 : Math.max(10 * med, 50);
+    if (luas > batas) tahan = `luas ${luas} ha melebihi ${Math.round(batas)} ha (${med == null ? "belum ada pembanding" : "10x median 7 hari"})`;
+  }
   const {laci} = await dekatApi(env, url, lat, lon, kini).catch(() => ({laci: null}));
   const id = acak(8), tgl = wib(waktu), la = Math.round(lat * 1e5) / 1e5, lo = Math.round(lon * 1e5) / 1e5;
+  /* batas laju ATOMIK: INSERT..SELECT..WHERE hitungan < batas dalam satu pernyataan (cek-lalu-sisip bisa dilompati kiriman serentak) */
+  let hasil;
   try {
-    await env.DB.batch([env.DB.prepare(`INSERT INTO lapangan (id, regu_id, klien_id, tgl, waktu, dibuat, lat, lon, akurasi, status, luas_ha, padam_ha, personel, kendala, sumber_air,
-      catatan, prov, kab, kompleks_id, gps_curiga) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
+    hasil = await env.DB.batch([env.DB.prepare(`INSERT INTO lapangan (id, regu_id, klien_id, tgl, waktu, dibuat, lat, lon, akurasi, status, luas_ha, padam_ha, personel, kendala, sumber_air,
+      catatan, prov, kab, kompleks_id, gps_curiga) SELECT ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?
+      WHERE (SELECT count(*) FROM lapangan WHERE regu_id = ?21 AND dibuat > ?22) < ?23 AND (SELECT count(*) FROM lapangan WHERE tgl = ?4 AND prov = ?17 AND kab = ?18) < ?24`)
       .bind(id, regu.id, o.klien_id, tgl, waktu, kini, la, lo, Math.round(akurasi), o.status, luas, padam, personel, JSON.stringify(kendala), o.sumber_air || null, catatan, prov, kab, laci ?? null,
-        gps.curiga.length ? gps.curiga.join(" · ").slice(0, 600) : null), agregat(env, tgl, prov, kab, kini)]);
+        gps.curiga.length ? gps.curiga.join(" · ").slice(0, 600) : null, regu.id, kini - JAM, LAJU_REGU, LAJU_KAB),
+      ...(tahan ? [env.DB.prepare("INSERT INTO lapangan_tahan (lapangan_id, alasan, putusan, waktu) SELECT ?1, ?2, 'tahan', ?3 WHERE EXISTS (SELECT 1 FROM lapangan WHERE id = ?1)").bind(id, tahan, kini)] : []),
+      agregat(env, tgl, prov, kab, kini)]);
   } catch (e) { if (/UNIQUE/i.test(String(e.message || e))) { const u = await ulang(); if (u) return u; } throw e; }   // dua kiriman serentak dengan klien_id sama
-  return json({id, prov, kab, kompleks_id: laci ?? null}, 201);
+  if (!hasil[0].meta.changes) return gagal(429, `batas laporan tercapai: ${LAJU_REGU} per jam untuk satu regu atau ${LAJU_KAB} per kabupaten per hari`, {"retry-after": "600"});
+  return json({id, prov, kab, kompleks_id: laci ?? null, ditahan: !!tahan}, 201);
+}
+/* JPEG: buang segmen APP1 (EXIF/XMP, memuat GPS dan perangkat) dan APP13 sebelum SOS. Struktur janggal = berkas apa adanya. */
+export function buangExif(b) {
+  const out = [b.subarray(0, 2)]; let i = 2;
+  while (i + 4 <= b.length) {
+    if (b[i] !== 0xff) return b;
+    const m = b[i + 1], len = (b[i + 2] << 8) | b[i + 3];
+    if (m === 0xd8 || len < 2) return b;
+    if (m === 0xda) { out.push(b.subarray(i)); i = b.length; break; }   // SOS: sisanya data gambar
+    if (i + 2 + len > b.length) return b;
+    if (m !== 0xe1 && m !== 0xed) out.push(b.subarray(i, i + 2 + len));
+    i += 2 + len;
+  }
+  if (i < b.length) out.push(b.subarray(i));
+  const r = new Uint8Array(out.reduce((a, x) => a + x.length, 0)); let p = 0; for (const x of out) { r.set(x, p); p += x.length; }
+  return r;
 }
 async function fotoLapor(env, req, id, kini) {
-  const regu = await reguDari(env, req); if (!regu) return kodeTolak();
+  const regu = await reguDari(env, req); if (regu instanceof Response) return regu;
   if (!env.MEDIA) return gagal(503, "penyimpanan foto belum aktif (R2 MEDIA); laporan tetap tersimpan tanpa foto");
   const r = await env.DB.prepare("SELECT foto FROM lapangan WHERE id = ? AND regu_id = ?").bind(id, regu.id).first();
   if (!r) return gagal(404, "laporan tidak ada");
   if (r.foto) return gagal(409, "laporan ini sudah punya foto");
-  if (Number(req.headers.get("content-length")) > MAKS_FOTO) return gagal(413, `foto maksimal ${MAKS_FOTO / 1048576} MB`);
-  const b = new Uint8Array(await req.arrayBuffer());
-  if (b.length > MAKS_FOTO) return gagal(413, `foto ${(b.length / 1048576).toFixed(1)} MB, maksimal ${MAKS_FOTO / 1048576} MB`);
+  const u = await bacaBytes(req, MAKS_FOTO); if (u.galat) return gagal(u.status || 400, u.galat);   // dihitung per byte: chunked tanpa Content-Length pun terkena 413
+  let b = u.b;
   const mime = jenisBerkas(b); if (mime !== "image/jpeg" && mime !== "image/webp") return gagal(400, "berkas harus foto JPEG atau WebP");
+  const q = await env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) SELECT ?1, 'foto', ?2 WHERE (SELECT count(*) FROM laju_posko WHERE kunci = ?1 AND aksi = 'foto' AND waktu > ?3) < ?4").bind(regu.id, kini, kini - JAM, LAJU_FOTO).run();
+  if (!q.meta.changes) return gagal(429, `batas ${LAJU_FOTO} foto per jam untuk satu regu tercapai`, {"retry-after": "900"});
+  if (mime === "image/jpeg") b = buangExif(b);   // WebP: metadata tidak dibuang (keterbatasan; klien mengecilkan lewat canvas yang membuangnya)
   await env.MEDIA.put(`lapangan/${id}`, b, {httpMetadata: {contentType: mime}});
   try { await env.DB.prepare("UPDATE lapangan SET foto = 1 WHERE id = ?").bind(id).run(); }
   catch (e) { await env.MEDIA.delete(`lapangan/${id}`); throw e; }   // baris gagal = berkas jangan yatim
@@ -218,8 +266,20 @@ async function daftarLapangan(env, req, url, kini) {
   if (!await adm(env, req)) return tolakAdmin();
   const tgl = url.searchParams.get("tgl") || wib(kini); if (!tglSah(tgl)) return gagal(400, "tgl harus YYYY-MM-DD yang sah");
   return json({tgl, laporan: (await env.DB.prepare(`SELECT l.id, l.tgl, l.waktu, l.dibuat, l.lat, l.lon, l.akurasi, l.status, l.luas_ha, l.padam_ha, l.personel, l.kendala, l.sumber_air, l.catatan, l.foto,
-    l.prov, l.kab, l.kompleks_id, l.gps_curiga, l.dummy, r.nama regu, r.unsur FROM lapangan l JOIN regu r ON r.id = l.regu_id WHERE l.tgl = ? ORDER BY l.waktu DESC LIMIT 500`).bind(tgl).all())
+    l.prov, l.kab, l.kompleks_id, l.gps_curiga, l.dummy, r.nama regu, r.unsur, (SELECT putusan FROM lapangan_tahan WHERE lapangan_id = l.id) putusan, (SELECT alasan FROM lapangan_tahan WHERE lapangan_id = l.id) alasan_tahan FROM lapangan l JOIN regu r ON r.id = l.regu_id WHERE l.tgl = ? ORDER BY l.waktu DESC LIMIT 500`).bind(tgl).all())
     .results.map(x => ({...x, kendala: JSON.parse(x.kendala)})), kendala_nama: KENDALA});
+}
+
+/* admin memutuskan laporan pencilan: setuju = ikut neraca, tahan = dikeluarkan; neraca regu kabupaten itu dihitung ulang */
+async function putusLapangan(env, req, id, kini) {
+  const mod = await adm(env, req); if (!mod) return tolakAdmin();
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (b.o.aksi !== "setuju" && b.o.aksi !== "tahan") return gagal(400, "aksi harus setuju atau tahan");
+  const l = await env.DB.prepare("SELECT tgl, prov, kab FROM lapangan WHERE id = ?").bind(id).first(); if (!l) return gagal(404, "laporan tidak ada");
+  await env.DB.batch([env.DB.prepare(`INSERT INTO lapangan_tahan (lapangan_id, alasan, putusan, waktu, oleh) VALUES (?1, 'diputuskan admin', ?2, ?3, ?4)
+      ON CONFLICT (lapangan_id) DO UPDATE SET putusan = excluded.putusan, waktu = excluded.waktu, oleh = excluded.oleh`).bind(id, b.o.aksi, kini, mod),
+    env.DB.prepare("DELETE FROM neraca_harian WHERE tgl = ? AND prov = ? AND kab = ? AND sumber = 'regu'").bind(l.tgl, l.prov, l.kab), agregat(env, l.tgl, l.prov, l.kab, kini)]);
+  return json({id, putusan: b.o.aksi});
 }
 
 /* ================================================================ kontak perusahaan (hanya admin) */
@@ -241,8 +301,8 @@ const SQL_KONTAK = `INSERT INTO kontak_pt (id, perusahaan_id, nama_pt, kontak, e
     catatan = excluded.catatan, diubah = excluded.diubah, oleh = excluded.oleh, dummy = 0`;
 const simpanKontak = (env, v, kini, mod) => env.DB.prepare(SQL_KONTAK).bind(acak(8), v.perusahaan_id, v.nama_pt, v.kontak, v.email, v.wa, v.telepon, v.catatan, kini, mod);
 async function tambahKontak(env, req, kini) {
-  const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const mod = await modOK(env, req); if (!mod) return tolakMod();
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekKontak(b.o); if (c.galat) return gagal(400, c.galat);
   await simpanKontak(env, c.v, kini, mod).run();
   return json({kontak: await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt WHERE perusahaan_id = ?").bind(c.v.perusahaan_id).first()}, 201);
@@ -263,8 +323,8 @@ export function uraiCsvKontak(teks) {
   return baris;
 }
 async function imporKontak(env, req, kini) {
-  const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(400, b.galat);
+  const mod = await modOK(env, req); if (!mod) return tolakMod();
+  const b = await bacaBody(req, MAKS_CSV + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (typeof b.o.csv !== "string" || !b.o.csv.trim()) return gagal(400, "csv wajib (teks CSV dengan baris kepala)");
   if (b.o.csv.length > MAKS_CSV) return gagal(413, `csv ${b.o.csv.length} karakter, maksimal ${MAKS_CSV}`);
   const [kepala, ...isi] = uraiCsvKontak(b.o.csv), kol = (kepala || []).map(x => x.trim().toLowerCase());
@@ -284,12 +344,12 @@ async function imporKontak(env, req, kini) {
   return json({diimpor: ok.length}, 201);
 }
 async function daftarKontak(env, req) {
-  if (!await adm(env, req)) return tolakAdmin();
+  if (!await modOK(env, req)) return tolakMod();
   return json({kontak: (await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt ORDER BY nama_pt LIMIT 1000").all()).results});
 }
 async function hapusKontak(env, req, id) {
-  if (!await adm(env, req)) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  if (!await modOK(env, req)) return tolakMod();
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   if (b.o.aksi !== "hapus") return gagal(400, "aksi harus hapus");
   const r = await env.DB.prepare("DELETE FROM kontak_pt WHERE id = ?").bind(id).run();
   return r.meta.changes ? json({ok: true}) : gagal(404, "kontak tidak ada");
@@ -310,7 +370,7 @@ async function kirimEmail(env, ke, m) {
   const reply = (env.EMAIL_TO || "").split(",").map(s => s.trim()).filter(Boolean)[0];
   const r = await fetch("https://api.resend.com/emails", {method: "POST", signal: AbortSignal.timeout(8000), headers: {authorization: `Bearer ${env.EMAIL_API_KEY}`, "content-type": "application/json"},
     body: JSON.stringify({from: env.EMAIL_FROM, to: [ke], ...(reply ? {reply_to: reply} : {}), subject: m.subject, text: m.teks, html: m.html})});
-  if (!r.ok) throw new Error(`Resend ${r.status}: ${(await r.text()).slice(0, 200)}`);
+  if (!r.ok) { r.body?.cancel(); throw new Error(`Resend HTTP ${r.status}`); }   // isi balasan tidak ikut log/respons
 }
 const KOLOM_PANGGILAN = `p.id, p.tanggal, p.perusahaan_id, p.nama_pt, p.prov, p.kab, p.titik_n, p.terdeteksi, p.lat, p.lon, p.status, p.dipanggil_pada, p.batas, p.direspons_pada, p.dicek_pada,
   p.saluran, p.hasil, p.catatan, p.oleh, p.dibuat, p.dummy`;
@@ -327,7 +387,8 @@ async function daftarPanggilan(env, req, url, kini) {
 const SALURAN_AKSI = {wa: "wa", email: "email", telepon: "telepon"};
 async function ubahPanggilan(env, req, id, kini) {
   const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (typeof b.o.aksi === "string" && Object.hasOwn(SALURAN_AKSI, b.o.aksi) && !await modOK(env, req)) return tolakMod();   // kirim email/WA/telepon ke perusahaan
   const aksi = b.o.aksi, hasil = tx(b.o.hasil, 300), catatan = tx(b.o.catatan, 500), tambahan = tx(b.o.pesan, 300);
   if ([hasil, catatan, tambahan].includes(undefined)) return gagal(400, "hasil maks 300, catatan maks 500, pesan maks 300 karakter");
   const p = await env.DB.prepare(`SELECT ${KOLOM_PANGGILAN}, k.email, k.wa FROM panggilan p LEFT JOIN kontak_pt k ON k.perusahaan_id = p.perusahaan_id WHERE p.id = ?`).bind(id).first();
@@ -414,7 +475,7 @@ export function cekTemplat(o) {
     const o2 = {id: t.id, judul: judul.s, ...(sub.s ? {sub: sub.s} : {}), isi, setelah: t.setelah};
     if (t.gambar_url != null && t.gambar_url !== "") {
       const u = typeof t.gambar_url === "string" ? t.gambar_url.trim() : "";
-      if (!(/^\/(?!\/)[\w\-./%]{1,300}$/.test(u) || /^https:\/\/[\w.-]+(?::\d+)?\/[\w\-./%?=&~+]{0,300}$/.test(u))) return {galat: `${n}.gambar_url harus jalur /… atau https://…`};
+      if (!/^\/(?!\/)[\w\-./%]{1,300}$/.test(u)) return {galat: `${n}.gambar_url harus jalur satu situs yang diawali / (mis. /img/foto.jpg); tautan luar tidak diizinkan`};   // sama dengan urlAman di klien paparan
       o2.gambar_url = u;
     }
     T.push(o2);
@@ -429,7 +490,7 @@ async function bacaTemplat(env) {
 }
 async function simpanTemplat(env, req, kini) {
   const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req, MAKS_TEMPLAT + 1024); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req, MAKS_TEMPLAT + 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekTemplat(b.o); if (c.galat) return gagal(400, c.galat);
   await env.DB.prepare("INSERT INTO paparan_templat (id, isi, diubah, oleh) VALUES (1, ?1, ?2, ?3) ON CONFLICT (id) DO UPDATE SET isi = ?1, diubah = ?2, oleh = ?3").bind(JSON.stringify(c.isi), kini, mod).run();
   return json({ok: true, ukuran: JSON.stringify(c.isi).length}, 201);
@@ -475,8 +536,9 @@ export async function buatAntrean(env, kini = Date.now()) {
     provDibaca++;
     const P = berkas.perusahaan || [];
     for (const [pi, set] of titikDalamKonsesi(P, titik)) for (const ti of set) {
-      const t = titik[ti], key = wib(t.t) + "|" + P[pi].id;
-      const g = grup.get(key) || grup.set(key, {tanggal: wib(t.t), id: P[pi].id, nama: String(P[pi].nama || P[pi].id).slice(0, 120), prov, n: 0, la: 0, lo: 0, t0: t.t, kab: {}}).get(key);
+      const t = titik[ti], key = wib(t.t) + "|" + P[pi].id, nama = tx(String(P[pi].nama || P[pi].id), 120);
+      if (typeof P[pi].id !== "string" || !RE_PID.test(P[pi].id) || !nama || nama.length < 2 || !t.kab || t.kab.length < 2 || t.kab.length > 60) continue;   // satu baris buruk tidak boleh menggagalkan batch
+      const g = grup.get(key) || grup.set(key, {tanggal: wib(t.t), id: P[pi].id, nama, prov, n: 0, la: 0, lo: 0, t0: t.t, kab: {}}).get(key);
       g.n++; g.la += t.lat; g.lo += t.lon; g.t0 = Math.min(g.t0, t.t); g.kab[t.kab] = (g.kab[t.kab] || 0) + 1;
     }
   }
@@ -492,7 +554,7 @@ export async function bersihkanPosko(env, kini = Date.now()) {
   const foto = (await env.DB.prepare("SELECT id FROM lapangan WHERE dibuat <= ? AND foto = 1 LIMIT 200").bind(lama).all()).results;
   if (foto.length && env.MEDIA) await env.MEDIA.delete(foto.map(x => `lapangan/${x.id}`));
   const r = await env.DB.batch([env.DB.prepare("DELETE FROM lapangan WHERE dibuat <= ?").bind(lama), env.DB.prepare("DELETE FROM panggilan WHERE dibuat <= ?").bind(lama),
-    env.DB.prepare("DELETE FROM neraca_harian WHERE tgl < ?").bind(wib(kini - 400 * HARI))]);
+    env.DB.prepare("DELETE FROM neraca_harian WHERE tgl < ?").bind(wib(kini - RETENSI_NERACA_HARI * HARI)), env.DB.prepare("DELETE FROM laju_posko WHERE waktu <= ?").bind(kini - 2 * HARI)]);
   return {lapangan: r[0].meta.changes, panggilan: r[1].meta.changes};
 }
 
@@ -573,8 +635,8 @@ async function dummyHapus(env) {
   return json({ok: true, ...n});
 }
 async function dummy(env, req, kini) {
-  const mod = await adm(env, req); if (!mod) return tolakAdmin();
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   if (b.o.aksi === "isi") return dummyIsi(env, kini, mod, b.o.tgl);
   if (b.o.aksi === "hapus") return dummyHapus(env);
   return gagal(400, "aksi harus isi/hapus");
@@ -594,13 +656,14 @@ export const RUTE_POSKO = {
   "GET /admin/posko": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanPosko()),
   "GET /api/neraca": (env, req, url, kini, ctx) => neracaPublik(env, req, url, kini, ctx),
   "GET /api/paparan/templat": (env, req, url, kini, ctx) => cacheTepi(new Request(new URL("/api/paparan/templat", url), {method: "GET"}), ctx, 60, async () => json((await bacaTemplat(env)).templat)),
-  "GET /api/lapangan/saya": async (env, req) => { const g = await reguDari(env, req); return g ? json({regu: {nama: g.nama, unsur: g.unsur, prov: g.prov, kab: g.kab}}) : kodeTolak(); },
+  "GET /api/lapangan/saya": async (env, req) => { const g = await reguDari(env, req); return !(g instanceof Response) ? json({regu: {nama: g.nama, unsur: g.unsur, prov: g.prov, kab: g.kab}}) : g; },
   "POST /api/lapangan": (env, req, url, kini) => lapor(env, req, url, kini),
   "POST /api/lapangan/foto/:id": (env, req, url, kini, ctx, id) => fotoLapor(env, req, id, kini),
   "GET /api/posko/regu": (env, req) => daftarRegu(env, req),
   "POST /api/posko/regu": (env, req, url, kini) => buatRegu(env, req, url, kini),
   "POST /api/posko/regu/:id": (env, req, url, kini, ctx, id) => cabutRegu(env, req, id, kini),
   "GET /api/posko/lapangan": (env, req, url, kini) => daftarLapangan(env, req, url, kini),
+  "POST /api/posko/lapangan/:id": (env, req, url, kini, ctx, id) => putusLapangan(env, req, id, kini),
   "GET /api/posko/foto/:id": (env, req, url, kini, ctx, id) => fotoAdmin(env, req, id),
   "GET /api/posko/neraca": (env, req, url, kini) => neracaAdmin(env, req, url, kini),
   "POST /api/posko/neraca": (env, req, url, kini) => simpanRakor(env, req, kini),

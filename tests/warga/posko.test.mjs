@@ -8,7 +8,8 @@ import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: posko.js dan worker.js saling impor
-import {UNSUR, KENDALA, STATUS_LAP, SUMBER_AIR, STATUS_PANGGILAN, cekTemplat, uraiCsvKontak, titikDalamKonsesi} from "../../src/posko.js";
+import {PUBLIK_TANPA_SESI} from "../../src/worker.js";
+import {buangExif, UNSUR, KENDALA, STATUS_LAP, SUMBER_AIR, STATUS_PANGGILAN, cekTemplat, uraiCsvKontak, titikDalamKonsesi} from "../../src/posko.js";
 
 const JAM = 3600e3, MENIT = 60e3, ADMIN = {"x-admin-token": "rahasia-admin"};
 const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
@@ -21,6 +22,8 @@ const KONSESI = {prov: "62", nama: "Kalimantan Tengah", perusahaan: [
   {id: "sawit-uji-1", nama: "PT Uji Sawit Satu", geom: [{type: "MultiPolygon", coordinates: [[kotak(113.5, -2.3, 113.7, -2.0)]]}]},
   {id: "hti-uji-2", nama: "PT Uji Hutan Dua", geom: [{type: "Polygon", coordinates: [kotak(113.5, -2.3, 113.7, -2.0), kotak(113.56, -2.13, 113.58, -2.12)]}]},
   {id: "hph-uji-3", nama: "PT Uji Jauh Tiga", geom: [{type: "Polygon", coordinates: [kotak(113.5, -3.6, 113.7, -3.4)]}]},
+  {id: "sawit-nama-pendek", nama: "A", geom: [{type: "Polygon", coordinates: [kotak(113.5, -2.3, 113.7, -2.0)]}]},          // nama 1 huruf: dilewati, tidak menggagalkan batch
+  {id: "x", nama: "PT Id Terlalu Pendek", geom: [{type: "Polygon", coordinates: [kotak(113.5, -2.3, 113.7, -2.0)]}]},        // id tidak sah: dilewati
 ]};
 const KINI = Date.now(), t1 = KINI - 2 * JAM;
 const KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
@@ -36,7 +39,7 @@ let luarLog = [], resend = {status: 200};
 const luar = async req => {
   const u = new URL(req.url); luarLog.push(u.hostname);
   if (u.hostname === "firms.modaps.eosdis.nasa.gov") { const s = u.pathname.split("/")[5]; return new Response(CSV[s] ?? "", {status: s in CSV ? 200 : 400}); }
-  if (u.hostname === "api.resend.com") { resend.diterima = JSON.parse(await req.text()); return new Response(resend.status === 200 ? '{"id":"x"}' : "gagal", {status: resend.status}); }
+  if (u.hostname === "api.resend.com") { resend.diterima = JSON.parse(await req.text()); return new Response(resend.status === 200 ? '{"id":"x"}' : "RAHASIA-BALASAN-RESEND", {status: resend.status}); }
   return new Response("diblok di uji", {status: 599});
 };
 const aset = async req => {
@@ -47,7 +50,7 @@ const aset = async req => {
 };
 const opsi = (nama, ikat = {}, r2 = false) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
   compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
-  bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", FIRMS_MAP_KEY: "kunci-uji", ...ikat}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
+  bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", FIRMS_MAP_KEY: "kunci-uji", ...ikat}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
 let mf, DB;
 before(async () => {
   CSV = csvAwal();
@@ -92,6 +95,8 @@ uji("migrasi 0018 dijalankan dua kali tanpa galat dan tanpa mengubah baris", asy
   await DB.prepare("INSERT INTO paparan_templat (id, isi, diubah) VALUES (1, '{}', 1)").run();
   await DB.batch(pecah(f).map(s => DB.prepare(s)));
   await DB.batch(pecah(f).map(s => DB.prepare(s)));
+  const f19 = readFileSync(path.join(AKAR, "migrations/0019_posko_tahan.sql"), "utf8");
+  await DB.batch(pecah(f19).map(s => DB.prepare(s))); await DB.batch(pecah(f19).map(s => DB.prepare(s)));   // 0019 juga idempoten
   assert.equal((await DB.prepare("SELECT isi FROM paparan_templat").first()).isi, "{}");
   await DB.prepare("DELETE FROM paparan_templat").run();
 });
@@ -268,7 +273,7 @@ uji("neraca: agregat regu dihitung dari laporan (susulan di titik sama mengganti
   const kendalaA = await kirim(A.kode, lap(-2.1234, 113.5678, {luas_ha: 10, padam_ha: 4, personel: 6, kendala: ["air_jauh"]}, now - MINUTE_60()));
   assert.equal(kendalaA.s, 201, kendalaA.t);
   assert.equal((await kirim(A.kode, lap(-2.1234, 113.5678, {luas_ha: 12, padam_ha: 5, personel: 8, kendala: ["air_jauh", "asap_tebal"]}, now))).s, 201);   // susulan: mengganti
-  assert.equal((await kirim(A.kode, lap(-2.1247, 113.5678, {status: "padam", luas_ha: 20, padam_ha: 20, personel: 3, kendala: ["angin_kencang"]}, now - 5 * MENIT))).s, 201);
+  assert.equal((await kirim(A.kode, lap(-2.1334, 113.5678, {status: "padam", luas_ha: 20, padam_ha: 20, personel: 3, kendala: ["angin_kencang"]}, now - 5 * MENIT))).s, 201);
   assert.equal((await kirim(B.kode, lap(-2.1234, 113.5678, {status: "tidak_ditemukan", personel: 5}, now - 2 * MENIT))).s, 201);
   const kab = (await DB.prepare("SELECT DISTINCT kab FROM lapangan").all()).results.map(x => x.kab);
   assert.equal(kab.length, 1, `titik bertetangga harus satu kabupaten: ${kab}`);
@@ -279,7 +284,9 @@ uji("neraca: agregat regu dihitung dari laporan (susulan di titik sama mengganti
   assert.ok(!/Rahasia|regu_id|kode|unsur|BPBD|Manggala/.test(r.t), "angka agregat saja: tanpa identitas regu: " + r.t);
   assert.match(r.h.get("cache-control"), /no-store|max-age/);
   for (const q of ["", "?prov=6", "?prov=62&tgl=2026-13-40", "?prov=62&tgl=kemarin", "?prov=ab"]) assert.equal((await api("GET", "/api/neraca" + q)).s, 400, q);
-  assert.equal((await api("GET", "/api/neraca?prov=62&tgl=2020-01-01")).j.kab.length, 0, "hari tanpa data = kosong, bukan galat");
+  assert.equal((await api("GET", "/api/neraca?prov=62&tgl=2020-01-01")).s, 400, "di luar jendela retensi 400 hari");
+  assert.equal((await api("GET", `/api/neraca?prov=62&tgl=${wib(Date.now() + 3 * 24 * JAM)}`)).s, 400, "tanggal depan");
+  assert.equal((await api("GET", `/api/neraca?prov=62&tgl=${wib(Date.now() - 3 * 24 * JAM)}`)).j.kab.length, 0, "hari tanpa data = kosong, bukan galat");
 });
 const MINUTE_60 = () => 60 * MENIT;
 
@@ -344,7 +351,7 @@ const s0 = r => r.s;
 
 uji("antrean: cron menit 16 mencocokkan titik FIRMS ke konsesi; satu baris per perusahaan per hari; lubang poligon dihormati; tanpa kiriman otomatis", async () => {
   await DB.prepare("DELETE FROM panggilan").run();
-  assert.deepEqual([...titikDalamKonsesi(KONSESI.perusahaan, [{lat: -2.1234, lon: 113.5678}, {lat: -2.16, lon: 113.6}, {lat: -9, lon: 100}])].map(([i, s]) => [i, [...s].sort()]),
+  assert.deepEqual([...titikDalamKonsesi(KONSESI.perusahaan.slice(0, 3), [{lat: -2.1234, lon: 113.5678}, {lat: -2.16, lon: 113.6}, {lat: -9, lon: 100}])].map(([i, s]) => [i, [...s].sort()]),
     [[0, [0, 1]], [1, [1]]], "A: dua titik; B: titik di lubang tidak dihitung; C: tak ada");
   const w = await mf.getWorker(), jam = (h, m) => Date.UTC(2026, 9, 16, h, m);
   luarLog = [];
@@ -431,7 +438,7 @@ uji("panggilan: email lewat Resend hanya saat admin menekan; gagal kirim tidak m
     assert.equal((await api("GET", "/api/posko/panggilan", undefined, ADMIN, m2)).j.email_siap, true);
     luarLog = []; resend = {status: 500};
     const gagalKirim = await api("POST", "/api/posko/panggilan/eeeeeeeeeeeeeeee", {aksi: "email"}, ADMIN, m2);
-    assert.equal(gagalKirim.s, 502, gagalKirim.t); assert.equal((await D2.prepare("SELECT status FROM panggilan").first()).status, "baru", "kirim gagal: tidak ada hitung mundur");
+    assert.equal(gagalKirim.s, 502, gagalKirim.t); assert.ok(!gagalKirim.t.includes("RAHASIA-BALASAN"), "isi balasan Resend tidak ikut respons"); assert.match(gagalKirim.t, /Resend HTTP 500/); assert.equal((await D2.prepare("SELECT status FROM panggilan").first()).status, "baru", "kirim gagal: tidak ada hitung mundur");
     resend = {status: 200};
     const ok = await api("POST", "/api/posko/panggilan/eeeeeeeeeeeeeeee", {aksi: "email", pesan: "Mohon balas"}, ADMIN, m2); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.terkirim, true);
     assert.deepEqual(resend.diterima.to, ["pt@uji.id"]); assert.equal(resend.diterima.from, "Posko <posko@contoh.id>"); assert.equal(resend.diterima.reply_to, "admin@contoh.id");
@@ -451,11 +458,11 @@ uji("templat paparan: skema ketat, publik membaca tanpa data sensitif, simpan ha
     [{versi: 1, tambahan: [{id: "t", judul: "<b>x</b>", isi: [], setelah: "a"}]}, "<"], [{versi: 1, tambahan: [{id: "t", judul: "", isi: [], setelah: "a"}]}, "judul"],
     [{versi: 1, tambahan: [{id: "t", judul: "x", isi: Array(21).fill("a"), setelah: "a"}]}, "isi"], [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [5], setelah: "a"}]}, "isi[0]"],
     [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "a", gambar_url: "javascript:alert(1)"}]}, "gambar"], [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "a", gambar_url: "//evil.com/x.png"}]}, "gambar"],
-    [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "a", gambar_url: "http://evil.com/x.png"}]}, "gambar"], [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "A B"}]}, "setelah"],
+    [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "a", gambar_url: "http://evil.com/x.png"}]}, "gambar"], [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "a", gambar_url: "https://cdn.contoh.id/x.png"}]}, "gambar"], [{versi: 1, tambahan: [{id: "t", judul: "x", isi: [], setelah: "A B"}]}, "setelah"],
     [{versi: 1, slide: Array.from({length: 61}, (_, i) => ({id: "s" + i, aktif: true, urutan: i}))}, "60"]];
   for (const [c, kata] of cobaan) { const r = await adm("POST", "/api/posko/templat", c); assert.equal(r.s, 400, kata + " " + r.t); assert.ok(r.j.galat, kata); }
   assert.equal((await adm("POST", "/api/posko/templat", {versi: 1, tambahan: [{id: "t", judul: "x", isi: ["y".repeat(300)], setelah: "a"}]})).s, 201);
-  assert.equal((await adm("POST", "/api/posko/templat", {versi: 1, tambahan: Array.from({length: 30}, (_, i) => ({id: "t" + i, judul: "j".repeat(120), sub: "s".repeat(200), isi: Array(20).fill("i".repeat(300)), setelah: "a"}))})).s, 400, "lebih dari 64 KB");
+  assert.equal((await adm("POST", "/api/posko/templat", {versi: 1, tambahan: Array.from({length: 30}, (_, i) => ({id: "t" + i, judul: "j".repeat(120), sub: "s".repeat(200), isi: Array(20).fill("i".repeat(300)), setelah: "a"}))})).s, 413, "lebih dari 64 KB = 413");
   assert.equal(await n("paparan_templat"), 1);
   assert.equal((await api("POST", "/api/posko/templat", sah)).s, 403, "publik tidak boleh menyimpan");
   const ok = await adm("POST", "/api/posko/templat", sah); assert.equal(ok.s, 201, ok.t);
@@ -523,4 +530,123 @@ uji("bersih-bersih menit 17: laporan > 180 hari dibuang, yang baru utuh", async 
   await ins("a000000000000001", kini - 200 * 24 * JAM); await ins("a000000000000002", kini - 2 * JAM);
   await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: Date.UTC(2026, 9, 16, 5, 17)});
   assert.deepEqual((await DB.prepare("SELECT id FROM lapangan WHERE regu_id = ?").bind(g.id).all()).results.map(x => x.id), ["a000000000000002"]);
+  await DB.prepare("DELETE FROM lapangan WHERE regu_id = ?").bind(g.id).run(); await DB.prepare("DELETE FROM neraca_harian").run();   // jangan meninggalkan baris tak teragregasi untuk uji berikutnya
+});
+
+const ipH = ip => sha256("garam-uji|" + ip);
+const MOD = {"x-admin-token": "moderator-dua"}, GERBANG = {"x-admin-token": "gerbang@x:sandi"};
+
+uji("peran: dummy hanya Super Admin (tertutup bila SUPER_ADMIN kosong); kontak PT dan kirim ke perusahaan bukan untuk akun gerbang situs", async () => {
+  const sebelum = await n("regu");
+  for (const h of [MOD, GERBANG, {}]) { const r = await api("POST", "/api/posko/dummy", {aksi: "isi"}, h); assert.equal(r.s, 403, JSON.stringify(h) + r.t); }
+  assert.equal(await n("regu"), sebelum, "ditolak = tidak menulis");
+  const m2 = new Miniflare(opsi("uji-posko-tanpa-super", {SUPER_ADMIN: ""}));
+  try {
+    const D2 = await m2.getD1Database("DB"); await D2.batch(pecah(migrasi()).map(s => D2.prepare(s)));
+    const r = await api("POST", "/api/posko/dummy", {aksi: "isi"}, ADMIN, m2); assert.equal(r.s, 403, "tanpa SUPER_ADMIN dummy tertutup bahkan untuk admin: " + r.t);
+    assert.equal((await D2.prepare("SELECT count(*) n FROM regu").first()).n, 0);
+  } finally { await m2.dispose(); }
+  assert.equal((await api("GET", "/api/posko/kontak", undefined, MOD)).s, 200, "moderator boleh");
+  const id = "0123456789abcdef";
+  for (const [m, j, b] of [["GET", "/api/posko/kontak"], ["POST", "/api/posko/kontak", {perusahaan_id: "pt-x-1", nama_pt: "PT X", email: "a@b.id"}], ["POST", "/api/posko/kontak/impor", {csv: "perusahaan_id,nama_pt,email\npt-x-1,PT X,a@b.id"}],
+    ["POST", `/api/posko/kontak/${id}`, {aksi: "hapus"}], ["POST", `/api/posko/panggilan/${id}`, {aksi: "wa"}], ["POST", `/api/posko/panggilan/${id}`, {aksi: "email"}], ["POST", `/api/posko/panggilan/${id}`, {aksi: "telepon"}]]) {
+    const r = await api(m, j, b, GERBANG); assert.equal(r.s, 403, `${m} ${j} akun gerbang = ${r.s}`); assert.match(r.j.galat, /moderator/);
+  }
+  assert.equal((await api("GET", "/api/posko/regu", undefined, GERBANG)).s, 200, "akun gerbang tetap admin biasa untuk yang lain");
+  const tolak = await api("GET", "/api/posko/regu"); assert.equal(tolak.j.galat, "akses ditolak"); assert.ok(!/ADMIN_TOKEN/.test(tolak.t), "pesan 403 generik, tanpa bocoran konfigurasi");
+});
+
+uji("angka publik dari satu kode: luas/padam <= 5000, pencilan DITAHAN sampai admin setuju, dedup per sel, waktu_gps <= 6 jam, batas per kabupaten per hari", async () => {
+  await DB.prepare("DELETE FROM lapangan").run(); await DB.prepare("DELETE FROM neraca_harian").run();   // lembar bersih: baseline tidak tercemar baris langsung dari uji lain
+  const g = await buatRegu({nama: "Regu Pencilan"}), total = async () => (await api("GET", "/api/neraca?prov=62")).j.total, awal = await total(), now = Date.now();
+  for (const c of [{luas_ha: 5001}, {luas_ha: 5000, padam_ha: 5001}, {waktu_gps: now - 7 * JAM}]) assert.equal((await kirim(g.kode, {...lap(-2.2, 113.7), ...c})).s, 400, JSON.stringify(c));
+  assert.rejects(DB.prepare("INSERT INTO lapangan (id, regu_id, klien_id, tgl, waktu, dibuat, lat, lon, status, prov, kab, luas_ha) VALUES ('f000000000000001', ?, 'klien-luas-1', '2026-10-19', 1, 1, -2, 113, 'bara', '62', 'K', 6000)").bind(g.id).run(), /5000/);
+  const r = await kirim(g.kode, lap(-2.2, 113.7, {luas_ha: 4000, padam_ha: 100})); assert.equal(r.s, 201, r.t); assert.equal(r.j.ditahan, true);
+  assert.deepEqual(await total(), awal, "ditahan: tidak masuk angka publik");
+  await assert.rejects(DB.prepare("UPDATE lapangan SET kendala = '[\"hantu\"]' WHERE id = ?").bind(r.j.id).run(), /kendala/, "trigger UPDATE kendala (0019)");
+  const th = await DB.prepare("SELECT putusan, alasan FROM lapangan_tahan WHERE lapangan_id = ?").bind(r.j.id).first(); assert.equal(th.putusan, "tahan"); assert.match(th.alasan, /luas 4000/);
+  const daftar = await adm("GET", "/api/posko/lapangan"); assert.equal(daftar.j.laporan.find(x => x.id === r.j.id).putusan, "tahan");
+  assert.equal((await adm("POST", `/api/posko/lapangan/${r.j.id}`, {aksi: "ngawur"})).s, 400); assert.equal((await adm("POST", "/api/posko/lapangan/ffffffffffffffff", {aksi: "setuju"})).s, 404);
+  assert.equal((await api("POST", `/api/posko/lapangan/${r.j.id}`, {aksi: "setuju"})).s, 403);
+  assert.equal((await adm("POST", `/api/posko/lapangan/${r.j.id}`, {aksi: "setuju"})).s, 200);
+  const t2 = await total(); assert.equal(t2.luas_ha, awal.luas_ha + 4000); assert.equal(t2.fs, awal.fs + 1);
+  assert.equal((await adm("POST", `/api/posko/lapangan/${r.j.id}`, {aksi: "tahan"})).s, 200); assert.deepEqual(await total(), awal, "ditahan lagi: kembali");
+  /* laporan wajar tidak ditahan; dua laporan satu regu di satu sel ~1 km dihitung sekali (yang terbaru) */
+  const a = await kirim(g.kode, lap(-2.141, 113.571, {luas_ha: 3}, now - 60e3)); assert.equal(a.j.ditahan, false);
+  const b2 = await kirim(g.kode, lap(-2.143, 113.573, {luas_ha: 4}, now)); assert.equal(b2.s, 201); assert.equal(b2.j.kab, a.j.kab, "dua titik satu sel harus satu kabupaten");
+  const t3 = await total(); 
+  assert.equal(t3.fs, awal.fs + 1, "dua laporan satu sel = satu"); assert.equal(t3.luas_ha, awal.luas_ha + 4, "yang terbaru menang");
+  /* batas per kabupaten per hari: atomik di INSERT */
+  const kab = (await DB.prepare("SELECT kab FROM lapangan WHERE id = ?").bind(a.j.id).first()).kab, lama = Date.now() - 3 * JAM, st = [];
+  for (let i = 0; i < 300; i++) st.push(DB.prepare("INSERT INTO lapangan (id, regu_id, klien_id, tgl, waktu, dibuat, lat, lon, status, prov, kab) VALUES (?, ?, ?, ?, ?, ?, -2.1, 113.5, 'bara', '62', ?)").bind(`c${String(i).padStart(15, "0")}`, g.id, `massal-kab-${i}`, wib(Date.now()), lama, lama, kab));
+  await DB.batch(st);
+  const lalu = await kirim(g.kode, lap(-2.14, 113.57)); assert.equal(lalu.s, 429, lalu.t);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM lapangan WHERE klien_id LIKE 'uji-klien-%' AND regu_id = ? AND luas_ha IS NULL").bind(g.id).first()).n, 0, "429 = tidak ada baris");
+  await DB.prepare("DELETE FROM lapangan WHERE klien_id LIKE 'massal-kab-%'").run();
+});
+
+uji("tebakan kode regu dan token admin dihitung per IP bergaram; login dan IP lain tidak terganggu", async () => {
+  const ip = "203.0.113.7", g = await buatRegu({nama: "Regu Brute"}), pasang = async (k, aksi, jumlah) => DB.batch(Array.from({length: jumlah}, () => DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(k, aksi, Date.now())));
+  for (let i = 0; i < 3; i++) assert.equal((await api("POST", "/api/lapangan", lap(-2.1, 113.5), {"cf-connecting-ip": ip, "x-kode-regu": "0".repeat(26)})).s, 403);
+  const baris = (await DB.prepare("SELECT kunci FROM laju_posko WHERE aksi = 'kode_gagal'").all()).results;
+  assert.equal(baris.filter(x => x.kunci === ipH(ip)).length, 3, "tiap kegagalan tercatat"); assert.ok(!baris.some(x => x.kunci === ip), "IP mentah tidak tersimpan");
+  await pasang(ipH(ip), "kode_gagal", 297);
+  const blok = await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": ip, "x-kode-regu": g.kode}); assert.equal(blok.s, 429, "300 gagal: kode BENAR pun ditahan dari IP itu"); assert.ok(blok.h.get("retry-after"));
+  assert.equal((await api("POST", "/api/lapangan", lap(-2.1234, 113.5678), {"cf-connecting-ip": "203.0.113.8", "x-kode-regu": g.kode})).s, 201, "IP lain tidak terkena");
+  /* admin lewat header */
+  const ip2 = "203.0.113.9", salah = {"cf-connecting-ip": ip2, "x-admin-token": "tebakan"};
+  for (let i = 0; i < 3; i++) assert.equal((await api("GET", "/api/posko/regu", undefined, salah)).s, 403);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM laju_posko WHERE aksi = 'admin_gagal' AND kunci = ?").bind(ipH(ip2)).first()).n, 3);
+  assert.equal((await api("GET", "/api/posko/regu", undefined, {"cf-connecting-ip": ip2, ...ADMIN})).s, 200, "di bawah batas: token benar lolos");
+  await pasang(ipH(ip2), "admin_gagal", 297);
+  assert.equal((await api("GET", "/api/posko/regu", undefined, {"cf-connecting-ip": ip2, ...ADMIN})).s, 403, "300 gagal: token benar pun ditolak dari IP itu");
+  assert.equal((await api("GET", "/api/posko/regu", undefined, {"cf-connecting-ip": "203.0.113.10", ...ADMIN})).s, 200, "IP lain normal");
+  assert.equal((await api("GET", "/api/posko/regu", undefined, ADMIN)).s, 200, "tanpa IP (skrip lokal) normal");
+  const masuk = await mf.dispatchFetch("http://posko.lokal/admin/masuk", {method: "POST", redirect: "manual", headers: {"cf-connecting-ip": ip2, "content-type": "application/x-www-form-urlencoded"}, body: "email=gerbang%40x&sandi=sandi"});
+  assert.equal(masuk.status, 303, "form masuk punya batas sendiri dan tidak ikut terkunci"); const ck = masuk.headers.get("set-cookie"); assert.match(ck, /sesi_admin=/);
+  const sesi = await mf.dispatchFetch("http://posko.lokal/api/posko/regu", {headers: {cookie: ck.split(";")[0], "cf-connecting-ip": ip2}}); assert.equal(sesi.status, 200, "cookie sesi tidak lewat penghitung header");
+  await DB.prepare("DELETE FROM laju_posko").run();
+});
+
+uji("body dibaca per byte: chunked tanpa Content-Length tetap kena 413 (JSON dan foto); foto: EXIF dibuang, batas 30 foto per jam per regu", async () => {
+  const aliran = (total, h) => { let kirimn = 0; return mf.dispatchFetch("http://posko.lokal" + h.j, {method: "POST", headers: h.h, duplex: "half", body: new ReadableStream({pull(c) { if (kirimn >= total) return c.close(); c.enqueue(new Uint8Array(65536).fill(0x41)); kirimn += 65536; }})}); };
+  const r1 = await aliran(100 * 1024, {j: "/api/posko/regu", h: {...ADMIN, "content-type": "application/json"}}); assert.equal(r1.status, 413, await r1.text());
+  const g = await buatRegu({nama: "Regu Foto Dua"}), l = await kirim(g.kode, lap(-2.1234, 113.5678)); assert.equal(l.s, 201);
+  const r2 = await aliran(2 * 1048576, {j: `/api/lapangan/foto/${l.j.id}`, h: {"x-kode-regu": g.kode}}); assert.equal(r2.status, 413, await r2.text());
+  assert.equal((await DB.prepare("SELECT foto FROM lapangan WHERE id = ?").bind(l.j.id).first()).foto, 0);
+  const jfif = [0xff, 0xe0, 0, 16, 74, 70, 73, 70, 0, 1, 1, 0, 0, 1, 0, 1, 0, 0], exif = [0xff, 0xe1, 0, 8, 69, 120, 105, 102, 0, 0], sos = [0xff, 0xda, 0, 8, 1, 1, 0, 0, 63, 0, 1, 2, 3, 0xff, 0xd9];
+  const asli = new Uint8Array([0xff, 0xd8, ...jfif, ...exif, ...sos]), bersih = new Uint8Array([0xff, 0xd8, ...jfif, ...sos]);
+  assert.deepEqual([...buangExif(asli)], [...bersih]); assert.deepEqual([...buangExif(new Uint8Array([0xff, 0xd8, 0xff, 0xe1, 0xff, 0xff, 1]))].length, 7, "struktur janggal = apa adanya");
+  assert.equal((await api("POST", `/api/lapangan/foto/${l.j.id}`, asli, {"x-kode-regu": g.kode})).s, 200);
+  const f = await mf.dispatchFetch(`http://posko.lokal/api/posko/foto/${l.j.id}`, {headers: ADMIN}); assert.deepEqual([...new Uint8Array(await f.arrayBuffer())], [...bersih], "APP1/EXIF tidak tersimpan di R2");
+  const l2 = await kirim(g.kode, lap(-2.3, 113.6)); assert.equal(l2.s, 201);
+  await DB.batch(Array.from({length: 30}, () => DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, 'foto', ?)").bind(g.id, Date.now())));
+  const batas = await api("POST", `/api/lapangan/foto/${l2.j.id}`, asli, {"x-kode-regu": g.kode}); assert.equal(batas.s, 429, batas.t);
+  await DB.prepare("DELETE FROM laju_posko").run();
+});
+
+uji("origin tak terurai ditolak 403 JSON (bukan 500) di rute POST", async () => {
+  for (const o of ["bukan url", "http://", "://x"]) { const r = await api("POST", "/api/posko/regu", {x: 1}, {...ADMIN, origin: o}); assert.equal(r.s, 403, o + " " + r.t); assert.ok(r.j.galat); }
+  const w = await api("POST", "/api/warga", {}, {origin: "bukan url"}); assert.equal(w.s, 403);
+});
+
+uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; semua halaman lain tertutup (halaman baru ikut terkunci)", async () => {
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan"], "daftar putih persis satu halaman, bersama alasan");
+  assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
+  const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
+  assert.equal((await buka("/lapangan")).status, 200);
+  const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
+  const halaman = new Set(["/", "/peringatan", "/privasi", "/laporan", "/f/0123456789abcdef"]);
+  for (const f of ["worker.js", "foto.js", "sosmed.js", "posko.js", "ews.js", "gempa.js", "statistik.js"])
+    for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
+  assert.ok(halaman.has("/statistik"), "pemindai menemukan rute halaman");
+  for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
+  /* berkas HTML statis dibuka langsung lewat nama (run_worker_first ["/*.html"] di wrangler*.jsonc memanggil Worker HANYA untuk pola ini) */
+  for (const j of ["/laporan.html", "/index.html", "/warga/index.html", "/paparan.html", "/banjir/index.html", "/tentang.html", "/LAPORAN.HTML"]) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id = ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
+  const lh = await buka("/lapangan.html"); assert.equal(lh.status, 303); assert.equal(lh.headers.get("location"), "/lapangan", "lapangan.html dialihkan ke satu pintu");
+  const sesi = await mf.dispatchFetch("https://centurisk97.id/laporan.html", {headers: ADMIN}); assert.equal(sesi.status, 200, "dengan sesi admin berkas terbuka"); await sesi.text();
+  for (const j of ["/laporan.html", "/index.html", "/warga/index.html"]) { const r = await mf.dispatchFetch("https://pantau.terasurban.com" + j, {redirect: "manual"}); await r.text(); assert.equal(r.status, 200, `${j} di host publik harus 200`); }
+  for (const j of ["/data/meta.json", "/informasi_jenis.js", "/admin/admin.css"]) { const r = await buka(j); assert.equal(r.status, 200, `${j} (JSON/JS/CSS) tidak digerbang`); }
+  assert.equal((await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {redirect: "manual"})).status, 200, "halaman masuk tetap terbuka");
+  const ews = await mf.dispatchFetch("https://centurisk97.id/ews/berhenti?x=1", {redirect: "manual"}); assert.ok(!(ews.headers.get("location") || "").startsWith("/admin/masuk"), "tautan surel EWS tidak digerbang admin");
 });

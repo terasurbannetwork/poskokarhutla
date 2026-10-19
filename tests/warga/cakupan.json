@@ -166,7 +166,12 @@
     "cron bersihkanPosko": "bersih-bersih menit 17",
     "trigger lapangan_kendala_sah": "CHECK dan trigger menolak isian liar",
     "trigger neraca_kendala_sah": "CHECK dan trigger menolak isian liar",
-    "trigger neraca_kendala_ubah": "CHECK dan trigger menolak isian liar"
+    "trigger neraca_kendala_ubah": "CHECK dan trigger menolak isian liar",
+    "table lapangan_tahan": "angka publik dari satu kode",
+    "trigger lapangan_luas_maks": "angka publik dari satu kode",
+    "trigger lapangan_kendala_ubah": "angka publik dari satu kode",
+    "table laju_posko": "tebakan kode regu dan token admin",
+    "POST /api/posko/lapangan/:id": "angka publik dari satu kode"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

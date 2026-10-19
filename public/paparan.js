@@ -20,17 +20,20 @@ const situsW = host.endsWith(".workers.dev") || host === "centurisk97.id" || hos
 const izinPerusahaan = situsW || host === "localhost" || host === "127.0.0.1";
 const merek = situsW ? "Centurisk97" : "Pantau Bencana";
 
-const S = {foto: null, D: null, prov: "62", tgl: null, templat: null, susunan: [], gambar: {}, logo: null, gen: 0, sibuk: false};
+const S = {draf: false, foto: null, D: null, prov: "62", tgl: null, templat: null, susunan: [], gambar: Object.create(null), logo: null, gen: 0, sibuk: false};
 const perusahaan = {};
 
 /* ---------------------------------------------------------------- templat: satu titik ganti sumber */
+const urlAman = PS.urlAman, cekTemplat = PS.cekTemplat;   // validasi templat tinggal di paparan_slide.js (murni, diuji node --test)
 async function muatTemplat() {
-  /* ponytail: sumber = berkas statis + salinan di peramban. Penyimpanan permanen lewat admin (D1) cukup mengganti isi fungsi ini. */
-  const dasar = await muatJSON("/data/paparan_templat.json").catch(() => ({versi: 1, sampul: {}, slide: [], tambahan: []}));
-  try { const l = JSON.parse(localStorage.getItem(KUNCI)); if (l && l.versi) return l; } catch (e) {}
-  return dasar;
+  /* urutan sumber (satu titik ganti): server (D1) -> bawaan berkas statis -> draf lokal yang lolos cekTemplat */
+  let t = cekTemplat(await opsi("/api/paparan/templat")); S.draf = false;
+  if (!t || (!t.slide.length && !t.tambahan.length)) t = cekTemplat(await opsi("/data/paparan_templat.json")) || {versi: 1, sampul: {}, slide: [], tambahan: []};
+  try { const l = cekTemplat(JSON.parse(localStorage.getItem(KUNCI))); if (l) { S.draf = true; t = l; } } catch (e) {}
+  return t;
 }
-function simpanLokal() { try { localStorage.setItem(KUNCI, JSON.stringify(templatSaatIni())); } catch (e) {} }
+function tandaiDraf() { $("#ppDraf").hidden = !S.draf; }
+function simpanLokal() { try { localStorage.setItem(KUNCI, JSON.stringify(templatSaatIni())); S.draf = true; } catch (e) {} tandaiDraf(); }
 function templatSaatIni() {
   const t = S.templat, tamb = new Map((t.tambahan || []).map(e => [e.id, e])), bawaan = new Set(PS.REGISTRI.map(s => s.id));
   const slide = [], tambahan = [];
@@ -102,13 +105,13 @@ $("#ppAtur").addEventListener("click", e => {
   simpanLokal(); gambarAtur(); jadwalkan();   // kotak centang sudah berubah di layar; kerja berat ditunda
 });
 $("#ppForm").addEventListener("submit", e => {
-  e.preventDefault(); const f = new FormData(e.target), id = "t" + Date.now().toString(36);
-  const ent = {id, judul: f.get("judul").trim(), sub: f.get("sub").trim(), isi: f.get("isi").split("\n").map(x => x.trim()).filter(Boolean), gambar_url: f.get("gambar_url").trim() || undefined, bagian: f.get("bagian"), setelah: S.susunan.at(-1)?.id || ""};
+  e.preventDefault(); const f = new FormData(e.target), id = "t" + Date.now().toString(36), bersih2 = v => String(v).replace(/[<>]/g, "");
+  const ent = {id, judul: bersih2(f.get("judul").trim()), sub: bersih2(f.get("sub").trim()), isi: f.get("isi").split("\n").map(x => bersih2(x.trim())).filter(Boolean), gambar_url: urlAman(f.get("gambar_url").trim()) ? f.get("gambar_url").trim() : undefined, bagian: f.get("bagian"), setelah: S.susunan.at(-1)?.id || ""};
   (S.templat.tambahan ||= []).push(ent); S.susunan.push({id, aktif: true}); e.target.reset(); simpanLokal(); gambarAtur(); jadwalkan();
 });
 for (const [el, k] of [["#ppPenyaji", "penyaji"], ["#ppJabatan", "jabatan"], ["#ppLokasi", "lokasi"]])
   $(el).addEventListener("input", e => { (S.templat.sampul ||= {})[k] = e.target.value; simpanLokal(); jadwalkan(); });
-$("#ppReset").onclick = () => { try { localStorage.removeItem(KUNCI); } catch (e) {} muatTemplat().then(t => { S.templat = t; isiSampul(); S.susunan = susun(t); gambarAtur(); jadwalkan(); }); };
+$("#ppReset").onclick = () => { try { localStorage.removeItem(KUNCI); } catch (e) {} muatTemplat().then(t => { S.templat = t; tandaiDraf(); isiSampul(); S.susunan = susun(t); gambarAtur(); jadwalkan(); }); };
 $("#ppEks").onclick = () => unduhBlob(new Blob([JSON.stringify(templatSaatIni(), null, 2)], {type: "application/json"}), "paparan_templat.json");
 function isiSampul() { const t = S.templat.sampul || {}; $("#ppPenyaji").value = t.penyaji || ""; $("#ppJabatan").value = t.jabatan || ""; $("#ppLokasi").value = t.lokasi || ""; }
 
@@ -119,7 +122,7 @@ async function muatPerusahaan(p) {
 }
 async function muatGambarTambahan() {
   for (const e of S.templat.tambahan || []) {
-    if (!e.gambar_url || S.gambar[e.id]) continue;
+    if (!e.gambar_url || S.gambar[e.id] || !urlAman(e.gambar_url)) continue;
     try {
       const b = await (await fetch(e.gambar_url)).blob(), data = await new Promise(r => { const f = new FileReader(); f.onload = () => r(f.result); f.readAsDataURL(b); });
       const dim = await new Promise((r, x) => { const im = new Image(); im.onload = () => r({w: im.naturalWidth, h: im.naturalHeight}); im.onerror = x; im.src = data; });
@@ -164,7 +167,7 @@ async function awal() {
   PilihCantik.pasang(); isiSampul();
   $("#upd").textContent = "Data s.d. " + PS.tglP(S.tgl);
   await Promise.all([muatPerusahaan(S.prov), muatGambarTambahan()]);
-  gambarAtur(); await pratinjau();
+  tandaiDraf(); gambarAtur(); await pratinjau();
 }
 $("#ppProv").addEventListener("change", async e => { S.prov = e.target.value; await muatPerusahaan(S.prov); gambarAtur(); jadwalkan(); });
 $("#ppTgl").addEventListener("change", e => { S.tgl = e.target.value; $("#upd").textContent = "Data s.d. " + PS.tglP(S.tgl); gambarAtur(); jadwalkan(); });

@@ -194,3 +194,12 @@ npx wrangler@3 d1 migrations apply poskowarga --remote      # 0007_foto.sql
 # 2) tambahkan ke wrangler.jsonc lalu push ke main (terbit.yml men-deploy):
 #    "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
 ```
+
+## Ruang Posko: peran dan secret
+
+- `SUPER_ADMIN` (secret, boleh kosong): daftar awalan akun dipisah koma yang boleh memakai dummy 🧪/🧹 di /admin/posko. Awalan = 12 hex pertama sha256 entri `ADMIN_TOKEN` akun itu
+  (`printf '%s' 'email:sandi' | shasum -a 256 | cut -c1-12`). Kosong = dummy tertutup untuk semua (aman bawaan).
+- Akun gerbang situs (`AKUN_SITUS`) adalah admin biasa tetapi tidak bisa membaca/mengubah Kontak PT dan tidak bisa mengirim email/WA/telepon ke perusahaan.
+- `/lapangan` publik (regu masuk dengan kode); satu-satunya pengecualian gerbang centurisk97.id, tercatat di `PUBLIK_TANPA_SESI` (src/worker.js). Halaman baru otomatis terkunci di sana.
+- Tebakan kode regu dan token admin lewat header dihitung per IP bergaram di `laju_posko` (migrasi 0019): 300 gagal per jam = 429/403 dari IP itu.
+- Keterbatasan: EXIF dibuang server hanya untuk JPEG; WebP tidak dibersihkan.

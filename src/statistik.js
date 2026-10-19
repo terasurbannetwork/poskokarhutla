@@ -10,7 +10,7 @@
      melewati 20 rb, kiriman disampel deterministik per peramban (p 1 -> 0,5 -> 0,2 -> 0,05) dan dicatat dengan bobot 1/p;
      dasbor menandai "perkiraan (sampel)". Batas kasar tulisan statistik: ~40 rb/hari + 5 % dari kelebihannya.
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
-import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, HOST_TERKUNCI} from "./worker.js";
+import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, bacaBytes, HOST_TERKUNCI} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
 import {halStatistik} from "./bencana.js";
 
@@ -233,7 +233,7 @@ export async function masuk(env, req, kini, halamanMasuk) {
   if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : html(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
   if (laju) return html(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
-  const t = await req.text();
+  const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);

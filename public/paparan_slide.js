@@ -23,6 +23,8 @@ const R = (t, c, b) => ({t, c, b});   // potongan teks berwarna/tebal
 /* ------------------------------------------------------------ kanvas: tiga keluaran */
 const rataKanan = {l: "left", c: "center", r: "right"};
 const runsDari = r => (typeof r === "string" ? [{t: r}] : Array.isArray(r) ? r : [r]).map(x => typeof x === "string" ? {t: x} : x);
+/* hanya data URL gambar raster yang dipakai: menutup sisipan CSS/skrip lewat Content-Type server */
+const gambarAman = d => typeof d === "string" && /^data:image\/(png|jpe?g|webp|gif);base64,[A-Za-z0-9+/=]+$/.test(d);
 const rgb = h => [0, 2, 4].map(i => parseInt(h.slice(i, i + 2), 16));
 
 function KanvasPptx(s) {
@@ -36,7 +38,7 @@ function KanvasPptx(s) {
     },
     garis(x1, y1, x2, y2, o = {}) { s.addShape("line", {x: Math.min(x1, x2), y: Math.min(y1, y2), w: Math.abs(x2 - x1), h: Math.abs(y2 - y1), flipV: (y2 < y1) !== (x2 < x1), line: {color: o.c || C.navy, width: o.w || 1}}); },
     bulat(cx, cy, r, o = {}) { s.addShape("ellipse", {x: cx - r, y: cy - r, w: 2 * r, h: 2 * r, fill: {color: o.f || C.navy}, line: {type: "none"}}); },
-    gambar(d, x, y, w, h) { s.addImage({data: d, x, y, w, h}); },
+    gambar(d, x, y, w, h) { if (!gambarAman(d)) return; s.addImage({data: d, x, y, w, h}); },
   };
 }
 
@@ -73,7 +75,7 @@ function KanvasPdf(doc) {
     },
     garis(x1, y1, x2, y2, o = {}) { doc.setDrawColor(...rgb(o.c || C.navy)); doc.setLineWidth((o.w || 1) / 72); doc.line(x1, y1, x2, y2); },
     bulat(cx, cy, r, o = {}) { doc.setFillColor(...rgb(o.f || C.navy)); doc.circle(cx, cy, r, "F"); },
-    gambar(d, x, y, w, h) { doc.addImage(d, (d.slice(5, d.indexOf(";")).split("/")[1] || "png").toUpperCase().replace("JPG", "JPEG"), x, y, w, h); },
+    gambar(d, x, y, w, h) { if (!gambarAman(d)) return; doc.addImage(d, (d.slice(5, d.indexOf(";")).split("/")[1] || "png").toUpperCase().replace("JPG", "JPEG"), x, y, w, h); },
   };
 }
 
@@ -91,7 +93,7 @@ function KanvasHtml(el) {
       tambah(`left:${px(x1)};top:${(y1 * 100 - t / 2).toFixed(1)}px;width:${px(len)};height:${t}px;background:#${o.c || C.navy};transform-origin:0 50%;transform:rotate(${a}deg)`);
     },
     bulat(cx, cy, r, o = {}) { tambah(`left:${px(cx - r)};top:${px(cy - r)};width:${px(2 * r)};height:${px(2 * r)};border-radius:50%;background:#${o.f || C.navy}`); },
-    gambar(d, x, y, w, h) { tambah(`left:${px(x)};top:${px(y)};width:${px(w)};height:${px(h)};background:url(${d}) center/contain no-repeat`); },
+    gambar(d, x, y, w, h) { if (!gambarAman(d)) return; tambah(`left:${px(x)};top:${px(y)};width:${px(w)};height:${px(h)};background:url("${d}") center/contain no-repeat`); },
   };
 }
 
@@ -247,7 +249,7 @@ slide("nasional", "Kondisi nasional", "situasi", c => c.D.laporan.luas_banding &
   const klaim = rank.every(r => r === rank[0]) ? (rmax === 1 ? `terluas sejak ${th[0]}` : `terluas ke-${rmax} sejak ${th[0]}`) : `termasuk ${kata[rmax] || rmax} terluas sejak ${th[0]}`;
   const prov26 = Object.entries(S.prov).map(([p, v]) => [p, jum(v[th.at(-1)])]).sort((a, b) => b[1] - a[1]), top = prov26.slice(0, 8), me = prov26.find(x => x[0] === c.prov)?.[1] || 0;
   const t26 = tn.at(-1), i19 = th.indexOf("2019"), m26 = Object.values(S.prov).reduce((a, v) => a.map((x, i) => x + (v[th.at(-1)][i] || 0)), Array(12).fill(0)), agsep = m26[7] + m26[8];
-  const uji = (L.sumber?.luas || "").match(/uji balik tahunan meleset sampai ([^;]+)/)?.[1]?.replace(/%/g, " persen");
+  const uji = (L.sumber?.luas || "").match(/uji balik tahunan meleset sampai ([^;]+)/)?.[1]?.replace(/%/g, " persen").replace(/\u2212/g, "-");
   const tambah = g.extra ? `, ditambah luas harian ${tglK(g.awal)} sampai ${tglK(c.tgl)}` : "";
   rangka(k, c, {
     panel: [
@@ -369,7 +371,7 @@ slide("konsesi12", "12 konsesi dengan titik terbanyak", "konsesi", c => konsesiA
     sumber: `NASA FIRMS VIIRS S-NPP 1 Januari sampai ${tglP(c.tgl)}; indikasi terbakar dan persen gambut: posisi data ${tglP(sdP(c))}; batas konsesi Kemenhut via GFW; RSPO: GFW rspo_oil_palm (2020)`,
   });
   tabel(k, 0.6, 1.6, 12.15, [{j: "No", w: 0.4}, {j: "Perusahaan", w: 2.6}, {j: "Jenis", w: 0.7}, {j: "Grup", w: 1.35}, {j: "Kab/kota", w: 1.35}, {j: "Luas izin (ha)", w: 1.0, a: "r"}, {j: "Titik 2026", w: 0.85, a: "r"}, {j: "Titik 7 hari", w: 0.85, a: "r"}, {j: "Indikasi terbakar (ha)", w: 1.1, a: "r"}, {j: "Persen terbakar", w: 0.95, a: "r"}, {j: "Persen gambut", w: 0.95, a: "r"}, {j: "RSPO", w: 1.5}],
-    t.map((p, i) => [String(i + 1), {t: p.nama, b: true}, JENIS[p.jenis] || p.jenis, p.grup || (p.rspo?.grup) || "–", (p.kab || []).join(", ") || "–", fmt(p.luas_ha), fmt(p.titik), {t: fmt(p.titik_7h), c: C.jingga, b: true}, fmt(p.luas_bakar_ha), pct(p.luas_bakar_ha, p.luas_ha) + " persen", p.gambut != null ? Math.round(p.gambut * 100) + " persen" : "–",
+    t.map((p, i) => [String(i + 1), {t: p.nama, b: true}, JENIS[p.jenis] || p.jenis, (g => g.length > 34 ? g.slice(0, 33) + "…" : g)(p.grup || (p.rspo?.grup) || "–"), (p.kab || []).join(", ") || "–", fmt(p.luas_ha), fmt(p.titik), {t: fmt(p.titik_7h), c: C.jingga, b: true}, fmt(p.luas_bakar_ha), pct(p.luas_bakar_ha, p.luas_ha) + " persen", p.gambut != null ? Math.round(p.gambut * 100) + " persen" : "–",
       p.jenis === "sawit" ? (p.rspo ? {t: p.rspo.sertifikat ? "Anggota" : "Anggota, tanpa sertifikat", c: "2B7A3D", b: true} : {t: "Bukan anggota", c: C.jingga, b: true}) : "–"]), {rh: 0.375, hh: 0.5, s: 8});
 });
 
@@ -432,5 +434,26 @@ function slideTeks(e) {
 /* buat(ctx) -> {pptx(slide), pdf(doc), html(el)}: satu fungsi gambar, tiga keluaran */
 const lengkapi = s => (s.buat = c => ({pptx: sl => s.gambar(KanvasPptx(sl), c), pdf: d => s.gambar(KanvasPdf(d), c), html: el => s.gambar(KanvasHtml(el), c)}), s);
 REGISTRI.forEach(lengkapi);
-window.PaparanSlide = {lengkapi, W, H, C, REGISTRI, KanvasPptx, KanvasPdf, KanvasHtml, slideTeks, fmt, tglP, LEVEL};
+const urlAman = u => /^\/(?!\/)[^\s"'()<>\\]{0,300}$/.test(u);   // gambar_url hanya satu situs: IP penonton tidak bocor ke host luar
+const BAGIAN = ["situasi", "konsesi", "arahan", "lampiran"], teksOk = (v, maks) => typeof v === "string" && v.length <= maks, bersih = v => v.replace(/[<>]/g, "");
+/* cekTemplat: validasi skema sisi klien (id dikenal, tipe, panjang); mengembalikan salinan bersih atau null */
+function cekTemplat(t) {
+  try {
+    if (!t || typeof t !== "object" || typeof t.versi !== "number" || !Array.isArray(t.slide) || !Array.isArray(t.tambahan || []) || t.slide.length > 60 || (t.tambahan || []).length > 30) return null;
+    const tamb = [], idT = new Set(), idR = new Set(REGISTRI.map(s => s.id));
+    for (const e of t.tambahan || []) {
+      if (!e || !/^[\w-]{1,40}$/.test(e.id) || idR.has(e.id) || idT.has(e.id) || ["__proto__", "constructor", "prototype"].includes(e.id) || !teksOk(e.judul, 160) || !(e.sub == null || teksOk(e.sub, 200)) || !Array.isArray(e.isi || []) || (e.isi || []).length > 30 || !(e.isi || []).every(x => teksOk(x, 500))) return null;
+      if (e.gambar_url != null && !(teksOk(e.gambar_url, 300) && urlAman(e.gambar_url))) return null;
+      if (e.bagian != null && !BAGIAN.includes(e.bagian)) return null;
+      idT.add(e.id); tamb.push({id: e.id, judul: bersih(e.judul), sub: bersih(e.sub || ""), isi: (e.isi || []).map(bersih), gambar_url: e.gambar_url || undefined, bagian: e.bagian || "arahan", setelah: teksOk(e.setelah, 40) ? e.setelah : "", aktif: e.aktif !== false});
+    }
+    const dikenal = new Set([...REGISTRI.map(s => s.id), ...tamb.map(e => e.id)]), slide = [];
+    const lihat = new Set();
+    for (const x of t.slide) { if (!x || !dikenal.has(x.id) || typeof x.urutan !== "number" || lihat.has(x.id)) return null; lihat.add(x.id); slide.push({id: x.id, aktif: x.aktif !== false, urutan: x.urutan}); }
+    const sp = t.sampul || {}; if (typeof sp !== "object" || ["penyaji", "jabatan", "lokasi"].some(k => !(sp[k] == null || teksOk(sp[k], 160)))) return null;
+    return {versi: t.versi, sampul: {penyaji: bersih(sp.penyaji || ""), jabatan: bersih(sp.jabatan || ""), lokasi: bersih(sp.lokasi || "")}, slide, tambahan: tamb};
+  } catch (e) { return null; }
+}
+
+window.PaparanSlide = {urlAman, cekTemplat, lengkapi, W, H, C, REGISTRI, KanvasPptx, KanvasPdf, KanvasHtml, slideTeks, fmt, tglP, LEVEL};
 })();
