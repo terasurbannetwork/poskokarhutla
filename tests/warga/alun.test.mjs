@@ -6,7 +6,7 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: alun.js mengimpornya balik (siklus), urutan yang sama dengan produksi
-import {JENIS, BANTUAN, ALASAN, MODERASI, TERUSKAN, bersihPanjang} from "../../src/alun.js";
+import {JENIS, BANTUAN, ALASAN, MODERASI, TERUSKAN, bersihPanjang, kunciDaftar} from "../../src/alun.js";
 
 const U = await siapkan("uji-alun"), uji = berantai();
 const ip = n => ({"cf-connecting-ip": `10.9.0.${n}`});
@@ -125,7 +125,7 @@ uji("upvote: satu per IP per pos, IP lain menambah", async () => {
   assert.equal((await U.api("POST", "/api/alun/upvote/abcdef0123456789", {}, ip(11))).s, 404);
 });
 
-uji("lapor: alasan wajib dari daftar tetap; 3 IP berbeda menyembunyikan; IP sama dihitung sekali", async () => {
+uji("lapor: alasan wajib dari daftar tetap; 5 IP berbeda menyembunyikan; IP sama dihitung sekali", async () => {
   const k = await tulis({judul: "Utas yang akan dilaporkan"}, ip(6)), id = k.j.id, l = (n, alasan = "spam") => U.api("POST", "/api/alun/lapor/" + id, {alasan}, ip(n));
   assert.equal((await l(21, "liar")).s, 400); assert.equal((await U.api("POST", "/api/alun/lapor/" + id, {}, ip(21))).s, 400);
   assert.equal((await l(21)).j.tersembunyi, false);
@@ -133,7 +133,9 @@ uji("lapor: alasan wajib dari daftar tetap; 3 IP berbeda menyembunyikan; IP sama
   assert.equal((await l(22, "hoaks")).j.tersembunyi, false);
   assert.equal((await U.DB.prepare("SELECT moderasi FROM alun_utas WHERE id = ?").bind(id).first()).moderasi, "dilaporkan");
   assert.equal((await U.api("GET", "/api/alun/" + id)).s, 200, "dilaporkan masih tampil");
-  assert.equal((await l(23, "data_pribadi")).j.tersembunyi, true);
+  assert.equal((await l(23, "data_pribadi")).j.tersembunyi, false, "3 aduan tidak lagi cukup (ambang 5)");
+  assert.equal((await l(24)).j.tersembunyi, false);
+  assert.equal((await l(25, "lainnya")).j.tersembunyi, true);
   assert.equal((await U.api("GET", "/api/alun/" + id)).s, 404, "tersembunyi hilang dari publik");
   assert.ok(!(await U.api("GET", "/api/alun")).j.utas.some(x => x.id === id));
   assert.equal((await U.api("GET", "/api/alun/" + id, undefined, ADMIN)).s, 200, "admin tetap bisa melihat");
@@ -266,4 +268,72 @@ uji("tabel belum dimigrasi: rute membalas 503, bukan 500", async () => {
   for (const [m, j, b] of [["GET", "/api/alun"], ["GET", "/api/alun/abcdef0123456789"], ["POST", "/api/alun", SAH]]) assert.equal((await V.api(m, j, b, ip(90))).s, 503, j);
   assert.equal((await V.api("GET", "/api/alun/admin", undefined, ADMIN)).s, 503);
   assert.equal((await V.api("GET", "/alun-alun")).s, 200, "halaman statis tetap tayang");
+});
+
+/* ---------------- perbaikan ulasan ---------------- */
+uji("perbaikan ulasan: akun GERBANG 403 di /api/alun/admin dan tidak melihat utas tersembunyi / teruskan_catatan", async () => {
+  assert.equal((await U.api("GET", "/api/alun/admin", undefined, GERBANG)).s, 403);
+  assert.equal((await U.api("GET", "/api/alun/admin?dummy=1", undefined, GERBANG)).s, 403);
+  const bt = (await tulis({jenis: "butuh_bantuan", judul: "Butuh sesuatu rahasia"}, ip(100))).j.id;
+  await U.api("POST", "/api/alun/admin/" + bt, {aksi: "teruskan", ke: "relawan", catatan: "catatan internal"}, ADMIN);
+  const g = await U.api("GET", "/api/alun/" + bt, undefined, GERBANG); assert.equal(g.s, 200); assert.equal(g.j.teruskan_catatan, undefined); assert.ok(!g.t.includes("catatan internal"));
+  await U.api("POST", "/api/alun/admin/" + bt, {aksi: "sembunyikan"}, ADMIN);
+  assert.equal((await U.api("GET", "/api/alun/" + bt, undefined, GERBANG)).s, 404, "gerbang tidak melihat utas tersembunyi");
+  assert.equal((await U.api("GET", "/api/alun/" + bt, undefined, ADMIN)).s, 200);
+});
+
+uji("perbaikan ulasan: lokasi disimpan dibulatkan 2 desimal, presisi penuh tidak bocor", async () => {
+  const r = await tulis({lat: -6.912345, lon: 110.612399}, ip(101)); assert.equal(r.s, 201);
+  const g = await U.api("GET", "/api/alun/" + r.j.id); assert.equal(g.j.lat, -6.91); assert.equal(g.j.lon, 110.61); assert.ok(!g.t.includes("6.9123"));
+  const d = await U.DB.prepare("SELECT lat, lon FROM alun_utas WHERE id = ?").bind(r.j.id).first(); assert.deepEqual([d.lat, d.lon], [-6.91, 110.61]);
+  assert.match(readFileSync(path.join(AKAR, "public/bnpb/alun-alun.js"), "utf8"), /dibulatkan sekitar 1 km, tampil publik/);
+});
+
+uji("perbaikan ulasan: butuh_bantuan tidak pernah auto-sembunyi (hanya dilaporkan); jenis lain perlu 5 aduan", async () => {
+  const bt = (await tulis({jenis: "butuh_bantuan", judul: "Butuh bantuan dibanjiri aduan"}, ip(102))).j.id;
+  for (let n = 110; n < 118; n++) await U.api("POST", "/api/alun/lapor/" + bt, {alasan: "spam"}, ip(n));
+  const d = await U.DB.prepare("SELECT moderasi, aduan_n FROM alun_utas WHERE id = ?").bind(bt).first();
+  assert.equal(d.moderasi, "dilaporkan"); assert.equal(d.aduan_n, 8); assert.equal((await U.api("GET", "/api/alun/" + bt)).s, 200);
+  const tn = (await tulis({judul: "Tanya biasa diaduankan"}, ip(103))).j.id;
+  for (let n = 120; n < 124; n++) await U.api("POST", "/api/alun/lapor/" + tn, {alasan: "spam"}, ip(n));
+  assert.equal((await U.api("GET", "/api/alun/" + tn)).s, 200, "4 aduan belum cukup");
+  await U.api("POST", "/api/alun/lapor/" + tn, {alasan: "spam"}, ip(124));
+  assert.equal((await U.api("GET", "/api/alun/" + tn)).s, 404, "5 aduan menyembunyikan");
+});
+
+uji("perbaikan ulasan: aduan hanya dihitung bila Turnstile lolos (aktif), upvote tidak terpengaruh", async () => {
+  const T = await siapkan("uji-alun-ts", {ikat: {TURNSTILE_SECRET: "s", TURNSTILE_SITEKEY: "k"}});
+  const id = (await T.DB.prepare("INSERT INTO alun_utas (id, jenis, judul, teks, bencana, prov, pemilik_sha, dibuat) VALUES ('c000000000000001', 'tanya', 'Judul sah', 'isi', 'banjir', '33', ?, 1) RETURNING id").bind("3".repeat(64)).first()).id;
+  const a = await T.api("POST", "/api/alun/lapor/" + id, {alasan: "spam", turnstile: "token"}, ip(130)); assert.equal(a.s, 403);
+  assert.equal(await T.n("alun_suara", "jenis = 'aduan'"), 0, "aduan tanpa Turnstile sah tidak dihitung");
+  assert.equal((await T.api("POST", "/api/alun/upvote/" + id, {}, ip(130))).s, 200);
+});
+
+uji("perbaikan ulasan: kunci cache daftar memakai parameter tervalidasi saja", async () => {
+  const k = (q, p) => kunciDaftar(new URL("http://x.lokal/api/alun?" + q), p).url;
+  const p = {jenis: "tanya", bencana: "", prov: "33", urut: "terbaru", kursor: "0"};
+  assert.equal(k("jenis=tanya&prov=33", p), k("prov=33&jenis=tanya&x=1&cb=abc123", p));
+  assert.equal(k("prov=33&jenis=tanya&zzz=9", p), "http://x.lokal/api/alun?jenis=tanya&prov=33");
+});
+
+uji("perbaikan ulasan: lajuIP sebelum Turnstile (tulis & balas)", async () => {
+  const T = await siapkan("uji-alun-ts2", {ikat: {TURNSTILE_SECRET: "s", TURNSTILE_SITEKEY: "k"}}), h = ip(140);
+  for (let i = 0; i < 5; i++) assert.equal((await T.api("POST", "/api/alun", {...SAH, turnstile: "x"}, h)).s, 403);
+  assert.equal((await T.api("POST", "/api/alun", {...SAH, turnstile: "x"}, h)).s, 429, "percobaan Turnstile gagal tetap terhitung laju");
+});
+
+uji("perbaikan ulasan: nama yang meniru petugas ditolak untuk non-moderator (tulis & balas); nama biasa lolos", async () => {
+  for (const n of ["Petugas Posko", "BPBD Demak", "bnpb pusat", "Admin Forum", "Moderator", "Tim RESMI", "Pemerintah Desa", "Polisi Lalu", "TNI AD", "Basarnas SAR"]) {
+    assert.equal((await tulis({nama: n}, ip(150))).s, 400, n);
+    assert.equal((await U.api("POST", "/api/alun/balas/" + DEPAN.utas.id, {teks: "halo", nama: n}, ip(150))).s, 400, "balas " + n);
+  }
+  assert.equal((await tulis({nama: "Fitni"}, ip(151))).s, 201, "Fitni bukan TNI");
+  assert.equal((await U.api("POST", "/api/alun/balas/" + DEPAN.utas.id, {teks: "halo", nama: "Antoni"}, ip(151))).s, 201);
+});
+
+uji("perbaikan ulasan: terjawab oleh pemilik dibatasi 30 per jam per kode", async () => {
+  const u = (await tulis({judul: "Utas untuk laju terjawab"}, ip(160))).j, b = (await U.api("POST", "/api/alun/balas/" + u.id, {teks: "jawaban"}, ip(161))).j.id;
+  const t = () => U.api("POST", "/api/alun/terjawab/" + u.id, {balasan_id: b}, {...ip(162), "x-kode": u.kode});
+  for (let i = 0; i < 30; i++) assert.equal((await t()).s, 200, "ke-" + i);
+  const r = await t(); assert.equal(r.s, 429); assert.ok(r.h.get("retry-after"));
 });

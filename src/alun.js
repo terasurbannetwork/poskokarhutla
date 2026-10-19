@@ -1,7 +1,7 @@
 /* Alun-alun: forum publik warga, relawan, BPBD. Rancangan: docs/bnpb/ARSITEKTUR.md, docs/bnpb/RENCANA-12-JAM.md R2. Skema: migrations/0024_alun.sql.
    Setiap rute bergerbang sejak awal: tulis = bersihTeks + Turnstile + laju per IP; pengumuman/moderasi = modOK; dummy = superOK; tabel belum ada = 503. */
-import {json, gagal, sha, acak, ipHash, bacaBody, bersihTeks, turnstileOK, adminOK, cacheTepi} from "./worker.js";
-import {lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
+import {json, gagal, sha, acak, ipHash, bacaBody, bersihTeks, turnstileOK, cacheTepi} from "./worker.js";
+import {laju, lajuIP, kodeBaru, pemegangKode, halamanBnpbPublik} from "./bnpb.js";
 import {modOK, superOK, num} from "./posko.js";
 import {halamanAdmin} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
@@ -20,10 +20,18 @@ export const PROV = {"11": "Aceh", "12": "Sumatera Utara", "13": "Sumatera Barat
   "65": "Kalimantan Utara", "71": "Sulawesi Utara", "72": "Sulawesi Tengah", "73": "Sulawesi Selatan", "74": "Sulawesi Tenggara", "75": "Gorontalo", "76": "Sulawesi Barat",
   "81": "Maluku", "82": "Maluku Utara", "91": "Papua", "92": "Papua Barat", "93": "Papua Selatan", "94": "Papua Tengah", "95": "Papua Pegunungan", "96": "Papua Barat Daya"};
 const BENCANA = () => new Set([...hidup().map(b => b.id), "umum"]);   // registry public/bencana.json + "umum" (tidak terkait satu bencana)
-const BATAS = {tulis: [[JAM, 5], [HARI, 20]], balas: [[JAM, 20]], upvote: [[JAM, 120]], lapor: [[JAM, 20]]};
-const MAKS_JUDUL = 120, MAKS_UTAS = 1000, MAKS_BALAS = 280, MAKS_NAMA = 40, MAKS_KAB = 60, GLOBAL_UTAS_JAM = 200, AMBANG_ADUAN = 3, MAKS_BALASAN_UTAS = 300, MAKS_SEMATAN = 5, HALAMAN = 20;
+const BATAS = {tulis: [[JAM, 5], [HARI, 20]], balas: [[JAM, 20]], upvote: [[JAM, 120]], lapor: [[JAM, 20]], terjawab: [[JAM, 30]]};
+const MAKS_JUDUL = 120, MAKS_UTAS = 1000, MAKS_BALAS = 280, MAKS_NAMA = 40, MAKS_KAB = 60, GLOBAL_UTAS_JAM = 200, AMBANG_ADUAN = 5, MAKS_BALASAN_UTAS = 300, MAKS_SEMATAN = 5, HALAMAN = 20;
 
-const tolakAdmin = () => gagal(403, "akses ditolak");
+/* nama tampil bebas tidak boleh meniru petugas (moderator memakai lencana Petugas, bukan nama) */
+const NAMA_RESMI = /petugas|bpbd|bnpb|admin|moderator|resmi|pemerintah|polisi|\btni\b|basarnas/i;
+const tolakNama = nama => nama != null && NAMA_RESMI.test(nama) ? "nama: tidak boleh memuat sebutan petugas/instansi resmi" : null;
+/* kunci cache dari parameter yang sudah divalidasi saja; query liar (?x=1, urutan lain) tidak membuat kunci baru */
+export const kunciDaftar = (url, {jenis, bencana, prov, urut, kursor}) => {
+  const k = new URL("/api/alun", url);
+  for (const [a, v] of [["bencana", bencana], ["jenis", jenis], ["kursor", kursor === "0" ? "" : kursor], ["prov", prov], ["urut", urut === "terbaru" ? "" : urut]]) if (v) k.searchParams.set(a, v);
+  return new Request(k, {method: "GET"});
+};
 const tolakMod = () => gagal(403, "hanya untuk moderator ke atas (bukan akun gerbang situs)");
 const tabelBelum = f => async (...a) => {
   try { return await f(...a); }
@@ -50,7 +58,7 @@ const baris = (r, admin) => ({id: r.id, jenis: r.jenis, judul: r.judul, bencana:
 const sapaan = r => r.petugas ? "Petugas" : r.nama || null;
 
 async function daftar(env, req, url, kini, ctx) {
-  const dummy = url.searchParams.get("dummy") === "1" && !!await adminOK(env, req, kini);
+  const dummy = url.searchParams.get("dummy") === "1" && !!await modOK(env, req);
   const jenis = url.searchParams.get("jenis") || "", bencana = url.searchParams.get("bencana") || "", prov = url.searchParams.get("prov") || "", urut = url.searchParams.get("urut") || "terbaru";
   const kursor = url.searchParams.get("kursor") || "0";
   if (jenis && !JENIS.includes(jenis)) return gagal(400, "jenis tidak dikenal");
@@ -70,11 +78,15 @@ async function daftar(env, req, url, kini, ctx) {
     const rs = (await env.DB.prepare(`SELECT ${KOLOM} FROM alun_utas WHERE ${w.join(" AND ")} AND sematan = 0 ORDER BY ${susun}, id LIMIT ${HALAMAN + 1} OFFSET ${+kursor}`).bind(...b).all()).results;
     return json({utas: rs.slice(0, HALAMAN).map(r => baris(r, dummy)), sematan: sematan.map(r => baris(r, dummy)), berikut: rs.length > HALAMAN ? String(+kursor + HALAMAN) : null});
   };
-  return dummy ? buat() : cacheTepi(req, ctx, 10, buat);
+  return dummy ? buat() : cacheTepi(kunciDaftar(url, {jenis, bencana, prov, urut, kursor}), ctx, 10, buat);
 }
 
-async function rincian(env, req, id, kini) {
-  const admin = await adminOK(env, req, kini), dummy = admin && new URL(req.url).searchParams.get("dummy") === "1";
+async function rincian(env, req, id, ctx) {
+  const admin = await modOK(env, req);
+  if (!admin) return cacheTepi(new Request(new URL("/api/alun/" + id, req.url), {method: "GET"}), ctx, 10, () => rincianBaca(env, id, null, false));
+  return rincianBaca(env, id, admin, new URL(req.url).searchParams.get("dummy") === "1");
+}
+async function rincianBaca(env, id, admin, dummy) {
   const u = await env.DB.prepare(`SELECT ${KOLOM}, teks, lat, lon, teruskan_catatan, terjawab_id FROM alun_utas WHERE id = ?`).bind(id).first();
   if (!u || (u.moderasi === "tersembunyi" && !admin) || (u.dummy && !dummy)) return gagal(404, "utas tidak ada");
   const bs = (await env.DB.prepare(`SELECT id, teks, nama, petugas, moderasi, upvote, aduan_n, dibuat, dummy FROM alun_balas WHERE utas_id = ? ${admin ? "" : "AND moderasi <> 'tersembunyi'"} ORDER BY dibuat, id LIMIT 300`).bind(id).all()).results;
@@ -100,12 +112,14 @@ async function tulis(env, req, kini) {
   if (kab.teks != null && kab.teks.length < 2) return gagal(400, "kab minimal 2 huruf");
   const nama = opsi(o.nama, MAKS_NAMA, "nama"); if (nama.galat) return gagal(400, nama.galat);
   if (nama.teks != null && nama.teks.length < 2) return gagal(400, "nama minimal 2 huruf");
-  const lat = num(o.lat, -11.5, 6.5), lon = num(o.lon, 94.5, 141.5);
-  if (Number.isNaN(lat) || Number.isNaN(lon) || (lat == null) !== (lon == null)) return gagal(400, "lat dan lon harus berpasangan dan di dalam Indonesia");
+  const tn = !mod && tolakNama(nama.teks); if (tn) return gagal(400, tn);
+  const lat0 = num(o.lat, -11.5, 6.5), lon0 = num(o.lon, 94.5, 141.5);
+  if (Number.isNaN(lat0) || Number.isNaN(lon0) || (lat0 == null) !== (lon0 == null)) return gagal(400, "lat dan lon harus berpasangan dan di dalam Indonesia");
+  const kira = v => v == null ? null : Math.round(v * 100) / 100, lat = kira(lat0), lon = kira(lon0);   // privasi: disimpan dibulatkan 2 desimal (sekitar 1 km); presisi penuh tidak pernah masuk D1
   if (o.sematan != null && (!resmi || typeof o.sematan !== "boolean")) return gagal(400, "sematan hanya untuk pengumuman");
   if (!mod) {
-    if (!(await turnstileOK(env, o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
     const l = await lajuIP(env, req, "alun.tulis", BATAS.tulis, kini); if (l) return l;
+    if (!(await turnstileOK(env, o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
     if ((await env.DB.prepare("SELECT count(*) n FROM alun_utas WHERE dibuat > ? AND dummy = 0").bind(kini - JAM).first()).n >= GLOBAL_UTAS_JAM)
       return gagal(429, "forum sedang ramai sekali; coba lagi sebentar lagi", {"retry-after": "600"});
   }
@@ -127,11 +141,12 @@ async function balas(env, req, id, kini) {
   if (!teks.teks) return gagal(400, "teks kosong");
   const nama = petugas ? {teks: null} : opsi(o.nama, MAKS_NAMA, "nama"); if (nama.galat) return gagal(400, nama.galat);
   if (nama.teks != null && nama.teks.length < 2) return gagal(400, "nama minimal 2 huruf");
+  const tn = tolakNama(nama.teks); if (tn) return gagal(400, tn);
   const u = await env.DB.prepare("SELECT id, moderasi, dummy, balasan_n FROM alun_utas WHERE id = ?").bind(id).first();
   if (!u || (u.moderasi === "tersembunyi" && !mod)) return gagal(404, "utas tidak ada");
   if (!mod) {
-    if (!(await turnstileOK(env, o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
     const l = await lajuIP(env, req, "alun.balas", BATAS.balas, kini); if (l) return l;
+    if (!(await turnstileOK(env, o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
   }
   if (u.balasan_n >= MAKS_BALASAN_UTAS) return gagal(409, "utas ini sudah penuh");
   const rid = acak(8);
@@ -144,13 +159,13 @@ const cariPos = async (env, id) => {
   const u = await env.DB.prepare("SELECT id, jenis, moderasi, dummy, id utas_id, 'alun_utas' tabel FROM alun_utas WHERE id = ?").bind(id).first();
   return u || await env.DB.prepare("SELECT b.id, b.petugas, b.moderasi, b.dummy, b.utas_id, 'alun_balas' tabel, u.jenis FROM alun_balas b JOIN alun_utas u ON u.id = b.utas_id WHERE b.id = ?").bind(id).first();
 };
-/* hitung ulang cacah dari alun_suara (satu sumber kebenaran). Aduan >= ambang menyembunyikan, kecuali pos resmi (pengumuman, balasan petugas): tidak bisa dibungkam massa. */
+/* hitung ulang cacah dari alun_suara (satu sumber kebenaran). Aduan >= ambang menyembunyikan, kecuali pos resmi (pengumuman, balasan petugas) dan permintaan bantuan (butuh_bantuan serta balasannya): tidak bisa dibungkam massa, cukup 'dilaporkan' untuk moderator. */
 const hitungSuara = (env, p) => env.DB.prepare(`UPDATE ${p.tabel} SET upvote = (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'upvote'),
   aduan_n = (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'aduan'),
   moderasi = CASE WHEN moderasi <> 'tampil' AND moderasi <> 'dilaporkan' THEN moderasi
     WHEN ?2 = 1 THEN moderasi
-    WHEN (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'aduan') >= ${AMBANG_ADUAN} THEN 'tersembunyi'
-    WHEN (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'aduan') > 0 THEN 'dilaporkan' ELSE moderasi END WHERE id = ?1`).bind(p.id, p.jenis === "pengumuman" || p.petugas ? 1 : 0);
+    WHEN ?3 = 0 AND (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'aduan') >= ${AMBANG_ADUAN} THEN 'tersembunyi'
+    WHEN (SELECT count(*) FROM alun_suara WHERE pos_id = ?1 AND jenis = 'aduan') > 0 THEN 'dilaporkan' ELSE moderasi END WHERE id = ?1`).bind(p.id, p.jenis === "pengumuman" || p.petugas ? 1 : 0, p.jenis === "butuh_bantuan" ? 1 : 0);
 
 async function suara(env, req, id, jenis, kini) {
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
@@ -159,6 +174,7 @@ async function suara(env, req, id, jenis, kini) {
   const p = await cariPos(env, id);
   if (!p || p.moderasi === "tersembunyi" || p.dummy) return gagal(404, "konten tidak ada");
   const l = await lajuIP(env, req, jenis === "aduan" ? "alun.lapor" : "alun.upvote", jenis === "aduan" ? BATAS.lapor : BATAS.upvote, kini); if (l) return l;
+  if (jenis === "aduan" && !(await turnstileOK(env, b.o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");   // aduan hanya dihitung dari manusia terverifikasi (anti pembungkaman massal)
   const baru = (await env.DB.prepare("INSERT OR IGNORE INTO alun_suara (pos_id, kunci, jenis, alasan, waktu) VALUES (?, ?, ?, ?, ?)").bind(id, await ipHash(env, req), jenis, alasan, kini).run()).meta.changes;
   if (baru) await env.DB.batch([hitungSuara(env, p), ...(jenis === "aduan" && p.tabel === "alun_balas" ? [hitungBalas(env, p.utas_id)] : [])]);
   const t = await env.DB.prepare(`SELECT upvote, aduan_n, moderasi FROM ${p.tabel} WHERE id = ?`).bind(id).first();
@@ -170,6 +186,7 @@ async function terjawab(env, req, id, kini) {
   if (!mod) {   // bukan moderator: harus pemilik utas (header x-kode, token dari saat membuat)
     const g = await pemegangKode(env, req, "alun", async h => env.DB.prepare("SELECT id FROM alun_utas WHERE id = ? AND pemilik_sha = ?").bind(id, h).first());
     if (g instanceof Response) return g;
+    const l = await laju(env, "alun.kode:" + g.id, "alun.terjawab", BATAS.terjawab, kini); if (l) return l;
   }
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const bid = b.o.balasan_id;
@@ -186,7 +203,7 @@ async function terjawab(env, req, id, kini) {
 
 /* ---------------- admin ---------------- */
 async function adminDaftar(env, req, url, kini) {
-  if (!await adminOK(env, req, kini)) return tolakAdmin();
+  if (!await modOK(env, req)) return tolakMod();
   const d = url.searchParams.get("dummy") === "1", ft = d ? "1" : "dummy = 0";
   const ut = (await env.DB.prepare(`SELECT ${KOLOM}, teruskan_catatan FROM alun_utas WHERE ${ft} ORDER BY dibuat DESC LIMIT 150`).all()).results;
   const rb = (await env.DB.prepare(`SELECT b.id, b.utas_id, b.teks, b.nama, b.petugas, b.moderasi, b.aduan_n, b.upvote, b.dibuat, b.dummy, u.judul FROM alun_balas b JOIN alun_utas u ON u.id = b.utas_id
@@ -317,7 +334,7 @@ export const RUTE_ALUN = {
   "GET /admin/alun": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("alun")),
   "GET /api/alun": T((env, req, url, kini, ctx) => daftar(env, req, url, kini, ctx)),
   "GET /api/alun/admin": T((env, req, url, kini) => adminDaftar(env, req, url, kini)),
-  "GET /api/alun/:id": T((env, req, url, kini, ctx, id) => rincian(env, req, id, kini)),
+  "GET /api/alun/:id": T((env, req, url, kini, ctx, id) => rincian(env, req, id, ctx)),
   "POST /api/alun": T((env, req, url, kini) => tulis(env, req, kini)),
   "POST /api/alun/balas/:id": T((env, req, url, kini, ctx, id) => balas(env, req, id, kini)),
   "POST /api/alun/upvote/:id": T((env, req, url, kini, ctx, id) => suara(env, req, id, "upvote", kini)),

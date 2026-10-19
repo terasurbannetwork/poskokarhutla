@@ -190,7 +190,7 @@
   $("lokasiPakai").addEventListener("click", () => {
     if (!navigator.geolocation) { $("lokasiInfo").textContent = "Peramban ini tidak bisa membaca lokasi."; return; }
     $("lokasiInfo").textContent = "Mencari lokasi...";
-    navigator.geolocation.getCurrentPosition(p => { lokasi = {lat: +p.coords.latitude.toFixed(4), lon: +p.coords.longitude.toFixed(4)}; $("lokasiInfo").textContent = `${lokasi.lat.toLocaleString("id-ID")}, ${lokasi.lon.toLocaleString("id-ID")}`; },
+    navigator.geolocation.getCurrentPosition(p => { lokasi = {lat: +p.coords.latitude.toFixed(2), lon: +p.coords.longitude.toFixed(2)}; $("lokasiInfo").textContent = `Lokasi kira-kira, dibulatkan sekitar 1 km, tampil publik: ${lokasi.lat.toLocaleString("id-ID")}, ${lokasi.lon.toLocaleString("id-ID")}`; },
       () => { lokasi = null; $("lokasiInfo").textContent = "Lokasi tidak bisa dibaca."; }, {timeout: 8000});
   });
   $("formTulis").addEventListener("submit", async e => {

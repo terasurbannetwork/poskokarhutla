@@ -1,5 +1,6 @@
 /* Alun-alun (halaman publik). Token dan komponen dasar dari bnpb.css; di sini hanya tata letak forum. Tanpa gaya inline (CSP). */
 .bn-tombol svg,.al-ikon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.al-tata [hidden],.bn-tombol[hidden]{display:none!important}   /* display:grid/inline-flex menimpa atribut hidden: kartu rincian kosong & tombol Muat lebih banyak tampil tanpa isi */
 .bn-tombol{display:inline-flex;align-items:center;gap:7px}
 .al-tata{display:grid;gap:16px;grid-template-columns:250px minmax(300px,1fr) minmax(0,1.35fr);align-items:start}
 .al-tata:has(#rincian[hidden]){grid-template-columns:250px minmax(0,1fr)}
