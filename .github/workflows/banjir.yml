@@ -17,7 +17,9 @@ permissions:
 jobs:
   perbarui:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # 19 Okt 2026: 50 menit membunuh job tiap hari sejak 17 Okt. Langkah banjir sendiri ±41 menit, lalu posko.py merantai
+    # cuaca, gunung api, berita + dampak 5 modul (masing-masing sampai 15 menit): tak pernah terbit, berita modul macet sejak 16 Okt.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
