@@ -12,14 +12,18 @@
                 Cuaca     : tingkat peringatan 0-3 (/3) hari ini atau besok dari cuaca_kec.json (hujan, angin, gelombang).   [harian]
   KETERPAPARAN  peringkat persentil penduduk kecamatan (WorldPop 2026, penduduk.json) di antara semua kecamatan, 0-1.
   KAPASITAS     statis: 1 - jarak ke kantor BPBD terdekat / 100 km (proksi; hanya 324 kantor terpetakan). Bobot w = 0,3.
-                Dinamis (posko, regu, relawan, Destana) ada di D1, belum bisa dibaca pipeline: null, menyusul lewat API.
+                Dinamis (opsional, C3): relawan siap per kabupaten dari /api/relawan/kapasitas. Hanya MENAIKKAN kapasitas:
+                  kap = statis + (1 - statis) x WD x dinamis,  dinamis = min(1, siap / (penduduk kab / 10.000)),  WD = 0,5.
+                Kabupaten yang tak ada di agregat (relawan belum mendaftar) TIDAK dihukum: kap = statis. Agregat gagal, 404, atau
+                lebih tua dari 3 hari = tanpa komponen dinamis. Satu angka kabupaten berlaku untuk semua kecamatannya (tak bisa dipecah).
+                Nama kabupaten dicocokkan: kunci "prov|kab" persis, lalu normal (huruf kecil, tanpa tanda baca, tanpa awalan "Kab."/"Kabupaten"; "Kota" dipertahankan).
 
 Komponen yang hilang = null (bukan 0). Sekolah dan faskes hanya ada di sembilan provinsi prioritas: ditampilkan, TIDAK masuk skor.
 Label wajib: "indeks komposit, belum diuji balik".
 
 Pakai:  python3 scripts/bnpb/risiko.py [--hari YYYY-MM-DD]      |  python3 scripts/bnpb/risiko.py --cek
 """
-import argparse, bisect, datetime as dt, json, math, os, sys, tempfile
+import argparse, bisect, datetime as dt, json, math, os, re, sys, tempfile, urllib.request
 
 AB = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.normpath(os.path.join(AB, "../.."))
@@ -29,6 +33,11 @@ import kejadian as _kej   # simpan (kunci "dibuat" pertama, atomik), baca, km, d
 WIB = dt.timezone(dt.timedelta(hours=7))
 LABEL = "indeks komposit, belum diuji balik"
 BOBOT_KAPASITAS = 0.3
+WD_DINAMIS = 0.5                 # porsi sisa kapasitas (1 - statis) yang bisa diisi relawan
+PENDUDUK_PER_RELAWAN = 10_000    # satu relawan siap per 10.000 penduduk kabupaten = dinamis 1,0
+UMUR_KAPASITAS_MAKS = 3          # hari; agregat relawan lebih tua dari ini dibuang
+URL_KAPASITAS = "https://pantau.terasurban.com/api/relawan/kapasitas"
+URL_MEJA = "https://pantau.terasurban.com/api/meja/ringkas"
 JARAK_KAPASITAS_KM = 100
 KELAS = ["Rendah", "Sedang", "Tinggi", "Sangat tinggi"]
 AMBANG = [15, 35, 60]            # skor < 15 rendah; < 35 sedang; < 60 tinggi; selebihnya sangat tinggi (ambang kerja tetap, bukan persentil)
@@ -39,7 +48,7 @@ BOBOT_LEVEL = {1: 0.0, 2: 0.4, 3: 0.75, 4: 1.0}
 BOBOT_KRB = {"I": 0.33, "II": 0.66, "III": 1.0}
 BENCANA = ["karhutla", "banjir", "gempa", "gunungapi", "kekeringan", "cuaca"]
 NAMA = {"karhutla": "Karhutla", "banjir": "Banjir dan longsor", "gempa": "Gempa", "gunungapi": "Gunung api", "kekeringan": "Kekeringan", "cuaca": "Cuaca ekstrem"}
-KOLOM = ["prov", "kab", "kec", "risiko", "kelas", "bahaya", "utama"] + ["h_" + b for b in BENCANA] + ["pend", "pangkat", "bpbd_km", "kapasitas", "sekolah", "siswa", "faskes"]
+KOLOM = ["prov", "kab", "kec", "risiko", "kelas", "bahaya", "utama"] + ["h_" + b for b in BENCANA] + ["pend", "pangkat", "bpbd_km", "kapasitas", "sekolah", "siswa", "faskes", "kap_statis", "kap_dinamis"]
 Z = {"w": _kej._W}
 
 
@@ -213,6 +222,66 @@ def h_cuaca(pusat, cuaca, hari, urut):
                "validasi": "ambang hujan, angin, gelombang kelas BMKG; ambang ansambel masih hipotesis"}
 
 
+# ---------------------------------------------------------------- kapasitas dinamis (C3)
+def ambil_json(sumber):
+    """Berkas lokal atau URL -> isi JSON, atau None (gagal, 404, bukan JSON). Tidak pernah melempar."""
+    try:
+        if re.match(r"https?://", sumber):
+            with urllib.request.urlopen(urllib.request.Request(sumber, headers={"User-Agent": "pantau-bencana-risiko"}), timeout=15) as r:
+                return json.load(r)
+        with open(sumber, encoding="utf-8") as f:
+            return json.load(f)
+    except Exception:
+        return None
+
+
+def norm_kab(n):
+    s = re.sub(r"[^a-z0-9 ]", "", n.lower().replace(".", ". ")).split()
+    if s and s[0] in ("kab", "kabupaten"):
+        s = s[1:]
+    return "".join(s)
+
+
+def cocok_kab(kunci, ada):
+    """kunci "prov|kab" dari agregat -> kunci "prov|kab" di indeks (persis, lalu normal) atau None."""
+    if kunci in ada:
+        return kunci
+    p, _, n = kunci.partition("|")
+    return next((k for k in ada if k.startswith(p + "|") and norm_kab(k[3:]) == norm_kab(n)), None)
+
+
+def kap_dinamis(agregat, pend_kab, hari):
+    """-> ({kab: 0-1}, meta). Agregat None, tanpa kunci kab, atau basi -> ({}, meta dipakai False)."""
+    meta = {"dipakai": False, "sumber": URL_KAPASITAS, "bobot": {"WD": WD_DINAMIS, "penduduk_per_relawan": PENDUDUK_PER_RELAWAN, "umur_maks_hari": UMUR_KAPASITAS_MAKS},
+            "alasan": None, "dibuat": None, "kabupaten_cocok": 0, "kabupaten_tak_cocok": []}
+    if not isinstance(agregat, dict) or not isinstance(agregat.get("kab"), dict):
+        meta["alasan"] = "tidak tersedia (gagal, 404, atau bentuk lain)"
+        return {}, meta
+    meta["dibuat"] = agregat.get("dibuat")
+    u = umur(hari, (agregat.get("dibuat") or "")[:10])
+    if u is None or u > UMUR_KAPASITAS_MAKS or u < 0:
+        meta["alasan"] = f"basi atau tanpa tanggal (umur {u} hari, maks {UMUR_KAPASITAS_MAKS})"
+        return {}, meta
+    out = {}
+    for kunci, v in agregat["kab"].items():
+        k = cocok_kab(kunci, pend_kab)
+        siap = v.get("siap") if isinstance(v, dict) else None
+        if k is None:
+            meta["kabupaten_tak_cocok"].append(kunci)
+        elif isinstance(siap, (int, float)) and siap >= 0 and pend_kab[k]:
+            out[k] = round(min(1.0, siap / (pend_kab[k] / PENDUDUK_PER_RELAWAN)), 3)
+    meta.update(dipakai=bool(out), kabupaten_cocok=len(out), kabupaten_tak_cocok=sorted(meta["kabupaten_tak_cocok"])[:20])
+    meta["alasan"] = None if out else "agregat kosong"
+    return out, meta
+
+
+def gabung_kapasitas(statis, dinamis):
+    """Hanya menaikkan; statis None tetap None (tak ada jarak = tak ada dasar)."""
+    if statis is None or dinamis is None:
+        return statis
+    return round(statis + (1 - statis) * WD_DINAMIS * dinamis, 3)
+
+
 # ---------------------------------------------------------------- keterpaparan, kapasitas, fasilitas
 def fasilitas(unit, sekolah, fas):
     """Sekolah dan siswa dari sekolah.json (cocok lewat nama), faskes dari fasilitas.json (titik dalam kecamatan). Hanya provinsi yang tercakup."""
@@ -233,7 +302,7 @@ def fasilitas(unit, sekolah, fas):
             {k: (fk.get(k, 0) or None) if k[:2] in prov else None for k in unit})
 
 
-def bangun(src, hari):
+def bangun(src, hari, kapasitas=None):
     """src = {nama: isi JSON atau None}; unit = semua kecamatan bernama di geo. -> dict keluaran (tanpa `dibuat`)."""
     ident = sorted({a for v in Z["wilayah"].indeks.values() for _, _, a in v if a[1] and a[2]})
     unit = [satuan(a) for a in ident]
@@ -250,6 +319,11 @@ def bangun(src, hari):
     rank = pangkat(pend)
     kantor = [(x["lat"], x["lon"]) for x in (src["bpbd"] or {}).get("kantor", []) if x.get("lat") is not None]
     sek, siswa, faskes = fasilitas(unit, src["sekolah"], src["fasilitas"])
+    pend_kab = {}
+    for k, v in pend.items():
+        kk = k.rsplit("|", 1)[0]
+        pend_kab[kk] = pend_kab.get(kk, 0) + v
+    dinkab, dmeta = kap_dinamis(kapasitas, pend_kab, hari)
     baris, kosong = [], {b: 0 for b in BENCANA}
     for a, k in zip(ident, unit):
         h = {b: (None if k not in pusat or H[b].get(k) is None else round(H[b][k], 3)) for b in BENCANA}
@@ -258,12 +332,14 @@ def bangun(src, hari):
         d = None
         if k in pusat and kantor:
             d = min(_kej.km(pusat[k], c) for c in kantor)
-        kap = None if d is None else round(max(0.0, 1 - d / JARAK_KAPASITAS_KM), 3)
+        kap_s = None if d is None else round(max(0.0, 1 - d / JARAK_KAPASITAS_KM), 3)
+        kap_d = dinkab.get(k.rsplit("|", 1)[0])
+        kap = gabung_kapasitas(kap_s, kap_d)
         r = rank.get(k)
         r = None if r is None else round(r, 3)   # skor dihitung dari angka yang terbit, supaya layar bisa mengulang persis
         skor, b, utama = risiko(h, r, kap)
         baris.append([a[0], a[1], a[2], skor, kelas_dari(skor), None if b is None else round(b, 3), utama] + [h[x] for x in BENCANA] +
-                     [pend.get(k), None if r is None else round(r, 3), None if d is None else round(d, 1), kap, sek[k], siswa[k], faskes[k]])
+                     [pend.get(k), None if r is None else round(r, 3), None if d is None else round(d, 1), kap, sek[k], siswa[k], faskes[k], kap_s, kap_d])
     dist = [0] * 4
     for r in baris:
         if r[4] is not None:
@@ -278,7 +354,9 @@ def bangun(src, hari):
         "keterpaparan": {"sumber": "WorldPop Global2 R2025A 2026 per kecamatan, peringkat persentil nasional",
                          "catatan": "sekolah, siswa (Dapodik/EMIS) dan faskes (OSM) hanya tersedia untuk sebagian provinsi; ditampilkan, tidak masuk skor"},
         "kapasitas": {"statis": "jarak pusat kecamatan ke kantor BPBD terdekat (324 kantor BPBD terpetakan): proksi, bukan kemampuan nyata",
-                      "kapasitas_dinamis": None, "kapasitas_dinamis_catatan": "posko, regu, relawan siap, dan status Destana belum tersedia"},
+                      "kapasitas_dinamis": dmeta,
+                      "kapasitas_dinamis_catatan": "relawan siap per kabupaten (satu angka untuk semua kecamatannya) hanya menaikkan kapasitas; posko, regu, dan Destana per kabupaten belum tersedia publik",
+                      "rumus_dinamis": f"kap = statis + (1 - statis) × {WD_DINAMIS} × min(1, relawan siap / (penduduk kab / {PENDUDUK_PER_RELAWAN}))"},
         "provinsi": {p: n for p, n in Z["w"].PROVINSI.items()},
         "ringkas": {"kecamatan": len(baris), "tanpa_skor": sum(r[3] is None for r in baris), "per_kelas": dict(zip(KELAS, dist))},
         "kolom": KOLOM, "kec": baris,
@@ -299,6 +377,47 @@ def muat():
 def siapkan():
     Z["wilayah"] = Z["w"].Wilayah()
     return muat()
+
+
+def cek_dinamis(src, hari, dasar, ix):
+    # pencocokan nama
+    ada = {"31|Jakarta Selatan": 1, "32|Bogor": 1, "32|Kota Bogor": 1, "73|Luwu Utara": 1}
+    assert cocok_kab("32|Kab. Bogor", ada) == "32|Bogor" and cocok_kab("32|KOTA BOGOR", ada) == "32|Kota Bogor"
+    assert cocok_kab("32|Kabupaten Bogor", ada) == "32|Bogor" and cocok_kab("31|Jakarta  Selatan", ada) == "31|Jakarta Selatan"
+    assert cocok_kab("99|Bogor", ada) is None and cocok_kab("73|Luwu", ada) is None
+    # formula pada angka tangan
+    assert gabung_kapasitas(0.2, 1.0) == 0.6 and gabung_kapasitas(0.2, 0.0) == 0.2 and gabung_kapasitas(1.0, 1.0) == 1.0
+    assert gabung_kapasitas(None, 1.0) is None and gabung_kapasitas(0.4, None) == 0.4
+    pk = {"32|Bogor": 100_000}
+    d, m = kap_dinamis({"dibuat": "2026-10-19T08:00+07:00", "kab": {"32|Kab. Bogor": {"siap": 5}, "99|Hantu": {"siap": 3}}}, pk, hari)
+    assert d == {"32|Bogor": 0.5} and m["dipakai"] and m["kabupaten_tak_cocok"] == ["99|Hantu"], (d, m)
+    assert kap_dinamis({"dibuat": "2026-10-19T08:00+07:00", "kab": {"32|Bogor": {"siap": 99}}}, pk, hari)[0] == {"32|Bogor": 1.0}
+    # basi, 404, bentuk lain, tanpa tanggal = tanpa komponen dinamis
+    for agg in (None, {"error": "x"}, {"dibuat": "2026-10-10T00:00+07:00", "kab": {"32|Bogor": {"siap": 5}}}, {"kab": {"32|Bogor": {"siap": 5}}}, {"dibuat": "2026-10-19", "kab": {}}):
+        assert kap_dinamis(agg, pk, hari)[0] == {} and not kap_dinamis(agg, pk, hari)[1]["dipakai"] and kap_dinamis(agg, pk, hari)[1]["alasan"]
+    assert ambil_json("/tidak/ada.json") is None
+    # fixture penuh: kabupaten pertama ber-skor mendapat dinamis penuh; kapasitas naik, skor tidak naik; kab lain tak berubah
+    kabs = {}
+    for r in dasar["kec"]:
+        if r[ix["pend"]]:
+            kabs[f"{r[0]}|{r[1]}"] = kabs.get(f"{r[0]}|{r[1]}", 0) + r[ix["pend"]]
+    kunci = next(k for k in kabs if any(f"{r[0]}|{r[1]}" == k and r[ix["risiko"]] for r in dasar["kec"]))
+    agg = {"dibuat": hari + "T06:00+07:00", "kab": {kunci: {"siap": 10 ** 6}}}
+    b = bangun(src, hari, agg)
+    assert b["kapasitas"]["kapasitas_dinamis"]["dipakai"] and b["kapasitas"]["kapasitas_dinamis"]["kabupaten_cocok"] == 1
+    naik = 0
+    for r0, r1 in zip(dasar["kec"], b["kec"]):
+        if f"{r1[0]}|{r1[1]}" == kunci:
+            assert r1[ix["kap_dinamis"]] == 1.0 and (r1[ix["kapasitas"]] is None or r1[ix["kapasitas"]] >= r0[ix["kapasitas"]])
+            assert r1[ix["risiko"]] is None or r1[ix["risiko"]] <= r0[ix["risiko"]], "relawan tidak boleh menaikkan risiko"
+            naik += r1[ix["kapasitas"]] is not None and r1[ix["kapasitas"]] > r0[ix["kapasitas"]]
+        else:
+            assert r1[ix["risiko"]] == r0[ix["risiko"]] and r1[ix["kapasitas"]] == r0[ix["kapasitas"]], "kabupaten tanpa agregat berubah"
+    assert naik > 0
+    # skor layar (rumus risiko() pada kolom terbit) tetap sama dengan pipeline
+    for r in b["kec"][:3000]:
+        if r[ix["risiko"]] is not None:
+            assert risiko({x: r[ix["h_" + x]] for x in BENCANA}, r[ix["pangkat"]], r[ix["kapasitas"]])[0] == r[ix["risiko"]]
 
 
 def cek():
@@ -326,7 +445,8 @@ def cek():
             assert risiko(h, r[ix["pangkat"]], r[ix["kapasitas"]])[0] == r[ix["risiko"]], "rumus layar berbeda dari pipeline"
         assert r[ix["pend"]] is not None or r[ix["risiko"]] is None, "penduduk hilang tidak boleh punya skor"
     assert ada > 0.9 * n_geo, f"terlalu banyak kecamatan tanpa skor: {ada}/{n_geo}"
-    assert a["kapasitas"]["kapasitas_dinamis"] is None and a["label"] == LABEL
+    assert a["kapasitas"]["kapasitas_dinamis"]["dipakai"] is False and a["label"] == LABEL
+    assert all(r[ix["kap_dinamis"]] is None and r[ix["kap_statis"]] == r[ix["kapasitas"]] for r in a["kec"]), "tanpa agregat kapasitas = statis"
     # komponen hilang = null, bukan 0: buang gempa dan hasilnya tidak berubah ke 0
     src2 = dict(src, inarisk_gempa=None)
     c = bangun(src2, hari)
@@ -336,6 +456,7 @@ def cek():
     assert risiko({"a": 0.5}, 1.0, 1.0)[0] == 35.0 and risiko({"a": None}, 1.0, 0.0)[0] is None and risiko({"a": 1.0}, None, 0.0)[0] is None
     assert pangkat({"x": 1, "y": 2, "z": 3}) == {"x": 0.0, "y": 0.5, "z": 1.0} and pangkat({"x": 5, "y": 5, "z": 9})["x"] == 0.25
     assert [kelas_dari(s) for s in (0, 14.9, 15, 34.9, 35, 59.9, 60, 100, None)] == [0, 0, 1, 1, 2, 2, 3, 3, None]
+    cek_dinamis(src, hari, a, ix)
     # keluaran ke berkas: kunci "dibuat" pertama, ukuran wajar
     with tempfile.TemporaryDirectory() as t:
         p = os.path.join(t, "r.json")
@@ -348,11 +469,13 @@ def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--hari", default=dt.datetime.now(WIB).date().isoformat())
     ap.add_argument("--cek", action="store_true")
+    ap.add_argument("--kapasitas", default=URL_KAPASITAS, help="berkas JSON atau URL agregat relawan (fixture lokal untuk uji); gagal = tanpa komponen dinamis")
+    ap.add_argument("--tanpa-kapasitas", action="store_true")
     ap.add_argument("--keluar", default=os.path.join(AKAR, "public/banjir/data/risiko_kecamatan.json"))
     a = ap.parse_args()
     if a.cek:
         return cek()
-    isi = bangun(siapkan(), a.hari)
+    isi = bangun(siapkan(), a.hari, None if a.tanpa_kapasitas else ambil_json(a.kapasitas))
     _kej.simpan(a.keluar, isi)
     print(f"risiko: {isi['ringkas']['kecamatan']} kecamatan, {isi['ringkas']['tanpa_skor']} tanpa skor, kelas {isi['ringkas']['per_kelas']}, {os.path.getsize(a.keluar) // 1024} KB", file=sys.stderr)
 

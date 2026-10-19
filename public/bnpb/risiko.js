@@ -1,7 +1,7 @@
 "use strict";
 /* Risiko kecamatan (halaman publik). Data: /banjir/data/risiko_kecamatan.json (pipeline scripts/bnpb/risiko.py), geo per provinsi dimuat saat dipilih.
    Peta digambar sendiri sebagai SVG (CSP halaman ini melarang pustaka peta dari CDN). Rumus skor sama persis dengan risiko() di risiko.py.
-   Butuh /inti/format.js (fmt, esc) dan /inti/tabel.js (pengurutKepala). */
+   Butuh /inti/format.js (fmt, esc) dan /inti/tabel.js (pengurutKepala, paginasi). */
 (() => {
   const el = id => document.getElementById(id), NS = "http://www.w3.org/2000/svg";
   const IKON = {
@@ -15,8 +15,9 @@
   const ikon = id => `<svg class="rk-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="${IKON[id] || IKON.cuaca}"/></svg>`;
   const WARNA = {karhutla: "#f08a3c", banjir: "#4f9be0", gempa: "#8a6d4e", gunungapi: "#b5523b", kekeringan: "#c9a24b", cuaca: "#7d8ca3"};
   const SIFAT = {karhutla: "harian", banjir: "statis × harian", gempa: "statis", gunungapi: "harian", kekeringan: "harian, hipotesis", cuaca: "harian"};
-  let D, IX, BENCANA, KOR = new Map(), pilih = new Set(), prov = "", lingkup = "prov", geoCache = {}, elPath = [], terpilih = -1;
-  const st = {urut: "risiko", turun: true, hal: 0};
+  let D, P, U, IX, BENCANA, KOR = new Map(), pilih = new Set(), prov = "", lingkup = "prov", geoCache = {}, elPath = [], terpilih = -1;
+  const st = {urut: "risiko", turun: true, hal: 0}, PER_PRIO = 15;
+  let halPrio = 0;
 
   const pct = v => v == null ? "–" : fmt(Math.round(v * 100)) + "%";
   const bil = v => v == null ? "–" : fmt(Math.round(v));   // skor 0-100: bilangan bulat
@@ -43,7 +44,9 @@
     el("fProv").innerHTML = P.map(p => `<option value="${p}">${esc(D.provinsi[p])}</option>`).join("");
     el("fProv").value = prov;
     el("legenda").innerHTML = D.kelas.map((n, i) => `<span><i class="k${i}"></i>${esc(n)}</span>`).join("") + `<span><i class="kn"></i>Tanpa data</span>`;
-    el("pilLabel").textContent = D.label.charAt(0).toUpperCase() + D.label.slice(1);
+    const lb = U && U.vonis ? U.vonis.label : D.label;   // hasil uji balik menggantikan "belum diuji balik" (pipeline ujibalik_risiko.py)
+    el("pilLabel").textContent = lb.charAt(0).toUpperCase() + lb.slice(1);
+    if (U && U.vonis) el("pilLabel").title = U.vonis.ringkas;
     el("pilHari").textContent = new Date(D.hari + "T00:00:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"});
   }
 
@@ -94,6 +97,27 @@
     el("isiTabel").querySelectorAll(".rk-bhy").forEach(x => x.style.setProperty("--pil", WARNA[x.dataset.b]));
   }
 
+  /* ---------- prioritas hari ini (risiko_prioritas.json, scripts/bnpb/prioritas.py) */
+  const tel = n => String(n || "").replace(/[^0-9+]/g, "");
+  function gambarPrio() {
+    const k = P.kec, per = PER_PRIO, a = Math.min(halPrio, Math.max(0, Math.ceil(k.length / per) - 1));
+    el("prioPil").innerHTML = `<span class="bn-pil">${fmt(P.ringkas.kecamatan)} kecamatan</span><span class="bn-pil">${fmt(P.ringkas.jiwa)} jiwa</span>` +
+      (P.ringkas.naik ? `<span class="bn-pil">${fmt(P.ringkas.naik)} naik kelas</span>` : "") + (P.usang ? `<span class="bn-pil rk-peringatan">Data usang</span>` : "");
+    el("prioCat").textContent = P.aturan.charAt(0).toUpperCase() + P.aturan.slice(1) + (P.pembanding ? "" : " Belum ada pembanding sebelumnya: perubahan kelas muncul setelah data risiko berikutnya.");
+    el("prioIsi").innerHTML = k.length ? k.slice(a * per, (a + 1) * per).map(x => {
+      const i = KOR.get(`${x.prov}|${x.kab}|${x.kec}`), b = x.bpbd;
+      return `<tr${i == null ? "" : ` data-i="${i}" tabindex="0"`}><td data-label="Kecamatan">${esc(x.kec)}</td><td data-label="Kabupaten">${esc(x.kab)}</td><td data-label="Provinsi">${esc(x.prov_nama || "")}</td>
+        <td class="n" data-label="Risiko">${pilKelas(x.skor)}</td>
+        <td data-label="Bahaya utama"><span class="bn-pil rk-bhy" data-b="${x.utama}">${ikon(x.utama)}${esc(x.utama_nama)} ${idx(x.bahaya)}</span></td>
+        <td class="n" data-label="Penduduk (jiwa)">${fmt(x.pend)}</td>
+        <td data-label="Perubahan">${x.perubahan === "naik" ? "Naik dari " + esc(x.dari_kelas) : x.perubahan == null ? "–" : x.perubahan === "turun" ? "Turun" : "Tetap"}${x.alasan.includes("harian_aktif") ? `<span class="rk-nair">Bahaya harian aktif</span>` : ""}</td>
+        <td data-label="BPBD terdekat">${b ? esc(b.nama) + (b.sekab === false ? ` <span class="rk-nair">terdekat, ${fmt(Math.round(b.km))} km</span>` : "") + (b.pusdalops ? `<span class="rk-nair"><a href="tel:${tel(b.pusdalops)}">${esc(b.pusdalops)}</a></span>` : "") : "–"}</td></tr>`; }).join("")
+      : `<tr><td colspan="8" class="ad-kosong">Tidak ada kecamatan yang memenuhi syarat prioritas saat ini.</td></tr>`;
+    el("prioIsi").querySelectorAll(".rk-bhy").forEach(x => x.style.setProperty("--pil", WARNA[x.dataset.b]));
+    el("prioHal").innerHTML = k.length > per ? paginasi(a, k.length, per, "kecamatan") : "";
+    el("prio").hidden = false;
+  }
+
   /* ---------- pop-up rincian */
   function buka(i) {
     const r = D.kec[i], s = skor(r), nama = val(r, "kec");
@@ -104,14 +128,15 @@
     const fas = [["Sekolah", val(r, "sekolah")], ["Siswa", val(r, "siswa")], ["Faskes", val(r, "faskes")]].filter(x => x[1] != null);
     el("dlgIsi").innerHTML = `<div class="rk-dlg-kepala"><div><h2 id="dlgJudul">${esc(nama)}</h2><p>${esc(val(r, "kab"))}, ${esc(D.provinsi[val(r, "prov")])}</p></div>
         <button type="button" class="rk-tutup" id="dlgTutup" aria-label="Tutup"><svg class="rk-ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div class="rk-skor">${pilKelas(s.s)}<span class="bn-pil">${esc(D.label)}</span></div>
+      <div class="rk-skor">${pilKelas(s.s)}<span class="bn-pil">${esc(U && U.vonis ? U.vonis.label : D.label)}</span></div>
       <div class="rk-blok"><h3>Bahaya hari ini</h3>${bh}</div>
       <div class="rk-dua">
         <div class="rk-blok"><h3>Keterpaparan</h3><dl class="rk-kv">${kv("Penduduk", val(r, "pend") == null ? "–" : fmt(val(r, "pend")) + " jiwa")}${kv("Peringkat nasional", pct(val(r, "pangkat")))}${fas.map(x => kv(x[0], fmt(x[1]))).join("")}</dl></div>
-        <div class="rk-blok"><h3>Kapasitas</h3><dl class="rk-kv">${kv("Jarak ke BPBD", val(r, "bpbd_km") == null ? "–" : fmt(val(r, "bpbd_km")) + " km")}${kv("Kapasitas statis", pct(val(r, "kapasitas")))}${kv("Posko, relawan, Destana", "belum tersedia")}</dl></div></div>
+        <div class="rk-blok"><h3>Kapasitas</h3><dl class="rk-kv">${kv("Jarak ke BPBD", val(r, "bpbd_km") == null ? "–" : fmt(val(r, "bpbd_km")) + " km")}${kv("Kapasitas dipakai", pct(val(r, "kapasitas")))}${kv("Kapasitas statis", pct(val(r, "kap_statis")))}${kv("Relawan siap (kabupaten)", val(r, "kap_dinamis") == null ? "belum tersedia" : "indeks " + fmt(Math.round(val(r, "kap_dinamis") * 100) / 100))}</dl></div></div>
       <details class="rk-sumber"><summary>Rumus dan sumber</summary><p>${esc(D.rumus)}. ${esc(D.ambang_catatan)}</p>
         <ul>${D.bencana.map(b => `<li><b>${esc(b.nama)}</b>: ${esc(b.sumber)}. ${esc(b.validasi)}${b.kosong ? ` (${fmt(b.kosong)} kecamatan tanpa data)` : ""}</li>`).join("")}
-        <li><b>Keterpaparan</b>: ${esc(D.keterpaparan.sumber)}. ${esc(D.keterpaparan.catatan)}</li><li><b>Kapasitas</b>: ${esc(D.kapasitas.statis)}</li></ul></details>`;
+        <li><b>Keterpaparan</b>: ${esc(D.keterpaparan.sumber)}. ${esc(D.keterpaparan.catatan)}</li><li><b>Kapasitas</b>: ${esc(D.kapasitas.statis)}. ${esc(D.kapasitas.rumus_dinamis || "")}${D.kapasitas.kapasitas_dinamis && D.kapasitas.kapasitas_dinamis.dipakai ? "" : " Komponen relawan belum dipakai: " + esc((D.kapasitas.kapasitas_dinamis || {}).alasan || "tidak tersedia") + "."}</li>
+        ${U ? `<li><b>Uji balik</b>: ${esc(U.vonis.label)}. ${esc(U.vonis.ringkas)}. ${U.keterbatasan.map(esc).join(" ")}</li>` : ""}</ul></details>`;
     const d = el("dlg"); d.showModal(); el("dlgTutup").onclick = () => d.close();
   }
 
@@ -142,6 +167,9 @@
     const tb = el("isiTabel");
     tb.addEventListener("click", e => { const t = e.target.closest("tr[data-i]"); if (t) bukaDariTabel(+t.dataset.i); });
     tb.addEventListener("keydown", e => { const t = e.target.closest("tr[data-i]"); if (t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); bukaDariTabel(+t.dataset.i); } });
+    el("prioIsi").addEventListener("click", e => { if (e.target.closest("a")) return; const t = e.target.closest("tr[data-i]"); if (t) bukaDariTabel(+t.dataset.i); });
+    el("prioIsi").addEventListener("keydown", e => { const t = e.target.closest("tr[data-i]"); if (t && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); bukaDariTabel(+t.dataset.i); } });
+    el("prioHal").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (b && !b.disabled) { halPrio = +b.dataset.h; gambarPrio(); } });
     el("dlg").addEventListener("close", () => { terpilih = -1; warnai(); });
     pengurutKepala(st, el("kepalaTabel"), gambarTabel);
   }
@@ -156,12 +184,17 @@
       const r = await fetch("/banjir/data/risiko_kecamatan.json"); if (!r.ok) throw new Error(r.status);
       D = await r.json();
     } catch (e) { el("pesan").textContent = "Data risiko belum bisa kamu buka. Coba muat ulang sebentar lagi."; el("pesan").className = "bn-pesan galat"; return; }
+    /* opsional: gagal = halaman tetap jalan tanpa prioritas / hasil uji balik */
+    const ambil = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (e) { return null; } };
+    [P, U] = await Promise.all([ambil("/banjir/data/risiko_prioritas.json"), ambil("/banjir/data/risiko_ujibalik.json")]);
+    if (!(P && Array.isArray(P.kec) && P.ringkas)) P = null;
+    if (!(U && U.vonis && Array.isArray(U.keterbatasan))) U = null;
     IX = Object.fromEntries(D.kolom.map((k, i) => [k, i]));
     BENCANA = D.bencana.map(b => b.id); pilih = new Set(BENCANA);
     D.kec.forEach((r, i) => KOR.set(`${r[0]}|${r[1]}|${r[2]}`, i));
     const atas = D.kec.reduce((m, r) => r[IX.risiko] != null && (m == null || r[IX.risiko] > m[IX.risiko]) ? r : m, null);
     prov = atas ? atas[IX.prov] : D.kec[0][IX.prov];
-    gambarKontrol(); pasang();
+    gambarKontrol(); pasang(); if (P) gambarPrio();
     el("tata").hidden = false; el("pesan").textContent = "";
     ganti();
   }

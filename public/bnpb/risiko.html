@@ -9,7 +9,8 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/bnpb/bnpb.css" rel="stylesheet">
-<link href="/bnpb/risiko.css?v=1" rel="stylesheet">
+<link href="/inti/kartu.css" rel="stylesheet">
+<link href="/bnpb/risiko.css?v=3" rel="stylesheet">
 </head>
 <body>
 <header class="ad-top">
@@ -22,6 +23,15 @@
     <span class="bn-pil rk-peringatan" id="pilLabel"></span>
     <span class="bn-pil" id="pilHari"></span>
   </div>
+  <section class="bn-kartu rk-prio" id="prio" aria-label="Prioritas hari ini" hidden>
+    <div class="rk-kepala"><h2>Prioritas hari ini</h2>
+      <div class="rk-pilpil rk-prio-pil" id="prioPil"></div></div>
+    <p class="rk-prio-cat" id="prioCat"></p>
+    <div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr>
+      <th>Kecamatan</th><th>Kabupaten</th><th>Provinsi</th><th>Risiko</th><th>Bahaya utama</th><th>Penduduk (jiwa)</th><th>Perubahan</th><th>BPBD terdekat</th>
+    </tr></thead><tbody id="prioIsi"></tbody></table></div>
+    <div id="prioHal"></div>
+  </section>
   <section class="bn-kartu rk-kontrol" aria-label="Penyaring">
     <div class="rk-pilpil" id="fBencana" role="group" aria-label="Bencana"></div>
     <label class="bn-isian rk-prov">Provinsi<select id="fProv"></select></label>
@@ -55,6 +65,6 @@
 <script src="/inti/format.js"></script>
 <script src="/inti/tabel.js"></script>
 <script src="/inti/nanti.js"></script>
-<script src="/bnpb/risiko.js?v=2"></script>
+<script src="/bnpb/risiko.js?v=3"></script>
 </body>
 </html>
