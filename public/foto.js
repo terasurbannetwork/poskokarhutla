@@ -449,7 +449,7 @@
         const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
         set("bencana", BEN); set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
         set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", y.kamera ? "1" : "0");
-        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu); set("sampel", JSON.stringify(this.loc.sampel));
+        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu); set("sampel", JSON.stringify(this.loc.sampel)); set("zona", Intl.DateTimeFormat().resolvedOptions().timeZone || "");
         if (y.exif?.waktu) set("exif_waktu", y.exif.waktu);
         if (y.exif?.lat != null) { set("exif_lat", y.exif.lat); set("exif_lon", y.exif.lon); }
         if (y.durasi) set("durasi", y.durasi);

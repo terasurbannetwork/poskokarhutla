@@ -116,7 +116,8 @@ uji("foto: anti GPS palsu — tolak yang pasti janggal, tandai yang curiga untuk
     [{sampel: JSON.stringify([[-2.21, 113.92, 15, t], [-2.21, 113.92, 15, t - 9e3], [-2.21, 113.92, 15, t]])}, {country: "ID"}, "tidak bisa diverifikasi"],
     [{sampel: sampel(-2.21, 113.92, t - 5000)}, {country: "ID"}, "tidak bisa diverifikasi"],   // waktu sampel tak cocok waktu_gps
     [{sampel: "[" + "1,".repeat(600) + "1]"}, {country: "ID"}, "tidak bisa diverifikasi"],
-    [{}, {country: "SG"}, "luar Indonesia"]]) {
+    [{}, {country: "SG"}, "luar Indonesia"],
+    [{}, {country: "ID", asOrganization: "DigitalOcean, LLC"}, "VPN/proxy"]]) {
     const r = await unggah(isian, {}, ipBaru(), cf);
     assert.equal(r.s, 400, `${pesan}: ${JSON.stringify(r.j)}`); assert.match(r.j.galat, new RegExp(pesan));
   }
@@ -127,6 +128,15 @@ uji("foto: anti GPS palsu — tolak yang pasti janggal, tandai yang curiga untuk
   const ip = ipBaru(); assert.equal((await unggah({}, {}, ip)).s, 201);
   const loncat = await unggah({lat: "-6.2000", lon: "106.8200", sampel: sampel(-6.2, 106.82)}, {}, ip);   // Palangka Raya -> Jakarta dalam detik
   assert.equal(loncat.s, 201); assert.match(await curiga(loncat.j.id), /pindah .* km/);
+  const em = "pindah@contoh.id"; assert.equal((await unggah({email: em})).s, 201);
+  const lewatEmail = await unggah({email: em, lat: "-6.2000", lon: "106.8200", sampel: sampel(-6.2, 106.82)});   // IP lain, email sama
+  assert.match(await curiga(lewatEmail.j.id), /pindah .* km .*email sama/);
+  const relay = await unggah({}, {}, ipBaru(), {country: "ID", asn: 13335, asOrganization: "Cloudflare, Inc."});   // iCloud Private Relay / WARP: masuk, ditandai
+  assert.equal(relay.s, 201, JSON.stringify(relay.j)); assert.match(await curiga(relay.j.id), /relay privasi/);
+  for (const [zona, pola] of [["Asia/Pontianak", null], ["Asia/Jakarta", null], ["Asia/Jayapura", /jam perangkat WIT, padahal GPS di wilayah WIB/], ["Europe/London", /bukan zona Indonesia/]]) {
+    const z = await unggah({zona}); assert.equal(z.s, 201);
+    if (pola) assert.match(await curiga(z.j.id), pola); else assert.equal(await curiga(z.j.id), "", `${zona} cocok untuk Kalteng`);
+  }
   const a = await panggil("GET", "/api/foto/admin?status=menunggu", null, "10.8.8.8", ADMIN);
   assert.ok(a.j.foto.find(f => f.id === d.j.id).gps_curiga, "admin melihat tanda curiga");
   const p = await panggil("GET", "/api/foto/" + d.j.id, null, "10.8.8.8", ADMIN);

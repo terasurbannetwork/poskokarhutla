@@ -14,7 +14,8 @@ import {json, gagal, acak, sha, ipHash, turnstileOK, adminOK, bersihTeks, bacaBo
 import {wilayah, cariWilayah} from "./titik.js";
 import REGISTRY from "./bencana.generated.js";
 import {hidup} from "./bencana.js";
-import {nilaiGps} from "./gps.js";
+import {nilaiGps, jaringanRelay} from "./gps.js";
+import {jaringanHosting} from "./publik.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 export const BATAS_FOTO = {unggah: [[JAM, 5], [HARI, 20]], komentar: [[JAM, 10], [HARI, 50]], suka: [[JAM, 120]], aduan: [[JAM, 20]]};
@@ -196,8 +197,11 @@ async function unggah(env, req, url, kini) {
   if (email && (email.length > 254 || !RE_EMAIL.test(email))) return gagal(400, "alamat email tidak sah");
   if (!(await turnstileOK(env, v("turnstile"), req))) return gagal(403, "verifikasi Turnstile gagal");
   const ip = await ipHash(env, req), l = await laju(env, ip, "unggah", kini); if (l) return l;   // sebelum cek GPS: penolakan ikut terhitung, probe dibatasi
-  const sebelum = await env.DB.prepare("SELECT lat, lon, dibuat FROM foto WHERE ip_hash = ? AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1").bind(ip, kini - HARI).first();
-  const gps = nilaiGps({negara: req.cf?.country, lat, lon, waktuGps, sampel: v("sampel"), sebelum, kini});
+  /* unggahan sebelumnya dari IP ATAU email yang sama (24 jam): uji loncat lokasi. ponytail: email tanpa indeks (scan foto 24 jam via foto_status);
+     tambah indeks (email, dibuat) bila tabel foto melewati ~100 rb baris */
+  const sebelum = await env.DB.prepare(`SELECT lat, lon, dibuat, CASE WHEN ip_hash = ? THEN 'ip' ELSE 'email' END lewat FROM foto
+    WHERE (ip_hash = ? OR (? != '' AND email = ?)) AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1`).bind(ip, ip, email, email, kini - HARI).first();
+  const gps = nilaiGps({negara: req.cf?.country, hosting: jaringanHosting(req.cf), relay: jaringanRelay(req.cf), zona: v("zona"), prov, lat, lon, waktuGps, sampel: v("sampel"), sebelum, kini});
   if (gps.tolak) return gagal(400, gps.tolak);
   const curiga = (await kolomAda(env, "gps_curiga", kini)) ? gps.curiga.join(" · ").slice(0, 600) : null;
 
