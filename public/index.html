@@ -1496,13 +1496,15 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
           <label><input type="checkbox" data-l="metar"> METAR (Jarak Pandang Bandara)</label>
         </details>
       </div>
-      <!-- Banding & Timelapse di bawah panel Overlay (pemilik, 19 Okt 2026) -->
+      <!-- Banding & Timelapse di bawah panel Overlay, berdampingan (pemilik, 19 Okt 2026) -->
+      <div style="display:flex;gap:8px">
       <button class="iconbtn" id="bdBuka" type="button" aria-pressed="false" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Banding peta, bandingkan dua citra" title="Banding">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M12 4v16M8 10l-2 2 2 2M16 10l2 2-2 2"/></svg>
       </button>
       <button class="iconbtn" id="tlBuka" type="button" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Timelapse citra harian area ini (GIF)" title="Timelapse">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="14" rx="2"/><path d="m10 9 5 3-5 3Z"/></svg>
       </button>
+      </div>
     </div>
     <div class="dok" id="dok">
       <div class="box" id="legenda"></div>
