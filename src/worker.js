@@ -11,6 +11,7 @@ import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
 import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
+import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
@@ -87,7 +88,7 @@ async function titikPanas(env, asal) {
   } catch (e) { TITIK = {dimuat: Date.now(), acuan: 0, laci: [], sel: new Map()}; }
   return TITIK;
 }
-async function dekatApi(env, asal, lat, lon, kini) {
+export async function dekatApi(env, asal, lat, lon, kini) {
   const T = await titikPanas(env, asal);
   if (!T.acuan || kini - T.acuan > 30 * JAM) return {dekat: 0, laci: null};   // data basi: jangan memberi lencana
   const i = Math.floor(lat / .02), j = Math.floor(lon / .02);
@@ -118,9 +119,9 @@ export function kunciIP(ip) {
 }
 export const ipHash = (env, req) => sha(env.IP_SALT + "|" + kunciIP(req.headers.get("cf-connecting-ip") || "lokal"));
 
-export async function bacaBody(req) {
+export async function bacaBody(req, maks = MAKS_BODY) {
   const t = await req.text();
-  if (t.length > MAKS_BODY) return {galat: `body ${t.length} byte, maksimal ${MAKS_BODY}`};
+  if (t.length > maks) return {galat: `body ${t.length} byte, maksimal ${maks}`};
   try { const o = JSON.parse(t || "{}"); return o && typeof o === "object" && !Array.isArray(o) ? {o} : {galat: "body harus objek JSON"}; }
   catch (e) { return {galat: "body bukan JSON"}; }
 }
@@ -397,6 +398,7 @@ const RUTE = {
   "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
   ...RUTE_SOSMED,
+  ...RUTE_POSKO,
 };
 let GABUNG = null;
 async function rute(env, req, url, ctx) {
@@ -429,6 +431,7 @@ export const HTML_RUTE = [
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
   [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
   [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
+  [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
 ];
 function catatHTML(env, req, jalur, ctx) {
@@ -542,6 +545,8 @@ export default {
     const sekarang = ev.scheduledTime || Date.now(), w = new Date(sekarang), m = w.getUTCMinutes();
     if (ev.cron === CRON_GEMPA) {
       if (m === 15 && w.getUTCHours() % 3 === 0) try { console.log("titik", JSON.stringify(await perbaruiTitik(env))); } catch (e) { console.error("titik", e?.message); }
+      /* antrean panggilan perusahaan: invokasi sendiri (menit 16, sesudah titik di menit 15) supaya parse konsesi2026/<prov>.json punya anggaran CPU sendiri */
+      if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -566,6 +571,7 @@ export default {
 async function bersihSemua(env, sekarang) {
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
+    try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan

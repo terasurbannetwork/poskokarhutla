@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>Lapor Lapangan · Posko Karhutla</title>
+<link rel="stylesheet" href="/lapangan.css?v=1">
+</head>
+<body>
+<header class="lp-kop">
+  <h1>Lapor Lapangan</h1>
+  <p id="regu" class="lp-regu">Memeriksa kode regu…</p>
+</header>
+<main class="lp-isi">
+  <p id="tanpaKode" class="lp-banner" hidden>Halaman ini hanya untuk regu yang punya tautan dari posko. Buka lagi tautan yang dikirim posko ke ponsel Anda.</p>
+  <p id="pesan" class="lp-pesan" role="status" aria-live="polite"></p>
+  <section id="antrean" class="lp-antrean" hidden>
+    <p id="antreanTeks"></p>
+    <button type="button" id="kirimLagi" class="lp-tombol">Kirim sekarang</button>
+  </section>
+  <form id="f" autocomplete="off" novalidate>
+    <section class="lp-blok">
+      <h2>1. Lokasi</h2>
+      <button type="button" id="gps" class="lp-tombol utama">📍 Ambil lokasi saya</button>
+      <p id="lokasi" class="lp-kecil">Belum ada lokasi. Berdiri di dekat titik api, lalu tekan tombol.</p>
+    </section>
+    <section class="lp-blok">
+      <h2>2. Kondisi api</h2>
+      <div id="status" class="lp-pilihan" role="radiogroup" aria-label="Kondisi api"></div>
+    </section>
+    <section class="lp-blok">
+      <h2>3. Angka</h2>
+      <label>Luas terbakar (hektare)<input id="luas" inputmode="decimal" autocomplete="off" placeholder="mis. 2,5"></label>
+      <label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal" autocomplete="off" placeholder="mis. 1"></label>
+      <label>Jumlah personel di lokasi<input id="personel" inputmode="numeric" autocomplete="off" placeholder="mis. 12"></label>
+    </section>
+    <section class="lp-blok">
+      <h2>4. Kendala</h2>
+      <div id="kendala" class="lp-centang"></div>
+      <label>Sumber air terdekat<select id="air"></select></label>
+    </section>
+    <section class="lp-blok">
+      <h2>5. Catatan dan foto</h2>
+      <label>Catatan (maksimal 500 huruf)<textarea id="catatan" rows="3" maxlength="500"></textarea></label>
+      <label>Foto lokasi (boleh dikosongkan)<input id="foto" type="file" accept="image/*" capture="environment"></label>
+    </section>
+    <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button>
+  </form>
+</main>
+<script src="/lapangan.js?v=1" defer></script>
+</body>
+</html>

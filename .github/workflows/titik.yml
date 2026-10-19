@@ -63,6 +63,10 @@ jobs:
           python3 scripts/data/ringkasan.py
           python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
 
+      - name: Kendala lapangan per kompleks (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py
+
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true

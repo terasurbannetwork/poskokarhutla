@@ -82,7 +82,7 @@ nav.tabs{display:flex;justify-content:space-evenly;gap:4px;margin:0 clamp(8px,3v
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
-@media (max-width:1280px){nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
+@media (max-width:1500px){nav.tabs{margin:0 8px}nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
 nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
@@ -105,7 +105,9 @@ nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current
 @media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
 /* mobile: pilihan bencana & tema disembunyikan, tab pindah ke menu garis tiga (pemilik, 15 Okt 2026) */
 #burger{display:none}
-@media (max-width:640px){#burger{display:grid}.bencana,#tema{display:none!important}.stat{margin-left:auto}
+@media (max-width:640px){.bencana,#tema{display:none!important}}
+/* 8 tab baru muat sebaris mulai ~1255px; di bawahnya tab pindah ke menu garis tiga (pemilik, 19 Okt 2026: tab Foto terpotong) */
+@media (max-width:1260px){#burger{display:grid}.stat{margin-left:auto}
   nav.tabs{display:none;position:fixed;top:var(--top);left:8px;right:auto;z-index:60;flex-direction:column;align-items:stretch;gap:2px;margin:6px 0 0;padding:6px;min-width:220px;max-height:calc(100dvh - var(--top) - 20px);overflow-y:auto;
     background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg)}
   header.top.buka nav.tabs{display:flex}
@@ -4811,7 +4813,7 @@ const Posko = {
       <div class="grid g4" style="margin-bottom:12px">${[["Personel", fmt(a.org), x.tingkat === 2 ? a.regu + " regu × 15" : x.tingkat === 1 ? `${ASUMSI.staffKab} staf + 1 regu cadangan` : ASUMSI.staffProv + " staf komando"],
         ["Alat yang kurang", rp(a.alat.t), x.jenis_posko === "aju" ? "memakai alat pangkalan" : a.alat.est ? rp(a.alat.est) + " masih estimasi · kendaraan disewa" : "kendaraan disewa"], ["Operasional / hari", rp(a.harian), "personel, konsumsi, BBM, sewa, internet"],
         ["Total " + a.hari + " hari", rp(a.total), x.tingkat === 0 && a.dsp ? "+ DSP BNPB " + rp(a.dsp) + " terpisah" : "APBD / instansi"]].map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("")}</div>
-      <div class="tw"><table><thead><tr><th>Kelompok</th><th>Sarana</th><th class="n">Jumlah</th><th class="n">Harga satuan</th><th class="n">Subtotal</th><th>Sumber harga</th></tr></thead><tbody>
+      <div class="tw"><table><thead><tr><th>Kelompok</th><th>Sarana</th><th class="n">Jumlah</th><th class="n">Harga satuan</th><th class="n">Sub Total</th><th>Sumber harga</th></tr></thead><tbody>
       ${grup.flatMap(([g, it]) => it.map(([n, sat, m, , kali]) => { const q = m * (kali ? regu : 1), h = HARGA[n];
         return SEWA.has(n) ? `<tr><td>${esc(g)}</td><td style="white-space:normal">${esc(n)}</td><td class="n num">${fmt(q)} ${sat}</td><td colspan="2" class="n">disewa (masuk operasional)</td><td></td></tr>`
           : `<tr><td>${esc(g)}</td><td style="white-space:normal">${esc(n)}</td><td class="n num">${fmt(q)} ${sat}</td><td class="n num">${h ? rpc(h[0]) : "–"}</td><td class="n num">${h ? rpc(h[0] * q) : "–"}</td><td>${h ? (h[2] ? `<span class="pill l2">estimasi</span>` : esc(h[1])) : `<span class="pill l3">belum ada</span>`}</td></tr>`; })).join("")}</tbody>

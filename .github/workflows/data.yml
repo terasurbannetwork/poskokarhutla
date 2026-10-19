@@ -188,6 +188,17 @@ jobs:
           python3 scripts/data/operasi.py uji
           python3 scripts/data/operasi.py
 
+      # prioritas pembasahan per KHG (titik panas di dalam poligon KHG) dan kendala lapangan per kompleks. khg_hari.json (penghitung harian,
+      # ikut cache public/data) terisi mundur dari FIRMS maks 45 permintaan per jalan, jadi musim 2026 lengkap setelah beberapa jalan.
+      - name: Prioritas KHG dan kendala lapangan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 30
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
+          python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
+
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
       - name: Indeks iklim ENSO/IOD (boleh gagal)
         continue-on-error: true

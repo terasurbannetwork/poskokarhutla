@@ -100,6 +100,14 @@ main.kn{position:static;inset:auto}
 .kn-sta-a i svg{width:14px;height:14px}
 .kn-sta.kn-sta-a b{color:#fff;font-size:16px}
 .kn-sta.kn-sta-a small{color:rgba(255,255,255,.85)}
+/* rincian pill status api: angka + satuan dipisah garis tipis */
+.kn-sta-d{display:inline-flex;align-items:baseline;gap:4px;padding-left:9px;border-left:1px solid rgba(255,255,255,.35);font-weight:600}
+.kn-sta.kn-sta-a .kn-sta-d b{font-size:15px}
+/* rincian baris tabel info: pill kecil berikon dengan label */
+.kn-tg{display:inline-flex;align-items:center;gap:4px;margin:2px 0 2px 6px;padding:1px 8px 1px 5px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:11px;color:var(--ink2);white-space:nowrap;vertical-align:middle}
+.kn-tg svg{width:12px;height:12px;flex:none;color:#1d4e89}
+.kn-tg b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.kn-it td:last-child>.kn-tg:first-child{margin-left:0}
 .kn-kabh{display:flex;align-items:flex-end;justify-content:space-between;column-gap:12px;gap:12px 20px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line)}
 .kn-kabh h2{font-size:22px;margin:2px 0 0}
 .kn-chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -127,8 +135,8 @@ main.kn{position:static;inset:auto}
 .kn-it tbody tr:first-child td{border-top:0}
 .kn-it td:first-child{width:128px;color:var(--ink2);font-weight:700;font-size:11.5px;background:var(--surface);print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-it small{margin-left:4px;color:var(--ink2);font-size:11px;line-height:1.4}
-.kn-it small b{color:var(--ink);font-weight:800}
-.kn-it td:last-child>b{font:800 13.5px var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.kn-it small b{color:var(--ink);font-weight:700}
+.kn-it td:last-child>b{font:600 13px var(--font);color:var(--ink);font-variant-numeric:tabular-nums}
 .kn-it .kn-bt{display:inline-block;width:70px;vertical-align:middle;margin-right:4px}
 .kn-ph-m{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
 .kn-ubin{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
@@ -204,9 +212,11 @@ main.kn{position:static;inset:auto}
 .kn-ket{margin:10px 0 0;padding:10px 12px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:12px;line-height:1.45}
 .kn-ket-h{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
 .kn-ket-h i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1d4e89;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-ket dl{display:grid;gap:4px;margin:0}
+.kn-ket dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0}
+.kn-ket dl>div:last-child:nth-child(odd){grid-column:1/-1}
+@media (max-width:760px){.kn-ket dl{grid-template-columns:1fr}}
 .kn-ket dl>div{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:8px;background:var(--card);border:1px solid var(--line);border-left:3px solid #6b9bd6}
-.kn-ket dt{flex:none;width:118px;font-weight:800;color:var(--ink)}
+.kn-ket dt{flex:none;font-weight:800;color:var(--ink)}
 .kn-ket dd{margin:0;color:var(--ink2);flex:1;min-width:0}
 .kn-ket dd small{display:block;margin-top:4px;font-size:11px}
 .kn-ket-ps{display:flex;flex-wrap:wrap;gap:6px 14px}
@@ -476,3 +486,4 @@ main.kn{position:static;inset:auto}
 @media print{.kn-dft,.kn-tk-kab{min-width:0}.kn-dft td,.kn-dft th{padding:2px 4px}}
 .kn-dua>*,.kn-kpi>div,.kn-sek{min-width:0}
 .kn-saring .seg{max-width:100%;overflow-x:auto}
+@media print{.kn-tg{font-size:7px;padding:0 5px 0 3px;margin-left:3px}.kn-tg svg{width:8px;height:8px}}

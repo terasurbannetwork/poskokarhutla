@@ -1,0 +1,17 @@
+{
+  "versi": 1,
+  "sampul": {"penyaji": "", "jabatan": "", "lokasi": ""},
+  "slide": [
+    {"id": "sampul", "aktif": true, "urutan": 10},
+    {"id": "daftar", "aktif": true, "urutan": 20},
+    {"id": "nasional", "aktif": true, "urutan": 30},
+    {"id": "provinsi", "aktif": true, "urutan": 40},
+    {"id": "harian", "aktif": true, "urutan": 50},
+    {"id": "operasi", "aktif": true, "urutan": 60},
+    {"id": "konsesi", "aktif": true, "urutan": 70},
+    {"id": "konsesi12", "aktif": true, "urutan": 80},
+    {"id": "profil3", "aktif": true, "urutan": 90},
+    {"id": "lampiran_kab", "aktif": true, "urutan": 100}
+  ],
+  "tambahan": []
+}

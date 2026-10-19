@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Paparan Rakor Karhutla · Centurisk97</title>
+<meta name="description" content="Susun paparan rapat koordinasi karhutla per provinsi dari data situs, unduh dalam PPTX dan PDF dengan satu klik.">
+<link rel="canonical" href="https://pantau.terasurban.com/paparan">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Paparan Rakor Karhutla · Centurisk97">
+<meta property="og:description" content="Deck paparan rakor karhutla per provinsi, PPTX dan PDF, dari data situs.">
+<meta property="og:url" content="https://pantau.terasurban.com/paparan">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/inti/tabel.css">
+<link rel="stylesheet" href="/inti/insight.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/paparan.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="karhutla"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary><div class="menu"><a href="/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a></div></details>
+  </div>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <button class="iconbtn" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="page on scroll" id="p-paparan" aria-label="Paparan Rakor Karhutla">
+    <div class="pp">
+      <section class="pp-kep">
+        <div class="pp-jd"><h1>Paparan Rakor Karhutla</h1><p>Deck per provinsi dari data situs: pilih wilayah dan tanggal, atur slide, lalu unduh.</p></div>
+        <div class="pp-ctl">
+          <label>Provinsi<select id="ppProv" aria-label="Provinsi"></select></label>
+          <label>Tanggal data<select id="ppTgl" aria-label="Tanggal data"></select></label>
+          <button type="button" class="pp-btn" id="ppPptx">Unduh PPTX</button>
+          <button type="button" class="pp-btn ke2" id="ppPdf">Unduh PDF</button>
+        </div>
+        <div class="pp-st" id="ppSt" role="status" aria-live="polite">Memuat data…</div>
+      </section>
+      <div class="pp-badan">
+        <aside class="pp-atur" aria-label="Atur slide">
+          <h2>Atur slide</h2>
+          <ol id="ppAtur"></ol>
+          <details class="pp-tambah"><summary>Tambah slide teks bebas</summary>
+            <form id="ppForm" autocomplete="off">
+              <input name="judul" placeholder="Judul slide" required maxlength="160">
+              <input name="sub" placeholder="Sub-judul (opsional)" maxlength="200">
+              <textarea name="isi" rows="5" placeholder="Satu poin per baris"></textarea>
+              <input name="gambar_url" placeholder="Alamat gambar (opsional, satu situs)">
+              <select name="bagian" aria-label="Bagian"><option value="arahan">Arahan dan tindak lanjut</option><option value="situasi">Situasi</option><option value="konsesi">Laporan konsesi</option><option value="lampiran">Lampiran</option></select>
+              <button type="submit" class="pp-btn kecil">Tambah</button>
+            </form>
+          </details>
+          <details class="pp-tambah"><summary>Data sampul</summary>
+            <div class="pp-samp">
+              <input id="ppPenyaji" placeholder="Penyaji (nama dan gelar)" maxlength="160">
+              <input id="ppJabatan" placeholder="Jabatan" maxlength="160">
+              <input id="ppLokasi" placeholder="Lokasi rapat (contoh: Palangka Raya)" maxlength="80">
+            </div>
+          </details>
+          <div class="pp-aksi"><button type="button" class="pp-btn kecil ke2" id="ppEks">Ekspor templat (JSON)</button><button type="button" class="pp-btn kecil ke2" id="ppReset">Atur ulang</button></div>
+          <p class="pp-cat">Perubahan disimpan sementara di peramban ini.</p>
+        </aside>
+        <section class="pp-pv" aria-label="Pratinjau slide"><div id="ppGrid" class="pp-grid"></div></section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="/inti/format.js"></script>
+<script src="/inti/pilih.js"></script>
+<script src="/paparan_slide.js"></script>
+<script src="/paparan.js"></script>
+<script type="module" src="/inti/kepala.js"></script>
+</body>
+</html>
