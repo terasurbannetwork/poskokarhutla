@@ -41,8 +41,11 @@ const Metode = {
     if (S.ren) out.push(["Dampak kelompok rentan", `<ul class="mt-daftar"><li><b>Balita dan lansia</b>: penduduk kelompok umur itu di wilayah yang rata-rata PM2,5 24 jamnya di atas 55,4 µg/m³.</li><li><b>Kasus ISPA</b>: tambahan kasus per hari = penduduk × insidensi dasar harian × (RR<sup>(PM2,5 − 15)/10</sup> − 1). RR per 10 µg/m³ berasal dari studi rawat inap penyakit pernapasan (WHO HRAPIE) dan dipakai sebagai proksi untuk kasus ISPA, yang lebih luas dari rawat inap. Pada konsentrasi asap yang jauh di atas rentang studi hasilnya ekstrapolasi dan tidak teruji. Rentang rendah sampai tinggi mengikuti selang kepercayaan 95% RR, sehingga batas bawah bisa nol.</li><li><b>Sekolah</b>: sekolah di kota berstatus siaga atau awas besok; maksimal 300 yang terburuk.</li><li><b>Bandara</b>: jarak pandang METAR sekarang, lalu prakiraan dari PM2,5 model lewat rumus Koschmieder. Prakiraan jarak pandang ini belum diuji terhadap METAR. Jarak pandang juga dipengaruhi kabut dan hujan, tidak hanya asap.</li></ul>${asum(S.ren.asumsi)}`]);
     out.push(["Simulasi", `<p>Tab Simulasi memakai angin dan prakiraan yang sama untuk mencoba skenario. Hasilnya cara berpikir, bukan prakiraan resmi.${window.SimUdara?.BATAS ? " " + esc(window.SimUdara.BATAS) : ""}</p>`]);
     return out; },
-  render() {
+  async render() {
     if ($("#metode").dataset.sudah) return; $("#metode").dataset.sudah = 1;
-    $("#metode").innerHTML = `<div class="mt-kisi">${this.bagian().map(([j, h]) => `<section class="card pad mt-bag"><h3>${j}</h3>${h}</section>`).join("")}</div>`;
+    const [PL, AS] = await Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]);
+    const pel = [...(PL ? [["Peluang PM2,5", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>")]] : []),
+      ...(AS?.batasan?.length ? [["Asal asap per kota", `<ul class="mt-daftar">${AS.batasan.map(x => `<li>${esc(x)}</li>`).join("")}</ul>`]] : [])];
+    $("#metode").innerHTML = `<div class="mt-kisi">${[...this.bagian(), ...pel].map(([j, h]) => `<section class="card pad mt-bag"><h3>${j}</h3>${h}</section>`).join("")}</div>`;
   },
 };

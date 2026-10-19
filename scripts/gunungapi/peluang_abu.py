@@ -1,4 +1,4 @@
-"""Peluang abu gunung api melewati bandara/kota, 3 hari ke depan -> public/gunungapi/data/peluang.json (kontrak peluang/1).
+"""Peluang abu gunung api melewati bandara/kota, 3 hari ke depan -> public/banjir/data/abu_peluang.json (kontrak peluang/1).
 
 SKENARIO, bukan ramalan letusan: tiap gunung level >= II diandaikan meletus SEKARANG. Model dispersi = abu.py (tidak
 diubah, diimpor); yang ditambah hanya ansambelnya. Tidak menggantikan advisory VAAC Darwin / VONA PVMBG.
@@ -26,6 +26,7 @@ import importlib.util
 import json
 import math
 import os
+import re
 import sys
 import time
 import urllib.parse
@@ -44,7 +45,7 @@ def _muat(nama, rel):
 abu = _muat("abu_gn", "scripts/gunungapi/abu.py")
 P = _muat("peluang_umum", "scripts/umum/peluang.py")
 
-KELUAR = os.path.join(AKAR, "public/gunungapi/data/peluang.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/abu_peluang.json")
 CACHE = os.path.join(AKAR, "data/raw/gunungapi/angin_ansambel.json")
 KOTA = os.path.join(AKAR, "scripts/udara/kota.json")
 ENSEMBLE = "https://ensemble-api.open-meteo.com/v1/ensemble"
@@ -217,6 +218,7 @@ def wilayah_gunung(g, gid, n_ang, per, titik_per_kode, tgl):
     out = {}
     for kode, anggota in per.items():
         _, nama, _, _, jenis = titik_per_kode[kode]
+        nama = re.sub(r"\s*\(.*?\)", "", nama).strip()   # kontrak: nama wilayah tanpa kurung
         hari = [P.hari(tgl[d], [m[d] for m in anggota], [a[0] for a in AMBANG], desimal=2) for d in range(HARI_N)]
         tempat = f"di atas {nama}"
         out[f"{gid}|{kode}"] = {"nama": nama, "tingkat": "titik", "jenis": jenis,
@@ -257,7 +259,7 @@ def susun(daftar, kol_per_gunung, cache, titik, tgl, n=N_PARTIKEL):
     ring = (f"{len(jumlah)} gunung; anggota per gunung {min(jumlah.values()) if jumlah else 0}-{n_maks}"
             f" ({nens} gunung memakai 51 anggota ensemble ECMWF)." )
     return P.berkas("gunungapi",
-                    "Open-Meteo (ECMWF IFS, GFS, ICON, ensemble ECMWF) angin lapisan tekanan + model Lagrangian abu.py; status MAGMA PVMBG",
+                    "Open-Meteo (ECMWF, GFS, ICON) + model abu.py + MAGMA PVMBG",
                     n_maks, {"label": "Beban abu relatif puncak dalam 25 km", "satuan": "mg/m3", "desimal": 2},
                     [{"k": k, "label": l, "nilai": v} for v, k, l in AMBANG], wil, batasan(ring))
 

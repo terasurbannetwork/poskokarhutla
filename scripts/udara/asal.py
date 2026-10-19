@@ -136,7 +136,7 @@ def main():
     if not kota_asal:
         raise RuntimeError("asal: tak ada kota yang jalurnya melewati api")
     d = {"v": 1, "dibuat": alat.iso(dt.datetime.now(dt.timezone.utc)), "mulai": alat.iso(t), "n_api": len(src),
-         "sumber": "angin.json (Open-Meteo, 3 lapis), kluster.json (VIIRS via NASA FIRMS), konsesi2026; emisi: atribusi.ASUMSI",
+         "sumber": "Open-Meteo (angin 3 lapis), NASA FIRMS VIIRS, perkiraan Pantau Bencana",
          "batasan": BATASAN, "kota": kota_asal}
     nb = alat.simpan("asal.json", d)
     alat.log(f"asal.json: {nb // 1024} KB, {len(kota_asal)} kota dari {len(kota)}")

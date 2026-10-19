@@ -20,6 +20,7 @@ Pakai:  python3 scripts/umum/peluang.py uji               self-check
 import datetime as dt
 import json
 import math
+import re
 import sys
 
 VERSI = "peluang/1"
@@ -99,8 +100,10 @@ def tanggal(t):
 def persen(p):
     if p is None:
         return "-"
-    if 0 < p < 0.01:
+    if 0 < p < 0.005:
         return "<1%"
+    if 0.995 <= p < 1 or p == 1:
+        return ">99%"
     return f"{round(p * 100)}%"
 
 
@@ -143,6 +146,8 @@ def periksa(d):
             g.append("tanpa " + k)
     if g:
         return g
+    if re.search(r"\.json|\d{4}-\d\d-\d\dT", str(d["sumber"])) or len(str(d["sumber"])) > 90:
+        g.append("sumber harus nama lembaga/data singkat untuk layar (tanpa nama berkas, jam ISO, > 90 huruf)")
     if not d["batasan"] or not all(isinstance(s, str) and s.strip() for s in d["batasan"]):
         g.append("batasan kosong")
     na = len(d["ambang"])
@@ -152,6 +157,8 @@ def periksa(d):
     if not d["wilayah"]:
         g.append("wilayah kosong")
     for kode, w in d["wilayah"].items():
+        if "(" in str(w.get("nama", "")):
+            g.append(f"{kode}: nama wilayah berkurung, penjelasan masuk batasan")
         if not w.get("nama") or not w.get("hari"):
             g.append(f"{kode}: tanpa nama/hari")
             continue
@@ -200,7 +207,7 @@ def uji():
     assert v == "Dalam 2 hari ke depan, hujan 50 mm atau lebih di Kota Bogor cukup mungkin terjadi: peluang tertinggi 40%, pada Selasa, 20 Oktober.", v
     assert vonis(h[:1], [50, 100], 0, "x", "di y", n_hari=3).startswith("Dalam 3 hari")
     assert "tidak muncul" in vonis([h[1]], [50, 100], 0, "hujan lebat", "di sini")
-    assert persen(0.004) == "<1%" and persen(0) == "0%" and persen(0.555) == "56%"
+    assert persen(0.004) == "<1%" and persen(0) == "0%" and persen(0.555) == "56%" and persen(1) == ">99%" and persen(0.007) == "1%"
     am = [{"k": "lebat", "label": "Hujan 50 mm atau lebih", "nilai": 50}, {"k": "sl", "label": "Hujan 100 mm atau lebih", "nilai": 100}]
     d = berkas("banjir", "uji", 5, {"label": "Hujan harian", "satuan": "mm", "desimal": 0}, am,
                {"32.71": {"nama": "Kota Bogor", "tingkat": "kabupaten", "hari": h, "vonis": v}}, ["Uji saja."])
@@ -208,6 +215,8 @@ def uji():
     rusak = json.loads(json.dumps(d))
     rusak["wilayah"]["32.71"]["hari"][0]["p"] = [0.1, 0.3]
     assert any("lebih parah" in x for x in periksa(rusak))
+    rusak["sumber"] = "ECMWF (hujan_ansambel.json, dibuat 2026-10-19T08:00)"
+    assert any("sumber" in x for x in periksa(rusak))
     rusak["batasan"] = []
     assert any("batasan" in x for x in periksa(rusak))
     try:

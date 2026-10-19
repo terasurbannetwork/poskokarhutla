@@ -77,7 +77,7 @@ def bangun(ans, kota, verif=None, hari_ini=None):
     if kt and kt.get("lead"):
         uji = {"jenis": "alarm deterministik hujan >= 50 mm (bukan peluang ansambel)", "periode": kt.get("periode"), "acuan": kt.get("acuan"),
                "lead": kt["lead"], "catatan": "pod/far/csi pasangan provinsi-hari terhadap DIBI; DIBI hanya mencatat kejadian yang dilaporkan, jadi far pesimis dan pod optimis."}
-    return P.berkas("cuaca", f"Ansambel ECMWF IFS {ans.get('anggota')} anggota via Open-Meteo (dibuat {ans.get('dibuat')}); kab/kota: scripts/udara/kota.json",
+    return P.berkas("cuaca", "ECMWF IFS ansambel lewat Open-Meteo",
                     ans.get("anggota"), {"label": "Hujan harian", "satuan": "mm", "desimal": 0}, AMBANG, wil, BATASAN, uji)
 
 

@@ -24,8 +24,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from umum import KELUAR, WIB, baca, simpan
 from wilayah import AKAR, PROVINSI
 
-AMBANG = [{"k": "lebat", "label": "Hujan harian 50 mm atau lebih (lebat)", "nilai": 50},
-          {"k": "sangat_lebat", "label": "Hujan harian 100 mm atau lebih (sangat lebat)", "nilai": 100}]
+AMBANG = [{"k": "lebat", "label": "Hujan 50 mm atau lebih per hari (lebat)", "nilai": 50},
+          {"k": "sangat_lebat", "label": "Hujan 100 mm atau lebih per hari (sangat lebat)", "nilai": 100}]
 KEJADIAN = ["hujan harian 50 mm atau lebih", "hujan harian 100 mm atau lebih"]
 BATAS_DERAJAT = 1.0
 BATAS_BYTE = 400 * 1024
@@ -77,10 +77,14 @@ def uji_balik(val):
     s = ((val or {}).get("banjir") or {}).get("siaga")
     if not s:
         return None
-    return {"jenis": "status Siaga banjir (deterministik, ERA5 sebagai prakiraan sempurna), bukan keandalan peluang ansambel",
-            "periode_uji": val.get("periode_uji"), "kabupaten": val["banjir"].get("kab"),
-            "pod": s["pod"], "far": s["far"], "ets": s["ets"], "ci_ets": s["ci"]["ets"], "ci_pod": s["ci"]["pod"], "ci_far": s["ci"]["far"],
-            "keandalan_peluang": "belum diukur: butuh catatan prospektif peluang semua kabupaten (skor Brier/diagram keandalan)"}
+    pc = lambda v: f"{round(v * 100)}%"
+    rg = lambda c: f"{round(c[0] * 100)} sampai {round(c[1] * 100)}%"
+    return {"latih": val.get("periode_latih"), "uji": val.get("periode_uji"),
+            "jenis": "status Siaga banjir (deterministik, hujan ERA5 sebagai prakiraan sempurna), bukan keandalan peluang ansambel",
+            "kejadian tertangkap": f"{pc(s['pod'])} (rentang 95%: {rg(s['ci']['pod'])})",
+            "peringatan tanpa kejadian": f"{pc(s['far'])} (rentang 95%: {rg(s['ci']['far'])})",
+            "ketepatan gabungan (ETS)": f"{s['ets']:.3f} (rentang 95%: {s['ci']['ets'][0]:.3f} sampai {s['ci']['ets'][1]:.3f})".replace(".", ","),
+            "keandalan peluang": "belum diukur: butuh catatan prospektif peluang semua kabupaten (skor Brier, diagram keandalan)"}
 
 
 def bangun(ens, pusat, hari_ini, val=None):
@@ -99,7 +103,7 @@ def bangun(ens, pusat, hari_ini, val=None):
     prov_titik = {}
     for (p, _), s in kab_titik.items():
         prov_titik.setdefault(p, set()).update(s)
-    wil = {"ID": {"nama": "Indonesia (kotak prakiraan 1 derajat terbasah)", "tingkat": "nasional", "hari": agregat(ens, range(len(grid)), i0, n)}}
+    wil = {"ID": {"nama": "Indonesia", "tingkat": "nasional", "hari": agregat(ens, range(len(grid)), i0, n)}}
     wil["ID"]["vonis"] = vonis(wil["ID"]["hari"], "di sebagian Indonesia")
     wil["ID"]["vonis_3hari"] = vonis_3hari(wil["ID"]["hari"], "di sebagian Indonesia")
     for p in sorted(prov_titik):
@@ -121,8 +125,8 @@ def bangun(ens, pusat, hari_ini, val=None):
         f"Peluang = pecahan dari {anggota} anggota ansambel bobot sama; bukan terkalibrasi (belum ada diagram keandalan). 8 hari pertama saja; makin jauh makin menyebar.",
         f"{len(tanpa)} kabupaten tidak ditulis karena tak ada anggota yang melewati 50 mm/hari atau 100 mm/3 hari sepanjang horizon (lihat tanpa_sinyal); itu bukan jaminan tanpa hujan.",
     ]
-    d = PL.berkas("banjir", f"ECMWF IFS ENS {anggota} anggota via Open-Meteo Ensemble API (hujan_ansambel.json, dibuat {ens['dibuat']})", anggota,
-                  {"label": "Hujan harian", "satuan": "mm", "desimal": 0}, AMBANG, wil, batasan, uji_balik(val))
+    d = PL.berkas("banjir", f"ECMWF IFS ansambel {anggota} anggota lewat Open-Meteo", anggota,
+                  {"label": "Curah hujan harian", "satuan": "mm", "desimal": 0}, AMBANG, wil, batasan, uji_balik(val))
     d["tanpa_sinyal"] = tanpa
     d["agregasi"] = "maksimum atas titik 1 derajat; p3 = P(jumlah 3 hari mulai hari itu >= 100 mm)"
     return d
@@ -151,7 +155,7 @@ def uji():
         tk(-6.5, 107.5, [0, .1, .3, .0], [0, 0, 0, 0], [0, 0, .1, 0], [[0] * 4, [0, 2, 20, 1], [2, 12, 60, 8]]),
         tk(-8.5, 120.5, [0] * 4, [0] * 4, [0] * 4, [[0] * 4, [0] * 4, [0] * 4])]}
     pusat = {"32|Bogor|A": [-6.5, 106.6], "32|Bogor|B": [-6.5, 107.4], "32|Kota Z|C": [-6.4, 107.5], "53|Sumba|D": [-8.5, 120.4], "53|Jauh|E": [-1.0, 130.0]}
-    val = {"periode_uji": "2022-2025", "kab": 42, "banjir": {"kab": 42, "siaga": {"pod": .1, "far": .9, "ets": .03, "ci": {"ets": [.02, .04], "pod": [.1, .2], "far": [.8, .9]}}}}
+    val = {"periode_latih": "2016-2021", "periode_uji": "2022-2025", "kab": 42, "banjir": {"kab": 42, "siaga": {"pod": .1, "far": .9, "ets": .03, "ci": {"ets": [.02, .04], "pod": [.1, .2], "far": [.8, .9]}}}}
     d = bangun(ens, pusat, "2026-10-19", val)
     assert PL.periksa(d) == [] and len(d["wilayah"]["ID"]["hari"]) == 3, "hari 18 Okt dibuang (sebelum hari ini)"
     b = d["wilayah"]["32|Bogor"]["hari"]
@@ -161,7 +165,7 @@ def uji():
     v = d["wilayah"]["32|Bogor"]["vonis"]
     assert "50 mm" in v and "60%" in v and "Selasa, 20 Oktober" in v and "cukup mungkin" in v, v
     assert "di sebagian 32" not in d["wilayah"]["32"]["vonis"] and "di sebagian Jawa Barat" in d["wilayah"]["32"]["vonis"] and "kotak prakiraan" not in d["wilayah"]["32"]["vonis"]
-    assert "100 mm" in d["wilayah"]["ID"]["vonis_3hari"] and d["uji_balik"]["pod"] == .1 and d["uji_balik"]["ci_ets"] == [.02, .04]
+    assert "100 mm" in d["wilayah"]["ID"]["vonis_3hari"] and "10%" in d["uji_balik"]["kejadian tertangkap"] and "0,020 sampai 0,040" in d["uji_balik"]["ketepatan gabungan (ETS)"]
     try:
         bangun(ens, pusat, "2026-11-01")
         assert False

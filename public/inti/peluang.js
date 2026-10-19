@@ -56,7 +56,7 @@ const Peluang = (() => {
       const ak = o.ambang ?? st[k + "A"], idx = pil.find(i => d.ambang[i].k === ak) ?? pil[0];
       const sel = Object.keys(d.wilayah).length > 1 ? `<select data-set="${k}W" aria-label="Pilih wilayah">${urut(d).map(c => `<option value="${esc(c)}"${c === kode ? " selected" : ""}>${esc(d.wilayah[c].nama)}</option>`).join("")}</select>` : "";
       const seg = pil.length > 1 ? Kartu.seg(k + "A", pil.map(i => [d.ambang[i].k, esc(pendek(d.ambang[i], d.besaran))]), {[k + "A"]: d.ambang[idx].k}) : "";
-      const jd = esc(w.vonis || w.nama || "").replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
+      const jd = esc(String(w.vonis || w.nama || "").trim().replace(/\.$/, "").replace(/\.\s+(\S)/g, (m, c) => "; " + c.toLowerCase())).replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
       const aria = `Peluang ${o.kejadian || ""} per hari, ${d.ambang[idx].label}, ${w.nama}`.replace(/\s+/g, " ");
       return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, d.ambang.map((a, i) => [WARNA[i % WARNA.length], esc(a.label)])); },
 

@@ -133,7 +133,7 @@ def main():
     ]
     mt = (prak.get("galat") or {}).get("metar")
     uji = {"jenis": "analisis CAMS vs METAR (bukan peluang)", **{k: mt[k] for k in ("n", "satuan", "n_bandara", "hit", "far", "csi", "selang", "periode") if k in mt}} if mt else None
-    d = P.berkas("udara", "CAMS (Copernicus) via Open-Meteo + sebaran asumsi atribusi.py (plume Gauss api/PLTU); batas P.14/2020", len(VARIAN),
+    d = P.berkas("udara", "CAMS lewat Open-Meteo, batas P.14/2020", len(VARIAN),
                  {"label": "PM2,5 rata-rata 24 jam", "satuan": "µg/m³", "desimal": 0}, AMBANG, wil, batasan, uji)
     d["bobot"] = bobot
     nb = alat.simpan("peluang.json", d)

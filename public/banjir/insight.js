@@ -10,10 +10,10 @@ Tip.polaSatu = /^([\d.,]+(?:\s?(?:rb|jt))?\s+(?:kecamatan|kejadian|mm))$/;   /* 
 if (!window.__pilihPasang) { window.__pilihPasang = 1; PilihCantik.pasang(); }
 
 const Insight = {
-  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", pel: "b", ub: "banjir", pulau: "", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
+  st: {status: "b", hari: 0, hujan: "h3", tren: "banjir", prak: "b", pel: "b", pa: "pantura", ub: "banjir", pulau: "", musim: "banjir", dampak: "meninggal", kab: "banjir", provKec: "", provPv: ""},
   /* urutan kartu; tabel kecamatan dan provinsi ikut sebagai kartu terakhir. musim/dampak/kab sengaja tidak di sini (disembunyikan, A24) */
-  EX: ["kejadian", "status", "hujan", "sungai", "rob", "tren", "prakiraan", "peluang", "ujibalik", "kecamatan", "provinsi"],
-  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", peluang: "Peluang 3 hari", ujibalik: "Ketepatan status", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
+  EX: ["kejadian", "status", "hujan", "sungai", "rob", "pasang", "tren", "prakiraan", "pelhujan", "peluang", "ujibalik", "kecamatan", "provinsi"],
+  LABEL: {kejadian: "Kejadian", status: "Status", hujan: "Hujan", sungai: "Sungai", rob: "Rob", pasang: "Kalender pasang", pelhujan: "Peluang hujan lebat", tren: "Riwayat 15 tahun", prakiraan: "Prakiraan", peluang: "Peluang 3 hari", ujibalik: "Ketepatan status", kecamatan: "Siaga dan awas", provinsi: "Provinsi",
     musim: "Musim", dampak: "Dampak", kab: "Langganan"},
   /* status tabel (urut, arah, halaman) per kartu bertabel */
   T: {kejadian: {urut: "_", turun: true, hal: 0}, peluang: {urut: "_", turun: true, hal: 0}, kecamatan: {urut: "_", turun: true, hal: 0}, provinsi: {urut: "_", turun: true, hal: 0}},
@@ -120,6 +120,33 @@ const Insight = {
     return this.ex(n ? `${this.hl(fmt(n) + " titik pantai")} diperkirakan berstatus rob dalam 10 hari ke depan` : `Pasang belum melewati ambang dalam 10 hari ke depan; BMKG mengeluarkan ${this.hl(fmt(bm) + " peringatan rob")}`, "", "",
       `<div class="tw sk"><svg viewBox="0 0 ${W} ${H}" style="min-width:720px" role="img" aria-label="Pasang laut 10 hari">${g}</svg></div>`, `Sumber: Open-Meteo Marine, BMKG Maritim, DIBI BNPB`); },
 
+  /* 4b. kalender pasang: indeks gaya pasang astronomis harian 12 bulan (scripts/banjir/pasang_astro.py). Batasan (bukan tinggi muka air, asumsi bobot) ada di Metode. */
+  exPasang() {
+    const D = this.PA; if (!D?.seri?.g) return "";
+    const pr = D.seri.g[this.st.pa] ? this.st.pa : "pantura", g = D.seri.g[pr], n = g.length, PT = D.pasang_tinggi[pr], t0 = Date.parse(D.seri.t0 + "T00:00:00Z");
+    if (!PT?.tertinggi?.length) return "";
+    const M = innerWidth < 640, W = 940, L = 34, R = 16, T = 62, B = 214, X = i => L + i * (W - L - R) / (n - 1), Y = v => B - v * (B - T), ix = t => Math.round((Date.parse(t + "T00:00:00Z") - t0) / 864e5);
+    const f = (t, o) => new Date(t + "T12:00:00Z").toLocaleDateString("id-ID", {timeZone: "UTC", ...o});
+    const rentang = (a, b, tahun) => { const A = new Date(a + "T12:00:00Z"), Z = new Date(b + "T12:00:00Z"), ba = A.getUTCMonth() !== Z.getUTCMonth() || A.getUTCFullYear() !== Z.getUTCFullYear(), th = tahun ? " " + Z.getUTCFullYear() : "";
+      if (a === b) return f(a, {day: "numeric", month: tahun ? "long" : "short"}) + th;
+      return ba ? `${f(a, {day: "numeric", month: tahun ? "long" : "short"})}–${f(b, {day: "numeric", month: tahun ? "long" : "short"})}${th}` : `${A.getUTCDate()}–${f(b, {day: "numeric", month: tahun ? "long" : "short"})}${th}`; };
+    const top = PT.tertinggi[0], tertinggi = [...PT.tertinggi].sort((a, b) => a.awal < b.awal ? -1 : 1);
+    let s = [0, .5, 1].map(v => `<line x1="${L}" x2="${W - R}" y1="${Y(v)}" y2="${Y(v)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(v) + 4}" text-anchor="end" font-size="11" opacity=".6">${F2(v)}</text>`).join("");
+    s += PT.jendela.map(j => { const a = ix(j.awal), b = ix(j.akhir); return `<rect x="${X(a) - 1}" y="${T - 8}" width="${Math.max(3, X(b) - X(a) + 2)}" height="${B - T + 8}" fill="${MERAH}" opacity=".16"/>`; }).join("");
+    s += `<path d="M${X(0)},${B} ${g.map((v, i) => `L${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")} L${X(n - 1)},${B}Z" fill="${BIRU}" opacity=".16"/><path d="${g.map((v, i) => `${i ? "L" : "M"}${X(i).toFixed(1)},${Y(v).toFixed(1)}`).join(" ")}" fill="none" stroke="${BIRU}" stroke-width="1.8" stroke-linejoin="round"/>`;
+    s += tertinggi.map((j, k) => { const c = (X(ix(j.awal)) + X(ix(j.akhir))) / 2, tk = `${rentang(j.awal, j.akhir)} · ${F2(j.nilai)}`, w = tk.length * 6.8 + 16, x = Math.max(2, Math.min(W - w - 2, c - w / 2)), y = k % 2 ? 30 : 4;
+      return `<line x1="${c}" x2="${c}" y1="${y + 22}" y2="${Y(j.nilai) - 3}" stroke="${MERAH}" stroke-width="1" opacity=".5"/>${this.p(x, y, tk, MERAH, "#fff", 11)[0]}`; }).join("");
+    let bl = "", xl = -99; for (let i = 0; i < n; i++) { const d = new Date(t0 + i * 864e5); if ((d.getUTCDate() === 1 || i === 0) && X(i) - xl >= 40) { xl = X(i); bl += `<text x="${X(i)}" y="${B + 18}" text-anchor="${i ? "middle" : "start"}" font-size="${M ? 11 : 10.5}" opacity=".7">${BLN[d.getUTCMonth()]}${d.getUTCMonth() === 0 ? " " + String(d.getUTCFullYear()).slice(2) : ""}</text>`; } }
+    const kol = g.map((v, i) => { const t = new Date(t0 + i * 864e5).toISOString().slice(0, 10), j = PT.jendela.find(w => t >= w.awal && t <= w.akhir);
+      return `<rect x="${X(i) - (W - L - R) / (n - 1) / 2}" y="${T - 8}" width="${(W - L - R) / (n - 1)}" height="${B - T + 8}" fill="transparent" data-tip="<b>${f(t, {weekday: "long", day: "numeric", month: "long"})}</b><br>Gaya pasang: ${F2(v)}${j ? `<br>Jendela terkuat: ${rentang(j.awal, j.akhir)}` : ""}"/>`; }).join("");
+    Kartu.leg([[BIRU, "gaya pasang harian (0–1)"], [MERAH, "jendela terkuat"]]);
+    return this.ex(`Pasang astronomis terkuat 12 bulan ke depan jatuh pada ${this.hl(rentang(top.awal, top.akhir, true))}`, "", "",
+      `<div class="tw sk"><svg viewBox="0 0 ${W} ${B + 26}" style="min-width:${M ? 720 : 0}px" role="img" aria-label="Gaya pasang astronomis harian 12 bulan">${s}${bl}${kol}</svg></div>`,
+      `Sumber: perhitungan astronomi posisi Bulan dan Matahari`, this.seg("pa", Object.entries(D.profil).map(([k, v]) => [k, k === "pantura" ? "Pantura Jawa" : "Titik lain"]))); },
+
+  /* 4c. peluang hujan lebat per wilayah (peluang.json, mesin bersama inti/peluang.js; scripts/banjir/peluang_banjir.py). Tanpa mesin atau berkas = dibuang. */
+  exPelhujan() { if (typeof Peluang === "undefined" || !this.PH) return ""; return Peluang.kartu(this.PH, {ey: this.LABEL.pelhujan, st: this.st, kunci: "ph", kejadian: "hujan lebat"}); },
+
   /* 5. riwayat 15 tahun: kejadian nasional per tahun */
   exTren() {
     const K = S.kejadian; if (!K) return "";
@@ -161,7 +188,7 @@ const Insight = {
   /* 6b. peluang 3 hari: kecamatan dengan peluang Siaga tertinggi (ansambel ECMWF 51 anggota, jalur hujan), status.py -> prakiraan72.json */
   exPeluang() {
     const D = Pra72.d; if (!D) return "";
-    if (D.anggota == null) return this.ex("Peluang belum tersedia: ansambel ECMWF belum jalan", "", "", `<p class="kosong">Peluang muncul setelah ansambel hujan diambil. Status per hari tetap tampil di kartu lain.</p>`, `Sumber: ECMWF IFS ansambel lewat Open-Meteo`);
+    if (D.anggota == null) return "";
     const b = this.st.pel, q = b === "b" ? "hb" : "hl", nama = NAMA_B[b], J = Pra72.jendela();
     const semua = Object.entries(D.kec).filter(([, v]) => v[q]).map(([k, v]) => { const [p, kb, kc] = k.split("|"), lv = v[b], pk = v[q].map(x => x[1]); return {k, p, kb, kc, lv, pk, pu: v[q].map(x => x[2]), h3: S.st.kec[k]?.h3}; });
     if (!semua.length) return "";
@@ -276,8 +303,10 @@ const Insight = {
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box, sesudah) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); if (sesudah) nanti(sesudah); }); },
   async render() {
-    const [kej, val, , akt] = await Promise.all([S.kejadian || muatJSON("data/kejadian.json").catch(() => null), S.validasi || muatJSON("data/validasi.json").catch(() => null), Pra72.muat(),
-      this.aktif === undefined ? muatJSON("data/kejadian_aktif_awal.json").catch(() => null) : this.aktif]);
+    const [kej, val, , akt, ph, pa] = await Promise.all([S.kejadian || muatJSON("data/kejadian.json").catch(() => null), S.validasi || muatJSON("data/validasi.json").catch(() => null), Pra72.muat(),
+      this.aktif === undefined ? muatJSON("data/kejadian_aktif_awal.json").catch(() => null) : this.aktif,
+      typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/pasang_astro.json").catch(() => null)]);
+    this.PH = ph; this.PA = pa;
     S.kejadian ||= kej; S.validasi ||= val; if (this.aktif === undefined) this.aktif = akt;
     const el = $("#insight");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");

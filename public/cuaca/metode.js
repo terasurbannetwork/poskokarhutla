@@ -11,8 +11,8 @@ const Metode = {
     const isi = this.tabel(["Yang dinilai", "Tepat", "Alarm palsu", "Meleset", "POD", "FAR", "CSI"], R)
       + `<ul class="mt"><li>Penilaian dicocokkan per provinsi dan tanggal. Prakiraan kita dihitung untuk 1, 2, dan 3 hari sebelumnya, dengan hujan sehari 50 mm atau lebih sebagai alarm. Kejadian pembanding hanya yang dilaporkan, jadi jumlah meleset cenderung terlalu kecil bila laporan telat, dan terlalu besar bila arsip peringatan baru dimulai.</li><li>Tepat = ada peringatan dan ada kejadian. Alarm palsu = ada peringatan, tak ada kejadian. Meleset = ada kejadian, tak ada peringatan.</li><li>POD = tepat / (tepat + meleset). FAR = alarm palsu / (tepat + alarm palsu). CSI = tepat / (tepat + alarm palsu + meleset).</li>${V.bmkg?.kejadian ? `<li>Kejadian pembanding: ${esc(V.bmkg.kejadian)}.</li>` : ""}${cat}</ul>`;
     return `<div data-ex="Verifikasi">${Kartu.ex("Verifikasi", "", "", isi, "Sumber: BMKG, DIBI BNPB, Open-Meteo, dibuat " + jamWIB(V.dibuat)).replace('<span class="ex-ey"></span>', "")}</div>`; },
-  render() {
-    const A = S.meta.ambang, sumber = this.tabel(["Data", "Sumber", "Cara tampil"], [
+  async render() {
+    const PL = typeof Peluang !== "undefined" ? await Peluang.muat("../banjir/data/cuaca_peluang.json") : null, A = S.meta.ambang, sumber = this.tabel(["Data", "Sumber", "Cara tampil"], [
       ["Peringatan nowcast", "BMKG (CAP)", "Apa adanya, berlabel BMKG dan jam terbit; hilang saat masa berlakunya lewat"],
       ["Peringatan gelombang", "BMKG Maritim", "Kelas dan perairan dari BMKG, digabung per provinsi"],
       ["Hujan dan embusan", "Open-Meteo, kisi 0,25 derajat", "Prakiraan per sel, 10 hari"],
@@ -41,6 +41,7 @@ const Metode = {
       <li>Angin siklon memakai profil Holland (1980): V = Vmaks x akar((Rm/r)^B x e^(1 - (Rm/r)^B)) dengan B = 1,5. Vmaks dari lintasan JTWC, Rm (radius angin maksimum) dari pengaturan di layar karena tidak ada di berkas. Angin berputar melawan jarum jam di utara ekuator, searah di selatan, dan masuk 20 derajat ke pusat (asumsi).</li>
       <li>Gelombang di bawah siklon memakai Pierson dan Moskowitz (1964), Hs = 0,21 U kuadrat / g. Ini batas atas laut berkembang penuh, jadi perkiraan atas, bukan prakiraan.</li>
       <li>Pelabuhan: terganggu bila Hs 1,5 m atau lebih, atau angin 16 kt atau lebih; tutup bila Hs 2,5 m atau lebih, atau angin 21 kt atau lebih. Bandara: terganggu bila embusan 54 km/jam atau lebih, atau hujan 10 mm/jam atau lebih; tutup bila embusan 72 km/jam atau lebih. Semua ini hipotesis berdasar kriteria risiko BMKG, bukan keputusan syahbandar atau otoritas bandara.</li></ul>`;
-    $("#metode").innerHTML = lain + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Pantau Bencana").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi();
+    const pel = PL ? `<div data-ex="Peluang">${Kartu.ex("Peluang hujan ekstrem", "", "", Peluang.batasan(PL, {judul: "Peluang dan batasnya"}).replace("<b>0. ", "<b>"), "Sumber: ECMWF, Open-Meteo").replace('<span class="ex-ey"></span>', "")}</div>` : "";
+    $("#metode").innerHTML = lain + pel + `<div data-ex="Simulasi" id="simulasi">${Kartu.ex("Simulasi", "", "", sim, "Sumber: Holland (1980), Pierson dan Moskowitz (1964), BMKG, Pantau Bencana").replace('<span class="ex-ey"></span>', "")}</div>` + this.verifikasi();
   },
 };

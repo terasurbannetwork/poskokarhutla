@@ -27,7 +27,7 @@ test("kartu gempa: judul = vonis, batang = jumlah hari, tanpa subjudul/catatan",
   assert.ok(h.includes('<span class="hl">74%</span>'), "angka vonis disorot");
   assert.ok(h.includes('<span class="hl">&gt;99%</span>'));
   assert.equal(batang(h), w.hari.length);
-  assert.ok(!h.includes("100%")); assert.ok(h.includes("Sumber: USGS FDSN"));
+  assert.ok(!h.includes("100%")); assert.ok(h.includes("Sumber: " + D.sumber));
   assert.ok(!/<p[ >]|<small|Batasan|uji_balik/i.test(h), "tanpa paragraf catatan/batasan di kartu");
   assert.match(h, /data-set="pelW"/); assert.match(h, /data-set="pelA"/);
   assert.match(h, /class="gy"[^>]*data-tip="&lt;b&gt;Selasa, 20 Okt/);
@@ -57,4 +57,10 @@ test("batasan + uji balik hanya di bab Metode", () => {
   assert.match(h, /^<details class="mt-sek">/); assert.ok(h.includes("<b>0. ")); assert.ok(h.includes("Gempa utama tidak bisa diramal"));
   assert.ok(h.includes("Uji balik") && h.includes("teramati 119") && h.includes("29 dari 30"));
   const d = salin(D); delete d.uji_balik; d.batasan = []; assert.equal(P.batasan(d), "");
+});
+
+test("judul tanpa titik akhir, dua kalimat disambung titik koma", () => {
+  const h = P.kartu(D), jd = h.match(/<h3>(.*?)<\/h3>/)[1].replace(/<[^>]+>/g, "");
+  assert.ok(!jd.endsWith(".")); assert.ok(jd.includes("diketahui; dalam 12 bulan")); assert.ok(!/\.\s/.test(jd));
+  const d = salin(D); d.wilayah.ID.vonis = "Peluang 5% di sini."; assert.ok(P.kartu(d).includes("di sini</h3>"));
 });

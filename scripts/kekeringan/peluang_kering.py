@@ -1,4 +1,4 @@
-"""Peluang kekeringan per provinsi/kabupaten -> public/kekeringan/data/peluang.json (kontrak peluang/1).
+"""Peluang kekeringan per provinsi/kabupaten -> public/banjir/data/kering_peluang.json (kontrak peluang/1).
 
 BUKAN model kedua: prakiraan.py sudah menghitung peluang dari 51 anggota ensemble musiman ECMWF SEAS5 (SPI-3 <= -1 / -1,5 / -2 untuk
 bulan +1..+3, dan HTH >= 31 / >= 61 hari dalam 90 hari). Berkas ini hanya membungkus public/data/kekeringan_prakiraan.json ke kontrak
@@ -37,7 +37,7 @@ P = _muat("peluang_umum", "scripts/umum/peluang.py")
 PROVINSI = _muat("wilayah_data_kering", "scripts/data/wilayah.py").PROVINSI
 PRAKIRAAN = os.path.join(AKAR, "public/data/kekeringan_prakiraan.json")
 UJIBALIK = os.path.join(AKAR, "public/data/kekeringan_ujibalik.json")
-KELUAR = os.path.join(AKAR, "public/kekeringan/data/peluang.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/kering_peluang.json")
 AMBANG = [{"k": "spi1", "label": "SPI-3 -1 atau lebih kering (kering)", "nilai": 1.0},
           {"k": "spi15", "label": "SPI-3 -1,5 atau lebih kering (sangat kering)", "nilai": 1.5},
           {"k": "spi2", "label": "SPI-3 -2 atau lebih kering (ekstrem kering)", "nilai": 2.0}]

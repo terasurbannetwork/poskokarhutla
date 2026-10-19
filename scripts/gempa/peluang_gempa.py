@@ -24,9 +24,22 @@ _s.loader.exec_module(P)
 TH0, TH_UJI0, TH1 = 1990, 2016, 2025  # latih 1990-2015, uji balik 2016-2025
 DANGKAL_KM = 70
 N_MIN = 3
-AMBANG = [4, 5, 6]  # magnitudo
+AMBANG = [5, 6]  # magnitudo; M4+ dibuang: di bawah mc model susulan (4,7), tak pernah terisi
 JENIS = [("m6", "gempa M6+", lambda e: e[4] >= 6), ("m7", "gempa M7+", lambda e: e[4] >= 7),
          ("m7d", "gempa M7+ dangkal", lambda e: e[4] >= 7 and e[3] <= DANGKAL_KM)]
+
+
+ARAH = {"N": "utara", "NNE": "utara timur laut", "NE": "timur laut", "ENE": "timur timur laut", "E": "timur", "ESE": "timur tenggara",
+        "SE": "tenggara", "SSE": "selatan tenggara", "S": "selatan", "SSW": "selatan barat daya", "SW": "barat daya",
+        "WSW": "barat barat daya", "W": "barat", "WNW": "barat barat laut", "NW": "barat laut", "NNW": "utara barat laut"}
+
+
+def tempat_id(place):
+    """'119 km SSW of Gambiran Satu, Indonesia' -> '119 km selatan barat daya Gambiran Satu'; pola lain: buang ', Indonesia' saja."""
+    import re
+    t = re.sub(r",\s*Indonesia$", "", place or "")
+    m = re.match(r"(\d+) km ([NSEW]{1,3}) of (.+)$", t)
+    return f"{m.group(1)} km {ARAH[m.group(2)]} {m.group(3)}" if m and m.group(2) in ARAH else t
 
 
 def teks_p(p):
@@ -120,12 +133,12 @@ def susulan_strip(mdl, ev, kini):
             tgl = (kini + dt.timedelta(days=d)).date()
             t0 = max(0.0, susulan._hari(tgl.isoformat() + "T00:00") - e["t"])
             ps = []
-            for m, k in zip(AMBANG, (None, "m5", "m6")):  # M4 tak punya target model: selalu null
+            for m, k in zip(AMBANG, ("m5", "m6")):
                 ps.append(round(susulan.peluang(e["m"], t0, 1.0, m, mdl["param"])["p"], 4) if k and mdl["terbit_target"].get(k) else None)
             hari.append({"t": tgl.isoformat(), "p": ps, "p10": None, "p50": None, "p90": None})
-        p5 = max((h["p"][1] for h in hari if h["p"][1] is not None), default=None)
+        p5 = max((h["p"][0] for h in hari if h["p"][0] is not None), default=None)
         out[f"susulan:{e['w']}"] = {
-            "nama": f"Susulan M {str(e['m']).replace('.', ',')} {e['place']}", "tingkat": "titik", "hari": hari,
+            "nama": f"Susulan M {str(e['m']).replace('.', ',')} {tempat_id(e['place'])}", "tingkat": "titik", "hari": hari,
             "vonis": f"Dalam 7 hari ke depan, peluang susulan M5+ tertinggi {teks_p(p5)} per hari, menurun tiap hari." if p5 is not None else ""}
     return out
 
@@ -147,10 +160,10 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
                  "teratas_m6": [{"prov": p, "nama": nama.get(p, p), "per_tahun": v} for p, v in teratas], "uji_balik": ub}
     # strip 7 hari: laju harian nasional (M5, M6) + susulan gempa utama aktif
     harian = [round(poisson_p(nas5["per_tahun"] / 365), 4), round(poisson_p(nas["m6"]["per_tahun"] / 365), 4)]
-    hari0 = [{"t": (kini + dt.timedelta(days=d)).date().isoformat(), "p": [None] + harian, "p10": None, "p50": None, "p90": None}
+    hari0 = [{"t": (kini + dt.timedelta(days=d)).date().isoformat(), "p": harian, "p10": None, "p50": None, "p90": None}
              for d in range(1, 8)]
     vn = " ".join(vonis_laju(lab[k], "di Indonesia", nas[k]) for k in ("m7d", "m6"))
-    wil = {"ID": {"nama": "Indonesia (laju latar)", "tingkat": "nasional", "hari": hari0, "vonis": vn}}
+    wil = {"ID": {"nama": "Indonesia", "tingkat": "nasional", "hari": hari0, "vonis": vn}}
     for p, r in prov.items():
         if r["m6"]["p12"] is not None:
             wil[p] = {"nama": nama.get(p, p), "tingkat": "provinsi", "hari": hari0,
@@ -161,11 +174,12 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
     batasan = [
         "Gempa utama tidak bisa diramal: laju 12 bulan adalah rata-rata jangka panjang, bukan prakiraan tempat atau hari.",
         f"Laju dihitung dari USGS M5+ {TH0}-{TH1} setelah declustering; wilayah dengan kurang dari {N_MIN} kejadian tidak ditampilkan peluangnya.",
-        "Strip hari menunjukkan laju latar nasional; susulan hanya untuk target yang lolos validasi (M5+), M4+ dan M6+ tidak diterbitkan.",
+        "Wilayah Indonesia dan provinsi menampilkan laju latar jangka panjang (USGS, declustering Gardner-Knopoff), bukan prakiraan hari tertentu.",
+        "Strip hari menunjukkan laju latar nasional; susulan hanya untuk target yang lolos validasi (M5+), M6+ tidak diterbitkan.",
         f"Uji balik laju {TH0}-{TH_UJI0 - 1} ke {TH_UJI0}-{TH1}: {sum(v['dalam_selang'] for v in ub['nasional'].values())} dari {len(ub['nasional'])} kelas nasional "
         f"dan {cov['dalam_selang']} dari {cov['dari']} provinsi (M6+) masuk selang 90%."]
     ambang = [{"k": f"m{m}", "label": f"Magnitudo {m} atau lebih", "nilai": m} for m in AMBANG]
-    return P.berkas("gempa", "USGS FDSN (riwayat_m5.json), declustering Gardner-Knopoff; susulan Reasenberg-Jones (model_susulan.json)",
+    return P.berkas("gempa", "USGS, model susulan Reasenberg-Jones",
                     th, {"label": "Magnitudo", "satuan": "M", "desimal": 1}, ambang, wil, batasan, uji_balik=ub), laju_json
 
 
@@ -198,6 +212,7 @@ def uji():
     assert lj["nasional"]["m7"]["n"] == 3, lj["nasional"]  # susulan 1 hari dibuang
     assert lj["nasional"]["m7d"]["n"] == 2 and lj["nasional"]["m7d"]["p12"] is None  # n < 3
     assert teks_p(0.9999) == ">99%" and teks_p(0.994) == "99%" and "100%" not in json.dumps(d)
+    assert tempat_id("119 km SSW of Gambiran Satu, Indonesia") == "119 km selatan barat daya Gambiran Satu" and tempat_id("Bali") == "Bali"
     assert P.periksa(d) == [] and len(d["wilayah"]["ID"]["hari"]) == 7
     print("peluang_gempa.py: uji lulus")
 
