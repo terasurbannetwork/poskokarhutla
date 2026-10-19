@@ -26,8 +26,10 @@
   if (kode) { try { sessionStorage.setItem(K, kode); } catch (e) {} try { history.replaceState(null, "", location.pathname); } catch (e) {} }
   else { const b = baca(); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
+  /* F6 luring: check-in/out masuk antrean perangkat bila tanpa sinyal (antre.js); kode TIDAK ikut tersimpan, diambil dari sini saat kirim */
+  const antre = Antre.buat({untuk: "relawan", simpan: Antre.penyimpanan("bnpb"), kirimItem: Antre.pengirim(() => kode || ""), kodeAda: () => !!kode});
   async function api(metode, j, body) {
-    const r = await fetch(j, {method: metode, headers: {"x-kode": kode, ...(body ? {"content-type": "application/json"} : {})}, body: body ? JSON.stringify(body) : undefined});
+    let r; try { r = await fetch(j, {method: metode, headers: {"x-kode": kode, ...(body ? {"content-type": "application/json"} : {})}, body: body ? JSON.stringify(body) : undefined}); } catch (e) { return {ok: false, s: 0, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
   }
   /* tabel standar: kepala gelap, urut per kolom, berhalaman */
@@ -80,6 +82,7 @@
   }
   async function muat() {
     const r = await api("GET", "/api/relawan/saya");
+    if (r.s === 0) return pesan(r.j.galat);   // tanpa sinyal: biarkan tampilan terakhir
     if (!r.ok) { $("isi").hidden = true; if (r.s === 403) { $("tanpaKode").hidden = false; pesan("Tautan pribadimu tidak berlaku (salah atau sudah dicabut). Minta tautan baru dari admin."); try { sessionStorage.removeItem(K); } catch (e) {} } else pesan(r.j.galat || "Halaman belum bisa dimuat."); return; }
     const k = await (await fetch("/api/relawan/ringkas")).json().catch(() => ({}));
     d = {provinsi: k.konfig?.provinsi || {}, keahlianNama: k.konfig?.keahlian || {}}; $("tanpaKode").hidden = true; gambar(r.j);
@@ -95,9 +98,10 @@
     else {
       const body = {aksi: t.dataset.a};
       if (t.dataset.a === "masuk" && t.closest("article").querySelector(".gps")?.checked) { pesan("Membaca lokasimu..."); const p = await lokasi(); if (p) Object.assign(body, p); else pesan("Lokasi tidak terbaca; check-in dicatat tanpa lokasi.", false); }
-      r = await api("POST", `/api/relawan/saya/penugasan/${t.dataset.id}`, body);
+      r = body.aksi === "masuk" || body.aksi === "keluar" ? await antre.kirim("POST", `/api/relawan/saya/penugasan/${t.dataset.id}`, body) : await api("POST", `/api/relawan/saya/penugasan/${t.dataset.id}`, body);
     }
     if (!r.ok) { pesan(r.j.galat || `Gagal (${r.s})`); t.disabled = false; return; }
+    if (r.antre) { segarkanPita(); return pesan(`${t.dataset.a === "masuk" ? "Check-in" : "Check-out"} disimpan di perangkat dengan jam saat ini. Dikirim otomatis begitu ada sinyal.`, true); }
     await muat();
     pesan({terima: "Tugas diterima.", tolak: "Tugas ditolak.", masuk: "Check-in tercatat.", keluar: `Check-out tercatat (${durasi(r.j.menit)}). Jammu menunggu validasi.`, siap: "Kamu tercatat siap tugas.", istirahat: "Kamu istirahat dulu."}[t.dataset.a || t.dataset.s], true);
   });
@@ -114,5 +118,6 @@
       $("isi").hidden = true; pesan("Datamu sudah dihapus. Terima kasih sudah bersedia membantu.", true);
     }
   });
+  const segarkanPita = Antre.pasang(antre, {wadah: document.querySelector("main"), selesai: () => { if (kode) muat(); }});
   if (!kode) { $("tanpaKode").hidden = false; } else muat();
 })();

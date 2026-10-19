@@ -80,11 +80,22 @@ const wilayahTeks = (b, M) => {
   if (M.wilayah.kec && !kec) return {galat: `kecamatan wajib untuk meja ${M.nama}`};
   return {kec, desa};
 };
+/* kiriman dari antrean luring: klien_id (kunci kirim ulang, opsional) dan waktu_klien (ms, waktu kejadian menurut perangkat).
+   Waktu klien dipakai hanya bila masuk akal (<= 5 menit ke depan, <= 14 hari ke belakang); di luar itu waktu server. Waktu server menerima disimpan terpisah di meja_jejak.diterima. */
+const RE_KLIEN = /^[A-Za-z0-9_-]{8,40}$/;
+function luring(o, kini) {
+  if (o.klien_id != null && (typeof o.klien_id !== "string" || !RE_KLIEN.test(o.klien_id))) return {galat: "klien_id 8-40 huruf/angka/garis"};
+  const w = o.waktu_klien;
+  if (w != null && !Number.isFinite(w)) return {galat: "waktu_klien harus angka (ms)"};
+  return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= kini - 14 * HARI ? Math.round(w) : kini};
+}
 const UNIK = {rehab: "kaji cepat ini sudah punya catatan rehab-rekon", gudang: "gudang dan barang itu sudah tercatat di kabupaten ini"};
 async function buat(env, req, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  const x = semuaKunci(b.o, ["meja", "prov", "kab", "kec", "desa", "data", "kaji_id"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const x = semuaKunci(b.o, ["meja", "prov", "kab", "kec", "desa", "data", "kaji_id", "klien_id", "waktu_klien"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
+  if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, !p.petugas), ulang: true}); }
   if (!Object.hasOwn(MEJA, b.o.meja || "")) return gagal(400, `meja harus salah satu dari ${DAFTAR_MEJA.join(", ")}`);
   const M = MEJA[b.o.meja], kabB = b.o.kab == null ? null : tx(b.o.kab, 60);
   let prov, kab;
@@ -111,13 +122,29 @@ async function buat(env, req, kini) {
   const id = acak(8);
   try {
     await env.DB.batch([
-      env.DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, petugas_id, kaji_id, stok) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-        .bind(id, M.id, prov, kab, wl.kec, wl.desa, JSON.stringify(v.data), M.awal, kini, kini, p.oleh, p.petugas?.id ?? null, kajiId, M.id === "gudang" ? v.data.stok_awal : null),
-      env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh) VALUES (?, NULL, ?, ?, ?)").bind(id, M.awal, kini, p.oleh),
+      env.DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, petugas_id, kaji_id, stok, klien_id) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+        .bind(id, M.id, prov, kab, wl.kec, wl.desa, JSON.stringify(v.data), M.awal, lr.waktu, lr.waktu, p.oleh, p.petugas?.id ?? null, kajiId, M.id === "gudang" ? v.data.stok_awal : null, lr.klien),
+      env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, diterima) VALUES (?, NULL, ?, ?, ?, ?)").bind(id, M.awal, lr.waktu, p.oleh, kini),
     ]);
-  } catch (e) { if (UNIK[M.id] && /UNIQUE/i.test(String(e?.message || e))) return gagal(409, UNIK[M.id]); throw e; }
+  } catch (e) {
+    if (/UNIQUE/i.test(String(e?.message || e))) {   // dua kiriman serentak dengan klien_id sama: yang kedua mengembalikan baris yang sudah ada
+      if (lr.klien) { const u = await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE oleh IS ? AND klien_id = ?`).bind(p.oleh, lr.klien).first(); if (u) return json({catatan: baris(u, kini, !p.petugas), ulang: true}); }
+      if (UNIK[M.id]) return gagal(409, UNIK[M.id]);
+    }
+    throw e;
+  }
   await SELESAI_SEGARKAN(env, M.id, prov, kab, 0, kini);
   return json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, !p.petugas)}, 201);
+}
+/* permintaan logistik dari data terstruktur (Teruskan ke logistik di Alun-alun): validasi yang sama dengan rute buat (validasi + kolom meja Logistik). Mengembalikan {id} atau {galat}. */
+export async function sisipLogistik(env, {prov, kab, data}, kini, oleh, dummy = 0) {
+  const v = validasi("logistik", data, null, kini); if (v.galat) return {galat: v.galat};
+  const M = MEJA.logistik, id = acak(8);
+  await env.DB.batch([
+    env.DB.prepare("INSERT INTO meja_catatan (id, meja, prov, kab, kec, desa, data, status, dibuat, diubah, oleh, dummy) VALUES (?, 'logistik', ?, ?, NULL, NULL, ?, ?, ?, ?, ?, ?)").bind(id, prov, kab, JSON.stringify(v.data), M.awal, kini, kini, oleh, dummy),
+    env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh) VALUES (?, NULL, ?, ?, ?)").bind(id, M.awal, kini, oleh)]);
+  await SELESAI_SEGARKAN(env, "logistik", prov, kab, dummy, kini);
+  return {id};
 }
 /* petugas hanya melihat baris kabupaten + mejanya; selain itu dijawab 404 (tidak membocorkan bahwa id-nya ada) */
 async function muatBaris(env, p, id) {
@@ -155,9 +182,12 @@ async function ubahStok(env, p, r, o, cat, kini) {
 async function ubah(env, req, id, kini) {
   const p = await pelaku(env, req); if (p instanceof Response) return p;
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const x = semuaKunci(b.o, ["aksi", "ke", "data", "kec", "desa", "catatan", "jenis", "jumlah", "klien_id", "waktu_klien"]); if (x) return gagal(400, `kolom "${x.slice(0, 40)}" tidak dikenal`);
+  const lr = luring(b.o, kini); if (lr.galat) return gagal(400, lr.galat);
   if (!["status", "ubah", "stok"].includes(b.o.aksi)) return gagal(400, "aksi harus status, ubah, atau stok");
   const r = await muatBaris(env, p, id); if (!r) return gagal(404, "catatan tidak ada");
+  const ulang = async () => json({catatan: baris(await env.DB.prepare(`SELECT ${KOLOM} FROM meja_catatan WHERE id = ?`).bind(id).first(), kini, !p.petugas, await namaGudang(env, [r])), ulang: true});
+  if (lr.klien && await env.DB.prepare("SELECT 1 FROM meja_jejak WHERE catatan_id = ? AND klien_id = ?").bind(id, lr.klien).first()) return ulang();   // kiriman ulang antrean luring: sudah tercatat
   const M = MEJA[r.meja], lama = JSON.parse(r.data), cat = b.o.catatan == null ? null : tx(b.o.catatan, 200);
   if (cat === undefined) return gagal(400, "catatan maksimal 200 huruf");
   if (b.o.aksi === "stok") return ubahStok(env, p, r, b.o, cat, kini);
@@ -190,9 +220,9 @@ async function ubah(env, req, id, kini) {
   const gudangIsi = r.meja === "gudang" && b.o.aksi === "ubah";
   const st = [
     env.DB.prepare(`UPDATE meja_catatan SET status = ?, data = ?, kec = ?, desa = ?, diubah = ?${gudangIsi ? ", stok = ? + (SELECT coalesce(sum(delta), 0) FROM meja_stok WHERE gudang_id = meja_catatan.id)" : ""} WHERE id = ? AND status = ?`)
-      .bind(ke, JSON.stringify(data), kec, desa, Math.max(kini, r.dibuat), ...(gudangIsi ? [data.stok_awal] : []), id, r.status),
-    env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan) SELECT ?, ?, ?, ?, ?, ? WHERE changes() > 0")
-      .bind(id, r.status, ke, kini, p.oleh, b.o.aksi === "ubah" ? (cat || "isi diubah") : cat),
+      .bind(ke, JSON.stringify(data), kec, desa, Math.max(lr.waktu, r.diubah), ...(gudangIsi ? [data.stok_awal] : []), id, r.status),
+    env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, klien_id, diterima) SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0")
+      .bind(id, r.status, ke, lr.waktu, p.oleh, b.o.aksi === "ubah" ? (cat || "isi diubah") : cat, lr.klien, kini),
   ];
   if (gd) st.push(
     env.DB.prepare("UPDATE meja_catatan SET stok = stok - ?, diubah = max(diubah, ?) WHERE id = ? AND changes() > 0").bind(data.jumlah_kirim, kini, gd.id),
@@ -200,7 +230,7 @@ async function ubah(env, req, id, kini) {
       .bind(-data.jumlah_kirim, id, kini, p.oleh, `dikirim untuk ${data.posko}`.slice(0, 200), gd.id));
   let u;
   try { [u] = await env.DB.batch(st); }
-  catch (e) { if (/CHECK/i.test(String(e?.message || e))) return gagal(409, gd ? "stok gudang tidak cukup (berubah bersamaan); muat ulang" : "stok akhir tidak boleh minus"); throw e; }
+  catch (e) { if (lr.klien && /UNIQUE/i.test(String(e?.message || e))) return ulang(); if (/CHECK/i.test(String(e?.message || e))) return gagal(409, gd ? "stok gudang tidak cukup (berubah bersamaan); muat ulang" : "stok akhir tidak boleh minus"); throw e; }
   if (!u.meta.changes) return gagal(409, "status berubah di waktu yang sama; muat ulang lalu coba lagi");
   await SELESAI_SEGARKAN(env, r.meja, r.prov, r.kab, r.dummy, kini);
   if (gd) await SELESAI_SEGARKAN(env, "gudang", gd.prov, gd.kab, gd.dummy, kini);

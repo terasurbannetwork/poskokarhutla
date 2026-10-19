@@ -238,6 +238,14 @@ export async function bersihkanRelawan(env, kini = Date.now()) {
   return rows.length;
 }
 
+/* kiriman antrean luring: klien_id = kunci kirim ulang; waktu_klien = waktu check-in/out di perangkat (dipakai bila <= 5 menit ke depan dan <= 24 jam ke belakang, selain itu waktu server) */
+const RE_KLIEN = /^[A-Za-z0-9_-]{8,40}$/;
+function luring(o, kini, lantai = kini - 24 * JAM) {
+  if (o.klien_id != null && (typeof o.klien_id !== "string" || !RE_KLIEN.test(o.klien_id))) return {galat: "klien_id 8-40 huruf/angka/garis"};
+  if (o.waktu_klien != null && !Number.isFinite(o.waktu_klien)) return {galat: "waktu_klien harus angka (ms)"};
+  const w = o.waktu_klien;
+  return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= lantai ? Math.round(w) : kini};
+}
 async function aksiPenugasanSaya(env, req, id, kini) {
   const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
   const lj = await laju(env, r.id, "relawan.penugasan", [[JAM, 60]], kini); if (lj) return lj;
@@ -260,21 +268,33 @@ async function aksiPenugasanSaya(env, req, id, kini) {
   }
   if (o.aksi === "masuk") {
     if (g.status !== "diterima" && g.status !== "bertugas") return salah(["diterima", "bertugas"]);
+    const lr = luring(o, kini); if (lr.galat) return gagal(400, lr.galat);
+    if (lr.klien) { const u = await env.DB.prepare("SELECT masuk FROM relawan_jam WHERE relawan_id = ? AND klien_masuk = ?").bind(r.id, lr.klien).first(); if (u) return json({masuk: u.masuk, ulang: true}); }
     const lat = num(o.lat, -90, 90), lon = num(o.lon, -180, 180);
     if (Number.isNaN(lat) || Number.isNaN(lon) || (lat == null) !== (lon == null) || (lat != null && !dalamBbox(lat, lon))) return gagal(400, "lokasi harus berada di Indonesia (atau kosongkan)");
     try {
-      await env.DB.batch([env.DB.prepare("INSERT INTO relawan_jam (id, relawan_id, penugasan_id, masuk, lat, lon) VALUES (?, ?, ?, ?, ?, ?)").bind(acak(8), r.id, g.id, kini, lat, lon),
+      await env.DB.batch([env.DB.prepare("INSERT INTO relawan_jam (id, relawan_id, penugasan_id, masuk, lat, lon, klien_masuk) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(acak(8), r.id, g.id, lr.waktu, lat, lon, lr.klien),
         env.DB.prepare("UPDATE relawan_penugasan SET status = 'bertugas', diubah = ? WHERE id = ?").bind(kini, g.id),
         env.DB.prepare("UPDATE relawan SET status = 'bertugas', diubah = ? WHERE id = ? AND status IN ('ditugaskan', 'bertugas')").bind(kini, r.id)]);
-    } catch (e) { if (/UNIQUE/i.test(e?.message)) return gagal(409, "kamu masih tercatat check-in. Check-out dulu."); throw e; }
-    return json({masuk: kini});
+    } catch (e) {
+      if (/UNIQUE/i.test(e?.message)) {
+        const u = lr.klien && await env.DB.prepare("SELECT masuk FROM relawan_jam WHERE relawan_id = ? AND klien_masuk = ?").bind(r.id, lr.klien).first();   // dua kiriman serentak, klien_id sama
+        if (u) return json({masuk: u.masuk, ulang: true});
+        return gagal(409, "kamu masih tercatat check-in. Check-out dulu.");
+      }
+      throw e;
+    }
+    return json({masuk: lr.waktu});
   }
   if (o.aksi === "keluar") {
+    const lr = luring(o, kini, 0); if (lr.galat) return gagal(400, lr.galat);
+    if (lr.klien) { const u = await env.DB.prepare("SELECT keluar, menit FROM relawan_jam WHERE relawan_id = ? AND klien_keluar = ?").bind(r.id, lr.klien).first(); if (u) return json({keluar: u.keluar, menit: u.menit, ulang: true}); }
     const s = await env.DB.prepare("SELECT id, masuk FROM relawan_jam WHERE relawan_id = ? AND penugasan_id = ? AND keluar IS NULL").bind(r.id, g.id).first();
     if (!s) return gagal(409, "kamu belum check-in pada penugasan ini");
-    const menit = menitSesi(s.masuk, kini);
-    await env.DB.prepare("UPDATE relawan_jam SET keluar = ?, menit = ? WHERE id = ? AND keluar IS NULL").bind(kini, menit, s.id).run();
-    return json({keluar: kini, menit});
+    const keluar = Math.max(lr.waktu, s.masuk), menit = menitSesi(s.masuk, keluar);   // keluar tidak boleh mendahului masuk (CHECK)
+    const u = await env.DB.prepare("UPDATE relawan_jam SET keluar = ?, menit = ?, klien_keluar = ? WHERE id = ? AND keluar IS NULL").bind(keluar, menit, lr.klien, s.id).run().catch(e => /UNIQUE/i.test(e?.message) ? null : Promise.reject(e));
+    if (!u) { const x = await env.DB.prepare("SELECT keluar, menit FROM relawan_jam WHERE relawan_id = ? AND klien_keluar = ?").bind(r.id, lr.klien).first(); return json({keluar: x.keluar, menit: x.menit, ulang: true}); }
+    return json({keluar, menit});
   }
   return gagal(400, "aksi harus terima, tolak, masuk, atau keluar");
 }
@@ -552,14 +572,19 @@ function cekPermintaan(o) {
   if (catatan === undefined) return {galat: "catatan maksimal 500 karakter"};
   return {v: {judul, bencana: o.bencana, prov: o.prov, kab, lat, lon, butuh: butuh.map(x => ({keahlian: x.keahlian, jumlah: Number(x.jumlah)})), mulai: o.mulai, selesai: o.selesai, catatan}};
 }
+/* satu pintu membuat permintaan (rute admin dan "Teruskan ke relawan" di Alun-alun): validasi cekPermintaan, lalu sisip. Mengembalikan {id} atau {galat}. */
+export async function sisipPermintaan(env, o, kini, oleh, dummy = 0) {
+  const c = cekPermintaan(o); if (c.galat) return {galat: c.galat};
+  const v = c.v, id = acak(8);
+  await env.DB.prepare("INSERT INTO relawan_permintaan (id, judul, bencana, prov, kab, lat, lon, butuh, mulai, selesai, catatan, dibuat, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .bind(id, v.judul, v.bencana, v.prov, v.kab, v.lat, v.lon, JSON.stringify(v.butuh), v.mulai, v.selesai, v.catatan, kini, oleh, dummy).run();
+  return {id};
+}
 async function buatPermintaan(env, req, kini) {
   const mod = await adm(env, req); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
-  const c = cekPermintaan(b.o); if (c.galat) return gagal(400, c.galat);
-  const v = c.v, id = acak(8);
-  await env.DB.prepare("INSERT INTO relawan_permintaan (id, judul, bencana, prov, kab, lat, lon, butuh, mulai, selesai, catatan, dibuat, oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
-    .bind(id, v.judul, v.bencana, v.prov, v.kab, v.lat, v.lon, JSON.stringify(v.butuh), v.mulai, v.selesai, v.catatan, kini, mod).run();
-  return json({id}, 201);
+  const r = await sisipPermintaan(env, b.o, kini, mod); if (r.galat) return gagal(400, r.galat);
+  return json({id: r.id}, 201);
 }
 async function daftarPermintaan(env, req) {
   if (!await adm(env, req)) return tolakMod();

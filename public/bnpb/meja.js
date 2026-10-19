@@ -17,11 +17,14 @@
   const waktuF = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   const angkaF = (k, v) => k.rupiah ? "Rp" + ID.format(v) : ID.format(v);
 
-  let kode = "", kajiOps = [], S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true;
+  let segarkanPita = () => {}, kode = "", kajiOps = [], S = null, saya = null, meja = null, daftar = [], urut = "diubah", arah = -1, hal = 0, form = null, buka = new Map(), pesanT = "", pesanOk = true;
   const api = async (m, u, b) => {
-    const r = await fetch(u, {method: m, headers: {"x-kode": kode, ...(b ? {"content-type": "application/json"} : {})}, body: b ? JSON.stringify(b) : undefined});
+    let r; try { r = await fetch(u, {method: m, headers: {"x-kode": kode, ...(b ? {"content-type": "application/json"} : {})}, body: b ? JSON.stringify(b) : undefined}); }
+    catch (e) { return {ok: false, s: 0, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
   };
+  /* F6 luring: catatan baru dan perpindahan status/ubah isi masuk antrean perangkat bila tanpa sinyal (antre.js); kode tidak ikut tersimpan */
+  const antre = Antre.buat({untuk: "meja", simpan: Antre.penyimpanan("bnpb"), kirimItem: Antre.pengirim(() => kode), kodeAda: () => !!kode});
 
   /* ---------- nilai & formulir dinamis dari spek ---------- */
   const nilaiF = (k, v) => {
@@ -150,11 +153,13 @@
     }
     const kolom = m.kolom.filter(k => (k.tahap ?? null) === (form.mode === "status" ? form.ke : null)), data = ambil(f, kolom);
     const wil = {...(f.elements._desa ? {desa: f.elements._desa.value.trim() || undefined} : {}), ...(f.elements._kec ? {kec: f.elements._kec.value.trim() || undefined} : {})};
-    const r = form.mode === "baru" ? await api("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji ? {kaji_id: f.elements._kaji.value} : {}), data})
-      : form.mode === "ubah" ? await api("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "ubah", ...wil, data})
-      : await api("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "status", ke: form.ke, data, ...(f.elements._catatan.value.trim() ? {catatan: f.elements._catatan.value.trim()} : {})});
+    const r = form.mode === "baru" ? await antre.kirim("POST", "/api/meja/catatan", {meja, ...wil, ...(m.tautKaji ? {kaji_id: f.elements._kaji.value} : {}), data})
+      : form.mode === "ubah" ? await antre.kirim("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "ubah", ...wil, data})
+      : await antre.kirim("POST", `/api/meja/catatan/${form.baris.id}`, {aksi: "status", ke: form.ke, data, ...(f.elements._catatan.value.trim() ? {catatan: f.elements._catatan.value.trim()} : {})});
     if (!r.ok) { tombol.disabled = false; return salah(r, "Gagal menyimpan"); }
-    form = null; lapor("Tersimpan.", true); muat();
+    form = null;
+    if (r.antre) { lapor("Disimpan di perangkat dengan jam saat ini. Dikirim otomatis begitu ada sinyal.", true); segarkanPita(); return gambar(); }
+    lapor("Tersimpan.", true); muat();
   });
 
   /* ---------- mulai ---------- */
@@ -162,8 +167,10 @@
     const dariUrl = location.hash.match(/(?:^|[#&])k=([0-9a-fA-F]{26})(?:&|$)/);
     if (dariUrl) { sessionStorage.setItem(KUNCI, dariUrl[1].toLowerCase()); history.replaceState(null, "", location.pathname); }   // kode tidak tertinggal di bilah alamat
     kode = sessionStorage.getItem(KUNCI) || "";
+    if (kode) segarkanPita = Antre.pasang(antre, {wadah: document.body, selesai: () => { if (meja) muat(); }, buang: l => lapor(l.map(x => x.pesan).join("; "), false)});   // kirim ulang segera, tanpa menunggu spek
     if (!kode) { app.innerHTML = '<p class="mj-pesan galat">Halaman ini hanya untuk petugas yang punya tautan dari admin. Buka lagi tautan yang dikirim kepadamu.</p>'; return; }
-    const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()), api("GET", "/api/meja/saya")]);
+    const [sp, sy] = await Promise.all([fetch("/api/meja/spek").then(r => r.json()).catch(() => null), api("GET", "/api/meja/saya")]);
+    if (sy.s === 0 || !sp) { app.innerHTML = '<p class="mj-pesan galat">Tidak ada sinyal, Meja Kerja belum bisa dibuka. Kiriman yang sudah disimpan di perangkat tetap dikirim otomatis saat sinyal kembali.</p>'; return; }
     if (!sy.ok || sy.j.peran !== "petugas") { sessionStorage.removeItem(KUNCI); app.innerHTML = `<p class="mj-pesan galat">${esc(sy.j.galat || "Kodemu tidak berlaku.")} Minta tautan baru dari admin.</p>`; return; }
     S = sp; saya = sy.j; meja = S.meja.find(m => saya.petugas.meja.includes(m.id))?.id;
     if (!meja) { app.innerHTML = '<p class="mj-pesan galat">Kodemu belum punya meja yang boleh diisi.</p>'; return; }

@@ -402,6 +402,28 @@ uji("check-in dan check-out menghitung jam kerja; validasi sah masuk ringkasan p
   assert.ok(Math.abs(s.j.jam_sah_menit - 210) <= 1);
 });
 
+uji("luring: check-in/out dengan klien_id ganda tidak membuat baris ganda; waktu klien dipakai; kiriman serentak aman", async () => {
+  const g = b => U.api("POST", `/api/relawan/saya/penugasan/${G1}`, b, K(rA.kode)), kini = Date.now();
+  const baris = col => U.DB.prepare(`SELECT count(*) n FROM relawan_jam WHERE relawan_id = ? AND ${col} IS NOT NULL`).bind(rA.id).first().then(r => r.n);
+  try {
+    const m = {aksi: "masuk", klien_id: "klien-masuk-0001", waktu_klien: kini - 2 * JAM};
+    const a = await g(m); assert.equal(a.s, 200, a.t); assert.equal(a.j.masuk, m.waktu_klien, "jam masuk = waktu klien");
+    const b = await g(m); assert.equal(b.s, 200, b.t); assert.equal(b.j.ulang, true); assert.equal(b.j.masuk, a.j.masuk); assert.equal(await baris("klien_masuk"), 1);
+    assert.equal((await g({aksi: "masuk", klien_id: "klien-masuk-0002"})).s, 409, "klien_id lain saat masih check-in tetap 409");
+    const k = {aksi: "keluar", klien_id: "klien-keluar-0001", waktu_klien: kini - JAM};
+    const c = await g(k); assert.equal(c.s, 200, c.t); assert.equal(c.j.menit, 60); assert.equal(c.j.keluar, k.waktu_klien);
+    const d = await g(k); assert.equal(d.s, 200, d.t); assert.equal(d.j.ulang, true); assert.equal(d.j.menit, 60); assert.equal(await baris("klien_keluar"), 1);
+    assert.equal((await g({aksi: "masuk", klien_id: "klien-masuk-0001"})).j.ulang, true, "check-in lama tetap dikenali sesudah check-out");
+    assert.equal((await g({aksi: "masuk", klien_id: "pendek"})).s, 400); assert.equal((await g({aksi: "masuk", waktu_klien: "x"})).s, 400);
+    /* serentak + waktu di masa depan diabaikan */
+    const par = await Promise.all([1, 2, 3].map(() => g({aksi: "masuk", klien_id: "klien-masuk-0003", waktu_klien: kini + 3 * JAM})));
+    assert.ok(par.every(r => r.s === 200), par.map(r => r.s).join()); assert.ok(par.every(r => r.j.masuk === par[0].j.masuk && r.j.masuk <= Date.now() + 1000));
+    assert.equal(await baris("klien_masuk"), 2);
+    assert.equal((await g({aksi: "keluar", klien_id: "klien-keluar-0002", waktu_klien: kini - 10 * JAM})).s, 200, "keluar sebelum masuk dijepit ke jam masuk (CHECK)");
+    assert.equal((await U.DB.prepare("SELECT menit FROM relawan_jam WHERE klien_keluar = 'klien-keluar-0002'").first()).menit, 0);
+  } finally { await U.DB.prepare("DELETE FROM relawan_jam WHERE relawan_id = ? AND (klien_masuk IS NOT NULL OR klien_keluar IS NOT NULL)").bind(rA.id).run(); }
+});
+
 uji("POST /api/relawan/admin/penugasan/:id: asuransi, selesai (butuh check-out), penilaian 1-5 hanya setelah selesai", async () => {
   const u = b => U.adm("POST", `/api/relawan/admin/penugasan/${G1}`, b);
   assert.equal((await u({aksi: "asuransi", asuransi: "kebal"})).s, 400);

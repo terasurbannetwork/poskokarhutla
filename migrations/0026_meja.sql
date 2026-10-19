@@ -40,6 +40,7 @@ CREATE TABLE IF NOT EXISTS meja_catatan (
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
   kaji_id TEXT REFERENCES meja_catatan (id),
   stok INTEGER CHECK (stok IS NULL OR stok >= 0),
+  klien_id TEXT CHECK (klien_id IS NULL OR length(klien_id) BETWEEN 8 AND 40),   -- kunci kirim ulang antrean luring: pembuat yang sama + klien_id sama = catatan yang sama
   CHECK ((meja = 'kaji_cepat' AND status IN ('dilaporkan', 'diverifikasi', 'masuk_jitupasna'))
     OR (meja = 'logistik' AND status IN ('diminta', 'disetujui', 'dikirim', 'diterima'))
     OR (meja = 'dsp' AND status IN ('diajukan', 'disetujui', 'cair', 'spj', 'selesai', 'ditolak'))
@@ -51,6 +52,7 @@ CREATE TABLE IF NOT EXISTS meja_catatan (
   CHECK (meja != 'destana' OR kec IS NOT NULL)
 );
 CREATE INDEX IF NOT EXISTS meja_catatan_wilayah ON meja_catatan (meja, prov, kab, status);
+CREATE UNIQUE INDEX IF NOT EXISTS meja_catatan_klien ON meja_catatan (oleh, klien_id) WHERE klien_id IS NOT NULL;
 
 -- Rehab-rekon hanya boleh tertaut ke catatan kaji cepat berstatus masuk_jitupasna di kabupaten yang sama, dan satu usulan per kaji cepat.
 CREATE TRIGGER IF NOT EXISTS meja_rehab_tautan BEFORE INSERT ON meja_catatan
@@ -83,9 +85,12 @@ CREATE TABLE IF NOT EXISTS meja_jejak (
   waktu INTEGER NOT NULL,
   oleh TEXT,
   catatan TEXT CHECK (catatan IS NULL OR length(catatan) <= 200),
-  dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1))
+  dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
+  klien_id TEXT CHECK (klien_id IS NULL OR length(klien_id) BETWEEN 8 AND 40),   -- kirim ulang perpindahan status dari antrean luring
+  diterima INTEGER   -- waktu server menerima; waktu = waktu kejadian menurut klien bila kiriman luring
 );
 CREATE INDEX IF NOT EXISTS meja_jejak_catatan ON meja_jejak (catatan_id, waktu);
+CREATE UNIQUE INDEX IF NOT EXISTS meja_jejak_klien ON meja_jejak (catatan_id, klien_id) WHERE klien_id IS NOT NULL;
 
 -- Transaksi stok gudang (masuk, keluar, koreksi): hanya ditambah, tidak diubah. delta bertanda; saldo = stok sesudah transaksi.
 -- keluar dari logistik 'dikirim' membawa logistik_id (satu transaksi per permintaan logistik).

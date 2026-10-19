@@ -142,9 +142,13 @@ CREATE TABLE IF NOT EXISTS relawan_jam (
   sah INTEGER NOT NULL DEFAULT 0 CHECK (sah IN (0, 1, 2)),
   oleh TEXT CHECK (oleh IS NULL OR length(oleh) <= 64),
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
+  klien_masuk TEXT CHECK (klien_masuk IS NULL OR length(klien_masuk) BETWEEN 8 AND 40),   -- kunci kirim ulang check-in/out dari antrean luring
+  klien_keluar TEXT CHECK (klien_keluar IS NULL OR length(klien_keluar) BETWEEN 8 AND 40),
   CHECK ((keluar IS NULL) = (menit IS NULL))
 );
 CREATE INDEX IF NOT EXISTS relawan_jam_r ON relawan_jam (relawan_id, masuk);
+CREATE UNIQUE INDEX IF NOT EXISTS relawan_jam_klien_masuk ON relawan_jam (relawan_id, klien_masuk) WHERE klien_masuk IS NOT NULL;
+CREATE UNIQUE INDEX IF NOT EXISTS relawan_jam_klien_keluar ON relawan_jam (relawan_id, klien_keluar) WHERE klien_keluar IS NOT NULL;
 CREATE UNIQUE INDEX IF NOT EXISTS relawan_jam_terbuka ON relawan_jam (relawan_id) WHERE keluar IS NULL;
 
 CREATE TABLE IF NOT EXISTS relawan_pelatihan (

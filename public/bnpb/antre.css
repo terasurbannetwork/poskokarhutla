@@ -1,0 +1,5 @@
+/* Pita antrean luring (antre.js): di atas konten /meja dan /relawan/saya */
+.antre-pita { position: sticky; top: 0; z-index: 20; display: flex; gap: 12px; align-items: center; justify-content: space-between; flex-wrap: wrap; margin: 0 0 12px; padding: 10px 14px; border-radius: 10px; background: #fff7e0; border: 1px solid #e8c766; color: #5a4300; font-size: 14px; font-weight: 600; }
+.antre-pita.galat { background: #fdecec; border-color: #e39a9a; color: #7a1d1d; }
+.antre-pita button { min-height: 44px; padding: 0 16px; border-radius: 8px; border: 1px solid currentColor; background: transparent; color: inherit; font: inherit; cursor: pointer; }
+.antre-pita button:disabled { opacity: .5; cursor: default; }

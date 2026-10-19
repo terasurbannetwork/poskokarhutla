@@ -27,7 +27,7 @@ const mulai = async (id, h, r = {}) => DB.prepare("UPDATE meja_catatan SET dibua
 
 uji("migrasi idempoten: berkas 0026 jalan dua kali tanpa galat dan tanpa mengubah baris", async () => {
   const sql = pecah(readFileSync(path.join(AKAR, "migrations/0026_meja.sql"), "utf8"));
-  assert.ok(sql.length === 19, 'jumlah pernyataan migrasi: ' + sql.length);
+  assert.ok(sql.length === 21, 'jumlah pernyataan migrasi: ' + sql.length);
   await DB.batch(sql.map(s => DB.prepare(s)));
   await DB.batch(sql.map(s => DB.prepare(s)));
   assert.equal(await U.n("meja_catatan"), 0);
@@ -177,6 +177,34 @@ uji("isolasi: petugas kab A tidak bisa membaca atau menulis kab B, dan hanya mej
   await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'meja.tulis', ?)").bind(pb.id, Date.now())));
   const l = await baru(pb.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa B2"}); assert.equal(l.s, 429); assert.ok(l.h.get("retry-after"));
   assert.equal((await baru(pa.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa A"})).s, 403, "kode dicabut tidak bisa menulis");
+});
+
+uji("luring: klien_id ganda tidak membuat baris ganda (buat dan ubah status), waktu klien dipakai, serentak aman, petugas lain terpisah", async () => {
+  const p = await petugas("Kab Luring", DAFTAR_MEJA), q = await petugas("Kab Luring", DAFTAR_MEJA, "71", "Petugas Dua");
+  const KL = "klien-luring-0001", n = () => DB.prepare("SELECT count(*) n FROM meja_catatan WHERE klien_id = ?").bind(KL).first().then(r => r.n);
+  const waktu = Date.now() - 3 * JAM;
+  const a = await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: KL, waktu_klien: waktu});
+  assert.equal(a.s, 201, a.t); assert.equal(a.j.catatan.dibuat, waktu, "waktu kejadian = waktu klien");
+  assert.equal((await DB.prepare("SELECT waktu, diterima FROM meja_jejak WHERE catatan_id = ?").bind(a.j.catatan.id).first()).waktu, waktu);
+  assert.ok((await DB.prepare("SELECT diterima FROM meja_jejak WHERE catatan_id = ?").bind(a.j.catatan.id).first()).diterima > waktu + 2 * JAM, "waktu terima server tercatat terpisah");
+  const b = await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: KL, waktu_klien: waktu});
+  assert.equal(b.s, 200, b.t); assert.equal(b.j.ulang, true); assert.equal(b.j.catatan.id, a.j.catatan.id); assert.equal(await n(), 1);
+  /* serentak: empat kiriman klien_id yang sama -> tetap satu baris */
+  const K2 = "klien-luring-0002", par = await Promise.all([1, 2, 3, 4].map(() => baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: K2})));
+  assert.ok(par.every(r => r.s === 200 || r.s === 201), par.map(r => r.s).join()); assert.equal(new Set(par.map(r => r.j.catatan.id)).size, 1);
+  assert.equal((await DB.prepare("SELECT count(*) n FROM meja_catatan WHERE klien_id = ?").bind(K2).first()).n, 1);
+  /* petugas lain dengan klien_id sama = catatannya sendiri */
+  const c = await baru(q.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: KL}); assert.equal(c.s, 201); assert.notEqual(c.j.catatan.id, a.j.catatan.id);
+  /* klien_id liar dan waktu tak masuk akal */
+  assert.equal((await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", klien_id: "pendek"})).s, 400);
+  assert.equal((await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", waktu_klien: "kemarin"})).s, 400);
+  const depan = await baru(p.h, "kaji_cepat", undefined, undefined, kaji(), {desa: "Desa Luring", waktu_klien: Date.now() + 5 * JAM});
+  assert.ok(depan.j.catatan.dibuat <= Date.now() + 1000, "waktu klien di masa depan diabaikan");
+  /* ubah status: kirim ulang klien_id yang sama = 200 ulang, satu jejak */
+  const id = a.j.catatan.id, st = (h, b) => api("POST", "/api/meja/catatan/" + id, {aksi: "status", ke: "diverifikasi", ...b}, h), jejak = () => DB.prepare("SELECT count(*) n FROM meja_jejak WHERE catatan_id = ?").bind(id).first().then(r => r.n);
+  const w2 = waktu + HARI / 48, s1 = await st(p.h, {klien_id: "klien-status-01", waktu_klien: w2}); assert.equal(s1.s, 200, s1.t); assert.equal(s1.j.catatan.diubah, w2);
+  const s2 = await st(p.h, {klien_id: "klien-status-01", waktu_klien: w2}); assert.equal(s2.s, 200, s2.t); assert.equal(s2.j.ulang, true); assert.equal(s2.j.catatan.status, "diverifikasi"); assert.equal(await jejak(), 2);
+  assert.equal((await st(p.h, {klien_id: "klien-status-02"})).s, 409, "klien_id baru untuk transisi yang sudah lewat tetap ditolak");
 });
 
 uji("alur status per meja: transisi liar ditolak, peran dijaga, isian per tahap, jejak lengkap", async () => {
