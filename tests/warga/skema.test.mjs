@@ -204,3 +204,24 @@ uji("migrasi 0006: stat_hari dibangun ulang, data utuh, CHECK halaman diperlebar
   ditolak(() => isi.run("2026-10-15", "karhutla", 0, 0, 0, 1, S, M, "{}", "[]"), "dim tanpa _n tetap ditolak");
   assert.deepEqual(lama.prepare("SELECT name FROM sqlite_master WHERE name LIKE 'stat_hari%' AND type = 'table'").all().map(r => r.name), ["stat_hari"], "tabel sementara harus hilang");
 });
+
+/* 0017 dijalankan di atas stat_hari yang sudah berisi (produksi), bukan basis data kosong */
+uji("migrasi 0017: stat_hari menerima id bencana baru, data lama utuh, enum tetap dijaga, idempoten", () => {
+  const berkas = readdirSync(AKAR + "/migrations").filter(f => f.endsWith(".sql")).sort(), i = berkas.indexOf("0017_statistik_bencana.sql");
+  assert.ok(i > 0, "0017_statistik_bencana.sql tidak ada");
+  const db = new DatabaseSync(":memory:"), baca = f => readFileSync(AKAR + "/migrations/" + f, "utf8");
+  for (const f of berkas.slice(0, i)) db.exec(baca(f));
+  const S = JSON.stringify(Array(144).fill(0)), M = JSON.stringify(Array(1440).fill(0)), D = '{"_n":{"tab":1},"tab":{"peta":[3,0]}}';
+  const isi = db.prepare("INSERT INTO stat_hari (tgl, hal, kiriman, orang, tampilan, sampel, slot, menit, dim, kini) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+  isi.run("2026-10-14", "karhutla", 5, 4.5, 12, 0.5, S, M, D, "[]"); isi.run("2026-10-14", "publik", 1, 1, 7, 1, S, M, '{"_n":{}}', "[[1,\"ab\",\"/\"]]");
+  ditolak(() => isi.run("2026-10-14", "gempa", 0, 0, 0, 1, S, M, D, "[]"), "sebelum 0017 'gempa' ditolak (pembanding)");
+  const sebelum = db.prepare("SELECT * FROM stat_hari ORDER BY hal").all();
+  db.exec(baca(berkas[i]));
+  assert.deepEqual(db.prepare("SELECT * FROM stat_hari ORDER BY hal").all(), sebelum, "semua baris & kolom harus utuh");
+  for (const h of ["gempa", "cuaca", "udara", "gunungapi", "kekeringan", "sistem", "tentang"]) isi.run("2026-10-15", h, 1, 1, 1, 1, S, M, D, "[]");
+  for (const h of ["", "Gempa", "tsunami", "lain"]) ditolak(() => isi.run("2026-10-16", h, 0, 0, 0, 1, S, M, D, "[]"), `halaman '${h}' di luar enum tetap ditolak`);
+  ditolak(() => isi.run("2026-10-16", "karhutla", 0, 0, 0, 1, S, M, "{}", "[]"), "dim tanpa _n tetap ditolak");
+  db.exec(baca(berkas[i]));   // dijalankan ulang di atas data: tidak melempar, data tetap
+  assert.equal(db.prepare("SELECT count(*) n FROM stat_hari").get().n, 2 + 7);
+  assert.deepEqual(db.prepare("SELECT name FROM sqlite_master WHERE name LIKE 'stat_hari%' AND type = 'table'").all().map(r => r.name), ["stat_hari"], "tabel sementara harus hilang");
+});

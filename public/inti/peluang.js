@@ -66,7 +66,7 @@ const Peluang = (() => {
       const seg = pil.length > 1 ? Kartu.seg(k + "A", pil.map(i => [d.ambang[i].k, esc(pendek(d.ambang[i], d.besaran))]), {[k + "A"]: d.ambang[idx].k}) : "";
       const jd = esc(vonis1(w.vonis || w.nama || "")).replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
       const aria = `Peluang ${o.kejadian || ""} per hari, ${d.ambang[idx].label}, ${w.nama}`.replace(/\s+/g, " ");
-      return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...d.ambang.map((a, i) => [WARNA[i % WARNA.length], esc(a.label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]); },
+      return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...pil.map(i => [WARNA[i % WARNA.length], esc(d.ambang[i].label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]); },
 
     /* bab Metode: batasan[] + uji_balik; "" bila keduanya kosong */
     batasan(d, o = {}) {

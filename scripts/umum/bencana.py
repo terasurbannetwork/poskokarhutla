@@ -120,6 +120,17 @@ def periksa(reg, akar=AKAR):
                 break
         if any(t not in b["tab"] for t in b["tab_sembunyi"]):
             g.append(f"{id_}: tab_sembunyi memuat tab yang tidak ada di tab")
+        hl = b.get("halaman", {})   # opsional: {tab: "berkas.html"} tab yang berupa halaman terpisah di public<rute>
+        if not isinstance(hl, dict):
+            g.append(f"{id_}: halaman harus objek {{tab: berkas.html}}")
+        else:
+            for t, f in hl.items():
+                if t not in b["tab"]:
+                    g.append(f"{id_}: halaman['{t}'] bukan tab di tab")
+                elif not (isinstance(f, str) and re.match(r"^[A-Za-z0-9_-]+\.html$", f)):
+                    g.append(f"{id_}: halaman['{t}'] harus nama berkas .html tanpa folder")
+                elif b["status"] != "mati" and not os.path.exists(os.path.join(akar, "public" + b["rute"], f)):
+                    g.append(f"{id_}: halaman['{t}'] public{b['rute']}{f} tidak ada")
         if b["status"] != "mati":
             if not os.path.isdir(os.path.join(akar, "public" + b["data"])):
                 g.append(f"{id_}: folder data public{b['data']} tidak ada")
@@ -178,6 +189,8 @@ def _uji():
     rusak(lambda b: b[3]["kejadian"].update(awalan="G"), "awalan")
     rusak(lambda b: b[0].update(prioritas=["62"]), "prioritas")
     rusak(lambda b: b[1].update(data="/tidak-ada/"), "folder data")
+    rusak(lambda b: b[4].update(halaman={"simulasi": "tidak-ada.html"}), "tidak ada")
+    rusak(lambda b: b[4].update(halaman={"tabngawur": "x.html"}), "bukan tab")
     rusak(lambda b: b[4].pop("kata"), "'kata' hilang")
     rusak(lambda b: b[4].update(nama_en="a — b"), "em dash")
     print("bencana.py: self-check lolos")

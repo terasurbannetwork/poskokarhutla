@@ -25,7 +25,7 @@ test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; semua benc
   // semua bencana kini aktif dan dilayani (tidak ada lagi tahap 'uji'); 'mati' disimulasikan pada salinan di bawah
   for (const id of ["cuaca", "udara", "kekeringan", "gunungapi"]) assert.equal(cocok(HTML_RUTE, `/${id}/`)?.[1], `/${id}/index.html`, id);
   // gempa aktif: halaman, tab (juga yang tersembunyi dari nav), dan kejadian G dilayani; mati = 404 lagi
-  for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/posko", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
+  for (const j of ["/gempa", "/gempa/", "/gempa/peta", "/gempa/tentang", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/sim", "/gempa/k/G0001"]) assert.equal(cocok(HTML_RUTE, j)?.[1], "/gempa/index.html", j);
   assert.ok(!cocok(HTML_RUTE, "/gempa/k/K0001"), "kejadian karhutla bukan di gempa");
   const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
   for (const j of ["/gempa", "/gempa/", "/gempa/peta"]) assert.ok(!cocok(ruteBencana(MATI), j), `gempa mati harus 404: ${j}`);
@@ -76,8 +76,8 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
   for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
-  for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/sim", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
+  for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/sim", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
+  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/kejadian", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
   for (const id of ["cuaca", "udara", "gunungapi", "kekeringan"]) for (const t of ["", "peta", "insight", "berita", "tren", "dampak", "foto", "tentang"]) assert.ok(loc.includes(`/${id}/${t}`), `/${id}/${t} aktif harus ada`);
   assert.ok(!x.includes("terasurban"));
@@ -90,4 +90,16 @@ test("robots.txt dan llms.txt ada, robots menunjuk sitemap", () => {
   assert.match(readFileSync(path.join(AKAR, "public/robots.txt"), "utf8"), /^Sitemap: https:\/\/\S+\/sitemap\.xml$/m);
   const l = readFileSync(path.join(AKAR, "public/llms.txt"), "utf8");
   for (const b of REG.bencana.filter(b => b.status === "aktif")) assert.ok(l.includes(b.rute === "/" ? "Karhutla" : b.rute), b.id);
+});
+
+test("registry `halaman`: tab berupa halaman terpisah disajikan berkasnya (cuaca/simulasi), tab lain tetap index.html bencananya", () => {
+  const berkas = j => cocok(HTML_RUTE, j)?.[1];
+  assert.equal(REG.bencana.find(b => b.id === "cuaca").halaman.simulasi, "simulasi.html");
+  assert.equal(berkas("/cuaca/simulasi"), "/cuaca/simulasi.html"); assert.equal(berkas("/cuaca/simulasi/"), "/cuaca/simulasi.html");
+  assert.equal(berkas("/cuaca/peta"), "/cuaca/index.html");
+  assert.equal(berkas("/udara/simulasi"), "/udara/index.html", "udara punya p-simulasi di index.html");
+  assert.equal(berkas("/gunungapi/simulasi"), "/gunungapi/index.html");
+  assert.equal(berkas("/banjir/simulasi"), "/banjir/index.html", "alias lama banjir tidak berubah");
+  const R = ruteBencana(salinan()).find(([, f]) => f === "/cuaca/simulasi.html");
+  assert.ok(R && R[2] === null, "halaman terpisah tidak punya kunci statistik sendiri (sama dengan tab lain)");
 });

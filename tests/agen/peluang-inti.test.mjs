@@ -38,6 +38,10 @@ test("kartu gempa: judul = vonis, batang = jumlah hari, tanpa subjudul/catatan",
 test("ambang tanpa data (m4 null) tidak jadi segmen; ambang dipilih lewat st", () => {
   const h = P.kartu(D, {st: {pelA: "m6"}});
   assert.ok(!h.includes('data-v="m4"')); assert.match(h, /data-v="m6" aria-pressed="true"/); assert.match(h, />3%</);
+  // legenda ikut menyaring: ambang tanpa batang tidak didaftar (A18), ambang bermodal tetap
+  const d = salin(D); for (const w of Object.values(d.wilayah)) for (const x of w.hari || []) x.p[0] = null;
+  const g = P.kartu(d); assert.ok(!g.includes("Magnitudo 5 atau lebih") && g.includes("Magnitudo 6 atau lebih"));
+  assert.ok(P.kartu(D).includes("Magnitudo 5 atau lebih"));
 });
 
 test("wilayah dipilih lewat st dan vonis wilayah itu jadi judul", () => {

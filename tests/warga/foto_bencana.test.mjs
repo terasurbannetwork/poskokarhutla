@@ -17,9 +17,11 @@ const JPEG = new Uint8Array([0xff, 0xd8, 0xff, 0xe0, ...Array(2000).fill(7)]);
 const WEBP = new Uint8Array([..."RIFF"].map(c => c.charCodeAt(0)).concat([0, 0, 0, 0], [..."WEBPVP8 "].map(c => c.charCodeAt(0)), Array(500).fill(1)));
 let n = 0; const ipBaru = () => `10.9.${Math.floor(++n / 250)}.${n % 250}`;
 const unggahDi = (mf, isian) => { const f = new FormData();
-  for (const [k, v] of Object.entries({kategori: "api", lat: "-2.2100", lon: "113.9200", akurasi: "15", waktu_gps: String(Date.now()), setuju: "1", keterangan: "uji", ...isian})) f.append(k, v);
+  const t = Date.now();   // anti GPS palsu (src/gps.js, migrasi 0015): >= 3 bacaan berurutan, yang terakhir = titik kiriman dan waktu_gps
+  const sampel = JSON.stringify([[-2.21002, 113.91999, 18, t - 2000], [-2.20999, 113.92002, 16, t - 1000], [-2.21, 113.92, 15, t]]);
+  for (const [k, v] of Object.entries({kategori: "api", lat: "-2.2100", lon: "113.9200", akurasi: "15", waktu_gps: String(t), setuju: "1", keterangan: "uji", sampel, ...isian})) f.append(k, v);
   f.append("media", new File([JPEG], "a.bin")); f.append("thumb", new File([WEBP], "t.bin"));
-  return mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ipBaru()}}).then(async r => ({s: r.status, j: await r.json()})); };
+  return mf.dispatchFetch("http://warga.lokal/api/foto", {method: "POST", body: f, headers: {"cf-connecting-ip": ipBaru()}, cf: {country: "ID"}}).then(async r => ({s: r.status, j: await r.json()})); };
 const ambil = async (mf, jalur) => { const r = await mf.dispatchFetch("http://warga.lokal" + jalur, {headers: {"cf-connecting-ip": "10.8.8.8"}}); return {s: r.status, j: await r.json().catch(() => null)}; };
 const setujui = (mf, id) => mf.dispatchFetch("http://warga.lokal/api/foto/admin/" + id, {method: "POST", headers: {"content-type": "application/json", "cf-connecting-ip": "10.8.8.8", ...ADMIN}, body: JSON.stringify({aksi: "setujui"})});
 
@@ -67,7 +69,7 @@ test("kategori dari bencana lain dan bencana tak dikenal ditolak server (400)", 
 });
 
 uji("trigger foto_kategori_sah menolak pasangan (bencana, kode) di luar tabel rujukan walau lewat SQL langsung", async () => {
-  const sisip = (ben, kat, katb) => DB.prepare("INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat, exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash, bencana, kategori_b) VALUES (?, 'foto', ?, -2.2, 113.9, 10, '62', 'x', 'y', '', '', 0, '', 1, ?, 0, NULL, 0, 10, 0, 'image/jpeg', '" + "h".repeat(64) + "', ?, ?)")
+  const sisip = (ben, kat, katb) => DB.prepare("INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat, exif_waktu, exif_jarak, kamera, ukuran, durasi, mime, ip_hash, bencana, kategori_b) VALUES (?, 'foto', ?, -2.2, 113.9, 10, '62', 'x', 'y', '', '', 0, '', 1, ?, 0, NULL, 0, 10, NULL, 'image/jpeg', '" + "h".repeat(64) + "', ?, ?)")
     .bind(Math.random().toString(16).slice(2, 18).padEnd(16, "0"), kat, Date.now(), ben, katb).run();
   await assert.rejects(sisip("banjir", "lainnya", "api"), /kategori foto tidak dikenal/);
   await assert.rejects(sisip("ngawur", "api", ""), /kategori foto tidak dikenal/);

@@ -341,27 +341,18 @@ export default {
       "status": "aktif",
       "warisan": false,
       "tab": [
-        "ringkasan",
         "peta",
         "insight",
         "berita",
         "tren",
-        "kejadian",
-        "posko",
         "dampak",
         "metode",
         "sim",
-        "informasi",
         "foto",
         "tentang"
       ],
       "tab_sembunyi": [
-        "ringkasan",
-        "kejadian",
-        "posko",
-        "metode",
-        "sim",
-        "informasi"
+        "metode"
       ],
       "sumber_status": [
         [
@@ -438,7 +429,7 @@ export default {
           "selang_detik": 300
         }
       ],
-      "workflow": "statis.yml",
+      "workflow": "gempa.yml",
       "pengerja": "gempa",
       "bagikan": {
         "nama": "Pantau Bencana · Gempa",
@@ -476,7 +467,7 @@ export default {
           "gempa bumi",
           "tsunami"
         ],
-        "leksikon": "scripts/berita/gempa.py"
+        "leksikon": "scripts/gempa/berita.py"
       },
       "prioritas": []
     },
@@ -496,10 +487,14 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
       ],
+      "halaman": {
+        "simulasi": "simulasi.html"
+      },
       "tab_sembunyi": [
         "metode"
       ],
@@ -568,7 +563,12 @@ export default {
       "lapor_bahaya": [
         "cuaca"
       ],
-      "cron_worker": [],
+      "cron_worker": [
+        {
+          "tugas": "nowcast",
+          "selang_detik": 600
+        }
+      ],
       "workflow": "banjir.yml",
       "pengerja": "cuaca",
       "bagikan": {
@@ -625,6 +625,7 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
@@ -694,7 +695,7 @@ export default {
         "udara"
       ],
       "cron_worker": [],
-      "workflow": "data.yml",
+      "workflow": "udara.yml",
       "pengerja": "udara",
       "bagikan": {
         "nama": "Pantau Bencana · Kualitas Udara",
@@ -749,6 +750,7 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
@@ -853,7 +855,7 @@ export default {
           "gunung api",
           "erupsi"
         ],
-        "leksikon": "scripts/berita/gunungapi.py"
+        "leksikon": "scripts/gunungapi/berita.py"
       },
       "prioritas": []
     },
@@ -976,7 +978,7 @@ export default {
           "kekeringan",
           "krisis air bersih"
         ],
-        "leksikon": "scripts/berita/kekeringan.py"
+        "leksikon": "scripts/kekeringan/berita.py"
       },
       "prioritas": []
     }

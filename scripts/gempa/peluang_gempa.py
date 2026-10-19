@@ -125,14 +125,23 @@ def uji_balik(utama, kode_prov):
             "provinsi_m6": {"dalam_selang": ok, "dari": tot, "pecahan": round(ok / tot, 3) if tot else None}}
 
 
-def vonis_laju(jenis_label, tempat, r):
-    if r.get("p12_rentang_uji"):  # lolos uji tapi tipis: selang eksak 90% dari laju periode uji
+def teks_laju(r):
+    """Teks peluang satu kelas: selang uji bila ada, selain itu angka tunggal; None bila tidak boleh tampil."""
+    if r.get("p12_rentang_uji"):
         lo, hi = r["p12_rentang_uji"]
-        return f"Dalam 12 bulan, peluang {jenis_label} {tempat} antara {teks_p(lo)} dan {teks_p(hi)}, tempatnya tidak bisa diketahui."
-    if r["p12"] is None:
-        return f"Peluang {jenis_label} 12 bulan {tempat} tidak ditampilkan: hanya {r['n']} kejadian sejak {TH0}."
-    return (f"Dalam 12 bulan, peluang {jenis_label} {tempat} {teks_p(r['p12'])}"
-            f"{', tempatnya tidak bisa diketahui' if tempat.endswith('Indonesia') else ''}.")
+        return f"antara {teks_p(lo)} dan {teks_p(hi)}"
+    return teks_p(r["p12"]) if r["p12"] is not None else None
+
+
+def vonis_laju(tempat, kelas, nasional=False):
+    """Satu kalimat: 'Dalam 12 bulan, peluang gempa M7+ di Indonesia antara 57% dan 89%, M6+ >99%; tempatnya tidak bisa diketahui.'
+    kelas = [(label, r)]; kelas tanpa teks dibuang. Kosong -> kalimat 'tidak ditampilkan'."""
+    bagian = [(l, teks_laju(r)) for l, r in kelas if teks_laju(r)]
+    if not bagian:
+        return f"Peluang gempa 12 bulan {tempat} tidak ditampilkan: kejadian sejak {TH0} terlalu sedikit atau meleset dari uji balik."
+    (l0, t0), sisa = bagian[0], bagian[1:]
+    k = f"Dalam 12 bulan, peluang {l0} {tempat} {t0}" + "".join(f", {l.replace('gempa ', '')} {t}" for l, t in sisa)
+    return k + ("; tempatnya tidak bisa diketahui." if nasional else ".")
 
 
 def susulan_strip(mdl, ev, kini):
@@ -198,14 +207,14 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
     strip = lambda ps: [{"t": (kini + dt.timedelta(days=d)).date().isoformat(), "p": ps, "p10": None, "p50": None, "p90": None}
                         for d in range(1, 8)]
     hari0 = strip(harian)
-    vn = " ".join(vonis_laju(lab[k], "di Indonesia", nas[k]) for k in ("m7", "m6"))  # "tempatnya..." hanya sekali lewat endswith
+    vn = vonis_laju("di Indonesia", [(lab[k], nas[k]) for k in ("m7", "m6")], nasional=True)
     wil = {"ID": {"nama": "Indonesia", "tingkat": "nasional", "hari": hari0, "vonis": vn}}
     for p, r in prov.items():
         if r["m6"]["p12"] is not None:
             n5 = sum(1 for e in utama if e[5] == p and e[4] >= 5 and TH0 <= int(e[0][:4]) <= TH1)  # strip dari laju provinsi sendiri
             hp = [round(poisson_p(n5 / th / 365), 4) if n5 >= N_MIN and nas5["lolos_uji"] else None, round(poisson_p(r["m6"]["per_tahun"] / 365), 4)]
             wil[p] = {"nama": nama.get(p, p), "tingkat": "provinsi", "hari": strip(hp),
-                      "vonis": vonis_laju(lab["m6"], "di " + nama.get(p, p), r["m6"]) + (" " + vonis_laju(lab["m7d"], "di " + nama.get(p, p), r["m7d"]) if r["m7d"]["p12"] is not None else "")}
+                      "vonis": vonis_laju("di " + nama.get(p, p), [(lab[k], r[k]) for k in ("m6", "m7d")])}
     if mdl and ev is not None:
         wil.update(susulan_strip(mdl, ev, kini))
     cov = ub["provinsi_m6"]

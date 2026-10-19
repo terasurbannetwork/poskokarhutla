@@ -26,6 +26,8 @@ export function ruteBencana(B = REGISTRY) {
   const out = [[/^\/semua(\/|\/index\.html)?$/, "/semua/index.html", "/semua"]];   // beranda semua bencana: halaman tetap, bukan entri registry; masuk sitemap
   for (const b of hidup(B)) {
     const p = polaHalaman(b);
+    /* tab berupa halaman terpisah (registry `halaman`: {tab: berkas}) harus mendahului pola umum, karena find() mengambil yang pertama */
+    for (const [t, f] of Object.entries(b.halaman || {})) out.push([new RegExp(`^${dasar(b)}/${t}/?$`), `${dasar(b)}/${f}`, null]);
     if (akar(b)) out.push([/^\/(index\.html)?$/, "/index.html", "/"], ...(p ? [[p, "/index.html", null]] : []));
     else out.push([new RegExp(`^${dasar(b)}(/|/index\\.html)?$`), `${dasar(b)}/index.html`, b.rute], ...(p ? [[p, `${dasar(b)}/index.html`, null]] : []));
   }

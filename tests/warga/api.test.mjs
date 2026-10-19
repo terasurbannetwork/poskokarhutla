@@ -91,8 +91,9 @@ uji("situs statis tetap dilayani lewat ASSETS", async () => {
 });
 
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
-  /* selain *.workers.dev, merek Centurisk97 di <title>/meta diganti Pantau Bencana oleh worker (layaniHTML, 17 Okt 2026) */
-  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8").replace(/Centurisk97/g, "Pantau Bencana");
+  /* selain *.workers.dev, worker (layaniHTML) mengganti merek HANYA di <title>, meta content, title/alt/aria-label, .lp-kop b.
+     Kata di komentar skrip/badan tidak disentuh, jadi uji meniru penggantian yang sama (bukan seluruh berkas). */
+  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8").replace(/(<title>[^<]*?)Centurisk97/, "$1Pantau Bencana");
   for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
     const r = await panggil("GET", j);
     assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
@@ -342,15 +343,17 @@ uji("hapus_pengirim wajib konfirmasi jumlah; tanpa itu tidak mengubah apa pun", 
 const gempaSumber = jam => DB.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?) ON CONFLICT(kunci) DO UPDATE SET dibuat = excluded.dibuat").bind(KINI - jam * JAM).run();
 const hapusGempaSumber = () => DB.prepare("DELETE FROM gempa_sumber").run();
 const cuacaSumber = (jam, DBx = DB) => DBx.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('nowcast', '{}', ?) ON CONFLICT(kunci) DO UPDATE SET dibuat = excluded.dibuat").bind(KINI - jam * JAM).run();
+/* registry 19 Okt 2026: lima bencana baru punya sumber_status berita_<id> (/banjir/data/berita_<id>.json, ambang 30 jam), aktif ikut 503 */
+const beritaSegar = () => Object.fromEntries(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].map(n => [`/banjir/data/berita_${n}.json`, metaUji(2)]));
 const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
 uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
-  Object.assign(ASET_UJI, {"/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     let r = await panggil("GET", "/api/status");
     assert.equal(r.status, 200, `semua segar (dampak tidak punya ambang) harus 200: ${r.teks}`);
     assert.ok("cuaca" in r.j.sumber && "cuaca_nowcast" in r.j.sumber && !("cuaca_nowcast" in r.j.uji), "cuaca (aktif) masuk sumber, bukan uji");
-    assert.equal(r.j.sumber.cuaca_nowcast.ambang_jam, 2); assert.equal(r.j.sumber.cuaca_nowcast.umur_jam, 0.5); assert.equal(r.j.sumber.cuaca.ambang_jam, null);
+    assert.equal(r.j.sumber.cuaca_nowcast.ambang_jam, 2); assert.equal(r.j.sumber.cuaca_nowcast.umur_jam, 0.5); assert.equal(r.j.sumber.cuaca.ambang_jam, 30, "cuaca_meta kini berambang 30 jam di registry"); assert.equal(r.j.sumber.cuaca.umur_jam, 3);
     await cuacaSumber(2.5);
     r = await panggil("GET", "/api/status");
     assert.equal(r.status, 503, `cuaca_nowcast 2,5 jam (> 2) harus 503: ${r.teks}`); assert.deepEqual(r.j.basi, ["cuaca_nowcast"]);
@@ -381,14 +384,22 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
       assert.equal(r.status, 503); assert.deepEqual(r.j.basi, [nama], `${nama} hilang harus basi`);
       ASET_UJI[jalur] = metaUji(2);
     }
-    ASET_UJI["/banjir/data/gunungapi_status.json"] = null;   // gunungapi tanpa ambang: hanya dilaporkan, tidak pernah basi
+    ASET_UJI["/banjir/data/gunungapi_status.json"] = null;   // gunungapi kini berambang 30 jam (registry 19 Okt): hilang = basi = 503
     r = await panggil("GET", "/api/status");
-    assert.equal(r.status, 200); assert.equal(r.j.sumber.gunungapi.basi, undefined); assert.equal(r.j.sumber.gunungapi.ambang_jam, null);
+    assert.equal(r.status, 503); assert.deepEqual(r.j.basi, ["gunungapi"]); assert.equal(r.j.sumber.gunungapi.ambang_jam, 30);
+    ASET_UJI["/banjir/data/gunungapi_status.json"] = metaUji(2);
+    for (const n of ["gempa", "cuaca", "udara", "gunungapi", "kekeringan"]) {   // berita_<id>: aktif, ambang 30 jam
+      ASET_UJI[`/banjir/data/berita_${n}.json`] = metaUji(31);
+      r = await panggil("GET", "/api/status");
+      assert.equal(r.status, 503, `berita_${n} 31 jam harus 503`); assert.deepEqual(r.j.basi, [`berita_${n}`]);
+      ASET_UJI[`/banjir/data/berita_${n}.json`] = metaUji(2);
+    }
+    assert.equal((await panggil("GET", "/api/status")).status, 200);
   } finally { for (const k of Object.keys(ASET_UJI)) delete ASET_UJI[k]; await hapusGempaSumber(); await DB.prepare("DELETE FROM cuaca_sumber").run(); }
 });
 
 uji("status: hanya sumber bencana aktif menentukan 503 (semua bencana kini aktif, `uji` kosong)", async () => {
-  Object.assign(ASET_UJI, {"/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     const r = await panggil("GET", "/api/status");
@@ -425,7 +436,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   try {
     const D2 = await mf2.getD1Database("DB"); await D2.batch(pecah(migrasi()).map(s => D2.prepare(s)));
     const st = async () => { const r = await mf2.dispatchFetch("http://warga.lokal/api/status"); return {status: r.status, j: await r.json()}; };
-    Object.assign(ASET_UJI, {"/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+    Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/data/udara_kualitas.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
     await D2.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?)").bind(KINI - 0.1 * JAM).run();
     let r = await st();   // tabel cuaca_sumber kosong = cuaca_nowcast (uji) hilang
     assert.equal(r.status, 200, `uji hilang harus tetap 200: ${JSON.stringify(r.j)}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);
@@ -478,4 +489,13 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
   assert.ok(r.j.galat.some(g => g.includes("VIIRS_NOAA20_NRT")), "galat sensor gagal harus dicatat");
   for (let i = 0; i < 9; i++) await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
   assert.equal((await DB.prepare("SELECT count(*) n FROM titik_terbaru").first()).n, 8, "hanya 8 putaran terakhir disimpan");
+});
+
+uji("GET /cuaca/simulasi menyajikan public/cuaca/simulasi.html, /udara/simulasi index.html udara, /cuaca/peta index.html cuaca (registry `halaman`)", async () => {
+  const baca = f => readFileSync(path.join(AKAR, "public", f), "utf8"), judul = t => t.match(/<title>[^<]*<\/title>/)?.[0].replace("Centurisk97", "Pantau Bencana");   // worker menukar merek di <title>
+  const sim = await panggil("GET", "/cuaca/simulasi");
+  assert.equal(sim.status, 200); assert.equal(judul(sim.teks), judul(baca("cuaca/simulasi.html")), "judul halaman simulasi cuaca");
+  assert.ok(sim.teks.length > 1000 && sim.teks.includes("sim_layar.js"), "isi simulasi.html, bukan index.html");
+  assert.equal(judul((await panggil("GET", "/cuaca/peta")).teks), judul(baca("cuaca/index.html")));
+  assert.equal(judul((await panggil("GET", "/udara/simulasi")).teks), judul(baca("udara/index.html")));
 });

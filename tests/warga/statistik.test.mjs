@@ -109,6 +109,21 @@ uji("jejak: tiap kiriman = satu baris (hari, halaman) yang diperbarui, angka ter
   await DB.prepare("DELETE FROM stat_hari WHERE hal IN ('tentang', 'privasi', 'statistik')").run();   // uji berikutnya menghitung jumlah baris
 });
 
+uji("jejak: tiap id bencana registry TERSIMPAN di stat_hari (CHECK hal tidak menelan diam-diam, migrasi 0017)", async () => {
+  /* INSERT OR IGNORE di statistik.js membuang baris yang melanggar CHECK tanpa galat: 204 tetap keluar, jadi periksa barisnya langsung */
+  const ids = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana.filter(b => b.status !== "mati").map(b => b.id);
+  assert.ok(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].every(i => ids.includes(i)), `registry kehilangan bencana: ${ids}`);
+  try {
+    for (const h of ids) {
+      const sebelum = (await hari(tglWIB(Date.now()), h))?.orang ?? 0;   // karhutla sudah berisi dari uji sebelumnya
+      assert.equal((await jejak({h, o: 1, kv: 1, e: [["tampil", h]]})).status, 204, `halaman ${h} harus diterima`);
+      const r = await hari(tglWIB(Date.now()), h);
+      assert.ok(r, `halaman ${h}: tidak ada baris di stat_hari (CHECK hal menolak diam-diam?)`);
+      assert.equal(r.orang, sebelum + 1, `halaman ${h}: orang bertambah satu`);
+    }
+  } finally { await DB.prepare("DELETE FROM stat_hari WHERE hal != 'karhutla'").run(); }   // uji berikutnya menghitung jumlah baris (hanya karhutla yang tersisa)
+});
+
 uji("jejak: kunci baru di atas 100 per dimensi per hari masuk 'lainnya'", async () => {
   const tgl = tglWIB(Date.now()), r = await hari(tgl), d = JSON.parse(r.dim);
   d.cari = Object.fromEntries(Array.from({length: 100}, (_, i) => ["Wilayah " + i, [1, 0]])); d._n.cari = 100;
