@@ -1,7 +1,8 @@
 name: Terbitkan tampilan
 
 # Perubahan tampilan (HTML/JS/CSS, worker) terbit lewat sini, BUKAN `wrangler deploy` dari laptop: data harian diambil dari
-# cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 2 menit.
+# cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 5 menit (2 menit terbit + uji node).
+# Uji node (agen + worker) jalan SEBELUM apa pun diterbitkan: merah = tidak deploy.
 on:
   push:
     branches: [main, staging]
@@ -21,9 +22,22 @@ concurrency:
 jobs:
   terbit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+
+      # Gerbang uji node pertama di CI. Jalan di checkout bersih (keadaan yang ada di git), sebelum cache data dipulihkan.
+      # miniflare dari package-lock.json untuk uji worker; wrangler 3 untuk deploy tetap diunduh npx di langkah terbit.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Pasang dependensi uji
+        run: npm ci
+      - name: Uji agen (gerbang)
+        run: npm run uji:agen
+      - name: Uji worker (D1, route, foto)
+        run: npm run uji:warga
 
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4

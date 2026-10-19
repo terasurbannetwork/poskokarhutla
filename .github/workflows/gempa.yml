@@ -28,7 +28,8 @@ jobs:
 
       - name: Uji aturan
         run: |
-          for s in susulan laporan_gempa guncangan peluang_gempa; do python3 scripts/gempa/$s.py uji; done
+          # semua skrip gempa yang punya `uji` (11), bukan hanya 4: self-check offline, detik per skrip
+          for s in bahaya batimetri berita bukti dampak guncangan laporan_gempa peluang_gempa riwayat sesar susulan; do python3 scripts/gempa/$s.py uji; done
           if command -v node >/dev/null; then
             python3 scripts/gempa/uji_js_susulan.py
             python3 scripts/gempa/uji_js_guncangan.py

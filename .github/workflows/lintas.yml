@@ -1,0 +1,192 @@
+name: Perbarui data lintas bencana
+
+# Harian 09.10 WIB, SESUDAH banjir.yml (00.20 UTC, ±60 menit) dan gempa.yml (01.10 UTC), sebelum data.yml (14.20 UTC).
+# Dulu rantai ini menempel di akhir scripts/banjir/posko.py dan scripts/data/tanah.py; job banjir 50 menit terbunuh tiap hari sejak
+# 17 Okt 2026 karenanya. Kini tiap modul punya langkah, batas waktu, dan kegagalan sendiri (continue-on-error).
+# Masukan dari cache banjir- (hujan.json, hujan_ansambel.json, meta.json) dan data- (tanah.json, fwi.json); keluaran disimpan lagi
+# ke KEDUA cache itu supaya data.yml, titik.yml, terbit.yml, dan banjir.yml besok memakainya. Folder di luar cache (public/gempa/data,
+# public/gunungapi/data, public/kekeringan/data) TIDAK ditulis di sini: ditimpa checkout main saat terbit (lihat statis.yml).
+on:
+  schedule:
+    - cron: "10 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  lintas:
+    runs-on: ubuntu-latest
+    # Hangat ±60 menit; dingin (cache mentah kosong) ±110. Jumlah batas langkah 20+25+15+40+60 = 160 menit + pulihkan/terbit. Jangan lebih:
+    # grup `data` antre tunggal, titik.yml (tiap 3 jam) tertahan selama job ini jalan dan /api/status memberi 503 bila titik > 8 jam.
+    timeout-minutes: 180
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan data banjir sebelumnya
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      # mentah yang tidak ikut cache lain: HTH 6 jam, SEAS5 7 hari (tanpa ini ±4.500 bobot kuota hilang tiap hari), hujan bulanan SPI,
+      # angin ansambel peluang abu. Jalur HARUS sama persis dengan simpanan di bawah.
+      - name: Pulihkan data mentah lintas bencana
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/raw/kekeringan
+            data/raw/kekeringan_hujan.json
+            data/raw/gunungapi
+          key: lintas-${{ github.run_id }}
+          restore-keys: lintas-
+
+      # sama dengan banjir.yml/data.yml: berkas karhutla yang di-commit tapi tidak dibuat ulang di CI jangan digantikan versi cache
+      # luas_resmi.json TIDAK di sini: data.yml menariknya harian dari SiPongi; versi repo akan menimpa bulan baru
+      - name: Pakai lapisan statis dari repo, bukan dari cache
+        run: |
+          f=$(git ls-files public/data/penduduk.json public/data/fasilitas.json public/data/kanal.json public/data/jalan.geojson \
+            public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
+            public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
+            public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+          [ -z "$f" ] || git checkout HEAD -- $f
+
+      # Tanpa langkah "Uji aturan" bersama: tiap modul menjalankan `uji`-nya sendiri di langkahnya, jadi satu uji rusak
+      # hanya mematikan modul itu, bukan kelima bencana sekaligus.
+
+      # 8 langkah cuaca.py (sarana sekali, gelombang, prakiraan_kec, dampak_cuaca, medan, siklon, verifikasi, laporan_cuaca) gagal sendiri-sendiri.
+      # Kuota Open-Meteo ±1.085/hari (gelombang 320, medan 416, verifikasi 349); butuh hujan.json dan hujan_ansambel.json dari banjir.yml.
+      - name: Cuaca ekstrem (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        run: |
+          python3 scripts/cuaca/cuaca.py uji && python3 scripts/cuaca/cuaca.py || echo "::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan"
+          python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
+
+      # magma.py merantai abu.py (angin ECMWF lapisan tekanan, ±beberapa puluh bobot kuota) lalu laporan.py. paparan.py dan citra.py TIDAK di sini:
+      # mereka menulis public/gunungapi/data (di luar cache, ditimpa checkout main) dan memakai Overpass/STAC; tempatnya statis.yml.
+      - name: Gunung api (MAGMA, abu, laporan) (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: python3 scripts/gunungapi/magma.py uji && python3 scripts/gunungapi/magma.py
+
+      # skenario 18 anggota deterministik + 51 anggota ensemble untuk gunung level >= 2, ±2 menit CPU; kuota Open-Meteo ±100-300
+      - name: Peluang abu bandara dan kota (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/gunungapi/peluang_abu.py uji && python3 scripts/gunungapi/peluang_abu.py
+
+      # status.py menjalankan RANTAI 9 turunan (hth, prakiraan, padi, ujibalik, laporan, neraca, resmi, bukti, dampak), tiap turunan batas 1800 dtk.
+      # Kuota: hth ±941/hari (cache 6 jam), prakiraan SEAS5 sampai 4.500 per lari lalu cache 7 hari. Keluar 1 bila ada turunan gagal.
+      # peluang_kering hanya membungkus kekeringan_prakiraan.json + ujibalik: tanpa jaringan.
+      - name: Kekeringan (status dan 9 turunan) (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 40
+        run: |
+          python3 scripts/kekeringan/status.py uji
+          python3 scripts/kekeringan/status.py || echo "::warning title=kekeringan::status/rantai kekeringan ada yang gagal"
+          python3 scripts/kekeringan/peluang_kering.py uji && python3 scripts/kekeringan/peluang_kering.py || echo "::warning title=peluang_kering::gagal"
+
+      # Berita banjir lalu berita + dampak modul lain, harian (aturan A22). Keluaran HARUS di public/banjir/data dan data/raw/banjir/berita_<id>.
+      # Urutan: sesudah magma.py (dampak gunungapi membaca gunungapi_status.json). kekeringan/dampak.py sudah jalan di RANTAI status.py.
+      # Cache arsip hilang = isi ulang 120 hari (±8 menit per modul); `timeout 900` per skrip supaya satu modul tidak menahan yang lain.
+      - name: Berita dan dampak lima modul (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 60
+        run: |
+          python3 scripts/umum/berita.py banjir uji && { timeout 900 python3 scripts/umum/berita.py banjir || echo "::warning title=berita-banjir::gagal"; }
+          for m in gempa gunungapi kekeringan cuaca udara; do
+            for s in dampak berita; do
+              p=scripts/$m/$s.py
+              [ -f $p ] || continue
+              [ "$m/$s" = kekeringan/dampak ] && continue
+              python3 $p uji && { timeout 900 python3 $p || echo "::warning title=$m-$s::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=$m-$s::uji $p gagal"
+            done
+          done
+
+      - name: Simpan data banjir untuk jalan berikutnya
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+
+      # kekeringan_*.json, dampak_kekeringan.json, kekeringan_bukti.json ditulis ke public/data: simpan agar data.yml/titik.yml/terbit.yml memakainya
+      - name: Simpan data karhutla dan kekeringan
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+
+      - name: Simpan data mentah lintas bencana
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw/kekeringan
+            data/raw/kekeringan_hujan.json
+            data/raw/gunungapi
+          key: lintas-${{ github.run_id }}
+
+      # citra satelit punya cache sendiri (PNG besar, tidak ikut cache data-); jalur harus sama persis dengan simpanannya
+      - name: Pulihkan citra satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
+          restore-keys: citra-
+
+      - name: Terbitkan ke Cloudflare
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@3 deploy; exit; fi
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/banjir/data data/raw/banjir/sungai_ambang.json data/raw/banjir/rob/ambang.json data/raw/banjir/rob/titik.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: lintas bencana harian $(TZ=Asia/Jakarta date +%F)"
+          git pull -q --rebase && git push -q
+
+      # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
+      # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.
+      - name: Periksa kesegaran data yang tayang
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          URL_STATUS: ${{ vars.URL_STATUS || 'https://poskokarhutla.terasurbannetwork.workers.dev/api/status' }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || exit 0
+          for i in 1 2 3; do
+            kode=$(curl -sS -m 30 -o status.json -w '%{http_code}' "$URL_STATUS") || kode=000
+            echo "percobaan $i: HTTP $kode"; cat status.json 2>/dev/null; echo
+            [ "$kode" = 200 ] && exit 0
+            sleep 30
+          done
+          echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
+          exit 1
