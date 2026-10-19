@@ -57,3 +57,11 @@ uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP keta
     assert.doesNotMatch(r.t, /<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+=|<style|style="/i, j + ": skrip/gaya inline akan diblokir CSP");
   }
 });
+
+uji("berkas /bnpb/*.html dibuka langsung: 301 ke jalur bersih ber-CSP, berkas tak dikenal 404", async () => {
+  const buka = j => U.mf.dispatchFetch("http://bnpb.lokal" + j, {redirect: "manual"});
+  const r = await buka("/bnpb/relawan-saya.html");
+  assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/relawan/saya");
+  assert.equal((await buka("/bnpb/index.html")).headers.get("location"), "/bnpb");
+  assert.equal((await buka("/bnpb/tidakada.html")).status, 404);
+});

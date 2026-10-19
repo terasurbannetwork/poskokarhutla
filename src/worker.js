@@ -478,6 +478,8 @@ async function rute(env, req, url, ctx) {
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
+const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
@@ -574,6 +576,12 @@ export default {
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
+    /* Ruang Koordinasi: berkas /bnpb/*.html hanya lewat jalur bersihnya (halamanBnpbPublik memberi CSP ketat, no-store untuk halaman berkode);
+       dibuka langsung = 301 ke jalur bersih (fragmen #k= ikut dibawa peramban), berkas tak dikenal = 404 */
+    if (url.pathname.startsWith("/bnpb/") && url.pathname.endsWith(".html")) {
+      const ke = BNPB_BERSIH[url.pathname.slice(6, -5)];
+      return ke ? new Response(null, {status: 301, headers: {location: ke + url.search, "cache-control": "no-store"}}) : new Response("Tidak ditemukan", {status: 404});
+    }
     if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
     if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req))
       return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
