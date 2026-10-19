@@ -494,7 +494,9 @@ uji("giliran adil: semua pelanggan dinilai tiap putaran (lebih dari satu kelompo
   const TF = T0 + 3 * HARI + 3 * JAM, id = i => i.toString(16).padStart(16, "0");
   const masuk = (i, email, kk) => DB4.prepare("INSERT INTO ews_langganan (id, email, email_kunci, lat, lon, kec_kunci, bencana, status, dibuat) VALUES (?, ?, ?, ?, ?, ?, '[\"banjir\"]', 'aktif', 1)")
     .bind(id(i), email, email, kk ? -2.21 : 5.55, kk ? 113.92 : 95.32, kk || "11|Tidak|Ada");
-  await DB4.batch([...Array.from({length: 450}, (_, i) => masuk(i + 1, `diam${i}@contoh.id`)), ...Array.from({length: 5}, (_, i) => masuk(0xf000 + i, `kena${i}@contoh.id`, kecKunci))]);
+  /* dikirim per 50: satu batch 455 pernyataan lewat proksi miniflare putus ("fetch failed") di mesin lambat/sibuk (runner CI, 19 Okt 2026) */
+  const semua = [...Array.from({length: 450}, (_, i) => masuk(i + 1, `diam${i}@contoh.id`)), ...Array.from({length: 5}, (_, i) => masuk(0xf000 + i, `kena${i}@contoh.id`, kecKunci))];
+  for (let i = 0; i < semua.length; i += 50) await DB4.batch(semua.slice(i, i + 50));
   muat(TF, {kecKunci});
   const kena = () => surat.filter(s => /^kena\d@/.test(s.to[0])), per = {};
   await cron(JAM_CRON, TF, mf4);
