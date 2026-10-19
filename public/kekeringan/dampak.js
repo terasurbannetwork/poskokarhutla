@@ -2,7 +2,7 @@
 /* ================================================================ dampak */
 /* Tab Dampak kekeringan: rupa sama dengan Dampak banjir/karhutla (pintasan bagian di kiri, pita bagian berwarna, kartu bergaya Insight, gaya dk-* dari public/inti/dampak.css).
    Data: ../data/dampak_kekeringan.json (scripts/kekeringan/dampak.py, harian lewat scripts/banjir/posko.py). Bagian yang datanya tidak ada dibuang (A18): tanpa kecamatan Siaga/Awas hari ini, bagian Penduduk tidak muncul;
-   Korban dan kerugian historis (BNPB) ada selama sumbernya ada. Sekolah dan fasilitas kesehatan hanya untuk kabupaten Siaga/Awas yang ada dalam data (sembilan provinsi prioritas karhutla; sisanya dibuang, bukan nol); lahan pertanian tidak ada.
+   Korban dan kerugian historis (BNPB) ada selama sumbernya ada. Sekolah dan fasilitas kesehatan hanya untuk kabupaten Siaga/Awas yang ada dalam data (data baru tersedia untuk 9 provinsi; sisanya dibuang, bukan nol); lahan pertanian tidak ada.
    Kerugian ekonomi (rupiah) belum ada asumsi bernama yang bersumber kuat, jadi tidak ditampilkan. */
 const Dampak = (() => {
   const W = {pasir: "#c9a24b", oranye: "#e58a45"};
@@ -32,7 +32,7 @@ const Dampak = (() => {
   function fas() {
     const F = D.sekolah_fasilitas, A = F?.siaga_awas, Aw = F?.awas; if (!A?.kab) return "";
     const R = Object.entries(F.prov).filter(([, o]) => o.sekolah).sort((a, b) => b[1].siswa - a[1].siswa).slice(0, 12); if (!R.length) return "";
-    return bag("fas", `${Kartu.hl(fmt(A.sekolah) + " sekolah")} dengan ${jt(A.siswa)} siswa, ${fmt(A.faskes)} puskesmas atau klinik, dan ${fmt(A.rs)} rumah sakit ada di ${fmt(A.kab)} kabupaten/kota berstatus Siaga atau Awas${Aw?.kab ? `; ${fmt(Aw.sekolah)} sekolah di antaranya di ${fmt(Aw.kab)} kabupaten Awas` : ""}`,
+    return bag("fas", `${Kartu.hl(fmt(A.sekolah) + " sekolah")} dengan ${jt(A.siswa)} siswa di ${fmt(A.kab)} dari ${fmt(F.kab_siaga_awas)} kabupaten/kota Siaga atau Awas, ditambah ${fmt(A.faskes)} puskesmas atau klinik dan ${fmt(A.rs)} rumah sakit${Aw?.kab ? `; ${fmt(Aw.sekolah)} sekolah di antaranya di ${fmt(Aw.kab)} kabupaten Awas` : ""}`,
       hbar(R.map(([k, o]) => ({n: namaProv(k), v: o.siswa, txt: rb(o.siswa), w: "#3f7fb8", tip: `<b>${esc(namaProv(k))}</b><br>Siswa: ${fmt(o.siswa)}<br>Sekolah: ${fmt(o.sekolah)}<br>Puskesmas dan klinik: ${fmt(o.faskes)}<br>Rumah sakit: ${fmt(o.rs)}<br>Kabupaten/kota Siaga atau Awas: ${fmt(o.kab)}`}))),
       `Hanya ${fmt(F.kab_tercakup)} dari ${fmt(F.kab_siaga_awas)} kabupaten/kota Siaga atau Awas yang ada dalam data sekolah dan fasilitas (${fmt(F.prov_sekolah.length)} provinsi); sisanya tidak dihitung, bukan nol. Batang = jumlah siswa. Fasilitas OpenStreetMap tidak lengkap, jadi bisa kurang dari kenyataan. Sumber: ${esc(D.sumber.sekolah_fasilitas || "Dapodik, EMIS, OpenStreetMap")}`); }
   function hist() {
@@ -68,7 +68,7 @@ const Dampak = (() => {
     const ket = Object.entries(st).sort((a, b) => b[1] - a[1]).map(([n, c]) => `${fmt(c)} ${n}`).join(", ");
     return bag("sk", `${Kartu.hl(fmt(R.sk.length) + " SK")} status darurat BNPB ${R.tahun_data} menyebut kekeringan, ${Kartu.hl(fmt(R.n_aktif) + " berlaku")} sekarang (${esc(ket)})`, hbar(rows),
       `Riwayat SK ${R.tahun_data}, bukan status berlaku; surat lengkap ada di pop-up wilayah pada peta. Sumber: ${esc(R.sumber || "BNPB")}`); }
-  const gambar = () => [terpapar(), fas(), hist(), sawah(), sk()].filter(Boolean).join("");
+  const gambar = () => [beriAmbang(terpapar()), beriAmbang(fas()), hist(), sawah(), sk()].filter(Boolean).join("");
   async function render() {
     const el = $("#dampak"); if (!el) return;
     if (!el._dk) { el._dk = 1;

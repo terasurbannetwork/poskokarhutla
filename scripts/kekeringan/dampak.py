@@ -8,7 +8,7 @@ Bagian tanpa data dibuang (A18): tanpa kecamatan Awas/Siaga tidak ada kunci `ter
   tanpa_air jiwa Siaga/Awas per provinsi x (1 - % rumah tangga akses air minum layak), HANYA bila public/kekeringan/data/air_minum.json (kurasi tangan dari BPS,
             tiap provinsi berkolom persen + sumber + tahun) ada. BPS webapi butuh kunci dan angka tak boleh dikarang, jadi tanpa berkas itu bagian ini dibuang.
   sekolah_fasilitas  sekolah, siswa, puskesmas/klinik dan rumah sakit di kabupaten berstatus Siaga/Awas hari ini (public/data/sekolah.json Dapodik/EMIS dan fasilitas.json OSM, pola
-            scripts/banjir/dampak.py). Kedua sumber HANYA mencakup sembilan provinsi prioritas karhutla, jadi yang dihitung adalah kabupaten Siaga/Awas DI DALAM cakupan itu
+            scripts/banjir/dampak.py). Kedua sumber baru tersedia untuk 9 provinsi, jadi yang dihitung adalah kabupaten Siaga/Awas DI DALAM cakupan itu
             (`kab_tercakup` dari `kab_siaga_awas`); kabupaten di luar cakupan dibuang, bukan dihitung nol. Fasilitas OSM tidak lengkap: angkanya bisa kurang dari kenyataan.
 Sengaja tak ada: luas sawah (tak ada data sawah terbuka yang layak: OSM 7.077 poligon padi se-Indonesia, BPS/Kementan butuh kunci);
 harga beras (API panel harga Bapanas 401 tanpa kunci).
@@ -127,7 +127,7 @@ def tulis():
         if sf:
             out["sekolah_fasilitas"] = sf
     out["sumber"] = {"terpapar": "Deteksi Pantau Bencana (NASA POWER, ECMWF, ERA5-Land); penduduk WorldPop 2026", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)",
-                     "sekolah_fasilitas": "Sekolah Dapodik/Kemendikbud dan EMIS Kemenag; puskesmas, klinik, rumah sakit OpenStreetMap; hanya sembilan provinsi prioritas karhutla"}
+                     "sekolah_fasilitas": "Sekolah Dapodik/Kemendikbud dan EMIS Kemenag; puskesmas, klinik, rumah sakit OpenStreetMap; data baru tersedia untuk 9 provinsi"}
     with open(KELUAR, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     print(f"dampak kekeringan: {(t or {}).get('jiwa_awas', 0):,} jiwa Awas, {(t or {}).get('jiwa_siaga', 0):,} jiwa Siaga atau Awas; tahunan {len(th)} tahun")

@@ -10,7 +10,7 @@ risiko    indeks 0-100 per kabupaten, bobot sama dengan risiko_riwayat karhutla 
             kekerapan = porsi tahun 1991-2025 yang punya >= 1 bulan berstatus Siaga atau lebih (SPI-3 <= -1,5 pada >= 30% penduduk kabupaten, aturan status.py);
             besaran   = log(1 + total bulan Siaga+) / log(1 + total terbesar antar kabupaten);
             tren      = rata-rata bulan Siaga+ per tahun pada paruh akhir seri vs paruh awal; turun separuh = 0, naik dua kali = 1 (log2).
-          Catatan: SPI memakai baku 1991-2020, jadi kekerapan RATA-RATA nasional ditetapkan definisi; yang informatif adalah perbedaan antar kabupaten dan tren.
+          Catatan: SPI memakai baku 1991-2020, jadi porsi bulan Siaga rata-rata nasional ditetapkan definisi; yang informatif adalah perbedaan antar kabupaten dan tren.
           Kejadian DIBI (2023-2026, terlalu pendek untuk tren) ditampilkan sebagai pembanding, TIDAK masuk indeks.
 Pakai:  python3 scripts/kekeringan/riwayat.py      |  python3 scripts/kekeringan/riwayat.py uji
 """
@@ -105,7 +105,7 @@ def bangun(pow_sel, prov_sel, oni, penduduk, pusat, kej, hari):
         kab[k] = {"risiko": r, "kekerapan": f, "bulan_siaga": tot, "tren": tr, "dibi": dibi.get(k, 0)}
     return {"dibuat": dt.datetime.now(H.WIB).isoformat(timespec="minutes"), "hari": hari, "label": "Deteksi Pantau Bencana", "tahun": [TAHUN[0], TAHUN[-1]],
             "tahun_el_nino": sorted(el), "bulan_kering_mm": BULAN_KERING_MM, "bobot": {"kekerapan": BOBOT[0], "besaran": BOBOT[1], "tren": BOBOT[2]}, "maks_bulan_siaga": mx,
-            "catatan": "Indeks 0-100: 50% kekerapan tahun bersiaga, 30% besaran, 20% tren (paruh akhir vs paruh awal seri). SPI berbaku 1991-2020 sehingga rerata nasional ditetapkan definisi; "
+            "catatan": "Indeks 0-100: 50% kekerapan tahun bersiaga, 30% besaran, 20% tren (paruh akhir vs paruh awal seri). SPI berbaku 1991-2020 sehingga porsi bulan Siaga rata-rata nasional ditetapkan definisi; "
                        "yang bermakna adalah perbedaan antar kabupaten. Kejadian DIBI 2023-2026 hanya pembanding.",
             "sumber": "NASA POWER (MERRA-2) hujan bulanan 1991-2025; ONI NOAA CPC; kejadian DIBI BNPB; bulan kering Schmidt-Ferguson 1951 (< 60 mm)",
             "kalender": kalender(pow_sel, prov_sel, el), "kab": kab}

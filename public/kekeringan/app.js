@@ -45,6 +45,12 @@ const BIAS_TXT = () => S.prak?.bias?.label || "tanpa koreksi bias";
 const BIAS_BULAN = () => (S.prak?.bias?.per_bulan || []).map(x => `${bulanPanjang(x.bulan)}: ${x.kalimat}${x.rasio != null ? ` (hujan anggota ${F2(x.rasio)} kali klimatologi)` : ""}`);
 const BELUM_UJI = "Belum diuji balik";
 /* ambang status SPI/tanah: label lepas dari "hipotesis" hanya bila uji balik terhadap kejadian DIBI lolos kriteria (ujibalik.py `kejadian.vonis`); alasan tertulis di berkas */
+const blnIso = ym => BLN[+ym.slice(5) - 1] + " " + ym.slice(0, 4);
+const AMBANG_KAKI = () => { const j = S.uji?.kejadian; if (!j || j.vonis?.layak) return ""; const f = Object.entries(j.aturan?.waspada || {}).filter(([k]) => k !== "semua").map(([, v]) => v.far).filter(x => x != null).map(x => Math.round(x * 100));
+  return `Ambang belum lolos uji kejadian DIBI${f.length ? ` (FAR ${Math.min(...f)}–${Math.max(...f)}%)` : ""}; angka ini ukuran skala, bukan jumlah penerima.`; };
+/* kartu yang angkanya bergantung pada status Waspada/Siaga/Awas: pil ambang di kepala + satu kalimat di kaki; lepas sendiri bila uji balik lolos */
+const beriAmbang = h => { const k = AMBANG_KAKI(); if (!k || !h) return h;
+  return h.replace(/(<span class="ex-ey">[^<]*<\/span>)/, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
 const AMBANG_PIL = () => S.uji?.kejadian?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis";
 /* nama provinsi pada SK BNPB -> kode */
 const PROV_KODE = (() => { let m = null; return n => { if (!m) { m = {}; for (const [k, v] of Object.entries(S.meta.provinsi)) m[v.toLowerCase()] = k; m["daerah istimewa yogyakarta"] = "34"; m["dki jakarta"] = "31"; } return m[String(n).toLowerCase()]; }; })();
