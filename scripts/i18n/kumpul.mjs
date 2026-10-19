@@ -1,10 +1,10 @@
-/* Crawl headless semua tab karhutla & banjir (+ Tentang, Privasi, Statistik) dalam ID dan EN, lalu laporkan kebocoran DUA ARAH:
+/* Crawl headless semua tab karhutla, banjir, gempa, cuaca, udara, gunungapi & kekeringan (+ Tentang, Privasi, Statistik) dalam ID dan EN, lalu laporkan kebocoran DUA ARAH:
      - ID mode: teks yang memuat kata Inggris ("oil palm", "Score", "Today")         -> laporan.id_berisi_en
      - EN mode: teks yang masih memuat kata Indonesia (belum/setengah diterjemahkan)  -> laporan.en_berisi_id (+ laporan.hilang untuk kamus)
      - kedua mode: kalimat campur (kata ID dan EN dalam satu simpul teks)            -> laporan.campur
    Tiap tab juga dijelajahi: tombol/baris yang membuka dialog diklik satu per jenis (popup Insight, Berita, Dampak, Posko, Operasi, Ringkasan…),
    dialog yang terbuka direkam sebagai "tab/dlg:…", lalu tab direkam ulang sesudah semua klik ("tab/klik": hasil simulasi, rincian terbuka).
-   Pakai:  node scripts/i18n/kumpul.mjs [--lebar 1440,390] [--hanya karhutla|banjir|tentang|privasi|statistik] [--bahasa id|en] [--tab peta,insight]
+   Pakai:  node scripts/i18n/kumpul.mjs [--lebar 1440,390] [--hanya karhutla|banjir|gempa|cuaca|udara|gunungapi|kekeringan|tentang|privasi|statistik] [--bahasa id|en] [--tab peta,insight]
                                         [--tanpa-klik] [--dump] [--keluar berkas.json]
    Pengelompok kata ada di kelas.mjs (node scripts/i18n/kelas.mjs = cek cepat); skor.mjs menilai ulang keluaran --dump tanpa crawl ulang.
    (lintasan bisa dijalankan paralel per halaman/lebar/bahasa dengan --keluar berbeda, lalu digabung dengan scripts/i18n/gabung.mjs)
@@ -102,6 +102,11 @@ const laporan = {dibuat: new Date().toISOString(), hilang: {}, semua_hilang: {},
 const HALAMAN = [
   {nama: "karhutla", url: "/", ekstra: {posko: ["posko", "sarana", "operasi", "keputusan"]}},
   {nama: "banjir", url: "/banjir/"},
+  {nama: "gempa", url: "/gempa/"},
+  {nama: "cuaca", url: "/cuaca/"},
+  {nama: "udara", url: "/udara/"},
+  {nama: "gunungapi", url: "/gunungapi/"},
+  {nama: "kekeringan", url: "/kekeringan/"},
   {nama: "tentang", url: "/tentang.html", polos: true},
   {nama: "privasi", url: "/privasi.html", polos: true},
   {nama: "statistik", url: "/statistik", polos: true},

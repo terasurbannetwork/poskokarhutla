@@ -13,6 +13,9 @@
      node tests/beban/beban.mjs http://localhost:8799 --dasar 20 --lonjakan 15 --burst 50 --log log.txt
    Pakai (pratinjau Cloudflare, tanpa --log; hitung pemanggilan dari dasbor Workers > Metrics):
      node tests/beban/beban.mjs https://<preview>.workers.dev --dasar 60 --lonjakan 30 --burst 50 --skala 0.2
+   Catatan 19 Okt 2026: lima bencana lain (gempa, cuaca, udara, gunungapi, kekeringan) kini ada di RUTE (bobot 18 % total). wrangler dev --local TANPA
+   pembungkus jenuh pada --burst 50 (galat 5xx massal lalu proses mati, 486 kunjungan/10 dtk); pakai --burst 5 untuk dev lokal, burst 50 hanya di pratinjau.
+   Plafon muatan awal per rute ada di ukur_muat.mjs (PLAFON_KB; exit 1 bila lewat).
    --skala memperkecil laju (mis. 0.2 = 20 % laju sesungguhnya) supaya uji singkat tidak menghabiskan kuota harian. */
 import {readFileSync, existsSync} from "node:fs";
 
@@ -20,10 +23,19 @@ const arg = process.argv.slice(2), asal = arg[0];
 const opsi = k => { const i = arg.indexOf("--" + k); return i < 0 ? null : arg[i + 1]; };
 const DASAR = +(opsi("dasar") ?? 20), LONJAK = +(opsi("lonjakan") ?? 15), BURST = +(opsi("burst") ?? 50), SKALA = +(opsi("skala") ?? 1), LOG = opsi("log");
 const LAJU = 100000 / 86400 * SKALA;
-const RUTE = [["/", 40], ["/peta", 15], ["/ringkasan", 10], ["/banjir/", 15], ["/k/K0001", 5], ["/berita", 5], ["/sim/K0001", 3], ["/tentang", 2], ["/warga/", 5]];
+const RUTE = [["/", 32], ["/peta", 12], ["/ringkasan", 8], ["/banjir/", 12], ["/k/K0001", 4], ["/berita", 4], ["/sim/K0001", 2], ["/tentang", 2], ["/warga/", 4],
+  ["/gempa/", 5], ["/cuaca/", 5], ["/udara/", 4], ["/gunungapi/", 3], ["/kekeringan/", 3]];
 const DATA_KARHUTLA = ["data/meta.json", "data/hotspot24.json", "data/kluster_awal.json", "data/fwi.json", "data/bnpb.json", "data/wilayah.json", "geo/provinsi.json",
   "data/daops.json", "data/inarisk.json", "data/bpbd.json", "data/sejarah.json", "data/harian30.json", "data/posko.json"];
 const DATA_BANJIR = ["banjir/data/meta.json", "banjir/data/status.json", "banjir/data/hujan.json", "banjir/data/posko.json"];
+/* data muatan awal bencana lain (terukur lewat ukur_muat.mjs 19 Okt 2026; /banjir/data/ dipakai bersama untuk berita/cuaca/gunungapi) */
+const DATA_LAIN = {
+  "/gempa/": ["geo/provinsi.json", "gempa/data/meta.json", "gempa/data/riwayat_prov.json", "gempa/data/laju.json", "banjir/data/berita_gempa.json", "banjir/data/dampak_gempa.json"],
+  "/cuaca/": ["geo/provinsi.json", "banjir/data/pusat_kec.json", "banjir/data/cuaca_prakiraan.json", "banjir/data/cuaca_meta.json", "banjir/data/berita_cuaca.json"],
+  "/udara/": ["geo/provinsi.json", "udara/data/lintasan.json", "udara/data/prakiraan.json", "data/udara_kualitas.json", "banjir/data/berita_udara.json"],
+  "/gunungapi/": ["geo/provinsi.json", "banjir/data/abu_gunungapi.json", "banjir/data/gunungapi_status.json", "banjir/data/berita_gunungapi.json"],
+  "/kekeringan/": ["geo/provinsi.json", "data/kekeringan_prakiraan.json", "data/kekeringan_meta.json", "banjir/data/berita_kekeringan.json"],
+};
 const P_WARGA = 0.1;   // bagian kunjungan yang membuka peta Lapor Warga (GET /api/warga)
 /* titik_live.js memanggil /api/titik hanya bila data statis > 3,5 jam (titik.yml terlambat); tepat jadwal umurnya <= ± 3,3 jam */
 const P_TITIK = +(opsi("titik") ?? 0.1);
@@ -48,9 +60,9 @@ async function kunjungan() {
     const base = html.match(/<base href="([^"]+)"/)?.[1];
     skripCache.set(rute, [...html.matchAll(/<(?:script|link)\b[^>]*?\b(?:src|href)="([^"#:]+\.(?:js|css)(?:\?[^"]*)?)"/g)].map(m => new URL(m[1], base ? new URL(base, asal) : dasar).href));
   }
-  const banjir = rute.startsWith("/banjir"), aset = [...skripCache.get(rute), ...(banjir ? DATA_BANJIR : rute === "/tentang" ? [] : DATA_KARHUTLA).map(p => asal + "/" + p)];
+  const banjir = rute.startsWith("/banjir"), lain = DATA_LAIN[rute], aset = [...skripCache.get(rute), ...(lain || (banjir ? DATA_BANJIR : rute === "/tentang" ? [] : DATA_KARHUTLA)).map(p => asal + "/" + p)];
   await Promise.all(aset.map(ambil));
-  if (!banjir && rute !== "/tentang" && Math.random() < P_TITIK) await ambil(asal + "/api/titik");
+  if (!banjir && !lain && rute !== "/tentang" && Math.random() < P_TITIK) await ambil(asal + "/api/titik");
   if (Math.random() < P_WARGA) await ambil(asal + `/api/warga?jam=24&bbox=${[100, -5, 120, 5].map(v => v + Math.floor(Math.random() * 3)).join(",")}`);
 }
 

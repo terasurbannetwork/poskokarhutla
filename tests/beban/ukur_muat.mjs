@@ -45,9 +45,17 @@ async function ukur(url) {
   return {g, total: Object.values(g).reduce((a, b) => a + b, 0), lokal: g.data + g["js/css"] + g.html, n: selesai.length, besar: besar.slice(0, 12)};
 }
 
+/* Plafon muatan lokal (KB gzip) per rute utama, diukur 19 Okt 2026 lewat wrangler dev --local, lalu diberi ruang ~15 %.
+   Terukur: gempa 418, cuaca 597, udara 618, gunungapi 656 (provinsi.json terunduh dua kali), kekeringan 480, banjir 1326, karhutla 2836.
+   Lewat plafon = exit 1: data/skrip baru memberatkan layar ponsel; kecilkan dulu, jangan naikkan angka ini untuk meloloskan. */
+const PLAFON_KB = {"/": 3300, "/banjir/": 1550, "/gempa/": 480, "/cuaca/": 690, "/udara/": 710, "/gunungapi/": 760, "/kekeringan/": 550};
+let lewat = 0;
 const kb = n => (n / 1024).toFixed(0) + " KB";
 for (const j of jalur) {
   const r = await ukur(asal + j);
   console.log(`\n${j}: lokal ${kb(r.lokal)} (data ${kb(r.g.data)}, js/css ${kb(r.g["js/css"])}, html ${kb(r.g.html)}) + luar ${kb(r.g.luar)}; ${r.n} permintaan`);
   for (const [p, n] of r.besar) console.log(`   ${kb(n).padStart(8)}  ${p}`);
+  const batas = PLAFON_KB[j];
+  if (batas && r.lokal / 1024 > batas) { lewat++; console.log(`   MELEBIHI PLAFON ${batas} KB: muatan awal ${j} terlalu berat; kecilkan data/skrip, jangan naikkan plafon`); }
 }
+process.exitCode = lewat ? 1 : 0;

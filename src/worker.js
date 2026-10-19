@@ -272,7 +272,11 @@ async function buat(env, req, url, kini) {
     VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
     .bind(id, o.jenis, o.sub, bahaya, lat, lon, t.teks, JSON.stringify(d.detail), jumlah, kini, kini + J.umur * JAM, api.dekat, api.laci, induk, durasi, ip, await sha(token))];
   if (wa) st.push(env.DB.prepare("INSERT INTO kontak (laporan_id, wa, dibuat) VALUES (?, ?, ?)").bind(id, wa, kini));
-  await env.DB.batch(st);
+  try { await env.DB.batch(st); }
+  catch (e) {   // mis. CHECK D1 lama (migrasi belum diterapkan) atau D1 sesaat gagal: detail ke log, bukan ke publik
+    console.error("simpan laporan", bahaya, o.jenis, e?.message);
+    return gagal(503, "Laporan belum bisa disimpan. Coba lagi beberapa menit lagi.", {"retry-after": "600"});
+  }
   return json({id, token, induk, durasi_buruk: durasi, titik_panas: !!api.dekat, laci: api.laci}, 201);
 }
 

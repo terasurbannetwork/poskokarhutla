@@ -35,6 +35,7 @@ const Peta = {
     const ro = new ResizeObserver(lebar); ro.observe($(".panel")); ro.observe($(".tools")); lebar();
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
     peta.touchZoomRotate.disableRotation();
+    import("../inti/peta/konteks.js").then(m => m.pasang(peta, "gunungapi", {lewati: ["sekolah", "fasilitas"]})).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
@@ -75,6 +76,7 @@ const Peta = {
     peta.on("mouseleave", "titik", () => { peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); });
     peta.on("click", "titik", e => { const g = cari(e.features[0].properties.nama); g && Detail.buka(g); });
     /* sentuh: tanpa hover, ketuk langsung membuka detail (di atas) */
+    $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");   /* tombol Overlay di layar sempit tak punya penangan (ditemukan 19 Okt 2026) */
     document.querySelector("#lapis").addEventListener("change", e => { const k = e.target.dataset.l; if (!k) return;
       if (k === "satelit") this.satelit();
       const ids = {gunung: ["titik"], radius: ["radius-isi", "radius-garis"], nama: ["nama"], satelit: ["satelit"]}[k] || [];

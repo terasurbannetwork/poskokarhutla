@@ -134,7 +134,7 @@ uji("masukan salah DITOLAK dan tidak menulis apa pun", async () => {
     [{jenis: "gempa", sub: "x"}, 400, "jenis di luar enum"],
     [{jenis: "listrik", sub: "habis"}, 400, "sub milik jenis lain"],
     [{jenis: "api", sub: "kecil", bahaya: "banjir"}, 400, "jenis karhutla di bahaya banjir"],
-    [{jenis: "listrik", sub: "padam", bahaya: "gempa"}, 400, "bahaya di luar enum"],
+    [{jenis: "listrik", sub: "padam", bahaya: "bukan_bahaya"}, 400, "bahaya di luar enum"],
     [{jenis: "listrik", sub: "padam", lat: 10, lon: 113}, 400, "lat 10 di luar Indonesia"],
     [{jenis: "listrik", sub: "padam", lat: -2, lon: 150}, 400, "lon 150 di luar Indonesia"],
     [{jenis: "listrik", sub: "padam", lat: "abc"}, 400, "lat bukan angka"],
@@ -162,6 +162,47 @@ uji("masukan salah DITOLAK dan tidak menulis apa pun", async () => {
   assert.equal((await panggil("GET", "/api/warga?jenis=gempa")).status, 400, "filter jenis tak dikenal harus ditolak");
   assert.equal((await panggil("GET", "/api/warga?bbox=1,2,3")).status, 400, "bbox 3 angka harus ditolak");
   assert.equal(await jumlahBaris(), n0, `masukan salah menulis ${(await jumlahBaris()) - n0} baris`);
+});
+
+uji("Lapor Warga multi-bahaya: tiap bencana registry menerima jenisnya, tersimpan, dan tampil; bahaya/jenis salah 400", async () => {
+  const kasus = [["gempa", "guncang", "kuat"], ["gempa", "rusak_gedung", "retak"], ["gempa", "tsunami_tanda", "surut"], ["tsunami", "tsunami_tanda", "ombak"],
+    ["gunungapi", "abu", "tebal"], ["gunungapi", "lahar", "sungai"], ["gunungapi", "gemuruh", "dentuman"],
+    ["cuaca", "pohon_tumbang", "jalan"], ["cuaca", "atap_rusak", "sebagian"], ["cuaca", "puting_beliung", "terlihat"], ["cuaca", "hujan_es", "besar"],
+    ["udara", "asap_tebal", "tebal"], ["udara", "sesak_napas", "sesak"], ["udara", "jarak_pandang", "p500"],
+    ["kekeringan", "sumur_kering", "kering"], ["kekeringan", "gagal_panen", "sebagian"], ["kekeringan", "antre_air", "antre"], ["kekeringan", "listrik", "padam"]];
+  const dikenal = new Set(REG.bencana.flatMap(b => b.lapor_bahaya));
+  for (const [bahaya, jenis, sub] of kasus) {
+    assert.ok(dikenal.has(bahaya), `${bahaya} tidak ada di lapor_bahaya registry`);
+    const r = await kirim({jenis, sub, bahaya, ...titikBaru()});
+    assert.equal(r.status, 201, `${bahaya}/${jenis}:${sub} = ${r.status} ${r.teks}`);
+    const baris = await DB.prepare("SELECT bahaya, jenis, sub FROM laporan WHERE id = ?").bind(r.j.id).first();
+    assert.deepEqual({...baris}, {bahaya, jenis, sub}, "baris D1 harus persis yang dikirim");
+  }
+  const d = await panggil("GET", "/api/warga?bahaya=kekeringan&jenis=antre_air");
+  assert.equal(d.status, 200); assert.ok(d.j.features.some(f => f.properties.jenis === "antre_air" && f.properties.bahaya === "kekeringan"), "laporan kekeringan harus muncul di daftar");
+  assert.equal((await panggil("GET", "/api/warga?bahaya=bukan_bahaya")).status, 400, "filter bahaya tak dikenal harus ditolak");
+  const n0 = await jumlahBaris();
+  for (const [o, sebab] of [[{jenis: "guncang", sub: "kuat", bahaya: "cuaca"}, "jenis gempa di bahaya cuaca"], [{jenis: "hujan_es", sub: "besar", bahaya: "gempa"}, "jenis cuaca di bahaya gempa"],
+    [{jenis: "guncang", sub: "kuat", bahaya: "umum"}, "jenis gempa di bahaya umum"], [{jenis: "guncang", sub: "meluap", bahaya: "gempa"}, "sub milik jenis lain"],
+    [{jenis: "abu", sub: "tebal", bahaya: "bukan_bahaya"}, "bahaya tak dikenal"], [{jenis: "sumur_kering", sub: "kering", bahaya: "karhutla"}, "jenis kekeringan di karhutla"]]) {
+    const r = await kirim({...o, ...titikBaru()}); assert.equal(r.status, 400, `${sebab}: ${r.status} ${r.teks}`);
+  }
+  assert.equal(await jumlahBaris(), n0, "penolakan tidak boleh menulis baris");
+});
+
+uji("D1 dengan CHECK lama (tanpa 0020) + POST bahaya baru = 503 berpesan, tanpa baris", async () => {
+  const mf3 = new Miniflare({...opsi(), d1Databases: {DB: "uji-skema-lama"}});
+  try {
+    const D3 = await mf3.getD1Database("DB");
+    const lama = (await import("node:fs")).readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && f < "0020").sort()
+      .map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    await D3.batch(pecah(lama).map(s => D3.prepare(s)));
+    const r = await mf3.dispatchFetch("http://warga.lokal/api/warga", {method: "POST", headers: {"content-type": "application/json", origin: "http://warga.lokal", "cf-connecting-ip": ipBaru()},
+      body: JSON.stringify({jenis: "guncang", sub: "kuat", bahaya: "gempa", lat: -2.5, lon: 113.9})});
+    const j = await r.json();
+    assert.equal(r.status, 503, JSON.stringify(j)); assert.match(j.galat, /Coba lagi/); assert.doesNotMatch(j.galat, /D1|skema|migrasi|CHECK/, "detail internal tidak bocor ke publik");
+    assert.equal((await D3.prepare("SELECT count(*) n FROM laporan").first()).n, 0, "tidak boleh ada baris");
+  } finally { await mf3.dispose(); }
 });
 
 uji("tautan dan nomor HP dibuang dari teks publik", async () => {

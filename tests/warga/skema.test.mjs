@@ -7,6 +7,7 @@ import {DatabaseSync} from "node:sqlite";
 import {migrasi, AKAR} from "./_bantu.mjs";
 import {readFileSync, readdirSync} from "node:fs";
 import {JENIS, BAHAYA} from "../../public/informasi_jenis.js";
+import REGISTRY from "../../src/bencana.generated.js";
 
 const db = new DatabaseSync(":memory:");
 db.exec("PRAGMA foreign_keys = ON;");
@@ -60,7 +61,7 @@ uji("jenis khusus hanya di bahayanya, jenis umum di semua bahaya", () => {
     if (boleh) lapor({jenis: j, sub: s, bahaya: b, detail: isianSah(j)});
     else assert.throws(() => lapor({jenis: j, sub: s, bahaya: b, detail: isianSah(j)}), /CHECK constraint/, `${j} di bahaya ${b} harus ditolak (katalog: ${d.bahaya})`);
   }
-  ditolak(() => lapor({bahaya: "gempa"}), "bahaya di luar enum");
+  ditolak(() => lapor({bahaya: "bukan_bahaya"}), "bahaya di luar enum");
 });
 
 uji("koordinat, teks, detail, jumlah, waktu: nilai salah ditolak", () => {
@@ -224,4 +225,56 @@ uji("migrasi 0017: stat_hari menerima id bencana baru, data lama utuh, enum teta
   db.exec(baca(berkas[i]));   // dijalankan ulang di atas data: tidak melempar, data tetap
   assert.equal(db.prepare("SELECT count(*) n FROM stat_hari").get().n, 2 + 7);
   assert.deepEqual(db.prepare("SELECT name FROM sqlite_master WHERE name LIKE 'stat_hari%' AND type = 'table'").all().map(r => r.name), ["stat_hari"], "tabel sementara harus hilang");
+});
+
+uji("BAHAYA = lapor_bahaya registry + umum, tiap bahaya registry diterima CHECK, dan tiap bencana punya jenis khusus", () => {
+  const dariRegistry = new Set(["umum", ...REGISTRY.bencana.flatMap(b => b.lapor_bahaya)]);
+  assert.deepEqual(new Set(Object.keys(BAHAYA)), dariRegistry, "BAHAYA harus persis lapor_bahaya registry + umum");
+  for (const b of Object.keys(BAHAYA)) lapor({bahaya: b});   // jenis umum (listrik:padam) di tiap bahaya
+  for (const b of REGISTRY.bencana) assert.ok(Object.values(JENIS).some(d => d.bahaya && b.lapor_bahaya.some(x => d.bahaya.includes(x))), `bencana ${b.id} belum punya jenis laporan khusus`);
+});
+
+/* 0020 dijalankan di atas laporan yang sudah berisi beserta anaknya (kontak, suara), seperti produksi */
+uji("migrasi 0020: laporan multi-bahaya, data+anak+induk utuh, indeks/trigger kembali, CHECK menjaga, idempoten", () => {
+  const berkas = readdirSync(AKAR + "/migrations").filter(f => f.endsWith(".sql")).sort(), i = berkas.indexOf("0020_laporan_multi_bahaya.sql");
+  assert.ok(i > 0, "0020_laporan_multi_bahaya.sql tidak ada");
+  const d = new DatabaseSync(":memory:"), baca = f => readFileSync(AKAR + "/migrations/" + f, "utf8");
+  d.exec("PRAGMA foreign_keys = ON;");
+  for (const f of berkas.slice(0, i)) d.exec(baca(f));
+  const ins = (id, o = {}) => { const r = {jenis: "minta", sub: "air", bahaya: "banjir", induk: null, jumlah: 3, ...o};
+    d.prepare(`INSERT INTO laporan (id, jenis, sub, bahaya, lat, lon, teks, detail, jumlah, dibuat, kedaluwarsa, induk, ip_hash, token_hash)
+      VALUES (?, ?, ?, ?, -2.5, 113.9, 'tes', '{}', ?, ?, ?, ?, ?, ?)`).run(id, r.jenis, r.sub, r.bahaya, r.jumlah, T0, T0 + JAM, r.induk, H, H); };
+  ins("lama0001"); ins("lama0002", {jenis: "listrik", sub: "padam", bahaya: "umum", jumlah: null, induk: "lama0001"});
+  d.prepare("INSERT INTO kontak (laporan_id, wa, dibuat) VALUES ('lama0001', '6281234567890', ?)").run(T0);
+  for (const [k, ip] of [["konfirmasi", "b"], ["aduan", "c"]]) d.prepare("INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES ('lama0001', ?, ?, ?, ?)").run(ip.repeat(64), k, k === "aduan" ? "spam" : "benar", T0);
+  ditolak(() => ins("lama0003", {jenis: "guncang", sub: "kuat", bahaya: "gempa", jumlah: null}), "sebelum 0020 'gempa' ditolak (pembanding)");
+  const foto = () => ({l: d.prepare("SELECT * FROM laporan ORDER BY id").all(), k: d.prepare("SELECT * FROM kontak").all(), s: d.prepare("SELECT * FROM suara ORDER BY ip_hash").all()});
+  const sebelum = foto();
+  d.exec(baca(berkas[i]));
+  assert.deepEqual(foto(), sebelum, "laporan, kontak (CASCADE tak boleh menghapus), suara, dan induk harus utuh");
+  const sql = t => d.prepare("SELECT name FROM sqlite_master WHERE type = ? AND tbl_name IN ('laporan', 'kontak', 'suara') ORDER BY name").all(t).map(r => r.name);
+  assert.deepEqual(sql("index").filter(n => n.startsWith("laporan_")), ["laporan_aktif", "laporan_induk", "laporan_ip", "laporan_lokasi"]);
+  assert.deepEqual(sql("trigger"), ["kontak_hanya_bantuan", "suara_hapus", "suara_tambah", "suara_ubah"]);
+  ditolak(() => d.prepare("INSERT INTO kontak (laporan_id, wa, dibuat) VALUES ('lama0002', '6281234567891', ?)").run(T0), "trigger kontak_hanya_bantuan hidup lagi");
+  d.prepare("INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES ('lama0001', ?, 'aduan', 'palsu', ?)").run("d".repeat(64), T0);
+  assert.equal(d.prepare("SELECT aduan FROM laporan WHERE id = 'lama0001'").get().aduan, 2, "trigger suara_tambah hidup lagi");
+  d.prepare("DELETE FROM laporan WHERE id = 'lama0001'").run();
+  assert.equal(d.prepare("SELECT count(*) n FROM kontak").get().n, 0, "FK CASCADE ke kontak hidup lagi");
+  assert.equal(d.prepare("SELECT induk FROM laporan WHERE id = 'lama0002'").get().induk, null, "FK SET NULL induk hidup lagi");
+  for (const [b, j, s] of [["gempa", "guncang", "kuat"], ["tsunami", "tsunami_tanda", "surut"], ["gunungapi", "lahar", "meluap"], ["cuaca", "hujan_es", "besar"], ["udara", "sesak_napas", "sesak"], ["kekeringan", "antre_air", "habis"]])
+    ins("baru" + b, {jenis: j, sub: s, bahaya: b, jumlah: null});
+  for (const [b, j, s, sebab] of [["bukan_bahaya", "listrik", "padam", "bahaya di luar enum"], ["cuaca", "guncang", "kuat", "jenis gempa di bahaya cuaca"], ["gempa", "guncang", "sub_ngawur", "sub di luar katalog"], ["banjir", "api", "kecil", "jenis karhutla di banjir"]])
+    ditolak(() => ins("salah" + b, {jenis: j, sub: s, bahaya: b, jumlah: null}), sebab);
+  d.exec(baca(berkas[i]));   // dijalankan ulang di atas data: tidak melempar, data tetap
+  assert.equal(d.prepare("SELECT count(*) n FROM laporan").get().n, 1 + 6);
+  assert.deepEqual(d.prepare("SELECT name FROM sqlite_master WHERE name LIKE '%\\_cad' ESCAPE '\\'").all(), [], "tabel cadangan harus hilang");
+});
+
+uji("CHECK laporan.bahaya di migrasi terakhir yang membangun laporan = BAHAYA (dari registry), dua arah", () => {
+  const berkas = readdirSync(AKAR + "/migrations").filter(f => f.endsWith(".sql")).sort().reverse().find(f => /CREATE TABLE laporan \(/.test(readFileSync(AKAR + "/migrations/" + f, "utf8")));
+  const m = readFileSync(AKAR + "/migrations/" + berkas, "utf8").match(/bahaya TEXT NOT NULL CHECK \(bahaya IN \(([^)]*)\)\)/);
+  assert.ok(m, `${berkas} tidak memuat CHECK bahaya IN (...)`);
+  const sql = new Set([...m[1].matchAll(/'([^']+)'/g)].map(x => x[1])), kode = new Set(Object.keys(BAHAYA));
+  assert.deepEqual([...kode].filter(b => !sql.has(b)), [], `BAHAYA (registry) punya slug yang belum ada di CHECK ${berkas}: buat migrasi baru yang membangun ulang laporan`);
+  assert.deepEqual([...sql].filter(b => !kode.has(b)), [], `CHECK ${berkas} punya bahaya yang tak ada di registry`);
 });

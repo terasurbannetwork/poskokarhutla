@@ -18,7 +18,12 @@ export const IKON = {
   perisai: '<path d="M12 3 4 6v6c0 5 3.5 8 8 9 4.5-1 8-4 8-9V6z"/>',
   debit: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>',
   rasio: '<path d="M5 19 19 5M7 8.5v.5M17 15v.5"/>',
+  orang: '<circle cx="9" cy="8" r="3"/><circle cx="17" cy="9" r="2.5"/><path d="M3 20c0-3.5 2.5-6 6-6s6 2.5 6 6M15 14.5c3 0 6 2 6 5.5"/>',
+  gedung: '<path d="M4 21V5l8-2v18M12 9l8 2v10M8 8v.5M8 12v.5M8 16v.5M16 14v.5M16 18v.5"/>',
+  jalan: '<path d="M8 3 4 21M16 3l4 18M12 5v3M12 11v3M12 17v3"/>',
 };
+/* warna ubin lapisan konteks (inti/peta/konteks.js); sama dengan Overlay karhutla */
+const KONTEKS = {kt_penduduk: ["#5f2b5f", "#e58ab0", "orang"], kt_fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], kt_jalan: ["#4b5563", "#c7ccd4", "jalan"]};
 const ik = (k, w) => `<i class="tp-ik"${w ? ` style="background:${w}1f;color:${w}"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IKON[k] || IKON.peta}</svg></i>`;
 const angka = n => typeof n === "number" ? n.toLocaleString("id-ID") : n;
 
@@ -41,7 +46,7 @@ export function ubinLapis(L, {katalog = {}, pendek = {}} = {}) {
   if (!L) return;
   const jalan = () => L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
-    ls.forEach(l => { const i = l.querySelector("input"), [a, b, k] = katalog[i?.dataset.l] || ["#5f6fb0", "#a9b6e6", "peta"], t = l.textContent.trim(), pn = pendek[i?.dataset.l] || t;
+    ls.forEach(l => { const i = l.querySelector("input"), [a, b, k] = katalog[i?.dataset.l] || KONTEKS[i?.dataset.l] || ["#5f6fb0", "#a9b6e6", "peta"], t = l.textContent.trim(), pn = pendek[i?.dataset.l] || t;
       l.className = "ubin"; l.textContent = ""; l.append(i);
       l.insertAdjacentHTML("beforeend", `<i class="ub-th" style="--a:${a};--b:${b}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">${IKON[k] || IKON.peta}</svg></i><span>${esc(pn)}</span>`);
       if (pn !== t) l.dataset.tip = `<b>${esc(t)}</b>`; gr.append(l); }); });
