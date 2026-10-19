@@ -22,7 +22,10 @@ const kelasDalam = d => d == null ? -1 : d < 60 ? 0 : d <= 300 ? 1 : 2;
 const TSUNAMI = {1: ["Tsunami Waspada", "#e0b400"], 2: ["Tsunami Siaga", "#e8743b"], 3: ["Tsunami Awas", "#d64545"]};
 /* teks wilayah BMKG "Pusat gempa berada di darat 21 km Barat Daya Kota Bogor" -> "Darat 21 km Barat Daya Kota Bogor" */
 const ARAH_EN = {utara: "N", timurlaut: "NE", timur: "E", tenggara: "SE", selatan: "S", baratdaya: "SW", barat: "W", baratlaut: "NW"};
-const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa berada di\s*/i, "").trim(); if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
+/* teks mentah BMKG "Pusat gempa 60 km TimurLaut LABUANBAJO-NTT": arah kamel dipisah, tempat KAPITAL dijadikan huruf judul, akhiran provinsi dibuang, KAB- jadi "Kab.". Spasi nama tempat yang menyatu (LABUANBAJO) tak bisa dipulihkan tanpa kamus. */
+const rapiTempat = r => { if (r !== r.toUpperCase() || !/[A-Z]/.test(r)) return r; const p = r.split("-").map(x => x.trim()).filter(Boolean); if (p.length > 1 && /^[A-Z]{2,5}$/.test(p[p.length - 1])) p.pop();
+  return p.map(x => x === "KAB" ? "Kab." : x[0] + x.slice(1).toLowerCase()).join(" ").replace(/^Kab\. /, "Kab. "); };
+const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "").replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
   /* EN: "darat 21 km Barat Daya Kota Bogor" -> "21 km SW of Kota Bogor (onshore)"; nama tempat BMKG tetap apa adanya */
   const m = window.BAHASA === "en" && s.match(/^(darat|laut)?\s*(\d+)\s*km\s+(utara|timur\s?laut|timur|tenggara|selatan|barat\s?daya|barat\s?laut|barat)\s+(.+)$/i);
   if (m) return `${m[2]} km ${ARAH_EN[m[3].toLowerCase().replace(/\s/g, "")]} of ${m[4]}${m[1] ? (/^d/i.test(m[1]) ? " (onshore)" : " (offshore)") : ""}`;
