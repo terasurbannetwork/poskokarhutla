@@ -1,9 +1,9 @@
-"""Titik panas FIRMS yang BUKAN kebakaran vegetasi -> public/data/titik_palsu.json (daftar sumber statis; belum dipasang ke pipeline titik).
+"""Titik panas FIRMS yang BUKAN kebakaran vegetasi -> public/data/titik_palsu.json (daftar sumber statis; dipasang di harian.py, bendera env TITIK_PALSU=0 mematikan).
 
 Data NRT (yang dipakai harian.py) tidak membawa kolom `type`, sedangkan arsip standar (SP) membawanya (0 vegetasi, 1 gunung api,
 2 sumber panas tetap darat, 3 lepas pantai). Skrip ini menurunkan daftar sel dari ARSIP, lalu titik NRT dicocokkan ke daftar itu.
 
-Aturan (angka kalibrasi di `kalibrasi`, diukur pada arsip VIIRS S-NPP 2019 dan 2023-2025):
+Aturan (diukur pada arsip VIIRS S-NPP 2019 dan 2023-2025: sel vegetasi murni dengan >= 30 hari per tahun hanya 41, 13, 11, 6 per tahun dan tak ada yang lolos 2 tahun; uji OKI di bawah: 1 sel di kotak OKI, -3,19/104,60, tertandai karena menyala 12 bulan di 2015 dan 2019 dan FIRMS menandainya tipe 2):
   sel 0,01 derajat (~1,1 km; piksel 375 m bergeser antar lintasan sehingga sel 375 m terpecah) menyala
   >= HARI_MIN hari dalam setahun, tersebar di >= BULAN_MIN bulan, pada >= TAHUN_MIN tahun berbeda.
   Kebakaran gambut besar (OKI 2015/2019) menyala berminggu-minggu di musim kemarau saja (3-5 bulan) dan tidak di sel yang sama
@@ -15,7 +15,7 @@ lewat tipe FIRMS 2 dan pola persisten.
 
 Pakai:  python3 scripts/data/titik_palsu.py bangun <viirs_2023.csv> <viirs_2024.csv> ...   (CSV dari firms.py, boleh satu per tahun)
         python3 scripts/data/titik_palsu.py dampak <csv_30hari>                            hitung titik terbuang di CSV itu
-        python3 scripts/data/titik_palsu.py uji
+        python3 scripts/data/titik_palsu.py uji   (bila data/raw/firms/viirs_*.csv ada: uji out-of-sample, sel OKI tak boleh tertandai)
 """
 import csv, collections, datetime as dt, json, math, os, sys
 
@@ -151,6 +151,18 @@ def uji():
     assert jenis(-3.0, 120.0, None, [])[0] == "persisten"
     s_, j_ = sel_industri()
     assert not any(v == "kawah" for v in j_.values()) and set(j_) == s_
+    import glob
+    arsip = sorted(glob.glob(os.path.join(AKAR, "data/raw/firms/viirs_*.csv")))
+    if len(arsip) >= 2:
+        c, ty = hitung(arsip)
+        oki = lambda k: -4.0 <= k[0] / 100 <= -2.5 and 104.5 <= k[1] / 100 <= 106.5   # OKI/Sumsel pesisir: kebakaran gambut 2015, 2019
+        ramai = [k for k, ys in c.items() if oki(k) and any(len(h) >= 30 for h, _ in ys.values())]
+        kena = [k for k in statis(c) if oki(k)]
+        # yang tertandai di kotak OKI hanya boleh sumber yang FIRMS sendiri tandai bukan vegetasi (tipe 1/2/3), bukan api gambut
+        assert ramai and all(ty[k] and ty[k].most_common(1)[0][0] != "0" for k in kena), "sel OKI vegetasi tertandai statis"
+        print(f"  OKI: {len(ramai)} sel >= 30 hari/tahun (arsip {len(arsip)} tahun), tertandai statis {len(kena)} (semua tipe FIRMS non-vegetasi), api gambut 0")
+    else:
+        print("  (arsip data/raw/firms/viirs_*.csv tak ada: uji OKI dilewati)")
     print("titik_palsu.py: uji lulus")
 
 

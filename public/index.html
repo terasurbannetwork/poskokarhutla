@@ -3780,7 +3780,8 @@ const Insight = {
   kartu(ids) { return ids.map(id => { const g = this.gambar(id); return g ? `<div data-ex="${id}"${this.PENUH.has(id) ? ' class="penuh"' : ""}>${g}</div>` : ""; }).join(""); },
   /* Peluang bahaya api: berkas CI hanya ditimpa bila ada hari ke depan, jadi dibuang bila semua harinya sudah lewat (tanggal WIB) */
   exPeluang() { const d = this.data.pel, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
-    if (!d || !Object.values(d.wilayah).some(w => (w.hari || []).some(h => h.t >= kini))) return "";
+    /* ansambel FWI > 2 hari = tenggang prakiraan basi; berkas lama tanpa ansambel_dibuat ikut disembunyikan */
+    if (!d || !(Date.now() - Date.parse(d.ansambel_dibuat) <= 2 * 864e5) || !Object.values(d.wilayah).some(w => (w.hari || []).some(h => h.t >= kini))) return "";
     return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla"}); },
   /* Titik panas kumulatif tahun berjalan vs pembanding per minggu (public/data/kumulatif.json; dua dasar sensor tidak dicampur) */
   exKumulatif() {
@@ -3806,7 +3807,7 @@ const Insight = {
     const jd = esc(String((s15 ? A.kalimat : A.kalimat_rerata) || "").replace(/\.$/, "")).replace(/\d[\d.,]*%/g, this.hl);
     if (!jd) return "";
     return this.ex(jd, "", "", `<div class="tw sk"><svg viewBox="0 0 ${W} ${B + 24}" role="img" aria-label="Titik panas kumulatif ${esc(A.nama)} ${th} dibanding tahun pembanding" style="min-width:${innerWidth < 640 ? 560 : 0}px">${g}</svg></div>`,
-      "Sumber: NASA FIRMS (MODIS, VIIRS)", sel + this.seg("kumM", [["all", "Semua satelit (vs 2019, 2023, rerata)"], ["s15", "Setara 2015 (MODIS + S-NPP)"]])); },
+      "Sumber: NASA FIRMS (MODIS, VIIRS)", sel + this.seg("kumM", innerWidth < 640 ? [["all", "Semua satelit"], ["s15", "Setara 2015"]] : [["all", "Semua satelit (vs 2019, 2023, rerata)"], ["s15", "Setara 2015 (MODIS + S-NPP)"]])); },
   async render() {
     const el = $("#insight");
     if (!this.data.mo) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan insight…</div>`;

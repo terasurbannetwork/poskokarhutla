@@ -9,7 +9,8 @@ import {fileURLToPath} from "node:url";
 
 const akar = path.join(path.dirname(fileURLToPath(import.meta.url)), "..", "..");
 const baca = p => fs.readFileSync(path.join(akar, p), "utf8");
-const D = JSON.parse(baca("public/gempa/data/peluang.json"));
+// fixture beku berbentuk kontrak peluang/1: pipeline menulis ulang public/gempa/data/peluang.json, literal uji tak boleh ikut berubah
+const D = JSON.parse(baca("tests/agen/fixtures/peluang.json"));
 const ctx = vm.createContext({document: {addEventListener() {}}, console});
 for (const f of ["format.js", "kartu.js", "peluang.js"]) vm.runInContext(baca("public/inti/" + f), ctx, {filename: f});
 const P = vm.runInContext("Peluang", ctx);

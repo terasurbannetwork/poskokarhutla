@@ -9,7 +9,7 @@ Pola emisi.app (udara dilacak mundur dari kota penerima, asap dijumlahkan dari t
             emisi   = atribusi.skala(kompleks, tengah): FRP 24 jam x 0,368 kg/MJ x EF gambut 17,3 atau hutan 9,1 g/kg (atribusi.ASUMSI, sumber di sana).
             1/jarak = pengenceran rezim tercampur: C ~ Q / (sigma_y u H) dengan sigma_y = 0,1 x jarak (atribusi.MEANDER).
   hujan   : pencucian TIDAK dipakai. Tak ada koefisien pencucian bersumber di repo; menebaknya sama dengan mengarang. Ditulis di batasan.
-Bobot relatif (persen dari api yang dilewati), bukan konsentrasi. Kota yang kurang dari 20% jalurnya melewati api dibuang (bukan 0%).
+Bobot relatif (persen dari api yang dilewati), bukan konsentrasi. Kota dibuang (bukan 0%) bila kurang dari 2 dari 5 waktu tiba melewati api, atau PM2,5 prakiraannya < 30 µg/m3.
 Pakai: python3 scripts/udara/asal.py   |   python3 scripts/udara/asal.py uji
 """
 import datetime as dt
@@ -26,11 +26,13 @@ from wilayah import PROVINSI
 
 TIBA = (24, 36, 48, 60, 72)      # jam sejak angin.json[jam][0]
 MAKS_MUNDUR = 96
-MIN_KENA = 0.2        # kota ditulis hanya bila >= 20% dari 15 jalurnya melewati api; di bawah itu asalnya terlalu kebetulan
+MIN_TIBA = 2          # kota ditulis hanya bila >= 2 dari 5 waktu tiba punya jalur yang melewati api; di bawah itu asalnya kebetulan
+PM_MIN = 30           # kota dengan PM2,5 24 jam prakiraan tertinggi (3 hari) di bawah ini tidak diberi atribusi
 SUB = 4
 CEL = 0.25
 TENGAH = (1, 1, 1)
 BATASAN = [
+    "Persen dinormalkan ke total bobot api yang dilewati jalur (jumlah 100%), jadi 100% berarti semua api yang dilewati ada di provinsi itu; dasar jumlah jalur yang kena tertulis di kalimat.",
     "Bagian asap adalah bobot relatif dari api yang dilewati jalur angin mundur (kedekatan x emisi api / jarak), bukan konsentrasi atau hasil ukur.",
     "Angin hanya tersedia 72 jam dari awal prakiraan, jadi jalur mundur paling panjang 72 jam; api yang lebih jauh ke belakang tidak terhitung.",
     "Api dianggap terus menyala seperti 24 jam terakhir; hujan yang mencuci asap tidak dihitung karena tidak ada koefisien pencucian bersumber.",
@@ -79,16 +81,16 @@ def paparan(jalur, idx, kota, emisi):
     return out
 
 
-def kalimat(k, prov, komp):
+def kalimat(k, prov, komp, kena):
     p, c = prov[0], komp[0]
-    t = f"Asap di {k['nama']} paling banyak dari {PROVINSI.get(p[0], p[0])} ({p[1]}%)"
+    t = f"Asap yang sampai di {k['nama']} dari api yang dilewati angin paling banyak dari {PROVINSI.get(p[0], p[0])} ({p[1]}%, {kena[0]} dari {kena[1]} jalur)"
     t += f", terutama kompleks api di {c['kab']} ({c['persen']}%{', gambut' if c['gambut'] else ''})"
     if c["konsesi"]:
         t += f", titik panasnya di areal konsesi tercatat {c['konsesi'][0]}"
     return t + "."
 
 
-def bangun(kota, A, src, t):
+def bangun(kota, A, src, t, pm_maks=None):
     jam0 = (t - alat.dari_iso(A["jam"][0])).total_seconds() / 3600
     akhir = (len(A["jam"]) - 1) * 3
     idx = indeks_api(src)
@@ -96,18 +98,23 @@ def bangun(kota, A, src, t):
     info = {s["id"]: s for s in src}
     out = {}
     for k in kota:
-        tot, n_kena, n = {}, 0, 0
+        if pm_maks is not None and pm_maks.get(k["kode"], 0) < PM_MIN:
+            continue
+        tot, n_kena, n, tiba_kena = {}, 0, 0, 0
         for tiba in TIBA:
             if tiba > akhir:
                 continue
+            ada = False
             for l in range(len(A["lapis"])):
                 n += 1
                 p = paparan(mundur(A, l, k["lon"], k["lat"], tiba), idx, k, emisi)
                 n_kena += bool(p)
+                ada |= bool(p)
                 for i, v in p.items():
                     tot[i] = tot.get(i, 0.0) + v
+            tiba_kena += ada
         s = sum(tot.values())
-        if s <= 0 or n_kena < MIN_KENA * n:
+        if s <= 0 or tiba_kena < MIN_TIBA:
             continue
         pr = {}
         for i, v in tot.items():
@@ -119,7 +126,7 @@ def bangun(kota, A, src, t):
         komp = [c for c in komp if c["persen"] >= 1]
         if not prov or not komp:
             continue
-        out[k["kode"]] = {"nama": k["nama"], "prov": k["prov"], "prov_asal": prov, "kompleks": komp, "jalur_kena": [n_kena, n], "kalimat": kalimat(k, prov, komp)}
+        out[k["kode"]] = {"nama": k["nama"], "prov": k["prov"], "prov_asal": prov, "kompleks": komp, "jalur_kena": [n_kena, n], "kalimat": kalimat(k, prov, komp, [n_kena, n])}
     return out
 
 
@@ -132,7 +139,8 @@ def main():
     for s in src:
         s["kab"] = kab.get(s["id"])
     kota = alat.kota()
-    kota_asal = bangun(kota, A, src, t)
+    pm_maks = {k["kode"]: max(k["r24"]) for k in alat.keluaran("prakiraan.json")["kota"]}
+    kota_asal = bangun(kota, A, src, t, pm_maks)
     if not kota_asal:
         raise RuntimeError("asal: tak ada kota yang jalurnya melewati api")
     d = {"v": 1, "dibuat": alat.iso(dt.datetime.now(dt.timezone.utc)), "mulai": alat.iso(t), "n_api": len(src),
@@ -158,10 +166,11 @@ def uji():
     assert list(o) == ["1"], "kota tanpa api di jalur dibuang"
     r = o["1"]
     assert r["prov_asal"] == [["16", 100]] and r["kompleks"][0]["id"] == "H" and r["kompleks"][0]["konsesi"] == ["PT A"] and r["jalur_kena"] == [15, 15], r
-    assert r["kalimat"].startswith("Asap di Kota X paling banyak dari Sumatera Selatan (100%), terutama kompleks api di OKI") and "—" not in r["kalimat"], r["kalimat"]
+    assert r["kalimat"].startswith("Asap yang sampai di Kota X dari api yang dilewati angin paling banyak dari Sumatera Selatan (100%, 15 dari 15 jalur), terutama kompleks api di OKI") and "—" not in r["kalimat"], r["kalimat"]
     # dua api hulu: yang lebih besar dan lebih dekat menang, persen jumlah <= 100
     src.append(mk("H2", 103.9, 0.0, 3000, "62", "Kobar", atribusi.EF_HUTAN, []))
     r = bangun(kota, A, src, t)["1"]
+    assert "1" not in bangun(kota, A, src, t, {"1": 10}), "PM < 30 tanpa atribusi"
     assert sum(x[1] for x in r["prov_asal"]) in range(98, 103) and len(r["kompleks"]) == 2
     print("asal.py: uji lulus")
 

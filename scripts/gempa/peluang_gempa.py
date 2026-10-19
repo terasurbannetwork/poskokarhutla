@@ -24,8 +24,9 @@ _s.loader.exec_module(P)
 TH0, TH_UJI0, TH1 = 1990, 2016, 2025  # latih 1990-2015, uji balik 2016-2025
 DANGKAL_KM = 70
 N_MIN = 3
+RENTANG_UJI = ("m7",)
 AMBANG = [5, 6]  # magnitudo; M4+ dibuang: di bawah mc model susulan (4,7), tak pernah terisi
-JENIS = [("m6", "gempa M6+", lambda e: e[4] >= 6), ("m7", "gempa M7+", lambda e: e[4] >= 7),
+JENIS = [("m5", "gempa M5+", lambda e: e[4] >= 5), ("m6", "gempa M6+", lambda e: e[4] >= 6), ("m7", "gempa M7+", lambda e: e[4] >= 7),
          ("m7d", "gempa M7+ dangkal", lambda e: e[4] >= 7 and e[3] <= DANGKAL_KM)]
 
 
@@ -63,6 +64,20 @@ def selang(lam, tingkat=0.90):
     while cdf(hi) < 1 - a:
         hi += 1
     return lo, hi
+
+
+def selang_laju(n, tingkat=0.90):
+    """Selang eksak (Garwood) laju Poisson dari cacah n: lam_lo dengan P(X>=n)=a, lam_hi dengan P(X<=n)=a."""
+    a = (1 - tingkat) / 2
+    cdf = lambda k, lam: sum(math.exp(-lam + i * math.log(lam) - math.lgamma(i + 1)) for i in range(k + 1))
+
+    def cari(f, lo, hi):
+        for _ in range(80):
+            mid = (lo + hi) / 2
+            lo, hi = (mid, hi) if f(mid) else (lo, mid)
+        return lo
+    lo = cari(lambda l: 1 - cdf(n - 1, l) < a, 1e-9, n + 50) if n > 0 else 0.0
+    return lo, cari(lambda l: cdf(n, l) > a, 1e-9, n + 50 + 10 * n)
 
 
 def deklaster_utama(baris):
@@ -111,6 +126,9 @@ def uji_balik(utama, kode_prov):
 
 
 def vonis_laju(jenis_label, tempat, r):
+    if r.get("p12_rentang_uji"):  # lolos uji tapi tipis: selang eksak 90% dari laju periode uji
+        lo, hi = r["p12_rentang_uji"]
+        return f"Dalam 12 bulan, peluang {jenis_label} {tempat} antara {teks_p(lo)} dan {teks_p(hi)}, tempatnya tidak bisa diketahui."
     if r["p12"] is None:
         return f"Peluang {jenis_label} 12 bulan {tempat} tidak ditampilkan: hanya {r['n']} kejadian sejak {TH0}."
     return (f"Dalam 12 bulan, peluang {jenis_label} {tempat} {teks_p(r['p12'])}"
@@ -148,10 +166,26 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
     utama = deklaster_utama([r for r in baris if r[0][:4] >= str(TH0)])
     th = TH1 - TH0 + 1
     nas = {k: laju(hitung(utama, TH0, TH1)[k], th) for k, _, _ in JENIS}
-    nas5 = laju(sum(1 for e in utama if e[4] >= 5 and TH0 <= int(e[0][:4]) <= TH1), th)
+    # Kelas yang meleset dari selang 90% uji balik: peluang tunggal dibuang (p12 None). Kelas yang lolos tapi tipis (M7+) tampil
+    # sebagai selang eksak 90% dari laju periode uji (cacah TH_UJI0-TH1), bukan laju seluruh periode.
     kode = sorted({e[5] for e in utama if TH0 <= int(e[0][:4]) <= TH1})
-    prov = {p: {k: laju(hitung(utama, TH0, TH1, p)[k], th) for k, _, _ in JENIS} for p in kode}
     ub = uji_balik(utama, kode)
+    tu = TH1 - TH_UJI0 + 1
+    for k, _, _ in JENIS:
+        nas[k]["lolos_uji"] = ub["nasional"][k]["dalam_selang"]
+    for k in RENTANG_UJI:
+        lo, hi = selang_laju(hitung(utama, TH_UJI0, TH1)[k])
+        nas[k]["p12_rentang_uji"] = [round(poisson_p(lo / tu), 4), round(poisson_p(hi / tu), 4)]
+    for k in nas:
+        if not nas[k]["lolos_uji"]:
+            nas[k].update(p12=None, p12_teks=None, catatan="meleset dari uji balik, tidak ditampilkan")
+    nas5 = nas["m5"]
+    prov = {p: {k: laju(hitung(utama, TH0, TH1, p)[k], th) for k, _, _ in JENIS} for p in kode}
+    for r_ in prov.values():
+        for k in r_:
+            r_[k]["lolos_uji"] = nas[k]["lolos_uji"]
+            if not nas[k]["lolos_uji"]:
+                r_[k].update(p12=None, p12_teks=None)
     lab = {k: l for k, l, _ in JENIS}
     teratas = sorted(((p, r["m6"]["per_tahun"]) for p, r in prov.items()), key=lambda x: -x[1])[:5]
     laju_json = {"versi": 1, "dibuat": kini.strftime("%Y-%m-%dT%H:%MZ"), "periode": f"{TH0}-{TH1}", "tahun": th, "dangkal_km": DANGKAL_KM,
@@ -159,14 +193,18 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
                  "nasional": nas, "provinsi": {p: {"nama": nama.get(p, p), **r} for p, r in prov.items()},
                  "teratas_m6": [{"prov": p, "nama": nama.get(p, p), "per_tahun": v} for p, v in teratas], "uji_balik": ub}
     # strip 7 hari: laju harian nasional (M5, M6) + susulan gempa utama aktif
-    harian = [round(poisson_p(nas5["per_tahun"] / 365), 4), round(poisson_p(nas["m6"]["per_tahun"] / 365), 4)]
-    hari0 = [{"t": (kini + dt.timedelta(days=d)).date().isoformat(), "p": harian, "p10": None, "p50": None, "p90": None}
-             for d in range(1, 8)]
-    vn = " ".join(vonis_laju(lab[k], "di Indonesia", nas[k]) for k in ("m7d", "m6"))
+    harian = [round(poisson_p(nas5["per_tahun"] / 365), 4) if nas5["lolos_uji"] else None,  # M5+ meleset uji balik: dibuang
+               round(poisson_p(nas["m6"]["per_tahun"] / 365), 4)]
+    strip = lambda ps: [{"t": (kini + dt.timedelta(days=d)).date().isoformat(), "p": ps, "p10": None, "p50": None, "p90": None}
+                        for d in range(1, 8)]
+    hari0 = strip(harian)
+    vn = " ".join(vonis_laju(lab[k], "di Indonesia", nas[k]) for k in ("m7", "m6"))  # "tempatnya..." hanya sekali lewat endswith
     wil = {"ID": {"nama": "Indonesia", "tingkat": "nasional", "hari": hari0, "vonis": vn}}
     for p, r in prov.items():
         if r["m6"]["p12"] is not None:
-            wil[p] = {"nama": nama.get(p, p), "tingkat": "provinsi", "hari": hari0,
+            n5 = sum(1 for e in utama if e[5] == p and e[4] >= 5 and TH0 <= int(e[0][:4]) <= TH1)  # strip dari laju provinsi sendiri
+            hp = [round(poisson_p(n5 / th / 365), 4) if n5 >= N_MIN and nas5["lolos_uji"] else None, round(poisson_p(r["m6"]["per_tahun"] / 365), 4)]
+            wil[p] = {"nama": nama.get(p, p), "tingkat": "provinsi", "hari": strip(hp),
                       "vonis": vonis_laju(lab["m6"], "di " + nama.get(p, p), r["m6"]) + (" " + vonis_laju(lab["m7d"], "di " + nama.get(p, p), r["m7d"]) if r["m7d"]["p12"] is not None else "")}
     if mdl and ev is not None:
         wil.update(susulan_strip(mdl, ev, kini))
@@ -175,10 +213,17 @@ def bangun(baris, nama, mdl=None, ev=None, kini=None):
         "Gempa utama tidak bisa diramal: laju 12 bulan adalah rata-rata jangka panjang, bukan prakiraan tempat atau hari.",
         f"Laju dihitung dari USGS M5+ {TH0}-{TH1} setelah declustering; wilayah dengan kurang dari {N_MIN} kejadian tidak ditampilkan peluangnya.",
         "Wilayah Indonesia dan provinsi menampilkan laju latar jangka panjang (USGS, declustering Gardner-Knopoff), bukan prakiraan hari tertentu.",
-        "Strip hari menunjukkan laju latar nasional; susulan hanya untuk target yang lolos validasi (M5+), M6+ tidak diterbitkan.",
+        "Strip hari: laju latar M5+ " + ("lolos" if nas5["lolos_uji"] else "meleset dari") + f" uji balik (teramati {ub['nasional']['m5']['teramati']}, selang90 {ub['nasional']['m5']['selang90']}); M5+ yang meleset tidak digambar. Strip menunjukkan laju latar nasional; susulan hanya untuk target yang lolos validasi (M5+), M6+ tidak diterbitkan.",
         f"Uji balik laju {TH0}-{TH_UJI0 - 1} ke {TH_UJI0}-{TH1}: {sum(v['dalam_selang'] for v in ub['nasional'].values())} dari {len(ub['nasional'])} kelas nasional "
-        f"dan {cov['dalam_selang']} dari {cov['dari']} provinsi (M6+) masuk selang 90%."]
-    ambang = [{"k": f"m{m}", "label": f"Magnitudo {m} atau lebih", "nilai": m} for m in AMBANG]
+        f"dan {cov['dalam_selang']} dari {cov['dari']} provinsi (M6+) masuk selang 90%. Kelas yang meleset ({', '.join(v['label'] for v in ub['nasional'].values() if not v['dalam_selang'])}) peluangnya dibuang.",
+        f"Declustering dijalankan sekali pada seluruh katalog, jadi batas {TH_UJI0 - 1}/{TH_UJI0} sedikit bocor dan laju latih sedikit terlalu rendah. Selang uji balik hanya memuat galat cacah Poisson (terlalu sempit: laju asli juga berubah antar dekade).",
+        f"M7+ semua kedalaman lolos uji balik dengan tipis ({ub['nasional']['m7']['teramati']} teramati, selang {ub['nasional']['m7']['selang90']}); peluangnya ditampilkan sebagai selang 90% dari cacah {TH_UJI0}-{TH1}."]
+    # A18: ambang yang tak punya satu pun angka di seluruh wilayah dibuang (kolom p-nya juga), bukan digambar kosong
+    pakai = [i for i in range(len(AMBANG)) if any(h["p"][i] is not None for w in wil.values() for h in w["hari"])]
+    for w in wil.values():
+        for h in w["hari"]:
+            h["p"] = [h["p"][i] for i in pakai]
+    ambang = [{"k": f"m{AMBANG[i]}", "label": f"Magnitudo {AMBANG[i]} atau lebih", "nilai": AMBANG[i]} for i in pakai]
     return P.berkas("gempa", "USGS, model susulan Reasenberg-Jones",
                     th, {"label": "Magnitudo", "satuan": "M", "desimal": 1}, ambang, wil, batasan, uji_balik=ub), laju_json
 
@@ -213,6 +258,11 @@ def uji():
     assert lj["nasional"]["m7d"]["n"] == 2 and lj["nasional"]["m7d"]["p12"] is None  # n < 3
     assert teks_p(0.9999) == ">99%" and teks_p(0.994) == "99%" and "100%" not in json.dumps(d)
     assert tempat_id("119 km SSW of Gambiran Satu, Indonesia") == "119 km selatan barat daya Gambiran Satu" and tempat_id("Bali") == "Bali"
+    lo, hi = selang_laju(14)
+    assert 7.5 < lo < 9 and 21 < hi < 24, (lo, hi)  # Garwood n=14: 8,46 - 22,2
+    assert all(k in lj["nasional"] for k in ("m5", "m6", "m7", "m7d"))
+    assert d["wilayah"]["11"]["hari"][0]["p"] != d["wilayah"]["ID"]["hari"][0]["p"] if "11" in d["wilayah"] else True
+    assert all(len(h["p"]) == len(d["ambang"]) and any(h["p"][i] is not None for w in d["wilayah"].values() for h in w["hari"]) for w in d["wilayah"].values() for h in w["hari"][:1] for i in range(len(d["ambang"])))  # tak ada ambang kosong
     assert P.periksa(d) == [] and len(d["wilayah"]["ID"]["hari"]) == 7
     print("peluang_gempa.py: uji lulus")
 

@@ -15,7 +15,8 @@ const NAMA_MUSIM = m => { const b = m.label.split(" - "); return b.map(s => s.sp
 const rentang = p => { const [a, z] = p.label.split(" - ").map(s => s.split(" ")), th = a[1] === z[1] ? ` ${z[1]}` : ""; return `${a[0]}${th ? "" : " " + a[1]}–${z[0]} ${z[1]}`.replace(/\s+/g, " "); };
 const legIklim = (I, p) => { const a = Object.keys(p.wilayah).map(w => lulus(I, p, w) ? p.wilayah[w].anom_pct : null);
   return [a.some(v => v != null && v < 0) && [MERAH, "Lebih kering dari normal"], a.some(v => v != null && v >= 0) && [BIRU, "Lebih basah dari normal"], a.includes(null) && [ABU, "Tidak teruji"]].filter(Boolean); };
-const lulus = (I, p, w) => { const f = I.fit?.[p.musim]?.[w]; return !!f && f.skill_loo > 0; };
+/* tampil: fit lolos uji balik (f.lulus, skill LOO > 0,1) DAN rentang prakiraan lebih sempit dari iklim biasa (wilayah.tampil) */
+const lulus = (I, p, w) => { const f = I.fit?.[p.musim]?.[w]; return !!f && (f.lulus ?? f.skill_loo > 0.1) && p.wilayah?.[w]?.tampil !== false; };
 
 function iklimIsi(I, p) {
   const ws = Object.keys(p.wilayah).sort((a, b) => (a === "nasional") - (b === "nasional") || p.wilayah[a].anom_pct - p.wilayah[b].anom_pct);

@@ -79,6 +79,19 @@ def bobot_stasiun(kota, prak, A, src, t0, arsip):
     return w, round(1.0 / sum(x * x for x in w), 1), pakai
 
 
+def vonis_udara(hs, i, tempat, n):
+    """Vonis sendiri (peluang.vonis bersama tidak diubah): galat CAMS tidak ada di anggota, jadi 0% dan 100% selalu 'menurut CAMS'."""
+    puncak = max((h for h in hs if h["p"][i] is not None), key=lambda h: h["p"][i], default=None)
+    if puncak is None:
+        return ""
+    p = puncak["p"][i]
+    if p == 0:
+        return f"Dalam {n} hari ke depan, model CAMS tidak menunjukkan {KEJADIAN[i]} {tempat}."
+    if p >= 0.995:
+        return f"Dalam {n} hari ke depan, menurut CAMS {KEJADIAN[i]} {tempat} terjadi: pada {P.tanggal(puncak['t'])} hampir semua varian melewati batas."
+    return P.vonis(hs, AMBANG, i, KEJADIAN[i], tempat, n_hari=n)
+
+
 def bangun(kota, prak, A, src, t0, arsip=None):
     jam = [alat.dari_iso(j) for j in prak["jam"]]
     hari_jam = [[i for i, j in enumerate(jam) if alat.hari_wib(j) == d] for d in prak["hari"]]
@@ -111,7 +124,7 @@ def bangun(kota, prak, A, src, t0, arsip=None):
         if not hs:
             continue
         i = max((j for j in (0, 1, 2) if any(h["p"][j] and h["p"][j] >= 0.10 for h in hs)), default=0)
-        wil[k["kode"]] = {"nama": k["nama"], "tingkat": "kabupaten", "hari": hs, "vonis": P.vonis(hs, AMBANG, i, KEJADIAN[i], "di " + k["nama"], n_hari=len(prak["hari"]))}
+        wil[k["kode"]] = {"nama": k["nama"], "tingkat": "kabupaten", "hari": hs, "vonis": vonis_udara(hs, i, "di " + k["nama"], len(prak["hari"]))}
     return wil, {"dipakai": dipakai, "ess": ess, "n_stasiun": pakai, "ess_min": ESS_MIN, "varian": n}
 
 
@@ -124,14 +137,16 @@ def main():
     wil, bobot = bangun(alat.kota(), prak, A, src, t0, arsip)
     if not wil:
         raise RuntimeError("peluang_udara: tak ada kota terpercaya")
+    mt = (prak.get("galat") or {}).get("metar")
     batasan = [
         "Anggota adalah 729 varian asumsi asap (sebaran x emisi) di atas satu prakiraan CAMS, bukan ansambel cuaca: peluang mengukur ketidakpastian asap model, tidak termasuk galat CAMS sendiri.",
         "Kota yang model asapnya melebihi 1,5 kali CAMS, atau tanpa api/PLTU dalam jangkauan 600 km, tidak ditulis. Hari ini hanya jam tersisa yang digoyang.",
-        "Skor uji balik di bawah adalah analisis CAMS hari lampau terhadap METAR, bukan prakiraan 1 sampai 3 hari.",
+        "Skor uji balik di bawah adalah analisis CAMS hari lampau terhadap METAR, bukan prakiraan 1 sampai 3 hari."
+        + ((" CAMS meluputkan sekitar %d%% kejadian asap bandara, jadi 0%% berarti model CAMS tidak menunjukkan asap, bukan jaminan udara bersih." % round((1 - mt["hit"]) * 100)) if mt and mt.get("hit") is not None else ""),
+        "Peluang tidak dijepit dengan angka hit dan alarm palsu METAR: kejadiannya (asap menurunkan jarak pandang bandara, 27 bandara, analisis) berbeda dari PM2,5 24 jam di kota, jadi memakainya sebagai koreksi akan mengarang kalibrasi.",
         ("Varian ditimbang dengan bacaan stasiun WAQI (ESS %s dari %d varian, %d stasiun)." % (str(bobot["ess"]).replace(".", ","), bobot["varian"], bobot["n_stasiun"])) if bobot["dipakai"]
         else "Varian berbobot sama: tidak ada bacaan stasiun yang cocok, atau ESS di bawah %d (stasiun %d terpakai, ESS %s)." % (ESS_MIN, bobot["n_stasiun"], str(bobot["ess"]).replace(".", ",")),
     ]
-    mt = (prak.get("galat") or {}).get("metar")
     uji = {"jenis": "analisis CAMS vs METAR (bukan peluang)", **{k: mt[k] for k in ("n", "satuan", "n_bandara", "hit", "far", "csi", "selang", "periode") if k in mt}} if mt else None
     d = P.berkas("udara", "CAMS lewat Open-Meteo, batas P.14/2020", len(VARIAN),
                  {"label": "PM2,5 rata-rata 24 jam", "satuan": "µg/m³", "desimal": 0}, AMBANG, wil, batasan, uji)
@@ -168,6 +183,10 @@ def uji():
     assert n2 == 1 and abs(sum(w2) - 1) < 1e-9 and 1 <= e2 <= len(VARIAN)
     w3, e3, n3 = bobot_stasiun(kota, prak, A, src, t0, {})
     assert n3 == 0 and e3 == len(VARIAN) and w3[0] == n0
+    h0 = [{"t": "2026-10-19", "p": [0, 0, 0]}]
+    h1 = [{"t": "2026-10-19", "p": [1.0, 0, 0]}]
+    assert "model CAMS tidak menunjukkan" in vonis_udara(h0, 0, "di X", 3) and "tidak muncul" not in vonis_udara(h0, 0, "di X", 3)
+    assert "menurut CAMS" in vonis_udara(h1, 0, "di X", 3) and vonis_udara(h1, 0, "di X", 3).startswith("Dalam 3 hari")
     print("peluang_udara.py: uji lulus")
 
 

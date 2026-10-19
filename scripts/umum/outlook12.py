@@ -12,16 +12,15 @@ Per bahaya x bulan:
     pendorong sekarang dari iklim_outlook.json (persistensi nilai terakhir, lihat batasan di sana).
   E_semua  = rerata f semua tahun (klimatologi).
 Uji balik (leave-one-out tiap tahun): prakiraan analog dari tahun-tahun LAIN lawan prakiraan klimatologi dari tahun-tahun lain;
-  skill = 1 - SSE_analog/SSE_klimatologi, dikumpulkan lewat semua bulan. Skill <= 0.02 -> bahaya itu memakai klimatologi
-  (dasar="klimatologi") dan TIDAK mengklaim pengaruh iklim.
+  skill = 1 - SSE_analog/SSE_klimatologi, dikumpulkan lewat semua bulan. Skill dihitung PER BULAN kalender; analog dipakai hanya di bulan berskill > 0.02,
+  bulan lain klimatologi (dasar per bulan) dan tidak mengklaim pengaruh iklim.
 Tingkat dari indeks yang dipakai (E): tidak ada < 0,1 | rendah < 0,7 | sedang < 1,3 | parah < 2,0 | ekstrem >= 2,0.
   Artinya relatif terhadap bulan rerata bahaya itu sendiri (bukan lintas bahaya): "parah" = bulan yang biasanya
   1,3-2x lebih ramai dari bulan rerata. Batas adalah konvensi tampilan, bukan hasil fit.
-Gempa: laju tetap (tidak dipengaruhi iklim): M>=6 dangkal (<=70 km) dalam wilayah katalog, 1990-2025, USGS.
+Gempa: laju tetap (tidak dipengaruhi iklim) dari public/gempa/data/laju.json (M>=6 dangkal <=70 km, declustering).
 Pasang tertinggi: jendela dari public/banjir/data/pasang_astro.json bila ada (indeks gaya astronomis, BUKAN tinggi air).
-Berantai: pasangan A lalu B di provinsi yang sama dengan B dalam 1-30 hari setelah hari kejadian A; diurutkan menurut
-  jumlah kejadian x rata-rata korban meninggal (= total korban), disertai lift terhadap peluang acak B dalam 30 hari di
-  provinsi yang sama dan 1 preseden terbesar.
+Berantai: pasangan A lalu B di provinsi yang sama dengan B dalam 1-30 hari setelah hari kejadian A; lift terhadap permutasi B
+  di dalam bulan kalender yang sama, tampil bila lift >= 1,5 dan signifikan, urut lift, dengan 1 preseden terbesar.
 
 Sumber kejadian, berurutan (yang pertama ada yang dipakai): data/raw/banjir/dibi_bulanan.json (cache DIBI BNPB 2008-kini,
   ditulis sini bila dibi.bnpb.go.id terjangkau lewat scripts/banjir/kejadian.dibi) -> DIBI langsung -> klimatologi
@@ -34,6 +33,7 @@ import importlib.util
 import json
 import math
 import os
+import random
 import sys
 import urllib.request
 
@@ -45,6 +45,7 @@ RIWAYAT = os.path.join(AKAR, "public/banjir/data/riwayat.json")
 PASANG = os.path.join(AKAR, "public/banjir/data/pasang_astro.json")
 MODIS = os.path.join(AKAR, "public/data/sejarah_modis.json")
 GEMPA = os.path.join(AKAR, "public/gempa/data/riwayat_m5.json")
+LAJU = os.path.join(AKAR, "public/gempa/data/laju.json")
 CACHE_DIBI = os.path.join(AKAR, "data/raw/banjir/dibi_bulanan.json")
 MUSIM = ["DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ"]
 K = 5
@@ -134,17 +135,13 @@ def deret_karhutla():
 
 
 def laju_gempa():
-    d = baca(GEMPA)
-    if not d:
+    """Satu sumber dengan peluang_gempa.py: public/gempa/data/laju.json (USGS M>=5, declustering Gardner-Knopoff, dangkal <=70 km)."""
+    d = baca(LAJU)
+    n = (d or {}).get("nasional")
+    if not n or "m6" not in n or "m7" not in n:
         return None
-    akhir = dt.date.today().year - 1
-    n6 = n7 = 0
-    for w, la, lo, dalam, m, pv in d["baris"]:
-        if 1990 <= int(w[:4]) <= akhir and dalam <= 70:
-            n6 += m >= 6.0
-            n7 += m >= 7.0
-    th = akhir - 1990 + 1
-    return {"n_m6": n6, "n_m7": n7, "tahun": [1990, akhir], "per_bulan_m6": n6 / th / 12, "per_bulan_m7": n7 / th / 12}
+    return {"n_m6": n["m6"]["n"], "n_m7": n["m7"]["n"], "per_bulan_m6": n["m6"]["per_tahun"] / 12, "per_bulan_m7": n["m7"]["per_tahun"] / 12,
+            "tahun": d["periode"], "metode": d["metode"]}
 
 
 # ---------------------------------------------------------------- indeks, analog, uji balik
@@ -181,14 +178,15 @@ def pendorong_bulan(pend, m, tahun):
 
 
 def uji_balik(f, pend, k=K):
-    """Leave-one-out per tahun; -> {skill, n, bulan_positif}. f = indeks(...)."""
+    """Leave-one-out per tahun; -> {skill (pooled, informasi), skill_bulan[12] (None bila pendorong kurang), n_tahun, bulan_skill_positif}."""
     th = sorted(f)
     sse_a = sse_c = 0.0
-    pos = 0
+    sb = []
     for m in range(1, 13):
         sa = sc = 0.0
         kand_semua = pendorong_bulan(pend, m, th)
         if len(kand_semua) < len(th):
+            sb.append(None)
             continue
         for y in th:
             lain = [t for t in th if t != y]
@@ -200,26 +198,30 @@ def uji_balik(f, pend, k=K):
             sc += (f[y][m - 1] - ec) ** 2
         sse_a += sa
         sse_c += sc
-        pos += sa < sc
-    return {"skill": round(1 - sse_a / sse_c, 3) if sse_c > 0 else 0.0, "n_tahun": len(th), "bulan_skill_positif": pos}
+        sb.append(round(1 - sa / sc, 3) if sc > 0 else 0.0)
+    return {"skill": round(1 - sse_a / sse_c, 3) if sse_c > 0 else 0.0, "skill_bulan": sb, "n_tahun": len(th),
+            "bulan_skill_positif": sum(1 for v in sb if v is not None and v > SKILL_MIN)}
 
 
 def tabel_bahaya(kunci, nama, f, pend, target, bulan_depan, label_dasar):
-    """Satu baris tabel. target = {(tahun,bulan): (roni,dmi)}."""
+    """Satu baris tabel. target = {(tahun,bulan): (roni,dmi)}. Analog dipakai PER BULAN hanya bila skill LOO bulan itu > SKILL_MIN."""
     th = sorted(f)
     ub = uji_balik(f, pend)
-    pakai = ub["skill"] > SKILL_MIN
     bl = []
     for (y, m) in bulan_depan:
         r0, d0 = target[(y, m)]
         ana = terdekat(pendorong_bulan(pend, m, th), r0, d0)
+        sk = ub["skill_bulan"][m - 1]
+        pakai = sk is not None and sk > SKILL_MIN
         e_all = sum(f[t][m - 1] for t in th) / len(th)
         e_ana = sum(f[t][m - 1] for t in ana) / len(ana) if ana else e_all
         e = e_ana if pakai else e_all
         bl.append({"b": f"{y}-{m:02d}", "tingkat": tingkat(e), "E": round(e, 2), "E_semua": round(e_all, 2),
-                   "E_analog": round(e_ana, 2), "rasio": round(e_ana / e_all, 2) if e_all > 0 else None, "tahun": ana})
-    return {"bahaya": kunci, "nama": nama, "dasar": "analog" if pakai else "klimatologi", "sumber": label_dasar, "uji_balik": ub,
-            "tahun_data": [th[0], th[-1]], "bulan": bl}
+                   "dasar": "analog" if pakai else "klimatologi", "skill_bulan": sk,
+                   "E_analog": round(e_ana, 2), "rasio": round(e_ana / e_all, 2) if e_all > 0 else None, "tahun": ana if pakai else []})
+    n_an = sum(1 for b in bl if b["dasar"] == "analog")
+    return {"bahaya": kunci, "nama": nama, "dasar": "analog_per_bulan" if n_an else "klimatologi", "n_bulan_analog": n_an, "sumber": label_dasar,
+            "uji_balik": ub, "tahun_data": [th[0], th[-1]], "bulan": bl}
 
 
 # ---------------------------------------------------------------- berantai
@@ -238,71 +240,90 @@ def peristiwa(rows, gempa_rows, prov_nama):
     return ev
 
 
-def berantai(ev, prov_nama, hari=JENDELA_HARI, min_hit=8, atas=6):
-    """Pasangan A->B: B terjadi 1..hari hari setelah hari A di provinsi yang sama."""
+def _frac_hit(da_prov, db_prov, batas, hari):
+    """(n_A, n_A yang diikuti B dalam 1..hari hari) di semua provinsi. da_prov/db_prov: {prov: [date terurut]}."""
+    n = hit = 0
+    for p, da in da_prov.items():
+        db = db_prov.get(p, [])
+        for x in da:
+            if x > batas:
+                break
+            n += 1
+            i = bisect.bisect_right(db, x)
+            hit += i < len(db) and db[i] <= x + dt.timedelta(days=hari)
+    return n, hit
+
+
+def _acak_bulan(db, awal, akhir, rnd):
+    """Permutasi di dalam bulan kalender yang sama: tiap B tetap di bulan-tahun-bulan (musim terjaga), tahun dan hari diundi ulang."""
+    out = []
+    for x in db:
+        for _ in range(6):
+            y = rnd.randint(awal.year, akhir.year)
+            hmax = [31, 29 if y % 4 == 0 else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31][x.month - 1]
+            d = dt.date(y, x.month, rnd.randint(1, hmax))
+            if awal <= d <= akhir:
+                x = d
+                break
+        out.append(x)
+    return sorted(out)
+
+
+def berantai(ev, prov_nama, hari=JENDELA_HARI, min_hit=8, perm=20, lift_min=1.5, atas=6):
+    """Pasangan A->B: B 1..hari hari setelah hari A di provinsi yang sama. Pembanding = permutasi B di dalam bulan yang sama
+    (perm kali, benih tetap). -> (lolos, lain, n_hari). lolos: lift >= lift_min dan lebih besar dari semua permutasi; urut lift."""
     jenis = sorted({j for j, _ in ev})
     tg = {k: sorted(dt.date.fromisoformat(t) for t in v) for k, v in ev.items()}
     semua = [d for v in tg.values() for d in v]
     awal, akhir = min(semua), max(semua)
-    # hari terakhir yang boleh dinilai: B butuh jendela penuh setelah A
     batas = akhir - dt.timedelta(days=hari)
-    span = (batas - awal).days + 1
     provs = sorted({p for _, p in ev})
+    rnd = random.Random(20261019)
     hasil = []
     for a in jenis:
+        da_prov = {p: [d for d in tg.get((a, p), [])] for p in provs if tg.get((a, p))}
         for b in jenis:
             if a == b:
                 continue
-            n = hit = 0
-            korban = 0
-            base_num = 0.0
-            terbaik = None
-            for p in provs:
-                da = [d for d in tg.get((a, p), []) if d <= batas]
-                if not da:
-                    continue
-                db = tg.get((b, p), [])
-                # peluang acak: pecahan hari di [awal,batas] yang punya B dalam 1..hari hari berikutnya
-                tutup = 0
-                prev_end = awal - dt.timedelta(days=1)
-                for x in db:
-                    s = max(x - dt.timedelta(days=hari), awal)
-                    e = min(x - dt.timedelta(days=1), batas)
-                    if e < s:
-                        continue
-                    s = max(s, prev_end + dt.timedelta(days=1))
-                    if e >= s:
-                        tutup += (e - s).days + 1
-                        prev_end = e
-                base_num += len(da) * tutup / span
-                for x in da:
-                    n += 1
-                    i = bisect.bisect_right(db, x)
-                    sampai = x + dt.timedelta(days=hari)
-                    cocok = [y for y in db[i:] if y <= sampai]
-                    if cocok:
-                        hit += 1
-                        ka = ev[(a, p)][x.isoformat()][0]
-                        kb = sum(ev[(b, p)][y.isoformat()][0] for y in cocok)
-                        korban += ka + kb
-                        if terbaik is None or ka + kb > terbaik[0]:
-                            terbaik = (ka + kb, p, x, cocok, ka, kb)
+            db_prov = {p: tg[(b, p)] for p in provs if tg.get((b, p))}
+            n, hit = _frac_hit(da_prov, db_prov, batas, hari)
             if n < 20 or hit < min_hit:
                 continue
-            base = base_num / n
+            fr = []
+            for _ in range(perm):
+                acak = {p: _acak_bulan(v, awal, akhir, rnd) for p, v in db_prov.items()}
+                fr.append(_frac_hit(da_prov, acak, batas, hari)[1] / n)
+            base = sum(fr) / perm
             lift = (hit / n) / base if base > 0 else None
-            if lift is None or lift < 1.0:
+            if lift is None:
                 continue
-            kb_, p, x, cocok, ka, kb = terbaik
-            kab_a = sorted(ev[(a, p)][x.isoformat()][1])[:3]
-            kab_b = sorted(set().union(*[ev[(b, p)][y.isoformat()][1] for y in cocok]))[:3]
-            hasil.append({"a": a, "b": b, "n_a": n, "n_lalu_b": hit, "frac": round(hit / n, 3), "peluang_acak": round(base, 3),
-                          "lift": round(lift, 2), "korban_total": korban, "skor": korban, "n_hari": span,
-                          "preseden": {"prov": prov_nama.get(p, p), "tanggal_a": x.isoformat(), "kab_a": kab_a, "meninggal_a": ka,
-                                       "tanggal_b": [y.isoformat() for y in cocok][:3], "kab_b": kab_b, "meninggal_b": kb,
-                                       "sumber": "DIBI BNPB (dibi.bnpb.go.id) via kejadian.json" if a != "gempa" else "USGS (gempa) + DIBI BNPB (susulan)"}})
-    hasil.sort(key=lambda r: (-r["skor"], -r["n_lalu_b"]))
-    return hasil[:atas]
+            kor, terbaik = 0, None
+            for p, da in da_prov.items():
+                db = db_prov.get(p, [])
+                for x in da:
+                    if x > batas:
+                        break
+                    i = bisect.bisect_right(db, x)
+                    cocok = [y for y in db[i:] if y <= x + dt.timedelta(days=hari)]
+                    if cocok:
+                        ka = ev[(a, p)][x.isoformat()][0]
+                        kb = sum(ev[(b, p)][y.isoformat()][0] for y in cocok)
+                        kor += ka + kb
+                        if terbaik is None or ka + kb > terbaik[0]:
+                            terbaik = (ka + kb, p, x, cocok, ka, kb)
+            _, p, x, cocok, ka, kb = terbaik
+            r = {"a": a, "b": b, "n_a": n, "n_lalu_b": hit, "frac": round(hit / n, 3), "peluang_acak_bulan_sama": round(base, 3),
+                 "lift": round(lift, 2), "p_perm": round((1 + sum(1 for f in fr if f >= hit / n)) / (perm + 1), 3), "perm": perm,
+                 "korban_total": kor,
+                 "preseden": {"prov": prov_nama.get(p, p), "tanggal_a": x.isoformat(), "kab_a": sorted(ev[(a, p)][x.isoformat()][1])[:3], "meninggal_a": ka,
+                              "tanggal_b": [y.isoformat() for y in cocok][:3],
+                              "kab_b": sorted(set().union(*[ev[(b, p)][y.isoformat()][1] for y in cocok]))[:3], "meninggal_b": kb,
+                              "sumber": "DIBI BNPB (dibi.bnpb.go.id) via kejadian.json" if a != "gempa" else "USGS (gempa) + DIBI BNPB (susulan)"}}
+            hasil.append(r)
+    hasil.sort(key=lambda r: (-r["lift"], r["p_perm"], -r["n_lalu_b"]))
+    lolos = [r for r in hasil if r["lift"] >= lift_min and r["p_perm"] <= 1 / perm + 1e-9][:atas]
+    lain = [{k: r[k] for k in ("a", "b", "n_a", "n_lalu_b", "frac", "peluang_acak_bulan_sama", "lift", "p_perm")} for r in hasil if r not in lolos][:10]
+    return lolos, lain, (batas - awal).days + 1
 
 
 def jendela_pasang(bulan_depan):
@@ -373,7 +394,7 @@ def bangun():
                                 f"NASA FIRMS MODIS {min(kh)}-{max(kh)}, jumlah titik panas nasional per bulan (public/data/sejarah_modis.json)"))
     g = laju_gempa()
     if g:
-        tab.append({"bahaya": "gempa", "nama": NAMA["gempa"], "dasar": "laju_tetap", "sumber": "USGS FDSN, public/gempa/data/riwayat_m5.json",
+        tab.append({"bahaya": "gempa", "nama": NAMA["gempa"], "dasar": "laju_tetap", "sumber": "public/gempa/data/laju.json (" + g["metode"] + ")",
                     "uji_balik": None, "tahun_data": g["tahun"],
                     "laju": {"m6_per_bulan": round(g["per_bulan_m6"], 3), "m7_per_bulan": round(g["per_bulan_m7"], 3), "n_m6": g["n_m6"], "n_m7": g["n_m7"]},
                     "bulan": [{"b": f"{y}-{m:02d}", "tingkat": "tetap", "peluang_m6": round(1 - math.exp(-g["per_bulan_m6"]), 2),
@@ -388,7 +409,7 @@ def bangun():
     awal_dibi = min((r[3] for r in rows), default="9999")
     gempa_rows = [(w[:10], pv) for w, la, lo, dalam, m, pv in gm["baris"] if m >= 6.0 and dalam <= 70 and w[:10] >= awal_dibi and pv]
     ev = peristiwa(rows, gempa_rows, wil.PROVINSI)
-    ber = berantai(ev, wil.PROVINSI) if ev else []
+    ber, ber_lain, n_hari = berantai(ev, wil.PROVINSI) if ev else ([], [], 0)
     for k in tab:  # horizon dan tanda ekstrapolasi dari iklim_outlook (persistensi makin tidak andal makin jauh)
         for i, b in enumerate(k["bulan"]):
             pk = next(p for p in ik["prakiraan"] if p["bulan_tengah"] == b["b"])
@@ -399,17 +420,17 @@ def bangun():
            "bulan": [f"{y}-{m:02d}" for y, m in bd], "dasar": dasar,
            "definisi_tingkat": {"indeks": "E = kejadian bulan itu / rerata bulanan bahaya itu (1,0 = bulan rerata); dinormalkan tren 5 tahun untuk DIBI",
                                 "batas": {"tidak ada": "E<0,1", "rendah": "0,1<=E<0,7", "sedang": "0,7<=E<1,3", "parah": "1,3<=E<2,0", "ekstrem": "E>=2,0"},
-                                "analog_dipakai_bila": f"skill leave-one-out > {SKILL_MIN} dibanding klimatologi; selain itu klimatologi",
+                                "analog_dipakai_bila": f"skill leave-one-out BULAN itu > {SKILL_MIN} dibanding klimatologi; bulan lain klimatologi",
                                 "catatan": "relatif terhadap pola bahaya itu sendiri; bukan perbandingan keparahan antarbahaya"},
            "tabel": tab, "pasang_tertinggi": ps,
-           "berantai": {"aturan": f"A di provinsi p, lalu B di p dalam 1-{JENDELA_HARI} hari; skor = jumlah kejadian x rata-rata korban meninggal; lift = frekuensi teramati / peluang B acak 30 hari di provinsi itu",
-                        "jumlah_hari_data": ber[0]["n_hari"] if ber else 0, "pasangan": ber},
+           "berantai": {"aturan": f"A di provinsi p, lalu B di p dalam 1-{JENDELA_HARI} hari. Pembanding: B diundi ulang di dalam bulan kalender yang sama (musim terjaga), 20 permutasi, benih tetap; lift = frekuensi teramati / rerata permutasi. Tampil bila lift >= 1,5 dan tak ada permutasi yang menyamai (p_perm = 1/21); urut lift.",
+                        "jumlah_hari_data": n_hari, "pasangan": ber, "tidak_lolos": ber_lain},
            "uji_balik": uj,
            "batasan": [
                "Pendorong 12 bulan ke depan = persistensi nilai terakhir (lihat iklim_outlook.json); bila El Nino/IOD berubah, tahun pembanding berubah.",
                "Tahun pembanding hanya 5 tahun dari 18 (DIBI 2008-2025) atau 24 (MODIS 2002-2025): satu tahun luar biasa menggeser angka. Uji balik leave-one-out menentukan apakah analog dipakai.",
                "DIBI hanya mencatat kejadian yang dilaporkan dan per kabupaten (satu kejadian lintas kabupaten bisa terhitung berkali-kali); indeks dinormalkan tren, bukan koreksi bias pelaporan.",
-               "Gempa tidak diprakirakan; angka adalah laju historis M>=6 dangkal 1990-2025 dalam wilayah katalog Indonesia, dianggap tetap sepanjang tahun.",
+               "Gempa tidak diprakirakan; angka adalah laju historis M>=6 dangkal 1990-2025 (laju.json, sudah di-declustering Gardner-Knopoff, satu sumber dengan peluang_gempa.py), dianggap tetap sepanjang tahun.",
                "Gunung api tidak masuk: repo belum punya riwayat erupsi bulanan.",
                "Pasang tertinggi adalah indeks gaya astronomis, bukan tinggi air dan bukan prakiraan rob.",
                "Berantai: korban satu kejadian besar dihitung ulang di tiap pasangan yang jendelanya menjangkaunya (gelombang banjir Sumatra Nov 2025 mendominasi data 3 tahun); jangan dibaca sebagai jumlah korban unik. Berantai = kebersamaan statistik dalam 30 hari di provinsi yang sama, bukan sebab-akibat; lift mendekati 1 berarti hampir sama dengan kebetulan. Korban hanya meninggal dari DIBI; gempa tanpa korban di sini."]}
@@ -446,8 +467,8 @@ def uji():
     assert u1["skill"] > 0.3, u1
     assert u2["skill"] < SKILL_MIN, u2
     tt = tabel_bahaya("x", "X", indeks(sinyal, False), pend, {(2026, 1): (2.0, 0.0), (2026, 2): (-2.0, 0.0)}, [(2026, 1), (2026, 2)], "uji")
-    assert tt["dasar"] == "analog" and tt["bulan"][0]["E"] > tt["bulan"][1]["E"] and tt["bulan"][0]["rasio"] > 1
-    assert tabel_bahaya("x", "X", indeks(derau, False), pend, {(2026, 1): (2.0, 0.0)}, [(2026, 1)], "uji")["dasar"] == "klimatologi"
+    assert tt["bulan"][0]["dasar"] == "analog" and tt["bulan"][0]["E"] > tt["bulan"][1]["E"] and tt["bulan"][0]["rasio"] > 1
+    assert tabel_bahaya("x", "X", indeks(derau, False), pend, {(2026, 1): (2.0, 0.0)}, [(2026, 1)], "uji")["bulan"][0]["dasar"] == "klimatologi"
     # berantai: B selalu 5 hari setelah A di prov "11"; di prov "12" B acak jarang -> lift tinggi, preseden = A terbesar
     rows = []
     d0 = dt.date(2020, 1, 1)
@@ -456,13 +477,23 @@ def uji():
         rows.append(["banjir", "11", "Kab A", a.isoformat(), 1, i % 5])
         rows.append(["longsor", "11", "Kab B", (a + dt.timedelta(days=5)).isoformat(), 1, 2])
     ev = peristiwa(rows, [], {"11": "Aceh"})
-    br = berantai(ev, {"11": "Aceh"}, min_hit=5)
+    br, _, nh = berantai(ev, {"11": "Aceh"}, min_hit=5)
+    assert nh > 2000
     ab = next(r for r in br if r["a"] == "banjir" and r["b"] == "longsor")
     assert ab["n_lalu_b"] == ab["n_a"] - 0 or ab["n_lalu_b"] >= 38, ab
     assert ab["lift"] > 1.8 and ab["preseden"]["meninggal_a"] == 4 and ab["preseden"]["prov"] == "Aceh"
     # B lebih dulu dari A (longsor lalu banjir) tidak boleh terhitung searah
     ba = [r for r in br if r["a"] == "longsor" and r["b"] == "banjir"]
     assert not ba or ba[0]["n_lalu_b"] < 3 or ba[0]["lift"] < ab["lift"]
+    # dua bahaya MUSIMAN yang saling bebas (sama-sama hanya Nov-Des): lift ~1, tidak boleh lolos sebagai berantai
+    rr = random.Random(5)
+    musiman = []
+    for y in range(2018, 2026):
+        for jn in ("banjir", "longsor"):
+            for _ in range(30):
+                musiman.append([jn, "12", "K", dt.date(y, rr.choice((11, 12)), rr.randint(1, 28)).isoformat(), 1, 0])
+    lo, lain, _ = berantai(peristiwa(musiman, [], {}), {}, min_hit=5)
+    assert not lo and all(r["lift"] < 1.5 for r in lain), (lo, lain)
     # baris 'banjir+longsor' tidak berpasangan dengan dirinya sendiri (hari sama)
     ev2 = peristiwa([["banjir+longsor", "11", "K", "2020-01-01", 1, 0]], [], {})
     assert set(j for j, _ in ev2) == {"banjir", "longsor"}

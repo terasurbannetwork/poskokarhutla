@@ -64,7 +64,7 @@ def vonis(hs, tempat):
 
 def vonis_3hari(hs, tempat):
     h3 = [{"t": h["t"], "p": [h["p3"]]} for h in hs]
-    return PL.vonis(h3, [100], 0, "jumlah hujan 3 hari 100 mm atau lebih", tempat)
+    return PL.vonis(h3, [100], 0, "jumlah hujan 3 hari 100 mm atau lebih", tempat).replace(", pada ", ", mulai ")  # jendela 3 hari mulai hari itu
 
 
 def sinyal(hs):
@@ -114,7 +114,7 @@ def bangun(ens, pusat, hari_ini, val=None):
     for (p, kab), s in sorted(kab_titik.items()):
         hs = agregat(ens, sorted(s), i0, n)
         if sinyal(hs):
-            wil[f"{p}|{kab}"] = {"nama": f"{kab}, {PROVINSI[p]}", "tingkat": "kabupaten", "hari": hs, "vonis": vonis(hs, f"di {kab}")}
+            wil[f"{p}|{kab}"] = {"nama": f"{kab}, {PROVINSI[p]}", "tingkat": "kabupaten", "hari": hs, "vonis": vonis(hs, f"di sebagian {kab}")}
         else:
             tanpa.append(f"{p}|{kab}")
     anggota = ens["anggota"]
@@ -165,7 +165,7 @@ def uji():
     v = d["wilayah"]["32|Bogor"]["vonis"]
     assert "50 mm" in v and "60%" in v and "Selasa, 20 Oktober" in v and "cukup mungkin" in v, v
     assert "di sebagian 32" not in d["wilayah"]["32"]["vonis"] and "di sebagian Jawa Barat" in d["wilayah"]["32"]["vonis"] and "kotak prakiraan" not in d["wilayah"]["32"]["vonis"]
-    assert "100 mm" in d["wilayah"]["ID"]["vonis_3hari"] and "10%" in d["uji_balik"]["kejadian tertangkap"] and "0,020 sampai 0,040" in d["uji_balik"]["ketepatan gabungan (ETS)"]
+    assert "100 mm" in d["wilayah"]["ID"]["vonis_3hari"] and ", mulai " in d["wilayah"]["ID"]["vonis_3hari"] and "di sebagian Bogor" in v and "10%" in d["uji_balik"]["kejadian tertangkap"] and "0,020 sampai 0,040" in d["uji_balik"]["ketepatan gabungan (ETS)"]
     try:
         bangun(ens, pusat, "2026-11-01")
         assert False

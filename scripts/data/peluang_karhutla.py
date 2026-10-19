@@ -24,6 +24,7 @@ _s.loader.exec_module(P)
 AMBANG = [{"k": "tinggi", "label": "FWI 7 atau lebih (Tinggi)", "nilai": 7},
           {"k": "sangat_tinggi", "label": "FWI 14 atau lebih (Sangat Tinggi)", "nilai": 14}]
 NASIONAL = "ID"
+UMUR_MAKS = 2  # hari; ansambel lebih tua dari ini ditolak (berkas lama dibiarkan)
 
 
 def rata(xs):
@@ -72,14 +73,15 @@ def bangun(ans, hari_ini=None):
         return None
     tanggal = [ans["hari"][i] for i in ada]
     grid = [{**g, **{k: [g[k][i] for i in ada] for k in ("pt", "ps", "med", "p10", "p90")}} for g in ans["grid"]]
-    wil = {NASIONAL: {"nama": "wilayah rawan", "tingkat": "nasional", "sel": grid}}
+    wil = {NASIONAL: {"nama": "Provinsi yang sering mengalami karhutla", "tingkat": "nasional", "sel": grid}}
     for g in grid:
         wil.setdefault(g["prov"], {"nama": PROVINSI.get(g["prov"], g["prov"]), "tingkat": "provinsi", "sel": []})["sel"].append(g)
     out = {}
     for kode, w in wil.items():
         hs = hari_wilayah(w["sel"], tanggal)
+        nv = w["nama"][0].lower() + w["nama"][1:] if kode == NASIONAL else w["nama"]
         out[kode] = {"nama": w["nama"], "tingkat": w["tingkat"], "sel": len(w["sel"]), "hari": hs,
-                     "vonis": vonis(hs, w["nama"])}
+                     "vonis": vonis(hs, nv)}
     urut = [NASIONAL] + sorted((k for k in out if k != NASIONAL), key=lambda k: -max(h["p"][1] or 0 for h in out[k]["hari"]))
     batasan = [
         f"Angka adalah pecahan sel 0,5 derajat (~55 km) di wilayah itu yang diperkirakan melewati ambang FWI, dirata-rata dari peluang tiap sel ({ans['anggota']} anggota ansambel {ans['model']}); bukan peluang satu titik dan bukan peluang \"ada api\".",
@@ -87,14 +89,21 @@ def bangun(ans, hari_ini=None):
         f"Cakupan hanya {len(wil) - 1} provinsi rawan (cakupan \"{ans['cakupan']}\"), bukan seluruh Indonesia. FWI bukan jumlah titik panas: hari berbahaya tidak otomatis ada kebakaran, sumber api tetap manusia.",
         "Belum ada uji balik peluang ini terhadap kejadian titik panas, jadi keandalannya (kalibrasi) belum terukur.",
         f"Nasional di sini = gabungan seluruh sel provinsi rawan yang dicakup ansambel. Ansambel dibuat {ans['dibuat']}; keadaan awal FFMC/DMC/DC dari fwi.json dan dilanjutkan sendiri oleh tiap anggota."]
-    return P.berkas("karhutla", "ECMWF IFS ansambel lewat Open-Meteo, sistem FWI Kanada",
+    d = P.berkas("karhutla", "ECMWF IFS ansambel lewat Open-Meteo, sistem FWI Kanada",
                     ans["anggota"], {"label": "Indeks FWI siang hari", "satuan": "FWI", "desimal": 1}, AMBANG,
                     {k: out[k] for k in urut}, batasan)
+    d["ansambel_dibuat"] = ans["dibuat"]
+    return d
 
 
 def main():
     ans = json.load(open(os.path.join(AKAR, "public/data/fwi_ansambel.json")))
-    hari_ini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).date().isoformat()
+    sekarang = dt.datetime.now(dt.timezone(dt.timedelta(hours=7)))
+    umur = (sekarang - dt.datetime.fromisoformat(ans["dibuat"])).total_seconds() / 86400
+    if umur > UMUR_MAKS:
+        print(f"peluang.json: ansambel berumur {umur:.1f} hari (> {UMUR_MAKS}), berkas lama dibiarkan")
+        return
+    hari_ini = sekarang.date().isoformat()
     d = bangun(ans, hari_ini)
     if d is None:
         # ansambel basi: semua harinya sudah lewat. Berkas lama TIDAK ditimpa (kontrak melarang wilayah kosong); layar menilai dari `dibuat`.
@@ -124,7 +133,7 @@ def uji():
     # hari lewat dibuang; semua lewat -> None
     d2 = bangun(ans, "2026-10-21")
     assert [x["t"] for x in d2["wilayah"]["62"]["hari"]] == ["2026-10-21"] and P.periksa(d2) == []
-    assert bangun(ans, "2026-10-22") is None
+    assert bangun(ans, "2026-10-22") is None and d["ansambel_dibuat"] == "t"
     assert LUAS_KATA(0.99) == "hampir seluruh" and LUAS_KATA(0.7) == "sebagian besar" and LUAS_KATA(0.5) == "sekitar separuh" and LUAS_KATA(0.2) == "sebagian" and LUAS_KATA(0.05) == "sebagian kecil"
     print("peluang_karhutla.py: uji lulus")
 

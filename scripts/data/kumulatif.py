@@ -63,8 +63,9 @@ def kalimat(nama, b, tahun, n, vs="2015", dasar=""):
     if not c or c["persen"] is None:
         return None
     f = lambda x: f"{x:,}".replace(",", ".")
-    return (f"Sampai minggu ke-{-(-n // 7)} tahun {tahun}, titik panas{dasar} {nama} = {c['persen']}% dari {vs} pada minggu yang sama "
-            f"({f(b['ini'])} vs {f(c['titik'])}).")
+    label = "rerata 2019\u20132025" if vs == "rerata" else vs
+    return (f"Sampai minggu ke-{-(-n // 7)}, titik panas{dasar} {tahun} di {nama} {'sudah' if c['persen'] >= 100 else 'baru'} "
+            f"{c['persen']}% dari {label} pada minggu yang sama ({f(b['ini'])} vs {f(c['titik'])}).")
 
 
 def bangun(m, mn, luas=None):
@@ -90,11 +91,11 @@ def bangun(m, mn, luas=None):
         for k in m["prov"]:
             sz["prov"][k] = {**baris(mn_seri(k), ny, ["2015", "2019", "2023"]), "nama": PROVINSI.get(k, k)}
         for b in [sz["nasional"], *sz["prov"].values()]:
-            b["kalimat"] = kalimat(b["nama"], b, tahun, ny, "2015", " (MODIS + S-NPP)")
+            b["kalimat"] = kalimat(b["nama"], b, tahun, ny, "2015", " MODIS + S-NPP")
         res["setara_2015"] = sz
         res["kalimat"] = sz["nasional"]["kalimat"]
     for b in [out["nasional"], *out["prov"].values()]:
-        b["kalimat_rerata"] = kalimat(b["nama"], b, tahun, n, "rerata", "") and kalimat(b["nama"], b, tahun, n, "rerata").replace("dari rerata", "dari rerata 2019-2025")
+        b["kalimat_rerata"] = kalimat(b["nama"], b, tahun, n, "rerata")
     res["batasan"] = ["Persen vs 2015 hanya memakai MODIS + VIIRS S-NPP (NOAA-20 belum terbang di 2015); perbandingan dengan 2019, 2023, dan rerata memakai semua satelit.",
                       "Dasar MODIS + S-NPP dibangun lokal dan berhenti di tanggal potongnya (setara_2015.sd), tidak ikut bertambah tiap hari.",
                       "Titik panas bukan luas terbakar dan bukan jumlah kebakaran; satu kebakaran besar bisa menghasilkan banyak titik di hari yang sama.",
@@ -139,12 +140,13 @@ def uji():
     b = baris(s, 10, ["2015", "2019", "2023"], RERATA)
     assert b["banding"]["2015"] == {"titik": 20, "persen": 50} and b["banding"]["2019"]["persen"] == 25
     assert b["banding"]["rerata"]["titik"] == round((40 + 10 + 50) / 3) and "2015" not in RERATA
-    k = kalimat("Indonesia", b, "2026", 10, "2015", " (MODIS + S-NPP)")
-    assert "titik panas (MODIS + S-NPP) Indonesia = 50% dari 2015 pada minggu yang sama (10 vs 20)" in k and kalimat("X", {"banding": {}, "ini": 1}, "2026", 1) is None
+    k = kalimat("Indonesia", b, "2026", 10, "2015", " MODIS + S-NPP")
+    assert k == "Sampai minggu ke-2, titik panas MODIS + S-NPP 2026 di Indonesia baru 50% dari 2015 pada minggu yang sama (10 vs 20).", k
+    assert "sudah 200% dari rerata 2019\u20132025" in kalimat("X", {"banding": {"rerata": {"titik": 5, "persen": 200}}, "ini": 10}, "2026", 7, "rerata") and kalimat("X", {"banding": {}, "ini": 1}, "2026", 1) is None
     m = {"tahun": ["2025", "2026"], "sd": "2026-01-10", "nasional": {"2025": [1] * 365, "2026": [1] * 10}, "prov": {"14": {"2025": [1] * 365, "2026": [1] * 10}}}
     mn = {"sd": "2026-01-08", "tahun": {"2015": {"nasional": [2] * 365, "prov": {"14": [2] * 365}}, "2026": {"nasional": [1] * 8, "prov": {"14": [1] * 8}}}}
     r = bangun(m, mn)
-    assert r["hari_ke"] == 10 and r["setara_2015"]["hari_ke"] == 8 and "50% dari 2015" in r["kalimat"] and r["prov"]["14"]["nama"] == "Riau"
+    assert r["hari_ke"] == 10 and r["setara_2015"]["hari_ke"] == 8 and "baru 50% dari 2015" in r["kalimat"] and r["prov"]["14"]["nama"] == "Riau"
     assert bangun(m, None).get("kalimat") is None
     print("kumulatif.py: uji lulus")
 

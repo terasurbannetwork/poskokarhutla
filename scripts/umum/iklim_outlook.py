@@ -43,6 +43,8 @@ UA = "poskokarhutla/1.0 (pantau bencana; data publik)"
 MULAI_HUJAN = 1981
 BASIS = (1991, 2020)
 K_BANDING = 5
+SKILL_LULUS = 0.1  # satu ambang untuk kalimat dan medan lulus
+HORIZON_PERSISTEN = 3  # >= bulan ini: pendorong persistensi dianggap ekstrapolasi
 MUSIM = ["DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ"]  # indeks 0 = bulan tengah Januari
 BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 # id: (nama, bujur_barat, bujur_timur, lintang_selatan, lintang_utara). Kotak persegi, BUKAN batas administrasi.
@@ -303,7 +305,7 @@ def kalimat(nama, musim, c, koef, t, skill, kunci="roni"):
     i = 1 if kunci == "roni" else 2
     awal, akhir = BLN[(c - 2) % 12], BLN[c % 12]
     ind = "RONI (Pasifik tengah-timur)" if kunci == "roni" else "DMI (Samudra Hindia barat dikurangi timur)"
-    if abs(t[i]) < 2 or skill <= 0:
+    if abs(t[i]) < 2 or skill <= SKILL_LULUS:
         return f"{nama}, {awal}-{akhir}: hubungan dengan {ind} tidak teruji (|t|={abs(t[i]):.1f}, skill LOO {skill:+.2f})."
     arah = "turun" if koef[i] < 0 else "naik"
     lain = "DMI nol" if kunci == "roni" else "RONI nol"
@@ -311,6 +313,25 @@ def kalimat(nama, musim, c, koef, t, skill, kunci="roni"):
 
 
 # ---------------------------------------------------------------- perakit
+def sd_persistensi(roni, dmi, lead, dari=1982, sampai=2025):
+    """RMS selisih nilai pendorong musim 3-bulanan (berpusat bulan i+lead) dan (bulan i) = galat bila nilai terakhir dipertahankan
+    lead bulan. -> (sd_roni, sd_dmi) dari seluruh pasangan historis; (0,0) bila lead 0."""
+    if lead <= 0:
+        return 0.0, 0.0
+    R, D = {}, {}
+    for c, ms in enumerate(MUSIM, 1):
+        for y in range(dari, sampai + 1):
+            if (ms, y) in roni:
+                R[bulan_ke_indeks(y, c)] = roni[(ms, y)]
+            d = rerata_musim_dmi(dmi, y, c)
+            if d is not None:
+                D[bulan_ke_indeks(y, c)] = d
+    def rms(S):
+        v = [S[i + lead] - S[i] for i in S if i + lead in S]
+        return math.sqrt(sum(x * x for x in v) / len(v)) if len(v) >= 30 else float("nan")
+    return rms(R), rms(D)
+
+
 def anomali(seri_kotak, y, c, klim):
     t = total_musim(seri_kotak, y, c)
     return None if t is None or not klim else 100 * (t / klim - 1)
@@ -428,11 +449,19 @@ def bangun():
         r0 = obs if obs is not None else r_akhir["nilai"]
         asal_r = f"teramati {ms} {yy}" if obs is not None else f"persistensi {r_akhir['musim']} {r_akhir['tahun']} ({r_akhir['nilai']:+.2f})"
         pb = pembanding([(t, r, d) for t, r, d in baris[ms] if t <= tahun_akhir], r0, d_now)
+        lead_r = bulan_ke_indeks(yy, mm) - bulan_ke_indeks(r_akhir["tahun"], MUSIM.index(r_akhir["musim"]) + 1) if obs is None else 0
+        lead_d = bulan_ke_indeks(yy, mm) - bulan_ke_indeks(last4[-1][0].year, last4[-1][0].month) if obs is None and last4 else 0
+        sd_r = sd_persistensi(roni, dmi, lead_r)[0]
+        sd_d = sd_persistensi(roni, dmi, lead_d)[1]
         wil = {}
         for kid, f in fit[ms].items():
             x = desain(r0, d_now)
-            pred = sum(b * v for b, v in zip(f["beta"], x))
-            wil[kid] = {"anom_pct": round(pred, 1), "p10": round(pred - 1.2816 * f["rmse_loo"], 1), "p90": round(pred + 1.2816 * f["rmse_loo"], 1)}
+            b = f["beta"]
+            pred = sum(bb * v for bb, v in zip(b, x))
+            g_r, g_d = b[1] + b[3] * d_now, b[2] + b[3] * r0  # gradien prakiraan terhadap pendorong
+            sd_tot = math.sqrt(f["rmse_loo"] ** 2 + (g_r * sd_r) ** 2 + (g_d * sd_d) ** 2)
+            wil[kid] = {"anom_pct": round(pred, 1), "p10": round(pred - 1.2816 * sd_tot, 1), "p90": round(pred + 1.2816 * sd_tot, 1),
+                        "sd_total": round(sd_tot, 1), "tampil": bool(sd_tot < f["sd_anomali"])}
         banding = []
         for jarak, t in pb:
             r, d = pend[ms][t]
@@ -444,10 +473,12 @@ def bangun():
             banding.append({"tahun": t, "roni": round(r, 2), "dmi": round(d, 2), "jarak": round(jarak, 2), "hujan_pct": h})
         prak.append({"musim": ms, "tahun": yy, "bulan_tengah": f"{yy}-{mm:02d}", "label": f"{BLN[(mm - 2) % 12]} {yy - (mm == 1)} - {BLN[mm % 12]} {yy + (mm == 12)}",
                      "horizon_bulan": dk,
-                     "ekstrapolasi": not (min(x[1] for x in baris[ms]) <= r0 <= max(x[1] for x in baris[ms]) and min(x[2] for x in baris[ms]) <= d_now <= max(x[2] for x in baris[ms])),
+                     "di_luar_rentang": not (min(x[1] for x in baris[ms]) <= r0 <= max(x[1] for x in baris[ms]) and min(x[2] for x in baris[ms]) <= d_now <= max(x[2] for x in baris[ms])),
+                     "ekstrapolasi": obs is None and dk >= HORIZON_PERSISTEN or not (min(x[1] for x in baris[ms]) <= r0 <= max(x[1] for x in baris[ms]) and min(x[2] for x in baris[ms]) <= d_now <= max(x[2] for x in baris[ms])),
+                     "sd_pendorong": {"roni": round(sd_r, 2), "dmi": round(sd_d, 2), "lead_bulan": [lead_r, lead_d]},
                      "pendorong": {"roni": round(r0, 2), "dmi": round(d_now, 2), "roni_asal": asal_r,
                                    "dmi_asal": asal_dmi},
-                     "jenis_pendorong": "persistensi",
+                     "jenis_pendorong": "teramati" if obs is not None else "persistensi",
                      "wilayah": wil, "pembanding": banding})
     ringkas = []
     for ms in MUSIM:
@@ -464,7 +495,7 @@ def bangun():
             wil_fit[ms][kid] = {"a_b_c_d": [round(b, 2) for b in f["beta"]], "t": [round(x, 1) for x in f["t"]], "n": f["n"],
                                 "r2": round(f["r2"], 3), "sd_resid": round(f["sd_resid"], 1), "sd_anomali": round(f["sd_anomali"], 1),
                                 "rmse_loo": round(f["rmse_loo"], 1), "skill_loo": round(f["skill_loo"], 3),
-                                "lulus": bool(f["skill_loo"] > 0.1), "tahun": [f["tahun"][0], f["tahun"][-1]],
+                                "lulus": bool(f["skill_loo"] > SKILL_LULUS), "tahun": [f["tahun"][0], f["tahun"][-1]],
                                 "kalimat_roni": kalimat(nama[kid], ms, ci, f["beta"], f["t"], f["skill_loo"], "roni"),
                                 "kalimat_dmi": kalimat(nama[kid], ms, ci, f["beta"], f["t"], f["skill_loo"], "dmi")}
     semua = [(ms, kid, f) for ms, d in fit.items() for kid, f in d.items()]
@@ -497,7 +528,7 @@ def bangun():
                "Pendorong musim depan = persistensi nilai terakhir (RONI musim teramati terakhir, DMI 4 minggu terakhir), bukan prakiraan. ENSO dan IOD berubah dalam hitungan bulan; prakiraan lebih dari 2-3 musim ke depan hampir pasti meleset kalau keadaan pendorongnya berubah.",
                "Regresi memakai pendorong musim yang SAMA dengan hujannya (serentak). Skill LOO mengukur kecocokan hubungan, bukan kemampuan meramal dari pendorong yang belum teramati.",
                "Kotak persegi bukan batas administrasi: sebagian laut dan pulau tetangga ikut tersaring; Kalsel selatan, Bengkulu-Lampung sebagian, dan Natuna di luar kotak.",
-               "Hanya 45 tahun data per musim dan 4 parameter; tahun ekstrem (1997, 2015, 2019) berpengaruh besar. Normal galat residu dipakai untuk rentang p10-p90 (asumsi).",
+               "Hanya 45 tahun data per musim dan 4 parameter; tahun ekstrem (1997, 2015, 2019) berpengaruh besar. Rentang p10-p90 = normal dengan ragam galat LOO + ragam galat persistensi pendorong yang dirambatkan lewat gradien (RMS selisih historis RONI/DMI pada lead yang sama; galat RONI dan DMI dianggap tidak berkorelasi); tampil=false bila sd total >= sd anomali klimatologi (tak lebih baik dari iklim biasa).",
                "DMI terkini dari OISST (OSMC) berbeda produk dengan DMI riwayat HadISST; kecocokannya ada di dmi_perbandingan.",
                "CHIRPS memadukan satelit dan stasiun; di Papua dan Maluku stasiunnya jarang sehingga lebih tidak pasti."]}
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
@@ -558,6 +589,20 @@ def uji():
     # nasional berbobot sel
     sn = seri_nasional({"a": {(2000, 1): 100.0}, "b": {(2000, 1): 200.0}}, {"a": 1, "b": 3})
     assert abs(sn[(2000, 1)] - 175) < 1e-9
+    assert "tidak teruji" in kalimat("Jawa", "SON", 10, [0, -14.2, 3, 0], [0, -4.0, 1, 0], 0.05)  # skill 0..0,1 belum lulus
+    rr = {("DJF", y): 0.0 for y in range(1982, 2026)}
+    w = random.Random(1)
+    nilai = 0.0
+    roni_rw, dmi_rw = {}, {}
+    for y in range(1980, 2027):
+        for m in range(1, 13):
+            nilai += w.gauss(0, 0.3)
+            dmi_rw[(y, m)] = nilai
+    for y in range(1982, 2026):
+        for c, ms in enumerate(MUSIM, 1):
+            roni_rw[(ms, y)] = rerata_musim_dmi(dmi_rw, y, c)
+    s0, s6, s12 = (sd_persistensi(roni_rw, dmi_rw, L)[0] for L in (0, 6, 12))
+    assert s0 == 0 and 0.3 < s6 < s12 and abs(s6 - 0.3 * math.sqrt(6)) < 0.25, (s6, s12)
     print("iklim_outlook uji: lulus")
 
 
