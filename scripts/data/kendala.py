@@ -1,14 +1,14 @@
 """Kendala lapangan per kompleks api -> public/data/kendala.json
 
-Meniru label slide 7 paparan Rakor BNPB Kalteng 19 Okt 2026 ("Air jauh", "Akses sulit di rawa", "Roda empat sulit masuk"),
-tetapi dihitung dari data yang dipegang repo, bukan dari tabel BNPB. Cakupan: kompleks operasi.json di provinsi yang lapisan
+Terinspirasi label slide 7 paparan Rakor BNPB Kalteng 19 Okt 2026 ("Air jauh", "Akses sulit di rawa", "Roda empat sulit masuk"),
+tetapi labelnya sengaja diberi nama sesuai yang DIUKUR ("Sungai/kanal besar > 2 km", "Jalan utama > 2 km"), dihitung dari data yang dipegang repo, bukan dari tabel BNPB. Cakupan: kompleks operasi.json di provinsi yang lapisan
 sungai+kanal+jalan OSM-nya lengkap (kanal.json `provinsi` = 9 provinsi prioritas); kompleks lain tidak dinilai (tidak ada di keluaran),
 bukan "tanpa kendala".
 
 Sumber data (semua sudah terbit, tanpa jaringan, aman dijalankan harian):
   air   : sungai besar OSM waterway=river (jalan.geojson kelas 6) dan kanal/parit/drain OSM (kanal.json, sel 0,02 derajat);
           danau, rawa, embung, dan anak sungai kecil TIDAK ada di data ini -> air_km batas atas (air sebenarnya bisa lebih dekat).
-  jalan : jalan OSM kelas trunk/primary (1), secondary (2), tertiary (3) dari jalan.geojson (bisa dilalui roda empat);
+  jalan : jalan OSM kelas trunk/primary (1), secondary (2), tertiary (3) dari jalan.geojson;
           unclassified dan track (jalan desa/kebun/tanah) hanya ada di graf waktu tempuh, bukan di peta -> lihat kaki_km.
   kaki_km, jam : akses.json (graf jalan+sungai OSM semua kelas) untuk kompleks level 3 di 9 provinsi prioritas; jam = tercepat dari
           posko/daops. Kompleks tanpa entri akses.json: kaki_km dan jam null.
@@ -28,16 +28,17 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 # SEMUA ambang di sini; ikut ditulis ke JSON (`ambang`). Ambang = penyaring perencanaan platform ini, BUKAN angka BNPB
 # (slide BNPB hanya menyebut label tanpa angka) dan bukan standar baku.
 AMBANG = {
-    "air_jauh_km": 2.0,     # air_km > ini -> "Air jauh". Rujukan internal operasi.py KOEF: kanal_dekat 0,5 km (selang 10-15 gulung) dan
-                            # jarak_air_heli lo 2 km (batas dekat heli isi ember); di atas 2 km pompa+selang tidak lagi mungkin, tinggal heli/tangki.
+    "air_jauh_km": 2.0,     # air_km > ini -> label air. 2 km mengacu pada koef jarak_air_heli lo di operasi.py (skenario optimis jarak isi ember),
+                            # BUKAN batas kemampuan heli atau selang; kanal_dekat 0,5 km (selang 10-15 gulung) di berkas yang sama jauh di bawahnya.
     "rawa_jalan_km": 1.0,   # gambut dan kaki_km (jalan/track/sungai terdekat, akses.py) > ini -> "Akses sulit di rawa". Asumsi: 1 km pada 4 km/jam
                             # (KAKI_KMJ akses.py) = 15 menit sekali jalan di gambut sambil memikul selang/pompa.
-    "roda4_km": 2.0,        # tidak ada jalan roda empat (trunk..tertiary OSM) <= ini -> "Roda empat sulit masuk". Asumsi: 2 km = 30 menit jalan kaki
-                            # memikul peralatan dari titik terakhir kendaraan.
+    "jalan_utama_km": 2.0,  # tidak ada jalan trunk/primary/secondary/tertiary OSM <= ini -> "Jalan utama > 2 km". Mengukur jarak ke jalan UTAMA saja;
+                            # jalan desa/kebun (unclassified, track) belum terdata di peta terbit, jadi BUKAN bukti roda empat tak bisa masuk. Asumsi 2 km = 30 menit jalan kaki.
+    "air_jauh_acuan": "2 km mengacu pada koef jarak_air_heli lo di operasi.py (asumsi platform), bukan batas kemampuan heli",
     "cari_maks_km": 25.0,   # pencarian terdekat dihentikan di sini; di luar ini nilai null dan dihitung melewati ambang
 }
 JALAN_KELAS = {1: "trunk/primary", 2: "secondary", 3: "tertiary"}
-LABEL = {"air": "Air jauh", "rawa": "Akses sulit di rawa", "roda4": "Roda empat sulit masuk"}
+LABEL = {"air": "Sungai/kanal besar > 2 km", "rawa": "Akses sulit di rawa", "jalan": "Jalan utama > 2 km"}
 SEL = 0.05            # derajat, indeks ruang
 LANGKAH_KM = 0.5      # garis dipadatkan tiap 0,5 km supaya jarak ke titik terdekat tidak melonjak pada segmen panjang
 
@@ -82,17 +83,16 @@ class Indeks:
         return (best, tag) if best is not None and best <= maks_km else (None, None)
 
 
-def label(air_km, air_ada, gambut, kaki_km, jalan_km, a=AMBANG):
-    """Aturan label. air_km/jalan_km None = tidak ditemukan dalam cari_maks_km (dianggap lewat ambang). kaki_km None = bukan kompleks akses.json:
-    aturan rawa memakai jalan_km (jalan roda empat) sebagai pengganti terburuk."""
+def label(air_km, gambut, kaki_km, jalan_km, a=AMBANG):
+    """air_km/jalan_km None = tidak ditemukan dalam cari_maks_km (dianggap melewati ambang). Label rawa HANYA bila kaki_km (akses.json,
+    jalan/track/sungai semua kelas) diketahui; tanpa itu tidak ada label rawa (yang terukur cuma jalan utama, itu label tersendiri)."""
     out = []
     if air_km is None or air_km > a["air_jauh_km"]:
         out.append(LABEL["air"])
-    akses = kaki_km if kaki_km is not None else jalan_km
-    if gambut and (akses is None or akses > a["rawa_jalan_km"]):
+    if gambut and kaki_km is not None and kaki_km > a["rawa_jalan_km"]:
         out.append(LABEL["rawa"])
-    if jalan_km is None or jalan_km > a["roda4_km"]:
-        out.append(LABEL["roda4"])
+    if jalan_km is None or jalan_km > a["jalan_utama_km"]:
+        out.append(LABEL["jalan"])
     return out
 
 
@@ -110,8 +110,8 @@ def bangun(kompleks, air, jalan, akses, prov_ok, a=AMBANG):
         out[k["id"]] = {"prov": k["prov"], "kab": k.get("kab"),
                         "air_km": None if da is None else round(da, 2), "air_jenis": ja,
                         "jalan_km": None if dj is None else round(dj, 2), "jalan_kelas": JALAN_KELAS.get(jj) if dj is not None else None,
-                        "roda4": dj is not None and dj <= a["roda4_km"], "kaki_km": kaki, "jam": jam, "gambut": gambut, "rawa_dasar": "kaki_km" if kaki is not None else "jalan_km",
-                        "label": label(da, ja, gambut, kaki, dj, a)}
+                        "jalan_utama_dekat": dj is not None and dj <= a["jalan_utama_km"], "kaki_km": kaki, "jam": jam, "gambut": gambut, 
+                        "label": label(da, gambut, kaki, dj, a)}
     return out
 
 
@@ -138,11 +138,12 @@ def main():
            "label": LABEL, "n": len(hasil), "n_label": n_lab,
            "catatan": ("Perkiraan perencanaan dari data OpenStreetMap (ODbL) yang sudah terbit di repo, bukan survei lapangan dan bukan tabel BNPB; label meniru slide 7 Rakor BNPB Kalteng 19 Okt 2026. "
                        "Hanya kompleks operasi.json di 9 provinsi prioritas (kanal.json provinsi). Ambang di `ambang` adalah asumsi platform (alasan di docstring scripts/data/kendala.py): "
-                       "air_km > air_jauh_km: Air jauh; gambut dan akses (kaki_km dari akses.json bila ada, selain itu jalan_km) > rawa_jalan_km: Akses sulit di rawa; "
-                       "jalan_km > roda4_km: Roda empat sulit masuk. "
+                       "air_km > air_jauh_km: label Sungai/kanal besar > 2 km; gambut dan kaki_km (akses.json) > rawa_jalan_km: Akses sulit di rawa (hanya bila kaki_km ada); "
+                       "jalan_km > jalan_utama_km: Jalan utama > 2 km. "
                        "air_km = jarak terdekat ke sungai besar OSM (air_jenis sungai) atau kanal/parit OSM (sel 0,02 derajat, galat sampai ~1,5 km); danau, embung, rawa, dan anak sungai kecil tidak ada di data, jadi air_km adalah batas atas "
-                       "(null = tak ada dalam cari_maks_km, dihitung melewati ambang). jalan_km = jarak ke jalan OSM trunk/primary/secondary/tertiary (jalan_kelas); jalan desa/kebun (unclassified, track) tidak ada di peta sehingga "
-                       "Roda empat sulit masuk bisa berlebih di tempat yang hanya punya jalan kebun. kaki_km dan jam (tercepat dari posko/daops) hanya untuk kompleks yang masuk akses.json (level 3), selain itu null. "
+                       "(null = tak ada dalam cari_maks_km, dihitung melewati ambang). 2 km air mengacu pada koef jarak_air_heli lo di operasi.py, bukan batas kemampuan heli. "
+                       "jalan_km = jarak ke jalan OSM trunk/primary/secondary/tertiary (jalan_kelas). Jalan desa/kebun (unclassified, track) BELUM terdata di peta terbit (jalan.geojson hanya kelas 1-3, graf_jalan.json.gz tidak menyimpan kelas), "
+                       "jadi label jalan menyatakan jarak ke jalan utama, bukan bahwa roda empat tidak bisa masuk. kaki_km dan jam (tercepat dari posko/daops) hanya untuk kompleks yang masuk akses.json (level 3), selain itu null dan tanpa label rawa. "
                        "Kondisi musiman (banjir, portal perusahaan, jalan rusak) tidak dimodelkan."),
            "kompleks": hasil}
     p = os.path.join(DATA, "kendala.json")
@@ -164,23 +165,23 @@ def uji():
     ix.tambah(0.18, 0, "x")                 # ~19,9 km, beberapa cincin sel jauhnya
     d, t = ix.terdekat(0.09, 20 * e, 25)    # titik di tengah antara garis (10 km) dan "x": cincin harus cukup luas
     assert abs(d - 14.1) < 0.2, d   # ke ujung garis (10 km utara-barat daya), bukan ke "x" (22 km)
-    L, a = label, AMBANG
-    assert L(1.0, "sungai", False, None, 0.5) == []
-    assert L(2.5, "sungai", False, 0.2, 0.5) == ["Air jauh"]
-    assert L(2.0, "sungai", False, 0.2, 0.5) == []                       # tepat di ambang: tidak berlabel
-    assert L(0.5, "kanal", True, 1.5, 0.5) == ["Akses sulit di rawa"]
-    assert L(0.5, "kanal", True, 1.0, 0.5) == []
-    assert L(0.5, "kanal", False, 5.0, 0.5) == []                         # bukan gambut: tak ada label rawa
-    assert L(0.5, "kanal", True, None, 3.0) == ["Akses sulit di rawa", "Roda empat sulit masuk"]   # tanpa akses.json pakai jalan_km
-    assert L(None, None, True, None, None) == ["Air jauh", "Akses sulit di rawa", "Roda empat sulit masuk"]
+    L = label
+    assert L(1.0, False, None, 0.5) == []
+    assert L(2.5, False, 0.2, 0.5) == [LABEL["air"]]
+    assert L(2.0, False, 0.2, 0.5) == []                                  # tepat di ambang: tidak berlabel
+    assert L(0.5, True, 1.5, 0.5) == [LABEL["rawa"]]
+    assert L(0.5, True, 1.0, 0.5) == []
+    assert L(0.5, False, 5.0, 0.5) == []                                  # bukan gambut: tak ada label rawa
+    assert L(0.5, True, None, 3.0) == [LABEL["jalan"]]                    # tanpa kaki_km: TIDAK ada label rawa
+    assert L(None, True, 3.0, None) == [LABEL["air"], LABEL["rawa"], LABEL["jalan"]]
     # bangun end-to-end kecil
     air, jal = Indeks(), Indeks()
     air.tambah(0, 3 * e, "sungai")
     jal.garis([(0, 0), (0, 5 * e)], 3)
     ks = [{"id": "K1", "prov": "62", "kab": "X", "lat": 0, "lon": 0, "jenis": "gambut"}, {"id": "K2", "prov": "11", "lat": 0, "lon": 0}]
     r = bangun(ks, air, jal, {"K1": {"kaki_km": 0.4, "dari": [{"jam": 2.5}]}}, {"62"})
-    assert list(r) == ["K1"] and r["K1"]["air_jenis"] == "sungai" and abs(r["K1"]["air_km"] - 3) < 0.01 and r["K1"]["roda4"] is True
-    assert r["K1"]["jalan_kelas"] == "tertiary" and r["K1"]["jam"] == 2.5 and r["K1"]["label"] == ["Air jauh"], r
+    assert list(r) == ["K1"] and r["K1"]["air_jenis"] == "sungai" and abs(r["K1"]["air_km"] - 3) < 0.01 and r["K1"]["jalan_utama_dekat"] is True
+    assert r["K1"]["jalan_kelas"] == "tertiary" and r["K1"]["jam"] == 2.5 and r["K1"]["label"] == [LABEL["air"]], r
     print("kendala: uji lolos")
 
 

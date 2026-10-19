@@ -53,61 +53,121 @@ def hitung_titik(baris, cari, kolom):
     return total, per_hari
 
 
-def perbarui_hari(hari, baru, batas_lengkap):
-    """Hari >= batas_lengkap dari hitungan baru (jendela 7 hari menutupnya penuh, nol ikut tercatat); sisanya dari hari lama."""
-    out = {t: v for t, v in hari.items() if t < batas_lengkap}
-    for t in {*baru, *(t for t in hari if t >= batas_lengkap)}:
-        if t >= batas_lengkap:
-            out[t] = baru.get(t, {})
+def perbarui_hari(hari, baru, batas_lengkap, akhir):
+    """Tanggal batas_lengkap..akhir (akhir = tanggal WIB `acuan` hotspot) ditimpa dari hitungan baru (nol ikut tercatat);
+    hari lain, termasuk SESUDAH akhir, dibiarkan (hotspot tidak tahu apa-apa tentangnya; itu urusan isi_mundur)."""
+    out = dict(hari)
+    d, a = dt.date.fromisoformat(batas_lengkap), dt.date.fromisoformat(akhir)
+    while d <= a:
+        out[d.isoformat()] = baru.get(d.isoformat(), {})
+        d += dt.timedelta(days=1)
     return out
 
 
-def isi_mundur(hari, awal, hari_ini, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS_REQ):
-    """Isi tanggal WIB yang belum ada dari `awal` s.d. hari_ini-1 dari FIRMS (tanggal WIB D = UTC D-1 17:00 .. D 17:00)."""
-    h0 = dt.date.fromisoformat(hari_ini)
-    kosong = []
-    d = dt.date.fromisoformat(awal)
+FAMILI = ("VIIRS_SNPP", "VIIRS_NOAA20", "MODIS")
+VERSI_HARI = 2     # v1 memilih SP/NRT dari umur hari: SP VIIRS berakhir 30 Jun 2026, jadi Jul-Agu hanya terisi MODIS atau kosong
+MIGRASI_DARI = "2026-07-01"
+CURIGA_NAS = 300   # hari KHG kosong tetapi titik nasional (musim_harian.json) >= ini dianggap unduhan gagal, bukan nol sungguhan
+
+
+def muat_ketersediaan(kunci, ambil):
+    """FIRMS data_availability: {data_id: (tgl_min, tgl_maks)}. Arsip standar (SP) tertinggal ~3 bulan dari NRT; menebak sumber dari umur
+    hari membuat SP kosong diterima sebagai 'nol titik' (bug 19 Okt: 2-27 Agustus kosong)."""
+    ket = {}
+    for b in ambil(f"https://firms.modaps.eosdis.nasa.gov/api/data_availability/csv/{kunci}/ALL").splitlines()[1:]:
+        p = b.split(",")
+        if len(p) == 3:
+            ket[p[0]] = (dt.date.fromisoformat(p[1]), dt.date.fromisoformat(p[2]))
+    if not all(f + "_NRT" in ket for f in FAMILI):
+        raise RuntimeError(f"data_availability tak lengkap: {sorted(ket)}")
+    return ket
+
+
+def sumber_hari(fam, d, ket):
+    """SP bila d dalam jangkauannya, selain itu NRT bila d dalam jangkauannya, selain itu None (tak ada data = hari tak bisa selesai)."""
+    for sfx in ("_SP", "_NRT"):
+        r = ket.get(fam + sfx)
+        if r and r[0] <= d <= r[1]:
+            return fam + sfx
+    return None
+
+
+def csv_sah(teks):
+    """Balasan FIRMS yang sah selalu berawal header CSV; pesan galat (kunci, kuota) datang sebagai teks berstatus 200."""
+    if not teks.lstrip().startswith("latitude"):
+        raise ValueError("balasan FIRMS bukan CSV: " + teks.strip()[:80])
+    return csv.DictReader(io.StringIO(teks))
+
+
+def curiga(hari, awal, hari_ini, nasional, parsial=()):
+    """Tanggal WIB awal..hari_ini-1 yang belum boleh dianggap selesai: belum ada, parsial, atau kosong padahal nasional >= CURIGA_NAS."""
+    out, d, h0 = [], dt.date.fromisoformat(awal), dt.date.fromisoformat(hari_ini)
     while d < h0:
-        if d.isoformat() not in hari:
-            kosong.append(d)
+        t = d.isoformat()
+        if t not in hari or t in parsial or (not hari[t] and nasional.get(t, 0) >= CURIGA_NAS):
+            out.append(d)
         d += dt.timedelta(days=1)
-    if not kosong:
+    return out
+
+
+def nasional_harian(jalur, tahun):
+    """{tgl: titik nasional} dari musim_harian.json (hitungan setara; pembanding kewarasan saja)."""
+    if not os.path.exists(jalur):
+        return {}
+    m = json.load(open(jalur))
+    d0 = dt.date(int(tahun), 1, 1)
+    return {(d0 + dt.timedelta(days=i)).isoformat(): n for i, n in enumerate(m.get("nasional", {}).get(str(tahun), []))}
+
+
+def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS_REQ, parsial=None, ket=None):
+    """Isi tanggal WIB `perlu` (list date) dari FIRMS (tanggal WIB D = UTC D-1 17:00 .. D 17:00, jadi butuh hari UTC D-1 dan D).
+    Sumber per hari dipilih dari ketersediaan FIRMS; balasan bukan CSV = blok gagal. Hari baru ditandai selesai bila SEMUA famili
+    sensor sukses untuk hari UTC D-1 dan D."""
+    if not perlu:
         return 0
-    maks_hari = (maks_req // 3) * 5 - 1
-    sasaran = kosong[:maks_hari]
-    u0, u1 = sasaran[0] - dt.timedelta(days=1), sasaran[-1]   # hari UTC yang harus diunduh
-    blok, d = [], u0
-    while d <= u1:
-        n = min(5, (u1 - d).days + 1)
-        sumber = UTAMA if (dt.datetime.now(dt.timezone.utc).date() - d).days <= BATAS_NRT else SP
-        blok.append((d, n, [(s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{kunci}/{s}/{bbox}/{n}/{d}") for s in sumber]))
-        d += dt.timedelta(days=n)
-    lihat, hitung, utc_ok = set(), {}, set()
-    for d, n, tugas in blok:
-        baris = []
+    ket = ket or muat_ketersediaan(kunci, ambil)
+    sasaran = sorted(perlu)[:(maks_req // 3) * 5 - 1]
+    u0, u1 = sasaran[0] - dt.timedelta(days=1), sasaran[-1]
+    blok = []   # (famili, hari_awal, n, sumber)
+    for fam in FAMILI:
+        d = u0
+        while d <= u1:
+            src = sumber_hari(fam, d, ket)
+            n = 1
+            while n < 5 and d + dt.timedelta(days=n) <= u1 and sumber_hari(fam, d + dt.timedelta(days=n), ket) == src:
+                n += 1
+            blok.append((fam, d, n, src))
+            d += dt.timedelta(days=n)
+    lihat, hitung, ok = set(), {}, {}   # ok[hari UTC] = famili yang sukses
+    for fam, d, n, src in blok:
+        if src is None:
+            continue   # tak ada data FIRMS untuk hari ini: tidak ditandai
         try:
-            for s, url in tugas:
-                baris += [(s, r) for r in csv.DictReader(io.StringIO(ambil(url)))]
-        except Exception as e:   # satu blok gagal: hari UTC-nya tidak ditandai, blok lain tetap dipakai
-            print("khg_prioritas: gagal", d, e, file=sys.stderr)
+            baris = list(csv_sah(ambil(f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{kunci}/{src}/{bbox}/{n}/{d}")))
+        except Exception as e:   # blok gagal: hari UTC-nya tidak ditandai, blok lain tetap dipakai
+            print("khg_prioritas: gagal", src, d, e, file=sys.stderr)
             continue
-        utc_ok |= {d + dt.timedelta(days=i) for i in range(n)}
-        for s, r in baris:
+        for i in range(n):
+            ok.setdefault(d + dt.timedelta(days=i), set()).add(fam)
+        for r in baris:
             jam = r["acq_time"].zfill(4)
             t = dt.datetime.fromisoformat(f"{r['acq_date']}T{jam[:2]}:{jam[2:]}:00+00:00")
             lat, lon = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4)
-            if (lat, lon, t, s) in lihat:
+            if (lat, lon, t, src) in lihat:
                 continue
-            lihat.add((lat, lon, t, s))
+            lihat.add((lat, lon, t, src))
             if saring and saring(lat, lon):
                 continue
             k = cari(lon, lat)
             if k:
                 tg = t.astimezone(WIB).date().isoformat()
                 hitung.setdefault(tg, {})[k] = hitung.setdefault(tg, {}).get(k, 0) + 1
-    selesai = [d for d in sasaran if d in utc_ok and d - dt.timedelta(days=1) in utc_ok]   # tanggal WIB D = UTC D-1 dan D
+    penuh = lambda d: ok.get(d, set()) == set(FAMILI)
+    selesai = [d for d in sasaran if penuh(d) and penuh(d - dt.timedelta(days=1))]
     for d in selesai:
         hari[d.isoformat()] = hitung.get(d.isoformat(), {})
+        if parsial is not None:
+            parsial.discard(d.isoformat())
     return len(selesai)
 
 
@@ -177,13 +237,21 @@ def main():
     acuan = dt.datetime.fromisoformat(h["acuan"])
     hari_ini = dt.datetime.now(WIB).date().isoformat()
     ki = h["kolom"].index("tgl_wib")
-    titik7, baru = hitung_titik(baris, cari, lambda b: tgl_dari_hotspot(h, b[ki]))
+    _, baru = hitung_titik(baris, cari, lambda b: tgl_dari_hotspot(h, b[ki]))
+    akhir_acuan = acuan.astimezone(WIB).date()
     batas_lengkap = ((acuan - dt.timedelta(days=7)).astimezone(WIB).date() + dt.timedelta(days=1)).isoformat()
 
     jalur = os.path.join(DATA, "khg_hari.json")
-    lama = json.load(open(jalur))["hari"] if os.path.exists(jalur) else {}
-    hari = perbarui_hari(lama, baru, batas_lengkap)
+    simpan = json.load(open(jalur)) if os.path.exists(jalur) else {}
+    lama, parsial = simpan.get("hari", {}), set(simpan.get("parsial", []))
+    if simpan.get("versi", 1) < VERSI_HARI and simpan:   # berkas dari pemilihan sumber lama (SP kosong dianggap nol / VIIRS hilang): buang hari terdampak
+        lama = {t: v for t, v in lama.items() if t < MIGRASI_DARI}
+        print(f"khg_prioritas: migrasi khg_hari v{simpan.get('versi', 1)} -> v{VERSI_HARI}: hari >= {MIGRASI_DARI} diisi ulang", file=sys.stderr)
+    hari = perbarui_hari(lama, baru, batas_lengkap, akhir_acuan.isoformat())
+    # hari acuan baru terisi sebagian (jam acuan), hari sebelumnya di jendela sudah penuh
+    parsial = {t for t in parsial if not (batas_lengkap <= t < akhir_acuan.isoformat())} | {akhir_acuan.isoformat()}
     awal = f"{hari_ini[:4]}-01-01"
+    nas = nasional_harian(os.path.join(DATA, "musim_harian.json"), hari_ini[:4])
     if os.environ.get("FIRMS_MAP_KEY") or os.path.exists(os.path.join(AKAR, ".env")):
         try:
             import harian, titik_palsu as TP
@@ -191,25 +259,30 @@ def main():
             kunci = harian.kunci()
             if not kunci:
                 raise RuntimeError("FIRMS_MAP_KEY kosong")
-            n = isi_mundur(hari, awal, hari_ini, kunci, harian.ambil, harian.BBOX, cari,
-                           (lambda la, lo: TP.palsu(la, lo, sel)) if sel else None)
+            perlu = curiga(hari, awal, hari_ini, nas, parsial)
+            n = isi_mundur(hari, perlu, kunci, harian.ambil, harian.BBOX, cari,
+                           (lambda la, lo: TP.palsu(la, lo, sel)) if sel else None, parsial=parsial)
             print(f"khg_prioritas: isi mundur {n} hari", file=sys.stderr)
         except (Exception, SystemExit) as e:   # kunci hilang / FIRMS mati: jalan terus dengan hari yang ada
             print("khg_prioritas: isi mundur dilewati:", e, file=sys.stderr)
     hari = {t: v for t, v in hari.items() if t >= f"{int(hari_ini[:4]) - 1}-12-01"}   # simpan 1 Des tahun lalu s.d. kini (30 hari awal Januari)
-    json.dump({"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "hari": dict(sorted(hari.items()))},
+    json.dump({"versi": VERSI_HARI, "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "parsial": sorted(parsial), "hari": dict(sorted(hari.items()))},
               open(jalur, "w"), separators=(",", ":"))
+    h0 = dt.date.fromisoformat(hari_ini)
+    kemarin = (h0 - dt.timedelta(days=1)).isoformat()   # hari ini selalu parsial: tidak ikut hitungan apa pun
     d0 = dt.date.fromisoformat(awal)
-    n_hari = (dt.date.fromisoformat(hari_ini) - d0).days   # Jan 1 .. kemarin
-    lengkap = all((d0 + dt.timedelta(days=i)).isoformat() in hari for i in range(n_hari))
+    curiga_sisa = curiga(hari, awal, hari_ini, nas, parsial)
+    lengkap = not curiga_sisa
     tgl_awal_ada = min((t for t in hari if t >= awal), default=None)
-    t30 = jumlah(hari, (dt.date.fromisoformat(hari_ini) - dt.timedelta(days=29)).isoformat(), hari_ini)
-    musim = jumlah(hari, awal, hari_ini)
+    j7 = [(h0 - dt.timedelta(days=7)).isoformat(), kemarin]
+    titik7 = jumlah(hari, *j7)
+    t30 = jumlah(hari, (h0 - dt.timedelta(days=30)).isoformat(), kemarin)
+    musim = jumlah(hari, awal, kemarin)
 
     op = json.load(open(os.path.join(DATA, "operasi.json")))
     kompleks = {}
     for k in op["kompleks"]:
-        if k.get("ini", 0) > 0:
+        if (k.get("ini") or 0) > 0:
             kode = cari(k["lon"], k["lat"])
             if kode:
                 kompleks[kode] = kompleks.get(kode, 0) + 1
@@ -221,13 +294,14 @@ def main():
             kanal[kode] = kanal.get(kode, 0.0) + km
 
     baris_khg = rakit(props, titik7, t30, musim, kompleks, kanal, geom, Wilayah(), lengkap)
-    out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "per": hari_ini, "acuan_titik": h["acuan"],
+    out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "per": hari_ini, "hari_curiga": len(curiga_sisa), "jendela_7h": j7, "jendela_30h": [(h0 - dt.timedelta(days=30)).isoformat(), kemarin],
            "musim_tahun": int(hari_ini[:4]), "musim_lengkap": lengkap, "musim_data_dari": tgl_awal_ada,
-           "sumber": "Poligon KHG: BRGM PRIMS (prims.brgm.go.id, tidak dimodifikasi); titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20) via hotspot.json dan khg_hari.json; kanal: OpenStreetMap (ODbL) via kanal.json; kompleks: operasi.json",
-           "catatan": ("Titik dihitung di dalam poligon KHG (point-in-polygon, cincin luar), sensor M/N/N20 semua keyakinan, titik industri/PLTU sudah dibuang. "
-                       "titik_7h = jendela 7x24 jam dari acuan_titik; titik_30h dan titik_musim = jumlah harian WIB (khg_hari.json). "
-                       + ("" if lengkap else f"Musim BELUM lengkap sejak 1 Januari (data dari {tgl_awal_ada}): titik_musim batas bawah, terisi penuh bertahap tiap jalan harian. ")
-                       + "kompleks_aktif = kompleks operasi.json (titik tengah) dengan deteksi hari ini > 0 yang jatuh di KHG. "
+           "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); kanal: OpenStreetMap (ODbL); kompleks: operasi.json",
+           "catatan": ("Poligon KHG tidak diubah isinya, hanya disederhanakan untuk tampilan (Douglas-Peucker, toleransi 0,002 derajat, galat sampai +-220 m di tepi), jadi titik dekat tepi bisa masuk/keluar KHG secara keliru; lisensi PRIMS nonkomersial. "
+                       "Titik dihitung di dalam poligon (point-in-polygon, cincin luar), sensor M/N/N20 semua keyakinan, titik industri/PLTU sudah dibuang. "
+                       f"titik_7h = jumlah titik harian WIB pada jendela_7h {j7[0]} s.d. {j7[1]} (7 hari penuh terakhir; hari ini yang belum selesai tidak dihitung); titik_30h dan titik_musim dari khg_hari.json sampai {kemarin}. "
+                       + ("" if lengkap else f"Musim BELUM lengkap: {len(curiga_sisa)} hari belum terisi/parsial/curiga (kosong padahal nasional >= {CURIGA_NAS}; contoh {curiga_sisa[0]}): titik_musim dan titik_30h batas bawah, terisi penuh bertahap tiap jalan harian. ")
+                       + f"kompleks_aktif = kompleks operasi.json (per {op.get('per')}, titik tengah) dengan deteksi hari itu > 0 yang jatuh di KHG. "
                        "kanal_km = jumlah panjang kanal/parit OSM pada sel 0,02 derajat yang titik tengahnya di KHG (perkiraan kasar, +-2 km per sel). "
                        "kab = kab/kota yang dilintasi menurut titik contoh tiap 4,4 km (maks 6, urut luas contoh), prov = yang terbanyak. "
                        "Hanya KHG dengan titik_musim > 0; urut titik_7h lalu titik_musim. Prioritas pembasahan = di mana titik, kompleks, dan kanal bertemu."),
@@ -261,26 +335,46 @@ def uji():
     assert tot == {"A": 2, "B": 1} and ph == {"2026-01-02": {"A": 2}, "2026-01-03": {"B": 1}}, (tot, ph)
     # gabung hari: >= batas ditimpa (termasuk jadi kosong), < batas dipertahankan
     lama = {"2026-01-01": {"A": 9}, "2026-01-02": {"A": 99}, "2026-01-03": {"A": 7}}
-    g = perbarui_hari(lama, ph, "2026-01-02")
+    g = perbarui_hari(lama, ph, "2026-01-02", "2026-01-03")
     assert g == {"2026-01-01": {"A": 9}, "2026-01-02": {"A": 2}, "2026-01-03": {"B": 1}}, g
-    g2 = perbarui_hari({"2026-01-04": {"A": 5}}, {}, "2026-01-04")
-    assert g2 == {"2026-01-04": {}}, g2
-    # isi mundur dengan FIRMS palsu: 3 hari UTC dengan 1 titik di A, hari kosong tetap tercatat, titik palsu disaring, 2 sensor tak dobel
-    csv_ = "latitude,longitude,acq_date,acq_time\n-2.5,100.5,2026-01-02,0100\n-2.5,100.5,2026-01-02,0100\n-2.5,100.6,2026-01-02,2000\n-2.4,100.4,2026-01-03,0300\n"
+    # hari SESUDAH acuan tidak boleh ditandai selesai (nol palsu) maupun dihapus; hari dalam jendela tanpa titik jadi {} sungguhan
+    g2 = perbarui_hari({"2026-01-05": {"A": 5}}, {}, "2026-01-02", "2026-01-03")
+    assert "2026-01-04" not in g2 and g2["2026-01-05"] == {"A": 5} and g2["2026-01-02"] == {} and g2["2026-01-03"] == {}, g2
+    D = dt.date.fromisoformat
+    HDR = "latitude,longitude,acq_date,acq_time\n"
+    avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-01-02\n{f}_NRT,2026-01-03,2026-12-31\n" for f in FAMILI)
     dipanggil = []
-    def ambil(url):
+    def ambil_ok(url, isi=HDR):
         dipanggil.append(url)
-        return csv_
+        return avail if "data_availability" in url else isi
+    # hari parsial diunduh ulang
+    hp, pars = {"2026-01-02": {"A": 1}}, {"2026-01-02"}
+    isi_mundur(hp, [D("2026-01-02")], "K", ambil_ok, "b", lambda lo, la: None, parsial=pars)
+    assert not pars and hp["2026-01-02"] == {}, (pars, hp)
+    # sumber dipilih dari ketersediaan, BUKAN dari umur: 01-03 UTC hanya ada di NRT (SP-nya kosong), 01-01/01-02 di SP
+    ket = muat_ketersediaan("K", ambil_ok)
+    assert sumber_hari("MODIS", D("2026-01-02"), ket) == "MODIS_SP" and sumber_hari("MODIS", D("2026-01-03"), ket) == "MODIS_NRT" and sumber_hari("MODIS", D("2025-01-01"), ket) == "MODIS_SP"
+    assert sumber_hari("MODIS", D("2027-01-01"), ket) is None
+    # isi mundur dengan FIRMS palsu: titik di A, titik palsu disaring, duplikat dalam satu sensor dibuang
+    csv_ = HDR + "-2.5,100.5,2026-01-02,0100\n-2.5,100.5,2026-01-02,0100\n-2.5,100.6,2026-01-02,2000\n-2.4,100.4,2026-01-03,0300\n"
+    dipanggil.clear()
     hari = {}
-    n = isi_mundur(hari, "2026-01-02", "2026-01-04", "KEY", ambil, "94,-11.5,141.5,6.5", cari, lambda la, lo: abs(lo - 100.4) < 1e-6)
-    assert n == 2 and len(dipanggil) == 3, (n, len(dipanggil))
-    # 01-02 WIB = UTC 01-01 17:00 .. 01-02 17:00: titik 0100 dan (-2.5,100.5) hitung 1 (dedup per sensor); 2000 UTC => 01-03 WIB
-    assert hari["2026-01-02"] == {"A": 3} and hari["2026-01-03"] == {"A": 3}, hari  # 3 sensor palsu menjawab sama; duplikat dalam satu sensor dibuang
-    # gagal unduh = tidak ada hari yang ditandai selesai
-    hari2 = {}
-    def rusak(url):
-        raise RuntimeError("mati")
-    assert isi_mundur(hari2, "2026-01-02", "2026-01-04", "KEY", rusak, "b", cari) == 0 and not hari2
+    n = isi_mundur(hari, [D("2026-01-02"), D("2026-01-03")], "KEY", lambda u: ambil_ok(u, csv_), "94,-11.5,141.5,6.5", cari, lambda la, lo: abs(lo - 100.4) < 1e-6)
+    pakai = [u.split("/")[-4] for u in dipanggil if "area/csv" in u]
+    assert n == 2 and sorted(pakai) == sorted([f + "_SP" for f in FAMILI] * 1 + [f + "_NRT" for f in FAMILI]) , (n, pakai)
+    # 01-02 WIB = UTC 01-01 17:00 .. 01-02 17:00; 2000 UTC => 01-03 WIB. SP dan NRT masing-masing menjawab csv_ => 6 jawaban
+    assert hari["2026-01-02"] == {"A": 6} and hari["2026-01-03"] == {"A": 6}, hari
+    # gagal unduh ATAU balasan galat (200 berisi teks) = tidak ada hari yang ditandai selesai, termasuk balasan header saja yang salah-sumber tidak lolos
+    for galat in (lambda u: avail if "data_availability" in u else (_ for _ in ()).throw(RuntimeError("mati")),
+                  lambda u: avail if "data_availability" in u else "Invalid MAP_KEY."):
+        hari2 = {}
+        assert isi_mundur(hari2, [D("2026-01-02")], "KEY", galat, "b", cari) == 0 and not hari2
+    # hari kosong di antara hari berisi dengan nasional > 1000 WAJIB dianggap curiga (bug 2-27 Agustus: SP kosong diterima sebagai nol)
+    hh = {"2026-08-01": {"A": 20}, "2026-08-02": {}, "2026-08-03": {}, "2026-08-04": {"A": 9}, "2026-08-05": {}}
+    nas = {"2026-08-02": 3842, "2026-08-03": 1500, "2026-08-05": 50}
+    assert [d.isoformat() for d in curiga(hh, "2026-08-01", "2026-08-06", nas)] == ["2026-08-02", "2026-08-03"]
+    assert curiga(hh, "2026-08-01", "2026-08-06", nas, {"2026-08-05"})[-1].isoformat() == "2026-08-05"
+    assert [d.isoformat() for d in curiga({}, "2026-08-01", "2026-08-03", {})] == ["2026-08-01", "2026-08-02"]   # belum ada = curiga
     s = jumlah({"2026-01-01": {"A": 1}, "2026-01-05": {"A": 2, "B": 1}, "2026-02-01": {"A": 4}}, "2026-01-01", "2026-01-31")
     assert s == {"A": 3, "B": 1}, s
     # rakit: hanya musim > 0, urut 7h lalu musim
