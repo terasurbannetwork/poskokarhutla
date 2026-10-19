@@ -294,7 +294,7 @@
     "GET /bnpb": "halaman Ruang Koordinasi tanpa modul",
     "POST /api/riset/admin/luaran/:id": "perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui",
     "GET /kebutuhan": "halaman Ruang Koordinasi tanpa modul",
-    "GET /admin/gakkum": "/admin/gakkum: tanpa sesi",
+    "GET /admin/gakkum": "/admin/gakkum dan /admin/pimpinan: tanpa sesi",
     "GET /api/meja/ekspor": "sempurna: ekspor DIBI csv/json hanya admin",
     "trigger meja_rehab_tautan": "sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi",
     "table meja_stok": "sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi",
@@ -309,7 +309,8 @@
     "POST /api/relawan/admin/institusi": "POST /api/relawan/admin/institusi: validasi 400",
     "POST /api/relawan/admin/institusi/:id": "POST /api/relawan/admin/institusi/:id: kode baru",
     "table institusi": "CHECK menolak isian liar langsung di D1 (tanpa lewat worker)",
-    "table institusi_perjanjian": "CHECK menolak isian liar langsung di D1 (tanpa lewat worker)"
+    "table institusi_perjanjian": "CHECK menolak isian liar langsung di D1 (tanpa lewat worker)",
+    "GET /admin/pimpinan": "/admin/gakkum dan /admin/pimpinan: tanpa sesi"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

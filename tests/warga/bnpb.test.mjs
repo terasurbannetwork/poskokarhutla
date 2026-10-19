@@ -66,11 +66,13 @@ uji("berkas /bnpb/*.html dibuka langsung: 301 ke jalur bersih ber-CSP, berkas ta
   assert.equal((await buka("/bnpb/tidakada.html")).status, 404);
 });
 
-uji("/admin/gakkum: tanpa sesi dialihkan ke masuk, admin 200 dengan kerangka bersama", async () => {
-  const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/gakkum", {redirect: "manual"});
-  assert.equal(r.status, 303);
-  const a = await U.adm("GET", "/admin/gakkum");
-  assert.equal(a.s, 200); assert.match(a.t, /\/admin\/bersama\.js/); assert.match(a.t, /\/admin\/gakkum\.js/);
+uji("/admin/gakkum dan /admin/pimpinan: tanpa sesi dialihkan ke masuk, admin 200 dengan kerangka bersama", async () => {
+  for (const k of ["gakkum", "pimpinan"]) {
+    const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/" + k, {redirect: "manual"});
+    assert.equal(r.status, 303, k);
+    const a = await U.adm("GET", "/admin/" + k);
+    assert.equal(a.s, 200, k); assert.match(a.t, /\/admin\/bersama\.js/); assert.match(a.t, new RegExp(`/admin/${k}\\.js`));
+  }
 });
 
 uji("Turnstile alun-alun: CSP mengizinkan challenges.cloudflare.com HANYA bila TURNSTILE_SITEKEY diset; halaman lain tetap ketat", async () => {
