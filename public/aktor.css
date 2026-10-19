@@ -53,19 +53,19 @@
 /* tooltip poligon konsesi: titik panas VIIRS */
 .ak-tw2{display:block;color:#c9503a;font-weight:700}
 /* tooltip perusahaan: kartu rata kiri */
-#tip .ak-tch{display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left}#tip .tp2-h.ak-tch,#tip .tp2-h.ak-tch b,#tip .tp2-h.ak-tch small{text-align:left}
-#tip .ak-tch>span{display:flex;flex-direction:column;min-width:0}
-#tip .ak-tch b{font-size:13px;line-height:1.25}
-#tip .ak-tch small{color:var(--muted);font-size:11px}
-#tip .ak-tcs{display:flex;gap:6px;margin-bottom:7px}
-#tip .ak-tcs span{flex:1;display:flex;flex-direction:column;padding:5px 8px;border-radius:9px;background:var(--surface);color:var(--muted);font-size:10.5px}
-#tip .ak-tcs b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
-#tip .ak-tcs .ak-tck{background:#c9503a14}#tip .ak-tcs .ak-tck b{color:#c9503a}
-#tip .ak-tcm{color:var(--muted);margin-bottom:6px}
-#tip .ak-tcl{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
-#tip .ak-tcl small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
-#tip .ak-tcl span{display:flex;align-items:center;gap:6px}
-#tip .ak-tcn{margin:0;padding-top:6px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.45}
+:is(#tip,.ak-laci) .ak-tch{display:flex;align-items:center;justify-content:flex-start;gap:9px;text-align:left}:is(#tip,.ak-laci) .tp2-h.ak-tch,:is(#tip,.ak-laci) .tp2-h.ak-tch b,:is(#tip,.ak-laci) .tp2-h.ak-tch small{text-align:left}
+:is(#tip,.ak-laci) .ak-tch>span{display:flex;flex-direction:column;min-width:0}
+:is(#tip,.ak-laci) .ak-tch b{font-size:13px;line-height:1.25}
+:is(#tip,.ak-laci) .ak-tch small{color:var(--muted);font-size:11px}
+:is(#tip,.ak-laci) .ak-tcs{display:flex;gap:6px;margin-bottom:7px}
+:is(#tip,.ak-laci) .ak-tcs span{flex:1;display:flex;flex-direction:column;padding:5px 8px;border-radius:9px;background:var(--surface);color:var(--muted);font-size:10.5px}
+:is(#tip,.ak-laci) .ak-tcs b{font-size:15px;color:var(--ink);font-variant-numeric:tabular-nums}
+:is(#tip,.ak-laci) .ak-tcs .ak-tck{background:#c9503a14}:is(#tip,.ak-laci) .ak-tcs .ak-tck b{color:#c9503a}
+:is(#tip,.ak-laci) .ak-tcm{color:var(--muted);margin-bottom:6px}
+:is(#tip,.ak-laci) .ak-tcl{display:flex;flex-direction:column;gap:3px;margin-bottom:6px}
+:is(#tip,.ak-laci) .ak-tcl small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
+:is(#tip,.ak-laci) .ak-tcl span{display:flex;align-items:center;gap:6px}
+:is(#tip,.ak-laci) .ak-tcn{margin:0;padding-top:6px;border-top:1px solid var(--line);color:var(--muted);font-size:11px;line-height:1.45}
 
 /* laci perusahaan (isi #laci): linimasa harian, daftar kompleks dan titik, penanda denyut di peta */
 .laci .hd-meta .ak-gr{max-width:150px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px}
@@ -96,12 +96,12 @@
 .ak-gd li>:last-child{justify-self:end}
 /* perusahaan di kompleks api: laci + tooltip (19 Okt 2026) */
 .ak-laci{margin-top:12px;display:grid;gap:6px}
-.ak-kp{display:flex;align-items:center;gap:8px;padding:6px 8px;border:1px solid var(--line,#e3e8ef);border-radius:8px}
-.ak-kp[data-ak-buka]{cursor:pointer}
-.ak-kp[data-ak-buka]:hover{background:var(--hover,#f3f6fa)}
-.ak-kp span{display:flex;flex-direction:column;min-width:0}
-.ak-kp b{display:flex;align-items:center;gap:4px;font-size:13px}
-.ak-kp small{color:var(--muted);font-size:11.5px}
+.ak-kp{padding:10px 12px 4px;border:1px solid var(--line,#e3e8ef);border-radius:12px;background:var(--card,#fff)}
+.ak-kp .ak-tch{margin-bottom:8px}
+.ak-kp[data-ak-buka]{cursor:pointer;transition:border-color .15s}
+.ak-kp[data-ak-buka]:hover{border-color:var(--ink2,#8a94a6)}
+.ak-laci .ak-tcs span{font-size:11px}
 #tip .ak-tkp{display:flex;flex-direction:column;gap:3px;padding:6px 12px 0}
 #tip .ak-tkp small{color:var(--muted);font-size:10.5px;text-transform:uppercase;letter-spacing:.04em;font-weight:700}
 #tip .ak-tkp span{display:flex;align-items:center;gap:6px;font-weight:600}
+.ak-laci .ak-tcl span{font-size:12.5px}.ak-laci .ak-tcn{margin-bottom:6px}

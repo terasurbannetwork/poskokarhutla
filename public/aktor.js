@@ -253,8 +253,11 @@
     return [...hasil.values()].sort((a, b) => (b.luas_peta_ha || 0) - (a.luas_peta_ha || 0));
   }).catch(() => []);
   const JNS = {sawit: "Sawit", hti: "HTI", hph: "HPH", tambang: "Tambang"};
-  const barisPer = p => { const w = A.per?.[p.nama], gr = w?.grup?.length ? w.grup.join(", ") : p.grup;
-    return `<div class="ak-kp"${w ? ` data-ak-buka="${esc(p.nama)}" tabindex="0" role="button"` : ""}>${A.logo(w?.grup?.[0] || p.grup, 18)}<span><b>${benderaDaf(w ? w.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean), 11)}${esc(p.nama)}</b><small>${esc([JNS[p.jenis] || p.jenis, gr].filter(Boolean).join(" · "))}</small></span></div>`; };
+  /* kartu sama dengan tooltip tabel perusahaan (A.tip); pemegang di luar daftar WALHI: logo grup, jenis, luas areal di peta */
+  const barisPer = p => { const w = A.per?.[p.nama];
+    if (w) return `<div class="ak-kp" data-ak-buka="${esc(p.nama)}" tabindex="0" role="button" title="Buka rincian perusahaan">${A.tip(w)}</div>`;
+    return `<div class="ak-kp"><div class="tp2-h ak-tch">${A.logo(p.grup || p.nama, 26)}<span><b>${benderaDaf([A.d?.grup_negara?.[p.grup]].filter(Boolean), 11)}${esc(p.nama)}</b><small>${esc([p.grup, p.kab].filter(Boolean).join(" · "))}</small></span></div>`
+      + `<div class="ak-tcs"><span><b>${esc(JNS[p.jenis] || p.jenis || "–")}</b>jenis konsesi</span>${p.luas_peta_ha ? `<span><b>${fmt(p.luas_peta_ha)}</b>ha areal di peta</span>` : ""}</div></div>`; };
   const _bukaLaci = Laci.buka.bind(Laci);
   Laci.buka = function (id) { _bukaLaci(id); A.perKompleks(id).then(ps => {
     if (S.pilihK !== id || $("#laci .ak-laci")) return;
