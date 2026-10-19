@@ -1,7 +1,7 @@
 "use strict";
 /* Risiko kecamatan (halaman publik). Data: /banjir/data/risiko_kecamatan.json (pipeline scripts/bnpb/risiko.py), geo per provinsi dimuat saat dipilih.
    Peta digambar sendiri sebagai SVG (CSP halaman ini melarang pustaka peta dari CDN). Rumus skor sama persis dengan risiko() di risiko.py.
-   Butuh /inti/format.js (fmt, esc, rb) dan /inti/tabel.js (pengurutKepala). */
+   Butuh /inti/format.js (fmt, esc) dan /inti/tabel.js (pengurutKepala). */
 (() => {
   const el = id => document.getElementById(id), NS = "http://www.w3.org/2000/svg";
   const IKON = {
@@ -14,11 +14,13 @@
   };
   const ikon = id => `<svg class="rk-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="${IKON[id] || IKON.cuaca}"/></svg>`;
   const WARNA = {karhutla: "#f08a3c", banjir: "#4f9be0", gempa: "#8a6d4e", gunungapi: "#b5523b", kekeringan: "#c9a24b", cuaca: "#7d8ca3"};
-  const SIFAT = {karhutla: "harian", banjir: "statis x harian", gempa: "statis", gunungapi: "harian", kekeringan: "harian, hipotesis", cuaca: "harian"};
+  const SIFAT = {karhutla: "harian", banjir: "statis × harian", gempa: "statis", gunungapi: "harian", kekeringan: "harian, hipotesis", cuaca: "harian"};
   let D, IX, BENCANA, KOR = new Map(), pilih = new Set(), prov = "", lingkup = "prov", geoCache = {}, elPath = [], terpilih = -1;
   const st = {urut: "risiko", turun: true, hal: 0};
 
   const pct = v => v == null ? "–" : fmt(Math.round(v * 100)) + "%";
+  const bil = v => v == null ? "–" : fmt(Math.round(v));   // skor 0-100: bilangan bulat
+  const idx = v => v == null ? "–" : "indeks " + fmt(Math.round(v * 100) / 100);   // bahaya 0-1: indeks, bukan persen
   const val = (r, k) => r[IX[k]];
   /* skor satu baris untuk bencana yang dipilih: rumus yang sama dengan pipeline */
   function skor(r) {
@@ -31,7 +33,7 @@
   const kelas = s => s == null ? null : D.ambang.filter(a => s >= a).length;
   const kls = s => s == null ? "kn" : "k" + kelas(s);
   const namaB = b => D.bencana.find(x => x.id === b).nama;
-  const pilKelas = s => `<span class="rk-kls ${kls(s)}">${s == null ? "Tanpa data" : fmt(s) + " · " + D.kelas[kelas(s)]}</span>`;
+  const pilKelas = s => `<span class="rk-kls ${kls(s)}">${s == null ? "Tanpa data" : bil(s) + " · " + D.kelas[kelas(s)]}</span>`;
 
   /* ---------- kontrol */
   function gambarKontrol() {
@@ -86,8 +88,8 @@
     el("isiTabel").innerHTML = bs.length ? bs.map(({i, r, s}) => `<tr data-i="${i}" tabindex="0">
       <td data-label="Kecamatan">${esc(val(r, "kec"))}</td><td data-label="Kabupaten">${esc(val(r, "kab"))}</td><td data-label="Provinsi">${esc(D.provinsi[val(r, "prov")])}</td>
       <td class="n" data-label="Risiko">${pilKelas(s.s)}</td>
-      <td data-label="Bahaya utama"><span class="bn-pil rk-bhy" data-b="${s.u}">${ikon(s.u)}${esc(namaB(s.u))} ${pct(s.b)}</span></td>
-      <td class="n" data-label="Penduduk">${rb(val(r, "pend"))}</td><td class="n" data-label="Kapasitas">${pct(val(r, "kapasitas"))}</td></tr>`).join("")
+      <td data-label="Bahaya utama"><span class="bn-pil rk-bhy" data-b="${s.u}">${ikon(s.u)}${esc(namaB(s.u))} ${idx(s.b)}</span></td>
+      <td class="n" data-label="Penduduk (jiwa)">${fmt(val(r, "pend"))}</td><td class="n" data-label="Kapasitas">${pct(val(r, "kapasitas"))}</td></tr>`).join("")
       : `<tr><td colspan="7" class="ad-kosong">Belum ada kecamatan bersekor.</td></tr>`;
     el("isiTabel").querySelectorAll(".rk-bhy").forEach(x => x.style.setProperty("--pil", WARNA[x.dataset.b]));
   }
@@ -97,7 +99,7 @@
     const r = D.kec[i], s = skor(r), nama = val(r, "kec");
     terpilih = i; warnai();
     const bh = BENCANA.map(b => { const v = val(r, "h_" + b), m = D.bencana.find(x => x.id === b);
-      return `<div class="rk-baris"><span>${ikon(b)} ${esc(m.nama)}</span><meter min="0" max="1" low=".33" high=".66" optimum="0" value="${v ?? 0}"></meter><span class="a">${pct(v)}</span><span class="bn-pil st">${esc(SIFAT[b])}</span></div>`; }).join("");
+      return `<div class="rk-baris"><span>${ikon(b)} ${esc(m.nama)}</span><meter min="0" max="1" low=".33" high=".66" optimum="0" value="${v ?? 0}"></meter><span class="a">${idx(v)}</span><span class="bn-pil st">${esc(SIFAT[b])}</span></div>`; }).join("");
     const kv = (a, b) => `<dt>${a}</dt><dd>${b}</dd>`;
     const fas = [["Sekolah", val(r, "sekolah")], ["Siswa", val(r, "siswa")], ["Faskes", val(r, "faskes")]].filter(x => x[1] != null);
     el("dlgIsi").innerHTML = `<div class="rk-dlg-kepala"><div><h2 id="dlgJudul">${esc(nama)}</h2><p>${esc(val(r, "kab"))}, ${esc(D.provinsi[val(r, "prov")])}</p></div>
@@ -106,7 +108,7 @@
       <div class="rk-blok"><h3>Bahaya hari ini</h3>${bh}</div>
       <div class="rk-dua">
         <div class="rk-blok"><h3>Keterpaparan</h3><dl class="rk-kv">${kv("Penduduk", val(r, "pend") == null ? "–" : fmt(val(r, "pend")) + " jiwa")}${kv("Peringkat nasional", pct(val(r, "pangkat")))}${fas.map(x => kv(x[0], fmt(x[1]))).join("")}</dl></div>
-        <div class="rk-blok"><h3>Kapasitas</h3><dl class="rk-kv">${kv("Jarak ke BPBD", val(r, "bpbd_km") == null ? "–" : fmt(val(r, "bpbd_km")) + " km")}${kv("Kapasitas statis", pct(val(r, "kapasitas")))}${kv("Posko, relawan, Destana", "menyusul lewat API")}</dl></div></div>
+        <div class="rk-blok"><h3>Kapasitas</h3><dl class="rk-kv">${kv("Jarak ke BPBD", val(r, "bpbd_km") == null ? "–" : fmt(val(r, "bpbd_km")) + " km")}${kv("Kapasitas statis", pct(val(r, "kapasitas")))}${kv("Posko, relawan, Destana", "belum tersedia")}</dl></div></div>
       <details class="rk-sumber"><summary>Rumus dan sumber</summary><p>${esc(D.rumus)}. ${esc(D.ambang_catatan)}</p>
         <ul>${D.bencana.map(b => `<li><b>${esc(b.nama)}</b>: ${esc(b.sumber)}. ${esc(b.validasi)}${b.kosong ? ` (${fmt(b.kosong)} kecamatan tanpa data)` : ""}</li>`).join("")}
         <li><b>Keterpaparan</b>: ${esc(D.keterpaparan.sumber)}. ${esc(D.keterpaparan.catatan)}</li><li><b>Kapasitas</b>: ${esc(D.kapasitas.statis)}</li></ul></details>`;
@@ -117,7 +119,7 @@
   function sorot(i) {
     if (i < 0) return;
     const r = D.kec[i], s = skor(r);
-    el("sorot").textContent = `${val(r, "kec")}, ${val(r, "kab")}: ${s.s == null ? "tanpa data" : fmt(s.s) + " (" + D.kelas[kelas(s.s)] + ")"}`;
+    el("sorot").textContent = `${val(r, "kec")}, ${val(r, "kab")}: ${s.s == null ? "tanpa data" : bil(s.s) + " (" + D.kelas[kelas(s.s)] + ")"}`;
   }
   const segar = () => nanti(() => { warnai(); gambarTabel(); });   // pil yang baru ditekan tampil dulu (/inti/nanti.js)
   async function ganti() {

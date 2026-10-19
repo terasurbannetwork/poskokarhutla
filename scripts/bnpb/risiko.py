@@ -116,7 +116,7 @@ def h_karhutla(pusat, fwi, hot, hari):
         v = [x for x in (a, b) if x is not None]
         h[k] = max(v) if v else None
     return h, {"tanggal": {"fwi": tf, "titik_panas": th}, "umur_hari": {"fwi": umur(hari, tf), "titik_panas": umur(hari, th)},
-               "sumber": "FWI Kanada dari Open-Meteo (public/data/fwi.json, sel 0,5 derajat terdekat <= 80 km) dan titik panas NASA FIRMS 3 hari (public/data/hotspot.json)",
+               "sumber": "FWI Kanada dari Open-Meteo (sel 0,5 derajat terdekat, paling jauh 80 km) dan titik panas NASA FIRMS 3 hari",
                "validasi": "FWI kelas BMKG/Kanada; belum diuji balik sebagai peluang kebakaran per kecamatan"}
 
 
@@ -138,13 +138,13 @@ def h_banjir(pusat, bahaya, ans, hari):
         t = terdekat(titik, la, lo, 110) if titik else None
         h[k] = None if stat is None or t is None else stat * (0.2 + 0.8 * min(1.0, t[2]))
     return h, {"tanggal": {"hujan": tgl}, "umur_hari": {"hujan": umur(hari, tgl)},
-               "sumber": "InaRISK BNPB banjir, banjir bandang, longsor (public/banjir/data/bahaya.json, statis) x peluang hujan >= 50 mm/hari ECMWF ansambel (hujan_ansambel.json, titik <= 110 km)",
-               "validasi": "pengali 0,2 + 0,8 x peluang adalah pilihan kerja; peluang hujan sendiri diuji balik di modul banjir, gabungannya belum"}
+               "sumber": "InaRISK BNPB banjir, banjir bandang, longsor (statis) × peluang hujan ≥ 50 mm/hari dari ansambel ECMWF (titik terdekat, paling jauh 110 km)",
+               "validasi": "pengali 0,2 + 0,8 × peluang adalah pilihan kerja; peluang hujan sendiri diuji balik di modul banjir, gabungannya belum"}
 
 
 def h_gempa(pusat, ig):
     h = {k: (ig["nilai"].get(k) if ig else None) for k in pusat}
-    return h, {"sumber": "InaRISK BNPB indeks bahaya gempa bumi 0-1 di pusat kecamatan (public/gempa/data/inarisk_gempa.json)",
+    return h, {"sumber": "InaRISK BNPB indeks bahaya gempa bumi 0-1 di pusat kecamatan",
                "validasi": "potensi statis, bukan prakiraan hari ini; tidak berubah dari hari ke hari"}
 
 
@@ -155,7 +155,7 @@ def slug(n):
 def h_gunungapi(pusat, status, geo):
     """Kecamatan tersentuh KRB: pusatnya di dalam poligon zona, atau sebuah titik batas zona jatuh di dalam kecamatan."""
     h = {k: (0.0 if status and geo else None) for k in pusat}
-    meta = {"sumber": "Tingkat aktivitas PVMBG/MAGMA (gunungapi_status.json) x zona KRB PVMBG 2018 (gunungapi/data/paparan_geo.json)",
+    meta = {"sumber": "Tingkat aktivitas PVMBG/MAGMA × zona KRB PVMBG 2018",
             "validasi": "bobot tingkat dan zona adalah pilihan kerja; KRB hanya ada untuk sebagian gunung", "tanpa_krb": []}
     if not (status and geo):
         return h, meta
@@ -194,8 +194,8 @@ def h_kekeringan(pusat, grid, kmeta, hari):
         t = terdekat(baris, la, lo, 80) if baris else None
         h[k] = None if t is None else t[2] / 3
     return h, {"tanggal": {"status": tgl}, "umur_hari": {"status": umur(hari, tgl)},
-               "sumber": "Tingkat kekeringan 0-3 sel 0,5 derajat (public/data/kekeringan_grid.json, SPI-3 dan Kode Kekeringan)",
-               "validasi": "MERAGUKAN: aturan ambang kekeringan TIDAK LAYAK uji balik terhadap DIBI (POD 0,23 < 0,5; FAR 0,93 > 0,8; scripts/kekeringan/RISET-AMBANG.md). Angka ditampilkan sebagai hipotesis."}
+               "sumber": "Tingkat kekeringan 0-3 sel 0,5 derajat (SPI-3 dan Kode Kekeringan)",
+               "validasi": "MERAGUKAN: aturan ambang kekeringan TIDAK LAYAK uji balik terhadap DIBI (POD 0,23 < 0,5; FAR 0,93 > 0,8). Angka ditampilkan sebagai hipotesis."}
 
 
 def h_cuaca(pusat, cuaca, hari, urut):
@@ -209,7 +209,7 @@ def h_cuaca(pusat, cuaca, hari, urut):
     else:
         h = {k: None for k in pusat}
     return h, {"tanggal": {"cuaca": tgl}, "umur_hari": {"cuaca": umur(hari, tgl)},
-               "sumber": "Tingkat peringatan 0-3 hujan, angin, gelombang hari ini atau besok (public/banjir/data/cuaca_kec.json); kecamatan tak tertulis = tingkat 0",
+               "sumber": "Tingkat peringatan 0-3 hujan, angin, gelombang hari ini atau besok dari BMKG; kecamatan tak tertulis = tingkat 0",
                "validasi": "ambang hujan, angin, gelombang kelas BMKG; ambang ansambel masih hipotesis"}
 
 
@@ -270,15 +270,15 @@ def bangun(src, hari):
             dist[r[4]] += 1
     return {
         "versi": 1, "hari": hari, "label": LABEL,
-        "rumus": "risiko = 100 x bahaya x keterpaparan x (1 - w x kapasitas); bahaya = maks bahaya per bencana yang tersedia; keterpaparan = peringkat persentil penduduk; kapasitas = 1 - jarak BPBD / 100 km",
+        "rumus": "risiko = 100 × bahaya × keterpaparan × (1 − w × kapasitas); bahaya = maks bahaya per bencana yang tersedia; keterpaparan = peringkat persentil penduduk; kapasitas = 1 - jarak BPBD / 100 km",
         "bobot": {"w_kapasitas": BOBOT_KAPASITAS, "jarak_kapasitas_km": JARAK_KAPASITAS_KM, "level_gunungapi": BOBOT_LEVEL, "krb": BOBOT_KRB,
-                  "fwi_jenuh": FWI_JENUH, "titik_panas_jenuh": TITIK_JENUH, "pemicu_banjir": "0,2 + 0,8 x peluang hujan >= 50 mm"},
+                  "fwi_jenuh": FWI_JENUH, "titik_panas_jenuh": TITIK_JENUH, "pemicu_banjir": "0,2 + 0,8 × peluang hujan ≥ 50 mm"},
         "kelas": KELAS, "ambang": AMBANG, "ambang_catatan": "skor < 15 Rendah; < 35 Sedang; < 60 Tinggi; selebihnya Sangat tinggi. Ambang kerja tetap, belum dikalibrasi ke DIBI.",
         "bencana": [{"id": b, "nama": NAMA[b], **M[b], "kosong": kosong[b]} for b in BENCANA],
-        "keterpaparan": {"sumber": "WorldPop Global2 R2025A 2026 per kecamatan (public/data/penduduk.json), peringkat persentil nasional",
-                         "catatan": "sekolah, siswa (Dapodik/EMIS) dan faskes (OSM) hanya ada di sembilan provinsi prioritas; ditampilkan, tidak masuk skor"},
-        "kapasitas": {"statis": "jarak pusat kecamatan ke kantor BPBD terdekat (public/data/bpbd.json, 324 kantor terpetakan): proksi, bukan kemampuan nyata",
-                      "kapasitas_dinamis": None, "kapasitas_dinamis_catatan": "posko, regu, relawan siap, dan status Destana ada di D1: menyusul lewat API"},
+        "keterpaparan": {"sumber": "WorldPop Global2 R2025A 2026 per kecamatan, peringkat persentil nasional",
+                         "catatan": "sekolah, siswa (Dapodik/EMIS) dan faskes (OSM) hanya tersedia untuk sebagian provinsi; ditampilkan, tidak masuk skor"},
+        "kapasitas": {"statis": "jarak pusat kecamatan ke kantor BPBD terdekat (324 kantor BPBD terpetakan): proksi, bukan kemampuan nyata",
+                      "kapasitas_dinamis": None, "kapasitas_dinamis_catatan": "posko, regu, relawan siap, dan status Destana belum tersedia"},
         "provinsi": {p: n for p, n in Z["w"].PROVINSI.items()},
         "ringkas": {"kecamatan": len(baris), "tanpa_skor": sum(r[3] is None for r in baris), "per_kelas": dict(zip(KELAS, dist))},
         "kolom": KOLOM, "kec": baris,

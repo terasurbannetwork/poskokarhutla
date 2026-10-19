@@ -28,10 +28,10 @@
     "72": "Sulawesi Tengah", "73": "Sulawesi Selatan", "74": "Sulawesi Tenggara", "75": "Gorontalo", "76": "Sulawesi Barat", "81": "Maluku", "82": "Maluku Utara", "91": "Papua", "92": "Papua Barat",
     "93": "Papua Selatan", "94": "Papua Tengah", "95": "Papua Pegunungan", "96": "Papua Barat Daya"};
   const ada = v => typeof v === "number" && isFinite(v);
-  const F = (v, d = 0) => ada(v) ? v.toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "-";
+  const F = (v, d = 0) => ada(v) ? v.toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "–";
   const wib = (t, opsi) => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", ...opsi});
-  const tglPendek = iso => { const d = new Date(String(iso).slice(0, 10) + "T12:00:00Z"); return isNaN(d) ? "-" : d.toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}); };
-  const jamWIB = iso => { const d = new Date(iso); return iso && !isNaN(d) ? wib(d, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB" : "-"; };
+  const tglPendek = iso => { const d = new Date(String(iso).slice(0, 10) + "T12:00:00Z"); return isNaN(d) ? "–" : d.toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}); };
+  const jamWIB = iso => { const d = new Date(iso); return iso && !isNaN(d) ? wib(d, {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB" : "–"; };
   const ambil = u => fetch(u, {cache: "no-cache", signal: AbortSignal.timeout(9000)}).then(r => r.ok ? r.json() : null).catch(() => null);
   const nm = s => String(s || "").toLowerCase().replace(/^(di|daerah istimewa)\s+/, "").trim();
 
@@ -70,7 +70,7 @@
   /* ---- baris kejadian per bencana ---- */
   const tingkatNama = (b, k) => (b.tingkat || []).find(t => t.kode === k) || null;
   function ubahTeks(a, b, arah) {
-    if (!ada(a) || !ada(b)) return {t: "-", ikon: null, kelas: ""};
+    if (!ada(a) || !ada(b)) return {t: "–", ikon: null, kelas: ""};
     if (a === b) return {t: "tetap", ikon: "tetap", kelas: ""};
     const naik = a > b, p = b === 0 ? null : Math.round(Math.abs(a - b) / Math.abs(b) * 100);
     return {t: (naik ? "naik " : "turun ") + (p == null ? "dari nol" : F(p) + "%"), ikon: naik ? "naik" : "turun", kelas: arah === "netral" ? "" : naik === (arah !== "naik_baik") ? "buruk" : "baik"};
@@ -109,7 +109,7 @@
       if (b.id === "gunungapi") {
         for (const x of (D.gunung?.perubahan || [])) {
           const g = (D.gunung.gunung || []).find(y => y.nama === x.nama);
-          if (x.ke > x.dari && (!prov || nm(g?.prov) === nm(PROV[prov]))) out.push({b, nama: x.nama, prov: g?.prov || "-", dari: tingkatNama(b, x.dari - 1)?.nama || "-", ke: tingkatNama(b, x.ke - 1)?.nama || "-", naik: `naik ${F(x.ke - x.dari)} level`, urut: 1e9});
+          if (x.ke > x.dari && (!prov || nm(g?.prov) === nm(PROV[prov]))) out.push({b, nama: x.nama, prov: g?.prov || "–", dari: tingkatNama(b, x.dari - 1)?.nama || "–", ke: tingkatNama(b, x.ke - 1)?.nama || "–", naik: `naik ${F(x.ke - x.dari)} level`, urut: 1e9});
         }
         continue;
       }
@@ -118,7 +118,7 @@
       let i = L.hari.indexOf(L.hari_lengkap); if (i < 1) i = L.hari.length - 1; if (i < 1) continue;
       L.kab.filter(k => !prov || k.prov === prov).map(k => ({k, a: k[u.k]?.[i], p: k[u.k]?.[i - 1]})).filter(x => ada(x.a) && ada(x.p) && x.a > x.p)
         .sort((x, y) => (y.a - y.p) - (x.a - x.p)).slice(0, 3)
-        .forEach(x => out.push({b, nama: x.k.nama, prov: L.prov?.[x.k.prov]?.nama || PROV[x.k.prov] || "-", dari: F(x.p, d), ke: F(x.a, d), naik: "naik " + F(x.a - x.p, d) + (u.satuan ? " " + u.satuan : ""), urut: (x.a - x.p) / Math.max(1, x.p)}));
+        .forEach(x => out.push({b, nama: x.k.nama, prov: L.prov?.[x.k.prov]?.nama || PROV[x.k.prov] || "–", dari: F(x.p, d), ke: F(x.a, d), naik: "naik " + F(x.a - x.p, d) + (u.satuan ? " " + u.satuan : ""), urut: (x.a - x.p) / Math.max(1, x.p)}));
     }
     return out;
   }
@@ -166,7 +166,7 @@
   function sKejadian(rows) {
     const baris = rows.map(r => {
       const titik = h("span", {class: "sr-nama"}); const dot = h("i", {class: "sr-titik"}); dot.style.setProperty("--w", r.b.warna || "#4f8fc4"); titik.append(dot, r.b.nama);
-      if (r.belum) return [titik, h("span", {class: "bn-label", teks: r.belum}), "-", "-", "-"];
+      if (r.belum) return [titik, h("span", {class: "bn-label", teks: r.belum}), "–", "–", "–"];
       const tren = h("span", {class: "sr-tren " + (r.ubah.kelas || "")}); if (r.ubah.ikon) tren.append(svg(r.ubah.ikon)); tren.append(r.ubah.t);
       const angka = h("span", {class: "sr-angka"}, h("b", {teks: F(r.angka, r.utama?.desimal | 0)}), h("small", {teks: ada(r.angka) ? " " + (r.satuan || "") : ""}));
       return [titik, r.tingkat ? pil(r.tingkat.nama, "perisai", r.tingkat.warna) : h("span", {class: "bn-label", teks: "tanpa tingkat"}), angka, tren, tglPendek(r.tgl)];
@@ -206,7 +206,7 @@
     const baris = M.map(m => {
       const st = h("span", {class: "sr-pils"}, ...Object.entries(m.status).map(([s, n]) => pil(`${STATUS_MEJA[s] || s} ${F(n)}`, null, "var(--c5)")));
       if (m.k === "kaji_cepat" && m.n) st.append(pil(`Rumah rusak ${F((m.jumlah.rumah_rb || 0) + (m.jumlah.rumah_rs || 0) + (m.jumlah.rumah_rr || 0))}`, null, "var(--c1)"), pil(`Mengungsi ${F(m.jumlah.mengungsi || 0)}`, null, "var(--c2)"));
-      return [m.nama, {t: F(m.n), n: 1}, m.bahaya ? pil(F(m.bahaya), "segitiga", "var(--c1)") : {t: "0", n: 1}, m.n ? st : "-"];
+      return [m.nama, {t: F(m.n), n: 1}, m.bahaya ? pil(F(m.bahaya), "segitiga", "var(--c1)") : {t: "0", n: 1}, m.n ? st : "–"];
     });
     return kartu("Logistik dan kaji cepat", "kotak", tabel(["Meja", "Catatan", "Perlu perhatian", "Status"], baris), "Meja Kerja BPBD (angka per provinsi)");
   }

@@ -14,6 +14,10 @@
   };
   const ikon = (k, c = "kb-ikon") => `<svg class="${c}" viewBox="0 0 24 24" aria-hidden="true"><path d="${IKON[k]}"/></svg>`;
   const rp = v => v == null ? "–" : "Rp" + Math.round(v).toLocaleString("id-ID");
+  /* ringkas: kartu = miliar/juta bulat; tabel = 1 desimal koma (miliar bila >= 1 miliar, selain itu juta) */
+  const rpK = v => v == null ? "–" : v >= 1e9 ? "Rp" + fmt(Math.round(v / 1e9)) + " miliar" : "Rp" + fmt(Math.round(v / 1e6)) + " juta";
+  const rpT = v => v == null ? "–" : v >= 1e9 ? "Rp" + fmt(Math.round(v / 1e8) / 10) + " miliar" : "Rp" + fmt(Math.round(v / 1e5) / 10) + " juta";
+  const bulat = v => v == null ? "–" : fmt(Math.round(v));
   let D, IX, hor = 90, sk = "rata";
   const st = {urut: "rp_total", turun: true, hal: 0};
   const baris = () => D.data[`${sk}|${hor}`];
@@ -33,11 +37,12 @@
     const n = nas(), k = (ik, judul, angka, label, warna) => `<section class="bn-kartu"><h2><span class="kb-ikon-kartu" data-w="${warna}">${ikon(ik)}</span>${esc(judul)}</h2><div class="bn-angka">${angka}</div><div class="bn-label">${label}</div></section>`;
     const tahun = D.tahun_dipakai[`${sk}|${hor}`];
     el("kartu").innerHTML = `<section class="bn-kartu kb-utama"><h2><span class="kb-ikon-kartu" data-w="c2">${ikon("rupiah")}</span>Total perkiraan ${hor} hari</h2>
-        <div class="bn-angka">${rp(n.rp_total)}</div><div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka · tahun ${esc(tahun.join(", "))}</div>
-        <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rp(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rp(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rp(n.rp_masker)}</span></div></section>`
+        <div class="bn-angka">${rpK(n.rp_total)}</div><div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka · tahun ${esc(tahun.join(", "))}</div>
+        <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Pantau Bencana.</div>
+        <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rpK(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rpK(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rpK(n.rp_masker)}</span></div></section>`
       + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang · ${fmt(n.kompleks)} kompleks api`, "c3")
-      + k("regu", "Regu darat", fmt(n.regu_rata) + " regu", `rata-rata siaga · ${fmt(n.regu_hari)} regu-hari`, "c4")
-      + k("masker", "Masker N95", fmt(n.masker), `untuk ${fmt(n.terdampak)} warga terdampak asap`, "c1")
+      + k("regu", "Regu darat", bulat(n.regu_rata) + " regu", `rata-rata siaga · ${fmt(n.regu_hari)} regu-hari`, "c4")
+      + k("masker", "Masker N95", fmt(n.masker) + " masker", `untuk ${fmt(n.terdampak)} warga terdampak asap`, "c1")
       ;
     el("kartu").querySelectorAll("[data-w]").forEach(x => x.style.setProperty("--pil", `var(--${x.dataset.w})`));
   }
@@ -52,8 +57,8 @@
     const hal = Math.min(st.hal, Math.max(0, Math.ceil(rs.length / PER) - 1)), potong = rs.slice(hal * PER, hal * PER + PER);
     el("isiTabel").innerHTML = potong.map(r => `<tr><td data-label="Provinsi">${esc(D.provinsi[r[0]])}</td>
       <td class="n" data-label="Titik panas">${fmt(r[IX.titik])}</td><td class="n" data-label="Kompleks api">${fmt(r[IX.kompleks])}</td>
-      <td class="n" data-label="Jam terbang">${fmt(r[IX.jam_terbang])}</td><td class="n" data-label="Regu darat">${fmt(r[IX.regu_rata])}</td>
-      <td class="n" data-label="Masker">${fmt(r[IX.masker])}</td><td class="n" data-label="Total rupiah">${rp(r[IX.rp_total])}</td></tr>`).join("");
+      <td class="n" data-label="Jam terbang">${fmt(r[IX.jam_terbang])}</td><td class="n" data-label="Regu darat">${bulat(r[IX.regu_rata])}</td>
+      <td class="n" data-label="Masker">${fmt(r[IX.masker])}</td><td class="n" data-label="Total rupiah">${rpT(r[IX.rp_total])}</td></tr>`).join("");
     el("pgn").innerHTML = paginasi(hal, rs.length, PER, "provinsi");
   }
 

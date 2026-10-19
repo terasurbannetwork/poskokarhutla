@@ -34,23 +34,35 @@ RONI_EL_NINO = 0.5   # ambang RONI untuk menandai skenario analog sebagai yang r
 UH = {"14": 370e3, "15": 370e3, "16": 380e3, "61": 380e3, "62": 360e3, "63": 380e3, "64": 430e3, "53": 430e3, "93": 580e3}
 UH_BAWAAN = 380e3
 TARIF = {
-    "heli_jam": {"nilai": 150e6, "satuan": "Rp/jam terbang", "sumber": "ASUMSI.heliJam tab Posko (public/index.html): sewa helikopter water bombing, Dana Siap Pakai BNPB"},
-    "uang_harian": {"nilai": UH, "bawaan": UH_BAWAAN, "satuan": "Rp/orang/hari", "sumber": "SBM 2026 uang harian luar kota per provinsi (tab Posko); provinsi lain memakai nilai bawaan, asumsi"},
-    "porsi_bko": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "ASUMSI.porsiBKO tab Posko: porsi personel yang dibayar uang harian penuh"},
-    "porsi_mpa": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "ASUMSI.porsiMPA tab Posko: porsi Masyarakat Peduli Api"},
-    "honor_mpa": {"nilai": 100e3, "satuan": "Rp/orang/hari", "sumber": "ASUMSI.honorMPA tab Posko"},
-    "konsumsi": {"nilai": 150e3, "satuan": "Rp/orang/hari", "sumber": "ASUMSI.konsumsi tab Posko"},
-    "harga_masker": {"nilai": 15e3, "satuan": "Rp/masker N95", "sumber": "estimasi tab Posko (HARGA 'Masker N95')"},
+    "heli_jam": {"nilai": 150e6, "satuan": "Rp/jam terbang", "sumber": "asumsi kerja tim Pantau Bencana: sewa helikopter water bombing, acuan Dana Siap Pakai BNPB"},
+    "uang_harian": {"nilai": UH, "bawaan": UH_BAWAAN, "satuan": "Rp/orang/hari", "sumber": "SBM 2026 (Kemenkeu), uang harian luar kota per provinsi; provinsi lain memakai nilai bawaan (asumsi)"},
+    "porsi_bko": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Pantau Bencana: porsi personel yang dibayar uang harian penuh"},
+    "porsi_mpa": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Pantau Bencana: porsi Masyarakat Peduli Api"},
+    "honor_mpa": {"nilai": 100e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Pantau Bencana"},
+    "konsumsi": {"nilai": 150e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Pantau Bencana"},
+    "harga_masker": {"nilai": 15e3, "satuan": "Rp/masker N95", "sumber": "estimasi harga pasar, asumsi kerja tim Pantau Bencana"},
 }
 KOEF = {
-    "orang_per_regu": {"nilai": 15, "satuan": "orang/regu", "sumber": "Permen LHK P.32/2016 (operasi.json koef orang_regu)"},
-    "jam_heli_per_api": {"nilai": 3, "satuan": "jam terbang/kompleks prioritas", "sumber": "ASUMSI scripts/data/keputusan.py (rentang 1,5 sampai 6)"},
-    "rotasi": {"nilai": 1.5, "satuan": "kali", "sumber": "operasi.json koef rotasi tengah: tiga giliran, dua regu bekerja"},
+    "orang_per_regu": {"nilai": 15, "satuan": "orang/regu", "sumber": "Permen LHK P.32/2016"},
+    "jam_heli_per_api": {"nilai": 3, "satuan": "jam terbang/kompleks prioritas", "sumber": "asumsi kerja tim Pantau Bencana (rentang 1,5 sampai 6)"},
+    "rotasi": {"nilai": 1.5, "satuan": "kali", "sumber": "skenario tengah rencana operasi: tiga giliran, dua regu bekerja"},
     "masker_per_orang": {"nilai": 2, "satuan": "masker/orang terdampak", "sumber": "ASUMSI platform: dua masker per orang untuk satu episode asap"},
 }
 SKENARIO = [("rata", "Rerata 2019-2025"), ("analog", "Tahun El Nino")]
 KOLOM = ["prov", "titik", "kompleks", "jam_terbang", "regu_hari", "regu_rata", "terdampak", "masker", "rp_heli", "rp_regu", "rp_masker", "rp_total"]
 Z = {"w": _kej._W}
+
+
+BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"]
+
+
+def tgl(iso):
+    """'2026-10-12' -> '12 Okt 2026' untuk teks layar; nilai kosong/aneh dikembalikan apa adanya."""
+    try:
+        d = dt.date.fromisoformat(str(iso)[:10])
+    except ValueError:
+        return str(iso)
+    return f"{d.day} {BULAN[d.month - 1][:3]} {d.year}"
 
 
 def baca(j):
@@ -152,25 +164,25 @@ def bangun(src, hari):
     return {
         "versi": 1, "hari": hari, "label": LABEL,
         "rumus": {
-            "titik": "rerata jumlah titik panas pada jendela H hari yang sama, atas tahun skenario (musim_harian.json, 2019-2025)",
-            "kompleks": "titik / titik_per_kompleks provinsi (rerata n kluster untuk kompleks operasi.json)",
-            "jam_terbang": "kompleks x porsi kompleks prioritas (lv 3) x jam_heli_per_api",
-            "regu_hari": "kompleks x regu_hari_per_kompleks (rerata wl + wb tengah operasi.json) x rotasi",
-            "regu_rata": "regu_hari / H",
-            "terdampak": "penduduk kecamatan berkompleks tingkat 2+ x min(1, kompleks / kompleks operasi.json)",
-            "masker": "terdampak x masker_per_orang",
-            "rp_heli": "jam_terbang x tarif heli per jam",
-            "rp_regu": "regu_hari x 15 orang x biaya orang-hari (0,4 x uang harian + 0,4 x honor MPA + konsumsi)",
-            "rp_masker": "masker x harga masker",
-            "rp_total": "rp_heli + rp_regu + rp_masker (komponen null tidak dijumlah)"},
+            "titik": "rerata jumlah titik panas pada jendela H hari yang sama, atas tahun skenario (2019–2025)",
+            "kompleks": "titik ÷ titik per kompleks provinsi (rerata titik per kluster pada kompleks operasi)",
+            "jam_terbang": "kompleks × porsi kompleks prioritas (tingkat 3) × jam heli per kompleks",
+            "regu_hari": "kompleks × regu-hari per kompleks (rerata skenario tengah rencana operasi) × rotasi",
+            "regu_rata": "regu-hari ÷ jumlah hari",
+            "terdampak": "penduduk kecamatan berkompleks tingkat ≥ 2 × min(1, kompleks ÷ kompleks operasi)",
+            "masker": "terdampak × masker per orang",
+            "rp_heli": "jam terbang × tarif heli per jam",
+            "rp_regu": "regu-hari × 15 orang × biaya orang-hari (0,4 × uang harian + 0,4 × honor MPA + konsumsi)",
+            "rp_masker": "masker × harga masker",
+            "rp_total": "rupiah heli + rupiah regu + rupiah masker (komponen tanpa data tidak dijumlah)"},
         "tarif": TARIF, "koefisien": KOEF, "asumsi": True,
-        "dasar": {"titik_panas": f"public/data/musim_harian.json sampai {mh['sd']}", "operasi": f"public/data/operasi.json per {src['operasi'].get('per')}",
-                  "kluster": "public/data/kluster.json", "penduduk": "public/data/penduduk.json (WorldPop 2026)", "tahun_el_nino": nino,
+        "dasar": {"titik_panas": f"Titik panas 2019–2025 sampai {tgl(mh['sd'])}", "operasi": f"Kompleks operasi per {tgl(src['operasi'].get('per'))}",
+                  "kluster": "Kluster titik panas", "penduduk": "Penduduk WorldPop 2026", "tahun_el_nino": nino,
                   "roni_sekarang": roni, "analog_relevan": roni is not None and roni >= RONI_EL_NINO,
                   "umur_titik_hari": (mulai - dt.date.fromisoformat(mh["sd"])).days},
         "batas": ["Klimatologi titik panas 2019-2025 pada jendela yang sama, bukan prakiraan; ENSO dan IOD diwakili hanya lewat skenario tahun El Nino.",
                   "Koefisien operasional dan tarif adalah asumsi kerja, bukan RAB; Manggala Agni yang sudah dibiayai DIPA tetap dihitung agar skala kebutuhan terlihat.",
-                  "Provinsi dengan kurang dari 5 kompleks di operasi.json tidak punya koefisien yang layak: komponennya null, bukan nol."],
+                  "Provinsi dengan kurang dari 5 kompleks operasi tidak punya koefisien yang layak: komponennya kosong, bukan nol."],
         "horizon": HORIZON, "skenario": [{"id": s, "nama": n} for s, n in SKENARIO], "tahun_dipakai": tahun_pakai,
         "provinsi": prov, "kolom": KOLOM, "data": data, "nasional": nas,
         "koef_provinsi": {p: {k: (round(v, 3) if isinstance(v, float) else v) for k, v in d.items()} for p, d in sorted(kp.items())},

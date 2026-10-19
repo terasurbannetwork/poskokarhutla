@@ -1,5 +1,5 @@
 /* Pintu /bnpb: kartu ke tiap sistem Ruang Koordinasi dengan angka hidup dari endpoint ringkas masing-masing.
-   Angka gagal dimuat = kartu tanpa angka (bukan galat). Teks data lewat textContent. */
+   Angka gagal dimuat = "belum ada data" (bukan kartu kosong). Teks data lewat textContent. */
 (() => {
   "use strict";
   const NS = "http://www.w3.org/2000/svg";
@@ -36,9 +36,9 @@
     ["alun", "Alun-alun", "/alun-alun", "alun", async () => { const r = await ambil("/api/alun?jenis=butuh_bantuan"); if (!r || !Array.isArray(r.utas)) return null;
       const n = [...(r.sematan || []), ...r.utas].filter(u => u.bantuan === "terbuka").length; return [F(n) + (r.berikut ? "+" : ""), "permintaan bantuan terbuka"]; }],
     ["riset", "Riset", "/riset", "riset", async () => { const r = await ambil("/api/riset/ringkas"); const k = r?.kartu; return k && typeof k.berjalan === "number" ? [F(k.berjalan), "riset berjalan"] : null; }],
-    ["risiko", "Indeks risiko kecamatan", "/risiko", "risiko", async () => { const r = await awalRisiko(); const p = r?.per_kelas; return p ? [F((p["Tinggi"] || 0) + (p["Sangat tinggi"] || 0)), "kecamatan berisiko tinggi", "belum diuji balik"] : null; }],
+    ["risiko", "Indeks risiko kecamatan", "/risiko", "risiko", async () => { const r = await awalRisiko(); const p = r?.per_kelas; return p ? [F((p["Tinggi"] || 0) + (p["Sangat tinggi"] || 0)), "kecamatan berisiko tinggi", "belum diuji balik"] : null; }, null, "BNPB InaRISK, BMKG, PVMBG, WorldPop 2026"],
     ["kebutuhan", "Kebutuhan musim", "/kebutuhan", "sitrep", async () => { const r = await ambil("/banjir/data/kebutuhan_musim.json"); const v = r?.nasional?.["rata|90"]?.rp_total;
-      return typeof v === "number" ? ["Rp" + F(Math.round(v / 1e9)) + " miliar", "perkiraan biaya 90 hari"] : null; }, "perkiraan"],
+      return typeof v === "number" ? ["Rp" + F(Math.round(v / 1e9)) + " miliar", "perkiraan biaya 90 hari"] : null; }, "perkiraan", "titik panas 2019–2025, rencana operasi karhutla, asumsi kerja tim Pantau Bencana"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 
@@ -47,10 +47,11 @@
 
   const host = document.getElementById("pintu");
   document.getElementById("admin").append(svg("admin"), "Pintu admin");
-  for (const [id, judul, href, ikon, ambilAngka, petugas] of KARTU) {
+  for (const [id, judul, href, ikon, ambilAngka, petugas, sumber] of KARTU) {
     const angka = h("div", {class: "pt-angka"}), a = h("a", {class: "bn-kartu pt-kartu", href, id: "k-" + id},
-      h("h2", null, svg(ikon), judul, h("span", {class: "pt-panah"}, svg("panah"))), angka, petugas ? pil(petugas, "meja") : null);
+      h("h2", null, svg(ikon), judul, h("span", {class: "pt-panah"}, svg("panah"))), angka, petugas ? pil(petugas, "meja") : null, sumber ? h("div", {class: "bn-label", teks: "Sumber: " + sumber}) : null);
+    const kosong = () => angka.append(h("span", {class: "bn-label", teks: "belum ada data"}));
     host.append(a);
-    ambilAngka().then(x => { if (!x) return; angka.append(h("span", {class: "bn-angka", teks: x[0]}), h("span", {class: "bn-label", teks: x[1]})); if (x[2]) a.append(pil(x[2], "risiko")); }).catch(() => {});
+    ambilAngka().then(x => { if (!x) return kosong(); angka.append(h("span", {class: "bn-angka", teks: x[0]}), h("span", {class: "bn-label", teks: x[1]})); if (x[2]) a.append(pil(x[2], "risiko")); }).catch(kosong);
   }
 })();
