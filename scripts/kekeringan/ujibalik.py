@@ -24,6 +24,7 @@ Dua pertanyaan, dijawab dengan angka apa adanya (termasuk yang buruk):
     Batasan: DIBI mencatat laporan BPBD, bukan semua kekeringan, jadi FAR dari sini batas atas (kabupaten kering tanpa laporan terhitung alarm palsu), dan DIBI 2026
     mungkin belum lengkap. Pembanding: alarm acak dengan laju alarm dan laju kejadian yang sama.
     Label "hipotesis" baru boleh lepas bila KRITERIA_LAYAK terpenuhi di KETIGA periode (ditetapkan sebelum angka dilihat); alasannya ditulis di `kejadian.vonis`.
+    Penyetelan ambang (ambang.py, protokol di RISET-AMBANG.md): 21 kandidat dipilih di Okt 2023-Des 2024, diuji sekali di 2025-Agu 2026 -> `kejadian.setel`.
 
 Pakai:  python3 scripts/kekeringan/ujibalik.py      |  python3 scripts/kekeringan/ujibalik.py uji
 """
@@ -127,7 +128,7 @@ def temuan(ar):
             "laju_definisi_pct": LAJU_DEFINISI, "kalimat": "; ".join(t) + "."}
 
 
-VERSI = 2   # 2 = ada uji kejadian DIBI; berkas versi lama dihitung ulang walau masih segar
+VERSI = 3   # 2 = ada uji kejadian DIBI, 3 = penyetelan ambang (kejadian.setel, ambang.py); berkas versi lama dihitung ulang walau masih segar
 KRITERIA_LAYAK = {"pod_min": .5, "far_maks": .8, "csi_lipat_acak": 2.0}   # ditetapkan sebelum angka dilihat; harus lolos di tiap periode
 PERIODE = (("2023-10", "2024-12"), ("2025-01", "2025-12"), ("2026-01", "2026-12"))
 JENIS = "kering"
@@ -288,6 +289,9 @@ def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None):
         ym = SPI.bulan_terakhir(pow_sel)
         spi_k = spi3_sel(pow_sel, range(1, 13), range(2023, ym[0] + 1))
         kejadian = uji_kejadian(spi_k, kej, peta, f"{ym[0]}-{ym[1]:02d}")
+        import ambang   # impor lambat: ambang.py mengimpor modul ini
+        obs, _, _ = kejadian_per_kab(kej, {kab for _, kab, _, _ in peta})
+        kejadian["setel"] = ambang.setel(pow_sel, peta, obs, f"{ym[0]}-{ym[1]:02d}")
     isi = {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "versi": VERSI, "label": "Deteksi Pantau Bencana", "loo": True, "sel": len(pow_sel),
             "periode": [TAHUN[0], TAHUN[-1]], "klimatologi": list(SPI.DASAR),
             "catatan": "Angka apa adanya. SPI dihitung dengan tahun yang diuji dibuang dari gamma baku (tinggal-satu-tahun). Bagian aturan menguji SPI-3 terhadap tahun kering yang dikenal; "
@@ -386,6 +390,7 @@ def uji():
     assert k["dibi_total"] == 4 and k["dibi_cocok"] == 3 and k["dibi_dalam_periode"] == 2 and k["periode_data"] == ["2023-10", "2026-08"]
     w = k["aturan"]["waspada"]["semua"]
     assert w["terlewat"] == 1 and w["tepat"] == 0 and w["pod"] == 0 and w["n"] == w["tepat"] + w["terlewat"] + w["palsu"] + w["tak_ada"] == 70 and k["vonis"]["hipotesis"] is True and "Belum layak" in k["vonis"]["alasan"]
+    assert k["setel"]["kandidat_n"] == 21 and k["setel"]["vonis"]["layak"] is False and k["setel"]["uji"] == ["2025-01", "2026-08"]
     assert list(k["aturan"]["waspada"]) == ["semua", "2023-10..2024-12", "2025-01..2025-12", "2026-01..2026-08"]
     assert vonis({"semua": {}, "a": {"pod": .9, "far": .3, "csi": .6, "csi_acak": .1}})["layak"] is True and vonis({"semua": {}, "a": {"pod": .9, "far": .9, "csi": .6, "csi_acak": .1}})["layak"] is False
     print("ok ujibalik")
