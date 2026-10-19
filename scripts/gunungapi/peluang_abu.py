@@ -3,16 +3,17 @@
 SKENARIO, bukan ramalan letusan: tiap gunung level >= II diandaikan meletus SEKARANG. Model dispersi = abu.py (tidak
 diubah, diimpor); yang ditambah hanya ansambelnya. Tidak menggantikan advisory VAAC Darwin / VONA PVMBG.
 
-Anggota per gunung = (sumber angin lapisan tekanan) x (tinggi kolom 0,5x/1x/2x kolom abu.py) x (durasi lepas 2/3/6 jam):
-  - 3 model deterministik Open-Meteo: ECMWF IFS 0,25, GFS, ICON  -> 3 x 3 x 3 = 27 anggota;
+Anggota per gunung = (sumber angin lapisan tekanan) x (tinggi kolom 0,5x/1x/2x kolom abu.py) x (durasi lepas 3/6 jam):
+  - 3 model deterministik Open-Meteo: ECMWF IFS 0,25, GFS, ICON  -> 3 x 3 x 2 = 18 anggota;
   - gunung level >= ENS_LEVEL_MIN juga memakai 51 anggota ENSEMBLE ECMWF IFS (ensemble-api.open-meteo.com/v1/ensemble punya
     wind_speed/direction/geopotential_height lapisan tekanan; GFS ensemble di endpoint itu KOSONG untuk lapisan tekanan, diuji 19 Okt).
-    Tiap anggota ensemble dipasangkan ke SATU kombinasi (tinggi, durasi) bergiliran (indeks mod 9), supaya biaya tak 9x lipat.
+    Tiap anggota ensemble dipasangkan ke SATU kombinasi (tinggi, durasi) bergiliran (indeks mod 6), supaya biaya tak 9x lipat.
   Bobot tiap anggota SAMA (tidak dicocokkan ke alat ukur: tidak ada alat ukur abu yang terbuka).
 
 Besaran = konsentrasi abu puncak (mg/m3) pada sel kisi 0,1 derajat mana pun yang pusatnya dalam 25 km titik, partikel <= FL350,
 maksimum atas jam-jam dalam jendela 24 jam. Dipilih ini (bukan jarak jejak) karena dari satu besaran yang sama lahir tiga
-ambang yang naik: 0,2 / 2 / 4 mg/m3 (rendah / sedang / tinggi menurut kelas kontaminasi abu EASA-CAA; 2 mg/m3 = ambang abu.py).
+ambang yang naik: 0,2 / 2 / 4 mg/m3 (2 mg/m3 = ambang abu.py; 0,2 dan 4 = sepersepuluh dan dua kali ambang itu, pilihan sendiri,
+TIDAK diklaim sebagai kelas lembaga mana pun).
 Konsentrasi = massa sel / (luas sel x 2 km tebal awan); massa = MER Mastin x durasi (semua ASUMSI abu.py). Ini beban RELATIF
 model, bukan konsentrasi terukur. Hari = jendela 24 jam sejak waktu skenario (t = tanggal WIB awal jendela).
 Pasangan gunung-titik yang tak satu anggota pun mencapai 0,2 mg/m3 dibuang (bukan ditulis nol).
@@ -51,15 +52,17 @@ KOTA = os.path.join(AKAR, "scripts/udara/kota.json")
 ENSEMBLE = "https://ensemble-api.open-meteo.com/v1/ensemble"
 MODEL = (("ecmwf_ifs025", "ECMWF IFS"), ("gfs_seamless", "GFS"), ("icon_seamless", "ICON"))
 FAKTOR_KOLOM = (0.5, 1.0, 2.0)
-DURASI = (2, 3, 6)
+DURASI = (3, 6)
 KOMBO = [(f, d) for f in FAKTOR_KOLOM for d in DURASI]
 ENS_LEVEL_MIN = 3
 N_ANGGOTA_ENS = 51          # kontrol + 50
-AMBANG = [(0.2, "rendah", "Abu 0,2 mg/m3 atau lebih (kontaminasi rendah)"),
-          (2.0, "sedang", "Abu 2 mg/m3 atau lebih (kontaminasi sedang)"),
-          (4.0, "tinggi", "Abu 4 mg/m3 atau lebih (kontaminasi tinggi)")]
+AMBANG = [(0.2, "a02", "Abu 0,2 mg/m\u00b3 atau lebih"),
+          (2.0, "a2", "Abu 2 mg/m\u00b3 atau lebih"),
+          (4.0, "a4", "Abu 4 mg/m\u00b3 atau lebih")]
+KOTA_MIN_JIWA = 500000      # kabupaten/kota yang ikut: >= 500 ribu jiwa (pusat tujuan penting); bandara semua ikut
+P_MIN = 0.05                # pasangan dibuang bila peluang tertinggi di ambang terendah < 5% (menjaga berkas < 400 KB)
 HARI_N = 3
-N_PARTIKEL = 2000
+N_PARTIKEL = 500
 BLOK_ENS = 3                # lokasi per panggilan ensemble (respons ~ 3 x 24 x 51 deret)
 MAKS_JSON_ENS = 40 * 1024 * 1024
 
@@ -132,12 +135,22 @@ def kumpul(daftar):
 
 
 # ---------- titik ----------
+def nama_bandara(n):
+    """'Sultan Hasanuddin International Airport' -> 'Bandara Sultan Hasanuddin' (nama OurAirports berbahasa Inggris)."""
+    n = re.sub(r"\s*\(.*?\)", "", n).strip()
+    if re.match(r"(?i)(bandara|bandar udara|pangkalan)\b", n):
+        return n
+    m = re.sub(r"(?i)\s+(international|intl|domestic)?\s*(airport|arpt|airfield|airstrip)\s*$", "", n).strip()
+    return "Bandara " + m
+
+
 def muat_titik():
     """[(kode, nama, lat, lon, jenis)] bandara.json (OurAirports) + pusat kabupaten/kota (scripts/udara/kota.json)."""
-    out = [(b["icao"], b["nama"], b["lat"], b["lon"], "bandara") for b in abu.baca(abu.BANDARA, [])]
+    out = [(b["icao"], nama_bandara(b["nama"]), b["lat"], b["lon"], "bandara") for b in abu.baca(abu.BANDARA, [])]
     try:
-        for kode, nama, _, lat, lon, *_ in json.load(open(KOTA))["baris"]:
-            out.append((kode, nama, lat, lon, "kota"))
+        for kode, nama, _, lat, lon, jiwa, *_ in json.load(open(KOTA))["baris"]:
+            if jiwa >= KOTA_MIN_JIWA:
+                out.append((kode, nama, lat, lon, "kota"))
     except (OSError, ValueError):
         print("  kota.json tak terbaca: hanya bandara", file=sys.stderr)
     return out
@@ -220,11 +233,15 @@ def wilayah_gunung(g, gid, n_ang, per, titik_per_kode, tgl):
         _, nama, _, _, jenis = titik_per_kode[kode]
         nama = re.sub(r"\s*\(.*?\)", "", nama).strip()   # kontrak: nama wilayah tanpa kurung
         hari = [P.hari(tgl[d], [m[d] for m in anggota], [a[0] for a in AMBANG], desimal=2) for d in range(HARI_N)]
+        if max(h["p"][0] or 0 for h in hari) < P_MIN:
+            continue
+        for h in hari:
+            h["p"] = [None if x is None else round(x, 3) for x in h["p"]]
         tempat = f"di atas {nama}"
-        out[f"{gid}|{kode}"] = {"nama": nama, "tingkat": "titik", "jenis": jenis,
+        out[f"{gid}|{kode}"] = {"nama": f"{g['nama']} \u2192 {nama}", "tingkat": "titik", "jenis": jenis,
                                 "gunung": g["nama"], "anggota": n_ang, "hari": hari,
                                 "vonis": P.vonis(hari, [a[0] for a in AMBANG], 0,
-                                                 f"abu dari {g['nama']} (jika meletus sekarang) 0,2 mg/m3 atau lebih", tempat)}
+                                                 f"abu dari {g['nama']} (jika meletus sekarang) 0,2 mg/m\u00b3 atau lebih", tempat)}
     return out
 
 
@@ -232,10 +249,10 @@ def batasan(ringkas_angin):
     return [
         "SKENARIO: tiap gunung level II ke atas diandaikan meletus sekarang. Ini bukan ramalan letusan dan bukan peluang gunung meletus.",
         "Tidak menggantikan advisory VAAC Darwin (BoM) atau VONA PVMBG; keputusan terbang dan evakuasi tetap mengikuti lembaga resmi.",
-        "Peluang = pecahan anggota ansambel berbobot sama: sumber angin x tinggi kolom (0,5x/1x/2x) x durasi lepas (2/3/6 jam); " + ringkas_angin,
-        "Besaran adalah beban abu relatif model (sel 0,1 derajat, awan setebal 2 km, massa dari rumus Mastin), bukan konsentrasi terukur; semua asumsi abu.py berlaku.",
+        "Peluang = pecahan anggota ansambel berbobot sama: sumber angin x tinggi kolom (0,5x/1x/2x) x durasi lepas (3/6 jam); " + ringkas_angin,
+        "Besaran adalah beban abu relatif model (sel 0,1 derajat, awan setebal 2 km, massa dari rumus Mastin), bukan konsentrasi terukur; ambang 2 mg/m\u00b3 mengikuti abu.py, 0,2 dan 4 mg/m\u00b3 adalah pilihan sendiri, bukan kelas lembaga; semua asumsi abu.py berlaku.",
         "Tanpa hujan, tanpa agregasi abu, dan letusan dianggap berlangsung dengan laju tetap; rentang ketidakpastian tinggi kolom dan durasi ikut dihitung, bukan dikalibrasi.",
-        "Pasangan gunung-titik yang tak satu anggota pun mencapai 0,2 mg/m3 dibuang. Hari = jendela 24 jam sejak waktu skenario (tanggal WIB awal jendela).",
+        "Pasangan gunung-titik dengan peluang tertinggi di bawah 5% pada ambang 0,2 mg/m\u00b3 dibuang; titik = semua bandara dan kabupaten/kota berpenduduk 500 ribu jiwa atau lebih. Hari = jendela 24 jam sejak waktu skenario (tanggal WIB awal jendela).",
     ]
 
 
@@ -328,7 +345,7 @@ def uji():
     tgl = ["2026-10-20", "2026-10-21", "2026-10-22"]
     d = susun([g], {"Uji": 5000}, cache, titik, tgl, n=1000)
     assert P.periksa(d) == [], P.periksa(d)
-    assert d["anggota"] == 27, d["anggota"]          # 3 sumber x 3 tinggi x 3 durasi
+    assert d["anggota"] == 18, d["anggota"]          # 3 sumber x 3 tinggi x 2 durasi
     w = d["wilayah"]
     assert "uji|T" in w and "uji|B" not in w and "uji|J" not in w, list(w)   # angin timur: barat tak kena, 4000 km tak sampai (72 jam x 10 m/s = 2592 km)
     h = w["uji|T"]["hari"]
@@ -338,7 +355,7 @@ def uji():
     assert h[0]["p"][2] <= h[0]["p"][0]
     # ensemble: 51 anggota ditambahkan hanya bila ada
     e = {m: a_timur for m in range(N_ANGGOTA_ENS)}
-    assert len(anggota_gunung(g, 5000, {"ens": e})) == 51 and len(anggota_gunung(g, 5000, {"gfs_seamless": a_timur})) == 9
+    assert len(anggota_gunung(g, 5000, {"ens": e})) == 51 and len(anggota_gunung(g, 5000, {"gfs_seamless": a_timur})) == 6
     assert tanggal("2026-10-18T19:00:00Z")[0] == "2026-10-19"
     print("peluang_abu.py: uji lulus")
 
