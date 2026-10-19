@@ -45,3 +45,10 @@ export async function halamanBnpbPublik(env, url, berkas, {pribadi = false} = {}
 
 /* cron menit 17 */
 export const bersihkanBnpb = (env, kini = Date.now()) => env.DB.prepare("DELETE FROM laju_bnpb WHERE waktu <= ?").bind(kini - 2 * HARI).run();
+
+/* halaman Ruang Koordinasi tanpa modul worker sendiri (datanya JSON statis atau endpoint ringkas modul lain) */
+export const RUTE_BNPB = {
+  "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
+  "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
+  "GET /sitrep": (env, req, url) => halamanBnpbPublik(env, url, "sitrep"),
+};

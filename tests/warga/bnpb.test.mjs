@@ -47,3 +47,13 @@ uji("cron menit 17: laju_bnpb lebih tua dari 2 hari dibuang", async () => {
   await bersihkanBnpb(env, k);
   assert.equal(await U.n("laju_bnpb", "kunci = 'kunci-tua'"), 0);
 });
+
+uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP ketat tanpa inline", async () => {
+  for (const j of ["/risiko"]) {   // /sitrep dan /bnpb menyusul saat halamannya jadi
+    const r = await U.api("GET", j);
+    assert.equal(r.s, 200, j + " " + r.t.slice(0, 80));
+    const csp = r.h.get("content-security-policy");
+    assert.match(csp, /script-src 'self';/); assert.doesNotMatch(csp, /unsafe-inline/);
+    assert.doesNotMatch(r.t, /<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+=|<style|style="/i, j + ": skrip/gaya inline akan diblokir CSP");
+  }
+});

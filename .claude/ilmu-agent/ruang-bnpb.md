@@ -49,3 +49,5 @@ Tabel D1: `laju_bnpb` (0022), lalu 0023 relawan, 0024 alun-alun, 0025 riset, 002
 - Pemeriksaan layar di peramban 1440 dan 390, konsol tanpa galat; pengulas `selera-angka` dan `inp-reviewer`.
 
 ## Kasus
+- 2026-10-19 · Halaman /bnpb dilayani dengan CSP script-src 'self' dan tanpa vendor lokal: MapLibre dari cdnjs akan diblokir, jadi peta koroplet digambar sebagai SVG sendiri (path per kecamatan, kelas CSS k0-k3). Gaya lewat atribut style di markup juga diblokir; setProperty lewat JS dan elemen meter boleh. Uji dengan server node yang menambahkan header CSP dari src/bnpb.js lalu Chrome headless lewat CDP: konsol harus kosong selain favicon.
+- 2026-10-19 · Data lokal repo bisa tertinggal dari produksi (fwi.json dan hotspot.json commit 12-13 Okt, hari kerja 19 Okt). risiko.py membuang sumber harian lebih tua dari 7 hari (null) dan mencatat umur_hari per sumber di JSON; jangan baca 'tanpa titik panas' sebagai nol bila berkasnya basi. Fasilitas (sekolah.json, fasilitas.json) hanya mencakup 9 provinsi prioritas, jadi tidak boleh masuk skor nasional.

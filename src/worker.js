@@ -13,7 +13,7 @@ import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
-import {bersihkanBnpb} from "./bnpb.js";
+import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
 import {RUTE_RELAWAN} from "./relawan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
@@ -449,7 +449,8 @@ const RUTE = {
   ...RUTE_FOTO,
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
-  ...RUTE_RELAWAN,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
+  ...RUTE_BNPB,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
+  ...RUTE_RELAWAN,
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,

@@ -1,0 +1,59 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Risiko kecamatan · Pantau Bencana</title>
+<meta name="description" content="Indeks risiko operasional per kecamatan: bahaya hari ini, keterpaparan penduduk, dan kapasitas.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/risiko.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Risiko</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul">
+    <h1>Risiko kecamatan</h1>
+    <span class="bn-pil rk-peringatan" id="pilLabel"></span>
+    <span class="bn-pil" id="pilHari"></span>
+  </div>
+  <section class="bn-kartu rk-kontrol" aria-label="Penyaring">
+    <div class="rk-pilpil" id="fBencana" role="group" aria-label="Bencana"></div>
+    <label class="bn-isian rk-prov">Provinsi<select id="fProv"></select></label>
+  </section>
+  <p id="pesan" class="bn-pesan" role="status">Memuat data risiko…</p>
+  <div class="rk-tata" id="tata" hidden>
+    <section class="bn-kartu rk-peta" aria-label="Peta risiko">
+      <div class="rk-sorot" id="sorot" aria-live="polite">Ketuk kecamatan untuk melihat rincian.</div>
+      <svg id="peta" class="rk-svg" role="img" aria-label="Peta kecamatan menurut kelas risiko"></svg>
+      <div class="ad-leg" id="legenda"></div>
+    </section>
+    <section class="bn-kartu rk-tabel" aria-label="Kecamatan teratas">
+      <div class="rk-kepala"><h2>20 kecamatan teratas</h2>
+        <div class="ad-seg" id="fLingkup" role="group" aria-label="Lingkup"><button type="button" data-l="prov" aria-pressed="true">Provinsi ini</button><button type="button" data-l="nas" aria-pressed="false">Nasional</button></div></div>
+      <div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr id="kepalaTabel">
+        <th><button type="button" data-k="kec">Kecamatan<i></i></button></th>
+        <th><button type="button" data-k="kab">Kabupaten<i></i></button></th>
+        <th><button type="button" data-k="prov">Provinsi<i></i></button></th>
+        <th><button type="button" data-k="risiko">Risiko<i>↓</i></button></th>
+        <th><button type="button" data-k="utama">Bahaya utama<i></i></button></th>
+        <th><button type="button" data-k="pend">Penduduk<i></i></button></th>
+        <th><button type="button" data-k="kap">Kapasitas<i></i></button></th>
+      </tr></thead><tbody id="isiTabel"></tbody></table></div>
+    </section>
+  </div>
+</main>
+
+<dialog id="dlg" class="rk-dlg" aria-labelledby="dlgJudul">
+  <div class="rk-dlg-isi" id="dlgIsi"></div>
+</dialog>
+<script src="/inti/format.js"></script>
+<script src="/inti/tabel.js"></script>
+<script src="/bnpb/risiko.js?v=1"></script>
+</body>
+</html>
