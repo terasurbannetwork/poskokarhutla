@@ -181,7 +181,22 @@
     "trigger lapangan_kendala_ubah": "angka publik dari satu kode",
     "table laju_posko": "tebakan kode regu dan token admin",
     "POST /api/posko/lapangan/:id": "angka publik dari satu kode",
-    "table laju_bnpb": "laju_bnpb: batas per jendela"
+    "table laju_bnpb": "laju_bnpb: batas per jendela",
+    "table alun_utas": "migrasi 0024 idempoten",
+    "table alun_balas": "migrasi 0024 idempoten",
+    "table alun_suara": "migrasi 0024 idempoten",
+    "GET /alun-alun": "halaman /alun-alun",
+    "GET /admin/alun": "halaman /alun-alun",
+    "GET /api/alun": "daftar: filter",
+    "GET /api/alun/:id": "tulis utas sah",
+    "POST /api/alun": "tulis liar ditolak",
+    "POST /api/alun/balas/:id": "balas: nama opsional",
+    "POST /api/alun/upvote/:id": "upvote: satu per IP",
+    "POST /api/alun/lapor/:id": "lapor: alasan wajib",
+    "POST /api/alun/terjawab/:id": "terjawab: hanya pemilik",
+    "GET /api/alun/admin": "dummy: tolak non-super",
+    "POST /api/alun/admin/:id": "moderasi admin",
+    "POST /api/alun/dummy": "dummy: tolak non-super"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

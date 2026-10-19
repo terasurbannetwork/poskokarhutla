@@ -49,14 +49,14 @@ const kelas = (j, s) => JENIS[j]?.sub[s]?.[1];
 /* ---------------- teks publik: buang tautan & nomor, tolak kata kasar ---------------- */
 const RE_URL = /\b(?:https?:\/\/|www\.)\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:com|net|org|id|co|io|xyz|me|info|biz|site|online|link|ly|gl|app|top|club|shop|store|click)(?:\/\S*)?/gi;
 const RE_HP = /(?:\+|\b)\d(?:[\s.\-()]?\d){8,}/g;
-export function bersihTeks(t) {
+export function bersihTeks(t, maks = MAKS_TEKS) {
   const asli = String(t ?? "").normalize("NFC").replace(/[\u0000-\u0008\u000B-\u001F\u007F​-‏‪-‮]/g, "");
-  if (asli.length > MAKS_TEKS) return {galat: `teks ${asli.length} karakter, maksimal ${MAKS_TEKS}`};
+  if (asli.length > maks) return {galat: `teks ${asli.length} karakter, maksimal ${maks}`};
   const kecil = asli.toLowerCase();
   if (KASAR.some(k => new RegExp(`(^|[^a-z])${k}([^a-z]|$)`).test(kecil))) return {galat: "teks memuat kata kasar"};
   if (/(.)\1{7,}/u.test(asli)) return {galat: "teks berisi karakter berulang (spam)"};
   const teks = asli.replace(RE_URL, "[tautan dihapus]").replace(RE_HP, "[nomor dihapus]").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
-  return {teks: teks.slice(0, MAKS_TEKS)};
+  return {teks: teks.slice(0, maks)};
 }
 
 /* ---------------- isian tambahan per jenis -> objek detail yang sudah bersih ---------------- */

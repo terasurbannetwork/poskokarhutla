@@ -1,0 +1,68 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Alun-alun · Pantau Bencana</title>
+<meta name="description" content="Ruang bersama warga, relawan, dan petugas untuk bertanya, meminta bantuan, dan berbagi kabar lapangan.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/alun-alun.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Alun-alun</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul">
+    <h1>Alun-alun</h1>
+    <div class="bn-aksi"><button class="bn-tombol" id="tulisBuka" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>Tulis utas</button></div>
+  </div>
+  <div class="al-tata">
+    <aside class="al-saring" aria-label="Saring utas">
+      <div class="al-blok"><h2>Jenis</h2><div class="al-pilpil" id="fJenis" role="group" aria-label="Jenis utas"></div></div>
+      <div class="al-blok"><label class="al-isian">Bencana<select id="fBencana"></select></label>
+        <label class="al-isian">Provinsi<select id="fProv"></select></label>
+        <label class="al-isian">Urutan<select id="fUrut"><option value="terbaru">Terbaru</option><option value="terpopuler">Terpopuler</option><option value="belum_terjawab">Belum terjawab</option></select></label></div>
+    </aside>
+    <section class="al-daftar" aria-label="Daftar utas">
+      <ul id="daftar" class="al-utas"></ul>
+      <p id="daftarPesan" class="bn-pesan" role="status"></p>
+      <button class="bn-tombol sekunder" id="lagi" type="button" hidden>Muat lebih banyak</button>
+    </section>
+    <section class="al-rincian" id="rincian" aria-label="Rincian utas" hidden></section>
+  </div>
+</main>
+
+<dialog id="dlgTulis" class="al-dlg" aria-labelledby="tulisJudul">
+  <form id="formTulis" class="bn-form" autocomplete="off">
+    <h2 id="tulisJudul">Tulis utas</h2>
+    <div class="bn-pilihan" id="tJenis" role="radiogroup" aria-label="Jenis utas"></div>
+    <label class="bn-isian">Judul<input name="judul" maxlength="120" required minlength="3"></label>
+    <label class="bn-isian">Isi<textarea name="teks" maxlength="1000" required></textarea></label>
+    <div class="bn-baris">
+      <label class="bn-isian">Bencana<select name="bencana" id="tBencana" required></select></label>
+      <label class="bn-isian">Provinsi<select name="prov" id="tProv" required></select></label>
+      <label class="bn-isian">Kabupaten atau kota (opsional)<input name="kab" maxlength="60"></label>
+      <label class="bn-isian">Nama tampil (opsional)<input name="nama" maxlength="40"></label>
+    </div>
+    <div class="al-lokasi"><button class="bn-tombol sekunder" id="lokasiPakai" type="button"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Pakai lokasiku</button><span id="lokasiInfo" class="bn-label"></span></div>
+    <p id="tulisPesan" class="bn-pesan" role="status"></p>
+    <div class="al-aksi-form"><button class="bn-tombol sekunder" id="tulisBatal" type="button">Batal</button><button class="bn-tombol" id="tulisKirim" type="submit">Kirim</button></div>
+  </form>
+</dialog>
+
+<dialog id="dlgLapor" class="al-dlg kecil" aria-labelledby="laporJudul">
+  <form id="formLapor" class="bn-form">
+    <h2 id="laporJudul">Laporkan konten</h2>
+    <div class="bn-pilihan" id="laporAlasan" role="radiogroup" aria-label="Alasan"></div>
+    <p id="laporPesan" class="bn-pesan" role="status"></p>
+    <div class="al-aksi-form"><button class="bn-tombol sekunder" id="laporBatal" type="button">Batal</button><button class="bn-tombol" type="submit">Laporkan</button></div>
+  </form>
+</dialog>
+<script src="/bnpb/alun-alun.js?v=1"></script>
+</body>
+</html>
