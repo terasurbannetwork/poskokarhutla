@@ -2,21 +2,14 @@
 :root{--lp:12px;--tw:12px}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
 h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
 button{font:inherit;color:inherit}
-.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
 :focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
 a{color:inherit}
 
-header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+header.top{justify-content:space-between}
 .mark{display:flex;align-items:center;gap:10px;min-width:0}
 .stat{display:flex;align-items:center;gap:8px;flex:none}
-.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
-.iconbtn:hover{background:oklch(100% 0 0 / .22)}
-.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
-.toast.on{display:block}
 
 main{padding-top:var(--top)}
 .peta-bagian{position:relative;height:calc(100dvh - var(--top) - 120px);min-height:420px}

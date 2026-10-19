@@ -42,8 +42,6 @@ td a,td button.link{color:var(--brand2);font-weight:600;background:none;border:0
 .fold > button[aria-expanded="true"] .chev{transform:rotate(180deg)}
 .fold > div{padding:0 16px 12px}
 .rumus{font-family:ui-monospace,SFMono-Regular,Menlo,monospace;font-size:12.5px;background:var(--surface);border-radius:10px;padding:10px 12px;overflow:auto;white-space:pre}
-.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
-.toast.on{display:block}
 tr.klik{cursor:pointer}
 tr.klik:hover td{background:var(--surface)}
 dialog.dlg{border:1px solid var(--line);border-radius:var(--r);background:var(--card);color:var(--ink);padding:0;width:min(780px,calc(100vw - 24px));max-height:calc(100dvh - 48px);box-shadow:var(--shadow-lg)}

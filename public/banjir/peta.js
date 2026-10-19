@@ -13,9 +13,7 @@ const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa
   hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
   kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
 const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", rob: "Rob", kejadian: "Kejadian", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
-function kotak(fitur) { let a = [180, 90, -180, -90];
-  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
-  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 /* "Hari ini" hanya bila tanggal itu memang hari ini (WIB); status.json bisa tertinggal sehari */
 const hariWIB = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
 const labelHari = t => t === hariWIB() ? "Hari ini" : tglPendek(t);

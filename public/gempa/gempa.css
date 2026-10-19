@@ -22,7 +22,6 @@
 /* laci: bagian lanjutan (susulan, paparan, gelombang) */
 .lc-lanjut{display:grid;gap:10px}
 .lc-sek{display:grid;gap:6px}
-.lc-h{margin:0;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
 .lc-mmi{display:inline-block;padding:2px 9px;border-radius:999px;font-size:11.5px;font-weight:700;background:var(--w)}
 .lc-sim{align-self:start;justify-self:start}
 /* A24: kontak BPBD dibuat tetapi disembunyikan, sama seperti "Respons terdekat" karhutla (data kantor lama, nomor perlu dicek) */

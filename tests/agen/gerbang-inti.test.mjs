@@ -10,9 +10,7 @@
 // Cara memperbaiki: pindahkan blok ke public/inti/ (atau pakai yang sudah ada di sana) lalu muat dari kedua halaman.
 // JANGAN melonggarkan ambang atau menambah pengecualian supaya lolos.
 //
-// SENGAJA MERAH (19 Okt 2026): 17 salinan nyata. Disimpan di tests/agen/merah/ (di luar glob uji:agen supaya tidak memblokir terbit.yml);
-// jalankan: node --test tests/agen/merah/gerbang-inti.test.mjs. Pindah ke tests/agen/ begitu layar-peta melunasi utangnya.
-// Dipasangkan dengan pengerjanya: layar-peta (public/**). Gerbang ini milik penulis-gerbang.
+// Salinan lama dilunasi 19 Okt 2026 (inti-layar); sejak itu ikut uji:agen dan memblokir salinan baru. Gerbang ini milik penulis-gerbang.
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
@@ -21,7 +19,7 @@ import { readFileSync, existsSync } from 'node:fs'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
-const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../../..')
+const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const CSS_MIN = 90
 const JS_MIN = 200
 

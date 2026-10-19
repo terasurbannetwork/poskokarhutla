@@ -1,0 +1,2 @@
+/* Header kartu di tab Metode yang memakai kartu Insight (cuaca, gunungapi). Dulu disalin di cuaca.css dan gunungapi.css; dimuat sebelum css halaman. */
+#metode .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}

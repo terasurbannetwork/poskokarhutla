@@ -39,7 +39,6 @@
 #tren .kl-tb td{vertical-align:middle}
 #tren .kl-tb th,#tren .kl-tb td{padding-left:7px;padding-right:7px}
 .kl-no{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--surface);font-size:10.5px;font-weight:800;color:var(--ink2)}
-.br-lb{font-style:normal;font-size:10px;font-weight:700;padding:1px 7px;border-radius:999px;background:color-mix(in oklch, var(--w) 14%, transparent);color:var(--w);white-space:nowrap}
 @media (max-width:700px){
   .tren-sumber .seg button{flex:none}
 }

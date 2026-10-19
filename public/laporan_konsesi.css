@@ -1,4 +1,5 @@
 /* Laporan Konsesi Terbakar 2026 (public/laporan_konsesi.*) */
+@import url("/inti/laporan-dasar.css");
 html,body{height:auto}
 main.kn{position:static;inset:auto}
 .mark b{display:block}
@@ -7,12 +8,10 @@ main.kn{position:static;inset:auto}
 .kn-saring,.kn-kartu,.kn-kpi>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .kn-status{font-size:12.5px;color:var(--ink2)}
 /* pita kepala + saringan: standar Laporan Harian (laporan.css lp-kep, kartu.css seg/pc) */
-.lp-kep{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;margin-bottom:12px;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
+.lp-kep{margin-bottom:12px}   /* sisanya dari inti/laporan-dasar.css */
 .lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
 .lp-jd h1{margin:0;font-size:clamp(22px,3vw,30px);line-height:1.15;color:#fff}
 .lp-pils{display:flex;flex-wrap:wrap;gap:6px}
-.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
 .lp-pil.ok{background:#2b8c86}
 .lp-aksi{display:flex;align-items:center;gap:10px;max-width:100%;min-width:0}
 .kn-f .pc{width:100%}
@@ -24,7 +23,6 @@ main.kn{position:static;inset:auto}
 .kn-pp-daf button[aria-selected="true"] em{color:#fff;opacity:.8}
 .pc-menu.multi .kn-pp-daf button:has(em)::after{margin-left:8px}
 .kn-pp-daf p{margin:8px;font-size:12px}
-.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}
 .lp-cetak:disabled{opacity:.5;cursor:progress}
 .lp-cetak svg{width:17px;height:17px}

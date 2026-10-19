@@ -8,9 +8,7 @@ const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHei
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; };
 const UBIN = {bmkg: ["#7a3b0b", "#f2b544", "peringatan"], gelombang: ["#16405c", "#4fa3c4", "ombak"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
 const UBIN_PENDEK = {bmkg: "BMKG", gelombang: "Ombak", satelit: "Satelit"};
-function kotak(fitur) { let a = [180, 90, -180, -90];
-  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
-  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 const MEDAN_KOR = [[94.5, 6.5], [141.5, 6.5], [141.5, -11.5], [94.5, -11.5]]; /* kotak gambar hujan: barat laut, timur laut, tenggara, barat daya */
 const sevWarna = s => WARNA_SEV[s] || SEV_ASAL;
 const SEV_ID = {Minor: "Ringan", Moderate: "Sedang", Severe: "Berat", Extreme: "Ekstrem"};   /* tingkat CAP BMKG dalam bahasa Indonesia, satu tabel untuk tabel dan laci */

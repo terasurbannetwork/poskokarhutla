@@ -1,21 +1,18 @@
 /* laporan.css (public/inti): mesin laporan harian generik. Dasar kartu/tabel/tooltip/pemilih dari tema.css, gaya.css, tabel.css, insight.css, kartu.css.
    Di sini hanya pita kepala, pil, tabel laporan, grafik batang, dan cetak A4. Semua dibatasi di #laporan supaya tak bocor ke halaman lain. */
+@import url("laporan-dasar.css");
 #p-laporan.scroll{padding:14px 12px 48px}
 #laporan{max-width:1180px;margin:0 auto;min-width:0}
 #laporan #insight.lp{max-width:none;gap:12px}
 #laporan .kosong{padding:22px;text-align:center;color:var(--ink2)}
 
 /* pita kepala */
-.lp-kep{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
 .lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px;min-width:0}
 .lp-jd h1{margin:0;font-size:clamp(20px,3vw,28px);line-height:1.15;color:#fff}
 .lp-pils{display:flex;flex-wrap:wrap;gap:6px}
-.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
 .lp-pil.ok{background:#2b8c86}.lp-pil.sm{background:#c9503a}
 .lp-aksi{display:flex;align-items:center;flex-wrap:wrap;gap:10px;max-width:100%;min-width:0}
 .lp-aksi .pc{flex:0 1 220px}
-.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}
 .lp-cetak svg{width:17px;height:17px}
 
@@ -27,10 +24,8 @@
 #laporan .lp-tb thead th{text-transform:none;font-size:11.5px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
 #laporan .lp-tb thead th button{display:inline-flex;white-space:normal;text-align:inherit}
 #laporan .lp-tb thead th.n button{justify-content:flex-end}
-.lp-tb tbody td:first-child{font-weight:600}
 .lp-tb small{color:var(--ink2);font-weight:500}
 .lp-tb tfoot td{padding:10px 14px}
-.lp-tb tr.lp-grp td{background:oklch(42% .11 255 / .09);font-weight:800;border-top:2px solid oklch(42% .11 255 / .35)}
 .lp-tb td.lp-kab{padding-left:26px!important;font-weight:500!important}
 .lp-tb .kosong{white-space:normal}
 .lp-bf{display:inline-block;vertical-align:middle;padding:1px 7px;border-radius:999px;font:800 10px var(--font);background:#d2772c;color:#fff;white-space:nowrap}

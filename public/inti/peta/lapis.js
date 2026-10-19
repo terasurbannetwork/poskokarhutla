@@ -39,6 +39,11 @@ export function tampilTip(html, ev) {
   t.style.left = Math.min(innerWidth - t.offsetWidth - 8, ev.clientX + 14) + "px"; t.style.top = Math.max(8, ev.clientY - t.offsetHeight - 12) + "px";
 }
 export const sembunyiTip = () => { const t = document.getElementById("tip"); if (t) { t.classList.remove("on"); t._html = null; } };
+/* kotak pembatas [[barat, selatan], [timur, utara]] dari deretan fitur GeoJSON, untuk fitBounds */
+export function kotak(fitur) {
+  let a = [180, 90, -180, -90];
+  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
+  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
 
 /* ubin Overlay: tiap <label><input data-l> di dalam <details> jadi ubin ikon; satu baris (kisi 5 kolom) per kategori.
    katalog: {kunci: [warnaA, warnaB, ikon]}; pendek: {kunci: nama pendek}; nama lengkap pindah ke tooltip. */

@@ -7,9 +7,7 @@ const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
-function kotak(fitur) { let a = [180, 90, -180, -90];
-  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
-  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 
 /* ---------- warna per mode: tangga [batas atas, warna]; nilai pertama yang <= batas menang */
 const TANGGA = {

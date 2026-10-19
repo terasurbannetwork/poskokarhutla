@@ -35,15 +35,12 @@ img{max-width:100%}
 .loncat:focus{left:12px}
 
 /* header */
-header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
 .logo{display:flex;flex:none}
 .pe-nav{display:flex;align-items:center;gap:2px;flex:1;min-width:0;overflow-x:auto;scrollbar-width:none}
 .pe-nav::-webkit-scrollbar{display:none}
 .pe-nav a{color:#fff;text-decoration:none;font:700 14px var(--display);padding:8px 11px;border-radius:10px;white-space:nowrap;opacity:.85}
 .pe-nav a:hover{opacity:1;background:oklch(100% 0 0 / .12)}
 .pe-nav a[aria-current]{opacity:1;background:oklch(100% 0 0 / .18)}
-.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
-.iconbtn:hover{background:oklch(100% 0 0 / .22)}
 @media (max-width:480px){.pe-ini .pe-tx{display:none}}
 @media (max-width:640px){.pe-pj{display:none}.pe-ini .pe-tx{display:none}.pe-ini{padding:8px 10px}header.top{gap:6px;padding:0 10px}.pe-nav a{padding:8px 7px;font-size:12.5px}}
 
