@@ -48,6 +48,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/bnpb/**`
 - `public/data/bnpb/**`
 - `docs/bnpb/**`
+- `public/admin/pimpinan.*`
+- `public/admin/gakkum.*`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.
