@@ -18,11 +18,11 @@ export function metaRute(url, M, B = REGISTRY) {
   const S = M.situs, p = url.pathname.replace(/\/+$/, "") || "/", dasarH = M.halaman["/"], gbr = g => `${S}/data/og/${g}.png?v=${M.v}`, bs = hidup(B);
   for (const b of bs) if (!akar(b) && (p === dasar(b) || p === dasar(b) + "/index.html")) { const h = profil(b, M); return {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + b.rute}; }
   for (const b of bs) {   // /k/K0001, /sim/K0001 (akar) atau /<id>/k/<KODE>: awalan kode dari kejadian.awalan
-    const aw = b.kejadian?.awalan, k = aw && (akar(b) || !b.warisan) && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(k|sim)/(${aw}\\d+)$`));
+    const aw = b.kejadian?.awalan, k = aw && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(${akar(b) || !b.warisan ? "k|sim" : "k"})/(${aw}\\d+)$`));
     if (!k) continue;
     const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = prov && M.prov?.[prov] ? "prov-" + prov : "ringkasan", api = aw === "K";
     return {judul: `${sim ? (api ? "Simulasi penjalaran api" : "Simulasi " + b.kejadian.nama.toLowerCase()) : b.kejadian.nama} ${k[2]} · Pantau Bencana`,
-      desk: d ? `${d}.${api ? " " + (sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta.") : ""}` : dasarH.desk,
+      desk: !d && !akar(b) ? profil(b, M).desk : d ? `${d}.${api ? " " + (sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta.") : ""}` : dasarH.desk,
       gambar: gbr(g), url: S + p};
   }
   const wil = (url.searchParams.get("wil") || "").slice(0, 2);

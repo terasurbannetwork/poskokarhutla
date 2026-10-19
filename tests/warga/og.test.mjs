@@ -43,6 +43,8 @@ test("halaman & tab: peta, banjir, tab lain dapat og:url sendiri", () => {
   assert.equal(metaRute(u("/peta"), M).gambar, img("peta"));
   assert.equal(metaRute(u("/banjir/"), M).url, S + "/banjir/");
   assert.equal(metaRute(u("/index.html"), M).url, S + "/");
+  const bk = metaRute(u("/banjir/k/B0007"), M); assert.equal(bk.desk, metaRute(u("/banjir/"), M).desk, "kejadian banjir memakai deskripsi bencana");
+  assert.equal(metaRute(u("/banjir/sim/B0007"), M), null);
   assert.equal(metaRute(u("/dampak"), M).url, S + "/dampak");
 });
 

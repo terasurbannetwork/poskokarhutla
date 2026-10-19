@@ -18,8 +18,8 @@ const baru = {id: "uji1", nama: "Bencana Baru", rute: "/uji1/", status: "aktif",
 test("rute karhutla/banjir identik dengan daftar tulisan tangan lama; semua bencana dilayani, mati 404", () => {
   const LAMA = /^\/(tentang|ringkasan|peta|insight|berita|kompleks|posko|informasi|foto|keputusan|tren|dampak|sim|metode|prioritas|sarana|operasi|k\/K\d+|sim\/K\d+)\/?$/;
   for (const j of ["/", "/index.html", "/banjir", "/banjir/", "/banjir/index.html", "/tentang", "/peta/", "/k/K0009", "/sim/K12", "/operasi", "/keputusan", "/sarana", "/prioritas",
-    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
-    const lama = LAMA.test(j) || /^\/banjir\/(peta|insight|simulasi|rob)\/?$/.test(j) || /^\/(index\.html)?$/.test(j) || /^\/banjir(\/|\/index\.html)?$/.test(j) || j === "/tentang-halaman" || j === "/privasi";
+    "/k/B0001", "/k/K", "/sim", "/banjir/peta", "/banjir/insight", "/banjir/simulasi", "/banjir/rob/", "/banjir/x", "/banjir/k/B0001", "/banjir/k/B0007", "/banjir/k/X1", "/banjir/sim/B0001", "/x", "/data/meta.json", "/tentang-halaman", "/privasi"]) {
+    const lama = LAMA.test(j) || /^\/banjir\/(peta|insight|simulasi|rob)\/?$/.test(j) || /^\/(index\.html)?$/.test(j) || /^\/banjir(\/|\/index\.html)?$/.test(j) || /^\/banjir\/k\/B\d+$/.test(j) || j === "/tentang-halaman" || j === "/privasi";
     assert.equal(!!cocok(HTML_RUTE, j), lama, j);
   }
   // semua bencana kini aktif dan dilayani (tidak ada lagi tahap 'uji'); 'mati' disimulasikan pada salinan di bawah

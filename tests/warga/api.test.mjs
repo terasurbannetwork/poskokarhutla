@@ -112,6 +112,12 @@ uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain
   for (const j of ["/petaku", "/k/abc", "/api/wargaX", "/peta/x"]) assert.notEqual((await panggil("GET", j)).teks, idx, `GET ${j} tidak boleh jadi index.html`);
 });
 
+uji("/banjir/k/B0007 disajikan index.html banjir; /banjir/k/X1 dan /banjir/sim/B0007 404", async () => {
+  const bj = (await panggil("GET", "/banjir/")).teks;
+  assert.equal((await panggil("GET", "/banjir/k/B0007")).teks, bj, "kejadian banjir = index banjir");
+  for (const j of ["/banjir/k/X1", "/banjir/sim/B0007"]) assert.equal((await panggil("GET", j)).status, 404, j);
+});
+
 uji("laporan sah tersimpan dan muncul di daftar tanpa kontak, hash, atau token", async () => {
   const r = await kirim({jenis: "minta", sub: "makanan", jumlah: 40, teks: "Butuh nasi untuk 40 orang #wargabantuwarga", kontak: "0812-3456-7890", ...titikBaru()});
   assert.equal(r.status, 201, `POST minta = ${r.status}: ${r.teks}`);
