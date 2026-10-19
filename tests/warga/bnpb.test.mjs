@@ -72,3 +72,13 @@ uji("/admin/gakkum: tanpa sesi dialihkan ke masuk, admin 200 dengan kerangka ber
   const a = await U.adm("GET", "/admin/gakkum");
   assert.equal(a.s, 200); assert.match(a.t, /\/admin\/bersama\.js/); assert.match(a.t, /\/admin\/gakkum\.js/);
 });
+
+uji("Turnstile alun-alun: CSP mengizinkan challenges.cloudflare.com HANYA bila TURNSTILE_SITEKEY diset; halaman lain tetap ketat", async () => {
+  const tanpa = await U.api("GET", "/alun-alun");
+  assert.doesNotMatch(tanpa.h.get("content-security-policy"), /challenges\.cloudflare\.com/);
+  const T = await siapkan("uji-bnpb-ts", {ikat: {TURNSTILE_SITEKEY: "kunci-situs-uji", TURNSTILE_SECRET: "rahasia-uji"}});
+  const dengan = await T.api("GET", "/alun-alun"), csp = dengan.h.get("content-security-policy");
+  assert.match(csp, /script-src 'self' https:\/\/challenges\.cloudflare\.com/); assert.match(csp, /frame-src https:\/\/challenges\.cloudflare\.com/);
+  assert.doesNotMatch((await T.api("GET", "/risiko")).h.get("content-security-policy"), /challenges/, "halaman tanpa formulir tidak ikut dilonggarkan");
+  assert.match(dengan.t, /\/bnpb\/turnstile\.js/);
+});

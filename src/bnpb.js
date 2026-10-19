@@ -38,11 +38,13 @@ export async function pemegangKode(env, req, modul, cari, kini = Date.now()) {
 
 /* Halaman publik Ruang Koordinasi dari public/bnpb/<berkas>.html dengan CSP ketat (tanpa skrip/gaya inline). */
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
-export async function halamanBnpbPublik(env, url, berkas, {pribadi = false} = {}) {
+/* turnstile: true = halaman berformulir publik; bila TURNSTILE_SITEKEY diset, CSP mengizinkan widget challenges.cloudflare.com (skrip + bingkai) */
+const CSP_TS = CSP.replace("script-src 'self'", "script-src 'self' https://challenges.cloudflare.com").replace("frame-ancestors", "frame-src https://challenges.cloudflare.com; frame-ancestors");
+export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turnstile = false} = {}) {
   const r = await env.ASSETS.fetch(new Request(new URL(`/bnpb/${berkas}.html`, url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman tidak ada"); }
   return new Response(r.body, {headers: {"content-type": "text/html; charset=utf-8", "cache-control": pribadi ? "no-store" : "public, max-age=300", "x-content-type-options": "nosniff",
-    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": CSP}});
+    "referrer-policy": pribadi ? "no-referrer" : "strict-origin-when-cross-origin", ...(pribadi ? {"x-robots-tag": "noindex, nofollow"} : {}), "content-security-policy": turnstile && env.TURNSTILE_SITEKEY ? CSP_TS : CSP}});
 }
 
 /* cron menit 17 */

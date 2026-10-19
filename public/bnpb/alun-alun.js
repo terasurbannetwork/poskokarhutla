@@ -44,6 +44,8 @@
   const kodeUtas = id => simpan.ambil("alun.kode." + id);
 
   async function api(metode, jalur, body, kode) {
+    /* tulis, balas, lapor: token Turnstile bila server mengaktifkannya (/bnpb/turnstile.js); upvote dan terjawab tanpa */
+    if (body && metode === "POST" && /^\/api\/alun(\/balas\/|\/lapor\/|$)/.test(jalur)) { const t = await window.tokenTurnstile?.(); if (t) body = {...body, turnstile: t}; }
     const r = await fetch(jalur, {method: metode, headers: {...(body ? {"content-type": "application/json"} : {}), ...(kode ? {"x-kode": kode} : {})}, body: body ? JSON.stringify(body) : undefined});
     return {ok: r.ok, s: r.status, j: await r.json().catch(() => ({}))};
   }

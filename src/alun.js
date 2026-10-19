@@ -330,7 +330,7 @@ async function dummy(env, req) {
 
 const T = tabelBelum;
 export const RUTE_ALUN = {
-  "GET /alun-alun": (env, req, url) => halamanBnpbPublik(env, url, "alun-alun"),
+  "GET /alun-alun": (env, req, url) => halamanBnpbPublik(env, url, "alun-alun", {turnstile: true}),
   "GET /admin/alun": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("alun")),
   "GET /api/alun": T((env, req, url, kini, ctx) => daftar(env, req, url, kini, ctx)),
   "GET /api/alun/admin": T((env, req, url, kini) => adminDaftar(env, req, url, kini)),
