@@ -73,7 +73,7 @@ const Tren = {
     return this.kartu("Kalender musim asap", `${Kartu.hl(this.BLN_PENUH[pk])} bulan dengan titik panas terbanyak: median ${Kartu.hl(fmt(md[pk]) + " titik")} per bulan pada ${th[0]} sampai ${th.at(-1)}, kisaran ${fmt(B.min[pk])} sampai ${fmt(B.maks[pk])}`,
       Grafik.kolom({cat: this.BLN, seri: [["Titik panas", "#c9503a"]], nilai: md.map(v => [v]), aria: "Median titik panas nasional per bulan", fmtNilai: x => kr(Math.round(x)),
         tip: i => `<b>${this.BLN_PENUH[i]}</b><br>Median titik panas: ${fmt(md[i])}<br>Kisaran: ${fmt(B.min[i])} sampai ${fmt(B.maks[i])}${cams[i] ? `<br>PM2,5 CAMS ${cams[i][0].slice(0, 4)}: ${fmt(cams[i][1])} µg/m³ (perkiraan model)` : ""}`}),
-      `NASA FIRMS, semua satelit, ${th[0]} sampai ${th.at(-1)}. Titik panas penanda musim bakar, bukan ukuran asap; ${c0 ? `PM2,5 CAMS baru ada sejak ${this.BLN_PENUH[+c0[0].slice(5) - 1]} ${c0[0].slice(0, 4)}, belum cukup untuk kalender PM2,5` : "PM2,5 CAMS belum cukup panjang untuk kalender PM2,5"}`); },
+      `NASA FIRMS, semua satelit, ${th[0]} sampai ${th.at(-1)}. Titik panas penanda musim bakar, bukan ukuran asap; ${c0 ? `PM2,5 CAMS baru ada sejak ${this.BLN_PENUH[+c0[0].slice(5) - 1]} ${c0[0].slice(0, 4)}, belum cukup untuk kalender PM2,5` : "PM2,5 CAMS belum cukup panjang untuk kalender PM2,5"}`, "", null, false); },
   /* ENSO: titik panas 1 Jan sampai tanggal data terakhir tiap tahun, diwarnai fase ENSO tahun itu (rata-rata ONI, NOAA CPC); hanya mempertemukan dua deret, tidak menilai sebab */
   exEnso() {
     const T = this.M?.tahun, th = T && Object.keys(T).sort(); if (!th || th.length < 4) return "";
