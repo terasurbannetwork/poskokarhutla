@@ -9,7 +9,9 @@ PilihCantik.pasang();
   $("#muat").classList.add("hilang");
   /* /cuaca/<tab> bersih; tab yang tak ada jatuh ke Peta */
   const j = location.pathname.replace(/^\/cuaca\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, "");
-  if (TABS.some(t => t[0] === j) && halamanAda(j)) bukaTab(j, false);
+  const kj = j.match(/^k\/(C\d+)$/);
+  if (kj) Kejadian.buka(kj[1], false);
+  else if (j === "kejadian" ? Kejadian.ada() : TABS.some(t => t[0] === j) && halamanAda(j)) bukaTab(j, false);
   else if (j) history.replaceState(null, "", "/cuaca/peta" + location.search);
 })();
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });

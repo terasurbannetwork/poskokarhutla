@@ -16,7 +16,7 @@ const SEKARANG = () => { const q = new URLSearchParams(location.search).get("sek
 const tglWIB = t => new Date(t + 7 * 36e5).toISOString().slice(0, 10);
 const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
 const OFS = {WIB: "+07:00", WITA: "+08:00", WIT: "+09:00"};
-/* skala hujan harian BMKG (mm): lebat 50, sangat lebat 100, ekstrem 150; embusan (km/jam) 54, 72, 90 = 15, 20, 25 m/s */
+/* skala hujan harian BMKG (mm): lebat 50, sangat lebat 100, ekstrem 150. Embusan (km/jam) 54, 72, 90 = 15, 20, 25 m/s adalah ambang hipotesis Pantau Bencana, bukan kelas BMKG; kartu Hujan dan Angin memakai ambang sel prakiraan ini, bukan ambang tingkat kecamatan (pil ambang hanya di kartu Status dan Sarana) */
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 205, 240, 90]], [5, [110, 180, 235, 150]], [20, [60, 140, 220, 200]], [50, [40, 80, 200, 225]], [100, [110, 50, 190, 235]], [150, [190, 40, 140, 245]], [250, [120, 20, 60, 250]]];
 const ST_ANGIN = [[0, [120, 200, 190, 0]], [25, [140, 205, 190, 70]], [40, [190, 215, 130, 150]], [54, [227, 185, 78, 215]], [72, [229, 138, 69, 235]], [90, [201, 80, 58, 245]], [130, [120, 20, 40, 250]]];
 const WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"];
@@ -44,11 +44,18 @@ const basi = () => !!S.meta && tglWIB(Date.parse(S.meta.dibuat)) !== tglWIB(SEKA
 const pct = (a, b) => b ? Math.round(a / b * 100) : null;
 const namaProv = k => S.meta?.prov?.[k] ?? k;
 const AMB = () => S.meta.ambang;
+/* ambang tingkat kecamatan (hujan, embusan, gelombang, ansambel): lepas dari "hipotesis" hanya bila cuaca_verifikasi.json memuat kita.vonis.layak (uji balik lolos).
+   Sampai itu, kartu yang angkanya bergantung pada tingkat diberi pil dan satu kalimat bukti dari uji balik DIBI (prakiraan 1 hari sebelumnya, hujan 50 mm atau lebih). */
+const AMBANG_PIL = () => S.ver?.kita?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis";
+const AMBANG_KAKI = () => { const K = S.ver?.kita; if (K?.vonis?.layak) return ""; const l = K?.lead?.["1"], n = l ? l.a + l.c : 0;
+  return `Ambang belum lolos uji balik${K && n >= (K.n_min ?? 30) ? `: dari ${fmt(n)} provinsi-hari ber-kejadian DIBI, prakiraan 1 hari sebelumnya menangkap ${fmt(l.a)} (sekitar ${fmt(Math.round(l.a / n * 100))}%)` : ""}.`; };
+const beriAmbang = h => { if (!h || S.ver?.kita?.vonis?.layak) return h; const k = AMBANG_KAKI();
+  return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const halamanAda = id => !!$("#p-" + id);
@@ -58,10 +65,14 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/cuaca/" + id + location.search);
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
+    ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
 }
-{ const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
-  $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
+/* tab Kejadian hanya ada bila ada kejadian segar (A18): dipanggil lagi sesudah berkasnya terbaca */
+const tbTab = ([k, n]) => `<button data-t="${k}" aria-current="${document.querySelector("#p-" + k)?.classList.contains("on") ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
+const isiTab = () => { const T = TABS.filter(t => !TAB_SEMBUNYI.has(t[0]) && (t[0] !== "kejadian" || Kejadian.ada())), el = $("#tabs");
+  if (el.children.length && [...el.children].map(b => b.dataset.t).join() === T.map(t => t[0]).join()) return;   /* himpunan tab sama: jangan tulis ulang (fokus dan menu tetap) */
+  el.innerHTML = T.map(tbTab).join(""); };
+{ isiTab();
   const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
   bg.onclick = e => { e.stopPropagation(); atur(!hd.classList.contains("buka")); };
   document.addEventListener("click", e => { if (hd.classList.contains("buka") && !e.target.closest("#tabs")) atur(false); });
@@ -74,7 +85,7 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* berkas tambahan boleh hilang: kartu dan lapisan yang datanya tak ada dibuang (A18) */
 const opsi = u => muatJSON(u).catch(() => null);
 async function muatTambahan() {
-  const B = "../banjir/data/", [kec, gel, sik, sar, ver, dmp, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
+  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
   const tg = reg?.bencana?.find(b => b.id === "cuaca")?.tingkat; if (tg?.length === 4) TINGKAT = tg.map(x => [x.nama, x.warna]);
   if (kec?.kec?.length) { const pk = await opsi(B + "pusat_kec.json"); if (pk) Object.assign(S, {kec, kecKunci: Object.keys(pk), kecPusat: Object.values(pk)}); }
   if (gel?.titik?.length) S.gel = gel;
@@ -82,6 +93,7 @@ async function muatTambahan() {
   if (sar && dmp && (dmp.pelabuhan?.length || dmp.bandara?.length)) S.sar = sar;
   if (ver && (ver.bmkg || ver.kita)) S.ver = ver;
   S.dmp = dmp;
+  await kej; isiTab();
 }
 async function muatData() {
   const tambahan = muatTambahan();

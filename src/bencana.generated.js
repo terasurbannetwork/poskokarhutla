@@ -487,6 +487,7 @@ export default {
         "insight",
         "berita",
         "tren",
+        "kejadian",
         "dampak",
         "simulasi",
         "foto",

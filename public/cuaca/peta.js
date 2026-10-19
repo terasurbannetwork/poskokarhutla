@@ -13,7 +13,8 @@ function kotak(fitur) { let a = [180, 90, -180, -90];
   fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
 const MEDAN_KOR = [[94.5, 6.5], [141.5, 6.5], [141.5, -11.5], [94.5, -11.5]]; /* kotak gambar hujan: barat laut, timur laut, tenggara, barat daya */
 const sevWarna = s => WARNA_SEV[s] || SEV_ASAL;
-const pilSev = s => `<span class="pl" style="--w:${sevWarna(s)}" translate="no">${esc(s)}</span>`;
+const SEV_ID = {Minor: "Ringan", Moderate: "Sedang", Severe: "Berat", Extreme: "Ekstrem"};   /* tingkat CAP BMKG dalam bahasa Indonesia, satu tabel untuk tabel dan laci */
+const pilSev = s => `<span class="pl" style="--w:${sevWarna(s)}">${esc(SEV_ID[s] || s)}</span>`;
 const pilGel = i => `<span class="pl" style="--w:${GEL[i][3]}">${GEL[i][1]}</span>`;
 
 const Peta = {
@@ -55,7 +56,7 @@ const Peta = {
     peta.addLayer({id: "ens", type: "circle", source: "ens", layout: {visibility: S.mode === "ens" ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
-    Status.pasang(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
+    Status.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
   gambarMedan() {
@@ -129,12 +130,12 @@ const Peta = {
 let panelMode = "nc";
 const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
 const Laci = {
-  buka(ey, judul, meta, isi) { const el = $("#laci");
+  buka(ey, judul, meta, isi) { const el = $("#laci"); Kejadian.bersih();   /* laci lain terbuka: lapisan dan tautan kejadian dilepas (Kejadian.laci menahan lewat _buka) */
     el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta"><span>${meta}</span></div>` : ""}</div>
       <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="bd" style="display:grid;gap:10px">${isi}</div>`;
     if (el._tarik) el.appendChild(el._tarik);
     el.classList.add("on"); el.querySelector(".tutup").onclick = () => Laci.tutup(); },
-  tutup() { $("#laci").classList.remove("on"); S.pilih = null; renderCrumb(); },
+  tutup() { $("#laci").classList.remove("on"); S.pilih = null; Kejadian.bersih(); renderCrumb(); },
 };
 /* crumb seperti karhutla/banjir: pil "Indonesia" di luar kartu; peringatan yang dibuka jadi pil kedua dengan tombol Rincian */
 function renderCrumb() {

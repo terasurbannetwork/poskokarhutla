@@ -152,7 +152,7 @@ const Lapis = {
   pasangIa(k) {
     if (this.ia[k]) return; this.ia[k] = 1;
     const T = {
-      "abu-isi": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>Skenario jam ke-${fmt(p.jam)}, bukan VAAC</small>`, stat: [["angin", km5(p.km) + " km", "jangkauan"], ["mata", arahMata(p.arah), "ke arah"]]}),
+      "abu-isi": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>Skenario jam ke-${fmt(p.jam)}, bukan prakiraan</small>`, stat: [["angin", km5(p.km) + " km", "jangkauan"], ["mata", arahMata(p.arah), "ke arah"]]}),
       "bandara-titik": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>${esc(p.iata)} · ${esc(p.icao)}</small>`, stat: p.kena ? [["bel", "jam ke-" + fmt(p.jam), "abu tiba (skenario)", W_KENA, true]] : []}),
       "sekolah-titik": p => ({judul: `<span translate="no">${esc(p.nama)}</span>`, sub: `<small>${p.jenis === "faskes" ? "Fasilitas kesehatan" : "Sekolah"} · KRB ${esc(p.zona)} · ${esc(p.gn)}</small>`, stat: p.km != null ? [["peringatan", fmt(p.km) + " km", "dari kawah"]] : []}),
       "rute-garis": p => ({judul: "Rute evakuasi", sub: `<small>${p.cad ? "dari desa KRB I terdekat (cadangan)" : "dari desa KRB III dan II"}</small>`, stat: []}),
@@ -190,7 +190,7 @@ function legendaBaru() {
   const L = k => Peta.lihat(k); let h = "";
   if (L("abu")) { const f = Lapis.info, j = S.jamAbu;
     const ket = !f ? "memuat…" : f.n ? `${fmt(f.n)} gunung: awan di atas ambang menjangkau sampai ${km5(f.maks.km)} km ke arah ${arahMata(f.maks.arah)}` : `Di bawah ambang penerbangan 2 mg/m³ pada jam ke-${fmt(j)}, bukan berarti tanpa abu`;
-    h += `<div class="lbl">Jejak abu 2 mg/m³ <span class="pl" style="--w:${W_ABU}">skenario Pantau Bencana, bukan VAAC</span></div>
+    h += `<div class="lbl">Jejak abu 2 mg/m³ <span class="pl" style="--w:${W_ABU}">${TXT_SKEN}</span></div>
       <div class="seg penuh" role="group" aria-label="Jam sejak erupsi" id="jamSeg" style="box-shadow:none;margin:4px 0">${JAM_ABU.map(x => `<button data-jam="${x}" aria-pressed="${x === j}">${x} jam</button>`).join("")}</div>
       <div class="leg" style="margin:4px 0 8px"><span>${sw(W_ABU)}${ket}</span></div>`; }
   if (L("bandara")) h += `<div class="lbl">Bandara</div><div class="leg" style="margin:4px 0 8px"><span>${sw(W_KENA, 1)}di jalur abu</span><span>${sw(W_BAND, 1)}lainnya</span></div>`;
@@ -240,7 +240,7 @@ const Detail = {
     const J = ga.jejak_maks !== undefined ? ga.jejak_maks : ga.jejak.filter(jejakOk).sort((a, b) => b.jangkau_km - a.jangkau_km)[0], B = (ga.bandara || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba);
     const awan = J ? `awan abu di atas ambang penerbangan 2 mg/m³ menjangkau sampai ${Kartu.hl(km5(J.jangkau_km) + " km")} ke arah ${arahMata(J.arah_deg)}, terjauh pada jam ke-${fmt(J.jam)}` : `abu tetap ${Kartu.hl("di bawah ambang penerbangan 2 mg/m³")} selama 72 jam, bukan berarti tanpa abu`;
     const band = B.length ? `bandara di jalurnya: ${B.slice(0, 3).map(b => `<span translate="no">${esc(b.nama)}</span> (${esc(b.iata || b.icao)}) tiba jam ke-${Kartu.hl(fmt(b.jam_tiba))}`).join(", ")}` : J ? "tidak ada bandara di jalurnya" : "";
-    return lipat("Skenario abu 72 jam", `<p><span class="pl" style="--w:${W_ABU}">skenario Pantau Bencana, bukan VAAC</span></p><p class="dl-kal">Bila meletus sekarang dengan kolom ${fmt(ga.kolom_m / 1000)} km di atas puncak, ${awan}${band ? "; " + band : ""}.</p>
+    return lipat("Skenario abu 72 jam", `<p><span class="pl" style="--w:${W_ABU}">${TXT_SKEN}</span></p><p class="dl-kal">Bila meletus sekarang dengan kolom ${fmt(ga.kolom_m / 1000)} km di atas puncak, ${awan}${band ? "; " + band : ""}.</p>
       <p class="rek-sumber">Tinggi kolom: ${esc(ga.kolom_sumber || "asumsi")} · angin ECMWF IFS lewat Open-Meteo</p>`); },
   sPaparan(pg) {
     if (!pg) return "";

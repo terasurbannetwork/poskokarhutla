@@ -24,10 +24,12 @@ const Grafik = {
 };
 const BNPB = {kejadian: ["Kejadian", "kejadian"], terdampak: ["Terdampak", "jiwa"], mengungsi: ["Mengungsi", "jiwa"], rumah_rusak: ["Rumah rusak", "rumah"], meninggal: ["Meninggal", "jiwa"]};
 const SUMBER_BNPB = "BNPB dan DIBI BNPB";
+const BLN_PENUH = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const MUSIM_ONI = {DJF: "Des sampai Feb", JFM: "Jan sampai Mar", FMA: "Feb sampai Apr", MAM: "Mar sampai Mei", AMJ: "Apr sampai Jun", MJJ: "Mei sampai Jul", JJA: "Jun sampai Agu", JAS: "Jul sampai Sep", ASO: "Agu sampai Okt", SON: "Sep sampai Nov", OND: "Okt sampai Des", NDJ: "Nov sampai Jan"};
 
 const Tren = {
   st: {rentang: "30", bnpb: "kejadian"}, T: {provinsi: {urut: "hari", turun: true, hal: 0}},
-  R: undefined, D: undefined,
+  R: undefined, D: undefined, M: undefined,
   hari() { const N = +this.st.rentang; return Object.keys(this.R.tgl).sort().slice(-N); },
   tampilSeg: () => Tren.R && Object.keys(Tren.R.tgl).length > 14,
 
@@ -71,15 +73,35 @@ const Tren = {
     const ada = Object.keys(BNPB).filter(k => th.some(t => N[t][k] != null)); if (!ada.length) return "";
     if (!ada.includes(this.st.bnpb)) this.st.bnpb = ada[0];
     const k = this.st.bnpb, [nm, sat] = BNPB[k], v = t => N[t][k] ?? 0, akhir = th.at(-1), pk = th.reduce((a, t) => v(t) > v(a) ? t : a, th[0]), ber = akhir >= String(new Date().getFullYear());
-    return this.kartu("Per tahun", `${Kartu.hl(fmt(v(pk)) + " " + sat)} ${nm.toLowerCase()} akibat cuaca ekstrem pada ${Kartu.hl(pk)}, tertinggi sejak ${th[0]}${ber ? ` (${akhir} belum penuh)` : ""}`,
+    return this.kartu("Per tahun", `${Kartu.hl(fmt(v(pk)) + " " + sat)}${k === "kejadian" ? "" : " " + nm.toLowerCase()} akibat cuaca ekstrem pada ${Kartu.hl(pk)}, tertinggi sejak ${th[0]}${ber ? ` (${akhir} belum penuh)` : ""}`,
       Grafik.kolom({cat: th.map(t => "'" + String(t).slice(2)), seri: [[nm, "#7d8ca3"]], nilai: th.map(t => [v(t)]), aria: nm + " per tahun",
         tip: i => `<b>${th[i]}${ber && th[i] === akhir ? " (berjalan)" : ""}</b><br>${nm}: ${fmt(v(th[i]))} ${sat}`}),
       `${SUMBER_BNPB}, ${th[0]} sampai ${akhir}; hanya angka yang tercatat`, Kartu.seg("bnpb", ada.map(x => [x, BNPB[x][0]]), this.st)); },
 
+  /* kalender bulanan: kejadian cuaca dan gelombang ekstrem DIBI di satu tahun penuh (cuaca_musim.json, scripts/cuaca/musim.py). Tanpa klaim musim: satu tahun, dan DIBI telat lapor */
+  exMusim() {
+    const M = this.M?.bulan; if (!M) return "";
+    const c = M.cuaca, g = M.gelombang, tot = c.map((v, i) => v + g[i]), N = tot.reduce((a, b) => a + b, 0), th = this.M.tahun_bulan; if (!N) return "";
+    const pk = tot.indexOf(Math.max(...tot)), ur = tot.map((v, i) => i).sort((a, b) => tot[b] - tot[a]), nama = i => BLN_PENUH[i];
+    return this.kartu("Kalender musim", `${Kartu.hl(nama(pk) + " " + th)} bulan terbanyak kejadian cuaca dan gelombang ekstrem (${Kartu.hl(fmt(tot[pk]))}), disusul ${nama(ur[1])} (${fmt(tot[ur[1]])})`,
+      Grafik.kolom({cat: Grafik.BLN, seri: [["Cuaca ekstrem", "#c99a1e"], ["Gelombang ekstrem", "#3f7fb8"]], nilai: c.map((v, i) => [v, g[i]]), aria: "Kejadian cuaca ekstrem per bulan",
+        tip: i => `<b>${nama(i)} ${th}</b><br>Cuaca ekstrem: ${fmt(c[i])} kejadian<br>Gelombang ekstrem: ${fmt(g[i])} kejadian`}),
+      `${SUMBER_BNPB}, tahun ${th} saja (2024 tidak lengkap, 2026 belum lengkap); hanya yang dilaporkan, pelaporan sering terlambat`, "", [["#c99a1e", "cuaca ekstrem"], ["#3f7fb8", "gelombang ekstrem"]]); },
+  /* ENSO: kejadian cuaca dan gelombang ekstrem per tahun, diwarnai fase ENSO tahun itu (rata-rata ONI setahun, NOAA CPC); hanya mempertemukan dua deret, tidak menilai sebab */
+  exEnso() {
+    const T = this.M?.tahun, th = T && Object.keys(T).sort(); if (!th || th.length < 5) return "";
+    const FASE = [["El Niño", "#c9503a"], ["Netral", "#9aa4b2"], ["La Niña", "#3f7fb8"]], pk = th.reduce((a, t) => T[t].n > T[a].n ? t : a, th[0]), K = this.M.kini || {}, o = K.oni;
+    const f2 = v => (v > 0 ? "+" : "") + v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2}), nEl = th.filter(t => T[t].fase === "El Niño").length;
+    return this.kartu("ENSO", `${Kartu.hl(fmt(T[pk].n) + " kejadian")} cuaca dan gelombang ekstrem pada ${Kartu.hl(pk)} (${T[pk].fase}), tertinggi sejak ${th[0]}${K.status && o ? `; ENSO kini ${Kartu.hl(K.status)}, ONI ${f2(o.nilai)} (${MUSIM_ONI[o.musim] || o.musim} ${o.tahun})` : ""}`,
+      Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Kejadian cuaca ekstrem per tahun menurut fase ENSO",
+        tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} kejadian<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}`}),
+      `${SUMBER_BNPB} ${th[0]} sampai ${th.at(-1)}; ONI NOAA CPC rata-rata setahun kalender (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang); jumlah tercatat juga naik karena pelaporan makin lengkap`,
+      "", FASE.map(([f, w]) => [w, f])); },
+
   segRentang() { return this.tampilSeg() ? Kartu.seg("rentang", [["14", "14 hari"], ["30", "30 hari"], ["90", "90 hari"]], this.st) : ""; },
   kartu(ey, judul, isi, sumber, ctl = "", leg = null) { return Kartu.kartu(`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[this.IKON[ey]] || ""}</svg>${ey}`, judul, isi, sumber, ctl, leg); },
-  IKON: {"Hujan lebat": "hujan", Angin: "angin", Provinsi: "provinsi", "Per tahun": "ansambel"},
-  EX: ["hujan", "angin", "provinsi", "bnpb"],
+  IKON: {"Hujan lebat": "hujan", Angin: "angin", Provinsi: "provinsi", "Per tahun": "ansambel", "Kalender musim": "peluang", ENSO: "siklon"},
+  EX: ["hujan", "angin", "provinsi", "bnpb", "musim", "enso"],
   gambar(id) { Kartu._leg = null; try { return this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""; } catch (e) { console.error(e); return ""; } },
   tulis() { const el = $("#tren"), h = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.innerHTML = h; Grafik.gulir(el); },
@@ -90,8 +112,8 @@ const Tren = {
         const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return nanti(() => this.tulis()); }
         const pg = e.target.closest(".pgn-b[data-h]"); if (pg && !pg.disabled) { this.T.provinsi.hal = +pg.dataset.h; const box = pg.closest("[data-ex]"); return nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); }
         const th = e.target.closest("th button[data-k]"); if (th) { const st = this.T.provinsi, k = th.dataset.k; st.turun = st.urut === k ? !st.turun : true; st.urut = k; st.hal = 0; const box = th.closest("[data-ex]"); nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); } }); }
-    if (!this.R && !this.D) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren cuaca…</div>`;
-      [this.R, this.D] = await Promise.all([muatJSON("../banjir/data/cuaca_riwayat.json").catch(() => null), muatJSON("../banjir/data/cuaca_dampak.json").catch(() => null)]); }
+    if (!this.R && !this.D && !this.M) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren cuaca…</div>`;
+      [this.R, this.D, this.M] = await Promise.all([muatJSON("../banjir/data/cuaca_riwayat.json").catch(() => null), muatJSON("../banjir/data/cuaca_dampak.json").catch(() => null), muatJSON("../banjir/data/cuaca_musim.json").catch(() => null)]); }
     this.tulis();
     if (!el.textContent.trim()) el.innerHTML = `<div class="kosong">Data tren cuaca belum tersedia.</div>`; },
 };

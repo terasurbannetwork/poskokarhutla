@@ -168,7 +168,8 @@ const Insight = {
 
   /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;
-    try { const h = this["ex" + id[0].toUpperCase() + id.slice(1)](); if (!h) return "";
+    try { let h = this["ex" + id[0].toUpperCase() + id.slice(1)](); if (!h) return "";
+      if (id === "status" || id === "sarana") h = beriAmbang(h);   /* angka bergantung pada ambang tingkat kecamatan: pil hipotesis sampai teruji */
       return h.replace('<span class="ex-ey"></span>', `<span class="ex-ey"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[id]}</svg>${this.LABEL[id]}</span>`);
     } catch (e) { console.error(e); return ""; } },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); },

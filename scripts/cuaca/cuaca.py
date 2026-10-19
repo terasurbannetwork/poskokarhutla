@@ -112,7 +112,7 @@ def riwayat(lama, sel, hari, hari_ini, hitung_hari):
 
 LANGKAH = [("sarana", lambda m, pr, meta: m.main()), ("gelombang", lambda m, pr, meta: m.main()), ("prakiraan_kec", lambda m, pr, meta: m.main()),
            ("dampak_cuaca", lambda m, pr, meta: m.main(pr, meta)), ("medan", lambda m, pr, meta: m.main()), ("siklon", lambda m, pr, meta: m.main()),
-           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main())]
+           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main()), ("musim", lambda m, pr, meta: m.main())]
 
 
 def ringkas(kec, siklon):
