@@ -180,7 +180,8 @@ async function hitungRingkas(env, kini, dummy) {
   return {dibuat: kini, relawan: tot.n, siap_tugas: tot.siap ?? 0, bertugas: tugas.n, jam_kerja_jam: Math.round(jam.m / 60 * 10) / 10, sesi_sah: jam.sesi,
     per_provinsi: P.filter(p => p.tampil).sort((a, b) => b.n - a.n || (a.prov < b.prov ? -1 : 1)).map(p => ({prov: p.prov, nama: PROV[p.prov] || p.prov, n: p.n})),
     per_keahlian: Object.keys(KEAHLIAN).filter(k => N[k] >= (dummy ? 1 : K_AHLI)).sort((a, b) => N[b] - N[a] || (a < b ? -1 : 1)).map(k => ({keahlian: k, nama: KEAHLIAN[k], n: N[k]})),
-    kampus: baris(kampus).map(k => ({id: k.id, nama: k.nama, singkatan: k.singkatan, prov: k.prov, relawan: k.relawan}))};
+    /* jumlah per kampus juga k-anonim: kampus dengan < 5 pendaftar tampil tanpa angka (nama kampus mitra memang publik) */
+    kampus: baris(kampus).map(k => ({id: k.id, nama: k.nama, singkatan: k.singkatan, prov: k.prov, relawan: dummy || k.relawan >= K_SEL ? k.relawan : null}))};
 }
 async function ringkas(env, req, url, kini, ctx) {
   const konfig = {keahlian: KEAHLIAN, provinsi: PROV, golongan_darah: GOL_DARAH, turnstile: env.TURNSTILE_SITEKEY || null};

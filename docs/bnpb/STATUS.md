@@ -1,6 +1,6 @@
 # Status Ruang Koordinasi BNPB
 
-Ditulis 19 Okt 2026 di akhir kerja 12 jam. Rencana: `RENCANA-12-JAM.md`. Kontrak teknis: `ARSITEKTUR.md`.
+Ditulis 19 Okt 2026, diperbarui 20 Okt 2026 sesudah gelombang penyempurnaan. Rencana: `RENCANA-12-JAM.md`, `RENCANA-SEMPURNA-12-JAM.md`. Kontrak teknis: `ARSITEKTUR.md`.
 
 ## Yang sudah jadi
 
@@ -25,11 +25,34 @@ M8 (pengungsi) dicoret pemilik.
 
 Halaman admin relawan, alun-alun, riset, dan meja punya 🧪 isi dummy / 🧹 hapus dummy (Super Admin); Berkas Gakkum tidak, karena hanya membaca data konsesi nyata. Dummy tidak pernah masuk angka publik.
 
+## Gelombang penyempurnaan (20 Okt 2026)
+
+| Butir | Hasil | Tempat |
+|---|---|---|
+| C1 integrasi | "Butuh bantuan" alun-alun diteruskan sekali klik menjadi permintaan relawan atau logistik; status tampil di utas publik tanpa data pribadi | `/admin/alun`, `src/alun.js` |
+| C2 pengingat | Antrean harian 07.40 WIB: MoU/PKS hampir habis, logistik >24 jam, DSP tanpa SPJ, renkon, rehab macet, stok rendah, bantuan terbuka >24 jam. Email hanya bila admin menekan kirim | `/admin/pengingat` |
+| C3 kapasitas dinamis | Relawan aktif per kab masuk indeks risiko (syarat ≥10 relawan dan ada jam sah; prioritas tetap pakai kapasitas statis supaya tidak bisa ditekan pendaftaran palsu) | `/api/relawan/kapasitas` (k-anonim: kab <5 orang dan keahlian <3 orang disembunyikan) |
+| C4 uji balik | Jujur: banjir/longsor dan gempa **belum** mengalahkan pembanding bermakna (gempa kalah dari peta bahaya InaRISK saja). Label per bahaya di layar; arsip potret harian untuk uji prospektif | `/risiko`, `risiko_ujibalik.json` |
+| C5 wilayah Lapor Warga | prov/kab per laporan (tabel samping 0027, isi mundur via cron), filter `?prov=`; tetap jalan bila 0027 belum diterapkan | `/api/warga` |
+| C6 uji layar | 59 uji otomatis Chrome headless: 19 halaman × 1440/390 + interaksi (termasuk luring dan Teruskan) | `npm run uji:layar` |
+| C7 institusi tunggal | Satu tabel institusi + perjanjian (MoU relawan, PKS riset) untuk relawan dan riset | tab Institusi di `/admin/relawan` dan `/admin/riset` |
+| C8 agregat | `meja_ringkas` menggantikan pemindaian 20.000 baris; disegarkan tiap tulis dan cron | `src/meja.js` |
+| C9 Turnstile | Siap pakai di relawan dan alun-alun; aktif begitu sitekey diisi | `public/bnpb/turnstile.js` |
+| C10 arsip sitrep | Arsip harian 07 WIB di R2 (agregat, tanpa teks/koordinat warga, retensi 400 hari, hapus per tanggal oleh moderator) | `/sitrep?tgl=` |
+| F1 Layar Pimpinan | Satu layar: situasi, prioritas dampak, rapor BPBD, tanda bahaya, relawan, alun-alun, kebutuhan, pengingat; cetak A4 | `/admin/pimpinan` |
+| F2 prioritas dampak | **Sebagian.** Daftar kecamatan naik kelas / sangat tinggi dengan bahaya harian aktif, × jiwa, + BPBD terdekat sudah ada. Antrean kiriman ke BPBD (admin menekan kirim) BELUM dibuat, dan pipeline jalan harian lewat lintas.yml, bukan tiap 6 jam | `/risiko` (Prioritas hari ini) |
+| F3 rehab-rekon | Meja baru tertaut kaji cepat: jitupasna → usulan → disetujui → cair → dibangun → selesai, tanda macet >60 hari | `/meja`, `/admin/meja` |
+| F4 stok gudang | Stok per gudang; logistik dikirim memotong stok secara atomik; koreksi hanya admin | `/meja`, `/admin/meja` |
+| F5 ekspor DIBI | CSV/JSON berkolom gaya DIBI dari kaji cepat (nama jenis bencana DIBI perlu dicek pemilik) | `/api/meja/ekspor` |
+| F6 luring | Antrean kiriman `/meja` dan check-in relawan saat sinyal hilang, kirim ulang otomatis, idempoten | `public/bnpb/antre.js` |
+
 ## Pengulas yang sudah lewat
 
 - `security-reviewer`: tanpa temuan kritis; temuan tinggi/sedang (anonimisasi UU PDP, koordinat peminta bantuan, akun gerbang membaca moderasi, oracle pendaftaran, luaran mitra tanpa persetujuan) sudah dibetulkan dan diuji.
 - `guard-api`: semua rute bergerbang; jalur 500 dan cache yang bisa dibobol sudah dibetulkan.
-- `migrasi-idempoten`: 0022–0026 bersih, aman diterapkan ke D1 produksi berisi data.
+- `migrasi-idempoten` dan `guard-api`: 0022–0028 bersih (hanya CREATE IF NOT EXISTS), aman diterapkan ke D1 produksi berisi data.
+- `validasi-model`: uji balik dirombak supaya jujur (seri dipecah netral, vonis wajib mengalahkan semua pembanding bermakna), kebutuhan musim tampil sebagai rentang.
+- Gelombang 2: `security-reviewer` (k-anonimitas kapasitas, arsip sitrep agregat + retensi, stok hanya admin, laju email) dan `guard-api` dibetulkan; uji worker 461/461, gerbang 57/57, layar 59/59.
 - `inp-reviewer`: dua handler berat (risiko, kebutuhan) dipindah sesudah frame tercat.
 - `selera-angka`: 15 temuan format/presisi, dibetulkan.
 
@@ -46,8 +69,9 @@ Halaman admin relawan, alun-alun, riset, dan meja punya 🧪 isi dummy / 🧹 ha
 
 ## Batas yang diketahui
 
-- Indeks risiko dan kebutuhan musim berlabel "belum diuji balik"; ambang kekeringan yang dipakai indeks risiko gagal uji balik (FAR 0,93).
-- Kapasitas di indeks risiko masih statis (jarak kantor BPBD); posko/relawan/Destana dari D1 belum masuk skor.
-- Lapor Warga tidak punya kolom provinsi, jadi sitrep per provinsi menampilkannya nasional.
-- Rapor BPBD dan ringkas Meja Kerja membaca maksimal 20.000 baris lalu menghitung di Worker (catatan `ponytail` di kode).
-- Data kampus mitra relawan dan mitra riset masih dua tabel terpisah.
+- Indeks risiko: uji balik komponen statis banjir/longsor dan gempa belum mengalahkan pembanding; bahaya harian (karhutla, gunung api, cuaca, kekeringan) belum teruji mundur (uji prospektif butuh ±44 hari potret). Ambang kekeringan gagal uji balik (FAR 0,93).
+- Kebutuhan musim: rentang lebar (skenario El Nino hanya 2 tahun data); tarif dan koefisien adalah asumsi kerja.
+- Sitrep per provinsi kini memakai wilayah Lapor Warga, setelah migrasi 0027 diterapkan.
+- Arsip sitrep masih memuat 5 judul utas "butuh bantuan" teratas; takedown utas tidak merambat otomatis (pakai hapus per tanggal).
+- Mode luring butuh halaman sudah pernah dibuka saat daring (tanpa service worker). Aksi stok tidak lewat antrean luring.
+- Uji layar butuh Chrome dan belum masuk CI.

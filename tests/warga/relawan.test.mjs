@@ -917,3 +917,9 @@ uji("keamanan 2: MoU habis atau belum mulai: koordinator tidak bisa menulis (403
   await U.DB.prepare("UPDATE institusi_perjanjian SET mulai = ?, berakhir = ? WHERE institusi_id = ?").bind(geser(-10), geser(200), k.j.id).run();
   const [a, b] = await Promise.all(tulis()); assert.equal(a.s, 200, a.t); assert.equal(b.s, 200, b.t);
 });
+
+uji("keamanan 2: jumlah relawan per kampus di ringkas publik ditekan bila < 5 (nama kampus tetap tampil)", async () => {
+  const r = await U.api("GET", "/api/relawan/ringkas");
+  assert.equal(r.s, 200);
+  for (const k of r.j.kampus) assert.ok(k.relawan === null || k.relawan >= 5, `${k.nama}: ${k.relawan}`);
+});

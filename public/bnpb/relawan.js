@@ -23,7 +23,7 @@
     kampus = d.kampus;
     $("kampusBlok").hidden = !d.kampus.length;
     $("kampusJudul").innerHTML = pil("p-kuning", "kampus", "Kampus mitra");
-    $("kampusDaftar").innerHTML = d.kampus.map(k => `<span class="bn-pil p-abu">${esc(k.singkatan ? k.singkatan + " · " : "")}${esc(k.nama)} · ${angka(k.relawan)} relawan</span>`).join("");
+    $("kampusDaftar").innerHTML = d.kampus.map(k => `<span class="bn-pil p-abu">${esc(k.singkatan ? k.singkatan + " · " : "")}${esc(k.nama)}${k.relawan == null ? "" : ` · ${angka(k.relawan)} relawan`}</span>`).join("");
   }
 
   /* ---- formulir ---- */
