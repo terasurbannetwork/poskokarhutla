@@ -9,7 +9,7 @@ const Posko = (() => {
   function batang(rows) {
     const W = 940, L = innerWidth < 640 ? 110 : 190, rh = 28, mx = Math.max(1, ...rows.map(r => r.v)), X = v => v / mx * (W - L - 90);
     return `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Kebutuhan tangki air per provinsi">${rows.map((r, i) => { const y = i * rh;
-      return `<g><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="13" font-weight="600">${esc(r.n)}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(r.v))}" height="${rh - 10}" rx="3" fill="#1d6fa5" data-tip="${r.tip}"/><g class="gf" style="--i:${i}">${Kartu.pil(L + X(r.v) + 8, y + 3, fmt(r.v), "#1d6fa5")[0]}</g></g>`; }).join("")}</svg>`; }
+      return `<g><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="13" font-weight="600">${esc(r.n)}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(r.v))}" height="${rh - 10}" rx="3" fill="#1d6fa5" data-tip="${r.tip}"/><g class="gf" style="--i:${i}">${Kartu.pil(L + X(r.v) + 8, y + 3, fmt(r.v), "#1d6fa5", "#fff")[0]}</g></g>`; }).join("")}</svg>`; }
   function gambar() {
     const N = D.nasional, P = Object.entries(D.prov).sort((a, b) => b[1].tangki - a[1].tangki).slice(0, 12);
     const a = kartu("Posko air bersih", `${Kartu.hl(fmt(D.nasional.posko) + " posko")} di ${fmt(N.kab)} kabupaten/kota melayani ${Kartu.hl(jtP(N.jiwa) + " jiwa")} yang butuh sampai ${Kartu.hl(juta(N.liter) + " juta liter")} air sehari, setara ${Kartu.hl(fmt(N.tangki) + " rit tangki")} per hari`,

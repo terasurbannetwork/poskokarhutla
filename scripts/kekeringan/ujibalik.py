@@ -219,9 +219,10 @@ def vonis(per):
     k = KRITERIA_LAYAK
     f = lambda x: f"{x:.2f}".replace(".", ",")
     gagal = []
-    for lab, v in per.items():
-        if lab == "semua":
+    for lab0, v in per.items():
+        if lab0 == "semua":
             continue
+        lab = lab0.replace("..", " sampai ")
         if v["pod"] is None or v["pod"] < k["pod_min"]:
             gagal.append(f"{lab}: POD {f(v['pod']) if v['pod'] is not None else 'tak ada kejadian'} < {f(k['pod_min'])}")
         if v["far"] is None or v["far"] > k["far_maks"]:

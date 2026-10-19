@@ -311,8 +311,10 @@ async function dummy(env, req, kini) {
   const catat = (aksi, n) => env.DB.prepare("INSERT INTO audit_foto (waktu, moderator, aksi, target, alasan) VALUES (?, ?, ?, 'dummy', ?)").bind(kini, mod, aksi, `${n} baris`);
   if (b.o.aksi === "hapus") {
     const n = (await env.DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n;
-    const r = await env.DB.batch([env.DB.prepare("DELETE FROM foto_komentar WHERE dummy = 1"), env.DB.prepare("DELETE FROM foto WHERE dummy = 1"), catat("hapus_dummy", n)]);
-    return json({ok: true, foto: n, komentar: r[0].meta.changes});   // meta.changes foto ikut menghitung baris cascade
+    /* foto_aduan menunjuk target teks tanpa FK: tanpa baris ini tiap isi/hapus meninggalkan satu aduan yatim */
+    const r = await env.DB.batch([env.DB.prepare("DELETE FROM foto_aduan WHERE jenis = 'foto' AND target IN (SELECT id FROM foto WHERE dummy = 1)"),
+      env.DB.prepare("DELETE FROM foto_komentar WHERE dummy = 1"), env.DB.prepare("DELETE FROM foto WHERE dummy = 1"), catat("hapus_dummy", n)]);
+    return json({ok: true, foto: n, komentar: r[1].meta.changes});   // meta.changes foto ikut menghitung baris cascade
   }
   if (b.o.aksi !== "isi") return gagal(400, "aksi harus isi/hapus");
   const sudah = (await env.DB.prepare(`SELECT count(*) n FROM foto WHERE dummy = 1${ada ? " AND bencana = ?" : ""}`).bind(...(ada ? [ben] : [])).first()).n;

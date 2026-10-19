@@ -188,6 +188,9 @@
       const r = await fetch(`${API}/${id}`, {credentials: "same-origin"});
       if (!r.ok) { d.innerHTML = `<div class="fl-r-isi"><button class="fl-x" data-tutup aria-label="Tutup">×</button><div class="fl-kosong"><b>Foto tidak ditemukan</b><p>Mungkin sudah dihapus atau belum disetujui.</p></div></div>`; return; }
       const f = await r.json(); this.f = f; d.innerHTML = this.html(f);
+      if (f.contoh) fetch(`/img/dummy/${BEN === "karhutla" ? "" : BEN + "/"}kredit.json`).then(x => x.json()).then(ks => {   // lisensi BY/BY-SA: foto contoh Commons tampil dengan kreditnya
+        const k = ks[parseInt(f.id.slice(-2), 16) % ks.length], info = d.querySelector(".fl-info"); if (!k || !info) return;
+        info.insertAdjacentHTML("beforeend", `<div><dt>${IK.galeri}Foto contoh</dt><dd><a href="${esc(k.sumber)}" target="_blank" rel="noopener">${esc(k.judul.replace(/^File:/, ""))}</a> · ${esc(k.penulis || k.pembuat || "")} · ${esc(k.lisensi)}</dd></div>`); }).catch(() => {});
     },
     html(f) {
       const [k, w] = KAT[f.kategori] || KAT.lainnya;

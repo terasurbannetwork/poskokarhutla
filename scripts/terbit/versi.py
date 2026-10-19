@@ -6,6 +6,7 @@
    string JS lain atau di HTML di luar tag yang sudah diberi versi, mis. "bagikan.css" yang dimuat bagikan.js) -> max-age 1 tahun,
    immutable. _headers mencocokkan jalur tanpa kueri, jadi berkas yang juga dimuat tanpa ?v tidak boleh immutable (bisa basi
    setahun); berkas itu tetap pakai bawaan Cloudflare (revalidasi ETag). Halaman HTML -> no-cache.
+   Aturan digabung per pola ("/*.html", "/folder/*.js") supaya jauh di bawah batas 100 aturan Cloudflare.
 
 Idempoten: ?v lama diganti, blok _headers lama dibuang dulu.
 Pakai:  python3 scripts/terbit/versi.py [akar_public]  |  ... uji
@@ -60,19 +61,35 @@ def jalan(akar=AKAR, maks=100):
     hp = os.path.join(akar, "_headers")
     lama = open(hp, encoding="utf-8").read() if os.path.exists(hp) else ""
     lama = lama.split("\n" + TANDA)[0].rstrip("\n")
-    # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). No-cache halaman wajib; immutable cuma optimasi,
-    # jadi yang dibuang immutable berkas terkecil dulu. ponytail: per berkas; gabung per folder kalau sisa jatahnya terlalu sempit.
-    jatah = maks - sum(1 for b in lama.splitlines() if b.startswith("/")) - len(halaman)
-    if len(abadi) > jatah:
-        abadi = sorted(sorted(abadi, key=lambda w: -os.path.getsize(os.path.join(akar, w.lstrip("/"))))[:max(jatah, 0)])
+    # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). Satu splat per pola (dokumen resmi: "/dir/*.js" sah).
+    # Halaman: satu aturan "/*.html" (jalur "/x/" tanpa nama berkas tidak kena, sama seperti aturan per-berkas lama).
+    # Immutable: pola "/folder/*.ext" dipakai bila SEMUA berkas berekstensi itu di bawah folder tsb memang immutable; kalau ada
+    # satu yang dinamis, folder itu turun ke aturan per berkas (cache-nya tetap sama persis, hanya aturannya lebih banyak).
+    semua = [("/" + os.path.relpath(os.path.join(d, f), akar).replace(os.sep, "/"))
+             for d, _, fs in os.walk(akar) for f in fs]
+    ada, pola_abadi, sisa_abadi = set(abadi), [], set(abadi)
+    for web in sorted(abadi, key=lambda w: w.count("/")):
+        if web not in sisa_abadi:
+            continue
+        ujung, bagian = os.path.splitext(web)[1], web.split("/")[:-1]
+        for n in range(1, len(bagian) + 1):               # dari akar ke dalam: pola terluas yang sah menang
+            dasar = "/".join(bagian[:n])
+            pola = f"{dasar}/*{ujung}"
+            kena = [w for w in semua if w.startswith(dasar + "/") and w.endswith(ujung)]
+            if all(w in ada for w in kena):
+                pola_abadi.append(pola); sisa_abadi -= set(kena)
+                break
     blok = [TANDA]
-    for w in abadi:
+    for w in sorted(pola_abadi) + sorted(sisa_abadi):
         blok += [w, "  Cache-Control: public, max-age=31536000, immutable"]
-    for w in sorted(halaman):
-        blok += [w, "  Cache-Control: no-cache"]
+    if halaman:
+        blok += ["/*.html", "  Cache-Control: no-cache"]
+    jumlah = sum(1 for b in lama.splitlines() if b.startswith("/")) + sum(1 for b in blok if b.startswith("/"))
+    if jumlah > maks:
+        sys.exit(f"versi.py: _headers {jumlah} aturan > {maks} (batas Cloudflare); gabung aturan tulisan tangan di public/_headers")
     open(hp, "w", encoding="utf-8").write(lama + "\n\n" + "\n".join(blok) + "\n")
     print(f"versi.py: {len(versi)} berkas diberi ?v, {len(abadi)} immutable, {len(versi) - len(abadi)} juga dimuat tanpa versi: "
-          f"{sorted(set(versi) - set(abadi))}; {len(halaman)} halaman no-cache")
+          f"{sorted(set(versi) - set(abadi))}; {len(halaman)} halaman no-cache; {jumlah} aturan")
     return versi, abadi
 
 
