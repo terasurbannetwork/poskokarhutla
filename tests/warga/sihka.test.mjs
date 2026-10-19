@@ -7,7 +7,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: sihka.js saling impor dengannya
-import {SQL_BACA} from "../../src/sihka.js";
+import {SQL_BACA, SQL_DASAR, SQL_HAPUS_LAMA, SQL_HAPUS_BACA_POS} from "../../src/sihka.js";
 
 const FIX = readFileSync(path.join(AKAR, "tests/warga/fixtures/sihka_telemetry.json"), "utf8");
 const K = Date.parse("2026-10-19T09:23:00Z"), k = K / 1000, K2 = Date.parse("2026-10-19T20:23:00Z"), k2 = K2 / 1000;   // menit 23: jam biasa, lalu 20 UTC (harian)
@@ -182,7 +182,7 @@ uji("dasar harian (20 UTC): persentil nearest-rank SQL = hitungan JS pada deret 
   await bersihSemua();
   await DB.batch([pos("S-d", "cm"), ...seri("S-d", nilai, akhir),
     baca("S-d", k2 - 181 * 86400, 7), baca("S-d", k2 - 100 * 86400, 8),   // 181 hari: dibuang; 100 hari: tetap ada (di luar jendela dasar tapi dalam retensi)
-    DB.prepare("INSERT INTO sihka_pos (pos,nama,dilihat) VALUES ('S-tua','tua',?)").bind(k2 - 31 * 86400)]);
+    DB.prepare("INSERT INTO sihka_pos (pos,nama,dilihat) VALUES ('S-tua','tua',?)").bind(k2 - 31 * 86400), baca("S-tua", k2 - 40 * 86400, 5)]);
   isiSumber = FIX; panggilan = 0; await tik(K2);
   assert.equal(panggilan, 2, "tiap jam + tarikan harian sendiri");
   const dalam = waktu.map((t, i) => i).filter(i => waktu[i] > k2 - 90 * 86400 && waktu[i] <= k2 - 86400);
@@ -196,8 +196,36 @@ uji("dasar harian (20 UTC): persentil nearest-rank SQL = hitungan JS pada deret 
   assert.equal((await baris("SELECT count(*) n FROM sihka_baca WHERE pos = 'S-d' AND t = ?", k2 - 181 * 86400))[0].n, 0, "181 hari dibuang");
   assert.equal((await baris("SELECT count(*) n FROM sihka_baca WHERE pos = 'S-d' AND t = ?", k2 - 100 * 86400))[0].n, 1, "100 hari masih disimpan");
   assert.equal((await baris("SELECT count(*) n FROM sihka_pos WHERE pos = 'S-tua'"))[0].n, 0, "pos tak terlihat > 30 hari dibuang");
+  assert.equal((await baris("SELECT count(*) n FROM sihka_baca WHERE pos = 'S-tua'"))[0].n, 0, "bacaan pos itu ikut dibuang (tanpa yatim)");
   assert.ok((await baris("SELECT count(*) n FROM sihka_pos"))[0].n >= 30, "metadata pos dari tarikan harian");
   const sd = (await api()).j.pos.find(p => p.id === "S-d"); assert.ok(sd && sd.status);
+});
+
+uji("dasar: pos dihitung ulang sekali per siklus 14 hari (bucket dari id), pos tanpa baris dasar langsung; anggaran baca dan hapus tanpa pindai penuh", async () => {
+  await bersihSemua();
+  const POS = 50, HARI = 30, kini = k2 + 100 * 86400;
+  await DB.prepare(`WITH RECURSIVE p(i) AS (SELECT 1 UNION ALL SELECT i+1 FROM p WHERE i<${POS}) INSERT INTO sihka_pos (pos,nama,x,y,satuan,dilihat) SELECT 'q'||printf('%08x', (i*2654435761)%4294967296),'n',1,2,'cm',${kini} FROM p`).run();
+  await DB.prepare(`WITH RECURSIVE h(j) AS (SELECT 0 UNION ALL SELECT j+1 FROM h WHERE j<${HARI * 24 - 1}) INSERT INTO sihka_baca (pos,t,v) SELECT pos, ${kini} - 86400 - j*3600, 100 + (j*7)%23 FROM sihka_pos, h`).run();
+  const jendela = POS * (HARI * 24 - 24);   // t <= kini - 86400 dikecualikan: 24 bacaan per pos terakhir
+  const pertama = (await DB.prepare(SQL_DASAR).bind(kini).run()).meta;   // belum ada baris dasar: semua pos dihitung sekali
+  assert.equal((await baris("SELECT count(*) n FROM sihka_dasar"))[0].n, POS);
+  await DB.prepare("UPDATE sihka_dasar SET dihitung = 1, n = 9999").run();
+  let baca_ = 0, hitung = new Set();
+  for (let h = 1; h <= 14; h++) {   // satu siklus penuh: tiap pos tepat satu kali, tiap hari hanya sebagiannya
+    const m = (await DB.prepare(SQL_DASAR).bind(kini + h * 86400).run()).meta; baca_ += m.rows_read;
+    for (const r of await baris("SELECT pos FROM sihka_dasar WHERE n != 9999")) hitung.add(r.pos);
+  }
+  assert.equal(hitung.size, POS, "semua pos terhitung dalam satu siklus 14 hari");
+  assert.ok(baca_ <= 24 * jendela, `satu siklus ${baca_} baris baca untuk ${jendela} baris jendela (+ ~20x per pos yang dihitung)`);
+  assert.ok(pertama.rows_read / jendela > 5, "pembanding: dihitung semua sekaligus mahal (~20x)");
+  assert.ok(baca_ / 14 <= 2 * jendela, `rata-rata per hari ${baca_ / 14} <= 2x baris jendela ${jendela}`);
+  // hapus: seek per pos; baca ~ baris terhapus, bukan seluruh tabel
+  const tua = kini - 86400 - 20 * 86400, dihapus = (await baris("SELECT count(*) n FROM sihka_baca WHERE t < ?", tua))[0].n;
+  const h1 = (await DB.prepare(SQL_HAPUS_LAMA).bind(tua).run()).meta;
+  assert.equal(h1.changes, dihapus); assert.ok(h1.rows_read <= 2 * dihapus + POS * 10, `hapus membaca ${h1.rows_read} untuk ${dihapus} baris`);
+  const sisa = (await baris("SELECT count(*) n FROM sihka_baca"))[0].n;
+  const h2 = (await DB.prepare(SQL_HAPUS_BACA_POS).bind(kini + 1).run()).meta;   // semua pos "tak terlihat": semua bacaannya
+  assert.equal(h2.changes, sisa); assert.ok(h2.rows_read <= 2 * sisa + POS * 10);
 });
 
 uji("fixture jahat: 6000 raw, nama 1 MB, nilai 1e999, id angka/panjang, koordinat di luar Indonesia = dipotong atau ditolak; status tetap JSON sah", async () => {

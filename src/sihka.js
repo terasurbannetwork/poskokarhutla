@@ -9,7 +9,7 @@
    bila satuan diketahui, bila tidak v >= p95 dan kenaikan >= 2x p99) > tertinggi (v > rekor, >= 30 hari) > biasa. Dasar persentil tidak memuat 24 jam terakhir. */
 import {gagal, cacheTepi} from "./worker.js";
 
-const SUMBER = "https://sihka.dev-tunnels.id/api/v1s/telemetry-list", TIMEOUT_MS = 8000, MAKS_BYTE = 2e6, TAHAN_HARI = 180, DASAR_HARI = 90;   // bacaan mentah 180 hari (uji balik satu musim hujan); jendela dasar 90 hari
+const SUMBER = "https://sihka.dev-tunnels.id/api/v1s/telemetry-list", TIMEOUT_MS = 8000, MAKS_BYTE = 2e6, TAHAN_HARI = 180, DASAR_HARI = 90, DASAR_SIKLUS = 14;   // bacaan mentah 180 hari (uji balik satu musim hujan); jendela dasar 90 hari
 const UA = "pantaubencana-sihka/1.0 (+https://centurisk97.id; pemantauan banjir nonkomersial)";
 const SUMBER_TEKS = "Kementerian PU, Ditjen SDA (SIHKA)";
 
@@ -39,20 +39,28 @@ const SQL_POS = `INSERT INTO sihka_pos (pos, nama, x, y, satuan, tz, merek, dili
   LIMIT 1500
   ON CONFLICT(pos) DO UPDATE SET nama = excluded.nama, x = excluded.x, y = excluded.y, satuan = excluded.satuan, tz = excluded.tz, merek = excluded.merek, dilihat = excluded.dilihat`;
 
-/* kenaikan 3 jam = v - bacaan terdekat pada [t-3j-20mnt, t-3j+20mnt]. Persentil = peringkat terdekat (ceil(n*p/100)) lewat row_number; tanpa CPU Worker. */
+/* kenaikan 3 jam = v - bacaan terdekat pada [t-3j-20mnt, t-3j+20mnt]. */
 const REF = (pos, t, geser) => {   // tanpa ORDER BY yang merujuk kolom luar: SQLite di D1 menolaknya ("no such column") bila kolom luar berasal dari CTE
   const w = (x) => `${x}.pos = ${pos} AND ${x}.t BETWEEN ${t} - ${geser} - 1200 AND ${t} - ${geser} + 1200`;
   return `(SELECT a.v FROM sihka_baca a WHERE ${w("a")} AND abs(a.t - (${t} - ${geser})) = (SELECT min(abs(c.t - (${t} - ${geser}))) FROM sihka_baca c WHERE ${w("c")}) LIMIT 1)`;
 };
+/* Dasar: SATU lintasan per pos (tanpa subquery berkorelasi: itu 17 jt baris baca untuk 864 rb baris). Pembanding 3 jam = rata-rata bacaan di [t-3j20m, t-2j40m]
+   lewat window RANGE; NULL bila tak ada = bukan sampel. Biaya: ~20 baris baca per baris jendela (window + dua sortir), jadi pos hanya dihitung ulang sekali tiap DASAR_SIKLUS (14) hari (bucket dari id, digeser per hari); pos tanpa baris dasar langsung. Jendela dihitung (t-90h, t-1h]; 3j20m sebelum batas bawah hanya dibaca sebagai pembanding. */
 export const SQL_DASAR = `INSERT OR REPLACE INTO sihka_dasar (pos, n, d3_p50, d3_p99, v_p95, v_max, hari, dihitung)
-  WITH b AS (SELECT pos, t, v FROM sihka_baca WHERE pos IN (SELECT pos FROM sihka_pos) AND t > ?1 - ${DASAR_HARI} * 86400 AND t <= ?1 - 86400),
-  
-  dr AS (SELECT pos, d3, row_number() OVER (PARTITION BY pos ORDER BY d3) rn, count(*) OVER (PARTITION BY pos) n
-    FROM (SELECT pos, v - ${REF("b.pos", "b.t", 10800)} d3 FROM b) WHERE d3 IS NOT NULL),
+  WITH w AS (SELECT pos, t, v, v - avg(v) OVER (PARTITION BY pos ORDER BY t RANGE BETWEEN 12000 PRECEDING AND 9600 PRECEDING) d3
+    FROM sihka_baca WHERE pos IN (SELECT pos FROM sihka_pos WHERE pos NOT IN (SELECT pos FROM sihka_dasar)
+      OR (unicode(substr(pos, -1)) * 31 + unicode(substr(pos, -2, 1))) % ${DASAR_SIKLUS} = (?1 / 86400) % ${DASAR_SIKLUS})
+    AND t > ?1 - ${DASAR_HARI} * 86400 - 12000 AND t <= ?1 - 86400),
+  b AS (SELECT pos, t, v, d3 FROM w WHERE t > ?1 - ${DASAR_HARI} * 86400),
+  dr AS (SELECT pos, d3, row_number() OVER (PARTITION BY pos ORDER BY d3) rn, count(*) OVER (PARTITION BY pos) n FROM b WHERE d3 IS NOT NULL),
   dp AS (SELECT pos, max(n) n, max(CASE WHEN rn = (n * 50 + 99) / 100 THEN d3 END) p50, max(CASE WHEN rn = (n * 99 + 99) / 100 THEN d3 END) p99 FROM dr GROUP BY pos),
   vr AS (SELECT pos, t, v, row_number() OVER (PARTITION BY pos ORDER BY v) rn, count(*) OVER (PARTITION BY pos) n FROM b),
   vp AS (SELECT pos, max(CASE WHEN rn = (n * 95 + 99) / 100 THEN v END) p95, max(v) vmax, (max(t) - min(t)) / 86400.0 hari FROM vr GROUP BY pos)
   SELECT vp.pos, coalesce(dp.n, 0), dp.p50, dp.p99, vp.p95, vp.vmax, vp.hari, ?1 FROM vp LEFT JOIN dp ON dp.pos = vp.pos`;
+
+/* Hapus tanpa pindai penuh (seek PK per pos): bacaan lama; bacaan pos yang akan dibuang (dilihat < ?) dulu, baru barisnya. SQL_BACA hanya menerima pos terdaftar, jadi tak ada yatim. */
+export const SQL_HAPUS_LAMA = "DELETE FROM sihka_baca WHERE pos IN (SELECT pos FROM sihka_pos) AND t < ?";
+export const SQL_HAPUS_BACA_POS = "DELETE FROM sihka_baca WHERE pos IN (SELECT pos FROM sihka_pos WHERE dilihat < ?)";
 
 /* lantai kenaikan setara 20 cm hanya untuk satuan yang diketahui (cm/m/mm); satuan lain/NULL tanpa lantai */
 const LANTAI = `CASE lower(u.satuan) WHEN 'cm' THEN 20.0 WHEN 'centimeter' THEN 20.0 WHEN 'm' THEN 0.2 WHEN 'meter' THEN 0.2 WHEN 'mm' THEN 200.0 ELSE NULL END`;
@@ -121,8 +129,11 @@ export async function dasarSihka(env, kini = Date.now()) {
   let teks; try { teks = await tarik(); } catch (e) { return {galat: e.message}; }
   await env.DB.prepare(SQL_POS).bind(teks, detik).run();
   await env.DB.prepare(SQL_DASAR).bind(detik).run();
-  const buang = (await env.DB.prepare("DELETE FROM sihka_baca WHERE t < ?").bind(detik - TAHAN_HARI * 86400).run()).meta.changes;
-  const pos = (await env.DB.prepare("DELETE FROM sihka_pos WHERE dilihat < ?").bind(detik - 30 * 86400).run()).meta.changes;
+  // tanpa pindai penuh: seek PK per pos terdaftar; bacaan pos yang akan dibuang dihapus dulu (SQL_BACA hanya menerima pos terdaftar, jadi tak ada yatim)
+  const buang = (await env.DB.prepare(SQL_HAPUS_LAMA).bind(detik - TAHAN_HARI * 86400).run()).meta.changes;
+  const hilang = detik - 30 * 86400;
+  await env.DB.prepare(SQL_HAPUS_BACA_POS).bind(hilang).run();
+  const pos = (await env.DB.prepare("DELETE FROM sihka_pos WHERE dilihat < ?").bind(hilang).run()).meta.changes;
   await bangunStatus(env, kini);
   return {buang, pos};
 }
