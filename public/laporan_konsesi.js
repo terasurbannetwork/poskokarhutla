@@ -735,7 +735,10 @@
   const hariSebelum = (t, k) => Array.from({length: k + 1}, (_, i) => new Date(Date.parse(t) - i * 864e5).toISOString().slice(5, 10));
   const pasangan = r => {
     const j = (CITJ[r.id] || []).map(c => { const h = hariSebelum(c.tgl, 14); return {d: c.tgl, c, jelas: true, hari: h, n: r.pt.filter(p => h.includes(p[2].slice(0, 5))).length}; });
-    const sisa = hariTop(r).filter(([d]) => !j.some(x => x.d === d)).map(([d, n]) => ({d, n, hari: [d.slice(5)], c: CIT[r.id]?.[d]}));
+    /* tanggal tanpa adegan Sentinel: pakai citra Sentinel konsesi ini yang terdekat (<= 10 hari) sebelum jatuh ke VIIRS; tanggal aslinya tetap di keterangan */
+    const semua = [...(CITJ[r.id] || []), ...Object.values(CIT[r.id] || {}).filter(Boolean)];
+    const dekat = d => semua.map(c => [Math.abs(Date.parse(c.tgl) - Date.parse(d)) / 864e5, c]).filter(([h]) => h <= 10).sort((a, b) => a[0] - b[0])[0]?.[1];
+    const sisa = hariTop(r).filter(([d]) => !j.some(x => x.d === d)).map(([d, n]) => ({d, n, hari: [d.slice(5)], c: CIT[r.id]?.[d] || dekat(d)}));
     return [...j, ...sisa].slice(0, 4).sort((a, b) => a.d.localeCompare(b.d));
   };
   /* 4 hari dengan titik terbanyak, urut tanggal */
