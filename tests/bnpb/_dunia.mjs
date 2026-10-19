@@ -12,7 +12,7 @@ const aset = async req => {
 };
 export async function buatDunia() {
   const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-    compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: "uji-layar"}, port: 0, host: "127.0.0.1",
+    compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: "uji-layar"}, r2Buckets: {MEDIA: "media-layar"}, port: 0, host: "127.0.0.1",
     bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji"},
     serviceBindings: {ASSETS: aset}, outboundService: () => new Response("diblok di uji", {status: 599}), cache: false});
   const base = (await mf.ready).origin;
@@ -26,7 +26,7 @@ export async function buatDunia() {
   /* urutan penting: dummy Alun-alun ikut menyisipkan baris Meja (logistik), sehingga dummy Meja yang diisi SESUDAH Alun-alun dijawab 409 (temuan, dilaporkan ke warga-api).
      Tiap modul diisi sendiri-sendiri: modul yang dummy-nya rusak melapor galatnya (uji halamannya gagal dengan sebab itu), modul lain tetap jalan */
   const galatIsi = {}, kode = {};
-  for (const m of ["meja", "relawan", "riset", "alun"]) { const r = await api("POST", `/api/${m}/dummy`, {aksi: "isi"}); if (r.s >= 300) galatIsi[m] = `POST /api/${m}/dummy ${r.s} ${r.t.slice(0, 160)}`; }
+  for (const m of ["meja", "relawan", "riset", "alun", "pengingat"]) { const r = await api("POST", `/api/${m}/dummy`, {aksi: "isi"}); if (r.s >= 300) galatIsi[m] = `POST /api/${m}/dummy ${r.s} ${r.t.slice(0, 160)}`; }
   /* kode pribadi nyata (kode dummy tidak bisa dipakai masuk): petugas Meja, relawan, koordinator kampus */
   const pt = await api("POST", "/api/meja/petugas", {nama: "Petugas Uji", prov: "64", kab: "Kutai Kartanegara", meja: ["kaji_cepat", "logistik", "gudang"]});
   kode.meja = pt.j?.kode; if (!kode.meja) galatIsi.meja_kode = `POST /api/meja/petugas ${pt.s} ${pt.t.slice(0, 160)}`;
@@ -36,7 +36,15 @@ export async function buatDunia() {
   const kp = (await api("GET", "/api/relawan/admin/institusi")).j?.institusi?.find(i => i.perjanjian?.length);
   const kb = kp && await api("POST", "/api/relawan/admin/institusi/" + kp.id, {aksi: "kode_baru"});
   kode.kampus = kb?.j?.kode; if (!kode.kampus) galatIsi.kampus_kode = `kode_baru institusi (kampus) ${kb?.s} ${kb?.t?.slice(0, 160)}`;
+  /* kode mitra riset nyata (kode dummy tidak bisa dipakai masuk): mitra baru pada institusi yang sudah ada */
+  const mt = kp && await api("POST", "/api/riset/admin/mitra", {institusi_id: kp.id, unit: "Unit Uji"});
+  kode.mitra = mt?.j?.kode; if (!kode.mitra) galatIsi.riset_mitra_kode = `POST /api/riset/admin/mitra ${mt?.s} ${mt?.t?.slice(0, 160)}`;
+  /* arsip sitrep lewat cron sungguhan: 00:05 UTC hari ini (= 07:05 WIB) memicu arsipkanSitrep, yang menulis ke R2 MEDIA */
+  const d0 = new Date(); const tglArsip = d0.toISOString().slice(0, 10);
+  try { await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: Date.UTC(d0.getUTCFullYear(), d0.getUTCMonth(), d0.getUTCDate(), 0, 5)}); } catch (e) { galatIsi.sitrep_arsip = "cron arsip: " + e.message; }
+  const ds = await api("GET", "/api/sitrep/arsip/daftar", null, {});
+  if (!ds.j?.tgl?.includes(tglArsip)) galatIsi.sitrep_arsip = `arsip ${tglArsip} tidak ada di R2 sesudah cron: ${ds.t.slice(0, 160)}`;
   /* cookie sesi admin = Super Admin (token rahasia-admin): format "exp.mod.hmac" milik src/statistik.js, ditandatangani SESI_KUNCI uji */
   const isi = `${Date.now() + 6 * 3600e3}.${sha256("rahasia-admin").slice(0, 12)}`, sesi = `${isi}.${createHmac("sha256", "kunci-sesi-uji").update(isi).digest("hex")}`;
-  return {mf, base, sesi, DB, api, kode, galatIsi, tutup: () => mf.dispose()};
+  return {mf, base, sesi, tglArsip, DB, api, kode, galatIsi, tutup: () => mf.dispose()};
 }
