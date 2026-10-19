@@ -99,20 +99,26 @@ function kartuBerantai(O) {
   return Kartu.kartu("Bencana berantai", jd, svg, "DIBI BNPB tiga tahun terakhir", "", [[MERAH, "Disusul bencana kedua dalam 30 hari"], ["currentColor", "Peluang kebetulan"]]);
 }
 
-/* ---------- 3b. Laporan kejadian otomatis: kab/kota yang menembus Siaga (scripts/umum/laporan_kejadian.py, index kejadian/1 per modul) */
-const MODUL_KJ = {banjir: "Banjir dan longsor", cuaca: "Cuaca ekstrem", udara: "Kualitas udara"}, WARNA_B = {banjir: "#4f9be0", cuaca: "#7d8ca3", udara: "#4a9d9c"};
+/* ---------- 3b. Laporan kejadian otomatis: kab/kota yang menembus Siaga (scripts/umum/laporan_kejadian.py, index kejadian/1 per modul).
+   Segmen saring per bencana + paginasi 10 baris (paginasi dari inti/tabel.js); kontrol urgent, isi kartu menyusul lewat nanti() */
+const MODUL_KJ = {banjir: "Banjir dan longsor", cuaca: "Cuaca ekstrem", udara: "Kualitas udara", kekeringan: "Kekeringan"};
+const WARNA_B = {banjir: "#4f9be0", cuaca: "#7d8ca3", udara: "#4a9d9c", kekeringan: "#c8892b"}, PER_KJ = 10;
 const tglP = t => { const d = new Date(t + "T12:00:00Z"); return `${d.getUTCDate()} ${BP[d.getUTCMonth()]}`; };
-function kartuKejadian(L) {
-  const a = L.filter(e => e.aktif), arsip = L.length - a.length;
+const pilStatus = e => !e.aktif ? `<span class="pl" style="--w:${ABU}">Selesai</span>` : e.tingkat === "awas" ? `<span class="pl" style="--w:#8f2d1f">Awas</span>` : `<span class="pl" style="--w:${MERAH}">Siaga</span>`;
+function kartuKejadian(L, st) {
   if (!L.length) return "";
+  const ada = Object.keys(MODUL_KJ).filter(m => L.some(e => e.modul === m)), F = st.b && ada.includes(st.b) ? L.filter(e => e.modul === st.b) : L;
+  const a = F.filter(e => e.aktif), arsip = F.length - a.length, hal = Math.min(st.hal, Math.max(0, Math.ceil(F.length / PER_KJ) - 1));
   /* kolom pembeda (bencana, status) di depan: tetap terlihat di layar sempit, provinsi di ujung */
-  const baris = L.map(e => `<tr><td><a href="${esc(e.url)}" translate="no">${esc(e.kab)}</a></td>
-    <td><span class="pl" style="--w:${WARNA_B[e.modul] || ABU}">${esc(MODUL_KJ[e.modul] || e.modul)}</span></td><td>${e.aktif ? `<span class="pl" style="--w:${MERAH}">Siaga</span>` : `<span class="pl" style="--w:${ABU}">Selesai</span>`}</td>
-    <td class="n">${esc(tglP(e.mulai))}</td><td class="n">${esc(tglP(e.terakhir))}</td><td>${esc(e.nilai)}</td><td>${esc(e.prov_nama || "")}</td></tr>`).join("");
-  const jd = a.length ? `${Kartu.hl(ang(a.length) + " kab/kota")} sedang Siaga dan punya laporan kejadian otomatis${arsip ? `, ${ang(arsip)} laporan lain sudah selesai` : ""}`
-    : `Tidak ada kab/kota Siaga hari ini; ${ang(arsip)} laporan kejadian terakhir masih bisa dibuka`;
-  return Kartu.kartu("Laporan kejadian", jd, `<div class="tw kj-tw"><table class="kj-tb"><thead><tr><th>Kab/kota</th><th>Bencana</th><th>Status</th><th class="n">Mulai</th><th class="n">Terakhir</th><th>Pemicu</th><th>Provinsi</th></tr></thead><tbody>${baris}</tbody></table></div>`,
-    "laporan harian modul banjir, cuaca, dan kualitas udara Pantau Bencana");
+  const baris = F.slice(hal * PER_KJ, hal * PER_KJ + PER_KJ).map(e => `<tr><td><a href="${esc(e.url)}" translate="no">${esc(e.kab)}</a></td>
+    <td><span class="pl" style="--w:${WARNA_B[e.modul] || ABU}">${esc(MODUL_KJ[e.modul] || e.modul)}</span></td><td>${pilStatus(e)}</td>
+    <td class="n">${e.mulai ? esc(tglP(e.mulai)) : "–"}</td><td class="n">${esc(tglP(e.terakhir))}</td><td>${esc(e.nilai)}</td><td>${esc(e.prov_nama || "")}</td></tr>`).join("");
+  const nb = st.b && ada.includes(st.b) ? ` ${esc(MODUL_KJ[st.b].toLowerCase())}` : "";
+  const jd = a.length ? `${Kartu.hl(ang(a.length) + " kab/kota")} sedang Siaga${nb} dan punya laporan kejadian otomatis${arsip ? `, ${ang(arsip)} laporan lain sudah selesai` : ""}`
+    : `Tidak ada kab/kota Siaga${nb} hari ini; ${ang(arsip)} laporan kejadian terakhir masih bisa dibuka`;
+  const seg = ada.length > 1 ? Kartu.seg("kjb", [["", `Semua (${ang(L.length)})`], ...ada.map(m => [m, `${MODUL_KJ[m]} (${ang(L.filter(e => e.modul === m).length)})`])], {kjb: st.b}) : "";
+  return Kartu.kartu("Laporan kejadian", jd, `<div class="tw kj-tw"><table class="kj-tb"><thead><tr><th>Kab/kota</th><th>Bencana</th><th>Status</th><th class="n">Mulai</th><th class="n">Terakhir</th><th>Pemicu</th><th>Provinsi</th></tr></thead><tbody>${baris}</tbody></table></div>${typeof paginasi === "function" ? paginasi(hal, F.length, PER_KJ, "laporan") : ""}`,
+    "laporan harian modul Pantau Bencana (banjir, cuaca, kualitas udara, kekeringan)", seg);
 }
 
 /* ---------- 4. Cara hitung dan batasan: satu blok terlipat */
@@ -127,21 +133,29 @@ function cara(I, O) {
 
 /* ---------- pasang */
 export async function pasangAnalisis(el) {
-  const [I, O, LJ, KB, KC, KU] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json"),
-    getJson("/banjir/data/kejadian/index-banjir.json"), getJson("/banjir/data/kejadian/index-cuaca.json"), getJson("/udara/data/kejadian/index-udara.json")]);
-  const KJ = [KB, KC, KU].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
+  const [I, O, LJ, KB, KC, KU, KK] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json"),
+    getJson("/banjir/data/kejadian/index-banjir.json"), getJson("/banjir/data/kejadian/index-cuaca.json"), getJson("/udara/data/kejadian/index-udara.json"),
+    getJson("/data/kejadian/index-kekeringan.json")]);
+  const KJ = [KB, KC, KU, KK].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || ((y.tingkat === "awas") - (x.tingkat === "awas")) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
   const iOk = I?.versi?.startsWith("iklim_outlook/") && I.prakiraan?.length, oOk = O?.versi?.startsWith("outlook12/") && O.tabel?.length;
-  const st = {musim: ""};
-  const isi = [kartuKejadian(KJ), iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
+  const st = {musim: ""}, kj = {b: "", hal: 0};
+  const isi = [KJ.length ? `<div id="kj-kartu">${kartuKejadian(KJ, kj)}</div>` : "", iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
   if (!isi.trim()) return;
   el.innerHTML = isi + cara(iOk ? I : null, oOk ? O : null);
   if (typeof pasangTip === "function") pasangTip();
-  el.addEventListener("click", e => { const b = e.target.closest("[data-set='musim']"); if (!b || !iOk) return;
+  el.addEventListener("click", e => {
+    const k = e.target.closest("#kj-kartu [data-set='kjb'], #kj-kartu .pgn-b[data-h]");
+    if (k) { if (k.disabled) return;
+      if (k.dataset.set) { k.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === k))); kj.b = k.dataset.v; kj.hal = 0; }   /* chrome urgent */
+      else kj.hal = +k.dataset.h;
+      return nanti(() => { $("#kj-kartu").innerHTML = kartuKejadian(KJ, kj); }); }                                                                   /* isi menyusul */
+    const b = e.target.closest("[data-set='musim']"); if (!b || !iOk) return;
     b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));       /* chrome urgent */
     st.musim = b.dataset.v;
     nanti(() => { const p = I.prakiraan.find(x => x.musim === st.musim); if (!p) return;                            /* isi menyusul */
       $("#ob-iklim").innerHTML = iklimIsi(I, p);
-      el.querySelector(".ex-leg").innerHTML = legIklim(I, p).map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("");
+      const kI = $("#ob-iklim").closest(".ex");
+      kI.querySelector(".ex-leg").innerHTML = legIklim(I, p).map(([w, n]) => `<span><i style="background:${w}"></i>${n}</span>`).join("");
       const n = p.wilayah.nasional.anom_pct, mirip = p.pembanding.slice(0, 3).map(x => x.tahun);
-      el.querySelector(".ex h3").innerHTML = `Hujan ${esc(rentang(p))} di Indonesia diperkirakan ${Kartu.hl(ang(Math.abs(n)) + "%")} ${n < 0 ? "di bawah" : "di atas"} normal, mirip ${mirip.slice(0, -1).join(", ")}, dan ${mirip.at(-1)}`; }); });
+      kI.querySelector("h3").innerHTML = `Hujan ${esc(rentang(p))} di Indonesia diperkirakan ${Kartu.hl(ang(Math.abs(n)) + "%")} ${n < 0 ? "di bawah" : "di atas"} normal, mirip ${mirip.slice(0, -1).join(", ")}, dan ${mirip.at(-1)}`; }); });
 }

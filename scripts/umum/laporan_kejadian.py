@@ -48,6 +48,26 @@ MODUL["banjir"]["kata"] = lambda kab, i: "; ".join(f"{_kec(kab, i, k):g} kecamat
 MODUL["cuaca"]["kata"] = lambda kab, i: f"{_kec(kab, i, 'kec'):g} kecamatan Siaga/Awas cuaca ekstrem"
 MODUL["udara"]["kata"] = lambda kab, i: (f"PM2,5 rata-rata 24 jam {kab['pm_jiwa'][i]:g} µg/m³ (model CAMS di titik kota), sangat tidak sehat ke atas" if (kab.get("pm_jiwa") or [None] * (i + 1))[i] is not None
                                          else "PM2,5 sangat tidak sehat ke atas")
+# kekeringan: status per kab adalah potret hari ini (kekeringan_wilayah.json, gabungan SPI-3 + kelembapan tanah), tidak ada arsip status harian
+MODUL["kekeringan"] = {"nama": "Kekeringan", "laporan": "public/data/kekeringan_laporan.json", "dir": "public/data", "pemicu": [],
+                       "jiwa": "jiwa31", "jiwa_judul": "Penduduk di HTH 31 hari atau lebih",
+                       "jiwa_ket": "Penduduk di sel dengan hari tanpa hujan 31 hari atau lebih (stok harian, WorldPop), bukan jumlah yang kekurangan air.",
+                       "sumber": [{"nama": "DIBI BNPB", "url": "https://dibi.bnpb.go.id", "catatan": "kejadian kekeringan untuk uji balik"}]}
+_WIL = {}
+
+
+def _status_kering(kab):
+    """(level, rekaman wilayah) kab hari ini dari kekeringan_wilayah.json; kunci 'prov|nama' sama dengan nama kab laporan kekeringan"""
+    if "kab" not in _WIL:
+        _WIL["kab"] = (_baca("public/data/kekeringan_wilayah.json") or {}).get("kab", {})
+    r = _WIL["kab"].get(f"{kab['prov']}|{kab['nama']}")
+    return ((r or {}).get("lv") or 0), r
+
+
+MODUL["kekeringan"]["status"] = _status_kering
+MODUL["kekeringan"]["kata"] = lambda kab, i, r=None: (f"Status {NL[(r or {}).get('lv') or 0]} (SPI-3 dan kelembapan tanah)"
+                                                      + (f", {rb(r['jiwa'][1])} jiwa di wilayah Siaga atau lebih" if r and r.get("jiwa") else ""))
+NL = {0: "Normal", 1: "Waspada", 2: "Siaga", 3: "Awas"}
 BATASAN_UMUM = ["Laporan ini dirakit otomatis dari data modul yang sudah terbit; tidak ada angka yang ditambahkan tangan.",
                 "Status Siaga adalah keluaran model Pantau Bencana, bukan penetapan status darurat oleh BNPB/BPBD."]
 
@@ -60,6 +80,11 @@ def _baca(rel):
         return None
 
 
+def rb(n):
+    """pemisah ribuan titik (format Indonesia), hanya pada angkanya: koma kalimat tidak ikut berubah"""
+    return format(n, ",").replace(",", ".")
+
+
 def tgl(h):
     d = dt.date.fromisoformat(h)
     return f"{d.day} {BLN[d.month - 1]}"
@@ -70,7 +95,10 @@ def norm(n):
 
 
 def pemicu_aktif(L, kab, spec):
-    """indeks hari terakhir dengan pemicu > 0 di jendela [hari_lengkap .. akhir], atau None"""
+    """indeks hari terakhir dengan pemicu > 0 di jendela [hari_lengkap .. akhir], atau None. Modul berstatus potret (spec["status"]):
+    level >= 2 hari ini -> indeks hari_lengkap"""
+    if "status" in spec:
+        return (L["hari"].index(L["hari_lengkap"]) if L.get("hari_lengkap") in L["hari"] else len(L["hari"]) - 1) if spec["status"](kab)[0] >= 2 else None
     i0 = L["hari"].index(L["hari_lengkap"]) if L.get("hari_lengkap") in L["hari"] else len(L["hari"]) - 1
     for i in range(len(L["hari"]) - 1, i0 - 1, -1):
         if any((kab.get(k) or [None] * len(L["hari"]))[i] or 0 for k in spec["pemicu"]):
@@ -81,7 +109,7 @@ def pemicu_aktif(L, kab, spec):
 def runtun(L, kab, spec, i):
     """indeks awal runtun Siaga yang berakhir di i (hari tanpa data memutus runtun)"""
     a = i
-    while a > 0 and any((kab.get(k) or [])[a - 1] or 0 for k in spec["pemicu"]):
+    while "status" not in spec and a > 0 and any((kab.get(k) or [])[a - 1] or 0 for k in spec["pemicu"]):
         a -= 1
     return a
 
@@ -94,15 +122,17 @@ def kronologi(L, kab, spec, a, i):
         v = [kab.get(m["k"], [None] * len(L["hari"]))[j] for m in ms]
         if all(x is None for x in v):
             continue
-        sg = any((kab.get(k) or [])[j] or 0 for k in spec["pemicu"])
-        ket = "Siaga atau lebih" if sg else "Di bawah Siaga"
-        if j == a:
-            ket = "Mulai Siaga"
+        if "status" in spec:   # status harian tidak diarsipkan: hanya hari ini yang diketahui
+            ket = NL[spec["status"](kab)[0]] + " (status hari ini)" if j == i else "–"
+        else:
+            sg = any((kab.get(k) or [])[j] or 0 for k in spec["pemicu"])
+            ket = "Mulai Siaga" if j == a else "Siaga atau lebih" if sg else "Di bawah Siaga"
         if L.get("hari_lengkap") and L["hari"][j] > L["hari_lengkap"]:
             ket += " (berjalan)"
         baris.append([tgl(L["hari"][j])] + v + [ket])
     return {"id": "kronologi", "judul": f"Kronologi {kab['nama']}", "kolom": ["Tanggal"] + [m["label"] for m in ms] + ["Keadaan"], "baris": baris,
-            "catatan": f"Seri harian kab/kota dari laporan harian modul; hari sesudah {tgl(L['hari_lengkap'])} masih berjalan." if L.get("hari_lengkap") else None}
+            "catatan": (f"Seri harian kab/kota dari laporan harian modul; hari sesudah {tgl(L['hari_lengkap'])} masih berjalan." if L.get("hari_lengkap") else "")
+                       + (" Status kekeringan harian belum diarsipkan, jadi kapan Siaga dimulai tidak diketahui." if "status" in spec else "") or None}
 
 
 def asal_banjir(kab):
@@ -118,7 +148,7 @@ def asal_banjir(kab):
     return ({"id": "asal", "judul": f"Asal hujan per sub-DAS hulu {d['kab']}",
              "kolom": ["Sub-DAS", f"Porsi hujan {jd(j['lalu'])} (%)", "Hujan (mm)", f"Porsi prakiraan {jd(j['depan'])} (%)", "Luas (km²)", "Konsesi (ha)"],
              "baris": rows,
-             "catatan": d["vonis"] + f" DAS {d['das_km2']:,} km², {d['n_subdas']} sub-DAS; hutan hilang 2001 s.d. 2025 {d['hutan']['hilang_ha']:,} ha.".replace(",", ".")
+             "catatan": d["vonis"] + f" DAS {rb(d['das_km2'])} km², {d['n_subdas']} sub-DAS; hutan hilang 2001 s.d. 2025 {rb(d['hutan']['hilang_ha'])} ha."
                         + " Jendela hujan adalah jendela terbaru saat laporan dibuat, bukan tanggal mulai Siaga. Konsesi per sub-DAS perkiraan scanline."},
             None)
 
@@ -159,6 +189,17 @@ def ukur(modul):
         return {"id": "ukur", "judul": "Model vs catatan kejadian: hujan lebat 1 hari ke depan", "kolom": ["Uji", "Kejadian tertangkap", "Peringatan tanpa kejadian", "Ketepatan gabungan"],
                 "baris": [[f"Hujan ≥ {V['kita'].get('ambang_mm')} mm/hari", p(r.get("pod")), p(r.get("far")), p(r.get("csi"))]],
                 "catatan": f"Pasangan provinsi-hari {tgl(V['kita']['periode'][0])} s.d. {tgl(V['kita']['periode'][1])} terhadap kejadian DIBI BNPB."}
+    if modul == "kekeringan":
+        U = _baca("public/data/kekeringan_ujibalik.json")
+        kj = (U or {}).get("kejadian") or {}
+        r = ((kj.get("aturan") or {}).get("siaga") or {}).get("semua")
+        if not r:
+            return None
+        p = lambda x: "–" if x is None else f"{round(x * 100)}%"
+        pd = kj.get("periode_data") or ["", ""]
+        return {"id": "ukur", "judul": "Model vs catatan kejadian: aturan SPI-3 tingkat Siaga", "kolom": ["Uji", "Kejadian tertangkap", "Peringatan tanpa kejadian", "Ketepatan gabungan", "Ketepatan acak"],
+                "baris": [[f"SPI-3 ≤ −1,5, {rb(r['n'])} kabupaten-bulan", p(r.get("pod")), p(r.get("far")), p(r.get("csi")), p(r.get("csi_acak"))]],
+                "catatan": f"Kejadian kekeringan DIBI BNPB per kabupaten-bulan {pd[0]} s.d. {pd[1]}. Yang diuji aturan SPI-3 saja; status di laporan ini menggabungkan SPI-3 dengan kelembapan tanah. Kekeringan kecil jarang tercatat DIBI, jadi peringatan tanpa kejadian tampak tinggi."}
     if modul == "udara":
         P = _baca("public/udara/data/prakiraan.json")
         m = ((P or {}).get("galat") or {}).get("metar")
@@ -179,7 +220,8 @@ def dampak(L, kab, spec, a, i):
     if not k or k not in kab:
         return None
     m = next(x for x in L["metrik"] if x["k"] == k)
-    rows = [[tgl(L["hari"][j]), kab[k][j]] for j in range(a, len(L["hari"])) if kab[k][j] is not None]
+    dari = max(0, i - MAKS_KRONOLOGI + 1) if "status" in spec else a   # stok harian: tampilkan 14 hari terakhir
+    rows = [[tgl(L["hari"][j]), kab[k][j]] for j in range(dari, len(L["hari"])) if kab[k][j] is not None]
     if not rows:
         return None
     return {"id": "dampak", "judul": spec.get("jiwa_judul", m["label"]) + f" di {kab['nama']}", "kolom": ["Tanggal", f"{m['label']} ({m['satuan']})"], "baris": rows, "catatan": spec["jiwa_ket"]}
@@ -190,23 +232,27 @@ def satu(modul, L, kab, i, dibuat):
     a = runtun(L, kab, spec, i)
     kp = kab["prov"]
     ms = {m["k"]: m for m in L["metrik"]}
-    nilai = spec["kata"](kab, i)
+    lv, rek = spec["status"](kab) if "status" in spec else (2, None)
+    nilai = spec["kata"](kab, i, rek) if "status" in spec else spec["kata"](kab, i)
     pv = LAP.PROVINSI.get(kp, kp)
-    # a == 0: runtun sudah berjalan sejak awal seri laporan modul, awal sebenarnya tidak diketahui
-    sejak = ("sedikitnya sejak " if a == 0 else "sejak ") + tgl(L["hari"][a])
-    sorot = [{"tingkat": "siaga", "prov": kp, "judul": f"{kab['nama']}: Siaga {sejak}",
+    # a == 0: runtun sudah berjalan sejak awal seri laporan modul, awal sebenarnya tidak diketahui; status potret: hanya "per" hari ini
+    sejak = f"per {tgl(L['hari'][i])}" if "status" in spec else ("sedikitnya sejak " if a == 0 else "sejak ") + tgl(L["hari"][a])
+    tingkat = "awas" if lv >= 3 else "siaga"
+    sorot = [{"tingkat": tingkat, "prov": kp, "judul": f"{kab['nama']}: {NL[max(lv, 2)]} {sejak}",
               "teks": f"{nilai} pada {tgl(L['hari'][i])}."}]
     tb = [kronologi(L, kab, spec, a, i)]
     if modul == "banjir":
         t, ket = asal_banjir(kab)
     elif modul == "udara":
         t, ket = asal_udara(kab)
+    elif modul == "kekeringan":
+        t, ket = None, "Kekeringan meteorologis tidak punya sumber tunggal seperti hulu sungai atau asap; telusur asal tidak berlaku."
     else:
         t, ket = None, None
     if t:
         tb.append(t)
     if ket:
-        sorot.append({"tingkat": "info", "prov": kp, "judul": "Asal belum tersedia", "teks": ket})
+        sorot.append({"tingkat": "info", "prov": kp, "judul": "Asal tidak berlaku" if modul == "kekeringan" else "Asal belum tersedia", "teks": ket})
     dm = dampak(L, kab, spec, a, i)
     for f in (ukur(modul), dm):
         if f:
@@ -222,8 +268,8 @@ def satu(modul, L, kab, i, dibuat):
     d = LAP.susun(modul, f"Laporan Kejadian {spec['nama']}: {kab['nama']}, {pv}", L["hari"], L["metrik"], L["nasional"], {kp: L["prov"][kp]}, [kab],
                   cutoff=L["cutoff"], hari_lengkap=L["hari_lengkap"], sorot=sorot[:8], tambahan=tb, sumber=L.get("sumber", []) + [x for x in spec["sumber"] if x["nama"] not in {y.get("nama") for y in L.get("sumber", [])}], dibuat=dibuat)
     d["fokus"] = kab["kode"]
-    entri = {"modul": modul, "kode": kab["kode"], "prov": kp, "prov_nama": pv, "kab": kab["nama"], "judul": d["judul"], "mulai": L["hari"][a], "terakhir": L["hari"][i],
-             "nilai": nilai, "url": f"/kejadian.html?b={modul}&k={kab['kode']}"}
+    entri = {"modul": modul, "kode": kab["kode"], "prov": kp, "prov_nama": pv, "kab": kab["nama"], "judul": d["judul"], "mulai": None if "status" in spec else L["hari"][a], "terakhir": L["hari"][i],   # status potret: awal tidak diketahui
+             "nilai": nilai, "tingkat": tingkat, "url": f"/kejadian.html?b={modul}&k={kab['kode']}"}
     return d, entri
 
 
@@ -314,6 +360,23 @@ def uji():
     x = copy.deepcopy(d)
     x["fokus"] = "0000"
     assert any("fokus" in g for g in LAP.periksa(x))
+    # status potret (kekeringan): pemicu dari level hari ini, awal tidak diketahui, kronologi tanpa status lampau
+    lama = dict(_WIL)
+    _WIL["kab"] = {"96|Maybrat": {"lv": 3, "jiwa": [1200, 1100, 900]}, "96|Sorong": {"lv": 1, "jiwa": [5, 0, 0]}}
+    try:
+        hk = bangun("kekeringan", L, "x")
+        assert [e["kode"] for _, e in hk] == ["9605"], [e for _, e in hk]
+        dk, ek = hk[0]
+        assert LAP.periksa(dk) == [] and ek["mulai"] is None and ek["tingkat"] == "awas" and ek["terakhir"] == L["hari_lengkap"], ek
+        assert ek["nilai"] == "Status Awas (SPI-3 dan kelembapan tanah), 1.100 jiwa di wilayah Siaga atau lebih", ek["nilai"]
+        kr = next(t for t in dk["tambahan"] if t["id"] == "kronologi")
+        hl = tgl(L["hari_lengkap"])
+        assert all(r[-1].replace(" (berjalan)", "") == ("Awas (status hari ini)" if r[0] == hl else "–") for r in kr["baris"]), kr["baris"]
+        assert dk["sorot"][0]["tingkat"] == "awas" and dk["sorot"][0]["judul"] == f"Maybrat: Awas per {hl}", dk["sorot"][0]
+    finally:
+        _WIL.clear()
+        _WIL.update(lama)
+    assert rb(4542) == "4.542" and rb(17693) == "17.693"
     assert norm("Kab. Tanjung Jabung Timur") == "tanjung jabung timur" and norm("Kota Serang") == "serang"
     print("laporan_kejadian.py uji: lulus")
 

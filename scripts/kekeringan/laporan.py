@@ -9,7 +9,8 @@ Metrik (hari = 30 hari yang berakhir kemarin WIB; kemarin = hari_lengkap):
   hth_maks HTH terpanjang di wilayah itu (maks).
   kab31    kabupaten dengan >= 30% penduduk di HTH >= 31 (rerata, stok per hari; di kabupaten bernilai 0 atau 1).
   hujan    hujan rerata berbobot penduduk, mm/hari (rerata; lebih tinggi = lebih baik).
-Kabupaten dimuat hanya yang pernah HTH >= 31 dalam 30 hari (menjaga berkas < 400 KB); provinsi dan nasional menghitung semua kabupaten.
+Kabupaten dimuat hanya yang pernah HTH >= 31 dalam 30 hari ATAU berstatus Siaga/Awas hari ini (kekeringan_wilayah.json; laporan kejadian
+per kab, scripts/umum/laporan_kejadian.py, butuh serinya); provinsi dan nasional menghitung semua kabupaten. Berkas tetap < 400 KB.
 Kode kabupaten di sini INTERNAL (kode provinsi + urutan abjad, hth.kode_kab), bukan kode Kemendagri.
 
 Pakai:  python3 scripts/kekeringan/laporan.py      |  python3 scripts/kekeringan/laporan.py uji
@@ -54,8 +55,8 @@ def juta2(n):
     return f"{n / 1e6:.2f}".replace(".", ",") + " juta"
 
 
-def seri_laporan(ag, n):
-    """Agregat harian (hth.agregat_harian) -> (nasional, prov, kab) berformat susun()."""
+def seri_laporan(ag, n, ikut=frozenset()):
+    """Agregat harian (hth.agregat_harian) -> (nasional, prov, kab) berformat susun(). `ikut`: kunci 'prov|kab' yang dimuat walau HTH < 31."""
     flag = lambda w: [1 if w["total"] and w["j31"][d] / w["total"] >= H.BATAS_WIL else 0 for d in range(n)]
     kab_semua = {k: flag(w) for k, w in ag["kab"].items()}
     ambil = lambda w, f: {"jiwa31": w["j31"], "hth_maks": w["maks"], "hujan": w["hujan"], "kab31": f}
@@ -66,7 +67,7 @@ def seri_laporan(ag, n):
     nas = ambil(ag["nas"], [sum(v[d] for v in kab_semua.values()) for d in range(n)])
     kode = ag["_kode"]
     kab = [{"prov": k.split("|")[0], "kode": kode[k], "nama": nama_kab(k), **ambil(w, kab_semua[k])}
-           for k, w in ag["kab"].items() if k in kode and any(m is not None and m >= 31 for m in w["maks"])]
+           for k, w in ag["kab"].items() if k in kode and (k in ikut or any(m is not None and m >= 31 for m in w["maks"]))]
     return nas, prov, kab
 
 
@@ -156,7 +157,7 @@ def bangun(harian, penduduk, pusat, wilayah, prakiraan, padi, sekarang):
     isi, ag = H.hitung(harian, penduduk, pusat)
     n = len(isi["tgl30"])
     ag["_kode"] = H.kode_kab(penduduk)
-    nas, prov, kab = seri_laporan(ag, n)
+    nas, prov, kab = seri_laporan(ag, n, frozenset(k for k, v in ((wilayah or {}).get("kab") or {}).items() if (v.get("lv") or 0) >= 2))
     prov_urut = [p for _, p in sorted(((w["j31"][-1], p) for p, w in ag["prov"].items()), reverse=True)]
     t_ref = harian["tgl"].index(harian["hari_ini"]) - 1
     tambahan = [t for t in (tabel_spi(prakiraan), tabel_padi(padi)) if t]
@@ -196,6 +197,14 @@ def main():
                baca(os.path.join(H.DIR_DATA, "kekeringan_padi.json")), dt.datetime.now(H.WIB))
     j = tulis(d)
     print(f"laporan kekeringan: {len(d['kab'])} kab, {len(d['sorot'])} sorotan, {os.path.getsize(j) // 1024} KB; {time.time() - t0:.0f} dtk", file=sys.stderr)
+    try:   # laporan kejadian per kab Siaga/Awas (scripts/umum/laporan_kejadian.py); gagal tidak menggagalkan laporan harian
+        sp = importlib.util.spec_from_file_location("laporan_kejadian", os.path.join(H.AKAR, "scripts/umum/laporan_kejadian.py"))
+        lk = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(lk)
+        lk.uji()
+        lk.jalankan("kekeringan")
+    except (Exception, SystemExit) as e:
+        print(f"::warning title=kekeringan laporan_kejadian::{type(e).__name__}: {str(e)[:300]}", file=sys.stderr)
 
 
 def uji():
@@ -214,7 +223,9 @@ def uji():
     assert L.periksa(d) == [], L.periksa(d)
     assert len(d["hari"]) == 30 and d["hari"][-1] == "2026-10-17" == d["hari_lengkap"] and d["cutoff"] == h["dibuat"]
     assert d["nasional"]["jiwa31"][-1] == 3010 and d["nasional"]["kab31"][-1] == 2 and d["nasional"]["hth_maks"][-1] == 40
-    assert [o["kode"] for o in d["kab"]] == ["1101", "7201"] and d["prov"]["11"]["jiwa31"][-1] == 3000          # Zeta (hujan tiap hari) tidak dimuat
+    assert [o["kode"] for o in d["kab"]] == ["1101", "1102", "7201"] and d["prov"]["11"]["jiwa31"][-1] == 3000   # Zeta (hujan tiap hari) dimuat karena Siaga
+    ag0 = dict(H.hitung(h, penduduk, pusat)[1], _kode=H.kode_kab(penduduk))
+    assert [o["kode"] for o in seri_laporan(ag0, len(d["hari"]))[2]] == ["1101", "7201"]   # tanpa status: hanya HTH >= 31
     assert [s["tingkat"] for s in d["sorot"]][:2] == ["awas", "siaga"] and d["sorot"][0]["judul"] == "1 kabupaten berstatus Awas"
     assert len(d["prakiraan"]["hari"]) == 7 and d["prakiraan"]["baris"][0]["nilai"][0] is not None and len(d["tambahan"]) == 2
     tb = d["tambahan"][0]
