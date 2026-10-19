@@ -5,7 +5,7 @@ import {gunzipSync} from "node:zlib";
 import {readFileSync} from "node:fs";
 import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
-import {siapkan, berantai} from "./_bnpb.mjs";
+import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 
 const U = await siapkan("uji-sitrep", {r2: true}), uji = berantai();
 const worker = await U.mf.getWorker(), R2 = await U.mf.getR2Bucket("MEDIA");
@@ -64,8 +64,9 @@ uji("sitrep arsip: TIDAK ada data pribadi (wa, email, kode, hash, token) di arsi
 
 uji("GET /api/sitrep/arsip sah: 200 JSON gzip, cache 1 hari, isi sama dengan arsip", async () => {
   const r = await U.mf.dispatchFetch(`http://bnpb.lokal/api/sitrep/arsip?tgl=${TGL}`, {headers: {"accept-encoding": "gzip"}});
-  assert.equal(r.status, 200);   // fetch Miniflare sudah mengurai gzip dan membuang headernya; peramban sama
-  const b = Buffer.from(await r.arrayBuffer()), j = JSON.parse((b[0] === 0x1f && b[1] === 0x8b ? gunzipSync(b) : b).toString());   // klien nyata (peramban) mengurai gzip sendiri
+  assert.equal(r.status, 200);
+  assert.equal(r.headers.get("content-encoding"), null, "tidak ada content-encoding manual (gzip ganda)");
+  const j = await r.json();   // klien biasa: harus bisa di-parse langsung
   assert.equal(j.tgl, TGL); assert.ok("/bencana.json" in j.masukan);
   assert.match(r.headers.get("cache-control"), /max-age=86400/);
   assert.equal(r.headers.get("x-content-type-options"), "nosniff");
@@ -94,4 +95,40 @@ uji("halaman /sitrep?tgl= : 200 dengan CSP ketat tanpa skrip/gaya inline, kontro
   assert.doesNotMatch(r.t, /<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+=|<style|style="/i);
   const js = readFileSync(path.join(AKAR, "public/bnpb/sitrep.js"), "utf8");
   assert.match(js, /ARSIP \? Promise\.resolve\(ARSIP\.masukan\[u\]/, "satu pintu ambil() harus membaca arsip bila ada");
+});
+
+uji("keamanan 2: arsip menyimpan laporan warga hanya sebagai jenis/benar/salah (tanpa teks, id, koordinat)", async () => {
+  const w = await U.api("POST", "/api/warga", {jenis: "minta", sub: "makanan", jumlah: 7, teks: "TEKS-WARGA-RAHASIA di Jalan Mawar", lat: -2.23456, lon: 113.98765}, {"cf-connecting-ip": "10.7.0.9"});
+  assert.equal(w.s, 201, w.t);
+  await R2.delete(`sitrep/${TGL}.json.gz`); await tik(KINI);
+  const a = await baca(TGL), f = a.masukan["/api/warga?jam=24"].features;
+  assert.equal(f.length, 2);
+  for (const x of f) { assert.deepEqual(Object.keys(x.properties).sort(), ["benar", "jenis", "salah"]); assert.equal(x.geometry, null); }
+  const t = JSON.stringify(a); assert.ok(!t.includes("TEKS-WARGA-RAHASIA") && !t.includes("-2.23") && !t.includes("113.98"));
+});
+
+uji("keamanan 2: cron menit 17 menghapus arsip > 400 hari, maks 50 per panggilan, yang baru dan yang bukan arsip tetap", async () => {
+  const lama = Array.from({length: 55}, (_, i) => `sitrep/${new Date(Date.parse("2023-01-01") + i * 864e5).toISOString().slice(0, 10)}.json.gz`);
+  for (const k of lama) await R2.put(k, "x");
+  await R2.put("sitrep/2025-12-01.json.gz", "x");   // 323 hari: tetap
+  const sisaLama = async () => (await R2.list({prefix: "sitrep/", limit: 1000})).objects.map(o => o.key).filter(k => k < "sitrep/2025-09-01" && k.endsWith(".json.gz")).length;
+  const sebelum = await sisaLama();
+  assert.ok(sebelum >= 55, "sebelum: " + sebelum);
+  await tik(Date.parse("2026-10-20T13:17:00Z"));
+  assert.equal(await sisaLama(), sebelum - 50, "tepat 50 terhapus per panggilan");
+  await tik(Date.parse("2026-10-20T14:17:00Z"));
+  assert.equal(await sisaLama(), 0);
+  assert.ok(await R2.head("sitrep/2025-12-01.json.gz") && await R2.head(`sitrep/${TGL}.json.gz`) && await R2.head("sitrep/bukan-tanggal.txt"));
+});
+
+uji("keamanan 2: POST /api/sitrep/arsip/hapus hanya moderator, tgl sah, 404 bila tidak ada, arsip hilang dan tidak bisa dibaca lagi", async () => {
+  const h = (b, hd) => U.api("POST", "/api/sitrep/arsip/hapus", b, hd);
+  await R2.put("sitrep/2026-10-10.json.gz", "x");
+  assert.equal((await h({tgl: "2026-10-10"})).s, 403); assert.equal((await h({tgl: "2026-10-10"}, GERBANG)).s, 403, "akun gerbang situs bukan moderator");
+  for (const b of [{}, {tgl: "2026-02-30"}, {tgl: "../x"}, {tgl: 20261010}, {tgl: "2026-10-10\0"}]) assert.equal((await h(b, ADMIN)).s, 400, JSON.stringify(b));
+  assert.equal((await h({tgl: "2026-10-11"}, ADMIN)).s, 404);
+  const ok = await h({tgl: "2026-10-10"}, MOD2); assert.equal(ok.s, 200, ok.t);
+  assert.equal(await R2.head("sitrep/2026-10-10.json.gz"), null);
+  assert.equal((await U.api("GET", "/api/sitrep/arsip?tgl=2026-10-10")).s, 404);
+  assert.equal((await U.api("GET", "/api/sitrep/arsip/hapus")).s, 405);
 });

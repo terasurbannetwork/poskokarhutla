@@ -6,6 +6,7 @@
    Isi pengingat: judul/angka/wilayah saja; tidak ada nama, WA, atau email relawan maupun petugas. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
 import {modOK, superOK, esc, wib, kirimEmail} from "./posko.js";
+import {laju} from "./bnpb.js";
 import {halamanAdmin, emailSiap} from "./statistik.js";
 import {halamanBnpb} from "./admin_halaman.js";
 import {statusMou} from "./relawan.js";
@@ -105,7 +106,9 @@ async function periksa(env, req, kini) {
   return json({ok: true, ...await buatPengingat(env, kini)});
 }
 /* satu email gabungan; isi = judul, rincian, wilayah. Tanpa data pribadi. */
-export function susunEmail(rows) {
+export function susunEmail(rows, kini = Date.now(), asal = "") {
+  /* bantuan_terbuka: judul utas warga tidak ikut ke email (bisa memuat kata-kata warga); cukup jenis, umur, wilayah, dan tautan admin */
+  rows = rows.map(r => r.jenis !== "bantuan_terbuka" ? r : {...r, judul: `Utas butuh bantuan terbuka ${r.dibuat ? Math.max(1, Math.floor((kini - r.dibuat) / HARI)) + " hari" : "lebih dari 24 jam"}`, rincian: `Lihat di ${asal}/admin/pengingat`});
   const per = DAFTAR_JENIS.map(j => [j, rows.filter(r => r.jenis === j)]).filter(([, a]) => a.length), w = r => [r.kab, PROV[r.prov]].filter(Boolean).join(", ");
   const teks = per.map(([j, a]) => `${JENIS[j]} (${a.length})\n` + a.map(r => `- ${r.judul}${r.rincian ? ` | ${r.rincian}` : ""}${w(r) ? ` | ${w(r)}` : ""}`).join("\n")).join("\n\n");
   const FONT = "font:14px/1.55 Arial,sans-serif;color:#1d2733";
@@ -119,10 +122,11 @@ async function kirim(env, req, kini) {
   const ids = b.o.ids;
   if (!Array.isArray(ids) || !ids.length || ids.length > MAKS_KIRIM || !ids.every(x => typeof x === "string" && RE_ID.test(x))) return gagal(400, `ids: 1-${MAKS_KIRIM} id pengingat (16 hex)`);
   if (!emailSiap(env)) return gagal(503, "email belum siap: EMAIL_API_KEY, EMAIL_FROM, dan EMAIL_TO (Resend) belum diset");
-  const rows = (await env.DB.prepare("SELECT id, jenis, judul, rincian, prov, kab, status FROM pengingat WHERE id IN (SELECT value FROM json_each(?)) AND dummy = 0 AND status IN ('baru', 'dikirim') ORDER BY dibuat, id").bind(JSON.stringify(ids)).all()).results;
+  const rows = (await env.DB.prepare("SELECT id, jenis, judul, rincian, prov, kab, status, dibuat FROM pengingat WHERE id IN (SELECT value FROM json_each(?)) AND dummy = 0 AND status IN ('baru', 'dikirim') ORDER BY dibuat, id").bind(JSON.stringify(ids)).all()).results;
   if (!rows.length) return gagal(409, "tidak ada pengingat terpilih yang masih terbuka (data contoh dummy tidak dikirim)");
+  const l = await laju(env, mod, "pengingat.kirim", [[JAM, 10]], kini); if (l) return l;   // per moderator, 10 email per jam
   const ke = env.EMAIL_TO.split(",").map(s => s.trim()).filter(Boolean);
-  try { await kirimEmail(env, ke, susunEmail(rows)); }
+  try { await kirimEmail(env, ke, susunEmail(rows, kini, new URL(req.url).origin)); }
   catch (e) { console.error("pengingat email", e?.message); return gagal(502, "email gagal terkirim (" + String(e?.message || e).slice(0, 120) + "); status tidak diubah"); }
   await env.DB.prepare("UPDATE pengingat SET status = 'dikirim', dikirim_pada = ?, oleh = ? WHERE id IN (SELECT value FROM json_each(?)) AND status IN ('baru', 'dikirim')").bind(kini, mod, JSON.stringify(rows.map(r => r.id))).run();   // ditandai SESUDAH terkirim
   return json({ok: true, terkirim: rows.length, ke: ke.length});

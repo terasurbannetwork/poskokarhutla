@@ -167,7 +167,7 @@ uji("kirim: email hanya saat admin menekan; satu email gabungan ke EMAIL_TO; tan
   assert.equal(luarLog.filter(h => h === "api.resend.com").length, 2, "tepat dua panggilan Resend: satu gagal, satu berhasil");
   assert.deepEqual(resend.diterima.to, ["a@contoh.id", "b@contoh.id"]); assert.equal(resend.diterima.from, "Pantau <p@contoh.id>");
   assert.match(resend.diterima.subject, /3 pengingat/);
-  for (const r of pilih) assert.ok(resend.diterima.text.includes(r.judul), r.judul);
+  for (const r of pilih) if (r.jenis !== "bantuan_terbuka") assert.ok(resend.diterima.text.includes(r.judul), r.judul);
   for (const r of sisa) assert.ok(!resend.diterima.text.includes(r.judul), "yang tidak dipilih tidak ikut");
   for (const s of PII) { assert.ok(!resend.diterima.text.includes(s) && !resend.diterima.html.includes(s), `data pribadi bocor: ${s}`); }
   assert.deepEqual((await U.DB.prepare("SELECT status, dikirim_pada IS NOT NULL ada FROM pengingat WHERE id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(pilih.map(r => r.id))).all()).results.map(r => `${r.status}:${r.ada}`), ["dikirim:1", "dikirim:1", "dikirim:1"]);
@@ -204,4 +204,19 @@ uji("dummy: lahir dari rantai sumber dummy modul lain, tiap jenis terisi, tidak 
   assert.equal(await W.n("pengingat", "dummy = 1"), isi.j.pengingat, "periksa asli tidak memangkas/menambah dummy");
   const hapus = await W.adm("POST", "/api/pengingat/dummy", {aksi: "hapus"}); assert.equal(hapus.j.pengingat, isi.j.pengingat);
   assert.equal(await W.n("pengingat", "dummy = 1"), 0); assert.equal(await W.n("pengingat"), 1, "yang asli utuh");
+});
+
+uji("keamanan 2: email bantuan_terbuka tanpa judul utas warga (jenis, umur, wilayah, tautan admin saja)", async () => {
+  const e = susunEmail([{jenis: "bantuan_terbuka", judul: "Butuh bantuan terbuka lebih dari 24 jam: RAHASIA-JUDUL-WARGA", rincian: null, prov: "33", kab: "Cilacap", dibuat: 10 * HARI}], 12 * HARI, "https://x.id");
+  assert.ok(!e.teks.includes("RAHASIA-JUDUL-WARGA") && !e.html.includes("RAHASIA-JUDUL-WARGA"));
+  assert.match(e.teks, /2 hari/); assert.match(e.teks, /Cilacap/); assert.match(e.teks, /https:\/\/x\.id\/admin\/pengingat/);
+});
+
+uji("keamanan 2: kirim email dibatasi 10 per jam per moderator (ke-11 = 429, moderator lain tetap boleh)", async () => {
+  resend = {status: 200, diterima: null};
+  const id = (await U.DB.prepare("SELECT id FROM pengingat WHERE status IN ('baru', 'dikirim') AND dummy = 0 LIMIT 1").first()).id;
+  const sebelum = (await U.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'pengingat.kirim'").first()).n;
+  for (let i = sebelum; i < 10; i++) assert.equal((await U.adm("POST", "/api/pengingat/admin/kirim", {ids: [id]})).s, 200);
+  const l = await U.adm("POST", "/api/pengingat/admin/kirim", {ids: [id]}); assert.equal(l.s, 429, l.t);
+  assert.equal((await U.api("POST", "/api/pengingat/admin/kirim", {ids: [id]}, MOD2)).s, 200, "batas per moderator, bukan global");
 });

@@ -191,7 +191,7 @@ async function ubah(env, req, id, kini) {
   const M = MEJA[r.meja], lama = JSON.parse(r.data), cat = b.o.catatan == null ? null : tx(b.o.catatan, 200);
   if (cat === undefined) return gagal(400, "catatan maksimal 200 huruf");
   if (b.o.aksi === "stok") return ubahStok(env, p, r, b.o, cat, kini);
-  let ke = r.status, data, kec = r.kec, desa = r.desa, gd = null;
+  let ke = r.status, data, kec = r.kec, desa = r.desa, gd = null, dAwal = 0, ubahAngka = "";
   if (b.o.aksi === "status") {
     ke = b.o.ke;
     const peran = typeof ke === "string" && Object.hasOwn(M.transisi[r.status] || {}, ke) ? M.transisi[r.status][ke] : null;
@@ -214,16 +214,24 @@ async function ubah(env, req, id, kini) {
     if (r.meja === "gudang" && ["gudang", "barang", "satuan"].some(k => v.data[k] !== lama[k])) return gagal(409, "nama gudang, barang, dan satuan tidak bisa diubah; buat catatan baru");
     const wl = wilayahTeks({kec: b.o.kec ?? r.kec, desa: b.o.desa ?? r.desa}, M); if (wl.galat) return gagal(400, wl.galat);
     data = v.data; ({kec, desa} = wl);
+    /* gudang: stok_awal menggerakkan saldo, jadi petugas tidak boleh; admin boleh dan selisih terhadap stok_awal lama menggeser saldo dan dicatat sebagai baris meja_stok koreksi (saldo bergeser relatif, bukan dihitung ulang) */
+    if (r.meja === "gudang") {
+      dAwal = data.stok_awal - lama.stok_awal;
+      if (dAwal && p.petugas) return gagal(403, "stok awal gudang hanya boleh diubah admin; petugas memakai aksi stok (masuk/keluar)");
+      ubahAngka = ["stok_awal", "ambang_min"].filter(k => data[k] !== lama[k]).map(k => `${k} ${lama[k]} ke ${data[k]}`).join("; ");
+    }
   }
   if (p.petugas) { const l = await laju(env, p.petugas.id, "meja.tulis", LAJU_TULIS, kini); if (l) return l; }
   /* UPDATE bersyarat status lama (dua penulis serentak: yang kedua 409); jejak hanya masuk bila UPDATE mengubah baris; langkah gudang mengikuti rantai changes() */
   const gudangIsi = r.meja === "gudang" && b.o.aksi === "ubah";
   const st = [
-    env.DB.prepare(`UPDATE meja_catatan SET status = ?, data = ?, kec = ?, desa = ?, diubah = ?${gudangIsi ? ", stok = ? + (SELECT coalesce(sum(delta), 0) FROM meja_stok WHERE gudang_id = meja_catatan.id)" : ""} WHERE id = ? AND status = ?`)
-      .bind(ke, JSON.stringify(data), kec, desa, Math.max(lr.waktu, r.diubah), ...(gudangIsi ? [data.stok_awal] : []), id, r.status),
+    env.DB.prepare(`UPDATE meja_catatan SET status = ?, data = ?, kec = ?, desa = ?, diubah = ?${gudangIsi ? ", stok = stok + ?" : ""} WHERE id = ? AND status = ?`)
+      .bind(ke, JSON.stringify(data), kec, desa, Math.max(lr.waktu, r.diubah), ...(gudangIsi ? [dAwal] : []), id, r.status),
     env.DB.prepare("INSERT INTO meja_jejak (catatan_id, dari, ke, waktu, oleh, catatan, klien_id, diterima) SELECT ?, ?, ?, ?, ?, ?, ?, ? WHERE changes() > 0")
-      .bind(id, r.status, ke, lr.waktu, p.oleh, b.o.aksi === "ubah" ? (cat || "isi diubah") : cat, lr.klien, kini),
+      .bind(id, r.status, ke, lr.waktu, p.oleh, b.o.aksi === "ubah" ? ((cat || "isi diubah") + (ubahAngka ? ` (${ubahAngka})` : "")).slice(0, 200) : cat, lr.klien, kini),
   ];
+  if (gudangIsi && dAwal) st.push(env.DB.prepare("INSERT INTO meja_stok (gudang_id, jenis, delta, saldo, waktu, oleh, catatan, dummy) SELECT id, 'koreksi', ?, stok, ?, ?, ?, dummy FROM meja_catatan WHERE id = ? AND changes() > 0")
+    .bind(dAwal, kini, p.oleh, `koreksi stok awal ${lama.stok_awal} ke ${lama.stok_awal + dAwal}`, id));
   if (gd) st.push(
     env.DB.prepare("UPDATE meja_catatan SET stok = stok - ?, diubah = max(diubah, ?) WHERE id = ? AND changes() > 0").bind(data.jumlah_kirim, kini, gd.id),
     env.DB.prepare("INSERT INTO meja_stok (gudang_id, jenis, delta, saldo, logistik_id, waktu, oleh, catatan, dummy) SELECT id, 'keluar', ?, stok, ?, ?, ?, ?, dummy FROM meja_catatan WHERE id = ? AND changes() > 0")

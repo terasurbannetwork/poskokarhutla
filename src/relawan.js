@@ -45,6 +45,8 @@ const dalamBbox = (lat, lon) => lat >= BBOX.latMin && lat <= BBOX.latMaks && lon
 const hariAntara = (a, b) => Math.round((Date.parse(b + "T00:00:00Z") - Date.parse(a + "T00:00:00Z")) / HARI);
 const hashKontak = (env, jenis, nilai) => sha(`${env.IP_SALT}|kontak|${jenis}|${nilai}`);
 const urai = s => { try { const a = JSON.parse(s); return Array.isArray(a) ? a : []; } catch (e) { return []; } };
+/* validator melihat bila jam perangkat berbeda > 1 jam dari server (jam HP salah, atau kiriman antrean luring yang lama) */
+const tandaiWaktu = ({selisih_menit: m, ...j}) => ({...j, catatan_waktu: Math.abs(m || 0) > 60 ? `waktu klien berbeda ${Math.round(Math.abs(m) / 6) / 10} jam` : null});
 const menitSesi = (masuk, keluar) => Math.max(0, Math.min(MAKS_SESI_MENIT, Math.round((keluar - masuk) / MENIT)));
 
 /* status MoU: habis = tidak menerima pendaftar baru; segera_habis (<= 60 hari) masih menerima tapi ditandai */
@@ -120,12 +122,53 @@ async function daftar(env, req, url, kini) {
   return json({status: "terdaftar", kode, tautan: `${url.origin}/relawan/saya#k=${kode}`}, 201);
 }
 
+/* ================================================================ k-anonimitas (UU PDP): ringkasan & kapasitas publik tidak boleh mengenali 1-4 orang
+   Satu sumber (petaAktif) untuk /ringkas dan /kapasitas supaya total dan sel tidak saling membuka. Aturan:
+   - Sel kabupaten (relawan aktif = siap_tugas + bertugas) < K_SEL (5) disembunyikan. "bertugas" tidak pernah dirilis per kabupaten: memisahkannya dari "siap" menunjukkan
+     siapa yang sedang bertugas, dan siap_tugas -> bertugas mengubah angka saat satu orang ditugaskan. Kunci `siap` tetap, isinya aktif (siap + bertugas), `bertugas` selalu null.
+   - Sel komplementer: selisih (total - sel terlihat) tidak boleh tinggal 1..4 orang. Total provinsi dirilis di /ringkas, total nasional juga; kalau sel tersembunyi hanya 1-4 orang,
+     sel terlihat terkecil ikut ditekan sampai sisanya 0 atau >= 5. Berlaku bertingkat: provinsi terhadap total nasional, kabupaten terhadap total provinsi. Provinsi yang ditekan
+     menyembunyikan semua kabupatennya, kalau tidak jumlah kabupaten terlihat membuka provinsi itu.
+   - Keahlian per kabupaten (lima utama) < K_AHLI (3) disembunyikan, dengan komplemen yang sama terhadap total nasional keahlian itu di /ringkas.
+   - jam30 dibulatkan KE ATAS ke kelipatan 5 jam (tetap > 0 bila ada jam sah, syarat pipeline indeks risiko).
+   Admin ?dummy=1 melihat angka apa adanya (tanpa penekanan): admin memang berhak atas data pribadinya. */
+const K_SEL = 5, K_AHLI = 3;
+/* n = angka tiap sel; kembalikan Set indeks yang disembunyikan. sisa0 = jumlah yang sudah tersembunyi di luar daftar ini. */
+function tekan(n, ambang, sisa0 = 0) {
+  const sembunyi = new Set();
+  let sisa = sisa0;
+  for (const i of n.map((_, i) => i).sort((a, b) => n[a] - n[b])) if (n[i] < ambang || (sisa > 0 && sisa < ambang)) { sembunyi.add(i); sisa += n[i]; }
+  return sembunyi;
+}
+/* satu baris per (provinsi, kabupaten tanpa beda huruf): aktif + hitungan 15 keahlian */
+async function petaAktif(env, d) {
+  const kolom = Object.keys(KEAHLIAN).map(k => `sum(EXISTS (SELECT 1 FROM json_each(r.keahlian) WHERE value = '${k}')) "${k}"`).join(", ");   // KEAHLIAN konstanta kode
+  return baris(await env.DB.prepare(`SELECT r.prov, min(r.kab) kab, lower(trim(r.kab)) lk, count(*) aktif, ${kolom} FROM relawan r
+    WHERE r.anonim = 0 AND r.status IN ('siap_tugas', 'bertugas') AND r.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d).all());
+}
+function sembunyikan(rows, aman) {
+  const prov = {};
+  for (const r of rows) { const p = prov[r.prov] ||= {prov: r.prov, n: 0, kab: []}; p.kab.push(r); p.n += r.aktif; }
+  const P = Object.values(prov), hP = aman ? tekan(P.map(p => p.n), K_SEL) : new Set(), N = {};
+  P.forEach((p, i) => {
+    p.tampil = !hP.has(i);
+    const hk = !p.tampil ? new Set(p.kab.keys()) : aman ? tekan(p.kab.map(k => k.aktif), K_SEL) : new Set();
+    p.kab.forEach((k, j) => { k.tampil = !hk.has(j); k.ahli = {}; });
+  });
+  for (const k of Object.keys(KEAHLIAN)) {
+    N[k] = rows.reduce((a, r) => a + r[k], 0);
+    const lihat = rows.filter(r => r.tampil), nilai = lihat.map(r => r[k]);
+    const h = aman ? tekan(nilai, K_AHLI, N[k] - nilai.reduce((a, v) => a + v, 0)) : new Set();
+    lihat.forEach((r, i) => { r.ahli[k] = h.has(i) ? null : r[k]; });
+  }
+  return {P, N};
+}
+
 /* ================================================================ ringkasan publik (agregat; tanpa data pribadi) */
 async function hitungRingkas(env, kini, dummy) {
   const d = dummy ? 1 : 0, h = wib(kini);
-  const [prov, ahli, tot, tugas, jam, kampus] = await Promise.all([
-    env.DB.prepare("SELECT prov, count(*) n FROM relawan WHERE status = 'siap_tugas' AND anonim = 0 AND dummy <= ?1 GROUP BY prov ORDER BY n DESC, prov").bind(d).all(),
-    env.DB.prepare("SELECT j.value k, count(*) n FROM relawan r, json_each(r.keahlian) j WHERE r.status = 'siap_tugas' AND r.anonim = 0 AND r.dummy <= ?1 GROUP BY j.value ORDER BY n DESC, k").bind(d).all(),
+  const [rows, tot, tugas, jam, kampus] = await Promise.all([
+    petaAktif(env, d),
     env.DB.prepare("SELECT count(*) n, sum(status = 'siap_tugas') siap FROM relawan WHERE anonim = 0 AND status NOT IN ('ditolak', 'nonaktif', 'daftar_hitam') AND dummy <= ?1").bind(d).first(),
     env.DB.prepare("SELECT count(*) n FROM relawan WHERE status = 'bertugas' AND anonim = 0 AND dummy <= ?1").bind(d).first(),
     env.DB.prepare("SELECT coalesce(sum(menit), 0) m, count(*) sesi FROM relawan_jam WHERE sah = 1 AND dummy <= ?1").bind(d).first(),
@@ -133,8 +176,10 @@ async function hitungRingkas(env, kini, dummy) {
       FROM institusi k WHERE k.dummy <= ?1 AND EXISTS (SELECT 1 FROM institusi_perjanjian p WHERE p.institusi_id = k.id AND p.jenis_perjanjian = 'mou_relawan' AND p.mulai <= ?2 AND p.berakhir >= ?2)
       ORDER BY relawan DESC, k.nama LIMIT 200`).bind(d, h).all(),
   ]);
+  const {P, N} = sembunyikan(rows, !dummy);
   return {dibuat: kini, relawan: tot.n, siap_tugas: tot.siap ?? 0, bertugas: tugas.n, jam_kerja_jam: Math.round(jam.m / 60 * 10) / 10, sesi_sah: jam.sesi,
-    per_provinsi: baris(prov).map(r => ({prov: r.prov, nama: PROV[r.prov] || r.prov, n: r.n})), per_keahlian: baris(ahli).map(r => ({keahlian: r.k, nama: KEAHLIAN[r.k] || r.k, n: r.n})),
+    per_provinsi: P.filter(p => p.tampil).sort((a, b) => b.n - a.n || (a.prov < b.prov ? -1 : 1)).map(p => ({prov: p.prov, nama: PROV[p.prov] || p.prov, n: p.n})),
+    per_keahlian: Object.keys(KEAHLIAN).filter(k => N[k] >= (dummy ? 1 : K_AHLI)).sort((a, b) => N[b] - N[a] || (a < b ? -1 : 1)).map(k => ({keahlian: k, nama: KEAHLIAN[k], n: N[k]})),
     kampus: baris(kampus).map(k => ({id: k.id, nama: k.nama, singkatan: k.singkatan, prov: k.prov, relawan: k.relawan}))};
 }
 async function ringkas(env, req, url, kini, ctx) {
@@ -148,19 +193,21 @@ async function ringkas(env, req, url, kini, ctx) {
 /* ================================================================ kapasitas per kabupaten (C3): dibaca pipeline indeks risiko dari produksi */
 export const KEAHLIAN_UTAMA = ["medis", "sar", "logistik", "dapur_umum", "psikososial"];
 const JENDELA_JAM = 30 * HARI;
-/* agregat murni: TANPA nama, kontak, atau id. Relawan siap_tugas + bertugas (bukan anonim) per (prov, kab); keahlian = berapa orang yang punya keahlian itu;
-   jam30 = jam kerja sah (check-out selesai, divalidasi) 30 hari terakhir. Kunci "<prov>|<kab>"; kab dikelompokkan tanpa beda huruf besar/kecil. */
+/* agregat murni: TANPA nama, kontak, atau id. Aturan k-anonimitas di blok "k-anonimitas" di atas. siap = relawan siap_tugas + bertugas (bukan anonim) per (prov, kab); bertugas selalu null;
+   keahlian = berapa orang yang punya keahlian itu (null bila < 3); jam30 = jam kerja sah (check-out selesai, divalidasi) 30 hari terakhir, dibulatkan ke atas kelipatan 5 jam.
+   Kunci "<prov>|<kab>"; kab dikelompokkan tanpa beda huruf besar/kecil. Kab dengan 0 relawan aktif tidak dimuat. */
 async function hitungKapasitas(env, kini, dummy) {
-  const d = dummy ? 1 : 0, kolom = KEAHLIAN_UTAMA.map(k => `sum(EXISTS (SELECT 1 FROM json_each(r.keahlian) WHERE value = '${k}')) ${k}`).join(", ");   // KEAHLIAN_UTAMA konstanta kode
-  const [orang, jam] = await Promise.all([
-    env.DB.prepare(`SELECT r.prov, min(r.kab) kab, sum(r.status = 'siap_tugas') siap, sum(r.status = 'bertugas') bertugas, ${kolom} FROM relawan r
-      WHERE r.anonim = 0 AND r.status IN ('siap_tugas', 'bertugas') AND r.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d).all().then(baris),
-    env.DB.prepare(`SELECT r.prov, min(r.kab) kab, sum(j.menit) menit FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id
-      WHERE j.sah = 1 AND j.keluar IS NOT NULL AND j.masuk >= ?2 AND r.anonim = 0 AND j.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d, kini - JENDELA_JAM).all().then(baris),
-  ]);
-  const kab = {}, ambil = r => kab[`${r.prov}|${r.kab}`] ||= {siap: 0, bertugas: 0, keahlian: Object.fromEntries(KEAHLIAN_UTAMA.map(k => [k, 0])), jam30: 0};
-  for (const r of orang) { const x = ambil(r); x.siap = r.siap; x.bertugas = r.bertugas; for (const k of KEAHLIAN_UTAMA) x.keahlian[k] = r[k]; }
-  for (const r of jam) ambil(r).jam30 = Math.round(r.menit / 60 * 10) / 10;
+  const d = dummy ? 1 : 0;
+  const [rows, jam] = await Promise.all([petaAktif(env, d),
+    env.DB.prepare(`SELECT r.prov, lower(trim(r.kab)) lk, sum(j.menit) menit FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id
+      WHERE j.sah = 1 AND j.keluar IS NOT NULL AND j.masuk >= ?2 AND r.anonim = 0 AND j.dummy <= ?1 GROUP BY r.prov, lower(trim(r.kab))`).bind(d, kini - JENDELA_JAM).all().then(baris)]);
+  sembunyikan(rows, !dummy);
+  const menit = Object.fromEntries(jam.map(r => [`${r.prov}|${r.lk}`, r.menit])), kab = {};
+  for (const r of rows) {
+    const m = menit[`${r.prov}|${r.lk}`] || 0;
+    kab[`${r.prov}|${r.kab}`] = r.tampil ? {siap: r.aktif, bertugas: null, keahlian: Object.fromEntries(KEAHLIAN_UTAMA.map(k => [k, r.ahli[k]])), jam30: m > 0 ? Math.ceil(m / 60 / 5) * 5 : 0}
+      : {siap: null, bertugas: null, keahlian: {}, jam30: null};
+  }
   return {dibuat: kini, kab};
 }
 async function kapasitas(env, req, url, kini, ctx) {
@@ -244,7 +291,7 @@ function luring(o, kini, lantai = kini - 24 * JAM) {
   if (o.klien_id != null && (typeof o.klien_id !== "string" || !RE_KLIEN.test(o.klien_id))) return {galat: "klien_id 8-40 huruf/angka/garis"};
   if (o.waktu_klien != null && !Number.isFinite(o.waktu_klien)) return {galat: "waktu_klien harus angka (ms)"};
   const w = o.waktu_klien;
-  return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= lantai ? Math.round(w) : kini};
+  return {klien: o.klien_id ?? null, waktu: w != null && w <= kini + 5 * MENIT && w >= lantai ? Math.round(w) : kini, beda: w != null ? Math.round((w - kini) / MENIT) : 0};   // beda = selisih jam perangkat vs server (menit), untuk validator
 }
 async function aksiPenugasanSaya(env, req, id, kini) {
   const r = await dariKode(env, req, kini); if (r instanceof Response) return r;
@@ -273,7 +320,7 @@ async function aksiPenugasanSaya(env, req, id, kini) {
     const lat = num(o.lat, -90, 90), lon = num(o.lon, -180, 180);
     if (Number.isNaN(lat) || Number.isNaN(lon) || (lat == null) !== (lon == null) || (lat != null && !dalamBbox(lat, lon))) return gagal(400, "lokasi harus berada di Indonesia (atau kosongkan)");
     try {
-      await env.DB.batch([env.DB.prepare("INSERT INTO relawan_jam (id, relawan_id, penugasan_id, masuk, lat, lon, klien_masuk) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(acak(8), r.id, g.id, lr.waktu, lat, lon, lr.klien),
+      await env.DB.batch([env.DB.prepare("INSERT INTO relawan_jam (id, relawan_id, penugasan_id, masuk, lat, lon, klien_masuk, selisih_menit) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(acak(8), r.id, g.id, lr.waktu, lat, lon, lr.klien, lr.beda),
         env.DB.prepare("UPDATE relawan_penugasan SET status = 'bertugas', diubah = ? WHERE id = ?").bind(kini, g.id),
         env.DB.prepare("UPDATE relawan SET status = 'bertugas', diubah = ? WHERE id = ? AND status IN ('ditugaskan', 'bertugas')").bind(kini, r.id)]);
     } catch (e) {
@@ -289,11 +336,15 @@ async function aksiPenugasanSaya(env, req, id, kini) {
   if (o.aksi === "keluar") {
     const lr = luring(o, kini, 0); if (lr.galat) return gagal(400, lr.galat);
     if (lr.klien) { const u = await env.DB.prepare("SELECT keluar, menit FROM relawan_jam WHERE relawan_id = ? AND klien_keluar = ?").bind(r.id, lr.klien).first(); if (u) return json({keluar: u.keluar, menit: u.menit, ulang: true}); }
-    const s = await env.DB.prepare("SELECT id, masuk FROM relawan_jam WHERE relawan_id = ? AND penugasan_id = ? AND keluar IS NULL").bind(r.id, g.id).first();
+    const s = await env.DB.prepare("SELECT id, masuk, selisih_menit FROM relawan_jam WHERE relawan_id = ? AND penugasan_id = ? AND keluar IS NULL").bind(r.id, g.id).first();
     if (!s) return gagal(409, "kamu belum check-in pada penugasan ini");
-    const keluar = Math.max(lr.waktu, s.masuk), menit = menitSesi(s.masuk, keluar);   // keluar tidak boleh mendahului masuk (CHECK)
-    const u = await env.DB.prepare("UPDATE relawan_jam SET keluar = ?, menit = ?, klien_keluar = ? WHERE id = ? AND keluar IS NULL").bind(keluar, menit, lr.klien, s.id).run().catch(e => /UNIQUE/i.test(e?.message) ? null : Promise.reject(e));
-    if (!u) { const x = await env.DB.prepare("SELECT keluar, menit FROM relawan_jam WHERE relawan_id = ? AND klien_keluar = ?").bind(r.id, lr.klien).first(); return json({keluar: x.keluar, menit: x.menit, ulang: true}); }
+    const keluar = Math.min(Math.max(lr.waktu, s.masuk), s.masuk + MAKS_SESI_MENIT * MENIT), menit = menitSesi(s.masuk, keluar);   // lantai = masuk (CHECK), langit-langit = masuk + 16 jam (sesi terlupa tidak memanjang)
+    const beda = Math.abs(lr.beda) > Math.abs(s.selisih_menit || 0) ? lr.beda : s.selisih_menit || 0;
+    const u = await env.DB.prepare("UPDATE relawan_jam SET keluar = ?, menit = ?, klien_keluar = ?, selisih_menit = ? WHERE id = ? AND keluar IS NULL").bind(keluar, menit, lr.klien, beda, s.id).run().catch(e => /UNIQUE/i.test(e?.message) ? null : Promise.reject(e));
+    if (!u) {   // UNIQUE klien_keluar: kiriman serentak dengan klien_id sama. Tanpa baris pasangan (tak seharusnya) jawab 409, bukan 500
+      const x = lr.klien && await env.DB.prepare("SELECT keluar, menit FROM relawan_jam WHERE relawan_id = ? AND klien_keluar = ?").bind(r.id, lr.klien).first();
+      return x ? json({keluar: x.keluar, menit: x.menit, ulang: true}) : gagal(409, "check-out bentrok dengan kiriman lain. Muat ulang lalu coba lagi.");
+    }
     return json({keluar, menit});
   }
   return gagal(400, "aksi harus terima, tolak, masuk, atau keluar");
@@ -307,6 +358,8 @@ const cariKampus = env => async h => {
   return m ? {...i, no_mou: m.nomor, mulai: m.mulai, berakhir: m.berakhir, kuota: m.kuota} : null;
 };
 const dariKodeKampus = (env, req, kini) => pemegangKode(env, req, "kampus", cariKampus(env), kini);
+/* aksi TULIS koordinator butuh MoU yang berlaku (aktif atau segera_habis). Baca dan unduh rekap tetap boleh agar kampus bisa menutup buku. Admin tidak terikat. */
+const tolakMouMati = (k, kini) => { const m = statusMou(k, kini); return menerima(m) ? null : gagal(403, `kerja sama (MoU) kampusmu ${m.status === "belum" ? "belum berlaku" : "sudah habis"}, jadi verifikasi dan validasi jam dihentikan. Data dan rekap tetap bisa dilihat; hubungi admin untuk perpanjangan.`); };
 const SQL_KAMPUS_RELAWAN = `SELECT r.id, r.nama, r.prov, r.kab, r.keahlian, r.status, r.alasan, r.dibuat,
   (SELECT coalesce(sum(menit), 0) FROM relawan_jam j WHERE j.relawan_id = r.id AND j.sah = 1) jam_sah_menit,
   (SELECT coalesce(sum(menit), 0) FROM relawan_jam j WHERE j.relawan_id = r.id AND j.sah = 0 AND j.keluar IS NOT NULL) jam_menunggu_menit,
@@ -318,12 +371,13 @@ async function kampusSaya(env, req, kini) {
   const k = await dariKodeKampus(env, req, kini); if (k instanceof Response) return k;
   const rows = baris(await env.DB.prepare(SQL_KAMPUS_RELAWAN).bind(k.id).all());   // tanpa WA/email/kontak darurat: itu hanya untuk admin
   const terisi = rows.filter(r => !["ditolak", "nonaktif"].includes(r.status)).length;
-  const jamSesi = baris(await env.DB.prepare(`SELECT j.id, j.relawan_id, r.nama, j.masuk, j.keluar, j.menit, j.sah FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id
-    WHERE r.kampus_id = ? AND r.anonim = 0 AND j.keluar IS NOT NULL ORDER BY j.masuk DESC LIMIT 500`).bind(k.id).all());
+  const jamSesi = baris(await env.DB.prepare(`SELECT j.id, j.relawan_id, r.nama, j.masuk, j.keluar, j.menit, j.sah, j.selisih_menit FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id
+    WHERE r.kampus_id = ? AND r.anonim = 0 AND j.keluar IS NOT NULL ORDER BY j.masuk DESC LIMIT 500`).bind(k.id).all()).map(tandaiWaktu);
   return json({kampus: ringkasKampus(k, kini, terisi), relawan: rows.map(r => ({...r, keahlian: urai(r.keahlian)})), jam: jamSesi});
 }
 async function putusKampus(env, req, id, kini) {
   const k = await dariKodeKampus(env, req, kini); if (k instanceof Response) return k;
+  const mati = tolakMouMati(k, kini); if (mati) return mati;
   const lj = await laju(env, k.id, "relawan.putus_relawan", [[JAM, 600]], kini); if (lj) return lj;   // koordinator memutus banyak mahasiswa: batas longgar
   const b = await bacaBody(req); if (b.galat) return salahBody(b);
   const aksi = b.o.aksi, alasan = tx(b.o.alasan, 300);
@@ -347,6 +401,7 @@ async function putusJam(env, req, id, kini, kampus) {
 }
 async function putusJamKampus(env, req, id, kini) {
   const k = await dariKodeKampus(env, req, kini); if (k instanceof Response) return k;
+  const mati = tolakMouMati(k, kini); if (mati) return mati;
   const lj = await laju(env, k.id, "relawan.putus_jam", [[JAM, 600]], kini); if (lj) return lj;
   return putusJam(env, req, id, kini, k);
 }
@@ -412,9 +467,9 @@ async function rincianAdmin(env, req, id) {
   const [latihan, tugas, jam] = await Promise.all([
     env.DB.prepare("SELECT id, nama, penyelenggara, tgl, berlaku_sampai FROM relawan_pelatihan WHERE relawan_id = ? ORDER BY tgl DESC").bind(id).all(),
     env.DB.prepare(`SELECT g.id, g.status, g.asuransi, g.nilai, p.judul FROM relawan_penugasan g JOIN relawan_permintaan p ON p.id = g.permintaan_id WHERE g.relawan_id = ? ORDER BY g.dibuat DESC`).bind(id).all(),
-    env.DB.prepare("SELECT id, masuk, keluar, menit, sah FROM relawan_jam WHERE relawan_id = ? ORDER BY masuk DESC LIMIT 100").bind(id).all(),
+    env.DB.prepare("SELECT id, masuk, keluar, menit, sah, selisih_menit FROM relawan_jam WHERE relawan_id = ? ORDER BY masuk DESC LIMIT 100").bind(id).all(),
   ]);
-  return json({relawan: bentukRelawan(r), pelatihan: baris(latihan), penugasan: baris(tugas), jam: baris(jam)});
+  return json({relawan: bentukRelawan(r), pelatihan: baris(latihan), penugasan: baris(tugas), jam: baris(jam).map(tandaiWaktu)});
 }
 async function ubahAdmin(env, req, url, id, kini) {
   const mod = await adm(env, req); if (!mod) return tolakMod();
@@ -644,7 +699,7 @@ async function daftarPenugasan(env, req) {
   return json({penugasan: baris(await env.DB.prepare(`SELECT g.id, g.status, g.asuransi, g.polis, g.nilai, g.nilai_catatan, g.dibuat, g.dummy, r.id relawan_id, r.nama, r.prov, p.id permintaan_id, p.judul, p.bencana, p.mulai, p.selesai,
       (SELECT coalesce(sum(menit), 0) FROM relawan_jam j WHERE j.penugasan_id = g.id AND j.sah = 1) jam_sah_menit
     FROM relawan_penugasan g JOIN relawan r ON r.id = g.relawan_id JOIN relawan_permintaan p ON p.id = g.permintaan_id ORDER BY g.dibuat DESC LIMIT 1000`).all()),
-    jam: baris(await env.DB.prepare(`SELECT j.id, j.penugasan_id, r.nama, j.masuk, j.keluar, j.menit, j.sah, j.lat, j.lon FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id ORDER BY j.masuk DESC LIMIT 500`).all())});
+    jam: baris(await env.DB.prepare(`SELECT j.id, j.penugasan_id, r.nama, j.masuk, j.keluar, j.menit, j.sah, j.lat, j.lon, j.selisih_menit FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id ORDER BY j.masuk DESC LIMIT 500`).all()).map(tandaiWaktu)});
 }
 async function ubahPenugasan(env, req, id, kini) {
   const mod = await adm(env, req); if (!mod) return tolakMod();
@@ -818,7 +873,7 @@ async function halamanDaftar(env, url) {
    Migrasi diterapkan manual di produksi: tabel belum ada -> 503, bukan 500. */
 const lindungi = rute => Object.fromEntries(Object.entries(rute).map(([k, f]) => [k, async (...a) => {
   try { return await f(...a); }
-  catch (e) { if (/no such table/i.test(e?.message || "")) return gagal(503, "fitur relawan belum diaktifkan (migrasi 0023 belum diterapkan)"); throw e; }
+  catch (e) { if (/no such table/i.test(e?.message || "")) return gagal(503, "fitur relawan belum diaktifkan (migrasi 0022/0023 belum diterapkan)"); throw e; }
 }]));
 export const RUTE_RELAWAN = lindungi({
   "GET /relawan": (env, req, url) => halamanDaftar(env, url),

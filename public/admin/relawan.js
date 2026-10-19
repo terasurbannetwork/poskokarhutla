@@ -58,7 +58,7 @@
   async function muat() {
     const isi = document.getElementById("rwIsi");
     try { if (!konfig) konfig = (await ambil("/api/relawan/ringkas")).konfig; await TAMPIL[tab](isi); }
-    catch (e) { if (e.message !== "perlu masuk") isi.innerHTML = kosong(/belum diaktifkan/.test(e.message) ? "Fitur relawan belum diaktifkan: migrasi 0023 belum diterapkan di database ini." : "Gagal memuat: " + e.message); }
+    catch (e) { if (e.message !== "perlu masuk") isi.innerHTML = kosong(/belum diaktifkan/.test(e.message) ? "Fitur relawan belum diaktifkan: migrasi 0022/0023 belum diterapkan di database ini." : "Gagal memuat: " + e.message); }
   }
   const pindah = k => { tab = k; terpilih = null; kerangka(); return muat(); };
 

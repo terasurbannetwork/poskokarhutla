@@ -18,8 +18,8 @@
   function gambarRingkas(d) {
     $("ringkas").innerHTML = kartu("bolt", d.siap_tugas, "Relawan siap tugas", "p-hijau") + kartu("pin", d.bertugas, "Sedang bertugas", "p-ungu") + kartu("jam", d.jam_kerja_jam, "Jam kerja tervalidasi", "p-biru") +
       kartu("kampus", d.kampus.length, "Kampus mitra aktif", "p-kuning") +
-      `<article class="bn-kartu"><h2>${pil("p-biru", "orang", "Keahlian yang siap")}</h2><div class="rl-pilgrup">${d.per_keahlian.length ? d.per_keahlian.map(k => `<span class="bn-pil p-abu">${esc(k.nama)} ${angka(k.n)}</span>`).join("") : '<span class="rl-kecil">Belum ada relawan siap tugas.</span>'}</div></article>` +
-      `<article class="bn-kartu"><h2>${pil("p-biru", "pin", "Siap per provinsi")}</h2><div class="rl-pilgrup">${d.per_provinsi.length ? d.per_provinsi.slice(0, 12).map(p => `<span class="bn-pil p-abu">${esc(p.nama)} ${angka(p.n)}</span>`).join("") : '<span class="rl-kecil">Belum ada data.</span>'}</div></article>`;
+      `<article class="bn-kartu"><h2>${pil("p-biru", "orang", "Keahlian yang siap")}</h2><div class="rl-pilgrup">${d.per_keahlian.length ? d.per_keahlian.map(k => `<span class="bn-pil p-abu">${esc(k.nama)} ${angka(k.n)}</span>`).join("") : '<span class="rl-kecil">Keahlian dengan kurang dari 3 orang tidak ditampilkan.</span>'}</div></article>` +
+      `<article class="bn-kartu"><h2>${pil("p-biru", "pin", "Aktif per provinsi")}</h2><div class="rl-pilgrup">${d.per_provinsi.length ? d.per_provinsi.slice(0, 12).map(p => `<span class="bn-pil p-abu">${esc(p.nama)} ${angka(p.n)}</span>`).join("") : '<span class="rl-kecil">Belum ada provinsi dengan 5 relawan aktif atau lebih.</span>'}</div></article>`;
     kampus = d.kampus;
     $("kampusBlok").hidden = !d.kampus.length;
     $("kampusJudul").innerHTML = pil("p-kuning", "kampus", "Kampus mitra");

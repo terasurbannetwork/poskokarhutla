@@ -84,7 +84,8 @@
   function relawanHitung() {
     const R = D.relawan; if (!R || typeof R.relawan !== "number") return null;
     const p = prov ? (R.per_provinsi || []).find(x => x.prov === prov) : null;
-    return {siap: prov ? p?.n ?? 0 : R.siap_tugas, bertugas: R.bertugas, jam: R.jam_kerja_jam, ahli: (R.per_keahlian || []).slice(0, 5)};
+    /* per provinsi = relawan aktif (siap + bertugas); provinsi < 5 orang disembunyikan demi privasi (null, bukan 0) */
+    return {siap: prov ? p?.n ?? null : R.siap_tugas, bertugas: R.bertugas, jam: R.jam_kerja_jam, ahli: (R.per_keahlian || []).slice(0, 5), aktifProv: !!prov};
   }
   function mejaHitung() {
     const M = D.meja?.meja; if (!M) return null;
@@ -148,7 +149,7 @@
   }
   function sRelawan(R) {
     if (!R) return kartu("Relawan", "warga", belum("Relawan belum aktif."), "Relawan Pantau Bencana");
-    const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran("Siap tugas", F(R.siap), prov ? PROV[prov] : null), ukuran("Bertugas sekarang", F(R.bertugas), prov ? "nasional" : null), ukuran("Jam kerja sah", F(R.jam, 1), prov ? "nasional" : null)),
+    const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran(prov ? "Relawan aktif" : "Siap tugas", F(R.siap), prov ? PROV[prov] : null), R.bertugas == null ? null : ukuran("Bertugas sekarang", F(R.bertugas), prov ? "nasional" : null), ukuran("Jam kerja sah", F(R.jam, 1), prov ? "nasional" : null)),
       R.ahli.length ? h("div", {class: "sr-pils"}, ...R.ahli.map(a => pil(`${a.nama} ${F(a.n)}`, "alat", "var(--c7)"))) : null);
     return kartu("Relawan", "warga", isi, "Relawan Pantau Bencana (siap tugas per provinsi, keahlian nasional)");
   }
@@ -176,7 +177,7 @@
     if (m.naik.length) { L.push("", "*Wilayah naik*"); for (const x of m.naik.slice(0, 8)) L.push(`- ${x.b.nama}: ${x.nama}, ${x.prov} (${x.naik})`); }
     if (m.neraca?.kab?.length) { const t = m.neraca.total; L.push("", `*Neraca Posko ${tglPendek(m.neraca.tgl)}*`, `- Titik api ${F(t.fs)}, luas ${F(t.luas_ha, 1)} ha, dipadamkan ${F(t.padam_ha, 1)} ha, sisa ${F(t.sisa_ha, 1)} ha, personel ${F(t.personel)}`); }
     if (m.warga) L.push("", "*Lapor Warga 24 jam*", `- ${F(m.warga.total)}${m.warga.terpotong ? "+" : ""} laporan, ${F(m.warga.per.reduce((a, x) => a + x.benar, 0))} dibenarkan warga lain`, ...m.warga.per.slice(0, 5).map(x => `- ${JENIS_WARGA(x.jenis)}: ${F(x.n)}`));
-    if (m.relawan) L.push("", "*Relawan*", `- Siap tugas ${F(m.relawan.siap)}${prov ? " di " + PROV[prov] : ""}, bertugas sekarang ${F(m.relawan.bertugas)}`);
+    if (m.relawan) L.push("", "*Relawan*", `- ${prov ? "Relawan aktif" : "Siap tugas"} ${F(m.relawan.siap)}${prov ? " di " + PROV[prov] : ""}${m.relawan.bertugas == null ? "" : `, bertugas sekarang ${F(m.relawan.bertugas)}`}`);
     if (m.meja) { L.push("", "*Logistik dan kaji cepat*"); for (const x of m.meja) L.push(`- ${x.nama}: ${F(x.n)} catatan, ${F(x.bahaya)} perlu perhatian`); }
     if (m.alun) L.push("", "*Alun-alun*", `- Permintaan bantuan terbuka ${F(m.alun.terbuka)}${m.alun.lebih ? "+" : ""}, ditangani ${F(m.alun.ditangani)}`);
     L.push("", "Sumber: Pantau Bencana (BMKG, NASA FIRMS, PVMBG, Posko, Lapor Warga)", location.origin + "/sitrep" + (ARSIP || prov ? "?" + [ARSIP ? "tgl=" + ARSIP.tgl : "", prov ? "prov=" + prov : ""].filter(Boolean).join("&") : ""));

@@ -522,7 +522,7 @@ uji("rute publik tidak memuat WA, email, kontak darurat, PIC, kode, atau nama re
     assert.ok(!/kode_sha|"kode"/.test(r.t));
   }
   const d = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
-  assert.ok(d.siap_tugas >= 3 && d.per_provinsi.length >= 2 && d.per_keahlian.length >= 2 && d.kampus.length >= 2);
+  assert.ok(d.siap_tugas >= 3 && Array.isArray(d.per_provinsi) && Array.isArray(d.per_keahlian) && d.kampus.length >= 2);   // sel < 5 / < 3 orang ditekan (keamanan 2:), jadi panjangnya tidak dijaga di sini
   assert.deepEqual(Object.keys(d.kampus[0]).sort(), ["id", "nama", "prov", "relawan", "singkatan"]);
   assert.ok(d.konfig.keahlian.medis && d.konfig.provinsi["62"]);
   for (const h of ["halaman", "kampus"]) { const x = await U.api("GET", h === "halaman" ? "/relawan" : "/kampus", undefined, ipBaru()); for (const s of sensitif) assert.ok(!x.t.includes(s)); }
@@ -607,7 +607,7 @@ uji("tabel relawan belum dimigrasi: rute membalas 503 yang jelas, bukan 500", as
   await U.DB.prepare("ALTER TABLE relawan_jam RENAME TO relawan_jam_x").run();
   try {
     const r = await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru());
-    assert.equal(r.s, 503); assert.match(r.j.galat, /migrasi 0023/);
+    assert.equal(r.s, 503); assert.match(r.j.galat, /migrasi 0022\/0023/);
     assert.equal((await U.adm("GET", "/api/relawan/admin/penugasan")).s, 503);
   } finally { await U.DB.prepare("ALTER TABLE relawan_jam_x RENAME TO relawan_jam").run(); }
   assert.equal((await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).s, 200);
@@ -746,6 +746,8 @@ uji("sempurna: GET /api/relawan/kapasitas agregat per kabupaten cocok dengan hit
   const r5 = await rel("nonaktif", ["medis"]);                              // tidak dihitung sebagai kapasitas, tetapi jam sahnya tetap
   await rel("siap_tugas", ["gis_data"], {kab: KABK.toLowerCase()});         // huruf kecil = kabupaten yang sama; keahlian di luar lima utama
   await rel("siap_tugas", ["medis"], {dummy: 1, kab: "Kab Kapasitas Dummy"});
+  await rel("siap_tugas", ["medis"]); await rel("siap_tugas", ["medis"]);   // kab uji = 5 siap + 1 bertugas = 6 (>= 5 supaya terlihat)
+  for (const pv of ["91", "92", "93", "94", "95"]) await rel("siap_tugas", ["medis"], {prov: pv, kab: "Kab Sepi " + pv});   // 5 sel kecil tersembunyi: sisa komplementer >= 5, sel kab uji tidak ikut ditekan
   const pid = id16(), gid = id16();
   await sisip("relawan_permintaan", {id: pid, judul: "Uji kapasitas", bencana: "banjir", prov: PROVK, kab: KABK, butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-60), selesai: geser(60), dibuat: kini});
   const tugas = {};
@@ -756,20 +758,19 @@ uji("sempurna: GET /api/relawan/kapasitas agregat per kabupaten cocok dengan hit
   await jam(r3, 10, 150, 1); await jam(r5, 1, 60, 1);
   const d = (await U.api("GET", "/api/relawan/kapasitas", undefined, ipBaru())).j;
   assert.deepEqual(Object.keys(d).sort(), ["dibuat", "kab"]); assert.ok(Math.abs(d.dibuat - kini) < 60e3);
-  assert.deepEqual(d.kab[`${PROVK}|${KABK}`], {siap: 3, bertugas: 1, keahlian: {medis: 2, sar: 2, logistik: 1, dapur_umum: 1, psikososial: 1}, jam30: 5.5});
+  assert.deepEqual(d.kab[`${PROVK}|${KABK}`], {siap: 6, bertugas: null, keahlian: {medis: 4, sar: null, logistik: null, dapur_umum: null, psikososial: null}, jam30: 10},
+    "siap = siap+bertugas, bertugas null, keahlian < 3 null, jam30 5,5 jam dibulatkan ke atas ke 10");
   assert.ok(!(`${PROVK}|${KABK.toLowerCase()}` in d.kab), "huruf besar/kecil satu kabupaten");
   assert.ok(!("61|Kab Kapasitas Dummy" in d.kab), "dummy tersembunyi dari publik");
-  /* hitung manual atas seluruh tabel (tanpa lewat SQL agregat endpoint) harus identik untuk tiap kabupaten */
-  const semua = (await U.DB.prepare("SELECT id, prov, kab, status, keahlian FROM relawan WHERE anonim = 0 AND dummy = 0").all()).results;
-  const jams = (await U.DB.prepare("SELECT j.menit, j.masuk, j.sah, j.keluar, r.prov, r.kab FROM relawan_jam j JOIN relawan r ON r.id = j.relawan_id WHERE r.anonim = 0 AND j.dummy = 0").all()).results;
-  const manual = {};
-  const sel = (p, k) => manual[`${p}|${k}`] ||= {siap: 0, bertugas: 0, keahlian: {medis: 0, sar: 0, logistik: 0, dapur_umum: 0, psikososial: 0}, menit: 0, nama: new Set()};
-  const kanon = (p, k) => { const c = semua.concat(jams).filter(x => x.prov === p && x.kab.trim().toLowerCase() === k.trim().toLowerCase()).map(x => x.kab).sort()[0]; return c; };   // tampilan = bentuk terkecil
-  for (const r of semua) if (["siap_tugas", "bertugas"].includes(r.status)) { const x = sel(r.prov, kanon(r.prov, r.kab)); x[r.status === "siap_tugas" ? "siap" : "bertugas"]++; for (const k of JSON.parse(r.keahlian)) if (k in x.keahlian) x.keahlian[k]++; }
-  for (const j of jams) if (j.sah === 1 && j.keluar != null && j.masuk >= kini - 30 * HARI) sel(j.prov, kanon(j.prov, j.kab)).menit += j.menit;
-  const harapan = Object.fromEntries(Object.entries(manual).map(([k, x]) => [k, {siap: x.siap, bertugas: x.bertugas, keahlian: x.keahlian, jam30: Math.round(x.menit / 60 * 10) / 10}]));
-  assert.deepEqual(d.kab, harapan, "angka endpoint = hitung manual");
-  assert.ok(Object.keys(d.kab).length >= 3, "beberapa kabupaten dari uji sebelumnya ikut terhitung");
+  /* tiap kabupaten: sel tersembunyi seluruhnya null; sel terlihat = hitung manual aktif (siap+bertugas) >= 5 */
+  const semua = (await U.DB.prepare("SELECT prov, kab, status FROM relawan WHERE anonim = 0 AND dummy = 0 AND status IN ('siap_tugas', 'bertugas')").all()).results;
+  for (const [k, c] of Object.entries(d.kab)) {
+    const [pv, kb] = k.split("|"), aktif = semua.filter(x => x.prov === pv && x.kab.trim().toLowerCase() === kb.trim().toLowerCase()).length;
+    assert.ok(aktif > 0, `${k}: kab tanpa relawan aktif tidak dimuat`);
+    if (c.siap === null) { assert.deepEqual(c, {siap: null, bertugas: null, keahlian: {}, jam30: null}); continue; }
+    assert.equal(c.siap, aktif, `${k}: angka endpoint = hitung manual`); assert.ok(c.siap >= 5); assert.equal(c.bertugas, null);
+    assert.equal(c.jam30 % 5, 0, "jam30 kelipatan 5");
+  }
   /* tanpa data pribadi */
   const pribadi = (await U.DB.prepare("SELECT nama, wa, email, darurat_wa, darurat_nama, id FROM relawan WHERE anonim = 0").all()).results.flatMap(r => Object.values(r)).filter(Boolean);
   const t = JSON.stringify(d);
@@ -781,7 +782,7 @@ uji("sempurna: GET /api/relawan/kapasitas agregat per kabupaten cocok dengan hit
   const tanpaAdmin = await U.api("GET", "/api/relawan/kapasitas?dummy=1", undefined, ipBaru());
   assert.ok(!("61|Kab Kapasitas Dummy" in tanpaAdmin.j.kab), "?dummy=1 tanpa admin diabaikan");
   const admin = await U.adm("GET", "/api/relawan/kapasitas?dummy=1");
-  assert.equal(admin.j.kab["61|Kab Kapasitas Dummy"].siap, 1); assert.doesNotMatch(admin.h.get("cache-control") || "", /max-age/);
+  assert.equal(admin.j.kab["61|Kab Kapasitas Dummy"].siap, 1, "admin dummy tanpa penekanan"); assert.doesNotMatch(admin.h.get("cache-control") || "", /max-age/);
   assert.equal((await U.api("POST", "/api/relawan/kapasitas", {}, ipBaru())).s >= 400, true, "hanya GET");
 });
 
@@ -832,4 +833,87 @@ uji("sempurna: tab Institusi di /admin/relawan dan /admin/riset memakai SATU mod
   assert.ok(bersama.includes("Relawan") && bersama.includes("Riset"), "kolom Relawan dan Riset");
   assert.ok(!/—/.test(bersama + css) && !/\.style\.|style=/.test(bersama), "tanpa em dash dan gaya inline");
   assert.ok(/stopPropagation/.test(bersama), "penangan induk (data-*) tidak ikut menangkap klik modul bersama");
+});
+
+/* ---------------- keamanan 2: k-anonimitas, waktu klien, MoU mati ---------------- */
+uji("keamanan 2: kapasitas dan ringkas menekan sel kecil; selisih total - sel terlihat tidak membuka sel tersembunyi", async () => {
+  const kini = Date.now(), PV = "81";
+  let n = 0;
+  const rel = (kab, status, keahlian) => { n++; const id = id16(); return sisip("relawan", {id, nama: `K2 Orang ${n}`, wa: `62877${String(n).padStart(7, "0")}`, email: `k2o${n}@contoh-k2.id`, prov: PV, kab, jalur: "umum", status,
+    keahlian: JSON.stringify(keahlian), hari_per_minggu: 3, maks_hari: 30, luar_provinsi: 0, setuju_pdp: 1, dibuat: kini, diubah: kini, dummy: 0}).then(() => id); };
+  const kecil = await rel("K2 Kecil", "siap_tugas", ["medis", "bahasa_isyarat"]), kecil2 = await rel("K2 Kecil", "bertugas", ["medis"]);   // 2 orang: siapa bertugas tidak boleh terbaca
+  for (let i = 0; i < 5; i++) await rel("K2 Pas", "siap_tugas", ["logistik"]);                                                                 // 5 = batas, tetapi ikut ditekan sebagai komplemen
+  const besar = []; for (let i = 0; i < 6; i++) besar.push(await rel("K2 Besar", i === 0 ? "bertugas" : "siap_tugas", ["medis"]));
+  const pid = id16(); await sisip("relawan_permintaan", {id: pid, judul: "Uji k2", bencana: "banjir", prov: PV, kab: "K2 Besar", butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-60), selesai: geser(60), dibuat: kini});
+  for (const [rid, menit] of [[kecil2, 600], [besar[1], 90]]) {
+    const g = id16(); await sisip("relawan_penugasan", {id: g, permintaan_id: pid, relawan_id: rid, dibuat: kini, diubah: kini});
+    await sisip("relawan_jam", {id: id16(), relawan_id: rid, penugasan_id: g, masuk: kini - 2 * HARI, keluar: kini - 2 * HARI + menit * 60e3, menit, sah: 1, dummy: 0});
+  }
+  const kap = (await U.api("GET", "/api/relawan/kapasitas", undefined, ipBaru())).j.kab, rin = (await U.api("GET", "/api/relawan/ringkas", undefined, ipBaru())).j;
+  const NOL = {siap: null, bertugas: null, keahlian: {}, jam30: null};
+  assert.deepEqual(kap[`${PV}|K2 Kecil`], NOL, "kab 2 relawan: tanpa angka, tanpa siap->bertugas, tanpa jam");
+  assert.deepEqual(kap[`${PV}|K2 Pas`], NOL, "sel 5 ditekan sebagai komplemen: sisa tersembunyi hanya 2 orang");
+  assert.deepEqual(kap[`${PV}|K2 Besar`], {siap: 6, bertugas: null, keahlian: {medis: 6, sar: null, logistik: null, dapur_umum: null, psikososial: null}, jam30: 5}, "6 aktif; jam 1,5 dibulatkan ke atas 5; keahlian kosong null");
+  assert.ok(!JSON.stringify(rin).includes("K2 Kecil") && !kap[`${PV}|K2 Kecil`].jam30, "jam 10 jam kab kecil tidak keluar");
+  /* keahlian langka (1 orang) tidak keluar di ringkas; di sel kab null */
+  assert.ok(!rin.per_keahlian.some(k => k.keahlian === "bahasa_isyarat"), "keahlian dengan 1 orang tidak dirilis");
+  assert.equal(rin.per_keahlian.find(k => k.keahlian === "medis").n >= 6, true);
+  /* uji pengurangan atas seluruh data: total provinsi dikurangi kab terlihat, dan total keahlian dikurangi sel terlihat, harus 0 atau >= ambang */
+  const pv = rin.per_provinsi.find(p => p.prov === PV); assert.ok(pv && pv.n === 13, "provinsi 81 = 13 aktif");
+  const nasional = rin.siap_tugas + rin.bertugas;
+  for (const p of rin.per_provinsi) {
+    const terlihat = Object.entries(kap).filter(([k, c]) => k.startsWith(p.prov + "|") && c.siap !== null).reduce((a, [, c]) => a + c.siap, 0), sisa = p.n - terlihat;
+    assert.ok(sisa === 0 || sisa >= 5, `provinsi ${p.prov}: sisa ${sisa} membuka sel tersembunyi`);
+    assert.ok(p.n >= 5, "provinsi < 5 tidak dirilis");
+  }
+  assert.equal(pv.n - 6, 7, "sisa provinsi 81 = Kecil 2 + Pas 5, tidak bisa dipecah");
+  const tersembunyi = nasional - rin.per_provinsi.reduce((a, p) => a + p.n, 0); assert.ok(tersembunyi === 0 || tersembunyi >= 5, `sisa nasional ${tersembunyi}`);
+  for (const k of ["medis", "sar", "logistik", "dapur_umum", "psikososial"]) {
+    const total = rin.per_keahlian.find(x => x.keahlian === k)?.n; if (total == null) continue;
+    const terlihat = Object.values(kap).reduce((a, c) => a + (c.keahlian[k] ?? 0), 0), sisa = total - terlihat;
+    assert.ok(sisa === 0 || sisa >= 3, `keahlian ${k}: sisa ${sisa}`);
+  }
+  for (const c of Object.values(kap)) { assert.equal(c.bertugas, null); if (c.jam30 !== null) assert.equal(c.jam30 % 5, 0); }
+  /* admin ?dummy=1 tetap melihat angka mentah */
+  assert.equal((await U.adm("GET", "/api/relawan/kapasitas?dummy=1")).j.kab[`${PV}|K2 Kecil`].siap, 2);
+});
+
+uji("keamanan 2: check-out luring dijepit ke masuk..masuk+16 jam; beda jam klien > 1 jam tampil ke koordinator dan admin", async () => {
+  const idA1 = await idRelawan("Mhs A1"), kini = Date.now();
+  const pid = id16(), gid = id16(); await sisip("relawan_permintaan", {id: pid, judul: "Uji waktu klien", bencana: "banjir", prov: "62", kab: "Kab", butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-5), selesai: geser(5), dibuat: kini});
+  await sisip("relawan_penugasan", {id: gid, permintaan_id: pid, relawan_id: idA1, status: "diterima", dibuat: kini, diubah: kini});
+  await U.DB.prepare("UPDATE relawan SET status = 'ditugaskan' WHERE id = ?").bind(idA1).run();
+  const kodeA1 = (await U.adm("POST", `/api/relawan/admin/relawan/${idA1}`, {aksi: "kode_baru"})).j.kode, g = b => U.api("POST", `/api/relawan/saya/penugasan/${gid}`, b, K(kodeA1));
+  try {
+    const m = await g({aksi: "masuk", klien_id: "k2-masuk-0001", waktu_klien: kini - 3 * JAM}); assert.equal(m.s, 200, m.t);
+    await U.DB.prepare("UPDATE relawan_jam SET masuk = ?, keluar = NULL WHERE relawan_id = ? AND keluar IS NULL").bind(kini - 30 * JAM, idA1).run();
+    const o = await g({aksi: "keluar", klien_id: "k2-keluar-0001", waktu_klien: kini}); assert.equal(o.s, 200, o.t);
+    assert.equal(o.j.menit, 960); assert.equal(o.j.keluar, kini - 30 * JAM + 16 * JAM, "keluar dijepit masuk + 16 jam");
+    const j = (await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kA))).j.jam.find(x => x.relawan_id === idA1 && x.menit === 960);
+    assert.equal(j.catatan_waktu, "waktu klien berbeda 3 jam"); assert.ok(!("selisih_menit" in j));
+    const adm = (await U.adm("GET", "/api/relawan/admin/penugasan")).j.jam.find(x => x.id === j.id); assert.equal(adm.catatan_waktu, "waktu klien berbeda 3 jam");
+    assert.equal((await U.adm("GET", `/api/relawan/admin/relawan/${idA1}`)).j.jam.find(x => x.id === j.id).catatan_waktu, "waktu klien berbeda 3 jam");
+    const lain = (await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kA))).j.jam.filter(x => x.id !== j.id);
+    assert.ok(lain.every(x => x.catatan_waktu === null), "tanpa waktu klien: tanpa catatan");
+  } finally { await U.DB.prepare("DELETE FROM relawan_jam WHERE penugasan_id = ?").bind(gid).run(); await U.DB.prepare("DELETE FROM relawan_penugasan WHERE id = ?").bind(gid).run(); await U.DB.prepare("UPDATE relawan SET status = 'diverifikasi' WHERE id = ?").bind(idA1).run(); }
+});
+
+uji("keamanan 2: MoU habis atau belum mulai: koordinator tidak bisa menulis (403), baca dan unduh rekap tetap jalan", async () => {
+  const k = await U.adm("POST", "/api/relawan/admin/institusi", mouBody({nama: "Universitas Mati Uji", singkatan: "UMT"})); assert.equal(k.s, 201, k.t);
+  const kode = k.j.kode, r = await daftar({nama: "Mhs Mati", jalur: "kampus", kampus_id: k.j.id}); assert.equal(r.s, 201, r.t);
+  const rid = await idRelawan("Mhs Mati"), jid = id16(), pid = id16(), gid = id16(), kini = Date.now();
+  await sisip("relawan_permintaan", {id: pid, judul: "Uji mou mati", bencana: "banjir", prov: "62", kab: "Kab", butuh: '[{"keahlian":"medis","jumlah":1}]', mulai: geser(-5), selesai: geser(5), dibuat: kini});
+  await sisip("relawan_penugasan", {id: gid, permintaan_id: pid, relawan_id: rid, status: "bertugas", dibuat: kini, diubah: kini});
+  await sisip("relawan_jam", {id: jid, relawan_id: rid, penugasan_id: gid, masuk: kini - 3 * JAM, keluar: kini - JAM, menit: 120});
+  const tulis = () => [U.api("POST", `/api/relawan/kampus/relawan/${rid}`, {aksi: "verifikasi"}, K(kode)), U.api("POST", `/api/relawan/kampus/jam/${jid}`, {aksi: "sah"}, K(kode))];
+  for (const [mulai, berakhir, status] of [[geser(-400), geser(-1), "habis"], [geser(5), geser(300), "belum"]]) {
+    await U.DB.prepare("UPDATE institusi_perjanjian SET mulai = ?, berakhir = ? WHERE institusi_id = ?").bind(mulai, berakhir, k.j.id).run();
+    for (const x of await Promise.all(tulis())) { assert.equal(x.s, 403, x.t); assert.match(x.j.galat, /MoU/); }
+    assert.equal(await U.n("relawan", `id = '${rid}' AND status = 'terdaftar'`), 1, "tidak ada tulisan"); assert.equal(await U.n("relawan_jam", `id = '${jid}' AND sah = 0`), 1);
+    const s = await U.api("GET", "/api/relawan/kampus/saya", undefined, K(kode)); assert.equal(s.s, 200); assert.equal(s.j.kampus.status, status);
+    assert.equal((await U.api("GET", "/api/relawan/kampus/csv", undefined, K(kode))).s, 200);
+    assert.equal((await U.adm("POST", `/api/relawan/admin/jam/${jid}`, {aksi: "menunggu"})).s, 200, "admin tidak terikat MoU");
+  }
+  await U.DB.prepare("UPDATE institusi_perjanjian SET mulai = ?, berakhir = ? WHERE institusi_id = ?").bind(geser(-10), geser(200), k.j.id).run();
+  const [a, b] = await Promise.all(tulis()); assert.equal(a.s, 200, a.t); assert.equal(b.s, 200, b.t);
 });

@@ -56,8 +56,7 @@ const HALAMAN = [
     aksi: async t => { await t.klikTeks("button", "^Sawit$"); }, harus: "document.querySelectorAll('table tr').length >= 2"},
 ];
 /* Bug layar yang ditemukan uji ini: kunci "<halaman>|<bagian>" -> alasan. Pemilik halamannya memperbaiki, lalu baris ini dihapus. */
-const ARSIP_GANDA = "src/sitrep.js arsip(): new Response(o.body, {content-encoding: gzip}) tanpa encodeBody:'manual' -> workerd meng-gzip LAGI isi R2 yang sudah gzip; peramban hanya membuka satu lapis, r.json() gagal, halaman /sitrep?tgl= selalu 'Arsip tanggal itu tidak ada' (bukti: scratch miniflare, encodeBody:'manual' memperbaikinya). Pemilik: warga-api";
-const TODO = {"/sitrep (arsip)|1440": ARSIP_GANDA, "/sitrep (arsip)|390": ARSIP_GANDA};
+const TODO = {};   // kosong: semua halaman wajib lulus
 
 if (!CHROME) {
   test("uji layar BNPB DILEWATI: Chrome tidak ditemukan", {skip: "tidak ada Chrome/Chromium (set CHROME_BIN atau pasang Google Chrome); uji layar hanya jalan di mesin yang punya peramban"}, () => {});

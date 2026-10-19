@@ -5,6 +5,8 @@
     "cron arsipkanSitrep": "sitrep arsip: seed data pribadi",
     "GET /api/sitrep/arsip": "GET /api/sitrep/arsip sah",
     "GET /api/sitrep/arsip/daftar": "GET /api/sitrep/arsip/daftar: urut",
+    "POST /api/sitrep/arsip/hapus": "keamanan 2: POST /api/sitrep/arsip/hapus hanya moderator",
+    "cron bersihkanArsipSitrep": "keamanan 2: cron menit 17 menghapus arsip > 400 hari",
     "table gempa_kejadian": "kejadian G: susulan dalam jendela",
     "table gempa_sumber": "putaran ulang bukan kelipatan 5",
     "table cuaca_nowcast": "migrasi 0014 cuaca_nowcast idempoten",

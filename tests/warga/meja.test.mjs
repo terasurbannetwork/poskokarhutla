@@ -553,10 +553,26 @@ uji("sempurna: stok gudang, transaksi, dikirim mengurangi stok atomik, 409 bila 
   const kalah = ra.s === 409 ? a : b; assert.equal((await adm("GET", "/api/meja/catatan/" + kalah)).j.catatan.status, "disetujui", "yang kalah tetap disetujui");
   /* ubah isi gudang: stok_awal dihitung ulang terhadap transaksi; nama/barang beku; tak boleh membuat saldo minus */
   const ub = (data, h = p.h) => api("POST", "/api/meja/catatan/" + g.id, {aksi: "ubah", data}, h);
-  assert.equal((await ub(isi({stok_awal: 200}))).j.catatan.data.stok, 110, "200 + (-30+5-5-40-20)"); assert.equal((await ub(isi({barang: "tenda"}))).s, 409); assert.equal((await ub(isi({gudang: "Lain"}))).s, 409);
-  assert.equal((await ub(isi({stok_awal: 80}))).s, 409, "saldo akan minus (80 - 90)"); assert.equal(await saldo(g.id), 110);
+  assert.equal((await ub(isi({stok_awal: 200}), ADMIN)).j.catatan.data.stok, 110, "stok awal 100 ke 200 = koreksi +100 dari saldo 10"); assert.equal((await ub(isi({barang: "tenda"}))).s, 409); assert.equal((await ub(isi({gudang: "Lain"}))).s, 409);
+  assert.equal((await ub(isi({stok_awal: 0}), ADMIN)).s, 409, "saldo akan minus (110 - 200)"); assert.equal(await saldo(g.id), 110);
   /* ringkas dan rekap melihat gudang */
   const gr = (await adm("GET", "/api/meja/rekap")).j.per_kab.gudang["71|Kab Gudang"]; assert.equal(gr.n, 2); assert.equal(gr.status.menipis ?? 0, 1, "selimut 10 <= ambang 30");
+});
+
+uji("keamanan 2: stok_awal gudang hanya admin; selisih jadi baris koreksi; jejak 'isi diubah' memuat nilai lama ke baru", async () => {
+  const p = await petugas("Kab Aman2", ["gudang"]);
+  const g = (await baru(p.h, "gudang", undefined, undefined, {gudang: "G Aman", barang: "beras", satuan: "kg", stok_awal: 100, ambang_min: 30})).j.catatan;
+  const isi = (o = {}) => ({gudang: "G Aman", barang: "beras", satuan: "kg", stok_awal: 100, ambang_min: 30, ...o});
+  const ub = (data, h) => api("POST", "/api/meja/catatan/" + g.id, {aksi: "ubah", data}, h), n = q => U.n("meja_stok", `gudang_id = '${g.id}'${q ? " AND " + q : ""}`);
+  const saldo = async () => (await DB.prepare("SELECT stok FROM meja_catatan WHERE id = ?").bind(g.id).first()).stok;
+  const t = await ub(isi({stok_awal: 999}), p.h); assert.equal(t.s, 403, t.t); assert.equal(await saldo(), 100); assert.equal(await n(), 0, "tanpa baris stok");
+  assert.equal((await ub(isi({ambang_min: 40}), p.h)).s, 200, "petugas boleh ubah ambang"); assert.equal(await saldo(), 100); assert.equal(await n(), 0);
+  const a = await ub(isi({stok_awal: 150, ambang_min: 40}), ADMIN); assert.equal(a.s, 200, a.t); assert.equal(a.j.catatan.data.stok, 150);
+  const k = await DB.prepare("SELECT jenis, delta, saldo, oleh FROM meja_stok WHERE gudang_id = ?").bind(g.id).all(); assert.equal(k.results.length, 1);
+  assert.deepEqual([k.results[0].jenis, k.results[0].delta, k.results[0].saldo], ["koreksi", 50, 150]); assert.ok(k.results[0].oleh);
+  assert.equal((await ub(isi({stok_awal: 150, ambang_min: 40}), ADMIN)).s, 200); assert.equal(await n(), 1, "kirim ulang nilai sama tidak menambah koreksi"); assert.equal(await saldo(), 150);
+  const j = (await DB.prepare("SELECT catatan FROM meja_jejak WHERE catatan_id = ? ORDER BY id").bind(g.id).all()).results.map(x => x.catatan);
+  assert.ok(j.some(c => /isi diubah/.test(c) && /ambang_min 30 ke 40/.test(c)), j.join(" | ")); assert.ok(j.some(c => /stok_awal 100 ke 150/.test(c) && /ambang_min 40 ke 40/.test(c) === false), j.join(" | "));
 });
 
 uji("sempurna: agregat meja_ringkas sama persis dengan hitung manual dari meja_catatan untuk data acak (tulis, ubah status, umur)", async () => {

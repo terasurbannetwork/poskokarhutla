@@ -144,6 +144,7 @@ CREATE TABLE IF NOT EXISTS relawan_jam (
   dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0, 1)),
   klien_masuk TEXT CHECK (klien_masuk IS NULL OR length(klien_masuk) BETWEEN 8 AND 40),   -- kunci kirim ulang check-in/out dari antrean luring
   klien_keluar TEXT CHECK (klien_keluar IS NULL OR length(klien_keluar) BETWEEN 8 AND 40),
+  selisih_menit INTEGER CHECK (selisih_menit IS NULL OR selisih_menit BETWEEN -5256000 AND 5256000),   -- jam perangkat dikurangi jam server saat check-in/out (terbesar), untuk validator
   CHECK ((keluar IS NULL) = (menit IS NULL))
 );
 CREATE INDEX IF NOT EXISTS relawan_jam_r ON relawan_jam (relawan_id, masuk);
