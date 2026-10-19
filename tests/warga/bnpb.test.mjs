@@ -49,7 +49,7 @@ uji("cron menit 17: laju_bnpb lebih tua dari 2 hari dibuang", async () => {
 });
 
 uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP ketat tanpa inline", async () => {
-  for (const j of ["/risiko", "/sitrep", "/bnpb"]) {
+  for (const j of ["/risiko", "/sitrep", "/bnpb", "/kebutuhan"]) {
     const r = await U.api("GET", j);
     assert.equal(r.s, 200, j + " " + r.t.slice(0, 80));
     const csp = r.h.get("content-security-policy");
@@ -64,4 +64,11 @@ uji("berkas /bnpb/*.html dibuka langsung: 301 ke jalur bersih ber-CSP, berkas ta
   assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/relawan/saya");
   assert.equal((await buka("/bnpb/index.html")).headers.get("location"), "/bnpb");
   assert.equal((await buka("/bnpb/tidakada.html")).status, 404);
+});
+
+uji("/admin/gakkum: tanpa sesi dialihkan ke masuk, admin 200 dengan kerangka bersama", async () => {
+  const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/gakkum", {redirect: "manual"});
+  assert.equal(r.status, 303);
+  const a = await U.adm("GET", "/admin/gakkum");
+  assert.equal(a.s, 200); assert.match(a.t, /\/admin\/bersama\.js/); assert.match(a.t, /\/admin\/gakkum\.js/);
 });

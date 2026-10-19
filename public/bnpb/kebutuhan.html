@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Perkiraan kebutuhan musim · Pantau Bencana</title>
+<meta name="description" content="Perkiraan jam terbang water bombing, regu darat, dan logistik karhutla per provinsi untuk 30, 60, dan 90 hari ke depan, lengkap dengan rupiah dan asumsinya.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/kebutuhan.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Kebutuhan musim</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul">
+    <h1>Perkiraan kebutuhan musim</h1>
+    <span class="bn-pil kb-perkiraan" id="pilLabel"></span>
+    <span class="bn-pil kb-asumsi" id="pilAsumsi"></span>
+    <span class="bn-pil kb-nino" id="pilNino" hidden></span>
+    <span class="bn-pil" id="pilHari"></span>
+  </div>
+  <section class="bn-kartu kb-kontrol" aria-label="Pilihan">
+    <div class="kb-pilpil" id="fHorizon" role="group" aria-label="Horizon"></div>
+    <div class="ad-seg" id="fSkenario" role="group" aria-label="Skenario"></div>
+  </section>
+  <p id="pesan" class="bn-pesan" role="status">Memuat perkiraan…</p>
+  <div id="isi" hidden>
+    <div class="kb-kartu-baris" id="kartu"></div>
+    <section class="kb-tabel" aria-label="Kebutuhan per provinsi">
+      <div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr id="kepalaTabel">
+        <th><button type="button" data-k="prov">Provinsi<i></i></button></th>
+        <th><button type="button" data-k="titik">Titik panas<i></i></button></th>
+        <th><button type="button" data-k="kompleks">Kompleks api<i></i></button></th>
+        <th><button type="button" data-k="jam_terbang">Jam terbang<i></i></button></th>
+        <th><button type="button" data-k="regu_rata">Regu darat<i></i></button></th>
+        <th><button type="button" data-k="masker">Masker<i></i></button></th>
+        <th><button type="button" data-k="rp_total">Total rupiah<i>↓</i></button></th>
+      </tr></thead><tbody id="isiTabel"></tbody></table></div>
+      <div id="pgn"></div>
+    </section>
+    <section class="kb-asumsi-panel" aria-label="Asumsi tarif">
+      <h2 id="judulAsumsi"></h2>
+      <div class="ad-tabel-wadah"><table class="ad-tabel"><thead><tr><th>Komponen</th><th>Nilai</th><th>Satuan</th><th>Sumber</th></tr></thead><tbody id="isiAsumsi"></tbody></table></div>
+      <ul class="kb-rumus" id="rumus"></ul>
+    </section>
+  </div>
+</main>
+<script src="/inti/format.js"></script>
+<script src="/inti/tabel.js"></script>
+<script src="/bnpb/kebutuhan.js?v=1"></script>
+</body>
+</html>

@@ -37,6 +37,8 @@
       const n = [...(r.sematan || []), ...r.utas].filter(u => u.bantuan === "terbuka").length; return [F(n) + (r.berikut ? "+" : ""), "permintaan bantuan terbuka"]; }],
     ["riset", "Riset", "/riset", "riset", async () => { const r = await ambil("/api/riset/ringkas"); const k = r?.kartu; return k && typeof k.berjalan === "number" ? [F(k.berjalan), "riset berjalan"] : null; }],
     ["risiko", "Indeks risiko kecamatan", "/risiko", "risiko", async () => { const r = await awalRisiko(); const p = r?.per_kelas; return p ? [F((p["Tinggi"] || 0) + (p["Sangat tinggi"] || 0)), "kecamatan berisiko tinggi", "belum diuji balik"] : null; }],
+    ["kebutuhan", "Kebutuhan musim", "/kebutuhan", "sitrep", async () => { const r = await ambil("/banjir/data/kebutuhan_musim.json"); const v = r?.nasional?.["rata|90"]?.rp_total;
+      return typeof v === "number" ? ["Rp" + F(Math.round(v / 1e9)) + " miliar", "perkiraan biaya 90 hari"] : null; }, "perkiraan"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 

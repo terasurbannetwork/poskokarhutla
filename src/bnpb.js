@@ -1,6 +1,8 @@
 /* Ruang Koordinasi BNPB: helper bersama modul relawan, alun-alun, riset, meja kerja (docs/bnpb/ARSITEKTUR.md).
    Skema: migrations/0022_bnpb_bersama.sql (laju_bnpb). Pola kode tanpa akun = kode regu Posko (src/posko.js reguDari). */
 import {gagal, sha, acak, ipHash} from "./worker.js";
+import {halamanAdmin} from "./statistik.js";
+import {halamanBnpb} from "./admin_halaman.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 
@@ -51,4 +53,7 @@ export const RUTE_BNPB = {
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
   "GET /sitrep": (env, req, url) => halamanBnpbPublik(env, url, "sitrep"),
+  "GET /kebutuhan": (env, req, url) => halamanBnpbPublik(env, url, "kebutuhan"),
+  /* berkas Gakkum konsesi: bahan awal, admin saja (data konsesi sendiri publik di /data/konsesi2026) */
+  "GET /admin/gakkum": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("gakkum")),
 };

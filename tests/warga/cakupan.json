@@ -291,7 +291,9 @@
     "POST /api/relawan/dummy": "dummy isi: rantai lengkap",
     "GET /sitrep": "halaman Ruang Koordinasi tanpa modul",
     "GET /bnpb": "halaman Ruang Koordinasi tanpa modul",
-    "POST /api/riset/admin/luaran/:id": "perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui"
+    "POST /api/riset/admin/luaran/:id": "perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui",
+    "GET /kebutuhan": "halaman Ruang Koordinasi tanpa modul",
+    "GET /admin/gakkum": "/admin/gakkum: tanpa sesi"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
