@@ -252,19 +252,41 @@
     }
     return [...hasil.values()].sort((a, b) => (b.luas_peta_ha || 0) - (a.luas_peta_ha || 0));
   }).catch(() => []);
-  const JNS = {sawit: "Sawit", hti: "HTI", hph: "HPH", tambang: "Tambang"};
-  /* kartu sama dengan tooltip tabel perusahaan (A.tip); pemegang di luar daftar WALHI: logo grup, jenis, luas areal di peta */
-  const barisPer = p => { const w = A.per?.[p.nama];
-    if (w) return `<div class="ak-kp" data-ak-buka="${esc(p.nama)}" tabindex="0" role="button" title="Buka rincian perusahaan">${A.tip(w)}</div>`;
-    return `<div class="ak-kp"><div class="tp2-h ak-tch">${A.logo(p.grup || p.nama, 26)}<span><b>${benderaDaf([A.d?.grup_negara?.[p.grup]].filter(Boolean), 11)}${esc(p.nama)}</b><small>${esc([p.grup, p.kab].filter(Boolean).join(" · "))}</small></span></div>`
-      + `<div class="ak-tcs"><span><b>${esc(JNS[p.jenis] || p.jenis || "–")}</b>jenis konsesi</span>${p.luas_peta_ha ? `<span><b>${fmt(p.luas_peta_ha)}</b>ha areal di peta</span>` : ""}</div></div>`; };
+  /* data lengkap per konsesi 2026 (laporan konsesi, public/data/konsesi2026/<prov>.json, id = id poligon peta): dimuat per provinsi
+     ponytail: berkas provinsi memuat geom (s.d. 3 MB); berkas ringkas tanpa geom dari pipeline bila terasa lambat */
+  const K26 = {};
+  A.k26 = prov => K26[prov] ||= fetch(`data/konsesi2026/${prov}.json`).then(r => r.ok ? r.json() : {perusahaan: []})
+    .then(d => Object.fromEntries((d.perusahaan || []).map(({geom, harian, pt, ...r}) => [r.id, r]))).catch(() => ({}));
+  const JNS = {sawit: ["Sawit", "#c98a3c"], hti: ["HTI", "#6b8e3a"], hph: ["HPH", "#2f6f8f"], tambang: ["Tambang", "#7a5c99"]};
+  const pc = x => x == null ? "–" : x > 0 && x < .005 ? "< 1%" : Math.round(x * 100) + "%";
+  /* titik > 2 hari = titik dalam kejadian (rangkaian hari ber-titik) yang lamanya > 2 hari; kompleks = jumlah kejadian (sama dengan laporan konsesi) */
+  const lama = r => (r.kejadian || []).reduce((a, e) => a + (e[2] > 2 ? e[3] : 0), 0);
+  const rspo = r => r.jenis !== "sawit" ? "" : !r.rspo ? `<span class="ak-rs ak-rs0" data-tip="Tidak tercocokkan di data RSPO 2020 (GFW)">RSPO tidak tercatat</span>`
+    : `<span class="ak-rs" data-tip="${r.rspo.sertifikat ? "Bersertifikat" : "Anggota"} RSPO lewat ${esc(r.rspo.grup || "")}${r.rspo.sejak ? " sejak " + esc(r.rspo.sejak) : ""} (data RSPO 2020)">${r.rspo.sertifikat ? "✓ RSPO bersertifikat" : "Anggota RSPO"}</span>`;
+  const barisPer = (p, r) => {
+    const w = A.per?.[p.nama], gr = w?.grup?.length ? w.grup.join(", ") : r?.grup || p.grup, ng = w ? w.negara : r?.negara?.length ? r.negara : [A.d?.grup_negara?.[p.grup]].filter(Boolean);
+    const ngA = /Sinar Mas/i.test(gr || "") ? [] : ng;   /* Sinar Mas = grup Indonesia, sama dengan laporan konsesi (pemilik, 18 Okt 2026) */
+    const j = JNS[p.jenis] || [p.jenis, "#8a94a6"], luas = r?.luas_ha ?? p.luas_peta_ha;
+    const ub = (n, l, c = "") => `<span${c ? ` class="${c}"` : ""}><b>${n}</b>${l}</span>`;
+    const ps = (w?.pemegang || []).filter(x => x.negara !== "ID");
+    return `<div class="ak-kp"${w ? ` data-ak-buka="${esc(p.nama)}" tabindex="0" role="button" title="Buka rincian perusahaan"` : ""}>
+      <div class="tp2-h ak-tch">${A.logo(gr || p.nama, 28)}<span><b>${benderaDaf(ngA, 11)}${esc(p.nama)}</b><small>${esc([gr || "Grup belum teridentifikasi", (r?.kab || [p.kab]).filter(Boolean).join(", ")].join(" · "))}</small></span></div>
+      <div class="ak-kpm"><span class="ak-j" style="--w:${j[1]}">${esc(j[0])}</span>${r ? rspo(r) : ""}${r?.titik_7h ? `<span class="ak-rs ak-rsa">● Masih ada api</span>` : ""}</div>
+      <div class="ak-kps">${ub(luas != null ? fmt(luas) : "–", "ha konsesi")}${ub(r?.gambut_ha != null ? fmt(r.gambut_ha) : "–", `ha gambut${r?.gambut_ha && luas ? ` · ${pc(r.gambut_ha / luas)}` : ""}`)}
+        ${r ? ub(fmt(r.titik), "titik panas 2026") + ub(fmt(lama(r)), "titik > 2 hari") + ub(fmt(r.titik_7h || 0), "titik 7 hari", r.titik_7h ? "ak-tck" : "")
+          + ub(fmt((r.kejadian || []).length), "kompleks") + ub(fmt(r.luas_bakar_ha || 0), `ha terbakar · ${pc(r.persen_bakar)} konsesi`, "ak-kpl") : ""}</div>
+      ${r ? "" : `<p class="ak-kpk">Tidak ada titik panas di konsesi ini sepanjang 2026.</p>`}
+      ${ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : ""}</div>`; };
   const _bukaLaci = Laci.buka.bind(Laci);
-  Laci.buka = function (id) { _bukaLaci(id); A.perKompleks(id).then(ps => {
+  Laci.buka = function (id) { _bukaLaci(id); A.perKompleks(id).then(async ps => {
+    const d26 = Object.assign({}, ...await Promise.all([...new Set(ps.map(p => p.prov).filter(Boolean))].map(A.k26)));
     if (S.pilihK !== id || $("#laci .ak-laci")) return;
     const sek = [...document.querySelectorAll("#laci details.lipat")].find(d => (d.querySelector("summary")?.textContent || "").startsWith("Lahan & penanggung jawab"));
     if (!sek) return;
-    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di kompleks ini</div>${ps.length ? ps.map(barisPer).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di kompleks ini.</p>`}</div>`);
-    sek.querySelector(".ak-laci").onclick = e => { const b = e.target.closest("[data-ak-buka]"); if (b) A.buka(b.dataset.akBuka); }; }); };
+    const urut = ps.map(p => [p, d26[p.id]]).sort((a, b) => (b[1]?.titik || 0) - (a[1]?.titik || 0));
+    sek.querySelector(".isi").insertAdjacentHTML("beforeend", `<div class="ak-laci"><div class="lbl">Perusahaan pemegang konsesi di kompleks ini</div>${urut.length ? urut.map(([p, r]) => barisPer(p, r)).join("") : `<p style="margin:0;font-size:12.5px">Tidak ada areal konsesi bernama di kompleks ini.</p>`}
+      <p class="ak-kpk">Sumber: NASA FIRMS VIIRS 375 m di poligon konsesi GFW/Trase, 1 Jan 2026 s.d. hari ini; terbakar = indikasi dari piksel VIIRS.</p></div>`);
+    sek.querySelector(".ak-laci").onclick = e => { const b = e.target.closest("[data-ak-buka]"); if (b && !e.target.closest("[data-tip]")) A.buka(b.dataset.akBuka); }; }); };
   /* tooltip kompleks (konsesi.js): nama perusahaan, paling banyak 3 */
   A.tipKompleks = id => A.perKompleks(id).then(ps => ps.length ? `<div class="ak-tkp"><small>Perusahaan</small>${ps.slice(0, 3).map(p => `<span>${benderaDaf(A.per?.[p.nama]?.negara, 11)}${esc(p.nama)}</span>`).join("")}${ps.length > 3 ? `<span class="ak-mt">+${ps.length - 3} lainnya</span>` : ""}</div>` : "");
   A.muat();
