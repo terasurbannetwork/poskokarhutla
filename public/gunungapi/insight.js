@@ -75,7 +75,7 @@ const Insight = {
       {k: "jam", n: "Abu tiba", num: 1, v: r => r.jam_tiba ?? 99, h: r => r.jam_tiba != null ? `jam ke-${fmt(r.jam_tiba)}` : "–"}];
     const cepat = [...B].sort((a, b) => a.jam_tiba - b.jam_tiba)[0], gn = new Set(B.map(b => b.gunung)).size;
     return this.ex(`${this.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam dari ${fmt(gn)} gunung; tercepat ${this.nm(cepat.iata || cepat.icao)} dalam ${this.hl(fmt(cepat.jam_tiba) + " jam")}`, "", "",
-      this.tabel("bandara", kol, B, r => `data-gn="${esc(nmG(r.gunung)?.nama || "")}"`, 10, "bandara", r => -r.jam_tiba), "Skenario Pantau Bencana, bukan advisory VAAC. Sumber: model abu Pantau Bencana (angin ECMWF IFS via Open-Meteo), OurAirports"); },
+      this.tabel("bandara", kol, B, r => `data-gn="${esc(nmG(r.gunung)?.nama || "")}"`, 10, "bandara", r => -r.jam_tiba), "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Pantau Bencana (angin ECMWF IFS via Open-Meteo), OurAirports"); },
 
   /* 5. penduduk di KRB III per gunung */
   exKrb() {
@@ -127,7 +127,7 @@ const Insight = {
     const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
     if (!this.st.pelW) { const skor = w => (w.hari || []).reduce((a, h) => a + (h.p || []).reduce((x, y) => x + (y || 0), 0), 0);
       this.st.pelW = Object.keys(d.wilayah).sort((a, b) => skor(d.wilayah[b]) - skor(d.wilayah[a]) || (d.wilayah[b].jenis === "bandara") - (d.wilayah[a].jenis === "bandara"))[0]; }
-    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "abu gunung api", sumber: "Skenario Pantau Bencana (Open-Meteo, MAGMA PVMBG); bukan advisory VAAC"}); },
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "abu gunung api", sumber: "Skenario jika meletus sekarang, bukan prakiraan letusan atau advisory VAAC (Open-Meteo, MAGMA PVMBG)"}); },
   exDaftar() {
     const G = S.st.gunung, kol = [{k: "nm", n: "Gunung", v: r => r.nama, h: r => `<b>${esc(r.nama)}</b>`}, {k: "pv", n: "Provinsi", v: r => r.prov, h: r => esc(r.prov)},
       {k: "lv", n: "Level", v: r => r.level, h: r => pilLv(r.level, true)},

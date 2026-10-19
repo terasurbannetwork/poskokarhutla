@@ -493,7 +493,10 @@ def muat_krb():
         os.makedirs(MENTAH, exist_ok=True)
         u = KRB_URL + "/query?" + urllib.parse.urlencode({"where": "1=1", "outFields": "namobj,lcode,thterbit", "returnGeometry": "true",
                                                            "outSR": 4326, "maxAllowableOffset": 0.0003, "geometryPrecision": 5, "f": "geojson"})
-        open(p, "wb").write(ambil(u, timeout=300))
+        b = ambil(u, timeout=300)
+        if not json.loads(b).get("features"):   # tulis hanya bila isinya benar-benar KRB (galat server kadang 200 tanpa features; berkas kosong meracuni cache)
+            raise RuntimeError("KRB tanpa features: " + b[:120].decode("utf-8", "replace"))
+        open(p, "wb").write(b)
     return json.load(open(p))["features"]
 
 

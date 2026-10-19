@@ -215,9 +215,10 @@ const Detail = {
   buka(g) {
     const ev = letusanDari(g.nama).slice(0, 3), kv = (v, l) => !v ? "" : `<div><b>${v}</b><span>${l}</span></div>`;
     const kot = [kv(g.radius_km && fmt(g.radius_km) + " km", "radius"), kv(g.sektor_km && fmt(g.sektor_km) + " km", "jarak sektor"), kv(g.penduduk_radius > 0 ? jiwaTxt(g.penduduk_radius) : null, "jiwa dalam radius (perkiraan WorldPop 1 km)"), kv(g.tinggi > 0 && fmt(g.tinggi) + " m", "tinggi puncak")].join("");
-    $("#dlg").innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(g.nama)}</h3><p>${esc(g.prov)}</p><div style="margin-top:8px">${pilLv(g.level)}</div></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
+    $("#dlg").innerHTML = `<div class="dh"><div><h3 id="dlgJudul">${esc(g.nama)}</h3><p>${esc(g.prov)}</p><div style="margin-top:8px;display:flex;gap:6px;flex-wrap:wrap">${pilLv(g.level)}<span id="dlgKode"></span></div></div><button type="button" aria-label="Tutup" data-tutup>×</button></div>
       <div class="db">${kot ? `<div class="kv gn-kv">${kot}</div>` : ""}
       ${g.rekomendasi ? `<details class="lipat" open><summary>Rekomendasi PVMBG</summary><div class="isi"><p class="rek-teks" translate="no" lang="id">${esc(g.rekomendasi)}</p><p class="rek-sumber">${g.periode ? `<span translate="no" lang="id">${esc(g.periode)}</span> · ` : ""}MAGMA Indonesia</p></div></details>` : ""}
+      ${this.sKontak(g.kontak)}
       ${ev.length ? `<details class="lipat" open><summary>Erupsi terbaru</summary><div class="isi"><ul class="ev">${ev.map(x => `<li><b>${tglJam(x.waktu)}</b>${x.tinggi_m ? ` <span class="pl" style="--w:#b5523b">kolom abu ${fmt(x.tinggi_m)} m</span>` : ""}<br><span translate="no" lang="id">${esc(x.ket)}</span></li>`).join("")}</ul></div></details>` : ""}
       <div id="dlgLanjut"></div>
       <div class="dk"><button class="btn" type="button" data-sim><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/></svg> Simulasi</button>
@@ -227,9 +228,22 @@ const Detail = {
     d.querySelector("[data-sim]").onclick = () => { d.close(); bukaTab("simulasi", true, idGn(g.nama)); };
     d.querySelector("[data-bagi]").onclick = () => Bagikan.bagi({...Bagikan.konteks("gunung", g), lainnya: () => Bagikan.buka()});
     d.onclick = e => { if (e.target === d) d.close(); };
+    d.onclose = () => { if (location.pathname.startsWith("/gunungapi/k/")) history.replaceState(null, "", "/gunungapi/peta"); };   /* tautan kejadian hanya selama laci terbuka */
     if (!d.open) d.showModal();
-    this.lanjut(g);
+    this.kode(g); this.lanjut(g);
   },
+  /* kode kejadian V (pil); hanya gunung Waspada ke atas punya kode. Bila laci dibuka dari tautan /gunungapi/k/..., tautan mengikuti gunung yang sedang terbuka */
+  async kode(g) {
+    const d = $("#dlg"); await Kejadian.muat(); const v = Kejadian.kode(g), el = d.querySelector("#dlgKode"); if (!el || d._g !== g) return;
+    if (v) el.innerHTML = `<span class="pl" style="--w:#5b6575" translate="no">${esc(v)}</span>`;
+    if (location.pathname.startsWith("/gunungapi/k/")) history.replaceState(null, "", v ? "/gunungapi/k/" + v : "/gunungapi/peta"); },
+  /* kontak resmi hanya dari yang tertulis di teks rekomendasi PVMBG (magma.py urai_kontak); tak ada daftar pos terstruktur, jadi gunung tanpa teks kontak tak punya bagian ini (A18) */
+  sKontak(k) {
+    if (!k) return "";
+    const tel = n => `<a href="tel:+62${n.replace(/\D/g, "").replace(/^0/, "")}" translate="no">${esc(n)}</a>`, li = [];
+    if (k.pos) li.push(`<li><b translate="no">${esc(k.pos.nama)}</b>${k.pos.di ? ` <span translate="no">(${esc(k.pos.di)})</span>` : ""}<br>${(k.pos.telp || []).map(tel).join(", ")}</li>`);
+    if (k.pusat) li.push(`<li><b>Pusat Vulkanologi dan Mitigasi Bencana Geologi</b> <span translate="no">(Bandung)</span><br>${tel(k.pusat)}</li>`);
+    return li.length ? lipat("Kontak resmi", `<ul class="ev">${li.join("")}</ul><p class="rek-sumber">Sumber: teks rekomendasi PVMBG di MAGMA Indonesia</p>`) : ""; },
   /* bagian yang bergantung pada berkas turunan diisi sesudah dialog tampil (klik tidak menunggu jaringan); bagian tanpa data dibuang */
   async lanjut(g) {
     const id = idGn(g.nama), [abu, pg] = await Promise.all([Data.abu(), Data.pg(id)]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;

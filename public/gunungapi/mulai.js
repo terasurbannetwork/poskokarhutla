@@ -6,9 +6,11 @@ PilihCantik.pasang();
   try { await muatData(); } catch (e) { $("#muat").innerHTML = `<div><b>Data belum tersedia.</b><br>${esc(e.message)}</div>`; return; }
   renderLevelSeg(); renderDaftar(); await Peta.init(); renderLegenda(); Peta.segarkan();
   $("#muat").classList.add("hilang");
+  Kejadian.muat();   /* kecil (±8 KB); kode V dipakai laci dan tombol bagikan */
   /* /gunungapi/<tab> bersih; tab tak dikenal jatuh ke Peta */
   const j = location.pathname.replace(/^\/gunungapi\/?/, "").replace(/\/+$/, "").replace(/^index\.html$/, "");
-  if (TABS.some(t => t[0] === j)) bukaTab(j, false); else if (j) history.replaceState(null, "", "/gunungapi/peta");
+  const kj = j.match(/^k\/(V\d+)$/);
+  if (kj) Kejadian.buka(kj[1], false); else if (TABS.some(t => t[0] === j)) bukaTab(j, false); else if (j) history.replaceState(null, "", "/gunungapi/peta");
 })();
 /* panel kiri dan kanan bisa ditarik; lebar diingat per perangkat */
 (() => { const atur = (el, kunci, sisi, min, max) => { if (!el) return; const w0 = bacaLokal(kunci, null); if (w0 && innerWidth > 900) el.style.width = w0 + "px";
