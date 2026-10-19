@@ -267,12 +267,12 @@ def main():
     n = d["nasional"]
     print(f"laporan_banjir: {d['hari'][-1]} banjir_sa {n['banjir_sa'][-1]} longsor_sa {n['longsor_sa'][-1]} rob {n['rob_siaga'][-1]} "
           f"penduduk {n['penduduk'][-1]}; {len(d['prov'])} prov, {len(d['kab'])} kab -> {jalur}", file=sys.stderr)
-    # fase 3 RENCANA-PELUANG: telusur hulu per DAS lalu laporan kejadian per kab/kota Siaga (banjir, cuaca). Dipanggil dari sini karena
+    # fase 3 RENCANA-PELUANG: telusur hulu per DAS lalu laporan kejadian per kab/kota Siaga banjir (cuaca: scripts/cuaca/cuaca.py, lintas.yml). Dipanggil dari sini karena
     # token CLI tak bisa menyunting workflow; boleh gagal tanpa menggagalkan laporan harian.
     import importlib.util
     import traceback
     for nama, jalur_py, panggil in (("hulu", "scripts/banjir/hulu.py", lambda m: m.main()),
-                                    ("laporan_kejadian", "scripts/umum/laporan_kejadian.py", lambda m: [m.jalankan(x) for x in ("banjir", "cuaca")])):
+                                    ("laporan_kejadian", "scripts/umum/laporan_kejadian.py", lambda m: m.jalankan("banjir"))):
         try:
             sp = importlib.util.spec_from_file_location("fase3_" + nama, os.path.join(LAP.AKAR, jalur_py))
             m = importlib.util.module_from_spec(sp)

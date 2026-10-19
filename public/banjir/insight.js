@@ -227,7 +227,7 @@ const Insight = {
     const opsi = H.daerah.map(x => [esc(x.slug), `${esc(x.kab)}${x.status.maks >= 2 ? (x.status.maks === 3 ? " · Awas" : " · Siaga") : ""}`]);
     Kartu.leg([[BIRU, "porsi hujan sub-DAS"], [MERAH, "memuat sel hutan hilang terbanyak sejak 2021"], ...(U.M ? [] : [[NAVY, "konsesi di sub-DAS"]])]);  /* layar sempit: konsesi cukup di tooltip */
     return this.ex(judul, "", "", top.length ? `<svg viewBox="0 0 ${W} ${baris.length * rh + 6}" role="img" aria-label="Porsi hujan per sub-DAS hulu">${g}</svg>` : "",
-      `Sumber: hujan Open-Meteo kisi 0,25 derajat, batas HydroBASINS v1c; hutan hilang dan konsesi hulu di <a href="/banjir/laporan-das.html#${esc(d.slug)}">Bukti DAS hulu</a>. Porsi volume hujan, bukan debit sungai`,
+      `Sumber: hujan Open-Meteo kisi 0,25 derajat, batas HydroBASINS v1c; hutan hilang dan konsesi hulu di <a href="/banjir/laporan-das.html#${esc(d.slug)}">Bukti DAS hulu</a>. Porsi volume hujan, bukan debit sungai${H.status_cocok === false ? ". Status kab tidak ditampilkan: data status beda hari dengan data hujan" : ""}`,
       this.selJenis("hulu", opsi, "Daerah") + this.seg("hj", [["lalu", "3 hari terakhir"], ["depan", "3 hari ke depan"]])); },
 
   /* 6c. uji balik: seberapa tepat status ini (validasi.json, uji_balik.py); angka apa adanya, termasuk yang buruk */

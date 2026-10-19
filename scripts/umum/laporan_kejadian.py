@@ -12,7 +12,7 @@ Isi: kronologi (seri kab dari laporan modul), asal (banjir: hulu.json per sub-DA
 model vs alat ukur (uji balik yang sudah ada), dampak jiwa (metrik jiwa modul), dan bagian Batasan.
 Modul tanpa status Siaga per kab/kota (gempa, gunung api, kekeringan, karhutla) belum memicu laporan; lihat BATASAN_MODUL.
 
-Keluaran: <dir>/kejadian/<modul>-<kode>.json + <dir>/kejadian/index.json. Laporan yang pemicunya berhenti tetap disimpan
+Keluaran: <dir>/kejadian/<modul>-<kode>.json + <dir>/kejadian/index-<modul>.json. Laporan yang pemicunya berhenti tetap disimpan
 SIMPAN_HARI hari sesudah hari terakhir Siaga (arsip), lalu dihapus.
 """
 import datetime as dt
@@ -247,7 +247,8 @@ def jalankan(modul, dibuat=None):
     dibuat = dibuat or dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00")
     kel = os.path.join(AKAR, spec["dir"], "kejadian")
     os.makedirs(kel, exist_ok=True)
-    jalur_idx = os.path.join(kel, "index.json")
+    # satu index per modul: banjir.yml, lintas.yml (cuaca), dan udara.yml terbit dari cache masing-masing, index bersama akan saling menimpa
+    jalur_idx = os.path.join(kel, f"index-{modul}.json")
     idx = _baca(os.path.relpath(jalur_idx, AKAR)) or {"versi": "kejadian/1", "laporan": []}
     hasil = bangun(modul, L, dibuat)
     baru = {(e["modul"], e["kode"]) for _, e in hasil}

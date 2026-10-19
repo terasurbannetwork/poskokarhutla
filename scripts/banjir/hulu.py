@@ -123,7 +123,7 @@ def bangun(hujan, status, bukti, dibuat):
     out.sort(key=lambda o: (-o["status"]["maks"], -(o["lalu_mm"] or 0)))
     return {"versi": "hulu/1", "dibuat": dibuat, "hari_ini": hi,
             "jendela": {"lalu": [hari[lalu[0]], hari[lalu[-1]]] if lalu else None, "depan": [hari[depan[0]], hari[depan[-1]]] if depan else None},
-            "status_hari": status.get("hari", [])[:1] + status.get("hari", [])[-1:],
+            "status_hari": status.get("hari", [])[:1] + status.get("hari", [])[-1:], "status_cocok": hi in status.get("hari", []),
             "n_siaga": sum(1 for o in out if o["status"]["maks"] >= 2), "daerah": out, "sumber": SUMBER, "batasan": BATASAN}
 
 
@@ -179,7 +179,8 @@ def uji():
     assert hu["depan_persen"] == 10.0, hu
     assert d["depan_mm"] == round(2000 / 300, 1) and d["cakupan_persen"] == 100.0, d
     st2 = dict(status, hari=["2026-10-20", "2026-10-21"])                        # status basi/beda hari: tidak dipakai
-    assert bangun(hujan, st2, bukti, "x")["daerah"][0]["status"] == {"hari_ini": 0, "maks": 0}
+    H2 = bangun(hujan, st2, bukti, "x")
+    assert H2["daerah"][0]["status"] == {"hari_ini": 0, "maks": 0} and H2["status_cocok"] is False and H["status_cocok"] is True
     assert [o["label"] for o in d["subdas"]] == ["Kec. Hulu", "Kec. Hilir"], [o["label"] for o in d["subdas"]]
     assert d["vonis"].startswith("100,0% hujan 3 hari terakhir di hulu A jatuh di sub-DAS sekitar Kec. Hulu"), d["vonis"]
     assert jendela(["a", "b", "c", "d", "e"], "a") == ([0], [1, 2, 3])
@@ -228,6 +229,11 @@ def main():
     g = periksa(H)
     if g:
         sys.exit("hulu.json ditolak:\n- " + "\n- ".join(g))
+    if not H["status_cocok"]:
+        print(f"::warning title=hulu status basi::status.json ({H['status_hari']}) tidak memuat hari_ini hujan {H['hari_ini']}; status kab ditulis 0", file=sys.stderr)
+    telat = (dt.datetime.now(WIB).date() - dt.date.fromisoformat(H["hari_ini"])).days
+    if telat > 1:
+        print(f"::warning title=hulu hujan basi::hari_ini hujan.json {H['hari_ini']} tertinggal {telat} hari", file=sys.stderr)
     if not H["daerah"]:
         sys.exit("hulu: tidak ada daerah ber-subdas (jalankan bukti_das.py subdas)")
     simpan(JALUR, H)

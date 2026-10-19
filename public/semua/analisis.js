@@ -127,9 +127,9 @@ function cara(I, O) {
 
 /* ---------- pasang */
 export async function pasangAnalisis(el) {
-  const [I, O, LJ, KB, KU] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json"),
-    getJson("/banjir/data/kejadian/index.json"), getJson("/udara/data/kejadian/index.json")]);
-  const KJ = [KB, KU].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
+  const [I, O, LJ, KB, KC, KU] = await Promise.all([getJson("/data/iklim_outlook.json"), getJson("/banjir/data/outlook12.json"), getJson("/gempa/data/laju.json"),
+    getJson("/banjir/data/kejadian/index-banjir.json"), getJson("/banjir/data/kejadian/index-cuaca.json"), getJson("/udara/data/kejadian/index-udara.json")]);
+  const KJ = [KB, KC, KU].filter(k => k?.versi === "kejadian/1").flatMap(k => k.laporan).sort((x, y) => (y.aktif - x.aktif) || (y.terakhir > x.terakhir) - (y.terakhir < x.terakhir) || x.kab.localeCompare(y.kab, "id"));
   const iOk = I?.versi?.startsWith("iklim_outlook/") && I.prakiraan?.length, oOk = O?.versi?.startsWith("outlook12/") && O.tabel?.length;
   const st = {musim: ""};
   const isi = [kartuKejadian(KJ), iOk ? kartuIklim(I, st) : "", oOk ? kartuBahaya(O, LJ) : "", oOk ? kartuBerantai(O) : ""].join("");
