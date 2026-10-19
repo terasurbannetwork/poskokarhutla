@@ -63,3 +63,6 @@ public/data/jejak_api.json
 
 # PMTiles tahap 2 (diunggah ke R2, tidak di-commit)
 data/ubin/*.pmtiles
+
+# Himawari: ditarik CI tiap 30 menit langsung ke R2, bukan berkas repo
+public/data/himawari.json

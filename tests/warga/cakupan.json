@@ -31,6 +31,7 @@
     "trigger audit_tetap_ubah": "audit moderasi hanya bisa ditambah",
     "trigger audit_tetap_hapus": "audit moderasi hanya bisa ditambah",
     "GET /api/titik": "titik panas 3 jam",
+    "GET /api/himawari": "himawari: R2 data/himawari.json",
     "cron bersihkan": "kedaluwarsa: hilang dari daftar",
     "cron titik": "titik panas 3 jam",
     "aset statis": "situs statis tetap dilayani",

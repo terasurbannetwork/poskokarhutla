@@ -135,3 +135,12 @@ uji("ubin: lewat worker.fetch melayani /ubin/ dan tidak mengganggu aset lain", a
   const s = await worker.fetch(new Request("https://x.test/index.css"), e, {});
   assert.equal(await s.text(), "aset");
 });
+
+uji("himawari: R2 data/himawari.json disajikan; objek hilang = kosong 200", async () => {
+  const isi = '{"acuan":"2026-10-19T00:00Z","baris":[[-2,114,1,5,1,1,1]]}', ada = {MEDIA: {get: async k => k === "data/himawari.json" ? {body: new Response(isi).body} : null}};
+  const a = await worker.fetch(new Request("https://x.test/api/himawari"), ada, undefined);
+  assert.equal(a.status, 200); assert.match(a.headers.get("content-type"), /application\/json/); assert.match(a.headers.get("cache-control"), /max-age=300/);
+  assert.equal(await a.text(), isi);
+  const b = await worker.fetch(new Request("https://x.test/api/himawari?x=1"), {MEDIA: {get: async () => null}}, undefined);
+  assert.equal(b.status, 200); assert.deepEqual(await b.json(), {acuan: null, baris: []});
+});
