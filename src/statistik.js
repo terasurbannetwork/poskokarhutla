@@ -10,7 +10,7 @@
      melewati 20 rb, kiriman disampel deterministik per peramban (p 1 -> 0,5 -> 0,2 -> 0,05) dan dicatat dengan bobot 1/p;
      dasbor menandai "perkiraan (sampel)". Batas kasar tulisan statistik: ~40 rb/hari + 5 % dari kelebihannya.
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
-import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody} from "./worker.js";
+import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, HOST_TERKUNCI} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
 import {halStatistik} from "./bencana.js";
 
@@ -228,7 +228,7 @@ const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {locat
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
 const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])/.test(k) ? k : ""; };
 export async function masuk(env, req, kini, halamanMasuk) {
-  const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
+  const ke = tujuan(req), merek = HOST_TERKUNCI.has(new URL(req.url).hostname) ? "Centurisk 97" : undefined, hal = g => halamanMasuk(g, ke, merek);
   if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
   if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : html(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);

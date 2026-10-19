@@ -33,13 +33,13 @@ ${atas(k)}
 ${ekor}
 </body></html>`;
 
-export const halamanMasuk = (galat, ke = "") => `${kepala("Masuk admin · Pantau Bencana")}
+export const halamanMasuk = (galat, ke = "", merek = "Pantau Bencana") => `${kepala("Masuk admin · " + merek)}
 <body class="ad-masuk">
 <div class="ad-cahaya" aria-hidden="true"><i></i><i></i><i></i></div>
 <main class="ad-kartu-masuk">
   <div class="ad-kepala-masuk">
     <img src="/img/logo.svg?v=2" alt="" width="64" height="64">
-    <h1>Pantau Bencana</h1>
+    <h1>${esc(merek)}</h1>
     <p>Panel admin</p>
   </div>
   <div class="ad-garis"></div>

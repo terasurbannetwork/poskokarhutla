@@ -371,7 +371,8 @@ uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain l
   assert.equal((await buka("/f/0123456789abcdef")).status, 303, "tautan foto ikut terkunci");
   assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
   const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
-  assert.match(await f.text(), /action="\/admin\/masuk\?ke=%2Fpeta"/);
+  const tf = await f.text(); assert.match(tf, /action="\/admin\/masuk\?ke=%2Fpeta"/); assert.match(tf, /<h1>Centurisk 97<\/h1>/, "merek Centurisk 97 di centurisk97.id");
+  assert.match((await panggil("GET", "/admin/masuk")).teks, /<h1>Pantau Bencana<\/h1>/, "domain lain tetap Pantau Bencana");
   const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
     headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
   assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
