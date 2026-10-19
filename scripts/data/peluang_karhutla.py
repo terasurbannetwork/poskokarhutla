@@ -11,7 +11,7 @@ acak di wilayah itu melewati ambang (pecahan sel yang diharapkan melewati). Buka
 Pakai:  python3 scripts/data/peluang_karhutla.py        tulis public/data/peluang.json
         python3 scripts/data/peluang_karhutla.py uji   self-check luring
 """
-import importlib.util, json, os, statistics, sys
+import datetime as dt, importlib.util, json, os, statistics, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, PROVINSI
@@ -45,28 +45,41 @@ def hari_wilayah(sel, tanggal):
     return out
 
 
-def vonis(hs, nama, n_sel):
-    """Kalimat dari ambang Sangat Tinggi bila ada hari dengan >= 10% sel, selain itu dari ambang Tinggi."""
+LUAS = [(0.9, "hampir seluruh"), (0.6, "sebagian besar"), (0.4, "sekitar separuh"), (0.15, "sebagian"), (0.0, "sebagian kecil")]
+
+
+def LUAS_KATA(p):
+    return next(k for b, k in LUAS if p >= b)
+
+
+def vonis(hs, nama):
+    """Kalimat dari ambang Sangat Tinggi bila ada hari dengan >= 10% wilayah, selain itu dari ambang Tinggi."""
     i = 1 if max((h["p"][1] or 0) for h in hs) >= 0.10 else 0
-    kej = ["Tinggi (FWI 7 atau lebih)", "Sangat Tinggi (FWI 14 atau lebih)"][i]
+    kej = ["Tinggi", "Sangat Tinggi"][i]
     puncak = max(hs, key=lambda h: h["p"][i] or 0)
     p = puncak["p"][i] or 0
     if p == 0:
-        return f"Dalam {len(hs)} hari ke depan, tidak ada sel di {nama} yang berbahaya api {kej} di satu skenario pun."
-    return (f"Dalam {len(hs)} hari ke depan, sekitar {P.persen(p)} dari {n_sel} sel di {nama} diperkirakan berbahaya api {kej} "
-            f"pada puncaknya, {P.tanggal(puncak['t'])}.")
+        return f"Dalam {len(hs)} hari ke depan, bahaya api {kej} tidak diperkirakan di {nama} pada satu skenario pun."
+    luas = LUAS_KATA(p)
+    return (f"Dalam {len(hs)} hari ke depan, bahaya api {kej} diperkirakan meliputi {luas} {nama} "
+            f"pada puncaknya, {P.tanggal(puncak['t'])} ({P.persen(p)} wilayah).")
 
 
-def bangun(ans):
-    tanggal, grid = ans["hari"], ans["grid"]
-    wil = {NASIONAL: {"nama": "Provinsi rawan", "tingkat": "nasional", "sel": grid}}
+def bangun(ans, hari_ini=None):
+    """hari_ini: 'YYYY-MM-DD' WIB; hari yang sudah lewat dibuang. None bila tak ada hari ke depan."""
+    ada = [i for i, t in enumerate(ans["hari"]) if hari_ini is None or t >= hari_ini]
+    if not ada:
+        return None
+    tanggal = [ans["hari"][i] for i in ada]
+    grid = [{**g, **{k: [g[k][i] for i in ada] for k in ("pt", "ps", "med", "p10", "p90")}} for g in ans["grid"]]
+    wil = {NASIONAL: {"nama": "wilayah rawan", "tingkat": "nasional", "sel": grid}}
     for g in grid:
         wil.setdefault(g["prov"], {"nama": PROVINSI.get(g["prov"], g["prov"]), "tingkat": "provinsi", "sel": []})["sel"].append(g)
     out = {}
     for kode, w in wil.items():
         hs = hari_wilayah(w["sel"], tanggal)
         out[kode] = {"nama": w["nama"], "tingkat": w["tingkat"], "sel": len(w["sel"]), "hari": hs,
-                     "vonis": vonis(hs, w["nama"], len(w["sel"]))}
+                     "vonis": vonis(hs, w["nama"])}
     urut = [NASIONAL] + sorted((k for k in out if k != NASIONAL), key=lambda k: -max(h["p"][1] or 0 for h in out[k]["hari"]))
     batasan = [
         f"Angka adalah pecahan sel 0,5 derajat (~55 km) di wilayah itu yang diperkirakan melewati ambang FWI, dirata-rata dari peluang tiap sel ({ans['anggota']} anggota ansambel {ans['model']}); bukan peluang satu titik dan bukan peluang \"ada api\".",
@@ -81,7 +94,12 @@ def bangun(ans):
 
 def main():
     ans = json.load(open(os.path.join(AKAR, "public/data/fwi_ansambel.json")))
-    d = bangun(ans)
+    hari_ini = dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).date().isoformat()
+    d = bangun(ans, hari_ini)
+    if d is None:
+        # ansambel basi: semua harinya sudah lewat. Berkas lama TIDAK ditimpa (kontrak melarang wilayah kosong); layar menilai dari `dibuat`.
+        print(f"peluang.json: ansambel basi (hari terakhir {ans['hari'][-1]} < {hari_ini}), berkas lama dibiarkan")
+        return
     jalur = os.path.join(AKAR, "public/data/peluang.json")
     with open(jalur, "w") as f:
         json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
@@ -100,8 +118,14 @@ def uji():
     assert h[0]["p"] == [0.5, 0.25] and h[1]["p"] == [0.5, 0.0], h
     assert d["wilayah"][NASIONAL]["hari"][0]["p"][0] == round(1 / 3, 4)
     assert list(d["wilayah"])[:2] == [NASIONAL, "62"], "urut: nasional lalu provinsi paling parah"
-    assert "Kalimantan Tengah" in d["wilayah"]["62"]["vonis"] and "25%" in d["wilayah"]["62"]["vonis"], d["wilayah"]["62"]["vonis"]
-    assert "tidak ada sel" in d["wilayah"]["14"]["vonis"]
+    v = d["wilayah"]["62"]["vonis"]
+    assert "Kalimantan Tengah" in v and "(25% wilayah)" in v and "sebagian" in v and "sel" not in v.replace("selasa", ""), v
+    assert "tidak diperkirakan" in d["wilayah"]["14"]["vonis"]
+    # hari lewat dibuang; semua lewat -> None
+    d2 = bangun(ans, "2026-10-21")
+    assert [x["t"] for x in d2["wilayah"]["62"]["hari"]] == ["2026-10-21"] and P.periksa(d2) == []
+    assert bangun(ans, "2026-10-22") is None
+    assert LUAS_KATA(0.99) == "hampir seluruh" and LUAS_KATA(0.7) == "sebagian besar" and LUAS_KATA(0.5) == "sekitar separuh" and LUAS_KATA(0.2) == "sebagian" and LUAS_KATA(0.05) == "sebagian kecil"
     print("peluang_karhutla.py: uji lulus")
 
 

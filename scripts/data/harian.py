@@ -300,6 +300,22 @@ def main():
 
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w)
+    # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
+    # jumlah titik, kompleks, status, dan harian30. Gunung api tetap (setara SiPongi). Matikan: TITIK_PALSU=0.
+    industri = {"aktif": False, "titik": 0, "jenis": {}}
+    if os.environ.get("TITIK_PALSU", "1") != "0":
+        import titik_palsu as TP, harian30
+        sel_ind, jenis_ind = TP.sel_industri()
+        if not sel_ind:
+            print("::warning title=Filter titik palsu mati::public/data/titik_palsu.json tidak ada; titik industri ikut dihitung", file=sys.stderr)
+        if sel_ind:
+            sebelum = titik
+            titik = [p for p in titik if not TP.palsu(p["lat"], p["lon"], sel_ind)]
+            from collections import Counter as _C
+            industri = {"aktif": True, "titik": len(sebelum) - len(titik),
+                        "jenis": dict(_C(jenis_ind[TP.sel(p["lat"], p["lon"])] for p in sebelum if TP.palsu(p["lat"], p["lon"], sel_ind)))}
+            harian30.SARING = lambda la, lo: TP.palsu(la, lo, sel_ind)
+            print(f"titik palsu: {industri['titik']} dari {len(sebelum)} titik dibuang", file=sys.stderr)
     try:  # riwayat harian 35 hari per provinsi & kab/kota (tren 7/30 hari); gagal di sini tidak menghentikan pembaruan
         import harian30
         harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
@@ -526,7 +542,7 @@ def main():
     simpan("bnpb.json", bnpb)
     simpan("meta.json", {
         "dibuat": sekarang.isoformat(timespec="minutes"), "data_terakhir": akhir.isoformat(), "hari_wib": hari_akhir.isoformat(),
-        "jumlah_titik": len(titik), "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
+        "jumlah_titik": len(titik), "titik_industri": industri, "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
         "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48},
         "bara": GB.CATATAN})

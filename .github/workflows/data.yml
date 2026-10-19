@@ -45,7 +45,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
@@ -86,6 +86,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 scripts/data/ansambel.py
+          python3 scripts/data/peluang_karhutla.py || echo "::warning title=peluang karhutla::gagal; berkas lama dibiarkan"
           python3 scripts/data/tanah.py
 
       - name: Simpan iklim tanah
@@ -192,6 +193,8 @@ jobs:
         continue-on-error: true
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f public/data/iklim.json ]; then python3 scripts/data/iklim.py; fi
+          # outlook hujan Niño x Dipol (CHIRPS 1981-sekarang, ±3 menit tanpa cache): mingguan bersama iklim.py
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f public/data/iklim_outlook.json ]; then python3 scripts/umum/iklim_outlook.py uji && python3 scripts/umum/iklim_outlook.py; fi
 
       - name: Data keputusan & InaRISK/BPBD (boleh gagal)
         continue-on-error: true
@@ -278,6 +281,10 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/laporan.py
 
+      - name: Kurva titik panas kumulatif antartahun (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/kumulatif.py
+
       - name: Laporan harian gagal (peringatan)
         if: steps.laporan.outcome == 'failure'
         run: |
@@ -301,6 +308,7 @@ jobs:
           python3 scripts/data/dampak.py uji
           python3 scripts/data/penerbangan.py uji
           python3 scripts/data/ansambel.py uji
+          for s in titik_palsu peluang_karhutla kumulatif; do python3 scripts/data/$s.py uji; done
           python3 scripts/data/tanah.py uji
           python3 scripts/data/penduduk.py paparan > /dev/null
           python3 scripts/scrape/akses.py uji

@@ -8,11 +8,12 @@ const SUMBER = "Sumber: MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)";
 const NAVY = "oklch(25.5% .075 256)", BATA = "#b5523b";
 
 const Insight = {
-  EX: ["status", "letusan", "perubahan", "bandara", "krb", "tambang", "kinerja", "daftar"],
-  LABEL: {status: "Status", letusan: "Erupsi", perubahan: "Perubahan level", bandara: "Bandara di jalur abu", krb: "Paparan KRB III", tambang: "Izin tambang", kinerja: "Uji", daftar: "Daftar gunung"},
+  EX: ["status", "letusan", "perubahan", "bandara", "peluang", "krb", "tambang", "kinerja", "daftar"],
+  LABEL: {status: "Status", letusan: "Erupsi", perubahan: "Perubahan level", bandara: "Bandara di jalur abu", peluang: "Peluang abu", krb: "Paparan KRB III", tambang: "Izin tambang", kinerja: "Uji", daftar: "Daftar gunung"},
   /* kartu yang bergantung pada berkas turunan (abu, paparan): digambar sesudah berkasnya tiba, dibuang bila datanya tak ada (A18) */
-  LAMBAT: ["bandara", "krb", "tambang", "kinerja"],
+  LAMBAT: ["bandara", "peluang", "krb", "tambang", "kinerja"],
   T: {daftar: {urut: "_", turun: true, hal: 0}, bandara: {urut: "jam", turun: false, hal: 0}, tambang: {urut: "zona", turun: true, hal: 0}},
+  st: {},
   ex: (...a) => Kartu.ex(...a),
   hl: Kartu.hl,
   p: (x, y, t, bg, fg = "#fff", fs = 12) => Kartu.pil(x, y, t, bg, fg, fs),
@@ -120,6 +121,13 @@ const Insight = {
       `<svg viewBox="0 0 ${U.W} ${H + 16}" role="img" aria-label="Uji balik arah abu">${g}${garis}</svg>`, `Arah angin musiman = tebakan memakai arah angin rata-rata bulan itu. Hanya arah yang bisa diuji (laporan PVMBG 8 mata angin, tanpa jarak); sampel kecil. Sumber: VONA PVMBG vs angin ECMWF IFS, ${esc(a.periode || "")}`); },
 
   /* 8. tabel standar. Penduduk dalam radius pindah ke tab Dampak (Insight karhutla tidak memuatnya) */
+  /* peluang abu di bandara/kota (../banjir/data/abu_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Wilayah awal = pasangan gunung-titik
+     yang paling mungkin tertimpa abu. Tanpa mesin atau berkas = dibuang. SKENARIO "jika meletus sekarang", bukan ramalan letusan. */
+  exPeluang() {
+    const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
+    if (!this.st.pelW) { const skor = w => (w.hari || []).reduce((a, h) => a + (h.p || []).reduce((x, y) => x + (y || 0), 0), 0);
+      this.st.pelW = Object.keys(d.wilayah).sort((a, b) => skor(d.wilayah[b]) - skor(d.wilayah[a]) || (d.wilayah[b].jenis === "bandara") - (d.wilayah[a].jenis === "bandara"))[0]; }
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "abu gunung api", sumber: "Skenario Pantau Bencana (Open-Meteo, MAGMA PVMBG); bukan advisory VAAC"}); },
   exDaftar() {
     const G = S.st.gunung, kol = [{k: "nm", n: "Gunung", v: r => r.nama, h: r => `<b>${esc(r.nama)}</b>`}, {k: "pv", n: "Provinsi", v: r => r.prov, h: r => esc(r.prov)},
       {k: "lv", n: "Level", v: r => r.level, h: r => pilLv(r.level, true)},
@@ -146,10 +154,12 @@ const Insight = {
     const el = $("#insight"); if (el._siap) return; el._siap = 1;
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.LAMBAT.includes(id) ? "" : this.gambar(id)}</div>`).join("");
     /* berkas turunan: digambar sesudah tiba; kartu tanpa data dibuang */
-    Promise.all([Data.abu(), Data.pap()]).then(([a, p]) => { this.abu = a; this.pap = p;
+    Promise.all([Data.abu(), Data.pap(), typeof Peluang === "undefined" ? null : Peluang.muat("../banjir/data/abu_peluang.json")]).then(([a, p, pl]) => { this.abu = a; this.pap = p; this.pel = pl;
       this.LAMBAT.forEach(id => { const box = el.querySelector(`[data-ex="${id}"]`); if (!box) return; const h = this.gambar(id); if (h) { box.innerHTML = h; this.pasangUrut(box); } else box.remove(); }); });
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
+    el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };
     el.onclick = e => {
+      const s = e.target.closest("[data-set]:not(select)"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; box.querySelectorAll(".pgn-b[data-h]").forEach(x => { const on = x === pg; if (!x.textContent.match(/[‹›]/)) { x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); } }); this.ulang(box); } return; }
       const gn = e.target.closest("[data-gn]"); if (gn) { const g = S.st.gunung.find(x => x.nama === gn.dataset.gn); if (g) { bukaTab("peta"); nanti(() => { Peta.terbang(g); Detail.buka(g); }); } } };
   },

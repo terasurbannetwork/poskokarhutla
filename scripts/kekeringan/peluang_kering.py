@@ -38,9 +38,9 @@ PROVINSI = _muat("wilayah_data_kering", "scripts/data/wilayah.py").PROVINSI
 PRAKIRAAN = os.path.join(AKAR, "public/data/kekeringan_prakiraan.json")
 UJIBALIK = os.path.join(AKAR, "public/data/kekeringan_ujibalik.json")
 KELUAR = os.path.join(AKAR, "public/banjir/data/kering_peluang.json")
-AMBANG = [{"k": "spi1", "label": "SPI-3 -1 atau lebih kering (kering)", "nilai": 1.0},
-          {"k": "spi15", "label": "SPI-3 -1,5 atau lebih kering (sangat kering)", "nilai": 1.5},
-          {"k": "spi2", "label": "SPI-3 -2 atau lebih kering (ekstrem kering)", "nilai": 2.0}]
+AMBANG = [{"k": "spi1", "label": "SPI-3 -1 atau lebih kering", "nilai": 1.0},
+          {"k": "spi15", "label": "SPI-3 -1,5 atau lebih kering", "nilai": 1.5},
+          {"k": "spi2", "label": "SPI-3 -2 atau lebih kering", "nilai": 2.0}]
 BULAN = P.BULAN
 
 
@@ -88,6 +88,7 @@ def vonis_hth(nama, p31, p61):
 
 
 def wilayah(kode, nama, tingkat, r, bulan, **ekstra):
+    nama = nama.replace("Kep. ", "Kepulauan ").replace(". ", " ")    # komponen layar memecah kalimat di '. '
     if r.get("satu_titik") or not r.get("lead") or any(l.get("pk1") is None for l in r["lead"]):
         return None
     hari = [entri(b, l) for b, l in zip(bulan, r["lead"])]

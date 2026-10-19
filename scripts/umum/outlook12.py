@@ -1,4 +1,4 @@
-"""Tabel bahaya 12 bulan ke depan lintas bencana + kombinasi berantai (pola P7) -> public/data/outlook12.json
+"""Tabel bahaya 12 bulan ke depan lintas bencana + kombinasi berantai (pola P7) -> public/banjir/data/outlook12.json
 
 Pakai:  python3 scripts/umum/outlook12.py        baca public/data/iklim_outlook.json (jalankan iklim_outlook.py dulu), tulis berkas
         python3 scripts/umum/outlook12.py uji    self-check luring
@@ -23,7 +23,7 @@ Berantai: pasangan A lalu B di provinsi yang sama dengan B dalam 1-30 hari setel
   jumlah kejadian x rata-rata korban meninggal (= total korban), disertai lift terhadap peluang acak B dalam 30 hari di
   provinsi yang sama dan 1 preseden terbesar.
 
-Sumber kejadian, berurutan (yang pertama ada yang dipakai): data/raw/iklim/dibi_bulanan.json (cache DIBI BNPB 2008-kini,
+Sumber kejadian, berurutan (yang pertama ada yang dipakai): data/raw/banjir/dibi_bulanan.json (cache DIBI BNPB 2008-kini,
   ditulis sini bila dibi.bnpb.go.id terjangkau lewat scripts/banjir/kejadian.dibi) -> DIBI langsung -> klimatologi
   riwayat.json (DIBI 2008-2025 agregat per dasarian; hanya banjir/longsor, TANPA tahun pembanding) + kejadian_dibi
   kejadian.json (3 tahun terakhir; cukup untuk berantai, tidak cukup untuk tahun pembanding).
@@ -38,14 +38,14 @@ import sys
 import urllib.request
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
-KELUAR = os.path.join(AKAR, "public/data/outlook12.json")
+KELUAR = os.path.join(AKAR, "public/banjir/data/outlook12.json")
 IKLIM = os.path.join(AKAR, "public/data/iklim_outlook.json")
 KEJADIAN = os.path.join(AKAR, "public/banjir/data/kejadian.json")
 RIWAYAT = os.path.join(AKAR, "public/banjir/data/riwayat.json")
 PASANG = os.path.join(AKAR, "public/banjir/data/pasang_astro.json")
 MODIS = os.path.join(AKAR, "public/data/sejarah_modis.json")
 GEMPA = os.path.join(AKAR, "public/gempa/data/riwayat_m5.json")
-CACHE_DIBI = os.path.join(AKAR, "data/raw/iklim/dibi_bulanan.json")
+CACHE_DIBI = os.path.join(AKAR, "data/raw/banjir/dibi_bulanan.json")
 MUSIM = ["DJF", "JFM", "FMA", "MAM", "AMJ", "MJJ", "JJA", "JAS", "ASO", "SON", "OND", "NDJ"]
 K = 5
 TAHUN_DIBI = (2008, 2025)
@@ -103,7 +103,7 @@ def muat_kejadian():
     """-> (rows [[jenis 'a+b', prov, kab, tgl, n_kejadian, meninggal]], label, penuh: bool)."""
     c = baca(CACHE_DIBI)
     if c:
-        return c, "DIBI BNPB 2008-kini (cache data/raw/iklim/dibi_bulanan.json)", True
+        return c, "DIBI BNPB 2008-kini (cache data/raw/banjir/dibi_bulanan.json)", True
     c = dibi_langsung()
     if c:
         return c, "DIBI BNPB 2008-kini (langsung dibi.bnpb.go.id)", True
@@ -389,6 +389,10 @@ def bangun():
     gempa_rows = [(w[:10], pv) for w, la, lo, dalam, m, pv in gm["baris"] if m >= 6.0 and dalam <= 70 and w[:10] >= awal_dibi and pv]
     ev = peristiwa(rows, gempa_rows, wil.PROVINSI)
     ber = berantai(ev, wil.PROVINSI) if ev else []
+    for k in tab:  # horizon dan tanda ekstrapolasi dari iklim_outlook (persistensi makin tidak andal makin jauh)
+        for i, b in enumerate(k["bulan"]):
+            pk = next(p for p in ik["prakiraan"] if p["bulan_tengah"] == b["b"])
+            b["horizon_bulan"], b["ekstrapolasi"] = pk["horizon_bulan"], pk["ekstrapolasi"]
     uj = {k["bahaya"]: k["uji_balik"] for k in tab if k.get("uji_balik")}
     out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"), "versi": "outlook12/1",
            "keadaan": ik["keadaan_sekarang"], "pendorong_sumber": "public/data/iklim_outlook.json (persistensi nilai terakhir)",
@@ -408,7 +412,7 @@ def bangun():
                "Gempa tidak diprakirakan; angka adalah laju historis M>=6 dangkal 1990-2025 dalam wilayah katalog Indonesia, dianggap tetap sepanjang tahun.",
                "Gunung api tidak masuk: repo belum punya riwayat erupsi bulanan.",
                "Pasang tertinggi adalah indeks gaya astronomis, bukan tinggi air dan bukan prakiraan rob.",
-               "Berantai = kebersamaan statistik dalam 30 hari di provinsi yang sama, bukan sebab-akibat; lift mendekati 1 berarti hampir sama dengan kebetulan. Korban hanya meninggal dari DIBI; gempa tanpa korban di sini."]}
+               "Berantai: korban satu kejadian besar dihitung ulang di tiap pasangan yang jendelanya menjangkaunya (gelombang banjir Sumatra Nov 2025 mendominasi data 3 tahun); jangan dibaca sebagai jumlah korban unik. Berantai = kebersamaan statistik dalam 30 hari di provinsi yang sama, bukan sebab-akibat; lift mendekati 1 berarti hampir sama dengan kebetulan. Korban hanya meninggal dari DIBI; gempa tanpa korban di sini."]}
     if dasar.get("tahun_pembanding_tersedia") is False:
         out["batasan"].insert(0, "DIBI 2008-kini tidak terjangkau saat dibuat: banjir/longsor memakai klimatologi riwayat.json tanpa tahun pembanding; cuaca, kekeringan, gelombang, rob tidak ada tabel. Berantai memakai 3 tahun terakhir saja.")
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)

@@ -64,3 +64,14 @@ test("judul tanpa titik akhir, dua kalimat disambung titik koma", () => {
   assert.ok(!jd.endsWith(".")); assert.ok(jd.includes("diketahui; dalam 12 bulan")); assert.ok(!/\.\s/.test(jd));
   const d = salin(D); d.wilayah.ID.vonis = "Peluang 5% di sini."; assert.ok(P.kartu(d).includes("di sini</h3>"));
 });
+
+test("singkatan tidak memecah kalimat; entri bulanan; garis normal", () => {
+  const d = salin(D); d.wilayah.ID.vonis = "Di Kab. Malang peluang 5%. Tempatnya tidak pasti.";
+  const jd = P.kartu(d).match(/<h3>(.*?)<\/h3>/)[1]; assert.ok(jd.includes("Kab. Malang") && jd.includes("5%</span>; tempatnya"), jd);
+  const b = salin(D); b.wilayah.ID.hari = [["2026-11-30", .16], ["2026-12-31", .13], ["2027-01-31", .06]].map(([t, v]) => ({t, p: [null, v, .02], p10: null, p50: null, p90: null, p_dasar: [null, .16, .07]}));
+  const h = P.kartu(b);
+  assert.ok(h.includes(">Nov 2026<") && h.includes(">Des 2026<") && !h.includes(">Sen 30<"));
+  assert.ok(h.includes("November 2026") && h.includes("Normalnya: 16%"));
+  assert.equal((h.match(/stroke-dasharray="4 3"/g) || []).length, 3); assert.ok(h.includes(">normal<"));
+  assert.ok(!P.kartu(D).includes(">normal<") && !P.kartu(D).includes("Normalnya"));
+});

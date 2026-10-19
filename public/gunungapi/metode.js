@@ -9,6 +9,7 @@ const Metode = {
   daftar: (judul, baris, sumber, ey) => Kartu.ex(judul, "", "", `<ul class="mt">${baris.map(([a, b]) => `<li><b>${a}</b><span>${b}</span></li>`).join("")}</ul>`, sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`),
   async render() {
     const a = await Data.abu(), P = a?.parameter || {}, UB = a?.uji_balik, UT = a?.uji_balik_tipis, amb = P.ambang || {}, kb = P.kelas_butir || [];
+    const PL = typeof Peluang === "undefined" ? null : await Peluang.muat("../banjir/data/abu_peluang.json");
     const kh = P.kh_m2s ?? 1000, lepas = P.durasi_lepas_jam ?? 3, nP = P.n_partikel ?? 5000;
     const butir = kb.length ? kb.map(k => `${fmt(Math.round(k.massa * 100))}% jatuh ${k.kec_jatuh_ms.toLocaleString("id-ID", {maximumFractionDigits: 3})} m/dtk`).join(", ") : "40% jatuh 0,008 m/dtk, 30% 0,07 m/dtk, 20% 0,5 m/dtk, 10% 1,5 m/dtk";
     const uji = (u, nama) => { if (!u?.n) return ""; const k = Math.round(u.persen_dalam_45deg * u.n / 100), p = u.p_binomial ?? 1, kl = u.klimatologi_persen;
@@ -45,5 +46,5 @@ const Metode = {
         ["Bukan informasi penerbangan", "Informasi abu vulkanik untuk penerbangan (VONA, VAAC) tetap bersumber dari PVMBG dan BMKG."],
         ["Angin dan jarak", "Angin dari prakiraan, bukan pengukuran; satu skenario kolom tetap selama pelepasan. Jarak jangkauan belum teruji."],
         ["Data tidak lengkap", "Tanpa data zona, desa, atau rute untuk suatu gunung, bagian itu dibuang, bukan ditulis kosong. Nol di OSM bukan bukti tidak ada."]], "Sumber: PVMBG, Badan Geologi", "Batas"),
-    ].join(""); },
+    ].join("") + (PL ? Peluang.batasan(PL, {judul: "Peluang abu di bandara dan kota"}).replace(/<b>0\. /, "<b>") : ""); },
 };

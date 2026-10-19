@@ -16,7 +16,7 @@ ambang yang naik: 0,2 / 2 / 4 mg/m3 (2 mg/m3 = ambang abu.py; 0,2 dan 4 = sepers
 TIDAK diklaim sebagai kelas lembaga mana pun).
 Konsentrasi = massa sel / (luas sel x 2 km tebal awan); massa = MER Mastin x durasi (semua ASUMSI abu.py). Ini beban RELATIF
 model, bukan konsentrasi terukur. Hari = jendela 24 jam sejak waktu skenario (t = tanggal WIB awal jendela).
-Pasangan gunung-titik yang tak satu anggota pun mencapai 0,2 mg/m3 dibuang (bukan ditulis nol).
+Pasangan gunung-titik yang tak satu anggota pun mencapai 0,2 mg/m3 pada peluang tertinggi < 5% dibuang (bukan ditulis nol).
 
 Pakai:  python3 scripts/gunungapi/peluang_abu.py          (jalan sungguhan; butuh jaringan, simpan angin ke data/raw)
         python3 scripts/gunungapi/peluang_abu.py ulang    (dari angin tersimpan, tanpa jaringan)
@@ -60,7 +60,7 @@ AMBANG = [(0.2, "a02", "Abu 0,2 mg/m\u00b3 atau lebih"),
           (2.0, "a2", "Abu 2 mg/m\u00b3 atau lebih"),
           (4.0, "a4", "Abu 4 mg/m\u00b3 atau lebih")]
 KOTA_MIN_JIWA = 500000      # kabupaten/kota yang ikut: >= 500 ribu jiwa (pusat tujuan penting); bandara semua ikut
-P_MIN = 0.05                # pasangan dibuang bila peluang tertinggi di ambang terendah < 5% (menjaga berkas < 400 KB)
+P_MIN = 0.25                # pasangan dibuang bila peluang tertinggi di ambang terendah < 25% (menjaga berkas < 400 KB)
 HARI_N = 3
 N_PARTIKEL = 500
 BLOK_ENS = 3                # lokasi per panggilan ensemble (respons ~ 3 x 24 x 51 deret)
@@ -140,8 +140,18 @@ def nama_bandara(n):
     n = re.sub(r"\s*\(.*?\)", "", n).strip()
     if re.match(r"(?i)(bandara|bandar udara|pangkalan)\b", n):
         return n
+    m = re.sub(r"(?i)\s+air force base\s*$", "", n)
+    if m != n:
+        return "Pangkalan TNI AU " + m
+    n = re.sub(r"(?i)\blieutenant colonel\b", "Letkol", n)
     m = re.sub(r"(?i)\s+(international|intl|domestic)?\s*(airport|arpt|airfield|airstrip)\s*$", "", n).strip()
     return "Bandara " + m
+
+
+def tanpa_titik(n):
+    """Komponen layar memecah kalimat di '. ': 'Kab. X' jadi 'Kab; x'. Singkatan ditulis penuh atau tanpa titik."""
+    n = re.sub(r"^Kab\. ", "Kabupaten ", n)
+    return re.sub(r"\.\s*", " ", n).strip()
 
 
 def muat_titik():
@@ -211,7 +221,7 @@ def anggota_gunung(g, kol, angin_sumber):
     ens = angin_sumber.get("ens")
     if ens:
         for m, a in sorted(ens.items()):
-            f, d = KOMBO[m % len(KOMBO)]
+            f, d = KOMBO[int(m) % len(KOMBO)]
             out.append(("ENS", a, kol * f, d))
     return out
 
@@ -231,12 +241,13 @@ def wilayah_gunung(g, gid, n_ang, per, titik_per_kode, tgl):
     out = {}
     for kode, anggota in per.items():
         _, nama, _, _, jenis = titik_per_kode[kode]
-        nama = re.sub(r"\s*\(.*?\)", "", nama).strip()   # kontrak: nama wilayah tanpa kurung
+        nama = tanpa_titik(re.sub(r"\s*\(.*?\)", "", nama).strip())   # kontrak: tanpa kurung; layar: tanpa titik
         hari = [P.hari(tgl[d], [m[d] for m in anggota], [a[0] for a in AMBANG], desimal=2) for d in range(HARI_N)]
         if max(h["p"][0] or 0 for h in hari) < P_MIN:
             continue
         for h in hari:
             h["p"] = [None if x is None else round(x, 3) for x in h["p"]]
+            h.pop("p10", None)   # hampir selalu 0; membuang p10 menjaga berkas < 400 KB
         tempat = f"di atas {nama}"
         out[f"{gid}|{kode}"] = {"nama": f"{g['nama']} \u2192 {nama}", "tingkat": "titik", "jenis": jenis,
                                 "gunung": g["nama"], "anggota": n_ang, "hari": hari,
@@ -252,7 +263,7 @@ def batasan(ringkas_angin):
         "Peluang = pecahan anggota ansambel berbobot sama: sumber angin x tinggi kolom (0,5x/1x/2x) x durasi lepas (3/6 jam); " + ringkas_angin,
         "Besaran adalah beban abu relatif model (sel 0,1 derajat, awan setebal 2 km, massa dari rumus Mastin), bukan konsentrasi terukur; ambang 2 mg/m\u00b3 mengikuti abu.py, 0,2 dan 4 mg/m\u00b3 adalah pilihan sendiri, bukan kelas lembaga; semua asumsi abu.py berlaku.",
         "Tanpa hujan, tanpa agregasi abu, dan letusan dianggap berlangsung dengan laju tetap; rentang ketidakpastian tinggi kolom dan durasi ikut dihitung, bukan dikalibrasi.",
-        "Pasangan gunung-titik dengan peluang tertinggi di bawah 5% pada ambang 0,2 mg/m\u00b3 dibuang; titik = semua bandara dan kabupaten/kota berpenduduk 500 ribu jiwa atau lebih. Hari = jendela 24 jam sejak waktu skenario (tanggal WIB awal jendela).",
+        "Pasangan gunung-titik dengan peluang tertinggi di bawah 25% pada ambang 0,2 mg/m\u00b3 dibuang; titik = semua bandara dan kabupaten/kota berpenduduk 500 ribu jiwa atau lebih. Hari = jendela 24 jam sejak waktu skenario (tanggal WIB awal jendela).",
     ]
 
 
@@ -277,7 +288,7 @@ def susun(daftar, kol_per_gunung, cache, titik, tgl, n=N_PARTIKEL):
             f" ({nens} gunung memakai 51 anggota ensemble ECMWF)." )
     return P.berkas("gunungapi",
                     "Open-Meteo (ECMWF, GFS, ICON) + model abu.py + MAGMA PVMBG",
-                    n_maks, {"label": "Beban abu relatif puncak dalam 25 km", "satuan": "mg/m3", "desimal": 2},
+                    n_maks, {"label": "Beban abu relatif puncak dalam 25 km", "satuan": "mg/m\u00b3", "desimal": 2},
                     [{"k": k, "label": l, "nilai": v} for v, k, l in AMBANG], wil, batasan(ring))
 
 

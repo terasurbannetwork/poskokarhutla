@@ -66,6 +66,9 @@ def gabung(lama, baru, batas_lengkap):
     return out
 
 
+SARING = None  # callable (lat, lon) -> True bila titik dibuang (sumber statis/industri); dipasang harian.main bila TITIK_PALSU aktif
+
+
 def isi_mundur(kosong, k, w, ambil, bbox):
     """Unduh FIRMS untuk tanggal WIB yang belum ada. Tanggal WIB d = UTC d-1 17:00 s.d. d 17:00."""
     if not kosong:
@@ -93,7 +96,7 @@ def isi_mundur(kosong, k, w, ambil, bbox):
                 continue
             lihat.add((lat, lon, t, s))
             adm = w.cari(lon, lat)
-            if adm:
+            if adm and not (SARING and SARING(lat, lon)):
                 titik.append({"t": t, "s": {**UTAMA, **SP}[s], "adm": adm})
     hasil = per_hari(titik)
     return {t: hasil.get(t, {"p": {}, "k": {}}) for t in kosong}

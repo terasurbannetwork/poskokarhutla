@@ -115,6 +115,15 @@ def muat():
     return {sel(s["lat"], s["lon"]) for s in d["sumber_statis"]}, d
 
 
+def sel_industri():
+    """Set sel untuk disaring pipeline: semua sumber statis KECUALI kawah (titik gunung api tetap dihitung setara SiPongi dan
+    sudah ditangani aturan.gunung_api untuk kompleks). Kosong bila berkas daftar belum ada. -> (set, {sel: jenis})"""
+    if not os.path.exists(JALUR):
+        return set(), {}
+    j = {sel(x["lat"], x["lon"]): x["jenis"] for x in json.load(open(JALUR))["sumber_statis"] if x["jenis"] != "kawah"}
+    return set(j), j
+
+
 def dampak(berkas):
     s, d = muat()
     n = tot = 0
@@ -140,6 +149,8 @@ def uji():
     assert jenis(-7.54, 110.446, None, [])[0] == "kawah" and jenis(-3.0, 120.0, collections.Counter({"2": 5}), [])[0] == "sumber panas tetap"
     assert jenis(-6.446, 110.742, None, json.load(open(PLTU)))[0] == "PLTU"
     assert jenis(-3.0, 120.0, None, [])[0] == "persisten"
+    s_, j_ = sel_industri()
+    assert not any(v == "kawah" for v in j_.values()) and set(j_) == s_
     print("titik_palsu.py: uji lulus")
 
 

@@ -24,10 +24,18 @@ const Peluang = (() => {
   const urut = d => Object.keys(d.wilayah).sort((a, b) => { const A = d.wilayah[a], B = d.wilayah[b];
     return TINGKAT.indexOf(A.tingkat) - TINGKAT.indexOf(B.tingkat) || String(A.nama).localeCompare(String(B.nama), "id"); });
 
-  function tip(d, h) {
+  /* judul satu kalimat: titik akhir dibuang, ". Kalimat" antar kalimat jadi "; kalimat" kecuali sesudah singkatan (Kab. Malang tetap) */
+  const SINGKAT = new Set(["kab", "kep", "kec", "dr", "prof", "st", "h", "hj", "tk", "jl", "no"]);
+  const vonis1 = v => String(v).trim().replace(/\.$/, "").replace(/(\S+)\.\s+(\p{Lu})/gu, (m, k, c) => SINGKAT.has(k.replace(/[^\p{L}]/gu, "").toLowerCase()) ? m : k + "; " + c.toLowerCase());
+  const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  /* entri bulanan (jarak antar entri >= 28 hari): label sumbu "Nov 2026" */
+  const bulanan = H => H.length > 1 && H.slice(1).every((h, k) => (Date.parse(h.t) - Date.parse(H[k].t)) / 864e5 >= 28);
+
+  function tip(d, h, i, bln) {
     const t = tgl(h.t), B = d.besaran || {}, des = B.desimal ?? 1, u = B.satuan ? " " + B.satuan : "";
-    let o = `<b>${t.hari}, ${t.tg} ${t.bln}</b>`;
+    let o = `<b>${bln ? BLN[+h.t.slice(5, 7) - 1] + " " + h.t.slice(0, 4) : `${t.hari}, ${t.tg} ${t.bln}`}</b>`;
     d.ambang.forEach((a, i) => { const p = pct(h.p?.[i]); if (p) o += `<br>${esc(a.label)}: ${p}`; });
+    if (h.p_dasar?.[i] != null) o += `<br>Normalnya: ${pct(h.p_dasar[i])}`;
     if (h.p50 != null) o += `<br>Median: ${angka(h.p50, des)}${u}`;
     if (h.p10 != null && h.p90 != null) o += `<br>Rentang p10 sampai p90: ${angka(h.p10, des)} sampai ${angka(h.p90, des)}${u}`;
     return o; }
@@ -36,13 +44,13 @@ const Peluang = (() => {
   function grafik(d, w, i, aria) {
     const H = w.hari || [], n = H.length; if (!n) return "";
     const M = typeof innerWidth === "number" && innerWidth < 640, W = M ? Math.max(350, n * 34 + 60) : 940, L = 20, R = 20, T = 36, B = 200, gap = (W - L - R) / n, bw = Math.min(gap * .66, 64);
-    const P = H.map(h => h.p?.[i] ?? null), mx = Math.max(.1, ...P.filter(v => v != null)), Y = v => B - v / mx * (B - T), fs = n > 24 ? 9.5 : 11.5;
+    const bln = bulanan(H), P = H.map(h => h.p?.[i] ?? null), DS = H.map(h => h.p_dasar?.[i] ?? null), mx = Math.max(.1, ...P.filter(v => v != null), ...DS.filter(v => v != null)), Y = v => B - v / mx * (B - T), fs = n > 24 ? 9.5 : 11.5;
     const datar = P.every(v => v === P[0]), puncak = datar ? -1 : P.indexOf(Math.max(...P.filter(v => v != null))), warna = WARNA[i % WARNA.length];
     const g = H.map((h, k) => { const x = L + k * gap + (gap - bw) / 2, v = P[k], tx = pct(v), t = tgl(h.t), cx = x + bw / 2;
-      let s = `<g class="gy" style="--i:${k}" data-tip="${esc(tip(d, h))}">${v != null && v > 0 ? `<rect x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="${Math.min(4, bw / 3)}" fill="${warna}" opacity=".93"/>` : ""}<rect x="${L + k * gap}" y="${T}" width="${gap}" height="${B - T}" fill="transparent"/></g>`;
+      let s = `<g class="gy" style="--i:${k}" data-tip="${esc(tip(d, h, i, bln))}">${v != null && v > 0 ? `<rect x="${x}" y="${Y(v)}" width="${bw}" height="${Math.max(2, B - Y(v))}" rx="${Math.min(4, bw / 3)}" fill="${warna}" opacity=".93"/>` : ""}<rect x="${L + k * gap}" y="${T}" width="${gap}" height="${B - T}" fill="transparent"/>${DS[k] != null ? `<line x1="${x - 4}" x2="${x + bw + 4}" y1="${Y(DS[k])}" y2="${Y(DS[k])}" stroke="currentColor" stroke-width="1.4" stroke-dasharray="4 3" opacity=".6"/>` : ""}</g>`;
       if (tx) { const yy = v > 0 ? Y(v) : B; s += k === puncak ? Kartu.pil(cx - (tx.length * 6.6 + 16) / 2, yy - 26, esc(tx), "#c9503a", "#fff", 11)[0]
         : `<text x="${cx}" y="${yy - 6}" text-anchor="middle" font-size="${fs}" font-weight="700" opacity=".75" pointer-events="none">${esc(tx)}</text>`; }
-      return s + `<text x="${cx}" y="${B + 16}" text-anchor="middle" font-size="10.5" opacity=".7">${t.h3} ${t.tg}</text>`; }).join("");
+      return s + `<text x="${cx}" y="${B + 16}" text-anchor="middle" font-size="10.5" opacity=".7">${bln ? BL[+h.t.slice(5, 7) - 1] + " " + h.t.slice(0, 4) : t.h3 + " " + t.tg}</text>`; }).join("");
     return `<div class="tw sk"><svg viewBox="0 0 ${W} ${B + 24}" style="min-width:${M ? W : 0}px" role="img" aria-label="${esc(aria)}"><line x1="${L}" x2="${W - R}" y1="${B}" y2="${B}" stroke="currentColor" opacity=".15"/>${g}</svg></div>`; }
 
   return {
@@ -56,9 +64,9 @@ const Peluang = (() => {
       const ak = o.ambang ?? st[k + "A"], idx = pil.find(i => d.ambang[i].k === ak) ?? pil[0];
       const sel = Object.keys(d.wilayah).length > 1 ? `<select data-set="${k}W" aria-label="Pilih wilayah">${urut(d).map(c => `<option value="${esc(c)}"${c === kode ? " selected" : ""}>${esc(d.wilayah[c].nama)}</option>`).join("")}</select>` : "";
       const seg = pil.length > 1 ? Kartu.seg(k + "A", pil.map(i => [d.ambang[i].k, esc(pendek(d.ambang[i], d.besaran))]), {[k + "A"]: d.ambang[idx].k}) : "";
-      const jd = esc(String(w.vonis || w.nama || "").trim().replace(/\.$/, "").replace(/\.\s+(\S)/g, (m, c) => "; " + c.toLowerCase())).replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
+      const jd = esc(vonis1(w.vonis || w.nama || "")).replace(/(?:&gt;|&lt;)?\d[\d.,]*\s?%/g, Kartu.hl);
       const aria = `Peluang ${o.kejadian || ""} per hari, ${d.ambang[idx].label}, ${w.nama}`.replace(/\s+/g, " ");
-      return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, d.ambang.map((a, i) => [WARNA[i % WARNA.length], esc(a.label)])); },
+      return Kartu.kartu(o.ey || "Peluang", jd, grafik(d, w, idx, aria), o.sumber ?? d.sumber ?? "", sel + seg, [...d.ambang.map((a, i) => [WARNA[i % WARNA.length], esc(a.label)]), ...((w.hari || []).some(h => h.p_dasar) ? [["#8a8f98", "normal"]] : [])]); },
 
     /* bab Metode: batasan[] + uji_balik; "" bila keduanya kosong */
     batasan(d, o = {}) {

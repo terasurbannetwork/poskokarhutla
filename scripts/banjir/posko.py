@@ -295,6 +295,16 @@ if __name__ == "__main__":
         magma = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../gunungapi/magma.py")
         if subprocess.call([sys.executable, magma, "uji"]) != 0 or subprocess.call([sys.executable, magma]) != 0:
             print("::warning title=gunungapi::magma.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
+        # peluang abu bandara/kota (abu_peluang.json, ~2 mnt CPU; angin Open-Meteo) dan peluang kekeringan (kering_peluang.json, membungkus
+        # kekeringan_prakiraan.json): uji dulu, gagal atau lewat batas waktu = berkas lama dibiarkan
+        for m, s_, w in (("gunungapi", "peluang_abu", 900), ("kekeringan", "peluang_kering", 120)):
+            p_ = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", m, s_ + ".py")
+            try:
+                ok = subprocess.call([sys.executable, p_, "uji"]) == 0 and subprocess.call([sys.executable, p_], timeout=w) == 0
+            except subprocess.TimeoutExpired:
+                ok = False
+            if not ok:
+                print(f"::warning title={s_}::{s_}.py gagal; berkas lamanya dibiarkan", file=sys.stderr)
         # berita + dampak modul lain, harian (aturan A22). Keluaran HARUS di public/banjir/data/{berita,dampak}_<id>.json dan arsip mentah di
         # data/raw/banjir/berita_<id>: hanya dua folder itu yang di-cache, di-commit, dan diterbitkan banjir.yml/data.yml/titik.yml/terbit.yml.
         # Modul baru (cuaca, udara) cukup menaruh scripts/<id>/berita.py|dampak.py berbentuk sama (uji + jalan) dan menambah id di sini.

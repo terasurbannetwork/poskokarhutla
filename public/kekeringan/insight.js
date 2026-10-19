@@ -10,8 +10,8 @@ const tanda = v => (v > 0 ? "+" : v < 0 ? "−" : "") + F2(Math.abs(v));
 
 const Insight = {
   st: {jiwa: "3"},
-  EX: ["kabupaten", "jiwa", "prakiraan", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel"],
-  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering"},
+  EX: ["kabupaten", "jiwa", "prakiraan", "peluang", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel"],
+  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", peluang: "Peluang kering", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering"},
   T: {tabel: {urut: "_", turun: true, hal: 0}, prakiraan: {urut: "nm", turun: false, hal: 0}, padi: {urut: "nm", turun: false, hal: 0}, gambut: {urut: "dc", turun: true, hal: 0}, berulang: {urut: "tahun", turun: true, hal: 0}},
   ex: (...a) => Kartu.ex(...a), hl: Kartu.hl, pil: Kartu.pil,
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
@@ -91,6 +91,9 @@ const Insight = {
 
 
   /* 5. prakiraan SEAS5 1-3 bulan: nasional + tabel provinsi TANPA peringkat (urutan nama; pengguna boleh mengurutkan sendiri) */
+  /* peluang kekeringan (../banjir/data/kering_peluang.json, kontrak peluang/1; membungkus prakiraan SEAS5). Mesin public/inti/peluang.js; tanpa mesin atau berkas = dibuang. */
+  exPeluang() { const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "bulan kering", sumber: "ECMWF SEAS5 lewat Open-Meteo, Deteksi Pantau Bencana"}); },
   exPrakiraan() {
     const P = S.prak, L = P?.nasional?.lead; if (!L?.length) return "";
     const bl = BLN_PRAK(), M = innerWidth < 640, W = M ? 700 : 940, H = 230, Lm = 20, B0 = 176, T0 = 40, gw = (W - Lm - 10) / L.length, bw = Math.min(70, gw / 4.2);
@@ -179,12 +182,14 @@ const Insight = {
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {
     const el = $("#insight");
+    if (this.pel === undefined) { this.pel = null; if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { if (d) { this.pel = d; if (el.isConnected) this.render(); } }); }
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="simulasi.html">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);
+    el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };
     el.onclick = e => {
-      const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
+      const s = e.target.closest("[data-set]:not(select)"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; box.querySelectorAll(".pgn-b[data-h]").forEach(x => { const on = x === pg; if (!x.textContent.match(/[‹›]/)) { x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); } }); this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); return turun(pv.dataset.prov); }
       const kb = e.target.closest("[data-kab]"); if (kb) { const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab))); return; } };

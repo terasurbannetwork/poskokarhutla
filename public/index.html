@@ -1552,6 +1552,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 <script src="/inti/kartu.js"></script>
 <script src="/inti/pilih.js"></script>
 <script src="/inti/tip.js"></script>
+<script src="/inti/peluang.js"></script>
 <script src="/inti/tabel.js"></script>
 <script>
 "use strict";
@@ -3416,7 +3417,7 @@ const Insight = {
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
   /* ytd, tahun, kec dibuang (sudah ada di Tren); kartu riwayat panjang pindah ke Tren lewat TREN (pemilik, 17 Okt 2026) */
   /* bnpb (Laporan resmi BNPB) dan penanganan disembunyikan (pemilik, 17 Okt 2026); exBnpb/exPenanganan tetap ada, pulihkan dengan menambah id ke EX */
-  EX: ["harian", "musim", "cuaca", "paparan"],
+  EX: ["peluang", "harian", "kumulatif", "musim", "cuaca", "paparan"],
   TREN: ["luasTahun", "luas", "nasional", "dunia"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
@@ -3430,13 +3431,15 @@ const Insight = {
   selProvMulti(key, daftar = PRIO) { return Kartu.selProvMulti(key, daftar, namaProv, this.st); },
   selProv(key, semua) { return Kartu.selProv(key, semua, PRIO, namaProv, this.st); },
   /* label kategori di pojok kartu; kartu lebar (banyak panel / tabel) memakai dua kolom */
-  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", luasTahun: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", dunia: "Situasi global", kec: "Kecamatan langganan"},
+  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", luasTahun: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", dunia: "Situasi global", kec: "Kecamatan langganan", peluang: "Peluang bahaya api", kumulatif: "Titik panas kumulatif"},
   PENUH: new Set(["harian"]),
   async muat() {
     const D = this.data;
     const [mo, mu, sat, res, asap, kr] = await Promise.all([Tren.cache["data/sejarah_modis.json"] || muatJSON("data/sejarah_modis.json"), Tren.musim || muatJSON("data/musim.json"),
       muatJSON("data/luas_satelit.json").catch(() => null), muatJSON("data/luas_resmi.json").catch(() => null), Lapis.cache.asap || muatJSON("data/asap.json").catch(() => null), muatJSON("img/kredit.json").catch(() => [])]);
     D.fs = await muatJSON("data/factsheet_karhutla.json").catch(() => null);
+    /* kartu peluang (inti/peluang.js) dan kumulatif: berkas boleh tak ada, kartunya saja yang dibuang */
+    [D.pel, D.kum] = await Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null)]);
     Tren.cache["data/sejarah_modis.json"] = mo; Tren.musim = mu; Lapis.cache.asap = asap;
     Object.assign(D, {mo, mu, sat, res, asap, kr}); await Riwayat.muat();
     /* lapisan5.js: paparan(prov) = jiwa per kelas ISPU per hari; akses.json = waktu tempuh regu per kompleks */
@@ -3774,7 +3777,36 @@ const Insight = {
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; this._leg = null; try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
   /* muat sekali walau Insight dan Tren meminta bersamaan; gagal boleh dicoba lagi */
   siap() { return this._siap ||= this.muat().catch(e => { this._siap = null; throw e; }); },
-  kartu(ids) { return ids.map(id => `<div data-ex="${id}"${this.PENUH.has(id) ? ' class="penuh"' : ""}>${this.gambar(id)}</div>`).join(""); },
+  kartu(ids) { return ids.map(id => { const g = this.gambar(id); return g ? `<div data-ex="${id}"${this.PENUH.has(id) ? ' class="penuh"' : ""}>${g}</div>` : ""; }).join(""); },
+  /* Peluang bahaya api: berkas CI hanya ditimpa bila ada hari ke depan, jadi dibuang bila semua harinya sudah lewat (tanggal WIB) */
+  exPeluang() { const d = this.data.pel, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    if (!d || !Object.values(d.wilayah).some(w => (w.hari || []).some(h => h.t >= kini))) return "";
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kejadian: "karhutla"}); },
+  /* Titik panas kumulatif tahun berjalan vs pembanding per minggu (public/data/kumulatif.json; dua dasar sensor tidak dicampur) */
+  exKumulatif() {
+    const K = this.data.kum, st = this.st; if (!K?.nasional?.kurva) return "";
+    const s15 = st.kumM === "s15" && K.setara_2015?.prov, kode = K.prov[st.kumP] ? st.kumP : "", S0 = s15 ? K.setara_2015 : K;
+    const A = (kode ? S0.prov[kode] : S0.nasional) || S0.nasional, n = S0.hari_ke || K.hari_ke, th = K.tahun;
+    const DEF = s15 ? [["2015", "#4a130d", "2015"], ["2019", "#d9a441", "2019"], ["2023", "#2b8c86", "2023"]] : [["2019", "#d9a441", "2019"], ["2023", "#2b8c86", "2023"], ["rerata", "#8a94a6", `Rerata ${K.rerata_tahun[0]}–${K.rerata_tahun[1]}`]];
+    const ini = A.kurva?.ini; if (!ini?.length) return "";
+    const seri = [...DEF.filter(([y]) => A.kurva[y]).map(([y, w, nm]) => ({nm, w, v: A.kurva[y].slice(0, ini.length - 1).concat(A.banding[y]?.titik ?? A.kurva[y][ini.length - 1])})), {nm: th, w: "#c9503a", v: ini, ini: 1}];
+    const W = 940, L = 14, R = 110, T = 24, B = 190, mx = Math.max(1, ...seri.flatMap(r => r.v)), X = j => L + (j < ini.length - 1 ? (j + 1) * 7 : n) / n * (W - L - R), Y = v => B - v / mx * (B - T);
+    const tgl = d => new Date(Date.UTC(+th, 0, d)).toLocaleDateString("id-ID", {day: "numeric", month: "long", timeZone: "UTC"});
+    let g = `<line x1="${L}" x2="${W - R}" y1="${B}" y2="${B}" stroke="currentColor" opacity=".15"/>`;
+    for (let m = 0; m < 12; m++) { const d = Math.floor((Date.UTC(+th, m, 1) - Date.UTC(+th, 0, 1)) / 864e5) + 1; if (d > n - 8) break;
+      g += `<text x="${L + d / n * (W - L - R)}" y="${B + 16}" font-size="10.5" opacity=".7">${BULAN[m]}</text>`; }
+    seri.forEach(r => { g += `<path d="M${r.v.map((v, j) => X(j).toFixed(1) + " " + Y(v).toFixed(1)).join("L")}" fill="none" stroke="${r.w}" stroke-width="${r.ini ? 3 : 2}" stroke-linejoin="round" stroke-linecap="round"${r.nm.startsWith("Rerata") ? ' stroke-dasharray="5 4"' : ""}/>`; });
+    ini.forEach((_, j) => { const hr = j < ini.length - 1 ? (j + 1) * 7 : n, w = (W - L - R) / n * 7;
+      g += `<rect x="${X(j) - w / 2}" y="${T}" width="${w}" height="${B - T}" fill="transparent" data-tip="${esc(`<b>${tgl(hr)}</b>` + seri.slice().reverse().map(r => `<br>${esc(String(r.nm))}: ${fmt(r.v[j])} titik`).join(""))}"/>`; });
+    /* pil angka di ujung tiap garis; saling tolak minimal 22 px agar tidak bertumpuk */
+    const ps = seri.map(r => ({r, y: Y(r.v.at(-1))})).sort((a, b) => a.y - b.y); ps.forEach((p, i) => { if (i && p.y < ps[i - 1].y + 22) p.y = ps[i - 1].y + 22; });
+    ps.forEach(p => { g += Kartu.pil(W - R + 8, p.y - 10, fmt(p.r.v.at(-1)), p.r.w, "#fff", 11.5)[0]; });
+    this.leg([...seri.map(r => [r.w, esc(String(r.nm))])]);
+    const pv = Object.keys(K.prov).sort((a, b) => K.prov[a].nama.localeCompare(K.prov[b].nama, "id")), sel = Kartu.selProv("kumP", "Indonesia", pv, k => K.prov[k].nama, st);
+    const jd = esc(String((s15 ? A.kalimat : A.kalimat_rerata) || "").replace(/\.$/, "")).replace(/\d[\d.,]*%/g, this.hl);
+    if (!jd) return "";
+    return this.ex(jd, "", "", `<div class="tw sk"><svg viewBox="0 0 ${W} ${B + 24}" role="img" aria-label="Titik panas kumulatif ${esc(A.nama)} ${th} dibanding tahun pembanding" style="min-width:${innerWidth < 640 ? 560 : 0}px">${g}</svg></div>`,
+      "Sumber: NASA FIRMS (MODIS, VIIRS)", sel + this.seg("kumM", [["all", "Semua satelit (vs 2019, 2023, rerata)"], ["s15", "Setara 2015 (MODIS + S-NPP)"]])); },
   async render() {
     const el = $("#insight");
     if (!this.data.mo) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Menyiapkan insight…</div>`;
@@ -5771,6 +5803,16 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
     </div></details>`).join("")}</div></article>`;
 
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
+  /* bab tambahan: batasan peluang (inti/peluang.js), catatan sensor kumulatif, dan titik industri yang dibuang */
+  Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null)]).then(([pl, kum]) => {
+    const wadah = $("#metode article.ex:last-of-type .ex-bd"); if (!wadah) return;
+    const bab = (n, jd, sub, singkat, daftar) => `<details class="mt-sek"><summary><span class="mt-nom">${mtIkon("mata")}</span><span class="mt-jd"><b>${n}. ${jd}</b><small>${sub}</small></span></summary>
+      <div class="mt-isi"><div class="mt-singkat"><span class="mt-lbl">Singkatnya</span><p>${singkat}</p></div><div class="mt-batas"><span class="mt-lbl">Batasan</span><ul>${daftar.map(x => `<li><span>${esc(x)}</span></li>`).join("")}</ul></div></div></details>`;
+    const ind = M.titik_industri, catInd = typeof ind === "number" && ind >= 0 ? [`${fmt(ind)} titik di lokasi industri dan lepas pantai tidak dihitung sebagai karhutla.`] : [];
+    let n = B.length;
+    const p = Peluang.batasan(pl, {judul: "Peluang bahaya api dan batasnya"}).replace("<b>0. ", `<b>${++n}. `);
+    const k = kum?.batasan?.length || catInd.length ? bab(++n, "Titik panas kumulatif", "perbandingan tahun berjalan dan sensor", "Garis kumulatif menjumlahkan titik panas sejak 1 Januari sampai hari yang sama di tahun pembanding.", [...(kum?.batasan || []), ...catInd]) : "";
+    wadah.insertAdjacentHTML("beforeend", p + k); });
   /* contoh dihitung saat bagian dibuka pertama kali (bagian 2 terbuka sejak awal) */
   const isi = el => { if (el.dataset.ok) return; el.dataset.ok = 1; const i = +el.dataset.i, box = $("#mtc" + i);
     nanti(() => Promise.resolve().then(() => B[i].contoh()).then(html => box.innerHTML = html)

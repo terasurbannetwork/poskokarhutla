@@ -4,6 +4,7 @@
 import {muatSemua} from "/inti/adapter.js";
 import {IKON} from "/inti/kepala.js";
 import {susunLegenda} from "/inti/peta/legenda.js";
+import {pasangAnalisis} from "/semua/analisis.js";
 
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const bacaLokal = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -76,3 +77,6 @@ function bagikan(url, nama, kampanye) {
 $("#bagikan").onclick = () => bagikan("/semua", "Semua bencana · Pantau Bencana", "semua");
 $("#kartu").addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (b) bagikan(b.dataset.bagi, b.dataset.nama + " · Pantau Bencana", "semua-" + b.closest("article").dataset.h); });
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pb-tema", t); } catch (e) {} nanti(() => peta.setStyle(DASAR(), {diff: false})); };
+
+/* ---------- outlook iklim, bahaya 12 bulan, bencana berantai: di bawah kartu situasi, dimuat setelah cat pertama */
+nanti(() => pasangAnalisis($("#analisis")));

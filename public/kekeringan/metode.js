@@ -42,5 +42,6 @@ const Metode = {
         [["Rendah", "< 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "≥ 425"]], "n num"), "Canadian Forest Fire Danger Rating System") +
       kartu("Wilayah", `Kabupaten/kota naik tingkat bila ${Kartu.hl("30%")} penduduknya di kecamatan bertingkat itu`, tabel(["Bahan", "Keterangan"],
         [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu);
+    if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { const h = d && Peluang.batasan(d, {judul: "Peluang kekeringan"}); if (h) $("#metode")?.insertAdjacentHTML("beforeend", h.replace(/<b>0\. /, "<b>")); });
  },
 };
