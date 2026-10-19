@@ -1678,7 +1678,16 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 let LAMBANG = {}; muatJSON("lambang/kabkota.json").then(d => LAMBANG = d).catch(() => {});
 const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `lambang/provinsi/${prov}.png`;
   return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
-async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }
+async function muatJSON(u) { const r = await fetch(u, {cache: "no-cache"}); if (!r.ok) throw new Error(u + " " + r.status); return SITUS_C ? tanpaWalhi(await r.json()) : r.json(); }
+/* situs Centurisk97: tidak ada kata WALHI di layar (pemilik, 19 Okt 2026). Entri daftar yang judul/nama/sumbernya menyebut WALHI
+   (artikel, tokoh, kutipan, penuntut) disaring; di teks lain (catatan perusahaan) keterangan "(... WALHI ...)" dan kalimat yang
+   menyebutnya dibuang. Kunci data (walhi_*) tidak tampil, dibiarkan. */
+const SITUS_C = document.documentElement.dataset.situs === "w", RE_WALHI = /\bwalhi\b/i;
+const sebutW = v => typeof v === "string" ? RE_WALHI.test(v) : !!v && typeof v === "object" && !Array.isArray(v)
+  && ["judul", "nama", "sumber", "domain", "penuntut", "media"].some(k => RE_WALHI.test(JSON.stringify(v[k] ?? "")));
+const tanpaWalhi = x => typeof x === "string" ? x.replace(/\s*\([^()]*\bWALHI\b[^()]*\)/gi, "").split(/(?<=[.!?;])\s+/).filter(k => !RE_WALHI.test(k)).join(" ").replace(/;$/, ".")
+  : Array.isArray(x) ? x.filter(v => !sebutW(v)).map(tanpaWalhi)
+  : x && typeof x === "object" ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, tanpaWalhi(v)])) : x;
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
     muatJSON("data/meta.json"), muatJSON(S.rentang === 168 ? "data/hotspot.json" : S.rentang === 72 ? "data/hotspot72.json" : "data/hotspot24.json").catch(() => muatJSON("data/hotspot72.json")).catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster_awal.json").then(d => (d.awal = true, d)).catch(() => muatJSON("data/kluster.json")),
