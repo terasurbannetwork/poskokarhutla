@@ -1,0 +1,52 @@
+/* Ruang Koordinasi BNPB: gaya bersama halaman publik (/bnpb, /relawan, /alun-alun, /riset, /risiko, /sitrep, /meja).
+   Token, header, tabel, pil, tombol dari admin.css (satu bahasa visual dengan panel admin); di sini hanya tambahan halaman publik.
+   Modul menambah gayanya di berkas .css sendiri, tidak menyalin isi berkas ini. */
+@import url("/admin/admin.css?v=4");
+
+.bn-wrap{max-width:1440px;margin:0 auto;padding:20px 24px 48px}
+.bn-judul{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 16px}
+.bn-judul h1{font-size:22px;font-weight:800}
+.bn-judul .bn-aksi{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+
+/* kartu gaya Insight */
+.bn-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+.bn-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:16px 18px;min-width:0}
+.bn-kartu h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
+.bn-angka{font:800 28px/1.1 var(--display);letter-spacing:-.02em}
+.bn-label{color:var(--ink2);font-size:12.5px;font-weight:600}
+
+/* pil berikon */
+.bn-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;
+  background:color-mix(in srgb,var(--pil,var(--c5)) 14%,transparent);color:color-mix(in srgb,var(--pil,var(--c5)) 80%,var(--ink))}
+.bn-pil svg{width:13px;height:13px;flex:none}
+
+/* formulir */
+.bn-form{display:grid;gap:14px}
+.bn-blok{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:16px 18px;display:grid;gap:12px}
+.bn-blok h2{font-size:15px;font-weight:800}
+.bn-baris{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.bn-isian{display:grid;gap:5px;font-size:13px;font-weight:600;color:var(--ink2)}
+.bn-isian input,.bn-isian select,.bn-isian textarea{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font-size:14.5px;color:var(--ink);font-weight:500}
+.bn-isian textarea{min-height:96px;resize:vertical}
+.bn-isian input:focus-visible,.bn-isian select:focus-visible,.bn-isian textarea:focus-visible{outline:2px solid var(--c5);outline-offset:1px;border-color:transparent}
+.bn-pilihan{display:flex;flex-wrap:wrap;gap:8px}
+.bn-pilihan label{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--line);border-radius:999px;padding:7px 13px;font-size:13px;font-weight:600;cursor:pointer;background:var(--card)}
+.bn-pilihan input{accent-color:var(--navy2)}
+.bn-pilihan label:has(input:checked){background:color-mix(in srgb,var(--c5) 14%,transparent);border-color:color-mix(in srgb,var(--c5) 50%,transparent);color:var(--ink)}
+.bn-setuju{display:flex;gap:10px;align-items:flex-start;font-size:13px;color:var(--ink2)}
+.bn-tombol{border:0;border-radius:12px;padding:11px 18px;font-weight:800;font-size:14px;cursor:pointer;background:var(--gradien);color:#fff;box-shadow:0 6px 16px -8px rgb(11 37 69 / .6)}
+.bn-tombol.sekunder{background:var(--card);color:var(--ink);box-shadow:var(--ring)}
+.bn-tombol:disabled{opacity:.55;cursor:not-allowed}
+.bn-tombol:active:not(:disabled){transform:scale(.98)}
+.bn-pesan{border-radius:12px;padding:10px 14px;font-weight:600}
+.bn-pesan:empty{display:none}
+.bn-pesan.ok{background:color-mix(in srgb,var(--c4) 14%,transparent);color:color-mix(in srgb,var(--c4) 75%,var(--ink))}
+.bn-pesan.galat{background:color-mix(in srgb,var(--c1) 12%,transparent);color:var(--c1)}
+
+/* alur status (daftar → verifikasi → ...) */
+.bn-alur{display:flex;gap:6px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
+.bn-alur li{font-size:12px;font-weight:700;padding:4px 10px;border-radius:999px;background:var(--soft);color:var(--ink3)}
+.bn-alur li[aria-current]{background:var(--navy);color:#fff}
+.bn-alur li.lewat{background:color-mix(in srgb,var(--c4) 16%,transparent);color:color-mix(in srgb,var(--c4) 80%,var(--ink))}
+
+@media (max-width:640px){.bn-wrap{padding:14px 16px 40px}.bn-judul h1{font-size:19px}.bn-angka{font-size:24px}}

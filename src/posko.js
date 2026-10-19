@@ -24,26 +24,26 @@ export const SUMBER_AIR = ["sungai", "kanal", "embung", "sumur_bor", "hidran", "
 export const STATUS_PANGGILAN = ["baru", "dipanggil", "direspons", "dicek", "tindak_lanjut", "selesai", "abaikan"];
 const MAKS_FOTO = 1.5 * 1048576, MAKS_HA = 5000, LAJU_KAB = 300, MAKS_GAGAL_KODE = 300, LAJU_FOTO = 30, RETENSI_NERACA_HARI = 400, MAKS_CSV = 65536, MAKS_TEMPLAT = 65536, LAJU_REGU = 60;   // laporan per regu per jam
 
-const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
-const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
-const KONTROL = /[\u0000-\u0008\u000B-\u001F\u007F​-‏‪-‮⁦-⁩﻿]/g;
+export const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
+export const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
+export const KONTROL = /[\u0000-\u0008\u000B-\u001F\u007F​-‏‪-‮⁦-⁩﻿]/g;
 /* teks bersih (NFC, tanpa karakter kontrol/bidi, dipangkas); null bila kosong, undefined bila lewat batas */
-const tx = (v, maks) => { if (v == null) return null; if (typeof v !== "string") return undefined; const s = v.normalize("NFC").replace(KONTROL, "").trim(); return s.length > maks ? undefined : s || null; };
+export const tx = (v, maks) => { if (v == null) return null; if (typeof v !== "string") return undefined; const s = v.normalize("NFC").replace(KONTROL, "").trim(); return s.length > maks ? undefined : s || null; };
 /* angka: kosong -> null, bukan angka/di luar rentang -> NaN */
-const num = (v, min, maks, bulat) => { if (v == null || v === "") return null; const n = typeof v === "number" ? v : typeof v === "string" && v.trim() !== "" ? Number(v) : NaN;
+export const num = (v, min, maks, bulat) => { if (v == null || v === "") return null; const n = typeof v === "number" ? v : typeof v === "string" && v.trim() !== "" ? Number(v) : NaN;
   return Number.isFinite(n) && n >= min && n <= maks && (!bulat || Number.isInteger(n)) ? n : NaN; };
-const RE_PROV = /^\d{2}$/, RE_TGL = /^\d{4}-[01]\d-[0-3]\d$/, RE_PID = /^[A-Za-z0-9._-]{3,80}$/;
-const tglSah = t => RE_TGL.test(t) && !Number.isNaN(Date.parse(t + "T00:00:00Z")) && new Date(t + "T00:00:00Z").toISOString().slice(0, 10) === t;
+export const RE_PROV = /^\d{2}$/, RE_TGL = /^\d{4}-[01]\d-[0-3]\d$/, RE_PID = /^[A-Za-z0-9._-]{3,80}$/;
+export const tglSah = t => RE_TGL.test(t) && !Number.isNaN(Date.parse(t + "T00:00:00Z")) && new Date(t + "T00:00:00Z").toISOString().slice(0, 10) === t;
 const kendalaSah = k => Array.isArray(k) && k.length <= 6 && k.every(x => typeof x === "string" && Object.hasOwn(KENDALA, x)) && new Set(k).size === k.length;
 const adm = async (env, req) => (await adminOK(env, req)) || null;
 /* peran: adminOK mengembalikan 12 hex awal sha256 entri ADMIN_TOKEN/AKUN_SITUS yang cocok. Akun gerbang situs (AKUN_SITUS) boleh admin biasa,
    tapi bukan kontak PT / kirim ke perusahaan (modOK). Super Admin = awalan yang tercantum di secret SUPER_ADMIN (koma); kosong = dummy tertutup. */
-const awalan = async d => new Set((await Promise.all(String(d || "").split(",").map(x => x.trim()).filter(Boolean).map(sha))).map(a => a.slice(0, 12)));
-const modOK = async (env, req) => {
+export const awalan = async d => new Set((await Promise.all(String(d || "").split(",").map(x => x.trim()).filter(Boolean).map(sha))).map(a => a.slice(0, 12)));
+export const modOK = async (env, req) => {
   const m = await adminOK(env, req); if (!m) return null;
   return (await awalan(env.AKUN_SITUS)).has(m) && !(await awalan(env.ADMIN_TOKEN)).has(m) ? null : m;
 };
-const superOK = async (env, req) => {
+export const superOK = async (env, req) => {
   const m = await modOK(env, req); if (!m) return null;
   return new Set(String(env.SUPER_ADMIN || "").split(",").map(x => x.trim().toLowerCase()).filter(x => /^[0-9a-f]{12}$/.test(x))).has(m) ? m : null;
 };

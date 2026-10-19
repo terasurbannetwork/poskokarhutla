@@ -16,7 +16,8 @@ const kepala = judul => `<!doctype html>
 <link href="/admin/admin.css?v=4" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
-const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"]};
+const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"]};
 const atas = aktif => `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>
   <nav>${Object.entries(HAL).map(([k, [ik, l]]) => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
@@ -76,6 +77,10 @@ export const halamanSosmed = () => halaman("sosmed", "Memuat post…", `<link hr
 
 export const halamanPosko = () => halaman("posko", "Memuat Ruang Posko…", `<link href="/admin/posko.css?v=1" rel="stylesheet">
 <script src="/admin/posko.js?v=1"></script>`);
+
+/* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
+export const halamanBnpb = k => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
+<script src="/admin/${k}.js?v=1"></script>`);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 

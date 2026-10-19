@@ -180,7 +180,8 @@
     "trigger lapangan_luas_maks": "angka publik dari satu kode",
     "trigger lapangan_kendala_ubah": "angka publik dari satu kode",
     "table laju_posko": "tebakan kode regu dan token admin",
-    "POST /api/posko/lapangan/:id": "angka publik dari satu kode"
+    "POST /api/posko/lapangan/:id": "angka publik dari satu kode",
+    "table laju_bnpb": "laju_bnpb: batas per jendela"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

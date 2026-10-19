@@ -13,6 +13,11 @@ import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
+import {bersihkanBnpb} from "./bnpb.js";
+import {RUTE_RELAWAN} from "./relawan.js";
+import {RUTE_ALUN} from "./alun.js";
+import {RUTE_RISET} from "./riset.js";
+import {RUTE_MEJA} from "./meja.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
@@ -444,6 +449,10 @@ const RUTE = {
   ...RUTE_FOTO,
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
+  ...RUTE_RELAWAN,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
+  ...RUTE_ALUN,
+  ...RUTE_RISET,
+  ...RUTE_MEJA,
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
@@ -633,6 +642,7 @@ async function bersihSemua(env, sekarang) {
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
+    try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan
