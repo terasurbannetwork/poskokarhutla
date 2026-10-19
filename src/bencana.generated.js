@@ -571,8 +571,8 @@ export default {
           "selang_detik": 600
         }
       ],
-      "workflow": "banjir.yml",
-      "pengerja": "cuaca",
+      "workflow": "lintas.yml",
+      "pengerja": "cuaca-udara",
       "bagikan": {
         "nama": "Pantau Bencana · Cuaca Ekstrem",
         "sumber": "BMKG, Open-Meteo, ECMWF",
@@ -699,7 +699,7 @@ export default {
       ],
       "cron_worker": [],
       "workflow": "udara.yml",
-      "pengerja": "udara",
+      "pengerja": "cuaca-udara",
       "bagikan": {
         "nama": "Pantau Bencana · Kualitas Udara",
         "sumber": "Copernicus CAMS via Open-Meteo, NOAA METAR, WorldPop (perkiraan model)",
@@ -823,8 +823,8 @@ export default {
         "gunungapi"
       ],
       "cron_worker": [],
-      "workflow": "banjir.yml",
-      "pengerja": "gunungapi",
+      "workflow": "lintas.yml",
+      "pengerja": "gunungapi-kering",
       "bagikan": {
         "nama": "Pantau Bencana · Gunung Api",
         "sumber": "PVMBG (MAGMA Indonesia)",
@@ -949,8 +949,8 @@ export default {
         "kekeringan"
       ],
       "cron_worker": [],
-      "workflow": "data.yml",
-      "pengerja": "kekeringan",
+      "workflow": "lintas.yml",
+      "pengerja": "gunungapi-kering",
       "bagikan": {
         "nama": "Pantau Bencana · Kekeringan",
         "sumber": "Deteksi Pantau Bencana",
