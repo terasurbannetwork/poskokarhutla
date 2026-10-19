@@ -44,12 +44,12 @@ TARIF = {
 }
 KOEF = {
     "orang_per_regu": {"nilai": 15, "satuan": "orang/regu", "sumber": "Permen LHK P.32/2016"},
-    "jam_heli_per_api": {"nilai": 3, "satuan": "jam terbang/kompleks prioritas", "sumber": "asumsi kerja tim Pantau Bencana (rentang 1,5 sampai 6)"},
+    "jam_heli_per_api": {"nilai": 3, "rendah": 1.5, "tinggi": 6, "satuan": "jam terbang/kompleks prioritas", "sumber": "asumsi kerja tim Pantau Bencana; rentang rendah 1,5 dan tinggi 6 dipakai untuk batas rupiah"},
     "rotasi": {"nilai": 1.5, "satuan": "kali", "sumber": "skenario tengah rencana operasi: tiga giliran, dua regu bekerja"},
     "masker_per_orang": {"nilai": 2, "satuan": "masker/orang terdampak", "sumber": "ASUMSI platform: dua masker per orang untuk satu episode asap"},
 }
 SKENARIO = [("rata", "Rerata 2019-2025"), ("analog", "Tahun El Nino")]
-KOLOM = ["prov", "titik", "kompleks", "jam_terbang", "regu_hari", "regu_rata", "terdampak", "masker", "rp_heli", "rp_regu", "rp_masker", "rp_total"]
+KOLOM = ["prov", "titik", "kompleks", "jam_terbang", "regu_hari", "regu_rata", "terdampak", "masker", "rp_heli", "rp_regu", "rp_masker", "rp_total", "rp_rendah", "rp_tinggi"]
 Z = {"w": _kej._W}
 
 
@@ -110,16 +110,17 @@ def koef_prov(operasi, kluster, penduduk):
     return out
 
 
-def hitung(titik, p, kp):
-    """Satu baris dari titik panas yang diharapkan. kp = koef_prov[p] atau None. Satu rumus untuk semua provinsi dan horizon."""
+def hitung(titik, p, kp, jam_heli=None):
+    """Satu baris dari titik panas yang diharapkan. kp = koef_prov[p] atau None. Satu rumus untuk semua provinsi dan horizon.
+    jam_heli menggantikan jam heli per kompleks (dipakai untuk batas rendah/tinggi)."""
     k, t = KOEF, TARIF
     if titik is None:
         return None
     if kp is None or not kp["titik_per_kompleks"] or kp["kompleks_operasi"] < MIN_KOMPLEKS:
         return {"titik": round(titik), "kompleks": None, "jam_terbang": None, "regu_hari": None, "regu_rata": None, "terdampak": None,
-                "masker": None, "rp_heli": None, "rp_regu": None, "rp_masker": None, "rp_total": None}
+                "masker": None, "rp_heli": None, "rp_regu": None, "rp_masker": None, "rp_total": None, "rp_rendah": None, "rp_tinggi": None}
     kom = titik / kp["titik_per_kompleks"]
-    jam = kom * kp["porsi_prioritas"] * k["jam_heli_per_api"]["nilai"]
+    jam = kom * kp["porsi_prioritas"] * (jam_heli or k["jam_heli_per_api"]["nilai"])
     rh = kom * kp["regu_hari_per_kompleks"] * k["rotasi"]["nilai"]
     ter = None if not kp["pend_berkompleks"] else kp["pend_berkompleks"] * min(1.0, kom / kp["kompleks_operasi"])
     mask = None if ter is None else ter * k["masker_per_orang"]["nilai"]
@@ -129,7 +130,7 @@ def hitung(titik, p, kp):
     return {"titik": round(titik), "kompleks": round(kom, 1), "jam_terbang": round(jam), "regu_hari": round(rh), "regu_rata": None,
             "terdampak": None if ter is None else round(ter), "masker": None if mask is None else round(mask),
             "rp_heli": round(rp_h), "rp_regu": round(rp_r), "rp_masker": None if rp_m is None else round(rp_m),
-            "rp_total": round(rp_h) + round(rp_r) + round(rp_m or 0)}
+            "rp_total": round(rp_h) + round(rp_r) + round(rp_m or 0), "rp_rendah": None, "rp_tinggi": None}
 
 
 def bangun(src, hari):
@@ -142,15 +143,18 @@ def bangun(src, hari):
     for sk, _ in SKENARIO:
         thn = TAHUN if sk == "rata" else nino
         for H in HORIZON:
-            ok = [y for y in thn if all(titik_jendela(mh["prov"].get(p, {}), mulai, H, y) is not None for p in list(mh["prov"])[:1])]
+            ok = [y for y in thn if mh["prov"] and all(titik_jendela(a, mulai, H, y) is not None for a in mh["prov"].values())]
             tahun_pakai[f"{sk}|{H}"] = ok
             baris, tot = [], defaultdict(float)
             for p in sorted(prov):
-                v = [titik_jendela(mh["prov"].get(p, {}), mulai, H, y) for y in ok]
+                v = [x for x in (titik_jendela(mh["prov"].get(p, {}), mulai, H, y) for y in ok) if x is not None]
                 r = hitung(sum(v) / len(v) if v else None, p, kp.get(p))
                 if r is None:
                     baris.append([p] + [None] * (len(KOLOM) - 1))
                     continue
+                if r["rp_total"] is not None:   # rentang: tahun paling sepi + heli terendah .. tahun paling ramai + heli tertinggi
+                    r["rp_rendah"] = hitung(min(v), p, kp.get(p), KOEF["jam_heli_per_api"]["rendah"])["rp_total"]
+                    r["rp_tinggi"] = hitung(max(v), p, kp.get(p), KOEF["jam_heli_per_api"]["tinggi"])["rp_total"]
                 if r["regu_hari"] is not None:
                     r["regu_rata"] = round(r["regu_hari"] / H, 1)
                 baris.append([p] + [r[c] for c in KOLOM[1:]])
@@ -174,7 +178,9 @@ def bangun(src, hari):
             "rp_heli": "jam terbang × tarif heli per jam",
             "rp_regu": "regu-hari × 15 orang × biaya orang-hari (0,4 × uang harian + 0,4 × honor MPA + konsumsi)",
             "rp_masker": "masker × harga masker",
-            "rp_total": "rupiah heli + rupiah regu + rupiah masker (komponen tanpa data tidak dijumlah)"},
+            "rp_total": "rupiah heli + rupiah regu + rupiah masker (komponen tanpa data tidak dijumlah)",
+            "rp_rendah": "total dengan titik panas tahun paling sepi di skenario dan 1,5 jam heli per kompleks prioritas",
+            "rp_tinggi": "total dengan titik panas tahun paling ramai di skenario dan 6 jam heli per kompleks prioritas; rentang nasional = jumlah rentang provinsi"},
         "tarif": TARIF, "koefisien": KOEF, "asumsi": True,
         "dasar": {"titik_panas": f"Titik panas 2019–2025 sampai {tgl(mh['sd'])}", "operasi": f"Kompleks operasi per {tgl(src['operasi'].get('per'))}",
                   "kluster": "Kluster titik panas", "penduduk": "Penduduk WorldPop 2026", "tahun_el_nino": nino,
@@ -182,6 +188,8 @@ def bangun(src, hari):
                   "umur_titik_hari": (mulai - dt.date.fromisoformat(mh["sd"])).days},
         "batas": ["Klimatologi titik panas 2019-2025 pada jendela yang sama, bukan prakiraan; ENSO dan IOD diwakili hanya lewat skenario tahun El Nino.",
                   "Koefisien operasional dan tarif adalah asumsi kerja, bukan RAB; Manggala Agni yang sudah dibiayai DIPA tetap dihitung agar skala kebutuhan terlihat.",
+                  "Rentang rupiah hanya memvariasikan tahun (paling sepi sampai paling ramai) dan jam heli (1,5 sampai 6); tarif dan koefisien lain tetap, jadi bukan selang kepercayaan.",
+                  "Skenario analog = tahun El Nino di 2019-2025 (jumlahnya sedikit). Titik per kompleks, porsi prioritas, dan regu-hari per kompleks berasal dari kondisi kompleks saat ini, bukan dari tahun analog.",
                   "Provinsi dengan kurang dari 5 kompleks operasi tidak punya koefisien yang layak: komponennya kosong, bukan nol."],
         "horizon": HORIZON, "skenario": [{"id": s, "nama": n} for s, n in SKENARIO], "tahun_dipakai": tahun_pakai,
         "provinsi": prov, "kolom": KOLOM, "data": data, "nasional": nas,
@@ -216,6 +224,11 @@ def cek():
     z = hitung(400, "99", None)
     assert z["titik"] == 400 and z["kompleks"] is None and z["rp_total"] is None, "tanpa koefisien harus null"
     assert hitung(None, "99", kp) is None
+    r1, r6 = hitung(400, "99", kp, 1.5), hitung(400, "99", kp, 6)
+    assert r1["rp_total"] < r["rp_total"] < r6["rp_total"], "jam heli lebih besar harus lebih mahal"
+    # provinsi tanpa data di musim_harian tidak boleh melempar TypeError
+    s2 = dict(src, musim_harian=dict(src["musim_harian"], prov={k: v for k, v in list(src["musim_harian"]["prov"].items())[:-3]}))
+    assert bangun(s2, hari)["data"]["rata|30"], "provinsi kosong"
     ix = {k: i for i, k in enumerate(a["kolom"])}
     assert set(a["data"]) == {f"{s}|{h}" for s, _ in SKENARIO for h in HORIZON}
     for kunci, baris in a["data"].items():
@@ -226,6 +239,16 @@ def cek():
                 assert v is None or (isinstance(v, (int, float)) and v >= 0), (kunci, r)
             if r[ix["rp_total"]] is not None:
                 assert r[ix["rp_total"]] == (r[ix["rp_heli"]] or 0) + (r[ix["rp_regu"]] or 0) + (r[ix["rp_masker"]] or 0), (kunci, r)
+    # rentang: rendah <= titik tengah <= tinggi, per provinsi dan nasional
+    for kunci, baris in a["data"].items():
+        for r in baris:
+            if r[ix["rp_total"]] is not None:
+                assert r[ix["rp_rendah"]] <= r[ix["rp_total"]] <= r[ix["rp_tinggi"]], (kunci, r)
+            else:
+                assert r[ix["rp_rendah"]] is None and r[ix["rp_tinggi"]] is None
+        nn = a["nasional"][kunci]
+        assert nn["rp_rendah"] <= nn["rp_total"] <= nn["rp_tinggi"] and nn["rp_rendah"] < nn["rp_tinggi"], (kunci, nn)
+    assert any("kondisi" in b and "saat ini" in b for b in a["batas"]) and KOEF["jam_heli_per_api"]["rendah"] == 1.5 and KOEF["jam_heli_per_api"]["tinggi"] == 6
     # horizon lebih panjang tidak boleh lebih sedikit titik/rupiah (skenario sama)
     for s, _ in SKENARIO:
         n = [a["nasional"][f"{s}|{h}"] for h in HORIZON]

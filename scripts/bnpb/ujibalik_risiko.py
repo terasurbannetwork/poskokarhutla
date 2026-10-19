@@ -6,29 +6,37 @@ dan apakah itu LEBIH BAIK daripada tebakan naif (peringkat penduduk saja)?
 DUA UJI, dan batasnya ditulis terang di keluaran:
 
   1. RETROSPEKTIF (jalan sekarang). Indeks harian tidak punya riwayat, jadi yang diuji hanya komponen STATIS: bahaya InaRISK
-     (banjir/bandang/longsor; gempa) x peringkat penduduk x (1 - 0,3 x kapasitas statis). Tak satu pun masukannya memakai data
-     kejadian, jadi tak ada kebocoran isi; tetapi ini BUKAN indeks harian: bahaya cuaca, kekeringan, karhutla, gunung api
+     (banjir/bandang/longsor; gempa) x peringkat penduduk x (1 - 0,3 x kapasitas statis). Kami tidak memasukkan data kejadian ke rumus,
+     tetapi peta InaRISK dibangun dari data historis yang tidak kami periksa, sehingga independensinya dari DIBI tidak terjamin
+     (kemungkinan kebocoran tak langsung). Ini juga BUKAN indeks harian: bahaya cuaca, kekeringan, karhutla, gunung api
      (komponen harian) tak bisa diuji mundur dan dikatakan "tak teruji" di keluaran. Kejadian: DIBI BNPB (public/banjir/data/kejadian.json
      `kejadian_dibi`, 3 tahun bergulir, dicatat per KABUPATEN, bukan kecamatan) dan gempa M>=5 USGS (riwayat_m5.json, titik
      -> kabupaten dengan pusat kecamatan terdekat <= 60 km). Satuan uji = kabupaten (skor = kecamatan tertinggi di dalamnya),
      bukan kecamatan, karena kejadian tak dicatat per kecamatan. Jendela = DUA paruh periode DIBI (A lalu B); angka diumumkan
-     per paruh. Tak ada ambang yang disetel: ambang kelas (15/35/60) dan aturan lulus di bawah ditetapkan SEBELUM melihat hasil.
+     per paruh. Ambang kelas (15/35/60) dan margin/selang aturan lulus ditetapkan sebelum melihat POD. JUJUR: bendera "seperempat teratas" dan sasaran
+     "seperempat kabupaten terbanyak laporan" dipilih SESUDAH melihat distribusi skor dan base rate (Tinggi+ menjangkau ~90% kabupaten;
+     presence DIBI jenuh), bukan sesudah melihat POD. Sebagai uji sensitivitas, POD bendera Tinggi+ dilaporkan di samping penduduk dengan
+     jumlah bendera sama (`bendera_kelas_tinggi_plus`, `pembanding_penduduk_sama_banyak`).
+     SERI di ambang: skor bahaya InaRISK jenuh (banyak kabupaten bernilai identik), jadi seri dipecah dengan acak berbenih tetap (hash
+     benih+kunci, bukan urutan kode wilayah), sasaran mengambil SEMUA yang seri di ambang, dan jumlah seri dicetak (`seri`). Bila lebih
+     dari separuh bendera ditentukan oleh pemecah seri, angka pembandingnya TIDAK ditampilkan (`tidak_bermakna` beserta alasan).
      Kejadian DIBI = laporan BPBD (lebih banyak di kabupaten padat dan berlaporan baik), jadi bias pelaporan ikut mengangkat
      baseline penduduk. Itu sebab baseline ini wajib dikalahkan, bukan sekadar base rate.
   2. PROSPEKTIF (tumbuh tiap jalan). Tiap jalan menyimpan potret kelas kabupaten per bahaya (`arsip`); kejadian SESUDAH tanggal
      potret dalam JENDELA_HARI dicocokkan. Inilah satu-satunya uji tanpa kebocoran untuk bahaya harian. Dihitung hanya dari potret
      yang jendelanya sudah tertutup data kejadian (DIBI terlambat beberapa hari).
 
-Tolok ukur: hit rate per kelas; POD, FAR, CSI untuk bendera seperempat teratas (Tinggi+ menjangkau ~90% kabupaten pada skor kabupaten = kecamatan tertinggi, jadi dilaporkan tapi tak dipakai vonis); lalu pembanding dengan jumlah bendera SAMA:
+Tolok ukur: hit rate per kelas; POD, FAR, CSI untuk bendera seperempat teratas (Tinggi+ menjangkau ~90% kabupaten pada skor kabupaten = kecamatan tertinggi, jadi dilaporkan sebagai sensitivitas tapi tak dipakai vonis); lalu pembanding dengan jumlah bendera SAMA:
 peringkat penduduk kabupaten (naif), bahaya saja (tanpa penduduk dan kapasitas), dan (paruh B) riwayat paruh A (kuat).
-ATURAN LULUS (tetap): untuk SETIAP kelompok dan SETIAP paruh, POD indeks >= POD penduduk + 0,10 dan batas bawah selang 90% bootstrap
-(2.000 ulangan, benih tetap) selisih itu > 0. Lulus semua = label "belum diuji balik" boleh diganti; selain itu labelnya
-"diuji balik: belum lebih baik dari baseline" beserta angkanya.
+ATURAN LULUS (tetap): untuk SETIAP kelompok, SETIAP paruh, dan SETIAP pembanding yang bermakna (penduduk; bahaya saja; paruh B juga riwayat
+paruh A), POD indeks >= POD pembanding + 0,10 dan batas bawah selang 90% bootstrap (2.000 ulangan, benih tetap) selisih itu > 0.
+Label "lulus" per kelompok hanya bila mengalahkan SEMUA pembanding bermakna; selain itu labelnya jujur menyebut pembanding mana yang tidak
+dikalahkan. Mengalahkan penduduk saja tidak cukup: peta bahaya InaRISK saja adalah pembanding yang lebih keras.
 
 Pakai:  python3 scripts/bnpb/ujibalik_risiko.py [--keluar BERKAS]    |   python3 scripts/bnpb/ujibalik_risiko.py --cek
 Urutan di workflow: sesudah risiko.py (membaca risiko_kecamatan.json dan menambah potret hari itu ke arsip).
 """
-import argparse, datetime as dt, json, os, random, sys, tempfile
+import argparse, datetime as dt, hashlib, json, os, random, sys, tempfile
 from collections import Counter
 
 AB = os.path.dirname(os.path.abspath(__file__))
@@ -130,9 +138,24 @@ def kab_gempa(pusat, lat, lon):
 
 
 # ---------------------------------------------------------------- metrik
+def acak(k):
+    """Pemecah seri netral: hash berbenih tetap dari kunci (deterministik, tidak berkorelasi dengan urutan kode wilayah maupun penduduk)."""
+    return hashlib.sha1(f"{BENIH}|{k}".encode()).hexdigest()
+
+
 def bendera_teratas(nilai, n):
-    """{kab: nilai} -> n kabupaten teratas (nilai None dibuang; seri dipecah dengan kunci kab: deterministik, bukan tebakan)."""
-    return set(k for k, _ in sorted(((k, v) for k, v in nilai.items() if v is not None), key=lambda x: (-x[1], x[0]))[:n])
+    """{kab: nilai} -> n kabupaten teratas (nilai None dibuang; seri dipecah dengan acak berbenih tetap, bukan kunci wilayah)."""
+    return set(k for k, _ in sorted(((k, v) for k, v in nilai.items() if v is not None), key=lambda x: (-x[1], acak(x[0])))[:n])
+
+
+def seri_ambang(nilai, n):
+    """-> info seri di ambang n teratas: nilai ambang, berapa kabupaten bernilai sama, berapa slot bendera yang diperebutkan seri itu."""
+    v = sorted((x for x in nilai.values() if x is not None), reverse=True)
+    if not n or n > len(v):
+        return {"nilai_ambang": None, "seri": 0, "slot_seri": 0, "bendera": n, "bermakna": False}
+    t = v[n - 1]
+    atas = sum(x > t for x in v)
+    return {"nilai_ambang": t, "seri": sum(x == t for x in v), "slot_seri": n - atas, "bendera": n, "bermakna": (n - atas) <= n / 2}
 
 
 def metrik(bendera, E, U):
@@ -179,15 +202,40 @@ def spearman(a, b):
 
 
 def sasaran(C, U, sering):
-    """Counter -> set kabupaten sasaran. sering=True (DIBI, hampir semua kabupaten punya >= 1 laporan): seperempat teratas menurut jumlah
-    kejadian (seri dipecah kunci kab); False (gempa M5+): ada/tidaknya."""
+    """Counter -> set kabupaten sasaran. sering=True (DIBI, hampir semua kabupaten punya >= 1 laporan): kabupaten dengan jumlah kejadian
+    >= jumlah milik kabupaten ke-(U//4) (SEMUA yang seri di ambang ikut, jadi bisa > U//4; ambang minimal 1 kejadian); False (gempa M5+): ada/tidaknya."""
     if not sering:
         return {k for k in C if k in U}
-    return set(sorted(U, key=lambda k: (-C.get(k, 0), k))[:len(U) // 4])
+    t = ambang_sasaran(C, U)
+    return set() if t is None else {k for k in U if C.get(k, 0) >= t}
+
+
+def ambang_sasaran(C, U):
+    n = len(U) // 4
+    return None if not n else max(1, sorted((C.get(k, 0) for k in U), reverse=True)[n - 1])
 
 
 def nilai_skor(skor):
     return {k: v for k, v in skor.items() if v is not None}
+
+
+def metrik_atau_tak(bendera, E, U, info, nama):
+    """metrik biasa bila pemecah seri tidak menentukan separuh lebih bendera; selain itu angka tidak ditampilkan beserta alasannya."""
+    if info["bermakna"]:
+        return metrik(bendera, E, U)
+    return {"bendera": len(bendera), "kena": None, "pod": None, "far": None, "csi": None, "presisi": None, "tidak_bermakna":
+            f"{nama}: {info['seri']} kabupaten bernilai sama ({info['nilai_ambang']}) di ambang, memperebutkan {info['slot_seri']} dari {info['bendera']} bendera; "
+            "pilihannya ditentukan pemecah seri acak, jadi POD-nya bukan ukuran ketepatan dan tidak ditampilkan"}
+
+
+def lawan(F, G, E, U):
+    """F (indeks) vs G (pembanding) -> aturan lulus tetap. G None = pembanding tak bermakna (tidak ikut vonis)."""
+    if G is None:
+        return {"bermakna": False, "jelas_lebih_baik": None}
+    sel, bawah = bootstrap_selisih(F, G, E, U) if E and F else (None, None)
+    pi, pg = len(F & E) / len(E) if E else None, len(G & E) / len(E) if E else None
+    jelas = pi is not None and pg is not None and pi - pg >= MARGIN_POD and bawah is not None and bawah > 0
+    return {"bermakna": True, "selisih_pod": None if pi is None or pg is None else round(pi - pg, 3), "bootstrap_selisih_rata": sel, "bootstrap_batas_bawah_90": bawah, "jelas_lebih_baik": jelas}
 
 
 def uji_kelompok(skor, bahaya_saja, pend, C, sering, riwayat_lalu=None):
@@ -201,21 +249,29 @@ def uji_kelompok(skor, bahaya_saja, pend, C, sering, riwayat_lalu=None):
         per.append({"kelas": R.KELAS[c], "kabupaten": len(m), "kena": len(set(m) & E), "hit_rate": round(len(set(m) & E) / len(m), 3) if m else None})
     Fk = {k for k, v in kelas.items() if v >= KELAS_BENDERA}
     N = len(U) // 4                       # bendera uji = seperempat kabupaten dengan skor tertinggi (kelas Tinggi+ menjangkau ~90% kabupaten: tak informatif)
-    F = bendera_teratas(nilai_skor(skor), N)
-    pop = bendera_teratas({k: pend.get(k) for k in U}, N)
-    haz = bendera_teratas({k: bahaya_saja.get(k) for k in U}, N)
-    nilai = {k: v for k, v in skor.items() if v is not None}
-    out = {"kabupaten": len(U), "kejadian": len(E), "sasaran": "seperempat kabupaten dengan kejadian terbanyak" if sering else "kabupaten dengan >= 1 gempa M5+",
-           "spearman_jumlah_kejadian": {"indeks": spearman(nilai, {k: C.get(k, 0) for k in U}), "penduduk": spearman({k: pend.get(k, 0) for k in U}, {k: C.get(k, 0) for k in U}),
-                                        "bahaya_saja": spearman({k: bahaya_saja[k] for k in U if bahaya_saja.get(k) is not None}, {k: C.get(k, 0) for k in U})}, "base_rate": round(len(E) / len(U), 3) if U else None, "per_kelas": per,
-           "indeks": metrik(F, E, U), "bendera_kelas_tinggi_plus": metrik(Fk, E, U), "baseline_penduduk": metrik(pop, E, U), "bahaya_saja": metrik(haz, E, U)}
+    nilai = nilai_skor(skor)
+    nP, nH = {k: pend.get(k) for k in U}, {k: bahaya_saja.get(k) for k in U}
+    F, pop, haz = bendera_teratas(nilai, N), bendera_teratas(nP, N), bendera_teratas(nH, N)
+    seri = {"indeks": seri_ambang(nilai, N), "penduduk": seri_ambang(nP, N), "bahaya_saja": seri_ambang(nH, N)}
+    Cu = {k: C.get(k, 0) for k in U}
+    out = {"kabupaten": len(U), "kejadian": len(E), "sasaran": ("kabupaten dengan jumlah kejadian >= milik kabupaten ke-seperempat (semua yang seri di ambang ikut)" if sering else "kabupaten dengan >= 1 gempa M5+"),
+           "seri_sasaran": None if not sering else {"ambang_kejadian": ambang_sasaran(C, U), "seri_di_ambang": sum(1 for k in U if Cu[k] == ambang_sasaran(C, U))},
+           "spearman_jumlah_kejadian": {"indeks": spearman(nilai, Cu), "penduduk": spearman({k: pend.get(k, 0) for k in U}, Cu),
+                                        "bahaya_saja": spearman({k: bahaya_saja[k] for k in U if bahaya_saja.get(k) is not None}, Cu) if seri["bahaya_saja"]["bermakna"] else None}, "base_rate": round(len(E) / len(U), 3) if U else None, "per_kelas": per,
+           "seri": seri, "indeks": metrik_atau_tak(F, E, U, seri["indeks"], "indeks"), "bendera_kelas_tinggi_plus": metrik(Fk, E, U),
+           "pembanding_penduduk_sama_banyak": metrik(bendera_teratas(nP, len(Fk)), E, U),
+           "baseline_penduduk": metrik_atau_tak(pop, E, U, seri["penduduk"], "penduduk"), "bahaya_saja": metrik_atau_tak(haz, E, U, seri["bahaya_saja"], "bahaya saja")}
+    pemb = {"penduduk": pop if seri["penduduk"]["bermakna"] else None, "bahaya_saja": haz if seri["bahaya_saja"]["bermakna"] else None}
     if riwayat_lalu is not None:
-        out["riwayat_paruh_A"] = metrik(bendera_teratas({k: riwayat_lalu.get(k, 0) for k in U}, N), E, U)
-        out["spearman_jumlah_kejadian"]["riwayat_paruh_A"] = spearman({k: riwayat_lalu.get(k, 0) for k in U}, {k: C.get(k, 0) for k in U})
-    sel, bawah = bootstrap_selisih(F, pop, E, U) if E and N else (None, None)
-    pi, pp = out["indeks"]["pod"], out["baseline_penduduk"]["pod"]
-    jelas = pi is not None and pp is not None and pi - pp >= MARGIN_POD and bawah is not None and bawah > 0
-    out["lawan_penduduk"] = {"selisih_pod": None if pi is None or pp is None else round(pi - pp, 3), "bootstrap_selisih_rata": sel, "bootstrap_batas_bawah_90": bawah, "jelas_lebih_baik": jelas}
+        sr = seri_ambang({k: riwayat_lalu.get(k, 0) for k in U}, N)
+        seri["riwayat_paruh_A"] = sr
+        ra = bendera_teratas({k: riwayat_lalu.get(k, 0) for k in U}, N)
+        out["riwayat_paruh_A"] = metrik_atau_tak(ra, E, U, sr, "riwayat paruh A")
+        out["spearman_jumlah_kejadian"]["riwayat_paruh_A"] = spearman({k: riwayat_lalu.get(k, 0) for k in U}, Cu)
+        pemb["riwayat_paruh_A"] = ra if sr["bermakna"] else None
+    ind_ok = seri["indeks"]["bermakna"]
+    out["lawan"] = {n: lawan(F, g, E, U) if ind_ok else {"bermakna": False, "jelas_lebih_baik": None} for n, g in pemb.items()}
+    out["lawan_penduduk"] = out["lawan"]["penduduk"]
     return out
 
 
@@ -243,17 +299,45 @@ def retro(r, kej, m5, pusat, bahaya_stat):
     return P, hasil
 
 
+PEMBANDING = {"penduduk": "peringkat penduduk", "bahaya_saja": "peta bahaya InaRISK saja", "riwayat_paruh_A": "riwayat kejadian paruh A"}
+
+
+def status_banding(v, n):
+    """-> 'lebih_baik' | 'tidak' | 'tak_bermakna' untuk pembanding n di kedua paruh (riwayat hanya paruh B)."""
+    L = [v[p]["lawan"][n] for p in "AB" if n in v[p]["lawan"]]
+    ber = [x for x in L if x["bermakna"]]
+    if not ber:
+        return "tak_bermakna"
+    return "lebih_baik" if all(x["jelas_lebih_baik"] for x in ber) and len(ber) == len(L) else "tidak"
+
+
+def vonis_kelompok(v):
+    st = {n: status_banding(v, n) for n in PEMBANDING}
+    # lulus hanya bila mengalahkan SEMUA pembanding yang bermakna, dan penduduk wajib bermakna
+    lulus = st["penduduk"] == "lebih_baik" and all(x in ("lebih_baik", "tak_bermakna") for x in st.values())
+    kalah = [PEMBANDING[n] for n, x in st.items() if x == "tidak"]
+    menang = [PEMBANDING[n] for n, x in st.items() if x == "lebih_baik"]
+    tak = [PEMBANDING[n] for n, x in st.items() if x == "tak_bermakna"]
+    kal = f"{v['nama']}: " + (f"lebih baik dari {' dan '.join(menang)}" if menang else "")
+    if kalah:
+        kal += (", tetapi " if menang else "") + f"TIDAK lebih baik dari {' dan '.join(kalah)}"
+    hz, ix = v["B"]["bahaya_saja"]["pod"], v["B"]["indeks"]["pod"]
+    if "peta bahaya InaRISK saja" in kalah and hz is not None and ix is not None and hz > ix:
+        kal += "; faktor penduduk dan kapasitas menurunkan ketepatan dibanding bahaya saja"
+    if tak:
+        kal += f". Pembanding tidak bermakna dan tidak dinilai: {' dan '.join(tak)} (seri di ambang)"
+    return {"lulus": lulus, "status": st, "kalimat": kal,
+            "label": "diuji balik: lebih baik dari semua pembanding bermakna" if lulus else f"diuji balik: belum lebih baik dari {' dan '.join(kalah)}"}
+
+
 def vonis(hasil):
-    gagal, baik = [], []
-    for g, v in hasil.items():
-        for p in ("A", "B"):
-            L = v[p]["lawan_penduduk"]
-            (baik if L["jelas_lebih_baik"] else gagal).append(f"{v['nama']} paruh {p}: indeks POD {v[p]['indeks']['pod']} vs penduduk {v[p]['baseline_penduduk']['pod']} (batas bawah {L['bootstrap_batas_bawah_90']})")
+    pk = {g: vonis_kelompok(v) for g, v in hasil.items()}
+    gagal = [f"{hasil[g]['nama']}: {k['kalimat']}" for g, k in pk.items() if not k["lulus"]]
+    baik = [f"{hasil[g]['nama']}: {k['kalimat']}" for g, k in pk.items() if k["lulus"]]
     lulus = not gagal
-    angka = "; ".join(f"{v['nama']}: POD {v['B']['indeks']['pod']} FAR {v['B']['indeks']['far']} vs penduduk POD {v['B']['baseline_penduduk']['pod']} (paruh B)" for v in hasil.values())
-    return {"lulus": lulus,
-            "label": "diuji balik: lebih baik dari baseline penduduk (komponen statis)" if lulus else "diuji balik: belum lebih baik dari baseline",
-            "ringkas": angka, "tidak_lebih_baik": gagal, "lebih_baik": baik}
+    angka = "; ".join(f"{v['nama']}: POD {v['B']['indeks']['pod']} FAR {v['B']['indeks']['far']} vs penduduk POD {v['B']['baseline_penduduk']['pod']}, bahaya saja POD {v['B']['bahaya_saja']['pod'] if v['B']['bahaya_saja']['pod'] is not None else 'tidak ditampilkan (seri)'} (paruh B)" for v in hasil.values())
+    return {"lulus": lulus, "label": "Uji balik: hanya komponen statis banjir/longsor dan gempa",
+            "per_kelompok": pk, "ringkas": " | ".join(k["kalimat"] for k in pk.values()) + ". Angka: " + angka, "tidak_lebih_baik": gagal, "lebih_baik": baik}
 
 
 # ---------------------------------------------------------------- prospektif (arsip potret)
@@ -320,14 +404,19 @@ def bangun(r, kej, m5, pusat, bahaya_stat, arsip_lama):
     arsip = tambah_arsip(arsip_lama, r)
     return {
         "versi": 1, "hari_indeks": r["hari"],
-        "metode": "Satuan kabupaten (skor = kecamatan tertinggi). Bendera uji = seperempat kabupaten dengan skor tertinggi; pembanding berbendera sama banyak. Bendera kelas Tinggi+ (skor >= 35) dilaporkan terpisah (`bendera_kelas_tinggi_plus`) tetapi menjangkau ~90% kabupaten (skor = kecamatan tertinggi), jadi tak dipakai untuk vonis.",
+        "metode": "Satuan kabupaten (skor = kecamatan tertinggi). Bendera uji = seperempat kabupaten dengan skor tertinggi; pembanding berbendera sama banyak; seri di ambang dipecah acak berbenih tetap (bukan urutan kode wilayah) dan jumlahnya dicetak di `seri`. Bendera kelas Tinggi+ (skor >= 35) dilaporkan sebagai uji sensitivitas (`sensitivitas_tinggi_plus`, dibanding penduduk berbendera sama banyak) tetapi menjangkau ~90% kabupaten, jadi tak dipakai untuk vonis. Pembanding yang separuh lebih benderanya ditentukan pemecah seri tidak ditampilkan (`tidak_bermakna`).",
         "periode": {"DIBI": P, "pembagian": "dua paruh sama panjang dari rentang kejadian_dibi; indeks statis tidak memakai kejadian apa pun"},
-        "aturan_lulus": f"setiap kelompok dan setiap paruh: POD indeks >= POD baseline penduduk + {MARGIN_POD} DAN batas bawah selang 90% bootstrap selisih POD > 0 ({ULANGAN} ulangan, benih {BENIH}). Aturan ditetapkan sebelum hasil dilihat; tidak ada ambang yang disetel.",
+        "aturan_lulus": f"setiap kelompok, setiap paruh, dan SEMUA pembanding bermakna (penduduk, peta bahaya saja, riwayat paruh A untuk paruh B): POD indeks >= POD pembanding + {MARGIN_POD} DAN batas bawah selang 90% bootstrap selisih POD > 0 ({ULANGAN} ulangan, benih {BENIH}). Margin, selang, dan aturan seri ditetapkan sebelum POD dilihat; bendera seperempat teratas dan sasaran seperempat terbanyak dipilih sesudah melihat distribusi skor dan base rate (bukan POD).",
         "retrospektif": hasil, "vonis": vonis(hasil),
+        "sensitivitas_tinggi_plus": {g: {p: {"bendera": hasil[g][p]["bendera_kelas_tinggi_plus"]["bendera"], "pod_indeks": hasil[g][p]["bendera_kelas_tinggi_plus"]["pod"],
+                                             "far_indeks": hasil[g][p]["bendera_kelas_tinggi_plus"]["far"], "pod_penduduk_sama_banyak": hasil[g][p]["pembanding_penduduk_sama_banyak"]["pod"]} for p in "AB"} for g in hasil},
         "tak_teruji": TAK_TERUJI,
         "keterbatasan": [
             "Yang diuji mundur hanya komponen STATIS (InaRISK banjir/longsor dan gempa x penduduk x kapasitas statis); indeks harian tidak punya riwayat, jadi komponen harian (cuaca, kekeringan, karhutla, gunung api) belum teruji mundur.",
-            "Hampir semua kabupaten punya >= 1 laporan DIBI per paruh (jenuh: base rate ~0,9, POD tak informatif), maka sasaran banjir/longsor = seperempat kabupaten dengan laporan terbanyak (aturan tetap, ditetapkan karena jenuh, bukan karena hasil); korelasi peringkat (Spearman) terhadap jumlah laporan dilaporkan sebagai pelengkap tanpa ambang.",
+            "Peta InaRISK dibangun dari data historis kejadian yang tidak kami periksa; independensinya dari DIBI tidak terjamin, jadi keunggulan bahaya InaRISK atas penduduk bisa sebagian karena kebocoran tak langsung, bukan kemampuan prediksi murni.",
+            "Bendera (seperempat teratas) dan sasaran (seperempat kabupaten terbanyak laporan) dipilih SESUDAH melihat distribusi skor dan base rate (bendera Tinggi+ menjangkau ~90% kabupaten; presence DIBI jenuh), bukan sesudah melihat POD. POD bendera Tinggi+ dilaporkan sebagai uji sensitivitas.",
+            "Skor bahaya InaRISK banyak yang identik (jenuh): seri di ambang dipecah acak berbenih tetap, sasaran mengambil semua yang seri di ambang, dan pembanding yang benderanya didominasi pemecah seri tidak ditampilkan. Aturan separuh itu ditetapkan sebelum angka akhir dilihat.",
+            "Hampir semua kabupaten punya >= 1 laporan DIBI per paruh (jenuh: base rate ~0,9, POD tak informatif), maka sasaran banjir/longsor = kabupaten dengan laporan terbanyak seperempat teratas, termasuk semua yang seri di ambang (aturan tetap, ditetapkan karena jenuh, bukan karena hasil); korelasi peringkat (Spearman) terhadap jumlah laporan dilaporkan sebagai pelengkap tanpa ambang.",
             "Kejadian DIBI dicatat per kabupaten dari laporan BPBD, bukan per kecamatan: uji berjalan di tingkat kabupaten, dan kabupaten padat/berlaporan baik terlihat lebih sering kena (bias pelaporan).",
             "DIBI 2024 tidak lengkap; rentang hanya 3 tahun bergulir, jadi jumlah kejadian per kelompok kecil dan selang bootstrap lebar.",
             "Gempa dipetakan ke kabupaten lewat pusat kecamatan terdekat <= 60 km dari episentrum M>=5 (USGS); episentrum di laut jauh tidak dihitung. Kerusakan tidak diuji, hanya keberadaan guncangan M5+.",
@@ -365,7 +454,44 @@ def cek():
                 assert x[k]["pod"] is None or 0 <= x[k]["pod"] <= 1
             assert x["lawan_penduduk"]["jelas_lebih_baik"] in (True, False)
         assert "riwayat_paruh_A" in v["B"] and "riwayat_paruh_A" not in v["A"]
+        for p in "AB":                       # jumlah seri di ambang tercetak untuk tiap skor; angka tak bermakna tidak ditampilkan
+            for n_, sr in v[p]["seri"].items():
+                assert {"nilai_ambang", "seri", "slot_seri", "bendera", "bermakna"} <= set(sr)
+            for k in ("baseline_penduduk", "bahaya_saja", "indeks") + (("riwayat_paruh_A",) if p == "B" else ()):
+                assert (v[p][k]["pod"] is None) == bool(v[p][k].get("tidak_bermakna")) == (not v[p]["seri"][k if k != "baseline_penduduk" else "penduduk"]["bermakna"]), (g, p, k)
     assert a["vonis"]["lulus"] == (not a["vonis"]["tidak_lebih_baik"]) and a["vonis"]["label"]
+    for g in RETRO:                          # vonis memuat pembanding bahaya_saja dan riwayat; lulus hanya bila mengalahkan SEMUA yang bermakna
+        k = a["vonis"]["per_kelompok"][g]
+        assert set(k["status"]) == {"penduduk", "bahaya_saja", "riwayat_paruh_A"} and k["kalimat"]
+        assert k["lulus"] == (k["status"]["penduduk"] == "lebih_baik" and all(x != "tidak" for x in k["status"].values()))
+    gm = a["vonis"]["per_kelompok"]["gempa"]
+    if gm["status"]["bahaya_saja"] == "tidak":
+        assert "TIDAK lebih baik dari peta bahaya InaRISK saja" in gm["kalimat"] and not gm["lulus"], "gempa kalah dari bahaya saja harus dikatakan terang"
+    assert set(a["sensitivitas_tinggi_plus"]) == set(RETRO)
+    # seri dipecah netral: nilai identik -> pilihan tidak mengikuti urutan abjad kode wilayah, dan deterministik
+    sama = {f"11|K{i:03d}": 1.0 for i in range(400)}
+    pil = bendera_teratas(sama, 100)
+    assert pil == bendera_teratas(sama, 100) and len(pil) == 100 and pil != {f"11|K{i:03d}" for i in range(100)}, "seri dipecah dengan abjad"
+    assert sum(k < "11|K200" for k in pil) not in range(0, 20) and sum(k < "11|K200" for k in pil) not in range(81, 101), "pemecah seri condong ke satu ujung abjad"
+    si = seri_ambang({**sama, "x": 2.0}, 100)
+    assert si["seri"] == 400 and si["slot_seri"] == 99 and not si["bermakna"], si
+    assert seri_ambang({f"k{i}": float(i) for i in range(100)}, 25)["bermakna"]
+    # bahaya_saja jenuh: angka tidak ditampilkan, tidak ikut vonis
+    ju = {f"k{i}": 100.0 for i in range(40)}
+    pend_t = {k: i for i, k in enumerate(ju)}
+    hs = uji_kelompok({k: float(i) for i, k in enumerate(ju)}, ju, pend_t, Counter({f"k{i}": 5 for i in range(30, 40)}), False)
+    assert hs["bahaya_saja"]["pod"] is None and hs["bahaya_saja"]["tidak_bermakna"] and hs["lawan"]["bahaya_saja"]["jelas_lebih_baik"] is None and hs["seri"]["bahaya_saja"]["seri"] == 40
+    # sasaran DIBI mengambil SEMUA yang seri di ambang (boleh > U//4)
+    ss = sasaran(Counter({"a": 9, "b": 5, "c": 5, "d": 5, "e": 1}), {"a", "b", "c", "d", "e", "f", "g", "h"}, True)
+    assert ss == {"a", "b", "c", "d"}, ss
+    # nilai penting: tidak lulus bila kalah dari pembanding bermakna walau menang dari penduduk
+    v_t = {"nama": "T", **{p: {"lawan": {"penduduk": {"bermakna": True, "jelas_lebih_baik": True}, "bahaya_saja": {"bermakna": True, "jelas_lebih_baik": False}, **({"riwayat_paruh_A": {"bermakna": True, "jelas_lebih_baik": True}} if p == "B" else {})},
+                          "bahaya_saja": {"pod": 0.5}, "indeks": {"pod": 0.4}} for p in "AB"}}
+    vt = vonis_kelompok(v_t)
+    assert not vt["lulus"] and "lebih baik dari peringkat penduduk" in vt["kalimat"] and "TIDAK lebih baik dari peta bahaya InaRISK saja" in vt["kalimat"] and "menurunkan ketepatan" in vt["kalimat"], vt
+    v_t["B"]["lawan"]["bahaya_saja"]["jelas_lebih_baik"] = v_t["A"]["lawan"]["bahaya_saja"]["jelas_lebih_baik"] = True
+    assert vonis_kelompok(v_t)["lulus"]
+    assert "Peta InaRISK dibangun dari data historis" in " ".join(a["keterbatasan"]) and "sesudah melihat distribusi skor" in " ".join(a["keterbatasan"]).lower()
     # null bukan 0: bahaya hilang -> kabupaten tanpa skor, bukan skor 0
     r2 = json.loads(json.dumps(r))
     ix = ix_kolom(r2)
@@ -384,7 +510,8 @@ def cek():
     m = metrik(F, E, set("abcdxyz"))
     assert (m["kena"], m["pod"], m["far"], m["csi"]) == (2, 0.5, 0.333, round(2 / 5, 3)), m
     assert metrik(set(), E, E)["far"] is None and metrik(F, set(), E)["pod"] is None
-    assert bendera_teratas({"b": 5, "a": 5, "c": 9, "d": None}, 2) == {"c", "a"}
+    t_ = bendera_teratas({"b": 5, "a": 5, "c": 9, "d": None}, 2)
+    assert "c" in t_ and len(t_) == 2 and "d" not in t_, "teratas pasti ikut, None dibuang"
     # bootstrap: indeks sempurna vs penduduk jelek -> batas bawah > 0; dua pembanding identik -> selisih 0
     U = {f"k{i}" for i in range(100)}
     Ee = {f"k{i}" for i in range(20)}
@@ -421,7 +548,7 @@ def cek():
         _kej.simpan(p, a)
         assert next(iter(json.load(open(p)))) == "dibuat" and os.path.getsize(p) < 400_000, os.path.getsize(p)
     sx = a["retrospektif"]["banjir_longsor"]["A"]
-    assert sx["kejadian"] == 515 // 4 or sx["kejadian"] == sx["kabupaten"] // 4
+    assert sx["kejadian"] >= sx["kabupaten"] // 4 and sx["seri_sasaran"]["seri_di_ambang"] >= 1, "sasaran mengambil semua yang seri di ambang"
     for g in RETRO:
         print(f"  {a['retrospektif'][g]['nama']}: A {ringkas(a['retrospektif'][g]['A'])} | B {ringkas(a['retrospektif'][g]['B'])}")
     print("cek ok:", a["vonis"]["label"])

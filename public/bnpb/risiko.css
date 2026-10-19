@@ -60,3 +60,4 @@
 .rk-nair{font-size:11px;color:var(--ink2);display:block}
 @media (max-width:900px){.rk-tata{grid-template-columns:1fr}.rk-prov{min-width:0;width:100%}}
 @media (max-width:640px){.rk-baris{grid-template-columns:110px minmax(0,1fr) 52px}.rk-baris .st{display:none}.rk-dua{grid-template-columns:1fr}.rk-dlg-isi{padding:14px}}
+.rk-catatan{font-size:12px;color:var(--ink2);margin:6px 0 0}

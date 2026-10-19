@@ -17,6 +17,8 @@
   /* ringkas: kartu = miliar/juta bulat; tabel = 1 desimal koma (miliar bila >= 1 miliar, selain itu juta) */
   const rpK = v => v == null ? "–" : v >= 1e9 ? "Rp" + fmt(Math.round(v / 1e9)) + " miliar" : "Rp" + fmt(Math.round(v / 1e6)) + " juta";
   const rpT = v => v == null ? "–" : v >= 1e9 ? "Rp" + fmt(Math.round(v / 1e8) / 10) + " miliar" : "Rp" + fmt(Math.round(v / 1e5) / 10) + " juta";
+  /* rentang kartu: "Rp400–950 miliar" bila satuannya sama, selain itu dua nilai lengkap */
+  const rpR = (a, b) => a == null || b == null ? "–" : a >= 1e9 && b >= 1e9 ? "Rp" + fmt(Math.round(a / 1e9)) + "–" + fmt(Math.round(b / 1e9)) + " miliar" : rpK(a) + " – " + rpK(b);
   const bulat = v => v == null ? "–" : fmt(Math.round(v));
   let D, IX, hor = 90, sk = "rata";
   const st = {urut: "rp_total", turun: true, hal: 0};
@@ -28,6 +30,8 @@
     el("fHorizon").innerHTML = D.horizon.map(h => `<button type="button" data-h="${h}" aria-pressed="${h === hor}">${ikon("hari")}${h} hari</button>`).join("");
     el("fSkenario").innerHTML = D.skenario.map(s => `<button type="button" data-s="${s.id}" aria-pressed="${s.id === sk}">${esc(s.nama)}</button>`).join("");
     el("pilLabel").innerHTML = ikon("perkiraan") + esc(D.label.charAt(0).toUpperCase() + D.label.slice(1));
+    const nn = D.tahun_dipakai[`analog|${D.horizon[0]}`] || [];
+    el("pilAnalog").innerHTML = ikon("hari") + `Analog = ${fmt(nn.length)} tahun El Nino`; el("pilAnalog").title = nn.join(", ");
     el("pilAsumsi").innerHTML = ikon("asumsi") + "Asumsi tarif dan koefisien";
     if (D.dasar.analog_relevan) { el("pilNino").hidden = false; el("pilNino").innerHTML = ikon("perkiraan") + `RONI ${fmt(D.dasar.roni_sekarang)}, El Nino aktif`; }
     el("pilHari").textContent = "Mulai " + new Date(D.hari + "T00:00:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"});
@@ -37,7 +41,8 @@
     const n = nas(), k = (ik, judul, angka, label, warna) => `<section class="bn-kartu"><h2><span class="kb-ikon-kartu" data-w="${warna}">${ikon(ik)}</span>${esc(judul)}</h2><div class="bn-angka">${angka}</div><div class="bn-label">${label}</div></section>`;
     const tahun = D.tahun_dipakai[`${sk}|${hor}`];
     el("kartu").innerHTML = `<section class="bn-kartu kb-utama"><h2><span class="kb-ikon-kartu" data-w="c2">${ikon("rupiah")}</span>Total perkiraan ${hor} hari</h2>
-        <div class="bn-angka">${rpK(n.rp_total)}</div><div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka · tahun ${esc(tahun.join(", "))}</div>
+        <div class="bn-angka">${rpR(n.rp_rendah, n.rp_tinggi)}</div><div class="bn-label">Titik tengah ${rpK(n.rp_total)} · rentang dari tahun paling sepi sampai paling ramai dan 1,5 sampai 6 jam heli per kompleks</div>
+        <div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka · tahun ${esc(tahun.join(", "))}. Titik per kompleks berasal dari kondisi kompleks saat ini, bukan dari tahun-tahun itu.</div>
         <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Pantau Bencana.</div>
         <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rpK(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rpK(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rpK(n.rp_masker)}</span></div></section>`
       + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang · ${fmt(n.kompleks)} kompleks api`, "c3")

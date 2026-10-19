@@ -24,15 +24,21 @@
   const idx = v => v == null ? "–" : "indeks " + fmt(Math.round(v * 100) / 100);   // bahaya 0-1: indeks, bukan persen
   const val = (r, k) => r[IX[k]];
   /* skor satu baris untuk bencana yang dipilih: rumus yang sama dengan pipeline */
-  function skor(r) {
+  function skor(r, statis) {   // statis = true: kapasitas statis saja (tanpa relawan), seperti daftar prioritas
     const ada = BENCANA.filter(b => pilih.has(b) && val(r, "h_" + b) != null);
-    const pg = val(r, "pangkat"), kap = val(r, "kapasitas");
+    const pg = val(r, "pangkat"), kap = val(r, statis ? "kap_statis" : "kapasitas");
     if (!ada.length || pg == null || kap == null) return {s: null, b: ada.length ? Math.max(...ada.map(b => val(r, "h_" + b))) : null, u: null};
     const u = ada.reduce((m, b) => val(r, "h_" + b) > val(r, "h_" + m) ? b : m), b = val(r, "h_" + u);
     return {s: Math.round(1000 * b * pg * (1 - D.bobot.w_kapasitas * kap)) / 10, b, u};
   }
   const kelas = s => s == null ? null : D.ambang.filter(a => s >= a).length;
   const kls = s => s == null ? "kn" : "k" + kelas(s);
+  /* label uji balik menurut bahaya utama: hanya banjir/longsor dan gempa yang pernah diuji (komponen statisnya); selebihnya komposit */
+  const labelUji = u => {
+    const k = U && U.vonis.per_kelompok && U.vonis.per_kelompok[u === "banjir" ? "banjir_longsor" : u === "gempa" ? "gempa" : ""];
+    return k ? k.label : D.label.charAt(0).toUpperCase() + D.label.slice(1);
+  };
+  const kalimatUji = u => { const k = U && U.vonis.per_kelompok && U.vonis.per_kelompok[u === "banjir" ? "banjir_longsor" : u === "gempa" ? "gempa" : ""]; return k ? k.kalimat : ""; };
   const namaB = b => D.bencana.find(x => x.id === b).nama;
   const pilKelas = s => `<span class="rk-kls ${kls(s)}">${s == null ? "Tanpa data" : bil(s) + " · " + D.kelas[kelas(s)]}</span>`;
 
@@ -44,7 +50,7 @@
     el("fProv").innerHTML = P.map(p => `<option value="${p}">${esc(D.provinsi[p])}</option>`).join("");
     el("fProv").value = prov;
     el("legenda").innerHTML = D.kelas.map((n, i) => `<span><i class="k${i}"></i>${esc(n)}</span>`).join("") + `<span><i class="kn"></i>Tanpa data</span>`;
-    const lb = U && U.vonis ? U.vonis.label : D.label;   // hasil uji balik menggantikan "belum diuji balik" (pipeline ujibalik_risiko.py)
+    const lb = U && U.vonis ? U.vonis.label : D.label;   // ringkas: hanya komponen statis banjir/longsor dan gempa yang diuji (ujibalik_risiko.py)
     el("pilLabel").textContent = lb.charAt(0).toUpperCase() + lb.slice(1);
     if (U && U.vonis) el("pilLabel").title = U.vonis.ringkas;
     el("pilHari").textContent = new Date(D.hari + "T00:00:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"});
@@ -102,7 +108,8 @@
   function gambarPrio() {
     const k = P.kec, per = PER_PRIO, a = Math.min(halPrio, Math.max(0, Math.ceil(k.length / per) - 1));
     el("prioPil").innerHTML = `<span class="bn-pil">${fmt(P.ringkas.kecamatan)} kecamatan</span><span class="bn-pil">${fmt(P.ringkas.jiwa)} jiwa</span>` +
-      (P.ringkas.naik ? `<span class="bn-pil">${fmt(P.ringkas.naik)} naik kelas</span>` : "") + (P.usang ? `<span class="bn-pil rk-peringatan">Data usang</span>` : "");
+      (P.ringkas.naik ? `<span class="bn-pil">${fmt(P.ringkas.naik)} naik kelas</span>` : "") + (P.usang ? `<span class="bn-pil rk-peringatan">Data usang</span>` : "") +
+      `<span class="bn-pil rk-peringatan">${esc((P.label_prioritas || "prioritas: belum diuji balik").replace(/^./, c => c.toUpperCase()))}</span>`;
     el("prioCat").textContent = P.aturan.charAt(0).toUpperCase() + P.aturan.slice(1) + (P.pembanding ? "" : " Belum ada pembanding sebelumnya: perubahan kelas muncul setelah data risiko berikutnya.");
     el("prioIsi").innerHTML = k.length ? k.slice(a * per, (a + 1) * per).map(x => {
       const i = KOR.get(`${x.prov}|${x.kab}|${x.kec}`), b = x.bpbd;
@@ -118,6 +125,12 @@
     el("prio").hidden = false;
   }
 
+  /* skor tanpa relawan berdampingan bila kapasitas dinamis mengubahnya (daftar prioritas selalu tanpa relawan) */
+  function tanpaRelawan(r, s) {
+    const t = skor(r, true);
+    return t.s == null || s.s == null || t.s === s.s ? "" : `<p class="rk-catatan">Skor dengan relawan siap: ${bil(s.s)} · tanpa relawan (dipakai daftar prioritas): ${bil(t.s)}. Pendaftaran relawan hanya menurunkan skor tampilan ini, bukan daftar waspada.</p>`;
+  }
+
   /* ---------- pop-up rincian */
   function buka(i) {
     const r = D.kec[i], s = skor(r), nama = val(r, "kec");
@@ -128,7 +141,8 @@
     const fas = [["Sekolah", val(r, "sekolah")], ["Siswa", val(r, "siswa")], ["Faskes", val(r, "faskes")]].filter(x => x[1] != null);
     el("dlgIsi").innerHTML = `<div class="rk-dlg-kepala"><div><h2 id="dlgJudul">${esc(nama)}</h2><p>${esc(val(r, "kab"))}, ${esc(D.provinsi[val(r, "prov")])}</p></div>
         <button type="button" class="rk-tutup" id="dlgTutup" aria-label="Tutup"><svg class="rk-ikon" viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button></div>
-      <div class="rk-skor">${pilKelas(s.s)}<span class="bn-pil">${esc(U && U.vonis ? U.vonis.label : D.label)}</span></div>
+      <div class="rk-skor">${pilKelas(s.s)}<span class="bn-pil" title="${esc(kalimatUji(s.u))}">${esc(labelUji(s.u))}</span></div>
+      ${tanpaRelawan(r, s)}
       <div class="rk-blok"><h3>Bahaya hari ini</h3>${bh}</div>
       <div class="rk-dua">
         <div class="rk-blok"><h3>Keterpaparan</h3><dl class="rk-kv">${kv("Penduduk", val(r, "pend") == null ? "–" : fmt(val(r, "pend")) + " jiwa")}${kv("Peringkat nasional", pct(val(r, "pangkat")))}${fas.map(x => kv(x[0], fmt(x[1]))).join("")}</dl></div>
@@ -136,7 +150,8 @@
       <details class="rk-sumber"><summary>Rumus dan sumber</summary><p>${esc(D.rumus)}. ${esc(D.ambang_catatan)}</p>
         <ul>${D.bencana.map(b => `<li><b>${esc(b.nama)}</b>: ${esc(b.sumber)}. ${esc(b.validasi)}${b.kosong ? ` (${fmt(b.kosong)} kecamatan tanpa data)` : ""}</li>`).join("")}
         <li><b>Keterpaparan</b>: ${esc(D.keterpaparan.sumber)}. ${esc(D.keterpaparan.catatan)}</li><li><b>Kapasitas</b>: ${esc(D.kapasitas.statis)}. ${esc(D.kapasitas.rumus_dinamis || "")}${D.kapasitas.kapasitas_dinamis && D.kapasitas.kapasitas_dinamis.dipakai ? "" : " Komponen relawan belum dipakai: " + esc((D.kapasitas.kapasitas_dinamis || {}).alasan || "tidak tersedia") + "."}</li>
-        ${U ? `<li><b>Uji balik</b>: ${esc(U.vonis.label)}. ${esc(U.vonis.ringkas)}. ${U.keterbatasan.map(esc).join(" ")}</li>` : ""}</ul></details>`;
+        ${U ? `<li><b>Uji balik</b>: ${esc(U.vonis.label)}. ${esc(U.vonis.ringkas)}. ${U.sensitivitas_tinggi_plus ? "Uji sensitivitas, bendera kelas Tinggi+ (paruh B): " + Object.entries(U.sensitivitas_tinggi_plus).map(([g, v]) => `${esc(U.retrospektif[g].nama)} POD ${fmt(v.B.pod_indeks)} dengan ${fmt(v.B.bendera)} bendera, penduduk berbendera sama POD ${fmt(v.B.pod_penduduk_sama_banyak)}`).join("; ") + ". " : ""}${U.keterbatasan.map(esc).join(" ")}</li>` : ""}
+        <li><b>Prioritas</b>: belum diuji balik; selalu memakai kapasitas statis.</li></ul></details>`;
     const d = el("dlg"); d.showModal(); el("dlgTutup").onclick = () => d.close();
   }
 

@@ -14,6 +14,9 @@
   KAPASITAS     statis: 1 - jarak ke kantor BPBD terdekat / 100 km (proksi; hanya 324 kantor terpetakan). Bobot w = 0,3.
                 Dinamis (opsional, C3): relawan siap per kabupaten dari /api/relawan/kapasitas. Hanya MENAIKKAN kapasitas:
                   kap = statis + (1 - statis) x WD x dinamis,  dinamis = min(1, siap / (penduduk kab / 10.000)),  WD = 0,5.
+                Syarat anti-pendaftaran-palsu: dinamis hanya dihitung bila siap >= 10 DAN jam30 (jam kerja sah 30 hari) > 0 untuk kabupaten itu;
+                kunci agregat yang dinormalkan ke kabupaten sama DIJUMLAHKAN (siap, jam30), bukan ditimpa. Kapasitas dinamis hanya untuk
+                tampilan skor kecamatan; daftar prioritas (prioritas.py) memakai kap_statis supaya tak bisa ditekan lewat pendaftaran.
                 Kabupaten yang tak ada di agregat (relawan belum mendaftar) TIDAK dihukum: kap = statis. Agregat gagal, 404, atau
                 lebih tua dari 3 hari = tanpa komponen dinamis. Satu angka kabupaten berlaku untuk semua kecamatannya (tak bisa dipecah).
                 Nama kabupaten dicocokkan: kunci "prov|kab" persis, lalu normal (huruf kecil, tanpa tanda baca, tanpa awalan "Kab."/"Kabupaten"; "Kota" dipertahankan).
@@ -35,6 +38,8 @@ LABEL = "indeks komposit, belum diuji balik"
 BOBOT_KAPASITAS = 0.3
 WD_DINAMIS = 0.5                 # porsi sisa kapasitas (1 - statis) yang bisa diisi relawan
 PENDUDUK_PER_RELAWAN = 10_000    # satu relawan siap per 10.000 penduduk kabupaten = dinamis 1,0
+SIAP_MIN = 10                    # relawan siap minimum per kabupaten supaya komponen dinamis dihitung (pendaftaran sedikit/palsu tak menggeser skor)
+JAM30_MIN = 0                    # jam kerja sah 30 hari harus LEBIH dari ini: relawan terdaftar tanpa pernah bertugas tidak dihitung
 UMUR_KAPASITAS_MAKS = 3          # hari; agregat relawan lebih tua dari ini dibuang
 URL_KAPASITAS = "https://pantau.terasurban.com/api/relawan/kapasitas"
 URL_MEJA = "https://pantau.terasurban.com/api/meja/ringkas"
@@ -262,16 +267,26 @@ def kap_dinamis(agregat, pend_kab, hari):
     if u is None or u > UMUR_KAPASITAS_MAKS or u < 0:
         meta["alasan"] = f"basi atau tanpa tanggal (umur {u} hari, maks {UMUR_KAPASITAS_MAKS})"
         return {}, meta
-    out = {}
+    jml, out = {}, {}
     for kunci, v in agregat["kab"].items():
         k = cocok_kab(kunci, pend_kab)
         siap = v.get("siap") if isinstance(v, dict) else None
         if k is None:
             meta["kabupaten_tak_cocok"].append(kunci)
         elif isinstance(siap, (int, float)) and siap >= 0 and pend_kab[k]:
+            j = v.get("jam30")
+            a = jml.setdefault(k, [0, 0.0])
+            a[0] += siap
+            a[1] += j if isinstance(j, (int, float)) and j > 0 else 0   # dua kunci agregat yang jatuh ke kabupaten sama dijumlahkan
+    tolak = 0
+    for k, (siap, jam30) in jml.items():
+        if siap >= SIAP_MIN and jam30 > JAM30_MIN:
             out[k] = round(min(1.0, siap / (pend_kab[k] / PENDUDUK_PER_RELAWAN)), 3)
-    meta.update(dipakai=bool(out), kabupaten_cocok=len(out), kabupaten_tak_cocok=sorted(meta["kabupaten_tak_cocok"])[:20])
-    meta["alasan"] = None if out else "agregat kosong"
+        else:
+            tolak += 1
+    meta.update(dipakai=bool(out), kabupaten_cocok=len(out), kabupaten_ditolak_syarat=tolak, kabupaten_tak_cocok=sorted(meta["kabupaten_tak_cocok"])[:20])
+    meta["syarat"] = f"relawan siap >= {SIAP_MIN} dan jam kerja sah 30 hari > {JAM30_MIN} per kabupaten"
+    meta["alasan"] = None if out else ("agregat kosong" if not jml else "tidak ada kabupaten yang memenuhi syarat")
     return out, meta
 
 
@@ -356,7 +371,7 @@ def bangun(src, hari, kapasitas=None):
         "kapasitas": {"statis": "jarak pusat kecamatan ke kantor BPBD terdekat (324 kantor BPBD terpetakan): proksi, bukan kemampuan nyata",
                       "kapasitas_dinamis": dmeta,
                       "kapasitas_dinamis_catatan": "relawan siap per kabupaten (satu angka untuk semua kecamatannya) hanya menaikkan kapasitas; posko, regu, dan Destana per kabupaten belum tersedia publik",
-                      "rumus_dinamis": f"kap = statis + (1 - statis) × {WD_DINAMIS} × min(1, relawan siap / (penduduk kab / {PENDUDUK_PER_RELAWAN}))"},
+                      "rumus_dinamis": f"kap = statis + (1 - statis) × {WD_DINAMIS} × min(1, relawan siap / (penduduk kab / {PENDUDUK_PER_RELAWAN})); hanya bila siap >= {SIAP_MIN} dan jam kerja sah 30 hari > {JAM30_MIN}"},
         "provinsi": {p: n for p, n in Z["w"].PROVINSI.items()},
         "ringkas": {"kecamatan": len(baris), "tanpa_skor": sum(r[3] is None for r in baris), "per_kelas": dict(zip(KELAS, dist))},
         "kolom": KOLOM, "kec": baris,
@@ -389,11 +404,20 @@ def cek_dinamis(src, hari, dasar, ix):
     assert gabung_kapasitas(0.2, 1.0) == 0.6 and gabung_kapasitas(0.2, 0.0) == 0.2 and gabung_kapasitas(1.0, 1.0) == 1.0
     assert gabung_kapasitas(None, 1.0) is None and gabung_kapasitas(0.4, None) == 0.4
     pk = {"32|Bogor": 100_000}
-    d, m = kap_dinamis({"dibuat": "2026-10-19T08:00+07:00", "kab": {"32|Kab. Bogor": {"siap": 5}, "99|Hantu": {"siap": 3}}}, pk, hari)
-    assert d == {"32|Bogor": 0.5} and m["dipakai"] and m["kabupaten_tak_cocok"] == ["99|Hantu"], (d, m)
-    assert kap_dinamis({"dibuat": "2026-10-19T08:00+07:00", "kab": {"32|Bogor": {"siap": 99}}}, pk, hari)[0] == {"32|Bogor": 1.0}
+    T = "2026-10-19T08:00+07:00"
+    d, m = kap_dinamis({"dibuat": T, "kab": {"32|Kab. Bogor": {"siap": 5, "jam30": 8}, "99|Hantu": {"siap": 3}}}, {"32|Bogor": 100_000}, hari)
+    assert d == {} and m["kabupaten_tak_cocok"] == ["99|Hantu"] and m["kabupaten_ditolak_syarat"] == 1, "siap < 10 tidak boleh menghitung dinamis"
+    pk = {"32|Bogor": 200_000}
+    d, m = kap_dinamis({"dibuat": T, "kab": {"32|Kab. Bogor": {"siap": 10, "jam30": 0.5}}}, pk, hari)
+    assert d == {"32|Bogor": 0.5} and m["dipakai"], (d, m)
+    assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99, "jam30": 0}}}, pk, hari)[0] == {}, "jam30 = 0 (tak pernah bertugas) tidak dihitung"
+    assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99}}}, pk, hari)[0] == {}, "tanpa jam30 tidak dihitung"
+    assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99, "jam30": 1}}}, pk, hari)[0] == {"32|Bogor": 1.0}
+    # dua kunci yang dinormalkan ke kabupaten sama dijumlahkan, bukan ditimpa (6 + 6 = 12 >= 10; jam 0 + 3 > 0)
+    d, _ = kap_dinamis({"dibuat": T, "kab": {"32|Kab. Bogor": {"siap": 6, "jam30": 0}, "32|Bogor": {"siap": 6, "jam30": 3}}}, pk, hari)
+    assert d == {"32|Bogor": round(12 / 20, 3)}, d
     # basi, 404, bentuk lain, tanpa tanggal = tanpa komponen dinamis
-    for agg in (None, {"error": "x"}, {"dibuat": "2026-10-10T00:00+07:00", "kab": {"32|Bogor": {"siap": 5}}}, {"kab": {"32|Bogor": {"siap": 5}}}, {"dibuat": "2026-10-19", "kab": {}}):
+    for agg in (None, {"error": "x"}, {"dibuat": "2026-10-10T00:00+07:00", "kab": {"32|Bogor": {"siap": 50, "jam30": 5}}}, {"kab": {"32|Bogor": {"siap": 50, "jam30": 5}}}, {"dibuat": "2026-10-19", "kab": {}}):
         assert kap_dinamis(agg, pk, hari)[0] == {} and not kap_dinamis(agg, pk, hari)[1]["dipakai"] and kap_dinamis(agg, pk, hari)[1]["alasan"]
     assert ambil_json("/tidak/ada.json") is None
     # fixture penuh: kabupaten pertama ber-skor mendapat dinamis penuh; kapasitas naik, skor tidak naik; kab lain tak berubah
@@ -402,7 +426,7 @@ def cek_dinamis(src, hari, dasar, ix):
         if r[ix["pend"]]:
             kabs[f"{r[0]}|{r[1]}"] = kabs.get(f"{r[0]}|{r[1]}", 0) + r[ix["pend"]]
     kunci = next(k for k in kabs if any(f"{r[0]}|{r[1]}" == k and r[ix["risiko"]] for r in dasar["kec"]))
-    agg = {"dibuat": hari + "T06:00+07:00", "kab": {kunci: {"siap": 10 ** 6}}}
+    agg = {"dibuat": hari + "T06:00+07:00", "kab": {kunci: {"siap": 10 ** 6, "jam30": 100}}}
     b = bangun(src, hari, agg)
     assert b["kapasitas"]["kapasitas_dinamis"]["dipakai"] and b["kapasitas"]["kapasitas_dinamis"]["kabupaten_cocok"] == 1
     naik = 0

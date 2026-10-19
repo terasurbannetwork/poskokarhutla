@@ -2,7 +2,13 @@
 
 Dipilih dari risiko_kecamatan.json (keluaran risiko.py):
   (a) kelas NAIK dibanding data risiko sebelumnya DAN sekarang Tinggi atau lebih, atau
-  (b) kelas Sangat tinggi DAN bahaya utamanya bersifat HARIAN dan aktif (bahaya >= HARIAN_AKTIF).
+  (b) skor yang dihitung HANYA dari bahaya HARIAN (karhutla, banjir, gunung api, cuaca; tanpa gempa statis dan tanpa kekeringan) sudah
+      kelas Sangat tinggi. Bahaya harian dipisah dari statis supaya kecamatan yang bahaya statisnya besar tetapi harian aktifnya juga
+      parah tak terlewat. Ambang bahaya harian terpisah (dulu HARIAN_AKTIF = 0,5) DIHAPUS: redundan, sebab skor <= 100 x bahaya, jadi
+      skor >= 60 berarti bahaya >= 0,6 > 0,5; ambangnya tak pernah mengikat.
+  Kapasitas yang dipakai di sini SELALU kap_statis (jarak BPBD), bukan kapasitas dinamis relawan: daftar waspada tak boleh bisa ditekan
+  dengan pendaftaran relawan (palsu). Skor kecamatan di layar boleh memakai dinamis; daftar ini tidak.
+  Label: prioritas ini belum diuji balik (hanya komponen statis banjir/longsor dan gempa yang pernah diuji; lihat risiko_ujibalik.json).
 Kekeringan (ambang hipotesis, POD 0,23 / FAR 0,93) DIKELUARKAN dari penentuan kelas di sini; skor dihitung ulang dengan rumus
 risiko() yang sama tanpa kekeringan. Gempa statis tidak pernah memicu (b) (tidak berubah harian) tetapi bisa memicu (a).
 Urut = dampak = penduduk x bahaya utama (jiwa tertimbang), turun; paling banyak 200 kecamatan. Tiap baris: bahaya utama, kelas,
@@ -29,7 +35,6 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 MAKS = 200
 KELAS_MIN = 2                      # Tinggi
 HARIAN = {"karhutla", "banjir", "gunungapi", "cuaca"}   # bahaya yang berubah harian (banjir = statis x peluang hujan hari ini)
-HARIAN_AKTIF = 0.5
 HIPOTESIS = {"kekeringan"}
 USANG_HARI = 2
 
@@ -41,7 +46,12 @@ def baca(jalur):
 def tanpa_hipotesis(row, ix):
     """-> (skor, bahaya, utama) memakai risiko() tanpa bahaya hipotesis."""
     h = {b: row[ix["h_" + b]] for b in R.BENCANA if b not in HIPOTESIS}
-    return R.risiko(h, row[ix["pangkat"]], row[ix["kapasitas"]])
+    return R.risiko(h, row[ix["pangkat"]], row[ix["kap_statis"]])
+
+
+def hanya_harian(row, ix):
+    """-> (skor, bahaya, utama) dari bahaya HARIAN saja (kapasitas statis); pemicu (b)."""
+    return R.risiko({b: row[ix["h_" + b]] for b in HARIAN}, row[ix["pangkat"]], row[ix["kap_statis"]])
 
 
 def kelas_semua(r):
@@ -90,7 +100,10 @@ def pilih(r, kini, sebelum, pusat, bpbd):
         kelas = R.kelas_dari(s)
         dari = None if sebelum is None or sebelum["kelas"][i] == "x" else int(sebelum["kelas"][i])
         naik = dari is not None and kelas > dari
-        aktif = kelas == 3 and u in HARIAN and b >= HARIAN_AKTIF
+        sh, bh, uh = hanya_harian(row, ix)
+        aktif = sh is not None and R.kelas_dari(sh) == 3
+        if aktif:
+            b, u = bh, uh                       # bahaya yang dilaporkan = bahaya harian yang memicu (sama dengan utama bila utama sudah harian)
         if not ((naik and kelas >= KELAS_MIN) or aktif):
             continue
         pend = row[ix["pend"]]
@@ -116,7 +129,8 @@ def bangun(r, pusat, bpbd, lama, sekarang):
     umur = (sekarang.date() - dt.date.fromisoformat(r["hari"])).days
     return {
         "versi": 1, "hari": r["hari"], "risiko_dibuat": r.get("dibuat"), "label": r["label"], "usang": umur > USANG_HARI,
-        "aturan": f"kelas naik dibanding data risiko sebelumnya dan sekarang Tinggi atau lebih; ATAU Sangat tinggi dengan bahaya utama harian ({', '.join(sorted(HARIAN))}) berindeks >= {HARIAN_AKTIF}. Kekeringan (hipotesis) dikeluarkan dari penentuan. Urut: penduduk × bahaya utama.",
+        "aturan": f"kelas naik dibanding data risiko sebelumnya dan sekarang Tinggi atau lebih; ATAU skor dari bahaya harian saja ({', '.join(sorted(HARIAN))}) sudah Sangat tinggi. Kapasitas = statis (jarak BPBD), bukan dinamis relawan. Kekeringan (hipotesis) dikeluarkan dari penentuan. Urut: penduduk × bahaya utama.",
+        "label_prioritas": "prioritas: belum diuji balik",
         "pembanding": None if sebelum is None else {"hari": sebelum["hari"], "risiko_dibuat": sebelum["risiko_dibuat"]},
         "ringkas": {"kecamatan": len(pilihan), "memenuhi_syarat": len(semua), "jiwa": sum(x["pend"] for x in pilihan), "naik": sum("naik" in x["alasan"] for x in pilihan),
                     "harian_aktif": sum("harian_aktif" in x["alasan"] for x in pilihan), "kabupaten": len({(x["prov"], x["kab"]) for x in pilihan})},
@@ -150,6 +164,25 @@ def cek():
     ada = [x for x in b["kec"] if "naik" in x["alasan"]]
     nama0 = r["kec"][i0][:3]
     assert len(ada) >= 1 and any([x["prov"], x["kab"], x["kec"]] == nama0 or (x["prov"], x["kab"], x["kec"]) == tuple(nama0) for x in ada), "kecamatan yang naik harus terpilih"
+    # kapasitas dinamis tidak boleh menekan daftar: kap_dinamis penuh memakai kap_statis, hasil sama
+    r5 = json.loads(json.dumps(r))
+    for row in r5["kec"]:
+        row[ix["kapasitas"]] = 1.0
+        row[ix["kap_dinamis"]] = 1.0
+    assert bangun(r5, pusat, bpbd, None, now)["kec"] == a["kec"], "daftar prioritas harus memakai kap_statis, bukan kapasitas dinamis"
+    for row in r["kec"][:2000]:
+        assert tanpa_hipotesis(row, ix)[0] == R.risiko({k: row[ix["h_" + k]] for k in R.BENCANA if k != "kekeringan"}, row[ix["pangkat"]], row[ix["kap_statis"]])[0]
+    # pemicu (b) = skor dari bahaya harian saja; gempa statis tinggi tidak ikut dan tidak menghalangi
+    baris_t = [None] * len(r["kolom"])
+    for k in ("prov", "kab", "kec"):
+        baris_t[ix[k]] = "x"
+    for k in R.BENCANA:
+        baris_t[ix["h_" + k]] = 0.0
+    baris_t[ix["pangkat"]], baris_t[ix["kap_statis"]], baris_t[ix["h_gempa"]], baris_t[ix["h_cuaca"]] = 1.0, 0.0, 1.0, 0.7
+    sh, bh, uh = hanya_harian(baris_t, ix)
+    assert uh == "cuaca" and R.kelas_dari(sh) == 3 and tanpa_hipotesis(baris_t, ix)[2] == "gempa", "bahaya harian dipisah dari statis"
+    baris_t[ix["h_cuaca"]] = 0.5
+    assert R.kelas_dari(hanya_harian(baris_t, ix)[0]) == 2
     # data risiko yang sama dijalankan lagi: pembanding tidak bergeser, hasil sama
     c = bangun(r, pusat, bpbd, b, now)
     assert c["kec"] == b["kec"] and c["snapshot"] == b["snapshot"], "pembanding bergeser pada data risiko yang sama"
@@ -178,6 +211,7 @@ def cek():
         p = os.path.join(t, "p.json")
         _kej.simpan(p, b)
         assert next(iter(json.load(open(p)))) == "dibuat" and os.path.getsize(p) < 300_000, os.path.getsize(p)
+    assert b["label_prioritas"] == "prioritas: belum diuji balik" and "HARIAN_AKTIF" not in globals()
     print(f"cek ok: jalan pertama {a['ringkas']}; dengan pembanding sintetis {b['ringkas']}")
 
 
