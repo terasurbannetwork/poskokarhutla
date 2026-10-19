@@ -23,8 +23,8 @@ def _umum():
 
 
 P = _umum()
-AMBANG = [{"k": "lebat", "label": "Hujan lebat (50 mm/hari atau lebih)", "nilai": HUJAN[0]},
-          {"k": "sangat_lebat", "label": "Hujan sangat lebat (100 mm/hari atau lebih)", "nilai": HUJAN[1]}]
+AMBANG = [{"k": "lebat", "label": "Hujan lebat 50 mm/hari atau lebih", "nilai": HUJAN[0]},
+          {"k": "sangat_lebat", "label": "Hujan sangat lebat 100 mm/hari atau lebih", "nilai": HUJAN[1]}]
 BATASAN = [
     "Peluang adalah pecahan dari 51 anggota ansambel ECMWF pada titik terdekat (satu titik mewakili kotak 1 derajat, sekitar 110 km); hujan lokal yang sempit bisa tidak terwakili.",
     "Nilai provinsi adalah titik tertinggi di provinsi itu, bukan rata-rata: artinya 'di salah satu tempat', bukan 'di seluruh provinsi'.",
