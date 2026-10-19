@@ -76,7 +76,7 @@
       + `<li>Dasar data: ${esc(Object.values(D.dasar).filter(v => typeof v === "string").join("; "))}.</li>`;
   }
 
-  const segar = () => requestAnimationFrame(() => { st.hal = 0; gambarKartu(); gambarTabel(); });
+  const segar = () => nanti(() => { st.hal = 0; gambarKartu(); gambarTabel(); });   // pil yang baru ditekan tampil dulu (/inti/nanti.js)
   function pasang() {
     el("fHorizon").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; hor = +b.dataset.h;
       el("fHorizon").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); segar(); });

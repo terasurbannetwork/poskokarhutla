@@ -119,7 +119,7 @@
     const r = D.kec[i], s = skor(r);
     el("sorot").textContent = `${val(r, "kec")}, ${val(r, "kab")}: ${s.s == null ? "tanpa data" : fmt(s.s) + " (" + D.kelas[kelas(s.s)] + ")"}`;
   }
-  const segar = () => requestAnimationFrame(() => { warnai(); gambarTabel(); });
+  const segar = () => nanti(() => { warnai(); gambarTabel(); });   // pil yang baru ditekan tampil dulu (/inti/nanti.js)
   async function ganti() {
     el("pesan").textContent = ""; el("pesan").className = "bn-pesan";
     try { await gambarPeta(); } catch (e) { el("pesan").textContent = "Peta provinsi ini belum bisa kamu buka. Coba muat ulang."; el("pesan").className = "bn-pesan galat"; }
@@ -129,7 +129,9 @@
     el("fBencana").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
       const id = b.dataset.b; if (pilih.has(id)) { if (pilih.size === 1) return; pilih.delete(id); } else pilih.add(id);
       b.setAttribute("aria-pressed", pilih.has(id)); segar(); });
-    el("fProv").addEventListener("change", e => { prov = e.target.value; terpilih = -1; ganti(); });
+    /* ganti provinsi: umpan balik dulu, lalu geo 1 MB diurai dan peta digambar sesudah frame tercat */
+    el("fProv").addEventListener("change", e => { prov = e.target.value; terpilih = -1; el("pesan").textContent = "Memuat peta…"; el("peta").setAttribute("aria-busy", "true");
+      nanti(() => ganti().finally(() => el("peta").removeAttribute("aria-busy"))); });
     el("fLingkup").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; lingkup = b.dataset.l;
       el("fLingkup").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); gambarTabel(); });
     const peta = el("peta");

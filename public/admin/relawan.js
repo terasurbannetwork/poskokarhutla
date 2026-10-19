@@ -63,15 +63,34 @@
   const pindah = k => { tab = k; terpilih = null; kerangka(); return muat(); };
 
   /* ================= relawan + antrean ================= */
-  function aksiRelawan(r) {
-    const b = (a, l, k = "") => `<button class="ad-tombol kecil ${k}" data-r="${a}" data-id="${esc(r.id)}">${l}</button>`;
-    return `<div class="rw-aksi">${{terdaftar: b("verifikasi", "Verifikasi", "utama") + b("tolak", "Tolak", "bahaya"), diverifikasi: b("siap", "Tandai siap", "utama") + b("tolak", "Tolak", "bahaya"),
-      selesai: b("siap", "Tandai siap", "utama"), nonaktif: b("aktifkan", "Aktifkan"), daftar_hitam: b("pulihkan", "Pulihkan")}[r.status] || ""}
-      ${["siap_tugas", "selesai", "diverifikasi", "terdaftar"].includes(r.status) ? b("nonaktifkan", "Nonaktifkan") : ""}${r.status !== "daftar_hitam" ? b("daftar_hitam", "Daftar hitam", "bahaya") : ""}${b("kode_baru", "Kode baru")}</div>`;
+  function aksiRelawan(r) {   // satu tombol utama + menu "⋯" (aksi lain; berbahaya merah). Alur prompt/confirm tetap di penangan klik.
+    const b = (a, l, k = "", m = "") => `<button type="button" class="ad-tombol kecil ${k}" ${m} data-r="${a}" data-id="${esc(r.id)}">${l}</button>`;
+    const utama = {terdaftar: ["verifikasi", "Verifikasi"], diverifikasi: ["siap", "Tandai siap"], selesai: ["siap", "Tandai siap"], nonaktif: ["aktifkan", "Aktifkan"], daftar_hitam: ["pulihkan", "Pulihkan"]}[r.status];
+    const lain = [];
+    if (["terdaftar", "diverifikasi"].includes(r.status)) lain.push(b("tolak", "Tolak", "rw-bhy", 'role="menuitem"'));
+    if (["siap_tugas", "selesai", "diverifikasi", "terdaftar"].includes(r.status)) lain.push(b("nonaktifkan", "Nonaktifkan", "", 'role="menuitem"'));
+    if (r.status !== "daftar_hitam") lain.push(b("daftar_hitam", "Daftar hitam", "rw-bhy", 'role="menuitem"'));
+    lain.push(b("kode_baru", "Kode baru", "", 'role="menuitem"'));
+    return `<div class="rw-aksi">${utama ? b(utama[0], utama[1], "utama") : ""}<span class="rw-menu-bungkus"><button type="button" class="ad-tombol kecil" data-menu="1" aria-haspopup="menu" aria-expanded="false" aria-label="Aksi lain untuk ${esc(r.nama)}" title="Aksi lain">⋯</button><div class="rw-menu" role="menu" hidden>${lain.join("")}</div></span></div>`;
   }
+  /* popover aksi: absolut di bawah tombol; wadah tabel diberi ruang saat terbuka (CSS :has); tutup saat klik di luar, Esc, ubah ukuran */
+  const tutupMenu = balik => { document.querySelectorAll(".rw-menu:not([hidden])").forEach(m => { m.hidden = true; const t = m.previousElementSibling; t.setAttribute("aria-expanded", "false"); if (balik) t.focus(); }); };
+  document.addEventListener("click", e => {
+    const t = e.target.closest("[data-menu]"), m = t && t.nextElementSibling, buka = t && m.hidden;
+    tutupMenu(); if (!buka) return;
+    m.hidden = false; t.setAttribute("aria-expanded", "true");
+    m.querySelector("button").focus();
+  });
+  document.addEventListener("keydown", e => {
+    const m = document.querySelector(".rw-menu:not([hidden])"); if (!m) return;
+    if (e.key === "Escape") { e.preventDefault(); return tutupMenu(true); }
+    const x = [...m.querySelectorAll("button")], i = x.indexOf(document.activeElement), d = {ArrowDown: 1, ArrowUp: -1}[e.key];
+    if (d) { e.preventDefault(); x[(i + d + x.length) % x.length].focus(); } else if (e.key === "Tab") tutupMenu();
+  });
+  addEventListener("resize", () => tutupMenu());
   const kolomRelawan = () => [
     {l: "Nama", k: "nama", h: r => `<b>${esc(r.nama)}</b>${dummyPil(r.dummy)}<br><span class="rw-redup">${esc(r.gol_darah || "")}</span>`},
-    {l: "Kontak", u: false, h: r => `${esc(r.wa || "-")}<br><span class="rw-redup">${esc(r.email || "-")}</span><br><span class="rw-redup">Darurat: ${esc(r.darurat_nama || "-")} ${esc(r.darurat_wa || "")}</span>`},
+    {l: "Kontak", u: false, h: r => `<span title="Kontak darurat: ${esc(r.darurat_nama || "-")} ${esc(r.darurat_wa || "")}">${esc(r.wa || "-")}<br><span class="rw-redup">${esc(r.email || "-")}</span></span>`},
     {l: "Wilayah", v: r => r.prov + r.kab, h: r => `${esc(r.kab)}<br><span class="rw-redup">${esc(konfig.provinsi[r.prov] || r.prov)}</span>`},
     {l: "Jalur", k: "jalur", h: r => `${esc(r.jalur)}${r.kampus ? `<br><span class="rw-redup">${esc(r.kampus)}</span>` : ""}${r.organisasi ? `<br><span class="rw-redup">${esc(r.organisasi)}</span>` : ""}`},
     {l: "Keahlian", v: r => r.keahlian.join(","), h: r => pilKeahlian(r.keahlian) + (r.sertifikat ? `<br><span class="rw-redup">${esc(r.sertifikat)}</span>` : "")},

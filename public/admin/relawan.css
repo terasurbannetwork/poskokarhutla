@@ -25,3 +25,11 @@
 .rw-tabel .ad-tabel td{vertical-align:top}
 .p-biru{--pil:var(--c5)}.p-hijau{--pil:var(--c4)}.p-merah{--pil:var(--c1)}.p-kuning{--pil:var(--c3)}.p-abu{--pil:var(--ink3)}.p-ungu{--pil:var(--c7)}.p-oranye{--pil:var(--c2)}
 .bn-pil svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rw-tabel .rw-aksi{flex-wrap:nowrap;white-space:nowrap}
+.rw-menu-bungkus{display:inline-block;position:relative}
+.rw-tabel .ad-tabel-wadah:has(.rw-menu:not([hidden])){padding-bottom:170px}
+.rw-menu{position:absolute;right:0;top:calc(100% + 4px);z-index:50;display:grid;min-width:150px;padding:4px;background:var(--card);border:1px solid var(--line);border-radius:10px;box-shadow:var(--bayang)}
+.rw-menu[hidden]{display:none}
+.rw-menu .ad-tombol{justify-content:flex-start;text-align:left;border:0;background:none;box-shadow:none;width:100%}
+.rw-menu .ad-tombol:hover,.rw-menu .ad-tombol:focus-visible{background:var(--paper)}
+.rw-menu .rw-bhy{color:var(--c1);font-weight:700}
