@@ -49,7 +49,8 @@ const aset = async req => {
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
 const opsi = (nama, ikat = {}, r2 = false) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-  compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
+  /* cf tetap: tanpa ini miniflare membaca lokasi mesin penguji (runner GitHub = US) dan pemeriksa VPN menolak semua kiriman */
+  compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
   bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", FIRMS_MAP_KEY: "kunci-uji", ...ikat}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
 let mf, DB;
 before(async () => {
