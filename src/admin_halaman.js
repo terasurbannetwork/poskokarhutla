@@ -33,7 +33,7 @@ ${atas(k)}
 ${ekor}
 </body></html>`;
 
-export const halamanMasuk = galat => `${kepala("Masuk admin · Pantau Bencana")}
+export const halamanMasuk = (galat, ke = "") => `${kepala("Masuk admin · Pantau Bencana")}
 <body class="ad-masuk">
 <div class="ad-cahaya" aria-hidden="true"><i></i><i></i><i></i></div>
 <main class="ad-kartu-masuk">
@@ -45,10 +45,10 @@ export const halamanMasuk = galat => `${kepala("Masuk admin · Pantau Bencana")}
   <div class="ad-garis"></div>
   <div class="ad-isi-masuk">
     <h2>Login</h2>
-    <form method="post" action="/admin/masuk">
+    <form method="post" action="/admin/masuk${ke ? "?ke=" + encodeURIComponent(ke) : ""}">
       <div class="ad-isian">
-        <input id="email" name="email" type="email" placeholder=" " autocomplete="username" required autofocus>
-        <label for="email">Email</label>
+        <input id="email" name="email" type="text" placeholder=" " autocomplete="username" autocapitalize="none" spellcheck="false" required autofocus>
+        <label for="email">Username atau email</label>
       </div>
       <div class="ad-isian">
         <input id="sandi" name="sandi" type="password" placeholder=" " autocomplete="current-password" required>

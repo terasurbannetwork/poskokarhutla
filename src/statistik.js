@@ -219,22 +219,26 @@ export async function sesiOK(env, req, kini, modSah) {
   const tanda = new Uint8Array(m[3].match(/../g).map(h => parseInt(h, 16)));
   return await crypto.subtle.verify("HMAC", await kunciHMAC(env), tanda, new TextEncoder().encode(`${m[1]}.${m[2]}`)) ? m[2] : null;
 }
-const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Strict; Max-Age=${umur}`;
+/* Lax, bukan Strict: tautan dari WhatsApp/surel ke situs terkunci harus tetap membawa sesi; POST tetap dijaga cek origin di rute() */
+const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const html = (isi, status = 200, h = {}) => new Response(isi, {status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store",
   "x-frame-options": "DENY", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
 const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store", ...h}});
 
+/* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
+const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])/.test(k) ? k : ""; };
 export async function masuk(env, req, kini, halamanMasuk) {
-  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(halamanMasuk("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
-  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan("/admin/statistik") : html(halamanMasuk(""));
+  const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
+  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
+  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : html(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
-  if (laju) return html(halamanMasuk("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
+  if (laju) return html(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const t = await req.text();
-  /* akun = entri "email:sandi" di ADMIN_TOKEN (email huruf kecil); tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
+  /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
-  if (!sah) return html(halamanMasuk("Email atau kata sandi salah."), 401);
-  return alihkan("/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
+  if (!sah) return html(hal("Username atau kata sandi salah."), 401);
+  return alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
 }
 export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
 export async function halamanAdmin(env, req, kini, isi) {

@@ -290,8 +290,9 @@ async function selesai(env, req, id, kini) {
    Entri berbentuk "email:sandi" adalah akun untuk form /admin/masuk (sandi tanpa koma, tanpa spasi di ujung).
    Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
 export async function adminOK(env, req, kini = Date.now()) {
-  if (!env.ADMIN_TOKEN) return null;
-  const sah = await Promise.all(env.ADMIN_TOKEN.split(",").map(x => x.trim()).filter(Boolean).map(sha));
+  const daftar = [env.ADMIN_TOKEN, env.AKUN_SITUS].filter(Boolean).join(",");   // AKUN_SITUS: akun "user:sandi" tambahan (gerbang centurisk97.id)
+  if (!daftar) return null;
+  const sah = await Promise.all(daftar.split(",").map(x => x.trim()).filter(Boolean).map(sha));
   const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
   if (t != null) { const a = await sha(t.trim()); return sah.includes(a) ? a.slice(0, 12) : null; }
   return St.sesiOK(env, req, kini, sah.map(a => a.slice(0, 12)));
@@ -404,7 +405,7 @@ async function rute(env, req, url, ctx) {
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
-  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi juga SameSite=Strict)
+  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
     const o = req.headers.get("origin");
     if (o && o !== "null" && new URL(o).host !== url.host) return gagal(403, "origin lain ditolak");
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
@@ -417,6 +418,7 @@ async function rute(env, req, url, ctx) {
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
+export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 export const HTML_RUTE = [
   ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
@@ -486,6 +488,10 @@ export default {
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
+    /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
+    if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD")
+      && (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) && !await adminOK(env, req))
+      return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
     const r = await rute(env, req, url, ctx); if (r) return r;
     const h = await layaniHTML(req, env, ctx, url); if (h) return h;
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);

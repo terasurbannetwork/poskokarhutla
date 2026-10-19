@@ -179,7 +179,7 @@ uji("statistik: pengunjung kembali dan aturan 30 menit dari bendera klien", asyn
 });
 
 /* ================================================================ sesi admin */
-uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Strict 12 jam", async () => {
+uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Lax 12 jam", async () => {
   for (const b of [MASUK.replace("sandi=", "sandi=x"), "email=lain%40contoh.id&sandi=" + encodeURIComponent(SANDI), "email=&sandi=", "token=" + encodeURIComponent(TOKEN)]) {
     const salah = await panggil("POST", "/admin/masuk", b, {ip: ipBaru()});
     assert.equal(salah.status, 401, b); assert.equal(salah.h.get("set-cookie"), null, "masuk gagal tidak boleh memberi cookie: " + b);
@@ -188,7 +188,7 @@ uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Strict 12
   const ok = await panggil("POST", "/admin/masuk", MASUK, {ip: ipBaru()});
   assert.equal(ok.status, 303); assert.equal(ok.h.get("location"), "/admin/statistik");
   const c = ok.h.get("set-cookie");
-  for (const f of ["HttpOnly", "Secure", "SameSite=Strict", "Path=/", "Max-Age=43200"]) assert.ok(c.includes(f), `cookie sesi tanpa ${f}: ${c}`);
+  for (const f of ["HttpOnly", "Secure", "SameSite=Lax", "Path=/", "Max-Age=43200"]) assert.ok(c.includes(f), `cookie sesi tanpa ${f}: ${c}`);
   const kue = c.split(";")[0];
   assert.equal((await panggil("GET", "/api/statistik", undefined, {h: {cookie: kue}})).status, 200, "cookie sesi membuka API");
   const hal = await panggil("GET", "/admin/statistik", undefined, {h: {cookie: kue}});
@@ -362,4 +362,24 @@ uji("cron: retensi statistik 90 hari (publik dikosongkan rinciannya), pesan 180 
   const sis = await hari(tglWIB(Date.now()), "sistem");
   assert.ok(sis && JSON.parse(sis.slot)[slotWIB(Date.now())] >= 1, "slot sekarang ditandai gangguan");
   assert.ok(JSON.parse(sis.dim).basi.titik, "sumber basi tercatat");
+});
+
+uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain lain tetap terbuka", async () => {
+  const buka = (jalur, h = {}) => mf.dispatchFetch("https://centurisk97.id" + jalur, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, ...h}});
+  const r = await buka("/peta?x=1");
+  assert.equal(r.status, 303); assert.equal(r.headers.get("location"), "/admin/masuk?ke=%2Fpeta%3Fx%3D1");
+  assert.equal((await buka("/f/0123456789abcdef")).status, 303, "tautan foto ikut terkunci");
+  assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
+  const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
+  assert.match(await f.text(), /action="\/admin\/masuk\?ke=%2Fpeta"/);
+  const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
+    headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
+  assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
+  const kue = ok.headers.get("set-cookie").split(";")[0];
+  assert.equal((await buka("/peta", {cookie: kue})).status, 200, "sesi membuka halaman");
+  for (const ke of ["//jahat.id", "/\\jahat.id", "https://jahat.id"]) {
+    const x = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=" + encodeURIComponent(ke), {method: "POST", redirect: "manual", body: MASUK,
+      headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded"}});
+    assert.equal(x.headers.get("location"), "/admin/statistik", "tujuan luar ditolak: " + ke);
+  }
 });
