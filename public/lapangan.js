@@ -159,6 +159,7 @@
     try {
       sisip("link", {rel: "stylesheet", href: CDN + "css", integrity: SRI_CSS, crossOrigin: "anonymous"}).catch(() => {});   // peta tanpa gaya masih bisa dipakai lewat tombol lokasi
       sisip("link", {rel: "stylesheet", href: "/rumah_rusak.css?v=1"}).catch(() => {});
+      sisip("link", {rel: "stylesheet", href: "/inti/lapor-gelap.css?v=1&k=2"}).catch(() => {});   // ulang SESUDAH rumah_rusak.css: :root terang-nya menimpa mode gelap bila yang pertama
       await Promise.all([sisip("script", {src: CDN + "js", integrity: SRI_JS, crossOrigin: "anonymous"}).catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=1"})]);
       window.RumahRusak.pasang($("rrWadah"), {kode});
       t.hidden = true;

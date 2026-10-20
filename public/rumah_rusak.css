@@ -1,6 +1,5 @@
 /* Lapor Rumah Rusak: token dan nada sama dengan lapangan.css. Tanpa gaya inline (CSP style-src 'self' + cdnjs untuk MapLibre). */
 :root{--navy:#0b2545;--navy2:#1d4e89;--emas:#c9a227;--merah:#c9503a;--hijau:#2f7d52;--ink:#0b2545;--ink2:#4c5873;--paper:#f5f7fb;--card:#fff;--line:#d6dce8;--rb:#b3261e;--rs:#e08a1e;--rr:#e5c100;color-scheme:light}
-@media (prefers-color-scheme:dark){:root{--ink:#eef1f7;--ink2:#aab4c8;--paper:#0b1220;--card:#131c30;--line:#26314a;color-scheme:dark}}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
 a{color:var(--navy2)}

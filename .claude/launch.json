@@ -42,6 +42,24 @@
         "AKUN_SITUS_UJI:uji:sandi-uji"
       ],
       "port": 8795
+    },
+    {
+      "name": "rr",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8797",
+        "--persist-to",
+        ".wrangler/rr",
+        "--var",
+        "SESI_KUNCI:kunci-lokal",
+        "--var",
+        "AKUN_SITUS_UJI:uji:sandi-uji"
+      ],
+      "port": 8797
     }
   ]
 }
