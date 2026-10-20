@@ -7,6 +7,7 @@ import {readFileSync, existsSync} from "node:fs";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
+const uji = (nama, fn) => test(nama, fn);   // gerbang.test.mjs mencari uji("<nama>")
 const ADMIN = {"x-admin-token": "rahasia-admin"};
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);

@@ -6,7 +6,7 @@ body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 system-ui,
 a{color:var(--navy2)}
 .rr-kop{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
 .rr-kop h1{margin:0;font-size:22px}
-.rr-siapa{margin:2px 0 0;font-size:15px;opacity:.9}
+.rr-siapa{margin:0;font-size:15px;color:var(--ink2);font-weight:600}
 .rr-isi{max-width:720px;margin:0 auto;padding:12px 14px 32px;display:grid;gap:12px}
 .rr-blok{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 0 0 1px var(--line);display:grid;gap:12px;min-width:0}
 .rr-blok h2{margin:0;font-size:16px;letter-spacing:.02em}

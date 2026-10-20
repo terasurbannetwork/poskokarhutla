@@ -33,3 +33,4 @@ input:focus,select:focus,textarea:focus{outline:3px solid var(--emas);outline-of
 .lp-banner,.lp-antrean{background:color-mix(in srgb,var(--emas) 18%,var(--card));border-radius:14px;padding:12px 14px;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent);margin:0}
 .lp-antrean{display:grid;gap:10px}
 .lp-antrean p{margin:0}
+.lp-rr{display:grid;gap:12px;min-width:0}

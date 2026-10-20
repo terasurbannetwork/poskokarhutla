@@ -433,7 +433,7 @@ P.push({id: "konsesi", judul: "Areal konsesi", gambar: (k, c) => {
     k.teks(0.6, y, 1.5, rh * 0.62, p.nama, {s: 9, b: r < 2, v: "m"});
     k.kotak(2.15, y + 0.06, bw, 0.22, {f: "F1F2F4"});
     let bx = 2.15; const kecil = [];
-    for (const [j, l, f] of JENIS_K) { const w = bw * (num(p[j]) || 0) / mx; if (w <= 0) continue; k.kotak(bx, y + 0.06, w, 0.22, {f}); if (w > 0.5) k.teks(bx, y + 0.06, w, 0.22, n0(p[j]), {s: 6, b: true, c: C.putih, a: "c", v: "m"}); else kecil.push(R(`■ ${l} ${n0(p[j])}  `, f === "AEB6C0" ? C.teks : f, false)); bx += w; }
+    for (const [j, l, f] of JENIS_K) { const w = bw * (num(p[j]) || 0) / mx; if (w <= 0) continue; k.kotak(bx, y + 0.06, w, 0.22, {f}); if (w > 0.5) k.teks(bx, y + 0.06, w, 0.22, n0(p[j]), {s: 6, b: true, c: C.putih, a: "c", v: "m"}); else kecil.push(R(`${l} ${n0(p[j])}   `, f === "AEB6C0" ? C.teks : f, false)); bx += w; }
     if (kecil.length) k.teks(2.15, y + 0.29, bw + 2, 0.15, kecil, {s: 5.8});
     k.teks(5.5, y, 1.0, rh * 0.62, n0(t), {s: 9.5, b: true, a: "r", v: "m"});
     k.teks(6.65, y, 1.0, rh * 0.62, [R(n0(p.n), C.teks, true), R(` / ${n0(p.total)}`, C.abu)], {s: 9, v: "m"});

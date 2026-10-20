@@ -184,7 +184,21 @@
     "table laju_bnpb": "laju_bnpb: batas per jendela",
     "table laporan_bnpb": "migrasi 0023 idempoten",
     "GET /api/laporan-bnpb": "simpan lalu baca kembali sama persis",
-    "POST /api/laporan-bnpb": "isian salah DITOLAK 400/413"
+    "POST /api/laporan-bnpb": "isian salah DITOLAK 400/413",
+    "table rumah_rusak": "migrasi 0024 rumah_rusak idempoten",
+    "table rumah_rusak_koreksi": "migrasi 0024 rumah_rusak idempoten",
+    "trigger rumah_rusak_koreksi_tetap_ubah": "migrasi 0024 rumah_rusak idempoten",
+    "trigger rumah_rusak_koreksi_tetap_hapus": "migrasi 0024 rumah_rusak idempoten",
+    "GET /rumah-rusak": "halaman /rumah-rusak: ada CSP ketat",
+    "POST /api/rumah-rusak": "POST /api/rumah-rusak: isian salah ditolak 400",
+    "GET /api/rumah-rusak": "GET /api/rumah-rusak: wajib auth",
+    "GET /api/rumah-rusak/rekap": "GET /api/rumah-rusak/rekap: hitung RB/RS/RR",
+    "GET /api/bangunan/terpapar": "GET /api/bangunan/*: tanpa masuk atau token salah ditolak 403",
+    "GET /api/bangunan/kec": "GET /api/bangunan/*: berkas ada = 200 isi sama persis",
+    "GET /api/bangunan/grid": "GET /api/bangunan/grid: kode provinsi salah DITOLAK 400",
+    "POST /api/rumah-rusak/:id": "koreksi: hanya admin",
+    "POST /api/rumah-rusak/foto/:id": "foto rumah: hanya pelapor aslinya",
+    "GET /api/rumah-rusak/foto/:id": "foto rumah: hanya pelapor aslinya"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

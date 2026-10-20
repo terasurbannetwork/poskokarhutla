@@ -4,7 +4,7 @@
    Router worker.js hanya mengenal GET dan POST, jadi koreksi = POST /api/rumah-rusak/:id (bukan PATCH).
    Lokasi: titik yang ditandai (ketuk peta atau GPS) divalidasi bbox Indonesia; prov/kab/kec ditentukan SERVER dari wilayah() (klien tidak mengirimnya).
    ponytail: tanpa pemeriksaan GPS anti-palsu (src/gps.js): tim boleh menandai rumah dari jauh lewat peta. Pengaman = batas laju + dedup 10 m + koreksi admin. */
-import {json, gagal, acak, adminOK, bacaBody, bacaBytes, situsCenturisk} from "./worker.js";
+import {json, gagal, acak, adminOK, bersihTeks, bacaBody, bacaBytes, situsCenturisk} from "./worker.js";
 import {reguDari, wib, tx, num, tglSah, buangExif} from "./posko.js";
 import {laju, lajuIP} from "./bnpb.js";
 import {wilayah, cariWilayah} from "./titik.js";
@@ -42,7 +42,8 @@ async function buat(env, req, url, kini) {
   if (typeof tanggal !== "string" || !tglSah(tanggal) || tanggal > wib(kini) || tanggal < wib(kini - JENDELA_TANGGAL)) return gagal(400, "tanggal kejadian harus YYYY-MM-DD, tidak di masa depan dan paling lama 120 hari lalu");
   const lat = num(o.lat, BBOX.latMin, BBOX.latMaks), lon = num(o.lon, BBOX.lonMin, BBOX.lonMaks);
   if (lat == null || lon == null || Number.isNaN(lat) || Number.isNaN(lon)) return gagal(400, "lat dan lon wajib berupa angka di dalam Indonesia");
-  const catatan = tx(o.catatan, 300); if (catatan === undefined) return gagal(400, "catatan maksimal 300 karakter");
+  let catatan = tx(o.catatan, 300); if (catatan === undefined) return gagal(400, "catatan maksimal 300 karakter");
+  if (catatan) { const c = bersihTeks(catatan); if (c.galat) return gagal(400, "catatan: " + c.galat); catatan = c.teks || null; }   // buang tautan dan nomor HP seperti laporan warga
   const k = cariWilayah(await wilayah(env), lat, lon); if (!k) return gagal(400, "titik ini tidak berada di wilayah daratan Indonesia");
   const [prov, kab, kec] = k.split("|");
   const la = Math.round(lat * 1e5) / 1e5, lo = Math.round(lon * 1e5) / 1e5;
@@ -125,13 +126,14 @@ async function fotoUnggah(env, req, id, kini) {
   const r = await env.DB.prepare("SELECT foto, pelapor FROM rumah_rusak WHERE id = ?").bind(id).first();
   if (!r || r.pelapor !== s.pid) return gagal(404, "laporan tidak ada");   // hanya pelapor aslinya; koreksi admin tidak mengganti foto
   if (r.foto) return gagal(409, "laporan ini sudah punya foto");
+  const g = await laju(env, s.pid, "rumah.foto", BATAS_FOTO, kini); if (g) return g;   // laju SEBELUM membaca badan
   const u = await bacaBytes(req, MAKS_FOTO); if (u.galat) return gagal(u.status || 400, u.galat);
-  const mime = jenisBerkas(u.b); if (mime !== "image/jpeg" && mime !== "image/webp") return gagal(400, "berkas harus foto JPEG atau WebP");
-  const g = await laju(env, s.pid, "rumah.foto", BATAS_FOTO, kini); if (g) return g;
-  const isi = mime === "image/jpeg" ? buangExif(u.b) : u.b;   // EXIF/GPS perangkat tidak disimpan
-  await env.MEDIA.put(`rumah/${id}`, isi, {httpMetadata: {contentType: mime}});
-  try { await env.DB.prepare("UPDATE rumah_rusak SET foto = 1 WHERE id = ? AND foto = 0").bind(id).run(); }
-  catch (e) { await env.MEDIA.delete(`rumah/${id}`); throw e; }
+  if (jenisBerkas(u.b) !== "image/jpeg") return gagal(400, "berkas harus foto JPEG");   // klien selalu mengodekan ulang lewat canvas
+  /* klaim dulu (UPDATE ... foto = 0), baru tulis R2: unggahan serentak yang kalah dapat 409 dan tidak menimpa berkas pemenang */
+  const ubah = await env.DB.prepare("UPDATE rumah_rusak SET foto = 1 WHERE id = ? AND foto = 0").bind(id).run();
+  if (!ubah.meta.changes) return gagal(409, "laporan ini sudah punya foto");
+  try { await env.MEDIA.put(`rumah/${id}`, buangExif(u.b), {httpMetadata: {contentType: "image/jpeg"}}); }   // EXIF/GPS perangkat tidak disimpan
+  catch (e) { await env.DB.prepare("UPDATE rumah_rusak SET foto = 0 WHERE id = ?").bind(id).run(); throw e; }   // R2 gagal: tidak ada baris bertanda foto tanpa berkas
   return json({id, foto: true});
 }
 async function fotoBaca(env, req, id, kini) {

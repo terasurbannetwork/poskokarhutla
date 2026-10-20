@@ -643,7 +643,7 @@ async function dummy(env, req, kini) {
 }
 
 /* ================================================================ halaman regu + rute */
-const CSP_LAPANGAN = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_LAPANGAN = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 async function halamanLapangan(env, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/lapangan.html", url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman lapangan tidak ada"); }
