@@ -35,25 +35,70 @@ function hujanHarian(D, sk) {
   return out;
 }
 
-/* jalankan bak untuk semua sel. cfg = {tanam, laju, kap, omc} (omc = pecahan tambahan hujan pada hari yang sudah hujan) */
-function jalankan(D, sk, hj, cfg) {
-  const N = D.n, P = D.param, dr = new Float32Array(N * H), ks = new Float32Array(N * H), eta = new Float32Array(N * H), irg = new Float32Array(N * H);
-  const musim = P.fase.reduce((a, b) => a + b, 0), jiwa = new Float64Array(H), luas = new Float64Array(H);
-  for (let i = 0; i < N; i++) {
-    const taw = D.taw[i], raw = P.p * taw, E = sk.et0[i]; let d = D.dr0[i], sisa = cfg.kap;
+/* Hasil padi: FAO-33 (Doorenbos & Kassam 1979) Ya/Ym = 1 - ky (1 - sum ETa / sum ETc), ky padi 1,09 dan batas gagal 50% sama dengan scripts/kekeringan/padi.py.
+   Kebun (sawit, HTI): bak kedua per sel, Kc 0,95, p 0,65, Zr 0,9 m (FAO-56 Tabel 12 dan 22, kelompok palem; belum dicocokkan ke teks seperti padi). */
+const KY = 1.09, GAGAL = 0.5, KEBUN = {kc: 0.95, p: 0.65, zr: 0.9};
+
+/* jalankan bak untuk sel idx (bawaan semua). cfg = {tanam, laju, kap, omc} (omc = pecahan tambahan hujan pada hari yang sudah hujan) */
+function jalankan(D, sk, hj, cfg, idx) {
+  const N = D.n, P = D.param, dr = new Float32Array(N * H), ks = new Float32Array(N * H), eta = new Float32Array(N * H), irg = new Float32Array(N * H), loss = new Float32Array(N);
+  const musim = P.fase.reduce((a, b) => a + b, 0), jiwa = new Float64Array(H), luas = new Float64Array(H), kebun = new Float64Array(H);
+  for (const i of idx || Array.from({length: N}, (_, k) => k)) {
+    const taw = D.taw[i], raw = P.p * taw, E = sk.et0[i], kHa = D.kebun ? D.kebun[i] : 0, tawK = taw * KEBUN.zr / P.zr;
+    let d = D.dr0[i], dK = d / taw * tawK, sisa = cfg.kap, sEta = 0, sEtc = 0;
     for (let t = 0; t < H; t++) {
-      const umur = t - cfg.tanam, h0 = hj[i * H + t], h = h0 * (1 + (h0 > 0 ? cfg.omc : 0));
+      const umur = t - cfg.tanam, h0 = hj[i * H + t], h = h0 * (1 + (h0 > 0 ? cfg.omc : 0)), e0 = E[Math.min(E.length - 1, Math.floor(t / 30))], kc = kcPadi(umur, P);
       let ir = 0;
       if (cfg.laju > 0 && umur >= 0 && umur < musim && d > raw) { ir = Math.min(cfg.laju, d - raw, sisa); sisa -= ir; }
-      const r = langkah(d, taw, P.p, kcPadi(umur, P), E[Math.min(E.length - 1, Math.floor(t / 30))], h, ir);
+      const r = langkah(d, taw, P.p, kc, e0, h, ir);
       d = r[0]; dr[i * H + t] = d; eta[i * H + t] = r[1]; ks[i * H + t] = r[2]; irg[i * H + t] = ir;
+      if (umur >= 0 && umur < musim) { sEta += r[1]; sEtc += kc * e0; }
       if (r[2] < P.ambang_berat) { jiwa[t] += D.jiwa[i]; luas[t] += D.km2[i]; }
+      if (kHa > 0) { const rk = langkah(dK, tawK, KEBUN.p, KEBUN.kc, e0, h); dK = rk[0]; if (rk[2] < P.ambang_berat) kebun[t] += kHa; }
     }
+    loss[i] = sEtc > 0 ? Math.min(1, Math.max(0, KY * (1 - sEta / sEtc))) : 0;
   }
-  return {dr, ks, eta, irg, jiwa, luas, cfg};
+  return {dr, ks, eta, irg, jiwa, luas, loss, kebun, cfg};
 }
 
-if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, hujanHarian, jalankan, H};
+/* ringkasan dampak satu jalan atas sel idx. Sawah dari tutupan.json (BUKAN pengamatan: lihat scripts/kekeringan/tutupan.py). */
+function dampak(D, R, idx) {
+  let sawah = 0, hilang = 0, puso = 0;
+  for (const i of idx) { const s = D.sawah ? D.sawah[i] : 0; sawah += s; hilang += s * R.loss[i]; if (R.loss[i] >= GAGAL) puso += s; }
+  let jiwaPuncak = 0, hariKrisis = 0, kebunPuncak = 0;
+  for (let t = 0; t < H; t++) { if (R.jiwa[t] > jiwaPuncak) jiwaPuncak = R.jiwa[t]; if (R.jiwa[t] > 0) hariKrisis++; if (R.kebun[t] > kebunPuncak) kebunPuncak = R.kebun[t]; }
+  return {sawah, hilang, puso, jiwaPuncak, hariKrisis, kebunPuncak, kebutuhanL: jiwaPuncak * 15};
+}
+/* sel di sekitar sel i0: kotak +-r derajat. Perlakuan dinilai atas kawasan ini, bukan satu sel 55 km */
+const fokusSel = (D, i0, r = 1) => { const o = []; for (let i = 0; i < D.n; i++) if (Math.abs(D.lat[i] - D.lat[i0]) <= r + 1e-6 && Math.abs(D.lon[i] - D.lon[i0]) <= r + 1e-6) o.push(i); return o; };
+
+/* Kandidat perlakuan: tiap satu dijalankan lewat bak yang sama atas kawasan idx, lalu dihitung manfaat (setara ha padi, jiwa) dan biaya (Rp).
+   T = Tanggap (sim_tanggap.js); ctx = {tanam, pangkalan, biayaOmcHari}. Pompa/tanam awal hanya menyelamatkan padi; tangki/sumur bor hanya air bersih;
+   hujan buatan dinilai dari keduanya lewat model (jiwa = turunnya puncak jiwa di sel stres). */
+function evaluasi(T, D, sk, hj, idx, ctx) {
+  const A = T.ASUMSI, dasar = jalankan(D, sk, hj, {tanam: ctx.tanam, laju: 0, kap: 0, omc: 0}, idx), md = dampak(D, dasar, idx), nP = ctx.pangkalan.length;
+  const cakup = ha => md.sawah > 0 ? Math.min(1, ha / md.sawah) : 0;
+  const DEF = [
+    {id: "t2", nama: "Truk tangki, 2 per pangkalan", jenis: "tangki", n: 2}, {id: "t10", nama: "Truk tangki, 10 per pangkalan", jenis: "tangki", n: 10},
+    {id: "s10", nama: "Sumur bor air bersih, 10 titik", jenis: "sumur", n: 10}, {id: "s30", nama: "Sumur bor air bersih, 30 titik", jenis: "sumur", n: 30},
+    {id: "p20", nama: "Pompanisasi, 20 pompa", jenis: "pompa", n: 20}, {id: "p60", nama: "Pompanisasi, 60 pompa", jenis: "pompa", n: 60},
+    {id: "awal", nama: "Tanam 14 hari lebih awal", jenis: "awal", hari: 14}, {id: "omc", nama: "Hujan buatan, +10% di hari hujan", jenis: "omc", persen: 10}];
+  const kand = DEF.map(k => {
+    let cfg = {tanam: ctx.tanam, laju: 0, kap: 0, omc: 0}, jiwa = 0, biaya = 0, rinci = "";
+    if (k.jenis === "tangki") { const kap = T.kapasitasTangki(ctx.pangkalan, k.n, A); jiwa = T.jiwaTerlayani(md.jiwaPuncak, kap, A); biaya = k.n * nP * A.sewa_tangki_hari * md.hariKrisis;
+      rinci = `${k.n * nP} truk × ${md.hariKrisis} hari krisis; angkut ${Math.round(kap).toLocaleString("id-ID")} L/hari`; }
+    else if (k.jenis === "sumur") { const kap = k.n * T.sumurL(A); jiwa = T.jiwaTerlayani(md.jiwaPuncak, kap, A); biaya = k.n * A.sumur_modal; rinci = `${k.n} titik × ${A.sumur_ls} L/detik, ${A.sumur_jam} jam/hari`; }
+    else if (k.jenis === "pompa") { const c = cakup(k.n * A.pompa_ha); cfg.laju = A.laju_irigasi * c; cfg.kap = A.pompa_kap_mm * c; biaya = k.n * (A.pompa_modal + A.pompa_bbm_hari * 60); rinci = `${k.n * A.pompa_ha} ha terjangkau, ${Math.round(c * 100)}% sawah kawasan`; }
+    else if (k.jenis === "awal") { cfg.tanam = Math.max(0, ctx.tanam - k.hari); biaya = md.sawah * A.awal_ha; rinci = `seluruh sawah kawasan`; }
+    else { cfg.omc = k.persen / 100; biaya = A.omc_hari * (ctx.biayaOmcHari || A.omc_rp_hari); rinci = `${A.omc_hari} hari operasi`; }
+    const R = k.jenis === "tangki" || k.jenis === "sumur" ? dasar : jalankan(D, sk, hj, cfg, idx), m = dampak(D, R, idx);
+    const padiHa = Math.max(0, md.hilang - m.hilang), jw = k.jenis === "omc" ? Math.max(0, md.jiwaPuncak - m.jiwaPuncak) : jiwa;
+    return {...k, padiHa, jiwa: Math.round(jw), biaya, rinci, perHa: T.perUnit(biaya, padiHa), perJiwa: T.perUnit(biaya, jw)};
+  });
+  return {dasar: md, kand, n: idx.length};
+}
+
+if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, hujanHarian, jalankan, dampak, fokusSel, evaluasi, H, KY, GAGAL};
 
 if (typeof document !== "undefined") (() => {
 const $ = s => document.querySelector(s), fmt1 = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});

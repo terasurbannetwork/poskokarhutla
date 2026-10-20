@@ -114,7 +114,7 @@
       return out;
     }
 
-    return { fasilitas: fasilitas, mmi: mmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d, m), v == null ? vs0 : v); },
+    return { fasilitas: fasilitas, mmi: mmi, pgaKeMmi: pgaKeMmi, pga: function (m, r, d, j, v) { return pga(m, r, d, j || tebakJenis(d, m), v == null ? vs0 : v); },
              jendelaKm: function (m, d, j, v) { return jendelaKm(m, d, j, v == null ? vs0 : v); },
              kecamatan: function (gm, p, v) { return kecamatan(gm, p, v == null ? vs0 : v); }, tebakJenis: tebakJenis, ekstrapolasi: ekstrapolasi };
   }
@@ -130,5 +130,17 @@
     return { per: per, total: total, tanpa: tanpa };
   }
 
-  g.GempaGuncangan = { pasang: pasang, paparan: paparan };
+  /* TAMBAHAN: Vs30 per sel (data/vs30.bin + vs30.json, proksi kemiringan Wald & Allen 2007 dari DEM; scripts/gempa/vs30.py).
+     Mengembalikan fungsi (lat, lon) -> Vs30 m/s; di luar grid atau bukan darat -> `baku` (400). */
+  function vs30Grid(meta, bytes, baku) {
+    var b = baku || VS30;
+    return function (lat, lon) {
+      var i = Math.round((lon - meta.lon0) / meta.d), j = Math.round((lat - meta.lat0) / meta.d);
+      if (i < 0 || j < 0 || i >= meta.nx || j >= meta.ny) return b;
+      var v = bytes[j * meta.nx + i];
+      return v ? v * meta.sat : b;
+    };
+  }
+
+  g.GempaGuncangan = { pasang: pasang, paparan: paparan, vs30Grid: vs30Grid };
 })(typeof window !== "undefined" ? window : globalThis);

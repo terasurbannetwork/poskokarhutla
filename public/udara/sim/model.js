@@ -12,9 +12,12 @@ export const KONF = {
   spin: 24,           /* jam spin-up sebelum jam 0 */
   jam: 72,
   sel: 0.25,          /* derajat per sel kisi keluaran */
-  efApi: 3.4,         /* g PM2,5 per MJ energi radiatif api (FRP x waktu); orde faktor emisi gambut/hutan tropis (Andreae 2019, Kaiser 2012) */
+  /* Emisi api dari energi radiatif (FRE): dm = FRE x dmFre (Wooster dkk. 2005, 0,368 kg bahan kering per MJ), PM2,5 = dm x faktor emisi (Andreae 2019:
+     gambut 15,3 g/kg, hutan tropis/mineral 9,1 g/kg). frp24 di kluster.json = JUMLAH FRP semua deteksi 24 jam; satu api terlihat sekali tiap lintasan
+     satelit, jadi daya rata-rata = frp24 / lintasan (VIIRS Suomi-NPP, NOAA-20, NOAA-21, sekitar 6 lintasan sehari di khatulistiwa; asumsi). */
+  dmFre: 0.368, efGambut: 15.3, efMineral: 9.1, lintasan: 6,
   efPltu: 0.05,       /* g PM2,5 primer per kWh, batu bara dengan ESP; hanya primer */
-  kfPltu: 0.6,        /* faktor kapasitas rata-rata */
+  kfPltu: 0.6,        /* faktor kapasitas bila pltu.json tak memuat fk */
   khBL: 2500, khAtas: 300, kzBL: 40, kzAtas: 2, /* m2/s */
   vd: 0.002,          /* m/s deposisi kering PM2,5 */
   tau: 5 * 24 * 3600, /* s peluruhan umum (hujan, dll) */
@@ -25,6 +28,10 @@ export const KONF = {
   /* tinggi lapis angin (m di atas tanah, kira-kira) menurut nama lapis */
   zLapis: {"10m": 10, "925hPa": 760, "850hPa": 1500, "700hPa": 3000}
 };
+
+/* g PM2,5 per MJ FRE menurut jenis lahan, dan laju emisi (g/s) dari jumlah FRP 24 jam kompleks */
+export const efPerMJ = gambut => KONF.dmFre * (gambut ? KONF.efGambut : KONF.efMineral);
+export const emisiApi = (frp24, gambut) => frp24 / KONF.lintasan * efPerMJ(gambut);
 
 export const KAT = [{n: "Baik", s: "Normal", w: "#5a9e74", fg: "#fff", b: 15.5}, {n: "Sedang", s: "Normal", w: "#e3b94e", fg: "#3b2e00", b: 55.4},
   {n: "Tidak sehat", s: "Waspada", w: "#e8743b", fg: "#fff", b: 150.4}, {n: "Sangat tidak sehat", s: "Siaga", w: "#d64545", fg: "#fff", b: 250.4}, {n: "Berbahaya", s: "Awas", w: "#8a2be2", fg: "#fff", b: Infinity}];
@@ -48,11 +55,11 @@ export function kemasAngin(a) {
 export const medanKosong = A => ({u: Array.from({length: A.nl}, () => new Float32Array(A.nx * A.ny)), v: Array.from({length: A.nl}, () => new Float32Array(A.nx * A.ny)), b: new Float32Array(A.nx * A.ny)});
 /* medan angin pada jam ke-h (dari jam 0), diinterpolasi waktu, lalu diubah skenario: skn.anginKali, skn.anginPutar (radian, berlawanan jarum jam) */
 export function medanAngin(A, h, skn, out = medanKosong(A)) {
-  const km = skn?.anginKali ?? 1, th = skn?.anginPutar || 0, c = Math.cos(th) * km, s = Math.sin(th) * km;
+  const bk = skn?.blhKali ?? 1, km = skn?.anginKali ?? 1, th = skn?.anginPutar || 0, c = Math.cos(th) * km, s = Math.sin(th) * km;
   const ft = Math.min(Math.max(h / A.dtJam, 0), A.nt - 1.000001), t0 = ft | 0, w = ft - t0, t1 = Math.min(t0 + 1, A.nt - 1), n = A.nx * A.ny;
   for (let l = 0; l < A.nl; l++) { const ua = A.U[l][t0], ub = A.U[l][t1], va = A.V[l][t0], vb = A.V[l][t1], ou = out.u[l], ov = out.v[l];
     for (let k = 0; k < n; k++) { const u = ua[k] * (1 - w) + ub[k] * w, v = va[k] * (1 - w) + vb[k] * w; ou[k] = c * u - s * v; ov[k] = s * u + c * v; } }
-  const ba = A.B[t0], bb = A.B[t1]; for (let k = 0; k < n; k++) out.b[k] = ba[k] * (1 - w) + bb[k] * w;
+  const ba = A.B[t0], bb = A.B[t1]; for (let k = 0; k < n; k++) out.b[k] = (ba[k] * (1 - w) + bb[k] * w) * bk;
   return out;
 }
 /* bilinear pada kisi A; di luar kisi dijepit ke tepi */
@@ -76,15 +83,15 @@ export function buatSumber(kluster, pltu, A, o = {}) {
   const P = (kluster?.features || kluster || []).map(f => f.properties || f).filter(p => p.frp24 > 0 && dalam(A, p.lon, p.lat)).sort((a, b) => b.frp24 - a.frp24);
   const grup = [], sumber = [], nApi = o.nApi ?? KONF.nApi;
   const tinggi = (gambut, frp) => { const s = Math.min(1, frp / 8000); return gambut ? [30, 300 + 500 * s] : [100, 500 + 1500 * s]; };
-  const buatApi = (p, g) => { const [lo, hi] = tinggi(p.gambut, p.frp24); sumber.push({g, jenis: "api", id: p.id, lat: p.lat, lon: p.lon, Q: p.frp24 * KONF.efApi, zlo: lo, zhi: hi, frp: p.frp24}); };
-  P.slice(0, nApi).forEach(p => { grup.push({id: p.id, jenis: "api", nama: p.kab ? `Kompleks ${p.kab} ${p.id}` : `Kompleks ${p.id}`, kab: p.kab || "", prov: p.prov || "", frp: p.frp24, lat: p.lat, lon: p.lon, konsesi: p.konsesi || []}); buatApi(p, grup.length - 1); });
+  const buatApi = (p, g) => { const [lo, hi] = tinggi(p.gambut, p.frp24); sumber.push({g, jenis: "api", id: p.id, lat: p.lat, lon: p.lon, Q: emisiApi(p.frp24, p.gambut), gambut: !!p.gambut, zlo: lo, zhi: hi, frp: p.frp24}); };
+  P.slice(0, nApi).forEach(p => { grup.push({id: p.id, jenis: "api", nama: p.kab ? `Kompleks ${p.kab} ${p.id}` : `Kompleks ${p.id}`, kab: p.kab || "", prov: p.prov || "", frp: p.frp24, luas: p.luas, lat: p.lat, lon: p.lon, konsesi: p.konsesi || []}); buatApi(p, grup.length - 1); });
   const sisa = new Map(); for (const p of P.slice(nApi)) { const k = Math.round(p.lat) + "|" + Math.round(p.lon), q = sisa.get(k) || {frp: 0, la: 0, lo: 0, gb: 0}; q.frp += p.frp24; q.la += p.lat * p.frp24; q.lo += p.lon * p.frp24; q.gb += p.gambut ? p.frp24 : 0; sisa.set(k, q); }
   const lump = [...sisa.values()].sort((a, b) => b.frp - a.frp).slice(0, o.nLump ?? KONF.nLump);
   if (lump.length) { grup.push({id: "lain", jenis: "api", nama: "Api lain", frp: lump.reduce((s, q) => s + q.frp, 0)}); const g = grup.length - 1;
     for (const q of lump) buatApi({id: "lain", lat: q.la / q.frp, lon: q.lo / q.frp, frp24: q.frp, gambut: q.gb > q.frp / 2}, g); }
   const pl = (pltu || []).filter(p => dalam(A, p.lon, p.lat)).sort((a, b) => b.mw - a.mw).slice(0, o.nPltu ?? KONF.nPltu);
   if (pl.length) { grup.push({id: "pltu", jenis: "pltu", nama: "PLTU", mw: pl.reduce((s, p) => s + p.mw, 0)}); const g = grup.length - 1;
-    for (const p of pl) sumber.push({g, jenis: "pltu", id: p.id, nama: p.nama, lat: p.lat, lon: p.lon, Q: p.mw * 1000 * KONF.kfPltu * KONF.efPltu / 3600, zlo: 180, zhi: 400, mw: p.mw}); }
+    for (const p of pl) sumber.push({g, jenis: "pltu", id: p.id, nama: p.nama, lat: p.lat, lon: p.lon, Q: p.mw * 1000 * (p.fk ?? KONF.kfPltu) * KONF.efPltu / 3600, zlo: 180, zhi: 400, mw: p.mw, fk: p.fk ?? KONF.kfPltu}); }
   return {grup, sumber};
 }
 
@@ -177,15 +184,46 @@ export function jalankan(A, src, kota, skn, seed) { const s = buatSim(A, src, ko
    sehingga PM2,5 asal api di kota (rata-rata 24 jam hari 1 dari model) cocok orde besarnya dengan atribusi pipeline:
    target_kota = r24[0] x asap[0] (prakiraan.json). K = median(target / model) atas kota dengan target >= 3 µg/m³ dan model >= 0,05 µg/m³,
    dijepit ke [0,01; 50]. Tanpa kota yang memenuhi, K = 1 dan terkalibrasi = false. K dibekukan: skenario memakai K dasar. */
-export function kalibrasi(hasil, prak) {
-  const r = []; const NB = hasil.NB;
+function pasanganKal(hasil, prak) {
+  const p = [], NB = hasil.NB;
   prak.kota.forEach((c, ci) => { const tgt = (c.r24?.[0] ?? 0) * (c.asap?.[0] ?? 0); if (!(tgt >= 3)) return; let m = 0;
     for (let g = 0; g < hasil.nG; g++) if (hasil.grup[g].jenis === "api") for (let b = 0; b < 24; b++) m += hasil.kon[(g * hasil.nK + ci) * NB + b] / 24;
-    if (m >= .05) r.push(tgt / m); });
+    if (m >= .05) p.push({ci, tgt, m}); });
+  return p;
+}
+const median = a => { const b = Array.from(a).sort((x, y) => x - y), n = b.length; return n % 2 ? b[n >> 1] : (b[n / 2 - 1] + b[n / 2]) / 2; };
+export function kalibrasi(hasil, prak) {
+  const r = pasanganKal(hasil, prak).map(x => x.tgt / x.m);
   if (!r.length) return {K: 1, n: 0, terkalibrasi: false};
   r.sort((a, b) => a - b); const K = Math.min(50, Math.max(.01, r[r.length >> 1]));
   return {K, n: r.length, terkalibrasi: true};
 }
+
+/* Cek skala: PM2,5 asal api model x K dibanding target atribusi pipeline (CAMS) di tiap kota, K dihitung TANPA kota yang sedang dinilai (leave-one-out),
+   jadi galat tidak dikecilkan oleh pencocokan. Galat = faktor kali/bagi (median |ln(model/target)|); bias > 1 berarti model terlalu pekat. Bukan pembanding dengan alat ukur. */
+export function validasi(hasil, prak) {
+  const p = pasanganKal(hasil, prak); if (p.length < 2) return {n: p.length, ok: false};
+  const e = p.map((x, i) => { const K = Math.min(50, Math.max(.01, median(p.filter((_, j) => j !== i).map(y => y.tgt / y.m)))); return Math.log(x.m * K / x.tgt); });
+  return {ok: true, n: p.length, galat: Math.exp(median(e.map(Math.abs))), bias: Math.exp(median(e)), dalam2: e.filter(v => Math.abs(v) <= Math.LN2).length / e.length,
+    terburuk: p.map((x, i) => ({ci: x.ci, f: Math.exp(e[i])})).sort((a, b) => Math.abs(Math.log(b.f)) - Math.abs(Math.log(a.f))).slice(0, 3)};
+}
+
+/* ---------- ensemble ---------- */
+/* n-1 anggota (anggota 0 = dasar): angin, arah, tinggi lapisan campuran, emisi diganggu lognormal terpotong, benih sendiri. Deterministik menurut seed. */
+export function anggotaEnsemble(n = ENS.n, seed = 7) {
+  const r = mulberry32(seed), ln = (sd, lo, hi) => Math.min(hi, Math.max(lo, Math.exp(sd * gauss(r)))), o = [];
+  for (let i = 1; i < n; i++) o.push({seed: seed * 1000 + i, skn: {anginKali: ln(ENS.sdAngin, .5, 1.6), anginPutar: gauss(r) * ENS.sdArah * Math.PI / 180, blhKali: ln(ENS.sdBlh, .5, 2), fApi: ln(ENS.sdApi, .3, 3), fPltu: ln(ENS.sdPltu, .5, 2)}});
+  return o;
+}
+export function kuantil(v, q) { const a = Float64Array.from(v).sort(), x = (a.length - 1) * q, i = x | 0; return a[i] + (a[Math.min(i + 1, a.length - 1)] - a[i]) * (x - i); }
+/* pita per kota: deret p10/p50/p90 per jam, puncak 72 jam tiap kuantil, dan peluang (porsi anggota) puncaknya di atas ambang. hasilAnggota = [hasil simulasi anggota 1..n-1] */
+export function pitaDariSeri(seri) {
+  const NB = KONF.jam + 1, o = {p10: new Float32Array(NB), p50: new Float32Array(NB), p90: new Float32Array(NB)};
+  for (let b = 0; b < NB; b++) { const v = seri.map(x => x[b]); o.p10[b] = kuantil(v, .1); o.p50[b] = kuantil(v, .5); o.p90[b] = kuantil(v, .9); }
+  const pk = seri.map(x => { let m = 0; for (let b = 0; b < KONF.jam; b++) if (x[b] > m) m = x[b]; return m; });
+  return {...o, n: seri.length, puncak: {p10: kuantil(pk, .1), p50: kuantil(pk, .5), p90: kuantil(pk, .9)}, peluang: pk.filter(v => v > KONF.ambang).length / pk.length};
+}
+export const pitaKota = (prak, dasar, hasilAnggota, pmDasar, K, A, ci) => pitaDariSeri([pmDasar[ci], ...hasilAnggota.map(h => pmKota(prak, dasar, h, K, ci, A))]);
 
 /* ---------- kota: PM2,5 per jam ---------- */
 /* deret mentah (belum diskalakan) api atau PLTU di kota ci per jam 0..72; abaikan = grup yang dibuang (untuk "padamkan kompleks X") */
@@ -227,6 +265,15 @@ export function paparan(pm, jiwa, ambang = KONF.ambang, saring = null) {
   let jam = 0, dosis = 0; for (let b = 0; b < KONF.jam; b++) { if (saring && !saring(b)) continue; if (pm[b] > ambang) { jam++; dosis += pm[b] - ambang; } }
   return {jj: jam * jiwa, dosis: dosis * jiwa};
 }
+/* ISPA tambahan 3 hari (WIB-kasar: tiga blok 24 jam dari jam 0) hanya pada hari rata-rata > 55,4: jiwa x y0 x (1 - exp(-b x min(100, maks(0, pm - 15)))), b = ln(RR)/10.
+   Rumus dan RR sama dengan scripts/udara/rentan.py (Heroux dkk. 2015, HRAPIE; RR rawat inap pernapasan sebagai proksi, bukan fungsi ISPA); lo dari RR 0,9982 dijepit 0. */
+export const ISPA = {y0: .093 / 30, rr: [.9982, 1.019, 1.0402], c0: 15, dcMaks: 100, hari: 55.4};
+export function ispaHari(pm, jiwa) {
+  const o = {t: 0, lo: 0, hi: 0};
+  for (let d = 0; d < 3; d++) { let m = 0; for (let b = d * 24; b < d * 24 + 24; b++) m += pm[b] / 24; if (m <= ISPA.hari) continue; const dc = Math.min(ISPA.dcMaks, Math.max(0, m - ISPA.c0));
+    const f = rr => jiwa * ISPA.y0 * (1 - Math.exp(-Math.log(rr) / 10 * dc)); o.t += f(ISPA.rr[1]); o.lo += Math.max(0, f(ISPA.rr[0])); o.hi += f(ISPA.rr[2]); }
+  return o;
+}
 /* kota dengan penduduk, PM, dan paparan per skenario. pmDasar/pmSkn: larik Float32Array(73) per kota */
 export function bandingKota(prak, jiwa, pmDasar, pmSkn) {
   return prak.kota.map((c, i) => { const a = paparan(pmDasar[i], jiwa[i]), b = paparan(pmSkn[i], jiwa[i]); const mx = v => v.reduce((m, x) => x > m ? x : m, 0);
@@ -235,16 +282,19 @@ export function bandingKota(prak, jiwa, pmDasar, pmSkn) {
 
 /* sekolah: jam sekolah (Sen-Jum 07.00-13.59 WIB). Anak di sekolah ventilasi alami: sebagian waktu di luar (upacara, istirahat, perjalanan), sisanya di kelas dengan faktor infiltrasi FS.
    Libur: di rumah, lebih sedikit di luar dan faktor infiltrasi rumah FR lebih rendah. Faktor paparan efektif = luar + (1 - luar) x infiltrasi, dikalikan ke jiwa-jam dan dosis. */
+/* ensemble: anggota 0 = dasar; anggota lain = perturbasi acak bersebaran lognormal (sd pada log) */
+export const ENS = {n: 8, sdAngin: .2, sdArah: 10, sdBlh: .25, sdApi: .35, sdPltu: .2};
 export const SEKOLAH = {luarS: .25, fs: .8, luarR: .1, fr: .6};
 export const ASUMSI = [
-  {nama: "Emisi api", nilai: `${KONF.efApi} g PM2,5 per MJ FRP, lalu diskalakan ke atribusi pipeline`, sumber: "Andreae 2019; Kaiser dkk. 2012 (orde), skala akhir dari atribusi"},
-  {nama: "Emisi PLTU", nilai: `${KONF.efPltu} g per kWh, kapasitas ${KONF.kfPltu * 100}% (hanya partikel primer)`, sumber: "WRI Global Power Plant Database untuk lokasi dan MW; faktor emisi tipikal batu bara ber-ESP"},
+  {nama: "Emisi api", nilai: `energi radiatif (jumlah FRP 24 jam dibagi ${KONF.lintasan} lintasan) x ${String(KONF.dmFre).replace(".", ",")} kg bahan kering per MJ x ${String(KONF.efGambut).replace(".", ",")} g PM2,5/kg (gambut) atau ${String(KONF.efMineral).replace(".", ",")} g/kg (lahan mineral)`, sumber: "Wooster dkk. 2005 (kg per MJ); Andreae 2019 (faktor emisi); jumlah lintasan asumsi; gambut membara rendah FRP sehingga cenderung terlalu rendah"},
+  {nama: "Emisi PLTU", nilai: `${String(KONF.efPltu).replace(".", ",")} g per kWh x kapasitas (MW) x faktor kapasitas tiap PLTU (cadangan ${KONF.kfPltu * 100}%), hanya partikel primer`, sumber: "WRI Global Power Plant Database untuk lokasi, MW, dan faktor kapasitas; faktor emisi tipikal batu bara ber-ESP"},
+  {nama: "Ensemble", nilai: `${ENS.n} anggota: angin x lognormal ${ENS.sdAngin}, arah ${ENS.sdArah} derajat, tinggi lapisan campuran x lognormal ${ENS.sdBlh}, emisi api x lognormal ${ENS.sdApi}, emisi PLTU x lognormal ${ENS.sdPltu}, benih acak berbeda`, sumber: "sebaran diatur dari galat tipikal prakiraan angin dan faktor emisi (asumsi), bukan diukur"},
   {nama: "Infiltrasi sekolah", nilai: `${SEKOLAH.luarS * 100}% waktu di luar, kelas ${SEKOLAH.fs}`, sumber: "Chen dan Zhao 2011, rasio dalam/luar ruang ventilasi alami; disesuaikan"},
   {nama: "Infiltrasi rumah (libur)", nilai: `${SEKOLAH.luarR * 100}% waktu di luar, rumah ${SEKOLAH.fr}`, sumber: "Chen dan Zhao 2011; disesuaikan"},
   {nama: "Usia sekolah", nilai: `${KONF.anak * 100}% penduduk`, sumber: "Struktur umur BPS, perkiraan kasar"},
   {nama: "Ambang terpapar", nilai: `${String(KONF.ambang).replace(".", ",")} µg/m³`, sumber: "Batas bawah Tidak sehat, PermenLHK P.14/2020"}
 ];
-const hariKerjaSekolah = (A, b) => { const w = new Date(A.t0 + b * 36e5 + 7 * 36e5), d = w.getUTCDay(), j = w.getUTCHours(); return d >= 1 && d <= 5 && j >= 7 && j < 14; };
+export const hariKerjaSekolah = (A, b) => { const w = new Date(A.t0 + b * 36e5 + 7 * 36e5), d = w.getUTCDay(), j = w.getUTCHours(); return d >= 1 && d <= 5 && j >= 7 && j < 14; };
 export function sekolahHindar(A, pm, jiwa) {
   const anak = jiwa * KONF.anak, fS = SEKOLAH.luarS + (1 - SEKOLAH.luarS) * SEKOLAH.fs, fR = SEKOLAH.luarR + (1 - SEKOLAH.luarR) * SEKOLAH.fr, s = b => hariKerjaSekolah(A, b);
   /* jiwa-jam setara-luar-ruang: jam dengan PM2,5 luar di atas ambang dihitung sebesar faktor paparan efektif (fS di sekolah, fR di rumah) */
@@ -253,11 +303,11 @@ export function sekolahHindar(A, pm, jiwa) {
 }
 /* tembolok deret dasar per kota (api, PLTU) sekali per urutPerlakuan; api tanpa grup g = api - kontribusi g */
 function hindarGrup(A, prak, dasar, K, jiwa, pmDasar, g, skala, tb) {
-  let jj = 0, dosis = 0;
+  let jj = 0, dosis = 0, ispa = 0;
   for (let ci = 0; ci < dasar.nK; ci++) { if (!jiwa[ci]) continue; const base = (g * dasar.nK + ci) * dasar.NB; let ada = false; for (let b = 0; b < dasar.NB; b++) if (dasar.kon[base + b] > .05) { ada = true; break; } if (!ada) continue;
     const c = tb[ci] ||= {api: deret(dasar, ci, "api"), pl: deret(dasar, ci, "pltu")}, apiS = new Float32Array(dasar.NB); for (let b = 0; b < dasar.NB; b++) apiS[b] = Math.max(0, c.api[b] - dasar.kon[base + b]);
-    const o2 = pmDariDeret(prak, ci, A, c.api, apiS, c.pl, c.pl, K, skala), a = paparan(pmDasar[ci], jiwa[ci]), b2 = paparan(o2, jiwa[ci]); jj += a.jj - b2.jj; dosis += a.dosis - b2.dosis; }
-  return {jj, dosis};
+    const o2 = pmDariDeret(prak, ci, A, c.api, apiS, c.pl, c.pl, K, skala), a = paparan(pmDasar[ci], jiwa[ci]), b2 = paparan(o2, jiwa[ci]); jj += a.jj - b2.jj; dosis += a.dosis - b2.dosis; ispa += ispaHari(pmDasar[ci], jiwa[ci]).t - ispaHari(o2, jiwa[ci]).t; }
+  return {jj, dosis, ispa};
 }
 /* Daftar perlakuan terurut menurut jiwa-jam yang dihindari dalam 72 jam (perkiraan). Kompleks: kontribusi dasar dikurangi seluruhnya; hanya kota-jam dengan porsi api terpercaya
    (asap tidak null) yang ikut dihitung, jadi kota tak terpercaya tidak menurunkan peringkat. Rentang: porsi api x0,7 dan x1,3 (kompleks), selisih infiltrasi x0,5 dan x1,5 (sekolah). */
@@ -266,7 +316,7 @@ export function urutPerlakuan(...a) { const g = urutGen(...a); let r; while (!(r
 export function* urutGen(A, prak, dasar, K, jiwa, pmDasar, o = {}) {
   const out = [], tb = [];
   for (let g = 0; g < dasar.nG; g++) { const G = dasar.grup[g]; if (G.jenis !== "api" || G.id === "lain") continue; const h = hindarGrup(A, prak, dasar, K, jiwa, pmDasar, g, 1, tb);
-    if (h.jj > 0 || h.dosis > 0) out.push({jenis: "kompleks", id: G.id, nama: G.nama, jj: h.jj, dosis: h.dosis, g}); yield; }
+    if (h.jj > 0 || h.dosis > 0) out.push({jenis: "kompleks", id: G.id, nama: G.nama, jj: h.jj, dosis: h.dosis, ispa: h.ispa, g}); yield; }
   for (let ci = 0; ci < prak.kota.length; ci++) { if (!jiwa[ci]) continue; const h = sekolahHindar(A, pmDasar[ci], jiwa[ci]); if (h.jj > 0 || h.dosis > 0) out.push({jenis: "sekolah", id: prak.kota[ci].kode, nama: prak.kota[ci].nama, jj: h.jj, dosis: h.dosis, ci}); if (ci % 64 === 0) yield; }
   out.sort((a, b) => b.jj - a.jj || b.dosis - a.dosis);
   const top = out.slice(0, o.sekolahTop ?? 400);
@@ -283,13 +333,13 @@ export const SKENARIO = [
   {id: "lemah", nama: "Angin melemah", skn: {anginKali: .5}},
   {id: "pltu", nama: "PLTU mati", skn: {fPltu: 0}}
 ];
-export const kunciSkn = s => JSON.stringify([s.fApi ?? 1, s.fPltu ?? 1, s.anginKali ?? 1, s.anginPutar ?? 0, Object.entries(s.f || {}).sort()]);
+export const kunciSkn = s => JSON.stringify([s.fApi ?? 1, s.fPltu ?? 1, s.anginKali ?? 1, s.anginPutar ?? 0, s.blhKali ?? 1, Object.entries(s.f || {}).sort()]);
 
 /* ---------- batas model (teks untuk halaman Metode) ---------- */
 export const BATAS = [
   "Hanya partikel primer: tanpa kimia sekunder (sulfat, nitrat, aerosol organik sekunder), jadi sumbangan PLTU dan asap yang menua terhitung rendah.",
   "Angin dari kisi 1 derajat (sekitar 110 km) per 3 jam, interpolasi ke ruang dan waktu; lembah, pantai, dan angin darat-laut tidak tertangkap.",
-  "Emisi api dari FRP deteksi satelit 24 jam, bukan inventaris. Skala awan dikalikan satu faktor supaya porsi api di kota cocok orde besarnya dengan atribusi pipeline; angka kota memakai porsi atribusi itu dan model hanya memberi nisbah perubahan per skenario, jadi dekat sumber model cenderung terlalu pekat dan jauh dari sumber terlalu tipis.",
+  "Emisi api dari energi radiatif (FRE) deteksi satelit 24 jam dengan faktor emisi gambut dan mineral, bukan inventaris; gambut yang membara rendah FRP terdeteksi kurang. Emisi PLTU dari MW dan faktor kapasitas tiap unit, faktor emisi satu nilai tipikal. Skala awan dikalikan satu faktor supaya porsi api di kota cocok orde besarnya dengan atribusi pipeline; angka kota memakai porsi atribusi itu dan model hanya memberi nisbah perubahan per skenario, jadi dekat sumber model cenderung terlalu pekat dan jauh dari sumber terlalu tipis.",
   "Tinggi plume api dan PLTU diundi dari rentang tetap menurut jenis lahan dan besar api, tanpa daya apung yang dihitung.",
   "Hujan tidak dimodelkan khusus: hanya deposisi kering dan peluruhan umum 5 hari, jadi hari hujan deras akan terhitung terlalu pekat.",
   "Batas lapisan campuran dari blh prakiraan, minimum 150 m; asap di atasnya baru turun saat lapisan itu menebal.",
@@ -297,5 +347,9 @@ export const BATAS = [
   "Bila pipeline menolak atribusi api suatu hari di suatu kota (model lebih dari 1,5 kali CAMS, porsi null), PM2,5 kota itu dibiarkan apa adanya di skenario dan diberi tanda bintang di label; kota itu tidak ikut menentukan peringkat perlakuan.",
   "Jiwa-jam yang dihindari adalah perkiraan kasar dengan rentang (porsi api x0,7 sampai x1,3; infiltrasi sekolah x0,5 sampai x1,5), bukan hitungan pasti.",
   "Skenario mengubah prakiraan model (belum dikoreksi ke alat ukur) di tiap kota menurut nisbah model; nilainya perkiraan, bukan nasihat medis.",
-  "Sumber di luar 80 kompleks terbesar digabung per sel 1 derajat; kompleks dan PLTU di luar kisi angin dibuang."
+  "Sumber di luar 80 kompleks terbesar digabung per sel 1 derajat; kompleks dan PLTU di luar kisi angin dibuang.",
+  "Pita ketidakpastian dari ensemble kecil (8 anggota, benih dan tinggi lapisan campuran, angin, emisi diganggu): p10 dan p90 adalah sebaran anggota, bukan selang kepercayaan statistik, dan galat model fisikanya sendiri tidak ikut tercakup.",
+  "Cek terhadap data memakai PM2,5 CAMS di kota (leave-one-out) karena stasiun ukur belum tersedia; kecocokan dengan CAMS belum berarti cocok dengan alat ukur di tanah.",
+  "Peringkat perlakuan memakai biaya satuan asumsi (masker, pembersih udara, regu pemadam, selisih biaya pembangkit) yang bukan angka resmi; orang-hari terpapar = jam di atas 55,5 µg/m³ dibagi 24 dikali penduduk kota, tanpa membedakan umur atau kecamatan.",
+  "Ruang udara bersih dan beban faskes memakai sekolah, rumah sakit, dan puskesmas dari OpenStreetMap di sembilan provinsi (Riau, Jambi, Sumsel, Kalbar, Kalteng, Kalsel, Kaltim, NTT, Papua Selatan); kota di luarnya tidak dinilai ruang bersihnya, kantor belum ada datanya, dan pembagian masker per kecamatan belum bisa karena penduduk dipecah per kota, bukan per kecamatan."
 ];
