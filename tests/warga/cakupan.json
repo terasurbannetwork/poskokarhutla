@@ -181,7 +181,10 @@
     "trigger lapangan_kendala_ubah": "angka publik dari satu kode",
     "table laju_posko": "tebakan kode regu dan token admin",
     "POST /api/posko/lapangan/:id": "angka publik dari satu kode",
-    "table laju_bnpb": "laju_bnpb: batas per jendela"
+    "table laju_bnpb": "laju_bnpb: batas per jendela",
+    "table laporan_bnpb": "migrasi 0023 idempoten",
+    "GET /api/laporan-bnpb": "simpan lalu baca kembali sama persis",
+    "POST /api/laporan-bnpb": "isian salah DITOLAK 400/413"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

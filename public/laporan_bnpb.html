@@ -1,0 +1,84 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Laporan BNPB · Centurisk97</title>
+<meta name="description" content="Isi angka Laporan Kejadian Bencana Harian dan Paparan Presiden, pratinjau langsung, unduh PPTX dan PDF.">
+<link rel="canonical" href="https://centurisk97.id/laporan-bnpb">
+<meta name="robots" content="noindex, nofollow">
+<meta name="theme-color" content="#0b2545">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:locale" content="id_ID">
+<meta property="og:title" content="Laporan BNPB · Centurisk97">
+<meta property="og:description" content="Input dan ekspor laporan BNPB.">
+<meta property="og:url" content="https://centurisk97.id/laporan-bnpb">
+<meta name="twitter:card" content="summary">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script>try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/gaya.css">
+<link rel="stylesheet" href="/inti/tabel.css">
+<link rel="stylesheet" href="/inti/insight.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/paparan.css">
+<link rel="stylesheet" href="/laporan_bnpb.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="karhutla"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</summary><div class="menu"><a href="/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a></div></details>
+  </div>
+  <div class="stat">
+    <span class="upd" id="upd">Memuat data…</span>
+    <button class="iconbtn" id="tema" type="button" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
+  </div>
+</header>
+
+<main>
+  <section class="page on scroll" id="p-paparan" aria-label="Laporan BNPB">
+    <div class="pp">
+      <section class="pp-kep">
+        <div class="pp-jd"><h1>Laporan BNPB</h1><p>Isi angka, pratinjau berubah langsung, simpan, lalu unduh PPTX atau PDF.</p></div>
+        <div class="lb-jenis" id="lbJenis" role="group" aria-label="Jenis laporan">
+          <button type="button" data-j="harian" aria-pressed="true">Laporan Kejadian Bencana Harian</button>
+          <button type="button" data-j="presiden" aria-pressed="false">Paparan Presiden (Karhutla)</button>
+        </div>
+        <div class="pp-ctl">
+          <label>Buka laporan<select id="lbDaftar" aria-label="Laporan tersimpan"></select></label>
+          <label>Tanggal laporan<input type="date" id="lbTgl" aria-label="Tanggal laporan"></label>
+          <button type="button" class="pp-btn ke2" id="lbGeser" title="Pindahkan angka satu hari ke kiri untuk laporan berikutnya">Geser hari</button>
+          <button type="button" class="pp-btn" id="lbSimpan">Simpan</button>
+          <button type="button" class="pp-btn" id="lbPptx">Unduh PPTX</button>
+          <button type="button" class="pp-btn ke2" id="lbPdf">Unduh PDF</button>
+        </div>
+        <div class="pp-st" id="lbSt" role="status" aria-live="polite">Memuat…</div>
+      </section>
+      <div class="lb-badan">
+        <aside class="pp-atur lb-isian" aria-label="Isian laporan">
+          <div id="lbForm"></div>
+          <div class="pp-aksi">
+            <button type="button" class="pp-btn kecil ke2" id="lbEks">Ekspor JSON</button>
+            <label class="pp-btn kecil ke2 lb-imp">Impor JSON<input type="file" id="lbImp" accept="application/json,.json" hidden></label>
+            <button type="button" class="pp-btn kecil ke2" id="lbBuang">Buang draf</button>
+          </div>
+          <p class="pp-cat">Isian tersimpan otomatis di peramban ini sampai Simpan ditekan. Tanggal baru otomatis menyalin laporan terakhir.</p>
+        </aside>
+        <section class="pp-pv" aria-label="Pratinjau slide"><div id="lbGrid" class="pp-grid"></div></section>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="/inti/format.js"></script>
+<script src="/paparan_slide.js"></script>
+<script src="/laporan_bnpb_slide.js"></script>
+<script src="/laporan_bnpb.js"></script>
+<script type="module" src="/inti/kepala.js"></script>
+</body>
+</html>

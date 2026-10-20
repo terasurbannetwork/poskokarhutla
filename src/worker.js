@@ -14,6 +14,7 @@ import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
 import {bersihkanBnpb} from "./bnpb.js";
+import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RELAWAN} from "./relawan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
@@ -330,7 +331,9 @@ export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
 }
 export const catatGagal = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini).run();
 export async function adminOK(env, req, kini = Date.now()) {
-  const daftar = [env.ADMIN_TOKEN, env.AKUN_SITUS].filter(Boolean).join(",");   // AKUN_SITUS: akun "user:sandi" tambahan (gerbang centurisk97.id)
+  /* AKUN_SITUS dan AKUN_SITUS_<NAMA>: akun "user:sandi" tambahan (gerbang centurisk97.id). Satu secret per orang supaya akun baru
+     tidak perlu membaca ulang secret lama (Cloudflare tidak bisa menampilkan nilai secret). */
+  const daftar = [env.ADMIN_TOKEN, ...Object.keys(env).filter(k => /^AKUN_SITUS(_[A-Z0-9_]+)?$/.test(k)).sort().map(k => env[k])].filter(x => typeof x === "string" && x).join(",");
   if (!daftar) return null;
   const sah = await Promise.all(daftar.split(",").map(x => x.trim()).filter(Boolean).map(sha));
   const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
@@ -453,6 +456,7 @@ const RUTE = {
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
+  ...RUTE_LAPORAN_BNPB,   // Laporan Harian & Paparan Presiden BNPB yang diketik tim (public/laporan_bnpb*)
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
@@ -488,6 +492,7 @@ export const HTML_RUTE = [
   [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
+  [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
@@ -513,7 +518,7 @@ async function layaniHTML(req, env, ctx, url) {
   const tt = situsCenturisk(url.hostname) && url.pathname.match(/^(\/[a-z]+)?\/tentang(-halaman)?\/?$/);
   if (tt) return Response.redirect(new URL(tt[1] ? `${tt[1]}/peta` : "/", url), 302);
   /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
-  if (jalur === "/laporan-konsesi" && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
+  if ((jalur === "/laporan-konsesi" || jalur === "/laporan-bnpb") && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
   const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
   if (!aset.ok || req.method === "HEAD") return aset;

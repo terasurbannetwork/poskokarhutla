@@ -1,0 +1,63 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>Lapor Rumah Rusak · Centurisk97</title>
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css">
+<link rel="stylesheet" href="/rumah_rusak.css?v=1">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js" defer></script>
+<script src="/rumah_rusak.js?v=1" defer></script>
+</head>
+<body>
+<header class="rr-kop">
+  <h1>Lapor Rumah Rusak</h1>
+  <p id="siapa" class="rr-siapa">Memeriksa akses…</p>
+</header>
+<main class="rr-isi">
+  <p id="tanpaAkses" class="rr-banner" hidden>Halaman ini hanya untuk akun yang sudah masuk atau regu lapangan yang punya tautan dari posko. Masuk lewat <a href="/admin/masuk?ke=/rumah-rusak">halaman masuk</a>, atau buka lagi tautan regu Anda di <a href="/lapangan">Lapor Lapangan</a>.</p>
+  <p id="pesan" class="rr-pesan" role="status" aria-live="polite"></p>
+  <form id="f" autocomplete="off" novalidate>
+    <section class="rr-blok">
+      <h2>1. Lokasi rumah</h2>
+      <div id="peta" class="rr-peta" role="application" aria-label="Peta: ketuk untuk menandai rumah"></div>
+      <button type="button" id="gps" class="rr-tombol">📍 Pakai lokasi saya</button>
+      <p id="lokasi" class="rr-kecil">Ketuk peta tepat di rumah yang rusak, atau tekan tombol di atas.</p>
+    </section>
+    <section class="rr-blok">
+      <h2>2. Tingkat kerusakan</h2>
+      <div id="tingkat" class="rr-tingkat" role="radiogroup" aria-label="Tingkat kerusakan"></div>
+    </section>
+    <section class="rr-blok">
+      <h2>3. Kejadian</h2>
+      <label>Bencana<select id="bencana"></select></label>
+      <label>Tanggal kejadian<input id="tanggal" type="date"></label>
+    </section>
+    <section class="rr-blok">
+      <h2>4. Catatan dan foto</h2>
+      <label>Catatan (maksimal 300 huruf, boleh kosong)<textarea id="catatan" rows="2" maxlength="300"></textarea></label>
+      <label>Foto rumah (boleh kosong)<input id="foto" type="file" accept="image/*" capture="environment"></label>
+    </section>
+    <button type="submit" id="kirim" class="rr-tombol utama besar">Kirim laporan</button>
+  </form>
+  <section class="rr-blok">
+    <h2>Laporan saya</h2>
+    <ul id="saya" class="rr-daftar"></ul>
+  </section>
+  <section class="rr-blok">
+    <h2>Rekap per kecamatan</h2>
+    <div class="rr-baris">
+      <label>Dari<input id="rDari" type="date"></label>
+      <label>Sampai<input id="rSampai" type="date"></label>
+      <label>Bencana<select id="rBencana"></select></label>
+    </div>
+    <button type="button" id="rMuat" class="rr-tombol">Muat rekap</button>
+    <div class="rr-gulir"><table id="rekap" class="rr-tabel"><caption class="rr-kecil">Hanya laporan berstatus sah. RB = rusak berat, RS = rusak sedang, RR = rusak ringan.</caption>
+      <thead><tr><th scope="col">Wilayah</th><th scope="col">RB</th><th scope="col">RS</th><th scope="col">RR</th><th scope="col">Jumlah</th></tr></thead><tbody></tbody></table></div>
+  </section>
+</main>
+</body>
+</html>

@@ -52,7 +52,7 @@ const tolakAdmin = () => gagal(403, "akses ditolak");
 
 /* ================================================================ regu (kode) */
 /* kembalikan baris regu, atau Response galat. Tebakan kode dihitung per IP (hash bergaram) SEBELUM lookup D1: > MAKS_GAGAL_KODE per jam = 429. */
-async function reguDari(env, req, kini = Date.now()) {
+export async function reguDari(env, req, kini = Date.now()) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   const ip = await ipHash(env, req);
   if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});

@@ -1,0 +1,573 @@
+{
+ "jenis": "presiden",
+ "tanggal": "2026-10-20",
+ "isi": {
+  "judul": "Penanganan dan Pengendalian Kebakaran Hutan dan Lahan di Provinsi Prioritas",
+  "kepada": "Presiden Republik Indonesia",
+  "kepada_nama": "Bapak Jenderal TNI (Purn.) H. Prabowo Subianto",
+  "penyaji": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)",
+  "jabatan": "Kepala Badan Nasional Penanggulangan Bencana",
+  "instansi": "Badan Nasional Penanggulangan Bencana",
+  "hari": [
+   "2026-10-16",
+   "2026-10-17",
+   "2026-10-18"
+  ],
+  "fs": [
+   223,
+   295,
+   263
+  ],
+  "sub_catatan": "termasuk TN Tanjung Puting",
+  "prov": [
+   {
+    "nama": "Kalimantan Tengah",
+    "hotspot": [
+     1462,
+     3253,
+     7950
+    ],
+    "luas": [
+     665.07,
+     716.77,
+     497.09
+    ],
+    "belum": [
+     526.24,
+     416.6,
+     401.16
+    ],
+    "status": "Lambat",
+    "personel": 4686,
+    "heli": 6,
+    "heli_ket": "heli WB",
+    "omc": 8,
+    "wb_ha": 3,
+    "kendala": "WB batal 2 hari; TN Tanjung Puting ±348 ha; sulit dijangkau"
+   },
+   {
+    "nama": "Sumatera Selatan",
+    "hotspot": [
+     2392,
+     1074,
+     1392
+    ],
+    "luas": [
+     404.06,
+     445.13,
+     355.92
+    ],
+    "belum": [
+     72.6,
+     151.6,
+     94.25
+    ],
+    "status": "Efektif, FS baru",
+    "personel": 12285,
+    "heli": 5,
+    "heli_ket": "heli (+1 Lampung)",
+    "omc": 9,
+    "wb_ha": 86,
+    "kendala": "FS baru terus muncul; sumber air terbatas; 2 armada tidak siap"
+   },
+   {
+    "nama": "Jambi",
+    "hotspot": [
+     870,
+     198,
+     43
+    ],
+    "luas": [
+     99.5,
+     96.0,
+     99.0
+    ],
+    "belum": [
+     63.5,
+     58.5,
+     69.0
+    ],
+    "status": "Belum efektif",
+    "personel": 5984,
+    "heli": 3,
+    "heli_ket": "heli (1 perawatan)",
+    "omc": 0,
+    "wb_ha": 7.5,
+    "kendala": "heli perawatan; tanpa OMC; TN Berbak Sembilang"
+   },
+   {
+    "nama": "Kalimantan Selatan",
+    "hotspot": [
+     54,
+     455,
+     711
+    ],
+    "luas": [
+     104.42,
+     83.22,
+     30.64
+    ],
+    "belum": [
+     17.7,
+     11.0,
+     3.0
+    ],
+    "status": "Efektif",
+    "personel": 7927,
+    "heli": 5,
+    "heli_ket": "heli (+1 IKN)",
+    "omc": 4,
+    "wb_ha": 17.5,
+    "kendala": "WB batal 1 hari; heli perawatan/reposisi"
+   },
+   {
+    "nama": "Kalimantan Barat",
+    "hotspot": [
+     21,
+     340,
+     836
+    ],
+    "luas": [
+     18.19,
+     11.89,
+     11.09
+    ],
+    "belum": [
+     5.39,
+     1.39,
+     0.89
+    ],
+    "status": "Efektif",
+    "personel": 14458,
+    "heli": 7,
+    "heli_ket": "heli WB",
+    "omc": 4,
+    "wb_ha": 3,
+    "kendala": "bandara Ketapang, Singkawang tutup; hotspot satelit naik 46%"
+   },
+   {
+    "nama": "Riau",
+    "hotspot": [
+     9,
+     0,
+     2
+    ],
+    "luas": [
+     2.0,
+     4.5,
+     3.0
+    ],
+    "belum": [
+     1.0,
+     2.5,
+     1.0
+    ],
+    "status": "Terkendali",
+    "personel": 14837,
+    "heli": 4,
+    "heli_ket": "heli WB",
+    "omc": 0,
+    "wb_ha": 1,
+    "kendala": "Tasik Serai, Bengkalis; sumber air terbatas"
+   }
+  ],
+  "penanganan": {
+   "personel": 60177,
+   "heli": 30,
+   "pesawat": 15,
+   "tanggal_unsur": "15 Okt",
+   "unsur": [
+    {
+     "nama": "TNI",
+     "n": 12285
+    },
+    {
+     "nama": "Perusahaan",
+     "n": 8950
+    },
+    {
+     "nama": "Polri",
+     "n": 8594
+    },
+    {
+     "nama": "Relawan",
+     "n": 8201
+    },
+    {
+     "nama": "Pemda",
+     "n": 4767
+    },
+    {
+     "nama": "MPA",
+     "n": 4749
+    },
+    {
+     "nama": "BPBD",
+     "n": 3472
+    },
+    {
+     "nama": "Polhut",
+     "n": 1434
+    },
+    {
+     "nama": "M. Agni",
+     "n": 1376
+    }
+   ]
+  },
+  "omc": {
+   "judul": "4 provinsi",
+   "ket": "hujan setelah OMC",
+   "hujan": "Kalbar; Kalteng, Kapuas; Kalsel, HSU; Sumsel, Palembang",
+   "tanpa": "Jambi, Riau tanpa OMC"
+  },
+  "prioritas": {
+   "judul": "",
+   "pola": "pola El Niño",
+   "hari": [
+    "2026-10-13",
+    "2026-10-14",
+    "2026-10-15",
+    "2026-10-16",
+    "2026-10-17",
+    "2026-10-18",
+    "2026-10-19"
+   ],
+   "periode": [
+    "Okt tengah",
+    "Okt akhir",
+    "Nov awal",
+    "Nov tengah",
+    "Nov akhir"
+   ],
+   "sumber": "Sumber: *Luas terbakar kumulatif menurut laporan daerah (laporan harian 19 Okt; Sumsel sejak 1 Agu). Hotspot: satelit MODIS, VIIRS S-NPP, NOAA-20, 13–19 Okt (19 Okt s.d. 16:09 WIB); peringkat = urutan hotspot 7 hari di 38 provinsi. Peluang: NASA FIRMS MODIS 2002-2025; porsi tahun El Niño (2002, 2004, 2006, 2009, 2015, 2019, 2023) yang dasariannya masuk masa puncak",
+   "baris": [
+    {
+     "peringkat": 1,
+     "nama": "Kalimantan Tengah",
+     "status": "tetap",
+     "total": 41313,
+     "luas": "±24.223 ha*",
+     "titik": [
+      4047,
+      10671,
+      5634,
+      1510,
+      4158,
+      11073,
+      4220
+     ],
+     "peluang": [
+      86,
+      57,
+      29,
+      14,
+      0
+     ]
+    },
+    {
+     "peringkat": 2,
+     "nama": "Papua Selatan",
+     "status": "masuk",
+     "total": 12342,
+     "luas": "",
+     "titik": [
+      903,
+      573,
+      693,
+      2034,
+      3499,
+      2618,
+      2022
+     ],
+     "peluang": [
+      86,
+      100,
+      71,
+      57,
+      57
+     ]
+    },
+    {
+     "peringkat": 3,
+     "nama": "Sumatera Selatan",
+     "status": "tetap",
+     "total": 12237,
+     "luas": "±7.026 ha*",
+     "titik": [
+      1155,
+      2452,
+      2786,
+      2553,
+      1118,
+      1559,
+      614
+     ],
+     "peluang": [
+      86,
+      71,
+      29,
+      14,
+      0
+     ]
+    },
+    {
+     "peringkat": 4,
+     "nama": "Kalimantan Barat",
+     "status": "tetap",
+     "total": 6360,
+     "luas": "",
+     "titik": [
+      419,
+      1148,
+      736,
+      527,
+      853,
+      2027,
+      650
+     ],
+     "peluang": [
+      14,
+      0,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "peringkat": 5,
+     "nama": "Kalimantan Selatan",
+     "status": "tetap",
+     "total": 5161,
+     "luas": "",
+     "titik": [
+      446,
+      1516,
+      816,
+      36,
+      459,
+      839,
+      1049
+     ],
+     "peluang": [
+      71,
+      71,
+      43,
+      0,
+      0
+     ]
+    },
+    {
+     "peringkat": 6,
+     "nama": "Kalimantan Timur",
+     "status": "masuk",
+     "total": 5042,
+     "luas": "±2.716 ha*",
+     "titik": [
+      119,
+      1554,
+      1072,
+      172,
+      375,
+      1077,
+      673
+     ],
+     "peluang": [
+      71,
+      86,
+      43,
+      0,
+      0
+     ]
+    },
+    {
+     "peringkat": 10,
+     "nama": "Jambi",
+     "status": "tetap",
+     "total": 2081,
+     "luas": "",
+     "titik": [
+      167,
+      352,
+      894,
+      207,
+      45,
+      345,
+      71
+     ],
+     "peluang": [
+      71,
+      29,
+      0,
+      0,
+      0
+     ]
+    },
+    {
+     "peringkat": 33,
+     "nama": "Riau",
+     "status": "keluar",
+     "total": 11,
+     "luas": "±20.696 ha*",
+     "titik": [
+      0,
+      2,
+      0,
+      6,
+      0,
+      2,
+      1
+     ],
+     "peluang": [
+      0,
+      0,
+      0,
+      0,
+      0
+     ]
+    }
+   ]
+  },
+  "konsesi": {
+   "judul": "",
+   "sumber": "Sumber: Titik panas NASA FIRMS VIIRS S-NPP 375 m, 1 Jan–19 Okt 2026 pukul 14:46 WIB; peta areal sawit dan HPH Kemenhut via GFW, HTI Trase 2026, tambang PPKH Kemenhut 2026. Titik di areal konsesi adalah indikasi untuk verifikasi lapangan, bukan bukti siapa yang membakar",
+   "kpi": {
+    "areal": 930,
+    "areal_total": 1973,
+    "titik": 110035,
+    "titik7": 7686,
+    "ha": 884733,
+    "ha_konsesi": 22200000,
+    "gambut": 459877,
+    "aktif": 272
+   },
+   "prov": [
+    {
+     "nama": "Kalimantan Barat",
+     "sawit": 259908,
+     "hti": 125031,
+     "hph": 35029,
+     "tambang": 1363,
+     "n": 344,
+     "total": 571
+    },
+    {
+     "nama": "Kalimantan Tengah",
+     "sawit": 192447,
+     "hti": 55951,
+     "hph": 71029,
+     "tambang": 1387,
+     "n": 358,
+     "total": 656
+    },
+    {
+     "nama": "Sumatera Selatan",
+     "sawit": 6299,
+     "hti": 56952,
+     "hph": 4837,
+     "tambang": 2909,
+     "n": 44,
+     "total": 123
+    },
+    {
+     "nama": "Kalimantan Selatan",
+     "sawit": 7017,
+     "hti": 32330,
+     "hph": 4907,
+     "tambang": 2220,
+     "n": 59,
+     "total": 201
+    },
+    {
+     "nama": "Riau",
+     "sawit": 8261,
+     "hti": 3233,
+     "hph": 1125,
+     "tambang": 14,
+     "n": 85,
+     "total": 317
+    },
+    {
+     "nama": "Jambi",
+     "sawit": 2178,
+     "hti": 8282,
+     "hph": 1814,
+     "tambang": 210,
+     "n": 40,
+     "total": 105
+    }
+   ],
+   "jenis": [
+    {
+     "nama": "Sawit",
+     "ha": 476110,
+     "n": 616,
+     "total": 1287
+    },
+    {
+     "nama": "HTI",
+     "ha": 281779,
+     "n": 145,
+     "total": 192
+    },
+    {
+     "nama": "HPH",
+     "ha": 118741,
+     "n": 93,
+     "total": 142
+    },
+    {
+     "nama": "Tambang",
+     "ha": 8103,
+     "n": 76,
+     "total": 352
+    }
+   ]
+  },
+  "kesimpulan": [
+   {
+    "label": "Situasi",
+    "judul": "263 titik api, 43% padam",
+    "isi": "±427,44 ha padam dari ±996,74 ha; ±569,30 ha masih dipadamkan, ditambah titik api baru hari ini"
+   },
+   {
+    "label": "Wilayah",
+    "judul": "Kalimantan 25%, Sumatera 64% padam",
+    "isi": "Sisa api terbesar di Kalimantan Tengah (±401 ha, termasuk TN Tanjung Puting) dan Sumatera Selatan (±94 ha)"
+   },
+   {
+    "label": "Tren",
+    "judul": "±2,2 juta ha terbakar 2026",
+    "isi": "Tertinggi ke-2 sejak 2015; hotspot naik dari 4.808 (laporan 17 Okt) ke 10.934 (laporan 19 Okt)"
+   },
+   {
+    "label": "Prioritas terkini",
+    "judul": "7 provinsi prioritas",
+    "isi": "Papua Selatan dan Kalimantan Timur masuk, Riau keluar; Papua Selatan berpeluang tetap dalam masa puncak hingga akhir November"
+   },
+   {
+    "label": "Efektivitas",
+    "judul": "Kalsel dan Kalbar efektif",
+    "isi": "Sisa api turun 83%; Kalimantan Tengah lambat; sisa api Sumatera Selatan dan Jambi bertambah karena titik api baru"
+   },
+   {
+    "label": "Dampak dan kendala",
+    "judul": "Jarak pandang ±100 m",
+    "isi": "Udara berbahaya di sejumlah kota, bandara Ketapang dan Singkawang tutup, sekolah PJJ; api gambut dan sumber air terbatas menghambat"
+   },
+   {
+    "label": "Konsesi",
+    "judul": "930 konsesi, ±884.733 ha",
+    "isi": "272 konsesi masih bertitik panas 7 hari terakhir; perlu verifikasi lapangan dan penegakan hukum"
+   },
+   {
+    "label": "OMC dan luar prioritas",
+    "judul": "Hujan di 4 provinsi",
+    "isi": "Hujan setelah OMC di Kalbar, Kalteng, Kalsel, Sumsel; di luar provinsi prioritas ±2.127 ha terbakar, ±1.976,53 ha masih ditangani"
+   }
+  ],
+  "arahan": "Penanganan perlu terus dioptimalkan di Kalimantan Tengah, Sumatera Selatan, dan Jambi yang luas belum padamnya relatif besar",
+  "judul_situasi": "",
+  "judul_efektivitas": ""
+ }
+}

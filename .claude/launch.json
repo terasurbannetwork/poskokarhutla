@@ -24,6 +24,24 @@
         "8790"
       ],
       "port": 8790
+    },
+    {
+      "name": "lbnpb",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8795",
+        "--persist-to",
+        ".wrangler/lbnpb",
+        "--var",
+        "SESI_KUNCI:kunci-lokal",
+        "--var",
+        "AKUN_SITUS_UJI:uji:sandi-uji"
+      ],
+      "port": 8795
     }
   ]
 }
