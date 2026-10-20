@@ -3,7 +3,7 @@
 INI INDIKASI, BUKAN BUKTI SIAPA MEMBAKAR: tumpang-tindih ruang dan waktu tidak menunjukkan pelaku.
 
 Keluaran: data/raw/sawit/hasil/sawit_retro.json (internal, dua tahun, ber-nama) dan, hanya tahun 2015 (2019: jendela 1 tahun,
-"tidak terbit"), public/data/konsesi2026/sawit_riwayat.json + citra/<id>_riwayat2015_<sebelum|sesudah|plus2>_<tgl>.png untuk
+"tidak terbit"), public/data/konsesi2026/sawit_riwayat.json + riwayat/<id>_riwayat2015_<sebelum|sesudah|plus2>_<tgl>.png untuk
 halaman Laporan Konsesi (keputusan pemilik 17 Okt + 19 Okt 2026: halaman itu memang menampilkan nama perusahaan).
 
 Sumber:
@@ -25,6 +25,7 @@ Pakai:  python3 scripts/data/sawit_retro.py                  # semua tahap, 2015
         python3 scripts/data/sawit_retro.py analisis [--tahun 2015] [--tanpa-descals]
         python3 scripts/data/sawit_retro.py citra            # hanya 2015, 15 teratas terbit
         python3 scripts/data/sawit_retro.py tulis             # gabung antara/ -> hasil/sawit_retro.json + sawit_riwayat.json
+        python3 scripts/data/sawit_retro.py ttm | citra-ttm | ringkas   # 2019 dan 2023 dari TTM2024 (internal); konfirm = ttm_konfirm 2015
         python3 scripts/data/sawit_retro.py unduh | uji
 """
 from array import array
@@ -39,8 +40,9 @@ ANTARA = os.path.join(DIR, "antara")
 # bernama perusahaan: keputusan pemilik 14 Okt 2026, tidak terbit -> data/raw (di-ignore)
 KELUAR = os.path.join(AKAR, "data/raw/sawit/hasil/sawit_retro.json")
 CITRA_DIR = os.path.join(AKAR, "data/raw/sawit/hasil/citra")
+CITRA_TTM = os.path.join(AKAR, "data/raw/sawit/hasil/citra_ttm")   # internal, belum terbit
 TERBIT = os.path.join(AKAR, "public/data/konsesi2026/sawit_riwayat.json")
-TERBIT_CITRA = os.path.join(AKAR, "public/data/konsesi2026/citra")
+TERBIT_CITRA = os.path.join(AKAR, "public/data/konsesi2026/riwayat")   # folder sendiri: konsesi2026/citra dibersihkan skrip citra konsesi
 TAHUN_TERBIT = 2015             # 2019 tidak terbit: jendela 1 tahun (hanya F2019)
 BS_MIN, PORSI_MIN, TOP_TERBIT = 50, .10, 15   # hipotesis, belum diuji balik: saring perusahaan terbit
 LUAS_RESMI_2015 = 2_610_000     # ha, luas terbakar resmi KLHK 2015
@@ -55,6 +57,8 @@ JENIS = [("Industrial_Oil_Palm", "industri"), ("Smallholder_Oil_Palm", "rakyat")
 SAWIT = {"IOPP", "Smallholder"}
 ASAL = ("Forest", "Non Forest", "ITP")
 TAHUN = (2015, 2019)
+TAHUN_TTM = (2019, 2023)        # sumber TTM2024 (tahun tanam dari peta, bukan jendela Gaveau)
+ASAL_TTM = ("hutan primer saat api", "hutan primer sudah hilang sebelum api", "bukan hutan primer 2000")
 BATAS = 2019                    # Gaveau berhenti di 2019
 JENDELA = 4                     # tahun sesudah api yang dicek untuk "jadi sawit"
 UNDUH = {
@@ -68,6 +72,7 @@ SUMBER = [
     "KLHK via Global Forest Watch: konsesi sawit, HPH, HTI (data ~2014-2019), https://data.globalforestwatch.org/.",
     "Contains modified Copernicus Sentinel data 2015-2021 (citra bukti, Sentinel-2 L2A via AWS Earth Search).",
 ]
+SUMBER_TTM = "The TreeMap (2026). Global oil palm expansion 2001-2024 v1.1, Zenodo 10.5281/zenodo.20747717, CC BY-NC 4.0 (NonCommercial)."
 SUMBER_DESCALS = "Descals, A. dkk. (2024). Global mapping of oil palm planting year from 1990 to 2021. Earth Syst. Sci. Data 16:5111, Zenodo 10.5281/zenodo.13379129, CC BY 4.0."
 
 
@@ -424,7 +429,7 @@ def agregat(tahun, s, gav, dsc, ko, pko, kec, pkec, dcf=()):
     return tot, per, kab
 
 
-def ringkas_perusahaan(daftar, per):
+def ringkas_perusahaan(daftar, per, asal=ASAL, lag_maks=JENDELA):
     hasil = []
     for c, p in per.items():
         if p["ha"]["bs"] + p["ha"]["bd"] < 10 and p["ha"]["st"] < 50:
@@ -441,11 +446,11 @@ def ringkas_perusahaan(daftar, per):
             "titik": {x: p["n"][x] for x in KELAS},
             "jejak_ha": round(jejak, 1), "bs_porsi": round(bs / jejak, 3) if jejak else 0,
             "titik_total": titik, "ha_per_titik": round(jejak / titik, 2) if titik else None,
-            "lag_ha": {str(g): round(p["lag"][g], 1) for g in range(JENDELA + 1)},
+            "lag_ha": {str(g): round(p["lag"][g], 1) for g in range(lag_maks + 1)},
             "bukan_hutan_sejak_2000_ha": round(p["nh"], 1),
             "muda_porsi": round(p["muda"] / bs, 3) if bs else 0,
             "descals_konfirm": round(p["dcf_n"] / p["bs_n"], 3) if p["bs_n"] else None,
-            "asal": {x: round(p["asal"][x], 1) for x in ASAL if p["asal"][x]},
+            "asal": {x: round(p["asal"][x], 1) for x in asal if p["asal"][x]},
             "tahun_sawit": {str(t): round(p["th"][t], 1) for t in sorted(p["th"])},
             "pemilik_kebun": {x: round(h, 1) for x, h in p["pem"].items()},
             "contoh": [[round(q[2] / q[0], 4), round(q[1] / q[0], 4), round(q[0], 1), BULAN[q[3].most_common(1)[0][0]] if q[3] else None,
@@ -473,13 +478,18 @@ def analisis(tahun, descals_on=True):
                 dsc = descals([k for k in s if k not in gav])
         except Exception as e:
             log("  descals dilewati:", repr(e))
+    return susun(tahun, t0, s, gav, dsc, dcf, tump_gav)
+
+
+def susun(tahun, t0, s, gav, dsc, dcf, tump_gav, asal=ASAL, lag_maks=JENDELA, jendela=None, berkas=None, extra=None, hapus=()):
+    rows = baris(s)
     ko = baca_konsesi()
     pko, tump_ko, pasang = tetapkan(rows, [e["bagian"] for e in ko], [e["jenis"] for e in ko])
     kec = baca_kecamatan()
     pkec, _, _ = tetapkan(rows, [x[2] for x in kec])
     kec_ = [(x[0], x[1]) for x in kec]
     tot, per, kab = agregat(tahun, s, gav, dsc, ko, pko, kec_, pkec, dcf)
-    pr = ringkas_perusahaan(ko, per)
+    pr = ringkas_perusahaan(ko, per, asal, lag_maks)
     kabl = []
     for (kode, nama), b in kab.items():
         if b["ha"]["bs"] + b["ha"]["bd"] + b["ha"]["st"] >= 10:
@@ -496,62 +506,186 @@ def analisis(tahun, descals_on=True):
     hasil = {
         "total": {"ha": {x: round(tot["ha"][x], 1) for x in KELAS}, "titik": {x: tot["n"][x] for x in KELAS},
                   "luar_konsesi_ha": {x: round(tot["luar_ha"][x], 1) for x in KELAS},
-                  "asal_bs_ha": {x: round(tot["asal"][x], 1) for x in ASAL},
+                  "asal_bs_ha": {x: round(tot["asal"][x], 1) for x in asal},
                   "tahun_sawit_ha": {str(t): round(h, 1) for t, h in sorted(tot["th"].items())},
-                  "jejak_ha": round(sum(tot["ha"].values()), 1), "lag_ha": {str(g): round(tot["lag"][g], 1) for g in range(JENDELA + 1)},
+                  "jejak_ha": round(sum(tot["ha"].values()), 1), "lag_ha": {str(g): round(tot["lag"][g], 1) for g in range(lag_maks + 1)},
                   "bukan_hutan_sejak_2000_ha": round(tot["nh"], 1), "muda_ha": round(tot["muda"], 1),
                   "descals_konfirm": round(tot["dcf_n"] / tot["bs_n"], 3) if tot["bs_n"] else None,
                   "pemilik_bs_ha": {x: round(h, 1) for x, h in tot["pem"].items()},
                   "sampel": len(s), "deteksi": sum(v >> 12 for v in s.values()),
                   "tumpang_poligon_gaveau": tump_gav, "tumpang_konsesi": tump_ko,
                   "tumpang_pasangan": {f"{a}+{b}": n for (a, b), n in pasang.items()},
-                  "jendela_tahun": min(tahun + JENDELA, BATAS) - tahun + 1, "descals": bool(dsc),
+                  "jendela_tahun": jendela or min(tahun + JENDELA, BATAS) - tahun + 1, "descals": bool(dsc),
                   "descals_konfirm_aktif": bool(dcf)},
         "perusahaan": pr, "kabupaten": kabl, "provinsi": provl,
         "detik": round(time.time() - t0),
     }
+    hasil.update(extra or {})
+    for r in [hasil["total"]] + hasil["perusahaan"]:
+        for h_ in hapus:
+            r.pop(h_, None)
     os.makedirs(ANTARA, exist_ok=True)
-    json.dump(hasil, open(os.path.join(ANTARA, f"agregat_{tahun}.json"), "w"), separators=(",", ":"))
+    json.dump(hasil, open(os.path.join(ANTARA, berkas or f"agregat_{tahun}.json"), "w"), separators=(",", ":"))
     log(f"  selesai {tahun}: {len(pr)} perusahaan, {len(kabl)} kab, total {hasil['total']['ha']}, {hasil['detik']} dtk")
     return hasil
 
 
+
+
+# ---------------------------------------------------------------- TTM2024
+def kelas_ttm(v, tahun):
+    """kode TTM -> tuple seperti kelas_sampel: ('st'|'bs', asal, tahun_tanam, tipe, False). tahun_tanam 2015 = <=2015 (sudah sawit)."""
+    import sawit_peta as S
+    tipe, hutan, hilang, tanam = S.urai_kode(v)
+    asal = ASAL_TTM[2] if not hutan else ASAL_TTM[0] if hilang >= tahun else ASAL_TTM[1]
+    return ("st" if tanam < tahun else "bs", asal, tanam, tipe, False)
+
+
+def kode_sampel(s):
+    import sawit_peta as S
+    t0 = time.time()
+    kode = S.kode_ttm((k, *pusat(k)) for k in s)
+    log(f"  ttm: {len(kode)} dari {len(s)} sampel bersawit 2024, {time.time() - t0:.0f} dtk")
+    return kode
+
+
+def analisis_ttm(tahun):
+    """tahun api 2019/2023 dari TTM2024: st = tahun_tanam < tahun (YY=15 = <=2015 ikut), bs = tahun_tanam >= tahun, bk = bukan sawit 2024"""
+    t0 = time.time()
+    log(f"== analisis TTM {tahun}")
+    s = sampel(tahun)
+    kode = kode_sampel(s)
+    gav = {k: kelas_ttm(v, tahun) for k, v in kode.items()}
+    lag_maks = 2024 - tahun
+    return susun(tahun, t0, s, gav, {}, (), 0, ASAL_TTM, lag_maks, lag_maks + 1, f"agregat_ttm_{tahun}.json",
+                 {"sumber_peta": "TTM2024", "jendela_pendek": lag_maks < 2, "jendela_tahun_tanam": [tahun, 2024]},
+                 hapus=("descals_konfirm", "bukan_hutan_sejak_2000_ha", "muda_porsi", "muda_ha"))
+
+
+def konfirm_2015():
+    """porsi sampel 'bakar lalu sawit' Gaveau 2015 per perusahaan yang di TTM bertahun_tanam 15..19 (`ttm_konfirm`; 15 = <=2015 ambigu)
+    dan 16..19 saja (`ttm_konfirm_ketat`); tulis ke antara/agregat_2015.json tanpa menyentuh bagian lain (citra tetap)."""
+    import sawit_peta as S
+    s = sampel(2015)
+    rows = baris(s)
+    gav, _ = gaveau(rows, 2015)
+    ko = baca_konsesi()
+    pko, _, _ = tetapkan(rows, [e["bagian"] for e in ko], [e["jenis"] for e in ko])
+    bs = [k for k, h in gav.items() if h[0] == "bs" and k in s]
+    kode = kode_sampel({k: 1 for k in bs})
+    per = defaultdict(lambda: [0, 0, 0, 0])
+    for k in bs:
+        c = pko.get(k)
+        if c is None:
+            continue
+        t = S.urai_kode(kode[k])[3] if k in kode else 0
+        q = per[ko[c]["id"]]
+        q[0] += 1
+        q[1] += 2015 <= t <= 2019
+        q[2] += 2016 <= t <= 2019
+        q[3] += t == 2015
+    jalur = os.path.join(ANTARA, "agregat_2015.json")
+    h = json.load(open(jalur))
+    for p in h["perusahaan"]:
+        q = per.get(p["id"])
+        p["ttm_konfirm"] = round(q[1] / q[0], 3) if q and q[0] else None
+        p["ttm_konfirm_ketat"] = round(q[2] / q[0], 3) if q and q[0] else None
+        p["ttm_tanam15"] = round(q[3] / q[0], 3) if q and q[0] else None
+    n = sum(q[0] for q in per.values())
+    h["total"]["ttm_konfirm"] = round(sum(q[1] for q in per.values()) / n, 3) if n else None
+    h["total"]["ttm_konfirm_ketat"] = round(sum(q[2] for q in per.values()) / n, 3) if n else None
+    h["total"]["ttm_tanam15"] = round(sum(q[3] for q in per.values()) / n, 3) if n else None
+    json.dump(h, open(jalur, "w"), separators=(",", ":"))
+    log(f"  ttm_konfirm 2015: {h['total']['ttm_konfirm']} (ketat 16..19: {h['total']['ttm_konfirm_ketat']}, =15: {h['total']['ttm_tanam15']}) dari {n} sampel di konsesi")
+
+
 # ---------------------------------------------------------------- citra bukti (Sentinel-2, SWIR)
-def adegan(koleksi, lat, lon, km, d1, d2, urut, maks=12, awan_maks=30):
-    """kandidat bersih (awan <= awan_maks, tak kosong > 30%) pada [d1, d2]: [(tgl, awan, item, koleksi)] sesuai urut"""
+AWAN_MAKS, TERANG = 15, .18     # tolak adegan dengan > 15% awan di kotak; piksel B2,B3,B4 semuanya > 0,18 dihitung awan
+_awan = {}
+
+
+def refl(it, landsat, k, lat, lon, km, n):
+    """pantulan (float, None = tanpa data) kanal red/green/blue n*n piksel di kotak"""
     import citra as C, konsesi_citra as KC
-    q = {"collections": [koleksi], "bbox": C.kotak(lat, lon, 2), "limit": 50,
-         "datetime": f"{d1}T00:00:00Z/{d2}T23:59:59Z", "sortby": [{"field": "properties.datetime", "direction": urut}]}
-    hasil, lihat = [], set()
-    for it in json.loads(C.ambil(C.STAC, data=json.dumps(q).encode())).get("features", []):
-        tgl = it["properties"]["datetime"][:10]
-        if tgl in lihat:
-            continue
-        lihat.add(tgl)
-        if len(lihat) > maks * 3:
-            break
-        try:
-            aw, ksg = KC.awan(it, lat, lon, km)
-        except Exception:
-            continue
-        if ksg <= 30:
-            hasil.append((tgl, aw, it, koleksi))
-    return hasil
+    rb = (it["assets"][k].get("raster:bands") or [{}])[0]
+    if landsat:
+        v = baca_ls(it, k, lat, lon, km, n)[1]
+        sk, of = rb.get("scale", 2.75e-5), rb.get("offset", -.2)
+    else:
+        c = C.COG(it["assets"][k]["href"])
+        x0, y0, r0, kiri, atas = KC.jendela(it, k, lat, lon, km)
+        v = c.contoh(C.level_untuk(c, r0, max(10, km * 1000 / n)), x0, y0, r0, kiri, atas, km * 1000, n)[0]
+        sk, of = rb.get("scale", 1e-4), rb.get("offset", 0)
+    return [d * sk + of if d else None for d in v]
 
 
-def pilih(lat, lon, km, d1, d2, urut, mode):
-    """mode: 'terakhir' (adegan bersih terakhir di jendela), 'awal' (adegan bersih paling awal), 'bersih' (awan terendah)"""
+def awan_nyata(it, landsat, lat, lon, km, n=60):
+    """(% awan, % kosong) dari piksel kotak itu sendiri. Awan = bendera QA (Landsat QA_PIXEL bit 1 awan-dilasi, 3 awan, 4 bayangan;
+    Sentinel-2 SCL 3/8/9/10) ATAU terang (B2,B3,B4 semuanya > 0,18: kabut/asap tebal yang tak diberi bendera). % awan dari piksel sah."""
+    kunci = (it["id"], round(lat, 3), round(lon, 3), km)
+    if kunci in _awan:
+        return _awan[kunci]
+    import citra as C, konsesi_citra as KC
+    if landsat:
+        H, W = it["properties"]["proj:shape"]
+        x0, y0, r0, kiri, atas = jendela_ls(it, lat, lon, km)
+        if not (x0 <= kiri and kiri + km * 1000 <= x0 + W * r0 and y0 - H * r0 <= atas - km * 1000 and atas <= y0):
+            return 100, 100
+        q = baca_ls(it, "qa_pixel", lat, lon, km, n)[1]
+        bendera = [bool(v & 0b11010) for v in q]
+        kosong = [bool(v & 1) for v in q]
+    else:
+        c = C.COG(it["assets"]["scl"]["href"])
+        x0, y0, r0, kiri, atas = KC.jendela(it, "scl", lat, lon, km)
+        q = c.contoh(0, x0, y0, r0, kiri, atas, km * 1000, n)[0]
+        bendera = [v in (3, 8, 9, 10) for v in q]
+        kosong = [v == 0 for v in q]
+    ch = [refl(it, landsat, k, lat, lon, km, n) for k in ("red", "green", "blue")]
+    sah = tang = 0
+    for i in range(len(q)):
+        if kosong[i] or any(c[i] is None for c in ch):
+            kosong[i] = True
+            continue
+        sah += 1
+        tang += bendera[i] or all(c[i] > TERANG for c in ch)
+    _awan[kunci] = (round(100 * tang / sah) if sah else 100, round(100 * sum(kosong) / len(q)))
+    return _awan[kunci]
+
+
+def pilih(lat, lon, km, d1, d2, urut, mode, maks=30):
+    """Sentinel-2 L2A di [d1, d2], urut 'asc'|'desc' menurut tanggal. mode 'pertama' = adegan layak pertama menurut urut,
+    'bersih' = awan terendah. Layak = awan_nyata <= AWAN_MAKS dan kosong <= 30. -> (tgl, awan, item, koleksi) | None"""
+    import citra as C
     for kol in ("sentinel-2-l2a", "sentinel-2-c1-l2a"):
+        q = {"collections": [kol], "bbox": C.kotak(lat, lon, 2), "limit": 50, "query": {"eo:cloud_cover": {"lte": 85}},
+             "datetime": f"{d1}T00:00:00Z/{d2}T23:59:59Z", "sortby": [{"field": "properties.datetime", "direction": urut}]}
         try:
-            k = adegan(kol, lat, lon, km, d1, d2, urut)
+            fs = json.loads(C.ambil(C.STAC, data=json.dumps(q).encode())).get("features", [])
         except Exception as e:
             log("   stac gagal", kol, repr(e)[:80])
             continue
-        bersih = [x for x in k if x[1] <= 30]
-        if mode == "bersih" and k:
-            return min(k, key=lambda x: (x[1], x[0]))
-        if bersih:
-            return bersih[0]
+        lihat, terbaik = set(), None
+        for it in fs:
+            tgl = it["properties"]["datetime"][:10]
+            if tgl in lihat:
+                continue
+            lihat.add(tgl)
+            if len(lihat) > maks:
+                break
+            try:
+                aw, ksg = awan_nyata(it, False, lat, lon, km)
+            except Exception:
+                continue
+            if ksg > 30 or aw > AWAN_MAKS:
+                continue
+            if mode == "pertama":
+                return (tgl, aw, it, kol)
+            if terbaik is None or (aw, tgl) < terbaik[:2]:
+                terbaik = (aw, tgl, it, kol)
+            if aw <= 2:
+                break
+        if terbaik:
+            return (terbaik[1], terbaik[0], terbaik[2], terbaik[3])
     return None
 
 
@@ -587,28 +721,9 @@ def baca_ls(it, aset, lat, lon, km, n):
     return c, c.contoh(C.level_untuk(c, r0, max(r0, km * 1000 / n)), x0, y0, r0, kiri, atas, km * 1000, n)[0]
 
 
-_awan = {}
-
-
-def awan_ls(it, lat, lon, km):
-    """(% awan/bayangan/sirus/dilasi, % kosong) dalam kotak dari QA_PIXEL; kotak di luar adegan dihitung kosong"""
-    kunci = (it["id"], round(lat, 3), round(lon, 3))
-    if kunci in _awan:
-        return _awan[kunci]
-    x0, y0, r0, kiri, atas = jendela_ls(it, lat, lon, km)
-    H, W = it["properties"]["proj:shape"]
-    if not (x0 <= kiri and kiri + km * 1000 <= x0 + W * r0 and y0 - H * r0 <= atas - km * 1000 and atas <= y0):
-        return 100, 100
-    _, q = baca_ls(it, "qa_pixel", lat, lon, km, 60)
-    kosong = sum(1 for v in q if v & 1)
-    sah = max(1, len(q) - kosong)
-    _awan[kunci] = (round(100 * sum(1 for v in q if not v & 1 and v & 0b11110) / sah), round(100 * kosong / len(q)))
-    return _awan[kunci]
-
-
-def adegan_ls(lat, lon, km, d1, d2, maks=8):
+def adegan_ls(lat, lon, km, d1, d2, maks=10):
     """adegan Landsat bersih di kotak [(tgl, awan, kosong, item)]; hanya `maks` adegan dengan eo:cloud_cover terendah
-    (<= 50) yang dicek QA lokal, supaya tidak menembus batas laju"""
+    (<= 50) yang dicek lokal (QA + terang), supaya tidak menembus batas laju"""
     import citra as C
     q = {"collections": ["landsat-c2-l2"], "intersects": {"type": "Point", "coordinates": [lon, lat]}, "limit": 80,
          "datetime": f"{d1}T00:00:00Z/{d2}T23:59:59Z", "query": {"eo:cloud_cover": {"lte": 50}}}
@@ -618,22 +733,21 @@ def adegan_ls(lat, lon, km, d1, d2, maks=8):
     hasil = []
     for it in fs[:maks]:
         try:
-            aw, ks = awan_ls(it, lat, lon, km)
+            aw, ks = awan_nyata(it, True, lat, lon, km)
         except Exception as e:
             log("   qa gagal", it["id"], repr(e)[:80])
             continue
-        if aw <= 30 and ks <= 10:
+        if aw <= AWAN_MAKS and ks <= 10:
             hasil.append((it["properties"]["datetime"][:10], aw, ks, it))
     return hasil
 
 
 def pilih_ls(lat, lon, km, d1, d2, mode):
     """mode 'akhir' | 'awal' (adegan bersih terakhir/pertama di jendela, L8 dulu) | 'bersih' (awan lokal terendah).
-    Bersih = awan lokal <= 30% (diutamakan <= 10). -> {tgl, aw, it, sat}"""
+    Bersih = awan_nyata <= AWAN_MAKS (QA + terang di kotak). -> {tgl, aw, it, sat} | None"""
     k = adegan_ls(lat, lon, km, d1, d2)
     for pf in ("landsat-8", "landsat-7"):
         c = [x for x in k if x[3]["properties"]["platform"] == pf]
-        c = [x for x in c if x[1] <= 10] or [x for x in c if x[1] <= 20] or c   # diutamakan paling bersih
         if c:
             x = min(c, key=lambda x: (x[1], x[0])) if mode == "bersih" else sorted(c, key=lambda x: x[0])[-1 if mode == "akhir" else 0]
             return {"tgl": x[0], "aw": x[1], "it": x[3], "sat": "Landsat " + pf.split("-")[-1]}
@@ -642,7 +756,6 @@ def pilih_ls(lat, lon, km, d1, d2, mode):
 
 def pilih_s2(lat, lon, km, d1, d2):
     pil = pilih(lat, lon, km, d1, d2, "asc", "bersih")
-    pil = pil if pil and pil[1] <= 30 else None
     return {"tgl": pil[0], "aw": pil[1], "it": pil[2], "sat": "Sentinel-" + pil[2]["properties"].get("platform", "sentinel-2?").split("-")[-1].upper()} if pil else None
 
 
@@ -695,29 +808,37 @@ def simpan_set(foto, n=320):
 
 
 _api = {}
+_kunci_api = __import__("threading").Lock()
 
 
-def api_klaster(lat, lon, r=.03):
-    """tanggal WIB titik VIIRS 2015 (type 0, n/h) dalam +-r derajat dari pusat klaster: {pertama, puncak, terakhir, titik}"""
-    if not _api:
-        for row in csv.DictReader(open(os.path.join(DIR, "viirs_2015.csv"))):
+def api_klaster(lat, lon, r=.03, tahun=2015):
+    """tanggal WIB titik VIIRS tahun itu (type 0, n/h) dalam +-r derajat dari pusat klaster: {pertama, puncak, terakhir, titik}"""
+    with _kunci_api:   # tiga utas citra: bangun sekali, jangan ganda
+      if tahun not in _api:
+        _api_ = {}
+        for row in csv.DictReader(open(os.path.join(DIR, f"viirs_{tahun}.csv"))):
             if row["type"] != "0" or row["confidence"] not in ("n", "h"):
                 continue
             t = dt.datetime.fromisoformat(row["acq_date"]) + dt.timedelta(hours=int(row["acq_time"]) // 100 + 7, minutes=int(row["acq_time"]) % 100)
-            _api.setdefault((round(float(row["latitude"]) / .05), round(float(row["longitude"]) / .05)), []).append(
+            _api_.setdefault((round(float(row["latitude"]) / .05), round(float(row["longitude"]) / .05)), []).append(
                 (float(row["latitude"]), float(row["longitude"]), t.date()))
+        _api[tahun] = _api_
+    _api_ = _api[tahun]
     tgl = Counter(d for la0 in range(round((lat - r) / .05), round((lat + r) / .05) + 1)
                   for lo0 in range(round((lon - r) / .05), round((lon + r) / .05) + 1)
-                  for la, lo, d in _api.get((la0, lo0), ()) if abs(la - lat) <= r and abs(lo - lon) <= r)
+                  for la, lo, d in _api_.get((la0, lo0), ()) if abs(la - lat) <= r and abs(lo - lon) <= r)
     if not tgl:
         return None
     return {"pertama": min(tgl).isoformat(), "puncak": tgl.most_common(1)[0][0].isoformat(), "terakhir": max(tgl).isoformat(), "titik": sum(tgl.values())}
 
 
+TAHAP_TERBAKAR = ((1, 60), (61, 120), (121, 200), (201, 275))
+
+
 def citra_satu(p):
     """4 foto warna asli 2015 satu perusahaan, bbox dan px sama: sebelum (terakhir bersih sebelum api pertama klaster),
     terbakar (bersih paling awal sesudah api terakhir), kebun1 dan kebun2 (tahun sawit muncul menurut Gaveau, dan tahun sesudahnya;
-    bila berawan, tahun berikutnya). -> (citra, api) ; berkas ke public/data/konsesi2026/citra"""
+    bila berawan, tahun berikutnya). -> (citra, api) ; berkas ke public/data/konsesi2026/riwayat"""
     if not p["contoh"]:
         return None, None
     lat, lon, _, _, ty = p["contoh"][0]
@@ -728,8 +849,11 @@ def citra_satu(p):
     d0, d1 = dt.date.fromisoformat(api["pertama"]), dt.date.fromisoformat(api["terakhir"])
     pil = {"sebelum": pilih_ls(lat, lon, km, "2015-01-01", (d0 - dt.timedelta(days=1)).isoformat(), "akhir") if d0 > dt.date(2015, 1, 15) else None}
     pil["sebelum"] = pil["sebelum"] or pilih_ls(lat, lon, km, "2014-06-01", "2014-10-31", "akhir")
-    pil["terbakar"] = (pilih_ls(lat, lon, km, (d1 + dt.timedelta(days=1)).isoformat(), (d1 + dt.timedelta(days=150)).isoformat(), "awal")
-                       or pilih_ls(lat, lon, km, (d1 + dt.timedelta(days=151)).isoformat(), (d1 + dt.timedelta(days=330)).isoformat(), "awal"))   # musim hujan: lebar bila kosong
+    pil["terbakar"] = None
+    for a, b in TAHAP_TERBAKAR:   # jendela bertahap, maks 9 bulan sesudah api terakhir; kosong lebih baik daripada foto awan
+        pil["terbakar"] = pilih_ls(lat, lon, km, (d1 + dt.timedelta(days=a)).isoformat(), (d1 + dt.timedelta(days=b)).isoformat(), "awal")
+        if pil["terbakar"]:
+            break
     y1 = max(ty or 2016, 2016)
     pil["kebun1"] = foto_tahun(y1, lat, lon, km)
     pil["kebun2"] = foto_tahun(y1 + 1, lat, lon, km) or foto_tahun(y1 + 2, lat, lon, km)
@@ -737,6 +861,8 @@ def citra_satu(p):
         pil["kebun1"] = foto_tahun(y1 + 1, lat, lon, km)
         pil["kebun2"] = foto_tahun(y1 + 2, lat, lon, km)
     pil = {k: v for k, v in pil.items() if v}
+    if not pil:
+        return None, api
     nama = {k: f"{p['id']}_riwayat2015_{k}_{v['tgl'].replace('-', '')}.png" for k, v in pil.items()}
     os.makedirs(TERBIT_CITRA, exist_ok=True)
     jalur = {k: os.path.join(TERBIT_CITRA, f) for k, f in nama.items()}
@@ -747,9 +873,82 @@ def citra_satu(p):
     hasil = {"bbox": __import__("citra").kotak(lat, lon, km), "pusat": [lat, lon], "px": px}
     for k in ("sebelum", "terbakar", "kebun1", "kebun2"):
         v = pil.get(k)
-        hasil[k] = {"f": f"konsesi2026/citra/{nama[k]}", "tgl": v["tgl"], "satelit": v["sat"], "awan": v["aw"],
+        hasil[k] = {"f": f"konsesi2026/riwayat/{nama[k]}", "tgl": v["tgl"], "satelit": v["sat"], "awan": v["aw"],
                     **({"tahun_sawit": ty} if k.startswith("kebun") else {})} if v else None
     return hasil, api
+
+
+def s2_dict(pil):
+    return {"tgl": pil[0], "aw": pil[1], "it": pil[2], "sat": "Sentinel-" + pil[2]["properties"].get("platform", "sentinel-2?").split("-")[-1].upper()} if pil else None
+
+
+def citra_ttm_satu(p, tahun):
+    """4 foto warna asli Sentinel-2 untuk api `tahun` (TTM): sebelum, terbakar, kebun1, kebun2. Awan_nyata <= 15%, kosong bila tak ada.
+    Berkas ke CITRA_TTM. -> (citra, api)"""
+    if not p["contoh"]:
+        return None, None
+    lat, lon, _, _, ty = p["contoh"][0]
+    km = 6
+    api = api_klaster(lat, lon, tahun=tahun)
+    if not api:
+        return None, None
+    d0, d1 = dt.date.fromisoformat(api["pertama"]), dt.date.fromisoformat(api["terakhir"])
+    dd = lambda d, n: (d + dt.timedelta(days=n)).isoformat()
+    pil = {"sebelum": None, "terbakar": None}
+    for a, b in ((150, 1), (330, 151)):
+        pil["sebelum"] = s2_dict(pilih(lat, lon, km, dd(d0, -a), dd(d0, -b), "desc", "pertama"))
+        if pil["sebelum"]:
+            break
+    for a, b in TAHAP_TERBAKAR:
+        pil["terbakar"] = s2_dict(pilih(lat, lon, km, dd(d1, a), dd(d1, b), "asc", "pertama"))
+        if pil["terbakar"]:
+            break
+    if tahun >= 2023:
+        y1 = 2024
+        pil["kebun1"] = foto_tahun(2024, lat, lon, km)
+        k2 = [x for x in (foto_tahun(2025, lat, lon, km), foto_tahun(2026, lat, lon, km)) if x]
+        pil["kebun2"] = min(k2, key=lambda x: (x["aw"], x["tgl"])) if k2 else None
+    else:
+        y1 = min(max(ty or tahun, tahun), 2025)
+        pil["kebun1"] = foto_tahun(y1, lat, lon, km)
+        pil["kebun2"] = foto_tahun(y1 + 1, lat, lon, km) or foto_tahun(y1 + 2, lat, lon, km)
+    if pil["kebun1"] and pil["terbakar"] and pil["kebun1"]["tgl"] == pil["terbakar"]["tgl"]:
+        pil["kebun1"], pil["kebun2"] = foto_tahun(y1 + 1, lat, lon, km), foto_tahun(y1 + 2, lat, lon, km)
+    pil = {k: v for k, v in pil.items() if v}
+    if not pil:
+        return None, api
+    os.makedirs(CITRA_TTM, exist_ok=True)
+    nama = {k: f"{p['id']}_ttm{tahun}_{k}_{v['tgl'].replace('-', '')}.png" for k, v in pil.items()}
+    jalur = {k: os.path.join(CITRA_TTM, f) for k, f in nama.items()}
+    px = None
+    if not all(os.path.exists(j) for j in jalur.values()):
+        px = simpan_set({jalur[k]: rgb_foto(v, lat, lon, km, 320) for k, v in pil.items()})
+    px = px or struct.unpack(">I", open(next(iter(jalur.values())), "rb").read(24)[16:20])[0]
+    hasil = {"bbox": __import__("citra").kotak(lat, lon, km), "pusat": [lat, lon], "px": px, "tahun_tanam_dominan": ty}
+    for k in ("sebelum", "terbakar", "kebun1", "kebun2"):
+        v = pil.get(k)
+        hasil[k] = {"f": nama[k], "tgl": v["tgl"], "satelit": v["sat"], "awan": v["aw"]} if v else None
+    return hasil, api
+
+
+def citra_ttm(tahun, top=TOP_TERBIT):
+    from concurrent.futures import ThreadPoolExecutor
+    jalur = os.path.join(ANTARA, f"agregat_ttm_{tahun}.json")
+    h = json.load(open(jalur))
+    pilih_ = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])[:top]
+    api_klaster(0, 0, tahun=tahun)   # muat arsip api sekali sebelum utas
+
+    def kerja(p):
+        try:
+            return citra_ttm_satu(p, tahun)
+        except Exception as e:
+            log("  citra gagal", p["nama"], repr(e)[:120])
+            return None, None
+    with ThreadPoolExecutor(3) as ex:
+        for p, (c, api) in zip(pilih_, ex.map(kerja, pilih_)):
+            p["citra"], p["api"] = c, api
+            log(f"  citra ttm{tahun} {p['nama']}: " + (", ".join(f"{k}={c[k]['tgl'] + '/' + str(c[k]['awan']) if c[k] else '-'}" for k in ('sebelum', 'terbakar', 'kebun1', 'kebun2')) if c else "tidak ada"))
+    json.dump(h, open(jalur, "w"), separators=(",", ":"))
 
 
 def layak(p):
@@ -851,7 +1050,12 @@ def tulis():
         if os.path.exists(p):
             ada_[str(t)] = json.load(open(p))
     from wilayah import PROVINSI
-    for v in ada_.values():
+    ttm = {}
+    for t in TAHUN_TTM:
+        p = os.path.join(ANTARA, f"agregat_ttm_{t}.json")
+        if os.path.exists(p):
+            ttm[str(t)] = json.load(open(p))
+    for v in list(ada_.values()) + list(ttm.values()):
         for r in v["kabupaten"] + v["provinsi"]:
             r["nama_prov"] = PROVINSI.get(r["prov"], r["prov"])
         for r in v["perusahaan"]:
@@ -864,6 +1068,15 @@ def tulis():
            "catatan_batas": CATATAN,
            "tidak_terbit": {"2019": "jendela 1 tahun (hanya F2019): 'bakar lalu sawit' sangat kurang"},
            "tahun": ada_}
+    if ttm:
+        out["ttm"] = {
+            "sumber": SUMBER_TTM, "lisensi": "CC BY-NC 4.0: hanya internal, cek sebelum terbit",
+            "metode": "Tahun api 2019 dan 2023 dengan tahun tanam dari TTM2024 (kode ABFFYY, ~10 m) pada piksel titik sampel 125 m. 'st' = tahun_tanam < tahun api (YY=15 = <=2015 ikut); 'bs' = tahun_tanam >= tahun api (jendela 0..2024-tahun api); 'bk' = bukan sawit 2024. Asal bs: hutan primer saat api / sudah hilang sebelum api / bukan hutan primer 2000.",
+            "kelas": {"bs": "bakar lalu sawit (TTM)", "st": "sawit terbakar", "bk": "bukan sawit 2024"},
+            "catatan": ["Hanya sawit yang masih ada pada 2024 terlihat: kebun yang sudah dibuka tetapi bukan sawit 2024 tidak masuk.",
+                        "Tahun tanam TTM 15 = 2015 atau sebelumnya (ambigu); 2023 hanya berjendela 0..1 tahun (jendela pendek): bakar lalu sawit 2023 sangat kurang.",
+                        "Tahun hilang hutan hanya untuk hutan primer 2000; 'hutan primer saat api' memakai tahun_hilang >= tahun api (tahun yang sama ambigu)."],
+            "tahun": ttm}
     with open(KELUAR, "w") as f:
         json.dump(out, f, separators=(",", ":"), ensure_ascii=False)
     log(f"{KELUAR}: {os.path.getsize(KELUAR) / 1e6:.2f} MB")
@@ -871,6 +1084,73 @@ def tulis():
         with open(TERBIT, "w") as f:
             json.dump(terbit(ada_[str(TAHUN_TERBIT)], PROVINSI), f, separators=(",", ":"), ensure_ascii=False)
         log(f"{TERBIT}: {os.path.getsize(TERBIT) / 1e3:.0f} KB")
+
+
+# ---------------------------------------------------------------- ringkasan internal
+def akurasi_xlsx():
+    """ringkasan akurasi validasi TTM dari xlsx (zip XML, stdlib): [(kelas, UA, PA)] dan OA. Tak ada berkas -> []"""
+    import xml.etree.ElementTree as ET
+    N = "{http://schemas.openxmlformats.org/spreadsheetml/2006/main}"
+    jalur = os.path.join(DIR, "ttm2024/Validation_LandCoverChange_8classes.xlsx")
+    if not os.path.exists(jalur):
+        return []
+    z = zipfile.ZipFile(jalur)
+    ss = ["".join(t.text or "" for t in si.iter(N + "t")) for si in ET.fromstring(z.read("xl/sharedStrings.xml")).findall(N + "si")]
+    hasil = []
+    for row in ET.fromstring(z.read("xl/worksheets/sheet5.xml")).iter(N + "row"):
+        v = [ss[int(c.find(N + "v").text)] if c.get("t") == "s" else c.find(N + "v").text for c in row if c.find(N + "v") is not None]
+        if len(v) >= 4 and v[0].startswith("Class "):
+            hasil.append((v[1], v[2], v[3]))
+    return hasil
+
+
+def ringkas():
+    out = ["# Sawit terbakar dan bakar-lalu-sawit, api 2019 dan 2023 (TTM2024) - INTERNAL, belum terbit", "",
+           "Sumber peta: " + SUMBER_TTM + " Titik panas: VIIRS S-NPP 375 m (type 0, n/h), kisi 125 m, konsesi KLHK/GFW (sama dengan 2015).",
+           "INDIKASI, bukan bukti pelaku. Luas = luas jejak titik VIIRS, bukan luas bakar terpeta.", ""]
+    for t in TAHUN_TTM:
+        h = json.load(open(os.path.join(ANTARA, f"agregat_ttm_{t}.json")))
+        T = h["total"]
+        jb = T["jejak_ha"]
+        out += [f"## Api {t}" + (" (jendela pendek 0..1 tahun)" if h.get("jendela_pendek") else f" (jendela 0..{2024 - t} tahun)"), "",
+                f"- Jejak titik: {jb:,.0f} ha, {T['sampel']:,} sampel, {T['deteksi']:,} deteksi.",
+                f"- Bakar lalu sawit (bs): **{T['ha']['bs']:,.0f} ha** ({T['ha']['bs'] / jb:.1%}); di dalam konsesi terpetakan {T['ha']['bs'] - T['luar_konsesi_ha']['bs']:,.0f} ha.",
+                f"- Sawit terbakar (st): {T['ha']['st']:,.0f} ha ({T['ha']['st'] / jb:.1%}); bukan sawit 2024: {T['ha']['bk']:,.0f} ha.",
+                "- Asal bs (ha): " + "; ".join(f"{k} {v:,.0f}" for k, v in T["asal_bs_ha"].items()),
+                "- Jeda tanam bs (ha, tahun tanam - tahun api): " + "; ".join(f"{k} th: {v:,.0f}" for k, v in T["lag_ha"].items()),
+                "- Tipe kebun bs (ha): " + "; ".join(f"{k} {v:,.0f}" for k, v in T["pemilik_bs_ha"].items()), "",
+                "| # | Perusahaan | Grup | Jenis | Kabupaten | bs ha | porsi bs | Asal dominan | Jeda dominan (th) | Industri / rakyat (ha) |",
+                "|--|--|--|--|--|--|--|--|--|--|"]
+        daftar = sorted((p for p in h["perusahaan"] if layak(p)), key=lambda p: -p["ha"]["bs"])
+        for i, p in enumerate(daftar[:15], 1):
+            asal = max(p["asal"], key=p["asal"].get) if p["asal"] else "-"
+            lag = max(p["lag_ha"], key=lambda g: p["lag_ha"][g])
+            pm = p["pemilik_kebun"]
+            out.append(f"| {i} | {p['nama']} | {p['grup'] or '-'} | {p['jenis']} | {', '.join(p['kab'][:2])} | {p['ha']['bs']:,.0f} | {p['bs_porsi']:.0%} | {asal} | {lag} | "
+                       f"{pm.get('industri', 0):,.0f} / {pm.get('rakyat', 0):,.0f} |")
+        out += ["", f"Perusahaan layak (bs >= {BS_MIN} ha dan porsi >= {PORSI_MIN:.0%}): {len(daftar)} dari {len(h['perusahaan'])}.", ""]
+    g19 = os.path.join(ANTARA, "agregat_2019.json")
+    if os.path.exists(g19):
+        g = json.load(open(g19))["total"]
+        t = json.load(open(os.path.join(ANTARA, "agregat_ttm_2019.json")))["total"]
+        out += ["## Gaveau (jendela 1 tahun) vs TTM, api 2019", "",
+                f"Gaveau bs+bd {g['ha']['bs'] + g['ha']['bd']:,.0f} ha, st {g['ha']['st']:,.0f} ha; TTM bs {t['ha']['bs']:,.0f} ha, st {t['ha']['st']:,.0f} ha. "
+                "Gaveau hanya melihat sawit tahun 2019 (F2019) dan memakai tahun sebelum api untuk 'sudah sawit'; TTM melihat semua tanam 2019-2024.", ""]
+    ak = akurasi_xlsx()
+    out += ["## Akurasi validasi TTM2024 (xlsx penulis, Olofsson dkk. 2014; UA/PA % dan selang 95%)", "",
+            "Akurasi global tahun-sawit 2024 dan perubahan tutupan; BUKAN akurasi tahun tanam per piksel. OA sawit 2024 98,9 (98,7-99,0).", "",
+            "| Kelas | UA | PA |", "|--|--|--|"] + [f"| {a} | {b} | {c} |" for a, b, c in ak] + [""]
+    out += ["## Batas metode", "",
+            "- TTM2024 hanya memuat sawit yang ada pada 2024. Lahan terbakar yang jadi sawit lalu hilang/diganti, atau jadi tanaman lain, tidak tampak.",
+            "- Tahun tanam 15 = 2015 atau sebelumnya: untuk api 2019/2023 itu 'sudah sawit' (st), tetapi sebagian mungkin tanam ulang.",
+            "- Api 2023: jendela hanya tahun tanam 2023-2024; 'bakar lalu sawit' 2023 terlalu rendah dan lahan yang baru dibuka 2025-2026 belum ada di peta.",
+            "- Satu piksel (~10 m) di titik sampel mewakili sel 125 m (~1,56 ha): galat sampling per sel; agregat tidak bias.",
+            "- Tahun hilang hutan sama dengan tahun api dihitung 'saat api' (ambigu dalam tahun).",
+            "- Lisensi CC BY-NC 4.0: keluaran ini internal sampai lisensi/atribusi dicek untuk publikasi.",
+            "- Konsesi KLHK ~2014-2019 tidak lengkap; 'di luar konsesi terpetakan' bukan berarti tanpa izin.", ""]
+    jalur = os.path.join(AKAR, "data/raw/sawit/hasil/ringkas_2019_2023.md")
+    open(jalur, "w").write("\n".join(out))
+    log(jalur)
 
 
 # ---------------------------------------------------------------- uji
@@ -910,7 +1190,14 @@ def uji():
     assert klasifikasi(deret("Forest", 2030, 2031), 2019) == ("lain", "Forest", None)
     assert klasifikasi(deret("Forest", 2019, 2019), 2019, batas=2019)[2] == 2019
     assert klasifikasi(deret("Forest", 2020, 2025), 2015, batas=2019) == ("lain", "Forest", None)  # di luar jendela
-    # ambang terbit + peregangan warna asli
+    # TTM: tahun_tanam < api = sawit terbakar; >= api = bakar lalu sawit; asal dari hutan primer dan tahun hilang
+    assert kelas_ttm(201515, 2019) == ("st", ASAL_TTM[2], 2015, "rakyat", False)             # YY=15 (<=2015) sudah sawit
+    assert kelas_ttm(111718, 2019) == ("st", ASAL_TTM[1], 2018, "industri", False)           # hilang 2017 < api 2019, tanam 2018 < 2019
+    assert kelas_ttm(111921, 2019) == ("bs", ASAL_TTM[0], 2021, "industri", False)           # hilang 2019 >= api: hutan primer saat api
+    assert kelas_ttm(211523, 2023) == ("bs", ASAL_TTM[1], 2023, "rakyat", False)             # hilang <=2015, tanam 2023 (jeda 0)
+    assert kelas_ttm(201924, 2023) == ("bs", ASAL_TTM[2], 2024, "rakyat", False)             # B=0: FF diabaikan
+    assert kelas_ttm(201522, 2023)[0] == "st"
+    # ambang awan: terang ATAU bendera; ambang terbit + peregangan warna asli
     assert layak({"ha": {"bs": 50}, "bs_porsi": .10}) and not layak({"ha": {"bs": 49}, "bs_porsi": .5}) and not layak({"ha": {"bs": 900}, "bs_porsi": .09})
     assert list(ke_byte_tc([0, 100, 20000], 2.75e-5, -.2)) == [0, 0, 255] and ke_byte_tc([10000], 2.75e-5, -.2)[0] > 0
     assert TAHUN_TERBIT == 2015 and "2019" not in str(TAHUN_TERBIT)
@@ -944,6 +1231,16 @@ if __name__ == "__main__":
         unduh()
         for t in th:
             analisis(t, "--tanpa-descals" not in a)
+    elif perintah == "ttm":     # analisis + foto + ringkasan TTM 2019/2023 (+ ttm_konfirm 2015 dengan --konfirm)
+        for t in TAHUN_TTM:
+            analisis_ttm(t)
+    elif perintah == "konfirm":
+        konfirm_2015()
+    elif perintah == "citra-ttm":
+        for t in TAHUN_TTM:
+            citra_ttm(t)
+    elif perintah == "ringkas":
+        ringkas()
     elif perintah == "citra":
         citra()
     elif perintah == "tulis":

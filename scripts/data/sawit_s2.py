@@ -42,7 +42,7 @@ PETAK = 2               # sel per petak pemecahan
 CELAH_HARI = 30         # celah waktu yang memecah klaster
 MIN_TITIK = 20          # klaster terkecil yang dianalisis (klaim akhir)
 MIN_KAL = 5             # klaster terkecil yang boleh jadi contoh kalibrasi (positif Gaveau jarang di klaster besar)
-KAL_BS = .3             # pecahan sampel Gaveau 'bakar lalu sawit' untuk positif kalibrasi
+KAL_BS = .3             # pecahan sampel Gaveau 'bakar lalu sawit' untuk positif kalibrasi sekunder (2019)
 MAKS_KLASTER = 150      # per tahun
 SAWIT_LAMA = .60        # >= porsi ini sampel sudah sawit sebelum api -> "sawit terbakar"
 SAMPEL_MAKS = 300       # sampel per klaster untuk uji sawit lama
@@ -201,14 +201,16 @@ def ha_viirs(pts, idx):
     return round(len(s) * 14.06)
 
 
-def pecahan(ks, tahun, gav, S):
-    """-> dict pecahan sampel: lama (sawit sebelum api), bs (Gaveau bakar lalu sawit), tak (tak ada sawit di kedua peta s.d. 2021)"""
+def pecahan(ks, tahun, gav, S, ttm):
+    """-> dict pecahan sampel: lama (sawit sebelum api: Descals/Gaveau/TTM), bs (Gaveau bakar lalu sawit), tak (tak ada sawit di peta mana pun),
+    ttm_baru (TTM YY >= tahun api), ttm_lama (TTM YY < tahun api), ttm_tak (TTM bukan sawit)"""
     import sawit_retro as R
     kand_cache = {}
-    lama = bs = tak = tot = 0
+    lama = bs = tak = tot = tb = tl = tt = 0
+    yy = tahun % 100
     for k in ks:
         lon, lat = R.pusat(k)
-        kd = kand_cache.setdefault((round(lon), round(lat)), None)
+        kd = kand_cache.get((round(lon), round(lat)))
         if kd is None:
             kd = [(i, v) for i, v in S.indeks().items()
                   if v[0] < round(lon) + 1 and v[0] + v[2] * S.Ubin.PIX > round(lon) - 1 and v[1] > round(lat) - 1 and v[1] - v[3] * S.Ubin.PIX < round(lat) + 1]
@@ -216,14 +218,23 @@ def pecahan(ks, tahun, gav, S):
         v = S.nilai_di(lon, lat, kd)
         g = gav.get(k)
         kode = g[0] if g else None
+        tv = ttm.get(k)
+        a, y = ttm_decode(tv) if tv else (0, 0)
         tot += 1
-        if (v and v < tahun) or kode == "st":
+        if (v and v < tahun) or kode == "st" or (a and 0 < y < yy):
             lama += 1
         if kode == "bs":
             bs += 1
-        if not v and kode in (None, "lain"):
+        if not v and kode in (None, "lain") and not y:
             tak += 1
-    return {"lama": round(lama / max(1, tot), 3), "bs": round(bs / max(1, tot), 3), "tak": round(tak / max(1, tot), 3), "sampel": tot}
+        if a and y >= yy:
+            tb += 1
+        elif a and 0 < y < yy:
+            tl += 1
+        elif not y:
+            tt += 1
+    f = lambda x: round(x / max(1, tot), 3)
+    return {"lama": f(lama), "bs": f(bs), "tak": f(tak), "ttm_baru": f(tb), "ttm_lama": f(tl), "ttm_tak": f(tt), "sampel": tot}
 
 
 def tahap_klaster(tahun):
@@ -233,7 +244,7 @@ def tahap_klaster(tahun):
     t0 = time.time()
     os.makedirs(CACHE, exist_ok=True)
     pts = baca_titik(tahun)
-    kl = [k for k in klaster(pts) if k["n"] >= (MIN_KAL if tahun == 2019 else MIN_TITIK)]
+    kl = [k for k in klaster(pts) if k["n"] >= MIN_KAL]
     log(f"{tahun}: {len(pts)} titik, {len(kl)} klaster ({time.time() - t0:.0f} dtk)")
     ik = indeks_konsesi(R.baca_konsesi())
     for k in kl:
@@ -247,8 +258,11 @@ def tahap_klaster(tahun):
     if tahun == 2019:
         rows = R.baris({x for v in ks.values() for x in v})
         gav, _ = R.gaveau(rows, 2019)
+    tk = {x: R.pusat(x) for v in ks.values() for x in v}
+    ttm = ttm_batch(tk)
+    log(f"  ttm: {sum(1 for v in ttm.values() if v)} / {len(ttm)} sampel sawit ({time.time() - t0:.0f} dtk)")
     for k in kl:
-        k["sawit"] = pecahan(ks[id(k)], tahun, gav, S)
+        k["sawit"] = pecahan(ks[id(k)], tahun, gav, S, ttm)
         k["viirs_ha"] = ha_viirs(pts, k["idx"])
     # kabupaten klaster di luar konsesi
     kec = [(p, kab, b) for p, kab, b in R.baca_kecamatan()]
@@ -279,20 +293,88 @@ def tahap_klaster(tahun):
     pil_id = {k["kid"] for k in pilih}
     rnd = random.Random(2019)
     sisa = [k for k in kl if k["kid"] not in pil_id and not k["kelas_awal"]]
-    kal_pos = [k for k in sisa if k["sawit"]["bs"] >= KAL_BS and k["sawit"]["lama"] < .2]
-    kal_neg = [k for k in sisa if k["sawit"]["tak"] >= .9 and k["sawit"]["lama"] == 0]
-    if tahun == 2019:
-        rnd.shuffle(kal_pos), rnd.shuffle(kal_neg)
-    else:
-        kal_pos, kal_neg = [], []
+    kal_pos = [k for k in sisa if k["sawit"]["ttm_baru"] >= TTM_POS and k["sawit"]["lama"] < TTM_LAMA_MAKS]
+    kal_neg = [k for k in sisa if k["sawit"]["tak"] >= .95 and k["sawit"]["lama"] == 0]
+    kalg_pos = [k for k in sisa if tahun == 2019 and k["sawit"]["bs"] >= KAL_BS and k["sawit"]["lama"] < .2]
+    for lst in (kal_pos, kal_neg, kalg_pos):
+        rnd.shuffle(lst)
     for k in kl:
         k.pop("idx", None)
     out = {"tahun": tahun, "titik": len(pts), "pool": kl, "pilih": [k["kid"] for k in pilih],
            "kal_pos": [k["kid"] for k in kal_pos[:45]], "kal_neg": [k["kid"] for k in kal_neg[:45]],
-           "kal_kandidat": {"pos": len(kal_pos), "neg": len(kal_neg)},
+           "kalg_pos": [k["kid"] for k in kalg_pos[:45]],
+           "kal_kandidat": {"pos": len(kal_pos), "neg": len(kal_neg), "gaveau_pos": len(kalg_pos)},
            "luar_kab": [{"prov": p, "kab": kb, "klaster_n": n} for (p, kb), n in luar.most_common(30)]}
     json.dump(out, open(os.path.join(CACHE, f"klaster_{tahun}.json"), "w"), separators=(",", ":"))
     log(f"  pilih {len(pilih)} (dari {len(calon)}), sawit terbakar {sum(1 for k in kl if k['kelas_awal'])}, kalibrasi kandidat pos {len(kal_pos)} neg {len(kal_neg)}, total {time.time() - t0:.0f} dtk")
+
+
+
+# ================================================================ 3b. TTM2024 (The TreeMap, Global oil palm expansion 2001-2024)
+TTM_ZIP = os.path.join(DIR, "ttm2024/Global_OPExpansion_2001-2024.zip")
+TTM_PIX = 0.00008983152841195215
+TTM_POS, TTM_LAMA_MAKS = .30, .20   # hipotesis kalibrasi: pecahan sampel sawit baru (YY >= tahun api) untuk positif, sawit lama untuk dikecualikan
+
+
+def ttm_decode(v):
+    """ABFFYY -> (A tipe sawit 2024, YY tahun tanam 15=<=2015 | 0 bukan sawit)"""
+    return v // 100000, v % 100
+
+
+def ttm_indeks():
+    """{id: [lon_kiri, lat_atas, W, H]} untuk ubin yang menyentuh Indonesia; cache s2_cache/ttm_indeks.json"""
+    import zipfile
+    import sawit_peta as P
+    jalur = os.path.join(CACHE, "ttm_indeks.json")
+    if os.path.exists(jalur):
+        return json.load(open(jalur))
+    z = zipfile.ZipFile(TTM_ZIP)
+    ix = {}
+    for n in z.namelist():
+        if not n.endswith(".tif"):
+            continue
+        t = P.ifd(z.read(n))
+        tp = t[33922]
+        w, h = t[256][0], t[257][0]
+        if tp[3] < 142 and tp[3] + w * TTM_PIX > 94 and tp[4] > -12 and tp[4] - h * TTM_PIX < 8:
+            ix[n.rsplit("-", 1)[1][:-4]] = [tp[3], tp[4], w, h]
+    json.dump(ix, open(jalur, "w"))
+    return ix
+
+
+def ttm_batch(titik):
+    """titik = {kunci: (lon, lat)} -> {kunci: nilai ABFFYY | None (di luar ubin)}; dikerjakan per ubin (dekode blok sekali)"""
+    import zipfile
+    from array import array
+    import sawit_peta as P
+    ix = ttm_indeks()
+    z = zipfile.ZipFile(TTM_ZIP)
+    per = defaultdict(list)
+    out = {}
+    for k, (lo, la) in titik.items():
+        out[k] = None
+        for i, (x0, y0, W, H) in ix.items():
+            x, y = int((lo - x0) / TTM_PIX), int((y0 - la) / TTM_PIX)
+            if 0 <= x < W and 0 <= y < H:
+                per[i].append((y // 256, x // 256, y, x, k))
+                break
+    for i, lst in per.items():
+        b = z.read(f"Global_OPExpansion_2001-2024_ID-{i}.tif")
+        t = P.ifd(b)
+        W, T = t[256][0], t[322][0]
+        tx = -(-W // T)
+        off, cnt = t[324], t[325]
+        lst.sort()
+        akhir, blok = None, None
+        for by, bx, y, x, k in lst:
+            if (by, bx) != akhir:
+                kk = by * tx + bx
+                blok = array("i")
+                blok.frombytes(P.lzw(b[off[kk]:off[kk] + cnt[kk]]))
+                akhir = (by, bx)
+            j = (y % T) * T + x % T
+            out[k] = blok[j] if j < len(blok) else None
+    return out
 
 
 # ================================================================ 4. Sentinel-2
@@ -366,16 +448,25 @@ def indeks_piksel(sah, red, nir, sw1, sw2):
     return ndvi, nbr, buka
 
 
+OFFSET_MIN_DN = 950   # p5 DN red di bawah ini = DN tidak membawa offset +1000 walau metadata Earth Search menyatakan -0,1
+
+
+def offset_efektif(red_dn, of_deklarasi):
+    """Earth Search menandai adegan 2019-2026 'offset -0,1', tetapi DN COG-nya (red p5 ~ 100-400) TIDAK memuat +1000: memakai offset itu
+    membuat pantulan negatif dan NDVI jenuh. Offset dipakai hanya bila DN red persentil-5 >= OFFSET_MIN_DN (vegetasi rapat tak mungkin setinggi itu tanpa offset)."""
+    nz = sorted(d for d in red_dn if d)
+    return of_deklarasi if nz and nz[len(nz) // 20] >= OFFSET_MIN_DN else 0.0
+
+
 def muat_adegan(it, lat, lon, s):
-    """baca red, NIR(B8A), SWIR1, SWIR2 untuk adegan yang lolos; -> dict peta piksel"""
-    def b(k):
-        v, sk, of = pita(it, k, lat, lon)
-        return [None if d == 0 else d * sk + of for d in v]
+    """baca red, NIR(B8A), SWIR1, SWIR2 untuk adegan yang lolos; -> dict peta piksel (+ 'of' offset yang dipakai)"""
     with ThreadPoolExecutor(4) as ex:
-        red, nir, sw1, sw2 = ex.map(b, ("red", "nir08", "swir16", "swir22"))
+        mentah = list(ex.map(lambda k: pita(it, k, lat, lon), ("red", "nir08", "swir16", "swir22")))
+    of = offset_efektif(mentah[0][0], mentah[0][2])
+    red, nir, sw1, sw2 = ([None if d == 0 else d * sk + of for d in v] for v, sk, _ in mentah)
     sah = sah_dari_scl(s)
     ndvi, nbr, buka = indeks_piksel(sah, red, nir, sw1, sw2)
-    return {"sah": [v is not None for v in ndvi], "ndvi": ndvi, "nbr": nbr, "buka": buka}
+    return {"sah": [v is not None for v in ndvi], "ndvi": ndvi, "nbr": nbr, "buka": buka, "of": of}
 
 
 def adegan_bersih(lat, lon, d1, d2, urut, maks=6, awan_lt=70):
@@ -435,7 +526,7 @@ def analisis_klaster(k):
     for tahap, (it, s, aw, ks) in (("sebelum", sb), ("terbakar", tb)):
         g = grid[tahap]
         waktu.append({"tahap": tahap, "tahun": int(it["properties"]["datetime"][:4]), "tgl": it["properties"]["datetime"][:10], "adegan": it["id"],
-                      "awan": round(100 * aw), "item": mini(it), "sah": gabung(g["sah"]), "buka": gabung(g["buka"]),
+                      "awan": round(100 * aw), "item": mini(it), "of": g["of"], "sah": gabung(g["sah"]), "buka": gabung(g["buka"]),
                       "ndvi_fp": med([v for v, f in zip(g["ndvi"], fp) if f]),
                       "porsi_box": round(sum(g["buka"]) / max(1, sum(g["sah"])), 3)})
     def tahun_(y):
@@ -449,7 +540,7 @@ def analisis_klaster(k):
             log("   muat gagal", r[0]["id"], repr(e)[:60])
             return None
         return {"tahap": "tahun", "tahun": y, "tgl": r[0]["properties"]["datetime"][:10], "adegan": r[0]["id"], "awan": round(100 * r[2]),
-                "item": mini(r[0]), "sah": gabung(g["sah"]), "buka": gabung(g["buka"]),
+                "item": mini(r[0]), "of": g["of"], "sah": gabung(g["sah"]), "buka": gabung(g["buka"]),
                 "ndvi_fp": med([v for v, f in zip(g["ndvi"], fp) if f]), "porsi_box": round(sum(g["buka"]) / max(1, sum(g["sah"])), 3)}
     if out["fp_px"] >= MIN_JEJAK_PX:   # tanpa jejak yang terlihat, lintasan tahunan percuma
         with ThreadPoolExecutor(3) as ex:
@@ -461,7 +552,7 @@ def analisis_klaster(k):
 def tahap_citra(tahun):
     kl = json.load(open(os.path.join(CACHE, f"klaster_{tahun}.json")))
     peta = {k["kid"]: k for k in kl["pool"]}
-    ids = kl["kal_pos"] + kl["kal_neg"] + kl["pilih"]
+    ids = kl["kal_pos"] + kl["kal_neg"] + kl.get("kalg_pos", []) + kl["pilih"]
     kerja = [peta[i] for i in ids if not os.path.exists(os.path.join(CACHE, f"s2_{i}.json"))]
     log(f"{tahun}: {len(ids)} klaster, {len(kerja)} belum di-cache")
     t0 = time.time()
@@ -635,8 +726,9 @@ def foto_klaster(h, kid, tahap_tahun, semu_tahun):
             continue
         it = w["item"]
         ch = []
+        of = w.get("of", 0.0)
         for k in ("red", "green", "blue"):
-            v, sk, of = pita(it, k, lat, lon, FOTO_PX)
+            v, sk, _ = pita(it, k, lat, lon, FOTO_PX)
             ch.append(stretch_tc(v, sk, of))
         nama = f"{kid}_{tahap}_{w['tgl'].replace('-', '')}.png"
         simpan_png(ch, FOTO_PX, os.path.join(FOTO, nama))
@@ -644,7 +736,7 @@ def foto_klaster(h, kid, tahap_tahun, semu_tahun):
         if tahap == "kebun1":
             sm = []
             for k, g in zip(("nir", "swir16", "red"), GAIN_SEMU):
-                v, sk, of = pita(it, k, lat, lon, FOTO_PX)
+                v, sk, _ = pita(it, k, lat, lon, FOTO_PX)
                 sm.append(stretch_lin(v, sk, of, g))
             nama = f"{kid}_semu_{w['tgl'].replace('-', '')}.png"
             simpan_png(sm, FOTO_PX, os.path.join(FOTO, nama))
@@ -663,34 +755,43 @@ def tahap_hasil(tahun):
     peta = {k["kid"]: k for k in kl["pool"]}
     t0 = time.time()
     amb_p = os.path.join(CACHE, "kalibrasi.json")
-    kal = None
+
+    def ambil(ids, maks=30):
+        out = []
+        for i in ids:
+            h = muat_cache(i)
+            m = hitung(h) if h else None
+            if m and m["status"] == "ok" and m["fp_px"] >= MIN_JEJAK_PX and any(t["cakupan"] >= MIN_CAKUPAN for t in m["tahunan"]):
+                out.append(m)
+            if len(out) == maks:
+                break
+        return out
+
+    def sebaran(ms):
+        return [{"porsi_max": max((t["porsi_buka"] for t in m["tahunan"] if t["porsi_buka"] is not None), default=None),
+                 "lurus_max": max((t["lurus"] for t in m["tahunan"]), default=None)} for m in ms]
+
+    def eval_set(pos, neg, amb):
+        return {"n_positif": len(pos), "n_negatif": len(neg), **{x: v for x, v in stat_mat(matriks(pos, neg, amb)).items()}}
+    pos, neg = ambil(kl["kal_pos"]), ambil(kl["kal_neg"])
     if tahun == 2019:
-        def ambil(ids):
-            out = []
-            for i in ids:
-                h = muat_cache(i)
-                m = hitung(h) if h else None
-                if m and m["status"] == "ok" and m["fp_px"] >= MIN_JEJAK_PX and any(t["cakupan"] >= MIN_CAKUPAN for t in m["tahunan"]):
-                    out.append(m)
-                if len(out) == 30:
-                    break
-            return out
-        pos, neg = ambil(kl["kal_pos"]), ambil(kl["kal_neg"])
         if len(pos) < 5 or len(neg) < 5:
             sys.exit(f"kalibrasi kurang data: pos {len(pos)} neg {len(neg)}")
         amb, c, awal = kalibrasi(pos, neg)
-        kal = {"n_positif": len(pos), "n_negatif": len(neg), **{x: c[x] for x in ("tp", "fp", "tn", "fn", "sensitivitas", "spesifisitas", "presisi", "J")},
-               "ambang_dipakai": amb, "dengan_ambang_awal": {"ambang": AMBANG_AWAL, **awal},
-               "kandidat_tersedia": kl["kal_kandidat"],
-               "sebaran": {"positif": [{"porsi_max": max((t["porsi_buka"] for t in m["tahunan"] if t["porsi_buka"] is not None), default=None),
-                                        "lurus_max": max((t["lurus"] for t in m["tahunan"]), default=None)} for m in pos],
-                           "negatif": [{"porsi_max": max((t["porsi_buka"] for t in m["tahunan"] if t["porsi_buka"] is not None), default=None),
-                                        "lurus_max": max((t["lurus"] for t in m["tahunan"]), default=None)} for m in neg]},
-               "catatan": "dalam-sampel (ambang dipilih dari set yang sama dilaporkan); kebenaran = Gaveau F2019; hasil klaim akhir TIDAK memakai klaster kalibrasi"}
-        json.dump({"kalibrasi": kal, "ambang": amb}, open(amb_p, "w"))
+        kal = {"kebenaran": "TTM2024 (The TreeMap, Zenodo 20747717): positif = sampel sawit baru YY >= tahun api >= %.0f%% dan sawit lama < %.0f%%; negatif = bukan sawit di semua peta" % (100 * TTM_POS, 100 * TTM_LAMA_MAKS),
+               "tuning_2019": {"n_positif": len(pos), "n_negatif": len(neg), **{x: c[x] for x in ("tp", "fp", "tn", "fn", "sensitivitas", "spesifisitas", "presisi", "J")},
+                               "ambang_dipakai": amb, "dengan_ambang_awal": {"ambang": AMBANG_AWAL, **awal}, "kandidat_tersedia": kl["kal_kandidat"],
+                               "sebaran": {"positif": sebaran(pos), "negatif": sebaran(neg)},
+                               "catatan": "dalam-sampel: ambang dipilih dari set yang sama dengan yang dilaporkan"}}
+        gp = ambil(kl.get("kalg_pos", []))
+        if gp:
+            kal["gaveau_2019"] = {"keterangan": "positif Gaveau F2019=sawit dari bukan-sawit F2018 (>=30% sampel), negatif = set TTM", **eval_set(gp, neg, amb)}
+        json.dump({"ambang": amb, "kalibrasi": kal}, open(amb_p, "w"))
     else:
         d = json.load(open(amb_p))
         amb, kal = d["ambang"], d["kalibrasi"]
+        kal[f"luar_sampel_{tahun}"] = {"keterangan": f"set TTM {tahun} dinilai dengan ambang dari 2019 (tanpa penyetelan ulang)", **eval_set(pos, neg, amb),
+                                       "sebaran": {"positif": sebaran(pos), "negatif": sebaran(neg)}}
     # kelas semua klaster terpilih
     kls = []
     for kid in kl["pilih"]:
@@ -702,26 +803,40 @@ def tahap_hasil(tahun):
     for k in kl["pool"]:
         if k["kelas_awal"] and k["pid"] and k["n"] >= MIN_TITIK:
             kls.append({"k": k, "h": None, "m": None, "kelas": "sawit terbakar", "ky": None})
-    # foto: kebun teratas
+    # foto: klaster teratas = (S2 kebun DAN TTM sawit baru) > TTM saja > S2 saja
     os.makedirs(FOTO, exist_ok=True)
-    kebun = sorted([x for x in kls if x["kelas"] == "dibuka jadi kebun?"],
-                   key=lambda x: -(x["m"]["fp_px"] * .04 * next(t["porsi_buka"] for t in x["m"]["tahunan"] if t["tahun"] == x["ky"])))[:FOTO_TOP]
-    for x in kebun:
-        h, m = x["h"], x["m"]
-        w = {(v["tahap"], v["tahun"]): v for v in h["waktu"]}
-        k1 = w[("tahun", x["ky"])]
-        sesudah = [v for v in h["waktu"] if v["tahap"] == "tahun" and v["tahun"] > x["ky"]]
-        k2 = sesudah[0] if sesudah else None
+
+    def ttm_ok(x):
+        return x["k"]["sawit"]["ttm_baru"] >= TTM_POS
+
+    def tahun_foto(x):
+        if x["ky"]:
+            return x["ky"]
+        th = [t for t in x["m"]["tahunan"] if t["cakupan"] >= MIN_CAKUPAN and t["porsi_buka"] is not None]
+        return max(th, key=lambda t: (t["porsi_buka"], -t["tahun"]))["tahun"] if th else None
+    cal = [x for x in kls if x["m"] and x["m"]["status"] == "ok" and x["m"]["fp_px"] >= MIN_JEJAK_PX and tahun_foto(x)
+           and (x["kelas"] == "dibuka jadi kebun?" or ttm_ok(x))]
+    cal.sort(key=lambda x: (-(x["kelas"] == "dibuka jadi kebun?" and ttm_ok(x)), -ttm_ok(x), -x["m"]["fp_px"] * x["k"]["sawit"]["ttm_baru"]))
+    if len(cal) < 3:   # tahun tanpa kandidat kuat: 3 klaster ber-TTM-sawit-baru tertinggi sebagai cadangan, diberi label
+        sisa = [x for x in kls if x not in cal and x["m"] and x["m"]["status"] == "ok" and x["m"]["fp_px"] >= MIN_JEJAK_PX and tahun_foto(x)]
+        cal += sorted(sisa, key=lambda x: -x["k"]["sawit"]["ttm_baru"])[:3 - len(cal)]
+    for x in cal[:FOTO_TOP]:
+        h = x["h"]
+        ty = tahun_foto(x)
+        k1 = next(v for v in h["waktu"] if v["tahap"] == "tahun" and v["tahun"] == ty)
+        k2 = next((v for v in h["waktu"] if v["tahap"] == "tahun" and v["tahun"] > ty), None)
         try:
             x["citra"] = foto_klaster(h, x["k"]["kid"], {"sebelum": next(v for v in h["waktu"] if v["tahap"] == "sebelum"),
-                                                         "terbakar": next(v for v in h["waktu"] if v["tahap"] == "terbakar"), "kebun1": k1, "kebun2": k2}, x["ky"])
+                                                         "terbakar": next(v for v in h["waktu"] if v["tahap"] == "terbakar"), "kebun1": k1, "kebun2": k2}, ty)
+            x["citra"]["dasar"] = ("S2+TTM" if x["kelas"] == "dibuka jadi kebun?" and ttm_ok(x) else "TTM" if ttm_ok(x) else "S2" if x["kelas"] == "dibuka jadi kebun?" else "cadangan (TTM sawit baru rendah)")
+            x["citra"]["tahun_kebun1"] = ty
         except Exception as e:
             log("  foto gagal", x["k"]["kid"], repr(e)[:80])
     # susun JSON
     def ringkas(x):
         k, m = x["k"], x["m"]
         d = {"id": k["kid"], "pusat": k["pusat"], "bbox": k["bbox"], "api": k["api"], "n_titik": k["n"], "kelas": x["kelas"], "sawit_lama": k["sawit"]["lama"],
-             "viirs_ha": k["viirs_ha"]}
+             "viirs_ha": k["viirs_ha"], "sawit": k["sawit"]}
         if m and m["status"] == "ok":
             d["jejak_ha"] = round(m["fp_px"] * .04, 1)
             d["sebelum"] = {"tgl": m["sebelum"]["tgl"], **m["sebelum_box"]}
@@ -747,9 +862,11 @@ def tahap_hasil(tahun):
             continue
         p = perusahaan.setdefault(c["id"], {"id": c["id"], "nama": c["nama"], "grup": grup.get(c["id"]) or c.get("grup") or "", "jenis": c["jenis"],
                                             "prov": c["prov"], "kab": c["kab"], "klaster_n": 0, "klaster_dianalisis": 0, "ha_jejak": 0, "ha_jejak_s2": 0,
-                                            "ha_dibuka_kebun": 0, "ha_sawit_terbakar": 0, "ha_pulih": 0, "contoh": []})
+                                            "ha_dibuka_kebun": 0, "ha_sawit_baru_ttm": 0, "ha_sawit_terbakar": 0, "ha_pulih": 0, "contoh": []})
         p["klaster_n"] += 1
         p["ha_jejak"] += x["k"]["viirs_ha"]
+        if x["kelas"] != "sawit terbakar":
+            p["ha_sawit_baru_ttm"] += x["k"]["viirs_ha"] * x["k"]["sawit"]["ttm_baru"]   # perkiraan kasar: luas titik x pecahan sampel TTM sawit baru
         if x["m"] and x["m"]["status"] == "ok":
             p["klaster_dianalisis"] += 1
             ha = x["m"]["fp_px"] * .04
@@ -765,10 +882,10 @@ def tahap_hasil(tahun):
     for p in perusahaan.values():
         ex = sorted(p["contoh"], key=lambda x: (x["kelas"] != "dibuka jadi kebun?", -x["k"]["n"]))
         p["contoh"] = [ringkas(x) for x in ex[:3]]
-        for kk in ("ha_jejak", "ha_jejak_s2", "ha_dibuka_kebun", "ha_sawit_terbakar", "ha_pulih"):
+        for kk in ("ha_jejak", "ha_jejak_s2", "ha_dibuka_kebun", "ha_sawit_baru_ttm", "ha_sawit_terbakar", "ha_pulih"):
             p[kk] = round(p[kk])
         daftar.append(p)
-    daftar.sort(key=lambda p: -p["ha_dibuka_kebun"])
+    daftar.sort(key=lambda p: (-p["ha_dibuka_kebun"], -p["ha_sawit_baru_ttm"]))
     cnt = Counter(x["kelas"] for x in kls)
     out = {"dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"), "internal": "BNPB, tidak terbit; indikasi untuk pemeriksaan, bukan bukti pelaku",
            "tahun": tahun, "metode": __doc__.split("Metode ringkas:")[1].split("Lisensi")[0].strip(),
@@ -783,7 +900,7 @@ def tahap_hasil(tahun):
     json.dump(out, open(os.path.join(HASIL, f"sawit_s2_{tahun}.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     log(f"{tahun}: sawit_s2_{tahun}.json, kelas {dict(cnt)}, foto {sum(len(x.get('citra', {})) for x in kls)} ({time.time() - t0:.0f} dtk)")
     if kal:
-        log(f"  kalibrasi: tp {kal['tp']} fn {kal['fn']} fp {kal['fp']} tn {kal['tn']} J {kal['J']} ambang {amb}")
+        log("  kalibrasi:", json.dumps({x: kal[x] for x in kal if x != 'kebenaran'}.get('tuning_2019', {}).get('ambang_dipakai')))
 
 
 # ================================================================ uji
@@ -842,6 +959,7 @@ def uji():
     # indeks piksel + peta bit pulang-pergi
     nd, nb, bk = indeks_piksel([True, True, False], [.1, .15, .1], [.5, .2, .5], [.2, .4, .3], [.1, .3, .1])
     assert bk == [False, True, False] and nd[2] is None and abs(nb[0] - (.5 - .1) / .6) < 1e-9
+    assert offset_efektif([300, 250, 100, 0], -.1) == 0.0 and offset_efektif([1100, 1300, 1020], -.1) == -.1
     v = [True, False, False, True, False] + [False] * (N * N - 5)
     assert urai(gabung(v)) == v
     print("uji sawit_s2 ok", s_lurus, s_rot, s_acak)
