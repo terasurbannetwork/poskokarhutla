@@ -19,9 +19,9 @@ const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
 async function gambar(d) {
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
-  /* sementara hanya Karhutla yang bisa dibuka dari menu; bencana lain tampil non-aktif berlabel "Soon", "Semua bencana" dan
-     "Tentang kami" disembunyikan (pemilik, 17 Okt 2026). Memulihkan: kosongkan TAMPIL. Halamannya tetap bisa dibuka lewat URL. */
-  const TAMPIL = new Set(["karhutla"]);
+  /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
+     terbuka, plus "Semua bencana" & "Tentang kami" (pemilik membuka semuanya, 20 Okt 2026). */
+  const TAMPIL = new Set();
   const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon]);
   const buka = b => !TAMPIL.size ? b.status === "aktif" : TAMPIL.has(b.id);
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */
