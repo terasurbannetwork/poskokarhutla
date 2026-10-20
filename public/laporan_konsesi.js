@@ -54,7 +54,7 @@
     "Premier Palmoil Energy Pte Ltd, First Borneo Group": SG("Premier Palmoil Energy"), "Borneo Group": SG("Premier Palmoil Energy"), "BRU Group": SG("Global Palm Resources"),
     "Sampoerna Agro/POSCO": ["ID", "KR", "POSCO International"], "Sampoerna Agro": ["ID", "KR", "POSCO International"], "Goodhope Asia Holdings": ["LK"], "REA Holdings Plc.": ["GB"],
     "Triputra Agro Persada": ["ID"], "Dharma Satya Nusantara": ["ID"], "Djarum": ["ID"], "Best International/Best Agro Plantation": ["ID"], "Makin": ["ID"], "Medco": ["ID"],
-    "Nusantara Group": ["ID"], "Pasifik Agro Sentosa": ["ID"], "BHD Group": []};
+    "Nusantara Group": ["ID"], "Pasifik Agro Sentosa": ["ID"], "BHD Group": ["MY"]};
   /* unit usaha di bawah grup menurut jenis konsesi (mis. Sinar Mas di HTI = APP); logo ikut unitnya */
   const UNIT = {"Sinar Mas|hti": "Asia Pulp & Paper (APP)", "Sinar Mas|sawit": "Golden Agri-Resources (GAR)", "Royal Golden Eagle|hti": "APRIL (Asia Pacific Resources International)",
     "RGE/APRIL|hti": "APRIL (Asia Pacific Resources International)", "Royal Golden Eagle|sawit": "Asian Agri", "Salim Group|sawit": "Indofood Agri Resources (IndoAgri)",

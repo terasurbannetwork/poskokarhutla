@@ -15,8 +15,8 @@
     D.dispatchEvent(new CustomEvent("pb-persetujuan", {detail: {analitik: pilihan.analitik, baru: pilihan.analitik && !sebelum}}));
     tutupSpanduk();
   }
-  /* analitik nyala bawaan untuk semua pengunjung tanpa spanduk (pemilik, 20 Okt 2026); mati bila pengunjung menolak lewat "Pengaturan privasi" atau DNT/GPC */
-  W.Persetujuan = {analitik: () => !dnt && (pilihan ? !!pilihan.analitik : true), pilihan: () => pilihan, buka: () => atur(), VERSI, simpan};
+  /* analitik hanya nyala setelah pengunjung setuju lewat "Pengaturan privasi"; DNT/GPC memaksa mati (20 Okt 2026) */
+  W.Persetujuan = {analitik: () => !dnt && !!pilihan?.analitik, pilihan: () => pilihan, buka: () => atur(), VERSI, simpan};
 
   D.head.insertAdjacentHTML("beforeend", `<style>
 .pv{--pv-bg:#fff;--pv-ink:#0b2545;--pv-ink2:#56607a;--pv-line:#dfe3ec;--pv-soft:#f2f4f8;--pv-pri:#0b2545;--pv-pri-ink:#fff;font:14px/1.5 Inter,system-ui,sans-serif;color:var(--pv-ink)}
