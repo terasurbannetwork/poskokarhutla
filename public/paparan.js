@@ -174,7 +174,7 @@ $("#ppTgl").addEventListener("change", e => { S.tgl = e.target.value; $("#upd").
 window.addEventListener("resize", () => requestAnimationFrame(skala));
 
 /* ---------------------------------------------------------------- unduh */
-function unduhBlob(blob, nama) { const a = document.createElement("a"), u = URL.createObjectURL(blob); a.href = u; a.download = nama; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+const unduhBlob = window.unduhBlob;   // public/inti/unduh.js
 const ukuran = b => b > 1048576 ? (b / 1048576).toFixed(1).replace(".", ",") + " MB" : Math.round(b / 1024) + " KB";
 async function unduh(jenis) {
   if (S.sibuk || !S.D) return; S.sibuk = true; S.gen++;   // hentikan pratinjau yang sedang jalan

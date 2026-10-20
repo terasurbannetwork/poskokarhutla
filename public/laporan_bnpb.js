@@ -276,7 +276,7 @@ async function muatRoboto() {   // sama dengan paparan.js: Roboto ditanam supaya
   try { robotoB64 = {n: await b64("/vendor/roboto/Roboto-Regular.ttf"), b: await b64("/vendor/roboto/Roboto-Bold.ttf")}; } catch (e) { robotoB64 = {}; }
   return robotoB64;
 }
-function unduhBlob(blob, nama) { const a = document.createElement("a"), u = URL.createObjectURL(blob); a.href = u; a.download = nama; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000); }
+const unduhBlob = window.unduhBlob;   // public/inti/unduh.js
 const ukuran = b => b > 1048576 ? (b / 1048576).toFixed(1).replace(".", ",") + " MB" : Math.round(b / 1024) + " KB";
 function namaBerkas(ext) {
   const t = S.tanggal, i = S.isi;
