@@ -53,17 +53,18 @@ const beriAmbang = h => { if (!h || S.ver?.kita?.vonis?.layak) return h; const k
   return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 const TAB_SEMBUNYI = new Set(["metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
-  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+  simulasi: '<path d="M8 5v14l11-7z"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const halamanAda = id => !!$("#p-" + id);
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/cuaca/" + id + location.search);
   nanti(() => { if (id === "peta" && peta) peta.resize();
+    if (id === "simulasi") { const f = $("#simulasiBingkai"); if (!f.src) f.src = "/cuaca/simulasi.html?tertanam=1"; }
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
     ({kejadian: Kejadian, insight: Insight, metode: Metode, berita: Berita, tren: Tren, dampak: Dampak, foto: Foto})[id]?.render(); });
 }
