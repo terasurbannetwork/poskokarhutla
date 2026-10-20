@@ -1,0 +1,368 @@
+{
+ "jenis": "harian",
+ "tanggal": "2026-10-19",
+ "isi": {
+  "mulai": "2026-10-18",
+  "jam": "07.00",
+  "laporan_masuk": 36,
+  "penyaji": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)",
+  "jabatan": "Kepala Badan Nasional Penanggulangan Bencana",
+  "instansi": "Badan Nasional Penanggulangan Bencana",
+  "singkatan": "BNPB",
+  "kejadian": [
+   {
+    "jenis": "karhutla",
+    "prov": "62",
+    "lokasi": "",
+    "utama": "± 24.223,17 ha (indikatif)",
+    "kedua": "",
+    "ket": "padam 95,93 | sisa 401,16",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "16",
+    "lokasi": "",
+    "utama": "± 7.026,40 ha (1 Agu–18 Okt)",
+    "kedua": "",
+    "ket": "padam 261,67 | sisa 94,25 ha",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "14",
+    "lokasi": "",
+    "utama": "± 20.696,31 ha (s.d. 19 Okt)",
+    "kedua": "",
+    "ket": "aman dan terkendali",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "64",
+    "lokasi": "",
+    "utama": "± 2.715,76 ha (s.d. 19 Okt)",
+    "kedua": "",
+    "ket": "padam 37,97 | sisa 3,50 ha",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Wonosobo",
+    "utama": "± 5,27 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Cilacap",
+    "utama": "± 2,3 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Klaten",
+    "utama": "± 2 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Karanganyar",
+    "utama": "± 200 ha",
+    "kedua": "",
+    "ket": "rencana WB 2 sortie",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "±200 ha; rencana water bombing 2 sortie"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Purworejo",
+    "utama": "± 2,2 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Sragen",
+    "utama": "± 6 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Wonosobo (pendakian)",
+    "utama": "pendataan; 152 pendaki dievakuasi",
+    "kedua": "",
+    "ket": "api belum padam",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "Api belum padam; 152 pendaki perlu evakuasi"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "71",
+    "lokasi": "Minahasa Utara",
+    "utama": "± 1.149,20 ha (pendataan)",
+    "kedua": "",
+    "ket": "5 titik api belum padam",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "5 titik api ±5 ha belum padam"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "71",
+    "lokasi": "Manado (TPA)",
+    "utama": "± 3 ha",
+    "kedua": "",
+    "ket": "masih berasap ±1 ha",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "Masih ada titik api dan asap ±1 ha"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "18",
+    "lokasi": "TN Way Kambas, Lampung Timur",
+    "utama": "± 26 ha",
+    "kedua": "",
+    "ket": "padam ±5,3 ha",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Bondowoso",
+    "utama": "± 5 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "72",
+    "lokasi": "Parigi Moutong",
+    "utama": "± 6 ha",
+    "kedua": "",
+    "ket": "terkendali",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "74",
+    "lokasi": "Bombana",
+    "utama": "± 5 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "73",
+    "lokasi": "Sinjai",
+    "utama": "± 5 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Boyolali",
+    "utama": "12.022 KK",
+    "kedua": "57.311 jiwa",
+    "ket": "71.000 liter",
+    "catatan": "untuk 6 desa",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Wonosobo",
+    "utama": "1.244 KK",
+    "kedua": "4.807 jiwa",
+    "ket": "35.000 liter",
+    "catatan": "untuk 750 KK",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Semarang",
+    "utama": "2.799 KK",
+    "kedua": "7.582 jiwa",
+    "ket": "30.000 liter",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Pekalongan",
+    "utama": "9.260 KK",
+    "kedua": "30.032 jiwa",
+    "ket": "52.000 liter",
+    "catatan": "18 Okt",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Pemalang",
+    "utama": "14.847 KK",
+    "kedua": "",
+    "ket": "108.000 liter",
+    "catatan": "untuk 1.301 KK",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "33",
+    "lokasi": "Purbalingga",
+    "utama": "4.732 KK",
+    "kedua": "17.274 jiwa",
+    "ket": "40.000 liter",
+    "catatan": "untuk 513 KK",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "73",
+    "lokasi": "Bulukumba",
+    "utama": "217 KK",
+    "kedua": "783 jiwa",
+    "ket": "28.400 liter",
+    "catatan": "untuk 175 KK",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kekeringan",
+    "prov": "73",
+    "lokasi": "Bone",
+    "utama": "731 KK",
+    "kedua": "2.829 jiwa",
+    "ket": "63.800 liter",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "gempabumi",
+    "prov": "32",
+    "lokasi": "Bogor",
+    "utama": "19 KK · 61 jiwa",
+    "kedua": "6 rusak berat · 25 rusak sedang",
+    "ket": "assessment berjalan",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "gempabumi",
+    "prov": "53",
+    "lokasi": "",
+    "utama": "±27.871 jiwa mengungsi",
+    "kedua": "transisi s.d. 27 Des",
+    "ket": "huntara berjalan",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "kebakaran_permukiman",
+    "prov": "73",
+    "lokasi": "Sinjai",
+    "utama": "1 jiwa meninggal",
+    "kedua": "korban dimakamkan",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   }
+  ],
+  "perhatian_tambahan": [
+   {
+    "jenis": "kekeringan",
+    "judul": "Jateng, Sulsel · Kekeringan",
+    "isi": "±45.852 KK di 8 kabupaten",
+    "status": "berjalan"
+   },
+   {
+    "jenis": "gempabumi",
+    "judul": "NTT · Pengungsi gempa",
+    "isi": "±27.871 jiwa mengungsi; huntara dibangun",
+    "status": "berjalan"
+   }
+  ],
+  "tindak": [
+   {
+    "judul": "Evakuasi dan pemadaman",
+    "isi": "152 pendaki di Wonosobo, bersama BPBD Jawa Tengah dan Basarnas"
+   },
+   {
+    "judul": "Dukungan udara",
+    "isi": "Water bombing 2 sortie di Karanganyar; titik api medan sulit di Minahasa Utara"
+   },
+   {
+    "judul": "Pemadaman prioritas",
+    "isi": "Sisa api Kalimantan Tengah dan Sumatera Selatan; Tim BNPB tetap mendampingi"
+   },
+   {
+    "judul": "Bantuan dan pemulihan",
+    "isi": "Air bersih untuk kekeringan; assessment gempa Bogor; huntara NTT"
+   }
+  ],
+  "judul_ringkasan": "",
+  "judul_rincian": ""
+ }
+}

@@ -68,16 +68,16 @@ export async function buat(wadah, o) {
   for (const q of o.sumber) { const m = new T.SpriteMaterial({map: tex[q.jenis], transparent: true, depthWrite: false}), sp = new T.Sprite(m), ukr = q.jenis === "api" ? .28 + .5 * Math.sqrt((q.frp || 0) / maksFrp) : .5;
     const [x, , z] = P(q.lon, q.lat); sp.position.set(x, md.elev(q.lon, q.lat) / M_PER_DEG * PEMBESAR + ukr * .55, z); sp.scale.set(ukr, ukr, 1); sp.userData = q; scene.add(sp); spr.push(sp); }
   /* label kota */
-  const lab = o.kota.map(k => { const cv = document.createElement("canvas"); cv.width = 320; cv.height = 96; const t = new T.CanvasTexture(cv), sp = new T.Sprite(new T.SpriteMaterial({map: t, transparent: true, depthTest: false}));
-    const [x, , z] = P(k.lon, k.lat); sp.position.set(x, md.elev(k.lon, k.lat) / M_PER_DEG * PEMBESAR + .45, z); sp.scale.set(1.9, .57, 1); sp.renderOrder = 10; scene.add(sp); return {k, cv, t, sp, teks: ""}; });
+  const lab = o.kota.map(k => { const cv = document.createElement("canvas"); cv.width = 320; cv.height = 96; const t = new T.CanvasTexture(cv), sp = new T.Sprite(new T.SpriteMaterial({map: t, transparent: true, depthTest: false, sizeAttenuation: false}));
+    const [x, , z] = P(k.lon, k.lat); sp.position.set(x, md.elev(k.lon, k.lat) / M_PER_DEG * PEMBESAR + .45, z); sp.scale.set(.2, .06, 1); sp.renderOrder = 10; scene.add(sp); return {k, cv, t, sp, teks: ""}; });
   function gambarLabel(L, nama, val, kat) {
     const teks = `${nama}|${val}|${kat.w}`; if (L.teks === teks) return; L.teks = teks; const g = L.cv.getContext("2d"); g.clearRect(0, 0, 320, 96);
     g.fillStyle = "rgba(255,255,255,.94)"; g.beginPath(); g.roundRect(6, 12, 308, 72, 36); g.fill(); g.fillStyle = kat.w; g.beginPath(); g.roundRect(6, 12, 108, 72, 36); g.fill();
     g.fillStyle = kat.fg; g.font = "700 34px Inter,system-ui,sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(val, 60, 49);
-    g.fillStyle = "#1f2937"; g.font = "600 30px Inter,system-ui,sans-serif"; g.textAlign = "left"; let t = nama.replace(/^(Kota|Kabupaten|Kab\.) /, ""); while (g.measureText(t).width > 188 && t.length > 3) t = t.slice(0, -2); if (t !== nama.replace(/^(Kota|Kabupaten|Kab\.) /, "")) t += "..."; g.fillText(t, 124, 49); L.t.needsUpdate = true;
+    g.fillStyle = "#1f2937"; g.font = "600 30px Inter,system-ui,sans-serif"; g.textAlign = "left"; if (L.pangkas == null) { const asli = nama.replace(/^(Kota|Kabupaten|Kab\.) /, ""); let t = asli; while (g.measureText(t).width > 188 && t.length > 3) t = t.slice(0, -2); L.pangkas = t !== asli ? t + "..." : asli; } const t = L.pangkas; g.fillText(t, 124, 49); L.t.needsUpdate = true;
   }
   /* kamera orbit */
-  const K = {az: .5, el: .85, r: Math.max(lebar, tinggiPeta) * 1.15, tx: 0, ty: 0, tz: 0}; let kotor = true, hancur = false, ptr = new Map(), jarak0 = 0;
+  const fk = o.fokus ? P(o.fokus.lon, o.fokus.lat) : [0, 0, 0], K = {az: .35, el: .62, r: Math.max(lebar, tinggiPeta) * (o.fokus ? .85 : 1.0), tx: fk[0] * .7, ty: 0, tz: fk[2] * .7}; let kotor = true, hancur = false, ptr = new Map(), jarak0 = 0;
   const sedia = () => { const ce = Math.cos(K.el); cam.position.set(K.tx + K.r * ce * Math.sin(K.az), K.ty + K.r * Math.sin(K.el), K.tz + K.r * ce * Math.cos(K.az)); cam.lookAt(K.tx, K.ty, K.tz); kotor = true; };
   const cv = R.domElement; cv.style.touchAction = "none";
   cv.addEventListener("pointerdown", ev => { cv.setPointerCapture(ev.pointerId); ptr.set(ev.pointerId, [ev.clientX, ev.clientY]); if (ptr.size === 2) { const [a, b] = [...ptr.values()]; jarak0 = Math.hypot(a[0] - b[0], a[1] - b[1]); } });
@@ -105,7 +105,7 @@ export async function buat(wadah, o) {
       if (u > 2) { const al = Math.min(.3, .03 + u / 600); pp[k * 3] = cx[q]; pp[k * 3 + 1] = cy[q] + .55; pp[k * 3 + 2] = cz[q]; pc.set([.7 * gelap, .66 * gelap, .6 * gelap, al], k * 4); k++; } }
     gp.setDrawRange(0, k); gp.attributes.position.needsUpdate = true; gp.attributes.color.needsUpdate = true;
     for (const sp of spr) { const fk = faktorSumber(sp.userData); sp.material.opacity = fk <= 0 ? .22 : fk < 1 ? .6 : 1; }
-    lab.forEach((L, i) => { const nv = nilaiKota[i]; gambarLabel(L, L.k.nama, String(Math.round(nv.v)), nv.kat); });
+    lab.forEach((L, i) => { const nv = nilaiKota[i]; gambarLabel(L, L.k.nama, Math.round(nv.v) + (nv.tanda ? "*" : ""), nv.kat); });
     kotor = true;
   }
   function putar() { if (hancur) return; if (kotor) { kotor = false; R.render(scene, cam); } requestAnimationFrame(putar); }

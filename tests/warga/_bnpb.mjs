@@ -13,9 +13,8 @@ const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
-const PINTU = path.join(AKAR, "src/worker.js");
-export async function siapkan(nama, {r2 = false, ikat = {}, luar} = {}) {
-  const mf = new Miniflare({modules: true, scriptPath: PINTU, modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
+export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/worker.js"} = {}) {
+  const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, skrip), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
     bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", ...ikat},
     serviceBindings: {ASSETS: aset}, outboundService: luar || (() => new Response("diblok di uji", {status: 599})), cache: false});

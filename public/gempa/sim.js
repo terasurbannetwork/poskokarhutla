@@ -34,6 +34,8 @@ const Sim = (() => {
   const pilMmi = v => `<span class="sm-mmi" style="--w:${MMI_W[Math.round(v)] || MMI_W[1]};color:${v < 3.5 ? "#3b3320" : "#fff"}">${rom(v)}</span>`;
   /* waktu tiba tampil "sekitar N menit" (kelipatan 5), bukan menit pasti */
   const sekitar = m => m < 1 ? "langsung" : m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
+  /* lama berjalan: tidak pernah "langsung" */
+  const lamanya = m => m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
   const jamSim = t => t < 120 ? `${fmt(Math.floor(t))} dtk` : `${fmt(Math.floor(t / 60))} mnt${t < 3600 ? ` ${String(Math.floor(t % 60)).padStart(2, "0")} dtk` : ""}`;
   const km2 = (la1, lo1, la2, lo2) => { const x = (lo2 - lo1) * RAD * 6371 * Math.cos((la1 + la2) / 2 * RAD), y = (la2 - la1) * RAD * 6371; return Math.hypot(x, y); };
   const azimut = (a, b) => (Math.atan2((b[0] - a[0]) * Math.cos((a[1] + b[1]) / 2 * RAD), b[1] - a[1]) / RAD + 360) % 360;
@@ -155,14 +157,16 @@ self.onmessage = async e => { const d = e.data;
   /* tiga potong kerja dengan jeda di antaranya; basi() = skenario sudah diganti, hasil lama dibuang */
   async function hitungTsunami(sk, H, basi) {
     const G = S.D.grid;
-    if (!Tsunami.layak(sk.e, G)) { H.ts = {layak: false, alasan: sk.m < 6.5 ? "kekuatan di bawah M 6,5" : Tsunami.faktorDalam(sk.dalam, sk.jenis) <= 0 ? `pusatnya terlalu dalam untuk mengangkat dasar laut (batas ${sk.jenis === "subduksi" ? 70 : 40} km)` : "bidang patahannya lebih dari 20 km dari laut"}; return; }
+    if (!Tsunami.layak(sk.e, G)) { H.ts = {layak: false, alasan: sk.m < 6.5 ? "kekuatan di bawah M 6,5" : Tsunami.faktorDalam(sk.dalam, sk.jenis) <= 0 ? `pusatnya terlalu dalam untuk mengangkat dasar laut (batas ${sk.jenis === "subduksi" ? 50 : 40} km)` : "bidang patahannya lebih dari 20 km dari laut"}; return; }
     const wt = await waktuTibaLatar(sk); if (basi() || !wt) return;
     await lepas(); if (basi()) return;
     const swe = Tsunami.swe(G, sk.r, {radiusKm: sk.m >= 8 ? 1100 : 700}), cek = [swe.simpan()];
     await lepas(); if (basi()) return;
     /* waktu tiba terdekat dari sel laut <= 2 sel (~11 km) */
+    /* evakuasi memakai waktu tiba sisi aman: mentah x 0,61 (rasio SWE/Dijkstra terkecil yang teramati), bukan 0,85 tampilan */
+    const AMAN = Tsunami.SISI_AMAN / Tsunami.KALIBRASI;
     const tibaDi = (la, lo) => { const j0 = Math.round((la - G.lat0) / G.d), i0 = Math.round((lo - G.lon0) / G.d); let t = Infinity;
-      for (let a = -2; a <= 2; a++) for (let b = -2; b <= 2; b++) { const j = j0 + a, i = i0 + b; if (j >= 0 && i >= 0 && j < G.ny && i < G.nx) t = Math.min(t, wt.menit[j * G.nx + i]); } return t; };
+      for (let a = -2; a <= 2; a++) for (let b = -2; b <= 2; b++) { const j = j0 + a, i = i0 + b; if (j >= 0 && i >= 0 && j < G.ny && i < G.nx) t = Math.min(t, wt.menit[j * G.nx + i]); } return t * AMAN; };
     const kandidat = [];
     for (const [k, [la, lo]] of Object.entries(S.D.pusat)) { if (Math.abs(la - sk.lat) > 12 || Math.abs(lo - sk.lon) > 14) continue;
       const z = Tsunami.nilai(G, la, lo); if (z == null || z > 10) continue; const tb = tibaDi(la, lo); if (tb > MENIT_TS) continue;
@@ -243,14 +247,14 @@ self.onmessage = async e => { const d = e.data;
     const T = H.ts;
     if (T && !T.layak) out.push(kartu(pil("Tsunami", "#2f6f9f"), "Model ini tidak menghitung tsunami untuk skenario ini", `<p class="sm-1">Alasannya: ${T.alasan}. Status tsunami resmi hanya dari BMKG.</p>`));
     if (T && T.layak) { const pk = T.wt.perKab, p0 = pk[0];
-      out.push(kartu(pil("Tsunami", "#2f6f9f"), p0 ? p0.menit < 1 ? `Pantai ${esc(p0.kab)} ${hl("langsung")} terkena karena berada di atas bidang patahan` : `Gelombang pertama tiba di pantai ${esc(p0.kab)} ${hl(sekitar(p0.menit))} sesudah gempa` : `Gelombang tidak mencapai pantai dalam ${MENIT_TS} menit`,
-        pk.length ? `<table class="tb3"><thead><tr><th>Pantai</th><th class="n">Tiba</th><th class="n">Tinggi indikatif</th></tr></thead><tbody>${pk.slice(0, 12).map(p => `<tr><td><button class="link" data-ke="${p.lat},${p.lon}">${esc(p.kab)}</button></td><td class="n">${p.menit < 1 ? "langsung, di atas bidang patahan" : sekitar(p.menit)}</td><td class="n num">${des(p.tinggi_lo)} sampai ${des(p.tinggi_hi)} m</td></tr>`).join("")}</tbody></table>${pk.length > 12 ? `<p class="fnd">${fmt(12)} dari ${fmt(pk.length)} kabupaten/kota</p>` : ""}` : "",
+      out.push(kartu(pil("Tsunami", "#2f6f9f"), p0 ? p0.menit < 1 ? `Pantai ${esc(p0.kab)} ${hl("langsung")} terkena karena berada di atas atau tepat di tepi bidang patahan` : `Gelombang pertama tiba di pantai ${esc(p0.kab)} ${hl(sekitar(p0.menit))} sesudah gempa` : `Gelombang tidak mencapai pantai dalam ${MENIT_TS} menit`,
+        pk.length ? `<table class="tb3"><thead><tr><th>Pantai</th><th class="n">Tiba</th><th class="n">Tinggi indikatif</th></tr></thead><tbody>${pk.slice(0, 12).map(p => `<tr><td><button class="link" data-ke="${p.lat},${p.lon}">${esc(p.kab)}</button></td><td class="n">${p.menit < 1 ? "langsung, di atas atau tepat di tepi bidang patahan" : sekitar(p.menit)}</td><td class="n num">${des(p.tinggi_lo)} sampai ${des(p.tinggi_hi)} m</td></tr>`).join("")}</tbody></table>${pk.length > 12 ? `<p class="fnd">${fmt(12)} dari ${fmt(pk.length)} kabupaten/kota</p>` : ""}` : "",
         "Rentang tinggi empiris (Abe 1995), bukan angka pasti. Status tsunami resmi hanya dari BMKG."));
       const tidak = H.evak.filter(e => !e.sempat && !e.tanpaTujuan), tanpa = H.evak.filter(e => e.tanpaTujuan);
       if (H.evak.length) out.push(kartu(pil("Evakuasi", "#4d8a5e"), tidak.length ? `${hl(fmt(tidak.length))} dari ${fmt(H.evak.length)} titik pesisir rendah tidak sempat mencapai tanah 20 m berjalan kaki${tanpa.length ? `; ${fmt(tanpa.length)} tanpa tanah 20 m dalam 40 km` : ""}` :
         tanpa.length ? `${hl(fmt(tanpa.length))} dari ${fmt(H.evak.length)} titik pesisir rendah tidak punya tanah 20 m dalam 40 km` : `Semua ${hl(fmt(H.evak.length))} titik pesisir rendah sempat mencapai tanah 20 m berjalan kaki`,
-        `<table class="tb3"><thead><tr><th>Titik</th><th class="n">Jalan kaki</th><th class="n">Gelombang</th></tr></thead><tbody>${H.evak.slice(0, 12).map(e => `<tr class="${e.sempat ? "" : "sm-tidak"}"><td><button class="link" data-ke="${e.lat},${e.lon}">${esc(e.nama)}</button><small>${e.rs ? "fasilitas kesehatan" : esc(e.kab)}${e.tuju ? ` · ${des(e.km)} km` : " · tidak ada tanah 20 m dalam 40 km"}</small></td><td class="n">${e.jalan ? `${sekitar(e.jalan[1])}<small>${fmt(Math.round(e.jalan[0] / 5) * 5)} sampai ${fmt(Math.round(e.jalan[2] / 5) * 5)} menit</small>` : "–"}</td><td class="n">${sekitar(e.tiba)}${e.tanpaTujuan ? "<small>tanpa tujuan</small>" : e.sempat ? "" : "<small>tidak sempat</small>"}</td></tr>`).join("")}</tbody></table>`,
-        "Jalan kaki 4 km/jam (2,5 sampai 5), jarak lurus x 1,3, tanpa waktu reaksi. Garis di peta."));
+        `<table class="tb3"><thead><tr><th>Titik</th><th class="n">Jalan kaki</th><th class="n">Gelombang paling cepat</th></tr></thead><tbody>${H.evak.slice(0, 12).map(e => `<tr class="${e.sempat ? "" : "sm-tidak"}"><td><button class="link" data-ke="${e.lat},${e.lon}">${esc(e.nama)}</button><small>${e.rs ? "fasilitas kesehatan" : esc(e.kab)}${e.tuju ? ` · ${des(e.km)} km` : " · tidak ada tanah 20 m dalam 40 km"}</small></td><td class="n">${e.jalan ? `${lamanya(e.jalan[1])}${e.jalan[2] >= 7.5 ? `<small>${fmt(Math.max(5, Math.round(e.jalan[0] / 5) * 5))} sampai ${fmt(Math.round(e.jalan[2] / 5) * 5)} menit</small>` : ""}` : "–"}</td><td class="n">${sekitar(e.tiba)}${e.tanpaTujuan ? "<small>tanpa tujuan</small>" : e.sempat ? "" : "<small>tidak sempat</small>"}</td></tr>`).join("")}</tbody></table>`,
+        "Jalan kaki 4 km/jam (2,5 sampai 5), jarak lurus x 1,3, tanpa waktu reaksi. Waktu gelombang diambil dari perkiraan tercepat. Garis di peta."));
     }
     out.push(`<p class="fnd sm-metode">Cara menghitung dan batas model ada di <a href="/gempa/metode" id="smMetode">Metode</a>.</p>`);
     return out.join("");
@@ -377,7 +381,7 @@ self.onmessage = async e => { const d = e.data;
   function putar() { if (!S.hasil) return; S.putar = true; tombolPutar(); /* ikon dulu; kerja di frame berikut */
     const habis = S.t >= tMaks(); S.peta.getSource("sm-ts")?.play();
     let akhir = performance.now() + 16; if (habis) nanti(ulangi);
-    const f = now => { if (!S.putar) return; const dt = Math.min(.1, (now - akhir) / 1000), L = LAJU.find(l => l[0] === S.laju); akhir = now;
+    const f = now => { if (!S.putar || !S.hasil) return; const dt = Math.min(.1, (now - akhir) / 1000), L = LAJU.find(l => l[0] === S.laju); akhir = now;
       keWaktu(S.t + dt * (S.t < S.hasil.tSelesai ? L[2] : L[3])); if (S.putar) S.raf = requestAnimationFrame(f); };
     S.raf = requestAnimationFrame(f); }
   function jeda() { S.putar = false; cancelAnimationFrame(S.raf); tombolPutar(); segarKanvas(); }

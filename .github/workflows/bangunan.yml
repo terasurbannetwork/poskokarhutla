@@ -1,0 +1,152 @@
+name: Paparan bangunan (Open Buildings)
+
+# Data TERKUNCI: tidak di-commit, tidak di public/. Keluaran data/terkunci/bangunan/*.json diunggah ke R2
+# (poskokarhutla-foto, awalan bangunan/) dan dibaca worker setelah login.
+# bulanan : unduh Open Buildings (278 ubin, ~12,7 GB, skrip bisa dilanjutkan) -> grid -> paparan -> R2.
+# harian  : grid dari cache, hitung ulang terpapar.json dari data karhutla/banjir/gempa terbaru -> R2.
+# Grup concurrency sendiri (bukan `data`): tidak commit/terbit, dan unduhan berjam-jam tak boleh menahan data.yml.
+# Cron: statis 02 tgl 19:00, banjir 00:20, gempa 01:10, lintas 02:10, udara 06:40/18:40, data 14:20 (UTC).
+on:
+  schedule:
+    - cron: "30 20 3 * *"
+    - cron: "30 8 * * *"
+  workflow_dispatch:
+    inputs:
+      mode:
+        description: bulanan (unduh ulang grid) atau harian (paparan saja)
+        type: choice
+        options: [bulanan, harian]
+        default: harian
+
+concurrency:
+  group: bangunan
+  cancel-in-progress: false
+
+env:
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  bulanan:
+    if: (github.event_name == 'schedule' && github.event.schedule == '30 20 3 * *') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'bulanan')
+    runs-on: ubuntu-latest
+    timeout-minutes: 350
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: |
+          set -e
+          python3 scripts/umum/bangunan.py --uji
+          python3 scripts/umum/paparan_bangunan.py --uji
+
+      - name: Pulihkan hasil per ubin (lanjutkan unduhan)
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/bangunan/hasil
+          key: bangunan-hasil-${{ github.run_id }}
+          restore-keys: bangunan-hasil-
+
+      - name: Bangun grid semua provinsi
+        run: python3 scripts/umum/bangunan.py --semua --hapus-mentah
+
+      # simpan segera: bila langkah sesudahnya gagal, grid tidak hilang
+      - name: Simpan grid untuk job harian
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/kec.json
+          key: bangunan-grid-${{ github.run_id }}
+
+      - name: Simpan hasil per ubin
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/bangunan/hasil
+          key: bangunan-hasil-${{ github.run_id }}
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
+      - name: Hitung paparan
+        run: python3 scripts/umum/paparan_bangunan.py
+
+      - name: Unggah ke R2
+        run: |
+          set -e
+          for f in data/terkunci/bangunan/*.json; do
+            npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/bangunan/$(basename "$f")" --file "$f" --content-type application/json --remote
+          done
+
+  harian:
+    if: (github.event_name == 'schedule' && github.event.schedule == '30 8 * * *') || (github.event_name == 'workflow_dispatch' && inputs.mode == 'harian')
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: |
+          set -e
+          python3 scripts/umum/bangunan.py --uji
+          python3 scripts/umum/paparan_bangunan.py --uji
+
+      - name: Pulihkan grid bulanan
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/terkunci/bangunan/grid_*.json
+            data/terkunci/bangunan/kec.json
+          key: bangunan-grid-${{ github.run_id }}
+          restore-keys: bangunan-grid-
+
+      - name: Pulihkan data karhutla terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data
+          key: data-${{ github.run_id }}
+          restore-keys: data-
+
+      - name: Pulihkan data banjir terakhir
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/banjir/data
+            data/raw/banjir
+          key: banjir-${{ github.run_id }}
+          restore-keys: banjir-
+
+      # grid belum pernah dibangun (cache kosong/kedaluwarsa): jalankan mode bulanan dulu, jangan gagal merah
+      - name: Cek grid
+        id: grid
+        run: |
+          if ls data/terkunci/bangunan/grid_*.json >/dev/null 2>&1; then echo ada=1 >> "$GITHUB_OUTPUT"
+          else echo "::warning::grid bangunan tidak ada di cache; jalankan workflow ini mode bulanan"; fi
+
+      - name: Hitung paparan
+        if: steps.grid.outputs.ada == '1'
+        run: python3 scripts/umum/paparan_bangunan.py
+
+      - name: Unggah terpapar.json ke R2
+        if: steps.grid.outputs.ada == '1'
+        run: npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/bangunan/terpapar.json --file data/terkunci/bangunan/terpapar.json --content-type application/json --remote

@@ -19,8 +19,15 @@ BATAS = [55.4, 150.4, 250.4]   # P.14/2020, PM2,5 rata-rata 24 jam: batas atas S
 STATUS = ["normal", "waspada", "siaga", "awas"]
 
 
-def ambil(url, teks=False, timeout=180):
-    """GET dengan UA peramban; satu ulangan bila jaringan putus atau JSON rusak."""
+JEDA = 5
+
+
+def ambil(url, teks=False, timeout=180, rahasia=()):
+    """GET dengan UA peramban; satu ulangan bila jaringan putus atau JSON rusak.
+
+    Pesan galat TIDAK memuat query string (bisa berisi token) dan semua nilai `rahasia` disamarkan; rantai pengecualian
+    asli dibuang (`from None`) supaya traceback tidak membawa URL lengkap.
+    """
     for i in range(2):
         try:
             with urllib.request.urlopen(urllib.request.Request(url, headers={"User-Agent": UA}), timeout=timeout) as r:
@@ -28,8 +35,12 @@ def ambil(url, teks=False, timeout=180):
             return b if teks else json.loads(b)
         except Exception as e:
             if i:
-                raise RuntimeError(f"gagal ambil {url[:120]}: {e}") from e
-            time.sleep(65 if "429" in str(e) else 5)   # 429 = batas per menit Open-Meteo
+                pesan = f"gagal ambil {url.split('?')[0]}: {type(e).__name__}: {e}"
+                for r_ in rahasia:
+                    if r_:
+                        pesan = pesan.replace(r_, "***")
+                raise RuntimeError(pesan) from None
+            time.sleep(65 if "429" in str(e) else JEDA)   # 429 = batas per menit Open-Meteo
 
 
 def simpan(nama, isi, folder=OUT):
@@ -118,6 +129,13 @@ def uji():
     assert abs(jarak_km(0, 0, 0, 1) - 111.2) < .2 and jarak_km(-3, 104, -3, 104) == 0
     t = dari_iso("2026-10-18T17:30Z")
     assert iso(t) == "2026-10-18T17:30Z" and hari_wib(t) == "2026-10-19" and iso(dari_iso("2026-10-18T03:00")) == "2026-10-18T03:00Z"
+    global JEDA
+    JEDA, rahasia = 0, "TOKENRAHASIA123"
+    try:   # port tertutup di mesin sendiri: gagal cepat, tanpa jaringan luar
+        ambil(f"http://127.0.0.1:9/map/bounds?latlng=1&token={rahasia}", timeout=2, rahasia=(rahasia,))
+        raise AssertionError("ambil harus gagal")
+    except RuntimeError as e:
+        assert rahasia not in str(e) and "token" not in str(e) and e.__cause__ is None and e.__suppress_context__, str(e)
     print("alat uji: lulus")
 
 

@@ -89,6 +89,8 @@ const Citra = {
       return dt <= 600e3 && 12742 * Math.asin(Math.sqrt(a)) <= 100; }) || null; },
 };
 const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";
+/* waktu tiba tsunami: "langsung" di atas bidang patahan, "kurang dari 5 menit", selebihnya "sekitar N menit" kelipatan 5 (sama dengan sim.js) */
+const waktuTiba = m => m < 1 ? "langsung" : m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
 
 /* ================================================================ indeks risiko riwayat (data/risiko.json, scripts/gempa/riwayat.py) dan kontak BPBD (../data/bpbd.json) */
 /* skor 0 sampai 100 per provinsi: bobot 50 kekerapan, 30 besaran, 20 tren dari gempa M 5+ 2000-2025; prov[k] = [skor, indeks kelas] */

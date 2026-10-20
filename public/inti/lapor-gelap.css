@@ -1,0 +1,2 @@
+/* Mode gelap bersama /lapangan dan /rumah-rusak (token :root ada di lapangan.css / rumah_rusak.css; berkas ini dimuat SESUDAH keduanya). */
+@media (prefers-color-scheme:dark){:root{--ink:#eef1f7;--ink2:#aab4c8;--paper:#0b1220;--card:#131c30;--line:#26314a;color-scheme:dark}}

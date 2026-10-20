@@ -32,7 +32,7 @@ export async function buat(wadah, o) {
     for (let j = 0; j < H; j++) for (let i = 0; i < W; i++) { const c = (j0 + j) * kis.nx + i0 + i, v = Kal * (hasil.sfcA[b0 * N + c] * (1 - f) + hasil.sfcA[b1 * N + c] * f) + hasil.sfcP[b0 * N + c] * (1 - f) + hasil.sfcP[b1 * N + c] * f;
       const o2 = ((H - 1 - j) * W + i) * 4; if (v < 2) { d[o2 + 3] = 0; continue; } const r = rgb(v); d[o2] = r[0]; d[o2 + 1] = r[1]; d[o2 + 2] = r[2]; d[o2 + 3] = r[3]; }
     gk.putImageData(img, 0, 0); gb.imageSmoothingEnabled = true; gb.imageSmoothingQuality = "high"; gb.clearRect(0, 0, besar.width, besar.height); gb.drawImage(kecil, 0, 0, besar.width, besar.height); cv.play(); cv.pause();
-    m.getSource("su-kota").setData(fs(o.kota, (k, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [k.lon, k.lat]}, properties: {i, r: i, nama: k.nama.replace(/^(Kota|Kabupaten|Kab\.) /, ""), v: String(Math.round(nilaiKota[i].v)), c: nilaiKota[i].kat.w}})));
+    m.getSource("su-kota").setData(fs(o.kota, (k, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [k.lon, k.lat]}, properties: {i, r: i, nama: k.nama.replace(/^(Kota|Kabupaten|Kab\.) /, ""), v: Math.round(nilaiKota[i].v) + (nilaiKota[i].tanda ? "*" : ""), c: nilaiKota[i].kat.w}})));
     if (st.sknBaru) m.getSource("su-sumber").setData(fs(o.sumber, q => ({type: "Feature", geometry: {type: "Point", coordinates: [q.lon, q.lat]}, properties: {jenis: q.jenis, id: q.id, f: faktorSumber(q), ukr: q.jenis === "api" ? .45 + .5 * Math.sqrt((q.frp || 0) / Math.max(1, ...o.sumber.map(x => x.frp || 0))) : .6}})));
   }
   return {ubah, ukuran: () => m.resize(), hancur: () => m.remove()};

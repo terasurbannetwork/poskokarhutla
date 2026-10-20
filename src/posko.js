@@ -52,7 +52,7 @@ const tolakAdmin = () => gagal(403, "akses ditolak");
 
 /* ================================================================ regu (kode) */
 /* kembalikan baris regu, atau Response galat. Tebakan kode dihitung per IP (hash bergaram) SEBELUM lookup D1: > MAKS_GAGAL_KODE per jam = 429. */
-async function reguDari(env, req, kini = Date.now()) {
+export async function reguDari(env, req, kini = Date.now()) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   const ip = await ipHash(env, req);
   if (await gagalSudahBanyak(env, ip, "kode_gagal", MAKS_GAGAL_KODE, kini)) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
@@ -643,7 +643,7 @@ async function dummy(env, req, kini) {
 }
 
 /* ================================================================ halaman regu + rute */
-const CSP_LAPANGAN = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_LAPANGAN = "default-src 'self'; script-src 'self' https://cdnjs.cloudflare.com; style-src 'self' https://cdnjs.cloudflare.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 async function halamanLapangan(env, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/lapangan.html", url)));
   if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman lapangan tidak ada"); }

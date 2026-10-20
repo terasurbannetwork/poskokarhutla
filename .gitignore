@@ -66,3 +66,6 @@ data/ubin/*.pmtiles
 
 # Himawari: ditarik CI tiap 30 menit langsung ke R2, bukan berkas repo
 public/data/himawari.json
+
+# paparan bangunan terkunci: dibuat di Actions (bangunan.yml), diunggah ke R2, tidak di-commit
+data/terkunci/

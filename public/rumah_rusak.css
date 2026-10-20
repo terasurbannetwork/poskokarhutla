@@ -1,0 +1,47 @@
+/* Lapor Rumah Rusak: token dan nada sama dengan lapangan.css. Tanpa gaya inline (CSP style-src 'self' + cdnjs untuk MapLibre). */
+:root{--navy:#0b2545;--navy2:#1d4e89;--emas:#c9a227;--merah:#c9503a;--hijau:#2f7d52;--ink:#0b2545;--ink2:#4c5873;--paper:#f5f7fb;--card:#fff;--line:#d6dce8;--rb:#b3261e;--rs:#e08a1e;--rr:#e5c100;color-scheme:light}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:17px/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding-bottom:env(safe-area-inset-bottom)}
+a{color:var(--navy2)}
+.rr-kop{background:linear-gradient(135deg,var(--navy2),var(--navy));color:#fff;padding:calc(14px + env(safe-area-inset-top)) 16px 14px}
+.rr-kop h1{margin:0;font-size:22px}
+.rr-siapa{margin:0;font-size:15px;color:var(--ink2);font-weight:600}
+.rr-isi{max-width:720px;margin:0 auto;padding:12px 14px 32px;display:grid;gap:12px}
+.rr-blok{background:var(--card);border-radius:16px;padding:14px;box-shadow:0 0 0 1px var(--line);display:grid;gap:12px;min-width:0}
+.rr-blok h2{margin:0;font-size:16px;letter-spacing:.02em}
+label{display:grid;gap:6px;font-size:15px;color:var(--ink2);font-weight:600}
+input,select,textarea{font:inherit;color:var(--ink);background:var(--paper);border:2px solid var(--line);border-radius:12px;padding:10px 12px;min-height:50px;width:100%}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:3px solid var(--emas);outline-offset:1px}
+[hidden]{display:none!important}
+.rr-peta{height:min(52vh,420px);min-height:260px;border-radius:12px;overflow:hidden;box-shadow:0 0 0 1px var(--line);touch-action:none}
+.rr-tombol{font-family:inherit;font-weight:700;font-size:17px;line-height:1.2;min-height:52px;border-radius:14px;border:2px solid var(--navy);background:var(--card);color:var(--navy);padding:10px 16px;cursor:pointer;width:100%}
+.rr-tombol.utama{background:var(--navy);color:#fff}
+.rr-tombol.besar{min-height:62px;font-size:19px;position:sticky;bottom:calc(8px + env(safe-area-inset-bottom))}
+.rr-tombol:disabled{opacity:.5}
+.rr-tingkat{display:grid;gap:10px}
+.rr-pil{position:relative;display:block}
+.rr-pil input{position:absolute;opacity:0;inset:0;min-height:0;cursor:pointer}
+.rr-pil span{display:grid;gap:2px;border:2px solid var(--line);border-left:10px solid var(--w);border-radius:14px;padding:10px 12px;background:var(--paper);color:var(--ink)}
+.rr-pil b{font-size:17px}
+.rr-pil small{font-size:14px;font-weight:500;color:var(--ink2)}
+.rr-pil input:checked+span{border-color:var(--navy);background:color-mix(in srgb,var(--w) 16%,var(--card))}
+.rr-pil input:focus-visible+span{outline:3px solid var(--emas);outline-offset:2px}
+.rr-pil.berat{--w:var(--rb)}.rr-pil.sedang{--w:var(--rs)}.rr-pil.ringan{--w:var(--rr)}
+.rr-kecil{margin:0;font-size:14px;color:var(--ink2)}
+.rr-pesan{margin:0;font-weight:700;min-height:1.2em}
+.rr-pesan.ok{color:var(--hijau)}.rr-pesan.galat{color:var(--merah)}
+.rr-banner{background:color-mix(in srgb,var(--emas) 18%,var(--card));border-radius:14px;padding:12px 14px;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent);margin:0}
+.rr-baris{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.rr-daftar{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.rr-daftar li{display:flex;gap:10px;align-items:baseline;flex-wrap:wrap;border-bottom:1px solid var(--line);padding-bottom:6px;font-size:15px}
+.rr-lencana{display:inline-block;min-width:2.6em;text-align:center;border-radius:999px;padding:1px 9px;font-weight:800;font-size:13px;color:#fff;background:var(--rb)}
+.rr-lencana.sedang{background:var(--rs)}.rr-lencana.ringan{background:var(--rr);color:#3a2f00}
+.rr-lencana.ditolak{background:var(--ink2)}
+.rr-gulir{overflow-x:auto}
+.rr-tabel{border-collapse:collapse;width:100%;font-size:15px;font-variant-numeric:tabular-nums}
+.rr-tabel caption{text-align:left;padding-bottom:6px}
+.rr-tabel th,.rr-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);text-align:right}
+.rr-tabel th:first-child,.rr-tabel td:first-child{text-align:left}
+.rr-tabel tr.kab td{font-weight:800;background:color-mix(in srgb,var(--navy2) 8%,var(--card))}
+.rr-tabel tr.kec td:first-child{padding-left:20px}
+.rr-tabel tr.jumlah td{font-weight:800;border-top:2px solid var(--ink)}

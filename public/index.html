@@ -1946,6 +1946,8 @@ const Peta = {
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (S.panel !== "riw") tip.classList.remove("on"); });
     peta.on("click", e => {
       const kc = peta.getLayer("prio-klaster") && peta.queryRenderedFeatures(e.point, {layers: ["prio-klaster"]});
+      const hk = peta.getLayer("himawari-klaster") && peta.getLayoutProperty("himawari-klaster", "visibility") !== "none" && peta.queryRenderedFeatures(e.point, {layers: ["himawari-klaster"]});
+      if (hk && hk.length) { const f = hk[0]; peta.getSource("himawari").getClusterExpansionZoom(f.properties.cluster_id).then(z => peta.easeTo({center: f.geometry.coordinates, zoom: z + .3, duration: 900})); return; }
       if (kc && kc.length) { const id = kc[0].properties.cluster_id, src = peta.getSource("prio");
         src.getClusterLeaves(id, 100, 0).then(fs => { const b = new maplibregl.LngLatBounds(); fs.forEach(f => b.extend(f.geometry.coordinates));
           peta.fitBounds(b, {padding: 90, maxZoom: 9.5, duration: 1100, essential: true}); }); return; }
@@ -2086,8 +2088,15 @@ const Lapis = {
           paint: {"text-color": gelap() ? "#fff" : "#0b2545", "text-halo-color": gelap() ? "#0b1424" : "#fff", "text-halo-width": 1.6}}); },
       /* Himawari-9 (JAXA, pindai 10 menit): cincin biru, makin baru makin pekat; data diambil saat dinyalakan lalu tiap 10 menit selagi terlihat */
       himawari: async () => {
-        peta.addSource("himawari", {type: "geojson", data: this.hwFitur(0)});
-        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 4, paint: {"circle-radius": this.hwR(1),
+        /* api berdekatan digabung jadi gelembung biru bernomor di skala kecil, pecah saat diperbesar (sama dengan kompleks prioritas) */
+        peta.addSource("himawari", {type: "geojson", data: this.hwFitur(0), cluster: true, clusterRadius: 40, clusterMaxZoom: 7});
+        peta.addLayer({id: "himawari-klaster", type: "circle", source: "himawari", minzoom: 4, filter: ["has", "point_count"],
+          paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#22b8e0", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
+        peta.addLayer({id: "himawari-n", type: "symbol", source: "himawari", minzoom: 4, filter: ["has", "point_count"],
+          layout: {"text-field": ["to-string", ["get", "point_count"]], "text-size": 9.5, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
+          paint: {"text-color": "#fff", "text-halo-color": "#0e6f8a", "text-halo-width": .6}});
+        peta.on("mouseenter", "himawari-klaster", () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", "himawari-klaster", () => { peta.getCanvas().style.cursor = ""; });
+        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 4, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
           "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 4, 1, 10, 1.6],
           "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
         ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); this.hwMulai(); },
@@ -2562,7 +2571,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
   if (i.dataset.l === "satelit") ["himawari", "hwbaru"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari"], hwbaru: ["hwbaru", "hwbaru-halo"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], hwbaru: ["hwbaru", "hwbaru-halo"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));

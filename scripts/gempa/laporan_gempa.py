@@ -29,6 +29,7 @@ WIB = dt.timezone(dt.timedelta(hours=7))
 N_HARI = 60
 BMKG_URL = "https://pantau.terasurban.com/api/gempa/terbaru?jam=720"
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+P_MIN_HARIAN = 0.005  # baris prakiraan dibuang bila semua peluang harian di bawah ini
 TINGKAT_TSUNAMI = {1: "waspada", 2: "siaga", 3: "awas"}
 METRIK = [
     {"k": "kejadian", "label": "Gempa M 4 atau lebih", "satuan": "kejadian", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0, "dari": "n4"},
@@ -144,6 +145,9 @@ def prakiraan(ev, model, kini, wil):
         lt = wil.letak(e["lat"], e["lon"], e["place"])
         nama = lt[1] if lt and lt[1] else (lt[2] if lt else e["place"])
         baris.append({"label": f"{nama} ({m_teks(e['m'])}, {waktu_wib(t_utc)})", "prov": e["kp"], "nilai": nilai, "satuan": "peluang"})
+    baris = [b for b in baris if max(b["nilai"]) >= P_MIN_HARIAN]  # A18: baris yang semua harinya < 0,5% tampil 0% dan tak informatif
+    if not baris:
+        return None
     return {"judul": "Peluang harian gempa susulan M 5 atau lebih, 7 hari ke depan", "hari": hari, "baris": baris[:8],
             "catatan": "Hanya gempa utama M≥5 dalam 7 hari terakhir; gempa yang masih dalam rangkaian gempa sebelumnya tidak dihitung."}
 
@@ -269,6 +273,10 @@ def uji():
     v = p["baris"][0]["nilai"]
     assert all(0 < a for a in v) and all(a >= b for a, b in zip(v, v[1:])), v  # Omori: makin lama makin kecil
     assert {x["id"] for x in d["tambahan"]} == {"m5", "susulan"} and "rangkaian" in p["catatan"]
+    # gempa utama kecil 5 hari lalu: semua peluang harian < 0,5% -> baris dibuang, prakiraan tidak ditulis
+    ev_kecil = [dict(ev[0], w=t(days=5).strftime("%Y-%m-%dT%H:%M"), t=SU._hari(t(days=5).strftime("%Y-%m-%dT%H:%M")), m=5.1)]
+    d3 = bangun(feats, bmkg, ev_kecil, model, kini, wil)
+    assert "prakiraan" not in d3 and LP.periksa(d3) == [], d3.get("prakiraan")
     v_on = bangun(feats, bmkg, ev, dict(model, terbit_sesuaikan=True), kini, wil)["prakiraan"]["baris"][0]["nilai"]
     assert v_on != v, "terbit_sesuaikan true harus memakai param disesuaikan"
     e0 = ev[0]

@@ -13,6 +13,7 @@ Galat METAR: kejadian teramati = hari WIB dengan >= 3 laporan HZ/FU dan jarak pa
 import csv
 import datetime as dt
 import io
+import json
 import math
 import os
 import random
@@ -33,6 +34,7 @@ HARI_UJI = 7
 ARSIP_HARI = 120
 BOOT, BENIH = 2000, 20261018
 MIN_N_PRAKIRAAN = 50
+ARSIP_KB = 290
 EPA2012 = [(0, 12.0, 0, 50), (12.1, 35.4, 51, 100), (35.5, 55.4, 101, 150), (55.5, 150.4, 151, 200),
            (150.5, 250.4, 201, 300), (250.5, 350.4, 301, 400), (350.5, 500.4, 401, 500)]
 
@@ -104,9 +106,9 @@ def faktor_kota(kota, stasiun):
 
 def arsip_waqi(token, arsip, t):
     """Tambah pengukuran saat ini ke arsip {uid: {lat, lon, nama, obs: {jam ISO: pm}}}; buang > 45 hari."""
-    d = alat.ambil(URL_WAQI + token)
+    d = alat.ambil(URL_WAQI + token, rahasia=(token,))
     if d.get("status") != "ok":
-        raise RuntimeError(f"WAQI status {d.get('status')}: {str(d.get('data'))[:80]}")
+        raise RuntimeError(f"WAQI status {d.get('status')}: {str(d.get('data'))[:80].replace(token, '***')}")
     batas = alat.iso(t - dt.timedelta(days=45))
     for s in d["data"]:
         pm = aqi_ke_pm(float(s["aqi"])) if str(s.get("aqi", "")).replace(".", "").isdigit() else None
@@ -197,7 +199,7 @@ def skor_metar(kej, model, ulang=BOOT, benih=BENIH):
     h, f, c = _skor(*tot)
     bulat = lambda v: None if v is None else round(v, 3)
     out = {"n": sum(tot), "satuan": "hari-bandara", "n_bandara": len(per), "hit": bulat(h), "far": bulat(f), "csi": bulat(c),
-           "tabel": {"hit": tot[0], "alarm_palsu": tot[1], "luput": tot[2], "benar_negatif": tot[3]}, "selang": None}
+           "tabel": {"hit": tot[0], "alarm_palsu": tot[1], "luput": tot[2], "benar_negatif": tot[3]}, "ci": None, "ci_metode": None}
     if len(per) >= 2:
         rng, st = random.Random(benih), list(per.values())
         sampel = [[], [], []]
@@ -207,7 +209,44 @@ def skor_metar(kej, model, ulang=BOOT, benih=BENIH):
                 if v is not None:
                     sampel[i].append(v)
         q = lambda a: [round(sorted(a)[int(.025 * (len(a) - 1))], 3), round(sorted(a)[int(.975 * (len(a) - 1))], 3)] if a else None
-        out["selang"] = {"hit": q(sampel[0]), "far": q(sampel[1]), "csi": q(sampel[2]), "metode": f"bootstrap per bandara {ulang} ulangan, benih {benih}, 95%"}
+        out["ci"] = {"hit": q(sampel[0]), "far": q(sampel[1]), "csi": q(sampel[2])}
+        out["ci_metode"] = f"bootstrap per bandara {ulang} ulangan, benih {benih}, 95%"
+    return out
+
+
+# ---------- arsip prakiraan (append-only) ----------
+def arsip_dict(arsip):
+    """Bentuk ringkas -> {tgl: {kode: [r24 hari+1, hari+2]}}."""
+    out = {}
+    for t, v in arsip.get("tgl", {}).items():
+        kode = arsip["kode"]   # daftar kode berubah? arsip_tambah mengode ulang semua tanggal dengan daftar baru
+        n = len(kode)
+        out[t] = {k: [v[i], v[n + i]] for i, k in enumerate(kode)}
+    return out
+
+
+def arsip_tambah(arsip, tgl, baris, lama=None):
+    """{v, kode, tgl: {tgl: [h+1 x n kota, h+2 x n kota]}}. Tanggal yang sudah ada TIDAK ditimpa (append-only).
+    Buang tanggal > ARSIP_HARI hari sebelum tanggal terbaru, lalu yang tertua sampai < ARSIP_KB."""
+    kode = [k["kode"] for k in baris] or arsip.get("kode") or sorted({k for d in (lama or {}).values() for k in d})
+    d = arsip_dict(arsip) if arsip.get("tgl") else {}
+    for t, isi in (lama or {}).items():
+        d.setdefault(t, isi)
+    if tgl and tgl not in d:
+        d[tgl] = {k["kode"]: k["r24"][1:3] for k in baris}
+    for t, isi in d.items():
+        for k, v in isi.items():
+            if not (isinstance(v, list) and len(v) == 2 and all(x is None or (isinstance(x, (int, float)) and 0 <= x < 5000) for x in v)):
+                raise ValueError(f"arsip prakiraan {t} {k} tidak sah: {v!r}")
+    out = {"v": 1, "kode": kode, "tgl": {}}
+    for t in sorted(d):
+        isi = d[t]
+        out["tgl"][t] = [isi.get(k, [None, None])[0] for k in kode] + [isi.get(k, [None, None])[1] for k in kode]
+    if out["tgl"]:
+        batas = (dt.date.fromisoformat(max(out["tgl"])) - dt.timedelta(days=ARSIP_HARI)).isoformat()
+        out["tgl"] = {t: v for t, v in out["tgl"].items() if t >= batas}
+    while len(out["tgl"]) > 1 and len(json.dumps(out, separators=(",", ":"))) > ARSIP_KB * 1024:
+        del out["tgl"][min(out["tgl"])]
     return out
 
 
@@ -259,7 +298,7 @@ def main():
             arsip = arsip_waqi(token, alat.muat(arsip_p, {}), t)
             alat.simpan(arsip_p, arsip)
         except Exception as e:
-            alat.log(f"::warning title=udara WAQI::{e}")
+            alat.log(f"::warning title=udara WAQI::{str(e).replace(token, '***')}")
             arsip = {}
     titik = [(k["lat"], k["lon"]) for k in kota] + [(a["lat"], a["lon"]) for a in arsip.values()]
     waktu, seri = cams(titik)
@@ -278,11 +317,14 @@ def main():
     alat.simpan(rp, lama)
 
     # arsip prakiraan append-only: r24 hari+1 dan +2 per kota per tanggal jalan (hari WIB); jalan kedua di hari yang sama tidak menimpa
-    ap = os.path.join(alat.RAW, "prakiraan_arsip.json")
-    arsip_pr = alat.muat(ap, {})
-    if hari[0] not in arsip_pr:
-        arsip_pr[hari[0]] = {k["kode"]: k["r24"][1:3] for k in baris}
-        alat.simpan(ap, arsip_pr)
+    # di public/udara/data supaya ikut di-commit udara.yml (cache Actions hilang setelah 7 hari); migrasi sekali dari data/raw
+    lama_raw = os.path.join(alat.RAW, "prakiraan_arsip.json")
+    arsip = alat.keluaran("prakiraan_arsip.json", {})
+    if not arsip:
+        arsip = arsip_tambah({}, None, [], lama=alat.muat(lama_raw, {}))
+    arsip = arsip_tambah(arsip, hari[0], baris)
+    alat.simpan("prakiraan_arsip.json", arsip)
+    arsip_pr = arsip_dict(arsip)
 
     # arsip tiap jalan (2x sehari): ringkasan r24 3 hari per kab/kota, berkas bergulir 90 hari di data/raw/udara (cache CI)
     aj = os.path.join(alat.RAW, "prakiraan_jalan.json")
@@ -379,13 +421,29 @@ def uji():
     kej2 = {("A", "d1"): (24, 5), ("A", "d2"): (24, 0), ("A", "d3"): (24, 4), ("A", "d4"): (24, 0), ("A", "d5"): (5, 9)}
     s = skor_metar(kej2, {("A", "d1"): 80, ("A", "d2"): 60, ("A", "d3"): 20, ("A", "d4"): 10, ("A", "d5"): 99})
     assert (s["n"], s["hit"], s["far"], s["csi"], s["n_bandara"]) == (4, .5, .5, .333, 1), s   # d5 dibuang: laporan < 12
-    assert s["selang"] is None                                                                 # 1 bandara: tak ada selang
+    assert s["ci"] is None                                                                 # 1 bandara: tak ada selang
     assert skor_metar({("A", "d1"): (24, 0)}, {("A", "d1"): 55.4})["tabel"]["benar_negatif"] == 1   # 55,4 tampil 55: normal
     kej3 = {(b, f"d{i}"): (24, 5 if i < 5 else 0) for b in "ABCD" for i in range(10)}
     mod3 = {(b, f"d{i}"): (90 if (i < 5) == (b in "AB") else 10) for b in "ABCD" for i in range(10)}   # A,B sempurna; C,D terbalik
     s3 = skor_metar(kej3, mod3)
-    assert s3["n"] == 40 and s3["n_bandara"] == 4 and s3["csi"] == .333 and s3["selang"]["csi"][0] < .333 < s3["selang"]["csi"][1], s3
+    assert s3["n"] == 40 and s3["n_bandara"] == 4 and s3["csi"] == .333 and s3["ci"]["csi"][0] < .333 < s3["ci"]["csi"][1], s3
     assert skor_metar(kej3, mod3) == s3                                                            # benih tetap: hasil sama
+    # arsip prakiraan: append-only, migrasi bentuk lama, buang > 120 hari, batas ukuran, tolak nilai rusak
+    bar = lambda v: [{"kode": "1671", "r24": [0, v, v + 1]}, {"kode": "6271", "r24": [0, v + 2, v + 3]}]
+    lama = {"2026-05-01": {"1671": [9, 9]}, "2026-10-17": {"1671": [70, 71], "6271": [5, 6]}}
+    a1 = arsip_tambah({}, None, [], lama=lama)
+    a1 = arsip_tambah(a1, "2026-10-18", bar(80))
+    a1 = arsip_tambah(a1, "2026-10-18", bar(999))                                    # jalan kedua hari sama: tidak menimpa
+    dd = arsip_dict(a1)
+    assert sorted(dd) == ["2026-10-17", "2026-10-18"] and dd["2026-10-18"] == {"1671": [80, 81], "6271": [82, 83]}, dd   # Mei dibuang (> 120 hari)
+    assert dd["2026-10-17"]["1671"] == [70, 71] and a1["kode"] == ["1671", "6271"]
+    besar = arsip_tambah({}, None, [], lama={(dt.date(2026, 7, 1) + dt.timedelta(days=i)).isoformat(): {str(1000 + j): [100, 200] for j in range(600)} for i in range(100)})
+    assert len(json.dumps(besar, separators=(",", ":"))) <= ARSIP_KB * 1024 and max(besar["tgl"]) == "2026-10-08", len(besar["tgl"])
+    try:
+        arsip_tambah({}, "2026-10-18", [{"kode": "1671", "r24": [0, -5, 3]}])
+        raise AssertionError("nilai arsip negatif harus ditolak")
+    except ValueError:
+        pass
     # hitung: jam sekarang harus ada dan 72 jam ke depan harus tersedia
     W = [dt.datetime(2026, 10, 15, 17, tzinfo=dt.timezone.utc) + dt.timedelta(hours=k) for k in range(24 * 7)]
     kota = [{"kode": "1671", "nama": "Kota Palembang", "prov": "16", "lat": -2.97, "lon": 104.75}]

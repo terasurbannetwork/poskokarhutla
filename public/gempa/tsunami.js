@@ -8,7 +8,7 @@
    Invarian fisik dijaga scripts/gempa/uji_js_tsunami.py (jalan lewat node). */
 (function (g) {
   "use strict";
-  var KALIBRASI = 0.85, GRAV = 9.81, RB = 6371008.8, RAD = Math.PI / 180, MU = 3e10;
+  var KALIBRASI = 0.85, SISI_AMAN = 0.61, GRAV = 9.81, RB = 6371008.8, RAD = Math.PI / 180, MU = 3e10;
   var DIP = { subduksi: 15, naik: 35, turun: 60, geser: 90 };
   /* Kj: porsi angkatan dasar laut menurut mekanisme. Sesar geser nyaris tidak mengangkat dasar laut (rake ~0). */
   var KJ = { subduksi: 1, naik: 1, turun: 1, geser: 0.2 };
@@ -35,9 +35,9 @@
   }
 
   /* faktor kedalaman pusat (heuristik): gempa makin dalam makin kecil angkatan dasar lautnya.
-     Subduksi penuh <= 30 km, nol >= 70 km; kerak penuh <= 20 km, nol >= 40 km; linear di antaranya. */
+     Subduksi penuh <= 30 km, nol >= 50 km (>= 50 km = intraslab, selaras tebakJenis guncangan); kerak penuh <= 20 km, nol >= 40 km; linear di antaranya. */
   function faktorDalam(dalam, jenis) {
-    var b = jenisDasar(jenis) === "subduksi" ? [30, 70] : [20, 40], d = dalam == null ? 10 : dalam;
+    var b = jenisDasar(jenis) === "subduksi" ? [30, 50] : [20, 40], d = dalam == null ? 10 : dalam;
     return d <= b[0] ? 1 : d >= b[1] ? 0 : 1 - (d - b[0]) / (b[1] - b[0]);
   }
   /* bidang patahan seragam: M0 = mu A D -> slip D; angkatan awal = D sin(dip) Kj kd (tanda negatif untuk sesar turun) */
@@ -90,7 +90,7 @@
       if (jarakRupture(r, G.lat0 + j * G.d, G.lon0 + i * G.d) <= tambahKm) fn(j * G.nx + i, j, i);
   }
 
-  /* layak dihitung tsunaminya: M >= 6,5, faktor kedalaman > 0 (subduksi < 70 km, kerak < 40 km; tanpa jenis = subduksi),
+  /* layak dihitung tsunaminya: M >= 6,5, faktor kedalaman > 0 (subduksi < 50 km, kerak < 40 km; tanpa jenis = subduksi),
      dan jejak bidang patahan <= 20 km dari sel laut. Tanpa grid termuat, syarat laut dilewati. e = objek gempa {lat, lon, m, dalam, jenis?}. */
   function layak(e, G) {
     G = G || T.grid;
@@ -182,9 +182,10 @@
     if (!layak(e, G)) return null;
     var r = rupture(e), jalur = new Float32Array(G.nx * G.ny), t = waktuTempuh(G, r, (opsi.maksMenit || 180) * 60, jalur), nx = G.nx, ny = G.ny, z = G.z;
     var menit = new Float32Array(t.length);
-    /* kalibrasi 0,85: lintasan tercepat sel-ke-sel tiba 3-5 menit lebih lambat daripada stepper SWE di pantai Jawa
-       (uji_js_tsunami.py butir 7); dikali 0,85 supaya tidak memihak "sempat". opsi.kalibrasi = false untuk waktu mentah. */
-    var kal = opsi.kalibrasi === false ? 1 : KALIBRASI;
+    /* 0,85 dipasang di 3 pantai Jawa (Dijkstra mentah 3-5 menit lebih lambat dari stepper SWE). BUKAN konstanta fisik:
+       rasio SWE/Dijkstra-mentah di tempat lain 0,61-1,06 (uji_js_tsunami.py butir 7). Evakuasi memakai SISI_AMAN (0,61) atas
+       waktu mentah lewat opsi.kalibrasi = SISI_AMAN; opsi.kalibrasi = false untuk waktu mentah. */
+    var kal = opsi.kalibrasi === false ? 1 : typeof opsi.kalibrasi === "number" ? opsi.kalibrasi : KALIBRASI;
     for (var k = 0; k < t.length; k++) menit[k] = t[k] / 60 * kal;
     var cari = opsi.pusat ? pencariKec(opsi.pusat, 40) : null, pantai = [], kab = {};
     for (var j = 1; j < ny - 1; j++) for (var i = 1; i < nx - 1; i++) {
@@ -287,7 +288,7 @@
   }
 
   var T = { muat: muat, dariBuffer: dariBuffer, layak: layak, waktuTiba: waktuTiba, tinggi: tinggi, ukuran: ukuran, rupture: rupture,
-            jarakRupture: jarakRupture, faktorDalam: faktorDalam, lewatDarat: lewatDarat, lokal: lokal, nilai: nilai, sel: sel, cepat: cepat, tempatTinggi: tempatTinggi, swe: swe,
+            KALIBRASI: KALIBRASI, SISI_AMAN: SISI_AMAN, jarakRupture: jarakRupture, faktorDalam: faktorDalam, lewatDarat: lewatDarat, lokal: lokal, nilai: nilai, sel: sel, cepat: cepat, tempatTinggi: tempatTinggi, swe: swe,
             pencariKec: pencariKec, jenisDasar: jenisDasar, grid: null };
   g.Tsunami = T;
 })(typeof window !== "undefined" ? window : globalThis);

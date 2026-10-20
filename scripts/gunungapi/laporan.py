@@ -101,7 +101,15 @@ def bangun(st, abu, lama, cari):
 
     let = st.get("letusan", [])
     tl = [dt.datetime.fromisoformat(x["waktu"]) for x in let]
-    tutup = lambda i: bool(tl) and min(tl) <= dt.datetime.combine(awal + dt.timedelta(days=i), dt.time(), WIB)  # daftar letusan menjangkau awal hari itu
+    cak = st.get("letusan_cakupan")   # rentang yang terbukti terbaca dari MAGMA; tanpa itu tak ada hari yang boleh bernilai 0
+    c0, c1 = (dt.datetime.fromisoformat(cak["dari"]), dt.datetime.fromisoformat(cak["sampai"])) if cak else (None, None)
+
+    def tutup(i):
+        """hari tercakup bila halaman terbaca sejak awal hari itu dan sampai akhir hari itu (atau sampai sekarang untuk hari ini)"""
+        if not cak:
+            return False
+        a = dt.datetime.combine(awal + dt.timedelta(days=i), dt.time(), WIB)
+        return c0 <= a and (c1 >= a + dt.timedelta(days=1) or (i == today and c1.astimezone(WIB).date() == hr))
     hit = [0] * n
     for x, t in zip(let, tl):
         j = idx.get(iso(t.astimezone(WIB).date()))
@@ -140,6 +148,9 @@ def bangun(st, abu, lama, cari):
             for j, h in enumerate(lama.get("hari", [])):
                 i = idx.get(h)
                 v = tua.get(k, [None] * (j + 1))[j]
+                if k == "erupsi" and v is not None:   # nol lama hanya sah bila laporan lama membuktikan cakupannya; tanpa itu hanya hitungan positif
+                    c = lama.get("erupsi_cakupan")
+                    v = v if (v > 0 and not c) or (c and dt.datetime.fromisoformat(c["dari"]) <= dt.datetime.combine(dt.date.fromisoformat(h), dt.time(), WIB) and dt.datetime.fromisoformat(c["sampai"]) >= dt.datetime.combine(dt.date.fromisoformat(h) + dt.timedelta(days=1), dt.time(), WIB)) else None
                 if i is not None and baru[k][i] is None and v is not None:
                     baru[k][i] = v
         return baru
@@ -214,8 +225,11 @@ def bangun(st, abu, lama, cari):
         sumber.append({"nama": "Open-Meteo", "url": "https://open-meteo.com/", "catatan": "angin untuk skenario jangkauan abu (Pantau Bencana, bukan VAAC)"})
     for g in gun:
         g.pop("_p", None)
-    return U.susun("gunungapi", "Laporan Harian Gunung Api", hari, metrik, nasional, prov, [], cutoff=now.strftime("%Y-%m-%dT%H:%M+07:00"),
+    d = U.susun("gunungapi", "Laporan Harian Gunung Api", hari, metrik, nasional, prov, [], cutoff=now.strftime("%Y-%m-%dT%H:%M+07:00"),
                    hari_lengkap=hari[today - 1], sorot=sorot, prakiraan=prak, tambahan=tambahan, sumber=sumber, dibuat=dt.datetime.now(WIB).strftime("%Y-%m-%dT%H:%M+07:00"))
+    if cak:
+        d["erupsi_cakupan"] = cak   # bukti cakupan: laporan berikutnya boleh mewarisi nol hanya di dalamnya
+    return d
 
 
 def jalan():
@@ -244,6 +258,7 @@ def _contoh():
                      {"nama": "Ibu", "prov": "Maluku Utara", "level": 2, "lat": 1.48, "lon": 127.63},
                      {"nama": "Merapi", "prov": "Daerah Istimewa Yogyakarta dan Jawa Tengah", "level": 1, "lat": -7.54, "lon": 110.44}],
           "perubahan": [{"nama": "Ibu", "dari": 1, "ke": 2, "tgl": "2026-10-18"}],
+          "letusan_cakupan": {"dari": "2026-10-17T19:00+07:00", "sampai": "2026-10-18T10:00+07:00"},
           "letusan": [{"gunung": "Semeru", "waktu": "2026-10-18T03:12+07:00", "ket": "Kolom abu ke arah barat laut.", "tinggi_m": 500},
                       {"gunung": "Ibu", "waktu": "2026-10-17T20:00+07:00", "ket": "Terjadi erupsi."}],
           "riwayat": [{"tgl": "2026-10-17", "level": {"1": 40, "2": 24, "3": 4, "4": 0}, "erupsi": 1}]}
@@ -268,6 +283,13 @@ def uji():
     assert t == sorted(t) and d["sorot"][0]["tingkat"] == "siaga", d["sorot"]
     assert d["prakiraan"]["baris"][0]["nilai"] == [48, None, 120]
     assert d["tambahan"][0]["baris"][0] == ["18 Okt 03.12", "Semeru", 500, "barat laut"], d["tambahan"][0]["baris"][0]
+    s0 = copy.deepcopy(st)   # tanpa cakupan terbukti: tak ada hari 0, semua null (bukan 0 palsu)
+    s0.pop("letusan_cakupan")
+    assert bangun(s0, abu, None, cari)["nasional"]["erupsi"] == [None] * 7
+    s1 = copy.deepcopy(st)   # cakupan basi (berhenti 17 Okt): hari sesudahnya null, hari penuh di dalamnya 0
+    s1["letusan_cakupan"] = {"dari": "2026-10-15T00:00+07:00", "sampai": "2026-10-17T12:00+07:00"}
+    e1 = bangun(s1, abu, None, cari)["nasional"]["erupsi"]
+    assert e1[-4:] == [0, 0, None, None], e1  # 15,16 tercakup penuh; 17 (sampai tengah hari) dan 18 tidak
     # tanpa abu: metrik bandara dan prakiraan hilang; hari lama dari laporan sebelumnya dipertahankan
     d2 = bangun(copy.deepcopy(st), None, d, cari)
     assert [m["k"] for m in d2["metrik"]] == ["siaga_awas", "waspada_ke_atas", "erupsi", "kenaikan"] and "prakiraan" not in d2
@@ -275,6 +297,12 @@ def uji():
     st2["dibuat"] = "2026-10-19T10:00:00+07:00"
     d3 = bangun(st2, None, d, cari)
     assert d3["nasional"]["siaga_awas"][-3] == 4 and len(d3["hari"]) == 8, d3["nasional"]["siaga_awas"]
+    d4 = copy.deepcopy(d)   # laporan lama tanpa erupsi_cakupan: nol (bisa palsu) tidak diwarisi, hitungan positif ya
+    d4.pop("erupsi_cakupan")
+    d4["nasional"]["erupsi"] = [0, 0, 0, 0, 0, 3, 0]
+    s5 = copy.deepcopy(st)
+    s5.pop("letusan_cakupan")
+    assert bangun(s5, None, d4, cari)["nasional"]["erupsi"] == [None, None, None, None, None, 3, None], "nol warisan tanpa bukti harus null"
     print("laporan.py uji: lulus")
 
 

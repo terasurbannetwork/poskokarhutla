@@ -76,10 +76,10 @@ const Dampak = (() => {
     const kk = kol.find(c => c.k === T.urut) || kol[2], z = T.turun ? -1 : 1; R.sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y, "id") : x - y) * z || a.n.localeCompare(b.n, "id"); });
     T.hal = Math.min(T.hal, Math.max(0, Math.ceil(R.length / per) - 1));
     const mx = Math.max(...R.map(r => r.i)), top = R.filter(r => r.i === mx), nm = HZ[st.rk][1];
-    const judul = top.length === 1 ? `${Kartu.hl(top[0].n)} memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}` : `${Kartu.hl(fmt(top.length) + " kabupaten dan kota")} sama-sama memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}`;
+    const judul = top.length === 1 ? `${Kartu.hl(`<span translate="no">${esc(top[0].n)}</span>`)} memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}` : `${Kartu.hl(fmt(top.length) + " kabupaten dan kota")} sama-sama memiliki indeks risiko ${nm} tertinggi pada 2025, yaitu ${fmt(mx)}`;
     const tab = `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (T.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (T.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead><tbody>${R.slice(T.hal * per, (T.hal + 1) * per).map(r => `<tr>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(T.hal, R.length, per, "kabupaten dan kota")}`;
     const ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(h => `<button data-dks="rk" data-v="${h}" aria-pressed="${st.rk === h}">${HZ[h][0]}</button>`).join("")}</div>` : "";
-    return bag("risiko", judul, tab, `Indeks risiko adalah penilaian potensi, bukan catatan kejadian. ${SRC}`, ctl); }
+    return bag("risiko", judul, tab, `Indeks risiko adalah penilaian potensi, bukan catatan kejadian. Indeks 2025 memakai skala baru (maks 36), tidak sebanding dengan 2015 sampai 2024; perubahan dihitung 2015 ke 2024. ${SRC}`, ctl); }
   function sarbnpb() {
     const ada = hz("sarana_"); if (!ada.length) return ""; if (!ada.includes(st.sb)) st.sb = ada[0];
     const N = RB["sarana_" + st.sb].nasional, J = Object.keys(JN).filter(j => N[j] && N[j].some(v => v > 0)); if (!J.length) return "";
@@ -89,7 +89,7 @@ const Dampak = (() => {
     const tab = `<div class="tw"><table><thead><tr><th>Jenis</th><th class="n">Tinggi</th><th class="n">Sedang</th><th class="n">Rendah</th><th class="n">Aman</th><th class="n">Porsi tinggi</th></tr></thead><tbody>${J.map(j => { const a = N[j], tot = a.reduce((x, y) => x + y, 0);
       return `<tr><td>${JN[j]}</td><td class="n"><span class="pl" style="--w:${W.merah}">${fmt(a[3])}</span></td><td class="n">${fmt(a[2])}</td><td class="n">${fmt(a[1])}</td><td class="n">${fmt(a[0])}</td><td class="n">${tot ? fmt(Math.round(a[3] / tot * 1000) / 10) + "%" : "–"}</td></tr>`; }).join("")}</tbody></table></div>`;
     const ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(h => `<button data-dks="sb" data-v="${h}" aria-pressed="${st.sb === h}">${HZ[h][0]}</button>`).join("")}</div>` : "";
-    return bag("sarbnpb", `${bagian.slice(0, 3).join(", ")}, dan sarana lain berada di kelas bahaya ${nm} tinggi`, tab, `Kelas bahaya menurut peta InaRISK, bukan kejadian. ${SRC}`, ctl); }
+    return bag("sarbnpb", `${bagian.length > 3 ? bagian.slice(0, 3).join(", ") + ", dan sarana lain" : bagian.length > 1 ? bagian.slice(0, -1).join(", ") + (bagian.length > 2 ? "," : "") + " dan " + bagian.at(-1) : bagian[0]} berada di kelas bahaya tinggi (${nm})`, tab, `Kelas bahaya menurut peta InaRISK, bukan kejadian. ${SRC}`, ctl); }
   const gambar = () => [zona(), sarana(), pesisir(), pend(), hist(), risiko(), sarbnpb()].filter(Boolean).join("");
   async function render() {
     const el = $("#dampak"); if (!el) return;
@@ -108,5 +108,7 @@ const Dampak = (() => {
     const isi = gambar(); if (!isi) { el.innerHTML = `<div class="kosong">Data dampak belum tersedia.</div>`; return; }
     const ada = Object.keys(BAG).filter(k => isi.includes(`id="dk-${k}"`));
     el.innerHTML = `<div class="dk-lay"><nav class="dk-nav" aria-label="Bagian dampak">${ada.map(k => `<button data-ke="${k}" style="--w:${BAG[k][1]}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IKON[k]}"/></svg>${BAG[k][0]}</button>`).join("")}</nav><div id="dkIsi">${isi}</div></div>`; }
-  return {render};
+  /* tanggal pembuatan berkas InaRISK untuk tab Metode */
+  const dibuat = async () => { if (RB === null) RB = await muatJSON("../banjir/data/cuaca_risiko_bnpb.json").catch(() => false); return RB?.dibuat || null; };
+  return {render, dibuat};
 })();

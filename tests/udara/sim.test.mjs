@@ -64,8 +64,11 @@ test("adveksi: awan bergerak ke barat laut dari sumber (angin tenggara) dan berb
   assert.ok(x0 < 105.2 && y0 > -3.3, `pusat awan dasar (${x0.toFixed(2)}, ${y0.toFixed(2)}) harus di barat laut sumber (105,2; -3,3)`);
   assert.ok(x1 > x0 && y1 < y0, `berbalik: (${x1.toFixed(2)}, ${y1.toFixed(2)}) harus ke tenggara dari (${x0.toFixed(2)}, ${y0.toFixed(2)})`);
 });
-test("difusi: massa tersebar, bukan satu sel", () => {
-  const k = dasar.kisi; let n = 0; for (let c = 0; c < k.n; c++) if (dasar.sfcA[24 * k.n + c] > .01) n++; assert.ok(n > 30, `sel berasap ${n}`);
+test("difusi horizontal mengencerkan: konsentrasi puncak lebih rendah daripada tanpa difusi (massa sama)", () => {
+  const ukur = h => { const k = h.kisi; let sw = 0, sx = 0, sy = 0, mx = 0; for (let c = 0; c < k.n; c++) { const w = h.sfcA[24 * k.n + c]; if (w <= 0) continue; sw += w; sx += w * (c % k.nx); sy += w * ((c / k.nx) | 0); if (w > mx) mx = w; }
+    let v = 0; for (let c = 0; c < k.n; c++) { const w = h.sfcA[24 * k.n + c]; if (w > 0) v += w * (((c % k.nx) - sx / sw) ** 2 + (((c / k.nx) | 0) - sy / sw) ** 2); } return {lebar: v / sw, puncak: mx}; };
+  const {khBL, khAtas} = M.KONF; let tanpa; try { M.KONF.khBL = 0; M.KONF.khAtas = 0; tanpa = ukur(M.jalankan(A, src, kota, {})); } finally { M.KONF.khBL = khBL; M.KONF.khAtas = khAtas; }
+  const dengan = ukur(dasar); assert.ok(dengan.puncak < tanpa.puncak * .8, `dengan ${JSON.stringify(dengan)} tanpa ${JSON.stringify(tanpa)}`);
 });
 test("skenario: faktor emisi linear dan api 0 = tanpa kontribusi", () => {
   const sep = M.jalankan(A, src, kota, {fApi: .5}), nol = M.jalankan(A, src, kota, {fApi: 0});
@@ -110,4 +113,17 @@ test("urutan perlakuan menurun menurut jiwa-jam; libur sekolah hanya menghindari
 test("kategori ISPU dan BATAS", () => {
   assert.equal(M.kategori(15.5), 0); assert.equal(M.kategori(55.5), 2); assert.equal(M.kategori(300), 4);
   assert.ok(M.BATAS.length >= 5 && M.BATAS.every(t => !t.includes("—")));
+});
+
+test("asap null = tak terpercaya: PM dibiarkan, bukan dianggap 0, dan kota itu tidak menurunkan peringkat perlakuan", () => {
+  const kopi = {...prak, kota: prak.kota.map((c, i) => i === 0 ? {...c, asap: [null, null, null]} : c)};
+  const bal = M.jalankan(A, src, kota, {anginPutar: Math.PI}), p = M.pmKota(kopi, dasar, bal, kal.K, 0, A);
+  for (let b = 0; b <= 72; b++) assert.ok(Math.abs(p[b] - kopi.kota[0].pm[Math.min(b, 71)]) < 1e-2 + Math.abs(M.deret(bal, 0, "pltu")[b] - M.deret(dasar, 0, "pltu")[b]), `jam ${b}: ${p[b]} vs ${kopi.kota[0].pm[Math.min(b, 71)]}`);
+  assert.ok(M.takTerpercaya(kopi, 0, A, 10) && !M.takTerpercaya(prak, 0, A, 10));
+  const u1 = M.urutPerlakuan(A, prak, dasar, kal.K, jiwa, pmD).filter(x => x.jenis === "kompleks"), u2 = M.urutPerlakuan(A, kopi, dasar, kal.K, jiwa, pmD).filter(x => x.jenis === "kompleks");
+  assert.ok(u2.reduce((s, x) => s + x.jj, 0) < u1.reduce((s, x) => s + x.jj, 0), "kota Palembang tak terpercaya tidak boleh menyumbang jiwa-jam");
+});
+test("perlakuan teratas punya rentang lo <= jj <= hi", () => {
+  const u = M.urutPerlakuan(A, prak, dasar, kal.K, jiwa, pmD);
+  for (const x of u.slice(0, 5)) assert.ok(x.lo <= x.jj + 1e-6 && x.jj <= x.hi + 1e-6, `${x.nama}: ${x.lo} ${x.jj} ${x.hi}`);
 });

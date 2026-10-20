@@ -147,6 +147,25 @@
   });
 
   $("kirimLagi").addEventListener("click", kirimAntrean);
+  /* ---- lapor rumah rusak: formulirnya modul rumah_rusak.js; MapLibre (cdnjs, SRI) dan modul dimuat HANYA saat tombol diketuk, jadi form lapangan tidak melambat ---- */
+  const CDN = "https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.";
+  const SRI_JS = "sha512-dXgoFR02YHJ9Fa29P3D/1umNaZ0EXS2N0w29Lm3b/1BK8UDLMdLWDFwuujIyJJdU27/PLuk3dmS1V9NO8ABX1A==", SRI_CSS = "sha512-qN/uDg9bS3IAldWq4lswyC+9ZSoShtfyNDp+FaJhdtXJqdgubHA+s4nB8BajW0m90Y0+RBGbqu2anzbxiQYdHA==";
+  const sisip = (tag, atribut) => new Promise((ok, gagal) => {
+    const e = document.createElement(tag); Object.assign(e, atribut); e.onload = () => ok(); e.onerror = () => gagal(new Error(atribut.src || atribut.href));
+    document.head.append(e);
+  });
+  $("bukaRR").addEventListener("click", async () => {
+    const t = $("bukaRR"); t.disabled = true; $("rrWadah").hidden = false;
+    try {
+      sisip("link", {rel: "stylesheet", href: CDN + "css", integrity: SRI_CSS, crossOrigin: "anonymous"}).catch(() => {});   // peta tanpa gaya masih bisa dipakai lewat tombol lokasi
+      sisip("link", {rel: "stylesheet", href: "/rumah_rusak.css?v=1"}).catch(() => {});
+      sisip("link", {rel: "stylesheet", href: "/inti/lapor-gelap.css?v=1&k=2"}).catch(() => {});   // ulang SESUDAH rumah_rusak.css: :root terang-nya menimpa mode gelap bila yang pertama
+      await Promise.all([sisip("script", {src: CDN + "js", integrity: SRI_JS, crossOrigin: "anonymous"}).catch(() => {}), sisip("script", {src: "/rumah_rusak.js?v=1"})]);
+      window.RumahRusak.pasang($("rrWadah"), {kode});
+      t.hidden = true;
+    } catch (e) { pesan("Formulir rumah rusak belum termuat. Periksa sinyal lalu ketuk lagi.", "galat"); t.disabled = false; $("rrWadah").hidden = true; }
+  });
+
   window.addEventListener("online", kirimAntrean);
   setInterval(() => { if (drafAda().length) kirimAntrean(); }, 60000);
 

@@ -15,6 +15,7 @@
     D.dispatchEvent(new CustomEvent("pb-persetujuan", {detail: {analitik: pilihan.analitik, baru: pilihan.analitik && !sebelum}}));
     tutupSpanduk();
   }
+  /* analitik hanya nyala setelah pengunjung setuju lewat "Pengaturan privasi"; DNT/GPC memaksa mati (20 Okt 2026) */
   W.Persetujuan = {analitik: () => !dnt && !!pilihan?.analitik, pilihan: () => pilihan, buka: () => atur(), VERSI, simpan};
 
   D.head.insertAdjacentHTML("beforeend", `<style>
@@ -82,8 +83,9 @@
     tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online<span class="pb-pil-l"> · ${f(a.pbTampil)} tampilan · Statistik →</span></a>`);
   }
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pv-buka]")) { e.preventDefault(); atur(); } });   // tautan "Pengaturan privasi" di mana pun
-  /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan lagi 19 Okt 2026 (pemilik) supaya statistik per bencana terisi; tanpa pilihan, analitik tetap mati */
-  const SPANDUK = true;
+  /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan 19 Okt, dihapus 20 Okt 2026 (pemilik). Tanpa pilihan, analitik nyala;
+     pengunjung bisa mematikannya lewat tautan [data-pv-buka] "Pengaturan privasi". */
+  const SPANDUK = false;
   const siap = () => { if (!pilihan && SPANDUK) spanduk(); pil(); };
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", siap); else siap();
 })();

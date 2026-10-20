@@ -8,6 +8,7 @@ Metrik  : jiwa di kab/kota berstatus Tidak sehat+ (utama), PM2,5 rata-rata berbo
 import datetime as dt
 import importlib.util
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -19,11 +20,28 @@ _s.loader.exec_module(lap)
 
 MAKS_HARI = 60
 METRIK = [
-    {"k": "jiwa_tidak_sehat", "label": "Jiwa di udara tidak sehat", "satuan": "jiwa", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
+    {"k": "jiwa_tidak_sehat", "label": "Jiwa di Waspada (Tidak sehat) atau lebih", "satuan": "jiwa", "utama": True, "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
     {"k": "pm_jiwa", "label": "PM2,5 berbobot jiwa", "satuan": "µg/m³", "agregat": "rerata", "arah": "naik_buruk", "desimal": 0},
-    {"k": "kota_siaga", "label": "Kab/kota sangat tidak sehat+", "satuan": "kab/kota", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
+    {"k": "kota_siaga", "label": "Kab/kota Siaga (Sangat tidak sehat) atau lebih", "satuan": "kab/kota", "agregat": "jumlah", "arah": "naik_buruk", "desimal": 0},
 ]
 TINGKAT = {"awas": 0, "siaga": 1}
+LABEL = {"awas": "Awas (Berbahaya)", "siaga": "Siaga (Sangat tidak sehat)", "waspada": "Waspada (Tidak sehat)", "normal": "Normal"}
+BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+
+
+def tgl_pendek(iso):
+    d = dt.date.fromisoformat(iso)
+    return f"{d.day} {BULAN[d.month - 1]}"
+
+
+def porsi(b):
+    """'sekitar 46% (30 sampai 61%)'; rentang 0 sampai >= 80 terlalu lebar untuk angka tengah: hanya rentang."""
+    r = f"{b['rendah']} sampai {b['tinggi']}%"
+    return r if b["rendah"] == 0 and b["tinggi"] >= 80 else f"sekitar {b['persen']}% ({r})"
+
+
+def label_model(prak):
+    return "perkiraan model, belum dikoreksi" if prak.get("koreksi", {}).get("status") != "terkoreksi" else "perkiraan model, terkoreksi stasiun"
 NEGARA_TAMPIL = {"Malaysia": "Malaysia", "Singapura": "Singapura", "Brunei": "Brunei", "Timor Leste": "Timor Leste", "Papua Nugini": "Papua Nugini"}
 
 
@@ -75,11 +93,11 @@ def sorot(prak, lint, atr):
     out = []
     for k in calon[:6]:
         tk = min((s for s in k["st"][:2] if s in TINGKAT), key=TINGKAT.get)
-        teks = f"PM2,5 rata-rata 24 jam diperkirakan {angka(k['r24'][0])} µg/m³ hari ini dan {angka(k['r24'][1])} µg/m³ besok (model CAMS)."
+        teks = f"PM2,5 rata-rata 24 jam {angka(k['r24'][0])} µg/m³ hari ini dan {angka(k['r24'][1])} µg/m³ besok (CAMS; {label_model(prak)})."
         api = [b for b in sumber.get(k["kode"], []) if b["jenis"] == "api"]
         if api:
-            teks += f" Sumber api terbesar: {api[0]['nama']} sekitar {api[0]['persen']}% ({api[0]['rendah']}-{api[0]['tinggi']}%)."
-        out.append({"tingkat": tk, "judul": f"{k['nama']}: {'berbahaya' if tk == 'awas' else 'sangat tidak sehat'}", "teks": teks,
+            teks += f" Sumber api terbesar besok: {api[0]['nama']}, {porsi(api[0])}."
+        out.append({"tingkat": tk, "judul": f"{k['nama']}: {LABEL[tk]}", "teks": teks,
                     "prov": k["prov"], "tautan": f"/udara/?kota={k['kode']}"})
     kmp = {c["id"]: c for c in lint.get("kompleks", [])}
     sudah = set()
@@ -106,7 +124,7 @@ def susun(kota, r24, prak, lint, atr, ren):
         raise ValueError(f"riwayat hanya {len(hari)} hari, laporan butuh >= 7")
     nas, prov, kab = seri(kota, r24, hari)
     top = sorted(prak["kota"], key=lambda k: -max(k["r24"]))[:10]
-    prakiraan = {"judul": "PM2,5 rata-rata 24 jam, kab/kota terburuk", "hari": prak["hari"],
+    prakiraan = {"judul": f"PM2,5 rata-rata 24 jam, kab/kota terburuk ({label_model(prak)})", "hari": prak["hari"],
                  "baris": [{"label": k["nama"], "prov": k["prov"], "nilai": k["r24"], "satuan": "µg/m³"} for k in top]}
     tambahan = []
     at = sorted((b for b in atr.get("kota", []) if b.get("terpercaya", True) and b["bagian"]), key=lambda b: -b["pm"])[:10]
@@ -114,15 +132,19 @@ def susun(kota, r24, prak, lint, atr, ren):
         bar = []
         for b in at:
             s = next((x for x in b["bagian"] if x["jenis"] not in ("latar", "lain")), None)
-            bar.append([b["nama"], b["pm"], s["nama"] if s else "Latar", s["persen"] if s else None, f"{s['rendah']}-{s['tinggi']}" if s else None])
-        tambahan.append({"id": "atribusi", "judul": f"Sumber asap terbesar per kab/kota ({atr.get('hari', 'besok')})",
+            lebar = s and s["rendah"] == 0 and s["tinggi"] >= 80
+            bar.append([b["nama"], b["pm"], s["nama"] if s else "Latar", None if not s or lebar else s["persen"],
+                        f"{s['rendah']} sampai {s['tinggi']}" if s else None])
+        hr = atr.get("hari")
+        tambahan.append({"id": "atribusi", "judul": f"Sumber asap terbesar per kab/kota, {tgl_pendek(hr) if hr else 'besok'}",
                          "kolom": ["Kab/kota", "PM2,5 (µg/m³)", "Sumber teratas", "Porsi (%)", "Rentang (%)"], "baris": bar,
-                         "catatan": "Model plume sederhana; hanya kab/kota yang model-nya tak melebihi 1,5 x CAMS; rentang dari uji sensitivitas sebaran, emisi, dan normalisasi."})
+                         "catatan": f"{label_model(prak).capitalize()}. Model plume sederhana; hanya kab/kota yang model-nya tak melebihi 1,5× CAMS; "
+                                    "rentang dari uji sensitivitas sebaran, emisi, dan normalisasi; porsi kosong bila rentang 0 sampai 80% atau lebih."})
     bd = ren.get("bandara", [])[:10]
     if bd:
         tambahan.append({"id": "bandara", "judul": "Jarak pandang bandara", "kolom": ["Bandara", "Kini (km)", "Hari ini (km)", "Besok (km)", "Lusa (km)"],
                          "baris": [[f"{b['nama']} ({b['icao']})", b["vis_km"], *b["prakiraan_km"]] for b in bd],
-                         "catatan": "Kini dari METAR; prakiraan dari PM2,5 rata-rata 24 jam (Koschmieder), belum diuji terhadap METAR."})
+                         "catatan": f"Kini dari METAR; prakiraan dari PM2,5 rata-rata 24 jam (Koschmieder, {label_model(prak)}), belum diuji terhadap METAR."})
     cut = prak.get("jalan_model") or prak["dibuat"]
     cutoff = alat.dari_iso(cut).astimezone(alat.WIB).strftime("%Y-%m-%dT%H:%M+07:00")
     return lap.susun("udara", "Laporan Harian Kualitas Udara", hari, METRIK, nas, prov, kab, cutoff=cutoff,
@@ -154,14 +176,18 @@ def uji():
                      {"kode": "1601", "nama": "Kab. OKU", "prov": "16", "r24": [20, 20, 20], "st": ["normal"] * 3},
                      {"kode": "6271", "nama": "Kota Palangkaraya", "prov": "62", "r24": [60, 60, 60], "st": ["waspada"] * 3}]}
     lint = {"kompleks": [{"id": "K1", "kab": "Ogan Komering Ilir", "prov": "16"}], "lintas_batas": [{"negara": "Malaysia", "kompleks": "K1", "jam": 20}]}
-    atr = {"kota": [{"kode": "1671", "nama": "Kota Palembang", "pm": 300, "bagian": [{"jenis": "api", "nama": "Kompleks api OKI", "persen": 46, "rendah": 30, "tinggi": 61}]}]}
+    atr = {"hari": hari[9], "kota": [{"kode": "1671", "nama": "Kota Palembang", "pm": 300, "bagian": [{"jenis": "api", "nama": "Kompleks api OKI", "persen": 46, "rendah": 30, "tinggi": 61}]}]}
     d = susun(kota, r24, prak, lint, atr, {"bandara": [{"icao": "WIPP", "nama": "Palembang", "vis_km": 3.0, "prakiraan_km": [1.0, 2.0, 8.0]}]})
     assert lap.periksa(d) == [], lap.periksa(d)
     assert d["hari"] == hari and d["hari_lengkap"] == hari[8] and d["cutoff"] == "2026-10-10T07:00+07:00"
     assert d["nasional"]["jiwa_tidak_sehat"][0] == 1000 and d["nasional"]["jiwa_tidak_sehat"][2] == 1500 and d["nasional"]["kota_siaga"][9] == 1
     assert d["nasional"]["pm_jiwa"][0] == round((160 * 1000 + 20 * 3000) / 4000) == 55
     assert [k["kode"] for k in d["kab"]] == ["1671", "6271"] and d["kab"][1]["pm_jiwa"][0] is None   # hari tanpa data = null
-    assert [s["tingkat"] for s in d["sorot"]] == ["awas", "info"] and "Malaysia" in d["sorot"][1]["judul"] and "46%" in d["sorot"][0]["teks"]
+    assert [s["tingkat"] for s in d["sorot"]] == ["awas", "info"] and "Malaysia" in d["sorot"][1]["judul"] and "46% (30 sampai 61%)" in d["sorot"][0]["teks"]
+    assert d["sorot"][0]["judul"] == "Kota Palembang: Awas (Berbahaya)" and "perkiraan model, belum dikoreksi" in d["sorot"][0]["teks"]
+    assert d["tambahan"][0]["judul"].endswith(", 10 Okt") and d["tambahan"][0]["baris"][0][4] == "30 sampai 61" and "1,5× CAMS" in d["tambahan"][0]["catatan"]
+    assert porsi({"persen": 3, "rendah": 0, "tinggi": 90}) == "0 sampai 90%" and tgl_pendek("2026-10-20") == "20 Okt"
+    assert not any(re.search(r"\d-\d", x["teks"]) for x in d["sorot"])            # rentang ditulis "a sampai b", bukan "a-b"
     assert d["prakiraan"]["baris"][0]["label"] == "Kota Palembang" and d["tambahan"][0]["baris"][0][3] == 46
     r55 = {"1671": {h: 55.4 for h in hari[:9]}, "1601": {h: 55.6 for h in hari[:9]}}
     d2 = susun(kota, r55, prak, lint, atr, {})

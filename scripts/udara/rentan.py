@@ -102,7 +102,7 @@ def hitung(prak, kota, sekolah, metar):
             continue
         bd.append({"icao": m["icao"], "nama": m.get("nama"), "vis_km": None if m.get("vis_m") is None else round(m["vis_m"] / 1000, 1),
                    "vis_waktu": m.get("waktu"), "wx": m.get("wx"), "kode_kota": kp["kode"],
-                   "prakiraan_km": [jarak_pandang(x) for x in kp["r24"]], "teruji": False, "pm": kp["r24"]})
+                   "prakiraan_km": [jarak_pandang(x) for x in kp["r24"]], "prakiraan_teruji": False, "pm": kp["r24"]})
     return {"v": 1, "hari": prak["hari"], "nasional": bulat(nas), "prov": {p: bulat(T) for p, T in sorted(prov.items())},
             "kota": [bulat(o) for o in per_kota], "sekolah": [x[1] for x in daftar[:MAKS_SEKOLAH]],
             "bandara": sorted(bd, key=lambda b: min(b["prakiraan_km"])), "asumsi": ASUMSI}
@@ -148,7 +148,7 @@ def uji():
     assert d["prov"]["16"]["balita"] == [76, 76, 0] and [k["kode"] for k in d["kota"]] == ["1671"]
     assert d["sekolah"] == [{"nama": "SD 1", "lat": -2.9, "lon": 104.7, "kode_kota": "1671", "st": "waspada"}]
     assert len(d["bandara"]) == 1 and d["bandara"][0]["vis_km"] == 3.0 and d["bandara"][0]["prakiraan_km"][0] == 3.2   # WAJJ > 50 km dari kota mana pun
-    assert d["nasional"]["ispa"][2] == {"t": 0, "lo": 0, "hi": 0} and d["nasional"]["ispa"][0]["t"] >= 0 and d["bandara"][0]["teruji"] is False
+    assert d["nasional"]["ispa"][2] == {"t": 0, "lo": 0, "hi": 0} and d["nasional"]["ispa"][0]["t"] >= 0 and d["bandara"][0]["prakiraan_teruji"] is False
     prak["kota"][1]["r24"] = [55, 55, 55]         # status normal: ISPA tidak dihitung walau di atas 15
     assert hitung(prak, kota, sk, metar)["prov"]["16"]["ispa"][2] == {"t": 0, "lo": 0, "hi": 0}
     print("rentan uji: lulus")

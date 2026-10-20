@@ -13,6 +13,7 @@ import datetime as dt
 import glob
 import math
 import os
+import re
 import sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -150,16 +151,21 @@ def titik_konsesi():
     for p in sorted(glob.glob(pola)):
         for c in alat.muat(p).get("perusahaan", []):
             nama = c.get("nama", "")
-            if not nama.upper().startswith(("PT", "CV", "KOPERASI", "PERUM", "KUD")):
+            if not badan_usaha(nama):
                 continue
             for k in c.get("kompleks", []):
                 out.append((k[0], k[1], nama))
     return out
 
 
+def badan_usaha(nama):
+    """Hanya badan hukum yang bukan nama orang: PT, Koperasi, Perum, KUD. CV ditolak (sering memakai nama pemilik)."""
+    return bool(re.match(r"(PT|KOPERASI|PERUM|KUD)\b", (nama or "").strip().upper()))
+
+
 def konsesi_untuk(f, tk):
     x0, y0, x1, y1 = kotak(f["geometry"])
-    return sorted({n for la, lo, n in tk if x0 <= lo <= x1 and y0 <= la <= y1})
+    return sorted({n for la, lo, n in tk if x0 <= lo <= x1 and y0 <= la <= y1 and badan_usaha(n)})
 
 
 def bangun(kluster, A, kota, tk, t):
@@ -227,9 +233,12 @@ def uji():
         raise AssertionError("kompleks di luar Indonesia harus ditolak")
     except ValueError:
         pass
-    d = bangun(kl, angin_uji(0, 100), [{"kode": "1601", "lat": 0.0, "lon": 105.0}], [(-1.0, 105.05, "PT Contoh"), (5.0, 100.0, "PT Jauh")], t)
+    assert [badan_usaha(n) for n in ("PT Contoh", "pt. kecil", "Koperasi Tani", "Perum Perhutani", "KUD Maju", "CV Budi Santoso", "Budi Santoso", "PTOLEMY", "")] == \
+        [True, True, True, True, True, False, False, False, False]
+    d = bangun(kl, angin_uji(0, 100), [{"kode": "1601", "lat": 0.0, "lon": 105.0}],
+               [(-1.0, 105.05, "PT Contoh"), (5.0, 100.0, "PT Jauh"), (-1.0, 105.0, "CV Budi Santoso"), (-1.0, 105.0, "Budi Santoso")], t)
     k = d["kompleks"][0]
-    assert k["konsesi"] == ["PT Contoh"] and k["kota"][0]["kode"] == "1601" and k["kota"][0]["jam"] == 3, k["kota"]   # 36 km/jam ke utara: jam ke-3 (108 km) masuk 25 km kota
+    assert k["konsesi"] == ["PT Contoh"] and all(badan_usaha(n) for c in d["kompleks"] for n in c["konsesi"]) and k["kota"][0]["kode"] == "1601" and k["kota"][0]["jam"] == 3, k["kota"]   # 36 km/jam ke utara: jam ke-3 (108 km) masuk 25 km kota
     assert len(k["jalur"]) == 3 and k["jalur"][0]["t"][0] == [105.0, -1.0, 0]
     print("lintasan uji: lulus")
 

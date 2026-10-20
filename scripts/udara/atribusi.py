@@ -69,7 +69,7 @@ ASUMSI = [
      "sumber": "CAMS (Copernicus) via Open-Meteo"},
     {"nama": "Hari atribusi", "nilai": "besok (hari WIB penuh); hari ini hanya jam tersisa, dibandingkan CAMS di jam yang sama untuk porsi asap",
      "sumber": "pilihan metode: model tak punya jam lampau hari ini"},
-    {"nama": "Kepercayaan", "nilai": "total model > 1,5 x CAMS: porsi per sumber tidak diterbitkan (terpercaya=false); porsi asap harian juga null",
+    {"nama": "Kepercayaan", "nilai": "total model > 1,5× CAMS: porsi per sumber tidak diterbitkan (terpercaya=false); porsi asap harian juga null",
      "sumber": "asumsi; CAMS sebagai jangkar karena terasimilasi AOD satelit"},
     {"nama": "Rentang", "nilai": "min-maks dari 1.458 kombinasi: 27 varian sebaran x 27 varian emisi x 2 normalisasi (ke CAMS / ke total model)",
      "sumber": "uji sensitivitas, bukan selang statistik"},
@@ -201,10 +201,14 @@ def unit_kota(k, src, hari_jam):
 
 
 def rentang(unit, C, d):
-    """-> {sid: [min, maks]} dan latar [min, maks] atas DISP x EMIS x NORM untuk hari d; sumber yang tak pernah >= MIN_PERSEN dibuang."""
+    """-> ({sid: [persen per skenario]}, [latar per skenario]) atas DISP x EMIS x NORM untuk hari d.
+
+    Sumber yang tak pernah >= MIN_PERSEN dibuang. Deret per skenario disimpan supaya gabungan ("lain") dijumlahkan
+    PER SKENARIO lalu diambil min/maks, bukan menjumlah batas (yang bisa melebihi 100%).
+    """
     sk = [[skala(s, e) for e in EMIS] for s, _ in unit]
-    lo, hi = {}, {}
-    lat = [math.inf, -math.inf]
+    seri = [[] for _ in unit]
+    lat = []
     for di in range(len(DISP)):
         u = [pv[di][d] for _, pv in unit]
         for ei in range(len(EMIS)):
@@ -215,15 +219,9 @@ def rentang(unit, C, d):
                 if T <= 0:
                     continue
                 for j, v in enumerate(m):
-                    p = 100 * v / T
-                    sid = unit[j][0]["id"]
-                    if p < lo.get(sid, math.inf):
-                        lo[sid] = p
-                    if p > hi.get(sid, -math.inf):
-                        hi[sid] = p
-                lt = 100 * max(0.0, C - M) / T if norm == "cams" else 0.0
-                lat = [min(lat[0], lt), max(lat[1], lt)]
-    return {sid: [lo[sid], hi[sid]] for sid in lo if hi[sid] >= MIN_PERSEN}, lat
+                    seri[j].append(100 * v / T)
+                lat.append(100 * max(0.0, C - M) / T if norm == "cams" else 0.0)
+    return {unit[j][0]["id"]: x for j, x in enumerate(seri) if x and max(x) >= MIN_PERSEN}, lat
 
 
 def hitung(kota, prak, A, src, t0):
@@ -257,20 +255,21 @@ def hitung(kota, prak, A, src, t0):
              "terpercaya": model[d] <= BATAS_PERCAYA * C}
         if not o["terpercaya"]:
             o["bagian"] = []
-            o["alasan"] = f"Model plume {round(model[d])} µg/m³ melebihi 1,5 x CAMS {round(C)} µg/m³; porsi per sumber tidak diterbitkan."
+            o["alasan"] = f"Model plume {round(model[d])} µg/m³ melebihi 1,5× CAMS {round(C)} µg/m³; porsi per sumber tidak diterbitkan."
             baris.append(o)
             continue
-        rg, lat = rentang(unit, C, d)
+        sr, lat = rentang(unit, C, d)
         tengah = {s["id"]: 100 * skala(s, EMIS[TE]) * pv[TD][d] / max(C, model[d]) for s, pv in unit}
         bag = [{"jenis": s["jenis"], "id": s["id"], "nama": s["nama"], "konsesi": s["konsesi"], "persen": round(tengah[s["id"]]),
-                "rendah": round(rg[s["id"]][0]), "tinggi": round(rg[s["id"]][1])} for s, _ in unit if s["id"] in rg]
+                "rendah": round(min(sr[s["id"]])), "tinggi": round(max(sr[s["id"]]))} for s, _ in unit if s["id"] in sr]
         bag.sort(key=lambda b: -b["persen"])
         utama, sisa = bag[:6], bag[6:]
         if sisa:
+            jml = [sum(x) for x in zip(*(sr[b["id"]] for b in sisa))]   # jumlah per skenario
             utama.append({"jenis": "lain", "id": "lain", "nama": f"{len(sisa)} sumber lain dimodelkan", "konsesi": [],
-                          "persen": round(sum(b["persen"] for b in sisa)), "rendah": round(sum(b["rendah"] for b in sisa)), "tinggi": round(sum(b["tinggi"] for b in sisa))})
+                          "persen": round(sum(tengah[b["id"]] for b in sisa)), "rendah": round(min(jml)), "tinggi": round(max(jml))})
         utama.append({"jenis": "latar", "id": "latar", "nama": "Latar (sumber lain, CAMS)", "konsesi": [],
-                      "persen": round(100 * max(0.0, C - model[d]) / max(C, model[d])), "rendah": round(lat[0]), "tinggi": round(lat[1])})
+                      "persen": round(100 * max(0.0, C - model[d]) / max(C, model[d])), "rendah": round(min(lat)), "tinggi": round(max(lat))})
         o["bagian"] = utama
         baris.append(o)
     return baris, asap
@@ -343,13 +342,21 @@ def uji():
     src = [{"jenis": "api", "id": "K1", "nama": "Kompleks api OKI", "lon": 104.0, "lat": -3.0, "hs": 0.0, "basis": 400 * DM_PER_MJ, "ef": EF_GAMBUT, "konsesi": ["PT A"]},
            {"jenis": "pltu", "id": "W1", "nama": "PLTU X", "lon": 105.5, "lat": -3.0, "hs": 200.0, "basis": 1000 * .6 * 1000 / 3600, "konsesi": []},
            {"jenis": "api", "id": "K2", "nama": "Kompleks api Pulang Pisau", "lon": 113.7, "lat": -2.2, "hs": 0.0, "basis": 20000 * DM_PER_MJ, "ef": EF_GAMBUT, "konsesi": []}]
+    src += [{"jenis": "api", "id": f"KX{i}", "nama": f"api kecil {i}", "lon": 104.0 - .05 * i, "lat": -3.0 + .02 * i, "hs": 0.0,
+             "basis": 300 * DM_PER_MJ, "ef": EF_HUTAN, "konsesi": []} for i in range(1, 9)]   # 8 api kecil: memaksa bagian "lain"
     b, asap = hitung(kota, prak, A, src, t0)
     ka, kb = b
+    assert any(x["jenis"] == "lain" for x in ka["bagian"]), ka["bagian"]
+    assert all(0 <= x["rendah"] <= x["persen"] <= x["tinggi"] <= 100 for x in ka["bagian"]), ka["bagian"]   # gabungan per skenario, tak > 100
+    geom = {"type": "Polygon", "coordinates": [[[104.9, -1.1], [105.1, -1.1], [105.1, -0.9], [104.9, -0.9], [104.9, -1.1]]]}
+    kl = {"features": [{"geometry": geom, "properties": {"id": "K9", "lat": -1.0, "lon": 105.0, "akhir": "2026-10-18T02:00:00+00:00", "frp24": 10, "gambut": True}}]}
+    sl = sumber_list(kl, [], t0, [(-1.0, 105.0, "PT Boleh"), (-1.0, 105.0, "CV Nama Orang"), (-1.0, 105.0, "Nama Orang")])
+    assert sl[0]["konsesi"] == ["PT Boleh"] and all(lintasan.badan_usaha(n) for s_ in sl for n in s_["konsesi"])
     bag = {x["id"]: x for x in ka["bagian"]}
     assert ka["terpercaya"] and "W1" not in bag and bag["K1"]["rendah"] <= bag["K1"]["persen"] <= bag["K1"]["tinggi"] and bag["K1"]["tinggi"] > bag["K1"]["rendah"], bag
     assert bag["latar"]["rendah"] == 0 and abs(sum(x["persen"] for x in ka["bagian"]) - 100) <= 1 and bag["K1"]["konsesi"] == ["PT A"]
     assert ka["pm"] == 300 and 0 < asap["1671"][1] <= 1 and len(asap["1671"]) == 3
-    assert not kb["terpercaya"] and kb["bagian"] == [] and "1,5 x CAMS" in kb["alasan"] and asap["6271"][1] is None, kb
+    assert not kb["terpercaya"] and kb["bagian"] == [] and "1,5× CAMS" in kb["alasan"] and asap["6271"][1] is None, kb
     print("atribusi uji: lulus")
 
 

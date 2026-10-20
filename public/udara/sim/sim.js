@@ -4,27 +4,33 @@
 import * as M from "./model.js";
 const esc = s => String(s ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
 const fmt = n => Math.round(n).toLocaleString("id-ID"), fmt1 = n => n.toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
-const jj = v => { const a = Math.abs(v), t = a >= 1e6 ? fmt1(a / 1e6) + " juta" : a >= 1e3 ? fmt(a / 1e3) + " ribu" : fmt(a); return (v < 0 ? "-" : "") + t; };
+const jj = v => { const a = Math.abs(v), t = a >= 1e9 ? fmt1(a / 1e9) + " miliar" : a >= 1e6 ? fmt1(a / 1e6) + " juta" : a >= 1e3 ? fmt(a / 1e3) + " ribu" : fmt(a); return (v < 0 ? "-" : "") + t; };
 const HARI = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"], BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 const IK = {main: '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg>', jeda: '<svg viewBox="0 0 24 24"><path d="M6.5 4.5h4v15h-4zM13.5 4.5h4v15h-4z"/></svg>',
   api: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3c1 4 5 5 5 10a5 5 0 0 1-10 0c0-2 1-3 2-4 0 2 1 3 2 3 0-4-1-6 1-9z"/></svg>',
   sek: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 9l9-5 9 5-9 5zM7 11.5V16c0 1.5 2.5 3 5 3s5-1.5 5-3v-4.5"/></svg>'};
 
 async function ambil(urls) { for (const u of urls) { try { const r = await fetch(u); if (r.ok) return await r.json(); } catch { /* coba berikutnya */ } } return null; }
-async function muatData() {
+/* kluster.json diurai di Worker (hanya kolom yang dipakai kembali); gagal -> utas utama */
+function klusterWorker() { return new Promise(res => { try { const w = new Worker(new URL("kluster.worker.js", import.meta.url)); w.onmessage = e => { w.terminate(); res(e.data); }; w.onerror = () => { w.terminate(); res(null); }; w.postMessage("/data/kluster.json"); } catch { res(null); } }).then(r => r || ambil(["/data/kluster.json"])); }
+async function muatData(opsi = {}) {
   const [angin, pltu, prak, kluster, pend] = await Promise.all([
-    ambil(["/udara/data/angin.json"]), ambil(["/udara/data/pltu.json"]), ambil(["/udara/data/prakiraan.json"]),
-    ambil(["/data/kluster.json"]), ambil(["/data/penduduk.json"])]);
+    ambil(["/udara/data/angin.json"]), ambil(["/udara/data/pltu.json"]), (opsi.prak ? Promise.resolve(opsi.prak) : ambil(["/udara/data/prakiraan.json"])),
+    klusterWorker(), ambil(["/data/penduduk.json"])]);
   return {angin, pltu, prak, kluster, pend};
 }
 const kerja = (sim, prog, token) => new Promise(res => { const f = () => { if (token.batal) return res(null); const ok = sim.maju(10); prog(sim.progres()); ok ? res(sim.hasil()) : requestAnimationFrame(f); }; requestAnimationFrame(f); });
 
-function pasang(el) {
+/* generator dikerjakan per potongan rAF (10 ms), seperti kerja() untuk simulasi */
+const kerjaGen = (gen, token) => new Promise(res => { const f = () => { if (token.batal) return res(null); const t0 = performance.now(); let r; do r = gen.next(); while (!r.done && performance.now() - t0 < 10); r.done ? res(r.value) : requestAnimationFrame(f); }; requestAnimationFrame(f); });
+
+/* opsi.prak: halaman yang sudah punya prakiraan.json bisa mengopernya agar tidak diunduh ulang */
+function pasang(el, opsi = {}) {
   if (!el) return null; if (el._su) return el._su;
   const S = {el, jam: 0, main: false, tampil: "3d", sk: "dasar", komp: null, cache: new Map(), token: {}, kotor: true, view: {}, selesai: false, perlSek: null};
   el._su = S; el.classList.add("su");
   el.innerHTML = `<div class="su-kartu"><div class="su-muat" id="suMuatAwal">Memuat data angin dan sumber...</div></div>`;
-  muatData().then(d => mulai(S, d)).catch(e => { console.error("SimUdara:", e); el.innerHTML = `<div class="su-kartu su-kosong">Simulasi belum tersedia.</div>`; });
+  muatData(opsi).then(d => mulai(S, d)).catch(e => { console.error("SimUdara:", e); el.innerHTML = `<div class="su-kartu su-kosong">Simulasi belum tersedia.</div>`; });
   return S;
 }
 
@@ -48,18 +54,29 @@ async function mulai(S, d) {
   const kl = (v, a, b) => Math.max(a, Math.min(b, v)); const lx = S.A.lon0 + (S.A.nx - 1) * S.A.dlon, ly = S.A.lat0 + (S.A.ny - 1) * S.A.dlat;
   if (e - w < 8) { const c = (e + w) / 2; w = c - 4; e = c + 4; } if (n - s < 6) { const c = (n + s) / 2; s = c - 3; n = c + 3; }
   S.bbox = [kl(w, S.A.lon0, lx), kl(s, S.A.lat0, ly), kl(e, S.A.lon0, lx), kl(n, S.A.lat0, ly)];
-  S.label = S.kota.map((k, i) => i).filter(i => S.kota[i].lon >= S.bbox[0] && S.kota[i].lon <= S.bbox[2] && S.kota[i].lat >= S.bbox[1] && S.kota[i].lat <= S.bbox[3]).sort((a, b) => S.jiwa[b] - S.jiwa[a]).slice(0, 14);
-  S.sumberTampil = S.src.sumber.filter(q => q.lon >= S.bbox[0] && q.lon <= S.bbox[2] && q.lat >= S.bbox[1] && q.lat <= S.bbox[3] && (q.jenis === "pltu" || q.id !== "lain"));
+  S.bboxSeluruh = S.bbox; S.wil = "Seluruh";
   kerangka(S);
   S.token = {}; await hitungDasar(S);
 }
 
+const WIL = {Sumatra: [94.5, -6.5, 107, 6], Kalimantan: [108, -4.5, 119.5, 4.5], Jawa: [104.5, -9, 115.5, -5.2], Seluruh: null};
+/* wilayah: kotak tampilan, sumber di dalamnya, dan label kota tanpa tumpang tindih (prioritas kategori terburuk 72 jam, lalu penduduk) */
+function aturWilayah(S, w) {
+  S.wil = w; const b = WIL[w], z = S.bboxSeluruh; S.bbox = b ? [Math.max(z[0] - 20, b[0]), Math.max(S.A.lat0, b[1]), Math.min(z[2] + 20, b[2]), Math.min(S.A.lat0 + (S.A.ny - 1) * S.A.dlat, b[3])] : z;
+  const [w0, s0, e0, n0] = S.bbox, W = e0 - w0, H = n0 - s0, dlm = (x, y) => x >= w0 && x <= e0 && y >= s0 && y <= n0;
+  const puncak = i => S.pmDasar ? Math.max(...S.pmDasar[i].slice(0, 72)) : 0;
+  const kand = S.kota.map((k, i) => i).filter(i => dlm(S.kota[i].lon, S.kota[i].lat)).sort((a, c) => M.kategori(puncak(c)) - M.kategori(puncak(a)) || S.jiwa[c] - S.jiwa[a]);
+  S.label = []; for (const i of kand) { const k = S.kota[i]; if (S.label.every(j => Math.abs(S.kota[j].lon - k.lon) / W > .16 || Math.abs(S.kota[j].lat - k.lat) / H > .08)) S.label.push(i); if (S.label.length >= 12) break; }
+  S.sumberTampil = S.src.sumber.filter(q => dlm(q.lon, q.lat) && (q.jenis === "pltu" || q.id !== "lain"));
+}
+function wilayahAwal(S) { const g = S.urut?.find(x => x.jenis === "kompleks"), G = g && S.dasar.grup[g.g]; if (!G) return "Seluruh"; for (const w of ["Sumatra", "Kalimantan", "Jawa"]) { const b = WIL[w]; if (G.lon >= b[0] && G.lon <= b[2] && G.lat >= b[1] && G.lat <= b[3]) return w; } return "Seluruh"; }
 function kerangka(S) {
   S.el.innerHTML = `
-  <section class="su-kartu" id="suUtama"><div class="su-hd"><h3>Asap 72 jam ke depan</h3><span class="su-pil">${IK.api}Simulasi model</span></div>
+  <section class="su-kartu" id="suUtama"><div class="su-hd"><h3>Asap 72 jam ke depan</h3><span class="su-pil">${IK.api}Simulasi model, belum dikoreksi ke alat ukur</span></div>
     <div class="su-seg" id="suTampil" role="group" aria-label="Tampilan"><button type="button" data-t="3d" aria-pressed="true">3D</button><button type="button" data-t="peta" aria-pressed="false">Peta</button></div>
+    <div class="su-seg" id="suWil" role="group" aria-label="Wilayah" style="margin-top:8px">${Object.keys(WIL).map(w => `<button type="button" data-w="${w}" aria-pressed="false">${w}</button>`).join("")}</div>
     <div class="su-tahap"><div id="suV3"></div><div id="suV2" hidden></div>
-      <div class="su-leg">${M.KAT.map(k => `<span><i style="--c:${k.w}"></i>${k.n}</span>`).join("")}</div>
+      <div class="su-leg">${M.KAT.map((k, c) => `<span><i style="--c:${k.w}"></i>${esc(M.labelKat(c))}</span>`).join("")}</div>
       <div class="su-muat" id="suMuat"><div id="suMuatTeks">Menghitung...<i><b id="suBar"></b></i></div></div></div>
     <div class="su-waktu"><button type="button" class="su-main" id="suMain" aria-label="Putar">${IK.main}</button><input type="range" id="suJam" min="0" max="72" step="0.25" value="0" aria-label="Jam ke depan"><output id="suLabel" for="suJam"></output></div>
   </section>
@@ -72,6 +89,7 @@ function kerangka(S) {
   const q = s => S.el.querySelector(s);
   /* handler hanya mengubah keadaan; kerja berat dijadwalkan */
   q("#suTampil").addEventListener("click", ev => { const b = ev.target.closest("button"); if (b) requestAnimationFrame(() => aturTampil(S, b.dataset.t)); });
+  q("#suWil").addEventListener("click", ev => { const b = ev.target.closest("button"); if (b && b.dataset.w !== S.wil) requestAnimationFrame(() => gantiWilayah(S, b.dataset.w)); });
   q("#suSkn").addEventListener("click", ev => { const b = ev.target.closest("button"); if (!b) return; S.sk = b.dataset.s; S.perlSek = null; segarSkn(S); requestAnimationFrame(() => jalankanSkn(S)); });
   q("#suKomp").addEventListener("change", ev => { S.komp = ev.target.value; requestAnimationFrame(() => jalankanSkn(S)); });
   q("#suMain").addEventListener("click", () => { S.main = !S.main; segarMain(S); if (S.main && S.jam >= 72) S.jam = 0; S.kotor = true; S.t0 = 0; });
@@ -93,12 +111,12 @@ async function hitungDasar(S) {
   if (!S.dasar) return;
   S.cal = M.kalibrasi(S.dasar, S.prak); S.K = S.cal.K; console.info("SimUdara kalibrasi", S.cal);
   S.pmDasar = S.kota.map((_, i) => M.pmKota(S.prak, S.dasar, S.dasar, S.K, i, S.A));
-  S.urut = M.urutPerlakuan(S.A, S.prak, S.dasar, S.K, S.jiwa, S.pmDasar);
+  muat(S, "Menyusun perlakuan", -1); S.urut = await kerjaGen(M.urutGen(S.A, S.prak, S.dasar, S.K, S.jiwa, S.pmDasar), S.token); if (!S.urut) return;
   const kompl = S.urut.filter(x => x.jenis === "kompleks").slice(0, 15); S.daftarKomp = kompl; S.urut = S.urut.slice(0, 8); S.komp = kompl[0]?.id || null;
-  S.el.querySelector("#suKomp").innerHTML = kompl.map(x => `<option value="${esc(x.id)}">${esc(x.nama)} (${esc(x.id)})</option>`).join("");
+  S.el.querySelector("#suKomp").innerHTML = kompl.map(x => `<option value="${esc(x.id)}">${esc(x.nama)}</option>`).join("");
   S.cache.set(M.kunciSkn({}), {hasil: S.dasar, pm: S.pmDasar});
   S.aktif = S.dasar; S.pmAkt = S.pmDasar; S.sknAkt = {}; S.selesai = true; muat(S, "", null);
-  perlakuan(S); segarSkn(S); ringkas(S); await aturTampil(S, S.tampil); S.kotor = true;
+  perlakuan(S); segarSkn(S); ringkas(S); aturWilayah(S, wilayahAwal(S)); S.el.querySelectorAll("#suWil button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.w === S.wil))); await aturTampil(S, S.tampil); S.kotor = true;
 }
 function sknObj(S) {
   switch (S.sk) { case "api50": return {fApi: .5}; case "balik": return {anginPutar: Math.PI}; case "lemah": return {anginKali: .5}; case "pltu": return {fPltu: 0};
@@ -115,30 +133,34 @@ const faktorSumber = S => q => q.jenis === "pltu" ? (S.sknAkt?.fPltu ?? 1) : (S.
 function ringkas(S) {
   const el = S.el, kal = el.querySelector("#suRingkas"), tb = el.querySelector("#suTabel"), tl = (k, x) => k.nama + x;
   const b = M.bandingKota(S.prak, S.jiwa, S.pmDasar, S.pmAkt);
-  if (S.perlSek) { const it = S.perlSek; kal.innerHTML = `Libur sekolah di <b>${esc(it.nama)}</b> menghindari sekitar <b>${jj(it.jj)} jiwa-jam</b> anak dalam 72 jam.`;
+  if (S.perlSek) { const it = S.perlSek; kal.innerHTML = `Libur sekolah di <b>${esc(it.nama)}</b> menghindari sekitar <b>${jj(it.jj)} jiwa-jam</b> anak${it.hi != null ? ` (rentang ${jj(it.lo)} sampai ${jj(it.hi)})` : ""} dalam 72 jam.`;
     tb.innerHTML = ""; return; }
   if (S.sk === "dasar") { const top = b.filter(x => x.jjDasar > 0).sort((a, c) => c.jjDasar - a.jjDasar).slice(0, 8), tot = b.reduce((s, x) => s + x.jjDasar, 0);
     kal.innerHTML = tot ? `Dalam 72 jam ke depan ada sekitar <b>${jj(tot)} jiwa-jam</b> di atas ambang tidak sehat.` : `Tidak ada kota di atas ambang tidak sehat dalam 72 jam.`;
-    tb.innerHTML = top.length ? tabel(["Kota", "PM2,5 puncak", "Jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), jj(x.jjDasar)])) : ""; return; }
+    tb.innerHTML = top.length ? tabel(["Kota", "PM2,5 puncak <span class=\"su-sat\">(µg/m³)</span>", "Jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), jj(x.jjDasar)])) : ""; return; }
   const tot = b.reduce((s, x) => s + x.hindar, 0), tot0 = b.reduce((s, x) => s + x.jjDasar, 0), p = tot0 ? Math.abs(tot) / tot0 * 100 : 0;
   const nama = S.sk === "kompleks" ? `Padamkan ${S.daftarKomp?.find(x => x.id === S.komp)?.nama || "kompleks"}` : M.SKENARIO.find(x => x.id === S.sk).nama;
   kal.innerHTML = Math.abs(tot) < 1 ? `${esc(nama)} hampir tidak mengubah paparan kota dalam 72 jam.` : `${esc(nama)} ${tot > 0 ? "mengurangi" : "menambah"} paparan sekitar <b>${jj(Math.abs(tot))} jiwa-jam</b> (${fmt(p)}%) dibanding dasar.`;
   const top = b.filter(x => Math.abs(x.hindar) >= 1).sort((a, c) => Math.abs(c.hindar) - Math.abs(a.hindar)).slice(0, 8);
-  tb.innerHTML = top.length ? tabel(["Kota", "Dasar", "Skenario", "Selisih jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), kat(x.puncakSkn), jj(-x.hindar)])) : "";
+  tb.innerHTML = top.length ? tabel(["Kota", "Dasar <span class=\"su-sat\">(µg/m³)</span>", "Skenario <span class=\"su-sat\">(µg/m³)</span>", "Selisih jiwa-jam"], top.map(x => [esc(x.nama), kat(x.puncakDasar), kat(x.puncakSkn), jj(-x.hindar)])) : "";
 }
-const kat = v => { const k = M.KAT[M.kategori(v)]; return `<span class="kt" style="--c:${k.w};--f:${k.fg}">${fmt(v)}</span>`; };
+const kat = v => { const k = M.KAT[M.kategori(v)]; return `<span class="kt" title="${esc(M.labelKat(M.kategori(v)))}" style="--c:${k.w};--f:${k.fg}">${fmt(v)}</span>`; };
 const tabel = (kep, baris) => `<table class="su-tb"><thead><tr>${kep.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 function perlakuan(S) {
-  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${i + 1}</span><span>${x.jenis === "kompleks" ? IK.api : IK.sek}${x.jenis === "kompleks" ? "Padamkan" : "Liburkan sekolah di"} ${esc(x.nama)}</span><span class="n">${jj(x.jj)} jiwa-jam</span></button></li>`).join("")
+  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${i + 1}</span><span>${x.jenis === "kompleks" ? IK.api : IK.sek}${x.jenis === "kompleks" ? "Padamkan" : "Liburkan sekolah di"} ${esc(x.nama)}</span><span class="n">sekitar ${jj(x.jj)}${x.hi != null ? ` (${jj(x.lo)} sampai ${jj(x.hi)})` : ""} jiwa-jam</span></button></li>`).join("")
     : `<li class="su-kosong">Tidak ada perlakuan yang menghindari paparan di atas ambang.</li>`;
 }
 function tandaiPerl(S) { S.el.querySelectorAll("#suPerl button").forEach(b => { const it = S.urut[+b.dataset.i]; b.setAttribute("aria-pressed", String(it === S.perlSek || (!S.perlSek && S.sk === "kompleks" && it.jenis === "kompleks" && it.id === S.komp))); }); }
 
+async function gantiWilayah(S, w) {
+  aturWilayah(S, w); S.el.querySelectorAll("#suWil button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.w === w)));
+  S.view.d3?.hancur(); S.view.d2?.hancur(); S.view = {}; await aturTampil(S, S.tampil);
+}
 async function aturTampil(S, t) {
   S.tampil = t; S.el.querySelectorAll("#suTampil button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.t === t)));
   const v3 = S.el.querySelector("#suV3"), v2 = S.el.querySelector("#suV2"); v3.hidden = t !== "3d"; v2.hidden = t !== "peta";
   if (!S.selesai) return;
-  const ctx = {bbox: S.bbox, kisi: S.dasar.kisi, sumber: S.sumberTampil, kota: S.label.map(i => S.kota[i])};
+  const g0 = S.urut?.find(x => x.jenis === "kompleks"), G0 = g0 && S.dasar.grup[g0.g], ctx = {fokus: G0 && G0.lon >= S.bbox[0] && G0.lon <= S.bbox[2] && G0.lat >= S.bbox[1] && G0.lat <= S.bbox[3] ? {lon: G0.lon, lat: G0.lat} : null, bbox: S.bbox, kisi: S.dasar.kisi, sumber: S.sumberTampil, kota: S.label.map(i => S.kota[i])};
   try {
     if ((t === "3d" && !S.view.d3) || (t === "peta" && !S.view.d2)) muat(S, "Memuat tampilan", -1);
     if (t === "3d" && !S.view.d3) { const T = await import("./tiga.js"); if (!T.adaWebGL()) throw new Error("WebGL tidak ada"); S.view.d3 = await T.buat(v3, ctx); }
@@ -155,7 +177,7 @@ function lukis(S) {
   if (S.kotor && S.selesai) {
     S.kotor = false; const h = S.jam, b0 = Math.min(Math.floor(h), 72), b1 = Math.min(b0 + 1, 72), f = h - b0, vw = S.view[S.tampil === "3d" ? "d3" : "d2"];
     S.el.querySelector("#suLabel").textContent = labelWaktu(S, h);
-    if (vw) { const nilai = S.label.map(i => { const p = S.pmAkt[i], v = p[b0] * (1 - f) + p[b1] * f; return {v, kat: M.KAT[M.kategori(v)]}; });
+    if (vw) { const nilai = S.label.map(i => { const p = S.pmAkt[i], v = p[b0] * (1 - f) + p[b1] * f; return {v, kat: M.KAT[M.kategori(v)], tanda: S.sk !== "dasar" && !S.perlSek && M.takTerpercaya(S.prak, i, S.A, b0)}; });
       vw.ubah({jam: h, hasil: S.aktif, Kal: S.K, nilaiKota: nilai, faktorSumber: faktorSumber(S), jamWIB: jamWIB(S), sknBaru: S.sknBaru}); S.sknBaru = false; }
   }
   requestAnimationFrame(S.lukis);

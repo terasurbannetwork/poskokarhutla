@@ -39,7 +39,7 @@ const Laci = {
     /* 2. penduduk terpapar per kelas MMI dan fasilitas di MMI VI atau lebih (perkiraan model) */
     if (g.m >= 4.5 && typeof GempaGuncangan !== "undefined") Guncang.hitung(g).then(({P, F}) => { if (!P?.total) return;
       const ks = Object.keys(P.per).map(Number).filter(k => k >= 3 && P.per[k] > 0).sort((a, b) => b - a); if (!ks.length) return;
-      const nf = t => F ? F.filter(f => f.t === t).length : 0, fas = F && F.length ? `<p class="fnd">Dari fasilitas rawan yang dimuat (sebagian sekolah dengan syarat teringan tidak dimuat), ${[nf("sekolah") && fmt(nf("sekolah")) + " sekolah", nf("rs") && fmt(nf("rs")) + " fasilitas kesehatan", nf("publik") && fmt(nf("publik")) + " bangunan publik"].filter(Boolean).join(" dan ") || fmt(F.length) + " fasilitas"} diperkirakan terguncang MMI VI atau lebih.</p>` : "";
+      const nf = t => F ? F.filter(f => f.t === t).length : 0, fas = F && F.length ? `<p class="fnd">Dari fasilitas rawan yang dimuat (sebagian sekolah dengan syarat teringan tidak dimuat), ${[nf("sekolah") && fmt(nf("sekolah")) + " sekolah", nf("rs") && fmt(nf("rs")) + " fasilitas kesehatan", nf("publik") && fmt(nf("publik")) + " bangunan publik"].filter(Boolean).reduce((s, x, i, A) => s + (i ? (i === A.length - 1 ? " dan " : ", ") : "") + x, "") || fmt(F.length) + " fasilitas"} diperkirakan terguncang MMI VI atau lebih.</p>` : "";
       tambah(2, `<h4 class="lc-h">Perkiraan penduduk terpapar ${pilModel}</h4><table class="tb2"><tbody>${ks.map(k => baris(`<span class="lc-mmi" style="--w:${MMI_WARNA[k]};color:${k <= 3 ? "#3b3320" : "#fff"}">MMI ${rom(k)}</span>`, jiwaTeks(P.per[k]))).join("")}</tbody></table>${fas}
         <p class="fnd">Perkiraan model guncangan, belum diuji terhadap laporan Dirasakan.</p>`); }).catch(() => {});
     /* 6. bandara di zona guncangan MMI VI atau lebih (A35, model guncangan yang sama) */
@@ -53,8 +53,8 @@ const Laci = {
         <p class="fnd">Warna semu: tanah terbuka segar tampak terang. Sumber: Copernicus Sentinel-2 via Earth Search</p>`); }).catch(() => {});
     /* 3. waktu tiba dan tinggi di pantai terdekat, hanya bila gempa layak; status resmi BMKG tetap di atas. Dihitung di luar tugas klik (nanti), batas 60 menit lalu 180 bila kosong, cache per gempa */
     if (typeof Tsunami !== "undefined" && Tsunami.layak(g)) this.gelombang(g).then(P => { if (!P?.length) return;
-      const mnt = m => "sekitar " + fmt(Math.max(5, Math.round(m / 5) * 5)) + " menit", tg = x => x.tinggi_lo != null && x.tinggi_hi != null ? `${fmt(x.tinggi_lo)} sampai ${fmt(x.tinggi_hi)} m` : `sekitar ${fmt(Math.round(x.tinggi_m * 10) / 10)} m`;
-      tambah(3, `<h4 class="lc-h">Perkiraan gelombang di pantai terdekat</h4><table class="tb2"><tbody>${P.map(x => baris(esc(x.kab || this.koord({lat: x.lat, lon: x.lon})), `${mnt(x.menit)}, ${tg(x)}`)).join("")}</tbody></table>
+      const mnt = waktuTiba, tg = x => x.tinggi_lo != null && x.tinggi_hi != null ? `${fmt(x.tinggi_lo)} sampai ${fmt(x.tinggi_hi)} m` : `sekitar ${fmt(Math.round(x.tinggi_m * 10) / 10)} m`;
+      tambah(3, `<h4 class="lc-h">Perkiraan gelombang di pantai terdekat</h4><table class="tb2"><tbody>${P.map(x => baris(esc(x.kab || this.koord({lat: x.lat, lon: x.lon})), `${x.menit < 1 ? "langsung, di atas bidang patahan" : mnt(x.menit)}, ${tg(x)}`)).join("")}</tbody></table>
         <p class="fnd">Simulasi, bukan prakiraan. Ikuti status resmi BMKG di atas.</p>`); }).catch(() => {});
     /* 4. indeks risiko riwayat provinsi (data/risiko.json): skor 0 sampai 100, kelas sebagai pil */
     if (g.prov) Risiko.prov(g.prov).then(r => { if (!r) return;

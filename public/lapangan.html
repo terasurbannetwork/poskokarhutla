@@ -8,6 +8,7 @@
 <meta name="theme-color" content="#0b2545">
 <title>Lapor Lapangan · Posko Karhutla</title>
 <link rel="stylesheet" href="/lapangan.css?v=1">
+<link rel="stylesheet" href="/inti/lapor-gelap.css?v=1">
 </head>
 <body>
 <header class="lp-kop">
@@ -49,6 +50,12 @@
     </section>
     <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button>
   </form>
+  <section class="lp-blok">
+    <h2>Rumah rusak</h2>
+    <p class="lp-kecil">Lapor kerusakan rumah warga (rusak berat, sedang, ringan) dengan kode regu yang sama.</p>
+    <button type="button" id="bukaRR" class="lp-tombol">🏚️ Lapor rumah rusak</button>
+    <div id="rrWadah" class="lp-rr" hidden></div>
+  </section>
 </main>
 <script src="/lapangan.js?v=1" defer></script>
 </body>

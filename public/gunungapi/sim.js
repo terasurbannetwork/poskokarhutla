@@ -8,6 +8,7 @@ const TERRARIUM = (z, x, y) => `https://s3.amazonaws.com/elevation-tiles-prod/te
 const ESRI = "https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}";
 const KOLOM = [1, 3, 5, 10, 15], DURASI = [1, 3, 6, 12, 24], VOL = [1e5, 1e6, 1e7], HL = [0.2, 0.25, 0.3, 0.35];
 const V_PDC = 20, V_LAHAR = 6, T_LAHAR = 1;  /* m/dtk dan jam mulai lahar: ilustrasi, bukan hasil model */
+const AMBANG_HULU = "0,5"; /* km2, sama dengan bawaan ambangHulu di sim_lahar.js */
 const KM_JAM_EVAKUASI = 25;                  /* kecepatan kendaraan di jalan evakuasi (asumsi) */
 const WARNA = {abu: "#8a7a6b", lahar: "#3f7cc4", pdc: "#d64545", tebal: "#6b4a1f", sedang: "#b08a4f", tipis: "#dcc99b"};
 /* SATU aturan dengan abu.id_gunung (scripts/gunungapi/abu.py): "Lewotobi Laki-laki" = lewotobi-laki-laki */
@@ -173,7 +174,9 @@ function terapkanLahar() {
 /* tepi bergradasi: topeng diperbesar 2x lalu diburamkan, ditimpa inti yang lebih tajam (ctx.filter belum ada di Safari lama: di sana hanya diperhalus oleh skala) */
 function lembut(o) { const g = o.g, W = o.c.width, H = o.c.height; g.clearRect(0, 0, W, H); g.imageSmoothingEnabled = true; g.imageSmoothingQuality = "high";
   try { g.filter = "blur(4px)"; } catch {} g.drawImage(o.mk, 0, 0, W, H); g.filter = "none"; g.globalAlpha = .45; try { g.filter = "blur(1.2px)"; } catch {} g.drawImage(o.mk, 0, 0, W, H); g.filter = "none"; g.globalAlpha = 1; }
-function unggahKanvas(m, src) { src.play(); clearTimeout(src._tp); src._tp = setTimeout(() => { try { src.pause(); m.triggerRepaint(); } catch {} }, 400); } /* play lalu pause setelah jeda tetap: pause() mengunggah isi kanvas terakhir; hitungan event render tak andal saat peta lambat */
+/* Terrain menyimpan hasil gambar lapis raster per ubin (render-to-texture); pembaruan isi kanvas tidak membatalkan cache itu (terbukti: tekstur GL berisi 44 rb piksel
+   tetapi layar kosong). setCoordinates() menembakkan event data "content" yang membatalkannya. play lalu pause setelah jeda: pause() mengunggah isi kanvas terakhir. */
+function unggahKanvas(m, src, koor) { src.play(); clearTimeout(src._tp); src._tp = setTimeout(() => { try { src.pause(); src.setCoordinates(koor); m.triggerRepaint(); } catch {} }, 400); }
 /* gambar sel yang sudah dicapai muka aliran pada jam t; maju = hanya tambahan, mundur = ulang dari nol */
 function gambarLahar(paksa) {
   const s = S, r = s.lahar, K = s.kanvas, m = s.peta; if (!r || !K || !m?.getSource("lahar-img")) return;
@@ -185,7 +188,7 @@ function gambarLahar(paksa) {
       for (let dy = -rad; dy <= rad; dy++) for (let dx = -rad; dx <= rad; dx++) { const x = x0 + dx, y = y0 + dy; if (x >= 0 && y >= 0 && x < K.w && y < K.h) { const q = (y * K.w + x) * 4; px[q] = rgb[0]; px[q + 1] = rgb[1]; px[q + 2] = rgb[2]; px[q + 3] = 255; } }
       ptr++; tambah = true; }
     if (!tambah && ptr === o.ptr) return;
-    o.ptr = ptr; o.gm.putImageData(o.data, 0, 0); lembut(o); const src = m.getSource(nama + "-img"); unggahKanvas(m, src); };
+    o.ptr = ptr; o.gm.putImageData(o.data, 0, 0); lembut(o); unggahKanvas(m, m.getSource(nama + "-img"), K.coords); };
   hit("pdc", r.pdc, s.t * 3600 * V_PDC, [214, 69, 69], 1);
   hit("lahar", r.lahar, Math.max(-1, (s.t - T_LAHAR) * 3600 * V_LAHAR), [63, 124, 196], 2);
 }
@@ -317,8 +320,8 @@ function panel() {
   $("#smMet").innerHTML = `<ul style="margin:0;padding-left:18px">
     <li><b>Skenario, bukan prakiraan.</b> Erupsi diandaikan mulai sekarang; kolom, lama, dan volume pilihanmu. Level resmi tetap dari PVMBG.</li>
     <li><b>Abu:</b> 2.000 partikel digeser angin nyata 72 jam (${esc(s.anginSumber || "tidak tersedia")}), jatuh menurut ukuran butir, plus sebaran acak. Endapan desa berupa angka <i>relatif</i> (100% = titik terbanyak), bukan milimeter, dan tanpa hujan, gedung, atau abu yang terangkat lagi.</li>
-    <li><b>Lahar:</b> LAHARZ (Iverson dkk. 1998): penampang 0,05 V^(2/3) dan luas sebaran 200 V^(2/3), diisi dari lembah DEM terrarium ~38 m. Volume dibagi: separuh ke lembah dari dasar kawah, sisanya rata ke lembah lain. Waktu tempuh ilustrasi (${V_LAHAR} m/dtk, mulai jam ${T_LAHAR} setelah hujan memicu).</li>
-    <li><b>Awan panas:</b> kerucut energi H/L dari puncak, dibatasi lembah (tebal ${15} m), ${V_PDC} m/dtk. Lembah sempit di bawah ~80 m tak terpisah di DEM ini; kawah, kubah, dan tanggul baru tidak terbaca.</li>
+    <li><b>Lahar:</b> LAHARZ (Iverson dkk. 1998): penampang 0,05 V^(2/3) dan luas sebaran 200 V^(2/3), diisi dari lembah DEM terrarium ~38 m. Awal lahar = titik alur mulai terkonsentrasi (aliran terkumpul &ge; 0,5 km², asumsi umum, belum dicocokkan ke hulu sungai bernama); LAHARZ klasik memulai di batas zona proksimal H/L 0,2-0,3, sengaja tidak dipakai karena lahar hujan di sini bersumber di lereng atas. Volume dibagi: separuh ke alur dari dasar kawah, sisanya rata ke alur lain, dan luas total sama dengan B(V). Waktu tempuh ilustrasi (${V_LAHAR} m/dtk, mulai jam ${T_LAHAR} setelah hujan memicu).</li>
+    <li><b>Awan panas:</b> kerucut energi H/L dari puncak (Malin &amp; Sheridan 1982) dengan pengungkungan lembah (tebal ${15} m), ${V_PDC} m/dtk. Di lereng terbuka lidahnya melebar setengah-lebar 0,2 &times; jarak dari kawah di tiap sisi; angka 0,2 ilustrasi tanpa kalibrasi. Lembah sempit di bawah ~80 m tak terpisah di DEM ini; kawah, kubah, dan tanggul baru tidak terbaca.</li>
     <li><b>Evakuasi:</b> penduduk dan desa dari ${s.pg ? esc(s.pg.zona_sumber || "data paparan") : "<i>data paparan belum tersedia untuk gunung ini</i>"}; waktu tempuh ${KM_JAM_EVAKUASI} km/jam di ruas rute ${s.geo ? "yang ada" : "(data rute belum ada)"}.</li>
     ${s.pg ? "" : "<li>Tanpa data desa, endapan abu hanya tampil sebagai peta kisi.</li>"}</ul>`;
   const el = $("#smBd");
@@ -339,10 +342,21 @@ function hasilKartu() {
   if (hs) { const M = s.maks;   /* jejak terjauh dihitung SEKALI di Worker (AbuModel.jejakMaks) */
     abuTxt = M ? `abu di atas ambang penerbangan 2 mg/m³ menjangkau sampai ${hl(km5(M.jangkau_km) + " km")} ke arah ${arahMata(M.arah_deg)} dalam 72 jam pertama`
       : `abu tetap ${hl("di bawah ambang penerbangan 2 mg/m³")} selama 72 jam, bukan berarti tanpa abu`; }
-  const bagian = [abuTxt, r ? `lahar menempuh ${hl(BULAT(r.lahar_km, 1) + " km")} di lembah` : "", r ? `awan panas sampai ${hl(BULAT(r.pdc_km, 1) + " km")}` : ""].filter(Boolean);
+  /* lahar: jarak awal dan panjang dihitung sepanjang alur dari kawah; bila nol, tulis sebabnya (jangan diam-diam) */
+  const I = s.lahar?.info || [], ada = I.filter(i => i.berhenti !== "tak ada zona lahar"), utama = ada.slice().sort((a, b) => b.lahar_km - a.lahar_km)[0];
+  const tepi = I.some(i => i.berhenti === "tepi"), laut = I.some(i => i.berhenti === "laut"), tanpa = I.filter(i => i.berhenti === "tak ada zona lahar");
+  let laharTxt = "", catatan = "";
+  if (r && I.length) {
+    if (!ada.length) laharTxt = `lahar ${hl("tidak terbentuk")}: ${tanpa.every(i => i.alasan_tak_ada === "proksimal") ? "seluruh alur lembah masih di zona proksimal (H/L > 0,2 dari puncak)" : tanpa.every(i => i.alasan_tak_ada === "hulu") ? `lembah tak pernah mengumpulkan aliran sebesar ${AMBANG_HULU} km² hulu` : "alur lembah tak memenuhi syarat awal lahar"}`;
+    else laharTxt = `lahar mulai ${hl(BULAT(utama.awal_km, 1) + " km")} dari kawah dan menempuh ${hl(BULAT(Math.max(0, utama.lahar_km - utama.awal_km), 1) + " km")} di lembah`;
+    if (tepi) catatan += " Lahar mencapai tepi peta DEM (±24 km dari kawah), jadi jangkauan sebenarnya bisa lebih jauh.";
+    if (laut) catatan += " Sebagian lahar berhenti di laut.";
+    if (ada.length && tanpa.length) catatan += ` ${tanpa.length} dari ${I.length} alur tidak membentuk lahar (${tanpa[0].alasan_tak_ada === "hulu" ? "hulu terlalu kecil" : "masih di zona proksimal"}).`;
+  }
+  const bagian = [abuTxt, laharTxt, r ? `awan panas sampai ${hl(BULAT(r.pdc_km, 1) + " km")}` : ""].filter(Boolean);
   if (!bagian.length) { h.innerHTML = `<p class="sm-msg">Menghitung…</p>`; return; }
   const judul = "Skenario: " + bagian.join(", ") + ".";
-  h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km². Putar waktunya di bawah peta.</p>` : "", "Model skenario Pantau Bencana (abu_model.js dan LAHARZ)");
+  h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km².${catatan} Putar waktunya di bawah peta.</p>` : "", "Model skenario Pantau Bencana (abu_model.js dan LAHARZ)");
 }
 const arahMata = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(d / 45) % 8];
 

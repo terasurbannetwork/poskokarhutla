@@ -1,5 +1,5 @@
 /* Menu pilihan bencana di kepala, digambar dari /bencana.json (registry).
-   Pasang: <details class="bencana" data-bencana="<id halaman>" [data-tentang] [data-tanpa-segera]> dengan markup cadangan statis di dalamnya.
+   Pasang: <details class="bencana" data-bencana="<id halaman>" [data-tanpa-segera]> dengan markup cadangan statis di dalamnya.
    Bila registry gagal dimuat, markup cadangan dibiarkan apa adanya. Bencana tanpa ikon di IKON tidak ditampilkan. */
 export const IKON = {
   karhutla: '<path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/>',
@@ -12,16 +12,15 @@ export const IKON = {
 };
 const svg = (isi, atr = "") => `<svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"${atr}>${isi}</svg>`;
 const SEMUA = svg('<rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/>', ' fill="none" stroke="currentColor" stroke-width="2"');
-const TENTANG = svg('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"');
 const esc = s => String(s).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
 const rata = p => p.replace(/\.html$/, "").replace(/(.)\/$/, "$1");
 
 async function gambar(d) {
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
-  /* sementara hanya Karhutla yang bisa dibuka dari menu; bencana lain tampil non-aktif berlabel "Soon", "Semua bencana" dan
-     "Tentang kami" disembunyikan (pemilik, 17 Okt 2026). Memulihkan: kosongkan TAMPIL. Halamannya tetap bisa dibuka lewat URL. */
-  const TAMPIL = new Set(["karhutla"]);
+  /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
+     terbuka, plus "Semua bencana" (pemilik membuka semuanya, 20 Okt 2026). */
+  const TAMPIL = new Set();
   const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon]);
   const buka = b => !TAMPIL.size ? b.status === "aktif" : TAMPIL.has(b.id);
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */
@@ -34,11 +33,9 @@ async function gambar(d) {
     if (buka(b) || b.id === ini.id) return `<a href="${esc(b.rute)}"${rata(b.rute) === lokasi ? ' aria-current="page"' : ""}>${svg(IKON[b.ikon])}${esc(b.nama)}</a>`;
     return tanpaSegera && !TAMPIL.size ? "" : `<a class="segera" aria-disabled="true" tabindex="-1" title="Segera hadir">${svg(IKON[b.ikon])}${esc(b.nama)}<em class="bc-segera">${TAMPIL.size ? "Soon" : "Segera"}</em></a>`;
   }).join("");
-  const tentang = !TAMPIL.size && "tentang" in d.dataset
-    ? `<hr><a href="/tentang"${lokasi === "/tentang" ? ' aria-current="page"' : ""}>${TENTANG}Tentang kami</a>` : "";
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
-  d.querySelector(".menu").innerHTML = butir + tentang;
+  d.querySelector(".menu").innerHTML = butir;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
   d.classList.toggle("ada-segera", (!tanpaSegera || TAMPIL.size > 0) && daftar.some(b => !buka(b)));
 }
 

@@ -79,7 +79,9 @@ const Peta = {
     S.pilih = kode || null;
     if (S.pilih && peta?.getSource("prov")) peta.setFeatureState({source: "prov", id: S.pilih}, {pilih: true});
     if (terbang && peta) { const f = S.geo.features.find(f => f.properties.kode === kode); peta.fitBounds(f ? kotak([f]) : BB_ID, {padding: kiriPad(), duration: 700, maxZoom: 8}); }
-    renderDaftar(); renderCrumb(); kode ? this.laciProv(kode) : $("#laci").classList.remove("on"); },
+    document.querySelectorAll("#rows .tb:not(.kepala)").forEach(b => b.classList.toggle("dipilih", b.dataset.k === S.pilih));   /* sorotan langsung, isi menyusul (INP) */
+    if (!kode) $("#laci").classList.remove("on");
+    nanti(() => { renderDaftar(); renderCrumb(); if (kode) this.laciProv(kode); }); },
   /* laci rincian di kanan (sama dengan laci karhutla dan banjir): PM2,5 per hari, jiwa per kategori, kabupaten/kota paling terpapar. Semua angka perkiraan model. */
   laciProv(kode) { const H = S.uk.prov[kode]; if (!H) return $("#laci").classList.remove("on");
     const p = H[S.hari], kab = (S.uk.kab[S.hari] || []).filter(r => r[0] === kode && r[5] > 0).slice(0, 5), hr = hariTampil();

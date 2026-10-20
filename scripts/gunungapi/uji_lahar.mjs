@@ -58,7 +58,7 @@ const kerucut = jml(N, N, (x, y) => {
   if (x > C) z -= 40 * Math.exp(-(((y - C) / 5) ** 2)) * Math.min(1, (x - C) / 3); /* lembah ke timur, mulai dari bukaan kawah */
   return z;
 });
-const jalan = (V, hl, maxJalur = 1) => L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V, hl, maxJalur});
+const jalan = (V, hl, maxJalur = 1) => L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V, hl, maxJalur, proksimal: 0.5, ambangHulu: 0}); /* mekanik lahar saja: kerucut uji lereng 0,31 > batas, jadi zona proksimal dan ambang hulu dimatikan; jalur produksi diuji di bawah (kerucutCuram, opsi bawaan) */
 const panjangPx = r => Math.max(...[...r.lahar.idx].map(i => i % N)) - C;
 
 uji("jalur utama mengikuti lembah", () => {
@@ -85,7 +85,7 @@ uji("penampang LAHARZ A = 0,05 V^(2/3) dipakai di jalur (A terukur ~ A)", () => 
   }
 });
 uji("volume terjaga: luas total semua jalur ~ B(V), bukan jumlah B per bagian volume", () => {
-  const V = 1e5, B = L.laharz(V).B, r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V, hl: 0.3}), luas = r.ringkas.lahar_km2 * 1e6;
+  const V = 1e5, B = L.laharz(V).B, r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V, hl: 0.3, proksimal: 0.5, ambangHulu: 0}), luas = r.ringkas.lahar_km2 * 1e6;
   assert.ok(r.info.length > 1, "uji ini butuh lebih dari satu jalur, ada " + r.info.length);
   assert.ok(luas <= B * 1.0001, `luas total ${Math.round(luas)} m2 melebihi B(V)=${Math.round(B)} (rasio ${(luas / B).toFixed(4)}); pembagian volume menggelembungkan luas`);
   for (const i of r.info) assert.ok(i.lahar_km2 * 1e6 <= i.B_m2 * 1.0001, `jalur bobot ${i.bobot}: luas ${Math.round(i.lahar_km2 * 1e6)} m2 melebihi B jalur ${Math.round(i.B_m2)}`);
@@ -103,7 +103,7 @@ uji("lahar berhenti sesuai volume: jarak(1e5) > jarak(3e4) > jarak(1e4), berhent
 });
 uji("penyebab berhenti tercatat di info: B, tepi, laut", () => {
   const ada = new Set(["B", "tepi", "laut", "sink", "tak ada zona lahar"]);
-  const opsi = dem => ({dem, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], hl: 0.3, maxJalur: 1});
+  const opsi = dem => ({dem, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], hl: 0.3, maxJalur: 1, proksimal: 0.5, ambangHulu: 0});
   const b = L.simulasi({...opsi(kerucut), V: 1e5}).info[0].berhenti, tepi = L.simulasi({...opsi(kerucut), V: 1e8}).info[0].berhenti, lt = L.simulasi({...opsi(laut), V: 1e8}).info[0].berhenti;
   assert.ok([b, tepi, lt].every(x => ada.has(x)), `penyebab di luar daftar: ${[b, tepi, lt]}`);
   assert.equal(b, "B", "volume kecil di lembah panjang harus berhenti karena B");
@@ -139,8 +139,50 @@ uji("indeks sel <-> lon/lat konsisten: puncak = sel tertinggi dan pusat sel bola
   for (const idx of [...r.pdc.idx.slice(0, 50), ...r.lahar.idx.slice(0, 50)]) { const x = idx % N, y = (idx / N) | 0, [lon, lat] = L.pxKeLL(Z, 1000 + x + .5, 2000 + y + .5), [gx, gy] = L.llKePx(Z, lon, lat);
     assert.ok(Math.abs(gx - 1000 - x - .5) < 1e-6 && Math.abs(gy - 2000 - y - .5) < 1e-6, `sel ${x},${y} tidak bolak-balik: ${gx - 1000},${gy - 2000}`); }
 });
+/* ---- jalur PRODUKSI (opsi bawaan: proksimal H/L 0,2 dan ambang hulu 0,5 km2), bukan mekanik dengan zona dimatikan ---- */
+/* kelas bug "lahar mulai di kawah": H/L di sel pertama jalur selalu ~0 (turunnya belum ada), jadi syarat "H/L <= batas" langsung terpenuhi */
+const curam = jml(N, N, (x, y) => { const r = Math.hypot(x - C, y - C); let z = Math.max(100, PUNCAK - 12 * Math.min(r, 60) - 2 * Math.max(0, r - 60)); /* lereng 0,31 sampai r=60 sel, lalu 0,05; lembah dalam supaya aliran mengumpul */
+  if (x > C) z -= 120 * Math.exp(-(((y - C) / 6) ** 2)) * Math.min(1, (x - C) / 3); return z; });
+const produksi = (V, maxJalur = 5, dem = curam) => L.simulasi({dem, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V, hl: 0.3, maxJalur});
+uji("produksi (bawaan): lahar mulai di awal_alur (> 0), bukan di kawah dan bukan menunggu zona proksimal", () => {
+  const r = produksi(1e4, 1), dx = L.mPerPx(LAT, Z), [px, py] = r.puncak, i = r.info[0];
+  assert.ok(i.awal_km > 0 && i.hulu_km > 0, `awal harus > 0: awal ${i.awal_km} km, hulu ${i.hulu_km} km`);
+  assert.equal(i.proksimal_km, 0, "proksimal bawaan harus mati"); assert.ok(Math.abs(i.awal_km - i.hulu_km) < 1e-9, "awal harus = titik hulu alur");
+  const dekat = [...r.lahar.idx].map(k => Math.hypot(k % N - px, ((k / N) | 0) - py)).sort((a, b) => a - b)[0];
+  assert.ok(r.lahar.idx.length > 0 && dekat * dx / 1000 >= i.awal_lurus_km - 0.1, `sel lahar terdekat ${(dekat * dx / 1000).toFixed(2)} km < awal ${i.awal_lurus_km.toFixed(2)} km`);
+  assert.ok(i.awal_lurus_km < 4.5, `awal ${i.awal_lurus_km.toFixed(1)} km harus di dalam zona proksimal H/L 0,2 (~4,9 km): lahar hujan mulai di lereng atas`);
+});
+uji("proksimal eksplisit (mode LAHARZ klasik, H/L 0,2): lahar mulai sesudah zona proksimal, tak ada sel di dekat kawah", () => {
+  const r = L.simulasi({dem: curam, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V: 1e4, hl: 0.3, maxJalur: 1, proksimal: 0.2}), dx = L.mPerPx(LAT, Z), [px, py] = r.puncak, i = r.info[0];
+  const dekat = [...r.lahar.idx].map(k => Math.hypot(k % N - px, ((k / N) | 0) - py)).sort((a, b) => a - b)[0];
+  assert.ok(i.proksimal_km > 0 && i.awal_km >= i.proksimal_km - 1e-9, `awal ${i.awal_km} km harus >= batas proksimal ${i.proksimal_km} km`);
+  assert.ok(dekat >= 120, `sel lahar terdekat ${dekat} sel; zona proksimal H/L 0,2 berakhir >= 120 sel`);
+});
+uji("produksi: luas lahar per jalur <= B jalur dan total <= B(V), volume terjaga (jumlah B = B(V)), mulai > 0", () => {
+  const V = 1e4, B = L.laharz(V).B, r = produksi(V, 5);
+  assert.ok(r.info.length > 1 && r.info.some(x => x.awal_km > 0), "butuh banyak jalur dan mulai > 0");
+  for (const x of r.info) if (x.berhenti !== "tak ada zona lahar") assert.ok(x.lahar_km2 * 1e6 <= x.B_m2 * 1.0001, `jalur bobot ${x.bobot}: luas ${Math.round(x.lahar_km2 * 1e6)} > B jalur ${Math.round(x.B_m2)}`);
+  const luas = r.ringkas.lahar_km2 * 1e6; assert.ok(luas <= B * 1.0001, `luas total ${Math.round(luas)} > B(V)=${Math.round(B)}`);
+  const jumlahB = r.info.reduce((a, x) => a + (x.berhenti === "tak ada zona lahar" ? B * x.bobot : x.B_m2), 0); assert.ok(Math.abs(jumlahB / B - 1) < 1e-9, `jumlah B ${jumlahB} != B(V) ${B}`);
+});
+uji("produksi: jalur seluruhnya di zona proksimal -> berhenti 'tak ada zona lahar', bukan lahar nol diam-diam", () => {
+  const r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V: 1e5, hl: 0.3, maxJalur: 1, proksimal: 0.2, ambangHulu: 0}), i = r.info[0]; /* kerucut: lereng 0,31 dan H/L > 0,2 sampai tepi peta */
+  assert.equal(i.berhenti, "tak ada zona lahar", "berhenti seharusnya 'tak ada zona lahar', dapat " + i.berhenti);
+  assert.equal(i.alasan_tak_ada, "proksimal", "alasan seharusnya 'proksimal', dapat '" + i.alasan_tak_ada + "'");
+  assert.equal(r.lahar.idx.length, 0, "tak boleh ada sel lahar"); assert.equal(r.ringkas.lahar_km, 0);
+});
+uji("produksi: lembah yang tak pernah mengumpulkan ambang hulu -> 'tak ada zona lahar' beralasan 'hulu'", () => {
+  const r = L.simulasi({dem: curam, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V: 1e4, hl: 0.3, maxJalur: 1, ambangHulu: 1e4}), i = r.info[0];
+  assert.equal(i.berhenti, "tak ada zona lahar"); assert.equal(i.alasan_tak_ada, "hulu");
+});
+uji("zona proksimal batas H/L 0,3 mundur ke mekanik lama: tak ada sel lahar di lereng curam dekat kawah", () => {
+  const r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C, C], V: 1e3, hl: 0.3, maxJalur: 1, proksimal: 0.3, ambangHulu: 0}); /* lereng 0,31 > 0,3 sampai dataran r=158 */
+  const dx = L.mPerPx(LAT, Z), [px, py] = r.puncak; assert.ok(r.lahar.idx.length > 0, "volume kecil di dataran harus tetap menghasilkan lahar");
+  const dekat = [...r.lahar.idx].map(i => Math.hypot(i % N - px, ((i / N) | 0) - py)).sort((a, b) => a - b)[0];
+  assert.ok(dekat >= 150, `sel lahar terdekat ${dekat.toFixed(0)} sel (${(dekat * dx / 1000).toFixed(1)} km) dari puncak, padahal zona proksimal berakhir ~158 sel`);
+});
 uji("simulasi lima jalur selesai cepat dan tiap jalur berbobot", () => {
-  const t0 = Date.now(), r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V: 1e6, hl: 0.3});
+  const t0 = Date.now(), r = L.simulasi({dem: kerucut, n: N, m: N, z: Z, lat: LAT, pusat: [C + 2, C - 1], V: 1e6, hl: 0.3, proksimal: 0.5, ambangHulu: 0});
   assert.ok(Date.now() - t0 < 3000, "terlalu lama: " + (Date.now() - t0) + " ms");
   const w = r.info.reduce((a, i) => a + i.bobot, 0); assert.ok(Math.abs(w - 1) < 1e-9, "bobot volume harus berjumlah 1, dapat " + w);
   assert.ok(r.info[0].utama, "jalur pertama harus jalur dari dasar kawah");
