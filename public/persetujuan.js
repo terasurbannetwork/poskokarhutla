@@ -15,7 +15,8 @@
     D.dispatchEvent(new CustomEvent("pb-persetujuan", {detail: {analitik: pilihan.analitik, baru: pilihan.analitik && !sebelum}}));
     tutupSpanduk();
   }
-  W.Persetujuan = {analitik: () => !dnt && !!pilihan?.analitik, pilihan: () => pilihan, buka: () => atur(), VERSI, simpan};
+  /* analitik nyala bawaan untuk semua pengunjung tanpa spanduk (pemilik, 20 Okt 2026); mati bila pengunjung menolak lewat "Pengaturan privasi" atau DNT/GPC */
+  W.Persetujuan = {analitik: () => !dnt && (pilihan ? !!pilihan.analitik : true), pilihan: () => pilihan, buka: () => atur(), VERSI, simpan};
 
   D.head.insertAdjacentHTML("beforeend", `<style>
 .pv{--pv-bg:#fff;--pv-ink:#0b2545;--pv-ink2:#56607a;--pv-line:#dfe3ec;--pv-soft:#f2f4f8;--pv-pri:#0b2545;--pv-pri-ink:#fff;font:14px/1.5 Inter,system-ui,sans-serif;color:var(--pv-ink)}
@@ -82,8 +83,8 @@
     tema.parentElement.insertAdjacentHTML("afterbegin", `<a class="pb-pil" href="/statistik" title="Statistik pengunjung"><i aria-hidden="true"></i>${f(a.pbOnline)} online<span class="pb-pil-l"> · ${f(a.pbTampil)} tampilan · Statistik →</span></a>`);
   }
   D.addEventListener("click", e => { if (e.target.closest?.("[data-pv-buka]")) { e.preventDefault(); atur(); } });   // tautan "Pengaturan privasi" di mana pun
-  /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan 19 Okt, disembunyikan lagi 20 Okt 2026 (pemilik). Tanpa pilihan, analitik
-     tetap mati; pengunjung masih bisa menyalakannya lewat tautan [data-pv-buka] "Pengaturan privasi". */
+  /* spanduk persetujuan: disembunyikan 14 Okt 2026, dinyalakan 19 Okt, dihapus 20 Okt 2026 (pemilik). Tanpa pilihan, analitik nyala;
+     pengunjung bisa mematikannya lewat tautan [data-pv-buka] "Pengaturan privasi". */
   const SPANDUK = false;
   const siap = () => { if (!pilihan && SPANDUK) spanduk(); pil(); };
   if (D.readyState === "loading") D.addEventListener("DOMContentLoaded", siap); else siap();

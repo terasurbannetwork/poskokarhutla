@@ -60,15 +60,15 @@ tr:last-child td{border-bottom:0}
 <p class="kecil">Tanpa akun, tanpa cookie pelacak, tanpa iklan. Tindakan moderator dicatat (waktu, jenis tindakan, nomor laporan, kode moderator) tanpa isi laporan, IP, atau nomor.</p>
 
 <h2 id="penyimpanan">Penyimpanan di peramban dan pilihan kamu</h2>
-<p>Saat pertama datang kamu diminta memilih. Pilihan, versi kebijakan, dan tanggalnya disimpan di <code>localStorage</code> peramban kamu (kunci <code>pb_persetujuan</code>) dan ditanyakan lagi setelah 12 bulan atau bila kebijakan ini berubah.</p>
+<p>Tidak ada spanduk persetujuan: statistik anonim langsung aktif, dan kamu bisa mematikannya kapan saja. Bila kamu mengubah pilihan, pilihan itu, versi kebijakan, dan tanggalnya disimpan di <code>localStorage</code> peramban kamu (kunci <code>pb_persetujuan</code>) selama 12 bulan atau sampai kebijakan ini berubah.</p>
 <div class="tabel"><table>
 <tr><th>Kategori</th><th>Isi</th><th>Status</th></tr>
 <tr><td>Esensial</td><td>Tema terang/gelap dan preferensi tampilan, token pelapor Lapor Warga (untuk menandai laporan kamu selesai), pilihan persetujuan ini, dan cookie sesi admin (hanya untuk pengelola, HttpOnly, 12 jam).</td><td>Selalu aktif</td></tr>
-<tr><td>Analitik</td><td>Id acak di <code>localStorage</code> dan statistik penggunaan anonim (rincian di bawah). Tidak ada yang dikirim sebelum kamu menyetujui.</td><td>Mati sampai kamu memilih "Terima semua" atau menyalakannya di "Atur"</td></tr>
+<tr><td>Analitik</td><td>Id acak di <code>localStorage</code> dan statistik penggunaan anonim (rincian di bawah). Bisa dimatikan lewat "Pengaturan privasi".</td><td>Aktif, kecuali kamu mematikannya</td></tr>
 </table></div>
 <p>Ubah pilihan kapan saja: <button type="button" data-pv-buka>Pengaturan privasi</button> (juga ada di kaki halaman Ringkasan dan Metode). Menarik persetujuan langsung menghapus id analitik dari peramban kamu. Bila peramban mengirim <b>Do Not Track</b> atau <b>Global Privacy Control</b>, analitik selalu mati. Bila kamu menolak, tidak ada apa pun yang dikirim tentang pilihan itu; bila menerima, satu hitungan "persetujuan diterima" ikut dijumlahkan.</p>
 
-<h2 id="statistik">Statistik pengunjung (analitik, hanya dengan persetujuan)</h2>
+<h2 id="statistik">Statistik pengunjung (analitik)</h2>
 <p>Untuk mengetahui bagian situs yang berguna. Tanpa cookie, tanpa alamat IP, tanpa sidik perangkat, tanpa iklan, dan tidak dibagikan ke pihak lain. Peramban mengirim paling banyak beberapa ringkasan per kunjungan (saat halaman ditutup atau disembunyikan). Server hanya menyimpan <b>jumlah per hari</b>; tidak ada baris per orang, dan id acak kamu tidak disimpan di server (hanya dipakai untuk memilih sampel bila lalu lintas sangat ramai).</p>
 <div class="tabel"><table>
 <tr><th>Yang dihitung</th><th>Contoh</th></tr>

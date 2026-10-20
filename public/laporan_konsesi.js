@@ -57,7 +57,7 @@
     [/Bukit Asam|Aneka Tambang/i, "MIND ID"], [/Semen Baturaja/i, "SIG (Semen Indonesia)"], [/Pertamina EP|PHE /i, "Pertamina"]];
   const bumnDari = r => { const n = r.nama.replace(/\([^)]*\)/g, ""); return BUMN.find(([re]) => re.test(n))?.[1] || ""; };
   const rapikan = r => { if (r._rapi) return r; r._rapi = 1; r.grup = GRUP_RAPI[r.grup] ?? r.grup;
-    if (/Sinar Mas/i.test(r.grup)) r.negara = ["ID"];   /* Sinar Mas = grup Indonesia (pemilik, 18 Okt 2026) */
+    if (/Sinar Mas/i.test(r.grup)) { r.negara = ["ID"]; r.induk = "SG"; }   /* grup Indonesia; induk usaha (GAR, APP) di Singapura, WALHI tulis SG (pemilik, 20 Okt 2026) */
     if (!(r.negara || []).length && NEG_GRUP[r.grup]) r.negara = [NEG_GRUP[r.grup]]; r.unit = unitDari(r);
     r.bumn = bumnDari(r); if (r.bumn) { r.grup = "BUMN"; r.unit = r.bumn; r.negara = ["ID"]; }   /* grup ditulis BUMN, holding jadi unit usaha (pemilik, 18 Okt 2026) */
     return r; };
@@ -300,7 +300,7 @@
     const u = Object.entries(grup).sort((a, b) => jumlah(b[1]).t - jumlah(a[1]).t);
     return u.length ? `<h3>Grup perusahaan</h3><div class="tw"><table class="kn-tb kn-tk-kab"><thead><tr><th>Grup</th><th>Perusahaan</th><th>Jenis konsesi</th><th class="kn-c">RSPO</th><th>Kabupaten/kota</th><th class="r">Luas konsesi (ha)</th><th class="r">Titik panas</th><th class="r" title="Titik panas aktif 7 hari terakhir">7 hari</th><th class="r">Indikasi terbakar (ha)</th><th class="r" title="Indikasi terbakar dibagi luas konsesi">% konsesi</th></tr></thead><tbody>
       ${u.map(([g, xs]) => { const x = jumlah(xs), n = xs.length + (xs.length > 1 ? 1 : 0), neg = xs[0].negara || [];
-        return xs.map((r, m) => `<tr>${m ? "" : `<td rowspan="${n}" class="kn-rs"><span class="kn-gr">${logo(g, 22)}<b>${esc(g)}</b></span><span class="kn-gr-n">${neg.map(k => `${bendera(k, 12)}${NEG[k] || k}`).join(", ") || "Negara belum diketahui"}</span></td>`}
+        return xs.map((r, m) => `<tr>${m ? "" : `<td rowspan="${n}" class="kn-rs"><span class="kn-gr">${logo(g, 22)}<b>${esc(g)}</b></span><span class="kn-gr-n">${neg.map(k => `${bendera(k, 12)}${NEG[k] || k}`).join(", ") || "Negara belum diketahui"}</span>${xs[0].induk ? `<span class="kn-gr-n">Induk usaha: ${bendera(xs[0].induk, 12)}${NEG[xs[0].induk]}</span>` : ""}</td>`}
           <td><a href="#p${r._i}" data-buka="${r._i}" class="kn-nm">${esc(r.nama)}</a></td><td>${jenisPil(r.jenis)}</td>${rspoSel(r)}<td>${esc(r.kabU)}</td><td class="r">${ha(r.luas_ha)}</td><td class="r"><b>${fmt(r.titik)}</b></td><td class="r">${r.titik_7h ? `<span class="kn-ak">${fmt(r.titik_7h)}</span>` : NA}</td><td class="r">${ha(r.luas_bakar_ha)}</td><td class="r kn-mt">${pct(r.persen_bakar)}</td></tr>`).join("")
           + (xs.length > 1 ? `<tr class="kn-sub"><td colspan="4">Sub Total ${esc(g)}</td><td class="r">${ha(x.k)}</td><td class="r">${fmt(x.t)}</td><td class="r">${fmt(jml(xs, r => r.titik_7h))}</td><td class="r">${ha(x.l)}</td><td class="r">${pct(x.k ? x.l / x.k : 0)}</td></tr>` : ""); }).join("")}
       </tbody></table></div>` : "";
@@ -578,7 +578,7 @@
         <div class="kn-info">
           ${blokInfo("Identitas", [
             ["Jenis usaha", `${jenisPil(r.jenis)} ${JN[r.jenis]?.[2] || r.jenis}`],
-            ["Grup usaha", r.grup ? `<span class="kn-isi"><span class="kn-gr">${logo(r.grup, 20)}<b>${esc(r.grup)}</b></span>${(r.negara || []).map(k => `<span class="kn-ngp">${bendera(k, 12)}${NEG[k] || k}</span>`).join("")}${r.grup_asal === "greenpeace" ? `<small title="Grup berasal dari laporan Greenpeace dan Pantau Gambut 2026">grup menurut Greenpeace</small>` : ""}</span>` : `<span class="kn-mt">Belum teridentifikasi</span>`],
+            ["Grup usaha", r.grup ? `<span class="kn-isi"><span class="kn-gr">${logo(r.grup, 20)}<b>${esc(r.grup)}</b></span>${(r.negara || []).map(k => `<span class="kn-ngp">${bendera(k, 12)}${NEG[k] || k}</span>`).join("")}${r.induk ? `<span class="kn-ngp" title="Induk usaha (Golden Agri-Resources, Asia Pulp & Paper) berkantor pusat di ${NEG[r.induk]}">${bendera(r.induk, 12)}induk di ${NEG[r.induk]}</span>` : ""}${r.grup_asal === "greenpeace" ? `<small title="Grup berasal dari laporan Greenpeace dan Pantau Gambut 2026">grup menurut Greenpeace</small>` : ""}</span>` : `<span class="kn-mt">Belum teridentifikasi</span>`],
             ...(r.unit ? [["Unit usaha", `<span class="kn-isi"><span class="kn-gr">${logo(r.unit, 20)}<b>${esc(r.unit)}</b></span><span class="kn-ngp kn-ngp-j">${JN[r.jenis][0]}</span></span>`]] : []),
             ...(ps.length ? [["Pemegang saham", ps.map(x => `<span class="kn-ps">${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")]] : []),
             ...((r.tokoh || []).length ? [["Tokoh terkait", r.tokoh.map(t => `<span class="kn-ps"><b>${esc(t.nama)}</b> · ${esc(t.peran)}<small>${esc(t.kaitan)}</small></span>`).join("")]] : []),
