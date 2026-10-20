@@ -9,8 +9,10 @@ PilihCantik.pasang();   /* <select> jadi pil, seperti karhutla */
   if (!S.lin?.kompleks?.length) document.querySelector('#lapis [data-l="lintasan"]')?.closest("label").remove();
   renderHari(); renderDaftar(); renderCrumb(); await Peta.init(); Prak.kontrol(); renderLegenda();
   $("#muat").classList.add("hilang");
-  const t = location.pathname.replace(/\/$/, "").split("/").pop();
-  bukaTab(TABS.some(x => x[0] === t) ? t : "peta", false);
+  const t = location.pathname.replace(/\/$/, "").split("/").pop(), kj = location.pathname.match(/^\/udara\/k\/(U\d+)\/?$/);
+  if (kj) Kejadian.buka(kj[1], false);
+  else { const ok = TABS.some(x => x[0] === t) && (t !== "kejadian" || Kejadian.ada()); bukaTab(ok ? t : "peta", false);
+    if (!ok && t === "kejadian") history.replaceState(null, "", "/udara/peta" + location.search); }   /* tab Kejadian dibuang (tanpa kejadian segar): jangan tinggalkan URL mati */
 })();
 
 /* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat (sama dengan karhutla dan banjir) */

@@ -155,7 +155,7 @@ const masaAktif = m => m >= 6.5 ? 7 * HARI : 3 * HARI;
 
 export async function kelompokkan(env) {
   const g = (await env.DB.prepare("SELECT id, t, lat, lon, m, wilayah FROM gempa WHERE m >= 5 AND kej IS NULL ORDER BY t").all()).results;
-  if (!g.length) return 0;
+  if (!g.length) return await tautkanSusulanKecil(env);
   const kejadian = (await env.DB.prepare("SELECT * FROM gempa_kejadian WHERE aktif_hingga >= ?").bind(g[0].t).all()).results;
   let nomor = +((await env.DB.prepare("SELECT max(kode) k FROM gempa_kejadian").first()).k ?? "G0000").slice(1);
   const sentuh = new Set(), st = [];
@@ -169,7 +169,25 @@ export async function kelompokkan(env) {
   const K = ["kode", "utama_id", "lat", "lon", "mulai", "akhir", "m", "nama", "aktif_hingga"];
   for (const k of sentuh) st.push(env.DB.prepare(`INSERT OR REPLACE INTO gempa_kejadian (${K}) VALUES (${K.map(() => "?")})`).bind(...K.map(c => k[c])));
   await env.DB.batch(st);
-  return sentuh.size;
+  return sentuh.size + await tautkanSusulanKecil(env);
+}
+
+/* Susulan M<5: gempa lebih kecil yang jatuh dalam jendela jarak GK dan masa aktif kejadian ditautkan ke kejadian terdekat (tidak memperpanjang masa aktif).
+   Hanya kejadian yang mulai dalam 35 hari terakhir dipindai, supaya putaran tiap menit murah. */
+async function tautkanSusulanKecil(env) {
+  const dari = Date.now() - 35 * HARI;
+  const kej = (await env.DB.prepare("SELECT * FROM gempa_kejadian WHERE aktif_hingga >= ?").bind(dari).all()).results;
+  if (!kej.length) return 0;
+  const awal = Math.min(...kej.map(k => k.mulai));
+  const kecil = (await env.DB.prepare("SELECT id, t, lat, lon FROM gempa WHERE m < 5 AND kej IS NULL AND t >= ? ORDER BY t LIMIT 5000").bind(awal).all()).results;
+  const st = [];
+  for (const x of kecil) {
+    const k = kej.filter(c => c.mulai <= x.t && x.t <= c.aktif_hingga && km(c.lat, c.lon, x.lat, x.lon) <= jendelaKm(c.m))
+      .sort((a, b) => km(a.lat, a.lon, x.lat, x.lon) - km(b.lat, b.lon, x.lat, x.lon))[0];
+    if (k) st.push(env.DB.prepare("UPDATE gempa SET kej = ? WHERE id = ?").bind(k.kode, x.id));
+  }
+  for (let i = 0; i < st.length; i += 100) await env.DB.batch(st.slice(i, i + 100));
+  return 0;
 }
 
 /* ---------------- satu putaran cron ---------------- */

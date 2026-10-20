@@ -1,4 +1,5 @@
 /* Laporan Konsesi Terbakar 2026 (public/laporan_konsesi.*) */
+@import url("/inti/laporan-dasar.css");
 html,body{height:auto}
 main.kn{position:static;inset:auto}
 .mark b{display:block}
@@ -7,12 +8,10 @@ main.kn{position:static;inset:auto}
 .kn-saring,.kn-kartu,.kn-kpi>div{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow)}
 .kn-status{font-size:12.5px;color:var(--ink2)}
 /* pita kepala + saringan: standar Laporan Harian (laporan.css lp-kep, kartu.css seg/pc) */
-.lp-kep{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;margin-bottom:12px;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
+.lp-kep{margin-bottom:12px}   /* sisanya dari inti/laporan-dasar.css */
 .lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
 .lp-jd h1{margin:0;font-size:clamp(22px,3vw,30px);line-height:1.15;color:#fff}
 .lp-pils{display:flex;flex-wrap:wrap;gap:6px}
-.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
 .lp-pil.ok{background:#2b8c86}
 .lp-aksi{display:flex;align-items:center;gap:10px;max-width:100%;min-width:0}
 .kn-f .pc{width:100%}
@@ -24,7 +23,6 @@ main.kn{position:static;inset:auto}
 .kn-pp-daf button[aria-selected="true"] em{color:#fff;opacity:.8}
 .pc-menu.multi .kn-pp-daf button:has(em)::after{margin-left:8px}
 .kn-pp-daf p{margin:8px;font-size:12px}
-.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}
 .lp-cetak:disabled{opacity:.5;cursor:progress}
 .lp-cetak svg{width:17px;height:17px}
@@ -100,6 +98,14 @@ main.kn{position:static;inset:auto}
 .kn-sta-a i svg{width:14px;height:14px}
 .kn-sta.kn-sta-a b{color:#fff;font-size:16px}
 .kn-sta.kn-sta-a small{color:rgba(255,255,255,.85)}
+/* rincian pill status api: angka + satuan dipisah garis tipis */
+.kn-sta-d{display:inline-flex;align-items:baseline;gap:4px;padding-left:9px;border-left:1px solid rgba(255,255,255,.35);font-weight:600}
+.kn-sta.kn-sta-a .kn-sta-d b{font-size:15px}
+/* rincian baris tabel info: pill kecil berikon dengan label */
+.kn-tg{display:inline-flex;align-items:center;gap:4px;margin:2px 0 2px 6px;padding:1px 8px 1px 5px;border:1px solid var(--line);border-radius:999px;background:var(--surface);font-size:11px;color:var(--ink2);white-space:nowrap;vertical-align:middle}
+.kn-tg svg{width:12px;height:12px;flex:none;color:#1d4e89}
+.kn-tg b{color:var(--ink);font-weight:700;font-variant-numeric:tabular-nums}
+.kn-it td:last-child>.kn-tg:first-child{margin-left:0}
 .kn-kabh{display:flex;align-items:flex-end;justify-content:space-between;column-gap:12px;gap:12px 20px;flex-wrap:wrap;margin-bottom:12px;padding-bottom:12px;border-bottom:2px solid var(--line)}
 .kn-kabh h2{font-size:22px;margin:2px 0 0}
 .kn-chips{display:flex;flex-wrap:wrap;gap:8px}
@@ -127,8 +133,8 @@ main.kn{position:static;inset:auto}
 .kn-it tbody tr:first-child td{border-top:0}
 .kn-it td:first-child{width:128px;color:var(--ink2);font-weight:700;font-size:11.5px;background:var(--surface);print-color-adjust:exact;-webkit-print-color-adjust:exact}
 .kn-it small{margin-left:4px;color:var(--ink2);font-size:11px;line-height:1.4}
-.kn-it small b{color:var(--ink);font-weight:800}
-.kn-it td:last-child>b{font:800 13.5px var(--display);color:var(--ink);font-variant-numeric:tabular-nums}
+.kn-it small b{color:var(--ink);font-weight:700}
+.kn-it td:last-child>b{font:600 13px var(--font);color:var(--ink);font-variant-numeric:tabular-nums}
 .kn-it .kn-bt{display:inline-block;width:70px;vertical-align:middle;margin-right:4px}
 .kn-ph-m{display:flex;flex-wrap:wrap;gap:6px 8px;align-items:center}
 .kn-ubin{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:10px;margin-bottom:14px}
@@ -204,9 +210,11 @@ main.kn{position:static;inset:auto}
 .kn-ket{margin:10px 0 0;padding:10px 12px 12px;border:1px solid var(--line);border-radius:12px;background:var(--surface);font-size:12px;line-height:1.45}
 .kn-ket-h{display:inline-flex;align-items:center;gap:6px;margin-bottom:8px;font:800 10.5px var(--font);letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
 .kn-ket-h i{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#1d4e89;color:#fff;print-color-adjust:exact;-webkit-print-color-adjust:exact}
-.kn-ket dl{display:grid;gap:4px;margin:0}
+.kn-ket dl{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;margin:0}
+.kn-ket dl>div:last-child:nth-child(odd){grid-column:1/-1}
+@media (max-width:760px){.kn-ket dl{grid-template-columns:1fr}}
 .kn-ket dl>div{display:flex;gap:10px;align-items:baseline;padding:7px 10px;border-radius:8px;background:var(--card);border:1px solid var(--line);border-left:3px solid #6b9bd6}
-.kn-ket dt{flex:none;width:118px;font-weight:800;color:var(--ink)}
+.kn-ket dt{flex:none;font-weight:800;color:var(--ink)}
 .kn-ket dd{margin:0;color:var(--ink2);flex:1;min-width:0}
 .kn-ket dd small{display:block;margin-top:4px;font-size:11px}
 .kn-ket-ps{display:flex;flex-wrap:wrap;gap:6px 14px}
@@ -476,3 +484,44 @@ main.kn{position:static;inset:auto}
 @media print{.kn-dft,.kn-tk-kab{min-width:0}.kn-dft td,.kn-dft th{padding:2px 4px}}
 .kn-dua>*,.kn-kpi>div,.kn-sek{min-width:0}
 .kn-saring .seg{max-width:100%;overflow-x:auto}
+@media print{.kn-tg{font-size:7px;padding:0 5px 0 3px;margin-left:3px}.kn-tg svg{width:8px;height:8px}}
+
+/* Greenpeace & Pantau Gambut 2026 + riwayat 2015 (pil "indikasi" = gaya pil hipotesis: amber, bukan merah) */
+.kn-hip{display:inline-block;padding:2px 10px;border-radius:999px;font:800 11px var(--font);background:color-mix(in oklch,var(--warn) 18%,transparent);color:var(--ink);border:1px solid color-mix(in oklch,var(--warn) 55%,transparent);white-space:nowrap}
+.kn-hl{color:var(--bad)}
+.kn-pilbaris{display:flex;flex-wrap:wrap;gap:6px;margin:-4px 0 10px}
+.kn-blm{display:inline-block;padding:2px 9px;border-radius:999px;font:800 11px var(--font);background:var(--surface);border:1px solid var(--line);color:var(--ink2);white-space:nowrap}
+.kn-sumber{margin:12px 0 0;font-size:11.5px;color:var(--ink2)}
+.kn-nw{white-space:nowrap}
+.kn-riw-m{margin:0 0 8px;font-size:13px}
+.kn-batas{margin:0 0 12px;font-size:12.5px}
+.kn-batas summary{cursor:pointer;font-weight:800;color:var(--ink2)}
+.kn-batas ul{margin:6px 0 0;padding-left:18px;display:grid;gap:4px}
+.kn-riw-l{display:grid;gap:12px}
+.kn-riw-k{border:1px solid var(--line);border-radius:12px;padding:12px 14px;background:var(--card)}
+.kn-riw-k[hidden]{display:none}
+.kn-riw-k>header{display:flex;flex-wrap:wrap;align-items:center;gap:6px 10px}
+.kn-riw-n{font:800 15px var(--display)}
+.kn-riw-u{margin:8px 0 6px;font-size:14px}
+.kn-riw-u b{font:800 18px var(--display);font-variant-numeric:tabular-nums}
+.kn-riw-d{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:6px;margin:0 0 10px}
+.kn-riw-d>div{padding:6px 10px;border-radius:8px;background:var(--surface);border:1px solid var(--line);border-left:3px solid #6b9bd6;min-width:0}
+.kn-riw-d dt{font:800 10px var(--font);letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.kn-riw-d dd{margin:2px 0 0;font-size:12.5px}
+.kn-riw-c{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px}
+.kn-riw-c figure{margin:0;min-width:0}
+.kn-riw-im{aspect-ratio:4/3}
+.kn-riw-im img{cursor:zoom-in}
+.kn-riw-c figcaption{font-size:11px;color:var(--ink2);margin-top:3px}
+.kn-pg{display:flex;align-items:center;justify-content:center;gap:12px;margin-top:12px;font-size:12.5px;color:var(--ink2)}
+.kn-pg button{width:34px;height:34px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:800 16px var(--font);cursor:pointer}
+.kn-pg button:hover{border-color:var(--brand2);background:var(--surface)}
+.kn-riwp{display:inline-flex;align-items:center;height:28px;padding:0 12px;border-radius:999px;background:color-mix(in oklch,var(--warn) 28%,#fff);color:#3d2a00;font:800 12px var(--font);text-decoration:none;white-space:nowrap}
+.kn-riwp:hover{text-decoration:underline}
+.kn-zm{border:0;padding:0;background:transparent;max-width:92vw;max-height:92vh;overflow:visible}
+.kn-zm::backdrop{background:rgba(0,0,0,.78)}
+.kn-zm img{display:block;max-width:92vw;max-height:92vh;border-radius:10px;cursor:zoom-out}
+.kn-zm button{position:absolute;top:-14px;right:-14px;width:32px;height:32px;border-radius:50%;border:0;background:#fff;color:#000;font:800 18px var(--font);cursor:pointer}
+@media (max-width:860px){.kn-riw-c{gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}.kn-riw-k{padding:10px}.kn-zm button{top:6px;right:6px}}
+@media print{.kn-gps,.kn-rws{break-before:page}.kn-pg{display:none}.kn-riw-k[hidden]{display:block}.kn-riw-k{break-inside:avoid}.kn-riwp{font-size:7.5px;height:auto;padding:1px 6px}.kn-riw-u{font-size:9px}.kn-riw-d dd{font-size:8px}}
+.kn-gps .kn-tb td:first-child{min-width:150px}

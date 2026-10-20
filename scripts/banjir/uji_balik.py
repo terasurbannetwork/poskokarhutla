@@ -170,7 +170,7 @@ def level_harian(c, b, jenis, par, hari):
         ims = [x for x in im[w] if x is not None]
         imax = max(ims) if ims else None
         if jenis == "banjir":
-            out.append(level_banjir(h3, b[0], None, imax, k=k))
+            out.append(level_banjir(h3, b[0], None, imax, k=k, i_waspada=par.get("i_waspada", 20)))
         else:
             out.append(level_longsor(h3, sum(p[e - 7:e]), b[1], sm[e], imax, k=k, sm_jenuh=par["sm_jenuh"], a7_basah=par["a7_basah"]))
     return out

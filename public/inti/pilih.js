@@ -22,10 +22,14 @@ const PilihCantik = {
   bukaMenu(w) { this.tutup(); const sel = w.querySelector("select"), r = w.getBoundingClientRect(); w.classList.add("on");
     const m = document.createElement("div"); m.className = sel.multiple ? "pc-menu multi" : "pc-menu"; m.setAttribute("role", "listbox"); if (sel.multiple) m.setAttribute("aria-multiselectable", "true");
     m.innerHTML = [...sel.options].map((o, i) => `<button type="button" role="option" data-i="${i}" aria-selected="${o.selected}"${o.disabled ? " disabled" : ""}>${esc(o.textContent)}</button>`).join("");
+    /* banyak opsi (> 30): kolom cari di puncak menu */
+    if (!sel.multiple && sel.options.length > 30) { const q = document.createElement("input"); q.type = "search"; q.className = "pc-cari"; q.placeholder = "Cari"; q.setAttribute("aria-label", "Cari");
+      q.addEventListener("input", () => { const t = q.value.trim().toLowerCase(); m.querySelectorAll("[data-i]").forEach(b => { b.style.display = b.textContent.toLowerCase().includes(t) ? "" : "none"; }); });
+      m.prepend(q); }
     (document.querySelector("dialog[open]") || document.body).append(m);
     const bawah = innerHeight - r.bottom, tinggi = Math.min(320, m.scrollHeight);
     Object.assign(m.style, {left: r.left + "px", minWidth: r.width + "px", top: (bawah < tinggi + 12 && r.top > bawah ? r.top - tinggi - 6 : r.bottom + 6) + "px"});
-    m.querySelector('[aria-selected="true"]')?.scrollIntoView({block: "nearest"}); m.querySelector('[aria-selected="true"], button')?.focus({preventScroll: true});
+    m.querySelector('[aria-selected="true"]')?.scrollIntoView({block: "nearest"}); (m.querySelector(".pc-cari") || m.querySelector('[aria-selected="true"], button'))?.focus({preventScroll: true});
     m.addEventListener("click", e => { const o = e.target.closest("[data-i]"); if (!o) return;
       if (sel.multiple) { const op = sel.options[+o.dataset.i], ops = [...sel.options];
         if (this.semua(op)) ops.forEach(x => x.selected = this.semua(x)); else { op.selected = !op.selected; ops.filter(this.semua).forEach(x => x.selected = false); if (!this.nilai(sel).length) ops.filter(this.semua).forEach(x => x.selected = true); }
@@ -34,7 +38,7 @@ const PilihCantik = {
         sel.dispatchEvent(new Event("input", {bubbles: true})); sel.dispatchEvent(new Event("change", {bubbles: true})); return; }
       sel.selectedIndex = +o.dataset.i; this.label(sel); this.tutup();
       sel.dispatchEvent(new Event("input", {bubbles: true})); sel.dispatchEvent(new Event("change", {bubbles: true})); w.querySelector(".pc-btn").focus(); });
-    m.addEventListener("keydown", e => { const bs = [...m.querySelectorAll("button:not([disabled])")], i = bs.indexOf(document.activeElement);
+    m.addEventListener("keydown", e => { const bs = [...m.querySelectorAll("button:not([disabled])")].filter(b => b.style.display !== "none"), i = bs.indexOf(document.activeElement);
       if (e.key === "ArrowDown") { e.preventDefault(); bs[Math.min(bs.length - 1, i + 1)]?.focus(); } else if (e.key === "ArrowUp") { e.preventDefault(); bs[Math.max(0, i - 1)]?.focus(); }
       else if (e.key === "Escape") { this.tutup(); w.querySelector(".pc-btn").focus(); } });
     this.buka = m; },

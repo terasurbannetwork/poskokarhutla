@@ -11,6 +11,8 @@ const mTulis = m => "M " + Number(m).toLocaleString("id-ID", {minimumFractionDig
 /* kelas kekuatan: warna pil (A3) dan batas; teks pil memakai warna tegas supaya terbaca di latar putih */
 const KELAS_M = [[7, "#c9503a"], [6, "#d4702a"], [5, "#a8780c"], [0, "#3f6fa8"]];
 const warnaM = m => (KELAS_M.find(k => m >= k[0]) || KELAS_M[3])[1];
+/* pil abu "perkiraan model" (pola inti/adapter.js) untuk angka hasil model, bukan pengukuran */
+const pilModel = `<span class="pill pm" style="--w:#6b7280">perkiraan model</span>`;
 const pilM = m => `<span class="pill pm" style="--w:${warnaM(m)}">${mTulis(m)}</span>`;
 /* kedalaman: dangkal < 60 km, menengah 60 sampai 300, dalam > 300 */
 const KELAS_DALAM = [["Dangkal", "#d4572f", "< 60 km"], ["Menengah", "#e8a33c", "60 sampai 300 km"], ["Dalam", "#3a5fa8", "> 300 km"]];
@@ -20,7 +22,10 @@ const kelasDalam = d => d == null ? -1 : d < 60 ? 0 : d <= 300 ? 1 : 2;
 const TSUNAMI = {1: ["Tsunami Waspada", "#e0b400"], 2: ["Tsunami Siaga", "#e8743b"], 3: ["Tsunami Awas", "#d64545"]};
 /* teks wilayah BMKG "Pusat gempa berada di darat 21 km Barat Daya Kota Bogor" -> "Darat 21 km Barat Daya Kota Bogor" */
 const ARAH_EN = {utara: "N", timurlaut: "NE", timur: "E", tenggara: "SE", selatan: "S", baratdaya: "SW", barat: "W", baratlaut: "NW"};
-const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa berada di\s*/i, "").trim(); if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
+/* teks mentah BMKG "Pusat gempa 60 km TimurLaut LABUANBAJO-NTT": arah kamel dipisah, tempat KAPITAL dijadikan huruf judul, akhiran provinsi dibuang, KAB- jadi "Kab.". Spasi nama tempat yang menyatu (LABUANBAJO) tak bisa dipulihkan tanpa kamus. */
+const rapiTempat = r => { if (r !== r.toUpperCase() || !/[A-Z]/.test(r)) return r; const p = r.split("-").map(x => x.trim()).filter(Boolean); if (p.length > 1 && /^[A-Z]{2,5}$/.test(p[p.length - 1])) p.pop();
+  return p.map(x => x === "KAB" ? "Kab." : x[0] + x.slice(1).toLowerCase()).join(" ").replace(/^Kab\. /, "Kab. "); };
+const wilayahPendek = t => { const s = String(t || "").replace(/^Pusat gempa( berada di)?\s*/i, "").replace(/(Barat|Timur)(Laut|Daya)\b/g, "$1 $2").replace(/^((?:(?:darat|laut)\s+)?\d+\s*km\s+(?:utara|timur laut|timur|tenggara|selatan|barat daya|barat laut|barat)\s+)(\S.*)$/i, (_, h, r) => h.toLowerCase() + rapiTempat(r)).trim(); /* arah huruf kecil seperti laci: "60 km timur laut Labuanbajo" */ if (!s) return window.BAHASA === "en" ? "Indonesian waters" : "Perairan Indonesia";
   /* EN: "darat 21 km Barat Daya Kota Bogor" -> "21 km SW of Kota Bogor (onshore)"; nama tempat BMKG tetap apa adanya */
   const m = window.BAHASA === "en" && s.match(/^(darat|laut)?\s*(\d+)\s*km\s+(utara|timur\s?laut|timur|tenggara|selatan|barat\s?daya|barat\s?laut|barat)\s+(.+)$/i);
   if (m) return `${m[2]} km ${ARAH_EN[m[3].toLowerCase().replace(/\s/g, "")]} of ${m[4]}${m[1] ? (/^d/i.test(m[1]) ? " (onshore)" : " (offshore)") : ""}`;
@@ -71,6 +76,35 @@ const Guncang = {
   async fasilitas(g, bukti) { const X = await this.muat(); if (!X || !bukti?.fasilitas?.length) return null;
     try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, bukti, 6); } catch (e) { console.error(e); return null; } },
 };
+/* A35 bandara di zona guncangan: bandara.json (milik gunungapi, 140 bandara) dimasukkan ke model fasilitas yang sama (MMI VI atau lebih); bukan model baru */
+Guncang.bandara = async function (g) { const X = await this.muat(); if (!X) return null;
+  const B = await (this._b ||= muatJSON("../gunungapi/data/bandara.json").catch(() => (this._b = null))); if (!Array.isArray(B)) return null;
+  try { return X.M.fasilitas({lat: g.lat, lon: g.lon, m: g.m, dalam: g.dalam ?? 10}, {fasilitas_kolom: ["t", "nama", "lat", "lon"], fasilitas: B.map(b => ["bandara", b.nama, b.lat, b.lon])}, 6).sort((a, b) => b.mmi - a.mmi); } catch (e) { console.error(e); return null; } };
+/* A32 citra Sentinel-2 sebelum/sesudah (data/citra.json, scripts/gempa/citra.py) untuk gempa yang cocok: selisih waktu <= 10 menit dan <= 100 km */
+const Citra = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("data/citra.json").then(d => d.kejadian).catch(() => (this._p = null)); },
+  async untuk(g) { const K = await this.muat(); if (!K) return null; const t = g.t ?? Date.parse(g.waktu), rad = Math.PI / 180;
+    return K.find(k => { const dt = Math.abs(Date.parse(k.waktu_utc + "Z") - t), a = Math.sin((k.lat - g.lat) * rad / 2) ** 2 + Math.cos(g.lat * rad) * Math.cos(k.lat * rad) * Math.sin((k.lon - g.lon) * rad / 2) ** 2;
+      return dt <= 600e3 && 12742 * Math.asin(Math.sqrt(a)) <= 100; }) || null; },
+};
 const jiwaTeks = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta") + " jiwa";
 /* waktu tiba tsunami: "langsung" di atas bidang patahan, "kurang dari 5 menit", selebihnya "sekitar N menit" kelipatan 5 (sama dengan sim.js) */
 const waktuTiba = m => m < 1 ? "langsung" : m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
+
+/* ================================================================ indeks risiko riwayat (data/risiko.json, scripts/gempa/riwayat.py) dan kontak BPBD (../data/bpbd.json) */
+/* skor 0 sampai 100 per provinsi: bobot 50 kekerapan, 30 besaran, 20 tren dari gempa M 5+ 2000-2025; prov[k] = [skor, indeks kelas] */
+const WARNA_RISIKO = ["#d8c9a8", "#e3b94e", "#d4802f", "#a83a2a"];
+const Risiko = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("data/risiko.json").catch(() => (this._p = null)); },
+  async prov(k) { const r = await this.muat(), v = r?.prov?.[k]; return v ? {skor: v[0], kelas: r.kelas[v[1]], w: WARNA_RISIKO[v[1]], r} : null; },
+};
+const Kontak = {
+  _p: null,
+  muat() { return this._p ||= muatJSON("../data/bpbd.json").then(d => d.kantor).catch(() => (this._p = null)); },
+  /* tiga kantor BPBD terdekat dari titik (lat, lon), dengan jarak km garis lurus; kantor tanpa nomor Pusdalops tetap dimuat */
+  async dekat(lat, lon, n = 3) { const K = await this.muat(); if (!K?.length) return [];
+    const rad = Math.PI / 180, jarak = b => { const a = Math.sin((b.lat - lat) * rad / 2) ** 2 + Math.cos(lat * rad) * Math.cos(b.lat * rad) * Math.sin((b.lon - lon) * rad / 2) ** 2; return 12742 * Math.asin(Math.sqrt(a)); };
+    return K.filter(b => b.lat && b.lon).map(b => ({...b, km: jarak(b)})).sort((a, b) => a.km - b.km).slice(0, n); },
+};

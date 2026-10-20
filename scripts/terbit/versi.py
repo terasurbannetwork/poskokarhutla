@@ -6,6 +6,7 @@
    string JS lain atau di HTML di luar tag yang sudah diberi versi, mis. "bagikan.css" yang dimuat bagikan.js) -> max-age 1 tahun,
    immutable. _headers mencocokkan jalur tanpa kueri, jadi berkas yang juga dimuat tanpa ?v tidak boleh immutable (bisa basi
    setahun); berkas itu tetap pakai bawaan Cloudflare (revalidasi ETag). Halaman HTML -> no-cache.
+   Aturan digabung per pola ("/*.html", "/folder/*.js") supaya jauh di bawah batas 100 aturan Cloudflare.
 
 Idempoten: ?v lama diganti, blok _headers lama dibuang dulu.
 Pakai:  python3 scripts/terbit/versi.py [akar_public]  |  ... uji
@@ -60,19 +61,40 @@ def jalan(akar=AKAR, maks=100):
     hp = os.path.join(akar, "_headers")
     lama = open(hp, encoding="utf-8").read() if os.path.exists(hp) else ""
     lama = lama.split("\n" + TANDA)[0].rstrip("\n")
-    # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). No-cache halaman wajib; immutable cuma optimasi,
-    # jadi yang dibuang immutable berkas terkecil dulu. ponytail: per berkas; gabung per folder kalau sisa jatahnya terlalu sempit.
-    jatah = maks - sum(1 for b in lama.splitlines() if b.startswith("/")) - len(halaman)
-    if len(abadi) > jatah:
-        abadi = sorted(sorted(abadi, key=lambda w: -os.path.getsize(os.path.join(akar, w.lstrip("/"))))[:max(jatah, 0)])
-    blok = [TANDA]
-    for w in abadi:
-        blok += [w, "  Cache-Control: public, max-age=31536000, immutable"]
-    for w in sorted(halaman):
-        blok += [w, "  Cache-Control: no-cache"]
+    # Cloudflare menolak deploy kalau _headers > 100 aturan (kode 100324). Satu splat per pola ("/dir/*.js" sah, dokumen resmi).
+    # Halaman: satu aturan "/*.html" (jalur "/x/" tanpa nama berkas tidak kena, sama seperti aturan per-berkas lama).
+    # Immutable: "/*.js" dan "/*.css" untuk semua; berkas yang TIDAK boleh immutable (dimuat tanpa ?v, atau tak diberi versi)
+    # dikecualikan dengan "! Cache-Control" lalu header bawaan Cloudflare ditulis ulang (diuji di wrangler dev: tanpa baris
+    # kedua, header hilang total). Daftar pengecualian dihitung ulang tiap terbit dari semua .js/.css, jadi berkas baru
+    # yang belum diberi versi otomatis aman. Pengecualian digabung per awalan nama ("/gempa/sim*.js") bila semua yang
+    # kena memang pengecualian.
+    ada = set(abadi)
+    semua = [("/" + os.path.relpath(os.path.join(d, f), akar).replace(os.sep, "/"))
+             for d, _, fs in os.walk(akar) for f in fs]
+    blok, kecuali = [TANDA], []
+    for ujung in (".js", ".css"):
+        asing = sorted(w for w in semua if w.endswith(ujung) and w not in ada)
+        if len(asing) < len([w for w in semua if w.endswith(ujung)]):
+            blok += [f"/*{ujung}", "  Cache-Control: public, max-age=31536000, immutable"]
+        sisa = set(asing)
+        for w in asing:
+            if w not in sisa:
+                continue
+            for awal in ["/"] + [w[:i] for i in range(2, len(w) - len(ujung) + 1)] + [w]:   # awalan terpendek yang sah; terakhir nama persis
+                kena = [x for x in semua if x.startswith(awal) and x.endswith(ujung)] if awal != w else [w]
+                if all(x not in ada for x in kena):
+                    kecuali.append(w if awal == w else f"{awal}*{ujung}"); sisa -= set(kena)
+                    break
+    for pola in kecuali:
+        blok += [pola, "  ! Cache-Control", "  Cache-Control: public, max-age=0, must-revalidate"]
+    if halaman:
+        blok += ["/*.html", "  Cache-Control: no-cache"]
+    jumlah = sum(1 for b in lama.splitlines() if b.startswith("/")) + sum(1 for b in blok if b.startswith("/"))
+    if jumlah > maks:
+        sys.exit(f"versi.py: _headers {jumlah} aturan > {maks} (batas Cloudflare); gabung aturan tulisan tangan di public/_headers")
     open(hp, "w", encoding="utf-8").write(lama + "\n\n" + "\n".join(blok) + "\n")
     print(f"versi.py: {len(versi)} berkas diberi ?v, {len(abadi)} immutable, {len(versi) - len(abadi)} juga dimuat tanpa versi: "
-          f"{sorted(set(versi) - set(abadi))}; {len(halaman)} halaman no-cache")
+          f"{sorted(set(versi) - set(abadi))}; {len(halaman)} halaman no-cache; {jumlah} aturan")
     return versi, abadi
 
 
@@ -93,13 +115,17 @@ def uji():
         assert abadi == ["/a.js", "/c.js"], abadi           # b.css juga dimuat c.js tanpa versi -> tidak immutable
         jalan(t)                                             # idempoten: blok _headers tidak menumpuk
         h = open(os.path.join(t, "_headers")).read()
-        assert h.count(TANDA) == 1 and h.startswith("/*\n  X: 1") and "/banjir/index.html\n  Cache-Control: no-cache" in h, h
+        assert h.count(TANDA) == 1 and h.startswith("/*\n  X: 1") and "/*.html\n  Cache-Control: no-cache" in h, h
         w("a.js", "x=2"); v2, _ = jalan(t)
         assert v2["/a.js"] != versi["/a.js"] and v2["/c.js"] == versi["/c.js"], "versi harus mengikuti isi berkas"
-        _, abadi = jalan(t, maks=4)                          # 1 dasar + 2 halaman -> jatah 1: yang terbesar (c.js) bertahan
-        h = open(os.path.join(t, "_headers")).read()
-        aturan = sum(1 for b in h.splitlines() if b.startswith("/"))
-        assert abadi == ["/c.js"] and aturan == 4, f"jatah aturan dilanggar: {aturan} aturan, abadi={abadi}"
+        assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/*.html\n  Cache-Control: no-cache" in h, h
+        w("d.js", "y=1"); w("e.html", '<script src="d.js"></script><script>"d.js"</script>')   # d.js juga dimuat tanpa ?v
+        jalan(t); h = open(os.path.join(t, "_headers")).read()
+        assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/d*.js\n  ! Cache-Control" in h and "/a" not in h.split(TANDA)[1], h  # d.js jadi pengecualian
+        try:
+            jalan(t, maks=2); raise AssertionError("harus gagal bila aturan > maks")
+        except SystemExit:
+            pass
     print("versi uji: lolos")
 
 

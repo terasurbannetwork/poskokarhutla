@@ -11,10 +11,10 @@ export const hidup = (B = REGISTRY) => B.bencana.filter(b => b.status !== "mati"
 export const akar = b => b.rute === "/";
 export const dasar = b => b.rute.replace(/\/$/, "");
 /* Tab yang dilayani sebagai jalur: bencana akar (karhutla) dan bencana lain (tab + kunci alias lama, mis. banjir/simulasi).
-   Kejadian (k/B0001) bencana warisan tetap tidak dilayani. */
+   Kejadian bencana warisan non-akar (banjir): hanya k/B0001; sim/B… tetap 404 (simulasi banjir = tab `simulasi`). */
 export const tabRute = b => akar(b) ? [...new Set([...b.tab, ...TAB_LAMA])] : [...new Set([...b.tab, ...Object.keys(b.alias || {})])];
 /* alternasi jalur kejadian: k/K0001 dan sim/K0001 (awalan dari registry) */
-export const jalurKejadian = b => b.kejadian?.awalan && (akar(b) || !b.warisan) ? [`k/${b.kejadian.awalan}\\d+`, `sim/${b.kejadian.awalan}\\d+`] : [];
+export const jalurKejadian = b => !b.kejadian?.awalan ? [] : [`k/${b.kejadian.awalan}\\d+`, ...(akar(b) || !b.warisan ? [`sim/${b.kejadian.awalan}\\d+`] : [])];
 
 function polaHalaman(b) {
   const alt = [...tabRute(b), ...jalurKejadian(b)];
@@ -26,6 +26,8 @@ export function ruteBencana(B = REGISTRY) {
   const out = [[/^\/semua(\/|\/index\.html)?$/, "/semua/index.html", "/semua"]];   // beranda semua bencana: halaman tetap, bukan entri registry; masuk sitemap
   for (const b of hidup(B)) {
     const p = polaHalaman(b);
+    /* tab berupa halaman terpisah (registry `halaman`: {tab: berkas}) harus mendahului pola umum, karena find() mengambil yang pertama */
+    for (const [t, f] of Object.entries(b.halaman || {})) out.push([new RegExp(`^${dasar(b)}/${t}/?$`), `${dasar(b)}/${f}`, null]);
     if (akar(b)) out.push([/^\/(index\.html)?$/, "/index.html", "/"], ...(p ? [[p, "/index.html", null]] : []));
     else out.push([new RegExp(`^${dasar(b)}(/|/index\\.html)?$`), `${dasar(b)}/index.html`, b.rute], ...(p ? [[p, `${dasar(b)}/index.html`, null]] : []));
   }

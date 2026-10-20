@@ -7,7 +7,7 @@ Semua adegan Sentinel-2 L2A Jul s.d. hari ini yang menutup konsesi diperiksa kas
 - bekas bakar: dNBR, NBR turun > 0,27 dibanding NBR tertinggi adegan bersih sebelumnya di piksel yang sama
   (acuan dikumpulkan sejak Juni; gambut terbakar tetap ber-NBR positif, jadi NBR mutlak tidak dipakai);
 - api aktif: B12 > 0,30 dan B12 > 1,2 x B8A.
-Skor = (% bekas bakar baru + 8 x % api) x (1 - awan)^2 di piksel jauh dari awan; bekas bakar juga wajib NBR < 0,2.\n4 adegan terbaik (awan <= 45%, skor >= 0,5) digambar
+Adegan dengan api aktif (maks 2, terbanyak api) dipilih dulu. Skor = (% bekas bakar baru + 8 x % api) x (1 - awan)^2 di piksel jauh dari awan; bekas bakar juga wajib NBR < 0,2.\n4 adegan terbaik (awan <= 45%, skor >= 0,5) digambar
 penuh 500 px dengan kanal SWIR yang sama seperti konsesi_citra.py. Mesin baca COG dari citra.py.
 """
 import datetime as dt, json, math, os, sys
@@ -33,8 +33,7 @@ def kotak_konsesi(r):
     km = max((max(xs) - min(xs)) * 111.32 * math.cos(math.radians(lat0)), (max(ys) - min(ys)) * 110.574) * 1.1 + 2
     if km > K.MAKS_KM:  # konsesi besar: kotak 40 km di sekitar titik panas terbanyak
         km = K.MAKS_KM
-        lat = sum(p[0] for p in r["pt"]) / len(r["pt"])
-        lon = sum(p[1] for p in r["pt"]) / len(r["pt"])
+        lat, lon = K.pusat_padat(r["pt"])
     else:
         lat, lon = lat0, (min(xs) + max(xs)) / 2
     return lat, lon, max(km, 6)
@@ -50,8 +49,9 @@ def pita(item, k, lat, lon, km):
     return [None if d == 0 else d * sk + of for d in v]
 
 
-def sampel(item, lat, lon, km):
-    """NBR per piksel (None = awan/bayangan/kosong) + api aktif per piksel; None bila adegan tak terpakai"""
+def sampel(item, lat, lon, km, rinci=False):
+    """rinci=True menambah elemen ke-6: penanda gosong per piksel (list bool).
+    NBR per piksel (None = awan/bayangan/kosong) + api aktif per piksel; None bila adegan tak terpakai"""
     scl = C.COG(item["assets"]["scl"]["href"])
     x0, y0, r0, kiri, atas = K.jendela(item, "scl", lat, lon, km)
     s = scl.contoh(0, x0, y0, r0, kiri, atas, km * 1000, N)[0]
@@ -61,7 +61,7 @@ def sampel(item, lat, lon, km):
         return None
     b12, b8 = pita(item, "swir22", lat, lon, km), pita(item, "nir08", lat, lon, km)
     # awan diperlebar 1 piksel (± 500 m): tepi awan dan bayangan tipis tidak tertangkap SCL
-    buruk = {i for i, x in enumerate(s) if x in (0, 3, 8, 9, 10)}
+    buruk = {i for i, x in enumerate(s) if x in (0, 3, 6, 8, 9, 10)}   # 6 = air: laut/sungai bukan lahan hangus
     jauh = set()
     for i in buruk:
         y, x = divmod(i, N)
@@ -76,7 +76,8 @@ def sampel(item, lat, lon, km):
         api.append(ok and a > .30 and a > 1.2 * b)
         gosong.append(ok and a >= .85 * b and b < .2 and a > .06)   # SWIR >= NIR, NIR rendah: lahan hangus (tanpa acuan)
     n = sum(1 for v in nbr if v is not None)
-    return nbr, api, round(100 * awan), round(100 * kosong), (100 * sum(gosong) / n if n else 0)
+    r = (nbr, api, round(100 * awan), round(100 * kosong), (100 * sum(gosong) / n if n else 0))
+    return r + (gosong,) if rinci else r
 
 
 def satu(r):
@@ -113,7 +114,9 @@ def satu(r):
             if v is not None and (acuan[i] is None or v > acuan[i]):
                 acuan[i] = v
     urut = sorted(hasil, key=lambda h: -h[0][0])
-    pilih = [h for h in urut if h[0][0] >= .5 and h[0][3] <= 45][:4]   # jelas: awan <= 45%
+    # api aktif (merah di SWIR) didahulukan: 2 adegan dengan api terbanyak, baru sisanya menurut skor (pemilik, 19 Okt 2026)
+    pilih = sorted([h for h in urut if h[0][2] > 0 and h[0][3] <= 60], key=lambda h: -h[0][2])[:2]
+    pilih += [h for h in urut if h not in pilih and h[0][0] >= .5 and h[0][3] <= 45][:4 - len(pilih)]   # jelas: awan <= 45%
     pilih += [h for h in urut if h not in pilih and h[0][0] >= .3][:4 - len(pilih)]   # sisanya terbaik yang ada
     out = []
     for (skor, pb, pa, aw, ks), it, tgl in sorted(pilih, key=lambda h: h[2]):
@@ -141,7 +144,7 @@ def main():
         except Exception as e:
             print("  gagal", r["nama"], e, file=sys.stderr)
             return r["id"], None
-    with ThreadPoolExecutor(4) as ex:
+    with ThreadPoolExecutor(int(os.environ.get("KONSESI_UTAS", 4))) as ex:
         for i, (rid, h) in enumerate(ex.map(jalan, rs)):
             if h is not None:
                 hasil[rid] = h

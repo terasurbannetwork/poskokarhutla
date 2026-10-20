@@ -5,6 +5,7 @@ Kabupaten = kabupaten kecamatan dengan titik tengah terdekat (public/banjir/data
 Peta OSM tidak lengkap dan kolam kecil ikut tercacah: angka ini batas bawah yang kasar, bukan inventaris resmi.
 
 Pakai:  python3 scripts/kekeringan/embung.py        unduh + tulis
+        python3 scripts/kekeringan/embung.py pusat  tambah titik pusat kabupaten ke berkas yang ada (tanpa jaringan)
         python3 scripts/kekeringan/embung.py uji    self-check tanpa jaringan
 """
 import datetime as dt, json, math, os, sys, time, urllib.parse, urllib.request
@@ -59,6 +60,27 @@ def hitung(elemen, pusat):
     return n
 
 
+def pusat_kab(pusat, kab):
+    """{'prov|kab': [lat, lon]} = rata-rata titik tengah kecamatan, hanya untuk kabupaten di `kab`; dipakai lapisan peta (lingkaran per kabupaten, bukan lokasi tampungan)."""
+    a = {}
+    for k, (la, lo) in pusat.items():
+        kb = k.rsplit("|", 1)[0]
+        if kb in kab:
+            t = a.setdefault(kb, [0.0, 0.0, 0])
+            t[0] += la; t[1] += lo; t[2] += 1
+    return {kb: [round(t[0] / t[2], 3), round(t[1] / t[2], 3)] for kb, t in sorted(a.items())}
+
+
+def tambah_pusat():
+    """Tambahkan `pusat` ke embung.json yang sudah ada tanpa mengunduh ulang dari Overpass."""
+    d = json.load(open(KELUAR))
+    d["pusat"] = pusat_kab(json.load(open(os.path.join(AKAR, "public/banjir/data/pusat_kec.json"))), d["kab"])
+    with open(KELUAR + ".tmp", "w") as f:
+        json.dump(d, f, ensure_ascii=False, separators=(",", ":"))
+    os.replace(KELUAR + ".tmp", KELUAR)
+    print(f"embung: pusat {len(d['pusat'])} dari {len(d['kab'])} kabupaten")
+
+
 def tulis():
     pusat = json.load(open(os.path.join(AKAR, "public/banjir/data/pusat_kec.json")))
     el = unduh()
@@ -66,6 +88,7 @@ def tulis():
     out = {"sumber": "OpenStreetMap (ODbL) via Overpass: landuse=reservoir, water=reservoir, waterway=dam",
            "tanggal": dt.date.today().isoformat(), "satuan": "jumlah objek per kabupaten (kasar: kabupaten kecamatan terdekat)",
            "total": sum(n.values()), "kab": dict(sorted(n.items()))}
+    out["pusat"] = pusat_kab(pusat, out["kab"])
     with open(KELUAR + ".tmp", "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     os.replace(KELUAR + ".tmp", KELUAR)
@@ -88,8 +111,9 @@ def uji():
         raise SystemExit("kode wilayah rusak harus ditolak")
     except ValueError:
         pass
+    assert pusat_kab(pusat, {"11|A": 1}) == {"11|A": [3.05, 97.05]}, pusat_kab(pusat, {"11|A": 1})   # rata-rata kecamatan; kab tak terhitung dibuang
     print("embung: ok")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else tulis()
+    uji() if sys.argv[1:] == ["uji"] else tambah_pusat() if sys.argv[1:] == ["pusat"] else tulis()

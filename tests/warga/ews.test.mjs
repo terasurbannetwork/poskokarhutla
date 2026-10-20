@@ -69,7 +69,8 @@ before(async () => {
   await DB2.batch(pecah(migrasi()).map(s => DB2.prepare(s)));
   mf3 = new Miniflare(opsi("uji-ews-tanpats", {TURNSTILE_SITEKEY: "", TURNSTILE_SECRET: ""}));   // email aktif, Turnstile tidak dipasang
   DB3 = await mf3.getD1Database("DB"); await DB3.batch(pecah(migrasi()).map(s => DB3.prepare(s)));
-  mf4 = new Miniflare(opsi("uji-ews-giliran", {EWS_MAKS_EMAIL: "2"})); DB4 = await mf4.getD1Database("DB");
+  // kelompok 20 (produksi 200): uji "> 2 kelompok" cukup 45 pelanggan
+  mf4 = new Miniflare(opsi("uji-ews-giliran", {EWS_MAKS_EMAIL: "2", EWS_CHUNK: "20"})); DB4 = await mf4.getD1Database("DB");
   await DB4.batch(pecah(migrasi()).map(s => DB4.prepare(s)));
   mf5 = new Miniflare(opsi("uji-ews-simulasi")); DB5 = await mf5.getD1Database("DB");
   await DB5.batch(pecah(migrasi()).map(s => DB5.prepare(s)));
@@ -494,12 +495,14 @@ uji("giliran adil: semua pelanggan dinilai tiap putaran (lebih dari satu kelompo
   const TF = T0 + 3 * HARI + 3 * JAM, id = i => i.toString(16).padStart(16, "0");
   const masuk = (i, email, kk) => DB4.prepare("INSERT INTO ews_langganan (id, email, email_kunci, lat, lon, kec_kunci, bencana, status, dibuat) VALUES (?, ?, ?, ?, ?, ?, '[\"banjir\"]', 'aktif', 1)")
     .bind(id(i), email, email, kk ? -2.21 : 5.55, kk ? 113.92 : 95.32, kk || "11|Tidak|Ada");
-  await DB4.batch([...Array.from({length: 450}, (_, i) => masuk(i + 1, `diam${i}@contoh.id`)), ...Array.from({length: 5}, (_, i) => masuk(0xf000 + i, `kena${i}@contoh.id`, kecKunci))]);
+  /* 45 pelanggan diam dengan EWS_CHUNK 20 = > 2 kelompok. Dulu 450 dengan kelompok 200: satu putaran cron menilai 455 orang dan
+     panggilan miniflare putus ("fetch failed") di runner CI yang lebih lambat (19 Okt 2026). Yang diuji sama: giliran melewati beberapa kelompok. */
+  await DB4.batch([...Array.from({length: 45}, (_, i) => masuk(i + 1, `diam${i}@contoh.id`)), ...Array.from({length: 5}, (_, i) => masuk(0xf000 + i, `kena${i}@contoh.id`, kecKunci))]);
   muat(TF, {kecKunci});
   const kena = () => surat.filter(s => /^kena\d@/.test(s.to[0])), per = {};
   await cron(JAM_CRON, TF, mf4);
   assert.equal(kena().length, 2, "batas 2 email per putaran");
-  assert.ok((await DB4.prepare("SELECT count(*) n FROM ews_langganan WHERE diperiksa = ?").bind(TF).first()).n >= 452, "semua yang diam (450, > 2 kelompok) tetap dinilai walau batas email tercapai");
+  assert.ok((await DB4.prepare("SELECT count(*) n FROM ews_langganan WHERE diperiksa = ?").bind(TF).first()).n >= 47, "semua yang diam (45, > 2 kelompok) tetap dinilai walau batas email tercapai");
   await cron(JAM_CRON, TF + MENIT, mf4); assert.equal(kena().length, 4);
   await cron(JAM_CRON, TF + 2 * MENIT, mf4); assert.equal(kena().length, 5);
   await cron(JAM_CRON, TF + 3 * MENIT, mf4); assert.equal(kena().length, 5, "tidak ada yang dapat dua kali");

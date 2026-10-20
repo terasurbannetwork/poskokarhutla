@@ -112,7 +112,7 @@ def riwayat(lama, sel, hari, hari_ini, hitung_hari):
 
 LANGKAH = [("sarana", lambda m, pr, meta: m.main()), ("gelombang", lambda m, pr, meta: m.main()), ("prakiraan_kec", lambda m, pr, meta: m.main()),
            ("dampak_cuaca", lambda m, pr, meta: m.main(pr, meta)), ("medan", lambda m, pr, meta: m.main()), ("siklon", lambda m, pr, meta: m.main()),
-           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main())]
+           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main()), ("musim", lambda m, pr, meta: m.main())]
 
 
 def ringkas(kec, siklon):
@@ -149,6 +149,16 @@ def main():
         except BaseException as e:  # satu langkah gagal tidak boleh menjatuhkan yang lain (SystemExit dari sub-modul ikut ditangkap)
             gagal.append(nama)
             print(f"::warning title=cuaca {nama}::{e}", file=sys.stderr)
+    try:   # laporan kejadian per kab/kota Siaga cuaca (scripts/umum/laporan_kejadian.py), sesudah laporan_cuaca
+        import importlib.util
+        sp = importlib.util.spec_from_file_location("laporan_kejadian", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../umum/laporan_kejadian.py"))
+        lk = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(lk)
+        lk.uji()
+        lk.jalankan("cuaca")
+    except BaseException as e:
+        gagal.append("laporan_kejadian")
+        print(f"::warning title=cuaca laporan_kejadian::{e}", file=sys.stderr)
     try:
         meta.update(ringkas(baca(os.path.join(BANJIR, "cuaca_kec.json")), baca(os.path.join(BANJIR, "cuaca_siklon.json"))))
         simpan(os.path.join(BANJIR, "cuaca_meta.json"), meta)

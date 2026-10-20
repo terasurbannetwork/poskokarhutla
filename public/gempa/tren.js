@@ -34,15 +34,37 @@ const Tren = {
     return Kartu.kartu("Kedalaman", `${Kartu.hl(Math.round(c[0] / tot * 100) + "%")} gempa M 5+ di Indonesia sejak ${dari} berpusat dangkal (kurang dari 60 km): ${Kartu.hl(fmt(c[0]) + " gempa")}`,
       KG.mendatar(rows, {akhir: 70}), "USGS", Kartu.seg("dalam", [["2000", "Sejak 2000"], ["5", "5 tahun terakhir"]], this.st)); },
 
+  /* indeks risiko riwayat provinsi (risiko.json): peringkat teratas, pil kelas; pola karhutla (skor 0 sampai 100 dari data riwayat) */
+  async exRisiko() {
+    const r = await Risiko.muat(); if (!r?.prov) return "";
+    const R = Object.entries(r.prov).filter(([k]) => S.nama[k]).sort((a, b) => b[1][0] - a[1][0]).slice(0, 10), U = innerWidth < 640; if (!R.length) return "";
+    const rows = R.map(([k, [skor, ki]]) => ({nama: esc(U ? KG.pendek(namaProv(k)) : namaProv(k)), v: skor, teks: String(skor), warna: WARNA_RISIKO[ki], pil: [[r.kelas[ki], WARNA_RISIKO[ki], ki ? "#fff" : "#3b3320"]],
+      tip: `<b>${esc(namaProv(k))}</b><br>Indeks risiko: ${skor} dari 100 (${r.kelas[ki]})`}));
+    return Kartu.kartu("Indeks risiko riwayat", `${Kartu.hl(esc(namaProv(R[0][0])))} punya indeks risiko gempa tertinggi: ${Kartu.hl(R[0][1][0] + " dari 100")}`,
+      KG.mendatar(rows, {akhir: 110}), `USGS, gempa M 5+ ${r.tahun[0]} sampai ${r.tahun[1]}. Bobot kekerapan 50%, besaran 30%, tren 20%.`, "", WARNA_RISIKO.map((w, i) => [w, r.kelas[i]])); },
+
+  /* galeri kasus (B04): gempa merusak besar, kurasi tangan factsheet_gempa.json; tiap baris bersumber dan bertanggal */
+  /* nama situs dari URL sumber: usgs.gov jadi USGS, selain itu dua label terakhir hostname (jambi.antaranews.com jadi antaranews.com) */
+  situs(u) { try { const h = new URL(u).hostname.split(".").slice(-2).join("."); return h === "usgs.gov" ? "USGS" : h; } catch (e) { return String(u); } },
+  async exKasus() {
+    const F = await muatJSON("data/factsheet_gempa.json").catch(() => null), K = (F?.kasus || []).filter(k => k.meninggal > 0 && k.sumber && k.tanggal); if (!K.length) return "";
+    const top = [...K].sort((a, b) => b.meninggal - a.meninggal)[0], th = k => k.tanggal.slice(0, 4);
+    const rows = [...K].sort((a, b) => a.tanggal.localeCompare(b.tanggal)).map(k => ({nama: esc(`${th(k)} ${k.nama.split(",")[0].replace(/^Kepulauan /, "").replace(/^Donggala dan /, "")}`), v: k.meninggal, teks: fmt(k.meninggal) + " jiwa", warna: KG.MERAH,
+      pil: [[mTulis(k.m), warnaM(k.m)], ...(k.tsunami ? [["Tsunami", KG.BIRU]] : [])], tip: `<b>${esc(k.nama)}</b><br>${KG.tgl(k.tanggal + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"})} · ${mTulis(k.m)}<br>Meninggal: ${fmt(k.meninggal)} jiwa<br>Sumber: ${esc(this.situs(k.sumber))}`}));
+    return Kartu.kartu("Gempa merusak", `${Kartu.hl(fmt(top.meninggal) + " jiwa")} meninggal pada gempa ${Kartu.hl(mTulis(top.m))} ${esc(top.nama)} ${th(top)}, yang terbanyak dari ${Kartu.hl(K.length + " gempa merusak")} yang dikurasi sejak 2005`,
+      KG.mendatar(rows, {akhir: 130}), [...new Set(K.map(k => this.situs(k.sumber)))].join(", ")); },
+
   gambar(id) { Kartu._leg = null;
     try { return this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""; } catch (e) { console.error(e); return ""; } },
-  EX: ["bulan", "tahun", "dalam"],
+  EX: ["bulan", "tahun", "dalam", "risiko", "kasus"],
   async render() {
     const el = $("#tren"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
-      el.addEventListener("click", e => { const s = e.target.closest("[data-set]"); if (!s) return; this.st[s.dataset.set] = s.dataset.v; const box = s.closest("[data-ex]"); nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); KG.gulir(box); }); }); }
+      el.addEventListener("click", e => { const s = e.target.closest("[data-set]"); if (!s) return; this.st[s.dataset.set] = s.dataset.v; const box = s.closest("[data-ex]"); s.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === s)); nanti(async () => { box.innerHTML = await this.gambar(box.dataset.ex); KG.gulir(box); }); }); }
     if (!el.children.length) el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gempa…</div>`;
     if (!this.R) { const [R, m] = await Promise.all([Insight.R ?? muatJSON("data/riwayat_m5.json").catch(() => null), muatJSON("data/meta.json").catch(() => ({}))]); this.R = Insight.R = R; this.akhir = m.akhir || ""; }
     if (!this.R || !this.akhir) { el.innerHTML = `<div class="kosong">Data riwayat gempa belum tersedia.</div>`; return; }
-    el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join(""); KG.gulir(el); },
+    /* kartu async (risiko, kasus) menunggu datanya; kartu kosong dibuang (A18) */
+    const isi = await Promise.all(this.EX.map(async id => [id, await this.gambar(id)]));
+    el.innerHTML = isi.filter(([, h]) => h).map(([id, h]) => `<div data-ex="${id}">${h}</div>`).join(""); KG.gulir(el); },
 };

@@ -9,12 +9,13 @@ const jt = kr;
 const tglIns = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 
 const Insight = {
-  st: {hari: 0, kabHari: 0},
-  EX: ["jiwa", "kab", "jarak"],
+  st: {hari: 0, kabHari: 0, asalK: ""},
+  EX: ["jiwa", "kab", "pel", "asal", "jarak"],
+  PL: null, AS: null,   /* peluang.json dan asal.json, dimuat sekali di render() */
   T: {kab: {urut: "_", turun: true, hal: 0}},
   hl: Kartu.hl,
   /* pil kategori (ikon + nama) di samping pil "perkiraan model CAMS, belum dikoreksi": tiap kartu berangka jiwa/PM2,5 membawa label model */
-  IK: {jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', kab: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', jarak: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'},
+  IK: {pel: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/>', asal: '<path d="M4 20c4 0 4-8 8-8s4-8 8-8"/><circle cx="4" cy="20" r="1.5"/><circle cx="20" cy="4" r="1.5"/>', jiwa: '<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2M9 11a4 4 0 1 0 0-8 4 4 0 0 0 0 8ZM23 21v-2a4 4 0 0 0-3-3.9M16 3.1a4 4 0 0 1 0 7.8"/>', kab: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', jarak: '<path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7S1 12 1 12z"/><circle cx="12" cy="12" r="3"/>'},
   eyIk: (id, nama) => `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Insight.IK[id]}</svg>${nama}`,
   exM: (id, nama, ...a) => Kartu.ex(...a).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk(id, nama)}</span>${PIL_MODEL}`),
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
@@ -34,7 +35,7 @@ const Insight = {
         + [2, 3, 4].map(c => { const bw = X(x.p[c]); if (!bw) return ""; const s = `<rect class="gx" style="--i:${i}" x="${L + acc}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="${KAT[c].w}" data-tip="${tip}"/>`; acc += bw; return s; }).join("")
         + `<g class="gf" style="--i:${i}">${Kartu.pil(L + acc + 8, y + 5, kr(x.ts), KAT[kt].w, KAT[kt].fg)[0]}</g></g>`; }).join("");
     Kartu.leg([2, 3, 4].map(c => [KAT[c].w, KAT[c].n]));
-    return this.exM("jiwa", "Jiwa terpapar", ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
+    return this.exM("jiwa", "Jiwa terpapar", ts ? `${this.hl(jiwa(ts))} menghirup udara tidak sehat (PM2,5 di atas 55,4 µg/m³) di ${this.hl(fmt(semua.length) + " provinsi")} ${this.kapan(h)}, menurut model` : `Tidak ada provinsi dengan udara tidak sehat ${this.kapan(h)}`, "", "",
       pv.length ? `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Jiwa terpapar udara tidak sehat per provinsi">${g}</svg>` : `<p class="kosong">Semua provinsi di kategori baik atau sedang.</p>`,
       "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("hari")); },
 
@@ -46,10 +47,31 @@ const Insight = {
       {k: "prov", n: "Provinsi", v: r => namaProv(r[0]), h: r => `<span translate="no">${esc(namaProv(r[0]))}</span>`},
       {k: "rata", n: "PM2,5 24 jam", num: 1, v: r => r[2], h: r => `<span class="kt" style="--c:${KAT[kat(r[2])].w};--f:${KAT[kat(r[2])].fg}">${fmt(Math.round(r[2]))} µg/m³</span>`},
       {k: "kat", n: "Kategori", v: r => kat(r[2]), h: r => pilKat(kat(r[2]))},
-      {k: "maks", n: "Puncak per jam", num: 1, v: r => r[3], h: r => fmt(Math.round(r[3])) + " µg/m³"},
+      {k: "maks", n: "Puncak per jam", num: 1, v: r => r[3], h: r => r[3] == null ? "–" : fmt(Math.round(r[3])) + " µg/m³"},
       {k: "ts", n: "Jiwa tidak sehat", num: 1, v: r => r[5], h: r => r[5] ? kr(r[5]) + " jiwa" : "–"}];
     return this.exM("kab", "Kabupaten/kota", `${this.hl(esc(top[1]))} paling tercemar ${this.kapan(h)}: PM2,5 ${this.hl(fmt(Math.round(top[2])) + " µg/m³")} rata-rata 24 jam${ts ? `, ${this.hl(jiwa(ts))} menghirup udara tidak sehat` : ""}`, "", "",
       this.tabel("kab", kol, R, r => `data-prov="${r[0]}"`, 10, "kabupaten/kota", r => r[2]), "Sumber: Copernicus CAMS lewat Open-Meteo, WorldPop", this.segHari("kabHari")); },
+
+  /* 2b. peluang PM2,5 melewati batas status per kab/kota (peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
+  exPel() {
+    if (typeof Peluang === "undefined" || !this.PL) return "";
+    this.st.pelW ??= Object.entries(this.PL.wilayah).map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];   /* awal: kota dengan peluang tertinggi */
+    return Peluang.kartu(this.PL, {ey: this.eyIk("pel", "Peluang PM2,5"), st: this.st, kunci: "pel", kejadian: "PM2,5", sumber: "Copernicus CAMS lewat Open-Meteo, sebaran asumsi Pantau Bencana"}).replace("</span>", "</span>" + PIL_MODEL); },
+
+  /* 2c. asal asap per kota (asal.json): batang mendatar persen per provinsi asal dari lintasan angin mundur */
+  exAsal() {
+    const A = this.AS?.kota; if (!A || !Object.keys(A).length) return "";
+    const kode = Object.keys(A).sort((a, b) => A[a].nama.localeCompare(A[b].nama, "id"));
+    const teratas = (S.uk.kab[+this.st.kabHari] || S.uk.kab[S.h0] || []).map(r => kode.find(c => A[c].nama === r[1])).find(Boolean);
+    const pilih = A[this.st.asalK] ? this.st.asalK : teratas || kode[0], k = A[pilih], pv = k.prov_asal;
+    const M = innerWidth < 640, W = M ? 520 : 940, L = M ? 130 : 190, rh = 30, fs = M ? 14 : 13, mx = Math.max(1, ...pv.map(x => x[1])), X = v => v / mx * (W - L - 90);
+    const g = pv.map(([p, v], i) => { const y = i * rh, nm = M ? namaProv(p).replace("Kalimantan", "Kal.").replace("Sumatera", "Sum.").replace("Sulawesi", "Sul.").replace("Nusa Tenggara", "NT") : namaProv(p), bw = Math.max(3, X(v));
+      return `<g data-prov="${p}" style="cursor:pointer"><text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${fs}" font-weight="600" translate="no">${esc(nm)}</text>`
+        + `<rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${bw}" height="${rh - 10}" fill="#c9503a" data-tip="<b>${esc(namaProv(p))}</b><br>${v}% dari api yang dilewati jalur angin"/>`
+        + `<g class="gf" style="--i:${i}">${Kartu.pil(L + bw + 8, y + 5, v + "%", "#c9503a", "#fff")[0]}</g></g>`; }).join("");
+    const judul = esc(k.kalimat).replace(/\d+%/g, Kartu.hl);
+    return this.exM("asal", "Asal asap", judul, "", "", `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Asal asap ${esc(k.nama)} per provinsi">${g}</svg>`,
+      "Sumber: Open-Meteo (angin), NASA FIRMS VIIRS, perkiraan Pantau Bencana", Kartu.selProv("asalK", "Kota paling tercemar", kode, c => A[c].nama, {asalK: pilih === teratas && !this.st.asalK ? "" : pilih})); },
 
   /* 3. jarak pandang bandara; tanpa laporan segar atau semuanya jernih = kartu dibuang */
   exJarak() {
@@ -71,14 +93,16 @@ const Insight = {
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${hal.map(r => `<tr class="klik" ${atribut(r)}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
-  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), jarak: () => this.exJarak()})[id](); },
+  gambar(id) { return ({jiwa: () => this.exJiwa(), kab: () => this.exKab(), pel: () => this.exPel(), asal: () => this.exAsal(), jarak: () => this.exJarak()})[id](); },
   pasang(box) {
     const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasang(box); }); },
-  render() {
-    const el = $("#insight"); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
+  async render() {
+    const el = $("#insight");
+    if (typeof Peluang !== "undefined") [this.PL, this.AS] = await Promise.all([Peluang.muat("data/peluang.json"), fetch("data/asal.json").then(r => r.ok ? r.json() : null).catch(() => null)]); if (this.st.hari < S.h0) this.st.hari = this.st.kabHari = S.h0;
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasang(b));
+    el.addEventListener("change", e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } });
     el.onclick = e => {
       const s = e.target.closest("[data-set]"); if (s && s.tagName !== "SELECT") { this.st[s.dataset.set] = s.dataset.v; return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }

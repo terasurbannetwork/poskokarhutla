@@ -1,6 +1,6 @@
 "use strict";
 /* ================================================================ peta
-   Lapisan: PM2,5 CAMS (gambar 1 piksel per sel 1 derajat, dihaluskan peramban seperti hujan di banjir), titik jarak pandang METAR, citra satelit.
+   Lapisan: PM2,5 CAMS (interpolasi titik kabupaten/kota prakiraan ke sel 0,25 derajat, dihaluskan peramban), titik jarak pandang METAR, citra satelit.
    Ubin Overlay, kartu hover, dan susunan legenda dari public/inti/peta. */
 let peta = null, PI = null, LG = null, legBuka = innerWidth > 900;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
@@ -26,6 +26,7 @@ const Peta = {
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 12, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
     peta.once("load", () => window.NASA?.pasang(peta, ["co"]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
+    import("../inti/peta/konteks.js").then(m => m.pasang(peta, "udara")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
@@ -48,25 +49,29 @@ const Peta = {
     peta.addSource("metar", {type: "geojson", data: m});
     peta.addLayer({id: "metar", type: "circle", source: "metar", layout: {...vis(this.lihat("metar")), "circle-sort-key": ["-", 0, ["get", "k"]]},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 4, 6, 9, 11], "circle-color": ["match", ["get", "k"], 3, JP[3].w, 2, JP[2].w, 1, JP[1].w, JP[0].w], "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
-    Prak.pasangPeta();
+    Prak.pasangPeta(); Kejadian.pasangLapis();
     if (S.pilih) peta.setFeatureState({source: "prov", id: S.pilih}, {pilih: true});
     this.interaksi(); },
-  /* PM2,5 rata-rata 24 jam hari aktif sebagai gambar: satu piksel per sel, diperbesar 8x dengan penghalusan supaya tepi sel tidak kotak */
-  gambarPM() {
-    const rows = S.asap.grid, las = rows.map(r => r[0]), los = rows.map(r => r[1]), x0 = Math.min(...los) - .5, x1 = Math.max(...los) + .5, y0 = Math.min(...las) - .5, y1 = Math.max(...las) + .5;
-    const w = Math.round(x1 - x0), h = Math.round(y1 - y0), cv = document.createElement("canvas"); cv.width = w; cv.height = h;
-    const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
-    for (const r of rows) { const v = r[ROW.rata][S.hari]; if (v == null) continue; const cx = Math.floor(r[1] - x0), cy = Math.floor(y1 - r[0]);
-      if (cx >= 0 && cy >= 0 && cx < w && cy < h) img.data.set(gradasi(ST_PM, v), (cy * w + cx) * 4); }
+  /* PM2,5 rata-rata 24 jam hari aktif sebagai gambar: titik kab/kota prakiraan diinterpolasi (bobot 1/jarak^2, radius 2 derajat) ke sel 0,25 derajat;
+     sel yang jauh dari kab/kota mana pun dibiarkan bening (tidak mengarang angka di laut lepas), lalu diperbesar 4x dengan penghalusan */
+  gambarPM() { const c = this._pm = this._pm?.prak === S.prak ? this._pm : {prak: S.prak}; return c[S.hari] ||= this.hitungPM(); },   /* cache per hari; kosong hanya saat S.prak berganti */
+  hitungPM() {
+    const x0 = 94.5, x1 = 141.5, y0 = -11.5, y1 = 6.5, R = .25, w = Math.round((x1 - x0) / R), h = Math.round((y1 - y0) / R), K = S.prak.kota.filter(k => k.r24?.[S.hari] != null);
+    const cv = document.createElement("canvas"); cv.width = w; cv.height = h; const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
+    for (let cy = 0; cy < h; cy++) { const la = y1 - (cy + .5) * R, c = Math.cos(la * Math.PI / 180);
+      for (let cx = 0; cx < w; cx++) { const lo = x0 + (cx + .5) * R; let sw = 0, sv = 0, dm = 9;
+        for (const k of K) { const d2 = (k.lat - la) ** 2 + ((k.lon - lo) * c) ** 2; if (d2 > 4) continue; if (d2 < dm) dm = d2; const wt = 1 / (d2 + .05); sw += wt; sv += wt * k.r24[S.hari]; }
+        if (!sw) continue; const g = gradasi(ST_PM, sv / sw), dd = Math.sqrt(dm), f = dd <= 1 ? 1 : Math.max(0, (2 - dd));
+        img.data.set([g[0], g[1], g[2], Math.round(g[3] * f)], (cy * w + cx) * 4); } }
     ctx.putImageData(img, 0, 0);
-    const K = 8, bs = document.createElement("canvas"); bs.width = w * K; bs.height = h * K; const c2 = bs.getContext("2d"); c2.imageSmoothingEnabled = true; c2.imageSmoothingQuality = "high"; c2.drawImage(cv, 0, 0, bs.width, bs.height);
+    const Z = 4, bs = document.createElement("canvas"); bs.width = w * Z; bs.height = h * Z; const c2 = bs.getContext("2d"); c2.imageSmoothingEnabled = true; c2.imageSmoothingQuality = "high"; c2.drawImage(cv, 0, 0, bs.width, bs.height);
     return {url: bs.toDataURL(), kor: [[x0, y1], [x1, y1], [x1, y0], [x0, y0]]}; },
   geoMetar() { return {type: "FeatureCollection", features: metarSegar().map((m, i) => ({type: "Feature", geometry: {type: "Point", coordinates: [m.lon, m.lat]}, properties: {i, k: kelasJP(m.vis_m)}}))}; },
   terlihat(k) { return this.lihat(k); },
   segarkan() { if (!peta?.getSource("pm")) return; const g = this.gambarPM(); peta.getSource("pm").updateImage({url: g.url, coordinates: g.kor}); peta.getSource("metar")?.setData(this.geoMetar()); Prak.segarkan(); },
-  kartuSel(la, lo) { const r = sel(la, lo); if (!r) return ""; const v = r[ROW.rata][S.hari], mk = r[ROW.maks][S.hari]; if (v == null) return "";
+  kartuSel(la, lo) { const k = kotaTerdekat(la, lo); if (!k) return ""; const v = k.r24?.[S.hari], mk = S.mk[k.kode]?.[S.hari]; if (v == null) return "";
     const c = kat(v);
-    return PI.kartuTip({judul: `${KAT[c].n}`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]]}); },
+    return PI.kartuTip({judul: `${KAT[c].n}`, sub: `<small translate="no">${esc(k.nama)}</small>`, stat: [["perisai", KAT[c].n, "kategori", KAT[c].w, c >= 2], ["debit", fmt(Math.round(v)) + " µg/m³", "rata-rata 24 jam", KAT[c].w], ...(mk == null ? [] : [["peringatan", fmt(Math.round(mk)) + " µg/m³", "puncak per jam", "#7d8ca3"]])]}); },
   kartuMetar(i) { const m = metarSegar()[i]; if (!m) return ""; const k = kelasJP(m.vis_m), w = wxNama(m.wx);
     return PI.kartuTip({judul: esc(m.nama), sub: `<small>${esc(m.icao)}</small>`, stat: [["mata", m.vis_m >= 9999 ? "10 km atau lebih" : fmt(m.vis_m / 1000) + " km", "jarak pandang", JP[k].w, k >= 2], ...(w ? [["peringatan", w, "cuaca", "#e8743b"]] : [])]}); },
   pilihProv(kode, terbang = true) {
@@ -101,10 +106,10 @@ const Peta = {
 /* ---------- panel ---------- */
 const kot = (l, v, s) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`;
 const Laci = {
-  buka(ey, judul, meta, isi) { const el = $("#laci");
+  buka(ey, judul, meta, isi) { const el = $("#laci"); Kejadian.bersih();   /* laci lain terbuka: lapisan dan tautan kejadian dilepas (Kejadian.laci menahan lewat _buka) */
     el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">${ey}</span><h2 id="dlgJudul" translate="no" title="${judul.replace(/<[^>]+>/g, "")}">${judul}</h2>${meta ? `<div class="hd-meta">${meta}</div>` : ""}</div>
       <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div><div class="bd" style="display:grid;gap:10px">${isi}</div>`;
-    el.classList.add("on"); el.querySelector(".tutup").onclick = () => Peta.pilihProv(null, false); },
+    el.classList.add("on"); el.querySelector(".tutup").onclick = () => { Peta.pilihProv(null, false); Kejadian.bersih(); }; },
 };
 /* crumb seperti karhutla/banjir: pil "Indonesia" di luar kartu; provinsi yang dibuka jadi pil kedua dengan tombol Rincian */
 function renderCrumb() {
@@ -138,7 +143,7 @@ function terapkanUrut() { const box = $("#rows"); tandaiUrut(); if (!S.urut || !
 $("#rows").addEventListener("click", e => { const kol = e.target.closest(".kepala span[data-s]");
   if (kol) { const i = +kol.dataset.s, u = S.urut; S.urut = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; tandaiUrut(); return nanti(terapkanUrut); }
   const b = e.target.closest(".tb:not(.kepala)"); if (b) Peta.pilihProv(b.dataset.k === S.pilih ? null : b.dataset.k, b.dataset.k !== S.pilih); });
-$("#cari").addEventListener("input", renderDaftar);
+$("#cari").addEventListener("input", () => { clearTimeout(renderDaftar._t); renderDaftar._t = setTimeout(renderDaftar, 250); });
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
 /* ---------- hari, overlay, legenda ---------- */
@@ -146,7 +151,7 @@ const tglSingkat = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-I
 function renderHari() {
   $("#hariSeg").innerHTML = `<div class="seg penuh" style="box-shadow:none">${hariTampil().map(i => `<button data-i="${i}" aria-pressed="${S.hari === i}">${labelHari(i) === "Hari ini" ? "Hari ini" : tglSingkat(S.uk.hari[i])}</button>`).join("")}</div>`; }
 $("#hariSeg").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; S.hari = +b.dataset.i;
-  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); Prak.st.jam = null; nanti(() => { Peta.segarkan(); renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); });
+  $("#hariSeg").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); Prak.st.jam = null; nanti(() => { Peta.segarkan(); nanti(() => { renderDaftar(); if (S.pilih) Peta.laciProv(S.pilih); }); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l;
   const id = {pm25: "pm", metar: "metar", satelit: "satelit", kota: "kota", lintasan: ["lin", "lin-k"]}[k]; [].concat(id).forEach(x => peta.getLayer(x) && peta.setLayoutProperty(x, "visibility", i.checked ? "visible" : "none"));
   Prak.hiasKontrol(); renderLegenda(); });

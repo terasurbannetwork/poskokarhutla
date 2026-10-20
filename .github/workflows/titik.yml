@@ -36,8 +36,8 @@ jobs:
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
@@ -62,6 +62,10 @@ jobs:
           python3 scripts/data/operasi.py
           python3 scripts/data/ringkasan.py
           python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
+
+      - name: Kendala lapangan per kompleks (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py
 
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
@@ -165,7 +169,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           python3 scripts/terbit/versi.py
-          npx --yes wrangler@3 deploy
+          npx --yes wrangler@4.42.0 deploy
 
       # /api/status menjawab 503 bila sumber kunci basi (titik > 8 jam, banjir/berita > 30 jam): run jadi merah, tidak gagal diam.
       # Tanpa token Cloudflare (jalur commit) terbitnya lewat build lain, jadi dilewati.

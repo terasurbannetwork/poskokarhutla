@@ -1,0 +1,11 @@
+/* Kartu video bersama (public/inti/video.js): gempa, gunung api, dst. Karhutla masih memakai aturan .vd-* di index.html. */
+.vd-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:12px;margin-top:10px}
+.vd-k{display:grid;gap:4px;color:var(--ink);text-decoration:none;font-size:13px;line-height:1.35}
+.vd-k:hover b{color:var(--brand2)}
+.vd-th{position:relative;display:block;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:var(--surface)}
+.vd-th img{width:100%;height:100%;object-fit:cover;display:block}
+.vd-th i{position:absolute;right:8px;bottom:8px;width:28px;height:28px;border-radius:50%;background:rgb(0 0 0 / .65);color:#fff;font-style:normal;font-size:12px;display:grid;place-items:center}
+.vd-th u{position:absolute;left:8px;bottom:8px;padding:1px 6px;border-radius:5px;background:rgb(0 0 0 / .72);color:#fff;font-size:11px;font-weight:700;text-decoration:none}
+.vd-k small{color:var(--ink2);font-size:11.5px}
+.vd-ctl{display:grid;gap:12px;margin-top:14px}
+.vd-cari{width:100%;height:40px;border-radius:999px;border:1px solid var(--line);padding:0 16px;background:var(--surface);color:var(--ink)}

@@ -25,7 +25,7 @@ const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"], WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"], FG_LV = ["#fff", "#3b2e00", "#fff", "#fff"];
 const NAVY = "oklch(25.5% .075 256)", MERAH = "#c9503a", JINGGA = "#e58a45", KUNING = "#e3b94e", BIRU = "#4f8fc4";
 const S = {meta: null, grid: null, wil: null, tren: null, iklim: null, geo: {prov: null, kab: {}}, jalur: [], mode: "status", fiturWil: [], urut: null,
-  hth: null, prak: null, padi: null, uji: null, bukti: null, resmi: null, bnpb: null, bln: 0};
+  hth: null, prak: null, padi: null, uji: null, bukti: null, resmi: null, bnpb: null, riw: null, posko: null, bln: 0};
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 /* jumlah wilayah per tingkat TEPAT (kab_n di berkas kumulatif: >= waspada, >= siaga, >= awas) */
 /* ---------- data baru (HTH, prakiraan SEAS5, padi, uji balik, bukti, SK resmi); dibaca defensif, yang tak ada = null lalu dibuang dari layar */
@@ -44,6 +44,14 @@ const poinTxt = d => { const r = Math.round(d); return r === 0 ? "setara normal"
 const BIAS_TXT = () => S.prak?.bias?.label || "tanpa koreksi bias";
 const BIAS_BULAN = () => (S.prak?.bias?.per_bulan || []).map(x => `${bulanPanjang(x.bulan)}: ${x.kalimat}${x.rasio != null ? ` (hujan anggota ${F2(x.rasio)} kali klimatologi)` : ""}`);
 const BELUM_UJI = "Belum diuji balik";
+/* ambang status SPI/tanah: label lepas dari "hipotesis" hanya bila uji balik terhadap kejadian DIBI lolos kriteria (ujibalik.py `kejadian.vonis`); alasan tertulis di berkas */
+const blnIso = ym => BLN[+ym.slice(5) - 1] + " " + ym.slice(0, 4);
+const AMBANG_KAKI = () => { const j = S.uji?.kejadian; if (!j || j.vonis?.layak) return ""; const f = Object.entries(j.aturan?.waspada || {}).filter(([k]) => k !== "semua").map(([, v]) => v.far).filter(x => x != null).map(x => Math.round(x * 100));
+  return `Ambang belum lolos uji kejadian DIBI${f.length ? ` (FAR ${Math.min(...f)}–${Math.max(...f)}%)` : ""}; angka ini ukuran skala, bukan jumlah penerima.`; };
+/* kartu yang angkanya bergantung pada status Waspada/Siaga/Awas: pil ambang di kepala + satu kalimat di kaki; lepas sendiri bila uji balik lolos */
+const beriAmbang = h => { const k = AMBANG_KAKI(); if (!k || !h) return h;
+  return h.replace(/(<span class="ex-ey">[^<]*<\/span>)/, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
+const AMBANG_PIL = () => S.uji?.kejadian?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis";
 /* nama provinsi pada SK BNPB -> kode */
 const PROV_KODE = (() => { let m = null; return n => { if (!m) { m = {}; for (const [k, v] of Object.entries(S.meta.provinsi)) m[v.toLowerCase()] = k; m["daerah istimewa yogyakarta"] = "34"; m["dki jakarta"] = "31"; } return m[String(n).toLowerCase()]; }; })();
 const skPer = () => { if (S._sk) return S._sk; const o = {kab: {}, prov: {}}; for (const s of S.resmi?.sk || []) { const p = PROV_KODE(s.prov); if (!p) continue;
@@ -54,14 +62,14 @@ const irbiKab = kunci => { if (!S.bnpb?.irbi) return null; if (!S._irbi) { S._ir
 const tepat = n => [n[0] - n[1], n[1] - n[2], n[2]];   /* [waspada, siaga, awas] */
 const pill = l => `<span class="pill l${l}">${LEVEL[l]}</span>`;
 
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
-/* tidak tampil di nav: Metode ada tapi disembunyikan (A24, sama dengan karhutla); Foto menunggu kategori kekeringan di public/foto.js (KAT_AWAL): tanpa itu galerinya
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["posko", "Posko"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+/* tidak tampil di nav: Metode dan Posko ada tapi disembunyikan (A24, sama dengan karhutla; rute /kekeringan/posko tetap terbuka bila alamatnya diketik); Foto menunggu kategori kekeringan di public/foto.js (KAT_AWAL): tanpa itu galerinya
    jatuh ke kategori karhutla dan kirimannya ditolak server. Hapus "foto" dari sini dan dari tab_sembunyi di public/bencana.json begitu foto.js memilikinya. */
-const TAB_SEMBUNYI = new Set(["metode"]);
+const TAB_SEMBUNYI = new Set(["metode", "posko"]);
 const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
-  foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
-const halamanAda = id => !!$("#p-" + id) && (!TAB_SEMBUNYI.has(id) || id === "metode");
+  posko: '<path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', metode: '<path d="M4 5h16M4 12h16M4 19h10"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const halamanAda = id => !!$("#p-" + id) && (!TAB_SEMBUNYI.has(id) || id === "metode" || id === "posko");
 function bukaTab(id, dorong = true) {
   if (!halamanAda(id)) id = "peta";
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
@@ -69,7 +77,7 @@ function bukaTab(id, dorong = true) {
   if (dorong) history.replaceState(null, "", "/kekeringan/" + id);   /* tautan bersih tanpa tagar; worker mengarahkan jalur ini ke index.html */
   nanti(() => { if (id === "peta" && peta) peta.resize();
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, foto: window.Foto, metode: Metode})[id]?.render(); });
+    ({insight: Insight, berita: Berita, tren: Tren, dampak: Dampak, posko: Posko, foto: window.Foto, metode: Metode})[id]?.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
@@ -84,10 +92,10 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* ---------- data */
 async function muatData() {
   const lain = n => muatJSON("../data/" + n + ".json").catch(() => null);
-  const [meta, grid, wil, tren, prov, hth, prak, padi, uji, bukti, resmi, bnpb] = await Promise.all([muatJSON("../data/kekeringan_meta.json"), muatJSON("../data/kekeringan_grid.json"), muatJSON("../data/kekeringan_wilayah.json"),
+  const [meta, grid, wil, tren, prov, hth, prak, padi, uji, bukti, resmi, bnpb, riw] = await Promise.all([muatJSON("../data/kekeringan_meta.json"), muatJSON("../data/kekeringan_grid.json"), muatJSON("../data/kekeringan_wilayah.json"),
     muatJSON("../data/kekeringan_tren.json").catch(() => null), muatJSON("../geo/provinsi.json"),
-    lain("kekeringan_hth"), lain("kekeringan_prakiraan"), lain("kekeringan_padi"), lain("kekeringan_ujibalik"), lain("kekeringan_bukti"), lain("kekeringan_resmi"), lain("kekeringan_bnpb")]);
-  Object.assign(S, {meta, grid, wil, tren, hth, prak: prak?.lengkap === false ? null : prak, padi, uji, bukti, resmi, bnpb}); S.geo.prov = prov;
+    lain("kekeringan_hth"), lain("kekeringan_prakiraan"), lain("kekeringan_padi"), lain("kekeringan_ujibalik"), lain("kekeringan_bukti"), lain("kekeringan_resmi"), lain("kekeringan_bnpb"), lain("kekeringan_riwayat")]);
+  Object.assign(S, {meta, grid, wil, tren, hth, prak: prak?.lengkap === false ? null : prak, padi, uji, bukti, resmi, bnpb, riw}); S.geo.prov = prov;
   muatJSON("../data/iklim.json").then(d => { S.iklim = d; if ($("#p-insight").classList.contains("on")) Insight.render(); }).catch(() => {});
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
   /* lencana ENSO di kepala, sama dengan karhutla (lapisan5.js lencanaIklim): El Niño = kemarau lebih kering */

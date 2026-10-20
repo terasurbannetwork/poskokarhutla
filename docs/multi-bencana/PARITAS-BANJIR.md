@@ -1,136 +1,53 @@
-# Paritas karhutla vs banjir: tabel akhir
+# Paritas karhutla vs banjir
 
-Audit akhir 16 Okt 2026 (HEAD 02e7568 + perbaikan audit ini), `wrangler dev --local`, Chrome headless via Playwright, 1440x900 dan 390x844, ID dan `?lang=en`. Tangkapan berdampingan (karhutla kiri, banjir kanan) per tab di folder kerja audit. Tidak ada galat konsol milik banjir; yang tersisa (404 favicon situs berita luar, 500 `/api/foto` dan `/api/titik` karena D1 tidak ada di lokal, CSP report-only frame-src Tentang) sama di kedua sisi.
+Audit akhir 19 Okt 2026 malam, HEAD c191384. Rincian 113 baris dengan bukti `berkas:baris`: [`bencana/banjir.md`](bencana/banjir.md).
+Yang dibandingkan: karhutla yang TAMPIL (posko, sarana, keputusan, informasi, metode yang disembunyikan tidak dihitung kurang).
+Pembuktian: `gerbang-{bencana,inti,ilmu-agent,tab-registry}` 18/18; `tests/banjir` 40 lulus, 1 dilewati (`prospektif.json` tak ada lokal);
+swa-uji `uji_balik`, `unit_respons`, `hulu`, `citra_banjir`, `bukti_das`, `ambang_wilayah` ok.
+Data lokal hanya baseline (CI membuat data tayang tanpa commit); `hujan/status/rob/posko/validasi.json` lokal bertanggal 13 Okt.
 
-Keterangan: SAMA = identik atau memakai mesin bersama yang sama. D = beda yang sah karena data/bahaya (alasan tertulis). BEDA = selisih yang belum bisa ditutup.
+## Hitungan
 
-Hasil: 45 SAMA, 11 D, 0 BEDA (Foto kirim dipasang 16 Okt 2026). Status registry tidak diubah.
+| | ADA | SEBAGIAN | BELUM | TB |
+| --- | --- | --- | --- | --- |
+| Pagi 19 Okt | 76 | 28 | 6 | 3 |
+| Malam 19 Okt | 70 | 36 | 5 | 2 |
 
-## Diperbaiki pada audit ini
+Tidak ada komponen yang mundur. Selisih karena pemeriksaan malam lebih ketat: keputusan/sarana (A22, A24), indeks lereng (A12),
+heli (A23), preventif (A25), kesetaraan Python-JS (B07), rentang waktu (C06), berita (C17), muat/375 px/INP (C31-C33), admin (C36),
+`URL_STATUS` (E06) kini SEBAGIAN. Naik hari ini: kejadian aktif `B####` di peta + rute `/banjir/k/B####`, unit respons, prospektif
+(live 19 Okt, 521 kabupaten, belum ada skor), Lapor Warga multi-bahaya, foto dummy, lapisan konteks, EN, F02.
 
-| Selisih | Perbaikan |
-| --- | --- |
-| Berita: kartu menempel (jarak 2px vs 18px karhutla `#brEx`) | `inti/berita.css`: `#berita{display:grid;gap:18px}` |
-| 390: seg Insight (Banjir/Longsor + Hari) terpotong | `inti/insight.css`: dua seg turun baris, tombol rapat |
-| 390: seg Dampak (4 pilihan) terpotong | `inti/insight.css`: tombol rapat di `#dampak` |
-| 390: seg jenis bencana Tren (8 pilihan) terpotong digeser | `inti/tren.css`: seg membungkus baris |
-| Kamera awal peta beda (dok legenda banjir lebih tinggi mengecilkan area) | `banjir/peta.js` `kiriPad`: padding bawah dibatasi 160 |
-| Laci: dua catatan penjelas (A1) dan "Status dari aturan di tab Metode" | `banjir/peta.js`: dihapus, kaki laci = "Data {jam}" seperti karhutla |
-| EN: judul Berita, judul + sumber Dampak, label Riwayat, "Status longsor per wilayah", judul laci "Kejadian ... tercatat BNPB" | `i18n/en.json`: 15 kunci baru |
-| EN: pop-up Situasi memetakan waspada=watch, siaga=alert, awas=warning (terbalik dari kamus Waspada=Alert, Siaga=Watch, Awas=Warning) | `i18n/en.json`: tiga kunci dibenahi |
+## Yang sama dengan karhutla
 
-## 1. Kepala
+Kepala, menu, tab URL bersih, peta satelit multi-mode, kartu hover, legenda dok, Insight (±18 eksibit), Tren, Dampak, Simulasi
+(banjir, genangan, longsor), pop-up Situasi, Foto + dummy, Tentang, bagikan, OG `/banjir/k/B0007`, statistik, pemilik berkas.
 
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| K1 tab (8 tab) | SAMA | Peta, Insight, Berita, Tren, Dampak, Simulasi, Foto, Tentang; Posko/Informasi/Metode dan tab lama disembunyikan (A24) |
-| K2 jarak tab | SAMA | |
-| K3 menu bencana | SAMA | Banjir tampil aktif; "Segera" untuk sisanya. Di karhutla Banjir masih "Segera" karena registry `uji` (ikut status) |
-| K4 chip El Nino | D | Chip ENSO milik `lapisan5.js` karhutla; banjir tak punya padanan data |
-| Judul tab, logo, ikon, ID/EN, bagikan, tema, burger | SAMA | |
+## Beda yang sah (D)
 
-## 2. Peta
+Status dari aturan ambang Perka BNPB (bukan model terlatih); hari prakiraan 0..3 menggantikan rentang waktu; tidak ada penanggung
+jawab tunggal lahan (A26) dan cuaca per jam terpisah (A31); simulasi per wilayah administratif.
 
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| P1 dasar satelit | SAMA | |
-| P2 kamera awal | SAMA | setelah pembatasan padding bawah |
-| P3 panel 440 | SAMA | |
-| P4 crumb pil gelap di luar kartu | SAMA | |
-| P5 seg atas + cari | D | seg Status/Hujan/Sungai/Rob/Riwayat + Banjir/Longsor adalah mode bahaya; tak ada chip rentang (data banjir per hari prakiraan) |
-| P6 kepala tabel gelap | SAMA | |
-| P7 kepala bisa diurut | SAMA | |
-| P8 kolom Tren sparkline | D | butuh `seri_status.json` (tidak ada); kolom Awas/Siaga menggantikan |
-| P9 tinggi baris 30px | SAMA | |
-| P10 pil status | SAMA | |
-| P11 kolom kanan 280 | SAMA | |
-| P12 kartu rentang/hari di kolom kanan | SAMA | "Prakiraan banjir (hari)" |
-| P13 seg mode di panel kiri | SAMA | |
-| P14 Overlay berkepala gelap + lipat | SAMA | |
-| P15 judul grup kalimat + chevron | SAMA | |
-| P16 chip BMKG | SAMA | `databaru.js` bersama; karhutla menampilkan chip yang sama bila ada peringatan |
-| P17 legenda dok | D | tiga kolom + baris skala "Hujan 3 hari puncak": isi legenda khas banjir |
-| P18 legenda terlipat pil | SAMA | |
-| P19 laci rincian | SAMA | |
-| P20 kartu hover wilayah/sungai/rob | SAMA | `inti/peta/lapis.js` `kartuTip` |
-| P21 mobile lembar bawah | SAMA | |
-| P22 mobile kartu hari vs chip BMKG | SAMA | tidak bertumpuk lagi |
-| P23 chip LEGENDA | SAMA | |
+## Ketepatan: diakui, belum membaik
 
-## 3. Pop-up Situasi
+Uji balik `validasi.json` (POD/FAR/CSI/PSS/ETS + bootstrap blok): ETS 0,02-0,03, FAR 0,92-0,96, ditampilkan apa adanya. Protokol
+ambang per kabupaten (`ambang_wilayah.py`, RISET-AMBANG-WILAYAH.md:122 "Belum dijalankan") lulus swa-uji tetapi tidak dijalankan:
+DIBI harian 2016-2021 tidak tersedia; `status.py` tetap `i_waspada` 20 dan tidak membaca berkas apa pun. Kejadian aktif memakai skor
+"belum dikalibrasi" tanpa angka tangkapan/presisi.
 
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| S1 eyebrow, judul berangka, chip, daftar provinsi, daftar kecamatan, kaki Sumber + Lihat peta, 1440 dan 390 | SAMA | `inti/sapa.js` + `sapa_banjir.js`; sekali sehari `pb_sapa` |
+## 5 celah terbesar
 
-## 4. Insight
+1. Paket pimpinan (A30, C21, C16, B04): tanpa `ringkasan.json`/dashboard, cerita, galeri kejadian besar.
+2. Bukti ketepatan: prospektif baru mulai 19 Okt (B03), ambang per kabupaten terblokir data (B01/A13), skor kejadian belum dikalibrasi (A14).
+3. Rantai pipeline: `hulu.py`, `unit_respons.py`, `citra_banjir.py`, `bukti_das.py` tidak dipanggil workflow mana pun; `uji` tiga skrip tak terdaftar (E01).
+4. Data sekunder tipis/basi: berita 16 Okt tanpa label uji (A33), video tidak ada (A34), sekolah/faskes 9 provinsi (A29), katalog BNPB/InaRISK tak pernah diperbarui (A01/A38).
+5. Gerbang non-fungsional: tanpa uji otomatis 375 px/INP (C32-C33), `keputusan.js`/`posko.js` tanpa uji (A22/A24), kesetaraan hanya cek runtime (B07); laci kejadian miskin (C12) dan Lapor Warga admin tanpa pemilah bahaya (C36).
 
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Anatomi kartu, pil, judul merah, kaki legenda + Sumber, bagikan | SAMA | |
-| I1 seg di kepala kartu | SAMA | karhutla memakai `.ctl` di kepala juga (Berita sorotan, Dampak); audit lama keliru |
-| I2 mobile seg melebar | SAMA | diperbaiki |
-| I3 404 `kejadian_aktif_awal.json` | SAMA | tak muncul lagi |
+## Rusak / basi
 
-## 5. Tren
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| T1 seg sumber | D | 8 jenis bencana vs 2 sensor; membungkus baris di 390 |
-| T2 bagikan konsisten | SAMA | |
-| T3 select vs judul 390 | SAMA | |
-| T4 tabel standar | SAMA | |
-| Warna biru/La Nina vs oranye/El Nino | D | identitas bahaya |
-| 404 `seri_status.json` | SAMA | tak muncul lagi |
-
-## 6. Simulasi
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| M1 peta penuh + panel kiri melayang | SAMA | |
-| M2 tanpa subjudul | SAMA | |
-| M3 skenario tombol gelap bertitik | SAMA | |
-| M4 slider berkartu | SAMA | |
-| Pemilih Provinsi/Kabupaten, kartu legenda di peta | D | simulasi per wilayah administratif, bukan per kompleks |
-
-## 7. Tentang, Berita, Dampak
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Tentang iframe | SAMA | |
-| Berita (Volume, Peta berita, Sorotan, Topik, Daftar) | SAMA | jarak kartu diperbaiki; kartu sentimen dan garis titik panas tak ada: D (tak ada sentimen/ data pembanding banjir) |
-| Dampak (menu kiri, banner, kartu Insight) | SAMA | satu bagian "Korban dan kerugian": D (hanya data BNPB/DIBI yang ada, A18) |
-
-## 8. Foto
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Galeri, saring, urut, paginasi, kartu `fg-k` | SAMA | |
-| F3 tombol "Ambil foto", kalimat ajakan, alur kirim (Turnstile, EXIF/GPS, batas ukuran, pernyataan) | SAMA | Satu kode: `public/foto.js` diparameterkan lewat `window.FOTO_BENCANA` (disetel `public/banjir/foto.js`), mengirim `bencana=banjir` dan kategori banjir dari server (migrasi 0013). Diuji lokal: kirim dari `/banjir/` tampil di galeri banjir, tidak di karhutla. Tombol "Peta" di rincian tidak ada (banjir belum punya lapisan foto di peta) |
-
-## 9. Kaki, bagikan, jejak
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| F1 kaki Teras Urban di semua tab | SAMA | |
-| F2 dialog bagikan + templat Grafik Insight berpratinjau, Feed/Story/Kotak | SAMA | |
-| Chat Admin, jejak | SAMA | |
-
-## 10. Mobile 390
-
-Tidak ada scroll horizontal; semua tab dibandingkan berdampingan; seg Insight, Dampak, Tren diperbaiki.
-
-## 11. Teks, bahasa, galat
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| X1 `toFixed` titik desimal di teks tampil | SAMA | |
-| X2/X3/X4 sisa Indonesia di EN | SAMA | seluruh tab dan mode peta, pop-up Situasi, laci diperiksa `?lang=en`; sisa hanya judul artikel berita (isi) |
-| X5 em dash, "Anda", ISO mentah | SAMA | 0 |
-| X6 subjudul/penjelas (A1) | SAMA | catatan di laci dibuang |
-| X7/X8 404 data | SAMA | |
-| INP | SAMA | klik mode/tab 10-70 ms sampai dua frame (`nanti()`) |
-
-## Bukti
-
-Uji: `npm run uji:agen`, `npm run uji:warga`, konsol bersih per tab, INP diukur klik-ke-dua-frame.
+- `banjir.yml:164-179`: `URL_STATUS` bawaan menunjuk worker yatim `poskokarhutla.terasurbannetwork.workers.dev`; kesegaran bisa dinilai pada worker yang salah kecuali `vars.URL_STATUS` diset.
+- `unit_respons.py` docstring "bulanan" dan `hulu.py` "dibangun sesudah status.py" tanpa pemanggil (`hulu.json`, dipakai `insight.js:229`, akan basi; `unit_respons.json` hanya 29 unit SAR bernomor).
+- `prakiraan72.json` lokal: `kec_dihitung` 0 padahal `hujan_ansambel.json` 19 Okt ada; `meta.json` lokal `hari_wib` 13 Okt padahal `dibuat` 19 Okt.
+- `.claude/ilmu-agent/banjir.md` memuat klaim usang (rute `/banjir/k/B...` tak dilayani; kini `PATH_K: true`).
+- `scripts/i18n/laporan.json` 15 Okt; 9 dari 14 string baru banjir belum di kamus EN.
+- Live: `/api/status` banjir 4,2 jam (ambang 30), `kejadian_aktif_awal.json` 11 kejadian dibuat 16:14 WIB, `seri_status.json` 3 hari (lokal benih kosong 31 byte).

@@ -28,7 +28,8 @@ jobs:
 
       - name: Uji aturan
         run: |
-          for s in susulan laporan_gempa guncangan; do python3 scripts/gempa/$s.py uji; done
+          # semua skrip gempa yang punya `uji` (11), bukan hanya 4: self-check offline, detik per skrip
+          for s in bahaya batimetri berita bukti dampak guncangan laporan_gempa peluang_gempa riwayat sesar susulan; do python3 scripts/gempa/$s.py uji; done
           if command -v node >/dev/null; then
             python3 scripts/gempa/uji_js_susulan.py
             python3 scripts/gempa/uji_js_guncangan.py
@@ -41,11 +42,14 @@ jobs:
       - name: Laporan harian gempa
         run: python3 scripts/gempa/laporan_gempa.py
 
+      - name: Laju dan peluang gempa
+        run: python3 scripts/gempa/peluang_gempa.py
+
       - name: Commit data gempa ke main
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json"
+          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json public/gempa/data/peluang.json public/gempa/data/laju.json"
           git add $B
           git diff --cached --quiet -- $B && { echo "data gempa tidak berubah"; exit 0; }
           git commit -q -m "data: gempa harian $(TZ=Asia/Jakarta date +%F)" -- $B

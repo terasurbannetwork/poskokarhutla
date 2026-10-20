@@ -109,6 +109,21 @@ uji("jejak: tiap kiriman = satu baris (hari, halaman) yang diperbarui, angka ter
   await DB.prepare("DELETE FROM stat_hari WHERE hal IN ('tentang', 'privasi', 'statistik')").run();   // uji berikutnya menghitung jumlah baris
 });
 
+uji("jejak: tiap id bencana registry TERSIMPAN di stat_hari (CHECK hal tidak menelan diam-diam, migrasi 0017)", async () => {
+  /* INSERT OR IGNORE di statistik.js membuang baris yang melanggar CHECK tanpa galat: 204 tetap keluar, jadi periksa barisnya langsung */
+  const ids = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana.filter(b => b.status !== "mati").map(b => b.id);
+  assert.ok(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].every(i => ids.includes(i)), `registry kehilangan bencana: ${ids}`);
+  try {
+    for (const h of ids) {
+      const sebelum = (await hari(tglWIB(Date.now()), h))?.orang ?? 0;   // karhutla sudah berisi dari uji sebelumnya
+      assert.equal((await jejak({h, o: 1, kv: 1, e: [["tampil", h]]})).status, 204, `halaman ${h} harus diterima`);
+      const r = await hari(tglWIB(Date.now()), h);
+      assert.ok(r, `halaman ${h}: tidak ada baris di stat_hari (CHECK hal menolak diam-diam?)`);
+      assert.equal(r.orang, sebelum + 1, `halaman ${h}: orang bertambah satu`);
+    }
+  } finally { await DB.prepare("DELETE FROM stat_hari WHERE hal != 'karhutla'").run(); }   // uji berikutnya menghitung jumlah baris (hanya karhutla yang tersisa)
+});
+
 uji("jejak: kunci baru di atas 100 per dimensi per hari masuk 'lainnya'", async () => {
   const tgl = tglWIB(Date.now()), r = await hari(tgl), d = JSON.parse(r.dim);
   d.cari = Object.fromEntries(Array.from({length: 100}, (_, i) => ["Wilayah " + i, [1, 0]])); d._n.cari = 100;
@@ -179,7 +194,7 @@ uji("statistik: pengunjung kembali dan aturan 30 menit dari bendera klien", asyn
 });
 
 /* ================================================================ sesi admin */
-uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Strict 12 jam", async () => {
+uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Lax 12 jam", async () => {
   for (const b of [MASUK.replace("sandi=", "sandi=x"), "email=lain%40contoh.id&sandi=" + encodeURIComponent(SANDI), "email=&sandi=", "token=" + encodeURIComponent(TOKEN)]) {
     const salah = await panggil("POST", "/admin/masuk", b, {ip: ipBaru()});
     assert.equal(salah.status, 401, b); assert.equal(salah.h.get("set-cookie"), null, "masuk gagal tidak boleh memberi cookie: " + b);
@@ -188,7 +203,7 @@ uji("masuk: email/sandi salah ditolak, cookie HttpOnly Secure SameSite=Strict 12
   const ok = await panggil("POST", "/admin/masuk", MASUK, {ip: ipBaru()});
   assert.equal(ok.status, 303); assert.equal(ok.h.get("location"), "/admin/statistik");
   const c = ok.h.get("set-cookie");
-  for (const f of ["HttpOnly", "Secure", "SameSite=Strict", "Path=/", "Max-Age=43200"]) assert.ok(c.includes(f), `cookie sesi tanpa ${f}: ${c}`);
+  for (const f of ["HttpOnly", "Secure", "SameSite=Lax", "Path=/", "Max-Age=43200"]) assert.ok(c.includes(f), `cookie sesi tanpa ${f}: ${c}`);
   const kue = c.split(";")[0];
   assert.equal((await panggil("GET", "/api/statistik", undefined, {h: {cookie: kue}})).status, 200, "cookie sesi membuka API");
   const hal = await panggil("GET", "/admin/statistik", undefined, {h: {cookie: kue}});
@@ -362,4 +377,28 @@ uji("cron: retensi statistik 90 hari (publik dikosongkan rinciannya), pesan 180 
   const sis = await hari(tglWIB(Date.now()), "sistem");
   assert.ok(sis && JSON.parse(sis.slot)[slotWIB(Date.now())] >= 1, "slot sekarang ditandai gangguan");
   assert.ok(JSON.parse(sis.dim).basi.titik, "sumber basi tercatat");
+});
+
+uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain lain tetap terbuka", async () => {
+  const buka = (jalur, h = {}) => mf.dispatchFetch("https://centurisk97.id" + jalur, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, ...h}});
+  const r = await buka("/peta?x=1");
+  assert.equal(r.status, 303); assert.equal(r.headers.get("location"), "/admin/masuk?ke=%2Fpeta%3Fx%3D1");
+  assert.equal((await buka("/f/0123456789abcdef")).status, 303, "tautan foto ikut terkunci");
+  assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
+  const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
+  const tf = await f.text(); assert.match(tf, /action="\/admin\/masuk\?ke=%2Fpeta"/); assert.match(tf, /<h1>Centurisk 97<\/h1>/, "merek Centurisk 97 di centurisk97.id");
+  assert.match((await panggil("GET", "/admin/masuk")).teks, /<h1>Pantau Bencana<\/h1>/, "domain lain tetap Pantau Bencana");
+  const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
+    headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
+  assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
+  const kue = ok.headers.get("set-cookie").split(";")[0];
+  const hl = await buka("/peta", {cookie: kue}); assert.equal(hl.status, 200, "sesi membuka halaman");
+  /* centurisk97.id = situs Centurisk97 seperti *.workers.dev: data-situs=w (tanpa Tentang & Chat Admin, data perusahaan), judul tidak diganti (19 Okt 2026) */
+  const th = await hl.text(); assert.match(th, /<html[^>]* data-situs="w"/); assert.match(th, /<title>Centurisk97<\/title>/); assert.doesNotMatch(th, /<title>Pantau Bencana/);
+  assert.doesNotMatch(th, /<meta [^>]*content="[^"]*Pantau Bencana|alt="Pantau Bencana"|title="Pantau Bencana"/, "meta, logo: Centurisk97");
+  for (const ke of ["//jahat.id", "/\\jahat.id", "https://jahat.id"]) {
+    const x = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=" + encodeURIComponent(ke), {method: "POST", redirect: "manual", body: MASUK,
+      headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded"}});
+    assert.equal(x.headers.get("location"), "/admin/statistik", "tujuan luar ditolak: " + ke);
+  }
 });

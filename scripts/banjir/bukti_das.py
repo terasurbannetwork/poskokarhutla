@@ -3,6 +3,7 @@
 Pakai:  python3 scripts/banjir/bukti_das.py            # bangun semua daerah -> public/banjir/data/bukti/{index,<slug>}.json
         python3 scripts/banjir/bukti_das.py bangun "32|Bogor,11|Aceh Selatan"   # hanya kabupaten itu (kunci "prov|kab", dipisah koma)
         python3 scripts/banjir/bukti_das.py lengkapi    # hitung ulang bidang turunan (korelasi, tumpuk, % kabupaten, sumber) tanpa jaringan
+        python3 scripts/banjir/bukti_das.py subdas      # sub-DAS penyusun + irisan sel hujan 0,25 derajat (bobot scripts/banjir/hulu.py)
         python3 scripts/banjir/bukti_das.py uji         # invarian berkas hasil + uji fungsi murni (luring)
 Lalu  python3 scripts/banjir/citra_banjir.py            # menambah citra sebelum-sesudah ke berkas yang sama
 
@@ -652,6 +653,89 @@ def lengkapi():
     print(f"lengkapi: {len(ds)} daerah", file=sys.stderr)
 
 
+SEL_HUJAN = 0.25   # kisi hujan.json (scripts/banjir/hujan.py)
+DY_SUB = 0.005     # langkah scanline lintang untuk luas irisan sub-DAS x sel / konsesi
+
+
+def iris_sel(garis, dy=DY_SUB, sel=SEL_HUJAN):
+    """luas (km2) poligon yang jatuh di tiap sel kisi `sel` derajat -> {(lat_pusat, lon_pusat): km2}; scanline tiap `dy` derajat"""
+    out = collections.defaultdict(float)
+    y = garis.bbox[1] + dy / 2
+    while y < garis.bbox[3]:
+        w = dy * 110.574 * 111.32 * math.cos(math.radians(y))
+        la = (math.floor(y / sel) + 0.5) * sel
+        for lo, hi in garis.rentang(y):
+            x = lo
+            while x < hi:
+                b = (math.floor(x / sel + 1e-9) + 1) * sel
+                out[(round(la, 3), round((math.floor(x / sel + 1e-9) + 0.5) * sel, 3))] += (min(b, hi) - x) * w
+                x = min(b, hi)
+        y += dy
+    return dict(out)
+
+
+def satukan(a):
+    """gabungan interval real (tanpa celah +1 seperti `gabung` piksel)"""
+    out = []
+    for lo, hi in sorted(a):
+        if out and lo <= out[-1][1]:
+            out[-1] = (out[-1][0], max(out[-1][1], hi))
+        else:
+            out.append((lo, hi))
+    return out
+
+
+def luas_irisan(a, bs, dy=DY_SUB):
+    """km2 irisan Garis `a` dengan gabungan daftar Garis `bs` (poligon bertumpuk dihitung sekali; scanline)"""
+    bs = [b for b in bs if b.bbox[2] >= a.bbox[0] and b.bbox[0] <= a.bbox[2] and b.bbox[3] >= a.bbox[1] and b.bbox[1] <= a.bbox[3]]
+    if not bs:
+        return 0.0
+    y0, y1 = max(a.bbox[1], min(b.bbox[1] for b in bs)), min(a.bbox[3], max(b.bbox[3] for b in bs))
+    tot, y = 0.0, y0 + dy / 2
+    while y < y1:
+        u = satukan([r for b in bs for r in b.rentang(y)])
+        tot += sum(h - l for l, h in potong(a.rentang(y), u)) * dy * 110.574 * 111.32 * math.cos(math.radians(y))
+        y += dy
+    return tot
+
+
+def subdas():
+    """Isi `subdas` di tiap <slug>.json: sub-DAS HydroBASINS penyusun DAS hulu, luas irisannya dengan sel hujan 0,25 derajat
+    (bobot untuk scripts/banjir/hulu.py), konsesi per sub-DAS, kecamatan terdekat sebagai nama, dan penanda sel hutan hilang terbanyak.
+    Butuh zip HydroBASINS di data/raw/banjir/das (lihat RISET-BUKTI.md); tanpa Hansen/jaringan lain."""
+    idx = json.load(open(os.path.join(KELUAR, "index.json")))
+    titik = baca_json("public/banjir/data/pusat_kec.json")
+    attr, _ = indeks_basin({})
+    assert attr, "zip HydroBASINS tidak ada di data/raw/banjir/das"
+    for e in idx["daerah"]:
+        jalur = os.path.join(KELUAR, e["slug"] + ".json")
+        d = json.load(open(jalur))
+        ids = hulu(attr, d["keluaran"]["id"])
+        rings = collections.defaultdict(list)
+        for pp, rr in lintas_zip():
+            if rr and int(pp["hybas_id"]) in ids:
+                rings[int(pp["hybas_id"])] += rr
+        kons = [(pr["jenis"], Garis(rr)) for pr, rr in konsesi_dalam(d["das"]["bbox"])]
+        th = d.get("titik_hilang")
+        hasil = []
+        for i in sorted(ids):
+            g = Garis(rings[i])
+            sel = iris_sel(g, min(DY_SUB, (g.bbox[3] - g.bbox[1]) / 60))   # sub-DAS kecil: baris lebih rapat
+            bb = g.bbox
+            cy, cx = (bb[1] + bb[3]) / 2, (bb[0] + bb[2]) / 2
+            kec = min(titik, key=lambda k: (titik[k][0] - cy) ** 2 + (titik[k][1] - cx) ** 2)
+            ha = {j: luas_irisan(g, [kg for jj, kg in kons if j == "semua" or jj == j]) * 100 for j in JENIS + ("semua",)}
+            hasil.append({"id": i, "km2": round(attr[i][1], 1), "hulu_km2": round(attr[i][2]), "keluaran": i == d["keluaran"]["id"],
+                          "lat": round(cy, 3), "lon": round(cx, 3), "kec": kec.split("|")[2], "kab": kec.split("|")[1], "prov": kec.split("|")[0],
+                          "konsesi_ha": {j: round(v) for j, v in sorted(ha.items()) if v >= 1},
+                          "titik_hilang": bool(th) and di_dalam(th[1], th[0], rings[i]),
+                          "sel": [[la, lo, round(v, 2)] for (la, lo), v in sorted(sel.items()) if v >= 0.01]})
+        d["subdas"] = sorted(hasil, key=lambda s: -s["km2"])
+        validasi(d)
+        simpan(jalur, d)
+        print(f"subdas {e['slug']}: {len(hasil)} sub-DAS, {sum(len(s['sel']) for s in hasil)} irisan sel", file=sys.stderr)
+
+
 def bangun(pilihan=None):
     titik = baca_json("public/banjir/data/pusat_kec.json")
     print("indeks HydroBASINS ...", file=sys.stderr)
@@ -667,8 +751,11 @@ def bangun(pilihan=None):
     for kab, kid, kec, alasan in daftar:
         d = daerah(kab, kid, kec, alasan, attr, titik)
         lama = os.path.join(KELUAR, d["slug"] + ".json")
-        if os.path.exists(lama):  # pertahankan citra yang sudah dibuat citra_banjir.py
-            d["citra"] = json.load(open(lama)).get("citra")
+        if os.path.exists(lama):  # pertahankan citra (citra_banjir.py) dan subdas (`subdas`, jalankan ulang bila DAS berubah)
+            lm = json.load(open(lama))
+            d["citra"] = lm.get("citra")
+            if lm.get("subdas") and lm["keluaran"]["id"] == d["keluaran"]["id"]:
+                d["subdas"] = lm["subdas"]
         validasi(d)
         simpan(lama, d)
         idx_lama[kab] = ringkas_indeks(d)
@@ -720,6 +807,19 @@ def validasi(d):
         assert kr["bisa"] == (kr["r"] is not None), f"{k}: bisa={kr['bisa']} tetapi r={kr['r']}"
         assert kr["bisa"] or (kr["total_kejadian"] < 30 or kr["tahun_berkejadian"] < 8 or kr["r"] is None), f"{k}: r ditahan padahal data cukup"
         assert kr["n"] == len([y for y in d["kejadian"] if kr["dari"] <= int(y) <= kr["sampai"]]), f"{k}: n {kr['n']} != tahun bercatat (tahun tanpa catatan tak boleh diisi 0)"
+    sd = d.get("subdas")
+    if sd:
+        jml = sum(s["km2"] for s in sd)
+        assert abs(jml - d["das"]["luas_km2"]) <= max(2, 0.02 * jml), f"{k}: jumlah luas sub-DAS {jml:.0f} km2 != luas DAS {d['das']['luas_km2']} km2"
+        assert sum(s["keluaran"] for s in sd) == 1, f"{k}: sub-DAS keluaran harus tepat satu"
+        for s in sd:
+            ir = sum(c[2] for c in s["sel"])
+            assert 0.85 * s["km2"] - 1 <= ir <= 1.15 * s["km2"] + 1, f"{k}: sub-DAS {s['id']}: irisan sel {ir:.1f} km2 vs luas {s['km2']} km2"
+            assert all(v <= s["km2"] * 105 for v in s["konsesi_ha"].values()), f"{k}: konsesi satu jenis di sub-DAS {s['id']} > luasnya"
+            assert all(v <= s["konsesi_ha"].get("semua", 0) + 1 for v in s["konsesi_ha"].values()), f"{k}: konsesi satu jenis > semua di sub-DAS {s['id']}"
+        ks = sum(s["konsesi_ha"].get("semua", 0) for s in sd)
+        kt = d["konsesi"]["semua"]["luas_ha"]   # beda metode (cuplikan Hansen 120 m vs scanline 0,005 derajat): selisih ~10% wajar
+        assert 0.85 * kt - 30 <= ks <= kt * 1.1 + 20, f"{k}: konsesi seluruh sub-DAS {ks} ha jauh dari konsesi DAS {kt} ha"
     s1 = (d.get("citra") or {}).get("s1")
     if s1:
         assert s1["sesudah"]["tgl"] >= s1["kejadian"]["tanggal"], f"{k}: citra S1 'sesudah' {s1['sesudah']['tgl']} lebih awal dari kejadian {s1['kejadian']['tanggal']}"
@@ -748,6 +848,13 @@ def uji():
     assert korelasi({"2012": 40}, {})["n"] == 1, "tahun tanpa catatan tidak boleh diisi 0"
     assert abs(r_kritis(14) - 0.53) < 0.01, f"r_kritis(14) = {r_kritis(14)}"
     assert peringkat([5, 5, 1]) == [2.5, 2.5, 1.0], "peringkat berikat"
+    sl = iris_sel(Garis([kotak(100.1, 0.1, 100.4, 0.2)]))   # 0,3 x 0,1 derajat melintasi batas sel 100,25
+    assert set(sl) == {(0.125, 100.125), (0.125, 100.375)}, f"iris_sel: sel salah {sl}"
+    assert abs(sl[(0.125, 100.125)] / sl[(0.125, 100.375)] - 1) < 0.01, f"iris_sel: 0,15 vs 0,15 derajat harus sama luas {sl}"
+    assert abs(sum(sl.values()) - 0.3 * 0.1 * 110.574 * 111.32) < 1, f"iris_sel: total {sum(sl.values())}"
+    tumpuk = [Garis([kotak(0.5, 0, 2, 1)]), Garis([kotak(0.6, 0, 0.9, 1)])]   # poligon kedua di dalam yang pertama: tidak dihitung dua kali
+    assert abs(luas_irisan(Garis([kotak(0, 0, 1, 1)]), tumpuk) - 0.5 * 110.574 * 111.32) < 5, "luas_irisan: gabungan bertumpuk harus setengah kotak"
+    assert satukan([(3, 4), (0, 1), (0.5, 2)]) == [(0, 2), (3, 4)], "satukan"
     # penolakan masukan salah
     jalur = os.path.join(KELUAR, "index.json")
     if not os.path.exists(jalur):
@@ -792,6 +899,9 @@ if __name__ == "__main__":
         uji()
     elif a[:1] == ["lengkapi"]:
         lengkapi()
+        uji()
+    elif a[:1] == ["subdas"]:
+        subdas()
         uji()
     else:
         bangun(set(a[1].split(",")) if a[:1] == ["bangun"] and len(a) > 1 else None)

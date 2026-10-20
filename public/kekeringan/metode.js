@@ -19,7 +19,21 @@ const Metode = {
     if (J?.aturan) o.push(kartu("Uji balik", `Uji balik ${esc((J.periode || []).join("–"))} apa adanya${A ? `: model cadangan ENSO BSS ${Kartu.hl(F3m(A.bss))}` : ""}`, tabel(["Bagian", "Hasil"],
       [["Aturan SPI-3", "dibandingkan dengan tahun kering yang dikenal (2015, 2019, 2023) dan tahun netral; hanya tahun yang melebihi rentang tahun netral disebut menonjol"],
        ...(A ? [["Model cadangan", `bersyarat fase ENSO, BSS ${F3m(A.bss)} (nol = sama dengan klimatologi); BSS rerata per tahun ${F3m(J.prospek.bss_rerata_tahun)}, positif pada ${fmt(J.prospek.tahun_bss_positif)} dari ${fmt(J.prospek.n_tahun)} tahun`]] : []),
-       ["Batas", esc(J.catatan || "")], ...(J.bnpb?.ada === false ? [["Kejadian BNPB", esc(J.bnpb.alasan || "")]] : []), ["SEAS5", "tidak termasuk dalam uji ini"]]), "Pantau Bencana"));
+       ["Batas", esc(J.catatan || "")], ...(J.kejadian ? [["Kejadian DIBI", esc(`${J.kejadian.dibi_dalam_periode} kejadian kering ${J.kejadian.periode_data.map(blnIso).join(" sampai ")} dicocokkan per kabupaten-bulan dengan tingkat SPI-3 (${J.kejadian.dibi_cocok} dari ${J.kejadian.dibi_total} cocok nama kabupaten). Ambang pada bagian ini tidak disetel; penyetelan terpisah ada di kartu Penyetelan (latih Okt 2023 sampai Des 2024, uji Jan 2025 sampai Agu 2026). Tanah dan HTH tak punya riwayat harian. SPI-3 pada bulan kejadian adalah diagnosis serentak, bukan prakiraan. Alarm palsu batas atas karena DIBI hanya mencatat laporan.`)], ["Kriteria layak", esc(`POD ${J.kejadian.kriteria_layak.pod_min} atau lebih, FAR ${J.kejadian.kriteria_layak.far_maks} atau kurang, CSI ${J.kejadian.kriteria_layak.csi_lipat_acak} kali alarm acak atau lebih, di setiap periode; ditetapkan sebelum angka dilihat.`)], ["Vonis", esc(J.kejadian.vonis?.layak ? "Lolos: label hipotesis dilepas." : J.kejadian.vonis?.alasan || "")]] : J.bnpb?.ada === false ? [["Kejadian BNPB", esc(J.bnpb.alasan || "")]] : []), ["SEAS5", "tidak termasuk dalam uji ini"]]), "Pantau Bencana"));
+    /* penyetelan ambang (ambang.py, RISET-AMBANG.md): dipilih di periode latih, diuji sekali; angka apa adanya */
+    const T = J?.kejadian?.setel;
+    if (T?.hasil?.terpilih) {
+      const pc = x => x == null ? "–" : fmt(Math.round(x * 100)) + "%", ci = v => v ? ` (${pc(v[0])}–${pc(v[1])})` : "";
+      const nama = k => { const c = (T.kandidat || []).find(x => x.kode === k); return c ? esc((T.keluarga?.[c.keluarga] || k).replaceAll("<= t", "≤ " + String(c.t).replace(".", ",").replace("-", "−"))) : esc(k); };
+      const bar = (lab, k, s, c) => [lab, nama(k), pc(s.pod) + ci(c?.pod), pc(s.far) + ci(c?.far), F3m(s.csi) + (c?.csi ? ` (${F3m(c.csi[0])}–${F3m(c.csi[1])})` : ""), F3m(s.csi_acak)];
+      const H2 = T.hasil.terpilih, S0 = T.hasil.sekarang, L = T.latih.map(blnIso).join(" sampai "), U = T.uji.map(blnIso).join(" sampai ");
+      o.push(kartu("Penyetelan", `Ambang baru dipilih dari ${fmt(T.kandidat_n)} kandidat dan diuji sekali: ${Kartu.hl(T.vonis?.layak ? "lolos" : "belum layak")}${T.vonis?.layak ? "" : ", status tetap memakai ambang sekarang"}`, tabel(["Aturan", "Isi", "Tertangkap (POD)", "Alarm palsu (FAR)", "CSI", "CSI alarm acak"],
+        [bar(`Terpilih, latih ${L}`, H2.kode, H2.latih), bar(`Terpilih, uji ${U}`, H2.kode, H2.uji, H2.uji_selang95), bar(`Sekarang, latih ${L}`, S0.kode, S0.latih), bar(`Sekarang, uji ${U}`, S0.kode, S0.uji, S0.uji_selang95)], "n num") +
+        tabel(["Bagian", "Keterangan"], [["Cara", `kandidat dipilih dari CSI tertinggi pada ${L}; skor uji ${U} hanya dihitung untuk aturan terpilih dan aturan sekarang; selang 95% dari ${fmt(T.bootstrap?.ulang)} cuplikan ulang bulan`],
+          ["Kandidat", esc(Object.values(T.keluarga || {}).map(x => x.replaceAll("<=", "≤")).join("; ") + `; t = ${(T.ambang_t || []).map(x => String(x).replace(".", ",").replace("-", "−")).join(", ")}; pemilihan tidak dikoreksi untuk banyaknya percobaan`)],
+          ["Kriteria layak", "POD 50% atau lebih, alarm palsu 80% atau kurang, CSI 2 kali alarm acak atau lebih, dan batas bawah selang CSI di atas alarm acak, di periode uji; ditetapkan sebelum angka dilihat"],
+          ["Vonis", esc(T.vonis?.alasan || "")]]), "Pantau Bencana; DIBI BNPB; NASA POWER"));
+    }
     if (B) o.push(kartu("Bukti", "Bukti gambut dan kabupaten kandidat sering kering, beserta batasnya", tabel(["Bagian", "Keterangan"],
       [...(B.gambut ? [["Gambut konsesi", esc(B.gambut.catatan || "kompleks konsesi berlahan gambut di sel kekeringan Siaga atau Awas, tanpa nama perusahaan")]] : []),
        ...(B.berulang ? [["Sering kering", esc(B.berulang.catatan || "")], ["Tampungan", esc((B.berulang.embung_sumber || "") + ". Nol bukan bukti kekurangan karena peta OSM tidak lengkap")]] : [])]), "Pantau Bencana; OpenStreetMap; InaRISK BNPB"));
@@ -33,7 +47,7 @@ const Metode = {
     const kartu = (ey, judul, isi, sumber) => Kartu.ex(judul, "", "", isi, "Sumber: " + sumber).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${ey}</span>`);
     $("#metode").innerHTML =
       kartu("Status", `Status wilayah dihitung sendiri: ${Kartu.hl("Deteksi Pantau Bencana")}`, tabel(["Tingkat", "SPI-3", "Kelembapan tanah (persentil)"],
-        [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2, dan butuh penguat: tanah ≤ 10 atau SPI-6 ≤ −1,5", "≤ 10 (penguat)"]], "n num"), "ambang Pantau Bencana, belum diuji balik; tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga") +
+        [[pill(1), "≤ −1", "≤ 20"], [pill(2), "≤ −1,5", "≤ 10"], [pill(3), "≤ −2, dan butuh penguat: tanah ≤ 10 atau SPI-6 ≤ −1,5", "≤ 10 (penguat)"]], "n num"), `ambang Pantau Bencana, ${AMBANG_PIL().toLowerCase()} (lihat Uji balik); tanah menaikkan status paling banyak satu tingkat dari SPI-3, dan tanah saja paling tinggi Siaga`) +
       kartu("Hujan", `SPI-3 dari hujan bulanan 1991–2020${sp ? `, sampai ${bulanPanjang(sp.bulan)} di ${fmt(sp.sel)} sel` : ""}`, tabel(["Bahan", "Keterangan"],
         [["Hujan", "NASA POWER (MERRA-2), jumlah tiga bulan dibanding sebaran gamma 1991–2020"], ["Jeda data", "sekitar enam minggu; bulan terakhir yang terisi di hampir semua sel"], ["Dibuang", "sel yang rata-rata tiga bulannya di bawah 50 mm (SPI tak bermakna)"]]), "NASA POWER; McKee 1993; BMKG hanya menerbitkan peta gambar") +
       kartu("Tanah", `Kelembapan tanah 7–28 cm: ${Kartu.hl(fmt(M.tanah.sel))} sel sudah berpersentil`, tabel(["Bahan", "Keterangan"],
@@ -42,5 +56,6 @@ const Metode = {
         [["Rendah", "< 80"], ["Sedang", "80–189"], ["Tinggi", "190–299"], ["Sangat tinggi", "300–424"], ["Ekstrem", "≥ 425"]], "n num"), "Canadian Forest Fire Danger Rating System") +
       kartu("Wilayah", `Kabupaten/kota naik tingkat bila ${Kartu.hl("30%")} penduduknya di kecamatan bertingkat itu`, tabel(["Bahan", "Keterangan"],
         [["Kecamatan", "tingkat sel 0,5° terdekat dari titik tengah kecamatan"], ["Jiwa", `WorldPop, ${rb(N.total)} jiwa`], ["Status resmi", "status gabungan kami bukan status resmi; BMKG tidak menerbitkan data terstruktur. SK status darurat BNPB tampil terpisah di pop-up wilayah"]]), "WorldPop; BMKG") + this.baru(tabel, kartu);
+    if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { const h = d && Peluang.batasan(d, {judul: "Peluang kekeringan"}); if (h) $("#metode")?.insertAdjacentHTML("beforeend", h.replace(/<b>0\. /, "<b>")); });
  },
 };

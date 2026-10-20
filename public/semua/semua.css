@@ -2,21 +2,14 @@
 :root{--lp:12px;--tw:12px}
 *{box-sizing:border-box}
 html,body{margin:0}
-body{background:var(--paper);color:var(--ink);font:14.5px/1.5 var(--font);letter-spacing:-.006em;-webkit-font-smoothing:antialiased}
 h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
 button{font:inherit;color:inherit}
-.lbl{font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.08em;color:var(--ink2)}
 :focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:6px}
 a{color:inherit}
 
-header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;justify-content:space-between;gap:12px;padding:0 14px;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+header.top{justify-content:space-between}
 .mark{display:flex;align-items:center;gap:10px;min-width:0}
 .stat{display:flex;align-items:center;gap:8px;flex:none}
-.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
-.iconbtn:hover{background:oklch(100% 0 0 / .22)}
-.toast{position:fixed;right:16px;bottom:16px;z-index:50;background:var(--ink);color:var(--paper);padding:10px 14px;border-radius:12px;box-shadow:var(--shadow-lg);font-size:13px;display:none}
-.toast.on{display:block}
 
 main{padding-top:var(--top)}
 .peta-bagian{position:relative;height:calc(100dvh - var(--top) - 120px);min-height:420px}
@@ -60,5 +53,47 @@ main{padding-top:var(--top)}
 .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 .ex-ft em{font-style:italic;opacity:.9}
 
+/* kartu analisis (lebar penuh, bertumpuk) */
+.analisis{max-width:1240px;margin:0 auto;padding:0 18px 60px;display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}
+.analisis:empty{display:none}
+.analisis .ex-hd{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:8px 16px}
+.analisis .ex-jd{flex:1 1 100%}
+.analisis .ctl{margin-left:auto}
+.analisis .ex-bd svg{display:block;width:100%;height:auto;overflow:visible}
+.analisis .tw{overflow-x:auto}
+.analisis .gy{transform-box:fill-box;transform-origin:left;animation:tumbuh .5s cubic-bezier(.2,.7,.2,1) both;animation-delay:calc(var(--i,0) * 30ms)}
+@keyframes tumbuh{from{opacity:0;transform:scaleX(.6)}}
+@media (prefers-reduced-motion:reduce){.analisis .gy{animation:none}}
+.hm-w{overflow-x:auto;margin:0 -6px}
+table.hm{border-collapse:separate;border-spacing:3px;width:100%;min-width:680px;font-size:12px}
+.hm thead th{background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.05em;padding:6px 4px;border-radius:6px;text-align:center;line-height:1.2}
+.hm thead th:first-child{text-align:left;padding-left:10px;width:120px}
+.hm thead small{display:block;font-weight:600;opacity:.8;letter-spacing:0}
+:root[data-theme="dark"] .hm thead th{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .hm thead th{color:oklch(18% .035 256)}}
+.hm tbody th{text-align:left;font-weight:700;font-size:12.5px;padding:0 8px;white-space:nowrap}
+.hm-c{text-align:center;font-weight:800;font-size:11px;height:34px;border-radius:6px}
+.hm-c.ek{opacity:.72}
+.hm-n{background:linear-gradient(var(--surface),var(--surface)) center/100% 4px no-repeat}
+@media (max-width:640px){.hm-c{font-size:10px}}
+.hm-tetap{white-space:nowrap;background:var(--surface);border-radius:6px;padding:0 12px;height:34px;font-weight:600}
+.hm-p{text-align:center;height:34px}
+.hm-p span{display:inline-block;white-space:nowrap;min-width:28px;padding:3px 8px;border-radius:999px;background:color-mix(in oklch,var(--info) 22%,transparent);color:var(--brand2);font-weight:800;font-size:11.5px}
+.cara{grid-column:1/-1;margin-bottom:0}
+.cara .mt-isi{padding-top:6px}
+.mt-ul{margin:0 0 6px;padding-left:18px;font-size:13px;line-height:1.5;color:var(--ink)}
+.mt-ul li{margin:2px 0}
+.cara .mt-lbl{margin-top:6px}
+@media (max-width:640px){.analisis{padding:0 12px 40px}.ex-hd{padding:14px 16px 12px}.ex-bd{padding:14px 12px 8px}.ex h3{font-size:18px}.ex-ft{padding:10px 16px 14px}}
 @media (max-width:900px){.dok{left:12px;right:12px;top:auto;bottom:8px}.lg-isi{max-height:90px}.peta-bagian{height:calc(100dvh - var(--top) - 80px);min-height:380px}}
 @media (max-width:640px){.saring{right:12px;flex-wrap:nowrap;overflow-x:auto;scrollbar-width:none}.maplibregl-ctrl-top-right{top:52px}}
+/* laporan kejadian: tabel standar (kepala gelap, teks kiri, angka kanan), tanpa memuat inti/tabel.css yang global */
+.kj-tw{overflow-x:auto;border-radius:var(--r,12px);border:1px solid var(--line)}
+.kj-tb{border-collapse:collapse;width:100%;font-size:12.5px}
+.kj-tb thead th{background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:9px 10px;text-align:left;white-space:nowrap}
+:root[data-theme="dark"] .kj-tb thead th{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .kj-tb thead th{color:oklch(18% .035 256)}}
+.kj-tb td{padding:8px 10px;border-bottom:1px solid var(--line);white-space:nowrap}
+.kj-tb .n{text-align:right}
+.kj-tb a{color:var(--brand2);font-weight:700}
+.kj-tb thead th button{all:unset;cursor:pointer;display:inline-flex;gap:4px;align-items:center}

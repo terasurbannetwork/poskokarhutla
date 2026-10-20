@@ -170,6 +170,11 @@ def periksa(d):
                 g.append(f"prov {kp} metrik {k} hari ke-{j}: jumlah kab {v:g} melebihi nilai prov {pv:g}")
                 break
 
+    # fokus (opsional): laporan satu kab/kota (laporan kejadian), layar menampilkan seri kab itu sebagai ringkasan
+    fk = d.get("fokus")
+    if fk is not None and not any(isinstance(o, dict) and o.get("kode") == fk for o in kab):
+        g.append(f"fokus {fk!r} tidak ada di kab")
+
     # sorot
     so = d.get("sorot", [])
     if not isinstance(so, list) or len(so) > 8:
@@ -301,12 +306,12 @@ def dari_kejadian(baris, hari, metrik_spec):
     return nas, prov, kab
 
 
-def tulis(id, d):
-    """periksa dulu; galat -> ValueError berisi semuanya. Simpan ke public/<id>/data/laporan.json."""
+def tulis(id, d, jalur=None):
+    """periksa dulu; galat -> ValueError berisi semuanya. Simpan ke `jalur` (bawaan public/<id>/data/laporan.json)."""
     g = periksa(d)
     if g:
         raise ValueError(f"laporan {id} ditolak ({len(g)} galat):\n- " + "\n- ".join(g))
-    jalur = os.path.join(AKAR, "public", id, "data", "laporan.json")
+    jalur = jalur or os.path.join(AKAR, "public", id, "data", "laporan.json")
     if _simpan is not None:
         _simpan.simpan_json(jalur, d)
     else:
@@ -359,6 +364,10 @@ def uji():
     tolak(lambda x: x.update(sorot=[x["sorot"][0]] * 9), "maks 8")
     tolak(lambda x: x.update(tambahan=[{"id": "a", "judul": "j", "kolom": ["a", "b"], "baris": [[1]]}]), "jumlah kolom")
     tolak(lambda x: x["sumber"].append("polos"), "sumber[1]")
+    tolak(lambda x: x.update(fokus="9999"), "fokus")
+    x = copy.deepcopy(d)
+    x["fokus"] = "7203"
+    assert periksa(x) == []
     x = copy.deepcopy(d)  # netral boleh negatif
     x["metrik"][1]["arah"] = "netral"
     x["nasional"]["mag"][0] = -2

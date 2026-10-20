@@ -83,7 +83,7 @@ const Dampak = (() => {
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id)?.nama || id;
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
       hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao} · ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
-      "Skenario Pantau Bencana, bukan advisory VAAC. Sumber: model abu Pantau Bencana, OurAirports"); }
+      "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Pantau Bencana, OurAirports"); }
   const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};
   /* kontrol (segmen, pilihan gunung) tetap di tempat: hanya judul, isi, dan kaki yang diganti; pekerjaan berat sesudah paint */

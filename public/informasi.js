@@ -70,7 +70,7 @@
     akar.innerHTML = `
       <div class="lw-peta" id="lwPeta" role="application" aria-label="Peta laporan warga"></div>
       <div class="lw-judul"><span class="lw-logo">${svg(UI.logo, 18, 2.2)}</span><b>Lapor Warga</b><span class="lw-sub">Warga Bantu Warga</span>
-        <label class="lw-bahaya"><span class="sr">Jenis bencana</span><select id="lwBahaya">${Object.entries(K.BAHAYA).map(([k, n]) => `<option value="${k}">${n}</option>`).join("")}</select></label></div>
+        <label class="lw-bahaya"><span class="sr">Jenis bencana</span><select id="lwBahaya">${Object.entries(K.BAHAYA).map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join("")}</select></label></div>
       <div class="lw-kiri" id="lwKiri" role="toolbar" aria-label="Saring jenis laporan"></div>
       <div class="lw-kanan" role="toolbar" aria-label="Alat peta">
         <button class="lw-bulat" id="lwBantu" aria-label="Bantuan dan keterangan" title="Bantuan">${svg(UI.bantu)}</button>
@@ -294,7 +294,7 @@
       `<label class="lw-opsi"><input type="${tipe}" name="${nama}" value="${esc(k)}" ${wajib && tipe === "radio" ? "required" : ""} ${awal[nama] === k ? "checked" : ""}><span>${esc(Array.isArray(n) ? n[0] : n)}</span></label>`).join("")}</div>`;
     bukaPanel("form", `<form class="lw-form" id="lwForm" novalidate>
       <div class="lw-p-kepala">${chip(jenis, 24)}<div><h3>${awal.induk ? "Perbarui status: " : ""}${esc(J.nama)}</h3><p>${awal.induk ? "Status baru di titik yang sama" : "Laporan baru"}</p></div></div>
-      <label class="lw-medan">Bencana<select name="bahaya" ${bahayaBoleh.length === 1 ? "disabled" : ""}>${bahayaBoleh.map(b => `<option value="${b}" ${b === bahaya ? "selected" : ""}>${K.BAHAYA[b]}</option>`).join("")}</select></label>
+      <label class="lw-medan">Bencana<select name="bahaya" ${bahayaBoleh.length === 1 ? "disabled" : ""}>${bahayaBoleh.map(b => `<option value="${b}" ${b === bahaya ? "selected" : ""}>${esc(K.BAHAYA[b])}</option>`).join("")}</select></label>
       <fieldset><legend>Kondisi <span class="lw-wajib">wajib</span></legend>${pilihan("sub", J.sub, "radio", true)}</fieldset>
       ${Object.entries(J.isian || {}).map(([k, s]) => `<fieldset><legend>${esc(s.label)}${s.wajib ? ' <span class="lw-wajib">wajib</span>' : ""}</legend>${s.tipe === "ya" ? `<label class="lw-opsi"><input type="checkbox" name="${k}"><span>Ya</span></label>` : pilihan(k, s.nilai, s.tipe === "multi" ? "checkbox" : "radio", s.wajib)}</fieldset>`).join("")}
       ${J.jumlah ? `<label class="lw-medan">${esc(J.jumlah)}<input type="number" name="jumlah" min="1" max="100000" inputmode="numeric"></label>` : ""}
@@ -358,7 +358,7 @@
     }
     const baris = [...per.entries()].filter(([, r]) => r.n).sort((a, b) => b[1].n - a[1].n).slice(0, 25);
     const tot = Object.fromEntries(KOLOM.map(([k]) => [k, baris.reduce((a, [, r]) => a + (r[k] || 0), 0)]));
-    bukaPanel("ringkas", `<div class="lw-p-kepala"><div><h3>Ringkasan ${lv === "kab" ? "kabupaten/kota" : "kecamatan"}</h3><p>Laporan aktif di area peta, ${RENTANG.find(x => x[0] === S.jam)[2]} terakhir · ${K.BAHAYA[S.bahaya]}</p></div></div>
+    bukaPanel("ringkas", `<div class="lw-p-kepala"><div><h3>Ringkasan ${lv === "kab" ? "kabupaten/kota" : "kecamatan"}</h3><p>Laporan aktif di area peta, ${RENTANG.find(x => x[0] === S.jam)[2]} terakhir · ${esc(K.BAHAYA[S.bahaya])}</p></div></div>
       <div class="lw-pil" role="group" aria-label="Tingkat wilayah"><button class="lw-btn" data-lv="kab" aria-pressed="${lv === "kab"}">Kab/Kota</button><button class="lw-btn" data-lv="kec" aria-pressed="${lv === "kec"}">Kecamatan</button></div>
       <div class="lw-angka">${KOLOM.map(([k, n]) => `<div><b>${k === "api" ? `${tot.api}` : tot[k]}</b><span>${n}</span></div>`).join("")}</div>
       ${baris.length ? `<div class="lw-tabel"><table><thead><tr><th>Wilayah</th>${KOLOM.map(([, n]) => `<th>${n}</th>`).join("")}</tr></thead><tbody>${baris.map(([nama, r]) =>

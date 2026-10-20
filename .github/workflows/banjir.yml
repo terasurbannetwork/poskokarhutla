@@ -17,7 +17,9 @@ permissions:
 jobs:
   perbarui:
     runs-on: ubuntu-latest
-    timeout-minutes: 50
+    # 19 Okt 2026: 50 menit membunuh job tiap hari sejak 17 Okt. Langkah banjir sendiri ±41 menit, lalu posko.py merantai
+    # cuaca, gunung api, berita + dampak 5 modul (masing-masing sampai 15 menit): tak pernah terbit, berita modul macet sejak 16 Okt.
+    timeout-minutes: 120
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
@@ -49,11 +51,11 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah.
@@ -65,6 +67,13 @@ jobs:
       - name: Ansambel hujan ECMWF (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/ansambel_hujan.py
+
+      # tanpa kuota: peluang per wilayah dari hujan_ansambel.json + indeks pasang astronomi 12 bulan
+      - name: Peluang hujan lebat dan kalender pasang (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/banjir/peluang_banjir.py
+          python3 scripts/banjir/pasang_astro.py
 
       - name: Peringatan BMKG nowcast dan gelombang (boleh gagal)
         continue-on-error: true
@@ -93,6 +102,11 @@ jobs:
       - name: Riwayat, peringkat risiko, kalender musim (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/riwayat.py
+
+      # tabel bahaya 12 bulan: tahun pembanding dari public/data/iklim_outlook.json (cache data-) + DIBI + pasang_astro.json
+      - name: Outlook bahaya 12 bulan (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/umum/outlook12.py
 
       - name: Status kecamatan dan posko
         run: |
@@ -139,7 +153,7 @@ jobs:
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@3 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/banjir/data data/raw/banjir/sungai_ambang.json data/raw/banjir/rob/ambang.json data/raw/banjir/rob/titik.json

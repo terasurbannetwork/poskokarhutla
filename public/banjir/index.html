@@ -43,6 +43,7 @@
 <link rel="stylesheet" href="keputusan.css">
 <link rel="stylesheet" href="../inti/tren.css">
 <link rel="stylesheet" href="posko.css">
+<link rel="stylesheet" href="kejadian.css">
 <link rel="stylesheet" href="../inti/metode.css">
 <link rel="stylesheet" href="../inti/dampak.css">
 <link rel="stylesheet" href="../inti/berita.css">
@@ -101,6 +102,7 @@
           <label><input type="checkbox" data-l="wilayah" checked> Status wilayah</label>
           <label><input type="checkbox" data-l="sungai" checked> Titik sungai (GloFAS)</label>
           <label><input type="checkbox" data-l="rob" checked> Titik pantai (rob)</label>
+          <label><input type="checkbox" data-l="kejadian" checked> Kejadian aktif</label>
           <label hidden><input type="checkbox" data-l="posko"> Rekomendasi posko</label><!-- disembunyikan 16 Okt 2026, paritas karhutla (Posko hilangkan dulu, 14 Okt) -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
         </details>
@@ -141,6 +143,7 @@
 <script src="../inti/kartu.js"></script>
 <script src="../inti/pilih.js"></script>
 <script src="../inti/tip.js"></script>
+<script src="../inti/peluang.js"></script>
 <script src="../inti/tabel.js"></script>
 <script src="../inti/sapa.js"></script>
 <script>
@@ -241,6 +244,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 
 </script>
 <script src="peta.js"></script>
+<script src="kejadian.js"></script>
 <script src="tren.js"></script>
 <script src="insight.js"></script>
 <script src="metode.js"></script>

@@ -13,3 +13,9 @@
 .bencana .menu a:hover,.bencana .menu a[aria-current="page"]{background:var(--surface)}
 .bencana .menu hr{border:0;border-top:1px solid var(--line);margin:4px 6px}
 .bc-segera{margin-left:auto;font-style:normal;font-size:9.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:color-mix(in oklch,#4f9be0 16%,transparent);color:#2f6fb0;white-space:nowrap}
+html[data-situs=w] [data-t=tentang],html[data-situs=w] a[href="/tentang"]{display:none} /* situs Centurisk97: tanpa Tentang di bencana mana pun (pemilik, 19 Okt 2026); URL-nya dialihkan worker */
+/* kepala halaman: bilah atas dan tombol ikon (dulu disalin di gaya.css, semua.css, peringatan.css) */
+header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:flex;align-items:center;gap:12px;padding:0 14px;
+  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));color:#fff}
+.iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
+.iconbtn:hover{background:oklch(100% 0 0 / .22)}

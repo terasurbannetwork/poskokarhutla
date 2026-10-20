@@ -1,7 +1,8 @@
 name: Terbitkan tampilan
 
 # Perubahan tampilan (HTML/JS/CSS, worker) terbit lewat sini, BUKAN `wrangler deploy` dari laptop: data harian diambil dari
-# cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 2 menit.
+# cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 5 menit (2 menit terbit + uji node).
+# Uji node (agen + worker) jalan SEBELUM apa pun diterbitkan: merah = tidak deploy.
 on:
   push:
     branches: [main, staging]
@@ -21,9 +22,22 @@ concurrency:
 jobs:
   terbit:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 25
     steps:
       - uses: actions/checkout@v4
+
+      # Gerbang uji node pertama di CI. Jalan di checkout bersih (keadaan yang ada di git), sebelum cache data dipulihkan.
+      # miniflare dari package-lock.json untuk uji worker; wrangler 4.42.0 untuk deploy tetap diunduh npx di langkah terbit.
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+          cache: npm
+      - name: Pasang dependensi uji
+        run: npm ci
+      - name: Uji agen (gerbang)
+        run: npm run uji:agen
+      - name: Uji worker (D1, route, foto)
+        run: npm run uji:warga
 
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4
@@ -39,8 +53,8 @@ jobs:
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       # aktor_karhutla.json dari repo menunjuk ID kompleks saat dibuat; samakan dengan kluster.json cache yang ikut terbit
@@ -82,7 +96,7 @@ jobs:
         run: |
           python3 scripts/terbit/versi.py
           if [ "$GITHUB_REF_NAME" = main ]; then
-            npx --yes wrangler@3 deploy
+            npx --yes wrangler@4.42.0 deploy
           else
             npx --yes wrangler@4.42.0 versions upload --preview-alias staging --message "staging ${GITHUB_SHA::7}"
           fi

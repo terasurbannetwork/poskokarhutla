@@ -1,16 +1,13 @@
 /* laporan.css: halaman /laporan. Dasar kartu/tabel/tooltip dari public/inti; di sini hanya pita kepala, pil, tabel laporan, dan cetak. */
+@import url("/inti/laporan-dasar.css");
 #insight.lp{max-width:none;gap:12px}
 #p-laporan.scroll{padding:14px 12px 48px}
-.lp-kep{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px 20px;padding:18px 22px;border-radius:18px;color:#fff;
-  background:linear-gradient(135deg,oklch(42% .11 255),oklch(25.5% .075 256));box-shadow:var(--shadow)}
 .lp-jd h1{font-size:clamp(22px,3vw,30px);line-height:1.15;color:#fff}
 .lp-jd{display:flex;align-items:center;flex-wrap:wrap;gap:8px 14px}
 .lp-jd h1{margin:0}
 .lp-pils{display:flex;flex-wrap:wrap;gap:6px}
-.lp-pil{display:inline-flex;align-items:center;height:24px;padding:0 11px;border-radius:999px;font-size:11.5px;font-weight:800;background:oklch(100% 0 0 / .16);color:#fff;white-space:nowrap}
 .lp-pil.ok{background:#2b8c86}.lp-pil.sm{background:#c9503a}
 .lp-aksi{display:flex;align-items:center;gap:10px;max-width:100%;min-width:0}
-.lp-cetak{border:0;width:34px;height:34px;border-radius:10px;background:oklch(100% 0 0 / .14);color:#fff;display:grid;place-items:center;cursor:pointer;flex:none}
 .lp-cetak:hover{background:oklch(100% 0 0 / .26)}
 .lp-cetak svg{width:17px;height:17px}
 .lp-kep .seg{border-color:transparent}
@@ -34,7 +31,6 @@
 .lp-tb td.n{text-align:right;font-variant-numeric:tabular-nums}
 /* semua kepala kolom rata tengah, kolom angka sekalipun */
 #insight .lp-tb thead th,#insight .lp-tb thead th.n{text-align:center}
-.lp-tb tbody td:first-child{font-weight:600}
 .lp-tb tfoot td{padding:10px 14px}
 .lp-tb thead th{text-transform:none;font-size:11px;letter-spacing:0;white-space:normal;vertical-align:bottom;line-height:1.25}
 .lp-tb thead th button{display:inline;white-space:normal}
@@ -43,7 +39,6 @@
 .lv0{background:#6b7f99}.lv1{background:#b08a1e}.lv2{background:#d2772c}.lv3{background:#c9503a}
 .lp-tb-s td:first-child{width:1%;white-space:nowrap}
 .lp-th{margin-top:12px}
-.lp-tb tr.lp-grp td{background:oklch(42% .11 255 / .09);font-weight:800;border-top:2px solid oklch(42% .11 255 / .35)}
 .lp-tb td.lp-kab{padding-left:22px!important;font-weight:500!important}
 .lp-tb tr.lp-on td{background:oklch(55% .12 250 / .12);font-weight:700}
 .lp-tb tr.lp-on td:first-child{box-shadow:inset 4px 0 0 var(--brand)}
@@ -267,3 +262,4 @@
 /* kartu musim, percepatan, luas menurut sumber */
 .lp-tb td .lp-co{margin-right:6px;font-size:9.5px;padding:1px 6px}
 @media print{[data-ex="kurva"]{break-before:page}[data-ex="kurva"] .lp-gr svg{max-height:96mm}#insight [data-ex="kurva"] .ex{break-inside:avoid}}
+.lp-tautan{font:700 12.5px var(--font);color:inherit;text-decoration:none;padding:6px 12px;border-radius:999px;background:oklch(100% 0 0 / .14)}.lp-tautan:hover{background:oklch(100% 0 0 / .26)}

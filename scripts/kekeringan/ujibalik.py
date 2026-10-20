@@ -17,7 +17,14 @@ Dua pertanyaan, dijawab dengan angka apa adanya (termasuk yang buruk):
       Alarm palsu  alarm yang tak diikuti kejadian / semua alarm
     Sel bertetangga berkorelasi, jadi sampel efektif ~35 tahun, bukan 611 x 35. Ini model cadangan; SEAS5 sendiri belum teruji di sini.
 
-Katalog kejadian kering BNPB: tidak ada di repo (dicari 18 Okt 2026), jadi pencocokan dengan kejadian tidak dilakukan.
+(c) Kejadian nyata: DIBI BNPB (public/banjir/data/kejadian.json, jenis `kering`, ~288 kejadian bertanggal Okt 2023 - 2026). Satuan = kabupaten-bulan; teramati =
+    >= 1 kejadian kering DIBI di kabupaten itu pada bulan itu; alarm = tingkat kabupaten dari SPI-3 yang berakhir bulan itu (aturan status.py: >= 30% penduduk).
+    Ambang TIDAK disetel pada kejadian ini (-1 dan -1,5 ditetapkan di muka dari definisi SPI), jadi tiap periode adalah uji di luar sampel; periode dibagi tiga
+    (Okt 2023-Des 2024, 2025, 2026) supaya terlihat stabil atau tidak. Hanya bagian SPI-3 yang diuji: persentil tanah dan HTH tidak punya riwayat harian di repo.
+    Batasan: DIBI mencatat laporan BPBD, bukan semua kekeringan, jadi FAR dari sini batas atas (kabupaten kering tanpa laporan terhitung alarm palsu), dan DIBI 2026
+    mungkin belum lengkap. Pembanding: alarm acak dengan laju alarm dan laju kejadian yang sama.
+    Label "hipotesis" baru boleh lepas bila KRITERIA_LAYAK terpenuhi di KETIGA periode (ditetapkan sebelum angka dilihat); alasannya ditulis di `kejadian.vonis`.
+    Penyetelan ambang (ambang.py, protokol di RISET-AMBANG.md): 21 kandidat dipilih di Okt 2023-Des 2024, diuji sekali di 2025-Agu 2026 -> `kejadian.setel`.
 
 Pakai:  python3 scripts/kekeringan/ujibalik.py      |  python3 scripts/kekeringan/ujibalik.py uji
 """
@@ -41,17 +48,17 @@ MUSIM_ONI_AKHIR_JUNI = "MAM"
 MUSIM_ONI_PUNCAK = "JAS"
 
 
-def spi3_sel(pow_sel):
+def spi3_sel(pow_sel, bulan=BULAN, tahun=TAHUN):
     """{sel: {bulan: {tahun: SPI-3 berakhir bulan itu}}}. Gamma baku 1991-2020 TANPA tahun yang dihitung (tinggal-satu-tahun sungguhan);
     tahun di luar 1991-2020 memakai baku penuh."""
     out = {}
     for k, pow_ in pow_sel.items():
         d = {}
-        for m in BULAN:
+        for m in bulan:
             baku = {t: SPI.jumlah(pow_, t, m, 3) for t in range(SPI.DASAR[0], SPI.DASAR[1] + 1)}
             penuh = P.fit_gamma([v for v in baku.values() if v is not None])
             d[m] = {}
-            for y in TAHUN:
+            for y in tahun:
                 x = SPI.jumlah(pow_, y, m, 3)
                 f = P.fit_gamma([v for t, v in baku.items() if t != y and v is not None]) if y in baku else penuh
                 d[m][y] = None if x is None or f is None else P.spi_dari_fit(x, f)
@@ -121,6 +128,113 @@ def temuan(ar):
             "laju_definisi_pct": LAJU_DEFINISI, "kalimat": "; ".join(t) + "."}
 
 
+VERSI = 3   # 2 = ada uji kejadian DIBI, 3 = penyetelan ambang (kejadian.setel, ambang.py); berkas versi lama dihitung ulang walau masih segar
+KRITERIA_LAYAK = {"pod_min": .5, "far_maks": .8, "csi_lipat_acak": 2.0}   # ditetapkan sebelum angka dilihat; harus lolos di tiap periode
+PERIODE = (("2023-10", "2024-12"), ("2025-01", "2025-12"), ("2026-01", "2026-12"))
+JENIS = "kering"
+
+
+def norm_kab(n):
+    return "".join(c for c in n.lower().replace("kabupaten", "").replace("kab.", "") if c.isalpha())
+
+
+def kejadian_per_kab(kej, kab_peta):
+    """kej = kejadian.json -> ({('prov|kab', 'YYYY-MM'): n}, cocok, total). Nama kab DIBI dicocokkan ke kunci penduduk.json (prov + nama tanpa 'Kabupaten'); 'Kota X' beda dengan 'X'."""
+    idx = {}
+    for k in kab_peta:
+        idx[(k.split("|")[0], norm_kab(k.split("|")[1]))] = k
+    n, cocok, tot = {}, 0, 0
+    for e in kej.get("kejadian_dibi", []):
+        if e.get("jenis") != JENIS:
+            continue
+        tot += 1
+        k = idx.get((e["prov"], norm_kab(e["kab"])))
+        if k:
+            cocok += 1
+            n[(k, e["tanggal"][:7])] = n.get((k, e["tanggal"][:7]), 0) + 1
+    return n, cocok, tot
+
+
+def tingkat_kab(spi, tahun, bulan, peta):
+    """{'prov|kab': tingkat 0..3 dari SPI-3} untuk kabupaten yang punya nilai SPI (aturan >= 30% penduduk, sama dengan status.py)."""
+    per = {}
+    for prov, kab, jiwa, k in peta:
+        d = spi.get(k)
+        s = d[bulan][tahun] if d and bulan in d and tahun in d[bulan] else None
+        lv = H._st.lv_spi(s)
+        if lv is None:
+            continue
+        w = per.setdefault(kab, [[0, 0, 0, 0], 0])
+        w[0][lv] += jiwa
+        w[1] += jiwa
+    return {kab: H._st.lv_wilayah(w[0], w[1]) for kab, w in per.items()}
+
+
+def skor_kontingensi(h, m, f, n):
+    """h tepat, m terlewat, f alarm palsu, n tak-ada -> POD, FAR, CSI, dan CSI acak (alarm acak dengan laju alarm & laju kejadian sama)."""
+    tot = h + m + f + n
+    a, o = (h + f) / tot if tot else 0, (h + m) / tot if tot else 0
+    csi_acak = a * o / (a + o - a * o) if a + o - a * o > 0 else None
+    return {"n": tot, "tepat": h, "terlewat": m, "palsu": f, "tak_ada": n, "kejadian_pct": round(100 * o, 1), "alarm_pct": round(100 * a, 1),
+            "pod": round(h / (h + m), 3) if h + m else None, "far": round(f / (h + f), 3) if h + f else None,
+            "csi": round(h / (h + m + f), 3) if h + m + f else None, "csi_acak": round(csi_acak, 3) if csi_acak is not None else None}
+
+
+def bulan_dalam(ym, a, b):
+    return a <= ym <= b
+
+
+def uji_kejadian(spi, kej, peta, bulan_akhir):
+    """Uji aturan SPI-3 vs DIBI per kabupaten-bulan. bulan_akhir 'YYYY-MM' = SPI terakhir tersedia. Mengembalikan blok `kejadian` (angka apa adanya)."""
+    kab_peta = {kab for _, kab, _, _ in peta}
+    obs, cocok, tot = kejadian_per_kab(kej, kab_peta)
+    awal = PERIODE[0][0]
+    bulan = []
+    y, m = int(awal[:4]), int(awal[5:])
+    while f"{y}-{m:02d}" <= bulan_akhir:
+        bulan.append((y, m))
+        y, m = (y, m + 1) if m < 12 else (y + 1, 1)
+    out = {"periode_data": [awal, bulan_akhir], "dibi_total": tot, "dibi_cocok": cocok, "dibi_dalam_periode": sum(n for (k, ym), n in obs.items() if awal <= ym <= bulan_akhir),
+           "kab": len(kab_peta), "ambang": {"waspada": "SPI-3 <= -1", "siaga": "SPI-3 <= -1,5"}, "kriteria_layak": KRITERIA_LAYAK, "aturan": {}}
+    tk = {(y, m): tingkat_kab(spi, y, m, peta) for y, m in bulan}
+    for nama, lv_min in (("waspada", 1), ("siaga", 2)):
+        per = {}
+        for lab, (a, b) in (("semua", (awal, bulan_akhir)),) + tuple((f"{a}..{min(b, bulan_akhir)}", (a, min(b, bulan_akhir))) for a, b in PERIODE if a <= bulan_akhir):
+            h = mm = f = n = 0
+            for (y, m), lv in tk.items():
+                ym = f"{y}-{m:02d}"
+                if not bulan_dalam(ym, a, b):
+                    continue
+                for kab, v in lv.items():
+                    o, alarm = (kab, ym) in obs, v >= lv_min
+                    h, mm, f, n = h + (o and alarm), mm + (o and not alarm), f + (alarm and not o), n + (not o and not alarm)
+            per[lab] = skor_kontingensi(h, mm, f, n)
+        out["aturan"][nama] = per
+    out["vonis"] = vonis(out["aturan"]["waspada"])
+    return out
+
+
+def vonis(per):
+    """Lepas 'hipotesis' hanya bila KRITERIA_LAYAK lolos di tiap periode; kalimat berisi angka terburuknya."""
+    ps = [v for k, v in per.items() if k != "semua"]
+    k = KRITERIA_LAYAK
+    f = lambda x: f"{x:.2f}".replace(".", ",")
+    gagal = []
+    for lab0, v in per.items():
+        if lab0 == "semua":
+            continue
+        lab = lab0.replace("..", " sampai ")
+        if v["pod"] is None or v["pod"] < k["pod_min"]:
+            gagal.append(f"{lab}: POD {f(v['pod']) if v['pod'] is not None else 'tak ada kejadian'} < {f(k['pod_min'])}")
+        if v["far"] is None or v["far"] > k["far_maks"]:
+            gagal.append(f"{lab}: FAR {f(v['far']) if v['far'] is not None else 'tak ada alarm'} > {f(k['far_maks'])}")
+        if v["csi"] is None or v["csi_acak"] is None or v["csi"] < k["csi_lipat_acak"] * v["csi_acak"]:
+            gagal.append(f"{lab}: CSI {f(v['csi']) if v['csi'] is not None else 'tak ada'} kurang dari {f(k['csi_lipat_acak'])}x alarm acak ({f(v['csi_acak']) if v['csi_acak'] is not None else 'tak ada'})")
+    layak = bool(ps) and not gagal
+    return {"layak": layak, "hipotesis": not layak,
+            "alasan": ("Lolos kriteria di semua periode." if layak else "Belum layak: " + "; ".join(gagal) + ".")}
+
+
 def skor(pasangan):
     """pasangan [(p, o, p_klim)] -> dict Brier, Brier klimatologi, BSS, tangkapan, alarm palsu; None bila kosong."""
     if not pasangan:
@@ -163,19 +277,32 @@ def prospek(spi, oni, pow_sel):
             "per_fase": {f: skor(v) for f, v in sorted(per_fase.items(), key=lambda x: str(x[0]))}}
 
 
-def bangun(pow_sel, oni, penduduk, pusat, sekarang):
+def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None):
     if len(pow_sel) < 3:
         raise ValueError(f"uji balik butuh seri POWER banyak sel, ada {len(pow_sel)}")
     if len({y for (_, y) in oni}) < 25:
         raise ValueError("ONI kurang dari 25 tahun; uji bersyarat fase tak bermakna")
     spi = spi3_sel(pow_sel)
     peta = H.peta_kec(penduduk, pusat, pow_sel)
-    return {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "label": "Deteksi Pantau Bencana", "loo": True, "sel": len(pow_sel),
+    kejadian = None
+    if kej and any(e.get("jenis") == JENIS for e in kej.get("kejadian_dibi", [])):
+        ym = SPI.bulan_terakhir(pow_sel)
+        spi_k = spi3_sel(pow_sel, range(1, 13), range(2023, ym[0] + 1))
+        kejadian = uji_kejadian(spi_k, kej, peta, f"{ym[0]}-{ym[1]:02d}")
+        import ambang   # impor lambat: ambang.py mengimpor modul ini
+        obs, _, _ = kejadian_per_kab(kej, {kab for _, kab, _, _ in peta})
+        kejadian["setel"] = ambang.setel(pow_sel, peta, obs, f"{ym[0]}-{ym[1]:02d}")
+    isi = {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "versi": VERSI, "label": "Deteksi Pantau Bencana", "loo": True, "sel": len(pow_sel),
             "periode": [TAHUN[0], TAHUN[-1]], "klimatologi": list(SPI.DASAR),
             "catatan": "Angka apa adanya. SPI dihitung dengan tahun yang diuji dibuang dari gamma baku (tinggal-satu-tahun). Bagian aturan menguji SPI-3 terhadap tahun kering yang dikenal; "
                        "bagian prospek menguji model cadangan bersyarat ENSO, bukan SEAS5 (hindcast tidak tersedia). Sel bertetangga berkorelasi, sampel efektif ~35 tahun.",
-            "bnpb": {"ada": False, "alasan": "katalog kejadian kering BNPB tidak ada di repo; pencocokan kejadian tidak dilakukan"},
             "aturan": aturan(spi, oni, peta), "prospek": prospek(spi, oni, pow_sel)}
+    if kejadian:
+        isi["kejadian"] = kejadian
+        isi["bnpb"] = {"ada": True, "sumber": "DIBI BNPB (kejadian.json, jenis kering)", "alasan": "pencocokan kejadian dilakukan per kabupaten-bulan, lihat `kejadian`"}
+    else:
+        isi["bnpb"] = {"ada": False, "alasan": "kejadian kering DIBI tidak ada di kejadian.json; pencocokan kejadian tidak dilakukan"}
+    return isi
 
 
 def main():
@@ -184,16 +311,19 @@ def main():
     sekarang = dt.datetime.now(H.WIB)
     jalur_out = os.path.join(H.DIR_DATA, "kekeringan_ujibalik.json")
     ada = baca(jalur_out)
-    if H.lewati(ada, sekarang, UMUR_MAKS_HARI):
+    if H.lewati(ada, sekarang, UMUR_MAKS_HARI) and ada.get("versi") == VERSI:
         print(f"ujibalik: kekeringan_ujibalik.json berumur {H.umur_hari(ada, sekarang):.0f} hari (< {UMUR_MAKS_HARI}); dilewati", file=sys.stderr)
         return
     r = lambda f: json.load(open(os.path.join(H.DIR_DATA, f)))
     tanah, penduduk, iklim = r("tanah.json"), r("penduduk.json"), r("iklim.json")
     pusat = json.load(open(os.path.join(H.AKAR, "public/banjir/data/pusat_kec.json")))
     pow_sel = SPI.hujan_bulanan([(g["lat"], g["lon"]) for g in tanah["grid"]], dt.datetime.now(H.WIB).date())
-    isi = bangun(pow_sel, PK.muat_oni(iklim), penduduk, pusat, dt.datetime.now(H.WIB))
+    kej = baca(os.path.join(H.AKAR, "public/banjir/data/kejadian.json"))
+    isi = bangun(pow_sel, PK.muat_oni(iklim), penduduk, pusat, dt.datetime.now(H.WIB), kej)
     simpan(jalur_out, isi)
     s = isi["prospek"]["semua"]
+    k = (isi.get("kejadian") or {}).get("aturan", {}).get("waspada", {}).get("semua") or {}
+    print(f"ujibalik: kejadian DIBI Waspada+: POD {k.get('pod')} FAR {k.get('far')} CSI {k.get('csi')} (acak {k.get('csi_acak')}); {(isi.get('kejadian') or {}).get('vonis')}", file=sys.stderr)
     print(f"ujibalik: {isi['sel']} sel; prospek BSS {s['bss']}, tangkapan {s['tangkapan_pct']}%, alarm palsu {s['alarm_palsu_pct']}%; {time.time() - t0:.0f} dtk", file=sys.stderr)
 
 
@@ -249,7 +379,20 @@ def uji():
     # penjaga umur: 29 hari dilewati, 31 hari mencoba lagi
     now = dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB)
     assert H.lewati({"dibuat": "2026-09-19T07:00+07:00", "lengkap": True}, now, UMUR_MAKS_HARI) and not H.lewati({"dibuat": "2026-09-17T07:00+07:00", "lengkap": True}, now, UMUR_MAKS_HARI)
-    assert isi["lengkap"] is True
+    assert isi["lengkap"] is True and isi["bnpb"]["ada"] is False                      # tanpa kej: tak ada pencocokan, dilaporkan terus terang
+    # kejadian nyata: kategori kontingensi, nama kab dicocokkan, bulan di luar SPI diabaikan, hipotesis tetap bila kurang
+    assert skor_kontingensi(5, 5, 5, 85) == {"n": 100, "tepat": 5, "terlewat": 5, "palsu": 5, "tak_ada": 85, "kejadian_pct": 10.0, "alarm_pct": 10.0, "pod": .5, "far": .5, "csi": .333, "csi_acak": .053}
+    assert skor_kontingensi(0, 0, 0, 10)["pod"] is None and norm_kab("Kabupaten Alfa") == norm_kab("ALFA") != norm_kab("Kota Alfa")
+    kej = {"kejadian_dibi": [{"tanggal": "2026-08-03", "jenis": "kering", "prov": "11", "kab": "Kabupaten Alfa"}, {"tanggal": "2026-08-09", "jenis": "kering", "prov": "11", "kab": "Alfa"},
+                             {"tanggal": "2026-10-09", "jenis": "kering", "prov": "11", "kab": "Alfa"}, {"tanggal": "2026-08-03", "jenis": "banjir", "prov": "11", "kab": "Alfa"},
+                             {"tanggal": "2026-08-03", "jenis": "kering", "prov": "11", "kab": "Tak Ada"}]}
+    k = bangun(pw, oni, pend, pusat, dt.datetime(2026, 10, 18, 7, tzinfo=H.WIB), kej)["kejadian"]
+    assert k["dibi_total"] == 4 and k["dibi_cocok"] == 3 and k["dibi_dalam_periode"] == 2 and k["periode_data"] == ["2023-10", "2026-08"]
+    w = k["aturan"]["waspada"]["semua"]
+    assert w["terlewat"] == 1 and w["tepat"] == 0 and w["pod"] == 0 and w["n"] == w["tepat"] + w["terlewat"] + w["palsu"] + w["tak_ada"] == 70 and k["vonis"]["hipotesis"] is True and "Belum layak" in k["vonis"]["alasan"]
+    assert k["setel"]["kandidat_n"] == 21 and k["setel"]["vonis"]["layak"] is False and k["setel"]["uji"] == ["2025-01", "2026-08"]
+    assert list(k["aturan"]["waspada"]) == ["semua", "2023-10..2024-12", "2025-01..2025-12", "2026-01..2026-08"]
+    assert vonis({"semua": {}, "a": {"pod": .9, "far": .3, "csi": .6, "csi_acak": .1}})["layak"] is True and vonis({"semua": {}, "a": {"pod": .9, "far": .9, "csi": .6, "csi_acak": .1}})["layak"] is False
     print("ok ujibalik")
 
 

@@ -341,33 +341,30 @@ export default {
       "status": "aktif",
       "warisan": false,
       "tab": [
-        "ringkasan",
         "peta",
         "insight",
         "berita",
         "tren",
         "kejadian",
-        "posko",
         "dampak",
         "metode",
         "sim",
-        "informasi",
         "foto",
         "tentang"
       ],
       "tab_sembunyi": [
-        "ringkasan",
-        "kejadian",
-        "posko",
-        "metode",
-        "sim",
-        "informasi"
+        "metode"
       ],
       "sumber_status": [
         [
           "gempa_terbaru",
           "/api/gempa/terbaru",
           0.5
+        ],
+        [
+          "berita_gempa",
+          "/banjir/data/berita_gempa.json",
+          30
         ]
       ],
       "kejadian": {
@@ -433,7 +430,7 @@ export default {
           "selang_detik": 300
         }
       ],
-      "workflow": "statis.yml",
+      "workflow": "gempa.yml",
       "pengerja": "gempa",
       "bagikan": {
         "nama": "Pantau Bencana · Gempa",
@@ -471,7 +468,7 @@ export default {
           "gempa bumi",
           "tsunami"
         ],
-        "leksikon": "scripts/berita/gempa.py"
+        "leksikon": "scripts/gempa/berita.py"
       },
       "prioritas": []
     },
@@ -490,11 +487,16 @@ export default {
         "insight",
         "berita",
         "tren",
+        "kejadian",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
       ],
+      "halaman": {
+        "simulasi": "simulasi.html"
+      },
       "tab_sembunyi": [
         "metode"
       ],
@@ -502,12 +504,17 @@ export default {
         [
           "cuaca",
           "/banjir/data/cuaca_meta.json",
-          null
+          30
         ],
         [
           "cuaca_nowcast",
           "/api/cuaca/nowcast",
           2
+        ],
+        [
+          "berita_cuaca",
+          "/banjir/data/berita_cuaca.json",
+          30
         ]
       ],
       "kejadian": {
@@ -558,9 +565,14 @@ export default {
       "lapor_bahaya": [
         "cuaca"
       ],
-      "cron_worker": [],
-      "workflow": "banjir.yml",
-      "pengerja": "cuaca",
+      "cron_worker": [
+        {
+          "tugas": "nowcast",
+          "selang_detik": 600
+        }
+      ],
+      "workflow": "lintas.yml",
+      "pengerja": "cuaca-udara",
       "bagikan": {
         "nama": "Pantau Bencana · Cuaca Ekstrem",
         "sumber": "BMKG, Open-Meteo, ECMWF",
@@ -614,7 +626,9 @@ export default {
         "insight",
         "berita",
         "tren",
+        "kejadian",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
@@ -625,7 +639,12 @@ export default {
       "sumber_status": [
         [
           "kualitas",
-          "/data/udara_kualitas.json",
+          "/udara/data/prakiraan.json",
+          18
+        ],
+        [
+          "berita_udara",
+          "/banjir/data/berita_udara.json",
           30
         ]
       ],
@@ -679,8 +698,8 @@ export default {
         "udara"
       ],
       "cron_worker": [],
-      "workflow": "data.yml",
-      "pengerja": "udara",
+      "workflow": "udara.yml",
+      "pengerja": "cuaca-udara",
       "bagikan": {
         "nama": "Pantau Bencana · Kualitas Udara",
         "sumber": "Copernicus CAMS via Open-Meteo, NOAA METAR, WorldPop (perkiraan model)",
@@ -733,7 +752,9 @@ export default {
         "insight",
         "berita",
         "tren",
+        "kejadian",
         "dampak",
+        "simulasi",
         "foto",
         "tentang",
         "metode"
@@ -745,7 +766,12 @@ export default {
         [
           "gunungapi",
           "/banjir/data/gunungapi_status.json",
-          null
+          30
+        ],
+        [
+          "berita_gunungapi",
+          "/banjir/data/berita_gunungapi.json",
+          30
         ]
       ],
       "kejadian": {
@@ -797,8 +823,8 @@ export default {
         "gunungapi"
       ],
       "cron_worker": [],
-      "workflow": "banjir.yml",
-      "pengerja": "gunungapi",
+      "workflow": "lintas.yml",
+      "pengerja": "gunungapi-kering",
       "bagikan": {
         "nama": "Pantau Bencana · Gunung Api",
         "sumber": "PVMBG (MAGMA Indonesia)",
@@ -833,7 +859,7 @@ export default {
           "gunung api",
           "erupsi"
         ],
-        "leksikon": "scripts/berita/gunungapi.py"
+        "leksikon": "scripts/gunungapi/berita.py"
       },
       "prioritas": []
     },
@@ -853,17 +879,24 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "posko",
         "foto",
         "tentang",
         "metode"
       ],
       "tab_sembunyi": [
-        "metode"
+        "metode",
+        "posko"
       ],
       "sumber_status": [
         [
           "kekeringan",
           "/data/kekeringan_meta.json",
+          30
+        ],
+        [
+          "berita_kekeringan",
+          "/banjir/data/berita_kekeringan.json",
           30
         ]
       ],
@@ -916,8 +949,8 @@ export default {
         "kekeringan"
       ],
       "cron_worker": [],
-      "workflow": "data.yml",
-      "pengerja": "kekeringan",
+      "workflow": "lintas.yml",
+      "pengerja": "gunungapi-kering",
       "bagikan": {
         "nama": "Pantau Bencana · Kekeringan",
         "sumber": "Deteksi Pantau Bencana",
@@ -951,7 +984,7 @@ export default {
           "kekeringan",
           "krisis air bersih"
         ],
-        "leksikon": "scripts/berita/kekeringan.py"
+        "leksikon": "scripts/kekeringan/berita.py"
       },
       "prioritas": []
     }

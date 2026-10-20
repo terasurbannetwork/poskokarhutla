@@ -1,20 +1,20 @@
 /* Tambahan khas halaman Kekeringan di atas gaya bersama (inti/gaya.css dst). */
-#metode .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);box-shadow:none;overflow:auto}
+#metode .ex-bd .tw,#posko .ex-bd .tw{margin:0 2px;border-radius:12px;border:1px solid var(--line);box-shadow:none;overflow:auto}
 /* Metode memakai rupa kartu yang sama dengan Tren (gaya #tren di inti/tren.css, disalin per id) */
-#metode .ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
-#metode .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
-#metode .ex-bd{padding:16px 22px 10px}
-#metode .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
-#metode .ex-ft em{font-style:italic;opacity:.9}
-#metode .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
-#metode .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
-#metode .ex-ey:empty{display:none}
-#metode .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
-#metode .ex .ctl{margin:12px 0 0}
-#metode .ex .ctl .seg{display:flex;width:100%}
-#metode .ex .ctl .seg button{flex:1;text-align:center}
-#metode .ex .bg-ex{margin:14px 16px 0 0}
-#metode .ex{margin-bottom:18px}
+#metode .ex,#posko .ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#metode .ex-hd,#posko .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#metode .ex-bd,#posko .ex-bd{padding:16px 22px 10px}
+#metode .ex-ft,#posko .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#metode .ex-ft em,#posko .ex-ft em{font-style:italic;opacity:.9}
+#metode .ex-ft .ex-leg,#posko .ex-ft .ex-leg{flex:1 1 100%;justify-content:center}
+#metode .ex-ey,#posko .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#metode .ex-ey:empty,#posko .ex-ey:empty{display:none}
+#metode .ex h3,#posko .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#metode .ex .ctl,#posko .ex .ctl{margin:12px 0 0}
+#metode .ex .ctl .seg,#posko .ex .ctl .seg{display:flex;width:100%}
+#metode .ex .ctl .seg button,#posko .ex .ctl .seg button{flex:1;text-align:center}
+#metode .ex .bg-ex,#posko .ex .bg-ex{margin:14px 16px 0 0}
+#metode .ex,#posko .ex{margin-bottom:18px}
 /* lencana ENSO di kepala: rupa sama dengan karhutla (lapisan5.css), datanya dari S.meta.enso */
 .l5-iklim{display:inline-flex;align-items:center;gap:6px;height:24px;padding:0 10px;border-radius:999px;font-size:11.5px;font-weight:700;white-space:nowrap;background:oklch(100% 0 0 / .14);color:inherit}
 .l5-iklim::before{content:"";width:7px;height:7px;border-radius:50%;background:#5a9e74}
@@ -34,3 +34,4 @@
 /* 7 mode peta: dua baris, selebar wadah */
 #modePeta.seg.penuh{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));border-radius:18px;overflow:visible}
 #modePeta button{padding:5px 3px;font-size:11.5px;min-width:0}
+#posko svg text{fill:currentColor}

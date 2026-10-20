@@ -1,6 +1,7 @@
 name: Lapisan statis (OSM, WorldPop)
 
 # Tanggal 2 tiap bulan pukul 02.00 WIB, saat Overpass publik sepi: jalan, fasilitas, kanal, penduduk.
+# Sesudah itu lapisan bulanan lintas bencana (gempa, embung kekeringan), langkah dan commit TERPISAH supaya yang gagal tidak menahan yang lama.
 on:
   schedule:
     - cron: "0 19 2 * *"
@@ -16,7 +17,7 @@ permissions:
 jobs:
   statis:
     runs-on: ubuntu-latest
-    timeout-minutes: 240   # Overpass publik sering 504; tarik_osm mengulang sendiri dengan jeda
+    timeout-minutes: 360   # Overpass publik sering 504; tarik_osm mengulang sendiri dengan jeda; + bukti gempa (Overpass) dan embung
     steps:
       - uses: actions/checkout@v4
 
@@ -62,3 +63,45 @@ jobs:
           git diff --cached --quiet && exit 0
           git commit -q -m "data: lapisan statis $(TZ=Asia/Jakarta date +%F)"
           git pull -q --rebase && git push -q
+
+      # ---- Lapisan bulanan lintas bencana. Semua boleh gagal; keluaran di folder di luar cache, jadi HARUS di-commit ke main (terbit.yml/titik.yml
+      # mengambilnya dari checkout). Dijalankan SESUDAH Commit di atas: berkas yang setengah tertulis tidak boleh menghalangi `git pull --rebase`.
+      # Urutan gempa: riwayat, bahaya, sesar, bukti (bukti.py membaca sesar.geojson, jadi sesar dulu), citra (Sentinel-2 STAC M>=6,5 darat dari riwayat_m5.json, ±9 menit). Tanpa tangan: semua tanpa argumen, tanpa input.
+      - name: Gempa bulanan, riwayat USGS, InaRISK, sesar, bukti (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 120
+        run: |
+          for s in riwayat bahaya sesar bukti citra; do
+            python3 scripts/gempa/$s.py uji && { python3 scripts/gempa/$s.py || echo "::warning title=gempa-$s::$s.py gagal; berkas lamanya dibiarkan"; } || echo "::warning title=gempa-$s::uji $s.py gagal"
+          done
+
+      - name: Embung dan waduk kekeringan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 45
+        run: python3 scripts/kekeringan/embung.py uji && python3 scripts/kekeringan/embung.py
+
+      # paparan.py (KRB ESDM, InaRISK, Overpass) lalu citra.py (Sentinel-2 STAC): citra.py menjaga kolom `citra` di paparan.json, jadi urutannya ini.
+      # KRB ESDM mati = gunung tanpa KRB jatuh ke InaRISK/cincin radius (paparan.py:16), bukan dikarang.
+      - name: Paparan dan citra gunung api (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 90
+        run: |
+          python3 scripts/gunungapi/paparan.py uji && { python3 scripts/gunungapi/paparan.py || echo "::warning title=gunungapi-paparan::paparan.py gagal; berkas lamanya dibiarkan"; }
+          python3 scripts/gunungapi/citra.py uji && { python3 scripts/gunungapi/citra.py || echo "::warning title=gunungapi-citra::citra.py gagal; berkas lamanya dibiarkan"; }
+
+      # bahaya.py MENGHAPUS lapisan lama bila sumbernya tak terjangkau (aturan A18): berkas yang hilang dipulihkan dari index, bukan di-commit sebagai hapus.
+      - name: Commit lapisan bulanan lintas bencana
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B="public/gempa/data/riwayat_m5.json public/gempa/data/riwayat_prov.json public/gempa/data/riwayat_grid.json public/gempa/data/risiko.json public/gempa/data/meta.json public/gempa/data/inarisk_gempa.json public/gempa/data/inarisk_tsunami.json public/gempa/data/batas_lempeng.geojson public/gempa/data/bahaya_meta.json public/gempa/data/sesar.geojson public/gempa/data/bukti.json public/gempa/data/citra.json public/gempa/data/citra public/kekeringan/data/embung.json public/gunungapi/data/paparan.json public/gunungapi/data/citra"
+          for f in $B; do [ ! -e "$f" ] || git add "$f"; done
+          git checkout -- public/gempa/data public/kekeringan/data public/gunungapi/data
+          git diff --cached --quiet && { echo "lapisan bulanan tidak berubah"; exit 0; }
+          git commit -q -m "data: lapisan bulanan gempa, kekeringan, gunung api $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push lapisan bulanan gagal::git push ke main gagal 3x"
+          exit 1

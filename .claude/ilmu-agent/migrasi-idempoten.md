@@ -57,3 +57,4 @@ Uji yang membaca migrasi: `tests/warga/_bantu.mjs` `migrasi()` menggabungkan SEM
 
 - 2026-10-15 · Ilmu awal diisi dari kode (migrations/0001-0007, tests/warga/_bantu.mjs, WARGA.md). Temuan: tidak ada IF NOT EXISTS di 7 berkas (idempotensi dijaga d1_migrations); duplikat `0003_moderasi 2.sql` sudah dicabut di 3b90271; 0007_foto.sql tracked.
 - 2026-10-16 · Berkas migrasi baru tanpa nomor 0009 (0008 lalu 0010) lolos wrangler tapi melanggar aturan tanpa celah; rename sebelum pertama kali diterapkan aman karena belum ada baris d1_migrations.
+- 2026-10-19 · Migrasi baru + kode pemakainya belum di-git add (2026-10-19, 0016_sihka.sql dan src/sihka.js ?? ). Sebab: sesi kerja tidak commit. Akibat: CI/terbit tidak melihat keduanya; deploy tanpa migrasi membuat cron sihka gagal. Cara tahu: git status --short migrations src/sihka.js.

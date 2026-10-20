@@ -300,6 +300,22 @@ def main():
 
     print("hotspot...", file=sys.stderr)
     titik = hotspot(kunci(), w)
+    # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
+    # jumlah titik, kompleks, status, dan harian30. Gunung api tetap (setara SiPongi). Matikan: TITIK_PALSU=0.
+    industri = {"aktif": False, "titik": 0, "jenis": {}}
+    if os.environ.get("TITIK_PALSU", "1") != "0":
+        import titik_palsu as TP, harian30
+        sel_ind, jenis_ind = TP.sel_industri()
+        if not sel_ind:
+            print("::warning title=Filter titik palsu mati::public/data/titik_palsu.json tidak ada; titik industri ikut dihitung", file=sys.stderr)
+        if sel_ind:
+            sebelum = titik
+            titik = [p for p in titik if not TP.palsu(p["lat"], p["lon"], sel_ind)]
+            from collections import Counter as _C
+            industri = {"aktif": True, "titik": len(sebelum) - len(titik),
+                        "jenis": dict(_C(jenis_ind[TP.sel(p["lat"], p["lon"])] for p in sebelum if TP.palsu(p["lat"], p["lon"], sel_ind)))}
+            harian30.SARING = lambda la, lo: TP.palsu(la, lo, sel_ind)
+            print(f"titik palsu: {industri['titik']} dari {len(sebelum)} titik dibuang", file=sys.stderr)
     try:  # riwayat harian 35 hari per provinsi & kab/kota (tren 7/30 hari); gagal di sini tidak menghentikan pembaruan
         import harian30
         harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
@@ -520,13 +536,14 @@ def main():
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
     simpan("kluster_geo.json", geo)
+    simpan("kejadian_karhutla_awal.json", kejadian_awal(fitur, sekarang))
     simpan("fwi.json", {"sel": 0.5, "hari_ini": hari_ini, "pfvi": {"ambang": P.AMBANG_PG, "catatan": "Muka air tanah = perkiraan (proxy) dari hujan dan ET0, bukan pengukuran. Uji balik 2019+2023: scripts/sebaran/RISET-PFVI.md"}, "grid": [
         {"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "hari": g["hari"][-8:], **({"wt": g["wt"]} if "wt" in g else {})} for g in grid]})
     simpan("wilayah.json", rek)
     simpan("bnpb.json", bnpb)
     simpan("meta.json", {
         "dibuat": sekarang.isoformat(timespec="minutes"), "data_terakhir": akhir.isoformat(), "hari_wib": hari_akhir.isoformat(),
-        "jumlah_titik": len(titik), "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
+        "jumlah_titik": len(titik), "titik_industri": industri, "jumlah_kluster": len(fitur), "titik_tunggal_belum_dinilai": s1,
         "provinsi": PROVINSI, "prioritas": PRIORITAS, "bnpb": BNPB, "status": STATUS,
         "dbscan": {"eps_km": EPS_KM, "min_pts": MIN_PTS, "jendela_hari": JENDELA_HARI, "aktif_jam": AKTIF_JAM, "aktif_gambut_jam": AKTIF_GAMBUT_JAM, "jam_st": 48},
         "bara": GB.CATATAN})
@@ -550,6 +567,23 @@ def pecah_kluster(fitur):
     return {"type": "FeatureCollection", "features": awal}, geo
 
 
+def kejadian_awal(fitur, kini):
+    """Ringkasan lintas bencana (/semua), bentuk sama dengan public/banjir/data/kejadian_<id>_awal.json: kompleks K#### level 3
+    (Prioritas, sama dengan layar karhutla), tanpa geometri. Semua kompleks di `fitur` sudah dalam jendela aktif (72/168 jam)."""
+    wib = lambda iso: dt.datetime.fromisoformat(iso).astimezone(WIB).date().isoformat()
+    rows = []
+    for f in fitur:
+        p = f["properties"]
+        if p["level"] != 3:
+            continue
+        rows.append({"kode": p["id"], "nama": f"{p['kab']}, {p['kec']}",
+                     "prov": [p["prov"]], "kab": [f"{p['prov']}|{p['kab']}"], "mulai": wib(p["awal"]), "terakhir": wib(p["akhir"]),
+                     "aktif": True, "besaran": {"nilai": 3, "satuan": "level", "ket": "Prioritas"},
+                     "pusat": [round(p["lat"], 3), round(p["lon"], 3)]})
+    return {"dibuat": kini.strftime("%Y-%m-%dT%H:%M%z")[:-2] + ":00", "hari": kini.astimezone(WIB).date().isoformat(), "bencana": "karhutla",
+            "awalan": "K", "kejadian": rows}
+
+
 def uji():
     sq = {"type": "Polygon", "coordinates": [[[1, 1], [2, 1], [2, 2], [1, 1]]]}
     F = [{"type": "Feature", "geometry": sq, "properties": {"id": "K1", "lat": 1.5, "lon": 1.6, "level": 3, "api24": [[1.5, 1.5]]}},
@@ -560,6 +594,12 @@ def uji():
     assert awal["features"][0]["geometry"]["coordinates"] == [1.6, 1.5] and awal["features"][0]["properties"]["level"] == 3
     assert geo == {"K1": [sq, [[1.5, 1.5]]]}, f"geo hanya untuk kompleks berpoligon/api24: {geo}"
     assert F[0]["properties"]["api24"] == [[1.5, 1.5]], "kluster.json lengkap tidak boleh ikut berubah"
+    P3 = {"id": "K7", "lat": -3.1, "lon": 112.1, "level": 3, "px24": 40, "prov": "62", "kab": "Seruyan", "kec": "Seruyan Hilir",
+          "awal": "2026-10-17T20:00:00+00:00", "akhir": "2026-10-19T03:00:00+00:00"}
+    K = kejadian_awal([{"properties": P3}, {"properties": {**P3, "id": "K8", "level": 2}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))
+    assert list(K)[0] == "dibuat" and K["bencana"] == "karhutla" and [r["kode"] for r in K["kejadian"]] == ["K7"], "hanya level 3, dibuat pertama"
+    r = K["kejadian"][0]
+    assert r["mulai"] == "2026-10-18" and r["terakhir"] == "2026-10-19" and r["aktif"] and r["kab"] == ["62|Seruyan"], r
     print("harian uji: pecah_kluster OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat

@@ -4,7 +4,17 @@
    sub: kode -> [label, kelas]. kelas menentukan warna penanda (WARNA) dan arah status untuk durasi padam
    (buruk -> baik pada laporan lanjutan = "akhirnya hidup setelah padam N jam"). */
 
-export const BAHAYA = {karhutla: "Karhutla", banjir: "Banjir", longsor: "Longsor", rob: "Rob", umum: "Umum"};
+/* BAHAYA diturunkan dari registry (public/bencana.json -> lapor_bahaya tiap bencana), bukan daftar tulisan tangan.
+   Node/worker membaca src/bencana.generated.js (hasil bangkit registry); peramban membaca /bencana.json. 'umum' selalu ada.
+   Label: nama bencana bila ia satu-satunya bahayanya; bencana kelompok (banjir+longsor+rob, gempa+tsunami) memakai slug berhuruf besar. */
+const REGISTRY = typeof document === "undefined" ? (await import("../src/bencana.generated.js")).default : await fetch("/bencana.json").then(r => { if (!r.ok) throw new Error(`/bencana.json ${r.status}`); return r.json(); });
+export const bahayaDari = reg => {
+  const h = {};
+  for (const b of reg.bencana) for (const s of b.lapor_bahaya) h[s] = b.lapor_bahaya.length === 1 ? b.nama : s[0].toUpperCase() + s.slice(1);
+  h.umum = "Umum";
+  return h;
+};
+export const BAHAYA = bahayaDari(REGISTRY);
 
 /* kelas -> warna cincin (isi = versi pastelnya). Palet redup proyek. */
 export const WARNA = {buruk: "#c9503a", sedang: "#e3b94e", baik: "#5a9e74", minta: "#b5475f", tawar: "#4f8fc4",
@@ -60,6 +70,40 @@ export const JENIS = {
   rob: {nama: "Genangan rob", bahaya: ["rob"], umur: 24, ikon: "rob",
     sub: {kaki: ["Semata kaki", "sedang"], lutut: ["Selutut", "api"], pinggang: ["Sepinggang atau lebih", "buruk"]}},
 
+  /* Bencana lain (registry lapor_bahaya). Tab Informasi belum ditampilkan di halaman bencana baru; API dan katalog sudah siap. */
+  guncang: {nama: "Guncangan gempa", bahaya: ["gempa"], umur: 24, ikon: "guncang",
+    sub: {ringan: ["Terasa ringan", "sedang"], kuat: ["Kuat, barang jatuh", "api"], hebat: ["Sulit berdiri", "buruk"]}},
+  rusak_gedung: {nama: "Kerusakan bangunan", bahaya: ["gempa"], umur: 168, ikon: "rusak_gedung",
+    sub: {retak: ["Dinding retak", "sedang"], rusak: ["Rusak berat", "buruk"], roboh: ["Roboh", "tua"]}},
+  tsunami_tanda: {nama: "Tanda tsunami", bahaya: ["gempa", "tsunami"], umur: 12, ikon: "tsunami_tanda",
+    sub: {surut: ["Air laut surut mendadak", "buruk"], ombak: ["Gelombang tak biasa", "tua"], sirene: ["Sirene berbunyi", "api"]}},
+  abu: {nama: "Hujan abu", bahaya: ["gunungapi"], umur: 24, ikon: "abu",
+    sub: {tipis: ["Abu tipis", "sedang"], tebal: ["Abu tebal", "buruk"], kerikil: ["Hujan kerikil / pasir", "tua"]}},
+  lahar: {nama: "Lahar", bahaya: ["gunungapi"], umur: 24, ikon: "lahar",
+    sub: {sungai: ["Mengalir di sungai", "api"], meluap: ["Meluap ke permukiman", "buruk"], putus: ["Jalan / jembatan putus", "tua"]}},
+  gemuruh: {nama: "Gemuruh / sinar api", bahaya: ["gunungapi"], umur: 12, ikon: "gemuruh",
+    sub: {gemuruh: ["Gemuruh terdengar", "sedang"], dentuman: ["Dentuman keras", "api"], sinar: ["Sinar api di puncak", "tua"]}},
+  pohon_tumbang: {nama: "Pohon tumbang", bahaya: ["cuaca"], umur: 24, ikon: "pohon_tumbang",
+    sub: {jalan: ["Menutup jalan", "buruk"], rumah: ["Menimpa rumah", "tua"], kabel: ["Menimpa kabel listrik", "api"]}},
+  atap_rusak: {nama: "Atap rusak", bahaya: ["cuaca"], umur: 168, ikon: "atap_rusak",
+    sub: {sebagian: ["Sebagian atap", "sedang"], banyak: ["Banyak atap di sekitar", "buruk"], umum: ["Fasilitas umum", "tua"]}},
+  puting_beliung: {nama: "Puting beliung", bahaya: ["cuaca"], umur: 24, ikon: "puting_beliung",
+    sub: {terlihat: ["Terlihat pusaran", "buruk"], merusak: ["Sudah merusak", "tua"]}},
+  hujan_es: {nama: "Hujan es", bahaya: ["cuaca"], umur: 12, ikon: "hujan_es",
+    sub: {kecil: ["Butiran kecil", "sedang"], besar: ["Sebesar kelereng atau lebih", "buruk"]}},
+  asap_tebal: {nama: "Asap tebal", bahaya: ["udara"], umur: 24, ikon: "asap_tebal",
+    sub: {bau: ["Berbau asap / polusi", "sedang"], tebal: ["Langit kelabu pekat", "buruk"], sangat: ["Sangat pekat", "tua"]}},
+  sesak_napas: {nama: "Sesak napas", bahaya: ["udara"], umur: 24, ikon: "sesak_napas",
+    sub: {perih: ["Mata perih / batuk", "sedang"], sesak: ["Sesak napas", "buruk"], berat: ["Perlu pertolongan medis", "tua"]}},
+  jarak_pandang: {nama: "Jarak pandang", bahaya: ["udara"], umur: 12, ikon: "jarak_pandang",
+    sub: {p500: ["Kurang dari 500 m", "buruk"], p1000: ["500 m–1 km", "sedang"], p3000: ["1–3 km", "baik"]}},
+  sumur_kering: {nama: "Sumur kering", bahaya: ["kekeringan"], umur: 168, ikon: "sumur_kering",
+    sub: {surut: ["Air menyusut", "sedang"], kering: ["Sumur kering", "buruk"]}},
+  gagal_panen: {nama: "Gagal panen", bahaya: ["kekeringan"], umur: 168, ikon: "gagal_panen",
+    sub: {sebagian: ["Sebagian lahan", "sedang"], seluruh: ["Seluruh lahan", "tua"]}},
+  antre_air: {nama: "Antre air", bahaya: ["kekeringan"], umur: 24, ikon: "antre_air",
+    sub: {antre: ["Antre panjang", "sedang"], tangki: ["Bergantung air tangki", "api"], habis: ["Air tangki habis", "buruk"]}},
+
   akses: {nama: "Akses jalan", bahaya: null, umur: 24, ikon: "akses",
     sub: {truk: ["Bisa dilalui truk", "baik"], motor: ["Hanya motor", "sedang"], tergenang: ["Tergenang", "api"], asap: ["Tertutup asap", "ungu"], tertimbun: ["Tertimbun", "buruk"], putus: ["Terputus", "tua"]}},
   evakuasi: {nama: "Evakuasi / mengungsi", bahaya: null, umur: 168, bantuan: true, ikon: "evakuasi", jumlah: "Jumlah orang",
@@ -91,7 +135,23 @@ export const IKON = {
   rob: "M3 18c2 0 2-1.5 4.5-1.5S9.5 18 12 18s2.5-1.5 4.5-1.5S19 18 21 18M15 4a5 5 0 1 0 5 7 4 4 0 0 1-5-7z",
   akses: "M8 3L4 21M16 3l4 18M12 5v3M12 11v3M12 17v3",
   evakuasi: "M14 4h5v16h-5M10 8l-4 4 4 4M6 12h10",
+  guncang: "M3 12l2.5-4 3 8 3-10 3 12 3-8 2.5 2M3 20h18",
+  rusak_gedung: "M4 21V9l6-4v16M10 21h10V12l-4-3M7 12h.01M7 16h.01M14 15l2 2-2 2",
+  tsunami_tanda: "M2 18c3 0 3-2 6-2s3 2 6 2 3-2 8-2M4 13c1-5 5-8 10-8-3 2-3 5 0 6-3 1-6 0-10 2zM2 21h20",
+  abu: "M7 15a4 4 0 1 1 1-7.8A5 5 0 0 1 18 9a3.5 3.5 0 0 1 0 7H7zM8 19h.01M12 20h.01M16 19h.01",
+  lahar: "M3 20l6-12 3 5 3-7 6 14zM9 8c1 2 1 4-1 6M14 17c1-1 1-2 3-2",
+  gemuruh: "M12 3l-2 5 3 2-3 4 5-3-2-3 3-2zM4 9c-1 2-1 4 0 6M20 9c1 2 1 4 0 6M2 7c-1.5 3-1.5 7 0 10M22 7c1.5 3 1.5 7 0 10",
+  pohon_tumbang: "M3 20h18M14 20l-4-9M10 11l-6-1M10 11l1-6M10 11l5-2M14 20l5-4",
+  atap_rusak: "M2 12l10-8 10 8M5 11v9h14v-9M12 11l-2 3 3 2-2 4",
+  puting_beliung: "M4 5h16M6 9h12M8 13h8M10 17h4M12 21h.01",
+  hujan_es: "M12 3v6M9 5l3 2 3-2M12 14h.01M7 17h.01M17 17h.01M12 21h.01M7 12h.01M17 12h.01",
+  asap_tebal: "M4 8c3-3 5 3 8 0s5 3 8 0M4 13c3-3 5 3 8 0s5 3 8 0M4 18c3-3 5 3 8 0s5 3 8 0",
+  sesak_napas: "M12 3v8M12 11c-2 0-3 1-5 3-1.5 2-2 4-1 6h5M12 11c2 0 3 1 5 3 1.5 2 2 4 1 6h-5",
+  jarak_pandang: "M2 12s3.5-6 10-6 10 6 10 6-3.5 6-10 6S2 12 2 12zM4 4l16 16",
+  sumur_kering: "M5 9h14M7 9v11h10V9M9 9V5h6v4M11 14l2 3M13 14l-2 3",
+  gagal_panen: "M12 21v-9M12 12c0-4-3-6-6-6 0 4 2 6 6 6zM12 15c0-3 2-5 5-5 0 3-2 5-5 5M5 21h14M16 4l4 4M20 4l-4 4",
+  antre_air: "M12 4s4 4.5 4 7.5a4 4 0 0 1-8 0C8 8.5 12 4 12 4zM4 21v-4M4 14.5h.01M9 21v-3M15 21v-3M20 21v-4M20 14.5h.01",
   coret: "M4 4l16 16",
 };
 
-export default {BAHAYA, WARNA, JENIS, IKON, jenisUntuk};
+export default {BAHAYA, bahayaDari, WARNA, JENIS, IKON, jenisUntuk};

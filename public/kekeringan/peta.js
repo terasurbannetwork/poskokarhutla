@@ -7,9 +7,7 @@ const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150)}; };
-function kotak(fitur) { let a = [180, 90, -180, -90];
-  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
-  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 
 /* ---------- warna per mode: tangga [batas atas, warna]; nilai pertama yang <= batas menang */
 const TANGGA = {
@@ -41,8 +39,8 @@ const nilaiMode = (r, m) => m === "tanah" ? (r[4] ?? r[3]) : m === "spi" ? r[6] 
 const warnaSel = (r, m) => m === "status" ? (r[7] ? WARNA_LV[r[7]] : "") : warnaTangga(m, nilaiMode(r, m));
 const MODE = [["status", "Status"], ["hth", "HTH"], ["prakiraan", "Prakiraan"], ["padi", "Padi"], ["spi", "Hujan"], ["tanah", "Tanah"], ["dc", "Kode DC"]];
 const MODE_WIL = m => m === "status" || m === "padi";   /* mode yang mewarnai poligon wilayah; sisanya kisi */
-const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], grid: ["#1d4e89", "#69a7e8", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"]};
-const UBIN_PENDEK = {wilayah: "Status", grid: "Kisi", satelit: "Satelit"};
+const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], grid: ["#1d4e89", "#69a7e8", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"], embung: ["#0f4c75", "#7ec0e8", "sungai"], gambut: ["#5a3420", "#c9a07a", "rasio"]};
+const UBIN_PENDEK = {wilayah: "Status", grid: "Kisi", satelit: "Satelit", embung: "Embung", gambut: "Gambut"};
 let PI = null, LG = null, legBuka = innerWidth > 900, LAMBANG = {};
 const lambang = (prov, kab) => { const f = kab ? LAMBANG[prov + "|" + kab] && `../lambang/kabkota/${LAMBANG[prov + "|" + kab]}.png` : prov && `../lambang/provinsi/${prov}.png`;
   return f ? `<img class="lambang" src="${f}" alt="" loading="lazy" onerror="this.remove()">` : ""; };
@@ -60,6 +58,7 @@ const Peta = {
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
     peta.once("load", () => window.NASA?.pasang(peta, ["smap", "suhu"]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
+    import("../inti/peta/konteks.js").then(m => m.pasang(peta, "kekeringan")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
@@ -82,7 +81,32 @@ const Peta = {
     peta.addSource("prov", {type: "geojson", data: S.geo.prov});
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
     this.aturWilayah(false); this.interaksi();
-    nanti(() => this.lihat("satelit") && this.pasangSatelit()); },
+    nanti(() => this.lihat("satelit") && this.pasangSatelit());
+    ["embung", "gambut"].forEach(k => this.lihat(k) && this.lapisanSumber(k)); },   /* gaya dimuat ulang (tema): lapisan sumber air dipasang lagi bila masih dicentang */
+  /* lapisan "Sumber air dan lahan": embung = lingkaran per kabupaten (jumlah objek OSM, titik = rata-rata kecamatan, BUKAN lokasi tampungan); gambut = kompleks konsesi berlahan gambut di sel Siaga/Awas (kekeringan_bukti.json) */
+  async lapisanSumber(k) {
+    if (!peta.getSource(k)) {
+      let fc;
+      if (k === "embung") {
+        S.embung ||= await muatJSON("data/embung.json").catch(() => null); const E = S.embung; if (!E?.pusat) return false;
+        fc = {type: "FeatureCollection", features: Object.entries(E.kab).filter(([kb]) => E.pusat[kb]).map(([kb, n]) => ({type: "Feature", geometry: {type: "Point", coordinates: [E.pusat[kb][1], E.pusat[kb][0]]}, properties: {kunci: kb, n}}))};
+      } else {
+        const L = S.bukti?.gambut?.daftar; if (!L?.length) return false;
+        fc = {type: "FeatureCollection", features: L.map(d => ({type: "Feature", geometry: {type: "Point", coordinates: [d.lon, d.lat]}, properties: {prov: d.prov, lv: d.lv, dc: d.dc, g: d.gambut, titik: d.titik}}))};
+      }
+      if (peta.getSource(k)) return true;   /* dua pemanggil bersamaan: yang kedua tiba terlambat */
+      peta.addSource(k, {type: "geojson", data: fc});
+      peta.addLayer({id: k + "-c", type: "circle", source: k, layout: this.vis(this.lihat(k)), paint: k === "embung"
+        ? {"circle-color": "#1d6fa5", "circle-opacity": .55, "circle-stroke-color": "#fff", "circle-stroke-width": .8, "circle-radius": ["min", 18, ["+", 2.5, ["*", 2.2, ["sqrt", ["get", "n"]]]]]}
+        : {"circle-color": "#7a4a2c", "circle-opacity": .85, "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-radius": 5}});
+      if (!(this._ik ||= {})[k]) { this._ik[k] = 1;
+        peta.on("mousemove", k + "-c", e => { peta.getCanvas().style.cursor = "pointer"; const p = e.features[0].properties;
+          if (PI) PI.tampilTip(k === "embung"
+            ? PI.kartuTip({judul: esc(p.kunci.split("|")[1]), sub: `<small>${esc(namaProv(p.kunci.split("|")[0]))}</small>`, stat: [["debit", fmt(p.n) + " objek", "embung, waduk, bendungan OSM di kabupaten (kasar, tidak lengkap)", "#1d6fa5"]]})
+            : PI.kartuTip({judul: "Konsesi berlahan gambut", sub: `<small>${esc(namaProv(p.prov))}</small>`, stat: [["perisai", LEVEL[p.lv], "status sel", WARNA_LV[p.lv], p.lv >= 3], ...(p.dc != null ? [["debit", fmt(Math.round(p.dc)), "kode DC", "#7a4a2c"]] : [])]}), e.originalEvent); });
+        peta.on("mouseleave", k + "-c", () => { peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); }); }
+    }
+    return true; },
   pasangSatelit() {
     if (peta.getLayer("satelit")) return;
     peta.addSource("satelit", {type: "raster", tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], tileSize: 256, attribution: "Esri"});
@@ -154,7 +178,7 @@ function renderDaftar() {
   const u = k => U?.k === k ? ' class="urut"' + (U.d > 0 ? ' data-arah="1"' : "") : "";
   const n = tepat(j.length ? S.wil.prov[j[0]]?.kab_n || [0, 0, 0] : S.meta.nasional.kab_n);
   const pn = t => `<span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${t}</span>`;   /* pil netral: bulan SPI dan ambang belum teruji (A17) */
-  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn("Ambang belum diuji balik")}</div></div>`;
+  const ringkas = `<div class="ringkas"><div class="lbl">Kabupaten/kota</div><div class="kv">${[2, 1, 0].map(i => `<div><b style="color:${WARNA_LV[i + 1]}">${fmt(n[i])}</b><span>${LEVEL[i + 1]}</span></div>`).join("")}</div><div style="display:flex;gap:6px;flex-wrap:wrap;margin:6px 0">${S.meta.spi ? pn("SPI " + spiBulan()) : ""}${pn(AMBANG_PIL())}</div></div>`;
   const kepala = `<div class="tb kepala" style="${g}"><span></span><span data-s="nm"${u("nm")}>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span class="n" data-s="spi"${u("spi")}>SPI</span><span class="n" data-s="jiwa"${u("jiwa")}>Jiwa</span><span data-s="lv"${u("lv")} style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = ringkas + kepala + (item.map((i, k) => `<button class="tb" data-k="${esc(i.kunci)}" style="${g}"><span class="rk">${k + 1}</span><span style="font-weight:600" translate="no">${esc(i.nama)}</span>
     <span class="n">${i.a.spi3 != null ? F2(i.a.spi3) : "–"}</span><span class="n">${i.a.jiwa[0] ? rb(i.a.jiwa[0]) : "–"}</span>
@@ -191,10 +215,11 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   nanti(() => { Peta.segarkan(); if (lama === "padi" || S.mode === "padi") Peta.aturWilayah(false); renderLegenda(); }); });   /* poligon hanya digambar ulang bila warna padi masuk/keluar */
 document.addEventListener("click", e => { const b = e.target.closest("#blnPeta button"); if (!b) return; S.bln = +b.dataset.b; blnPeta(); nanti(() => { Peta.segarkan(); renderLegenda(); }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
-  const k = i.dataset.l, id = {wilayah: ["wil-fill"], grid: ["grid-fill"], satelit: ["satelit"]}[k];
+  const k = i.dataset.l, id = {wilayah: ["wil-fill"], grid: ["grid-fill"], satelit: ["satelit"], embung: ["embung-c"], gambut: ["gambut-c"]}[k];
   if (k === "satelit") Peta.pasangSatelit();
-  id.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
-  renderLegenda(); });
+  (i.checked && (k === "embung" || k === "gambut") ? Peta.lapisanSumber(k) : Promise.resolve()).then(() => {
+    id.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
+    renderLegenda(); }); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 
 /* ---------- legenda */
@@ -214,6 +239,8 @@ function renderLegenda() {
     ${grid && m === "spi" ? `<div class="lbl">Indeks hujan 3 bulan (SPI-3${M.spi ? ", " + spiBulan() : ""})</div>${skala("spi", [-3, -1.75, -1.25, -.75, 0, .75, 1.25, 2], ["−2", "−1,5", "−1", "−0,5", "+0,5", "+1", "+1,5", "> 1,5"])}` : ""}
     ${grid && m === "tanah" ? `<div class="lbl">Kelembapan tanah 7–28 cm (persentil, ${fmt(M.tanah.sel)} sel)</div>${skala("tanah", [3, 8, 15, 30, 50, 70, 90, 99], ["5", "10", "20", "40", "60", "80", "95", "> 95"])}` : ""}
     ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "< 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "≥ 425 ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
+    ${Peta.lihat("embung") && S.embung ? `<div class="lbl">Embung, waduk, bendungan (OpenStreetMap)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#1d6fa5"></i>lingkaran = jumlah objek per kabupaten (titik bukan lokasi embung), ${fmt(S.embung.total)} objek se-Indonesia; kasar, tidak lengkap</span></div>` : ""}
+    ${Peta.lihat("gambut") && S.bukti?.gambut?.daftar?.length ? `<div class="lbl">Konsesi berlahan gambut di sel Siaga atau Awas</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a4a2c"></i>${fmt(S.bukti.gambut.daftar.length)} kompleks teratas (menurut DC) dari ${fmt(S.bukti.gambut.n_kering)}, tanpa nama perusahaan; indikator kasar per sel 0,5°</span></div>` : ""}
     <div class="lbl" style="margin-top:2px">Deteksi Pantau Bencana</div></div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 

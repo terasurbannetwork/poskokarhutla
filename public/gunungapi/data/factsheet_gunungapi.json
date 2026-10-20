@@ -1,0 +1,288 @@
+{
+ "sumber": "NOAA NCEI Significant Volcanic Eruption Database (korban, rumah), Smithsonian GVP Volcanoes of the World (VEI), BNPB (pengungsi Merapi 2010); tiap angka menyimpan URL-nya di `sumber`",
+ "tanggal": "2026-10-19",
+ "catatan": "Dicocokkan ke sumber pada tanggal berkas ini. Korban = meninggal menurut NCEI (langsung; total hanya untuk Tambora 1815 dan Krakatau 1883 karena korban terbanyaknya tidak langsung: tsunami, kelaparan). NCEI memisahkan beberapa peristiwa satu rangkaian: Agung 1963 hanya angka 18 Maret (120 korban lain pada 16 Mei tidak dijumlahkan); Sinabung 2014 dan 2016 dua peristiwa terpisah. Semeru 4 Desember 2021: NCEI menulis 51 meninggal pada kolom langsung dan 45 pada kolom total, angka BNPB tidak terbuka, jadi dipakai angka kolom langsung dan tidak dianggap pasti. VEI rangkaian panjang (Sinabung, Marapi, Lewotobi) adalah VEI tertinggi seluruh rangkaian di GVP, bukan VEI hari korban jatuh. Pengungsi hanya Merapi 2010 (halaman BNPB terbuka lewat arsip web); peristiwa lain null karena halaman lembaganya tidak terbuka dari sini. Ruang 2024 tanpa korban jiwa tercatat di NCEI: null, bukan 0.",
+ "kasus": [
+  {
+   "tanggal": "1815-04-10",
+   "gunung": "Tambora",
+   "wilayah": "Nusa Tenggara Barat",
+   "nama": "Tambora, Nusa Tenggara Barat",
+   "vei": 7,
+   "vei_ket": null,
+   "meninggal": 60000,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": "total termasuk korban tidak langsung (tsunami, kelaparan, penyakit)",
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/367",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D16231"
+   }
+  },
+  {
+   "tanggal": "1883-08-27",
+   "gunung": "Krakatau",
+   "wilayah": "Selat Sunda (Banten dan Lampung)",
+   "nama": "Krakatau, Selat Sunda (Banten dan Lampung)",
+   "vei": 6,
+   "vei_ket": null,
+   "meninggal": 36417,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": "total termasuk korban tidak langsung (tsunami, kelaparan, penyakit)",
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/2429",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D15589"
+   }
+  },
+  {
+   "tanggal": "1919-05-19",
+   "gunung": "Kelud",
+   "wilayah": "Jawa Timur",
+   "nama": "Kelud, Jawa Timur",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": 5110,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": 9000,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/138",
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/138",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D15953"
+   }
+  },
+  {
+   "tanggal": "1930-12-18",
+   "gunung": "Merapi",
+   "wilayah": "Jawa Tengah dan DI Yogyakarta",
+   "nama": "Merapi, Jawa Tengah dan DI Yogyakarta",
+   "vei": 3,
+   "vei_ket": null,
+   "meninggal": 1369,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": 1109,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/94",
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/94",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D15902"
+   }
+  },
+  {
+   "tanggal": "1963-03-18",
+   "gunung": "Agung",
+   "wilayah": "Bali",
+   "nama": "Agung, Bali",
+   "vei": 5,
+   "vei_ket": null,
+   "meninggal": 1028,
+   "hilang": null,
+   "luka": 624,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/351",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/351",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D16210"
+   }
+  },
+  {
+   "tanggal": "1982-05-17",
+   "gunung": "Galunggung",
+   "wilayah": "Jawa Barat",
+   "nama": "Galunggung, Jawa Barat",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": 68,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/2524",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D15721"
+   }
+  },
+  {
+   "tanggal": "2010-10-26",
+   "gunung": "Merapi",
+   "wilayah": "Jawa Tengah dan DI Yogyakarta",
+   "nama": "Merapi, Jawa Tengah dan DI Yogyakarta",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": 367,
+   "hilang": null,
+   "luka": 277,
+   "rumah_hancur": null,
+   "pengungsi": 198488,
+   "pengungsi_ket": "tercatat BNPB per 6 November 2010 pukul 06.00 WIB",
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/5304",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/5304",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D15925",
+    "pengungsi": "https://web.archive.org/web/20110721122014/http://bnpb.go.id/irw/berita.asp?id=115"
+   }
+  },
+  {
+   "tanggal": "2014-02-01",
+   "gunung": "Sinabung",
+   "wilayah": "Sumatera Utara",
+   "nama": "Sinabung, Sumatera Utara",
+   "vei": 4,
+   "vei_ket": "VEI tertinggi rangkaian erupsi 2013 sampai 2018",
+   "meninggal": 17,
+   "hilang": null,
+   "luka": 3,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6004",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6004",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D20818"
+   }
+  },
+  {
+   "tanggal": "2014-02-13",
+   "gunung": "Kelud",
+   "wilayah": "Jawa Timur",
+   "nama": "Kelud, Jawa Timur",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": 7,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": 4098,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6024",
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6024",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D20934"
+   }
+  },
+  {
+   "tanggal": "2016-05-21",
+   "gunung": "Sinabung",
+   "wilayah": "Sumatera Utara",
+   "nama": "Sinabung, Sumatera Utara",
+   "vei": 4,
+   "vei_ket": "VEI tertinggi rangkaian erupsi 2013 sampai 2018",
+   "meninggal": 7,
+   "hilang": null,
+   "luka": 3,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6567",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/6567",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D20818"
+   }
+  },
+  {
+   "tanggal": "2021-12-04",
+   "gunung": "Semeru",
+   "wilayah": "Jawa Timur",
+   "nama": "Semeru, Jawa Timur",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": 51,
+   "hilang": 9,
+   "luka": 169,
+   "rumah_hancur": 2970,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7550",
+    "hilang": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7550",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7550",
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7550",
+    "vei": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7550"
+   }
+  },
+  {
+   "tanggal": "2023-12-03",
+   "gunung": "Marapi",
+   "wilayah": "Sumatera Barat",
+   "nama": "Marapi, Sumatera Barat",
+   "vei": 2,
+   "vei_ket": "VEI tertinggi rangkaian erupsi 2023 sampai 2026",
+   "meninggal": 23,
+   "hilang": 0,
+   "luka": 12,
+   "rumah_hancur": null,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7561",
+    "hilang": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7561",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7561",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D22550"
+   }
+  },
+  {
+   "tanggal": "2024-04-16",
+   "gunung": "Ruang",
+   "wilayah": "Sulawesi Utara",
+   "nama": "Ruang, Sulawesi Utara",
+   "vei": 4,
+   "vei_ket": null,
+   "meninggal": null,
+   "hilang": null,
+   "luka": null,
+   "rumah_hancur": 3200,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7567",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D22562"
+   }
+  },
+  {
+   "tanggal": "2024-11-03",
+   "gunung": "Lewotobi Laki-laki",
+   "wilayah": "Nusa Tenggara Timur",
+   "nama": "Lewotobi Laki-laki, Nusa Tenggara Timur",
+   "vei": 4,
+   "vei_ket": "VEI tertinggi rangkaian erupsi 2023 sampai 2025",
+   "meninggal": 9,
+   "hilang": null,
+   "luka": 64,
+   "rumah_hancur": 23,
+   "pengungsi": null,
+   "pengungsi_ket": null,
+   "korban_ket": null,
+   "sumber": {
+    "meninggal": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7576",
+    "luka": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7576",
+    "rumah_hancur": "https://www.ngdc.noaa.gov/hazel/hazard-service/api/v1/volcanoes/7576",
+    "vei": "https://webservices.volcano.si.edu/geoserver/GVP-VOTW/wfs?service=WFS&version=1.0.0&request=GetFeature&outputFormat=application/json&typeName=GVP-VOTW:Smithsonian_VOTW_Holocene_Eruptions&CQL_FILTER=Eruption_Number%3D22556"
+   }
+  }
+ ]
+}

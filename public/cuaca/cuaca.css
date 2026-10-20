@@ -16,7 +16,6 @@
 #insight .ex-bd:empty{display:none}
 #insight .ex-bd:empty + .ex-ft{border-top:0}
 #metode .ex{margin-bottom:16px;border-radius:18px;overflow:hidden}
-#metode .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
 #metode .ex-bd{padding:16px 22px 12px}
 #metode .ex-ft{padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
 #metode .ex-ft:empty{display:none}
@@ -28,3 +27,5 @@
 .pil-sik:empty{display:none}
 .pil-sik button{display:inline-flex;align-items:center;gap:6px;border:0;border-radius:999px;padding:7px 12px;background:#7a1f2b;color:#fff;font:600 12.5px var(--sans,inherit);box-shadow:var(--shadow);cursor:pointer}
 @media(max-width:900px){.pil-sik{left:12px;top:64px}}
+/* A24: kontak BPBD dibuat tetapi disembunyikan, sama seperti gempa dan "Respons terdekat" karhutla (data kantor lama, nomor perlu dicek) */
+#laci [data-j="Kontak BPBD"]{display:none}

@@ -11,11 +11,9 @@ const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHei
 let PI = null, LG = null, legBuka = innerWidth > 900;
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
   hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
-  bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
-const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", rob: "Rob", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
-function kotak(fitur) { let a = [180, 90, -180, -90];
-  const jalan = c => { if (typeof c[0] === "number") { a[0] = Math.min(a[0], c[0]); a[1] = Math.min(a[1], c[1]); a[2] = Math.max(a[2], c[0]); a[3] = Math.max(a[3], c[1]); } else c.forEach(jalan); };
-  fitur.forEach(f => jalan(f.geometry.coordinates)); return [[a[0], a[1]], [a[2], a[3]]]; }
+  kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
+const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", rob: "Rob", kejadian: "Kejadian", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
+const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 /* "Hari ini" hanya bila tanggal itu memang hari ini (WIB); status.json bisa tertinggal sehari */
 const hariWIB = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
 const labelHari = t => t === hariWIB() ? "Hari ini" : tglPendek(t);
@@ -64,6 +62,7 @@ const Peta = {
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
     peta.once("load", () => window.NASA?.pasang(peta, ["imerg", "modis721"]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
+    import("../inti/peta/konteks.js").then(m => m.pasang(peta, "banjir")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
@@ -86,7 +85,7 @@ const Peta = {
     /* lapisan lain dipasang malas, satu per giliran, supaya klik pertama tidak tertahan; satelit hanya bila dinyalakan */
     ["hujan", "sungai", "rob"].forEach(k => nanti(() => this.pasangLapis(k)));
     nanti(() => this.lihat("satelit") && this.pasangLapis("satelit"));
-    nanti(() => Posko.lapis()); },
+    nanti(() => Posko.lapis()); nanti(() => KejAktif.lapis()); },
   pasangLapis(k) {
     if (!peta.getSource("wil") || peta.getLayer(k)) return;
     const vis = on => ({visibility: on ? "visible" : "none"});
@@ -162,7 +161,7 @@ const Peta = {
       peta.on("mouseleave", id, () => { diTitik = false; peta.getCanvas().style.cursor = ""; tip(); }); }
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
-      if (!diTitik && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
+      if (!diTitik && !this.diKej && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
     peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
     /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
@@ -171,6 +170,7 @@ const Peta = {
     const AMBANG = () => ["wil-fill", "sungai", "rob", "hujan", "satelit"].flatMap(id => { const l = peta.getLayer(id); return l ? [l.minzoom, l.maxzoom].filter(z => z > 0 && z < 24) : []; }), tingkat = () => AMBANG().filter(a => peta.getZoom() >= a).length; let t0 = tingkat();
     peta.on("zoomend", () => { const t = tingkat(); if (t !== t0) { t0 = t; renderLegenda(); } });
     peta.on("click", e => {
+      const kj = KejAktif.hit(e.point); if (kj) return KejAktif.buka(kj);   /* pin kejadian menang; poligonnya sesudah posko/rob/sungai/riwayat */
       const pk = peta.getLayer("posko") && peta.queryRenderedFeatures(e.point, {layers: ["posko"]});
       if (pk && pk.length) return Posko.popup(pk[0].properties.id, pk[0].geometry.coordinates.slice());
       const rb_ = peta.getLayer("rob") && peta.queryRenderedFeatures(e.point, {layers: ["rob"]});
@@ -179,6 +179,7 @@ const Peta = {
       if (s && s.length) return Analisa.sungai(s[0].properties.i);
       const gb = S.mode === "riwayat" && peta.getLayer("riw-bubble") && peta.queryRenderedFeatures(e.point, {layers: ["riw-bubble"]});
       if (gb && gb.length) return Riwayat.buka(gb[0].properties.kunci);
+      const kp = KejAktif.hit(e.point, true); if (kp) return KejAktif.buka(kp);
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (!w.length) return;
       const k = w[0].properties.kunci;
@@ -265,10 +266,11 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
     renderLegenda();
   }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
-  const k = i.dataset.l, map = {posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
+  const k = i.dataset.l, map = {kejadian: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
   if (k === "hujan" || k === "h3") nanti(() => { Peta.pasangLapis("hujan"); if (!peta.getLayer("hujan")) return; const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none");
     const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); renderLegenda(); });
   else { if (["sungai", "rob", "satelit"].includes(k)) Peta.pasangLapis(k); map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); }
+  if (k === "kejadian") KejAktif.tampil(i.checked);
   renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
@@ -276,6 +278,7 @@ function renderLegenda() {
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${S.mode === "riwayat" ? Riwayat.legenda() :
     T("wilayah") ? `<div class="lbl">Status ${NAMA_B[S.b]} per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => `<span><i class="sw" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
+    ${T("kejadian") && KejAktif.K?.length ? `<div class="lbl">Kejadian banjir aktif</div><div class="leg" style="margin:4px 0 8px">${[3, 2].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
     ${T("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#3f7fb8"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
     ${T("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
     ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>

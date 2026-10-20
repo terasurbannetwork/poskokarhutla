@@ -14,7 +14,8 @@ import {json, gagal, acak, sha, ipHash, turnstileOK, adminOK, bersihTeks, bacaBo
 import {wilayah, cariWilayah} from "./titik.js";
 import REGISTRY from "./bencana.generated.js";
 import {hidup} from "./bencana.js";
-import {nilaiGps} from "./gps.js";
+import {nilaiGps, jaringanRelay} from "./gps.js";
+import {jaringanHosting} from "./publik.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM;
 export const BATAS_FOTO = {unggah: [[JAM, 5], [HARI, 20]], komentar: [[JAM, 10], [HARI, 50]], suka: [[JAM, 120]], aduan: [[JAM, 20]]};
@@ -107,15 +108,17 @@ async function rincian(env, req, id, kini, ctx) {
 }
 
 /* media & thumbnail dari R2; yang belum tayang hanya untuk admin. Dukung Range (video bisa digeser tanpa unduh penuh). */
-/* 100 foto karhutla berbeda dari Wikimedia Commons (lisensi bebas, kredit di /img/dummy/kredit.json); dua digit hex terakhir id dummy = nomor fotonya */
-const ASET_DUMMY = Array.from({length: 100}, (_, i) => `/img/dummy/${String(i).padStart(3, "0")}.jpg`);
+/* Foto contoh dari Wikimedia Commons (lisensi bebas): karhutla di /img/dummy/NNN.jpg, bencana lain di /img/dummy/<id>/NNN.jpg; kredit di kredit.json
+   sebelahnya. Jumlah per bencana dijaga tests/warga/foto.test.mjs terhadap kredit.json. Dua digit hex terakhir id dummy = nomor fotonya. */
+export const JUMLAH_DUMMY = {karhutla: 100, banjir: 17, gempa: 14, gunungapi: 14, cuaca: 17, udara: 15, kekeringan: 16};
+const asetDummy = (ben, i) => `/img/dummy/${ben === "karhutla" ? "" : ben + "/"}${String(i).padStart(3, "0")}.jpg`;
 async function media(env, req, url, id, kini, thumb) {
-  const r = await env.DB.prepare("SELECT status, mime, dummy FROM foto WHERE id = ?").bind(id).first();
+  const r = await env.DB.prepare(`SELECT status, mime, dummy${await bencanaAda(env, kini) ? ", bencana" : ""} FROM foto WHERE id = ?`).bind(id).first();
   if (!r) return gagal(404, "foto tidak ada");
   const tayang = r.status === "tayang";
   if (!tayang && !(await adminOK(env, req, kini))) return gagal(404, "foto belum disetujui");
   if (r.dummy) {   // dummy menunjuk foto contoh di aset statis (tidak ada berkas R2)
-    const a = await env.ASSETS.fetch(new Request(new URL(ASET_DUMMY[parseInt(id.slice(-2), 16) % ASET_DUMMY.length], url)));
+    const a = await env.ASSETS.fetch(new Request(new URL(asetDummy(r.bencana || "karhutla", parseInt(id.slice(-2), 16) % (JUMLAH_DUMMY[r.bencana || "karhutla"] || 1)), url)));
     if (!a.ok) return gagal(404, "aset contoh tidak ada");   // jangan balas 200 kosong: kartu jadi abu-abu tanpa galat
     return new Response(a.body, {headers: {"content-type": a.headers.get("content-type") || "image/jpeg", "cache-control": "private, max-age=300"}});
   }
@@ -194,8 +197,11 @@ async function unggah(env, req, url, kini) {
   if (email && (email.length > 254 || !RE_EMAIL.test(email))) return gagal(400, "alamat email tidak sah");
   if (!(await turnstileOK(env, v("turnstile"), req))) return gagal(403, "verifikasi Turnstile gagal");
   const ip = await ipHash(env, req), l = await laju(env, ip, "unggah", kini); if (l) return l;   // sebelum cek GPS: penolakan ikut terhitung, probe dibatasi
-  const sebelum = await env.DB.prepare("SELECT lat, lon, dibuat FROM foto WHERE ip_hash = ? AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1").bind(ip, kini - HARI).first();
-  const gps = nilaiGps({negara: req.cf?.country, lat, lon, waktuGps, sampel: v("sampel"), sebelum, kini});
+  /* unggahan sebelumnya dari IP ATAU email yang sama (24 jam): uji loncat lokasi. ponytail: email tanpa indeks (scan foto 24 jam via foto_status);
+     tambah indeks (email, dibuat) bila tabel foto melewati ~100 rb baris */
+  const sebelum = await env.DB.prepare(`SELECT lat, lon, dibuat, CASE WHEN ip_hash = ? THEN 'ip' ELSE 'email' END lewat FROM foto
+    WHERE (ip_hash = ? OR (? != '' AND email = ?)) AND dibuat > ? AND dummy = 0 ORDER BY dibuat DESC LIMIT 1`).bind(ip, ip, email, email, kini - HARI).first();
+  const gps = nilaiGps({negara: req.cf?.country, hosting: jaringanHosting(req.cf), relay: jaringanRelay(req.cf), zona: v("zona"), prov, lat, lon, waktuGps, sampel: v("sampel"), sebelum, kini});
   if (gps.tolak) return gagal(400, gps.tolak);
   const curiga = (await kolomAda(env, "gps_curiga", kini)) ? gps.curiga.join(" · ").slice(0, 600) : null;
 
@@ -291,40 +297,50 @@ async function adminAksi(env, req, url, id, kini) {
    tersembunyi), dan aduan terisi. Ember dicapai lewat pintunya: lahir 'menunggu', lalu UPDATE seperti tombol admin; suka &
    komentar baru setelah tayang (trigger menolak sebelumnya). Gerbang "sudah ada" menghitung baris dummy yang MASIH hidup. */
 const PROV_DUMMY = ["62", "16", "61", "14", "15", "64", "63"];
-const KET_DUMMY = ["Api masih menyala di lahan gambut belakang kebun", "Asap tebal sejak pagi, jarak pandang sekitar 200 m", "Regu Manggala Agni sedang memadamkan",
-  "Lahan bekas terbakar kemarin, masih ada bara", "Warga membantu membuat sekat bakar", "Asap mulai menipis setelah hujan semalam", "Sumur bor untuk pemadaman di dekat kanal"];
-const N_DUMMY = 100;
+const KET_DUMMY = {karhutla: ["Api masih menyala di lahan gambut belakang kebun", "Asap tebal sejak pagi, jarak pandang sekitar 200 m", "Regu Manggala Agni sedang memadamkan",
+  "Lahan bekas terbakar kemarin, masih ada bara", "Warga membantu membuat sekat bakar", "Asap mulai menipis setelah hujan semalam", "Sumur bor untuk pemadaman di dekat kanal"],
+  banjir: ["Air setinggi lutut di jalan utama", "Sungai meluap sejak dini hari", "Warga mengungsi ke balai desa", "Genangan belum surut sejak kemarin"],
+  gempa: ["Dinding rumah retak setelah guncangan", "Warga bermalam di halaman", "Atap sekolah runtuh sebagian", "Tanah merekah di tepi jalan"],
+  gunungapi: ["Hujan abu tipis menutupi atap", "Jalan berselimut abu vulkanik", "Kolom asap terlihat dari desa", "Warga memakai masker menghadapi abu"],
+  cuaca: ["Hujan deras disertai angin kencang", "Petir menyambar di sore hari", "Langit gelap sejak siang", "Jalan tergenang setelah hujan lebat"],
+  udara: ["Langit kelabu, matahari tampak merah", "Jarak pandang menurun karena kabut asap", "Bau asap terasa sejak pagi", "Warga mengurangi aktivitas di luar rumah"],
+  kekeringan: ["Tanah retak dan sawah mengering", "Air waduk menyusut jauh", "Sumur warga mulai kering", "Sungai hampir tanpa air"]};
 const NAMA_DUMMY = ["Rina", "Budi S.", "Pak Darto", "", "Siti", "", "Yoga"];
 async function dummy(env, req, kini) {
   const mod = await adminOK(env, req, kini); if (!mod) return gagal(403, "admin wajib masuk");
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const ben = b.o.bencana == null ? "karhutla" : b.o.bencana, ada = await bencanaAda(env, kini);   // isi = bencana HALAMAN yang dibuka; hapus = semua bencana
+  if (!JUMLAH_DUMMY[ben] || !KAT_BENCANA[ben]) return gagal(400, "bencana tidak dikenal");
+  if (ben !== "karhutla" && !ada) return gagal(503, "migrasi 0013 belum dijalankan");
   const catat = (aksi, n) => env.DB.prepare("INSERT INTO audit_foto (waktu, moderator, aksi, target, alasan) VALUES (?, ?, ?, 'dummy', ?)").bind(kini, mod, aksi, `${n} baris`);
   if (b.o.aksi === "hapus") {
     const n = (await env.DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n;
-    const r = await env.DB.batch([env.DB.prepare("DELETE FROM foto_komentar WHERE dummy = 1"), env.DB.prepare("DELETE FROM foto WHERE dummy = 1"), catat("hapus_dummy", n)]);
-    return json({ok: true, foto: n, komentar: r[0].meta.changes});   // meta.changes foto ikut menghitung baris cascade
+    /* foto_aduan menunjuk target teks tanpa FK: tanpa baris ini tiap isi/hapus meninggalkan satu aduan yatim */
+    const r = await env.DB.batch([env.DB.prepare("DELETE FROM foto_aduan WHERE jenis = 'foto' AND target IN (SELECT id FROM foto WHERE dummy = 1)"),
+      env.DB.prepare("DELETE FROM foto_komentar WHERE dummy = 1"), env.DB.prepare("DELETE FROM foto WHERE dummy = 1"), catat("hapus_dummy", n)]);
+    return json({ok: true, foto: n, komentar: r[1].meta.changes});   // meta.changes foto ikut menghitung baris cascade
   }
   if (b.o.aksi !== "isi") return gagal(400, "aksi harus isi/hapus");
-  const ada = (await env.DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n;
-  if (ada) return gagal(409, `data dummy masih ada (${ada} foto); hapus dulu bila ingin mengisi ulang`);
-  const W = await wilayah(env), kec = [];
+  const sudah = (await env.DB.prepare(`SELECT count(*) n FROM foto WHERE dummy = 1${ada ? " AND bencana = ?" : ""}`).bind(...(ada ? [ben] : [])).first()).n;
+  if (sudah) return gagal(409, `data dummy ${ben} masih ada (${sudah} foto); hapus dulu bila ingin mengisi ulang`);
+  const N_DUMMY = JUMLAH_DUMMY[ben], W = await wilayah(env), kec = [];
   for (const g of W.grid.values()) for (const k of g) if (PROV_DUMMY.includes(k[2].slice(0, 2))) kec.push(k);
   kec.sort((a, b) => a[2] < b[2] ? -1 : 1);
   const pilih = Array.from({length: N_DUMMY}, (_, i) => kec[Math.floor((i * 7919) % kec.length)]);
-  const ipPalsu = i => sha(`dummy-${i}`), KAT = Object.keys(KATEGORI), st = [], ids = [];
+  const ipPalsu = i => sha(`dummy-${i}`), KAT = Object.keys(KAT_BENCANA[ben]), KET = KET_DUMMY[ben], st = [], ids = [];
   for (let i = 0; i < pilih.length; i++) {
     const [la, lo, kunci] = pilih[i], [prov, kab, kc] = kunci.split("|"), id = acak(7) + i.toString(16).padStart(2, "0"), nama = NAMA_DUMMY[i % NAMA_DUMMY.length];
     const dibuat = kini - (i * 1.5 + 1) * JAM, exifW = i % 3 !== 2, exifJ = i % 4 === 0 ? 40 + i * 13 : null;
     ids.push(id);
     st.push(env.DB.prepare(`INSERT INTO foto (id, jenis, kategori, lat, lon, akurasi, prov, kab, kec, keterangan, nama, tampil_nama, email, diambil, dibuat, exif_waktu, exif_jarak,
-      kamera, ukuran, mime, ip_hash, dummy) VALUES (?, 'foto', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'image/webp', ?, 1)`)
-      .bind(id, KAT[i % KAT.length], la + ((i % 5) - 2) * .004, lo + ((i % 3) - 1) * .004, 8 + (i * 17) % 90, prov, kab, kc, "[Contoh] " + KET_DUMMY[i % KET_DUMMY.length],
-        nama, nama && i % 2 === 0 ? 1 : 0, i % 3 === 0 ? `warga${i}@contoh.id` : "", exifW ? dibuat - 25 * MENIT : dibuat, dibuat, exifW ? 1 : 0, exifJ, i % 2, 180000 + i * 9000, await ipPalsu(i % 9)));
+      kamera, ukuran, mime, ip_hash, dummy${ada ? ", bencana, kategori_b" : ""}) VALUES (?, 'foto', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'image/webp', ?, 1${ada ? ", ?, ?" : ""})`)
+      .bind(id, LAMA.has(KAT[i % KAT.length]) ? KAT[i % KAT.length] : "lainnya", la + ((i % 5) - 2) * .004, lo + ((i % 3) - 1) * .004, 8 + (i * 17) % 90, prov, kab, kc, "[Contoh] " + KET[i % KET.length],
+        nama, nama && i % 2 === 0 ? 1 : 0, i % 3 === 0 ? `warga${i}@contoh.id` : "", exifW ? dibuat - 25 * MENIT : dibuat, dibuat, exifW ? 1 : 0, exifJ, i % 2, 180000 + i * 9000, await ipPalsu(i % 9), ...(ada ? [ben, ben === "karhutla" ? "" : KAT[i % KAT.length]] : [])));
   }
   /* ember: 0,1 menunggu (yang terbaru, seperti antrean nyata); tiap ke-6 ditolak; sisanya tayang */
   ids.forEach((id, i) => { if (i < 3) return; const tolak = i % 6 === 5;
-    st.push(env.DB.prepare("UPDATE foto SET status = ?, alasan = ? WHERE id = ?").bind(tolak ? "ditolak" : "tayang", tolak ? "Foto tidak menunjukkan api/asap" : "", id)); });
-  const KOM = ["Semoga cepat padam 🙏", "Di kampung sebelah juga berasap", "Terima kasih infonya, kami kirim regu", "Masih ada asap jam 5 sore tadi"];
+    st.push(env.DB.prepare("UPDATE foto SET status = ?, alasan = ? WHERE id = ?").bind(tolak ? "ditolak" : "tayang", tolak ? "Foto tidak relevan dengan kejadian" : "", id)); });
+  const KOM = ["Semoga segera tertangani 🙏", "Di kampung sebelah juga begini", "Terima kasih infonya, kami kirim bantuan", "Kondisi masih sama jam 5 sore tadi"];
   for (let i = 3; i < ids.length; i++) {
     if (i % 6 === 5) continue;
     const ns = (i * 5) % 13, sv = [];   // satu INSERT banyak baris per foto: 100 foto tetap jauh di bawah batas kueri per panggilan D1
@@ -336,7 +352,7 @@ async function dummy(env, req, kini) {
   st.push(env.DB.prepare("INSERT INTO foto_aduan (target, jenis, ip_hash, alasan, waktu) VALUES (?, 'foto', ?, 'tidak_relevan', ?)").bind(ids[7], await ipPalsu(300), kini));
   st.push(catat("isi_dummy", ids.length));
   await env.DB.batch(st);
-  return json({ok: true, foto: ids.length}, 201);
+  return json({ok: true, foto: ids.length, bencana: ben}, 201);
 }
 
 /* cron: foto ditolak > 30 hari dihapus beserta berkasnya; jejak laju > 2 hari dibuang */

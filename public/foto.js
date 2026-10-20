@@ -84,11 +84,20 @@
       <span class="fg-kat" style="--k:${w}">${ikat(f.kategori)}${k}</span>
       <span class="fg-bawah"><span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)} · ${esc(namaProv(f.prov))} · ${lalu(f.diambil || f.dibuat)}</small></span>
       <span class="fg-st">${stat(IK.naik, f.suka)}${stat(IK.kom, f.komentar)}${stat(IKS.mata, f.dilihat)}</span></span></span></button>`; };
+  /* DUMMY.md: 🧪 mengisi foto dummy untuk bencana halaman ini (BEN), 🧹 menghapus SEMUA dummy; muat ulang penuh sesudahnya */
+  async function dummy(btn) {
+    const aksi = btn.dataset.dummy; if (aksi === "hapus" && !confirm("Hapus SEMUA foto, suka, dan komentar dummy? Data asli tidak tersentuh.")) return;
+    btn.disabled = true;
+    const r = await fetch(API + "/dummy", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json"}, body: JSON.stringify({aksi, bencana: BEN})});
+    const j = await r.json().catch(() => ({}));
+    alert(r.ok ? (aksi === "isi" ? `${j.foto} foto dummy ${NAMA_BEN} dibuat.` : `${j.foto} foto dan ${j.komentar} komentar dummy dihapus.`) : j.galat || "Gagal");
+    location.reload();
+  }
   async function render() {
     const el = $("#foto"); if (!el) return;
     if (!el.dataset.siap) {
       el.dataset.siap = 1;
-      el.innerHTML = `<div class="fl-wrap"><div class="fg-panel"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n, i]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${IK[i] || IKS[i]}${n}</button>`).join("")}</div></div>
+      el.innerHTML = `<div class="fl-wrap"><div class="fg-panel"><div class="fg-atas"><div class="fl-seg" role="group" aria-label="Urutkan">${URUT.map(([k, n, i]) => `<button data-u="${k}" aria-pressed="${k === G.urut}">${IK[i] || IKS[i]}${n}</button>`).join("")}</div>${admin ? `<span class="fl-dummy"><button type="button" class="fl-sek" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button type="button" class="fl-sek" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button></span>` : ""}</div>
         <div class="fg-saring"><div id="fgProv"></div><div class="fl-chip" role="group" aria-label="Kategori">${Object.entries(KAT).map(([k, [n, w]]) => `<button data-k="${k}" style="--k:${w}" aria-pressed="false">${ikat(k)}${n}</button>`).join("")}</div>
           <div class="fl-chip" role="group" aria-label="Jenis"><button data-j="foto" aria-pressed="false">${IK.kamera}Foto</button><button data-j="video" aria-pressed="false">${IK.video}Video</button></div></div></div>
         <button class="fl-pri fg-apung" data-kirim>${IK.kamera}Kirim foto</button>
@@ -99,6 +108,7 @@
         const j = e.target.closest("[data-j]"); if (j) { G.jenis = G.jenis === j.dataset.j ? "" : j.dataset.j; G.h = 0; el.querySelectorAll("[data-j]").forEach(b => b.setAttribute("aria-pressed", b.dataset.j === G.jenis)); return isiGaleri(); }
         const m = e.target.closest("[data-m]"); if (m && m.dataset.m === "peta") return lihatPeta();
         const h = e.target.closest("[data-h]"); if (h && !h.disabled) { G.h = +h.dataset.h; isiGaleri(); return el.scrollIntoView({block: "start"}); }
+        const dm = e.target.closest("[data-dummy]"); if (dm) return dummy(dm);   // 🧪/🧹 hanya dirender untuk admin; server tetap menolak non-admin (403)
         if (e.target.closest("[data-kirim]")) return Kirim.buka();
         const c = e.target.closest("[data-fid]"); if (c) return Rinci.buka(c.dataset.fid);
       });
@@ -178,6 +188,9 @@
       const r = await fetch(`${API}/${id}`, {credentials: "same-origin"});
       if (!r.ok) { d.innerHTML = `<div class="fl-r-isi"><button class="fl-x" data-tutup aria-label="Tutup">×</button><div class="fl-kosong"><b>Foto tidak ditemukan</b><p>Mungkin sudah dihapus atau belum disetujui.</p></div></div>`; return; }
       const f = await r.json(); this.f = f; d.innerHTML = this.html(f);
+      if (f.contoh) fetch(`/img/dummy/${BEN === "karhutla" ? "" : BEN + "/"}kredit.json`).then(x => x.json()).then(ks => {   // lisensi BY/BY-SA: foto contoh Commons tampil dengan kreditnya
+        const k = ks[parseInt(f.id.slice(-2), 16) % ks.length], info = d.querySelector(".fl-info"); if (!k || !info) return;
+        info.insertAdjacentHTML("beforeend", `<div><dt>${IK.galeri}Foto contoh</dt><dd><a href="${esc(k.sumber)}" target="_blank" rel="noopener">${esc(k.judul.replace(/^File:/, ""))}</a> · ${esc(k.penulis || k.pembuat || "")} · ${esc(k.lisensi)}</dd></div>`); }).catch(() => {});
     },
     html(f) {
       const [k, w] = KAT[f.kategori] || KAT.lainnya;
@@ -436,7 +449,7 @@
         const x = new FormData(), set = (k, v) => v != null && v !== "" && x.append(k, v);
         set("bencana", BEN); set("kategori", fm.kategori.value); set("keterangan", fm.keterangan.value); set("nama", fm.nama.value); set("email", fm.email.value);
         set("tampil_nama", fm.tampil_nama.checked ? "1" : "0"); set("setuju", "1"); set("kamera", y.kamera ? "1" : "0");
-        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu); set("sampel", JSON.stringify(this.loc.sampel));
+        set("lat", this.loc.lat); set("lon", this.loc.lon); set("akurasi", this.loc.akurasi); set("waktu_gps", this.loc.waktu); set("sampel", JSON.stringify(this.loc.sampel)); set("zona", Intl.DateTimeFormat().resolvedOptions().timeZone || "");
         if (y.exif?.waktu) set("exif_waktu", y.exif.waktu);
         if (y.exif?.lat != null) { set("exif_lat", y.exif.lat); set("exif_lon", y.exif.lon); }
         if (y.durasi) set("durasi", y.durasi);

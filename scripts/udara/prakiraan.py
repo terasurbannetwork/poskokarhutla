@@ -251,6 +251,16 @@ def arsip_tambah(arsip, tgl, baris, lama=None):
 
 
 # ---------- utama ----------
+def arsip_jalan(arsip, jalan, hari, baris, maks_hari=90):
+    """Tambah SATU entri per jalan (kunci = waktu jalan ISO): r24 3 hari tiap kab/kota. Append-only, tak pernah menimpa;
+    entri dengan hari[0] lebih tua dari maks_hari hari dibuang supaya berkas bergulir. Bahan uji balik lead 0..2 (1-3 hari) kelak; belum ditampilkan."""
+    if jalan in arsip:
+        return arsip
+    arsip[jalan] = {"hari": hari, "r24": {k["kode"]: k["r24"] for k in baris}}
+    batas = (dt.date.fromisoformat(hari[0]) - dt.timedelta(days=maks_hari)).isoformat()
+    return {j: v for j, v in sorted(arsip.items()) if v["hari"][0] >= batas}
+
+
 def hitung(kota, waktu, seri, t, f_kota):
     """kota + deret CAMS -> (baris kota prakiraan.json, hari, jam, r24 lampau {kode: {tgl: r24}})."""
     if t not in waktu:
@@ -269,7 +279,7 @@ def hitung(kota, waktu, seri, t, f_kota):
         if None in r:
             raise ValueError(f"{k['kode']}: r24 kosong {r}")
         rw[k["kode"]] = dict(zip(lampau, r24(waktu, kor, lampau)))
-        out.append({"kode": k["kode"], "nama": k["nama"], "prov": k["prov"], "lat": k["lat"], "lon": k["lon"],
+        out.append({"kode": k["kode"], "nama": k["nama"], "prov": k["prov"], "lat": k["lat"], "lon": k["lon"], "jiwa": k.get("jiwa"),
                     "pm": [None if v is None else round(v) for v in kor[i0:i0 + 72]],
                     "mentah": [None if v is None else round(v) for v in pm25[i0:i0 + 72]],
                     "pm10": [None if v is None else round(v * f) for v in pm10[i0:i0 + 72]],
@@ -315,6 +325,10 @@ def main():
     arsip = arsip_tambah(arsip, hari[0], baris)
     alat.simpan("prakiraan_arsip.json", arsip)
     arsip_pr = arsip_dict(arsip)
+
+    # arsip tiap jalan (2x sehari): ringkasan r24 3 hari per kab/kota, berkas bergulir 90 hari di data/raw/udara (cache CI)
+    aj = os.path.join(alat.RAW, "prakiraan_jalan.json")
+    alat.simpan(aj, arsip_jalan(alat.muat(aj, {}), alat.iso(t), hari, baris))
 
     # galat METAR: (1) analisis CAMS hari lampau; (2) prakiraan hari+1 dari arsip, hanya bila n >= 50 hari-bandara
     galat_metar = galat_pr = None
@@ -444,6 +458,15 @@ def uji():
             raise AssertionError(f"jam {salah} harus ditolak")
         except ValueError:
             pass
+    # arsip jalan: append-only, jalan sama tak menimpa, entri lewat 90 hari dibuang
+    brs = [{"kode": "1671", "r24": [90, 80, 70]}]
+    a = arsip_jalan({}, "2026-10-18T03:00Z", ["2026-10-18", "2026-10-19", "2026-10-20"], brs)
+    assert a["2026-10-18T03:00Z"]["r24"]["1671"] == [90, 80, 70]
+    assert arsip_jalan(a, "2026-10-18T03:00Z", ["2026-10-18", "2026-10-19", "2026-10-20"], [{"kode": "1671", "r24": [1, 1, 1]}]) == a
+    b2 = arsip_jalan(a, "2026-10-18T15:00Z", ["2026-10-18", "2026-10-19", "2026-10-20"], brs)
+    assert len(b2) == 2
+    b3 = arsip_jalan(b2, "2027-02-01T03:00Z", ["2027-02-01", "2027-02-02", "2027-02-03"], brs)
+    assert list(b3) == ["2027-02-01T03:00Z"], b3
     print("prakiraan uji: lulus")
 
 

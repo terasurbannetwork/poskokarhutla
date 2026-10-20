@@ -44,8 +44,8 @@ jobs:
             public/data/lapisan_tambahan.json public/data/model_sebaran.json public/data/musim.json public/data/musim_awal.json \
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
-            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm)
+            public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           [ -z "$f" ] || git checkout HEAD -- $f
 
       # sekali jalan: musim_harian.json dibangun ulang dengan latar median; cache data- lama (latar lain) tidak boleh menang.
@@ -86,6 +86,7 @@ jobs:
         continue-on-error: true
         run: |
           python3 scripts/data/ansambel.py
+          python3 scripts/data/peluang_karhutla.py || echo "::warning title=peluang karhutla::gagal; berkas lama dibiarkan"
           python3 scripts/data/tanah.py
 
       - name: Simpan iklim tanah
@@ -187,11 +188,24 @@ jobs:
           python3 scripts/data/operasi.py uji
           python3 scripts/data/operasi.py
 
+      # prioritas pembasahan per KHG (titik panas di dalam poligon KHG) dan kendala lapangan per kompleks. khg_hari.json (penghitung harian,
+      # ikut cache public/data) terisi mundur dari FIRMS maks 45 permintaan per jalan, jadi musim 2026 lengkap setelah beberapa jalan.
+      - name: Prioritas KHG dan kendala lapangan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 30
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
+          python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
+
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
       - name: Indeks iklim ENSO/IOD (boleh gagal)
         continue-on-error: true
         run: |
           if [ "$(date -u +%u)" = 1 ] || [ ! -f public/data/iklim.json ]; then python3 scripts/data/iklim.py; fi
+          # outlook hujan Niño x Dipol (CHIRPS 1981-sekarang, ±3 menit tanpa cache): mingguan bersama iklim.py
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f public/data/iklim_outlook.json ]; then python3 scripts/umum/iklim_outlook.py uji && python3 scripts/umum/iklim_outlook.py; fi
 
       - name: Data keputusan & InaRISK/BPBD (boleh gagal)
         continue-on-error: true
@@ -278,6 +292,10 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/laporan.py
 
+      - name: Kurva titik panas kumulatif antartahun (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/kumulatif.py
+
       - name: Laporan harian gagal (peringatan)
         if: steps.laporan.outcome == 'failure'
         run: |
@@ -301,6 +319,7 @@ jobs:
           python3 scripts/data/dampak.py uji
           python3 scripts/data/penerbangan.py uji
           python3 scripts/data/ansambel.py uji
+          for s in titik_palsu peluang_karhutla kumulatif; do python3 scripts/data/$s.py uji; done
           python3 scripts/data/tanah.py uji
           python3 scripts/data/penduduk.py paparan > /dev/null
           python3 scripts/scrape/akses.py uji
@@ -338,7 +357,7 @@ jobs:
         run: |
           # tampilan diambil dari main terbaru, bukan dari commit saat run dimulai: push di tengah run tidak boleh tertimpa
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data'
-          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@3 deploy; exit; fi
+          if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
           git add public/data

@@ -11,6 +11,8 @@ const labelHari = t => hariWIB(t) === hariWIB(Date.now()) ? "hari ini" : "per " 
 const jiwaAngka = v => { if (v == null || isNaN(v)) return "–"; if (v <= 0) return "0"; if (v < 100) return "kurang dari 100"; if (v < 1000) return fmt(Math.round(v / 100) * 100);
   if (v < 1e4) return fmt(Math.round(v / 100) / 10) + " ribu"; if (v < 1e6) return fmt(Math.round(v / 1000)) + " ribu"; return fmt(Math.round(v / 1e5) / 10) + " juta"; };
 const jiwaTxt = v => { const a = jiwaAngka(v); return /^\d/.test(a) && a !== "0" ? "±" + a : a; };
+/* teks pil untuk semua yang berasal dari abu.py: skenario "jika meletus sekarang" (erupsi diandaikan), bukan prakiraan letusan atau advisory VAAC */
+const TXT_SKEN = "skenario jika meletus sekarang, bukan prakiraan";
 const km5 = v => fmt(Math.max(5, Math.round(v / 5) * 5));
 const mnt5 = v => v < 5 ? "kurang dari 5 menit" : fmt(Math.round(v / 5) * 5) + " menit";
 /* peluang kebetulan sebagai "a dari b" (pecahan sederhana terdekat) */

@@ -830,6 +830,33 @@ peringatan BMKG disaring: hujan, banjir, longsor, petir, angin kencang, gelomban
       "Model 28 km tidak melihat banjir drainase kota, sungai kecil, tanggul jebol, atau longsor sangat lokal.", "Riwayat BNPB/DIBI tidak lengkap dan lebih baik di Jawa; skor risiko dan pilihan posko mewarisi bias itu.",
       "Parameter keputusan (efek peringatan dini, lama mengungsi, harga alat) sebagian besar asumsi bertanda lemah."]});
 
+  /* ---------------------------------------------------------------- kalender pasang astronomis (P8) */
+  B.push({ik: "kalender", j: "Kalender pasang astronomis", sub: "Kapan tarikan Bulan dan Matahari paling kuat dalam 12 bulan ke depan",
+    singkat: `Pasang laut ditarik oleh Bulan dan Matahari. Tarikan itu bisa dihitung jauh hari dari posisi keduanya saja, tanpa data laut. Kartu "Kalender pasang" di Insight menampilkan seberapa kuat tarikannya tiap hari (0 sampai 1) dan menandai hari-hari terkuat. Itu bukan tinggi air dan bukan prakiraan rob: rob nyata baru terjadi bila pasang kuat ini bertemu air laut yang sedang tinggi, angin, gelombang, dan tanah yang turun.`,
+    alur: [["d", "jam", "Posisi Bulan dan Matahari", "tiap hari, 365 hari"], ["o", "hitung", "Kuat tarikan", "jarak dan kemiringan"], ["o", "urut", "Dua suku", "harian dan dua kali sehari"], ["h", "kalender", "Indeks 0 sampai 1", "jendela terkuat ditandai"]],
+    contoh: async () => {
+      const A = await mtJSON("data/pasang_astro.json"), P = A.pasang_tinggi.pantura, t = P.tertinggi[0], pg = A.perigee.find(x => x.t.slice(0, 10) >= t.awal && x.t.slice(0, 10) <= t.akhir) || A.perigee.reduce((m, x) => Math.abs(Date.parse(x.t) - Date.parse(t.puncak)) < Math.abs(Date.parse(m.t) - Date.parse(t.puncak)) ? x : m);
+      const i = A.seri.g.pantura.indexOf(t.nilai) , dd = A.nodal.bulan.indexOf(A.mulai.slice(0, 7)), k1 = dd >= 0 ? A.nodal.f_k1[dd] : null;
+      return mtTangga(`Jendela terkuat berikutnya, profil pantura Jawa`, `Dihitung ${mtTgl(A.dibuat)} untuk ${A.hari} hari sejak ${mtTgl(A.mulai)}.`, [
+        ["in", "Hari dengan indeks tertinggi", "dari seri harian profil pantura", mtTgl(t.puncak)],
+        ["in", "Indeks pada hari itu", "1 = tarikan terkuat 2005 sampai 2035", mtA(t.nilai, 2)],
+        ["", "Jendela sekitarnya", `hari-hari dengan indeks di atas ${mtA(P.ambang, 2)} (persentil 85 dari 365 hari)`, `${mtTgl(t.awal)} sampai ${mtTgl(t.akhir)}`],
+        ["", "Perigee (Bulan terdekat) di sekitarnya", "jarak pusat Bumi ke pusat Bulan", `${mtTgl(pg.t)}, ${fmt(pg.km)} km`],
+        k1 != null && ["in", "Faktor nodal K1 bulan ini", "siklus 18,6 tahun; puncaknya sekitar 2025", mtA(k1, 3)],
+        ["hasil", "Jumlah jendela dalam 12 bulan", "pantura Jawa", fmt(P.jendela.length)]]); },
+    teknis: `<p><code>scripts/banjir/pasang_astro.py</code>, hanya hitungan astronomi, tanpa jaringan dan tanpa kuota. Posisi Bulan dari deret pendek Astronomical Almanac (sekitar 0,3 derajat), Matahari dari rumus Meeus bab 25.</p>
+    ${rumus(`gaya Bulan   = (384.400 km / jarak)^3
+gaya Matahari = 0,46 x (1 AU / jarak)^3        (rasio rata-rata, Pugh 1987)
+semi-diurnal ~ cos^2(deklinasi)     diurnal ~ sin(2 x deklinasi)
+suku = besar vektor fase Bulan + Matahari (selisih fase = selisih asensio rekta)
+indeks = bobot diurnal x D + bobot semi-diurnal x S,  D dan S dibagi maksimumnya 2005-2035`)}
+    <p>Karena fase dijumlahkan sebagai vektor, pasang purnama dan perbani muncul sendiri. Jendela terkuat = hari berurutan (celah paling lama satu hari ikut dilebur) yang indeksnya di atas persentil ke-85 dari 365 hari. Faktor nodal K1, O1, dan M2 (Schureman 1958) ditampilkan terpisah untuk konteks siklus 18,6 tahun; pengaruhnya sudah ada di deklinasi Bulan, jadi tidak dikalikan lagi.</p>
+    <p>Perigee dicocokkan dengan nilai publik: 14 Nov 2016 (356.509 km) dan 19 Mar 2011 (356.577 km) keluar dalam kisaran 0,3% jarak dan beberapa jam waktu.</p>`,
+    batas: ["Ini indeks gaya pasang astronomis, bukan tinggi muka air dan bukan prakiraan rob.",
+      "Bobot diurnal dan semi-diurnal adalah asumsi: pantura Jawa 80% dan 20% (arah umum Laut Jawa diurnal-campuran, Wyrtki 1961; angka 80/20 belum diukur per stasiun), titik lain 50% dan 50%. Repo ini tidak punya konstanta harmonik pasang per stasiun.",
+      "Posisi Bulan presisi rendah: tanggal puncak bisa meleset beberapa jam, cukup untuk jendela harian, tidak untuk jam pasang.",
+      "Tidak memuat unsur non-astronomis yang ikut menentukan rob: muka laut musiman, tekanan udara, angin, gelombang, dan penurunan tanah. Itu ada di bagian rob dari model laut."]});
+
   /* ---------------------------------------------------------------- gambaran besar */
   const SUMBER = [["hujan", "Open-Meteo", "hujan, hujan per jam, kebasahan tanah · 0,25°"], ["dadu", "ECMWF ansambel", "51 skenario hujan"], ["sungai", "GloFAS Copernicus", "debit sungai besar"],
     ["ombak", "Open-Meteo Marine + IOC", "muka laut, gelombang, alat ukur pasang"], ["perisai", "InaRISK BNPB", "peta bahaya banjir, longsor, gelombang"], ["berkas", "BNPB / DIBI", "kejadian 2008–sekarang"], ["lonceng", "BMKG", "peringatan cuaca, rob, gelombang"]];
@@ -860,6 +887,9 @@ peringatan BMKG disaring: hujan, banjir, longsor, petir, angin kencang, gelomban
       <div class="mt-batas"><span class="mt-lbl">Batasan</span><ul>${s.batas.map(x => `<li><span>${x}</span></li>`).join("")}</ul></div>
     </div></details>`).join("")}`;
 
+  /* bab peluang hujan lebat per wilayah: batasan dan uji balik dari peluang.json (mesin bersama inti/peluang.js), ditaruh paling akhir */
+  if (typeof Peluang !== "undefined") Peluang.muat("data/peluang.json").then(d => { const h = Peluang.batasan(d, {judul: "Peluang hujan lebat per wilayah"});
+    if (h) $("#metode").insertAdjacentHTML("beforeend", h.replace(/<b>0\. /, `<b>${B.length + 1}. `)); });
   $("#metode").querySelectorAll("[data-buka]").forEach(b => b.onclick = () => bukaTab(b.dataset.buka));
   /* contoh dihitung saat bagian dibuka pertama kali */
   const isi = el => { if (el.dataset.ok) return; el.dataset.ok = 1; const i = +el.dataset.i, box = $("#mtc" + i);

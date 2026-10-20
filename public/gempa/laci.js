@@ -8,7 +8,7 @@ const Laci = {
   /* "0,64° LU, 121,75° BT" (ID) atau "0.64° N, 121.75° E" (EN) */
   koord(g) { const en = window.BAHASA === "en", f = v => Math.abs(v).toFixed(2).replace(".", en ? "." : ",");
     return `${f(g.lat)}° ${en ? (g.lat < 0 ? "S" : "N") : (g.lat < 0 ? "LS" : "LU")}, ${f(g.lon)}° ${en ? "E" : "BT"}`; },
-  tutup() { $("#laci")?.classList.remove("on"); },
+  tutup() { $("#laci")?.classList.remove("on"); Kejadian.bersih(); },
   buka(g) {
     const el = $("#laci"); if (!el) return;
     const kd = kelasDalam(g.dalam), ts = g.tsunami, bmkg = g.sumber !== "usgs";
@@ -22,9 +22,9 @@ const Laci = {
       ${g.shakemap ? `<a class="fnd" href="${esc(g.shakemap)}" target="_blank" rel="noopener" style="display:block">Peta guncangan BMKG ↗</a>` : ""}
       <p class="fnd">Sumber: ${bmkg ? "BMKG" : "USGS"}${g.sumber === "bmkg" ? ", USGS" : ""}</p>`;
     el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">Gempa ${esc(mTulis(g.m))}</span><h2 id="dlgJudul" title="${esc(wilayahPendek(g.wilayah))}" translate="no">${esc(wilayahPendek(g.wilayah))}</h2><div class="hd-meta"><span translate="no">${esc(waktuGempa(g.waktu))}</span></div></div>
-      <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+      <div class="hd-aksi">${g.kej ? `<button class="bagikan ik-btn" aria-label="Bagikan" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>` : ""}<button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">${isi}<div class="lc-lanjut" id="laciLanjut"></div>${this.simulasi(g)}</div>`;
-    el.dataset.g = g.id; el.classList.add("on"); el.querySelector(".tutup").onclick = () => this.tutup(); this.lanjut(g, el); },
+    el.dataset.g = g.id; el.classList.add("on"); el.querySelector(".tutup").onclick = () => this.tutup(); const bg = el.querySelector(".bagikan"); if (bg) bg.onclick = () => this.bagikan(g); this.lanjut(g, el); },
   /* tautan ke tab Simulasi: /gempa/sim?lat=&lon=&m=&dalam= */
   simulasi: g => `<a class="btn sec lc-sim" href="/gempa/sim?lat=${g.lat}&lon=${g.lon}&m=${g.m}${g.dalam == null ? "" : "&dalam=" + g.dalam}"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 3.5-4 6-3"/></svg>Simulasikan</a>`,
   /* bagian yang bergantung pada model/data tambahan datang sendiri-sendiri; hilang bila datanya tidak ada (A18) */
@@ -40,14 +40,34 @@ const Laci = {
     if (g.m >= 4.5 && typeof GempaGuncangan !== "undefined") Guncang.hitung(g).then(({P, F}) => { if (!P?.total) return;
       const ks = Object.keys(P.per).map(Number).filter(k => k >= 3 && P.per[k] > 0).sort((a, b) => b - a); if (!ks.length) return;
       const nf = t => F ? F.filter(f => f.t === t).length : 0, fas = F && F.length ? `<p class="fnd">Dari fasilitas rawan yang dimuat (sebagian sekolah dengan syarat teringan tidak dimuat), ${[nf("sekolah") && fmt(nf("sekolah")) + " sekolah", nf("rs") && fmt(nf("rs")) + " fasilitas kesehatan", nf("publik") && fmt(nf("publik")) + " bangunan publik"].filter(Boolean).reduce((s, x, i, A) => s + (i ? (i === A.length - 1 ? " dan " : ", ") : "") + x, "") || fmt(F.length) + " fasilitas"} diperkirakan terguncang MMI VI atau lebih.</p>` : "";
-      tambah(2, `<h4 class="lc-h">Perkiraan penduduk terpapar</h4><table class="tb2"><tbody>${ks.map(k => baris(`<span class="lc-mmi" style="--w:${MMI_WARNA[k]};color:${k <= 3 ? "#3b3320" : "#fff"}">MMI ${rom(k)}</span>`, jiwaTeks(P.per[k]))).join("")}</tbody></table>${fas}
-        <p class="fnd">Simulasi, bukan prakiraan.</p>`); }).catch(() => {});
+      tambah(2, `<h4 class="lc-h">Perkiraan penduduk terpapar ${pilModel}</h4><table class="tb2"><tbody>${ks.map(k => baris(`<span class="lc-mmi" style="--w:${MMI_WARNA[k]};color:${k <= 3 ? "#3b3320" : "#fff"}">MMI ${rom(k)}</span>`, jiwaTeks(P.per[k]))).join("")}</tbody></table>${fas}
+        <p class="fnd">Perkiraan model guncangan, belum diuji terhadap laporan Dirasakan.</p>`); }).catch(() => {});
+    /* 6. bandara di zona guncangan MMI VI atau lebih (A35, model guncangan yang sama) */
+    if (g.m >= 5 && typeof GempaGuncangan !== "undefined") Guncang.bandara(g).then(B => { if (!B?.length) return;
+      tambah(6, `<h4 class="lc-h">Bandara di zona guncangan</h4><table class="tb2"><tbody>${B.slice(0, 5).map(b => baris(`<span translate="no">${esc(b.nama.replace(/ (International )?Airport$/, ""))}</span>`, `<span class="lc-mmi" style="--w:${MMI_WARNA[Math.round(b.mmi)]};color:${b.mmi < 3.5 ? "#3b3320" : "#fff"}">MMI ${rom(b.mmi)}</span>`)).join("")}</tbody></table>
+        <p class="fnd">${B.length > 5 ? `${fmt(B.length)} bandara diperkirakan MMI VI atau lebih, lima teratas ditampilkan. ` : ""}Perkiraan model guncangan, bukan laporan kerusakan. Sumber: OurAirports, model guncangan Pantau Bencana</p>`); }).catch(() => {});
+    /* 7. citra Sentinel-2 sebelum dan sesudah, hanya gempa M 6,5+ dangkal di darat yang sudah diproses citra.py */
+    if (g.m >= 6.5) Citra.untuk(g).then(k => { if (!k?.citra?.length) return;
+      const tg = c => KG.tgl(c.tgl + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"}), ar = {sebelum: "Sebelum", sesudah: "Sesudah"};
+      tambah(7, `<h4 class="lc-h">Citra satelit sebelum dan sesudah</h4><div class="lc-citra">${k.citra.map(c => `<figure><img loading="lazy" src="${esc(c.berkas)}" alt="${ar[c.fase]} gempa, Sentinel-2, ${esc(tg(c))}"><figcaption><span class="lc-mmi" style="--w:${c.fase === "sebelum" ? "#5f6fb0" : "#c9503a"};color:#fff">${ar[c.fase]}</span> ${esc(tg(c))}</figcaption></figure>`).join("")}</div>
+        <p class="fnd">Warna semu: tanah terbuka segar tampak terang. Sumber: Copernicus Sentinel-2 via Earth Search</p>`); }).catch(() => {});
     /* 3. waktu tiba dan tinggi di pantai terdekat, hanya bila gempa layak; status resmi BMKG tetap di atas. Dihitung di luar tugas klik (nanti), batas 60 menit lalu 180 bila kosong, cache per gempa */
     if (typeof Tsunami !== "undefined" && Tsunami.layak(g)) this.gelombang(g).then(P => { if (!P?.length) return;
       const mnt = waktuTiba, tg = x => x.tinggi_lo != null && x.tinggi_hi != null ? `${fmt(x.tinggi_lo)} sampai ${fmt(x.tinggi_hi)} m` : `sekitar ${fmt(Math.round(x.tinggi_m * 10) / 10)} m`;
       tambah(3, `<h4 class="lc-h">Perkiraan gelombang di pantai terdekat</h4><table class="tb2"><tbody>${P.map(x => baris(esc(x.kab || this.koord({lat: x.lat, lon: x.lon})), `${x.menit < 1 ? "langsung, di atas bidang patahan" : mnt(x.menit)}, ${tg(x)}`)).join("")}</tbody></table>
         <p class="fnd">Simulasi, bukan prakiraan. Ikuti status resmi BMKG di atas.</p>`); }).catch(() => {});
+    /* 4. indeks risiko riwayat provinsi (data/risiko.json): skor 0 sampai 100, kelas sebagai pil */
+    if (g.prov) Risiko.prov(g.prov).then(r => { if (!r) return;
+      tambah(4, `<h4 class="lc-h">Indeks risiko riwayat provinsi</h4><table class="tb2"><tbody>${baris(esc(namaProv(g.prov)), `<span class="lc-mmi" style="--w:${r.w};color:${r.skor < 30 ? "#3b3320" : "#fff"}">${r.kelas}</span> ${r.skor} dari 100`)}</tbody></table>
+        <p class="fnd">Dari gempa M 5+ ${r.r.tahun[0]} sampai ${r.r.tahun[1]}. Sumber: USGS</p>`); }).catch(() => {});
+    /* 5. kantor BPBD terdekat (bpbd.json BNPB). DISEMBUNYIKAN (A24) seperti "Respons terdekat" karhutla: gempa.css menyembunyikan [data-j="Kontak BPBD"]; data kantor lama (± 2016), nomor perlu dicek */
+    Kontak.dekat(g.lat, g.lon).then(K => { if (!K.length) return;
+      tambah(5, `<h4 class="lc-h" data-j="Kontak BPBD">Kontak BPBD terdekat</h4><table class="tb2" data-j="Kontak BPBD"><tbody>${K.map(b => baris(esc(b.nama), `${fmt(Math.round(b.km))} km${b.pusdalops ? ", " + esc(b.pusdalops) : ""}`)).join("")}</tbody></table>
+        <p class="fnd" data-j="Kontak BPBD">Sumber: BNPB (data kantor, perlu dicek ulang)</p>`); }).catch(() => {});
   },
+  /* tombol bagikan (ikon, A19) untuk kejadian: tautan /gempa/k/G0016 lewat lembar bagikan peramban, atau disalin */
+  async bagikan(g) { const u = location.origin + "/gempa/k/" + g.kej;
+    try { if (navigator.share) return await navigator.share({title: `Gempa ${mTulis(g.m)} ${wilayahPendek(g.wilayah)}`, url: u}); await navigator.clipboard.writeText(u); toast("Tautan disalin"); } catch (e) { if (e?.name !== "AbortError") toast("Tautan belum bisa dibagikan"); } },
   _gel: new Map(),
   gelombang(g) { let c = this._gel.get(g.id); if (c) return c;
     const hit = (grid, mk) => new Promise(res => nanti(() => { const w = Tsunami.waktuTiba(grid, g.lat, g.lon, g.m, {dalam: g.dalam, maksMenit: mk});

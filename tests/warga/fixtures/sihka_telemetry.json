@@ -1,0 +1,743 @@
+[
+{
+"id": "0138b705-8b47-41b0-a02b-c490f2141f5a",
+"name": "EMPANG",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "LOMBOK_ENERGI",
+"value": 0.19,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "13137659.136644244,-980814.2973979426"
+},
+{
+"id": "025c34ea-415b-41a4-8b59-2ec230ccc7eb",
+"name": "GEMPOL CIHERANG",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "KOICA",
+"value": 0,
+"timestamp": "2026-10-19T07:50:00+00:00"
+}
+],
+"coordinate": "11964131.040176462,-726617.4900713672"
+},
+{
+"id": "035b28b5-c2b0-4db7-b55d-756dbf4f76c7",
+"name": "S. KOSINGGOLAN - DOLODUO",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": 1.16,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "13775675.66617681,58002.70694316815"
+},
+{
+"id": "03dd1a0c-1fd8-432a-9cf0-b7708953589b",
+"name": "TEPIAN BUAH",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": 0.48,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "13036232.423094219,243754.56366214948"
+},
+{
+"id": "070c2961-15fc-4657-99a3-07582686e498",
+"name": "PITULASI",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "KOMTRONIK",
+"value": 0,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "12107680.495562928,-821794.7834121916"
+},
+{
+"id": "078dfbf2-fadb-4512-9211-d12e2001bab1",
+"name": "SUNGAI BELUTU - SILAU DUNIA",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "SUM_II",
+"value": 42,
+"timestamp": "2026-10-19T06:58:13+00:00"
+}
+],
+"coordinate": "11015401.579968467,365141.42905755376"
+},
+{
+"id": "00257c7e-0ee8-4789-b9a4-13bb70ba3492",
+"name": "POS DUGA AIR SUHAID",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "HIGERTECH",
+"value": -0.02,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "12467461.3791942,69792.52901721295"
+},
+{
+"id": "002930af-84f5-4c37-bf8f-48c4662c9e03",
+"name": "SUNGAI AIR RAYA",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "HIGERTECH",
+"value": 0.3,
+"timestamp": "2026-10-19T07:59:13+00:00"
+}
+],
+"coordinate": "11985658.254220972,-305466.0713621524"
+},
+{
+"id": "02399081-bf83-479b-b041-e59e7f0f3bef",
+"name": "TAMPA",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "HIGERTECH",
+"value": -0.49,
+"timestamp": "2026-10-19T07:55:01+00:00"
+}
+],
+"coordinate": "12815041.003430516,-214675.6317752178"
+},
+{
+"id": "02b08ff5-8dbd-4cd8-96fd-a9edf63865d3",
+"name": "ROWOKAWUK",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "BEACON",
+"value": 0.29,
+"timestamp": "2026-10-19T08:01:00+00:00"
+}
+],
+"coordinate": "12194284.816980273,-848835.6042102991"
+},
+{
+"id": "037df0cf-720b-445c-a22e-92213ce93ef1",
+"name": "AWLR SUNGAI DUA",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "BLITZ_TECHNOLOGY",
+"value": 6.42,
+"timestamp": "2026-10-19T07:55:25+00:00"
+}
+],
+"coordinate": "11673116.427355379,-340025.5879688591"
+},
+{
+"id": "05ece357-1676-403a-a75c-d6ab60d7993b",
+"name": "CIMANUK - AMPEL",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m",
+"merek": "HIGERTECH",
+"value": -0.22,
+"timestamp": "2026-10-19T07:50:00+00:00"
+}
+],
+"coordinate": "12054608.210984435,-739365.1958375117"
+},
+{
+"id": "0230b16f-5ac5-4a5c-a7d4-869b81a2ea14",
+"name": "TERBANGGI BESAR-PDA 135",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "APTECH",
+"value": 844,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11712914.703786844,-543713.3237271833"
+},
+{
+"id": "03ff6251-8b96-4a7d-ad5f-74d78f07e8e0",
+"name": "SOGATEN",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "TATONAS",
+"value": 166.91,
+"timestamp": "2026-10-19T07:45:00+00:00"
+}
+],
+"coordinate": "12415351.488683008,-848633.3513657877"
+},
+{
+"id": "066d342f-de4f-46e5-8ab5-098dde7e4d3c",
+"name": "LABUHAN RATU II - PASIR SAKTI-PDA.153",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "APTECH",
+"value": 49,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11776689.974020783,-624272.1910276867"
+},
+{
+"id": "08a148bc-d7ed-46cf-9acf-8737308d4d1c",
+"name": "AMUNTAI",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": "cm",
+"merek": "MERTANI",
+"value": 0.97,
+"timestamp": "2026-10-19T07:45:00+00:00"
+}
+],
+"coordinate": "12829682.633415574,-269473.3012991177"
+},
+{
+"id": "08afa8f4-c54a-4549-9849-7e0fc516561d",
+"name": "JURUG",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "PRIMABOT_SOLO",
+"value": 154.46,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "12340990.068833102,-844780.3881404344"
+},
+{
+"id": "092f9c25-ca7a-4d4a-953f-ad79d8bbc694",
+"name": "POS DUGA AIR BD. GEMAH",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "MERTANI",
+"value": 9,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "12297108.816118319,-782935.4580512985"
+},
+{
+"id": "2bfd8fa7-fb52-4b8a-b11e-076a17d6a77f",
+"name": "PAMARAYAN HILIR",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "APTECH",
+"value": 0,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11830881.86061182,-698297.4041757237"
+},
+{
+"id": "37670d3a-cb50-4556-a406-40cbc3ce5ad4",
+"name": "BENDUNG PASAR BARU",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "APTECH",
+"value": 0,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11869816.965711677,-686981.2780503907"
+},
+{
+"id": "44643b0c-eca8-4e8f-9001-6722e1883f10",
+"name": "POS DUGA AIR BATANG LEMBANG",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "HIGERTECH",
+"value": 0,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11202240.881232845,-86494.2217583419"
+},
+{
+"id": "5065bf14-caf0-499e-8ddc-15870321d9d8",
+"name": "TABING - GUNUNG BUNGSU",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "HIGERTECH",
+"value": 0,
+"timestamp": "2026-10-19T07:55:01+00:00"
+}
+],
+"coordinate": "11203162.38397763,35436.5158143335"
+},
+{
+"id": "62f3a255-052b-4202-8ec7-f9a25a9ac9c7",
+"name": "KAMPUNG KELAPA (T)",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "APTECH",
+"value": 0,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "11890480.089592723,-720122.4717926882"
+},
+{
+"id": "c1053239-fbae-4dd1-b582-2388aea3e141",
+"name": "MERANGIN",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "HIGERTECH",
+"value": 0,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "11233620.50985358,33519.56616825112"
+},
+{
+"id": "af851603-e4e5-4ab4-916a-e87d5bdd6643",
+"name": "SERENAN",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m3/s",
+"merek": "PRIMABOT_SOLO",
+"value": 0,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "12331973.190078847,-856438.2621812916"
+},
+{
+"id": "ef4e32bd-6c71-4431-b182-e22709b8243f",
+"name": "JARUM",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "m3/s",
+"merek": "PRIMABOT_SOLO",
+"value": 1.41,
+"timestamp": "2026-10-19T07:30:00+00:00"
+}
+],
+"coordinate": "12329423.97373968,-863537.7034825115"
+},
+{
+"id": "3ac2be8c-86d9-44ed-8b0e-3bc5db205822",
+"name": "PAMARAYAN HULU",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mdpl",
+"merek": "HIGERTECH",
+"value": 12.5,
+"timestamp": "2026-10-19T07:55:00+00:00"
+},
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "11830841.117678192,-698352.9499149068"
+},
+{
+"id": "a196df71-9c73-4e94-a238-f50c8bad296e",
+"name": "AWLR SG SUNGAI BOLANGO MOLOSIPAT",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": "centimeter",
+"merek": "HIGERTECH",
+"value": 16,
+"timestamp": "2026-10-19T07:59:38+00:00"
+}
+],
+"coordinate": "13697253.62299734,60350.61955996514"
+},
+{
+"id": "004cf0ca-fe55-4031-bd2f-11a9d1b7bf57",
+"name": "S. PUSIAN - PUSIAN",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "13803505.538875127,71748.81743099894"
+},
+{
+"id": "009eac77-a21c-448c-8ad7-a6997aeaa505",
+"name": "LUNGAU",
+"type": "DUGA AIR",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "12828803.209438305,-306469.0997825855"
+},
+{
+"id": "01a11c75-9a06-4443-8bcb-7580230a9393",
+"name": "CIBONGAS",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "11896528.188847013,-731496.4317182442"
+},
+{
+"id": "04b803c0-b9dd-4da8-beed-e4a44ffbe142",
+"name": "PDA SPILLWAY DANAU AYAMARU II",
+"type": "DUGA AIR",
+"tz": "Asia/Jayapura",
+"raw": [
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+},
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "14727347.50691358,-144331.00083737835"
+},
+{
+"id": "063fe08b-5f3e-4191-b20b-9d4162b40afb",
+"name": "PDA WATUDAKON-PENOMPO",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "MERTANI",
+"value": null,
+"timestamp": "2026-08-30T21:05:00+00:00"
+},
+{
+"unit": null,
+"merek": "INFORMOUS",
+"value": null,
+"timestamp": "2026-08-30T21:05:00+00:00"
+}
+],
+"coordinate": "12517338.398646137,-830237.4696425144"
+},
+{
+"id": "0c34ac20-9bbc-4f0f-be15-b022ed35aadd",
+"name": "POS DUGA AIR WD. CACABAN",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "MERTANI",
+"value": -73,
+"timestamp": "2026-10-19T08:00:00+00:00"
+},
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "12154543.280093264,-781898.7804616574"
+},
+{
+"id": "1063d290-02b0-43d5-8fd1-8663a452b6bf",
+"name": "POS DUGA AIR BD. GLAPAN",
+"type": "DUGA AIR",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "cm",
+"merek": "MERTANI",
+"value": 50,
+"timestamp": "2026-10-19T08:00:00+00:00"
+},
+{
+"unit": "cm",
+"merek": "MERTANI",
+"value": 1578,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "12321840.333429389,-793460.2006726158"
+},
+{
+"id": "0023660d-7c45-46b3-b653-e2d7fc2320f0",
+"name": "DASAN CERMEN",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "LOMBOK_ENERGI",
+"value": 0,
+"timestamp": "2026-10-19T07:30:00+00:00"
+}
+],
+"coordinate": "12944809.91871092,-960583.1264176262"
+},
+{
+"id": "00bf507a-11cf-408b-a574-558860721409",
+"name": "ARL LANGGOMALI",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "TATONAS",
+"value": null,
+"timestamp": "2025-02-18T02:00:00+00:00"
+}
+],
+"coordinate": "13502885.806834515,-426385.1285179802"
+},
+{
+"id": "00f06f6a-a239-4655-b58d-c327e09a2741",
+"name": "SEKATAK BUJI",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "SHINGIKI",
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "13031789.970571648,368671.40194601926"
+},
+{
+"id": "00fee15f-5a7b-4d85-a334-90cc4f2fb162",
+"name": "MANGKUPADI",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "13123764.015164446,280089.4453334578"
+},
+{
+"id": "01247d34-67f4-4ca1-9a5c-031fd67b82ce",
+"name": "BATU TANGGA",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": "mm",
+"merek": "MERTANI",
+"value": 0,
+"timestamp": "2026-10-19T08:00:00+00:00"
+}
+],
+"coordinate": "12859338.145762898,-281039.0280074514"
+},
+{
+"id": "015996eb-f0a2-4bc1-8448-f2a6fa6c609e",
+"name": "MAHE",
+"type": "CURAH HUJAN",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": null,
+"value": null,
+"timestamp": null
+}
+],
+"coordinate": "12852380.677588321,-228721.50322087426"
+},
+{
+"id": "0005d01d-ac92-49ee-8d71-2161235d83c0",
+"name": "AWS 2 (SINDANGLAYA)",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "HYQUEST",
+"value": null,
+"timestamp": "2026-05-07T00:00:00+00:00"
+}
+],
+"coordinate": "11834722.717002662,-741381.0047300066"
+},
+{
+"id": "01131411-2b28-400e-af23-939487e42009",
+"name": "BENDUNG COLO",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": "mm",
+"merek": "PRIMABOT_SOLO",
+"value": 0,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "12345554.167955626,-865368.9069345028"
+},
+{
+"id": "040567a0-66d2-4a9c-92a6-9db1ac7e7113",
+"name": "AWS RANTAU TENANG",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "BLITZ_TECHNOLOGY",
+"value": null,
+"timestamp": "2026-03-20T04:40:15+00:00"
+}
+],
+"coordinate": "11473264.990812177,-402752.91599190235"
+},
+{
+"id": "075088ce-f5a6-46e4-9eca-53f15dfcd577",
+"name": "MARONGGE",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": 37.3,
+"timestamp": "2026-10-19T07:55:00+00:00"
+}
+],
+"coordinate": "12040187.438869111,-757833.1241217874"
+},
+{
+"id": "0c333c3a-5ae7-4309-8ba5-a81afda327dd",
+"name": "POS KLIMATOLOGI WD. TEMPURAN (CH)",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Jakarta",
+"raw": [
+{
+"unit": null,
+"merek": "DASHINDO",
+"value": 5.77,
+"timestamp": "2026-10-19T08:04:00+00:00"
+},
+{
+"unit": "mm",
+"merek": "TATONAS",
+"value": 0,
+"timestamp": "2026-10-19T07:00:00+00:00"
+}
+],
+"coordinate": "12408195.649175836,-771067.884604313"
+},
+{
+"id": "0d04d7e2-2825-4188-b750-37fbeede4ff0",
+"name": "TATAKAN",
+"type": "KLIMATOLOGI",
+"tz": "Asia/Makassar",
+"raw": [
+{
+"unit": null,
+"merek": "HIGERTECH",
+"value": 136,
+"timestamp": "2026-10-19T07:55:03+00:00"
+}
+],
+"coordinate": "12815767.697066413,-337842.20525705675"
+}
+]

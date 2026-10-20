@@ -63,3 +63,5 @@
 ## Kasus
 
 - 2026-10-15 · Ilmu awal diisi dari kode (tests/agen, tests/warga, tests/beban, package.json, scripts/data/fwi.py). Temuan: uji:warga tidak dipanggil CI, og.test.mjs tidak di skrip uji:warga, belum ada gerbang yang menolak berkas ber-akhiran " 2".
+- 2026-10-19 · uji yang membaca public/**/data/*.json hidup (ditulis ulang pipeline) kadang gagal karena literal; kunci ke fixture beku tests/agen/fixtures/ (peluang-inti.test.mjs). Gerbang tab-registry membaca TABS/TAB_SEMBUNYI dari kode tiap modul (daftar BERKAS di uji): modul baru wajib ditambahkan, parser kosong = merah.
+- 2026-10-19 · 2026-10-19 · gerbang yang LANGSUNG merah jangan ditaruh di tests/agen/*.test.mjs: terbit.yml memblokir deploy bila uji:agen merah. Taruh di tests/agen/merah/ (di luar glob, jalankan eksplisit per berkas; node --test <dir> gagal di Node 24). gerbang-inti: 17 salinan nyata (peta.js kotak(), dampak.js hbar(), #metode CSS, laporan.css dst). Ukur muat lokal gzip: gempa 418, cuaca 597, udara 618, gunungapi 656, kekeringan 480 KB; wrangler dev --local tanpa pembungkus mati di --burst 50, pakai --burst 5.

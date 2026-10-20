@@ -1,6 +1,6 @@
 """Paparan gunung api -> public/gunungapi/data/paparan.json (+ paparan_geo.json dimuat malas). Skema: kontrak P2.
 
-Per gunung (level >= 2 di gunungapi_status.json, ditambah Merapi, Semeru, Kelud, Agung):
+Per gunung (SEMUA gunung di gunungapi_status.json, 69 per 19 Okt 2026; sebelumnya hanya level >= 2 + Merapi, Semeru, Kelud, Agung, Ruang):
   zona      KRB PVMBG (geoportal ESDM gis4 BGV_GA/KRB_Gunung_Api_Area, edisi 2018) > InaRISK bahaya gunung api (proksi) > cincin radius rekomendasi.
             KRB III/II/I = lcode 0703/0702/0701 (radius KRB 0603/0602/0601 dipakai bila gunung hanya punya itu).
   desa, sekolah, faskes, titik kumpul   OSM Overpass dalam 20 km (ODbL). Hanya yang berzona dicatat per nama; hitungan sekolah/faskes memuat yang tanpa nama.
@@ -12,6 +12,8 @@ Per gunung (level >= 2 di gunungapi_status.json, ditambah Merapi, Semeru, Kelud,
 Mentah di-cache di data/raw/gunungapi/ (bukan di public). Kegagalan satu gunung/sumber tidak menggagalkan yang lain.
 Pakai:  python3 scripts/gunungapi/paparan.py          tulis berkas
         python3 scripts/gunungapi/paparan.py unduh    hanya mengisi cache mentah
+Gunung yang sudah ada di paparan.json DIPAKAI ULANG apa adanya (tanpa jaringan); hanya yang baru dihitung. PAPARAN_ULANG=1 menghitung ulang semuanya.
+Gunung tanpa KRB PVMBG, tanpa InaRISK, dan tanpa radius rekomendasi (Level I) hanya mendapat jiwa per cincin 3/5/10/15 km (zona_sumber ZONA_JARAK); desa, sekolah, tambang, evakuasi dibuang, bukan dikarang.
         python3 scripts/gunungapi/paparan.py uji      self-check dari contoh/paparan_contoh.json
 """
 import datetime as dt, heapq, json, math, os, re, statistics, sys, time, urllib.parse, urllib.request
@@ -33,7 +35,7 @@ UA_OSM = UA
 OVERPASS = ["https://overpass-api.de/api/interpreter", "https://maps.mail.ru/osm/tools/overpass/api/interpreter",
             "https://overpass.private.coffee/api/interpreter", "https://overpass.kumi.systems/api/interpreter"]
 TIFF = os.path.join(AKAR, "data/raw/penduduk/idn_pop_2026_CN_1km_R2025A_UA_v1.tif")
-TAMBAH = ("Merapi", "Semeru", "Kelud", "Agung", "Ruang")   # Ruang: citra erupsi Apr 2024
+ZONA_JARAK = "cincin jarak dari kawah (proksi, bukan KRB PVMBG)"
 R_CARI = 20.0          # km, desa/sekolah/faskes/tambang
 CINCIN = (3, 5, 10, 15)
 RANK = {"III": 3, "II": 2, "I": 1}
@@ -491,7 +493,10 @@ def muat_krb():
         os.makedirs(MENTAH, exist_ok=True)
         u = KRB_URL + "/query?" + urllib.parse.urlencode({"where": "1=1", "outFields": "namobj,lcode,thterbit", "returnGeometry": "true",
                                                            "outSR": 4326, "maxAllowableOffset": 0.0003, "geometryPrecision": 5, "f": "geojson"})
-        open(p, "wb").write(ambil(u, timeout=300))
+        b = ambil(u, timeout=300)
+        if not json.loads(b).get("features"):   # tulis hanya bila isinya benar-benar KRB (galat server kadang 200 tanpa features; berkas kosong meracuni cache)
+            raise RuntimeError("KRB tanpa features: " + b[:120].decode("utf-8", "replace"))
+        open(p, "wb").write(b)
     return json.load(open(p))["features"]
 
 
@@ -575,15 +580,19 @@ def inarisk_zon(g):
 # ---------------------------------------------------------------- alur utama
 def sasaran():
     st = json.load(open(STATUS))
-    gs = [g for g in st["gunung"] if g["level"] >= 2 or g["nama"] in TAMBAH]
+    gs = list(st["gunung"])
     return sorted(gs, key=lambda g: (-g["level"], g["nama"]), reverse=bool(os.environ.get("PAPARAN_BALIK")))   # BALIK=1: pengunduh kedua dari ujung lain
 
 
 def tulis(unduh_saja=False):
-    gs = sasaran()
-    krb = muat_krb()
-    piks = piksel_penduduk(gs)
+    semua = sasaran()
     lama = json.load(open(KELUAR)) if os.path.exists(KELUAR) else {"gunung": []}
+    geo_lama = json.load(open(KELUAR_GEO)) if os.path.exists(KELUAR_GEO) else {}
+    ada = {} if os.environ.get("PAPARAN_ULANG") else {x["id"]: x for x in lama.get("gunung", []) if x["id"] in geo_lama}
+    gs = [g for g in semua if slug(g["nama"]) not in ada]
+    print(f"{len(ada)} gunung dipakai ulang, {len(gs)} dihitung", file=sys.stderr)
+    krb = muat_krb()
+    piks = piksel_penduduk(gs) if gs else {}
     citra_lama = {x["id"]: x.get("citra", []) for x in lama.get("gunung", [])}
     hasil, geo, log = [], {}, []
     for g in gs:
@@ -594,8 +603,18 @@ def tulis(unduh_saja=False):
             zon = inarisk_zon(g)
             zs = "InaRISK bahaya gunung api (proksi KRB)"
         if not zon:
-            zon, zs = zon_radius(g), "radius rekomendasi (proksi)"
+            zon, zs = zon_radius(g), "radius rekomendasi (proksi)" if g.get("radius_km") else ZONA_JARAK
         log.append(f"{g['nama']}: zona {zs}")
+        if zs == ZONA_JARAK:   # tanpa KRB/InaRISK/radius rekomendasi: zona karangan tak dipakai menghitung desa, sekolah, tambang, evakuasi; hanya jiwa per cincin jarak
+            if unduh_saja:
+                continue
+            e, ge = susun(g, {}, zs, {"desa": [], "sekolah": [], "faskes": [], "kumpul": []}, piks.get(id_, []), [], [])
+            e["catatan"] = "tanpa zona KRB PVMBG: hanya jiwa dalam radius yang dihitung, tanpa desa, sekolah, tambang, dan rute evakuasi"
+            e["citra"] = citra_lama.get(id_, [])
+            hasil.append(e)
+            geo[id_] = ge
+            print(f"  {g['nama']}: {zs}, jiwa {e['cincin'][-1]['penduduk']}", file=sys.stderr)
+            continue
         poi_raw = overpass(q_poi(g), os.path.join(MENTAH, f"poi_{id_}.json"))
         rj = r_jalan(g, zon)
         jb = os.path.join(MENTAH, f"jalan_{id_}.json")
@@ -626,6 +645,13 @@ def tulis(unduh_saja=False):
     if unduh_saja:
         print("\n".join(log))
         return
+    for g in semua:   # urutan = urutan status; yang dipakai ulang masuk dengan geometrinya
+        i = slug(g["nama"])
+        if i in ada:
+            hasil.append(ada[i])
+            geo[i] = geo_lama[i]
+    urut = {slug(g["nama"]): n for n, g in enumerate(semua)}
+    hasil.sort(key=lambda e: urut[e["id"]])
     cetak(hasil, geo)
 
 
@@ -737,7 +763,7 @@ def uji():
                 assert "KRB I" in x.get("catatan", ""), f"{x['id']}: rute cadangan KRB I tanpa catatan"
             if not x["evakuasi"]:
                 assert x.get("catatan"), f"{x['id']}: evakuasi kosong tanpa catatan"
-            assert x["zona_sumber"] in ("KRB PVMBG", "InaRISK bahaya gunung api (proksi KRB)", "radius rekomendasi (proksi)")
+            assert x["zona_sumber"] in ("KRB PVMBG", "InaRISK bahaya gunung api (proksi KRB)", "radius rekomendasi (proksi)", ZONA_JARAK)
     print("paparan uji: ok")
 
 

@@ -103,7 +103,7 @@ const baris = async (sql, ...b) => (await DB.prepare(sql).bind(...b).all()).resu
 const api = async j => { const r = await mf.dispatchFetch("http://gempa.lokal" + j); const teks = await r.text(); let x = null; try { x = JSON.parse(teks); } catch (e) {} return {status: r.status, j: x, teks}; };
 
 uji("migrasi 0009 idempoten: dijalankan dua kali tidak galat", async () => {
-  const sql = pecah(migrasi()).filter(s => /gempa/.test(s));
+  const sql = pecah(migrasi()).filter(s => /gempa/.test(s) && !/laporan/.test(s));   // 0020 menyebut 'gempa' di CHECK laporan.bahaya (bukan tabel gempa)
   assert.ok(sql.length >= 6);
   await DB.batch(sql.map(s => DB.prepare(s)));
 });
@@ -163,7 +163,8 @@ uji("kejadian G: susulan dalam jendela = satu G (kode tetap saat ulang), di luar
   const kej = async w => (await baris("SELECT kej FROM gempa WHERE wilayah = ?", w))[0].kej;
   assert.equal(await kej(susulan.Wilayah), kode, "M5.2 sejam kemudian, 15 km: kejadian yang sama");
   const kodeJauh = await kej(jauh.Wilayah); assert.match(kodeJauh, /^G\d{4}$/); assert.notEqual(kodeJauh, kode);
-  assert.equal(await kej(kecil.Wilayah), null, "M < 5 tidak masuk kejadian");
+  assert.equal(await kej(kecil.Wilayah), kode, "M4.2 dua jam kemudian di pusat yang sama: susulan kecil tertaut ke kejadiannya");
+  assert.equal((await baris("SELECT count(*) n FROM gempa_kejadian WHERE kode = ?", kode))[0].n, 1, "susulan kecil tidak membuat kejadian baru");
   await kirim(utama, susulan, jauh, kecil, lewat);
   assert.notEqual(await kej(lewat.Wilayah), kode, "4 hari kemudian: kejadian lama sudah tidak aktif (72 jam)");
   const n1 = (await baris("SELECT count(*) n FROM gempa_kejadian"))[0].n;
@@ -205,8 +206,8 @@ uji("GET /api/gempa/kejadian dan /kejadian/G0001 dan /status", async () => {
   const l = await api("/api/gempa/kejadian"); assert.equal(l.status, 200); assert.ok(l.j.kejadian.length >= 3);
   const k = l.j.kejadian.find(x => x.nama === "uji kejadian -3,100 M5.7");
   assert.deepEqual(Object.keys(k).sort(), ["akhir", "aktif", "aktif_hingga", "jumlah", "kode", "lat", "lon", "m", "mulai", "nama", "utama_id"]);
-  assert.equal(k.jumlah, 2); assert.equal(k.aktif, false);
-  const d = await api("/api/gempa/kejadian/" + k.kode); assert.equal(d.status, 200); assert.equal(d.j.gempa.length, 2); assert.equal(d.j.gempa[0].id, k.utama_id);
+  assert.equal(k.jumlah, 3); assert.equal(k.aktif, false);
+  const d = await api("/api/gempa/kejadian/" + k.kode); assert.equal(d.status, 200); assert.equal(d.j.gempa.length, 3); assert.equal(d.j.gempa[0].id, k.utama_id);
   assert.equal((await api("/api/gempa/kejadian/G9999")).status, 404); assert.equal((await api("/api/gempa/kejadian/x;drop")).status, 404);
   const s = await api("/api/gempa/status"); assert.equal(s.status, 200); assert.ok(s.j.n > 10); assert.equal(typeof s.j.sumber.autogempa.umur_detik, "number");
   assert.ok(!s.teks.includes("W/"), "ETag tidak dibocorkan");

@@ -18,6 +18,10 @@ import datetime as dt, html, json, os, re, sys, urllib.parse, urllib.request
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR
 from berita import R_MEDIA_RI, Geo
+from importlib.machinery import SourceFileLoader   # mesin API bersama: scripts/umum/video.py (satu salinan)
+_u = SourceFileLoader('umum_video', os.path.join(AKAR, 'scripts/umum/video.py')).load_module()
+durasi, statistik, ringkas, cari = _u.durasi, _u.statistik, _u.ringkas, _u.cari
+gabung = lambda lama, baru, batas: _u.gabung(lama, baru, batas, MAKS)
 
 KELUAR = os.path.join(AKAR, "public/data/video.json")
 KUERI = ["karhutla", "kebakaran hutan dan lahan", "kabut asap kebakaran", "kebakaran lahan gambut", "water bombing karhutla", "titik panas karhutla"]
@@ -53,11 +57,6 @@ def jenis(kanal):
     return "resmi" if R_RESMI.search(kanal) else "media" if R_MEDIA.search(kanal) else "kreator"
 
 
-def durasi(iso):
-    m = re.fullmatch(r"P(?:(\d+)D)?T?(?:(\d+)H)?(?:(\d+)M)?(?:(\d+)S)?", iso or "")
-    return sum(int(x or 0) * k for x, k in zip(m.groups(), (86400, 3600, 60, 1))) if m else None
-
-
 def tandai(v, geo):
     v["jenis"] = jenis(v["kanal"])
     v["tokoh"] = [n for n, r in TOKOH_RE if r.search(v["judul"])]
@@ -65,55 +64,6 @@ def tandai(v, geo):
     v["prov"] = geo.cari(re.sub(r"\[[^\]]*\]?|\|.*$|\bbatang\b", " ", v["judul"], flags=re.I))["prov"] if geo else []
     v["pendek"] = bool(re.search(r"#shorts?\b", v["judul"] + " " + v.get("desk", ""), re.I)) or (v.get("durasi") or 999) <= 60
     return v
-
-
-def statistik(kunci, ids):
-    """videos.list: tonton/suka/komen/durasi, 50 id per panggilan (1 unit kuota)."""
-    hasil = {}
-    for i in range(0, len(ids), 50):
-        p = {"part": "statistics,contentDetails", "id": ",".join(ids[i:i + 50]), "key": kunci}
-        with urllib.request.urlopen("https://www.googleapis.com/youtube/v3/videos?" + urllib.parse.urlencode(p), timeout=30) as r:
-            for x in json.load(r).get("items", []):
-                st = x.get("statistics", {})
-                hasil[x["id"]] = {"tonton": int(st.get("viewCount", 0)), "suka": int(st.get("likeCount", 0)) if "likeCount" in st else None,
-                                  "komen": int(st.get("commentCount", 0)) if "commentCount" in st else None,
-                                  "durasi": durasi(x.get("contentDetails", {}).get("duration"))}
-    return hasil
-
-
-def ringkas(item):
-    s, i = item["snippet"], item["id"]["videoId"]
-    th = s.get("thumbnails", {})
-    gb = (th.get("medium") or th.get("high") or th.get("default") or {}).get("url", "")
-    return {"id": i, "judul": html.unescape(s["title"]), "kanal": html.unescape(s.get("channelTitle", "")), "tgl": s["publishedAt"],
-            "gambar": gb, "desk": html.unescape(s.get("description", ""))[:200], "url": f"https://www.youtube.com/watch?v={i}"}
-
-
-def cari(kunci, q, sejak, urut="date", halaman=1, sampai=None):
-    p = {"part": "snippet", "q": q, "type": "video", "order": urut, "maxResults": 50, "regionCode": "ID",
-         "relevanceLanguage": "id", "publishedAfter": sejak, "key": kunci}
-    if sampai:
-        p["publishedBefore"] = sampai
-    xs = []
-    for _ in range(halaman):
-        with urllib.request.urlopen("https://www.googleapis.com/youtube/v3/search?" + urllib.parse.urlencode(p), timeout=30) as r:
-            j = json.load(r)
-        xs += j.get("items", [])
-        if not j.get("nextPageToken"):
-            break
-        p["pageToken"] = j["nextPageToken"]
-    return xs
-
-
-def gabung(lama, baru, batas):
-    semua = {v["id"]: v for v in lama}
-    semua.update({v["id"]: v for v in baru})
-    xs = [v for v in semua.values() if v["tgl"] >= batas]
-    # separuh kuota untuk yang terbaru, sisanya yang paling ditonton, supaya video lama yang ramai tidak terbuang
-    baru_ = sorted(xs, key=lambda v: v["tgl"], reverse=True)[:MAKS // 2]
-    ada = {v["id"] for v in baru_}
-    ramai = sorted((v for v in xs if v["id"] not in ada), key=lambda v: v.get("tonton") or 0, reverse=True)[:MAKS - len(baru_)]
-    return sorted(baru_ + ramai, key=lambda v: v["tgl"], reverse=True)
 
 
 def uji():

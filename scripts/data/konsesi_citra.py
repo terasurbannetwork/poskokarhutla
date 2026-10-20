@@ -26,6 +26,18 @@ SEBELUM = 5  # hari sebelum tanggal titik juga dicari (citra kosong = VIIRS kasa
 SESUDAH = 8  # hari; adegan terdekat dengan hari titik diutamakan (api aktif), bukan yang paling bersih
 
 
+def pusat_padat(pts, km=MAKS_KM):
+    """pusat gugus titik terpadat (sel 0,1 derajat + tetangga sejauh setengah kotak), bukan rata-rata semua titik:
+    konsesi terpecah (mis. daratan + pulau) membuat rata-rata jatuh di laut di antaranya"""
+    sel = {}
+    for p in pts:
+        sel.setdefault((round(p[0] * 10), round(p[1] * 10)), []).append(p)
+    r = max(1, int(km / 2 / 11))
+    terbaik = max(sel, key=lambda k: sum(len(sel.get((k[0] + i, k[1] + j), ())) for i in range(-r, r + 1) for j in range(-r, r + 1)))
+    dekat = [p for i in range(-r, r + 1) for j in range(-r, r + 1) for p in sel.get((terbaik[0] + i, terbaik[1] + j), ())]
+    return sum(p[0] for p in dekat) / len(dekat), sum(p[1] for p in dekat) / len(dekat)
+
+
 def jendela(item, aset, lat, lon, km):
     epsg = item["properties"].get("proj:epsg") or int(str(item["properties"].get("proj:code", "0")).split(":")[-1])
     E, N = C.ke_utm(lat, lon, epsg % 100)
@@ -66,8 +78,7 @@ def satu(r, d, n):
     km = max((max(xs) - min(xs)) * 111.32 * math.cos(math.radians(lat0)), (max(ys) - min(ys)) * 110.574) * 1.1 + 2
     if km > MAKS_KM:  # konsesi besar: kotak 40 km di sekitar titik hari itu
         km = MAKS_KM
-        lat = sum(p[0] for p in pts) / len(pts)
-        lon = sum(p[1] for p in pts) / len(pts)
+        lat, lon = pusat_padat(pts)
     else:
         lat, lon = lat0, (min(xs) + max(xs)) / 2
     km = max(km, 6)
@@ -124,7 +135,7 @@ def main():
         except Exception as e:
             print("  gagal", r["nama"], d, e, file=sys.stderr)
             return r["id"], d, None
-    with ThreadPoolExecutor(6) as ex:
+    with ThreadPoolExecutor(int(os.environ.get("KONSESI_UTAS", 6))) as ex:
         for i, (rid, d, h) in enumerate(ex.map(jalan, kerja)):
             hasil.setdefault(rid, {})[d] = h
             if i % 20 == 0:
@@ -136,4 +147,9 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    if sys.argv[1:] == ["uji"]:   # dua gugus berjauhan (daratan + pulau): pusat harus di gugus terbesar, bukan di laut tengah
+        la, lo = pusat_padat([[-4.1, 114.65]] * 30 + [[-3.8, 116.2]] * 50)
+        assert abs(la + 3.8) < .01 and abs(lo - 116.2) < .01, (la, lo)
+        print("uji ok")
+    else:
+        main()

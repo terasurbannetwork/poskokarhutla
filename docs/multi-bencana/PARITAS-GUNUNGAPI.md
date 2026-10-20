@@ -1,131 +1,51 @@
-# Paritas karhutla vs gunung api: tabel akhir
+# Paritas karhutla vs gunung api: audit akhir 19 Okt 2026 malam
 
-Audit 16 Okt 2026 (HEAD b84ba76 + perbaikan audit ini), `wrangler dev --local` (port 8797, migrasi D1 lokal diterapkan), Chrome headless via Playwright, 1440x900 dan 390x844, ID dan `?lang=en`. Tangkapan berdampingan (karhutla kiri, gunung api kanan) per tab di folder kerja audit. Galat konsol milik gunung api: tidak ada. Yang tersisa sama di kedua sisi: 404 favicon situs berita luar, 404 `/api/titik` dan `harian30.json` hanya di karhutla (D1 tidak ada di lokal), CSP report-only frame-src Tentang.
+Rincian 113 baris, tiap baris dengan bukti `berkas:baris` atau jalur data: [bencana/gunungapi.md](bencana/gunungapi.md). Registry `status: "aktif"`.
+Metode: kode dibuka satu per satu terhadap `PAKET-FITUR.md`; data live `https://centurisk97.terasurbannetwork.workers.dev` (hanya GET:
+`/api/status`, `/api/gunungapi/terbaru`, `/banjir/data/{gunungapi_status,kejadian_gunungapi_*,abu_*,dampak_gunungapi,berita_gunungapi}.json`,
+`/gunungapi/data/paparan.json`, halaman `/gunungapi/...`); gerbang dijalankan (`uji:agen` 57/57, enam berkas `tests/warga` terkait 79 tes, `uji` semua skrip
+`scripts/gunungapi`, `uji_setara.mjs`, `uji_lahar.mjs`). Paritas diukur terhadap karhutla yang TAMPIL.
 
-Keterangan: SAMA = identik atau memakai mesin bersama yang sama. D = beda yang sah karena data/bahaya (alasan tertulis). BEDA = selisih yang belum bisa ditutup.
+## Hasil
 
-Hasil (baris tabel di bawah; satu baris bisa memuat beberapa butir): 24 SAMA, 10 D, 4 BEDA. Status registry tidak diubah. **Belum SIAP AKTIF**: empat BEDA terbuka (Foto; isi berkala Berita; isi berkala Dampak; gambar OG khas modul), semuanya butuh pemilik lain (lihat "Perlu dari luar wilayah").
-
-## Diperbaiki pada audit ini
-
-| Selisih | Perbaikan |
-| --- | --- |
-| Kepala tanpa lonceng Peringatan Dini | `index.html`: tautan `/peringatan` seperti karhutla/banjir |
-| Menu bencana memakai `data-tentang data-tanpa-segera` (tanpa "Segera", ada "Tentang kami") | dilepas; menu digambar registry persis seperti karhutla |
-| Tab hanya Peta, Insight, Metode, Tentang | tambah Berita, Tren, Dampak (Foto disiapkan tapi disembunyikan, lihat BEDA); Metode disembunyikan (A24) |
-| Peta dasar putih (positron) dan "Citra satelit" mati | satelit hidup bawaan seperti karhutla |
-| Overlay: judul polos | `lapis-hd` gelap + tombol lipat semua grup (`mulai.js`) |
-| Daftar kiri berupa kartu baris tanpa kepala | tabel standar: kepala gelap, kolom bisa diurut (Gunung, Provinsi, Radius, Status) |
-| Kamera awal beda dengan karhutla (pusat lat -2,11 vs -6,28 di 1440) | padding bawah 163 (nilai terukur karhutla); sekarang pusat dan zoom identik di 1440 dan 390 |
-| `bagikan.sumber` registry menyebut "Smithsonian GVP" padahal GVP menjawab 403 dan tak dipakai | `bencana.json`: "PVMBG (MAGMA Indonesia)" |
-| Meta OG tanpa gambar, tanpa blok `<!-- og -->` | blok OG lengkap (og:image 1200x630, twitter large) |
-| Insight: kartu Penduduk dobel dengan Dampak | pindah ke tab Dampak (Insight karhutla tak memuatnya) |
-| EN: 52 kalimat Indonesia di tab baru dan popup | `i18n/en.json`: kunci baru; kutipan resmi PVMBG (rekomendasi, keterangan erupsi) diberi `translate="no"` |
-| **Data**: tanggal letusan salah (daftar erupsi "120 erupsi dalam 1 jam" dan jam di masa depan) | `magma.py urai_letusan`: judul hari lama ("Kamis, 15 Oktober 2026, 1 hari yang lalu") tak terbaca sehingga semua letusan halaman 2-3 dianggap hari ini; diperbaiki + dedupe halaman tumpang tindih + urut terbaru dulu + uji. Erupsi 24 jam yang benar: 18 |
-
-## 1. Kepala
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| K1 tab | SAMA | Peta, Insight, Berita, Tren, Dampak, Tentang; Foto dan Metode disembunyikan (A24) |
-| K1b tab Simulasi | D | Pantau Bencana tidak meramal letusan dan tidak menentukan level sendiri; tak ada model untuk disimulasikan |
-| K2 jarak tab, K3 menu bencana, judul tab, logo, ikon, ID/EN, bagikan, tema, burger, lonceng | SAMA | |
-| K4 chip El Nino | D | chip ENSO adalah data iklim karhutla/kekeringan; tak ada padanan untuk gunung api |
-
-## 2. Peta
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| P1 dasar satelit | SAMA | |
-| P2 kamera awal | SAMA | pusat (112,38; -6,28) zoom 3,32 di 1440; (118; -22,64) zoom 3 di 390, identik dengan karhutla |
-| P3 panel 440, P11 kolom kanan | SAMA | |
-| P4 crumb "Indonesia" di luar kartu | D | gunung api titik, tanpa tingkat wilayah untuk ditelusuri turun |
-| P5 seg atas + cari | D | seg level (Semua/Siaga/Waspada/Normal) menggantikan rentang waktu; cari gunung atau provinsi |
-| P6 kepala tabel gelap, P7 bisa diurut, P9 tinggi baris, P10 pil status | SAMA | |
-| P8 kolom Tren sparkline | D | riwayat level baru terkumpul sejak halaman ini jalan; kolom Radius menggantikan |
-| P14 Overlay berkepala gelap + lipat, P15 grup + chevron | SAMA | |
-| P16 chip BMKG | D | `databaru.js` hanya mengenal karhutla/banjir; peringatan resmi gunung api = status PVMBG itu sendiri |
-| P17 legenda dok | D | dua kolom khas: level resmi PVMBG dan radius rekomendasi |
-| P18 legenda terlipat pil, P19 laci/pop-up rincian, P20 kartu hover, P21 lembar bawah mobile, P23 chip LEGENDA | SAMA | `inti/peta/lapis.js`, `legenda.js`; pop-up lebar |
-
-## 3. Pop-up Situasi, Insight
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| S1 eyebrow, judul berangka, chip, daftar, kaki Sumber + Lihat peta, 1440 dan 390 | SAMA | `inti/sapa.js`; sekali sehari `pb_sapa_gunungapi` |
-| Insight: anatomi kartu, pil, judul merah, grafik berangka, kaki legenda + Sumber, bagikan, tabel standar | SAMA | Status, Erupsi, Perubahan level, Daftar gunung; kartu tanpa data dibuang (Perubahan level kosong sampai ada perubahan) |
-
-## 4. Tren
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| T1 anatomi kartu, batang berangka, pil puncak, bagikan | SAMA | |
-| T2 isi | D | Per tahun = kejadian erupsi BNPB 2010-2024; Status harian dan Erupsi harian muncul sendiri setelah dua hari (`riwayat` di `gunungapi_status.json`); tidak ada seri harian dari lembaga untuk diisi mundur |
-
-## 5. Berita
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Volume, Peta berita, Sorotan, Topik, Daftar berpaginasi, rinci kumpulan, pil topik | SAMA | salinan mesin berita banjir; leksikon `scripts/gunungapi/berita.py` (relevansi, kiasan, luar negeri, 7 topik); lokasi dari nama gunung (kab = "kode provinsi\|gunung") karena Geo mesin hanya mengenal wilayah administratif: berlokasi 83% |
-| Kartu sentimen, pantauan media, celah liputan, video | D | tidak ada label uji sentimen dan data pembanding (`sentimen_teruji: false`) |
-| Isi berita | BEDA | `berita.json` dijalankan tangan (tak ada workflow gunung api; token tanpa scope workflow); `dibuat` ditampilkan di kaki. Lihat "Perlu dari luar wilayah" |
-
-## 6. Dampak
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Menu kiri, pita bagian, kartu Insight, bagikan | SAMA | |
-| Bagian | D | Penduduk terpapar (jiwa dalam radius, WorldPop kisi 25 km: orde besar) dan Korban dan kerugian (BNPB: kejadian, mengungsi, terdampak, rumah rusak 2010-2024). Tanpa Sekolah/Kesehatan: `sekolah.json` dan `fasilitas.json` hanya mencakup provinsi prioritas karhutla (A18). "Meninggal" BNPB: sumber dayanya 404 di CKAN (16 Okt), dibuang, bukan diisi 0 |
-| Isi berkala | BEDA | `dampak.json` dibuat tangan (sama dengan Berita) |
-
-## 7. Foto
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Galeri, saring, urut, kirim (Turnstile, EXIF/GPS, batas ukuran) | BEDA | halaman, `foto.js` (`FOTO_BENCANA = "gunungapi"`), registry (`hujan_abu, lahar, pengungsian, lainnya`) dan server (`KAT_BENCANA`) sudah siap, tetapi `public/foto.js` hanya memiliki `KAT_AWAL` dan `CONTOH_KET` untuk karhutla dan banjir: tanpa entri gunung api galeri jatuh ke kategori karhutla dan kirimannya ditolak server. Tab disembunyikan (`TAB_SEMBUNYI`, `tab_sembunyi`). Tambalan yang dibutuhkan ada di "Perlu dari luar wilayah" |
-
-## 8. Tentang, kaki, bagikan, jejak, OG
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| Tentang iframe | SAMA | |
-| F1 kaki Teras Urban (kolom Pantau dari registry minus tab_sembunyi) | SAMA | |
-| F2 dialog bagikan + templat Ringkasan/Grafik Insight berpratinjau, Feed/Story/Kotak, QR | SAMA | diuji: pratinjau "Grafik Insight" tergambar dengan angka PVMBG |
-| Chat Admin, jejak (`jejak.js data-halaman`) | SAMA | |
-| OG: blok `<!-- og -->`, canonical, hreflang, twitter large | SAMA | worker menimpa per rute dari registry (`og_meta.js`) bila `meta.json` ada |
-| OG: gambar 1200x630 khas modul | BEDA | memakai `data/og/ringkasan.png`; `scripts/og/buat.py` belum membuat `gunungapi.png` (di luar wilayah) |
-
-## 9. Mobile 390
-
-Tidak ada scroll horizontal di semua tab; daftar kiri, seg level, Insight, Berita (peta berita), Dampak diperiksa berdampingan. Kolom Status daftar dilebarkan (92px) supaya pil "Waspada" tidak terpotong.
-
-## 10. Teks, bahasa, galat
-
-| # | Hasil | Catatan |
-| --- | --- | --- |
-| X1 `toFixed` titik desimal di teks tampil | SAMA | format `fmt` Indonesia |
-| X2/X3 sisa Indonesia di EN | SAMA | seluruh tab, pop-up Situasi, popup gunung, dialog bagikan diperiksa `?lang=en` (`T.hilang`); sisa hanya judul artikel berita, nama media, dan kutipan resmi PVMBG (`translate="no"`, isi lembaga) |
-| X5 em dash, "Anda", ISO mentah | SAMA | 0 |
-| X6 subjudul/penjelas (A1) | SAMA | catatan Dampak ("kisi 25 km...") adalah pernyataan batas data, bukan subjudul |
-| X7 404 data | SAMA | tak ada |
-| INP | SAMA | klik tab 5-41 ms sampai dua frame (`nanti()`), 1440 dan 390 |
-
-## Verifikasi data (16 Okt 2026, MAGMA live)
-
-| Gunung | Level di JSON | Level live | Radius JSON | Radius di laporan live |
+| Audit | ADA | SEBAGIAN | BELUM | TIDAK BERLAKU |
 | --- | --- | --- | --- | --- |
-| Semeru | III Siaga | III Siaga | 5 km | "radius 5 Km" |
-| Ibu | II Waspada | II Waspada | 2 km | "radius 2 Km" |
-| Merapi | III Siaga | III Siaga | 3 km | "radius 3 Km" |
+| 19 Okt pagi | 44 | 29 | 28 | 12 |
+| **19 Okt malam** | **67** | **26** | **13** | **7** |
 
-Jumlah per level juga cocok: 0 Awas, 4 Siaga, 23 Waspada, 42 Normal (halaman Tingkat Aktivitas). Satu cacat ditemukan dan diperbaiki: tanggal letusan (lihat tabel perbaikan). Letusan dibandingkan ulang dengan `informasi-letusan` live: Ibu 20:44 WIT = 18:44 WIB, Semeru 18:52 WIB muncul di daftar.
+ADA = 52 dibuat + 15 diadaptasi. Dari 13 BELUM, 7 tersembunyi di karhutla (A21-A24 posko/operasi/aset/keputusan, A30, C19, C21); 6 tidak:
+A15 risiko riwayat 0-100, A34 video, A36 kurasi tangan, B03 prospektif, B06 tren jangka panjang, C16 cerita. Butir 7 `gerbang-bencana` melarang `aktif` dengan
+baris "belum"; keenamnya perlu keputusan pemilik (kerjakan, atau nyatakan tidak berlaku dengan alasan).
 
-## Perlu dari luar wilayah
+## Yang bertambah sejak audit pagi
 
-| Kebutuhan | Pemilik |
+Kejadian V (`kejadian.py`, 27 kejadian) + tab Kejadian + `/gunungapi/k/V0001` (A04, C15); MAGMA tiap 30 menit di Worker -> D1 -> `/api/gunungapi/terbaru` (A03, D03);
+pil 'skenario' untuk semua keluaran abu; kontak resmi PVMBG dari teks rekomendasi (A40); peluang abu 18+51 anggota (A10, B08); paparan KRB/desa/sekolah/faskes/tambang/evakuasi
+30 gunung (A28, A29); lapisan konteks (C38); foto dummy 14 (C25); jenis Lapor Warga `abu`, `lahar`, `gemuruh` + migrasi 0020 (D05); i18n EN 213 entri (C29); `gerbang-inti`.
+
+## Lima celah terbesar
+
+1. **Pekerjaan tanpa jadwal** (A29, A32, A38, B07, E01): `paparan.py` dan `citra.py` tidak ada di workflow mana pun; `paparan.json` baru 30 dari 69 gunung dan citra hanya 5 gunung. Gunung yang naik ke Level II tidak otomatis mendapat zona/evakuasi. `uji_setara.mjs`, `uji_lahar.mjs`, `uji_abu.py`, `abu.py uji`, `laporan.py uji` tidak dijalankan CI.
+2. **Bukti model lemah dan tanpa prospektif** (B02, B03, A15, A18, B06): arah abu berambang cocok 25% dari 4 kejadian VONA (p = 0,68); sebaran mentah 72% dari 29. Tidak ada catatan prospektif, indeks risiko riwayat, katalog letusan historis, atau uji tren.
+3. **Peringatan belum tersambung**: `gunungapi_ubah` (kenaikan level) belum dibaca `src/ews.js` (komentar 'nanti', `src/gunungapi.js:73`); halaman Peringatan Dini tak memuat gunung api. Kontak PVMBG hanya 2 dari 27 gunung Level II ke atas (A40), pos pengamatan tidak terstruktur.
+4. **Respons dan keputusan** (A21-A24, A30, C19, C21): kode belum ada; dampak (C20, A27) tanpa rupiah dan lahan pertanian, sekolah/faskes hanya untuk 30 gunung.
+5. **Warga, terjemahan, pratinjau** (C24, D05, C29, C28, A33, F04): tab Informasi tidak ada dan migrasi 0020 produksi belum terverifikasi; judul dialog dan kartu baru bocor Indonesia di EN; og:image `/gunungapi/k/V0001` = gambar karhutla; sentimen/EN/video berita; Tentang tak menyebut MAGMA/PVMBG.
+
+## Rusak atau basi yang ditemukan
+
+| Temuan | Letak |
 | --- | --- |
-| `public/foto.js`: tambah ke `KAT_AWAL` `gunungapi: {hujan_abu: ["Hujan abu", "#7d8795"], lahar: ["Lahar", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]}` dan `CONTOH_KET.gunungapi`; ikon di `IKAT` (jatuh ke `lainnya` bila kosong). Lalu buang `"foto"` dari `TAB_SEMBUNYI` (`gunungapi/app.js`) dan `tab_sembunyi` registry | `layar-peta` (foto.js), `bencana.json` |
-| Workflow: rantai `python3 scripts/gunungapi/berita.py` dan `dampak.py` di akhir langkah yang sudah jalan harian (`banjir.yml` lewat `posko.py` memanggil `magma.py`), dan tambah `public/gunungapi/data` ke `git add` / cache | `mekanik-mesin` |
-| `scripts/og/buat.py`: render `gunungapi.png` | `mekanik-mesin` / pemilik og |
-| Geocoder mesin berita (`scripts/umum/berita.py`): "puncak" (puncak gunung) dikira Kabupaten Puncak; tambahkan ke `KAB_LEMAH`. Sementara ditangani di `scripts/gunungapi/berita.py` | `pipa-data` |
-| Kamera awal banjir: pusat (112,38; -2,11) vs karhutla (-6,28); padding bawah 163 menyamakan | `banjir` |
+| Docstring 'SEMUA gunung (69)'; berkas hanya 30 gunung | `scripts/gunungapi/paparan.py:3`, `public/gunungapi/data/paparan.json` |
+| Komentar menyebut `statis.yml` sebagai tempat `paparan.py`/`citra.py`; `statis.yml` tidak memuatnya | `.github/workflows/lintas.yml:85-86` |
+| Docstring 'Tidak ada workflow gunung api khusus', keluaran `public/gunungapi/data/berita.json`; nyatanya `public/banjir/data/berita_gunungapi.json` lewat `lintas.yml:117` | `scripts/gunungapi/berita.py:3-5` |
+| Data live `gunungapi_status.json` belum membawa `kontak` (0 dari 69) padahal parser dan layar sudah ada; data lokal baru 2 | live vs `scripts/gunungapi/magma.py:93` |
+| `/api/status` mengawasi berkas CI, bukan `umur_menit` D1: cron MAGMA mati tak membuat status basi; kolom `diubah` semua sama (12.07Z, putaran pertama) | registry `sumber_status`, `src/gunungapi.js:38` |
+| Langkah CI 'Periksa kesegaran' memakai worker yatim (balasan 404) kecuali `vars.URL_STATUS` diisi | `lintas.yml:189` dan empat workflow lain |
+| Registry `pengerja: "gunungapi"`, agen sebenarnya `gunungapi-kering` | `public/bencana.json` |
+| README: 'perlu cadangan GDACS' padahal GDACS/GVP ditolak (`magma.py:1-15`) | `docs/multi-bencana/README.md:56` |
+| Hasil crawl i18n tersimpan 15 Okt | `scripts/i18n/laporan.json` |
+
+## Yang sengaja tidak ditutup
+
+Tanpa kalender musim, ENSO, iklim, kondisi latar, indeks riset tambahan (TB). Level resmi PVMBG dipakai apa adanya (tidak ada tingkat buatan). Abu dan lahar adalah skenario
+'jika meletus sekarang', bukan prakiraan letusan, dan tidak menggantikan VONA/VAAC. Sentimen berita tidak ditampilkan sampai ada label uji manusia.

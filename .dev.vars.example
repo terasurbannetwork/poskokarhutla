@@ -1,3 +1,6 @@
 # salin ke .dev.vars untuk `wrangler dev --local` (jangan di-commit)
 IP_SALT=ganti-dengan-acak-panjang
 ADMIN_TOKEN=ganti-token-admin-lokal
+# SUPER_ADMIN: awalan akun yang boleh memakai dummy (🧪/🧹). Isi = 12 hex awal sha256 dari entri ADMIN_TOKEN akun itu, pisah koma.
+# Hitung: printf '%s' 'token-atau-email:sandi' | shasum -a 256 | cut -c1-12   Kosong = dummy tertutup. Akun AKUN_SITUS tidak dapat kontak PT / kirim ke perusahaan.
+SUPER_ADMIN=

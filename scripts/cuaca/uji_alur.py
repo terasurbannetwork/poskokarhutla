@@ -78,8 +78,8 @@ def jalankan():
         def tanpa_jaringan(*a, **k):
             raise AssertionError("jaringan nyata dipanggil: " + str(a[0])[:100])
         urllib.request.urlopen = tanpa_jaringan
-        import cuaca, dasar, dampak_cuaca, gelombang, laporan_cuaca, medan, prakiraan_kec, sarana, siklon, verifikasi
-        for m in (dasar, cuaca, dampak_cuaca, gelombang, laporan_cuaca, medan, prakiraan_kec, sarana, siklon, verifikasi):
+        import cuaca, dasar, dampak_cuaca, gelombang, laporan_cuaca, medan, musim, prakiraan_kec, sarana, siklon, verifikasi
+        for m in (dasar, cuaca, dampak_cuaca, gelombang, laporan_cuaca, medan, musim, prakiraan_kec, sarana, siklon, verifikasi):
             for nama in ("KELUAR", "MASUKAN", "BANJIR"):
                 if hasattr(m, nama):
                     setattr(m, nama, tmp)

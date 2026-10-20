@@ -50,3 +50,25 @@ test("format Indonesia: persen dan desimal bertanda koma, null jadi tanda hubung
   assert.equal(M.persen(0.71), "71%"); assert.equal(M.persen(null), "–"); assert.equal(M.desimal(null), "–");
   assert.ok(!/—/.test(M.ST.join(""))); assert.match(M.desimal(1.5, 1), /^1[,.]5$/);
 });
+
+test("satukan: prakiraan 514 kab -> ringkasan jiwa per kategori, prov, kab (satu jalur data)", () => {
+  const jam = Array.from({length: 48}, (_, i) => new Date(Date.UTC(2026, 9, 19, 7 + i)).toISOString().slice(0, 16) + "Z");
+  const pm = (a, b) => jam.map((_, i) => i < 10 ? a : b);   /* 07 UTC = 14 WIB: hari WIB 19 Okt = jam ke-0..9 */
+  const prak = {hari: ["2026-10-19", "2026-10-20"], jam, dibuat: "x", kota: [
+    {kode: "a", nama: "Kab. A", prov: "1", jiwa: 100, r24: [200, 10], pm: pm(300, 10)},
+    {kode: "b", nama: "Kab. B", prov: "1", jiwa: 300, r24: [10, 60], pm: pm(10, 70)},
+    {kode: "c", nama: "Kab. C", prov: "2", jiwa: 0, r24: [999, 999], pm: pm(999, 999)}]};   /* tanpa jiwa: dilewati */
+  const {uk, mk} = M.satukan(prak);
+  assert.deepEqual(uk.nasional[0].jiwa, [300, 0, 0, 100, 0]); assert.equal(Math.round(uk.nasional[0].rata), 58);
+  assert.deepEqual(uk.nasional[1].jiwa, [100, 0, 300, 0, 0]);
+  assert.deepEqual(uk.prov["1"][0].slice(0, 5), [300, 0, 0, 100, 0]); assert.equal(uk.prov["1"][0][6], 300); assert.equal(uk.prov["2"], undefined);
+  assert.equal(uk.kab[0][0][1], "Kab. A"); assert.deepEqual(uk.kab[0][0], ["1", "Kab. A", 200, 300, 100, 100]); assert.equal(uk.kab[1][0][5], 300);
+  assert.equal(mk.a[1], 10);
+});
+
+test("satukan: puncak per jam tak di bawah r24 (hari ini hanya jam tersisa) dan null tanpa jam", () => {
+  const jam = Array.from({length: 4}, (_, i) => new Date(Date.UTC(2026, 9, 19, 7 + i)).toISOString().slice(0, 16) + "Z");   /* semua hari WIB 19 Okt */
+  const prak = {hari: ["2026-10-19", "2026-10-20"], jam, dibuat: "x", kota: [{kode: "a", nama: "A", prov: "1", jiwa: 10, r24: [35, 20], pm: [17, 17, 17, 17]}]};
+  const {uk, mk} = M.satukan(prak);
+  assert.equal(mk.a[0], 35); assert.equal(mk.a[1], null); assert.equal(uk.prov["1"][0][6], 35); assert.equal(uk.kab[1][0][3], null);
+});

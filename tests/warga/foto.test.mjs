@@ -8,6 +8,7 @@ import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
 const JAM = 3600e3, ADMIN = {"x-admin-token": "rahasia-admin"};
+const REG = JSON.parse(readFileSync(path.join(AKAR, "public/bencana.json"), "utf8")).bencana;
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p.endsWith("/") ? p + "index.html" : p);
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) ? new Response(readFileSync(f), {headers: {"content-type": p.endsWith(".html") ? "text/html; charset=utf-8" : "application/octet-stream"}}) : new Response("tidak ada", {status: 404});
@@ -115,7 +116,8 @@ uji("foto: anti GPS palsu — tolak yang pasti janggal, tandai yang curiga untuk
     [{sampel: JSON.stringify([[-2.21, 113.92, 15, t], [-2.21, 113.92, 15, t - 9e3], [-2.21, 113.92, 15, t]])}, {country: "ID"}, "tidak bisa diverifikasi"],
     [{sampel: sampel(-2.21, 113.92, t - 5000)}, {country: "ID"}, "tidak bisa diverifikasi"],   // waktu sampel tak cocok waktu_gps
     [{sampel: "[" + "1,".repeat(600) + "1]"}, {country: "ID"}, "tidak bisa diverifikasi"],
-    [{}, {country: "SG"}, "luar Indonesia"]]) {
+    [{}, {country: "SG"}, "luar Indonesia"],
+    [{}, {country: "ID", asOrganization: "DigitalOcean, LLC"}, "VPN/proxy"]]) {
     const r = await unggah(isian, {}, ipBaru(), cf);
     assert.equal(r.s, 400, `${pesan}: ${JSON.stringify(r.j)}`); assert.match(r.j.galat, new RegExp(pesan));
   }
@@ -126,6 +128,15 @@ uji("foto: anti GPS palsu — tolak yang pasti janggal, tandai yang curiga untuk
   const ip = ipBaru(); assert.equal((await unggah({}, {}, ip)).s, 201);
   const loncat = await unggah({lat: "-6.2000", lon: "106.8200", sampel: sampel(-6.2, 106.82)}, {}, ip);   // Palangka Raya -> Jakarta dalam detik
   assert.equal(loncat.s, 201); assert.match(await curiga(loncat.j.id), /pindah .* km/);
+  const em = "pindah@contoh.id"; assert.equal((await unggah({email: em})).s, 201);
+  const lewatEmail = await unggah({email: em, lat: "-6.2000", lon: "106.8200", sampel: sampel(-6.2, 106.82)});   // IP lain, email sama
+  assert.match(await curiga(lewatEmail.j.id), /pindah .* km .*email sama/);
+  const relay = await unggah({}, {}, ipBaru(), {country: "ID", asn: 13335, asOrganization: "Cloudflare, Inc."});   // iCloud Private Relay / WARP: masuk, ditandai
+  assert.equal(relay.s, 201, JSON.stringify(relay.j)); assert.match(await curiga(relay.j.id), /relay privasi/);
+  for (const [zona, pola] of [["Asia/Pontianak", null], ["Asia/Jakarta", null], ["Asia/Jayapura", /jam perangkat WIT, padahal GPS di wilayah WIB/], ["Europe/London", /bukan zona Indonesia/]]) {
+    const z = await unggah({zona}); assert.equal(z.s, 201);
+    if (pola) assert.match(await curiga(z.j.id), pola); else assert.equal(await curiga(z.j.id), "", `${zona} cocok untuk Kalteng`);
+  }
   const a = await panggil("GET", "/api/foto/admin?status=menunggu", null, "10.8.8.8", ADMIN);
   assert.ok(a.j.foto.find(f => f.id === d.j.id).gps_curiga, "admin melihat tanda curiga");
   const p = await panggil("GET", "/api/foto/" + d.j.id, null, "10.8.8.8", ADMIN);
@@ -248,11 +259,50 @@ uji("foto dummy: isi semua ember lewat pintunya, publik tidak melihatnya, admin 
   const d = (await panggil("GET", "/api/foto?dummy=1", null, "1.1.1.1", ADMIN)).j.foto.find(x => x.contoh);
   const m = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + d.id);
   assert.equal(m.status, 200, "thumbnail dummy dari aset contoh"); await m.arrayBuffer();
+  /* karhutla: 000..099.jpg cocok satu-satu dengan kredit.json, dan SEMUA thumbnail dummy 200 (bukan 404 abu-abu) */
+  const kr = JSON.parse(readFileSync(path.join(AKAR, "public/img/dummy/kredit.json"), "utf8"));
+  assert.deepEqual(kr.map(k => k.berkas), Array.from({length: 100}, (_, i) => String(i).padStart(3, "0") + ".jpg"), "kredit karhutla = 000..099.jpg berurutan");
+  for (const k of kr) { assert.ok(existsSync(path.join(AKAR, "public/img/dummy", k.berkas)), `${k.berkas} ada`); assert.ok(k.judul && k.pembuat && /^https:\/\/commons\.wikimedia\.org\//.test(k.sumber), `${k.berkas}: kredit lengkap`); }
+  for (const x of (await DB.prepare("SELECT id FROM foto WHERE dummy = 1 AND bencana = 'karhutla'").all()).results) {
+    const t = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + x.id, {headers: ADMIN}); await t.arrayBuffer();
+    assert.equal(t.status, 200, `thumbnail dummy ${x.id} (nomor ${parseInt(x.id.slice(-2), 16) % 100})`);
+  }
   const h = await panggil("POST", "/api/foto/dummy", {aksi: "hapus"}, "1.1.1.1", ADMIN);
   assert.equal(h.j.foto, 100);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1").first()).n, 0);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto_komentar WHERE dummy = 1").first()).n, 0);
   assert.equal((await DB.prepare("SELECT count(*) n FROM foto_suka s LEFT JOIN foto f ON f.id = s.foto_id WHERE f.id IS NULL").first()).n, 0, "suka dummy ikut terhapus (cascade)");
+});
+
+/* Dummy per halaman bencana (DUMMY.md): 🧪 di halaman bencana X mengisi foto X saja, dengan kategori X dan foto contoh X; 🧹 mengembalikan jumlah baris SEMULA. */
+uji("foto dummy per bencana: kategori & foto contoh milik bencananya, gerbang per halaman, hapus mengembalikan jumlah baris semula", async () => {
+  const JUMLAH_DUMMY = Function(`return ${readFileSync(path.join(AKAR, "src/foto.js"), "utf8").match(/JUMLAH_DUMMY = (\{[^}]*\})/)[1]}`)();   // impor langsung foto.js memutar import lingkar dengan worker.js
+  const tabel = ["foto", "foto_komentar", "foto_suka", "foto_aduan"], hitung = async () => Object.fromEntries(await Promise.all(tabel.map(async t => [t, (await DB.prepare(`SELECT count(*) n FROM ${t}`).first()).n])));
+  const semula = await hitung();
+  assert.equal((await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: "tsunami"}, "1.1.1.1", ADMIN)).s, 400, "bencana tak dikenal ditolak");
+  assert.equal((await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: "banjir"})).s, 403, "non-admin ditolak");
+  const LISENSI = /^(CC0|CC BY(-SA)? [0-9.]+|Public domain)$/;
+  for (const b of REG.filter(x => JUMLAH_DUMMY[x.id] && x.id !== "karhutla")) {
+    const kredit = JSON.parse(readFileSync(path.join(AKAR, `public/img/dummy/${b.id}/kredit.json`), "utf8"));
+    assert.equal(kredit.length, JUMLAH_DUMMY[b.id], `${b.id}: JUMLAH_DUMMY = isi kredit.json`);
+    for (const k of kredit) { assert.ok(existsSync(path.join(AKAR, `public/img/dummy/${b.id}`, k.berkas)), `${b.id}/${k.berkas} ada`); assert.match(k.lisensi, LISENSI); assert.ok(k.judul && k.penulis && /^https:\/\/commons\.wikimedia\.org\//.test(k.sumber), `${b.id}/${k.berkas}: kredit lengkap`); }
+    const isi = await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: b.id}, "1.1.1.1", ADMIN);
+    assert.equal(isi.s, 201, JSON.stringify(isi.j)); assert.equal(isi.j.foto, JUMLAH_DUMMY[b.id]);
+    assert.equal((await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: b.id}, "1.1.1.1", ADMIN)).s, 409, `${b.id}: gerbang sudah ada per halaman`);
+    const r = (await DB.prepare("SELECT id, bencana, coalesce(nullif(kategori_b, ''), kategori) k FROM foto WHERE dummy = 1 AND bencana = ?").bind(b.id).all()).results;
+    assert.equal(r.length, JUMLAH_DUMMY[b.id]);
+    assert.deepEqual([...new Set(r.map(x => x.k))].sort(), b.foto_kategori.map(x => x[0]).sort(), `${b.id}: tiap kategori bencana itu terisi, tak ada kategori bencana lain`);
+    assert.equal(new Set(r.map(x => x.id.slice(-2))).size, r.length, `${b.id}: tiap dummy menunjuk foto contoh berbeda`);
+    for (const x of r) { const m = await mf.dispatchFetch("http://warga.lokal/api/foto/thumb/" + x.id, {headers: ADMIN}); assert.equal(m.status, 200, `${b.id}: foto contoh ${x.id} termuat`); assert.equal((await m.arrayBuffer()).byteLength > 1000, true); }
+    assert.ok((await panggil("GET", "/api/foto?dummy=1&bencana=" + b.id, null, "1.1.1.1", ADMIN)).j.foto.every(x => x.bencana === b.id && x.contoh), `${b.id}: daftar admin hanya dummy bencana itu`);
+    assert.ok((await panggil("GET", "/api/foto?bencana=" + b.id)).j.foto.every(x => !x.contoh), `${b.id}: publik tidak melihat dummy`);
+    assert.equal((await DB.prepare("SELECT count(*) n FROM foto WHERE dummy = 1 AND bencana != ?").bind(b.id).first()).n, 0, `${b.id}: tidak menulis bencana lain`);
+    const h = await panggil("POST", "/api/foto/dummy", {aksi: "hapus"}, "1.1.1.1", ADMIN);
+    assert.equal(h.j.foto, JUMLAH_DUMMY[b.id]); assert.deepEqual(await hitung(), semula, `${b.id}: hapus mengembalikan jumlah baris semula`);
+  }
+  /* dua halaman berurutan lalu satu 🧹 menghapus semuanya */
+  await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: "banjir"}, "1.1.1.1", ADMIN); await panggil("POST", "/api/foto/dummy", {aksi: "isi", bencana: "gempa"}, "1.1.1.1", ADMIN);
+  assert.equal((await panggil("POST", "/api/foto/dummy", {aksi: "hapus"}, "1.1.1.1", ADMIN)).j.foto, JUMLAH_DUMMY.banjir + JUMLAH_DUMMY.gempa); assert.deepEqual(await hitung(), semula);
 });
 
 uji("foto: pratinjau tautan /f/:id memakai keterangan & thumbnail foto", async () => {

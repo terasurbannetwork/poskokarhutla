@@ -242,7 +242,7 @@ export const ASUMSI = [
   {nama: "Infiltrasi sekolah", nilai: `${SEKOLAH.luarS * 100}% waktu di luar, kelas ${SEKOLAH.fs}`, sumber: "Chen dan Zhao 2011, rasio dalam/luar ruang ventilasi alami; disesuaikan"},
   {nama: "Infiltrasi rumah (libur)", nilai: `${SEKOLAH.luarR * 100}% waktu di luar, rumah ${SEKOLAH.fr}`, sumber: "Chen dan Zhao 2011; disesuaikan"},
   {nama: "Usia sekolah", nilai: `${KONF.anak * 100}% penduduk`, sumber: "Struktur umur BPS, perkiraan kasar"},
-  {nama: "Ambang terpapar", nilai: `${KONF.ambang} µg/m³`, sumber: "Batas bawah Tidak sehat, PermenLHK P.14/2020"}
+  {nama: "Ambang terpapar", nilai: `${String(KONF.ambang).replace(".", ",")} µg/m³`, sumber: "Batas bawah Tidak sehat, PermenLHK P.14/2020"}
 ];
 const hariKerjaSekolah = (A, b) => { const w = new Date(A.t0 + b * 36e5 + 7 * 36e5), d = w.getUTCDay(), j = w.getUTCHours(); return d >= 1 && d <= 5 && j >= 7 && j < 14; };
 export function sekolahHindar(A, pm, jiwa) {

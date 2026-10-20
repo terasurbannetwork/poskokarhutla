@@ -1,0 +1,15 @@
+{
+  "sumber": "USGS (parameter gempa dan ringkasan dampak per event) dan BNPB (korban Palu); tiap baris menyebut URL halaman yang memuat angkanya",
+  "tanggal": "2026-10-19",
+  "catatan": "Dicocokkan ke halaman sumber pada 19 Okt 2026. Magnitudo dan tanggal dari katalog USGS (tanggal = tanggal lokal Indonesia; Bantul 26 Mei 22:53 UTC = 27 Mei WIB, Majene 14 Jan 18:28 UTC = 15 Jan WITA). Korban jiwa = jumlah meninggal minimal yang tertulis di sumber baris itu (bukan termasuk hilang). Pilihan sumber: USGS untuk parameter gempa dan ringkasan dampak; BNPB dipakai bila halaman BNPB/kutipan BNPB bisa dibuka (Palu: BNPB 26 Okt 2018, 2.081 meninggal, 1.309 hilang). Halaman resmi BNPB/DIBI tidak dapat diakses langsung, sehingga dampak lain memakai ringkasan USGS 'impact-text'. Majene 105 berasal dari Basarnas via Antara, USGS menulis 107. 'tsunami' = tsunami tercatat menurut ringkasan USGS (termasuk kecil/tidak merusak: Padang 27 cm, Lombok kecil), bukan bendera peringatan USGS. Angka dibuang (null) karena tidak ada total tertulis di sumber: Nias (USGS hanya merinci 1.000+100+200+3 per lokasi) dan Pangandaran (USGS merinci per kabupaten, jumlah 665; angka lama 668 tidak ditemukan). Gempa Aceh-Andaman 26 Des 2004 (M 9,1) tidak dimuat karena angka resminya mencakup seluruh kawasan Samudra Hindia.",
+  "kasus": [
+    {"tanggal": "2005-03-28", "nama": "Nias, Sumatera Utara", "m": 8.6, "meninggal": null, "tsunami": true, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/official20050328160936530_30"},
+    {"tanggal": "2006-05-27", "nama": "Bantul, DI Yogyakarta", "m": 6.3, "meninggal": 5749, "tsunami": false, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ej1c"},
+    {"tanggal": "2006-07-17", "nama": "Pangandaran, Jawa Barat", "m": 7.7, "meninggal": null, "tsunami": true, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000ensm"},
+    {"tanggal": "2009-09-30", "nama": "Padang Pariaman, Sumatera Barat", "m": 7.6, "meninggal": 1117, "tsunami": true, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000h237"},
+    {"tanggal": "2010-10-25", "nama": "Kepulauan Mentawai, Sumatera Barat", "m": 7.8, "meninggal": 445, "tsunami": true, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/usp000hnj4"},
+    {"tanggal": "2018-08-05", "nama": "Lombok Utara, Nusa Tenggara Barat", "m": 6.9, "meninggal": 563, "tsunami": true, "sumber": "https://earthquake.usgs.gov/earthquakes/eventpage/us1000g3ub"},
+    {"tanggal": "2018-09-28", "nama": "Donggala dan Palu, Sulawesi Tengah", "m": 7.5, "meninggal": 2081, "tsunami": true, "sumber": "https://www.medcom.id/nasional/peristiwa/4ba2EyWk-korban-tewas-bencana-di-sulteng-2-081-orang"},
+    {"tanggal": "2021-01-15", "nama": "Majene, Sulawesi Barat", "m": 6.2, "meninggal": 105, "tsunami": false, "sumber": "https://jambi.antaranews.com/berita/429680/jumlah-korban-meninggal-akibat-gempa-di-sulbar-capai-105"}
+  ]
+}

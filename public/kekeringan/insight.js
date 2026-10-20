@@ -10,8 +10,8 @@ const tanda = v => (v > 0 ? "+" : v < 0 ? "−" : "") + F2(Math.abs(v));
 
 const Insight = {
   st: {jiwa: "3"},
-  EX: ["kabupaten", "jiwa", "prakiraan", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel"],
-  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering"},
+  EX: ["kabupaten", "jiwa", "prakiraan", "peluang", "padi", "ujibalik", "gambut", "berulang", "enso", "tabel"],
+  LABEL: {kabupaten: "Kabupaten/kota", jiwa: "Jiwa", prakiraan: "Prakiraan", peluang: "Peluang kering", padi: "Padi", ujibalik: "Seberapa tepat", gambut: "Gambut", berulang: "Paling sering kering", enso: "El Niño", tabel: "Paling kering"},
   T: {tabel: {urut: "_", turun: true, hal: 0}, prakiraan: {urut: "nm", turun: false, hal: 0}, padi: {urut: "nm", turun: false, hal: 0}, gambut: {urut: "dc", turun: true, hal: 0}, berulang: {urut: "tahun", turun: true, hal: 0}},
   ex: (...a) => Kartu.ex(...a), hl: Kartu.hl, pil: Kartu.pil,
   seg(key, opsi) { return Kartu.seg(key, opsi, this.st); },
@@ -91,6 +91,9 @@ const Insight = {
 
 
   /* 5. prakiraan SEAS5 1-3 bulan: nasional + tabel provinsi TANPA peringkat (urutan nama; pengguna boleh mengurutkan sendiri) */
+  /* peluang kekeringan (../banjir/data/kering_peluang.json, kontrak peluang/1; membungkus prakiraan SEAS5). Mesin public/inti/peluang.js; tanpa mesin atau berkas = dibuang. */
+  exPeluang() { const d = this.pel; if (typeof Peluang === "undefined" || !d) return "";
+    return Peluang.kartu(d, {ey: this.LABEL.peluang, st: this.st, kunci: "pel", kejadian: "bulan kering", sumber: "ECMWF SEAS5 lewat Open-Meteo, Deteksi Pantau Bencana"}); },
   exPrakiraan() {
     const P = S.prak, L = P?.nasional?.lead; if (!L?.length) return "";
     const bl = BLN_PRAK(), M = innerWidth < 640, W = M ? 700 : 940, H = 230, Lm = 20, B0 = 176, T0 = 40, gw = (W - Lm - 10) / L.length, bw = Math.min(70, gw / 4.2);
@@ -142,10 +145,18 @@ const Insight = {
     const tb = A ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Model cadangan ENSO (bukan SEAS5), ${esc(Q.bulan_target || "")}</th><th class="n">Hasil</th></tr></thead><tbody>
       ${th("Skor Brier relatif klimatologi (BSS), semua sel dan tahun", F3(A.bss))}${Q.bss_rerata_tahun != null ? th("BSS rerata per tahun", F3(Q.bss_rerata_tahun)) : ""}${Q.tahun_bss_positif != null ? th("Tahun dengan BSS positif", `${fmt(Q.tahun_bss_positif)} dari ${fmt(Q.n_tahun)}`) : ""}
       ${A.tangkapan_pct != null ? th(`Kejadian tertangkap oleh alarm (ambang ${fmt(Q.ambang_alarm_pct)}%)`, fmt(A.tangkapan_pct) + "%") : ""}${A.alarm_palsu_pct != null ? th("Alarm yang palsu", fmt(A.alarm_palsu_pct) + "%") : ""}</tbody></table></div>` : "";
+    /* kejadian nyata DIBI BNPB per kabupaten-bulan (ujibalik.py `kejadian`): angka apa adanya, termasuk yang buruk */
+    const K = J.kejadian, kw = K?.aturan?.waspada, ksg = K?.aturan?.siaga, pc = x => x == null ? "–" : fmt(Math.round(x * 100)) + "%", nmP = p => p === "semua" ? "Seluruh periode" : p.replace("..", " sampai ");
+    const baris = (n, o) => o ? `<tr><td>${esc(nmP(n))}</td><td class="n num">${pc(o.pod)}</td><td class="n num">${pc(o.far)}</td><td class="n num">${o.csi != null ? F3(o.csi) : "–"}</td><td class="n num">${o.csi_acak != null ? F3(o.csi_acak) : "–"}</td></tr>` : "";
+    const tk = kw?.semua ? `<div class="tw"><table class="kl-tb"><thead><tr><th>Kabupaten-bulan vs ${fmt(K.dibi_dalam_periode)} kejadian kering DIBI BNPB (${esc(K.periode_data.map(blnIso).join(" sampai "))})</th><th class="n">Tertangkap (POD)</th><th class="n">Alarm palsu (FAR)</th><th class="n">CSI</th><th class="n">CSI alarm acak</th></tr></thead><tbody>
+      <tr><td colspan="5"><span class="pill" style="background:oklch(25.5% .075 256);color:#fff">${AMBANG_PIL()}</span></td></tr>
+      <tr><td colspan="5"><b>Waspada atau lebih (SPI-3 ≤ −1)</b></td></tr>${Object.entries(kw).map(([n, o]) => baris(n, o)).join("")}${ksg ? `<tr><td colspan="5"><b>Siaga atau lebih (SPI-3 ≤ −1,5)</b></td></tr>${Object.entries(ksg).map(([n, o]) => baris(n, o)).join("")}` : ""}</tbody></table></div>
+      <p class="fnd" style="margin:8px 2px 0">${K.vonis?.layak ? "Lolos kriteria di semua periode uji." : `Belum layak: POD di bawah ${Math.round(K.kriteria_layak.pod_min * 100)}% dan FAR di atas ${Math.round(K.kriteria_layak.far_maks * 100)}% pada tiap periode uji.`} Hanya bagian SPI-3 yang diuji (tanah dan HTH tak punya riwayat harian); SPI-3 pada bulan kejadian adalah diagnosis serentak, bukan prakiraan; ambang tidak disetel pada kejadian ini. DIBI hanya mencatat laporan BPBD, jadi alarm palsu di sini batas atas.</p>` : "";
+    const kal = kw?.semua ? `; terhadap kejadian DIBI aturan menangkap ${this.hl(pc(kw.semua.pod))} kabupaten-bulan berkejadian dan ${this.hl(pc(kw.semua.far))} alarmnya tanpa laporan (${K.vonis?.layak ? "ambang layak" : "ambang tetap hipotesis"})` : "";
     Kartu.leg([[MERAH, "tahun yang menonjol dari tahun netral"], ["#9aa4b2", "tahun tidak menonjol"], [BIRU, "rerata tahun netral"]]);
-    return this.ex(`Aturan SPI-3 hanya menonjol pada ${this.hl(men.length ? men.join(", ") : "tidak satu pun tahun")}: ${fmt(Math.round(men.length ? v(men[0]) : nt.rerata))}% sel Waspada ke atas pada ${nm}${lain.length ? `, sedangkan ${lain.map(t => `${t} hanya ${fmt(Math.round(v(t)))}%`).join(" dan ")}` : ""} (tahun netral rerata ${fmt(Math.round(nt.rerata))}%)${A ? `; model cadangan ENSO ${A.bss <= 0 ? "tanpa keterampilan" : "dengan keterampilan kecil"} (BSS ${this.hl(F3(A.bss))})` : ""}`, "", "",
-      `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Uji balik aturan SPI-3">${g}</svg>${tb}`,
-      `Uji ${esc((J.periode || []).join("–"))}, klimatologi ${esc((J.klimatologi || []).join("–"))}; prakiraan SEAS5 sendiri belum diuji (hindcast tidak tersedia). Sumber: Pantau Bencana`); },
+    return this.ex(`Aturan SPI-3 hanya menonjol pada ${this.hl(men.length ? men.join(", ") : "tidak satu pun tahun")}: ${fmt(Math.round(men.length ? v(men[0]) : nt.rerata))}% sel Waspada ke atas pada ${nm}${lain.length ? `, sedangkan ${lain.map(t => `${t} hanya ${fmt(Math.round(v(t)))}%`).join(" dan ")}` : ""} (tahun netral rerata ${fmt(Math.round(nt.rerata))}%)${kal}${A ? `; model cadangan ENSO ${A.bss <= 0 ? "tanpa keterampilan" : "dengan keterampilan kecil"} (BSS ${this.hl(F3(A.bss))})` : ""}`, "", "",
+      `<svg viewBox="0 0 ${W} ${rows.length * rh + 6}" role="img" aria-label="Uji balik aturan SPI-3">${g}</svg>${tk}${tb}`,
+      `Uji ${esc((J.periode || []).join("–"))}, klimatologi ${esc((J.klimatologi || []).join("–"))}; prakiraan SEAS5 sendiri belum diuji (hindcast tidak tersedia). Sumber: Pantau Bencana${K ? ", DIBI BNPB" : ""}`); },
 
   /* 8. gambut konsesi mengering: penghubung ke Karhutla */
   exGambut() {
@@ -174,17 +185,19 @@ const Insight = {
       `Kandidat = kering ${fmt(B.min_tahun)} tahun atau lebih; "melebihi acak" bila jumlah tahun keringnya lebih banyak dari dugaan peluang acak${B.alfa != null ? ` (p di bawah ${F3(B.alfa)})` : ""}. Tampungan OSM kasar dan tidak lengkap, jadi nol bukan bukti kekurangan; rincian di Metode. Sumber: Pantau Bencana (NASA POWER), OpenStreetMap (ODbL), InaRISK BNPB`); },
 
   gambar(id) { const f = this["ex" + id[0].toUpperCase() + id.slice(1)]; Kartu._leg = null;
-    try { return f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); } catch (e) { console.error(e); return ""; } },
+    try { const h = f.call(this).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${this.LABEL[id] || ""}</span>`); return ["kabupaten", "jiwa", "tabel"].includes(id) ? beriAmbang(h) : h; } catch (e) { console.error(e); return ""; } },
   pasangUrut(box) { const th = box.querySelector("thead"), st = this.T[box.dataset.ex]; if (th && st) pengurutKepala(st, th, () => this.ulang(box)); },
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); this.pasangUrut(box); }); },
   render() {
     const el = $("#insight");
+    if (this.pel === undefined) { this.pel = null; if (typeof Peluang !== "undefined") Peluang.muat("../banjir/data/kering_peluang.json").then(d => { if (d) { this.pel = d; if (el.isConnected) this.render(); } }); }
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).filter(h => h.includes("<article")).join("");
     el.querySelectorAll("[data-ex]").forEach(b => this.pasangUrut(b));
     if (!el.innerHTML) el.innerHTML = `<p class="kosong">Belum ada data kekeringan.</p>`;
     else el.insertAdjacentHTML("beforeend", `<div class="kl-tautan"><a href="simulasi.html">Simulasi neraca air 180 hari</a><a href="laporan.html">Laporan harian</a></div>`);
+    el.onchange = e => { const s = e.target.closest("select[data-set]"); if (s) { this.st[s.dataset.set] = s.value; this.ulang(s.closest("[data-ex]")); } };
     el.onclick = e => {
-      const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
+      const s = e.target.closest("[data-set]:not(select)"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return this.ulang(s.closest("[data-ex]")); }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; box.querySelectorAll(".pgn-b[data-h]").forEach(x => { const on = x === pg; if (!x.textContent.match(/[‹›]/)) { x.classList.toggle("on", on); on ? x.setAttribute("aria-current", "page") : x.removeAttribute("aria-current"); } }); this.ulang(box); } return; }
       const pv = e.target.closest("[data-prov]"); if (pv) { bukaTab("peta"); return turun(pv.dataset.prov); }
       const kb = e.target.closest("[data-kab]"); if (kb) { const p = kb.dataset.kab.split("|"); S.jalur = [p[0]]; bukaTab("peta"); nanti(() => Peta.aturWilayah().then(() => Analisa.wilayah(kb.dataset.kab))); return; } };

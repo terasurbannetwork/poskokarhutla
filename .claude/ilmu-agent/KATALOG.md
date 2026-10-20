@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **19 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **20 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (10)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (11)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -22,11 +22,12 @@ Cara memakai katalog ini:
 | `banjir` | sonnet | membangun & membetulkan pipeline dan layar banjir/rob | karhutla; worker warga | `scripts/banjir/**`, `public/banjir/**`, `tests/banjir/**` +1 |
 | `gempa` | sonnet | membangun & membetulkan pipeline, model guncangan/susulan, dan layar modul gempa & tsunami | worker dan D1 (warga-api); karhutla; banjir; menyunting .github/workflows | `scripts/gempa/**`, `public/gempa/**`, `tests/gempa/**` |
 | `warga-api` | sonnet | membangun & membetulkan worker, route API, skema D1, alur laporan warga dan admin | pipeline data; model; deploy | `src/**`, `migrations/**`, `wrangler*.jsonc` +9 |
-| `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +11 |
+| `layar-peta` | sonnet | membangun & membetulkan layar peta, kartu, pop-up, bagikan, i18n | pipeline data; model; worker & D1 | `public/*.html`, `public/*.js`, `public/*.css` +12 |
 | `inti-layar` | sonnet | membangun dan memecah modul inti layar, registry bencana, halaman bencana berkerangka | pipeline data; worker & D1; workflow | `public/inti/**`, `public/bencana.json`, `public/semua/**` |
 | `pipa-umum` | sonnet | membangun dan menguji pustaka pipeline bersama, subperintah bencana.py | layar; worker; workflow; logika domain satu bencana | `scripts/umum/**`, `scripts/berita/**` |
 | `cuaca-udara` | sonnet | membangun pipeline dan layar modul cuaca ekstrem dan udara | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/cuaca/**`, `scripts/udara/**`, `public/cuaca/**` +3 |
 | `gunungapi-kering` | sonnet | membangun pipeline dan layar modul gunung api dan kekeringan | worker dan D1 (warga-api); karhutla; banjir; gempa; menyunting .github/workflows | `scripts/gunungapi/**`, `scripts/kekeringan/**`, `public/gunungapi/**` +3 |
+| `ruang-bnpb` | sonnet | membangun halaman publik Ruang Koordinasi BNPB dan pipeline indeks risiko/kebutuhan | worker & D1; model sebaran; deploy | `public/bnpb/**`, `scripts/bnpb/**`, `tests/bnpb/**` +2 |
 
 ## Pengerja platform — kerja menyeberang domain (layar, uji, gerbang, mesin, migrasi) (2)
 

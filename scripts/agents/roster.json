@@ -149,6 +149,7 @@
         "public/i18n/**",
         "public/og/**",
         "public/vendor/**",
+        "public/data/paparan_templat.json",
         "scripts/i18n/**",
         "scripts/og/**",
         "scripts/situs/**",
@@ -394,6 +395,30 @@
         "public/kekeringan/**",
         "tests/gunungapi/**",
         "tests/kekeringan/**"
+      ]
+    },
+    {
+      "nama": "ruang-bnpb",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja layar dan pipeline Ruang Koordinasi BNPB: pintu /bnpb, relawan, alun-alun, riset, meja kerja, sitrep, indeks risiko kecamatan, perkiraan kebutuhan musim.",
+      "kapan": "public/bnpb/**, scripts/bnpb/**, tests/bnpb/** atau public/data/bnpb/** disentuh atau rusak",
+      "fokus": [
+        "Rancangan bersama di docs/bnpb/ARSITEKTUR.md; rencana di docs/bnpb/RENCANA-12-JAM.md",
+        "Layar vanilla JS tanpa build step, satu berkas .html/.js/.css per halaman di public/bnpb/; gaya kartu Insight, tabel standar, pil berikon, aturan A1-A25",
+        "Data dari route worker (src/relawan.js, alun.js, riset.js, meja.js) dan JSON public/data; layar tidak menghitung ulang angka pipeline",
+        "Pipeline Python 3.12 stdlib di scripts/bnpb/ menulis public/data/bnpb/*.json, dengan self-check assert yang benar-benar jalan",
+        "Indeks komposit diberi label belum diuji balik sampai ada uji balik; data pribadi relawan tidak pernah tampil di layar publik"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (itu warga-api) atau layar peta utama (layar-peta). Jangan deploy, commit, atau push.",
+      "bisa": "membangun halaman publik Ruang Koordinasi BNPB dan pipeline indeks risiko/kebutuhan",
+      "tidak": "worker & D1; model sebaran; deploy",
+      "milik": [
+        "public/bnpb/**",
+        "scripts/bnpb/**",
+        "tests/bnpb/**",
+        "public/data/bnpb/**",
+        "docs/bnpb/**"
       ]
     }
   ]

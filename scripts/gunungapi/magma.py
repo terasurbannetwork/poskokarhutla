@@ -90,6 +90,22 @@ def urai_laporan(h):
     return o
 
 
+def urai_kontak(rek):
+    """Teks rekomendasi MAGMA -> {pusat, pos:{nama, telp[], di}} hanya dari yang tertulis di teks (tidak ada daftar pos terstruktur di MAGMA; jangan dikarang). None bila kosong."""
+    if not rek:
+        return None
+    k = {}
+    m = re.search(r"\(?022\)?[ -]?7272606", rek)
+    if m:
+        k["pusat"] = "(022) 7272606"
+    m = re.search(r"Pos Pengamatan (Gunung ?[Aa]pi |G\. ?|Gunung )?([A-Z][\w ]{2,30}?) ((?:\(0\d{2,4}\) ?\d{5,}|0\d{9,13})(?: (?:atau|dan) (?:\(0\d{2,4}\) ?\d{5,}|0\d{9,13}))*)(?: di ([^()]+?) \(Provinsi ([^)]+)\))?", rek)
+    if m:
+        k["pos"] = {"nama": "Pos Pengamatan Gunungapi " + m.group(2).strip(), "telp": re.findall(r"\(0\d{2,4}\) ?\d{5,}|0\d{9,13}", m.group(3))}
+        if m.group(4):
+            k["pos"]["di"] = f"{m.group(4).strip()}, {m.group(5).strip()}"
+    return k or None
+
+
 def urai_letusan(h):
     """Daftar letusan terbaru -> [{gunung, waktu (ISO, WIB), ket, tinggi_m}] terbaru dulu."""
     out, tgl = [], None
@@ -153,6 +169,16 @@ def simpan(jalur, isi):
     os.replace(jalur + ".tmp", jalur)
 
 
+def riwayat_hari(riwayat, sekarang, gunung, erupsi=None):
+    """riwayat tanpa baris hari ini + baris baru (level -> jumlah gunung; erupsi 24 jam hanya bila daftar MAGMA mencapai 24 jam). Simpan 365 hari."""
+    hari = sekarang.date().isoformat()
+    batas = (sekarang - dt.timedelta(days=365)).date().isoformat()
+    baris = {"tgl": hari, "level": {str(l): sum(1 for o in gunung if o["level"] == l) for l in (1, 2, 3, 4)}}
+    if erupsi is not None:
+        baris["erupsi"] = erupsi
+    return [r for r in riwayat if r["tgl"] >= batas and r["tgl"] != hari] + [baris]
+
+
 def jalan():
     sekarang = dt.datetime.now(WIB)
     daftar = urai_tingkat(ambil("/v1/gunung-api/tingkat-aktivitas"))
@@ -161,6 +187,10 @@ def jalan():
     kat = baca(KATALOG, {})
     lama = baca(KELUAR, {})
     lv_lama = {g["nama"]: g["level"] for g in lama.get("gunung", [])}
+    # Baris riwayat hari ini ditulis SEKARANG dari daftar level (satu permintaan cepat), sebelum laporan per gunung yang lambat (13 menit):
+    # job yang terbunuh di tengah (17 dan 18 Okt 2026 bolong) tetap meninggalkan catatan level hari itu. Baris akhir menimpa baris ini.
+    if lama.get("gunung"):
+        simpan(KELUAR, {**lama, "riwayat": riwayat_hari(lama.get("riwayat", []), sekarang, daftar)})
     gunung = []
     for g in daftar:
         k = kat.get(g["nama"], {})
@@ -178,6 +208,8 @@ def jalan():
         o = {"nama": g["nama"], "prov": g["prov"], "level": g["level"], "lat": k["lat"], "lon": k["lon"], "tinggi": k.get("tinggi"), "laporan": g["laporan"].split("?")[0]}
         if g["level"] >= 2:  # radius hanya bermakna saat ada rekomendasi pembatasan
             o.update({x: lap[x] for x in ("radius_km", "sektor_km", "periode", "rekomendasi") if x in lap})
+            if urai_kontak(lap.get("rekomendasi")):
+                o["kontak"] = urai_kontak(lap["rekomendasi"])
         gunung.append(o)
     cinc = {g["id"]: g.get("cincin") for g in (baca(PAPARAN, {}) or {}).get("gunung", [])}
     for o in gunung:
@@ -207,10 +239,8 @@ def jalan():
     n_lv = {l: sum(1 for o in gunung if o["level"] == l) for l in (1, 2, 3, 4)}
     # riwayat harian (satu baris per tanggal WIB, diganti bila jalan lagi di hari sama): jumlah gunung per level + erupsi 24 jam; layar Tren menggambarnya setelah >= 2 hari
     r24 = sum(1 for x in letusan if dt.datetime.fromisoformat(x["waktu"]) >= sekarang - dt.timedelta(hours=24))
-    batas_r = (sekarang - dt.timedelta(days=365)).date().isoformat()
-    riwayat = [r for r in lama.get("riwayat", []) if r["tgl"] >= batas_r and r["tgl"] != sekarang.date().isoformat()]
     lengkap = bool(cak) and dt.datetime.fromisoformat(cak["dari"]) <= sekarang - dt.timedelta(hours=24) and dt.datetime.fromisoformat(cak["sampai"]) >= sekarang - dt.timedelta(minutes=30)   # hanya bila cakupan yang TERBUKTI (bukan daftar lama) meliputi 24 jam terakhir
-    riwayat.append({"tgl": sekarang.date().isoformat(), "level": {str(l): n for l, n in n_lv.items()}, **({"erupsi": r24} if lengkap else {})})
+    riwayat = riwayat_hari(lama.get("riwayat", []), sekarang, gunung, r24 if lengkap else None)
     simpan(KELUAR, {"sumber": "MAGMA Indonesia, PVMBG (Badan Geologi, KESDM)", "dibuat": sekarang.isoformat(timespec="seconds"),
                     "jumlah_level": {str(l): n for l, n in n_lv.items()}, "gunung": gunung, "perubahan": perubahan, "letusan": letusan, **({"letusan_cakupan": cak} if cak else {}), "riwayat": riwayat})
     print(f"{len(gunung)} gunung; level {n_lv}; letusan {len(letusan)}; perubahan {len(perubahan)}", file=sys.stderr)
@@ -282,15 +312,24 @@ def uji():
     assert penduduk_cincin(merapi, 1.5) == 10 and penduduk_cincin(merapi, 4) < 15122 and 15122 < penduduk_cincin(merapi, 7) < 184363
     assert penduduk_cincin(merapi, 4) == int(round(40 + (15122 - 40) * 7 / 16, -2)), penduduk_cincin(merapi, 4)   # interpolasi menurut r^2
     assert penduduk_cincin(merapi, 20) is None and penduduk_cincin(None, 5) is None and penduduk_cincin([], 5) is None
+    rk = ("5. Untuk mengetahui informasi dapat menghubungi Pusat Vulkanologi dan Mitigasi Bencana Geologi, Badan Geologi (022) 7272606 di Bandung (Provinsi Jawa Barat) atau "
+          "Pos Pengamatan Gunungapi Krakatau (0254) 651449 atau 085846324506 di Pasauran (Provinsi Banten).")
+    assert urai_kontak(rk) == {"pusat": "(022) 7272606", "pos": {"nama": "Pos Pengamatan Gunungapi Krakatau", "telp": ["(0254) 651449", "085846324506"], "di": "Pasauran, Banten"}}, urai_kontak(rk)
+    assert urai_kontak("hubungi Pos Pengamatan Gunung api Sinabung") is None and urai_kontak(None) is None and urai_kontak("PVMBG pada nomor telepon 022-7272606") == {"pusat": "(022) 7272606"}
+    sk = dt.datetime(2026, 10, 19, 5, tzinfo=WIB)   # riwayat: baris hari ini diganti, bukan digandakan; bolong 17-18 Okt dibiarkan
+    r0 = [{"tgl": "2026-10-16", "level": {"1": 1}}, {"tgl": "2026-10-19", "level": {"1": 9}}]
+    r1 = riwayat_hari(r0, sk, [{"level": 3}, {"level": 1}, {"level": 1}], 4)
+    assert [r["tgl"] for r in r1] == ["2026-10-16", "2026-10-19"] and r1[-1] == {"tgl": "2026-10-19", "level": {"1": 2, "2": 0, "3": 1, "4": 0}, "erupsi": 4}, r1
+    assert "erupsi" not in riwayat_hari(r1, sk, [{"level": 3}])[-1]
     assert slug("Lewotobi Laki-laki") == "lewotobi-laki-laki" and slug("Anak Krakatau") == "anak-krakatau"
     print("ok")
 
 
 def rantai():
-    """Sesudah status tertulis: abu.py (bila ada) lalu laporan.py. Gagal = peringatan, berkas lama dibiarkan, exit tetap 0."""
+    """Sesudah status tertulis: abu.py, prospektif.py (catatan append-only arah abu vs VONA, butuh abu_gunungapi.json baru), lalu laporan.py. Gagal = peringatan, berkas lama dibiarkan, exit tetap 0."""
     import subprocess
     d = os.path.dirname(os.path.abspath(__file__))
-    for nama in ("abu.py", "laporan.py"):
+    for nama in ("abu.py", "prospektif.py", "laporan.py"):
         s = os.path.join(d, nama)
         if os.path.exists(s) and (subprocess.call([sys.executable, s, "uji"]) != 0 or subprocess.call([sys.executable, s]) != 0):
             print(f"::warning title=gunungapi::{nama} gagal; berkas lamanya dibiarkan", file=sys.stderr)

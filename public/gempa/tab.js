@@ -1,11 +1,11 @@
 "use strict";
 /* Tab, kepala, burger, tema. Urutan dan ikon mengikuti banjir; daftar tab = "tab" di public/bencana.json. */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
+const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["tren", "Tren"], ["berita", "Berita"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["metode", "Metode"]];
 /* tidak tampil di nav tapi tetap bisa dibuka lewat URL /gempa/metode dan tautan (A24). */
 const TAB_SEMBUNYI = new Set(["metode"]);
-const ISI_TAB = {insight: () => Insight.render(), tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(),
+const ISI_TAB = {kejadian: () => Kejadian.render(), insight: () => Insight.render(), tren: () => Tren.render(), berita: () => Berita.render(), dampak: () => Dampak.render(), foto: () => Foto.render(),
   sim: () => typeof Sim !== "undefined" && Sim.render(), metode: () => Metode.render()};
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   sim: '<path d="M2 12c2.5-6 4.5-6 7 0s4.5 6 7 0 3.5-4 6-3"/><path d="M2 19h20"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};

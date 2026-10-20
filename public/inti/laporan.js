@@ -34,7 +34,9 @@ const Laporan = (() => {
   }
   function kon(D, S) {
     const n = D.hari.length, i = Math.max(0, D.hari.indexOf(S.hari)), u = D.metrik.find(m => m.utama) || D.metrik[0];
-    return {D, S, n, i, u, ms: D.metrik, sr: S.prov ? D.prov[S.prov] : D.nasional, wil: S.prov ? nama(D, S.prov) : "", brj: h => !!D.hari_lengkap && h > D.hari_lengkap};
+    /* fokus = laporan kejadian satu kab/kota (scripts/umum/laporan_kejadian.py): ringkasan dan tren memakai seri kab itu */
+    const f = D.fokus && (D.kab || []).find(k => k.kode === D.fokus);
+    return {D, S, n, i, u, f, ms: D.metrik, sr: f || (S.prov ? D.prov[S.prov] : D.nasional), wil: f ? f.nama : S.prov ? nama(D, S.prov) : "", brj: h => !!D.hari_lengkap && h > D.hari_lengkap};
   }
   const sumberNama = D => esc((D.sumber || []).map(s => s.nama).filter(Boolean).join(", ") || "data bencana");
   const kartu = (ey, judul, isi, D, ctl = "") => Kartu.kartu(ey, judul, isi, sumberNama(D), ctl);
@@ -92,7 +94,7 @@ const Laporan = (() => {
       const {D, S} = c, brj = c.brj(S.hari), kodes = Object.keys(D.prov).sort((a, b) => D.prov[a].nama.localeCompare(D.prov[b].nama, "id"));
       const hari = `<select data-set="hari" aria-label="Hari laporan">${[...D.hari].reverse().map(h => `<option value="${esc(h)}"${h === S.hari ? " selected" : ""}>${esc(tgl(h, 1))}${c.brj(h) ? " (berjalan)" : ""}</option>`).join("")}</select>`;
       return `<section class="lp-kep" aria-live="polite"><div class="lp-jd"><h1>${esc(D.judul)}</h1><div class="lp-pils"><span class="lp-pil ${brj ? "sm" : "ok"}">${brj ? "Hari berjalan, belum final" : "Hari final"}</span><span class="lp-pil">Cut-off ${esc(wkt(D.cutoff))}</span></div></div>
-        <div class="lp-aksi">${hari}${kodes.length ? Kartu.selProv("prov", "Seluruh Indonesia", kodes, k => D.prov[k].nama, S) : ""}<button type="button" class="lp-cetak" id="lpCetak" aria-label="Cetak PDF" title="Cetak PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></button></div></section>`; },
+        <div class="lp-aksi">${hari}${kodes.length && !c.f ? Kartu.selProv("prov", "Seluruh Indonesia", kodes, k => D.prov[k].nama, S) : ""}<button type="button" class="lp-cetak" id="lpCetak" aria-label="Cetak PDF" title="Cetak PDF"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9V3h12v6M6 18H4v-7h16v7h-2M7 14h10v7H7z"/></svg></button></div></section>`; },
     ring(c) {
       const {D, S, u, i, n} = c, s = A(c.sr, u.k, n), ub = ubah(u, s[i], i > 0 ? s[i - 1] : null), b = D.hari[i - 1];
       const judul = `${esc(u.label)} ${esc(tgl(S.hari))}${dgn(c)}: ${Kartu.hl(angka(s[i], u.desimal | 0))} ${esc(u.satuan || "")}${ub.k ? ", " + esc(ub.k) : ""}`;
@@ -126,7 +128,7 @@ const Laporan = (() => {
       return kartu("Kenaikan terbesar", l.length ? `Kenaikan terbesar ${esc(u.label)} per kab/kota${dgn(c)}` : "Tidak ada kab/kota yang naik dibanding kemarin", isi, c.D); },
     kab: c => kartu("Per kab/kota", `Per kab/kota, ${esc(tgl(c.S.hari))}${c.S.prov ? " · " + esc(c.wil) : ""}`, tabelUrut(c, "kab", "Kab/kota"), c.D),
     tambahan: c => (c.D.tambahan || []).map(t => { const nm = x => typeof x === "number" ? angka(x, Number.isInteger(x) ? 0 : 1) : x == null ? "–" : esc(x);
-      return kartu("Tambahan", esc(t.judul), `<div class="tw"><table class="lp-tb"><thead><tr>${(t.kolom || []).map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${(t.baris || []).map(r =>
+      return kartu("Tambahan", esc(t.judul), `<div class="tw"><table class="lp-tb"><thead><tr>${(t.kolom || []).map((k, j) => `<th${(t.baris || []).some(r => typeof r[j] === "number") ? ' class="n"' : ""}>${esc(k)}</th>`).join("")}</tr></thead><tbody>${(t.baris || []).map(r =>
         `<tr>${r.map(x => `<td${typeof x === "number" ? ' class="n"' : ""}>${nm(x)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${t.catatan ? `<p class="lp-cat">${esc(t.catatan)}</p>` : ""}`, c.D); }).join(""),
     sumber(c) {
       const {D} = c, l = (D.sumber || []).map(s => { const h = tautan(s.url);
@@ -177,8 +179,10 @@ const Laporan = (() => {
       if (typeof PilihCantik !== "undefined" && document.querySelector("main")) PilihCantik.pasang();
     })();
   }
-  const bagian = (D, S, k) => B[k](kon(D, S));
+  /* laporan kejadian (fokus): tabel per provinsi dan kenaikan antar-kab tidak relevan untuk satu kab/kota */
+  const LEWAT_FOKUS = ["prov", "naik"];
+  const bagian = (D, S, k) => D.fokus && LEWAT_FOKUS.includes(k) ? "" : B[k](kon(D, S));
   const baris = (D, S, k) => { const c = kon(D, S); return k === "prov" ? barisProv(c) : barisKab(c); };
-  const bangun = (D, S) => { const c = kon(D, S); return Object.fromEntries(URUT.map(k => [k, B[k](c)])); };
+  const bangun = (D, S) => Object.fromEntries(URUT.map(k => [k, bagian(D, S, k)]));
   return {pasang, awal, bangun, bagian, baris, cek, urut: URUT};
 })();
