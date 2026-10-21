@@ -17,7 +17,6 @@
 .kb-kartu-baris .kb-ikon-kartu{color:var(--pil,var(--c5))}
 .kb-kartu-baris .bn-angka{overflow-wrap:anywhere}
 .kb-rincian{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
-.kb-tabel .ad-tabel th button{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px}
 .kb-tabel .ad-tabel td:first-child{font-weight:700}
 .kb-tabel .ad-tabel .n{text-align:right}
 .kb-asumsi-panel{margin-top:14px;display:grid;gap:12px}

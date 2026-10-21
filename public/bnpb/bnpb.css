@@ -53,3 +53,6 @@
 .bn-alur li.lewat{background:color-mix(in srgb,var(--c4) 16%,transparent);color:color-mix(in srgb,var(--c4) 80%,var(--ink))}
 
 @media (max-width:640px){.bn-pil{white-space:normal;max-width:100%}.bn-wrap{padding:14px 16px 40px}.bn-judul h1{font-size:19px}.bn-angka{font-size:24px}}
+/* dipakai bersama halaman risiko, kebutuhan, kebakaran (gerbang-inti: tanpa salinan antarberkas) */
+.kn{fill:color-mix(in srgb,var(--ink) 14%,var(--card));background:color-mix(in srgb,var(--ink) 14%,var(--card))}
+.kb-tabel .ad-tabel th button{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px}
