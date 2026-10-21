@@ -23,6 +23,7 @@
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/inti/peringatan-berita.css">
 <link rel="stylesheet" href="/inti/peta/legenda.css">
 <link rel="stylesheet" href="/inti/metode.css">
 <link rel="stylesheet" href="/semua/semua.css">
@@ -45,6 +46,7 @@
   </section>
   <section class="kartu-bagian" id="kartu" aria-label="Situasi hari ini"></section>
   <section class="analisis" id="kejadian" aria-label="Kejadian aktif"></section>
+  <section class="analisis" id="pbBerita" aria-label="Peringatan dari berita" hidden></section>
   <section class="analisis" id="analisis" aria-label="Outlook dan bahaya ke depan"></section>
 </main>
 <div class="toast" id="toast" role="status"></div>
@@ -53,6 +55,8 @@
 <script src="/inti/tip.js"></script>
 <script src="/inti/kartu.js"></script>
 <script src="/inti/tabel.js"></script>
+<script src="/inti/peringatan-berita.js"></script>
+<script>PeringatanBerita.pasang("#pbBerita")</script>
 <script src="/bagi.js" defer></script>
 <script type="module" src="/inti/kepala.js"></script>
 <script type="module" src="/semua/semua.js"></script>

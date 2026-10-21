@@ -49,6 +49,7 @@
 <link rel="stylesheet" href="../inti/berita.css">
 <link rel="stylesheet" href="foto.css">
 <link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="../inti/peringatan-berita.css">
 <link href="../databaru.css" rel="stylesheet">
 <link href="../informasi.css" rel="stylesheet">
 </head>
@@ -118,7 +119,7 @@
     <aside class="card laci" id="laci" aria-label="Rincian wilayah"></aside>
   </section>
 
-  <section class="page scroll" id="p-insight" aria-label="Insight banjir"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-insight" aria-label="Insight banjir"><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-prakiraan" aria-label="Prakiraan per wilayah"><div class="wrap" id="prakiraan"></div></section>
   <section class="page scroll" id="p-daftar" aria-label="Wilayah siaga"><div class="wrap" id="daftar"></div></section>
@@ -145,6 +146,8 @@
 <script src="../inti/tip.js"></script>
 <script src="../inti/peluang.js"></script>
 <script src="../inti/tabel.js"></script>
+<script src="../inti/peringatan-berita.js"></script>
+<script>PeringatanBerita.pasang("#pbBerita","banjir")</script>
 <script src="../inti/sapa.js"></script>
 <script>
 "use strict";
