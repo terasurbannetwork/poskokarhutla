@@ -20,11 +20,13 @@
 <link rel="stylesheet" href="../inti/gaya.css">
 <link rel="stylesheet" href="../inti/kartu.css">
 <link rel="stylesheet" href="simulasi.css">
+<script>if (/[?&]tertanam=1/.test(location.search)) document.documentElement.classList.add("tertanam");</script>
+<style>.tertanam header.top{display:none}.tertanam main{height:100dvh;top:0}</style>
 </head>
 <body>
 <header class="top">
   <div class="mark">
-    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="kekeringan"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="#d9a441"/><path fill="none" stroke="#d9a441" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>Kekeringan</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a><a href="../banjir/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/></svg>Banjir, Longsor & Rob</a></div></details><a class="sm-kembali" href="/kekeringan/" aria-label="Kembali ke peta"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>Kembali ke peta</span></a>
+    <a class="logo" href="../" title="Pantau Bencana"><img src="../img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="kekeringan"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="4.5" fill="#d9a441"/><path fill="none" stroke="#d9a441" stroke-width="1.8" stroke-linecap="round" d="M12 2.5v2.5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg>Kekeringan</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/></svg>Karhutla</a><a href="../banjir/"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/></svg>Banjir, Longsor & Rob</a></div></details><a class="sm-kembali" id="kembali" href="/kekeringan/" aria-label="Kembali ke peta"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m15 18-6-6 6-6"/></svg><span>Kembali ke peta</span></a>
   </div>
   <div class="stat">
     <span class="sm-sim">Simulasi</span>
@@ -36,6 +38,10 @@
   <div class="sm-peta"><div id="peta"></div><div class="sm-muat" id="muat"><div><div class="spin"></div>Memuat data simulasi…</div></div></div>
 
   <aside class="sm-kiri" id="kiri" aria-label="Pengaturan simulasi">
+    <div class="sm-kartu">
+      <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg>Mulai dari kejadian nyata</span></div>
+      <p class="sm-cat" id="awalTeks"></p>
+    </div>
     <div class="sm-kartu" id="kartuMulai">
       <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/></svg>Mulai simulasi</span></div>
       <div class="seg penuh" id="segMulai" role="group" aria-label="Mulai simulasi"></div>
@@ -58,12 +64,19 @@
       <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Porsi luas stres berat</span><b id="hHari"></b></div>
       <div class="sm-hasil" id="hasil"></div>
     </div>
+    <div class="sm-kartu">
+      <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/></svg><span id="dampakJudul">Dampak</span></span></div>
+      <div class="sm-hasil" id="dampak"></div>
+    </div>
   </aside>
 
   <section class="sm-bagan" id="bagan" aria-label="Neraca air sel terpilih">
     <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="selNama">Sel</span></span><span class="sm-nilai" id="selNilai"></span></div>
     <div id="grafik"></div>
     <div class="sm-leg" id="legGr"></div>
+    <div class="sm-hd"><span class="sm-pil"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Peringkat perlakuan</span></div>
+    <div class="seg penuh" id="segUrut" role="group" aria-label="Urutkan peringkat"></div>
+    <div id="peringkat"></div>
   </section>
 
   <footer class="sm-bawah" id="bawah">
@@ -84,6 +97,7 @@
 
 <dialog class="sm-dlg" id="dlg"></dialog>
 <script src="../inti/format.js"></script>
+<script src="sim_tanggap.js"></script>
 <script src="simulasi.js"></script>
 <script type="module" src="../inti/kepala.js"></script>
 </body>

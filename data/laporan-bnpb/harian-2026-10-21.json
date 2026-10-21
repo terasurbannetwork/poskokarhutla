@@ -1,0 +1,241 @@
+{
+ "jenis": "harian",
+ "tanggal": "2026-10-21",
+ "isi": {
+  "mulai": "2026-10-20",
+  "jam": "07.00",
+  "laporan_masuk": 19,
+  "penyaji": "Letnan Jenderal TNI Kristomei Sianturi, S.Sos., M.Si., M.Si. (Han)",
+  "jabatan": "Kepala Badan Nasional Penanggulangan Bencana",
+  "instansi": "Badan Nasional Penanggulangan Bencana",
+  "singkatan": "BNPB",
+  "kejadian": [
+   {
+    "jenis": "karhutla",
+    "prov": "62",
+    "lokasi": "",
+    "utama": "± 24.402,56 ha (indikatif)",
+    "kedua": "",
+    "ket": "padam darat 58,31 ha | 33 FS",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "16",
+    "lokasi": "",
+    "utama": "± 9.061,13 ha (s.d. 19 Okt)",
+    "kedua": "",
+    "ket": "sisa ±401,67 ha | WB ±54 ha",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "14",
+    "lokasi": "",
+    "utama": "± 20.696,28 ha (s.d. 20 Okt)",
+    "kedua": "",
+    "ket": "penambahan nihil",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "15",
+    "lokasi": "",
+    "utama": "± 4.852,75 ha (indikatif)",
+    "kedua": "",
+    "ket": "padam 26 ha | 20 dari 33 FS",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "18",
+    "lokasi": "TN Way Kambas, Lampung Timur",
+    "utama": "± 26 ha",
+    "kedua": "",
+    "ket": "padam ±3,4 ha",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Gunung Sumbing",
+    "utama": "± 140 ha",
+    "kedua": "14 titik api",
+    "ket": "api belum padam",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "Api belum padam; ±152 pendaki perlu evakuasi"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Karanganyar",
+    "utama": "± 490 ha hutan pinus",
+    "kedua": "",
+    "ket": "Tanggap Darurat s.d. 30 Okt",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "±490 ha hutan pinus terbakar"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "33",
+    "lokasi": "Boyolali",
+    "utama": "± 2,55 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Bromo (TNBTS), Probolinggo",
+    "utama": "± 75,37 ha (pendataan)",
+    "kedua": "5 jiwa meninggal",
+    "ket": "pendataan",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Arjuno Welirang, Pasuruan",
+    "utama": "pendataan",
+    "kedua": "",
+    "ket": "masih ada titik api",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "Masih ada titik api; luas dalam pendataan"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Malang",
+    "utama": "pendataan",
+    "kedua": "",
+    "ket": "56 personel pemadaman darat",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "35",
+    "lokasi": "Mojokerto",
+    "utama": "± 2 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "72",
+    "lokasi": "Sigi",
+    "utama": "± 60 ha",
+    "kedua": "",
+    "ket": "api belum padam",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "±60 ha; api belum padam"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "72",
+    "lokasi": "Tojo Una-Una",
+    "utama": "± 10 ha",
+    "kedua": "",
+    "ket": "api belum padam",
+    "catatan": "",
+    "status": "belum",
+    "perhatian": "±10 ha; api belum padam"
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "81",
+    "lokasi": "Seram Bagian Timur",
+    "utama": "± 12 ha",
+    "kedua": "136 jiwa ISPA",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "73",
+    "lokasi": "Sinjai",
+    "utama": "± 4 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "karhutla",
+    "prov": "21",
+    "lokasi": "Lingga",
+    "utama": "± 2 ha",
+    "kedua": "",
+    "ket": "api padam",
+    "catatan": "",
+    "status": "selesai",
+    "perhatian": ""
+   },
+   {
+    "jenis": "gempabumi",
+    "prov": "53",
+    "lokasi": "",
+    "utama": "±27.847 jiwa mengungsi",
+    "kedua": "transisi s.d. 27 Des",
+    "ket": "huntara berjalan",
+    "catatan": "",
+    "status": "berjalan",
+    "perhatian": ""
+   }
+  ],
+  "perhatian_tambahan": [
+   {
+    "jenis": "karhutla",
+    "judul": "Jawa Timur · Bromo (TNBTS)",
+    "isi": "5 jiwa meninggal; ±75,37 ha dalam pendataan",
+    "status": "berjalan"
+   }
+  ],
+  "tindak": [
+   {
+    "judul": "Evakuasi dan pemadaman",
+    "isi": "±152 pendaki Gunung Sumbing; api belum padam di Karanganyar dan Pasuruan"
+   },
+   {
+    "judul": "Sulawesi Tengah",
+    "isi": "Pemadaman darat di Sigi (±60 ha) dan Tojo Una-Una (±10 ha)"
+   },
+   {
+    "judul": "Pemadaman prioritas",
+    "isi": "Sisa ±401,67 ha Sumatera Selatan, Jambi, Kalimantan Tengah; Tim BNPB tetap mendampingi"
+   },
+   {
+    "judul": "Korban dan pemulihan",
+    "isi": "Pendataan korban Bromo; huntara pengungsi gempa NTT"
+   }
+  ],
+  "judul_ringkasan": "",
+  "judul_rincian": ""
+ }
+}

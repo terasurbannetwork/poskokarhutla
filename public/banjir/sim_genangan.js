@@ -109,6 +109,19 @@ function limpasan(hujan, cn, amc = 2) {
     P += x; const q = Q(P); ef[t] = q - q0; q0 = q; resap[t + 1] = P - q; }
   return {efektif: ef, resap, cn: c, S};
 }
+/* limpasan per sel: CN berbeda tiap sel (dari tutupan lahan, sim_lahan.js). CN dibulatkan ke bilangan bulat dan dikelompokkan, jadi
+   satu seri SCS-CN per CN unik (<= ~70), bukan per sel. Kembali {kelas: Uint8Array N, seri: [mm/jam per kelas], cn: CN rata-rata sel darat,
+   efektif: limpasan rata-rata sel darat per jam (mm), resap: resapan kumulatif rata-rata} untuk jalankan({hujanKelas: seri, kelas}). */
+function limpasanSel(hujan, cnSel, amc = 2, darat) {
+  const N = cnSel.length, idx = new Map(), cns = [], kelas = new Uint8Array(N);
+  for (let k = 0; k < N; k++) { const c = Math.round(cnSel[k]); angka(c, `CN sel ${k}`); let i = idx.get(c); if (i === undefined) { i = cns.length; idx.set(c, i); cns.push(c); } kelas[k] = i; }
+  cns.length <= 255 || salah(`${cns.length} CN unik > 255`);
+  const L = cns.map(c => limpasan(hujan, c, amc)), cacah = new Float64Array(cns.length); let nD = 0;
+  for (let k = 0; k < N; k++) if (!darat || darat[k]) { cacah[kelas[k]]++; nD++; }
+  const efektif = new Float64Array(hujan.length), resap = new Float64Array(hujan.length + 1); let cn = 0;
+  L.forEach((l, i) => { const w = cacah[i] / Math.max(1, nD); cn += l.cn * w; for (let t = 0; t < hujan.length; t++) efektif[t] += l.efektif[t] * w; for (let t = 0; t <= hujan.length; t++) resap[t] += l.resap[t] * w; });
+  return {kelas, seri: L.map(l => l.efektif), cn, efektif, resap};
+}
 /* muka laut per jam dari maks harian: kosinus M2 berpuncak di maks hari itu (fase tak diketahui = asumsi) */
 function pasang(maksHarian, rentang = ASUMSI.PASANG_RENTANG, periode = ASUMSI.PERIODE_PASANG) {
   const J = 24 * maksHarian.length, o = new Float64Array(J + 1);
@@ -143,8 +156,16 @@ function naikkan(z, topeng, tinggi) { angka(tinggi, "tinggi tanggul"); tinggi >=
 function jalankan(cfg, kabar) {
   const {nx, ny, dx} = cfg, z = cfg.z; cekKisi(z, nx, ny); angka(dx, "dx"); dx > 0 || salah(`dx ${dx} harus > 0`);
   const J = cfg.jam ?? 72; (Number.isInteger(J) && J > 0 && J <= 240) || salah(`jam ${J} tidak sah`);
-  const N = nx * ny, A = dx * dx, n2 = (cfg.manning ?? ASUMSI.MANNING) ** 2, laut = cfg.laut || new Uint8Array(N), tutup = cfg.tutup || new Uint8Array(N);
-  const hujan = cfg.hujan || new Float64Array(J); hujan.length >= J || salah(`hujan ${hujan.length} jam < ${J}`);
+  const N = nx * ny, A = dx * dx, laut = cfg.laut || new Uint8Array(N), tutup = cfg.tutup || new Uint8Array(N);
+  /* Manning per sel (cfg.manning = angka atau larik N dari sim_lahan.js); di sisi antar-sel dipakai rata-rata n^2 kedua sel */
+  const n2 = new Float64Array(N), mn = cfg.manning ?? ASUMSI.MANNING;
+  if (typeof mn === "number") { angka(mn, "manning"); mn > 0 || salah(`manning ${mn} harus > 0`); n2.fill(mn * mn); }
+  else { mn.length === N || salah(`manning ${mn.length} sel != ${N}`); for (let k = 0; k < N; k++) { angka(mn[k], "manning sel"); mn[k] > 0 || salah(`manning sel ${k} = ${mn[k]} harus > 0`); n2[k] = mn[k] * mn[k]; } }
+  /* hujan efektif: satu seri untuk semua sel (cfg.hujan) ATAU satu seri per kelas CN (cfg.hujanKelas = larik seri J jam, cfg.kelas = Uint8Array N indeks ke larik itu) */
+  const hk = cfg.hujanKelas || null, kls = cfg.kelas || null;
+  if (hk) { kls && kls.length === N || salah("hujanKelas butuh cfg.kelas sepanjang N"); for (let k = 0; k < N; k++) kls[k] < hk.length || salah(`kelas sel ${k} (${kls[k]}) di luar ${hk.length} seri`);
+    hk.forEach((s, c) => { s.length >= J || salah(`seri kelas ${c}: ${s.length} jam < ${J}`); for (let t = 0; t < J; t++) { angka(s[t], "hujan kelas"); s[t] >= 0 || salah(`hujan kelas ${c} negatif jam ${t}`); } }); }
+  const hujan = hk ? new Float64Array(J) : cfg.hujan || new Float64Array(J); hujan.length >= J || salah(`hujan ${hujan.length} jam < ${J}`);
   for (let t = 0; t < J; t++) { angka(hujan[t], "hujan"); hujan[t] >= 0 || salah(`hujan negatif jam ${t}`); }
   const adaLaut = laut.some(v => v); let muka = null;
   if (adaLaut) { muka = cfg.muka; (muka && muka.length >= J + 1) || salah("ada sel laut tetapi muka laut per jam tidak lengkap"); for (let t = 0; t <= J; t++) angka(muka[t], "muka laut"); }
@@ -158,6 +179,7 @@ function jalankan(cfg, kabar) {
   const h = new Float64Array(N), hmaks = new Float64Array(N), qx = new Float64Array((nx - 1) * ny), qy = new Float64Array(nx * (ny - 1)), sk = new Float64Array(N);
   /* hujan jatuh di sel darat yang bukan pintu tertutup (sel tertutup = dinding: kalau ikut menerima hujan airnya terkurung di sana) */
   const kena = new Uint8Array(N); let nDarat = 0; for (let k = 0; k < N; k++) if (!laut[k] && !tutup[k]) { kena[k] = 1; nDarat++; }
+  const nKelas = hk ? hk.length : 0, cacah = new Float64Array(nKelas), rKelas = new Float64Array(nKelas); if (hk) for (let k = 0; k < N; k++) if (kena[k]) cacah[kls[k]]++;
   /* tepi terbuka: aliran normal Manning q = h^(5/3) sqrt(S)/n, S = max(LERENG_TEPI, lereng dasar ke arah luar) */
   const ek = [], es = [];
   const sudah = new Uint8Array(N); /* sel sudut cukup satu sisi keluar, tidak dihitung dua kali */
@@ -183,7 +205,9 @@ function jalankan(cfg, kabar) {
     const es0 = adaLaut ? etaLaut(t) : 0; if (adaLaut && es0 - zPantai > hm) hm = es0 - zPantai;
     const dt = Math.min(ASUMSI.DT_MAKS, (cfg.alfa ?? ASUMSI.ALFA) * dx / Math.sqrt(G * hm), simpanBerikut - t);
     const jam = Math.min(J - 1, Math.floor(t / 3600)), r = hujan[jam] / 1000 / 3600 * dt;
-    if (r > 0) { for (let k = 0; k < N; k++) if (kena[k]) h[k] += r; V.hujan += r * A * nDarat; }
+    if (hk) { let ada = false; for (let c = 0; c < nKelas; c++) { const v = hk[c][jam] / 1000 / 3600 * dt; rKelas[c] = v; if (v > 0) { ada = true; V.hujan += v * A * cacah[c]; } }
+      if (ada) for (let k = 0; k < N; k++) if (kena[k]) h[k] += rKelas[kls[k]]; }
+    else if (r > 0) { for (let k = 0; k < N; k++) if (kena[k]) h[k] += r; V.hujan += r * A * nDarat; }
     for (const m of masuk) { const v = debit(m, t + dt / 2) * dt; h[m.k] += v / A; V.sungai += v; }
     const eta = adaLaut ? etaLaut(t + dt / 2) : 0; if (pompa.length) aturPompa(t);
     hAkhir = langkahAir(K, dt, eta);
@@ -206,7 +230,7 @@ function cbrt(a) { F64[0] = a; U32[HI] = ((U32[HI] / 3) | 0) + 715094163; U32[1 
   x = (2 * x + a / (x * x)) / 3; return (2 * x + a / (x * x)) / 3; }
 /* satu langkah inersia: fluks sisi, aliran tepi, pembatas, perbarui h. Fungsi terpisah tanpa closure: ~10x lebih cepat di V8 */
 function langkahAir(K, dt, eta) {
-  const {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px, py, sk, laut, tt, ek, es, qe, eo, pq, V} = K, N = nx * ny, nE = ek.length, gdt = G * dt, sn = Math.sqrt(n2);
+  const {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px, py, sk, laut, tt, ek, es, qe, eo, pq, V} = K, N = nx * ny, nE = ek.length, gdt = G * dt;
   /* skema q-terpusat de Almeida dkk. 2012: q lama dirata-rata dengan sisi sejajar tetangga. Diuji di mangkuk n 0,013-0,03,
      48 jam: theta 1 (Bates asli) dengan alfa 0,7 berosilasi lalu pecah sesudah ~6 jam; theta 0,7 membeku jadi pola papan
      catur; theta 0,9 alfa 0,7 rata sampai 0,1 mm. */
@@ -221,10 +245,10 @@ function langkahAir(K, dt, eta) {
     const za = z[a], zb = z[b], ea = la ? (za > eta ? za : eta) : za + h[a], eb = lb ? (zb > eta ? zb : eta) : zb + h[b];
     const hf = (ea > eb ? ea : eb) - (za > zb ? za : zb);
     if (hf <= HMIN) { arr[f] = 0; continue; }
-    const q = arr[f]; arr[f] = (qm - gdt * hf * (eb - ea) / dx) / (1 + gdt * n2 * (q < 0 ? -q : q) / (hf * hf * cbrt(hf)));
+    const q = arr[f]; arr[f] = (qm - gdt * hf * (eb - ea) / dx) / (1 + gdt * (n2[a] + n2[b]) * .5 * (q < 0 ? -q : q) / (hf * hf * cbrt(hf)));
   }
   eo.fill(0);
-  for (let e = 0; e < nE; e++) { const k = ek[e], d = h[k]; const v = d > HMIN ? d * cbrt(d * d) * es[e] / sn : 0; qe[e] = v; eo[k] += v; }
+  for (let e = 0; e < nE; e++) { const k = ek[e], d = h[k]; const v = d > HMIN ? d * cbrt(d * d) * es[e] / Math.sqrt(n2[k]) : 0; qe[e] = v; eo[k] += v; }
   for (let j = 0, k = 0; j < ny; j++) for (let i = 0; i < nx; i++, k++) { sk[k] = 1; if (laut[k]) continue; let o = eo[k];
     const fx = j * (nx - 1) + i;
     if (i < nx - 1) { const q = qx[fx]; if (q > 0) o += q; }
@@ -305,7 +329,7 @@ async function ambilDEM(lat, lon, sisi, n, ambil) {
 const keSel = (K, lon, lat) => { const [x, y] = keDunia(lon, lat, K.zoom); return [(x - K.x0) / K.s - .5, (y - K.y0) / K.s - .5]; };
 const dariSel = (K, i, j) => dariDunia(K.x0 + (i + .5) * K.s, K.y0 + (j + .5) * K.s, K.zoom);
 
-const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, siapkanArea, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, pasang, topengLaut, garisSel, naikkan, jalankan,
+const API = {ASUMSI, isiCekungan, batasiCekungan, siapkanDEM, siapkanArea, benihTepi, arahD8, akumulasi, hietograf, kelasAMC, cnAMC, limpasan, limpasanSel, pasang, topengLaut, garisSel, naikkan, jalankan,
   rencanaKisi, ambilDEM, keSel, dariSel, terrarium};
 if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.SimGenangan = API;
 })(typeof self !== "undefined" ? self : globalThis);

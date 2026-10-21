@@ -40,12 +40,13 @@
 <script src="angka.js"></script>
 <script src="abu_model.js"></script>
 <script src="sim_lahar.js"></script>
+<script src="sim_tanggap.js"></script>
 <script src="sim.js"></script>
 <script>
 { const t = (() => { try { return JSON.parse(localStorage.getItem("pb-tema")); } catch (e) { return null; } })(); if (t) document.documentElement.dataset.theme = t;
   $("#tema").onclick = () => { const g = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches, n = g ? "light" : "dark";
     document.documentElement.dataset.theme = n; try { localStorage.setItem("pb-tema", JSON.stringify(n)); } catch (e) {} Sim.tema?.(); };
-  Sim.buka({id: new URLSearchParams(location.search).get("g") || "semeru"}); }
+  Sim.buka({id: new URLSearchParams(location.search).get("g") || ""}); }
 </script>
 <script type="module" src="../inti/kepala.js"></script>
 </body>

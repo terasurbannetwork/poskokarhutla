@@ -1,0 +1,536 @@
+{
+ "modul": "udara-asap (kualitas udara dan asap: scripts/udara/**, public/udara/** termasuk sim/*, beserta jalur turunannya ke /semua/, laporan kejadian, pop-up, dan Laporan Harian). Catatan cara kerja: kuota WebSearch habis sejak panggilan pertama, jadi semua rujukan diperiksa dengan WebFetch langsung ke halaman resmi. Domain ispu.menlhk.go.id, sipongi.*.go.id, dan asmc.asean.org tidak terjangkau dari mesin ini (DNS gagal, 21 Okt 2026). Karena itu klaim tentang praktik KLH, Kemenhut, BMKG, Kemenkes, dan ASMC sebagian berasal dari pengetahuan umum dan ditandai 'perlu dicek'. Ada dua bukti baru yang diperiksa langsung. (1) Endpoint TAF AWC, host yang sudah dipakai metar.py, pada 21 Okt 05Z melaporkan WIPP 2000 m FU, WIOO 3000 m FU, WIBB 4000 m FU, dan WAOO 'BECMG 1500 FU'. Pada saat yang sama prakiraan Koschmieder platform menulis 10 km. (2) NOAA ISD (SYNOP BMKG) untuk Palangka Raya 96655, yang tidak ada di IEM maupun di feed AWC, mencatat kode ww 04/05 (asap/kabut asap) pada 29 hari di Sep 2019 dengan jarak pandang terendah 200 m (15 Sep 2019), dan 24 hari di Okt 2023. Arsip ini cocok untuk uji balik musim 2015, 2019, dan 2023, tetapi tidak NRT: berkas 2025 berhenti di 24 Agt 2025 dan berkas 2026 belum ada.",
+ "usulan": [
+  {
+   "metode_lama": "Konversi PM2,5 rata-rata 24 jam ke kategori ISPU (titik potong P.14/2020): alat.py:18, app.js:14, murni.js:43",
+   "vonis_akhir": "layak",
+   "alternatif": "Fungsinya tetap dipakai, dengan tiga peningkatan. (1) Hanya satu implementasi pembulatan dan jendela (hari WIB, minimal 18 jam), dipakai bersama oleh Python dan JS, ditambah uji silang. (2) Kata 'ISPU' dan angka indeks hanya muncul bila masukannya data AQMS terukur, dihitung dengan interpolasi linier antar-titik potong P.14/2020 dan sub-indeks maksimum lintas polutan. Untuk masukan model, tulis 'setara kategori ISPU PM2,5, perkiraan model'. (3) kejadian.py:249 tidak lagi memakai rata-rata 24 jam ke depan.",
+   "praktik_resmi_indonesia": "KLH (dulu KLHK) menerbitkan ISPU dari stasiun AQMS menurut Permen LHK P.14/MENLHK/SETJEN/KUM.1/7/2020. Situs ISPU tidak terjangkau dari CI (SUMBER-DATA.md:119) maupun dari mesin ini, sehingga akses perlu lewat jalur antarlembaga BNPB (perlu dicek).",
+   "kenapa_lebih_tepat": "Angka 'ISPU' di depan Presiden harus bisa dicocokkan satu-satu dengan publikasi KLH. Kategori dari model berbeda sifat dan harus diberi nama yang berbeda.",
+   "data_dibutuhkan": "Tidak ada data baru untuk penyatuan fungsi. Untuk ISPU sungguhan dibutuhkan data AQMS KLH per jam (akses antarlembaga).",
+   "upaya": "S",
+   "cara_validasi": "Uji silang Python dan JS pada 10.000 nilai acak, ditambah nilai batas 15,5 / 55,4 / 55,45 / 150,4 / 250,4. Lulus bila tidak ada satu pun ketidakcocokan. Bila data AQMS tersedia, kategori yang dihitung ulang dari rata-rata 24 jam yang sama harus cocok minimal 99% dengan ISPU terbitan KLH.",
+   "prioritas": "P2",
+   "rujukan": [
+    "Permen LHK P.14/MENLHK/SETJEN/KUM.1/7/2020 tentang Indeks Standar Pencemar Udara (URL JDIH tidak diverifikasi)",
+    "WHO Global Air Quality Guidelines 2021: https://www.who.int/publications/i/item/9789240034228"
+   ]
+  },
+  {
+   "metode_lama": "Status 4 tingkat Normal/Waspada/Siaga/Awas untuk udara (murni.js:8; sim/model.js:51 menyebutnya 'status resmi'; index-udara.json; /semua/ analisis.js:107)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Label Waspada/Siaga/Awas untuk udara dihapus. Sebagai gantinya, nama kategori ISPU (Baik/Sedang/Tidak Sehat/Sangat Tidak Sehat/Berbahaya) ditambah pil 'perkiraan model'. Status resmi hanya diambil dari sumber resmi:\n- status keadaan darurat bencana asap karhutla dari BNPB/Pemda, ditampilkan sebagai kolom terpisah;\n- untuk kawasan, Alert Level ASMC.\n\nJendela slider jam diisi 24 jam penuh dari jam analisis CAMS lampau (past_days sudah diambil di prakiraan.py:49), tidak lagi rata-rata 1 sampai 23 jam.",
+   "praktik_resmi_indonesia": "Status siaga darurat dan tanggap darurat karhutla ditetapkan kepala daerah atau BNPB, bukan dari ambang PM2,5. P.14/2020 hanya mengenal nama kategori ISPU. Istilah Waspada/Siaga/Awas adalah kosakata peringatan resmi PVMBG, BMKG, dan BNPB.",
+   "kenapa_lebih_tepat": "Model tidak lagi tampak seperti penetapan lembaga, sehingga tidak bisa bertabrakan dengan status darurat daerah di tabel lintas bencana /semua/.",
+   "data_dibutuhkan": "Status darurat karhutla per provinsi dan kab/kota dari BNPB (repo sudah memanen DIBI dan ArcGIS BNPB, SUMBER-DATA.md §8).",
+   "upaya": "S",
+   "cara_validasi": "Gerbang uji tanpa database: laporan.json, index-udara.json, dan prakiraan.json tidak boleh memuat 'siaga/awas/waspada' untuk udara kecuali field bersumber resmi. Uji unit: rata24 pada jam 0 memakai 24 nilai (23 jam lampau ditambah 1). Lulus bila 0 pelanggaran.",
+   "prioritas": "P1",
+   "rujukan": [
+    "Permen LHK P.14/2020 (kategori ISPU)",
+    "PELATIHAN-MODEL.md aturan 7: status resmi lembaga tidak pernah ditimpa model (repo)",
+    "ASMC: https://asmc.asean.org/ (tidak terjangkau saat diperiksa; perlu dicek)"
+   ]
+  },
+  {
+   "metode_lama": "Prakiraan PM2,5 72 jam per kab/kota dari CAMS global, satu titik berbobot penduduk per kab (prakiraan.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Disusun berlapis:\n- **(a) Data ukur lebih dulu.** PM2,5 AQMS KLH, PM2,5 BMKG, dan stasiun di OpenAQ v3 (kunci gratis; OPENAQ_KEY sudah direncanakan di SUMBER-DATA.md:153) ditampilkan di samping angka model.\n- **(b) Koreksi MOS.** Untuk CAMS dipakai regresi linier di ruang log atau quantile mapping per stasiun dan musim, dilatih pada arsip hindcast. Koreksinya disebar ke kab tanpa stasiun dengan interpolasi rasio log yang disusutkan ke 1.\n- **(c) Rerata multi-model.** CAMS (0,4°) digabung dengan NASA GEOS-CF (0,25°, per jam, pm25_rh35_gcc lewat OPeNDAP yang bisa dibaca stdlib lewat .ascii). Status operasional GEOS-CF harus dicek dulu, karena koleksi '.latest' saat diperiksa masih menunjuk prakiraan Jan 2026.\n- **(d) Nilai kab dari sel asli.** Nilai kab diambil dari rata-rata sel asli berbobot WorldPop, bukan satu titik.\n- **(e) Dek Presiden.** Hanya memuat ringkasan per provinsi atau pulau berlabel model.",
+   "praktik_resmi_indonesia": "KLH memakai ISPU terukur. BMKG mengoperasikan pemantau PM2,5 di sejumlah kota rawan asap dan menerbitkan informasi kualitas udara (perlu dicek; halaman .go.id tidak terjangkau dari mesin ini). Secara internasional, CAMS dan GEOS-CF adalah produk operasional global yang lazim dipakai dengan koreksi MOS terhadap stasiun.",
+   "kenapa_lebih_tepat": "Galat terbesar sekarang adalah bias dua arah: kota Jawa terlalu tinggi, bandara berasap terlalu rendah (bias frekuensi 0,52), ditambah artefak batas sel (Jakarta 121 berbanding 50 µg/m³). MOS adalah cara baku untuk mengoreksi bias sistematis model terhadap alat ukur. Rerata dua model mengurangi galat acak, dan agregasi sel menghapus lompatan batas.",
+   "data_dibutuhkan": "- Open-Meteo CAMS global 0,4°, 3-jam, diperbarui tiap 12 jam (sudah dipakai).\n- GEOS-CF OPeNDAP aqc_tavg_1hr_g1440x721 (0,25°, 1 jam, sekitar 5 hari).\n- OpenAQ v3 (kunci gratis; atribusi pemilik stasiun).\n- AQMS KLH dan PM2,5 BMKG lewat BNPB.\n- Raster WorldPop 1 km yang diagregasi sekali ke sel 0,25° atau 0,4°, disimpan statis.",
+   "upaya": "M",
+   "cara_validasi": "- **Skema uji:** tinggalkan-satu-stasiun pada musim 2023 dan 2026.\n- **Metrik:** NMB, NME, dan r rata-rata 24 jam per stasiun.\n- **Lulus:** memenuhi kriteria Emery dkk. 2017 untuk PM2,5 (NMB dalam ±30%, NME di bawah 50%, r di atas 0,40), dan HSS kategori ≥55,5 lebih tinggi dari CAMS mentah dengan selang bootstrap yang tidak memuat 0.\n- **Uji tanpa stasiun:** HSS hari berasap terhadap SYNOP ww 04/05 (ISD) di sekitar 30 stasiun BMKG pada 2019 dan 2023 harus melampaui CAMS mentah (HSS sekarang 0,38, bias 0,52).",
+   "prioritas": "P1",
+   "rujukan": [
+    "Open-Meteo Air Quality API (CAMS global 0,4°): https://open-meteo.com/en/docs/air-quality-api",
+    "GEOS-CF OPeNDAP: https://opendap.nccs.nasa.gov/dods/gmao/geos-cf/fcast",
+    "Keller dkk. 2021, Description of the NASA GEOS Composition Forecast Modeling System GEOS-CF v1.0, JAMES, doi:10.1029/2020MS002413",
+    "Glahn & Lowry 1972, The use of Model Output Statistics (MOS) in objective weather forecasting, J. Appl. Meteor. 11:1203",
+    "Emery dkk. 2017, Recommendations on statistics and benchmarks to assess photochemical model performance, JAWMA 67:582, doi:10.1080/10962247.2016.1265027 (penerbit menolak akses otomatis; angka patokan dari naskah yang dikenal, cek ulang)",
+    "OpenAQ v3: https://api.openaq.org/v3/locations"
+   ]
+  },
+  {
+   "metode_lama": "Koreksi bias per stasiun WAQI (prakiraan.py:75-151, tidak aktif)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Rancangan rasio yang disusutkan dipertahankan, tetapi masukannya diganti:\n- konsentrasi µg/m³ dari OpenAQ v3, AQMS KLH, dan BMKG;\n- bukan AQI WAQI yang dikonversi balik dengan tabel EPA 2012.\n\nKoreksi dilakukan di ruang log (rasio multiplikatif) per stasiun dan bulan. Penyebaran ke kab memakai jarak yang ditentukan dari variogram residu, tidak dipatok 50 km. Kondisi kegagalan juga harus ditulis apa adanya (prakiraan.py:300-302 sekarang menelannya).",
+   "praktik_resmi_indonesia": "Belum ada produk koreksi resmi yang diketahui. Data dasar resmi adalah ISPU KLH dan pemantau BMKG.",
+   "kenapa_lebih_tepat": "Ada dua alasan:\n- **Lisensi.** WAQI melarang redistribusi massal (SUMBER-DATA.md:24, :144), jadi tidak bisa menjadi dasar angka yang disimpan dan dikutip.\n- **Konversi.** EPA merevisi AQI PM2,5 pada Feb 2024, sehingga konversi AQI ke µg/m³ bergantung pada skala versi mana yang dipakai WAQI.\n\nMasukan µg/m³ langsung menghapus kedua sumber galat itu.",
+   "data_dibutuhkan": "OpenAQ v3 (kunci gratis, atribusi), AQMS KLH dan BMKG lewat BNPB. Jumlah stasiun Indonesia di OpenAQ belum diperiksa di sini dan perlu dihitung dengan kunci API.",
+   "upaya": "M",
+   "cara_validasi": "Uji tinggalkan-satu-stasiun, 7 hari di luar sampel bergulir selama satu musim. Lulus bila NME turun minimal 10 poin persentase dibanding CAMS mentah di minimal 70% stasiun, dan tidak ada stasiun yang memburuk lebih dari 10 poin. Pil 'terkoreksi ke stasiun' hanya boleh muncul bila lulus.",
+   "prioritas": "P2",
+   "rujukan": [
+    "EPA final rule PM NAAQS dan revisi AQI 2024: https://www.epa.gov/pm-pollution/final-reconsideration-national-ambient-air-quality-standards-particulate-matter-pm",
+    "OpenAQ v3: https://api.openaq.org/v3/locations",
+    "SUMBER-DATA.md:24,118-119,144-145 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Uji hindcast CAMS terhadap METAR, kartu 'Galat model' (prakiraan.py:155-214; 27 bandara IEM, n 837)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Kerangkanya dipertahankan, tetapi target dan cakupannya diperluas:\n- Pakai SYNOP stasiun BMKG dari NOAA ISD (kolom VIS dan MW1; kode WMO ww 04 = asap, 05 = kabut asap), tidak hanya METAR IEM. IEM hanya memuat 39 stasiun Indonesia, tanpa WAGG Palangka Raya, WIJJ Jambi, dan WIOK Ketapang.\n- Jalankan pada musim 2015, 2019, dan 2023 dengan CAMS EAC4 (2003-2025) sebagai hindcast. Hasilnya dilaporkan per wilayah (Sumatra, Kalimantan, Jawa), dengan FU dan HZ dipisah.\n- Kartu menampilkan HSS, PSS, dan bias frekuensi, bukan hanya 'hit'.\n- Perbaiki ketidakcocokan kunci 'ci' dan 'selang'.",
+   "praktik_resmi_indonesia": "BMKG mengirim SYNOP 3-jam dari stasiun meteorologi ke GTS WMO, dan kode ww 04/05 dipakai BMKG untuk pengamatan asap dan kabut asap. Verifikasi kategorikal POD/FAR/HSS adalah praktik WMO (JWGFVR).",
+   "kenapa_lebih_tepat": "Sampel sekarang hanya satu bulan, 837 hari-bandara, dan bandara Kalimantan Tengah dan Jambi tidak ada. ISD memuat stasiun yang hilang itu. Contohnya Palangka Raya 96655: ww 04/05 pada 29 hari di Sep 2019, jarak pandang terendah 200 m pada 15 Sep 2019, dan 24 hari di Okt 2023. Dengan ISD, n naik menjadi ribuan stasiun-hari lintas tiga musim El Niño, dan skill bisa dibedakan per wilayah.",
+   "data_dibutuhkan": "- NOAA Global Hourly/ISD di S3 publik (https://noaa-global-hourly-pds.s3.amazonaws.com/<tahun>/<USAF><WBAN>.csv; CSV, domain publik AS). Tidak NRT: berkas 2025 Palangka Raya berhenti 24 Agt 2025 dan berkas 2026 belum ada.\n- CAMS EAC4: 0,75°, 3-jam, 2003-2025, CC-BY, lewat ADS (butuh akun gratis; GRIB/netCDF, jadi perlu pustaka di luar stdlib atau langkah konversi lokal sekali jalan).",
+   "upaya": "M",
+   "cara_validasi": "Bootstrap blok per stasiun, 2000 ulangan.\n\n**Lulus metodologis:** n minimal 5.000 stasiun-hari dan selang 95% HSS per wilayah lebih sempit dari ±0,1.\n\nHasilnya menjadi tolok ukur yang harus dikalahkan oleh MOS dan metode deteksi asap.",
+   "prioritas": "P2",
+   "rujukan": [
+    "NOAA Global Hourly (ISD) di AWS: https://noaa-global-hourly-pds.s3.amazonaws.com/2019/96655099999.csv",
+    "IEM jaringan ID__ASOS (39 stasiun): https://mesonet.agron.iastate.edu/sites/networks.php?network=ID__ASOS",
+    "CAMS EAC4: https://ads.atmosphere.copernicus.eu/datasets/cams-global-reanalysis-eac4",
+    "WWRP/WGNE JWGFVR, Forecast verification methods: https://www.cawcr.gov.au/projects/verification/",
+    "WMO Manual on Codes (WMO-No. 306), tabel 4677 ww (URL tidak diverifikasi)"
+   ]
+  },
+  {
+   "metode_lama": "Arsip prakiraan dan uji prospektif hari+1 (prakiraan_arsip.json; metar_prakiraan null)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Diteruskan, dengan beberapa tambahan:\n- simpan PM per jam untuk lead h+1 sampai h+3 di public/, bukan cache CI 7 hari;\n- nilai terhadap METAR AWC (NRT) dan stasiun PM2,5 begitu tersedia;\n- catat jalan model (00 atau 12 UTC) di setiap entri.\n\nUntuk stasiun SYNOP NRT perlu sumber selain ISD (ISD tidak NRT). Kandidatnya data BMKG lewat BNPB, perlu dicek.",
+   "praktik_resmi_indonesia": "Belum ada pembanding resmi. Ini praktik verifikasi prospektif standar.",
+   "kenapa_lebih_tepat": "Hanya verifikasi prospektif yang boleh dipakai untuk mengklaim skill prakiraan. Hindcast analisis sekarang menguji CAMS yang sudah mengasimilasi AOD.",
+   "data_dibutuhkan": "Keluaran pipeline sendiri dan METAR AWC (100 permintaan/menit, riwayat 30 hari).",
+   "upaya": "S",
+   "cara_validasi": "Setelah minimal 60 hari dan minimal 500 hari-bandara per lead, hitung HSS dan bias per lead dengan bootstrap. Klaim 'teruji h+N' hanya boleh muncul bila batas bawah selang HSS di atas 0.",
+   "prioritas": "P2",
+   "rujukan": [
+    "AWC Data API: https://aviationweather.gov/data/api/",
+    "PELATIHAN-MODEL.md aturan 4: prospektif append-only (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Jiwa terpapar udara tidak sehat: seluruh penduduk kab ikut kategori satu titik CAMS (insight.js:27-40; laporan_udara.py; riwayat.py; 89,5 juta jiwa pada 20 Okt, 89% dari Jawa)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti dengan dua angka yang terpisah tegas:\n- **(1) Terukur.** Jumlah penduduk kab/kota yang stasiun ISPU/AQMS-nya mencatat rata-rata 24 jam di kategori Tidak Sehat ke atas. Angka ini konsisten dengan KLH.\n- **(2) Perkiraan model asap karhutla.** Hitung di sel asli (0,25° sampai 0,4°) dikali WorldPop, hanya untuk sel yang ditetapkan 'terpengaruh asap karhutla'. Penetapannya memakai lintasan mundur ansambel dengan angin analisis yang melewati gugus FIRMS dalam 72 jam, anomali PM2,5 terhadap dasar non-api sel itu sendiri, dan konfirmasi SYNOP/METAR FU bila ada.\n\nLaporkan sebagai orang-hari dengan rentang mentah sampai terkoreksi. Satu definisi dipakai untuk modul udara dan karhutla (scripts/data/dampak.py:283-305).",
+   "praktik_resmi_indonesia": "BNPB dan Kemenkes biasanya melaporkan penduduk terdampak per provinsi dari laporan daerah. KLH melaporkan ISPU per stasiun. Kajian ilmiah kabut asap Asia Tenggara (Koplitz dkk. 2016) memakai paparan asap berbobot penduduk dari model yang memisahkan komponen api.",
+   "kenapa_lebih_tepat": "Pemisahan asap dan polusi kota menghapus 83 sampai 89% angka yang berasal dari kota Jawa non-karhutla. Agregasi sel menghapus artefak batas sel. Angka terukur bisa dicocokkan dengan KLH, dan orang-hari tidak menggelembungkan seluruh kab menjadi 'terpapar' karena satu titik.",
+   "data_dibutuhkan": "- CAMS (sudah ada) atau GEOS-CF pada kisi asli.\n- WorldPop 1 km (https://hub.worldpop.org/), diagregasi sekali.\n- FIRMS (sudah ada).\n- Angin analisis: Open-Meteo past_days, 0,25°.\n- ISPU/BMKG lewat BNPB.",
+   "upaya": "M",
+   "cara_validasi": "(a) Di kota berstasiun: paparan berbobot jiwa dari sel terkoreksi dibanding stasiun, dengan NMB dalam ±30%.\n(b) Uji regresi lompatan Jakarta: selisih kab bertetangga di satu metropolitan di bawah faktor 1,5 bila stasiun tidak menunjukkan beda.\n(c) Gerbang kesetaraan: angka 'terpapar asap' sama persis di /udara/, /karhutla/, dan /semua/ untuk tanggal yang sama.\n(d) Klasifikasi 'terpengaruh asap' terhadap SYNOP ww 04 pada 2019 dan 2023: HSS minimal 0,4 dan bias 0,8 sampai 1,25.",
+   "prioritas": "P1",
+   "rujukan": [
+    "Koplitz dkk. 2016, Public health impacts of the severe haze in Equatorial Asia in Sep-Oct 2015, ERL 11:094023: https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+    "WorldPop: https://hub.worldpop.org/",
+    "Childs dkk. 2022, Daily local-level estimates of ambient wildfire smoke PM2.5 for the contiguous US, ES&T, doi:10.1021/acs.est.2c02934 (pendekatan anomali di atas dasar non-asap; penerbit menolak akses otomatis, isi tidak diperiksa ulang)"
+   ]
+  },
+  {
+   "metode_lama": "Balita, lansia, dan sekolah di wilayah tidak sehat (rentan.py:18,70-90; dampak.js:26-31)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Langkah 1 (S):** keluarkan dari briefing dan Laporan Harian.\n\n**Langkah 2 (M):** hitung dari sel 'terpengaruh asap karhutla' yang sama dengan usulan jiwa terpapar, memakai:\n- struktur umur WorldPop per sel, atau proyeksi BPS per kab, bukan 7,6% dan 12% nasional;\n- sekolah dinilai per titik Dapodik dengan nilai sel terkoreksi.\n\nKartu harus menulis jumlah sebenarnya, bukan panjang daftar yang dipotong 300 (dampak.js:31).",
+   "praktik_resmi_indonesia": "Keputusan meliburkan sekolah diambil Pemda dan Dinas Pendidikan, umumnya merujuk ISPU terukur. Kemenkes menerbitkan imbauan kelompok rentan.",
+   "kenapa_lebih_tepat": "Proporsi umur lokal dan penilaian per titik sekolah menghilangkan dua lapis asumsi seragam. Hasilnya juga tidak lagi mewarisi 'tidak sehat' dari kota Jawa yang tidak berasap.",
+   "data_dibutuhkan": "WorldPop age-sex structure 1 km (https://hub.worldpop.org/) atau proyeksi BPS per kab, public/data/sekolah.json (sudah ada), sel terkoreksi.",
+   "upaya": "M",
+   "cara_validasi": "Jumlah kelompok umur per provinsi cocok dengan proyeksi BPS dalam ±5%. Kartu sekolah sama dengan nasional.sekolah. Gerbang uji: angka di kartu tidak boleh sama dengan MAKS_SEKOLAH.",
+   "prioritas": "P1",
+   "rujukan": [
+    "WorldPop: https://hub.worldpop.org/",
+    "rentan.py:24,87,107 dan dampak.js:31 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Tambahan kasus ISPA per hari: RR rawat inap HRAPIE dipasangkan dengan prevalensi Riskesdas (rentan.py:19-22; sim/model.js:284-296); tiga rumus ISPA di satu platform",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**(1) Angka resmi.** Tampilkan kunjungan ISPA mingguan dari surveilans Kemenkes (SKDR, Sistem Kewaspadaan Dini dan Respons) per kab, dibanding dasar minggu yang sama di tahun non-asap. Akses lewat BNPB dan Kemenkes.\n\n**(2) Bila estimasi tetap diperlukan.** Pakai metode AirQ+ jangka pendek dengan fungsi risiko dan dasar insidensi yang dampaknya sama (rawat inap pernapasan × laju rawat inap pernapasan), hanya dari komponen asap. Hasilnya ditulis sebagai rentang yang memuat 0, satu fungsi untuk seluruh platform, dan teks Metode diperbaiki (1−RR^−x).",
+   "praktik_resmi_indonesia": "Saat kabut asap, Kemenkes melaporkan jumlah kasus ISPA dari puskesmas dan SKDR (perlu dicek aksesnya). BNPB mengutip angka Kemenkes, bukan model.",
+   "kenapa_lebih_tepat": "Angka surveilans adalah yang akan dikutip Menkes. Estimasi model yang selang RR-nya memuat 1 tidak bisa dibedakan dari nol, dan pasangan dampak yang tidak cocok (rawat inap dengan prevalensi gejala bulanan yang dibagi 30) bukan metode baku.",
+   "data_dibutuhkan": "SKDR Kemenkes mingguan per kab (antarlembaga, mungkin L untuk negosiasi). Bila estimasi: laju rawat inap pernapasan (BPJS/Kemenkes) dan AirQ+ (gratis setelah registrasi WHO, perlu dicek).",
+   "upaya": "M",
+   "cara_validasi": "Retrospektif 2019 dan 2023: korelasi Spearman estimasi mingguan per kab terhadap SKDR ISPA minimal 0,5 dan rasio total dalam faktor 2. Bila tidak lulus, angka estimasi tidak diterbitkan. Gerbang: satu fungsi ISPA dipakai rentan.py, sim/model.js, dan scripts/data/dampak.py (uji kesetaraan Python-JS).",
+   "prioritas": "P1",
+   "rujukan": [
+    "WHO AirQ+: https://www.who.int/tools/airq",
+    "WHO Regional Office for Europe 2013, Health risks of air pollution in Europe - HRAPIE project (RR rawat inap pernapasan PM2,5 harian 1,019 [0,9982-1,0402] per 10 µg/m³; URL tidak diverifikasi)",
+    "Koplitz dkk. 2016 (fungsi dampak kesehatan untuk asap 2015): https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023"
+   ]
+  },
+  {
+   "metode_lama": "Prakiraan jarak pandang bandara Koschmieder dari PM2,5 (rentan.py:23,51-54; 10 km untuk PM ≤63)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus. Tampilkan dua sumber resmi:\n- **TAF** dari endpoint yang sama dengan METAR (https://aviationweather.gov/api/data/taf?ids=...), ditulis apa adanya dengan jam berlaku. Pada 21 Okt 05Z: WIPP 2000 m FU, WIOO 3000 m FU, WIBB 4000 m FU, WAOO 'BECMG 1500 FU'.\n- **METAR terkini** untuk semua bandara.\n\nBandara tanpa TAF tidak diberi prakiraan.\n\nBila suatu saat dibutuhkan indikasi untuk bandara tanpa TAF: regresi logistik empiris P(vis <5 km) terhadap PM2,5 model terkoreksi dan RH, dilatih pada arsip METAR IEM dan SYNOP ISD 2015-2023, berlabel 'indikasi'.",
+   "praktik_resmi_indonesia": "Prakiraan jarak pandang bandara resmi adalah TAF dari BMKG (Meteorologi Penerbangan). Penutupan bandara diumumkan lewat NOTAM AirNav Indonesia dan Kemenhub.",
+   "kenapa_lebih_tepat": "TAF adalah produk resmi BMKG yang dipakai operator penerbangan, sudah memuat FU, dan sudah tersedia gratis dari host yang dipakai metar.py. Koschmieder dengan MEE asumsi dan rata-rata 24 jam tidak pernah diuji, dan hari ini bertentangan 5 kali lipat dengan TAF.",
+   "data_dibutuhkan": "AWC TAF API (publik, 100 permintaan/menit, JSON atau raw). Untuk model empiris: arsip METAR IEM dan ISD.",
+   "upaya": "S",
+   "cara_validasi": "Uji integrasi parser TAF pada contoh raw (BECMG, TEMPO, PROB30): visibilitas minimum per jam benar. Untuk model empiris (opsional): HSS kelas <5 km terhadap METAR 2023 di atas 0,4, dan tidak ditampilkan di bandara yang punya TAF.",
+   "prioritas": "P1",
+   "rujukan": [
+    "AWC Data API: https://aviationweather.gov/data/api/",
+    "Contoh TAF langsung 21 Okt 2026: https://aviationweather.gov/api/data/taf?ids=WIOO,WIPP,WIBB,WAOO&format=raw",
+    "IEM: https://mesonet.agron.iastate.edu/sites/networks.php?network=ID__ASOS"
+   ]
+  },
+  {
+   "metode_lama": "Jarak pandang bandara terkini dari METAR (14 bandara feed NOAA; HZ dihitung sama dengan FU)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Perluas cakupan:**\n- semua kode ICAO WA**/WI** di provinsi rawan;\n- tambahkan pengamatan SYNOP stasiun BMKG untuk kota tanpa METAR di feed (Palangka Raya, Jambi, Ketapang). ISD untuk riwayat; untuk NRT perlu sumber BMKG, perlu dicek.\n\n**Perbaiki tampilan:**\n- pisahkan FU (asap), HZ (kabut asap kering), dan BR/FG (kabut basah);\n- tambahkan status penutupan dari NOTAM;\n- urutkan tabel Laporan Harian menurut jarak pandang teramati, bukan prakiraan (bug Palembang 1,6 km FU yang terbuang).",
+   "praktik_resmi_indonesia": "METAR, SPECI, dan TAF diterbitkan BMKG (aviation.bmkg.go.id, perlu dicek). NOTAM diterbitkan AirNav Indonesia. Dek BNPB 20 Okt memuat penutupan Ketapang dan Singkawang yang tidak terlihat platform.",
+   "kenapa_lebih_tepat": "Pengamatan sudah sahih. Masalahnya cakupan dan pelabelan. Dengan cakupan penuh, kartu 'N bandara di bawah 5 km' tidak lagi meremehkan situasi, dan pemisahan FU/HZ menghindari klaim 'berasap' untuk polusi kota.",
+   "data_dibutuhkan": "AWC METAR/TAF (sudah dipakai), ISD SYNOP (riwayat), sumber NOTAM (AirNav, perlu dicek).",
+   "upaya": "S",
+   "cara_validasi": "Uji cakupan: minimal 90% bandara berjadwal di 10 provinsi rawan karhutla punya laporan di bawah 12 jam pada hari kerja. Uji regresi: tabel Laporan Harian memuat bandara dengan vis teramati terendah. Cocokkan penutupan 20 Okt (Ketapang, Singkawang) dengan NOTAM.",
+   "prioritas": "P1",
+   "rujukan": [
+    "AWC Data API: https://aviationweather.gov/data/api/",
+    "NOAA Global Hourly (SYNOP BMKG): https://noaa-global-hourly-pds.s3.amazonaws.com/2023/96655099999.csv",
+    "scripts/scrape/metar.py:3 (daftar bandara tak ada di feed) dan laporan_udara.py:143-146 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Lintasan asap maju 72 jam dari 60 kompleks api: satu jalur per lapis, kisi 1°, ada 'jam kedatangan' (lintasan.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Lintasan ansambel memakai anggota cuaca nyata:\n- Open-Meteo Ensemble API, ECMWF IFS ENS 51 anggota 0,25° 3-jam (atau GFS ENS 31 anggota), angin 925/850 hPa ditambah 10 m.\n- Tampilkan kerucut arah (persentil 10 sampai 90 posisi), lapis terendah sebagai acuan asap permukaan, tanpa jam kedatangan.\n\nAlternatif rujukan: HYSPLIT versi Linux tanpa registrasi bisa menghitung lintasan dengan meteorologi prakiraan (hanya dispersi yang dibatasi). Ini cocok sebagai pembanding offline, tetapi file meteorologi ARL GFS 0,25° berat untuk menit CI.",
+   "praktik_resmi_indonesia": "ASMC dan BMKG memakai HYSPLIT atau model setara untuk arah sebaran asap (perlu dicek). Secara internasional HYSPLIT ansambel adalah standar NOAA.",
+   "kenapa_lebih_tepat": "Satu jalur deterministik pada kisi 1° tidak menyatakan ketidakpastian. Ansambel cuaca nyata memberi sebaran arah yang konsisten secara fisik. Lapis 850 hPa umumnya di atas lapisan batas malam tempat asap gambut berada.",
+   "data_dibutuhkan": "Open-Meteo Ensemble API (gratis nonkomersial, 925/850 hPa tersedia). BLH tidak tercantum di ensemble API, jadi BLH tetap dari forecast API. Pembanding: HYSPLIT trial Linux dan meteorologi ARL.",
+   "upaya": "M",
+   "cara_validasi": "Bandingkan dengan HYSPLIT (GFS/GDAS) pada 30 kasus 2023 dan 2026: jarak titik akhir 24 jam dibagi panjang lintasan (AHTD relatif), median di bawah 25%. Arah terhadap bulu asap di citra true color: galat sudut median di bawah 30°.",
+   "prioritas": "P2",
+   "rujukan": [
+    "Open-Meteo Ensemble API: https://open-meteo.com/en/docs/ensemble-api",
+    "HYSPLIT: https://www.ready.noaa.gov/HYSPLIT.php",
+    "HYSPLIT Linux tanpa registrasi (lintasan bisa dengan meteorologi prakiraan): https://www.ready.noaa.gov/HYSPLIT_linuxtrial.php",
+    "Stein dkk. 2015, NOAA's HYSPLIT atmospheric transport and dispersion modeling system, BAMS, doi:10.1175/BAMS-D-14-00110.1"
+   ]
+  },
+  {
+   "metode_lama": "Peringatan asap lintas batas ke Malaysia, Singapura, Brunei, Timor Leste, dan Papua Nugini dari satu jalur dan kotak kasar (lintasan.py:25-32; laporan, pop-up)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus dari layar publik, pop-up, dan Laporan Harian. Untuk situasi kawasan, rujuk produk resmi:\n- peta kabut asap dan titik panas ASMC, serta Alert Level ASMC untuk ASEAN selatan;\n- pernyataan BMKG.\n\nBila tetap perlu pemantauan internal (tidak tayang): hitung konsentrasi model (CAMS/GEOS-CF terkoreksi) di sel wilayah negara tetangga dengan ambang 24 jam ≥55,5, dan pakai ansambel lintasan mundur dari kota-kota itu, bukan jalur maju dari 60 kompleks.",
+   "praktik_resmi_indonesia": "Isu asap lintas batas berada di bawah ASEAN Agreement on Transboundary Haze Pollution (diratifikasi UU 26/2014). Rujukan teknis kawasan adalah ASMC, dan komunikasi resmi dilakukan Kemenlu, KLH, dan BMKG.",
+   "kenapa_lebih_tepat": "Klaim lintas batas dari pihak Indonesia sendiri berisiko diplomatik dan sekarang lahir dari lapis 850 hPa (semua pemicu Brunei, 12 dari 16 pemicu Malaysia) tanpa ambang konsentrasi. Produk ASMC adalah acuan yang sudah diterima semua negara pihak.",
+   "data_dibutuhkan": "Produk ASMC (tautan, tanpa redistribusi). Untuk internal: kisi CAMS/GEOS-CF dan data PSI Singapura (data.gov.sg) atau API Malaysia untuk verifikasi.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang uji: string 'lintas batas' dan nama negara tetangga tidak muncul di laporan.json, sapa.js, dan index-udara.json. Untuk pemantauan internal: musim 2019 dan 2023, prediksi 'konsentrasi ≥55,5 di Malaysia/Singapura h+1' terhadap PSI/API terukur dengan POD dan FAR, lulus bila HSS di atas 0,3 sebelum dipertimbangkan tayang.",
+   "prioritas": "P1",
+   "rujukan": [
+    "ASMC: https://asmc.asean.org/ (tidak terjangkau dari mesin ini saat diperiksa; perlu dicek)",
+    "ASEAN Agreement on Transboundary Haze Pollution; UU No. 26 Tahun 2014 (URL tidak diverifikasi)",
+    "Stein dkk. 2015 HYSPLIT, BAMS, doi:10.1175/BAMS-D-14-00110.1"
+   ]
+  },
+  {
+   "metode_lama": "Atribusi sumber PM2,5 per kota dengan plume Gauss tunak sampai 600 km ditambah 'latar' = CAMS − model (atribusi.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hentikan persen sumber. Ganti dengan tiga lapis:\n- **(a) Status kualitatif 'terpengaruh asap karhutla: ya/mungkin/tidak' per kab-hari.** Dasarnya ansambel lintasan mundur 72 jam dengan angin analisis (Open-Meteo past_days 0,25° atau ENS) yang melewati gugus FIRMS ber-FRP, anomali PM2,5 di atas dasar non-api, dan konfirmasi SYNOP/METAR FU bila ada.\n- **(b) Peringkat provinsi penyumbang EMISI.** Diambil dari fluks PM2,5 GFAS dan diberi label 'emisi', bukan 'yang dihirup'.\n- **(c) Atribusi kuantitatif reseptor ke sumber.** Bila diminta, hanya lewat sensitivitas adjoint atau model kimia-transport dengan dan tanpa api (pola Koplitz dkk. 2016). Kerjanya berat (L) dan sebaiknya bermitra dengan BRIN atau universitas.",
+   "praktik_resmi_indonesia": "Belum ada atribusi resmi per kota. Kemenhut (SiPongi) melaporkan titik panas dan luas terbakar per provinsi, dan BMKG/ASMC melaporkan arah sebaran asap secara kualitatif.",
+   "kenapa_lebih_tepat": "Plume Gauss tunak hanya sahih sampai sekitar 50 km, sedangkan CAMS sudah memuat emisi GFAS. Hasilnya fisik mustahil, misalnya Kapuas 'dari Probolinggo' dan Pulang Pisau 99% latar. Pernyataan kualitatif berbasis lintasan, ditambah emisi GFAS per provinsi, bisa diuji dan tidak menyiratkan presisi palsu.",
+   "data_dibutuhkan": "- GFAS ADS: 0,1°, per jam untuk v1.4.2 sejak 2026, ada fluks PM2,5 dan tinggi injeksi, CC-BY. Formatnya GRIB/netCDF dan butuh akun ADS gratis, jadi perlu pustaka di luar stdlib atau job konversi terpisah.\n- FIRMS (ada).\n- Angin analisis Open-Meteo.",
+   "upaya": "M",
+   "cara_validasi": "Klasifikasi (a) pada 2019 dan 2023 terhadap SYNOP ww 04 di minimal 30 stasiun BMKG (ISD): HSS minimal 0,4, bias 0,8 sampai 1,25, dan lebih baik dari ambang CAMS mentah. Peringkat (b): cek konsistensi dengan peringkat titik panas SiPongi per provinsi (Spearman minimal 0,7) dan dengan GFAS publik.",
+   "prioritas": "P1",
+   "rujukan": [
+    "CAMS GFAS: https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas",
+    "Kaiser dkk. 2012, Biomass burning emissions estimated with a global fire assimilation system based on observed fire radiative power, Biogeosciences 9:527, doi:10.5194/bg-9-527-2012",
+    "Koplitz dkk. 2016 ERL: https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+    "Open-Meteo Ensemble API: https://open-meteo.com/en/docs/ensemble-api"
+   ]
+  },
+  {
+   "metode_lama": "Asal asap per kota: lintasan mundur dari angin PRAKIRAAN, bobot 1/jarak, dinormalkan ke 100% per provinsi, ditambah nama konsesi (asal.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Satukan dengan lapis (a) atribusi di atas. Kalimatnya kualitatif dan setingkat provinsi, contohnya: 'Dalam 72 jam terakhir, udara yang tiba di Kota X melewati gugus titik panas di Provinsi Y.'\n- memakai angin analisis lampau (past_days), bukan prakiraan;\n- memakai ansambel minimal 27 jalur (pola HYSPLIT: geser horizontal dan vertikal) atau anggota ENS;\n- tanpa persen dan tanpa nama perusahaan.\n\nPembanding offline: HYSPLIT mundur dengan GDAS.",
+   "praktik_resmi_indonesia": "Analisis daerah sumber asap di Indonesia dan ASEAN umumnya memakai lintasan mundur HYSPLIT yang ditumpangkan pada titik panas (perlu dicek di dokumen BMKG/ASMC).",
+   "kenapa_lebih_tepat": "Normalisasi ke 100% membuat kota yang hanya sedikit berasap tampak '100% dari Provinsi X'. Angin prakiraan untuk jam tiba di masa depan juga bukan 'asal' asap yang sedang dihirup. Kalimat kualitatif berangin analisis bisa diverifikasi dan tidak mudah dibantah.",
+   "data_dibutuhkan": "Open-Meteo forecast API dengan past_days (0,25°), FIRMS, HYSPLIT trial dan GDAS untuk pembanding.",
+   "upaya": "M",
+   "cara_validasi": "Pada 30 kota-hari musim 2023, provinsi asal teratas dari jalur sendiri harus cocok dengan HYSPLIT GDAS mundur pada minimal 80% kasus. Kontradiksi dengan atribusi (Kapuas: 'Kalsel' berbanding 'Probolinggo') harus 0 setelah keduanya disatukan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "HYSPLIT: https://www.ready.noaa.gov/HYSPLIT.php",
+    "Stein dkk. 2015, BAMS, doi:10.1175/BAMS-D-14-00110.1",
+    "Open-Meteo Ensemble API: https://open-meteo.com/en/docs/ensemble-api"
+   ]
+  },
+  {
+   "metode_lama": "Penautan kompleks api ke konsesi lewat kotak batas (bbox) ditambah 0,02° (lintasan.py:137-168)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Modul udara tidak menyebut badan usaha. Bila diperlukan di modul karhutla, gunakan irisan TITIK panas dengan POLIGON izin resmi (PBPH/HGU dari Kemenhut dan ATR/BPN), berlabel 'lokasi titik panas, bukan penetapan pelaku', dan tunduk pada proses verifikasi Gakkum.",
+   "praktik_resmi_indonesia": "Penetapan pelanggaran karhutla dilakukan Ditjen Gakkum (Kemenhut/KLH) setelah verifikasi lapangan. SiPongi menampilkan titik panas, tetapi tidak menuduh pemegang izin (perlu dicek).",
+   "kenapa_lebih_tepat": "Bbox multipoligon bisa jauh lebih luas dari area terbakar, sehingga perusahaan tetangga ikut tersebut. Irisan titik dan poligon adalah operasi geometri yang benar dan bisa diaudit.",
+   "data_dibutuhkan": "Poligon konsesi resmi (public/data/konsesi2026 sudah ada di modul karhutla) dan FIRMS.",
+   "upaya": "S",
+   "cara_validasi": "Audit manual 50 tautan lama: persen tautan bbox yang tidak didukung irisan poligon dilaporkan. Gerbang: kata 'PT ' dan nama badan usaha tidak muncul di keluaran public/udara/data.",
+   "prioritas": "P1",
+   "rujukan": [
+    "lintasan.py:137-168 dan asal.py:88-89 (repo)",
+    "NASA FIRMS: https://firms.modaps.eosdis.nasa.gov/"
+   ]
+  },
+  {
+   "metode_lama": "'Peluang' PM2,5 melewati ambang dari 729 varian asumsi plume (peluang_udara.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Segera:** ganti nama menjadi 'sensitivitas asumsi asap' atau hapus.\n\n**Peluang sungguhan:** kalibrasi statistik. Regresi logistik atau EMOS dari kejadian teramati (stasiun rata-rata 24 jam ≥55,5, atau hari berasap SYNOP/METAR) terhadap prediktor CAMS r24 (dan GEOS-CF), lead, wilayah, dan bulan. Dilatih pada arsip hindcast EAC4 2015-2023 dan arsip prakiraan sendiri.",
+   "praktik_resmi_indonesia": "Belum ada prakiraan probabilistik kualitas udara resmi di Indonesia yang diketahui. Prakiraan probabilistik BMKG untuk cuaca memakai ansambel dan kalibrasi.",
+   "kenapa_lebih_tepat": "Probabilitas harus terkalibrasi: dari semua hari berpeluang 70%, sekitar 70% harus terjadi. Ansambel asumsi dari model yang komponen asapnya 0,27 × CAMS tidak memenuhi itu, dan '0%' menyesatkan karena CAMS meluputkan 56% hari berasap.",
+   "data_dibutuhkan": "CAMS EAC4 (CC-BY, ADS), SYNOP ISD dan METAR IEM sebagai label, stasiun bila tersedia. Regresi logistik sudah ada di scripts/umum/latih (gbdt.py, kalibrasi.py).",
+   "upaya": "M",
+   "cara_validasi": "Validasi silang per tahun (tinggalkan-satu-musim: 2015, 2019, 2023). Lulus bila Brier Skill Score terhadap klimatologi bulanan di atas 0,1 dan kemiringan diagram reliabilitas 0,8 sampai 1,2, dilaporkan per wilayah.",
+   "prioritas": "P1",
+   "rujukan": [
+    "Gneiting dkk. 2005, Calibrated probabilistic forecasting using ensemble model output statistics and minimum CRPS estimation, MWR 133:1098, doi:10.1175/MWR2904.1",
+    "CAMS EAC4: https://ads.atmosphere.copernicus.eu/datasets/cams-global-reanalysis-eac4",
+    "WWRP/WGNE JWGFVR (Brier, reliabilitas): https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "Peta PM2,5 interpolasi IDW 1/d² ke sel 0,25° dari titik kab (peta.js:52-60)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tampilkan kisi model asli: CAMS 0,4° yang diambil per sel dari Open-Meteo dengan koordinat ganda per permintaan, atau GEOS-CF 0,25°. Sesudah MOS, tampilkan kisi terkoreksi. Beri label 'model, resolusi sekitar 45 km'. Tidak perlu menghaluskan dari titik sampel.",
+   "praktik_resmi_indonesia": "Peta model resmi (CAMS, ASMC) menampilkan kisi model apa adanya.",
+   "kenapa_lebih_tepat": "Merekonstruksi medan dari titik yang aslinya sampel kisi menggeser batas sel dan menciptakan nilai yang tidak ada di model mana pun.",
+   "data_dibutuhkan": "Sekitar 1.000 sampai 1.500 sel darat 0,4° di Open-Meteo, sekitar 3 kali permintaan sekarang (perlu dicek terhadap batas pemakaian gratis), atau GEOS-CF OPeNDAP subset.",
+   "upaya": "S",
+   "cara_validasi": "Nilai sel di koordinat kab harus sama persis dengan nilai API untuk sel itu (selisih 0). Lompatan Jakarta tampil sebagai batas sel yang jujur, bukan gradien buatan.",
+   "prioritas": "P3",
+   "rujukan": [
+    "Open-Meteo Air Quality API: https://open-meteo.com/en/docs/air-quality-api",
+    "GEOS-CF OPeNDAP: https://opendap.nccs.nasa.gov/dods/gmao/geos-cf/fcast"
+   ]
+  },
+  {
+   "metode_lama": "Kejadian udara U#### dan Laporan Kejadian per kab 'Siaga' yang dibangkitkan murni dari CAMS (kejadian.py:242-262; laporan_kejadian.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Kejadian udara hanya dibuat bila ada minimal satu konfirmasi pengamatan:\n- ISPU/AQMS atau PM2,5 BMKG ≥ Tidak Sehat (rata-rata 24 jam);\n- minimal 2 laporan SYNOP/METAR FU, atau ww 04, dengan jarak pandang di bawah 5 km di stasiun ≤50 km;\n- laporan warga atau BPBD terverifikasi.\n\nModel tanpa konfirmasi ditulis 'indikasi model', tidak masuk tabel lintas bencana. Tingkat memakai nama kategori ISPU, dan jendelanya hari WIB.",
+   "praktik_resmi_indonesia": "Kejadian bencana di DIBI BNPB berasal dari laporan BPBD, bukan model. Untuk asap, laporan daerah biasanya merujuk ISPU dan dampak lapangan.",
+   "kenapa_lebih_tepat": "Sejajar dengan banjir dan gempa di /semua/, kejadian harus berupa fakta teramati. Konfirmasi juga menutup celah 'Gresik Siaga' tanpa pengakuan BPBD.",
+   "data_dibutuhkan": "METAR AWC (ada), SYNOP (ISD untuk riwayat; NRT dari BMKG, perlu dicek), ISPU/BMKG lewat BNPB, Lapor Warga (ada di worker).",
+   "upaya": "S",
+   "cara_validasi": "Uji balik musim 2023: dari kejadian model-saja, berapa persen terkonfirmasi SYNOP dalam 50 km. Laporkan juga FAR, dan lulus bila FAR kejadian yang diterbitkan di bawah 0,3. Gerbang uji: setiap entri index-udara.json wajib punya field 'konfirmasi' berisi sumber pengamatan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "NOAA Global Hourly (SYNOP): https://noaa-global-hourly-pds.s3.amazonaws.com/2023/96655099999.csv",
+    "AWC Data API: https://aviationweather.gov/data/api/",
+    "SUMBER-DATA.md §8 BNPB DIBI dan ArcGIS (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Laporan Harian Kualitas Udara (laporan.json) dengan sorot otomatis, sumber api, lintas batas, dan tabel bandara (laporan_udara.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Buat 'versi briefing' terpisah yang hanya memuat:\n- METAR dan TAF bandara, diurutkan menurut jarak pandang teramati;\n- ISPU/PM2,5 terukur per stasiun bila tersedia;\n- titik panas (angka resmi SiPongi disandingkan dengan FIRMS, dengan definisi tertulis);\n- kategori PM2,5 model per PROVINSI berlabel 'perkiraan model CAMS';\n- status darurat resmi BNPB/Pemda;\n- arah angin kualitatif.\n\nSorot sumber api, lintas batas, jiwa terpapar model, ISPA model, dan prakiraan Koschmieder dibuang.\n\nOperasional:\n- bekukan satu snapshot berstempel jalan_model dan jalan_id;\n- jalan.py menggagalkan penerbitan bila satu langkah gagal;\n- berkas yang dihasilkan kode lama tidak boleh tayang.",
+   "praktik_resmi_indonesia": "Laporan harian BNPB dan Paparan Presiden memakai data lembaga teknis: SiPongi (Kemenhut), ISPU (KLH), BMKG (cuaca, asap, penerbangan), dan Kemenkes (kesehatan).",
+   "kenapa_lebih_tepat": "Setiap angka di dek harus bisa dilacak ke lembaga yang bertanggung jawab atasnya. Snapshot tunggal mencegah satu laporan mencampur keluaran jalan yang berbeda.",
+   "data_dibutuhkan": "API SiPongi (repo sudah punya klien opsroom.sipongidata.my.id di scripts/scrape/luas_satelit.py:29), AWC METAR/TAF, BNPB, dan keluaran model berlabel.",
+   "upaya": "M",
+   "cara_validasi": "Gerbang uji tanpa database:\n- setiap angka di briefing.json punya 'sumber' dari daftar putih dan jalan_id yang sama;\n- tidak ada field terlarang (lintas_batas, atribusi persen, ispa, prakiraan_km);\n- jalan.py keluar dengan kode bukan 0 bila ada langkah gagal.\n\nUji regresi: Palembang 1,6 km FU muncul di tabel bandara.",
+   "prioritas": "P1",
+   "rujukan": [
+    "scripts/scrape/luas_satelit.py:29 (API SiPongi) dan scripts/udara/jalan.py (repo)",
+    "AWC Data API: https://aviationweather.gov/data/api/"
+   ]
+  },
+  {
+   "metode_lama": "Riwayat dan Tren PM2,5 dari analisis CAMS past_days, ditimpa tiap jalan (prakiraan.py:310-317; riwayat.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tampilkan sebagai indeks relatif (anomali terhadap klimatologi model itu sendiri), tanpa angka jiwa absolut.\n- Untuk perbandingan antartahun (2015, 2019, 2023), pakai CAMS EAC4 yang konsisten 2003-2025 dan riwayat stasiun bila tersedia.\n- Nilai yang sudah terbit dibekukan dengan versi.",
+   "praktik_resmi_indonesia": "KLH menyimpan riwayat ISPU per stasiun, dan BMKG punya riwayat pengamatan PM2,5 dan SYNOP.",
+   "kenapa_lebih_tepat": "Analisis operasional berubah versi dan tidak cocok untuk nilai absolut lintas tahun. Reanalisis sengaja dibuat konsisten. Anomali relatif tidak mewarisi bias absolut kota Jawa.",
+   "data_dibutuhkan": "CAMS EAC4 (0,75°, 3-jam, 2003-2025, jeda 4 sampai 6 bulan, CC-BY, akun ADS), ISD SYNOP untuk validasi.",
+   "upaya": "M",
+   "cara_validasi": "HSS hari berasap EAC4 terhadap SYNOP ww 04/05 musim 2015, 2019, dan 2023 dilaporkan berdampingan dengan analisis operasional. Uji versi: nilai hari yang sudah terbit tidak berubah antarjalan kecuali ditandai 'revisi'.",
+   "prioritas": "P2",
+   "rujukan": [
+    "CAMS EAC4: https://ads.atmosphere.copernicus.eu/datasets/cams-global-reanalysis-eac4",
+    "NOAA Global Hourly: https://noaa-global-hourly-pds.s3.amazonaws.com/2019/96655099999.csv"
+   ]
+  },
+  {
+   "metode_lama": "Kalender musim asap dan ENSO: titik panas multisensor 2019-2026, fase dari rata-rata ONI setahun (musim_asap.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Statistik titik panas memakai satu sensor dan jendela yang konsisten:\n- VIIRS S-NPP keyakinan nominal dan tinggi sejak 2012 (repo sudah punya viirs_2012_2014.csv dan viirs.csv);\n- MODIS C6.1 sejak 2001 untuk deret panjang.\n\nAngka resmi SiPongi disandingkan di sebelahnya, lewat API opsroom yang sudah dipakai repo. Definisi kepercayaan SiPongi perlu dikonfirmasi ke Kemenhut.\n\nFase iklim memakai definisi resmi:\n- CPC NOAA kini memakai RONI untuk pemantauan ENSO resmi;\n- episode = ambang ±0,5 selama minimal 5 musim tumpang tindih berturut;\n- ditambah IOD (DMI) dan pernyataan ENSO/IOD bulanan BMKG.",
+   "praktik_resmi_indonesia": "Kemenhut (SiPongi) menerbitkan rekap titik panas dan indikasi luas terbakar. BMKG menerbitkan analisis dan prakiraan ENSO serta IOD bulanan.",
+   "kenapa_lebih_tepat": "Satu sensor menghindari hitung ganda api yang sama. Deret sejak 2012/2015 tidak menyembunyikan 2015: dengan S-NPP pada jendela 1 Jan sampai 19 Okt, 2015 = 775.371 berbanding 2026 = 570.858. Definisi fase resmi menyamakan bahasa dengan BMKG.",
+   "data_dibutuhkan": "Arsip FIRMS di data/raw/firms (ada), API SiPongi (ada klien), CPC ONI/RONI, DMI PSL (sudah di SUMBER-DATA.md §6).",
+   "upaya": "S",
+   "cara_validasi": "(a) Peringkat tahunan S-NPP harus memuat 2015 di atas 2019 dan 2023 untuk jendela yang sama.\n(b) Rasio total tahunan platform terhadap SiPongi dilaporkan per tahun. Lulus bila rasionya stabil (koefisien variasi di bawah 15%), yang menandakan definisinya konsisten.\n(c) Fase ENSO per tahun cocok 100% dengan tabel CPC.",
+   "prioritas": "P2",
+   "rujukan": [
+    "CPC ONI/RONI (RONI dipakai untuk pemantauan resmi): https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+    "DMI (IOD): https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+    "NASA FIRMS: https://firms.modaps.eosdis.nasa.gov/",
+    "scripts/scrape/luas_satelit.py:29 (API SiPongi, repo)"
+   ]
+  },
+  {
+   "metode_lama": "Simulasi dispersi partikel Lagrangian dan 6 skenario (sim/model.js, sim/sim.js); emisi gambut 3,5 kg/MJ belum dicek, berbeda 14 kali dari pipeline",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Segera:** angka skenario disembunyikan dari layar publik, sehingga simulasi menjadi alat edukasi visual tanpa angka.\n\n**Bila ingin dipakai serius:**\n- satu set emisi bersama Python dan JS, yaitu fluks PM2,5 GFAS dengan tinggi injeksi;\n- angin anggota ECMWF ENS;\n- skenario 'api padam X%' sebagai penskalaan linier komponen asap hasil lapis atribusi yang sudah lulus uji;\n- validasi kasus Sep 2019 dan Sep-Okt 2023 terhadap SYNOP dan stasiun.",
+   "praktik_resmi_indonesia": "Tidak ada simulasi skenario resmi yang diketahui. Kajian ilmiah memakai model kimia-transport dengan dan tanpa api (Koplitz dkk. 2016).",
+   "kenapa_lebih_tepat": "Skenario hanya bermakna bila emisi dasarnya konsisten dan model mereproduksi episode nyata. Satu konstanta yang belum dicek saat ini menentukan peringkat kompleks gambut berbanding mineral.",
+   "data_dibutuhkan": "GFAS (ADS, CC-BY), Open-Meteo Ensemble, ISD SYNOP untuk validasi.",
+   "upaya": "L",
+   "cara_validasi": "Reproduksi episode Sep 2019. Hari berasap di 30 stasiun SYNOP harus memberi HSS minimal 0,4, dan di kota berstasiun NMB PM2,5 harus dalam ±30%. Uji kesetaraan konstanta emisi Python-JS dengan selisih 0.",
+   "prioritas": "P2",
+   "rujukan": [
+    "CAMS GFAS: https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas",
+    "Kaiser dkk. 2012, Biogeosciences 9:527, doi:10.5194/bg-9-527-2012",
+    "Koplitz dkk. 2016: https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023"
+   ]
+  },
+  {
+   "metode_lama": "Kalibrasi faktor K dan kartu 'Kecocokan skala dengan CAMS' (sim/model.js:195-226; melingkar)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti nama menjadi 'diagnostik internal' dan sembunyikan dari publik. Validasi sungguhan dilakukan terhadap pengamatan independen (SYNOP ww 04/05, METAR FU, stasiun PM2,5), bukan terhadap atribusi.",
+   "praktik_resmi_indonesia": "Tidak relevan. Praktik baku adalah verifikasi terhadap pengamatan independen.",
+   "kenapa_lebih_tepat": "Kecocokan dengan model lain yang juga tidak teruji bukan bukti kalibrasi. Pembanding independen membuat angka 'cocok' bermakna.",
+   "data_dibutuhkan": "ISD SYNOP, METAR, stasiun (lihat usulan uji hindcast).",
+   "upaya": "S",
+   "cara_validasi": "Gerbang uji: kata 'kecocokan' atau 'kalibrasi' tidak muncul di kartu publik tanpa field 'pembanding' yang menyebut sumber pengamatan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "sim/model.js:215-217,373 (repo)",
+    "WWRP/WGNE JWGFVR: https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "Ensemble simulasi 24 anggota dengan gangguan lognormal asumsi; 'Peluang Tidak sehat' dari puncak per JAM ≥55,5 (sim/model.js:228-249,304)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pakai anggota ansambel cuaca nyata (Open-Meteo: ECMWF IFS ENS 51 anggota atau GFS ENS 31 anggota, 0,25°) untuk angin. Ketidakpastian emisi diambil dari selisih antarinventaris (mis. GFAS berbanding FRP sendiri), bukan sd asumsi. Ambang 'Tidak sehat' diterapkan pada rata-rata 24 jam, bukan puncak per jam.",
+   "praktik_resmi_indonesia": "BMKG memakai ansambel NWP untuk prakiraan probabilistik cuaca (perlu dicek produk spesifiknya).",
+   "kenapa_lebih_tepat": "Sebaran ansambel harus mencerminkan galat nyata (hubungan spread-skill). Gangguan asumsi tidak menjamin itu, dan memakai ambang 24 jam pada nilai per jam menaikkan peluang secara sistematis.",
+   "data_dibutuhkan": "Open-Meteo Ensemble API (925/850 hPa ada; BLH tidak tercantum), GFAS.",
+   "upaya": "M",
+   "cara_validasi": "Rasio spread-skill 0,8 sampai 1,2 dan histogram peringkat datar (uji chi-kuadrat, p di atas 0,05) terhadap METAR/SYNOP dan stasiun pada minimal 60 hari musim 2026. Bila tidak lulus, pita disembunyikan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "Open-Meteo Ensemble API: https://open-meteo.com/en/docs/ensemble-api",
+    "Gneiting dkk. 2005, MWR 133:1098, doi:10.1175/MWR2904.1"
+   ]
+  },
+  {
+   "metode_lama": "Peringkat perlakuan berbiaya rupiah asumsi (libur sekolah, kurangi PLTU 50%, masker, ruang udara bersih, padamkan kompleks) dan beban faskes (sim/tanggap.js)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan dari layar publik dan briefing. Untuk dukungan keputusan, tampilkan pedoman resmi yang sudah ada:\n- imbauan Kemenkes (masker, ruang udara bersih) dan ambang ISPU untuk aktivitas sekolah dari Pemda/Kemendikdasmen;\n- prioritas pemadaman dari Manggala Agni dan Satgas (data Daops sudah dipanen di scripts/scrape/daops.py).\n\nBila analisis biaya-manfaat benar dibutuhkan, jadikan kajian terpisah dengan Standar Biaya Masukan Kemenkeu, data PLN, dan outcome kesehatan tervalidasi, ditinjau instansi teknis.",
+   "praktik_resmi_indonesia": "Keputusan libur sekolah ada di Pemda. Operasi PLTU ada di ESDM dan PLN. Masker dan ruang udara bersih adalah ranah Kemenkes dan BNPB. Prioritas pemadaman ditetapkan Satgas Karhutla dan Manggala Agni.",
+   "kenapa_lebih_tepat": "Rekomendasi lintas kementerian dari rantai model yang belum teruji dan biaya asumsi bisa dibaca sebagai saran resmi. Pedoman yang sudah ditetapkan lembaga tidak punya risiko itu.",
+   "data_dibutuhkan": "Dokumen pedoman Kemenkes dan Pemda (perlu dikumpulkan), data Daops (sudah ada).",
+   "upaya": "S",
+   "cara_validasi": "Gerbang uji: tidak ada angka rupiah atau 'perlakuan paling berdampak' di keluaran publik. Kajian terpisah (bila ada) baru boleh tampil setelah ada tinjauan tertulis dari Kemenkes atau BNPB.",
+   "prioritas": "P1",
+   "rujukan": [
+    "sim/tanggap.js:6-20 dan model.js:374 (repo)",
+    "scripts/scrape/daops.py (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Estimasi emisi PM2,5 api dari jumlah FRP 24 jam dibagi lintasan satelit asumsi (atribusi.py:40-45; sim/model.js:15-21)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pakai langsung fluks PM2,5 GFAS: 0,1°, per jam sejak v1.4.2 (2026), dengan faktor konversi khusus tutupan lahan termasuk gambut dan koreksi awan dari asimilasi FRP, plus tinggi injeksi.\n\nBila tetap memakai FIRMS sendiri, minimal harus:\n- satu berkas konstanta bersama Python dan JS;\n- faktor gambut dari literatur yang dikutip (Kaiser dkk. 2012 dan tabel faktor emisinya);\n- uji silang Python-JS.",
+   "praktik_resmi_indonesia": "Belum ada inventaris emisi karhutla harian resmi yang diketahui. Kajian Indonesia dan ASEAN umumnya memakai GFAS, GFED, atau FINN.",
+   "kenapa_lebih_tepat": "GFAS adalah produk operasional berbasis FRP yang sudah divalidasi dan dipakai CAMS sendiri, sehingga komponen api konsisten dengan model PM2,5 yang ditampilkan. Dua konversi gambut di satu modul yang berbeda 14 kali hilang.",
+   "data_dibutuhkan": "GFAS ADS (CC-BY, GRIB/netCDF; butuh akun ADS gratis dan pustaka di luar stdlib, atau job konversi terpisah yang menulis JSON per provinsi).",
+   "upaya": "M",
+   "cara_validasi": "Emisi PM2,5 harian per provinsi dari FRP sendiri dibanding GFAS pada 2019 dan 2023: r minimal 0,8 dan rasio median dalam faktor 2. Bila tidak lulus, pakai GFAS. Uji kesetaraan konstanta Python-JS dengan selisih 0.",
+   "prioritas": "P2",
+   "rujukan": [
+    "CAMS GFAS: https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas",
+    "Kaiser dkk. 2012, Biogeosciences 9:527, doi:10.5194/bg-9-527-2012",
+    "Wooster dkk. 2005, Retrieval of biomass combustion rates and totals from fire radiative power observations, JGR 110:D24311, doi:10.1029/2005JD006318"
+   ]
+  },
+  {
+   "metode_lama": "Jalur lama udara_kualitas.json dan udara_dampak.json (sel 1°, basi sejak 16 Okt) yang masih dibaca /semua/ dan OG (adapter.js:53-63)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus jalur lama: kualitas.py, dampak_udara.py, dan pemanggilan dari metar.py:38-40. /semua/ dan OG membaca Murni.satukan(prakiraan.json), atau ringkasan versi briefing. Adapter menolak data basi: bila hari ini tidak ada, tampilkan 'data basi', tidak jatuh ke indeks 0.",
+   "praktik_resmi_indonesia": "Tidak relevan, ini kebersihan data.",
+   "kenapa_lebih_tepat": "Satu sumber kebenaran per angka mencegah halaman nasional menampilkan angka 15 Okt sebagai 'hari ini' dan berbeda dari /udara/.",
+   "data_dibutuhkan": "Tidak ada.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit adapter: untuk berkas tanpa tanggal hari ini, fungsi mengembalikan null dan label basi, bukan nilai indeks 0. Gerbang: tidak ada berkas di public/ yang membaca udara_kualitas.json.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/inti/adapter.js:55,61 dan scripts/scrape/metar.py:38-40 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Angin 3 lapis dan BLH dari Open-Meteo best_match, kisi 1°, hanya ke depan (angin.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Naikkan ke 0,25° (ECMWF IFS atau GFS lewat Open-Meteo), tambahkan past_days=3 supaya lintasan mundur memakai angin mendekati analisis, dan pakai ERA5 (archive-api Open-Meteo, sudah dipakai repo) untuk kasus historis.",
+   "praktik_resmi_indonesia": "BMKG memakai NWP resolusi tinggi sendiri. Angin analisis global GFS/ECMWF 0,25° adalah masukan standar HYSPLIT.",
+   "kenapa_lebih_tepat": "Kisi 1° kasar untuk pantai dan lembah. Lintasan mundur dengan angin prakiraan bukan 'asal' asap yang sudah tiba.",
+   "data_dibutuhkan": "Open-Meteo forecast API (past_days) dan archive-api ERA5 (sudah dipakai di scripts/sebaran/cuaca.py).",
+   "upaya": "S",
+   "cara_validasi": "RMSE vektor angin 10 m terhadap METAR di 20 bandara selama 30 hari turun dibanding kisi 1°. Arah lintasan mundur 24 jam dengan past_days dibanding HYSPLIT GDAS pada 20 kasus: galat sudut median di bawah 30°.",
+   "prioritas": "P2",
+   "rujukan": [
+    "Open-Meteo Ensemble/forecast API: https://open-meteo.com/en/docs/ensemble-api",
+    "HYSPLIT: https://www.ready.noaa.gov/HYSPLIT.php"
+   ]
+  },
+  {
+   "metode_lama": "Berita kualitas udara: panen RSS dan leksikon relevansi (berita.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan sebagai konteks media. Tambahkan uji presisi relevansi pada sampel berlabel, jangan pakai jumlah berita sebagai ukuran keparahan, dan perbarui teks Metode ('diperbarui tangan' sudah usang).",
+   "praktik_resmi_indonesia": "BNPB memantau media sebagai informasi awal, bukan indikator dampak.",
+   "kenapa_lebih_tepat": "Presisi yang terukur membuat kartu berita tidak menyesatkan. Konteks media tetap berguna bagi pembaca.",
+   "data_dibutuhkan": "200 judul berlabel manual (sekali).",
+   "upaya": "S",
+   "cara_validasi": "Presisi relevansi minimal 0,8 pada 200 sampel berlabel dengan selang bootstrap dilaporkan. Bila di bawah, saringan diperketat.",
+   "prioritas": "P3",
+   "rujukan": [
+    "berita.py:8,36 dan metode.js:18 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Lapisan satelit CO AIRS 500 hPa (nasa.js:10)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tambahkan lapisan yang lebih langsung menunjukkan asap:\n- citra true color VIIRS atau MODIS (repo sudah punya ubin Satelit);\n- AOD MODIS/VIIRS dari GIBS (ID lapisan perlu dicek di daftar visualisasi GIBS);\n- tautan ke citra Himawari BMKG.\n\nLapisan CO tetap ada dengan label 'troposfer tengah sekitar 5,5 km, bukan udara yang dihirup'.",
+   "praktik_resmi_indonesia": "BMKG dan ASMC memakai citra Himawari dan true color untuk memetakan sebaran asap (perlu dicek).",
+   "kenapa_lebih_tepat": "AOD dan citra true color langsung memperlihatkan bulu asap dekat permukaan, sedangkan CO 500 hPa tidak.",
+   "data_dibutuhkan": "NASA GIBS (tanpa kunci, CORS).",
+   "upaya": "S",
+   "cara_validasi": "Ubin 200 dengan CORS (pola pemeriksaan di nasa.js). Label lapisan memuat ketinggian dan kata 'bukan udara permukaan'.",
+   "prioritas": "P3",
+   "rujukan": [
+    "NASA GIBS available visualizations: https://nasa-gibs.github.io/gibs-api-docs/available-visualizations/",
+    "public/inti/peta/nasa.js:10 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Inventaris PLTU WRI GPPD v1.3 (70 unit, 29,3 GW, data 2017) untuk atribusi, skenario 'PLTU mati', dan 'kurangi PLTU 50%' (pltu.py)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Perbarui dari Global Coal Plant Tracker (GEM), rilis Juli 2026, diperbarui dua kali setahun, mencakup PLTU captive. Bandingkan dengan RUPTL PLN dan data ESDM. Alternatif yang lebih murah: keluarkan PLTU dari atribusi dan skenario sampai inventarisnya mutakhir.",
+   "praktik_resmi_indonesia": "Data pembangkit resmi ada di RUPTL PLN dan statistik ESDM. PLTU captive kawasan industri (Morowali/IMIP, Weda Bay) tidak semuanya tercatat di RUPTL.",
+   "kenapa_lebih_tepat": "Armada 2017 tanpa Batang, Jawa 7, dan PLTU captive nikel membuat porsi PLTU dan skenario dihitung dari armada yang tidak ada lagi.",
+   "data_dibutuhkan": "GEM GCPT (unduhan dari halaman proyek; lisensi tidak tertera di halaman dan perlu dicek sebelum tayang ulang), RUPTL PLN.",
+   "upaya": "S",
+   "cara_validasi": "Total kapasitas operasi Indonesia dan jumlah unit cocok dengan ringkasan GEM rilis yang sama dalam ±5%. Pencarian 'Batang', 'Jawa 7', dan 'Morowali' tidak kosong.",
+   "prioritas": "P2",
+   "rujukan": [
+    "Global Coal Plant Tracker, Global Energy Monitor (rilis Juli 2026): https://globalenergymonitor.org/projects/global-coal-plant-tracker/",
+    "scripts/udara/pltu.py:1-30 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "Pop-up harian 'Situasi kualitas udara hari ini' (sapa.js: jiwa terpapar, kartu lintas batas, Siaga/Awas, perbandingan prakiraan hari ini dengan analisis kemarin)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Buang kartu lintas batas dan angka jiwa. Ganti dengan:\n- jumlah kab/kota per kategori ISPU berlabel model, per pulau;\n- bandara dengan jarak pandang teramati di bawah 5 km (METAR);\n- jumlah titik panas.\n\nPerbandingan 'naik/turun dari kemarin' harus memakai jenis data yang sama (analisis dengan analisis, atau prakiraan dengan prakiraan).",
+   "praktik_resmi_indonesia": "Ringkasan publik BNPB dan BMKG memakai data teramati dan status resmi.",
+   "kenapa_lebih_tepat": "Pop-up adalah kanal yang paling banyak dilihat. Isinya harus berasal dari komponen yang layak, dan perbandingan dua jenis data menghasilkan tren palsu.",
+   "data_dibutuhkan": "Sama dengan versi briefing.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit sapa.js: kedua sisi perbandingan memakai field 'jenis' yang sama. Gerbang: tidak ada lintas_batas atau jiwa_tidak_sehat di render pop-up.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/udara/sapa.js:8-12,29,34-35 (repo)"
+   ]
+  },
+  {
+   "metode_lama": "PM2,5 rata-rata nasional/provinsi berbobot jiwa (pm_jiwa) beserta kategori ISPU-nya (tren.js:50; sapa.js:33; laporan_udara.py:24)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan sebagai indeks tren relatif, dihitung dari sel model (setelah usulan kisi), tanpa memberi kategori ISPU pada rata-rata wilayah. Untuk briefing, ganti dengan distribusi: persen penduduk per kategori, terpisah asap dan non-asap.",
+   "praktik_resmi_indonesia": "KLH memberi kategori ISPU per stasiun, bukan rata-rata nasional.",
+   "kenapa_lebih_tepat": "Kategori ISPU bermakna untuk paparan di satu lokasi. Rata-rata nasional yang 56% bobotnya di Jawa menyamarkan asap Kalimantan dan Sumatra di balik polusi kota.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang uji: fungsi kat() tidak dipanggil pada agregat wilayah (cek statis di tren.js dan sapa.js). Indeks dihitung ulang dari sel dan cocok dengan Python dalam toleransi 0,1 µg/m³.",
+   "prioritas": "P2",
+   "rujukan": [
+    "public/udara/tren.js:50 dan murni.js:56-61 (repo)"
+   ]
+  }
+ ]
+}

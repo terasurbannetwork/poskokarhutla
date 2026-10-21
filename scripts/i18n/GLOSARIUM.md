@@ -26,6 +26,7 @@ Angka di kunci ditulis `{0}`, `{1}`, … (penerjemah mengganti angka otomatis), 
 | HPH (hutan alam) | HPH (natural-forest logging concession) | PBPH = nama izin baru, tetap |
 | areal konsesi / di luar areal konsesi | concession area / outside concession areas | |
 | status lahan titik panas | hotspot land status | nama perusahaan TIDAK ditampilkan |
+| Hari ini / Kemarin / Tanggal lain (pemilih hari titik panas) | Today / Yesterday / Other date | satu hari kalender WIB per pilihan, tidak ada jendela 72 jam atau 7 hari; "Rentang tren" = Trend range (jendela tren, bukan penyaring titik) |
 | regu | crew | |
 | personel | personnel | |
 | pemadaman | suppression | pemadaman awal = initial attack |
@@ -136,3 +137,19 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | semak/belukar | shrubland | |
 | sawah | rice paddy | |
 | latar (laporan) | baseline | "Percepatan api 2 hari" = 2-day fire acceleration |
+
+## Peta provinsi interaktif (/laporan, 21 Okt 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| Hotspot (titik) | Hotspots (count) | ukuran 1 di peta; sama dengan "titik panas" |
+| Luas terbakar (ha) | Burned area (ha) | ukuran 2; perkiraan, ditulis dengan ± |
+| Belum padam (ha) | Not extinguished (ha) | ukuran 3; persediaan pada hari terakhir periode ("per <tanggal>" = "as of <date>"), tidak pernah dijumlah |
+| Hari / Minggu / Bulan / Rentang / 12 Bulan | Day / Week / Month / Range / 12 months | jenis periode; 12 Bulan = satu tahun kalender |
+| pada / selama / sepanjang <periode> | on / during / throughout <period> | hari / minggu-bulan-rentang / tahun |
+| Data satelit tidak lengkap pada ... | Satellite data incomplete on ... | catatan hari "celah" (mis. lintasan S-NPP hilang) |
+| Luas terbakar / Belum padam (perkiraan satelit) | Burned area / Not extinguished (satellite estimate) | luas dan belum padam adalah hitungan dari deteksi, bukan cek regu darat; "Jumlah luas harian" = Sum of daily burned area (periode > 1 hari, area sama bisa terhitung berulang) |
+| Tanpa deteksi; deteksi satelit yang bertahan | No detections; persisting satellite detections | tiadanya deteksi bukan bukti padam; jangan tulis "tidak ada api" |
+| naik / turun dari hari (periode) sebelumnya | up / down from the previous day (period) | legenda warna oranye / biru seperti slide deck BNPB |
+| Perubahan tidak ditampilkan: data satelit ... tidak lengkap | Change not shown: satellite data ... is incomplete | lencana perubahan disembunyikan bila periode atau pembandingnya memuat hari celah |
+| 1–20 Okt 2026; 1 Jan – 20 Okt 2026 | 1–20 Oct 2026; 1 Jan – 20 Oct 2026 | bulan/tahun yang belum tercakup penuh diberi nama rentang tercakup, bukan "Oktober 2026" / "2026" |

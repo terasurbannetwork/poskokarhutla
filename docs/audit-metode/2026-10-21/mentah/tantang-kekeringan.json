@@ -1,0 +1,248 @@
+{
+ "modul": "Kekeringan (scripts/kekeringan/**, public/kekeringan/**, public/data/kekeringan_*.json, dampak_kekeringan.json, posko_kekeringan.json, public/banjir/data/kering_peluang.json, scripts/og/buat.py:135-145, scripts/umum/kejadian.py:286-298)",
+ "catatan_umum": "Hampir semua angka reviewer pertama cocok dengan berkas. Saya membuka JSON dan kodenya lalu menghitung ulang beberapa angka dengan cuplikan Python baca-saja. Ada enam koreksi yang mengubah kesimpulan.\n\n(1) Data hujan POWER tidak seburuk yang disimpulkan reviewer pertama. Kalimat repo sendiri, \"Hanya 2015 menonjol\", muncul karena salah memilih pembanding. Tahun \"netral\" berpuncak 67,6% pada September ternyata 1994, tahun IOD positif kuat sekaligus tahun kekeringan dan kebakaran besar. Hitungan ulang porsi sel SPI-3 <= -1 pada September (tanpa LOO): 1994 66,1%, 1997 83,5%, 2015 66,7%, 2019 26,2%, sedangkan tahun netral sesungguhnya paling tinggi 24,9% (2006, juga IOD+), lalu 19,0% (1993). Jadi POWER menangkap 1994, 1997, 2015, dan 2019, dan hanya gagal di 2023 (0,7%).\n- Dugaan bahwa Agustus 2026 berasal dari produk hampir-waktu-nyata yang sistemnya berbeda juga lemah. Hujan harian Open-Meteo 20-31 Agustus 2026 (data/raw/kekeringan/harian.json, produk lain) bermedian 0,36 kali normal, dengan 64,5% sel di bawah 50% normal.\n- DIBI Juni-Agustus 2026 mencatat 91 kejadian kering, angka tertinggi dalam catatan repo.\n- Secara fisis ini konsisten dengan ONI 2,16 ditambah IOD+, analog 1997.\n\n(2) Status punya keterampilan tipis di periode uji, bukan nol. Aturan A-1,0 memberi CSI 0,038 vs acak 0,012, selang 95% 0,013-0,053. Namun uji itu diagnosis bulan yang sama (RISET-AMBANG.md:15), sedangkan status yang tayang tanggal 19 Okt memakai SPI Agustus. Keterampilan operasionalnya belum pernah diukur.\n\n(3) HTH harus turun ke tidak_layak. Pada pertengahan Oktober di tahun El Nino ONI 2,16:\n- Bali: HTH maksimum <= 1 hari di semua 9 kabupaten.\n- NTB: median 0,5 hari. NTT: median 2 hari.\n- Sel Kupang: 13 hari >= 1 mm dalam 20 Jul-18 Okt, banyak di antaranya bernilai 1,0-1,8 mm.\nGerimis model mematahkan deret kering di wilayah yang paling penting, sehingga urutan wilayah pun salah, bukan sekadar batas bawah.\n\n(4) Sasaran verifikasinya sendiri tidak cocok dengan konstruk SPI. Kejadian kering di DIBI adalah krisis air bersih musiman yang dilaporkan BPBD:\n- 153 dari 288 kejadian (53%) ada di Jawa. NTT hanya 2, Aceh 2.\n- Kejadian berulang juga di tahun bukan El Nino: Jun-Sep 2024 ada 71 kejadian, Jun-Sep 2026 ada 107.\n- Laporan harian BNPB 19 Okt (data/laporan-bnpb/harian-2026-10-19.json) mencatat kekeringan ±45.852 KK di 8 kabupaten (Jateng dan Sulsel).\n- Platform menulis 246 kabupaten Siaga+ dan 147,9 juta jiwa, dengan Jateng 0 Awas dan Aceh 16 Awas.\n- Kandidat terbaik dalam penyetelan adalah keluarga E (SPI hanya di musim kemarau setempat). Ini petunjuk bahwa kekeringan tingkat dampak ditentukan kekeringan absolut ditambah kerentanan, bukan anomali.\n\n(5) Data resmi pun perlu catatan:\n- IRBI 2025: 26 kabupaten berbagi skor maksimum 26, dan 11 di antaranya di Papua. Daftar NTT yang dikutip reviewer pertama hasil pilih-pilih, dan IRBI tidak bisa dipakai untuk peringkat.\n- Dari 79 SK \"menyebut kekeringan\", 68 adalah SK hidrometeorologi multi-bahaya, dan 49 di antaranya mulai Nov-Des 2025, yaitu musim banjir.\n- Seri DIBI tahunan mencatat 2015 hanya 7 kejadian.\n\n(6) Selisih padi: hanya 1 kabupaten >= +10 poin (Kutai Timur). Ada 90 kabupaten <= -10 dan 401 dari 508 bernilai negatif. Artefak gerimis lebih parah dari yang dilaporkan.\n\nMetode yang lebih efektif dan tepat, urut prioritas:\n(a) Untuk status dan angka resmi di depan Presiden, jangan menghitung sendiri. BNPB bisa meminta data terstruktur Peringatan Dini Kekeringan Meteorologis dan HTH pos BMKG lewat jalur antarlembaga, lalu menampilkannya berlabel BMKG. Kriteria peringatannya diverifikasi ke dokumen BMKG.\n(b) Untuk lapisan bahaya: CHIRPS v2.0 ditambah CHIRPS-prelim, atau grid BMKG.\n- Laporkan Sifat Hujan (% normal; AN/N/BN dengan batas 115/85%), bahasa resmi BMKG.\n- SPI/SPEI hanya di sel yang klimatologinya cukup. Di musim kemarau wilayah semi-arid pakai desil, % normal, atau jumlah bulan < 60 mm, jangan membuang selnya diam-diam.\n(c) Untuk peringatan dini yang dicocokkan ke DIBI: model berbasis dampak. Masukannya kekeringan absolut (HTH dari GSMaP_NRT atau IMERG dengan ambang hari hujan yang dikalibrasi ke frekuensi pos BMKG, atau jumlah bulan kering berturut) dikali kerentanan (Susenas: rumah tangga tanpa air minum layak; cakupan PDAM). Latih pada DIBI 2008-kini dengan jeda 1-2 bulan. Verifikasi di luar sampel (ROC, BSS, CSI dengan selang bootstrap) dan terbitkan hanya bila lolos.\n(d) Untuk prakiraan musiman: anomali multi-sistem C3S yang dikalibrasi terhadap hindcast, atau prakiraan probabilistik BMKG.\n(e) Untuk pertanian: luas terkena dan puso dari Kementan (Ditlin TP) dan BPS KSA, ditambah VHI atau fAPAR di piksel sawah.\n(f) Combined Drought Indicator ala EDO/GDO baru masuk akal setelah kelembapan tanah tersedia penuh di semua sel dengan baseline 30 tahun.\n\nSelama itu belum ada, yang aman di depan Presiden hanya: ENSO/IOD NOAA, IRBI (sebagai kelas), anomali hujan SPI berlabel reanalisis, dan seri DIBI berlabel \"tercatat\". Semuanya dengan catatan, dan metodologi uji balik dipakai sebagai alat kontrol mutu.",
+ "keputusan": [
+  {
+   "nama": "SPI-3 dan SPI-6 (anomali hujan) dari NASA POWER",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka reviewer pertama terverifikasi di data/raw/kekeringan_hujan.json: median rasio hujan/normal Jul 2023 1,22, Sep 2023 0,92, Agu 2026 0,15-0,16, dan 74,4-74,7% sel di bawah 50% normal. kekeringan_ujibalik.json aturan.tahun.2023.bulan.09.sel = [0.7,0,0]. Kesimpulannya terlalu keras karena bersandar pada temuan repo yang cacat pembanding: tahun 'netral' 67,6% (Sep) adalah 1994, tahun IOD+ yang kering. Hitungan ulang porsi sel SPI-3 <= -1 pada September: 1994 66,1%, 1997 83,5%, 2015 66,7%, 2019 26,2%, sedangkan netral sejati paling tinggi 24,9% (2006, juga IOD+) lalu 19,0%. Jadi POWER menangkap empat dari lima tahun kering acuan dan hanya gagal di 2023. Dugaan inhomogenitas Agu 2026 tidak didukung data. Open-Meteo 20-31 Agu 2026 (produk berbeda) bermedian 0,36 kali normal dengan 64,5% sel di bawah 50%. DIBI Jun-Agu 2026 mencatat 91 kejadian, tertinggi dalam rekam repo. Masalah yang tersisa nyata: (a) 2023 terlewat; (b) jeda 7 minggu (SPI Agustus tayang 19 Okt); (c) MIN_RATA 50 mm (spi.py:25,70) membuang sel Timor Barat dan Sumbawa; (d) '% wilayah' adalah porsi 603 sel 0,5 derajat, bukan luas atau penduduk. Layak sebagai lapisan berlabel 'anomali hujan Jun-Agu 2026 menurut reanalisis NASA POWER (bukan BMKG)', disandingkan dengan Analisis Sifat Hujan BMKG, dan tidak pernah sebagai status. Pengganti yang lebih tepat: CHIRPS v2.0 + prelim atau grid BMKG, dilaporkan sebagai Sifat Hujan (% normal) ditambah SPI/SPEI."
+  },
+  {
+   "nama": "Status kekeringan 4 tingkat (Normal/Waspada/Siaga/Awas)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka uji terverifikasi: Waspada+ POD 0,099/0,146/0,38 dan FAR 0,988/0,977/0,953; CSI periode pertama 0,011 vs acak 0,012. Koreksi: di periode uji Jan 2025-Agu 2026 aturan yang dipakai sekarang (A-1,0) mencapai CSI 0,038 vs acak 0,012, selang 0,013-0,053. Keterampilannya tipis tetapi di atas acak, dan tetap jauh dari kriteria (POD >= 0,5, FAR <= 0,8). Ada cacat yang lebih berat dan belum disebut reviewer pertama. (1) Uji itu diagnosis bulan yang sama (RISET-AMBANG.md:15), sedangkan 'Situasi kekeringan hari ini' (sapa.js:28) memakai SPI Agustus. Keterampilan dengan jeda nyata belum pernah diukur. (2) Penguat Awas tidak independen: 79 dari 81 sel Awas lolos lewat SPI-6 <= -1,5 dari seri POWER yang sama (status.py:54). Tanah hanya ada di 12 sel, 11 di NTT dan 1 di Papua Selatan, dan 2 sel Sumba menjadi Awas semata karena pct1 = 0. (3) Geografinya bertentangan dengan laporan BNPB 19 Okt (data/laporan-bnpb/harian-2026-10-19.json: ±45.852 KK di 8 kabupaten Jateng dan Sulsel). Platform memberi Jateng 0 Awas dan Aceh 16 Awas (3,7 juta jiwa) tanpa satu pun laporan BPBD Aceh. Perbaikan: hapus istilah Waspada/Siaga/Awas untuk model. Status resmi diambil dari Peringatan Dini Kekeringan BMKG lewat permintaan data antarlembaga. Model internal diganti dengan model berbasis dampak (kekeringan absolut x kerentanan) yang diuji dengan jeda 1-2 bulan terhadap DIBI 2008-kini."
+  },
+  {
+   "nama": "Paparan penduduk dan agregasi wilayah (aturan 30% penduduk)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "kekeringan_meta.json nasional.jiwa = [223.312.196; 147.857.658; 18.852.218] terverifikasi. Bukti tambahan yang lebih berat: judul bagian di dampak.js:12 berbunyi harfiah 'Penduduk terdampak', jadi bukan hanya 'tinggal di kecamatan berstatus'. Pembanding operasional BNPB pada hari yang sama: ±45.852 KK (sekitar 0,15-0,2 juta jiwa) di 8 kabupaten, selisih lebih dari 700 kali. Ambang 30% tidak disetel, dan seluruh penduduk kecamatan dihitung. Metode yang lebih tepat: penduduk rentan = rumah tangga tanpa akses air minum layak (Susenas) di wilayah dengan peringatan BMKG atau HTH pos >= 60 hari. Untuk angka 'terdampak', hanya pakai laporan BPBD/DIBI."
+  },
+  {
+   "nama": "Persentil kelembapan tanah 7-28 cm (penguat status)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Cakupan 12 dari 611 sel terverifikasi (kekeringan_meta.json tanah.sel 12), dengan 11 sel di NTT dan 1 di Papua Selatan (kekeringan_grid.json). Ada bukti ketidakstabilan baru: dua lapisan saling bertentangan di sel yang sama. Kupang pct0 0 vs pct1 52; Sumba (-9.75,119.75) pct0 63 vs pct1 0. Nilai pct1 = 0 di Sumba itulah yang menaikkan SPI-3 -1,66 (Siaga) menjadi Awas. Baseline 2015-2025 hanya 11 musim, dan HTESSEL adalah model tanah mineral. Kata 'gabungan SPI-3 dan kelembapan tanah' di laporan.py dan buat.py menyesatkan untuk 98% wilayah. Pengganti: anomali kelembapan tanah yang sudah jadi (GDO/JRC SMA, ESA CCI SM, SMAP L4) atau ERA5-Land 1991-2020 untuk semua sel."
+  },
+  {
+   "nama": "Hari Tanpa Hujan (HTH) dan jiwa di HTH >= 31/61 hari",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Konsep dan kelasnya memang baku BMKG, tetapi keluarannya tidak masuk akal di wilayah paling penting. Pada 18 Okt, di tahun ONI 2,16 dan IOD+, kekeringan_hth.json menunjukkan: Bali maksimum <= 1 hari di semua 9 kabupaten; NTB median 0,5 hari (maks 10); NTT median 2 hari (maks 28); sementara Indramayu, Banyuwangi, Bondowoso, Situbondo, dan Sumenep 62 hari. Data mentah (data/raw/kekeringan/harian.json): sel Kupang punya 13 hari >= 1 mm dan 15 hari gerimis 0,1-1 mm antara 20 Jul dan 18 Okt (total 38,6 mm), banyak bernilai 1,0-1,8 mm. Sel Indramayu 0 hari >= 1 mm tetapi 22 hari gerimis di bawah 1 mm. Ambang 1 mm pada hujan model rata-rata areal bekerja berbeda per wilayah. Biasnya tidak seragam, jadi angka ini tidak bisa dibaca sebagai 'batas bawah': urutan wilayah terpanjang ikut salah. Kartu tren menulis 'kelas ekstrem menurut BMKG' (tren.js:47), yang mudah dibaca sebagai penetapan BMKG. Pengganti: HTH pos BMKG lewat permintaan data resmi. Bila model tetap dipakai, gunakan GSMaP_NRT/IMERG dengan ambang hari hujan per wilayah yang dikalibrasi ke frekuensi hari hujan pos, lalu validasi MAE terhadap HTH dasarian BMKG."
+  },
+  {
+   "nama": "Laporan Harian Kekeringan (sorotan, tabel peluang, tabel padi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Isi sorot terverifikasi: '80 kabupaten berstatus Awas', '166 kabupaten berstatus Siaga', 'HTH terpanjang 62 hari di Indramayu'. Koreksi kecil: teksnya sudah memuat 'deteksi Pantau Bencana', tetapi tanpa pil hipotesis, tanpa bulan SPI, dan dengan klaim palsu 'gabungan SPI-3 dan kelembapan tanah'. Ketiga sorotan mewarisi metode yang tidak layak, termasuk HTH yang mengabaikan NTT. tabel_padi (laporan.py) mengurutkan menurut selisih, sehingga kabupaten teratas adalah Kutai Timur, Mimika, Bontang, Deiyai, dan Asmat, yang tidak masuk akal sebagai tabel kekeringan padi. Sorotan sebaiknya hanya memuat data resmi (DIBI/BPBD, SK, BMKG). Model ditaruh di lampiran berlabel, dengan gerbang L.periksa yang menolak kata 'berstatus' bila kejadian.vonis.layak False."
+  },
+  {
+   "nama": "Prakiraan kekeringan 1-3 bulan dari ECMWF SEAS5",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: rasio hujan anggota/klimatologi 0,89/1,11/1,19; nasional pk1 15,83/12,75/6,16%; Kepulauan Riau 85,66%. Bukti tambahan tentang bias lintas-produk ada di kering_peluang.json: median SPI-3 November untuk Aceh +3,57 dan Papua +2,05. Median sebesar itu setara peristiwa basah sekali dalam ribuan tahun, jadi jelas artefak pencampuran Open-Meteo/SEAS5 dengan klimatologi POWER. Di layar yang sama Aceh ditampilkan dengan 16 kabupaten Awas. 'Baseline klimatologi' 15,9/6,7/2,3% adalah konstanta teoretis Phi(-1), sama untuk semua sel, bukan klimatologi empiris model. Label 'belum diuji balik' sudah ada. Pengganti: anomali multi-sistem C3S terhadap hindcast (sudah terkoreksi bias di ruang anomali) atau prakiraan probabilistik BMKG. Skor ROC/BSS hindcast per provinsi wajib dihitung sebelum terbit."
+  },
+  {
+   "nama": "Peluang HTH >= 31 / >= 61 hari dalam 90 hari",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: nasional p31 6,2% dan p61 1,0%. Aceh 0%. Kalimat vonis di kering_peluang.json berbunyi pasti, padahal kode sendiri mengakui gerimis model. Masalahnya sama dengan HTH, hanya lebih buruk karena berasal dari model musiman berskala titik 2 derajat. Hapus, dan ganti dengan peluang hujan dasarian < 20 mm dari prakiraan BMKG."
+  },
+  {
+   "nama": "Prospek cadangan bersyarat fase ENSO",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: BSS -0,019, BSS fase El Nino -0,144, tangkapan 0,5%, alarm palsu 96,6%, dan BSS tahunan positif hanya 12 dari 35 tahun. Saat ini tidak aktif (kekeringan_prakiraan.json cadangan = {}) dan disajikan jujur sebagai tanpa keterampilan. Risiko yang tersisa hanya peralihan otomatis bila SEAS5 gagal. Ganti dengan pesan 'prakiraan tidak tersedia, rujuk BMKG'. Model statistik baru layak dicoba hanya dengan ONI+DMI dan validasi silang, dan diterbitkan bila batas bawah selang BSS > 0."
+  },
+  {
+   "nama": "Uji balik aturan SPI-3 vs tahun kering dikenal",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Rancangan LOO-nya benar (ujibalik.py:51-66). Namun kalimat temuannya ('Hanya 2015 menonjol', kekeringan_ujibalik.json aturan.temuan) salah karena kelompok netral ditentukan dari ONI saja (ujibalik.py:95). Tahun 1994, kering karena IOD+, masuk kelompok netral dengan 67,6% sel Waspada+ pada September. Tanpa 1994, netral tertinggi adalah 24,9% (2006, juga IOD+), sehingga 2019 (27,1%) juga menonjol. Kalimat yang sekarang meremehkan data dan menyesatkan pembaca yang mengutipnya. Perbaikan: kelompokkan pembanding menurut ONI dan DMI, sebut 1994 dan 1997 sebagai tahun uji, dan tambahkan kebenaran lapangan independen (Analisis Sifat Hujan BMKG)."
+  },
+  {
+   "nama": "Uji balik status vs kejadian DIBI dan penyetelan 21 kandidat",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Statistik kontingensi, pembagian latih/uji maju, bootstrap per bulan, dan kriteria yang ditetapkan sebelum angka dilihat memang benar dan jujur. Namun sebagai bukti, uji ini berbatas dan tidak boleh disebut 'tervalidasi'. (1) Diagnosis bulan yang sama, bukan dengan jeda operasional ~7 minggu. (2) DIBI adalah rekam pelaporan yang miring ke Jawa: 153 dari 288 kejadian (53%) di Jawa, NTT 2, Aceh 2. (3) Kejadian DIBI adalah krisis air musiman yang berulang di tahun bukan El Nino (Jun-Sep 2024 ada 71 kejadian), sehingga yang diuji kecocokan anomali dengan kecenderungan melapor. (4) Periode latih hanya 15 bulan (101 kabupaten-bulan berkejadian), dan 21 kandidat tanpa koreksi banyak-uji. Kandidat terpilih E-0,5 mencapai CSI uji 0,059 vs acak 0,011, tetapi batas bawah selangnya 0. (5) Tidak dijalankan sebagai uji CI. Layak sebagai alat kontrol mutu dan sebagai pernyataan 'model belum andal (batas atas)'. Perpanjang ke DIBI 2008-kini dan tambahkan uji dengan jeda 1-2 bulan."
+  },
+  {
+   "nama": "Indeks risiko riwayat kekeringan 0-100",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Hitungan ulang saya terhadap IRBI v25: Spearman -0,178 (n=501). Reviewer pertama mendapat -0,145 (n=494); bedanya dari pencocokan nama, kesimpulannya sama. Karena SPI dibakukan per sel, kekerapan bulan Siaga mendekati konstan menurut definisi, sehingga indeks ini hanya mengukur sisa fit gamma dan tren reanalisis. Koreksi: peringkat teratas sebenarnya seri antara Serdang Bedagai 68, lalu Deli Serdang, Kota Medan, Bima, dan Dompu (65). Klaim 'Medan teratas' hanya separuh benar. Ganti dengan kelas IRBI resmi. Untuk riwayat bahaya, pakai ukuran absolut dari CHIRPS (jumlah bulan < 60 mm, panjang kemarau per ZOM) dengan tren Mann-Kendall/Theil-Sen."
+  },
+  {
+   "nama": "Kalender musim (hujan bulanan, komposit El Nino, bulan kering < 60 mm)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": false,
+   "alasan": "Tidak saya buka sampai baris kode (riwayat.py:47-73). Konsepnya, yaitu Schmidt-Ferguson dan komposit ENSO, lazim. Klimatologi 35 tahun kokoh untuk pola musim, tetapi besaran mm dari MERRA-2 belum dibandingkan dengan Normal BMKG. Rata-rata provinsi juga menutupi beda antar-ZOM. Pakai Normal BMKG 1991-2020 per ZOM atau CHIRPS."
+  },
+  {
+   "nama": "Kabupaten 'sering kering' (uji binomial)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: n_kab 71, n_berulang 0, n_cek_lapangan 68. Hasil nol itu ditampilkan jujur, jadi risikonya lebih kecil dari gambaran reviewer pertama. Masalahnya, uji ini melingkar menurut rancangan: SPI dibakukan per sel terhadap 1991-2020, sehingga laju 6,7% berlaku di mana-mana, dan yang bisa terdeteksi hanya galat fit. Daftar 'kandidat' tetap tampil dan mudah dibaca sebagai prioritas. Hapus, dan ganti dengan frekuensi DIBI 2008-kini plus indikator kekeringan absolut."
+  },
+  {
+   "nama": "Tampungan air OSM per 100.000 jiwa",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: ambang 5 per 100 ribu dipilih sendiri, dan 68 dari 71 kandidat jatuh ke 'cek lapangan'. Catatan di JSON sendiri mengakui peta OSM tidak lengkap. Jumlah objek tanpa kapasitas dan tanpa kelengkapan bukan ukuran ketersediaan air. Pakai data bendungan dan embung Kementerian PU (BBWS/SIH3) dan Kementan, dengan kapasitas dan status isi."
+  },
+  {
+   "nama": "Kompleks konsesi gambut di sel Siaga/Awas",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 160 dari 450, dengan 99 di Papua Selatan (kode 93). Di Papua Selatan hanya ada satu sel tanah, jadi indikatornya praktis SPI saja di resolusi 55 km, dan tanpa TMAT (catatan JSON: SiPALAGA tak bisa diakses). Kartu exGambut tidak dibungkus pil hipotesis (insight.js:188 hanya membungkus kabupaten, jiwa, dan tabel). Pisahkan dari status meteorologis, dan pakai TMAT BRGM/KLHK atau DC dengan kelas FDRS Indonesia."
+  },
+  {
+   "nama": "Drought Code (DC) sebagai lapisan dan tren",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: DC tidak masuk status (status.py:14), dan tren median 230-240 dengan P90 757-804 pada 8-15 Okt (kekeringan_tren.json). Indeksnya baku, tetapi kelas yang dipakai adalah kelas Kanada, bukan kalibrasi FDRS Indonesia, dan DC adalah indikator kelembapan bahan bakar, bukan kekeringan sosial-ekonomi. Untuk Presiden, kutip kelas FDRS BMKG."
+  },
+  {
+   "nama": "Cekaman air padi tadah hujan (FAO-56 + FAO-33 per anggota SEAS5)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Median 1% vs Normal 6% terverifikasi (508 kabupaten). Artefaknya lebih parah dari laporan reviewer pertama. Hanya 1 kabupaten yang selisihnya >= +10 poin (Kutai Timur), 90 kabupaten <= -10, dan 401 dari 508 bernilai negatif. Lima selisih tertinggi adalah Kutai Timur, Mimika, Bontang, Deiyai, dan Asmat, wilayah hutan hujan dengan sawah tadah hujan yang sangat kecil. Penyebabnya perbandingan dua generator hujan berbeda (gerimis SEAS5 vs Markov 15 mm) tanpa data sawah. Pengganti: luas terkena dan puso dari Kementan, BPS KSA, dan VHI/fAPAR di piksel sawah."
+  },
+  {
+   "nama": "Simulasi neraca air FAO-56 180 hari",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: NINO = (1997, 2015, 2023) di neraca.py:50, dan rasio ET0 PM POWER/Open-Meteo 0,86. Persamaan baknya benar, tetapi tanah dan Kc diseragamkan untuk semua sel (termasuk kota) dan intensitas hujan 15 mm diasumsikan. Komposit El Nino memuat 2023, yang di POWER tidak kering. Metrik '% luas' dan 'jiwa di sel stres' bukan ukuran dampak. Cukup sebagai alat latih internal. Untuk pimpinan, pakai anomali kelembapan tanah GDO/ERA5-Land."
+  },
+  {
+   "nama": "Dampak simulasi: padi hilang/puso, jiwa tanpa air bersih, kebutuhan air",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di tutupan.py:25: luas sawah nasional 7,4 juta ha 'Dicatat dari ingatan penulis, BELUM dicek', lalu disebar merata. Definisi 'jiwa tanpa air bersih' = penduduk sel dengan stres akar padi (simulasi.js:396) keliru secara konsep, karena air minum bergantung pada sumur, PDAM, dan mata air. Hapus metrik itu. Gunakan Lahan Baku Sawah ATR/BPN, data puso Kementan, dan Susenas air minum layak."
+  },
+  {
+   "nama": "Peringkat perlakuan dan biaya (truk, sumur bor, pompa, tanam awal, hujan buatan)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di simulasi.js:392 dan 399. Efek hujan buatan 0-20% diakui tanpa rujukan WMO atau BRIN, dan semua harga kecuali OMC disebut 'asumsi perencanaan'. Peringkat biaya-manfaat di atas model dampak yang tidak tervalidasi tidak boleh sampai ke pimpinan. Bila dibutuhkan, susun dari e-katalog/DIPA dan evaluasi intervensi BNPB/BRIN, lengkap dengan rentang ketidakpastian."
+  },
+  {
+   "nama": "Posko air bersih dan kebutuhan truk tangki",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di posko_kekeringan.json: 1.410 posko, 148.368.658 jiwa, 2.225.529.870 L/hari, 445.244 rit. Kode mengakuinya sebagai 'BATAS ATAS' (posko.py:9). Pembanding nyata dari laporan BNPB 19 Okt: 8 kabupaten, ±45.852 KK, dengan distribusi air tercatat sekitar 428.200 L. Selisihnya tiga sampai empat orde besaran. Hitung dari KK yang dilaporkan BPBD kekurangan air atau dari rumah tangga tanpa air minum layak di wilayah berperingatan BMKG, dengan armada nyata BPBD."
+  },
+  {
+   "nama": "Sekolah, siswa, puskesmas, dan RS di kabupaten Siaga/Awas",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 14.753 sekolah dan 2.065.070 siswa di 33 dari 246 kabupaten. Pil hipotesis ada (dampak.js:71, beriAmbang). Daftar asetnya resmi, tetapi wilayahnya ditentukan status yang tidak terbukti, cakupannya 13%, dan data faskes dari OSM. Mesinnya bisa dipertahankan dengan penentu wilayah dari peringatan BMKG atau SK BNPB berlaku, dan data faskes dari Kemenkes."
+  },
+  {
+   "nama": "Kejadian D (gugus kabupaten Siaga/Awas sebagai 'kejadian kekeringan')",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di scripts/umum/kejadian.py: adaptor_kekeringan menjadikan gugus kabupaten lv >= 2 sebagai entitas 'Kekeringan Siaga/Awas, sekitar X', lengkap dengan jumlah jiwa. Di halaman multi-bencana, entitas itu sejajar dengan kejadian nyata BPBD, padahal kejadian kering sungguhan dari DIBI/laporan BNPB hari ini hanya 8 kabupaten. Matikan adaptor ini. Kejadian kekeringan cukup diambil dari DIBI dan laporan BPBD."
+  },
+  {
+   "nama": "Prakiraan hujan 7 hari ke depan (laporan harian)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di laporan.py (prakiraan_hujan, catatan 'Open-Meteo, belum diuji balik'). Total 7 hari skala provinsi jauh kurang peka terhadap gerimis dibanding HTH, jadi informasinya masih wajar sebagai pelengkap. Provinsi yang dipilih (lima teratas menurut jiwa HTH >= 31) mewarisi bias HTH yang mengabaikan NTT, NTB, dan Bali. Untuk Presiden, kutip prakiraan BMKG."
+  },
+  {
+   "nama": "SK status keadaan darurat BNPB (riwayat)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Data resmi, tetapi penyajiannya punya dua cacat. (1) Hitung lebih: dari 79 'SK menyebut kekeringan', 68 bertipe 'multi', yaitu SK hidrometeorologi umum (resmi.py:70), dan 49 di antaranya mulai Nov-Des 2025, musim banjir Sumatra. SK khusus kekeringan hanya 11 (Jun-Agu 2025). Kalimat dampak.js:67 ('79 SK ... menyebut kekeringan') dan hitungan per provinsi di pop-up menyesatkan. (2) Pil merah peta.js:284 'Tidak ada SK berlaku sekarang' adalah klaim pasti yang bersandar pada dataset yang hanya berisi 2025. Tampilkan 11 SK khusus dan 68 SK multi secara terpisah, tulis 'data SK sampai 2025', dan ambil SK 2026 dari Pusdatinkom/BPBD."
+  },
+  {
+   "nama": "Seri tahunan kejadian/terdampak dan sawah rusak akibat kekeringan (BNPB DIBI)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka resmi dan terverifikasi (2018 terdampak 7.798.763; 2023: 174 kejadian, 4.394.370 terdampak). Seri ini rekam pelaporan yang tidak konsisten: 2015 (El Nino kuat) hanya 7 kejadian; 2016 nol; 2011 ada 219 kejadian dengan 0 terdampak; 2022 hanya 4; sawah rusak 2015 hanya 434 ha. Judul kartu di dampak.js menghitung perubahan persen tahun-ke-tahun ('naik/turun X% dari ...') yang mengundang pembacaan tren. Aman disajikan sebagai 'tercatat di DIBI', tanpa persen perubahan dan tanpa klaim 'tertinggi'. Sandingkan dengan data puso Kementan."
+  },
+  {
+   "nama": "Indeks Risiko Bencana Indonesia (IRBI) kekeringan, InaRISK",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Ini indeks resmi BNPB dan sah dikutip. Koreksi atas reviewer pertama: skor tertinggi v25 (26) dibagi 26 kabupaten, 6 di NTT, 11 di Papua dan Papua Barat (antara lain Jayapura, Biak Numfor, Keerom, Teluk Bintuni, Yahukimo, Yalimo), ditambah Merangin, Kubu Raya, dan Konawe. Daftar enam kabupaten NTT dan kesan 'NTT/NTB teratas' hasil pilih-pilih. Banyak nilai seri dan metode 2025 berbeda skala (kekeringan_bnpb.json irbi_catatan), sehingga peringkat tidak bermakna. Sajikan sebagai kelas risiko resmi BNPB (rendah, sedang, tinggi), sebutkan perubahan metode 2025, dan jangan disusun sebagai urutan."
+  },
+  {
+   "nama": "Status ENSO/IOD (ONI, RONI, DMI, peluang CPC)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: ONI 2,16 (JAS 2026), RONI 1,69, DMI 0,48, peluang 83% sampai Jan-Mar 2027 (diambil dengan regex yang diuji di status.py:80-92 dan :244-245). Sumbernya baku dan otoritatif. Satu catatan: kata sifat 'sangat kuat' (insight.js:66, ONI >= 2,0) adalah konvensi tidak resmi. Dengan RONI 1,69, yang juga disimpan repo, klasnya 'kuat'. Selaraskan kata sifat dengan pernyataan BMKG, dan perbarui iklim.json (data 13 Okt)."
+  },
+  {
+   "nama": "Pemantauan berita kekeringan",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": false,
+   "alasan": "Tidak saya verifikasi sampai kode. Sentimen yang tidak teruji sudah dibuang menurut reviewer pertama. Volume berita bukan ukuran kekeringan. Layak sebagai 'sorotan media' setelah presisi relevansi diukur pada sampel berlabel."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Aturan pengecualian SPI (MIN_RATA 50 mm) yang membuat titik buta di wilayah semi-arid",
+   "vonis": "tidak_layak",
+   "alasan": "SPI dibuang bila rata-rata hujan jendela 3 bulan di bawah 50 mm. Ini sesuai pedoman WMO, tetapi akibatnya wilayah yang paling rawan kekeringan di musim kemarau tidak mendapat status anomali sama sekali. Sel Kupang malah ber-status 0 ('Normal') lewat persentil tanah pct1 52, di tahun El Nino kuat. Porsi '% wilayah kering' dan jumlah jiwa nasional diam-diam mengecualikan wilayah ini. Seharusnya ditampilkan 'tidak dapat dihitung', disertai indikator absolut (HTH pos, jumlah bulan < 60 mm, % normal atau desil Gibbs-Maher) untuk sel tersebut.",
+   "bukti": "spi.py:25 (MIN_RATA = 50.0) dan :70; kekeringan_grid.json: 8 sel spi3 None semuanya di Timor Barat (-10.25,123.75; -9.75,123.75; -9.75,124.25; -9.75,124.75; -9.25,124.75) dan Sumbawa (-8.75,117.25; -8.75,117.75; -8.75,118.25); sel Kupang mm3 = 14 mm, lv 0"
+  },
+  {
+   "nama": "Penguat Awas (SPI-6 atau tanah) sebagai 'konfirmasi independen'",
+   "vonis": "tidak_layak",
+   "alasan": "Awas mensyaratkan penguat, tetapi 79 dari 81 sel Awas lolos lewat SPI-6 <= -1,5 dari seri POWER yang sama. Jendela Jun-Agu termuat di dalam Mar-Agu, jadi korelasinya tinggi menurut konstruksi. 2 sel sisanya (Sumba) lolos lewat persentil tanah 0 yang bertentangan dengan lapisan tanah lain. Penguat yang sungguh independen harus datang dari besaran lain: anomali kelembapan tanah dengan cakupan penuh, anomali vegetasi (VHI/fAPAR), atau HTH pos.",
+   "bukti": "status.py:47-56 (gabung); kekeringan_grid.json: 157 sel SPI-3 <= -2, 81 sel Awas, 79 di antaranya SPI-6 <= -1,5; sel -9.75,119.75 dan -9.75,120.25: SPI-3 -1,66, pct1 0, lv 3"
+  },
+  {
+   "nama": "Kartu pratinjau tautan (OG) kekeringan",
+   "vonis": "tidak_layak",
+   "alasan": "Pratinjau tautan di WhatsApp dan media sosial adalah permukaan yang paling luas tersebar ke pejabat, tetapi kartu ini tidak memuat label hipotesis maupun bulan data SPI. Judulnya '80 kabupaten/kota berstatus awas kekeringan, 18,9 juta jiwa di kecamatan awas'. Deskripsinya mengklaim sumber 'hujan (SPI), tanah, dan indeks kekeringan', padahal DC tidak ikut menentukan tingkat (status.py:14) dan tanah hanya ada di 12 sel. Ganti dengan angka resmi (laporan BPBD, peringatan BMKG), atau minimal tulis 'anomali hujan Jun-Agu (model, hipotesis)'.",
+   "bukti": "scripts/og/buat.py:135-145 (eyebrow 'Status kekeringan', judul '... berstatus awas kekeringan', deskripsi 'Sumber: Deteksi Pantau Bencana dari hujan (SPI), tanah, dan indeks kekeringan'); status.py:14"
+  },
+  {
+   "nama": "Klasifikasi SK 'menyebut kekeringan' (tipe khusus vs multi)",
+   "vonis": "tidak_layak",
+   "alasan": "Aturan teks 'kering' di jenis_bencana menghitung SK hidrometeorologi multi-bahaya sebagai SK kekeringan. Hasilnya 68 dari 79 SK berasal dari tipe multi, 49 di antaranya mulai Nov-Des 2025 (musim banjir), dan SK khusus kekeringan hanya 11. Angka '79 SK' dan hitungan SK per provinsi di pop-up wilayah membesar-besarkan riwayat status darurat kekeringan, terutama di Sumatra. Laporkan SK khusus dan SK multi secara terpisah.",
+   "bukti": "resmi.py:52-73 (tipe 'khusus' bila 'kering' di judul SK, selain itu 'multi'); kekeringan_resmi.json: multi 68, khusus 11; multi 2025-12 = 29, 2025-11 = 20; dampak.js:67; peta.js:287"
+  },
+  {
+   "nama": "Pelabelan waktu: SPI Agustus disajikan sebagai 'hari ini' dan sebagai riwayat dasarian",
+   "vonis": "tidak_layak",
+   "alasan": "Pop-up berjudul 'Situasi kekeringan hari ini', dan riwayat tren menambah satu titik per dasarian, padahal tingkatnya hanya berubah bulanan dan berjeda sekitar 7 minggu (bulan SPI Agustus dipakai 19 Okt). Serinya akan berbentuk tangga dan bisa dibaca sebagai perubahan situasi per dasarian. Di pop-up yang sama, HTH (data Oktober) menunjukkan 558 dari 611 sel ber-HTH <= 5 hari, sehingga pembaca mendapat dua gambaran waktu yang bertentangan tanpa penjelasan. Sebut periode data di judul ('anomali hujan Jun-Agu 2026'), dan catat riwayat hanya saat bulan SPI berganti.",
+   "bukti": "sapa.js:28 (eyebrow 'Situasi kekeringan hari ini'); kekeringan_meta.json hari_ini 2026-10-19, spi.bulan 2026-08; status.py:171-174 (riwayat dasarian); tren.js kDasarian; kekeringan_hth.json kelas sel {0:558,...}"
+  }
+ ]
+}

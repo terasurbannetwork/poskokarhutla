@@ -31,6 +31,8 @@ const Sim = (() => {
   const mT = m => "M " + Number(m).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1});
   const des = (v, n = 1) => Number(v).toLocaleString("id-ID", {maximumFractionDigits: n});
   const jiwa = v => rb(v).replace(" rb", " ribu").replace(" jt", " juta");
+  /* tanpa presisi palsu: dua angka bermakna */
+  const r2 = v => { if (!(v >= 10)) return Math.round(v); const q = 10 ** (Math.floor(Math.log10(v)) - 1); return Math.round(v / q) * q; };
   const pilMmi = v => `<span class="sm-mmi" style="--w:${MMI_W[Math.round(v)] || MMI_W[1]};color:${v < 3.5 ? "#3b3320" : "#fff"}">${rom(v)}</span>`;
   /* waktu tiba tampil "sekitar N menit" (kelipatan 5), bukan menit pasti */
   const sekitar = m => m < 1 ? "langsung" : m < 5 ? "kurang dari 5 menit" : `sekitar ${fmt(Math.round(m / 5) * 5)} menit`;
@@ -53,7 +55,23 @@ const Sim = (() => {
     return best; };
   const lingkaran = (lat, lon, km) => { const c = []; for (let a = 0; a <= 360; a += 4) { const p = geser(lat, lon, a, km); c.push([p[1], p[0]]); } return c; };
 
-  const S = {dom: false, peta: null, D: null, sk: null, hasil: null, t: 0, putar: false, laju: "sedang", basi: false, raf: 0, miring: false, gem: [], pilih: "lembang"};
+  const S = {nyata: [], dom: false, peta: null, D: null, sk: null, hasil: null, t: 0, putar: false, laju: "sedang", basi: false, raf: 0, miring: false, gem: [], pilih: "lembang"};
+
+  /* ---------- gempa nyata: bawaan simulasi = gempa M 5+ terkuat 7 hari terakhir (BMKG/USGS lewat /api/gempa/terbaru), bukan skenario tetap ---------- */
+  const namaNyata = g => `${mT(g.m)} ${typeof wilayahPendek === "function" ? wilayahPendek(g.wilayah) : g.wilayah || ""}`.trim();
+  async function muatNyata() {
+    const ambil = jam => fetch("/api/gempa/terbaru?jam=" + jam, {signal: AbortSignal.timeout?.(8000)}).then(r => r.ok ? r.json() : null).catch(() => null);
+    const d = await ambil(168); let l = (d?.gempa || []).filter(g => g.m >= 5 && Number.isFinite(g.lat) && Number.isFinite(g.lon));
+    /* terkuat dulu; sama kuat, yang dirasakan dan yang terbaru lebih dulu */
+    l.sort((a, b) => b.m - a.m || !!(b.dirasakan || b.mmi_maks) - !!(a.dirasakan || a.mmi_maks) || Date.parse(b.waktu) - Date.parse(a.waktu));
+    return l.slice(0, 6);
+  }
+  /* pasang gempa nyata sebagai skenario: titik tetap di pusatnya, jenis sumber ditebak dari kedalaman dan palung */
+  function pakaiNyata(g) {
+    const base = DIKENAL[0], dalam = Number.isFinite(g.dalam) ? Math.min(150, Math.max(5, Math.round(g.dalam))) : 10;
+    pasangSkenario(bentuk(base, Math.min(9.2, Math.max(5, Math.round(g.m * 10) / 10)), dalam)); S.sk.nyata = true;
+    pindah(g.lat, g.lon, true, true); S.sk.nyata = true; S.sk.n = "Gempa " + (typeof wilayahPendek === "function" ? wilayahPendek(g.wilayah) : g.wilayah || "terbaru"); S.pilih = "nyata:" + g.id; S.sk.nyataGempa = g; panel();
+  }
 
   /* ---------- data ---------- */
   let janji = null;
@@ -62,12 +80,17 @@ const Sim = (() => {
     const [model, sesar, pusat, pend, fas, grid] = await Promise.all([muatJSON("data/model_guncangan.json"), muatJSON("data/sesar.geojson"),
       muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json"), muatJSON("../data/fasilitas.json"), Tsunami.muat("data/")]);
     const M = GempaGuncangan.pasang(model), cari = Tsunami.pencariKec(pusat, 60);
+    /* Vs30 per sel (proksi kemiringan DEM, vs30.py); gagal dimuat = jatuh ke 400 m/s seragam dan panel mengatakannya */
+    try { GempaKerusakan.atur(await muatJSON("data/kalibrasi_kerusakan.json")); } catch (e) { console.warn("kalibrasi kerusakan tidak termuat", e); }
+    let vs30 = null;
+    try { const meta = await muatJSON("data/vs30.json"), r = await fetch(new URL("data/vs30.bin", document.baseURI)); if (!r.ok) throw new Error("vs30.bin " + r.status);
+      vs30 = GempaGuncangan.vs30Grid(meta, new Uint8Array(await r.arrayBuffer()), model.vs30_baku); } catch (e) { console.warn("Vs30 tidak tersedia, dipakai 400 m/s seragam", e); }
     /* nama sesar GEM kosong: "<jenis> <panjang> km dekat <kabupaten>" dari pusat kecamatan terdekat titik tengahnya */
     S.gem = sesar.features.map((f, i) => { const g = f.geometry.coordinates, c = diGaris(g, .5), k = cari(c.lat, c.lon), L = panjang(g);
       return {id: "gem" + i, i, jenis: f.properties.jenis, garis: g, L, n: `Sesar ${f.properties.jenis} ${fmt(Math.round(L))} km${k ? " dekat " + k.split("|")[1] : ""}`}; })
       .filter(s => s.jenis !== "pemekaran").sort((a, b) => a.n.localeCompare(b.n, "id"));
     /* fasilitas.json & sekolah.json baru mencakup provinsi karhutla: kartu fasilitas hanya untuk provinsi yang tercakup */
-    return {model, M, sesar, pusat, pend: pend.kec || {}, rs: fas.filter(f => f.t === "rs"), provFas: new Set(fas.map(f => f.prov)), grid, cari, sekolah: null}; })().catch(e => { janji = null; throw e; });
+    return {model, M, vs30, vs30Ada: !!vs30, sesar, pusat, pend: pend.kec || {}, rs: fas.filter(f => f.t === "rs"), provFas: new Set(fas.map(f => f.prov)), grid, cari, sekolah: null}; })().catch(e => { janji = null; throw e; });
   /* ---------- pekerja latar (Web Worker): waktu tiba tsunami (~100-500 ms) dan sekolah.json (7 MB) tidak menahan klik.
      Gagal membuat Worker (CSP, peramban lama) = jatuh ke utas utama lewat nanti(). */
   const KODE_PEKERJA = `let G = null, P = null;
@@ -103,7 +126,7 @@ self.onmessage = async e => { const d = e.data;
 
   /* ---------- skenario ---------- */
   const sumber = id => DIKENAL.find(s => s.id === id) || S.gem.find(s => s.id === id);
-  const jenisG = sk => sk.jenis === "subduksi" ? (sk.dalam >= 50 ? "intraslab" : "antarmuka") : "kerak";
+  const jenisG = sk => sk.nyata && sk.jenis !== "subduksi" ? S.D.M.tebakJenis(sk.dalam, sk.m, sk.lat, sk.lon) : sk.jenis === "subduksi" ? (sk.dalam >= 50 ? "intraslab" : "antarmuka") : "kerak";
   /* M bawaan sesar GEM dari panjangnya (Wells & Coppersmith 1994, semua jenis), 6,0-8,0; subduksi 8,5 */
   const mBawaan = s => s.m || (s.jenis === "subduksi" ? 8.5 : Math.round(Math.min(8, Math.max(6, (Math.log10(s.L) + 2.44) / .59)) * 10) / 10);
   /* titik pusat & arah. Subduksi: titik di parit, bidang patahan digeser ke arah darat setengah lebarnya (sisi yang lebih tinggi di grid) */
@@ -127,7 +150,9 @@ self.onmessage = async e => { const d = e.data;
   function hitung(sk) {
     const D = S.D, M = D.M, w = D.model.param.wells_coppersmith94, lw4 = Math.pow(10, w.a + w.b * sk.m) / 4, jg = jenisG(sk), r = sk.r;
     /* guncangan.js memakai Rjb = jarak - L/4 dari pusat; di sini jarak diganti jarak ke bidang patahan, jadi L/4 dikembalikan dulu */
-    const mmiDi = (la, lo) => M.mmi(sk.m, Tsunami.jarakRupture(r, la, lo) + lw4, sk.dalam, jg);
+    const vs = D.vs30 || (() => 400), KZ = GempaKerusakan, g0 = sk.nyataGempa, jam = g0 ? KZ.jamLokal(g0.waktu, sk.lon) : null;
+    const pgaDi = (la, lo) => M.pga(sk.m, Tsunami.jarakRupture(r, la, lo) + lw4, sk.dalam, jg, vs(la, lo));
+    const mmiDi = (la, lo) => M.pgaKeMmi(pgaDi(la, lo));
     const tDi = (la, lo, v) => Math.hypot(km2(sk.lat, sk.lon, la, lo), sk.dalam) / v;
     const win = M.jendelaKm(sk.m, sk.dalam, jg) + Math.max(r.L, r.Wh) / 2;
     /* raster MMI <= 210 x 210 sel */
@@ -138,16 +163,19 @@ self.onmessage = async e => { const d = e.data;
       mmi[k] = z == null || z < 0 ? 0 : mmiDi(la, lo); tS[k] = tDi(la, lo, VS); } /* laut tidak diwarnai: guncangan yang dirasakan orang di darat */
     const ras = {nx, ny, lat0, lon0, d, mmi, tS, kotak: [lon0, lat0, lon0 + nx * d, lat0 + ny * d]};
     /* kecamatan: MMI, waktu P/S, penduduk WorldPop */
-    const kec = [], perKelas = new Array(13).fill(0);
-    for (const [k, [la, lo]] of Object.entries(D.pusat)) { if (km2(sk.lat, sk.lon, la, lo) > win) continue;
-      const v = mmiDi(la, lo), p = D.pend[k] || 0, [prov, kab, nm] = k.split("|"), nama = nm && nm !== "None" ? nm : kab; if (v < 2) continue;
-      kec.push({k, prov, kab, nama, lat: la, lon: lo, mmi: v, tP: tDi(la, lo, VP), tS: tDi(la, lo, VS), p}); perKelas[Math.round(v)] += p; }
+    const kec = [], perKelas = new Array(13).fill(0), perLo = new Array(13).fill(0), perHi = new Array(13).fill(0);
+    /* PGA per kecamatan lewat KZ.sebaran: jalur yang sama dengan kalibrasi ke kejadian nyata (scripts/gempa/kalibrasi_kerusakan.mjs) */
+    const sebar = KZ.sebaran({M, Tsunami, model: D.model, vs30: D.vs30, pusat: D.pusat, pend: D.pend}, sk, r, jg, win);
+    for (const c of sebar) { const [prov, kab, nm] = c.k.split("|"), nama = nm && nm !== "None" ? nm : kab, pita = KZ.pita(c.pg, jg, sk.m);
+      kec.push({k: c.k, prov, kab, nama, lat: c.lat, lon: c.lon, mmi: c.v, pga: pita, vs30: c.vs30, tP: tDi(c.lat, c.lon, VP), tS: tDi(c.lat, c.lon, VS), p: c.p}); perKelas[Math.round(c.v)] += c.p;
+      perLo[Math.round(M.pgaKeMmi(pita[0]))] += c.p; perHi[Math.round(M.pgaKeMmi(pita[2]))] += c.p; }
     kec.sort((a, b) => b.mmi - a.mmi);
     /* kota untuk ilustrasi peringatan dini: kecamatan berpenduduk terbanyak per kabupaten/kota */
     const kota = {}; kec.forEach(c => { const a = kota[c.prov + "|" + c.kab]; if (!a || c.p > a.p) kota[c.prov + "|" + c.kab] = c; });
     const provKuat = new Set(kec.filter(c => c.mmi >= 6.5).map(c => c.prov)), provAda = [...provKuat].filter(p => D.provFas.has(p));
     const rs = D.rs.filter(f => provAda.includes(f.prov) && Math.abs(f.lat - sk.lat) < degLa && Math.abs(f.lon - sk.lon) < degLo).map(f => ({...f, mmi: mmiDi(f.lat, f.lon)})).filter(f => f.mmi >= 6.5);
-    const H = {ras, kec, perKelas, provKuat, provAda, kota: Object.values(kota).filter(c => c.mmi >= 4).sort((a, b) => a.tS - b.tS), rs, sekolah: null, win, mmiDi,
+    const kerusakan = KZ.taksir(sebar, jg, sk.m, jam), t7 = a => a.slice(7).reduce((x, y) => x + y, 0);
+    const H = {ras, kec, perKelas, tujuhPita: [t7(perLo), t7(perKelas), t7(perHi)], mmiPita: kec.length ? kec[0].pga.map(M.pgaKeMmi) : null, kerusakan, vs30Ada: D.vs30Ada, pgaDi, provKuat, provAda, kota: Object.values(kota).filter(c => c.mmi >= 4).sort((a, b) => a.tS - b.tS), rs, sekolah: null, win, mmiDi,
       tSelesai: Math.hypot(win, sk.dalam) / VS + 4, ts: null, evak: []};
     H.kotakSekolah = [sk.lat - degLa, sk.lat + degLa, sk.lon - degLo, sk.lon + degLo];
     return H;
@@ -185,7 +213,8 @@ self.onmessage = async e => { const d = e.data;
   /* ---------- panel ---------- */
   function opsiSumber() {
     const o = (s, grup) => `<option value="${s.id}" ${s.id === S.pilih ? "selected" : ""}>${esc(s.n)}</option>`;
-    return `<optgroup label="Skenario dikenal">${DIKENAL.map(o).join("")}</optgroup><optgroup label="Sesar aktif (GEM)">${S.gem.map(o).join("")}</optgroup>`;
+    const ny = S.nyata.length ? `<optgroup label="Gempa nyata terbaru (7 hari)">${S.nyata.map(g => `<option value="nyata:${esc(g.id)}" ${("nyata:" + g.id) === S.pilih ? "selected" : ""}>${esc(namaNyata(g))}</option>`).join("")}</optgroup>` : "";
+    return ny + `<optgroup label="Skenario dikenal">${DIKENAL.map(o).join("")}</optgroup><optgroup label="Sesar aktif (GEM)">${S.gem.map(o).join("")}</optgroup>`;
   }
   /* kontrol dibangun sekali; sesudahnya panel() hanya memperbarui nilai dan #smHasil (fokus & menu pilih tidak hilang) */
   function panel() {
@@ -203,13 +232,15 @@ self.onmessage = async e => { const d = e.data;
     el.innerHTML = `<button class="sm-gagang" id="smGagang" aria-label="Perbesar atau perkecil panel"></button><div class="sm-pita"><span class="pill sm-bukan">Simulasi, bukan prakiraan</span></div>
       <h2 id="smJudul"></h2>
       <label class="fld"><span class="lbl">Sumber gempa</span><select id="smSumber" aria-label="Sumber gempa">${opsiSumber()}</select></label>
-      <label class="simgeser"><span>Kekuatan</span><input type="range" id="smM" min="5.5" max="9.2" step="0.1" value="${sk.m}" aria-label="Kekuatan"><b class="num" id="smMV">${mT(sk.m)}</b></label>
+      <label class="simgeser"><span>Kekuatan</span><input type="range" id="smM" min="5" max="9.2" step="0.1" value="${sk.m}" aria-label="Kekuatan"><b class="num" id="smMV">${mT(sk.m)}</b></label>
       <label class="simgeser"><span>Kedalaman</span><input type="range" id="smH" min="5" max="150" step="5" value="${sk.dalam}" aria-label="Kedalaman"><b class="num" id="smHV">${fmt(sk.dalam)} km</b></label>
       <p class="fnd">Klik peta untuk memindah pusat gempa; titik dekat sesar ikut arah dan jenis sesarnya.</p>
       <button class="btn pri" id="smJalan" style="width:100%;margin-top:10px"></button>
       <p class="fnd" id="smStatus" aria-live="polite" style="margin-top:6px"></p>
       <div id="smHasil"></div>`;
-    $("#smSumber").onchange = e => { S.pilih = e.target.value; const s = sumber(S.pilih); $("#smStatus").textContent = "Menyiapkan…"; nanti(() => { pasangSkenario(bentuk(s, mBawaan(s), s.dalam || (s.jenis === "subduksi" ? 25 : 10))); jalankan(); }); };
+    $("#smSumber").onchange = e => { S.pilih = e.target.value;
+      if (S.pilih.startsWith("nyata:")) { const g = S.nyata.find(x => "nyata:" + x.id === S.pilih); $("#smStatus").textContent = "Menyiapkan…"; return nanti(() => { pakaiNyata(g); jalankan(); }); }
+      const s = sumber(S.pilih); $("#smStatus").textContent = "Menyiapkan…"; nanti(() => { pasangSkenario(bentuk(s, mBawaan(s), s.dalam || (s.jenis === "subduksi" ? 25 : 10))); jalankan(); }); };
     const ikat = (id, set, t) => { const i = $("#" + id); i.oninput = () => { $("#" + id + "V").textContent = t(+i.value); };
       i.onchange = () => { set(+i.value); nanti(() => S.sk.klik ? pindah(S.sk.klik.lat, S.sk.klik.lon, true, S.sk.tetap) : pasangSkenario(bentuk(sumber(S.sk.src), S.sk.m, S.sk.dalam))); }; };
     ikat("smM", v => S.sk.m = v, mT); ikat("smH", v => S.sk.dalam = v, v => fmt(v) + " km");
@@ -226,7 +257,12 @@ self.onmessage = async e => { const d = e.data;
     const tujuh = H.perKelas.slice(7).reduce((a, b) => a + b, 0), maks = Math.max(1, ...kelas.map(v => H.perKelas[v]));
     out.push(kartu(pil("Guncangan", "#c9503a"), tujuh ? `${hl(jiwa(tujuh) + " orang")} merasakan guncangan VII atau lebih` : kelas.length ? `Guncangan terkuat di permukiman ${hl("MMI " + rom(kelas[0]))}` : "Tidak ada permukiman yang merasakan guncangan IV atau lebih",
       kelas.length ? `<div class="sm-batang">${kelas.map(v => `<div>${pilMmi(v)}<i><b style="width:${Math.max(1, H.perKelas[v] / maks * 100)}%;background:${MMI_W[v]}"></b></i><span class="num">${rb(H.perKelas[v])}</span></div>`).join("")}</div>` : "",
-      "Sumber: WorldPop 2026 per kecamatan; MMI dari model GMPE."));
+      `Sumber: WorldPop 2026 per kecamatan; MMI dari model GMPE.${tujuh ? ` Rentang ${jiwa(H.tujuhPita[0])} sampai ${jiwa(H.tujuhPita[2])} orang bila guncangan satu sigma lebih lemah atau lebih kuat.` : ""}`));
+    /* 1b. kerusakan bangunan dan korban jiwa */
+    const K = H.kerusakan, rent = a => `${fmt(r2(Math.min(...a)))} sampai ${fmt(r2(Math.max(...a)))}`; /* RS tidak monoton: rentang = min dan maks tiga lajur */
+    if (K.rumah > 0) out.push(kartu(pil("Kerusakan bangunan", "#8f2a1e"), K.rb[1] >= 1 || K.jiwa[1] >= 1 ? `Sekitar ${hl(fmt(r2(K.rb[1])) + " rumah")} rusak berat dan ${hl(fmt(r2(K.jiwa[1])) + " orang")} meninggal` : "Model tidak memperkirakan rumah rusak berat",
+      `<table class="tb3"><thead><tr><th>Perkiraan</th><th class="n">Tengah</th><th class="n">Rentang</th></tr></thead><tbody>${[["Rusak berat", K.rb], ["Rusak sedang", K.rs], ["Rusak ringan", K.rr], ["Korban jiwa", K.jiwa]].map(([n, a]) => `<tr><td>${n}</td><td class="n num">${fmt(r2(a[1]))}</td><td class="n num">${rent(a)}</td></tr>`).join("")}</tbody></table>`,
+      `Hasil model. Disetel ke 8 gempa kerak 2006 sampai 2022; pada uji leave-one-out korban jiwa meleset rata-rata ${des(GempaKerusakan.kal.faktorLoo)} kali lipat atau sepersekian. Sumber: WorldPop 2026, BPS, kurva HAZUS. ${H.vs30Ada ? "Tanah per sel dari kemiringan DEM." : "Tanah dianggap seragam (data Vs30 tidak termuat)."}`));
     /* 2. sekolah & RS di MMI VII+ */
     const ns = H.sekolah ? H.sekolah.length : null;
     if (H.provAda.length) out.push(kartu(pil("Fasilitas", "#a8780c"), ns == null ? `${hl(fmt(H.rs.length))} rumah sakit dan puskesmas di guncangan VII atau lebih; sekolah sedang dimuat` :
@@ -236,7 +272,7 @@ self.onmessage = async e => { const d = e.data;
     /* 3. kecamatan terdampak */
     const k6 = H.kec.filter(c => c.mmi >= 5.5);
     if (H.kec.length) out.push(kartu(pil("Wilayah", "#3f6fa8"), k6.length ? `${hl(fmt(k6.length) + " kecamatan")} di guncangan VI atau lebih` : "Tidak ada kecamatan di guncangan VI atau lebih",
-      `<table class="tb3"><thead><tr><th>Kecamatan</th><th class="n">MMI</th><th class="n">Penduduk</th></tr></thead><tbody>${H.kec.slice(0, 8).map(c => `<tr><td><button class="link" data-ke="${c.lat},${c.lon}">${esc(c.nama)}</button><small>${esc(c.kab)}</small></td><td class="n">${pilMmi(c.mmi)}</td><td class="n num">${rb(c.p)}</td></tr>`).join("")}</tbody></table>`));
+      `<table class="tb3"><thead><tr><th>Kecamatan</th><th class="n">MMI</th><th class="n">Penduduk</th></tr></thead><tbody>${H.kec.slice(0, 8).map(c => `<tr><td><button class="link" data-ke="${c.lat},${c.lon}">${esc(c.nama)}</button><small>${esc(c.kab)}</small></td><td class="n">${pilMmi(c.mmi)}</td><td class="n num">${rb(c.p)}</td></tr>`).join("")}</tbody></table>`, H.mmiPita ? `Guncangan tertinggi MMI ${rom(H.mmiPita[1])}, rentang ${rom(H.mmiPita[0])} sampai ${rom(H.mmiPita[2])} (satu sigma GMPE).` : ""));
     /* 4. peringatan dini, ilustrasi */
     if (H.kota.length) { const k = H.kota.filter(c => c.tS - c.tP >= 1).sort((a, b) => b.mmi - a.mmi)[0];
       out.push(kartu(pil("Ilustrasi peringatan dini", "#5a6b85"), k ? `Warga ${esc(k.kab)} punya ${hl(fmt(Math.floor(k.tS - k.tP)) + " detik")} antara gelombang P dan guncangan kuat` : "Guncangan kuat tiba hampir bersamaan dengan gelombang pertama",
@@ -409,10 +445,10 @@ self.onmessage = async e => { const d = e.data;
       if (p.km <= (sub ? 80 : 40) && (!best || p.km < best.p.km)) best = {p, f, i, sub}; });
     let src = sumber(S.sk.src), titik = {lat, lon, strike: S.sk.strike};
     if (best) { src = DIKENAL.find(d => d.parit?.[0] === best.i) || S.gem.find(g => g.i === best.i) || src; titik = best.sub ? best.p : {lat, lon, strike: best.p.strike}; S.pilih = src.id; }
-    const sk = bentuk(src, S.sk.m, S.sk.dalam, titik); sk.klik = {lat, lon}; sk.n = best ? src.n : "Titik pilihanmu";
+    const sk = bentuk(src, S.sk.m, S.sk.dalam, titik); sk.klik = {lat, lon}; sk.n = best ? src.n : "Titik pilihanmu"; sk.nyata = !!(tetap && S.sk.nyata); if (sk.nyata) sk.nyataGempa = S.sk.nyataGempa;
     if (tetap && best) { sk.lat = lat; sk.lon = lon; sk.e = {lat, lon, m: sk.m, dalam: sk.dalam, jenis: sk.jenis, strike: sk.strike}; sk.r = Tsunami.rupture(sk.e); sk.tetap = true; sk.n = "Gempa pilihan"; }
     if (!best) { sk.jenis = S.sk.jenis === "subduksi" ? "naik" : S.sk.jenis; sk.lat = lat; sk.lon = lon; sk.e = {lat, lon, m: sk.m, dalam: sk.dalam, jenis: sk.jenis, strike: sk.strike}; sk.r = Tsunami.rupture(sk.e); }
-    if (tetap) { sk.tetap = true; sk.n = "Gempa pilihan"; }
+    if (tetap) { sk.tetap = true; sk.n = S.sk.nyata ? S.sk.n : "Gempa pilihan"; }
     pasangSkenario(sk); if (!diam) toast("Pusat gempa dipindah. Tekan Jalankan simulasi.");
   }
   /* penjaga balapan: tiap await diperiksa apakah skenario masih sama; yang kalah membuang hasilnya */
@@ -439,8 +475,9 @@ self.onmessage = async e => { const d = e.data;
     try { S.D ||= await muat(); } catch (e) { $("#simPanel").innerHTML = `<div class="kosong">Data simulasi gagal dimuat. Coba muat ulang halaman.</div>`; console.warn(e); return; }
     await siapPeta(); S.peta.resize();
     legenda();
-    if (!S.sk) { const s = sumber(S.pilih); pasangSkenario(bentuk(s, mBawaan(s), s.dalam));
-      if (URL0) { const u = URL0; S.sk.m = Number.isFinite(u.m) ? Math.min(9.2, Math.max(5.5, Math.round(u.m * 10) / 10)) : S.sk.m; S.sk.dalam = Number.isFinite(u.dalam) ? Math.min(150, Math.max(5, Math.round(u.dalam))) : S.sk.dalam;
+    if (!S.sk) { if (!URL0) { S.nyata = await muatNyata(); if (S.nyata.length) { pakaiNyata(S.nyata[0]); nanti(jalankan); return; } }
+      const s = sumber(S.pilih); pasangSkenario(bentuk(s, mBawaan(s), s.dalam));
+      if (URL0) { const u = URL0; S.sk.m = Number.isFinite(u.m) ? Math.min(9.2, Math.max(5, Math.round(u.m * 10) / 10)) : S.sk.m; S.sk.dalam = Number.isFinite(u.dalam) ? Math.min(150, Math.max(5, Math.round(u.dalam))) : S.sk.dalam;
         pindah(u.lat, u.lon, true, true); S.sk.n = "Gempa pilihan"; panel(); nanti(jalankan); return; }
       S.peta.fitBounds([[S.sk.lon - 1.5, S.sk.lat - 1.2], [S.sk.lon + 1.5, S.sk.lat + 1.2]], {padding: pad(), duration: 0}); }
   }

@@ -1,0 +1,417 @@
+{
+ "modul": "gempa-tsunami",
+ "usulan": [
+  {
+   "indeks": 0,
+   "prioritas": "P1",
+   "metode_lama": "Status tsunami resmi BMKG (pengurai teks Potensi, src/gempa.js:26-31)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://rtsp.bmkg.go.id/manual/Ina-RTSP_UserGuide_version-3.pdf",
+     "masalah": "Ini panduan RTSP Samudra Hindia untuk NTWC. Isinya tidak mendefinisikan ambang Awas/Siaga/Waspada. Buletin ETA/ETH per zona di dalamnya hanya untuk NTWC di situs berkata sandi, jadi tidak mendukung klaim tingkat atau diseminasi publik.",
+     "pengganti": "https://bmkg-content-inatews.storage.googleapis.com/last30tsunamievent.xml (CAP 1.2 dengan <wzarea> province/district/level/date/time). Untuk ambang Siaga 0,5-3 m dan Waspada <0,5 m pakai Antara 5695576 yang sudah dikutip."
+    },
+    {
+     "url": "https://bmkg-content-inatews.storage.googleapis.com/datagempa.json",
+     "masalah": "Berkas ini hanya memuat SATU kejadian terakhir, dengan eventid berupa stempel waktu. Tidak cocok untuk cek harian per eventid, dan autogempa/gempaterkini sendiri tidak punya eventid.",
+     "pengganti": "https://bmkg-content-inatews.storage.googleapis.com/last30event.xml (30 Info Gempa terakhir, ada eventid dan potential), dicocokkan lewat waktu dan lokasi."
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- Uji node: uraiPotensi memberi 1 untuk 'Tidak ada potensi tsunami', 'Peringatan dini tsunami telah berakhir/diakhiri', dan 'Tidak menimbulkan tsunami'. Hanya 'tidak berpotensi tsunami' yang menjadi 0.\n- datagempa.json (dibuka 21 Okt 2026) memuat identifier 'Indonesia-InaTEWS-20261021144703' serta potential, instruction, headline, dan shakemap, tanpa zona.\n- UU 31/2009 benar. Perpres 93/2019 ditetapkan 30 Des 2019.\n- Google Public Alerts memuat contoh identifier 'Indonesia-InaTEWS-earthquakes-20230415221056'.\n- Siaga 0,5-3 m dan Waspada <0,5 m, ditetapkan per kabupaten, terkonfirmasi (Antara, Nagekeo 15 Agu 2026). Ambang Awas >3 m tidak tertulis di rujukan yang dikutip.\n\nSALAH: 'tingkat per zona dan ETA belum ada umpan publik'. Bucket yang sama memuat last30tsunamievent.xml: 30 pesan PD-1 sampai PD-4 dari 6 peringatan (Jul 2025-Agu 2026), lengkap dengan level SIAGA/WASPADA dan jam per segmen. Statusnya sama: tidak terdokumentasi, jadi tetap minta izin BMKG.\n\nPENTING untuk rancangan daftar-putih:\n- Teks potential pada pesan peringatan nyata adalah 'Potensi TSUNAMI untuk diteruskan pada masyarakat'. Tidak ada kata Waspada/Siaga/Awas di dalamnya.\n- Pesan PD-4 'telah berakhir' tetap membawa teks potential yang sama.\n- Akibatnya aturan 'kode 1-3 hanya bila ada kata tingkat' dan 'teks lain = null' akan GAGAL menandai peringatan sungguhan. Tingkat harus diambil dari wzarea, dan status berakhir dari subject 'PD-4' atau headline.\n- Uji node: berpotensiTsunami di src/ews.js mengembalikan false untuk teks ini.\n- Frasa Potensi di autogempa.json saat ada peringatan belum terverifikasi. Fixture ews.test.mjs memakai frasa karangan."
+  },
+  {
+   "indeks": 1,
+   "prioritas": "P1",
+   "metode_lama": "Alarm peringatan dini platform Waspada/Siaga/Awas (src/peringatan.js:32, :43-45; public/inti/alarm.js)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.usgs.gov/data/shakemap-atlas-v4-and-atlascat",
+     "masalah": "Atlas 4.0 hanya mencakup 1900-2020 (sekitar 14.100 kejadian, CC0, DOI 10.5066/P98ATOGZ). Uji balik 2008-2025 tidak bisa memakai Atlas untuk 2021-2025.",
+     "pengganti": "ShakeMap/PAGER per kejadian dari ComCat: https://earthquake.usgs.gov/fdsnws/event/1/query?eventid=<id>&format=geojson"
+    },
+    {
+     "url": "docs/multi-bencana/SUMBER-BNPB.md (repo: DIBI/InaRISK sudah dipanen)",
+     "masalah": "Mekanisme panen DIBI lewat Superset memang ada di scripts/banjir/kejadian.py. Tetapi DIBI_JENIS tidak memuat 'Gempabumi', jadi kejadian gempa BELUM dipanen.",
+     "pengganti": "Tambahkan 'Gempabumi' ke DIBI_JENIS di scripts/banjir/kejadian.py."
+    }
+   ],
+   "koreksi": "TERKONFIRMASI DI KODE:\n- peringatan.js:43-45 menulis 'Awas' dan sumber 'InaTEWS' untuk setiap potensi 1-3.\n- Waspada gempa (M≥5) tanpa syarat kedalaman.\n- mmi_maks≥4, yang bisa berasal dari USGS saja, melewati syarat darat dan diberi sumber 'Deteksi Pantau Bencana'.\n- Dipanggil cron di worker.js:637. alarm.js dimuat di index.html:6419, gempa/index.html:167, dan semua/index.html:59.\n- Kolom pager diisi dari properti alert USGS (src/gempa.js:75) dan belum dipakai.\n- Kelas PAGER hijau/kuning/oranye/merah menurut korban/kerugian terkonfirmasi di dokumen losspager.\n\nTIDAK TEPAT: 'Waspada/Siaga/Awas punya arti hukum dalam status kedaruratan BNPB/BPBD'. Status kedaruratan BNPB adalah siaga darurat, tanggap darurat, dan transisi darurat. Triplet Waspada/Siaga/Awas dipakai InaTEWS (level di wzarea) dan tingkat aktivitas gunung api. Poin ini tidak saya cek daring.\n\nTAMBAHAN: last30tsunamievent.xml memberi tingkat resmi per kabupaten. Pada 6 peringatan terakhir (Jul 2025-Agu 2026) yang muncul hanya SIAGA dan WASPADA, tidak pernah AWAS. Aturan platform sekarang akan menulis 'Awas' untuk semuanya."
+  },
+  {
+   "indeks": 2,
+   "prioritas": "P1",
+   "metode_lama": "Email EWS gempa dan tsunami ke pelanggan (src/ews.js:47-50, :221-233, :293-320)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "Allen, T.I., Wald, D.J., Worden, C.B. 2012, J. Seismology 16:409-433, doi:10.1007/s10950-012-9278-7 [ingatan]",
+     "masalah": "Sitasinya ada dan cocok (OpenQuake mengimplementasikannya). Tetapi IPE ini untuk wilayah KERAK AKTIF. Untuk gempa intraslab dalam, misalnya contoh M4 di kedalaman 300 km, klaim 'kedalaman dengan sendirinya terhitung' terlalu kuat.",
+     "pengganti": "https://doi.org/10.1007/s10950-012-9278-7, ditambah IPE/GMPE+GMICE subduksi untuk gempa intraslab."
+    },
+    {
+     "url": "https://ghsc.code-pages.usgs.gov/esi/shakemap",
+     "masalah": "Halaman panduan ShakeMap 4.5.1 tidak mendukung klaim 'IPE adalah cara standar ShakeMap/DYFI'. ShakeMap 4 pada dasarnya memakai GMPE+GMICE yang dipilih per rezim tektonik.",
+     "pengganti": "https://ghsc.code-pages.usgs.gov/esi/shakemap/docs2020/manual4_0/tg_select.html"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI DI KODE:\n- RADIUS_GEMPA [[7,500],[6,300],[5,150],[4,50]], GEMPA_AWAS_MAG 6, TSUNAMI_KM 500.\n- Frasa 'Segera menjauhi pantai' ada di ews_email.js:88 dan :97.\n\nKOREKSI:\n- Umpan zona InaTEWS SUDAH tersedia (last30tsunamievent.xml). Penyaringan pelanggan per kabupaten pesisir yang disebut buletin bisa dibangun sekarang, dengan izin BMKG.\n- Pengurai berpotensiTsunami menolak teks potential pesan peringatan nyata 'Potensi TSUNAMI untuk diteruskan pada masyarakat' (node: false). Bila autogempa memakai frasa yang sama, email tsunami tidak akan pernah terkirim.\n- Praktik resmi terkonfirmasi: BMKG menerbitkan info M5+ dan Dirasakan lewat data.bmkg.go.id."
+  },
+  {
+   "indeks": 3,
+   "prioritas": "P1",
+   "metode_lama": "Model guncangan (GMPE + GMICE) untuk gempa nyata: laci, Dampak 'jiwa terguncang MMI VI+', isoseismal",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://ghsc.code-pages.usgs.gov/esi/shakemap/manual4_0/tg_select.html",
+     "masalah": "404: path tanpa /docs2020/.",
+     "pengganti": "https://ghsc.code-pages.usgs.gov/esi/shakemap/docs2020/manual4_0/tg_select.html (terkonfirmasi: pemilihan GMPE per rezim Garcia dkk. 2012 dan Slab2 Hayes 2018)"
+    },
+    {
+     "url": "https://www.usgs.gov/data/us-geological-survey-global-vs30-mosaic",
+     "masalah": "DOI 10.5066/P96HFVXM yang disebut adalah rilis 2020. Pembaruan 24 Juli 2026 (COG, 30 detik busur, CC0) punya DOI lain.",
+     "pengganti": "DOI 10.5066/P1NV6UNM (rilis 2026); 10.5066/P96HFVXM hanya untuk versi 2020"
+    },
+    {
+     "url": "https://github.com/usgs/strec",
+     "masalah": "Repo diarsipkan 15 Sep 2026, dan README-nya menyebut Slab 1.0, bukan Slab2.",
+     "pengganti": "https://ghsc.code-pages.usgs.gov/esi/shakemap/docs2020/manual4_0/tg_select.html (Slab2 di pemilihan GMPE ShakeMap)"
+    },
+    {
+     "url": "https://doi.org/10.5066/F7PV6JNV",
+     "masalah": "403 hanya karena bot diblokir. DOI-nya benar: Hayes 2018, Slab2, ScienceBase per wilayah.",
+     "pengganti": "tidak perlu diganti"
+    },
+    {
+     "url": "https://www.usgs.gov/data/shakemap-atlas-v4-and-atlascat",
+     "masalah": "Atlas hanya 1900-2020. Validasi (b) tidak mencakup kejadian 2021 dan sesudahnya.",
+     "pengganti": "ShakeMap ComCat per kejadian untuk 2021 dan sesudahnya"
+    },
+    {
+     "url": "Abrahamson, Gregor, Addo 2016, BC Hydro GMPE, Earthquake Spectra 32(1):23-44 [ingatan]",
+     "masalah": "Tidak terkonfirmasi daring. Pencarian hanya menemukan dokumentasi sekunder (OpenQuake, pygmm), dengan tahun yang berbeda-beda (2015/2016).",
+     "pengganti": "cek di halaman jurnal Earthquake Spectra sebelum dikutip"
+    }
+   ],
+   "koreksi": "CACAT REPO TERKONFIRMASI (node):\n- M5,5 di kedalaman 30 km: MMI pusat 8,22, sedangkan antarmuka 4,79.\n- M6,5 di 45 km = 10 km = 8,40, sedangkan antarmuka 6,01.\n- M7,9: 7,89 di kedalaman 49 km, 9,27 di 50 km.\n\nRUJUKAN TERKONFIRMASI:\n- PuSGeN 2017 (PDF UGM) memakai GMPE terpisah: fault/shallow background NGA (BA08/CB08/CY08; bab 5.4: BSSA14/CB14/CY14), subduksi (Youngs 1997, AB2003, Zhao 2006, BCHydro 2012), dan deep background (AB2003 intraslab, Youngs).\n- Garcia dkk. 2012, BSSA 102(1):185-203.\n- Heath dkk. 2020, Earthquake Spectra 36(3):1570-1584.\n- Parker dkk. 2022, 38(1):456-493, DOI benar.\n- losspager memuat json/exposures.json dan json/losses.json.\n\nKOREKSI: DOI Vs30 (lihat rujukan) dan URL tg_select."
+  },
+  {
+   "indeks": 4,
+   "prioritas": "P1",
+   "metode_lama": "Paparan bangunan per MMI untuk gempa M≥5 30 hari, data internal BNPB (scripts/umum/paparan_bangunan.py, src/bangunan.js)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "docs/multi-bencana/SUMBER-BNPB.md:13 (get-infra-risk)",
+     "masalah": "Endpoint-nya jalan, tetapi kolom 'bangunan' BUKAN stok bangunan. Pengujian 21 Okt 2026: Kota Bandung (3273) total 18.031, Kota Yogyakarta (3471) 0 di semua kelas. Validasi 'rasio Open Buildings / bangunan get-infra-risk 0,7-1,3' tidak berdasar.",
+     "pengganti": "Minta definisi kolom ke BNPB. Untuk rekonsiliasi pakai sumber stok bangunan lain (misalnya BPS/PODES)."
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- paparan_bangunan.py:249 memakai tebak_jenis dari guncangan.py.\n- src/bangunan.js hanya untuk adminOK (pengguna masuk).\n- get-infra-risk menerima kunci 'gempabumi' (juga 'gempa-bumi') dan 'tsunami'.\n\nKOREKSI:\n- Kolom 'penduduk' InaRISK juga tidak sama dengan BPS: Kota Bandung 861.108, padahal BPS sekitar 2,5 juta; Kota Yogyakarta 556.648. Nyatakan basis populasinya sebelum angka ini disandingkan dengan Open Buildings atau WorldPop."
+  },
+  {
+   "indeks": 5,
+   "prioritas": "P1",
+   "metode_lama": "Bandara di zona guncangan MMI VI+ (public/gempa/kata.js:80-82, laci.js:45-48)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- Guncang.bandara (kata.js) memakai X.M.fasilitas dengan ambang 6, Vs30 baku 400, tebakJenis, dan dalam ?? 10. Cacatnya sama dengan model guncangan.\n- ShakeMap menerbitkan grid.xml.\n- Penutupan bandara diputuskan lewat NOTAM oleh Kemenhub/AirNav/otoritas bandara setelah inspeksi landasan (contoh: Wamena 2016, Ngurah Rai 2016, Halim 2021).\n\nCatatan kecil: ShakeMap Atlas 4.0 hanya 1900-2020."
+  },
+  {
+   "indeks": 6,
+   "prioritas": "P1",
+   "metode_lama": "Kerusakan bangunan dan korban jiwa (HAZUS + satu pengali kalib 3,06)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://inasafe.org [ingatan]",
+     "masalah": "URLError: domain tidak bisa dijangkau, termasuk changelog.inasafe.org.",
+     "pengganti": "https://github.com/inasafe/inasafe (dikembangkan BNPB, Pemerintah Australia, World Bank-GFDRR)"
+    },
+    {
+     "url": "https://ecat.ga.gov.au/geonetwork/srv/api/records/0f7e900c-3a73-a6e6-e053-10a3070a6f5f",
+     "masalah": "Rekamannya ada, tetapi atribusi 'Ghasemi & Ryu 2015' tidak lengkap. Penulisnya Sengara, Suarjana, Yulman (ITB), Ghasemi, dan Ryu (GA), dengan judul 'An Empirical Fatality Model for Indonesia Based on a Bayesian Approach' (GSL Spec. Publ. 441). Ini model 'ITB' yang dipakai InaSAFE.",
+     "pengganti": "rujukan yang sama dengan sitasi Sengara dkk."
+    },
+    {
+     "url": "https://journals.sagepub.com/doi/10.1193/1.3480331",
+     "masalah": "403 karena bot diblokir. Makalahnya nyata: Jaiswal & Wald 2010, Earthquake Spectra 26(4):1017-1037.",
+     "pengganti": "https://pubs.usgs.gov/publication/70003714"
+    },
+    {
+     "url": "https://www.usgs.gov/data/shakemap-atlas-v4-and-atlascat",
+     "masalah": "Atlas hanya sampai 2020. Hindcast DIBI 2008-2025 tidak tercakup untuk 2021-2025.",
+     "pengganti": "ShakeMap ComCat untuk 2021 dan sesudahnya"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- Jaiswal & Wald 2010.\n- OFR 2009-1136 (memuat contoh analisis Indonesia).\n- losses.json dan kelas peringatan PAGER.\n- InaSAFE Realtime memakai 'ITB Bayesian Earthquake Impact Function', dirancang bersama BMKG dan BNPB.\n- Katalog Gempabumi Merusak 1821-2025 BMKG ada (PDF 49 MB).\n\nTIDAK TERKONFIRMASI:\n- Klaim bahwa InaSAFE juga memakai model PAGER.\n- Parameter θ/β Indonesia (memang diakui belum dicek).\n\nKOREKSI:\n- Kejadian gempa dari DIBI belum dipanen, karena DIBI_JENIS di kejadian.py tidak memuat Gempabumi.\n\nAngka repo terkonfirmasi: kalib 3,0586, faktor_loo 5,341, n 8."
+  },
+  {
+   "indeks": 7,
+   "prioritas": "P1",
+   "metode_lama": "Pengelompokan kejadian G, gempa utama dan susulan (src/gempa.js:153-197)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI DI KODE:\n- src/gempa.js:165 hanya memperbarui akhir dan aktif_hingga. Nilai m, utama_id, lat/lon, dan mulai tetap milik gempa pertama.\n- Jendela jarak memakai jendelaKm(c.m) dan masa aktif memakai masaAktif(k.m).\n- jendelaKm(6,1) ≈ 54,7 km dan jendelaKm(7,5) ≈ 81,5 km.\n\nRUJUKAN TERKONFIRMASI (lewat sumber sekunder):\n- Zaliapin & Ben-Zion 2013, JGR 118:2847-2864.\n- Strasser, Arango, Bommer 2010, SRL 81(6):941-950, doi 10.1785/gssrl.81.6.941.\n- Gardner & Knopoff 1974.\n- Endpoint FDSN USGS hidup.\n\nKlaim praktik BMKG (menyebut gempa utama dan jumlah susulan) tidak dicek daring, tetapi wajar."
+  },
+  {
+   "indeks": 8,
+   "prioritas": "P1",
+   "metode_lama": "Waktu tiba dan tinggi tsunami untuk gempa NYATA di laci (public/gempa/laci.js:55-58, tsunami.js:93-102)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://bmkg-content-inatews.storage.googleapis.com/datagempa.json",
+     "masalah": "Benar bahwa berkas ini tanpa zona. Tetapi kesimpulan 'belum ada umpan publik zona/ETA' SALAH.",
+     "pengganti": "https://bmkg-content-inatews.storage.googleapis.com/last30tsunamievent.xml (<wzarea>: provinsi, segmen kabupaten, level, tanggal, jam tiba per segmen)"
+    },
+    {
+     "url": "https://rtsp.bmkg.go.id/manual/Ina-RTSP_UserGuide_version-3.pdf",
+     "masalah": "Buletin ETA/ETH per zona di panduan ini untuk NTWC Samudra Hindia di situs berkata sandi, bukan untuk publik Indonesia. Panduan ini hanya menyebut parameter hiposenter tersedia ≤5 menit.",
+     "pengganti": "last30tsunamievent.xml dan Antara 5695576 (peringatan per kabupaten)"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI DI KODE:\n- laci.js:55 memanggil Tsunami.layak(g) tanpa memeriksa status BMKG.\n- layak() mensyaratkan M≥6,5 dan kedalaman <100 km dengan faktorDalam >0. Jenis kosong dianggap subduksi.\n\nKOREKSI: data zona dan waktu tiba resmi ada di umpan publik yang sama bucket-nya. Contoh gempa M7,7 15 Agu 2026: 8 segmen SIAGA dan 14 WASPADA, jam tiba 05.02-06.01 WIB. Antara mencatat PD-1 terbit 05.00 WIB untuk gempa 04.58 WIB.\n\nKlaim 'InaTEWS terbit sekitar 5 menit' wajar. Bucket tetap tidak terdokumentasi, jadi minta izin BMKG."
+  },
+  {
+   "indeks": 9,
+   "prioritas": "P1",
+   "metode_lama": "Tinggi tsunami indikatif Abe 1995 + koreksi Green/mekanisme (public/gempa/tsunami.js:104-110)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "docs/multi-bencana/SUMBER-BNPB.md:30-37 (GeoServer InaRISK: INA_Megathrust, Inun_*_Mw)",
+     "masalah": "raster:Inun_7_8_Mw sampai Inun_9_0_Mw hanya mencakup Kota Ambon (bbox GetCapabilities 128,04-128,30 BT; 3,57-3,79 LS). bukti.py:514 sendiri sudah mencatat ini, jadi layer ini tidak bisa menjadi 'peta genangan untuk Presiden' tingkat nasional.",
+     "pengganti": "layer_bahaya_tsunami InaRISK (https://inarisk.bnpb.go.id/v4/config/arcgis-layers.json) untuk cakupan nasional"
+    },
+    {
+     "url": "JSCE (2002) 0,95<K<1,05 dan κ<1,45 [ingatan]",
+     "masalah": "Ambang ini tidak terkonfirmasi daring. Aida 1978 (J. Phys. Earth 26:57-73) terkonfirmasi.",
+     "pengganti": "kutip langsung dokumen JSCE 2002 'Tsunami Assessment Method for Nuclear Power Plants in Japan'"
+    }
+   ],
+   "koreksi": "RUJUKAN TERKONFIRMASI:\n- Glimsdal dkk. 2019, PAGEOPH 176(7):3227-3246: faktor amplifikasi dengan sebaran lognormal, dikalibrasi di NEAM (6 situs, >500 simulasi). Catatan 'wajib validasi ulang untuk Indonesia' tepat.\n- Widiyantoro dkk. 2020: sekitar 20 m di Jawa Barat, sekitar 12 m di Jawa Timur, rata-rata 4,5 m.\n- INA_Megathrust: 15 fitur lewat WFS, atribut hanya Id/Name.\n- BATNAS 6 detik busur (BIG).\n- Katalog Tsunami BMKG 416-2025 (PDF ada) dan NCEI HazEL ada.\n\nKOREKSI: cakupan Inun_* hanya Ambon (lihat rujukan)."
+  },
+  {
+   "indeks": 10,
+   "prioritas": "P1",
+   "metode_lama": "Evakuasi jalan kaki ke tanah ≥20 m (public/gempa/sim.js:194-209, tsunami.js:206-228)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.ioc-sealevelmonitoring.org/",
+     "masalah": "Tidak cocok dengan klaimnya: ini layanan pemantauan stasiun muka laut (VLIZ/IOC, DOI 10.14284/482), bukan rujukan analisis evakuasi.",
+     "pengganti": "https://pubs.usgs.gov/publication/70042900 (Wood & Schmidtlein 2012)"
+    },
+    {
+     "url": "docs/multi-bencana/SUMBER-BNPB.md:30-37",
+     "masalah": "'Batas zona genangan InaRISK' skenario hanya tersedia untuk Kota Ambon.",
+     "pengganti": "layer_bahaya_tsunami InaRISK, atau peta evakuasi BPBD per kota percontohan"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- Wood & Schmidtlein 2012, Nat. Hazards 62(2):275-300, doi 10.1007/s11069-011-9994-2.\n- DEMNAS 0,27 detik busur (sekitar 8 m, BIG; unduhan tides.big.go.id/DEMNAS).\n- Kode: sim.js memakai AMAN 0,61/0,85, jarak ×1,3, dan 4 km/jam.\n\nTIDAK DICEK: program Tsunami Ready BMKG dan laju jalan lansia 0,7 m/s."
+  },
+  {
+   "indeks": 11,
+   "prioritas": "P1",
+   "metode_lama": "Indeks risiko riwayat gempa 0-100 (scripts/gempa/riwayat.py, tren.js, laci.js:59-62)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://sirusa.bps.go.id/metadata/indikator/82491",
+     "masalah": "404 (juga di sirusa.web.bps.go.id). Menurut cuplikan pencarian, entri ini terkait kompilasi Kota Tangerang, bukan metadata indikator RPJMN nasional. Klaim 'IRBI indikator RPJMN' tidak terdukung.",
+     "pengganti": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full (data) dan buku IRBI 2024 BNPB (salinan: https://bpbd.dumaikota.go.id/assets/backend/dokumen/683529c8536ef.pdf). Klaim RPJMN perlu dokumen RPJMN Bappenas."
+    },
+    {
+     "url": "https://satudata.sultengprov.go.id/ro/dataset/indeks-resiko-bencana-2024/resource/94bb33d6-64da-4b39-a202-7c98396e33a1",
+     "masalah": "404, juga tanpa awalan bahasa. Ini portal provinsi, bukan sumber primer.",
+     "pengganti": "https://inarisk.bnpb.go.id/apiv4/data-irbi-full"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- data-irbi-full: NDJSON, 5.654 baris = 514 kab × 2015-2025, dengan kolom gempabumi dan tsunami.\n- urai_irbi ada di scripts/cuaca/risiko_bnpb.py:52, fixture irbi_cuplikan ada.\n- Buku PuSGeN 2024 diluncurkan Kementerian PU dan PuSGeN 10 Des 2024; entri Bina Marga ber-ISBN 978-602-9095-53-1 menyediakan PDF.\n- Nilai risiko.json: Jawa Tengah [22, Rendah], Jawa Timur 28, DIY 38, Gorontalo 73.\n\nTIDAK TERKONFIRMASI: IRBI sebagai indikator RPJMN (rujukannya mati)."
+  },
+  {
+   "indeks": 12,
+   "prioritas": "P1",
+   "metode_lama": "Fasilitas rawan: atas sesar, MMI VII skenario, pesisir rendah, tanpa evakuasi (scripts/gempa/bukti.py, public/gempa/bukti.js)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- get-infra-risk/{kab}/gempabumi dan /tsunami mengembalikan cacah per kelas aman/rendah/sedang/tinggi untuk sekolah, madrasah, rs, puskesmas, perguruan_tinggi, obvitnas, bandara, pelabuhan, penduduk, dan bangunan.\n- bukti.py:514 memang menolaknya karena 'bukan titik'.\n- Data Referensi Kemendikdasmen ada (referensi.data.kemdikbud.go.id). Ketersediaan koordinat per sekolah belum terkonfirmasi.\n\nKOREKSI:\n- 'Genangan InaRISK menggantikan pesisir ≤10 m' hanya bisa dengan layer_bahaya_tsunami nasional. Raster genangan skenario Inun_* hanya untuk Ambon.\n- Kolom penduduk/bangunan InaRISK tidak sebanding dengan BPS/stok bangunan (Kota Bandung penduduk 861.108, bangunan 18.031; Kota Yogyakarta bangunan 0). Pakai cacah fasilitasnya, dan beri catatan pada kolom penduduk/bangunan."
+  },
+  {
+   "indeks": 13,
+   "prioritas": "P1",
+   "metode_lama": "Laporan Harian Gempa Bumi dan pop-up 'Situasi gempa hari ini' (scripts/gempa/laporan_gempa.py, sapa.js)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.bmkg.go.id/gempabumi/mitigasi/katalog-gempabumi-tsunami",
+     "masalah": "Halaman ini hanya berisi dua PDF (Katalog Gempa Merusak 1821-2025 dan Katalog Tsunami 416-2025). Tidak ada katalog gempa yang bisa dipanen, dan repogempa tidak disebut.",
+     "pengganti": "https://repogempa.bmkg.go.id/eventcatalog (403 untuk bot; unduh gelombang perlu akun lewat inatews@bmkg.go.id)"
+    },
+    {
+     "url": "https://bmkg-content-inatews.storage.googleapis.com/live30event.xml",
+     "masalah": "Berkasnya ada, tetapi magnitudo dan kedalamannya adalah solusi revisi yang berbeda dari Info Gempa. Rekonsiliasi 'cacah M≥5 = cacah M≥5 BMKG, selisih 0' jadi tidak terdefinisi.",
+     "pengganti": "Tetapkan satu versi resmi (Info Gempa: gempaterkini/last30event.xml) dan cocokkan dengan waktu dan jarak."
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- METRIK utama 'Gempa M 4 atau lebih' dari USGS (laporan_gempa.py:35); mc USGS 4,7.\n- live30event.xml (21 Okt): 199 kejadian, M 1,9-6,3, rentang sekitar 4,7 hari (sekitar 42 per hari), semua 'confirmed', eventid 'bmg…'.\n\nKOREKSI: kejadian yang sama punya nilai berbeda:\n- 21 Okt 07.44 UTC: gempaterkini M5,1/96 km, live30event M4,9/90 km.\n- 20 Okt: 5,4/74 km lawan 5,2/57 km.\n- 18 Okt: 5,3 lawan 5,1.\nGempa M≥5 versi Info Gempa bisa menjadi M<5 di live30event. 'area' live30event berupa nama region berbahasa Inggris ('Banda Sea')."
+  },
+  {
+   "indeks": 14,
+   "prioritas": "P1",
+   "metode_lama": "Outlook 12 bulan lintas bencana, baris 'Gempa M6+ dangkal' (scripts/umum/outlook12.py:20, :57)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- outlook12.py:57 memberi label 'Gempa M6+ dangkal'.\n- peluang_gempa.py: kelas m6 = e[4]≥6 tanpa saringan kedalaman.\n- laju.json m6: n 467, 12,972 per tahun.\n- outlook12.json: m6_per_bulan 1,081, peluang_m6 0,66.\n- riwayat_m5.json: 515 dari 657 M6+ 1990-2025 berkedalaman ≤70 km (78,4%), jadi berlebih sekitar 27,6%.\n\nCatatan kecil: rasio itu dihitung dari katalog mentah, sedangkan laju memakai katalog yang sudah di-declustering. Besar kelebihannya pada laju sebenarnya bisa sedikit berbeda."
+  },
+  {
+   "indeks": 15,
+   "prioritas": "P2",
+   "metode_lama": "Katalog gempa hidup dan penggabungan BMKG-USGS (src/gempa.js:13, :46-123)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.bmkg.go.id/gempabumi/mitigasi/katalog-gempabumi-tsunami",
+     "masalah": "Tidak mendukung klaim 'arsip panjang di repogempa'. Isinya hanya dua PDF.",
+     "pengganti": "https://repogempa.bmkg.go.id/eventcatalog"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- data.bmkg.go.id: autogempa 1, gempaterkini 15 (M5+), gempadirasakan 15, atribusi BMKG wajib.\n- live30event.xml berisi sekitar 200 kejadian semua magnitudo (199; M min 1,9; sekitar 4,7 hari).\n\nKOREKSI:\n- (a) 'Wilayah memakai teks area BMKG': area di live30event adalah nama region Inggris yang kasar ('Banda Sea', 'Flores Region, Indonesia'), lebih kasar daripada Wilayah Info Gempa ('62 km TimurLaut MALUKUBRTDAYA').\n- (b) Validasi 'semua eventid M≥5 gempaterkini ada di live30event' tidak bisa dijalankan. gempaterkini tidak punya eventid, datagempa/last30event memakai eventid stempel waktu, live30event memakai 'bmg…', dan magnitudonya berbeda (5,1 lawan 4,9).\n- (c) 'Semua hitungan resmi hanya dari BMKG' harus memilih versi: Info Gempa (cepat, yang dirilis ke publik) atau solusi revisi live30event.\n- Bahwa format repogempa sejak 2023 memuat mekanisme fokal hanya terdukung deskripsi dataset turunan."
+  },
+  {
+   "indeks": 16,
+   "prioritas": "P2",
+   "metode_lama": "MMI 'Dirasakan' (kolom mmi_maks gabungan BMKG + ShakeMap USGS; src/gempa.js:34-44, :74, :97)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- src/gempa.js:74 mengisi mmi_maks dari p.mmi USGS.\n- satukan() mengambil Math.max saat menggabungkan.\n- gempadirasakan berisi 15 butir.\n- Skala SIG-BMKG I-V memang ada (Jurnal MG BMKG); teks Dirasakan BMKG memakai angka Romawi MMI."
+  },
+  {
+   "indeks": 17,
+   "prioritas": "P2",
+   "metode_lama": "Simulasi skenario guncangan berbidang patahan + Vs30 proksi lereng (public/gempa/sim.js, scripts/gempa/vs30.py)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.usgs.gov/data/us-geological-survey-global-vs30-mosaic",
+     "masalah": "DOI yang disebut (10.5066/P96HFVXM) adalah rilis 2020, sedangkan teks menyebut pembaruan 2026.",
+     "pengganti": "DOI 10.5066/P1NV6UNM (24 Juli 2026, COG, CC0)"
+    },
+    {
+     "url": "https://www.usgs.gov/data/shakemap-atlas-v4-and-atlascat",
+     "masalah": "Atlas hanya 1900-2020. Kasus validasi Cianjur 2022 tidak ada di Atlas.",
+     "pengganti": "ShakeMap/DYFI ComCat untuk Cianjur 2022"
+    },
+    {
+     "url": "https://binamarga.pu.go.id/perpustakaan/repositori/peta-sumber-dan-bahaya-gempa-indonesia-tahun-2024",
+     "masalah": "Entri ini ada (PDF PuSGeN 2024), tetapi halamannya tidak mengonfirmasi 'pemutakhiran sesar dan GMPE'.",
+     "pengganti": "cek isi PDF 2024 sebelum dikutip"
+    }
+   ],
+   "koreksi": "TERKONFIRMASI:\n- PuSGeN 2017 mendefinisikan 295 sumber gempa (242 tambahan atas 53 sumber di peta 2010).\n- Vs30 USGS beresolusi 30 detik busur, CC0.\n- INA_Megathrust 15 segmen tetapi hanya geometri (Id/Name), tanpa Mmax atau laju. Mmax dan laju harus diambil dari PuSGeN."
+  },
+  {
+   "indeks": 18,
+   "prioritas": "P2",
+   "metode_lama": "Peluang gempa susulan Reasenberg-Jones + keragaman a ala Page dkk. 2016 (scripts/gempa/susulan.py, public/gempa/susulan.js)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI di model_susulan.json:\n- pembanding.peluang.m5 = 0,0639 / 0,1589 / 0,2725 / 0,4184 / 0,8068, dengan n_latih 1572 / 493 / 177 / 48 / 43.\n- kinerja_uji.m5: BSS 0,0021, Brier 0,07795 lawan 0,07812, N-test 177 lawan 365,8.\n\nCatatan: pembanding dihaluskan dengan (k+0,5)/(n+1). Kalimat '27% dari 177 gempa' adalah pembulatan nilai terhaluskan, bukan proporsi mentah persis.\n\nRUJUKAN TERKONFIRMASI:\n- Page dkk. 2016, BSSA 106(5):2290-2301, doi 10.1785/0120160073.\n- Repo lmizrahi/etas (MIT; Mizrahi dkk. 2021)."
+  },
+  {
+   "indeks": 19,
+   "prioritas": "P2",
+   "metode_lama": "Laju dan peluang gempa 12 bulan, Poisson setelah declustering (scripts/gempa/peluang_gempa.py, laju.json, peluang.json)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- ISC-GEM mencakup 1904-2022, M≥5,5 (ditambah kejadian kontinental M≥5,0). Lisensinya belum dibaca.\n- Scordilis 2006, J. Seismol. 10:225-236, doi 10.1007/s10950-006-9012-4.\n- laju.json uji_balik:\n  - M6+: 133,85 lawan 119 dalam [115, 153].\n  - M7+: 20,0 lawan 14 dalam [13, 28].\n  - Provinsi M6+: 29 dari 30 di dalam selang.\n- Strip harian M6+ 0,0349 ada di peluang.json."
+  },
+  {
+   "indeks": 20,
+   "prioritas": "P2",
+   "metode_lama": "Penduduk terpapar bahaya gempa: InaRISK di satu titik per kecamatan × WorldPop (scripts/gempa/dampak.py)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "docs/multi-bencana/SUMBER-BNPB.md:13-14",
+     "masalah": "Endpoint-nya jalan, tetapi kajian-summary nasional TIDAK merinci jiwa terpapar per kelas. Isinya: jiwa_terpapar 131.881.978, penduduk 271.680.290, 7.084 kecamatan; yang dirinci per kelas hanya luas dan Rp.",
+     "pengganti": "Jiwa per kelas diambil dari get-infra-risk kolom penduduk, dengan catatan basis populasinya."
+    }
+   ],
+   "koreksi": "Angka platform '39,3 juta jiwa kelas tinggi' tidak sebanding langsung dengan jiwa_terpapar InaRISK 131,9 juta, karena definisinya berbeda.\n\nAngka penduduk InaRISK per kabupaten juga berbeda dari BPS (Kota Bandung 861.108, Kota Yogyakarta 556.648). Uji 'jumlah per kab = total nasional ±2%' tetap bisa dijalankan, tetapi basis populasinya harus disebut."
+  },
+  {
+   "indeks": 21,
+   "prioritas": "P2",
+   "metode_lama": "Galeri 'Gempa merusak', kurasi factsheet (public/gempa/data/factsheet_gempa.json, tren.js:49-55)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- factsheet: Bantul 5.749, Padang 1.117, Lombok 563, Palu 2.081 (Medcom), Nias dan Pangandaran null.\n- kalibrasi: 5.700 / 1.115 / 560.\n- PDF katalog BMKG ada, dan DIBI dapat dijangkau.\n\nKOREKSI: mekanisme Superset di kejadian.py belum memanen jenis Gempabumi, dan DIBI_ANGKA tidak punya kolom 'hilang'. Keduanya perlu ditambah sebelum 'satu sumber DIBI' dan definisi 'meninggal termasuk hilang' bisa dijalankan."
+  },
+  {
+   "indeks": 22,
+   "prioritas": "P2",
+   "metode_lama": "Ilustrasi peringatan dini, jeda gelombang P-S (public/gempa/sim.js:12, :277-280)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "TERKONFIRMASI:\n- sim.js:12 memakai VP 6,5 dan VS 3,7.\n- Judul kartunya 'Warga X punya N detik', dengan label 'Ilustrasi... belum termasuk waktu deteksi dan siaran'.\n- Allen & Melgar 2019, Annu. Rev. Earth Planet. Sci. 47:361-388, doi 10.1146/annurev-earth-053018-060457.\n\nCatatan: menurut siaran pers BMKG 27 Feb 2026, InaEEWS masih uji coba terbatas dan belum diluncurkan resmi. Kinerja InaEEWS yang dipublikasikan kemungkinan belum ada, sehingga jalur cadangan 'tab edukasi berlabel ilustrasi' yang berlaku."
+  }
+ ],
+ "vonis_dicek": [
+  {
+   "nama": "Semua 22 keputusan di tantang-gempa-tsunami.json",
+   "hasil": "Tidak ada keputusan dengan bukti_terverifikasi=false, jadi tidak ada yang wajib dicek ulang."
+  },
+  {
+   "nama": "Cek acak tambahan: metode terlewat 'Alarm peringatan dini platform'",
+   "hasil": "BENAR.\n- peringatan.js:43-45 memberi 'Awas'/'InaTEWS' untuk potensi 1-3.\n- Waspada gempa M≥5 tanpa syarat kedalaman.\n- Jalur mmi_maks≥4 melewati syarat darat.\n- Dipanggil worker.js:637, dan alarm.js dimuat di tiga halaman."
+  },
+  {
+   "nama": "Cek acak tambahan: metode terlewat 'Email EWS'",
+   "hasil": "BENAR untuk konstanta dan 'Segera menjauhi pantai'.\n\nTemuan baru: berpotensiTsunami di ews.js mengembalikan false untuk teks potential peringatan InaTEWS nyata, 'Potensi TSUNAMI untuk diteruskan pada masyarakat' (dari last30tsunamievent.xml). Masalahnya kebalikan dari yang dituduhkan: email tsunami bisa tidak pernah terkirim."
+  },
+  {
+   "nama": "Cek acak tambahan: metode terlewat 'Paparan bangunan per MMI'",
+   "hasil": "BENAR.\n- paparan_bangunan.py:249 memakai tebak_jenis.\n- bangunan.js hanya untuk adminOK.\n\nUji node pada versi JS: MMI pusat M5,5 adalah 8,22 baik di kedalaman 30 km maupun 40 km (antarmuka 4,79 / 4,49). Angka Python 7,83 lawan 4,48 di tantang tidak saya jalankan."
+  },
+  {
+   "nama": "Cek acak tambahan: klaim laporan.json basi",
+   "hasil": "SUBSTANSI BENAR, KRONOLOGI KELIRU.\n- laporan.json (commit bot b21ef646, 20 Okt 08.49 WIB) memuat baris prakiraan maks 0,0037 < P_MIN_HARIAN 0,005.\n- Tetapi filter P_MIN_HARIAN sudah dikomit di f0a91d8a pada 19 Okt 04.22 WIB, bukan 'diubah 11.06/14.00'.\n- f0a91d8a bukan leluhur b21ef646. Artinya bot membangun dari pohon yang belum memuat filter, sehingga berkas dihasilkan oleh kode yang lebih lama dari HEAD."
+  }
+ ],
+ "klaim_utama": [
+  {
+   "klaim": "Pengurai status tsunami (src/gempa.js:26-31) memberi kode 1 'Tsunami Waspada (BMKG)' untuk teks negatif seperti 'Tidak ada potensi tsunami' dan 'Peringatan dini tsunami telah berakhir'.",
+   "status": "benar",
+   "catatan": "Dijalankan ulang dengan node: 'Tidak ada potensi tsunami', 'Peringatan dini tsunami telah berakhir/diakhiri', dan 'Tidak menimbulkan tsunami' semuanya menjadi 1.\n\nTambahan: teks potential pesan peringatan InaTEWS nyata, 'Potensi TSUNAMI untuk diteruskan pada masyarakat', juga menjadi 1. Teks ini tetap terbawa pada pesan PD-4 'telah berakhir', sehingga peringatan yang sudah diakhiri pun terbaca aktif. Sebaliknya, ews.js menolak teks yang sama, jadi kedua jalur memberi keputusan berbeda."
+  },
+  {
+   "klaim": "Alarm platform menulis 'Awas · InaTEWS' untuk SETIAP kode potensi 1-3. Kodenya berjalan di cron tiap menit dan pop-up-nya tampil di semua halaman.",
+   "status": "benar",
+   "catatan": "Terverifikasi di kode:\n- src/peringatan.js:43-45 dan :32.\n- Dipanggil src/worker.js:637.\n- alarm.js dimuat di public/index.html:6419, gempa/index.html:167, dan semua/index.html:59.\n\nBukti tambahan dari last30tsunamievent.xml: 6 peringatan BMKG terakhir (Jul 2025-Agu 2026) hanya bertingkat SIAGA/WASPADA per kabupaten, tidak pernah AWAS. Platform akan menaikkan semuanya menjadi 'Awas'."
+  },
+  {
+   "klaim": "Model guncangan mengabaikan kedalaman untuk M<7 di 15-50 km. Contohnya M5,5 h30 MMI pusat 8,22 (antarmuka 4,79), dan M5,2 h30 di Garut 1.113.872 jiwa 'MMI VI+' (antarmuka 0). Sebanyak 36,7% gempa M5-6,9 sejak 2010 jatuh di pita ini.",
+   "status": "benar",
+   "catatan": "Node mereproduksi angka pusat dengan persis:\n- M5,5 h30: 8,22 lawan 4,79.\n- M6,5 h45 sama dengan h10, yaitu 8,40, lawan 6,01.\n- 7,89 lawan 9,27 di 49/50 km.\n\nriwayat_m5.json: 1.253 dari 3.410 = 36,7%.\n\nAngka Garut bergantung koordinat yang tidak disebut. Dengan koordinat perkiraan (-7,3; 107,9) saya mendapat 1.235.950 jiwa, sedangkan versi antarmuka 0, jadi orde besarannya terkonfirmasi.\n\nAngka ini memang tampil sebagai judul di Dampak (dampak.js:41)."
+  },
+  {
+   "klaim": "Mesin kerusakan dan korban dikalibrasi ke 8 gempa dengan pengali 3,06 dan galat LOO sekitar 5,3 kali (Yogyakarta model 555 lawan 5.700; Padang 3.063 lawan 1.115). Mesin ini muncul otomatis untuk gempa nyata di Simulasi, sementara tab Metode disembunyikan dan teksnya basi.",
+   "status": "benar",
+   "catatan": "Terverifikasi:\n- kalibrasi_kerusakan.json: kalib 3,0586, faktor_loo 5,341, n 8. Yogya 555/394 lawan 5.700; Padang 3.063 lawan 1.115. Catatan berkasnya sendiri berbunyi 'ditulis dari ingatan'.\n- sim.js:478 memuat gempa nyata terkuat 7 hari.\n- bencana.json untuk Gempa: tab_sembunyi ['metode'].\n- metode.js masih menulis letalitas 2,5%/4%/0,5% dan okupansi 0,8, padahal kerusakan.js memakai 0,015/0,014/0,002."
+  },
+  {
+   "klaim": "Indeks risiko riwayat 0-100 memberi Jawa Tengah 22 (Rendah), Jawa Timur 28 (Rendah), DIY 38 (Sedang), dan Gorontalo 73 (Sangat tinggi). Indeks ini tampil di laci untuk setiap gempa.",
+   "status": "benar",
+   "catatan": "risiko.json prov: 33 [22,0], 35 [28,0], 34 [38,1], 75 [73,3], 17 [69,3], 32 [44,1].\n\nPembanding resmi yang diusulkan (data-irbi-full, 514 kab × 2015-2025, ada kolom gempabumi) terkonfirmasi tersedia."
+  },
+  {
+   "klaim": "Outlook 12 bulan menulis 'Gempa M6+ dangkal', padahal memakai laju M6+ semua kedalaman (12,97 per tahun, 0,66 per bulan), sehingga laju 'dangkal' dilebihkan sekitar 28%.",
+   "status": "benar",
+   "catatan": "Terverifikasi:\n- outlook12.py:57 memberi label.\n- peluang_gempa.py: kelas m6 tanpa saringan kedalaman.\n- laju.json m6: n 467, 12,972 per tahun.\n- outlook12.json: m6_per_bulan 1,081, peluang_m6 0,66.\n- 515/657 (78,4%) ≤70 km, jadi kelebihannya sekitar 27,6%.\n\nRasio itu dari katalog mentah, belum di-declustering, jadi persennya perkiraan."
+  }
+ ]
+}

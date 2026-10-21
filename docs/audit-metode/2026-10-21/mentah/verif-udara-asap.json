@@ -1,0 +1,412 @@
+{
+ "modul": "udara-asap. Saya memeriksa 31 usulan P1/P2 (indeks 17, 29, dan 30 adalah P3, jadi dilewati). Di status-tautan.tsv tidak ada tautan modul ini yang berstatus 404 atau URLError. OpenAQ v3 berstatus 401, dan itu memang perilakunya: API ini butuh kunci X-API-Key yang gratis. Untuk usulan yang praktik_resmi-nya berupa klaim positif tentang lembaga tetapi tidak berhasil saya konfirmasi, statusnya saya turunkan menjadi 'sebagian'. Snapshot data yang dicek adalah public/udara/data (prakiraan.json dibuat 2026-10-19T19:20Z), sama dengan snapshot telaah. Isinya sudah sekitar 2 hari saat dicek.",
+ "usulan": [
+  {
+   "indeks": 0,
+   "prioritas": "P2",
+   "metode_lama": "Konversi PM2,5 rata-rata 24 jam ke kategori ISPU (P.14/2020)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "Permen LHK P.14/MENLHK/SETJEN/KUM.1/7/2020 (URL JDIH tidak diverifikasi)",
+     "masalah": "Tidak ada URL. Peraturannya ada (Berita Negara 2020 No. 774), tetapi tabel titik potong di naskah resmi tidak terbaca: PDF Berita Negara mengembalikan HTTP 500 dan salinan PPKL tidak bisa di-resolve DNS-nya.",
+     "pengganti": "https://peraturan.go.id/files/bn774-2020.pdf (BN 2020/774). Rentang yang sama 0-15,5 / 15,6-55,4 / 55,5-150,4 / 150,5-250,4 / >250,5 µg/m³ tercantum di halaman resmi BMKG https://www.bmkg.go.id/kualitas-udara/informasi-partikulat-pm25.bmkg"
+    }
+   ],
+   "koreksi": "Titik potong di kode cocok dengan tabel kategori PM2,5 BMKG. P.14/2020 masih berlaku: Permen LH 5/2026 hanya mencabut Permen LH 12/2010, dan ISPU disebut masih dipakai. Situs ispu.menlhk.go.id gagal DNS juga dari mesin ini (ENOTFOUND). Tambahan untuk praktik_resmi: BMKG menerbitkan konsentrasi PM2,5 terukur dari 27 stasiun BAM dengan kategori yang sama. Data ini adalah sumber terukur yang langsung tersedia, tanpa harus menunggu akses AQMS KLH. Rujukan WHO AQG 2021 memang ada (22 Sep 2021), tetapi tidak relevan untuk titik potong ISPU."
+  },
+  {
+   "indeks": 1,
+   "prioritas": "P1",
+   "metode_lama": "Status Normal/Waspada/Siaga/Awas untuk udara",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://asmc.asean.org/",
+     "masalah": "Catatan 'tidak terjangkau, perlu dicek' sudah usang. Halaman bisa diakses (200). Halaman alert memuat Alert Level 0-3 untuk ASEAN selatan.",
+     "pengganti": "https://asmc.asean.org/asmc-alerts/"
+    }
+   ],
+   "koreksi": "Inti usulan sahih. PELATIHAN-MODEL.md aturan 7 ('status resmi lembaga tidak pernah jadi label yang ditimpa model') ada di repo. Praktik resmi terkonfirmasi: status siaga darurat karhutla 2026 ditetapkan lewat SK kepala daerah, misalnya Gubernur Sumsel (22 Apr-30 Nov), Jambi, Riau, Kalbar (2 Feb-15 Nov), Kalteng dan Kalsel (s.d. 31 Okt), serta kabupaten Ponorogo dan Situbondo. Yang belum terkonfirmasi adalah klaim bahwa status ini bisa diambil dari DIBI atau ArcGIS BNPB yang sudah dipanen repo. SUMBER-DATA.md §8 hanya menyebut layanan kejadian, dan saya tidak menemukan daftar status darurat tunggal dari BNPB. Sumbernya harus dikumpulkan dari SK daerah atau BPBD. Konteks baru yang penting: ASMC menaikkan Alert Level 3 untuk ASEAN selatan pada 16 Okt 2026."
+  },
+  {
+   "indeks": 2,
+   "prioritas": "P1",
+   "metode_lama": "Prakiraan PM2,5 72 jam per kab dari CAMS",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://opendap.nccs.nasa.gov/dods/gmao/geos-cf/fcast",
+     "masalah": "Ini koleksi GEOS-CF v1 yang sudah berhenti. aqc_tavg_1hr_g1440x721_v1.latest hanya mencakup 2-7 Jan 2026. Nama variabel 'pm25_rh35_gcc' juga milik v1.",
+     "pengganti": "https://opendap.nccs.nasa.gov/dods/gmao/geos-cf/v2/fcst/aqc_tavg_1hr_glo_L1440x721_slv.latest (GEOS-CF v2: 1440x721, per jam, 120 langkah; .info saat dicek mencakup 20 Okt 09:30Z-25 Okt 08:30Z 2026; variabel pm25_rh35)"
+    },
+    {
+     "url": "Keller dkk. 2021 doi:10.1029/2020MS002413",
+     "masalah": "Rujukannya benar (JAMES 13(4); GEOS-CF v1.0 0,25°, prakiraan 5 hari; mengakui aerosol terlalu tinggi 20-50%), tetapi hanya menjelaskan v1. Rujukan untuk v2 belum ada.",
+     "pengganti": "Tetap dipakai, dan perlu ditambah dokumentasi GEOS-CF v2 (belum saya temukan)."
+    }
+   ],
+   "koreksi": "Yang terkonfirmasi:\n- Open-Meteo CAMS global 0,4° (~45 km), 3-jam, diperbarui tiap 12 jam, mendukung past_days.\n- Glahn & Lowry 1972 J. Appl. Meteor. 11:1203-1211.\n- Ambang Emery dkk. 2017 (JAWMA 67:582-598) untuk PM2,5: NMB ±30%, NME <50%, r >0,40. Ini tingkat 'criteria'; tingkat 'goal' adalah ±10%/35%/0,70.\n\nPraktik resmi yang ditandai 'perlu dicek' kini terkonfirmasi: BMKG menayangkan PM2,5 terukur (Beta Attenuation) di 27 stasiun, termasuk Palangkaraya, Pangkalanbun, Kota Jambi, Muaro Jambi, Pekanbaru, dua stasiun Palembang, Kubu Raya, Sintang, Mempawah, Banjarbaru, Samarinda, dan Kemayoran. Inilah pembanding MOS paling langsung, karena mencakup kota berasap yang tidak ada di METAR.\n\nData yang bisa dihitung ulang dari repo cocok: status hari ini 428/65/13/8, Jakarta 121 berbanding 50, dan Pulang Pisau [895,719,583].\n\nCatatan lisensi: tier gratis Open-Meteo hanya untuk nonkomersial (<10.000 panggilan/hari, CC BY 4.0)."
+  },
+  {
+   "indeks": 3,
+   "prioritas": "P2",
+   "metode_lama": "Koreksi bias per stasiun WAQI (tidak aktif)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Yang terkonfirmasi:\n- Halaman EPA menyebut revisi AQI PM2,5 bersamaan dengan final rule 7 Feb 2024.\n- SUMBER-DATA.md:24, :117, :144 menyatakan WAQI melarang redistribusi massal, dan :153 OPENAQ_KEY ada.\n- prakiraan.json koreksi {status 'belum', n_stasiun 0, metode 'WAQI_TOKEN tak ada'}.\n\nOpenAQ v3 401 berarti kunci wajib dan gratis, bukan tautan rusak. Jumlah stasiun Indonesia di OpenAQ tetap belum dihitung. Sumber µg/m³ yang sudah pasti ada adalah 27 stasiun PM2,5 BMKG (lihat usulan 2)."
+  },
+  {
+   "indeks": 4,
+   "prioritas": "P2",
+   "metode_lama": "Uji hindcast CAMS terhadap METAR",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.cawcr.gov.au/projects/verification/",
+     "masalah": "Dialihkan permanen (301). Isinya masih ada di alamat baru dan memuat POD, FAR, frequency bias, HSS, Peirce, Brier, dan reliability diagram.",
+     "pengganti": "https://jwgfvr.github.io/forecastverification"
+    },
+    {
+     "url": "WMO Manual on Codes (WMO-No. 306), tabel 4677 (URL tidak diverifikasi)",
+     "masalah": "Tidak ada URL.",
+     "pengganti": "https://www.nodc.noaa.gov/gtspp/document/codetbls/wmocodes/table4677.html (salinan NOAA tabel 4677: 04 = 'Visibility reduced by smoke, e.g. veldt or forest fires...', 05 = 'Haze')"
+    }
+   ],
+   "koreksi": "Semua klaim data saya cek langsung.\n\nISD 96655099999 (Palangka Raya Tjilik Riwut):\n- Kolom VIS dan MW1 ada.\n- Sep 2019: 29 hari dengan ww 04/05, jarak pandang minimum 200 m pada 2019-09-15T03Z.\n- Okt 2023: 24 hari.\n- Berkas 2025 berakhir 2025-08-24T21Z.\n- Berkas 2026 404 (memang belum ada).\n- Baris SYNOP BMKG (SYN...) ada di berkas, jadi klaim SYNOP sampai ke GTS juga terbukti.\n\nIEM ID__ASOS memuat 39 stasiun, tanpa WAGG, WIJJ, dan WIOK.\n\nCAMS EAC4: 0,75°, 3-jam, 2003-2025, diperbarui dua kali setahun dengan jeda 4-6 bulan, GRIB (opsi netCDF), CC-BY."
+  },
+  {
+   "indeks": 5,
+   "prioritas": "P2",
+   "metode_lama": "Arsip prakiraan dan uji prospektif h+1",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Halaman AWC menyatakan batas 100 permintaan/menit dan akses database sampai 30 hari ke belakang. Aturan 4 di PELATIHAN-MODEL.md ('prospektif append-only sejak hari pertama terbit') ada. metar_prakiraan memang null di prakiraan.json."
+  },
+  {
+   "indeks": 6,
+   "prioritas": "P1",
+   "metode_lama": "Jiwa terpapar udara tidak sehat (seluruh kab ikut satu titik CAMS)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan terkonfirmasi:\n- Koplitz dkk. 2016 ERL 11:094023 memakai sensitivitas adjoint GEOS-Chem dikali emisi GFAS. Hasilnya paparan asap saja yang berbobot penduduk, jadi deskripsi di praktik_resmi cukup tepat.\n- Childs dkk. 2022 ES&T: PM2,5 asap didefinisikan sebagai anomali di atas median 3 tahun hari non-asap per stasiun-bulan. Ini sesuai dengan cara rujukan itu dipakai.\n- WorldPop R2025A memuat IDN 2026 1 km (idn_pop_2026_CN_1km_R2025A_UA_v1.tif), berlisensi CC BY 4.0.\n\nAngka repo terkonfirmasi: 89.518.808 jiwa, dan Jawa 79.663.100 (89,0%).\n\nYang perlu dikoreksi: 'menghapus 83 sampai 89% angka yang berasal dari kota Jawa non-karhutla' terlalu kuat. Angka 89% adalah porsi Jawa secara keseluruhan, bukan porsi non-karhutla. Angka 83% berasal dari rincian telaah yang sudah dikoreksi tantang dan melingkar karena memakai porsi api atribusi. Belum ada bukti berapa bagian yang bukan asap. dampak.py:283-305 memang menyaring penduduk dengan kena_api, jadi definisi karhutla memang berbeda."
+  },
+  {
+   "indeks": 7,
+   "prioritas": "P1",
+   "metode_lama": "Balita, lansia, dan sekolah di wilayah tidak sehat",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://hub.worldpop.org/",
+     "masalah": "Tautan ini hanya halaman portal, tidak menunjuk dataset struktur umur.",
+     "pengganti": "https://data.worldpop.org/GIS/AgeSex_structures/Global_2015_2030/R2025A/2026/IDN/v1/1km_ua/ (struktur umur-jenis kelamin IDN 2026, 1 km dan 100 m, CC BY 4.0)"
+    }
+   ],
+   "koreksi": "Repo terkonfirmasi:\n- rentan.py:18: BALITA 0,076 dan LANSIA 0,12 nasional.\n- rentan.py:24: MAKS_SEKOLAH 300.\n- rentan.json: daftar sekolah tepat 300 entri, sedangkan nasional.sekolah [15.737; 16.886; 15.447].\n- dampak.js menulis 'sekitar ${s.length} sekolah', sehingga yang tampil adalah 300.\n\nData umur 1 km per sel yang dibutuhkan usulan memang tersedia."
+  },
+  {
+   "indeks": 8,
+   "prioritas": "P1",
+   "metode_lama": "Tambahan kasus ISPA per hari (RR HRAPIE × prevalensi Riskesdas)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "WHO Europe 2013 HRAPIE (URL tidak diverifikasi)",
+     "masalah": "Tidak ada URL. RR-nya sendiri benar: Héroux dkk. 2015, Tabel 1 grup A*, RR 1,0190 (0,9982-1,0402) per 10 µg/m³ untuk rawat inap pernapasan. Namun WHO Europe sudah menerbitkan HRAPIE-2 (28 Nov 2025) yang memperbarui CRF 2013.",
+     "pengganti": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4480843/ (HRAPIE 2013) dan https://www.who.int/publications/i/item/9789289062633 (HRAPIE-2, 2025, sebaiknya jadi acuan)"
+    },
+    {
+     "url": "https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+     "masalah": "Tidak cocok dengan klaim yang didukungnya. Fungsi dampak di Koplitz 2016 hanya untuk kematian dewasa (sekitar 100.300 kematian berlebih), bukan morbiditas atau ISPA.",
+     "pengganti": "HRAPIE-2 (2025) atau manual AirQ+ untuk fungsi rawat inap pernapasan jangka pendek"
+    }
+   ],
+   "koreksi": "Praktik resmi terkonfirmasi lewat pemberitaan: Kemenkes melaporkan 50.891 kasus ISPA di 63 kab/kota (Jul-Agu 2026) dan 283.270 kasus di 7 provinsi terdampak per 13 Okt 2026. Ada juga Surat Kewaspadaan Karhutla dari Kemenkes. Rantai pelaporannya yang belum terkonfirmasi. SKDR memang ada (mingguan, sejak 2009), tetapi daftar penyakit SKDR yang saya temukan menyebut ILI dan pneumonia, bukan 'ISPA'. Klaim 'kunjungan ISPA mingguan SKDR per kab' harus dicek ke Pedoman SKDR. Untuk AirQ+, halaman WHO tidak menyebut gratis atau tidaknya maupun syarat registrasinya. Repo terkonfirmasi: rentan.py:19-22, dan ispa nasional {t 40.785, lo 0, hi 78.255}."
+  },
+  {
+   "indeks": 9,
+   "prioritas": "P1",
+   "metode_lama": "Prakiraan jarak pandang bandara Koschmieder",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://aviationweather.gov/api/data/taf?ids=WIOO,WIPP,WIBB,WAOO&format=raw",
+     "masalah": "Ini tautan langsung, isinya berganti tiap penerbitan. Angka 05Z yang dikutip tidak bisa dibuka lagi. Saat dicek (terbit 211100Z): WIPP 2500 FU (TEMPO 0800), WIOO 3000 FU, WIBB 3000 FU, WAOO 8000 dengan TEMPO 2118/2201 2000 FU.",
+     "pengganti": "Arsipkan teks raw TAF berstempel waktu di repo. Dasar resmi TAF BMKG: Peraturan BMKG No. 6/2024 https://peraturan.go.id/filespengundangan/peraturan-bmkg-no-6-tahun-2024.pdf (ditemukan lewat pencarian, belum dibuka)"
+    }
+   ],
+   "koreksi": "Rumus di repo: V = 3,912/(0,013 + 0,006·PM), dibatasi maksimum 10 km. Hasilnya 10 km untuk PM ≤ 63,0 µg/m³. Di rentan.json, ke-14 bandara bernilai prakiraan [10,10,10]. TAF terkini tetap memuat FU dengan jarak pandang 2,5-3 km, jadi kontradiksinya nyata. Rasionya 3 sampai 4 kali lipat pada penerbitan 11Z, bukan 5 kali lipat seperti pada 05Z. Praktik resmi benar: TAF disusun dan disebarkan stasiun meteorologi BMKG."
+  },
+  {
+   "indeks": 10,
+   "prioritas": "P1",
+   "metode_lama": "Jarak pandang bandara terkini dari METAR",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "aviation.bmkg.go.id (di praktik_resmi, perlu dicek)",
+     "masalah": "Domain yang muncul di sumber resmi adalah web-aviation.bmkg.go.id. aviation.bmkg.go.id tidak saya verifikasi.",
+     "pengganti": "https://web-aviation.bmkg.go.id/"
+    }
+   ],
+   "koreksi": "Repo terkonfirmasi:\n- metar.py:3 mencatat WIJJ, WAGG, WIOK, dan lainnya tidak ada di feed.\n- Flag 'asap' menghitung FU dan HZ sama.\n- laporan_udara.py:143 mengambil 10 bandara pertama.\n- Tabel 'bandara' di laporan.json tidak memuat WIPP Palembang 1,6 km FU.\n- data/laporan-bnpb/presiden-2026-10-20.json baris 146 dan 556: Ketapang dan Singkawang tutup.\n\nNOTAM memang diterbitkan AirNav Indonesia (contoh NOTAM C1086/26 untuk WICC, 6 Sep 2026). Ditjen Hubud meminta operator menerbitkan NOTAM untuk kabut asap 13-17 Okt 2026. Endpoint NOTAM yang bisa dipanen mesin belum ditemukan."
+  },
+  {
+   "indeks": 11,
+   "prioritas": "P2",
+   "metode_lama": "Lintasan asap maju 72 jam satu jalur per lapis",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Yang terkonfirmasi:\n- Ensemble API: ECMWF IFS 0,25° 51 anggota 3-jam, GFS Ensemble 0,25° 31 anggota 3-jam, angin 925/850 hPa ada, BLH tidak tercantum. Lisensi gratis hanya nonkomersial (CC BY 4.0).\n- HYSPLIT Linux 'Public (unregistered) Version' sama dengan versi terdaftar kecuali dispersi dengan meteorologi prakiraan. Tetap wajib mengisi email dan menyetujui syarat pakai.\n- Stein dkk. 2015, BAMS 96(12):2059-2077.\n\nYang tidak terkonfirmasi: praktik 'ASMC dan BMKG memakai HYSPLIT'. Saya hanya menemukan kajian BMKG GAW Kototabang (Megasains 2019) yang memakai HYSPLIT, dan BMKG publik 2026 memakai AOD ditambah arah angin. Untuk ASMC tidak ada sumber. Laporan menyebut MetMalaysia memakai HYSPLIT."
+  },
+  {
+   "indeks": 12,
+   "prioritas": "P1",
+   "metode_lama": "Peringatan asap lintas batas dari satu jalur dan kotak kasar",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://asmc.asean.org/",
+     "masalah": "Catatan 'tidak terjangkau' usang. Halaman bisa diakses, dan Alert Level 0-3 terdokumentasi.",
+     "pengganti": "https://asmc.asean.org/asmc-alerts/"
+    },
+    {
+     "url": "ASEAN Agreement on Transboundary Haze Pollution; UU No. 26 Tahun 2014 (URL tidak diverifikasi)",
+     "masalah": "Tidak ada URL. UU-nya terkonfirmasi: ditetapkan 14 Okt 2014, LN 2014/258, TLN 5592.",
+     "pengganti": "https://peraturan.bpk.go.id/Details/38689"
+    }
+   ],
+   "koreksi": "Saya menghitung ulang lintasan.json dengan poligon NEGARA di lintasan.py:25-32. Ada 16 pemicu jalur ke Malaysia (12 dari lapis 850 hPa, 4 dari 925 hPa) dan 4 ke Brunei (semuanya 850 hPa). Tidak satu pun dari lapis 10 m, sesuai klaim tantang. Per kompleks: 8 kompleks Malaysia hanya lewat 850 hPa, 4 lewat 850 dan 925 hPa. Konteks baru: ASMC sendiri sudah mengeluarkan Alert Level 3 untuk ASEAN selatan pada 16 Okt 2026. Produk resmi itu bisa langsung dirujuk menggantikan klaim model."
+  },
+  {
+   "indeks": 13,
+   "prioritas": "P1",
+   "metode_lama": "Atribusi sumber PM2,5 plume Gauss sampai 600 km",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Yang terkonfirmasi:\n- GFAS ADS: 0,1°, per jam untuk v1.4.2 sejak 2026, harian untuk v1.2 2003-2025; ada variabel 'Wildfire flux of PM2.5' dan 'Injection height (IS4FIRES)'; GRIB (opsi netCDF); CC-BY.\n- Kaiser dkk. 2012, Biogeosciences 9:527-554: ada koreksi celah pengamatan akibat awan, dan faktor konversi per tutupan lahan dengan kelas PEAT 5,87 kg/MJ berbanding hutan tropis 0,96.\n- Koplitz dkk. 2016 memang memakai adjoint.\n- atribusi.json: Kab. Kapuas teratas 'Kompleks api Probolinggo K0003' 9% (0-39); Pulang Pisau pm 719 berbanding model 9.\n- SiPongi melaporkan luas terbakar per provinsi (klien di luas_satelit.py:29)."
+  },
+  {
+   "indeks": 14,
+   "prioritas": "P1",
+   "metode_lama": "Asal asap per kota dari lintasan mundur angin prakiraan",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan HYSPLIT, Stein 2015, dan Ensemble API terkonfirmasi. Forecast API Open-Meteo mendukung past_days 0-92, ECMWF IFS 0,25°, GFS 0,25°, angin 925/850 hPa, dan BLH. Praktik 'umumnya memakai lintasan mundur HYSPLIT pada titik panas' baru terkonfirmasi sebagian. Contoh yang ada hanya kajian BMKG GAW Kototabang (https://megasains.gawbkt.id/index.php/megasains/article/download/167/56/614) yang memakai HYSPLIT dengan titik api Terra-Aqua. Untuk ASMC tidak ada sumber. Angka '27 jalur (pola HYSPLIT)' tidak saya cek ke dokumentasi HYSPLIT."
+  },
+  {
+   "indeks": 15,
+   "prioritas": "P1",
+   "metode_lama": "Penautan kompleks api ke konsesi lewat bbox +0,02°",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Kode terkonfirmasi. lintasan.py:137-144 membuat kotak batas MultiPolygon kompleks api ±0,02°, lalu mencari titik 'kompleks' perusahaan di dalamnya.\n\nKoreksi data: usulan menyebut 'poligon izin resmi (PBPH/HGU dari Kemenhut dan ATR/BPN)' dan bahwa 'public/data/konsesi2026 sudah ada'. Poligon (geom) memang ada di konsesi2026, tetapi sumbernya menurut index.json adalah:\n- sawit: Kemenhut data 2012 (diperbarui 2014) lewat GFW;\n- HTI: Trase 2026;\n- HPH: Kemenhut 2014 lewat GFW;\n- tambang: PPKH Kemenhut Jan 2026.\n\nTidak ada HGU ATR/BPN, dan sebagian besar data sudah lebih dari 10 tahun. Jadi data ini belum memenuhi syarat 'resmi dan mutakhir'.\n\nPraktik resmi terkonfirmasi: Ditjen Gakkum Kehutanan menindaklanjuti kasusnya, dan Kemenhut membekukan 5 PBPH di Kalbar pada Sep 2026. SiPongi meneruskan titik panas di konsesi ke pemegang izin untuk verifikasi lapangan, tanpa menetapkan pelaku."
+  },
+  {
+   "indeks": 16,
+   "prioritas": "P1",
+   "metode_lama": "'Peluang' dari 729 varian asumsi plume",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.cawcr.gov.au/projects/verification/",
+     "masalah": "Dialihkan permanen (301).",
+     "pengganti": "https://jwgfvr.github.io/forecastverification"
+    }
+   ],
+   "koreksi": "Gneiting dkk. 2005 (EMOS, MWR 133:1098, DOI aktif) dan EAC4 terkonfirmasi.\n\nKlaim data_dibutuhkan 'Regresi logistik sudah ada di scripts/umum/latih (gbdt.py, kalibrasi.py)' salah:\n- scripts/umum/latih/ tidak ada; kerangka itu baru rencana di PELATIHAN-MODEL.md §2;\n- gbdt.py ada di scripts/sebaran/gbdt.py;\n- kalibrasi.py tidak ada di mana pun di scripts/.\n\nAkibatnya upaya (M) terlalu rendah bila kerangka latih harus dibangun dulu."
+  },
+  {
+   "indeks": 18,
+   "prioritas": "P1",
+   "metode_lama": "Kejadian udara U#### dari CAMS tanpa konfirmasi",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "ISD 2023 Palangka Raya terkonfirmasi: ada sampai 2023-12-31, dengan 24 hari ww 04/05 di Okt 2023. Begitu juga AWC API, SUMBER-DATA.md §8 (DIBI dan ArcGIS BNPB), dan jalan.py yang menjalankan laporan_kejadian.jalankan('udara') sesudah langkah lain. Untuk SYNOP NRT belum ada sumber, karena ISD tidak NRT. Ini sudah diakui usulan."
+  },
+  {
+   "indeks": 19,
+   "prioritas": "P1",
+   "metode_lama": "Laporan Harian Kualitas Udara (laporan.json)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "scripts/scrape/luas_satelit.py:29 (API SiPongi)",
+     "masalah": "Endpoint di baris itu adalah https://opsroom.sipongidata.my.id/... Domainnya .my.id, bukan .go.id. Saat dicek endpoint itu hidup (200), tetapi statusnya sebagai sumber resmi Kemenhut tidak terkonfirmasi. Situs resmi SiPongi+ 2026 adalah sipongi.gakkum.kehutanan.go.id (dulu sipongi.menlhk.go.id).",
+     "pengganti": "Konfirmasi ke Kemenhut, atau ambil angka resmi dari https://sipongi.gakkum.kehutanan.go.id sebelum ditulis 'angka resmi SiPongi' di briefing."
+    }
+   ],
+   "koreksi": "jalan.py terkonfirmasi: tiap langkah boleh gagal, langkah hilir memakai berkas jalan sebelumnya, dan skrip keluar 1 hanya bila SEMUA langkah gagal. Ini mendukung usulan snapshot tunggal ditambah gagal-keras. Bug Palembang di tabel bandara juga terkonfirmasi."
+  },
+  {
+   "indeks": 20,
+   "prioritas": "P2",
+   "metode_lama": "Riwayat dan Tren PM2,5 dari analisis CAMS",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "EAC4: 0,75°, 3-jam, 2003-2025, diperbarui dua kali setahun dengan jeda 4-6 bulan, CC-BY. Tahun 2026 belum tercakup. ISD 2019 terkonfirmasi. Riwayat 14 Okt di laporan.json memuat 154.544.130 jiwa."
+  },
+  {
+   "indeks": 21,
+   "prioritas": "P2",
+   "metode_lama": "Kalender musim asap dan ENSO",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_v5.php",
+     "masalah": "Halaman ini benar menyatakan RONI dipakai untuk pemantauan resmi (PNS 26-05, efektif 1 Feb 2026). Namun yang dimuat adalah tabel ONI v5, bukan tabel RONI.",
+     "pengganti": "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/ (tabel RONI; episode = ambang ±0,5 minimal 5 musim tumpang tindih berturut, dasar 1991-2020)"
+    },
+    {
+     "url": "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+     "masalah": "Data DMI HadISST hanya terisi sampai Mei 2026; Jun-Des bernilai -9999. Tidak cocok untuk fase IOD terkini.",
+     "pengganti": "Analisis dinamika atmosfer dasarian BMKG (ENSO dan IOD), contoh https://www.bmkg.go.id/iklim/dinamika-atmosfer/analisis-dinamika-atmosfer-dasarian-i-juli-2026"
+    }
+   ],
+   "koreksi": "Saya menghitung ulang dari data/raw/firms (viirs.csv dan viirs_2012_2014.csv, satelit N = S-NPP, 1 Jan-19 Okt, semua tingkat keyakinan): 2015 = 775.371, 2019 = 397.137, 2023 = 231.218, 2026 = 570.858. Klaim terkonfirmasi. BMKG menerbitkan analisis ENSO dan IOD per dasarian, bukan cuma bulanan."
+  },
+  {
+   "indeks": 22,
+   "prioritas": "P2",
+   "metode_lama": "Simulasi dispersi Lagrangian dan 6 skenario",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://iopscience.iop.org/article/10.1088/1748-9326/11/9/094023",
+     "masalah": "Dikutip untuk 'model kimia-transport dengan dan tanpa api'. Koplitz 2016 tidak menjalankan skenario dengan dan tanpa api, tetapi memakai sensitivitas adjoint GEOS-Chem (meteorologi 2006) dikali emisi GFAS.",
+     "pengganti": "Rujukan yang sama, dengan deskripsi diperbaiki menjadi 'sensitivitas adjoint × emisi GFAS'."
+    }
+   ],
+   "koreksi": "Konstanta repo terkonfirmasi:\n- sim/model.js: dmGambut 3,5 kg/MJ × efGambut 17,3 × koreksiApi 1,5 = 90,8 g/MJ.\n- atribusi.py: DM_PER_MJ 0,368 × EF_GAMBUT 17,3 = 6,4 g/MJ, sekitar 14 kali lebih kecil.\n\nKomentar di model.js menyebut 3,5 kg/MJ sebagai 'ORDE GFAS, belum dicek ke tabelnya'. Tabel 2 Kaiser 2012 memberi PEAT 5,87 kg/MJ, jadi 3,5 bukan nilai GFAS. Catatan: β GFAS berlaku untuk FRP GFAS yang sudah dikoreksi celah, sehingga tidak bisa langsung dipakai untuk jumlah FRP VIIRS mentah."
+  },
+  {
+   "indeks": 23,
+   "prioritas": "P2",
+   "metode_lama": "Kalibrasi faktor K dan kartu 'Kecocokan skala dengan CAMS'",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.cawcr.gov.au/projects/verification/",
+     "masalah": "Dialihkan permanen (301).",
+     "pengganti": "https://jwgfvr.github.io/forecastverification"
+    }
+   ],
+   "koreksi": "Di sim/model.js:215-216 kode sendiri menulis '(BUKAN validasi)' dan 'sebagian MELINGKAR'. Klaim terkonfirmasi."
+  },
+  {
+   "indeks": 24,
+   "prioritas": "P2",
+   "metode_lama": "Ensemble simulasi 24 anggota dengan gangguan lognormal",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Ensemble API terkonfirmasi: ECMWF IFS 51 anggota dan GFS 31 anggota pada 0,25°, 925/850 hPa ada, BLH tidak tercantum. Gneiting 2005 terkonfirmasi. Praktik 'BMKG memakai ansambel NWP' tidak saya cek, tetapi tidak menopang inti usulan."
+  },
+  {
+   "indeks": 25,
+   "prioritas": "P1",
+   "metode_lama": "Peringkat perlakuan berbiaya rupiah asumsi dan beban faskes",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukannya hanya berkas repo, dan berkasnya ada: sim/tanggap.js dan scripts/scrape/daops.py. Pembagian kewenangan di praktik_resmi adalah pengetahuan tata kelola umum dan tidak saya cek per sumber. Satu bagian terkonfirmasi lewat dek BNPB 20 Okt: 'sekolah PJJ'. Kemenkes juga mengeluarkan instruksi rumah oksigen di puskesmas (17 Okt 2026)."
+  },
+  {
+   "indeks": 26,
+   "prioritas": "P2",
+   "metode_lama": "Estimasi emisi PM2,5 dari jumlah FRP 24 jam dibagi lintasan asumsi",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Yang terkonfirmasi:\n- GFAS 0,1°, per jam v1.4.2 sejak 2026.\n- Kaiser 2012: faktor konversi per tutupan lahan termasuk PEAT 5,87 kg/MJ, dan koreksi celah akibat awan.\n- Wooster dkk. 2005, JGR 110:D24311: makalahnya ada, tetapi koefisien 0,368 kg/MJ tidak saya baca langsung di naskahnya.\n- atribusi.py:40-43: DM_PER_MJ 0,368 dan LINTAS (6,4,2).\n\nPraktik 'belum ada inventaris emisi harian resmi' adalah klaim negatif yang tidak bisa dikonfirmasi, tetapi juga tidak terbantah."
+  },
+  {
+   "indeks": 27,
+   "prioritas": "P1",
+   "metode_lama": "Jalur lama udara_kualitas.json / udara_dampak.json",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Di public/inti/adapter.js:55 ada `h = Math.max(0, u.hari.indexOf(tgl))`, sehingga data jatuh ke indeks 0 bila tanggal hari ini tidak ada. Judulnya tetap menulis 'hari ini'. metar.py:38-41 memanggil scripts/udara/kualitas.py di blok finally."
+  },
+  {
+   "indeks": 28,
+   "prioritas": "P2",
+   "metode_lama": "Angin 3 lapis dan BLH, best_match kisi 1°",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://open-meteo.com/en/docs/ensemble-api",
+     "masalah": "Tidak cocok. Usulannya memakai forecast API deterministik 0,25° dengan past_days dan ERA5, bukan ensemble API.",
+     "pengganti": "https://open-meteo.com/en/docs (forecast: past_days 0-92, ECMWF IFS 0,25°, GFS 0,25°, angin 925/850 hPa, BLH) dan endpoint arsip https://archive-api.open-meteo.com/v1/archive yang sudah dipakai scripts/sebaran/cuaca.py:27"
+    }
+   ],
+   "koreksi": "Inti usulan sahih. Praktik 'BMKG memakai NWP resolusi tinggi sendiri' tidak saya cek."
+  },
+  {
+   "indeks": 31,
+   "prioritas": "P2",
+   "metode_lama": "Inventaris PLTU WRI GPPD v1.3",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://globalenergymonitor.org/projects/global-coal-plant-tracker/",
+     "masalah": "Rilis Juli 2026 dan pembaruan dua kali setahun (sekitar Januari dan Juli) terkonfirmasi. Lisensi tidak tertera di halaman, dan footernya '© 2026 Global Energy Monitor All Rights Reserved'. Cakupan PLTU captive hanya tersirat dari adanya tabel 'Captive Coal Plants'.",
+     "pengganti": "Halaman yang sama. Syarat lisensi unduhan GEM wajib dicek sebelum data ditayangkan ulang."
+    }
+   ],
+   "koreksi": "Pengakuan usulan bahwa lisensi 'perlu dicek' itu benar. Selama lisensi belum jelas, opsi 'keluarkan PLTU dari atribusi dan skenario' adalah yang aman."
+  },
+  {
+   "indeks": 32,
+   "prioritas": "P1",
+   "metode_lama": "Pop-up harian 'Situasi kualitas udara hari ini'",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "public/udara/sapa.js terkonfirmasi:\n- ringkasKota membandingkan skr = S.uk.prov[..][S.h0][5] dengan lalu = S.rw (riwayat analisis kemarin), jadi dua jenis data.\n- Ada kartu 'Asap lintas batas' dari S.lin.lintas_batas.\n- Judulnya jiwa 'terpapar udara tidak sehat', dan chip menampilkan PM2,5 rata-rata nasional."
+  },
+  {
+   "indeks": 33,
+   "prioritas": "P2",
+   "metode_lama": "PM2,5 rata-rata nasional/provinsi berbobot jiwa (pm_jiwa) dan kategorinya",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Tooltip di tren.js:50 menulis 'Kategori: ${KAT[kat(D[i].rata)].n}' pada rata-rata nasional berbobot jiwa. laporan.json nasional.pm_jiwa 7 hari: [68, 69, 68, 59, 52, 53, 58]. Klaim terkonfirmasi."
+  }
+ ],
+ "vonis_dicek": [
+  {
+   "nama": "Lapisan satelit karbon monoksida AIRS (NASA GIBS), satu-satunya keputusan dengan bukti_terverifikasi=false",
+   "hasil": "Bukti tantang terkonfirmasi di repo: public/inti/peta/nasa.js:10 memakai id 'AIRS_L3_Carbon_Monoxide_500hPa_Volume_Mixing_Ratio_Daily_Day' dengan nama 'Karbon monoksida AIRS (±5,5 km)'. Lapisan ini adalah rasio campuran CO pada 500 hPa, bukan kolom total, jadi koreksi tantang atas telaah benar dan vonis layak_catatan tetap. Label 'bukan udara permukaan' belum ada di kode. Header nasa.js menyebut semua ubin GIBS diperiksa 200 dan ber-CORS pada 17 Okt. Katalog GIBS gagal dimuat dari mesin ini, sehingga keberadaan lapisan di katalog tidak saya cek ulang."
+  }
+ ],
+ "klaim_utama": [
+  {
+   "klaim": "Angka judul 'sekitar 89,5 juta jiwa menghirup udara tidak sehat' (20 Okt), 89% dari Jawa",
+   "status": "benar",
+   "catatan": "Dihitung ulang dari prakiraan.json (r24 hari ke-0 ≥55,5): 89.518.808 jiwa. Rinciannya: Jawa (kode 31-36) 79.663.100 = 89,0%; Jabar 30,12 juta; Jateng 17,03; Jatim 16,28; Banten 10,99; DKI 5,23. Riwayat 7 hari di laporan.json: [154,5; 135,3; 132,5; 122,1; 80,1; 93,3; 89,5] juta. Klaim telaah '74,5 juta (83%) di kab berporsi api <50%' sudah dikoreksi tantang dan melingkar, jadi jangan dipakai. Pembanding '43 juta jiwa terpapar 2015 (BNPB)' memang banyak dikutip media dan LSM sebagai angka BNPB, tetapi sumber primer BNPB tidak saya buka dan tidak ada di repo. Catatan: snapshot data ini sudah sekitar 2 hari (dibuat 19 Okt 19:20Z)."
+  },
+  {
+   "klaim": "Satu-satunya bukti skill: hindcast analisis CAMS terhadap METAR, n 837 hari-bandara dari 27 bandara, POD 0,44, FAR 0,16, CSI 0,41, HSS 0,38, bias frekuensi 0,52 (CAMS meluputkan 56% hari berasap)",
+   "status": "benar",
+   "catatan": "prakiraan.json galat.metar: tabel 168/32/214/423, jenis 'analisis', periode 19 Sep-19 Okt 2026. Hitung ulang: POD 168/382 = 0,440; FAR 32/200 = 0,160; bias 200/382 = 0,524; HSS 2(168·423−32·214)/(382·637+200·455) = 0,384. koreksi.status 'belum', n_stasiun 0, metar_prakiraan null, jadi skill prakiraan h+1..h+3 memang belum ada. Celah kunci juga terkonfirmasi: data terbit menulis 'selang', sedangkan kode sekarang (prakiraan.py:202,212) menulis 'ci' dan layar (prakiraan.js:110) membaca 'ci'. Akibatnya selang tidak tampil dengan data yang sekarang terbit."
+  },
+  {
+   "klaim": "Artefak batas sel CAMS di Jakarta: 121 berbanding 50 µg/m³ dalam satu metropolitan",
+   "status": "benar",
+   "catatan": "prakiraan.json r24: Jakarta Selatan, Jakarta Timur, Kota/Kab. Bogor, Kota Bekasi, Depok, dan Tangsel identik [121,115,124] berstatus waspada. Jakarta Pusat, Utara, Barat, dan Kota Tangerang identik [50,43,38] berstatus normal. Kota Bandung dan Kab. Bandung Barat [122,132,125], sedangkan Kab. Bandung [47,30,30]."
+  },
+  {
+   "klaim": "Prakiraan Koschmieder menulis 10 km di semua bandara, dan Laporan Harian membuang Palembang 1,6 km FU (pengamatan terburuk)",
+   "status": "benar",
+   "catatan": "rentan.py:51-54 dengan MEE 4, f(RH) 1,5, Rayleigh 0,013: V = 3,912/(0,013+0,006·PM) ≥10 untuk PM ≤63,0. rentan.json: ke-14 bandara bernilai prakiraan [10,10,10], sedangkan METAR melapor WIPP 1,6 FU, WAMM 2,0 FU, WAOO 3,2 HZ, WAAA 3,3 FU, WIBB 4,5 FU, dan WIDD 5,0 FU. Tabel 'bandara' di laporan.json (laporan_udara.py:143 mengambil [:10]) memuat WAAA s.d. WIEE tanpa WIPP. TAF AWC 21 Okt 11Z mencatat FU 2,5-3 km di WIPP, WIOO, dan WIBB, jadi prakiraan 10 km bertentangan dengan produk resmi BMKG."
+  },
+  {
+   "klaim": "Emisi gambut: pipeline 0,368 kg/MJ berbanding simulasi 3,5 kg/MJ (beda sekitar 14 kali) menjadi akar atribusi yang mustahil (Kapuas 'dari Probolinggo', Pulang Pisau 99% latar)",
+   "status": "benar",
+   "catatan": "atribusi.py:40-41: DM_PER_MJ 0,368 × EF_GAMBUT 17,3 = 6,4 g/MJ. sim/model.js: 3,5 × 17,3 × 1,5 = 90,8 g/MJ, sekitar 14 kali. atribusi.json: Kab. Kapuas teratas 'Kompleks api Probolinggo K0003' 9% (0-39%); Pulang Pisau pm 719 berbanding model 9. Pembanding independen: Tabel 2 Kaiser dkk. 2012 memberi faktor GFAS PEAT 5,87 kg/MJ (hutan tropis 0,96), sekitar 16 kali di atas nilai pipeline. Ini memperkuat diagnosis bahwa emisi gambut terlalu kecil satu orde."
+  },
+  {
+   "klaim": "Peringatan lintas batas ke Malaysia dan Brunei lahir dari lapis 850 hPa; nol pemicu dari 10 m",
+   "status": "benar",
+   "catatan": "lintasan.json lintas_batas: 12 Malaysia dan 4 Brunei (field tidak menyimpan lapis). Dihitung ulang dengan poligon NEGARA di lintasan.py: jalur yang masuk Malaysia 12 dari 850 hPa dan 4 dari 925 hPa, Brunei 4 dari 850 hPa, nol dari 10 m. Setiap kompleks pemicu Malaysia punya jalur 850 hPa. Konteks: ASMC sudah mengeluarkan Alert Level 3 untuk ASEAN selatan pada 16 Okt 2026, sehingga rujukan resmi tersedia tanpa klaim model."
+  }
+ ]
+}

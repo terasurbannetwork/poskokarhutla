@@ -1,0 +1,546 @@
+{
+ "modul": "Kekeringan (scripts/kekeringan/**, public/kekeringan/**, public/data/kekeringan_*.json, dampak_kekeringan.json, posko_kekeringan.json, kering_peluang.json, scripts/og/buat.py, scripts/umum/kejadian.py). Temuan baru yang mengubah prioritas: BMKG ternyata menerbitkan Peringatan Dini Kekeringan Meteorologis (PDKM) per dasarian sebagai TABEL HTML kabupaten/kota per kategori Waspada/Siaga/Awas, bukan hanya gambar seperti anggapan spi.py:3-4. Tabel itu bisa diurai dengan html.parser stdlib. Isinya pada Dasarian II Okt 2026 (diperiksa 21 Okt 2026): 23 provinsi; seluruh NTT (22 kab/kota) dan seluruh DIY (5) berstatus Awas; Jateng 7 Awas, 15 Siaga, 5 Waspada. Platform pada hari yang sama: Jateng 0 Awas, DIY 0 Awas, NTT 4 Awas, Aceh 16 Awas, padahal Aceh tidak ada di daftar provinsi Awas BMKG. Menurut BMKG (dikutip Katadata, 24 Sep 2026), HTH Bantul mencapai 141 hari per 20 Sep, sedangkan jendela HTH platform terpotong di 93 hari (hth.py:10). Untuk modul ini, metode yang lebih efektif bukan model yang lebih canggih. Caranya: tampilkan produk resmi BMKG/BNPB sebagai angka utama, lalu pakai model internal (CHIRPS, GSMaP) hanya sebagai lapisan berlabel yang lolos uji terhadap produk resmi itu. Catatan riset: kuota WebSearch habis di tengah jalan, jadi beberapa ambang (Waspada/Siaga PDKM, kelas DC FDRS, URL data PU/Kemenkes/BPS) ditandai 'perlu verifikasi' dan tidak dikarang.",
+ "usulan": [
+  {
+   "metode_lama": "Status kekeringan 4 tingkat Normal/Waspada/Siaga/Awas dari SPI-3 POWER + penguat SPI-6/tanah (status.py:9-14, 39-64); tampil di sapa.js:28-30, insight.js:24-37, laporan.py:78-83",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Tahap 1 (sekarang): ganti seluruh status Waspada/Siaga/Awas di layar dan laporan dengan PDKM BMKG per kabupaten/kota per dasarian. Skrip baru scripts/kekeringan/pdkm.py mengurai tabel HTML di bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis dengan html.parser stdlib, memakai pola UA peramban yang sudah ada di scripts/banjir/peringatan.py. Nama kab/kota dicocokkan ke kode wilayah, lalu hasilnya ditulis ke public/data/kekeringan_pdkm.json beserta label 'BMKG, Dasarian II Okt 2026'. Setiap terbit dicatat append-only (pola kekeringan_prospektif.json) supaya arsip terbentuk. Deteksi model diturunkan menjadi lapisan 'anomali hujan' dengan kategori McKee (agak/sangat/ekstrem kering), tanpa istilah status. Tahap 2 (opsional): model peringatan berbasis dampak dengan regresi logistik per kab-bulan. Masukannya kekeringan absolut (HTH GSMaP, jumlah bulan < 60 mm CHIRPS) dan kerentanan (% rumah tangga tanpa air minum layak BPS), sasarannya DIBI 2008-kini dengan jeda 1-2 bulan.",
+   "praktik_resmi_indonesia": "BMKG menerbitkan PDKM tiap dasarian dengan tingkat Waspada/Siaga/Awas per kab/kota. Dasarnya HTH dari pos hujan ditambah prakiraan peluang hujan < 20 mm/dasarian. Menurut berita Antara, Awas = HTH > 60 hari dan peluang hujan < 20 mm/dasarian > 70%. Ambang Waspada (sekitar 21 hari) dan Siaga (sekitar 31 hari) baru terkonfirmasi dari berita daerah dan perlu verifikasi ke dokumen BMKG. Istilah status darurat (Siaga/Tanggap Darurat) ditetapkan lewat SK kepala daerah/BNPB, bukan oleh model.",
+   "kenapa_lebih_tepat": "Istilah Waspada/Siaga/Awas di ranah publik Indonesia sudah 'milik' BMKG (PDKM) dan BNPB/BPBD (SK). Memakai istilah itu untuk keluaran model yang POD-nya 0,10-0,38 dan FAR-nya 0,95-0,99 pasti berbenturan. Hal ini sudah terbukti: pada Dasarian II Okt 2026 BMKG menetapkan Awas di seluruh NTT dan DIY serta 7 kab Jateng, sedangkan platform memberi Jateng dan DIY 0 Awas dan Aceh 16 Awas. PDKM berbasis pos (bukan reanalisis), mencakup 20 hari ke depan, dan otomatis sejalan dengan pernyataan BMKG kepada Presiden.",
+   "data_dibutuhkan": "Tabel HTML PDKM: https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis (dasarian, tingkat kab/kota, wajib mencantumkan BMKG sebagai sumber). Citra: https://dataweb.bmkg.go.id/iklim/peringatan-kekeringan-meteorologis/PDKM_latest.jpg. Kamus nama kab/kota ke kode Kemendagri, yang sudah ada di repo (batas/penduduk). Arsip PDKM sebelum log dimulai sebaiknya diminta resmi ke BMKG (Pusat Informasi Perubahan Iklim) lewat jalur antarlembaga BNPB. Tahap 2: DIBI 2008-kini (https://dibi.bnpb.go.id), Susenas BPS.",
+   "upaya": "S",
+   "cara_validasi": "(1) Uji parser offline dengan HTML tersimpan di tests/: jumlah kab per kategori sama dengan isi sel tabel, 0 nama tak tercocok (bila ada, gagal dengan nama yang gagal disebut), dan provinsi kosong ('-') ditangani. (2) Gerbang laporan: laporan.py/L.periksa menolak kata 'Waspada', 'Siaga', atau 'Awas' pada kalimat yang sumbernya bukan BMKG atau SK. (3) Patokan keterampilan: dari log PDKM, hitung POD/FAR/CSI PDKM BMKG terhadap DIBI per kab-bulan, dengan bootstrap blok bulan. Ini menjadi batas realistis. Model internal tahap 2 hanya boleh tampil berdampingan bila CSI-nya, dengan jeda 1 bulan, punya batas bawah selang 95% di atas CSI PDKM pada periode uji yang sama.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis",
+    "https://dataweb.bmkg.go.id/iklim/peringatan-kekeringan-meteorologis/PDKM_latest.jpg",
+    "https://kupang.antaranews.com/berita/54174/bmkg-sebut-13-daerah-di-ntt-berstatus-awas-kekeringan-meteorologis",
+    "https://bengkulu.antaranews.com/berita/292377/bmkg-keluarkan-peringatan-dini-kekeringan-meteorologis-di-diy",
+    "https://kupang.antaranews.com/berita/118728/bmkg-sebut-hujan-sangat-rendah-pada-enam-kecamatan-di-mabar",
+    "https://health.detik.com/berita-detikhealth/d-8703565/bmkg-peringatkan-wilayah-yang-hadapi-kekeringan-di-level-awas-ini-daftarnya",
+    "https://dibi.bnpb.go.id",
+    "scripts/banjir/peringatan.py (pola UA BMKG yang sudah ada)",
+    "public/data/kekeringan_wilayah.json (Aceh 16 Awas; Jateng 0 Awas)"
+   ]
+  },
+  {
+   "metode_lama": "Hari Tanpa Hujan (HTH) dan jiwa di HTH >= 31/61 hari dari hujan model Open-Meteo past_days=92 (hth.py:3-13, 37-39); tampil di sapa.js:24-25, tren.js:39-48, laporan.py:30-35",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Angka utama: HTH resmi BMKG. Versi tabular diambil tidak langsung lewat PDKM (Awas mensyaratkan HTH > 60 hari), ditambah citra peta HTH BMKG dengan atribusi, dan untuk Presiden dikutip 'HTH terpanjang X hari di pos Y (BMKG)'. Bila HTH grid internal tetap diperlukan sebagai lapisan: (a) ganti sumber ke GSMaP_Gauge_NRT (JAXA, 0,1 derajat per jam, terkoreksi pos, CSV/biner, gratis setelah registrasi) atau CHIRPS v3 harian untuk riwayat; (b) perpanjang jendela ke >= 180 hari, karena batas 93 hari sekarang (hth.py:10) mustahil menangkap 141 hari Bantul; (c) pakai ambang hari hujan per wilayah yang dikalibrasi supaya frekuensi hari >= 1 mm pada grid sama dengan pos BMKG terdekat (pencocokan kuantil), bukan 1 mm tetap pada rata-rata areal 55 km.",
+   "praktik_resmi_indonesia": "BMKG memantau HTH dari jaringan pos hujan per dasarian (hari hujan >= 1 mm; kelas 1-5, 6-10, 11-20, 21-30, 31-60, > 60 hari) dan menerbitkan peta di bmkg.go.id/iklim/hari-tanpa-hujan. Kategori HTH juga menjadi inti PDKM. Data pos harian bisa diminta lewat dataonline.bmkg.go.id (perlu registrasi) atau kerja sama antarlembaga.",
+   "kenapa_lebih_tepat": "Kegagalannya struktural, bukan sekadar bias. Bali bernilai <= 1 hari di semua kabupaten dan NTT bermedian 2 hari, padahal BMKG menetapkan Awas di seluruh NTT. Jendela 92 hari membuat 141 hari terbaca '>= 93'. Ambang 1 mm pada hujan model yang sering gerimis mematahkan deret kering secara tidak seragam antarwilayah, sehingga urutan wilayah pun ikut salah. Produk berbasis pos atau satelit terkoreksi pos menghilangkan kedua masalah ini.",
+   "data_dibutuhkan": "BMKG HTH: https://www.bmkg.go.id/iklim/hari-tanpa-hujan (PNG; atribusi wajib). PDKM (lihat usulan status). GSMaP: https://sharaku.eorc.jaxa.jp/GSMaP/ (registrasi gratis, kredensial FTP disimpan sebagai secret GitHub, latensi jam-hari). CHIRPS v3: https://data.chc.ucsb.edu/products/CHIRPS/v3.0/ (0,05 derajat, 1981-kini; prelim 2 hari setelah akhir pentad, final minggu ke-3 bulan berikutnya; tersedia format BIL yang mudah dibaca stdlib). Pos BMKG: https://dataonline.bmkg.go.id.",
+   "upaya": "M",
+   "cara_validasi": "Sasaran 1: daftar kab/kota Awas PDKM per dasarian (proksi HTH > 60 hari). Kelas HTH >= 61 versi grid, diagregasi ke kab (maks berbobot luas sawah/penduduk), harus mencapai POD >= 0,8 dan FAR <= 0,3 selama >= 6 dasarian musim kemarau 2026. Sasaran 2: 20-30 pos BMKG dari dataonline yang tersebar di Jawa, Bali-NT, Sulawesi, dan Sumatra. Hitung HTH dari hujan harian pos, bandingkan dengan sel grid yang sama, dan syaratkan MAE <= 7 hari untuk kasus HTH >= 21 dan Spearman >= 0,7. Kalau gagal, lapisan grid tidak terbit dan layar hanya menampilkan produk BMKG.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/hari-tanpa-hujan",
+    "https://katadata.co.id/amp/ekonomi-hijau/investasi-hijau/6ab4bc44a2f77/197-daerah-berstatus-awas-kekeringan-bantul-hampir-lima-bulan-tanpa-hujan",
+    "https://sharaku.eorc.jaxa.jp/GSMaP/guide.html",
+    "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/README-CHIRPSv3.0.txt",
+    "https://dataonline.bmkg.go.id",
+    "scripts/kekeringan/hth.py:10 (batas 93 hari)"
+   ]
+  },
+  {
+   "metode_lama": "Laporan Harian Kekeringan: sorotan '80 kabupaten berstatus Awas', '166 Siaga', 'HTH terpanjang 62 hari di Indramayu', tabel peluang SPI-3 per provinsi, dan tabel padi (laporan.py:74-152)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Susun ulang laporan dengan sorotan yang hanya berasal dari sumber resmi bertanggal: (1) jumlah kab/kota Waspada/Siaga/Awas menurut PDKM BMKG dasarian berjalan, beserta provinsi yang seluruhnya Awas; (2) kejadian dan KK terdampak kekeringan dari laporan harian BNPB/DIBI (pembacaan data/laporan-bnpb/harian-*.json sudah ada di repo); (3) SK status darurat yang berlaku, dengan catatan cakupan data; (4) status ENSO/IOD. Tabel peluang SEAS5 per provinsi dan tabel padi dikeluarkan dari laporan. Produk model dipindah ke lampiran 'Indikator model (hipotesis)', dengan angka uji (tertangkap/alarm palsu) dan bulan data. Kode kabupaten diganti kode Kemendagri.",
+   "praktik_resmi_indonesia": "Laporan Harian Pusdalops BNPB memuat kejadian, KK/jiwa terdampak, dan respons, dari laporan BPBD. Peringatan meteorologis dikutip dari BMKG dengan menyebut periode dasarian.",
+   "kenapa_lebih_tepat": "Laporan inilah yang paling mungkin disalin utuh ke Paparan Presiden. Setiap angka di sorotan harus bisa ditelusuri ke lembaga yang berwenang dan tidak boleh bertentangan dengannya. Contohnya, BMKG menyebut 7 kab Jateng Awas, sementara laporan platform menyebut Jateng 0 Awas.",
+   "data_dibutuhkan": "kekeringan_pdkm.json (usulan status), data/laporan-bnpb/harian-*.json (sudah ada), kekeringan_resmi.json, iklim.json. Kamus kode wilayah Kemendagri (repo sudah punya batas/kode BIG/Kemendagri di modul lain).",
+   "upaya": "M",
+   "cara_validasi": "Uji unit laporan.py: setiap butir 'sorot' wajib punya medan sumber dengan nilai BMKG, BNPB, BPBD, atau NOAA, ditambah medan periode. Uji gagal bila ada sorotan bersumber 'Pantau Bencana' atau memuat kata 'berstatus' tanpa sumber BMKG/SK. Uji silang otomatis: jumlah Awas di sorotan sama dengan jumlah baris Awas di kekeringan_pdkm.json pada dasarian yang sama.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis",
+    "https://dibi.bnpb.go.id",
+    "scripts/kekeringan/laporan.py",
+    "data/laporan-bnpb/harian-2026-10-19.json"
+   ]
+  },
+  {
+   "metode_lama": "Paparan penduduk dan agregasi wilayah dengan aturan 30% penduduk ('147,9 juta jiwa Siaga+', judul 'Penduduk terdampak' di dampak.js:12; status.py:110-140)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Tampilkan tiga besaran terpisah dan jangan pernah menggabungkannya. (1) 'Terdampak': hanya dari BPBD/BNPB (laporan harian, DIBI), dalam satuan KK/jiwa. (2) 'Penduduk di wilayah peringatan BMKG': jiwa kab/kota pada daftar PDKM Awas/Siaga, diberi label tegas 'paparan, bukan terdampak'. (3) 'Perkiraan rentan air bersih': penduduk kab/kota Awas PDKM dikali (1 - % rumah tangga dengan akses air minum layak) dari BPS. Kerangka besaran ketiga sudah ada di dampak.py:73-86 dan menunggu air_minum.json. Hapus aturan 30% dan hitungan seluruh penduduk kecamatan.",
+   "praktik_resmi_indonesia": "BNPB/BPBD melaporkan 'terdampak' dari asesmen lapangan. Kajian risiko InaRISK menyajikan 'jiwa terpapar' per bahaya. BPS menerbitkan indikator akses air minum layak (SDG 6.1.1) dari Susenas.",
+   "kenapa_lebih_tepat": "Angka 147,9 juta sekitar 34 kali terdampak tertinggi 2023 dan lebih dari 700 kali angka laporan BNPB 19 Okt (sekitar 45.852 KK). Memisahkan paparan dari terdampak sesuai praktik BNPB, dan memakai kerentanan air menyempitkan angka ke kelompok yang memang membutuhkan dropping air.",
+   "data_dibutuhkan": "PDKM BMKG (usulan status), WorldPop/penduduk.json (sudah ada), tabel BPS 'persentase rumah tangga dengan akses sumber air minum layak' per provinsi dan bila ada per kab/kota (portal https://www.bps.go.id; URL tabel persisnya perlu dicari, belum diverifikasi), laporan harian BNPB.",
+   "upaya": "S",
+   "cara_validasi": "(1) Gerbang kata: dampak.js/laporan menolak 'terdampak' pada angka yang sumbernya bukan BNPB/BPBD. (2) Uji kewajaran: untuk kab/kota yang punya laporan BPBD kekurangan air dalam 3 dasarian terakhir, 'perkiraan rentan' harus berada dalam 0,1-10 kali jiwa yang dilaporkan (median rasio dicatat). Bila di luar rentang itu pada lebih dari separuh kab, besaran (3) tidak terbit.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id",
+    "https://www.bps.go.id",
+    "https://dibi.bnpb.go.id",
+    "scripts/kekeringan/dampak.py:73-86"
+   ]
+  },
+  {
+   "metode_lama": "Kartu pratinjau tautan (OG) kekeringan: '80 kabupaten/kota berstatus awas kekeringan, 18,9 juta jiwa di kecamatan awas' (scripts/og/buat.py:135-145)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ambil isi kartu OG dari kekeringan_pdkm.json, misalnya 'Peringatan dini kekeringan BMKG Dasarian II Okt 2026: N kab/kota Awas', dengan sumber 'BMKG'. Bila PDKM gagal diambil, tampilkan kalimat netral tanpa angka ('Pantau kekeringan: peringatan BMKG, kejadian BNPB'). Deskripsi yang mengklaim 'hujan (SPI), tanah, dan indeks kekeringan' dihapus.",
+   "praktik_resmi_indonesia": "Pesan publik tentang status mengutip lembaga yang berwenang (BMKG untuk peringatan dini, BNPB/BPBD untuk status darurat).",
+   "kenapa_lebih_tepat": "Pratinjau WhatsApp adalah permukaan yang paling luas beredar ke pejabat, dan tidak ada ruang di sana untuk label hipotesis. Hanya angka resmi yang aman ditaruh di situ.",
+   "data_dibutuhkan": "kekeringan_pdkm.json.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit buat.py: judul kekeringan tidak boleh memuat 'awas', 'siaga', atau 'waspada' kecuali medan sumber = 'BMKG' dan periode dasarian terisi. Uji gagal bila deskripsi menyebut 'tanah' atau 'indeks kekeringan'.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis",
+    "scripts/og/buat.py:135-145"
+   ]
+  },
+  {
+   "metode_lama": "Kejadian D: gugus kabupaten Siaga/Awas model dijadikan entitas 'Kekeringan Siaga/Awas, sekitar X' (scripts/umum/kejadian.py:283-298)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Matikan adaptor_kekeringan. Entitas kejadian kekeringan hanya dibentuk dari laporan harian BNPB/DIBI (kab/kota dengan laporan BPBD). Bila halaman multi-bencana perlu konteks bahaya, tambahkan lapisan terpisah 'Peringatan BMKG (bukan kejadian)' dengan ikon berbeda, dari PDKM.",
+   "praktik_resmi_indonesia": "DIBI dan Pusdalops BNPB mencatat kejadian berdasarkan laporan BPBD. Peringatan dini BMKG diperlakukan sebagai peringatan, bukan kejadian.",
+   "kenapa_lebih_tepat": "Menyejajarkan sekitar 44 'kejadian' model dengan 8 kabupaten berkejadian nyata (laporan BNPB 19 Okt) mengaburkan beda antara dugaan dan fakta.",
+   "data_dibutuhkan": "data/laporan-bnpb/harian-*.json dan DIBI (sudah dibaca modul lain).",
+   "upaya": "S",
+   "cara_validasi": "Uji kejadian.py: tidak ada entitas berkode D yang sumbernya bukan BNPB/BPBD. Jumlah entitas D sama dengan jumlah kab/kota berkejadian kekeringan pada laporan harian terakhir.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://dibi.bnpb.go.id",
+    "scripts/umum/kejadian.py"
+   ]
+  },
+  {
+   "metode_lama": "Posko air bersih dan kebutuhan truk tangki: seluruh penduduk kecamatan Siaga/Awas x 15 L (posko.py; 148,4 juta jiwa, 2,23 miliar L/hari, 445.244 rit)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sembunyikan rute /kekeringan/posko dari publik. Hitung ulang kebutuhan air dari jiwa/KK yang DILAPORKAN BPBD kekurangan air bersih (laporan harian BNPB, DIBI) x 15 L/orang/hari (Sphere), dan bandingkan dengan distribusi air yang tercatat. Sebagai skenario perencanaan, pakai 'perkiraan rentan air bersih' (penduduk kab Awas PDKM x proporsi tanpa akses air minum layak BPS) dengan rentang, dan armada nyata BPBD.",
+   "praktik_resmi_indonesia": "Dropping air oleh BPBD berdasarkan permintaan desa dan asesmen. Standar minimum Sphere 15 L/orang/hari dipakai luas oleh BNPB dan mitra kemanusiaan. Standar nasional dalam Perka BNPB tentang pemenuhan kebutuhan dasar belum saya verifikasi angkanya.",
+   "kenapa_lebih_tepat": "Kebutuhan logistik mengikuti penduduk yang benar-benar kehilangan akses air, bukan seluruh penduduk wilayah anomali hujan. Pembandingnya, laporan BNPB 19 Okt mencatat distribusi sekitar 428.200 L, tiga sampai empat orde besaran di bawah angka platform.",
+   "data_dibutuhkan": "Laporan harian BNPB (sudah ada di repo), BPS akses air minum layak, daftar armada tangki BPBD (diminta ke BNPB/BPBD), Sphere Handbook 2018.",
+   "upaya": "S",
+   "cara_validasi": "Bandingkan perkiraan kebutuhan (L/hari) per kab dengan volume distribusi yang tercatat di laporan harian selama >= 4 pekan. Lulus bila median rasio berada dalam 0,3-3. Bila belum lulus, angka tidak dipublikasikan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://spherestandards.org/handbook/",
+    "https://dibi.bnpb.go.id",
+    "scripts/kekeringan/posko.py"
+   ]
+  },
+  {
+   "metode_lama": "Pelabelan waktu: SPI Agustus disajikan sebagai 'Situasi kekeringan hari ini' (sapa.js:28) dan dicatat sebagai riwayat dasarian (status.py:171-174)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Setiap angka membawa periode datanya di judul. Contohnya 'Anomali hujan Jun-Agu 2026 (reanalisis NASA, terbit dengan jeda sekitar 7 minggu)', 'Peringatan BMKG Dasarian II Okt 2026', dan 'HTH sampai 20 Okt (BMKG)'. Riwayat tren hanya menambah titik saat bulan SPI berganti. Judul pop-up 'hari ini' hanya untuk produk yang memang harian atau dasarian (PDKM, laporan BNPB).",
+   "praktik_resmi_indonesia": "Produk BMKG selalu mencantumkan periode (bulan analisis, dasarian prakiraan).",
+   "kenapa_lebih_tepat": "Pembaca tidak lagi melihat dua gambaran waktu yang bertentangan (SPI Agustus vs HTH Oktober) tanpa penjelasan.",
+   "data_dibutuhkan": "Medan periode yang sudah ada (kekeringan_meta.json spi.bulan, hari_ini).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit sapa.js/insight.js lewat tests/: setiap kartu yang memuat angka berbasis SPI juga memuat nama bulan data. Uji gagal bila 'hari ini' muncul pada kartu yang sumber datanya bulanan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/kekeringan/sapa.js:28",
+    "scripts/kekeringan/status.py:171-174"
+   ]
+  },
+  {
+   "metode_lama": "SK status keadaan darurat BNPB (riwayat dan 'Tidak ada SK berlaku sekarang') beserta klasifikasi 'SK menyebut kekeringan' khusus vs multi (resmi.py:52-73; dampak.js:67; peta.js:279-288)",
+   "vonis_akhir": "layak_catatan (riwayat SK); tidak_layak (klasifikasi 79 SK)",
+   "alternatif": "Pisahkan 11 SK khusus kekeringan dari 68 SK hidrometeorologi multi-bahaya di semua kalimat dan hitungan provinsi. Ganti pil 'Tidak ada SK berlaku sekarang' dengan 'Data SK di data.bnpb.go.id hanya sampai 2025; SK 2026 belum tersedia'. Minta rekap SK 2026 ke Pusdatinkom BNPB, atau kumpulkan dari laman BPBD/JDIH daerah, dan simpan sebagai berkas kurasi bertanggal sumber.",
+   "praktik_resmi_indonesia": "Status keadaan darurat ditetapkan kepala daerah/BNPB lewat SK, dan rekapnya ada di BNPB (Pusdatinkom, data.bnpb.go.id).",
+   "kenapa_lebih_tepat": "Klaim 'tidak ada SK' yang bersandar pada dataset berhenti di 2025 bisa salah fatal di depan Presiden. Menggabungkan SK multi-bahaya musim banjir ke hitungan SK kekeringan juga melebih-lebihkan riwayat kekeringan.",
+   "data_dibutuhkan": "data.bnpb.go.id CKAN (sudah dipakai resmi.py), rekap SK 2026 dari Pusdatinkom BNPB.",
+   "upaya": "S",
+   "cara_validasi": "Uji resmi.py: kalimat 'tidak ada SK berlaku' hanya boleh muncul bila tahun_data >= tahun berjalan. Bila tidak, wajib kalimat cakupan data. Uji jumlah: khusus + multi = total, dan dampak.js menampilkan keduanya terpisah.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://data.bnpb.go.id",
+    "scripts/kekeringan/resmi.py:52-73"
+   ]
+  },
+  {
+   "metode_lama": "Prakiraan kekeringan 1-3 bulan dari SEAS5 mentah lewat Open-Meteo (peluang SPI-3 <= -1/-1,5/-2 terhadap gamma POWER; prakiraan.py:7-15, 273-319; tabel provinsi laporan.py:120-139)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Untuk Presiden (sekarang): kutip Prediksi Hujan Dasarian probabilistik BMKG (peluang < 20 mm dan < 50 mm/dasarian untuk 3 dasarian ke depan) dan Prediksi Hujan Bulanan BMKG, dengan atribusi. Tabel SEAS5 per provinsi dikeluarkan dari laporan. Untuk lapisan internal (nanti): peluang tersil bawah yang terkalibrasi hindcast. Pilihan (a) multi-sistem C3S: anomali terhadap hindcast 1993-2016 sudah tersedia, tetapi butuh akun CDS gratis dan GRIB, sehingga diproses bulanan di job terpisah dengan cfgrib/eccodes, di luar stdlib. Pilihan (b) NMME lewat IRI Data Library: forecast dan hindcast 1991-2020 bisa diambil dalam netCDF3, yang bisa dibaca netcdf3() di scripts/data/iklim.py, tetapi IRI DL kini meminta sign-in. Ambang tersil dihitung dari hindcast model sendiri, bukan klimatologi POWER.",
+   "praktik_resmi_indonesia": "BMKG menerbitkan Prakiraan Musim, Prediksi Hujan Bulanan, dan Prediksi Hujan Dasarian (deterministik dan probabilistik). BMKG juga memakai peluang < 20 mm/dasarian sebagai komponen PDKM.",
+   "kenapa_lebih_tepat": "SEAS5 mentah yang dibandingkan dengan klimatologi produk lain menghasilkan artefak, misalnya median SPI-3 November Aceh +3,57, padahal bias rasio hujan model 0,89-1,19. Kalibrasi hindcast menghapus bias rerata dan sebaran. Produk BMKG adalah rujukan yang tidak akan dipertentangkan.",
+   "data_dibutuhkan": "BMKG: https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian (PNG, termasuk pch_das_prob_b20_step1_web.png) dan https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan. C3S: https://cds.climate.copernicus.eu (akun gratis, GRIB, rilis sekitar tanggal 13 tiap bulan). NMME: https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/ (sign-in).",
+   "upaya": "L",
+   "cara_validasi": "Pada hindcast 1993-2016 (C3S) atau 1991-2020 (NMME), per provinsi, bulan target, dan lead 1-3, kejadian 'tersil bawah' dihitung dari CHIRPS. Lulus bila luas ROC >= 0,6 dan BSS terhadap klimatologi > 0 dengan batas bawah bootstrap (blok tahun) > 0. Hanya provinsi-lead yang lulus yang ditampilkan. Log prospektif yang sudah ada dilanjutkan, dan skornya ditampilkan setelah >= 12 terbit.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian",
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan",
+    "https://cds.climate.copernicus.eu",
+    "https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/",
+    "scripts/data/iklim.py (netcdf3 stdlib yang sudah ada)"
+   ]
+  },
+  {
+   "metode_lama": "Peluang HTH >= 31 / >= 61 hari dalam 90 hari dari anggota SEAS5 (prakiraan.py:13-14, 226-255; peluang_kering.py:83-98)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus. Ganti dengan peluang curah hujan < 20 mm/dasarian untuk 3 dasarian ke depan dari Prediksi Hujan Dasarian probabilistik BMKG. Ini komponen prakiraan yang dipakai BMKG dalam PDKM.",
+   "praktik_resmi_indonesia": "BMKG: produk probabilistik dasarian (ambang di bawah 20/50/100/150 mm) dan PDKM.",
+   "kenapa_lebih_tepat": "Model musiman berskala titik 2 derajat tidak dirancang untuk urutan hari kering, dan biasnya terhadap gerimis sudah diakui di kode. Total dasarian jauh lebih tahan terhadap bias gerimis dibanding deret hari, dan produknya resmi.",
+   "data_dibutuhkan": "https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian (citra; angka tabular per kab perlu diminta ke BMKG).",
+   "upaya": "S",
+   "cara_validasi": "Tidak ada model untuk diuji, jadi yang diuji keberadaannya: kering_peluang.json tidak lagi memuat p31/p61, dan kartu Peluang merujuk produk BMKG berikut periodenya.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian"
+   ]
+  },
+  {
+   "metode_lama": "Indeks risiko riwayat kekeringan 0-100 (riwayat.py:9-13, 31-44, 76-84; kartu tren.js:62-69 'Serdang Bedagai 68')",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sekarang: hapus kartu itu dan tampilkan KELAS risiko kekeringan IRBI/InaRISK (rendah/sedang/tinggi), bukan peringkat. Nanti, untuk riwayat bahaya, pakai ukuran ABSOLUT dari CHIRPS 1991-2020 per kab: rata-rata jumlah bulan < 60 mm per tahun (Schmidt-Ferguson), panjang deret kering terpanjang tiap musim kemarau, dan frekuensi tahun dengan hujan musim kemarau < 50% normal. Trennya diuji dengan Mann-Kendall dan kemiringan Theil-Sen, dan hanya ditampilkan bila p < 0,05 setelah koreksi Benjamini-Hochberg.",
+   "praktik_resmi_indonesia": "BNPB memakai kajian risiko/IRBI (InaRISK) sebagai acuan risiko. BMKG memakai klimatologi per Zona Musim dan kriteria bulan kering < 60 mm (Schmidt-Ferguson, juga Oldeman).",
+   "kenapa_lebih_tepat": "SPI dibakukan per sel, sehingga kekerapan anomali hampir konstan menurut definisi dan tidak bisa mengukur kerawanan. Akibatnya indeks berkorelasi negatif dengan IRBI (Spearman -0,145 sampai -0,178). Ukuran absolut membedakan wilayah semi-arid (NTT, NTB) dari wilayah basah.",
+   "data_dibutuhkan": "CHIRPS v2 bulanan (pengambil IRI DL sudah ada di scripts/umum/iklim_outlook.py; ganti kotak dengan sel/kab) atau CHIRPS v3 BIL/GeoTIFF langsung dari CHC; IRBI InaRISK (sudah diambil resmi.py); DIBI 2008-kini.",
+   "upaya": "M",
+   "cara_validasi": "Spearman indikator absolut terhadap (a) frekuensi kejadian kering DIBI 2008-2025 per kab dan (b) skor bahaya kekeringan InaRISK. Lulus bila keduanya >= 0,3 dengan p < 0,01. Sebagai pembanding wajib, indeks lama dihitung pada data yang sama (sekarang negatif).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id",
+    "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/",
+    "https://doi.org/10.1038/sdata.2015.66",
+    "scripts/umum/iklim_outlook.py (pengambil CHIRPS yang sudah ada)"
+   ]
+  },
+  {
+   "metode_lama": "Kompleks konsesi gambut di sel kekeringan Siaga/Awas (bukti.py:40-62; insight.js:162-173 '160 dari 450 kompleks')",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sekarang: sembunyikan kartu dan lapisannya. Bila konteks gambut diperlukan: pisahkan dari kekeringan meteorologis, dan pakai Tinggi Muka Air Tanah (TMAT) gambut dari jaringan SiPALAGA BRGM (ambang -0,4 m menurut PP 57/2016) bila akses resmi diurus. Sebagai pengganti cepat, pakai kelas DC/FDRS BMKG di modul karhutla, bukan di modul kekeringan.",
+   "praktik_resmi_indonesia": "KLHK/Kemenhut dan BRGM memantau TMAT gambut (SiPALAGA), dan BMKG menerbitkan FDRS/peringatan karhutla.",
+   "kenapa_lebih_tepat": "Kekeringan gambut ditentukan muka air tanah, bukan anomali hujan 55 km. Menautkan nama konsesi dengan status yang tidak tervalidasi juga berisiko hukum.",
+   "data_dibutuhkan": "SiPALAGA (alamat portal yang saya ingat sipalaga.brg.go.id, belum terverifikasi; repo mencatat aksesnya gagal), peringatan karhutla BMKG https://www.bmkg.go.id/cuaca/karhutla.",
+   "upaya": "S",
+   "cara_validasi": "Bila TMAT tersedia: korelasi DC terhadap TMAT di pos SiPALAGA (target r <= -0,5) sebelum DC dipakai sebagai proksi. Untuk tindakan sekarang, cukup dipastikan kartu tidak dirender (uji layar).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/cuaca/karhutla",
+    "scripts/kekeringan/bukti.py:40-62"
+   ]
+  },
+  {
+   "metode_lama": "Cekaman air padi tadah hujan FAO-56 + FAO-33 per anggota SEAS5 dibanding 'Normal' Markov (padi.py; insight.js:117-133; tabel padi laporan.py:142-152)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sekarang: keluarkan tabel padi dari laporan, karena urutannya dipimpin Kutai Timur, Mimika, Bontang, Deiyai, dan Asmat. Untuk Presiden: pakai data resmi luas pertanaman padi terkena dan puso akibat kekeringan dari Kementan (Ditjen Tanaman Pangan, Direktorat Perlindungan Tanaman), dan fase tumbuh atau luas panen dari BPS Kerangka Sampel Area (KSA) per kab per bulan. Ditambah peta Ketersediaan Air bagi Tanaman BMKG. Bila indikator model tetap dibuat: batasi ke piksel Lahan Baku Sawah ATR/BPN non-irigasi, pakai hujan CHIRPS/GSMaP, dan bandingkan skenario dengan klimatologi dari generator hujan yang SAMA (hindcast/CHIRPS harian), bukan Markov 15 mm.",
+   "praktik_resmi_indonesia": "Kementan melaporkan luas terkena dan puso per kab (laporan dampak perubahan iklim/OPT). BPS KSA memantau fase tumbuh padi bulanan. BMKG menerbitkan ATi bulanan (neraca air Thornthwaite-Mather; kategori Kurang < 40%, Sedang 40-60%, Cukup > 60%).",
+   "kenapa_lebih_tepat": "Selisih model sekarang mencampur sinyal iklim dengan beda dua generator hujan (401 dari 508 kab bernilai negatif saat El Nino kuat). Data resmi mengukur dampak langsung di sawah.",
+   "data_dibutuhkan": "Kementan: data luas terkena/puso kekeringan per kab (diminta resmi; portal publik belum saya verifikasi). BPS KSA: https://www.bps.go.id (tabel luas panen dan produksi padi per kab). BMKG ATi: https://www.bmkg.go.id/iklim/ketersediaan-air-tanaman. LBS ATR/BPN (Kepmen ATR/BPN 2019 sekitar 7,46 juta ha; angka dan pemutakhirannya perlu dicek di dokumen resmi).",
+   "upaya": "M",
+   "cara_validasi": "Bila indikator model dipertahankan: Spearman indikator cekaman per kab terhadap luas puso kekeringan Kementan pada musim kemarau 2015, 2019, dan 2023. Lulus bila rho >= 0,4 di ketiga tahun dan POD kab dengan puso >= 100 ha minimal 0,6. Bila gagal, hanya data resmi yang tampil.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/ketersediaan-air-tanaman",
+    "https://www.bps.go.id",
+    "Allen dkk. 1998, FAO Irrigation and Drainage Paper 56",
+    "Doorenbos & Kassam 1979, FAO Irrigation and Drainage Paper 33"
+   ]
+  },
+  {
+   "metode_lama": "Dampak simulasi: padi hilang/puso (ha), 'jiwa tanpa air bersih', kebutuhan air, kebun tertekan; luas sawah per sel dari LBS_HA 7,4 juta 'dari ingatan penulis' (tutupan.py:25-26; simulasi.js:64-71, 326-333)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus metrik 'jiwa tanpa air bersih' dan hektare puso dari simulasi. Ganti sebaran sawah merata dengan peta Lahan Baku Sawah ATR/BPN (layanan peta BHUMI ATR/BPN; ketersediaan unduhan perlu dicek) atau sebaran sawah BPS KSA. Akses air rumah tangga diambil dari BPS (air minum layak), bukan dari stres akar padi.",
+   "praktik_resmi_indonesia": "Luas baku sawah ditetapkan ATR/BPN lewat keputusan menteri. Akses air minum diukur BPS lewat Susenas. Puso diukur Kementan.",
+   "kenapa_lebih_tepat": "Cekaman air akar padi dan ketersediaan air minum adalah dua sistem yang berbeda (sumur, PDAM, mata air). Luas sawah yang dikarang lalu disebar merata tidak bisa dipertanggungjawabkan.",
+   "data_dibutuhkan": "LBS ATR/BPN (BHUMI, https://bhumi.atrbpn.go.id, perlu dicek), BPS air minum layak, data puso Kementan.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: simulasi.js tidak mengeluarkan medan 'tanpa_air'. tutupan.json memuat sumber sawah = 'ATR/BPN' atau 'BPS', dan totalnya cocok dengan angka resmi dalam 1%.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://bhumi.atrbpn.go.id",
+    "https://www.bps.go.id",
+    "scripts/kekeringan/tutupan.py:25-26"
+   ]
+  },
+  {
+   "metode_lama": "Peringkat perlakuan dan biaya (truk tangki, sumur bor, pompa, tanam awal, hujan buatan/OMC) di simulasi.js:75-99, 334-339 dengan harga asumsi sim_tanggap.js:5-15",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sembunyikan dari tampilan pimpinan. Bila diperlukan nanti, susun analisis biaya-efektivitas dari harga e-Katalog LKPP atau realisasi DIPA BNPB/BPBD, efektivitas intervensi dari evaluasi BNPB/BMKG/BRIN (termasuk laporan OMC), dan tampilkan rentang, bukan satu peringkat.",
+   "praktik_resmi_indonesia": "Perencanaan anggaran penanganan darurat memakai harga satuan pemerintah (e-Katalog/SBM) dan rencana operasi BNPB/BPBD.",
+   "kenapa_lebih_tepat": "Peringkat yang dibangun di atas model dampak tidak tervalidasi, harga karangan, dan efek OMC tanpa rujukan bisa langsung diterjemahkan menjadi rekomendasi anggaran.",
+   "data_dibutuhkan": "Harga e-Katalog/SBM, laporan evaluasi OMC BMKG/BRIN (belum saya verifikasi ketersediaannya untuk publik).",
+   "upaya": "S",
+   "cara_validasi": "Uji layar: tabel peringkat tidak dirender pada mode publik/pimpinan. Untuk versi baru nanti: setiap harga satuan punya medan sumber dan tanggal.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/sim_tanggap.js",
+    "public/kekeringan/simulasi.js"
+   ]
+  },
+  {
+   "metode_lama": "SPI-3 dan SPI-6 dari NASA POWER (MERRA-2) bulanan (spi.py:21-24, 63-79); lapisan 'Hujan', kartu '61,9% wilayah kering'",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti hujan dengan CHIRPS. Gunakan v2.0 lewat pengambil IRI Data Library yang SUDAH ada di scripts/umum/iklim_outlook.py (cukup ganti kotak dengan sel 0,5 derajat; IRI DL bisa merata-ratakan per sel dan mengirim netCDF3 yang dibaca netcdf3() di scripts/data/iklim.py), atau v3.0 langsung dari CHC (format BIL, mudah dibaca stdlib). Laporkan dua besaran: (1) Sifat Hujan, yaitu hujan bulanan atau 3-bulanan dalam % normal 1991-2020 dengan kategori BMKG AN > 115%, N 85-115%, BN < 85%; (2) SPI-1/3/6 McKee (gamma, baseline 1991-2020). Bila suhu tersedia, tambahkan SPEI-3 (Vicente-Serrano 2010, PET Hargreaves) agar kenaikan penguapan saat El Nino ikut terhitung. Pakai CHIRPS-prelim untuk bulan terakhir, lalu ganti dengan final saat terbit. '% wilayah' diganti '% kab/kota' atau '% penduduk', dengan jumlah sel tak terhitung disebut.",
+   "praktik_resmi_indonesia": "BMKG menerbitkan Analisis Curah Hujan dan Sifat Hujan bulanan (AN/N/BN, batas 115%/85% normal) di buletin iklim, serta SPI bulanan di bmkg.go.id/iklim/indeks-presipitasi-terstandarisasi.",
+   "kenapa_lebih_tepat": "CHIRPS memadukan satelit IR dengan pos (v3: lebih dari 90 sumber stasiun, koreksi undercatch) pada 0,05 derajat, jauh lebih dekat ke pos BMKG dibanding MERRA-2 yang gagal menangkap 2023 (0,7% sel pada Sep 2023). Latensinya juga turun dari sekitar 7 minggu menjadi sekitar 2 hari (prelim) atau minggu ke-3 bulan berikutnya (final). Kategori Sifat Hujan memakai bahasa resmi BMKG, sehingga tidak bertentangan.",
+   "data_dibutuhkan": "CHIRPS v2.0 monthly lewat IRI DL https://iridl.ldeo.columbia.edu/SOURCES/.UCSB/.CHIRPS/.v2p0/ (per 21 Okt 2026 laman IRI DL meminta sign-in; iklim_outlook.json tetap terbit 19 Okt, jadi pastikan endpoint data.tsv/data.nc masih tanpa login atau siapkan akun). CHIRPS v3: https://data.chc.ucsb.edu/products/CHIRPS/v3.0/ (monthly/prelim; NetCDF, GeoTIFF, BIL; 1981-kini). Suhu untuk SPEI: POWER T2M yang sudah diambil, atau ERA5.",
+   "upaya": "M",
+   "cara_validasi": "(1) Uji tahun kering: porsi kab dengan SPI-3 Agu-Okt <= -1 pada 1994, 1997, 2015, 2019, dan 2023 masing-masing harus melebihi maksimum tahun yang ONI DAN DMI-nya netral (|ONI| < 0,5 dan |DMI| < 0,4). Syarat wajib: 2023 tertangkap (POWER hanya 0,7%). (2) Kesesuaian kategori dengan Analisis Sifat Hujan BMKG untuk >= 6 bulan (2023 dan 2026), dengan peta BMKG dicuplik per kab. Lulus bila kesesuaian 3 kategori >= 70% dan Heidke Skill Score >= 0,4. (3) Gerbang latensi: bulan M tersedia sebelum tanggal 25 bulan M+1.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/README-CHIRPSv3.0.txt",
+    "https://doi.org/10.1038/sdata.2015.66",
+    "https://www.bmkg.go.id/iklim/indeks-presipitasi-terstandarisasi",
+    "https://staklim-sumsel.bmkg.go.id/wp-content/uploads/2022/02/BULETIN-BMKG-EDISI-AGUSTUS-2024.pdf",
+    "https://doi.org/10.1175/2009JCLI2909.1",
+    "McKee, Doesken & Kleist 1993; WMO-No.1090 (2012) SPI User Guide",
+    "scripts/umum/iklim_outlook.py:40, 158-185"
+   ]
+  },
+  {
+   "metode_lama": "Aturan pengecualian SPI MIN_RATA 50 mm yang membuat titik buta di Timor Barat dan Sumbawa (spi.py:25, 70)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Jangan buang sel diam-diam. Untuk jendela yang klimatologinya < 50 mm, tampilkan 'SPI tak dapat dihitung (musim kemarau)', lalu berikan indikator absolut: hujan dalam % normal (Sifat Hujan BMKG), desil Gibbs-Maher terhadap 1991-2020, atau jumlah bulan berturut < 60 mm. Hitungan '% wilayah' dan jiwa nasional menyebut berapa sel atau kab yang tidak terhitung.",
+   "praktik_resmi_indonesia": "BMKG tetap memetakan sifat hujan dan HTH di wilayah semi-arid, dan PDKM justru menandai seluruh NTT Awas.",
+   "kenapa_lebih_tepat": "Pedoman WMO memang menyarankan SPI tidak dipakai bila hujan klimatologi sangat kecil. Namun wilayah itulah yang paling rawan, sehingga pengganti absolut wajib ada agar tidak muncul 'Normal' palsu (sel Kupang lv 0).",
+   "data_dibutuhkan": "CHIRPS bulanan (usulan SPI).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit spi.py/status.py: sel dengan spi3 None tidak pernah menghasilkan lv 0 'Normal' dan selalu membawa medan indikator absolut. Uji lapangan: kab NTT yang ber-PDKM Awas tidak boleh tampil 'Normal' di lapisan mana pun.",
+   "prioritas": "P2",
+   "rujukan": [
+    "WMO-No.1090 (2012) SPI User Guide",
+    "Gibbs & Maher 1967, Rainfall deciles as drought indicators (Bureau of Meteorology Bull. 48)",
+    "scripts/kekeringan/spi.py:25"
+   ]
+  },
+  {
+   "metode_lama": "Penguat Awas memakai SPI-6 dari seri POWER yang sama atau persentil tanah 12 sel (status.py:47-56)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Begitu status model diganti PDKM (usulan status), penguat ini tidak dibutuhkan untuk label. Bila indikator gabungan internal dibangun, ikuti logika Combined Drought Indicator (Sepulcre-Canto dkk. 2012): Watch = anomali hujan; Warning = ditambah anomali kelembapan tanah dari besaran INDEPENDEN dengan cakupan 100%; Alert = ditambah anomali vegetasi. SPI-6 yang menumpang pada SPI-3 tidak boleh dihitung sebagai konfirmasi.",
+   "praktik_resmi_indonesia": "Tidak ada CDI resmi Indonesia. BMKG memisahkan produk SPI, HTH, dan ATi.",
+   "kenapa_lebih_tepat": "Jendela Jun-Agu termuat di dalam Mar-Agu, sehingga 79 dari 81 sel Awas 'terkonfirmasi' oleh dirinya sendiri. Konfirmasi harus berasal dari besaran fisik lain.",
+   "data_dibutuhkan": "Kelembapan tanah cakupan penuh (usulan tanah), anomali vegetasi (opsional, P3).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: penguat dengan korelasi > 0,8 terhadap pemicu (dihitung pada 1991-2020) ditolak sebagai konfirmasi.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://doi.org/10.5194/nhess-12-3519-2012",
+    "scripts/kekeringan/status.py:47-56"
+   ]
+  },
+  {
+   "metode_lama": "Persentil kelembapan tanah 7-28 cm ERA5-Land + IFS, baseline 2015-2025, hanya 12 dari 611 sel (scripts/data/tanah.py:34, 82-108)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Untuk Presiden: kutip peta Ketersediaan Air bagi Tanaman (ATi) BMKG bulanan. Untuk lapisan internal, ada dua pilihan. (a) ERA5-Land lewat Open-Meteo archive (sudah dipakai tanah.py) dengan baseline 1991-2020 untuk SEMUA sel, dibangun sekali sebagai klimatologi dasarian lalu di-commit sebagai JSON. Karena kuota gratis Open-Meteo menghitung permintaan panjang sebagai banyak panggilan, isi bertahap terjadwal atau bangun lokal sekali. (b) Anomali kelembapan tanah siap pakai dari Global Drought Observatory (Copernicus), bila format unduhannya bisa dibaca; ini belum saya verifikasi. Lapisan ini baru boleh ikut indikator gabungan setelah cakupan 100%.",
+   "praktik_resmi_indonesia": "BMKG: ATi bulanan dengan neraca air Thornthwaite-Mather, kategori Kurang < 40%, Sedang 40-60%, Cukup > 60%, terbit sekitar tanggal 2-4 bulan berikutnya.",
+   "kenapa_lebih_tepat": "Baseline 11 musim tidak stabil untuk persentil <= 5, dan 2% cakupan menjadikan klaim 'gabungan SPI dan tanah' tidak benar. Baseline 30 tahun adalah standar WMO, dan ATi adalah produk resmi untuk kekeringan pertanian.",
+   "data_dibutuhkan": "BMKG ATi: https://www.bmkg.go.id/iklim/ketersediaan-air-tanaman (JPG per bulan). Open-Meteo archive: https://open-meteo.com/en/docs/historical-weather-api (ERA5-Land 0,1 derajat sejak 1950, jeda sekitar 5 hari, soil_moisture_7_to_28cm; lisensi non-komersial gratis). GDO: https://drought.emergency.copernicus.eu/tumbo/gdo/map/.",
+   "upaya": "M",
+   "cara_validasi": "(1) Gerbang cakupan: indikator tidak dipakai bila sel berpersentil < 95%. (2) Kesesuaian kategori anomali ERA5-Land (tersil) dengan kategori ATi BMKG per provinsi untuk 6 bulan musim kemarau 2023 dan 2026. Lulus bila >= 65% dan HSS >= 0,3. (3) Konsistensi fisis: anomali musim kemarau 1997, 2015, dan 2019 di Jawa-NT harus negatif di >= 70% sel.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/ketersediaan-air-tanaman",
+    "https://open-meteo.com/en/docs/historical-weather-api",
+    "https://drought.emergency.copernicus.eu/tumbo/gdo/map/",
+    "WMO-No.1173 (2016) Handbook of Drought Indicators and Indices"
+   ]
+  },
+  {
+   "metode_lama": "Uji balik status vs kejadian DIBI dan penyetelan 21 kandidat ambang (ujibalik.py:132-235; ambang.py:117-170; RISET-AMBANG.md)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan protokolnya, lalu perluas di empat sisi. (1) DIBI 2008-kini, sehingga periode latih mencakup beberapa El Nino (2009, 2015, 2019, 2023). (2) Verifikasi dengan jeda operasional nyata: SPI bulan M dinilai terhadap kejadian bulan M+1 dan M+2. (3) Pembanding ketiga selain alarm acak: PDKM BMKG, sebagai batas praktik resmi. (4) Koreksi banyak-uji (Holm/BH) untuk 21 kandidat. Pasang ujibalik.py dan ambang.py uji di CI harian, dengan pola gerbang di tests/agen, dan hentikan 'status.py || echo warning' di lintas.yml:106 untuk langkah uji.",
+   "praktik_resmi_indonesia": "Verifikasi kategori POD/FAR/CSI adalah praktik baku WMO/WWRP untuk peringatan. BMKG dan BNPB belum menerbitkan skor verifikasi PDKM terhadap DIBI, sehingga uji ini bisa menjadi masukan berharga bagi BNPB.",
+   "kenapa_lebih_tepat": "Uji serentak bulan yang sama mengukur kecocokan diagnosis, bukan kegunaan operasional. Pembanding PDKM menunjukkan apakah model menambah apa pun di atas produk resmi.",
+   "data_dibutuhkan": "DIBI ekspor 2008-kini: https://dibi.bnpb.go.id. Log PDKM (usulan status).",
+   "upaya": "M",
+   "cara_validasi": "Kriteria layak yang sudah ditulis (POD >= 0,5, FAR <= 0,8, CSI >= 2 kali acak, batas bawah selang CSI > acak) ditambah satu syarat: CSI dengan jeda 1 bulan >= CSI PDKM pada periode yang sama. CI gagal bila ujibalik.py uji merah, dan bukan sekadar memberi peringatan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dibi.bnpb.go.id",
+    "scripts/kekeringan/RISET-AMBANG.md",
+    "WWRP/WGNE Joint Working Group on Forecast Verification, https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "Uji balik aturan SPI-3 vs tahun kering dikenal dengan pembanding netral menurut ONI saja (ujibalik.py:94-128; kalimat 'Hanya 2015 menonjol')",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tentukan tahun netral dengan ONI DAN DMI netral (|ONI| < 0,5 serta |DMI| < 0,4 pada JAS/ASO), dan jadikan 1994 dan 1997 tahun uji. Tulis ulang kalimat temuannya. Jalankan ulang dengan CHIRPS untuk memisahkan masalah data dari masalah aturan. Tambahkan kebenaran lapangan independen per tahun: terdampak BNPB, dan Sifat Hujan BMKG bila tersedia.",
+   "praktik_resmi_indonesia": "BMKG memantau ENSO dan IOD bersamaan sebagai pendorong kemarau Indonesia.",
+   "kenapa_lebih_tepat": "Memasukkan 1994 (IOD+ kuat) ke kelompok netral menaikkan batas 'menonjol' menjadi 67,6% dan menyesatkan kesimpulan.",
+   "data_dibutuhkan": "DMI HadISST dari NOAA PSL (sudah diambil iklim_outlook.py), ONI/RONI CPC.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit ujibalik.py: daftar netral tidak memuat tahun dengan |DMI| >= 0,4. Uji hasil: dengan POWER, 1994, 1997, 2015, dan 2019 harus menonjol (sesuai hitungan reviewer). Dengan CHIRPS, 2023 juga harus menonjol; bila tidak, catat sebagai kegagalan data.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://psl.noaa.gov/gcos_wgsp/Timeseries/Data/dmi.had.long.data",
+    "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt",
+    "scripts/kekeringan/ujibalik.py:95"
+   ]
+  },
+  {
+   "metode_lama": "Prospek cadangan bersyarat fase ENSO (prakiraan.py:356-389; BSS -0,019) yang otomatis aktif bila SEAS5 gagal",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Cabut peralihan otomatis. Bila SEAS5 tidak ada, tampilkan 'Prakiraan tidak tersedia, rujuk Prediksi Hujan Bulanan BMKG'. Bila model statistik tetap diinginkan, pakai ulang regresi CHIRPS ~ RONI + DMI yang sudah ada di scripts/umum/iklim_outlook.py, tetapi dengan prediktor PRAKIRAAN (peluang ENSO CPC/IRI) dan jeda nyata, bukan prediktor serentak.",
+   "praktik_resmi_indonesia": "BMKG Prakiraan Musim dan Prediksi Hujan Bulanan.",
+   "kenapa_lebih_tepat": "Model tanpa keterampilan yang menyala diam-diam saat sumber utama gagal adalah bentuk overclaim yang paling sulit dideteksi pembaca.",
+   "data_dibutuhkan": "Tidak ada data baru untuk tindakan utama. Untuk opsi model: iklim_outlook.json (sudah ada), peluang ENSO CPC (sudah diambil).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit prakiraan.py: saat SEAS5 kosong, keluaran tidak memuat peluang. Untuk opsi model: LOO dengan prediktor yang diketahui pada waktu terbit (misalnya ONI MJJ untuk target ASO), lulus bila BSS > 0 dengan batas bawah bootstrap > 0.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan",
+    "scripts/umum/iklim_outlook.py"
+   ]
+  },
+  {
+   "metode_lama": "Kabupaten 'sering kering' dengan uji binomial SPI-3 (bukti.py:23-29, 90-132)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus. Ganti dengan frekuensi kejadian kekeringan DIBI 2008-kini per kab, kelas IRBI, dan indikator absolut CHIRPS (rata-rata jumlah bulan < 60 mm, frekuensi musim kemarau < 50% normal). Bila tetap ingin menguji 'berulang', pakai kejadian DIBI dengan koreksi Benjamini-Hochberg dan bootstrap blok tahun.",
+   "praktik_resmi_indonesia": "BNPB memakai DIBI dan InaRISK untuk wilayah rawan. BMKG memakai klimatologi ZOM.",
+   "kenapa_lebih_tepat": "SPI dibakukan per sel, jadi laju 6,7% berlaku di mana-mana menurut definisi. Uji ini melingkar dan hanya menangkap galat fit.",
+   "data_dibutuhkan": "DIBI 2008-kini, IRBI (sudah ada), CHIRPS.",
+   "upaya": "S",
+   "cara_validasi": "Daftar pengganti harus berkorelasi positif dengan frekuensi DIBI (Spearman >= 0,3) pada periode di luar yang dipakai menyusunnya (misalnya disusun dari 2008-2018, diuji pada 2019-2025).",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dibi.bnpb.go.id",
+    "https://inarisk.bnpb.go.id"
+   ]
+  },
+  {
+   "metode_lama": "Tampungan air OSM per 100.000 jiwa dengan ambang 5 ('cek lapangan') (embung.py; bukti.py:23, 101-102)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan dari tampilan pimpinan. Ganti dengan daftar bendungan, waduk, dan embung resmi Kementerian PU (Ditjen SDA/BBWS), lengkap dengan kapasitas tampung (m3) dan bila ada status isi waduk, ditambah embung pertanian Kementan. OSM boleh tetap sebagai lapisan peta berlabel 'OpenStreetMap, tidak lengkap'.",
+   "praktik_resmi_indonesia": "Kementerian PU (Ditjen SDA) mengelola data bendungan dan memantau tinggi muka air waduk. Kementan mendata embung pertanian.",
+   "kenapa_lebih_tepat": "Jumlah objek tanpa kapasitas dan tanpa kelengkapan bukan ukuran ketersediaan air. Data PU dengan kapasitas menjawab 'berapa air yang tersedia'.",
+   "data_dibutuhkan": "Data bendungan PU (portal SDA/SIH3; URL dan lisensinya belum saya verifikasi, sehingga perlu ditanyakan ke PU), embung Kementan.",
+   "upaya": "M",
+   "cara_validasi": "Kelengkapan: jumlah bendungan besar di data baru dicocokkan dengan daftar resmi bendungan nasional (selisih <= 5%). Kartu menampilkan kapasitas (m3 per jiwa), bukan jumlah objek.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://sda.pu.go.id (perlu verifikasi alamat data)",
+    "scripts/kekeringan/embung.py"
+   ]
+  },
+  {
+   "metode_lama": "Simulasi neraca air FAO-56 180 hari (neraca.py; simulasi.js) dengan komposit El Nino 1997/2015/2023 dari POWER",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Jadikan alat latih internal dengan cap 'skenario edukasi, bukan prakiraan' di setiap angka, dan keluarkan dari tautan laporan. Perbaikan isi: komposit El Nino diambil dari CHIRPS dan tahun yang memang kering di data itu (1997, 2015, 2019, ditambah 1994 IOD+). Gunakan tekstur tanah SoilGrids untuk TAW per sel, masker sawah LBS, buang sel perkotaan, dan sebaran hujan harian dari CHIRPS harian historis, bukan konstanta 15 mm per hari hujan. Untuk pimpinan, pakai ATi BMKG.",
+   "praktik_resmi_indonesia": "BMKG ATi (neraca air Thornthwaite-Mather bulanan).",
+   "kenapa_lebih_tepat": "Mekanika FAO-56 sudah benar. Kelemahannya ada pada masukan seragam dan metrik ('% luas', 'jiwa di sel stres') yang tidak mengukur dampak.",
+   "data_dibutuhkan": "CHIRPS harian/bulanan, SoilGrids (https://soilgrids.org, CC-BY 4.0), LBS ATR/BPN.",
+   "upaya": "M",
+   "cara_validasi": "Deplesi Dr harian dibandingkan anomali kelembapan tanah ERA5-Land 7-28 cm per sel pada 2015, 2019, dan 2023. Lulus bila korelasi anomali median >= 0,5 di sel sawah.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/ketersediaan-air-tanaman",
+    "https://soilgrids.org",
+    "Allen dkk. 1998, FAO-56 bab 8"
+   ]
+  },
+  {
+   "metode_lama": "Sekolah, siswa, puskesmas, dan RS di kabupaten Siaga/Awas model (dampak.py:37-65; dampak.js:32-37)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pertahankan mesin inventarisnya, tetapi ganti penentu wilayah dengan kab/kota Awas PDKM BMKG atau kab ber-SK/berkejadian BPBD. Fasilitas kesehatan diambil dari data fasyankes Kemenkes, bukan OSM. Judul diubah menjadi 'fasilitas di wilayah peringatan BMKG', bukan 'terdampak'.",
+   "praktik_resmi_indonesia": "Kemendikdasmen (Dapodik) dan Kemenag (EMIS) untuk sekolah, Kemenkes untuk registrasi fasyankes, BMKG untuk peringatan.",
+   "kenapa_lebih_tepat": "Daftar aset sudah resmi. Yang salah hanya zona bahayanya, dan zona resmi PDKM memperbaikinya tanpa model baru.",
+   "data_dibutuhkan": "kekeringan_pdkm.json, sekolah.json (sudah ada), data fasyankes Kemenkes (portal persisnya perlu dicek).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: kab dalam hitungan sama dengan himpunan kab Awas PDKM yang punya data aset. Cakupan (kab tercakup / kab Awas) ditampilkan di kartu.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/peringatan-dini-kekeringan-meteorologis",
+    "scripts/kekeringan/dampak.py:37-65"
+   ]
+  },
+  {
+   "metode_lama": "Prakiraan hujan 7 hari ke depan Open-Meteo untuk 5 provinsi pilihan HTH (laporan.py:101-117)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Di laporan, kutip Prediksi Hujan Dasarian BMKG (deterministik dan peluang < 20 mm) untuk provinsi yang dipilih menurut jumlah kab Awas PDKM, bukan menurut HTH model yang mengabaikan NTT, NTB, dan Bali. Open-Meteo boleh tetap sebagai pelengkap berlabel.",
+   "praktik_resmi_indonesia": "BMKG: Prediksi Hujan Dasarian dan prakiraan cuaca harian.",
+   "kenapa_lebih_tepat": "Pemilihan provinsi menjadi selaras dengan wilayah yang memang diperingatkan BMKG, dan angkanya sama dengan rujukan resmi.",
+   "data_dibutuhkan": "https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian, kekeringan_pdkm.json.",
+   "upaya": "S",
+   "cara_validasi": "Bila Open-Meteo dipertahankan: verifikasi total 7 hari per provinsi terhadap GSMaP atau CHIRPS-prelim selama 12 pekan (kategori < 20 / 20-50 / > 50 mm). Lulus bila HSS >= 0,3. Uji unit: provinsi terpilih diturunkan dari PDKM.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-dasarian"
+   ]
+  },
+  {
+   "metode_lama": "Seri tahunan kejadian/terdampak dan sawah rusak akibat kekeringan (DIBI) dengan persen perubahan tahunan dan klaim 'tertinggi' (dampak.js:38-62)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Sajikan sebagai 'tercatat di DIBI BNPB' tanpa persen perubahan dan tanpa kata 'tertinggi'. Tambahkan catatan kelengkapan, misalnya '2015 hanya 7 kejadian tercatat'. Sandingkan dengan luas terkena/puso kekeringan Kementan untuk pertanian.",
+   "praktik_resmi_indonesia": "DIBI BNPB (rekam laporan BPBD) dan Kementan (luas terkena/puso).",
+   "kenapa_lebih_tepat": "Seri pelaporan yang tidak konsisten (2016 nol; 2011 dengan 219 kejadian tetapi 0 terdampak) tidak bisa dibaca sebagai tren.",
+   "data_dibutuhkan": "DIBI (sudah ada), data Kementan (diminta resmi).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit dampak.js: tidak ada string persen perubahan tahun-ke-tahun pada kartu DIBI, dan label 'tercatat' selalu ada.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dibi.bnpb.go.id",
+    "https://data.bnpb.go.id"
+   ]
+  },
+  {
+   "metode_lama": "IRBI kekeringan InaRISK sebagai kolom dan peringkat (resmi.py:90-111; insight.js:182)",
+   "vonis_akhir": "layak",
+   "alternatif": "Jadikan IRBI satu-satunya ukuran risiko di layar, tetapi sebagai KELAS resmi (rendah/sedang/tinggi menurut InaRISK), bukan urutan. Alasannya, 26 kab berbagi skor maksimum dan metode 2025 berubah skala. Tambahkan catatan perubahan metode.",
+   "praktik_resmi_indonesia": "BNPB: IRBI dan kajian risiko bencana (InaRISK).",
+   "kenapa_lebih_tepat": "Peringkat dari nilai yang banyak seri memberi kesan presisi yang tidak ada. Kelas resmi menjaga konsistensi dengan dokumen BNPB.",
+   "data_dibutuhkan": "InaRISK apiv4 (sudah diambil resmi.py); ambang kelas resmi dari dokumen IRBI 2025 (perlu dicek).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: kartu tidak menampilkan nomor urut, dan kelas yang tampil sama dengan kelas di sumber untuk 100% kab.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id"
+   ]
+  },
+  {
+   "metode_lama": "Kalender musim dari hujan bulanan POWER 1991-2025, komposit El Nino, dan bulan kering < 60 mm (riwayat.py:47-73; tren.js:51-59)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti besaran mm dengan klimatologi CHIRPS 1991-2020 (pengambil sudah ada) dan sajikan per Zona Musim BMKG atau per kab, bukan rata-rata provinsi. Awal dan akhir kemarau dikutip dari Prakiraan Musim Kemarau BMKG per ZOM.",
+   "praktik_resmi_indonesia": "BMKG: normal curah hujan 1991-2020 per ZOM dan Prakiraan Musim (awal, sifat, puncak musim).",
+   "kenapa_lebih_tepat": "Angka mm menjadi dekat ke Normal BMKG, dan beda antar-ZOM dalam satu provinsi (misalnya pantai utara vs selatan Jawa) tidak hilang.",
+   "data_dibutuhkan": "CHIRPS bulanan; peta/daftar ZOM BMKG (dari buku Prakiraan Musim; ketersediaan data vektor perlu diminta ke BMKG).",
+   "upaya": "S",
+   "cara_validasi": "Bandingkan normal bulanan CHIRPS dengan normal BMKG yang tercantum di buletin/prakiraan musim untuk >= 20 ZOM. Lulus bila MAPE musim kemarau <= 25% dan bulan terkering sama di >= 80% ZOM.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/buletin-iklim",
+    "https://data.chc.ucsb.edu/products/CHIRPS/v3.0/"
+   ]
+  },
+  {
+   "metode_lama": "Drought Code (DC) sistem FWI dengan kelas Kanada sebagai lapisan dan tren kekeringan (peta.js:16, 241; tren.js:25-29)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pindahkan DC ke modul karhutla sebagai indikator bahaya kebakaran, dan pakai kelas FDRS Indonesia sebagaimana keluaran BMKG, bukan kelas Kanada. Di modul kekeringan cukup tautan ke peta FDRS/karhutla BMKG.",
+   "praktik_resmi_indonesia": "BMKG menjalankan FDRS harian sejak awal 2000-an, adaptasi CFFDRS dengan ambang lokal (de Groot dkk.; Field dkk.). Angka ambang kelas DC resmi belum terkonfirmasi dalam riset ini dan perlu diminta ke BMKG.",
+   "kenapa_lebih_tepat": "DC mengukur kelembapan bahan bakar dalam (bahaya kebakaran), bukan kekeringan sosial-ekonomi, dan kelas Kanada tidak terkalibrasi untuk gambut tropis.",
+   "data_dibutuhkan": "https://www.bmkg.go.id/cuaca/karhutla; dokumen ambang FDRS BMKG.",
+   "upaya": "S",
+   "cara_validasi": "Bila kelas lokal dipakai: frekuensi hotspot FIRMS per kelas DC harus naik monoton (uji di modul karhutla yang sudah punya data FIRMS).",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.bmkg.go.id/cuaca/karhutla",
+    "https://jmg.bmkg.go.id/jmg/index.php/jmg/article/view/37/32"
+   ]
+  },
+  {
+   "metode_lama": "Status ENSO/IOD (ONI, RONI, DMI, peluang CPC) dengan kata sifat 'sangat kuat' (insight.js:56-70)",
+   "vonis_akhir": "layak",
+   "alternatif": "Pertahankan, dengan dua perbaikan. Selaraskan kata sifat dengan indeks yang juga ditampilkan, misalnya 'kuat' berdasarkan RONI 1,69, dan sandingkan dengan pernyataan ENSO/IOD BMKG terbaru. Perbarui iklim.json minimal mingguan.",
+   "praktik_resmi_indonesia": "BMKG menerbitkan status ENSO/IOD dasarian (bmkg.go.id/iklim/el-nino-la-nina) dan menyebutnya di konferensi pers kemarau.",
+   "kenapa_lebih_tepat": "Mencegah perbedaan istilah dengan BMKG di forum yang sama.",
+   "data_dibutuhkan": "Sudah ada (CPC, PSL), ditambah teks pernyataan BMKG (manual atau rilis pers).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: kata sifat diturunkan dari satu indeks yang disebut di kalimat yang sama, dan iklim.json tidak lebih tua dari 10 hari saat laporan terbit.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/el-nino-la-nina",
+    "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt"
+   ]
+  },
+  {
+   "metode_lama": "Pemantauan berita kekeringan (volume, topik, media, peta; berita.py)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ukur presisi relevansi pada sampel berlabel tangan (200 artikel, 2 penilai) dan tampilkan angkanya. Sajikan sebagai 'sorotan media', bukan ukuran kekeringan. Berita juga bisa dipakai sebagai sumber petunjuk kejadian untuk dicek silang dengan laporan BPBD, bukan sebagai angka.",
+   "praktik_resmi_indonesia": "Pusdatinkom BNPB juga memantau media sebagai sumber awal informasi kejadian.",
+   "kenapa_lebih_tepat": "Tanpa presisi terukur, volume berita bisa digelembungkan oleh artikel tidak relevan.",
+   "data_dibutuhkan": "Sampel berlabel lokal (tanpa data eksternal baru).",
+   "upaya": "S",
+   "cara_validasi": "Presisi >= 0,85 dan recall >= 0,7 pada sampel berlabel. Kesepakatan antarpenilai (Cohen kappa) >= 0,6 dicatat.",
+   "prioritas": "P3",
+   "rujukan": [
+    "scripts/kekeringan/berita.py"
+   ]
+  }
+ ]
+}

@@ -1,0 +1,243 @@
+{
+ "modul": "Kualitas udara dan asap (scripts/udara/**, public/udara/** termasuk sim/*, tests/udara/, docs/multi-bencana/PARITAS-UDARA.md, serta jalur turunannya ke /semua/, laporan kejadian, pop-up harian, dan Laporan Harian). Telaah kedua yang adversarial, read-only, atas snapshot data lokal public/udara/data yang dibuat 2026-10-19T19:20Z (jalan_model CAMS 2026-10-19T00:00Z).",
+ "catatan_umum": "**Hasil verifikasi.** Hampir semua bukti reviewer pertama benar dan terbaca dengan tepat. Saya menghitung ulang angka-angkanya sendiri:\n- Tabel METAR 168/32/214/423 menghasilkan POD 0,44, FAR 0,16, CSI 0,406, POFD 0,07, bias 0,52, HSS 0,384, PSS 0,37, dan ETS 0,24.\n- 89.518.808 jiwa \"tidak sehat\", dengan rincian 11,96 juta, 74,46 juta, dan 3,11 juta.\n- Artefak sel CAMS di Jakarta: 121 berbanding 50 µg/m³.\n- Probolinggo sebagai sumber teratas untuk Kab. Kapuas.\n- Rentang \"lain\" sampai 247% (148 bagian di atas 100%).\n- 692/414/168 kota-hari pada peluang.\n- Koschmieder menghasilkan 10 km untuk PM ≤63.\n- Selisih emisi gambut sekitar 14 kali.\n\n**Koreksi atas reviewer pertama:**\n1. **Rincian per provinsi pada \"jiwa terpapar\" keliru.** Jabar 30,1 juta, Jateng 17,0, Jatim 16,3, Banten 11,0, dan DKI 5,2 adalah total terpapar per provinsi. Jumlahnya 79,66 juta, yaitu 89% angka nasional dari Jawa. Angka itu bukan bagian 74,5 juta yang porsi apinya di bawah 50%. Bagian Jatim di kelompok itu hanya 5,96 juta. Argumen \"porsi api di bawah 50%\" juga melingkar, karena porsi itu berasal dari atribusi yang oleh reviewer sendiri dinilai tidak layak. Bukti yang lebih kuat dan independen adalah lompatan batas sel dan fakta bahwa 89% angka judul berasal dari Jawa.\n2. **Kartu sekolah tidak menampilkan 15.737.** Kartu menulis \"sekitar 300 sekolah\" karena memakai panjang daftar yang dipotong pada 300, bukan jumlah 16.886.\n3. **Rumus ISPA di kode benar, teks Metode yang salah.** Kode memakai bentuk fraksi atribusi 1−RR^−x yang baku di AirQ+. Yang salah adalah teks Metode (RR^x−1).\n4. **Lapisan AIRS bukan \"kolom total\".** Lapisan itu adalah rasio campuran CO pada 500 hPa (sekitar 5,5 km), lihat nasa.js:10.\n5. **Komposisi sensor titik panas konsisten 2019–2026.** NOAA-20 sudah ada pada 2019 (488.570 deteksi). Masalahnya adalah 2015. Dengan jendela dan sensor yang sama (S-NPP, 1 Jan–19 Okt), 2015 = 775.371, lebih tinggi 36% dari 2026 = 570.858.\n6. **Lima entri \"Siaga\" di Jawa Timur belum tentu artefak.** Menurut atribusi platform sendiri, porsi api Lamongan dan Kota Mojokerto 1,0 dan Surabaya 0,69. Masalahnya ada pada label dan tidak adanya konfirmasi, bukan bukti positif palsu.\n7. **Pita ensemble palsu-sempit sudah dikeluarkan dari tampilan** (sim.js:214).\n\n**Temuan baru:**\n- **Laporan Harian membuang Palembang.** Tabel bandara diurutkan menurut prakiraan yang semuanya 10 km lalu dipotong 10 baris. Akibatnya Palembang (WIPP) 1,6 km FU, pengamatan terburuk, hilang dari laporan.\n- **Lintas batas hanya dari lapis 850 hPa.** Semua 4 pemicu Brunei dan 12 dari 16 pemicu Malaysia berasal dari lapis 850 hPa. Tidak satu pun dari lapis 10 m, padahal asap gambut berada di lapisan batas.\n- **Atribusi dan asal saling bertentangan.** asal.json menulis asap Kab. Kapuas 85% dari Kalimantan Selatan, sedangkan atribusi menulis Probolinggo.\n- **Akar masalah atribusi.** atribusi.py memakai 0,368 kg/MJ (faktor non-gambut) juga untuk gambut, padahal ASUMSI-nya sendiri mengakui FRP terlalu rendah untuk gambut. Akibatnya Pulang Pisau 719 µg/m³ hanya berporsi api 1%.\n- **\"Peluang Tidak sehat\" di ensemble salah ambang.** Ambang 24 jam (55,5) diterapkan pada puncak per JAM.\n- **Inventaris PLTU usang.** WRI GPPD v1.3 hanya memuat 70 unit, 29,3 GW, dengan tahun operasi terakhir 2017. Batang, Jawa 7, dan PLTU captive Morowali/Weda Bay tidak ada.\n- **Data terbit lebih tua dari perbaikan kode.** laporan.json dan atribusi.json masih memuat format \"0-80%\" dan rentang di atas 100% yang sudah diperbaiki di kode. Pada 20 Okt, prakiraan.json dan rentan.json sempat ter-commit dengan penanda konflik git.\n- **Keluaran dari jalan yang berbeda bisa tercampur.** jalan.py membiarkan tiap langkah gagal lalu langkah hilir memakai berkas jalan sebelumnya, sehingga satu laporan bisa menggabungkan keluaran dari jalan yang berbeda.\n- **Snapshot lokal sudah sekitar 2 hari** saat ditelaah (21 Okt).\n- **Dek Presiden memuat kejadian yang tidak terlihat platform.** data/laporan-bnpb/presiden-2026-10-20.json belum memuat angka udara platform, tetapi memuat pengamatan lapangan: bandara Ketapang dan Singkawang tutup, jarak pandang sekitar 100 m. Feed METAR platform tidak melihat Ketapang (WIOK tidak ada di feed, metar.py:3).\n\n**Vonis akhir 31 metode:**\n- 1 layak.\n- 12 layak dengan catatan. METAR pengamatan turun dari layak karena cakupan 14 bandara tidak lengkap dan HZ dihitung \"berasap\".\n- 18 tidak layak.\n\nDitambah 3 metode yang terlewat.\n\n**Metode yang lebih efektif dan lebih tepat (berurutan, yang termurah dan terkuat dulu):**\n1. **Data ukur sebagai inti.** Pakai ISPU/AQMS KLHK dan jaringan PM2,5 BMKG lewat jalur antarlembaga BNPB. METAR/SPECI dan TAF diambil langsung dari BMKG Penerbangan (cakupan penuh, termasuk Ketapang), ditambah NOTAM/AirNav untuk penutupan bandara. Model hanya mengisi celah.\n2. **Koreksi CAMS dengan MOS sederhana** (quantile mapping atau regresi per stasiun-musim) yang dilatih pada arsip musim 2019 dan 2023. Diverifikasi dengan NMB/NME/FAC2 (patokan Emery dkk. 2017) dan HSS per kategori, termasuk uji prakiraan h+1 sampai h+3. Sebelum itu, angka per kab tidak dikutip.\n3. **Paparan dihitung di kisi CAMS asli (0,4°) dikali WorldPop 1 km**, dilaporkan sebagai orang-hari dan rentang. Pisahkan \"dipengaruhi asap karhutla\" (lintasan mundur dengan angin ANALISIS, misalnya HYSPLIT GDAS/GFS 0,25° ansambel, ditambah titik panas dan METAR FU) dari \"polusi kota\". Pakai satu definisi untuk modul udara dan karhutla.\n4. **Sumber asap ditulis kualitatif** (\"ya/mungkin/tidak dipengaruhi gugus api X\"), tanpa persen dan tanpa nama perusahaan. Untuk lintas batas, rujuk produk ASMC/BMKG.\n5. **Kesehatan dari surveilans Kemenkes** (SKDR, kunjungan ISPA puskesmas) dan laporan lapangan BNPB. Bila tetap diperlukan estimasi, pakai AirQ+ dengan pasangan dampak dan fungsi risiko yang sama, ditulis sebagai rentang yang memuat nol.\n6. **Probabilitas** hanya dari kalibrasi statistik (regresi logistik atau EMOS) pada arsip hindcast dengan Brier dan reliability diagram, atau dari ansambel multi-model.\n7. **Statistik titik panas** memakai satu sensor dan jendela yang sama, mulai 2012/2015 (data sudah ada di repo), disandingkan dengan SiPongi KLHK. Fase ENSO memakai definisi episode NOAA, ditambah IOD.\n8. **PLTU**: perbarui inventaris (GEM Global Coal Plant Tracker atau RUPTL) atau keluarkan dari atribusi dan skenario.\n9. **Operasional**: bekukan satu snapshot briefing berstempel waktu jalan model, dan blokir penerbitan bila ada langkah pipeline yang gagal.\n\n**Untuk dek Presiden saat ini, yang aman dibawa hanya:**\n- Kategori PM2,5 per wilayah sebagai pola regional berlabel \"perkiraan model CAMS, belum dikoreksi\", disandingkan dengan ISPU resmi.\n- METAR BMKG.\n- Titik panas.\n- Arah angin kualitatif.",
+ "keputusan": [
+  {
+   "nama": "Konversi PM2,5 rata-rata 24 jam ke kategori ISPU (titik potong P.14/2020)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar: alat.py:18 BATAS [55.4,150.4,250.4], app.js:14 [15.5,55.4,150.4,250.4], murni.js:43, uji alat.py:121-122, dan tabel Metode metode.js:6-11 sesuai titik potong P.14/2020 (ISPU 50/100/200/300). Fungsi pemetaannya baku dan benar, jadi tetap layak SEBAGAI FUNGSI. Catatan: (1) yang dipetakan adalah CAMS mentah, jadi hasilnya bukan ISPU dan harus ditulis 'kategori PM2,5 (titik potong ISPU), perkiraan model'; (2) beda pembulatan antarjalur (riwayat.py:28 membandingkan nilai 1 desimal mentah, laporan_udara.py:69 membulatkan dulu) hanya berpengaruh di 55,4-55,5, tidak material; (3) penyalahgunaan kecil: tren.js:50 memberi 'Kategori' ISPU pada rata-rata NASIONAL berbobot jiwa, yang tidak bermakna sebagai kategori (lihat metode terlewat pm_jiwa)."
+  },
+  {
+   "nama": "Status 4 tingkat Normal/Waspada/Siaga/Awas per kab/kota",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: murni.js:8 ST_NAMA, sim/model.js:51 menyebutnya 'status resmi', index-udara.json (dibuat 20 Okt 02.21 WIB) memuat 25 laporan, semuanya tingkat 'siaga', termasuk Pulang Pisau 895 µg/m³ yang menurut skala sendiri Awas; /semua/ analisis.js:107 menampilkan pil 'Siaga' sejajar status PVMBG/banjir. Slider jam memakai rata24 terpotong (prakiraan.js:23 dengan k.pm mulai jam sekarang), sementara tooltip menulis 'rata-rata 24 jam sampai jam ini' (prakiraan.js:48): pada jam 0 itu rata-rata 1 jam. Pembelaan sebagian: label ganda 'Siaga (Sangat tidak sehat)' dan teks pemicu '(model CAMS di titik kota)' ada. Koreksi: lima entri Jatim belum tentu artefak (atribusi sendiri memberi Lamongan dan Kota Mojokerto porsi api 1,0); masalahnya kosakata status resmi pada keluaran model tanpa konfirmasi. Vonis tetap."
+  },
+  {
+   "nama": "Prakiraan PM2,5 72 jam per kab/kota dari CAMS (satu titik berbobot penduduk per kab)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di prakiraan.json: koreksi {status 'belum', n_stasiun 0}, status hari ini 428/65/13/8, 404 deret r24 unik dari 514, Pulang Pisau [895,719,583], Kota Bandung [122,132,125] sementara Kab. Bandung [47,30,30], Jakarta Selatan/Timur/Kota Bogor/Kota Bekasi/Depok/Tangsel identik [121,115,124] vs Jakarta Pusat/Utara/Barat/Kota Tangerang [50,43,38]: lompatan 2,4 kali dalam satu metropolitan adalah artefak sel 0,4 derajat. Satu-satunya bukti skill adalah hindcast ANALISIS (POD 0,44, bias 0,52); skill prakiraan h+1..h+3 belum ada. Tetap layak_catatan hanya sebagai pola regional (provinsi/pulau) berlabel; angka per kab (Jakarta Selatan 121, Pulang Pisau 895) tidak boleh dikutip di depan Presiden sampai dikoreksi ke stasiun."
+  },
+  {
+   "nama": "Koreksi bias per stasiun WAQI (dikodekan, tidak aktif)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi prakiraan.py:75-151 (rasio lewat nol, jepit 0,2-3, susut K=48, 1/d² dalam 50 km, uji 7 hari di luar sampel) dan keluaran n_stasiun 0. Tambahan: teks koreksi.metode menyatakan 'WAQI_TOKEN tak ada' (prakiraan.py:379), padahal udara.yml:59 mengirim secret dan PARITAS-UDARA.md mencatat token dikirim; kegagalan WAQI ditelan ke arsip {} (prakiraan.py:300-302), sehingga alasan yang ditulis bisa keliru. Rancangan MOS-nya wajar; tetap layak_catatan sebagai rancangan, dengan syarat masukan diganti µg/m³ KLHK/BMKG (bukan AQI agregator yang dikonversi balik dengan tabel EPA 2012) dan lulus uji tinggalkan-satu-stasiun sebelum pil 'terkoreksi ke stasiun' boleh muncul."
+  },
+  {
+   "nama": "Uji hindcast CAMS terhadap METAR (kartu 'Galat model')",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka dan turunan terverifikasi persis (n 837, 27 bandara, 168/32/214/423, POFD 0,07, bias 0,52, HSS 0,384, ETS 0,24, base rate 45,6%). Stabil antarjalan: PARITAS mencatat 810 hari-bandara, hit 45,3%, FAR 15,8%, CSI 41,8% pagi 19 Okt. Celah kunci 'selang' (data terbit) vs 'ci' (prakiraan.py:202, prakiraan.js:110) terverifikasi: selang tidak tampil. Catatan tambahan: yang diuji adalah analisis CAMS yang mengasimilasi AOD, jadi skill prakiraan pasti lebih rendah; HZ di bandara Jawa juga muncul karena polusi kota dan kelembapan. Metode verifikasinya sah (gaya WMO JWGFVR); hasilnya justru bukti bahwa CAMS meluputkan 56% hari berasap. Layak_catatan sebagai bukti keterbatasan, bukan sebagai klaim akurasi."
+  },
+  {
+   "nama": "Arsip prakiraan dan uji prospektif hari+1",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: prakiraan.py:36 MIN_N_PRAKIRAAN 50, arsip append-only 120 hari di public (prakiraan_arsip.json 9,6 KB), arsip per jalan di data/raw (cache CI) dan metar_prakiraan null. Prosesnya benar dan justru syarat untuk mengklaim skill; belum menghasilkan bukti. Tambahkan lead h+2/h+3 dan simpan PM per jam supaya uji tidak terbatas pada r24 h+1."
+  },
+  {
+   "nama": "Jiwa terpapar udara tidak sehat (seluruh penduduk kab/kota ikut kategori satu titik CAMS)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Total 89.518.808 dan pembagian 11.956.088 / 74.456.790 / 3.105.930 terverifikasi; riwayat 14 Okt [278.123.047; 154.544.130; 68,3] terverifikasi. Koreksi: daftar 'Jabar 30,1, Jateng 17,0, Jatim 16,3, Banten 11,0, DKI 5,2 juta' adalah TOTAL terpapar per provinsi (jumlah 79,66 juta = 89% angka nasional dari Jawa), bukan rincian 74,5 juta; bagian Jatim berporsi api <50% hanya 5,96 juta. Memakai porsi api dari atribusi sebagai bukti juga melingkar. Bukti independen yang cukup: 89% angka judul dari Jawa, lompatan sel 50 vs 121 µg/m³ di Jakarta, Bandung kota 122 vs kabupaten 47, dan Metode sendiri (metode.js:25) mengakui kota Jawa cenderung terlalu tinggi. Satu titik model untuk seluruh kab tanpa koreksi tidak layak jadi angka judul; angka 43 juta (2015) tidak bisa diverifikasi di repo, jangan dipakai sebagai pembanding resmi."
+  },
+  {
+   "nama": "Balita, lansia, dan sekolah di wilayah tidak sehat",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "rentan.json terverifikasi (balita [6.803.425; 6.433.609; 6.226.277], lansia 10.742.250, nasional.sekolah [15.737; 16.886; 15.447]). Temuan baru yang memperberat: kartu Dampak menulis 'sekitar ${s.length} sekolah berada di zona tidak sehat besok' (dampak.js:31) dengan s = daftar yang dipotong MAKS_SEKOLAH 300 (rentan.py:24,107), jadi layar menampilkan 'sekitar 300 sekolah', bukan 16.886; Metode (metode.js:40) menulis 'kota berstatus siaga atau awas', kode memakai waspada ke atas (rentan.py:87). Tiga definisi untuk satu angka, ditambah proporsi umur nasional untuk semua kab."
+  },
+  {
+   "nama": "Tambahan kasus ISPA per hari (dan beban faskes)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: rentan.py:19-22 (Y0 9,3%/30, RR (0,9982; 1,019; 1,0402), C0 15, DC_MAKS 100), rentan.json nasional {t 40.785, lo 0, hi 78.255}, sim/model.js:289-296 fungsi mulus tanpa ambang dengan batas bawah tak dijepit, dan karhutla scripts/data/dampak.py:59-61 (RR 1,02/1,04/1,06, dasar 4,4% diagnosis nakes per provinsi): tiga rumus ISPA di satu platform. Koreksi: rumus kode 1−RR^(−x) adalah bentuk fraksi atribusi baku AirQ+; yang salah teks Metode 'RR^x − 1' (metode.js:40). Masalah inti tetap: RR rawat inap dipasangkan dengan prevalensi periode gejala/diagnosis 1 bulan yang dibagi 30 (prevalensi bukan insidensi), selang memuat nol, dan loncatan di 55,4."
+  },
+  {
+   "nama": "Prakiraan jarak pandang bandara (Koschmieder dari PM2,5)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: rentan.py:23,51-54; rumus memberi 10 km untuk PM ≤63; semua 14 bandara diprakirakan [10,10,10] sementara METAR melapor Manado 2,0 FU, Banjarmasin 3,2 HZ, Makassar 3,3 FU, Pekanbaru 4,5 FU, Batam 5,0 FU, dan Palembang 1,6 km FU (yang terburuk, terlewat oleh reviewer pertama). Temuan baru: laporan_udara.py:143-146 mengambil 10 bandara pertama dari daftar yang diurutkan menurut min(prakiraan_km) (rentan.py:108), yang semuanya 10,0, sehingga Palembang WIPP 1,6 km FU hilang dari tabel Laporan Harian. Topik keselamatan penerbangan; tidak layak."
+  },
+  {
+   "nama": "Jarak pandang bandara terkini (pengamatan METAR)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Pengamatan ICAO/WMO berstempel waktu dengan filter basi 12 jam (app.js:31,92), sah sebagai data. Diturunkan karena tiga hal yang membuat ringkasannya tidak aman dipresentasikan apa adanya: (1) cakupan hanya 14 bandara dari feed NOAA; metar.py:3 mencatat WIOK (Ketapang), WAGG, WAOI dan lainnya tidak ada di feed, padahal dek BNPB 20 Okt (data/laporan-bnpb/presiden-2026-10-20.json) melaporkan bandara Ketapang dan Singkawang tutup dengan jarak pandang ±100 m, jadi kartu 'N bandara di bawah 5 km' meremehkan situasi; (2) flag 'asap' menghitung HZ sama dengan FU (metar.py:30), sehingga kartu menulis 'berasap' untuk kabut asap kering yang bisa berasal dari polusi kota; (3) snapshot lokal public/data/metar.json bertanggal 12 Okt. Layak bila diambil langsung dari BMKG Penerbangan dengan cakupan penuh dan HZ/FU dibedakan."
+  },
+  {
+   "nama": "Lintasan asap maju 72 jam dari kompleks api (peta)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi lintasan.py:82-98 (Heun 1 jam) vs Metode 'langkah 3 jam' (metode.js:38), lintasan.json 60 kompleks FRP 287/466/4.587. Deterministik satu jalur per lapis tanpa gerak vertikal; lapis 850 hPa (sekitar 1,5 km) umumnya di atas lapisan batas malam tempat asap gambut berada. Layak hanya sebagai arah angin kualitatif dari gugus api; hapus 'jam kedatangan' di laci kota dan beri tahu lapis mana yang realistis untuk asap permukaan."
+  },
+  {
+   "nama": "Peringatan asap lintas batas negara (Malaysia, Singapura, Brunei, Timor Leste, Papua Nugini)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: lintasan.py:25-32 (kotak kasar), laporan.json sorot Malaysia 32 jam dan Brunei 55 jam dari K0043 Katingan, lintas_batas 12 Malaysia + 4 Brunei. Bukti baru: ketika jalur dipetakan ulang ke poligon, semua 4 pemicu Brunei dan 12 dari 16 pemicu Malaysia berasal dari lapis 850 hPa, 4 dari 925 hPa, dan nol dari 10 m: klaim ini lahir dari lapis yang paling tidak mewakili asap permukaan. Juga muncul di pop-up harian setiap pengunjung (sapa.js:29). Risiko diplomatik di bawah ASEAN Agreement on Transboundary Haze Pollution; rujukan resmi ASMC/BMKG."
+  },
+  {
+   "nama": "Atribusi sumber PM2,5 per kota (plume Gauss api/PLTU/latar) dan porsi asap api per kota-hari",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di atribusi.json (dibuat 19 Okt 19.21Z): 327 terpercaya, 99 tidak, lebar rentang 34,0; Kab. Kapuas teratas Probolinggo K0003 9% (0-39), lalu Tana Toraja, Situbondo, Jember, Bondowoso; Pulang Pisau model 9 vs CAMS 719, latar 99%; 148 bagian 'lain' bertinggi >100% (sampai 247%) walau kode rentang() sekarang menjumlah per skenario (berkas terbit lebih tua dari perbaikan). Akar masalah yang terlewat: DM_PER_MJ 0,368 kg/MJ (faktor non-gambut, atribusi.py:40) dipakai juga untuk gambut, padahal ASUMSI sendiri (atribusi.py:57-58) mengakui FRP terlalu rendah untuk gambut; emisi gambut lokal jadi sekitar satu orde terlalu kecil, sehingga api Jawa berjarak lebih dari 500 km 'menang'. 247 dari 327 kota 'terpercaya' bermodel <0,5×CAMS. Juga bertentangan dengan asal.json untuk kota yang sama (Kapuas: 85% dari Kalimantan Selatan)."
+  },
+  {
+   "nama": "Asal asap per kota (lintasan mundur, persen per provinsi, kompleks, dan konsesi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi asal.py:27-130 dan asal.json (263 kota; 64 berasal '100%' satu provinsi untuk provinsi teratas; 59 kalimat menyebut nama konsesi). Contoh: 'Asap yang sampai di Kota Administrasi Jakarta Selatan ... paling banyak dari Jawa Barat (66%) ... Karawang (66%)' untuk kota yang porsi api atribusinya 1%; Kab. Kapuas '85% Kalimantan Selatan' bertentangan dengan atribusi (Probolinggo). Jalur mundur memakai angin PRAKIRAAN (waktu tiba jam 24-72 ke depan), bukan analisis; bobot 1/jarak dan radius 25 km rakitan sendiri; pencucian hujan diabaikan. Tidak layak."
+  },
+  {
+   "nama": "Penautan kompleks api ke konsesi (nama badan usaha)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi lintasan.py:137-168 (kotak batas +0,02 derajat, filter PT/Koperasi/Perum/KUD) dan 24 dari 60 kompleks berkonsesi; nama perusahaan muncul di kartu Sumber asap (prakiraan.js:131), kalimat asal (asal.py:88-89; 59 kota), dan laporan kejadian. Penafian 'bukan penetapan siapa yang membakar' ada (lintasan.py:10, metode.js:39), tetapi metode bbox terlalu kasar untuk menyebut nama di dokumen negara. Tidak layak."
+  },
+  {
+   "nama": "Peluang PM2,5 melewati ambang 55,4/150,4/250,4 (729 varian)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi peluang.json: 472 wilayah, p(waspada) 0 untuk 692 kota-hari, tengah 414, ≥0,995 untuk 168; bobot {dipakai false, ess 729, n_stasiun 0}. Pembelaan: batasan jujur (peluang_udara.py:141-149: bukan ansambel cuaca, '0% berarti model CAMS tidak menunjukkan asap'). Namun karena komponen asap model median hanya 0,27×CAMS dan emisi gambut terlalu kecil (lihat atribusi), sebaran praktis hanyalah ambang deterministik CAMS yang dibungkus kata 'peluang'. Untuk dek Presiden tetap tidak layak."
+  },
+  {
+   "nama": "Peta PM2,5 interpolasi (IDW 1/d², sel 0,25 derajat)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi peta.js:55-60 (IDW radius 2 derajat, sel jauh dibiarkan bening). Visualisasi pola regional; merekonstruksi kasar medan CAMS dari titik sampel, termasuk lompatan sel Jakarta. Lebih tepat memakai kisi CAMS asli berlabel 'model, sekitar 40 km'."
+  },
+  {
+   "nama": "Kejadian udara U (gugus kab bersebelahan >55,4) dan Laporan Kejadian per kab Siaga",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi kejadian.py:240-262 (rata-rata pm[:24] KE DEPAN, beda dari status hari WIB), laporan_kejadian.py:44 pemicu kota_siaga, index-udara.json 25 laporan semua 'siaga' (895 µg/m³ pun 'siaga'), tampil di /semua/ dengan pil Siaga (analisis.js:107,113). Teks pemicu memuat '(model CAMS di titik kota)', tetapi kejadian dibangkitkan murni dari model tanpa konfirmasi pengamatan. Koreksi: entri Jatim belum terbukti positif palsu; yang kurang adalah konfirmasi (ISPU/BMKG, METAR FU, laporan lapangan)."
+  },
+  {
+   "nama": "Laporan Harian Kualitas Udara (laporan.json): metrik, prakiraan, dan sorot otomatis",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi laporan.json (dibuat 20 Okt 02.21 WIB): jiwa_tidak_sehat 7 hari terakhir [154,5; 135,3; 132,5; 122,1; 80,1; 93,3; 89,5 juta], 6 sorot 'berbahaya' dengan 'Sumber api terbesar: Kompleks api Kapuas K0041 sekitar 0% (0-80%)' dan 'Probolinggo K0003 sekitar 9%' untuk Kapuas, 2 sorot lintas batas. Tambahan: berkas terbit dihasilkan kode lama (kode sekarang menulis 'Awas (Berbahaya)' dan '0 sampai 80%', laporan_udara.py:28,40), jadi isi layar tidak sama dengan kode yang ditinjau; tabel bandara membuang Palembang 1,6 km FU; jalan.py membiarkan langkah gagal sehingga satu laporan bisa menggabungkan keluaran jalan berbeda. Sebagai produk utuh tidak layak; komponen yang layak dibawa ke versi briefing tersendiri."
+  },
+  {
+   "nama": "Riwayat dan Tren PM2,5 (analisis CAMS hari lampau, maks 120 hari)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi riwayat.json 32 hari (18 Sep-19 Okt), puncak 14 Okt 154.544.130 jiwa, PM berbobot 68,3; riwayat ditimpa analisis terbaru tanpa versi (prakiraan.py:310-317). Arah relatif dalam satu model informatif; nilai absolut mewarisi bias CAMS. Tambahan: tren.js:50 memberi kategori ISPU pada rata-rata nasional, dan grafik mencampur hari analisis dengan hari prakiraan (batang pudar, tren.js:43). Layak_catatan sebagai indeks relatif."
+  },
+  {
+   "nama": "Kalender musim asap dan ENSO (titik panas dan ONI)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi musim_asap.json (2019 n 783.421; 2026 n 1.266.458 sampai 19 Okt) dan fase dari rata-rata ONI setahun (musim_asap.py:58-59), bukan definisi episode NOAA; IOD tidak dipakai. Koreksi: komposisi sensor konsisten 2019-2026 (viirs_noaa20.csv 2019 = 488.570), jadi perbandingan 2019-2026 tidak cacat sensor. Bukti yang lebih tepat soal 2015: dengan jendela sama 1 Jan-19 Okt dan sensor sama S-NPP, 2015 = 775.371 vs 2026 = 570.858 (2015 lebih tinggi 36%); kalimat 'tertinggi sejak 2019' (tren.js:76) benar secara harfiah tetapi menyembunyikan 2015. Hitungan semua keyakinan dan multi-sensor juga beda dari SiPongi KLHK."
+  },
+  {
+   "nama": "Simulasi dispersi partikel Lagrangian dan 6 skenario",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi sim/model.js:15-21 (dmGambut 3,5 kg/MJ 'ASUMSI, belum dicek ke tabelnya', koreksiApi 1,5) vs atribusi.py:40-41 (0,368): 90,8 vs 6,4 g/MJ, sekitar 14 kali. Tambahan yang lebih menentukan: rasio gambut terhadap mineral di simulasi 18,1 kali, di pipeline 1,9 kali (beda sekitar 9,5 kali); faktor tunggal K tidak bisa memperbaikinya, jadi peringkat 'padamkan kompleks' antara kompleks gambut dan non-gambut ditentukan konstanta yang belum diperiksa. Skenario juga bergantung pada porsi api atribusi yang tidak layak, dan uji hanya sifat matematis (tests/udara/sim.test.mjs). Alat edukasi tanpa angka saja."
+  },
+  {
+   "nama": "Kalibrasi faktor K dan kartu 'Kecocokan skala dengan CAMS'",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi model.js:195-226: target = r24×asap dari atribusi, kode sendiri menulis 'BUKAN validasi' dan 'sebagian MELINGKAR' (model.js:215-217, BATAS :373). Pelabelan di kode jujur, tetapi judul kartu publik 'Kecocokan skala dengan CAMS' (sim.js:95) mudah dibaca sebagai bukti kalibrasi. Tidak layak untuk briefing; jadikan diagnostik internal."
+  },
+  {
+   "nama": "Ensemble simulasi 24 anggota: pita p10-p90 dan peluang puncak",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi ENS model.js:304 dan ASUMSI 'sebaran ... (asumsi), bukan diukur'. Koreksi: pita palsu-sempit di kota berporsi null sudah dikeluarkan dari tampilan (sim.js:214, ilmu cuaca-udara 20 Okt). Temuan baru: kolom 'Peluang Tidak sehat' (sim.js:214) adalah porsi anggota yang PUNCAK PER JAM-nya di atas 55,5 (pitaDariSeri, model.js), ambang 24 jam yang diterapkan pada nilai 1 jam, sehingga peluang terangkat secara sistematis. Tanpa spread-skill atau reliability; tidak layak."
+  },
+  {
+   "nama": "Peringkat perlakuan dan biaya rupiah, kestabilan peringkat, dan beban faskes",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi tanggap.js:6-20 (masker Rp15.000, ruang Rp6 juta + Rp300 ribu/hari, regu Rp12 juta/hari, PLTU Rp800/kWh, sekolah Rp25.000/murid-hari), pil 'Hasil model, belum divalidasi' (sim.js:91), BATAS model.js:374. Tambahan: opsi 'kurangi PLTU 50%' bertumpu pada inventaris PLTU usang (lihat metode terlewat), dan beban faskes memakai fungsi ISPA ketiga. Rekomendasi lintas kementerian dari rantai model tak teruji; tidak layak."
+  },
+  {
+   "nama": "Estimasi emisi PM2,5 api dari FRP (jumlah FRP 24 jam dibagi lintasan satelit)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi atribusi.py:40-45 (LINTAS 6/4/2 diasumsikan) dan model.js:36-47 (lintasan teramati dari hotspot24). Akar masalah yang menjelaskan absurditas atribusi: faktor bahan kering 0,368 kg/MJ dipakai seragam untuk gambut di pipeline, sementara simulasi memakai 3,5 kg/MJ; dua konversi di satu modul berbeda sekitar 14 kali tanpa uji silang Python-JS (udara.md B07 'sebagian'). GFAS sudah menyediakan fluks emisi harian dengan konversi khusus gambut; tidak layak."
+  },
+  {
+   "nama": "Jalur lama udara_kualitas.json dan udara_dampak.json yang masih dibaca /semua/ dan OG",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: udara_kualitas.json dibuat 2026-10-15T15:26+07:00, hari 15-18 Okt, tidak sehat ke atas 15 Okt = 119.917.424; commit terakhir 270b9873 16 Okt; adapter.js:55 `Math.max(0, u.hari.indexOf(tgl))` jatuh ke indeks 0 sehingga data 15 Okt tampil sebagai 'hari ini' (adapter.js:61). Ada pil 'Data <jam>' (adapter.js:62) yang sedikit menolong, tetapi kalimat 'hari ini' tetap salah dan angkanya beda dari /udara/. public/udara/data/meta.json juga masih menunjuk berkas lama. Tidak layak; hapus jalur ini."
+  },
+  {
+   "nama": "Angin 3 lapis dan tinggi lapisan batas (masukan lintasan, atribusi, dan simulasi)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi angin.py:16-20 (best_match, kisi 1 derajat, 25 langkah 3 jam ke depan). Masukan NWP sah untuk arah umum; resolusi kasar dan ketiadaan jam lampau membuat lintasan mundur memakai angin prakiraan (diakui asal.py:5-6). Tambahkan past_days atau analisis dan resolusi 0,25 derajat."
+  },
+  {
+   "nama": "Berita kualitas udara (panen RSS dan leksikon relevansi)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi berita.py:8,36 SENTIMEN_TERUJI False dan Metode 'diperbarui tangan' (metode.js:18) yang usang. Konteks media, bukan indikator dampak; uji presisi relevansi belum ada (udara.md A33)."
+  },
+  {
+   "nama": "Lapisan satelit karbon monoksida AIRS (NASA GIBS)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": false,
+   "alasan": "Deskripsi reviewer pertama keliru: lapisan ini bukan kolom total CO, melainkan 'AIRS_L3_Carbon_Monoxide_500hPa_Volume_Mixing_Ratio_Daily_Day' dengan label 'Karbon monoksida AIRS (±5,5 km)' (public/inti/peta/nasa.js:10), yaitu rasio campuran CO di troposfer tengah. Kesimpulannya justru lebih kuat: ini bukan udara yang dihirup. Label ketinggian sudah ada; tambahkan 'bukan udara permukaan' dan pertimbangkan AOD/true color VIIRS untuk sebaran asap. Vonis tetap."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Inventaris PLTU batu bara (WRI Global Power Plant Database v1.3) sebagai sumber atribusi, skenario 'PLTU mati', dan perlakuan 'kurangi PLTU 50%'",
+   "vonis": "tidak_layak",
+   "alasan": "Isinya hanya 70 unit dengan total 29,3 GW dan tahun operasi terakhir 2017. Tidak ada Batang, Jawa 7, maupun PLTU captive industri nikel (Morowali/IMIP, Weda Bay), padahal kapasitas batu bara Indonesia saat ini jauh di atas angka itu. Faktor kapasitasnya dari 'estimated_generation_gwh_2017', yaitu hasil model, bukan data pelaporan. Akibatnya porsi PLTU di atribusi, skenario 'PLTU mati', dan biaya 'kurangi PLTU 50%' dihitung dari armada yang tidak lengkap. Perbaikan: perbarui dari GEM Global Coal Plant Tracker atau RUPTL/PLN plus pembangkit captive, atau keluarkan PLTU dari atribusi dan skenario.",
+   "bukti": "scripts/udara/pltu.py:1-30 (sumber GPPD v1.3, fk dari 2017); public/udara/data/pltu.json: 70 unit, jumlah MW 29.333, maks tahun 2017, pencarian 'Batang', 'Jawa 7', 'Morowali', 'IMIP', 'Weda' kosong; dipakai di atribusi.py:155-159, sim/model.js (efPltu), sim/tanggap.js:9."
+  },
+  {
+   "nama": "Pop-up harian 'Situasi kualitas udara hari ini' (ringkasan otomatis untuk setiap pengunjung)",
+   "vonis": "tidak_layak",
+   "alasan": "Ini kanal yang paling sering dilihat orang, dan isinya menggabungkan beberapa metode yang tidak layak menjadi kalimat judul:\n- Angka 'X jiwa terpapar udara tidak sehat'.\n- Kartu 'Asap lintas batas: asap dari K0043 menuju Malaysia sekitar 32 jam lagi'.\n- Status 'Siaga/Awas'.\n- Perbandingan 'naik/turun X% dari kemarin' yang membandingkan rata-rata provinsi prakiraan hari ini dengan analisis kemarin, jadi dua jenis data yang berbeda.\n\nLabel model ada, tetapi lintas batas tidak berlabel ketidakpastian. Perbaikan: buang kartu lintas batas, ganti angka jiwa dengan kategori per wilayah, dan bandingkan hari ini dengan kemarin dari jenis data yang sama.",
+   "bukti": "public/udara/sapa.js:8-12 (ringkasKota, banding skr S.uk vs S.rw kemarin), :29 (kartu 'Asap lintas batas' dari S.lin.lintas_batas), :34-35 (judul jiwa dan chip PM2,5 rata-rata nasional)."
+  },
+  {
+   "nama": "PM2,5 rata-rata nasional/provinsi berbobot jiwa (metrik pm_jiwa) beserta kategorinya",
+   "vonis": "layak_catatan",
+   "alasan": "Metrik ini menjadi metrik Laporan Harian (laporan_udara.py:24), chip pop-up, kartu Tren, dan kartu provinsi 'hari tidak sehat'. Rata-rata berbobot penduduk adalah ringkasan yang sah untuk tren relatif. Namun di platform ini sekitar 56% bobotnya ada di Jawa, sehingga nilainya mengikuti bias CAMS di kota Jawa (lompatan sel di Jakarta). Selain itu, layar memberi rata-rata nasional itu kategori ISPU ('Kategori: Tidak sehat'), padahal kategori hanya bermakna untuk paparan di satu lokasi. Layak hanya sebagai indeks tren relatif, tanpa kategori dan tanpa dibaca sebagai 'udara nasional tidak sehat'.",
+   "bukti": "public/udara/tren.js:50 (tooltip 'Kategori: ${KAT[kat(D[i].rata)].n}' pada rata nasional); public/udara/sapa.js:33 (chip PM2,5 rata-rata nasional); laporan.json nasional.pm_jiwa 7 hari terakhir [68, 69, 68, 59, 52, 53, 58]; murni.js:56-61 (rata berbobot jiwa)."
+  }
+ ]
+}

@@ -1,0 +1,635 @@
+{
+ "modul": "Banjir, rob, dan longsor (scripts/banjir/**, public/banjir/**; tanpa *_gunungapi.json dan cuaca_*), termasuk konsumen langsungnya: scripts/umum/laporan_kejadian.py, scripts/umum/outlook12.py, src/ews.js, src/worker.js (/api/status), src/nowcast.js, src/sihka.js. Empat temuan repo yang belum disebut kedua peninjau: (1) src/nowcast.js sudah menarik nowcast CAP BMKG tiap 10 menit ke D1 (GET /api/cuaca/nowcast), tetapi laporan_banjir.py:202 masih menghitung tanda 'aktif' dari peringatan.json harian. (2) src/sihka.js sudah menarik tinggi muka air sungai TERUKUR (SIHKA, Ditjen SDA) tiap jam ke D1 dengan status 'naik_di_atas_biasa' (/api/banjir/sungai-ukur), tetapi belum dipakai satu pun layar atau laporan banjir; sumbernya berdomain sihka.dev-tunnels.id (bukan go.id), jadi asal datanya wajib dipastikan ke Ditjen SDA. (3) scripts/cuaca/risiko_bnpb.py sudah punya klien InaRISK apiv4 (data-irbi-full, get-infra-risk per kelas bahaya) yang bisa langsung menggantikan skor risiko dan angka 'terpapar'. (4) docs/multi-bencana/SUMBER-BNPB.md:14 mencatat /kajian-summary/{bahaya}/ALL sebagai angka jiwa terpapar nasional resmi.",
+ "usulan": [
+  {
+   "metode_lama": "Status banjir per kecamatan (Siaga/Awas), bagian A: penyajian dan cakupan",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Peringatan resmi menjadi lapis utama, status platform dipersempit. (1) Di atas: nowcast CAP BMKG yang aktif saat dibaca (D1, src/nowcast.js), peringatan dini berbasis dampak (IBF) BMKG, dan kategori Hujan Lebat/Sangat Lebat dari prakiraan per desa api.bmkg.go.id. (2) Status platform hanya sebagai 'indikasi prioritas': Siaga/Awas hari ke-0, dihitung per kabupaten (bukan jumlah kecamatan), hanya di pulau yang CI95 PSS-nya > 0 (Jawa, Sumatra, Sulawesi), dengan kalimat tetap 'sekitar 6 dari 100 Siaga diikuti kejadian tercatat (uji 2022-2025, batas atas, sampel condong kota)'. (3) Buang jalur CAPE (status.py:22, tidak berpengaruh); matikan jalur P3 dan sungai sampai teruji. (4) Penjaga data basi: status.py keluar non-nol bila hujan.hari_ini bukan tanggal WIB hari ini (pola kejadian_aktif.py:158-162).",
+   "praktik_resmi_indonesia": "Peringatan dini cuaca adalah kewenangan BMKG (UU 31/2009). BMKG sedang memperluas prakiraan berbasis dampak (IBF) untuk banjir, banjir bandang, dan longsor, menuju tingkat desa dan 10 hari (IBF Expose 2026). BPBD/BNPB menetapkan status siaga darurat berdasarkan peringatan itu, bukan berdasarkan model pihak ketiga.",
+   "kenapa_lebih_tepat": "Presiden tidak akan menerima dua 'status banjir' yang saling bertentangan. Satuan yang ditampilkan sama dengan satuan yang tervalidasi (kabupaten-hari). Wilayah tanpa skill (Kalimantan, Bali-NT, Papua) tidak lagi mendapat klaim. Jumlah kecamatan di Jawa yang rapat tidak lagi menggelembungkan angka.",
+   "data_dibutuhkan": "Nowcast BMKG: RSS/CAP tiap 10-30 menit, sudah ada di D1, atribusi BMKG. Prakiraan desa: api.bmkg.go.id/publik/prakiraan-cuaca?adm4=, 3-jaman, 3 hari, terbuka dengan atribusi. IBF BMKG (signature.bmkg.go.id): tidak ada akses mesin; halamannya di balik tantangan Cloudflare (RISET-ROB.md:113) dan tidak boleh dibypass, jadi minta umpan data lewat Pusdatin BNPB atau MoU BMKG.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang tanpa DB: (a) fixture hujan 13 Okt dengan jam hitung 19 Okt membuat status.py dan laporan menolak; (b) angka paparan = jumlah kabupaten, bukan kecamatan; (c) pulau dengan CI95 PSS ≤ 0 di validasi.json tidak muncul. Pantau tiap hari porsi kabupaten Siaga platform yang hari itu juga punya peringatan BMKG aktif. Bila di bawah 50% selama 30 hari, tampilkan catatan ketidaksesuaian.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://peraturan.bpk.go.id/Details/38769/uu-no-31-tahun-2009",
+    "https://www.bmkg.go.id/berita/bmkg-dorong-implementasi-peringatan-dini-berbasis-dampak-melalui-ibf-expose-2026",
+    "https://www.bmkg.go.id/berita/utama/bmkg-perkuat-aksi-merespons-peringatan-dini-melalui-sistem-prakiraan-berbasis-dampak",
+    "https://www.bmkg.go.id/alerts/nowcast/id",
+    "https://github.com/infoBMKG/data-cuaca"
+   ]
+  },
+  {
+   "metode_lama": "Status banjir per kecamatan (Siaga/Awas), bagian B: metode ambang",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti ambang mm nasional (H3 ≥ 80/120 mm, dikali 0,8) dengan ambang periode-ulang per sel, seperti EFAS/GloFAS. (1) Per sel 0,25°, hitung tingkat hujan 1-hari dan 3-hari periode-ulang 2 dan 5 tahun dari maksimum tahunan ERA5 1991-2020 (Gumbel L-momen, cara yang sama dengan GloFAS untuk debit). Iklim model dipakai karena prakiraannya juga IFS. (2) Sinyal ansambel = porsi 51 anggota ECMWF ENS yang melewati RP2/RP5. Siaga bila P(>RP5) ≥ 30% dalam 3 hari, mengikuti kriteria titik pelaporan ERIC. (3) Hujan d-1 diambil dari hujan teramati GSMaP/IMERG, bukan model. (4) Bahaya InaRISK tetap sebagai syarat kerentanan. EFI/SOT ECMWF belum terkonfirmasi masuk subset data terbuka gratis; pendekatan periode-ulang di atas adalah pengganti yang bisa dibangun sendiri.",
+   "praktik_resmi_indonesia": "BMKG memakai kategori hujan harian per titik stasiun (lebat 50-100, sangat lebat 100-150, ekstrem >150 mm) dan IBF yang memadukan prakiraan hujan dengan kerentanan. Tidak ada ambang periode-ulang resmi Indonesia, jadi metode ini pelengkap internal di bawah lapis BMKG, bukan pengganti.",
+   "kenapa_lebih_tepat": "Ambang yang relatif terhadap iklim lokal adalah standar EFAS (EPIC/ERIC, Alfieri dkk. 2014) dan GloFAS. Cara ini menghapus dua bias: 50 mm berarti lain di Bogor dan Merauke, dan ambang titik stasiun dibandingkan dengan rerata sel 28 km. Keluarannya pun langsung berupa peluang.",
+   "data_dibutuhkan": "ERA5 harian lewat archive-api.open-meteo.com (1940-kini, CC BY 4.0, nonkomersial; 2.931 sel x 30 tahun, dijalankan tangan sekali dan disimpan sebagai JSON ambang per sel). Ensemble ecmwf_ifs025 lewat Open-Meteo (sudah dipakai). GSMaP_NRT (JAXA, 0,1°, per jam, latensi sekitar 4 jam, registrasi gratis).",
+   "upaya": "M",
+   "cara_validasi": "Pakai protokol ambang_wilayah.py: latih 2016-2021, validasi 2022-2023, uji 2024-2025 dibuka sekali. Satuan kabupaten-hari, mencakup semua 514 kabupaten atau sampel acak berstrata (≥15 per pulau, dipilih hanya dari data latih). Kebenaran: DIBI banjir, ditambah hari genangan Copernicus GFM sebagai kebenaran kedua. Pembanding: aturan sekarang, aturan '≥50 mm BMKG', dan klimatologi bulanan. Lulus bila: ΔETS terhadap aturan sekarang > 0 dengan batas bawah CI95 > 0; PSS CI95 > 0 di tiap pulau yang ditampilkan; dan ROC AUC skor kontinu (periode-ulang H3) ≥ 0,70.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://nhess.copernicus.org/articles/14/1505/2014/nhess-14-1505-2014.pdf",
+    "https://confluence.ecmwf.int/spaces/CEMS/pages/265028918/GloFAS+threshold+level+exceedance+probabilities",
+    "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+    "https://www.ecmwf.int/node/29328",
+    "https://sharaku.eorc.jaxa.jp/GSMaP/faq/GSMaP_faq06.html"
+   ]
+  },
+  {
+   "metode_lama": "Status longsor per kecamatan, bagian A: penyajian",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Lapis utama: Peta Prakiraan Wilayah Potensi Terjadi Gerakan Tanah PVMBG bulan berjalan. Peta ini hasil tumpang susun zona kerentanan gerakan tanah dengan prakiraan hujan bulanan BMKG, disajikan per kecamatan. Sementara parser dibangun, tautkan langsung ke peta dan tabel bulan berjalan. Status harian platform hanya boleh tampil di Jawa (84 dari 99 kena berasal dari Jawa), hanya di kecamatan zona menengah-tinggi PVMBG, dan dengan kalimat skill. Untuk pulau lain, keluarkan dari Laporan Harian, sorot, posko, dan email.",
+   "praktik_resmi_indonesia": "PVMBG/Badan Geologi memperbarui peta prakiraan gerakan tanah tiap akhir bulan dan mengirimkannya ke Pemda (vsi.esdm.go.id/portalmbg). MAGMA menyediakan cek kerawanan per koordinat. IBF BMKG juga memuat potensi longsor.",
+   "kenapa_lebih_tepat": "Produk ini wewenang lembaga resmi, sudah dipakai BPBD, dan memakai peta kerentanan geologi yang tidak dimiliki platform. Skill harian platform sendiri tidak terbukti di 4 dari 6 kelompok pulau, bahkan negatif nyata di Bali-NT.",
+   "data_dibutuhkan": "vsi.esdm.go.id/portalmbg: peta dan tabel bulanan (PDF/gambar). Lisensinya tidak terbuka, jadi wajib atribusi PVMBG dan izin tertulis sebelum dipakai massal (SUMBER-DATA.md:143). MAGMA API membalas 401, jadi perlu kanal data resmi lewat BNPB.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang konsistensi: ≥90% kecamatan Siaga longsor platform harus berada di zona menengah-tinggi PVMBG bulan itu; bila tidak, status itu disembunyikan. Uji balik Jawa saja dilaporkan terpisah (POD/FAR/PSS dengan CI).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://vsi.esdm.go.id/portalmbg/",
+    "https://www.esdm.go.id/id/media-center/arsip-berita/posko-nasional-sektor-esdm-masyarakat-dapat-mengetahui-tingkat-kerawanan-gerakan-tanah-secara-langsung"
+   ]
+  },
+  {
+   "metode_lama": "Status longsor per kecamatan, bagian B: model harian",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ada tiga jalur. (1) NASA LHASA v2: nowcast longsor probabilistik 1 km, harian. Modelnya XGBoost dengan peubah kerentanan, hujan satelit, dan kelembapan tanah; dilatih 2015-2018 dan diuji 2019-2020. Hasilnya diagregasi ke kecamatan sebagai porsi sel ≥ ambang. (2) Alternatif ringan stdlib: ambang nasional ILEWS hasil revisi Yuniawan dkk. 2022 (hujan 1-hari dan 3-hari, dari 420 kejadian Jawa dengan data GPM), diterapkan pada hujan teramati GSMaP/IMERG, hanya di zona kerentanan menengah-tinggi PVMBG. (3) LHASA-F (prakiraan 1-2 hari dengan GEOS-FP) dipakai untuk hari +1 bila produknya tersedia operasional. Status statis kelembapan tanah IFS dengan ambang 0,45 dibuang.",
+   "praktik_resmi_indonesia": "Ambang ILEWS (Hidayat dkk. 2019; direvisi Yuniawan dkk. 2022) adalah ambang sistem peringatan dini longsor nasional berbasis hujan 1- dan 3-hari. PVMBG menerbitkan prakiraan bulanan.",
+   "kenapa_lebih_tepat": "LHASA v2 divalidasi terhadap inventaris global dan dua kali lebih mungkin mendeteksi longsor historis dibanding v1 pada laju alarm palsu yang sama. Ambang ILEWS diturunkan dari kejadian Indonesia. Keduanya memakai hujan teramati, bukan sel model 28 km.",
+   "data_dibutuhkan": "LHASA v2: GES DISC Global_Landslide_Nowcast v2.0.0 (DOI 10.5067/8VKQDQFFOTS3, CC BY 4.0, Earthdata Login gratis, latensi minimal 5 jam). Format berkas belum saya pastikan; kode di github.com/nasa/lhasa. GSMaP/IMERG seperti usulan hujan. Zona kerentanan PVMBG.",
+   "upaya": "M",
+   "cara_validasi": "Uji balik kabupaten-hari 2019-2025 (2024 dibuang) terhadap DIBI longsor, ditambah titik longsor Indonesia dari NASA COOLR/Global Landslide Catalog. Lulus bila ROC AUC ≥ 0,70, PSS CI95 > 0 per pulau yang ditampilkan, dan ΔETS > 0 terhadap aturan sekarang. Acuan wajar: Satyaningsih dkk. 2023 melaporkan AUC 0,73 untuk ambang berbasis GSMaP di DAS Progo.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.frontiersin.org/articles/10.3389/feart.2021.640043/full",
+    "https://frontiersin.org/articles/10.3389/feart.2022.878996/full",
+    "https://www.earthdata.nasa.gov/data/catalog/ges-disc-global-landslide-nowcast-2.0.0",
+    "https://registry.opendata.aws/nasa-landslide-project/",
+    "https://github.com/nasa/lhasa",
+    "https://www.mdpi.com/2076-3263/12/3/129",
+    "https://link.springer.com/article/10.1007/s11069-023-06208-2",
+    "https://gpm.nasa.gov/landslides/data.html"
+   ]
+  },
+  {
+   "metode_lama": "Status Waspada (banjir dan longsor)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Waspada tidak masuk laporan, paparan, posko, maupun email bawaan. Di peta, gantikan dengan kategori prakiraan hujan BMKG per desa/kecamatan (Hujan Lebat, Sangat Lebat, Ekstrem) apa adanya. Bila level 1 platform tetap ingin dipertahankan sebagai lapis internal, definisikan ulang sebagai hujan ≥ periode-ulang 1-tahun sel (lihat usulan ambang periode-ulang), supaya laju alarm turun dari 27-32% menjadi beberapa persen hari. Posko 'siaga dini' dipicu peringatan BMKG, bukan gugus 4 kecamatan Waspada.",
+   "praktik_resmi_indonesia": "BMKG menerbitkan prakiraan per kelurahan dan peringatan dini cuaca. Kategori hujan lebat BMKG adalah istilah yang dikenal BPBD.",
+   "kenapa_lebih_tepat": "Waspada sekarang menyala di seperempat sampai sepertiga hari dengan presisi 3,6%, hanya sekitar 2 kali laju dasar 1,7%. Ratusan kecamatan 'Waspada' di awal musim hujan 2026/27, yang menurut BMKG mundur di 61% ZOM, memberi kesan krisis.",
+   "data_dibutuhkan": "api.bmkg.go.id/publik/prakiraan-cuaca?adm4= (satu desa wakil per kecamatan atau kabupaten; batas laju belum dikonfirmasi resmi, jadi jalankan berjeda).",
+   "upaya": "S",
+   "cara_validasi": "Pada uji 2024-2025, laju alarm ≤ 5% kabupaten-hari dengan lift presisi (presisi/laju dasar) ≥ 3. Bandingkan lift kategori BMKG ≥ lebat dengan Waspada sekarang (lift sekitar 2,1).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://github.com/infoBMKG/data-cuaca",
+    "https://infopublik.id/kategori/nasional-sosial-budaya/990337/musim-hujan-20262027-di-6108-persen-wilayah-indonesia-datang-lebih-lambat"
+   ]
+  },
+  {
+   "metode_lama": "Kalimat vonis peluang nasional dan provinsi (agregasi maksimum)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus kalimat 'peluang tertinggi X%' untuk nasional dan provinsi. Ada dua pengganti. (a) Peluang wilayah yang benar: untuk tiap anggota ansambel, ambil hujan maksimum di semua titik dalam wilayah, lalu hitung porsi anggota yang maksimumnya ≥ ambang. Ini sama dengan P(setidaknya satu titik). (b) Kalimat hitungan: 'N kabupaten berpeluang ≥50% menerima hujan ≥50 mm/hari dalam 3 hari (ECMWF ENS, belum terkalibrasi)'. Untuk narasi nasional ke Presiden, kutip siaran pers peringatan dini BMKG.",
+   "praktik_resmi_indonesia": "BMKG menyampaikan potensi hujan lebat nasional lewat siaran pers peringatan dini dan daftar wilayah, bukan lewat satu angka peluang maksimum.",
+   "kenapa_lebih_tepat": "Maksimum dari peluang titik secara matematis ≤ peluang 'terjadi di suatu tempat di wilayah'. Kalimat lama sistematis meremehkan kejadian yang pada skala stasiun hampir pasti terjadi di musim hujan.",
+   "data_dibutuhkan": "Anggota ansambel harian yang sudah diunduh ansambel_hujan.py; simpan nilai per anggota, bukan hanya ringkasan.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: P(wilayah) ≥ maks P(titik) untuk fixture. Setelah 90 hari log, bandingkan frekuensi teramati (GSMaP: ada sel ≥ 50 mm di provinsi) dengan peluang wilayah (diagram keandalan per kelas 10%).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+    "https://cawcr.gov.au/projects/verification/Stanski_et_al/Stanski_et_al.html"
+   ]
+  },
+  {
+   "metode_lama": "Kelas sungai GloFAS (Q2/Q5/Q20 Gumbel), bagian A: penyajian dan lapis terukur",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(1) Selama jalur ini belum hidup di luar Papua Selatan, layar dan laporan menulis 'sinyal sungai model belum tersedia di wilayah ini', bukan kosong yang bisa dibaca 'aman'. (2) Sorot 'titik sungai melewati debit banjir 5 tahunan' diganti 'puncak PRAKIRAAN 7 hari'. (3) Tambahkan lapis TERUKUR yang sudah ada di repo: tinggi muka air SIHKA di D1 (src/sihka.js, status naik_di_atas_biasa/tertinggi, /api/banjir/sungai-ukur), setelah sumbernya dipastikan resmi. URL-nya sihka.dev-tunnels.id, bukan domain pemerintah. Untuk Jakarta, tambahkan status Siaga pintu air BPBD DKI.",
+   "praktik_resmi_indonesia": "Ditjen SDA/BBWS mengelola pos duga air (TMA) dalam kerangka SIH3. BPBD memakai status Siaga 1-4 pos pintu air (mis. Katulampa, Manggarai, Pasar Ikan) sebagai pemicu evakuasi.",
+   "kenapa_lebih_tepat": "Tinggi muka air terukur adalah observasi, bukan model. Status siaga pos air adalah bahasa yang dipakai BPBD. Presiden tidak lagi menerima 'sungai aman' yang sebenarnya berarti 'tidak ada data'.",
+   "data_dibutuhkan": "SIHKA: sudah ditarik tiap jam ke D1, butuh konfirmasi asal dan izin dari Ditjen SDA. BPBD DKI: halaman pintu air/gelombang laut (tanpa API resmi yang saya temukan).",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: titik tanpa ambang wajib membawa label 'belum dihitung' di JSON dan layar. Untuk SIHKA, cocokkan 20 pos dengan nama dan lokasi pos resmi BBWS, lalu catat porsi pos berstatus 'lama'/'macet'. Pos yang macet > 20% waktu tidak ditampilkan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://sda.pu.go.id/balai/bwsbabel/file_uploads/konten_detail/SVkdK.pdf",
+    "https://www.medcom.id/nasional/metro/ybDrv9jK-bpbd-catat-kenaikan-tinggi-air-laut-di-pintu-air-pasar-ikan"
+   ]
+  },
+  {
+   "metode_lama": "Kelas sungai GloFAS (Q2/Q5/Q20 Gumbel), bagian B: metode",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(1) Pakai ambang resmi GloFAS v4 (RP 1,5 sampai 500 tahun, Gumbel L-momen atas reanalisis 1980-2022, data auxiliary CEMS), bukan Gumbel momen buatan sendiri. (2) Snap titik ke alur dengan peta luas hulu LISFLOOD (JRC). Pakai hanya sel dengan luas tangkapan ≥ 250 km², seperti lapis GloFAS. (3) Peluang = porsi 50 anggota (Open-Meteo Flood API, ensemble) yang melewati Q5 atau Q20, ditambah syarat persistensi, mengikuti GloFAS threshold exceedance. (4) Periksa dulu anomali sekarang (Q2 12-59 kali median; puncak/Q2 0,01-0,17). Hitung ulang Q2 dari reanalisis v4 di sel yang SAMA dengan prakiraan, lalu bandingkan dengan ambang resmi. (5) Uji jalur ini terutama di Kalimantan dan Sumatra, tempat status berbasis hujan tidak punya skill.",
+   "praktik_resmi_indonesia": "Belum ada prakiraan debit nasional terbuka dari Kementerian PU. GloFAS adalah produk Copernicus global yang tidak dirancang menggantikan sistem hidrologi lokal, sehingga posisinya pendukung di bawah TMA terukur BBWS/BPBD.",
+   "kenapa_lebih_tepat": "Ambang resmi menghapus kesalahan fit sendiri (Q20/Q2 sekitar 1,3, rasio janggal). Snap berdasarkan luas hulu memastikan titik berada di sungai. Peluang ansambel dengan persistensi adalah aturan operasional GloFAS. Studi global (Harrigan dkk. 2023) menunjukkan GloFAS berskill di lebih dari 93% DAS untuk jangka pendek-menengah, tetapi skill lokal Indonesia harus diuji sendiri.",
+   "data_dibutuhkan": "Open-Meteo Flood API: GloFAS v4 0,05°, 50 anggota, reanalisis 1984 sampai Juli 2022, gratis nonkomersial. Ambang GloFAS v4 dari CEMS/EWDS (akun gratis, NetCDF, unduh sekali, ekstrak 192 titik secara manual ke JSON kecil). Peta statis LISFLOOD dari FTP JRC (terbuka).",
+   "upaya": "M",
+   "cara_validasi": "(1) Rasio Q2 hitung-sendiri terhadap Q2 resmi di 192 titik; lulus bila median 0,8-1,25. (2) Uji balik reanalisis v4 2016-2022: hari lampau Q5 yang persisten terhadap DIBI banjir di kabupaten tepi sungai Kalimantan dan Sumatra; lulus bila PSS CI95 > 0. (3) Anomali harian debit GloFAS terhadap TMA SIHKA di pos terdekat dengan tangkapan setara; lulus bila r ≥ 0,5.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://open-meteo.com/en/docs/flood-api",
+    "https://confluence.ecmwf.int/spaces/CEMS/pages/265028918/GloFAS+threshold+level+exceedance+probabilities",
+    "https://global-flood.emergency.copernicus.eu/news/142-major-update-of-the-copernicus-emergency-management-service-glofas-is-now-operational/",
+    "https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/CEMS-GLOFAS/LISFLOOD_static_and_parameter_maps_for_GloFAS/",
+    "https://hess.copernicus.org/articles/27/1/2023/",
+    "https://global-flood.emergency.copernicus.eu/technical-information/glofas-skill"
+   ]
+  },
+  {
+   "metode_lama": "Status rob (persentil iklim muka laut model) dan penanda gabung ombak, bagian A: status",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Status rob diambil dari baris peringatan rob BMKG yang AKTIF pada tanggal itu (rob.json bmkg.rob, sudah diurai). Baris dipetakan ke kecamatan/kabupaten. Model SMOC turun menjadi informasi pendukung 'tinggi muka laut prakiraan (model)' tanpa level Waspada/Siaga/Awas. 'Awas = melewati rekor' dihapus. Laporan Harian dan email memuat peringatan rob BMKG yang aktif. Kartu Insight (insight.js:118) menghitung baris aktif hari ini, bukan 46 baris terbitan. Penanda 'gabung ombak' baru dihidupkan setelah diuji.",
+   "praktik_resmi_indonesia": "BMKG Pusat Meteorologi Maritim menerbitkan Informasi Potensi Banjir Pesisir (Rob) per fase bulan, berbasis fase bulan, perigee, dan tinggi pasang per stasiun, sampai tingkat kecamatan/kelurahan. BPBD DKI memakai tinggi pos Pasar Ikan: normal < 170 cm; Siaga II sekitar 201-250 cm (berita 2018); Siaga 1 pada sekitar 254 cm (berita 2022). Angka ini dari berita, belum dari pedoman resmi.",
+   "kenapa_lebih_tepat": "Sepanjang 10-22 Okt 2026, model menyatakan 0 titik Waspada, sementara BMKG memperingatkan Jakarta Utara, Bekasi, Karawang, Belawan, Bima, dan Ambon. Status resmi menghapus pertentangan ini. Persentil 'luar biasa' tidak sama dengan 'menggenangi', terutama di pantura yang turun 5-10 cm/tahun.",
+   "data_dibutuhkan": "PDF BMKG maritim (terbit per fase bulan, sudah diurai rob.py); maritim.bmkg.go.id/apidoc (gelombang, valid_from/valid_until).",
+   "upaya": "S",
+   "cara_validasi": "Gerbang dengan fixture terbitan 1 Okt: pada 13 Okt, Jakarta Utara, Bekasi, dan Karawang wajib berstatus 'peringatan rob BMKG aktif' di rob.json dan di laporan; baris 2-4 Okt tidak boleh terhitung pada 13 Okt.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://maritim.bmkg.go.id/apidoc",
+    "https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf",
+    "https://www.medcom.id/nasional/metro/ybDrv9jK-bpbd-catat-kenaikan-tinggi-air-laut-di-pintu-air-pasar-ikan"
+   ]
+  },
+  {
+   "metode_lama": "Status rob, bagian B: model genangan rob berdatum lokal (pendamping BMKG)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(1) Ubah muka laut SMOC ke datum lokal dengan offset bergulir 30 hari (gauge IOC sensor prs dikurangi model) di koli, sema, sura, dan stasiun IOC Indonesia lain (33 stasiun). (2) Ambang genangan = HAT lokal BIG (srgi pasutv2) ditambah margin. Pola ini mengikuti ambang dampak bersama NOAA (banjir pasang minor relatif terhadap datum pasang lokal). (3) Margin dikalibrasi 2022-2024 terhadap hari kejadian DIBI rob, hari peringatan BMKG, dan laporan BPBD; uji 2025-2026 dibuka sekali. (4) Komponen astronomis dari prediksi harmonik (lihat kalender pasang). (5) Koreksi penurunan tanah dengan laju GNSS Susilo dkk. 2023 untuk konteks elevasi. Pakai DeltaDTM untuk luas daratan di bawah muka air. (6) Untuk Jakarta, tinggi pos Pasar Ikan dijadikan kebenaran.",
+   "praktik_resmi_indonesia": "BMKG (prakiraan pasang per pelabuhan dan peringatan rob), BIG (datum pasut SRGI), dan BPBD DKI (pos Pasar Ikan).",
+   "kenapa_lebih_tepat": "Rob ditentukan oleh tinggi air terhadap daratan lokal, bukan oleh kelangkaan statistik. Datum lokal dan uji di luar sampel menghapus dua cacat utama metode lama: in-sample, dan ambang 'luar biasa'.",
+   "data_dibutuhkan": "IOC SLSMF (real-time, belum divalidasi, as is, gratis). BIG srgi pasutv2 (tidak terdokumentasi, rapuh, tanpa login). DeltaDTM v1.1 (30 m, MAE sekitar 0,43 m, CC BY 4.0, 4TU; unduh tile pantura sekali). GNSS Zenodo 10.5281/zenodo.7775016 (CC BY 4.0). Open-Meteo Marine (sudah).",
+   "upaya": "M",
+   "cara_validasi": "Uji 2025-2026: POD hari-sama dan PSS terhadap DIBI rob kabupaten-hari; lulus bila PSS CI95 > 0. Kesepakatan dengan hari peringatan BMKG di lokasi yang sama ≥ 70%. RMSE offset model-gauge ≤ 0,10 m di tiga gauge. Sebelum lulus, model hanya tampil sebagai angka tinggi air.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.ioc-sealevelmonitoring.org/",
+    "https://srgi.big.go.id/map/pasut-prediction-active",
+    "https://data.4tu.nl/datasets/1da2e70f-6c4d-4b03-86bd-b53e789cc629",
+    "https://doi.org/10.1038/s41597-024-03091-9",
+    "https://doi.org/10.5281/zenodo.7775016",
+    "https://tidesandcurrents.noaa.gov/publications/techrpt86_PaP_of_HTFlooding.pdf",
+    "https://www.ecmwf.int/node/29629"
+   ]
+  },
+  {
+   "metode_lama": "Laporan Harian Banjir, Longsor dan Rob (laporan.json, cetak PDF)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Susun ulang laporan. Bagian 1, LAPIS RESMI: (a) nowcast BMKG yang aktif dihitung saat render dari D1 (/api/cuaca/nowcast, effective/expires), dengan jam terbit dan kedaluwarsa; (b) peringatan rob BMKG yang aktif per tanggal; (c) PVMBG bulan berjalan; (d) peringatan gelombang dengan valid_until. Bagian 2, INDIKASI PLATFORM: Siaga/Awas hari ke-0 per kabupaten, hanya pulau berskill, dengan kalimat skill tetap dan 'bukan peringatan resmi; ikuti BMKG/BPBD'. Aturan tambahan: (1) cut-off = tanggal data (hujan.hari_ini/run IFS), bukan meta.dibuat; (2) laporan_banjir.py menolak menulis bila status.hari[0] bukan hari WIB (pola kejadian_aktif.py:158); (3) 'Terpapar banjir' diganti 'penduduk di wilayah bahaya sedang-tinggi InaRISK pada kabupaten berstatus (potensi)'; (4) 'kejadian banjir aktif' diganti 'wilayah prioritas pantau (prakiraan)'; (5) angka hujan memakai H3 hari ke-0; (6) sungai ditulis 'puncak prakiraan 7 hari'.",
+   "praktik_resmi_indonesia": "Laporan harian Pusdalops BNPB memuat kejadian terkonfirmasi dan peringatan BMKG yang berlaku, dengan sumber disebut per angka.",
+   "kenapa_lebih_tepat": "Semua cacat yang sudah terverifikasi tertutup: nowcast yang sudah habis 6 hari, rob 0 padahal BMKG memperingatkan, cut-off yang salah, label yang menyiratkan korban, dan satuan yang tak tervalidasi. Angka yang sampai ke Presiden tidak lagi bertentangan dengan BMKG/BNPB.",
+   "data_dibutuhkan": "Semua sumber sudah ada di repo: D1 nowcast, rob.json bmkg, status/hujan, dan InaRISK get-infra-risk (lihat usulan dampak).",
+   "upaya": "M",
+   "cara_validasi": "Gerbang tanpa DB, berupa fixture snapshot nyata: (a) hujan 13 Okt dengan jam hitung 19 Okt membuat laporan ditolak; (b) nowcast dengan expires lebih awal dari jam render tidak terhitung aktif; (c) baris rob BMKG Jakarta Utara 12-18 Okt muncul pada 13 Okt; (d) teks wajib memuat penafian dan angka POD/FAR; (e) metrik dihitung per kabupaten.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/alerts/nowcast/id",
+    "https://maritim.bmkg.go.id/apidoc",
+    "https://vsi.esdm.go.id/portalmbg/"
+   ]
+  },
+  {
+   "metode_lama": "Peringatan BMKG: nowcast CAP dan peringatan gelombang (penentuan 'aktif')",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Status aktif dihitung SAAT DIBACA dari medan expires/valid_until, tidak disimpan sebagai tanda saat unduh (peringatan.py:91). Bila unduhan gagal, salinan lama tidak membawa tanda aktif (peringatan.py:120-127). Laporan dan layar membaca D1 yang diperbarui tiap 10 menit oleh src/nowcast.js, bukan peringatan.json harian. Tampilkan jam terbit dan kedaluwarsa. Tambahkan IBF BMKG dan prakiraan per desa sebagai lapis utama setelah akses data resmi ada.",
+   "praktik_resmi_indonesia": "Nowcast BMKG berlaku 2-3 jam (CAP 1.2, effective/expires). Peringatan gelombang maritim punya valid_from/valid_until.",
+   "kenapa_lebih_tepat": "Produk resmi tetap utuh, dan hanya disebut 'aktif' bila memang masih berlaku. Infrastrukturnya sudah ada di Worker, jadi perubahannya kecil.",
+   "data_dibutuhkan": "D1 cuaca_nowcast (migrations/0014) dan /api/cuaca/nowcast (sudah ada); warnings.json maritim.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: fungsi aktif(x, kini) bernilai false untuk expires < kini. Fixture: tiga nowcast 13 Okt yang berakhir 03.00 WIB menghasilkan 0 aktif saat dirender 19 Okt.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/alerts/nowcast/id",
+    "https://maritim.bmkg.go.id/apidoc"
+   ]
+  },
+  {
+   "metode_lama": "Parser PDF peringatan dini rob BMKG",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan parser, dengan lima perubahan: (1) hitung baris AKTIF per tanggal (tanggal hari ini berada dalam salah satu rentang); (2) tampilkan tautan PDF asli dan tanggal terbit di samping tabel; (3) gerbang jumlah baris per provinsi dibandingkan terbitan sebelumnya, dengan peringatan bila turun lebih dari 50%; (4) masukkan ke Laporan Harian dan email; (5) ajukan permintaan resmi lewat BNPB agar BMKG menerbitkan rob dalam format terstruktur (CAP/JSON), seperti nowcast.",
+   "praktik_resmi_indonesia": "BMKG maritim menerbitkan rob sebagai PDF siaran pers per fase bulan. Belum ada API JSON untuk rob (RISET-ROB.md:88-94).",
+   "kenapa_lebih_tepat": "Isinya adalah produk rob paling otoritatif yang tersedia. Masalahnya hanya pada cara menghitung dan menyajikan, bukan pada sumbernya.",
+   "data_dibutuhkan": "PDF BMKG maritim (sudah) dan teks mentah yang disimpan.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit dengan dua PDF terbitan berbeda: jumlah baris per provinsi cocok dengan hitungan manual; uji tanggal aktif di batas rentang (hari pertama dan terakhir).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://maritim.bmkg.go.id/marine2026-data/doc/peringatan-dini-banjir-rob.pdf",
+    "https://maritim.bmkg.go.id/apidoc"
+   ]
+  },
+  {
+   "metode_lama": "Kejadian banjir aktif (gugus kecamatan Siaga) dan skor 0-100",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pisahkan dua hal. (1) Gugus status diganti nama menjadi 'wilayah prioritas pantau (prakiraan)'; kata 'kejadian' dan 'Banjir <kab>' dibuang, begitu juga skor 0-100. (2) 'Kejadian aktif' hanya untuk kejadian TERKONFIRMASI. Sumbernya: baris DIBI/BNPB baru, laporan BPBD/Pusdalops, dan berita tergeokode dari minimal 2 media berbeda (berita.json sudah ada). Pelengkapnya deteksi genangan Copernicus GFM: Sentinel-1, 20 m, peta tersedia sekitar 8 jam setelah akuisisi, arsip sejak 2015. GDACS banjir sebagai sinyal tambahan.",
+   "praktik_resmi_indonesia": "BNPB/Pusdalops mencatat kejadian di DIBI. Untuk kejadian besar, Copernicus EMS Rapid Mapping diaktifkan atas permintaan.",
+   "kenapa_lebih_tepat": "Presiden menerima kejadian yang benar-benar terjadi, sementara prakiraan disebut prakiraan. GFM adalah deteksi satelit harian tervalidasi (ansambel tiga algoritma SAR) dan tidak bergantung pada laporan.",
+   "data_dibutuhkan": "GFM: api.gfm.eodc.eu v2 / portal / WMS. Syarat akunnya belum saya pastikan, perlu cek ke dokumentasi GFM. DIBI (Superset tamu, tidak resmi), berita.json, GDACS.",
+   "upaya": "M",
+   "cara_validasi": "Presisi daftar terkonfirmasi: 100 entri acak dicek manual terhadap rilis BNPB/BPBD; lulus bila ≥ 90% benar. Recall: porsi baris DIBI banjir yang sudah tertangkap dalam ≤ 2 hari; dilaporkan, target ≥ 60%.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://global-flood.emergency.copernicus.eu/news/107-global-flood-monitoring-product-launch/",
+    "https://global-flood.emergency.copernicus.eu/media/events/4/accessing_and_using_gfm_data.pdf",
+    "https://dibi.bnpb.go.id/",
+    "https://www.gdacs.org/"
+   ]
+  },
+  {
+   "metode_lama": "Dampak keterpaparan (penduduk, sekolah, faskes, jalan di kecamatan Siaga/Awas)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Pakai angka keterpaparan RESMI BNPB: InaRISK apiv4 /get-infra-risk/{kab}/{bahaya}. Endpoint ini memberi penduduk, sekolah, madrasah, RS, puskesmas, dan bangunan per kelas bahaya aman/rendah/sedang/tinggi. Untuk kabupaten berstatus, jumlahkan kelas sedang dan tinggi, dan beri label 'potensi terpapar (InaRISK BNPB)'. Kliennya sudah ada di scripts/cuaca/risiko_bnpb.py; ejaan nama bahaya banjir/longsor perlu dicek, seperti 'cuaca-ekstrim'. Cara ini sekaligus menyelesaikan cakupan sekolah/faskes yang tadinya hanya 9 provinsi. (2) Untuk kejadian yang sudah terjadi: jumlah penduduk GHSL/WorldPop di dalam jejak genangan GFM. (3) Pembanding nasional: /kajian-summary/banjir/ALL.",
+   "praktik_resmi_indonesia": "Kajian Risiko Bencana dan InaRISK BNPB memakai 'jiwa terpapar' per kelas bahaya. DIBI mencatat realisasi (menderita, mengungsi).",
+   "kenapa_lebih_tepat": "Angkanya sama dengan yang dipakai BNPB, sehingga tidak bertentangan. Keterpaparan dihitung dari zona bahaya, bukan seluruh penduduk kecamatan. Cakupannya 38 provinsi.",
+   "data_dibutuhkan": "InaRISK apiv4 (sekitar 514 panggilan per bahaya, dijalankan tangan tiap bulan; kabupaten yang 'pending' diulang; lisensi tidak tertulis, sebut 'Sumber: InaRISK BNPB'). GHSL GHS-POP R2023A (100 m). GFM.",
+   "upaya": "S",
+   "cara_validasi": "Konsistensi: angka per kabupaten sama dengan portal InaRISK (selisih 0) untuk 20 kabupaten acak. Laporkan juga rasio potensi terpapar terhadap DIBI 'menderita' pascakejadian sebagai konteks, bukan gerbang.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "https://data.jrc.ec.europa.eu/dataset/2ff68a52-5b5b-4a22-8f40-c41da8332cfe",
+    "https://doi.org/10.1038/s41586-021-03695-w"
+   ]
+  },
+  {
+   "metode_lama": "Uji balik status terhadap DIBI dan catatan prospektif (metode verifikasi)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Sampel: semua 514 kabupaten, atau acak berstrata per pulau dengan benih tetap, dipilih HANYA dari kejadian periode latih. (2) Manifest di validasi.json: daftar kabupaten, sha256 dibi_tanggal.json, versi kode. (3) Pembanding wajib: klimatologi bulanan, persistensi, dan aturan '≥50 mm BMKG'. (4) Skor: tambah ROC/AUC untuk skor kontinu dan BSS/diagram keandalan untuk semua angka peluang. (5) Kebenaran kedua: hari genangan GFM per kabupaten (2016+), untuk mengurangi bias kurang-catat DIBI dan absennya DKI. (6) Log prospektif semua kabupaten-hari disimpan di D1/R2, bukan cache Actions, lalu skill per waktu-tunda d0-d3 dilaporkan. (7) Sampai nomor 1 selesai, kalimat skill yang dikutip harus menyebut 'sampel 42 kabupaten condong kota; FAR nasional kemungkinan lebih tinggi'.",
+   "praktik_resmi_indonesia": "Verifikasi prakiraan mengikuti metode WMO/JWGFVR (tabel kontingensi, Brier, keandalan). Kriteria lulus uji balik sebaiknya disepakati dengan BMKG sebelum angka dikutip.",
+   "kenapa_lebih_tepat": "Angka POD/FAR menjadi wakil nasional dan dapat direproduksi. Pembanding menunjukkan apakah aturan lebih baik dari yang paling sederhana, dan log prospektif tidak hilang.",
+   "data_dibutuhkan": "dibi_tanggal.json (data/raw, perlu salinan stabil), cache ERA5, GFM per kabupaten, D1/R2 untuk log.",
+   "upaya": "M",
+   "cara_validasi": "Reproduksi: dua kali jalan dari manifest yang sama menghasilkan validasi.json dengan hash identik. Gerbang menolak validasi.json tanpa manifest atau tanpa skor pembanding.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://cawcr.gov.au/projects/verification/Stanski_et_al/Stanski_et_al.html",
+    "https://global-flood.emergency.copernicus.eu/news/107-global-flood-monitoring-product-launch/"
+   ]
+  },
+  {
+   "metode_lama": "Skor risiko riwayat 0-100 (kabupaten, kecamatan, provinsi) dan permukaan kekerapan",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti dengan Indeks Risiko Bencana Indonesia (IRBI) BNPB untuk banjir dan longsor per kabupaten. Sumbernya InaRISK /apiv4/data-irbi-full, kolom banjir dan longsor 2015-2025; urai_irbi sudah ada di scripts/cuaca/risiko_bnpb.py:52. Skala 2025 berbeda dari 2015-2024, jadi tren dihitung 2015-2024. Skor platform cukup diberi nama 'kekerapan kejadian tercatat DIBI'. Permukaan 0,1° yang membagi kejadian kabupaten ke kecamatan dibuang karena detail spasialnya rekaan.",
+   "praktik_resmi_indonesia": "IRBI BNPB (bahaya × kerentanan / kapasitas; terbit tahunan, buku IRBI 2024 terbit Januari 2025; kelas tinggi/sedang/rendah) dan dokumen Kajian Risiko Bencana daerah.",
+   "kenapa_lebih_tepat": "Peringkat risiko yang sampai ke Presiden adalah peringkat resmi BNPB, sehingga tidak ada dua peringkat yang berbeda. IRBI memuat kerentanan dan kapasitas, bukan hanya kekerapan laporan yang bias Jawa.",
+   "data_dibutuhkan": "inarisk.bnpb.go.id/apiv4/data-irbi-full (NDJSON sekitar 2 MB, sekali per bulan atau per tahun, atribusi BNPB).",
+   "upaya": "S",
+   "cara_validasi": "Konsistensi nilai IRBI per kabupaten dengan buku IRBI 2024 untuk 10 kabupaten. Hitung juga Spearman ρ antara skor lama dan IRBI banjir. Bila ρ < 0,5, catat di Metode sebagai alasan penggantian.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id/apiv4/data-irbi-full",
+    "https://bpbd.dumaikota.go.id/assets/backend/dokumen/683529c8536ef.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Sarana, anggaran posko, dan Dana Siap Pakai (DSP)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Untuk paparan: daftar kebutuhan sarana menurut Perka BNPB 7/2008, 10/2008, dan 17/2009, TANPA rupiah. Untuk alat internal: harga diambil dari Standar Biaya Masukan Kemenkeu (PMK 32/2025 untuk TA 2026; untuk TA 2027 ada PMK 54/2026 menurut sumber sekunder yang perlu dicek), e-Katalog LKPP, dan SSH daerah. Tampilkan rentang P10-P90, bukan satu titik. Lama mengungsi dan biaya per orang per hari diambil dari realisasi DSP/Kemensos kejadian lampau, bukan asumsi 7 hari dan Rp35.000.",
+   "praktik_resmi_indonesia": "Kebutuhan anggaran tanggap darurat dihitung BNPB/BPKAD dari kaji cepat dan SBM/e-Katalog. DSP dikelola BNPB.",
+   "kenapa_lebih_tepat": "30 dari 51 harga masih estimasi marketplace, jadi presisi rupiahnya palsu. Harga resmi dan rentang membuat angka dapat dipertanggungjawabkan.",
+   "data_dibutuhkan": "PMK SBM (JDIH Kemenkeu/DJPb), e-Katalog LKPP (sebagian butuh login), SSH Pemda.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: rupiah hanya tampil bila porsi item berbendera estimasi = 0 dan tiap harga punya sumber resmi. Uji kewajaran: total per provinsi dibandingkan dengan realisasi DSP kejadian sejenis, bila data tersedia.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://djpb.kemenkeu.go.id/kppn/jakarta3/id/data-publikasi/313-peraturan-terbaru/3024-pmk-32-tahun-2025-standar-biaya-masukan-tahun-anggaran-2026.html",
+    "https://www.komunitasbelajar.id/2026/08/pmk-54-tahun-2026-standar-biaya-masukan-sbm-2027.html?m=1",
+    "https://peraturan.go.id/files/bn1777-2016.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Keputusan musim banjir (CBA Monte Carlo dan SMAA)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan dari paparan sebagai rekomendasi. Ganti dengan analisis ambang (break-even): 'paket B bernilai positif bila efek peringatan dini terhadap kematian > x dan nilai nyawa statistik ≥ y'. Sertakan diagram tornado yang menunjukkan parameter mana yang menentukan hasil. Parameter diisi dari evaluasi Indonesia (evaluasi EWS BNPB/BPBD, kajian Bappenas). BCR Hallegatte 2012 (4-36) dipakai hanya sebagai uji kewajaran, bukan masukan.",
+   "praktik_resmi_indonesia": "Prioritas anggaran PB ditetapkan lewat RPJMN, Bappenas, dan Rencana Penanggulangan Bencana, berdasarkan kajian risiko resmi, bukan model platform.",
+   "kenapa_lebih_tepat": "Hasil sekarang ditentukan oleh asumsi efek peringatan dini dan nilai nyawa. Analisis ambang menyatakan ketergantungan itu secara jujur, tanpa menyamar sebagai rekomendasi ilmiah.",
+   "data_dibutuhkan": "param_banjir.json yang ada; studi evaluasi EWS Indonesia (belum ditemukan dalam bentuk publik, jadi butuh permintaan ke BNPB).",
+   "upaya": "S",
+   "cara_validasi": "Rekomendasi hanya boleh tampil bila paket yang sama terpilih di ≥ 80% kombinasi parameter dalam rentang berbukti (bukan rentang ASUMSI). Bila tidak, layar menulis 'tidak ada rekomendasi yang kokoh'.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://documents1.worldbank.org/curated/en/190261468181486694/text/WPS6058.txt"
+   ]
+  },
+  {
+   "metode_lama": "Korelasi hutan hilang dengan kejadian banjir per tahun",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus dari paparan dan dari layar publik. Bila pertanyaan tata guna lahan dan banjir perlu dijawab, ada dua jalan yang sah. (a) Model hidrologi skenario tutupan lahan (SWAT atau rantai LISFLOOD/GloFAS) yang membandingkan debit puncak dengan tutupan 2000 dan tutupan kini. (b) Desain kasus-kontrol DAS berpasangan dengan detrending pencatatan DIBI dan koreksi uji berganda (Benjamini-Hochberg).",
+   "praktik_resmi_indonesia": "Kajian daya dukung DAS (Kemenhut/BPDAS) dan KLHS memakai model hidrologi, bukan korelasi tahunan.",
+   "kenapa_lebih_tepat": "Dua deret yang sama-sama naik karena pencatatan membaik tidak membuktikan sebab-akibat. Dengan 13 uji, sekitar 0,65 positif palsu sudah diharapkan terjadi.",
+   "data_dibutuhkan": "Tidak ada untuk penghapusan. Untuk model: tutupan lahan, tanah, dan hujan per DAS (berat, di luar stack harian).",
+   "upaya": "S",
+   "cara_validasi": "Bila suatu hari dipertahankan: FDR ≤ 10% setelah detrending, dan hasil stabil pada uji selisih tahunan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://zenodo.org/records/15366671"
+   ]
+  },
+  {
+   "metode_lama": "Laporan Kejadian per kabupaten/kota (scripts/umum/laporan_kejadian.py, banjir-*.json)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(1) Ganti judul dari 'Laporan Kejadian Banjir dan Longsor' menjadi 'Laporan Status Prakiraan'. (2) Buang kolom 'Konsesi (ha)' dari tabel asal hujan per sub-DAS. (3) Terbitkan hanya untuk kabupaten di kelompok pulau berskill. (4) Kronologi diisi kejadian terkonfirmasi (BPBD, DIBI, berita ≥ 2 media), bukan perubahan status. (5) Ganti otomatis menjadi 'Laporan Kejadian' hanya bila ada konfirmasi kejadian resmi.",
+   "praktik_resmi_indonesia": "Laporan kejadian resmi diterbitkan BPBD/Pusdalops BNPB berdasarkan kaji cepat.",
+   "kenapa_lebih_tepat": "Tidak ada lagi laporan 'kejadian' untuk wilayah tanpa kejadian (Maybrat). Penyandingan dengan konsesi tidak lagi menyiratkan penyebab tanpa bukti.",
+   "data_dibutuhkan": "Sama dengan usulan 'kejadian aktif terkonfirmasi'.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: judul berjenis 'Kejadian' hanya bila ada ≥ 1 konfirmasi bersumber. Kolom bernama konsesi tidak boleh muncul di berkas kejadian/*.json.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://dibi.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Peringatan dini email warga dari status banjir/longsor/rob (src/ews.js)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pemicu email diganti produk resmi: (a) nowcast BMKG yang aktif dan poligonnya memuat lokasi pelanggan (data D1 sudah ada, pencocokan titik-dalam-poligon); (b) baris peringatan rob BMKG yang aktif untuk kecamatan pelanggan; (c) PVMBG zona menengah-tinggi bulan berjalan sebagai pengingat bulanan. Status platform menjadi ringkasan 'indikasi' terpisah per kabupaten, hanya di pulau berskill, dengan angka skill di badan email. Level Waspada tidak bisa dipilih lagi. Pemeriksaan sumberBasi() yang sudah benar dipertahankan.",
+   "praktik_resmi_indonesia": "Peringatan dini cuaca diterbitkan BMKG (UU 31/2009) dan disebarkan BPBD. Saluran pihak ketiga sebaiknya meneruskan, bukan membuat peringatan sendiri.",
+   "kenapa_lebih_tepat": "Warga tidak menerima peringatan paralel yang bertentangan dengan BMKG, dengan presisi sekitar 6% dan nol di sebagian pulau. Nowcast resmi lebih presisi secara waktu (2-3 jam) dan lokasi (poligon).",
+   "data_dibutuhkan": "D1 cuaca_nowcast (src/nowcast.js), rob.json bmkg, peta PVMBG.",
+   "upaya": "M",
+   "cara_validasi": "Uji integrasi handler (bukan mock): nowcast aktif dengan poligon memuat titik pelanggan mengirim satu email; nowcast kedaluwarsa tidak mengirim. Pantau rata-rata email per pelanggan per minggu; batas atas disepakati, mis. ≤ 3.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://peraturan.bpk.go.id/Details/38769/uu-no-31-tahun-2009",
+    "https://www.bmkg.go.id/alerts/nowcast/id"
+   ]
+  },
+  {
+   "metode_lama": "Penjaga kesegaran data banjir (/api/status membaca meta.json 'dibuat', ambang 30 jam)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Pemantau membandingkan TANGGAL DATA (meta.hari_wib atau hujan.hari_ini) dengan tanggal WIB hari ini, seperti sumberBasi() di ews.js dan sapa_banjir.js:45-47. Status dinyatakan basi bila hari data ≠ hari ini setelah jam jalan terjadwal. status.py keluar non-nol bila hujan.hari_ini bukan hari ini (pola kejadian_aktif.py:158-162), sehingga langkah CI 'periksa kesegaran' gagal keras.",
+   "praktik_resmi_indonesia": "Tidak relevan, ini kontrol mutu internal. Pusdalops tetap mencantumkan waktu data per angka.",
+   "kenapa_lebih_tepat": "Jalur yang membuat data basi 6 hari dilaporkan 'segar' tertutup di satu tempat yang dilalui semua konsumen.",
+   "data_dibutuhkan": "Medan hari_wib di meta.json (sudah ada).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit worker: meta dengan dibuat 19 Okt dan hari_wib 13 Okt dilaporkan basi pada 19 Okt. Uji CLI status.py dengan fixture hujan basi menghasilkan kode keluar ≠ 0 dan tidak menulis berkas.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/alerts/nowcast/id"
+   ]
+  },
+  {
+   "metode_lama": "Hujan prakiraan dan 'hujan yang sudah turun' (H3, A7, hujan kemarin)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Hujan lalu (d-1 sampai d-7, termasuk A7) diambil dari presipitasi satelit teramati: GSMaP_Gauge_NRT atau GSMaP_NRT (0,1°, per jam, latensi sekitar 4 jam), dengan cadangan IMERG Early (0,1°, 30 menit, latensi sekitar 4 jam). Penakar BMKG dipakai untuk verifikasi. Prakiraan d0 sampai d+3 tetap IFS, dengan label 'prakiraan model' dan jam run. Angka di laporan memakai H3 hari ke-0, bukan maksimum 4 jendela.",
+   "praktik_resmi_indonesia": "BMKG mengoperasikan jaringan AWS/ARG/penakar (dataonline.bmkg.go.id, butuh registrasi) yang menjadi kebenaran hujan resmi.",
+   "kenapa_lebih_tepat": "Hujan yang sudah turun seharusnya pengamatan, bukan arsip prakiraan model. Satelit 0,1° lebih menangkap hujan konvektif lokal dibanding sel model 28 km, dan GSMaP terbukti dipakai dalam ambang longsor Indonesia (AUC 0,73 di Progo).",
+   "data_dibutuhkan": "GSMaP: registrasi gratis, FTP; atribusi diminta. Menampilkan citra olahan tidak butuh prosedur, tetapi mempublikasikan data mentah butuh kontak JAXA. Format biner berkas harus dicek dari Data Format Description. IMERG: Earthdata Login gratis, secret EARTHDATA_TOKEN sudah direncanakan (SUMBER-DATA.md:156), HDF5 berat untuk stdlib sehingga lebih cocok lewat subset ASCII OPeNDAP. CHIRPS final lewat IRI Data Library untuk verifikasi (pola scripts/umum/iklim_outlook.py).",
+   "upaya": "M",
+   "cara_validasi": "Arsip 6 bulan, satuan sel 0,25° harian. GSMaP dibandingkan CHIRPS final (berbasis penakar); lulus bila |bias| ≤ 20% dan r ≥ 0,6 di Jawa, Sumatra, Sulawesi. Lalu uji balik status dengan d-1 satelit melawan d-1 model; lulus bila ΔETS ≥ 0.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://sharaku.eorc.jaxa.jp/GSMaP/faq/GSMaP_faq06.html",
+    "https://sharaku.eorc.jaxa.jp/GSMaP/faq/GSMaP_faq16.html",
+    "https://www.earthdata.nasa.gov/data/catalog/ges-disc-gpm-3imergde-07",
+    "https://registry.opendata.aws/nasa-gpm3imergde/",
+    "https://link.springer.com/article/10.1007/s11069-023-06208-2"
+   ]
+  },
+  {
+   "metode_lama": "Peluang hujan lebat per kabupaten (ansambel ECMWF, peluang.json)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Peluang lingkungan (neighbourhood) per kabupaten: untuk tiap anggota, ambil hujan maksimum di semua titik ansambel/sel 0,25° di dalam kabupaten, lalu hitung porsi anggota yang ≥ 50/100 mm. (2) Sampai terkalibrasi, tampilkan kategori (rendah < 20%, sedang 20-50%, tinggi > 50%), bukan persen. (3) Log SEMUA kabupaten-hari ke prospektif (D1/R2), bukan hanya yang ≥ 10%. (4) Setelah satu musim, kalibrasi per pulau (keandalan isotonik atau regresi logistik sederhana). (5) Sebut model di tiap kalimat (ECMWF 51 anggota atau cadangan GFS 31).",
+   "praktik_resmi_indonesia": "Setahu saya BMKG tidak menerbitkan peluang ansambel hujan lebat per kabupaten secara terbuka; produk resminya kategorikal (prakiraan per desa, peringatan dini). Karena itu angka ini tetap berlabel indikatif.",
+   "kenapa_lebih_tepat": "Peluang lingkungan menjawab pertanyaan yang benar ('ada lokasi di kabupaten ini yang kena'). Kategori menghindari pembacaan persen harfiah tanpa bukti keandalan.",
+   "data_dibutuhkan": "Open-Meteo ensemble (sudah); kebenaran dari GSMaP harian maksimum per kabupaten.",
+   "upaya": "M",
+   "cara_validasi": "Setelah ≥ 90 hari log, kebenaran = ada sel GSMaP ≥ 50 mm dalam kabupaten. Hitung Brier, BSS terhadap klimatologi sampel, dan diagram keandalan per pulau. Lulus bila BSS > 0 (CI95 bootstrap per hari) dan kemiringan keandalan 0,7-1,3; sebelum itu tetap kategori.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.ecmwf.int/en/forecasts/datasets/open-data",
+    "https://cawcr.gov.au/projects/verification/Stanski_et_al/Stanski_et_al.html"
+   ]
+  },
+  {
+   "metode_lama": "Peluang status per kecamatan (prakiraan72.json pb/pl/hb/hl)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hentikan persen per kecamatan. Hitung per kabupaten dengan sumber yang konsisten: semua hari memakai titik ansambel yang sama (atau neighbourhood seperti usulan peluang hujan lebat), dan hujan kemarin dari GSMaP untuk semua anggota. Syarat kejenuhan deterministik dikeluarkan dari versi peluang. Tampilkan tiga kategori, catat semua kabupaten, dan kalibrasi setelah satu musim. Bila kec_dihitung = 0, layar menulis 'peluang tidak tersedia hari ini', bukan kosong.",
+   "praktik_resmi_indonesia": "Tidak ada padanan resmi. Status peluang adalah produk internal.",
+   "kenapa_lebih_tepat": "Data dari dua lokasi tidak lagi dicampur. Satuan cocok dengan uji balik, dan kegagalan ansambel terlihat jelas.",
+   "data_dibutuhkan": "Sama dengan peluang hujan lebat, ditambah GSMaP.",
+   "upaya": "M",
+   "cara_validasi": "Brier dan keandalan terhadap kebenaran ganda: (a) DIBI banjir kabupaten-hari; (b) status yang dihitung ulang dari hujan teramati GSMaP. Lulus bila BSS > 0 terhadap laju dasar pada (a) setelah ≥ 1 musim.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://cawcr.gov.au/projects/verification/Stanski_et_al/Stanski_et_al.html"
+   ]
+  },
+  {
+   "metode_lama": "Simulasi genangan 3D 72 jam (inersia lokal di atas DEM SRTM)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(1) Untuk angka genangan sungai, pakai prosedur katalog peta (Dottori dkk. 2017, EFAS rapid risk assessment). Bila debit GloFAS di suatu ruas melewati RP T, tampilkan peta bahaya JRC Global River Flood Hazard v2.1 (90 m, kedalaman, RP 10-500 tahun, terbuka) untuk RP terdekat, lalu jumlahkan penduduk di dalamnya. (2) Untuk pesisir, pakai bathtub terhubung di DeltaDTM dengan muka air berdatum lokal. (3) Bila simulasi 2D tetap dipertahankan untuk ilustrasi: ganti DEM ke FABDEM (CC BY-NC-SA, cocok untuk pemakaian nonkomersial, berbagi-serupa), DeltaDTM, atau DEMNAS. Perbarui metode.js:716. Cabut batas cekungan 0,5 m yang mendangkalkan polder. (4) Tanpa angka jiwa sampai lulus validasi.",
+   "praktik_resmi_indonesia": "Peta bahaya banjir InaRISK BNPB (100 m, statis); DEMNAS BIG sebagai DEM nasional (0,27 detik busur, EGM2008).",
+   "kenapa_lebih_tepat": "Peta JRC berasal dari simulasi hidrodinamika global yang dipublikasikan dan dipakai operasional di EFAS/GloFAS. FABDEM membuang tinggi pohon dan bangunan (galat di hutan turun dari 5,15 m ke 2,88 m dibanding Copernicus DEM), sedangkan SRTM tahun 2000 adalah DSM yang sudah usang untuk pantura yang ambles.",
+   "data_dibutuhkan": "JRC flood hazard (FTP jeodpp, GeoTIFF, terbuka; potong sekali untuk Indonesia). DeltaDTM (4TU, CC BY 4.0, Asia.zip 17 GB, cukup tile pesisir). FABDEM (Fathom, NC). DEMNAS (unduh BIG, syaratnya perlu dicek).",
+   "upaya": "L",
+   "cara_validasi": "Pilih 5-10 kejadian lampau berjejak satelit (mis. Kalimantan Selatan Jan 2021, Jakarta Jan 2020, Demak Mar 2024) dan ambil jejaknya dari arsip GFM atau Copernicus EMS. Hitung CSI/F1 genangan. Lulus bila CSI ≥ 0,4 dan bias luas dalam ±30%; peta JRC RP terdekat dipakai sebagai pembanding minimum.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://nhess.copernicus.org/articles/17/1111/2017/",
+    "https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/CEMS-GLOFAS/flood_hazard/README.txt",
+    "https://www.fathom.global/insight/fabdem-download/",
+    "https://doi.org/10.1088/1748-9326/ac4d4f",
+    "https://data.4tu.nl/datasets/1da2e70f-6c4d-4b03-86bd-b53e789cc629",
+    "https://big.go.id/en/content/produk/demnas",
+    "https://rapidmapping.emergency.copernicus.eu/"
+   ]
+  },
+  {
+   "metode_lama": "Citra Sentinel-1 'gelap baru' dan Sentinel-2 sebelum-sesudah",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Angka persen piksel diganti GFM observed flood extent, lengkap dengan reference water mask dan exclusion mask (ansambel tiga algoritma, arsip sejak 2015). Untuk analisis mandiri, pakai praktik UN-SPIDER: deteksi perubahan rasio sebelum/sesudah dengan ambang tervalidasi, masker air permanen JRC Global Surface Water, dan masker HAND/lereng. Citra S2 dipertahankan sebagai ilustrasi.",
+   "praktik_resmi_indonesia": "BNPB/LAPAN-BRIN dan Copernicus EMS (atas aktivasi) memakai delineasi genangan SAR untuk tanggap darurat.",
+   "kenapa_lebih_tepat": "Masker menghapus sawah, tambak, dan bayangan lereng yang sekarang ikut terhitung. GFM sudah tervalidasi dan memberi luas genangan nyata, bukan persen piksel gelap.",
+   "data_dibutuhkan": "GFM (WMS/API; syarat akun perlu dicek), JRC GSW occurrence (51,7 MB per tile, terbuka, RISET-ROB.md:166).",
+   "upaya": "M",
+   "cara_validasi": "Untuk 3 kejadian dengan delineasi Copernicus EMS, hitung CSI GFM atau metode mandiri. Lulus bila CSI ≥ 0,5 sebelum angka luas ditampilkan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://global-flood.emergency.copernicus.eu/news/107-global-flood-monitoring-product-launch/",
+    "https://www.un-spider.org/sites/default/files/20230221_unspider_sar_floodmapping_gee.pdf",
+    "https://rapidmapping.emergency.copernicus.eu/"
+   ]
+  },
+  {
+   "metode_lama": "Bukti DAS hulu: hutan hilang (Hansen) dan konsesi di DAS",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Pisahkan jenis kehilangan hutan dengan WRI/Google DeepMind Global Drivers of Forest Loss v1.2 (1 km, 2001-2024): pertanian permanen, komoditas keras, perladangan berpindah, penebangan, kebakaran, permukiman. Dengan begitu rotasi HTI/sawit tidak terbaca sebagai deforestasi permanen. (2) Di paparan, agregat per jenis konsesi tanpa nama perusahaan. (3) Titik keluaran DAS dipilih dari lokasi genangan nyata (GFM/DIBI desa), bukan sembarang pusat kecamatan.",
+   "praktik_resmi_indonesia": "Angka deforestasi resmi adalah dari Kemenhut (SIMONTANA, deforestasi netto tahunan). Konsesi menurut data Kemenhut/ATR.",
+   "kenapa_lebih_tepat": "Pemicu kehilangan hutan menjadi terpisah, DAS-nya adalah DAS penyebab genangan, dan risiko hukum/politik menyebut perusahaan tanpa uji sebab-akibat hilang.",
+   "data_dibutuhkan": "WRI drivers v1.2 (Zenodo/GEE, CC BY 4.0), Hansen GFC (sudah), GFM.",
+   "upaya": "M",
+   "cara_validasi": "Untuk tiap daerah, outlet DAS harus memuat ≥ 50% luas genangan GFM pada kejadian rujukan; bila tidak, DAS dipilih ulang. Laporkan porsi kehilangan per pemicu dengan selang dari cuplikan S=1 dan S=4.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://zenodo.org/records/15366671",
+    "https://doi.org/10.1088/1748-9326/add606"
+   ]
+  },
+  {
+   "metode_lama": "Statistik kejadian dan korban tahunan BNPB/DIBI (kejadian.json)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Angka ke Presiden memakai rilis resmi BNPB (data.bnpb.go.id kompilasi tahunan atau ekspor DIBI resmi lewat perjanjian data), dengan satu sumber per tahun dan per jenis. (2) 'Banjir dan Tanah Longsor' dihitung sekali sebagai kategori gabungan, bukan ganda di banjir dan longsor. (3) Tandai 2024 tidak lengkap. (4) Cantumkan tanggal tarik per angka.",
+   "praktik_resmi_indonesia": "DIBI dan buku data tahunan BNPB.",
+   "kenapa_lebih_tepat": "Total yang dikutip akan sama persis dengan publikasi BNPB, dan hitung ganda hilang.",
+   "data_dibutuhkan": "data.bnpb.go.id (CKAN, odc-by); DIBI lewat kanal resmi.",
+   "upaya": "S",
+   "cara_validasi": "Total nasional per tahun dan per jenis sama dengan publikasi BNPB (selisih ≤ 1%). Uji unit tanpa hitung ganda kategori gabungan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://data.bnpb.go.id/",
+    "https://dibi.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Bahaya 12 bulan banjir/longsor (scripts/umum/outlook12.py -> outlook12.json)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pendorong utama untuk 1-6 bulan adalah prakiraan musim BMKG per ZOM (awal, puncak, sifat musim hujan) dan prakiraan hujan bulanan BMKG. Untuk 2026/27 BMKG memprakirakan awal musim hujan mundur di 529 ZOM (61%) karena El Niño sangat kuat. ECMWF SEAS5 lewat C3S dipakai sebagai pembanding. Klimatologi DIBI hanya konteks. Label diganti dari 'parah/ekstrem' menjadi 'lebih ramai dari biasanya', dan bulan ekstrapolasi tidak masuk paparan.",
+   "praktik_resmi_indonesia": "BMKG Prakiraan Musim Hujan per ZOM (rilis Agustus-September) dan prakiraan hujan bulanan.",
+   "kenapa_lebih_tepat": "Prakiraan musim resmi memuat kondisi ENSO/IOD tahun berjalan; klimatologi kejadian tidak. Label relatif menghindari pembacaan keparahan absolut.",
+   "data_dibutuhkan": "Rilis prakiraan musim BMKG (PDF/peta; perlu parser atau entri manual per ZOM). SEAS5 lewat Copernicus C3S (akun gratis, GRIB, berat untuk stdlib, sehingga cukup ringkasan bulanan sekali per bulan).",
+   "upaya": "M",
+   "cara_validasi": "Hindcast leave-one-year-out 2010-2025: tercile jumlah kejadian DIBI bulanan per provinsi. Lulus bila RPSS > 0 terhadap klimatologi; bila tidak, hanya pola klimatologi yang tampil, dengan label.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://infopublik.id/kategori/nasional-sosial-budaya/990337/musim-hujan-20262027-di-6108-persen-wilayah-indonesia-datang-lebih-lambat",
+    "https://infopublik.id/kategori/nasional-sosial-budaya/990317/bmkg-ungkap-prediksi-musim-hujan-2026-2027-mulai-november-puncak-desember"
+   ]
+  },
+  {
+   "metode_lama": "Pemantauan berita banjir (berita.json, berita.js)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Jadikan berita sumber konfirmasi kejadian dengan mutu yang terukur. Geokode memakai gazetteer kode wilayah Kemendagri (nama desa/kecamatan/kabupaten dengan disambiguasi provinsi) dan membaca isi artikel bila lisensinya mengizinkan, bukan hanya judul. Kejadian baru dinyatakan terkonfirmasi bila ≥ 2 media independen atau 1 media ditambah BPBD/DIBI. Sentimen tetap disembunyikan.",
+   "praktik_resmi_indonesia": "Pusdalops BNPB juga memantau media sebagai sumber awal, lalu memverifikasinya ke BPBD.",
+   "kenapa_lebih_tepat": "Berita yang terukur presisinya adalah sumber 'kejadian terkonfirmasi' yang lebih tepat daripada gugus prakiraan.",
+   "data_dibutuhkan": "Google News RSS (sudah); tabel kode wilayah (sudah ada di repo: public/geo, scripts/data/wilayah.py).",
+   "upaya": "S",
+   "cara_validasi": "Sampel berlabel 200 artikel: presisi relevansi ≥ 0,90 dan ketepatan geokode tingkat kabupaten ≥ 0,85 sebelum dipakai sebagai konfirmasi.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dibi.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Indeks bahaya InaRISK per kecamatan (maksimum 10 titik)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti maksimum titik dengan statistik zonal. Pakai operasi computeHistograms ImageServer InaRISK dengan geometri poligon kecamatan (public/geo/kecamatan) untuk mendapat porsi luas kelas rendah/sedang/tinggi. Simpan 'porsi luas bahaya tinggi', dan bila memungkinkan 'porsi penduduk di bahaya tinggi' (dikalikan raster penduduk). Untuk kabupaten, langsung pakai get-infra-risk (penduduk per kelas, resmi).",
+   "praktik_resmi_indonesia": "Kajian Risiko BNPB memakai statistik zonal per kelas bahaya, bukan nilai maksimum titik.",
+   "kenapa_lebih_tepat": "Kecamatan besar di Papua dan Kalimantan tidak lagi naik ke titik paling rawan atau terlewat karena sampel 10 titik. Hasilnya sejalan dengan angka BNPB.",
+   "data_dibutuhkan": "gis.bnpb.go.id ImageServer layer_bahaya_banjir dan longsor (100 m, wajib UA, lisensi tidak tertulis, sebut BNPB); sekitar 7.200 poligon x 2 bahaya, dijalankan tangan tiap bulan atau tahun.",
+   "upaya": "M",
+   "cara_validasi": "Di 200 kecamatan acak, bandingkan kelas maksimum-titik dengan kelas zonal dan laporkan porsi yang berubah. Uji balik status dengan B zonal; lulus bila ΔETS ≥ 0. Konsistensi penduduk kelas tinggi per kabupaten dengan get-infra-risk ±5%.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id/apiv4/data-irbi-full"
+   ]
+  },
+  {
+   "metode_lama": "Kalender pasang astronomis (indeks gaya pasang 0-1, 12 bulan)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti indeks dengan prediksi pasang harmonik: tinggi dan jam pasang tinggi harian di titik pesisir. Konstanta harmonik diperoleh dengan dua cara: (a) analisis harmonik least-squares atas deret gauge IOC ≥ 1 tahun (koli, sema, sura, dan stasiun IOC Indonesia lain); bisa stdlib, atau sekali dengan pyTMD.solve; (b) untuk titik tanpa gauge, konstanta EOT20 diekstrak sekali secara offline. Konstanta disimpan sebagai JSON kecil, dan prediksi harian cukup jumlah kosinus dengan koreksi nodal di stdlib. Tampilkan 'pasang tertinggi bulan ini: tanggal, jam, tinggi terhadap HAT lokal'.",
+   "praktik_resmi_indonesia": "BIG menerbitkan prediksi pasut (SRGI; unduhan deret butuh login dengan reCAPTCHA). BMKG menerbitkan prakiraan pasang pelabuhan, tetapi fasenya belum cocok dengan gauge (RISET-ROB.md:98).",
+   "kenapa_lebih_tepat": "Hasilnya tinggi dan jam pasang sungguhan yang bisa dicek terhadap tabel BIG/BMKG dan gauge, bukan indeks gaya tanpa respons laut lokal dengan bobot 80/20 asumsi.",
+   "data_dibutuhkan": "IOC SLSMF (gratis); EOT20 (SEANOE, CC BY 4.0, 2,33 GB, sekali unduh). Dukungan EOT20 di pyTMD belum saya pastikan dari dokumentasi, perlu dicek; alternatifnya baca NetCDF EOT20 langsung.",
+   "upaya": "M",
+   "cara_validasi": "Uji pada data IOC 2025 yang tidak dipakai fit: RMSE ≤ 0,10-0,15 m, dan galat jam pasang tinggi ≤ 30 menit di tiga gauge.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.seanoe.org/data/00683/79489/",
+    "https://pytmd.readthedocs.io/en/latest/api_reference/predict.html",
+    "https://www.ioc-sealevelmonitoring.org/",
+    "https://srgi.big.go.id/map/pasut-prediction-active"
+   ]
+  },
+  {
+   "metode_lama": "Simulasi skenario aturan (bagaimana bila)",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti pengali seragam (hujan x1,5 atau x2) dengan dua jenis skenario: (a) skenario ansambel, yaitu anggota persentil 90 atau anggota terbasah per kabupaten dari hujan_ansambel.json; (b) skenario analog historis, yaitu hujan kejadian besar lampau di wilayah itu (ERA5 atau GSMaP) dijalankan ulang terhadap aturan hari ini. Aturan 'pasang tinggi' khusus simulasi dibuang, atau diganti dengan baris peringatan rob BMKG. Label di paparan: 'latihan skenario, bukan prakiraan'.",
+   "praktik_resmi_indonesia": "Latihan kesiapsiagaan BNPB/BPBD memakai skenario kejadian historis atau skenario kontinjensi.",
+   "kenapa_lebih_tepat": "Skenario ansambel dan analog secara fisik mungkin terjadi dan punya bobot peluang. Pengali seragam tidak keduanya.",
+   "data_dibutuhkan": "hujan_ansambel.json (sudah), cache ERA5 (sudah).",
+   "upaya": "S",
+   "cara_validasi": "Swaperiksa: tanpa skenario, hasilnya sama dengan peta. Skenario p90 harus menghasilkan jumlah kabupaten berstatus ≥ skenario median (uji monoton).",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.ecmwf.int/en/forecasts/datasets/open-data"
+   ]
+  },
+  {
+   "metode_lama": "Indeks kerawanan longsor lereng (lereng tak-hingga dan model ember)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Untuk paparan, pakai zona kerentanan gerakan tanah PVMBG dan nowcast LHASA v2. Bila model fisika ingin dipertahankan sebagai ilustrasi: parameter tanah dari SoilGrids 250 m (tekstur, kepadatan, kedalaman), bukan seragam; infiltrasi transien gaya TRIGRS (Iverson); DEM FABDEM; dan teks sim_longsor.js:2 tidak lagi memakai kata 'peluang'.",
+   "praktik_resmi_indonesia": "Peta Zona Kerentanan Gerakan Tanah PVMBG (dasar prakiraan bulanan).",
+   "kenapa_lebih_tepat": "Zona PVMBG dan LHASA sudah teruji terhadap inventaris. Indeks dengan parameter tanah seragam tanpa validasi bisa memerahkan lereng curam yang kering.",
+   "data_dibutuhkan": "SoilGrids (ISRIC, terbuka), FABDEM, PVMBG, LHASA.",
+   "upaya": "L",
+   "cara_validasi": "Hitung AUC terhadap titik longsor NASA COOLR dan DIBI (Jawa Barat dan Jawa Tengah, 2016-2025). Lulus bila AUC ≥ 0,75 dan tidak lebih buruk dari zona PVMBG pada titik yang sama; sebelum itu hanya ilustrasi.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://soilgrids.org/",
+    "https://gpm.nasa.gov/landslides/data.html",
+    "https://vsi.esdm.go.id/portalmbg/"
+   ]
+  },
+  {
+   "metode_lama": "Lapis tanggap dan peringkat perlakuan (sim_tanggap)",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Jadikan alat latihan internal saja. Peringkat 'tanggul, pompa, jiwa berkurang, Rp' dibuang dari layar publik (sesuai RISET-PARAMETER.md:42-43 'jangan hitung manfaat tanggul di dasbor'). Waktu tempuh diambil dari routing OSRM di jaringan OSM, dihitung offline per provinsi dengan layanan table. Inventaris perahu/personel diambil dari data resmi BNPB/Basarnas/BPBD melalui permintaan data. Semua ini baru dikerjakan setelah genangan lulus validasi.",
+   "praktik_resmi_indonesia": "Rencana kontinjensi BPBD memuat inventaris sumber daya dan rute evakuasi.",
+   "kenapa_lebih_tepat": "Rekomendasi tidak lagi ditumpuk di atas genangan tanpa validasi dan inventaris rekaan.",
+   "data_dibutuhkan": "OSRM (sumber terbuka; server demo publik dibatasi sekitar 10.000 sel matriks, sehingga dihitung offline); inventaris BNPB/Basarnas (tidak publik).",
+   "upaya": "L",
+   "cara_validasi": "Waktu tempuh OSRM dibandingkan catatan waktu respons BPBD pada kejadian lampau (bila tersedia). Tidak tampil di publik sebelum genangan lulus CSI ≥ 0,4.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://project-osrm.org/",
+    "https://www.rdocumentation.org/packages/osrm/versions/3.5.1/topics/osrmTable"
+   ]
+  },
+  {
+   "metode_lama": "Lokasi posko (permanen, siaga, komando) dan waktu tempuh garis lurus",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Waktu tempuh dihitung dengan OSRM di jaringan jalan OSM (layanan table, dihitung offline per provinsi), menggantikan jarak garis lurus x 1,4 / 40 km/jam. (2) Pos siaga hanya dipicu peringatan BMKG aktif atau Siaga kabupaten di pulau berskill; Waspada tidak lagi memicu. (3) Posko permanen dibandingkan dengan daftar posko/kantor BPBD aktual (bpbd.json). (4) Label 'usulan platform', mengikuti jenjang Perka BNPB 3/2016.",
+   "praktik_resmi_indonesia": "Perka BNPB 3/2016 (Sistem Komando Penanganan Darurat Bencana); posko ditetapkan oleh BPBD/Komandan Tanggap Darurat.",
+   "kenapa_lebih_tepat": "Waktu tempuh mengikuti jalan nyata (sungai, pegunungan, pulau), dan pemicunya produk resmi atau berskill.",
+   "data_dibutuhkan": "OSM (ODbL), OSRM, bpbd.json (sudah).",
+   "upaya": "M",
+   "cara_validasi": "Median rasio waktu OSRM terhadap rumus lama per provinsi dilaporkan. Porsi posko permanen usulan yang berada ≤ 15 km dari kantor/posko BPBD nyata dilaporkan; target ≥ 50%.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://peraturan.go.id/files/bn1777-2016.pdf",
+    "https://project-osrm.org/"
+   ]
+  },
+  {
+   "metode_lama": "Kalender musim banjir per dasarian",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Tahun La Niña ditentukan otomatis dari ONI CPC dengan aturan resmi CPC (≤ −0,5 selama ≥ 5 musim tumpang tindih). Berkasnya oni.ascii.txt, sudah dibaca scripts/data/iklim.py; daftar tetap di riwayat.py:49 dibuang. (2) Tambah selang bootstrap per tahun untuk peluang 'dasarian sibuk' dan sebut jumlah tahun La Niña. (3) Tampilkan prakiraan awal dan puncak musim hujan BMKG per ZOM di sampingnya sebagai acuan resmi.",
+   "praktik_resmi_indonesia": "BMKG Prakiraan Musim per ZOM dan analisis dasarian BMKG.",
+   "kenapa_lebih_tepat": "Klasifikasi ENSO menjadi dapat direproduksi dan sesuai definisi resmi. Ketidakpastian pada provinsi dengan sedikit kejadian menjadi terlihat.",
+   "data_dibutuhkan": "cpc.ncep.noaa.gov oni.ascii.txt (domain publik), rilis prakiraan musim BMKG.",
+   "upaya": "S",
+   "cara_validasi": "Skor Brier leave-one-year-out untuk peluang dasarian sibuk dibandingkan peluang seragam; lulus bila BSS > 0. Bila tidak, tampilkan hanya 'pola tercatat 2008-2025' tanpa pemisahan ENSO.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.cpc.ncep.noaa.gov/data/indices/oni.ascii.txt",
+    "https://cpc.ncep.noaa.gov/products/analysis_monitoring/ensostuff/ONI_change.shtml"
+   ]
+  },
+  {
+   "metode_lama": "Telusur hulu: porsi volume hujan per sub-DAS",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Bobot volume hujan dengan waktu tempuh aliran ke outlet. Waktu tempuh dihitung dari arah aliran/panjang alur peta statis LISFLOOD GloFAS atau HydroSHEDS dengan kecepatan nominal, sehingga yang dilaporkan adalah 'porsi hujan yang tiba dalam 1-3 hari'. Alternatifnya, pakai debit GloFAS anak sungai bila sel tangkapannya ≥ 250 km². Komentar hulu.py:13 diperbaiki (status memakai d−1 sampai d+1). Data konsesi dipisahkan dari tabel ini.",
+   "praktik_resmi_indonesia": "Analisis DAS BBWS memakai model hidrologi (routing). Tidak ada produk 'porsi hujan hulu' resmi.",
+   "kenapa_lebih_tepat": "Hujan di hulu yang jauh tiba berhari-hari kemudian. Tanpa routing, porsi volume menyesatkan untuk kejadian hari ini.",
+   "data_dibutuhkan": "Peta statis LISFLOOD (FTP JRC, terbuka) atau HydroSHEDS; hujan.json.",
+   "upaya": "M",
+   "cara_validasi": "Korelasi porsi hulu berbobot dengan puncak TMA SIHKA atau debit GloFAS di outlet pada 20 kejadian; harus lebih tinggi dari porsi tanpa bobot.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://jeodpp.jrc.ec.europa.eu/ftp/jrc-opendata/CEMS-GLOFAS/LISFLOOD_static_and_parameter_maps_for_GloFAS/"
+   ]
+  }
+ ]
+}

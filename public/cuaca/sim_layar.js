@@ -33,7 +33,7 @@
     if (!S.M && !S.G) { isi.innerHTML = `<div class="sc-kosong"><b>Medan prakiraan belum tersedia.</b><br>Angka simulasi belum bisa ditampilkan.</div>`; return; }
     const t0 = S.jam0, hari = [];
     for (let h = 0; h < S.n; h++) { const d = wib(t0 + h * 36e5); if (h === 0 || d.getUTCHours() === 0) hari.push([h, `${HARI[d.getUTCDay()]} ${d.getUTCDate()}`]); }
-    isi.innerHTML = `<div class="sc-tab" id="sTab" role="group" aria-label="Isi panel"><button type="button" data-t="waktu" aria-pressed="true">Waktu</button><button type="button" data-t="skenario" aria-pressed="false">Skenario</button><button type="button" data-t="dampak" aria-pressed="false">Dampak</button></div>
+    isi.innerHTML = `<div class="sc-tab" id="sTab" role="group" aria-label="Isi panel"><button type="button" data-t="waktu" aria-pressed="true">Waktu</button><button type="button" data-t="skenario" aria-pressed="false">Skenario</button><button type="button" data-t="dampak" aria-pressed="false">Dampak</button><button type="button" data-t="model" aria-pressed="false">Model</button></div>
       <div id="t-waktu">
       <div class="sc-jam" id="jam"></div>
       <div class="sc-bar"><button class="sc-main" id="main" aria-label="Putar atau jeda"></button><input id="geser" type="range" min="0" max="${S.n - 1}" step="0.25" value="0" aria-label="Jam prakiraan"></div>
@@ -42,7 +42,7 @@
       <div class="sc-cip" id="cip">${LAPIS.filter(l => l[3]()).map(([id, n, w]) => `<button type="button" data-l="${id}" style="--w:${w}" aria-pressed="${S.hidup.has(id)}"><i></i>${n}</button>`).join("")}
         <button type="button" id="b3d" style="--w:#5b6b86" aria-pressed="false"><i></i>Tampilan 3D</button></div>
       <p class="sc-kal" id="kv"></p>
-      <p class="sc-sumber" id="sumber"></p></div><div id="t-skenario" hidden></div><div id="t-dampak" hidden></div>`;
+      <p class="sc-sumber" id="sumber"></p></div><div id="t-skenario" hidden></div><div id="t-dampak" hidden></div><div id="t-model" hidden></div>`;
     $("#main").innerHTML = ikon(false);
     $("#main").onclick = () => { S.main = !S.main; if (S.main && S.t >= S.n - 1) S.t = 0; $("#main").innerHTML = ikon(S.main); jadwal(); };
     $("#geser").oninput = e => { S.t = +e.target.value; S.main = false; $("#main").innerHTML = ikon(false); jadwal(); };

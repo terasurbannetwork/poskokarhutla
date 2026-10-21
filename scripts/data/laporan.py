@@ -4,7 +4,7 @@ Titik panas dan luas terdampak per hari, per kab/kota, per provinsi, dengan arsi
 Kontrak skema: lihat kunci-kunci di build(); halaman laporan membaca berkas ini.
 
 Definisi angka:
-  titik  = sensor M, N, N20 (hotspot.json sensor_utama), semua keyakinan, hari kalender WIB (== wilayah.json harian)
+  titik  = sensor M, N, N20 (hotspot.json sensor_utama), semua keyakinan, jendela 24 jam s.d. 16.00 WIB (lihat 'Hari laporan'); BUKAN sama dengan wilayah.json harian (hari kalender)
   luas   = PERKIRAAN luas terbakar = titik VIIRS S-NPP (N) keyakinan >= 1 hari itu x HA_TITIK (4,3 ha)
   baru   = sama dengan luas (tiap deteksi harian menyumbang luas baru); kumulatif = jumlah luas harian
   dampak = luas TERDAMPAK = sel kisi 375 m (1 piksel VIIRS) yang memuat titik VIIRS S-NPP/NOAA-20 keyakinan >= 1 hari itu
@@ -20,7 +20,12 @@ Definisi angka:
   (kolom type tidak ada di NRT) -> luas harian condong sedikit ke atas. Kalibrasi nasional tahunan: tidak diuji per hari
   atau per wilayah, jadi angka harian/provinsi bersifat indikatif (dibulatkan ke 1 ha supaya kab/kota kecil tidak jadi nol). Satu piksel VIIRS 375 m = 14,06 ha; 4,3 ha ~ 31% piksel.
   Rumus lama (sel kisi x 14,06 ha) membesar-besarkan 3-4x; arsip luas_v < 2 dikonversi sekali (lihat konversi_arsip).
-Hari D "lengkap" bila waktu hitung >= D 21:00 WIB (data.yml menutup 21.20 WIB).
+Hari laporan (keputusan pemilik 21 Okt 2026): hari D = deteksi dengan waktu akuisisi di (D-1 16.00 WIB, D 16.00 WIB].
+  Waktu akuisisi = acuan + kolom jam hotspot.json (dibulatkan ke menit). Hari D "lengkap" bila waktu hitung >= D 16.00 WIB.
+  Hari yang sudah ditutup tetap dihitung ulang di jalan berikutnya: latensi FIRMS NRT ~3 jam, jadi lintasan siang Sumatra bisa
+  masuk setelah 16.00; jendelanya tetap ditentukan waktu akuisisi, bukan waktu tiba.
+  Hari arsip yang lebih tua dari jendela hotspot.json tetap memakai definisi lama (hari kalender WIB, tutup 21.00): data mentahnya
+  tidak ada di CI untuk dihitung ulang. Hari pada perbatasan (21 Okt 2026) bisa bercampur dua definisi.
 
 Pakai:  python3 scripts/data/laporan.py  |  ... uji
 """
@@ -35,7 +40,7 @@ HA_TITIK, HA_RENDAH, HA_TINGGI = 4.30, 3.22, 4.59   # ha per titik S-NPP; lihat 
 HA_PIKSEL, SEL = 14.06, 0.375 / 111.32   # 1 piksel VIIRS 375 m; sel kisi dalam derajat lintang
 LUAS_V = 2
 ARSIP_HARI = 90
-TUTUP_JAM = 21
+TUTUP_JAM = 16   # jam WIB penutup hari laporan
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 
 
@@ -54,8 +59,15 @@ def tanggal(mmdd, akhir):
     return t if t <= akhir else dt.date(akhir.year - 1, m, d)
 
 
+def hari_lap(waktu):
+    """Waktu akuisisi (aware) -> hari laporan: (D-1 TUTUP_JAM, D TUTUP_JAM] WIB; tepat 16.00 masih hari D. Menit dibulatkan
+    karena kolom jam hotspot.json hanya 0,01 jam."""
+    w = (waktu.astimezone(WIB) + dt.timedelta(seconds=30)).replace(second=0, microsecond=0)
+    return (w + dt.timedelta(hours=24 - TUTUP_JAM, minutes=-1)).date()
+
+
 def hari_status(dibuat, hari_akhir):
-    """(hari_lengkap, hari_berjalan) menurut aturan 21:00 WIB."""
+    """(hari_lengkap, hari_berjalan) menurut aturan TUTUP_JAM WIB."""
     tutup = dt.datetime.combine(hari_akhir, dt.time(TUTUP_JAM), WIB)
     if dibuat >= tutup:
         return hari_akhir, None
@@ -66,12 +78,13 @@ def hitung(hs, sensor_utama=None):
     """Titik panas -> t[hari][kunci] = titik sensor utama, s[hari][kunci] = titik S-NPP keyakinan >= 1,
     c[hari][kunci] = set sel kisi 375 m bertitik VIIRS (N, N20) keyakinan >= 1. Kunci: (), (prov,), (prov,kab)."""
     acuan = dt.datetime.fromisoformat(hs["acuan"]).astimezone(WIB)
-    akhir = acuan.date()
+    akhir = hari_lap(acuan)
     utama = set(sensor_utama or hs.get("sensor_utama") or ["M", "N", "N20"])
     tabel = [tuple(w.split("|")[:2]) for w in hs["wilayah"]]
     t, s, c = {}, {}, {}
-    for lat, lon, _j, sen, _f, yak, w, tg in hs["baris"]:
-        d = tanggal(tg, akhir)
+    for lat, lon, j, sen, _f, yak, w, tg in hs["baris"]:
+        # tanpa jam yang bisa dipakai: tanggal kalender lama (tg)
+        d = hari_lap(acuan + dt.timedelta(hours=j)) if isinstance(j, (int, float)) else tanggal(tg, akhir)
         prov, kab = tabel[w]
         if sen in utama:
             for k in ((), (prov,), (prov, kab)):
@@ -392,7 +405,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "hari_berjalan": berjalan.isoformat() if berjalan else None,
         "bnpb_sd": per.isoformat() if per else None,
         "awal_arsip": hari_iso[0] if hari_iso else None,
-        "jadwal": {"tutup": "21.20 WIB", "pembaruan": "tiap 3 jam"},
+        "jadwal": {"tutup": "16.00 WIB", "pembaruan": "tiap 3 jam"},
         "luas_v": LUAS_V,
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
@@ -443,9 +456,10 @@ def main():
 
 def uji():
     # (b) perkiraan luas pada data sintetis: 3 hari, jendela terpotong
-    acuan = "2026-01-02T12:00:00+00:00"  # 19.00 WIB 2 Jan; tgl_wib 12-31 membuktikan pergantian tahun
+    acuan = "2026-01-02T08:30:00+00:00"  # 15.30 WIB 2 Jan = masih hari laporan 2 Jan; deteksi 10.00 WIB tiap hari; 12-31 membuktikan pergantian tahun
     L = lambda la, lo: (la, lo)
-    b = lambda p, sen, yak, w, tg: [p[0], p[1], 0, sen, 1.0, yak, w, tg]
+    JAM = {"12-31": -53.5, "01-01": -29.5, "01-02": -5.5}   # jam relatif acuan untuk 10.00 WIB tiap hari
+    b = lambda p, sen, yak, w, tg: [p[0], p[1], JAM[tg], sen, 1.0, yak, w, tg]
     hs = {"acuan": acuan, "sensor_utama": ["M", "N", "N20"], "wilayah": ["14|A|x", "14|B|y"],
           "baris": [b(L(0.5, 101.5), "N", 1, 0, "12-31"), b(L(0.5, 101.5), "N", 1, 0, "12-31"),  # 2 titik S-NPP = 2 x 4,3 ha
                     b(L(0.5, 101.5), "N", 1, 0, "01-01"),
@@ -493,25 +507,34 @@ def uji():
     tb = tahun_berjalan(sj, ["2026-01-02", "2026-01-03"], [4, 7], "2026", tt, [5, 6])
     assert tb["titik"] == 3 + 5 + 6 and tb["triwulan"][0]["titik"] == 14 and tb["triwulan"][0]["prov_aktif"] == 1, tb
     assert "titik" not in tahun_berjalan(sj, ["2026-01-05"], [4], "2026", tt, [5])
-    # (c) hari lengkap / berjalan di sekitar 21:00 WIB
+    # (c) hari lengkap / berjalan di sekitar 16:00 WIB
     d = dt.date(2026, 10, 12)
     ja = lambda h, m: dt.datetime(2026, 10, 12, h, m, tzinfo=WIB)
-    assert hari_status(ja(20, 59), d) == (dt.date(2026, 10, 11), d)
-    assert hari_status(ja(21, 0), d) == (d, None)
+    assert hari_status(ja(15, 59), d) == (dt.date(2026, 10, 11), d)
+    assert hari_status(ja(16, 0), d) == (d, None)
     assert hari_status(ja(21, 45), d) == (d, None)
     assert hari_status(ja(3, 0) + dt.timedelta(days=1), d) == (d, None)  # data basi tetap menutup hari akhir
     assert tanggal("12-31", dt.date(2026, 1, 2)) == dt.date(2025, 12, 31) and tanggal("01-02", dt.date(2026, 1, 2)) == dt.date(2026, 1, 2)
-    # (a) titik per prov per hari == wilayah.json harian (berkas lokal)
-    hl, wl = baca("hotspot.json"), baca("wilayah.json")
-    if hl and wl:
+    # batas 16.00 WIB: 15.59 -> D, 16.00 -> D (batas atas masuk), 16.01 -> D+1; pergantian tahun; acuan setelah 16.00 = hari berjalan D+1
+    ac = dt.datetime(2026, 1, 1, 17, 0, tzinfo=WIB)
+    jm = lambda t: round((t - ac).total_seconds() / 3600, 2)
+    wk = lambda *a: dt.datetime(*a, tzinfo=WIB)
+    bb = lambda t, tg: [0.5, 101.5, jm(t), "M", 1.0, 1, 0, tg]
+    hb = {"acuan": ac.isoformat(), "wilayah": ["14|A|x"], "baris": [
+        bb(wk(2025, 12, 31, 15, 59), "12-31"), bb(wk(2025, 12, 31, 16, 0), "12-31"), bb(wk(2025, 12, 31, 16, 1), "12-31"),
+        bb(wk(2026, 1, 1, 15, 59), "01-01"), bb(wk(2026, 1, 1, 16, 1), "01-01"), bb(wk(2025, 12, 31, 0, 5), "12-31")]}
+    _, akh, tb_, _, _ = hitung(hb)
+    assert akh == dt.date(2026, 1, 2), akh
+    assert {k: v[()] for k, v in tb_.items()} == {dt.date(2025, 12, 31): 3, dt.date(2026, 1, 1): 2, dt.date(2026, 1, 2): 1}, tb_
+    hb["baris"].append([0.5, 101.5, None, "M", 1.0, 1, 0, "12-31"])   # tanpa jam: jatuh ke tanggal kalender tg
+    assert hitung(hb)[2][dt.date(2025, 12, 31)][()] == 4
+    # (a) tidak lagi dibandingkan dengan wilayah.json harian: itu hari kalender, laporan memakai jendela s.d. 16.00 WIB.
+    #     Gantinya: jumlah titik semua hari laporan == jumlah baris sensor utama hotspot.json (tak ada titik hilang/ganda)
+    hl = baca("hotspot.json")
+    if hl:
         _, _, tt, _, _ = hitung(hl)
-        n = 0
-        for p, v in wl.items():
-            for tg, c in v["harian"].items():
-                dd = dt.date.fromisoformat(tg)
-                assert tt.get(dd, {}).get((p,), 0) == c, (p, tg, tt.get(dd, {}).get((p,), 0), c)
-                n += 1
-        print(f"  titik cocok wilayah.json: {n} sel prov x hari")
+        n = sum(1 for r in hl["baris"] if r[3] in set(hl.get("sensor_utama") or ["M", "N", "N20"]))
+        assert sum(v.get((), 0) for v in tt.values()) == n, (sum(v.get((), 0) for v in tt.values()), n)
     # luas_banding: sumber tanpa data suatu tahun = None (bukan 0); GWIS digabung di kode pertama grup
     sj2 = {"tahun": ["2025", "2026"], "dibuat": "2026-01-02", "prov": {"14": {"2025": [100] + [0] * 11, "2026": [10] + [0] * 11}}}
     tb2 = tahun_berjalan(sj2, ["2026-01-02"], [7], "2026")

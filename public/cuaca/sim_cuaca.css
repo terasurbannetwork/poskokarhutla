@@ -40,7 +40,7 @@ canvas.sc-angin{position:absolute;inset:0;pointer-events:none;z-index:2}
   .tabs{display:none}
 }
 [hidden]{display:none!important}
-.sc-tab{display:grid;grid-template-columns:repeat(3,1fr);gap:6px;margin:0 0 10px}
+.sc-tab{display:grid;grid-template-columns:repeat(4,1fr);gap:6px;margin:0 0 10px}
 .sc-tab button,.sc-sw,.sc-reset,.sc-prov button{border:0;border-radius:12px;background:var(--surface);color:var(--ink2);font:inherit;font-size:12.5px;font-weight:600;height:36px;cursor:pointer;min-width:0}
 .sc-tab button[aria-pressed="true"],.sc-sw[aria-pressed="true"],.sc-prov button[aria-pressed="true"]{background:var(--ink);color:var(--card)}
 .sc-k{margin:0 0 10px;padding:12px 14px;border-radius:16px;background:var(--surface)}
@@ -81,3 +81,5 @@ canvas.sc-angin{position:absolute;inset:0;pointer-events:none;z-index:2}
   .dok{bottom:auto;top:8px;max-height:24%;pointer-events:none}
   .simgraf:not([hidden]) ~ .dok{display:none}
 }
+
+.sc-tb .m{color:var(--ink2);font-size:10.5px;display:block}.sc-gen{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ink2);margin:0 0 10px}.sc-gen .spin{width:14px;height:14px}.sc-bar2{height:6px;border-radius:3px;background:var(--line);overflow:hidden;margin:6px 0}.sc-bar2 i{display:block;height:100%;background:var(--brand2);width:0}

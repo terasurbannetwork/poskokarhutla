@@ -4,6 +4,8 @@
    longsor dari sim_longsor.js, perlakuan tanggul/pompa/pintu air, banding tanpa/dengan perlakuan. Masukan dari data halaman:
    hujan.json (sel terdekat), hujan_ansambel.json (hujan harian pada peluang >= 10 %), sungai.json (debit di atas Q2 = luapan),
    rob.json (muka laut). Dipanggil dari Simulasi.render() bila Simulasi.mode === "genangan". Pola kamera & medan: public/sim_3d.js.
+   Tambahan (20 Okt 2026): tutupan lahan nyata per sel (sim_lahan.js: CN dan Manning), pita ketidakpastian dari 51 anggota ECMWF, lapis tanggap
+   (sim_tanggap.js: pangkalan, jalan OSM yang tak terendam, titik aman) dan peringkat perlakuan; titik awal = kejadian aktif paling genting (Simulasi.awal).
    INP: klik hanya mengubah fragmen panel; kerja berat di worker; animasi berlaju adaptif dan berhenti sendiri bila frame > 300 ms. */
 const SimTampak = (() => {
 /* sim_longsor.js dimuat SESUDAH berkas ini (urutan index.html): SL diisi saat render pertama */
@@ -15,7 +17,8 @@ const T = {k: null, titik: null, sisi: 6000, n: 100, sk: "dasar", op: {ekstrem: 
   tanggul: [], pompa: [], pintu: false, tinggi: 2, laju: .5, alat: null, draf: [],
   dem: null, demKunci: "", prep: null, hasil: null, lihat: "dengan", t: 0, main: false, basi: false,
   lapis: {air: true, longsor: true, citra: true}, kanvas: {}, peta: null, sibuk: false, kerja: undefined, tanpaWorker: false, ex: 1.5, pend: undefined, raf: 0,
-  alatVer: 0, cache: {}};
+  alatVer: 0, cache: {}, lahan: undefined, lahanKunci: "", dcn: 0, tg: null, tgCtx: null, pm: null, pita: null, vek: null, unitDaftar: undefined, awalJalan: false};
+const SLh = () => window.SimLahan, STg = () => window.SimTanggap;
 const ik = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
 const IK = {main: '<path d="M7 5l12 7-12 7z"/>', jeda: '<path d="M8 5v14M16 5v14"/>'};
 const jeda = () => new Promise(r => nanti(r));
@@ -40,6 +43,7 @@ function kerja(pesan, kabar) {
   if (!T.kerja) { /* cadangan tanpa worker: utas utama. Animasi dihentikan dan layar memberi tahu */
     T.tanpaWorker = true; berhenti();
     return jeda().then(() => pesan.jenis === "dem" ? SG.ambilDEM(pesan.lat, pesan.lon, pesan.sisi, pesan.n).then(dem => ({dem}))
+      : pesan.jenis === "lahan" ? SLh().kisiLahan(pesan.K).then(lahan => ({lahan}))
       : pesan.jenis === "siap" ? {prep: SG.siapkanArea(pesan.dem, SL.lereng)} : {hasil: SG.jalankan(pesan.cfg, kabar)}); }
   return new Promise((ok, gagal) => { const id = ++idN; tunggu.set(id, {ok, gagal, kabar}); T.kerja.postMessage({...pesan, id}); });
 }
@@ -49,7 +53,8 @@ function pusat() {
   if (T.titik) return T.titik;
   const c = Simulasi.kec?.[T.k]; return c ? {lat: c.lat, lon: c.lon, nama: c.nama, kab: c.kab} : null;
 }
-function kecAwal() { /* kecamatan dengan hujan 3 hari prakiraan tertinggi di provinsi */
+function kecAwal() { /* kejadian aktif paling genting hari ini (Simulasi.awal); bila di provinsi lain: kecamatan dengan hujan 3 hari prakiraan tertinggi */
+  const a = Simulasi.awalInfo?.k; if (a && Simulasi.kec?.[a]) return a;
   const D = Simulasi.dasar || {}; let best = null, v = -1;
   for (const k of Object.keys(Simulasi.kec || {})) { const h = D[k]?.h3 ?? 0; if (h > v) { v = h; best = k; } }
   return best;
@@ -89,7 +94,7 @@ function luapan(sg) {
 }
 function susun() {
   const P = pusat(), D = T.dem, pr = T.prep, M = masukan(P), hari = hariSkenario(M), amc = SG.kelasAMC(M.a7, M.sm);
-  const hu = SG.hietograf(hari), L = SG.limpasan(hu, T.cn, amc);
+  const hu = SG.hietograf(hari), L = limpasanX(hu, amc);
   let sungai = null;
   if (M.sg) { const [i, j] = SG.keSel(D, M.sg.lon, M.sg.lat), r = 3000 / D.dx;
     if (i > -r && j > -r && i < D.nx + r && j < D.ny + r) {
@@ -101,15 +106,24 @@ function susun() {
   if (pr.nLaut) { const R = S.rob, r0 = M.rob && R ? R.hari.indexOf(S.hujan.hari_ini) : -1;
     const maks = [0, 1, 2].map(d => M.rob && r0 >= 0 && M.rob.h[r0 + d] != null ? M.rob.h[r0 + d] : .5).map(v => v + (T.sk === "pasang" ? T.op.pasang : 0));
     mukaSumber = M.rob && r0 >= 0 ? "rob" : "asumsi"; muka = SG.pasang(maks); }
-  return {P, M, hari, amc, cn: L.cn, hujan: hu, efektif: L.efektif, resap: L.resap, sungai, muka, mukaSumber};
+  return {P, M, hari, amc, cn: L.cn, hujan: hu, efektif: L.efektif, resap: L.resap, seri: L.seri, kelas: L.kelas, manning: T.lahan?.n || null, sungai, muka, mukaSumber};
 }
-function cfgDari(X, perlakuan) {
+/* limpasan SCS-CN: per sel dari tutupan lahan bila termuat (CN digeser T.dcn, air tetap 100), kalau tidak satu CN seragam T.cn */
+function limpasanX(hu, amc) {
+  const lh = T.lahan; if (!lh) return SG.limpasan(hu, T.cn, amc);
+  const laut = T.prep.laut, cn = Float32Array.from(lh.cn, c => c >= 100 ? 100 : Math.max(40, Math.min(98, c + T.dcn))), darat = Uint8Array.from(laut, v => v ? 0 : 1);
+  return SG.limpasanSel(hu, cn, amc, darat);
+}
+function cfgDari(X, perlakuan, spec) {
   const D = T.dem, pr = T.prep, N = D.nx * D.ny; let z = pr.z; const tutup = new Uint8Array(N), pompa = [];
-  if (perlakuan) {
+  if (spec) { /* kandidat peringkat (koordinat sel dari sim_tanggap.kandidatPerlakuan) */
+    for (const tg of spec.tanggul) z = SG.naikkan(z, SG.garisSel(tg.garis, D.nx, D.ny), tg.tinggi);
+    for (const p of spec.pompa) pompa.push({k: p.k, q: p.q}); if (spec.pintu) tutup.set(pr.pintu); }
+  else if (perlakuan) {
     for (const tg of T.tanggul) z = SG.naikkan(z, SG.garisSel(tg.garis.map(([lo, la]) => SG.keSel(D, lo, la)), D.nx, D.ny), tg.tinggi);
     for (const p of T.pompa) { const [i, j] = SG.keSel(D, p.lon, p.lat).map(Math.round), k = j * D.nx + i; if (i >= 0 && j >= 0 && i < D.nx && j < D.ny && !pr.laut[k]) pompa.push({k, q: p.q}); }
     if (T.pintu) tutup.set(pr.pintu); }
-  return {nx: D.nx, ny: D.ny, dx: D.dx, z, laut: pr.laut, muka: X.muka, hujan: X.efektif, masuk: X.sungai?.k != null ? [{k: X.sungai.k, q: X.sungai.q}] : [], pompa, tutup, jam: J};
+  return {nx: D.nx, ny: D.ny, dx: D.dx, z, laut: pr.laut, muka: X.muka, hujan: X.seri ? undefined : X.efektif, hujanKelas: X.seri, kelas: X.kelas, manning: X.manning || undefined, masuk: X.sungai?.k != null ? [{k: X.sungai.k, q: X.sungai.q}] : [], pompa, tutup, jam: J};
 }
 const adaPerlakuan = () => T.tanggul.length || T.pompa.length || T.pintu;
 
@@ -122,6 +136,9 @@ async function jalan() {
     const kunci = [P.lat.toFixed(4), P.lon.toFixed(4), T.sisi, T.n].join("|");
     if (T.demKunci !== kunci) { status("Mengunduh medan (DEM)…"); const r = await kerja({jenis: "dem", lat: P.lat, lon: P.lon, sisi: T.sisi, n: T.n}); T.dem = r.dem; T.prep = null; T.demKunci = kunci; }
     if (!T.prep) { status("Menyiapkan medan…"); T.prep = (await kerja({jenis: "siap", dem: T.dem})).prep; }
+    const lk = T.demKunci + "|lahan"; /* tutupan lahan: gagal = CN 80 dan n 0,06 seragam (dilaporkan di panel), bukan galat */
+    if (T.lahanKunci !== lk && SLh()) { status("Memuat tutupan lahan (ESA WorldCover)…"); const {z: _z, ...meta} = T.dem; T.lahan = await kerja({jenis: "lahan", K: meta}).then(r => r.lahan).catch(e => { console.warn("SimTampak: tutupan lahan tidak termuat", e); return null; }); T.lahanKunci = lk; }
+    T.tg = T.pm = T.pita = null; T.tgCtx = null;
     T.ex = Math.round(Math.min(10, Math.max(1.5, 250 / T.prep.relief)) * 2) / 2;
     const X = susun(), ada = adaPerlakuan(), tahap = ada ? 2 : 1;
     const run = (pl, i) => kerja({jenis: "jalan", cfg: cfgDari(X, pl)}, p => status(`Menghitung genangan 72 jam${tahap > 1 ? ` (${i}/${tahap})` : ""}… ${fmt(Math.round(p * 100))} %`)).then(r => r.hasil);
@@ -155,6 +172,21 @@ function kepadatan(P) {
   T.cache.kp = {kunci, v}; return v;
 }
 
+/* penduduk per sel [lo, hi]: total kotak = kepadatan (rentang) x luas darat kotak, disebar menurut bobot permukiman tutupan lahan (asumsi; bukan peta penduduk).
+   null = tak ada estimasi penduduk */
+function popSel() {
+  const H = T.hasil; if (!H || !SLh()) return null; const kp = kepadatan(H.X.P); if (!kp) return null;
+  const kunci = T.nJalan + "|" + kp.join() + "|" + !!T.lahan; if (T.cache.ps?.kunci === kunci) return T.cache.ps.v;
+  let dar = 0; for (const l of T.prep.laut) if (!l) dar++; const km2 = dar * T.dem.dx ** 2 / 1e6, v = SLh().sebarPenduduk([kp[0] * km2, kp[1] * km2], T.lahan?.bobot, T.prep.laut);
+  T.cache.ps = {kunci, v}; return v;
+}
+/* jiwa [lo, hi] di sel dengan air >= ambang pada jam t */
+function jiwaJam(R, pop, t, ambang) { const N = R.nx * R.ny, o = t * N; let lo = 0, hi = 0; for (let k = 0; k < N; k++) if (R.kedalaman[o + k] >= ambang) { lo += pop.lo[k]; hi += pop.hi[k]; } return [lo, hi]; }
+const tengah = r => (r[0] + r[1]) / 2, rentang = r => { const a = orde(r[0]), b = orde(r[1]); return a === b ? a : `${a}–${b}`; };
+const rpS = (lo, hi) => { const u = hi >= 1e9 ? 1e9 : 1e6, f = x => u === 1e9 || x / u < 10 ? angka1(x / u) : bulat(x / u), a = f(lo), b = f(hi); return `Rp ${a === b ? a : `${a}–${b}`} ${u === 1e9 ? "miliar" : "juta"}`; };
+const waktu = h => !Number.isFinite(h) ? "tak terjangkau" : h < 1 ? `${bulat(h * 60)} menit` : `${angka1(h)} jam`;
+const kuantil = (xs, q) => { const a = xs.filter(Number.isFinite).sort((x, y) => x - y); return a.length ? a[Math.floor(q * (a.length - 1))] : null; };
+
 /* ---------- peta 3D ---------- */
 async function petaSiap() {
   let el = $("#simPeta3"); if (!el) { $("#simPeta").insertAdjacentHTML("afterend", `<div id="simPeta3" role="img" aria-label="Peta 3D genangan dan indeks kerawanan longsor"></div>`); el = $("#simPeta3"); }
@@ -177,7 +209,7 @@ async function petaSiap() {
   m.addLayer({id: "gn-tanggul", type: "line", source: "gn-alat", filter: ["in", ["get", "j"], ["literal", ["tanggul", "draf"]]], layout: {"line-cap": "round", "line-join": "round"},
     paint: {"line-color": ["case", ["==", ["get", "j"], "draf"], "#ffd24a", "#7a4a1f"], "line-width": 5}});
   m.addLayer({id: "gn-titik", type: "circle", source: "gn-alat", filter: ["==", ["geometry-type"], "Point"], paint: {"circle-radius": 7, "circle-stroke-width": 2, "circle-stroke-color": "#fff",
-    "circle-color": ["match", ["get", "j"], "pompa", "#c9503a", "sungai", "#1d6fd1", "#ffd24a"]}});
+    "circle-color": ["match", ["get", "j"], "pompa", "#c9503a", "sungai", "#1d6fd1", "unit", "#2e9e5b", "aman", "#8e5bd1", "#ffd24a"]}});
   m.addLayer({id: "gn-titik-lbl", type: "symbol", source: "gn-alat", filter: ["==", ["geometry-type"], "Point"], layout: {"text-field": ["get", "n"], "text-font": ["Noto Sans Regular"], "text-size": 11, "text-offset": [0, 1.3], "text-anchor": "top"},
     paint: {"text-color": "#fff", "text-halo-color": "#0b2545", "text-halo-width": 1.4}});
   m.on("click", klik); m.on("dblclick", e => { if (T.alat === "tanggul") { e.preventDefault(); selesaiTanggul(); } });
@@ -208,6 +240,10 @@ function dataAlat() {
   T.tanggul.forEach(tg => fs.push({type: "Feature", properties: {j: "tanggul"}, geometry: {type: "LineString", coordinates: tg.garis}}));
   if (T.draf.length > 1) fs.push({type: "Feature", properties: {j: "draf"}, geometry: {type: "LineString", coordinates: T.draf}});
   T.pompa.forEach(p => fs.push({type: "Feature", properties: {j: "pompa", n: `Pompa ${angka1(p.q)} m³/dtk`}, geometry: {type: "Point", coordinates: [p.lon, p.lat]}}));
+  const sn = T.tg?.ada && T.tg.snapshot.at(-1);
+  if (sn && D) { (T.tg.unit || []).forEach(u => fs.push({type: "Feature", properties: {j: "unit", n: namaUnit(u)}, geometry: {type: "Point", coordinates: [u.lon, u.lat]}}));
+    if (sn.aman) { const [lo, la] = SG.dariSel(D, sn.aman.k % D.nx, Math.floor(sn.aman.k / D.nx)); fs.push({type: "Feature", properties: {j: "aman", n: `Titik aman: ${sn.aman.nama}`}, geometry: {type: "Point", coordinates: [lo, la]}}); }
+    fs.push({type: "Feature", properties: {j: "sasaran", n: "Pusat permukiman tergenang"}, geometry: {type: "Point", coordinates: sn.pusat}}); }
   if (X?.sungai?.k != null) { const [lo, la] = SG.dariSel(D, X.sungai.k % D.nx, Math.floor(X.sungai.k / D.nx)); fs.push({type: "Feature", properties: {j: "sungai", n: "Luapan sungai masuk"}, geometry: {type: "Point", coordinates: [lo, la]}}); }
   return {type: "FeatureCollection", features: fs};
 }
@@ -299,7 +335,7 @@ function pakaiAlat(a) {
 
 /* ---------- panel ---------- */
 const geser = (id, lbl, min, max, step, v, tampil) => `<label class="simgeser"><span>${lbl}</span><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${v}"><b class="num" id="${id}V">${tampil(v)}</b></label>`;
-const tampilQ = v => v === 3 ? "Q20" : "Q5";
+const tampilQ = v => v === 3 ? "Q20" : "Q5", tampilCN = v => T.lahan ? (v > 0 ? "+" : "") + fmt(v) : fmt(v);
 const adaEns = () => { const P = pusat(); return !!(P && masukan(P).ens); };
 function aturHtml() {
   const g = {ekstrem: geser("gnE", "Hujan 3 hari", 100, 500, 25, T.op.ekstrem, v => fmt(v) + " mm"),
@@ -318,6 +354,7 @@ function panel() {
   el.innerHTML = `<div class="lbl">Simulasi genangan 72 jam · model</div><h2><span translate="no">${esc(P?.nama || "Pilih area")}</span></h2>
     <div style="font-size:12.5px;color:var(--ink2)"><span translate="no">${esc(P?.kab || "")}</span>${T.dem ? ` · sel ${bulat(T.dem.dx)} m · ketinggian ×${fmt(T.ex)}` : ""}</div>
     ${sumber()}
+    ${Simulasi.awalHtml(T.titik ? "-" : T.k)}
     ${Simulasi.modeHtml()}
     <label class="fld"><span class="lbl">Provinsi</span><select id="gnProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === Simulasi.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
     <label class="fld"><span class="lbl">Kecamatan</span><select id="gnKec" aria-label="Kecamatan">${T.titik ? `<option value="" selected>Titik pilihan</option>` : ""}${kecs.map(([k, c]) => `<option value="${esc(k)}" ${!T.titik && k === T.k ? "selected" : ""}>${esc(c.nama)} · ${esc(c.kab)}</option>`).join("")}</select></label>
@@ -335,10 +372,11 @@ function panel() {
       <button type="button" data-hapus ${adaPerlakuan() ? "" : "disabled"}>Hapus perlakuan</button></div>
     <div class="simatur">${geser("gnTg", "Tinggi tanggul", .5, 4, .5, T.tinggi, v => angka1(v) + " m")}${geser("gnPq", "Laju pompa", .1, 3, .1, T.laju, v => angka1(v) + " m³/dtk")}
       <p class="fnd" id="gnPl">${esc(rangkumPl())}</p></div>
-    <details class="simatur-grup"><summary class="lbl">Asumsi model</summary><div class="simatur">${geser("gnCN", "Bilangan kurva CN", 60, 95, 1, T.cn, v => fmt(v))}</div></details>
+    <details class="simatur-grup"><summary class="lbl">Asumsi model</summary><div class="simatur">${T.lahan ? geser("gnCN", "Geser CN semua sel", -15, 15, 1, T.dcn, tampilCN) : geser("gnCN", "Bilangan kurva CN", 60, 95, 1, T.cn, tampilCN)}</div></details>
     <button class="btn pri" id="gnJalan" style="width:100%;margin-top:10px" ${T.sibuk ? "disabled" : ""}>${H ? (T.basi ? "Jalankan ulang" : "Jalankan lagi") : "Jalankan simulasi"}</button>
     <p class="fnd" id="gnStatus" aria-live="polite" style="margin-top:6px"></p>
-    <div id="gnHasil">${hasilLihat() ? hasilHtml() : ""}</div>`;
+    <div id="gnHasil">${hasilLihat() ? hasilHtml() : ""}</div>
+    <div id="gnLanjut">${hasilLihat() ? lanjutHtml() : ""}</div>`;
   if (!el._gnPasang) { el._gnPasang = true; /* animasi berhenti saat jari/klik menyentuh panel: klik tidak bersaing dengan lukisan */
     el.addEventListener("pointerdown", () => { if (T.main) berhenti(); }, true); }
   el.onclick = klikPanel;
@@ -350,7 +388,7 @@ function pasangGeser() {
   const gs = (id, set, t, ikut) => { const i = $("#" + id); if (i) i.oninput = () => { set(+i.value); $("#" + id + "V").textContent = t(+i.value); ikut?.(); tandaiBasi(); }; };
   gs("gnSisi", v => T.sisi = v * 1000, v => fmt(v) + " km"); gs("gnE", v => T.op.ekstrem = v, v => fmt(v) + " mm");
   gs("gnS", v => T.op.sungai = v, tampilQ, () => { const p = $("#gnSK"); if (p) p.textContent = `${T.op.sungai === 3 ? "Q20 (sekali dalam 20 tahun)" : "Q5 (sekali dalam 5 tahun)"}, puncak jam +30`; });
-  gs("gnP", v => T.op.pasang = v, v => angka1(v) + " m"); gs("gnTg", v => T.tinggi = v, v => angka1(v) + " m"); gs("gnPq", v => T.laju = v, v => angka1(v) + " m³/dtk"); gs("gnCN", v => T.cn = v, v => fmt(v));
+  gs("gnP", v => T.op.pasang = v, v => angka1(v) + " m"); gs("gnTg", v => T.tinggi = v, v => angka1(v) + " m"); gs("gnPq", v => T.laju = v, v => angka1(v) + " m³/dtk"); gs("gnCN", v => { if (T.lahan) T.dcn = v; else T.cn = v; }, tampilCN);
 }
 /* fragmen kecil, bukan panel penuh */
 function segarPerlakuan() {
@@ -372,17 +410,28 @@ function klikPanel(e) {
   if (d.glihat) { if (T.lihat === d.glihat) return; T.lihat = d.glihat; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); return nanti(() => { segarHasil(); jadwal(); }); }
   if (d.glapis) { const k = d.glapis; T.lapis[k] = !T.lapis[k]; b.setAttribute("aria-pressed", T.lapis[k]); return nanti(() => { terapkanLapis(); if (k === "longsor" && T.lapis.longsor) { T.lsKunci = null; T.lukisKunci = null; jadwal(); } }); }
   if (b.id === "gnJalan") { b.textContent = "Menghitung…"; return nanti(jalan); }
+  if (b.id === "gnPita") { b.textContent = "Menghitung…"; return nanti(pita); }
+  if (b.id === "gnTanggap") { b.textContent = "Menghitung…"; return nanti(tanggap); }
+  if (b.id === "gnPeringkat") { b.textContent = "Menghitung…"; return nanti(peringkatan); }
   if (b.id === "gnKamera") return nanti(() => T.peta?.easeTo({bearing: T.peta.getBearing() + 90, pitch: 60, duration: 1200}));
 }
 function segarHasil() { const h = $("#gnHasil"); if (h && hasilLihat()) h.innerHTML = hasilHtml(); }
 function ringkas(R) {
   const lu = Math.max(...R.luas), tp = R.luas.indexOf(lu); let dm = 0; for (let k = 0; k < R.hmaks.length; k++) if (!T.prep.laut[k] && R.hmaks[k] > dm) dm = R.hmaks[k];
-  return {lu, tp, dm, vol: Math.max(...R.volume), l72: R.luas[J], kerja: R.neraca.pompaMinta > 0 ? R.neraca.pompa / R.neraca.pompaMinta : 1};
+  const pop = popSel(), kp = T.hasil && kepadatan(T.hasil.X.P), jiwa = pop ? jiwaJam(R, pop, tp, .1) : kp ? [lu / 1e6 * kp[0], lu / 1e6 * kp[1]] : null;
+  return {lu, tp, dm, vol: Math.max(...R.volume), l72: R.luas[J], kerja: R.neraca.pompaMinta > 0 ? R.neraca.pompa / R.neraca.pompaMinta : 1, jiwa};
+}
+function lahanHtml() {
+  const L = T.lahan, S0 = SLh(); if (!S0) return ""; const sb = (t, d) => `<p class="fnd" style="margin-top:4px">Sumber: ${t}, data s.d. ${d}</p>`;
+  if (!L) return `<p class="fnd" style="margin-top:6px">Tutupan lahan tidak termuat (jaringan atau layanan ESA): CN 80 dan n Manning 0,06 dipakai seragam di seluruh area. <span class="pill l2" style="height:17px;font-size:9.5px">asumsi seragam</span></p>`;
+  let nm = 0, c = 0; for (let k = 0; k < L.n.length; k++) if (!T.prep.laut[k]) { nm += L.n[k]; c++; }
+  return `<table class="tb2" style="margin-top:6px"><tbody><tr><td>Tutupan lahan (${S0.ringkasLahan(L).slice(0, 4).map(x => `${x.nama} ${bulat(x.bagian * 100)} %`).join(", ")})</td><td class="n">n Manning rata-rata ${F2(c ? nm / c : 0)}</td></tr></tbody></table>
+    ${sb("ESA WorldCover 2021 v200 (10 m, CC BY 4.0) lewat Microsoft Planetary Computer", "2021")}<p class="fnd" style="margin-top:4px">CN dan n tiap kelas adalah asumsi (tanah kelompok C; USDA TR-55, Chow 1959), lihat halaman Metode.</p>`;
 }
 function hasilHtml() {
   const kunci = [T.nJalan, T.lihat, !!T.pend].join("|"); if (T.cache.html?.kunci === kunci) return T.cache.html.v;
   const H = T.hasil, X = H.X, a = ringkas(H.dasar), b = H.dengan ? ringkas(H.dengan) : null, R = hasilLihat(), r = R === H.dengan ? b : a, P = X.P, kp = kepadatan(P);
-  const orang = s => !kp ? "tak ada estimasi" : s.lu ? `${orde(s.lu / 1e6 * kp[0])}–${orde(s.lu / 1e6 * kp[1])}` : "0", n = R.neraca, sk = SKN.find(s => s.id === T.sk);
+  const orang = s => !s.jiwa ? "tak ada estimasi" : s.lu ? rentang(s.jiwa) : "0", rumah = s => !s.jiwa ? "tak ada estimasi" : s.lu ? rentang(s.jiwa.map(x => x / STg().ASUMSI.JIWA_RUMAH)) : "0", n = R.neraca, sk = SKN.find(s => s.id === T.sk);
   const persen = x => x < 1e-4 ? "< 0,01 %" : F2(x * 100) + " %";
   const tot = X.hari.reduce((s, x) => s + x.p, 0), M = X.M, ens = T.sk === "ansambel";
   const nL = (() => { const L = petaLongsor(J); let c = 0; for (let k = 0; k < L.length; k++) if (L[k] >= .4 && !T.prep.laut[k]) c++; return c * T.dem.dx ** 2; })();
@@ -394,7 +443,8 @@ function hasilHtml() {
     <table class="tb2" style="margin-top:8px"><tbody>
       <tr><td>Luas tergenang puncak (≥ 10 cm)</td><td class="n">${bulat(ha(r.lu))} ha</td></tr>
       <tr><td>Kedalaman maks</td><td class="n">${angka1(r.dm)} m</td></tr>
-      <tr><td>Orang di genangan (orde besaran, kepadatan rata-rata)</td><td class="n">${orang(r)}</td></tr>
+      <tr><td>Orang di genangan ≥ 10 cm saat puncak (orde besaran${T.lahan ? ", disebar menurut permukiman" : ", kepadatan rata-rata"})</td><td class="n">${orang(r)}</td></tr>
+      <tr><td>Rumah terendam <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span> (jiwa ÷ ${angka1(STg().ASUMSI.JIWA_RUMAH)} per rumah)</td><td class="n">${rumah(r)}</td></tr>
       <tr><td>Lereng dengan indeks kerawanan longsor ≥ 0,4 di jam +72</td><td class="n">${bulat(ha(nL))} ha</td></tr></tbody></table>
     <p class="fnd" style="margin-top:4px">Indeks longsor: ${LABEL_LONGSOR}.</p>
     <div class="simchips" role="group" aria-label="Lapisan peta" style="margin-top:10px">${[["air", "Genangan"], ["longsor", "Kerawanan longsor"], ["citra", "Citra satelit"]].map(([k, nm]) => `<button type="button" data-glapis="${k}" aria-pressed="${T.lapis[k]}">${nm}</button>`).join("")}
@@ -404,13 +454,14 @@ function hasilHtml() {
     <table class="tb3" style="margin-top:4px"><thead><tr><th></th><th class="n">Tanpa</th><th class="n">Dengan</th><th class="n">Selisih</th></tr></thead><tbody>
       ${baris("Luas puncak", s => ha(s.lu), " ha")}${baris("Luas jam +72", s => ha(s.l72), " ha")}
       ${baris("Kedalaman maks", s => s.dm, " m", true)}${baris("Volume puncak", s => s.vol, " m³")}
-      ${kp ? baris("Orang di genangan (tengah rentang)", s => s.lu / 1e6 * (kp[0] + kp[1]) / 2, "") : ""}</tbody></table>
+      ${a.jiwa && b.jiwa ? baris("Orang di genangan (tengah rentang)", s => tengah(s.jiwa), "") : ""}</tbody></table>
     ${b.kerja < .999 ? `<p class="fnd">Pompa hanya bekerja ${bulat(b.kerja * 100)} % dari kapasitas.</p>` : ""}` : ""}
     <div class="lbl" style="margin-top:12px">Masukan dari data</div>
     <table class="tb2" style="margin-top:4px"><tbody>
       ${X.hari.map((x, d) => `<tr><td>Hujan ${tglPendek(S.hujan.hari[M.i0 + d])}${ens && !x.ubah ? " (tetap prakiraan)" : ""}</td><td class="n">${angka1(x.p)} mm</td></tr>`).join("")}
-      <tr><td>Hujan menjadi limpasan (CN ${fmt(T.cn)} <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span>, tanah ${["", "kering", "normal", "basah"][X.amc]})</td><td class="n">${bulat(X.efektif.reduce((s, v) => s + v, 0))} mm</td></tr></tbody></table>
+      <tr><td>Hujan menjadi limpasan (${T.lahan ? `CN rata-rata ${fmt(Math.round(X.cn))} dari tutupan lahan${T.dcn ? `, digeser ${T.dcn > 0 ? "+" : ""}${fmt(T.dcn)}` : ""}` : `CN ${fmt(T.cn)} seragam`} <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span>, tanah ${["", "kering", "normal", "basah"][X.amc]})</td><td class="n">${bulat(X.efektif.reduce((s, v) => s + v, 0))} mm</td></tr></tbody></table>
     ${sb("Open-Meteo (prakiraan hujan), hujan_ansambel ECMWF IFS", tglPendek(S.hujan.hari_ini))}
+    ${lahanHtml()}
     <table class="tb2" style="margin-top:6px"><tbody>
       <tr><td>Sungai${X.sungai?.sg ? ` <span translate="no">${esc(X.sungai.sg.kec)}</span>` : ""}</td><td class="n">${X.sungai?.k != null ? `luapan puncak ${bulat(Math.max(...X.sungai.q))} m³/dtk` : X.sungai?.catat || (M.sg ? "di luar area" : "tidak ada titik ≤ 25 km")}</td></tr></tbody></table>
     <p class="fnd" style="margin-top:4px">Debit sungai tidak ikut dikali skenario hujan; luapan disuntik di satu titik.</p>
@@ -427,6 +478,134 @@ function hasilHtml() {
       <tr><td>Galat numerik hitungan (bukan akurasi model)</td><td class="n">${persen(n.galat)}</td></tr></tbody></table>`;
   T.cache.html = {kunci, v}; return v;
 }
+/* ---------- pita ketidakpastian, tanggap darurat, peringkat perlakuan ---------- */
+const NAMA_JENIS = {basarnas: "Basarnas", bpbd: "BPBD", pos: "Pos"};
+const judulKata = t => String(t).toLowerCase().replace(/(^|\s)(\S)/g, (_, a, b) => a + b.toUpperCase());
+const namaUnit = u => u.jenis === "bpbd" ? "BPBD " + judulKata(u.nama) : u.nama;
+const rpSatu = x => x >= 1e6 ? `Rp ${angka1(x / 1e6)} juta` : `Rp ${bulat(x / 1e3)} ribu`;
+const adaM3 = () => (T.hasil?.X.M.ens?.e.m3?.[0] || []).filter(Number.isFinite).length >= 30;
+function lanjutHtml() {
+  const H = T.hasil; if (!H) return ""; const pop = popSel(), ok = adaM3() && T.sk === "dasar";
+  return `<div class="lbl" style="margin-top:14px">Pita ketidakpastian hujan</div>
+    <p class="fnd">Tiga hitungan dengan hujan 3 hari persentil 10, 50 dan 90 dari 51 anggota ECMWF.</p>
+    <button class="btn sec" id="gnPita" style="width:100%" ${ok ? "" : "disabled"}>${T.pita ? "Hitung ulang pita" : "Hitung pita (3 hitungan)"}</button>
+    ${!adaM3() ? `<p class="fnd">Tidak tersedia: tak ada sebaran per anggota ansambel untuk area dan tanggal ini.</p>` : T.sk !== "dasar" ? `<p class="fnd">Pilih skenario Prakiraan untuk menghitung pita.</p>` : ""}
+    <div id="gnPitaH">${pitaHtml()}</div>
+    <div class="lbl" style="margin-top:14px">Tanggap darurat</div>
+    <p class="fnd">Waktu tiba pangkalan terdekat ke permukiman yang tergenang, lewat jalan yang tidak terendam.</p>
+    <button class="btn sec" id="gnTanggap" style="width:100%" ${pop ? "" : "disabled"}>${T.tg ? "Hitung ulang tanggap" : "Hitung tanggap"}</button>
+    ${pop ? "" : `<p class="fnd">Butuh estimasi penduduk area ini (penduduk.json).</p>`}
+    <div id="gnTanggapH">${tanggapHtml()}</div>
+    <div class="lbl" style="margin-top:14px">Peringkat perlakuan</div>
+    <p class="fnd">Tiap kandidat dijalankan lewat model yang sama lalu diurutkan menurut jiwa yang terselamatkan.</p>
+    <button class="btn sec" id="gnPeringkat" style="width:100%" ${pop ? "" : "disabled"}>${T.pm ? "Hitung ulang peringkat" : "Peringkatkan perlakuan (6 hitungan)"}</button>
+    <div id="gnPeringkatH">${peringkatHtml()}</div>`;
+}
+const segarLanjut = () => { const el = $("#gnLanjut"); if (el && T.hasil) el.innerHTML = lanjutHtml(); };
+function pitaHtml() {
+  const p = T.pita; if (!p) return ""; let pb = "";
+  try { const pk = Simulasi.perKejadian?.(); if (S.kejadian && pk && pk.terdampak[1] > 0) pb = `<p class="fnd" style="margin-top:6px">Pembanding tercatat (DIBI, provinsi ini): median ${orde(pk.terdampak[1])} orang terdampak per kejadian banjir, P25–P75 ${orde(pk.terdampak[0])}–${orde(pk.terdampak[2])}. Satu kejadian DIBI mencakup satu kabupaten, jadi ini pembanding kasar. Belum ada peta genangan hasil pengamatan di data, jadi model belum divalidasi.</p>`; } catch {}
+  return `<table class="tb3" style="margin-top:6px"><thead><tr><th></th><th class="n">P10</th><th class="n">P50</th><th class="n">P90</th></tr></thead><tbody>
+    <tr><td>Hujan 3 hari</td>${p.mm.map(v => `<td class="n num">${bulat(v)} mm</td>`).join("")}</tr>
+    <tr><td>Luas genangan puncak</td>${p.ha.map(v => `<td class="n num">${bulat(v)} ha</td>`).join("")}</tr>
+    ${p.jiwa.every(Boolean) ? `<tr><td>Orang di genangan (tengah rentang)</td>${p.jiwa.map(v => `<td class="n num">${orde(tengah(v))}</td>`).join("")}</tr>` : ""}</tbody></table>
+    <p class="fnd" style="margin-top:4px">Prakiraan tunggal: ${bulat(p.det.mm)} mm, ${bulat(p.det.ha)} ha. Persentil per jumlah 3 hari semua anggota; sebaran spasial dan sungai tidak ikut berubah.</p>${pb}`;
+}
+async function pita() {
+  if (T.sibuk || !T.hasil || !adaM3() || T.sk !== "dasar") return;
+  T.sibuk = true; berhenti();
+  try {
+    const H = T.hasil, X = H.X, m3 = X.M.ens.e.m3[0], mm = [.1, .5, .9].map(q => kuantil(m3, q)), base = X.hari.reduce((a, x) => a + x.p, 0), rs = [];
+    for (let i = 0; i < 3; i++) {
+      const sk = base > 0 ? mm[i] / base : 0, hari = base > 0 ? X.hari.map(x => ({p: x.p * sk, jam: x.jam, imax: x.imax * sk})) : [0, 1, 2].map(() => ({p: mm[i] / 3, jam: 6, imax: mm[i] / 12}));
+      const hu = SG.hietograf(hari), L = limpasanX(hu, X.amc), Xq = {...X, hari, hujan: hu, efektif: L.efektif, seri: L.seri, kelas: L.kelas};
+      const r = (await kerja({jenis: "jalan", cfg: cfgDari(Xq, false)}, p => status(`Pita ${i + 1}/3 (persentil ${[10, 50, 90][i]})… ${fmt(Math.round(p * 100))} %`))).hasil; rs.push(ringkas(r));
+    }
+    T.pita = {mm, ha: rs.map(r => ha(r.lu)), jiwa: rs.map(r => r.jiwa), det: {mm: base, ha: ha(ringkas(H.dasar).lu)}}; status("");
+  } catch (e) { console.warn("SimTampak pita:", e); status("Gagal: " + e.message); }
+  T.sibuk = false; segarLanjut();
+}
+/* jalan, titik aman: peta MapLibre tersembunyi (sumber openmaptiles = ubin OSM yang sama dengan peta dasar), seperti public/sim_adegan.js */
+async function muatVektor() {
+  if (T.vek?.kunci === T.demKunci) return T.vek.v;
+  const D = T.dem, src = T.peta?.getStyle?.().sources?.openmaptiles; if (!src || !window.maplibregl) return null;
+  let el, m, v = null; const KELAS_POI = {school: "sekolah", college: "sekolah", kindergarten: "sekolah", hospital: "faskes", clinic: "faskes", doctors: "faskes"};
+  try {
+    const zm = 14, mpp = 78271.52 * Math.cos(D.lat * Math.PI / 180) / 2 ** zm, px = Math.min(2400, Math.ceil(D.sisi * 1.1 / mpp));
+    el = document.createElement("div"); el.style.cssText = `position:fixed;left:-9999px;top:0;width:${px}px;height:${px}px;visibility:hidden`; document.body.append(el);
+    const ly = (id, sl, type) => ({id, type, source: "openmaptiles", "source-layer": sl, paint: {[type + "-opacity"]: 0}});
+    m = new maplibregl.Map({container: el, interactive: false, attributionControl: false, fadeDuration: 0, pixelRatio: 1, center: [D.lon, D.lat], zoom: zm,
+      style: {version: 8, sources: {openmaptiles: src}, layers: [ly("t", "transportation", "line"), ly("p", "poi", "circle")]}});
+    await new Promise(res => { const to = setTimeout(res, 15000); m.once("idle", () => { clearTimeout(to); res(); }); });
+    const q = sl => m.querySourceFeatures("openmaptiles", {sourceLayer: sl}), garis = [], poi = [], lihat = new Set();
+    for (const f of q("transportation")) { const g = f.geometry, k = f.properties.class; if (!STg().LAJU_JALAN[k]) continue; for (const ln of g.type === "LineString" ? [g.coordinates] : g.type === "MultiLineString" ? g.coordinates : []) garis.push({p: ln, k}); }
+    for (const f of q("poi")) { const c = f.properties.class, j = KELAS_POI[c]; if (!j || f.geometry.type !== "Point") continue; const [lon, lat] = f.geometry.coordinates, id = lon.toFixed(5) + "," + lat.toFixed(5); if (lihat.has(id)) continue; lihat.add(id);
+      poi.push({nama: f.properties.name || (j === "sekolah" ? "Sekolah" : "Fasilitas kesehatan"), jenis: j, lat, lon}); }
+    v = garis.length || poi.length ? {garis, poi} : null;
+  } catch (e) { console.warn("SimTampak: ubin OSM (jalan, titik aman) tidak termuat", e); }
+  finally { try { m?.remove(); } catch {} el?.remove(); }
+  T.vek = {kunci: T.demKunci, v}; return v;
+}
+async function pilihUnit() {
+  T.unitDaftar ||= (async () => { const [u, pk] = await Promise.all([muatJSON("data/unit_respons.json").catch(() => null), S.posko ? Promise.resolve(S.posko) : muatJSON("data/posko.json").catch(() => null)]);
+    return [...(u?.unit || []).filter(x => NAMA_JENIS[x.j]).map(x => ({nama: x.n, jenis: x.j, lat: x.lat, lon: x.lon})),
+      ...(pk?.lapangan || []).filter(x => x.lat != null).map(x => ({nama: `Posko ${x.desa ? "desa " + x.desa : "kec. " + x.kec}`, jenis: "pos", lat: x.lat, lon: x.lon}))]; })();
+  const semua = await T.unitDaftar, P = pusat(), o = [];
+  for (const j of ["basarnas", "bpbd", "pos"]) o.push(...semua.filter(x => x.jenis === j).map(x => ({...x, km: km(P.lat, P.lon, x.lat, x.lon)})).filter(x => x.km <= 150).sort((a, b) => a.km - b.km).slice(0, j === "pos" ? 1 : 2));
+  return o;
+}
+async function tanggap() {
+  if (T.sibuk || !T.hasil) return; const pop = popSel(); if (!pop) return toast("Tanggap butuh estimasi penduduk area ini");
+  T.sibuk = true; berhenti();
+  try {
+    status("Memuat jalan dan titik aman (OSM)…"); const vek = await muatVektor(); status("Memuat pangkalan…"); const unit = await pilihUnit(); status("Menghitung waktu tempuh…"); await jeda();
+    const D = T.dem, pr = T.prep, R = T.hasil.dasar, N = D.nx * D.ny, keSel = (lo, la) => SG.keSel(D, lo, la), dariSel = (i, j) => SG.dariSel(D, i, j);
+    const ctx = {nx: D.nx, ny: D.ny, dx: D.dx, laut: pr.laut, laju: vek ? STg().rasterJalan(vek.garis, keSel, D.nx, D.ny) : new Float32Array(N), kedalaman: R.kedalaman, hmaks: R.hmaks, z: pr.z, J, pop, keSel, dariSel, unit, poi: vek?.poi || []};
+    const r = STg().analisisTanggap(ctx); T.tgCtx = ctx; T.tg = {...r, jalan: !!vek, nPoi: vek?.poi.length || 0, nUnit: unit.length, unit}; status(""); segarAlat();
+  } catch (e) { console.warn("SimTampak tanggap:", e); status("Gagal: " + e.message); }
+  T.sibuk = false; segarLanjut();
+}
+function tanggapHtml() {
+  const g = T.tg; if (!g) return ""; if (!g.ada) return `<p class="fnd" style="margin-top:6px">${esc(g.alasan)}</p>`;
+  const [a, b] = [g.snapshot[0], g.snapshot.at(-1)], dua = g.snapshot.length > 1, A = STg().ASUMSI;
+  const baris = u => `<tr><td>${esc(namaUnit(u))}<small>${NAMA_JENIS[u.jenis]} · ${fmt(Math.round(u.km))} km${u.luarKm ? `, ${fmt(Math.round(u.luarKm))} km jalan ke tepi area` : ", di dalam area"}</small></td>${[a, ...(dua ? [b] : [])].map(s => { const x = s.unit.find(y => y.nama === u.nama && y.jenis === u.jenis); return `<td class="n num">${waktu(x.tiba)}</td>`; }).join("")}</tr>`;
+  return `<table class="tb3" style="margin-top:6px"><thead><tr><th>Pangkalan</th><th class="n">Jam +${fmt(a.jam)}</th>${dua ? `<th class="n">Jam +${fmt(b.jam)}</th>` : ""}</tr></thead><tbody>${g.unit.map(baris).join("") || `<tr><td colspan="3">Tidak ada pangkalan BPBD, Basarnas atau pos dalam 150 km.</td></tr>`}</tbody></table>
+    <p class="fnd" style="margin-top:4px">Waktu tiba di permukiman tergenang; kolom kedua memakai jalan yang terendam pada jam puncak.</p>
+    <table class="tb2" style="margin-top:6px"><tbody>
+      <tr><td>Orang di genangan ≥ 30 cm (jam +${fmt(b.jam)})</td><td class="n">${rentang(b.jiwa)}</td></tr>
+      <tr><td>Titik aman terdekat${b.aman ? ` <span translate="no">${esc(b.aman.nama)}</span>` : ""}</td><td class="n">${b.aman ? `${b.aman.jenis === "dem" ? "tanah tinggi DEM" : b.aman.jenis}, ${waktu(b.aman.jam)}` : "tidak ada"}</td></tr>
+      <tr><td>Warga ke titik aman (median, 90 %)</td><td class="n">${waktu(b.evak)}, ${waktu(b.evak90)}</td></tr>
+      <tr><td>Perahu karet: jiwa terangkut dalam ${fmt(A.JENDELA)} jam <span class="pill l1" style="height:17px;font-size:9.5px">asumsi</span></td><td class="n">${rentang([b.angkut, b.angkut])}${b.angkut ? ` (${fmt(Math.round(b.bagian * 100))} % dari sasaran)` : ""}</td></tr></tbody></table>
+    <p class="fnd" style="margin-top:4px">Perahu per pangkalan (Basarnas ${A.PERAHU.basarnas}, BPBD ${A.PERAHU.bpbd}, pos ${A.PERAHU.pos}) dan ${fmt(A.KAPASITAS)} jiwa per perahu adalah asumsi, bukan inventaris. Jalan tak bisa dilewati bila air ≥ ${fmt(A.AMBANG_JALAN * 100)} cm.</p>
+    <p class="fnd" style="margin-top:4px">Sumber: ${g.jalan ? `OpenStreetMap (ODbL): jalan dan ${fmt(g.nPoi)} sekolah/faskes sebagai titik aman` : "jaringan jalan OSM tidak termuat, perjalanan dihitung jalan kaki dan perahu"}; pangkalan dari unit_respons.json (BNPB, OSM) dan posko.json.</p>`;
+}
+async function peringkatan() {
+  if (T.sibuk || !T.hasil) return; if (!T.tg) await tanggap(); const g = T.tg; if (!g || T.sibuk) return;
+  T.sibuk = true; berhenti();
+  try {
+    const H = T.hasil, X = H.X, R0 = H.dasar, D = T.dem, pr = T.prep, N = D.nx * D.ny, pop = popSel(), Tg = STg(), ks = Tg.kandidatPerlakuan({nx: D.nx, ny: D.ny, dx: D.dx, hmaks: R0.hmaks, pop, laut: pr.laut, z: pr.z, sungaiK: X.sungai?.k ?? -1, adaLaut: pr.nLaut > 0});
+    if (!ks.kandidat.length) { T.pm = {alasan: ks.alasan}; T.sibuk = false; return segarLanjut(); }
+    const dasar = Tg.jiwaTerpapar(R0.hmaks, pop, .5), hasil = [];
+    for (let i = 0; i < ks.kandidat.length; i++) { const c = ks.kandidat[i];
+      const r = (await kerja({jenis: "jalan", cfg: cfgDari(X, false, c)}, p => status(`Kandidat ${i + 1}/${ks.kandidat.length}: ${c.nama}… ${fmt(Math.round(p * 100))} %`))).hasil;
+      hasil.push({id: c.id, nama: c.nama, ket: c.ket, biaya: c.biaya, berat: Tg.jiwaTerpapar(r.hmaks, pop, .5), lu: Math.max(...r.luas)}); }
+    /* evakuasi dini: bukan hitungan hidrolika; hanya soal waktu (air tiba 30 cm vs peringatan + mobilisasi + jalan ke titik aman) */
+    const aman = g.ada && g.snapshot.at(-1).aman, ctx = T.tgCtx;
+    if (aman && ctx) { const tiba = new Float64Array(N).fill(Infinity), K = R0.kedalaman; for (let k = 0; k < N; k++) for (let t = 0; t <= J; t++) if (K[t * N + k] >= .3) { tiba[k] = t; break; }
+      const {v, air} = Tg.kecepatan(ctx.laju, K.subarray(0, N), pr.laut), ke = Tg.waktuTempuh(D.nx, D.ny, D.dx, v, air, [{k: aman.k, t: 0}]), ev = Tg.evakuasiDini(R0.hmaks, pop, tiba, ke), b = Tg.BIAYA.evakuasiJiwa;
+      hasil.push({id: "evak", nama: "Evakuasi dini", ket: `peringatan, warga bergerak ${fmt(Tg.ASUMSI.MOBILISASI)} jam kemudian ke ${aman.nama}; ${fmt(Math.round(Tg.ASUMSI.PATUH[0] * 100))}–${fmt(Math.round(Tg.ASUMSI.PATUH[1] * 100))} % warga patuh`, biaya: [ev.diungsikan[0] * b[0], ev.diungsikan[1] * b[1]], selamat: ev.diungsikan, lu: Math.max(...R0.luas)}); }
+    T.pm = {dasar, urut: Tg.peringkat(dasar, hasil), luDasar: Math.max(...R0.luas)}; status("");
+  } catch (e) { console.warn("SimTampak peringkat:", e); status("Gagal: " + e.message); }
+  T.sibuk = false; segarLanjut();
+}
+function peringkatHtml() {
+  const m = T.pm; if (!m) return ""; if (m.alasan) return `<p class="fnd" style="margin-top:6px">${esc(m.alasan)}</p>`;
+  return `<p class="fnd" style="margin-top:6px">Tanpa perlakuan: ${rentang(m.dasar)} jiwa di sel dengan air maks ≥ 50 cm.</p>
+    <table class="tb3" style="margin-top:4px"><thead><tr><th>Perlakuan</th><th class="n">Jiwa selamat</th><th class="n">Biaya</th></tr></thead><tbody>
+    ${m.urut.map((x, i) => `<tr><td>${fmt(i + 1)}. ${esc(x.nama)}<small>${esc(x.ket)}</small></td><td class="n num">${tengah(x.selamat) > 0 ? rentang(x.selamat) : "0"}<small>${tengah(x.rumah) > 0 ? rentang(x.rumah) + " rumah" : ""}</small></td><td class="n num">${rpS(x.biaya[0], x.biaya[1])}<small>${x.rpPerJiwa ? rpSatu(x.rpPerJiwa) + " per jiwa" : "tanpa manfaat"}</small></td></tr>`).join("")}</tbody></table>
+    <p class="fnd" style="margin-top:4px">Jiwa selamat = penduduk di sel yang tak lagi tergenang ≥ 50 cm, rentang dari rentang penduduk. Biaya adalah asumsi rentang, belum dari harga satuan resmi (HSPK). Penduduk disebar menurut tutupan permukiman.</p>`;
+}
+
 /* dok jam + legenda: dibangun sekali per hasil; #gnMain/#gnT tidak diganti (fokus tetap) */
 function dok() {
   const el = $("#simLegenda"); if (!el) return; const R = hasilLihat(), kunci = R ? "h" + T.nJalan + T.lapis.longsor : "kosong";
@@ -449,8 +628,10 @@ async function render() {
   if (!T.k || !Simulasi.kec[T.k]) T.k = kecAwal();
   $("#p-sim").classList.add("gn"); T.dokKunci = null;
   panel(); await petaSiap(); if (T.dem) { pasangArea(false); T.lukisKunci = null; jadwal(); }
+  /* kejadian nyata terpilih: hitung sekali begitu mode dibuka, supaya layar tidak mulai kosong */
+  if (Simulasi.awalInfo && !T.awalJalan && !T.hasil && !T.titik && T.k === Simulasi.awalInfo.k) { T.awalJalan = true; nanti(jalan); }
 }
 function lepas() { berhenti(); $("#p-sim")?.classList.remove("gn"); const el = $("#simPeta3"); if (el) el.hidden = true; const p = $("#simPeta"); if (p) p.hidden = false; $("#tip")?.classList.remove("on"); }
-return {render, lepas, jalan, T, _uji: {susun, cfgDari, masukan, hariSkenario, kepadatan, luapan, orde}};
+return {render, lepas, jalan, T, _uji: {susun, cfgDari, masukan, hariSkenario, kepadatan, luapan, orde, popSel, jiwaJam, rpS, waktu, kuantil, limpasanX}};
 })();
 window.SimTampak = SimTampak;

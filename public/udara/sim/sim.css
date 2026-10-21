@@ -45,6 +45,9 @@
 .su-lis .no{color:var(--su-ink2);font-variant-numeric:tabular-nums}
 .su-lis .n{font-variant-numeric:tabular-nums;color:var(--ok,#2a8a52);min-width:0;overflow-wrap:anywhere}
 .su-lis li{min-width:0}
+.su-lis small{display:block;color:var(--su-ink2);font-size:11.5px}
+.su-pita svg{display:block;width:100%;height:auto;color:var(--su-brand);font:600 10px var(--font,Inter,sans-serif)}
+.su-pita text{fill:var(--su-ink2)}
 .su-lis svg{width:14px;height:14px;vertical-align:-2px;margin-right:4px}
 .su-batas{margin:0;padding-left:18px;display:grid;gap:6px;color:var(--su-ink2)}
 .su-kosong{padding:24px;text-align:center;color:var(--su-ink2)}

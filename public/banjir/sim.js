@@ -114,12 +114,21 @@ const Simulasi = {
       for (let y = 2008; y <= 2025; y++) { const kj = J.reduce((a, j) => a + (p[j]?.[y]?.kejadian || 0), 0); if (kj) r.push(J.reduce((a, j) => a + (p[j]?.[y]?.[f] || 0), 0) / kj); }
       o[f] = r.length ? [persentil(r, .25), persentil(r, .5), persentil(r, .75)] : [0, 0, 0]; }
     return o; },
-  render() {
+  /* titik awal = kejadian aktif paling genting hari ini (kejadian_aktif_awal.json, skor tertinggi), tanpa kejadian = kecamatan status tertinggi;
+     SimTanggap.pilihAwal. Bawaan provinsi 32 hanya bila keduanya kosong. Satu kali per muat halaman. */
+  awal() { return this._awal ||= (async () => { try {
+    const K = window.KejAktif ? await KejAktif.muatAwal() : ((await muatJSON("data/kejadian_aktif_awal.json").catch(() => null))?.kejadian || []);
+    const a = window.SimTanggap?.pilihAwal(K, S.st?.kec); if (!a) return; const [pv, kb] = a.k.split("|"); if (!S.meta.provinsi[pv]) return;
+    this.awalInfo = a; this.prov = pv; this.kab = kb; } catch (e) { console.warn("Simulasi.awal:", e); } })(); },
+  awalHtml(k) { const a = this.awalInfo; if (!a || (k ? k !== a.k : this.prov !== a.k.split("|")[0])) return ""; const [, kb, kc] = a.k.split("|");
+    return `<p class="fnd" id="simAwal">${a.sumber === "kejadian" ? `Dimulai dari kejadian ${esc(a.kode)} sejak ${tglPendek(a.sejak)}, yang paling genting hari ini` : "Dimulai dari kecamatan paling genting di status hari ini"}: <span translate="no">${esc(kc)}, ${esc(kb)}</span>.</p>`; },
+  async render() {
     const p = $("#p-sim");
     /* peta penuh + panel kiri + dok legenda, seperti /sim karhutla; section dibuat ulang sekali (tanpa .scroll/.wrap halaman form lama) */
     if (!this.dom) { p.classList.remove("scroll"); this.dom = true;
       p.innerHTML = `<div id="simPeta" role="img" aria-label="Peta status kecamatan skenario"></div><div class="card simpanel" id="simPanel"></div><div class="dok" id="simDok"><div class="box" id="simLegenda"></div></div>`; }
     if (!S.st || !S.hujan) { $("#simPanel").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat data…</div>`; return; }
+    await this.awal();
     if (this.mode === "genangan" && window.SimTampak) return SimTampak.render();
     window.SimTampak?.lepas(); this.muat(); },
   async muat() {
@@ -148,6 +157,7 @@ const Simulasi = {
     const hariOpt = [["maks", "4 hari ke depan"], ...S.st.hari.map((t, i) => [i, tglPendek(t)])];
     el.innerHTML = `<div class="lbl">Simulasi skenario 4 hari · model</div><h2>${esc(wil)}</h2>
       <div style="font-size:12.5px;color:var(--ink2)">${this.kab ? esc(namaProv(this.kode)) : esc(fmt(kabs.length) + " kabupaten/kota")} · <span class="pill l${tinggi}">${LEVEL[tinggi]}</span></div>
+      ${this.awalHtml()}
       ${window.SimTampak ? this.modeHtml() : ""}
       <label class="fld"><span class="lbl">Provinsi</span><select id="smProv" aria-label="Provinsi">${Object.entries(S.meta.provinsi).map(([k, n]) => `<option value="${k}" ${k === this.prov ? "selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
       <label class="fld"><span class="lbl">Kabupaten/kota</span><select id="smKab" aria-label="Kabupaten"><option value="">Semua kabupaten/kota</option>${kabs.map(k => `<option ${k === this.kab ? "selected" : ""}>${esc(k)}</option>`).join("")}</select></label>

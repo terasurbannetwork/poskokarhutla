@@ -1,0 +1,172 @@
+{
+ "modul": "Karhutla: model sebaran & eskalasi api (scripts/sebaran/**, public/sebaran_model.js, public/sim_*.js, insight_sebaran.js, cerita_karhutla.js, tentang.html, jalur EWS simulasi src/ews.js, model_sebaran.json, prospektif.json, jejak_api.json, PFVI)",
+ "catatan_umum": "Saya memeriksa ulang 20 entri reviewer pertama. Ringkasannya menyebut 19, padahal JSON-nya memuat 20. Hampir semua angkanya benar dan saya temukan di berkasnya: kinerja uji di hasil.json, kinerja model membesar di lolos_hasil.json, angka sebaran_kasus.json, prospektif.json yang mencatat 0/0, dan jejak_api.json berstatus data_basi dengan 2.259 kompleks aktif. Hasil akhir: 0 layak, 9 layak dengan catatan, 11 tidak layak, ditambah 4 metode yang terlewat (2 tidak layak).\n\nKOREKSI ATAS REVIEWER PERTAMA:\n(1) IoU dibanding persistensi adalah argumen lemah. RISET-SEBARAN.md:196–197 sendiri menyebut IoU kumulatif menguntungkan persistensi. Argumen yang lebih kuat ada tiga: galat luas 72 jam populasi GBDT 0,98 vs persistensi 0,65; arah 81° vs acak 90°; F1 2024 = 0.\n(2) Klaim di tentang.html bahwa model data \"mengalahkan\" model Kanada/AS/Australia secara harfiah benar pada F1 mikro sel baru 24 jam (0,136 vs 0,104/0,066/0,011). Di 123 kasus, keunggulan hibrida atas GBDT berbalik antar-horizon dan selangnya tumpang tindih. Jadi klaim itu menyesatkan, tetapi tidak bertentangan dengan data.\n(3) Model \"akan membesar\" yang terpasang dilatih hanya dengan data 2015–2023 (lolos.py:375–378). Artinya, uji 2024–2026 benar-benar di luar sampel untuk model itu. Brier Skill Score (BSS)-nya ≈ 0,28 (Brier 0,0209 vs iklim 0,0290). Ini memperkuat metode itu.\n(4) PFVI sudah ditulis ke fwi.json oleh harian.py:267–271 dan 540. Status \"BELUM di situs\" di RISET-PFVI sudah usang.\n\nTEMUAN BARU PALING PENTING:\n(a) Lencana WASPADA dan peta model di tab Simulasi dihitung dengan masukan yang berbeda dari data latih:\n- waktu = Date.now(), sehingga fitur \"malam\" mengikuti jam pengguna;\n- n0 diambil dari 24 jam tiga satelit, bukan lintasan pertama S-NPP;\n- FRP dikira-kira \"×3\".\nSaya uji kepekaannya pada 51 titik nyata Oktober 2026. Fitur malam saja mengalikan peluang rata-rata 4,5×. Gabungan ketiganya mengalikan peluang 8,7×, dan WASPADA naik dari 0 menjadi 16 titik. Jalur yang divalidasi (prospektif.py, jejak.py) memakai masukan yang benar. Yang tampil di layar tidak.\n(b) Email EWS memberi peluang simulasi 0,20 tingkat \"Siaga: Kemungkinan besar terjadi\". Di email yang sama, blok simulasinya menulis \"kemungkinan kecil (1 dari 5)\".\n(c) laporan.py:14–22 sudah mengkalibrasi 4,30 ha per titik terhadap SiPongi dan menulis bahwa rumus sel × 14,06 ha membesar-besarkan 3–4×. Modul sebaran masih memakai 14,06 ha per sel di mana-mana, termasuk ambang \"≥ 140 ha\".\n(d) Awal musim tersensor kiri pada 9 Juni. Papua Selatan 2026 = 9 Juni, jadi \"68 hari lebih awal\" adalah nilai lantai.\n(e) Indeks ONI/DMI beku. DMI masih memakai nilai Mei di bulan Oktober, dan diam-diam menjadi 0 mulai Desember 2026.\n(f) DC model hanya dihitung dari 30 hari (≈200–300), sedangkan DC operasional di sel yang sama 868.\n\nJALUR KE PRESIDEN: paparan.js (deck) dan laporan.py TIDAK membaca keluaran modul ini. paparan.js hanya membaca laporan.json, kumulatif.json, sejarah.json, kompleks_konsesi.json, dan operasi_resmi.json. Risikonya datang dari lima tempat:\n- kalimat utama Dashboard: \"× normal\" dan \"Siaga\" (ringkasan.js:321–353);\n- tombol Dashboard \"Bandingkan perlakuan (Simulasi)\" (ringkasan.js:279);\n- Insight cerita;\n- halaman Tentang;\n- email EWS.\n\nMETODE YANG LEBIH TEPAT:\n1. Untuk briefing, pakai angka teramati: titik VIIRS tiga satelit dan Himawari-9, yang sudah ada di src/himawari.js. Bandingkan dengan klimatologi persentil dari sensor yang sama. Untuk luas, pakai SiPongi atau HA_TITIK 4,30 dari laporan.py.\n2. Untuk bahaya, pakai FWI/FDRS bersambung (DC penuh). Tambahkan PFVI hanya sebagai kelas, bukan persen.\n3. Model \"membesar\" disajikan sebagai daftar prioritas pantau dari jalur CI, dengan presisi/recall per 100 titik. Tampilkan setelah uji prospektif minimal 1 bulan dengan BSS dan diagram keandalan.\n4. Peta sebaran, ETA, luas, dan perlakuan baru boleh masuk kembali setelah dua syarat terpenuhi:\n- uji balik semu dengan arsip prakiraan (Open-Meteo Historical Forecast), diverifikasi dengan Fractions Skill Score untuk peta dan POD/FAR/CSI untuk aturan 2/5 km;\n- Monte Carlo minimal 200 putaran dengan kalibrasi isotonik.\n5. Pendorong: pakai bootstrap per tahun dan jadikan rasio odds tersesuaikan sebagai angka utama.\n6. Awal musim: tulis \"≤ tanggal\" bila tersensor, atau definisikan sebagai hari ke-n persentil kumulatif tahunan.",
+ "keputusan": [
+  {
+   "nama": "Pelacakan peristiwa api & 'luas' dari jejak piksel VIIRS (lacak.py, HA_SEL 14,06 ha/sel)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti reviewer benar: lacak.py:140; umum.py:22; cerita_karhutla.js:131 dan 154 menghitung 'ha terbakar' = Σ sel × 14,06. Vonis saya turunkan karena repo sendiri sudah mengukur biasnya. scripts/data/laporan.py:14–22 mengkalibrasi HA_TITIK 4,30 ha/titik terhadap luas resmi SiPongi 2015–2025: uji tinggal-satu-tahun meleset ≤ 15% di 6 dari 11 tahun, uji luar-contoh Jan–Jul 2026 −6%. File yang sama menulis bahwa 'sel kisi × 14,06 ha membesar-besarkan 3–4x'. Akibatnya Laporan Harian (yang dibaca BNPB) dan layar Insight/Simulasi memakai dua konversi luas yang berbeda 3–4×, dan di depan Presiden keduanya langsung bertabrakan. Ambang 'membesar ≥ 140 ha' (≥ 10 sel; sim_data.js:52–55) kira-kira setara 35–47 ha luas resmi. Definisi peristiwa (≤ 750 m, ≤ 24 jam) tetap sah sebagai unit internal model. Perbaikan: pakai HA_TITIK laporan.py atau luas KLHK. Ganti label 'ha terbakar' menjadi 'jejak piksel 375 m (bukan luas terbakar)' dan '≥ 140 ha' menjadi '≥ 10 piksel'."
+  },
+  {
+   "nama": "Awal musim 2026 per provinsi (musim_awal.py)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Tabel sensitivitas benar (RISET:30–45). Sumsel 6 Agu vs 30 Jun; klaim 'stabil' di baris 44 tidak didukung tabelnya sendiri. Ada cacat baru yang lebih tajam. MULAI_UTAMA = 159 (musim_awal.py:22) membuat 9 Juni menjadi tanggal paling awal yang bisa keluar. Papua Selatan 2026 = 09 Jun (musim_awal.json), jadi '68 hari lebih awal' adalah nilai tersensor kiri (≥ 68 hari, atau musim sudah berjalan sebelum pencarian dimulai). Median historis juga memuat nilai tersensor 09 Jun (Riau 2012–2014, Jambi 2013–2014, Kalbar 2012) dan membuang tahun tanpa musim (lihat musim_awal.py:216–217). Lantai 10 titik/7 hari membuat 'musim' di bulan sepi dipicu hitungan kecil. Tanggal mulai tetap berguna secara deskriptif. Selisih harinya jangan dibawa ke briefing. Metode yang lebih tepat: tulis '≤ 9 Jun' bila tersensor, pakai onset berbasis persentil kumulatif tahunan atau analisis survival dengan sensor, dan tampilkan rentang untuk dasar 2012–25/2015–25 dan ambang 1,5×/2×/3×."
+  },
+  {
+   "nama": "Garis dasar 'normal' titik panas & aturan '≥ 3× normal' (Dashboard)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar: norm = ambang/2/7 (ringkasan.js:73); Siaga bila rasio ≥ 3 dan ≥ 300 titik (:110). Label '2015–2025' salah di DUA tempat (ringkasan.js:353 dan :583), padahal musim_awal.json memakai dasar [2012, 2025]. Ada tambahan: KPI menampilkan jumlah h24 dari sensor utama MODIS+S-NPP+NOAA-20 (:80) di samping 'X× normal' yang dihitung dari S-NPP saja (:81, :148). Pembaca akan mengira rasio = jumlah ÷ normal. Ini metode modul ini yang paling mungkin terbawa ke briefing, karena masuk kalimat utama Dashboard (:321–323). Konsep anomali terhadap klimatologi sahih. Ambang 3×/300 belum dikalibrasi terhadap status resmi. Perbaikan: samakan label, tampilkan hitungan S-NPP yang dipakai, ganti dengan anomali persentil (> P90 hari yang sama, produk NRT yang sama), dan sebut 'tingkat platform', bukan 'Siaga'."
+  },
+  {
+   "nama": "Tren 25 tahun & rasio El Niño (MODIS 2002–2025, Theil–Sen + Mann–Kendall)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar. Kartu '25 tahun' sudah dihapus (cerita_karhutla.js:106) dan tidak tampil. Catatan drift orbit Terra/Aqua ada di RISET:49–50. Uji dilakukan tanpa koreksi ikatan (definisi musim_awal.json). Tren hitungan titik bukan tren luas terbakar. Rasio El Niño dihitung dari median per tahun sehingga n efektifnya hanya ±9 tahun El Niño. Untuk briefing pakai VIIRS 2012–2025 atau luas SiPongi, dengan Mann–Kendall Hamed–Rao."
+  },
+  {
+   "nama": "Analisis pendorong 'apa yang membuat api membesar' (pendorong.py)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: n0 ≥ 5 vs 1 = 41,03× (sebaran_cerita.json). Label n72 memasukkan sel awal (pendorong.py:113, 120, 127), jadi judul '41 kali' (cerita_karhutla.js:180) sebagian tautologis. Ada dua cacat tambahan. (1) Selang bootstrap per peristiwa mengabaikan pengelompokan per tahun. Untuk variabel tingkat-tahun seperti ONI/DMI, 269.280 dari 370.112 titik berasal dari tahun ONI ≥ 1 dan kelas La Niña hanya 10.708 titik dari beberapa musim, sehingga selang '9×' jauh terlalu sempit. Perlu bootstrap blok per tahun. (2) Grafik yang tampil memuat rasio univariat kanal 2,84×, jalan 3,08×, dan desa yang terkacau gambut. Rasio odds tersesuaikan jauh lebih kecil (jarak desa 1,12 per SD; RISET:118–121). Statistik deskriptifnya sah. Perbaikan: target '≥ 10 sel baru di luar lintasan pertama', rasio odds tersesuaikan sebagai angka utama, label 'asosiasi, bukan sebab' di kartu."
+  },
+  {
+   "nama": "Model sel GBDT 375 m: peta peluang 24/48/72 jam & arah utama",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka benar. Bin keandalan tertinggi 0,4465 dengan n = 3; F1 mikro 0,1355; 2024 F1 0. Satu koreksi: IoU vs persistensi bukan argumen terkuat, karena RISET:196–197 menyebut IoU kumulatif memang menguntungkan persistensi. Bukti yang tahan uji: (1) F1 mikro sel baru 0,136, sekitar 2× elips angin (0,062), tetapi nilai absolutnya rendah; (2) arah 81° (70–92) sementara tebakan acak 90°, dan selisih berpasangan vs bawah-angin +1° (−12 s.d. +14); (3) galat luas 72 jam populasi |log| 0,98 vs persistensi 0,65 (hasil.json uji.model). Untuk api yang tumbuh GBDT memang lebih baik (1,19 vs 1,44), tetapi subset itu baru diketahui sesudah kejadian. Sisi positif: kartu sim_data.js:58 jujur menyebut arah 'keyakinan rendah … tidak bisa diramal'. Tambahan: di layar, waktu = Date.now() sehingga fitur malam, jendela cuaca, dan umur_jam = 0 mengikuti jam klik (sebaran_model.js:240). DC model hanya dari masa panas 30 hari. Jangan masuk briefing."
+  },
+  {
+   "nama": "Luas 24/48/72 jam P10–P90 + selang konformal (CQR)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi. Cakupan 78/75/73% pada populasi, 55/57/55% pada 123 kasus, dan hanya 22% untuk kelas besar pada 72 jam (RISET:327–334). Sebagai catatan, |log luas| 0,98 adalah angka peta deterministik; galat absolut median Monte Carlo tidak dilaporkan (galat_uji.json hanya bias −0,024). Ada tambahan. Nilai q diskret (ln 1,5 dan ln 2, setara 1–2 sel) karena skor dihitung dari jumlah sel bulat. Kalibrasi memakai titik deteksi pertama yang diperkaya kira-kira 2:1 (lolos.py:517–525), lalu dipakai untuk kompleks n0 ≥ 10 lewat kunci WASPADA = 1 (sebaran_model.js:262). Untuk luas populasi, persistensi lebih akurat. Label 'rentang 80% dikalibrasi' (sim_data.js:57) keliru untuk kompleks besar."
+  },
+  {
+   "nama": "Dampak terkena dari peta peluang (gambut ha, lindung ha, desa, jiwa)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di sebaran_model.js:287–302 dan sim_data.js:59. Daftar desa = sel p ≥ 0,1 dalam radius 2 sel; jiwa = kepadatan 0,25° × luas harapan (tidak ditampilkan di kartu). Angka ini mewarisi peta tanpa keahlian arah dan konversi 14,06 ha/sel yang 3–4× terlalu besar. Ganti dengan paparan teramati: desa atau penduduk dalam radius X km dari titik aktif 24 jam, memakai WorldPop 100 m/1 km."
+  },
+  {
+   "nama": "Model khusus 'akan membesar' + tanda WASPADA (lolos.py), jalur CI",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka benar: AUC uji 0,9077, recall 0,674, presisi 0,216, alarm palsu 7,5%, ditandai 9,3 per 100 titik (lolos_hasil.json). Ada penguatan yang tidak disebut reviewer pertama. Model yang terpasang dilatih HANYA dengan data 2015–2023 (lolos.py:375–378), jadi uji 2024–2026 benar-benar luar sampel untuk model ini. BSS ≈ 0,28 (Brier 0,0209 vs iklim 0,0290) dan BSS CV ≈ 0,30. Kelemahannya: presisi sekitar 1 dari 5; 2015 mengisi 44% baris CV; cuaca ERA5. Label '≥ 140 ha' sebenarnya ≈ 35–47 ha luas resmi. Vonis layak_catatan HANYA berlaku untuk keluaran dengan masukan yang benar, yaitu jalur prospektif.py. Lencana di layar Simulasi tidak memakai masukan itu (lihat metode terlewat). Sajikan sebagai daftar prioritas pantau, bukan status, setelah uji prospektif minimal 1 bulan."
+  },
+  {
+   "nama": "Peluang membesar cara lama (porsi Monte Carlo + Platt) & AUC 0,70 yang dipublikasikan",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: hasil.json uji.lepas AUC 0,701, Brier 0,0619 vs iklim 0,0769; pada ambang 50% recall 21% (RISET:310); fallback di sim_data.js:56. Ironinya, tentang.html:1308–1314 masih mengutip AUC lama ini dan justru tidak menyebut model baru (0,91). Hapus fallback dan perbarui tentang.html."
+  },
+  {
+   "nama": "Jejak api 72 jam per kompleks + peringatan Awas/Siaga simulasi (jejak.py → src/ews.js)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: ews.js:36–41 dan 172–191; jejak_api.json data_basi dengan 2.259 aktif dan 0 diramal. Sebagai catatan, jejak.py memakai S-NPP dan umur sejak deteksi pertama (lebih setia ke data latih daripada layar), dan sel awal tidak masuk peta peluang. Ada tambahan. MIN_MC = 8 dan DET_KOMPLEKS = 90 detik (jejak.py:39–40, 190), jadi Monte Carlo bisa turun ke 8 putaran (resolusi 0,125, galat baku ±0,18 di p 0,5), sedangkan ews.js tidak memeriksa n_mc. SIM_UMUR 36 jam. Tingkat Siaga (p ≥ 0,20) dicetak dengan arti 'Kemungkinan besar terjadi' (lihat metode terlewat). Tidak ada POD/FAR/CSI. Jangan dibawa ke briefing."
+  },
+  {
+   "nama": "Mesin fisika Simulasi (FBP Kanada + Dijkstra + kalibrasi per kompleks)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: tanpa kalibrasi bias +4,43 (≈ 84×); dengan kalibrasi kompleks +2,07 (≈ 8×, n = 23); ETA jam WIB (index.html sekitar baris 6328); spanduk 'belum divalidasi'; pemetaan bahan bakar proksi (index.html:5859–5866). Ada tambahan. Port yang divalidasi memakai kisi 375 m, sedangkan situs 120 m tanpa sel air (simfisika.py:4–6), jadi angka uji tidak persis mewakili mesin yang tampil. 'Pita ±20%' adalah uji sensitivitas laju, bukan selang ketidakpastian. Untuk gambut, api permukaan FBP bukan model yang tepat; perlu model bara terpisah."
+  },
+  {
+   "nama": "Skenario 'what-if' Simulasi",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (index.html:5868–5875, 6300–6313). Arah perubahan kualitatif masuk akal, tetapi persen perubahan berasal dari mesin yang biasnya 8–84×. Garis kendali 150 m/jam per regu dan aturan hujan ≥ 3 mm/jam tidak punya rujukan lapangan Indonesia. Untuk briefing, tampilkan peringkat kualitatif saja."
+  },
+  {
+   "nama": "Simulasi perlakuan & biaya (ha diselamatkan, Rp, ha per Rp1 jt)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: sim_perlakuan.js:10, 224–260; tombol dari Dashboard di ringkasan.js:279, sehingga jalurnya dekat ke briefing. 'ha diselamatkan' mewarisi bias mesin fisika, dan efektivitas perlakuan hanya asumsi (PKA; ef_omc 0,05). Komponen waktu tiba sumber (akses.json) bisa dipisah sebagai metode logistik yang lebih bisa dipertanggungjawabkan. Angka ha dan Rp jangan dipakai sampai dikalibrasi dengan data operasi Manggala Agni/BPBD."
+  },
+  {
+   "nama": "Visualisasi forensik/armada/3D (sim_3d, sim_armada, sim_panel, sim_adegan, sim_topo)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Label 'SIMULASI' dan 'insiden buatan' memang ada (sim_armada.js:385, 452; sim_3d.js:94, 643). Ini bukan metode prediktif, tetapi konstanta telemetrinya karangan dan luasnya berasal dari mesin fisika yang bias. Tidak boleh dipakai sebagai bukti di paparan. Tambahkan watermark permanen pada ekspor gambar."
+  },
+  {
+   "nama": "Kerangka validasi: uji tahan 2024–2026 + 123 kasus",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: uji didominasi 2026 (496 dari 604); kinerja_uji.f1_24 = 0,3835 adalah F1 rata-rata, bukan F1 mikro. Desainnya disiplin dan jujur melaporkan kegagalan. Ada koreksi. Galat arah antar-model di 123 kasus dihitung pada subset berbeda (GBDT n 36, hibrida n 20, Rothermel n 8), jadi tidak bisa dipakai untuk memeringkat model. F1 mikro uji tidak punya selang. Cuaca ERA5 harus ditulis sebagai syarat. Tambahkan uji balik semu dengan arsip prakiraan."
+  },
+  {
+   "nama": "Klaim kinerja publik di tentang.html ('mengalahkan model Kanada, AS, Australia')",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Teks terverifikasi (tentang.html:1308–1314). Penalaran reviewer pertama perlu dikoreksi. Pada metrik yang RISET anggap adil, yaitu F1 mikro sel baru 24 jam, GBDT memang unggul: 0,136 vs hibrida 0,104, Rothermel 0,066, FBP 0,011. Di 123 kasus, F1 GBDT vs hibrida berbalik antar-horizon (24 jam 0,44 vs 0,49; 72 jam 0,45 vs 0,43) dengan selang yang tumpang tindih. Jadi klaimnya tidak 'bertentangan dengan data', tetapi tetap menyesatkan: pembandingnya port buatan sendiri dengan pemetaan bahan bakar asumsi, semua model hampir tanpa keahlian arah, dan persistensi unggul di IoU dan galat luas. AUC yang dikutip (0,70) pun milik model lama. Ganti dengan kalimat terukur tentang model membesar (AUC 0,91, menangkap 2 dari 3, sekitar 1 dari 5 tanda benar) dan nyatakan bahwa peta/arah belum andal."
+  },
+  {
+   "nama": "Uji prospektif (prospektif.py → prospektif.json)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 0 dicatat dan 0 dinilai (commit terakhir 14 Okt); nilai.jsonl 0 B; ledger di cache Actions (titik.yml:84–122); jejak_api.json tidak dilacak git. Ada tambahan. prospektif.py memakai masukan yang benar (deteksi pertama S-NPP, waktu lintasan), sedangkan layar Simulasi memakai jalur lain. Jadi hasil prospektif nanti TIDAK memvalidasi lencana yang dilihat pengguna. Simpan ledger di R2/git, perluas penilaian ke jejak_api, dan tambahkan BSS + diagram keandalan."
+  },
+  {
+   "nama": "Analisis galat & kalibrasi ulang per strata (galat.py, geser_logit)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: bias uji −0,024 (galat_uji.json); pilihan_strata sabana: mcarthur tidak dipakai JS, padahal teks exhibit tersembunyi menyatakan sebaliknya (insight_sebaran.js:147). Ini dokumen QA internal; biarkan tetap tersembunyi."
+  },
+  {
+   "nama": "Bahaya api gambut FWI + PFVI ('Peluang api besok ±X%')",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka RISET-PFVI benar: AUC 0,783 / 0,767 / 0,801. Satu koreksi status: harian.py:267–271 dan 540 sudah menulis pfvi/pg ke fwi.json, jadi lapisan ini tampil begitu data.yml berjalan. fwi.json lokal (hari_ini 2026-10-12) belum memuatnya, dan 'BELUM di situs' di RISET-PFVI.md:3 sudah usang. Target dasarnya ≥ 1 titik per sel 0,5° dengan laju 48%, jadi 'peluang api besok' bukan peluang di lokasi tertentu. Tahun uji semuanya El Niño/IOD+. Tampilkan sebagai kelas di samping FWI/FDRS, dan uji juga pada tahun La Niña/netral."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Penerapan model 'akan membesar' dan model sel di layar Simulasi (sim_data.js → SebaranModel.ramal): masukan berbeda dari data latih",
+   "vonis": "tidak_layak",
+   "alasan": "Lencana WASPADA dan peluang di tab Simulasi BUKAN keluaran model yang divalidasi. Ada empat perbedaan masukan:\n(1) waktu = Date.now(), sehingga fitur 'malam' (fitur ke-2 terpenting, rasio odds 3,4×), jendela cuaca, dan umur_jam = 0 mengikuti jam pengguna membuka tab, bukan jam lintasan satelit;\n(2) n0 = sel unik dari ≤ 80 titik 24 jam tiga satelit VIIRS (api24), sedangkan saat latih n0 = sel lintasan pertama S-NPP ≤ 30 menit;\n(3) frp0 = rata-rata × 3 (tebakan);\n(4) frp_jml0 = jumlah FRP 24 jam, bukan jumlah lintasan pertama.\nUji kepekaan saya pada 51 titik nyata 12 Okt 2026:\n- malam 0→1 menaikkan peluang rata-rata 4,5× (p90 5,5×);\n- n0 ×2 menaikkan 1,7× (p90 4,6×);\n- gabungan menaikkan 8,7× (p90 19,6×), dan WASPADA naik dari 0 menjadi 16 dari 51.\nJadi kompleks yang sama bisa berlencana WASPADA di malam hari dan tidak di siang hari, sementara kartu mengutip 'presisi ±22%' yang tidak berlaku. Kalimat 'Sudah ≥ 140 ha … perlakukan sebagai kebakaran besar' juga dipicu ≥ 10 sel tiga satelit, yang setara ±35–47 ha luas resmi.\nPerbaikan: hitung fitur dengan definisi latih (lintasan pertama S-NPP dan waktunya), atau tampilkan hanya tanda dari jalur CI prospektif.py. Tambahkan uji kesetaraan masukan layar vs prospektif.",
+   "bukti": "public/sim_data.js:18–22 (sel0 dari api24, frp = frp24/px24*3, frpJumlah = p.frp24, waktu: Date.now()), :53–55; public/sebaran_model.js:201–204 (jl/malam dari t0), :240 (umur_jam 0, malam dari jam klik); scripts/data/harian.py:21, 27, 451 (api24 = 24 jam, tiga satelit VIIRS, 80 titik teratas menurut FRP); scripts/sebaran/lolos.py:143–153 (definisi latih); uji kepekaan dengan model_sebaran.json 'lolos' pada data/raw/sebaran/prospektif_uji_alur_14okt/ramalan.jsonl"
+  },
+  {
+   "nama": "Pemetaan peluang simulasi ke tingkat status EWS (Siaga/Awas) beserta teks artinya",
+   "vonis": "tidak_layak",
+   "alasan": "Peluang model ≥ 0,20 dalam 5 km diberi tingkat 2 'Siaga', yang di katalog bersama berarti 'Kemungkinan besar terjadi. Bersiap bertindak.' Peluang ≥ 0,50 diberi 'Awas: Sedang atau segera terjadi. Bertindak sekarang.' Judul email, pil status, dan kalimat arti diambil dari tingkat tertinggi itu. Padahal di email yang sama, blok simulasi menerjemahkan p 0,20–0,29 sebagai 'kemungkinan kecil (sekitar 1 dari 5)'. Peluangnya tidak terkalibrasi: dari 86.811 sel uji tidak ada yang berpeluang di atas 0,45 untuk 24 jam, dan Monte Carlo bisa hanya 8 putaran. Akibatnya bahasa status resmi BNPB menempel pada angka yang tidak tervalidasi. Perbaikan: jalur simulasi jangan memakai TINGKAT bersama. Pakai skala peluang tersendiri ('perkiraan model: kemungkinan rendah/sedang') tanpa kata Siaga/Awas, dan tetapkan ambang dari kurva ROC setelah uji POD/FAR.",
+   "bukti": "public/ews_tindakan.js:10–14; src/ews.js:41 (SIM_AWAS_P 0,50, SIM_SIAGA_P 0,20), :174–185; src/ews_email.js:10 (kataPeluang), :46–47 dan :64–67 (judul + pil + arti dari tingkat tertinggi); scripts/sebaran/jejak.py:39–40, 190 (MIN_MC 8); data/raw/sebaran/hasil.json uji.reliabilitas.gbdt.bins"
+  },
+  {
+   "nama": "Indeks iklim ONI/DMI beku di model_sebaran.json (dengan fallback diam-diam ke 0)",
+   "vonis": "layak_catatan",
+   "alasan": "ONI/DMI adalah fitur di model sel dan model membesar, tetapi tabelnya hanya ditulis saat pelatihan: ONI sampai 2026-08, DMI sampai 2026-05. Pencarian mundur paling jauh 6 bulan, lalu nilainya menjadi 0,0. Jadi DMI otomatis menjadi 0 (netral) mulai Desember 2026 dan ONI mulai Maret 2027, tanpa peringatan apa pun. Ramalan prospektif Oktober 2026 sudah memakai dmi 0,146 (nilai Mei). Dampaknya kecil tapi nyata: dmi 0,146→1,0 menaikkan peluang membesar rata-rata 1,21× (p90 1,46×). Saat latih dipakai nilai bulan yang sama, sehingga ada sedikit look-ahead. Perbaikan: segarkan ONI/DMI tiap bulan di data.yml dan tolak bila sudah basi lebih dari 2 bulan. Alternatifnya, buang fitur ini dari model sel, karena ablasinya hanya +0,00003 logloss.",
+   "bukti": "public/data/model_sebaran.json iklim.oni (akhir 2026-08), iklim.dmi (akhir 2026-05); scripts/sebaran/latih_jalan.py:436 (satu-satunya penulis); scripts/sebaran/fitur.py:231–238; public/sebaran_model.js:158–159; data/raw/sebaran/prospektif_uji_alur_14okt/ramalan.jsonl (dmi 0,146 pada t0 Oktober); RISET-SEBARAN.md:157"
+  },
+  {
+   "nama": "Kode kekeringan FWI/DC versi model (masa panas 30 hari dari 85/6/15) vs DC operasional platform",
+   "vonis": "layak_catatan",
+   "alasan": "Model sel dan model membesar menghitung DC dengan masa panas 30 hari dari nilai awal 15, jadi DC tidak pernah jauh di atas 200–300. Sementara itu fwi.json operasional (keadaan bersambung) memberi DC 868 di NTT pada hari yang sama, dan ramalan model untuk wilayah itu mencatat dc 208–215. Di tab Simulasi juga ada dua 'DC': mesin fisika memakai p.dc operasional untuk catatan 'membara' (DC > 350), sedangkan model data memakai DC 30 hari. Latih dan pemakaian memang konsisten, jadi ini bukan kebocoran data. Masalahnya, model tidak bisa membedakan kekeringan gambut ekstrem (DC 400–900, inti El Niño) dari kekeringan biasa, padahal itulah pendorong utama api gambut. Perbaikan: latih ulang dengan DC bersambung (dari fwi.json/BMKG FDRS, atau masa panas sejak awal musim kemarau) dan jangan menamainya 'DC' di keluaran bila tetap 30 hari.",
+   "bukti": "scripts/sebaran/fitur.py:6–8; public/sebaran_model.js:68–72; RISET-SEBARAN.md:108 (kelas DC tertinggi 200–300); public/data/fwi.json grid[0] lat −10,25 lon 123,75: dc 868,3 (2026-10-08); data/raw/sebaran/prospektif_uji_alur_14okt/ramalan.jsonl (−10,77/123,21: dc 208,8); public/index.html sekitar baris 6338 (catatan membara p.dc > 350)"
+  }
+ ]
+}

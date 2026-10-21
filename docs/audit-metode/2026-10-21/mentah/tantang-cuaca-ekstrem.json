@@ -1,0 +1,242 @@
+{
+ "modul": "Cuaca ekstrem (scripts/cuaca/**, public/cuaca/**, public/banjir/data/cuaca_*.json, docs/multi-bencana/PARITAS-CUACA.md)",
+ "catatan_umum": "Ini telaah kedua yang sengaja mencari celah. Semua berkas dan angka yang dikutip reviewer pertama sudah saya buka dan saya hitung ulang. Berkas data yang diperiksa adalah salinan lokal di repo, dibuat 18–19 Okt 2026. Tidak ada berkas yang diubah.\n\nHASIL VERIFIKASI\nHampir semua bukti reviewer pertama benar. Yang sudah saya hitung ulang dan cocok:\n- Uji balik prakiraan 1 hari: a=94, b=135, c=1.348, N = 346 hari × 37 provinsi = 12.802. Turunannya juga cocok: bias 0,16, ETS 0,044, HSS 0,084, PSS 0,053, OR 5,8.\n- Pemicu status kecamatan: embusan 121, hujan 60, gelombang 0, ansambel 0.\n- Jarak lintasan siklon Champi ke Miangas: 1.458 km.\n- Dampak tahunan: 733 lawan 1.261 kejadian, terbaca \"turun 42%\".\n- IRBI: median 9,75 dan 16,0, enam kabupaten seri di nilai 36.\n\nSatu bukti keliru: klaim bahwa cuaca_peluang.json tidak bisa direproduksi (148 dari 550 nilai beda) sudah usang. Saya bangun ulang dari hujan_ansambel.json dan hasilnya 0 beda dari 4.104 nilai kabupaten-hari.\n\nPERUBAHAN VONIS\nDua vonis saya ubah:\n- IRBI/sarana InaRISK turun dari layak ke layak_catatan, karena penyebut \"porsi tinggi\" tidak jelas.\n- Penduduk terpapar turun dari layak_catatan ke tidak_layak, karena angkanya sangat bergejolak dan tidak punya ketepatan lokasi.\n\nHasil akhir 30 metode: 2 layak, 8 layak_catatan, 20 tidak_layak. Saya juga menambah 4 metode yang terlewat.\n\nKONTEKS: BAGAIMANA ANGKA CUACA BISA SAMPAI KE PRESIDEN\nDeck Paparan Presiden (public/laporan_bnpb.js) TIDAK menarik data cuaca secara otomatis; isinya diisi tangan. Angka cuaca baru sampai ke Presiden lewat tiga jalur:\n- /cuaca/laporan.html (cetak A4),\n- gambar dan teks Bagikan,\n- staf yang menyalin dari kartu di layar.\nKetiga jalur inilah yang harus dijaga.\n\nTEMUAN LINTAS METODE YANG TERLEWAT\n1. Artefak data tidak bisa direproduksi dari kode. cuaca_kec.json dan prakiraan_kec.py masuk di commit yang sama (84926dd7), tetapi blok sumber dan ambang di berkas tidak sesuai dengan yang ditulis kode.\n2. Stempel waktu tidak konsisten. cuaca_meta.json mencatat dibuat 13 Okt tetapi hari_ini 18 Okt. Layar menampilkan \"Data 13 Okt\" (cuaca.js:115). Kartu cuaca di beranda memberi pil jam model, bukan jam terbit BMKG (adapter.js:75). Kartu terpapar menulis \"Hari ini\" untuk prakiraan yang dibuat 3 hari sebelumnya.\n3. DIBI telat lapor jauh lebih lama dari 14 hari. Kejadian hidrometeorologi Juni–September 2026 hanya 59/32/20/51, padahal Juni–September 2025 sebanyak 326/255/295/270. Sebagian karena El Niño kuat (ONI JAS 2026 = 2,16), sebagian kemungkinan karena keterlambatan. Akibatnya uji balik dan deret kejadian di laporan bias.\n4. Kode kabupaten di Laporan Harian bentrok dengan kode Kemendagri. Contoh: 3216 di laporan = Kota Bandung, padahal di Kemendagri = Kab. Bekasi.\n5. Sarana ganda. Tiga terminal Makassar yang berjarak kurang dari 3 km dihitung sebagai tiga pelabuhan.\n\nMETODE YANG LEBIH EFEKTIF DAN TEPAT (urut prioritas)\n(1) Lapisan resmi menjadi isi utama bahan Presiden:\n- CAP BMKG. Sumbernya arsip D1, tetapi rekonsiliasi dulu karena kelengkapannya belum terbukti (lihat butir Arsip CAP).\n- Peringatan gelombang BMKG Maritim per perairan, lengkap dengan masa berlakunya.\n- Peringatan dini berbasis dampak BMKG per kabupaten. Endpoint-nya perlu dicek dulu.\n- Siklon dari TCWC Jakarta atau RSMC Tokyo (angin rata-rata 10 menit), ditambah jarak terdekat ke garis pantai RI.\n- Status ENSO/IOD dari BMKG.\n\n(2) Model hanya sebagai lampiran berlabel \"indikasi model, belum tervalidasi\". Status sebaiknya bertumpu pada ansambel ECMWF, bukan pada embusan deterministik dan hujan best_match. Alasannya: puting beliung, jenis cuaca ekstrem dominan di DIBI, lebih kecil dari sel model. Untuk itu hanya nowcast radar BMKG yang punya skill.\n\n(3) Verifikasi meteorologis yang sah, terpisah dari uji dampak:\n- QPF dibandingkan dengan GSMaP_Gauge/IMERG Final dan pos hujan BMKG, memakai FSS (Roberts & Lean 2008) serta ETS/HSS/bias.\n- Ansambel diuji dengan BSS, diagram reliabilitas, dan ROC, lalu dikalibrasi dengan regresi logistik atau EMOS.\n- Embusan dibandingkan dengan SYNOP/METAR, dengan faktor embusan yang jelas.\n- Hs dibandingkan dengan altimetri CMEMS.\n\n(4) Uji dampak:\n- Satuan uji kabupaten-hari dengan toleransi ±1 hari, dibandingkan dengan DIBI jenis cuaca saja.\n- Jeda DIBI diukur dari kurva kelengkapan dua tarikan berselang, kemungkinan 60–90 hari, bukan 14 hari.\n- Ambang dipilih lewat ROC/PSS.\n\n(5) Paparan berbobot peluang: Σ penduduk × P(≥50 mm), disajikan sebagai rentang dan dibulatkan.\n\n(6) Kebersihan data:\n- Pakai kode Kemendagri.\n- Gabungkan sarana yang berjarak kurang dari 5 km, dan pakai daftar sarana resmi Kemenhub.\n- Kosakata Waspada/Siaga/Awas dihapus dari semua produk model.\n\n(7) Simulasi dikeluarkan dari bahan Presiden.",
+ "keputusan": [
+  {
+   "nama": "Peringatan nowcast BMKG (CAP) apa adanya",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti reviewer pertama benar:\n- Hitungan kecamatan memakai split koma (cuaca.js:121). Pola yang sama dipakai di kartu beranda (adapter.js:69).\n- Jiwa pada kejadian CAP adalah seluruh penduduk kabupaten yang tersentuh poligon (kejadian.py:340).\n\nIni sebenarnya cukup akurat, karena teks wilayah CAP BMKG memang daftar kecamatan.\n\nTiga turunan lain perlu dibetulkan:\n(a) Provinsi CAP diturunkan dari titik poligon. CAP berjudul 'Hujan Lebat disertai Petir di Jambi' tercatat prov ['15','16'] (peringatan.json), sehingga jumlah provinsi dan kolom 'Nowcast BMKG' per provinsi bisa ganda.\n(b) Pil 'Data' kartu cuaca di beranda memakai cuaca_meta.dibuat (jam model) lebih dulu daripada jam terbit BMKG (adapter.js:75).\n(c) Kolom deskripsi terpotong, misalnya '...di sebagian wilayah Kep.'.\n\nIntinya tetap produk resmi yang diteruskan apa adanya, jadi tetap layak."
+  },
+  {
+   "nama": "Peringatan gelombang BMKG Maritim (kelas Tinggi ke atas)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti terverifikasi:\n- Label 'terbit' sebenarnya jam tarik pipeline (insight.js:123 memakai S.per.dibuat).\n- Kelas Sedang tidak dihitung (cuaca.js:27-29; verifikasi.py:59-62).\n\nProduknya resmi dan kelasnya baku, jadi tetap layak. Syaratnya, yang ditampilkan adalah valid_from dan valid_until dari BMKG, bukan jam tarik. Peringatan juga sebaiknya ditarik lebih sering dari sekali sehari."
+  },
+  {
+   "nama": "Arsip CAP harian dan metrik 'Peringatan BMKG' di Laporan Harian",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar dan malah lebih parah. Isi cuaca_arsip_bmkg.json (57 baris) per tanggal:\n- 12 Okt: 3 baris\n- 13 Okt: 8 baris\n- 17 Okt: 1 baris\n- 18 Okt: 36 CAP dan 9 baris gelombang\nSemua baris sebelum 18 Okt adalah gelombang per provinsi; tidak ada satu pun CAP.\n\nJadi deret laporan [3, 8, 0, 0, 0, 1, 45] mencampur dua produk yang berbeda: nowcast CAP yang berlaku 2-3 jam dan peringatan gelombang multi-hari per provinsi. Angka nol hanya berarti tidak ada yang tertangkap.\n\nSaran reviewer pertama untuk beralih ke D1 belum aman. PARITAS-CUACA.md mencatat /api/cuaca/arsip hanya berisi 7 CAP untuk 13-19 Okt, padahal satu tarikan harian pada 18 Okt saja menangkap 36 CAP. Rekonsiliasi dulu sebelum D1 disebut lengkap."
+  },
+  {
+   "nama": "Status kecamatan 72 jam Normal/Waspada/Siaga/Awas (dasar.tingkat_kec)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Hitungan ulang saya atas cuaca_kec.json: 120 kecamatan dan 181 kecamatan-hari, semuanya tingkat 1. Pemicunya: 121 embusan saja, 60 hujan saja, 0 Hs, 0 ansambel. Hs yang diberikan ke kecamatan pedalaman dalam radius 50 km juga terverifikasi (prakiraan_kec.py:62-63).\n\nTemuan tambahan:\n(a) Ambang 54 km/jam diterapkan pada embusan maksimum model. Kriteria angin kencang BMKG adalah 25 knot (sekitar 45 km/jam) untuk kecepatan angin. Bila itu kecepatan rata-rata (perlu dicek ke dokumen BMKG), embusan 54 km/jam hanya setara angin rata-rata sekitar 35-40 km/jam. Jadi 'Waspada' bisa menyala di bawah kriteria ekstrem BMKG.\n(b) cuaca_kec.json tidak cocok dengan kode di commit yang sama (84926dd7). Blok sumber tidak punya kunci embusan, aturan, dan status, dan blok ambang tidak punya p_waspada. Berkas ini tidak bisa direproduksi.\n(c) status.js menulis pemicu 'peluang hujan lebat tinggi' bila p50 ≥ p_siaga, padahal aturan Siaga memakai p100 (dasar.py:33).\n\nTidak punya skill yang terbukti, dan kosakatanya bertabrakan dengan BMKG."
+  },
+  {
+   "nama": "Embusan angin model dengan kelas waspada/siaga/awas",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti terverifikasi:\n- Jumlah sel ≥54 km/jam per hari di cuaca_meta.json: 30, 38, 36, 25, 14, 11, 17, 20, 20, 28.\n- Deret embusan laporan tujuh hari terakhir: [68, 74, null, 70, 65, 68, 70].\n\nArgumen faktor embusan pada butir status juga berlaku di sini: ambang ini menyala setiap hari karena embusan dibandingkan dengan kriteria yang dirancang untuk angin rata-rata.\n\nLegenda kartu Angin (insight.js:135) dan Tren Angin (tren.js) memakai kata waspada/siaga/awas untuk embusan model, sama dengan kata peringatan resmi. Tidak ada verifikasi terhadap SYNOP/METAR."
+  },
+  {
+   "nama": "Prakiraan hujan deterministik dengan kelas BMKG (kartu Hujan, pop-up, peta medan, Bagikan)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar: hujan.json masih hari_ini 13 Okt, dan nama model tidak disebut.\n\nBukti baru dari repo sendiri: lokasi hujan ≥50 mm tidak stabil antar-run. Prakiraan 1 hari sebelumnya hanya menangkap 26% provinsi-hari ≥50 mm menurut run model itu sendiri (cuaca_verifikasi.json kita.analisis.lead['1']: POD 0,26, FAR 0,54). Akibatnya kalimat 'Hujan lebat 74 mm di Provinsi X besok' (sapa.js:27, insight.js:129) tidak punya ketepatan lokasi. Teks Bagikan (bagikan.js:16-19) juga menyajikannya tanpa kata 'model'.\n\nLayak_catatan hanya untuk peta raster dan kelas luas wilayah yang diberi label 'model global Open-Meteo, bukan prakiraan BMKG'. Angka maksimum satu sel sebagai judul tidak layak dibawa ke Presiden."
+  },
+  {
+   "nama": "Peluang hujan ekstrem dari ansambel ECMWF (kab/provinsi 8 hari, kartu Ansambel, kolom kecamatan, laporan)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": false,
+   "alasan": "Klaim 'tidak bisa direproduksi, 148/550 beda' sudah usang. Saya membangun ulang p50 kabupaten dari hujan_ansambel.json (dibuat 19 Okt 15.04) dan membandingkannya dengan cuaca_peluang.json (dibuat 19 Okt 15.46 WIB): 0 beda dari 4.104 nilai. Temuan di jejak validasi-model (19 Okt 15.45) mendahului pembangunan ulang itu.\n\nMasalah yang nyata:\n(a) Belum ada Brier, diagram reliabilitas, atau ROC (benar).\n(b) Label layar dipatok 'ECMWF IFS 51 anggota' (insight.js:28, :143), padahal ansambel_hujan.py punya cadangan gfs025 dengan 31 anggota.\n(c) Angkanya bergejolak antar-run dan antar-produk. Untuk 20 Okt, Laporan (run 18 Okt) memberi Papua Pegunungan 18% dan Papua Tengah 4%, sedangkan cuaca_peluang (run 19 Okt) memberi 31% untuk keduanya.\n(d) Kalimat 'Dalam 8 hari ke depan ... peluang tertinggi 18%' mencampur peluang harian maksimum dengan peluang kejadian dalam 8 hari.\n\nMasukannya standar dunia, jadi tetap layak_catatan, asalkan disajikan sebagai peluang mentah yang belum dikalibrasi."
+  },
+  {
+   "nama": "Gelombang model Open-Meteo Marine di pelabuhan dan titik pesisir",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti terverifikasi:\n- Hs maksimum 2,0 m di 296 titik.\n- Label 'bukan peringatan resmi BMKG' ada di tabel laporan (laporan_cuaca.py:227).\n- Hari ke-0 hanya parsial.\n\nModelnya baku tetapi belum diverifikasi, jadi layak hanya sebagai indikasi yang dirujuk ke prakiraan perairan BMKG Maritim."
+  },
+  {
+   "nama": "Status pelabuhan dan bandara terancam (Waspada ke atas)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti benar: bandara ber-ID 'Old Nabire Airport' dan 'Tabing Airport', dan tiga bandara Waspada semuanya karena embusan 54-59 km/jam.\n\nTemuan tambahan: penggandaan. Di cuaca_dampak.json ada tiga terminal Makassar yang berjarak kurang dari 3 km, dengan nilai identik [1,1,0], Hs 0,6 m, embusan 55 km/jam:\n- indeks 147 'Terminal Petikemas Makassar'\n- indeks 148 'PT Pelindo Terminal Petikemas Makassar'\n- indeks 151 'Pelabuhan Newport Makassar'\nJadi '5 pelabuhan Waspada' sebenarnya hanya 3 lokasi. Kelimanya dipicu embusan model, sementara gelombangnya hanya 0,5-0,7 m.\n\nDaftar 71 bandara jauh di bawah jumlah bandara berjadwal nasional."
+  },
+  {
+   "nama": "Siklon tropis dari JTWC/GDACS (lintasan, kategori, sorotan laporan)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Hitungan saya: titik lintasan terdekat berjarak 1.458 km dari Miangas (21 Okt 01.00 WIB, 17,8 LU 131,4 BT). Angin 130 kt × 1,852 = 241 km/jam (insight.js:71). Sorotan 'siaga' (laporan_cuaca.py:142) terverifikasi.\n\nNuansa: meneruskan lintasan JTWC sebagai pembanding berlabel bukan kesalahan metode. Yang menyesatkan adalah:\n- tingkat 'siaga' untuk sistem sejauh itu,\n- istilah 'siklon tropis super' dan angin rata-rata 1 menit,\n- tidak ada jarak ke wilayah RI,\n- tidak ada rujukan ke TCWC Jakarta atau RSMC Tokyo."
+  },
+  {
+   "nama": "Uji balik prakiraan hujan terhadap DIBI (POD/FAR/CSI, pil 'Ambang masih hipotesis')",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Semua angka cocok dengan cuaca_verifikasi.json, termasuk turunannya (bias 0,16, ETS 0,044, HSS 0,084, PSS 0,053, OR 5,8).\n\nTemuan tambahan:\n(a) Jeda DIBI 14 hari (verifikasi.py:31) terlalu pendek. Kejadian hidrometeorologi DIBI Juni–September 2026 hanya 59/32/20/51, sedangkan Juni–September 2025 sebanyak 326/255/295/270. Sebagian karena El Niño kuat (ONI JAS 2,16), sebagian kemungkinan telat lapor. Empat bulan itu masuk periode uji sehingga FAR bias.\n(b) Acuan 'analisis' sebenarnya prakiraan 0-24 jam (previous_day0), bukan analisis.\n(c) Kontradiksi arah bias terverifikasi: verifikasi.py:16 menyebut 'optimis', sim_model.js:103 menyebut 'batas bawah'.\n\nHasil uji ini sendiri adalah bukti utama bahwa produk turunannya belum layak. Hasil itu harus diakui sebagai 'belum tervalidasi', bukan dipajang sebagai 'Tepat (%)'."
+  },
+  {
+   "nama": "Verifikasi peringatan BMKG terhadap DIBI (kartu 'Ketepatan peringatan BMKG')",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: n=0, arsip dimulai 12 Okt, sedangkan penilaian dihentikan 28 Sep.\n\nTambahan: arsip sebelum 18 Okt tidak memuat satu pun CAP, hanya baris gelombang. Seandainya n sudah cukup, yang dinilai sebagian besar adalah peringatan gelombang per provinsi, bukan nowcast.\n\nPlatform pihak ketiga yang menilai ketepatan BMKG dengan data yang cacat tidak boleh masuk bahan Presiden."
+  },
+  {
+   "nama": "Penduduk terpapar di sel prakiraan hujan ≥50 mm",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Vonis diturunkan. Deret 16-19 Okt adalah 21.307, lalu 1.698.278, lalu 136.617, lalu 902.303 jiwa: melonjak sekitar 80 kali dalam sehari. Angka ini berasal dari satu run deterministik yang ketepatan lokasinya rendah (prakiraan 1 hari hanya menangkap 26% dibanding run model itu sendiri), dan seluruh penduduk sel 28 km dihitung.\n\nKartu juga menulis 'Hari ini' berdasarkan jam peramban (dampak.js:23, 29) tanpa memeriksa kebasian run. Prakiraan buatan 18 Okt tampil sebagai 'hari ini' pada 21 Okt.\n\nAngka 'X juta jiwa' adalah yang paling mudah dikutip. Label 'bukan jiwa terdampak' tidak cukup untuk Presiden. Gantilah dengan paparan berbobot peluang ansambel yang disajikan sebagai rentang."
+  },
+  {
+   "nama": "Zona 72 jam: jiwa, sekolah, dan faskes di kecamatan tingkat 2 ke atas",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Label 'diprakirakan hujan lebat (Siaga atau lebih)' (dampak.js:53) terverifikasi salah: tingkat 2 bisa dipicu embusan, Hs, atau p100, dan Siaga dari hujan berarti ≥100 mm.\n\nSaat ini zona.jiwa bernilai [0, 0, 0], jadi kartu tidak tampil. Belum ada kerugian nyata, tetapi metodenya tetap mewarisi status yang belum teruji."
+  },
+  {
+   "nama": "Penduduk pesisir dengan gelombang ≥2,5 m",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (dampak_cuaca.py:72, prakiraan_kec.py:62-63): radius 50 km tanpa syarat garis pantai, dan seluruh penduduk kecamatan dihitung.\n\nSaat ini nilainya [0, 0, 0] karena Hs maksimum 2,0 m, sehingga kartu tidak tampil. Metodenya tetap salah definisi."
+  },
+  {
+   "nama": "Kejadian dan korban tahunan BNPB/DIBI (Dampak 'Korban dan kerugian', Tren 'Per tahun')",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: dampak.js:42 menganggap 2024 tahun penuh, sehingga 733 lawan 1.261 terbaca 'turun 42%'.\n\nTambahan: kelengkapan antar-kolom pada tahun yang sama tidak konsisten. Pada 2024, rumah rusak 22.363 (lebih besar dari 19.905 pada 2023) dan terdampak 81.131 (lebih besar dari 74.832), padahal jumlah kejadian turun tajam.\n\nDaftar kejadian_dibi untuk cuaca dan gelombang juga melonjak dari 245 (2023) ke 805 (2024) lalu 2.479 (2025). Cakupan pelaporan berubah besar dari tahun ke tahun.\n\nData resmi, tetapi persentase perubahan harus dibuang dan tahun yang belum lengkap ditandai."
+  },
+  {
+   "nama": "Kalender musim (kejadian DIBI per bulan 2025)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka bulanan cocok dengan cuaca_musim.json. Keterangan kartu sudah jujur ('tahun 2025 saja ... pelaporan sering terlambat', tren.js:85), dan judulnya menyebut tahun 2025.\n\nYang tersisa hanya nama kartu 'Kalender musim', yang menyiratkan pola musiman. Ganti nama kartunya, atau rujuk ke Prakiraan Musim BMKG per Zona Musim (ZOM)."
+  },
+  {
+   "nama": "ENSO terhadap kejadian per tahun",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti tambahan dari iklim.json bahwa rata-rata ONI per tahun kalender salah klasifikasi:\n- 2010: DJF +1,47 sampai NDJ -1,48 (El Niño kuat ke La Niña kuat) tercatat 'Netral' (rata-rata -0,43).\n- 2016: DJF +2,5 tercatat 'Netral' (0,49).\n- 2020: berakhir -1,06 tercatat 'Netral'.\n- 2023 tercatat 'El Niño' (0,81).\n\nDeret kejadian 2010 sampai 2021 naik sekitar empat kali karena perbaikan pelaporan. Korelasi seperti ini tidak layak dibawa ke Presiden."
+  },
+  {
+   "nama": "Riwayat harian model (Tren Hujan lebat/Angin/Provinsi; Laporan 'Hujan harian tertinggi' dan 'Embusan tertinggi')",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: deret hujan nasional [131 (10 Okt), 65, 46, 46, null, 32, 58, 69, 74], dan sumbernya sendiri berlabel 'analisis model, bukan alat ukur'.\n\nTambahan: hari terakhir dalam deret 'riwayat' sebenarnya prakiraan (laporan_cuaca.py:4 'hari ini = prakiraan'), tercampur dengan hari lampau tanpa pembeda visual selain hari_lengkap.\n\nRiwayat semestinya berasal dari pengamatan: pos hujan BMKG, GSMaP_Gauge, atau IMERG."
+  },
+  {
+   "nama": "Laporan Harian Cuaca Ekstrem (agregasi cuaca_laporan.json)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti reviewer pertama benar, dan ada lebih banyak masalah:\n(a) Metrik UTAMA 'Kecamatan Siaga dan Awas' bernilai null selama 30 hari, karena cuaca_seri_kec.json tidak ada. Judul laporan kosong.\n(b) Kode kabupaten bentrok dengan Kemendagri: 3216 = Kota Bandung (Kemendagri: Kab. Bekasi), 3217 = Bogor (Kemendagri: Kab. Bandung Barat), 1117 = Gayo Lues (Kemendagri: Kab. Bener Meriah). Pasti salah gabung bila digabungkan dengan data BNPB.\n(c) Deret kejadian DIBI menulis 0, bukan null, untuk hari yang belum lengkap (1-4 Okt dan 7-12 Okt).\n(d) Tabel peluang provinsi bias seleksi (lihat metode terlewat).\n(e) Metrik peringatan mencampur CAP dengan gelombang.\n(f) Kolom 'Tepat (%)' berisi POD.\n\nDokumen siap cetak yang tampak resmi ini tidak boleh beredar ke Presiden dalam bentuk sekarang."
+  },
+  {
+   "nama": "Kejadian C#### dari gugus model dan CAP, serta laporan kejadian otomatis per kabupaten",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- Nama 'Cuaca ekstrem, sekitar <kab>' dibuat dari kecamatan tingkat ≥2 (kejadian.py:313-327).\n- Pemicu laporan per kabupaten adalah kecamatan Siaga/Awas (laporan_kejadian.py:9).\n\nSaat ini berkas kejadian_cuaca belum terbit (PARITAS: 404), jadi belum ada kerugian nyata. Prinsipnya tetap salah: prakiraan dengan ambang hipotesis tidak boleh diberi kode insiden."
+  },
+  {
+   "nama": "Risiko menurut BNPB: IRBI InaRISK dan sarana di kelas bahaya tinggi",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Vonis diturunkan. Indeks IRBI per kabupaten adalah produk resmi BNPB dan layak bila angkanya dicocokkan dengan portal InaRISK.\n\nBagian sarana adalah agregasi buatan sendiri. Nilai 'nasional' adalah jumlah per kabupaten dari infra-risk, karena ALL/{bahaya} ternyata bukan jumlah nasional (risiko_bnpb.py, docstring). Total semua kelas hanya 33,99 juta penduduk (1,08 + 2,37 + 4,76 + 25,79 juta), jauh dari sekitar 280 juta penduduk Indonesia. Akibatnya kolom 'Porsi tinggi' 75,9% (dampak.js:89-90) memakai penyebut yang tidak dijelaskan, dan mudah terbaca sebagai 'tiga perempat penduduk berisiko tinggi'.\n\nTambahan lain:\n- Berkas dibangun dengan tangan (19 Okt) dan lisensinya tidak tertulis.\n- 98 dari 508 kabupaten punya seri 2015-2024 yang datar.\n- Enam kabupaten seri di nilai maksimum 36.\n\nSajikan kelas IRBI resmi. Angka sarana boleh dipakai hanya bila definisi penyebutnya sudah dikonfirmasi BNPB."
+  },
+  {
+   "nama": "Pantauan berita (volume, peta berita, sorotan, topik)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: SENTIMEN_TERUJI = False (berita.py), dan judul memuat 'naik/turun X% dari n hari sebelumnya' (berita.js:44). Judul juga menyebut 'perhatian media', jadi labelnya sebagian sudah benar.\n\nPresisi saringan dan penghapusan duplikat sindikasi belum diukur. Layak hanya sebagai ukuran perhatian media."
+  },
+  {
+   "nama": "Lapisan satelit NASA GIBS (hujan IMERG, suhu AIRS)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: nama lapisan 'Hujan teramati GPM IMERG' dan waktu 'default' (nasa.js:3, 12).\n\nProduk visual baku. Jam citra perlu ditampilkan, dan kata 'teramati' diganti 'estimasi satelit'."
+  },
+  {
+   "nama": "Simulasi: medan 72 jam dan skenario siklon (Holland, geser lintasan, Hs Pierson-Moskowitz, sel badai)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: geser lintasan (sim_skenario.js:39), siklon pengandaian (:54-57), siklon tidak melemah di darat (:287), grid 1,5 derajat 31×12 (cuaca_medan.json).\n\nLayar sudah memberi pil 'Hasil model, belum divalidasi' dan menyebut skenario sebagai pengandaian. Meski begitu, tangkapan layar tidak membawa tanda air. Alat latihan, bukan prakiraan."
+  },
+  {
+   "nama": "Simulasi: kerapuhan angin (rumah rusak atap, pohon tumbang)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: median 95 dan 75 km/jam serta β 0,25 bertanda ASUMSI, dan ambang_p 2% mengakui 'bukan HAZUS asli' (sim_dampak.js:13-16, 35).\n\nGrid 1,5 derajat tidak menangkap puting beliung. Angka rumah rusak adalah karangan."
+  },
+  {
+   "nama": "Simulasi: limpasan SCS-CN, genangan, dan pita ansambel p10/p50/p90",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti terverifikasi, ditambah kontradiksi dokumentasi:\n- Kepala sim_dampak.js:3 dan daftar Asumsi di sim_model.js mengklaim 'CN disesuaikan lereng DEM (Sharpley-Williams 1990)'.\n- PARAM cn (sim_dampak.js:18) justru menulis 'CN tunggal tanpa koreksi lereng'.\n\nMetode diklaim lebih canggih dari yang sebenarnya dipakai. Pita p10-p90 juga diakui sebagai 'BATAS LEBAR', karena anggota ansambel diandaikan berkorelasi sempurna antar-hari (:115)."
+  },
+  {
+   "nama": "Simulasi: gelombang badai (barometer terbalik ditambah pembendungan angin)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- L = 50 km dan h = 15 m tanpa batimetri (sim_dampak.js:33-34).\n- Rumus Atkinson-Holliday benar, yaitu Vmaks = 6,7(1010-Pc)^0,644, tetapi berbasis angin rata-rata 1 menit.\n- Layar menyebutnya 'perkiraan atas' (sim_model.js:94).\n\nHanya berjalan pada skenario fiktif."
+  },
+  {
+   "nama": "Simulasi: batas operasi kapal per kelas, status pelabuhan dan bandara (Buka/Terganggu/Tutup)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- Ambang kapal berlabel HIPOTESIS (sim_dampak.js:39-46).\n- Logika memakai ATAU (:70, jamKapal).\n- Ambang bandara 'HIPOTESIS kami', dan embusan dipakai utuh, bukan komponen melintang landasan (sim_data.js:156).\n\nStatus 'Tutup' adalah wewenang KSOP, ASDP, dan AirNav, bukan hasil model."
+  },
+  {
+   "nama": "Simulasi: peringkat tindakan (rasio manfaat/biaya)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: semua koefisien bertanda ASUMSI (sim_dampak.js:23-30), dan uji :200 malah mensyaratkan rentang evakuasi lebih dari 100 kali lebar.\n\nKeputusan anggaran tidak boleh disusun di atas koefisien karangan."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Kartu Provinsi Insight: hitungan provinsi 'bersinyal' (gabungan model dan BMKG, 7 hari)",
+   "vonis": "tidak_layak",
+   "alasan": "Kartu menghitung provinsi yang memenuhi salah satu syarat dalam 7 hari:\n- hujan model ≥50 mm, atau\n- embusan model ≥54 km/jam, atau\n- p50 ≥50%, atau\n- ada CAP, atau\n- ada peringatan gelombang.\nHasilnya disajikan sebagai satu angka 'X provinsi punya hujan lebat, embusan kencang, atau peringatan BMKG'.\n\nAngka ini mencampur produk resmi dengan ambang embusan hipotesis yang menyala setiap hari (11-38 sel per hari). Hasilnya selalu tinggi dan tidak bisa dipisahkan sumbernya.",
+   "bukti": "public/cuaca/insight.js:144-151 (definisi 'sinyal') dan :159 (judul); cuaca_meta.json hitung.angin 30, 38, 36, 25, 14, 11, 17, 20, 20, 28"
+  },
+  {
+   "nama": "Tabel 'Peluang hujan 50 mm atau lebih per provinsi teratas' di Laporan Harian",
+   "vonis": "tidak_layak",
+   "alasan": "Nilai provinsi adalah p50 maksimum, tetapi hanya dari baris cuaca_kec.json. Baris itu hanya memuat kecamatan dengan t≥1, dan sebagian besar t≥1 dipicu embusan. Provinsi yang peluang hujannya ada tetapi tidak ada kecamatan yang ditandai tidak akan pernah muncul.\n\nAngkanya juga tidak sama dengan kartu Peluang di layar yang sama. Untuk 20 Okt, Laporan memberi Papua Tengah 4% dan Papua Pegunungan 18%, sedangkan cuaca_peluang.json memberi 31% untuk keduanya. Runnya berbeda (18 dan 19 Okt), jadi tidak semua selisih berasal dari bias seleksi, tetapi dua produk resmi-tampak di modul yang sama saling bertentangan.\n\nBangun ulang dari cuaca_peluang.json, yang mencakup semua kabupaten.",
+   "bukti": "scripts/cuaca/laporan_cuaca.py:193-202; scripts/cuaca/prakiraan_kec.py:70 (hanya t≥1 yang ditulis); cuaca_laporan.json prakiraan.baris; cuaca_peluang.json wilayah['94'] dan ['95'] untuk 2026-10-20 = 0,31"
+  },
+  {
+   "nama": "Deret harian 'Kejadian cuaca dan gelombang (DIBI)' di Laporan Harian",
+   "vonis": "layak_catatan",
+   "alasan": "Datanya resmi, tetapi hari yang belum lengkap ditulis 0, bukan null. k_ada memakai tanggal DIBI terakhir tanpa jeda lapor, sehingga hari yang belum terlaporkan tampil sebagai 'nol kejadian'.\n\nKelengkapan DIBI 2026 jauh di bawah 2025 untuk bulan yang sama (Juni–September: 59/32/20/51 lawan 326/255/295/270). Sebagian karena El Niño kuat (ONI JAS 2,16), sebagian kemungkinan telat lapor.\n\nLayak hanya bila hari-hari terakhir disamarkan dengan jeda yang diukur (kemungkinan 60-90 hari) dan diberi label 'sementara'.",
+   "bukti": "scripts/cuaca/laporan_cuaca.py:97 dan :101 (k_ada tanpa LAG); cuaca_laporan.json nasional.kejadian bernilai 0 pada 1-4 Okt dan 7-12 Okt; kejadian.json kejadian_dibi dihitung per bulan (jenis cuaca, banjir, longsor, banjir_longsor, bandang); public/data/iklim.json oni_terakhir 2,16"
+  },
+  {
+   "nama": "Gambar dan teks Bagikan 'Cuaca ekstrem hari ini'",
+   "vonis": "tidak_layak",
+   "alasan": "Artefak inilah yang paling mungkin masuk ke grup WhatsApp atau slide briefing. Di dalamnya, KPI 'Hujan terlebat' dan 'Embusan angin terkuat' (maksimum satu sel model Open-Meteo) diletakkan sejajar dengan jumlah nowcast BMKG dan provinsi bergelombang tinggi menurut BMKG Maritim, tanpa label sumber per KPI.\n\nKalimat teksWil, 'Hujan terlebat 74 mm di X, embusan terkuat 70 km/jam, 3 peringatan nowcast BMKG berlaku', tidak memuat kata 'model' atau 'prakiraan'. Pembaca akan mengira semua angka itu dari BMKG.",
+   "bukti": "public/cuaca/bagikan.js:16-19 (teksWil), :20-21 (keterangan), :25-32 (kpi dan bar 'Provinsi dengan hujan terlebat hari ini')"
+  }
+ ]
+}

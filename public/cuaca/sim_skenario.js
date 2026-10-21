@@ -116,7 +116,7 @@
       () => { bangunSiklon(); S.vorAda = !!K.vor; K.Mn = medanSkenario(); K.F1 = K.Mn ? bingkaiSemua(K.Mn) : K.F0; },
       () => { K.skn = (K.Mn || K.vor) ? hitung(K.Mn || M0, K.F1, true) : K.dasar; S.Msk = K.Mn; S.fr = null; S.HS = K.skn.HS; }, /* medan, HS, dan bingkai berganti bersamaan */
       () => { K.jalur = deteksiSel(K.F1); },
-      () => { gambarStatis(); K.kotor = true; if (K.tab === "dampak") panelDampak(); C.jadwal(true); if (window.SimGraf) SimGraf.segar(); mulaiPutar(); }];
+      () => { gambarStatis(); K.kotor = true; if (K.tab === "dampak") panelDampak(); C.jadwal(true); if (window.SimGraf) SimGraf.segar(); mulaiPutar(); document.dispatchEvent(new Event("sim-hitung")); }];
     const maju = () => { if (id !== K.gen) return; const t = performance.now(); langkah[i++](); ms += performance.now() - t; S.msHitung = Math.round(ms); if (i < langkah.length) requestAnimationFrame(maju); };
     maju();
   }
@@ -297,7 +297,7 @@
 
   /* ---------------------------------------------------------------- tab panel kiri */
   function render() { if (S.M && !$("#skA")) panelSkenario(); }
-  function tab(k) { K.tab = k; document.querySelectorAll("#sTab button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === k)); for (const x of ["waktu", "skenario", "dampak"]) { const e = $("#t-" + x); if (e) e.hidden = x !== k; } if (k === "dampak" && K.kotor) C.nanti(panelDampak); }
+  function tab(k) { K.tab = k; document.querySelectorAll("#sTab button").forEach(b => b.setAttribute("aria-pressed", b.dataset.t === k)); for (const x of ["waktu", "skenario", "dampak", "model"]) { const e = $("#t-" + x); if (e) e.hidden = x !== k; } if (k === "dampak" && K.kotor) C.nanti(panelDampak); document.dispatchEvent(new CustomEvent("sim-tab", {detail: k})); }
 
   /* ---------------------------------------------------------------- seri satu titik untuk grafik */
   function seri(lat, lon, ti, idx) {
@@ -317,7 +317,7 @@
   const terdekatTitik = (lat, lon) => { let b = -1, bd = 150; (S.G?.titik || []).forEach((p, i) => { if (Math.abs(p[0] - lat) < 1.5 && Math.abs(p[1] - lon) < 1.5) { const d = SC.jarak(lat, lon, p[0], p[1]); if (d < bd) { bd = d; b = i; } } }); return b; };
 
   /* ---------------------------------------------------------------- mulai */
-  window.SimSk = {K, pasang, bingkai, tampak, tab, seri, terdekatTitik, adaSkenario, setSasaran: ll => { K.sasaran = ll; if (K.sik.on && !trackDasar()) { panelSkenario(); mintaHitung(true); } }, sites: () => K.sites};
+  window.SimSk = {K, kartu, IK, ik, pasang, bingkai, tampak, tab, seri, terdekatTitik, adaSkenario, setSasaran: ll => { K.sasaran = ll; if (K.sik.on && !trackDasar()) { panelSkenario(); mintaHitung(true); } }, sites: () => K.sites};
   (async () => {
     const meta = await fetch("/banjir/data/cuaca_meta.json").then(r => r.ok ? r.json() : null).catch(() => null); K.namaProv = meta?.prov || {};
     await new Promise(r => S.data ? r() : document.addEventListener("sim-data", r, {once: true})); await new Promise(r => requestAnimationFrame(r));
