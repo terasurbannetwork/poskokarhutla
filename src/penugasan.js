@@ -40,6 +40,8 @@ export function susunChecklist(t, orang = 1) {
   if (bbm > 0) out.push({k: "bbm", teks: `BBM pompa sekitar ${ang(bbm)} liter per hari (perkiraan kebutuhan seluruh tugas)`, wajib: true});
   if (selang > 0) out.push({k: "selang", teks: `Selang sekitar ${ang(selang)} meter (perkiraan kebutuhan seluruh tugas)`, wajib: true});
   if (jet > 0) out.push({k: "jet_shooter", teks: `Jet shooter ${ang(jet)} unit${lance > 0 ? ` dan lance ${ang(lance)} cm` : ""} (perkiraan kebutuhan seluruh tugas)`, wajib: true});
+  const pem = rek?.kebutuhan?.pembasah, lPem = pem && pem.perlu === true ? tengah(pem.konsentrat_l_hari) : null;
+  if (lPem > 0) out.push({k: "pembasah", teks: `Bahan pembasah konsentrat sekitar ${ang(lPem)} liter per hari + inductor/proportioner (gambut kering menolak air; disarankan, bukan wajib)`, wajib: false, saran: true});
   out.push({k: "p3k", teks: "Kotak P3K lengkap", wajib: true}, {k: "gps_ht", teks: "GPS atau ponsel berbaterai penuh, HT, dan baterai cadangan", wajib: true}, {k: "senter", teks: "Senter atau lampu kepala", wajib: false},
     {k: "rute", teks: "Rute dicek: lihat kartu akses dan tombol Navigasi", wajib: true}, {k: "cuaca", teks: "Cuaca dan arah angin dicek", wajib: false},
     {k: "komandan", teks: "Sudah lapor ke komandan atau pimpinan regu", wajib: true}, {k: "darurat", teks: "Nomor darurat dicatat: 112, Pusdalops BPBD, dan komandan", wajib: true});

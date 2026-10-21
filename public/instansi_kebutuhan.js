@@ -34,6 +34,19 @@
     if ("jaringan_pln" in en) o.push(`<li>Jaringan PLN: ${en.jaringan_pln === true ? "tersedia" : en.jaringan_pln === false ? "tidak tersedia" : "belum ada data jaringan"}</li>`);
     return o.join("");
   }
+  /* Bahan pembasah (taktik.py rekomendasi.kebutuhan.pembasah): {perlu, alasan, konsentrasi_persen, konsentrat_l_hari[3], cara, peringatan, status} atau null (tidak tampil).
+     Bila luas terkonfirmasi ada, konsentrat = air per hari (per_ha x luas) x konsentrasi; selain itu angka pipeline. */
+  const SUMBER = "https://doi.org/10.1071/WF20117";
+  function pembasah(p, konf) {
+    if (!p || typeof p !== "object" || p.perlu !== true) return "";
+    const pct = num(p.konsentrasi_persen) ? p.konsentrasi_persen : 1, air = konf?.per_ha_x_luas?.air_l;
+    const dari = num(air) ? [air] : Array.isArray(air) && air.length === 3 && air.every(num) ? air : null;
+    const pl = p.konsentrat_l_hari, L = dari ? dari.map(a => a * pct / 100) : Array.isArray(pl) && pl.length === 3 && pl.every(num) ? pl : num(pl) ? [pl] : null;
+    const teksL = !L ? "" : L.length === 3 ? `±${fmt(L[1])} L/hari (rendah ${fmt(L[0])}, tinggi ${fmt(L[2])})` : `±${fmt(L[0])} L/hari`;
+    const s = x => typeof x === "string" && x ? `<p>${esc(x)}</p>` : "";
+    return `<h3>Bahan pembasah (wetting agent)</h3><div><span class="kb-pil kuning">Perkiraan, uji laboratorium</span> <a href="${SUMBER}" target="_blank" rel="noopener">Santoso dkk. 2021, doi 10.1071/WF20117</a></div>
+      ${s(p.alasan)}<p>Konsentrasi ${fmt(pct)}%${teksL ? `, konsentrat ${teksL}` : ""}.</p>${s(p.cara)}${s(p.peringatan)}`;
+  }
   /* t = tugas dari Worker (rekomendasi, kebutuhan_konf, luas_terkonfirmasi, kurang). tanpaPil = pil "Perkiraan, belum divalidasi lapangan" sudah tampil di rincian yang sama (cukup sekali). */
   function html(t, tanpaPil) {
     const k = t?.rekomendasi?.kebutuhan; if (!k || typeof k !== "object") return "";
@@ -45,6 +58,7 @@
       ${tot ? `<h3>${konf ? "Dari hitungan satelit" : "Kebutuhan dari hitungan satelit"}${rentang(luasSat) !== "–" ? ` (luas ${rentang(luasSat)} ha)` : ""}</h3><ul>${baris(TOTAL, totalLain)}${pompa(tot.pompa)}</ul>` : ""}
       ${rentang(hari) !== "–" ? `<p>Setara ${rentang(hari)} hari kerja satu provinsi.</p>` : ""}
       ${melampaui ? `<p><span class="kb-pil kuning">Melampaui rujukan lapangan</span> ${typeof melampaui === "string" ? esc(melampaui) : ""}</p>` : ""}
+      ${pembasah(k.pembasah, konf)}
       ${en ? `<h3>Energi</h3><ul>${energi(en)}</ul>` : ""}
       ${t.kurang?.length ? `<p>${t.kurang.map(x => `<span class="kb-pil merah">${esc(x.teks)}</span>`).join(" ")}</p>` : ""}</div>`;
   }

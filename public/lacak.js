@@ -44,7 +44,7 @@
   function gambarCek() {
     const c = info.checklist || {}, r = info.ringkas;
     $("ringkasCek").textContent = `${r.wajib_centang} dari ${r.wajib} butir wajib sudah dicentang.${r.wajib_centang < r.wajib ? " Berangkat tanpa butir wajib tetap bisa, tetapi kamu akan diingatkan." : " Siap berangkat."}`;
-    $("daftarCek").innerHTML = info.butir.map(b => `<li><label class="${c[b.k] ? "ya" : ""}"><input type="checkbox" data-k="${esc(b.k)}"${c[b.k] ? " checked" : ""}><span>${esc(b.teks)}${b.wajib ? "" : ` <em>(opsional)</em>`}${c[b.k] ? ` <small>dicentang ${esc(new Date(c[b.k]).toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}))}</small>` : ""}</span></label></li>`).join("");
+    $("daftarCek").innerHTML = info.butir.map(b => `<li><label class="${c[b.k] ? "ya" : ""}"><input type="checkbox" data-k="${esc(b.k)}"${c[b.k] ? " checked" : ""}><span>${esc(b.teks)}${b.wajib ? "" : ` <em>(${b.saran ? "disarankan" : "opsional"})</em>`}${c[b.k] ? ` <small>dicentang ${esc(new Date(c[b.k]).toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"}))}</small>` : ""}</span></label></li>`).join("");
   }
   function tombolJalan() {
     const b = $("bBerangkat");

@@ -135,7 +135,7 @@
       <h3 class="ai-judul">Per akun aktif</h3>${tabel(["Username", "Jenis", "Wilayah", "Isian", "Konfirmasi", "Kabar", "Terakhir"], akun, "Belum ada akun aktif.")}`;
   }
   const SUMBER = {exif: "waktu EXIF foto", gps: "waktu GPS perangkat", unggah: "waktu unggah"};
-  const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal"};
+  const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal", pembasah_l: "bahan pembasah (liter konsentrat)"};
   /* "di lapangan sekarang" (kabar terakhir), selisih terhadap perkiraan kebutuhan, dan waktu terdokumentasi */
   function sekarang(t) {
     const s = t.sekarang, d = t.dokumentasi || {};

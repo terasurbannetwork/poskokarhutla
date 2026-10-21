@@ -9,7 +9,7 @@
   const BANTUAN = {personel: "Personel", air_pompa: "Air dan pompa", alat_berat: "Alat berat", heli_water_bombing: "Helikopter water bombing", logistik: "Logistik", medis: "Medis", lainnya: "Lainnya"};
   const HASIL = {api_ada: "Api ada di lokasi", bukan_api: "Bukan api", sudah_padam: "Sudah padam"};
   const STATUS_API = {menyala: "Masih menyala", bara: "Tinggal bara", padam: "Sudah padam"};
-  const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal"};
+  const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal", pembasah_l: "bahan pembasah (liter konsentrat)"};
   const UNSUR = {bpbd: "BPBD", tni: "TNI", polri: "Polri", manggala_agni: "Manggala Agni", mpa: "MPA", damkar: "Damkar", swasta: "Swasta", relawan: "Relawan", lainnya: "Lainnya"};
   const LAHAN = {gambut: "Gambut", mineral: "Mineral", campuran: "Campuran", tidak_tahu: "Tidak tahu"};
   const NAMA_STATUS = {belum_klaim: "Belum diklaim", menunggu: "Menunggu persetujuan admin", aktif: "Aktif", ditolak: "Ditolak", dicabut: "Dicabut"};

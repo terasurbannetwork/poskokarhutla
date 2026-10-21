@@ -194,8 +194,8 @@ CREATE INDEX IF NOT EXISTS instansi_media_akun ON instansi_media (akun_id, dibua
 CREATE TRIGGER IF NOT EXISTS tugas_isian_unsur_sah BEFORE INSERT ON tugas_isian
 WHEN EXISTS (SELECT 1 FROM json_each(NEW.personel_unsur) WHERE key NOT IN ('bpbd', 'tni', 'polri', 'manggala_agni', 'mpa', 'damkar', 'swasta', 'relawan', 'lainnya')
     OR typeof(value) != 'integer' OR value < 0 OR value > 5000)
-  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal')
-    OR typeof(value) != 'integer' OR value < 0 OR value > 100000)
+  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal', 'pembasah_l')
+    OR typeof(value) != 'integer' OR value < 0 OR value > 100000 OR (key = 'pembasah_l' AND value > 5000))
 BEGIN
   SELECT RAISE(ABORT, 'personel_unsur atau alat_dipakai tidak sah');
 END;
@@ -243,8 +243,8 @@ END;
 CREATE TRIGGER IF NOT EXISTS tugas_isian_unsur_ubah BEFORE UPDATE OF personel_unsur, alat_dipakai ON tugas_isian
 WHEN EXISTS (SELECT 1 FROM json_each(NEW.personel_unsur) WHERE key NOT IN ('bpbd', 'tni', 'polri', 'manggala_agni', 'mpa', 'damkar', 'swasta', 'relawan', 'lainnya')
     OR typeof(value) != 'integer' OR value < 0 OR value > 5000)
-  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal')
-    OR typeof(value) != 'integer' OR value < 0 OR value > 100000)
+  OR EXISTS (SELECT 1 FROM json_each(NEW.alat_dipakai) WHERE key NOT IN ('pompa', 'selang_m', 'jet_shooter', 'heli_wb', 'alat_berat', 'drone_termal', 'pembasah_l')
+    OR typeof(value) != 'integer' OR value < 0 OR value > 100000 OR (key = 'pembasah_l' AND value > 5000))
 BEGIN
   SELECT RAISE(ABORT, 'personel_unsur atau alat_dipakai tidak sah');
 END;

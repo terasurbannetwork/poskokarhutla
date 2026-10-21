@@ -32,7 +32,7 @@ export const STATUS_API = ["menyala", "bara", "padam"];
 export const LAHAN = ["gambut", "mineral", "campuran", "tidak_tahu"];
 export const BANTUAN = {personel: "Personel", air_pompa: "Air dan pompa", alat_berat: "Alat berat", heli_water_bombing: "Helikopter water bombing", logistik: "Logistik", medis: "Medis", lainnya: "Lainnya"};
 export const UNSUR = ["bpbd", "tni", "polri", "manggala_agni", "mpa", "damkar", "swasta", "relawan", "lainnya"];
-export const ALAT = ["pompa", "selang_m", "jet_shooter", "heli_wb", "alat_berat", "drone_termal"];
+export const ALAT = ["pompa", "selang_m", "jet_shooter", "heli_wb", "alat_berat", "drone_termal", "pembasah_l"];
 const NAMA_JENIS = {pemprov: "Pemerintah Provinsi", pemkab: "Pemerintah Kabupaten", pemkot: "Pemerintah Kota", polda: "Polda", polres: "Polres", kodam: "Kodam", kodim: "Kodim"};
 
 /* kode provinsi BPS -> [singkatan username, nama] */
@@ -351,7 +351,7 @@ function bacaPemadaman(o, kini) {
     const x = {};
     for (const [k, n] of Object.entries(v)) {
       if (!kunci.includes(k)) return {g: `${nama}: kunci '${String(k).slice(0, 30)}' tidak dikenal (boleh: ${kunci.join(", ")})`};
-      const m = num(n, 0, maks, true); if (m == null || Number.isNaN(m)) return {g: `${nama}.${k} harus bilangan bulat 0-${maks}`};
+      const mk = k === "pembasah_l" ? 5000 : maks, m = num(n, 0, mk, true); if (m == null || Number.isNaN(m)) return {g: `${nama}.${k} harus bilangan bulat 0-${mk}`};
       x[k] = m;
     }
     return {x};
