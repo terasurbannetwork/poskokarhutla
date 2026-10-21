@@ -1,0 +1,34 @@
+/* Admin Kemitraan Riset: pil berikon, bilah statistik, formulir. Token warna dan tabel dari admin.css (ikut tema gelap). */
+.rs-isi{display:grid;gap:14px;margin-top:14px}
+.rs-pesan{margin:10px 2px 0;font-weight:700;font-size:13px;min-height:1.2em}
+.rs-pesan.ok{color:var(--c4)}.rs-pesan.galat{color:var(--c1)}
+.rs-statbar{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));margin-bottom:14px}
+.rs-stat{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;display:grid;gap:6px;align-content:start}
+.rs-stat b{font:800 24px/1.1 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.rs-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:800;white-space:nowrap;background:var(--surface);color:var(--ink2)}
+.rs-pil svg{width:13px;height:13px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rs-pil.biru{background:color-mix(in srgb,var(--c5) 16%,transparent);color:var(--c5)}
+.rs-pil.hijau{background:color-mix(in srgb,var(--c4) 18%,transparent);color:color-mix(in srgb,var(--c4) 75%,var(--ink))}
+.rs-pil.merah{background:color-mix(in srgb,var(--c1) 14%,transparent);color:var(--c1)}
+.rs-pil.kuning{background:color-mix(in srgb,var(--c3) 26%,transparent);color:color-mix(in srgb,#9a7a12 80%,var(--ink))}
+.rs-pil.ungu{background:color-mix(in srgb,var(--c6) 16%,transparent);color:color-mix(in srgb,var(--c6) 80%,var(--ink))}
+.rs-pil.abu{background:var(--surface);color:var(--ink2)}
+.ad-tombol svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rs-bar{display:flex;gap:8px 10px;flex-wrap:wrap;align-items:center;font-size:13px}
+.rs-sp{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.rs-redup{color:var(--ink2);font-size:12px}
+.rs-sub{font:800 12px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);margin-top:6px}
+.rs-form{display:grid;gap:12px}
+.rs-form label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--ink2)}
+.rs-form input,.rs-form select,.rs-form textarea,.rs-isian{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+.rs-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(210px,1fr))}
+.rs-aksi{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.rs-kode{box-shadow:0 0 0 2px var(--emas),var(--bayang);display:grid;gap:10px}
+.rs-kode p{margin:0}
+.rs-kosong{padding:28px;text-align:center;color:var(--ink2);background:var(--card);border-radius:16px;box-shadow:var(--bayang);margin:0}
+.rs-kosong-baris{text-align:center;color:var(--ink2);padding:18px!important}
+.rs-redam td{opacity:.55}
+.ad-tabel td{vertical-align:top}
+.rs-detail{display:grid;gap:4px;margin-top:8px;font-size:12.5px;font-weight:500}
+.rs-detail p{margin:0}.rs-detail ul{margin:0;padding-left:18px}
+details>summary{cursor:pointer}

@@ -418,7 +418,9 @@
         "scripts/bnpb/**",
         "tests/bnpb/**",
         "public/data/bnpb/**",
-        "docs/bnpb/**"
+        "docs/bnpb/**",
+        "public/admin/pimpinan.*",
+        "public/admin/gakkum.*"
       ]
     }
   ]

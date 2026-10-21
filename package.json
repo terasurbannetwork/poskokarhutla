@@ -10,6 +10,7 @@
     "agents:build": "node scripts/agents/build.mjs",
     "agents:check": "node scripts/agents/build.mjs --cek",
     "uji:agen": "node --test tests/agen/*.test.mjs",
+    "uji:layar": "node --test --test-concurrency=1 tests/bnpb/*.test.mjs",
     "bencana:js": "python3 scripts/umum/bencana.py js",
     "bencana:cek": "python3 scripts/umum/bencana.py cek"
   },

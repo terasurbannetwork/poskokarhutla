@@ -1,0 +1,76 @@
+/* Alun-alun (halaman publik). Token dan komponen dasar dari bnpb.css; di sini hanya tata letak forum. Tanpa gaya inline (CSP). */
+.bn-tombol svg,.al-ikon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.al-tata [hidden],.bn-tombol[hidden]{display:none!important}   /* display:grid/inline-flex menimpa atribut hidden: kartu rincian kosong & tombol Muat lebih banyak tampil tanpa isi */
+.bn-tombol{display:inline-flex;align-items:center;gap:7px}
+.al-tata{display:grid;gap:16px;grid-template-columns:250px minmax(300px,1fr) minmax(0,1.35fr);align-items:start}
+.al-tata:has(#rincian[hidden]){grid-template-columns:250px minmax(0,1fr)}
+.al-saring{display:grid;gap:12px;position:sticky;top:76px}
+.al-blok{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px;display:grid;gap:10px}
+.al-blok h2{font-size:13px;font-weight:800;color:var(--ink2)}
+.al-pilpil{display:grid;gap:6px}
+.al-pilpil button{display:flex;align-items:center;gap:8px;border:0;background:var(--soft);border-radius:12px;padding:9px 12px;font-weight:700;font-size:13px;cursor:pointer;text-align:left;color:var(--ink)}
+.al-pilpil button .al-ikon{color:var(--pil)}
+.al-pilpil button[aria-pressed="true"]{background:var(--gradien);color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
+.al-pilpil button[aria-pressed="true"] .al-ikon{color:#fff}
+.al-pilpil button:active{transform:scale(.98)}
+.al-isian{display:grid;gap:5px;font-size:12px;font-weight:700;color:var(--ink2)}
+.al-isian select{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;font-size:13.5px;color:var(--ink)}
+
+.al-utas{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.al-baris{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 12px;align-items:center;width:100%;text-align:left;border:0;background:var(--card);border-radius:14px;box-shadow:var(--bayang);padding:11px 14px;cursor:pointer;color:var(--ink)}
+.al-baris:hover{box-shadow:0 0 0 1px color-mix(in srgb,var(--c5) 45%,transparent),var(--bayang)}
+.al-baris[aria-current="true"]{box-shadow:0 0 0 2px var(--navy2),var(--bayang)}
+.al-judul{font:700 14.5px/1.35 var(--display);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
+.al-sematan .al-judul{color:var(--navy2)}
+.al-meta{grid-column:1/-1;display:flex;flex-wrap:wrap;gap:6px 10px;align-items:center;font-size:12px;color:var(--ink2);font-weight:600}
+.al-angka{display:inline-flex;align-items:center;gap:4px;font-variant-numeric:tabular-nums}
+.al-kanan{display:flex;gap:6px;align-items:center}
+.bn-pil{--pil:var(--c5)}
+.bn-pil.tanya{--pil:var(--c5)}.bn-pil.butuh_bantuan{--pil:var(--c1)}.bn-pil.info_lapangan{--pil:var(--c7)}.bn-pil.pengumuman,.bn-pil.resmi{--pil:var(--navy2)}
+.bn-pil.terjawab,.bn-pil.selesai{--pil:var(--c4)}.bn-pil.ditangani{--pil:var(--c6)}.bn-pil.terbuka{--pil:var(--c2)}.bn-pil.relawan,.bn-pil.logistik{--pil:var(--c7)}
+.al-pilpil .al-ikon{--pil:var(--c5)}
+button[data-jenis="tanya"]{--pil:var(--c5)}button[data-jenis="butuh_bantuan"]{--pil:var(--c1)}button[data-jenis="info_lapangan"]{--pil:var(--c7)}button[data-jenis="pengumuman"]{--pil:var(--navy2)}
+.bn-pil.resmi{background:var(--gradien);color:#fff}
+
+.al-rincian{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:18px;display:grid;gap:14px;position:sticky;top:76px;max-height:calc(100vh - 92px);overflow:auto;min-width:0}
+.al-rincian h2{font-size:19px;font-weight:800;line-height:1.3;overflow-wrap:anywhere}
+.al-kepala{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.al-teks{white-space:pre-wrap;overflow-wrap:anywhere;font-size:15px;line-height:1.6}
+.al-bar{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.al-ikonbtn{display:inline-flex;align-items:center;gap:6px;border:0;background:var(--soft);color:var(--ink);border-radius:999px;padding:7px 13px;font-weight:700;font-size:13px;cursor:pointer}
+.al-ikonbtn[aria-pressed="true"]{background:color-mix(in srgb,var(--c5) 18%,transparent);color:var(--navy2)}
+.al-ikonbtn:active{transform:scale(.97)}
+.al-balasan{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.al-balas{background:var(--soft);border-radius:14px;padding:11px 13px;display:grid;gap:7px}
+.al-balas.petugas{background:color-mix(in srgb,var(--navy2) 9%,transparent);box-shadow:inset 3px 0 0 var(--navy2)}
+.al-balas.jawaban{box-shadow:inset 3px 0 0 var(--c4)}
+.al-balas p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.al-balas .al-meta{grid-column:auto}
+.al-formbalas{display:grid;gap:8px}
+.al-formbalas textarea{min-height:72px}
+.al-kembali{display:none}
+.al-dlg{border:0;border-radius:18px;padding:20px;width:min(640px,calc(100vw - 24px));background:var(--card);color:var(--ink);box-shadow:0 24px 60px -20px rgb(11 37 69 / .5)}
+.al-dlg.kecil{width:min(420px,calc(100vw - 24px))}
+.al-dlg::backdrop{background:rgb(11 37 69 / .5)}
+.al-aksi-form{display:flex;gap:8px;justify-content:flex-end}
+.al-lokasi{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.al-kosong{text-align:center;color:var(--ink2);font-weight:600;padding:28px 12px}
+
+@media (max-width:1100px){
+  .al-tata,.al-tata:has(#rincian[hidden]){grid-template-columns:220px minmax(0,1fr)}
+  .al-rincian{position:fixed;inset:0;z-index:20;border-radius:0;max-height:none;padding:16px 16px 28px}
+  .al-kembali{display:inline-flex}
+}
+@media (max-width:760px){
+  .al-tata,.al-tata:has(#rincian[hidden]){grid-template-columns:1fr}
+  .al-saring{position:static;grid-template-columns:1fr}
+  .al-pilpil{display:flex;overflow-x:auto;scrollbar-width:none;gap:6px}
+  .al-pilpil button{white-space:nowrap;flex:none}
+  .al-judul{white-space:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+  .al-baris{grid-template-columns:1fr}
+  .al-kanan{justify-content:flex-start}
+  .al-dlg{padding:16px}
+  .al-aksi-form .bn-tombol{flex:1;justify-content:center}
+}
+
+.bn-pil.tautan{--pil:var(--c4)}

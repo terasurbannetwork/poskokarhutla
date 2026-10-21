@@ -47,3 +47,40 @@ uji("cron menit 17: laju_bnpb lebih tua dari 2 hari dibuang", async () => {
   await bersihkanBnpb(env, k);
   assert.equal(await U.n("laju_bnpb", "kunci = 'kunci-tua'"), 0);
 });
+
+uji("halaman Ruang Koordinasi tanpa modul (/risiko /sitrep /bnpb): 200, CSP ketat tanpa inline", async () => {
+  for (const j of ["/risiko", "/sitrep", "/bnpb", "/kebutuhan"]) {
+    const r = await U.api("GET", j);
+    assert.equal(r.s, 200, j + " " + r.t.slice(0, 80));
+    const csp = r.h.get("content-security-policy");
+    assert.match(csp, /script-src 'self';/); assert.doesNotMatch(csp, /unsafe-inline/);
+    assert.doesNotMatch(r.t, /<script(?![^>]*\bsrc=)[^>]*>|\son[a-z]+=|<style|style="/i, j + ": skrip/gaya inline akan diblokir CSP");
+  }
+});
+
+uji("berkas /bnpb/*.html dibuka langsung: 301 ke jalur bersih ber-CSP, berkas tak dikenal 404", async () => {
+  const buka = j => U.mf.dispatchFetch("http://bnpb.lokal" + j, {redirect: "manual"});
+  const r = await buka("/bnpb/relawan-saya.html");
+  assert.equal(r.status, 301); assert.equal(r.headers.get("location"), "/relawan/saya");
+  assert.equal((await buka("/bnpb/index.html")).headers.get("location"), "/bnpb");
+  assert.equal((await buka("/bnpb/tidakada.html")).status, 404);
+});
+
+uji("/admin/gakkum dan /admin/pimpinan: tanpa sesi dialihkan ke masuk, admin 200 dengan kerangka bersama", async () => {
+  for (const k of ["gakkum", "pimpinan"]) {
+    const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/" + k, {redirect: "manual"});
+    assert.equal(r.status, 303, k);
+    const a = await U.adm("GET", "/admin/" + k);
+    assert.equal(a.s, 200, k); assert.match(a.t, /\/admin\/bersama\.js/); assert.match(a.t, new RegExp(`/admin/${k}\\.js`));
+  }
+});
+
+uji("Turnstile alun-alun: CSP mengizinkan challenges.cloudflare.com HANYA bila TURNSTILE_SITEKEY diset; halaman lain tetap ketat", async () => {
+  const tanpa = await U.api("GET", "/alun-alun");
+  assert.doesNotMatch(tanpa.h.get("content-security-policy"), /challenges\.cloudflare\.com/);
+  const T = await siapkan("uji-bnpb-ts", {ikat: {TURNSTILE_SITEKEY: "kunci-situs-uji", TURNSTILE_SECRET: "rahasia-uji"}});
+  const dengan = await T.api("GET", "/alun-alun"), csp = dengan.h.get("content-security-policy");
+  assert.match(csp, /script-src 'self' https:\/\/challenges\.cloudflare\.com/); assert.match(csp, /frame-src https:\/\/challenges\.cloudflare\.com/);
+  assert.doesNotMatch((await T.api("GET", "/risiko")).h.get("content-security-policy"), /challenges/, "halaman tanpa formulir tidak ikut dilonggarkan");
+  assert.match(dengan.t, /\/bnpb\/turnstile\.js/);
+});

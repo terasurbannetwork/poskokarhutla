@@ -15,14 +15,21 @@ Format ubin: BigTIFF, LZW, tanpa prediktor, blok 256x256. Dekoder LZW stdlib, ha
 Pakai:  import sawit_peta as S;  S.tahun_tanam(barat, selatan, timur, utara, n) -> n*n sel (baris 0 = utara),
         tiap sel (fraksi_sawit, median_tahun) atau None bila tak ada data; median_tahun None bila tak ada sawit.
 Uji:    python3 scripts/data/sawit_peta.py uji
+
+TTM2024: The TreeMap "Global oil palm expansion 2001-2024" v1.1, Zenodo 10.5281/zenodo.20747717, CC BY-NC 4.0 (NonCommercial:
+hanya internal/analisis, cek lisensi sebelum terbit). Ubin data/raw/sawit/ttm2024/ubin/Global_OPExpansion_2001-2024_ID-<ID>.tif,
+BigTIFF LZW int32 ~10 m, 10000x10002 piksel (~0,9 derajat), EPSG:4326. Kode ABFFYY: A tipe sawit 2024 (1 industri, 2 rakyat),
+B hutan primer 2000 (0/1), FF tahun hilang hutan (15 = <=2015, 16..24; hanya bila B=1), YY tahun tanam (15 = <=2015, 16..24);
+0 = bukan sawit 2024. Pakai: kode_ttm([(kunci, lon, lat)...]) -> {kunci: kode} (hanya kode != 0), urai_kode(kode).
 """
-import glob, json, os, struct, sys
+import glob, json, math, os, struct, sys
 from array import array
-from collections import OrderedDict
+from collections import OrderedDict, defaultdict
 
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
 DIR = os.path.join(AKAR, "data/raw/sawit")
 YOP = os.path.join(DIR, "yop")
+TTM = os.path.join(DIR, "ttm2024/ubin")
 SAMPEL = 8          # contoh SAMPEL x SAMPEL piksel per sel
 LRU_MAKS = 400      # blok terdekompresi (~130 KB per blok)
 _blok = OrderedDict()
@@ -94,10 +101,12 @@ def indeks():
 class Ubin:
     PIX = 0.00026949458523585647
 
-    def __init__(self, id_):
-        self.b = open(os.path.join(YOP, f"GlobalOilPalm_OP-YoP_{id_}.tif"), "rb").read()
+    def __init__(self, id_, jalur=None, bit=16):
+        self.b = open(jalur or os.path.join(YOP, f"GlobalOilPalm_OP-YoP_{id_}.tif"), "rb").read()
         t = ifd(self.b)
-        assert t[259][0] == 5 and t.get(317, (1,))[0] == 1 and t[258][0] == 16, "bukan LZW/uint16 tanpa prediktor"
+        assert t[259][0] == 5 and t.get(317, (1,))[0] == 1 and t[258][0] == bit, "bukan LZW/%d-bit tanpa prediktor" % bit
+        self.typ = "H" if bit == 16 else "i"
+        assert array(self.typ).itemsize * 8 == bit
         self.W, self.H, self.T = t[256][0], t[257][0], t[322][0]
         self.tx = -(-self.W // self.T)
         self.off, self.cnt = t[324], t[325]
@@ -108,7 +117,7 @@ class Ubin:
         if kunci in _blok:
             _blok.move_to_end(kunci)
             return _blok[kunci]
-        a = array("H")
+        a = array(self.typ)
         a.frombytes(lzw(self.b[self.off[k]:self.off[k] + self.cnt[k]]))
         if sys.byteorder == "big":
             a.byteswap()
@@ -134,6 +143,96 @@ def ubin(id_):
             _ubin.clear()
         _ubin[id_] = Ubin(id_)
     return _ubin[id_]
+
+
+# ---------------------------------------------------------------- TTM2024 (int32 ABFFYY)
+_ix_ttm = None
+_NOL = None
+
+
+def urai_kode(v):
+    """kode ABFFYY -> (tipe, hutan2000, tahun_hilang, tahun_tanam); 0 -> None. tipe 'industri'|'rakyat'; hutan2000 bool;
+    tahun_hilang None bila bukan hutan primer 2000 (2015 = <=2015); tahun_tanam 2015 = <=2015 (ambigu)."""
+    if not v:
+        return None
+    a, b, ff, yy = v // 100000, v // 10000 % 10, v // 100 % 100, v % 100
+    assert a in (1, 2) and b in (0, 1) and 15 <= yy <= 24 and 15 <= ff <= 24, v   # data nyata: FF=15 juga bila B=0 (dokumen: hanya bila B=1)
+    return ("industri" if a == 1 else "rakyat", bool(b), 2000 + ff if b else None, 2000 + yy)
+
+
+def indeks_ttm():
+    """{id: [lon_kiri, lat_atas, W, H, pix]} dari kepala ubin TTM; di-cache ke indeks_ttm.json"""
+    global _ix_ttm
+    if _ix_ttm is None:
+        jalur = os.path.join(DIR, "indeks_ttm.json")
+        if os.path.exists(jalur):
+            _ix_ttm = json.load(open(jalur))
+        else:
+            _ix_ttm = {}
+            for f in sorted(glob.glob(os.path.join(TTM, "Global_OPExpansion_2001-2024_ID-*.tif"))):
+                with open(f, "rb") as h:
+                    t = ifd(h.read(1 << 20))
+                tp = t[33922]
+                _ix_ttm[os.path.basename(f).rsplit("-", 1)[1][:-4]] = [tp[3], tp[4], t[256][0], t[257][0], t[33550][0]]
+            json.dump(_ix_ttm, open(jalur, "w"), separators=(",", ":"))
+    return _ix_ttm
+
+
+def ubin_ttm(id_):
+    k = "t" + id_
+    if k not in _ubin:
+        if len(_ubin) > 12:
+            _ubin.clear()
+        u = Ubin("t" + id_, os.path.join(TTM, f"Global_OPExpansion_2001-2024_ID-{id_}.tif"), 32)
+        _ubin[k] = u
+    return _ubin[k]
+
+
+def _nol(u):
+    """bita terkompresi blok semua-nol (sama di semua ubin), diverifikasi sekali; blok itu dilewati tanpa dekode"""
+    global _NOL
+    if _NOL is None:
+        k = min(range(len(u.cnt)), key=lambda i: u.cnt[i])
+        d = u.b[u.off[k]:u.off[k] + u.cnt[k]]
+        assert not any(lzw(d)), "blok terkecil bukan nol"
+        _NOL = d
+    return _NOL
+
+
+def kode_ttm(titik):
+    """titik = [(kunci, lon, lat)] -> {kunci: kode TTM != 0}. Titik dikelompokkan per ubin dan blok; blok semua-nol tak didekode."""
+    ix = indeks_ttm()
+    petak = defaultdict(list)
+    for i, (x0, y0, W, H, p) in ix.items():
+        for gx in range(math.floor(x0), math.floor(x0 + W * p) + 1):
+            for gy in range(math.floor(y0 - H * p), math.floor(y0) + 1):
+                petak[(gx, gy)].append(i)
+    kerja = defaultdict(list)
+    for k, lon, lat in titik:
+        for i in petak.get((math.floor(lon), math.floor(lat)), ()):
+            x0, y0, W, H, p = ix[i]
+            x, y = int((lon - x0) / p), int((y0 - lat) / p)
+            if 0 <= x < W and 0 <= y < H:
+                kerja[i].append((y // 256, x // 256, y, x, k))
+                break
+    hasil = {}
+    for i, daftar in kerja.items():
+        daftar.sort()
+        u = ubin_ttm(i)
+        z = _nol(u)
+        kosong = set()
+        for by, bx, y, x, k in daftar:
+            b = by * u.tx + bx
+            if b in kosong:
+                continue
+            if u.cnt[b] == len(z) and u.b[u.off[b]:u.off[b] + u.cnt[b]] == z:
+                kosong.add(b)
+                continue
+            v = u.nilai(x, y)
+            if v:
+                hasil[k] = v
+        _blok.clear()
+    return hasil
 
 
 def nilai_di(lon, lat, kand):
@@ -228,6 +327,37 @@ def uji():
     h = tahun_tanam(x0 + .1, y0 - .5, x0 + .6, y0 - .1, 4)
     assert len(h) == 16 and all(c is None or 0 <= c[0] <= 1 for c in h) and any(c and c[0] > 0 for c in h), h
     print("tahun_tanam ok", h[:2])
+    uji_ttm()
+
+
+def uji_ttm():
+    assert urai_kode(0) is None
+    assert urai_kode(111718) == ("industri", True, 2017, 2018)
+    assert urai_kode(201515) == ("rakyat", False, None, 2015)
+    assert urai_kode(112424) == ("industri", True, 2024, 2024)
+    for salah in (311718, 101018, 110018, 111799):
+        try:
+            urai_kode(salah)
+            raise SystemExit("seharusnya gagal " + str(salah))
+        except AssertionError:
+            pass
+    fs = sorted(glob.glob(os.path.join(TTM, "Global_OPExpansion_2001-2024_ID-*.tif")))
+    if not fs:
+        print("tanpa ubin TTM: lewati uji dekode")
+        return
+    id_ = os.path.basename(max(fs, key=os.path.getsize)).rsplit("-", 1)[1][:-4]
+    u = ubin_ttm(id_)
+    nilai = set()
+    for k in range(0, len(u.cnt), 20):
+        if u.cnt[k] != len(_nol(u)):
+            nilai |= set(u.blok(k))
+    assert len(nilai) > 1 and nilai >= {0}, sorted(nilai)[:10]
+    baik = [urai_kode(v) for v in nilai if v]
+    x0, y0, W, H, p = indeks_ttm()[id_]
+    pts = [((i, j), x0 + (j + .5) * .01, y0 - (i + .5) * .01) for i in range(80) for j in range(80)]
+    h = kode_ttm(pts)
+    assert all(urai_kode(v) for v in h.values())
+    print("uji ubin TTM ok", id_, "kode berbeda", len(nilai), "contoh", sorted(nilai)[1:4], "titik bersawit", len(h), "/", len(pts))
 
 
 if __name__ == "__main__":

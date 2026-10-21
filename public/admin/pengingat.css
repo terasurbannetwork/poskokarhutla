@@ -1,0 +1,18 @@
+/* Admin Pengingat: kartu hitungan per jenis, pil berikon, tabel standar. Token, tabel (.ad-tabel), tombol (.ad-tombol) dari admin.css. */
+.pg-isi{display:grid;gap:14px;margin-top:14px}
+.pg-pesan{margin:10px 2px 0;font-weight:700;font-size:13px;min-height:1.2em}
+.pg-pesan.ok{color:var(--c4)}.pg-pesan.galat{color:var(--c1)}
+.pg-jenis{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.pg-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:11px 14px;display:grid;gap:2px;border:0;font:inherit;text-align:left;cursor:pointer;color:var(--ink)}
+.pg-kartu[aria-pressed=true]{outline:2px solid var(--c5)}
+.pg-kartu b{font:800 22px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.pg-kartu span{color:var(--ink2);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+.pg-ikon{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.pg-pil{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--pil,var(--c5)) 15%,transparent);color:color-mix(in srgb,var(--pil,var(--c5)) 78%,var(--ink))}
+.pg-pil.baru{--pil:var(--c2)}.pg-pil.dikirim{--pil:var(--c5)}.pg-pil.selesai{--pil:var(--c4)}.pg-pil.abaikan{--pil:var(--c6)}.pg-pil.dummy{--pil:var(--c6);font-size:10px;letter-spacing:.06em}
+.pg-bar{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.pg-aksi{display:flex;gap:6px;flex-wrap:wrap}
+.pg-isi .ad-tabel td{vertical-align:top}
+.pg-cuplik{max-width:520px;overflow-wrap:anywhere}.pg-cuplik small{display:block;color:var(--ink2);margin-top:2px}
+.pg-kosong{text-align:center;color:var(--ink2);font-weight:600;padding:24px 10px}
+@media (max-width:640px){.pg-cuplik{max-width:240px}}

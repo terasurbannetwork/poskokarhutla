@@ -11,15 +11,20 @@ button,input,select{font:inherit;color:inherit}
 .mark svg{flex:none}
 .mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
 .mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
-/* jarak antar-tab tetap 6px seperti karhutla (8 tab mengisi nav); tab sedikit tidak direnggangkan */
-nav.tabs{display:flex;justify-content:flex-start;gap:6px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
-@media (min-width:1500px){nav.tabs{margin:0 auto;justify-content:center}}
+/* tab rata tengah di ruang antara logo dan status (pemilik, 20 Okt 2026); "safe" supaya tab yang tidak muat tidak terpotong di kiri */
+nav.tabs{display:flex;justify-content:center;justify-content:safe center;gap:6px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
+@media (min-width:1500px){nav.tabs{margin:0 auto}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
 nav.tabs button svg,nav.tabs a.tab-ln svg{width:16px;height:16px;flex:none;opacity:.9}
 nav.tabs button,nav.tabs a.tab-ln{text-decoration:none;display:inline-flex;align-items:center;gap:7px;font-size:14.5px!important;border:0;background:transparent;color:#fff;opacity:.78;padding:8px 16px;border-radius:999px;font-weight:600;font-size:13.5px;white-space:nowrap;cursor:pointer}
-/* dipadatkan di bawah 1500px seperti karhutla; harus SESUDAH aturan dasar tombol supaya padding & ukuran huruf menang (8-10 tab muat di 1440) */
-@media (max-width:1500px){nav.tabs button svg{display:none}nav.tabs button,nav.tabs a.tab-ln{padding:8px 11px;font-size:13.5px!important}}
+/* dipadatkan di bawah 1500px; ikon tetap tampil (pemilik, 20 Okt 2026) dan baru disembunyikan bila ruang benar-benar sempit.
+   Harus SESUDAH aturan dasar tombol supaya padding & ukuran huruf menang */
+@media (max-width:1500px){nav.tabs button,nav.tabs a.tab-ln{padding:8px 12px;gap:6px;font-size:13.5px!important}nav.tabs button svg,nav.tabs a.tab-ln svg{width:15px;height:15px}}
+/* 9 tab (gempa, gunung api) baru muat berikon mulai 1500px; 7-8 tab muat berikon mulai ~1340px (diukur 20 Okt 2026) */
+@media (max-width:1500px) and (min-width:1281px){nav.tabs:has(> button:nth-of-type(9)) button svg{display:none}}
+@media (min-width:1501px){nav.tabs:has(> button:nth-of-type(9)) button{padding:8px 12px;gap:6px}}
+@media (max-width:1340px) and (min-width:1281px){nav.tabs button svg,nav.tabs a.tab-ln svg{display:none}}
 nav.tabs button:hover{opacity:1;background:oklch(100% 0 0 / .08)}
 nav.tabs button[aria-current="page"]{opacity:1;background:oklch(100% 0 0 / .16)}
 .lainnya{flex:none}
@@ -37,9 +42,11 @@ nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current
 @media (max-width:1500px){.mark small,.stat .upd{display:none}}
 @media (max-width:1100px){.mark > div{display:none}}
 @media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
-/* mobile: pilihan bencana & tema disembunyikan, tab pindah ke menu garis tiga (pemilik, 15 Okt 2026) */
+/* mobile: pilihan bencana & tema disembunyikan (pemilik, 15 Okt 2026) */
 #burger{display:none}
-@media (max-width:640px){#burger{display:grid}.bencana,#tema{display:none!important}.stat{margin-left:auto}
+@media (max-width:640px){.bencana,#tema{display:none!important}}
+/* di bawah 1280px tab tidak lagi muat sebaris (diukur 20 Okt 2026), pindah ke menu garis tiga seperti karhutla (<= 1260px) */
+@media (max-width:1280px){#burger{display:grid}.stat{margin-left:auto}
   nav.tabs{display:none;position:fixed;top:var(--top);left:8px;right:auto;z-index:60;flex-direction:column;align-items:stretch;gap:2px;margin:6px 0 0;padding:6px;min-width:220px;max-height:calc(100dvh - var(--top) - 20px);overflow-y:auto;
     background:var(--card);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg)}
   header.top.buka nav.tabs{display:flex}

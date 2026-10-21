@@ -31,19 +31,19 @@ const api = async (m, u, body, h = {}) => {
 };
 const sah = {jenis: "harian", tanggal: "2026-10-19", isi: {mulai: "2026-10-18", kejadian: [{jenis: "karhutla", prov: "62", utama: "± 24.223,17 ha", status: "berjalan"}], laporan_masuk: 36}};
 
-test("migrasi 0023 idempoten: dijalankan dua kali tanpa galat", async () => {
+uji("migrasi 0023 idempoten: dijalankan dua kali tanpa galat", async () => {
   await DB.batch(pecah(readFileSync(path.join(AKAR, "migrations/0023_laporan_bnpb.sql"), "utf8")).map(s => DB.prepare(s)));
   assert.equal((await DB.prepare("SELECT count(*) n FROM laporan_bnpb").first()).n, 0);
 });
 
-test("laporan bnpb: tanpa masuk ditolak 403 (baca dan simpan)", async () => {
+uji("laporan bnpb: tanpa masuk ditolak 403 (baca dan simpan)", async () => {
   assert.equal((await api("GET", "/api/laporan-bnpb?jenis=harian")).s, 403);
   assert.equal((await api("POST", "/api/laporan-bnpb", sah)).s, 403);
   assert.equal((await api("POST", "/api/laporan-bnpb", sah, {"x-admin-token": "salah"})).s, 403);
   assert.equal((await DB.prepare("SELECT count(*) n FROM laporan_bnpb").first()).n, 0, "penolakan tidak boleh menulis apa pun");
 });
 
-test("laporan bnpb: simpan lalu baca kembali sama persis, simpan ulang menimpa", async () => {
+uji("laporan bnpb: simpan lalu baca kembali sama persis, simpan ulang menimpa", async () => {
   const r = await api("POST", "/api/laporan-bnpb", sah, ADMIN); assert.equal(r.s, 201, r.t);
   const b = await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-19", null, ADMIN);
   assert.equal(b.s, 200); assert.deepEqual(b.j.isi, sah.isi); assert.equal(b.h.get("cache-control"), "no-store");
@@ -54,7 +54,7 @@ test("laporan bnpb: simpan lalu baca kembali sama persis, simpan ulang menimpa",
   assert.equal((await api("GET", "/api/laporan-bnpb?jenis=presiden&tanggal=2026-10-19", null, ADMIN)).s, 404, "jenis lain terpisah");
 });
 
-test("laporan bnpb: isian salah DITOLAK 400/413 dan tidak tersimpan", async () => {
+uji("laporan bnpb: isian salah DITOLAK 400/413 dan tidak tersimpan", async () => {
   const cobaan = [[{...sah, jenis: "mingguan"}, "jenis asing"], [{...sah, tanggal: "2026-02-30"}, "tanggal mustahil"], [{...sah, tanggal: "19-10-2026"}, "format tanggal"],
     [{...sah, isi: []}, "isi larik"], [{...sah, isi: {"Kunci Aneh": 1}}, "nama kolom"], [{...sah, isi: {__proto__x: 1}}, "kolom garis bawah"],
     [{...sah, isi: {a: "x".repeat(2001)}}, "teks terlalu panjang"], [{...sah, isi: {a: Array(201).fill(0)}}, "larik terlalu panjang"],
@@ -65,16 +65,16 @@ test("laporan bnpb: isian salah DITOLAK 400/413 dan tidak tersimpan", async () =
   assert.equal((await DB.prepare("SELECT count(*) n FROM laporan_bnpb WHERE tanggal = '2026-10-01'").first()).n, 0);
 });
 
-test("laporan bnpb: karakter kontrol dan bidi dibuang server", async () => {
+uji("laporan bnpb: karakter kontrol dan bidi dibuang server", async () => {
   assert.equal((await api("POST", "/api/laporan-bnpb", {...sah, tanggal: "2026-10-02", isi: {penyaji: "A‮B\u0007C"}}, ADMIN)).s, 201);
   assert.equal((await api("GET", "/api/laporan-bnpb?jenis=harian&tanggal=2026-10-02", null, ADMIN)).j.isi.penyaji, "ABC");
 });
 
-test("laporan bnpb: POST dari origin lain ditolak (CSRF)", async () => {
+uji("laporan bnpb: POST dari origin lain ditolak (CSRF)", async () => {
   assert.equal((await api("POST", "/api/laporan-bnpb", sah, {...ADMIN, origin: "https://jahat.example"})).s, 403);
 });
 
-test("akun AKUN_SITUS_<NAMA>: masuk lewat form, sesi membuka API laporan; AKUN_SITUS lama tetap berlaku", async () => {
+uji("akun AKUN_SITUS_<NAMA>: masuk lewat form, sesi membuka API laporan; AKUN_SITUS lama tetap berlaku", async () => {
   for (const [u, p] of [["dirga", "Sandi!!2026"], ["lama@x", "sandi-lama"]]) {
     const m = await mf.dispatchFetch("https://centurisk97.id/admin/masuk", {method: "POST", headers: {"content-type": "application/x-www-form-urlencoded"}, body: `email=${encodeURIComponent(u)}&sandi=${encodeURIComponent(p)}`, redirect: "manual"});
     assert.equal(m.status, 303, `${u} harus bisa masuk`);
@@ -85,7 +85,7 @@ test("akun AKUN_SITUS_<NAMA>: masuk lewat form, sesi membuka API laporan; AKUN_S
   assert.notEqual(salah.status, 303, "sandi salah tidak boleh masuk");
 });
 
-test("halaman /laporan-bnpb: centurisk97.id wajib masuk; alamat lain 404", async () => {
+uji("halaman /laporan-bnpb: centurisk97.id wajib masuk; alamat lain 404", async () => {
   const r = await mf.dispatchFetch("https://centurisk97.id/laporan-bnpb", {redirect: "manual"});
   assert.equal(r.status, 303); assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Flaporan-bnpb/);
   assert.equal((await mf.dispatchFetch("https://pantau.terasurban.com/laporan-bnpb", {redirect: "manual"})).status, 404);

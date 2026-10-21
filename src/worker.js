@@ -4,7 +4,7 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
-import {perbaruiTitik, titikTerbaru} from "./titik.js";
+import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
@@ -13,14 +13,16 @@ import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
-import {bersihkanBnpb} from "./bnpb.js";
+import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
+import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
+import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
-import {RUTE_RELAWAN} from "./relawan.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
-import {RUTE_MEJA} from "./meja.js";
+import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
+import {RUTE_PENGINGAT, buatPengingat} from "./pengingat.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
@@ -52,14 +54,14 @@ const kelas = (j, s) => JENIS[j]?.sub[s]?.[1];
 /* ---------------- teks publik: buang tautan & nomor, tolak kata kasar ---------------- */
 const RE_URL = /\b(?:https?:\/\/|www\.)\S+|\b[\w-]+(?:\.[\w-]+)*\.(?:com|net|org|id|co|io|xyz|me|info|biz|site|online|link|ly|gl|app|top|club|shop|store|click)(?:\/\S*)?/gi;
 const RE_HP = /(?:\+|\b)\d(?:[\s.\-()]?\d){8,}/g;
-export function bersihTeks(t) {
+export function bersihTeks(t, maks = MAKS_TEKS) {
   const asli = String(t ?? "").normalize("NFC").replace(/[\u0000-\u0008\u000B-\u001F\u007F​-‏‪-‮]/g, "");
-  if (asli.length > MAKS_TEKS) return {galat: `teks ${asli.length} karakter, maksimal ${MAKS_TEKS}`};
+  if (asli.length > maks) return {galat: `teks ${asli.length} karakter, maksimal ${maks}`};
   const kecil = asli.toLowerCase();
   if (KASAR.some(k => new RegExp(`(^|[^a-z])${k}([^a-z]|$)`).test(kecil))) return {galat: "teks memuat kata kasar"};
   if (/(.)\1{7,}/u.test(asli)) return {galat: "teks berisi karakter berulang (spam)"};
   const teks = asli.replace(RE_URL, "[tautan dihapus]").replace(RE_HP, "[nomor dihapus]").replace(/[ \t]+/g, " ").replace(/\n{3,}/g, "\n\n").trim();
-  return {teks: teks.slice(0, MAKS_TEKS)};
+  return {teks: teks.slice(0, maks)};
 }
 
 /* ---------------- isian tambahan per jenis -> objek detail yang sudah bersih ---------------- */
@@ -168,17 +170,29 @@ export async function turnstileOK(env, token, req) {
 }
 
 /* ---------------- baris -> GeoJSON (tanpa kontak, tanpa hash) ---------------- */
-const KOLOM = "l.id, l.jenis, l.sub, l.bahaya, l.lat, l.lon, l.teks, l.detail, l.jumlah, l.dibuat, l.kedaluwarsa, l.selesai, l.benar, l.salah, l.dekat_titik_panas, l.laci, l.induk, l.durasi_buruk";
+const KOLOM = "l.id, l.jenis, l.sub, l.bahaya, l.lat, l.lon, l.teks, l.detail, l.jumlah, l.dibuat, l.kedaluwarsa, l.selesai, l.benar, l.salah, l.dekat_titik_panas, l.laci, l.induk, l.durasi_buruk, w.prov, w.kab";
 const fitur = (r, kini) => ({type: "Feature", id: r.id, geometry: {type: "Point", coordinates: [r.lon, r.lat]},
   properties: {id: r.id, jenis: r.jenis, sub: r.sub, bahaya: r.bahaya, teks: r.teks, detail: JSON.parse(r.detail || "{}"), jumlah: r.jumlah,
     dibuat: r.dibuat, kedaluwarsa: r.kedaluwarsa, selesai: !!r.selesai, benar: r.benar, salah: r.salah, titik_panas: !!r.dekat_titik_panas,
-    laci: r.laci, induk: r.induk, durasi_buruk: r.durasi_buruk, kontak: !!r.ada_kontak, kedaluwarsa_lewat: r.kedaluwarsa <= kini}});
+    laci: r.laci, induk: r.induk, durasi_buruk: r.durasi_buruk, prov: r.prov ?? null, kab: r.kab ?? null, kontak: !!r.ada_kontak, kedaluwarsa_lewat: r.kedaluwarsa <= kini}});
 const ADA_KONTAK = kini => `EXISTS (SELECT 1 FROM kontak k WHERE k.laporan_id = l.id AND k.dibuat > ${Math.floor(kini - KONTAK_UMUR)}) AS ada_kontak`;
 
 async function rantai(env, id) {
   return (await env.DB.prepare(`WITH RECURSIVE r(id, induk, d) AS (SELECT id, induk, 0 FROM laporan WHERE id = ?
     UNION ALL SELECT l.id, l.induk, r.d + 1 FROM laporan l JOIN r ON l.id = r.induk WHERE r.d < 50)
     SELECT l.id, l.sub, l.dibuat, l.teks, l.disembunyikan, r.d FROM r JOIN laporan l ON l.id = r.id ORDER BY r.d`).bind(id).all()).results;
+}
+
+/* wilayah laporan (migrasi 0027). Worker bisa terbit SEBELUM migrasinya diterapkan di D1 produksi: tanpa tabel itu
+   Lapor Warga tetap jalan dengan prov/kab null (subkueri kosong menggantikan JOIN), bukan 500. */
+const GABUNG_WIL = "LEFT JOIN laporan_wilayah w ON w.laporan_id = l.id";
+async function denganWilayah(env, sql, ikat, cara) {
+  try { return await env.DB.prepare(sql).bind(...ikat)[cara](); }
+  catch (e) {
+    if (!/no such table: laporan_wilayah/i.test(String(e?.message || e))) throw e;
+    if (sql.includes("w.prov = ?")) return null;   // filter ?prov= tanpa tabel wilayah: pemanggil menjawab 503, bukan daftar kosong yang menyesatkan
+    return env.DB.prepare(sql.replace(GABUNG_WIL, "LEFT JOIN (SELECT NULL laporan_id, NULL prov, NULL kab) w ON 0")).bind(...ikat)[cara]();
+  }
 }
 
 /* ================================================================ rute */
@@ -200,13 +214,18 @@ async function daftar(env, url, kini) {
     where += ` AND l.jenis IN (${js.map(() => "?").join(",")})`; ikat.push(...js);
   }
   if (q.get("bahaya")) { if (!BAHAYA[q.get("bahaya")]) return gagal(400, "bahaya tidak dikenal"); }
-  const r = await env.DB.prepare(`SELECT ${KOLOM}, ${ADA_KONTAK(kini)} FROM laporan l WHERE ${where} ORDER BY l.dibuat DESC LIMIT ${MAKS_DAFTAR + 1}`).bind(...ikat).all();
+  if (q.has("prov")) {
+    if (!/^\d{2}$/.test(q.get("prov"))) return gagal(400, "prov harus 2 digit kode provinsi");
+    where += " AND w.prov = ?"; ikat.push(q.get("prov"));
+  }
+  const r = await denganWilayah(env, `SELECT ${KOLOM}, ${ADA_KONTAK(kini)} FROM laporan l ${GABUNG_WIL} WHERE ${where} ORDER BY l.dibuat DESC LIMIT ${MAKS_DAFTAR + 1}`, ikat, "all");
+  if (r === null) return gagal(503, "filter provinsi belum aktif (migrasi 0027_laporan_wilayah belum diterapkan)");
   const rows = r.results;
   return json({type: "FeatureCollection", terpotong: rows.length > MAKS_DAFTAR, kini, features: rows.slice(0, MAKS_DAFTAR).map(x => fitur(x, kini))});
 }
 
 async function rincian(env, id, kini) {
-  const r = await env.DB.prepare(`SELECT ${KOLOM}, l.disembunyikan, ${ADA_KONTAK(kini)} FROM laporan l WHERE l.id = ?`).bind(id).first();
+  const r = await denganWilayah(env, `SELECT ${KOLOM}, l.disembunyikan, ${ADA_KONTAK(kini)} FROM laporan l ${GABUNG_WIL} WHERE l.id = ?`, [id], "first");
   if (!r || r.disembunyikan) return gagal(404, "laporan tidak ada atau disembunyikan");
   const f = fitur(r, kini);
   f.properties.riwayat = (await rantai(env, id)).filter(x => x.d > 0 && !x.disembunyikan).map(x => ({id: x.id, sub: x.sub, dibuat: x.dibuat, teks: x.teks}));
@@ -215,7 +234,7 @@ async function rincian(env, id, kini) {
   return json(f);
 }
 
-async function buat(env, req, url, kini) {
+async function buat(env, req, url, kini, ctx) {
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
   const o = b.o, J = JENIS[o.jenis];
   if (!J) return gagal(400, `jenis '${o.jenis}' tidak dikenal`);
@@ -286,7 +305,32 @@ async function buat(env, req, url, kini) {
     console.error("simpan laporan", bahaya, o.jenis, e?.message);
     return gagal(503, "Laporan belum bisa disimpan. Coba lagi beberapa menit lagi.", {"retry-after": "600"});
   }
+  // wilayah dihitung SESUDAH jawaban (poligon 700 KB di-parse sekali per isolat; di luar jalur kritis Workers Free 10 ms). Gagal = isi-mundur cron menyusul.
+  const wil = tulisWilayah(env, id, lat, lon, "masuk").catch(e => console.error("wilayah laporan", e?.message));
+  if (ctx?.waitUntil) ctx.waitUntil(wil); else await wil;
   return json({id, token, induk, durasi_buruk: durasi, titik_panas: !!api.dekat, laci: api.laci}, 201);
+}
+
+/* C5: prov/kab laporan dari poligon provinsi + kecamatan terdekat (titik.js). Di luar wilayah: buat() tak menulis baris; isi-mundur menulis penanda tak_ada. */
+async function tulisWilayah(env, id, lat, lon, sumber) {
+  const w = cariWilayah(await wilayah(env), lat, lon);   // "kodeProv|Kabupaten|Kecamatan"
+  if (!w) return false;
+  const [prov, kab] = w.split("|");
+  await env.DB.prepare("INSERT OR IGNORE INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES (?, ?, ?, ?)").bind(id, prov, kab || null, sumber).run();
+  return true;
+}
+
+/* Isi mundur (cron menit 17): paling banyak 50 laporan tanpa baris wilayah per panggilan, terbaru dulu. Titik di laut dapat penanda tak_ada agar tidak diulang. */
+export async function isiWilayahLaporan(env, kini = Date.now()) {
+  const r = (await env.DB.prepare(`SELECT l.id, l.lat, l.lon FROM laporan l WHERE NOT EXISTS (SELECT 1 FROM laporan_wilayah w WHERE w.laporan_id = l.id)
+    ORDER BY l.dibuat DESC LIMIT 50`).all()).results;
+  if (!r.length) return {diproses: 0, terisi: 0};
+  let terisi = 0;
+  for (const x of r) {
+    if (await tulisWilayah(env, x.id, x.lat, x.lon, "mundur")) terisi++;
+    else await env.DB.prepare("INSERT OR IGNORE INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES (?, NULL, NULL, 'tak_ada')").bind(x.id).run();
+  }
+  return {diproses: r.length, terisi};
 }
 
 async function suara(env, req, id, kelompok, kini) {
@@ -363,7 +407,7 @@ async function admin(env, req, url, id, kini) {
     if (url.searchParams.get("audit") === "1")
       return json((await env.DB.prepare("SELECT waktu, moderator, aksi, laporan_id, jumlah, alasan FROM audit_moderasi ORDER BY id DESC LIMIT 300").all()).results);
     const tersembunyi = url.searchParams.get("tersembunyi") === "1";
-    const r = await env.DB.prepare(`SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`).all();
+    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`, [], "all");
     return json(r.results.map(x => ({...x, detail: JSON.parse(x.detail)})));
   }
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
@@ -454,10 +498,13 @@ const RUTE = {
   ...RUTE_FOTO,
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
-  ...RUTE_RELAWAN,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
+  ...RUTE_SITREP,   // arsip sitrep harian (src/sitrep.js)
+  ...RUTE_BNPB,   // Ruang Koordinasi BNPB (docs/bnpb/ARSITEKTUR.md)
+  ...RUTE_RELAWAN,
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
+  ...RUTE_PENGINGAT,   // antrean pengingat harian Ruang Koordinasi (src/pengingat.js)
   ...RUTE_LAPORAN_BNPB,   // Laporan Harian & Paparan Presiden BNPB yang diketik tim (public/laporan_bnpb*)
   ...RUTE_RUMAH_RUSAK,   // rumah rusak RB/RS/RR per rumah, akun atau regu berkode (public/rumah_rusak*)
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
@@ -485,6 +532,8 @@ async function rute(env, req, url, ctx) {
    Hanya rute HTML di daftar ini yang memanggil Worker; JS/CSS/JSON/gambar tetap aset statis tanpa pemanggilan Worker.
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
+const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
@@ -582,6 +631,12 @@ export default {
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
+    /* Ruang Koordinasi: berkas /bnpb/*.html hanya lewat jalur bersihnya (halamanBnpbPublik memberi CSP ketat, no-store untuk halaman berkode);
+       dibuka langsung = 301 ke jalur bersih (fragmen #k= ikut dibawa peramban), berkas tak dikenal = 404 */
+    if (url.pathname.startsWith("/bnpb/") && url.pathname.endsWith(".html")) {
+      const ke = BNPB_BERSIH[url.pathname.slice(6, -5)];
+      return ke ? new Response(null, {status: 301, headers: {location: ke + url.search, "cache-control": "no-store"}}) : new Response("Tidak ditemukan", {status: 404});
+    }
     if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)
     if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req))
@@ -597,7 +652,7 @@ export default {
         if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
       }
       if (p.length === 0 && req.method === "GET") return cacheTepi(req, ctx, 30, () => daftar(env, url, kini));
-      if (p.length === 0 && req.method === "POST") return buat(env, req, url, kini);
+      if (p.length === 0 && req.method === "POST") return buat(env, req, url, kini, ctx);
       if (p[0] === "konfig" && req.method === "GET") return cacheTepi(req, ctx, 300, () => json({turnstile: env.TURNSTILE_SITEKEY || null, batas: BATAS}));
       if (p[0] === "admin" && p.length === 1 && req.method === "GET") return admin(env, req, url, null, kini);
       const id = p[0];
@@ -626,6 +681,8 @@ export default {
       if (m === 15 && w.getUTCHours() % 3 === 0) try { console.log("titik", JSON.stringify(await perbaruiTitik(env))); } catch (e) { console.error("titik", e?.message); }
       /* antrean panggilan perusahaan: invokasi sendiri (menit 16, sesudah titik di menit 15) supaya parse konsesi2026/<prov>.json punya anggaran CPU sendiri */
       if (m === 16 && w.getUTCHours() % 3 === 0) try { console.log("antrean", JSON.stringify(await buatAntrean(env, sekarang))); } catch (e) { console.error("antrean", e?.message); }
+      if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
+      if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -652,7 +709,11 @@ async function bersihSemua(env, sekarang) {
     await bersihkan(env);
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
+    try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
+    try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
+    try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari
+    try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan

@@ -366,10 +366,10 @@ export function pesanPanggilan(p, batas, tambahan = "") {
   return {subject: `[Posko Karhutla] ${p.titik_n} titik panas di konsesi ${p.nama_pt} (${p.tanggal})`, teks,
     html: `<p style="font:14px/1.55 Arial,sans-serif;color:#1d2733">${esc(isi)}</p>${tambahan ? `<p style="font:14px/1.55 Arial,sans-serif;color:#1d2733">${esc(tambahan)}</p>` : ""}`};
 }
-async function kirimEmail(env, ke, m) {
+export async function kirimEmail(env, ke, m) {   // ke = satu alamat atau larik (pengingat.js mengirim ke EMAIL_TO)
   const reply = (env.EMAIL_TO || "").split(",").map(s => s.trim()).filter(Boolean)[0];
   const r = await fetch("https://api.resend.com/emails", {method: "POST", signal: AbortSignal.timeout(8000), headers: {authorization: `Bearer ${env.EMAIL_API_KEY}`, "content-type": "application/json"},
-    body: JSON.stringify({from: env.EMAIL_FROM, to: [ke], ...(reply ? {reply_to: reply} : {}), subject: m.subject, text: m.teks, html: m.html})});
+    body: JSON.stringify({from: env.EMAIL_FROM, to: [].concat(ke), ...(reply ? {reply_to: reply} : {}), subject: m.subject, text: m.teks, html: m.html})});
   if (!r.ok) { r.body?.cancel(); throw new Error(`Resend HTTP ${r.status}`); }   // isi balasan tidak ikut log/respons
 }
 const KOLOM_PANGGILAN = `p.id, p.tanggal, p.perusahaan_id, p.nama_pt, p.prov, p.kab, p.titik_n, p.terdeteksi, p.lat, p.lon, p.status, p.dipanggil_pada, p.batas, p.direspons_pada, p.dicek_pada,

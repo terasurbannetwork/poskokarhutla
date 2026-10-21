@@ -1,0 +1,32 @@
+/* Admin Alun-alun: kartu statistik, pil, formulir. Token, tabel (.ad-tabel), tab (.ad-tabs), tombol (.ad-tombol) dari admin.css. */
+.ax-isi{display:grid;gap:14px;margin-top:14px}
+.ax-pesan{margin:10px 2px 0;font-weight:700;font-size:13px;min-height:1.2em}
+.ax-pesan.ok{color:var(--c4)}.ax-pesan.galat{color:var(--c1)}
+.ax-stat{display:grid;gap:12px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.ax-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:13px 16px;display:grid;gap:3px;min-width:0}
+.ax-kartu b{font:800 24px/1.1 var(--display);font-variant-numeric:tabular-nums}
+.ax-kartu span{color:var(--ink2);font-size:12px;font-weight:700;display:flex;align-items:center;gap:6px}
+.ax-kartu.peringatan b{color:var(--c1)}
+.ax-ikon{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ax-pil{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:color-mix(in srgb,var(--pil,var(--c5)) 15%,transparent);color:color-mix(in srgb,var(--pil,var(--c5)) 78%,var(--ink))}
+.ax-pil.tanya{--pil:var(--c5)}.ax-pil.butuh_bantuan{--pil:var(--c1)}.ax-pil.info_lapangan{--pil:var(--c7)}.ax-pil.pengumuman{--pil:var(--navy2)}
+.ax-pil.tampil,.ax-pil.selesai{--pil:var(--c4)}.ax-pil.dilaporkan,.ax-pil.terbuka{--pil:var(--c2)}.ax-pil.tersembunyi{--pil:var(--c1)}.ax-pil.ditangani{--pil:var(--c6)}.ax-pil.dummy{--pil:var(--c6);font-size:10px;letter-spacing:.06em}
+.ax-pil.petugas{background:var(--gradien);color:#fff}
+.ax-isi .ad-tabel td{vertical-align:top}
+.ax-cuplik{max-width:420px;overflow-wrap:anywhere}
+.ax-cuplik small{display:block;color:var(--ink2);margin-top:2px}
+.ax-aksi{display:flex;gap:6px;flex-wrap:wrap}
+.ax-tua td:first-child{box-shadow:inset 3px 0 0 var(--c1)}
+.ax-form{display:grid;gap:10px}
+.ax-form label{display:grid;gap:4px;font-size:12px;font-weight:700;color:var(--ink2)}
+.ax-form input,.ax-form select,.ax-form textarea,.ax-sel{font:inherit;font-size:13px;color:var(--ink);background:var(--paper);border:1px solid var(--line);border-radius:10px;padding:8px 10px;width:100%;min-width:0}
+.ax-form textarea{min-height:90px}
+.ax-baris{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.ax-cek{display:flex!important;align-items:center;gap:8px;grid-auto-flow:column;justify-content:start}
+.ax-cek input{width:auto}
+.ax-panel{display:grid;gap:10px}
+.ax-balas{border-radius:12px;background:var(--soft);padding:9px 12px;display:grid;gap:6px}
+.ax-balas p{margin:0;white-space:pre-wrap;overflow-wrap:anywhere}
+.ax-meta{color:var(--ink2);font-size:12px;display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.ax-kosong{text-align:center;color:var(--ink2);font-weight:600;padding:24px 10px}
+@media (max-width:640px){.ax-cuplik{max-width:220px}.ad-tabs button{padding:0 10px}}

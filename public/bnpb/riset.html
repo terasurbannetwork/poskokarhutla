@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Riset kampus untuk kebijakan · Pantau Bencana</title>
+<meta name="description" content="Agenda riset BNPB, riset kampus mitra yang sedang berjalan atau selesai, dan katalog data terbuka dengan aturan sitasi.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/bnpb/riset.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Riset</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul"><h1>Riset kampus untuk kebijakan</h1></div>
+  <p id="pesan" class="bn-pesan galat" role="status"></p>
+  <section id="kartu" class="bn-grid rs-kartu" aria-label="Ringkasan"></section>
+
+  <section class="rs-sec" aria-labelledby="hAgenda">
+    <div class="rs-kepala"><h2 id="hAgenda">Agenda riset BNPB</h2>
+      <div class="rs-saring"><label class="bn-isian">Tema<select id="fTema"></select></label><label class="bn-isian">Bencana<select id="fBencana"></select></label></div></div>
+    <div id="agenda" class="bn-grid"></div>
+  </section>
+
+  <section class="rs-sec" aria-labelledby="hRiset">
+    <div class="rs-kepala"><h2 id="hRiset">Riset berjalan dan selesai</h2></div>
+    <div id="riset"></div>
+  </section>
+
+  <section class="rs-sec" aria-labelledby="hKatalog">
+    <div class="rs-kepala"><h2 id="hKatalog">Katalog data</h2></div>
+    <div id="katalog"></div>
+    <div class="bn-kartu rs-sitasi" id="sitasi"></div>
+  </section>
+
+  <section class="bn-kartu rs-ajak" aria-labelledby="hAjak">
+    <h2 id="hAjak"></h2>
+    <p id="ajakTeks"></p>
+  </section>
+</main>
+<script src="/bnpb/riset.js?v=1"></script>
+</body>
+</html>

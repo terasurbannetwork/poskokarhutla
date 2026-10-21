@@ -1,0 +1,27 @@
+/* Perkiraan kebutuhan musim (halaman publik). Token dan komponen dasar dari bnpb.css dan admin.css. Tanpa gaya inline (CSP). */
+.kb-kontrol{display:flex;gap:14px;align-items:center;flex-wrap:wrap;margin-bottom:14px}
+.kb-pilpil{display:flex;gap:8px;flex-wrap:wrap;flex:1;min-width:0}
+.kb-pilpil button{display:inline-flex;align-items:center;gap:7px;border:0;border-radius:999px;padding:8px 16px;font-weight:700;font-size:13px;cursor:pointer;background:var(--soft);color:var(--ink2)}
+.kb-pilpil button svg,.kb-ikon{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.kb-pilpil button[aria-pressed="true"]{background:var(--gradien);color:#fff;box-shadow:0 0 0 1px color-mix(in srgb,var(--emas) 50%,transparent)}
+.kb-pilpil button:active,.ad-seg button:active{transform:scale(.97)}
+.ad-seg button{border:0;border-radius:999px;padding:7px 14px;font-weight:700;font-size:12.5px;cursor:pointer;background:transparent;color:var(--ink2)}
+.ad-seg button[aria-pressed="true"]{background:var(--card);color:var(--ink);box-shadow:var(--bayang)}
+.kb-perkiraan{--pil:var(--c2)}
+.kb-asumsi{--pil:var(--c5)}
+.kb-nino{--pil:var(--c1)}
+.kb-asumsi-panel h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px}
+.kb-kartu-baris{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-bottom:14px}
+.kb-kartu-baris .bn-kartu{display:grid;gap:4px;align-content:start}
+.kb-kartu-baris .kb-utama{grid-column:span 2}
+.kb-kartu-baris .kb-ikon-kartu{color:var(--pil,var(--c5))}
+.kb-kartu-baris .bn-angka{overflow-wrap:anywhere}
+.kb-rincian{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.kb-tabel .ad-tabel th button{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px}
+.kb-tabel .ad-tabel td:first-child{font-weight:700}
+.kb-tabel .ad-tabel .n{text-align:right}
+.kb-asumsi-panel{margin-top:14px;display:grid;gap:12px}
+.kb-asumsi-panel .ad-tabel td:nth-child(4){font-size:12px;color:var(--ink2)}
+.kb-rumus{margin:0;padding-left:18px;display:grid;gap:5px;font-size:12.5px;color:var(--ink2)}
+.kb-rumus b{color:var(--ink)}
+@media (max-width:640px){.kb-kartu-baris .kb-utama{grid-column:auto}.kb-tabel .ad-tabel .n{text-align:right}}

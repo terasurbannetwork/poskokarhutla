@@ -1,7 +1,7 @@
 /* Ruang Koordinasi BNPB: gaya bersama halaman publik (/bnpb, /relawan, /alun-alun, /riset, /risiko, /sitrep, /meja).
    Token, header, tabel, pil, tombol dari admin.css (satu bahasa visual dengan panel admin); di sini hanya tambahan halaman publik.
    Modul menambah gayanya di berkas .css sendiri, tidak menyalin isi berkas ini. */
-@import url("/admin/admin.css?v=4");
+@import url("/admin/admin.css?v=6");
 
 .bn-wrap{max-width:1440px;margin:0 auto;padding:20px 24px 48px}
 .bn-judul{display:flex;align-items:center;gap:12px;flex-wrap:wrap;margin:6px 0 16px}
@@ -10,6 +10,9 @@
 
 /* kartu gaya Insight */
 .bn-grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(280px,1fr))}
+/* deret angka ringkas: kartu kecil, dua kolom di ponsel (bukan satu angka per layar) */
+.bn-grid.bn-ringkas{grid-template-columns:repeat(auto-fill,minmax(170px,1fr))}
+@media (max-width:640px){.bn-grid.bn-ringkas{grid-template-columns:1fr 1fr;gap:10px}.bn-ringkas .bn-kartu{padding:12px 14px}}
 .bn-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:16px 18px;min-width:0}
 .bn-kartu h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin-bottom:10px}
 .bn-angka{font:800 28px/1.1 var(--display);letter-spacing:-.02em}
@@ -49,4 +52,4 @@
 .bn-alur li[aria-current]{background:var(--navy);color:#fff}
 .bn-alur li.lewat{background:color-mix(in srgb,var(--c4) 16%,transparent);color:color-mix(in srgb,var(--c4) 80%,var(--ink))}
 
-@media (max-width:640px){.bn-wrap{padding:14px 16px 40px}.bn-judul h1{font-size:19px}.bn-angka{font-size:24px}}
+@media (max-width:640px){.bn-pil{white-space:normal;max-width:100%}.bn-wrap{padding:14px 16px 40px}.bn-judul h1{font-size:19px}.bn-angka{font-size:24px}}

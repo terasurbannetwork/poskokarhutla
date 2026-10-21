@@ -13,14 +13,19 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=4" rel="stylesheet">
+<link href="/admin/admin.css?v=6" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"]};
+/* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum"];
+const subBnpb = aktif => BNPB.includes(aktif) ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${BNPB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
 const atas = aktif => `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>
-  <nav>${Object.entries(HAL).map(([k, [ik, l]]) => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
+  <nav>${Object.entries(HAL).filter(([k]) => !BNPB.includes(k) || k === BNPB[0]).map(([k, [ik, l]]) => BNPB.includes(k)
+    ? `<a href="/admin/${k}" ${BNPB.includes(aktif) ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
+    : `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
@@ -28,6 +33,7 @@ const halaman = (k, memuat, ekor) => `${kepala(`${HAL[k][1]} · Pantau Bencana`)
 <body>
 ${atas(k)}
 <main class="ad-wrap">
+  ${subBnpb(k)}
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
 </main>
@@ -80,6 +86,7 @@ export const halamanPosko = () => halaman("posko", "Memuat Ruang Posko…", `<li
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
 export const halamanBnpb = k => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
+<script src="/admin/bersama.js?v=1"></script>
 <script src="/admin/${k}.js?v=1"></script>`);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
@@ -96,7 +103,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=4" rel="stylesheet">
+<link href="/admin/admin.css?v=6" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>

@@ -1,0 +1,59 @@
+/* Halaman publik riset (/riset) dan halaman mitra (/riset/mitra). Token dan tabel dari bnpb.css -> admin.css. */
+.rs-kartu{grid-template-columns:repeat(auto-fit,minmax(170px,1fr));margin-bottom:6px}
+.rs-stat{display:grid;gap:8px;align-content:start}
+.rs-sec{margin-top:26px;display:grid;gap:12px}
+.rs-kepala{display:flex;align-items:flex-end;gap:12px 18px;flex-wrap:wrap}
+.rs-kepala h2{font:800 18px var(--display);letter-spacing:-.01em}
+.rs-saring{display:flex;gap:10px;flex-wrap:wrap;margin-left:auto}
+.rs-saring .bn-isian{min-width:180px}
+.rs-pilpil{display:flex;gap:6px;flex-wrap:wrap}
+.rs-agenda{display:grid;gap:8px;align-content:start;border-left:4px solid var(--line)}
+.rs-agenda.p1{border-left-color:var(--c1)}.rs-agenda.p2{border-left-color:var(--c3)}.rs-agenda.p3{border-left-color:var(--ink3)}
+.rs-agenda h3{font:800 15px/1.35 var(--display)}
+.rs-latar{margin:0;color:var(--ink2);font-size:13.5px;display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden}
+.rs-luaran-harap{margin:0;font-size:12.5px;color:var(--ink2)}
+.rs-kosong{margin:0;padding:22px;text-align:center;color:var(--ink2);background:var(--card);border-radius:16px;box-shadow:var(--bayang);grid-column:1/-1}
+.rs-redup{display:block;color:var(--ink2);font-size:12px;font-weight:500}
+.rs-judul b{display:block;font-weight:700}
+.ad-tabel td{vertical-align:top}
+.rs-luaran{display:flex;flex-wrap:wrap;gap:6px}
+.ad-tabel td.rs-luaran{display:table-cell}
+.rs-chip{display:inline-flex;align-items:center;gap:5px;margin:0 6px 6px 0;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink);font-size:12px;font-weight:600;text-decoration:none;max-width:320px}
+.rs-chip svg{width:13px;height:13px;flex:none}
+a.rs-chip:hover{background:color-mix(in srgb,var(--c5) 16%,var(--soft))}
+.rs-urut{all:unset;cursor:pointer;color:#fff;font-weight:800;letter-spacing:inherit;text-transform:inherit}
+.rs-urut:focus-visible{outline:2px solid var(--emas);outline-offset:3px;border-radius:4px}
+.rs-hal{display:flex;gap:12px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:6px;font-size:13px;color:var(--ink2);font-weight:600}
+.bn-pil svg,.rs-chip svg,.ad-tombol svg,.bn-tombol svg{fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.bn-pil.rs-biru{--pil:var(--c5)}.bn-pil.rs-ungu{--pil:var(--c6)}.bn-pil.rs-hijau{--pil:var(--c4)}.bn-pil.rs-merah{--pil:var(--c1)}.bn-pil.rs-kuning{--pil:#b8860b}.bn-pil.rs-abu{--pil:var(--ink3)}
+.rs-sitasi{display:grid;gap:10px;justify-items:start;margin-top:4px}
+.rs-kutip{margin:0;padding:10px 12px;border-radius:10px;background:var(--soft);font:13px/1.5 ui-monospace,Menlo,Consolas,monospace;overflow-wrap:anywhere;width:100%}
+.rs-ajak{margin-top:26px;display:grid;gap:8px}
+.rs-ajak h2 svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.rs-ajak p{margin:0}
+@media (max-width:760px){.rs-saring{margin-left:0;width:100%}.rs-saring .bn-isian{flex:1;min-width:140px}.rs-chip{max-width:100%}.ad-tabel td.rs-luaran{display:flex}}
+
+/* ---- halaman mitra ---- */
+.mt-masuk{max-width:520px;margin:40px auto;display:grid;gap:12px}
+.mt-kepala{display:flex;gap:10px 14px;flex-wrap:wrap;align-items:center;margin-bottom:6px}
+.mt-kepala h2{font:800 18px var(--display)}
+.mt-blok{margin-top:22px;display:grid;gap:12px}
+.mt-form{display:grid;gap:12px}
+.mt-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.mt-dlg{border:0;border-radius:18px;padding:0;width:min(980px,96vw);max-height:92vh;background:var(--card);color:var(--ink);box-shadow:0 30px 80px -20px rgb(0 0 0 / .5)}
+.mt-dlg::backdrop{background:rgb(11 20 40 / .55)}
+.mt-dlg-isi{padding:18px 20px 22px;display:grid;gap:14px;overflow:auto;max-height:92vh}
+.mt-dlg-kepala{display:flex;gap:10px;align-items:flex-start}.mt-dlg-kepala h2{font:800 17px/1.35 var(--display);flex:1}
+.mt-bagian{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line)}
+.mt-bagian h3{font:800 11px var(--font);letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)}
+.mt-daftar{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.mt-daftar li{padding:9px 12px;border-radius:12px;background:var(--soft);font-size:13.5px;display:grid;gap:3px}
+.mt-daftar .rs-redup{display:block}
+.mt-info{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:10px}
+.mt-info div{display:grid;gap:2px;font-size:13.5px}.mt-info b{font-size:11px;letter-spacing:.07em;text-transform:uppercase;color:var(--ink2)}
+.mt-catatan{padding:10px 14px;border-radius:12px;background:color-mix(in srgb,var(--c3) 18%,var(--card));font-weight:600}
+.mt-kepala svg,.mt-dlg svg,.bn-tombol svg,.mt-masuk svg,.mt-aksi svg{width:16px;height:16px;flex:none;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.mt-kepala h2{display:flex;align-items:center;gap:8px}
+.ad-bulat svg{width:18px;height:18px}
+.bn-tombol{display:inline-flex;align-items:center;gap:6px}
+.mt-kepala .bn-aksi{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
