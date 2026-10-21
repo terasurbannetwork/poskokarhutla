@@ -1299,6 +1299,7 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di *.workers.dev (pemilik, 17 Okt 2026) */
 </style>
 <link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/inti/peringatan-berita.css">
 <link href="lapisan5.css" rel="stylesheet">
 <link href="dampak.css" rel="stylesheet">
 <link href="ringkasan.css" rel="stylesheet">
@@ -1529,7 +1530,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
   </section>
 
   <!-- ================= KEPUTUSAN ================= -->
-  <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap" id="insight"></div>
+  <section class="page scroll" id="p-insight" aria-label="Insight karhutla"><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div>
     <!-- tab Kompleks digabung ke Insight (pemilik, 14 Okt 2026): tabel kompleks & prioritas di bawah kartu Insight -->
     <div class="wrap" id="insightKompleks"><div id="prioritas"></div><div id="kompleks"></div></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita karhutla"><div class="wrap" id="berita"></div></section>
@@ -1558,6 +1559,8 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 <script src="/inti/tip.js"></script>
 <script src="/inti/peluang.js"></script>
 <script src="/inti/tabel.js"></script>
+<script src="/inti/peringatan-berita.js"></script>
+<script>PeringatanBerita.pasang("#pbBerita","karhutla")</script>
 <script>
 "use strict";
 /* ================================================================ util */

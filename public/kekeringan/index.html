@@ -46,6 +46,7 @@
 <link rel="stylesheet" href="../inti/berita.css">
 <link rel="stylesheet" href="../foto.css">
 <link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="../inti/peringatan-berita.css">
 <link rel="stylesheet" href="kekeringan.css">
 </head>
 <body>
@@ -110,7 +111,7 @@
     </div>
   </section>
 
-  <section class="page scroll" id="p-insight" aria-label="Insight kekeringan"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-insight" aria-label="Insight kekeringan"><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita kekeringan"><div class="wrap" id="berita"></div></section>
   <section class="page scroll" id="p-tren" aria-label="Tren kekeringan"><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak kekeringan"><div class="wrap" id="dampak"></div></section>
@@ -127,6 +128,8 @@
 <script src="../inti/tip.js"></script>
 <script src="../inti/peluang.js"></script>
 <script src="../inti/tabel.js"></script>
+<script src="../inti/peringatan-berita.js"></script>
+<script>PeringatanBerita.pasang("#pbBerita","kekeringan")</script>
 <script src="app.js"></script>
 <script src="peta.js"></script>
 <script src="insight.js"></script>

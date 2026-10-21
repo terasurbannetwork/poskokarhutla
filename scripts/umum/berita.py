@@ -141,7 +141,7 @@ PROV_EN = {"north sumatra": "12", "west sumatra": "13", "south sumatra": "16", "
 PROV_SINGKAT = {"kalteng": "62", "kalbar": "61", "kalsel": "63", "kaltim": "64", "kaltara": "65", "sumsel": "16", "sumut": "12",
                 "sumbar": "13", "sulsel": "73", "sulteng": "72", "sultra": "74", "sulut": "71", "sulbar": "76", "jabar": "32",
                 "jateng": "33", "jatim": "35", "ntt": "53", "ntb": "52", "babel": "19", "kepri": "21", "diy": "34",
-                "yogyakarta": "34", "jakarta": "31", "malut": "82", "bangka belitung": "19", "papua selatan": "93"}
+                "yogyakarta": "34", "dki": "31", "dki jakarta": "31", "jakarta": "31", "pabar": "92", "papbar": "92", "malut": "82", "bangka belitung": "19", "papua selatan": "93"}
 KAB_SINGKAT = {
     "oki": "Ogan Komering Ilir", "oku": "Ogan Komering Ulu", "oku timur": "Ogan Komering Ulu Timur", "okut": "Ogan Komering Ulu Timur",
     "oku selatan": "Ogan Komering Ulu Selatan", "okus": "Ogan Komering Ulu Selatan", "muba": "Musi Banyuasin",
@@ -158,7 +158,7 @@ KAB_SINGKAT = {
     "bovendigoel": "Boven Digoel", "kota baru": "Kotabaru", "labuhan batu": "Labuhanbatu",
 }
 # nama kabupaten yang juga sungai/kata umum: hanya diterima bila provinsinya disebut atau ada awalan "kabupaten"
-KAB_LEMAH = {"kapuas", "landak", "siak", "kampar", "musi", "padang", "malaka", "banjar", "batu", "solok", "agam", "toba",
+KAB_LEMAH = {"kapuas", "landak", "siak", "kampar", "musi", "malaka", "banjar", "batu", "agam", "toba", "seribu",
              "belu", "alor", "ende", "karo", "tebo", "bungo", "paser", "kotabaru", "kota baru", "seruyan", "katingan",
              "lamandau", "melawi", "sekadau", "sanggau", "kerinci", "merangin", "mappi", "asmat", "malinau", "tapin",
              "balangan", "tabalong", "nias", "dairi", "samosir", "pasaman", "sijunjung"}
@@ -168,6 +168,21 @@ GENERIK = set("kota tengah barat timur utara selatan hulu hilir ilir ulu baru la
               "karang lima puluh empat tiga dua satu kepulauan induk pusat mandiri sejahtera bersatu damai sentosa kencana merdeka "
               "bakti setia abadi kuala api asap hutan lahan hujan sawit bandar kuta batang talang tebing binjai medan".split())
 NEGARA = {"indonesia"}
+# kata sesudah nama wilayah yang membuatnya bukan wilayah ("padang rumput", "padang pasir")
+BLOK_SESUDAH = {"padang": {"rumput", "pasir", "lamun", "savana", "sabana", "golf", "ilalang", "tandus", "gersang", "sampah", "mahsyar", "bulan"}}
+BLOK_SEBELUM = {"padang": {"desa", "kelurahan", "dusun", "kampung", "jorong", "nagari", "kecamatan", "kec"},  # "Desa Padang Lengkuas"
+                "bima": {"wamendagri", "mendagri", "menteri", "wamen", "wakil", "menko"},  # "Wamendagri Bima Arya" = nama orang
+                "batang": {"sungai", "kali", "air"}}  # "Sungai Batang"
+BLOK_SESUDAH.update({"medan": {"terjal", "berat", "perang", "laga", "juang", "sulit", "pertempuran", "tempur", "operasi", "laut"},  # "Medan Terjal"
+                     "batang": {"pohon", "kayu", "tubuh", "air", "hari", "otak"}, "bima": {"arya"}})
+# kata umum yang hanya wilayah bila diikuti kata ini ("Kabupaten Puncak" dan "Puncak Jaya" sudah frasa panjang): "Puncak Kemarau" bukan wilayah
+HANYA_SESUDAH = {"puncak": {"papua", "jaya"}}
+# bagian sesudah " - " terakhir yang jelas bukan nama media (kata kerja/depan/sambung): sufiks seperti itu dipertahankan
+BUKAN_MEDIA = set("di ke dari yang dan untuk dengan pada akan telah sudah masih sedang usai jelang hingga tak tidak belum rendam terendam "
+                  "merendam tewas meninggal terjang menerjang melanda dilanda landa terbakar guncang mengguncang diguncang erupsi meletus "
+                  "naik turun minta imbau waspada ungkap sebut kata banjir longsor ancam mengancam warga korban".split())
+# nama kab yang kembar dengan kota di provinsi yang sama dan tetap diterima tanpa provinsi: hanya provinsi yang pasti, kab tidak ditebak
+KEMBAR_KOTA = {"solok"}
 
 
 class Geo:
@@ -199,8 +214,15 @@ class Geo:
             for k in ks:
                 self.tambah(n, ("kab", k, n not in KAB_LEMAH))
                 bare = n[5:] if n.startswith("kota ") else n
+                bare = bare[13:] if bare.startswith("administrasi ") else bare
+                if n.startswith("kota ") and bare in KEMBAR_KOTA and bare in nama_kab:  # Solok: kota dan kabupaten sama-sama calon
+                    self.tambah(bare, ("kab", k, 2))  # 2 = kembar: kab tidak ditebak
+                if n.startswith("kepulauan ") and len(n) > 15 and n[10:] not in nama_kab and n[10:] not in GENERIK:
+                    self.tambah(n[10:], ("kab", k, n[10:] not in KAB_LEMAH))
                 self.tambah("kabupaten " + bare, ("kab", k, True)); self.tambah("kab " + bare, ("kab", k, True))
                 self.tambah(bare + " regency", ("kab", k, True))
+                if bare != n and not n.startswith("kota ") and bare not in nama_prov and bare not in nama_kab:  # "Kota Administrasi Jakarta Utara"
+                    self.tambah(bare, ("kab", k, True))
                 if n.startswith("kota ") and bare not in nama_prov and bare not in nama_kab:
                     self.tambah(bare, ("kab", k, bare not in KAB_LEMAH))
         for v, nama in KAB_SINGKAT.items():
@@ -208,10 +230,20 @@ class Geo:
                 self.tambah(v, ("kab", k, v not in KAB_LEMAH))
         for k in self.pusat["kec"]:
             n = norm(k.split("|")[2])
+            kb = norm(k.split("|")[1])
+            for aw in ("kota administrasi ", "kota ", "kabupaten "):
+                if kb.startswith(aw):
+                    kb = kb[len(aw):]
+                    break
+            ktx = " " in n and n.startswith(kb + " ") and not any(j == "kab" for j, _, _ in self.frasa.get(n, []))
+            if ktx:
+                self.tambah(n, ("kec", k, True))  # "Medan Barat" memuat nama kotanya: konteks sudah ada di frasa
             if len(n) < 4 or all(t in GENERIK for t in n.split()):
                 self.tambah("kecamatan " + n, ("kec", k, True))
                 continue
-            self.tambah(n, ("kec", k, False)); self.tambah("kecamatan " + n, ("kec", k, True)); self.tambah("kec " + n, ("kec", k, True))
+            if not ktx:
+                self.tambah(n, ("kec", k, False))
+            self.tambah("kecamatan " + n, ("kec", k, True)); self.tambah("kec " + n, ("kec", k, True))
         self.maks = max(len(f.split()) for f in self.frasa)
 
     def tambah(self, frasa, target):
@@ -236,12 +268,24 @@ class Geo:
         rata = lambda d: {k: [round(v[0] / v[2], 4), round(v[1] / v[2], 4)] for k, v in d.items()}
         return {"kec": kec, "kab": rata(kab), "prov": rata(prov)}
 
+    def potong_media(self, teks):
+        """Buang sufiks " - <nama media>" di akhir ("... - Ayo Semarang", "- Cirebon Raya"): nama media bukan lokasi. Dipotong bila bagian
+        sesudah " - " terakhir <= 40 char, <= 5 kata, tanpa angka dan kata kerja/depan, dan BUKAN satu nama wilayah utuh ("- Medan", "- Sumut")."""
+        if " - " not in teks:
+            return teks
+        depan, b = (x.strip() for x in teks.rsplit(" - ", 1))
+        tok = token(b)
+        if not depan or not tok or len(b) > 40 or len(tok) > 5 or any(c.isdigit() for c in b) or BUKAN_MEDIA & set(tok) or norm(b) in self.frasa:
+            return teks
+        return depan
+
     def cocok(self, teks):
-        tok, i, hit = token(teks), 0, []
+        tok, i, hit = token(self.potong_media(teks)), 0, []
         while i < len(tok):
             for n in range(min(self.maks, len(tok) - i), 0, -1):
                 f = " ".join(tok[i:i + n])
-                if f in self.frasa:
+                if f in self.frasa and not (n == 1 and ((i + 1 < len(tok) and tok[i + 1] in BLOK_SESUDAH.get(f, ())) or (i and tok[i - 1] in BLOK_SEBELUM.get(f, ()))
+                                                        or (f in HANYA_SESUDAH and not (i + 1 < len(tok) and tok[i + 1] in HANYA_SESUDAH[f])))):
                     hit.append(self.frasa[f]); i += n
                     break
             else:
@@ -265,8 +309,15 @@ class Geo:
             eksplisit_kec = any(j == "kec" and e for j, _, e in h)
             if kb and not eksplisit_kec:
                 pilih = [k for k, e in kb if k[:2] in prov_teks] or ([kb[0][0]] if len(kb) == 1 and kb[0][1] else [])
+                if len(pilih) > 1:  # kota+kab kembar dengan provinsi disebut: tetap kabupatennya (perilaku lama); kota hanya bila ditulis "Kota X"
+                    pilih = [k for k in pilih if "|Kota " not in k] or pilih
+                kembar = any(e == 2 for _, e in kb)
+                if not pilih and not kembar and len(kb) > 1 and len({k[:2] for k, _ in kb}) == 1 and all(e for _, e in kb):  # "Kabupaten X": kota dan kab satu provinsi, ambil kabupatennya
+                    pilih = [k for k, _ in kb if "|Kota " not in k]
                 for k in pilih:
                     tambah(kab, k); tambah(prov, k[:2])
+                if not pilih and kembar and len({k[:2] for k, _ in kb}) == 1:  # "Solok" saja: provinsi pasti, kab tidak ditebak
+                    tambah(prov, kb[0][0][:2])
         konteks = set(prov)
         for h in hit:
             if any(j in ("prov",) for j, _, _ in h) or (any(j == "kab" for j, _, _ in h) and not any(j == "kec" and e for j, _, e in h)):
@@ -436,7 +487,7 @@ def olah_ringan(arsip, sekarang, geo, L):
     art = []
     for a in arsip:
         teks = a["judul"] + " " + a.get("ringkas", "")
-        g = geo.cari(teks)
+        g = geo.cari(geo.potong_media(a["judul"]) + " " + a.get("ringkas", ""))
         if not L.relevan(teks, g)[0]:
             continue
         s1, al1 = skor(a["judul"], a.get("ringkas", ""), L.SITUASI, getattr(L, "saring", None))
@@ -552,6 +603,35 @@ def uji():
     a = [{"_t": t, "_k": kunci_judul("banjir rendam ratusan rumah pekalongan"), "_e": set()},
          {"_t": t + dt.timedelta(hours=2), "_k": kunci_judul("banjir rendam ratusan rumah di pekalongan"), "_e": set()}]
     assert kelompok(a) == [0, 0]
+    # geocoder: contoh nyata yang dulu lolos tanpa lokasi + salah-cocok kata umum
+    G = Geo(muat("scripts/berita/banjir.py", "berita_banjir").PROVINSI)
+    ada = lambda t, prov, kab=None, kec=None: (lambda r: r["prov"] == [prov] and (kab is None or r["kab"] == [kab]) and (kec is None or r["kec"] == [kec]) or print(t, r))(G.cari(t))
+    assert ada("BMKG Peringatkan Potensi Banjir Rob di Medan Utara 23-31 Oktober 2026", "12", "12|Kota Medan")
+    assert ada("Banjir di Jakarta Utara", "31", "31|Kota Administrasi Jakarta Utara")
+    assert ada("Hujan lebat guyur NTT", "53") and ada("Gempa Sumbar", "13") and ada("Warga Sumut siaga", "12") and G.cari("Jateng dan DIY")["prov"] == ["33", "34"]
+    assert ada("Pesisir Sumbar dan Mentawai", "13", "13|Kepulauan Mentawai")
+    assert ada("Kualitas Udara di Padang Sangat Tidak Sehat ISPU 225", "13", "13|Kota Padang")
+    assert ada("Kabut Asap Kiriman Selimuti Solok", "13", None) and G.cari("Kabut Asap Kiriman Selimuti Solok")["kab"] == []  # kota/kab kembar: kab tidak ditebak
+    assert ada("Banjir rendam Medan Barat", "12", "12|Kota Medan", "12|Kota Medan|Medan Barat")
+    assert ada("Banjir di Solok, Sumbar", "13", "13|Solok")
+    for neg in ("Polsek sosialisasi di Desa Padang Lengkuas", "Kuda merumput di padang rumput luas", "Padang pasir Sahara dilanda badai", "Warga bantu korban banjir",
+                "Kota besar waspada angin dari barat dan timur", "Pemerintah kota tengah mengkaji utara selatan"):
+        assert G.cari(neg)["prov"] == [], (neg, G.cari(neg))
+    assert G.cari("Bantul banjir")["kab"] == ["34|Bantul"]
+    # sufiks nama media bukan lokasi; nama wilayah utuh sesudah " - " tetap dipakai
+    for t in ("Banjir Rendam Rumah Warga - Ayo Semarang", "Rob Meluas - About Malang", "Banjir Bandang - Cirebon Raya", "Banjir Susulan - Lamongan N",
+              "Angin Kencang Terjang Pantura - Suara Merdeka"):
+        assert G.cari(t)["prov"] == [], (t, G.cari(t))
+    assert G.cari("Banjir Rendam Rumah Warga - Semarang")["prov"] == ["33"] and G.cari("Banjir Demak Rob - Ayo Semarang")["kab"] == ["33|Demak"]
+    assert G.cari("Rob Rendam Pantai - Kota Semarang")["kab"] == ["33|Kota Semarang"]
+    # kata umum dan nama orang
+    for t in ("Pasukan Lewati Medan Terjal Menuju Lokasi", "Wamendagri Bima Arya Tinjau Banjir", "Batang Pohon Tumbang Timpa Rumah", "Sungai Batang Meluap",
+              "Puncak Kemarau Diprediksi Agustus", "Banjir Merendam Medan Laga"):
+        assert G.cari(t)["prov"] == [], (t, G.cari(t))
+    assert G.cari("Banjir Rendam Kota Medan")["prov"] == ["12"] and G.cari("Banjir di Medan Barat")["kab"] == ["12|Kota Medan"]
+    assert G.cari("Banjir Rendam Bima, NTB")["kab"] == ["52|Bima"]
+    assert G.cari("Banjir di Kabupaten Batang")["kab"] == ["33|Batang"] and G.cari("Longsor Kabupaten Puncak")["prov"] == ["94"]
+    assert G.cari("Longsor di Puncak Jaya")["kab"] == ["94|Puncak Jaya"] and G.cari("Longsor di Puncak, Papua")["kab"] == ["94|Puncak"]
     print("umum/berita.py uji: ok")
 
 
