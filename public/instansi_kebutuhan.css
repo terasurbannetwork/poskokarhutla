@@ -1,0 +1,4 @@
+/* gudang terdekat (Kebutuhan.gudang): satu gaya untuk /instansi dan /admin/instansi */
+.kb-pil.hijau{background:color-mix(in srgb,#2e8b57 20%,transparent);color:color-mix(in srgb,#2e8b57 70%,var(--ink))}
+.kb-gudang-daftar{display:grid;gap:8px}.kb-gudang-daftar>li{padding:8px 0;border-bottom:1px dashed var(--line)}.kb-g-kepala{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.kb-gudang ul ul li{border:0;padding:3px 0}.kb-sorot{background:color-mix(in srgb,#2e8b57 12%,transparent);border-radius:8px;padding-left:8px!important}

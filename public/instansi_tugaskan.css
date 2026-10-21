@@ -1,0 +1,47 @@
+/* penugasan, pelacak posisi, pop-up peta, padam, dan akses di /instansi (dan /admin/instansi lewat kelas yang sama). Memakai token warna halaman (--c1 merah, --c3 emas, --c4 hijau, --navy). */
+.tg-kartu{display:grid;gap:12px}
+.tg-kepala{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap}.tg-kepala .in-sub{margin:0}
+.tg-baru{width:auto;min-height:44px;padding:8px 16px}
+.tg-form{display:grid;gap:10px}
+.tg-hasil{display:grid;gap:10px;padding:12px 14px;border-radius:14px;background:color-mix(in srgb,var(--c4,#2e8b57) 12%,transparent);border:1px solid color-mix(in srgb,var(--c4,#2e8b57) 40%,transparent)}
+.tg-hasil p{margin:0}
+.tg-tautan{width:100%;border:1px solid var(--line,#d9e0ea);border-radius:10px;padding:10px 12px;font:600 13px/1.3 ui-monospace,Menlo,Consolas,monospace;background:var(--card,#fff);color:inherit}
+.tg-o-aksi{display:flex;gap:8px;flex-wrap:wrap}.tg-o-aksi>.lp-tombol{width:auto;min-height:44px;flex:1 1 160px;text-decoration:none}
+.tg-daftar{display:grid;gap:10px}
+.tg-orang{display:grid;gap:6px;padding:12px 14px;border:1px solid var(--line,#d9e0ea);border-radius:14px;background:var(--card,#fff)}
+.tg-o-kepala{display:flex;align-items:center;gap:8px;flex-wrap:wrap}.tg-peran{font-size:13px;color:var(--ink2,#4a5568)}
+.tg-o-info{margin:0;font-size:14px}.tg-o-info b{color:#e8743b}
+.tg-cek-daftar{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px}
+.tg-cek-daftar label{display:flex;gap:10px;align-items:flex-start;min-height:36px;padding:6px 0}.tg-cek-daftar input{width:20px;height:20px;flex:none;accent-color:#2e8b57}
+.tg-peta,.tg-peta-modal{width:100%;height:280px;border-radius:14px;overflow:hidden;background:var(--surface,#eef2f7)}
+.tg-pin{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#1b5fa8;color:#fff;font:800 13px/1 system-ui,sans-serif;border:3px solid #fff;box-shadow:0 0 0 1px #0006}
+.tg-padam.hijau{border-left:4px solid var(--c4,#2e8b57)}.tg-padam.merah{border-left:4px solid var(--c1,#c9503a)}.tg-padam.emas{border-left:4px solid var(--c3,#d08a1a)}
+.tg-padam p{margin:4px 0}
+/* pop-up peta saat masuk: lembar bawah di ponsel, kotak tengah di desktop */
+.tg-modal{position:fixed;inset:0;z-index:60;display:grid;align-items:end;background:rgb(11 37 69/.55);padding:0}
+.tg-kotak{display:grid;gap:10px;background:var(--card,#fff);border-radius:20px 20px 0 0;padding:16px 16px calc(16px + env(safe-area-inset-bottom));max-height:92vh;overflow:auto}
+.tg-kotak h2{margin:0;font-size:20px}.tg-ringkas{margin:0;font:800 20px/1.2 var(--display,system-ui),system-ui,sans-serif;color:#e8743b}
+.tg-peta-modal{height:min(52vh,420px)}
+.tg-legenda{display:flex;flex-wrap:wrap;align-items:center;gap:6px 12px;margin:0;font-size:12.5px;color:var(--ink2,#4a5568)}
+.tg-l{display:inline-block;width:12px;height:12px;border-radius:50%;margin-right:4px;vertical-align:-1px;border:2px solid #fff;box-shadow:0 0 0 1px #0004}
+.tg-l-titik{background:#e8743b}.tg-l-aktif{background:#d08a1a}.tg-l-telat{background:#c9503a}.tg-l-selesai{background:#2f7d52}
+.tg-aksi{display:grid;grid-template-columns:1fr 1fr;gap:10px}.tg-aksi .lp-tombol{min-height:52px}
+@media (min-width:720px){.tg-modal{align-items:center;justify-items:center;padding:24px}.tg-kotak{width:min(920px,100%);border-radius:20px;max-height:90vh}.tg-peta-modal{height:min(56vh,480px)}.tg-aksi{grid-template-columns:auto auto;justify-content:end}.tg-aksi .lp-tombol{width:auto;min-width:160px}}
+@media (max-width:719px){.tg-peta{height:240px}}
+/* kartu akses (public/instansi_akses.js), sama dengan /lacak */
+.ak-kartu{background:var(--card,#fff);border-radius:16px;box-shadow:var(--bayang,0 1px 3px rgb(11 37 69/.12));padding:16px;display:grid;gap:10px}
+.ak-kartu h2{font-size:17px;margin:0}
+.ak-pil{justify-self:start;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--c3,#d08a1a) 24%,transparent);color:color-mix(in srgb,#8a6a08 70%,var(--ink,#14213d))}
+.ak-baris{display:grid;gap:2px;padding-top:8px;border-top:1px solid var(--line,#d9e0ea)}.ak-baris:first-of-type{border-top:0;padding-top:0}
+.ak-k{font-size:12.5px;color:var(--ink2,#4a5568);font-weight:700}.ak-baris b{font-size:16px}.ak-baris p{margin:2px 0 0;font-size:13px;color:var(--ink2,#4a5568)}
+.ak-jenis{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--surface,#eef2f7);color:var(--ink2,#4a5568);margin-left:4px}
+.ak-jalan{background:var(--surface,#f4f7fb);border-radius:12px;padding:8px 12px}
+.ak-bawa{margin:4px 0 0;padding-left:20px}.ak-bawa li{margin:2px 0}
+/* /admin/instansi memuat berkas ini tanpa instansi.css: gaya dasar kelas yang dipakai modul, dibatasi ke rincian tugas admin */
+.ai-rincian .in-pil{display:inline-flex;align-items:center;font-size:12px;font-weight:800;padding:3px 10px;border-radius:999px;background:#eef2f7;color:#4a5568;white-space:normal}
+.ai-rincian .in-pil.merah{background:#fdecea;color:#c9503a}.ai-rincian .in-pil.hijau{background:#e6f4ec;color:#1f6b42}.ai-rincian .in-pil.emas{background:#fff4e0;color:#7a4f00}
+.ai-rincian .in-kartu{display:grid;gap:8px;padding:12px 14px;border:1px solid #d9e0ea;border-radius:12px;margin:8px 0}.ai-rincian .in-sub{font-size:15px;margin:0}
+.ai-rincian .lp-kecil{margin:0;font-size:12.5px;color:#4a5568}.ai-rincian .lp-tombol{min-height:40px;padding:8px 14px;border:1px solid #0b2545;border-radius:10px;background:#fff;color:#0b2545;font-weight:700;cursor:pointer}
+.ai-rincian .in-rinci>summary{cursor:pointer;font-weight:700}
+.in-nav{text-decoration:none;min-height:48px;margin-top:6px}.in-nav .in-ik{transform:rotate(180deg)}.in-nav-cat{margin:4px 0 0}
+span.in-pin{display:block}

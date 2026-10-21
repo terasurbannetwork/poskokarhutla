@@ -1,0 +1,56 @@
+/* Sortie OMC (/admin/omc): ponsel dulu, lalu desktop. Token dan tombol bulat dari admin.css; gaya kartu dan pil mengikuti /bnpb (inventaris.css, meja.css). Tanpa gaya inline (CSP admin). */
+.om-pesan{margin:0;font-weight:700;font-size:13px;min-height:1.2em}.om-pesan.ok{color:var(--c4)}.om-pesan.galat{color:var(--c1)}
+.om-redup,.om-meta{color:var(--ink2);font-size:12.5px;margin:0}
+.om-ringkas{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}.om-ringkas>:last-child:nth-child(odd){grid-column:1/-1}
+.om-ringkas-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;display:grid;gap:2px;min-height:64px}
+.om-ringkas-kartu b{font:800 24px/1.1 var(--display);font-variant-numeric:tabular-nums}.om-ringkas-kartu.merah b{color:var(--c1)}
+.om-ringkas-kartu span{color:var(--ink2);font-size:12px;font-weight:700}
+.om-bagian{display:grid;gap:10px;min-width:0;max-width:100%}.om-bagian h2{font-size:15px;font-weight:800;margin:0}
+.om-grup{display:grid;gap:8px;min-width:0}.om-grup h3{font-size:14px;font-weight:800;margin:0}
+.om-baris{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
+.om-aksi{display:flex;gap:8px;flex-wrap:wrap}
+.om-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--ring);color:var(--ink);font:700 13px var(--font);cursor:pointer;text-decoration:none;touch-action:manipulation}
+.om-btn.utama{background:var(--gradien);color:#fff}.om-btn.kecil{min-height:36px;padding:0 12px;font-size:12px}.om-btn.bahaya{color:var(--c1)}.om-btn:disabled{opacity:.5;cursor:default}
+.om-chip-baris{display:flex;gap:6px}.om-chip{min-height:44px;border:0;border-radius:999px;padding:0 16px;background:var(--card);box-shadow:var(--ring);cursor:pointer;font-weight:700;font-size:13px;color:var(--ink2);touch-action:manipulation}
+.om-chip[aria-pressed=true]{background:var(--gradien);color:#fff}
+.om-pil{display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--soft);color:var(--ink2);text-decoration:none}
+.om-pil.sejalan,.om-pil.sementara{background:color-mix(in srgb,var(--c2) 28%,transparent);color:var(--ink)}
+.om-pil.tak,.om-pil.menunggu{background:var(--soft);color:var(--ink2)}
+.om-pil.kurang{background:transparent;box-shadow:inset 0 0 0 1px var(--line);color:var(--ink2)}
+.om-pil.lawan,.om-pil.final{background:color-mix(in srgb,var(--c5) 24%,transparent);color:var(--ink)}
+.om-pil.metrik{background:var(--navy);color:#fff}.om-pil.bendera{background:color-mix(in srgb,var(--c3) 30%,transparent);color:var(--ink)}
+.om-pil.dummy{background:var(--emas);color:#2a2000}.om-pil.nacl{background:color-mix(in srgb,var(--c7) 22%,transparent);color:var(--ink)}.om-pil.dry_ice{background:color-mix(in srgb,var(--c6) 22%,transparent);color:var(--ink)}
+.om-pil.sasaran{background:color-mix(in srgb,var(--c2) 28%,transparent);color:var(--ink);border:0;cursor:pointer;font-family:inherit;min-height:32px}
+.om-pil.kontrol{background:color-mix(in srgb,var(--c5) 24%,transparent);color:var(--ink)}.om-pil.pita{background:color-mix(in srgb,var(--ink3) 22%,transparent);color:var(--ink)}
+.om-form{display:grid;gap:12px;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px;grid-template-columns:minmax(0,1fr)}.om-form h3{margin:0;font-size:15px}
+.om-bidang{display:grid;gap:4px;min-width:0}.om-bidang>span{font-size:12px;font-weight:700;color:var(--ink2)}
+.om-bidang input,.om-bidang select,.om-bidang textarea{min-height:44px;border:0;border-radius:10px;background:var(--soft);box-shadow:var(--ring);padding:0 10px;font-size:14px;max-width:100%;min-width:0;width:100%}
+.om-bidang textarea{padding:8px 10px;min-height:64px;resize:vertical}
+.om-baris select,.om-baris input[type=search]{width:auto;flex:1 1 160px}
+.om-kablist{list-style:none;margin:0;padding:6px 10px;display:grid;gap:2px;max-height:200px;overflow:auto;background:var(--soft);border-radius:10px;grid-template-columns:repeat(auto-fill,minmax(180px,1fr))}
+.om-kablist label{display:flex;align-items:center;gap:6px;min-height:36px;font-size:13px;font-weight:600;color:var(--ink)}.om-kablist input{width:auto;min-height:0}
+.om-pilihan{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:6px}
+.om-svg{width:100%;height:auto;max-height:420px;background:var(--soft);border-radius:12px;display:block;cursor:crosshair;touch-action:manipulation}
+.om-kec{fill:var(--ink3);opacity:.55}.om-kec.dipilih{fill:var(--c2);opacity:1}
+.om-poligon{fill:color-mix(in srgb,var(--c2) 30%,transparent);stroke:var(--c2);stroke-width:3;stroke-linejoin:round}
+.om-simpul{fill:var(--c2);stroke:var(--card);stroke-width:2}.om-nomor{font:700 20px var(--font);fill:var(--ink)}
+.om-tabel-wadah{overflow-x:auto;border-radius:12px;box-shadow:var(--ring);background:var(--card)}
+.om-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.om-tabel th,.om-tabel td{padding:8px 10px;text-align:left;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.om-tabel td.angka{text-align:right}.om-tabel td.redup{color:var(--ink3)}.om-tabel td.sasaran{max-width:240px;overflow:hidden;text-overflow:ellipsis}.om-tabel td.aksi{display:flex;gap:6px}
+.om-tabel td b{margin-right:6px}
+.om-episode{display:grid;gap:8px;min-width:0}
+.om-kartu-grid{display:grid;gap:10px;grid-template-columns:minmax(0,1fr)}
+.om-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px;display:grid;gap:10px;min-width:0;border-top:3px solid var(--line);align-content:start}
+.om-kartu.sejalan{border-top-color:var(--c2)}.om-kartu.lawan{border-top-color:var(--c5)}
+.om-eyebrow{display:flex;gap:6px;flex-wrap:wrap}
+.om-kalimat{margin:0;font:700 14px/1.45 var(--display)}.om-angka{color:var(--c1)}
+.om-grafik{width:100%;height:auto;display:block}.om-garis{fill:none;stroke-width:3}.om-garis.sasaran{stroke:var(--c2)}.om-garis.kontrol{stroke:var(--c5);stroke-dasharray:6 5}
+.om-titik.sasaran{fill:var(--c2)}.om-titik.kontrol{fill:var(--c5)}.om-nilai{font:700 12px var(--font);fill:var(--ink);font-variant-numeric:tabular-nums}.om-sumbu{font:600 11px var(--font);fill:var(--ink2)}
+.om-pita{fill:color-mix(in srgb,var(--ink3) 30%,transparent)}.om-pita-tengah{stroke:var(--ink2);stroke-width:2}
+.om-legenda{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin:6px 0 0}.om-satuan{font-size:11.5px;color:var(--ink2);font-weight:600}
+.om-bendera{display:flex;gap:6px;flex-wrap:wrap}
+.om-sumber{margin:0;font-size:11.5px;color:var(--ink2);text-align:center}.om-footer{margin:0;font-size:11.5px;color:var(--ink2);border-top:1px solid var(--line);padding-top:8px}
+.om-kosong{display:grid;gap:12px;justify-items:start;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:20px}.om-kosong p{margin:0;font-weight:600;max-width:60ch}
+@media (min-width:700px){.om-form{grid-template-columns:repeat(2,minmax(0,1fr))}.om-bidang.lebar,.om-form h3,.om-form>.om-aksi{grid-column:1/-1}.om-kartu-grid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (min-width:900px){.om-ringkas{grid-template-columns:repeat(3,minmax(0,1fr))}.om-ringkas>:last-child:nth-child(odd){grid-column:auto}}
+#app>*{min-width:0;max-width:100%}

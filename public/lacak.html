@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>Tugas api | Pantau Bencana</title>
+<link rel="icon" href="/img/logo.svg">
+<link rel="stylesheet" href="/lacak.css?v=1">
+</head>
+<body>
+<header class="lk-top"><img src="/img/logo.svg" alt="" width="28" height="28"><span>Pantau Bencana</span><b>Tugas api</b></header>
+<main class="lk-wrap">
+  <p id="pesanUtama" class="lk-pesan" role="status" aria-live="polite">Memuat tugas…</p>
+
+  <section id="tampilanMati" class="lk-kartu lk-mati" hidden>
+    <h1>Tautan tidak bisa dipakai</h1>
+    <p id="matiTeks"></p>
+    <p class="lk-kecil">Hubungi orang yang menugaskanmu bila perlu tautan baru. Posisi tidak lagi dikirim.</p>
+  </section>
+
+  <div id="isi" hidden>
+    <section class="lk-kartu lk-tugas" aria-labelledby="judul">
+      <p class="lk-label">Ditugaskan ke</p>
+      <h1 id="judul"></h1>
+      <p id="ciri" class="lk-ciri"></p>
+      <p id="siapa" class="lk-kecil"></p>
+      <div id="navWadah" class="lk-nav"></div>
+      <p class="lk-kecil">Google Maps berhenti di ujung jalan yang bisa dilalui. Sisanya jalan kaki: lihat kartu akses di bawah.</p>
+    </section>
+
+    <div id="kartuAkses"></div>
+    <div id="cara"></div>
+
+    <section class="lk-kartu" aria-labelledby="hCek">
+      <h2 id="hCek">Persiapan sebelum berangkat</h2>
+      <p id="ringkasCek" class="lk-kecil"></p>
+      <ul id="daftarCek" class="lk-cek"></ul>
+    </section>
+
+    <section class="lk-kartu lk-jalan" aria-labelledby="hJalan">
+      <h2 id="hJalan">Perjalanan</h2>
+      <p id="jarak" class="lk-jarak"></p>
+      <p id="peringatan" class="lk-peringatan" role="alert" hidden></p>
+      <button type="button" id="bBerangkat" class="lk-tombol utama">Mulai berangkat</button>
+      <p id="statusPosisi" class="lk-status" role="status" aria-live="polite">Posisi belum dikirim. Ketuk Mulai berangkat saat kamu berangkat.</p>
+      <p id="statusLayar" class="lk-kecil"></p>
+      <div class="lk-dua">
+        <button type="button" id="bTiba" class="lk-tombol" disabled>Tiba di lokasi</button>
+        <button type="button" id="bSelesai" class="lk-tombol bahaya" disabled>Selesai</button>
+      </div>
+      <p class="lk-kecil lk-layar">Jika layar mati, posisi berhenti terkirim. Biarkan layar menyala dan jangan tutup halaman ini selama di jalan. Posisimu hanya terlihat oleh pihak yang menugaskanmu dan berhenti dikirim saat kamu menekan Selesai.</p>
+    </section>
+  </div>
+</main>
+<script src="/instansi_akses.js?v=1" defer></script>
+<script src="/lacak.js?v=1" defer></script>
+</body>
+</html>

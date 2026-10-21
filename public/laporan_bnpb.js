@@ -26,7 +26,7 @@ const LABEL_KES = ["Situasi", "Wilayah", "Tren", "Prioritas terkini", "Efektivit
 const kosong = n => Array(n).fill(null);
 const BARU = {
   harian: t => ({mulai: geser(t, -1), jam: "07.00", laporan_masuk: null, penyaji: "", jabatan: "", instansi: "Badan Nasional Penanggulangan Bencana", singkatan: "BNPB",
-    kejadian: [], perhatian_tambahan: [], tindak: Array.from({length: 4}, () => ({judul: "", isi: ""})), judul_ringkasan: "", judul_rincian: "", imbauan: [], konpers_pembuka: ""}),
+    kejadian: [], perhatian_tambahan: [], tindak: Array.from({length: 4}, () => ({judul: "", isi: ""})), judul_ringkasan: "", judul_rincian: "", imbauan: [], konpers_pembuka: "", kepada: "Kepala BNPB", tembusan: [...window.LaporanKoordalops.TEMBUSAN], koordinator: ""}),
   presiden: t => ({judul: "Penanganan dan Pengendalian Kebakaran Hutan dan Lahan di Provinsi Prioritas", kepada: "Presiden Republik Indonesia", kepada_nama: "", penyaji: "", jabatan: "",
     instansi: "Badan Nasional Penanggulangan Bencana", hari: [-4, -3, -2].map(n => geser(t, n)), fs: kosong(3), sub_catatan: "",
     prov: BNPB6.map(nama => ({nama, hotspot: kosong(3), luas: kosong(3), belum: kosong(3), status: "", personel: null, heli: null, heli_ket: "heli WB", omc: null, wb_ha: null, kendala: ""})),
@@ -38,6 +38,7 @@ const BARU = {
     kesimpulan: LABEL_KES.map(label => ({label, judul: "", isi: ""})), arahan: "", judul_situasi: "", judul_efektivitas: ""}),
 };
 const JENIS_OPSI = Object.entries(LB.JENIS).map(([k, v]) => [k, v.nama]);
+const SIFAT_OPSI = [["", "—"], ["Kejadian Baru", "Kejadian Baru"], ["Pengkinian Data", "Pengkinian Data"]];
 const STATUS_OPSI = [["berjalan", "Berjalan"], ["selesai", "Selesai/terkendali"], ["belum", "Belum selesai"]];
 let PROV_OPSI = [];   // [kode, nama] dari /data/laporan.json
 
@@ -49,10 +50,13 @@ const FORM = {
       ["penyaji", "Disampaikan oleh", "t"], ["jabatan", "Jabatan", "t"], ["instansi", "Instansi", "t"], ["singkatan", "Singkatan instansi", "t"]]},
     {judul: "Kejadian menonjol", ket: "Satu baris per kejadian. Baris berprovinsi sama dikelompokkan. Kolom keterangan: pisah dua pil dengan | (contoh: padam 95,93 | sisa 401,16).",
       tabel: "kejadian", kolom: [["jenis", "Jenis", "p", JENIS_OPSI], ["prov", "Provinsi", "p", "prov"], ["lokasi", "Kab/lokasi", "t", 9], ["utama", "Angka utama", "t", 11], ["kedua", "Angka kedua", "t", 8],
-        ["ket", "Keterangan (pil)", "t", 11], ["catatan", "Catatan kecil", "t", 8], ["status", "Status", "p", STATUS_OPSI], ["perhatian", "Teks perlu perhatian", "t", 12]]},
+        ["ket", "Keterangan (pil)", "t", 11], ["catatan", "Catatan kecil", "t", 8], ["status", "Status", "p", STATUS_OPSI], ["perhatian", "Teks perlu perhatian", "t", 12],
+        ["sifat", "Sifat (Koordalops)", "p", SIFAT_OPSI], ["tempat", "Tempat di judul", "t", 12], ["dampak", "Dampak", "t", 16], ["status_penetapan", "Penetapan status", "t", 16], ["pendampingan", "Pendampingan BNPB", "t", 9], ["kondisi", "Kondisi mutakhir", "t", 16], ["entry_no", "Entry laphar no", "n", 3]]},
     {judul: "Perlu perhatian tambahan", ket: "Kejadian berstatus belum selesai otomatis masuk. Tambahkan butir ringkasan di sini (maks. 6 tampil).",
       tabel: "perhatian_tambahan", kolom: [["jenis", "Jenis", "p", JENIS_OPSI], ["judul", "Judul", "t", 14], ["isi", "Isi", "t", 18], ["status", "Status", "p", STATUS_OPSI]]},
     {judul: "Yang akan dilakukan", tabel: "tindak", tetap: true, kolom: [["judul", "Judul", "t", 12], ["isi", "Isi", "t", 30]]},
+    {judul: "Dit. Koordalops (opsional)", ket: "Untuk keluaran Dit. Koordalops. Kolom tambahan per kejadian ada di tabel Kejadian menonjol (geser ke kanan); kosong tampil sebagai tanda hubung.", lipat: true,
+      medan: [["kepada", "Kepada (Yth.)", "t"], ["koordinator", "Koordinator pembuat laporan", "t"], ["tembusan", "Tembusan (pisah koma)", "t"]]},
     {judul: "Konferensi pers (opsional)", ket: "Kosong = kalimat imbauan baku per jenis bencana yang ada hari itu. Maks. 6 imbauan. Pembuka dipakai di naskah juru bicara dan halaman ringkasan.", lipat: true,
       tabel: "imbauan", kolom: [["judul", "Judul imbauan", "t", 16], ["isi", "Isi", "t", 30]], medan: [["konpers_pembuka", "Kalimat pembuka konpers", "a"]]},
     {judul: "Judul slide (opsional)", ket: "Kosong = judul dihitung otomatis dari angka.", lipat: true, medan: [["judul_ringkasan", "Judul slide ringkasan", "a"], ["judul_rincian", "Judul slide rincian", "a"]]},
@@ -103,7 +107,7 @@ function inputMedan(p, label, jenis, opsi) {
   if (jenis === "a") return `<label class="lb-m lebar" for="${id}">${esc(label)}<textarea id="${id}" data-p="${p}" data-j="t" rows="2">${esc(v)}</textarea></label>`;
   if (jenis === "p") return `<label class="lb-m" for="${id}">${esc(label)}<select id="${id}" data-p="${p}" data-j="t">${opsiHtml(opsi, v)}</select></label>`;
   const val = jenis === "n" ? tulisAngka(v) : Array.isArray(v) ? v.join(", ") : v ?? "";
-  return `<label class="lb-m" for="${id}">${esc(label)}<input id="${id}" data-p="${p}" data-j="${p === "prioritas.periode" ? "l" : jenis}" ${jenis === "d" ? 'type="date"' : jenis === "n" ? 'inputmode="decimal"' : ""} value="${esc(val)}"></label>`;
+  return `<label class="lb-m" for="${id}">${esc(label)}<input id="${id}" data-p="${p}" data-j="${p === "prioritas.periode" || p === "tembusan" ? "l" : jenis}" ${jenis === "d" ? 'type="date"' : jenis === "n" ? 'inputmode="decimal"' : ""} value="${esc(val)}"></label>`;
 }
 const opsiHtml = (o, v) => (o === "prov" ? [["", "—"], ...PROV_OPSI] : o).map(([k, n]) => `<option value="${esc(k)}"${k === (v ?? "") ? " selected" : ""}>${esc(n)}</option>`).join("");
 function tabelHtml(b) {
@@ -291,6 +295,7 @@ function siapkanPeta() {
   S.aset.peta = o === "matador" ? null : petaPng(ks); S.aset.petaM = o === "matador" ? petaPng(ks, true) : null;
 }
 const skala = () => document.querySelectorAll(".sl-wrap").forEach(w => { w.firstChild.style.transform = `scale(${w.clientWidth / (w.dataset.lebar * 100)})`; });
+const koordNow = () => ({isi: S.isi, tanggal: S.tanggal, prov: S.prov});
 const naskahNow = () => window.LaporanKonpers.naskah(konteks(1));
 function pratinjauNaskah() {
   const n = naskahNow(); $("#lbNaskahTeks").textContent = n.teks;
@@ -300,6 +305,7 @@ function pratinjauNaskah() {
 async function pratinjau() {
   if (!S.isi) return; const id = ++S.gen, grid = $("#lbGrid"); grid.textContent = "";
   if (OUT() === "naskah") return void pratinjauNaskah();
+  if (OUT() === "koordalops") return void ($("#lbKoordTeks").textContent = window.LaporanKoordalops.teks(koordNow()));
   siapkanPeta(); const d = DECK(), [W, H] = dim();
   grid.style.gridTemplateColumns = W / H > 3 ? "1fr" : ""; let sk = 0;   // skala dihitung sekali: semua figur sama lebar
   for (let i = 0; i < d.length; i++) {
@@ -327,6 +333,7 @@ function namaBerkas(ext) {
   if (S.jenis === "harian") {
     if (S.out === "konpers") return `Konferensi-Pers-Penanganan-Bencana-${tg}.${ext}`;
     if (S.out === "matador") return `Matador-Konferensi-Pers-${S.aspek.replace(":", "x")}-${tg}.${ext}`;
+    if (S.out === "koordalops") return `Laporan-Dit-Koordalops-${+i.mulai.slice(8)}-${+t.slice(8)}-${LB.tglK(t).split(" ")[1]}-${t.slice(0, 4)}.${ext}`;
     if (S.out === "naskah") return `Naskah-Juru-Bicara-Konferensi-Pers-${tg}.${ext}`;
     return `Laporan-Kejadian-Bencana-Harian-${+i.mulai.slice(8)}-${+t.slice(8)}-${LB.tglK(t).split(" ")[1]}-${t.slice(0, 4)}.${ext}`;
   }
@@ -375,6 +382,19 @@ async function unduhNaskahPdf() {   // huruf besar, spasi lega, nomor halaman
   } catch (e) { console.error(e); status("Gagal menyusun naskah: " + (e.message || e)); }
   finally { S.sibuk = false; $("#lbPdf").disabled = false; }
 }
+async function unduhKoord(jenis) {   // PDF A4 tegak atau DOCX dari model baris yang sama dengan teks WhatsApp
+  if (S.sibuk || !S.isi) return; S.sibuk = true; const tombol = [$("#lbPdf"), $("#lbDocx")]; tombol.forEach(b => b.disabled = true);
+  try {
+    const K = window.LaporanKoordalops, nama = namaBerkas(jenis); let blob, ket;
+    if (jenis === "pdf") {
+      status("Memuat pustaka…"); await muatLib("pdf"); await jeda();
+      const doc = new window.jspdf.jsPDF({unit: "in", format: "a4", compress: true}); await tanamRoboto(doc);
+      ket = K.pdf(doc, koordNow(), doc.__roboto ? "Roboto" : "helvetica") + " halaman"; blob = doc.output("blob");
+    } else { blob = new Blob([K.docx(koordNow())], {type: "application/vnd.openxmlformats-officedocument.wordprocessingml.document"}); ket = "DOCX"; }
+    unduhBlob(blob, nama); status(`${nama}: ${ket}, ${ukuran(blob.size)}.`); window.__lbTerakhir = {jenis, bytes: blob.size, nama};
+  } catch (e) { console.error(e); status("Gagal menyusun berkas: " + (e.message || e)); }
+  finally { S.sibuk = false; tombol.forEach(b => b.disabled = false); }
+}
 async function salinNaskah() {
   const t = naskahNow().teks;
   try { await navigator.clipboard.writeText(t); status("Naskah disalin."); }
@@ -418,7 +438,7 @@ function gambarLayar() {
   const n = Layar.i + 1; (window.requestIdleCallback || (f => setTimeout(f, 60)))(() => { if (Layar.on) siapSlide(n); });
 }
 function bukaLayar() {   // hidden=false + fullscreen dulu (masih dalam gestur pengguna), kerja berat sesudah satu frame
-  if (!S.isi || OUT() === "naskah") return; Layar.on = true; Layar.i = 0; Layar.d = null; Layar.cache = []; $("#lbLayarStage").textContent = "";
+  if (!S.isi || OUT() === "naskah" || OUT() === "koordalops") return; Layar.on = true; Layar.i = 0; Layar.d = null; Layar.cache = []; $("#lbLayarStage").textContent = "";
   $("#lbLayarMsg").hidden = false; $("#lbLayar").hidden = false; $("#lbLayar").requestFullscreen?.()?.catch(() => {});
   sesudahCat(() => { if (!Layar.on) return; siapkanPeta(); Layar.d = DECK(); gambarLayar(); });
 }
@@ -442,7 +462,8 @@ function aturOut() {
   const o = OUT(), harian = S.jenis === "harian";
   document.querySelectorAll("#lbOut button").forEach(x => x.setAttribute("aria-pressed", x.dataset.o === S.out ? "true" : "false"));
   $("#lbOut").hidden = !harian; $("#lbAspekW").hidden = o !== "matador"; $("#lbTayang").hidden = !(o === "konpers" || o === "matador");
-  $("#lbPptx").hidden = o === "naskah"; $("#lbNaskah").hidden = o !== "naskah"; $("#lbGrid").hidden = o === "naskah"; $("#lbContoh").hidden = !harian;
+  const kd = o === "koordalops"; $("#lbPptx").hidden = o === "naskah" || kd; $("#lbDocx").hidden = !kd; $("#lbNaskah").hidden = o !== "naskah"; $("#lbKoord").hidden = !kd;
+  $("#lbGrid").hidden = o === "naskah" || kd; $("#lbContoh").hidden = !harian;
 }
 document.querySelectorAll("#lbOut button").forEach(b => b.onclick = () => { if (b.dataset.o === S.out) return; S.out = b.dataset.o; aturOut(); jadwalkan(); });
 $("#lbAspek").onchange = e => { S.aspek = e.target.value; jadwalkan(); };
@@ -458,7 +479,11 @@ $("#lbTgl").onchange = e => { if (e.target.value) buka(e.target.value, {dariTera
 $("#lbSimpan").onclick = simpan;
 $("#lbGeser").onclick = geserHari;
 $("#lbPptx").onclick = () => unduh("pptx");
-$("#lbPdf").onclick = () => OUT() === "naskah" ? unduhNaskahPdf() : unduh("pdf");
+$("#lbPdf").onclick = () => OUT() === "naskah" ? unduhNaskahPdf() : OUT() === "koordalops" ? unduhKoord("pdf") : unduh("pdf");
+$("#lbDocx").onclick = () => unduhKoord("docx");
+$("#lbKoordSalin").onclick = async () => { const t = window.LaporanKoordalops.teks(koordNow());
+  try { await navigator.clipboard.writeText(t); status("Teks Dit. Koordalops disalin."); }
+  catch (e) { const a = document.createElement("textarea"); a.value = t; document.body.append(a); a.select(); const ok = document.execCommand("copy"); a.remove(); status(ok ? "Teks Dit. Koordalops disalin." : "Salin gagal: pilih teks lalu salin manual."); } };
 $("#lbEks").onclick = () => unduhBlob(new Blob([JSON.stringify({jenis: S.jenis, tanggal: S.tanggal, isi: S.isi}, null, 2)], {type: "application/json"}), `laporan-bnpb-${S.jenis}-${S.tanggal}.json`);
 $("#lbImp").onchange = async e => {
   const f = e.target.files[0]; e.target.value = ""; if (!f) return;

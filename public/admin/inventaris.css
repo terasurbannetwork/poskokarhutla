@@ -1,0 +1,44 @@
+/* Inventaris alat pemadam (/admin/inventaris): ponsel dulu, lalu desktop. Token dan tombol bulat dari admin.css; gaya kartu dan pil mengikuti /bnpb (bnpb.css, meja.css). */
+.iv-pesan{margin:0;font-weight:700;font-size:13px;min-height:1.2em}.iv-pesan.ok{color:var(--c4)}.iv-pesan.galat{color:var(--c1)}
+.iv-redup{color:var(--ink2);font-size:12.5px;margin:0}
+.iv-ringkas{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.iv-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;display:grid;gap:2px;border:0;font:inherit;text-align:left;color:var(--ink);min-height:64px;touch-action:manipulation}
+button.iv-kartu{cursor:pointer}.iv-kartu[aria-pressed=true]{outline:2px solid var(--c5)}
+.iv-kartu b{font:800 24px/1.1 var(--display);font-variant-numeric:tabular-nums}.iv-kartu.merah b{color:var(--c1)}
+.iv-kartu span{color:var(--ink2);font-size:12px;font-weight:700}
+.iv-saring{display:grid;gap:10px}
+.iv-chip-baris{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}
+.iv-chip{flex:none;min-height:40px;border:0;border-radius:999px;padding:0 14px;background:var(--card);box-shadow:var(--ring);cursor:pointer;font-weight:700;font-size:12.5px;color:var(--ink2);touch-action:manipulation}
+.iv-chip[aria-pressed=true]{background:var(--gradien);color:#fff}
+.iv-saring select{height:40px;border:0;border-radius:10px;background:var(--card);box-shadow:var(--ring);padding:0 10px;font-weight:600;font-size:13px;max-width:100%}
+.iv-bagian{display:grid;gap:8px;min-width:0}.iv-bagian h2{font-size:15px;font-weight:800;margin:0}
+.iv-svg{width:100%;height:auto;max-height:520px;background:var(--card);border-radius:16px;box-shadow:var(--bayang);display:block}
+.iv-gr{stroke:var(--line);stroke-width:1}
+.iv-titik{stroke:var(--card);stroke-width:2;cursor:pointer;fill:var(--c4)}.iv-titik.basi{fill:var(--c2)}.iv-titik.kosong{fill:var(--c1)}.iv-titik:focus-visible{outline:3px solid var(--c5)}
+.iv-legenda{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center;margin:8px 0 0}
+.iv-pil{display:inline-flex;align-items:center;font-size:11px;font-weight:800;padding:3px 9px;border-radius:999px;white-space:nowrap;background:var(--soft);color:var(--ink2)}
+.iv-pil.ok{background:color-mix(in srgb,var(--c4) 22%,transparent);color:var(--ink)}.iv-pil.basi{background:color-mix(in srgb,var(--c2) 28%,transparent);color:var(--ink)}
+.iv-pil.kosong{background:color-mix(in srgb,var(--c1) 24%,transparent);color:var(--ink)}.iv-pil.dummy{background:var(--emas);color:#2a2000}
+.iv-tabel-wadah{overflow-x:auto;border-radius:12px;box-shadow:var(--ring);background:var(--card)}
+.iv-tabel{border-collapse:collapse;width:100%;font-size:12.5px}.iv-tabel th,.iv-tabel td{padding:8px 10px;text-align:right;white-space:nowrap;border-bottom:1px solid var(--line);font-variant-numeric:tabular-nums}
+.iv-tabel th:first-child,.iv-tabel td:first-child{text-align:left;position:sticky;left:0;background:var(--card)}.iv-tabel td.nol,.iv-tabel td.tak{color:var(--ink3)}
+.iv-tabel td.rusak_berat,.iv-tabel td.servis{color:var(--c1);font-weight:700}.iv-tabel td.dikerahkan{color:var(--c5);font-weight:700}
+.iv-jumlah td{font-weight:800;border-top:2px solid var(--line)}
+.iv-daftar{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:8px}
+.iv-gudang{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;border-left:4px solid var(--c4);display:grid;gap:4px;min-width:0}.iv-gudang.basi{border-left-color:var(--c2)}
+.iv-baris{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
+.iv-meta{margin:0;font-size:12.5px;color:var(--ink2);overflow-wrap:anywhere}
+.iv-aksi{display:flex;gap:8px;flex-wrap:wrap;margin-top:4px}
+.iv-btn{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 16px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--ring);color:var(--ink);font:700 13px var(--font);cursor:pointer;text-decoration:none;touch-action:manipulation}
+.iv-btn.utama{background:var(--gradien);color:#fff}
+.iv-rinci{display:grid;gap:8px;margin-top:6px}.iv-rinci h4{margin:6px 0 0;font-size:13px}
+.iv-jejak{margin:0;padding-left:18px;font-size:12.5px;color:var(--ink2);display:grid;gap:2px}
+.iv-kosong{display:grid;gap:12px;justify-items:start;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:20px}.iv-kosong p{margin:0;font-weight:600;max-width:60ch}
+@media (min-width:900px){.iv-ringkas{grid-template-columns:repeat(3,minmax(0,1fr))}.iv-daftar{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* sapu desain: tabel rekap tidak boleh melebarkan halaman; ubin ganjil mengisi baris */
+#app>*,.iv-bagian{min-width:0;max-width:100%}
+.iv-ringkas>:last-child:nth-child(odd){grid-column:1/-1}
+@media (min-width:900px){.iv-ringkas>:last-child:nth-child(odd){grid-column:auto}}
+.iv-bagian{grid-template-columns:minmax(0,1fr)}
+.iv-svg{max-height:380px}
+.iv-tabel td.peringatan{background:color-mix(in srgb,var(--c1) 16%,transparent);font-weight:700}

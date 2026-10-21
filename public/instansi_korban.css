@@ -1,0 +1,26 @@
+/* Instansi: tab Korban (public/instansi_korban.js). Berdiri sendiri: hanya token warna dari bnpb.css/admin.css. Ponsel dulu: target sentuh 48 px. */
+#tabKorban{display:grid;gap:12px;min-width:0}
+.kb-redup{color:var(--ink2);font-size:13px;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.kb-atas,.kb-baris,.kb-aksi{display:flex;gap:8px 12px;flex-wrap:wrap;align-items:center}.kb-atas{justify-content:space-between}
+.kb-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 16px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--ring);color:var(--ink);font:700 14px/1.2 var(--font);cursor:pointer;touch-action:manipulation;text-align:center}
+.kb-btn.utama{background:var(--gradien);color:#fff}.kb-btn:disabled{opacity:.5;cursor:default}
+.kb-pil{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink2);white-space:nowrap}
+.kb-pil.dilaporkan,.kb-pil.dikoreksi{background:color-mix(in srgb,var(--c1) 22%,transparent);color:var(--ink)}.kb-pil.terverifikasi{background:color-mix(in srgb,var(--c4) 24%,transparent);color:var(--ink)}.kb-pil.dummy{background:var(--emas);color:#2a2000}
+.kb-daftar{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.kb-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px;border-left:4px solid var(--c1);display:grid;gap:6px;min-width:0}.kb-kartu.terverifikasi{border-left-color:var(--c4)}
+.kb-kartu b{font:800 16px/1.3 var(--display)}
+.kb-form{display:grid;gap:12px;padding:14px;border-radius:16px;background:var(--card);box-shadow:var(--bayang);max-width:760px}.kb-form h3{margin:0;font-size:16px}
+.kb-form label{display:grid;gap:6px;font-size:13px;font-weight:700;color:var(--ink2)}
+.kb-form input:not([type=hidden]):not([type=file]),.kb-form select,.kb-form textarea{width:100%;min-height:48px;font:500 16px var(--font);color:var(--ink);background:var(--paper);border:1.5px solid var(--line);border-radius:12px;padding:10px 12px;box-sizing:border-box}
+.kb-form fieldset{border:1.5px solid var(--line);border-radius:12px;padding:10px;display:grid;gap:10px;min-width:0}.kb-form legend{font-weight:800;font-size:13px;padding:0 6px}
+.kb-tiga{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+.kb-cacah{display:grid;gap:6px;font-size:13px;font-weight:700;color:var(--ink2)}
+.kb-stepper{display:inline-flex;align-items:center;border-radius:12px;background:var(--paper);box-shadow:var(--ring);overflow:hidden;justify-self:start}
+.kb-stepper button{width:52px;height:52px;border:0;background:none;font:800 24px var(--display);color:var(--ink);cursor:pointer;touch-action:manipulation}
+.kb-form .kb-stepper input{width:72px;min-height:52px;border:0;padding:0;text-align:center;font:800 20px var(--display);background:none;font-variant-numeric:tabular-nums}
+.kb-seg{display:flex;gap:8px;flex-wrap:wrap}
+.kb-seg button{min-height:48px;padding:0 14px;border:0;border-radius:12px;background:var(--soft);box-shadow:var(--ring);font:700 13px var(--font);color:var(--ink);cursor:pointer;touch-action:manipulation}
+.kb-seg button[aria-pressed=true]{background:var(--gradien);color:#fff}
+.kb-pesan{margin:0;font-size:13px;font-weight:700;min-height:1.2em}.kb-pesan.galat{color:var(--c1)}.kb-pesan.ok{color:var(--c4)}
+.kb-kosong{display:grid;gap:12px;justify-items:start;padding:20px;border-radius:16px;background:var(--card);box-shadow:var(--bayang)}.kb-kosong p{margin:0;font-weight:600;max-width:56ch}.kb-kosong.galat p{color:var(--c1)}
+@media (min-width:900px){.kb-daftar{grid-template-columns:repeat(2,minmax(0,1fr))}}

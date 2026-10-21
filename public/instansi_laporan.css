@@ -1,0 +1,36 @@
+/* Instansi: tab Laporan harian (public/instansi_laporan.js). Berdiri sendiri: hanya token warna dari bnpb.css/admin.css (--card, --ink, --ink2, --soft, --ring, --c1..c5, --gradien). Ponsel dulu, target sentuh 48 px. */
+#tabLaporan{display:grid;gap:12px;min-width:0;padding-bottom:84px}
+.lk-redup{color:var(--ink2);font-size:13px;line-height:1.5;margin:0;overflow-wrap:anywhere}
+.lk-atas{display:flex;gap:10px 16px;flex-wrap:wrap;align-items:flex-end;justify-content:space-between}.lk-atas h2{margin:0 0 4px;font-size:18px}
+.lk-baris{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
+.lk-btn{display:inline-flex;align-items:center;justify-content:center;min-height:48px;padding:0 18px;border:0;border-radius:12px;background:var(--card);box-shadow:var(--ring);color:var(--ink);font:700 14px/1.2 var(--font);cursor:pointer;touch-action:manipulation;text-align:center}
+.lk-btn.utama{background:var(--gradien);color:#fff;box-shadow:none}.lk-btn.bahaya{color:var(--c1)}.lk-btn.kecil{min-height:40px;padding:0 13px;font-size:13px;justify-self:start}.lk-btn:disabled{opacity:.5;cursor:default}.lk-btn:active{transform:scale(.97)}
+.lk-pil{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink2);white-space:nowrap}
+.lk-pil.st-terkirim{background:color-mix(in srgb,var(--c5) 24%,transparent);color:var(--ink)}.lk-pil.st-disetujui{background:color-mix(in srgb,var(--c4) 26%,transparent);color:var(--ink)}.lk-pil.st-dikembalikan{background:color-mix(in srgb,var(--c1) 22%,transparent);color:var(--ink)}
+.lk-banner{margin:0;padding:10px 12px;border-radius:12px;font-weight:600;font-size:13px;background:var(--soft)}
+.lk-banner.galat{background:color-mix(in srgb,var(--c1) 14%,var(--card));color:var(--ink)}.lk-banner.kuning{background:color-mix(in srgb,var(--c2) 22%,var(--card))}.lk-banner.ok{background:color-mix(in srgb,var(--c4) 18%,var(--card))}
+.lk-set{border:0;margin:0;padding:0;min-width:0;display:grid;gap:10px}
+.lk-bagian{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:0 14px}
+.lk-bagian summary{cursor:pointer;min-height:52px;display:flex;align-items:center;gap:8px 12px;flex-wrap:wrap;list-style:none;font-size:15px}.lk-bagian summary::-webkit-details-marker{display:none}
+.lk-bagian summary::before{content:"+";font-weight:800;width:18px;color:var(--ink2)}.lk-bagian[open] summary::before{content:"-"}
+.lk-isi{display:grid;gap:12px;padding:0 0 14px}
+.lk-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
+.lk-kol{display:grid;gap:4px;font-weight:700;font-size:12.5px;min-width:0}.lk-kol input:not([type=checkbox]),.lk-kol select,.lk-kol output{height:46px;border:0;border-radius:10px;background:var(--soft);padding:0 12px;font:600 15px var(--font);color:var(--ink);min-width:0;width:100%}
+.lk-kol output{display:flex;align-items:center;font-variant-numeric:tabular-nums}
+.lk-kol.cek{display:flex;gap:8px;align-items:center;min-height:44px;font-weight:600}.lk-kol.cek input{width:22px;height:22px;flex:none}
+.lk-pilihan{border:0;margin:0;padding:0;display:grid;gap:2px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}.lk-pilihan legend{font-weight:800;font-size:13px;margin-bottom:4px}
+.lk-daftar{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.lk-fs{background:var(--soft);border-radius:14px;padding:12px;display:grid;gap:10px}.lk-fs-kepala{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center;font-size:13px;overflow-wrap:anywhere}
+.lk-fs .lk-kol input:not([type=checkbox]),.lk-fs .lk-kol select,.lk-fs .lk-kol output{background:var(--card)}
+.lk-total{margin:0;font-weight:800;font-variant-numeric:tabular-nums}
+.lk-hasil{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;display:grid;gap:8px}.lk-hasil h3,.lk-hasil h4{margin:0;font-size:14px}
+.lk-hasil ul{margin:4px 0 0;padding-left:18px;display:grid;gap:3px;font-size:13px}
+.lk-cek-kel.merah h4{color:var(--c1)}.lk-cek-kel.kuning h4{color:var(--ink)}
+.lk-cek{margin:0;font-size:12.5px;font-weight:700;padding:6px 10px;border-radius:8px}.lk-cek.merah{background:color-mix(in srgb,var(--c1) 14%,transparent)}.lk-cek.kuning{background:color-mix(in srgb,var(--c2) 24%,transparent)}.lk-cek.ok,.lk-hasil li.ok{opacity:.75}
+.lk-bar{position:fixed;left:0;right:0;bottom:0;z-index:20;display:flex;gap:10px;align-items:center;justify-content:space-between;padding:10px 14px calc(10px + env(safe-area-inset-bottom));background:var(--card);box-shadow:0 -4px 18px rgb(0 0 0 / .12)}
+.lk-simpan{font-size:12.5px;font-weight:700;color:var(--ink2)}.lk-simpan.tersimpan{color:var(--c4)}.lk-simpan.belum,.lk-simpan.konflik{color:var(--c1)}
+.lk-kosong{text-align:center;display:grid;gap:10px;justify-items:center;padding:24px 10px}
+@media (min-width:900px){.lk-bar{position:sticky;border-radius:14px;margin-top:6px}#tabLaporan{padding-bottom:0}.lk-btn.utama{min-width:180px}}
+@media (prefers-reduced-motion:reduce){.lk-btn{transition:none}.lk-btn:active{transform:none}}
+/* empat tab (Tugas api, Kontak konsesi, Peralatan, Laporan harian): di ponsel jadi dua baris rapi, tidak menggulir dan tidak terpotong */
+@media (max-width:560px){.in-tab:has(#tabLaporanTombol){grid-auto-flow:row;grid-template-columns:repeat(2,minmax(0,1fr));grid-auto-columns:auto}.in-tab:has(#tabLaporanTombol) button{padding:0 8px;font-size:13px;white-space:nowrap}}

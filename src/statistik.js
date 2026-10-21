@@ -12,6 +12,7 @@
    - CPU: tanpa hash kriptografi, tanpa urai JSON besar; penggabungan JSON dikerjakan SQLite di D1. */
 import {json, gagal, sha, hex, acak, cekLaju, ipHash, turnstileOK, adminOK, bacaBody, bacaBytes, HOST_TERKUNCI} from "./worker.js";
 import {CSP_ADMIN} from "./admin_halaman.js";
+import {stafSesi} from "./staf.js";
 import {halStatistik} from "./bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, WIB = 7 * JAM;
@@ -241,8 +242,22 @@ export async function masuk(env, req, kini, halamanMasuk) {
   return alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
 }
 export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
-export async function halamanAdmin(env, req, kini, isi) {
-  return (await adminOK(env, req, kini)) ? html(isi) : alihkan("/admin/masuk");
+/* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (layar masuk staf ada di halaman Meja Pantau). */
+export async function kerangka(env, req, kini = Date.now()) {
+  if (await adminOK(env, req, kini)) return undefined;
+  const s = await stafSesi(env, req, kini);
+  return {nama: s?.nama ?? null, peran: s?.peran ?? []};
+}
+/* isi = HTML, atau fungsi (kerangka) => HTML. bolehStaf = peran staf yang boleh membuka halaman ini (null = admin saja).
+   Admin: halaman penuh. Staf berperan: halaman dengan kerangka staf. Staf tanpa peran yang cocok: ke Meja Pantau (bukan login admin). Belum masuk: login admin seperti semula. */
+export async function halamanAdmin(env, req, kini, isi, bolehStaf = null) {
+  const buat = k => html(typeof isi === "function" ? isi(k) : isi);
+  if (await adminOK(env, req, kini)) return buat(undefined);
+  if (bolehStaf) {
+    const s = await stafSesi(env, req, kini);
+    if (s) return s.peran.some(p => bolehStaf.includes(p)) ? buat({nama: s.nama, peran: s.peran}) : alihkan("/admin/pantau");
+  }
+  return alihkan("/admin/masuk");
 }
 
 /* ================================================================ kotak pesan */

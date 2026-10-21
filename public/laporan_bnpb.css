@@ -28,6 +28,7 @@
 .lb-naskah{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow)}
 .lb-naskah-bar{display:flex;flex-wrap:wrap;align-items:center;gap:8px 10px;position:sticky;top:0;background:var(--card);padding-bottom:10px;font-size:12.5px;font-weight:600}
 .lb-naskah-bar span{flex:1 1 280px}
+.lb-naskah-bar .pp-btn.ke2{background:var(--card);color:var(--ink);border:1px solid var(--line)}
 .lb-naskah-teks{white-space:pre-wrap;font:500 15px/1.75 var(--font);margin:0;color:var(--ink)}
 .lb-tele,.lb-layar{position:fixed;inset:0;z-index:1000;background:#000;color:#fff}
 .lb-tele[hidden],.lb-layar[hidden]{display:none}

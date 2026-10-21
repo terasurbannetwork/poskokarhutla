@@ -53,6 +53,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/foto.*`
 - `public/titik_live.js`
 - `public/statistik_publik.js`
+- `public/instansi*`
 - `WARGA.md`
 - `.dev.vars.example`
 

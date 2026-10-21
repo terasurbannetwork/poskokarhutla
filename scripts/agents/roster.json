@@ -118,6 +118,7 @@
         "public/foto.*",
         "public/titik_live.js",
         "public/statistik_publik.js",
+        "public/instansi*",
         "WARGA.md",
         ".dev.vars.example"
       ]
@@ -371,7 +372,10 @@
         "public/cuaca/**",
         "public/udara/**",
         "tests/cuaca/**",
-        "tests/udara/**"
+        "tests/udara/**",
+        "scripts/omc/**",
+        "public/omc/**",
+        "tests/omc/**"
       ]
     },
     {

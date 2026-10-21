@@ -1,0 +1,1478 @@
+{
+ "skema": 1,
+ "tanggal_laporan": "2026-10-21",
+ "tanggal_data": "2026-10-20",
+ "ralat": 0,
+ "alasan_ralat": null,
+ "status": "dikunci",
+ "dikunci_oleh": "admin",
+ "dikunci_pada": 1792590746544,
+ "pengecualian": [],
+ "prioritas": [
+  "61",
+  "62",
+  "63",
+  "14",
+  "15",
+  "16"
+ ],
+ "nasional": {
+  "fs_ha": {
+   "fs": 261,
+   "fs_padam": 173,
+   "fs_sisa": 88,
+   "target_ha": 983.34,
+   "padam_ha": 502.08,
+   "sisa_ha": 481.26
+  },
+  "hotspot": {
+   "total": 4129,
+   "tinggi": 281,
+   "sedang": 3848,
+   "sumber": "GIS/satelit"
+  },
+  "personel": {
+   "total": 71878,
+   "unsur": {
+    "bpbd": 0,
+    "tni": 0,
+    "polri": 0,
+    "manggala_agni": 0,
+    "mpa": 0,
+    "swasta": 0,
+    "relawan": 0,
+    "pemda": 0,
+    "kehutanan": 0
+   },
+   "tanpa_rincian": 71878,
+   "standby": 0
+  },
+  "peralatan": [],
+  "provinsi_terisi": 6,
+  "provinsi_wajib": 6,
+  "kumulatif_tidak_dijumlah": [],
+  "udara": {
+   "wb_sortie": 0,
+   "patroli_sortie": 0,
+   "armada": 0
+  },
+  "omc": {
+   "sortie": 0,
+   "kg_total": 0
+  }
+ },
+ "wilayah": [
+  {
+   "wilayah": "Kalimantan",
+   "provinsi": [
+    "61",
+    "62",
+    "63"
+   ],
+   "fs": 136,
+   "fs_padam": 71,
+   "fs_sisa": 65,
+   "target_ha": 509.59,
+   "padam_ha": 182.33,
+   "sisa_ha": 327.26,
+   "hotspot": 2993,
+   "personel": 38772
+  },
+  {
+   "wilayah": "Sumatera",
+   "provinsi": [
+    "14",
+    "15",
+    "16"
+   ],
+   "fs": 125,
+   "fs_padam": 102,
+   "fs_sisa": 23,
+   "target_ha": 473.75,
+   "padam_ha": 319.75,
+   "sisa_ha": 154,
+   "hotspot": 1136,
+   "personel": 33106
+  }
+ ],
+ "provinsi": [
+  {
+   "kode": "61",
+   "nama": "Kalimantan Barat",
+   "wilayah": "Kalimantan",
+   "sumber": "prov:61",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 6,
+    "fs_padam": 5,
+    "fs_sisa": 1,
+    "target_ha": 16.79,
+    "padam_ha": 14.6,
+    "sisa_ha": 2.19
+   },
+   "blok": [],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 14,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 14458,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  },
+  {
+   "kode": "62",
+   "nama": "Kalimantan Tengah",
+   "wilayah": "Kalimantan",
+   "sumber": "prov:62",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 98,
+    "fs_padam": 38,
+    "fs_sisa": 60,
+    "target_ha": 431.66,
+    "padam_ha": 110.31,
+    "sisa_ha": 321.35
+   },
+   "blok": [
+    {
+     "kawasan": "Di luar TNTP",
+     "fs": 46,
+     "fs_padam": 33,
+     "fs_sisa": 13,
+     "target_ha": 74.77,
+     "padam_ha": 58.31,
+     "sisa_ha": 16.46
+    },
+    {
+     "kawasan": "TNTP",
+     "fs": 52,
+     "fs_padam": 5,
+     "fs_sisa": 47,
+     "target_ha": 356.89,
+     "padam_ha": 52,
+     "sisa_ha": 304.89
+    }
+   ],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 2083,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 16387,
+    "unsur": {},
+    "shift": "2 shift + standby",
+    "standby": null,
+    "keterangan": "Termasuk 2 shift dan standby",
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  },
+  {
+   "kode": "63",
+   "nama": "Kalimantan Selatan",
+   "wilayah": "Kalimantan",
+   "sumber": "prov:63",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 32,
+    "fs_padam": 28,
+    "fs_sisa": 4,
+    "target_ha": 61.14,
+    "padam_ha": 57.42,
+    "sisa_ha": 3.72
+   },
+   "blok": [],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 896,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 7927,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  },
+  {
+   "kode": "14",
+   "nama": "Riau",
+   "wilayah": "Sumatera",
+   "sumber": "prov:14",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 0,
+    "fs_padam": 0,
+    "fs_sisa": 0,
+    "target_ha": 0,
+    "padam_ha": 0,
+    "sisa_ha": 0
+   },
+   "blok": [],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 4,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 14837,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  },
+  {
+   "kode": "15",
+   "nama": "Jambi",
+   "wilayah": "Sumatera",
+   "sumber": "prov:15",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 29,
+    "fs_padam": 18,
+    "fs_sisa": 11,
+    "target_ha": 98.5,
+    "padam_ha": 28.5,
+    "sisa_ha": 70
+   },
+   "blok": [],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 77,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 5984,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  },
+  {
+   "kode": "16",
+   "nama": "Sumatera Selatan",
+   "wilayah": "Sumatera",
+   "sumber": "prov:16",
+   "lanjut_tanpa": null,
+   "data_terakhir": null,
+   "ada": true,
+   "total": {
+    "fs": 96,
+    "fs_padam": 84,
+    "fs_sisa": 12,
+    "target_ha": 375.25,
+    "padam_ha": 291.25,
+    "sisa_ha": 84
+   },
+   "blok": [],
+   "kumulatif_ha": null,
+   "fs": [],
+   "hotspot": {
+    "total": 1055,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   "personel": {
+    "total": 12285,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   "peralatan": [],
+   "kondisi": [],
+   "hambatan": {
+    "pilihan": [],
+    "teks": null
+   },
+   "upaya": {
+    "pilihan": [],
+    "teks": null
+   },
+   "darurat": null,
+   "catatan": null
+  }
+ ],
+ "udara": {
+  "armada": [],
+  "armada_per_provinsi": {},
+  "water_bombing": {
+   "sortie": 0,
+   "bom": 0,
+   "liter": 0,
+   "padam_ha": 0,
+   "lintas_provinsi": 0,
+   "daftar": []
+  },
+  "patroli": {
+   "sortie": 0,
+   "durasi_menit": 0,
+   "temuan_fs": 0,
+   "temuan_ha": 0,
+   "daftar": []
+  },
+  "per_provinsi": {
+   "14": {
+    "wb": 0,
+    "patroli": 0
+   },
+   "15": {
+    "wb": 0,
+    "patroli": 0
+   },
+   "16": {
+    "wb": 0,
+    "patroli": 0
+   },
+   "61": {
+    "wb": 0,
+    "patroli": 0
+   },
+   "62": {
+    "wb": 0,
+    "patroli": 0
+   },
+   "63": {
+    "wb": 0,
+    "patroli": 0
+   }
+  },
+  "alasan_kosong": "Contoh: rincian operasi udara tidak ada di data sumber laporan 21 Okt 2026",
+  "catatan": "DUMMY",
+  "data_terakhir": null
+ },
+ "omc": {
+  "sortie": 0,
+  "lintas_provinsi": 0,
+  "kg_total": 0,
+  "per_bahan": {
+   "nacl": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "dry_ice": {
+    "sortie": 0,
+    "kg": 0
+   }
+  },
+  "per_provinsi": {
+   "14": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "15": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "16": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "61": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "62": {
+    "sortie": 0,
+    "kg": 0
+   },
+   "63": {
+    "sortie": 0,
+    "kg": 0
+   }
+  },
+  "daftar": [],
+  "hasil": [],
+  "kalimat_hujan": "kesesuaian lokasi hujan dengan sasaran belum membuktikan sebab-akibat",
+  "alasan_kosong": "Contoh: rincian OMC tidak ada di data sumber laporan 21 Okt 2026",
+  "catatan": "DUMMY",
+  "data_terakhir": null
+ },
+ "di_luar_prioritas": {
+  "kejadian": [],
+  "catatan": "DUMMY",
+  "data_terakhir": null
+ },
+ "tiga_hari": [
+  {
+   "tanggal_laporan": "2026-10-21",
+   "tanggal_data": "2026-10-20",
+   "ralat": 0,
+   "nasional": {
+    "fs": 261,
+    "fs_padam": 173,
+    "fs_sisa": 88,
+    "target_ha": 983.34,
+    "padam_ha": 502.08,
+    "sisa_ha": 481.26,
+    "hotspot": 4129,
+    "personel": 71878
+   },
+   "provinsi": {
+    "14": {
+     "fs": 0,
+     "fs_padam": 0,
+     "fs_sisa": 0,
+     "target_ha": 0,
+     "padam_ha": 0,
+     "sisa_ha": 0,
+     "hotspot": 4,
+     "personel": 14837
+    },
+    "15": {
+     "fs": 29,
+     "fs_padam": 18,
+     "fs_sisa": 11,
+     "target_ha": 98.5,
+     "padam_ha": 28.5,
+     "sisa_ha": 70,
+     "hotspot": 77,
+     "personel": 5984
+    },
+    "16": {
+     "fs": 96,
+     "fs_padam": 84,
+     "fs_sisa": 12,
+     "target_ha": 375.25,
+     "padam_ha": 291.25,
+     "sisa_ha": 84,
+     "hotspot": 1055,
+     "personel": 12285
+    },
+    "61": {
+     "fs": 6,
+     "fs_padam": 5,
+     "fs_sisa": 1,
+     "target_ha": 16.79,
+     "padam_ha": 14.6,
+     "sisa_ha": 2.19,
+     "hotspot": 14,
+     "personel": 14458
+    },
+    "62": {
+     "fs": 98,
+     "fs_padam": 38,
+     "fs_sisa": 60,
+     "target_ha": 431.66,
+     "padam_ha": 110.31,
+     "sisa_ha": 321.35,
+     "hotspot": 2083,
+     "personel": 16387
+    },
+    "63": {
+     "fs": 32,
+     "fs_padam": 28,
+     "fs_sisa": 4,
+     "target_ha": 61.14,
+     "padam_ha": 57.42,
+     "sisa_ha": 3.72,
+     "hotspot": 896,
+     "personel": 7927
+    }
+   }
+  }
+ ],
+ "riwayat": [],
+ "lampiran": {
+  "A1_fs_per_provinsi": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "fs": 6,
+    "fs_padam": 5,
+    "fs_sisa": 1,
+    "target_ha": 16.79,
+    "padam_ha": 14.6,
+    "sisa_ha": 2.19,
+    "blok": []
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "fs": 98,
+    "fs_padam": 38,
+    "fs_sisa": 60,
+    "target_ha": 431.66,
+    "padam_ha": 110.31,
+    "sisa_ha": 321.35,
+    "blok": [
+     {
+      "kawasan": "Di luar TNTP",
+      "fs": 46,
+      "fs_padam": 33,
+      "fs_sisa": 13,
+      "target_ha": 74.77,
+      "padam_ha": 58.31,
+      "sisa_ha": 16.46
+     },
+     {
+      "kawasan": "TNTP",
+      "fs": 52,
+      "fs_padam": 5,
+      "fs_sisa": 47,
+      "target_ha": 356.89,
+      "padam_ha": 52,
+      "sisa_ha": 304.89
+     }
+    ]
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "fs": 32,
+    "fs_padam": 28,
+    "fs_sisa": 4,
+    "target_ha": 61.14,
+    "padam_ha": 57.42,
+    "sisa_ha": 3.72,
+    "blok": []
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "fs": 0,
+    "fs_padam": 0,
+    "fs_sisa": 0,
+    "target_ha": 0,
+    "padam_ha": 0,
+    "sisa_ha": 0,
+    "blok": []
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "fs": 29,
+    "fs_padam": 18,
+    "fs_sisa": 11,
+    "target_ha": 98.5,
+    "padam_ha": 28.5,
+    "sisa_ha": 70,
+    "blok": []
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "fs": 96,
+    "fs_padam": 84,
+    "fs_sisa": 12,
+    "target_ha": 375.25,
+    "padam_ha": 291.25,
+    "sisa_ha": 84,
+    "blok": []
+   }
+  ],
+  "A2_rincian_fs": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "fs": []
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "fs": []
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "fs": []
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "fs": []
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "fs": []
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "fs": []
+   }
+  ],
+  "A3_personel": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "total": 14458,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "total": 16387,
+    "unsur": {},
+    "shift": "2 shift + standby",
+    "standby": null,
+    "keterangan": "Termasuk 2 shift dan standby",
+    "diperbarui": true
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "total": 7927,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "total": 14837,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "total": 5984,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "total": 12285,
+    "unsur": {},
+    "shift": null,
+    "standby": null,
+    "keterangan": null,
+    "diperbarui": true
+   }
+  ],
+  "A4_peralatan": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "peralatan": []
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "peralatan": []
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "peralatan": []
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "peralatan": []
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "peralatan": []
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "peralatan": []
+   }
+  ],
+  "A5_kondisi_wilayah": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "kondisi": []
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "kondisi": []
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "kondisi": []
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "kondisi": []
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "kondisi": []
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "kondisi": []
+   }
+  ],
+  "A6_hambatan_upaya": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "hambatan": {
+     "pilihan": [],
+     "teks": null
+    },
+    "upaya": {
+     "pilihan": [],
+     "teks": null
+    }
+   }
+  ],
+  "A7_kedaruratan": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "darurat": null
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "darurat": null
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "darurat": null
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "darurat": null
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "darurat": null
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "darurat": null
+   }
+  ],
+  "A8_armada_udara": {
+   "armada": [],
+   "per_provinsi": {}
+  },
+  "A9_water_bombing_patroli": {
+   "water_bombing": {
+    "sortie": 0,
+    "bom": 0,
+    "liter": 0,
+    "padam_ha": 0,
+    "lintas_provinsi": 0,
+    "daftar": []
+   },
+   "patroli": {
+    "sortie": 0,
+    "durasi_menit": 0,
+    "temuan_fs": 0,
+    "temuan_ha": 0,
+    "daftar": []
+   },
+   "per_provinsi": {
+    "14": {
+     "wb": 0,
+     "patroli": 0
+    },
+    "15": {
+     "wb": 0,
+     "patroli": 0
+    },
+    "16": {
+     "wb": 0,
+     "patroli": 0
+    },
+    "61": {
+     "wb": 0,
+     "patroli": 0
+    },
+    "62": {
+     "wb": 0,
+     "patroli": 0
+    },
+    "63": {
+     "wb": 0,
+     "patroli": 0
+    }
+   }
+  },
+  "A10_omc": {
+   "sortie": 0,
+   "lintas_provinsi": 0,
+   "kg_total": 0,
+   "per_bahan": {
+    "nacl": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "dry_ice": {
+     "sortie": 0,
+     "kg": 0
+    }
+   },
+   "per_provinsi": {
+    "14": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "15": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "16": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "61": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "62": {
+     "sortie": 0,
+     "kg": 0
+    },
+    "63": {
+     "sortie": 0,
+     "kg": 0
+    }
+   },
+   "daftar": [],
+   "hasil": [],
+   "kalimat_hujan": "kesesuaian lokasi hujan dengan sasaran belum membuktikan sebab-akibat",
+   "alasan_kosong": "Contoh: rincian OMC tidak ada di data sumber laporan 21 Okt 2026",
+   "catatan": "DUMMY",
+   "data_terakhir": null
+  },
+  "A11_di_luar_prioritas": {
+   "kejadian": [],
+   "catatan": "DUMMY",
+   "data_terakhir": null
+  },
+  "B1_hotspot_provinsi": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "total": 14,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "total": 2083,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "total": 896,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "total": 4,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "total": 77,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "total": 1055,
+    "tinggi": null,
+    "sedang": null,
+    "sumber": "GIS/satelit"
+   }
+  ],
+  "B2_tren_hotspot": [
+   {
+    "kode": "61",
+    "nama": "Kalimantan Barat",
+    "titik": [
+     886,
+     1184,
+     621,
+     639,
+     502,
+     796,
+     874,
+     419,
+     1148,
+     736,
+     527,
+     630
+    ],
+    "luas": [
+     1584,
+     2117,
+     1110,
+     1143,
+     898,
+     1724,
+     1883,
+     749,
+     1264,
+     1453,
+     1492,
+     1234
+    ]
+   },
+   {
+    "kode": "62",
+    "nama": "Kalimantan Tengah",
+    "titik": [
+     5661,
+     7384,
+     9631,
+     4835,
+     1970,
+     4228,
+     8022,
+     4047,
+     10671,
+     5634,
+     1510,
+     3315
+    ],
+    "luas": [
+     10122,
+     13203,
+     17220,
+     8645,
+     3522,
+     10324,
+     20085,
+     7236,
+     12943,
+     8265,
+     4842,
+     8007
+    ]
+   },
+   {
+    "kode": "63",
+    "nama": "Kalimantan Selatan",
+    "titik": [
+     616,
+     612,
+     1667,
+     699,
+     638,
+     400,
+     1238,
+     449,
+     1544,
+     839,
+     37,
+     386
+    ],
+    "luas": [
+     1101,
+     1094,
+     2981,
+     1250,
+     1141,
+     1182,
+     2928,
+     803,
+     2958,
+     701,
+     82,
+     770
+    ]
+   },
+   {
+    "kode": "14",
+    "nama": "Riau",
+    "titik": [
+     16,
+     19,
+     8,
+     14,
+     3,
+     1,
+     4,
+     0,
+     4,
+     5,
+     9,
+     0
+    ],
+    "luas": [
+     29,
+     34,
+     14,
+     25,
+     5,
+     0,
+     0,
+     0,
+     9,
+     13,
+     13,
+     0
+    ]
+   },
+   {
+    "kode": "15",
+    "nama": "Jambi",
+    "titik": [
+     437,
+     384,
+     224,
+     455,
+     335,
+     182,
+     326,
+     167,
+     352,
+     894,
+     207,
+     45
+    ],
+    "luas": [
+     781,
+     687,
+     401,
+     814,
+     599,
+     297,
+     366,
+     299,
+     847,
+     2176,
+     194,
+     9
+    ]
+   },
+   {
+    "kode": "16",
+    "nama": "Sumatera Selatan",
+    "titik": [
+     3687,
+     3850,
+     3327,
+     2250,
+     1887,
+     2157,
+     2560,
+     1155,
+     2456,
+     2791,
+     2559,
+     995
+    ],
+    "luas": [
+     6592,
+     6884,
+     5949,
+     4023,
+     3374,
+     4141,
+     3595,
+     2065,
+     4880,
+     6626,
+     4936,
+     1402
+    ]
+   }
+  ],
+  "B3_konsesi_gambut": null,
+  "B4_konsesi_terindikasi": [
+   {
+    "kode": "61",
+    "kompleks": 267,
+    "luas_kompleks": 35255
+   },
+   {
+    "kode": "62",
+    "kompleks": 1764,
+    "luas_kompleks": 336947
+   },
+   {
+    "kode": "63",
+    "kompleks": 582,
+    "luas_kompleks": 50461
+   },
+   {
+    "kode": "14",
+    "kompleks": 9,
+    "luas_kompleks": 200
+   },
+   {
+    "kode": "15",
+    "kompleks": 126,
+    "luas_kompleks": 18405
+   },
+   {
+    "kode": "16",
+    "kompleks": 1029,
+    "luas_kompleks": 99438
+   }
+  ],
+  "B5_riwayat_tahunan": [
+   {
+    "kode": "61",
+    "perkiraan": {
+     "2018": 128334,
+     "2019": 178398,
+     "2020": 41770,
+     "2021": 47012,
+     "2022": 36739,
+     "2023": 108605,
+     "2024": 63421,
+     "2025": 91246,
+     "2026": 326361
+    },
+    "sipongi": {
+     "2018": 68422.03,
+     "2019": 151919,
+     "2020": 7646,
+     "2021": 20590,
+     "2022": 21836,
+     "2023": 111848.43,
+     "2024": 24154.63,
+     "2025": 26702.81,
+     "2026": 38310.86
+    }
+   },
+   {
+    "kode": "62",
+    "perkiraan": {
+     "2018": 68968,
+     "2019": 377781,
+     "2020": 12492,
+     "2021": 7379,
+     "2022": 5732,
+     "2023": 134517,
+     "2024": 18327,
+     "2025": 16177,
+     "2026": 598152
+    },
+    "sipongi": {
+     "2018": 47432.57,
+     "2019": 317749,
+     "2020": 7681,
+     "2021": 3653,
+     "2022": 1554,
+     "2023": 165896.44,
+     "2024": 11459.89,
+     "2025": 4803.97,
+     "2026": 7634.46
+    }
+   },
+   {
+    "kode": "63",
+    "perkiraan": {
+     "2018": 31412,
+     "2019": 71715,
+     "2020": 4184,
+     "2021": 4339,
+     "2022": 3272,
+     "2023": 61585,
+     "2024": 8299,
+     "2025": 6325,
+     "2026": 90587
+    },
+    "sipongi": {
+     "2018": 98637.99,
+     "2019": 137848,
+     "2020": 4017,
+     "2021": 8625,
+     "2022": 429,
+     "2023": 190394.58,
+     "2024": 4993.88,
+     "2025": 11896.38,
+     "2026": 8019.63
+    }
+   },
+   {
+    "kode": "14",
+    "perkiraan": {
+     "2018": 47059,
+     "2019": 133700,
+     "2020": 18413,
+     "2021": 10737,
+     "2022": 5220,
+     "2023": 12152,
+     "2024": 9520,
+     "2025": 15854,
+     "2026": 25977
+    },
+    "sipongi": {
+     "2018": 37236.27,
+     "2019": 90550,
+     "2020": 15442,
+     "2021": 8970,
+     "2022": 4915,
+     "2023": 7267.03,
+     "2024": 11027.96,
+     "2025": 21843.73,
+     "2026": 15738.92
+    }
+   },
+   {
+    "kode": "15",
+    "perkiraan": {
+     "2018": 8161,
+     "2019": 126553,
+     "2020": 3814,
+     "2021": 2795,
+     "2022": 3879,
+     "2023": 12135,
+     "2024": 9589,
+     "2025": 6785,
+     "2026": 28706
+    },
+    "sipongi": {
+     "2018": 1577.75,
+     "2019": 56593,
+     "2020": 1002,
+     "2021": 540,
+     "2022": 918,
+     "2023": 6539.68,
+     "2024": 5636.69,
+     "2025": 3566.22,
+     "2026": 379
+    }
+   },
+   {
+    "kode": "16",
+    "perkiraan": {
+     "2018": 24570,
+     "2019": 209973,
+     "2020": 7134,
+     "2021": 8247,
+     "2022": 6360,
+     "2023": 118340,
+     "2024": 19905,
+     "2025": 11812,
+     "2026": 194412
+    },
+    "sipongi": {
+     "2018": 16226.6,
+     "2019": 336798,
+     "2020": 950,
+     "2021": 5245,
+     "2022": 3723,
+     "2023": 132082.86,
+     "2024": 15422.48,
+     "2025": 5939.79,
+     "2026": 1926.23
+    }
+   }
+  ]
+ },
+ "satelit": {
+  "hari": [
+   "2026-10-06",
+   "2026-10-07",
+   "2026-10-08",
+   "2026-10-09",
+   "2026-10-10",
+   "2026-10-11",
+   "2026-10-12",
+   "2026-10-13",
+   "2026-10-14",
+   "2026-10-15",
+   "2026-10-16",
+   "2026-10-17"
+  ],
+  "sumber": "GIS/satelit (FIRMS), bukan angka lapangan"
+ },
+ "kesimpulan": [
+  "Data 2026-10-20: 261 fire spot dengan target 983,34 ha, padam 502,08 ha, belum padam 481,26 ha di 6 dari 6 provinsi prioritas.",
+  "Sisa terluas di Kalimantan Tengah, 321,35 ha (60 FS belum padam).",
+  "Satelit (GIS) mendeteksi 4.129 hotspot di provinsi prioritas."
+ ]
+}

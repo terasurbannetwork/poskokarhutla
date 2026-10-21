@@ -54,6 +54,7 @@
           <button type="button" data-o="konpers" aria-pressed="false">Konferensi pers</button>
           <button type="button" data-o="matador" aria-pressed="false">Matador</button>
           <button type="button" data-o="naskah" aria-pressed="false">Naskah</button>
+          <button type="button" data-o="koordalops" aria-pressed="false">Dit. Koordalops</button>
         </div>
         <div class="pp-ctl">
           <label>Buka laporan<select id="lbDaftar" aria-label="Laporan tersimpan"></select></label>
@@ -64,6 +65,7 @@
           <button type="button" class="pp-btn ke2" id="lbTayang" hidden>Tayang layar penuh</button>
           <button type="button" class="pp-btn" id="lbPptx">Unduh PPTX</button>
           <button type="button" class="pp-btn ke2" id="lbPdf">Unduh PDF</button>
+          <button type="button" class="pp-btn ke2" id="lbDocx" hidden>Unduh DOCX</button>
         </div>
         <div class="pp-st" id="lbSt" role="status" aria-live="polite">Memuat…</div>
       </section>
@@ -71,7 +73,7 @@
         <aside class="pp-atur lb-isian" aria-label="Isian laporan">
           <div id="lbForm"></div>
           <div class="pp-aksi">
-            <button type="button" class="pp-btn kecil ke2" id="lbContoh" title="Isi data dummy: contoh Laporan Harian 20–21 Okt 2026 (hanya draf peramban)">Isi contoh</button>
+            <button type="button" class="pp-btn kecil ke2" id="lbContoh" title="Isi data dummy: contoh Laporan Harian 20–21 Okt 2026 (hanya draf peramban)">Isi contoh (laporan 21 Okt 2026)</button>
             <button type="button" class="pp-btn kecil ke2" id="lbEks">Ekspor JSON</button>
             <label class="pp-btn kecil ke2 lb-imp">Impor JSON<input type="file" id="lbImp" accept="application/json,.json" hidden></label>
             <button type="button" class="pp-btn kecil ke2" id="lbBuang">Buang draf</button>
@@ -84,6 +86,11 @@
               <button type="button" class="pp-btn kecil" id="lbTele2">Teleprompter</button>
               <button type="button" class="pp-btn kecil ke2" id="lbSalin">Salin teks</button></div>
             <pre id="lbNaskahTeks" class="lb-naskah-teks"></pre>
+          </div>
+          <div id="lbKoord" class="lb-naskah" hidden>
+            <div class="lb-naskah-bar"><span>Teks siap tempel ke WhatsApp. Angka dari isian harian; kolom kosong tampil sebagai tanda hubung.</span>
+              <button type="button" class="pp-btn kecil" id="lbKoordSalin">Salin teks</button></div>
+            <pre id="lbKoordTeks" class="lb-naskah-teks"></pre>
           </div>
           <div id="lbGrid" class="pp-grid"></div></section>
       </div>
@@ -107,6 +114,7 @@
 <script src="/laporan_bnpb_slide.js"></script>
 <script src="/laporan_konpers.js"></script>
 <script src="/laporan_matador.js"></script>
+<script src="/laporan_koordalops.js"></script>
 <script src="/laporan_contoh.js"></script>
 <script src="/laporan_bnpb.js"></script>
 <script type="module" src="/inti/kepala.js"></script>

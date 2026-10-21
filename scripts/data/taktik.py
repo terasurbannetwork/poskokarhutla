@@ -28,6 +28,8 @@ sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
 import gambut_bara as GB  # noqa: E402
 import operasi as OP  # noqa: E402  (kebutuhan sumber daya: rumus satu-satunya di operasi.kebutuhan/total)
+sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
+from akses import KAKI_KMJ  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
 
 DATA = os.path.join(AKAR, "public/data")
 
@@ -75,6 +77,9 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "tegangan_v": (230, BS, "satu fasa 230 V (PLN)"),
     "rho_cu": (0.0175, BS, "resistivitas tembaga ohm mm2/m (praktik instalasi; 0,0172 pada 20 C)"),
     "susut_maks": (0.05, BV, "batas susut tegangan 5% (PUIL 2011; pasal belum dibuka)"),
+    "kaki_kmj": (KAKI_KMJ, AS, "kecepatan jalan kaki di gambut/rawa tanpa beban (scrape/akses.py KAKI_KMJ); memikul pompa dan air memperlambat, jadi jalan_kaki_jam batas bawah (faktor perlambatan belum ada sumbernya)"),
+    "cari_jalan_km": (50.0, AS, "jalan terdekat dicari sampai 50 km garis lurus; lebih jauh: null"),
+    "orang_akses": (15, BS, "orang per regu (koef orang_regu, Permen LHK P.32/2016); dipakai untuk air minum regu"),
     "maks_huruf": (2000, BS, "batas JSON per rekomendasi; warga-api memotong di 2.000"),
 }
 AMBANG = {k: v[0] for k, v in _M.items()}
@@ -100,6 +105,7 @@ CATATAN = {   # teks tetap, ditulis sekali di akar berkas (taktik_catatan) supay
     "dasar": "dasar.luas_ha = hitungan piksel (px24 x ha_bara_piksel), bukan terukur; rekonsiliasi_ha_per_piksel = operasi.json rekonsiliasi.ha_per_piksel_setara_resmi",
     "genset": "untuk celup = pompa celup listrik sumur bor (bor >= 16 m lebih dalam dari batas hisap 7,5 m); logistik = pengisian drone termal dan HT serta penerangan malam",
     "tangki": "tangki_fleksibel = isi per hari dan mobil_tangki = rit per hari, masing-masing 5.000 L (laporan BNPB, belum diverifikasi); dihitung dari air_l_hari",
+    "akses": "akses.jalan = titik jalan OSM terdekat dari pusat kompleks (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya kompleks yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
     "per_ha": "per_ha = total / luas operasi per skenario [rendah, tengah, tinggi]; personel_hari_rujukan = rasio regional BNPB 20-21 Okt, model tengah 24,75 (koef bara_regu catatan_regional)",
 }
 CAP_HELI = "Terbang tergantung jarak pandang dan asap."
@@ -447,6 +453,82 @@ def muat(r):
     return r
 
 
+KELAS_JALAN = {1: "trunk/primary", 2: "secondary", 3: "tertiary", 4: "unclassified (jalan desa/kebun)", 5: "track"}
+CEL = 0.05   # derajat, indeks ruang jalan
+
+
+def indeks_jalan(geo):
+    """geojson jalan -> {(i, j): [(k, lat1, lon1, lat2, lon2)]}; ruas didaftarkan ke tiap sel bbox-nya. None bila kosong."""
+    ix = {}
+    for f in (geo or {}).get("features", []):
+        k = f["properties"].get("k")
+        if k not in KELAS_JALAN:
+            continue
+        for g in f["geometry"]["coordinates"]:
+            for (o1, a1), (o2, a2) in zip(g, g[1:]):
+                for i in range(int(min(a1, a2) // CEL), int(max(a1, a2) // CEL) + 1):
+                    for j in range(int(min(o1, o2) // CEL), int(max(o1, o2) // CEL) + 1):
+                        ix.setdefault((i, j), []).append((k, a1, o1, a2, o2))
+    return ix or None
+
+
+def jalan_terdekat(ix, lat, lon, maks_km):
+    """-> {lat, lon, kelas, km_garis_lurus} titik terdekat pada ruas jalan, atau None (indeks kosong/tak ada dalam maks_km)."""
+    if not ix:
+        return None
+    ci, cj, best = int(lat // CEL), int(lon // CEL), None
+    for r in range(int(maks_km / 5.5) + 2):
+        if best and (r - 1) * CEL * 110.57 > best[0]:   # cincin berikut pasti lebih jauh dari yang terbaik
+            break
+        for i in range(ci - r, ci + r + 1):
+            for j in range(cj - r, cj + r + 1):
+                if max(abs(i - ci), abs(j - cj)) != r:
+                    continue
+                for k, a1, o1, a2, o2 in ix.get((i, j), ()):
+                    c = math.cos(math.radians(lat))
+                    dy, dx = (a2 - a1), (o2 - o1) * c
+                    u = 0.0 if dy == dx == 0 else max(0.0, min(1.0, ((lat - a1) * dy + (lon - o1) * c * dx) / (dy * dy + dx * dx)))
+                    pa, po = a1 + u * (a2 - a1), o1 + u * (o2 - o1)
+                    d = jarak_km(lat, lon, pa, po)
+                    if best is None or d < best[0]:
+                        best = (d, pa, po, k)
+    if not best or best[0] > maks_km:
+        return None
+    return {"lat": round(best[1], 5), "lon": round(best[2], 5), "kelas": KELAS_JALAN[best[3]], "km_garis_lurus": round(best[0], 2)}
+
+
+def akses_kompleks(t, op, kd, ak, koef, ix):
+    """Analisis AKSES satu kompleks -> dict atau None bila semua bagian tidak ada. Bagian tanpa data = None (tidak dikarang).
+    jalan: jalan_terdekat; kaki_km, jam_tiba, dari: kendala/akses.json; jalan_kaki_jam = kaki_km / kaki_kmj; bawa: dipikul dari ujung jalan."""
+    op, kd, ak = op or {}, kd or {}, ak or {}
+    jalan = jalan_terdekat(ix, t["lat"], t["lon"], AMBANG["cari_jalan_km"])
+    kaki = kd.get("kaki_km", ak.get("kaki_km"))
+    dari = (ak.get("dari") or [None])[0]
+    jam = next((x for x in (op.get("jam"), kd.get("jam"), dari and dari.get("jam")) if x is not None), None)
+    jam_kaki = None if kaki is None else round(kaki / AMBANG["kaki_kmj"], 1)
+    bawa = None
+    if kaki is not None:
+        air = kd.get("air_km") if "air_km" in kd else op.get("kanal")
+        sp = k_(koef or {}, "selang_pompa")
+        am = k_(koef or {}, "air_minum")
+        n = AMBANG["orang_akses"]
+        bawa = []
+        if kaki > AMBANG["kaki_selang_km"]:
+            jj = [p for p in POMPA if p["kelas"] == "jinjing_ringan"]
+            if jj:
+                bawa.append({"barang": "pompa jinjing " + jj[0]["contoh_merek"].split(" (")[0], "jumlah": 1, "satuan": "per regu", "hp": jj[0]["hp"], "status": jj[0]["status"]})
+        bawa.append({"barang": "selang", "jumlah": None if air is None else int(math.ceil(air * 1000 / 50) * 50), "satuan": "m",
+                     "dasar": "jarak ke air garis lurus, kelipatan 50 m, tanpa kelok" if air is not None else "jarak ke air tak diketahui", "status": AS,
+                     "per_pompa_m": sp})
+        bawa.append({"barang": "air minum", "jumlah": None if am is None else am * n, "satuan": "L per regu per hari", "per_orang_hari_l": am,
+                     "dasar": f"koef air_minum x {n} orang", "status": BS if am is not None else AS})
+        bawa += [{"barang": b, "jumlah": 1, "satuan": u, "status": AS} for b, u in
+                 (("P3K", "per regu"), ("GPS dan HT", "per regu"), ("parang", "per regu"), ("senter", "per orang"))]
+    r = {"jalan": jalan, "kaki_km": kaki, "jam_tiba": jam, "dari": None if not dari else {x: dari.get(x) for x in ("dari", "jenis", "km_jalan", "jam")},
+         "jalan_kaki_jam": jam_kaki, "bawa": bawa}
+    return r if any(v is not None for v in r.values()) else None
+
+
 def baca(nama):
     try:
         return json.load(open(os.path.join(DATA, nama)))
@@ -454,7 +536,7 @@ def baca(nama):
         return None
 
 
-def susun(tugas, op, kendala, akses, kluster, himawari, udara=None):
+def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     """-> tugas baru (kunci `dibuat` pertama, `taktik_ambang`, tiap kompleks +rekomendasi bila ada)."""
     koef = (op or {}).get("koef") or {}
     ops = {k["id"]: k for k in (op or {}).get("kompleks", [])}
@@ -469,11 +551,14 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None):
            "taktik_ambang": {**AMBANG_META, "rumus": RUMUS}, "taktik_catatan": CATATAN, "kompleks": []}
     tgl = tugas["dibuat"][:10]
     for t in tugas["kompleks"]:
-        t = {k: v for k, v in t.items() if k != "rekomendasi"}
+        t = {k: v for k, v in t.items() if k not in ("rekomendasi", "akses")}
         omc = [h for h in (((op or {}).get("prov") or {}).get(t.get("prov"), {}).get("omc") or {}).get("hari", []) if h >= tgl]
         r = rekomendasi(t, ops.get(t["id"]), kds.get(t["id"]), kls.get(t["id"]), (akses or {}).get(t["id"]), himawari, koef, omc, tugas["dibuat"], pm.get((t.get("prov"), t.get("kab"))), rekon=((op or {}).get("rekonsiliasi") or {}).get("ha_per_piksel_setara_resmi"))
         if r:
             t["rekomendasi"] = r
+        a = akses_kompleks(t, ops.get(t["id"]), kds.get(t["id"]), (akses or {}).get(t["id"]), koef, jalan)
+        if a:
+            t["akses"] = a   # kunci saudara rekomendasi (bukan di dalamnya): tidak makan 2.000 huruf
         out["kompleks"].append(t)
     return out
 
@@ -483,11 +568,11 @@ def main():
     if not tugas:
         print("taktik: tugas_kompleks.json tidak ada, dilewati")
         return
-    out = susun(tugas, baca("operasi.json"), baca("kendala.json"), baca("akses.json"), baca("kluster.json"), baca("himawari.json"), baca("udara_kualitas.json"))
+    out = susun(tugas, baca("operasi.json"), baca("kendala.json"), baca("akses.json"), baca("kluster.json"), baca("himawari.json"), baca("udara_kualitas.json"), indeks_jalan(baca("jalan.geojson")))
     with open(os.path.join(DATA, "tugas_kompleks.json"), "w") as f:   # sama dengan harian.simpan
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
     n = sum("rekomendasi" in k for k in out["kompleks"])
-    print(f"taktik: {n}/{len(out['kompleks'])} kompleks mendapat rekomendasi")
+    print(f"taktik: {n}/{len(out['kompleks'])} kompleks mendapat rekomendasi, {sum('akses' in k for k in out['kompleks'])} analisis akses")
 
 
 KOEF = {k: {"lo": v[0], "mid": v[1], "hi": v[2]} for k, v in {
@@ -661,6 +746,34 @@ def uji():
     assert "kolom_air_min_mm" not in s["taktik_ambang"] and all({"nilai", "status", "sumber"} <= set(v) for k, v in s["taktik_ambang"].items() if k != "rumus")
     a = s["kompleks"][0]["rekomendasi"]
     assert a != {"lama": 1} and "kemungkinan tidak terbang" in a["catatan"] and "rekomendasi" not in s["kompleks"][1], s
+    # akses: jalan terdekat pada geometri sintetis (ruas 112.0-112.1 di lat -3.0, secondary; track di lat -3.01 hanya 112.0-112.02)
+    geo = {"features": [{"properties": {"k": 2}, "geometry": {"coordinates": [[[112.0, -3.0], [112.1, -3.0]]]}},
+                        {"properties": {"k": 5}, "geometry": {"coordinates": [[[112.0, -3.01], [112.02, -3.01]]]}},
+                        {"properties": {"k": 6}, "geometry": {"coordinates": [[[112.05, -3.019], [112.06, -3.019]]]}}]}   # sungai (k 6) bukan jalan: diabaikan
+    ix = indeks_jalan(geo)
+    j = jalan_terdekat(ix, -3.02, 112.05, 50)
+    assert j["kelas"] == "secondary" and j["lat"] == -3.0 and j["lon"] == 112.05 and abs(j["km_garis_lurus"] - 2.21) < 0.02, j   # tegak lurus ke ruas
+    j = jalan_terdekat(ix, -3.012, 112.01, 50)
+    assert j["kelas"] == "track" and abs(j["km_garis_lurus"] - 0.22) < 0.02, j   # track lebih dekat dari secondary
+    j = jalan_terdekat(ix, -3.0, 112.2, 50)
+    assert j["lon"] == 112.1 and abs(j["km_garis_lurus"] - 11.12) < 0.1, j   # lewat ujung: titik akhir
+    assert jalan_terdekat(ix, -3.0, 113.0, 50) is None and jalan_terdekat(None, -3.0, 112.0, 50) is None and indeks_jalan({"features": []}) is None
+    tk = {"id": "K1", "lat": -3.02, "lon": 112.05}
+    assert akses_kompleks(tk, None, None, None, None, None) is None   # tanpa data apa pun: null, tidak dikarang
+    ac = akses_kompleks(tk, {"jam": None}, {"kaki_km": 6.0, "air_km": 1.31, "jam": None}, {"dari": [{"dari": "A1 Desa X", "jenis": "posko", "km_jalan": 20.0, "jam": 2.5, "kode": "A1"}]}, KOEF, ix)
+    assert ac["jalan"]["kelas"] == "secondary" and ac["kaki_km"] == 6.0 and ac["jalan_kaki_jam"] == 1.5 and ac["jam_tiba"] == 2.5, ac
+    assert ac["dari"] == {"dari": "A1 Desa X", "jenis": "posko", "km_jalan": 20.0, "jam": 2.5}, ac
+    bw = {b["barang"].split(" ")[0]: b for b in ac["bawa"]}
+    assert bw["pompa"]["jumlah"] == 1 and bw["selang"]["jumlah"] == 1350 and set(bw) >= {"P3K", "GPS", "parang", "senter", "air"}, bw
+    assert not any(b["barang"].startswith("pompa") for b in akses_kompleks(tk, None, {"kaki_km": 0.8}, None, KOEF, ix)["bawa"])   # kaki <= 1 km: tanpa jinjing
+    assert akses_kompleks(tk, None, {"kaki_km": 5.0}, None, KOEF, None)["jalan"] is None   # tanpa jalan.geojson: jalan null, bagian lain tetap
+    ac0 = akses_kompleks(tk, None, None, None, KOEF, ix)
+    assert ac0["kaki_km"] is None and ac0["jalan_kaki_jam"] is None and ac0["bawa"] is None and ac0["jalan"], ac0   # tanpa kaki_km: tak ada bawa/jam
+    # susun: akses kunci saudara; rekomendasi tidak membengkak melewati 2.000 huruf karenanya
+    s2 = susun(tg, {"koef": KOEF, "kompleks": [{"id": "K1", "jenis": "mineral", "jam": 9.0, "isi": 5}], "prov": {}}, {"kompleks": {"K1": {"air_km": 5.0, "kaki_km": 8.0}}}, None, None, None, ud, ix)
+    k1 = s2["kompleks"][0]
+    assert k1["akses"]["kaki_km"] == 8.0 and "akses" not in k1["rekomendasi"] and len(json.dumps(k1["rekomendasi"], ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"]
+    assert len(json.dumps(k1["akses"], ensure_ascii=False, separators=(",", ":"))) < 1800, "akses terlalu besar"
     print("taktik uji: OK")
 
 

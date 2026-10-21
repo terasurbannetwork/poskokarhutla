@@ -52,6 +52,15 @@ def main():
     except (Exception, SystemExit) as e:
         traceback.print_exc()
         alat.log(f"::warning title=udara omc panen gagal::{type(e).__name__}: {str(e)[:300]}")
+    try:   # evaluasi sortie OMC (selisih-dalam-selisih + plasebo) -> omc_hasil.json; endpoint sortie belum ada = dilewati dengan peringatan
+        sp = importlib.util.spec_from_file_location("omc_nilai", os.path.join(os.path.dirname(os.path.abspath(__file__)), "../omc/nilai.py"))
+        m = importlib.util.module_from_spec(sp)
+        sp.loader.exec_module(m)
+        m.uji()
+        m.jalankan()
+    except (Exception, SystemExit) as e:
+        traceback.print_exc()
+        alat.log(f"::warning title=udara omc nilai gagal::{type(e).__name__}: {str(e)[:300]}")
     alat.log(f"udara: {len(LANGKAH) - len(gagal)}/{len(LANGKAH)} langkah ok" + (f", gagal: {', '.join(gagal)}" if gagal else ""))
     return 1 if len(gagal) == len(LANGKAH) else 0
 

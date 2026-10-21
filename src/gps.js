@@ -37,7 +37,7 @@ export function nilaiGps({negara, hosting, relay, zona, prov, lat, lon, waktuGps
   if (sebelum) {
     const km = jarakM(lat, lon, sebelum.lat, sebelum.lon) / 1000, jam = Math.max(kini - sebelum.dibuat, 60e3) / 36e5;
     if (km > PINDAH_MIN_KM && km / jam > KECEPATAN_MAKS)
-      curiga.push(`pindah ${fmt(km)} km dalam ${fmt(jam * 60)} menit dari unggahan sebelumnya (${sebelum.lewat === "email" ? "email" : "IP"} sama)`);
+      curiga.push(`pindah ${fmt(km)} km dalam ${fmt(jam * 60)} menit dari unggahan sebelumnya (${{email: "email", akun: "akun"}[sebelum.lewat] || "IP"} sama)`);
   }
   const zg = zonaProv(prov || "");
   if (zg && typeof zona === "string" && zona) {

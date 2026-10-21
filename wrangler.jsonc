@@ -13,6 +13,8 @@
     { "binding": "DB", "database_name": "poskowarga", "database_id": "2357f51f-540c-482c-8bf1-3130ddb7f196", "migrations_dir": "migrations" }
   ],
   "r2_buckets": [{ "binding": "MEDIA", "bucket_name": "poskokarhutla-foto" }],
+  // Workers AI: hitung orang di foto/video lapangan instansi (src/instansi.js, @cf/facebook/detr-resnet-50). Tanpa binding, hitungan kosong dan isian tetap tersimpan.
+  "ai": { "binding": "AI" },
   "triggers": { "crons": ["* * * * *"] },
   "vars": { "TURNSTILE_SITEKEY": "", "FOTO_DUMMY_PUBLIK": "1", "EMAIL_TO": "terasurbannetwork@gmail.com", "EMAIL_FROM": "Pantau Bencana <onboarding@resend.dev>" },
   "observability": { "enabled": true }

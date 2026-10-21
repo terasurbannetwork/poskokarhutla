@@ -69,7 +69,6 @@ function rangka(k, c, judul, o = {}) {
   k.kotak(0, 0, W, H, {f: C.putih});
   k.teks(0.6, 0.36, 11.2, o.tj || 0.95, judul, {s: o.s || 21, b: true});
   if (c.aset.logo) k.gambar(c.aset.logo, 12.32, 0.36, 0.42, 0.53); else k.teks(11.9, 0.4, 0.85, 0.3, "BNPB", {s: 9, b: true, c: C.biru, a: "r"});
-  k.teks(12.2, 0.9, 0.66, 0.16, "BNPB", {s: 6.5, b: true, c: C.biru, a: "c"});
   if (o.garis !== false) k.garis(0.6, o.gy || 1.3, 12.75, o.gy || 1.3, {c: "3A3F45", w: 0.75});
   k.garis(0.6, 7.04, 4.3, 7.04, {c: "3A3F45", w: 0.75});
   k.teks(0.6, 7.1, 7, 0.2, `${c.isi.instansi || "Badan Nasional Penanggulangan Bencana"}  |  Copyright ${c.tahun}`, {s: 8});

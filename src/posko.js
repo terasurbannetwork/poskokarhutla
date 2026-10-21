@@ -11,7 +11,8 @@ import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
 import {halamanAdmin} from "./statistik.js";
-import {halamanPosko} from "./admin_halaman.js";
+import {halamanPosko, HALAMAN_STAF} from "./admin_halaman.js";
+import {modAtauStaf, stafPeran, dalamWilayahStaf, dariStaf, stafNyata, P_KONSESI} from "./staf.js";   // peran analis_konsesi = jalur tambahan untuk kontak PT dan panggilan (staf.js)
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, BATAS_RESPONS = 2 * JAM;
 const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -283,7 +284,7 @@ async function putusLapangan(env, req, id, kini) {
 }
 
 /* ================================================================ kontak perusahaan (hanya admin) */
-const RE_EMAIL = /^[^\s@<>()",;:]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
+export const RE_EMAIL = /^[^\s@<>()",;:]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
 export function cekKontak(o) {
   const v = {perusahaan_id: tx(o.perusahaan_id, 80), nama_pt: tx(o.nama_pt, 120), kontak: tx(o.kontak, 80), email: tx(o.email, 254)?.toLowerCase() ?? null, wa: null, telepon: tx(o.telepon, 20), catatan: tx(o.catatan, 300)};
   if (!v.perusahaan_id || !RE_PID.test(v.perusahaan_id)) return {galat: "perusahaan_id wajib (3-80 huruf, angka, titik, garis; id dari konsesi2026)"};
@@ -299,11 +300,17 @@ export function cekKontak(o) {
 const SQL_KONTAK = `INSERT INTO kontak_pt (id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
   ON CONFLICT (perusahaan_id) DO UPDATE SET nama_pt = excluded.nama_pt, kontak = excluded.kontak, email = excluded.email, wa = excluded.wa, telepon = excluded.telepon,
     catatan = excluded.catatan, diubah = excluded.diubah, oleh = excluded.oleh, dummy = 0`;
-const simpanKontak = (env, v, kini, mod) => env.DB.prepare(SQL_KONTAK).bind(acak(8), v.perusahaan_id, v.nama_pt, v.kontak, v.email, v.wa, v.telepon, v.catatan, kini, mod);
+export const simpanKontak = (env, v, kini, mod) => env.DB.prepare(SQL_KONTAK).bind(acak(8), v.perusahaan_id, v.nama_pt, v.kontak, v.email, v.wa, v.telepon, v.catatan, kini, mod);
+/* staf berwilayah hanya menyentuh kontak perusahaan yang punya panggilan di provinsi wilayahnya; modOK dan staf nasional: semua */
+async function perusahaanDalamWilayah(env, req, pid) {
+  const provs = (await env.DB.prepare("SELECT DISTINCT prov FROM panggilan WHERE perusahaan_id = ?").bind(pid).all()).results.map(r => r.prov);
+  return dalamWilayahStaf(req, provs);
+}
 async function tambahKontak(env, req, kini) {
-  const mod = await modOK(env, req); if (!mod) return tolakMod();
+  const mod = await modAtauStaf(env, req, P_KONSESI); if (!mod) return tolakMod();
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
   const c = cekKontak(b.o); if (c.galat) return gagal(400, c.galat);
+  if (!await perusahaanDalamWilayah(env, req, c.v.perusahaan_id)) return gagal(404, "perusahaan tidak ada di wilayah Anda");
   await simpanKontak(env, c.v, kini, mod).run();
   return json({kontak: await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt WHERE perusahaan_id = ?").bind(c.v.perusahaan_id).first()}, 201);
 }
@@ -344,8 +351,11 @@ async function imporKontak(env, req, kini) {
   return json({diimpor: ok.length}, 201);
 }
 async function daftarKontak(env, req) {
-  if (!await modOK(env, req)) return tolakMod();
-  return json({kontak: (await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt ORDER BY nama_pt LIMIT 1000").all()).results});
+  if (!await modAtauStaf(env, req, P_KONSESI)) return tolakMod();
+  const prov = new Map();
+  for (const r of (await env.DB.prepare("SELECT DISTINCT perusahaan_id, prov FROM panggilan").all()).results) (prov.get(r.perusahaan_id) || prov.set(r.perusahaan_id, []).get(r.perusahaan_id)).push(r.prov);
+  return json({kontak: (await env.DB.prepare("SELECT id, perusahaan_id, nama_pt, kontak, email, wa, telepon, catatan, diubah, dummy FROM kontak_pt ORDER BY nama_pt LIMIT 1000").all()).results
+    .filter(k => dalamWilayahStaf(req, prov.get(k.perusahaan_id) || []) && !(stafNyata(req) && k.dummy))});
 }
 async function hapusKontak(env, req, id) {
   if (!await modOK(env, req)) return tolakMod();
@@ -375,24 +385,24 @@ export async function kirimEmail(env, ke, m) {   // ke = satu alamat atau larik 
 const KOLOM_PANGGILAN = `p.id, p.tanggal, p.perusahaan_id, p.nama_pt, p.prov, p.kab, p.titik_n, p.terdeteksi, p.lat, p.lon, p.status, p.dipanggil_pada, p.batas, p.direspons_pada, p.dicek_pada,
   p.saluran, p.hasil, p.catatan, p.oleh, p.dibuat, p.dummy`;
 async function daftarPanggilan(env, req, url, kini) {
-  if (!await adm(env, req)) return tolakAdmin();
+  if (!await adm(env, req) && !await stafPeran(env, req, P_KONSESI)) return tolakAdmin();
   const semua = url.searchParams.get("semua") === "1";
   const baris = (await env.DB.prepare(`SELECT ${KOLOM_PANGGILAN}, k.email IS NOT NULL ada_email, k.wa IS NOT NULL ada_wa, k.telepon IS NOT NULL ada_telepon,
     (SELECT count(*) FROM lapangan l WHERE l.tgl = p.tanggal AND l.prov = p.prov AND l.kab = p.kab) lapangan_n
     FROM panggilan p LEFT JOIN kontak_pt k ON k.perusahaan_id = p.perusahaan_id ${semua ? "" : "WHERE p.status NOT IN ('selesai', 'abaikan')"}
     ORDER BY (p.status = 'baru') DESC, p.batas IS NULL, p.batas, p.terdeteksi DESC LIMIT 500`).all()).results;
   return json({kini, batas_respons_ms: BATAS_RESPONS, email_siap: emailSiap(env), status: STATUS_PANGGILAN,
-    panggilan: baris.map(r => ({...r, ada_email: !!r.ada_email, ada_wa: !!r.ada_wa, ada_telepon: !!r.ada_telepon, terlambat: !!r.batas && r.batas < kini && ["dipanggil"].includes(r.status)}))});
+    panggilan: baris.filter(r => dalamWilayahStaf(req, [r.prov]) && !(stafNyata(req) && r.dummy)).map(r => ({...r, ada_email: !!r.ada_email, ada_wa: !!r.ada_wa, ada_telepon: !!r.ada_telepon, terlambat: !!r.batas && r.batas < kini && ["dipanggil"].includes(r.status)}))});
 }
 const SALURAN_AKSI = {wa: "wa", email: "email", telepon: "telepon"};
 async function ubahPanggilan(env, req, id, kini) {
-  const mod = await adm(env, req); if (!mod) return tolakAdmin();
+  const mod = await adm(env, req) || await stafPeran(env, req, P_KONSESI); if (!mod) return tolakAdmin();
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  if (typeof b.o.aksi === "string" && Object.hasOwn(SALURAN_AKSI, b.o.aksi) && !await modOK(env, req)) return tolakMod();   // kirim email/WA/telepon ke perusahaan
+  if (typeof b.o.aksi === "string" && Object.hasOwn(SALURAN_AKSI, b.o.aksi) && !dariStaf(mod) && !await modOK(env, req)) return tolakMod();   // kirim email/WA/telepon ke perusahaan (staf analis_konsesi boleh)
   const aksi = b.o.aksi, hasil = tx(b.o.hasil, 300), catatan = tx(b.o.catatan, 500), tambahan = tx(b.o.pesan, 300);
   if ([hasil, catatan, tambahan].includes(undefined)) return gagal(400, "hasil maks 300, catatan maks 500, pesan maks 300 karakter");
   const p = await env.DB.prepare(`SELECT ${KOLOM_PANGGILAN}, k.email, k.wa FROM panggilan p LEFT JOIN kontak_pt k ON k.perusahaan_id = p.perusahaan_id WHERE p.id = ?`).bind(id).first();
-  if (!p) return gagal(404, "panggilan tidak ada");
+  if (!p || !dalamWilayahStaf(req, [p.prov])) return gagal(404, "panggilan tidak ada");
   const tandaiPanggil = saluran => env.DB.prepare("UPDATE panggilan SET status = 'dipanggil', dipanggil_pada = ?1, batas = ?1 + ?2, saluran = ?3, oleh = ?4 WHERE id = ?5 AND status = 'baru'").bind(kini, BATAS_RESPONS, saluran, mod, id);
   const catat = () => env.DB.prepare("UPDATE panggilan SET hasil = coalesce(?, hasil), catatan = coalesce(?, catatan), oleh = ? WHERE id = ?").bind(hasil, catatan, mod, id);
   const segar = async extra => json({panggilan: await env.DB.prepare(`SELECT ${KOLOM_PANGGILAN} FROM panggilan p WHERE p.id = ?`).bind(id).first(), ...extra});
@@ -653,7 +663,7 @@ async function halamanLapangan(env, url) {
 /* rute: digabung ke RUTE di src/worker.js (gerbang uji membaca kunci tabel ini). Tanpa auth = publik; "admin" = adminOK; "kode" = x-kode-regu. */
 export const RUTE_POSKO = {
   "GET /lapangan": (env, req, url) => halamanLapangan(env, url),
-  "GET /admin/posko": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanPosko()),
+  "GET /admin/posko": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanPosko, HALAMAN_STAF.posko),
   "GET /api/neraca": (env, req, url, kini, ctx) => neracaPublik(env, req, url, kini, ctx),
   "GET /api/paparan/templat": (env, req, url, kini, ctx) => cacheTepi(new Request(new URL("/api/paparan/templat", url), {method: "GET"}), ctx, 60, async () => json((await bacaTemplat(env)).templat)),
   "GET /api/lapangan/saya": async (env, req) => { const g = await reguDari(env, req); return !(g instanceof Response) ? json({regu: {nama: g.nama, unsur: g.unsur, prov: g.prov, kab: g.kab}}) : g; },
