@@ -1,4 +1,5 @@
 import test from "node:test";
+import { existsSync, readFileSync } from "node:fs";
 import assert from "node:assert/strict";
 import * as M from "../../public/udara/sim/model.js";
 
@@ -130,12 +131,18 @@ test("perlakuan teratas punya rentang lo <= jj <= hi", () => {
 
 /* ---------- emisi, ensemble, validasi, lapis tanggap ---------- */
 import * as T from "../../public/udara/sim/tanggap.js";
-test("emisi api dari FRE: jumlah FRP / lintasan x kg-per-MJ x faktor emisi, gambut lebih besar daripada mineral", () => {
-  const { dmFre, efGambut, efMineral, lintasan } = M.KONF;
-  assert.ok(Math.abs(M.emisiApi(6000, false) - 6000 / lintasan * dmFre * efMineral) < 1e-9);
-  assert.ok(Math.abs(M.emisiApi(6000, true) / M.emisiApi(6000, false) - efGambut / efMineral) < 1e-9);
-  const s = M.buatSumber(kluster, pltu, A);
-  assert.equal(s.sumber.find(x => x.id === "K1").Q, M.emisiApi(9000, true)); assert.equal(s.sumber.find(x => x.id === "K3").Q, M.emisiApi(6000, false));
+test("emisi api dari FRE: FRP / lintasan teramati x koreksi x kg-per-MJ x faktor emisi; gambut konversi sendiri; cadangan 4 lintasan", () => {
+  const { dmFre, dmGambut, efGambut, efMineral, koreksiApi, lintasanCadangan } = M.KONF;
+  assert.ok(Math.abs(M.emisiApi(6000, false, 3) - 6000 / 3 * koreksiApi * dmFre * efMineral) < 1e-9);
+  assert.ok(Math.abs(M.emisiApi(6000, true, 3) / M.emisiApi(6000, false, 3) - dmGambut * efGambut / (dmFre * efMineral)) < 1e-9);
+  assert.equal(M.emisiApi(6000, false), M.emisiApi(6000, false, lintasanCadangan)); assert.equal(M.emisiApi(6000, false, 0), M.emisiApi(6000, false, lintasanCadangan));
+  const s = M.buatSumber({features: kluster.features.map(f => ({properties: {...f.properties, lintasan: f.properties.id === "K1" ? 2 : undefined}}))}, pltu, A);
+  assert.equal(s.sumber.find(x => x.id === "K1").Q, M.emisiApi(9000, true, 2)); assert.equal(s.sumber.find(x => x.id === "K3").Q, M.emisiApi(6000, false));
+});
+test("lintasan teramati: satu sensor dengan jeda > 1 jam = lintasan baru; di luar radius dan lebih lama dari 24 jam diabaikan; minimal 1", () => {
+  const rows = [[-3.3, 105.2, -5, "N"], [-3.31, 105.21, -4.9, "N"], [-3.3, 105.2, -17, "N"], [-3.3, 105.2, -5, "N20"], [-3.3, 105.2, -30, "N20"], [-3.3, 108, -5, "N21"], [-3.3, 105.2, -12, "M"]].map(([a, b, j, s]) => [a, b, j, s]);
+  const L = M.lintasanKompleks([{id: "A", lat: -3.3, lon: 105.2}, {id: "B", lat: 40, lon: 10}], rows);
+  assert.equal(L.A, 4, "N: -5 dan -17 (2), N20: -5 (1), M: -12 (1); N20 -30 dan N21 jauh diabaikan"); assert.equal(L.B, 1);
 });
 test("PLTU: emisi memakai faktor kapasitas tiap unit bila ada, kapasitas MW nyata", () => {
   const s = M.buatSumber({features: []}, [{id: "P", nama: "x", mw: 1000, lat: -5.9, lon: 106, fk: .8}, {id: "Q", nama: "y", mw: 1000, lat: -5.8, lon: 106, fk: null}], A);
@@ -147,11 +154,24 @@ test("blhKali: lapisan campuran dikalikan di medan, dan hasil berubah tetapi tet
   const t = h => h.sfcA.reduce((s, v) => s + v, 0), tebal = M.jalankan(A, src, kota, {blhKali: 2});
   assert.ok(tebal.sfcA.every(v => v >= 0 && Number.isFinite(v)) && Math.abs(t(tebal) / t(dasar) - 1) > .02, `tebal ${t(tebal)} vs dasar ${t(dasar)}`);
 });
-test("validasi: leave-one-out, galat >= 1 dan dalam2 antara 0 dan 1; target = model x K sempurna memberi galat 1", () => {
-  const v = M.validasi(dasar, prak); assert.ok(v.ok && v.n >= 3, JSON.stringify(v));
+test("kecocokan (identitas metrik): tinggalkan-satu, galat >= 1 dan dalam2 antara 0 dan 1; target = model x K sempurna memberi galat 1", () => {
+  const v = M.kecocokanSkala(dasar, prak); assert.ok(v.ok && v.n >= 3, JSON.stringify(v));
   assert.ok(v.galat >= 1 && v.dalam2 >= 0 && v.dalam2 <= 1 && v.terburuk.length > 0, JSON.stringify(v));
   const palsu = {...prak, kota: prak.kota.map((c, ci) => { let m = 0; for (let g = 0; g < dasar.nG; g++) if (dasar.grup[g].jenis === "api") for (let b = 0; b < 24; b++) m += dasar.kon[(g * dasar.nK + ci) * dasar.NB + b] / 24; return {...c, r24: [m * 7, 0, 0], asap: [1, 0, 0]}; })};
-  const p = M.validasi(dasar, palsu); assert.ok(p.ok && Math.abs(p.galat - 1) < 1e-6 && p.dalam2 === 1, JSON.stringify(p));
+  const p = M.kecocokanSkala(dasar, palsu); assert.ok(p.ok && Math.abs(p.galat - 1) < 1e-6 && p.dalam2 === 1, JSON.stringify(p));
+});
+test("kecocokan skala: tinggalkan-satu, galat >= 1, dalam2 + luar2 = 1, ada kota terburuk", () => {
+  const v = M.kecocokanSkala(dasar, prak); assert.ok(v.ok && v.n >= 2, JSON.stringify(v));
+  assert.ok(v.galat >= 1 && Math.abs(v.dalam2 + v.luar2 - 1) < 1e-12 && v.terburuk.length > 0 && !("validasi" in M), JSON.stringify(v));
+  assert.equal(M.sdApiDariGalat(1), .2); assert.equal(M.sdApiDariGalat(100), 1); assert.ok(Math.abs(M.sdApiDariGalat(2) - Math.log(2) / .6745) < 1e-12);
+});
+test("K pada data nyata di repo berada di rentang wajar (emisi tak salah skala struktural)", { skip: !existsSync(new URL("../../public/data/hotspot24.json", import.meta.url)) }, () => {
+  const baca = p => JSON.parse(readFileSync(new URL("../../public/" + p, import.meta.url))), ang = baca("udara/data/angin.json"), pr = baca("udara/data/prakiraan.json"), kl = baca("data/kluster.json"), pl = baca("udara/data/pltu.json"), hs = baca("data/hotspot24.json");
+  const AA = M.kemasAngin(ang), dlm = k => k.lon >= AA.lon0 && k.lon <= AA.lon0 + (AA.nx - 1) * AA.dlon && k.lat >= AA.lat0 && k.lat <= AA.lat0 + (AA.ny - 1) * AA.dlat && k.pm?.length;
+  const P = {...pr, kota: pr.kota.filter(dlm)}, props = kl.features.map(f => f.properties).filter(p => p.frp24 > 0), L = M.lintasanKompleks(props, hs.baris);
+  assert.ok(Object.values(L).every(n => n >= 1 && n <= 20), "lintasan masuk akal");
+  const S = M.buatSumber(props.map(p => ({...p, lintasan: L[p.id]})), pl, AA), h = M.jalankan(AA, S, P.kota, {}), c = M.kalibrasi(h, P);
+  assert.ok(c.terkalibrasi && c.K >= .2 && c.K <= 5, `K ${c.K} di luar rentang wajar 0,2 sampai 5 (n ${c.n})`);
 });
 test("ensemble: deterministik, anggota di batas, pita p10 <= p50 <= p90 dan peluang di [0,1]", () => {
   const a = M.anggotaEnsemble(5, 7), b = M.anggotaEnsemble(5, 7); assert.deepEqual(a, b); assert.equal(a.length, 4);
@@ -162,10 +182,12 @@ test("ensemble: deterministik, anggota di batas, pita p10 <= p50 <= p90 dan pelu
   assert.ok(pt.puncak.p10 <= pt.puncak.p90 && pt.peluang >= 0 && pt.peluang <= 1 && pt.n === 3);
   assert.ok(M.kuantil([1, 2, 3, 4, 5], .5) === 3 && M.kuantil([0, 10], .1) === 1);
 });
-test("ISPA: nol di bawah 55,4, naik dengan PM dan jiwa, lo <= t <= hi", () => {
-  assert.equal(M.ispaHari(new Float32Array(73).fill(50), 1e6).t, 0);
+test("ISPA: mulus tanpa loncatan di 55,4, nol di bawah 15, naik dengan PM dan jiwa, batas bawah RR tidak dijepit", () => {
+  assert.equal(M.ispaHari(new Float32Array(73).fill(10), 1e6).t, 0);
+  const t = v => M.ispaHari(new Float32Array(73).fill(v), 1e6).t, tepi = t(55.5) - t(55.3);
+  assert.ok(t(50) > 0 && tepi > 0 && tepi < 0.05 * t(55.4), `loncatan di ambang: ${tepi} vs ${t(55.4)}`);
   const a = M.ispaHari(new Float32Array(73).fill(100), 1e6), b = M.ispaHari(new Float32Array(73).fill(200), 1e6);
-  assert.ok(a.t > 0 && b.t > a.t && a.lo <= a.t && a.t <= a.hi, JSON.stringify([a, b]));
+  assert.ok(a.t > 0 && b.t > a.t && a.lo < 0 && a.lo <= a.t && a.t <= a.hi, JSON.stringify([a, b]));
   assert.ok(Math.abs(M.ispaHari(new Float32Array(73).fill(100), 2e6).t / a.t - 2) < 1e-9);
 });
 const fk = T.fasilitasKota([{t: "rs", lat: -2.95, lon: 104.7}, {t: "faskes", lat: -2.99, lon: 104.8}, {t: "sekolah", lat: -3, lon: 104.7}, {t: "sekolah", lat: 60, lon: 10}, {t: "lain", lat: -3, lon: 104.7}], kota);
@@ -188,6 +210,19 @@ test("peringkat perlakuan: menurun menurut orang-hari, biaya > 0, rentang lo <= 
   const mk = pr.find(x => x.jenis === "masker"), i = prak.kota.findIndex(c => c.kode === mk.id), maks = M.paparan(pmD[i], jiwa[i]).jj / 24;
   assert.ok(mk.oh <= maks + 1e-6 && mk.oh > 0, `masker ${mk.oh} vs seluruh ${maks}`);
   const ideal = T.TANGGAP.masker, lengkap = T.efekGrup(pmD[i], jiwa[i], T.maskerGrup({...ideal, cakupan: 1, patuh: 1, proteksi: 1})); assert.ok(Math.abs(lengkap.oh - maks) < 1e-6, "semua orang terlindung penuh menghindari semua orang-hari");
+});
+test("kestabilan peringkat: Spearman benar, urutan sama = stabil, terbalik = tidak stabil, terlalu sedikit = tak dinilai", () => {
+  assert.equal(T.spearman([1, 2, 3, 4], [10, 20, 30, 40]), 1); assert.equal(T.spearman([1, 2, 3, 4], [4, 3, 2, 1]), -1); assert.ok(Math.abs(T.spearman([1, 2, 2, 4], [1, 3, 3, 9]) - 1) < 1e-12);
+  const d = [100, 50, 20, 10];
+  assert.equal(T.stabilitas(d, [[90, 60, 25, 5], [110, 40, 30, 12]]).stabil, true);
+  assert.equal(T.stabilitas(d, [[5, 20, 50, 100], [10, 30, 60, 90]]).stabil, false);
+  assert.equal(T.stabilitas([1, 2], [[1, 2]]).stabil, null);
+});
+test("ensemble penuh (kecil): peringkat dijalankan ulang per anggota dan kunci kandidat dilaporkan; kunci tak muncul = 0", async () => {
+  const { jalankanEnsemble } = await import("../../public/udara/sim/ensemble.js"), urut = M.urutPerlakuan(A, prak, dasar, kal.K, jiwa, pmD), pr = T.peringkat(A, prak, dasar, kal.K, jiwa, pmD, urut, fk), kunci = [...pr.map(x => x.jenis + "|" + x.id), "kompleks|tidakada"];
+  const r = jalankanEnsemble({n: 3, sdApi: .35, A, src, kota, prak, dasar, K: kal.K, jiwa, pmDasar: pmD, fk, kunci});
+  assert.equal(r.ohAng.length, 2); assert.equal(r.seri[0].length, 3); assert.ok(r.ohAng.every(a => a.length === kunci.length && a[a.length - 1] === 0 && a.some(v => v > 0)));
+  assert.ok(T.stabilitas(pr.map(x => x.oh), r.ohAng).rho !== null || pr.length < 3);
 });
 test("beban RS: urut menurun, perFaskes null bila tak ada faskes", () => {
   const b = T.bebanRS(kota, jiwa, pmD, fk); for (let i = 1; i < b.length; i++) assert.ok(b[i - 1].ispa >= b[i].ispa);

@@ -102,7 +102,7 @@ if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, 
 
 if (typeof document !== "undefined") (() => {
 const $ = s => document.querySelector(s), fmt1 = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
-const S = {D: null, sk: null, pl: "none", mode: "air", hari: 0, sel: 0, main: false, kec: 8, d3: false, tanam: 10, par: {laju: 4, kap: 150, cak: 30, geser: 10, omc: 10}, hj: {}, A: null, B: null};
+const S = {D: null, sk: null, pl: "none", mode: "air", hari: 0, sel: 0, main: false, kec: 8, d3: false, tanam: 10, par: {laju: 4, kap: 150, cak: 30, geser: 10, omc: 10}, hj: {}, A: null, B: null, urut: "padi", tutupan: false, posko: [], pangkalan: [], grid: null, omcRp: 0, ev: null};
 const PL = [["none", "Tanpa"], ["pompa", "Pompa"], ["awal", "Tanam awal"], ["omc", "Hujan buatan"]];
 const RAMP = [[0, [164, 52, 58]], [.25, [224, 121, 59]], [.5, [232, 197, 71]], [.75, [121, 184, 106]], [1, [46, 127, 184]]];
 const KS_WARNA = ["#a4343a", "#e8b84a", "#5aa56e"];   /* berat, ringan, tak stres */
@@ -126,6 +126,7 @@ const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; f
 function siapkan(raw) {
   const c = raw.sel_data, n = c.lat.length;
   return {...raw, n, lat: c.lat, lon: c.lon, taw: c.taw, gb: c.gb, jiwa: c.jiwa, dr0: c.dr0, nol: c.dr0.map(() => 0),
+    sawah: raw.tutupan ? raw.tutupan.sawah : null, kebun: raw.tutupan ? raw.tutupan.sawit.map((v, i) => v + raw.tutupan.hti[i]) : null,
     km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), tot: c.lat.reduce((a, la) => a + 3098 * Math.cos(la * Math.PI / 180), 0)};
 }
 const cfgDasar = () => ({tanam: S.tanam, laju: 0, kap: 0, omc: 0});
@@ -146,7 +147,7 @@ function hitung() {
   const kn = "normal" + (S.mulai === "kemarau" ? "_k" : ""), skn = S.D.skenario[kn];   /* pembanding: Normal, tanggal mulai dan tanam sama, tanpa perlakuan */
   if (S.sk !== "normal" && skn) { S.hj[kn] ||= hujanHarian(S.D, skn); S.N = jalanCache(D, kn, S.hj[kn]); } else S.N = null;
   S.pA = pcOf(S.A); S.pB = pcOf(S.B); S.pN = S.N ? pcOf(S.N) : null; S.mxA = Math.max(...S.pA); S.mxB = Math.max(...S.pB); S.mxN = S.pN ? Math.max(...S.pN) : 0;
-  gambarSemua();
+  gambarSemua(); tanggap();
 }
 function gambarSemua() { renderSlider(); gambarSpark(); gambarGrafik(); segarHari(true); }
 
@@ -174,12 +175,14 @@ function petaInit() {
     peta.addSource("sm", {type: "geojson", data: {type: "FeatureCollection", features: fitur}, promoteId: "i"});
     peta.addLayer({id: "sm-isi", type: "fill", source: "sm", paint: {"fill-color": ["coalesce", ["feature-state", "c"], "rgba(0,0,0,0)"], "fill-opacity": .8}});
     peta.addLayer({id: "sm-tepi", type: "line", source: "sm", paint: {"line-color": "rgba(0,0,0,.35)", "line-width": .6}});
+    peta.addSource("fokus", {type: "geojson", data: {type: "FeatureCollection", features: []}});
+    peta.addLayer({id: "fokus-tepi", type: "line", source: "fokus", paint: {"line-color": "#ffffff", "line-width": 1.4, "line-dasharray": [3, 2]}});
     peta.addLayer({id: "sm-pilih", type: "line", source: "sm", filter: ["==", ["get", "i"], S.sel], paint: {"line-color": "#ffffff", "line-width": 2.4}});
-    peta.on("click", "sm-isi", e => { const f = e.features && e.features[0]; if (f) { S.sel = f.properties.i; peta.setFilter("sm-pilih", ["==", ["get", "i"], S.sel]); gambarGrafik(); segarHari(false); } });
+    peta.on("click", "sm-isi", e => { const f = e.features && e.features[0]; if (f) { S.sel = f.properties.i; peta.setFilter("sm-pilih", ["==", ["get", "i"], S.sel]); gambarGrafik(); segarHari(false); tanggap(); } });
     peta.on("mouseenter", "sm-isi", () => peta.getCanvas().style.cursor = "pointer");
     peta.on("mouseleave", "sm-isi", () => peta.getCanvas().style.cursor = "");
     $("#muat").classList.add("hilang");
-    warnaLama = []; warnaPeta();
+    warnaLama = []; warnaPeta(); gambarFokus();
   });
 }
 function warnaPeta() {
@@ -279,6 +282,64 @@ function legendaPeta() {
     : [["Stres berat (Ks < " + fmt(S.D.param.ambang_berat) + ")", KS_WARNA[0]], ["Stres ringan", KS_WARNA[1]], ["Tanpa stres", KS_WARNA[2]]].map(([n, c]) => `<span style="--w:${c}">${n}</span>`).join("");
 }
 
+/* ---------- dampak dan lapis tanggap di kawasan sekitar sel pilihan ---------- */
+const rp = n => "Rp" + (n >= 1e9 ? fmt1(n / 1e9) + " M" : n >= 1e6 ? fmt1(n / 1e6) + " jt" : fmt(Math.round(n)));
+const bulatan = n => n >= 1000 ? fmt(Math.round(n / 100) * 100) : fmt(Math.round(n));
+/* kabupaten terdekat dari titik posko kekeringan (BNPB/BPS lewat posko.py); null bila jauh dari semua titik */
+function namaKab(i) {
+  let b = null, jd = 1e9;
+  for (const p of S.posko) { const d = Tanggap.jarakKm(S.D.lat[i], S.D.lon[i], p.lat, p.lon); if (d < jd) { jd = d; b = p; } }
+  return b && jd < 80 ? b.kab.split("|")[1] : null;
+}
+/* bawaan = sel paling kering hari ini: SPI-3 terendah (kekeringan_grid.json) di antara sel berpenduduk 50 ribu ke atas; seri dipecah simpanan tanah terkini */
+function selTerkering() {
+  const D = S.D, g = S.grid, ik = g ? g.kolom.indexOf("spi3") : -1, peta = new Map(g ? g.grid.map(r => [r[0] + "," + r[1], r]) : []);
+  let best = -1, bs = Infinity;
+  for (let i = 0; i < D.n; i++) {
+    if (D.jiwa[i] < 5e4 || (D.sawah && !(D.sawah[i] > 0))) continue;
+    const r = peta.get(D.lat[i] + "," + D.lon[i]), spi = r && ik >= 0 ? r[ik] : null, lembap = D.dr0[i] / D.taw[i];
+    const sk = (spi == null ? 0 : spi) - .5 * lembap;
+    if (sk < bs) { bs = sk; best = i; }
+  }
+  if (best < 0) best = D.jiwa.indexOf(Math.max(...D.jiwa));
+  const r = peta.get(D.lat[best] + "," + D.lon[best]);
+  return {i: best, spi: r && ik >= 0 ? r[ik] : null, isi: Math.round((1 - D.dr0[best] / D.taw[best]) * 100)};
+}
+function kartuAwal() {
+  const a = S.awal, kab = namaKab(a.i), el = $("#awalTeks");
+  el.textContent = `Sel berpenduduk di atas 50.000 jiwa dengan SPI-3 terendah hari ini${kab ? ", dekat " + kab : ""}: SPI-3 ${a.spi == null ? "tak tersedia" : fmt1(a.spi)}, tanah terisi ${fmt(a.isi)}% dari kapasitas. Klik sel lain untuk menggantinya.`;
+}
+function gambarFokus() {
+  let src; try { src = peta && peta.getSource("fokus"); } catch (x) {} if (!src || !S.D) return;
+  const D = S.D, r = 1 + D.sel / 2, la = D.lat[S.sel], lo = D.lon[S.sel];
+  src.setData({type: "FeatureCollection", features: [{type: "Feature", properties: {}, geometry: {type: "Polygon", coordinates: [[[lo - r, la - r], [lo + r, la - r], [lo + r, la + r], [lo - r, la + r], [lo - r, la - r]]]}}]});
+}
+let antriT = false;
+function tanggap() { if (antriT) return; antriT = true; nanti(() => { antriT = false; hitungTanggap(); }); }
+function hitungTanggap() {
+  const D = S.D, key = kunciSk(), sk = D.skenario[key], Dm = S.mulai === "kemarau" ? {...D, dr0: D.nol} : D, idx = fokusSel(D, S.sel, 1);
+  S.hj[key] ||= hujanHarian(D, sk);
+  const pang = S.pangkalan.length ? Tanggap.pangkalanTerdekat(D.lat[S.sel], D.lon[S.sel], S.pangkalan) : [];
+  S.ev = evaluasi(Tanggap, Dm, sk, S.hj[key], idx, {tanam: S.tanam, pangkalan: pang, biayaOmcHari: S.omcRp || undefined}); S.ev.pang = pang;
+  gambarFokus(); renderTanggap();
+}
+function renderTanggap() {
+  const E = S.ev, m = E.dasar, ada = !!S.D.sawah, kab = namaKab(S.sel);
+  $("#dampakJudul").textContent = `Dampak di sekitar ${kab || "sel pilihan"}`;
+  const sel = (judul, nil, kat) => `<div class="sm-h"><span class="sm-pil2">${judul}</span><b>${nil}</b>${kat ? `<small>${kat}</small>` : ""}</div>`;
+  $("#dampak").innerHTML = (ada ? sel("Padi hilang", fmt(Math.round(m.hilang / 100) * 100) + "<i>ha</i>", `dari sawah perkiraan ${bulatan(m.sawah)} ha`) + sel("Padi puso", bulatan(m.puso) + "<i>ha</i>", "hilang hasil 50% atau lebih") : "")
+    + sel("Jiwa tanpa air bersih", bulatan(m.jiwaPuncak), "puncak, di sel stres berat") + sel("Kebutuhan air", bulatan(m.kebutuhanL / 1000) + "<i>m³/hari</i>", "15 liter per orang")
+    + (D_kebun() ? sel("Kebun tertekan", bulatan(m.kebunPuncak) + "<i>ha</i>", "sawit dan HTI, puncak") : "")
+    + `<small class="sm-cat" style="grid-column:1/-1">Kawasan ${fmt(E.n)} sel (±1°) di sekitar sel pilihan, simulasi ${tgl(0, true)} sampai ${tgl(H - 1, true)}. ${ada ? "Luas sawah adalah perkiraan dari tutupan lahan, bukan data sawah." : "Tutupan lahan belum tersedia: padi tidak dihitung."}</small>`;
+  const urut = Tanggap.urutkan(E.kand.filter(k => ada || (k.jenis !== "pompa" && k.jenis !== "awal")), S.urut);
+  seg($("#segUrut"), ada ? [["padi", "Padi"], ["jiwa", "Jiwa"], ["biaya", "Biaya"]] : [["jiwa", "Jiwa"], ["biaya", "Biaya"]], S.urut, "urut");
+  $("#peringkat").innerHTML = `<table class="sm-tb"><thead><tr><th>Perlakuan</th>${ada ? "<th>Padi (ha)</th>" : ""}<th>Jiwa</th><th>Biaya</th></tr></thead><tbody>`
+    + urut.map((k, n) => `<tr title="${esc(k.rinci)}"><td><b>${n + 1}.</b> ${esc(k.nama)}</td>${ada ? `<td>${k.padiHa > 0 ? bulatan(k.padiHa) + (k.perHa ? `<small>${rp(k.perHa)}/ha</small>` : "") : "–"}</td>` : ""}`
+      + `<td>${k.jiwa > 0 ? bulatan(k.jiwa) + (k.perJiwa ? `<small>${rp(k.perJiwa)}/jiwa</small>` : "") : "–"}</td><td>${rp(k.biaya)}</td></tr>`).join("") + `</tbody></table>`
+    + `<small class="sm-cat">Pangkalan truk: ${E.pang.length ? E.pang.map(b => `${esc(b.nama)} (${fmt(Math.round(b.km))} km, ${fmt1(b.tJam)} jam, ${b.rit} rit/hari)`).join("; ") : "tidak ada BPBD terdata"}. Waktu tempuh dari jarak lurus × 1,4 ÷ 40 km/jam, bukan jaringan jalan. Harga satuan asumsi perencanaan; ganti dengan harga resmi sebelum dipakai.</small>`;
+}
+const D_kebun = () => !!S.D.kebun;
+
 /* ---------- putar ---------- */
 let rafId = 0, terakhir = 0, sisa = 0;
 function putar(on) {
@@ -329,10 +390,18 @@ Dr' = Dr − hujan − irigasi + ETa      (pers. 85), dipotong ke 0 sampai TAW</
   <ul><li>Pompa: menambah air saat Dr melewati RAW, sebesar laju yang kamu atur, selama musim tanam, sampai kapasitas habis. Laju dan kapasitas berlaku di lahan terjangkau; di tingkat sel dikalikan porsi lahan terjangkau. Semuanya angka pengaturan, bukan data pompa atau embung nyata.</li>
   <li>Tanam lebih awal: menggeser tanggal tanam, sehingga kebutuhan air puncak jatuh di waktu lain.</li>
   <li>Hujan buatan: menambah hujan sekian persen hanya di hari yang sudah berhujan. Rentang 0 sampai 20% adalah rentang pengaturan, tanpa klaim hasil: kami tidak menemukan rujukan WMO atau BRIN yang bisa dikutip untuk angka efeknya.</li></ul>
+  <h4>Tutupan lahan, dampak, dan peringkat perlakuan</h4>
+  <ul><li>Bawaan simulasi: sel dengan SPI-3 terendah hari ini di antara sel berpenduduk di atas 50.000 jiwa (kekeringan_grid.json), dengan prakiraan ECMWF dari hari ini. Bukan sel berpenduduk terbanyak.</li>
+  <li>Tutupan dari lapisan repo (scripts/kekeringan/tutupan.py): hutan = kawasan hutan KLHK dan konsesi HPH, kebun = konsesi sawit dan HTI, gambut = peta gambut. Dirasterkan ke piksel 5,6 km. <b>Luas sawah tidak ada di data terbuka mana pun di repo.</b> Sawah per sel = lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali satu faktor supaya jumlah se-Indonesia ${f(S.D.tutupan ? S.D.tutupan.lbs_ha / 1e6 : 0)} juta ha (acuan lahan baku sawah ATR/BPN, belum diverifikasi ke dokumennya), tersebar merata. Pakai sebagai urutan besaran dan untuk membandingkan perlakuan, bukan sebagai luas sawah sel itu.</li>
+  <li>Padi hilang = luas sawah × turunnya hasil FAO-33 (1 − ky × (1 − ΣETa/ΣETc), ky padi ${f(KY)}), puso bila turun 50% atau lebih (sama dengan padi.py). Kebun: bak kedua, Kc 0,95, p 0,65, Zr 0,9 m. Jiwa tanpa air bersih = penduduk di sel yang stres berat; kebutuhan 15 liter per orang per hari (Sphere 2018).</li>
+  <li>Kawasan dampak dan peringkat: sel dalam ±1° dari sel pilihan. Tiap kandidat dijalankan lewat bak yang sama, manfaat = selisih terhadap tanpa perlakuan.</li>
+  <li>Truk tangki: pangkalan = tiga kantor BPBD kabupaten terdekat (posko_kekeringan.json, hanya yang terdata); waktu tempuh dari jarak lurus × 1,4 ÷ 40 km/jam seperti posko.py, bukan jaringan jalan; satu putaran = pergi, pulang, 1 jam isi dan bongkar; kerja 10 jam; tangki 5.000 liter. Jumlah truk adalah pengandaian, bukan data armada BPBD. Sumur bor 2 liter/detik, 12 jam/hari, untuk air bersih. Pompanisasi 10 ha per pompa, 6 mm/hari, sumber 150 mm (sungai atau embung terbatas).</li>
+  <li>Biaya: sewa truk Rp1,5 jt/hari, sumur bor Rp200 jt/titik, pompa Rp30 jt + BBM Rp300 rb/hari, tanam awal Rp400 rb/ha, hujan buatan 5 hari × Rp220 jt (keputusan.json, Kemenhut 2026). Selain hujan buatan semuanya asumsi perencanaan, belum harga resmi.</li>
+  <li>Padi dan jiwa tidak dijumlahkan; pilih urutan di atas peringkat. Hasil model, belum divalidasi terhadap puso Kementan atau laporan BPBD.</li></ul>
   <h4>Batas model</h4>
   <ul><li>Bak satu lapis: tanpa aliran lateral, muka air tanah, genangan sawah, atau irigasi nyata. Padi dianggap tadah hujan.</li>
   <li>Semua hujan meresap; limpasan dan perkolasi tidak dilacak.</li>
-  <li>Resolusi 0,5 derajat (sekitar 55 km): satu sel mewakili banyak jenis tanah dan tanam sekaligus.</li>
+  <li>Resolusi 0,5 derajat (sekitar 55 km): satu sel mewakili banyak jenis tanah dan tanam sekaligus; padi memakai satu bak per sel, bukan per petak sawah.</li>
   <li>Skenario iklim bukan prakiraan; angka jiwa adalah penduduk di sel yang sedang stres berat, bukan jumlah petani atau korban.</li></ul></div>`;
   d.showModal();
 }
@@ -349,6 +418,7 @@ function hubung() {
     else if (kunci === "sk") { S.sk = v; seg($("#segSk"), listSk(), v, "sk"); jadwal(); }
     else if (kunci === "mulai") { S.mulai = v; S.tanam = S.D.mulai[v].tanam; if (!listSk().some(([k]) => k === S.sk)) S.sk = "nino"; seg($("#segMulai"), listMulai(), v, "mulai"); seg($("#segSk"), listSk(), S.sk, "sk"); S.hari = 0; jadwal(); }
     else if (kunci === "pl") { S.pl = v; seg($("#segPl"), PL, v, "pl"); jadwal(); }
+    else if (kunci === "urut") { S.urut = v; renderTanggap(); }
     else if (kunci === "kec") { S.kec = +v; seg($("#segKec"), [[4, "Pelan"], [8, "Sedang"], [20, "Cepat"]], v, "kec"); }
     else if (kunci === "mode") { S.mode = v; seg($("#segMode"), [["air", "Air tanah"], ["stres", "Stres"]], v, "mode"); legendaPeta(); warnaLama = []; warnaPeta(); }
   });
@@ -363,11 +433,17 @@ function hubung() {
   let raw;
   try { const r = await fetch("../data/kekeringan_neraca.json"); if (!r.ok) throw new Error(r.status); raw = await r.json(); }
   catch (e) { $("#muat").innerHTML = `<div><b>Data simulasi belum tersedia.</b></div>`; return; }
-  S.D = siapkan(raw);
+  const lain = async u => { try { const r = await fetch(u); return r.ok ? await r.json() : null; } catch (x) { return null; } };
+  const [tut, pk, gr, kp] = await Promise.all([lain("data/tutupan.json"), lain("../data/posko_kekeringan.json"), lain("../data/kekeringan_grid.json"), lain("../data/keputusan.json")]);
+  raw.tutupan = tut && tut.lat.length === raw.sel_data.lat.length && tut.lat.every((v, i) => v === raw.sel_data.lat[i] && tut.lon[i] === raw.sel_data.lon[i]) ? tut : null;   /* urutan sel harus sama dengan neraca; bila beda, tutupan dibuang */
+  S.D = siapkan(raw); S.grid = gr;
+  S.posko = pk && pk.posko ? pk.posko : [];
+  S.pangkalan = pk && pk.kabupaten ? pk.kabupaten.filter(k => k.bpbd && k.bpbd.lat != null).map(k => ({nama: "BPBD " + k.nama, lat: k.bpbd.lat, lon: k.bpbd.lon})) : [];
+  S.omcRp = kp && kp.param && kp.param.biaya_omc_hari ? kp.param.biaya_omc_hari[0] : 0;
   const ids = Object.keys(S.D.skenario); if (!ids.length) { $("#muat").innerHTML = `<div><b>Data simulasi belum tersedia.</b></div>`; return; }
-  S.mulai = S.D.mulai.kemarau ? "kemarau" : "hariini"; S.tanam = S.D.mulai[S.mulai].tanam;   /* bawaan: awal kemarau (kekeringan dan perlakuan terlihat Jun-Okt); ECMWF hanya ada di Hari ini */
-  S.sk = listSk().some(([k]) => k === "nino") ? "nino" : listSk()[0][0];
-  S.sel = S.D.jiwa.indexOf(Math.max(...S.D.jiwa));
+  S.mulai = S.D.mulai.hariini ? "hariini" : "kemarau"; S.tanam = S.D.mulai[S.mulai].tanam;   /* bawaan: kejadian hari ini dengan prakiraan ECMWF; Awal kemarau tetap bisa dipilih */
+  S.sk = ["ecmwf", "nino"].find(k => listSk().some(([x]) => x === k)) || listSk()[0][0];
+  S.awal = selTerkering(); S.sel = S.awal.i; kartuAwal();
   seg($("#segMulai"), listMulai(), S.mulai, "mulai"); $("#kartuMulai").hidden = Object.keys(S.D.mulai).length < 2; seg($("#segSk"), listSk(), S.sk, "sk"); seg($("#segPl"), PL, S.pl, "pl");
   seg($("#segKec"), [[4, "Pelan"], [8, "Sedang"], [20, "Cepat"]], S.kec, "kec"); seg($("#segMode"), [["air", "Air tanah"], ["stres", "Stres"]], S.mode, "mode");
   $("#rTanam").value = S.tanam; $("#play").innerHTML = ik('<path d="M7 4.5v15l12-7.5z" fill="currentColor"/>');

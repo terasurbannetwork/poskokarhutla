@@ -120,7 +120,8 @@ function peringkat(dasar, desa, pilihan) {
   baris.forEach(b => { b.pareto = !baris.some(c => c !== b && c.selamat >= b.selamat && c.biaya <= b.biaya && (c.selamat > b.selamat || c.biaya < b.biaya)); b.tambah_selamat = b.selamat - dr.selamat; b.tambah_biaya = b.biaya - dr.biaya; });
   const sulit = [{kap_jalan: BAWAAN.kap_jalan / 2}, {mandiri: 0.4}];
   baris.forEach(b => { if (!b.pareto) return; const m = Math.min(b.selamat, ...sulit.map(p => evakuasi({...b.o, desa, dalam: b.dalam, param: {...b.o.param, ...p}}).terselamatkan)); b.peka = b.selamat > 0 && (b.selamat - m) / b.selamat > 0.2; });
-  const par = baris.filter(b => b.pareto && b !== dr).sort((a, b) => a.biaya - b.biaya || b.selamat - a.selamat);
+  const lihat = new Set(), par = baris.filter(b => b.pareto && b !== dr && b.selamat > dr.selamat + 0.5).sort((a, b) => a.biaya - b.biaya || b.selamat - a.selamat)
+    .filter(b => { const k = Math.round(b.selamat) + "|" + Math.round(b.biaya / 1e5); return lihat.has(k) ? false : (lihat.add(k), true); });   /* paket kembar (hasil sama) hanya dihitung sekali */
   /* manfaat marginal terhadap pareto sebelumnya (jiwa per Rp miliar) */
   par.forEach((b, i) => { const p = i ? par[i - 1] : dr, db = b.biaya - p.biaya, ds = b.selamat - p.selamat; b.per_miliar = db > 0 && ds > 0 ? ds / (db / 1e9) : null; });
   return {dasar: dr, pareto: par, semua: baris.length};

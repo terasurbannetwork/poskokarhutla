@@ -451,6 +451,7 @@ function tanggapUnit(s) {
 function bahayaRuasJam(s) {
   return (s.geo?.rute || []).map(c => { let t = Infinity; for (const [lo, la] of c) { const b = bahayaDi(lo, la); if (b != null && b < t) t = b; } return isFinite(t) ? t : null; });
 }
+const barisRp = v => "Rp " + rupiah(v);
 function peringkatKartu(D, dasar, res) {
   const el = $("#smRank"); if (!el) return;
   const rk = Tanggap.peringkat(dasar, D, {radius: [3, 5, 8, 10, 15, 20], mulai: [-12, -6, -3, 0, 1], armada: [0, 10, 30, 60]}), isi = rk.pareto.slice(0, 8);

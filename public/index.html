@@ -1556,6 +1556,7 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
 <script src="/inti/tip.js"></script>
 <script src="/inti/peluang.js"></script>
 <script src="/inti/tabel.js"></script>
+<script src="/riwayat_nasional.js"></script>
 <script>
 "use strict";
 /* ================================================================ util */
@@ -3428,7 +3429,7 @@ const Insight = {
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
   /* ytd, tahun, kec dibuang (sudah ada di Tren); kartu riwayat panjang pindah ke Tren lewat TREN (pemilik, 17 Okt 2026) */
   /* bnpb (Laporan resmi BNPB) dan penanganan disembunyikan (pemilik, 17 Okt 2026); exBnpb/exPenanganan tetap ada, pulihkan dengan menambah id ke EX */
-  EX: ["peluang", "harian", "kumulatif", "musim", "cuaca", "paparan"],
+  EX: ["peluang", "harian", "kumulatif", "nasional", "musim", "cuaca", "paparan"],
   TREN: ["luasTahun", "luas", "nasional", "dunia"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
@@ -3448,7 +3449,7 @@ const Insight = {
     const D = this.data;
     const [mo, mu, sat, res, asap, kr] = await Promise.all([Tren.cache["data/sejarah_modis.json"] || muatJSON("data/sejarah_modis.json"), Tren.musim || muatJSON("data/musim.json"),
       muatJSON("data/luas_satelit.json").catch(() => null), muatJSON("data/luas_resmi.json").catch(() => null), Lapis.cache.asap || muatJSON("data/asap.json").catch(() => null), muatJSON("img/kredit.json").catch(() => [])]);
-    D.fs = await muatJSON("data/factsheet_karhutla.json").catch(() => null);
+    [D.fs, D.tb] = await Promise.all([muatJSON("data/factsheet_karhutla.json").catch(() => null), muatJSON("data/laporan.json").then(l => l.tahun_berjalan).catch(() => null), S.sejarah || muatJSON("data/sejarah.json").then(j => S.sejarah = j).catch(() => null)]);
     /* kartu peluang (inti/peluang.js) dan kumulatif: berkas boleh tak ada, kartunya saja yang dibuang */
     [D.pel, D.kum] = await Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null)]);
     Tren.cache["data/sejarah_modis.json"] = mo; Tren.musim = mu; Lapis.cache.asap = asap;
@@ -3656,15 +3657,12 @@ const Insight = {
       `<svg viewBox="0 0 ${W} ${h1 + h2 + 104}" role="img" aria-label="Personel penanganan karhutla">${sub("Hari ini, " + new Date(f.tanggal + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"}), 14)}<g transform="translate(0,24)">${g3}</g>
         ${sub("Personel per provinsi", 74)}<g transform="translate(0,82)">${g1}</g>${sub("Personel per unsur", h1 + 96)}<g transform="translate(0,${h1 + 104})">${g2}</g></svg>`,
       `Sumber: ${f.sumber}`); },
+  /* grafik sama dengan kartu Riwayat nasional di /laporan (riwayat_nasional.js); 2026 = perkiraan satelit laporan.json */
   exNasional() {
-    const f = this.data.fs; if (!f) return "";
-    const rows = f.nasional.map(([n, v, cat]) => ({n, v, cat, tebal: n === "2026", lbl: (v > 2.8e6 ? "±" + fmt(v / 1e6) + " juta ha" : fmt(v) + " ha") + (n === "2026" ? " (sementara)" : "")}));
-    const ini = rows.at(-1);
-    const MERAH = "#c9503a", JINGGA = "#e58a45", [g, H] = this._batang(rows, 940, 110, 2.8e6, r => r === ini ? "#f2a05c" : r.v >= 1e6 ? MERAH : JINGGA, r => `<b>${r.n}</b><br>${fmt(r.v)} ha${r.cat ? "<br>" + esc(r.cat) : ""}`);
-    this._leg = [[MERAH, "di atas 1 juta ha"], [JINGGA, "di bawah 1 juta ha"], ["#f2a05c", "2026, data sementara"]];
-    return this.ex(`Luas terbakar 2026 menurut BNPB ${this.hl(fmt(ini.v) + " ha")} hingga 15 Oktober, angka sementara yang masih bisa bertambah karena ${this.hl("September–Oktober")} adalah puncak musim`, "", "",
-      `<svg viewBox="0 0 940 ${H}" role="img" aria-label="Luas terbakar Indonesia per tahun">${g}</svg>`,
-      `Sumber: BNPB, via ${f.sumber.split(",")[0]}`); },
+    const f = this.data.fs, tb = this.data.tb; if (!f || !tb) return "";
+    const r = riwayatNasional(f, tb, S.sejarah, document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana");
+    this._leg = r.leg;
+    return this.ex(r.judul, "", "", r.svg, "Sumber: " + r.sumber); },
   exDunia() {
     const f = this.data.fs; if (!f) return "";
     const rows = f.dunia.map(r => ({...r, v: r.ha, tebal: r.n === "Indonesia", lbl: (r.kira ? "±" : r.lebih ? "> " : "") + (r.ha >= 1e6 ? (r.ha / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2}) + " juta" : fmt(r.ha)) + " ha" + (r.per ? "*" : "")}));

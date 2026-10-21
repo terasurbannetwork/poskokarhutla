@@ -15,7 +15,7 @@ const IK = {main: '<svg viewBox="0 0 24 24"><path d="M7 4.5v15l12-7.5z"/></svg>'
 
 async function ambil(urls) { for (const u of urls) { try { const r = await fetch(u); if (r.ok) return await r.json(); } catch { /* coba berikutnya */ } } return null; }
 /* kluster.json diurai di Worker (hanya kolom yang dipakai kembali); gagal -> utas utama */
-function klusterWorker() { return new Promise(res => { try { const w = new Worker(new URL("kluster.worker.js", import.meta.url)); w.onmessage = e => { w.terminate(); res(e.data); }; w.onerror = () => { w.terminate(); res(null); }; w.postMessage("/data/kluster.json"); } catch { res(null); } }).then(r => r || ambil(["/data/kluster.json"])); }
+function klusterWorker() { return new Promise(res => { try { const w = new Worker(new URL("kluster.worker.js", import.meta.url), {type: "module"}); w.onmessage = e => { w.terminate(); res(e.data); }; w.onerror = () => { w.terminate(); res(null); }; w.postMessage("/data/kluster.json"); } catch { res(null); } }).then(r => r || ambil(["/data/kluster.json"])); }
 async function muatData(opsi = {}) {
   const [angin, pltu, prak, kluster, pend, fas] = await Promise.all([
     ambil(["/udara/data/angin.json"]), ambil(["/udara/data/pltu.json"]), (opsi.prak ? Promise.resolve(opsi.prak) : ambil(["/udara/data/prakiraan.json"])),
@@ -92,7 +92,7 @@ function kerangka(S) {
   <section class="su-kartu"><div class="su-hd"><h3>Pita ketidakpastian PM2,5</h3><span class="su-pil" id="suEnsPil">Ensemble</span></div>
     <div class="su-kontrol"><select class="su-pilih" id="suEnsKota" aria-label="Kota" hidden></select></div><div id="suEns"><p class="su-kal">Menunggu simulasi dasar...</p></div></section>
   <section class="su-kartu"><div class="su-hd"><h3>Beban fasilitas kesehatan</h3></div><div id="suRS"></div></section>
-  <section class="su-kartu"><div class="su-hd"><h3>Cek terhadap data</h3></div><div id="suVal"></div></section>
+  <section class="su-kartu"><div class="su-hd"><h3>Kecocokan skala dengan CAMS</h3></div><div id="suVal"></div></section>
   <section class="su-kartu"><div class="su-hd"><h3>Batas model</h3></div><ul class="su-batas">${M.BATAS.map(t => `<li>${esc(t)}</li>`).join("")}</ul></section>`;
   const q = s => S.el.querySelector(s);
   /* handler hanya mengubah keadaan; kerja berat dijadwalkan */
@@ -161,19 +161,23 @@ const kat = v => { const k = M.KAT[M.kategori(v)]; return `<span class="kt" titl
 const tabel = (kep, baris) => `<table class="su-tb"><thead><tr>${kep.map(h => `<th>${h}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
 const IKJ = {kompleks: IK.api, pltu: IK.api, sekolah: IK.sek, masker: IK.mk, ruang: IK.rm};
 function perlakuan(S) {
-  S.el.querySelector("#suPerlKal").textContent = "Diperingkat menurut orang-hari Tidak sehat yang terhindar dalam 72 jam; satuan biaya memakai asumsi.";
-  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${i + 1}</span><span>${IKJ[x.jenis]}${esc(x.nama)}</span><span class="n">sekitar ${jj(x.oh)} orang-hari${x.hi != null && x.hi > x.lo ? ` (${jj(x.lo)} sampai ${jj(x.hi)})` : ""}<small>${T.rupiah(x.biaya)}${x.perOh ? `, ${T.rupiah(x.perOh)} per orang-hari` : ""}${x.ispa >= 1 ? `, ISPA ${jj(x.ispa)} kasus terhindar` : ""}</small></span></button></li>`).join("")
+  const st = S.stab, ket = st?.stabil === true ? `Diperingkat menurut orang-hari Tidak sehat yang terhindar dalam 72 jam (urutan stabil di ensemble, korelasi ${fmt1(st.rho)}); satuan biaya memakai asumsi.`
+    : st?.stabil === false ? `Urutan tidak stabil di ensemble (korelasi ${fmt1(st.rho)}): daftar ini kandidat dengan perkiraan dampaknya, bukan peringkat; satuan biaya memakai asumsi.`
+    : "Kandidat dengan orang-hari Tidak sehat yang terhindar dalam 72 jam; urutan baru ditampilkan setelah kestabilannya diuji di ensemble.";
+  S.el.querySelector("#suPerlKal").textContent = ket;
+  S.el.querySelector("#suPerl").innerHTML = S.urut.length ? S.urut.map((x, i) => `<li><button type="button" data-i="${i}" aria-pressed="false"><span class="no">${st?.stabil === true ? i + 1 : "·"}</span><span>${IKJ[x.jenis]}${esc(x.nama)}</span><span class="n">sekitar ${jj(x.oh)} orang-hari${x.hi != null && x.hi > x.lo ? ` (${jj(x.lo)} sampai ${jj(x.hi)})` : ""}<small>${T.rupiah(x.biaya)}${x.perOh ? `, ${T.rupiah(x.perOh)} per orang-hari` : ""}${x.ispa >= 1 ? `, ISPA ${jj(x.ispa)} kasus terhindar` : ""}</small></span></button></li>`).join("")
     : `<li class="su-kosong">Tidak ada perlakuan yang menghindari paparan di atas ambang.</li>`;
 }
 function tandaiPerl(S) { S.el.querySelectorAll("#suPerl button").forEach(b => { const it = S.urut[+b.dataset.i]; b.setAttribute("aria-pressed", String(it === S.perlSek || (!S.perlSek && ((S.sk === "kompleks" && it.jenis === "kompleks" && it.id === S.komp) || (S.sk === "pltu" && it.jenis === "pltu"))))); }); }
 
-/* ---------- cek terhadap data ---------- */
+/* ---------- kecocokan skala dengan atribusi CAMS ---------- */
 function cekData(S) {
-  const v = M.validasi(S.dasar, S.prak), el = S.el.querySelector("#suVal"), st = S.galat?.stasiun, L = [];
-  let k1 = "Belum cukup kota dengan porsi asap untuk menilai model terhadap data.";
+  const v = S.kec = M.kecocokanSkala(S.dasar, S.prak), el = S.el.querySelector("#suVal"), st = S.galat?.stasiun, L = [];
+  let k1 = "Belum cukup kota dengan porsi asap untuk menilai kecocokan skala.";
   if (v.ok) { const t = v.bias > 1.15 ? ", cenderung terlalu pekat" : v.bias < .87 ? ", cenderung terlalu tipis" : "";
-    k1 = `Di ${fmt(v.n)} kota dengan porsi asap, asap model menyimpang rata-rata ${fmt1(v.galat)} kali dari PM2,5 CAMS${t}; ${fmt(v.dalam2 * 100)}% kota dalam faktor 2.`;
-    L.push(`Skala emisi api dikoreksi satu faktor K = ${fmt1(S.K)}; galat di atas dihitung dengan K yang tidak melihat kota yang dinilai.`); }
+    k1 = `Di ${fmt(v.n)} kota dengan porsi asap, asap model menyimpang rata-rata ${fmt1(v.galat)} kali dari atribusi CAMS${t}; ${fmt(v.luar2 * 100)}% kota di luar faktor 2.`; }
+  L.push(`Faktor skala K = ${fmt1(S.K)} (pengali terpisah pada asap api di kota)${S.K > 3 || S.K < 1 / 3 ? ": <b>K di luar 1/3 sampai 3, emisi model salah skala secara struktural, jadi awan 3D dan angka absolut tidak bisa dipercaya</b>" : ""}.`);
+  L.push("Ini bukan validasi: K dan targetnya sama-sama dari atribusi pipeline (sebagian melingkar), K dihitung tanpa kota yang dinilai.");
   L.push(st ? `Stasiun ukur: ${fmt(st.n)} hari-stasiun, bias ${fmt1(st.bias)} µg/m³, RMSE ${fmt1(st.rmse)} µg/m³, kategori tepat ${fmt(st.tepat_kategori * 100)}% (${esc(st.periode)}).`
     : "Belum ada stasiun ukur PM2,5 di pipeline (butuh WAQI_TOKEN), jadi model belum diuji terhadap alat ukur di tanah.");
   el.innerHTML = `<p class="su-kal">${k1}</p><ul class="su-batas">${L.map(t => `<li>${t}</li>`).join("")}</ul>`;
@@ -188,15 +192,17 @@ function bebanRS(S) {
 }
 
 /* ---------- ensemble: pita p10/p50/p90 ---------- */
-async function jalankanEns(S) {
-  if (S.ensJalan || !S.selesai) return; S.ensJalan = true; const tk = S.tokEns = {}, ang = M.anggotaEnsemble(), seri = S.kota.map((_, i) => [S.pmDasar[i]]), pil = S.el.querySelector("#suEnsPil");
-  for (let m = 0; m < ang.length; m++) {
-    pil.textContent = `Anggota ${m + 2} dari ${ang.length + 1}`;
-    const h = await kerja(M.buatSim(S.A, S.src, S.kota, ang[m].skn, ang[m].seed), p => { pil.textContent = `Anggota ${m + 2} dari ${ang.length + 1}: ${Math.round(p * 100)}%`; }, tk);
-    if (!h || !S.el.isConnected) return;
-    S.kota.forEach((_, i) => seri[i].push(M.pmKota(S.prak, S.dasar, h, S.K, i, S.A)));
-  }
-  S.pita = seri.map(M.pitaDariSeri); pil.textContent = `Ensemble ${ang.length + 1} anggota`; renderEns(S);
+/* ensemble di Worker: simulasi penuh tiap anggota + peringkat perlakuan dihitung ulang di anggota itu (kestabilan urutan) */
+function jalankanEns(S) {
+  if (S.ensJalan || !S.selesai) return; S.ensJalan = true; const pil = S.el.querySelector("#suEnsPil"), kunci = S.urut.map(x => x.jenis + "|" + x.id);
+  const gagal = () => { pil.textContent = "Ensemble tidak tersedia"; S.el.querySelector("#suEns").innerHTML = `<p class="su-kal">Ensemble belum bisa dijalankan di peramban ini.</p>`; };
+  let w; try { w = new Worker(new URL("ensemble.worker.js", import.meta.url), {type: "module"}); } catch { return gagal(); }
+  S.ensW = w; w.onerror = () => { w.terminate(); gagal(); };
+  w.onmessage = e => { const d = e.data;
+    if (d.t === "progres") pil.textContent = `Anggota ${d.m} dari ${d.n}`;
+    else if (d.t === "galat") { console.warn("SimUdara ensemble:", d.pesan); w.terminate(); gagal(); }
+    else if (d.t === "selesai") { w.terminate(); S.pita = d.seri.map(M.pitaDariSeri); S.stab = T.stabilitas(S.urut.map(x => x.oh), d.ohAng); pil.textContent = `Ensemble ${S.pita[0].n} anggota`; renderEns(S); perlakuan(S); tandaiPerl(S); } };
+  w.postMessage({n: M.ENS.n, sdApi: M.sdApiDariGalat(S.kec?.ok ? S.kec.galat : 1.4), A: S.A, src: S.src, kota: S.kota, prak: S.prak, dasar: S.dasar, K: S.K, jiwa: S.jiwa, pmDasar: S.pmDasar, fk: S.fk, kunci});
 }
 function renderEns(S) {
   /* kota yang porsi asapnya ditolak pipeline di semua hari tidak ikut: PM-nya tidak berubah antar anggota, jadi pitanya palsu-sempit */

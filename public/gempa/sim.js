@@ -81,6 +81,7 @@ const Sim = (() => {
       muatJSON("../banjir/data/pusat_kec.json"), muatJSON("../data/penduduk.json"), muatJSON("../data/fasilitas.json"), Tsunami.muat("data/")]);
     const M = GempaGuncangan.pasang(model), cari = Tsunami.pencariKec(pusat, 60);
     /* Vs30 per sel (proksi kemiringan DEM, vs30.py); gagal dimuat = jatuh ke 400 m/s seragam dan panel mengatakannya */
+    try { GempaKerusakan.atur(await muatJSON("data/kalibrasi_kerusakan.json")); } catch (e) { console.warn("kalibrasi kerusakan tidak termuat", e); }
     let vs30 = null;
     try { const meta = await muatJSON("data/vs30.json"), r = await fetch(new URL("data/vs30.bin", document.baseURI)); if (!r.ok) throw new Error("vs30.bin " + r.status);
       vs30 = GempaGuncangan.vs30Grid(meta, new Uint8Array(await r.arrayBuffer()), model.vs30_baku); } catch (e) { console.warn("Vs30 tidak tersedia, dipakai 400 m/s seragam", e); }
@@ -149,7 +150,7 @@ self.onmessage = async e => { const d = e.data;
   function hitung(sk) {
     const D = S.D, M = D.M, w = D.model.param.wells_coppersmith94, lw4 = Math.pow(10, w.a + w.b * sk.m) / 4, jg = jenisG(sk), r = sk.r;
     /* guncangan.js memakai Rjb = jarak - L/4 dari pusat; di sini jarak diganti jarak ke bidang patahan, jadi L/4 dikembalikan dulu */
-    const vs = D.vs30 || (() => 400), sig = GempaKerusakan.sigmaLn(jg);
+    const vs = D.vs30 || (() => 400), KZ = GempaKerusakan, g0 = sk.nyataGempa, jam = g0 ? KZ.jamLokal(g0.waktu, sk.lon) : null;
     const pgaDi = (la, lo) => M.pga(sk.m, Tsunami.jarakRupture(r, la, lo) + lw4, sk.dalam, jg, vs(la, lo));
     const mmiDi = (la, lo) => M.pgaKeMmi(pgaDi(la, lo));
     const tDi = (la, lo, v) => Math.hypot(km2(sk.lat, sk.lon, la, lo), sk.dalam) / v;
@@ -163,17 +164,17 @@ self.onmessage = async e => { const d = e.data;
     const ras = {nx, ny, lat0, lon0, d, mmi, tS, kotak: [lon0, lat0, lon0 + nx * d, lat0 + ny * d]};
     /* kecamatan: MMI, waktu P/S, penduduk WorldPop */
     const kec = [], perKelas = new Array(13).fill(0), perLo = new Array(13).fill(0), perHi = new Array(13).fill(0);
-    for (const [k, [la, lo]] of Object.entries(D.pusat)) { if (km2(sk.lat, sk.lon, la, lo) > win) continue;
-      const pg = pgaDi(la, lo), v = M.pgaKeMmi(pg), p = D.pend[k] || 0, [prov, kab, nm] = k.split("|"), nama = nm && nm !== "None" ? nm : kab; if (v < 2) continue;
-      const pita = [pg * Math.exp(-sig), pg, pg * Math.exp(sig)];
-      kec.push({k, prov, kab, nama, lat: la, lon: lo, mmi: v, pga: pita, vs30: vs(la, lo), tP: tDi(la, lo, VP), tS: tDi(la, lo, VS), p}); perKelas[Math.round(v)] += p;
-      perLo[Math.round(M.pgaKeMmi(pita[0]))] += p; perHi[Math.round(M.pgaKeMmi(pita[2]))] += p; }
+    /* PGA per kecamatan lewat KZ.sebaran: jalur yang sama dengan kalibrasi ke kejadian nyata (scripts/gempa/kalibrasi_kerusakan.mjs) */
+    const sebar = KZ.sebaran({M, Tsunami, model: D.model, vs30: D.vs30, pusat: D.pusat, pend: D.pend}, sk, r, jg, win);
+    for (const c of sebar) { const [prov, kab, nm] = c.k.split("|"), nama = nm && nm !== "None" ? nm : kab, pita = KZ.pita(c.pg, jg, sk.m);
+      kec.push({k: c.k, prov, kab, nama, lat: c.lat, lon: c.lon, mmi: c.v, pga: pita, vs30: c.vs30, tP: tDi(c.lat, c.lon, VP), tS: tDi(c.lat, c.lon, VS), p: c.p}); perKelas[Math.round(c.v)] += c.p;
+      perLo[Math.round(M.pgaKeMmi(pita[0]))] += c.p; perHi[Math.round(M.pgaKeMmi(pita[2]))] += c.p; }
     kec.sort((a, b) => b.mmi - a.mmi);
     /* kota untuk ilustrasi peringatan dini: kecamatan berpenduduk terbanyak per kabupaten/kota */
     const kota = {}; kec.forEach(c => { const a = kota[c.prov + "|" + c.kab]; if (!a || c.p > a.p) kota[c.prov + "|" + c.kab] = c; });
     const provKuat = new Set(kec.filter(c => c.mmi >= 6.5).map(c => c.prov)), provAda = [...provKuat].filter(p => D.provFas.has(p));
     const rs = D.rs.filter(f => provAda.includes(f.prov) && Math.abs(f.lat - sk.lat) < degLa && Math.abs(f.lon - sk.lon) < degLo).map(f => ({...f, mmi: mmiDi(f.lat, f.lon)})).filter(f => f.mmi >= 6.5);
-    const kerusakan = GempaKerusakan.hitung(kec), t7 = a => a.slice(7).reduce((x, y) => x + y, 0);
+    const kerusakan = KZ.taksir(sebar, jg, sk.m, jam), t7 = a => a.slice(7).reduce((x, y) => x + y, 0);
     const H = {ras, kec, perKelas, tujuhPita: [t7(perLo), t7(perKelas), t7(perHi)], mmiPita: kec.length ? kec[0].pga.map(M.pgaKeMmi) : null, kerusakan, vs30Ada: D.vs30Ada, pgaDi, provKuat, provAda, kota: Object.values(kota).filter(c => c.mmi >= 4).sort((a, b) => a.tS - b.tS), rs, sekolah: null, win, mmiDi,
       tSelesai: Math.hypot(win, sk.dalam) / VS + 4, ts: null, evak: []};
     H.kotakSekolah = [sk.lat - degLa, sk.lat + degLa, sk.lon - degLo, sk.lon + degLo];
@@ -261,7 +262,7 @@ self.onmessage = async e => { const d = e.data;
     const K = H.kerusakan, rent = a => `${fmt(r2(Math.min(...a)))} sampai ${fmt(r2(Math.max(...a)))}`; /* RS tidak monoton: rentang = min dan maks tiga lajur */
     if (K.rumah > 0) out.push(kartu(pil("Kerusakan bangunan", "#8f2a1e"), K.rb[1] >= 1 || K.jiwa[1] >= 1 ? `Sekitar ${hl(fmt(r2(K.rb[1])) + " rumah")} rusak berat dan ${hl(fmt(r2(K.jiwa[1])) + " orang")} meninggal` : "Model tidak memperkirakan rumah rusak berat",
       `<table class="tb3"><thead><tr><th>Perkiraan</th><th class="n">Tengah</th><th class="n">Rentang</th></tr></thead><tbody>${[["Rusak berat", K.rb], ["Rusak sedang", K.rs], ["Rusak ringan", K.rr], ["Korban jiwa", K.jiwa]].map(([n, a]) => `<tr><td>${n}</td><td class="n num">${fmt(r2(a[1]))}</td><td class="n num">${rent(a)}</td></tr>`).join("")}</tbody></table>`,
-      `Hasil model, belum divalidasi. Sumber: WorldPop 2026, BPS, kurva kerapuhan gaya HAZUS. ${H.vs30Ada ? "Tanah per sel dari kemiringan DEM." : "Tanah dianggap seragam (data Vs30 tidak termuat)."}`));
+      `Hasil model. Disetel ke 8 gempa kerak 2006 sampai 2022; pada uji leave-one-out korban jiwa meleset rata-rata ${des(GempaKerusakan.kal.faktorLoo)} kali lipat atau sepersekian. Sumber: WorldPop 2026, BPS, kurva HAZUS. ${H.vs30Ada ? "Tanah per sel dari kemiringan DEM." : "Tanah dianggap seragam (data Vs30 tidak termuat)."}`));
     /* 2. sekolah & RS di MMI VII+ */
     const ns = H.sekolah ? H.sekolah.length : null;
     if (H.provAda.length) out.push(kartu(pil("Fasilitas", "#a8780c"), ns == null ? `${hl(fmt(H.rs.length))} rumah sakit dan puskesmas di guncangan VII atau lebih; sekolah sedang dimuat` :
@@ -444,7 +445,7 @@ self.onmessage = async e => { const d = e.data;
       if (p.km <= (sub ? 80 : 40) && (!best || p.km < best.p.km)) best = {p, f, i, sub}; });
     let src = sumber(S.sk.src), titik = {lat, lon, strike: S.sk.strike};
     if (best) { src = DIKENAL.find(d => d.parit?.[0] === best.i) || S.gem.find(g => g.i === best.i) || src; titik = best.sub ? best.p : {lat, lon, strike: best.p.strike}; S.pilih = src.id; }
-    const sk = bentuk(src, S.sk.m, S.sk.dalam, titik); sk.klik = {lat, lon}; sk.n = best ? src.n : "Titik pilihanmu"; sk.nyata = !!(tetap && S.sk.nyata);
+    const sk = bentuk(src, S.sk.m, S.sk.dalam, titik); sk.klik = {lat, lon}; sk.n = best ? src.n : "Titik pilihanmu"; sk.nyata = !!(tetap && S.sk.nyata); if (sk.nyata) sk.nyataGempa = S.sk.nyataGempa;
     if (tetap && best) { sk.lat = lat; sk.lon = lon; sk.e = {lat, lon, m: sk.m, dalam: sk.dalam, jenis: sk.jenis, strike: sk.strike}; sk.r = Tsunami.rupture(sk.e); sk.tetap = true; sk.n = "Gempa pilihan"; }
     if (!best) { sk.jenis = S.sk.jenis === "subduksi" ? "naik" : S.sk.jenis; sk.lat = lat; sk.lon = lon; sk.e = {lat, lon, m: sk.m, dalam: sk.dalam, jenis: sk.jenis, strike: sk.strike}; sk.r = Tsunami.rupture(sk.e); }
     if (tetap) { sk.tetap = true; sk.n = S.sk.nyata ? S.sk.n : "Gempa pilihan"; }

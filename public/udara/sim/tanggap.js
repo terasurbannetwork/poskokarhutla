@@ -16,7 +16,7 @@ export const ASUMSI_TANGGAP = [
   {nama: "Kurangi PLTU", nilai: `${TANGGAP.pltu.kurang * 100}% keluaran semua PLTU di kisi, biaya selisih pembangkit pengganti Rp${TANGGAP.pltu.selisihKwh} per kWh`, sumber: "asumsi; selisih biaya pokok gas/BBM dengan batu bara"},
   {nama: "Padamkan kompleks", nilai: `kejadian = luas / ${TANGGAP.api.ukuranApi} ha, ${TANGGAP.api.apiPerRegu} kejadian per regu-hari, Rp${TANGGAP.api.reguHari / 1e6} juta per regu-hari`, sumber: "ukuran_api dan api_per_regu_hari dari keputusan.json (asumsi lemah); biaya regu asumsi"},
   {nama: "Libur sekolah", nilai: `Rp${TANGGAP.sekolah.perMuridHari.toLocaleString("id-ID")} per murid-hari pembelajaran pengganti`, sumber: "asumsi"},
-  {nama: "ISPA tambahan", nilai: "sama dengan kartu Dampak (RR 1,019 per 10 µg/m³, 9,3% per bulan insidensi dasar)", sumber: "Héroux dkk. 2015; Riskesdas 2018; proksi rawat inap, bukan fungsi ISPA"}
+  {nama: "ISPA tambahan", nilai: "fungsi mulus dari 15 µg/m³ (RR 1,019 per 10 µg/m³, 9,3% per bulan insidensi dasar), batas bawah RR tidak dijepit; tidak sama dengan kartu Dampak yang memakai ambang harian", sumber: "Héroux dkk. 2015 (HRAPIE); Riskesdas 2018; proksi rawat inap pernapasan, bukan fungsi ISPA"}
 ];
 
 /* fasilitas.json -> per kota {sekolah, rs, faskes}: titik masuk ke kota prakiraan terdekat dalam 0,55 derajat (Voronoi kasar, bukan batas administrasi) */
@@ -51,7 +51,7 @@ export function bebanRS(kota, jiwa, pmDasar, fk) {
 /* Kandidat dijalankan semua, diperingkat menurut orang-hari terhindar. in: urut = keluaran urutGen (kompleks dan sekolah, sudah punya jj/lo/hi), fk = fasilitasKota.
    Per jenis hanya yang teratas dipertahankan (kompleks 6, sekolah 4, masker 4, ruang 4) supaya satu jenis tidak memenuhi seluruh daftar. */
 export function peringkat(A, prak, dasar, K, jiwa, pmDasar, urut, fk, o = {}) {
-  const T = TANGGAP, out = [], per = {kompleks: o.kompleks ?? 6, sekolah: o.sekolah ?? 4, masker: o.masker ?? 4, ruang: o.ruang ?? 4};
+  const T = TANGGAP, out = [], per = o.semua ? {kompleks: 1e9, sekolah: 1e9, masker: 1e9, ruang: 1e9} : {kompleks: o.kompleks ?? 6, sekolah: o.sekolah ?? 4, masker: o.masker ?? 4, ruang: o.ruang ?? 4};
   for (const x of urut) { if (x.jenis === "kompleks") { const G = dasar.grup[x.g], kej = Math.max(1, Math.round((G.luas || T.api.ukuranApi) / T.api.ukuranApi));
       out.push({jenis: "kompleks", g: x.g, id: x.id, nama: `Padamkan ${x.nama}`, oh: x.jj / 24, lo: (x.lo ?? x.jj) / 24, hi: (x.hi ?? x.jj) / 24, ispa: x.ispa || 0, biaya: kej / T.api.apiPerRegu * T.api.reguHari}); }
     else if (x.jenis === "sekolah") { let hr = new Set(); for (let b = 0; b < KONF.jam; b++) if (hariKerjaSekolah(A, b)) hr.add(Math.floor(b / 24));
@@ -71,5 +71,21 @@ export function peringkat(A, prak, dasar, K, jiwa, pmDasar, urut, fk, o = {}) {
   const ambil = (a, jenis) => a.sort((x, y) => y.oh - x.oh).slice(0, per[jenis]);
   const semua = [...out.filter(x => x.jenis === "pltu"), ...ambil(out.filter(x => x.jenis === "kompleks"), "kompleks"), ...ambil(out.filter(x => x.jenis === "sekolah"), "sekolah"), ...ambil(mk, "masker"), ...ambil(rg, "ruang")];
   for (const x of semua) { if (x.lo > x.oh) x.lo = x.oh; if (x.hi < x.oh) x.hi = x.oh; x.perOh = x.biaya > 0 && x.oh > 0 ? x.biaya / x.oh : null; }
-  return semua.filter(x => x.oh >= 1).sort((a, b) => b.oh - a.oh);
+  return semua.filter(x => o.semua || x.oh >= 1).sort((a, b) => b.oh - a.oh);
+}
+
+/* ---------- kestabilan peringkat ---------- */
+const peringkatRata = a => { const idx = a.map((v, i) => i).sort((x, y) => a[x] - a[y]), r = new Array(a.length); for (let i = 0; i < idx.length;) { let j = i; while (j + 1 < idx.length && a[idx[j + 1]] === a[idx[i]]) j++; for (let k = i; k <= j; k++) r[idx[k]] = (i + j) / 2; i = j + 1; } return r; };
+export function spearman(a, b) {
+  const x = peringkatRata(a), y = peringkatRata(b), n = a.length, mx = x.reduce((s, v) => s + v, 0) / n, my = y.reduce((s, v) => s + v, 0) / n; let sxy = 0, sxx = 0, syy = 0;
+  for (let i = 0; i < n; i++) { sxy += (x[i] - mx) * (y[i] - my); sxx += (x[i] - mx) ** 2; syy += (y[i] - my) ** 2; }
+  return sxx && syy ? sxy / Math.sqrt(sxx * syy) : 0;
+}
+/* ohDasar: orang-hari tiap kandidat yang ditampilkan; ohAnggota: larik per anggota ensemble dengan urutan kandidat yang sama (0 bila kandidat tak muncul).
+   Stabil bila rata-rata Spearman dasar-vs-anggota >= ambang; kurang dari 3 kandidat tidak bisa dinilai (stabil = null). */
+export const AMBANG_STABIL = .7;
+export function stabilitas(ohDasar, ohAnggota) {
+  if (ohDasar.length < 3 || !ohAnggota.length) return {stabil: null, rho: null, n: ohAnggota.length};
+  const rho = ohAnggota.reduce((s, a) => s + spearman(ohDasar, a), 0) / ohAnggota.length;
+  return {stabil: rho >= AMBANG_STABIL, rho, n: ohAnggota.length};
 }
