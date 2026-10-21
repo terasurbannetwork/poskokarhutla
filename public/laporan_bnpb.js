@@ -24,7 +24,7 @@ const UNSUR = ["TNI", "Perusahaan", "Polri", "Relawan", "Pemda", "MPA", "BPBD", 
 const LABEL_KES = ["Situasi", "Wilayah", "Tren", "Prioritas terkini", "Efektivitas", "Dampak dan kendala", "Konsesi", "OMC dan luar prioritas"];
 const kosong = n => Array(n).fill(null);
 const BARU = {
-  harian: t => ({mulai: geser(t, -1), jam: "07.00", laporan_masuk: null, penyaji: "", jabatan: "", instansi: "Badan Nasional Penanggulangan Bencana", singkatan: "BNPB",
+  harian: t => ({mulai: geser(t, -1), jam: "09.00", laporan_masuk: null, penyaji: "", jabatan: "", instansi: "Badan Nasional Penanggulangan Bencana", singkatan: "BNPB",
     kejadian: [], perhatian_tambahan: [], tindak: Array.from({length: 4}, () => ({judul: "", isi: ""})), judul_ringkasan: "", judul_rincian: ""}),
   presiden: t => ({judul: "Penanganan dan Pengendalian Kebakaran Hutan dan Lahan di Provinsi Prioritas", kepada: "Presiden Republik Indonesia", kepada_nama: "", penyaji: "", jabatan: "",
     instansi: "Badan Nasional Penanggulangan Bencana", hari: [-4, -3, -2].map(n => geser(t, n)), fs: kosong(3), sub_catatan: "",

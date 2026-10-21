@@ -1,0 +1,144 @@
+{
+ "lulus": false,
+ "koreksi": [
+  {
+   "kutipan": "Tidak satu pun model prediktif buatan platform lolos tanpa catatan.",
+   "masalah": "Bertentangan dengan berkas audit. tantang-lintas-bnpb-sosial.json keputusan[13] memberi vonis layak (tanpa catatan) untuk 'Outlook 12 bulan: gempa M6+ laju tetap (Poisson, declustering Gardner-Knopoff)', dan itu model statistik buatan platform. Bagian 5.4 ringkasan sendiri mengakuinya. Kalimat sebelumnya ('Hampir semua yang layak adalah produk resmi … Sisanya tabel') juga terlalu kuat. Dari 14 vonis layak, 5 bukan produk resmi dan bukan sekadar tabel: penyaring titik palsu, aturan cut-off laporan, tabel luas_banding, kurva musim_harian.py, dan outlook Poisson gempa.",
+   "perbaikan": "'Sembilan dari 14 vonis layak adalah produk resmi yang diteruskan apa adanya. Lima sisanya pengolahan platform yang transparan: penyaring titik palsu, aturan cut-off, tabel tiga sumber luas, kurva musim harian, dan laju Poisson gempa M6+ (layak di modul lintas, layak dengan catatan di modul gempa). Tidak ada model prediktif karhutla, banjir, kekeringan, cuaca, udara, atau abu yang lolos tanpa catatan.'"
+  },
+  {
+   "kutipan": "Angka yang dihasilkan menjadi puluhan sampai ribuan kali angka lapangan: … Kebutuhan personel 212.339 orang, padahal personel resmi 60.177. … Air bersih 2,23 miliar L/hari, padahal distribusi yang tercatat 428.200 L.",
+   "masalah": "Contoh personel tidak cocok dengan 'puluhan sampai ribuan kali'. 212.339/60.177 = 3,5×. Pembanding resmi 60.177 juga sudah usang: slide 3 deck 21 Okt mencatat 71.878 personel darat, jadi rasionya ≈3×. Verifikator juga mencatat skenario optimis 65.520 justru dekat dengan angka resmi. Pada contoh air, satuannya tidak sebanding: L/hari dibandingkan dengan jumlah 8 baris laporan BNPB 19 Okt dalam liter, bukan per hari.",
+   "perbaikan": "'Angka yang dihasilkan menjadi beberapa kali sampai ribuan kali angka lapangan: luas di deck BNPB 18–30×; kebutuhan personel skenario tengah 212.339, sekitar 3× personel darat resmi terbaru 71.878 (skenario optimis 65.520 justru dekat angka resmi); kebutuhan air 2,23 miliar L/hari, dibanding 428.200 L total distribusi yang tercatat di laporan BNPB 19 Okt (8 kabupaten).'"
+  },
+  {
+   "kutipan": "Deck BNPB 21 Okt: luas terbakar 21–30 kali angka BNPB.",
+   "masalah": "Rentangnya tidak lengkap. Dari data verifikasi lintas indeks 0, luas 8 provinsi adalah 29.955/20.433/21.795 ha lawan 1.104,21/1.118,80/1.083,92 ha, yaitu 27,1×, 18,3×, dan 20,1×. Kalteng 18 Okt 29,6×. Angka 21–25× adalah rasio belum padam, bukan luas.",
+   "perbaikan": "'Deck BNPB 21 Okt: luas terbakar 18–30 kali angka BNPB, belum padam 21–25 kali.'"
+  },
+  {
+   "kutipan": "Menurut banner NASA Earthdata (halaman FIRMS menyebut 2 Nov), distribusi produk Suomi NPP berhenti pada tanggal itu, 11 hari dari sekarang.",
+   "masalah": "'Halaman FIRMS menyebut 2 Nov' tidak ada di berkas audit mana pun. Semua verifikator menulis 1 Nov 2026. Halaman muka FIRMS yang dicek 21 Okt tidak memuat banner penghentian. Pengumuman Earthdata menyebut 1 Nov 2026 pukul 13.00 UTC dan menyatakan tanggalnya bisa berubah.",
+   "perbaikan": "'Menurut pengumuman NASA Earthdata, pengiriman produk Suomi NPP (termasuk VIIRS) berhenti 1 Nov 2026 pukul 13.00 UTC (20.00 WIB), 11 hari dari sekarang; tanggal ini dapat berubah.' Hapus rujukan '2 Nov'."
+  },
+  {
+   "kutipan": "Citra Sentinel-2 independen: Nusantara Atlas 1.916.588 ha (Jan–Sep), MapBiomas 637.011 ha (Jan–Agu)",
+   "masalah": "Sensor MapBiomas Fire belum dicek. Verifikator titik-luas #5 meminta sensornya tidak disebut sebelum ATBD-nya dibaca, jadi label 'Sentinel-2' untuk MapBiomas tidak berdasar. Periodenya juga berbeda (Jan–Sep lawan Jan–Agu), sehingga kalimat di 2.2 'berbeda sekitar 3×' membandingkan periode yang tidak sama. Kedua angka ini juga tidak ada di luas_banding (laporan.py:283-344), yang hanya memuat perkiraan, GWIS MCD64A1, dan SiPongi. Penambahannya masih berupa usulan titik-luas #13.",
+   "perbaikan": "'Citra independen: Nusantara Atlas (Sentinel-2) 1.916.588 ha Jan–Sep; MapBiomas Fire 637.011 ha Jan–Agu (sensor dan metode belum dicek; periode berbeda, jadi rasio ±3× hanya indikatif)'. Di kolom sumber tulis 'perlu ditambahkan ke luas_banding (usulan titik-luas #13)'."
+  },
+  {
+   "kutipan": "BNPB 129.899 ha = luas dipadamkan s.d. 15 Okt",
+   "masalah": "Ini kesimpulan, bukan definisi resmi. Angka itu hanya hampir sama dengan dipadamkan_total 129.956 ha di operasi_resmi.json. Verifikator menulis '≈ luas dipadamkan'.",
+   "perbaikan": "'BNPB 129.899 ha s.d. 15 Okt (hampir sama dengan luas dipadamkan 129.956 ha; bukan luas terbakar)'"
+  },
+  {
+   "kutipan": "Selang yang jujur dari galat uji balik adalah ±1,55–2,72 juta ha.",
+   "masalah": "Verifikator lintas indeks 3 hanya mencocokkan secara aritmetika dengan P10–P90 rasio LOO 0,79–1,39 dan tidak menghitung ulang rasionya. Repo (laporan.json) dan layar web memakai 1,61–2,30 juta, dan tantang lintas justru merekomendasikan 'perkiraan satelit ±2,2 juta ha (1,6–2,3 juta)'. Tanda '±' di depan rentang juga keliru. Tantang mencatat pula bahwa peringkat ke-2 masih bertahan pada −20% (1,72 juta) dan baru gugur di kuartil bawah. Pada batas atas 2,72 juta, angka 2026 bahkan bisa melampaui 2015 resmi (2,61 juta).",
+   "perbaikan": "'Rentang di repo 1,61–2,30 juta ha; rentang P10–P90 galat LOO 1,55–2,72 juta ha (aritmetika, rasio belum dihitung ulang). Peringkat tidak bisa ditentukan: pada batas bawah di bawah 2019 resmi (1,65 juta), pada batas atas di atas 2015 resmi (2,61 juta).'"
+  },
+  {
+   "kutipan": "Semua butir di bawah buktinya sudah dicek ulang: bukti_terverifikasi = true di tahap tantang, dan/atau klaim_utama berstatus \"benar\" di tahap verifikasi.",
+   "masalah": "Bagian 2 memuat butir yang vonis akhirnya layak_catatan, bukan tidak_layak, tetapi disajikan dengan 'Mengapa salah' tanpa menyebut vonisnya:\n- 'Peluang masa puncak (pola El Niño)': LC di lintas #3, risiko #11, dan titik #27.\n- 'Hujan setelah OMC': metode terlewat lintas, LC.\n- '±2,2 juta ha': lintas menurunkannya dari TL ke LC dengan bukti_terverifikasi = false, dan klaim_utama lintas berstatus 'sebagian'. Hanya grafik peringkat (titik #9) yang TL.\n- 'Peluang abu' (gunungapi): bukti_terverifikasi = false; vonisnya baru dikukuhkan lewat vonis_dicek.",
+   "perbaikan": "Tambahkan vonis per butir. Contoh: '2.6 (vonis layak dengan catatan; perbaikan wajib sebelum dipakai lagi)'; '2.4 OMC (layak dengan catatan: boleh sebagai fakta operasional, bukan atribusi)'; '2.2 (perkiraan nasional layak dengan catatan; klaim peringkat tidak layak)'. Ubah kalimat pengantar menjadi '…dicek ulang di tahap tantang atau verifikasi (termasuk vonis_dicek)'."
+  },
+  {
+   "kutipan": "Padahal 2019 tidak El Niño (ONI ASO 0,31; RONI −0,01).",
+   "masalah": "Terlalu mutlak. 2019 tidak memenuhi episode El Niño pada JAS/ASO. Namun definisi repo sendiri di musim_awal.py:111 (ONI SON ≥ 0,5) memasukkan 2019 (9 tahun), dan ONI mencatat El Niño lemah di awal 2019.",
+   "perbaikan": "'Padahal 2019 tidak memenuhi definisi episode El Niño pada musim kebakaran JAS/ASO (ONI ASO 0,31; RONI −0,01); daftar tahunnya pun berbeda antarskrip (musim.py 7 tahun, episode RONI 6 tahun, musim_awal.py 9 tahun).'"
+  },
+  {
+   "kutipan": "Email memuat \"Segera menjauhi pantai\" (`ews_email.js:88, :97`) walaupun kalimat itu tidak ada di teks BMKG.",
+   "masalah": "Audit tidak membuktikan bahwa kalimat itu tidak pernah ada di teks BMKG. Temuannya: platform menambahkan perintah itu untuk setiap teks 'berpotensi tsunami' dalam radius 500 km, tanpa memeriksa teks BMKG maupun apakah pelanggan berada di pesisir atau zona yang diperingatkan. Uji yang diusulkan berbunyi 'hanya bila ada di teks sumber'. Tantang juga mencatat email hanya terkirim bila EMAIL_API_KEY dan domain pengirim aktif (src/ews.js:5-6), dan status aktif ini tidak disebut.",
+   "perbaikan": "'Email menambahkan perintah \"Segera menjauhi pantai\" (ews_email.js:88, :97) untuk setiap teks berpotensi tsunami dalam 500 km, tanpa memeriksa apakah kalimat itu ada di buletin BMKG dan apakah pelanggan berada di pesisir/zona yang diperingatkan. (Email hanya terkirim bila EMAIL_API_KEY dan domain aktif; status produksi perlu dicek.)'"
+  },
+  {
+   "kutipan": "| Kasus | MMI pusat dari model | Seharusnya (antarmuka) |",
+   "masalah": "Nilai 4,79 dan 6,01 adalah hasil GMPE Zhao 2006 untuk gempa antarmuka yang dipakai sebagai pembanding. Itu bukan nilai yang benar. Jenis sumber gempa Garut M5,2 h30 pun belum tentu antarmuka. Nilai sebenarnya hanya bisa diambil dari ShakeMap.",
+   "perbaikan": "Judul kolom: 'Bila dihitung sebagai gempa antarmuka (Zhao 2006)'. Tambahkan catatan: 'nilai acuan sebenarnya dari ShakeMap BMKG/USGS'."
+  },
+  {
+   "kutipan": "CSI aturan yang sekarang dipakai 0,038, hampir sama dengan tebakan acak (0,012).",
+   "masalah": "0,038 sekitar 3× CSI acak. Selang 0,013–0,053 ada di atas acak walaupun tipis, sehingga 'hampir sama' tidak tepat.",
+   "perbaikan": "'CSI aturan A-1,0 pada periode uji 0,038, hanya tipis di atas tebakan acak 0,012 (selang 0,013–0,053), dan diukur sebagai diagnosis bulan yang sama.'"
+  },
+  {
+   "kutipan": "Ada 12 jalur ke Malaysia dan 4 ke Brunei. Semuanya dari lapis 850/925 hPa, tidak ada satu pun dari lapis 10 m",
+   "masalah": "Ada dua hitungan yang tercampur. lintas_batas berisi 12 entri Malaysia dan 4 Brunei. Saat jalurnya dipetakan ulang (tantang udara), pemicu Malaysia ada 16: 12 dari 850 hPa dan 4 dari 925 hPa. Pemicu Brunei 4, semuanya dari 850 hPa.",
+   "perbaikan": "'lintas_batas memuat 12 peringatan ke Malaysia dan 4 ke Brunei. Jalur pemicunya: Malaysia 16 (12 dari 850 hPa, 4 dari 925 hPa), Brunei 4 (850 hPa), nol dari lapis 10 m.'"
+  },
+  {
+   "kutipan": "TAF 21 Okt 11Z: WIPP 2500 m FU (TEMPO 0800), WIOO dan WIBB 3000 m FU.",
+   "masalah": "'TEMPO 0800' tidak ada di berkas audit. Verifikasi hanya mencatat FU 2,5–3 km di WIPP, WIOO, dan WIBB. Kalimat 'Bandara Ketapang dan Singkawang … tidak ada di umpan' juga hanya terbukti untuk Ketapang (WIOK, metar.py:3). Selain itu, perbaikan 'Jarak pandang dari TAF, METAR, dan NOTAM' bertentangan dengan 5.2, yang menyatakan endpoint NOTAM belum terverifikasi.",
+   "perbaikan": "'TAF AWC 21 Okt 11Z mencatat FU 2,5–3 km di WIPP, WIOO, dan WIBB.' Ganti kalimat bandara menjadi 'Ketapang (WIOK) tidak ada di umpan; Singkawang belum dicek'. Tulis 'NOTAM bila endpoint-nya sudah terverifikasi'."
+  },
+  {
+   "kutipan": "Peluang abu pada hari ke-2: Merapi ke Jakarta Pusat 0,551, ke Soekarno-Hatta 0,594, ke Bandar Lampung 0,493.",
+   "masalah": "Ambangnya tidak disebut. Nilai ini untuk ambang terendah 0,2 mg/m³ dan merupakan peluang bersyarat atas erupsi hipotetis.",
+   "perbaikan": "'…pada ambang 0,2 mg/m³, bersyarat atas skenario erupsi: Merapi ke Jakarta Pusat 0,551, Soekarno-Hatta 0,594, Bandar Lampung 0,493.'"
+  },
+  {
+   "kutipan": "Pada hari yang sama berkas itu memuat 10–20 baris peringatan rob BMKG aktif per hari (10–18 Okt)",
+   "masalah": "Data verifikasi tidak mendukung rentang tanggal itu. Baris aktif tercatat 10 (10 Okt), 19–20 (12–15 Okt), dan 4 (22 Okt). Hitungan 16–18 Okt tidak dilaporkan. Yang terbukti untuk 16–18 Okt hanya Jakarta Utara dan Bekasi yang aktif 12–18 Okt (Belawan s.d. 15 Okt).",
+   "perbaikan": "'Berkas yang sama memuat 19–20 baris peringatan rob BMKG aktif per hari pada 12–15 Okt (10 pada 10 Okt); Jakarta Utara dan Bekasi aktif 12–18 Okt, Belawan s.d. 15 Okt.'"
+  },
+  {
+   "kutipan": "Model terpasang dilatih ulang pada 2015–2026 (`lolos.py:427-429`), jadi klaim \"tidak dipakai melatih\" tidak benar.",
+   "masalah": "Alasannya salah sasaran dan tidak lengkap. lolos.py:427-429 menyangkut model 'akan membesar'. Teks tentang.html:1309-1311 membicarakan 'model data' (model sel) dan mengutip AUC 0,70 milik model lama (lepas_auc, Monte Carlo + Platt, recall 21%). Pelatihan ulang model sel 2015–2026 bersumber dari catatan model_sebaran.json. Alasan utama vonis TL juga tidak disebut: 'mengalahkan' memakai pembanding port buatan sendiri, semua model hampir tanpa keahlian arah, dan persistensi unggul di IoU serta galat luas.",
+   "perbaikan": "'Klaim \"tidak dipakai melatih\" salah karena model sel dan model lolos sama-sama dilatih ulang 2015–2026 (catatan model_sebaran.json; lolos.py:427-429). AUC 0,70 yang dikutip milik model lama (recall 21%). \"Mengalahkan model Kanada, AS, Australia\" memakai pembanding port buatan sendiri, padahal persistensi unggul di IoU dan galat luas.'"
+  },
+  {
+   "kutipan": "Ini satu-satunya kesalahan yang bisa memicu kepanikan publik dengan nama BMKG.",
+   "masalah": "Tidak didukung audit. Keluaran lain juga membawa nama atau kosakata BMKG ke publik: Laporan Harian Banjir menulis '3 peringatan dini cuaca BMKG aktif' dari nowcast kedaluwarsa; status Waspada/Siaga/Awas per kecamatan bertabrakan dengan 'Peringatan Dini Potensi Curah Hujan Tinggi' Staklim BMKG (cuaca #3); email warga banjir/longsor memakai status model dengan FAR 0,94.",
+   "perbaikan": "'Ini kesalahan yang paling berisiko memicu kepanikan publik atas nama BMKG.'"
+  },
+  {
+   "kutipan": "Kode ini dijalankan cron tiap menit (`worker.js:637`).",
+   "masalah": "Nomor baris usang terhadap HEAD (worker.js terakhir di-commit fb2dd7c8, 20 Okt 16.53). Di HEAD, worker.js:637 adalah pengalihan /bnpb/, sedangkan pemanggilan periksaPeringatan ada di :694. Hal yang sama berlaku untuk '`worker.js:399-409` membaca kunci \"dibuat\"' di 2.13: baris itu kini rute admin, dan status() ada di sekitar :438–455. Kedua nomor cocok dengan versi 38d64370. Kecil: pE ≥ 0,3 ada di ringkasan.js:113 (tingkat ditetapkan :116), bukan :117.",
+   "perbaikan": "Pakai nama fungsi: 'periksaPeringatan() di handler cron (src/worker.js:694 di HEAD)' dan 'status() /api/status (src/worker.js:438-455) membaca kunci \"dibuat\"'; 'ringkasan.js:113'."
+  },
+  {
+   "kutipan": "**Pola masalah 4: produk resmi yang sudah bisa diambil belum menjadi lapis utama.**",
+   "masalah": "Ada tiga hal yang tidak sesuai:\n- last30tsunamievent.xml ada di bucket yang tidak terdokumentasi. Semua verifikator gempa menulis 'tetap minta izin BMKG', jadi belum 'sudah bisa diambil'.\n- Peringatan gelombang BMKG Maritim sudah tampil dan bervonis layak (cuaca #1). Yang belum dipakai adalah prakiraan pelabuhan/perairan BMKG Maritim (cuaca #8, #9).\n- ShakeMap/PAGER adalah produk USGS, bukan produk resmi Indonesia.",
+   "perbaikan": "'Produk resmi dan rujukan internasional yang tersedia belum menjadi lapis utama: PDKM BMKG, peringatan rob BMKG, VA SIGMET, ShakeMap BMKG serta ShakeMap/PAGER USGS, TCWC Jakarta, prakiraan pelabuhan BMKG Maritim, dan IRBI. Umpan zona InaTEWS (last30tsunamievent.xml) tersedia tetapi tidak terdokumentasi, sehingga perlu izin BMKG.'"
+  },
+  {
+   "kutipan": "| Seri tahunan BNPB | `kejadian.json` (cuaca); `dampak_gunungapi.json` | \"Sumber: Buku Data Bencana Indonesia 2024 (BNPB, Juni 2025)\"",
+   "masalah": "Kedua seri diambil dari CKAN data.bnpb.go.id, bukan dari Buku Data. Untuk cuaca, angkanya terbukti sama dengan Buku Data (733; total 3.472). Untuk gunung api, verifikator menulis isi tabel Buku Data 'tidak saya ekstrak', jadi atribusi itu belum terbukti. Seri gunung api juga memuat pencilan 2018 (58 kejadian) yang belum dijelaskan.",
+   "perbaikan": "Label: 'Sumber: data.bnpb.go.id (kompilasi BNPB 2010–2024); seri cuaca ekstrem cocok dengan Buku Data Bencana Indonesia 2024'. Untuk gunung api tulis 'belum dicocokkan dengan Buku Data'."
+  },
+  {
+   "kutipan": "Bahan: `docs/audit-metode/2026-10-21/mentah/` (berkas `telaah-*`, `tantang-*`, `alternatif-*`), `docs/audit-metode/2026-10-21/status-tautan.tsv`, dan hasil 10 pemeriksa verifikasi.",
+   "masalah": "Folder mentah/ hanya berisi 8 berkas verif-*.json. verif-udara-asap.json dan verif-lintas-bnpb-sosial.json tidak ada. Akibatnya hitungan T/S untuk dua modul itu (udara 9/8, lintas 3/14), 12 klaim utamanya, dan koreksinya tidak bisa ditelusuri dari folder audit. Ini juga berlaku untuk kalimat di Bagian 6 'Sepuluh pemeriksa, satu per modul'.",
+   "perbaikan": "Tambahkan di Bahan dan di Batasan: 'Hasil verifikasi modul udara-asap dan lintas-bnpb-sosial belum tersimpan di mentah/ (hanya 8 dari 10 berkas verif-*.json ada); simpan sebelum ringkasan diedarkan.'"
+  },
+  {
+   "kutipan": "Dua URL BRIN dan Hamed & Rao tercatat 404 karena terpotong di tanda kurung, bukan karena mati.",
+   "masalah": "Di status-tautan.tsv hanya ada satu URL BRIN yang terpotong (panduan hotspot.brin.go.id '…(Juli 2020'), ditambah satu Hamed & Rao (doi 10.1016/S0022-1694(97), jadi totalnya dua URL. Daftar 404 juga melewatkan pytmd.readthedocs.io/…/predict.html. Totalnya 17.",
+   "perbaikan": "'Dua URL tercatat 404 karena terpotong di tanda kurung, bukan karena mati: panduan hotspot BRIN dan Hamed & Rao.' Tambahkan pytmd readthedocs ke daftar URL mati."
+  },
+  {
+   "kutipan": "data.bnpb (odc-by)",
+   "masalah": "Verifikator gunungapi mendapati license_id dataset kompilasi 2024 di CKAN adalah odc-odbl (ODbL), bukan odc-by.",
+   "perbaikan": "'data.bnpb: dataset kompilasi 2024 berlisensi ODbL (license_id odc-odbl); lisensi dataset lain belum dicek.'"
+  },
+  {
+   "kutipan": "\"Rata-rata sekitar 13 gempa M6+ per tahun di wilayah Indonesia (semua kedalaman; laju jangka panjang katalog USGS). Gempa tidak dapat diprakirakan.\"",
+   "masalah": "Laju 12,97 per tahun berasal dari katalog yang sudah di-declustering Gardner-Knopoff (1990–2025), jadi yang dihitung gempa utama. Tantang meminta laju disajikan dengan selangnya, dan mencatat kedua kelas teramati di bawah harapan (tanda ketidakstasioneran).",
+   "perbaikan": "'Rata-rata sekitar 13 gempa utama M6+ per tahun (setelah declustering Gardner-Knopoff, semua kedalaman, katalog USGS 1990–2025; uji 2016–2025: 119 teramati, selang 115–153). Gempa tidak dapat diprakirakan.'"
+  }
+ ],
+ "terlewat": [
+  "Hektare harian per provinsi/kab di Laporan Harian Karhutla dan kolom 'Luas (ha)' Paparan Presiden (laporan.js:302-307, 317-352; paparan_slide.js:310, 321-322). Contohnya Kalteng 12 Okt 20.085 ha dari 8.022 titik, padahal BNPB mencatat 64,8 ha (sekitar 310×). Vonisnya tidak layak (titik-luas keputusan[4]) dan risiko yang ditulis: 'Presiden membaca 20 ribu ha terbakar dalam sehari di Kalteng, sementara BNPB 65 ha'. Butir ini harus masuk Bagian 2, bukan hanya deck 21 Okt (2.1) dan §4.2 #4.",
+  "Angka dampak karhutla di tab Dampak yang bervonis tidak layak tidak disebut di ringkasan mana pun, baik Bagian 2 maupun 4, karena prioritasnya P2: emisi '±706 juta ton CO₂e, setara 143 hari emisi seluruh Indonesia' (rentang 124–2.678 Mt); kerugian ekonomi 'Rp 204 triliun' dari transfer nilai Bank Dunia; 'Asap diperkirakan menambah X kunjungan ISPA per hari' (model HIA); dan paparan penduduk/sekolah/faskes dalam radius 1/5/10 km (titik-luas keputusan[19]–[21], [23]; alternatif #15–#18). Angka seperti ini mudah dikutip di paparan Presiden.",
+  "Waktu tiba dan tinggi tsunami yang dihitung sendiri untuk gempa NYATA di laci (public/gempa/laci.js:55-58; tsunami.js:93-102; jenis kosong dianggap subduksi). Vonis gempa keputusan[12] tidak layak. Angka ini bisa bertentangan dengan BMKG ('tidak berpotensi tsunami'), padahal BMKG otoritas tunggal (UU 31/2009, Perpres 93/2019). Hanya muncul di §4.5 #8; seharusnya masuk 2.7.",
+  "Lapisan PFVI 'Peluang api besok ±X%' dan 'Bahaya api gambut' sedang tayang di produksi (fwi.json 21 Okt: pfvi/pg di 534 sel-hari, ambang 0,6344). Risiko-cuaca keputusan[8] memberinya vonis tidak layak, karena tambahannya hanya +0,018 AUC dan peluangnya belum dikalibrasi. Ringkasan hanya menyebutnya sebagai koreksi 'PFVI belum di situs: usang'. Konflik vonis antarmodul (risiko-cuaca TL lawan model-sebaran keputusan[19] LC) juga tidak tercantum di §5.4.",
+  "Konflik vonis '±2,2 juta ha' tidak tercantum di §5.4. Tantang lintas menurunkannya dari tidak layak menjadi layak dengan catatan, dengan bukti_terverifikasi = false. Titik-luas memberi LC untuk perkiraan nasional (#3) tetapi TL untuk grafik/klaim peringkat (#9).",
+  "Kartu Insight/Laporan 'Fire Weather Index masih sangat tinggi di N provinsi' (index.html:3546-3567; laporan.js:622-637). Kartu ini memakai maksimum satu sel pada kolom prakiraan +3 hari, sehingga hasilnya 8 dari 9 provinsi, padahal median hanya 3. Vonisnya tidak layak dan klaim utamanya 'benar', tetapi hanya muncul di §4.3 #2, tidak di Bagian 2.",
+  "Indeks risiko riwayat gempa 0–100 yang tampil di laci setiap gempa: Jawa Tengah 22 'Rendah', Jawa Timur 28 'Rendah', Gorontalo 73 'Sangat tinggi'. Vonis gempa keputusan[9] tidak layak, dengan risiko 'merusak kredibilitas seluruh platform'. Hanya ada di §4.5 #11.",
+  "Status Waspada/Siaga/Awas cuaca per kecamatan (cuaca keputusan[3], TL) bertabrakan dengan produk BMKG yang sudah berjalan, yaitu 'Peringatan Dini Potensi Curah Hujan Tinggi' Stasiun Klimatologi, yang memberi Waspada/Siaga/Awas per kecamatan dan dikirim ke bupati/BPBD. Risikonya lebih besar dari sekadar 'metrik null' di 2.13, tetapi hanya disebut di §4.10 #3.",
+  "Kolom 'Kejadian' di Paparan Presiden (laporan.py:264-275) menghitung semua kompleks kluster.json. Sebanyak 7.987 dari 12.683 (63%) tidak teramati, dan 3.590 (28%) hanya bertahan karena aturan gambut 168 jam. Klaim utama risiko-cuaca ini 'benar' dan langsung masuk deck Presiden, tetapi hanya muncul di §4.3 #19.",
+  "Email warga dari status banjir/longsor/rob (metode terlewat banjir, TL) mengirim peringatan publik dari status model berFAR 0,939–0,954. Hanya ada di §4.9 #21 dan tidak disebut di Bagian 2.",
+  "Simulasi 'Dampak terkena' yang menyebut desa yang akan terkena (model-sebaran keputusan[7], TL; risiko 'memicu kepanikan atau evakuasi salah sasaran') dan visual forensik/armada/3D 'insiden buatan' (keputusan[14], TL; tangkapan layar bisa dikira pemantauan nyata) sama sekali tidak disebut.",
+  "Keluaran sosial di modul lintas yang bervonis tidak layak tidak disebut sama sekali: 'emosi' berita (marah/cemas) dari kata pemicu, analisis media sosial dari post kurasi admin, dan 'bencana berantai' (lift A→B tanpa koreksi uji ganda). Risikonya kalimat seperti 'kecemasan publik naik X%' atau 'warganet marah' masuk briefing."
+ ]
+}

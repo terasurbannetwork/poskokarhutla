@@ -1,0 +1,198 @@
+{
+ "modul": "Gempa & tsunami (src/gempa.js, src/peringatan.js, src/ews.js, scripts/gempa/**, public/gempa/**, scripts/umum/paparan_bangunan.py, scripts/umum/outlook12.py, docs/multi-bencana/RINCI-GEMPA.md, PARITAS-GEMPA.md)",
+ "catatan_umum": "Ini pemeriksaan kedua yang sengaja dibuat adversarial. Semua bukti yang dikutip pemeriksa pertama saya buka, lalu fungsi kuncinya saya jalankan ulang dengan node. Semuanya hanya membaca, tidak ada berkas yang diubah.\n\nAngka-angka inti pemeriksa pertama terbukti benar, yaitu isi kalibrasi_kerusakan.json, model_susulan.json, laju.json, risiko.json, model_guncangan.json, serta laporan.json yang sudah basi. Hasil akhirnya, dari 22 metode: 0 layak, 11 layak dengan catatan, 11 tidak layak. Satu vonis turun: pengurai status tsunami BMKG menjadi tidak layak. Saya juga menemukan 6 metode yang terlewat, 3 di antaranya tidak layak.\n\nTEMUAN BARU YANG PALING BERAT\n\n(1) Alarm peringatan dini platform (src/peringatan.js:43-45) menulis tingkat \"Awas\" berlabel \"InaTEWS\" untuk SETIAP kode potensi 1-3. Masalahnya, pengurai (src/gempa.js:29-30) sudah memberi kode 1 (\"Tsunami Waspada\") untuk tiga jenis teks:\n- teks BMKG \"Berpotensi tsunami\" yang tidak menyebut tingkat;\n- teks apa pun yang memuat kata \"tsunami\";\n- contoh nyata hasil uji node: \"Tidak ada potensi tsunami\" menjadi 1, dan \"Peringatan dini tsunami telah berakhir\" menjadi 1.\n\nAkibatnya, untuk satu gempa yang sama:\n- pil laci dan pop-up menulis \"Tsunami Waspada (BMKG)\";\n- pop-up alarm di SEMUA halaman (public/inti/alarm.js dimuat di index.html, gempa, dan semua) menulis \"Peringatan Awas · InaTEWS\".\n\nDua-duanya adalah tingkat yang tidak pernah diterbitkan BMKG. Uji (tests/warga/peringatan.test.mjs:87-92) hanya memakai teks \"status Awas\". Pemeriksa pertama keliru menyatakan tingkat Pantau Bencana \"belum ada di kode\". Kodenya sudah jalan di cron (src/worker.js:637). Klaim di PARITAS-GEMPA.md:28 juga tidak sesuai dengan kode.\n\n(2) Cacat kedalaman pada model guncangan jauh lebih besar dari yang dilaporkan.\n- Gempa M<7 di kedalaman 15-50 km diperlakukan sebagai gempa kerak (BSSA14), sehingga kedalamannya diabaikan.\n- Contoh M5,2 di kedalaman 30 km di bawah Garut: MMI pusat 7,22, dan 1.113.872 jiwa dinyatakan \"terguncang MMI VI atau lebih\". Bila dihitung dengan Zhao antarmuka: MMI 4,28 dan 0 jiwa.\n- Mesin kerusakan untuk gempa yang sama menghasilkan sekitar 3.200 rumah rusak berat dan sekitar 60 meninggal (rentang 7-444). Dengan Zhao antarmuka: 30 rumah dan 0 jiwa.\n- Sebanyak 36,7% gempa M5-6,9 Indonesia sejak 2010 (1.253 dari 3.410 di riwayat_m5.json) jatuh di pita kedalaman ini.\n\nCacat ini mengalir ke kartu Dampak \"Paparan guncangan\", laci, bandara, fasilitas, isoseismal, simulasi gempa nyata, dan paparan bangunan internal BNPB.\n\n(3) Email EWS gempa dan tsunami (src/ews.js:47-50, 221-233) memakai radius menurut M saja.\n- Kedalaman diabaikan.\n- Setiap gempa di dalam radius diberi tingkat Siaga.\n- Untuk tsunami, setiap teks \"berpotensi tsunami\" dalam radius 500 km memicu tingkat Awas dengan perintah \"Segera menjauhi pantai\". Tidak ada pemeriksaan zona pantai.\n\nKOREKSI ATAS PEMERIKSA PERTAMA\n(a) Tinggi tsunami di laci untuk M6,5-6,9 dari kode adalah 0,1-0,9 m, bukan 0,5-2 m. Contohnya M6,9 di kedalaman 25 km di Banda: 0,2-0,9 m, tiba 2,8 menit. Angka ini tetap bertentangan dengan BMKG yang menyatakan \"tidak berpotensi\".\n(b) Simulasi gempa nyata tidak selalu memakai templat sesar geser. Fungsi pindah() mengikuti sesar GEM dalam 40 km atau palung dalam 80 km (sim.js:444-450). Templat Lembang hanya dipakai bila keduanya tidak ada.\n(c) Reliabilitas susulan yang dikutip berasal dari set validasi. Pada set uji kalibrasinya cukup baik.\n(d) Rentang 57-89% untuk M7+ adalah selang Garwood dari 14 kejadian 2016-2025. Titik tengah 84% dihitung dari 36 tahun data.\n(e) PARITAS-GEMPA.md:27 sudah basi. Fungsi tautkanSusulanKecil sudah ada (src/gempa.js:177-191).\n(f) Kartu kerusakan di Simulasi sudah menulis faktor LOO di kakinya (sim.js:265). Itu mitigasi, tetapi tidak cukup.\n\nMETODE YANG LEBIH EFEKTIF DAN TEPAT, URUT PRIORITAS\n1. Status dan peringatan tsunami\n- Teruskan teks dan tingkat per zona dari buletin InaTEWS/CAP BMKG apa adanya.\n- Platform tidak boleh menaikkan, menurunkan, atau menebak tingkat.\n- Alarm gempa sebaiknya berbasis MMI Dirasakan atau ShakeMap BMKG, bukan ambang M.\n\n2. Guncangan gempa nyata\n- Pakai grid ShakeMap BMKG/USGS beserta paparan PAGER.\n- Bila tetap memakai model sendiri: regionalisasi dengan Slab2/STREC, GMPE subduksi NGA-Sub (Parker dkk. 2022) atau BC Hydro 2016, dan BSSA14 hanya untuk kerak dangkal.\n- Validasi terhadap arsip Dirasakan BMKG (sudah terkumpul di D1 sejak 16 Okt) dan DYFI USGS.\n\n3. Kerusakan dan korban\n- Pakai InaSAFE (alat BNPB, model korban ITB dan PAGER) atau model empiris PAGER Jaiswal & Wald 2010.\n- Tampilkan sebagai kelas orde besaran.\n- Kalibrasi ke DIBI.\n\n4. Susulan\n- Tabel laju historis per kelas M (skill-nya setara dengan model) setelah bug kejadian G diperbaiki.\n- Bila butuh model yang lebih baik: ETAS atau OAF USGS.\n\n5. Risiko\n- IRBI/InaRISK BNPB dan PGA PuSGeN 2017 (SNI 1726:2019).\n\n6. Tsunami skenario\n- Pakai basis data skenario InaTEWS, atau Okada ditambah JAGURS/COMCOT/Tsunami-HySEA di batimetri BATNAS.\n- Hitung tinggi pantai dengan faktor amplifikasi Glimsdal dkk. 2019, divalidasi terhadap basis data run-up NOAA NCEI.\n\n7. Laporan harian\n- Katalog BMKG sebagai sumber utama.\n- Bandingkan dengan laju jangka panjang beserta selang Poisson, tanpa panah naik/turun harian.",
+ "keputusan": [
+  {
+   "nama": "Katalog gempa hidup dan penggabungan BMKG-USGS",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Kodenya terverifikasi: src/gempa.js:13 (toleransi 90 detik, 100 km, wilayah sampai 300 km), :62-64 (regex ASING/LAUT_ID), :95-112 (BMKG menang saat digabung). Satu bukti sudah basi: PARITAS-GEMPA.md:27 menyebut kejadian live semuanya berjumlah 1, padahal tautkanSusulanKecil sekarang menautkan gempa M<5 (src/gempa.js:177-191).\n\nCatatan tambahan:\n- insight.js:43 memakai kata 'mengguncang N provinsi' untuk pusat gempa yang provinsinya diambil dari pusat kecamatan terdekat sampai 300 km, termasuk gempa dalam di laut.\n- Hitungan memakai magnitudo campuran: BMKG M untuk baris gabungan, USGS mb/Mww untuk baris yang hanya ada di USGS.\n\nYang lebih tepat:\n- Katalog BMKG (repogempa/InaTEWS) menjadi satu-satunya hitungan resmi.\n- USGS diberi label per baris.\n- Ganti kata 'mengguncang' dengan 'berpusat di'.\n- Rekonsiliasi harian otomatis terhadap BMKG."
+  },
+  {
+   "nama": "Status tsunami resmi BMKG (pengurai teks Potensi)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Vonis turun. Gagasan meneruskan status BMKG memang benar, tetapi seperti sekarang ditulis, status yang ditampilkan bukan status BMKG.\n\nHasil uji node terhadap src/gempa.js:28-30:\n- 'Tidak ada potensi tsunami', 'Peringatan dini tsunami telah berakhir', dan 'Tidak menimbulkan tsunami' semuanya menjadi 1.\n- 'Berpotensi tsunami' tanpa tingkat juga menjadi 1, yang lalu diberi label 'Tsunami Waspada'. Itu tingkat yang tidak dinyatakan BMKG.\n\nTeks asli BMKG tidak ditampilkan:\n- laci.js:15,18 hanya menampilkan label TSUNAMI[kode] dengan keterangan 'status resmi BMKG';\n- sapa.js:26 menulis '<label> (BMKG)';\n- insight.js:90 menulis 'dinyatakan BMKG berpotensi tsunami'.\n\nKode 1-3 yang sama dinaikkan menjadi alarm 'Awas' berlabel InaTEWS (src/peringatan.js:43-45). Uji hanya memakai frasa positif (tests/warga/gempa.test.mjs:17-24).\n\nPerbaikan:\n- Tampilkan teks Potensi BMKG verbatim sebagai isi utama.\n- Kode 0 hanya untuk 'tidak berpotensi'.\n- Kode 1-3 hanya bila kata Waspada/Siaga/Awas benar-benar ada di teks.\n- 'Berpotensi tsunami' tanpa tingkat ditampilkan 'BMKG: berpotensi tsunami (tingkat lihat InaTEWS)'.\n- Tambahkan uji negatif.\n- Untuk Presiden, kutip status langsung dari buletin InaTEWS."
+  },
+  {
+   "nama": "MMI 'Dirasakan' (kolom mmi_maks)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: src/gempa.js:74 mengisi mmi_maks dari p.mmi USGS (intensitas instrumental ShakeMap), dan src/gempa.js:97 mengambil nilai max saat digabung. Kolom ini dipakai insight.js:49 sebagai 'dirasakan warga'.\n\nDampak tambahan yang belum disebut pemeriksa pertama:\n- laporan_gempa.py:187-191 menyaring baris yang punya teks Dirasakan BMKG, tetapi angka MMI-nya tetap dari kolom gabungan, sehingga sorot 'Dirasakan MMI V' bisa berasal dari USGS.\n- src/peringatan.js:32 memicu alarm Waspada untuk mmi_maks ≥ 4, termasuk dari USGS saja dengan sumber 'Deteksi Pantau Bencana'.\n\nPerbaikan: pisahkan kolom mmi_dirasakan_bmkg dan mmi_shakemap_usgs. Hanya kolom BMKG yang boleh memakai kata 'dirasakan' dan dipakai untuk alarm."
+  },
+  {
+   "nama": "Pengelompokan kejadian G (gempa utama dan susulan)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- src/gempa.js:165 hanya memperbarui akhir dan aktif_hingga, tidak mengganti m, utama_id, lat, lon, atau mulai.\n- kata.js:52 memakai k.m dan k.mulai untuk peluang susulan.\n\nTambahan:\n- Jendela jarak (jendelaKm(c.m), :163) dan masa aktif (masaAktif(k.m), :165) juga memakai M gempa pertama.\n- Pada pola Palu 2018, M7,5 masuk ke kejadian 'M6,1': jendelanya 55 km, padahal M7,5 butuh 81 km, dan masa aktifnya 3 hari, padahal seharusnya 7 hari.\n- Susulan M7,5 yang lebih dari 55 km dari pusat M6,1 akan membuka kejadian baru. Satu rangkaian pecah menjadi beberapa kode G.\n- Uji (tests/warga/gempa.test.mjs:153-175) tidak punya kasus gempa pendahuluan.\n\nPerbaikan:\n- Pindahkan utama ke anggota terbesar, hitung ulang jendela, lalu tautkan ulang anggotanya.\n- Jendela untuk M≥7 mengikuti panjang patahan.\n- Lebih tepat lagi: pengelompokan nearest-neighbour Zaliapin & Ben-Zion 2013, atau ikuti pengelompokan BMKG."
+  },
+  {
+   "nama": "Model guncangan (GMPE + GMICE) untuk gempa nyata",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Vonis tetap tidak layak, dan buktinya kini lebih kuat. Koefisien BSSA14 PGA, Zhao 2006 PGA, dan Worden 2012 sesuai dengan publikasinya (guncangan.py:31-36). Yang salah adalah rangkaiannya.\n\nAkar masalah:\n- tebakJenis (guncangan.js:26-33) mengirim semua gempa M<7 di kedalaman <50 km ke BSSA14, yang hanya memakai Rjb, sehingga kedalaman hilang.\n\nHasil uji node:\n- M5,5 di kedalaman 30 km: MMI pusat 8,22. Zhao antarmuka: 4,79.\n- M6,5 di 45 km: 8,40 lawan 6,01.\n- M5,2 di 30 km di Garut: 1.113.872 jiwa 'MMI VI+' lawan 0.\n- M5,5 di 40 km di Lebak: 827.576 jiwa lawan 0.\n\nCakupan dan penayangan:\n- 36,7% gempa M5-6,9 sejak 2010 berada di pita 15-50 km.\n- Angka ini tampil sebagai judul Dampak (dampak.js:41 'N jiwa diperkirakan terguncang MMI VI atau lebih'). Padahal komentar dampak.js:4 dan dampak.py:7 sendiri menyebut model guncangan 'belum dipakai karena koefisien belum diverifikasi'.\n- Juga dipakai laci (kata.js:74-82), bandara (kata.js:80-82), dan isoseismal (kejadian.js:47).\n\nValidasi: model_guncangan.json kinerja_uji berstatus belum_diuji dengan n_laporan 0. Bendera ekstrapolasi tidak pernah ditampilkan.\n\nPerbaikan:\n- Untuk gempa nyata, pakai ShakeMap BMKG/USGS beserta PAGER.\n- Bila tetap memakai model sendiri: Slab2/STREC, GMPE subduksi (NGA-Sub, BC Hydro 2016) untuk gempa antarmuka dan intraslab, BSSA14 hanya untuk kerak dangkal dengan Ztor ≤20 km, Vs30 global USGS, dan pita sigma.\n- Validasi terhadap arsip Dirasakan BMKG di D1 sebelum tampil."
+  },
+  {
+   "nama": "Simulasi skenario guncangan berbidang patahan + Vs30 proksi lereng",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Vonis tetap layak dengan catatan, tetapi HANYA untuk jalur skenario sesar kerak dan megathrust yang diberi label jelas.\n\nAlasan bertahan:\n- Rangkaiannya (GMPE, GMICE Worden 2012, proksi Vs30 Wald & Allen 2007) setara dengan praktik ShakeMap Scenario USGS.\n- Tabel Vs30 di vs30.py:24 cocok dengan Tabel 1 Wald & Allen untuk tektonik aktif (1e-4 → 180 sampai 0,138 → 760 m/s), walau berkasnya mengaku 'dari ingatan'.\n- Label 'Simulasi, bukan prakiraan' ada di sim.js:232.\n\nCatatan:\n- Jalur gempa nyata yang dimuat otomatis (sim.js:478) mewarisi cacat tebakJenis lewat jenisG (sim.js:129).\n- Koreksi atas pemeriksa pertama: templat geser Lembang hanya dipakai bila tidak ada sesar GEM dalam 40 km atau palung dalam 80 km (sim.js:444-450).\n- Magnitudo skenario tidak bersumber per baris (sim.js:17-27).\n- Pita rentang hanya memuat tau.\n\nSyarat:\n- Matikan pemuatan otomatis gempa nyata.\n- Ambil Mmax, geometri, dan laju dari tabel PuSGeN 2017 dengan sitasi.\n- Untuk Presiden, pakai skenario resmi PuSGeN/BNPB atau ShakeMap Scenario."
+  },
+  {
+   "nama": "Kerusakan bangunan dan korban jiwa (HAZUS + satu pengali kalibrasi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Semua angka pemeriksa pertama cocok dengan kalibrasi_kerusakan.json: kalib 3,0586, faktor_loo 5,341, n 8, Yogyakarta 555/394 lawan 5.700, Lombok 19 Agu 157/231 lawan 14, Padang 3.063 lawan 1.115.\n\nBukti baru:\n- M5,2 di kedalaman 30 km di Garut, dijalankan lewat jalur kalibrasi yang sama: rumah rusak berat 3.188 (rentang 423-22.654) dan korban 60 jiwa (7-444).\n- Bila jenisnya antarmuka: 30 rumah rusak berat dan 0 jiwa.\n- Mesin ini muncul otomatis untuk gempa nyata di Simulasi (sim.js:177, 263-265).\n\nCatatan lain:\n- Pengali 3,06 ikut menyerap cacat kedalaman, karena Lombok 29 Jul (24 km) dan 5 Agu (31 km) dikalibrasi sebagai kerak.\n- Angka pengamatan tidak konsisten dengan factsheet_gempa.json di repo yang sama: 5.700 lawan 5.749, 1.115 lawan 1.117, 560 lawan 563.\n- Teks Metode basi (metode.js:59): letalitas 2,5%/4%/0,5% dan okupansi 0,8, padahal kode memakai 1,5%/1,4%/0,2% dan okupansi menurut jam.\n- Kaki kartu memang menyebut galat LOO, tetapi angka tengahnya tetap tampil sebagai judul.\n\nMetode yang lebih tepat:\n- InaSAFE (alat BNPB, model korban ITB dan PAGER) atau PAGER empiris Jaiswal & Wald 2010 dengan parameter Indonesia. Kelas warna PAGER sudah tersimpan di D1 (src/gempa.js:75) tetapi tidak ditampilkan.\n- Untuk skenario: OpenQuake dengan model paparan dan kerentanan GEM, dikalibrasi ke DIBI.\n- Keluaran berupa kelas orde besaran."
+  },
+  {
+   "nama": "Peluang gempa susulan (Reasenberg-Jones + keragaman a ala Page dkk. 2016)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka terverifikasi di model_susulan.json kinerja_uji.m5: BSS 0,0021, Brier 0,07795 lawan 0,07812, CI95 [-0,00288; 0,00251], N-test teramati 177 lawan harapan 365,8.\n\nKoreksi: reliabilitas buruk yang dikutip (0,25 lawan 0,097) berasal dari set validasi. Pada set uji kalibrasinya cukup baik:\n- 0,05-0,1: 0,063 lawan 0,054\n- 0,2-0,3: 0,248 lawan 0,188\n- 0,3-0,5: 0,391 lawan 0,364\n- 0,5-1: 0,675 lawan 0,556\nJadi peluang P(≥1) layak dibaca sebagai peluang, walau skill-nya tidak lebih baik dari tabel klimatologi.\n\nRisiko baru: model dilatih dengan magnitudo USGS ComCat, tetapi di layar Mu diambil dari kejadian D1 yang memakai M BMKG (src/gempa.js:8, :101). Pergeseran magnitudo antar-katalog ini tidak pernah diuji. Mu juga bisa salah karena bug kejadian G. prospektif_susulan.json dicatat 0.\n\nSyarat:\n- Perbaiki kejadian G dan konversi M ke Mw.\n- Untuk Presiden, sajikan tabel laju historis: misalnya 27% dari 177 gempa M6,0-6,4 di masa latih diikuti susulan M≥5 dalam 7 hari.\n- Bila ingin lebih baik: ETAS atau OAF USGS."
+  },
+  {
+   "nama": "Laju dan peluang gempa 12 bulan (Poisson setelah declustering)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di laju.json uji_balik:\n- M6+: 133,85 lawan 119, selang [115, 153].\n- M7+: 20,0 lawan 14, selang [13, 28].\n- M5+ dan M7+ dangkal gagal uji, dan sudah dibuang.\n\nKoreksi: titik tengah p12 M7+ 84% berasal dari 36 tahun (n = 66). Rentang 57-89% adalah selang Garwood 90% dari 14 kejadian pada dekade uji 2016-2025 (peluang_gempa.py:187). Itu pilihan konservatif yang baik, bukan 'dihitung dari 10 tahun saja'.\n\nIni metode paling dekat ke layak. Alasan tetap belum layak penuh:\n- Kedua kelas teramati di bawah harapan, dan kelas dangkal gagal. Ada tanda ketidakstasioneran.\n- Magnitudo USGS campur dan belum dihomogenkan ke Mw.\n- Laju belum dicocokkan dengan model sumber PuSGeN 2017.\n\nSajikan sebagai 'rata-rata 13 gempa M6+ per tahun (selang ...)' dan buang strip harian 3,49%. Laju ini juga dipakai outlook12 dengan label yang salah (lihat metode terlewat)."
+  },
+  {
+   "nama": "Indeks risiko riwayat gempa 0-100 (kab/kec/provinsi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Nilai di risiko.json terverifikasi: Gorontalo [73, Sangat tinggi], Bengkulu 69, Jawa Tengah [22, Rendah], Jawa Timur 28, DIY 38 (Sedang), Jawa Barat 44.\n\nTambahan:\n- Kelas ditetapkan menurut peringkat (riwayat.py:183), sehingga 40% wilayah selalu 'Rendah' secara definisi, berapa pun bahayanya.\n- Radius 100 km dari pusat tanpa memandang kedalaman (riwayat.py:159).\n- Komponen tren dari pecahan 30% tahun terakhir.\n- Ditampilkan di laci untuk setiap gempa (laci.js:59-62), sehingga gempa di DIY selalu disertai 'Sedang 38 dari 100'.\n\nPerbaikan: buang indeks ini. Untuk 'risiko', pakai IRBI BNPB. Untuk 'bahaya', pakai PGA PuSGeN 2017/SNI 1726:2019 atau InaRISK."
+  },
+  {
+   "nama": "Penduduk terpapar bahaya gempa (InaRISK x WorldPop per kecamatan)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: dampak.py:4-5 (tiga kelas sama lebar, 'pilihan kami'; seluruh penduduk kecamatan dimasukkan ke satu kelas).\n\nPembagian tiga kelas sama lebar kemungkinan sama dengan pembagian kelas indeks InaRISK sendiri, tetapi belum dicocokkan. Sumbernya resmi BNPB dan labelnya jujur ('paparan bahaya jangka panjang').\n\nAda kontradiksi di dampak.js:\n- komentar baris 4 menyebut model guncangan belum dipakai;\n- baris 35-42 di tab yang sama justru memakainya untuk judul 'Paparan guncangan', yang cacat.\nPisahkan keduanya di tab itu.\n\nPerbaikan: hitung piksel per piksel (raster InaRISK 100 m dikali WorldPop 100 m) atau pakai angka jiwa terpapar resmi BNPB."
+  },
+  {
+   "nama": "Fasilitas rawan (atas sesar, MMI VII skenario, pesisir rendah, tanpa evakuasi, genangan BNPB)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- bukti.json sumber: Dapodik di 9 provinsi, OSM di provinsi lain.\n- Catatan bukti.json: skenario pecah utuh, 'Sesar subduksi tidak dipakai'. Jadi kartu 'MMI VII' mengabaikan megathrust.\n- Koordinat yang dibuang: 2.833 sekolah dan 9.887 data OSM.\n\nKartu Insight memang sudah membawa batasan di kalimatnya (bukti.js:10-14, 24). Tetapi klaim 'berdiri di atas jejak sesar aktif' dengan penyangga 1 km dari jejak GEM skala global melampaui ketelitian datanya.\n\nFasilitas per gempa di laci memakai GMPE yang cacat kedalaman (guncangan.js:107-115) dan hanya subset fasilitas yang dimuat.\n\nPerbaikan:\n- Dapodik/EMIS dan RS Online untuk seluruh provinsi.\n- Peta sesar PuSGeN 2017 dengan zona deformasi.\n- PGA SNI 1726:2019 di lokasi fasilitas.\n- Genangan InaRISK/BNPB untuk pesisir."
+  },
+  {
+   "nama": "Waktu tiba dan tinggi tsunami untuk gempa NYATA (laci)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- laci.js:55 memanggil Tsunami.layak(g) tanpa jenis, sehingga dianggap subduksi (tsunami.js:17-23). Syaratnya M≥6,5 dan kedalaman <50 km.\n- Ambang ini di bawah ambang M7 yang dipakai InaTEWS. Untuk M6,5-6,9 BMKG lazimnya menyatakan 'tidak berpotensi', sementara laci tetap menampilkan gelombang.\n\nKoreksi angka (uji node): tinggi untuk M6,5-6,9 adalah 0,1-0,9 m, bukan 0,5-2 m. Contoh: M6,9 di kedalaman 25 km di Banda: 0,2-0,9 m, tiba 2,8 menit.\n\nLabelnya juga bertentangan sendiri: judul 'Perkiraan gelombang' tetapi kakinya 'Simulasi, bukan prakiraan' (laci.js:57-58). Perbedaan dengan Simulasi (Kj 0,2 untuk geser lawan 1 untuk subduksi, sampai 5 kali lipat) hanya terjadi bila Simulasi jatuh ke templat geser.\n\nPerbaikan: hapus dari gempa nyata. Tampilkan hanya status dan estimasi waktu tiba per zona dari InaTEWS, buletin PTWC, dan tautannya."
+  },
+  {
+   "nama": "Tsunami skenario: waktu tiba (c = √gh, Dijkstra) dan animasi SWE linear",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- tsunami.js:11 (KALIBRASI 0,85, SISI_AMAN 0,61) dan :185-189 ('BUKAN konstanta fisik').\n- uji_js_tsunami.py:10-15, 120-131 hanya menguji konsistensi diri dan kesesuaian dengan SWE milik sendiri, bukan dengan pengamatan.\n- metode.js:67 mengakui galat terhadap stepper: Bengkulu 10 menit lebih lambat (arah yang berbahaya), Padang 14 menit lebih awal, Flores 43 menit lebih awal.\n\nFisika waktu tempuh standar (dipakai PTWC/NOAA) dan penyajiannya dibulatkan ke 5 menit. Itu cukup untuk skenario edukasi dengan label, tetapi belum untuk angka resmi.\n\nPerbaikan:\n- Validasi terhadap rekaman pasang surut BIG/IOC untuk 2004, 2006, 2010, dan 2018.\n- Batimetri BATNAS.\n- Basis data skenario InaTEWS untuk bahan Presiden."
+  },
+  {
+   "nama": "Tinggi tsunami indikatif (Abe 1995 + koreksi Green dan mekanisme)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: rumus di tsunami.js:106-110.\n\nSaya hitung ulang Pangandaran 2006 (M7,7, kedalaman 20 km): 0,3-1,2 m di pantai pertama, lawan run-up teramati 5-8 m, sesuai metode.js:74. Batas atas skenario Jawa M8,5 adalah 21,4 m, lawan sekitar 12 m menurut Widiyantoro dkk. 2020 (metode.js:71).\n\nRentang 0,5-2 Hr bukan selang kepercayaan. Koreksi Green, Kj, dan faktor kedalaman semuanya heuristik. Tidak ada uji terhadap basis data run-up.\n\nPerbaikan: faktor amplifikasi Glimsdal dkk. 2019 dari amplitudo lepas pantai hasil SWE, atau keluaran model nonlinier/skenario terbit. Sajikan sebagai kelas ancaman InaTEWS (<0,5 / 0,5-3 / >3 m) dan validasi terhadap NOAA NCEI."
+  },
+  {
+   "nama": "Evakuasi jalan kaki ke tanah ≥20 m",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- sim.js:195-208: AMAN = 0,61/0,85, jarak dikali 1,3, laju 4 km/jam.\n- sim.js:293: 'tanpa waktu reaksi'.\n- tsunami.js:214-228: sel ETOPO 3 menit busur sebagai tujuan.\n\nPemakaian waktu tiba sisi aman 0,61 memang konservatif. Tetapi elevasi pada sel 5,5 km, titik asal di pusat kecamatan, dan garis lurus tidak bisa menentukan tempat evakuasi.\n\nPerbaikan: TES/TEA BPBD, genangan InaRISK, DEMNAS, analisis jarak jalan OSM (Wood & Schmidtlein), waktu reaksi 5-10 menit, dan sebaran laju jalan."
+  },
+  {
+   "nama": "Ilustrasi peringatan dini (jeda gelombang P-S)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: sim.js:12 (VP 6,5 dan VS 3,7 km/s) dan :277-280.\n\nSaya pertimbangkan menaikkan vonis karena kartunya diberi label 'Ilustrasi... belum termasuk waktu deteksi dan siaran' dan fisikanya benar. Saya tetap mempertahankan tidak layak karena:\n- kalimat 'Warga X punya N detik' dibaca sebagai waktu peringatan yang tersedia;\n- untuk megathrust, guncangan kuat datang dari bagian patahan yang lebih dekat, sebelum gelombang S dari hiposenter;\n- angka ini tidak terkait kinerja InaEEWS BMKG.\n\nUntuk edukasi publik: ganti menjadi 'selisih tiba P dan S' dikurangi latensi deteksi yang dinyatakan. Untuk Presiden: rujuk kinerja InaEEWS dari BMKG."
+  },
+  {
+   "nama": "Laporan Harian Gempa Bumi dan pop-up 'Situasi gempa hari ini'",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- laporan_gempa.py:35: metrik utama 'Gempa M 4 atau lebih' dari USGS.\n- Kelengkapan USGS di Indonesia baru dari mc 4,7.\n- 10 hari terakhir di laporan.json: 4, 8, 4, 1, 0, 1, 3, 1, 7, 2 per hari. Ini fluktuasi Poisson yang diberi panah dan persen (LAPORAN-HARIAN.md:67, 72).\n- Pop-up sapa.js:24, 37 menulis '▲/▼ dari sehari sebelumnya' untuk hitungan M5+ 24 jam.\n\nBerkas basi: laporan.json dibuat 20 Okt 08.49 WIB dan masih memuat baris prakiraan maks 0,0037, di bawah P_MIN_HARIAN 0,005. Kode diubah pukul 11.06 dan 14.00.\n\nSorot tsunami (laporan_gempa.py:178-182) mewarisi bug pengurai. Untungnya judulnya mengutip teks BMKG, jadi pembaca bisa melihat kontradiksinya.\n\nPerbaikan:\n- Katalog BMKG sebagai sumber utama; USGS hanya M≥5 dengan label.\n- Ganti panah harian dengan perbandingan 7/30 hari terhadap laju jangka panjang beserta selang Poisson.\n- Jalankan ulang pipa setiap kali kode berubah."
+  },
+  {
+   "nama": "Statistik deskriptif katalog USGS (riwayat sejak 1900, per dasawarsa/tahun, 'paling sering diguncang')",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: insight.js:66 ('paling sering diguncang'), :80-81 (judul 'terbanyak pada ...-an' dengan kaki 'catatan awal tidak lengkap, termasuk susulan').\n\nDatanya benar dan batasannya tertulis. Tetapi grafik per dasawarsa sejak 1900 menampilkan artefak deteksi sebagai seolah-olah tren, dan 'diguncang' dihitung dari letak pusat gempa, termasuk gempa dalam.\n\nPerbaikan: mulai dari tahun yang katalognya lengkap, pakai versi yang sudah di-declustering, saring kedalaman ≤70 km, dan ganti kata 'diguncang' dengan 'pusat gempa tercatat'."
+  },
+  {
+   "nama": "Galeri 'Gempa merusak' (kurasi factsheet)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di factsheet_gempa.json: Palu 2.081 dari Medcom (angka sementara BNPB 26 Okt 2018), Nias dan Pangandaran null, Aceh 2004 tidak dimuat.\n\nTemuan tambahan: angka di repo tidak konsisten antarberkas untuk kejadian yang sama. Galeri menulis Bantul 5.749, Padang 1.117, Lombok 563, sedangkan kalibrasi_kerusakan.json menulis 5.700, 1.115, 560.\n\nPerbaikan: satu sumber, yaitu DIBI BNPB angka akhir (meninggal, hilang, RB/RS/RR) dengan definisi yang dinyatakan, dan dipakai baik oleh galeri maupun kalibrasi."
+  },
+  {
+   "nama": "Lapisan peta bahaya: InaRISK gempa, sesar aktif GEM, batas lempeng PB2002",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- bahaya_meta.json: InaRISK gempa terambil di 7.254 dari 7.274 titik; InaRISK tsunami dibuang.\n- Atribusi PB2002 tercantum.\n\nSah sebagai latar peta. Daftar palung yang dipakai untuk tebakJenis (guncangan.py:39) tidak memuat Palung Timor/Banda di timur 120,9° BT, sehingga gempa dangkal M≥7 di sana dianggap kerak.\n\nPerbaikan: peta sesar PuSGeN 2017, layanan WMS raster InaRISK, dan geometri Slab2 untuk regionalisasi."
+  },
+  {
+   "nama": "Klasifikasi topik berita gempa (leksikon)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: berita.py:8, 37 (SENTIMEN_TERUJI = False, sentimen tidak ditampilkan).\n\nWajar sebagai gambaran perhatian media, dengan risiko rendah. Ukur presisi dan recall topik pada judul berlabel manusia sebelum dipakai di bahan Presiden."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Alarm peringatan dini gempa dan tsunami platform (Waspada/Siaga/Awas)",
+   "vonis": "tidak_layak",
+   "alasan": "Ini metode paling berbahaya di modul gempa dan dilewatkan pemeriksa pertama, yang menyebut 'Tingkat Pantau Bencana belum ada di kode'. Kodenya sudah berjalan tiap menit dan pop-up-nya tampil di semua halaman.\n\nTsunami:\n- Kode potensi 1-3 selalu menjadi 'Awas' berlabel InaTEWS.\n- Status BMKG 'Waspada' (kurang dari 0,5 m) atau 'Berpotensi tsunami' tanpa tingkat dinaikkan menjadi Awas (lebih dari 3 m).\n- Positif palsu dari pengurai (misalnya teks 'Tidak ada potensi tsunami') ikut menjadi Awas.\n\nGempa:\n- M≥5 di darat atau ≤100 km dari pusat kecamatan menjadi Waspada, tanpa melihat kedalaman. M5 di kedalaman 600 km pun berbunyi.\n- M≥6 dengan kedalaman ≤60 km menjadi Siaga.\n- mmi_maks ≥4, yang bisa berasal dari ShakeMap USGS, menjadi Waspada dengan sumber 'Deteksi Pantau Bencana'.\n\nKata Waspada/Siaga/Awas punya arti resmi di sistem InaTEWS dan BNPB. Tidak ada uji balik, padahal ambang di RINCI-GEMPA.md:70 disebut 'hipotesis'.\n\nPerbaikan:\n- Tsunami: teruskan tingkat per zona dari buletin InaTEWS apa adanya.\n- Gempa: jangan pakai kosakata status. Bila tetap ingin ada pemicu, dasarkan pada MMI Dirasakan atau ShakeMap BMKG, lalu uji balik terhadap DIBI (POD/FAR) sebelum terbit.",
+   "bukti": "src/peringatan.js:6-7, :32 (tingkatGempa), :43-45 (tsunami 'Awas', sumber 'InaTEWS'), :51-58; src/worker.js:637 (dipanggil cron); public/inti/alarm.js:7-8, :49-55 (polling /api/peringatan/aktif); alarm.js dimuat di public/index.html:6419, public/gempa/index.html:167, public/semua/index.html:59; tests/warga/peringatan.test.mjs:16-23, :87-92 (hanya teks 'status Awas'); PARITAS-GEMPA.md:28 tidak sesuai dengan kode."
+  },
+  {
+   "nama": "Email EWS gempa dan tsunami ke pelanggan",
+   "vonis": "tidak_layak",
+   "alasan": "Radius 'terasa' hanya ditentukan oleh M: M4 50 km, M5 150 km, M6 300 km, M7 500 km. Kedalaman diabaikan.\n\nTingkat email:\n- Setiap gempa di dalam radius diberi tingkat 2 'Siaga: Kemungkinan besar terjadi, bersiap bertindak'. M4 di kedalaman 300 km pun mendapat email 'terasa di sekitar Anda'.\n- M≥6 dalam 100 km diberi tingkat 3 'Awas: Bertindak sekarang'.\n- Tsunami: setiap teks 'berpotensi tsunami' dalam 500 km menghasilkan Awas dengan perintah 'Segera menjauhi pantai', tanpa memeriksa apakah pelanggan berada di pesisir atau di zona InaTEWS yang diperingatkan.\n\nPerintah evakuasi tsunami dari pihak ketiga bisa bertabrakan dengan kewenangan BMKG (UU 31/2009). Pengurai tsunami di sini lebih ketat (mensyaratkan frasa 'berpotensi tsunami' dan menolak 'tidak berpotensi') dan berbeda dari src/gempa.js, jadi dua jalur memberi keputusan berbeda untuk teks yang sama. Email ini hanya terkirim bila EMAIL_API_KEY dan domain pengirim sudah aktif.\n\nPerbaikan: teruskan peringatan InaTEWS per zona, cocokkan dengan lokasi pesisir pelanggan, dan untuk gempa pakai MMI dari ShakeMap atau Dirasakan BMKG.",
+   "bukti": "src/ews.js:47-50 (RADIUS_GEMPA, GEMPA_AWAS_BAGI 3, GEMPA_AWAS_MAG 6, TSUNAMI_KM 500), :221-233 (radiusGempa, berpotensiTsunami, nilaiGempa), :293-320 (prosesGempa); src/ews_email.js:82-95 ('Segera menjauhi pantai'); public/ews_tindakan.js:10-14 (2 = Siaga, 3 = Awas); src/ews.js:5-6 (email mati tanpa domain terverifikasi)."
+  },
+  {
+   "nama": "Paparan bangunan per MMI untuk gempa M≥5 30 hari (data terkunci untuk pengguna BNPB)",
+   "vonis": "tidak_layak",
+   "alasan": "Jumlah bangunan Open Buildings per pita MMI dihitung untuk setiap gempa M≥5 dengan scripts/gempa/guncangan.py. Akibatnya:\n- cacat tebak_jenis ikut terbawa (M<7 di kedalaman 15-50 km dianggap kerak);\n- Vs30 seragam 400 m/s, tanpa sigma;\n- gempa laut dihitung sama dengan gempa darat.\n\nAngka ini disajikan ke pengguna masuk, yaitu kalangan BNPB, lewat src/bangunan.js. Karena itu jalur menuju bahan rapat paling pendek. Untuk M5,5 di kedalaman 40 km, sel di atas pusat mendapat MMI sekitar 7,8 alih-alih sekitar 4,5.\n\nPerbaikan: pakai grid ShakeMap BMKG/USGS sebagai masukan MMI, atau model guncangan yang sudah diperbaiki dan divalidasi.",
+   "bukti": "scripts/umum/paparan_bangunan.py:7, :238-277 (tebak_jenis, mmi_perkiraan, 'MMI_V_ke_atas'); src/bangunan.js:1-2 (hanya adminOK); hasil node: M5,5 h40 kerak MMI pusat 7,83 lawan 4,48 antarmuka."
+  },
+  {
+   "nama": "Outlook 12 bulan lintas bencana, baris gempa",
+   "vonis": "layak_catatan",
+   "alasan": "Baris ini diberi label 'Gempa M6+ dangkal', padahal memakai laju.json kelas m6 untuk SEMUA kedalaman (12,97 per tahun, n = 467). Kelas m6 tidak punya saringan kedalaman. Dari data mentah, 78% M6+ 1990-2025 adalah dangkal (515 dari 657), jadi laju 'dangkal' dilebihkan sekitar 28%.\n\nTampil di /semua (analisis.js) sebagai peluang_m6 0,66 per bulan.\n\nMetode Poisson-nya sendiri sah dan sudah diuji balik. Perbaiki label, atau saring kedalaman ≤70 km lalu uji balik ulang. Analisis 'berantai' gempa lalu bencana lain tidak menghasilkan pasangan yang lolos, jadi tidak ada angka yang tampil dari situ.",
+   "bukti": "scripts/umum/outlook12.py:20, :57 (NAMA 'Gempa M6+ dangkal'), :137-144, :395-401; scripts/gempa/peluang_gempa.py:29-30 (m6 tanpa saringan kedalaman); public/banjir/data/outlook12.json baris gempa {m6_per_bulan 1.081, peluang_m6 0.66}; riwayat_m5.json: 515/657 M6+ ≤70 km."
+  },
+  {
+   "nama": "Citra Sentinel-2 sebelum dan sesudah gempa (laci, M≥6,5)",
+   "vonis": "layak_catatan",
+   "alasan": "Citra satelit nyata dengan warna semu SWIR-NIR-merah. Persentase awan dicantumkan, dan atribusi Copernicus ada.\n\nBatasannya:\n- Hanya untuk gempa historis dari katalog USGS yang diproses bulanan, bukan untuk gempa baru.\n- Pemilihan adegan otomatis, tanpa pengecekan oleh analis.\n- Bukan penilaian kerusakan.\n\nLayak sebagai ilustrasi berlabel. Untuk penilaian kerusakan, pakai produk Copernicus EMS, UNOSAT, atau LAPAN/BRIN.",
+   "bukti": "scripts/gempa/citra.py:1-7 (M≥6,5, kedalaman ≤70 km, darat, sejak Apr 2017, bulanan); public/gempa/laci.js:50-53; public/gempa/data/citra.json (keterangan 'awan 26%')."
+  },
+  {
+   "nama": "Bandara di zona guncangan MMI VI+ (laci)",
+   "vonis": "tidak_layak",
+   "alasan": "Daftar bandara 'MMI VI atau lebih' dihitung dengan model guncangan yang sama: Vs30 400 m/s, tebakJenis, dan jarak dari episenter. Akibatnya cacat kedalaman ikut terbawa. Untuk M5,5 di kedalaman 40 km, bandara di dekat pusat bisa ditulis MMI VII-VIII, padahal guncangan yang lebih mungkin MMI IV-V.\n\nLabelnya 'bukan laporan kerusakan', tetapi angka seperti ini mudah dikutip untuk keputusan operasional penerbangan.\n\nPerbaikan: pakai ShakeMap BMKG/USGS, atau keluarkan bagian ini dari laci sampai model guncangan tervalidasi.",
+   "bukti": "public/gempa/kata.js:80-82 (Guncang.bandara memakai X.M.fasilitas ambang 6); public/gempa/guncangan.js:107-115; public/gempa/laci.js:45-48."
+  }
+ ]
+}

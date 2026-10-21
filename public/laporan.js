@@ -23,7 +23,7 @@ const IK_NAIK = '<path d="M6 14l4-4 3 3 5-6"/>';
 /* perubahan: ▲ merah (naik = lebih buruk) / ▼ hijau; tanpa pembanding atau sama-sama nol = "–" */
 function ubah(n, p) {
   if (p == null || n == null) return "–";
-  if (!p) return n ? '<span class="naik">▲ baru</span>' : "–";
+  if (!p) return n ? '<span class="naik baru">▲ baru</span>' : "–";   /* .baru: abu seperti kolom "baru" slide deck (hanya kartu peta, laporan.css) */
   const v = Math.round((n - p) / p * 100);
   return v > 0 ? `<span class="naik">▲ ${fmt(v)}%</span>` : v < 0 ? `<span class="turun">▼ ${fmt(-v)}%</span>` : "0%";
 }
@@ -145,8 +145,11 @@ const SINGKAT = {11: "Aceh", 12: "Sumut", 13: "Sumbar", 14: "Riau", 15: "Jambi",
 fetch("/img/logo.svg?v=2").then(r => r.text()).then(t => { LOGO = t.replace(/<title>.*?<\/title>/, ""); if (D) semua(); }).catch(() => {});
 let GEO = null;   /* {d: {kode: path}, c: {kode: [x, y]}} sekali proyeksi; geo/provinsi.json dimuat malas */
 const PW = 1000, PH = 400, PS = PW / 46, pj = ([lo, la]) => [(lo - 95) * PS, (6.5 - la) * PS];
-async function muatGeo() {
-  if (GEO) return;
+/* satu janji bersama: kartuPeta dipanggil berkali-kali sebelum GEO siap (muat awal, peta_karhutla.json selesai, klik kontrol), file 381 KB tetap diminta sekali;
+   gagal = janji dibuang supaya render berikutnya mencoba lagi */
+let geoP, geoMenunggu = false;
+const muatGeo = () => geoP ||= muatGeoSekali().catch(e => { geoP = null; throw e; });
+async function muatGeoSekali() {
   const g = await fetch("/geo/provinsi.json").then(r => r.json()), d = {}, c = {};
   for (const f of g.features) {
     const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates;
@@ -162,21 +165,89 @@ async function muatGeo() {
   }
   GEO = {d, c};
 }
-function kartuPeta() {
-  const b = iB(), pakaiB = st.petaH === "b" && b > 0, i = pakaiB ? b : idx(), h = D.hari[i];
-  const P = provKepala(), K = P.length === 1 ? P[0] : "", S = seri();
+/* peta interaktif (pemilik, 21 Okt 2026): ukuran Hotspot / Luas terbakar / Belum padam dan periode (hari, minggu, bulan, rentang, 12 bulan) dari
+   data/peta_karhutla.json, dijumlah modul peta_karhutla.js. Warna mengikuti deck BNPB. Tanpa berkas itu kartu memakai laporan.json (modelLama). */
+let PKD, PKmuat = false, petaKet = "", petaCetak = "", petaFokus = null;   /* PKD: undefined = belum dimuat, null = tak ada atau rusak, objek = siap */
+const pet = {metrik: "hot", mode: "hari", ref: "", a: "", b: ""};
+function muatPK() {
+  const R = window.PetaKarhutla; if (PKmuat || !R) return; PKmuat = true;
+  fetch("/data/peta_karhutla.json").then(r => r.ok ? r.json() : null).catch(() => null).then(j => {
+    if (j && !R.cek(j)) { PKD = R.siapkan(j); petaGambar(); } else if (PKD === undefined) PKD = null; });
+}
+/* jangkar periode: pilihan pengguna, atau hari terakhir data. Sengaja TIDAK mengikuti st.hari: kartu memakai hari kalender WIB (00.00-23.59, metode deck BNPB),
+   kartu lain memakai hari laporan s.d. 16.00 WIB; satu tanggal bersama akan menampilkan dua jumlah berbeda (keputusan satu definisi hotspot: pemilik) */
+const jangkarPK = () => pet.ref || PKD.hari.at(-1);
+/* nm (judul, tooltip, keterangan) selalu memuat "perkiraan satelit": luas dan belum padam adalah hitungan dari deteksi, bukan hasil pengecekan regu darat;
+   pil = kepala kolom daftar; jml/ada = legenda; kosong = judul bila tak ada deteksi (tiada deteksi bukan bukti tiada api) */
+const INFO_PK = {
+  hot: {nm: "Hotspot", pil: "Hotspot", sat: "titik", jml: "jumlah titik panas", ada: "titik panas", kosong: "Tidak ada titik panas"},
+  luas: {nm: "Luas terbakar (perkiraan satelit)", pil: "Luas terbakar", sat: "ha, satelit", jml: "luas area terbakar (perkiraan satelit)", ada: "area terbakar", kosong: "Tidak ada area terbakar terdeteksi satelit"},
+  belum: {nm: "Belum padam (perkiraan satelit)", pil: "Belum padam", sat: "ha, satelit", jml: "luas deteksi satelit yang bertahan", ada: "deteksi satelit yang bertahan", kosong: "Tidak ada deteksi satelit yang bertahan"}};
+function modelPK(P) {
+  const R = window.PetaKarhutla, m = pet.metrik, ref = jangkarPK(), I = INFO_PK[m], [, , warna, muda] = R.METRIK.find(x => x[0] === m);
+  const r = R.rentang(PKD, pet.mode, ref, pet.a, pet.b) || {i0: PKD.n - 1, i1: PKD.n - 1}, [kw, lw] = R.waktuBagian(PKD, pet.mode, r.i0, r.i1, m);
+  const nm = m === "luas" && r.i0 !== r.i1 ? "Jumlah luas harian (perkiraan satelit)" : I.nm;   /* luas periode = jumlah harian: area yang sama bisa terhitung di beberapa hari */
+  const w = `${kw} <span class="lp-w">${lw}</span>`, wTeks = `${kw} ${lw}`;   /* label tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
+  const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `±${fmt(x)} ha`, mt = PKD.metode || {};
+  const rows = PKD.kode.filter(k => !P.length || P.includes(k)).map(k => ({k, nama: PKD.prov[k].nama, t: sekarang[k] || 0, tp: sebelum ? sebelum[k] || 0 : null})).filter(x => x.t > 0).sort((a, c) => c.t - a.t);
+  const tot = rows.reduce((a, x) => a + x.t, 0), totNas = PKD.kode.reduce((a, k) => a + (sekarang[k] || 0), 0), top = rows[0];   /* porsi selalu dari total nasional */
+  const j = !top ? `${I.kosong} ${w}` : m === "hot" ? `${Kartu.hl(fmt(rows.length))} provinsi mencatat titik panas ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${Kartu.hl(fmt(top.t))} titik)`
+    : `${nm} ${Kartu.hl("±" + fmt(tot) + " ha")} ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${v(top.t)})`;
+  const dari = r.i0 === r.i1 ? "hari sebelumnya" : "periode sebelumnya";
+  /* kaki: tiap kalimat di simpulnya sendiri supaya terjemahan EN per kalimat (teks metode dari JSON diterjemahkan per kunci di en.json) */
+  const tetap = t => [t, "."];   /* kalimat tetap: titik penutup di luar simpul, supaya kunci en.json tanpa titik */
+  const kal = [tetap("NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21); batas wilayah BIG"), PKD.cutoff ? [`Cut-off ${jamWIB(PKD.cutoff)}.`] : null,
+    tetap("Hari = kalender WIB 00.00–23.59; kartu lain di halaman ini memakai hari laporan s.d. 16.00 WIB, jadi angka tanggal yang sama bisa berbeda"),
+    m === "belum" ? tetap("Bukan \"luas belum padam\" BNPB yang dicek regu darat") : null,
+    m === "luas" && r.i0 !== r.i1 ? tetap("Luas periode = jumlah perkiraan harian; area yang sama bisa terhitung di beberapa hari") : null,
+    m === "luas" ? tetap("Berbeda dari kartu Luas karena memakai titik NOAA-20/21 x porsi, bukan titik S-NPP x 4,3 ha") : null,
+    mt[m] ? [I.pil + ":"] : null, mt[m] ? [mt[m]] : null, ...(mt.catatan || []).map(c => [c])].filter(Boolean);
+  return {rows, j, ctl: R.kontrol(PKD, pet, ref), pakaiB: false, dft: rows.slice(0, 10), ey: P.length ? "Peta " + namaWil(P) : "Peta provinsi", sat: m === "hot" ? " titik" : " ha",
+    kepala: `<div class="lp-rkh"><span>Provinsi · ${R.STOK.has(m) ? "per " + R.label(PKD, "hari", r.i1, r.i1, true) : R.label(PKD, pet.mode, r.i0, r.i1, true)}</span><b style="--mk:${warna};--mu:${muda}">${I.pil} <small>(${I.sat})</small></b></div>`,
+    ket: `${nm} ${w}${PKD.cutoff ? ` <span class="lp-co">Cut-off ${jamWIB(PKD.cutoff)}</span>` : ""}`,
+    cetak: [PKD.cutoff ? `Cut-off ${jamWIB(PKD.cutoff)}.` : "", mt.catatan?.[0] || ""].filter(Boolean).map(esc).join(" "),   /* cetak: satu baris catatan agar perkiraan tetap tertulis di kertas */
+    aria: `Peta ${m === "hot" ? "titik panas" : nm.toLowerCase()} tiap provinsi ${wTeks}`,
+    sumber: kal.map(([t, x = ""]) => `<span>${esc(t)}</span>${x}`).join(" "),
+    leg: [["#D9600B", `Ukuran lingkaran sebanding ${I.jml}`], ["#051C2C", "Provinsi dengan " + I.ada], ["#DCE1E7", "Tanpa deteksi"],
+      ["#D9600B", "naik dari " + dari], ["#2F86D1", "turun dari " + dari]],
+    tip: x => `<b>${esc(x.nama)}</b><br>${nm}: ${v(x.t)}${x.tp != null && nama ? `<br>${esc(nama)}: ${v(x.tp)}` : bd.celah ? "<br>Perubahan: tidak ditampilkan (data satelit tidak lengkap)" : ""}<br>Porsi: ${fmt(Math.round(x.t / (totNas || 1) * 100))}%`};
+}
+/* model dari laporan.json: bawaan lama; dipakai bila peta_karhutla.json belum ada/rusak, dan di mode satu provinsi (butuh baris kab/kota) */
+function modelLama(P, K) {
+  const b = iB(), pakaiB = st.petaH === "b" && b > 0, i = pakaiB ? b : idx(), h = D.hari[i], S = seri();
   const rows = Object.entries(D.prov).map(([k, o]) => ({k, nama: o.nama, t: o.titik[i] || 0, tp: i > 0 ? o.titik[i - 1] : null})).filter(r => r.t > 0 && (!P.length || P.includes(r.k))).sort((a, c) => c.t - a.t);
-  const tot = rows.reduce((a, r) => a + r.t, 0), top = rows[0], totNas = Object.values(D.prov).reduce((a, o) => a + (o.titik[i] || 0), 0);   /* porsi selalu dari total nasional */
+  const totNas = Object.values(D.prov).reduce((a, o) => a + (o.titik[i] || 0), 0);   /* porsi selalu dari total nasional */
   const teks = (ix, rs) => K ? `${Kartu.hl(esc(D.prov[K].nama))} mencatat ${Kartu.hl(fmt(S.titik[ix]))} titik panas di ${Kartu.hl(fmt(S.kab[ix]))} kab/kota` : rs.length ? `${Kartu.hl(fmt(rs.length))} provinsi mencatat titik panas, terbanyak ${Kartu.hl(esc(rs[0].nama))} (${Kartu.hl(fmt(rs[0].t))} titik)` : "Tidak ada titik panas tercatat";
   const rowsDi = ix => Object.entries(D.prov).filter(([k]) => !P.length || P.includes(k)).map(([, o]) => ({nama: o.nama, t: o.titik[ix] || 0})).filter(r => r.t > 0).sort((a, c) => c.t - a.t);
   const j = poinBerjalan(teks(idx(), rowsDi(idx())), x => teks(x, rowsDi(x)));
   const ctl = b > 0 ? Kartu.seg("petaH", [["", tgl(st.hari)], ["b", tgl(D.hari[b]) + " (belum final)"]], {petaH: pakaiB ? "b" : ""}) : "";
-  if (!GEO) { muatGeo().then(() => { isi("peta", kartuPeta); sampul(); }).catch(() => {}); return Kartu.kartu("Peta provinsi", j, '<div class="kosong">Memuat peta…</div>', "NASA FIRMS; batas wilayah BIG", ctl); }
-  const mx = Math.max(1, top?.t || 1), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(P.length ? P : rows.map(r => r.k));
+  const dft = K ? barisKab().filter(r => r.t > 0).sort((a, c) => c.t - a.t).slice(0, 10).map(r => ({nama: r.nama, t: r.t, tp: r.tp})) : rows.slice(0, 10);
+  return {rows, j, ctl, pakaiB, dft, kepala: "", ket: "", cetak: "", sat: " titik", ey: P.length ? "Peta " + namaWil(P) : "Peta provinsi", aria: `Peta titik panas tiap provinsi ${tgl(h)}`,
+    sumber: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG",
+    leg: [["#D9600B", "Ukuran lingkaran sebanding jumlah titik panas"], ["#051C2C", "Provinsi dengan titik panas"], ["#DCE1E7", "Tanpa titik panas"],
+      ["#D9600B", "naik dari hari sebelumnya"], ["#2F86D1", "turun dari hari sebelumnya"]],
+    tip: r => `<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / (totNas || 1) * 100))}%`};
+}
+/* gambar ulang kartu peta saja (kontrol metrik/periode, atau peta_karhutla.json / geo baru selesai dimuat). sampul() sengaja tidak di sini: ia menyalin
+   158 KB SVG ke elemen yang tersembunyi di layar, jadi dikerjakan di beforeprint saja */
+function petaGambar() {
+  isi("peta", kartuPeta);
+  const f = petaFokus; petaFokus = null;
+  if (f) requestAnimationFrame(() => { const e = document.querySelector(`[data-ex="peta"] [data-pk="${f[0]}"]${f[1] != null ? `[data-v="${f[1]}"]` : ""}`), t = e && !e.disabled ? e : document.querySelector('[data-ex="peta"] [data-pk="ref"]');
+    (t?.closest(".pc")?.querySelector(".pc-btn") || t)?.focus({preventScroll: true}); });
+}
+function kartuPeta() {
+  muatPK();
+  const P = provKepala(), K = P.length === 1 ? P[0] : "", M = PKD && !K ? modelPK(P) : modelLama(P, K), rows = M.rows, pakaiB = M.pakaiB;
+  petaKet = M.ket; petaCetak = M.cetak;
+  if (!GEO) {
+    if (!geoMenunggu) { geoMenunggu = true; muatGeo().then(petaGambar).catch(() => {}).finally(() => { geoMenunggu = false; }); }   /* satu penunggu saja, berapa kali pun kartu digambar */
+    return Kartu.kartu("Peta provinsi", M.j, '<div class="kosong">Memuat peta…</div>', M.sumber, M.ctl); }
+  const mx = Math.max(1, rows[0]?.t || 1), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(P.length ? P : rows.map(r => r.k));
   let s = Object.entries(GEO.d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? "pp-on" : P.length ? "pp pp-d" : "pp"}"/>`).join("");
   /* lingkaran kecil di atas yang besar supaya semuanya terlihat */
   const bul = rows.filter(r => GEO.c[r.k]).map(r => ({...r, x: GEO.c[r.k][0], y: GEO.c[r.k][1], r: rad(r.t)}));
-  s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc${pakaiB ? " sm" : ""}" data-tip="${esc(`<b>${esc(r.nama)}</b><br>Titik panas: ${fmt(r.t)}${r.tp != null ? `<br>Hari sebelumnya: ${fmt(r.tp)}` : ""}<br>Porsi: ${fmt(Math.round(r.t / (totNas || 1) * 100))}%`)}"/>`).join("");
+  s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc${pakaiB ? " sm" : ""}" data-tip="${esc(M.tip(r))}"/>`).join("");
   /* label: lingkaran besar (r >= 22) memuat angka + singkatan di dalam; lainnya diberi pil putih "Singkatan angka" di luar,
      disambung garis tipis. Posisi pil dicari melingkar (8 arah, 3 jarak) yang tidak menutup pil lain, lingkaran, atau tepi peta */
   s += bul.filter(r => r.r >= 22).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + 2).toFixed(1)}" class="pa">${fmt(r.t)}</text>`
@@ -186,7 +257,7 @@ function kartuPeta() {
     || bul.some(c => { const nx = Math.max(x, Math.min(c.x, x + w)), ny = Math.max(y, Math.min(c.y, y + LH)); return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2; });
   let garis = "", label = "";
   for (const r of bul.filter(r => r.r < 22)) {
-    const nm = SINGKAT[r.k] || "", n = fmt(r.t), w = nm.length * 5.9 + n.length * 6.6 + 18;
+    const nm = SINGKAT[r.k] || "", n = fmt(r.t) + M.sat, w = nm.length * 5.9 + n.length * 6.6 + 18;   /* pil memuat satuan (titik / ha) */
     let pos = null;
     for (const d of [8, 18, 30, 46, 64]) { for (let a = 0; a < 16 && !pos; a++) { const ang = -Math.PI / 4 - a * Math.PI / 8,
       cx = r.x + Math.cos(ang) * (r.r + d + w / 2), cy = r.y + Math.sin(ang) * (r.r + d + LH / 2), x = cx - w / 2, y = cy - LH / 2;
@@ -200,10 +271,9 @@ function kartuPeta() {
       + `<text x="8" y="12" class="pt-t"><tspan class="pt-n">${nm}</tspan> <tspan class="pt-v">${n}</tspan></text></g>`;
   }
   s += garis + label;
-  const dft = K ? barisKab().filter(r => r.t > 0).sort((a, c) => c.t - a.t).slice(0, 10).map(r => ({nama: r.nama, t: r.t, tp: r.tp})) : rows.slice(0, 10);
-  const daftar = dft.map((r, n) => `<li><span class="pr">${n + 1}</span><span class="pnm">${esc(r.nama)}</span><b>${fmt(r.t)}</b>${r.tp != null ? `<span class="pub">${ubah(r.t, r.tp)}</span>` : ""}</li>`).join("");
-  return Kartu.kartu(P.length ? "Peta " + namaWil(P) : "Peta provinsi", j, `<div class="lp-pt-w"><div class="lp-peta"><svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="Peta titik panas per provinsi ${tgl(h)}">${s}</svg></div><ol class="lp-rk">${daftar}</ol></div>`,
-    "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); batas wilayah BIG", ctl, [["#c4851f", "Ukuran lingkaran sebanding jumlah titik panas"], ["#0b2545", "Provinsi dengan titik panas"]]);
+  const daftar = M.dft.map((r, n) => `<li><span class="pr">${n + 1}</span><span class="pnm">${esc(r.nama)}</span><b>${fmt(r.t)}</b>${r.tp != null ? `<span class="pub">${ubah(r.t, r.tp)}</span>` : ""}</li>`).join("");
+  return Kartu.kartu(M.ey, M.j, `<div class="lp-pt-w"><div class="lp-peta"><svg viewBox="0 0 ${PW} ${PH}" role="img" aria-label="${esc(M.aria)}">${s}</svg></div><div class="lp-rkw">${M.kepala}<ol class="lp-rk">${daftar}</ol></div></div>`,
+    M.sumber, M.ctl, M.leg);
 }
 function kartuProvGrafik() {
   const P = pilih("provM"), semuaRows = barisProv(idx(), []), rows = semuaRows.filter(r => !P.length || P.includes(r.kode)).sort((a, b) => b.t - a.t);
@@ -385,7 +455,7 @@ function kartuSumber() {
   /* teks sumber dari pipeline diawali nama sumbernya; nama itu pindah ke pil sumber, sisanya jadi rincian */
   const rinci = t => tt(t).replace(/^(NASA FIRMS NRT|Kejadian api):\s*/, "").replace(/^(Badan Informasi Geospasial \(BIG\)|KLHK SiPongi),\s*/, "");
   /* kompartemen 1: alur waktu laporan, dari arsip sampai penutupan */
-  const tutup = new Date(`${st.hari}T${(D.jadwal.tutup.match(/\d{1,2}[.:]\d{2}/) || ["21.20"])[0].replace(".", ":").padStart(5, "0")}:00+07:00`);
+  const tutup = new Date(`${st.hari}T${(D.jadwal.tutup.match(/\d{1,2}[.:]\d{2}/) || ["16.00"])[0].replace(".", ":").padStart(5, "0")}:00+07:00`);
   const waktu = [[new Date(c), "Cut-off data", jamWIB(c)], [new Date(D.dibuat), "Dihitung", jamWIB(D.dibuat)],
     ...(st.hari === D.hari_berjalan ? [] : [[tutup, "Ditutup", `${tgl(st.hari)} ${D.jadwal.tutup}`, "tt"]])].sort((a, b) => a[0] - b[0]);
   const alur = `<div class="lp-km"><div class="lp-km-h"><span>Waktu laporan</span><span class="lp-bf${sm ? "" : " ok"}">${sm ? "Data belum final" : "Final"}</span></div>`
@@ -395,7 +465,7 @@ function kartuSumber() {
     kum: '<path d="M4 17l8 4 8-4M4 12l8 4 8-4M12 3l8 4-8 4-8-4z"/>', kej: '<circle cx="7" cy="8" r="2.5"/><circle cx="16" cy="7" r="2.5"/><circle cx="11" cy="16" r="2.5"/>',
     fwi: '<path d="M10 14V5a2 2 0 0 1 4 0v9a4 4 0 1 1-4 0z"/>', wil: '<path d="M9 4L3 6v14l6-2 6 2 6-2V4l-6 2zM9 4v14M15 6v14"/>'};
   const baris = [
-    ["titik", "Titik panas", "NASA FIRMS", s.titik && rinci(s.titik) + "; dikelompokkan per tanggal WIB (00.00–23.59 WIB), bukan tanggal UTC dari NASA"],
+    ["titik", "Titik panas", "NASA FIRMS", s.titik && rinci(s.titik) + "; dikelompokkan per hari laporan (24 jam s.d. 16.00 WIB menurut waktu akuisisi), bukan tanggal UTC dari NASA"],
     ["luas", "Perkiraan luas", MEREK, s.luas && tt(s.luas) + "; 4,3 ha = 31% luas 1 piksel VIIRS (375 m = 14,06 ha); ~ = hari dengan titik S-NPP ditaksir"],
     ["kum", "Kumulatif", MEREK, "Jumlah perkiraan luas harian; sepanjang tahun = titik S-NPP sejak 1 Januari x 4,3 ha"],
     ["kej", "Kejadian api", MEREK, s.kompleks && rinci(s.kompleks)], ["fwi", "FWI", "Open-Meteo", s.fwi && tt(s.fwi)],
@@ -485,10 +555,11 @@ function tandai(e, s) { const b = e.querySelector(`thead [data-k="${s.urut}"] i`
 /* sampul kertas cetak (gaya lembar Pangantara): kepala + angka pokok (sudah ada) + poin Ringkasan dan Luas + peta provinsi
    dengan peringkat. Isinya disalin dari kartu yang sudah dirender, jadi angka dan teksnya selalu sama dengan halaman */
 function sampul() {
-  const q = s => document.querySelector(s), j = q('[data-ex="peta"] h3'), pt = q('[data-ex="peta"] .lp-pt-w');
+  const q = s => document.querySelector(s), j = q('[data-ex="peta"] h3'), pt = q('[data-ex="peta"] .lp-pt-w'), cl = q('[data-ex="peta"] .lp-cl');
   const h = st.hari, bf = false;
+  /* cetak = kertas tanpa kontrol kartu: catatan celah (.lp-cl) dan satu baris catatan perkiraan (petaCetak) ikut disalin supaya angka satelit tidak tampil tanpa peringatannya */
   $("#lpSampul").innerHTML = (j ? `<div class="lp-sp-p">${j.innerHTML}</div>` : "")
-    + (pt ? `<div class="lp-sp-ey">Peta: data ${tglHari(h)}${bf ? ' <span class="lp-bf">Data belum final</span>' : ` <span class="lp-co">Cut-off ${cutoff(h)}</span>`}</div>${pt.outerHTML}` : "");
+    + (pt ? `<div class="lp-sp-ey">Peta: ${petaKet || `data ${tglHari(h)}${bf ? ' <span class="lp-bf">Data belum final</span>' : ` <span class="lp-co">Cut-off ${cutoff(h)}</span>`}`}</div>${cl ? cl.outerHTML : ""}${pt.outerHTML}${petaCetak ? `<div class="lp-sp-cat">${petaCetak}</div>` : ""}` : "");
 }
 function semua() {
   kepala(); isi("ring", kartuRingkasan); isi("luas", kartuLuas); isi("kurva", kartuKurva); isi("peta", kartuPeta); isi("provg", kartuProvGrafik); isi("prov", kartuProv); isi("kab", kartuKab); isi("naikp", () => kartuNaik("prov")); isi("naik", kartuNaik); isi("riwayat", kartuRiwayat); isi("tren", kartuTren); isi("musim", kartuMusim); isi("cuaca", kartuCuaca); isi("konsesi", kartuKonsesi); isi("sumber", kartuSumber);
@@ -553,12 +624,40 @@ document.addEventListener("change", e => {
       nanti(() => { semua(); balik(); }); return; }
     st.pk[k] = v; if (k === "provK") st.k.hal = 0;
     nanti(() => { (GAMBAR[k] || semua)(); balik(); }); return; } });
+/* kontrol kartu peta (data-pk): ukuran, jenis periode, geser, tanggal/minggu/bulan/tahun, rentang. Chrome (aria-pressed) langsung,
+   penjumlahan dan gambar ulang ditunda lewat nanti(); hanya kartu peta yang digambar ulang */
+function petaAtur(k, v) {
+  const R = window.PetaKarhutla, lo = PKD.hari[0], hi = PKD.hari.at(-1), tepat = s => s < lo ? lo : s > hi ? hi : s, ref = jangkarPK();
+  if (k === "metrik") pet.metrik = v;
+  else if (k === "mode" && v !== pet.mode) {
+    if (v === "rentang") Object.assign(pet, R.awalRentang(PKD, pet.mode, ref, pet.a, pet.b));
+    else if (pet.mode === "rentang") pet.ref = PKD.hari[(R.rentang(PKD, "rentang", ref, pet.a, pet.b) || {i1: PKD.n - 1}).i1];
+    pet.mode = v;
+  }
+  else if (k === "geser") { const t = R.tetangga(PKD, pet.mode, ref, +v); if (!t.ada) return; pet.ref = t.ref; }
+  else if (k === "ref") { if (!/^\d{4}-\d\d-\d\d$/.test(v)) return; pet.ref = tepat(v); }
+  else if (k === "a" || k === "b") { if (!/^\d{4}-\d\d-\d\d$/.test(v)) return; pet[k] = tepat(v); }
+  else return;
+  petaFokus = [k, k === "metrik" || k === "mode" || k === "geser" || (k === "ref" && pet.mode === "tahun") ? v : null];
+  nanti(petaGambar);
+}
+document.addEventListener("click", e => {
+  const b = e.target.closest("button[data-pk]"); if (!b || !PKD || b.disabled) return;
+  if (b.dataset.pk !== "geser") b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));   /* chrome urgent */
+  petaAtur(b.dataset.pk, b.dataset.v);
+});
+/* input tanggal memicu change pada tiap segmen yang menghasilkan tanggal sah (mengetik "10" lewat "1" melompat ke Januari lebih dulu) dan render ulang
+   merebut fokus dari input yang sedang diketik: komit setelah jeda, seperti pencarian (tunda). Nilai dibaca saat jeda habis; yang belum sah diabaikan petaAtur. */
+let tundaTgl;
+document.addEventListener("change", e => { const c = e.target.closest("select[data-pk],input[data-pk]"); if (!c || !PKD) return;
+  if (c.type === "date") { clearTimeout(tundaTgl); tundaTgl = setTimeout(() => PKD && petaAtur(c.dataset.pk, c.value), 600); return; }
+  petaAtur(c.dataset.pk, c.value); });
 /* pemilih kartu: gambar ulang kartunya saja */
 const GAMBAR = {ring: () => isi("ring", kartuRingkasan), luas: () => isi("luas", kartuLuas), kurva: () => isi("kurva", kartuKurva),
   provM: () => isi("provg", kartuProvGrafik), provK: () => { isi("kab", kartuKab); renderKab(); }};
 let tunda;
 document.addEventListener("input", e => { if (e.target.id !== "lpCari") return; st.cari = e.target.value; st.k.hal = 0; clearTimeout(tunda); tunda = setTimeout(() => nanti(renderKab), 120); });
-addEventListener("beforeprint", () => { st.cetak = true; renderKab(); });
+addEventListener("beforeprint", () => { st.cetak = true; renderKab(); sampul(); });
 addEventListener("afterprint", () => { st.cetak = false; renderKab(); });
 const gelapSkrg = () => document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
 $("#tema").onclick = () => { const t = gelapSkrg() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pk-tema", JSON.stringify(t)); } catch (e) {} };
@@ -670,6 +769,7 @@ async function muat(ulang) {
   D = d;
   st.prov = kodeSah(st.prov).join(",");   /* ?prov= tak dikenal dibuang; tak tersisa = Indonesia */
   if (!st.manual || !D.hari.includes(st.hari)) st.hari = awal();
+  if (ulang) PKmuat = false;   /* peta_karhutla.json ikut dimuat ulang pada render berikutnya */
   ulang ? nanti(semua) : semua();
 }
 pasangTip(); PilihCantik.pasang(); muatTambahan();

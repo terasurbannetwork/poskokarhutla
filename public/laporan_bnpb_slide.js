@@ -131,7 +131,7 @@ HARIAN.push({id: "sampul", judul: "Sampul", gambar: (k, c) => sampul(k, c, k => 
   const i = c.isi;
   k.teks(0.6, 1.95, 6.2, 1.3, "Laporan Kejadian Bencana Harian", {s: 32, b: true});
   k.teks(0.6, 3.25, 6.2, 0.35, i.instansi || "Badan Nasional Penanggulangan Bencana", {s: 15, b: true, c: C.biru});
-  const per = `${tglK(i.mulai)} ${tglObj(i.mulai).getUTCFullYear()}, ${i.jam || "07.00"}  –  ${tglK(c.tanggal)} ${tglObj(c.tanggal).getUTCFullYear()}, ${i.jam || "07.00"} WIB`;
+  const per = `${tglK(i.mulai)} ${tglObj(i.mulai).getUTCFullYear()}, ${i.jam || "09.00"}  –  ${tglK(c.tanggal)} ${tglObj(c.tanggal).getUTCFullYear()}, ${i.jam || "09.00"} WIB`;
   k.kotak(0.6, 3.75, 4.6, 0.42, {f: C.krem, r: 0.21}); k.bulat(0.83, 3.96, 0.13, {f: C.jingga});
   k.teks(1.05, 3.75, 4.1, 0.42, [R("PERIODE   ", C.jingga, true), R(per, C.teks, true)], {s: 9.5, v: "m"});
   blokPenyaji(k, c, 4.55, "Disampaikan oleh");

@@ -1,0 +1,305 @@
+{
+ "modul": "Lintas modul: Ruang Koordinasi BNPB, agregasi kejadian, outlook 12 bulan dan peluang, berita dan sosmed, paparan bangunan, laporan konsesi dan atribusi grup, laporan warga, rumah rusak, neraca Posko, serta generator /laporan-bnpb (Laporan Harian, Paparan Presiden, dan deck BNPB 21 Okt versi data satelit)",
+ "catatan_umum": "Saya memeriksa ulang bukti 39 metode secara baca-saja. Sebagian besar angka dan rujukan berkas penelaah pertama benar, dengan beberapa nomor baris yang bergeser (luas_bakar_ha ada di konsesi_laporan.py:278, bukan :293). Ada enam koreksi yang menentukan.\n\n1. Temuan terbesar justru terlewat. Folder data/laporan-bnpb/satelit-2026-10-21 berisi deck BNPB final 21 Okt (PPTX/PDF). Di slide 1–2, angka lapangan BNPB diganti perkiraan platform:\n   - luas terbakar harian = titik NOAA-20/21 × 0,534 × 4,3 ha;\n   - belum padam = titik yang bertahan 12–36 jam;\n   - telah padam = 48 jam tanpa deteksi;\n   - fire spot = kluster sel.\n   Hasilnya, untuk 8 provinsi pada 20 Okt luas 21.795 ha, sedangkan deck asli BNPB 1.083,92 ha (20×). Belum padam 11.680 ha lawan 554,76 ha (21×), FS 712 lawan 279. Judul kolom 'LUAS TERBAKAR / TARGET' diubah dan catatan kaki menjadi '*Data berdasarkan GIS' (ganti.py:100,105,107), tetap di bawah kop BNPB. Catatan 'NA: belum ada data laporan lapangan' untuk Papua Selatan dihapus. Hotspot 20 Okt yang diakui README 36–62% terlalu rendah dibiarkan, lengkap dengan panah turun. Angka final juga berbeda dari angka yang diverifikasi putaran-2. Ini metode paling tidak layak di modul ini karena langsung menggantikan angka resmi.\n\n2. Vonis 'tidak_layak' untuk ±2,2 juta ha keliru dasarnya. SiPongi 202.011 ha adalah angka Jan–Jul. Untuk periode yang sama perkiraan platform 189.376 ha (−6%, laporan.py:17). Angka BNPB 129.899 ha bahkan lebih kecil dari SiPongi Jan–Jul, jadi itu tanda dasbor laporan daerah tertinggal. GWIS 2021 lima kali lebih rendah dari SiPongi resmi, jadi GWIS bukan acuan pembanding. Metodenya teruji di tahun berat (2019 +3%, 2023 −20%). Masalahnya hanya penyajian di slide yang tanpa label dan tanpa rentang, sehingga vonisnya naik ke layak_catatan.\n\n3. Vonis konsesi justru harus lebih keras. laporan.py:22 sendiri menyatakan rumus sel kisi × 14,06 ha membesar-besarkan 3–4×. Luas terbakar dalam konsesi Kalbar (421.331 ha) melebihi perkiraan satelit untuk seluruh provinsi Kalbar (326.361 ha). Peta sawit dan HPH yang dipakai adalah data 2012/2014.\n\n4. Slide efektivitas turun ke tidak_layak. Kalbar disebut 'efektif, sisa api turun 83%' dari selisih 5,39 → 0,89 ha, padahal di deck yang sama hotspot Kalbar naik 46%.\n\n5. Hitungan hotspot naik ke layak_catatan. Hitungan tiga sensor ternyata dipakai juga oleh GIS BNPB (Papua Selatan identik). Masalah nyatanya ada dua deret hotspot berbeda dalam satu deck: Kalteng 18 Okt 7.950 lawan 11.073, dan Jambi bergeser satu hari.\n\n6. Peluang El Niño naik ke layak_catatan, dengan syarat ditulis sebagai frekuensi 'k dari 7 tahun', bukan peluang.\n\nSelain itu ada metode yang terlewat: sikap judul terhadap lembaga, termasuk 'Presiden & pemerintah pusat'. Akurasinya 0,858, nyaris sama dengan menebak mayoritas (0,85). Atribusi 'hujan setelah OMC' juga belum dinilai.\n\nMetode yang lebih tepat, ringkas:\n- Luas dan padam: dNBR Sentinel-2/Landsat per provinsi prioritas, ditambah konfirmasi lapangan. Deteksi yang hilang tidak boleh dibaca sebagai padam (harian.py:444 sendiri mengakui awan/asap).\n- Hotspot: satu definisi dan satu jendela hari per deck, dengan FRP atau kompleks aktif untuk prioritas.\n- Musiman: Prakiraan Awal Musim Hujan BMKG per ZOM dan C3S/SEAS5 serta IRI ENSO, bukan persistensi.\n- Risiko: InaRISK resmi BNPB yang sudah ditarik scripts/data/bnpb_gis.py.\n- Kekeringan dan banjir: produk resmi BMKG (HTH, peringatan dini) dan GloFAS/Flood Hub.\n- Atribusi grup: AHU/laporan tahunan/Trase per baris dengan tanggal.\n- Opini media: label manusia dua anotator, kappa dilaporkan, dan baru ditampilkan bila melampaui baseline mayoritas.",
+ "keputusan": [
+  {
+   "nama": "Paparan Presiden: luas terbakar tahun berjalan '±2,2 juta ha, tertinggi ke-2 sejak 2015'",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": false,
+   "alasan": "Angkanya benar: laporan.json tahun_berjalan ha 2.151.640, rendah 1.611.228, tinggi 2.296.751. Yang salah adalah pembandingannya, karena periodenya beda.\n\nSiPongi 202.011 ha mencakup Jan–Jul saja. Untuk periode itu perkiraan platform 189.376 ha (−6%, uji luar-contoh di scripts/data/laporan.py:17), dan penelaah pertama tidak menyebutnya. Selisih besar datang dari Jul–Sep (1.503.602 ha), yang belum dirilis SiPongi. BNPB 129.899 ha s.d. 15 Okt (factsheet_karhutla.json) lebih kecil dari SiPongi Jan–Jul, jadi itu tanda dasbor laporan daerah tertinggal, bukan bukti perkiraan salah. GWIS juga tidak bisa jadi hakim: GWIS 2021 71.889 ha lawan SiPongi resmi 358.867 ha (5× lebih rendah). Rasio 3,3× terhadap GWIS karena itu tidak menunjukkan overestimate terhadap angka resmi.\n\nDi tahun berat perkiraan dekat dengan SiPongi: 2019 1.696.961 lawan 1.649.258 (+3%), 2023 934.910 lawan 1.161.193 (−20%). 'Tertinggi ke-2' bertahan pada −20% (1,72 jt > 2019 1,65 jt), tetapi tidak pada kuartil bawah (1,61 jt).\n\nCacatnya ada di penyajian. Kesimpulan 'Tren' di presiden-2026-10-20.json tidak menyebut 'perkiraan satelit', tanpa rentang, dan tanpa penjelasan selisih 16× dengan BNPB. Layar web sudah jujur ('rentang 1,6–2,3 juta', public/laporan.js:302-304). Uji luar-contoh juga hanya mencakup musim ringan, dan Mei kosong (FIRMS 8 Mei–1 Jun).\n\nPerbaikan:\n- Tulis 'perkiraan satelit ±2,2 juta ha (1,6–2,3 juta); SiPongi belum merilis Agu–Okt; dasbor BNPB 129.899 ha dari laporan daerah'.\n- Ganti peringkat menjadi 'terbesar sejak 2015, setara atau di atas 2019'.\n- Untuk konfirmasi, pakai dNBR Sentinel-2/Landsat per provinsi prioritas, bukan MCD64A1 yang melewatkan api gambut kecil."
+  },
+  {
+   "nama": "Paparan Presiden dan laporan konsesi: luas indikasi terbakar konsesi (piksel VIIRS unik × 14,06 ha)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Angka terverifikasi. 6 provinsi: 884.733 ha, 110.035 titik, 930 konsesi (Riau 12.633 + Jambi 12.484 + Sumsel 70.997 + Kalbar 421.331 + Kalteng 320.814 + Kalsel 46.474). Rumusnya ada di konsesi_laporan.py:278 (bukan :293).\n\nBuktinya lebih berat daripada yang dikutip penelaah pertama:\n(1) laporan.py:22 menyatakan 'Rumus lama (sel kisi x 14,06 ha) membesar-besarkan 3-4x'. Rumus yang sama sudah dibuang untuk angka nasional tetapi masih dipakai di konsesi.\n(2) Konsesi Kalbar 421.331 ha lebih besar dari perkiraan satelit platform untuk SELURUH Kalbar 2026 (326.361 ha, laporan.json luas_banding). Kalbar: 48.959 titik → 29.962 piksel → 8,6 ha per titik, dua kali faktor kalibrasi 4,3. Konsesi bahkan menyerap 70% dari total perkiraan 6 provinsi (1.264.195 ha).\n(3) Peta sawit Kemenhut 'data 2012, diperbarui 2014' dan HPH 2014 (konsesi2026/index.json sumber_konsesi). Batas dan pemegang izin sudah banyak berubah.\nAngka gambut 459.877 ha memakai rumus piksel yang sama.\n\nPerbaikan: hapus angka hektare dari slide Presiden. Pakai jumlah konsesi bertitik plus perkiraan 4,3 ha/titik berikut rentangnya. Untuk penegakan hukum, delineasi dNBR Sentinel-2 sebelum/sesudah per konsesi, dengan peta izin terbaru (KLHK/ATR) dan verifikasi lapangan."
+  },
+  {
+   "nama": "Paparan Presiden: hotspot 7 hari dan peringkat provinsi prioritas",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Kode benar (laporan_bnpb.js:144-157, laporan_bnpb_slide.js:395). Namun alasan pokok penelaah pertama, bahwa definisi tiga sensor dan semua keyakinan tidak sebanding, dilemahkan bukti di repo. README satelit-2026-10-21 menunjukkan GIS BNPB memakai hitungan yang sama: Papua Selatan 2.618/2.632/2.766 lawan platform 2.619/2.632/2.766. Untuk peringkat, selisih antardefinisi tidak mengubah urutan atas (Kalteng 41.313 jauh di atas 12.342), dan sumber statis tidak berarti pada skala ini.\n\nMasalah nyata yang terlewat: satu deck memuat dua deret hotspot berbeda untuk provinsi dan hari yang sama, tanpa penjelasan.\n- Slide situasi (angka GIS BNPB yang diketik): Kalteng 18 Okt 7.950, Kalbar 16 Okt 21.\n- Slide prioritas (platform, hari WIB): Kalteng 18 Okt 11.073, Kalbar 16 Okt 527.\n- Jambi bergeser satu hari: BNPB 16/17/18 = 870/198/43 ≈ platform 15/16/17 = 894/207/45.\nKlaim README 'setara SiPongi/GIS BNPB' hanya benar untuk Papua Selatan. Pada deck 21 Okt, Jambi 18 Okt 345 lawan 43 dan Kalbar 20 Okt 211 lawan 14.\n\nPerbaikan:\n- Satu deret dan satu jendela hari per deck (samakan dengan potongan 07.00 WIB BNPB).\n- Tulis 'deteksi gabungan 3 sensor; satu api bisa terhitung beberapa kali'.\n- Untuk prioritas, tambahkan FRP total atau jumlah kompleks aktif."
+  },
+  {
+   "nama": "Paparan Presiden: 'Peluang masa puncak (pola El Niño)' per provinsi per dasarian",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Nilainya terverifikasi dari musim.json: Papua Selatan p_el_nino dasarian 28–32 = 0,86/1,0/0,71/0,57/0,57, dan Kalteng 0,86/0,57/0,29/0,14/0. Daftar El Niño ada di musim.py:33.\n\nPenelaah pertama tidak melihat bahwa sinyalnya nyata dan besar. Pada tahun biasa, peluang di dasarian yang sama jauh lebih rendah: Kalteng Okt tengah 0,12 lawan 0,86, Sumsel 0,06 lawan 0,86, Papua Selatan Okt akhir 0,24 lawan 1,0. Klimatologi bersyarat ENSO adalah metode yang dikenal. Sebagai statistik sejarah, angka ini benar.\n\nYang salah:\n- Label 'Peluang %' dan warna merah ≥50% menyiratkan prakiraan berskill, padahal n=7 tanpa uji balik.\n- 2019 masuk daftar El Niño padahal musim apinya netral ENSO (dipicu IOD positif).\n- Kekuatan El Niño tidak dibedakan.\n\nLayak hanya bila ditulis 'terjadi di k dari 7 tahun El Niño (tahun biasa: m dari 17)', tanpa persen, dan 2019 dikeluarkan atau diberi tanda. Untuk menjawab 'sampai kapan puncaknya', metode yang lebih tepat dan resmi adalah Prakiraan Awal Musim Hujan 2026/27 BMKG per ZOM, ditambah prakiraan FWI ansambel 2–4 minggu."
+  },
+  {
+   "nama": "Paparan Presiden: tabel situasi dan judul otomatis '% padam'",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Aritmetikanya benar (laporan_bnpb_slide.js:284-286). Luas 996,74, belum padam 569,30, padam 427,44 (43%) cocok dengan kesimpulan. Pecahan 'Kalimantan 25%, Sumatera 64%' juga benar (538,82/405,05 dan 457,92/164,25).\n\nTambahan dari saya: kolom hotspot di slide ini adalah angka GIS BNPB yang diketik, dan berbeda dengan deret platform di slide prioritas (lihat butir hotspot). 'FS' 263 adalah titik api lapangan. Ketiganya berada di satu slide tanpa definisi. Server tidak memeriksa belum ≤ luas (src/laporan_bnpb.js hanya membersihkan bentuk JSON).\n\nPerbaikan: validasi belum ≤ luas di klien dan server; ganti 'telah berhasil dipadamkan' dengan 'dilaporkan padam'; beri definisi singkat hotspot, FS, dan luas di kaki slide."
+  },
+  {
+   "nama": "Paparan Presiden: slide 'Efektivitas penanganan' (aturan turun ≥50% / naik >0, label Lambat/Efektif)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Kodenya terverifikasi (laporan_bnpb_slide.js:336-337, ambang −50% tanpa dasar). Data di deck yang sama membantah penilaiannya.\n\n- Kalbar dicap 'Efektif' dan masuk judul 'sisa api turun 83 persen' karena belum padam turun dari 5,39 ke 0,89 ha, selisih 4,5 ha. Padahal hotspot Kalbar yang diketik naik 21 → 340 → 836, hotspot platform 3 hari terakhir naik +46% (3.530 lawan 2.411), dan kolom kendala sendiri menulis 'hotspot satelit naik 46%'.\n- Kalsel 'efektif' (17,7 → 3,0 ha) sementara hotspotnya naik 54 → 455 → 711.\n\nPersentase pada basis beberapa hektare, tanpa normalisasi api baru atau hujan, lalu dinamai 'efektivitas' adalah klaim kinerja kepala daerah tanpa dasar. Label 'Lambat', 'Efektif', 'Belum efektif', dan 'Terkendali' diketik bebas tanpa kriteria.\n\nPerbaikan: ganti menjadi 'Perubahan sisa api (ha)' dengan angka absolut, tanpa label kinerja. Bila efektivitas memang perlu diukur, pakai indikator proses dari neraca Posko: waktu deteksi sampai tiba, persentase titik baru yang padam <24 jam, ha padam per jam terbang WB, dengan hari hujan/OMC dipisahkan."
+  },
+  {
+   "nama": "Paparan Presiden dan laporan konsesi: jumlah konsesi bertitik dan 'masih ada api 7 hari'",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: kpi areal 930/1.973, titik7 7.686, aktif 272. Tumpang-susun titik dengan poligon adalah praktik umum dan bisa diperiksa ulang.\n\nTambahan yang memperberat catatan: peta sawit adalah data 2012 (diperbarui 2014) dan HPH 2014 (index.json sumber_konsesi), sehingga penyebut 1.973 dan jenis usahanya bisa usang. Satu titik VIIRS (galat posisi ~375 m) di tepi poligon sudah cukup untuk dihitung 'terbakar'.\n\nPerbaikan: label 'konsesi dengan titik panas'; ambang minimal (≥2 hari bertitik atau ≥3 titik); buang titik ≤375 m dari batas; cantumkan tahun peta tiap jenis; pakai peta izin terbaru sebelum disebut di depan Presiden."
+  },
+  {
+   "nama": "Laporan Kejadian Bencana Harian: agregasi otomatis dari teks bebas (angkaTeks)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Kodenya terverifikasi (laporan_bnpb_slide.js:45 dan :219). Ada koreksi kecil: di harian-2026-10-21.json, Sumsel ('± 9.061,13 ha (s.d. 19 Okt)') hanya satu baris, jadi pil total tidak muncul dan tidak ada penjumlahan lintas periode saat ini.\n\nRisiko nyata yang ada sekarang: kelompok Jawa Timur berisi 4 baris, dua di antaranya 'pendataan'. Keduanya diam-diam dihitung 0, sehingga pil tampil 'total ± 77,37 ha' seolah lengkap. Kalteng '± 24.402,56 ha (indikatif)' adalah kumulatif yang tampil sejajar dengan kejadian tunggal 2 ha.\n\nPerbaikan: kolom angka terstruktur (nilai, satuan, jenis kumulatif/kejadian) dan penanda 'n baris belum ada angka'."
+  },
+  {
+   "nama": "Ruang Koordinasi BNPB: indeks risiko kecamatan (R4)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Belum ada kodenya: scripts/bnpb tidak ada, public/bnpb hanya berisi bnpb.css, dan src/relawan.js, meja.js, riset.js, alun.js masih RUTE_* = {}. Rencananya ada di docs/bnpb/RENCANA-12-JAM.md:101-115.\n\nTambahan: repo sudah menarik InaRISK resmi BNPB (scripts/data/bnpb_gis.py → public/data/inarisk.json). Membangun indeks komposit baru di samping InaRISK hanya akan menciptakan angka risiko tandingan milik BNPB sendiri. Metode yang tepat: InaRISK/IRBI (Perka BNPB 2/2012) sebagai dasar statis. Komponen 'bahaya hari ini' hanya boleh diambil dari modul yang lolos uji balik, dan diuji terhadap DIBI per kecamatan sebelum dipakai."
+  },
+  {
+   "nama": "Ruang Koordinasi BNPB: perkiraan kebutuhan musim (S9)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Belum ada kode (RENCANA-12-JAM.md:147-152). Rencananya bertumpu pada prospektif.json dan model sebaran yang belum terbukti skill-nya pada horizon 30–90 hari.\n\nMetode yang tepat: regresi historis sortie/jam terbang WB terhadap luas terbakar resmi atau kompleks aktif 2015–2025, dengan pendorong prakiraan resmi (BMKG/C3S). Diuji balik per musim (MAPE) dan ditampilkan sebagai rentang p10–p90."
+  },
+  {
+   "nama": "Ruang Koordinasi BNPB: sitrep otomatis harian (S1)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Belum ada kode. Rencananya menyertakan 'rekomendasi tingkat respons berdasar aturan status yang ada', padahal status kekeringan dan banjir punya FAR 94–97%.\n\nBila dibangun, ikuti format sitrep Pusdalops. Badan sitrep hanya memuat angka resmi dan lapangan terverifikasi; status model masuk lampiran berlabel 'indikatif' lengkap dengan POD/FAR-nya."
+  },
+  {
+   "nama": "Outlook 12 bulan: karhutla dengan tahun analog RONI/DMI (persistensi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi. Fungsi uji_balik (outlook12.py:180-203) memakai RONI/DMI teramati pada tahun dan musim yang sama, sedangkan prakiraan (tabel_bahaya, :206-216) memakai pendorong yang dipersistenkan (RONI 1,69 JAS 2026, DMI 0,76). Akibatnya skill Agustus 0,653 tidak berlaku untuk lead 10 bulan.\n\nAgu–Okt 2027 berstatus 'ekstrem' (E 3,98/5,55/5,98), dan judul otomatis analisis.js judulBahaya menulis 'Karhutla diperkirakan ekstrem Agustus sampai Oktober 2027'. Penanda ekstrapolasi hanya ada di tooltip ('lebih dari 3 bulan, kurang pasti'). Koreksi kecil: medan 'horizon' di outlook12.json bernilai None. Yang benar adalah ekstrapolasi True mulai 2027-01.\n\nNov–Des 2026 (lead 1–2, analog, tidak diekstrapolasi) masih wajar ditampilkan. Untuk lead >3 bulan, pakai prakiraan ENSO probabilistik IRI/CPC atau C3S/SEAS5 sebagai pendorong, lalu ulangi uji balik dengan pendorong pada lead yang sama. Judul hanya boleh memuat bulan yang skill-nya teruji pada lead itu."
+  },
+  {
+   "nama": "Outlook 12 bulan: banjir dan longsor (klimatologi DIBI)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: dasar klimatologi, tahun_pembanding_tersedia false, banjir Des–Mar 'parah' dengan E 1,33–1,81. Isinya pola musim biasa yang dilabeli 'parah', dan judul otomatis menggabungkannya dengan karhutla, sehingga terbaca sebagai peringatan khusus 2026/27.\n\nPerbaikan: label 'puncak musim (pola tahunan)'. Untuk anomali tahun ini, pakai Prakiraan Musim Hujan BMKG atau anomali C3S."
+  },
+  {
+   "nama": "Outlook 12 bulan: gempa M6+ laju tetap (Poisson, declustering Gardner-Knopoff)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di laju.json: m6 n 467, 12,972 per tahun, lolos_uji; m7 p12 0,84 dengan rentang uji [0,571; 0,888]. M5 dan M7 dangkal gagal uji dan tidak ditampilkan.\n\nLabel 'dangkal' di outlook12.py NAMA memang salah (data m6 adalah semua kedalaman). Namun layar menghapusnya dan menulis 'semua kedalaman' (analisis.js, t.nama.replace(\" dangkal\",\"\")), jadi tidak ada salah tampil.\n\nMetodenya baku dan jujur. Satu-satunya catatan: kalimat 'gempa tidak dapat diprakirakan; ini laju rata-rata nasional'. Untuk paparan risiko spasial, rujuk Peta Sumber dan Bahaya Gempa PuSGeN."
+  },
+  {
+   "nama": "Outlook 12 bulan: bencana berantai (lift A→B, 20 permutasi)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: pasangan = [] dan pasangan terkuat lift 1,3 dengan p_perm 0,095. Bug nama medan nyata: analisis.js kartuBerantai membaca p.peluang_acak, sedangkan JSON menulis peluang_acak_bulan_sama. Saat ini kartu tidak tampil (return \"\" bila kosong), jadi tidak ada salah tampil hari ini.\n\nDengan 20 permutasi tanpa koreksi uji berganda dan data hanya 3 tahun, metode ini tidak boleh menghasilkan klaim. Kalau tetap dipakai: ≥999 permutasi, FDR Benjamini-Hochberg, dan DIBI 2008–kini."
+  },
+  {
+   "nama": "Outlook iklim musiman (regresi CHIRPS terhadap RONI/DMI)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: n_fit 120, 106 berskill positif, median 0,389, ASO nasional 0,787. batasan[1] mengakui prediktornya serentak. Kartu hanya menampilkan horizon ≤2 bulan yang lolos uji (analisis.js kartuIklim), dan untuk lead itu persistensi ENSO memang cukup kuat.\n\nCatatan tambahan: SON 2026 (horizon 0, −38,3%) sebagian besar sudah teramati pada 21 Okt. Seharusnya ditampilkan anomali CHIRPS teramati Sep–Okt, bukan 'diperkirakan'. Sandingkan dengan Prakiraan Musim BMKG."
+  },
+  {
+   "nama": "Mesin peluang bersama (scripts/umum/peluang.py) dan peluang FWI karhutla",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: KATA di peluang.py:30. peluang.json batasan[3] menulis 'Belum ada uji balik', dan batasan[4] menyatakan ansambel dibuat 13 Okt sementara berkas dibuat 19 Okt. batasan[0] menegaskan angkanya pecahan sel yang melewati ambang FWI, bukan peluang 'ada api'.\n\nMesinnya benar, tetapi tanpa kalibrasi. Perbaikan: Brier Skill Score dan diagram keandalan sebelum kalimat vonis tampil; kalibrasi EMOS atau logistik; tolak ansambel >48 jam; pakai skala kata IPCC."
+  },
+  {
+   "nama": "Mesin kejadian (kode stabil, gugus kab bersebelahan, masa aktif)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (kejadian.py:32 MASA, :117 gugus, adaptor :242-345). 'Kejadian' di sini adalah gugus wilayah berstatus model, tidak sebanding dengan kejadian DIBI.\n\nNamai 'wilayah berstatus'. Mutu tiap adaptor dinilai sendiri (lihat butir udara, cuaca, kekeringan)."
+  },
+  {
+   "nama": "Kejadian gunung api (status PVMBG level ≥ II)",
+   "vonis_awal": "layak",
+   "vonis_akhir": "layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (kejadian.py:267-280): status resmi diteruskan tanpa diubah, dengan penjaga basi >2 hari. Tambahkan tanggal penetapan status PVMBG dan tautan MAGMA."
+  },
+  {
+   "nama": "Kejadian dan laporan kejadian kualitas udara (PM2,5 CAMS mentah)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: galat.metar hit 0,44, FAR 0,16, CSI 0,406 (n 837 hari-bandara). Koreksi 'belum', tanpa stasiun. Label 'Stasiun tercemar' ada di public/bencana.json padahal tidak ada stasiun.\n\nTambahan: validasinya memakai METAR HZ/FU (jarak pandang) sebagai proksi asap, bukan PM2,5, dan berjenis 'analisis hari lampau', bukan prakiraan.\n\nPerbaikan: tampilkan ISPU KLH/BMKG di kota berstasiun dan koreksi bias CAMS dengan stasiun tersebut. Ganti nama menjadi 'Udara tidak sehat (perkiraan model)'."
+  },
+  {
+   "nama": "Kejadian dan laporan kejadian cuaca ekstrem (CAP BMKG + tingkat kecamatan model)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: hujan ≥50 mm lead 1 POD 0,065, FAR 0,59, CSI 0,06 (n 1.577). Catatan tambahan: verifikasi CAP BMKG di repo masih n = 0 (cuaca_verifikasi.json bmkg.nasional), tetapi CAP adalah peringatan resmi.\n\nPisahkan keduanya. Utamakan CAP/IBF BMKG, dan tingkat model hanya sebagai lapisan 'indikatif' yang menyebut POD 6,5%."
+  },
+  {
+   "nama": "Laporan kejadian banjir dan longsor (status Siaga model)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi di validasi.json (uji 2022–2025):\n- Banjir siaga: POD 0,132, FAR 0,939, CSI 0,043, ETS 0,031 [0,023–0,039].\n- Longsor siaga: POD 0,151, FAR 0,954.\n- Banjir awas: POD 0,038.\nETS memang positif (lebih baik dari acak), tetapi sangat kecil, dan diukur dengan hujan ERA5 sebagai prakiraan sempurna, jadi skill nyatanya lebih rendah. Judul 'Laporan Kejadian' untuk status model menyesatkan walau BATASAN_UMUM jujur (laporan_kejadian.py:71-72).\n\nMetode yang lebih tepat: GloFAS/Google Flood Hub untuk sungai besar, peringatan BMKG dan BBWS, dan ambang yang dikalibrasi per DAS dengan sasaran PSS/ETS."
+  },
+  {
+   "nama": "Kejadian dan laporan kejadian kekeringan (SPI-3 + kelembapan tanah, Siaga/Awas)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 246 laporan aktif (166 Siaga, 80 Awas). SPI-3 ≤ −1,5: POD 0,116, FAR 0,965, CSI 0,028 (acak 0,011).\n\nBukti terkuat justru belum dikutip: kekeringan_ujibalik.json memuat kriteria_layak repo sendiri (POD ≥0,5, FAR ≤0,8), dan aturan Siaga gagal di keduanya.\n\nDua bukti pendukung penelaah pertama lemah:\n- kekeringan_resmi.json berisi SK 2025 (tahun_data 2025), jadi 'n_aktif 0' tidak membuktikan tidak ada darurat kekeringan pada 2026.\n- 'Aceh Barat Awas di Oktober' bukan bukti salah dengan sendirinya, karena SPI bersifat relatif terhadap klimatologi.\nStatus gabungan dengan kelembapan tanah belum pernah diuji.\n\nGunakan produk resmi BMKG (HTH dan peringatan dini kekeringan meteorologis). Arsipkan status harian supaya uji balik status gabungan bisa dilakukan."
+  },
+  {
+   "nama": "Bagian 'Asal' di laporan kejadian (hujan per sub-DAS, hutan hilang, konsesi, lintasan mundur asap)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi. Batasannya jujur, tetapi penyandingan hutan hilang dan konsesi dengan kejadian hari ini mengundang kesimpulan sebab-akibat. Resolusi 0,25° juga kasar untuk sub-DAS kecil.\n\nPisahkan ke kartu 'kondisi hulu, bukan penyebab terbukti'. Pakai IMERG/GSMaP dan HYSPLIT NOAA untuk validasi lintasan."
+  },
+  {
+   "nama": "Berita: relevansi dan geocoding (Google News RSS)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: relevansi n 159, presisi 1,0, recall 0,929. Berlokasi 0,606, setingkat kab 0,276. Berkas dibuat 15 Okt (basi 6 hari). Geocoding belum diuji.\n\nTulis 'perhatian media', bukan 'keparahan', dan jaga kesegaran data di bawah 24 jam."
+  },
+  {
+   "nama": "Berita: pengelompokan cerita (Jaccard judul)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 17.231 artikel menjadi 13.934 cerita (1,24 artikel per cerita) tanpa validasi. Jangan pakai jumlah 'cerita' sebagai ukuran isu. Validasi dengan B-cubed F1, atau pakai embedding kalimat multibahasa."
+  },
+  {
+   "nama": "Berita: nada situasi (regresi logistik) dan nada respons (leksikon)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi:\n- Model situasi: akurasi uji 0,83 [0,782–0,878] lawan mayoritas 0,55; label manusia 0,863 (n 51).\n- Respons: akurasi label manusia 0,941 lawan mayoritas 0,922.\n- Komposisi label: 675 label AI, 103 label manusia.\n\nTambahan: blok validasi.situasi (leksikon) menunjukkan akurasi uji 0,745, sama dengan mayoritas 0,745. Varian leksikon tidak berskill, dan teks metode.sentimen masih menggambarkan leksikon untuk situasi.\n\nPastikan layar memakai model LR. Sembunyikan nada respons sampai melampaui baseline. Tambah ≥300 label dua anotator dan laporkan kappa."
+  },
+  {
+   "nama": "Berita: emosi (marah, cemas, sedih, harapan) dari kata pemicu",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: scripts/berita/karhutla.py:279-297. Kata 'cemas' mencakup 'siaga|waspada|darurat|bahaya|meluas', dan 'marah' mencakup 'tuntut|desak|lamban'. Itu istilah status dan berita biasa, bukan emosi publik.\n\nEmosi ini ditampilkan di layar (index.html:3966, 4002) tanpa validasi apa pun. Hapus dari bahan pimpinan."
+  },
+  {
+   "nama": "Berita: lonjakan, isu dan peringatan, tier media, rekomendasi komunikasi",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: tier 1 memuat 'Tribratanews Polda Sumsel', tier 2 memuat 'Perhutani', dan peringatan[0] berbunyi 'tanggapi_dalam 6 jam'. Berguna untuk humas.\n\nTier media sebaiknya dari data jangkauan (Dewan Pers, trafik). Rekomendasi diberi label 'saran otomatis'. Lakukan uji balik pada krisis 2019 dan 2023."
+  },
+  {
+   "nama": "Berita: kontradiksi klaim 'nihil/padam' vs satelit, dan celah api tanpa berita",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: kontradiksi saat ini kosong, celah[0] Katingan 15 kompleks. Dialog layar sudah jujur ('Perlu konfirmasi lapangan sebelum dikutip').\n\nKontradiksi hanya untuk internal, memakai VIIRS keyakinan nominal/tinggi ≤5 km dari lokasi klaim. Celah boleh dipakai."
+  },
+  {
+   "nama": "Analisis media sosial (post kurasi admin)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: sosmed.json n 0, sentimen_teruji false. Sampel pilihan admin bias seleksi. Pakai hanya sebagai galeri anekdot."
+  },
+  {
+   "nama": "Paparan bangunan: grid Open Buildings v3 per kecamatan",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: 1.017.481 bangunan, hanya provinsi 62, ambang 0,70. Datasetnya sahih, tetapi cakupannya baru satu provinsi dan belum ada layar yang memakainya (hanya src/bangunan.js). Cocokkan dengan rumah tangga BPS per kecamatan dan sebutkan cakupan di tiap angka."
+  },
+  {
+   "nama": "Paparan bangunan karhutla: bangunan dalam 1/3/5 km dari kompleks aktif",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: umur data 187 jam, basi true, 479 dari 2.259 kompleks terliput, sel ~1,1 km untuk pita 1 km. Angka 12.160 bangunan (7.402 di Palangkaraya) tidak bisa dipertanggungjawabkan. Saat ini tidak tampil di layar mana pun.\n\nPakai grid 0,001° atau poligon bangunan, tolak data kluster >36 jam, dan pakai perimeter api hari itu."
+  },
+  {
+   "nama": "Paparan bangunan banjir, gempa, dan gunung api",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: GMPE tanpa sigma dengan Vs30 400; banjir dihitung sebagai batas atas kecamatan; semua bernilai 0 di luar Kalteng. Tampilkan 'tidak tercakup', bukan 0. Gunakan ShakeMap USGS/BMKG dan peta genangan Sentinel-1 (GFM/Copernicus EMS)."
+  },
+  {
+   "nama": "Laporan konsesi: aturan grup usaha dan negara asal (bendera)",
+   "vonis_awal": "tidak_layak",
+   "vonis_akhir": "tidak_layak",
+   "bukti_terverifikasi": true,
+   "alasan": "Bukti dasarnya benar: aturan 'Berhad' = MY ada di konsesi_laporan.py:250, dan tabel tangan 'riset 20 Okt 2026, pemilik' tanpa sumber per baris ada di laporan_konsesi.js:43-62. Ada satu koreksi: 'konflik' NEG_GRUP lawan ASAL_GRUP tidak tampil di layar, karena rapikan() (laporan_konsesi.js:69) mendahulukan ASAL_GRUP. Salim tampil sebagai ID dengan induk HK, bukan SG.\n\nMasalah yang lebih berat dan belum dikutip:\n(1) Ada tiga definisi negara yang tidak seragam. KURASI di scripts/data/grup_perusahaan.py menulis Wilmar 'Singapura' dan RGE 'Indonesia', sedangkan JS menampilkan Wilmar negara ID dengan induk SG, dan NEG_GRUP menulis RGE 'SG'.\n(2) grup_perusahaan.py:1-3 mencatat keputusan pemilik 14 Okt 2026 bahwa situs tidak menampilkan nama perusahaan/grup. Kenyataannya /laporan-konsesi (worker.js:498,525, host *.workers.dev) menampilkan grup, bendera, induk, dan pemegang saham.\n(3) Atribusi disambungkan ke peta konsesi 2012/2014.\n\nWajibkan sumber bertanggal per baris (AHU Kemenkumham, laporan tahunan, Trase). Hapus aturan nama. Tampilkan 'belum terverifikasi' bila tak bersumber."
+  },
+  {
+   "nama": "Laporan konsesi: 'Indikasi dibakar lalu jadi sawit (kebakaran 2015)'",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (laporan_konsesi.js:383 dan :449, Gaveau dkk. 2022, label 'bukan bukti pembakar'). Sumbernya telaah sejawat, tetapi tetap indikasi. Lengkapi dengan citra Landsat 2015–2017 per konsesi untuk Gakkum."
+  },
+  {
+   "nama": "Rumah rusak: rekap RB/RS/RR",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi: DEFAULT 'sah' di migrations/0024_rumah_rusak.sql:19. Dedup hanya berlaku untuk pelapor yang sama.\n\nTambahan: dedup juga mensyaratkan tingkat yang sama (src/rumah_rusak.js:56-57). Pelapor yang sama bisa menghitung satu rumah dua kali dengan mengganti kategori, dan dua regu pasti terhitung dua kali.\n\nPerbaikan: status 'menunggu' sebagai bawaan, verifikasi BPBD, dedup lintas pelapor sebagai penanda, foto wajib untuk RB, dan format JITUPASNA."
+  },
+  {
+   "nama": "Laporan warga foto/video dengan verifikasi lokasi",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (src/foto.js:4-9, src/gps.js:1-7). Cocok sebagai bukti kualitatif yang sudah dimoderasi, bukan statistik sebaran."
+  },
+  {
+   "nama": "Neraca Posko (agregasi laporan regu, rakor menimpa)",
+   "vonis_awal": "layak_catatan",
+   "vonis_akhir": "layak_catatan",
+   "bukti_terverifikasi": true,
+   "alasan": "Terverifikasi (src/posko.js SQL_AGREGAT, dummy dan laporan ditahan dibuang, rakor menang). Tampilkan jumlah regu pelapor dibanding yang terdaftar dan sumber tiap angka.\n\nInilah yang semestinya mengisi kolom luas dan belum padam Paparan Presiden, bukan ketikan ulang atau perkiraan satelit."
+  }
+ ],
+ "metode_terlewat": [
+  {
+   "nama": "Deck BNPB 21 Okt 2026 versi 'data satelit': luas terbakar harian, belum padam, 'telah padam' (48 jam), dan fire spot pengganti angka lapangan",
+   "vonis": "tidak_layak",
+   "alasan": "Slide 1–2 deck final 'Laporan Penanganan Pengendalian Karhutla 211026' mengganti angka lapangan BNPB dengan perkiraan platform, di bawah kop dan hak cipta BNPB:\n- luas = titik NOAA-20/21 n/h × porsi 0,534 × 4,3 ha;\n- belum padam = porsi titik yang sudah terdeteksi 12–36 jam sebelumnya;\n- padam = 48 jam tanpa deteksi;\n- FS = kluster sel bertahan.\n\nAngkanya 20 kali angka lapangan. 8 provinsi 20 Okt: luas 21.795 lawan 1.083,92 ha, belum padam 11.680 lawan 554,76 ha, FS 712 lawan 279. Kalteng 18 Okt: 14.695 ha, sedangkan Paparan Presiden 20 Okt mencatat 497,09 ha untuk hari yang sama.\n\nCacat metodologisnya:\n(1) Faktor 4,3 ha adalah kalibrasi nasional tahunan. laporan.py:20-21 sendiri menyatakan faktor itu 'tidak diuji per hari atau per wilayah ... indikatif'.\n(2) Deteksi yang hilang tidak sama dengan padam. Awan, asap, dan bara gambut yang membara pelan luput dari VIIRS. harian.py:444 sendiri menulis 'bisa padam, bisa tertutup awan/asap' dan memakai 72 jam (168 jam untuk gambut kering), bukan 48 jam.\n(3) Hasilnya peka terhadap definisi. Angka yang diverifikasi putaran-2 (padam 5.366 dari 14.229 = 38%, belum padam 8.323) berbeda dengan angka final (7.646 dari 23.382 = 33%, belum padam 7.824). Angka final belum melewati verifikasi independen, dan kedua putaran hanya menguji kecocokan hitungan, bukan keabsahan ilmiah.\n(4) Ketidakpastian ±15–40% hanya ditulis di README, tidak di slide.\n\nPenyajiannya menyesatkan. Judul kolom 'LUAS TERBAKAR / TARGET' diganti 'LUAS TERBAKAR*', dan catatan kaki diganti '*Data berdasarkan GIS' (ganti.py:100,105,107). Keterangan 'NA: belum ada data laporan lapangan' dihapus, lalu Papua Selatan diisi 5.945 ha.\n\nMetode yang lebih tepat:\n- Pertahankan angka lapangan BNPB/neraca Posko di kolom resmi.\n- Satelit masuk slide terpisah berjudul 'Indikasi satelit', berisi hotspot, kompleks aktif, dan FRP, dengan rentang.\n- Luas memakai dNBR Sentinel-2 mingguan untuk provinsi prioritas.\n- 'Padam' hanya dari konfirmasi lapangan.",
+   "bukti": "data/laporan-bnpb/satelit-2026-10-21/README.md (Metode; Catatan untuk paparan); hitung3.py (docstring, PORSI, bertahan(), padam 48 jam); angka.json (prov 62 luas 18 Okt 14694,56; porsi 0,5338); slide1/slide2.xml deck hasil lawan sumber-asli-BNPB-211026.pptx (Jumlah 8 provinsi 29.955/20.433/21.795 lawan 1.104,21/1.118,80/1.083,92; belum 15.045/13.044/11.680 lawan 597,80/572,08/554,76; FS 702/747/712 lawan 272/269/279); ganti.py:100,105-107; verifikasi/putaran-2.json (P 5.366, T 14.229, Q 38%, B 8.323); scripts/data/laporan.py:20-21; scripts/data/harian.py:29-30,444."
+  },
+  {
+   "nama": "Deck BNPB 21 Okt 2026: hotspot harian 18–20 Okt dan panah naik/turun dengan celah lintasan S-NPP 20 Okt yang dibiarkan",
+   "vonis": "tidak_layak",
+   "alasan": "README mengakui bahwa hotspot 20 Okt 'terlalu rendah sekitar 36–62% di Kalimantan, Sumatra, dan Sulawesi, karena lintasan siang S-NPP hilang ... sengaja tidak dikoreksi'. Putaran-2 memperkirakan 8 provinsi kurang sekitar 3.200–5.600 titik dari 9.031.\n\nMeski begitu, slide tetap menampilkan penurunan sebagai fakta: Kalteng 2.363 ▼44%, Kalbar 211 ▼68%, Sumsel 947 ▲26%. Satu-satunya catatan di slide adalah '*Data berdasarkan GIS'.\n\nKlaim README bahwa angka ini 'setara SiPongi/GIS BNPB' hanya terbukti untuk Papua Selatan. Untuk provinsi lain, deck asli BNPB berbeda jauh: Kalteng 18 Okt 7.950 lawan 11.073, Jambi 18 Okt 43 lawan 345, Kalbar 20 Okt 14 lawan 211.\n\nPerbaikan: tandai 20 Okt 'data satelit belum lengkap' dan sembunyikan panahnya, atau unduh ulang lintasan yang hilang. Pakai satu jendela hari yang sama dengan GIS BNPB (potongan 07.00 WIB).",
+   "bukti": "satelit-2026-10-21/README.md 'Catatan untuk paparan' butir 1; verifikasi/putaran-2.json temuan 'hot 20 Oct is still under-counted' (estimasi 36–62%); teks slide1.xml (11.073 ▲166% | 4.227 ▼62% | 2.363 ▼44%; Kalbar 211 ▼68%) lawan sumber-asli slide1.xml (Kalteng 7.950/4.213/2.083; Jambi 43/341/77; Kalbar 836/450/14)."
+  },
+  {
+   "nama": "Berita: sikap judul terhadap lembaga (termasuk 'Presiden & pemerintah pusat'), nada tokoh, dan tuntutan publik",
+   "vonis": "tidak_layak",
+   "alasan": "Layar ruang krisis menampilkan 'Sikap judul terhadap {lembaga}', misalnya PUSAT 'Presiden & pemerintah pusat' sikap7 = 78 negatif / 239 netral / 17 positif. Validasi repo sendiri menunjukkan pengklasifikasi ini tidak lebih baik dari menebak mayoritas:\n- akurasi 0,858 lawan mayoritas_akurasi 0,85;\n- F1 makro 0,662 [0,485–0,801];\n- recall negatif 0,429 dengan selang 95% [0,0–0,833], n 113.\nNada tokoh (kritik/apresiasi) memakai leksikon respons, yang pada label manusia juga hanya 0,941 lawan mayoritas 0,922.\n\nAngka 'berita negatif terhadap Presiden naik' dari alat setingkat tebakan bisa dikutip di depan Presiden. Sembunyikan sampai selang F1 tidak lagi tumpang-tindih dengan baseline mayoritas, dengan label manusia dua anotator (kappa dilaporkan), atau pakai model bahasa Indonesia terlatih (IndoBERT) yang dikalibrasi.",
+   "bukti": "public/data/berita.json validasi.lembaga {n 113, akurasi 0,858, f1_makro 0,662, recall negatif 0,429 ci95 [0,0; 0,833], mayoritas_akurasi 0,85}; berita.json lembaga.PUSAT {nama 'Presiden & pemerintah pusat', sikap7 [78,239,17]}; public/index.html:4675 (dialog 'Sikap judul terhadap'), pmLembaga/pmTokoh/pmTuntutan di blok brPantau (sekitar :4651-4654)."
+  },
+  {
+   "nama": "Paparan Presiden: atribusi 'hujan setelah OMC' (kartu Modifikasi cuaca dan kesimpulan 'Hujan di 4 provinsi')",
+   "vonis": "layak_catatan",
+   "alasan": "Templat memasang keterangan bawaan 'hujan setelah OMC' (laporan_bnpb.js BARU.presiden omc.ket). Kesimpulan menulis 'Hujan di 4 provinsi: Hujan setelah OMC di Kalbar, Kalteng, Kalsel, Sumsel'. Ini atribusi post hoc tanpa pembanding: tidak ada wilayah kontrol tanpa semai, tidak ada prakiraan hujan BMKG sebelum penyemaian, dan tidak ada data radar.\n\nPernyataan WMO tentang modifikasi cuaca menyebut efek penyemaian sulit dideteksi tanpa desain terkontrol. Boleh disampaikan sebagai fakta operasional ('hujan tercatat di wilayah sasaran sesudah penyemaian'), tetapi bukan sebagai hasil OMC.\n\nMetode yang lebih tepat: bandingkan hujan radar BMKG atau GSMaP/IMERG di sel sasaran dengan sel tetangga tanpa semai dan dengan prakiraan hujan sebelum penyemaian, mengikuti protokol evaluasi BRIN/BMKG.",
+   "bukti": "public/laporan_bnpb.js:33 (omc: {judul, ket: 'hujan setelah OMC', ...}); data/laporan-bnpb/presiden-2026-10-20.json omc {judul '4 provinsi', ket 'hujan setelah OMC'} dan kesimpulan[7] 'Hujan di 4 provinsi'; public/laporan_bnpb_slide.js:323-329 (kartu Modifikasi cuaca)."
+  }
+ ]
+}

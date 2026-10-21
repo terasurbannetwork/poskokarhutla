@@ -60,6 +60,18 @@
         "AKUN_SITUS_UJI:uji:sandi-uji"
       ],
       "port": 8797
+    },
+    {
+      "name": "statis",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8811",
+        "--directory",
+        "public"
+      ],
+      "port": 8811
     }
   ]
 }

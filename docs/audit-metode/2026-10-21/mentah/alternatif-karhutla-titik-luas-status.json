@@ -1,0 +1,452 @@
+{
+ "modul": "Karhutla: titik panas, luas terbakar, status kejadian api, laporan harian, kebutuhan operasi, dampak, pencegahan, penyisipan data resmi, termasuk deck BNPB data satelit 21 Okt 2026 (scripts/data/**, data/laporan-bnpb/satelit-2026-10-21/**, public/laporan.js, public/paparan_slide.js, public/riwayat_nasional.js, public/operasi.js, public/dampak.js)",
+ "usulan": [
+  {
+   "metode_lama": "Deck BNPB 21 Okt 2026 (data satelit), slide 1–2: kolom 'LUAS TERBAKAR' dan 'BELUM PADAM' harian per provinsi. Rumusnya titik NOAA-20/21 n/h × 0,534 × 4,3 ha (data/laporan-bnpb/satelit-2026-10-21/hitung3.py → angka.json → ganti.py), dicetak di bawah logo BNPB.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Cabut semua angka hektare harian dari slide berlogo BNPB. Kalau indikator satelit tetap perlu, buat slide terpisah berjudul 'Indikator satelit platform (bukan data BNPB)'. Isinya per provinsi per hari:\n- jumlah piksel api aktif VIIRS (NOAA-20, NOAA-21, S-NPP), dipisah per sensor;\n- jumlah FRP (MW);\n- persen piksel yang juga terdeteksi 12–36 jam sebelumnya, sebagai indikator persistensi dalam persen, bukan hektare;\n- tanda kelengkapan lintasan (lihat usulan hitungan titik).\nLuas hanya ditampilkan bulanan, dari citra (lihat usulan luas per provinsi).",
+   "praktik_resmi_indonesia": "Tidak ada lembaga Indonesia yang menerbitkan hektare harian dari hitungan titik.\n- BNPB melaporkan 'Lahan Terbakar Harian', 'luas lahan ditangani darat/udara', dan 'luas yang akan dipadamkan' dari laporan regu dan BPBD (lihat kolom-kolom itu di public/data/bnpb.json).\n- SiPongi Kemenhut melaporkan titik panas per tingkat kepercayaan.\n- BMKG menampilkan sebaran hotspot VIIRS/MODIS dan FDRS.",
+   "kenapa_lebih_tepat": "Piksel dan FRP adalah besaran yang benar-benar diukur sensor dan tidak memerlukan faktor konversi.\n\nFaktor 4,3 ha per titik hanya terkalibrasi tahunan dan nasional. GFED5NRT, metode titik-ke-luas paling maju yang sudah terbit, mengakui faktor statisnya membawa ketidakpastian lebih tinggi di skala subnasional.\n\nDengan tidak memakai hektare harian, selisih 21–30 kali dengan angka BNPB pada tanggal berlabel sama (Kalteng 18 Okt 14.695 vs 497 ha) tidak lagi muncul di bawah logo lembaga yang sama.",
+   "data_dibutuhkan": "Tidak ada data baru. FIRMS NRT VIIRS (kolom frp, scan, track, daynight, acq_time) sudah ada di firms-raw-15-21okt.tar.gz dan public/data/hotspot.json. Latensinya sekitar 3 jam, data NASA terbuka.",
+   "upaya": "S",
+   "cara_validasi": "(1) Tambahkan asersi di cek_tampil.py: slide 1–2 tidak boleh memuat satuan 'ha'.\n(2) Hitung korelasi peringkat Spearman antara FRP harian provinsi 15–21 Okt dan 'Lahan Terbakar Harian' BNPB untuk 8 provinsi, lalu laporkan nilainya apa adanya. Kedua angka tidak dipaksa sama.\n(3) Hari yang lintasannya tidak lengkap (20 Okt) tidak boleh diberi panah atau warna.\nLulus bila tidak ada satu pun angka hektare harian di deck berlogo BNPB.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://earthdata.nasa.gov/data/tools/firms/active-fire-data-attributes-modis-viirs",
+    "https://essd.copernicus.org/articles/18/7535/2026/",
+    "https://gis.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Deck BNPB 21 Okt 2026: 'telah padam' artinya piksel hari d−2 tidak terdeteksi lagi pada hari d−1 dan d ('aturan pemilik 48 jam', hitung3.py). Muncul di subjudul slide 1: '±7.646 ha (33%) telah padam'.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti labelnya menjadi 'tidak terdeteksi lagi ≥N jam pada lintasan lengkap (bukan status padam)'. Status 'padam' hanya boleh berasal dari laporan lapangan, yaitu 'luas dipadamkan' BNPB.\n\nAmbang N dipilih lewat analisis survival:\n- Dari arsip FIRMS SP VIIRS 2019 dan 2023, untuk setiap sel 375 m dengan jeda h jam tanpa deteksi, hitung peluang terdeteksi lagi dalam 7 hari.\n- Pisahkan gambut dan mineral. Hitung hanya jeda yang semua lintasan siang dan malamnya teramati.\n- Pilih h terkecil yang peluang deteksi ulangnya di bawah 10%.\n\nSyarat keteramatian tambahan: selama jeda tidak ada deteksi Himawari-9 WLF (tiap 10 menit, grid 0,02°) di sel itu. Data ini sudah diambil scripts/data/himawari.py.",
+   "praktik_resmi_indonesia": "BNPB memakai 'luas dipadamkan' dari laporan regu. Manggala Agni menyatakan padam setelah pendinginan, mop-up, dan pengecekan lapangan. Tidak ada aturan resmi yang menetapkan padam dari satelit.\n\nPlatform sendiri menulis 'tidak teramati tidak sama dengan padam' (index.html:5308) dan memakai 72/168 jam di harian.py:30.",
+   "kenapa_lebih_tepat": "Bara gambut sering berada di bawah ambang deteksi, dan awan atau asap menutupi api. Polar orbit juga hanya lewat sekitar 2 kali per hari per satelit. Tanpa syarat keteramatian, 'tidak terdeteksi' hanya berarti 'tidak terlihat'.\n\nAnalisis survival memberi ambang yang galatnya bisa dilaporkan (peluang 'padam palsu'), dan Himawari 10 menit menutup celah antarlintasan.\n\nContoh kegagalan aturan lama: 20 Okt lintasan siang S-NPP hilang, sehingga 'padam(20)' terlalu tinggi. Verifikasi di folder deck sendiri mengukur kepekaannya +3% sampai +14%.",
+   "data_dibutuhkan": "- Arsip FIRMS SP VIIRS S-NPP/NOAA-20 2019–2025 per negara: unduhan arsip FIRMS gratis; sejarah.py sudah memakai sumber ini.\n- Himawari-9 L2 WLF dari JAXA P-Tree: akun gratis, env PTREE_USER/PTREE_PASS sudah dipakai himawari.py. Latensi sekitar 1 jam, grid 0,02°, interval 10 menit.\n- Peta gambut yang sudah ada di repo.",
+   "upaya": "M",
+   "cara_validasi": "Uji balik tahan-satu-tahun: tetapkan ambang dengan data 2019, uji pada 2023, lalu sebaliknya.\n\nMetriknya laju padam palsu, yaitu porsi sel berlabel 'tidak terdeteksi lagi' yang terdeteksi ulang dalam 7 hari. Lulus bila ≤10% di gambut dan di mineral, dan ambang yang dipakai ditulis di slide.\n\nSebagai cek arah (bukan kalibrasi), bandingkan juga luas 'tidak terdeteksi lagi' per provinsi Okt 2026 dengan 'luas dipadamkan' BNPB.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.eorc.jaxa.jp/ptree/documents/README_H08_L2WLF.txt",
+    "https://earthdata.nasa.gov/data/tools/firms/active-fire-data-attributes-modis-viirs",
+    "https://essd.copernicus.org/articles/11/529/2019/"
+   ]
+  },
+  {
+   "metode_lama": "Deck BNPB 21 Okt 2026: label 'Fire spot' dipakai untuk jumlah kluster sel NOAA-20/21 yang bertahan (jarak ≤4 sel, ±1,5 km). Nilainya 702/747/712 untuk 8 provinsi, sedangkan deck Presiden 20 Okt mencatat 223/295/263.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti namanya menjadi 'kluster api satelit yang bertahan ≥1 hari (NOAA-20/21)'. Pakai istilah 'Fire Spot' hanya untuk angka BNPB dan letakkan berdampingan bila ada.\n\nTambahkan rentang kepekaan: hitung ulang kluster dengan jarak 2, 4, dan 8 sel. Kalau rentangnya lebih dari 2 kali, angka itu jangan dipaparkan.",
+   "praktik_resmi_indonesia": "Dalam data BNPB, 'Fire Spot' adalah besaran tersendiri yang berbeda dari hotspot: lokasi api yang terverifikasi atau ditangani (bnpb.json 12 Okt: Kalteng FS 49, Total Hotspot 3.908). SiPongi juga menegaskan bahwa titik panas bukan jumlah kejadian kebakaran.",
+   "kenapa_lebih_tepat": "Istilah yang sama dengan definisi berbeda, di bawah merek BNPB, akan dibaca Presiden sebagai FS versi BNPB yang naik 3 kali lipat dalam sehari.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "(1) Grep angka.json dan pptx: istilah 'Fire spot' hanya boleh muncul pada sel yang bersumber BNPB.\n(2) Uji kepekaan jarak kluster 2/4/8 sel pada 15–21 Okt. Laporkan rasio maksimum/minimum; lulus tampil bila ≤2.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://gis.bnpb.go.id/",
+    "https://databoks.katadata.co.id/demografi/statistik/639192d3fc69085/15273-hotspot-terdeteksi-di-indonesia-dalam-24-jam-terakhir-rabu-30-september-2026"
+   ]
+  },
+  {
+   "metode_lama": "Perkiraan luas terbakar tahun berjalan nasional: titik S-NPP sedang/tinggi × 4,3 ha. Hasilnya 2.151.640 ha (1.611.228–2.296.751) s.d. 17 Okt (laporan.py:238-261, laporan.js:302-308, paparan_slide.js:172-177). Masuk deck Presiden 20 Okt sebagai '±2,2 juta ha'.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(a) Sajikan tiga angka berdampingan, masing-masing dengan definisinya:\n- angka resmi SiPongi Kemenhut: 202.011 ha, s.d. Juli;\n- angka pemantau independen dari citra Sentinel-2, Nusantara Atlas: 1.916.588 ha untuk Jan–Sep 2026. Metodenya Gaveau, Descals & Salim 2026 di PLOS ONE (Random Forest pada komposit S2 bulanan 20 m, wajib ada titik FIRMS ≤100 m). Ini batas bawah: akurasi pengguna 98,7%, akurasi produsen 65,3%, dan bekas bakar <6,25 ha dibuang;\n- perkiraan platform dengan selang galat LOO, sekitar 1,5–2,7 juta ha, dibulatkan ke 0,1 juta.\n\n(b) Tingkatkan metode platform mengikuti GFED5NRT (Chen dkk. 2026, ESSD):\n- faktor luas efektif per titik (EFA) dipisah per kelas lahan (gambut, hutan, deforestasi, semak/savana, pertanian), memakai lapisan gambut/kawasan/konsesi yang sudah ada di repo;\n- koreksi sudut pindai VIIRS;\n- faktor terpisah per sensor (VNP, VJ1, gabungan). Dengan begitu substitusi NOAA-20 × 0,978 tidak diperlukan.\nFaktornya dikalibrasi ke peta Sentinel-2 Zenodo 2019–2024, bukan hanya ke SiPongi.",
+   "praktik_resmi_indonesia": "Angka luas resmi adalah SiPongi Kemenhut (indikasi luas per provinsi, diperbarui berkala; untuk 2026 baru s.d. Juli). Angka BNPB 129.899 ha adalah luas dipadamkan, jadi definisinya berbeda.\n\nSebelum paparan, minta Direktorat PKHL Kemenhut merilis pembaruan Agu–Okt. Itulah angka yang semestinya didengar Presiden.\n\nPublik juga sudah mengutip angka Nusantara Atlas 1,9 juta ha (AFP/Reuters, 19 Okt 2026), sehingga Presiden perlu tahu posisi angka resmi terhadapnya.",
+   "kenapa_lebih_tepat": "Peta citra 20 m mengukur bekas bakar secara langsung dan independen dari SiPongi.\n\nCek cepat dari repo, rasio perkiraan platform terhadap Sentinel-2 (Gaveau 2026):\n- 2019: 0,64\n- 2020: 0,52\n- 2023: 0,55\n- 2024: 0,73\n- Jan–Sep 2026: 0,83 (1.596.104 vs 1.916.588 ha)\nJadi perkiraan 2026 berada di atas pola historisnya. Kalau dikonversi ke skala SiPongi dengan rasio SiPongi/S2 historis (0,48–0,77), Jan–Sep 2026 setara kira-kira 0,9–1,5 juta ha. Artinya angka tengah 2,15 juta ha berada di batas atas.\n\nYang kokoh: orde 1–2 juta ha dan 'tertinggi sejak 2019'. Angka tengahnya tidak kokoh.\n\nEFA per kelas lahan mengikuti cara GFED5 menangani gambut dan deforestasi, yang biasnya berbeda antar provinsi (Kalsel 0,32–0,52, Kalbar 1,17–3,42).",
+   "data_dibutuhkan": "- Zenodo 19104282 'Burned Area Maps for Indonesia (2019–2024)' v2, CC BY 4.0: GeoTIFF 20 m tahunan (104 MB total) dan NRT_Monthly_BA_2019-2024.xlsx (10,6 kB). Berkas xlsx bisa dibaca stdlib dengan zipfile + xml.etree.\n- Angka bulanan Nusantara Atlas: dasbor tanpa API terdokumentasi, jadi disalin manual dengan tanggal akses.\n- Tabel GFED51VFA_regtp.csv (EFA) dan VIIRSsplwgt_2019-2021.csv (bobot sudut pindai) dari GitHub ychenzgithub/GFED5NRT (lisensi MIT).\n- Kolom scan/track FIRMS yang sudah ada.",
+   "upaya": "M",
+   "cara_validasi": "(1) LOO tahunan 2019–2024 terhadap peta Sentinel-2 Zenodo. Metriknya galat relatif median dan P10–P90. Lulus bila |median| ≤15% dan P90 ≤35%.\n(2) Uji bulanan Agu–Okt, massa perkiraan yang belum pernah diuji (91%), terhadap NRT_Monthly xlsx. Lulus bila galat median bulanan ≤25%.\n(3) Untuk 2026, laporkan rasio perkiraan/Nusantara Atlas Jan–Sep di catatan slide.\nSampai lulus, angka utama di Paparan adalah angka resmi ditambah angka citra independen. Perkiraan platform tampil hanya sebagai rentang.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0331831",
+    "https://zenodo.org/records/19104282",
+    "https://nusantara-atlas.org/monthly-burn-scars-and-fire-season-progress-now-live-on-nusantara-atlas/",
+    "https://www.thestar.com.my/aseanplus/aseanplus-news/2026/10/19/039utter-destruction-039-indonesia-fires-have-burned-nearly-two-million-hectares-monitor",
+    "https://essd.copernicus.org/articles/18/7535/2026/",
+    "https://github.com/ychenzgithub/GFED5NRT"
+   ]
+  },
+  {
+   "metode_lama": "Perkiraan luas terbakar harian dan per provinsi/kab, yaitu faktor 4,3 ha dikalikan titik S-NPP per hari dan per wilayah (laporan.py:91-104; laporan.js:302-322, 345-352; paparan_slide.js:310, 321-322). Contoh: Kalteng 12 Okt 20.085 ha, sedangkan BNPB 64,8 ha.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus hektare harian dan per kab/kota. Gantikan dengan luas bulanan per provinsi dari citra, dalam urutan pilihan:\n(a) angka Sentinel-2 per provinsi dari Nusantara Atlas, disalin bertanggal;\n(b) dNBR Sentinel-2 swakelola untuk kompleks prioritas. Pembaca COG stdlib yang dibutuhkan sudah ada (scripts/data/citra.py), begitu juga ambang dNBR > 0,27 di scripts/data/sawit_s2.py. Tambahkan dua aturan Gaveau 2026: syarat titik FIRMS ≤100 m dan buang petak <6,25 ha;\n(c) sementara itu, emisi GFED5NRT per provinsi Indonesia (CSV ton karbon) sebagai indikator intensitas relatif.\nUntuk harian cukup tampilkan piksel dan FRP.",
+   "praktik_resmi_indonesia": "BNPB: 'Lahan Terbakar Harian' dan 'luas dipadamkan' dari laporan lapangan. SiPongi: indikasi luas per provinsi secara berkala. Untuk 2015, Kemenhut memakai interpretasi visual Landsat 8 (2,6 juta ha). Lohberger dkk. 2018 dengan Sentinel-1 SAR mendapat 4,6 juta ha, yang menunjukkan angka resmi cenderung rendah.",
+   "kenapa_lebih_tepat": "Faktor nasional tahunan tidak bisa diturunkan ke skala provinsi. Rasio perkiraan/SiPongi antarprovinsi berkisar 0,32–2,24, dan biasnya tetap per provinsi.\n\ndNBR mengukur bekas bakar secara langsung pada 20 m dengan revisit 5 hari. Komposit bulanan mengatasi awan. Syarat titik FIRMS menekan galat komisi menjadi 1,3% (Gaveau 2026).",
+   "data_dibutuhkan": "- Sentinel-2 L2A COG di AWS Open Data lewat Earth Search STAC: tanpa login, atribusi Copernicus, sudah dipakai citra.py.\n- Zenodo 19104282 untuk kalibrasi.\n- GFED CSV: https://www.globalfiredata.org/current/csv/subnational/indonesia_provinces/ (direktori terakhir diubah 13 Sep 2026 saat dicek; frekuensi pembaruannya perlu dikonfirmasi).\n- Untuk peta bekas bakar nasional mandiri dibutuhkan komputasi berat (Google Earth Engine). Di luar GitHub Actions, jadi pakai Nusantara Atlas.",
+   "upaya": "M",
+   "cara_validasi": "Ambil 50 kompleks acak per tahun di 2019 dan 2023. Bandingkan luas dNBR swakelola dengan peta Sentinel-2 Zenodo.\nLulus bila galat luas median ≤20% dan IoU median ≥0,6.\nPer provinsi, laporkan rasio terhadap SiPongi tanpa memaksanya sama.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0331831",
+    "https://zenodo.org/records/19104282",
+    "https://epub.ub.uni-muenchen.de/68097",
+    "https://essd.copernicus.org/articles/18/7535/2026/",
+    "https://www.globalfiredata.org/current.html"
+   ]
+  },
+  {
+   "metode_lama": "Grafik luas per tahun dan klaim peringkat. Paparan menggambar 2015–2017 dari titik × 4,3 (2015 = 3,49 juta ha) dan 2018+ dari perkiraan (paparan_slide.js:243-269). riwayat_nasional.js:8, 32 membuang angka resmi 2026 lalu menulis 'tertinggi ke-2 sejak 2015'.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "- Tahun 2015–2025 selalu memakai angka resmi Kemenhut/SiPongi (2015 = 2,61 juta ha). Sebagai pembanding independen, tambahkan garis Sentinel-2 (Gaveau 2026) untuk 2019–2024 dan MapBiomas Indonesia Fire Collection 2 (Landsat).\n- Untuk 2026, gambar dua batang: angka resmi s.d. tanggal, dan perkiraan dengan selang.\n- Ganti klaim menjadi 'jumlah titik panas S-NPP tertinggi ke-2 sejak 2015'. Klaim ini kokoh: 477.066 titik s.d. 12 Okt lebih banyak daripada total 2019 (394.642) dan lebih sedikit daripada 2015 (811.961).\n- Klaim peringkat luas hanya boleh muncul bila batas bawah selang melewati tahun pembanding.",
+   "praktik_resmi_indonesia": "Kemenhut menerbitkan rekap luas tahunan resmi. MapBiomas Indonesia (konsorsium LSM) menerbitkan seri Landsat 2000–2024 per provinsi.",
+   "kenapa_lebih_tepat": "Tahun-tahun lalu sudah punya angka resmi yang dikenal publik, jadi tidak ada alasan menggambarnya dari estimasi. Klaim peringkat titik bertumpu pada hitungan langsung sensor yang sama, bukan konversi.",
+   "data_dibutuhkan": "luas_resmi.json (sudah ada); https://fire.mapbiomas.id/ (unduhan per provinsi); Zenodo 19104282.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit di laporan.py atau paparan:\n(1) setiap batang tahun sebelum tahun berjalan harus sama dengan nilai luas_resmi.json;\n(2) fungsi peringkat hanya mengeluarkan teks peringkat luas bila P10 selang lebih besar dari nilai resmi tahun pembanding.\nUji ini harus gagal pada data sekarang untuk klaim 'ke-2' luas.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://fire.mapbiomas.id/",
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0331831"
+   ]
+  },
+  {
+   "metode_lama": "Hitungan titik panas harian: MODIS + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan, per hari kalender WIB (harian.py:24-26; laporan.py:65-88; laporan.js:272-289; paparan_slide.js:306-323). Tidak ada pemeriksaan kelengkapan lintasan.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Definisinya dipertahankan, karena memang setara SiPongi. Data Databoks 30 Sep 2026 dari SiPongi: Terra/Aqua, SNPP, dan NOAA, semua tingkat kepercayaan (982 tinggi + 13.159 sedang + 1.132 rendah = 15.273).\n\nTambahkan:\n(a) Pemeriksaan kelengkapan lintasan per sensor per provinsi, siang dan malam. Hari ditandai 'data tidak lengkap' bila deteksi siang satu satelit tidak ada padahal satelit lain ada, atau bila rasio NOAA-20/S-NPP di luar P5–P95 historis provinsi itu. Bila perlu lengkapi dengan Himawari-9 WLF.\n(b) Kolom FRP harian.\n(c) Rincian rendah/sedang/tinggi seperti SiPongi dan BNPB GIS.\n(d) Jendela waktu ditulis jelas: hari WIB dibanding '24 jam terakhir' SiPongi.\n(e) Konfirmasi ke Kemenhut apakah 'NOAA' mencakup NOAA-21; bila ya, tambahkan NOAA-21.",
+   "praktik_resmi_indonesia": "- SiPongi Kemenhut: Terra/Aqua, SNPP, NOAA; kelas kepercayaan rendah 0–29, sedang 30–79, tinggi 80–100; jendela 24 jam terakhir.\n- BNPB GIS: kolom 'Hotspot Rendah/Sedang/Tinggi'.\n- BMKG: VIIRS dan MODIS (NOAA20, S-NPP, Terra, Aqua).\n- BRIN hotspot: membuang lokasi tambang.",
+   "kenapa_lebih_tepat": "Angka yang dibaca Presiden jadi cocok dengan angka Kemenhut/BNPB atau bedanya bisa dijelaskan. Tanda kelengkapan lintasan mencegah kasus 20 Okt, ketika lintasan siang S-NPP hilang (hotspot 8 provinsi kurang 36–62%) tetapi deck tetap mencetak Kalteng '▼44%'.",
+   "data_dibutuhkan": "FIRMS NRT (sudah ada; kolom satellite, daynight, acq_time). Himawari WLF (sudah ada). Baris BNPB GIS harian, yang perlu mulai diarsip tiap hari karena di git hanya ada 4 commit pada 12–13 Okt.",
+   "upaya": "S",
+   "cara_validasi": "(1) Detektor celah diuji pada celah yang sudah diketahui: 11 Mar–2 Jun 2026 dan lintasan siang S-NPP 20 Okt 2026. Target menandai ≥95% hari bercelah, dengan alarm palsu ≤5% pada Sep–Okt 2019 dan 2023 (arsip SP yang lengkap).\n(2) Rekonsiliasi 30 hari dengan BNPB GIS per provinsi setelah jendela waktunya disamakan. Laporkan rasio median dan IQR; target rasio median 0,9–1,1. Bila tidak tercapai, tulis sebabnya di laporan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://databoks.katadata.co.id/demografi/statistik/639192d3fc69085/15273-hotspot-terdeteksi-di-indonesia-dalam-24-jam-terakhir-rabu-30-september-2026",
+    "https://www.bmkg.go.id/cuaca/karhutla",
+    "https://hotspot.brin.go.id/guide/Panduan%20Website%20LAPAN%20Fire%20Hotspot%20v2.0%20(Juli%202020).pdf",
+    "https://earthdata.nasa.gov/data/tools/firms/active-fire-data-attributes-modis-viirs",
+    "https://www.eorc.jaxa.jp/ptree/documents/README_H08_L2WLF.txt"
+   ]
+  },
+  {
+   "metode_lama": "Perubahan harian (%) dan 'kenaikan terbesar' (laporan.js:275-276, 367-382; inti/laporan.js:20-25), ditambah kartuTren 3 hari vs 3 hari sebelumnya (laporan.js:575-590), keduanya dengan warna merah/hijau.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Kalimat utama memakai jumlah 7 hari bergulir dibanding 7 hari sebelumnya, atau 3v3 yang sudah ada, dan hanya dihitung dari hari yang lintasannya lengkap.\n- Warna hanya diberikan bila perubahan melampaui derau: |ln(a/b)| > 2·φ·√(1/a + 1/b), dengan φ (overdispersi) diambil dari variasi harian historis provinsi, dan jumlah minimal 50 titik di kedua jendela.\n- Tampilkan FRP 7 hari sebagai pembanding fisik.\n- Hari bercelah tidak diberi warna 'membaik'.",
+   "praktik_resmi_indonesia": "SiPongi dan Databoks menulis 'naik X titik dari periode sebelumnya' tanpa penilaian. BMKG dan ASMC menyampaikan tren mingguan atau dasarian.",
+   "kenapa_lebih_tepat": "Lonjakan atau penurunan 50–150% per hari sering hanya artefak lintasan; contohnya 13 Okt 9.029 lalu 14 Okt 22.049. Uji derau sederhana mencegah warna yang salah arah tanpa model baru.",
+   "data_dibutuhkan": "Tidak ada data baru. Dipakai bersama penanda kelengkapan lintasan dari usulan hitungan titik.",
+   "upaya": "S",
+   "cara_validasi": "Pada arsip SP Jul–Okt 2019 dan 2023, hitung laju 'pembalikan warna' (naik/turun yang berbalik dalam 2 hari). Target metrik baru <20% dan lebih rendah daripada metrik harian lama. Uji khusus: 20 Okt 2026 tidak boleh diberi warna.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.cawcr.gov.au/projects/verification/",
+    "https://databoks.katadata.co.id/demografi/statistik/639192d3fc69085/15273-hotspot-terdeteksi-di-indonesia-dalam-24-jam-terakhir-rabu-30-september-2026"
+   ]
+  },
+  {
+   "metode_lama": "Kebutuhan operasi (regu, personel, pompa, selang, titik bor, heli) dan KPI 'Selisih' (operasi.py:24-201, 312-323; operasi.js:92-145). Koefisiennya asumsi dan laju garis NWCG dari AS. Skenario tengah T=3: 212.339 personel, padahal personel resmi 60.177.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan dari Paparan sekarang. Ganti dengan indikator relatif yang terukur: piksel api teramati 24 jam (dan FRP) per 100 personel tersedia per provinsi, memakai personel resmi BNPB.\n\nLalu kalibrasi model beban kerja dari baris harian BNPB:\n- regresi 'luas lahan ditangani darat' terhadap 'Total Personel' (laju ha per personel-hari);\n- 'luas lahan ditangani udara' terhadap 'WB sortie' dan 'Volume WB';\n- 'luas lahan yang akan dipadamkan' terhadap piksel teramati.\nMulai sekarang arsip bnpb.json harian per tanggal.",
+   "praktik_resmi_indonesia": "BNPB dan Satgas merekap personel per unsur (TNI, Polri, BPBD, Manggala Agni, MPA, perusahaan), armada, sorti, dan luas ditangani, semuanya sudah ada di kolom bnpb.json. Manggala Agni bekerja dalam satuan regu.",
+   "kenapa_lebih_tepat": "Koefisien jadi berasal dari kinerja operasi Indonesia sendiri, bukan dari tabel bahan bakar AS.\n\nRekonsiliasi milik repo sendiri (0,06 ha per piksel, dibanding asumsi 1–4 ha) dan rentang optimis–pesimis 14 kali menunjukkan model sekarang tidak punya daya pembeda.",
+   "data_dibutuhkan": "bnpb.json harian (ArcGIS BNPB, publik) yang diarsip per tanggal minimal 30 hari × 8 provinsi, serta operasi_resmi.json.",
+   "upaya": "M",
+   "cara_validasi": "Bagi data: 2/3 hari untuk latihan, 1/3 untuk uji.\nLulus bila MAPE prediksi 'luas ditangani' dari personel + piksel ≤40%, dan model mengalahkan baseline persistensi (besok = hari ini).\nSebelum lulus, 'selisih personel' tidak boleh tampil.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://gis.bnpb.go.id/",
+    "https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "'Hari layak OMC': rerata peluang hujan ≥5 mm (ansambel ECMWF) antara 15–60% per provinsi (operasi.py:102-105, 286-297; KPI operasi.js:115).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Tampilkan rencana dan pelaksanaan OMC resmi: dari BMKG, dan dari kolom BNPB 'OMC unit', 'OMC sortie', 'total bahan semai (kg)'.\n\nKalau platform tetap ingin indikator sendiri, pakai variabel awan konvektif (CAPE, kelembapan relatif 850–500 hPa, tutupan awan menengah dari ECMWF lewat Open-Meteo) dengan label 'indikasi potensi awan', bukan 'layak OMC'.",
+   "praktik_resmi_indonesia": "OMC dilaksanakan BMKG bersama BNPB dan Kemenhut, berdasarkan pemantauan massa awan, angin, kelembapan, dan radar secara real time. Contoh: Kalbar 22 Agu–4 Sep 2026, 27 sorti, 24,6 ton NaCl, lalu diperpanjang hingga 14 Sep.",
+   "kenapa_lebih_tepat": "Keputusan OMC adalah wewenang BMKG, dan peluang hujan bukan ukuran awan yang bisa disemai. Rekomendasi yang berbeda dari BMKG akan membingungkan di depan Presiden.",
+   "data_dibutuhkan": "Siaran pers dan koordinasi BMKG; arsip bnpb.json harian (kolom OMC). Variabel Open-Meteo ECMWF bila indikator dibuat (gratis, tanpa kunci).",
+   "upaya": "S",
+   "cara_validasi": "Untuk Agu–Okt 2026, bandingkan hari 'layak OMC' platform dengan hari OMC yang terlaksana (OMC sortie > 0 per provinsi). Hitung POD, FAR, dan CSI.\nBila CSI <0,3, hapus indikator. Bila lulus, tetap beri label 'indikasi'.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/siaran-pers/optimalkan-potensi-hujan-untuk-redakan-karhutla-bmkg-omc-di-kalbar-buahkan-hasil",
+    "https://www.bmkg.go.id/siaran-pers/cegah-kebakaran-hutan-dan-lahan-operasi-modifikasi-cuaca-kembali-dilaksanakan-di-riau"
+   ]
+  },
+  {
+   "metode_lama": "Luas musim di tab Dampak (MODIS × rasio GWIS + regresi log-log SiPongi, dampak.py:158-253) dan proyeksi keputusan.py (luas_2026, luas_el_nino, luas_normal). Bug: kalibrasi() memakai semua tahun termasuk 2026 parsial (keputusan.py:75), sehingga kemiringan b turun dari 0,87 ke 0,60. Selain itu hari_bln dikunci 30 (keputusan.py:117).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "- Seluruh situs memakai satu angka luas, yaitu angka usulan luas tahun berjalan. Dampak dan Keputusan membacanya dari satu sumber.\n- Perbaiki bug: kalibrasi() memfilter tahun < tahun berjalan, termasuk tahun yang punya 'sd' parsial di luas_resmi.json. hari_bln diganti calendar.monthrange (stdlib).\n- Proyeksi akhir tahun = kumulatif s.d. hari ini + sisa musim. Selang prediksinya diambil dari galat LOO proyeksi yang dibuat pada tanggal yang sama di tahun-tahun lalu.",
+   "praktik_resmi_indonesia": "Tidak ada proyeksi luas resmi. Angka resmi tetap SiPongi.",
+   "kenapa_lebih_tepat": "Satu fakta luas tidak boleh punya tiga angka berbeda untuk provinsi yang sama (Kalteng 413.434 / 598.152 / 336.947 ha). Bug ini kemungkinan sudah aktif di produksi sejak commit 10bdfc69.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "(1) Uji regresi: kemiringan b dengan dan tanpa baris 2026 harus sama (selisih ≤0,02). Uji ini harus gagal pada kode sekarang.\n(2) Uji balik proyeksi akhir tahun dari posisi 17 Okt untuk 2015, 2019, dan 2023: galat ≤30% terhadap angka resmi.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://docs.python.org/3/library/calendar.html#calendar.monthrange"
+   ]
+  },
+  {
+   "metode_lama": "'Luas terdampak' (sel 375 m × 14,06 ha, laporan.py:10-13, 84-87, 103; laporan.js:300-307) dan 'luas kejadian api' (poligon garis luar kompleks 7 hari, garis_api.py; laporan.js:318-352; paparan_slide.js:281). Contoh Kalteng: 336.947 ha dalam 7 hari.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus satuan hektare dari keduanya di laporan dan Paparan.\n- Di kalimat utama cukup 'jumlah piksel api aktif 24 jam'.\n- Di lampiran teknis: 'jejak deteksi satelit 7 hari (km², bukan luas terbakar)'.\n- Bila luas per kompleks diperlukan untuk menentukan prioritas, ukur bekas bakarnya dengan dNBR Sentinel-2 per kompleks memakai citra.py dan sawit_s2.py (lihat usulan luas per provinsi).",
+   "praktik_resmi_indonesia": "Di BNPB, 'terdampak' berarti wilayah atau penduduk yang terkena dampak (kolom 'Kabkot Terdampak'), bukan jejak piksel. Tidak ada lembaga yang melaporkan luas dari jejak deteksi.",
+   "kenapa_lebih_tepat": "Dua angka itu tidak mengukur apa pun yang bisa dirujuk, tetapi tampil di samping angka resmi. 57% kompleks hanya berisi 1–2 deteksi.",
+   "data_dibutuhkan": "Tidak ada untuk langkah penghapusan. Sentinel-2 L2A (Earth Search) untuk dNBR.",
+   "upaya": "S",
+   "cara_validasi": "Grep atau uji unit: field 'dampak' dan 'luas_kompleks' tidak dirender dengan satuan 'ha' di laporan.js atau paparan_slide.js.\nUntuk dNBR: pada 2019/2023, rasio jejak deteksi terhadap luas bekas bakar Zenodo per kompleks dilaporkan, untuk mendokumentasikan alasan penghapusan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://zenodo.org/records/19104282",
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0331831"
+   ]
+  },
+  {
+   "metode_lama": "Atribusi asap karhutla ke 30 kota Indonesia dan 12 kota negara tetangga. Skornya jumlah titik dalam ≤300/900 km × (1−d/R) × bobot arah angin, dianggap 'asap karhutla' bila ≥25 (dampak.py:128-155, 306-311).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Lintas batas: jangan membuat klaim sendiri. Kutip peta kabut dan Alert Level ASMC (Alert Level 3 aktif sejak 27 Agu 2026 menurut media) serta produk 'Citra Sebaran Asap' BMKG (RGB Himawari + angin 1000 mb).\n\nKota dalam negeri: atribusi tiga syarat:\n(a) kabut terlihat di citra BMKG/Himawari;\n(b) lintasan balik 24–48 jam dari kota melewati kompleks aktif, dengan HYSPLIT NOAA READY atau aproksimasi lintasan balik dari angin Open-Meteo multi-level (bisa stdlib);\n(c) PM2,5 di atas baseline kontrafaktual kota itu.\nUntuk kontribusi per provinsi sumber, rujuk pendekatan adjoint Koplitz dkk. 2016.",
+   "praktik_resmi_indonesia": "BMKG: 'Citra Sebaran Asap' dan hotspot di bmkg.go.id/cuaca/karhutla. ASMC: rujukan lintas batas di bawah AATHP. KLH: ISPU per jam dari AQMS (Permen LHK P.14/2020).",
+   "kenapa_lebih_tepat": "Penyebab asap ditetapkan dengan pengamatan kabut dan fisika transport, bukan dengan jarak dan arah saja.\n\nMetode lama gagal nyata: Pekanbaru dan Dumai diberi skor 0 pada hari BNPB menulis 'Udara BERBAHAYA (BDR/PJJ)', sementara Singapura diberi true dari satu sel 1°. Klaim lintas batas yang salah juga sensitif secara diplomatik.",
+   "data_dibutuhkan": "- Peta harian ASMC (asmc.asean.org): ada di web; pengambilan otomatis perlu dicek ketentuannya.\n- PNG BMKG https://inderaja.bmkg.go.id/Trajektori/Asap.png (wajib atribusi BMKG).\n- Angin multi-level Open-Meteo (gratis).\n- HYSPLIT READY: web, ada batas penggunaan; untuk pemakaian batch perlu versi desktop.",
+   "upaya": "M",
+   "cara_validasi": "Untuk Sep 2019 dan Okt 2026, bandingkan label 'asap karhutla' per kota dengan hari ISPU 'Tidak Sehat' atau lebih buruk yang disertai keterangan asap dari BNPB/BMKG. Target POD ≥0,8 dan FAR ≤0,3.\nUntuk negara tetangga: tidak boleh ada klaim yang tidak tercantum di laporan ASMC hari itu.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://asmc.asean.org/home/",
+    "https://www.bmkg.go.id/cuaca/karhutla",
+    "https://www.ready.noaa.gov/HYSPLIT.php",
+    "https://doi.org/10.1088/1748-9326/11/9/094023",
+    "https://thestar.com.my/news/nation/2026/08/30/haze-1211-hotspots-recorded-across-southern-asean-region-13-in-malaysia",
+    "https://peraturan.go.id/files/bn774-2020.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Tabel tiga sumber luas, luas_banding: perkiraan vs GWIS MCD64A1 vs SiPongi (laporan.py:283-344).",
+   "vonis_akhir": "layak",
+   "alternatif": "Jadikan slide rekonsiliasi utama Paparan dan tambahkan:\n- Sentinel-2 Gaveau/Nusantara Atlas: tahunan 2019–2024 dari Zenodo, 2026 Jan–Sep 1.916.588 ha;\n- GFED5/GFED5NRT, yang mengoreksi MCD64A1 untuk api kecil dan gambut;\n- MapBiomas Fire (Landsat);\n- baris 'BNPB luas dipadamkan' (129.899 ha) beserta definisinya.\nSetiap kolom diberi resolusi, metode, dan tanggal 'sd'.",
+   "praktik_resmi_indonesia": "SiPongi adalah angka resmi. Kolom lain diberi label pembanding ilmiah atau independen.",
+   "kenapa_lebih_tepat": "Rentang antarproduk memperlihatkan ketidakpastian secara jujur. MCD64A1 500 m meremehkan Indonesia: tahun 2020 0,18 juta ha vs Sentinel-2 0,62 juta ha, dan akurasi produsennya 53% (Gaveau 2026). Dengan baris dipadamkan, angka BNPB tidak lagi dibaca sebagai luas terbakar.",
+   "data_dibutuhkan": "Zenodo 19104282 (CC BY 4.0), fire.mapbiomas.id, dan tabel ringkasan GFED (globalfiredata.org). Unduhan grid GFED lewat SFTP perlu kredensial, dan NetCDF4 tidak terbaca stdlib, jadi pakai tabel/CSV-nya.",
+   "upaya": "S",
+   "cara_validasi": "Uji struktur yang sudah ada (None ≠ 0) diperluas ke kolom baru. Tambahkan asersi: untuk tahun yang lengkap, Sentinel-2 ≥ MCD64A1 di ≥4 dari 6 tahun. Bila gagal, periksa pemetaan provinsi.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://zenodo.org/records/19104282",
+    "https://fire.mapbiomas.id/",
+    "https://essd.copernicus.org/articles/15/5227/2023/",
+    "https://gwis.jrc.ec.europa.eu/about-gwis/technical-background/statistics"
+   ]
+  },
+  {
+   "metode_lama": "Penyisipan data resmi: operasi_resmi.json (rekap BNPB/rapat 12 Okt, diketik tangan), luas SiPongi, baris BNPB GIS, dan factsheet Bakom (laporan.py:374-386; paparan_slide.js:279-342; operasi.js:109-165).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Tulis definisi untuk setiap angka resmi di layar. 'Lahan Terbakar Indikatif' BNPB ternyata berbeda arti antarprovinsi: untuk Kalbar, Sumsel, dan Kalsel sama dengan SiPongi s.d. Juli; untuk Kalteng dan Riau sama dengan luas dipadamkan.\n- Arsipkan bnpb.json per tanggal.\n- Ambil rekap luas SiPongi secara otomatis dengan tanggal 'per'.\n- Tambahkan asersi: jumlah provinsi = total.\n- Verifikasi ke dokumen BNPB bertanda tangan sebelum paparan.",
+   "praktik_resmi_indonesia": "Sumbernya tepat: BNPB GIS, SiPongi Kemenhut, Bakom. Yang kurang adalah metadata definisi dan tanggal.",
+   "kenapa_lebih_tepat": "Dua angka resmi yang berbeda tanpa catatan merusak kredibilitas kedua lembaga di depan Presiden. Arsip harian juga menjadi bahan kalibrasi operasi dan OMC.",
+   "data_dibutuhkan": "API publik BNPB GIS dan SiPongi (sudah dipakai).",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: setiap angka resmi di paparan_slide.js wajib punya field 'definisi' dan 'per' yang tidak lebih dari 3 hari (aturan basi 3 hari sudah ada di :325-326). Asersi jumlah per provinsi = total nasional ±0,5%.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://gis.bnpb.go.id/",
+    "https://databoks.katadata.co.id/demografi/statistik/639192d3fc69085/15273-hotspot-terdeteksi-di-indonesia-dalam-24-jam-terakhir-rabu-30-september-2026"
+   ]
+  },
+  {
+   "metode_lama": "Emisi CO₂e musim berjalan: luas heuristik × porsi gambut × konsumsi bahan bakar × EF IPCC, dibandingkan dengan 'setara N hari emisi nasional' (dampak.py:44-53, 437-443; dampak.js:367-372: '±706 juta ton, setara 143 hari').",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti dengan emisi GFED5NRT per provinsi Indonesia (CSV ton karbon, dibaca stdlib) dan/atau CAMS GFAS (0,1°, harian, berbasis asimilasi FRP). Tampilkan rentang antarproduk.\n\nHapus ukuran 'setara N hari'. Pembanding nasional 1.800 Mt sudah memuat emisi kebakaran gambut, jadi ukurannya berputar pada dirinya sendiri. Kalau perlu pembanding, pakai inventori GRK nasional terbaru (BUR/NDC).",
+   "praktik_resmi_indonesia": "KLH menghitung emisi kebakaran gambut dalam inventori GRK nasional (sistem SIGN-SMART, metode IPCC 2013 Wetlands Supplement; perlu konfirmasi ke Direktorat IGRK). Tidak ada angka resmi untuk musim berjalan.",
+   "kenapa_lebih_tepat": "GFED dan GFAS adalah produk operasional yang dipakai luas. Keduanya berbasis FRP atau deteksi yang sudah memisahkan gambut, sehingga tidak mewarisi luas heuristik. Rentang lama 124–2.678 Mt (21 kali) tidak bermakna sebagai angka tengah.",
+   "data_dibutuhkan": "- GFED: https://www.globalfiredata.org/current/csv/subnational/indonesia_provinces/ (tanpa login; tanggal pembaruan perlu dicek).\n- CAMS GFAS di ADS: akun gratis dan API key sebagai secret GitHub. Formatnya GRIB/NetCDF, perlu pustaka di luar stdlib, jadi mulai dengan CSV GFED.",
+   "upaya": "S",
+   "cara_validasi": "(1) Jumlah CSV provinsi harus sama dengan CSV nasional ±5%.\n(2) Untuk Sep–Okt 2015, 2019, dan 2023, bandingkan GFED dengan GFAS (dan dengan model lama). Rasio antarproduk dicetak di catatan layar. Model lama dihapus apa pun hasilnya.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.globalfiredata.org/current.html",
+    "https://essd.copernicus.org/articles/18/7535/2026/",
+    "https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas",
+    "https://atmosphere.copernicus.eu/global-fire-emissions"
+   ]
+  },
+  {
+   "metode_lama": "Kerugian ekonomi dengan transfer nilai Bank Dunia 2015/2019 per ha × luas musim heuristik. Hasilnya Rp 203,7 T (47,3–442,4 T) (dampak.py:21-40, 102-110, 445-465).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan angka rupiah dari layar dan deck Presiden.\n\nKalau diminta, sampaikan orde besarannya saja: transfer nilai dengan luas dari citra Sentinel-2 (bukan heuristik), rentang ditampilkan, dan rujukan yang dipakai adalah kajian kerusakan dan kerugian resmi.",
+   "praktik_resmi_indonesia": "BNPB: Pengkajian Kebutuhan Pascabencana (kerusakan, kerugian, kebutuhan per sektor) menurut Perka BNPB No. 15/2011; status berlakunya perlu dicek di JDIH BNPB. Kajian Bank Dunia 2016 dan 2019 adalah rujukan yang dikenal publik.",
+   "kenapa_lebih_tepat": "Transfer nilai sangat peka terhadap komposisi lahan dan luas. Masukan luas yang sekarang tidak terkalibrasi untuk tahun berjalan, sedangkan PDNA memakai data sektoral daerah.",
+   "data_dibutuhkan": "Luas Sentinel-2 (Zenodo / Nusantara Atlas) dan konstanta Bank Dunia yang sudah ada di dampak.py.",
+   "upaya": "S",
+   "cara_validasi": "Uji transfer tidak melingkar: terapkan nilai per ha 2015 ke luas Sentinel-2 2019 (2,64 juta ha), lalu bandingkan dengan estimasi Bank Dunia 2019 yang ada di dampak.py (WB2019_USD).\nGalat yang didapat dipakai sebagai selang minimum. Bila galatnya >50%, hanya orde besaran yang boleh tampil.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://bnpb.go.id/storage/app/media/uploads/migration/pubs/27.pdf",
+    "https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0331831"
+   ]
+  },
+  {
+   "metode_lama": "Model HIA tambahan kunjungan ISPA dengan ΔPM = PM2,5 − 15 µg/m³ (dampak.py:59-65, 112-116, 297; dampak.js:155, 278), ditambah angka ISPA dan penutupan sekolah dari judul berita (dampak.py:175-198).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "(a) Angka utama diambil dari surveilans Kemenkes, yaitu ISPA/ILI mingguan per kab/kota dari SKDR (EWARS) dan Dinkes. Minta aksesnya lewat Kemenkes atau BNPB.\n(b) Model HIA dipakai hanya untuk atribusi:\n- ΔPM khusus asap = PM2,5 hari ini dikurangi baseline kontrafaktual sel atau kota yang sama (median PM2,5 pada hari tanpa kompleks api dalam ±300 km di musim yang sama, atau median Jan–Mei);\n- RR khusus asap: Aguilera dkk. 2021 menemukan 1,3–10% per 10 µg/m³ untuk rawat inap pernapasan, dibanding 0,67–1,3% untuk PM non-asap;\n- PM dari stasiun ISPU KLH bila ada, dan CAMS pada resolusi aslinya, bukan sel 1°.\n(c) Angka dari berita diberi label 'kutipan media, belum diverifikasi', di-dedup per kab dan periode, dan tidak dijumlahkan.",
+   "praktik_resmi_indonesia": "- Kemenkes: SKDR mingguan dari puskesmas dan RS (Pedoman SKDR 2023).\n- KLH: ISPU per jam dari AQMS (Permen LHK P.14/2020).\n- Dinkes provinsi melaporkan kasus ISPA saat darurat asap.",
+   "kenapa_lebih_tepat": "Data surveilans adalah hitungan nyata, bukan model. Baseline kontrafaktual juga memperbaiki kesalahan utama metode lama: polusi latar kota tidak lagi dihitung sebagai asap.",
+   "data_dibutuhkan": "- Ekspor SKDR: tidak publik, perlu permintaan resmi.\n- ISPU KLH: publik, per jam.\n- CAMS lewat Open-Meteo: sudah dipakai asap.py.\n- Arsip PM harian untuk baseline: bisa dibangun dari Open-Meteo historis.",
+   "upaya": "M",
+   "cara_validasi": "(1) Uji kontrafaktual: di kota tanpa api dalam 300 km (misalnya Jakarta, Surabaya, Okt 2026), median |ΔPM asap| harus <5 µg/m³. Metode lama gagal di uji ini.\n(2) Bila data SKDR didapat: korelasi Spearman tambahan kunjungan mingguan model dengan ISPA mingguan SKDR, Riau/Kalteng/Sumsel Sep 2019; target ≥0,5.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7935892",
+    "https://web.stanford.edu/~mburke/papers/ChildsEtAl2022_smoke.pdf",
+    "https://infeksiemerging.kemkes.go.id/document/download/QZ9",
+    "https://peraturan.go.id/files/bn774-2020.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Paparan penduduk, sekolah, faskes, dan desa dalam 1/5/10 km dari kompleks level ≥2 (lingkaran seluas kompleks; penduduk WorldPop diagregasi ke 0,25° lalu disebar rata) (dampak.py:329-401). Contoh: Sumsel 4,66 juta jiwa dalam 10 km (52% penduduk provinsi).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "- Penduduk dari raster WorldPop 100 m 'constrained' (R2025A) atau dari penduduk desa BPS (Podes) yang dipasangkan ke poligon desa.\n- Hanya kompleks yang teramati dalam 24 jam.\n- Buffer dari poligon kompleks (garis_api.py), bukan lingkaran.\n- Raster diproses sekali secara lokal menjadi grid 0,01° per provinsi, lalu di-commit sebagai JSON ringkas, sehingga CI tidak perlu membaca GeoTIFF besar.",
+   "praktik_resmi_indonesia": "InaRISK BNPB menghitung penduduk terpapar per kelas bahaya karhutla. Data penduduk desa resmi adalah BPS (Podes dan proyeksi).",
+   "kenapa_lebih_tepat": "Menyebar rata sel ±28 km membuat penduduk kota terhitung berada dekat api pedesaan. Resolusi 100 m atau per desa menghilangkan galat itu.",
+   "data_dibutuhkan": "WorldPop R2025A 100 m constrained di data.worldpop.org. Lisensi CC BY 4.0, atau ODbL bila sumbernya OSM/Microsoft footprint; cek halaman dataset IDN. Data desa BPS.",
+   "upaya": "M",
+   "cara_validasi": "(1) Sanity: penduduk dalam 10 km per provinsi tidak boleh melebihi total penduduk kab/kota yang bersinggungan.\n(2) Bandingkan hasil WorldPop 100 m dengan agregasi desa BPS pada buffer yang sama untuk 20 kompleks: selisih median ≤20%.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://hub.worldpop.org/",
+    "https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/",
+    "https://inarisk.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Kompleks api ST-DBSCAN (eps 0,6–1,5 km, 48 jam, minPts 1) dan aturan aktif 72 jam / 168 jam di gambut kering (harian.py:27-30, 125-170, 342-458). Paparan menghitung semua kompleks sebagai 'kejadian api' (paparan_slide.js:284).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pelacakan objek dipertahankan; idenya setara FEDS NASA (Chen dkk. 2022). Yang diubah:\n(a) angka Paparan = 'kejadian teramati 24 jam' dengan minimal 2 deteksi;\n(b) ambang 'aktif' 72/168 jam diganti hasil analisis survival deteksi ulang per jenis lahan (sama dengan usulan 'telah padam'), plus syarat keteramatian Himawari;\n(c) uji kepekaan eps 1–3 km;\n(d) validasi presisi terhadap peta bekas bakar Sentinel-2.",
+   "praktik_resmi_indonesia": "SiPongi: titik panas bukan jumlah kejadian. BNPB: 'Fire Spot' adalah lokasi terverifikasi. Belum ada definisi resmi 'kejadian api' satelit.",
+   "kenapa_lebih_tepat": "57% kompleks hanya berisi 1–2 deteksi, dan 63% tidak teramati dalam 24 jam. Angka teramati dengan ambang empiris tidak membengkakkan kesan '12 ribu kebakaran aktif'.",
+   "data_dibutuhkan": "Arsip FIRMS SP VIIRS; Himawari WLF (sudah ada); Zenodo 19104282.",
+   "upaya": "M",
+   "cara_validasi": "(1) Kepekaan: jumlah kompleks teramati pada eps 1/1,5/3 km. Bila berubah >30%, laporkan rentangnya.\n(2) Tahun 2019 dan 2023: porsi kompleks (≥2 deteksi) yang bersinggungan dengan bekas bakar Sentinel-2 = presisi, target ≥0,7. Porsi bekas bakar >25 ha yang punya kompleks = recall, dilaporkan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.ess.uci.edu/~uci-nasa-firetracking",
+    "https://doi.org/10.1038/s41597-022-01343-0",
+    "https://essd.copernicus.org/articles/11/529/2019/",
+    "https://zenodo.org/records/19104282"
+   ]
+  },
+  {
+   "metode_lama": "Status taktis kompleks S1–S3 × kelas FWI swahitung, dengan level 3 'Prioritas' bila px24 ≥15 dan FWI ≥7. Status provinsi diambil dari nilai maksimum (aturan.py:1-14, 57-92). Klaim POD 90–95% hanya ada di docstring.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Commit skrip uji balik 3 satelit untuk ambang yang benar-benar dipakai (px24 ≥15).\n- Tampilkan FWI resmi BMKG berdampingan dengan FWI swahitung. BMKG menerbitkan peta FFMC, DMC, DC, BUI, ISI, dan FWI pengamatan di bmkg.go.id/cuaca/karhutla.\n- Ganti nama level menjadi 'Prioritas pantau 1–3' agar tidak mirip 'Siaga Darurat'.\n- Status wilayah = porsi kompleks prioritas, bukan nilai maksimum.",
+   "praktik_resmi_indonesia": "BMKG FDRS (FWI Kanada) adalah sistem resmi bahaya cuaca kebakaran, dengan prakiraan sampai 7 hari untuk ASEAN. Status siaga atau tanggap darurat ditetapkan kepala daerah atau BNPB.",
+   "kenapa_lebih_tepat": "Klaim skill jadi bisa diulang, angka FWI bisa dicocokkan dengan produk resmi, dan tidak ada label yang bentrok dengan status hukum.",
+   "data_dibutuhkan": "Arsip FIRMS SP; PNG BMKG (https://dataweb.bmkg.go.id/cuaca/spartan/36_indonesia_fwi_obs.png, wajib atribusi). Data grid BMKG tidak tersedia publik, jadi untuk perbandingan kuantitatif perlu minta lewat BNPB.",
+   "upaya": "M",
+   "cara_validasi": "Agu–Okt 2019 dan 2023 (SP, 3 satelit), target 'kompleks yang mencapai ≥100 piksel dalam 7 hari':\n- POD ≥0,85, presisi ≥0,35 (sesuai klaim docstring), CSI dicetak.\n- Uji ulang pada NRT 2026 s.d. kini.\nBila gagal, turunkan ke label 'urutan kerja internal'.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/cuaca/karhutla",
+    "https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "Kumulatif titik panas dibandingkan 2015/2019/2023/rerata, dengan kalimat 'x× median' dan '425% dari rerata' (kumulatif.py:61-106; laporan.js:424-466; paparan_slide.js:271-286).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Angka utama: S-NPP saja (sensor tunggal yang stabil sejak 2012).\n- Pembanding: median 2012–2025, bukan rerata.\n- Tambahkan ukuran fisik: energi radiatif kumulatif (∑FRP, MW·hari) dari FIRMS, atau emisi kumulatif GFED5NRT Indonesia. GFED menerbitkan kurva 'tahun ini vs tahun-tahun sebelumnya' per provinsi Indonesia.\n- Selalu tulis 'jumlah titik, bukan luas', dan sebutkan tanggal potongnya.",
+   "praktik_resmi_indonesia": "SiPongi merekap titik panas tahunan. GFED Current menampilkan kumulatif emisi per provinsi dan pulau besar Indonesia.",
+   "kenapa_lebih_tepat": "Rerata ditarik turun oleh tahun-tahun basah, sehingga '425%' melebih-lebihkan. Median dan FRP lebih tahan terhadap perubahan sensor dan lebih dekat ke intensitas fisik api.",
+   "data_dibutuhkan": "Kolom frp FIRMS (sudah ada) dan CSV GFED (publik).",
+   "upaya": "S",
+   "cara_validasi": "Uji ketahanan: urutan 2026 terhadap 2015, 2019, dan 2023 harus sama pada tiga ukuran (titik S-NPP, ∑FRP, emisi GFED). Bila berbeda, kalimat memakai ukuran yang paling konservatif.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.globalfiredata.org/current.html",
+    "https://earthdata.nasa.gov/data/tools/firms/active-fire-data-attributes-modis-viirs"
+   ]
+  },
+  {
+   "metode_lama": "Kalender musim per dasarian (musim.py) yang dipakai sebagai peluang ke depan dari 7 tahun analog El Niño. Contohnya kartu Musim laporan.js:600-616 dan deck Presiden 'prioritas.peluang' [86, 57, 29, 14, 0].",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Kondisikan peluang pada prakiraan curah hujan, bukan hanya status ENSO. Field dkk. 2016 menunjukkan aktivitas api Indonesia naik tidak linear ketika curah hujan musim kemarau <4 mm/hari.\n- Sumber prakiraan: Prakiraan Musim BMKG atau C3S SEAS5 bulanan (curah hujan 1–3 bulan ke depan), ditambah DMI (IOD) yang sudah diambil iklim.py.\n- Uji balik tahan-satu-tahun dengan Brier Skill Score terhadap klimatologi.\n- Tulis 'n = jumlah tahun analog' di setiap tampilan.",
+   "praktik_resmi_indonesia": "BMKG: Prakiraan Musim Kemarau/Hujan dan FDRS sampai 7 hari. ASMC: outlook musiman regional.",
+   "kenapa_lebih_tepat": "Hujan adalah pengendali langsung (penelitian di Indonesia), sedangkan ENSO hanya pengendali tidak langsung. Dengan 7 tahun analog, resolusi peluangnya hanya 14%, dan belum pernah diuji.",
+   "data_dibutuhkan": "- C3S seasonal-monthly-single-levels: akun CDS gratis, GRIB/NetCDF perlu pustaka. Alternatif stdlib: unduh rata-rata wilayah lewat API Open-Meteo seasonal, bila cakupannya memadai (perlu dicek).\n- CHIRPS atau ERA5 untuk curah hujan historis.\n- iklim.json (ONI, RONI, DMI) sudah ada.",
+   "upaya": "M",
+   "cara_validasi": "Uji balik tahan-satu-tahun 2002–2025 untuk peluang 'dasarian masuk 10% tersibuk' pada lead 1–2 bulan. Lulus bila BSS ≥0,1 terhadap klimatologi. Bila tidak lulus, tampilkan hanya klimatologi deskriptif tanpa kata 'berpeluang'.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4995960",
+    "https://cds.climate.copernicus.eu/datasets/seasonal-monthly-single-levels",
+    "https://www.cpc.ncep.noaa.gov/data/indices/RONI.ascii.txt",
+    "https://www.cawcr.gov.au/projects/verification/"
+   ]
+  },
+  {
+   "metode_lama": "Pengisian celah S-NPP: isi_celah hanya bila porsi S-NPP nasional <15%. 37 hari diisi NOAA-20 × 0,978, faktor tanpa skrip turunan (laporan.py:158-217, 332).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Pindahkan sensor dasar ke gabungan NOAA-20 + NOAA-21, atau gabungan seperti konfigurasi CMB/VJ1 GFED5NRT.\n- Faktor antarsensor diturunkan dari hari tumpang-tindih per bulan dan per provinsi, dengan galat dilaporkan, dan skripnya di-commit.\n- Deteksi celah per provinsi per lintasan, bukan per nasional (lihat usulan hitungan titik).",
+   "praktik_resmi_indonesia": "SiPongi dan BMKG memakai beberapa satelit sekaligus, sehingga tidak bergantung pada satu sensor.",
+   "kenapa_lebih_tepat": "S-NPP sudah tua dan makin sering bolong (37 hari Mar–Jun; lintasan siang 20 Okt). Faktor yang tidak bisa direproduksi akan menjadi pertanyaan auditor.",
+   "data_dibutuhkan": "Arsip FIRMS SP/NRT S-NPP, NOAA-20, dan NOAA-21 2023–2026 (gratis).",
+   "upaya": "S",
+   "cara_validasi": "Hitung rasio N20/S-NPP bulanan pada hari tumpang-tindih 2023–2026. Lulus bila CV bulanan ≤15%, dan faktor yang dipakai sama dengan keluaran skrip. Bila CV >15%, faktor dibuat per musim atau per provinsi.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://github.com/ychenzgithub/GFED5NRT",
+    "https://essd.copernicus.org/articles/18/7535/2026/"
+   ]
+  },
+  {
+   "metode_lama": "Bara gambut bawah permukaan (gambut_bara.py): E = A × D × BD × CC × EF. Hampir semua masukannya asumsi; rentangnya 29–73 kali.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "- Keluarkan dari layar.\n- Emisi gambut diambil dari GFED5NRT (kelas peat) atau CAMS GFAS.\n- Kondisi risiko bara dari TMAT terukur SIPALAGA BRGM (ambang 0,4 m di bawah permukaan, PP 57/2016) dan FDRS Gambut BRGM.\n- Luas terbakar di gambut dari peta Sentinel-2 bulanan yang ditumpangkan ke peta gambut.",
+   "praktik_resmi_indonesia": "BRGM: SIPALAGA, sensor TMAT otomatis tiap 10 menit (dikirim tiap jam), 153 unit di 7 provinsi menurut data 2019, serta FDRS Gambut. KLH: emisi gambut dalam inventori GRK.",
+   "kenapa_lebih_tepat": "Data terukur (TMAT) dan produk emisi operasional lebih baik daripada rantai asumsi yang rentangnya 1–2 orde besaran.",
+   "data_dibutuhkan": "Akses data SIPALAGA (aplikasi publik; API perlu dicek atau diminta ke BRGM) dan CSV GFED.",
+   "upaya": "S",
+   "cara_validasi": "Tidak perlu lulus karena model lama dihapus.\nUntuk TMAT: persentase stasiun dengan TMAT >0,4 m per provinsi dibandingkan dengan porsi titik di gambut minggu yang sama (Spearman). Laporkan nilainya sebagai bukti relevansi.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://mongabay.co.id/2019/01/28/brg-kembangkan-sistem-pemantauan-muka-air-gambut/",
+    "https://kalsel.antaranews.com/berita/391758/kalsel-optimalkan-upaya-selamatkan-ekosistem-lahan-gambut?page=all",
+    "https://www.globalfiredata.org/current.html"
+   ]
+  },
+  {
+   "metode_lama": "Skor peringkat kompleks dan indeks risiko riwayat 0–100 (50% kekerapan + 30% log total + 20% tren; aturan.py:95-122; preventif.py:38-50).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Untuk risiko yang tampil ke pimpinan, pakai indeks bahaya karhutla InaRISK BNPB. Raster 100 m ini sudah diambil scripts/data/bnpb_gis.py ke public/data/inarisk.json.\n- Indeks riwayat milik platform hanya untuk internal Daops, dan baru boleh tampil bila daya prediksinya terbukti setara atau lebih baik daripada InaRISK.",
+   "praktik_resmi_indonesia": "InaRISK BNPB (kerangka kajian risiko Perka BNPB 2/2012) adalah rujukan resmi risiko bencana termasuk karhutla.",
+   "kenapa_lebih_tepat": "Konsisten dengan angka risiko resmi, dan bobot buatan sendiri harus membuktikan nilai tambahnya.",
+   "data_dibutuhkan": "inarisk.json (sudah ada); arsip titik MODIS 2002–2025 (sudah ada).",
+   "upaya": "S",
+   "cara_validasi": "Bangun indeks dari data 2002–2022, uji terhadap titik 2023–2025 per kecamatan. Hitung AUC dan presisi@50, lalu bandingkan dengan InaRISK.\nIndeks platform tampil hanya bila AUC ≥0,75 dan tidak lebih buruk daripada InaRISK.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id/",
+    "https://gis.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Rencana pencegahan per kecamatan (preventif.py): 554 kecamatan, tindakan per aturan, biaya satuan dengan total Rp 2,55–5,68 T.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Sajikan sebagai daftar prioritas lokasi, sedangkan biaya masuk lampiran.\n- Biaya satuan diambil dari SBM Kemenkeu atau standar teknis BRGM/Kemenhut (sekat kanal, sumur bor).\n- Uji daya prediksi daftar lokasi.\n- Tambahkan bekas bakar Sentinel-2 2019–2024 per kecamatan sebagai pembobot, selain kekerapan titik.",
+   "praktik_resmi_indonesia": "Kemenhut (Permen LHK P.32/2016), BRGM (peta prioritas restorasi, infrastruktur pembasahan), dan BNPB InaRISK.",
+   "kenapa_lebih_tepat": "Luas bekas bakar mengukur dampak, sedangkan titik hanya mengukur kekerapan deteksi. Biaya dari standar resmi tidak akan dibaca sebagai usulan anggaran tanpa dasar.",
+   "data_dibutuhkan": "Zenodo 19104282 (bekas bakar per kecamatan; diolah sekali secara lokal karena GeoTIFF 20 m besar) dan SBM.",
+   "upaya": "S",
+   "cara_validasi": "Daftar dibangun dari 2002–2022, diuji terhadap titik dan bekas bakar 2023–2025.\nLulus bila presisi@150 ≥0,6, yaitu ≥60% dari 150 kecamatan teratas termasuk 20% kecamatan terbakar terluas pada 2023–2025.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://zenodo.org/records/19104282",
+    "https://inarisk.bnpb.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Prioritas pembasahan per KHG: titik 7 hari, 30 hari, dan musim di poligon KHG BRGM, ditambah kanal OSM (khg_prioritas.py).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "- Tambahkan TMAT terukur SIPALAGA per KHG.\n- Tambahkan luas bekas bakar Sentinel-2 per KHG (Zenodo 2019–2024, dan bulanan Nusantara Atlas untuk tahun berjalan).\n- Tampilkan penanda 'musim_lengkap' di layar.\n- Urutan prioritas = kombinasi TMAT > 0,4 m dan luas bekas bakar, bukan hanya titik 7 hari.",
+   "praktik_resmi_indonesia": "BRGM memakai TMAT (PP 57/2016: 0,4 m) dan peta prioritas restorasi per KHG.",
+   "kenapa_lebih_tepat": "Kebutuhan pembasahan ditentukan oleh muka air dan kerusakan, bukan oleh jumlah deteksi.",
+   "data_dibutuhkan": "SIPALAGA (perlu akses data dari BRGM) dan Zenodo 19104282.",
+   "upaya": "M",
+   "cara_validasi": "Uji: KHG dengan TMAT >0,4 m pada Agu 2023 harus memiliki luas bekas bakar Sep–Okt 2023 lebih tinggi (Mann-Whitney p <0,05). Bila tidak, bobot TMAT tidak dipakai.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://mongabay.co.id/2019/01/28/brg-kembangkan-sistem-pemantauan-muka-air-gambut/",
+    "https://zenodo.org/records/19104282"
+   ]
+  }
+ ]
+}

@@ -76,8 +76,8 @@ header.top{position:fixed;inset:0 0 auto 0;height:var(--top);z-index:30;display:
 .mark svg{flex:none}
 .mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap}
 .mark small{display:block;font-size:11px;opacity:.75;white-space:nowrap}
-/* tab rata tengah di ruang antara logo dan status (pemilik, 20 Okt 2026); "safe" supaya tab yang tidak muat tidak terpotong di kiri */
-nav.tabs{display:flex;justify-content:center;justify-content:safe center;gap:4px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
+/* tab rata tengah di ruang antara logo dan status, jarak antar-tab 6px; "safe" supaya tab yang tidak muat tidak terpotong di kiri */
+nav.tabs{display:flex;justify-content:center;justify-content:safe center;gap:6px;padding:4px 2px;margin:0 clamp(8px,3vw,48px);overflow-x:auto;scrollbar-width:none;min-width:0;flex:1 1 auto;max-width:980px}
 @media (min-width:1500px){nav.tabs{margin:0 auto}}
 .stat,.mark{flex:none}
 nav.tabs::-webkit-scrollbar{display:none}
@@ -102,7 +102,8 @@ nav.tabs .lainnya .menu button:hover,nav.tabs .lainnya .menu button[aria-current
 .iconbtn{border:0;background:oklch(100% 0 0 / .12);color:#fff;width:34px;height:34px;border-radius:10px;display:grid;place-items:center;cursor:pointer;flex:none}
 .iconbtn:hover{background:oklch(100% 0 0 / .22)}
 @media (max-width:900px){.stat .upd,.mark small{display:none}}
-@media (max-width:1500px){.mark small,.stat .upd{display:none}}
+/* jam data tetap tampil di layar sempit, teksnya saja yang dipendekkan (pemilik, 21 Okt 2026) */
+@media (max-width:1500px){.mark small,.stat .pjg{display:none}}
 @media (max-width:1100px){.mark > div{display:none}}
 @media (max-width:640px){header.top{gap:6px;padding:0 8px}.stat .jam{display:none}nav.tabs{margin:0;flex:1}nav.tabs button{padding:8px 10px;font-size:13px}}
 /* mobile: pilihan bencana & tema disembunyikan, tab pindah ke menu garis tiga (pemilik, 15 Okt 2026) */
@@ -953,6 +954,9 @@ main select:not([multiple]):hover{border-color:color-mix(in oklch,var(--ink2) 40
 .tm{padding:10px 10px 6px}
 .tr-sw{display:flex;align-items:center;gap:8px;padding:4px 2px 6px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
 .tr-sw .seg{box-shadow:none;padding:2px;width:100%}.tr-sw .seg button:disabled{opacity:.4;cursor:not-allowed}.tr-sw .seg button{padding:3px 9px;font-size:11px;text-transform:none;letter-spacing:0}
+/* chip rentang tren diberi label sendiri supaya tak dikira penyaring kolom Titik; baris hari kolom Titik di atas kepala tabel */
+.tr-lb{flex-direction:column;align-items:stretch;gap:4px}
+.tr-hari{padding:2px 2px 5px;font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}.tr-hari b{color:var(--ink)}
 .tr-c{display:flex;align-items:center;gap:4px;color:var(--ink2);overflow:visible!important}
 .tr-c svg{flex:none;color:var(--ink2)}
 .tr-c b{font-size:10.5px;font-variant-numeric:tabular-nums}
@@ -1294,6 +1298,18 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 .tools .garis-waktu > .lbl{display:block;text-align:center}
 .tools #fwiHari .seg{display:grid;grid-template-columns:repeat(4,1fr)}
 .tools #fwiHari .seg button{padding:5px 2px;font-size:11px;white-space:nowrap;min-width:0}
+/* pemilih hari titik panas: tiga segmen sama lebar; "Tanggal lain" = <select> native (data-cantik: tidak dibungkus PilihCantik) */
+.tools #rentang{display:grid;grid-template-columns:repeat(3,minmax(0,1fr))}
+.tools #rentang button{padding:5px 2px;font-size:11px;white-space:nowrap;min-width:0}
+#rentang .rt-lain{position:relative;flex:1;min-width:0;display:flex;border-radius:999px;color:var(--ink2)}
+#rentang .rt-lain select{appearance:none;-webkit-appearance:none;flex:1;min-width:0;width:100%;height:auto;border:0;box-shadow:none;background:none;color:inherit;font:inherit;font-size:11px;font-weight:600;text-align:center;text-align-last:center;padding:5px 14px 5px 2px;border-radius:999px;cursor:pointer;text-overflow:ellipsis}
+#rentang .rt-lain select:disabled{opacity:.4;cursor:not-allowed}
+#rentang .rt-lain select:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+#rentang .rt-lain select option{color:var(--ink);background:var(--card)}
+#rentang .rt-lain::after{content:"▾";position:absolute;right:7px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px}
+#rentang .rt-lain.on{background:var(--brand);color:#fff}
+:root[data-theme="dark"] #rentang .rt-lain.on{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #rentang .rt-lain.on{color:oklch(18% .035 256)}}
 .tp-hd{justify-content:center;text-align:center}
 .tb.kepala > span:nth-child(2){text-align:center!important;justify-self:center}
 html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di *.workers.dev (pemilik, 17 Okt 2026) */
@@ -1461,8 +1477,8 @@ html[data-situs=w] [data-t=tentang]{display:none} /* tab Tentang tidak tampil di
       </div>
     </div>
     <div class="tools" id="tools">
-      <!-- dua pemilih berbeda: rentang titik panas yang SUDAH terdeteksi vs hari prakiraan cuaca (pemilik, 14 Okt 2026) -->
-      <div class="card garis-waktu on" id="rentangKartu" aria-label="Rentang titik panas"><span class="lbl" style="white-space:nowrap">Titik panas terdeteksi</span><div class="seg penuh" role="group" aria-label="Rentang waktu" id="rentang"></div></div>
+      <!-- dua pemilih berbeda: hari titik panas yang SUDAH terdeteksi vs hari prakiraan cuaca (pemilik, 14 Okt 2026); titik panas = SATU hari kalender WIB per pilihan, tanpa akumulasi 72 jam / 7 hari (pemilik, 21 Okt 2026) -->
+      <div class="card garis-waktu on" id="rentangKartu" aria-label="Hari titik panas"><span class="lbl" style="white-space:nowrap">Titik panas terdeteksi</span><div class="seg penuh" role="group" aria-label="Pilih hari" id="rentang"></div></div>
       <div class="card garis-waktu" id="garisWaktu" aria-label="Hari prakiraan"><span class="lbl" style="white-space:nowrap">Prakiraan cuaca (siang)</span><div id="fwiHari" style="flex:1"></div></div>
       <button class="iconbtn" id="lapisBtn" style="background:var(--card);color:var(--ink);box-shadow:var(--shadow);display:grid" aria-label="Overlay peta" title="Lapisan peta">
         <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round"><path d="m12 3 9 5-9 5-9-5 9-5Z"/><path d="m3 13 9 5 9-5"/></svg>
@@ -1594,7 +1610,9 @@ const csv = rows => rows.map(r => r.map(v => { const s = String(v ?? ""); return
 /* ================================================================ state */
 const S = {
   meta: null, titik: [], acuan: null, kluster: null, fwi: null, bnpb: null, wilayah: null,
-  rentang: bacaLokal("pk-rentang2", "hari"), jalur: [], fwiHari: 0, wilKunci: [],
+  /* satu hari kalender WIB: "hari" | "kemarin" | "YYYY-MM-DD" (hari lebih lama, hanya ada di hotspot.json). Hanya hari/kemarin yang diingat;
+     nilai simpanan lama (72, 168, dll.) jatuh ke "hari" */
+  rentang: bacaLokal("pk-rentang2", "hari") === "kemarin" ? "kemarin" : "hari", jalur: [], fwiHari: 0, wilKunci: [],
   geo: {prov: null, kab: {}, kec: {}}, pilihK: null,
 };
 /* Tindakan per status: disusun dari insight SOP & regulasi (lihat Metode & data), bukan salinan SOP */
@@ -1699,7 +1717,7 @@ const tanpaWalhi = x => typeof x === "string" ? x.replace(/\s*\([^()]*\bWALHI\b[
   : x && typeof x === "object" ? Object.fromEntries(Object.entries(x).map(([k, v]) => [k, tanpaWalhi(v)])) : x;
 async function muatData() {
   const [meta, hs, kl, fw, bn, wl, prov] = await Promise.all([
-    muatJSON("data/meta.json"), muatJSON(S.rentang === 168 ? "data/hotspot.json" : S.rentang === 72 ? "data/hotspot72.json" : "data/hotspot24.json").catch(() => muatJSON("data/hotspot72.json")).catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster_awal.json").then(d => (d.awal = true, d)).catch(() => muatJSON("data/kluster.json")),
+    muatJSON("data/meta.json"), muatJSON("data/hotspot24.json").catch(() => muatJSON("data/hotspot72.json")).catch(() => muatJSON("data/hotspot.json")), muatJSON("data/kluster_awal.json").then(d => (d.awal = true, d)).catch(() => muatJSON("data/kluster.json")),
     muatJSON("data/fwi.json"), muatJSON("data/bnpb.json").catch(() => null), muatJSON("data/wilayah.json"), muatJSON("geo/provinsi.json")]);
   S.daops = await muatJSON("data/daops.json").catch(() => []);
   [S.inarisk, S.bpbd] = await Promise.all([muatJSON("data/inarisk.json").then(d => d.nilai).catch(() => ({})), muatJSON("data/bpbd.json").then(d => d.kantor).catch(() => [])]);
@@ -1711,21 +1729,42 @@ async function muatData() {
   S.posko = pk.posko; S.menengah = pk.menengah || []; S.pusat = pk.pusat || []; S.permanen = pk.permanen || [];
   S.semuaPosko = new Map([...S.pusat.map(x => [x.id, {...x, tingkat: 0}]), ...S.menengah.map(x => [x.id, {...x, tingkat: 1}]), ...S.posko.map(x => [x.id, {...x, tingkat: 2}])]);
   S.poskoDari = new Map(); S.posko.forEach(x => x.kompleks.forEach(k => S.poskoDari.set(k, x)));
-  S.meta = meta; S.acuan = new Date(hs.acuan); S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
+  S.meta = meta; S.acuan = new Date(hs.acuan); S.acuan0 = S.acuan; S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
   S.utama = new Set(hs.sensor_utama);
   S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
   const h0 = new Date(meta.hari_wib + "T00:00:00+07:00"); S.hariIni = meta.hari_wib.slice(5); S.kemarin = new Date(h0 - 864e5 + 7 * 36e5).toISOString().slice(5, 10);
   S.fwiHari = Math.max(0, fw.grid[0].hari.findIndex(h => h.tgl === fw.hari_ini));
   { const lb = document.querySelector('#lapis input[data-l="pfvi"]')?.closest("label"); if (lb) lb.style.display = adaPfvi() ? "" : "none"; }
-  $("#upd").textContent = "Data " + jamWIB(S.acuan || meta.dibuat); $("#upd").title = "Lintasan satelit terakhir; diolah " + jamWIB(meta.dibuat);
+  $("#upd").innerHTML = `<span class="pjg">Data </span>${jamWIB(S.acuan || meta.dibuat).replace(" WIB", '<span class="pjg"> WIB</span>')}`; $("#upd").title = "Lintasan satelit terakhir; diolah " + jamWIB(meta.dibuat);
   const umur = (Date.now() - new Date(meta.dibuat)) / 36e5; S.basi = umur > 36;
   if (false && umur > 26) { /* spanduk "data basi" disembunyikan dulu (pemilik, 14 Okt 2026) */ $("#basi").hidden = false; $("#basi").textContent = `Data terakhir diperbarui ${Math.round(umur)} jam lalu (${jamWIB(meta.dibuat)}). ${S.basi ? "Status kompleks tidak boleh dipakai untuk keputusan sampai data diperbarui." : "Periksa pembaruan otomatis."}`; }
 }
 
-/* titik masuk rentang? hari/kemarin = hari kalender WIB (setara SiPongi/BNPB); 72 jam/7 hari = mundur dari lintasan terakhir */
-const masuk = b => S.rentang === "hari" ? b[7] === S.hariIni : S.rentang === "kemarin" ? b[7] === S.kemarin : b[2] >= -S.rentang;
+/* titik di hari terpilih? SATU hari kalender WIB (setara SiPongi/BNPB), tanpa akumulasi. S.hariPilih = "MM-DD" hari itu (kolom b[7]);
+   hari lebih lama dari kemarin hanya ada di hotspot.json (muatTitik). S.rentang = pilihan di kontrol (langsung berubah saat diklik);
+   S.rentangHit = hari yang SEDANG dipegang S.hit/S.hariPilih (diisi hitung()): semua label angka membaca ini supaya tidak ada
+   label hari baru di atas angka hari lama selama hotspot.json belum termuat */
+const masuk = b => b[7] === S.hariPilih;
+const hariLama = v => v !== "hari" && v !== "kemarin";
+const kunciHari = v => v === "hari" ? S.hariIni : v === "kemarin" ? S.kemarin : v.slice(5);
+const tglRentang = () => { const r = S.rentangHit || S.rentang; return r === "hari" ? S.meta.hari_wib : r === "kemarin" ? hariSebelum(S.meta.hari_wib) : r; };
+/* "Sen 19 Okt" (hari kalender WIB, apa pun zona waktu peramban) */
+const tglLain = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, weekday: "short", day: "numeric", month: "short"}).replace(",", "");
+/* "Hari ini" / "Kemarin" menurut jam WIB sekarang (sama dengan label tombol: data yang terlambat sehari tampil "Kemarin"), selain itu "" */
+const relRentang = () => { const l = labelHari(tglRentang()); return l === "Hari ini" || l === "Kemarin" ? l : ""; };
+const namaRentang = () => relRentang().toLowerCase() || tglLain(tglRentang());
+/* hari utuh sebelum kemarin (2 sampai 7 hari ke belakang) yang tercakup hotspot.json = 168 jam dari acuan; hari pembuka yang terpotong tidak ditawarkan */
+function hariLain() {
+  const h0 = Date.parse(S.meta.hari_wib + "T00:00:00+07:00"), mulai = S.acuan0 - 168 * 36e5, out = [];
+  for (let i = 2; i <= 7 && h0 - i * 864e5 >= mulai; i++) out.push(new Date(h0 - i * 864e5 + 7 * 36e5).toISOString().slice(0, 10));
+  return out;
+}
 /* hitungan utama: MODIS + VIIRS S-NPP + NOAA-20, semua tingkat keyakinan */
 function hitung() {
+  /* hari lama yang hotspot.json-nya belum termuat: tetap di hari yang dipegang sekarang (hitungan separuh tak boleh tampil;
+     pemanggil lain seperti titik_live juga lewat sini) */
+  const r = hariLama(S.rentang) && !S.titikPenuh ? S.rentangHit || "hari" : S.rentang;
+  S.rentangHit = r; S.hariPilih = kunciHari(r);
   const per = {}, tinggi = {}, snpp = {};
   for (const b of S.titik) {
     if (b[3] === "N" && b[5] >= 1 && masuk(b)) for (const k of S.wilKunci[b[6]]) snpp[k] = (snpp[k] || 0) + 1; /* sebanding dengan arsip riwayat */
@@ -1940,8 +1979,8 @@ const Peta = {
         hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true});
         const k = f.properties.kunci, kp = k.split("|"), kl = klusterDi(k), pr = kl.filter(x => x.properties.level === 3).length, fw = kp.length === 1 ? S.wilayah[k]?.fwi_maks : null;
         kartuWil = kartuTip({judul: esc(f.properties.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "",
-          /* titik ikut rentang terpilih; kompleks = aktif (terdeteksi <= 72 jam, gambut kering 168 jam) tanpa ikut rentang, jadi labelnya disebut */
-          stat: [["titik", S.hit[k] || 0, "titik " + ({hari: "hari ini", kemarin: "kemarin", 72: "72 jam", 168: "7 hari"}[S.rentang] || ""), "#e58a45"], ["api", kl.length, "kompleks aktif", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
+          /* titik = hari terpilih (satu hari WIB); kompleks = aktif (terdeteksi <= 72 jam, gambut kering 168 jam) tanpa ikut hari terpilih, jadi labelnya disebut */
+          stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"], ["api", kl.length, "kompleks aktif", "#5f6fb0"], ["skor", pr, "prioritas", "#c9503a", pr > 0],
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : [])], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || $("#tip")._pf || Riwayat._diGelembung) return;
@@ -2007,7 +2046,7 @@ const Lapis = {
       return {type: "Feature", geometry: {type: "Point", coordinates: [a.reduce((t, b) => t + b[1] * w(b), 0), a.reduce((t, b) => t + b[0] * w(b), 0)]},
         properties: {px: a.length, f, lv: Math.max(...a.map(b => b[4])), rel: Math.max(...a.map(b => b[5])), u: Math.min(...a.map(b => b[2])), u0: Math.max(...a.map(b => b[8] ?? b[2])), n: Math.max(...a.map(b => b[7] ?? 1)), baru: a.some(b => b[9] === 1) ? 1 : 0}}; })}; },
   /* radius menurut zoom x jumlah FRP (<30 MW kecil, 30-150 sedang, >150 besar); k = pengali, b = ukuran suar */
-  hwR(k, b) { const r = (a, c, d) => ["step", ["get", "f"], a * k, 30, c * k, 150, d * k]; return b ? ["interpolate", ["linear"], ["zoom"], 4, r(3, 4, 5.5), 12, r(6, 8, 11)] : ["interpolate", ["linear"], ["zoom"], 4, r(3, 4, 5.5), 12, r(6, 9, 13)]; },
+  hwR(k, b) { const r = (a, c, d) => ["step", ["get", "f"], a * k, 30, c * k, 150, d * k]; return b ? ["interpolate", ["linear"], ["zoom"], 3, r(3, 4, 5.5), 12, r(6, 8, 11)] : ["interpolate", ["linear"], ["zoom"], 3, r(3, 4, 5.5), 12, r(6, 9, 13)]; },
   hwMulai() { if (this._hw) return; const ada = () => Peta.lihat("himawari") || Peta.lihat("hwbaru"), ambil = () => {
       fetch("/api/himawari", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { if (!d || !Array.isArray(d.baris)) return;
         this.cache.hwMeta = d; peta.getSource("himawari")?.setData(this.hwFitur(0)); peta.getSource("hwbaru")?.setData(this.hwFitur(1)); }).catch(() => {}); };
@@ -2093,21 +2132,21 @@ const Lapis = {
       himawari: async () => {
         /* api berdekatan digabung jadi gelembung biru bernomor di skala kecil, pecah saat diperbesar (sama dengan kompleks prioritas) */
         peta.addSource("himawari", {type: "geojson", data: this.hwFitur(0), cluster: true, clusterRadius: 40, clusterMaxZoom: 7});
-        peta.addLayer({id: "himawari-klaster", type: "circle", source: "himawari", minzoom: 4, filter: ["has", "point_count"],
+        peta.addLayer({id: "himawari-klaster", type: "circle", source: "himawari", minzoom: 3, filter: ["has", "point_count"],
           paint: {"circle-radius": ["interpolate", ["linear"], ["get", "point_count"], 2, 7.5, 10, 9, 50, 11], "circle-color": "#22b8e0", "circle-opacity": .95, "circle-stroke-color": "#fff", "circle-stroke-width": 1.4}});
-        peta.addLayer({id: "himawari-n", type: "symbol", source: "himawari", minzoom: 4, filter: ["has", "point_count"],
+        peta.addLayer({id: "himawari-n", type: "symbol", source: "himawari", minzoom: 3, filter: ["has", "point_count"],
           layout: {"text-field": ["to-string", ["get", "point_count"]], "text-size": 9.5, "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
           paint: {"text-color": "#fff", "text-halo-color": "#0e6f8a", "text-halo-width": .6}});
         peta.on("mouseenter", "himawari-klaster", () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", "himawari-klaster", () => { peta.getCanvas().style.cursor = ""; });
-        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 4, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
-          "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 4, 1, 10, 1.6],
+        peta.addLayer({id: "himawari", type: "circle", source: "himawari", minzoom: 3, filter: ["!", ["has", "point_count"]], paint: {"circle-radius": this.hwR(1),
+          "circle-color": "rgba(0,0,0,0)", "circle-stroke-color": "#22b8e0", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 3, 1, 10, 1.6],
           "circle-stroke-opacity": ["step", ["get", "u"], 1, 30, .8, 120, .6, 360, .4, 1440, .25]}});
         ["hwbaru-halo", "hwbaru"].forEach(l => peta.getLayer(l) && peta.moveLayer(l)); this.hwMulai(); },
       /* api baru: Himawari >= 2 pindai, FIRMS belum ada dalam 4 km / 24 jam; suar fuchsia (halo + titik), di atas titik & himawari */
       hwbaru: async () => {
         peta.addSource("hwbaru", {type: "geojson", data: this.hwFitur(1)});
-        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 4, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
-        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 4, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
+        peta.addLayer({id: "hwbaru-halo", type: "circle", source: "hwbaru", minzoom: 3, paint: {"circle-radius": this.hwR(2.2), "circle-color": "#d946ef", "circle-opacity": .22}});
+        peta.addLayer({id: "hwbaru", type: "circle", source: "hwbaru", minzoom: 3, paint: {"circle-radius": this.hwR(1, 1), "circle-color": "#d946ef", "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}}); this.hwMulai(); },
     };
     try { await gaya[k](); } catch (e) { toast("Lapisan " + k + " gagal dimuat"); }
   },
@@ -2126,10 +2165,10 @@ const ST_PM10 = [[0, [70, 150, 220, 0]], [50, [90, 180, 120, 40]], [150, [240, 2
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 200, 240, 120]], [10, [70, 140, 220, 200]], [30, [40, 80, 200, 230]], [80, [90, 40, 170, 240]]];
 /* grid ke gambar: 1 piksel per sel, MapLibre menghaluskan */
 const hariSebelum = t => new Date(new Date(t + "T12:00:00+07:00") - 864e5).toISOString().slice(0, 10);
-const tglPendek = t => { const l = labelHari(t); return /^(Hari ini|Kemarin|Besok|Lusa)$/.test(l) ? l.toLowerCase() + " (" + new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"}) + ")" : l; };
+const tglPendek = t => { const l = labelHari(t); return /^(Hari ini|Kemarin|Besok|Lusa)$/.test(l) ? l.toLowerCase() + " (" + new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "short"}) + ")" : l; };
 /* label hari relatif terhadap tanggal WIB saat ini (bukan tanggal data dibuat): data malam kemarin tampil "Kemarin" */
 function labelHari(tgl) { const kini = Date.now() + 7 * 36e5, d = t => new Date(kini + t * 864e5).toISOString().slice(0, 10);
-  return tgl === d(0) ? "Hari ini" : tgl === d(-1) ? "Kemarin" : tgl === d(1) ? "Besok" : tgl === d(2) ? "Lusa" : new Date(tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric"}); }
+  return tgl === d(0) ? "Hari ini" : tgl === d(-1) ? "Kemarin" : tgl === d(1) ? "Besok" : tgl === d(2) ? "Lusa" : new Date(tgl + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, weekday: "short", day: "numeric"}); }
 function gambarGrid(sel, x0, x1, y0, y1, isi) {
   const w = Math.round((x1 - x0) / sel), h = Math.round((y1 - y0) / sel), cv = document.createElement("canvas"); cv.width = w; cv.height = h;
   const ctx = cv.getContext("2d"), img = ctx.createImageData(w, h);
@@ -2239,7 +2278,7 @@ function turun(kunci) { S.jalur = kunci.split("|"); renderCrumb(); nanti(() => P
 function naik(n) { S.jalur = S.jalur.slice(0, n); renderCrumb(); nanti(() => Peta.aturWilayah()); }
 
 /* ---------- permukaan kepadatan titik panas saat ini (gaya Windy) ---------- */
-/* titik panas dalam rentang aktif (sensor utama) dihitung per sel 0,05 derajat, diwarnai skala log, lalu dihaluskan */
+/* titik panas pada hari terpilih (sensor utama) dihitung per sel 0,05 derajat, diwarnai skala log, lalu dihaluskan */
 const Kini = {
   SEL: .1, ST: [[0, [236, 200, 110, 0]], [.15, [236, 200, 110, 150]], [.35, [229, 160, 75, 200]], [.55, [218, 112, 60, 220]], [.75, [190, 72, 56, 235]], [1, [122, 43, 43, 245]]],
   gambar() { const x0 = 94.5, x1 = 141.5, y0 = -11.5, y1 = 6.5, w = Math.round((x1 - x0) / this.SEL), h = Math.round((y1 - y0) / this.SEL), n = new Uint16Array(w * h);
@@ -2285,15 +2324,16 @@ function renderKPI() {
   const jml = o => pre ? (o[pre] || 0) : Object.entries(o).filter(([k]) => !k.includes("|")).reduce((a, [, v]) => a + v, 0);
   const prior = kl.filter(f => f.properties.level === 3).length, siaga = kl.filter(f => f.properties.level === 2).length;
   const fw = S.jalur[0] ? S.wilayah[S.jalur[0]]?.fwi_maks : Math.max(...Object.keys(S.meta.provinsi).map(k => S.wilayah[k]?.fwi_maks || 0));
-  const nmR = {hari: `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)`, kemarin: `${tglPendek(hariSebelum(S.meta.hari_wib))} (sehari penuh, WIB)`, 72: "72 jam", 168: "7 hari"}[S.rentang];
+  const rh = S.rentangHit || S.rentang, bln = +tglRentang().slice(5, 7) - 1;
+  const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())} · sehari penuh WIB`;
   const kart = [
     ["Titik panas", fmt(jml(S.hit)), `${nmR} · ${fmt(jml(S.tinggi))} keyakinan tinggi`],
     ["Kompleks api", fmt(kl.length), "aktif 72 jam"],
     ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain siaga pemadaman`],
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],
   ];
-  const nrm = normalHarian(S.jalur[0]);
-  if (nrm && S.rentang === "kemarin") { const v = jml(S.snpp); kart[0][2] = `${(v / nrm).toFixed(1).replace(".", ",")}× normal harian ${BULAN[new Date().getMonth()]} (${S.sejarah.tahun[0]}–${S.sejarah.tahun[S.sejarah.tahun.length - 2]})`; }
+  const nrm = normalHarian(S.jalur[0], bln);
+  if (nrm && rh === "kemarin") { const v = jml(S.snpp); kart[0][2] = `${(v / nrm).toFixed(1).replace(".", ",")}× normal harian ${BULAN[bln]} (${S.sejarah.tahun[0]}–${S.sejarah.tahun[S.sejarah.tahun.length - 2]})`; }
   $("#kpis").innerHTML = kart.map(([l, v, s]) => `<div class="kpi"><span class="lbl">${l}</span><b>${v}</b><small>${s}</small></div>`).join("");
 }
 /* ---------- tren harian per wilayah: hari penuh terakhir (hari ini belum lengkap, tidak ikut) ---------- */
@@ -2359,8 +2399,10 @@ function renderDaftar() {
   const prio = new Set(S.meta.prioritas);
   const G = "grid-template-columns:18px minmax(0,2.6fr) minmax(44px,.8fr) minmax(36px,.6fr) minmax(86px,1.2fr) minmax(74px,1fr)";
   const ada = hariTersedia(); if (S.trenN > ada) S.trenN = 7;
-  const sakelar = `<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Rentang tren">${RENTANG_TREN.map(([x, n]) => `<button data-tn="${x}" aria-pressed="${S.trenN === x}"${x > ada ? ` disabled title="Riwayat ${n} tersedia setelah pembaruan data berikutnya"` : ""}>${n}</button>`).join("")}</div></div>`;
-  const kepala = `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Titik</span><span class="n">Komp.</span><span title="Turun hijau = membaik, naik merah = memburuk">Tren</span><span style="text-align:right">Status</span></div>`;
+  const sakelar = `<div class="tr-sw tr-lb"><span>Rentang tren</span><div class="seg penuh" role="group" aria-label="Rentang tren">${RENTANG_TREN.map(([x, n]) => `<button data-tn="${x}" aria-pressed="${S.trenN === x}"${x > ada ? ` disabled title="Riwayat ${n} tersedia setelah pembaruan data berikutnya"` : ""}>${n}</button>`).join("")}</div></div>`;
+  /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Titik panas terdeteksi"; harinya disebut di baris atas kepala tabel */
+  const hariTitik = `<div class="tr-hari" title="Kolom Titik: titik panas pada satu hari kalender WIB">Titik panas: <b>${relRentang() ? relRentang() + " · " : ""}${tglLain(tglRentang())}</b></div>`;
+  const kepala = hariTitik + `<div class="tb kepala" style="${G}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(j.length, 2)]}</span><span class="n">Titik</span><span class="n">Komp.</span><span title="Turun hijau = membaik, naik merah = memburuk">Tren</span><span style="text-align:right">Status</span></div>`;
   $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) : "") + sakelar + kepala + (item.length ? item.map((i, n) => {
     const kl = klusterDi(i.kunci), lv = Math.max(-1, ...kl.map(f => f.properties.level));
     const t = j.length === 0 ? trenProv(i.kunci) : null;
@@ -2398,7 +2440,10 @@ $("#panelMode").addEventListener("click", e => { const b = e.target.closest("but
 $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-rn]");
   if (rn) { Riwayat.n = +rn.dataset.rn; simpanLokal("pk-riw-n", Riwayat.n); Riwayat.hitung(); nanti(() => Peta.aturWilayah(false)); return; }
   const tn = e.target.closest("[data-tn]");
-  if (tn) { S.trenN = +tn.dataset.tn; simpanLokal("pk-tren-n", S.trenN); return renderDaftar(); }
+  if (tn) { S.trenN = +tn.dataset.tn; simpanLokal("pk-tren-n", S.trenN);
+    tn.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === tn));   /* chrome dulu, daftar menyusul */
+    const fokus = document.activeElement === tn;
+    return nanti(() => { renderDaftar(); if (fokus) $("#rows").querySelector(`[data-tn="${S.trenN}"]`)?.focus(); }); }
   const kol = e.target.closest(".kepala span[data-s]");
   if (kol) { const i = +kol.dataset.s, u = S.urut[S.panel]; S.urut[S.panel] = {i, d: u?.i === i ? -u.d : i === 1 ? 1 : -1}; return terapkanUrut(); }
   if (e.target.closest(".kepala")) return; const pb = e.target.closest("[data-pk]"); if (pb) { const x = S.semuaPosko.get(pb.dataset.pk);
@@ -2410,7 +2455,8 @@ $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-r
   else turun(b.dataset.k); });
 /* rata-rata titik per hari pada bulan berjalan di tahun-tahun lalu (VIIRS S-NPP keyakinan sedang/tinggi); dibandingkan dengan
    hitungan S-NPP sedang/tinggi kemarin (hari penuh) supaya sebanding */
-function normalHarian(prov) { const D = S.sejarah; if (!D) return null; const m = new Date().getMonth(), hari = new Date(2026, m + 1, 0).getDate(), lalu = D.tahun.slice(0, -1);
+/* m = bulan (0-11) hari yang dibandingkan, dari tanggal WIB hari terpilih (bukan jam peramban) */
+function normalHarian(prov, m) { const D = S.sejarah; if (!D) return null; const hari = new Date(2026, m + 1, 0).getDate(), lalu = D.tahun.slice(0, -1);
   const ps = prov ? [D.prov[prov] || {}] : Object.values(D.prov);
   const tot = lalu.reduce((a, t) => a + ps.reduce((b, P) => b + ((P[t] || [])[m] || 0), 0), 0);
   return tot / lalu.length / hari || null; }
@@ -2503,34 +2549,51 @@ function renderDaftarKom() {
 }
 $("#handle").onclick = () => $("#panel").classList.toggle("min");
 
-/* titik panas bertahap: awal hotspot24.json (hari ini + kemarin + 48 jam, jam_maks 48); hotspot72.json / hotspot.json (7 hari)
-   baru dimuat saat rentang lebih panjang dipilih atau tren kecamatan butuh 7 hari (muatTitik(168)). acuan tidak disentuh:
+/* titik panas bertahap: awal hotspot24.json (hari ini + kemarin, jam_maks 48); hotspot.json (7 hari) baru dimuat saat hari yang lebih
+   lama dari kemarin dipilih atau tren kab/kec butuh 7 hari (muatTitik(168)). acuan tidak disentuh:
    titik_live.js menggeser kolom jam saat S.titik berganti. */
-function muatTitik(jam = typeof S.rentang === "number" ? S.rentang : 48) {
+function muatTitik(jam = hariLama(S.rentang) ? 168 : 48) {
   if (S.titikPenuh || jam <= (S.jamTitik || 0)) return muatTitik._p || Promise.resolve();
-  const penuh = jam > 72;
   if (muatTitik._p && muatTitik._jam >= jam) return muatTitik._p;
   muatTitik._jam = jam;
-  return muatTitik._p = muatJSON(penuh ? "data/hotspot.json" : "data/hotspot72.json").then(hs => {
+  return muatTitik._p = muatJSON("data/hotspot.json").then(hs => {
     if (S.titikPenuh || (hs.jam_maks || 168) <= S.jamTitik) return;
     S.titik = hs.baris; S.wilKunci = hs.wilayah.map(k => { const p = k.split("|"); return [p[0], p[0] + "|" + p[1], k]; });
     S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168;
-    hitung(); peta?.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan?.(); window.Cari?.segar();
+    /* data sudah diganti serentak (S.titikPenuh dibaca pemanggil); hitung ulang + gambar ulang menyusul setelah satu frame tercat (INP) */
+    nanti(() => { hitung(); peta?.getSource("titik")?.setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan?.(); window.Cari?.segar(); });
   }).catch(e => { muatTitik._p = null; muatTitik._jam = 0; console.warn("titik", e); });
 }
-/* rentang & mode */
-const RENTANG = [["hari", "Hari ini"], ["kemarin", "Kemarin"], [72, "72 jam"], [168, "7 hari"]];
+/* hari titik panas: Hari ini | Kemarin | Tanggal lain (<select> native berisi hari utuh sebelum kemarin); tiga segmen sama lebar.
+   DOM hanya ditulis ulang bila isinya berubah (fokus papan ketik tidak hilang tiap aturWilayah). */
+const RENTANG = [["hari", "Hari ini"], ["kemarin", "Kemarin"]];
 function renderSeg() {
   /* label mengikuti tanggal data relatif terhadap hari ini WIB: data malam kemarin tampil "Kemarin", bukan "Hari ini" */
-  const nmV = v => !S.meta?.hari_wib ? null : v === "hari" ? labelHari(S.meta.hari_wib) : v === "kemarin" ? labelHari(hariSebelum(S.meta.hari_wib)) : null;
-  $("#rentang").innerHTML = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${String(S.rentang) === String(v)}">${nmV(v) || n}</button>`).join("");
+  const hi = S.meta?.hari_wib, nmV = v => !hi ? null : v === "hari" ? labelHari(hi) : v === "kemarin" ? labelHari(hariSebelum(hi)) : null,
+    lain = hi ? hariLain() : [], dipilih = hariLama(S.rentang);
+  const h = RENTANG.map(([v, n]) => `<button data-v="${v}" aria-pressed="${S.rentang === v}">${nmV(v) || n}</button>`).join("")
+    + `<span class="rt-lain${dipilih ? " on" : ""}"><select id="rentangLain" data-cantik="1" aria-label="Tanggal lain"${lain.length ? "" : " disabled"}><option value="" disabled hidden${dipilih ? "" : " selected"}>Tanggal lain</option>`
+    + `${lain.map(t => `<option value="${t}"${t === S.rentang ? " selected" : ""}>${tglLain(t)}</option>`).join("")}</select></span>`;
+  if (renderSeg._h !== h) { renderSeg._h = h; $("#rentang").innerHTML = h; }
 }
-$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return;
-  S.rentang = isNaN(+b.dataset.v) ? b.dataset.v : +b.dataset.v; simpanLokal("pk-rentang2", S.rentang);
-  if (S.rentang === 168 && !S.titikPenuh) toast("Memuat titik 7 hari…");
-  muatTitik();
-  $("#rentang").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
-  nanti(() => { hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); window.Cari?.segar(); }); });
+function pilihRentang(v) {
+  if (v === S.rentang) return;
+  if (hariLama(v) && !hariLain().includes(v)) return renderSeg();
+  const fokus = $("#rentang").contains(document.activeElement) ? (document.activeElement.id === "rentangLain" ? "#rentangLain" : `[data-v="${v}"]`) : null;
+  S.rentang = v; simpanLokal("pk-rentang2", v === "kemarin" ? v : "hari");   /* S.hariPilih/S.rentangHit baru berganti di hitung() */
+  renderSeg(); if (fokus) $("#rentang").querySelector(fokus)?.focus();
+  /* pilihan beruntun (panah di <select>): hanya yang terakhir menghitung ulang */
+  const n = pilihRentang._n = (pilihRentang._n || 0) + 1;
+  if (hariLama(v) && !S.titikPenuh) {
+    /* hari lebih lama dari kemarin hanya ada di hotspot.json: angka dan label tetap hari lama sampai termuat (muatTitik menghitung sendiri) */
+    toast("Memuat titik panas hari itu…");
+    muatTitik().then(() => { if (S.rentang === v && !S.titikPenuh) { toast("Titik panas hari itu gagal dimuat"); pilihRentang("hari"); } });
+    return;
+  }
+  nanti(() => { if (n !== pilihRentang._n) return; hitung(); peta.getSource("titik").setData(Peta.geoTitik()); Peta.aturWilayah(false); Kini.segarkan(); window.Cari?.segar(); });
+}
+$("#rentang").addEventListener("click", e => { const b = e.target.closest("button"); if (b) pilihRentang(b.dataset.v); });
+$("#rentang").addEventListener("change", e => { if (e.target.id === "rentangLain") pilihRentang(e.target.value); });
 
 /* panel Overlay bergaya Windy: tiap kotak centang jadi ubin bergambar (latar panel tetap putih).
    Kotak dari lapisan5.js disisipkan belakangan, jadi pengamat menghias label baru begitu muncul. */
@@ -3274,7 +3337,7 @@ const Tren = {
         <div class="grid g4">${kot("Skor risiko", r.skor, `<span class="pill l${lv[r.kelas]}">${r.kelas}</span>`)}${kot("Peringkat", `${fmt(rkNas)}<span style="font-size:13px;opacity:.6"> / ${fmt(sama.length)}</span>`, r.jenis === "prov" ? "nasional" : `nasional<br>ke-${fmt(rkProv)} dari ${fmt(sProv.length)} di provinsi`)}
           ${kot("Tahun terbakar", `${r.tahun}<span style="font-size:13px;opacity:.6"> / ${th.length}</span>`, `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tahun / th.length >= .6 ? ["Langganan api", 3] : r.tahun / th.length >= .3 ? ["Sering", 2] : ["Jarang", 0])}<br>${beruntun ? beruntun + " tahun beruntun" : "terakhir " + terakhir}<br>≥ ${fmt(amb)} titik`)}${kot("Tren", (r.tren >= 1 ? "↑ " : "↓ ") + fmt(r.tren) + "×", `${(f => `<span class="pill l${f[1]}">${f[0]}</span>`)(r.tren >= 1.1 ? ["Naik", 3] : r.tren <= .9 ? ["Turun", 0] : ["Stabil", 1])}<br>rata-rata 2023+ vs sebelumnya`)}</div>
         <details class="lipat" open><summary>Saat ini</summary><div class="isi">
-          <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), {hari: "hari ini", kemarin: "kemarin", 72: "72 jam", 168: "7 hari"}[S.rentang])}${kot("Kompleks aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span> · ${siaga} siaga` : siaga + " siaga")}
+          <div class="grid g3" style="margin-top:6px">${kot("Titik panas", fmt(S.hit[r.kunci] || 0), namaRentang())}${kot("Kompleks aktif", fmt(kl.length), prior ? `<span style="color:var(--bad);font-weight:700">${prior} prioritas</span> · ${siaga} siaga` : siaga + " siaga")}
             ${(en => kot("Peluang periode ini", o ? Math.round((en ? o.p_el_nino : o.p_semua)[das] * 100) + "%" : "–", o ? `${DAS(das)} · ${en ? "tahun El Niño seperti sekarang" : "semua tahun"}` : ""))(window.ENSO_STATUS === "El Niño")}</div>
           ${kl.length ? `<table class="tb3 rk-tb"><thead><tr><th>Kompleks</th><th>Kecamatan</th><th class="n">Piksel 24 j</th><th class="n">Hari menyala</th><th>Status</th></tr></thead><tbody id="rkKl"></tbody></table>${kl.length > 8 ? `<div id="rkHal"></div>` : ""}` : ""}</div></details>
         <details class="lipat" open><summary>Titik panas per tahun ${th[0]}–${th.at(-1)}</summary><div class="isi">
@@ -5169,7 +5232,7 @@ function renderMetode() {
       "Ukuran piksel sebenarnya = max(scan, track) dari FIRMS (km; kosong = 0,4). Dipakai DBSCAN.",
       "Wilayah: uji titik-dalam-poligon (ray casting) terhadap poligon kecamatan kode Kemendagri, diindeks per sel 0,5°. Hanya cincin luar yang dipakai (lubang diabaikan, batas sudah disederhanakan). Titik yang tidak jatuh di kecamatan mana pun dibuang (laut atau negara tetangga)."])}
     ${h("Angka platform (bukan angka resmi pemerintah)")}<p>Jumlah deteksi MODIS + VIIRS S-NPP + VIIRS NOAA-20, semua tingkat keyakinan, per hari kalender WIB (00.00–23.59), tanpa penghapusan duplikat antarsatelit. Jalan terakhir memuat ${fmt(M.jumlah_titik)} deteksi 7 hari (semua sensor).</p>
-    <p>Pilihan rentang di peta: <b>hari ini</b> dan <b>kemarin</b> = tanggal WIB; <b>72 jam</b> dan <b>7 hari</b> dihitung mundur dari deteksi terakhir yang masuk, bukan dari jam sekarang. Peta memuat <code>hotspot72.json</code> (≤ 72 jam sebelum deteksi terakhir) lebih dulu, lalu <code>hotspot.json</code> 7 hari di belakang.</p>
+    <p>Pilihan hari di peta: Hari ini, Kemarin, atau Tanggal lain. Tiap pilihan = satu hari kalender WIB (00.00–23.59), tidak dijumlahkan antarhari. Peta memuat <code>hotspot24.json</code> lebih dulu; <code>hotspot.json</code> baru dimuat saat tanggal yang lebih lama dipilih atau tren kecamatan dibuka.</p>
     <p><b>Kelipatan normal harian</b> (kartu titik panas, rentang "kemarin"): rata-rata titik VIIRS S-NPP keyakinan sedang/tinggi per hari pada bulan yang sama di tahun-tahun lalu (arsip <code>sejarah.json</code>, 2015 s.d. tahun lalu) = jumlah titik bulan itu ÷ jumlah tahun ÷ jumlah hari bulan itu. Pembandingnya hitungan S-NPP sedang/tinggi kemarin saja, supaya sebanding dengan arsip.</p>
     ${h("Validasi")}<p><b>Uji silang 11 Oktober 2026</b> terhadap dasbor BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>
     ${h("Yang mengubah hasil")}<p>Jam jalan: deteksi yang masuk FIRMS setelah 21.20 WIB baru terhitung di jalan berikutnya (sebagai "kemarin"). Perubahan daftar sensor di <code>SENSOR_UTAMA</code> mengubah angka resmi secara langsung.</p>`,

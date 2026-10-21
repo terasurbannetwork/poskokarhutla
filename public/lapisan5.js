@@ -232,10 +232,10 @@
     const ik = await muat("iklim", "data/iklim.json").catch(() => null); if (!ik) return;
     const o = ik.oni_terakhir.nilai, kuat = o >= 2 ? " sangat kuat" : o >= 1.5 ? " kuat" : o >= 1 ? " sedang" : o >= .5 ? " lemah" : "";
     window.ENSO_STATUS = ik.status;
-    const teks = ik.status === "El Niño" ? "El Niño" + kuat : ik.status === "La Niña" ? "La Niña" : "ENSO netral";
+    const teks = ik.status === "El Niño" ? `El Niño<span class="pjg">${kuat}</span>` : ik.status === "La Niña" ? "La Niña" : "ENSO netral";
     const kering = ik.status === "El Niño" || ik.iod_status === "IOD positif";
     const el = document.createElement("span"); el.className = "l5-iklim" + (kering ? " kering" : "");
-    el.textContent = teks; el.title = `ONI ${ik.oni_terakhir.musim} ${ik.oni_terakhir.tahun}: ${o > 0 ? "+" : ""}${o.toFixed(2).replace(".", ",")} °C · DMI 8 minggu ${ik.dmi_8_minggu > 0 ? "+" : ""}${String(ik.dmi_8_minggu).replace(".", ",")} °C\n${ik.cpc_status || ""}${kering ? "\nKemarau lebih kering dari biasa: kalender musim memakai pola tahun El Niño." : ""}\nSumber: NOAA CPC & OSMC`;
+    el.innerHTML = teks; el.title = `ONI ${ik.oni_terakhir.musim} ${ik.oni_terakhir.tahun}: ${o > 0 ? "+" : ""}${o.toFixed(2).replace(".", ",")} °C · DMI 8 minggu ${ik.dmi_8_minggu > 0 ? "+" : ""}${String(ik.dmi_8_minggu).replace(".", ",")} °C\n${ik.cpc_status || ""}${kering ? "\nKemarau lebih kering dari biasa: kalender musim memakai pola tahun El Niño." : ""}\nSumber: NOAA CPC & OSMC`;
     const upd = $("#upd"); upd ? upd.before(el) : null;
   }
 

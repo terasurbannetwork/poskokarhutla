@@ -1,0 +1,553 @@
+{
+ "modul": "gunungapi",
+ "usulan": [
+  {
+   "metode_lama": "Ingest level resmi MAGMA/PVMBG (I-IV). Layar, adaptor nasional, dan laporan membaca berkas harian 09.10 WIB (app.js:94, adapter.js:34). Feed D1 tiap 30 menit (src/gunungapi.js, /api/gunungapi/terbaru) sudah ada, tetapi belum dibaca layar mana pun.",
+   "vonis_akhir": "layak",
+   "alternatif": "Levelnya tetap dari MAGMA. Yang diubah sumbernya: /api/gunungapi/terbaru (D1, 30 menit) dijadikan satu-satunya sumber untuk layar, adapter.js, sapa.js, dan laporan.py. Berkas harian hanya jadi cadangan. Setiap angka membawa 'per pukul HH:MM WIB, sumber PVMBG (MAGMA)' dan umur datanya. Bila umur lebih dari BASI_MENIT (90), tampil 'data basi' dan /api/status ikut merah. Di samping level, tambahkan Aviation Colour Code dari VONA terakhir tiap gunung. Kode ini resmi PVMBG dan ICAO.",
+   "praktik_resmi_indonesia": "PVMBG/Badan Geologi menetapkan level I-IV lewat MAGMA Indonesia dan Aviation Colour Code (hijau/kuning/oranye/merah) lewat VONA. BNPB mengutip status PVMBG apa adanya.",
+   "kenapa_lebih_tepat": "Kenaikan ke Siaga/Awas di siang hari sekarang bisa baru tampil sekitar 24 jam kemudian. Feed D1 yang sudah dibangun menutup celah ini tanpa model baru. Kode warna VONA adalah indikator aviasi resmi, sehingga bisa menggantikan metrik 'bandara di jalur abu' hasil model.",
+   "data_dibutuhkan": "magma.esdm.go.id/v1/gunung-api/tingkat-aktivitas (scrape HTML lewat cron Worker yang sudah ada, latensi = latensi terbit PVMBG). magma.esdm.go.id/v1/vona (kode warna, tinggi awan; arsipnya sudah diurai di uji_abu.py). Lisensinya tidak tertulis, jadi sumber wajib disebut.",
+   "upaya": "M",
+   "cara_validasi": "(1) Selama 14 hari, catat umur_menit D1 dibanding jam terbit halaman MAGMA. Lulus bila 95% pembacaan berumur kurang dari 45 menit dan jumlah per level D1 tidak pernah berbeda dari MAGMA. (2) Gerbang di tests/agen: tolak layar atau laporan yang membaca gunungapi_status.json langsung bila jalur D1 tersedia. (3) Uji kesegaran: /api/status harus merah bila umur D1 lebih dari 90 menit (PARITAS-GUNUNGAPI.md:42 mencatat ini belum diawasi).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://magma.esdm.go.id/v1/vona",
+    "https://wovo.iavceivolcano.org/volcanic-alert-levels/9-volcanic-alert/15-aviation-colour-codes",
+    "src/gunungapi.js:1-11, 40-74; PARITAS-GUNUNGAPI.md:30, 42; public/inti/adapter.js:33-41"
+   ]
+  },
+  {
+   "metode_lama": "Teks rekomendasi, radius_km = max('radius X km'), dan sektor_km = max('sejauh/jarak X km'). Regex gagal membaca 'sejauh maksimal 7 km', sehingga sektor Merapi null. Peta hanya menggambar lingkaran radius.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Perbaiki regex ('sejauh( maksimal)?', 'hingga jarak'). Simpan sektor sebagai daftar {sungai, jarak_km dari puncak, sempadan_m} per butir rekomendasi. Gambar poligon sektor resmi dari garis sungai OSM bernama (Besuk Kobokan, Kali Gendol, Boyong, Bedog, Krasak, Bebeng, Woro) mulai dari puncak sampai jarak tertulis. Tambahkan sempadan 500 m bila teks PVMBG menyebutnya: Semeru sampai 13 km, lalu sempadan 500 m sampai 17 km. Sungai yang tidak ditemukan di OSM ditandai 'tidak tergambar', bukan ditebak. Di briefing, kutip butir rekomendasi utuh, jangan hanya angka radius.",
+   "praktik_resmi_indonesia": "PVMBG menulis zona larangan per sektor/sungai. Semeru: Besuk Kobokan 13 km ditambah sempadan 500 m sampai 17 km. Merapi: Boyong 5 km, Bedog/Krasak/Bebeng 7 km, Woro 3 km, Gendol 5 km. BPBD memakai sektor ini untuk penutupan wilayah.",
+   "kenapa_lebih_tepat": "Lingkaran 5 km untuk Semeru mengecilkan jarak larangan resmi sekitar 3 kali. Poligon sektor menyalin kalimat PVMBG secara geometris, jadi tidak ada model atau asumsi baru, kecuali lebar sempadan pada sungai yang teksnya tidak menyebut lebar (wajib dilabeli).",
+   "data_dibutuhkan": "Teks rekomendasi MAGMA, harian, sudah diambil. OSM waterway lewat Overpass (ODbL, bulanan; jalur Overpass sudah dipakai paparan.py).",
+   "upaya": "M",
+   "cara_validasi": "Uji urai pada teks nyata di gunungapi_status.json: sektor_km Merapi = 7, Semeru = 17, dan daftar sungai lengkap. Untuk Semeru dan Merapi, bandingkan poligon dengan peta infografis rekomendasi Badan Geologi. Lulus bila setiap sungai yang disebut tergambar dan ujungnya berada dalam ±0,5 km dari jarak tertulis (diukur garis lurus dari puncak, sesuai cara PVMBG menulis).",
+   "prioritas": "P1",
+   "rujukan": [
+    "scripts/gunungapi/magma.py:79-84 (regex sektor)",
+    "public/banjir/data/gunungapi_status.json (teks rekomendasi Semeru dan Merapi)",
+    "https://magma.esdm.go.id"
+   ]
+  },
+  {
+   "metode_lama": "Metrik 'erupsi tercatat' = jumlah laporan erupsi nasional. Ada dua definisi berlabel sama: 24 jam bergulir (riwayat 16 Okt = 18) dan hari kalender (laporan 16 Okt = 13). Chip '24 jam' di sapa.js dihitung terhadap jam peramban.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ganti indikator nasional menjadi 'jumlah gunung yang erupsi' per hari kalender WIB. Per gunung tampilkan jumlah laporan, tinggi kolom maksimum teramati, dan arah. Jendela 24 jam dihitung dari waktu data (dibuat), bukan Date.now(). Bila daftar terpotong 8 halaman, tulis jam cakupannya.",
+   "praktik_resmi_indonesia": "Siaran pers Badan Geologi dan laporan PVMBG menyebut gunung yang erupsi beserta tinggi kolom, bukan total laporan nasional. Weekly Volcanic Activity Report Smithsonian/USGS juga menghitung gunung.",
+   "kenapa_lebih_tepat": "Frekuensi laporan antargunung tidak sebanding: Ibu dan Anak Krakatau bisa belasan laporan per hari. Menghitung gunung menghapus inflasi itu dan menyatukan dua definisi menjadi satu.",
+   "data_dibutuhkan": "magma.esdm.go.id/v1/gunung-api/informasi-letusan (sudah diambil, tanpa data baru).",
+   "upaya": "S",
+   "cara_validasi": "(1) Uji unit: riwayat dan laporan menghasilkan angka yang sama untuk tanggal yang sama (sekarang 18 vs 13). (2) Selama 8 minggu, bandingkan himpunan gunung Indonesia yang erupsi per minggu dengan Weekly Volcanic Activity Report GVP. Lulus bila kecocokan dua arah ≥ 90%. (3) Uji sapa.js dengan jam tiruan: jendela harus mengikuti waktu data.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://volcano.si.edu/reports_weekly.cfm",
+    "scripts/gunungapi/magma.py:109-132, 226-243; laporan.py:23, 104-136; public/gunungapi/sapa.js:12"
+   ]
+  },
+  {
+   "metode_lama": "Perubahan level (naik/turun). Tanggalnya adalah tanggal terlihat oleh pipeline harian, ditulis sebagai fakta ('turun ... pada 19 Okt').",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Ambil dari catatan D1 gunungapi_ubah (resolusi 30 menit) dan tulis 'terdeteksi pukul X WIB'. Bila teks laporan MAGMA atau siaran pers Badan Geologi memuat jam berlaku penetapan ('terhitung mulai tanggal ... pukul ...'), tampilkan jam penetapan itu. Bila tidak ada, cukup jam deteksi dengan label tersebut.",
+   "praktik_resmi_indonesia": "Badan Geologi menetapkan perubahan status lengkap dengan jam berlaku dan mengumumkannya lewat siaran pers ESDM dan MAGMA.",
+   "kenapa_lebih_tepat": "Tanggal pipeline harian bisa meleset sampai 1 hari dan mudah dibantah PVMBG di rapat. Jam deteksi 30 menit ditambah jam penetapan resmi menutup celah itu.",
+   "data_dibutuhkan": "D1 gunungapi_ubah (sudah ada); arsip berita esdm.go.id; laporan MAGMA.",
+   "upaya": "S",
+   "cara_validasi": "Untuk setiap perubahan level sejak D1 berjalan yang punya siaran pers, hitung selisih jam deteksi D1 dengan jam penetapan resmi. Lulus bila median ≤ 60 menit dan tidak ada selisih lebih dari 6 jam. Gerbang: kalimat perubahan level tanpa jam dan tanpa kata 'terdeteksi' atau 'ditetapkan' ditolak.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.esdm.go.id/id/media-center/arsip-berita",
+    "scripts/gunungapi/magma.py:219-225; src/gunungapi.js:47-60; public/gunungapi/insight.js:82"
+   ]
+  },
+  {
+   "metode_lama": "'Kejadian V': setiap gunung Level II ke atas dianggap satu kejadian aktif (27 kejadian dalam sehari), bertanggal mulai sama dengan tanggal sistem mulai berjalan.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Entitas kejadian gunung api hanya dibuat bila memenuhi salah satu: (a) ada SK status keadaan darurat (siaga/tanggap/transisi) berjenis erupsi di dataset BNPB; (b) ada erupsi berdampak (meninggal, pengungsi, rumah rusak) yang tercatat BNPB/DIBI; (c) Level IV Awas. Gunung Level II-III tanpa dampak cukup masuk daftar 'gunung berstatus Waspada ke atas'. Tanggal mulai = tanggal SK atau tanggal penetapan level, bukan tanggal sistem.",
+   "praktik_resmi_indonesia": "DIBI BNPB mencatat kejadian erupsi berdampak (8 kejadian pada 2024, 4 pada 2023, menurut dampak_gunungapi.json). Status keadaan darurat ditetapkan pemda lewat SK dan dihimpun BNPB.",
+   "kenapa_lebih_tepat": "Hitungannya menjadi selaras dengan angka resmi BNPB. Status Waspada adalah kondisi pemantauan rutin, bukan bencana yang sedang berlangsung.",
+   "data_dibutuhkan": "data.bnpb.go.id CKAN datastore resource 5599c3f4-71f2-4f8b-9846-304fca0fdc8a (SK status keadaan darurat 2025: id_kab, jenis, siaga/tanggap/transisi, tanggal; sudah dicatat di docs/multi-bencana/SUMBER-BNPB.md). Dataset per kejadian BNPB, misalnya lewotobi-2024 dan erupsi-gunung-ibu-januari-2025.",
+   "upaya": "M",
+   "cara_validasi": "Jalankan aturan baru mundur untuk 2018-2024, lalu bandingkan jumlah kejadian per tahun dengan seri BNPB (dampak_gunungapi.json tahunan). Lulus bila selisihnya ≤ 1 kejadian atau ≤ 20% per tahun. Invarian: tidak ada kejadian yang tanggal mulainya sama dengan tanggal pertama sistem berjalan. Snapshot 19 Okt 2026 harus menghasilkan kejadian aktif sesuai SK/dampak, bukan 27.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://data.bnpb.go.id",
+    "https://data.bnpb.go.id/dataset/lewotobi-2024",
+    "docs/multi-bencana/SUMBER-BNPB.md (bagian 4)",
+    "scripts/umum/kejadian.py:267-280"
+   ]
+  },
+  {
+   "metode_lama": "Agregasi 'X kejadian aktif di Y bencana' di /semua yang ikut menjumlahkan 27 kejadian V, dengan peringkat = level - 1.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan gunung api dari hitungan kejadian aktif nasional sampai aturan kejadian berbasis BNPB (usulan sebelumnya) berlaku. Tampilkan baris terpisah 'N gunung berstatus Siaga/Awas (PVMBG, per pukul X)'. Peringkat lintas bencana memakai status keadaan darurat BNPB, bukan level - 1.",
+   "praktik_resmi_indonesia": "BNPB merekap kejadian per jenis bencana (DIBI). Status gunung api bukan kejadian.",
+   "kenapa_lebih_tepat": "Menghentikan penggelembungan angka kejadian nasional yang bertentangan dengan BNPB tanpa penjelasan.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: judul /semua tidak boleh memuat id V yang tidak lolos aturan BNPB. Uji snapshot data 19 Okt 2026: kontribusi gunung api ke 'kejadian aktif' hanya dari SK/dampak, bukan 27.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/semua/kejadian.js:24-30, 45",
+    "public/banjir/data/kejadian_gunungapi_awal.json"
+   ]
+  },
+  {
+   "metode_lama": "Jiwa dalam radius rekomendasi dari interpolasi cincin WorldPop 1 km menurut r kuadrat (total nasional 11.376 jiwa). Contoh galat: Banda Api radius 1 km = 1.000 jiwa, lebih besar dari KRB III-nya (342).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Hitung atas poligon resmi = lingkaran radius digabung poligon sektor (usulan sektor di atas). Pakai tumpang-susun berbobot luas pada raster 100 m (WorldPop R2025A 100 m constrained), bukan interpolasi cincin. Tampilkan rentang dari dua raster (WorldPop 100 m dan raster penduduk InaRISK bila akses WCS-nya terbuka). Cek silang dengan 'penduduk kelas tinggi' InaRISK per kabupaten untuk bahaya letusan gunung api. Angka nasional hanya boleh dikutip setelah sektor ikut dihitung.",
+   "praktik_resmi_indonesia": "Angka paparan resmi BNPB berasal dari InaRISK (kajian risiko, jiwa terpapar per kelas bahaya). BPBD memakai data penduduk desa Dukcapil untuk rencana pengungsian.",
+   "kenapa_lebih_tepat": "Interpolasi r kuadrat menganggap kepadatan seragam dan galat tepinya 1 km. Raster 100 m berbobot luas menghapus kedua masalah itu, dan sektor yang berpenghuni (Besuk Kobokan 13-17 km) ikut terhitung.",
+   "data_dibutuhkan": "WorldPop Global2 R2025A 100 m constrained (CC BY 4.0, data.worldpop.org). Bisa dibaca dengan pembaca BigTIFF stdlib yang sudah ada di scripts/data/penduduk.py; cukup ubin di sekitar gunung, bulanan. InaRISK apiv4 /get-infra-risk/{kab}/{bahaya} dan /kajian-summary/{bahaya}/ALL; pola pemanggilannya sudah ada di scripts/cuaca/risiko_bnpb.py, tetapi nama kunci bahaya gunung api perlu dicoba dulu. Lisensinya tidak tertulis: sebut 'Sumber: InaRISK BNPB'. GeoServer InaRISK raster:INARISKPOP_2020 / Population_Density2025 (akses WCS belum dicek).",
+   "upaya": "M",
+   "cara_validasi": "(1) Invarian: jiwa(poligon radius) ≤ jiwa(KRB III) bila radius berada di dalam KRB III, dan jiwa naik monoton terhadap radius; Banda Api dan Anak Ranakah wajib lolos. (2) Untuk Merapi dan Semeru, bandingkan dengan penduduk resmi (Dukcapil atau BPS Kecamatan Dalam Angka) pada desa yang lebih dari 50% luasnya di dalam poligon. Lulus bila galat relatif ≤ 25%; ambang ini usulan pemilik, bukan dari literatur.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://data.worldpop.org/GIS/Population/Global_2015_2030/R2025A/",
+    "https://inarisk.bnpb.go.id",
+    "docs/multi-bencana/SUMBER-BNPB.md (bagian 1-3)",
+    "scripts/gunungapi/magma.py:139-151"
+   ]
+  },
+  {
+   "metode_lama": "Paparan per zona KRB (KRB PVMBG edisi 2018 x WorldPop 1 km, aturan pusat piksel; baru 30 dari 69 gunung; paparan.py tidak dijadwalkan di workflow).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan zona KRB PVMBG sebagai acuan resmi. Ganti hitungan penduduknya: berbobot luas pada raster 100 m (sama seperti usulan radius), lalu dicek silang dengan InaRISK get-infra-risk per kabupaten untuk letusan gunung api. Cantumkan edisi peta KRB per gunung dari metadata geoportal; bila edisinya lebih tua dari erupsi besar terakhir (mis. Semeru 2021), beri tanda. Jadwalkan paparan.py bulanan di statis.yml agar gunung yang baru naik level otomatis punya zona.",
+   "praktik_resmi_indonesia": "Peta KRB adalah produk resmi Badan Geologi. InaRISK BNPB adalah angka paparan resmi per kelas bahaya.",
+   "kenapa_lebih_tepat": "KRB III sering berbentuk koridor lembah selebar ratusan meter. Aturan pusat piksel 1 km membuat galat dua arah, dan raster 100 m menguranginya satu orde. Pembanding InaRISK membuat angka tidak bertabrakan dengan angka BNPB di rapat.",
+   "data_dibutuhkan": "geoportal.esdm.go.id/gis4 BGV_GA/KRB_Gunung_Api_Area (sudah dipakai); WorldPop 100 m; InaRISK apiv4.",
+   "upaya": "M",
+   "cara_validasi": "(1) Rasio penduduk KRB III+II per kabupaten (versi baru) terhadap penduduk kelas sedang+tinggi InaRISK untuk bahaya letusan gunung api di kabupaten yang sama. Lulus bila rasio 0,5-2 di ≥ 80% kabupaten; selisih di luar itu harus dijelaskan (mis. edisi KRB). (2) Uji desa Merapi/Semeru seperti pada usulan radius, galat ≤ 25%.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://geoportal.esdm.go.id/gis4/rest/services/BGV_GA/KRB_Gunung_Api_Area/MapServer",
+    "https://inarisk.bnpb.go.id",
+    "scripts/gunungapi/paparan.py:1-17, 289-310; PARITAS-GUNUNGAPI.md:28"
+   ]
+  },
+  {
+   "metode_lama": "Sekolah, faskes, dan desa di KRB dari titik OSM.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pakai InaRISK /get-infra-risk/{kab}/{bahaya}, yang memuat sekolah, madrasah, RS, dan puskesmas per kelas bahaya, sebagai angka resmi per kabupaten. Untuk titik per KRB, pakai data sekolah nasional per NPSN (Dapodik). Pembacanya sudah ada di scripts/data/sekolah.py dan tinggal diperluas ke provinsi bergunung api. OSM tetap dipakai hanya sebagai lapisan peta.",
+   "praktik_resmi_indonesia": "Kemendikdasmen (Dapodik) adalah data sekolah resmi. BNPB/InaRISK menghitung fasilitas terpapar per kelas bahaya.",
+   "kenapa_lebih_tepat": "Repo sendiri mencatat kekurangan OSM: Kalimantan Tengah sekitar 430 sekolah di OSM, padahal Dapodik 3.000+ (scripts/scrape/fasilitas.py:4-5). Di zona bahaya, angka batas bawah seperti itu menyesatkan.",
+   "data_dibutuhkan": "sekolah.xlsx nasional (Dapodik, berkas lokal, tidak masuk repo); InaRISK apiv4 (bulanan, berjeda).",
+   "upaya": "M",
+   "cara_validasi": "Untuk setiap gunung yang punya KRB, hitung sekolah di KRB menurut OSM dan menurut Dapodik. Lulus bila Dapodik ≥ OSM di semua gunung, dan selisih total per kabupaten terhadap InaRISK ≤ 25% (ambang usulan). Simpan tabel pembanding sebagai bukti.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dapo.kemdikbud.go.id",
+    "https://inarisk.bnpb.go.id",
+    "scripts/data/sekolah.py; scripts/scrape/fasilitas.py:4-5"
+   ]
+  },
+  {
+   "metode_lama": "Izin tambang (WIUP) di KRB ditentukan dari titik pusat atau simpul poligon.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Hitung luas irisan WIUP ∩ KRB dalam ha dan tampilkan hanya WIUP dengan irisan di atas ambang luas. Tambahkan status tahap izin (eksplorasi atau operasi produksi) dari MODI ESDM. Labelnya: 'wilayah izin (WIUP) yang beririsan dengan KRB', bukan 'tambang di KRB'.",
+   "praktik_resmi_indonesia": "WIUP dan status IUP dikelola Ditjen Minerba ESDM (geoportal, MODI).",
+   "kenapa_lebih_tepat": "Aturan simpul melebihkan jumlah, dan izin tidak sama dengan aktivitas. Luas irisan ditambah status produksi lebih dekat ke risiko nyata, misalnya tambang pasir di alur lahar.",
+   "data_dibutuhkan": "geoportal ESDM WIUP (sudah dipakai); MODI ESDM (cara aksesnya perlu dicek).",
+   "upaya": "S",
+   "cara_validasi": "Ambil sampel 20 WIUP di KRB Merapi dan Semeru, lalu periksa bukaan tambang aktif secara visual di Sentinel-2 terbaru. Laporkan presisi label 'aktif'. Lulus bila tidak ada WIUP beririsan kurang dari 1 ha yang masih ikut terhitung.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://modi.esdm.go.id",
+    "https://geoportal.esdm.go.id",
+    "scripts/gunungapi/paparan.py:310-336"
+   ]
+  },
+  {
+   "metode_lama": "Rute dan waktu tempuh evakuasi arus bebas (Dijkstra jalan OSM, kecepatan tetap, 'titik aman' buatan sendiri).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Untuk briefing, tampilkan jalur evakuasi dan TES/TEA resmi dari Rencana Kontinjensi BPBD (Merapi dan Semeru sudah punya). Bila tetap memodelkan, ikuti kerangka Evacuation Time Estimate (ETE) NUREG/CR-7002: distribusi waktu mobilisasi, kapasitas jalan, dan antrean, dikalibrasi pada pengungsian nyata. Angka arus bebas cukup untuk perencanaan internal.",
+   "praktik_resmi_indonesia": "BPBD menyusun Rencana Kontinjensi berisi jalur evakuasi, TES/TEA, dan kebutuhan armada. BNPB merekap data pengungsi per kejadian (mis. dataset Lewotobi 2024).",
+   "kenapa_lebih_tepat": "Waktu arus bebas tanpa antrean bukan waktu evakuasi. ETE adalah metodologi baku yang memisahkan mobilisasi dari perjalanan, dan data kontinjensi resmi tidak akan bertabrakan dengan angka daerah.",
+   "data_dibutuhkan": "Dokumen Renkon BPBD (biasanya PDF, perlu diminta atau dicari); dataset pengungsi BNPB (data.bnpb.go.id); graf OSM yang sudah ada.",
+   "upaya": "L",
+   "cara_validasi": "Hindcast pengungsian Lewotobi November 2024 dan Semeru Desember 2021: bandingkan waktu sampai X% penduduk zona tiba di TES dengan catatan BPBD/BNPB. Lulus bila galat ≤ 30% (ambang usulan). Sebelum lulus, angka ini tidak masuk briefing.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.nrc.gov/reading-rm/doc-collections/nuregs/contract/cr7002/r1/",
+    "https://data.bnpb.go.id/dataset/lewotobi-2024",
+    "scripts/gunungapi/paparan.py:44-45, 337-385"
+   ]
+  },
+  {
+   "metode_lama": "Model abu Lagrangian 72 jam: jejak berambang 2 mg/m3, arah, dan jangkauan maksimum (Merapi 293 km, Semeru 284 km) di laci, laporan harian, dan Simulasi.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Untuk laporan dan briefing, ganti seluruh jejak dan jangkauan dengan produk resmi yang sedang berlaku:\n(1) VA SIGMET BMKG, yaitu poligon awan abu teramati dan prakiraan, diambil dari aviationweather.gov /api/data/sigmet?hazard=va&format=geojson. Host-nya sama dengan scripts/scrape/metar.py, jadi cukup satu fungsi.\n(2) VA Advisory VAAC Darwin (poligon OBS dan +6/+12/+18 jam), dikutip apa adanya.\n(3) VONA PVMBG (kode warna, tinggi awan).\nSkenario 'jika meletus sekarang' dihapus dari laporan_gunungapi.json. Bila tetap ada di Simulasi, beri cap 'latihan, bukan prakiraan'.",
+   "praktik_resmi_indonesia": "BMKG (MWO) menerbitkan VA SIGMET dan advisory sebaran abu yang merujuk VAAC Darwin dan Himawari-9. Advisory Lewotobi 14 Nov 2024 bahkan mencantumkan bandara yang berpotensi terdampak. VAAC Darwin (BoM) menerbitkan VAA paling lama tiap 6 jam. PVMBG menerbitkan VONA. Penutupan bandara diputuskan Kemenhub/AirNav lewat NOTAM.",
+   "kenapa_lebih_tepat": "Produk resmi berbasis pengamatan satelit dan sudah dipakai sektor aviasi. Model rumahan ini kalah dari klimatologi (berambang 25% vs 75%), jangkauannya bergeser 121-292 km hanya karena seed acak, dan jejaknya hilang bila fraksi abu halus 5% dipakai. Model seperti itu tidak boleh bersanding dengan produk resmi.",
+   "data_dibutuhkan": "aviationweather.gov Data API (NOAA, publik tanpa kunci, cache tiap menit; endpoint isigmet ditandai deprecated, jadi pakai /api/data/sigmet hazard=va). Perlu dicek bahwa SIGMET FIR Jakarta (WIIF) dan Ujung Pandang (WAAF) ikut tercakup. VAA Darwin: situs BoM menolak pengambilan otomatis (HTTP 403 saat saya coba 21 Okt 2026); salinan teks sebagian ada di VAAC Tokyo (daftar 'Darwin VAAC Backup' di data.jma.go.jp). Pengambilan rutin langsung dari BoM perlu izin atau feed resmi.",
+   "upaya": "M",
+   "cara_validasi": "(1) Selama 30 hari, arsipkan setiap VA SIGMET ber-FIR Indonesia dan cocokkan dengan VONA Orange/Red yang berawan abu pada jam yang sama. Lulus bila ≥ 90% VONA tersebut punya SIGMET dalam 1 jam; ini menguji cakupan feed. (2) Gerbang: laporan_gunungapi.json tidak boleh memuat metrik atau sorot yang bersumber dari abu_gunungapi.json.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://aviationweather.gov/data/api/",
+    "https://aviationweather.gov/data/schema/openapi.yaml",
+    "https://web-aviation.bmkg.go.id/storage/files/2/2024/VA_LEWOTOBI/Lewotobi_14_November_2024_05_00_UTC_docx.pdf",
+    "https://www.data.jma.go.jp/vaac/data/vaac_darwin_list.html",
+    "https://www.data.jma.go.jp/vaac/data/TextData/2024/20240418_26701000_0022_DA_Text.html"
+   ]
+  },
+  {
+   "metode_lama": "Aturan tinggi kolom skenario per level (II = 1 km, III = 2 km, IV = 5 km) dan massa dari MER Mastin.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Ganti pemetaan level ke tinggi kolom dengan tipe letusan (ESP) per gunung dari Mastin dkk. 2009. Paper itu menetapkan tipe letusan khas untuk sekitar 1.500 gunung Holosen dunia, termasuk parameter H, durasi, dan fraksi halus. Saat ada erupsi, pakai H teramati dari VONA/VAA. Ambil sampel H secara kontinu, dan MER dalam pita ±faktor 4 (selang 50% Mastin). Untuk awan jauh, pakai fraksi abu halus ~4% (Dacre dkk. 2013) alih-alih seluruh massa. Selama skenario tidak lulus uji, angkanya tidak boleh keluar dari Simulasi.",
+   "praktik_resmi_indonesia": "VAAC dan PVMBG memakai tinggi awan teramati (VONA 'ash-cloud top'), bukan tinggi dari level status. Level PVMBG mengukur aktivitas, bukan tinggi kolom.",
+   "kenapa_lebih_tepat": "ESP per gunung adalah praktik baku pemodel abu operasional dan memberi gaya letusan yang berbeda untuk dua gunung Level III. Data VONA di repo (median 600 m, 25 dari 29 kejadian di bawah 2 km) membuktikan asumsi 2 km untuk Level III terlalu tinggi.",
+   "data_dibutuhkan": "Tabel tipe ESP Mastin dkk. 2009 (lampiran paper); arsip VONA (sudah diurai uji_abu.py).",
+   "upaya": "M",
+   "cara_validasi": "(1) Per gunung, median tinggi kolom VONA 2024-2026 harus berada dalam rentang H tipe ESP yang ditetapkan untuk ≥ 80% gunung yang punya ≥ 5 VONA. (2) Jalankan uji balik arah dengan konfigurasi produksi baru dan bandingkan dengan konfigurasi kolom VONA pada 29 kejadian yang sama. Lulus bila tidak lebih buruk dari klimatologi (McNemar p > 0,05 ke arah buruk).",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://pubs.usgs.gov/publication/70192378",
+    "https://www.pages.mtu.edu/~raman/papers/MastinetalJVGR09.pdf",
+    "https://acp.copernicus.org/articles/13/1277/2013/",
+    "scripts/gunungapi/abu.py:67, 157-160"
+   ]
+  },
+  {
+   "metode_lama": "Bandara di jalur abu: pipeline memakai penyangga 25 km di sekitar sel lolos ambang, sedangkan Simulasi memakai selubung cembung. Hasilnya jadi metrik 'Bandara di jalur abu 72 jam' dan sorot 'abu bisa tiba di MLG sekitar 2 jam lagi'.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Bandara terdampak = bandara (OurAirports, kode ICAO, sudah ada di bandara.json) yang berada di dalam poligon VA SIGMET/VAA yang berlaku (uji titik-dalam-poligon), dengan lapisan ketinggian dari produk resmi. Tambahkan status penutupan hanya dari pengumuman resmi Kemenhub/AirNav/operator bandara. Model tidak boleh menghasilkan daftar bandara. Chip skenario di sapa.js dihapus.",
+   "praktik_resmi_indonesia": "Advisory sebaran abu BMKG mencantumkan bandara dan rute ATS yang berpotensi terdampak (contoh Lewotobi 14-16 Nov 2024: Soa, Komodo, Waikabubak). Keputusan penutupan oleh Kemenhub/AirNav lewat NOTAM/ASHTAM.",
+   "kenapa_lebih_tepat": "Daftarnya berasal dari poligon yang dipakai sektor aviasi, sehingga tidak ada 'bandara terdampak' tanpa erupsi. Kasus WARA kena hanya karena penyangga 25 km, padahal arah awan meleset 52 derajat. Ini juga tidak lagi melangkahi kewenangan BMKG, VAAC, dan Kemenhub.",
+   "data_dibutuhkan": "VA SIGMET (aviationweather.gov, lihat usulan model abu); public/gunungapi/data/bandara.json; arsip advisory PDF BMKG untuk uji.",
+   "upaya": "M",
+   "cara_validasi": "Uji balik episode Lewotobi November 2024: bandingkan daftar bandara di dalam poligon SIGMET/VAA dengan daftar bandara di advisory BMKG pada jam yang sama (web-aviation.bmkg.go.id). Lulus bila recall ≥ 80% dan tidak ada bandara di luar poligon resmi yang ikut terhitung. Selama SIGMET belum diarsipkan, uji memakai teks VAA yang ada di mirror JMA.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://web-aviation.bmkg.go.id/storage/files/2/2024/VA_LEWOTOBI/Lewotobi_14_November_2024_05_00_UTC_docx.pdf",
+    "https://web-aviation.bmkg.go.id/storage/files/2/2024/VA_LEWOTOBI/Lewotobi_15_November_2024_15_00_UTC_docx.pdf",
+    "https://aviationweather.gov/data/api/",
+    "scripts/gunungapi/abu.py:338-363; laporan.py:25, 188-193; public/gunungapi/sapa.js:18-41"
+   ]
+  },
+  {
+   "metode_lama": "Peluang abu di bandara/kota (ansambel 18-69 anggota, 500 partikel, ambang 0,2/2/4 mg/m3). Nilai p = 0,652 = 45/69 adalah artefak faktor kolom; peluang hari ke-2 ke Jakarta 0,55; '>99%' dari 18-69 anggota.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Cabut dari layar publik dan briefing sekarang. Bila tetap ingin ada angka peluang yang bisa dipertanggungjawabkan, ganti besarannya: 'peluang awan abu bergerak ke sektor X dalam 0-6 jam, BILA terjadi erupsi setinggi tipe ESP gunung itu'. Peluang ini dihitung dari lintasan ansambel angin (51 anggota ECMWF ENS yang sudah diambil peluang_abu.py) pada ketinggian kolom, tanpa ambang konsentrasi. Peluang konsentrasi (0,2/2/4 mg/m3, batas UK CAA) baru boleh kembali bila memakai model mapan berensembel (HYSPLIT seperti Dispersion Ensemble Prediction System BoM, atau FALL3D/Ash3d) dan lulus uji keandalan.",
+   "praktik_resmi_indonesia": "Tidak ada produk peluang abu resmi untuk Indonesia. BMKG dan VAAC Darwin menyajikan poligon deterministik. BoM mengembangkan ansambel HYSPLIT+ACCESS (DEPS) untuk VAAC Darwin.",
+   "kenapa_lebih_tepat": "Peluang arah memakai satu-satunya komponen yang punya bukti (arah awal 72% vs klimatologi 55%) dan bisa diverifikasi setiap hari terhadap VONA. Peluang konsentrasi yang sekarang hanya mencerminkan desain faktor kolom dan kuantum partikel.",
+   "data_dibutuhkan": "Open-Meteo ensemble (sudah dipakai); arsip VONA. Untuk ansambel konsentrasi: HYSPLIT Linux perlu registrasi NOAA, sedangkan Ash3d (USGS, CC0) dan FALL3D adalah Fortran yang berat untuk menit GitHub Actions. Perkiraan saya L.",
+   "upaya": "M",
+   "cara_validasi": "Peluang arah: Brier score multikategori 8 sektor terhadap arah VONA, dengan pembanding klimatologi arah VONA per gunung (leave-one-out). Lulus bila BSS > 0 dengan selang bootstrap 95% di atas 0 pada n ≥ 50 kejadian independen (satu per gunung per hari), disertai diagram reliabilitas seperti Crawford dkk. 2022. Peluang konsentrasi: FSS/BSS terhadap poligon VAA/SIGMET, dengan kelulusan FMS > 0,40 (Prata dkk. 2021).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://acp.copernicus.org/articles/22/13967/2022/",
+    "https://gmd.copernicus.org/articles/14/409/2021/",
+    "https://amos-ictmo-2019.p.amos.currinda.com/tracks/20/abstract/507",
+    "https://www.ready.noaa.gov/HYSPLIT_linux.php",
+    "https://www.usgs.gov/software/ash3d-version-100",
+    "scripts/gunungapi/peluang_abu.py:15-16, 53-65, 185-211, 295-301"
+   ]
+  },
+  {
+   "metode_lama": "Sebaran partikel mentah (jejak_tipis) untuk arah awal dan animasi awan 72 jam. Arah jam ke-3: 21 dari 29 (72%) vs klimatologi 55%, McNemar p = 0,30. Gagal pada 3 kolom terbesar.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tampilkan hanya 'arah angin di ketinggian kolom, 0-6 jam' sebagai panah atau sektor, dengan skill dilaporkan per kelas tinggi kolom (kurang dari 1 km, 1-2 km, lebih dari 2 km). Kelas yang belum lulus disembunyikan. Pakai profil angin pada tinggi kolom VONA terakhir. Jangkauan 72 jam dan animasi ribuan km dikeluarkan dari materi resmi.",
+   "praktik_resmi_indonesia": "Advisory BMKG dan VAA menyebut arah dan kecepatan gerak awan ('moving W at 20 kt') berdasarkan satelit dan sounding. Ini besaran yang sama, tetapi teramati.",
+   "kenapa_lebih_tepat": "Klaim dibatasi pada wilayah yang ada buktinya, dan kegagalan pada kolom besar (yang paling penting untuk penerbangan) tidak tertutup oleh rata-rata.",
+   "data_dibutuhkan": "Sama dengan sekarang, ditambah tinggi kolom VONA.",
+   "upaya": "S",
+   "cara_validasi": "Uji McNemar berpasangan terhadap klimatologi per kelas tinggi kolom, dengan n ≥ 30 per kelas dari seluruh arsip VONA. Kelas hanya ditampilkan bila p < 0,05 dan model lebih baik.",
+   "prioritas": "P2",
+   "rujukan": [
+    "scripts/gunungapi/abu.py:296-312",
+    "public/banjir/data/abu_gunungapi.json uji_balik_tipis",
+    "scripts/gunungapi/contoh/uji_balik_detail.json"
+   ]
+  },
+  {
+   "metode_lama": "Uji balik arah abu terhadap VONA (uji_abu.py): sampel 14 halaman per gunung, maksimal 8 kejadian, n = 29. Label pembanding di layar salah, dan konfigurasi produksi (kolom asumsi) tidak diuji.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "(1) Pakai seluruh arsip VONA per gunung, bukan sampel 14 halaman.\n(2) Uji berpasangan (McNemar) sebagai syarat klaim skill.\n(3) Uji juga konfigurasi produksi.\n(4) Tambah uji luas jejak terhadap poligon VAA Darwin yang teksnya tersedia di mirror JMA. Contohnya Ruang 18 Apr 2024 (advisory 2024/22), yang memuat poligon OBS di tiga lapisan FL plus prakiraan +6/+12/+18 jam. Metriknya FMS dan FSS.\n(5) Ubah label pembanding menjadi 'arah VONA terbanyak di gunung yang sama'.",
+   "praktik_resmi_indonesia": "Tidak ada uji publik dari lembaga Indonesia. Praktik internasional untuk validasi model abu: FMS/SAL (Prata dkk. 2021) dan FSS (Harvey & Dacre 2016) terhadap satelit atau VAA.",
+   "kenapa_lebih_tepat": "n yang besar dan uji berpasangan memisahkan skill dari kebetulan. Uji luas adalah satu-satunya cara menilai 'jangkauan', yang sekarang belum pernah diuji.",
+   "data_dibutuhkan": "magma.esdm.go.id/v1/vona (arsip lengkap); teks VAA Darwin di data.jma.go.jp (format teks dengan koordinat, mudah diurai stdlib); Open-Meteo historical-forecast.",
+   "upaya": "M",
+   "cara_validasi": "Arah: McNemar p < 0,05 dengan model lebih baik dari klimatologi. Luas: rerata FMS > 0,40 dan SAL < 1,5 terhadap poligon VAA OBS pada jam yang sama (kriteria Prata dkk. 2021). Sebelum lulus, kartu Uji menulis 'belum terbukti lebih baik dari klimatologi'.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://gmd.copernicus.org/articles/14/409/2021/",
+    "https://acp.copernicus.org/articles/16/861/2016/",
+    "https://www.data.jma.go.jp/vaac/data/TextData/2024/20240418_26701000_0022_DA_Text.html",
+    "scripts/gunungapi/uji_abu.py:1-18, 35, 133-150"
+   ]
+  },
+  {
+   "metode_lama": "Catatan prospektif append-only arah abu vs VONA. n = 0, karena 27 entri pertama terlambat. Yang dicatat adalah arah pada kolom asumsi level.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan pola append-only. Ubah isinya:\n- Catat arah pada tinggi kolom VONA terakhir gunung itu (atau tipe ESP), bukan asumsi level.\n- Tambahkan entri peluang arah (untuk Brier).\n- Tambahkan penilaian poligon terhadap VA SIGMET/VAA (FMS) setiap ada erupsi berawan abu.\n- Tampilkan n dan hasilnya apa adanya di kartu Uji.",
+   "praktik_resmi_indonesia": "Tidak ada. Ini praktik verifikasi baku (pra-registrasi).",
+   "kenapa_lebih_tepat": "Yang dinilai harus sama dengan yang akan ditampilkan. Sekarang yang dinilai adalah konfigurasi yang tidak akan dipakai pada erupsi nyata.",
+   "data_dibutuhkan": "VONA; arsip VA SIGMET (lihat usulan model abu).",
+   "upaya": "S",
+   "cara_validasi": "Setelah 60 hari: entri 'terlambat' kurang dari 5%, dan setidaknya 50 entri bernilai. Laporkan persentase cocok, BSS, dan FMS bersama selang kepercayaannya.",
+   "prioritas": "P2",
+   "rujukan": [
+    "scripts/gunungapi/prospektif.py:1-31, 95-99",
+    "scripts/gunungapi/magma.py:328-335; .github/workflows/lintas.yml:85-90"
+   ]
+  },
+  {
+   "metode_lama": "Lahar LAHARZ di jalur D8 (A = 0,05 V^(2/3), B = 200 V^(2/3)), DEM terrarium ~38 m pra-erupsi, volume bebas 1e5-1e7, waktu tiba Manning n = 0,06.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Briefing: tampilkan KRB dan poligon sektor PVMBG (usulan sektor) ditambah peringatan lahar resmi (butir lahar di rekomendasi PVMBG, peringatan BPBD), bukan hasil simulasi.\nModel, bila dilanjutkan: Laharz_py (USGS) dengan koefisien A dan B yang diregresi ulang per sungai dari lahar terpetakan setempat. Castruccio & Clavero 2015 menunjukkan koefisien 0,05 bisa meleset jauh; di Andes Selatan 0,02. Pakai DEMNAS BIG ~8 m, atau Copernicus DEM GLO-30 sebagai cadangan terbuka. Volume diambil dari kejadian historis, bukan dipilih bebas. Kalimat 'menit tiba' dihapus sampai ada kalibrasi kecepatan.",
+   "praktik_resmi_indonesia": "Badan Geologi memetakan bahaya lahar di KRB dan rekomendasi sektor. BPBD/BPPTKG mengoperasikan peringatan dini lahar di sungai-sungai Merapi. Tidak ada simulasi lahar publik dari lembaga resmi untuk briefing.",
+   "kenapa_lebih_tepat": "LAHARZ hanya sah bila koefisiennya dikalibrasi pada kejadian lokal. Tanpa itu, jarak, luas, dan menit hanyalah fungsi dari volume yang dipilih pengguna.",
+   "data_dibutuhkan": "DEMNAS (tanahair.indonesia.go.id, perlu akun; lisensi perlu dicek); Copernicus DEM GLO-30 (terbuka). Peta endapan sebagai target: Damage Proxy Map EOS-RS Semeru Desember 2021 (Sentinel-1) dan peta endapan McGowan dkk. (Sentinel-1 + PlanetScope); citra Sentinel-2 Marapi Mei 2024 yang sudah ada di citra.py.",
+   "upaya": "L",
+   "cara_validasi": "Hindcast per sungai: Semeru Besuk Kobokan Desember 2021 dan Marapi 11 Mei 2024, dengan volume kejadian. Metriknya indeks Jaccard antara area tergenang model dan area endapan terpetakan, serta galat jarak runout. Lulus bila Jaccard ≥ 0,5 dan galat runout ≤ 20% (ambang usulan pemilik, bukan literatur). Uji sintetis uji_lahar.mjs tetap dipakai, tetapi bukan sebagai bukti skill.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://pubs.usgs.gov/publication/ofr20141073",
+    "https://ideas.repec.org/a/spr/nathaz/v77y2015i2p693-716.html",
+    "https://sentinel-asia.org/EO/2021/article20211204ID/EOS/EOS-RS_202112_DPM_S1_Indonesia_Semeru_Volcano_v0.8_TXT.txt",
+    "https://mro.massey.ac.nz/handle/10179/74219",
+    "https://registry.opendata.aws/copernicus-dem/",
+    "public/gunungapi/sim_lahar.js:13-16, 67; public/gunungapi/metode.js:34"
+   ]
+  },
+  {
+   "metode_lama": "Awan panas: kerucut energi H/L pilihan 0,2-0,35 (bawaan 0,3), lidah lereng 0,2 x jarak, waktu tiba dari garis energi.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Briefing: KRB III dan sektor PVMBG.\nModel, bila dilanjutkan: kerucut energi probabilistik bercabang (ECMapProb, Aravena dkk.). H/L diambil sebagai sebaran yang dikalibrasi per gunung dari runout historis, bukan satu nilai bebas. Contoh kalibrasi Merapi: aliran terkungkung lembah 5 Nov 2010 mencapai 15,5 km (Komorowski dkk. 2013), dengan peta endapan 22,3 km2 (Charbonnier dkk. 2013). Untuk Semeru, pakai endapan Desember 2021. Rentang H/L di Simulasi harus mencakup nilai kalibrasi itu (Merapi sekitar 0,16-0,17, di bawah pilihan minimum 0,2 saat ini). Waktu tiba ditampilkan sebagai batas atas atau dihapus.",
+   "praktik_resmi_indonesia": "Jangkauan awan panas resmi ada di rekomendasi sektor PVMBG dan peta KRB III.",
+   "kenapa_lebih_tepat": "Kalibrasi pada kejadian setempat mencegah jangkauan simulasi yang lebih pendek dari sektor PVMBG, yang bisa terbaca sebagai 'zona aman'.",
+   "data_dibutuhkan": "Runout dan peta endapan dari literatur (Komorowski 2013, Charbonnier 2013, EOS-RS DPM 2021); DEMNAS atau Copernicus DEM.",
+   "upaya": "L",
+   "cara_validasi": "Hindcast Merapi 2010 (Gendol) dan Semeru 2021 (Besuk Kobokan): galat runout ≤ 15% dan Jaccard terhadap peta endapan ≥ 0,4 (ambang usulan). Invarian: untuk gunung yang punya sektor PVMBG, jangkauan persentil-50 tidak boleh lebih pendek dari sektor tanpa peringatan tertulis.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://link.springer.com/article/10.1007/s00445-024-01768-y",
+    "https://theghub.org/resources/4389",
+    "https://ueaeprints.uea.ac.uk/51762/",
+    "https://keele-repository.worktribe.com/output/427943/evaluation-of-the-impact-of-the-2010-pyroclastic-density-currents-at-merapi-volcano-from-high-resolution-satellite-imagery-field-investigations-and-numerical-simulations",
+    "public/gunungapi/sim.js:9, 78; sim_lahar.js:13, 16, 123-140"
+   ]
+  },
+  {
+   "metode_lama": "Hujan abu relatif di desa (dinormalkan ke titik maksimum; kelas tebal/sedang/tipis) dan kebutuhan masker (2 per orang per hari, Rp 3.500).",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Hapus kelas 'tebal/sedang/tipis' sekarang. Ganti dengan model beban endapan bersatuan kg/m2 atau mm: Tephra2, solusi tertutup adveksi-difusi yang bisa ditulis ulang dalam Python stdlib atau dikompilasi dari C di Actions. Masukannya ESP (massa total, H, sebaran butir) dan angin ensemble. Pakai ambang dampak terpublikasi: kurang dari 10 mm sudah mengganggu kesehatan dan infrastruktur; lebih dari 100 mm merusak tanaman dan infrastruktur (Wilson, Jenkins & Stewart 2015). Logistik masker = penduduk di dalam isopach ≥ 1 mm x hari paparan.",
+   "praktik_resmi_indonesia": "PVMBG memuat peringatan hujan abu di rekomendasi. BMKG memberi arah sebaran abu. Kebutuhan logistik ditetapkan BPBD/BNPB per kejadian.",
+   "kenapa_lebih_tepat": "Nilai relatif membuat erupsi sekecil apa pun selalu punya desa 'tebal'. Beban kg/m2 berskala dengan besar erupsi dan bisa dibandingkan dengan ambang dampak di literatur.",
+   "data_dibutuhkan": "Tephra2 (kode di GitHub geoscience-community-codes); ESP Mastin; angin Open-Meteo; desa dan penduduk dari paparan.",
+   "upaya": "L",
+   "cara_validasi": "Hindcast Kelud 13 Feb 2014 dengan ESP terbitan (MER sekitar 6,5 x 10^7 kg/s; Maeno dkk. 2019) dan angin hari itu. Bandingkan tebal model dengan titik lapangan dan isopach (Maeno dkk. 2019; inversi Tephra2 Williams dkk. 2020). Lulus bila ≥ 70% titik berada dalam faktor 2 (ambang usulan). Sampai lulus, Simulasi tidak menampilkan angka masker.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://theghub.org/resources/tephra2",
+    "https://www.cambridge.org/core/services/aop-cambridge-core/content/view/24D3B55544701A33CE138AEF6158765B/9781316276273c12_p281-288_CBO.pdf/volcanic-ash-fall-impacts.pdf",
+    "https://repository.kulib.kyoto-u.ac.jp/dspace/handle/2433/241765",
+    "https://appliedvolc.biomedcentral.com/articles/10.1186/s13617-020-00100-5",
+    "public/gunungapi/sim.js:138, 469-476; sim_tanggap.js:19, 132-137"
+   ]
+  },
+  {
+   "metode_lama": "Jiwa terpapar per piksel, evakuasi berkapasitas, dan peringkat perlakuan Pareto (jiwa terselamatkan vs rupiah). Semua satuannya ASUMSI tanpa kalibrasi.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Keluarkan dari briefing dan dari layar publik non-latihan. Pertahankan hanya sebagai alat tabletop dengan tanda air 'latihan'. Untuk keputusan nyata, pakai angka Rencana Kontinjensi BPBD/BNPB per gunung (target pengungsi, armada, TES) dan data pengungsi BNPB per kejadian. Bila kelak dimodelkan, ikuti kerangka ETE (NUREG/CR-7002) yang dikalibrasi pada pengungsian Semeru 2021 dan Lewotobi 2024. Satuan biaya harus dari standar resmi; sumber BNPB atau Kemensos untuk ini belum saya temukan, jadi perlu dicari.",
+   "praktik_resmi_indonesia": "Renkon BPBD dan data pengungsi BNPB (mis. dataset lewotobi-2024, erupsi-gunung-ibu-januari-2025).",
+   "kenapa_lebih_tepat": "Angka nyawa dan rupiah dari tumpukan asumsi di atas jejak bahaya yang tidak tervalidasi berisiko etis dan politis. Angka kontinjensi resmi adalah angka yang dipakai daerah.",
+   "data_dibutuhkan": "Data pengungsi BNPB (CKAN); dokumen Renkon BPBD.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: kartu 'Perlakuan evakuasi' dan 'Peringkat perlakuan' hanya dirender dalam mode latihan bertanda air. Validasi model kelak: hindcast Lewotobi November 2024, jumlah pengungsi per desa model vs dataset BNPB, galat ≤ 30% (ambang usulan).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.nrc.gov/reading-rm/doc-collections/nuregs/contract/cr7002/r1/",
+    "https://data.bnpb.go.id/dataset/lewotobi-2024",
+    "https://data.bnpb.go.id/tr/dataset/erupsi-gunung-ibu-januari-2025/resource/64b8876d-0555-4a7e-bbda-fa5b2cfa84ec",
+    "public/gunungapi/sim_tanggap.js:1-20"
+   ]
+  },
+  {
+   "metode_lama": "Pita ketidakpastian Simulasi: kolom x0,7/x1,4 dan volume lahar /3 dan x3 dengan seed tetap.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sekarang: ubah teksnya menjadi 'kepekaan terhadap satu asumsi, bukan selang keyakinan'. Kelak: ganti dengan persentil 10-50-90 dari ansambel yang mengambil sampel H dan durasi menurut tipe ESP, MER dalam ±faktor 4 (Mastin dkk. 2009), anggota angin ENS, dan beberapa seed.",
+   "praktik_resmi_indonesia": "Tidak ada produk resmi.",
+   "kenapa_lebih_tepat": "Derau seed saja sudah menggeser jangkauan Semeru 121-292 km, lebih lebar dari pita x0,7/x1,4. Pita yang sekarang memberi kesan presisi palsu.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Invarian: pita harus mencakup sebaran hasil 10 seed dengan parameter tengah. Bila tidak, pita tidak ditampilkan.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://pubs.usgs.gov/publication/70192378",
+    "public/gunungapi/sim_kerja.js:28-29, 39-40; sim.js:389-391"
+   ]
+  },
+  {
+   "metode_lama": "Indeks risiko riwayat letusan 0-100 (50% kekerapan + 30% VEI + 20% tren), termasuk baris 'Indeks risiko ... peringkat N' di kartu Cerita. Hasilnya Kelud 28, Tambora 0, Dukono 50.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Sekarang: hapus baris indeks dari kartu Cerita (insight.js:49) dan sajikan tipe gunung A/B/C Badan Geologi beserta riwayat letusan apa adanya.\nSkala kabupaten: pakai IRBI BNPB kolom gunungapi dari InaRISK apiv4 /data-irbi-full; endpoint ini sudah dicatat di repo, NDJSON 2015-2025 per kabupaten.\nPeringkat per gunung: pakai metode mapan Volcanic Hazard Index (Auker dkk. 2015) x Population Exposure Index (Brown dkk. 2015, GVM/GAR15), yang menggabungkan bahaya (frekuensi, VEI, awan panas, lahar, korban) dengan penduduk 10 dan 30 km. Alternatifnya, skema ancaman NVEWS (Ewert dkk. 2018, 24 faktor bahaya dan paparan). Bahan keduanya sudah ada: katalog GVP dan raster penduduk.",
+   "praktik_resmi_indonesia": "BNPB memakai Indeks Risiko Bencana Indonesia (IRBI) per kabupaten, termasuk komponen gunung api. Badan Geologi mengelompokkan gunung menjadi tipe A/B/C.",
+   "kenapa_lebih_tepat": "Indeks sekarang hanya mengukur kekerapan, padahal namanya 'risiko', dan menghukum gunung jarang meletus berdaya rusak tinggi. IRBI selaras dengan angka resmi, sedangkan VHI x PEI adalah metode terpublikasi yang memang dibuat untuk memeringkat ancaman gunung api, termasuk untuk Indonesia.",
+   "data_dibutuhkan": "InaRISK apiv4 /data-irbi-full (lisensi tak tertulis, sebut sumber); Smithsonian GVP (sudah dipakai); WorldPop untuk cincin 10 dan 30 km.",
+   "upaya": "M",
+   "cara_validasi": "Peringkat baru diuji membedakan gunung yang punya letusan mematikan sejak 1900 menurut NCEI/GVP (antara lain Kelud, Merapi, Semeru, Galunggung, Agung, Anak Krakatau, Sinabung, Lewotobi, Marapi) dari yang tidak. Lulus bila AUC ≥ 0,75 dan tidak satu pun gunung dengan korban lebih dari 100 jiwa berada di bawah median (ambang usulan).",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.cambridge.org/core/books/global-volcanic-hazards-and-risk/populations-around-holocene-volcanoes-and-development-of-a-population-exposure-index/8CAD59A8B0CE1DF9FD72FEE7DD3CAF7F",
+    "https://www.openphilanthropy.org/wp-content/uploads/Aspinall_et_al_GFDRR_Volcano_Risk_Final.pdf",
+    "https://pubs.usgs.gov/publication/sir20185140",
+    "https://inarisk.bnpb.go.id",
+    "scripts/gunungapi/risiko.py:1-15; public/gunungapi/insight.js:41-54"
+   ]
+  },
+  {
+   "metode_lama": "Factsheet letusan besar historis (kurasi tangan, angka NCEI/GVP ber-URL).",
+   "vonis_akhir": "layak",
+   "alternatif": "Pertahankan. Untuk peristiwa sejak 2010, tampilkan angka resmi BNPB (DIBI atau dataset per kejadian) di samping angka NCEI bila keduanya berbeda, dan sebut definisinya (meninggal langsung vs total).",
+   "praktik_resmi_indonesia": "BNPB adalah sumber resmi korban dan pengungsi untuk kejadian di Indonesia.",
+   "kenapa_lebih_tepat": "Mencegah bantahan di rapat ketika angka NCEI berbeda dari angka BNPB, misalnya untuk Semeru 2021.",
+   "data_dibutuhkan": "data.bnpb.go.id; Buku Data Bencana BNPB.",
+   "upaya": "S",
+   "cara_validasi": "Tabel selisih NCEI vs BNPB untuk peristiwa 2010-2024 di factsheet. Setiap selisih lebih dari 10% diberi catatan definisi.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/Buku%20Data%20Bencana%202024/20250613_Buku%20Data%202024.pdf",
+    "scripts/gunungapi/factsheet.py:1-39"
+   ]
+  },
+  {
+   "metode_lama": "Seri tahunan BNPB 2010-2024 dengan judul perubahan persen antartahun ('mengungsi naik 630%'). Nol yang sebenarnya hilang dianggap nol, dan seri meninggal tidak ada.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Hapus persen antartahun dari judul. Ganti dengan 'kejadian terbesar tahun itu' (gunung, jumlah pengungsi). Tandai nilai 0 sebagai 'tidak tercatat' bila metrik lain pada tahun yang sama tidak nol (2010: terdampak 0, mengungsi 506.794). Isi seri meninggal dari tabel BNPB 'Jumlah Korban Meninggal Dunia Akibat Bencana Menurut Provinsi' (XLSX, ODbL) dan Buku Data Bencana.",
+   "praktik_resmi_indonesia": "BNPB menerbitkan Buku Data Bencana tahunan dan tabel kompilasi dampak per jenis bencana.",
+   "kenapa_lebih_tepat": "Untuk bencana episodik, persen antartahun hanya mencerminkan satu tahun erupsi besar, sehingga '630%' terbaca sebagai tren memburuk. Korban jiwa adalah metrik dampak yang paling ditanyakan.",
+   "data_dibutuhkan": "data.bnpb.go.id kompilasi 2024 (XLSX; unduhan berkas bisa kena Cloudflare 403 menurut catatan repo, sedangkan datastore bisa); Buku Data Bencana 2024 (PDF).",
+   "upaya": "S",
+   "cara_validasi": "Invarian: tidak ada tahun dengan terdampak = 0 sementara mengungsi > 0 yang tampil sebagai 0. Total 2024 per metrik sama dengan tabel Buku Data Bencana 2024.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://data.bnpb.go.id/dataset/kompilasi-data-jumlah-dan-dampak-kejadian-bencana-2024",
+    "https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/Buku%20Data%20Bencana%202024/20250613_Buku%20Data%202024.pdf",
+    "scripts/gunungapi/dampak.py:49-75; public/gunungapi/dampak.js:44-45"
+   ]
+  },
+  {
+   "metode_lama": "Uji tren Mann-Kendall + Theil-Sen pada seri tahunan BNPB (n = 15). Semua hasilnya tidak bermakna.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pertahankan, dengan tiga tambahan: Mann-Kendall termodifikasi Hamed-Rao (koreksi autokorelasi), pembersihan nol yang hilang sebelum diuji, dan kalimat tetap bahwa seri kejadian BNPB juga mencerminkan praktik pencatatan.",
+   "praktik_resmi_indonesia": "Mann-Kendall dan Theil-Sen adalah praktik baku BMKG dan hidrologi.",
+   "kenapa_lebih_tepat": "Autokorelasi pada seri pendek membuat p optimistis. Koreksi Hamed-Rao adalah standar untuk masalah itu.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Simulasi 1.000 seri AR(1) tanpa tren (rho 0,3, n = 15). Lulus bila tingkat positif palsu pada alfa 0,05 berada di 3-7% setelah koreksi.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://doi.org/10.1016/S0022-1694(97)00125-X",
+    "scripts/gunungapi/tren.py:1-53"
+   ]
+  },
+  {
+   "metode_lama": "Laporan Harian Gunung Api (laporan.py). Lima metrik mencampur data resmi dengan skenario ('bandara_abu', prakiraan jangkauan 24/48/72 jam), pernah terbit 0 erupsi palsu, dan cutoff statusnya pagi hari.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Jadikan laporan 'Data resmi PVMBG/BMKG' saja, dengan isi:\n- status per level dan perubahan (dari D1, berjam);\n- gunung yang erupsi per hari kalender beserta tinggi kolom dan arah teramati;\n- butir rekomendasi PVMBG utuh, termasuk sektor;\n- VONA berkode warna oranye/merah;\n- VA SIGMET/VAA yang berlaku dan bandara di dalam poligonnya.\nSemua baris model dipindah ke lampiran berjudul 'Simulasi Pantau Bencana, bukan prakiraan', atau dihapus. Cantumkan jam terbit PVMBG dan jam cutoff di kepala laporan.",
+   "praktik_resmi_indonesia": "Laporan harian Pusdalops BNPB mengutip status dan rekomendasi PVMBG, serta informasi abu dari BMKG/VAAC.",
+   "kenapa_lebih_tepat": "Laporan inilah yang paling mungkin disalin ke Laporan Harian BNPB dan deck Presiden. Memisahkan resmi dari model mencegah baris skenario ikut tersalin tanpa labelnya.",
+   "data_dibutuhkan": "D1 /api/gunungapi/terbaru; VONA; VA SIGMET (aviationweather.gov).",
+   "upaya": "M",
+   "cara_validasi": "Gerbang: setiap kunci metrik di laporan_gunungapi.json wajib punya 'sumber' dari daftar resmi (PVMBG, BMKG, VAAC); sumber 'abu_gunungapi' atau 'peluang' ditolak. Uji snapshot 19 Okt 2026 tidak memuat kata 'Skenario'. Uji nilai hari tanpa data = null, bukan 0 (regresi commit e4c26dfd).",
+   "prioritas": "P1",
+   "rujukan": [
+    "scripts/gunungapi/laporan.py:20-26, 104-156, 188-211",
+    "https://aviationweather.gov/data/api/",
+    "https://magma.esdm.go.id/v1/vona"
+   ]
+  },
+  {
+   "metode_lama": "Pop-up 'Situasi gunung api hari ini' (sapa.js). Erupsi 24 jam dihitung terhadap jam peramban, dan chip 'skenario: N bandara di jalur abu' tampil di bawah atribusi 'sumber: PVMBG (MAGMA Indonesia)'.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Jendela 24 jam dihitung dari waktu data (S.st.dibuat atau umur D1). Kartu skenario abu dihapus dan diganti 'VA SIGMET/VAA berlaku: N' dengan sumber BMKG/VAAC Darwin. Sumber ditulis per bagian (PVMBG untuk status dan erupsi, BMKG/VAAC untuk abu). Perubahan status ditulis 'terdeteksi pukul X'.",
+   "praktik_resmi_indonesia": "Atribusi sumber per produk: PVMBG untuk status dan VONA, BMKG/VAAC untuk abu di udara.",
+   "kenapa_lebih_tepat": "Menghapus salah atribusi keluaran model ke PVMBG dan angka '24 jam' yang sebenarnya hanya mencakup sekitar 13 jam pada malam hari.",
+   "data_dibutuhkan": "Tidak ada data baru selain VA SIGMET.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit dengan jam tiruan (pukul 21.00 WIB, data pukul 09.10): jumlah erupsi 24 jam dihitung dari waktu data. Gerbang: string 'PVMBG' tidak boleh berada di blok yang memuat data dari abu_gunungapi.json.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/gunungapi/sapa.js:12, 18-19, 31, 34, 41"
+   ]
+  },
+  {
+   "metode_lama": "Kartu ringkasan nasional gunung api (adapter.js) dengan kalimat tetap 'berstatus Siaga atau Awas hari ini' dari berkas harian.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Pakai sumber D1 (usulan ingest) dan labelHari(dibuat) seperti insight.js:37: 'per pukul HH:MM WIB'. Bila umur data lebih dari 90 menit, tulis 'data per <tanggal jam>, belum diperbarui'.",
+   "praktik_resmi_indonesia": "Status PVMBG selalu dikutip dengan jam laporan.",
+   "kenapa_lebih_tepat": "Klaim 'hari ini' pada data berumur sampai 24 jam adalah presisi waktu palsu.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: tolak literal 'hari ini' pada adaptor yang tidak membaca waktu data. Uji: berkas berumur 20 jam harus menghasilkan label jam, bukan 'hari ini'.",
+   "prioritas": "P1",
+   "rujukan": [
+    "public/inti/adapter.js:33-41",
+    "public/gunungapi/insight.js:37"
+   ]
+  },
+  {
+   "metode_lama": "Arah kolom abu teramati dari teks letusan PVMBG (tabel 'Erupsi 24 jam terakhir').",
+   "vonis_akhir": "layak",
+   "alternatif": "Pertahankan sebagai sumber arah abu utama di briefing. Gabungkan dengan arah dan kecepatan gerak awan dari VONA dan VA SIGMET/VAA pada jam yang sama, dan tulis sumber masing-masing. Bila arah antarsumber bertentangan, tampilkan keduanya, jangan dipilih salah satu.",
+   "praktik_resmi_indonesia": "Laporan erupsi PVMBG, VONA, dan advisory BMKG/VAAC menyebut arah teramati.",
+   "kenapa_lebih_tepat": "Pengamatan resmi lebih kuat daripada arah model mana pun, dan menggabungkan tiga sumber resmi menutup jam ketika satu sumber kosong.",
+   "data_dibutuhkan": "Sudah ada (informasi letusan, VONA); ditambah VA SIGMET.",
+   "upaya": "S",
+   "cara_validasi": "Pada erupsi yang punya teks letusan dan VONA dalam selisih 30 menit, arahnya sama atau bertetangga (±45 derajat) di ≥ 90% kasus. Kasus di bawah itu ditandai untuk diperiksa parsernya.",
+   "prioritas": "P2",
+   "rujukan": [
+    "scripts/gunungapi/laporan.py:69-71, 214-217",
+    "https://magma.esdm.go.id/v1/vona"
+   ]
+  },
+  {
+   "metode_lama": "Citra Sentinel-2 sebelum/sesudah 6 peristiwa (jendela 150/75 hari).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tampilkan selisih hari setiap adegan dari peristiwa. Tambahkan Sentinel-1 SAR (tembus awan) atau Damage Proxy Map EOS-RS bila tersedia untuk peristiwa itu, dengan atribusi. Pakai citra yang sama sebagai target validasi LAHARZ dan H/L (lihat dua usulan sebelumnya).",
+   "praktik_resmi_indonesia": "Peta dampak cepat berbasis Sentinel-1 untuk Semeru 2021 dibuat EOS-RS dan disebarkan lewat Sentinel Asia dan NASA Disasters. Lembaga Indonesia memakai interpretasi visual.",
+   "kenapa_lebih_tepat": "Di daerah tropis, adegan optik bebas awan bisa berjarak bulanan dari peristiwa. SAR memberi adegan dalam hitungan hari.",
+   "data_dibutuhkan": "Sentinel-1 GRD (Copernicus, terbuka; STAC Earth Search sudah dipakai citra.py); produk EOS-RS DPM.",
+   "upaya": "S",
+   "cara_validasi": "Setiap kartu citra memuat selisih hari. Gerbang menolak adegan 'sesudah' yang berjarak lebih dari 75 hari tanpa label.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://sentinel-asia.org/EO/2021/article20211204ID/EOS/EOS-RS_202112_DPM_S1_Indonesia_Semeru_Volcano_v0.8_TXT.txt",
+    "scripts/gunungapi/citra.py:17-28"
+   ]
+  },
+  {
+   "metode_lama": "Pemantauan berita gunung api (volume dan topik; sentimen disembunyikan).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Beri label 'perhatian media, bukan besaran bencana' dan pisahkan dari indikator bahaya di laporan. Sentimen tetap disembunyikan sampai ada set uji berlabel manusia.",
+   "praktik_resmi_indonesia": "Tidak ada metrik resmi. BNPB memakai pemantauan media hanya untuk komunikasi.",
+   "kenapa_lebih_tepat": "Mencegah volume berita dibaca sebagai eskalasi bahaya.",
+   "data_dibutuhkan": "Tidak ada data baru.",
+   "upaya": "S",
+   "cara_validasi": "Gerbang: metrik berita tidak boleh muncul di laporan_gunungapi.json.",
+   "prioritas": "P3",
+   "rujukan": [
+    "scripts/gunungapi/berita.py:1-40"
+   ]
+  },
+  {
+   "metode_lama": "Tampilan 3D medan Simulasi dengan pembesaran vertikal adaptif 1,3-2 kali tanpa keterangan.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Tulis 'skala vertikal xN' di legenda, dan pakai 1x untuk tangkapan layar materi resmi.",
+   "praktik_resmi_indonesia": "Konvensi kartografi: pembesaran vertikal wajib dinyatakan.",
+   "kenapa_lebih_tepat": "Mencegah lereng tampak lebih curam di deck.",
+   "data_dibutuhkan": "Tidak ada.",
+   "upaya": "S",
+   "cara_validasi": "Uji unit: legenda memuat nilai ex yang sama dengan setTerrain exaggeration.",
+   "prioritas": "P3",
+   "rujukan": [
+    "public/gunungapi/sim.js:66, 145, 303"
+   ]
+  }
+ ]
+}

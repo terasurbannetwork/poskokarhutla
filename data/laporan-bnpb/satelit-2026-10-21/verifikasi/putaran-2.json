@@ -1,0 +1,108 @@
+{
+  "summary": "Independently re-verify the revised (v3) satellite numbers on BNPB deck slides 1-2",
+  "agentCount": 2,
+  "logs": [],
+  "result": [
+    {
+      "checker": "hitung-ulang-v3",
+      "result": {
+        "summary": "I re-implemented SPEC v3 from the raw FIRMS CSVs without reading hitung3.py (scratchpad/verif3/ulang.py, compared by verif3/banding.py). porsi matches exactly: daily ratios 0.5158/0.5898/0.5518/0.4364, median 0.5337924177818518. All 160 values (8 provinces x hot/luas/belum/padam/fs x 17-20 Oct) equal angka.json bit for bit; the largest absolute difference is 0, so nothing exceeds 0.5. I also checked the final deck (verif3/dek.py, dek2.py). The subtitles match (P 5.366, T 14.229, Q 38%, B 8.323, X 12.849), as do all row totals, the 8-province totals and the FS pills (987/978/833). Every ▲ is D9600B, every ▼ is 2F86D1, and the one 0% arrow (Papua Selatan hot 19 Oct) is shown as 0%. Out of 8 province rows, 7 match. The 8th, Kalbar, has one arrow that breaks the spec's round-half-up rule because ganti.py line 40 uses Python round(). The S-NPP gap is confined to the western daytime pass: on 20 Oct the land S-NPP daytime count is 171, against 2.643/5.153/3.576 on 17-19 Oct. The ~05:40-06:10 UTC pass (lon <131) is missing, while the 04:02-04:06 UTC Papua pass came in, but thin. luas is unaffected because it uses only NOAA-20/21 and porsi comes from 16-19 Oct. belum is unaffected for 7 provinces; the latest look-back end for any 20 Oct point is 04:11 UTC, before the missing pass. Papua Selatan has a small, bounded exposure. padam(20), the subtitle P/Q, fs(20) and hot(20) are still biased by the gap, as quantified below.",
+        "verdict": "issues",
+        "findings": [
+          {
+            "severity": "medium",
+            "what": "hot 20 Oct is still under-counted because the S-NPP daytime pass is missing. The hot column includes S-NPP, so the 20 Oct values and their arrows lean down.",
+            "evidence": "S-NPP share of hot dropped on 20 Oct: Kalteng 62 [65,42,29,14]%, Kalsel 63 [53,59,53,6]%, Papua Selatan 93 [57,35,53,12]%, Kaltim 64 [79,60,36,7]% for 17/18/19/20 Oct. I estimated the missing S-NPP daytime points three ways: (a) the province's own 17-19 Oct ratio of S-NPP to NOAA-20+21 daytime counts; (b) the national ratio, 0.550; (c) the 17-19 Oct median of hot/(NOAA-20+MODIS), checked against 20 Oct. Estimated missing points (deck value in brackets): 62 [2.363] 633-1.154 (27-49%); 16 [947] 0-522, estimates disagree (-2% to 55%); 63 [993] 407-990 (41-100%); 15 [87] 0-56, too few points to say; 61 [211] 0-34 (12-16%, method c says none); 93 [2.766] 1.005-2.428 (36-88%); 72 [911] 253-329 (28-36%); 64 [753] 240-983 (32-131%). For the 8 provinces, hot 20 Oct of 9.031 is roughly 3.200-5.600 points low (36-62%). The hot/(NOAA-20+MODIS) ratio on 20 Oct falls to 1.17 (62), 1.07 (63), 1.14 (93) and 1.08 (64), against 1.4-4.7 on 17-19 Oct. Scripts: verif3/celah.py, verif3/celah2.py."
+          },
+          {
+            "severity": "medium",
+            "what": "padam(20), and with it the slide-1 subtitle P and Q, is still sensitive to the gap. The spec tests each 19 Oct point against cells from ALL VIIRS detections on 20 Oct, including S-NPP. With almost no S-NPP daytime cells on 20 Oct, fewer 19 Oct points find a neighbour, so too many count as extinguished (padam) and padam(20) is likely overstated.",
+            "evidence": "On 17-19 Oct, when S-NPP daytime is complete, dropping S-NPP daytime cells from day d raised the 8-province padam by +3% (17 Oct), +14% (18 Oct) and +8% (19 Oct). For the 5 slide-1 provinces the rise was 2.885->3.007 (+4%), 3.081->3.505 (+14%) and 8.296->8.656 (+4%). Single provinces moved more, e.g. Kalbar 61 on 18 Oct 207->312 (+51%), Papua Selatan 93 on 19 Oct 1.797->2.284 (+27%), Sumsel 16 on 19 Oct 2.013->2.268 (+13%). Applying the same effect to 20 Oct: P = 5.366 ha is likely ~4-14% too high, so roughly 4.700-5.150 ha, and Q would be about 33-36% rather than 38%. Script: verif3/celah2.py, section B."
+          },
+          {
+            "severity": "low",
+            "what": "fs(20) is likely understated for the same reason: S-NPP daytime points on 20 Oct are part of the cluster set, and they are missing.",
+            "evidence": "On 17/18/19 Oct, removing S-NPP daytime points lowered the 8-province fs from 746->734 (-2%), 987->883 (-11%) and 978->836 (-15%). Papua Selatan 93 on 19 Oct went 279->193 and Kalsel 63 on 19 Oct went 115->84. The 20 Oct pill of 833 FS would therefore be roughly 850-980 with full S-NPP data. Script: verif3/celah2.py."
+          },
+          {
+            "severity": "low",
+            "what": "One deck arrow breaks the spec's round-half-up rule. Kalbar (61), BELUM PADAM 18 Oct, shows ▲12%; it should be ▲13%.",
+            "evidence": "The displayed belum values are 1.600 (17 Oct, from 1599.83) and 1.800 (18 Oct, from 1799.52). (1800-1600)/1600*100 = exactly 12.5, which rounds half up to 13. The cause is ganti.py line 40, `p = round((cur - prev) / prev * 100)`: Python's round() is banker's rounding, so round(12.5) = 12. It should use the file's own bul() helper (line 5). This is the only exact .5 tie in all 72 arrows, and the other 7 rows match exactly. Script: verif3/dek2.py."
+          },
+          {
+            "severity": "low",
+            "what": "Papua Selatan belum(20) has a small, bounded exposure to the gap. luas is fully unaffected, and belum for the other 7 provinces is unaffected. The latest look-back window for 20 Oct points ends at 04:11 UTC (20 Oct 11:11 WIB); the missing S-NPP pass ran ~05:40-06:10 UTC and so falls outside every window. The S-NPP Papua pass at 04:02-04:06 UTC does fall inside the windows of 657 Papua Selatan NOAA-21 night points (16:09-16:11 UTC), and that pass looks thin.",
+            "evidence": "That pass has 136 S-NPP daytime detections in 93, against 1.707 from NOAA-20 about 20 minutes later and 548-1.269 from S-NPP on 17-19 Oct. Of the 657 points, 204 are not currently bertahan. If that pass was truncated, belum(20) for 93 could rise by at most 204/2.590 x 5.945 = 468 ha (3.135 -> at most 3.603), and the 8-province X by the same amount. Scripts: verif3/celah3.py, celah4.py, celah5.py."
+          }
+        ]
+      }
+    },
+    {
+      "checker": "cek-pptx-v3",
+      "result": {
+        "verdict": "issues",
+        "summary": "I unzipped the final deck to verif3/x and checked slides 1-2 against angka.json under the v3 display rules. 481 of 482 checks pass. There is one error: on slide 1, Kalimantan Barat, BELUM PADAM, 18 Okt, the arrow shows ▲12% but should be ▲13%. The displayed values go from 1.600 to 1.800, which is exactly +12.5%. ganti.py computes the arrow with Python's round(), which rounds a .5 to the nearest even number, so 12.5 became 12. The spec says round half up, which gives 13. This is the only exact .5 case among all 216 arrows (checked with exact fractions).\n\nEverything else passes:\n- **Value labels:** all 216 labels are at the specified x positions, rounded half up once from the unrounded values, with '.' as the thousands separator (45 hotspot, 45 luas, 45 belum on slide 1; 27 of each on slide 2).\n- **Arrows:** all sit at y = baseline+18288 with cy=137160. Every percentage and colour is correct apart from the one above. ▲ is D9600B and ▼ is 2F86D1. The single zero case, Papua Selatan hotspot 19 Okt (2.619 to 2.632, +0.50%), shows '0%' in grey 6B7280 with a grey A9B4C2 bar.\n- **Bars:** all 216 are cx=297979, sit on the row baseline, are coloured to match their arrow, and have heights within 1 EMU of max(18288, round(H*v/max)). Each row band has exactly 9 bars, 9 labels and 9 arrows.\n- **Totals rows:** the 5-province row on slide 1 (y=5330952) and the 3-province (y=4416552) and 8-province (y=4855464) rows on slide 2 all equal the sum of the displayed row values. Slide 1: hotspot 15.856 / 6.773 / 4.601, luas 23.382 / 14.229 / 12.818, belum 14.085 / 11.107 / 8.323. 8 provinces: belum 17.627 / 14.109 / 12.849.\n- **FS pills:** 987 / 978 / 833 FS, which match the 8-province fs sums for 18/19/20 Okt.\n- **Slide 1 subtitle:** reads '5 provinsi prioritas; ±5.366 ha (38 persen) dari ±14.229 ha api 19 Okt telah padam pada 20 Okt, belum padam ±8.323 ha'. P = 3326+523+764+133+620 = 5366. T = 14229, which equals the 19 Okt luas total. Q = 5366/14229 = 37.71%, rounded to 38. B = 8323, which equals the 20 Okt belum total.\n- **Slide 2 subtitle:** ends '±12.849 ha', which equals the 8-province belum total for 20 Okt.\n- **No leftover template values:** no comma decimals, NA, 'TARGET', old FS pills or old footnotes remain. Template numbers that are still present (2.632, 2.766, ▼25%, ▲5%, ▲8%, 0%) match the new data at their positions.\n- **Slide 3 and other files:** slide3.xml is byte-identical to deck/x and src.pptx. Only slide1.xml and slide2.xml differ from src.pptx, and both are well-formed with no duplicate shape ids.\n- **Subtitle vs CUT OFF DATA box:** no collision. Using the installed Roboto Regular and Bold metrics at 12pt, the slide 1 subtitle is 639.4pt wide and ends at x≈8668702. The CUT OFF box starts at x=8849380, so the gap is 180678 EMU (14.2pt). This gap matters because the two boxes overlap vertically (the subtitle line is roughly y 960296..1161288, the CUT OFF box y 896112..1124712). The fonts are not embedded in the file. If Arial were substituted, the text would end at 8813438, which still clears by only 2.8pt. The slide 2 subtitle ends at x≈8504694, a 27.1pt gap.\n\nI did not recompute angka.json from the raw FIRMS files; this check compares the deck against angka.json only. Scripts are in /private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/519b7abb-b696-465e-bd1c-bcbbfb8815f9/scratchpad/verif3/s/ (cek.py, lebar.py, dump.py).",
+        "findings": [
+          {
+            "severity": "medium",
+            "what": "Slide 1, Kalimantan Barat (61), BELUM PADAM, 18 Okt: the arrow shows ▲12% but the spec's round-half-up gives ▲13%. ganti.py's banding() uses Python round(), which rounds .5 to even, instead of round half up. This is the only exact .5 case among all 216 arrows, so it is the only value affected.",
+            "evidence": "angka.json 61 belum[0]=1599.829 is displayed as 1600 and belum[1]=1799.521 as 1800. (1800-1600)/1600*100 = 12.5 exactly. The arrow shape in slide1.xml at x=9286037, y=5093208 (cy=137160) has text '▲12%'. In ganti.py the line is `p = round((cur - prev) / prev * 100)`, and round(12.5) returns 12. Fix: use int(math.floor(x + 0.5)) or Decimal ROUND_HALF_UP, like bul() does. The bar colour (orange D9600B) is already correct."
+          }
+        ]
+      }
+    }
+  ],
+  "workflowProgress": [
+    {
+      "type": "workflow_phase",
+      "index": 1,
+      "title": "Verifikasi v3"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 1,
+      "label": "hitung-ulang-v3",
+      "phaseIndex": 1,
+      "phaseTitle": "Verifikasi v3",
+      "agentId": "ae65677a345a9df33",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792570709817,
+      "queuedAt": 1792570709781,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "I re-implemented SPEC v3 from the raw FIRMS CSVs without re…",
+      "promptPreview": "You are a subagent. Don't run memo. Do NOT modify, delete or overwrite any existing file; no network downloads. Scratch scripts only under /private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/519b7abb-b696-465e-bd1c-bcbbfb8815f9/scratchpad/verif3/ (create it). Use \"python3 -I\" (you may sys.path.insert /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/scripts/data…",
+      "promptFramed": true,
+      "lastProgressAt": 1792571036946,
+      "tokens": 131795,
+      "toolCalls": 19,
+      "durationMs": 327127,
+      "resultPreview": "{\"summary\":\"I re-implemented SPEC v3 from the raw FIRMS CSVs without reading hitung3.py (scratchpad/verif3/ulang.py, compared by verif3/banding.py). porsi matches exactly: daily ratios 0.5158/0.5898/0.5518/0.4364, median 0.5337924177818518. All 160 values (8 provinces x hot/luas/belum/padam/fs x 17-20 Oct) equal angka.json bit for bit; the largest absolute difference is 0, so nothing exceeds 0.5. …"
+    },
+    {
+      "type": "workflow_agent",
+      "index": 2,
+      "label": "cek-pptx-v3",
+      "phaseIndex": 1,
+      "phaseTitle": "Verifikasi v3",
+      "agentId": "a686a747bb4bf17d6",
+      "model": "claude-opus-5-5",
+      "state": "done",
+      "startedAt": 1792570709817,
+      "queuedAt": 1792570709781,
+      "attempt": 1,
+      "lastToolName": "StructuredOutput",
+      "lastToolSummary": "issues",
+      "promptPreview": "You are a subagent. Don't run memo. Do NOT modify, delete or overwrite any existing file; no network downloads. Scratch scripts only under /private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/519b7abb-b696-465e-bd1c-bcbbfb8815f9/scratchpad/verif3/ (create it). Use \"python3 -I\" (you may sys.path.insert /Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/scripts/data…",
+      "promptFramed": true,
+      "lastProgressAt": 1792570916863,
+      "tokens": 140609,
+      "toolCalls": 20,
+      "durationMs": 205063,
+      "resultPreview": "{\"verdict\":\"issues\",\"summary\":\"I unzipped the final deck to verif3/x and checked slides 1-2 against angka.json under the v3 display rules. 481 of 482 checks pass. There is one error: on slide 1, Kalimantan Barat, BELUM PADAM, 18 Okt, the arrow shows ▲12% but should be ▲13%. The displayed values go from 1.600 to 1.800, which is exactly +12.5%. ganti.py computes the arrow with Python's round(), whic…"
+    }
+  ],
+  "totalTokens": 272404,
+  "totalToolCalls": 39
+}

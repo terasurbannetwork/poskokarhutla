@@ -1,0 +1,388 @@
+{
+ "modul": "karhutla-risiko-cuaca: indeks bahaya cuaca kebakaran (FWI dan ansambelnya), agregasi wilayah, PFVI/gambut, ENSO/IOD, kalender dan awal musim, outlook musiman/12 bulan, kelembapan tanah, status/peringkat kompleks, risiko kecamatan, OMC",
+ "usulan": [
+  {
+   "metode_lama": "Sistem FWI Kanada harian per sel 0,5° (scripts/data/fwi.py; harian.py:203-279). Cuaca diambil dari Open-Meteo best_match di titik tengah sel, dan hujan 24 jam memakai hujan model tanpa koreksi. Hasilnya tampil di peta, laci, Laporan, Paparan, Ringkasan, dan EWS.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Usulan ini punya tiga lapis.\n\n**(1) Angka resmi untuk briefing: FWI/FDRS SPARTAN BMKG.**\n- spartan.bmkg.go.id tidak membuka endpoint data. Saat dicek 21 Okt 2026, /Download-Data membalas HTTP 500, dan /MapInteractive tidak memperlihatkan API.\n- Jalurnya: BNPB mengajukan permintaan resmi ke BMKG untuk grid harian beserta prakiraannya.\n- Sampai feed itu ada, Paparan memakai peta SPARTAN sebagai gambar resmi, dan angka Pantau Bencana diberi label 'model'.\n\n**(2) Perbaiki masukan mesin sendiri.**\n- Hujan 24 jam pada hari-hari analisis (bagian past_days) diganti dengan GSMaP_NRT atau GSMaP_Gauge_NRT dari JAXA: 0,1°, per jam, NRT sekitar 4 jam.\n- Format bineri little-endian 3600×1200 bisa dibaca dengan modul array stdlib. Hujan prakiraan tetap dari model.\n- Model dipilih eksplisit (mis. ecmwf_ifs025), tidak lagi best_match. Dengan begitu keadaan awal satu keluarga dengan ansambel ECMWF.\n\n**(3) Pembanding independen yang terdokumentasi, untuk uji bulanan.**\n- CEMS FWI reanalisis ERA5 (cems-fire-historical-v1, CC-BY, diperbarui harian, 0,25°).\n- NASA GFWED: angin, suhu, dan RH dari MERRA-2, hujan dari IMERG/gauge, resolusi ~50 km.\n\nMesin fwi.py dipertahankan karena sudah lolos rantai cffdrs.",
+   "praktik_resmi_indonesia": "**Resmi Indonesia:**\n- BMKG SPARTAN memakai FDRS yang mengadopsi FWI Kanada dengan kalibrasi cuaca lokal. Isinya enam indeks: FFMC, DMC, DC, ISI, BUI, FWI (berita BMKG 23 Jun 2026).\n- FDRS Indonesia–Malaysia (de Groot dkk.; ringkasan ASEAN Haze Portal):\n  - FFMC > 82: penyulutan meningkat tajam.\n  - DC > 400: kabut asap berat meningkat.\n  - ISI > 6: dianggap ekstrem di Asia Tenggara.\n\n**Internasional:**\n- EFFIS/GWIS (GEFF ECMWF).\n- NASA GFWED.",
+   "kenapa_lebih_tepat": "- **Satu sumber resmi.** Presiden mendengar FWI BMKG di rapat yang sama. Dengan SPARTAN sebagai sumber, tidak ada dua angka untuk wilayah yang sama.\n- **Memori hujan.** DMC/DC menyimpan hujan berminggu-minggu. Hujan model yang tempatnya meleset pada sistem konvektif tropis menggeser DC selama berminggu-minggu.\n- **GSMaP lebih tepat letaknya.** GSMaP memadukan gelombang mikro dan IR satelit, dan versi Gauge dikoreksi dengan analisis stasiun CPC. Letak hujannya lebih benar daripada model.\n- **GFWED dibuat untuk masalah ini.** FWI-nya memakai hujan pengamatan, bukan reanalisis, dan sudah dievaluasi di NHESS (Field 2020).",
+   "data_dibutuhkan": "- **SPARTAN:** lewat kerja sama BNPB–BMKG; format belum diketahui.\n- **GSMaP:** https://sharaku.eorc.jaxa.jp/GSMaP/. Registrasi gratis, FTP /realtime (latensi 4 jam). Atribusi JAXA wajib. Latensi Gauge_NRT belum saya pastikan.\n- **CEMS:** https://ewds.climate.copernicus.eu/datasets/cems-fire-historical-v1. Akun EWDS dan token gratis. Formatnya NetCDF/GRIB2 dan butuh pustaka non-stdlib, jadi jalankan sebagai job validasi bulanan terpisah, bukan di pipeline harian.\n- **GFWED:** NASA GISS, NetCDF.\n- **ERA5 Open-Meteo archive:** sudah dipakai.",
+   "upaya": "M",
+   "cara_validasi": "**Kerangka:** perluas scripts/sebaran/pfvi_balik.py (sudah memakai ERA5 Open-Meteo dan arsip FIRMS) dari 89 sel gambut ke 611 sel darat. Periode Jul–Okt 2015–2025, termasuk La Niña 2020–2022.\n\n**Varian:** FWI dengan hujan ERA5 vs FWI dengan hujan GSMaP.\n\n**Target:** ≥1 titik VIIRS S-NPP besok di sel itu.\n\n**Metrik:** AUC per provinsi dan per lahan (gambut/mineral/sabana), dengan bootstrap per seri sel-tahun.\n\n**Lulus bila:**\n- Selang 95% ΔAUC varian GSMaP tidak seluruhnya negatif.\n- AUC ≥ 0,70 di tiap kelompok lahan. Kelompok dengan AUC < 0,65 tidak dipakai di briefing.\n- Korelasi peringkat harian per sel antara FWI kita dan CEMS ERA5 ≥ 0,8.\n- Kesepakatan kelas BMKG ≥ 70%.\n\nTarget yang sama dipakai terhadap SPARTAN begitu feed-nya ada. Sisa selisih ditulis di catatan slide.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://spartan.bmkg.go.id/",
+    "https://www.bmkg.go.id/berita/utama/bmkg-spartan-dukung-pemantauan-dan-pencegahan-potensi-karhutla",
+    "https://hazeportal.asean.org/?p=10687",
+    "https://sharaku.eorc.jaxa.jp/GSMaP/",
+    "https://earth.jaxa.jp/events/quad-ws2023/pdf/3-8_GSMaP_moekayamaji_JAXA.pdf",
+    "https://ewds.climate.copernicus.eu/datasets/cems-fire-historical-v1",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC7341852 (Vitolo dkk. 2020, Sci. Data 7:216)",
+    "https://nhess.copernicus.org/articles/20/1123/2020/ (Field 2020, evaluasi GFWED)",
+    "https://gpm.nasa.gov/data/IMERG"
+   ]
+  },
+  {
+   "metode_lama": "Kelas bahaya absolut BMKG: FWI <2/2–7/7–14/≥14 dan DC ≤140/≤260/≤350/>350 (aturan.py:57-64; fwi.py:105-107). Kelas ini dipakai di semua layar, termasuk teks 'DC > 350 = gambut bisa membara' untuk sel mana pun.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Kata kelas BMKG tetap dipakai di layar. Tambahannya:\n\n**Peringkat iklim per sel, mengikuti produk 'ranking' EFFIS/GWIS:**\n- Hitung persentil FWI hari ini terhadap klimatologi sel yang sama pada dasarian yang sama.\n- Klimatologi: ERA5 1991–2020 lewat Open-Meteo archive yang sudah dipakai pipeline.\n- Kelas mengikuti skema EFFIS: <80 rendah, lalu 80–90, 90–95, 95–98, 98–99, dan >99 sangat ekstrem.\n- Contoh kalimat: 'Sangat tinggi (kelas BMKG); lebih kering dari 95% hari serupa sejak 1991'.\n\n**DC > 350 dan teks asap/membara:**\n- Hanya untuk sel gambut (pfvi.sel_gambut sudah ada).\n- Untuk potensi asap berat, sebutkan juga ambang FDRS ASEAN DC > 400.\n- Di luar gambut, DC tidak disajikan sebagai indikator asap.",
+   "praktik_resmi_indonesia": "- **BMKG/SPARTAN:** kelas absolut FWI/DC.\n- **FDRS Indonesia (de Groot dkk.):** DC > 400 dikaitkan dengan kabut asap berat.\n- **EFFIS/JRC:** selain FWI absolut, menerbitkan 'ranking' (persentil terhadap ~40 tahun) dan 'anomaly' (simpangan baku terhadap rerata 40 tahun). Lapisan ecmwf.ranking dan ecmwf.anomaly ada di WMS GWIS (GetCapabilities dicek 21 Okt 2026).",
+   "kenapa_lebih_tepat": "- **Kelas absolut jenuh di savana.** Di NTT dan Papua Selatan, median FWI 23–31 sepanjang kemarau, jadi 'sangat tinggi' tidak lagi membedakan hari yang luar biasa. Persentil membedakannya dan memberi frekuensi alarm yang terkendali per sel.\n- **DC–asap dibangun dari gambut.** Hubungan DC–asap dalam literatur FDRS Indonesia dibangun dari kebakaran gambut. Memakainya untuk savana NTT (DC 1.000+) adalah salah tafsir.",
+   "data_dibutuhkan": "- ERA5 per jam 1991–2020 untuk 611 sel dari Open-Meteo archive. Diunduh sekali, dicicil beberapa hari agar tidak melewati kuota, lalu disimpan di data/raw.\n- Alternatif: CEMS historical (perlu decoder non-stdlib).",
+   "upaya": "M",
+   "cara_validasi": "**Data:** Jul–Okt 2015–2025, dipisah per lahan.\n\n**Bandingkan:** aturan 'persentil ≥ 95' vs 'FWI ≥ 14' pada porsi sel-hari bertanda yang sama.\n\n**Lulus bila:**\n- Di sabana/mineral, recall api besar (≥ 20 titik) naik ≥ 5 poin atau presisinya naik.\n- Di gambut, keduanya tidak turun.\n\n**Uji invarian:** teks 'gambut'/'membara' tidak pernah muncul untuk sel non-gambut.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://forest-fire.emergency.copernicus.eu/about-effis/technical-background/fire-danger-forecast",
+    "https://maps.effis.emergency.copernicus.eu/gwis?service=WMS&request=GetCapabilities",
+    "https://hazeportal.asean.org/?p=10687",
+    "https://open-meteo.com/en/docs/historical-weather-api"
+   ]
+  },
+  {
+   "metode_lama": "Agregasi provinsi memakai maksimum sel: fwi_maks dan dc_maks (harian.py:501-508). Kartu 'FWI masih sangat tinggi di N provinsi' (index.html:3546-3567; laporan.js:626-635) memakai maksimum satu sel pada kolom prakiraan terakhir (hari ini+3), sementara hujan di kartu yang sama dirata-rata.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Maksimum sel diganti dengan **porsi luas**.\n\n**Cara hitung:**\n- Persentase sel darat provinsi, dibobot luas daratan sel, yang kelas BMKG-nya ≥ ambang pada HARI INI (analisis), bukan pada kolom prakiraan +3.\n- Rumusnya sama dengan peluang_karhutla.py (rata-rata indikator sel), jadi kartu Cuaca dan kartu Peluang konsisten.\n\n**Kalimat:** 'Sangat tinggi di 34% wilayah Sumsel (model Pantau Bencana, data 21 Okt)'.\n\n**Kapan provinsi dihitung 'sangat tinggi':** hanya bila porsinya ≥ ambang. Ambang diambil dari uji di bawah (titik awal 25%), bukan ditetapkan bebas.\n\n**Konsistensi:**\n- DC agregat hanya dari sel gambut.\n- FWI dan hujan disajikan dengan statistik yang sama (porsi dan median).",
+   "praktik_resmi_indonesia": "- **InaRISK BNPB:** menyajikan bahaya sebagai luas per kelas (apiv4 /kajian-summary, 'luas per kelas'; lihat docs/multi-bencana/SUMBER-BNPB.md).\n- **SPARTAN BMKG:** memberi peta spasial, bukan nilai tunggal provinsi.\n- **Laporan harian BNPB karhutla:** per provinsi memakai besaran teramati.",
+   "kenapa_lebih_tepat": "- **Bias satu sel hilang.** Data 15 Okt menghitung 8 dari 9 provinsi bila memakai maksimum, dan 3 bila memakai median. Jambi (7% sel ≥ 14), Kalbar (4%), dan Kaltim (2%) ikut terhitung hanya karena satu sel.\n- **Mudah dibaca.** Porsi luas langsung terbaca sebagai seberapa luas wilayah yang terdampak.\n- **Tidak bertabrakan dengan peta BMKG.** Peta BMKG memperlihatkan sebagian besar wilayah rendah; maksimum sel tidak bisa menjelaskan itu.",
+   "data_dibutuhkan": "- fwi.json: sudah ada.\n- Daftar sel gambut: pfvi.sel_gambut, sudah ada.\n\nTidak perlu sumber baru.",
+   "upaya": "S",
+   "cara_validasi": "**Data:** FWI ERA5 2015–2025 (kerangka pfvi_balik diperluas), per provinsi-hari.\n\n**Bandingkan:** Spearman antara statistik agregat (maks, median, porsi ≥ 14) dan jumlah titik panas provinsi esok hari.\n\n**Lulus bila:** Spearman porsi ≥ Spearman maks di ≥ 7 dari 9 provinsi.\n\n**Ambang kartu:** dipilih dengan memaksimalkan skor Peirce, untuk 'provinsi dengan ≥ 100 titik besok'.\n\n**Gerbang unit:** kartu tidak lagi membaca fwi_maks atau kolom hari terakhir.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id (apiv4 /kajian-summary; docs/multi-bencana/SUMBER-BNPB.md di repo)",
+    "https://spartan.bmkg.go.id/"
+   ]
+  },
+  {
+   "metode_lama": "Kolom 'FWI' per kabupaten di Paparan Presiden dan Laporan: maksimum FWI antar kompleks api di kabupaten itu, berupa angka bulat dari sel 0,5° terdekat (laporan.py:264-276,384; paparan_slide.js:313,321-322). Catatan sumbernya 'FWI dari Open-Meteo'.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Isi kolom:**\n- Angka mentah diganti kata kelas BMKG (Rendah/Sedang/Tinggi/Sangat tinggi).\n- Nilai diambil di lokasi kompleks terbesar kabupaten itu, bukan maksimum antar kompleks. Sebut sebagai 'kondisi cuaca di lokasi api'.\n- Begitu feed SPARTAN tersedia, kolom ini langsung memakai kelas SPARTAN.\n\n**Catatan sumber slide diganti menjadi:** 'Indeks cuaca kebakaran (sistem FWI Kanada) dihitung Pantau Bencana dari cuaca model, tanggal data X; bukan SPARTAN BMKG'.",
+   "praktik_resmi_indonesia": "- BMKG SPARTAN dengan kelas bahaya BMKG adalah bahasa resmi untuk tingkat bahaya cuaca kebakaran.",
+   "kenapa_lebih_tepat": "- **Angka mentah tidak terbaca.** 'FWI 32' tidak bermakna bagi pembaca non-teknis.\n- **Presisi semu.** Satu sel 55 km menaungi beberapa kabupaten, jadi angka per kabupaten berlebihan.\n- **Bahasa yang sama dengan BMKG.** Dengan kelas dan label sumber, tidak ada klaim yang bersaing dengan BMKG.",
+   "data_dibutuhkan": "- kluster.json: sudah ada.\n- Feed SPARTAN: opsional, menyusul.",
+   "upaya": "S",
+   "cara_validasi": "**Gerbang uji paparan:**\n- Kolom FWI hanya berisi salah satu dari empat kata kelas.\n- Tiap slide punya baris sumber dan tanggal data.\n\n**Setelah feed SPARTAN tersedia:** kesepakatan kelas per kabupaten ≥ 70% selama 30 hari. Selisihnya dicatat di lampiran.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://spartan.bmkg.go.id/",
+    "https://www.bmkg.go.id/berita/utama/bmkg-spartan-dukung-pemantauan-dan-pencegahan-potensi-karhutla"
+   ]
+  },
+  {
+   "metode_lama": "Email EWS karhutla dikirim bila FWI deterministik hari ini/+1/+2 di sel terdekat ≥ 7 (Waspada) atau ≥ 14 (Siaga) (src/ews.js:32-33,150-156; ews_tindakan.js:20-26). Belum ada verifikasi per lead.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Pemicu baru:**\n- Peluang ansambel P(FWI ≥ 14) ≥ 0,6 pada lead 1–2, ATAU\n- Persentil iklim ≥ 95 selama dua hari berturut-turut.\n\nFWI deterministik mentah tidak lagi menjadi pemicu.\n\n**Isi email:**\n- Tautkan ke peringatan dini resmi BMKG (nowcast, sudah diambil modul banjir).\n- Sebut sebagai 'prakiraan model'.\n\n**Arsip:** mulai simpan prakiraan FWI tiap hari secara append-only (pola scripts/sebaran/prospektif.py) supaya bisa diverifikasi.",
+   "praktik_resmi_indonesia": "- BMKG menerbitkan peringatan dini cuaca resmi dan SPARTAN.\n- EFFIS memakai prakiraan deterministik ECMWF 1–9 hari dengan kelas dan ranking.",
+   "kenapa_lebih_tepat": "- **Alarm terlalu sering.** Di gambut, FWI ≥ 7 menandai 44,6% sel-hari (RISET-PFVI.md:45), sehingga warga kebanjiran peringatan.\n- **Frekuensi terkendali.** Ambang berbasis peluang atau persentil membatasi frekuensi alarm dan bisa dikalibrasi terhadap hasil verifikasi.",
+   "data_dibutuhkan": "- fwi.json, fwi_ansambel.json: sudah ada.\n- Arsip prakiraan baru: cache Actions atau berkas jsonl.",
+   "upaya": "M",
+   "cara_validasi": "**Data:** arsip ≥ 60 hari musim kering.\n\n**Metrik:** POD/FAR/CSI per lead 1–3 terhadap FWI analisis hari itu.\n\n**Lulus bila:**\n- Pada lead 1, POD ≥ 0,7 dan FAR ≤ 0,3.\n- Frekuensi alarm ≤ 2 per minggu per pelanggan di luar bulan puncak.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://forest-fire.emergency.copernicus.eu/about-effis/technical-background/fire-danger-forecast",
+    "https://cawcr.gov.au/projects/verification/reliability_resolution.html"
+   ]
+  },
+  {
+   "metode_lama": "Ansambel FWI 7 hari ECMWF IFS 51 anggota (ansambel.py). Cuaca diambil sekali per kotak 1° untuk semua sel di dalamnya, semua anggota mulai dari satu keadaan FFMC/DMC/DC deterministik, dan peluang = pecahan anggota tanpa kalibrasi. Konsumennya ringkasan.js, databaru.js, dan operasi.py, tanpa saringan umur yang seragam.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**(1) Verifikasi sebelum dipakai.**\n- Arsipkan tiap run secara append-only (pola prospektif.py).\n- Hitung Brier Skill Score dan diagram reliabilitas untuk P(FWI ≥ 7) dan P(FWI ≥ 14) per lead 1–7.\n- Target: FWI analisis hari itu. Referensi: klimatologi sel-dasarian.\n\n**(2) Kalibrasi pasca-proses** (isotonik atau logistik per lead) setelah ≥ 1 musim data.\n\n**(3) Ketidakpastian keadaan awal.** Separuh anggota dijalankan dari keadaan DC/DMC ERA5 dan separuh dari keadaan best_match. Keduanya sudah dihitung pipeline, jadi tidak perlu data baru.\n\n**(4) Cuaca per sel 0,5° untuk provinsi prioritas.**\n- Perkiraan beban: ~380 sel × bobot 20,4 ≈ 7.800 per hari. Ini dekat batas gratis Open-Meteo, jadi kuotanya perlu dicek dulu.\n- Bila tidak muat, tetap pakai kotak 1° dan tulis batasannya.\n\n**(5) Satu penjaga umur di semua konsumen** (ringkasan.js, databaru.js, operasi.py): buang hari sebelum hari ini dan tolak berkas berumur > 36 jam.",
+   "praktik_resmi_indonesia": "**Resmi Indonesia:** belum ada produk publik BMKG berupa peluang FWI harian yang saya temukan.\n\n**Internasional:**\n- GEFF/EFFIS menjalankan FWI dari ECMWF ENS 51 anggota. Skill-nya melampaui 10 hari terhadap klimatologi (Di Giuseppe dkk. 2020).\n- Nilai numerik real-time GWIS tidak terbuka. GetFeatureInfo lapisan ecmwf.query di WMS GWIS mengembalikan fitur tanpa atribut saat dicek 21 Okt 2026. Jadi ansambel sendiri tetap diperlukan, tetapi harus diverifikasi.",
+   "kenapa_lebih_tepat": "- **Peluang tanpa reliabilitas.** Tanpa diagram reliabilitas, '70%' belum tentu terjadi 70% kali.\n- **Sebaran awal terlalu sempit.** Semua anggota dari satu keadaan DC/DMC membuat sebaran hari 1–2 terlalu sempit, padahal DC/DMC paling menentukan.\n- **Data basi masih terpakai.** Penjaga umur hanya ada di kartu index; konsumen lain masih memakai ansambel berumur 6 hari.",
+   "data_dibutuhkan": "- Open-Meteo ensemble API: sudah dipakai.\n- fwi.json harian sebagai target verifikasi: sudah ada.\n- Arsip run: berkas baru.",
+   "upaya": "M",
+   "cara_validasi": "**Data:** setelah satu musim (≥ 90 hari × sel provinsi prioritas).\n\n**Lulus bila:**\n- BSS > 0 pada lead 1–3, dengan selang bootstrap di atas 0.\n- Kemiringan reliabilitas antara 0,8 dan 1,2.\n\n**Konsekuensi:** lead yang tidak lulus tidak boleh ditampilkan dengan kata 'peluang'.\n\n**Uji unit:** semua konsumen menolak ansambel berumur > 36 jam.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://nhess.copernicus.org/articles/20/2365/2020/ (Di Giuseppe dkk. 2020)",
+    "https://cawcr.gov.au/projects/verification/reliability_resolution.html",
+    "https://maps.effis.emergency.copernicus.eu/gwis?service=WMS&request=GetCapabilities"
+   ]
+  },
+  {
+   "metode_lama": "Peluang bahaya api 7 hari per wilayah (peluang_karhutla.py → peluang.json): rata-rata pt/ps sel, dengan kalimat vonis seperti 'Dalam 2 hari ke depan … (79% wilayah)'. Berkas di checkout dibuat 19 Okt dari ansambel 13 Okt.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Definisi porsi wilayah dipertahankan. Yang diubah:\n\n**Kata dan konteks kalimat:**\n- Ganti menjadi 'porsi wilayah yang diperkirakan Sangat Tinggi (model ansambel)'.\n- Kalimat menyebut tanggal hari prakiraan dan tanggal ansambel, mis. 'untuk 22–23 Okt; ansambel 21 Okt'.\n\n**Apa yang ditampilkan:**\n- Hanya lead yang lulus verifikasi ansambel.\n- Penjaga umur ≤ 36 jam yang sama dengan usulan ansambel, berlaku di semua konsumen.\n\n**Uji balik:** porsi prakiraan dibandingkan dengan porsi analisis pada hari itu.",
+   "praktik_resmi_indonesia": "- BMKG memakai bahasa 'peluang' hanya untuk produk probabilistik yang diterbitkan dan diverifikasi, mis. Prediksi Curah Hujan Bulanan Probabilistik.",
+   "kenapa_lebih_tepat": "- **Kata 'peluang' mudah salah dibaca.** Tanpa label 'porsi wilayah, model', angkanya bisa dibaca sebagai peluang terjadinya api.\n- **Kalimat bisa basi.** '2 hari ke depan' sempat lahir dari prakiraan hari ke-6–7 tanpa disadari pembaca.",
+   "data_dibutuhkan": "- fwi_ansambel.json, fwi.json: sudah ada.",
+   "upaya": "S",
+   "cara_validasi": "**Per provinsi-hari, lead 1–2:**\n- Galat absolut rata-rata porsi prakiraan vs porsi analisis ≤ 10 poin.\n- |bias| ≤ 5 poin.\n\n**Uji unit:** kalimat 'Dalam N hari ke depan' tidak pernah dibuat dari ansambel berumur > 36 jam.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan/curah-hujan-probabilistik-b150",
+    "https://cawcr.gov.au/projects/verification/reliability_resolution.html"
+   ]
+  },
+  {
+   "metode_lama": "Tingkat provinsi Normal/Waspada/Siaga/Darurat dan kartu keputusan Ringkasan (ringkasan.js:84-120,181-192,221-229).\n- pE = maksimum 3 hari dari rata-rata ps sel provinsi, tanpa saringan tanggal.\n- pE ≥ 0,3 sendirian sudah menaikkan ke Waspada.\n- Kartu 'Presiden: pimpin ratas' dan 'Gubernur: tetapkan/perpanjang status tanggap darurat' dibuat otomatis.\n- Kartu OMC dipicu dc_maks dari sel mana pun, dengan teks 'gambut bisa membara'.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "Fakta dan rekomendasi dipisahkan.\n\n**Tingkat provinsi** dihitung hanya dari besaran teramati dan status resmi:\n- Jumlah kompleks prioritas teramati.\n- Titik panas setara SiPongi.\n- Jiwa terpapar asap berdasarkan ISPU/PM2.5.\n- Status keadaan darurat karhutla yang ditetapkan pemda. Sumbernya SK di data.bnpb.go.id CKAN (resource 5599c3f4…, sudah dibaca scripts/kekeringan/resmi.py) dan baris harian BNPB dari gis.bnpb.go.id/karhutla2026 (sudah diambil ke public/data/bnpb.json). bnpb.json berisi OMC unit/sortie, personel, luas ditangani, dan kolom 'rekomendasi' dari BNPB sendiri.\n\n**pE** hanya ditampilkan sebagai konteks berlabel 'porsi wilayah, model', bukan pemicu.\n\n**Kartu keputusan:**\n- Kartu otomatis 'Presiden …' dan 'Gubernur … status tanggap darurat' dihapus.\n- Gantinya kartu 'Bahan keputusan' yang memuat fakta dan rekomendasi BNPB apa adanya.\n- Label 'Darurat' diganti 'Perhatian nasional'.\n\n**Kartu OMC:** dipicu analisis potensi pertumbuhan awan hujan BMKG dan status operasi OMC BNPB, bukan dc_maks.",
+   "praktik_resmi_indonesia": "- **Status keadaan darurat bencana:** ditetapkan pemerintah/pemerintah daerah sesuai skala (UU 24/2007 tentang Penanggulangan Bencana). Model tidak menetapkannya, sejalan dengan prinsip di harian.py:33-34.\n- **BNPB:** menerbitkan laporan harian karhutla per provinsi, termasuk rekomendasi dan operasi udara.\n- **BMKG:** menyediakan prediksi potensi pertumbuhan awan hujan (berlaku hingga 2 hari) dan pemantauan radar untuk menentukan lokasi dan waktu TMC.",
+   "kenapa_lebih_tepat": "- **Rekomendasi status hukum dari model.** Saat ini kartu merekomendasikan status hukum dan rapat Presiden berdasarkan peluang yang belum diverifikasi dan bisa basi. Memakai fakta teramati dan rekomendasi resmi BNPB menghapus risiko itu.\n- **Kartu OMC salah konteks.** Di savana NTT/Papua Selatan, DC mencapai 1.000–1.276 tanpa gambut, padahal teksnya menyebut gambut.",
+   "data_dibutuhkan": "- **bnpb.json:** sudah ada. Perlu diarsipkan harian; sekarang ditimpa tiap kali.\n- **CKAN SK status:** sudah ada aksesnya. Perlu dicek tiap musim karena dataset di CKAN hanya untuk 2025.\n- **Potensi awan BMKG:** lewat rilis resmi atau permintaan data.",
+   "upaya": "M",
+   "cara_validasi": "**Gerbang uji:** tidak ada string rekomendasi status hukum atau 'Presiden …' yang bisa dipicu oleh pE, ph, atau dc.\n\n**Replay musim 2023 dan 2026:**\n- Tingkat ≥ 2 harus muncul dalam ±7 hari dari tanggal SK siaga/tanggap darurat karhutla provinsi pada ≥ 80% kasus.\n- Tidak boleh ada tingkat ≥ 2 yang hanya dipicu oleh angka model.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/siaran-pers/bmkg-analisis-potensi-awan-hujan-untuk-teknologi-modifikasi-cuaca",
+    "https://gis.bnpb.go.id/karhutla2026/karhutla-api.php (dipakai harian.py:512)",
+    "https://data.bnpb.go.id/api/3/action/datastore_search?resource_id=5599c3f4-71f2-4f8b-9846-304fca0fdc8a",
+    "UU 24/2007 tentang Penanggulangan Bencana (penetapan status keadaan darurat; teks tidak saya buka ulang)"
+   ]
+  },
+  {
+   "metode_lama": "PFVI (KBDI dengan faktor muka air van Genuchten) dengan muka air proxy ember (hujan − k·ET0)/(10·Sy), Sy = 0,05, ditambah regresi logistik [log1p FWI, PFVI/100] yang menghasilkan 'Peluang api besok ±X%' (pfvi.py:84-99,171-189; index.html:1868-1916). Saat ini lapisannya tersembunyi karena fwi.json tidak memuat pfvi/pg.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Untuk briefing, kekeringan gambut dinyatakan dengan:**\n- DC di sel gambut, dengan kelas BMKG.\n- Hari tanpa hujan (HTH) BMKG.\n- TMAT terukur bila datanya didapat:\n  - SiMATAG-0,4m KLHK: ~9.603 titik penaatan, kebanyakan di konsesi.\n  - SiPALAGA BRGM: ≥ 142 stasiun dengan data per jam. API-nya menolak repo (HTTP 403), jadi aksesnya lewat permintaan data resmi antarlembaga.\n\n**Yang tidak ditampilkan lagi:** proxy ember dan kalimat 'Peluang api besok'.\n\n**Bila ingin indeks gambut berbasis satelit:** pakai SMAP L4 root-zone soil moisture. Dadap dkk. 2019 menunjukkan lengas tanah SMAP 30 hari sebelum api memprediksi luas terbakar gambut, dan menambah informasi di luar hujan.\n\n**PFVI** tetap boleh sebagai lapisan riset berlabel 'indeks eksperimental'.",
+   "praktik_resmi_indonesia": "- **PP 57/2016 (perubahan PP 71/2014), Pasal 23(3):** gambut fungsi budidaya dinyatakan rusak bila muka air tanah > 0,4 m di bawah permukaan.\n- **KLHK:** memantau kepatuhan lewat SiMATAG-0,4m.\n- **BRGM:** mengoperasikan SiPALAGA.\n- **BMKG:** menerbitkan HTH dan SPARTAN (termasuk DC).",
+   "kenapa_lebih_tepat": "- **TMAT adalah besaran resmi.** Muka air terukur adalah besaran yang diatur PP; proxy ember tidak.\n- **Proxy tidak fisik.** Dengan Sy 0,05, 1 mm hujan menaikkan muka air ~2 cm.\n- **Tambahannya kecil.** Tambahan PFVI atas FWI hanya +0,018 AUC, diuji hanya di tahun kering.\n- **SMAP punya bukti terbit.** Bukti SMAP untuk gambut Asia Tenggara sudah terbit di jurnal bertelaah.",
+   "data_dibutuhkan": "- **TMAT:** lewat kerja sama KLHK/BRGM.\n- **SMAP SPL4SMGP v8:** NSIDC, login Earthdata gratis, grid 9 km, keluaran per 3 jam, format HDF5 (perlu h5py, jadi di luar stdlib). Latensinya beberapa hari; angka pastinya belum saya konfirmasi.",
+   "upaya": "L",
+   "cara_validasi": "**Kerangka:** pfvi_balik.py, 89 sel gambut. Latih 2015–2018, uji 2019–2025, termasuk La Niña 2020–2022.\n\n**Bandingkan:** DC saja vs DC + SMAP root-zone.\n\n**Lulus bila:**\n- ΔAUC ≥ +0,02 dengan selang 95% > 0, baik di tahun kering maupun basah.\n- Brier dan diagram reliabilitas ikut dilaporkan.\n\n**Untuk TMAT:** Spearman DC/SMAP vs TMAT stasiun ≥ 0,5.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://dspace.mit.edu/handle/1721.1/125438 (Dadap dkk. 2019, ERL 14:094014)",
+    "https://nsidc.org/data/spl4smgp/versions/7",
+    "https://mongabay.co.id/2016/12/15/catatan-hukum-peraturan-gambut-lama-vs-baru/",
+    "https://rm.id/baca-berita/kemen-lhk/13681/klhk-kembangkan-sistem-informasi-untuk-pulihkan-ekosistem-gambut",
+    "https://mongabay.co.id/2019/01/28/brg-kembangkan-sistem-pemantauan-muka-air-gambut/"
+   ]
+  },
+  {
+   "metode_lama": "Estimasi bara dan emisi gambut per kompleks: E = A·D·BD·CC·EF (gambut_bara.py:9-14,51). Fraksi terbakar 10/30/100% adalah asumsi, dan kedalaman 15–51 cm dipotong oleh muka air proxy. Rentang ujung ke ujung ~73×.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Emisi provinsi/nasional:** pakai CAMS GFAS v1.2 (FRP satelit, 0,1°, harian, 40 spesies, memuat faktor emisi gambut), atau GFED sebagai pembanding tahunan.\n\n**Per kompleks:** hanya luas piksel gambut terdeteksi dan lama persistensi (sudah dihitung), tanpa angka ton CO2.\n\n**Bila kedalaman bakar tetap dibutuhkan untuk riset:** modulasi dengan lengas tanah satelit, mengikuti Kiely dkk. 2019 (korelasi PM simulasi vs observasi naik dari 0,48 ke 0,56), bukan dengan proxy ember.",
+   "praktik_resmi_indonesia": "- Emisi kebakaran gambut resmi dilaporkan tahunan dalam FREL/inventarisasi GRK nasional pada Tier 2 dari luas terbakar resmi (CIFOR-ICRAF WP 26).\n- Tidak ada angka emisi harian resmi per kompleks.",
+   "kenapa_lebih_tepat": "- **Rentang terlalu lebar.** Rentang ~2 orde besaran tidak bisa menjadi dasar keputusan.\n- **GFAS konsisten dan terbuka.** GFAS dipakai CAMS secara operasional dan metodenya terbuka.\n- **Kedalaman dari proxy tidak stabil.** Memotong kedalaman dengan proxy membuat satu hari hujan menghapus 'bara'.",
+   "data_dibutuhkan": "- **CAMS ADS:** https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas. Akun gratis, data tidak dibatasi.\n- **Format:** NetCDF/GRIB. Perlu decoder non-stdlib, jadi jalankan sebagai job mingguan terpisah.",
+   "upaya": "M",
+   "cara_validasi": "**Bandingkan total tahunan 2015, 2019, 2023 per provinsi:** metode terpilih vs GFAS dan GFED.\n\n**Lulus bila:**\n- Selisihnya dalam faktor 2.\n- Urutan antartahunnya sama.\n\n**Gerbang teks:** tidak ada angka ton emisi per kompleks di Laporan atau Paparan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://ads.atmosphere.copernicus.eu/datasets/cams-global-fire-emissions-gfas",
+    "https://acp.copernicus.org/articles/19/11105/2019/ (Kiely dkk. 2019)",
+    "https://cifor-icraf.org/publications/pdf_files/WPapers/CIFOR-ICRAF-WP-26.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Status ENSO dan IOD (iklim.py:97-118). Lencana menghitung kekuatan dari ONI (2,16, 'sangat kuat'), sementara outlook memakai RONI (1,69). IOD 'positif' bila rata-rata DMI 8 minggu ≥ 0,4 (iklim.json 0,48), sedangkan outlook memakai DMI 4 minggu (0,76).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**ENSO:** satu indeks di semua layar (lencana, outlook, kalender musim), yaitu RONI. CPC resmi memakainya sejak Feb 2026, dengan ambang ±0,5 yang tidak berubah.\n\n**IOD:**\n- Label 'IOD positif' hanya bila DMI mingguan ≥ +0,4 selama ≥ 8 minggu berturut-turut, sesuai praktik BoM. Rata-rata 8 minggu tidak dipakai lagi.\n- Data sampai 27 Sep: baru 4 minggu di atas ambang (0,64/0,66/0,96/0,78), dan enam minggu sebelumnya 0,16–0,31.\n- Label yang benar sekarang: 'IOD menguat menuju positif'. Paling cepat sah sekitar awal November bila bertahan.\n\n**Sumber pendamping:**\n- Pernyataan ENSO/IOD BMKG (buletin Dinamika Atmosfer dasarian) ditampilkan berdampingan.\n- Peluang ENSO resmi IRI/CPC (rilis 19 Okt 2026): El Niño 100% OND 2026 s.d. MAM 2027, 92% AMJ, 60% MJJ 2027.",
+   "praktik_resmi_indonesia": "- **BMKG:** menerbitkan analisis Dinamika Atmosfer per dasarian, berisi indeks Niño3.4 dan IOD dasarian beserta statusnya.\n- **NOAA CPC:** beralih ke RONI pada Feb 2026.\n- **IOD:** event positif dinyatakan bila indeks bertahan > +0,4 °C. Aturan '8 minggu berturut-turut' saya temukan di sumber sekunder (Weatherzone); halaman BoM membalas 403 saat dicek.",
+   "kenapa_lebih_tepat": "- **Tidak ada dua angka.** Dua layar tidak lagi memberi dua kekuatan ENSO dan dua nilai DMI.\n- **IOD tidak dinyatakan terlalu dini.** Mengikuti definisi bertahan mencegah klaim IOD positif sebelum terbukti.\n- **Sejajar dengan BMKG.** Pernyataan BMKG di samping angka kita mencegah kontradiksi di rapat.",
+   "data_dibutuhkan": "- **RONI.ascii dan DMI OSMC mingguan:** sudah diambil.\n- **PDF dasarian BMKG** (cdn.bmkg.go.id): diparsing teks atau dientri manual.",
+   "upaya": "S",
+   "cara_validasi": "**Uji unit aturan 8 minggu** pada deret DMI 2019 dan 2023: tanggal label 'positif' jatuh ≤ 2 minggu dari tanggal deklarasi BoM/BMKG.\n\n**Gerbang:** nilai ENSO di iklim.json, iklim_outlook.json, dan lencana berasal dari satu field.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/announcement.php",
+    "https://iri.columbia.edu/our-expertise/climate/forecasts/enso/current/",
+    "https://cdn.bmkg.go.id/Web/04.-Dinamika-Atmosfer-Dasarian-I-Februari-2024.pdf",
+    "https://weatherzone.com.au/news/indian-ocean-dipole-hits-new-high/530264 (sumber sekunder aturan 8 minggu; halaman BoM 403)"
+   ]
+  },
+  {
+   "metode_lama": "Kalender musim per dasarian (musim.py). Peluang 'masuk 10% dasarian tersibuk' dihitung dari 7 tahun El Niño yang ditulis tangan (musim.py:32: 2002, 2004, 2006, 2009, 2015, 2019, 2023). Kalimat 'karena tahun ini El Niño' ditulis mati di laporan.js:600-617. Angkanya sudah masuk deck Presiden (presiden-2026-10-20.json).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Definisi tahun El Niño baru:** episode resmi CPC berbasis RONI (≥ 5 musim tumpang tindih ≥ +0,5) yang mencakup JAS/ASO.\n- Dihitung dari public/data/iklim.json: 2002, 2004, 2006, 2009, 2015, 2023 (n = 6).\n- Versi ONI memberi 7 tahun (menambah 2018).\n- 2019 tidak memenuhi keduanya.\n- musim_awal.py:111 (ONI SON ≥ 0,5) memberi 9 tahun, termasuk 2014, 2018, 2019.\n- Satu fungsi dipakai bersama oleh semua modul.\n\n**Cara menyajikan peluang:**\n- Tulis 'x dari 6 tahun El Niño', bukan persen.\n- Haluskan dengan beta-binomial, memakai prior dari 24 tahun.\n- Atau ganti dengan regresi logistik pada RONI ASO dan DMI SON yang memakai seluruh 24 tahun, sehingga keluar peluang beserta selangnya.\n\n**Kalimat status:** 'tahun ini El Niño' dibaca dari iklim.json, tidak ditulis mati.\n\n**Klaim 'masa puncak hingga akhir November':** sandingkan dengan prakiraan awal musim hujan BMKG per ZOM di provinsi itu.",
+   "praktik_resmi_indonesia": "- **BMKG Prakiraan Musim Hujan per ZOM:** kriteria awal musim hujan adalah 3 dasarian berurutan dengan curah hujan ≥ 50 mm.\n- Akhir musim kebakaran mengikuti datangnya musim hujan, jadi tanggal BMKG ini menjadi jangkar resmi.\n- Definisi episode ENSO mengikuti CPC.",
+   "kenapa_lebih_tepat": "- **Seleksi berdasarkan hasil hilang.** 2019 masuk daftar karena banyak api, padahal ENSO netral; itu menggelembungkan p_el_nino.\n- **Konsisten antarmodul.** Satu definisi dipakai di semua modul.\n- **Resolusi jujur.** Dengan n = 6, tiap 'peluang' adalah kelipatan ~17%, dan pembaca perlu tahu itu.\n- **Klaim akhir musim tercocokkan.** Membandingkan dengan BMKG mencegah klaim yang bertentangan dengan prakiraan resmi.",
+   "data_dibutuhkan": "- iklim.json, sejarah_modis.json, musim.json: sudah ada.\n- Buletin Prakiraan Musim Hujan 2026/2027 BMKG: PDF/peta, kemungkinan dientri manual per provinsi.",
+   "upaya": "S",
+   "cara_validasi": "**Leave-one-year-out 2002–2025:** Brier untuk 'dasarian masuk 10% tersibuk', model terkondisi ENSO vs tanpa kondisi.\n\n**Lulus bila:** BSS > 0 dengan selang bootstrap > 0 di ≥ 5 dari 9 provinsi.\n\n**Konsekuensi:** kalimat di deck hanya untuk provinsi yang lulus. Tanggal 'akhir puncak' dicek terhadap awal musim hujan BMKG per ZOM.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.cpc.ncep.noaa.gov/products/analysis_monitoring/enso/roni/announcement.php",
+    "https://jmg.bmkg.go.id/jmg/index.php/jmg/article/view/113/106 (kriteria awal musim BMKG)",
+    "https://pmc.ncbi.nlm.nih.gov/articles/PMC4995960 (Field dkk. 2016, PNAS: kepekaan api terhadap hujan < 4 mm/hari)"
+   ]
+  },
+  {
+   "metode_lama": "Awal, puncak, dan akhir musim kebakaran 2026 (musim_awal.py): hari pertama jumlah titik VIIRS 7 hari > 2× median 2012–2025 selama ≥ 14 hari, dicari sejak 8–9 Juni. Ada narasi seperti 'Papua Selatan 09 Jun (68 hari lebih awal)'.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Nama:** ganti menjadi 'awal musim kebakaran (titik panas)'.\n\n**Onset terpotong:** tandai onset yang jatuh di hari pertama jendela pencarian atau tepat setelah celah data. Contoh: Papua Selatan 9 Jun 2026 ditulis '≤ 9 Jun, tidak terukur'.\n\n**Definisi pembanding yang lebih kokoh:** tanggal ketika titik panas kumulatif tahun itu melewati 10% median total musiman 2012–2025. Ini usulan saya, bukan standar yang saya temukan di literatur.\n\n**Pendamping resmi:** tampilkan Awal Musim Kemarau BMKG per ZOM di sebelahnya.",
+   "praktik_resmi_indonesia": "- **BMKG:** menetapkan Awal Musim Kemarau per Zona Musim (ZOM). Kriterianya curah hujan dasarian < 50 mm yang diikuti dua dasarian berikutnya.\n- Buletin 2026: 516 ZOM (73,8%) sudah memasuki kemarau per akhir Juli.",
+   "kenapa_lebih_tepat": "- **Tidak ada klaim palsu.** Klaim '68 hari lebih awal' adalah artefak jendela pencarian dan celah data.\n- **Tidak tertukar dengan BMKG.** Nama baru dan pendamping BMKG mencegah orang menyamakannya dengan awal musim kemarau BMKG.",
+   "data_dibutuhkan": "- Buletin prakiraan/monitoring musim kemarau BMKG per ZOM: PDF.\n- Arsip FIRMS: sudah ada.",
+   "upaya": "S",
+   "cara_validasi": "**Grid sensitivitas:** faktor {1,5; 2; 3} × durasi {7; 14; 21} hari. Laporkan rentang onset per provinsi.\n\n**Aturan sebut:** 'X hari lebih awal' hanya boleh bila rentangnya ≤ 14 hari dan onset tidak terpotong.\n\n**Uji historis 2012–2025:** jeda onset api vs AMK BMKG per provinsi, bila data ZOM berhasil dikumpulkan.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://jmg.bmkg.go.id/jmg/index.php/jmg/article/view/113/106",
+    "https://www.metrotvnews.com/read/b2lC64lJ-awal-musim-kemarau-2026-cek-daftar-wilayah-dan-prediksi-puncaknya"
+   ]
+  },
+  {
+   "metode_lama": "Outlook hujan musiman (iklim_outlook.py): OLS hujan% CHIRPS = a + b·RONI + c·DMI + d·RONI·DMI, dengan pendorong serentak dan prakiraan memakai persistensi nilai terakhir. Prakiraan saat ini: SON 2026 nasional −38,3%.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Angka utama untuk briefing: produk resmi BMKG.**\n- Prediksi Curah Hujan Bulanan Probabilistik (6 bulan ke depan; ambang < 150 mm dan > 100/150/300/500 mm).\n- Prakiraan Musim per ZOM.\n\n**Model RONI×DMI** diturunkan menjadi 'analisis hubungan', kecuali lulus hindcast dengan pendorong ber-lag.\n\n**Pembanding internasional:**\n- C3S multi-sistem/SEAS5 lewat CDS (akun gratis).\n- NMME di IRI Data Library. Catatan: halaman IRI DL kini meminta sign-in (dicek 21 Okt), tetapi unduhan CHIRPS pipeline masih berhasil pada 19 Okt (dari_cache = false). Ini perlu dipantau.\n\n**Bukti bahwa prakiraan dinamis berguna untuk api di Indonesia:**\n- Spessa dkk. 2015: hujan musiman ECMWF S4 menjelaskan ≥ 70% varians area terbakar Kalimantan beberapa bulan sebelumnya.\n- Shawki dkk. 2017: CFSv2 memprakirakan DC tinggi dengan lead ~180 hari di Kalimantan Selatan dan Papua bagian selatan, tetapi hanya ~60 hari di Sumatera Selatan.",
+   "praktik_resmi_indonesia": "- **BMKG:** Prediksi Hujan Bulanan Probabilistik dan Prakiraan Musim.\n- **Standar verifikasi:** WMO SVS-LRF (Manual GDPFS, WMO-No. 485): ROC dan skor probabilistik untuk prakiraan jangka panjang.",
+   "kenapa_lebih_tepat": "- **Bukan prakiraan.** Skill LOO model sekarang mengukur hubungan serentak, bukan kemampuan meramal.\n- **Prakiraan dinamis sudah terbukti.** Model dinamis multi-anggota sudah menunjukkan skill untuk api di Indonesia.\n- **Konsisten dengan sumber resmi.** Angka BMKG tidak akan bertentangan dengan paparan BMKG.",
+   "data_dibutuhkan": "- **Halaman BMKG:** peta; ekstraksi angka mungkin manual.\n- **CDS SEAS5:** GRIB, non-stdlib, rilis bulanan.\n- **CHIRPS:** bisa juga diambil langsung dari UCSB CHC bila IRI DL menutup akses.",
+   "upaya": "M",
+   "cara_validasi": "**Hindcast 1991–2025** dengan pendorong yang sudah diketahui saat prakiraan terbit: RONI musim sebelumnya, DMI bulan sebelumnya, atau plume IRI/CPC.\n\n**Skor:** RPSS tercile dan ROC kategori 'di bawah normal'.\n\n**Lulus bila:** RPSS > 0 dan ROC > 0,6 di ≥ separuh kotak untuk musim Jul–Okt.\n\n**Pembanding:** bandingkan hit rate dengan prakiraan BMKG untuk musim yang sama.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan/curah-hujan-probabilistik-b150",
+    "https://nhess.copernicus.org/articles/15/429/2015/ (Spessa dkk. 2015)",
+    "https://spiral.imperial.ac.uk/entities/publication/2aab1bbb-747e-4ae9-a223-d882ec4b53c2 (Shawki dkk. 2017, GRL 44:9996)",
+    "https://acct.metoffice.gov.uk/binaries/content/assets/metofficegovuk/pdf/research/climate-science/climate-observations-projections-and-impacts/svslrf.pdf",
+    "https://iridl.ldeo.columbia.edu/SOURCES/.Models/.NMME/"
+   ]
+  },
+  {
+   "metode_lama": "Bahaya 12 bulan karhutla (outlook12.py), dengan analog RONI/DMI dan pendorong persistensi. Skala absolut: E ≥ 2 = 'ekstrem', padahal klimatologi Agu–Okt sudah 2,75/3,40/2,35. Judul yang dihasilkan: 'Karhutla diperkirakan ekstrem Agustus sampai Oktober 2027' (analisis.js:54-61), padahal horizonnya 10–12 bulan dan ekstrapolasi = true.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Horizon:** potong ke ≤ 3 bulan, atau sejauh peluang ENSO resmi masih ≥ 80%.\n\n**Bentuk keluaran:** anomali terhadap bulan yang sama (E_analog/E_semua) dalam tiga kategori: di atas / sekitar / di bawah normal. Tingkat absolut 'ekstrem' tidak dipakai lagi.\n\n**Pendorong:** analog ditimbang dengan peluang ENSO resmi, bukan persistensi. IRI/CPC Okt 2026: El Niño 100% OND 2026 s.d. MAM 2027, 92% AMJ, 60% MJJ 2027.\n\n**Untuk musim 2027:**\n- Tunggu Prakiraan Musim Kemarau 2027 BMKG. Tahun ini prakiraan musim kemarau sudah dipaparkan dalam konferensi pers awal Maret 2026, jadi edisi 2027 kemungkinan terbit sekitar waktu yang sama.\n- Tambahkan prakiraan bahaya musiman CEMS (cems-fire-seasonal): GEFF digerakkan SEAS5, 51 anggota, horizon 7 bulan, rilis bulanan, dengan reforecast 1981–2016 untuk kalibrasi.\n\n**Bulan di luar horizon:** tampil sebagai klimatologi saja, dan judul tidak boleh menyebutnya.",
+   "praktik_resmi_indonesia": "- **BMKG:** Prediksi Hujan Bulanan Probabilistik (6 bulan) dan Prakiraan Musim Kemarau tahunan per ZOM.\n- **Internasional:** CEMS menerbitkan prakiraan indeks bahaya kebakaran musiman (SEAS5, 7 bulan).",
+   "kenapa_lebih_tepat": "- **Lead yang terbukti jauh lebih pendek.** Bukti terbit untuk Indonesia memberi lead DC 60–180 hari (Shawki 2017), bukan 10–12 bulan.\n- **Skala absolut menyesatkan.** Skala sekarang membuat Agu–Okt selalu 'ekstrem', bahkan di tahun biasa. Anomali memisahkan siklus musim dari sinyal tahun ini.\n- **Tanpa asumsi persistensi.** Peluang ENSO resmi menggantikan asumsi bahwa El Niño 2026 bertahan sampai Agu 2027.",
+   "data_dibutuhkan": "- **Peluang ENSO:** IRI menyatakan 'tidak lagi menyediakan data forecast', jadi pakai teks peluang di ENSO Diagnostic Discussion CPC yang sudah diambil iklim.py.\n- **cems-fire-seasonal:** EWDS, akun gratis, GRIB/NetCDF (non-stdlib).",
+   "upaya": "M",
+   "cara_validasi": "**Hindcast 2002–2025 per lead 1–12**, memakai pendorong yang tersedia pada tanggal terbit (persistensi atau plume).\n\n**Skor:** RPSS untuk kategori anomali E.\n\n**Lulus:** hanya lead dengan RPSS > 0 (selang bootstrap > 0) yang boleh tampil.\n\n**Gerbang uji:** judulBahaya tidak boleh memuat bulan berstatus ekstrapolasi = true.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://iri.columbia.edu/our-expertise/climate/forecasts/enso/current/",
+    "https://ewds.climate.copernicus.eu/datasets/cems-fire-seasonal",
+    "https://spiral.imperial.ac.uk/entities/publication/2aab1bbb-747e-4ae9-a223-d882ec4b53c2",
+    "https://www.bmkg.go.id/iklim/prediksi-hujan-bulanan/curah-hujan-probabilistik-b150",
+    "https://www.kompas.tv/info-publik/654584/bmkg-musim-kemarau-2026-datang-lebih-awal-puncaknya-diperkirakan-agustus"
+   ]
+  },
+  {
+   "metode_lama": "Kelembapan tanah 0–7 dan 7–28 cm (tanah.py).\n- Nilai yang ditampilkan: IFS mentah.\n- Persentil: dihitung dari ERA5-Land terakhir ditambah perubahan IFS, terhadap baseline 2015–2025 (11 tahun).",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Baseline:** ERA5-Land 1991–2020 sesuai normal WMO. Open-Meteo archive menyediakan ERA5-Land sejak 1950 lewat API yang sama.\n\n**Konsistensi:** angka yang ditampilkan harus nilai yang sama dengan yang dipersentilkan.\n\n**Pembanding:** SMAP L4 untuk anomali musim kering.\n\n**Gambut:** dilarang memakai lapisan ini; pakai TMAT atau DC gambut.",
+   "praktik_resmi_indonesia": "- **BMKG:** peringatan dini kekeringan meteorologis berbasis HTH dan SPI, sudah dipakai modul kekeringan.\n- **WMO:** normal iklim 30 tahun (1991–2020).",
+   "kenapa_lebih_tepat": "- **Baseline 11 tahun terlalu pendek.** Persentilnya tidak stabil, dan beberapa tahun ekstrem mendominasi.\n- **Dua sumber berdampingan.** Angka IFS di samping persentil ERA5-Land membingungkan pembaca.",
+   "data_dibutuhkan": "- **Open-Meteo archive era5_land:** variabel lengas 0–7 dan 7–28 cm. Penamaan variabelnya perlu dicek di dokumentasi.\n- **SMAP L4:** opsional.",
+   "upaya": "S",
+   "cara_validasi": "**Bandingkan** persentil baseline 11 tahun vs 30 tahun pada 2015–2025.\n\n**Korelasi:** anomali dengan SMAP L4 di sel 0,5° pada Jul–Okt.\n\n**Lulus bila:** r ≥ 0,6, dan perubahan kelas akibat ganti baseline dilaporkan.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://open-meteo.com/en/docs/historical-weather-api",
+    "https://nsidc.org/data/spl4smgp/versions/7"
+   ]
+  },
+  {
+   "metode_lama": "Status taktis kompleks dan level 3 'Prioritas pemadaman' (aturan.py:77-92): px24 ≥ 15 dan FWI ≥ 7. Klaim uji balik 90–95% hanya ada di docstring; skrip dan datanya tidak ada di repo, dan ambang 15 piksel untuk 3 satelit belum diuji ulang. Hasilnya tampil di kolom Status Paparan.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Pakai model yang sudah tervalidasi di repo:** peluang lolos terkalibrasi dari scripts/sebaran/lolos.py.\n- AUC 0,81 pada 500 deteksi pertama uji, 0,83 pada 123 kasus, 0,908 pada semua titik baru 2024–2026.\n- Kalibrasi Platt. Ambang WASPADA 4,84% memberi recall 70% dan presisi 19%.\n- Uji prospektif sedang berjalan di prospektif.py.\n\n**Cara pakai:**\n- 'Prioritas pemadaman' = WASPADA lolos, atau api yang sudah besar.\n- FWI hanya menjadi konteks.\n\n**Bila aturan lama dipertahankan:** skrip dan data uji baliknya wajib masuk repo dan diuji ulang dengan 3 satelit.\n\n**Di slide:** kriteria status dicantumkan.",
+   "praktik_resmi_indonesia": "- Tidak saya temukan standar prioritas pemadaman yang terbit.\n- Verifikasi lapangan titik panas diatur Permen LHK P.8/2018, dengan rujukan ke P.32/2016.\n- Data operasi resmi harian BNPB memuat 'luas lahan yang akan dipadamkan'.",
+   "kenapa_lebih_tepat": "- **Bisa direproduksi.** Model ini sudah diuji di luar sampel, terkalibrasi, dan diverifikasi prospektif. Klaim docstring tidak bisa ditunjukkan bila ditanya.\n- **Tidak ada kode baru.** Model ini sudah ada di repo.",
+   "data_dibutuhkan": "- Keluaran lolos.py dan prospektif.json: sudah ada.",
+   "upaya": "M",
+   "cara_validasi": "**Data:** uji 2024–2026 dan prospektif nilai.jsonl.\n\n**Bandingkan:** recall dan presisi aturan lama vs WASPADA lolos pada jumlah kompleks bertanda yang sama.\n\n**Lulus bila:** metode terpilih mencapai recall ≥ 70% dengan presisi ≥ 20%, dan skripnya ada di repo beserta self-check.",
+   "prioritas": "P2",
+   "rujukan": [
+    "scripts/sebaran/RISET-SEBARAN.md:284-339 (hasil uji lolos.py di repo)",
+    "https://www.peraturan.go.id/files/bn374-2018.pdf"
+   ]
+  },
+  {
+   "metode_lama": "Indeks risiko riwayat kecamatan 0–100 (aturan.py:106-122; index.html:3100-3116): 50% kekerapan + 30% log total + 20% tren, dengan bobot yang ditetapkan tanpa fit dan kelas berdasarkan peringkat. Hasilnya ikut mengalikan skor kompleks.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**'Risiko' memakai angka resmi InaRISK BNPB:**\n- Statistik zonal lapisan layer_risiko_kebakaran_hutan_dan_lahan dan layer_bahaya_kebakaran_hutan_dan_lahan per kecamatan.\n- Caranya: ImageServer computeStatisticsHistograms dengan poligon kecamatan BIG, yang sudah diambil scripts/geo/batas.py.\n- Ditambah IRBI 'karlahut' per kabupaten 2015–2025 dari apiv4 /data-irbi-full, yang sudah terdokumentasi di SUMBER-BNPB.md.\n\n**Riwayat dipertahankan sebagai riwayat, bukan risiko:**\n- 'Terbakar x dari y tahun'.\n- Kepadatan piksel VIIRS 375 m unik per km², tanpa tahun berjalan yang belum lengkap.",
+   "praktik_resmi_indonesia": "- BNPB InaRISK/IRBI (Perka BNPB 2/2012: bahaya, kerentanan, kapasitas) adalah indeks risiko resmi.\n- InaRISK sudah tampil di laci kompleks ('Bahaya InaRISK').",
+   "kenapa_lebih_tepat": "- **Satu arti 'risiko'.** Istilahnya tidak lagi bersaing dengan indeks resmi di layar yang sama.\n- **Tidak bias luas.** Kepadatan per km² menghilangkan bias kecamatan besar.\n- **Kelas mutlak.** Peringkat relatif selalu memberi 10% 'Sangat tinggi', berapa pun risiko absolutnya.",
+   "data_dibutuhkan": "- **InaRISK ImageServer:** gis.bnpb.go.id, tanpa login. Lisensi tidak tertulis, jadi tulis 'Sumber: InaRISK BNPB'.\n- **Poligon kecamatan BIG:** sudah dipakai.\n- **FIRMS arsip:** sudah ada.",
+   "upaya": "M",
+   "cara_validasi": "**Uji prediktif:** indeks dihitung dengan data 2015–2022, lalu dibandingkan dengan kepadatan titik 2023–2025 per kecamatan.\n\n**Kandidat:** skorRiwayat vs InaRISK bahaya vs kepadatan.\n\n**Lulus bila:**\n- Spearman ≥ 0,5.\n- 10% kecamatan teratas menangkap ≥ 50% titik 2023–2025.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://inarisk.bnpb.go.id/v4/config/arcgis-layers.json",
+    "https://gis.bnpb.go.id/server/rest/services/inarisk/layer_risiko_kebakaran_hutan_dan_lahan/ImageServer/",
+    "https://inarisk.bnpb.go.id/apiv4/data-irbi-full (docs/multi-bencana/SUMBER-BNPB.md)"
+   ]
+  },
+  {
+   "metode_lama": "Kurva musim harian dan latar median 2019–2025 (musim_harian.py). Isinya hitungan murni titik panas, dengan invarian cocok dengan laporan.json.",
+   "vonis_akhir": "layak",
+   "alternatif": "Metodenya dipertahankan. Tambahan kecil:\n\n**Pembanding luas resmi:** seri luas indikatif SiPongi per provinsi, yang sudah diambil scripts/scrape/luas_satelit.py ke luas_resmi.json. Tujuannya agar pembaca tidak membaca titik panas sebagai luas terbakar.\n\n**Keterangan di kartu:**\n- Basis median 2019–2025.\n- Perbedaan definisi dengan hitungan peta (penyaringan titik industri di harian.py:300-312).",
+   "praktik_resmi_indonesia": "- Hitungan titik panas BNPB/SiPongi.\n- Luas indikatif SiPongi KLHK/Kemenhut.",
+   "kenapa_lebih_tepat": "- **Hitungannya sudah benar.** Tambahan ini hanya mencegah salah tafsir titik panas sebagai luas.\n- **Satu definisi jelas.** Pembaca tahu kenapa angka kartu bisa berbeda dari peta.",
+   "data_dibutuhkan": "- luas_resmi.json: sudah ada.",
+   "upaya": "S",
+   "cara_validasi": "**Uji invarian yang sudah ada tetap berlaku.**\n\n**Gerbang teks:** kartu memuat frasa 'hitungan titik panas, bukan luas terbakar' dan menyebut basis median.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://opsroom.sipongidata.my.id/api/list/luas-kebakaran/provinsi (dipakai luas_satelit.py)"
+   ]
+  },
+  {
+   "metode_lama": "Umur kompleks gambut kering: kompleks gambut dengan DC model > 350 tetap 'aktif' 168 jam, bukan 72 jam (harian.py:26-28,401-407). laporan.py menghitung semua fitur, termasuk teramati = False, dan hasilnya masuk kolom 'Kejadian' Paparan Presiden.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Pisahkan dua hitungan di Laporan dan Paparan:**\n- 'Kejadian aktif teramati 24 jam'.\n- 'Diduga masih membara (tidak teramati, gambut kering)'.\n\nKolom 'Kejadian' Presiden hanya memakai yang teramati.\n\n**Syarat perpanjangan 168 jam:** hanya bila piksel kemungkinan tertutup awan saat lintasan VIIRS (~01.30 dan ~13.30 waktu setempat).\n- Pendekatan murah: cloud_cover per jam Open-Meteo pada jam lintasan.\n- Pendekatan tepat: masker awan VIIRS L2 dari LAADS (Earthdata, non-stdlib).\n\n**DC syarat:** hanya DC sel gambut.",
+   "praktik_resmi_indonesia": "- Verifikasi lapangan titik panas mengikuti P.8/2018 (groundcheck).\n- Laporan BNPB memakai luas dan kejadian yang ditangani atau teramati, bukan dugaan model.",
+   "kenapa_lebih_tepat": "- **Bukan hitungan dugaan.** Kolom di deck Presiden tidak boleh menggabungkan api teramati dengan dugaan model tanpa label.\n- **Hanya bila memang tak terlihat.** Syarat awan membatasi perpanjangan pada kasus yang benar-benar tidak teramati.",
+   "data_dibutuhkan": "- kluster.json (teramati): sudah ada.\n- Open-Meteo cloud_cover: API yang sama.",
+   "upaya": "S",
+   "cara_validasi": "**Data:** musim 2023 dan 2026.\n\n**Hitung:** dari kompleks yang dipertahankan oleh aturan DC > 350, berapa persen terdeteksi ulang pada hari ke-4 s.d. 7, terutama setelah awan hilang.\n\n**Lulus bila:** terdeteksi ulang ≥ 50%. Bila tidak, perpanjangan dihapus.\n\n**Gerbang uji:** kolom Kejadian Paparan hanya menghitung teramati = True.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.peraturan.go.id/files/bn374-2018.pdf",
+    "https://open-meteo.com/en/docs/historical-weather-api"
+   ]
+  },
+  {
+   "metode_lama": "Rasio titik panas terhadap normal di Ringkasan (ringkasan.js:68-79,111-113). Normal = ambang musim_awal/2/7, dengan lantai 10 titik per 7 hari. Siaga bila rasio ≥ 3 dan h24 ≥ 300.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "Rasio diganti **persentil empiris**:\n- Jumlah titik VIIRS S-NPP 7 hari per provinsi, dibanding distribusi hari-dalam-tahun yang sama (±7 hari) tahun 2012–2025.\n- Tanpa lantai.\n- Kalimat: 'di atas persentil 90: lebih tinggi dari 9 dari 10 tahun pada tanggal yang sama'.\n- Alternatif setara: anomali terstandar log(n + 1).",
+   "praktik_resmi_indonesia": "- SiPongi dan BNPB menyajikan hitungan titik panas mentah dan perbandingan antartahun; tidak ada indeks anomali resmi.\n- Persentil terhadap klimatologi adalah cara yang dipakai EFFIS (ranking).",
+   "kenapa_lebih_tepat": "- **Pembagi kecil dihilangkan.** Lantai 10 titik per 7 hari membuat 'normal' 0,71 titik per hari, sehingga rasio membesar.\n- **Tidak bergantung ambang bebas.** Persentil punya arti yang sama di semua provinsi, tanpa ambang 3× yang tidak dikalibrasi.",
+   "data_dibutuhkan": "- sejarah.json / arsip FIRMS VIIRS 2012–2025: sudah ada.",
+   "upaya": "S",
+   "cara_validasi": "**Replay 2023–2026:**\n- Hit rate pemicu persentil ≥ 90 terhadap periode SK siaga/tanggap darurat karhutla provinsi, dibanding pemicu rasio ≥ 3.\n- Lulus bila hit rate tidak lebih rendah dengan alarm palsu yang sama atau lebih sedikit.\n\n**Uji unit:** tidak ada rasio yang dihitung dari baseline di bawah lantai.",
+   "prioritas": "P2",
+   "rujukan": [
+    "https://forest-fire.emergency.copernicus.eu/about-effis/technical-background/fire-danger-forecast"
+   ]
+  },
+  {
+   "metode_lama": "Jendela 'hari layak OMC' (operasi.py:102-104,286-296): rata-rata ph provinsi (P hujan ≥ 5 mm dari ansambel) antara 0,15 dan 0,60. Jendela ini hanya bersumber dari artikel berita dan tanpa saringan umur. Hasilnya dipakai untuk keyakinan kartu OMC Ringkasan.",
+   "vonis_akhir": "tidak_layak",
+   "alternatif": "**Hapus jendela ph sebagai penentu kelayakan OMC.**\n\n**Ganti dengan sumber resmi:**\n- Tampilkan aktivitas OMC resmi dari bnpb.json: 'OMC unit', 'OMC sortie', 'total bahan semai (kg)', 'unit OMC standby'.\n- Rujuk prediksi potensi pertumbuhan awan hujan BMKG (berlaku 2 hari) sebagai dasar keputusan.\n\n**Bila ph tetap ditampilkan:**\n- Beri label 'peluang hujan ≥ 5 mm (model)'.\n- Verifikasi dulu terhadap hujan GSMaP.",
+   "praktik_resmi_indonesia": "- BMKG menyediakan prediksi potensi pertumbuhan awan hujan dan pemantauan radar tiap 10 menit untuk menentukan lokasi, waktu, dan rute TMC.\n- OMC karhutla dijalankan Kemenhut/BNPB bersama BMKG.",
+   "kenapa_lebih_tepat": "- **Peluang hujan bukan potensi awan.** Kelayakan OMC bergantung pada awan konvektif yang bisa disemai, bukan pada peluang hujan dari model.\n- **Tanpa dasar kuantitatif.** Jendela 15–60% tidak punya rujukan kuantitatif.",
+   "data_dibutuhkan": "- **bnpb.json:** sudah ada; perlu diarsip harian.\n- **Produk potensi awan BMKG:** lewat permintaan data.\n- **GSMaP:** untuk verifikasi ph.",
+   "upaya": "S",
+   "cara_validasi": "**Bila ph dipertahankan:** Brier P(hujan ≥ 5 mm) per provinsi-hari terhadap GSMaP selama satu musim.\n\n**Lulus bila:** BSS > 0 terhadap klimatologi.\n\n**Gerbang uji:** kartu OMC tidak memakai dc_maks dan ph sebagai pemicu.",
+   "prioritas": "P1",
+   "rujukan": [
+    "https://www.bmkg.go.id/siaran-pers/bmkg-analisis-potensi-awan-hujan-untuk-teknologi-modifikasi-cuaca",
+    "https://sharaku.eorc.jaxa.jp/GSMaP/"
+   ]
+  },
+  {
+   "metode_lama": "Pengurangan produksi garis regu oleh ISI (operasi.py:41-44,189): f_isi = 1 + (ISI − ambang)/8, dengan ambang dari bahan bakar hutan Kanada. Hasilnya masuk kebutuhan regu per kompleks.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Sebut sebagai asumsi skenario.** Tampilkan rentang lo/mid/hi yang sudah ada.\n\n**Kalibrasi ke data operasi resmi BNPB:**\n- bnpb.json memuat per provinsi per hari 'luas lahan ditangani darat', 'Total Personel', 'Manggala Agni', dan 'MPA'.\n- Dari situ bisa dihitung produktivitas empiris (ha per personel-hari) sebagai fungsi ISI.\n- Syaratnya bnpb.json diarsip harian mulai sekarang.\n\nSaya tidak menemukan angka produktivitas resmi di P.32/2016. Pencarian tidak menemukan teksnya yang memuat produktivitas.",
+   "praktik_resmi_indonesia": "- **P.32/MENLHK/2016:** pedoman pengendalian karhutla, mencakup organisasi, sarana, dan prosedur. Angka produktivitas garis tidak saya temukan di sana.\n- **Laporan harian BNPB:** mencatat personel dan luas yang ditangani.",
+   "kenapa_lebih_tepat": "- **Data lapangan Indonesia.** Kalibrasi dari data lapangan Indonesia lebih tepat daripada faktor tangan berbasis hutan Kanada.",
+   "data_dibutuhkan": "- Arsip bnpb.json harian: perlu dimulai.",
+   "upaya": "M",
+   "cara_validasi": "**Data:** setelah ≥ 60 provinsi-hari terarsip.\n\n**Fit:** regresi ha ditangani ~ personel × f(ISI).\n\n**Lulus bila:** prediksi berada dalam faktor 2 untuk ≥ 70% provinsi-hari. Bila tidak, faktor ISI dihapus dan hanya rentang skenario yang tampil.",
+   "prioritas": "P3",
+   "rujukan": [
+    "https://www.hukumonline.com/pusatdata/detail/lt5735489f3ab6e/peraturan-menteri-lingkungan-hidup-dan-kehutanan-nomor-p32-menlhk-setjen-kum1-3-2016-tahun-2016/analysis/",
+    "https://gis.bnpb.go.id/karhutla2026/karhutla-api.php"
+   ]
+  },
+  {
+   "metode_lama": "Skor peringkat kompleks (aturan.py:95-103,120-122; harian.py:440-461). Rumusnya px24 × (1 + log FRP/5) × (1 + hari/5) × (1 + ISI/20 + 0,5·[DC > 350]) × (1 + jarak Daops/150) × (1 + risiko riwayat/100), dengan semua bobot ditetapkan tangan. Hasilnya tampil sebagai 'urutan N di wilayah kerja'.",
+   "vonis_akhir": "layak_catatan",
+   "alternatif": "**Urutkan dengan dua komponen:**\n- Peluang lolos terkalibrasi dari lolos.py (sudah diuji, AUC 0,81–0,91).\n- Paparan: jiwa terpapar asap dan jarak ke permukiman atau fasilitas.\n\nContoh rumus: P(lolos) × (1 + paparan ternormalisasi).\n\n**Faktor yang dibuang:**\n- Faktor riwayat kecamatan, sampai lulus uji prediktif.\n- Faktor DC > 350 di sel non-gambut.",
+   "praktik_resmi_indonesia": "- Tidak ada skema peringkat resmi yang saya temukan.\n- Prioritas lapangan ditetapkan Daops/Manggala Agni dan Satgas.",
+   "kenapa_lebih_tepat": "- **Komponen utama sudah tervalidasi.** Peluang lolos sudah diuji dan terkalibrasi, jadi urutan bisa dipertanggungjawabkan.\n- **Bobot tangan tidak teruji.** Bobot sekarang tidak pernah diuji apakah mendahulukan api yang akhirnya paling besar.",
+   "data_dibutuhkan": "- lolos.py, kluster.json, udara/dampak: sudah ada.",
+   "upaya": "S",
+   "cara_validasi": "**Data:** 2024–2026, per Daops-hari.\n\n**Metrik:** precision@10 untuk 'kompleks yang tumbuh ≥ X sel dalam 3 hari'. Pembanding tambahan: Spearman urutan vs pertumbuhan.\n\n**Lulus bila:** urutan baru ≥ skor tangan + 10 poin.",
+   "prioritas": "P3",
+   "rujukan": [
+    "scripts/sebaran/RISET-SEBARAN.md:284-339"
+   ]
+  }
+ ]
+}

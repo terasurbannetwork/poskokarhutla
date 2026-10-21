@@ -1,0 +1,340 @@
+{
+ "modul": "gunungapi",
+ "usulan": [
+  {
+   "indeks": 0,
+   "prioritas": "P1",
+   "metode_lama": "Ingest level resmi MAGMA/PVMBG; layar membaca berkas harian, feed D1 30 menit tidak dipakai",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://wovo.iavceivolcano.org/volcanic-alert-levels/9-volcanic-alert/15-aviation-colour-codes",
+     "masalah": "HTTP 404 saat diambil 21 Okt 2026, padahal masih muncul di indeks mesin pencari. Halaman induk WOVO masih hidup.",
+     "pengganti": "https://wovo.iavceivolcano.org/volcanic-alert-levels ; definisi resmi ICAO Doc 9766 di https://codes.wmo.int/iwxxm/_AviationColourCode"
+    }
+   ],
+   "koreksi": "Bukti repo cocok. Hanya src/gunungapi.js yang memuat /api/gunungapi/terbaru; tidak ada layar yang memanggilnya. app.js:94 dan adapter.js:34 membaca gunungapi_status.json. MIN_GUNUNG 40 dan BASI_MENIT 90 ada di src/gunungapi.js:11. Halaman magma.esdm.go.id/v1/vona memang memuat kode warna, tinggi awan, dan arah (dicek 21 Okt 2026: Anak Krakatau Orange 500 m di atas puncak). Ada dua catatan. (1) Sejak November 2025 ICAO menambah kode kelima 'UNASSIGNED', jadi kode warna tidak lagi hanya hijau/kuning/oranye/merah. (2) VONA hanya terbit saat ada erupsi atau perubahan. 'Kode warna VONA terakhir' sebuah gunung bisa berumur berbulan-bulan, jadi tanggalnya wajib ditampilkan. Kode warna juga tidak bisa menggantikan daftar bandara, karena tidak memuat geometri."
+  },
+  {
+   "indeks": 1,
+   "prioritas": "P1",
+   "metode_lama": "Teks rekomendasi, radius_km, sektor_km lewat regex; peta hanya lingkaran radius",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi di gunungapi_status.json. Merapi tidak punya sektor_km, sedangkan Semeru radius 5 dan sektor 17. Teks Merapi persis menyebut Boyong 5 km, Bedog/Krasak/Bebeng 7 km, Woro 3 km, Gendol 5 km. Teks Semeru menyebut Besuk Kobokan 13 km plus sempadan 500 m sampai 17 km. Regex di magma.py:80 memang tidak menangkap 'sejauh maksimal'. Dua koreksi. (1) Perbaikan 'sejauh( maksimal)?' belum cukup, karena teks Merapi juga memuat 'Sungai Gendol 5 km' tanpa kata kunci jarak. Perlu pola per nama sungai. (2) Periode Merapi yang null adalah bug terpisah: regex judul <title> di magma.py:87, bukan akibat regex sektor."
+  },
+  {
+   "indeks": 2,
+   "prioritas": "P1",
+   "metode_lama": "Metrik 'erupsi tercatat' = jumlah laporan nasional, dua definisi (24 jam bergulir vs hari kalender)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://volcano.si.edu/reports_weekly.cfm",
+     "masalah": "Diblokir untuk bot (403), tetapi halamannya ada (dikonfirmasi lewat WebSearch). Laporan ini hanya memuat sebagian gunung aktif, rata-rata sekitar 16 gunung per minggu, bukan semua erupsi. Isi Indonesianya pun bersumber dari PVMBG/VAAC Darwin.",
+     "pengganti": "Tetap boleh dikutip sebagai praktik 'menghitung gunung'. Untuk validasi, pakai daftar letusan MAGMA sendiri atau VONA."
+    }
+   ],
+   "koreksi": "Bukti repo cocok. Di riwayat, 16 Okt tercatat 18 erupsi, sedangkan di laporan_gunungapi.json 16 Okt tercatat 13. sapa.js:12 memakai Date.now(). Ada temuan tambahan: letusan_cakupan pada snapshot hanya mencakup 18 Okt 12.01 sampai 19 Okt 04.38 WIB (sekitar 16,6 jam), jadi usul 'tulis jam cakupan' memang mendesak. Koreksi untuk cara validasinya: target kecocokan dua arah ≥ 90% dengan Weekly Report GVP tidak realistis. GVP sengaja selektif dan tidak independen dari PVMBG, sehingga gunung yang hanya erupsi kecil akan tampak 'meleset' padahal parser benar. Klaim bahwa siaran pers Badan Geologi menyebut gunung beserta tinggi kolom tidak saya verifikasi."
+  },
+  {
+   "indeks": 3,
+   "prioritas": "P1",
+   "metode_lama": "Perubahan level bertanggal deteksi pipeline harian, ditulis sebagai fakta",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.esdm.go.id/id/media-center/arsip-berita",
+     "masalah": "Tautan hidup (200), tetapi hanya halaman indeks dan tidak menunjukkan klaim jam berlaku.",
+     "pengganti": "Contoh siaran pers dengan jam berlaku: https://www.esdm.go.id/en/media-center/news-archives/badan-geologi-tingkatkan-status-g-lbu-ke-level-aw ('terhitung mulai tanggal 15 Januari 2025 pukul 10.00 WIT')"
+    }
+   ],
+   "koreksi": "Praktik resmi terkonfirmasi. Penetapan Badan Geologi memang memakai rumusan 'terhitung mulai tanggal ... pukul ...': Ibu 15 Jan 2025 pukul 10.00 WIT, Lewotobi 10 Jun 2024 pukul 09.00 WITA, Semeru 16 Des 2021 pukul 23.00 WIB. Tabel D1 gunungapi_ubah ada (src/gunungapi.js:4, migrations/0021). Tidak ada koreksi fakta."
+  },
+  {
+   "indeks": 4,
+   "prioritas": "P1",
+   "metode_lama": "Kejadian V: setiap gunung Level II ke atas = kejadian aktif (27), mulai = tanggal sistem",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Repo terverifikasi. Berkas memuat 27 kejadian, semuanya aktif dan semuanya bertanggal mulai 2026-10-19. Seri BNPB tahun 2024 = 8, tahun 2023 = 4. Data BNPB juga terverifikasi:\n- Resource SK 5599c3f4 punya kolom status_keadaan_darurat, tgl_mulai, dan jenis_bencana, dengan 10 SK erupsi tahun 2025 (Lumajang, Halmahera Barat, Flores Timur, Lembata). Tidak satu pun berstatus transisi.\n- Dataset lewotobi-2024 berisi XLSX pengungsi harian 7-27 Nov 2024.\n\nDua koreksi untuk cara validasinya. (1) Dataset SK hanya mencakup 2025, jadi uji mundur 2018-2024 tidak bisa memakai aturan (a). Yang tersisa hanya DIBI. (2) Seri BNPB 2018 = 58 kejadian, jauh di atas tahun lain. Ambang 'selisih ≤ 1 atau ≤ 20%' pasti gagal di 2018 kecuali pencilan itu dijelaskan lebih dulu."
+  },
+  {
+   "indeks": 5,
+   "prioritas": "P1",
+   "metode_lama": "Agregasi 'X kejadian aktif di Y bencana' di /semua ikut menjumlahkan 27 kejadian V",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi di public/semua/kejadian.js. umum('gunungapi') memfilter k.aktif, dan rank = nilai - 1 khusus gunung api. Judulnya 'kejadian aktif' (Kartu.kartu). Satu catatan: berkas dibuang bila dibuat lebih dari 3 hari lalu (BASI_HARI = 3). Penggelembungan ini hanya terjadi selama pipeline segar, dan memang begitu kondisinya sehari-hari."
+  },
+  {
+   "indeks": 6,
+   "prioritas": "P2",
+   "metode_lama": "Jiwa dalam radius dari interpolasi cincin WorldPop 1 km (total 11.376)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Angka repo cocok:\n- Total 11.376 jiwa, berasal dari 24 gunung yang nilainya di atas nol.\n- Merapi 40, Semeru 105.\n- Banda Api 1.000 lawan KRB III 342; Anak Ranakah 972 lawan KRB III 5.\n\nWorldPop R2025A 100 m constrained untuk Indonesia ada (idn_pop_2026_CN_100m_R2025A_v1.tif, 162 MB). Lisensinya CC BY 4.0 menurut hub.worldpop.org. Catatan teknis: pembaca stdlib di scripts/data/penduduk.py hanya menangani BigTIFF LZW tanpa prediktor. Kompresi berkas 100 m perlu dicek dulu. Ketersediaan WCS raster InaRISK dan kunci bahaya gunung api di get-infra-risk tidak saya uji, sesuai pengakuan usulan sendiri."
+  },
+  {
+   "indeks": 7,
+   "prioritas": "P2",
+   "metode_lama": "Paparan per zona KRB (KRB 2018 x WorldPop 1 km, 30 dari 69 gunung)",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://geoportal.esdm.go.id/gis4/rest/services/BGV_GA/KRB_Gunung_Api_Area/MapServer",
+     "masalah": "403 untuk bot, tetapi layanannya ada. Varian ?f=pjson bisa diambil: lapisan 'KRB Gunung Api (Area)', copyright PVMBG, sumber 'update 2018'.",
+     "pengganti": "https://geoportal.esdm.go.id/gis4/rest/services/BGV_GA/KRB_Gunung_Api_Area/MapServer?f=pjson"
+    },
+    {
+     "url": "PARITAS-GUNUNGAPI.md:28",
+     "masalah": "Rujukan basi (lokasinya docs/multi-bencana/PARITAS-GUNUNGAPI.md). Dokumen ini menyebut paparan.py tidak terjadwal, padahal statis.yml:85-90 menjalankannya sejak commit 07825ee7 (19 Okt 2026).",
+     "pengganti": ".github/workflows/statis.yml:83-90 (cron '0 19 2 * *', bulanan)"
+    }
+   ],
+   "koreksi": "Usul 'jadwalkan paparan.py bulanan di statis.yml' sudah terpasang: statis.yml:87-89, tanggal 2 tiap bulan pukul 19.00 UTC. Ini menyalahkan klaim tantang 'paparan.py tidak ada di workflow mana pun'. paparan.json masih berisi 30 gunung hanya karena jadwal itu belum sempat jalan; lari pertama 2 Nov. paparan.py juga sudah memakai InaRISK (INDEKS_BAHAYA_GUNUNGAPI) sebagai cadangan zona. Angka KRB III terverifikasi: Merapi 34.582, Semeru 9.304, Agung 30.414, total 86.615."
+  },
+  {
+   "indeks": 8,
+   "prioritas": "P2",
+   "metode_lama": "Sekolah, faskes, desa di KRB dari titik OSM",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://dapo.kemdikbud.go.id",
+     "masalah": "URLError. Domain lama Kemdikbud sudah tidak menjawab; kementerian kini bernama Kemendikdasmen.",
+     "pengganti": "https://dapo.kemendikdasmen.go.id ('Portal Dapodik – Data Pokok Pendidikan Indonesia'); pencarian NPSN di https://referensi.data.kemendikdasmen.go.id"
+    }
+   ],
+   "koreksi": "Bukti repo terverifikasi. fasilitas.py:4-5 mencatat Kalteng sekitar 430 sekolah di OSM lawan 3.000+ di Dapodik. scripts/data/sekolah.py membaca sekolah.xlsx nasional per NPSN, termasuk lembar madrasah EMIS. Ada dua hal yang belum terkonfirmasi. (1) InaRISK get-infra-risk memuat sekolah, madrasah, RS, dan puskesmas per kelas bahaya. Ini hanya tercatat di docs/multi-bencana/SUMBER-BNPB.md:13, dan kunci bahaya gunung apinya belum diuji. (2) Jangan menyebutnya 'angka resmi' sebelum panggilan itu benar-benar berhasil."
+  },
+  {
+   "indeks": 11,
+   "prioritas": "P1",
+   "metode_lama": "Model abu Lagrangian 72 jam (jejak 2 mg/m3, jangkauan 293/284 km) di laporan dan Simulasi",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Klaim utama terkonfirmasi kuat.\n- OpenAPI aviationweather menandai /api/data/isigmet deprecated: true.\n- /api/data/sigmet mencakup SIGMET internasional, dengan hazard=va dan format geojson.\n- Panggilan langsung 21 Okt 2026 mengembalikan VA SIGMET WIIF Jakarta (Krakatau) dan WAAF Ujung Pandang (Ibu, Semeru, Dukono). Jadi cakupan FIR Indonesia terbukti.\n- Batasnya 100 permintaan per menit; cache diperbarui tiap menit.\n- PDF BMKG Lewotobi 14 Nov 2024 benar merujuk VAAC Darwin dan Himawari-9, memuat SIGMET VA dari MWO, dan mendaftar bandara (Soa, H. Hasan Aroeboesman, Frans Seda, Frans Sales Lega, Waikabubak, Komodo) beserta rute ATS.\n- Mirror JMA 'Darwin VAAC Backup' ada, dan situs BoM memang memberi 403.\n- Kepekaan seed saya ulang secara read-only: jejak_maks Semeru pada seed 1-6 = 284, 129, 121, 140, 274, 292 km dengan 5-14 sel.\n\nYang tidak saya verifikasi: klaim 'VAA paling lama tiap 6 jam' (standar ICAO, tidak dicek)."
+  },
+  {
+   "indeks": 12,
+   "prioritas": "P2",
+   "metode_lama": "Tinggi kolom skenario per level (II=1 km, III=2 km, IV=5 km) + MER Mastin",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.pages.mtu.edu/~raman/papers/MastinetalJVGR09.pdf",
+     "masalah": "404 (salinan pracetak sudah dihapus).",
+     "pengganti": "https://doi.org/10.1016/j.jvolgeores.2009.01.008 atau https://digitalcommons.mtu.edu/geo-fp/28 (halaman USGS pubs 70192378 tetap sah)"
+    }
+   ],
+   "koreksi": "Dua klaim literatur terkonfirmasi. Mastin dkk. 2009 menetapkan tipe letusan untuk sekitar 1.500 gunung Holosen, dengan ketidakpastian ±faktor 4 pada selang 50%. Dacre dkk. 2013 menyebut sekitar 4% massa. Klaim data repo SALAH. Di uji_balik_detail.json (29 kejadian VONA), median kolom 700 m (bukan 600 m) dan yang di bawah 2 km ada 26 dari 29 (bukan 25); rentangnya 300-3000 m. Catatan: angka 4% dari Dacre berlaku untuk awan Eyjafjallajökull di atas Inggris, ribuan km dari sumber. Memakainya untuk jarak puluhan sampai ratusan km di Indonesia adalah ekstrapolasi yang wajib diberi label."
+  },
+  {
+   "indeks": 13,
+   "prioritas": "P1",
+   "metode_lama": "Bandara di jalur abu (penyangga 25 km / selubung cembung), metrik dan sorot laporan",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. Advisory BMKG Lewotobi 14 Nov 2024 05.00 UTC menyebut bandara terdampak (area poligon): Soa (WATB), Komodo (WATO), Waikabubak (WATK), dan tiga lainnya, ditambah ASHTAM VAWR0563. Di repo, WARA berjarak 30,2 km pada arah 311,3 derajat dari Semeru, sedangkan jejak bergerak ke 259 derajat. bandara_terdampak hanya berisi WARA dengan jam_tiba 2. Metrik bandara_abu dan sorot 'Skenario: abu G. Semeru bisa tiba di MLG ... sekitar 2 jam lagi' ada di laporan_gunungapi.json. PDF 15 Nov 2024 hidup (200) tetapi isinya tidak saya buka."
+  },
+  {
+   "indeks": 14,
+   "prioritas": "P1",
+   "metode_lama": "Peluang abu di bandara/kota (ansambel 18-69 anggota, 500 partikel, ambang 0,2/2/4)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Semua rujukan cocok:\n- Crawford dkk. 2022: reliabilitas, FSS setara BSS, ansambel HYSPLIT.\n- Prata dkk. 2021: abstrak menulis 'FMS > 0,40 dan SAL < 1,5 = acceptable agreement', tetapi penulis mengakui ambang ini panduan empiris, bukan standar.\n- Abstrak AMOS 2019: DEPS BoM = HYSPLIT digerakkan ansambel yang sebagian besar ACCESS, masih dalam pengembangan.\n- Linux HYSPLIT butuh registrasi.\n- Ash3d 1.0.0 berlisensi CC0.\n\nAmbang 0,2/2/4 mg/m3 memang batas rendah/sedang/tinggi UK CAA. Koreksi: skema kuantitatif baru ICAO (QVA) memakai pita 0,2/2/5/10 mg/m3. Bila mengikuti standar internasional terbaru, ambang 4 perlu ditinjau. 51 anggota ECMWF ENS hanya diambil untuk gunung Level III ke atas (3 gunung dalam snapshot)."
+  },
+  {
+   "indeks": 15,
+   "prioritas": "P2",
+   "metode_lama": "Sebaran partikel mentah (jejak_tipis) untuk arah awal; 21/29 vs klimatologi 55%",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Saya hitung ulang dari uji_balik_detail.json: model saja benar 10, klimatologi saja 5, keduanya 11, tidak satu pun 3. McNemar eksak p = 0,302. Kolom besar meleset: Marapi 2.400 m 57,8 derajat, Lewotobi 2.500 m 149,6 derajat, Ruang 3.000 m 89,3 derajat. Catatan kelayakan: syarat n ≥ 30 per kelas untuk kelas di atas 2 km kemungkinan lama tidak tercapai, karena hanya 3 dari 29 kejadian sampel yang berkolom di atas 2 km. Kelas yang paling penting untuk aviasi itu akan tetap tersembunyi, dan ini harus dinyatakan."
+  },
+  {
+   "indeks": 16,
+   "prioritas": "P2",
+   "metode_lama": "Uji balik arah abu vs VONA (sampel 14 halaman, n = 29), label pembanding salah",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan cocok. Prata dkk. 2021 memakai FMS/SAL. Harvey & Dacre 2016 memakai FSS terhadap satelit. Teks JMA 2024/22 adalah advisory VAAC Darwin untuk Ruang 18 Apr 2024, dengan OBS di tiga lapisan (SFC/FL250, FL400, FL550) dan prakiraan +6/+12/+18 jam. Label layar yang salah terverifikasi di insight.js:137 ('arah angin rata-rata bulan itu'). Catatan: daftar 'Darwin VAAC Backup' JMA hanya memuat advisory pada periode Tokyo menjadi cadangan. Teks VAA untuk uji luas akan jarang, jadi n uji FMS kemungkinan kecil."
+  },
+  {
+   "indeks": 17,
+   "prioritas": "P2",
+   "metode_lama": "Catatan prospektif append-only (n = 0, 27 entri terlambat, kolom asumsi level)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. prospektif_abu.json berisi 27 entri, semuanya terlambat: true, dan ringkasannya n = 0. Entri mencatat kolom 2000 m 'asumsi level 3'. Fungsi rantai() di magma.py menjalankan abu.py, lalu prospektif.py, lalu laporan.py. Tidak ada koreksi."
+  },
+  {
+   "indeks": 18,
+   "prioritas": "P1",
+   "metode_lama": "Lahar LAHARZ D8 (A=0,05 V^(2/3), B=200 V^(2/3)), Manning n=0,06, volume bebas",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan cocok:\n- Laharz_py adalah USGS OFR 2014-1073 (Schilling).\n- Castruccio & Clavero 2015 (Nat Hazards 77:693-716) menyatakan 0,05 tidak cocok dan mengusulkan 0,02.\n- DPM EOS-RS Semeru memakai Sentinel-1, adegan sesudah tanggal 7 Des 2021, piksel sekitar 30 m.\n- McGowan dkk. terbit 2026 di IJAEOG vol. 146 dan memetakan endapan dengan Sentinel-1 + PlanetScope.\n- Copernicus GLO-30 terbuka.\n\nKoreksi kecil. (1) Angka 0,05/200 berasal dari Iverson dkk. 1998; halaman OFR tidak memuatnya. (2) Nilai 0,02 diturunkan dari Villarrica dan Calbuco, bukan 'Andes Selatan' secara umum. (3) DEMNAS beresolusi 0,27 detik busur (sekitar 8 m) dan pengunduhannya butuh registrasi di tanahair.indonesia.go.id."
+  },
+  {
+   "indeks": 19,
+   "prioritas": "P1",
+   "metode_lama": "Awan panas: kerucut energi H/L 0,2-0,35, waktu tiba garis energi",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://theghub.org/resources/4389",
+     "masalah": "404 bagi pengambil otomatis. Indeks pencarian tetap menunjukkan halaman ini sebagai ECMapProb (Aravena & Cioni, v1.00, 2019), jadi rujukannya kemungkinan sah tetapi tidak bisa dibuka tanpa peramban/login.",
+     "pengganti": "Kutip artikel Aravena dkk. 2024, Bull. Volcanol. 86:84, doi:10.1007/s00445-024-01768-y (memakai ECMapProb 2.0)"
+    },
+    {
+     "url": "https://keele-repository.worktribe.com/output/427943/evaluation-of-the-impact-of-the-2010-pyroclastic-density-currents-at-merapi-volcano-from-high-resolution-satellite-imagery-field-investigations-and-numerical-simulations",
+     "masalah": "403 untuk bot; artikelnya ada.",
+     "pengganti": "https://doi.org/10.1016/j.jvolgeores.2012.12.021"
+    }
+   ],
+   "koreksi": "Data kalibrasi terkonfirmasi. Komorowski dkk. 2013 menulis aliran terkungkung lembah 'reached 15.5 km'. Charbonnier dkk. 2013 menulis endapan PDC 2010 sekitar 22,3 km2. DOI Springer 10.1007/s00445-024-01768-y adalah Aravena dkk. 2024 tentang bahaya PDC probabilistik di Tungurahua yang dikalibrasi. Yang belum terverifikasi: H/L Merapi '0,16-0,17' tidak dikutip dari sumber mana pun. Angka itu hasil hitungan sendiri yang bergantung pada elevasi ujung aliran, jadi harus dihitung dari DEM dan diberi label turunan. Hati-hati juga: 22 km2 di abstrak Komorowski adalah luas PDC berenergi tinggi dengan runout 8,4 km, bukan luas endapan Charbonnier. Jangan dicampur."
+  },
+  {
+   "indeks": 20,
+   "prioritas": "P1",
+   "metode_lama": "Hujan abu relatif (kelas tebal/sedang/tipis) dan kebutuhan masker",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://theghub.org/resources/tephra2",
+     "masalah": "404.",
+     "pengganti": "https://github.com/geoscience-community-codes/tephra2 (bahasa C, GPL-3.0)"
+    },
+    {
+     "url": "https://repository.kulib.kyoto-u.ac.jp/dspace/handle/2433/241765",
+     "masalah": "Koneksi terputus saat diambil (pengecekan otomatis mencatat 200). Isinya Maeno dkk., naskah JVGR terbit daring 7 Mar 2017.",
+     "pengganti": "https://doi.org/10.1016/j.jvolgeores.2017.03.002"
+    }
+   ],
+   "koreksi": "Klaim terkonfirmasi. Bab Wilson, Jenkins & Stewart 2015 menyatakan endapan kurang dari 10 mm sudah mengganggu kesehatan, infrastruktur, aviasi, dan pertanian, sedangkan lebih dari 100 mm merusak tanaman dan bangunan. Maeno dkk. memberi MER 6,5 ± 2,8 x 10^7 kg/s. Williams dkk. 2020 (J Appl Volcanol 9:10) memakai inversi Tephra2 untuk Kelud. Koreksi: tahun 'Maeno dkk. 2019' rancu, karena naskahnya daring sejak 2017. Kutip dengan DOI. Williams dkk. 2020 sebenarnya makalah kerentanan bangunan; isopach/beban hanya produk sampingannya."
+  },
+  {
+   "indeks": 21,
+   "prioritas": "P1",
+   "metode_lama": "Jiwa terpapar per piksel, evakuasi berkapasitas, peringkat Pareto jiwa vs rupiah",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.nrc.gov/reading-rm/doc-collections/nuregs/contract/cr7002/r1/",
+     "masalah": "Pengecek otomatis mencatat 403, tetapi WebFetch berhasil. Halamannya ada: 'Criteria for Development of Evacuation Time Estimate Studies', Rev. 1, Feb 2021.",
+     "pengganti": "Tetap sah; PDF ML21013A504"
+    }
+   ],
+   "koreksi": "Data BNPB terkonfirmasi. Dataset lewotobi-2024 berisi XLSX pengungsi harian 7-27 Nov 2024. Resource Ibu Jan 2025 berisi pengungsi per pos dan asal, berlisensi ODC-BY. Satuan ASUMSI di sim_tanggap.js sesuai klaim. Bahwa NUREG/CR-7002 memuat distribusi mobilisasi dan antrean tidak terlihat di halaman ringkasan. Isi itu baru bisa dipastikan dari PDF, tetapi bukan klaim yang menentukan."
+  },
+  {
+   "indeks": 22,
+   "prioritas": "P1",
+   "metode_lama": "Pita ketidakpastian Simulasi (kolom x0,7/x1,4, volume /3 dan x3, seed tetap)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Mastin dkk. 2009 terkonfirmasi (±faktor 4 pada selang 50%). Derau seed saya reproduksi tanpa menulis berkas. Pada angin dan kolom yang sama, jangkauan Semeru 121-292 km dan Merapi 293-303 km. Bandara WAHL muncul untuk Merapi hanya pada seed 4 dan 5. Pita x0,7/x1,4 dengan seed tetap memang lebih sempit dari derau sampling model sendiri."
+  },
+  {
+   "indeks": 23,
+   "prioritas": "P1",
+   "metode_lama": "Indeks risiko riwayat letusan 0-100 (Kelud 28, Tambora 0, Dukono 50)",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.openphilanthropy.org/wp-content/uploads/Aspinall_et_al_GFDRR_Volcano_Risk_Final.pdf",
+     "masalah": "Dialihkan (301) ke coefficientgiving.org, lalu 403. Dokumennya ada (Aspinall dkk. 2011, laporan GFDRR/NGI). Tetapi ini bukan 'Volcanic Hazard Index (Auker dkk. 2015)' yang disebut di teks usulan; rujukan dan klaimnya tidak cocok.",
+     "pengganti": "Auker dkk. 2015, 'Development of a new global Volcanic Hazard Index (VHI)', bab 22 Global Volcanic Hazards and Risk: https://www.cambridge.org/core/services/aop-cambridge-core/content/view/349AFD9E4CBA0EAE8BE5D047BA4072F7/9781316276273c22_p349-358_CBO.pdf/development-of-a-new-global-volcanic-hazard-index-vhi.pdf"
+    }
+   ],
+   "koreksi": "Klaim terkonfirmasi:\n- Bab Brown, Auker & Sparks 2015 menyusun PEI dari penduduk dalam radius 10 dan 30 km.\n- USGS SIR 2018-5140 (Ewert dkk.) memakai matriks 24 faktor bahaya dan paparan.\n- InaRISK /apiv4/data-irbi-full adalah NDJSON 5.654 baris, 514 kabupaten/kota x tahun 2015-2025, dengan kolom gunungapi (null bila tidak relevan).\n\nNilai risiko.json juga cocok: Kelud [28, Sedang], Galunggung 19, Tambora 0, Dukono 50. Merapi dan Semeru sama-sama 61."
+  },
+  {
+   "indeks": 25,
+   "prioritas": "P1",
+   "metode_lama": "Seri tahunan BNPB 2010-2024, judul persen antartahun ('mengungsi naik 630%')",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. dampak_gunungapi.json mencatat 2010 terdampak 0 tetapi mengungsi 506.794. Angka 2023 = 4.785 dan 2024 = 34.918 menghasilkan kenaikan 630%. Dataset kompilasi 2024 di CKAN memuat 28 XLSX, termasuk 'Jumlah Korban Meninggal Dunia Akibat Bencana Menurut Provinsi 2024'. license_id = odc-odbl (ODbL) benar, walau halaman dataset tidak menampilkannya. Buku Data Bencana Indonesia 2024 (PDF BNPB) ada; isi tabelnya tidak saya ekstrak. Pola nol yang sebenarnya hilang juga muncul di 2017 dan 2021 (terdampak 0, mengungsi 78.931 dan 10.565), bukan hanya di 2010."
+  },
+  {
+   "indeks": 27,
+   "prioritas": "P1",
+   "metode_lama": "Laporan Harian Gunung Api mencampur metrik resmi dan skenario",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. laporan_gunungapi.json memuat metrik 'bandara_abu' ('Bandara di jalur abu 72 jam', nilai 1 pada 19 Okt) dan sorot skenario MLG. Cutoff 2026-10-19 04.38 WIB. Sorot Merapi menulis 'periode terbaru'. Commit e4c26dfd (19 Okt 2026 03.43 WIB) ada dan menyentuh laporan_gunungapi.json. VA SIGMET dan VONA sebagai sumber pengganti terkonfirmasi tersedia (lihat indeks 11 dan 0)."
+  },
+  {
+   "indeks": 28,
+   "prioritas": "P1",
+   "metode_lama": "Pop-up sapa.js: erupsi 24 jam terhadap jam peramban, chip skenario bandara di bawah sumber PVMBG",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "public/gunungapi/sapa.js:12, 18-19, 31, 34, 41",
+     "masalah": "Nomor baris sudah bergeser di pohon kerja.",
+     "pengganti": "sapa.js:12 (Date.now), 18 (fetch abu_gunungapi.json), 28 ('tiba sekitar ... jam lagi'), 32 (chip 'skenario: N bandara di jalur abu'), 40 (sumber 'PVMBG (MAGMA Indonesia)')"
+    }
+   ],
+   "koreksi": "Substansinya benar. Kalimat skenario sendiri sudah berlabel 'Skenario Pantau Bencana, bukan VAAC'. Salah atribusinya ada di level kartu: satu-satunya sumber yang tercantum adalah PVMBG."
+  },
+  {
+   "indeks": 29,
+   "prioritas": "P1",
+   "metode_lama": "Kartu nasional adapter.js dengan 'hari ini' tetap",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. adapter.js:39 menulis literal 'hari ini', sedangkan insight.js:37 sudah memakai labelHari(S.st.dibuat). Pil waktu data (dataPil) memang ada di adapter.js:40, jadi waktu data sebenarnya tampil, hanya judulnya yang keliru."
+  },
+  {
+   "indeks": 30,
+   "prioritas": "P2",
+   "metode_lama": "Arah kolom abu teramati dari teks letusan PVMBG",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terverifikasi. Fungsi arah() di laporan.py:69-71 mengurai 'ke arah ...'. Halaman VONA MAGMA juga memuat arah gerak awan ('moving northwest'), dan VA SIGMET BMKG memuat arah serta kecepatan (contoh PDF Lewotobi: 'Barat / 15 knot'). Tidak ada koreksi."
+  }
+ ],
+ "vonis_dicek": [
+  {
+   "nama": "Peluang abu di bandara/kota (ansambel 18-69 anggota, ambang 0,2/2/4 mg/m3)",
+   "hasil": "Koreksi tantang atas telaah terbukti, dan vonis tidak_layak bertahan.\n(a) Di abu_peluang.json, 589 dari 735 pasangan punya peluang di atas 0 pada hari ke-2/3. Contohnya Merapi ke Jakarta Pusat hari ke-2 [0,551; 0,29; 0,217], ke Soekarno-Hatta [0,594; 0,304; 0,217], dan ke Bandar Lampung [0,493; 0,319; 0,232]. Klaim telaah 'hari ke-2/3 = 0' hanya berlaku untuk kabupaten dekat kawah.\n(b) Merapi ke Magelang, Sleman, Klaten, dan Boyolali sama-sama [1,0; 0,652; 0,652]. Nilai 0,652 = 45/69: 12 anggota deterministik dengan faktor 1x/2x, ditambah 33 anggota ensemble dengan m mod 6 ∈ {2..5}. Saya hitung ulang dan hasilnya cocok.\n(c) Kuantum per partikel dengan rumus abu.py: kolom 2 km dan 3 jam = 0,22 mg/m3; kolom 4 km = 3,9 mg/m3 (3 jam) sampai 7,8 mg/m3 (6 jam).\n(d) scripts/umum/peluang.py:105 mencetak '>99%' untuk p = 1. Ada 11 pasangan berbunyi '>99%'.\n(e) Docstring peluang_abu.py:19 menulis 5%, sedangkan kode P_MIN = 0,25 (baris 63). Teks batasan di layar sudah benar 25%.\n(f) insight.js:144-145 memilih pasangan dengan jumlah p tertinggi sebagai bawaan.\n(g) Docstring peluang_abu.py:15-16 dan batasan layar menulis '0,2 dan 4 adalah pilihan sendiri'. Ini keliru ke arah merendah: UK CAA menetapkan rendah > 0,2-2, sedang > 2-4, tinggi ≥ 4 mg/m3.\nSatu nuansa: uji_balik_arah() di peluang_abu.py:295-301 menulis jujur 'keandalan peluang ... BELUM diuji balik'."
+  }
+ ],
+ "klaim_utama": [
+  {
+   "klaim": "Uji balik arah abu: berambang 1 dari 4 (25%, p = 0,684) lawan klimatologi 75%; tanpa ambang 21 dari 29 (72%) lawan 55%; McNemar model-saja 10, klimatologi-saja 5, p = 0,30",
+   "status": "benar",
+   "catatan": "abu_gunungapi.json uji_balik: n = 4, persen 25, p_binomial 0,684, klimatologi 75. uji_balik_tipis: n = 29, persen 72, klimatologi 55. Dari uji_balik_detail.json saya hitung ulang 10/5/11/3 dengan McNemar eksak p = 0,302. Tiga kolom terbesar meleset: Marapi 2.400 m 57,8 derajat, Lewotobi 2.500 m 149,6 derajat, Ruang 3.000 m 89,3 derajat."
+  },
+  {
+   "klaim": "Jejak abu Merapi 292,7 km dan Semeru 284,1 km adalah artefak: hanya 2 dari 27 gunung punya jejak, seed 1-6 menggeser Semeru 121-292 km, dan WARA (MLG) kena hanya karena penyangga 25 km",
+   "status": "benar",
+   "catatan": "jejak_maks hanya ada untuk Merapi dan Semeru. Lari ulang read-only abu.jalankan dengan seed 1-6 (n = 5000, angin tersimpan) memberi Semeru 284, 129, 121, 140, 274, 292 km (5-14 sel) dan Merapi 293-303 km. WAHL hanya muncul pada seed 4 dan 5. WARA berjarak 30,2 km pada arah 311,3 derajat, sedangkan awan ke 259 derajat. Laporan harian benar-benar memuat metrik 'Bandara di jalur abu 72 jam' bernilai 1 dan sorot 'Skenario: abu G. Semeru bisa tiba di MLG ... sekitar 2 jam lagi'."
+  },
+  {
+   "klaim": "27 'kejadian V' (setiap gunung Level II ke atas) semuanya aktif dan bertanggal mulai 2026-10-19, lalu dijumlahkan ke judul nasional 'X kejadian aktif' di /semua; BNPB 2024 hanya 8 kejadian erupsi",
+   "status": "benar",
+   "catatan": "kejadian_gunungapi_awal.json: 27 entri, semuanya aktif: true dan mulai '2026-10-19'. public/semua/kejadian.js memasukkan gunungapi lewat umum() dengan rank = nilai - 1 dan judul 'kejadian aktif'. dampak_gunungapi.json mencatat 2024 = 8 dan 2023 = 4. Merapi berstatus Siaga sejak 2020, tetapi tertulis mulai 19 Okt 2026."
+  },
+  {
+   "klaim": "Semua layar dan laporan membaca berkas harian; feed D1 30 menit tidak dibaca layar; paparan.py tidak dijadwalkan di workflow mana pun",
+   "status": "sebagian",
+   "catatan": "Bagian pertama benar. Hanya src/gunungapi.js yang memuat 'gunungapi/terbaru', sedangkan app.js:94 dan adapter.js:34 membaca gunungapi_status.json, dan lintas.yml memakai cron '10 2 * * *' (09.10 WIB). Bagian kedua SALAH. statis.yml:85-90 menjalankan paparan.py dan citra.py bulanan sejak commit 07825ee7 (19 Okt 2026). Klaim itu mengutip docs/multi-bencana/PARITAS-GUNUNGAPI.md yang sudah basi. Usulan alternatif no. 7 ('jadwalkan paparan.py') karenanya sudah terpenuhi."
+  },
+  {
+   "klaim": "Asumsi kolom per level terbalik dari pengamatan: kolom VONA median 600 m, 25 dari 29 di bawah 2 km; Anak Krakatau (kolom teramati 200 m) dapat sekitar 2 ton, Semeru (asumsi 2 km) dapat 27.000 ton",
+   "status": "sebagian",
+   "catatan": "Inti klaimnya benar. Di abu_gunungapi.json, Anak Krakatau kolom 200 m dengan massa 2.000 kg, sedangkan Semeru dan Merapi kolom 2000 'asumsi level 3' dengan massa 2,7e7 kg. Rentang kolom VONA 300-3000 m juga benar. Tetapi dari uji_balik_detail.json mediannya 700 m (bukan 600), dan yang di bawah 2 km 26 dari 29 (bukan 25)."
+  },
+  {
+   "klaim": "Sektor larangan PVMBG tidak dihitung: Merapi sektor_km null karena regex 'sejauh maksimal'; peta Semeru hanya lingkaran 5 km (105 jiwa) padahal Besuk Kobokan 13-17 km; total nasional 11.376 jiwa",
+   "status": "benar",
+   "catatan": "gunungapi_status.json: Merapi tanpa sektor_km dengan radius 3 dan 40 jiwa; Semeru radius 5, sektor 17, 105 jiwa. Jumlah penduduk_radius = 11.376 dari 24 gunung bernilai di atas nol. Regex magma.py:80 tidak menangkap 'sejauh maksimal'. Koreksi kecil: periode Merapi yang null adalah bug terpisah (regex judul di magma.py:87), bukan akibat regex sektor."
+  }
+ ]
+}

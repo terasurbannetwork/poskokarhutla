@@ -1,0 +1,346 @@
+{
+ "modul": "karhutla-model-sebaran",
+ "usulan": [
+  {
+   "indeks": 0,
+   "prioritas": "P1",
+   "metode_lama": "Garis dasar 'normal' = ambang musim_awal ÷2 ÷7 (S-NPP), status 'Siaga' provinsi bila ≥3× normal & ≥300 titik; label '2015–2025' padahal dasar 2012–2025",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.ncei.noaa.gov/pub/data/normals/WMO/Guidelines%20for%20the%20Calculation%20of%20Climate%20Normals.WMO%20No1203_en.pdf",
+     "masalah": "HTTP 503 saat diperiksa (server sementara); dokumennya nyata (WMO-No. 1203, edisi 2017) menurut hasil pencarian",
+     "pengganti": "https://library.wmo.int/records/item/55797-wmo-guidelines-on-the-calculation-of-climate-normals (rekam katalog WMO dari hasil pencarian; belum saya buka)"
+    }
+   ],
+   "koreksi": "Terkonfirmasi dari PDF Berita Negara 375/2018: P.9/2018 Pasal 5 (empat tingkat Siaga 3/Normal, Siaga 2/Waspada, Siaga 1/Siaga Darurat, Darurat/Tanggap Darurat), Pasal 6(2) 11 parameter (sama persis dengan daftar usulan), Pasal 7(1) minimal 4 parameter, Pasal 8 (El Niño, periode musim kemarau), Pasal 9 (Bupati/Wali Kota, Gubernur, Menteri). ASMC Alert Level 0–3 terkonfirmasi (tanpa ambang angka titik panas). Halaman BMKG karhutla menampilkan FFMC/DMC/DC/ISI/BUI/FWI dan titik panas. Repo terkonfirmasi: ringkasan.js:73 (norm = amb/2/7), :102 (rasio = snpp/norm), :110 (rasio ≥3 & h24 ≥300), label '2015–2025' di :353 dan :583, musim_awal.json dasar [2012, 2025]. Koreksi: (1) Klaim 'Hitungan resmi SiPongi/BNPB = M+N+N20, semua keyakinan (harian.py:24)' bersumber dari komentar repo yang berbunyi 'setara SiPongi/BNPB'. Itu bukan dokumen resmi; SiPongi memberi kelas keyakinan rendah/sedang/tinggi. (2) Mengganti kata 'Siaga' saja tidak cukup. TINGKAT platform = ['Normal','Waspada','Siaga','Darurat'] (ringkasan.js:16), dan kalimat utama Dashboard bisa berbunyi 'N provinsi berstatus darurat' (:321). Keempat nama P.9 harus diganti. (3) 'Siaga' platform juga dipicu ≥3 kompleks prioritas atau ≥1 juta jiwa terpapar (:529, :583), bukan hanya ≥3× normal. (4) Ketersediaan API ISPU belum diperiksa (diakui usulan)."
+  },
+  {
+   "indeks": 1,
+   "prioritas": "P1",
+   "metode_lama": "Layar Simulasi menghitung peluang 'membesar' dengan masukan menyimpang dari definisi latih (n0 dari api24 3 satelit, frp ×3, frpJumlah = frp24, waktu = Date.now())",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Semua rujukan repo terkonfirmasi: sim_data.js:18–22 (sel0 dari api24, frp = frp24/px24×3, frpJumlah = p.frp24, waktu: Date.now()), sebaran_model.js:198–207 (fungsi lolos; malam dari t0) dan :240 (umur_jam dari t0), lolos.py:143–153 (latih: sel lintasan pertama ≤30 menit, FRP maks/jumlah lintasan pertama, malam dari jam deteksi pertama). Saya uji ulang dengan pohon model_sebaran.json 'lolos' pada 51 baris data/raw/sebaran/prospektif_uji_alur_14okt/ramalan.jsonl (p tersimpan tereproduksi, selisih maks 5e-5). Hasil: malam 0→1 rata-rata ×4,36 (p90 ×5,53); n0×2 ×2,45 (p90 ×4,55); gabungan malam + n0×2 + frp0×3 ×9,96 sampai ×12,66 (tergantung perlakuan frp_jml0); WASPADA naik dari 0 menjadi 15–17 dari 51 titik. Angka '8,7×' hanya salah satu varian skenario; arah dan besarnya terkonfirmasi. Ke-51 titik itu semuanya lintasan siang (malam = 0). Bagian 'kompleks ≥10 sel tidak diberi peluang' sebenarnya sudah berlaku: pl = null bila n0 ≥ 10 (sebaran_model.js:258), dan kartu sudah menulis 'Sudah ≥ 140 ha' (sim_data.js:52). Yang tersisa hanya mengganti label menjadi '≥ 10 piksel'."
+  },
+  {
+   "indeks": 2,
+   "prioritas": "P1",
+   "metode_lama": "Peluang simulasi p≥0,20 dalam 5 km = 'Siaga: Kemungkinan besar terjadi'; p≥0,50 dalam 2 km = 'Awas' di email/pil EWS",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.bmkg.go.id/siaran-pers/bmkg-waspada-potensi-curah-hujan-tinggi-dan-kekeringan-meteorologis-di-indonesia-10-hari-ke-depan",
+     "masalah": "Siaran pers 3/4 Sep 2021 ini TIDAK memuat pemetaan Waspada/Siaga/Awas ke hari tanpa hujan ('Awas bila > 60 hari'). Isinya hanya kategori HTH (31–60 'sangat panjang', >60 'ekstrem panjang') dan keterangan bahwa peringatan menggabungkan HTH dengan peluang hujan < 20 mm/dasarian.",
+     "pengganti": "Belum ditemukan dokumen BMKG yang memuat tabel kriteria. Hapus angka '> 60 hari' atau rujuk tabel kriteria Peringatan Dini Kekeringan Meteorologis BMKG (iklim.bmkg.go.id) setelah dicek."
+    },
+    {
+     "url": "https://www.cawcr.gov.au/projects/verification/",
+     "masalah": "Bukan rusak, tetapi 301 pindah permanen; isinya tetap panduan JWGFVR (POD/FAR/CSI, BSS, reliabilitas, FSS, CRPS, skill vs persistensi/klimatologi). Berlaku juga untuk usulan 3, 7, 10, 18.",
+     "pengganti": "https://jwgfvr.github.io/forecastverification"
+    }
+   ],
+   "koreksi": "Repo terkonfirmasi: src/ews.js:38 (SIM_AWAS_P 0,50, SIM_SIAGA_P 0,20), ews.js:174–191, public/ews_tindakan.js:10–14 (Siaga = 'Kemungkinan besar terjadi'), src/ews_email.js:10 (p < 0,3 = 'kemungkinan kecil (sekitar 1 dari 5)'), dan jejak.py:39 (MIN_MC 8). P.9/2018 terkonfirmasi. Status Normal/Waspada/Siaga/Awas PVMBG tidak saya buka, tetapi lazim. Ada inkonsistensi dalam usulan. Ia menyisakan kata status untuk 'pengamatan', padahal jalur titik panas teramati juga memakai Awas (≤5 km) dan Siaga (≤15 km) (ews.js:34). Bila kata Waspada/Siaga/Awas dicadangkan untuk instansi berwenang, jalur pengamatan pun harus berganti kosakata. Data produksi (pantau.terasurban.com/data/jejak_api.json, dibuat 18 Okt 2026): 28 dari 251 kompleks punya p_maks hari-1 ≥ 0,50 (wilayah Awas) dan 115 punya ≥ 0,20, padahal di uji tidak ada sel di atas 0,4465 (n = 3; hasil.json)."
+  },
+  {
+   "indeks": 3,
+   "prioritas": "P1",
+   "metode_lama": "Jejak api 72 jam per kompleks (MC 20, bisa turun ke 8) + peringatan Awas/Siaga simulasi, tanpa POD/FAR",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://ejournal.brin.go.id/ijreses/article/view/13812",
+     "masalah": "Artikel ini (Rahmi, Sulma & Prasasti, IJReSES Vol 16 No 2, 2019) memvalidasi algoritma AFP/PFP LAPAN pada Himawari-8 di Kalteng. Angka 51,33% (AFP, buffer 2 km) memang benar. Tetapi ini bukan validasi produk JAXA P-Tree WLF atau Himawari-9 yang dipakai repo, jadi angkanya tidak bisa dialihkan ke WLF.",
+     "pengganti": "Tidak ditemukan validasi WLF untuk Indonesia. Tulis 'algoritma LAPAN pada Himawari-8 (2019)'."
+    }
+   ],
+   "koreksi": "FIRMS Fire Alerts terkonfirmasi: gratis, area kustom (kotak/poligon), MODIS + VIIRS S-NPP/NOAA-20/NOAA-21, NRT/harian/mingguan. Perlu Earthdata Login atau kode email. P.8/2018 (Prosedur Tetap Pengecekan Lapangan Informasi Titik Panas) terkonfirmasi. Niculescu-Mizil & Caruana 2005 terkonfirmasi untuk distorsi sigmoid pada boosting. Galat baku MC terkonfirmasi: 8 putaran ±0,177; 200 putaran ±0,035. Koreksi penting: repo SUDAH punya peringatan kedekatan teramati. src/ews.js:34 memakai TITIK_AWAS_KM 5 / TITIK_SIAGA_KM 15 dalam 24 jam dari D1, ditambah deteksi Himawari-9 JAXA (ews.js sekitar :165–169). Jadi usulan ini pada intinya = cabut jalur simulasi, bukan membangun baru. Radius usulan 2/5/10 km juga berbeda dari 5/15 km yang ada. Latensi Himawari 'sekitar 1 jam' dan 'akun gratis' P-Tree belum terkonfirmasi (P-Tree memerlukan registrasi; latensinya tidak dinyatakan). Data produksi: 1.516 kompleks aktif, 251 diramal (1.216 dilewati karena anggaran waktu), n_mc = 20 di semua kompleks. Berkas dibuat 18 Okt, sehingga per 21 Okt sudah melewati SIM_UMUR 36 jam."
+  },
+  {
+   "indeks": 4,
+   "prioritas": "P1",
+   "metode_lama": "Model sel GBDT 375 m: peta peluang 24/48/72 jam & arah utama, tercentang bawaan sebagai 'perkiraan utama'",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan terkonfirmasi: Roberts & Lean 2008 MWR 136:78–97 (memperkenalkan FSS); Chen dkk. 2022 Sci Data 9:249 (pelacakan objek kebakaran VIIRS 375 m; repo fireatlas menyatakan mengimplementasikan algoritma FEDS Chen dkk. 2022, termasuk NOAA-21); Andela dkk. 2019 ESSD (Global Fire Atlas, 2003–2016, arah harian dari MCD64A1); Huot dkk. (arXiv 2021, terbit IEEE TGRS 2022); Gerard dkk. NeurIPS 2023 (WildfireSpreadTS multi-temporal, menyebut tugasnya 'challenging'); Open-Meteo Previous Runs ('most models archived from January 2024', previous_day1..7); berita BMKG SPARTAN ('bukan menginformasikan lokasi kebakaran'). Angka repo terkonfirmasi: hasil.json, |log luas| 72 jam GBDT 0,98 vs persistensi 0,65; bin keandalan tertinggi 0,4465 (n = 3). Catatan: (1) penulis GFA menyatakan arah sebaran TIDAK divalidasi dan hanya 8 arah pada sel 500 m, jadi GFA adalah pembanding kasar, bukan kebenaran; (2) Previous Runs: sebagian model punya arsip lebih pendek; (3) detail alpha-shape FEDS tidak saya konfirmasi dari halaman; (4) model sel yang terpasang dilatih 2015–2026, sedangkan angka uji berasal dari model 2015–2022 (model_sebaran.json catatan)."
+  },
+  {
+   "indeks": 5,
+   "prioritas": "P1",
+   "metode_lama": "Simulasi perlakuan & biaya: ha diselamatkan, Rp, ha per Rp1 jt di atas mesin fisika bias 8–84×",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://doi.org/10.1007/s40725-019-00084-5",
+     "masalah": "DOI ini adalah Plucinski 2019 BAGIAN 1, 'Fighting Flames and Forging Firelines', yaitu skala nyala dan garis kendali. Klaim 'efektivitas di tingkat insiden sulit diukur tanpa data insiden' ada di Bagian 2.",
+     "pengganti": "https://doi.org/10.1007/s40725-019-00085-4 (Plucinski 2019, 'Contain and control: wildfire suppression effectiveness at incidents and across landscapes', Curr For Rep 5:20–40)"
+    }
+   ],
+   "koreksi": "Bagian 2 menyatakan evaluasi efektivitas 'challenging at most scales' dan data sulit diperoleh. Ia TIDAK secara khusus menganjurkan pembanding kompleks tanpa operasi dengan pencocokan propensitas, jadi frasa 'pendekatan Plucinski 2019' terlalu kuat; tulis 'dirancang sendiri, terinspirasi tinjauan Plucinski'. P.32/2016 terkonfirmasi (BN 583/2016; pencegahan, pemadaman, penanganan pasca). Repo terkonfirmasi: sim_perlakuan.js:10 (PKA isiSiram 0,06, heliGambut 0,2), :75 (ef_omc 0,05), :231–232 ('Bila hanya bisa mengirim satu sumber', 'ha per Rp1 jt'), dan tombol ringkasan.js:279."
+  },
+  {
+   "indeks": 6,
+   "prioritas": "P1",
+   "metode_lama": "Peluang membesar cara lama (porsi MC + Platt kal_lepas) sebagai cadangan; AUC 0,70 dipajang di tentang.html",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terkonfirmasi: sim_data.js:56 (cadangan 'dari Monte Carlo'), tentang.html:1306–1314 (memakai kinerja_uji.lepas_auc 0,7012), sebaran_model.js:277–285 (kalLepas). Recall 21,4% pada ambang 50% dan presisi 90% (model_sebaran.json lolos.laporan, 500 deteksi pertama). Tambahan untuk gerbang: tentang.html:1309 juga menulis 'Diuji jujur pada data 2024–2026 yang tidak dipakai melatih'. Kalimat itu tidak benar untuk model yang terpasang: model sel dan model lolos sama-sama dilatih ulang pada 2015–2026 (model_sebaran.json catatan; lolos.py:427–429)."
+  },
+  {
+   "indeks": 7,
+   "prioritas": "P1",
+   "metode_lama": "Klaim publik tentang.html: 'model data mengalahkan model Kanada, AS, Australia', AUC 0,70, 'cukup untuk menentukan prioritas'",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Mitchell dkk. 'Model Cards for Model Reporting' (arXiv 1810.03993, FAT* 2019) dan panduan JWGFVR terkonfirmasi (alamat CAWCR pindah, lihat usulan 2). Kalimat pengganti yang diusulkan perlu diperbaiki sebelum dipakai: (1) Set uji 2024–2026 didominasi 2026: 73.675 dari 97.749 baris, dan 2.837 dari 2.922 api besar (97%). Tahun 2024 hanya punya 46 api besar dan 2025 hanya 39 (lolos_hasil.json). Recall per tahun 63% / 54% / 68%. Tulis 'diuji terutama pada musim 2026'. (2) Model yang terpasang dilatih ulang dengan semua tahun, termasuk 2024–2026 (lolos.py:427–429). Angka uji milik model 2015–2023, dan ini harus disebut. (3) 'Sekitar 1 dari 5 tanda benar' sesuai presisi 0,216."
+  },
+  {
+   "indeks": 8,
+   "prioritas": "P1",
+   "metode_lama": "Luas kejadian = sel 375 m unik × 14,06 ha (lacak.py) dipakai sebagai 'ha terbakar' dan ambang '≥140 ha'",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://catalog-beta.data.gov/dataset/viirs-npp-burned-area-monthly-l4-global-500m-sin-grid-v002",
+     "masalah": "404 (katalog beta data.gov sudah tidak aktif)",
+     "pengganti": "https://doi.org/10.5067/VIIRS/VNP64A1.002 atau https://catalog.data.gov/dataset/viirs-npp-burned-area-monthly-l4-global-500m-sin-grid-v002"
+    }
+   ],
+   "koreksi": "Terkonfirmasi: Gaveau dkk. 2021 ESSD 13:5353 (>3,11 Mha terbakar 2019 vs 1,64 Mha resmi KLHK). Zenodo 4551243 berlisensi CC BY 4.0 (soal lisensi selesai) dan memuat 1.298 titik acuan. Chen dkk. 2022 dan repo fireatlas (FEDS) terkonfirmasi. P.8/2018 terkonfirmasi. Repo terkonfirmasi: laporan.py:14–22 (HA_TITIK 4,30 [3,22–4,59]; 6 dari 11 tahun meleset ≤ 15%; Jan–Jul 2026 −6%; 'sel × 14,06 membesar-besarkan 3–4x'); harian.py:27–29 (DBSCAN Haversine ≤ 1,5 km, VIIRS 3 satelit, jendela 7 hari); cerita_karhutla.js:154 (Σ sel × 14,06 = 'ha terbakar'). Koreksi: (1) Nama produknya VNP64A1 Versi 2 (V002), bukan 'Koleksi 2'. Rilis LP DAAC Okt 2024, cakupan Mar 2012–kini, 500 m. (2) laporan.py sendiri masih memakai sel × 14,06 untuk field 'dampak' (luas terdampak), jadi 'satu definisi' juga harus menyentuh field itu. (3) Dengan HA_TITIK 3,22–4,59 per deteksi, 10 deteksi ≈ 32–46 ha. Sel unik tidak sama dengan deteksi, jadi '35–47 ha' hanyalah perkiraan kasar. (4) Metode SiPongi (Landsat 8 + titik panas) hanya terkonfirmasi dari sumber sekunder. Klaim 'GWIS tertinggal ±1 tahun' tidak saya cek."
+  },
+  {
+   "indeks": 9,
+   "prioritas": "P1",
+   "metode_lama": "Model 'akan membesar' (lolos.py) GBDT+Platt, WASPADA bila p ≥ 4,84%; AUC uji 0,908, recall 67%, presisi 22%, cuaca ERA5",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://open-meteo.com/en/docs/historical-forecast-api",
+     "masalah": "Bukan arsip prakiraan berjangka. Isinya jam-jam pertama tiap run yang disambung ('first few hours are stitched'), mulai 2021/2022, hampir setara analisis. Tidak cocok untuk uji balik semu lead ≥1 hari. Telaah dan tantang justru menyarankan API ini.",
+     "pengganti": "https://open-meteo.com/en/docs/previous-runs-api (previous_day1..7, sebagian besar model sejak Jan 2024), yang memang menjadi pilihan utama usulan ini"
+    }
+   ],
+   "koreksi": "Previous Runs terkonfirmasi. Berita ECMWF terkonfirmasi: PoF dari Di Giuseppe, McNorton, Lombardi & Wetterhall, Nature Communications 1 Apr 2025; meramal penyalaan/aktivitas api, bukan eskalasi; disalurkan ke CEMS dan negara anggota ECMWF. P.9 dan SPARTAN terkonfirmasi. Koreksi: (1) Model yang terpasang dilatih ulang pada SEMUA tahun 2015–2026 (lolos.py:427–429: 'dilatih ulang pada SEMUA tahun 2015-2026; kalibrasi & ambang dari luar-lipatan 2015-2023'). AUC 0,908 milik model 2015–2023 yang tidak dipasang. (2) Uji didominasi 2026: 97% api besar uji berasal dari 2026; 2024 = 46 positif dan 2025 = 39. (3) Ramal ulang 14 jam (AUC 0,955, presisi 37%) mencakup api yang SUDAH ≥ 10 sel pada jam ke-14. Untuk api yang belum lolos pada 14 jam: AUC 0,930, recall 63,5%, presisi 24,1% (lolos_hasil.json uji_lihat_kedua.ulang_belum_lolos_14j; RISET:324–325). Itulah angka yang pantas dikutip. (4) Regresi logistik yang ada di RISET:118–121 memakai 12 variabel, bukan 5–8; model 5–8 variabel belum ada. (5) BSS ≈ 0,28 benar (Brier 0,0209 vs laju dasar 0,0299)."
+  },
+  {
+   "indeks": 10,
+   "prioritas": "P1",
+   "metode_lama": "Uji prospektif (prospektif.py → prospektif.json); ledger di cache Actions; repo 14 Okt 0 dicatat/0 dinilai",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terkonfirmasi: scripts/cuaca/verifikasi.py adalah arsip append-only peringatan BMKG vs DIBI dengan POD/FAR/CSI dan klien previous-runs-api; titik.yml:82–122 memulihkan dan menyimpan ledger lewat actions/cache. Pembaruan penting: titik.yml mendeploy public/data lewat wrangler tanpa commit, jadi salinan git prospektif.json membeku di 14 Okt. Berkas produksi (pantau.terasurban.com/data/prospektif.json, 21 Okt 10:18) menunjukkan 903 ramalan awal dan 343 ramal ulang dicatat, tetapi 0 dinilai. RISET mengharapkan nilai pertama ±4 hari sesudah jalan CI pertama, jadi 0 dinilai setelah ±7 hari menandakan jalur penilaian tidak berjalan atau ledger tereset. Gerbang usulan ('n_dinilai > 0 dalam 7 hari') akan GAGAL hari ini, dan itu sinyal yang benar."
+  },
+  {
+   "indeks": 11,
+   "prioritas": "P1",
+   "metode_lama": "Mesin fisika Simulasi (FBP Kanada + Dijkstra + kalibrasi kompleks); bias ≈84× / ≈8×; ETA jam WIB; 'pita ±20%'; disebut 'terkalibrasi'",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.publish.csiro.au/wf/WF9980001",
+     "masalah": "404 pada URL ini; artikelnya ada (Cheney, Gould & Catchpole 1998, 'Prediction of fire spread in grasslands', IJWF 8(1):1–13)",
+     "pengganti": "https://doi.org/10.1071/WF9980001 (atau https://www.publish.csiro.au/WF/WF9980001)"
+    },
+    {
+     "url": "https://www.publish.csiro.au/wf/WF15103",
+     "masalah": "404 pada URL ini; artikelnya ada (Prat-Guitart dkk. 2016, IJWF 25(4):456–465)",
+     "pengganti": "https://doi.org/10.1071/WF15103"
+    }
+   ],
+   "koreksi": "Isi rujukan terkonfirmasi. Cheney dkk. 1998 adalah model rumput (angin 10 m, kadar air, curing). Prat-Guitart dkk. 2016 melaporkan median laju bara horizontal 1–5 cm/jam, tetapi itu eksperimen laboratorium pada gambut giling (milled peat), jadi pengalihannya ke gambut tropis perlu catatan. RISET-SEBARAN.md terkonfirmasi: :176 (bias +4,43), :177 (kalibrasi kompleks +2,07, n = 23), :178 (hibrida bias +0,80), :141 (k_angin 0,5, m_gambut 4, m 0,03). Catatan: |log luas| 72 jam hibrida = 1,30, tetap lebih buruk dari persistensi 0,65. Jadi parameter hibrida pun belum memenuhi kriteria lolos usulan sendiri; jangan dipasang dengan klaim 'terbukti lebih baik' tanpa syarat itu."
+  },
+  {
+   "indeks": 12,
+   "prioritas": "P1",
+   "metode_lama": "Awal musim (musim_awal.py), pencarian mulai 9 Juni → 'Papua Selatan 68 hari lebih awal' tersensor kiri",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terkonfirmasi: MULAI_UTAMA = 159 (musim_awal.py:22). Tahun 2026, tiga provinsi jatuh tepat di batas 09 Jun: Papua Selatan (−68 hari), Kep. Bangka Belitung, dan Maluku. Ada pula tahun dasar tersensor (Riau 2012–14, Jambi 2013–14, Kalbar 2012, dst.). Artikel JMG 285/194 (Ulfah & Sulistya 2015, JMG 16(3)) memuat kriteria baku BMKG: awal musim kemarau = CH dasarian < 50 mm diikuti beberapa dasarian berikutnya. Artikel itu sendiri mengusulkan kriteria alternatif untuk Jawa Timur. P.9 Pasal 8c ('periode musim kemarau') terkonfirmasi. Koreksi: repo SUDAH menghitung onset sejak 1 Januari sebagai 'awal_dini' (musim_awal.py:101–103). Hasilnya untuk 2026: Papua Selatan 18 Jan, Riau 25 Jan, Kalbar 13 Jan. Artinya pencarian sejak 1 Januari saja tidak menyelesaikan masalah, karena lantai 10 titik/7 hari memicu 'musim' di bulan sepi. Opsi persentil kumulatif atau Kaplan–Meier tetap diperlukan."
+  },
+  {
+   "indeks": 13,
+   "prioritas": "P2",
+   "metode_lama": "Rentang luas P10–P90 MC + CQR berlabel 'rentang 80% dikalibrasi'; cakupan kelas ≥1.000 ha 72 jam 22%",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Romano, Patterson & Candès 2019 (arXiv 1905.03222, Conformalized Quantile Regression) dan Chen 2022 terkonfirmasi. RISET-SEBARAN.md:327–334 terkonfirmasi: cakupan 78/75/73% pada populasi, 55/57/55% pada 123 kasus, dan 22% untuk kelas besar 72 jam. sebaran_model.js:258–262 memberi kompleks n0 ≥ 10 kunci WASPADA = 1 untuk q, sehingga kalibrasi titik baru dipakai untuk kompleks lama. Persistensi |log| 0,65 vs GBDT 0,98 terkonfirmasi (hasil.json uji.model 72)."
+  },
+  {
+   "indeks": 14,
+   "prioritas": "P2",
+   "metode_lama": "Dampak dari peta peluang: Σp×14,06 ha gambut/lindung, desa p≥0,1 dalam 2 sel, jiwa = kepadatan 0,25° × luas harapan",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Repo terkonfirmasi: sebaran_model.js:287–302. Kepadatan dirata-rata 0,25°; 'jiwa' dihitung tetapi tidak ditampilkan di kartu sim_data.js:59. WorldPop listing id = 135 terkonfirmasi: 'Individual countries 2015–2030 (100 m) R2025A v1', constrained, CC BY 4.0, berstatus alpha. Ketersediaan IDN tidak tampil di halaman dan belum saya cek. InaRISK BNPB memuat bahaya karhutla. Polanya layanan ArcGIS REST (INDEKS_BAHAYA_*), tetapi nama layer karhutla belum terkonfirmasi."
+  },
+  {
+   "indeks": 15,
+   "prioritas": "P2",
+   "metode_lama": "Skenario what-if (RH −15, +2 °C, embusan, hujan, regu ×150 m/jam, sekat) → '% luas naik/turun' dari mesin fisika",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://hazeportal.asean.org/?p=10687",
+     "masalah": "307 = tantangan bot Sucuri. Halamannya nyata ('Development of the Indonesian and Malaysian fire danger rating systems'): FFMC > 82 untuk penyalaan, DC > 400 untuk kabut asap parah.",
+     "pengganti": "(tetap sah; bila perlu sumber primer: de Groot dkk. 2007, Mitig Adapt Strateg Glob Change 12:165–180)"
+    }
+   ],
+   "koreksi": "Berita BMKG SPARTAN terkonfirmasi: FWI Kanada 'dikalibrasi dengan parameter cuaca lokal'. fwi.py:109–167 lolos uji data resmi cffdrs (DMC/DC ≤ 0,006). Belum terkonfirmasi: ambang 'kelas BMKG' untuk FWI di aturan.kelas_fwi (< 2 / < 7 / < 14 / ≥ 14) tidak saya temukan di dokumen BMKG. Literatur FDRS memakai ISI > 6 sebagai ekstrem di Asia Tenggara. Sebut kelas itu 'kelas FWI platform', atau cocokkan dulu dengan legenda SPARTAN sebelum menamainya 'kelas BMKG'."
+  },
+  {
+   "indeks": 16,
+   "prioritas": "P2",
+   "metode_lama": "Visualisasi forensik/armada/3D dengan drone, telemetri, suhu sel karangan",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Label 'SIMULASI' dan 'insiden buatan' memang ada (sim_armada.js:4, 385, 452; sim_3d.js:5, 94, 643). Gaveau 2021 hanya mendukung secara tidak langsung (Sentinel-2 sebagai bukti luas terbakar). Klaim 'paparan resmi BNPB/KLHK memakai citra satelit dan foto lapangan' tidak saya verifikasi. Koreksi cara validasi: tidak ada fitur ekspor gambar bagi pengguna. toDataURL di sim_3d.js:185 dan sim_armada.js:381 hanya membuat tekstur peta. Gerbang 'fungsi ekspor wajib menulis watermark' tidak punya sasaran. Risikonya tangkapan layar, jadi watermark harus digambar permanen di kanvas atau overlay DOM yang selalu tampil."
+  },
+  {
+   "indeks": 17,
+   "prioritas": "P2",
+   "metode_lama": "Analisis pendorong: '41× lebih mungkin membesar' tautologis, bootstrap per peristiwa untuk ONI/DMI",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://doi.org/10.1162/rest.90.3.414",
+     "masalah": "403 (diblokir bot); artikelnya nyata: Cameron, Gelbach & Miller 2008, REStat 90(3):414–427",
+     "pengganti": "(DOI benar; alternatif terbuka: https://www.nber.org/papers/t0344)"
+    }
+   ],
+   "koreksi": "pendorong.py:113 terkonfirmasi: n72 dihitung dari semua sel ≤ 72 jam, termasuk sel lintasan pertama, sehingga label 'lepas' sebagian tautologis terhadap n0. RISET:118–121 terkonfirmasi: rasio odds tersesuaikan, misalnya sel awal 4,09 per SD dan jarak desa 1,12. Cameron dkk. menunjukkan uji klaster berlebihan menolak bila jumlah klaster sedikit (5–30) dan menganjurkan wild cluster bootstrap-t. Dengan ±12 tahun sebagai klaster, varian itulah yang tepat, bukan bootstrap blok biasa."
+  },
+  {
+   "indeks": 18,
+   "prioritas": "P2",
+   "metode_lama": "Kerangka validasi uji 2024–2026 + 123 kasus: ERA5, didominasi 2026, F1 makro tercatat sebagai f1_24",
+   "status": "terverifikasi",
+   "rujukan_bermasalah": [],
+   "koreksi": "Terkonfirmasi: hasil.json uji.per_tahun n = 57 / 51 / 496 (2024 / 2025 / 2026); kinerja_uji.f1_24 = 0,3835 adalah F1 rata-rata, sedangkan F1 mikro 0,136; Previous Runs dan FSS terkonfirmasi. Tambahan untuk gerbang skema: catat 'model_dinilai' terpisah dari 'model_terpasang'. Kedua model terpasang (sel dan lolos) dilatih ulang dengan tahun uji, jadi tiap blok kinerja harus menyebut model mana yang diuji."
+  },
+  {
+   "indeks": 19,
+   "prioritas": "P2",
+   "metode_lama": "Lapisan 'Bahaya api gambut' & 'Peluang api besok ±X%' (PFVI + FWI logistik, sel 0,5°), diuji hanya pada tahun El Niño/IOD+",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://setkab.go.id/?p=105409",
+     "masalah": "Berita Setkab (6 Jan 2017) tentang PP 57/2016 TIDAK memuat ambang 0,4 m; ia hanya menyebut 'kriteria baku kerusakan'",
+     "pengganti": "https://peraturan.bpk.go.id/Details/5778/pp-no-57-tahun-2016. Teks resmi PP 57/2016 (peraturan.go.id/files/pp57-2016bt.pdf) terverifikasi: Pasal 23 ayat (3) huruf a, muka air tanah > 0,4 m di bawah permukaan gambut pada titik penaatan."
+    },
+    {
+     "url": "https://pmc.ncbi.nlm.nih.gov/articles/PMC4995960",
+     "masalah": "Field dkk. 2016 PNAS sah (ambang ±4 mm/hari), tetapi tidak mendukung klaim PFVI atau 0,4 m di usulan ini; relevansinya lemah di sini",
+     "pengganti": "(cukup dirujuk di usulan DC #21)"
+    }
+   ],
+   "koreksi": "Koreksi status: lapisan ini SUDAH TAYANG di produksi. pantau.terasurban.com/data/fwi.json (hari_ini 2026-10-21) memuat pfvi/pg pada 534 sel-hari dengan ambang 0,6344. Jadi 'Peluang api besok ±X%' sedang dilihat publik sekarang, dan baris 3 RISET-PFVI.md ('BELUM di situs') usang. harian.py:267–272 dan :540 terkonfirmasi. Nama dan API portal muka air BRGM/BRIN belum terverifikasi (diakui usulan)."
+  },
+  {
+   "indeks": 20,
+   "prioritas": "P2",
+   "metode_lama": "ONI/DMI beku di model_sebaran.json (ONI s.d. 2026-08, DMI s.d. 2026-05), fallback diam-diam ke 0 setelah 6 bulan",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://www.cpc.ncep.noaa.gov/products/international/ocean_monitoring/indian/IODMI/DMI_month.html",
+     "masalah": "Halaman CPC ini memakai ERSSTv6, bukan HadISST seperti yang ditulis usulan; nilai terakhir Agu 2026 = 0,68",
+     "pengganti": "(halaman sah; sebut 'DMI CPC ERSSTv6' dan perlakukan sebagai seri berbeda dari HadISST)"
+    }
+   ],
+   "koreksi": "Klaim 'nilai Agustus yang beku mengecilkan kondisi sekarang' SALAH untuk ONI. Kunci '2026-08' di model_sebaran.json = 2,16, yaitu musim JAS 2026 (cuaca.py:79 memetakan musim ke bulan tengah), dan itu nilai ONI TERBARU CPC per 21 Okt (ASO belum terbit). ONI tidak basi hari ini; ia baru jatuh ke 0 mulai Mar 2027. DMI: sumber repo (PSL dmi.had.long.data, HadISST) SENDIRI berhenti di Mei 2026 = 0,146 (Jun–Des = −9999). Jadi 'segarkan bulanan dari PSL' tidak menyelesaikan apa pun. Beralih ke CPC ERSSTv6 berarti ganti seri dan perlu latih ulang. Dampak praktisnya kecil: pada 51 titik Okt, DMI 0,146 → 0,68 mengubah p rata-rata ×1,00, dan → 1,0 menjadi ×1,24. Ablasi kelompok ENSO/IOD pada model sel +0,00003 logloss terkonfirmasi (ablasi.json). Kesimpulan: buang fitur atau pakai lag-1 dari seri yang memang terbit tepat waktu."
+  },
+  {
+   "indeks": 21,
+   "prioritas": "P2",
+   "metode_lama": "DC versi model dari masa panas 30 hari (85/6/15) sehingga ≈200–300, sementara DC operasional sel yang sama 868",
+   "status": "sebagian",
+   "rujukan_bermasalah": [],
+   "koreksi": "Rujukan terkonfirmasi: EWDS cems-fire-historical-v1 (memuat drought_code, 1940–kini, 0,25°, NetCDF/GRIB2, CC-BY; tombol Login/Register tampil); Vitolo dkk. 2020 Sci Data 7:216; Field dkk. 2016 PNAS (< 4 mm/hari; titik ubah 3,9–5,2); Haze Portal (DC > 400 → kabut asap parah); SPARTAN. Repo terkonfirmasi: fitur.py:6–8 dan RISET:108 (kelas DC tertinggi 200–300). DC di produksi kini lebih ekstrem: sel −10,25/123,75 (NTT) bernilai 948 pada 19 Okt, dan maksimum grid 1.367 (Jawa Timur). Belum terkonfirmasi: batas kelas 'BMKG' ≤ 140 / 260 / 350 / > 350. Hanya 'DC > 350 = ekstrem' (de Groot dkk. 2007, via presentasi Field) yang terkonfirmasi; batas 140 dan 260 serta atribusinya ke BMKG tidak ditemukan."
+  },
+  {
+   "indeks": 22,
+   "prioritas": "P3",
+   "metode_lama": "Tren 25 tahun MODIS Theil–Sen + Mann–Kendall tanpa koreksi autokorelasi",
+   "status": "sebagian",
+   "rujukan_bermasalah": [
+    {
+     "url": "https://doi.org/10.1016/S0022-1694(97)00125-X",
+     "masalah": "Tercatat 404 di status-tautan.tsv karena URL terpotong di tanda kurung ('...S0022-1694(97'). DOI lengkapnya benar: Hamed & Rao 1998, J. Hydrology 204:182–196.",
+     "pengganti": "https://doi.org/10.1016/S0022-1694(97)00125-X (pastikan tanda kurung di-encode: S0022-1694%2897%2900125-X)"
+    }
+   ],
+   "koreksi": "Hanya dicek tautan dan implementasinya. musim_awal.py:10 dan :59 memakai Mann–Kendall pendekatan normal tanpa koreksi ikatan maupun autokorelasi, sesuai klaim. Bagian lain usulan P3 tidak diverifikasi."
+  }
+ ],
+ "vonis_dicek": [
+  {
+   "nama": "Keputusan tantang dengan bukti_terverifikasi=false",
+   "hasil": "Tidak ada. Ke-20 keputusan di tantang-karhutla-model-sebaran.json berstatus bukti_terverifikasi=true. Di bawah ini cek tambahan atas klaim tantang yang paling menentukan, termasuk satu yang ternyata salah."
+  },
+  {
+   "nama": "Model khusus 'akan membesar' (koreksi tantang no. 3: 'model terpasang dilatih hanya 2015–2023 (lolos.py:375–378), jadi uji 2024–2026 benar-benar luar sampel')",
+   "hasil": "SALAH. lolos.py:375–378 melatih model evaluasi (TAHUN_CV 2015–2023). Model yang diekspor ke model_sebaran.json dilatih di lolos.py:427–429 dengan semua = range(len(R)), yaitu 2015–2026, dan komentar kodenya tegas: 'dilatih ulang pada SEMUA tahun 2015-2026'. Angka AUC 0,908, recall 0,674, presisi 0,216, BSS ≈ 0,28 benar (lolos_hasil.json), tetapi itu milik model yang tidak dipasang. Model yang dilihat pengguna sudah melihat tahun uji."
+  },
+  {
+   "nama": "Metode terlewat: penerapan model di layar Simulasi (masukan beda dari latih)",
+   "hasil": "TERKONFIRMASI (direproduksi). Dengan pohon 'lolos' di model_sebaran.json pada 51 baris ramalan.jsonl (p tereproduksi ±5e-5): malam ×4,36 (p90 5,53), n0×2 ×2,45 (p90 4,55), gabungan ×10–12,7, WASPADA 0→15–17. Tantang menulis ×4,5 / ×1,7 / ×8,7 dan 0→16. Selisihnya karena rincian skenario; kesimpulannya sama."
+  },
+  {
+   "nama": "Metode terlewat: pemetaan peluang simulasi ke Siaga/Awas EWS",
+   "hasil": "TERKONFIRMASI (ews.js:38; ews_tindakan.js:10–14; ews_email.js:10; jejak.py:39 MIN_MC 8). Data produksi memperberat temuan: jejak_api.json 18 Okt punya 28 dari 251 kompleks dengan p_maks hari-1 ≥ 0,50 dan 115 dengan ≥ 0,20. Itu jauh di atas bin keandalan uji tertinggi (0,4465, n = 3)."
+  },
+  {
+   "nama": "Metode terlewat: ONI/DMI beku",
+   "hasil": "SEBAGIAN. ONI '2026-08' = 2,16 sama dengan ONI JAS 2026 terbaru di CPC, jadi tidak basi per 21 Okt. DMI 0,146 (Mei) memang basi, tetapi sebabnya sumber PSL HadISST sendiri berhenti di Mei 2026, bukan repo yang lupa menyegarkan. CPC ERSSTv6 Agu = 0,68. Efek dmi 0,146→1,0 = ×1,24 (tantang ×1,21) terkonfirmasi; ke nilai nyata 0,68 efeknya ×1,00."
+  },
+  {
+   "nama": "Metode terlewat: DC 30 hari vs DC operasional",
+   "hasil": "TERKONFIRMASI. fitur.py:6–8; ramalan dc 208,8 di NTT. fwi.json produksi kini memberi DC 948 di sel yang sama (19 Okt)."
+  },
+  {
+   "nama": "Uji prospektif '0 dicatat, 0 dinilai' (tantang & telaah)",
+   "hasil": "USANG UNTUK PRODUKSI. Itu salinan git 14 Okt; titik.yml mendeploy public/data tanpa commit. Produksi 21 Okt 10:18: 903 dicatat (awal) dan 343 (ulang), tetapi masih 0 dinilai setelah ±7 hari. Jalur penilaian kemungkinan rusak atau ledger tereset."
+  },
+  {
+   "nama": "jejak_api.json 'data_basi, 2.259 aktif, 0 diramal'",
+   "hasil": "USANG UNTUK PRODUKSI. Berkas lokal itu tidak dilacak git. Produksi (dibuat 18 Okt 11:53 WIB, status ok): 1.516 aktif, 251 diramal, 1.216 dilewati anggaran, n_mc 20. Per 21 Okt umurnya > SIM_UMUR 36 jam, jadi EWS akan menganggapnya basi."
+  },
+  {
+   "nama": "PFVI 'BELUM di situs' usang (koreksi tantang no. 4)",
+   "hasil": "TERKONFIRMASI. fwi.json produksi 21 Okt memuat pfvi/pg di 534 sel-hari, jadi 'Peluang api besok ±X%' sedang tayang."
+  }
+ ],
+ "klaim_utama": [
+  {
+   "klaim": "Model 'akan membesar' teruji AUC 0,908, menangkap 67% api besar, presisi 22%, BSS ≈ 0,28 pada uji 2024–2026 yang 'benar-benar luar sampel' untuk model terpasang",
+   "status": "sebagian",
+   "catatan": "Angkanya benar (lolos_hasil.json uji_lihat_kedua.semua: n 97.749, lolos 2.922, AUC 0,9077, recall 0,674, presisi 0,216, Brier 0,0209). Tetapi: (1) model terpasang dilatih ulang pada 2015–2026 (lolos.py:427–429), jadi angka itu milik model lain; (2) set uji didominasi 2026: 73.675 baris dan 2.837 dari 2.922 api besar (97%). 2024 hanya 46 dan 2025 hanya 39 api besar; recall 2025 = 54%. (3) Ramal ulang 14 jam '0,955 / presisi 37%' memuat api yang sudah besar. Untuk yang belum lolos: AUC 0,930, recall 63,5%, presisi 24,1%. (4) Cuaca latih/uji ERA5. Untuk Presiden: 'diuji terutama pada musim 2026; model terpasang belum diuji prospektif'."
+  },
+  {
+   "klaim": "Lencana WASPADA di layar Simulasi memakai masukan beda dari latih (Date.now(), n0 api24, frp×3) sehingga peluang naik 8,7× dan WASPADA 0→16 dari 51",
+   "status": "benar",
+   "catatan": "Kode terkonfirmasi (sim_data.js:18–22; sebaran_model.js:198–207, 240). Saya reproduksi pada 51 titik ramalan.jsonl: malam saja ×4,36; gabungan ×10–12,7; WASPADA 0→15–17. Besarnya bergantung skenario, tetapi kesimpulannya kuat: tanda yang dilihat pengguna bukan keluaran model yang divalidasi, sementara kartu mengutip presisi 22% uji (sim_data.js:54)."
+  },
+  {
+   "klaim": "Uji prospektif belum menghasilkan apa pun: 0 dicatat, 0 dinilai (prospektif.json, 14 Okt)",
+   "status": "sebagian",
+   "catatan": "Benar hanya untuk salinan git. Produksi (pantau.terasurban.com/data/prospektif.json, 21 Okt 10:18): 903 ramalan awal dan 343 ramal ulang dicatat, 0 dinilai. Menurut RISET, nilai pertama seharusnya ±4 hari sesudah jalan pertama; sesudah ±7 hari masih 0, jadi jalur penilaian perlu diperiksa. Ledger tetap di cache Actions (titik.yml:84–122) dan hasil produksi tidak pernah di-commit."
+  },
+  {
+   "klaim": "Peringatan Awas/Siaga simulasi bekerja di wilayah peluang yang tak pernah divalidasi; jejak_api.json data_basi dengan 2.259 kompleks aktif dan 0 diramal",
+   "status": "sebagian",
+   "catatan": "Inti klaim benar dan diperkuat produksi: jejak_api.json 18 Okt memberi p_maks hari-1 ≥ 0,50 (ambang Awas) pada 28 dari 251 kompleks, sedangkan uji tidak punya sel di atas 0,4465 (n = 3) dan MC hanya 20 putaran. Angka '2.259 aktif, 0 diramal' berasal dari berkas lokal yang tidak dilacak git. Produksi: 1.516 aktif, 251 diramal (17%), 1.216 dilewati karena anggaran. Berkas produksi berumur > 36 jam per 21 Okt."
+  },
+  {
+   "klaim": "Dashboard: 'normal = median VIIRS 2015–2025' padahal dasar 2012–2025; provinsi 'Siaga' bila ≥ 3× normal dan ≥ 300 titik; rasio dari S-NPP di samping jumlah M+N+N20",
+   "status": "benar",
+   "catatan": "ringkasan.js:73, 102, 110, 353, 583 dan musim_awal.json dasar [2012, 2025] terkonfirmasi. Lebih luas dari klaim: tingkat platform memakai keempat nama P.9/2018 (Normal/Waspada/Siaga/Darurat; ringkasan.js:16), dan kalimat utama bisa berbunyi 'N provinsi berstatus darurat' (:321), padahal Pasal 9 P.9 menyerahkan penetapan status ke Bupati/Gubernur/Menteri. 'Siaga' juga dipicu ≥ 3 kompleks prioritas atau ≥ 1 juta jiwa terpapar."
+  },
+  {
+   "klaim": "'Papua Selatan 68 hari lebih awal' di cerita Insight adalah nilai tersensor kiri (batas pencarian 9 Juni)",
+   "status": "benar",
+   "catatan": "MULAI_UTAMA = 159 (musim_awal.py:22); musim_awal.json Papua Selatan awal_2026 = 09 Jun, selisih −68; tampil lewat cerita_karhutla.js:30, 129–131. Kep. Bangka Belitung dan Maluku 2026 juga jatuh tepat di 09 Jun. Onset tanpa sensor (awal_dini, dicari sejak 1 Jan) untuk Papua Selatan = 18 Jan, yang menunjukkan definisi ini juga terpicu di bulan sepi oleh lantai 10 titik. Selisih hari jangan dibawa ke briefing."
+  }
+ ]
+}
