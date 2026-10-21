@@ -49,11 +49,19 @@
           <button type="button" data-j="harian" aria-pressed="true">Laporan Kejadian Bencana Harian</button>
           <button type="button" data-j="presiden" aria-pressed="false">Paparan Presiden (Karhutla)</button>
         </div>
+        <div class="lb-jenis" id="lbOut" role="group" aria-label="Keluaran dari isian harian">
+          <button type="button" data-o="harian" aria-pressed="true">Laporan harian</button>
+          <button type="button" data-o="konpers" aria-pressed="false">Konferensi pers</button>
+          <button type="button" data-o="matador" aria-pressed="false">Matador</button>
+          <button type="button" data-o="naskah" aria-pressed="false">Naskah</button>
+        </div>
         <div class="pp-ctl">
           <label>Buka laporan<select id="lbDaftar" aria-label="Laporan tersimpan"></select></label>
           <label>Tanggal laporan<input type="date" id="lbTgl" aria-label="Tanggal laporan"></label>
           <button type="button" class="pp-btn ke2" id="lbGeser" title="Pindahkan angka satu hari ke kiri untuk laporan berikutnya">Geser hari</button>
+          <label id="lbAspekW" hidden>Rasio layar<select id="lbAspek" aria-label="Rasio layar Matador"><option value="16:9">16:9</option><option value="32:9">32:9 (videotron lebar)</option></select></label>
           <button type="button" class="pp-btn" id="lbSimpan">Simpan</button>
+          <button type="button" class="pp-btn ke2" id="lbTayang" hidden>Tayang layar penuh</button>
           <button type="button" class="pp-btn" id="lbPptx">Unduh PPTX</button>
           <button type="button" class="pp-btn ke2" id="lbPdf">Unduh PDF</button>
         </div>
@@ -63,22 +71,43 @@
         <aside class="pp-atur lb-isian" aria-label="Isian laporan">
           <div id="lbForm"></div>
           <div class="pp-aksi">
+            <button type="button" class="pp-btn kecil ke2" id="lbContoh" title="Isi data dummy: contoh Laporan Harian 20–21 Okt 2026 (hanya draf peramban)">Isi contoh</button>
             <button type="button" class="pp-btn kecil ke2" id="lbEks">Ekspor JSON</button>
             <label class="pp-btn kecil ke2 lb-imp">Impor JSON<input type="file" id="lbImp" accept="application/json,.json" hidden></label>
             <button type="button" class="pp-btn kecil ke2" id="lbBuang">Buang draf</button>
           </div>
           <p class="pp-cat">Isian tersimpan otomatis di peramban ini sampai Simpan ditekan. Tanggal baru otomatis menyalin laporan terakhir.</p>
         </aside>
-        <section class="pp-pv" aria-label="Pratinjau slide"><div id="lbGrid" class="pp-grid"></div></section>
+        <section class="pp-pv" aria-label="Pratinjau">
+          <div id="lbNaskah" class="lb-naskah" hidden>
+            <div class="lb-naskah-bar"><span id="lbDurasi" role="status"></span>
+              <button type="button" class="pp-btn kecil" id="lbTele2">Teleprompter</button>
+              <button type="button" class="pp-btn kecil ke2" id="lbSalin">Salin teks</button></div>
+            <pre id="lbNaskahTeks" class="lb-naskah-teks"></pre>
+          </div>
+          <div id="lbGrid" class="pp-grid"></div></section>
       </div>
     </div>
   </section>
 </main>
 
+<div id="lbTele" class="lb-tele" hidden role="dialog" aria-label="Teleprompter">
+  <div class="tp-bar"><button type="button" class="pp-btn kecil" id="tpJalan" aria-pressed="false">Lanjut</button>
+    <label>Kecepatan<input type="range" id="tpKec" min="10" max="300" step="5" value="60"></label>
+    <label>Huruf<input type="range" id="tpUkuran" min="32" max="140" step="2" value="72"></label>
+    <span class="tp-ket">Spasi jeda atau lanjut, panah atas bawah kecepatan, Esc tutup</span>
+    <button type="button" class="pp-btn kecil ke2" id="tpTutup">Tutup</button></div>
+  <div class="tp-teks" id="tpTeks" tabindex="0"></div>
+</div>
+<div id="lbLayar" class="lb-layar" hidden role="dialog" aria-label="Tayang layar penuh"><div id="lbLayarMsg" class="lb-layar-msg">Menyiapkan…</div><div id="lbLayarStage" class="sl-stage lb-layar-stage"></div></div>
+
 <script src="/inti/format.js"></script>
 <script src="/inti/unduh.js"></script>
 <script src="/paparan_slide.js"></script>
 <script src="/laporan_bnpb_slide.js"></script>
+<script src="/laporan_konpers.js"></script>
+<script src="/laporan_matador.js"></script>
+<script src="/laporan_contoh.js"></script>
 <script src="/laporan_bnpb.js"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>

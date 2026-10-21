@@ -532,6 +532,7 @@ def main():
     # muatan awal (rentang bawaan "hari ini", juga "kemarin", dan jendela 48 jam Ringkasan): tanggal WIB hari ini & kemarin
     # ditambah 48 jam terakhir dari acuan. jam_maks=48 -> peramban memuat hotspot72/hotspot.json hanya bila rentang lebih panjang.
     simpan("hotspot24.json", titik_json(lambda p: tgl(p["t"]) >= hari_akhir - dt.timedelta(days=1) or p["t"] >= akhir - dt.timedelta(hours=48), jam_maks=48))
+    simpan("tugas_kompleks.json", tugas_kompleks(fitur, kini))
     simpan("kluster.json", {"type": "FeatureCollection", "features": fitur})
     awal, geo = pecah_kluster(fitur)
     simpan("kluster_awal.json", awal)
@@ -584,6 +585,18 @@ def kejadian_awal(fitur, kini):
             "awalan": "K", "kejadian": rows}
 
 
+def tugas_kompleks(fitur, kini):
+    """Berkas kecil untuk Worker (kluster.json terlalu besar diurai di CPU 10 ms): kompleks level >= 2 yang teramati <= 24 jam.
+    ponytail: konsesi dikosongkan; pemetaan kompleks ke perusahaan hanya ada di data/raw/konsesi (bernama, tidak terbit), isi bila Worker butuh."""
+    ks = []
+    for f in fitur:
+        q = f["properties"]
+        if q["level"] >= 2 and q["jam_sejak"] <= 24:
+            ks.append({"id": q["id"], "lat": round(q["lat"], 4), "lon": round(q["lon"], 4), "prov": q["prov"], "kab": q["kab"], "kec": q["kec"],
+                       "level": q["level"], "n24": q["n24"], "jam_sejak": round(q["jam_sejak"], 1), "luas": round(q["luas"]), "konsesi": []})
+    return {"dibuat": kini.astimezone(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ"), "kompleks": ks}
+
+
 def uji():
     sq = {"type": "Polygon", "coordinates": [[[1, 1], [2, 1], [2, 2], [1, 1]]]}
     F = [{"type": "Feature", "geometry": sq, "properties": {"id": "K1", "lat": 1.5, "lon": 1.6, "level": 3, "api24": [[1.5, 1.5]]}},
@@ -600,6 +613,11 @@ def uji():
     assert list(K)[0] == "dibuat" and K["bencana"] == "karhutla" and [r["kode"] for r in K["kejadian"]] == ["K7"], "hanya level 3, dibuat pertama"
     r = K["kejadian"][0]
     assert r["mulai"] == "2026-10-18" and r["terakhir"] == "2026-10-19" and r["aktif"] and r["kab"] == ["62|Seruyan"], r
+    T = tugas_kompleks([{"properties": {**P3, "n24": 9, "jam_sejak": 3.04, "luas": 120.6}},
+                        {"properties": {**P3, "id": "K8", "level": 1, "n24": 1, "jam_sejak": 3, "luas": 1}},
+                        {"properties": {**P3, "id": "K9", "level": 2, "n24": 1, "jam_sejak": 30, "luas": 1}}], dt.datetime(2026, 10, 19, 12, 0, tzinfo=WIB))
+    assert list(T)[0] == "dibuat" and T["dibuat"] == "2026-10-19T05:00:00Z", T["dibuat"]
+    assert [k["id"] for k in T["kompleks"]] == ["K7"] and all(k["level"] >= 2 and len(k["prov"]) == 2 and k["kab"] for k in T["kompleks"]), T
     print("harian uji: pecah_kluster OK")
     import garis_api
     garis_api.uji()  # garis luar kompleks: kontur sah, memuat deteksi, luas wajar, cepat
