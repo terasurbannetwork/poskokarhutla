@@ -1,0 +1,42 @@
+/* Risiko kebakaran permukiman (halaman publik). Token dan komponen dasar dari bnpb.css dan admin.css. Tanpa gaya inline (CSP). */
+.kb-kartu{display:grid;gap:14px}
+.kb-peringatan{--pil:var(--c2)}
+.kb-ringkas{display:flex;gap:8px;flex-wrap:wrap}
+.kb-ringkas .bn-pil b{font-weight:800;color:var(--c2)}
+.kb-sorot{min-height:20px;font-size:13px;font-weight:700;color:var(--ink2)}
+.kb-svg{width:100%;height:auto;max-height:78vh;background:var(--surface);border-radius:12px;display:block}
+.kb-svg path{stroke:var(--card);stroke-width:.4;vector-effect:non-scaling-stroke;cursor:pointer;fill-rule:evenodd}
+.kb-svg path:hover,.kb-svg path.pilih{stroke:var(--ink);stroke-width:1.6}
+.kb-svg circle{fill:#fff;stroke:var(--ink);stroke-width:1.2;vector-effect:non-scaling-stroke;pointer-events:none}
+.k0{fill:var(--c4);background:var(--c4)}.k1{fill:var(--c3);background:var(--c3)}.k2{fill:var(--c2);background:var(--c2)}.k3{fill:var(--c1);background:var(--c1)}
+.kn{fill:color-mix(in srgb,var(--ink) 14%,var(--card));background:color-mix(in srgb,var(--ink) 14%,var(--card))}
+.ad-leg span{display:inline-flex;align-items:center}
+.kb-kepala{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.kb-kepala h2{font-size:15px;font-weight:800;margin:0}
+.kb-saring{display:flex;gap:8px;align-items:center;font-size:13px;font-weight:700;color:var(--ink2)}
+.kb-tabel .ad-tabel th button{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px}
+.kb-tabel .ad-tabel td:first-child{font-weight:700}
+.kb-tabel .ad-tabel tbody tr{cursor:pointer}
+.kb-tabel .ad-tabel .n{text-align:center}
+.kb-kls{white-space:nowrap;display:inline-flex;gap:6px;align-items:center;border-radius:999px;padding:2px 10px;font-weight:800;font-size:12px;color:#fff}
+.kb-kls.k1{color:var(--ink)}
+.kb-kls.kn{color:var(--ink2)}
+.kb-aturan,.kb-sumber{margin:0;font-size:12px;color:var(--ink2)}
+.kb-uji{margin-bottom:10px}
+.kb-uji h3{font-size:13px;font-weight:800;color:var(--ink2);margin:0 0 6px}
+.kb-uji .ad-tabel td:first-child{font-weight:700}
+.kb-selang{display:block;font-size:11px;color:var(--ink2);font-weight:600}
+.kb-dlg{border:0;border-radius:18px;padding:0;width:min(760px,calc(100vw - 24px));max-height:calc(100vh - 32px);background:var(--card);color:var(--ink);box-shadow:0 24px 60px -20px rgb(11 37 69 / .5)}
+.kb-dlg::backdrop{background:rgb(11 37 69 / .45)}
+.kb-dlg-isi{padding:18px 20px 20px;display:grid;gap:14px}
+.kb-dlg-kepala{display:flex;gap:12px;align-items:flex-start;justify-content:space-between}
+.kb-dlg-kepala h2{font-size:19px;font-weight:800;margin:0}
+.kb-dlg-kepala p{margin:2px 0 0;color:var(--ink2);font-size:13px}
+.kb-tutup{border:0;background:var(--soft);border-radius:999px;width:34px;height:34px;cursor:pointer;color:var(--ink);flex:none;display:grid;place-items:center}
+.kb-tutup svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.kb-skor{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.kb-blok{display:grid;gap:8px;background:var(--soft);border-radius:14px;padding:12px 14px}
+.kb-kv{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:13px}
+.kb-kv dt{color:var(--ink2);font-weight:600}.kb-kv dd{margin:0;font-weight:800;text-align:right}
+.kb-kv small{display:block;font-size:11px;color:var(--ink2);font-weight:600}
+@media (max-width:640px){.kb-dlg-isi{padding:14px}.kb-saring{width:100%}.kb-saring select{flex:1}}

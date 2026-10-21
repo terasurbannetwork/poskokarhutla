@@ -72,6 +72,20 @@
         "public"
       ],
       "port": 8811
+    },
+    {
+      "name": "kbr",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8796",
+        "--persist-to",
+        ".wrangler/kbr"
+      ],
+      "port": 8796
     }
   ]
 }

@@ -333,6 +333,7 @@
     "GET /bnpb": "halaman Ruang Koordinasi tanpa modul",
     "POST /api/riset/admin/luaran/:id": "perbaikan ulasan: luaran mitra baru tampil di publik hanya sesudah admin menyetujui",
     "GET /kebutuhan": "halaman Ruang Koordinasi tanpa modul",
+    "GET /risiko-kebakaran": "halaman Ruang Koordinasi tanpa modul",
     "GET /admin/gakkum": "/admin/gakkum dan /admin/pimpinan: tanpa sesi",
     "GET /api/meja/ekspor": "sempurna: ekspor DIBI csv/json hanya admin",
     "trigger meja_rehab_tautan": "sempurna: enum spek rehab dan gudang sama dengan CHECK/trigger migrasi",

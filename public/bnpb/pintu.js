@@ -11,6 +11,7 @@
     risiko: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M12 8v5|M12 16h.01",
     meja: "M3 7l9-4 9 4-9 4z|M3 7v10l9 4 9-4V7|M12 11v10",
     admin: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4",
+    kebakaran: "M12 3c1 3-1 4-1 6 0 1.5 1 2 2 2 0-1 1-2 1-2 2 1.5 3 3.5 3 6a5 5 0 0 1-10 0c0-3 3-5 5-12z",
     panah: "M5 12h14|M13 6l6 6-6 6",
   };
   const svg = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
@@ -37,6 +38,8 @@
       const n = [...(r.sematan || []), ...r.utas].filter(u => u.bantuan === "terbuka").length; return [F(n) + (r.berikut ? "+" : ""), "permintaan bantuan terbuka"]; }],
     ["riset", "Riset", "/riset", "riset", async () => { const r = await ambil("/api/riset/ringkas"); const k = r?.kartu; return k && typeof k.berjalan === "number" ? [F(k.berjalan), "riset berjalan"] : null; }],
     ["risiko", "Indeks risiko kecamatan", "/risiko", "risiko", async () => { const r = await awalRisiko(); const p = r?.per_kelas; return p ? [F((p["Tinggi"] || 0) + (p["Sangat tinggi"] || 0)), "kecamatan berisiko tinggi", "belum diuji balik"] : null; }, null, "BNPB InaRISK, BMKG, PVMBG, WorldPop 2026"],
+    ["kebakaran", "Risiko kebakaran permukiman", "/risiko-kebakaran", "kebakaran", async () => { const r = await ambil("/bnpb/data/kebakaran_31.json"); const i = r?.kolom?.indexOf("kelas");
+      return i >= 0 && Array.isArray(r.baris) ? [F(r.baris.filter(b => b[i] === 3).length), "kelurahan sangat tinggi, DKI Jakarta", r.ujibalik?.lulus ? null : "hipotesis"] : null; }, null, "Dinas Gulkarmat DKI, BIG, OpenStreetMap, Google Open Buildings"],
     ["kebutuhan", "Kebutuhan musim", "/kebutuhan", "sitrep", async () => { const r = await ambil("/banjir/data/kebutuhan_musim.json"); const v = r?.nasional?.["rata|90"]?.rp_total;
       return typeof v === "number" ? ["Rp" + F(Math.round(v / 1e9)) + " miliar", "perkiraan biaya 90 hari"] : null; }, "perkiraan", "titik panas 2019–2025, rencana operasi karhutla, asumsi kerja tim Pantau Bencana"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
