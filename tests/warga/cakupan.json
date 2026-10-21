@@ -358,6 +358,7 @@
     "POST /api/pengingat/admin/periksa": "dedup: dua kali jalan tidak menambah",
     "POST /api/pengingat/admin/kirim": "kirim: email hanya saat admin menekan",
     "POST /api/pengingat/admin/:id": "dedup: dua kali jalan tidak menambah",
+    "POST /api/pengingat/admin/dikirim-wa": "F2: hanya moderator yang menandai dikirim",
     "POST /api/pengingat/dummy": "dummy: lahir dari rantai sumber dummy",
     "cron buatPengingat": "pendeteksi: tiap jenis terdeteksi tepat di tepi ambang",
     "table laporan_bnpb": "migrasi 0023 idempoten",

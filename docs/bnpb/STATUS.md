@@ -40,7 +40,7 @@ Halaman admin relawan, alun-alun, riset, dan meja punya 🧪 isi dummy / 🧹 ha
 | C9 Turnstile | Siap pakai di relawan dan alun-alun; aktif begitu sitekey diisi | `public/bnpb/turnstile.js` |
 | C10 arsip sitrep | Arsip harian 07 WIB di R2 (agregat, tanpa teks/koordinat warga, retensi 400 hari, hapus per tanggal oleh moderator) | `/sitrep?tgl=` |
 | F1 Layar Pimpinan | Satu layar: situasi, prioritas dampak, rapor BPBD, tanda bahaya, relawan, alun-alun, kebutuhan, pengingat; cetak A4 | `/admin/pimpinan` |
-| F2 prioritas dampak | **Sebagian.** Daftar kecamatan naik kelas / sangat tinggi dengan bahaya harian aktif, × jiwa, + BPBD terdekat sudah ada. Antrean kiriman ke BPBD (admin menekan kirim) BELUM dibuat, dan pipeline jalan harian lewat lintas.yml, bukan tiap 6 jam | `/risiko` (Prioritas hari ini) |
+| F2 prioritas dampak | Daftar kecamatan naik kelas / sangat tinggi dengan bahaya harian aktif, × jiwa, + BPBD terdekat, diperbarui tiap 6 jam (titik.yml jam 00/06/12/18 UTC). Antrean "Prioritas dampak: kirim ke BPBD" di /admin/pengingat, dikelompokkan per BPBD: tautan WhatsApp ke Pusdalops (dibuka di perangkat admin, tidak terkirim otomatis), email ringkas, atau salin teks. Baru 6 dari 324 kantor BPBD di bpbd.json yang punya nomor Pusdalops, jadi jalur utama saat ini salin teks | `/risiko`, `/admin/pengingat` |
 | F3 rehab-rekon | Meja baru tertaut kaji cepat: jitupasna → usulan → disetujui → cair → dibangun → selesai, tanda macet >60 hari | `/meja`, `/admin/meja` |
 | F4 stok gudang | Stok per gudang; logistik dikirim memotong stok secara atomik; koreksi hanya admin | `/meja`, `/admin/meja` |
 | F5 ekspor DIBI | CSV/JSON berkolom gaya DIBI dari kaji cepat (nama jenis bencana DIBI perlu dicek pemilik) | `/api/meja/ekspor` |

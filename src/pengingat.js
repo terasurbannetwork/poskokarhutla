@@ -4,7 +4,7 @@
    tidak berulang tiap hari; baris baru lahir HANYA bila keadaan sumber berubah (MoU segera_habis -> habis, perjanjian diperpanjang lalu habis lagi, rehab pindah tahap).
    Bila kondisinya hilang (logistik sudah disetujui, stok diisi), barisnya ikut dihapus, jadi antrean tidak memuat hal basi dan kambuhnya hal yang sama muncul lagi.
    Isi pengingat: judul/angka/wilayah saja; tidak ada nama, WA, atau email relawan maupun petugas. */
-import {json, gagal, acak, bacaBody} from "./worker.js";
+import {json, gagal, acak, bacaBody, normalWA} from "./worker.js";
 import {modOK, superOK, esc, wib, kirimEmail} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {halamanAdmin, emailSiap} from "./statistik.js";
@@ -17,7 +17,8 @@ const JAM = 3600e3, HARI = 24 * JAM, BATAS_BACA = 5000, MAKS_KIRIM = 50, RE_ID =
 export const SEGERA_HARI = 60, SEGERA_LALU_HARI = 30;
 export const JENIS = {
   mou_relawan: "MoU relawan hampir habis", pks_riset: "PKS riset hampir habis", logistik_lambat: "Logistik belum disetujui", dsp_spj: "DSP belum SPJ",
-  renkon: "Rencana kontinjensi", rehab_macet: "Rehab-rekon macet", stok_rendah: "Stok gudang menipis", bantuan_terbuka: "Butuh bantuan belum ditangani"};
+  renkon: "Rencana kontinjensi", rehab_macet: "Rehab-rekon macet", stok_rendah: "Stok gudang menipis", bantuan_terbuka: "Butuh bantuan belum ditangani",
+  prioritas_dampak: "Prioritas dampak: kirim ke BPBD"};
 export const DAFTAR_JENIS = Object.keys(JENIS);
 export const STATUS = ["baru", "dikirim", "selesai", "abaikan"];
 const tolakMod = () => gagal(403, "hanya untuk moderator ke atas (bukan akun gerbang situs)");
@@ -68,12 +69,37 @@ async function bantuan(env, kini, dummy) {
   if (rows.length >= BATAS_BACA) return null;
   return rows.map(u => ({jenis: "bantuan_terbuka", sumber_id: u.id, keadaan: "terbuka", judul: `Butuh bantuan terbuka lebih dari 24 jam: ${u.judul}`, rincian: null, prov: u.prov, kab: u.kab}));
 }
-const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan]];
+/* F2 prioritas dampak: satu baris per kecamatan dari public/banjir/data/risiko_prioritas.json (agregat publik: wilayah, kelas, bahaya, jiwa, BPBD; tanpa data pribadi).
+   keadaan = kelas saja (BUKAN tanggal data: tanggal akan membuat baris baru tiap hari); naik kelas = baris baru, tanggal data di muatan ikut diperbarui selama masih 'baru'.
+   JSON hilang/404/usang/rusak = null (jenis dilewati, antrean tidak dipangkas). */
+const SITUS = "https://pantau.terasurban.com", RE_TGL = /^\d{4}-\d\d-\d\d$/;
+const hash16 = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))).slice(0, 8)].map(x => x.toString(16).padStart(2, "0")).join("");
+async function prioritas(env, kini, dummy) {
+  let d;
+  try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal/banjir/data/risiko_prioritas.json")); if (!r.ok) { r.body?.cancel(); return null; } d = await r.json(); } catch (e) { return null; }
+  if (!d || d.usang === true || !Array.isArray(d.kec) || !RE_TGL.test(d.hari) || d.kec.length >= BATAS_BACA) return null;
+  const out = [], sah = d.kec.filter(k => k && typeof k.kec === "string" && typeof k.kab === "string" && typeof k.kelas_nama === "string" && Number.isInteger(k.kelas));
+  /* dummy: 6 kecamatan teratas dari JSON nyata; nomor Pusdalops fiktif kecuali untuk BPBD kecamatan pertama (ujian "tanpa nomor") */
+  const pakai = dummy ? sah.slice(0, 6) : sah, tanpa = dummy ? String(pakai[0]?.bpbd?.nama) : null;
+  for (const k of pakai) {
+    const b = k.bpbd || {}, nama = String(b.nama || "").slice(0, 60), wa = dummy ? (nama === tanpa ? null : "6281200000000") : normalWA(b.pusdalops);
+    const jiwa = Number.isFinite(k.pend) ? Math.round(k.pend) : 0, bahaya = String(k.utama_nama || "").slice(0, 30), kelas = k.kelas_nama.slice(0, 20);
+    const kec = k.kec.slice(0, 60), kab = k.kab.slice(0, 60), sekab = b.sekab === true;
+    out.push({jenis: "prioritas_dampak", sumber_id: await hash16(`${dummy ? "dummy|" : ""}${k.prov}|${k.kab}|${k.kec}`), keadaan: `k${k.kelas}`,
+      judul: `Kec. ${kec}, ${kab}: ${kelas}, ${bahaya}, ±${jiwa.toLocaleString("id-ID")} jiwa`,
+      rincian: `${nama ? `BPBD ${nama}${!sekab && Number.isFinite(b.km) ? `, terdekat ${b.km} km` : ""}` : "BPBD tujuan belum ada"}; ${k.perubahan === "naik" && k.dari_kelas ? `naik dari ${k.dari_kelas}` : String(k.perubahan || "tetap")}`,
+      prov: /^\d{2}$/.test(String(k.prov)) ? String(k.prov) : null, kab: kab.length >= 2 ? kab : null, segar: true,
+      muatan: JSON.stringify({kec, kab, kelas, bahaya, jiwa, bpbd: nama, wa, hari: d.hari})});
+  }
+  return out;
+}
+const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas]];
 
 /* Cron harian (idempoten: dua kali jalan = tidak ada baris baru). dummy=1 membaca sumber dummy untuk tombol 🧪. */
-export async function buatPengingat(env, kini = Date.now(), {dummy = 0} = {}) {
+export async function buatPengingat(env, kini = Date.now(), {dummy = 0, hanya = null} = {}) {
   const hari = wib(kini), baru = [], utuh = [], per = Object.fromEntries(DAFTAR_JENIS.map(j => [j, 0]));
   for (const [jenis, f] of TIAP) {
+    if (hanya && !jenis.some(j => hanya.includes(j))) continue;
     let r;
     try { r = await f(env, kini, dummy); } catch (e) { if (/no such table/i.test(String(e?.message || e))) continue; throw e; }   // modul sumber belum dimigrasi: lewati
     if (!r) continue;   // terpotong BATAS_BACA: jangan memangkas antrean dari daftar yang tidak lengkap
@@ -81,25 +107,52 @@ export async function buatPengingat(env, kini = Date.now(), {dummy = 0} = {}) {
   }
   let dibuat = 0;
   for (let i = 0; i < baru.length; i += 50) {
-    const rs = await env.DB.batch(baru.slice(i, i + 50).map(p => env.DB.prepare(`INSERT OR IGNORE INTO pengingat (id, jenis, sumber_id, keadaan, tanggal, judul, rincian, prov, kab, dibuat, dummy)
-      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(acak(8), p.jenis, p.sumber_id, p.keadaan, hari, p.judul.slice(0, 160), p.rincian?.slice(0, 300) ?? null, p.prov ?? null, p.kab ?? null, kini, dummy)));
+    const rs = await env.DB.batch(baru.slice(i, i + 50).map(p => env.DB.prepare(`INSERT OR IGNORE INTO pengingat (id, jenis, sumber_id, keadaan, tanggal, judul, rincian, prov, kab, dibuat, dummy, muatan)
+      VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(acak(8), p.jenis, p.sumber_id, p.keadaan, hari, p.judul.slice(0, 160), p.rincian?.slice(0, 300) ?? null, p.prov ?? null, p.kab ?? null, kini, dummy, p.muatan ?? null)));
     for (const [k, x] of rs.entries()) if (x.meta.changes) { dibuat++; per[baru[i + k].jenis]++; }
   }
+  /* baris prioritas yang masih 'baru' ikut data terbaru (tanggal data, jiwa, BPBD/nomor); yang sudah dikirim/selesai tidak diubah */
+  const segar = baru.filter(p => p.segar);
+  for (let i = 0; i < segar.length; i += 50) await env.DB.batch(segar.slice(i, i + 50).map(p => env.DB.prepare(`UPDATE pengingat SET judul = ?, rincian = ?, muatan = ? WHERE jenis = ? AND sumber_id = ? AND keadaan = ? AND dummy = ? AND status = 'baru' AND muatan IS NOT ?3`)
+    .bind(p.judul.slice(0, 160), p.rincian?.slice(0, 300) ?? null, p.muatan, p.jenis, p.sumber_id, p.keadaan, dummy)));
   /* kondisi sudah hilang -> baris basi dihapus (hanya untuk jenis yang daftarnya lengkap) */
   const ada = JSON.stringify(baru.map(p => `${p.jenis}|${p.sumber_id}|${p.keadaan}`));
-  const hapus = utuh.length ? (await env.DB.prepare(`DELETE FROM pengingat WHERE dummy = ?1 AND jenis IN (SELECT value FROM json_each(?2)) AND (jenis || '|' || sumber_id || '|' || keadaan) NOT IN (SELECT value FROM json_each(?3))`)
+  const hapus = utuh.length ? (await env.DB.prepare(`DELETE FROM pengingat WHERE dummy = ?1 AND jenis IN (SELECT value FROM json_each(?2)) AND NOT (jenis = 'prioritas_dampak' AND status IN ('dikirim', 'selesai')) AND (jenis || '|' || sumber_id || '|' || keadaan) NOT IN (SELECT value FROM json_each(?3))`)
     .bind(dummy, JSON.stringify(utuh), ada).run()).meta.changes : 0;
   return {tanggal: hari, dibuat, dihapus: hapus, per_jenis: per};
+}
+
+/* Cron prioritas (jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json): hanya jenis ini; idempoten. */
+export const buatPengingatPrioritas = (env, kini = Date.now()) => buatPengingat(env, kini, {hanya: ["prioritas_dampak"]});
+
+/* Kelompok per BPBD tujuan untuk layar admin. Tautan wa.me hanya bila nomor Pusdalops sah (normalWA dipakai saat deteksi); membuka WhatsApp di perangkat admin, tidak mengirim apa pun.
+   Teks = wilayah, kelas, bahaya, jiwa, tanggal data, tautan /risiko: agregat publik, tanpa data pribadi. */
+const MAKS_TEKS = 25;
+export function kelompokPrioritas(rows) {
+  const per = new Map();
+  for (const r of rows) {
+    if (r.jenis !== "prioritas_dampak" || r.status !== "baru" || !r.muatan) continue;
+    let m; try { m = JSON.parse(r.muatan); } catch (e) { continue; }
+    const k = `${m.bpbd}|${m.wa || ""}`; if (!per.has(k)) per.set(k, {bpbd: m.bpbd || "", wa: m.wa || null, baris: []});
+    per.get(k).baris.push({id: r.id, m});
+  }
+  return [...per.values()].map(g => {
+    const hari = g.baris.map(b => b.m.hari).sort().at(-1), jiwa = g.baris.reduce((a, b) => a + (b.m.jiwa || 0), 0);
+    const teks = [`Prioritas dampak, data risiko ${tgl(hari)}`, `Kepada BPBD ${g.bpbd || "tujuan"}${g.wa ? " (Pusdalops)" : ""}: kecamatan berikut berisiko tinggi dengan bahaya harian aktif.`,
+      ...g.baris.slice(0, MAKS_TEKS).map((b, i) => `${i + 1}. Kec. ${b.m.kec}, ${b.m.kab}: ${b.m.kelas}, ${b.m.bahaya}, ±${(b.m.jiwa || 0).toLocaleString("id-ID")} jiwa`),
+      ...(g.baris.length > MAKS_TEKS ? [`dan ${g.baris.length - MAKS_TEKS} kecamatan lain`] : []), `Rincian: ${SITUS}/risiko`].join("\n");
+    return {bpbd: g.bpbd, wa: g.wa, tautan: g.wa ? `https://wa.me/${g.wa}?text=${encodeURIComponent(teks)}` : null, teks, ids: g.baris.map(b => b.id), kecamatan: g.baris.length, jiwa};
+  }).sort((a, b) => b.jiwa - a.jiwa);
 }
 
 /* ---------------- admin ---------------- */
 async function daftar(env, req, url) {
   if (!await modOK(env, req)) return tolakMod();
   const d = url.searchParams.get("dummy") === "1";
-  const rows = (await env.DB.prepare(`SELECT id, jenis, tanggal, judul, rincian, prov, kab, status, dikirim_pada, dibuat, dummy FROM pengingat ${d ? "" : "WHERE dummy = 0"}
+  const rows = (await env.DB.prepare(`SELECT id, jenis, tanggal, judul, rincian, prov, kab, status, dikirim_pada, dibuat, dummy, muatan FROM pengingat ${d ? "" : "WHERE dummy = 0"}
     ORDER BY (status IN ('baru', 'dikirim')) DESC, dibuat DESC, id LIMIT 1000`).all()).results;
   const hitung = Object.fromEntries(DAFTAR_JENIS.map(j => [j, rows.filter(r => r.jenis === j && (r.status === "baru" || r.status === "dikirim")).length]));
-  return json({pengingat: rows.map(r => ({...r, dummy: !!r.dummy, prov_nama: PROV[r.prov] || null})), per_jenis: hitung, jenis: JENIS, status: STATUS, email_siap: emailSiap(env)});
+  return json({pengingat: rows.map(({muatan: _, ...r}) => ({...r, dummy: !!r.dummy, prov_nama: PROV[r.prov] || null})), kelompok_prioritas: kelompokPrioritas(rows), per_jenis: hitung, jenis: JENIS, status: STATUS, email_siap: emailSiap(env)});
 }
 async function periksa(env, req, kini) {
   if (!await modOK(env, req)) return tolakMod();
@@ -131,6 +184,15 @@ async function kirim(env, req, kini) {
   await env.DB.prepare("UPDATE pengingat SET status = 'dikirim', dikirim_pada = ?, oleh = ? WHERE id IN (SELECT value FROM json_each(?)) AND status IN ('baru', 'dikirim')").bind(kini, mod, JSON.stringify(rows.map(r => r.id))).run();   // ditandai SESUDAH terkirim
   return json({ok: true, terkirim: rows.length, ke: ke.length});
 }
+/* admin sudah menekan tautan wa.me di perangkatnya: tandai kelompoknya terkirim (hanya prioritas_dampak yang masih 'baru'); tidak ada kiriman dari server */
+async function dikirimWA(env, req, kini) {
+  const mod = await modOK(env, req); if (!mod) return tolakMod();
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
+  const ids = b.o.ids;
+  if (!Array.isArray(ids) || !ids.length || ids.length > 500 || !ids.every(x => typeof x === "string" && RE_ID.test(x))) return gagal(400, "ids: 1-500 id pengingat (16 hex)");
+  const r = await env.DB.prepare("UPDATE pengingat SET status = 'dikirim', dikirim_pada = ?, oleh = ? WHERE id IN (SELECT value FROM json_each(?)) AND jenis = 'prioritas_dampak' AND status = 'baru'").bind(kini, mod, JSON.stringify(ids)).run();
+  return r.meta.changes ? json({ok: true, ditandai: r.meta.changes}) : gagal(409, "tidak ada pengingat prioritas dampak yang masih baru di antara id itu");
+}
 const AKSI = {selesai: "selesai", abaikan: "abaikan", buka: "baru"};
 async function ubah(env, req, id) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();
@@ -158,6 +220,7 @@ export const RUTE_PENGINGAT = {
   "GET /api/pengingat/admin": T((env, req, url) => daftar(env, req, url)),
   "POST /api/pengingat/admin/periksa": T((env, req, url, kini) => periksa(env, req, kini)),
   "POST /api/pengingat/admin/kirim": T((env, req, url, kini) => kirim(env, req, kini)),
+  "POST /api/pengingat/admin/dikirim-wa": T((env, req, url, kini) => dikirimWA(env, req, kini)),
   "POST /api/pengingat/admin/:id": T((env, req, url, kini, ctx, id) => ubah(env, req, id)),
   "POST /api/pengingat/dummy": T((env, req, url, kini) => dummy(env, req, kini)),
 };

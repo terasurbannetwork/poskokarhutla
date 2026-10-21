@@ -1,12 +1,12 @@
 /* Pengingat (src/pengingat.js, C2) di atas D1 lokal sungguhan (Miniflare, worker.js utuh): migrasi 0028, CHECK, enum JS == CHECK, pendeteksi di tepi ambang tiap jenis,
    dedup dua kali jalan, email Resend (fixture outboundService) hanya saat admin menekan, isi email tanpa data pribadi, tandai selesai/abaikan, dummy lewat rantai sumbernya. */
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul BNPB saling impor (siklus), urutan yang sama dengan produksi
-import {DAFTAR_JENIS, STATUS, JENIS, susunEmail} from "../../src/pengingat.js";
+import {DAFTAR_JENIS, STATUS, JENIS, susunEmail, kelompokPrioritas} from "../../src/pengingat.js";
 import {sisipInstitusi, sisipPerjanjian} from "../../src/relawan.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, MENIT = 60e3;
@@ -18,7 +18,14 @@ const luar = async req => {
   return new Response("diblok di uji", {status: 599});
 };
 const EMAIL = {EMAIL_API_KEY: "kunci-uji", EMAIL_FROM: "Pantau <p@contoh.id>", EMAIL_TO: "a@contoh.id, b@contoh.id"};
-const U = await siapkan("uji-pengingat", {ikat: EMAIL, luar}), V = await siapkan("uji-pengingat-tanpa-email", {luar}), uji = berantai();
+/* aset uji: sama dengan harness, kecuali risiko_prioritas.json yang dikendalikan per instans (null = 404). Uji lama tidak boleh ketambahan 113 baris prioritas dari berkas nyata. */
+const asetDengan = kontrol => async req => {
+  const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
+  if (p === "/banjir/data/risiko_prioritas.json") return kontrol.prio == null ? new Response("tidak ada", {status: 404}) : new Response(kontrol.prio);
+  return existsSync(f) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
+};
+const kU = {prio: null}, kV = {prio: null}, kW = {prio: null};
+const U = await siapkan("uji-pengingat", {ikat: EMAIL, luar, asetKu: asetDengan(kU)}), V = await siapkan("uji-pengingat-tanpa-email", {luar, asetKu: asetDengan(kV)}), uji = berantai();
 const env = {DB: U.DB};
 const sql = async t => (await U.DB.prepare("SELECT sql FROM sqlite_master WHERE name = ?").bind(t).first()).sql;
 const enumSql = (s, kol) => [...s.match(new RegExp(`${kol} IN \\(([^)]*)\\)`))[1].matchAll(/'([^']+)'/g)].map(m => m[1]);
@@ -184,13 +191,13 @@ uji("kirim: email hanya saat admin menekan; satu email gabungan ke EMAIL_TO; tan
 });
 
 uji("dummy: lahir dari rantai sumber dummy modul lain, tiap jenis terisi, tidak ikut angka publik/asli, tidak pernah dikirim, hapus bersih", async () => {
-  const W = await siapkan("uji-pengingat-dummy", {ikat: EMAIL, luar});
+  const W = await siapkan("uji-pengingat-dummy", {ikat: EMAIL, luar, asetKu: asetDengan(kW)});
   assert.equal((await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"})).s, 409, "sumber dummy belum ada: jujur, tidak mengarang");
   for (const m of ["relawan", "riset", "meja", "alun"]) { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.t}`); }
   const a = await W.api("POST", "/api/alun", {jenis: "butuh_bantuan", judul: "Perahu karet asli", teks: "Kami butuh perahu karet.", bencana: "banjir", prov: "33", kab: "Kabupaten Demak"}, {"cf-connecting-ip": "10.7.2.1"});
   await W.DB.prepare("UPDATE alun_utas SET dibuat = ? WHERE id = ?").bind(Date.now() - 30 * JAM, a.j.id).run();
   assert.equal((await W.adm("POST", "/api/pengingat/admin/periksa", {})).j.dibuat, 1, "satu pengingat asli");
-  luarLog = [];
+  luarLog = []; kW.prio = readFileSync(path.join(AKAR, "public/banjir/data/risiko_prioritas.json"), "utf8");   // JSON nyata baru tersedia saat dummy diisi
   const isi = await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"});
   assert.equal(isi.s, 201, isi.t); assert.deepEqual(isi.j.kosong, [], "tiap jenis terisi"); for (const j of DAFTAR_JENIS) assert.ok(isi.j.per_jenis[j] > 0, j);
   assert.equal((await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"})).s, 409, "sudah ada");
@@ -199,7 +206,7 @@ uji("dummy: lahir dari rantai sumber dummy modul lain, tiap jenis terisi, tidak 
   for (const j of DAFTAR_JENIS) assert.ok(semua.j.per_jenis[j] > 0, `per_jenis ${j}`);
   const ids = semua.j.pengingat.filter(x => x.dummy).slice(0, 3).map(x => x.id);
   const kirim = await W.adm("POST", "/api/pengingat/admin/kirim", {ids}); assert.equal(kirim.s, 409, kirim.t); assert.deepEqual(luarLog, [], "data dummy tidak pernah dikirim");
-  /* periksa asli tidak menyentuh dummy dan sebaliknya */
+  kW.prio = null;   /* periksa asli tidak menyentuh dummy dan sebaliknya */
   const p = await W.adm("POST", "/api/pengingat/admin/periksa", {}); assert.equal(p.s, 200);
   assert.equal(await W.n("pengingat", "dummy = 1"), isi.j.pengingat, "periksa asli tidak memangkas/menambah dummy");
   const hapus = await W.adm("POST", "/api/pengingat/dummy", {aksi: "hapus"}); assert.equal(hapus.j.pengingat, isi.j.pengingat);
@@ -219,4 +226,111 @@ uji("keamanan 2: kirim email dibatasi 10 per jam per moderator (ke-11 = 429, mod
   for (let i = sebelum; i < 10; i++) assert.equal((await U.adm("POST", "/api/pengingat/admin/kirim", {ids: [id]})).s, 200);
   const l = await U.adm("POST", "/api/pengingat/admin/kirim", {ids: [id]}); assert.equal(l.s, 429, l.t);
   assert.equal((await U.api("POST", "/api/pengingat/admin/kirim", {ids: [id]}, MOD2)).s, 200, "batas per moderator, bukan global");
+});
+
+/* ---------------- F2: prioritas dampak ke BPBD ---------------- */
+const NYATA = readFileSync(path.join(AKAR, "public/banjir/data/risiko_prioritas.json"), "utf8");
+const kX = {prio: null}, logX = [], X = await siapkan("uji-pengingat-f2", {ikat: EMAIL, luar: async r => { logX.push(new URL(r.url).hostname); return new Response("diblok di uji", {status: 599}); }, asetKu: asetDengan(kX)});
+const kec = (n, o = {}) => ({prov: "33", prov_nama: "Jawa Tengah", kab: "Kabupaten A", kec: "Kec " + n, kelas: 2, kelas_nama: "Tinggi", skor: 60, utama: "banjir", utama_nama: "Banjir", pend: 12345, perubahan: "tetap", dari_kelas: "Tinggi", ...o,
+  bpbd: {nama: "AAA", pusdalops: "0812-3456-7890", km: 5, sekab: true, ...o.bpbd}});
+const prio = (list, o = {}) => JSON.stringify({hari: "2026-10-19", usang: false, kec: list, ...o});
+const periksaX = () => X.adm("POST", "/api/pengingat/admin/periksa", {});
+const baris = async () => (await X.DB.prepare("SELECT id, sumber_id, keadaan, status, judul, rincian, muatan FROM pengingat WHERE jenis = 'prioritas_dampak' ORDER BY judul").all()).results;
+const kel = async (q = "") => (await X.adm("GET", "/api/pengingat/admin" + q)).j.kelompok_prioritas;
+const F2 = {};
+
+uji("F2: baris terbentuk dari JSON nyata repo, satu per kecamatan, sumber_id 16 hex, dua kali jalan tidak berulang", async () => {
+  const nyata = JSON.parse(NYATA); kX.prio = NYATA;
+  const a = await periksaX(); assert.equal(a.s, 200, a.t); assert.equal(a.j.per_jenis.prioritas_dampak, nyata.kec.length);
+  const rs = await baris(); assert.equal(rs.length, nyata.kec.length);
+  for (const r of rs) { assert.match(r.sumber_id, /^[0-9a-f]{16}$/); assert.match(r.keadaan, /^k[0-3]$/); assert.match(r.judul, /^Kec\. .+: .+, .+, ±[\d.,]+ jiwa$/); assert.match(r.rincian, /^BPBD /); }
+  assert.equal(new Set(rs.map(r => r.sumber_id)).size, rs.length, "kunci kecamatan unik");
+  const b = await periksaX(); assert.equal(b.j.dibuat, 0); assert.equal(b.j.dihapus, 0); assert.equal((await baris()).length, rs.length);
+  assert.deepEqual(logX, [], "periksa tidak mengirim apa pun ke luar");
+  await X.DB.prepare("DELETE FROM pengingat").run();
+});
+
+uji("F2: kelompok per BPBD; tautan wa.me hanya untuk nomor sah; teks tanpa data pribadi; naik kelas = baris baru; tanggal data ikut", async () => {
+  kX.prio = prio([kec(1), kec(2), kec(3, {bpbd: {nama: "BBB", pusdalops: "12345"}}), kec(4, {bpbd: {nama: "CCC", pusdalops: null, sekab: false, km: 22.5}})]);
+  assert.equal((await periksaX()).j.dibuat, 4);
+  let g = await kel(); assert.equal(g.length, 3);
+  const A = g.find(x => x.bpbd === "AAA"), B = g.find(x => x.bpbd === "BBB"), C = g.find(x => x.bpbd === "CCC");
+  assert.equal(A.kecamatan, 2); assert.equal(A.ids.length, 2); assert.equal(A.wa, "6281234567890");
+  assert.ok(A.tautan.startsWith("https://wa.me/6281234567890?text="), A.tautan);
+  const teks = decodeURIComponent(A.tautan.split("?text=")[1]); assert.equal(teks, A.teks);
+  for (const p of ["Kec. Kec 1, Kabupaten A: Tinggi, Banjir, ±", "Kec. Kec 2", "19 Oktober 2026", "https://pantau.terasurban.com/risiko", "BPBD AAA"]) assert.ok(teks.includes(p), p);
+  for (const pii of [...PII, "0812-3456", "081234567890", "token", "@"]) assert.ok(!teks.includes(pii), `teks memuat ${pii}`);
+  assert.equal(B.tautan, null, "nomor tak sah tidak jadi tautan"); assert.equal(B.wa, null); assert.equal(C.tautan, null);
+  assert.match((await baris()).find(r => r.judul.includes("Kec 4")).rincian, /terdekat 22\.5 km/);
+  assert.match((await baris()).find(r => r.judul.includes("Kec 1")).rincian, /BPBD AAA; tetap/); assert.ok(!(await baris()).find(r => r.judul.includes("Kec 1")).rincian.includes("terdekat"), "sekab: tanpa jarak");
+  /* tanggal data baru, kelas sama: tidak ada baris baru, teks ikut tanggal terbaru */
+  kX.prio = prio([kec(1), kec(2), kec(3, {bpbd: {nama: "BBB", pusdalops: "12345"}}), kec(4, {bpbd: {nama: "CCC", pusdalops: null}})], {hari: "2026-10-20"});
+  const t = await periksaX(); assert.equal(t.j.dibuat, 0); assert.equal(t.j.dihapus, 0);
+  assert.ok((await kel()).find(x => x.bpbd === "AAA").teks.includes("20 Oktober 2026"));
+  /* naik kelas kec 1: baris baru, baris lama (belum dikirim) diganti */
+  kX.prio = prio([kec(1, {kelas: 3, kelas_nama: "Sangat tinggi", perubahan: "naik", dari_kelas: "Tinggi"}), kec(2), kec(3, {bpbd: {nama: "BBB", pusdalops: "12345"}}), kec(4, {bpbd: {nama: "CCC", pusdalops: null}})], {hari: "2026-10-20"});
+  const n = await periksaX(); assert.equal(n.j.dibuat, 1); assert.equal(n.j.dihapus, 1);
+  const rs = await baris(); assert.equal(rs.length, 4); const k1 = rs.find(r => r.judul.includes("Kec 1"));
+  assert.equal(k1.keadaan, "k3"); assert.match(k1.rincian, /naik dari Tinggi/);
+});
+
+uji("F2: hanya moderator yang menandai dikirim; gerbang dan tanpa token 403; masukan liar 400; bukan prioritas 409; tidak ada kiriman server", async () => {
+  const A = (await kel()).find(x => x.bpbd === "AAA"), body = {ids: A.ids};
+  for (const h of [{}, GERBANG]) assert.equal((await X.api("POST", "/api/pengingat/admin/dikirim-wa", body, h)).s, 403);
+  for (const ids of [undefined, [], "x", ["bukan-id"], [1]]) assert.equal((await X.adm("POST", "/api/pengingat/admin/dikirim-wa", {ids})).s, 400);
+  const lain = await X.DB.prepare("INSERT INTO pengingat (id, jenis, sumber_id, keadaan, tanggal, judul, dibuat) VALUES ('1a1a1a1a1a1a1a1a', 'renkon', 'bbbbbbbbbbbbbbbb', 'x', '2026-10-20', 'Judul sah', 1)").run();
+  assert.equal((await X.adm("POST", "/api/pengingat/admin/dikirim-wa", {ids: ["1a1a1a1a1a1a1a1a"]})).s, 409, "jenis lain tak bisa ditandai lewat rute ini");
+  assert.equal(await X.n("pengingat", "id = '1a1a1a1a1a1a1a1a' AND status = 'baru'"), 1);
+  const ok = await X.api("POST", "/api/pengingat/admin/dikirim-wa", body, MOD2); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.ditandai, 2);
+  assert.equal(await X.n("pengingat", `jenis = 'prioritas_dampak' AND status = 'dikirim' AND dikirim_pada IS NOT NULL AND oleh IS NOT NULL`), 2);
+  assert.equal((await X.adm("POST", "/api/pengingat/admin/dikirim-wa", body)).s, 409, "sudah ditandai");
+  assert.ok(!(await kel()).some(x => x.bpbd === "AAA"), "kelompok yang sudah dikirim hilang dari antrean baru");
+  assert.deepEqual(logX, [], "menandai tidak mengirim apa pun dari server");
+  assert.equal((await X.api("GET", "/api/pengingat/admin")).s, 403, "daftar kelompok hanya moderator");
+  await X.DB.prepare("DELETE FROM pengingat WHERE id = '1a1a1a1a1a1a1a1a'").run();
+});
+
+uji("F2: kecamatan keluar daftar = baris dihapus, kecuali yang sudah dikirim atau selesai", async () => {
+  const k = await baris(), id = x => k.find(r => r.judul.includes(x)).id;
+  await X.adm("POST", `/api/pengingat/admin/${id("Kec 3")}`, {aksi: "selesai"});
+  kX.prio = prio([kec(2)], {hari: "2026-10-20"});   // keluar: kec 1 (dikirim), kec 3 (selesai), kec 4 (baru)
+  const p = await periksaX(); assert.equal(p.j.dibuat, 0);
+  const sisa = (await baris()).map(r => r.judul.match(/Kec \d/)[0]).sort();
+  /* Kec 1 dan 2 sudah dikirim, Kec 3 selesai -> bertahan; Kec 4 baru -> dihapus */
+  assert.deepEqual(sisa, ["Kec 1", "Kec 2", "Kec 3"]); assert.equal(p.j.dihapus, 1);
+});
+
+uji("F2: JSON usang, 404, rusak, atau tanpa tanggal = jenis dilewati, antrean tidak dipangkas", async () => {
+  const sebelum = (await baris()).length; assert.ok(sebelum >= 1);
+  for (const [nama, v] of [["usang", prio([kec(9)], {usang: true})], ["404", null], ["rusak", "{bukan json"], ["tanpa tanggal", JSON.stringify({usang: false, kec: [kec(9)]})], ["kec bukan larik", JSON.stringify({hari: "2026-10-20", kec: {}})], ["kosong", prio([])]]) {
+    kX.prio = v; const p = await periksaX(); assert.equal(p.s, 200, nama);
+    if (nama === "kosong") { assert.equal((await baris()).length, sebelum); continue; }
+    assert.equal(p.j.dibuat, 0, nama); assert.equal(p.j.dihapus, 0, nama); assert.equal((await baris()).length, sebelum, nama);
+  }
+  assert.equal((await baris()).length, sebelum, "daftar kosong sah: yang dikirim/selesai tetap");
+});
+
+uji("F2: cron jam 00/06/12/18 UTC menit 55 menjalankan pendeteksi prioritas saja; menit/jam lain tidak", async () => {
+  await X.DB.prepare("DELETE FROM pengingat").run(); kX.prio = prio([kec(7), kec(8)]);
+  const w = await X.mf.getWorker(), tik = t => w.scheduled({cron: "* * * * *", scheduledTime: new Date(t)});
+  await tik("2026-10-22T06:54:00Z"); await tik("2026-10-22T07:55:00Z"); assert.equal((await baris()).length, 0, "menit/jam salah");
+  await tik("2026-10-22T06:55:00Z"); assert.equal((await baris()).length, 2);
+  await tik("2026-10-22T12:55:00Z"); assert.equal((await baris()).length, 2, "idempoten");
+  assert.equal(await X.n("pengingat", "jenis <> 'prioritas_dampak'"), 0, "jenis lain tidak ikut di jam 06");
+});
+
+uji("F2: enum jenis di JS sama persis dengan CHECK migrasi 0028, prioritas_dampak terdaftar", async () => {
+  assert.deepEqual(enumSql(await sql("pengingat"), "jenis"), DAFTAR_JENIS); assert.ok(DAFTAR_JENIS.includes("prioritas_dampak")); assert.equal(JENIS.prioritas_dampak, "Prioritas dampak: kirim ke BPBD");
+  assert.match(readFileSync(path.join(AKAR, "migrations/0028_pengingat.sql"), "utf8"), /'bantuan_terbuka', 'prioritas_dampak'\)\)/);
+  assert.deepEqual(kelompokPrioritas([]), []);
+});
+
+uji("F2: dummy mengisi 6 baris dari JSON nyata dengan dummy=1, satu BPBD tanpa nomor, tidak bentrok dengan baris asli", async () => {
+  const Z = await siapkan("uji-pengingat-f2-dummy", {luar, ikat: EMAIL, asetKu: asetDengan({prio: NYATA})}), nyata = JSON.parse(NYATA);
+  assert.equal((await Z.adm("POST", "/api/pengingat/admin/periksa", {})).j.dibuat, nyata.kec.length, "asli lebih dulu: sumber_id dummy harus berbeda");
+  const i = await Z.adm("POST", "/api/pengingat/dummy", {aksi: "isi"}); assert.equal(i.s, 201, i.t); assert.equal(i.j.per_jenis.prioritas_dampak, 6);
+  assert.equal(await Z.n("pengingat", "jenis = 'prioritas_dampak' AND dummy = 1"), 6); assert.equal(await Z.n("pengingat", "jenis = 'prioritas_dampak' AND dummy = 0"), nyata.kec.length);
+  const g = (await Z.adm("GET", "/api/pengingat/admin?dummy=1")).j.kelompok_prioritas;
+  assert.ok(g.some(x => !x.tautan), "ada BPBD tanpa nomor"); assert.ok(g.some(x => x.tautan?.startsWith("https://wa.me/62")), "ada BPBD dengan nomor");
+  assert.equal((await Z.adm("POST", "/api/pengingat/dummy", {aksi: "hapus"})).s, 200); assert.equal(await Z.n("pengingat", "jenis = 'prioritas_dampak'"), nyata.kec.length);
 });
