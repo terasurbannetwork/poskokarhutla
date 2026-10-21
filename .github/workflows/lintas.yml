@@ -130,6 +130,24 @@ jobs:
         timeout-minutes: 10
         run: python3 scripts/umum/kejadian.py uji && python3 scripts/umum/kejadian.py
 
+      # Indeks risiko operasional per kecamatan (Ruang Koordinasi BNPB, /risiko): SESUDAH cuaca, gunung api, kekeringan; fwi/hotspot/penduduk dari
+      # cache karhutla. Keluaran public/banjir/data/risiko_kecamatan.json ikut cache banjir- yang dipulihkan terbit.yml. Sumber basi > 7 hari = null.
+      - name: Indeks risiko kecamatan (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
+          # prioritas dampak (kecamatan naik kelas / sangat tinggi dengan bahaya harian aktif) dan uji balik prospektif;
+          # arsip potret uji balik tinggal di risiko_ujibalik.json (ikut cache banjir-), jadi dibaca ulang tiap jalan
+          python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py || echo "::warning title=prioritas::gagal"
+          python3 scripts/bnpb/ujibalik_risiko.py --cek && python3 scripts/bnpb/ujibalik_risiko.py || echo "::warning title=ujibalik_risiko::gagal"
+
+      # Perkiraan kebutuhan musim (/kebutuhan): titik, kompleks, jam terbang, regu, masker, rupiah per provinsi 30/60/90 hari. Ikut cache banjir-.
+      - name: Kebutuhan musim (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/bnpb/kebutuhan.py --cek && python3 scripts/bnpb/kebutuhan.py
+
       # Video YouTube per bencana non-karhutla (API resmi, <= 600 unit kuota per bencana; karhutla 3.600 di data.yml; total < 10.000/hari).
       # Keluaran public/banjir/data/video_<id>.json (ber-cache); berkas < 20 jam dilewati. Tanpa secret YOUTUBE_API_KEY dilewati diam-diam.
       - name: Video YouTube lintas bencana (boleh gagal)
