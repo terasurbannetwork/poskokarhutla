@@ -318,7 +318,8 @@ export default {
         "sekolah",
         "fasilitas",
         "jalan",
-        "sungai"
+        "sungai",
+        "abrasi"
       ],
       "berita": {
         "kueri": [
