@@ -37,15 +37,18 @@
   /* Bahan pembasah (taktik.py rekomendasi.kebutuhan.pembasah): {perlu, alasan, konsentrasi_persen, konsentrat_l_hari[3], cara, peringatan, status} atau null (tidak tampil).
      Bila luas terkonfirmasi ada, konsentrat = air per hari (per_ha x luas) x konsentrasi; selain itu angka pipeline. */
   const SUMBER = "https://doi.org/10.1071/WF20117";
-  function pembasah(p, konf) {
+  function pembasah(p, konf, k) {
     if (!p || typeof p !== "object" || p.perlu !== true) return "";
-    const pct = num(p.konsentrasi_persen) ? p.konsentrasi_persen : 1, air = konf?.per_ha_x_luas?.air_l;
-    const dari = num(air) ? [air] : Array.isArray(air) && air.length === 3 && air.every(num) ? air : null;
-    const pl = p.konsentrat_l_hari, L = dari ? dari.map(a => a * pct / 100) : Array.isArray(pl) && pl.length === 3 && pl.every(num) ? pl : num(pl) ? [pl] : null;
-    const teksL = !L ? "" : L.length === 3 ? `±${fmt(L[1])} L/hari (rendah ${fmt(L[0])}, tinggi ${fmt(L[2])})` : `±${fmt(L[0])} L/hari`;
+    const pct = num(p.konsentrasi_persen) ? p.konsentrasi_persen : 1, air = konf?.per_ha_x_luas?.air_l, f = a => a * pct / 100;
+    const tiga = x => Array.isArray(x) && x.length === 3 && x.every(num);
+    const dari = num(air) ? [air] : tiga(air) ? air : null, pl = p.konsentrat_l_hari;
+    /* melampaui rujukan lapangan tanpa luas terkonfirmasi: jangan cetak total liter, arahkan ke luas dan beri per hektare bila ada */
+    const tahan = !konf && !!k?.melampaui_rujukan_lapangan, perHa = k?.per_ha?.air_l, ha = tiga(perHa) ? f(perHa[1]) : num(perHa) ? f(perHa) : null;
+    const L = dari ? dari.map(f) : tahan ? null : tiga(pl) ? pl : num(pl) ? [pl] : null;
+    const teksL = tahan && !dari ? `hitung dari luas terkonfirmasi${ha != null ? ` (sekitar ${fmt(ha)} L/hari per hektare)` : ""}` : !L ? "" : L.length === 3 ? `±${fmt(L[1])} L/hari (rendah ${fmt(L[0])}, tinggi ${fmt(L[2])})` : `±${fmt(L[0])} L/hari`;
     const s = x => typeof x === "string" && x ? `<p>${esc(x)}</p>` : "";
-    return `<h3>Bahan pembasah (wetting agent)</h3><div><span class="kb-pil kuning">Perkiraan, uji laboratorium</span> <a href="${SUMBER}" target="_blank" rel="noopener">Santoso dkk. 2021, doi 10.1071/WF20117</a></div>
-      ${s(p.alasan)}<p>Konsentrasi ${fmt(pct)}%${teksL ? `, konsentrat ${teksL}` : ""}.</p>${s(p.cara)}${s(p.peringatan)}`;
+    return `<h3>Bahan pembasah (disarankan)</h3><div><span class="kb-pil kuning">Perkiraan, uji laboratorium</span> <a href="${SUMBER}" target="_blank" rel="noopener">Santoso dkk. 2021, doi 10.1071/WF20117</a></div>
+      ${s(p.alasan)}${teksL ? `<p>Konsentrat ${teksL}, bila memakai agen setara pada ${fmt(pct)}%; produk lain ikuti label.</p>` : ""}${s(p.cara)}${s(p.peringatan)}`;
   }
   /* t = tugas dari Worker (rekomendasi, kebutuhan_konf, luas_terkonfirmasi, kurang). tanpaPil = pil "Perkiraan, belum divalidasi lapangan" sudah tampil di rincian yang sama (cukup sekali). */
   function html(t, tanpaPil) {
@@ -58,7 +61,7 @@
       ${tot ? `<h3>${konf ? "Dari hitungan satelit" : "Kebutuhan dari hitungan satelit"}${rentang(luasSat) !== "–" ? ` (luas ${rentang(luasSat)} ha)` : ""}</h3><ul>${baris(TOTAL, totalLain)}${pompa(tot.pompa)}</ul>` : ""}
       ${rentang(hari) !== "–" ? `<p>Setara ${rentang(hari)} hari kerja satu provinsi.</p>` : ""}
       ${melampaui ? `<p><span class="kb-pil kuning">Melampaui rujukan lapangan</span> ${typeof melampaui === "string" ? esc(melampaui) : ""}</p>` : ""}
-      ${pembasah(k.pembasah, konf)}
+      ${pembasah(k.pembasah, konf, k)}
       ${en ? `<h3>Energi</h3><ul>${energi(en)}</ul>` : ""}
       ${t.kurang?.length ? `<p>${t.kurang.map(x => `<span class="kb-pil merah">${esc(x.teks)}</span>`).join(" ")}</p>` : ""}</div>`;
   }

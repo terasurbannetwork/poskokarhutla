@@ -23,7 +23,7 @@ import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan} from "./penugas
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM, TENGGAT_KONFIRMASI = 6 * JAM, TENGGAT_KABAR = 24 * JAM, SESI_UMUR = 30 * HARI, GABUNG_KM = 2, JAUH_KM = 5;
 /* bacaan GPS boleh sampai 6 jam lalu: isian dari antrean luring terkirim saat sinyal kembali (sama dengan laporan regu posko, src/posko.js) */
 const GPS_UMUR_MAKS = 6 * JAM;
-const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5}, MAKS_DOK = 3 * 1048576, MAKS_FOTO = 2 * 1048576, COOKIE = "sesi_instansi", MAKS_REKOMENDASI = 2000;
+const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5}, MAKS_DOK = 3 * 1048576, MAKS_FOTO = 2 * 1048576, COOKIE = "sesi_instansi", MAKS_REKOMENDASI = 3000;
 /* daftar tetap: sama dengan CHECK/trigger di 0029 dan public/instansi.js (dijaga instansi.test.mjs) */
 export const JENIS = ["pemprov", "pemkab", "pemkot", "polda", "polres", "kodam", "kodim"];
 export const STATUS_AKUN = ["belum_klaim", "menunggu", "aktif", "ditolak", "dicabut"];
@@ -641,7 +641,7 @@ async function usulanSaya(env, req, kini) {
 /* ================================================================ cron menit 18: tugas dari tugas_kompleks.json */
 const kompleksSah = k => k && typeof k === "object" && Number.isFinite(k.lat) && Number.isFinite(k.lon) && k.lat >= BBOX.latMin && k.lat <= BBOX.latMaks && k.lon >= BBOX.lonMin && k.lon <= BBOX.lonMaks
   && typeof k.prov === "string" && /^\d{2}$/.test(k.prov) && typeof k.kab === "string" && k.kab.length >= 2 && k.kab.length <= 60 && Number.isFinite(k.level) && k.level >= 0 && k.level <= 9;
-/* rekomendasi: objek apa adanya sebagai JSON <= 2000 huruf. Lebih panjang dipotong BERURUTAN agar tetap JSON sah: buang catatan, lalu cara dari belakang, lalu alat. */
+/* rekomendasi: objek apa adanya sebagai JSON <= 3000 huruf. Lebih panjang dipotong BERURUTAN agar tetap JSON sah: buang catatan, lalu cara dari belakang, lalu alat. */
 export function pasRekomendasi(r) {
   if (!r || typeof r !== "object" || Array.isArray(r)) return null;
   const x = {...r}; let s = JSON.stringify(x);

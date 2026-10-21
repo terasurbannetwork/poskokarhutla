@@ -123,6 +123,8 @@ uji("penugasan: info lacak tanpa login memuat tugas, kartu akses, navigasi, dan 
   const polos = await tugas("Kab Satu", {rekomendasi: null, akses: null}), q = await tugaskan(A, polos, {orang: 2}), ip = await lacak("GET", "info", q.j.token);
   assert.deepEqual(ip.j.butir.map(b => b.k), ["apd", "n95", "air_minum", "makanan", "p3k", "gps_ht", "senter", "rute", "cuaca", "komandan", "darurat"]); assert.equal(ip.j.akses, null);
   assert.deepEqual(susunChecklist({rekomendasi: null, akses: null}, 3).map(b => b.k), ip.j.butir.map(b => b.k), "susunChecklist murni sama");
+  const bp = susunChecklist({rekomendasi: {kebutuhan: {pembasah: {perlu: true, konsentrat_l_hari: [100, 200, 300]}}}, akses: null}, 1).find(b => b.k === "pembasah");
+  assert.ok(bp && bp.wajib === false && bp.saran === true && /200 liter.*inductor\/proportioner/.test(bp.teks), "butir pembasah disarankan, bukan wajib"); assert.ok(!susunChecklist({rekomendasi: {kebutuhan: {pembasah: null}}, akses: null}, 1).some(b => b.k === "pembasah"), "pembasah null tanpa butir");
   assert.match(susunChecklist({rekomendasi: null, akses: {bawa: [{barang: "Radio"}]}}, 1).at(-1).teks, /^Bawa Radio$/, "barang tanpa jumlah atau satuan");
 });
 

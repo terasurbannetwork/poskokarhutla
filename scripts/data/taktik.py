@@ -34,6 +34,7 @@ from akses import KAKI_KMJ  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf a
 DATA = os.path.join(AKAR, "public/data")
 
 AS, BS, BV = "asumsi platform", "bersumber", "belum diverifikasi"
+BSU = "bersumber untuk agen uji, ekstrapolasi belum diverifikasi"
 _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_ambang {nilai, status, sumber}.
     "kaki_selang_km": (1.0, AS, "darat_selang: jalan kaki dari jalan/track/sungai <= 1 km (= kendala.rawa_jalan_km; 15 menit sekali jalan)"),
     "jalan_selang_km": (2.0, AS, "atau jalan utama <= 2 km (= kendala.jalan_utama_km)"),
@@ -80,9 +81,9 @@ _M = {   # nama: (nilai, status, sumber). Ikut ditulis ke JSON sebagai taktik_am
     "kaki_kmj": (KAKI_KMJ, AS, "kecepatan jalan kaki di gambut/rawa tanpa beban (scrape/akses.py KAKI_KMJ); memikul pompa dan air memperlambat, jadi jalan_kaki_jam batas bawah (faktor perlambatan belum ada sumbernya)"),
     "cari_jalan_km": (50.0, AS, "jalan terdekat dicari sampai 50 km garis lurus; lebih jauh: null"),
     "orang_akses": (15, BS, "orang per regu (koef orang_regu, Permen LHK P.32/2016); dipakai untuk air minum regu"),
-    "pembasah_persen": (1, BS, "bahan pembasah nabati 1% mempercepat padam bara gambut sekitar 39% dibanding air, 5% hanya sekitar 26% (Santoso dkk. 2021, IJWF 30(5):378-390, doi 10.1071/WF20117); UJI LABORATORIUM semprot permukaan, belum uji lapangan; air per kg gambut tetap sekitar 5,7 L"),
-    "pembasah_dc": (350.0, AS, "gambut dianggap kering bila DC >= 350 (ambang yang sama dengan aturan.py dan harian.py; belum ada sumber ambang hidrofobik); juga relevan bila bara ada, muka air proxy di bawah wt_rusak_cm, atau cara mencakup injeksi"),
-    "maks_huruf": (2000, BS, "batas JSON per rekomendasi; warga-api memotong di 2.000"),
+    "pembasah_persen": (1, BSU, "dosis 1% bahan pembasah nabati memangkas waktu padam bara gambut sekitar 39% dibanding air murni (5%: sekitar 26%; tanpa selang kepercayaan, jadi 1% tidak pasti lebih baik dari 5%); Santoso dkk. 2021, IJWF 30(5):378-390, doi 10.1071/WF20117; UJI LABORATORIUM semprot permukaan, efeknya termal, volume air tetap sekitar 5,7 L per kg gambut. Berlaku untuk agen nabati yang diuji; produk lain (foam kelas A) ikuti dosis label"),
+    "pembasah_dc": (350.0, AS, "gambut dianggap kering bila DC > 350 (sama dengan kelas aturan.py dan harian.py, tanpa sumber ambang); pemicu lain: bara terdeteksi, atau muka air proxy di bawah wt_rusak_cm (proksi, asumsi platform). Injeksi bukan pemicu"),
+    "maks_huruf": (3000, BS, "batas JSON per rekomendasi; warga-api memotong di 3.000 (naik dari 2.000 pada 22 Okt 2026 untuk bahan pembasah)"),
 }
 AMBANG = {k: v[0] for k, v in _M.items()}
 AMBANG_META = {k: {"nilai": v[0], "status": v[1], "sumber": v[2]} for k, v in _M.items()}
@@ -101,14 +102,14 @@ POMPA = [   # Spesifikasi pabrikan dicari orkestrator (WebSearch); tiap baris: k
      "titik_kerja": [[1300, 6], [1000, 8]], "debit_kerja_lpm": 1000, "kerja_bar": 8,
      "sumber": "https://tohatsu.com/ffdp/int/pump/medium_flow/vc52as.html", "status": "bersumber"},
 ]
-CATATAN = {   # teks tetap, ditulis sekali di akar berkas (taktik_catatan) supaya tiap kompleks tetap <= 2.000 huruf
+CATATAN = {   # teks tetap, ditulis sekali di akar berkas (taktik_catatan) supaya tiap kompleks tetap <= 3.000 huruf
     "jaringan_pln": "belum ada data jaringan; kabel dari jaringan PLN di lahan gambut umumnya tidak praktis (asumsi platform)",
     "bbm_jenis": "bensin (campur oli bila mesin 2-tak, cek buku pompa); L/jam diturunkan dari HP x beban x bsfc (asumsi), bukan lembar pabrikan",
     "dasar": "dasar.luas_ha = hitungan piksel (px24 x ha_bara_piksel), bukan terukur; rekonsiliasi_ha_per_piksel = operasi.json rekonsiliasi.ha_per_piksel_setara_resmi",
     "genset": "untuk celup = pompa celup listrik sumur bor (bor >= 16 m lebih dalam dari batas hisap 7,5 m); logistik = pengisian drone termal dan HT serta penerangan malam",
     "tangki": "tangki_fleksibel = isi per hari dan mobil_tangki = rit per hari, masing-masing 5.000 L (laporan BNPB, belum diverifikasi); dihitung dari air_l_hari",
     "akses": "akses.jalan = titik jalan OSM terdekat dari pusat kompleks (jalan.geojson, disederhanakan, garis lurus bukan rute); kaki_km dan jam_tiba = perkiraan graf jalan+sungai OSM (akses.json, kendala.json), hanya kompleks yang masuk akses.json; jalan_kaki_jam = kaki_km / kaki_kmj, batas bawah karena memikul pompa dan air memperlambat; bawa = peralatan yang dipikul dari ujung jalan, jumlah per regu (asumsi platform kecuali air minum dan pompa); tak ada data = null",
-    "pembasah": "gambut kering bersifat hidrofobik: air panas dan kering mengalir lewat tanpa meresap, jadi bahan pembasah (surfaktan, foam kelas A) menurunkan tegangan permukaan. Dosis 1% dari Santoso dkk. 2021 (uji laboratorium semprot permukaan, belum uji lapangan; 5% lebih lambat dan volume air per kg gambut tetap sekitar 5,7 L, efeknya termal). konsentrat_l_hari = air_l_hari x 1% (rendah, tengah, tinggi). Peralatan (inductor atau proportioner, tangki premix) dan ambang DC asumsi platform; produk dan dosis akhir mengikuti label pabrik",
+    "pembasah": "Santoso dkk. 2021 (IJWF 30(5):378-390, doi 10.1071/WF20117) hanya menunjukkan: bahan pembasah nabati 1% memangkas waktu padam bara gambut sekitar 39% dibanding air murni (5%: sekitar 26%), uji laboratorium semprot permukaan, efek termal, volume air tetap sekitar 5,7 L per kg gambut; belum uji lapangan, dosis 1% berlaku untuk agen yang diuji dan produk lain (foam kelas A) mengikuti dosis label. Hidrofobisitas gambut tropis yang kering tak balik (drainase, kemarau, kebakaran; lapisan 0-50 cm paling rentan) adalah klaim terpisah, dari literatur Indonesia yang belum dibaca utuh (belum diverifikasi): studi gambut hidrofobik Kalimantan Tengah FTIR 2009 (agris.fao.org/search/es/records/65df24c863b8185d9cab1a4e), IJTech UI 2018 (ijtech.eng.ui.ac.id/download/article/805), studi Palangka Raya 2021 (e-journal.upr.ac.id/index.php/Agp/article/download/3696/2832). konsentrat_l_hari = air bara saja (tanpa air front) x 1%, bila memakai agen setara pada 1%. Cara: campur di jalur pompa dengan inductor atau proportioner foam, atau premix di tangki fleksibel, lalu semprot (diuji); injeksi belum diuji. Peringatan: pakai produk biodegradable berlabel kebakaran kelas A; jangan buang konsentrat ke kanal, sumber air minum atau kolam ikan; ikuti dosis label produk, lebih pekat tidak lebih baik. Peralatan dan ambang DC asumsi platform",
     "per_ha": "per_ha = total / luas operasi per skenario [rendah, tengah, tinggi]; personel_hari_rujukan = rasio regional BNPB 20-21 Okt, model tengah 24,75 (koef bara_regu catatan_regional)",
 }
 CAP_HELI = "Terbang tergantung jarak pandang dan asap."
@@ -289,19 +290,22 @@ def kebutuhan(c, jenis, lance, T, ctx=None, pompa_tbl=None, rekon=None):
         return None
 
 
-def pembasah(jenis, bara, dc, wt, inj, air_l_hari):
-    """Bahan pembasah untuk gambut kering/berbara, atau None. konsentrat_l_hari = air_l_hari x pembasah_persen %."""
+def pembasah(jenis, bara, dc, wt, c, T, melampaui=False):
+    """Bahan pembasah untuk gambut kering/berbara (pemicu: bara, DC > ambang, muka air proxy < -40 cm; injeksi BUKAN pemicu), atau None.
+    konsentrat_l_hari = air BARA saja (bara x air_bara / (T + mopup), tanpa front) x pembasah_persen %, bila memakai agen setara pada 1%."""
     if jenis != "gambut":
         return None
-    sebab = [x for x, ok in (("bara terdeteksi", bool(bara)), (f"DC {dc:g} (>= {AMBANG['pembasah_dc']:g})" if dc is not None else "", dc is not None and dc >= AMBANG["pembasah_dc"]),
-                             (f"muka air proxy {wt:g} cm (< {AMBANG['wt_rusak_cm']:g})" if wt is not None else "", wt is not None and wt < AMBANG["wt_rusak_cm"]), ("cara mencakup injeksi", inj)) if ok]
+    sebab = [x for x, ok in (("bara terdeteksi", bool(bara)), (f"DC {dc:g} (> {AMBANG['pembasah_dc']:g})" if dc is not None else "", dc is not None and dc > AMBANG["pembasah_dc"]),
+                             (f"muka air proxy {wt:g} cm (< {AMBANG['wt_rusak_cm']:g})" if wt is not None else "", wt is not None and wt < AMBANG["wt_rusak_cm"])) if ok]
     if not sebab:
         return None
     pc = AMBANG["pembasah_persen"]
-    return {"perlu": True, "alasan": "Gambut kering hidrofobik, air panas hanya mengalir lewat: " + ", ".join(sebab) + ".", "konsentrasi_persen": pc,
-            "konsentrat_l_hari": [None if a is None else round(a * pc / 100) for a in air_l_hari],
-            "cara": "campur di jalur pompa dengan inductor/proportioner foam, atau premix di tangki fleksibel; semprot/injeksi ke lapisan bara (peralatan asumsi platform). Dosis 1% uji laboratorium, belum uji lapangan (Santoso 2021)",
-            "peringatan": "pakai produk biodegradable berlabel kebakaran kelas A; jangan buang konsentrat ke kanal, sumber air minum atau kolam ikan; ikuti dosis label; lebih pekat tidak lebih baik",
+    air_bara = [c["bara"][s] * OP.k("air_bara", s) / (T + OP.k("hari_mopup", s)) for s in range(3)]
+    return {"perlu": True, "alasan": "Gambut kering atau berbara: " + ", ".join(sebab) + ".", "konsentrasi_persen": pc,
+            "konsentrat_l_hari": [round(a * pc / 100) for a in air_bara],
+            "cara": "bila memakai agen setara pada 1% (nabati, diuji); produk lain ikuti dosis label. Campur di jalur pompa dengan inductor/proportioner foam atau premix di tangki fleksibel; semprot (diuji), injeksi belum diuji (alat asumsi platform)",
+            "peringatan": "produk biodegradable berlabel kelas A; jangan buang ke kanal, air minum, kolam ikan; ikuti dosis label, lebih pekat tidak lebih baik"
+            + ("; turunan dari kebutuhan air yang melampaui rujukan, pakai luas terkonfirmasi" if melampaui else ""),
             "status": AS}
 
 
@@ -432,8 +436,8 @@ def rekomendasi(t, op, kd, kl, ak, himawari, koef, omc_hari, tugas_dibuat, pm25=
     cara.sort(key=lambda c: c["peran"] != "utama")
     M_ = [c["metode"] for c in cara[:4]]  # stabil: utama dulu, heli pelengkap tak pernah di depan
     kb = kebutuhan(op0, jenis, lance, T, {"air_km": air, "jalan_km": jalan, "dekat": dekat, "sumur_bor": "sumur_bor" in M_, "injeksi": inj}, rekon=rekon) if op0 else None
-    if kb and (kb.get("total") or {}).get("air_l_hari"):
-        kb["pembasah"] = pembasah(jenis, bara, kl.get("dc"), wt, inj, kb["total"]["air_l_hari"])
+    if kb:
+        kb["pembasah"] = pembasah(jenis, bara, kl.get("dc"), wt, op0, T, kb["melampaui_rujukan_lapangan"])
     if kb and kb["melampaui_rujukan_lapangan"]:
         cat.insert(0, "luas bara dari hitungan piksel, bukan terukur; rujukan lapangan BNPB 20-21 Okt: 110-271 ha/hari per provinsi")
     if kb and bara:
@@ -450,6 +454,14 @@ def muat(r):
     def langkah():
         if (kb.get("energi") or {}).get("bbm"):
             kb["energi"].pop("bbm")
+            return True
+        pb = kb.get("pembasah")
+        if pb and len(pb["alasan"]) > 40:
+            pb["alasan"] = "Gambut kering atau berbara."   # sebab lengkap ada di ambang dan taktik_catatan.pembasah
+            return True
+        if pb and "taktik_catatan" not in pb["cara"]:
+            pb["cara"] = "agen setara 1% (diuji), lainnya dosis label; inductor/proportioner foam; rincian taktik_catatan.pembasah"
+            pb["peringatan"] = "biodegradable kelas A; jangan buang ke kanal, air minum; ikuti dosis label" + ("; turunan dari air melampaui rujukan, pakai luas terkonfirmasi" if "melampaui" in pb["peringatan"] else "")
             return True
         ps = (kb.get("total") or {}).get("pompa") or []
         if any("alasan" in p for p in ps):
@@ -585,7 +597,7 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
         kb = (r or {}).get("kebutuhan") or {}
         a = akses_kompleks(t, ops.get(t["id"]), kds.get(t["id"]), (akses or {}).get(t["id"]), koef, jalan, kb.get("pembasah"), ((kb.get("total") or {}).get("regu") or [None, None])[1])
         if a:
-            t["akses"] = a   # kunci saudara rekomendasi (bukan di dalamnya): tidak makan 2.000 huruf
+            t["akses"] = a   # kunci saudara rekomendasi (bukan di dalamnya): tidak makan 3.000 huruf
         out["kompleks"].append(t)
     return out
 
@@ -700,13 +712,16 @@ def uji():
     rm = R(T(), dict(c, jenis="mineral", isi=5), {"air_km": 1.0, "kaki_km": 1.0}, None)
     # pembasah: gambut + bara -> 1% air; gambut basah tanpa tanda kering -> null; mineral/savana -> null; DC dan muka air memicu tanpa bara
     pb = r["kebutuhan"]["pembasah"]
-    assert pb["perlu"] and pb["konsentrasi_persen"] == 1 and pb["konsentrat_l_hari"] == [round(a * 0.01) for a in kb["air_l_hari"]] and pb["status"] == AS and "kelas A" in pb["peringatan"] and "inductor" in pb["cara"], pb
+    ab_ = [round(c["bara"][i] * OP.k("air_bara", i) / (3 + OP.k("hari_mopup", i)) * 0.01) for i in range(3)]   # air BARA saja, tanpa front
+    assert pb["perlu"] and pb["konsentrasi_persen"] == 1 and pb["konsentrat_l_hari"] == ab_ and pb["konsentrat_l_hari"][1] < round(kb["air_l_hari"][1] * 0.01) and pb["status"] == AS, (pb, kb["air_l_hari"])
+    assert "kelas A" in pb["peringatan"] and "inductor" in pb["cara"] and "injeksi belum diuji" in pb["cara"] and pb["alasan"].startswith("Gambut kering atau berbara: ") and "mengalir" not in pb["alasan"] and "melampaui" not in pb["peringatan"], pb
     assert set(pb) == {"perlu", "alasan", "konsentrasi_persen", "konsentrat_l_hari", "cara", "peringatan", "status"}
     assert rm["kebutuhan"]["pembasah"] is None and R(T(), dict(c, jenis="savana", isi=5), {"air_km": 1.0, "kaki_km": 1.0}, None)["kebutuhan"]["pembasah"] is None
-    ag = [1000, 2000, 3000]
-    assert pembasah("gambut", None, 200.0, -10.0, False, ag) is None and pembasah("gambut", None, 350.0, None, False, ag)["konsentrat_l_hari"] == [10, 20, 30]
-    assert "muka air" in pembasah("gambut", None, 100.0, -41.0, False, ag)["alasan"] and pembasah("gambut", None, None, None, True, ag) and pembasah("mineral", {"x": 1}, 500.0, None, True, ag) is None
-    assert AMBANG_META["pembasah_persen"]["status"] == BS and AMBANG_META["pembasah_dc"]["status"] == AS
+    # gambut basah (tanpa bara, DC 350 tidak > 350, muka air -10) + injeksi bukan pemicu -> null; DC 351, muka air -41 -> relevan
+    assert pembasah("gambut", None, 200.0, -10.0, c, 3) is None and pembasah("gambut", None, 350.0, None, c, 3) is None and pembasah("gambut", None, None, None, c, 3) is None
+    assert pembasah("gambut", None, 351.0, None, c, 3)["konsentrat_l_hari"] == ab_ and "muka air" in pembasah("gambut", None, 100.0, -41.0, c, 3)["alasan"] and pembasah("mineral", {"x": 1}, 500.0, None, c, 3) is None
+    assert "melampaui rujukan" in pembasah("gambut", {"x": 1}, None, None, c, 3, True)["peringatan"]
+    assert AMBANG_META["pembasah_persen"]["status"] == BSU and AMBANG_META["pembasah_dc"]["status"] == AS
     ab = akses_kompleks(T(), None, {"kaki_km": 6.0}, None, KOEF, None, pb, 4)
     bb = {x["barang"]: x for x in ab["bawa"]}
     assert bb["bahan pembasah konsentrat"]["jumlah"] == round(pb["konsentrat_l_hari"][1] / 4, 1) and bb["inductor/proportioner"]["jumlah"] == 1
@@ -718,7 +733,7 @@ def uji():
     assert l_jam(6) == 1.72 and l_jam(None) is None
     assert all(x["sumber"] and x["status"] for x in POMPA)
     assert {x["kelas"] for x in POMPA} == {"tekanan_tinggi", "debit_besar", "jinjing_ringan", "portabel_besar"}
-    assert all(v["status"] in (AS, BS, BV) and v["sumber"] for v in AMBANG_META.values())
+    assert all(v["status"] in (AS, BS, BV, BSU) and v["sumber"] for v in AMBANG_META.values())
     kd_ = lambda **k: dict({"air_km": 1.0, "kaki_km": 1.0, "jalan_km": 1.0}, **k)
     # kanal dekat: debit besar + jinjing, bbm > 0, tanpa tangki fleksibel, genset null (mineral, bukan gambut)
     cm = dict(c, jenis="mineral", isi=5)
@@ -765,20 +780,20 @@ def uji():
     assert abs(kb2["per_ha"]["personel_hari"][1] * 590 - k2t["personel"][1]) < 590 * 0.005 + 1e-6 and abs(kb2["per_ha"]["air_l"][1] * 590 - k2t["air_l_hari"][1]) < 590 * 0.5 + 1
     assert abs(kb2["per_ha"]["regu_hari"][1] * 590 - k2t["regu"][1]) < 590 * 0.005 + 1e-6 and kb2["per_ha"]["personel_hari_rujukan"] == [45, 149]
     assert kb2["hari_provinsi"] == [round(590 / 271, 1), round(590 / 110, 1)] == [2.2, 5.4] and kb2["dasar"]["luas_ha"] == [295, 590, 1180]
-    assert kb2["melampaui_rujukan_lapangan"] is True and "110-271 ha/hari per provinsi" in r2["catatan"], (kb2["melampaui_rujukan_lapangan"], r2["catatan"], len(json.dumps(r2)))
+    assert kb2["melampaui_rujukan_lapangan"] is True and "110-271 ha/hari per provinsi" in r2["catatan"] and kb2["pembasah"]["perlu"], (kb2["melampaui_rujukan_lapangan"], r2["catatan"])
     kb3 = KB(R(T(), cm, kd_(air_km=0.3), None))
     assert R(T(), cm, kd_(air_km=0.3), None)["kebutuhan"]["melampaui_rujukan_lapangan"] is False
-    assert len(json.dumps(r2, ensure_ascii=False, separators=(",", ":"))) <= 2000 and k2t["pompa"]
+    assert len(json.dumps(r2, ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"] and k2t["pompa"]
     # rekonsiliasi diteruskan
     assert rekomendasi(T(), cm, kd_(air_km=0.3), None, None, None, KOEF, [], dc, None, None, 0.06)["kebutuhan"]["dasar"]["rekonsiliasi_ha_per_piksel"] == 0.06
     assert rm["kebutuhan"]["total"]["jet_shooter"] is None and rm["kebutuhan"]["energi"]["genset"] is None
     assert R(T(), None, {"air_km": 0.2, "kaki_km": 0.2}, None) is None or R(T(), None, {"air_km": 0.2, "kaki_km": 0.2}, None)["kebutuhan"] is None
     assert kebutuhan({"id": "x"}, "gambut", None, 3) is None
-    # batas ukuran 2000 huruf: kebutuhan tetap ada, catatan dipangkas
+    # batas ukuran 3000 huruf: kebutuhan tetap ada, catatan dipangkas
     besar = {"cara": [{"metode": "darat_selang", "alasan": "x" * 700}, {"metode": "sumur_bor", "alasan": "y" * 700}, {"metode": "injeksi", "alasan": "z" * 700}],
              "alat": ["a" * 100] * 6, "bara_cm": [1, 2, 3], "fre_mj": 1, "kebutuhan": {"regu": [1, 2, 3]}, "catatan": "c" * 900}
     z = muat(besar)
-    assert len(json.dumps(z, ensure_ascii=False, separators=(",", ":"))) <= 2000 and z["cara"][0]["metode"] == "darat_selang" and z["kebutuhan"], len(json.dumps(z))
+    assert len(json.dumps(z, ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"] and z["cara"][0]["metode"] == "darat_selang" and z["kebutuhan"], len(json.dumps(z))
     # susun: `dibuat` pertama, ambang berstatus, PM2.5 dari udara_kualitas, rekomendasi lama dibuang bila kini kosong
     tg = {"dibuat": dc, "kompleks": [T(prov="62", kab="Seruyan", rekomendasi={"lama": 1}), T(id="K2", prov="62", kab="Seruyan")]}
     ud = {"batas": [15.5, 55.4, 150.4, 250.4], "hari": ["2026-10-20", "2026-10-21"], "kab": [[], [["62", "Seruyan", 400.0, 500, 1, 1]]]}
@@ -810,7 +825,7 @@ def uji():
     assert akses_kompleks(tk, None, {"kaki_km": 5.0}, None, KOEF, None)["jalan"] is None   # tanpa jalan.geojson: jalan null, bagian lain tetap
     ac0 = akses_kompleks(tk, None, None, None, KOEF, ix)
     assert ac0["kaki_km"] is None and ac0["jalan_kaki_jam"] is None and ac0["bawa"] is None and ac0["jalan"], ac0   # tanpa kaki_km: tak ada bawa/jam
-    # susun: akses kunci saudara; rekomendasi tidak membengkak melewati 2.000 huruf karenanya
+    # susun: akses kunci saudara; rekomendasi tidak membengkak melewati 3.000 huruf karenanya
     s2 = susun(tg, {"koef": KOEF, "kompleks": [{"id": "K1", "jenis": "mineral", "jam": 9.0, "isi": 5}], "prov": {}}, {"kompleks": {"K1": {"air_km": 5.0, "kaki_km": 8.0}}}, None, None, None, ud, ix)
     k1 = s2["kompleks"][0]
     assert k1["akses"]["kaki_km"] == 8.0 and "akses" not in k1["rekomendasi"] and len(json.dumps(k1["rekomendasi"], ensure_ascii=False, separators=(",", ":"))) <= AMBANG["maks_huruf"]

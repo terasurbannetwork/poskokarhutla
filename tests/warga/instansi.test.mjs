@@ -125,7 +125,7 @@ uji("instansi: migrasi 0029 idempoten dan tabel lengkap", async () => {
   const sql = readFileSync(path.join(AKAR, "migrations/0029_instansi.sql"), "utf8");
   for (const s of pecah(sql)) await DB.prepare(s).run();   // jalankan ulang: IF NOT EXISTS, tanpa galat
   for (const t of ["instansi_akun", "instansi_sesi", "tugas_api", "tugas_isian", "instansi_media", "usulan_kontak_pt"]) assert.equal(await n(t), 0, t);
-  assert.match(sql, /rekomendasi TEXT CHECK \(rekomendasi IS NULL OR \(json_valid\(rekomendasi\) AND length\(rekomendasi\) <= 2000\)\)/, "kolom rekomendasi nullable JSON <= 2000 huruf");
+  assert.match(sql, /rekomendasi TEXT CHECK \(rekomendasi IS NULL OR \(json_valid\(rekomendasi\) AND length\(rekomendasi\) <= 3000\)\)/, "kolom rekomendasi nullable JSON <= 3000 huruf");
 });
 
 uji("instansi: daftar tetap kode = CHECK migrasi 0029 = instansi.js klien", () => {
@@ -317,7 +317,7 @@ uji("instansi: cron menggabung kompleks <= 2 km di kabupaten sama, idempoten, id
   await ev(BASE + 9 * JAM); assert.equal(await n("tugas_api"), 5); assert.equal(await n("tugas_api", "kab = 'Pulang Pisau'"), 1);
 });
 
-uji("instansi: rekomendasi disalin dari kompleks (JSON <= 2000, dipotong tetap sah) dan diperbarui saat bergabung", async () => {
+uji("instansi: rekomendasi disalin dari kompleks (JSON <= 3000, dipotong tetap sah) dan diperbarui saat bergabung", async () => {
   const REK = {cara: [{metode: "Sekat kanal", alasan: "gambut"}, {metode: "Pompa", alasan: "akses jalan"}], alat: ["Pompa", "Selang"], bara_cm: [10, 30, 60], catatan: "Perkiraan", kebutuhan: {regu: [2, 4, 6], pompa: [2, 3, 4]}};
   TUGAS = {dibuat: new Date(BASE + 12 * JAM - 30 * MENIT).toISOString(), kompleks: [KOMPLEKS("K1", -1.2, 113.0, {kab: "Kapuas", rekomendasi: REK})]};
   await cron(BASE + 12 * JAM);
@@ -327,9 +327,9 @@ uji("instansi: rekomendasi disalin dari kompleks (JSON <= 2000, dipotong tetap s
   await cron(BASE + 15 * JAM);
   assert.equal(await n("tugas_api", "kab = 'Kapuas'"), 1); assert.equal(JSON.parse((await DB.prepare("SELECT rekomendasi FROM tugas_api WHERE kab = 'Kapuas'").first()).rekomendasi).catatan, "Perkiraan baru", "diperbarui saat bergabung; kompleks tanpa rekomendasi tidak menghapus");
   const panjang = {cara: Array.from({length: 40}, (_, i) => ({metode: "Metode " + i, alasan: "x".repeat(60)})), alat: ["a"], catatan: "y".repeat(300)}, p = pasRekomendasi(panjang);
-  assert.ok(p.length <= 2000 && JSON.parse(p).cara.length > 0 && JSON.parse(p).alat.length === 1, "dipotong berurutan, tetap JSON sah: " + p.length);
+  assert.ok(p.length <= 3000 && JSON.parse(p).cara.length > 0 && JSON.parse(p).alat.length === 1, "dipotong berurutan, tetap JSON sah: " + p.length);
   assert.equal(pasRekomendasi("teks"), null); assert.equal(pasRekomendasi([1]), null);
-  await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = ? WHERE id = ?").bind("x".repeat(2001).replace(/^/, '"') + '"', t.id).run(), /CHECK/, "D1 menolak > 2000 huruf");
+  await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = ? WHERE id = ?").bind("x".repeat(3001).replace(/^/, '"') + '"', t.id).run(), /CHECK/, "D1 menolak > 3000 huruf");
   await assert.rejects(DB.prepare("UPDATE tugas_api SET rekomendasi = 'bukan json' WHERE id = ?").bind(t.id).run(), /CHECK/);
 });
 
@@ -496,14 +496,14 @@ uji("instansi: kabar tindakan, personel_unsur dijumlah server, unsur tak dikenal
   for (const [salah, alasan] of [[{tindakan: "x"}, "tindakan 1 huruf"], [{status_api: "mati"}, "status_api"], [{kendala: ["hujan"]}, "kendala asing"], [{kendala: ["asap_tebal", "asap_tebal"]}, "kendala ganda"], [{bantuan: ["roket"]}, "bantuan asing"],
     [{personel: 6000}, "personel > 5000"], [{luas_ha: 5, padam_ha: 9}, "padam > luas"], [{kedalaman_bara_cm: 301}, "bara > 300"], [{kedalaman_bara_cm: 1.5}, "bara bukan bulat"], [{lahan_teramati: "sawah"}, "lahan asing"],
     [{personel_unsur: {pramuka: 5}}, "unsur tak dikenal"], [{personel_unsur: {tni: -1}}, "unsur negatif"], [{personel_unsur: {tni: 5001}}, "unsur > 5000"], [{personel_unsur: {tni: 2.5}}, "unsur pecahan"], [{personel_unsur: {tni: "banyak"}}, "unsur bukan angka"],
-    [{personel_unsur: [1, 2]}, "unsur larik"], [{personel_unsur: {tni: 5000, polri: 1}}, "total > 5000"], [{alat_dipakai: {tank: 1}}, "alat asing"], [{alat_dipakai: {pompa: -1}}, "alat negatif"], [{regu: 501}, "regu > 500"], [{mulai_padam: Date.now() + HARI}, "mulai padam di masa depan"], [{mulai_padam: Date.now() - 30 * HARI}, "mulai padam terlalu lama"]])
+    [{personel_unsur: [1, 2]}, "unsur larik"], [{personel_unsur: {tni: 5000, polri: 1}}, "total > 5000"], [{alat_dipakai: {tank: 1}}, "alat asing"], [{alat_dipakai: {pompa: -1}}, "alat negatif"], [{alat_dipakai: {pembasah_l: 5001}}, "pembasah > 5000 L"], [{regu: 501}, "regu > 500"], [{mulai_padam: Date.now() + HARI}, "mulai padam di masa depan"], [{mulai_padam: Date.now() - 30 * HARI}, "mulai padam terlalu lama"]])
     assert.equal((await api("POST", `/api/instansi/kabar/${tid}`, KABAR([], salah), h)).s, 400, alasan);
   assert.equal(await n("tugas_isian", `tugas_id = '${tid}' AND langkah = 'tindakan'`), 0, "semua penolakan tidak meninggalkan isian");
   const manual = await api("POST", `/api/instansi/kabar/${tid}`, KABAR([await m(0)], {personel_unsur: {bpbd: 4, tni: 3, polri: 2, manggala_agni: 5, mpa: 1, damkar: 2, swasta: 3, relawan: 4, lainnya: 1}, personel: 999, regu: 3,
-    alat_dipakai: {pompa: 2, selang_m: 300, jet_shooter: 1, heli_wb: 0, alat_berat: 1, drone_termal: 1}, mulai_padam: Date.now() - 2 * HARI, kendala: ["asap_tebal"], bantuan: ["personel", "heli_water_bombing"], bantuan_lain: "selang"}), h);
+    alat_dipakai: {pompa: 2, selang_m: 300, jet_shooter: 1, heli_wb: 0, alat_berat: 1, drone_termal: 1, pembasah_l: 40}, mulai_padam: Date.now() - 2 * HARI, kendala: ["asap_tebal"], bantuan: ["personel", "heli_water_bombing"], bantuan_lain: "selang"}), h);
   assert.equal(manual.s, 201, manual.t);
   const i = await DB.prepare("SELECT personel, personel_unsur, regu, alat_dipakai, personel_terlihat, mulai_padam FROM tugas_isian WHERE id = ?").bind(manual.j.id).first();
-  assert.equal(i.personel, 25, "total personel = jumlah unsur (4+3+2+5+1+2+3+4+1), dihitung server; field personel kiriman diabaikan"); assert.deepEqual(JSON.parse(i.personel_unsur).tni, 3); assert.equal(i.regu, 3); assert.equal(JSON.parse(i.alat_dipakai).selang_m, 300);
+  assert.equal(i.personel, 25, "total personel = jumlah unsur (4+3+2+5+1+2+3+4+1), dihitung server; field personel kiriman diabaikan"); assert.deepEqual(JSON.parse(i.personel_unsur).tni, 3); assert.equal(i.regu, 3); assert.equal(JSON.parse(i.alat_dipakai).selang_m, 300); assert.equal(JSON.parse(i.alat_dipakai).pembasah_l, 40, "pembasah_l tercatat");
   assert.equal(i.personel_terlihat, null, "tanpa AI: mesin tidak menghitung, manual tetap tersimpan");
   /* tanpa unsur: personel lama dipakai; unsur parsial dijumlahkan */
   const legacy = await api("POST", `/api/instansi/kabar/${tid}`, KABAR([], {personel: 12, status_api: "menyala"}), h); assert.equal((await DB.prepare("SELECT personel FROM tugas_isian WHERE id = ?").bind(legacy.j.id).first()).personel, 12);
@@ -579,6 +579,16 @@ uji("instansi: tampilan kebutuhan tanpa NaN, undefined, atau [object], label Ind
   bersih(en2({genset: null, jaringan_pln: null, bbm_l_hari: null}), "energi null"); assert.doesNotMatch(h, /regu_hari|personel_hari|jet_shooter|air_l_hari/, "kunci mentah tidak dicetak");
   const tanpa = H({rekomendasi: {kebutuhan: KEB}, luas_terkonfirmasi: null, kebutuhan_konf: null, kurang: []}); bersih(tanpa, "tanpa luas"); assert.match(tanpa, /Belum ada luas terbakar/); assert.match(tanpa, /Kebutuhan dari hitungan satelit/); assert.doesNotMatch(tanpa, /kb-pil merah/, "tanpa luas terkonfirmasi tidak ada pil kurang");
   assert.doesNotMatch(H({rekomendasi: {kebutuhan: {...KEB, melampaui_rujukan_lapangan: false}}, kurang: []}), /Melampaui/);
+  /* bahan pembasah: bentuk tetap taktik.py; null/perlu false tidak tampil; luas terkonfirmasi menghitung ulang 1% dari air per hari */
+  const PEM = {perlu: true, alasan: "Gambut kering hidrofobik, air tidak meresap.", konsentrasi_persen: 1, konsentrat_l_hari: [100, 200, 300], cara: "Campur 1% ke air pompa lewat inductor.", peringatan: "Biodegradable, jauhi sumber air minum.", status: "uji_laboratorium"};
+  const pem = H({rekomendasi: {kebutuhan: {...KEB, melampaui_rujukan_lapangan: false, pembasah: PEM}}, luas_terkonfirmasi: null, kebutuhan_konf: null, kurang: []}); bersih(pem, "pembasah");
+  assert.match(pem, /Bahan pembasah \(disarankan\)/); assert.match(pem, /Konsentrat ±200 L\/hari \(rendah 100, tinggi 300\), bila memakai agen setara pada 1%; produk lain ikuti label/); assert.match(pem, /Gambut kering hidrofobik, air tidak meresap\./); assert.doesNotMatch(pem, /tegangan permukaan|meningkatkan penyerapan/); assert.match(pem, /Perkiraan, uji laboratorium/); assert.match(pem, /doi\.org\/10\.1071\/WF20117/); assert.match(pem, /jauhi sumber air minum/); assert.match(pem, /inductor/);
+  const pemKonf = H({...dasar, rekomendasi: {kebutuhan: {...KEB, pembasah: PEM}}}); bersih(pemKonf, "pembasah dengan luas");
+  assert.equal(dasar.kebutuhan_konf.per_ha_x_luas.air_l, 90000); assert.match(pemKonf, /Konsentrat ±900 L\/hari, bila memakai agen setara pada 1%/, "1% dari air per hari terkonfirmasi");
+  const lampau = H({rekomendasi: {kebutuhan: {...KEB, pembasah: PEM, melampaui_rujukan_lapangan: true}}, luas_terkonfirmasi: null, kebutuhan_konf: null, kurang: []}); bersih(lampau, "pembasah melampaui");
+  assert.match(lampau, /hitung dari luas terkonfirmasi/); assert.doesNotMatch(lampau, /±200/, "melampaui tanpa luas: tanpa total liter"); assert.match(lampau, /per hektare/, "per hektare dari per_ha.air_l");
+  for (const x of [null, undefined, {...PEM, perlu: false}]) assert.doesNotMatch(H({rekomendasi: {kebutuhan: {...KEB, pembasah: x}}, kurang: []}), /pembasah|wetting/i, "pembasah kosong tidak tampil");
+  bersih(H({rekomendasi: {kebutuhan: {...KEB, pembasah: {perlu: true, konsentrat_l_hari: [NaN, "x", null]}}}, kurang: []}), "pembasah aneh");
   /* data aneh dari pipeline tidak boleh merusak layar */
   const aneh = {rekomendasi: {kebutuhan: {per_ha: {regu_hari: "x", air_l: [1, null, 3], bbm_l: {a: 1}}, dasar: {luas_ha: "banyak"}, total: {regu: "?", personel: [NaN], pompa: [null, {kelas: "<img src=x onerror=1>", hp: "kuat", unit: "dua"}, 7], selang_m: Infinity, aneh_baru: [1, 2, 3, 4], heli: null}, hari_provinsi: ["a"],
     melampaui_rujukan_lapangan: true, energi: {genset: "<b>ya</b>", dalam: {x: 1}}}}, kebutuhan_konf: {luas_ha: 4, per_ha_x_luas: {regu_hari: NaN, air_l: [1, 2, 3], bbm_l: "x"}}, kurang: []};
