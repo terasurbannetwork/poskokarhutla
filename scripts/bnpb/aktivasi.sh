@@ -38,7 +38,10 @@ grep -q 'resend\.dev' wrangler.jsonc && echo "   EMAIL_FROM masih @resend.dev: e
 
 if [ "${1:-}" = "--terapkan" ] && [ ${#tertunda[@]} -gt 0 ]; then
   echo "4. Menerapkan ke produksi"
-  npx wrangler d1 export "$DB" --remote --output "$HOME/cadangan-$DB-$(date +%Y%m%d-%H%M).sql"
+  # cadangan berisi data pribadi (NIP/NRP, email, WA): hanya pemilik berkas yang boleh membaca
+  cad="$HOME/cadangan-$DB-$(date +%Y%m%d-%H%M).sql"
+  ( umask 077; npx wrangler d1 export "$DB" --remote --output "$cad" )
+  echo "   Cadangan: $cad (berisi data pribadi; hapus atau pindahkan ke penyimpanan terenkripsi setelah produksi terbukti sehat)"
   npx wrangler d1 migrations apply "$DB" --remote
   curl -fsS https://centurisk97.id/api/status | head -c 200; echo
 elif [ ${#tertunda[@]} -gt 0 ]; then

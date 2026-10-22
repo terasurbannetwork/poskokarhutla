@@ -13,7 +13,8 @@ body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--font)}
 .kb-daftar{list-style:none;margin:0;padding:0}
 .kb-daftar details{border:1px solid var(--line);border-radius:12px;background:var(--card);margin:8px 0}
 .kb-daftar summary{display:flex;gap:10px;align-items:center;min-height:44px;padding:8px 12px;cursor:pointer;font-size:14px}
-.kb-lv{flex:none;display:inline-grid;place-items:center;width:26px;height:26px;border-radius:999px;font-weight:800;font-size:13px;background:var(--surface)}
+.kb-lv{flex:none;display:inline-flex;align-items:center;padding:3px 10px;border-radius:999px;font-weight:800;font-size:11.5px;background:color-mix(in srgb,#d9531e 18%,transparent);color:var(--ink)}
 .kb-lv.l3{background:#d9531e;color:#fff}
+.kb-oranye{color:#d9531e}
 .kb-kartu{padding:0 12px 4px}
 .kb-kartu .kp-kartu{margin-top:0}
