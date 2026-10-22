@@ -4,7 +4,8 @@ Status: **Fase 0 dan 1 DISETUJUI pemilik 22 Okt 2026** dengan keputusan: tugas o
 bersyarat; insiden Himawari hanya ke Posko pusat sampai VIIRS mengonfirmasi; server rute berbayar BOLEH bila graf sendiri tidak
 cukup (Fase 3); permintaan akses data TMAT BRGM, SiPongi, Daops lewat jalur BNPB DIJALANKAN (draf surat:
 `docs/bnpb/SURAT-AKSES-DATA.md`).
-Fase 2 sampai 5 masih draf. Disusun dari (1) review kode dan data produksi, (2) riset sistem operasional dan repo terbuka.
+**Fase 0 dan 1 SELESAI 22 Okt 2026** (commit c6665052, f444167c, 73baff5f); berlaku di produksi setelah migrasi 0037-0041
+diterapkan. Fase 2 sampai 5 masih draf. Disusun dari (1) review kode dan data produksi, (2) riset sistem operasional dan repo terbuka.
 
 Tujuan tunggal: **api padam lebih cepat.** Ukurannya waktu nyata per insiden:
 deteksi → tugas → dikonfirmasi → tim tiba → padam → padam terverifikasi.
