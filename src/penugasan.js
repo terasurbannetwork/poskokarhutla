@@ -386,7 +386,9 @@ export async function bersihkanPenugasan(env, kini = Date.now()) {
   try { return (await env.DB.prepare("DELETE FROM penugasan_posisi WHERE pada <= ?").bind(kini - BATAS.retensiHari * HARI).run()).meta.changes; }
   catch (e) { if (TANPA_TABEL.test(String(e?.message || e))) return null; throw e; }
 }
-export const hapusDummyPenugasan = async env => { await env.DB.batch([env.DB.prepare("DELETE FROM penugasan_posisi WHERE penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 1)"), env.DB.prepare("DELETE FROM penugasan WHERE dummy = 1")]); };
+export const hapusDummyPenugasan = async env => {
+  try { await env.DB.prepare("DELETE FROM penugasan_darurat WHERE penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 1)").run(); } catch (e) { if (!/no such table: (main\.)?penugasan_darurat/i.test(String(e?.message || e))) throw e; }
+  await env.DB.batch([env.DB.prepare("DELETE FROM penugasan_posisi WHERE penugasan_id IN (SELECT id FROM penugasan WHERE dummy = 1)"), env.DB.prepare("DELETE FROM penugasan WHERE dummy = 1")]); };
 /* Dummy (DUMMY.md): tiap keadaan terisi: berangkat dengan jejak, belum dibuka, tiba, selesai, dicabut, kedaluwarsa. Token acak yang tak pernah ditampilkan (tak bisa dipakai membuka tautan).
    Jejak berjalan lewat garis lurus (yang berangkat dari 8 km ke 3 km, yang tiba berhenti 150 m dari api); tugas = [{id, lat, lon, ki, status}], akunKab = akun pengisi per kabupaten. */
 export async function dummyPenugasan(env, kini, {akunKab, tugas}) {
@@ -407,7 +409,12 @@ export async function dummyPenugasan(env, kini, {akunKab, tugas}) {
   await baru(B, "Budi (sudah selesai)", "driver", 2, {status: "selesai", dibuka: kini - 5 * JAM, berangkat: kini - 4 * JAM, tiba: kini - 3 * JAM, selesai: kini - 2 * JAM, cek: 5});
   await baru(A, "Andi (tautan dicabut)", "anggota", 1, {status: "dicabut", dibuka: kini - 2 * JAM});
   await baru(B, "Rina (tautan kedaluwarsa)", "anggota", 2, {kedaluwarsa: kini - JAM, dibuka: kini - 50 * JAM});
+  /* L3: sunyi (posisi terakhir 45 menit lalu), rotasi (berangkat 13 jam lalu, posisi segar), darurat (Hendra, 3 menit lalu) */
+  const p8 = await baru(A, "Wati (sunyi 45 menit)", "anggota", 2, {dibuka: kini - 2 * JAM, berangkat: kini - 90 * MENIT, cek: 2}); posisiSql.push(env.DB.prepare("INSERT INTO penugasan_posisi (penugasan_id, lat, lon, akurasi, pada) VALUES (?, ?, ?, 15, ?)").bind(p8, A.lat - 0.05, A.lon + 0.04, kini - 45 * MENIT));
+  const p9 = await baru(B, "Joko (rotasi 13 jam)", "driver", 3, {dibuka: kini - 14 * JAM, berangkat: kini - 13 * JAM, cek: 5}); posisiSql.push(env.DB.prepare("INSERT INTO penugasan_posisi (penugasan_id, lat, lon, akurasi, pada) VALUES (?, ?, ?, 15, ?)").bind(p9, B.lat - 0.03, B.lon + 0.02, kini - MENIT));
   await env.DB.batch(st); for (let i = 0; i < posisiSql.length; i += 50) await env.DB.batch(posisiSql.slice(i, i + 50));
+  try { await env.DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, 'terkepung_api', ?, ?, 12, ?)").bind(p1, A.lat - 0.03 * 0.8, A.lon + 0.03 * 0.6, kini - 3 * MENIT).run(); }
+  catch (e) { if (!/no such table: (main\.)?penugasan_darurat/i.test(String(e?.message || e))) throw e; }   // 0041 belum diterapkan: dummy lain tetap terisi
   return st.length;
 }
 
