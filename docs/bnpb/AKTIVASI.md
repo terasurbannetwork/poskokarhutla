@@ -5,7 +5,9 @@ Dijalankan pemilik di mesinnya sendiri, berurutan. Tiap langkah bisa dicek ulang
 
 1. **Migrasi D1.** `scripts/bnpb/aktivasi.sh --terapkan`. Skrip menguji kering semua migrasi tertunda
    di salinan skema produksi, mencadangkan D1 ke `~/cadangan-poskowarga-<waktu>.sql`, lalu menerapkan.
-   Per 22 Okt 2026 yang tertunda 0036 sampai 0048, dan ketigabelasnya lolos uji kering.
+   Per 22 Okt 2026 malam produksi sudah sampai 0041; yang tertunda 0042 sampai 0049, dan kedelapannya lolos uji kering.
+   Kedelapannya hanya membuat tabel/trigger baru dan menambah kolom boleh-kosong (tanpa indeks unik, isi data, atau bangun ulang tabel),
+   jadi isi data produksi tidak bisa menggagalkannya. 0047-0049 menyalakan tugas dan laporan harian untuk bencana selain karhutla.
    Jalan mundur: pulihkan dari berkas cadangan dengan `npx wrangler d1 execute poskowarga --remote --file <cadangan>`
    ke database baru, lalu arahkan `database_id`.
 2. **Push.** `node scripts/bnpb/vapid.mjs`, lalu pasang `VAPID_PRIVAT`, `VAPID_PUBLIK`, `VAPID_SUBJEK`
