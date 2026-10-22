@@ -51,13 +51,17 @@ export async function saringIndonesia(env) {
   try { const W = await wilayah(env); return (lat, lon) => !!cariWilayah(W, lat, lon); } catch (e) { return () => false; }
 }
 
-/* isi /api/himawari: objek R2 + kolom `baru` + n_baru, hanya titik di wilayah Indonesia (layar menggambar semuanya sebagai "Api baru"; pemilik, 22 Okt 2026).
+/* isi /api/himawari: objek R2 + kolom `baru` dan `w` + n_baru, hanya titik di wilayah Indonesia (layar menggambar semuanya sebagai "Api baru"; pemilik, 22 Okt 2026).
    Objek hilang = kosong (bukan 500). */
 export async function himawariRespons(env, kini = Date.now()) {
   const hw = await muatHimawari(env);
   if (!hw) return {acuan: null, baris: [], n_baru: 0};
   let firms = null;
   try { const r = await env.DB?.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first(); firms = r && JSON.parse(r.isi); } catch (e) {}
-  const diIndonesia = await saringIndonesia(env), baris = tandaiBaru(hw, firms, kini, diIndonesia).filter(r => diIndonesia(r[0], r[1]));
-  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru"], baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
+  /* kolom w = indeks ke `wilayah` (kunci "prov|kab|kec"), untuk indikator Api baru per wilayah di panel layar; wilayah gagal dimuat = kosong */
+  let W = null; try { W = await wilayah(env); } catch (e) {}
+  const kunci = (lat, lon) => W ? cariWilayah(W, lat, lon) : null, daftar = [], idx = new Map();
+  const baris = tandaiBaru(hw, firms, kini, (lat, lon) => !!kunci(lat, lon)).flatMap(r => { const k = kunci(r[0], r[1]); if (!k) return [];
+    if (!idx.has(k)) { idx.set(k, daftar.length); daftar.push(k); } return [[...r, idx.get(k)]]; });
+  return {...hw, kolom: [...(hw.kolom || ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]).slice(0, 7), "n", "u0", "baru", "w"], wilayah: daftar, baris, n_baru: baris.reduce((s, r) => s + r[9], 0)};
 }

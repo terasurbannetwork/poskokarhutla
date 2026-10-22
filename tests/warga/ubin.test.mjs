@@ -143,7 +143,7 @@ uji("himawari: R2 data/himawari.json disajikan; objek hilang = kosong 200", asyn
     ASSETS: {fetch: async q => new Response(readFileSync(new URL("../../public" + new URL(q.url).pathname, import.meta.url)))}};
   const a = await worker.fetch(new Request("https://x.test/api/himawari"), ada, undefined);
   assert.equal(a.status, 200); assert.match(a.headers.get("content-type"), /application\/json/); assert.match(a.headers.get("cache-control"), /max-age=300/);
-  const j = await a.json(); assert.deepEqual(j.baris, [[-2, 114, 1, 5, 1, 1, 1, 1, 1, 0]]); assert.equal(j.n_baru, 0); assert.equal(j.kolom.at(-1), "baru");
+  const j = await a.json(); assert.deepEqual(j.baris, [[-2, 114, 1, 5, 1, 1, 1, 1, 1, 0, 0]]); assert.match(j.wilayah[0], /^62\|/); assert.equal(j.n_baru, 0); assert.equal(j.kolom.at(-1), "w");
   const b = await worker.fetch(new Request("https://x.test/api/himawari?x=1"), {MEDIA: {get: async () => null}}, undefined);
   assert.equal(b.status, 200); assert.deepEqual(await b.json(), {acuan: null, baris: [], n_baru: 0});
 });

@@ -42,8 +42,8 @@ const D1 = isi => ({prepare: () => ({first: async () => isi ? {isi: JSON.stringi
 uji("himawari: /api/himawari menambah kolom baru + n_baru, FIRMS dari D1 menutup", async () => {
   const ambil = async env => (await worker.fetch(new Request("https://x.test/api/himawari?k=" + Math.random()), env, undefined)).json();
   const a = await ambil({MEDIA: r2({...RAW, kolom: ["lat", "lon", "u", "frp_mw", "level", "rel", "qf"]}), DB: D1(null), ASSETS});
-  assert.equal(a.kolom.at(-1), "baru"); assert.equal(a.n_baru, a.baris.filter(r => r[9]).length);
-  assert.ok(a.baris.every(r => r.length === 10)); assert.equal(a.baris.reduce((s, r) => s + r[9], 0), a.n_baru);
+  assert.equal(a.kolom.at(-1), "w"); assert.equal(a.n_baru, a.baris.filter(r => r[9]).length);
+  assert.ok(a.baris.every(r => r.length === 11 && a.wilayah[r[10]].split("|").length === 3)); assert.equal(a.baris.reduce((s, r) => s + r[9], 0), a.n_baru);
   assert.equal(a.acuan, RAW.acuan);
   assert.deepEqual(a.baris.map(r => r[9]), [1, 0]);   // Sabah tidak ikut terkirim
   const c = await ambil({MEDIA: r2(RAW), DB: D1(firms([[-2, 114, -1, "VIIRS", 5, 1]], ACU_NYATA)), ASSETS});
