@@ -4,7 +4,7 @@
    (400 bila tidak dikenal) lalu menyerahkan ke sini, jadi tidak ada rute baru di src/worker.js dan cookie sesi instansi (Path /api/instansi) tetap berlaku.
    Aturan sama dengan karhutla: operator provinsi = akun pemprov aktif, hanya provinsinya (provinsi lain 404); peramban tidak dipercaya (validasi ulang + cek merah/kuning di Worker);
    merah menahan SETUJUI dan KUNCI; kunci membekukan snapshot + sha256 di lkb_snapshot; koreksi = ralat. Beda dari karhutla: sumber hanya prov:<kode>, satu bentuk isian generik,
-   provinsi prioritas = penyumbang terbesar metrik utama di laporan.json pada tanggal data (dibekukan saat hari dibuat); provinsi di luar prioritas boleh mengirim (tidak wajib).
+   provinsi yang wajib mengirim laporan (prioritas) = penyumbang terbesar metrik utama di laporan.json pada tanggal data (dibekukan saat hari dibuat); provinsi di luar prioritas boleh mengirim (tidak wajib).
    Tanpa migrasi 0048 semua rute ?bencana= menjawab 503 sopan. Draf dibuat saat dibaca (tidak ada cron): angka otomatis dibaca dari berkas aset, bukan disalin ke D1.
    ponytail: tanpa tagih WA dan tanpa pengait Meja Pantau (provinsi belum kirim) untuk bahaya lain; tambahkan bila dibutuhkan, polanya ada di laporan_karhutla.js. */
 import {json, gagal, sha, bacaBody} from "./worker.js";
@@ -19,7 +19,7 @@ export const TANGGAL_DUMMY_BENCANA = "2026-10-21";
 
 /* kit = {pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs} dari laporan_karhutla.js (satu sumber hak akses, tanpa impor melingkar) */
 export function buatRute(kit) {
-  const {pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs} = kit;
+  const {pelaku, verifikator, adaTanggal, gerbangDummy, superOK, topeng, batasMs, batasPemprov} = kit;
 
   /* ---------------- data dasar */
   async function laporan(env, b) {
@@ -83,6 +83,7 @@ export function buatRute(kit) {
     const hari = (await ambilHari(env, b, tanggal)) ?? hariMaya(tanggal, []);
     const gd = gerbangDummy(p, hari); if (gd) return {r: gd};
     if (hari.status !== "terbuka") return {r: gagal(409, "laporan hari itu sudah dikunci; koreksi lewat ralat oleh verifikator")};
+    const bp = await batasPemprov(env, p, tanggal, kini); if (bp) return {r: bp};   // tanggal terlalu lama + batas laju tulis akun provinsi
     return {tanggal, sumber, isi, klien: klien_id ?? null, dasar: versi_dasar, hari};
   }
   async function simpan(env, req, kini, b, kirim) {
@@ -161,7 +162,7 @@ export function buatRute(kit) {
   }
   async function ubahPrioritas(env, req, kini, b) {
     const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
-    if (!verifikator(p)) return gagal(p.tipe === "pemprov" ? 404 : 403, "hanya verifikator yang menetapkan provinsi prioritas");
+    if (!verifikator(p)) return gagal(p.tipe === "pemprov" ? 404 : 403, "hanya verifikator yang menetapkan provinsi yang wajib mengirim laporan");
     const bd = await bacaBody(req, 2048); if (bd.galat) return gagal(bd.status || 400, bd.galat);
     const {tanggal, provinsi} = bd.o;
     if (!adaTanggal(tanggal, kini)) return gagal(400, "tanggal tidak sah");
@@ -244,17 +245,20 @@ export function buatRute(kit) {
       bersih[s] = isi;
     }
     const asal = Array.isArray(lama?.pengecualian) ? lama.pengecualian : (jsonDari(hari.pengecualian) || []), pengecualian = asal.filter(x => !Object.hasOwn(bersih, x.sumber)).map(x => ({sumber: x.sumber, alasan: x.alasan}));
-    const kirBaru = {...kir};
+    if (!lama?.provinsi) return gagal(404, "snapshot sebelumnya tidak terbaca; ralat tidak bisa dibuat");
+    /* sumber yang tidak dikoreksi diambil dari snapshot sebelumnya (beku), BUKAN dari lkb_kiriman hidup: kiriman yang berubah sesudah kunci tidak boleh menyelinap lewat ralat */
+    const kiriman = {};
+    for (const p of lama.provinsi) if (p.ada || p.lanjut_tanpa) kiriman[p.sumber] = {isi: p.kiriman, data_terakhir: p.data_terakhir};
+    for (const [s, isi] of Object.entries(bersih)) kiriman[s] = {isi};
     for (const [s, isi] of Object.entries(bersih)) {
       const cek = SP.cek(s, isi), ada = kir[s], baru = (ada?.versi ?? 0) + 1, tIsi = JSON.stringify(isi), tCek = JSON.stringify(cek);
       if (K.adaMerah(cek)) return json({galat: `cek merah menahan ralat pada ${SP.labelSumber(s)}; betulkan angkanya dulu`, sumber: s, merah: cek.filter(x => x.t === "merah")}, 422);
-      kirBaru[s] = {...(ada ?? {}), status: "disetujui", isi: tIsi};
       st.push(ada
         ? env.DB.prepare("UPDATE lkb_kiriman SET status = 'disetujui', versi = ?1, isi = ?2, cek = ?3, pengirim = ?4, diubah = ?5, verif_oleh = ?4, verif_pada = ?5, catatan = ?6 WHERE bencana = ?7 AND tanggal_laporan = ?8 AND sumber = ?9 AND versi = ?10").bind(baru, tIsi, tCek, p.oleh, kini, "ralat: " + alasan.slice(0, 300), b, tanggal, s, ada.versi)
         : env.DB.prepare("INSERT INTO lkb_kiriman (bencana, tanggal_laporan, sumber, status, versi, isi, cek, pengirim, diubah, dikirim, catatan, verif_oleh, verif_pada, dummy) VALUES (?1, ?2, ?3, 'disetujui', ?4, ?5, ?6, ?7, ?8, ?8, ?9, ?7, ?8, ?10)").bind(b, tanggal, s, baru, tIsi, tCek, p.oleh, kini, "ralat: " + alasan.slice(0, 300), hari.dummy));
       st.push(env.DB.prepare("INSERT INTO lkb_versi (bencana, tanggal_laporan, sumber, versi, aksi, status, isi, cek, oleh, waktu, catatan, dummy) VALUES (?1, ?2, ?3, ?4, 'ralat', 'disetujui', ?5, ?6, ?7, ?8, ?9, ?10)").bind(b, tanggal, s, baru, tIsi, tCek, p.oleh, kini, alasan.slice(0, 500), hari.dummy));
     }
-    const n = hari.ralat + 1, snap = await bangun(env, b, hari, tanggal, kirBaru, pengecualian, n, alasan, p.oleh, kini, undefined, lama);
+    const n = hari.ralat + 1, snap = SP.agregasi({tanggal_laporan: tanggal, prioritas: jsonDari(hari.prioritas) || [], pengecualian, kiriman, laporan: null, beku: lama, ralat: n, alasan, dikunci_oleh: topeng(p.oleh), dikunci_pada: kini});
     const perubahan = lama ? K.bedaSnapshot(lama, snap) : [];
     if (!perubahan.length) return gagal(400, "koreksi tidak mengubah angka apa pun di snapshot");
     const teks = JSON.stringify(snap), hash = await sha(teks);

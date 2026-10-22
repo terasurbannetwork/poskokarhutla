@@ -4,9 +4,10 @@
    Tombol dummy (Super Admin, dua ikon) mengisi satu hari penuh dari laporan 21 Okt 2026 lewat POST /api/laporan-karhutla/dummy. */
 import * as S from "/laporan_karhutla_spek.js";
 import * as SBM from "/laporan_bencana_spek.js";
-import {teksWA} from "/laporan_karhutla_wa.js";
+import {teksWA, tglPanjang} from "/laporan_karhutla_wa.js";
 
 /* angka gaya format.js (id-ID, "–" bila kosong) tetapi 2 desimal: luasan laporan bernilai 74,77 ha, fmt() dari format.js membulatkan ke 1 desimal */
+const fmtD = (n, d = 0) => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d});   // desimal menurut metriknya sendiri (bahaya lain)
 const fmt2 = n => (n == null || isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 2});
 /* ?bencana=<bahaya>: kosong = karhutla (tabel lk_*, tak berubah). Bahaya lain memakai spek adaptor (SP) dan rute yang sama dengan ?bencana= (src/laporan_bencana.js, tabel lkb_*).
    Operator provinsi mengisi dari /instansi; halaman ini untuk verifikator dan admin: kelengkapan, isi kiriman, verifikasi, kunci, ralat, snapshot, teks WA, paparan. */
@@ -104,7 +105,7 @@ function ringkasAtas(terkunci, b) {
   const kartu = (angka, label, o = {}) => h("div", {class: "lka-kpi" + (o.kelas ? " " + o.kelas : "")}, h("b", {teks: angka}), h("span", {teks: label}), o.isi ?? null);
   const wajib = b.filter(k => k.wajib), ok = wajib.filter(k => k.status === "disetujui").length;
   if (terkunci && snapshotTampil && HZ) { const m = snapshotTampil.snapshot.nasional;
-    return m ? h("div", {class: "lka-ringkas-atas", "aria-label": "Angka snapshot"}, m.slice(0, 5).map(x => kartu(fmt2(x.nilai), `${x.satuan} ${x.label.toLowerCase()}`, {kelas: x.utama ? "awas" : ""}))) : h("p", {class: "lka-redup", teks: "Pantauan otomatis tidak mencakup tanggal data; snapshot memuat laporan provinsi saja."}); }
+    return m ? h("div", {class: "lka-ringkas-atas", "aria-label": "Angka snapshot"}, m.slice(0, 5).map(x => kartu(fmtD(x.nilai, x.desimal), `${x.satuan}, ${x.judul ?? x.label}`, {kelas: x.utama ? "awas" : ""}))) : h("p", {class: "lka-redup", teks: "Pantauan otomatis tidak mencakup tanggal data; snapshot memuat laporan provinsi saja."}); }
   if (terkunci && snapshotTampil) { const n = snapshotTampil.snapshot.nasional, f = n.fs_ha, v = x => x == null ? "NA" : fmt2(x);
     return h("div", {class: "lka-ringkas-atas", "aria-label": "Angka snapshot"}, kartu(v(f.fs), "titik api (FS)"), kartu(v(f.target_ha), "ha target"), kartu(v(f.padam_ha), "ha padam"), kartu(v(f.sisa_ha), "ha belum padam", {kelas: "awas"}), kartu(v(n.hotspot?.total), "hotspot (GIS)"), kartu(v(n.personel.total), "personel")); }
   const bar = h("div", {class: "lka-bar", role: "progressbar", "aria-valuemin": "0", "aria-valuemax": String(wajib.length), "aria-valuenow": String(ok), "aria-label": "Sumber wajib disetujui"}, h("i")); bar.firstChild.style.width = (wajib.length ? Math.round(ok / wajib.length * 100) : 0) + "%";
@@ -216,7 +217,7 @@ const ringkasProv = isi => {
 /* ringkasan kiriman provinsi untuk bahaya lain: angka otomatis (bersumber) dipisah dari isian provinsi */
 function ringkasBencana(isi, oto) {
   const b2 = [];
-  if (oto?.metrik?.length) b2.push(`Pantauan otomatis ${oto.tanggal_data}: ${oto.metrik.map(m => `${fmt2(m.nilai)} ${m.satuan} (${m.label})`).join("; ")}. Sumber: ${oto.sumber.join(", ")}`);
+  if (oto?.metrik?.length) b2.push(`Pantauan otomatis ${tglPanjang(oto.tanggal_data)}: ${oto.metrik.map(m => `${fmtD(m.nilai, m.desimal)} ${m.satuan} (${m.label})`).join("; ")}. Sumber: ${oto.sumber.join(", ")}`);
   if (isi.ringkasan) b2.push("Situasi: " + isi.ringkasan);
   const dm = Object.entries(SBM.DAMPAK).filter(([k]) => isi.dampak?.[k] != null).map(([k, l]) => `${fmt2(isi.dampak[k])} ${l}`); if (dm.length) b2.push("Dampak: " + dm.join(", "));
   for (const [k, l] of [["upaya", "Upaya"], ["hambatan", "Hambatan"], ["catatan", "Catatan"]]) if (isi[k]) b2.push(`${l}: ${isi[k]}`);
@@ -276,8 +277,8 @@ function panelKunci(belum) {
     h("div", {class: "lka-aksi"}, h("button", {type: "button", class: "lka-btn utama", "data-a": "kunci"}, svg(IK.kunci), adaBelum ? "Kunci dengan pengecualian" : "Kunci laporan")));
 }
 function panelPrioritas() {
-  return h("details", {class: "lka-kartu lka-prioritas"}, h("summary", {teks: `Provinsi prioritas hari ini (${H.prioritas.length})`}),
-    h("p", {class: "lka-redup", teks: HZ ? "Sumber wajib = provinsi prioritas (penyumbang terbesar angka utama pada berkas otomatis). Provinsi lain boleh mengirim. Perubahan berlaku sampai hari dikunci." : "Sumber wajib = provinsi prioritas, Operasi udara, dan OMC. Perubahan berlaku sampai hari dikunci."}),
+  return h("details", {class: "lka-kartu lka-prioritas"}, h("summary", {teks: `Provinsi yang wajib mengirim laporan hari ini (${H.prioritas.length})`}),
+    h("p", {class: "lka-redup", teks: HZ ? "Sumber wajib = provinsi yang wajib mengirim laporan (penyumbang terbesar angka utama pada berkas otomatis). Provinsi lain boleh mengirim. Perubahan berlaku sampai hari dikunci." : "Sumber wajib = provinsi prioritas, Operasi udara, dan OMC. Perubahan berlaku sampai hari dikunci."}),
     h("div", {class: "lka-pilihan"}, Object.entries(HZ ? H.nama_prov : S.NAMA_PROV).map(([k, n]) => h("label", {class: "lka-kol cek"}, h("input", {type: "checkbox", "data-prio": k, checked: H.prioritas.includes(k)}), h("span", {teks: n})))),
     h("button", {type: "button", class: "lka-btn", "data-a": "simpan-prioritas", teks: "Simpan prioritas"}));
 }

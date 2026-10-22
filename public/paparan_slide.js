@@ -438,8 +438,8 @@ slideB("b_nasional", "Situasi nasional", "situasi", c => c.B.nasional ? null : "
   const B = c.B, u = B.nasional.find(m => m.utama) ?? B.nasional[0], mu = utamaB(c);
   rangka(k, c, {
     panel: B.nasional.slice(0, 4).map(m => ({a: `${fmt(m.nilai, m.desimal)} ${m.satuan}`.trim(), k: m.label + (m.ubah ? `, ${ubahB(m.ubah)}` : "")})),
-    judul: [R(`${fmt(u.nilai, u.desimal)} ${u.satuan}`, C.jingga), R(` ${u.label.toLowerCase()} pada ${tglP(c.tgl)}`), B.otomatis.berjalan ? R(" (hari berjalan, belum final)") : R("")],
-    sub: [R(`${NB(c)} nasional, berkas laporan harian posisi ${tglP((B.otomatis.cutoff || c.tgl).slice(0, 10))}`)],
+    judul: [R(`${fmt(u.nilai, u.desimal)} ${u.satuan}`, C.jingga), R(` ${u.judul ?? u.label.toLowerCase()} pada ${tglP(c.tgl)}`), B.otomatis.berjalan ? R(" (hari berjalan, belum final)") : R("")],
+    sub: [R(`${NB(c)} nasional, berkas laporan harian posisi ${B.otomatis.cutoff_teks || tglP(c.tgl)}`)],
     sumber: sumberB(c),
   });
   judulBagian(k, 0.6, 1.6, 8.7, `${mu.label}, hari terakhir (${mu.satuan})`);
@@ -450,7 +450,7 @@ slideB("b_provinsi", "Kondisi {prov}", "situasi", c => Object.keys(c.B.prov[c.pr
   const B = c.B, p = B.prov[c.prov], mu = utamaB(c), ms = B.metrik.filter(m => p.metrik[m.k] != null), uv = p.metrik[mu.k];
   rangka(k, c, {
     panel: ms.slice(0, 4).map(m => ({a: `${fmt(p.metrik[m.k], m.desimal)} ${m.satuan}`.trim(), k: m.label})),
-    judul: [R(c.namaProv + " ", C.biru), uv != null ? R(`${fmt(uv, mu.desimal)} ${mu.satuan}`, C.jingga) : R("tanpa angka"), R(` ${mu.label.toLowerCase()} pada ${tglP(c.tgl)}`)],
+    judul: [R(c.namaProv + " ", C.biru), uv != null ? R(`${fmt(uv, mu.desimal)} ${mu.satuan}`, C.jingga) : R("tanpa angka"), R(` ${mu.judul ?? mu.label.toLowerCase()} pada ${tglP(c.tgl)}`)],
     sumber: sumberB(c),
   });
   judulBagian(k, 0.6, 1.6, 8.7, `${c.namaProv}: ${mu.label}, hari terakhir (${mu.satuan})`);
@@ -459,10 +459,10 @@ slideB("b_provinsi", "Kondisi {prov}", "situasi", c => Object.keys(c.B.prov[c.pr
 
 slideB("b_peringkat", "Provinsi dengan nilai tertinggi", "situasi", c => Object.values(c.B.prov).some(p => adaN(p.metrik[utamaB(c).k])) ? null : "tidak ada angka provinsi pada tanggal ini", (k, c) => {
   const B = c.B, mu = utamaB(c), ms = B.metrik.slice(0, 4), baris = Object.entries(B.prov).filter(([, p]) => adaN(p.metrik[mu.k])).sort((a, b) => b[1].metrik[mu.k] - a[1].metrik[mu.k] || a[1].nama.localeCompare(b[1].nama, "id")).slice(0, 12);
-  rangka(k, c, {judul: [R(baris[0][1].nama + " ", C.biru), R(`${fmt(baris[0][1].metrik[mu.k], mu.desimal)} ${mu.satuan}`, C.jingga), R(` paling tinggi untuk ${mu.label.toLowerCase()} pada ${tglP(c.tgl)}, dari ${Object.values(B.prov).filter(p => adaN(p.metrik[mu.k])).length} provinsi`)], sumber: sumberB(c)});
+  rangka(k, c, {judul: [R(baris[0][1].nama + " ", C.biru), R(`${fmt(baris[0][1].metrik[mu.k], mu.desimal)} ${mu.satuan}`, C.jingga), R(` paling tinggi untuk ${mu.judul ?? mu.label.toLowerCase()} pada ${tglP(c.tgl)}, dari ${Object.values(B.prov).filter(p => adaN(p.metrik[mu.k])).length} provinsi`)], sumber: sumberB(c)});
   judulBagian(k, 0.6, 1.6, 12.15, `Provinsi, ${tglP(c.tgl)}`);
   tabel(k, 0.6, 2.05, 12.15, [{j: "Provinsi", w: 3}, ...ms.map(m => ({j: `${m.label} (${m.satuan})`, w: 2.2, a: "r"}))],
-    baris.map(([kode, p]) => [{t: p.nama, b: kode === c.prov}, ...ms.map(m => ({t: adaN(p.metrik[m.k]) ? fmt(p.metrik[m.k], m.desimal) : "NA", b: m.utama, c: m.utama ? C.jingga : undefined}))]), {rh: 0.38, s: 9});
+    baris.map(([kode, p]) => [{t: p.nama, b: kode === c.prov}, ...ms.map(m => ({t: adaN(p.metrik[m.k]) ? fmt(p.metrik[m.k], m.desimal) : "–", b: m.utama, c: m.utama ? C.jingga : undefined}))]), {rh: 0.38, s: 9});
 });
 
 slideB("b_sorot", "Perlu perhatian", "situasi", c => c.B.sorot ? null : "berkas otomatis tidak memuat butir perlu perhatian", (k, c) => {
@@ -476,15 +476,15 @@ slideB("b_sorot", "Perlu perhatian", "situasi", c => c.B.sorot ? null : "berkas 
 slideB("b_prakiraan", "Prakiraan", "situasi", c => c.B.prakiraan ? null : "berkas otomatis tidak memuat prakiraan", (k, c) => {
   const B = c.B, p = B.prakiraan, nh = p.hari.length, lw = Math.min(1.0, 7.2 / nh);
   rangka(k, c, {judul: [R(p.judul)], sumber: sumberB(c)});
-  tabel(k, 0.6, 1.6, 12.15, [{j: "Wilayah", w: 12.15 - nh * lw}, ...p.hari.map(h => ({j: tglK(h), w: lw, a: "r"}))], p.baris.map(b => [{t: b.label, b: true}, ...p.hari.map((_, j) => adaN(b.nilai[j]) ? fmt(b.nilai[j], 2) : "NA")]), {rh: 0.4, s: 9});
+  tabel(k, 0.6, 1.6, 12.15, [{j: "Wilayah", w: 12.15 - nh * lw}, ...p.hari.map(h => ({j: tglK(h), w: lw, a: "r"}))], p.baris.map(b => [{t: b.label, b: true}, ...p.hari.map((_, j) => adaN(b.nilai[j]) ? fmt(b.nilai[j], b.desimal ?? 0) : "–")]), {rh: 0.4, s: 9});
   if (p.baris[0]?.satuan) k.teks(0.6, 1.6 + 0.34 + p.baris.length * 0.4 + 0.12, 12, 0.3, `Satuan nilai: ${p.baris[0].satuan}.`, {s: 8.5, c: C.abu2});
 });
 
 slideB("b_sumber", "Sumber dan catatan data", "lampiran", () => null, (k, c) => {
   const B = c.B, o = B.otomatis;
   rangka(k, c, {judul: [R("Sumber dan catatan data "), R(NB(c).toLowerCase(), C.biru)], sumber: sumberB(c)});
-  const baris = [...B.sumber.map(x => [x.nama, x.catatan || ""]), ["Posisi berkas", `dibuat ${o.dibuat || "tidak tercatat"}, data terakhir masuk ${o.cutoff || "tidak tercatat"}`], ["Tanggal data", `${tglP(c.tgl)}${o.berjalan ? ", hari berjalan dan belum final" : ""}`],
-    ["Arti NA", "belum ada data pada berkas; angka tidak diisi dari hari lain"]];
+  const baris = [...B.sumber.map(x => [x.nama, x.catatan || ""]), ["Posisi berkas", `dibuat ${o.dibuat_teks || "tidak tercatat"}, data terakhir masuk ${o.cutoff_teks || "tidak tercatat"}`], ["Tanggal data", `${tglP(c.tgl)}${o.berjalan ? ", hari berjalan dan belum final" : ""}`],
+    ["Arti tanda –", "belum ada data pada berkas; angka tidak diisi dari hari lain"]];
   tabel(k, 0.6, 1.6, 12.15, [{j: "Sumber atau catatan", w: 4.5}, {j: "Keterangan", w: 7.65}], baris.slice(0, 12).map(b => [{t: b[0], b: true}, b[1]]), {rh: 0.4, s: 9});
 });
 

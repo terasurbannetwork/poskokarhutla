@@ -35,13 +35,23 @@ const bulat1 = x => Math.round(x * 10) / 10;
 /* ================================================================ checklist persiapan (murni) */
 const tengah = v => { const m = Array.isArray(v) ? (v.length === 3 ? v[1] : v[0]) : v; return typeof m === "number" && Number.isFinite(m) ? m : null; };
 const ang = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
+/* KEBIJAKAN (bukan hasil riset lapangan): butir APD per bahaya mengikuti perlengkapan standar SAR/BPBD yang lazim; karhutla (bencana kosong) tetap daftar aslinya di susunChecklist.
+   Pemilik boleh menyunting teksnya; kunci butir (apd, n95, ...) dipakai sebagai kunci JSON checklist, jangan diganti tanpa migrasi catatan lama. */
+const APD_BAHAYA = n => ({
+  banjir: [{k: "apd", teks: "APD: pelampung (life jacket), sepatu bot, sarung tangan", wajib: true}, {k: "perahu", teks: "Perahu karet atau alat apung untuk regu sudah dicek", wajib: false}],
+  gempa: [{k: "apd", teks: "APD: helm, sarung tangan, sepatu tertutup bersol tebal", wajib: true}, {k: "peluit", teks: "Peluit dan senter atau lampu kepala", wajib: false}],
+  gunungapi: [{k: "apd", teks: "APD: helm, kacamata pelindung, sepatu tertutup", wajib: true}, {k: "masker_abu", teks: `Masker penyaring abu (N95 atau setara) untuk tiap orang (${n} buah)`, wajib: true}],
+  cuaca: [{k: "apd", teks: "APD: jas hujan, helm, sepatu bot", wajib: true}, {k: "senter_cuaca", teks: "Senter atau lampu kepala cadangan", wajib: false}],
+  kekeringan: [{k: "apd", teks: "Topi atau pelindung kepala, baju lengan panjang, sarung tangan", wajib: true}],
+  udara: [{k: "apd", teks: "Kacamata pelindung", wajib: true}, {k: "n95", teks: `Masker N95 untuk tiap orang (${n} buah), kualitas udara buruk`, wajib: true}]});
+const bagianAPD = (b, n) => b && b !== "karhutla" ? APD_BAHAYA(n)[b] ?? null : null;
 /* Butir = [{k, teks, wajib}]. `t.rekomendasi` dan `t.akses` boleh objek atau string JSON (baris D1 mentah). Butir kebutuhan hanya ada bila pipeline memberi angkanya;
    butir `bawa` mengikuti daftar barang yang dipikul di akses. Kunci tetap (a-z0-9_) karena dipakai sebagai kunci JSON checklist. */
 export function susunChecklist(t, orang = 1) {
   const rek = typeof t.rekomendasi === "string" ? jsonAman(t.rekomendasi) : t.rekomendasi, ak = typeof t.akses === "string" ? jsonAman(t.akses) : t.akses;
   const n = Math.max(1, Math.min(200, Math.round(Number(orang)) || 1)), air = n * BATAS.airLiterPerOrangHari, tot = rek?.kebutuhan?.total, en = rek?.kebutuhan?.energi;
-  const out = [{k: "apd", teks: "APD lengkap: helm, sepatu bot, sarung tangan, baju tahan api", wajib: true},
-    {k: "n95", teks: `Masker N95 untuk tiap orang (${n} buah), asap gambut berbahaya`, wajib: true},
+  const out = [...(bagianAPD(t.bencana, n) ?? [{k: "apd", teks: "APD lengkap: helm, sepatu bot, sarung tangan, baju tahan api", wajib: true},
+    {k: "n95", teks: `Masker N95 untuk tiap orang (${n} buah), asap gambut berbahaya`, wajib: true}]),
     {k: "air_minum", teks: `Air minum ${ang(air)} liter (${n} orang, ${BATAS.airLiterPerOrangHari} liter per orang per hari, perkiraan)`, wajib: true},
     {k: "makanan", teks: "Makanan dan bekal untuk satu hari penuh", wajib: true}];
   const pompa = tot ? (Array.isArray(tot.pompa) ? tot.pompa.reduce((a, p) => a + (tengah(p?.unit) ?? 0), 0) : tengah(tot.pompa)) : null, bbm = tengah(en?.bbm_l_hari), selang = tengah(tot?.selang_m), jet = tengah(tot?.jet_shooter), lance = tengah(tot?.lance_cm);
@@ -161,6 +171,7 @@ async function terbitUlang(env, req, url, kini, pid) {
 }
 /* centang oleh akun (misalnya dari /instansi saat membantu persiapan); sumber kebenaran daftar butir = susunChecklist */
 async function centangCore(env, p, o, kini) {
+  if (p.bencana === undefined) await tandaiBencana(env, p, p.tugas_id);
   const k = typeof o.k === "string" ? o.k : "", butir = susunChecklist(p, p.orang);
   if (!RE_KUNCI.test(k) || !butir.some(b => b.k === k)) return gagal(400, "butir tidak dikenal untuk tugas ini");
   const ya = o.ya !== false;
@@ -257,6 +268,7 @@ const navigasi = t => `https://www.google.com/maps/dir/?api=1&destination=${t.la
 async function infoLacak(env, req, kini) {
   const d = await dariToken(env, req, kini); if (d.r) return d.r; const p = d.p;
   if (p.dibuka_pada == null) await env.DB.prepare("UPDATE penugasan SET dibuka_pada = ? WHERE id = ? AND dibuka_pada IS NULL").bind(kini, p.id).run();
+  await tandaiBencana(env, p, p.tugas_id);
   const cek = jsonAman(p.checklist) ?? {}, butir = susunChecklist(p, p.orang), rek = jsonAman(p.rekomendasi);
   const cara = (Array.isArray(rek?.cara) ? rek.cara : []).map(c => c && c.metode).filter(x => typeof x === "string").slice(0, 4), alat = (Array.isArray(rek?.alat) ? rek.alat : []).filter(x => typeof x === "string").slice(0, 8);
   const angin = await anginRegu(env, p, kini);
@@ -272,6 +284,7 @@ async function centangLacak(env, req, kini) {
 async function berangkat(env, req, kini) {
   const d = await dariToken(env, req, kini); if (d.r) return d.r;
   await env.DB.prepare("UPDATE penugasan SET berangkat_pada = coalesce(berangkat_pada, ?1), dibuka_pada = coalesce(dibuka_pada, ?1) WHERE id = ?2").bind(kini, d.p.id).run();
+  await tandaiBencana(env, d.p, d.p.tugas_id);
   const cek = jsonAman(d.p.checklist) ?? {}, r = ringkasChecklist(susunChecklist(d.p, d.p.orang), cek);
   return json({berangkat_pada: d.p.berangkat_pada ?? kini, belum_wajib: r.belum_wajib.length, ringkas: r});   // peringatan saja: berangkat tidak diblokir
 }

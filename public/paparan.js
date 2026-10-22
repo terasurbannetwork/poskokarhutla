@@ -171,8 +171,8 @@ async function awal() {
     S.tgl = laporan.hari_pilihan.includes(laporan.hari_lengkap) ? laporan.hari_lengkap : laporan.hari_pilihan.at(-1);
   }
   await isiPilihanBencana();
-  $("#ppProv").innerHTML = Object.entries(laporan.prov).map(([k, v]) => `<option value="${k}"${k === S.prov ? " selected" : ""}>${esc(v.nama)}</option>`).join("");
-  $("#ppTgl").innerHTML = [...laporan.hari_pilihan].reverse().map(h => `<option value="${h}"${h === S.tgl ? " selected" : ""}>${PS.tglP(h)}</option>`).join("");
+  $("#ppProv").innerHTML = Object.entries(laporan.prov).map(([k, v]) => `<option value="${esc(k)}"${k === S.prov ? " selected" : ""}>${esc(v.nama)}</option>`).join("");
+  $("#ppTgl").innerHTML = [...laporan.hari_pilihan].reverse().map(h => `<option value="${esc(h)}"${h === S.tgl ? " selected" : ""}>${PS.tglP(h)}</option>`).join("");
   PilihCantik.pasang(); isiSampul();
   $("#upd").textContent = "Data s.d. " + PS.tglP(S.tgl);
   await Promise.all([muatPerusahaan(S.prov), muatGambarTambahan()]);

@@ -30,7 +30,7 @@ export const BENCANA = {
     kunciKartu: [...KUNCI_UMUM, "jenis_peringatan", "berlaku_hingga", "jiwa_kab_terlibat"]},
   kekeringan: {nama: "Kekeringan", sebut: "Kekeringan", kata: "membaik", berkas: "tugas_kekeringan.json", meta: "tugas_kekeringan_dibuat", reda: {berturut: 2, normal: NORMAL, levelMaks: 1},
     kunciKartu: [...KUNCI_UMUM, "spi3", "hari_tanpa_hujan", "jiwa_kab_terlibat", "dasar", "hipotesis"]},
-  udara: {nama: "Kualitas udara", sebut: "Kualitas udara", kata: "membaik", berkas: "tugas_udara.json", meta: "tugas_udara_dibuat", reda: null,
+  udara: {nama: "Kualitas udara", sebut: "Kualitas udara", kata: "membaik", berkas: "tugas_udara.json", meta: "tugas_udara_dibuat", reda: null, umurMaksJam: UMUR_KAJI_CEPAT_JAM,
     kunciKartu: [...KUNCI_UMUM, "ispu", "polutan", "tren"]},
 };
 export const DAFTAR_BENCANA = Object.keys(BENCANA);

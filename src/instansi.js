@@ -517,7 +517,9 @@ async function konfirmasi(env, req, id, kini) {
   let usul = null; if (o.pt != null) { if (typeof o.pt !== "object" || Array.isArray(o.pt)) return gagal(400, "pt harus objek"); const c = cekUsulan(o.pt); if (c.galat) return gagal(400, c.galat); usul = c.v; }
   const md = await ambilMedia(env, a, id, o, 1); if (md instanceof Response) return md;   // konfirmasi wajib berfoto atau bervideo
   const l = await laju(env, a.id, "instansi.isi", [[JAM, 60]], kini); if (l) return l;
-  const iid = acak(8), selesai = o.hasil === "bukan_api" ? "bukan_api" : o.hasil === "sudah_padam" ? "padam" : "buka";
+  /* gempa: "Tanpa dampak" (kunci bukan_api, kamus instansi_kartu.js) menutup dengan langkah yang sama seperti bahaya lain (padam_dilaporkan, lalu padam_terverifikasi 48 jam kemudian via tutupKedaluwarsa), bukan status bukan_api */
+  const tanpaDampak = o.hasil === "bukan_api" && !!BENCANA[(await bencanaPer(env, [t])).get(id) ?? "karhutla"].umurMaksJam;
+  const iid = acak(8), selesai = tanpaDampak ? "padam" : o.hasil === "bukan_api" ? "bukan_api" : o.hasil === "sudah_padam" ? "padam" : "buka";
   let hasil;
   try {
     hasil = await env.DB.batch([
@@ -528,6 +530,7 @@ async function konfirmasi(env, req, id, kini) {
       ...(usul ? [stmtUsulan(env, a.id, id, usul, kini, "EXISTS (SELECT 1 FROM tugas_isian WHERE id = ?)", [iid])] : [])]);
   } catch (e) { if (/UNIQUE/i.test(String(e.message || e))) return gagal(409, "tugas ini baru saja dikonfirmasi akun lain"); throw e; }
   if (!hasil[0].meta.changes) return gagal(409, "tugas sudah dikonfirmasi atau ditutup, atau media sudah dipakai isian lain");
+  if (tanpaDampak) await lepasDariTugas(env, id, kini).catch(() => {});
   /* api ada pada tugas verifikasi: naik jadi pemadaman (kabar tindakan lalu berlaku); tabel 0041 belum ada = tak ada jenis untuk dinaikkan */
   if (o.hasil === "api_ada") await env.DB.prepare("UPDATE tugas_kartu SET kartu = json_set(kartu, '$.jenis', 'pemadaman') WHERE tugas_id = ? AND json_extract(kartu, '$.jenis') = 'verifikasi'").bind(id).run().catch(e => { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; });
   return json({id: iid, status: selesai, jarak_km: md.g.jarak_km, jauh: md.g.jarak_km > JAUH_KM, personel_terlihat: md.terlihat}, 201);
@@ -820,6 +823,14 @@ export async function tautkanLaporanRegu(env, l, kini = Date.now()) {
     await env.DB.prepare("INSERT OR IGNORE INTO tugas_lapangan (tugas_id, lapangan_id, jarak_km, status, dibuat, regu_id, dipercaya) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(t.id, l.id, Math.round(d * 100) / 100, l.status, kini, l.regu_id ?? null, l.dipercaya ? 1 : 0).run();
     if (!l.dipercaya) return {tugas_id: t.id, jarak_km: d, efek: null};
     const waktu = Math.min(l.waktu, kini);
+    /* bahaya tanpa sinyal reda otomatis (gempa, udara): laporan regu dipercaya "tidak ditemukan" (= Tanpa dampak di layar regu) dari dua regu BERBEDA dalam 24 jam menutup tugas,
+       langkah pertama padam_dilaporkan (cermin aturan padam karhutla). Satu regu = klaim. Jenis bahaya diturunkan dari tugas_bencana, bukan dari laporan. */
+    if (l.status === "tidak_ditemukan" && t.status === "buka" && BENCANA[(await bencanaPer(env, [t])).get(t.id) ?? "karhutla"].umurMaksJam) {
+      const n = (await env.DB.prepare("SELECT count(DISTINCT regu_id) n FROM tugas_lapangan WHERE tugas_id = ? AND status = 'tidak_ditemukan' AND dipercaya = 1 AND regu_id IS NOT NULL AND dibuat > ?").bind(t.id, kini - 24 * JAM).first()).n;
+      if (n < 2) return {tugas_id: t.id, jarak_km: d, efek: "klaim_regu"};
+      await tutupDilaporkan(env, [t.id], kini);
+      return {tugas_id: t.id, jarak_km: d, efek: "tanpa_dampak"};
+    }
     if (l.status === "padam" && (t.padam_pada == null || (t.status === "buka" && t.padam_verif === "muncul_lagi" && waktu > t.verif_pada))) {
       const sejak = Math.max(kini - 24 * JAM, t.padam_verif === "muncul_lagi" ? t.verif_pada ?? 0 : 0);
       const n = (await env.DB.prepare("SELECT count(DISTINCT regu_id) n FROM tugas_lapangan WHERE tugas_id = ? AND status = 'padam' AND dipercaya = 1 AND regu_id IS NOT NULL AND dibuat > ?").bind(t.id, sejak).first()).n;

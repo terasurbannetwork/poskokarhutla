@@ -81,7 +81,7 @@
     gempa: [["mag", "Magnitudo", v => ang(v, 1), ""], ["mmi_maks", "Guncangan terkuat", v => ang(v, 0), "MMI"], ["jiwa_mmi6", "Penduduk di wilayah MMI 6 atau lebih", v => `sekitar ${a2(v)}`, "jiwa", "perkiraan model, belum diuji"], ["dalam_km", "Kedalaman", v => ang(v, 0), "km"]],
     gunungapi: [["level", "Level PVMBG", v => LEVEL_GA[v] ? `${ang(v)}, ${LEVEL_GA[v]}` : ang(v), ""], ["radius_krb_km", "Radius kawasan rawan bencana", v => ang(v, 1), "km"], ["jiwa_krb", "Penduduk dalam radius", v => `sekitar ${a2(v)}`, "jiwa"]],
     cuaca: [["jenis_peringatan", "Jenis peringatan", v => str(v) && kata(str(v)), ""], ["berlaku_hingga", "Berlaku hingga", v => waktu(v), ""], ["jiwa_kab_terlibat", "Penduduk kabupaten terlibat", v => `sekitar ${a2(v)}`, "jiwa"]],
-    kekeringan: [["spi3", "SPI 3 bulan", v => ang(v, 2), ""], ["hari_tanpa_hujan", "Hari tanpa hujan", v => ang(v, 0), "hari"], ["jiwa_kab_terlibat", "Penduduk kabupaten terlibat", v => `sekitar ${a2(v)}`, "jiwa"]],
+    kekeringan: [["spi3", "SPI 3 bulan", v => ang(v, 1), ""], ["hari_tanpa_hujan", "Hari tanpa hujan", v => ang(v, 0), "hari"], ["jiwa_kab_terlibat", "Penduduk kabupaten terlibat", v => `sekitar ${a2(v)}`, "jiwa"]],
     udara: [["ispu", "ISPU", v => ang(v, 0), ""], ["polutan", "Polutan utama", v => str(v), ""], ["tren", "Tren", v => str(v) && kata(str(v)), ""]]};
   function susunBencana(b, t, kartu) {
     const k = obj(kartu) || {}, baris = [];
@@ -91,14 +91,14 @@
     }
     if (num(k.jiwa) && !(KARTU_B[b] || []).some(x => x[0] === "jiwa")) baris.push(["Penduduk terpapar", `sekitar ${a2(k.jiwa)} jiwa`]);
     const syarat = (Array.isArray(k.syarat) ? k.syarat : []).filter(x => typeof x === "string").map(kata);
-    return {id: str(k.insiden), baris, dasar: str(k.dasar), syarat, nav: num(t?.lat) && num(t?.lon) ? navUrl(t.lat, t.lon) : null, titik: koor(t?.lat, t?.lon), hipotesis: t?.hipotesis === true || k.hipotesis === true, ada: baris.length > 0};
+    return {id: str(k.insiden), baris, dasar: str(k.dasar), syarat, nav: num(t?.lat) && num(t?.lon) ? navUrl(t.lat, t.lon) : null, titik: koor(t?.lat, t?.lon), hipotesis: t?.hipotesis === true || k.hipotesis === true || b === "kekeringan", ada: baris.length > 0};
   }
   function teksBencana(b, t, kartu) {
     const m = KAMUS[b], s = susunBencana(b, t, kartu), o = [`*KARTU ${m.sebut.toUpperCase()}${s.id ? " " + s.id : ""}*`];
     const lok = [t?.kec && `Kecamatan ${t.kec}`, t?.kab].filter(Boolean).join(", ");
     if (lok || s.titik) o.push(`*Di mana:* ${[lok, s.titik].filter(Boolean).join(", ")}.`);
     if (s.nav) o.push(`Navigasi ke ${m.titik}: ${s.nav}`);
-    if (s.baris.length) o.push(`*Situasi:* ${s.baris.map(([n, v, c]) => `${n.toLowerCase()} ${v}${c ? ` (${c})` : ""}`).join(", ")}.`);
+    if (s.baris.length) o.push(`*Situasi:* ${s.baris.map(([n, v, c]) => `${n} ${v}${c ? ` (${c})` : ""}`).join(", ")}.`);
     if (s.dasar) o.push(`Dasar: ${s.dasar}.`);
     if (s.hipotesis) o.push("Status: hipotesis, ambang belum teruji."); o.push(SUMBER_B[b] + " Belum divalidasi lapangan."); return o.join("\n");
   }

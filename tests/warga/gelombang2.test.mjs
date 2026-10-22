@@ -71,11 +71,11 @@ uji("gel2/W2: GET /api/lapangan/tugas: kode regu wajib, maks 20 tugas buka di ka
   assert.equal(a.h.get("cache-control"), "private, no-store"); assert.ok(a.j.kini > 1e12); assert.equal(a.j.tugas.length, 7, "wilayah kabupaten saja, urut level lalu dibuat");
   const tid = a.j.tugas.map(t => t.id); assert.ok(!tid.includes(kapuas) && !tid.includes(padam) && !tid.includes(contoh), "kab lain, padam, dummy tidak ikut"); assert.ok(tid.includes(huruf), "kabupaten dicocokkan tanpa beda huruf besar");
   assert.equal(a.j.tugas.at(-1).id, ids[5], "level tertinggi dulu: level 1 terakhir"); assert.deepEqual(a.j.tugas.map(t => t.level), [3, 3, 3, 3, 3, 3, 1]);
-  const t0 = a.j.tugas.find(t => t.id === ids[0]); assert.deepEqual(Object.keys(t0).sort(), ["akses", "arahan", "jenis", "judul", "kab", "kartu", "kec", "id", "lat", "level", "lon", "rekomendasi"].sort());
+  const t0 = a.j.tugas.find(t => t.id === ids[0]); assert.deepEqual(Object.keys(t0).sort(), ["akses", "arahan", "bencana", "bencana_nama", "kata", "jenis", "judul", "kab", "kartu", "kec", "id", "lat", "level", "lon", "rekomendasi"].sort());
   assert.deepEqual(t0.rekomendasi, REK); assert.deepEqual(t0.akses, AKS); assert.deepEqual(t0.kartu, {luas_aktif: 80}); assert.strictEqual(a.j.tugas.find(t => t.id === ids[1]).kartu, null);
   /* sama dengan rincian tugas instansi: kartu/akses/rekomendasi berbentuk sama (objek, bukan string) */
   const b = await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": B}); assert.equal(b.s, 200); assert.deepEqual(b.j.tugas.map(t => t.id), [kapuas], "regu B hanya tugas wilayahnya");
-  assert.ok(!b.j.tugas.some(t => ids.includes(t.id)), "regu B tidak melihat tugas regu A"); assert.ok(!/Rahasia|akun_id|token|6281|pic_|nama/i.test(b.t + a.t), "tanpa nama/akun/nomor");
+  assert.ok(!b.j.tugas.some(t => ids.includes(t.id)), "regu B tidak melihat tugas regu A"); assert.ok(!/Rahasia|akun_id|token|6281|pic_|"nama"/i.test(b.t + a.t), "tanpa nama/akun/nomor");
   const sumber = await api("POST", "/api/posko/regu", {nama: "Regu Uji", unsur: "BPBD", prov: "62", kab: "Katingan"}, ADMIN); assert.equal((await api("POST", `/api/posko/regu/${sumber.j.regu.id}`, {aksi: "cabut"}, ADMIN)).s, 200);
   assert.equal((await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": sumber.j.kode})).s, 403, "kode dicabut");
   /* batas 20 + kunci kontak dibuang dari JSON bebas */

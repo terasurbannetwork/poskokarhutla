@@ -5,7 +5,7 @@
    Pakai: const SB = await import("/laporan_bencana_spek.js"); SB.spek("banjir").agregasi({...}). Worker: import dari ../public/laporan_bencana_spek.js.
    ponytail: satu isian provinsi generik untuk semua bahaya (ringkasan, dampak jiwa, upaya, hambatan, catatan); isian khusus per bahaya (mis. jumlah rumah rusak) menyusul bila diminta. */
 import * as K from "./laporan_karhutla_spek.js";
-import {teksWA as teksWAKarhutla} from "./laporan_karhutla_wa.js";
+import {teksWA as teksWAKarhutla, tglPanjang} from "./laporan_karhutla_wa.js";
 import {teksWABencana} from "./laporan_bencana_wa.js";
 
 const {Baca, tanggalData, kodeDariSumber, namaProv} = K;
@@ -13,6 +13,17 @@ const nn = v => typeof v === "number" && Number.isFinite(v);
 const id = (x, d = 0) => nn(x) ? Number(x).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "tidak ada data";
 const potong = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 const MAKS_PRIORITAS = 6;
+/* waktu ISO berzona (berkas laporan.json) -> "21 Okt 2026, 04.41 WIB"; tak terbaca = null. Satu-satunya pemformat waktu untuk WA, slide, dan paparan. */
+const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+export function waktuWIB(iso) {
+  const d = new Date(iso); if (typeof iso !== "string" || Number.isNaN(d.getTime())) return null;
+  const w = new Date(d.getTime() + 7 * 36e5), p2 = x => String(x).padStart(2, "0");
+  return `${w.getUTCDate()} ${BLN[w.getUTCMonth()]} ${w.getUTCFullYear()}, ${p2(w.getUTCHours())}.${p2(w.getUTCMinutes())} WIB`;
+}
+/* label metrik dalam kalimat: huruf kecil kecuali singkatan (FWI, PM2,5, SPI, KHG, M, NaCl) */
+export const labelKalimat = l => String(l).split(" ").map(w => /[A-Z0-9]/.test(w.slice(1)) || (w.length === 1 && /[A-Z]/.test(w)) ? w : w.toLowerCase()).join(" ");
+/* desimal nilai prakiraan menurut datanya sendiri (maksimal 2): peluang 0,12 tetap dua, curah hujan bulat tetap bulat */
+const desimalData = a => Math.min(2, Math.max(0, ...a.filter(nn).map(v => { const t = String(v); return t.includes(".") ? t.split(".")[1].length : 0; })));
 export const DAMPAK = {meninggal: "meninggal", hilang: "hilang", luka: "luka", mengungsi: "mengungsi", terdampak: "jiwa terdampak"};   // semua dalam jiwa
 
 /* ================================================================ isian provinsi (satu bentuk untuk semua bahaya) */
@@ -44,7 +55,7 @@ export function statusHari({status, prioritas, kiriman}) {
 }
 
 /* ================================================================ dari laporan.json v1 */
-/* provinsi prioritas = yang paling banyak pada metrik utama di tanggal data (hanya nilai > 0, maksimal 6); tanpa data hari itu: kosong */
+/* provinsi yang wajib mengirim laporan = yang paling banyak pada metrik utama di tanggal data (hanya nilai > 0, maksimal 6); tanpa data hari itu: kosong */
 export function pilihPrioritas(L, td, maks = MAKS_PRIORITAS) {
   const i = Array.isArray(L?.hari) ? L.hari.indexOf(td) : -1; if (i < 0 || !Array.isArray(L.metrik) || !L.metrik.length) return [];
   const u = L.metrik.find(m => m.utama) || L.metrik[0];
@@ -68,7 +79,7 @@ export function dariLaporan(L, td) {
   if (!L || L.v !== 1 || !Array.isArray(L.hari) || !Array.isArray(L.metrik) || !L.metrik.length) return null;
   const i = L.hari.indexOf(td); if (i < 0) return null;
   const nilai = (o, k, j) => { const v = o?.[k]?.[j]; return nn(v) ? v : null; };
-  const metrik = L.metrik.map(m => ({k: m.k, label: String(m.label), satuan: String(m.satuan ?? ""), desimal: m.desimal | 0, utama: !!m.utama, arah: m.arah ?? "netral", agregat: m.agregat ?? null}));
+  const metrik = L.metrik.map(m => ({k: m.k, label: String(m.label), satuan: String(m.satuan ?? ""), desimal: m.desimal | 0, utama: !!m.utama, arah: m.arah ?? "netral", agregat: m.agregat ?? null, judul: labelKalimat(m.label)}));
   if (!metrik.some(m => m.utama)) metrik[0].utama = true;
   const utama = metrik.find(m => m.utama);
   const nasional = metrik.map(m => ({...m, nilai: nilai(L.nasional, m.k, i), kemarin: i > 0 ? nilai(L.nasional, m.k, i - 1) : null})).filter(m => m.nilai != null).map(m => ({...m, ubah: ubahDari(m.nilai, m.kemarin, m.desimal)}));
@@ -85,10 +96,10 @@ export function dariLaporan(L, td) {
     tiga_hari: tiga.length >= 2 ? tiga : null,
     prov,
     sorot: Array.isArray(L.sorot) && L.sorot.length ? L.sorot.slice(0, 8).map(s => ({tingkat: s.tingkat, judul: potong(s.judul, 160), teks: potong(s.teks, 300), prov: /^\d{2}$/.test(s.prov ?? "") ? s.prov : null})) : null,
-    prakiraan: pr && Array.isArray(pr.hari) && Array.isArray(pr.baris) && pr.baris.length ? {judul: potong(pr.judul, 160), hari: pr.hari.slice(0, 7), baris: pr.baris.slice(0, 8).map(b => ({label: potong(b.label, 60), prov: b.prov ?? null, nilai: Array.isArray(b.nilai) ? b.nilai.slice(0, 7) : [], satuan: b.satuan ?? ""}))} : null,
+    prakiraan: pr && Array.isArray(pr.hari) && Array.isArray(pr.baris) && pr.baris.length ? {judul: potong(pr.judul, 160), hari: pr.hari.slice(0, 7), baris: pr.baris.slice(0, 8).map(b => ({label: potong(b.label, 60), prov: b.prov ?? null, nilai: Array.isArray(b.nilai) ? b.nilai.slice(0, 7) : [], desimal: desimalData(Array.isArray(b.nilai) ? b.nilai.slice(0, 7) : []), satuan: b.satuan ?? ""}))} : null,
     tambahan: Array.isArray(L.tambahan) && L.tambahan.length ? L.tambahan.slice(0, 3).map(t => ({id: t.id, judul: potong(t.judul, 120), kolom: (t.kolom || []).slice(0, 8), baris: (t.baris || []).slice(0, 10), catatan: t.catatan ? potong(t.catatan, 200) : null})) : null,
     sumber: (Array.isArray(L.sumber) ? L.sumber : []).slice(0, 8).map(s => ({nama: potong(s.nama, 120), url: typeof s.url === "string" ? s.url : null, catatan: s.catatan ? potong(s.catatan, 160) : null})),
-    otomatis: {dibuat: L.dibuat ?? null, cutoff: L.cutoff ?? null, hari_lengkap: L.hari_lengkap ?? null, berjalan: !!L.hari_lengkap && td > L.hari_lengkap},
+    otomatis: {dibuat: L.dibuat ?? null, cutoff: L.cutoff ?? null, dibuat_teks: waktuWIB(L.dibuat), cutoff_teks: waktuWIB(L.cutoff), hari_lengkap: L.hari_lengkap ?? null, berjalan: !!L.hari_lengkap && td > L.hari_lengkap},
   };
 }
 
@@ -116,7 +127,7 @@ export function agregasi(masuk) {
     pengecualian: pengecualian.map(p => ({sumber: p.sumber, label: namaProv(kodeDariSumber(p.sumber) ?? ""), alasan: p.alasan, data_terakhir: kiriman[p.sumber]?.data_terakhir ?? null})),
     prioritas, metrik: dl?.metrik ?? null, nasional: dl?.nasional ?? null, tiga_hari: dl?.tiga_hari ?? null, provinsi, dampak_provinsi: dampak.provinsi ? dampak : null,
     sorot: dl?.sorot ?? null, prakiraan: dl?.prakiraan ?? null, tambahan: dl?.tambahan ?? null, sumber: dl?.sumber ?? [], otomatis: dl?.otomatis ?? null,
-    data_otomatis: masuk.beku ? masuk.beku.data_otomatis ?? null : dl ? null : {alasan: laporan ? `berkas otomatis tidak mencakup ${td}` : "berkas otomatis tidak terbaca", hari_lengkap: laporan?.hari_lengkap ?? null},
+    data_otomatis: masuk.beku ? masuk.beku.data_otomatis ?? null : dl ? null : {alasan: laporan ? `berkas otomatis tidak mencakup ${tglPanjang(td)}` : "berkas otomatis tidak terbaca", hari_lengkap: laporan?.hari_lengkap ?? null},
   };
   snap.kesimpulan = kesimpulan(snap);
   return snap;
@@ -126,14 +137,14 @@ export function kesimpulan(s) {
   const k = [], n = s.nasional?.find(m => m.utama) ?? s.nasional?.[0];
   if (n) {
     const u = n.ubah ? ", " + n.ubah.teks : "";
-    k.push(`Data ${s.tanggal_data}: ${id(n.nilai, n.desimal)} ${n.satuan} (${n.label})${u}.`);
-  } else if (s.data_otomatis) k.push(`Pantauan otomatis ${s.nama_bencana.toLowerCase()} untuk ${s.tanggal_data} tidak tersedia (${s.data_otomatis.alasan}${s.data_otomatis.hari_lengkap ? `, hari lengkap terakhir ${s.data_otomatis.hari_lengkap}` : ""}).`);
+    k.push(`Data ${tglPanjang(s.tanggal_data)}: ${id(n.nilai, n.desimal)} ${n.satuan} (${n.label})${u}.`);
+  } else if (s.data_otomatis) k.push(`Pantauan otomatis ${s.nama_bencana.toLowerCase()} untuk ${tglPanjang(s.tanggal_data)} tidak tersedia (${s.data_otomatis.alasan}${s.data_otomatis.hari_lengkap ? `, hari lengkap terakhir ${tglPanjang(s.data_otomatis.hari_lengkap)}` : ""}).`);
   const wajib = s.provinsi.filter(p => p.wajib), terisi = wajib.filter(p => p.ada).length;
-  if (wajib.length) k.push(`${terisi} dari ${wajib.length} provinsi prioritas mengirim laporan provinsi.`);
+  if (wajib.length) k.push(`${terisi} dari ${wajib.length} provinsi yang wajib mengirim laporan sudah mengirim.`);
   const tertinggi = [...(s.sorot ?? [])].sort((a, b) => (KATA_SORT[b.tingkat] ?? 0) - (KATA_SORT[a.tingkat] ?? 0))[0];
   if (tertinggi) k.push(`Perlu perhatian (${tertinggi.tingkat}): ${tertinggi.judul}.`);
   if (s.dampak_provinsi) { const d = s.dampak_provinsi, t = Object.keys(DAMPAK).filter(x => nn(d[x])).map(x => `${id(d[x])} ${DAMPAK[x]}`).join(", "); k.push(`Dampak menurut laporan provinsi (${d.provinsi} provinsi): ${t}.`); }
-  for (const p of s.pengecualian) k.push(`${p.label}: data terakhir ${p.data_terakhir ?? "tidak ada"}, dikunci tanpa kiriman terbaru (${p.alasan}).`);
+  for (const p of s.pengecualian) k.push(`${p.label}: data terakhir ${p.data_terakhir ? tglPanjang(p.data_terakhir) : "tidak ada"}, dikunci tanpa kiriman terbaru (${p.alasan}).`);
   return k;
 }
 

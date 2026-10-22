@@ -56,7 +56,7 @@ export function laporanBencana(s) {
   }
   if (s.prakiraan) {
     const p = s.prakiraan;
-    L.push(H1("D. PRAKIRAAN"), "", `${kalimat(p.judul)} Hari ${p.hari.map(tglPanjang).join(", ")}.`, ...p.baris.slice(0, 5).map(b => `* ${b.label}: ${b.nilai.map(v => nn(v) ? fmt(v, 2) : "belum ada data").join("; ")}${b.satuan ? " " + b.satuan : ""}`), I(`Sumber: ${namaSumber(s)}`), "");
+    L.push(H1("D. PRAKIRAAN"), "", `${kalimat(p.judul)} Hari ${p.hari.map(tglPanjang).join(", ")}.`, ...p.baris.slice(0, 5).map(b => `* ${b.label}: ${b.nilai.map(v => nn(v) ? fmt(v, b.desimal ?? 0) : "belum ada data").join("; ")}${b.satuan ? " " + b.satuan : ""}`), I(`Sumber: ${namaSumber(s)}`), "");
   }
   for (const p of s.pengecualian) L.push(I(`Catatan: ${p.label}, data terakhir ${p.data_terakhir ? tglPanjang(p.data_terakhir) : "tidak ada"} (${p.alasan})`));
   L.push(H1("KESIMPULAN"), "", ...s.kesimpulan.map(t => `* ${t}`));

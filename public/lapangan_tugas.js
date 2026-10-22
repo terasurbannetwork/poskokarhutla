@@ -23,7 +23,7 @@
   }
   const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
   const ukuran = b => b >= 1048576 ? (b / 1048576).toLocaleString("id-ID", {maximumFractionDigits: 1}) + " MB" : Math.max(1, Math.round(b / 1024)).toLocaleString("id-ID") + " KB";
-  const jamLokal = ms => new Date(ms).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "");
+  const jamLokal = ms => new Date(ms).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   /* huruf dari lapisan gaya: text-font berupa larik teks; ekspresi dilewati */
   const tumpukanHuruf = gaya => { const s = new Set(); for (const l of gaya.layers || []) { const f = l.layout && l.layout["text-font"]; if (Array.isArray(f) && f.every(x => typeof x === "string")) s.add(f.join(",")); } return [...s]; };
   const sprite = gaya => typeof gaya.sprite === "string" ? [".json", ".png", "@2x.json", "@2x.png"].map(e => gaya.sprite + e) : [];
@@ -142,7 +142,7 @@
     const tampilMeta = () => {
       const m = bacaMeta(); bHapus.hidden = !m;
       if (!m) info.textContent = `Belum ada peta tersimpan. Satu area radius ${BATAS.radiusKm} km dari ${bt.titik} ini, beberapa MB sampai puluhan MB. Simpan saat ada sinyal.`;
-      else info.textContent = `Tersimpan ${ukuran(m.byte)}, ${m.ubin} ubin radius ${m.radius_km} km, ${jamLokal(m.waktu)}.${m.tugas && m.tugas !== t.id ? " Area ini milik ${bt.titik} lain; simpan lagi untuk menggantinya." : ""}${m.tidak_lengkap ? (m.tidak_lengkap === "batas" ? " Berhenti di batas 80 MB, sebagian ubin belum tersimpan." : " Dibatalkan, sebagian ubin belum tersimpan.") : ""}`;
+      else info.textContent = `Tersimpan ${ukuran(m.byte)}, ${m.ubin} ubin radius ${m.radius_km} km, ${jamLokal(m.waktu)}.${m.tugas && m.tugas !== t.id ? ` Area ini milik ${bt.titik} lain; simpan lagi untuk menggantinya.` : ""}${m.tidak_lengkap ? (m.tidak_lengkap === "batas" ? " Berhenti di batas 80 MB, sebagian ubin belum tersimpan." : " Dibatalkan, sebagian ubin belum tersimpan.") : ""}`;
     };
     bSimpan.addEventListener("click", async () => {
       if (sedangUnduh) return;
