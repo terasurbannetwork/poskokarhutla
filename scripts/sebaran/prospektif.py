@@ -11,7 +11,8 @@ anggaran bobot per jalan MAKS_BOBOT (kuota 10.000/hari). Model & ambang = model_
 (ramal ulang 14 jam setelah deteksi pertama). Label = sel 375 m S-NPP yang terhubung dengan titik itu dalam 72 jam >= 10.
 
 Catatan: data/raw/sebaran/prospektif/ramalan.jsonl, nilai.jsonl (append-only); ringkasan: public/data/prospektif.json.
-Pakai:  python3 scripts/sebaran/prospektif.py  |  ... uji
+Pakai:  python3 scripts/sebaran/prospektif.py  |  ... uji  |  ... arsip <tujuan.jsonl.gz>  |  ... pulih <sumber.jsonl.gz>
+Uji balik historis (bukan prospektif): scripts/sebaran/prospektif_historis.py
 """
 import datetime as dt, gzip, json, math, os, sys, time, urllib.parse
 
@@ -37,11 +38,70 @@ N_MIN_LOLOS = 50      # ASUMSI: dengan 50 kasus, setengah lebar CI95 recall ~ +-
 TOLERANSI_RECALL = 0.15  # ASUMSI: batas bawah CI95 recall prospektif >= klaim model (model_sebaran.json lolos.kinerja.uji2_recall) - 0,15
 
 
-def wilson_bawah(k, n, z=1.96):
+# Gerbang KALIBRASI (tambahan di atas gerbang recall; semua mode awal). Peluang yang tampil di layar harus bisa dipercaya sebagai peluang,
+# bukan hanya mengurutkan titik:
+ECE_MAKS = 0.08   # ASUMSI: selisih rata-rata |teramati - diramal| per kantong <= 8 poin. Laju dasar ~17%: "20%" di layar boleh berarti 12-28%, tidak lebih.
+                  # Dengan 10 kantong kuantil @ n=300 (30 per kantong) galat sampling ECE model SEMPURNA ~0,05; 0,08 menyisakan margin ~3 poin untuk
+                  # salah kalibrasi sungguhan, jadi ambang ini tidak bisa dilolosi dengan n kecil yang kebetulan bagus dan tidak dihukum karena noise.
+SKILL_MIN = 0.0   # Brier skill terhadap klimatologi (laju dasar himpunan yang sama) harus > 0: peluang harus mengalahkan "selalu bilang laju dasar".
+KANTONG = 10
+KANTONG_MIN_N = 30  # kantong < 30 titik terlalu berisik: jumlah kantong diturunkan (n // 30), minimal 2
+
+
+def wilson(k, n, z=1.96):
+    """Selang Wilson 95% (bawah, atas) untuk proporsi k/n."""
     if n <= 0:
-        return None
+        return None, None
     p = k / n
-    return (p + z * z / (2 * n) - z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))) / (1 + z * z / n)
+    d = 1 + z * z / n
+    c = p + z * z / (2 * n)
+    r = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n))
+    return max(0.0, (c - r) / d), min(1.0, (c + r) / d)
+
+
+def wilson_bawah(k, n, z=1.96):
+    return wilson(k, n, z)[0]
+
+
+def kalibrasi(p, y, k=KANTONG):
+    """Kurva reliabilitas: kantong KUANTIL (sama banyak titik; peluang menumpuk di bawah, kantong lebar-sama akan kosong di atas).
+    Tiap kantong: n, rata-rata peluang diramal, laju teramati, Wilson 95%. ECE = sum(n_b/n * |teramati - diramal|).
+    Brier skill = 1 - Brier / Brier klimatologi, klimatologi = selalu meramal laju dasar himpunan ini (ukuran yang generous ke klimatologi)."""
+    n = len(y)
+    if n < 2 * KANTONG_MIN_N:
+        return None
+    k = max(2, min(k, n // KANTONG_MIN_N))
+    o = sorted(range(n), key=lambda i: p[i])
+    bins, ece = [], 0.0
+    for b in range(k):
+        idx = o[b * n // k:(b + 1) * n // k]
+        nb, pr, ob = len(idx), sum(p[i] for i in idx) / len(idx), sum(y[i] for i in idx)
+        lo, hi = wilson(ob, nb)
+        bins.append({"n": nb, "p_diramal": round(pr, 4), "teramati": round(ob / nb, 4), "lo": round(lo, 4), "hi": round(hi, 4),
+                     "p_min": round(p[idx[0]], 4), "p_maks": round(p[idx[-1]], 4)})
+        ece += nb / n * abs(ob / nb - pr)
+    br = sum((pi - yi) ** 2 for pi, yi in zip(p, y)) / n
+    dasar = sum(y) / n
+    klim = dasar * (1 - dasar)
+    return {"n": n, "kantong": bins, "ece": round(ece, 4), "brier": round(br, 4), "brier_klimatologi": round(klim, 4),
+            "brier_skill": round(1 - br / klim, 4) if klim > 0 else None, "laju_dasar": round(dasar, 4)}
+
+
+def metrik_set(p, y, w):
+    """Ringkasan satu himpunan ramalan bernilai (bentuk SAMA untuk prospektif.json dan prospektif_historis.json)."""
+    import gbdt as G
+    tp = sum(a and b for a, b in zip(w, y))
+    return {"dinilai": len(y), "lolos": sum(y), "waspada": sum(w), "tepat": tp,
+            "recall": round(tp / sum(y), 3) if sum(y) else None, "presisi": round(tp / sum(w), 3) if sum(w) else None,
+            "alarm_palsu_per_tidak_lolos": round((sum(w) - tp) / (len(y) - sum(y)), 3) if len(y) > sum(y) else None,
+            "auc": round(G.auc(p, y), 3) if 0 < sum(y) < len(y) else None, "brier": round(G.brier(p, y), 4) if y else None,
+            "peluang_rata": round(sum(p) / len(p), 4) if p else None, "laju_teramati": round(sum(y) / len(y), 4) if y else None,
+            "kalibrasi": kalibrasi(p, y)}
+
+
+def kalibrasi_lolos(kal):
+    """Lolos gerbang kalibrasi? kal = hasil kalibrasi() (None = n terlalu kecil = belum lolos)."""
+    return bool(kal and kal["ece"] <= ECE_MAKS and kal["brier_skill"] is not None and kal["brier_skill"] > SKILL_MIN)
 MAKS_BOBOT = float(os.environ.get("PROSPEKTIF_BOBOT", "400"))
 URL = "https://api.open-meteo.com/v1/forecast"
 
@@ -261,8 +321,40 @@ def main():
     ringkas()
 
 
+# ---------------- arsip permanen ----------------
+# Cache Actions hidup 7 hari dan bisa tertimpa (kasus 20 Okt 2026). Arsip = SATU berkas jsonl.gz berisi SELURUH ramalan + nilai, diunggah workflow
+# ke R2 (poskokarhutla-foto/arsip/prospektif.jsonl.gz) dan dipulihkan SEBELUM prospektif.py jalan. pulih() hanya MENAMBAH baris yang belum ada
+# (kunci, mode): append-only, tidak pernah menimpa. Ukuran: ~1 KB/ramalan dikompres ~0,3 KB => setahun ~ 1-2 MB.
+def arsip(tujuan):
+    n = 0
+    with gzip.open(tujuan, "wt") as f:
+        for j, baris in (("r", baca_jsonl(RAMALAN)), ("n", baca_jsonl(NILAI))):
+            for r in baris:
+                f.write(json.dumps({"j": j, **r}, separators=(",", ":")) + "\n")
+                n += 1
+    return n
+
+
+def pulih(sumber):
+    """Gabungkan arsip ke ramalan.jsonl / nilai.jsonl: tambah baris yang (kunci, mode)-nya belum ada. Mengembalikan (ramalan+, nilai+)."""
+    os.makedirs(FOLDER, exist_ok=True)
+    ada = {"r": {(r["kunci"], r["mode"]) for r in baca_jsonl(RAMALAN)}, "n": {(r["kunci"], r["mode"]) for r in baca_jsonl(NILAI)}}
+    tambah = {"r": [], "n": []}
+    with gzip.open(sumber, "rt") as f:
+        for l in f:
+            r = json.loads(l)
+            j = r.pop("j")
+            if (r["kunci"], r["mode"]) not in ada[j]:
+                ada[j].add((r["kunci"], r["mode"]))
+                tambah[j].append(r)
+    for j, berkas in (("r", RAMALAN), ("n", NILAI)):
+        with open(berkas, "a") as f:
+            for r in tambah[j]:
+                f.write(json.dumps(r, separators=(",", ":")) + "\n")
+    return len(tambah["r"]), len(tambah["n"])
+
+
 def ringkas():
-    import gbdt as G
     R = baca_jsonl(RAMALAN)
     semua_n = baca_jsonl(NILAI)
     N = {(r["kunci"], r["mode"]): r for r in semua_n if not r.get("kedaluwarsa")}
@@ -275,12 +367,7 @@ def ringkas():
         y = [1 if n["lolos"] else 0 for _, n in dn]
         p = [r["p"] for r, _ in dn]
         w = [1 if r["waspada"] else 0 for r, _ in dn]
-        tp = sum(a and b for a, b in zip(w, y))
-        o = {"dicatat": len(rs), "dinilai": len(dn), "lolos": sum(y), "waspada": sum(w), "tepat": tp,
-             "recall": round(tp / sum(y), 3) if sum(y) else None, "presisi": round(tp / sum(w), 3) if sum(w) else None,
-             "alarm_palsu_per_tidak_lolos": round((sum(w) - tp) / (len(y) - sum(y)), 3) if len(y) > sum(y) else None,
-             "auc": round(G.auc(p, y), 3) if 0 < sum(y) < len(y) else None, "brier": round(G.brier(p, y), 4) if y else None,
-             "peluang_rata": round(sum(p) / len(p), 4) if p else None, "laju_teramati": round(sum(y) / len(y), 4) if y else None}
+        o = {"dicatat": len(rs), **metrik_set(p, y, w)}
         o["per_bulan"] = {}
         for r, n in dn:
             b = o["per_bulan"].setdefault(r["t0"][:7], {"dinilai": 0, "lolos": 0, "waspada": 0, "tepat": 0})
@@ -299,8 +386,13 @@ def ringkas():
     out["recall_min"] = round(klaim - TOLERANSI_RECALL, 3) if klaim is not None else None
     out["n_min_lolos"] = N_MIN_LOLOS
     out["tak_cocok"] = sum(1 for r in semua_n if r.get("tak_cocok") and r["mode"] == "awal")  # ramalan yang titik awalnya tak ditemukan lagi saat dinilai
-    out["teruji"] = bool(A["dinilai"] >= N_MIN_DINILAI and A["lolos"] >= N_MIN_LOLOS and out["recall_min"] is not None
-                         and A["recall_bawah95"] is not None and A["recall_bawah95"] >= out["recall_min"])  # layar menyembunyikan peluang "akan membesar" selama false
+    out["teruji_recall"] = bool(A["dinilai"] >= N_MIN_DINILAI and A["lolos"] >= N_MIN_LOLOS and out["recall_min"] is not None
+                                and A["recall_bawah95"] is not None and A["recall_bawah95"] >= out["recall_min"])
+    out["kalibrasi_ok"] = kalibrasi_lolos(A.get("kalibrasi"))
+    out["ece_maks"], out["skill_min"] = ECE_MAKS, SKILL_MIN
+    # layar menyembunyikan peluang "akan membesar" selama false: recall prospektif lolos DAN peluangnya terkalibrasi (ECE, Brier skill > 0).
+    # Uji balik historis (prospektif_historis.json) TIDAK ikut menentukan: ia hanya ditampilkan terpisah.
+    out["teruji"] = out["teruji_recall"] and out["kalibrasi_ok"]
     out["mulai"] = min((r["t0"] for r in R), default=None)  # ramalan tertua yang masih tercatat (loncat maju = catatan terputus)
     out["terbaru"] = [{"t0": r["t0"], "lat": r["lat"], "lon": r["lon"], "prov": r["prov"], "p": r["p"], "waspada": r["waspada"],
                        "n72": N.get((r["kunci"], "awal"), {}).get("n72")} for r in sorted((r for r in R if r["mode"] == "awal"), key=lambda r: r["t0"])[-60:]]
@@ -334,6 +426,39 @@ if __name__ == "__main__":
         r0 = nilai_baru([{"kunci": "1000_-9.0000_100.0000", "mode": "awal", "awal": [[1000.0, -9.0, 100.0]]}], set(), gud, 1000 + JEDA_NILAI + 5, 0, "x")
         assert r0 == [{"kunci": "1000_-9.0000_100.0000", "mode": "awal", "kedaluwarsa": True, "tak_cocok": True}], r0  # tak cocok => dihitung, bukan dibuang
         assert abs(wilson_bawah(34, 50) - 0.541) < .005 and wilson_bawah(0, 0) is None
+        # kalibrasi: model sempurna terkalibrasi (y ~ Bernoulli(p)) -> ECE kecil, skill > 0; model terbalik -> ECE besar, skill < 0
+        rnd = __import__("random").Random(7)
+        pp = [rnd.random() * .5 for _ in range(4000)]
+        yy = [1 if rnd.random() < q else 0 for q in pp]
+        kb = kalibrasi(pp, yy)
+        assert len(kb["kantong"]) == 10 and sum(b["n"] for b in kb["kantong"]) == 4000 and kb["ece"] < .04 and kb["brier_skill"] > .05 and kalibrasi_lolos(kb), kb
+        assert all(b["lo"] <= b["teramati"] <= b["hi"] for b in kb["kantong"])
+        assert [b["p_diramal"] for b in kb["kantong"]] == sorted(b["p_diramal"] for b in kb["kantong"])
+        kj = kalibrasi([.1 if v else .9 for v in yy], yy)
+        assert kj["ece"] > .5 and kj["brier_skill"] < 0 and not kalibrasi_lolos(kj), kj
+        # hitung tangan: 4 kantong (n=120, k=4): peluang 0,1 teramati 0,3 => ECE 0,2; Brier = rata-rata (p-y)^2; klimatologi = 0,3*0,7
+        kh = kalibrasi([.1] * 120, [1 if i % 10 in (0, 3, 6) else 0 for i in range(120)])  # ikatan peluang: urutan stabil = urutan indeks
+        assert kh["ece"] == 0.2 and kh["kantong"][0]["teramati"] == .3 and abs(kh["brier"] - (36 * .81 + 84 * .01) / 120) < 1e-3 and kh["brier_klimatologi"] == .21 and len(kh["kantong"]) == 4, kh
+        assert kalibrasi([.1] * 50, [0] * 50) is None and not kalibrasi_lolos(None)
+        lo, hi = wilson(30, 100)
+        assert abs(lo - .2189) < .002 and abs(hi - .3961) < .002 and wilson(0, 0) == (None, None)
+        # arsip: bolak-balik tidak menambah apa pun, sumber lama TIDAK menimpa baris yang sudah ada
+        import tempfile
+        with tempfile.TemporaryDirectory() as td:
+            globals().update(FOLDER=td, RAMALAN=os.path.join(td, "r.jsonl"), NILAI=os.path.join(td, "n.jsonl"))
+            open(RAMALAN, "w").write('{"kunci":"a","mode":"awal","p":0.1}\n')
+            open(NILAI, "w").write('{"kunci":"a","mode":"awal","n72":3,"lolos":false}\n')
+            arsip(os.path.join(td, "x.gz"))
+            open(RAMALAN, "a").write('{"kunci":"b","mode":"awal","p":0.2}\n')
+            isi = open(RAMALAN).read().replace('"p":0.1', '"p":0.9')
+            open(RAMALAN, "w").write(isi)  # salinan lokal berbeda: arsip tak boleh menimpanya
+            assert pulih(os.path.join(td, "x.gz")) == (0, 0)
+            os.remove(NILAI)
+            assert pulih(os.path.join(td, "x.gz")) == (0, 1) and len(baca_jsonl(RAMALAN)) == 2 and baca_jsonl(RAMALAN)[0]["p"] == .9
         print("ok")
+    elif sys.argv[1:2] == ["arsip"]:
+        print("arsip", arsip(sys.argv[2]), "baris")
+    elif sys.argv[1:2] == ["pulih"]:
+        print("pulih (ramalan, nilai):", pulih(sys.argv[2]) if os.path.exists(sys.argv[2]) else "sumber tidak ada, dilewati")
     else:
         main()

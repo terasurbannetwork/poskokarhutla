@@ -67,6 +67,18 @@ export function cariWilayah(W, lat, lon) {
   return p ? best : bd <= KEC_CADANGAN_KM ? best : null;   // di luar poligon provinsi: hanya kalau dekat sekali ke pusat kecamatan
 }
 
+/* ---------------- masker sumber panas tetap (smelter, tambang, kilang, PLTU): public/data/titik_palsu.json ----------------
+   Sama dengan scripts/data/titik_palsu.py::sel_industri: sel = (round(lat*100), round(lon*100)) dengan pembulatan genap Python, kawah TIDAK disaring (gunung api tetap dihitung
+   setara SiPongi). Berkas tak terbaca = tanpa masker (lebih baik titik lebih daripada titik hilang). */
+const bulatGenap = x => { const f = Math.floor(x), d = x - f; return d < .5 ? f : d > .5 ? f + 1 : f % 2 === 0 ? f : f + 1; };
+export const selTitik = (lat, lon) => bulatGenap(lat * 100) + "," + bulatGenap(lon * 100);
+export async function muatMasker(env) {
+  try {
+    const r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/titik_palsu.json")); if (!r.ok) { r.body?.cancel(); return null; }
+    const d = await r.json(); return new Set((d.sumber_statis || []).filter(x => x.jenis !== "kawah").map(x => selTitik(x.lat, x.lon)));
+  } catch (e) { return null; }
+}
+
 /* ---------------- satu putaran: ambil, urai, simpan ---------------- */
 export async function perbaruiTitik(env, kini = Date.now()) {
   if (!env.FIRMS_MAP_KEY) return {lewat: "FIRMS_MAP_KEY belum diset"};
@@ -78,9 +90,10 @@ export async function perbaruiTitik(env, kini = Date.now()) {
   }));
   const galat = hasil.filter(h => h.galat).map(h => h.galat);
   if (galat.length === hasil.length) return {galat};             // semua sensor gagal: putaran lama tetap dipakai
-  const W = await wilayah(env), lihat = new Set(), tabel = new Map(), titik = [];
+  const W = await wilayah(env), masker = await muatMasker(env), lihat = new Set(), tabel = new Map(), titik = []; let palsu = 0;
   for (const p of hasil.flatMap(h => h.titik).sort((a, b) => a.t - b.t)) {
     const k = `${p.lat}|${p.lon}|${p.t}|${p.s}`; if (lihat.has(k)) continue; lihat.add(k);
+    if (masker?.has(selTitik(p.lat, p.lon))) { palsu++; continue; }   // sumber panas industri tetap, bukan kebakaran
     const w = cariWilayah(W, p.lat, p.lon); if (!w) continue;      // laut atau negara tetangga
     if (!tabel.has(w)) tabel.set(w, tabel.size);
     titik.push({...p, w: tabel.get(w)});
@@ -95,7 +108,7 @@ export async function perbaruiTitik(env, kini = Date.now()) {
     env.DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(kini, teks),
     env.DB.prepare(`DELETE FROM titik_terbaru WHERE id NOT IN (SELECT id FROM titik_terbaru ORDER BY id DESC LIMIT ${SIMPAN})`),
   ]);
-  return {titik: isi.baris.length, rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
+  return {titik: isi.baris.length, palsu, rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
 }
 
 export async function titikTerbaru(env) {

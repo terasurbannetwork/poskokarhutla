@@ -18,6 +18,8 @@ import {muatHimawari, BARU_N_MIN, BARU_U_MAKS, BARU_LEVEL_MIN, BARU_ACUAN_MAKS} 
 import {halamanAdmin} from "./statistik.js";
 import {halamanInstansi, HALAMAN_STAF} from "./admin_halaman.js";
 import {gudangTerdekat, siapkanKerahkan, lepasDariTugas} from "./inventaris.js";
+import {catatAwalTugas} from "./alarm_himawari.js";
+import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan} from "./penugasan.js";
 
@@ -816,7 +818,7 @@ export async function butirCekUlang(env, kini, dummyOk) {
 }
 /* kartu (kunci saudara di tugas_kompleks.json, kontrak docs/bnpb/RANCANGAN-API-PADAM.md bagian 7): hanya kunci berikut yang dibawa, JSON <= 3000 huruf.
    Terlalu panjang dipotong BERURUTAN agar tetap JSON sah: konsesi dari belakang, lalu buang konsesi, syarat, tren, luas_koreksi, luas_aktif, masuk, radius_m, front; masih panjang: null. */
-const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat"];
+const MAKS_KARTU = 3000, KUNCI_KARTU = ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal"];
 const insidenSah = v => typeof v === "string" && v.length >= 3 && v.length <= 40 ? v : null;
 const angkaSah = v => typeof v === "number" && Number.isFinite(v) && v >= 0;
 export function pasKartu(k) {
@@ -890,19 +892,22 @@ async function buatTugasIsi(env, kini, versi) {
   const perInsiden = new Map(), kartuAda = {ya: true};
   try { const idx = new Map(buka.map(t => [t.id, t])); for (const r of (await env.DB.prepare("SELECT tugas_id, insiden FROM tugas_kartu WHERE insiden IS NOT NULL AND tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(buka.map(t => t.id))).all()).results) if (idx.has(r.tugas_id)) perInsiden.set(r.insiden, idx.get(r.tugas_id)); }
   catch (e) { if (!/no such table: tugas_kartu/i.test(String(e?.message || e))) throw e; kartuAda.ya = false; }
-  const st = [], kartu = []; let baru = 0, digabung = 0, pantau = 0;
+  const st = [], kartu = [], awal = [], level3 = []; let baru = 0, digabung = 0, pantau = 0;
   for (const k of ks) {
+    /* jam deteksi pertama insiden dari pipeline: insiden_awal_ms (ms epoch), cadangan insiden_awal / awal (ISO); hanya mengisi terdeteksi_awal yang masih kosong (src/alarm_himawari.js), tak pernah menimpa. Tanpa itu null dan tugas memakai `dibuat` (src/sla.js) */
+    const aw = Number.isFinite(k.insiden_awal_ms) ? k.insiden_awal_ms : Date.parse(k.insiden_awal || k.awal || k.terdeteksi_awal), awalMs = Number.isFinite(aw) && aw <= kini ? aw : null;
     const kab = k.kab.toLowerCase(), terakhir = Math.round(dibuat - (Number.isFinite(k.jam_sejak) ? k.jam_sejak : 0) * JAM), n24 = Math.max(0, Math.round(k.n24) || 0), luas = Number.isFinite(k.luas) && k.luas >= 0 ? k.luas : null;
     const rek = pasRekomendasi(k.rekomendasi), akses = pasAkses(k.akses), ins = insidenSah(k.insiden), front = titikSah(k.front), lat = front ? front.lat : k.lat, lon = front ? front.lon : k.lon;
     let dekat = ins ? perInsiden.get(ins) ?? null : null, jarak = GABUNG_KM + 1e-9;
     if (!dekat) for (const t of buka) if (t.prov === k.prov && t.kab.toLowerCase() === kab) { const d = Math.min(km(k.lat, k.lon, t.lat, t.lon), km(lat, lon, t.lat, t.lon)); if (d <= GABUNG_KM && d < jarak) { dekat = t; jarak = d; } }
-    const kt = kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat}) : null;
+    const kt = kartuAda.ya ? pasKartu({insiden: ins ?? undefined, front: k.front, masuk: k.masuk, radius_m: k.radius_m, luas_aktif: k.luas_aktif, luas_koreksi: k.luas_koreksi, tren: k.tren, konsesi: k.konsesi, syarat: k.syarat, insiden_awal_ms: k.insiden_awal_ms, insiden_awal: k.insiden_awal}) : null;
     const simpanKartu = id => { if (kartuAda.ya && (ins || kt)) kartu.push(env.DB.prepare("INSERT INTO tugas_kartu (tugas_id, insiden, kartu, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(tugas_id) DO UPDATE SET insiden = coalesce(?2, insiden), kartu = coalesce(?3, kartu), diperbarui = ?4").bind(id, ins, kt, kini)); if (ins) perInsiden.set(ins, buka.find(t => t.id === id)); };
     if (dekat?.status === "bukan_api") {   // sudah dikonfirmasi bukan api: hanya catat deteksi terakhir, tanpa membuka kembali dan tanpa tugas baru tiap 3 jam
       digabung++;
       st.push(env.DB.prepare("UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1) WHERE id = ?2 AND status = 'bukan_api'").bind(terakhir, dekat.id));
     } else if (dekat) {
       digabung++;
+      if (awalMs != null) awal.push({id: dekat.id, lat, lon, awal: awalMs, baru: false});
       /* lokasi ikut front terbaru selama tugas masih buka (padam/bukan_api tidak bergeser) */
       st.push(env.DB.prepare(`UPDATE tugas_api SET terakhir_terdeteksi = max(terakhir_terdeteksi, ?1), n24 = max(n24, ?2), level = max(level, ?3),
         luas_ha = CASE WHEN ?4 IS NULL THEN luas_ha ELSE max(coalesce(luas_ha, 0), ?4) END, rekomendasi = coalesce(?5, rekomendasi), akses = coalesce(?7, akses),
@@ -918,10 +923,15 @@ async function buatTugasIsi(env, kini, versi) {
       st.push(env.DB.prepare(`INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, rekomendasi, akses) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)`)
         .bind(id, k.prov, k.kab, typeof k.kec === "string" && k.kec && k.kec.length <= 60 ? k.kec : null, lat, lon, k.level, n24, luas, kini, terakhir, rek, akses));
       simpanKartu(id);
+      awal.push({id, lat, lon, awal: awalMs, baru: true});
+      if (k.level === 3) level3.push({id, prov: k.prov, kab: k.kab, kec: typeof k.kec === "string" ? k.kec : null});
     }
   }
   for (let i = 0; i < st.length; i += 50) await env.DB.batch(st.slice(i, i + 50));
   for (let i = 0; i < kartu.length; i += 50) await env.DB.batch(kartu.slice(i, i + 50));   // sesudah tugasnya ada (REFERENCES)
+  /* sesudah tugasnya ada: jam deteksi pertama + kunci alarm Himawari (0043), lalu kabar seketika level 3 (push + email, idempoten). Galat di sini tidak menggagalkan putaran. */
+  try { await catatAwalTugas(env, awal, kini); } catch (e) { console.error("awal tugas", e?.message); }
+  if (level3.length) try { const h = await kabarLevel3(env, level3, kini); if (h.akun) console.log("kabar level 3", JSON.stringify(h)); } catch (e) { console.error("kabar level 3", e?.message); }
   await tandai();
   return {baru, digabung, ...(pantau ? {pantau} : {})};
 }

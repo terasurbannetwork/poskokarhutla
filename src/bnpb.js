@@ -2,7 +2,7 @@
    Skema: migrations/0022_bnpb_bersama.sql (laju_bnpb). Pola kode tanpa akun = kode regu Posko (src/posko.js reguDari). */
 import {gagal, sha, acak, ipHash} from "./worker.js";
 import {halamanAdmin} from "./statistik.js";
-import {halamanBnpb} from "./admin_halaman.js";
+import {halamanBnpb, HALAMAN_STAF} from "./admin_halaman.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
 
@@ -62,4 +62,6 @@ export const RUTE_BNPB = {
   "GET /admin/gakkum": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("gakkum")),
   /* Layar Pimpinan: satu layar lintas sistem untuk pimpinan, dirakit di peramban dari API admin yang sudah ada (tanpa rute data baru) */
   "GET /admin/pimpinan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("pimpinan")),
+  /* Kinerja pemantauan: tiga tab (Data, Proses, Lapangan) dari GET /api/sla (src/sla.js). Admin + semua peran staf (sama dengan API). */
+  "GET /admin/kinerja": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanBnpb("kinerja"), HALAMAN_STAF.kinerja),   // hak sama dengan GET /api/sla: admin + semua peran staf
 };

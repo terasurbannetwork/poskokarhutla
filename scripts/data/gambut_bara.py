@@ -11,6 +11,7 @@ FRAKSI_TERBAKAR = (0.10, 0.30, 1.00)   # ASUMSI: porsi jejak piksel gambut yang 
 D_BAWAH, D_ATAS = 15.0, 51.0    # cm. 15 = rata-rata - SD Ballhorn dkk. 2009 PNAS (33 +- 18 cm); 51 = rata-rata Page dkk. 2002 Nature
 BD = (0.07, 0.10, 0.15)         # t/m3. ASUMSI: kisaran umum gambut tropis
 CC = 1.0                        # ASUMSI: kerangka kedalaman terbakar
+KAL_N = None                    # n insiden bila D_BAWAH/D_ATAS dikalibrasi (pasang_kalibrasi); None = bawaan literatur
 # t gas per t bahan kering (= g/kg). CO2 & CH4 sama dengan dampak.py (IPCC 2013 Wetlands Supp. Bab 2, tanah organik tropis);
 # CO 0,210: IPCC 2013 Wetlands Supplement Tabel 2.7 (belum diverifikasi ke dokumen asli).
 EF = {"co2": 1.703, "ch4": 0.021, "co": 0.210}
@@ -27,6 +28,24 @@ CATATAN = {
     "banding": "Perkiraan lokal per kompleks, bukan tambahan dari estimasi emisi nasional (dampak.py); jangan dijumlahkan.",
     "status": "Estimasi, belum divalidasi lapangan; muka air = proxy, bukan pengukuran; MCE tidak dihitung: tidak ada ukuran CO2 sebanding pada kolom asap dari satelit.",
 }
+
+
+def pasang_kalibrasi(kal=None, n_min=10):
+    """Ganti D_BAWAH/D_ATAS dengan p10/p90 kedalaman_bara_cm isian lapangan kelas gambut bila n >= n_min (kalibrasi.py). Dipanggil harian.main dan taktik.main,
+    bukan saat impor. -> n atau None."""
+    global D_BAWAH, D_ATAS, KAL_N
+    if kal is None:
+        import kalibrasi
+        kal = kalibrasi.muat()
+    v = ((kal or {}).get("kedalaman_bara") or {}).get("gambut") or {}
+    try:
+        if v.get("n", 0) >= n_min and 0 < float(v["p10"]) < float(v["p90"]):
+            D_BAWAH, D_ATAS, KAL_N = float(v["p10"]), float(v["p90"]), v["n"]
+            CATATAN["d"] += f" DIKALIBRASI: p10-p90 kedalaman bara isian lapangan, berdasarkan {v['n']} insiden gambut ({D_BAWAH:g}-{D_ATAS:g} cm)."
+            return v["n"]
+    except (KeyError, TypeError, ValueError):
+        pass
+    return None
 
 
 def hitung(deteksi, luas_ha, wt=None):
@@ -49,7 +68,7 @@ def hitung(deteksi, luas_ha, wt=None):
     return {"a": [round(x, 1) for x in a], "d": [round(x) for x in d], "m": [round(x) for x in m],
             **{g: [round(x * e) for x in m] for g, e in EF.items()},
             "fb": round(fb, 2), "wt": None if wt is None else round(wt), "px": len(px),
-            "dipotong": d != d0, "tertahan_air": wt is not None and wt >= 0}
+            "dipotong": d != d0, "tertahan_air": wt is not None and wt >= 0, **({"kal_n": KAL_N} if KAL_N else {})}
 
 
 def uji():
@@ -79,6 +98,14 @@ def uji():
     assert hitung([((0, 0), "a", 90.0), ((1, 1), "b", 90.0)], 100)["fb"] == 1.0
     assert hitung([((0, 0), "a", 5.0), ((2, 0), "a", 5.0)], 100)["fb"] == 0
     assert hitung([], 100) is None
+    # kalibrasi: n < 10 tidak menimpa; n >= 10 menimpa dan menandai kal_n; kembalikan agar uji lain tak terpengaruh
+    global D_BAWAH, D_ATAS, KAL_N
+    asli, cat = (D_BAWAH, D_ATAS), CATATAN["d"]
+    assert pasang_kalibrasi({"kedalaman_bara": {"gambut": {"n": 9, "p10": 10, "p90": 40}}}) is None and (D_BAWAH, D_ATAS) == asli and "kal_n" not in hitung(dt_, 1000)
+    assert pasang_kalibrasi({"kedalaman_bara": {"gambut": {"n": 12, "p10": 10, "p90": 40}}}) == 12 and (D_BAWAH, D_ATAS) == (10.0, 40.0) and hitung(dt_, 1000)["kal_n"] == 12
+    assert pasang_kalibrasi({"kedalaman_bara": {"gambut": {"n": 12, "p10": 50, "p90": 40}}}) is None
+    D_BAWAH, D_ATAS = asli
+    KAL_N, CATATAN["d"] = None, cat
     print("gambut_bara uji: OK")
 
 

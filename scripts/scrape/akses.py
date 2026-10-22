@@ -12,9 +12,13 @@ Model (perkiraan perencanaan, bukan navigasi):
   celah peta: komponen jaringan kecil (< 3000 simpul) disambung ke komponen lain lewat celah <= 5 km, garis lurus x 1,3
                pada 10 km/jam (jalan kebun tak terpeta)
   batas cari 18 jam; di atasnya dianggap tidak terjangkau lewat darat/sungai (andalkan udara).
+  jejak GPS regu: bila berkas JEJAK ada (env AKSES_JEJAK, bawaan data/jejak_regu.json) tiap jejak jadi ruas "track" 15 km/jam yang disambung ke simpul graf dalam 0,3 km
+               (jalan kaki 4 km/jam). Bentuk berkas: {"jejak": [[[lat, lon], ...], ...]} atau GeoJSON LineString/MultiLineString ([lon, lat]). Tanpa nama/identitas regu.
+Kompleks yang dihitung (harian): level 3 di provinsi prioritas (kluster.json) DITAMBAH setiap kompleks di tugas_kompleks.json (level >= 2 teramati <= 24 jam, SEMUA provinsi),
+  paling banyak MAKS_KOMPLEKS terpenting (level, lalu n24), dalam MAKS_DETIK dan akses.json < MAKS_BYTE. Tiap entri yang punya sumber air terdekat juga membawa `air` (air_dem.py).
 Graf dipadatkan: simpul = persimpangan, ujung ruas, dan titik jangkar tiap <= 2 km di sepanjang ruas.
 """
-import gzip, heapq, json, math, os, sys
+import gzip, heapq, json, math, os, sys, time
 
 AKAR = os.path.join(os.path.dirname(__file__), "../..")
 sys.path.insert(0, os.path.join(AKAR, "scripts/data"))
@@ -37,6 +41,9 @@ SEL = 0.05  # indeks ruang (derajat)
 # (3 km) membuat tetangga 1,5-3 km ikut mengambil akses kompleks lain. Satu entri hanya untuk SATU kompleks per putaran
 # (pasangan terdekat menang). Asumsi platform, belum diuji balik terhadap drift nyata (butuh arsip kluster antar putaran).
 COCOK_KM = 1.5
+MAKS_KOMPLEKS, MAKS_DETIK, MAKS_BYTE = 1500, 600, 3_000_000
+JEJAK = os.environ.get("AKSES_JEJAK") or os.path.join(AKAR, "data/jejak_regu.json")
+JEJAK_SAMBUNG_KM, JEJAK_LAJU = 0.3, LAJU["track"]
 
 
 def km(a1, o1, a2, o2):
@@ -226,7 +233,54 @@ def markas():
     return out
 
 
-def akses(simpul, sisi, kompleks, basis, n_daops=3, n_posko=2):
+def muat_jejak(path=JEJAK):
+    """berkas jejak -> [[(lat, lon), ...]] (>= 2 titik, koordinat sah). Tak ada/rusak = []."""
+    try:
+        d = json.load(open(path))
+    except (OSError, ValueError):
+        return []
+    garis = []
+    if isinstance(d, dict) and isinstance(d.get("jejak"), list):
+        garis = [[(p[0], p[1]) for p in g if isinstance(p, (list, tuple)) and len(p) >= 2] for g in d["jejak"] if isinstance(g, list)]
+    elif isinstance(d, dict) and d.get("type") == "FeatureCollection":
+        for f in d.get("features", []):
+            g = (f or {}).get("geometry") or {}
+            ls = [g["coordinates"]] if g.get("type") == "LineString" else g["coordinates"] if g.get("type") == "MultiLineString" else []
+            garis += [[(p[1], p[0]) for p in l if isinstance(p, (list, tuple)) and len(p) >= 2] for l in ls]
+    ok = lambda p: all(isinstance(v, (int, float)) for v in p) and -11.5 <= p[0] <= 6.5 and 94 <= p[1] <= 141.5
+    return [g for g in ([p for p in g if ok(p)] for g in garis) if len(g) >= 2]
+
+
+def tambah_jejak(simpul, sisi, jejak):
+    """Jejak GPS regu jadi ruas track: (simpul', sisi', n_ruas, n_sambung). Titik jejak dirapatkan tiap JANGKAR_KM seperti ruas OSM; tiap titik
+    disambung ke simpul graf terdekat dalam JEJAK_SAMBUNG_KM (jalan kaki), sehingga jejak yang menyusuri jalan tak memotong jalan itu."""
+    if not jejak:
+        return simpul, sisi, 0, 0
+    simpul, sisi = list(simpul), list(sisi)
+    ind = indeks(simpul)
+    baru, n_sambung = {}, 0
+    for pts in jejak:
+        prev = None
+        for a, b in zip(pts, pts[1:]):
+            n = max(1, math.ceil(km(*a, *b) / JANGKAR_KM))
+            for t in range(n + 1):
+                p = (round(a[0] + (b[0] - a[0]) * t / n, 5), round(a[1] + (b[1] - a[1]) * t / n, 5))
+                if p not in baru:
+                    baru[p] = len(simpul)
+                    simpul.append(p)
+                    for j, d in sorted(dekat(ind, simpul, *p, JEJAK_SAMBUNG_KM), key=lambda x: x[1])[:2]:
+                        sisi.append((baru[p], j, round(d / KAKI_KMJ * 60, 2), round(d * 1000)))
+                        n_sambung += 1
+                i = baru[p]
+                if prev is not None and prev != i:
+                    d = km(*simpul[prev], *p)
+                    sisi.append((prev, i, round(d / JEJAK_LAJU * 60, 2), round(d * 1000)))
+                prev = i
+    return simpul, sisi, len(jejak), n_sambung
+
+
+def akses(simpul, sisi, kompleks, basis, n_daops=3, n_posko=2, detik=None):
+    t0 = time.time()
     adj = [[] for _ in simpul]
     for a, b, m, d in sisi:
         adj[a].append((b, m, d))
@@ -237,6 +291,9 @@ def akses(simpul, sisi, kompleks, basis, n_daops=3, n_posko=2):
         hub.append([(i, d * KELOK / MARKAS_KMJ * 60, d * KELOK) for i, d in dekat(ind, simpul, b["lat"], b["lon"], MARKAS_MAKS_KM)])
     out = {}
     for k in kompleks:
+        if detik and time.time() - t0 > detik:
+            print(f"akses: batas waktu {detik} dtk, {len(out)}/{len(kompleks)} kompleks selesai (sisanya garis lurus)", file=sys.stderr)
+            break
         benih = {}
         for i, d in dekat(ind, simpul, k["lat"], k["lon"], KAKI_MAKS_KM):
             m = d / KAKI_KMJ * 60
@@ -278,19 +335,57 @@ def pasangkan_akses(daftar, titik, maks_km=COCOK_KM):
     return out
 
 
+def pilih_kompleks(kluster, tugas):
+    """Level 3 di provinsi prioritas (kluster.json, perilaku lama) DITAMBAH semua kompleks tugas_kompleks.json (semua provinsi), tanpa dobel id,
+    terpenting dulu (level lalu n24), paling banyak MAKS_KOMPLEKS. -> daftar properti dengan id, lat, lon."""
+    ada = {}
+    for f in kluster:
+        p = f["properties"]
+        if p.get("level") == 3 and p.get("prov") in PRIORITAS:
+            ada[p["id"]] = p
+    for t in (tugas or {}).get("kompleks", []):
+        if isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float)):
+            ada.setdefault(t["id"], t)
+    return sorted(ada.values(), key=lambda p: (-(p.get("level") or 0), -(p.get("n24") or 0), p["id"]))[:MAKS_KOMPLEKS]
+
+
 def harian():
     with gzip.open(GRAF, "rt") as f:
         g = json.load(f)
     kl = json.load(open(os.path.join(DATA, "kluster.json")))["features"]
-    kompleks = [f["properties"] for f in kl if f["properties"].get("level") == 3 and f["properties"].get("prov") in PRIORITAS]
-    hasil = akses([tuple(s) for s in g["simpul"]], g["sisi"], kompleks, markas())
+    try:
+        tugas = json.load(open(os.path.join(DATA, "tugas_kompleks.json")))
+    except (OSError, ValueError):
+        tugas = None
+    lama = sum(1 for f in kl if f["properties"].get("level") == 3 and f["properties"].get("prov") in PRIORITAS)
+    kompleks = pilih_kompleks(kl, tugas)
+    simpul, sisi, n_jejak, n_sambung = tambah_jejak([tuple(s) for s in g["simpul"]], g["sisi"], muat_jejak())
+    hasil = akses(simpul, sisi, kompleks, markas(), detik=MAKS_DETIK)
+    air = None
+    try:
+        import air_dem
+        for e in hasil.values():
+            e.pop("air", None)
+        n_s, n_b = air_dem.tambah(hasil)
+        air = {"kompleks_dengan_sumber": n_s, "dengan_beda_tinggi": n_b, "cari_km": air_dem.CARI_KM, "dem": air_dem.DEM_KET,
+               "arti": "beda_tinggi_m = elevasi kompleks - elevasi sumber (positif: air harus dinaikkan); km = garis lurus ke sumber, jarak selang = km x 1,2 (hitungEstafet)"} if n_s else None
+    except Exception as e:     # sumber air/DEM gagal tidak boleh menjatuhkan rute
+        print(f"akses: air_dem dilewati ({e.__class__.__name__}: {e})", file=sys.stderr)
     out = {"_meta": {"laju_kmj": LAJU, "kaki_kmj": KAKI_KMJ, "batas_jam": BATAS_JAM, "kompleks": len(kompleks), "terjangkau": len(hasil),
+                     "level3_prioritas_lama": lama, "dari_tugas": len((tugas or {}).get("kompleks", [])), "jejak_regu": {"ruas": n_jejak, "sambungan": n_sambung},
+                     **({"air": air} if air else {}),
                      "sumber": "OpenStreetMap (ODbL), (c) kontributor OpenStreetMap",
                      "catatan": "Perkiraan perencanaan: kondisi jalan, banjir, portal perusahaan, dan izin lewat tidak dimodelkan."}}
-    out.update(hasil)
+    urut = list(hasil.items())
+    out.update(urut)
+    teks = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
+    while len(teks.encode()) > MAKS_BYTE and len(out) > 1:     # kompleks paling tidak penting (ujung daftar) dibuang dulu
+        del out[urut.pop()[0]]
+        teks = json.dumps(out, ensure_ascii=False, separators=(",", ":"))
     p = os.path.join(DATA, "akses.json")
-    json.dump(out, open(p, "w"), ensure_ascii=False, separators=(",", ":"))
-    print(f"akses.json {len(hasil)}/{len(kompleks)} kompleks prioritas terjangkau, {os.path.getsize(p) / 1e3:.0f} KB")
+    open(p, "w").write(teks)
+    print(f"akses.json {len(urut)}/{len(kompleks)} kompleks terjangkau (graf), {sum(1 for _, e in urut if e.get('dari'))} punya rute dari markas, {os.path.getsize(p) / 1e3:.0f} KB; "
+          f"{lama} level-3 prioritas lama + tugas_kompleks {len((tugas or {}).get('kompleks', []))}; jejak regu {n_jejak} ruas")
 
 
 def uji():
@@ -326,6 +421,30 @@ def uji():
     # dua kompleks di 1 km dan 1,4 km dari SATU entri: hanya yang terdekat mendapat, tetangga tidak mengambil milik orang
     m = pasangkan_akses(d, [kc(1.4, "jauh"), kc(1.0, "dekat")])
     assert m == {"dekat": r}, m
+    # jejak GPS regu menyambung dua jaringan yang terpisah celah 20 km (> CELAH_KM): tanpa jejak tak ada rute dari markas, dengan jejak ada
+    kb = [("primary", [(0, 0), (0, e)]), ("primary", [(0, 3 * e), (0, 4 * e)])]
+    s4, e4 = bangun_graf(kb)
+    kx = {"id": "KJ", "lat": 0.0, "lon": 4 * e}
+    assert akses(s4, e4, [kx], basis)["KJ"]["dari"] == [], "tanpa jejak seharusnya tak terjangkau"
+    s5, e5, nr, ns = tambah_jejak(s4, e4, [[(0, e), (0, 3 * e)]])
+    j = akses(s5, e5, [kx], basis)["KJ"]["dari"]
+    assert nr == 1 and ns >= 2 and j and 1.3 < j[0]["jam"] < 1.9, (nr, ns, j)   # 10/50 + 20/15 + 10/50 = 1,73 jam
+    assert tambah_jejak(s4, e4, [])[2:] == (0, 0) and len(tambah_jejak(s4, e4, [])[0]) == len(s4)
+    # muat_jejak: dua bentuk berkas, koordinat tak sah/rusak dibuang
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        pj = os.path.join(d, "j.json")
+        json.dump({"jejak": [[[0, 100], [0, 100.1]], [[0, 100]], [[99, 99], [0, 100]]]}, open(pj, "w"))
+        assert muat_jejak(pj) == [[(0, 100), (0, 100.1)]], muat_jejak(pj)
+        json.dump({"type": "FeatureCollection", "features": [{"geometry": {"type": "LineString", "coordinates": [[100, 0], [100.1, 0]]}}, {"geometry": None}]}, open(pj, "w"))
+        assert muat_jejak(pj) == [[(0, 100), (0, 100.1)]]
+        open(pj, "w").write("{rusak")
+        assert muat_jejak(pj) == [] and muat_jejak(os.path.join(d, "tidak_ada.json")) == []
+    # pilih_kompleks: level 3 prioritas lama + tugas semua provinsi, tanpa dobel, terpenting dulu
+    kl_ = [{"properties": {"id": "A", "level": 3, "prov": "62", "lat": 0, "lon": 100, "n24": 5}}, {"properties": {"id": "B", "level": 3, "prov": "11", "lat": 0, "lon": 100, "n24": 5}}]
+    tg_ = {"kompleks": [{"id": "A", "lat": 0, "lon": 100, "level": 3}, {"id": "C", "lat": 1, "lon": 101, "level": 2, "n24": 9}, {"id": "D", "level": 2}]}
+    assert [p["id"] for p in pilih_kompleks(kl_, tg_)] == ["A", "C"], pilih_kompleks(kl_, tg_)   # B bukan prioritas dan tak ada di tugas; D tanpa koordinat
+    assert pilih_kompleks(kl_, None) == [kl_[0]["properties"]]
 
 if __name__ == "__main__":
     uji()

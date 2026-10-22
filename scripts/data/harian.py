@@ -306,6 +306,7 @@ def wt_dekat(grid, g, lat, lon, radius=1.0):
 # ---------------------------------------------------------------- utama
 def main():
     os.makedirs(KELUAR, exist_ok=True)
+    GB.pasang_kalibrasi()  # kedalaman bara dari isian lapangan bila kalibrasi.json ada dan n >= 10
     w = Wilayah()
     sekarang = dt.datetime.now(WIB)
     hari_ini = sekarang.date().isoformat()

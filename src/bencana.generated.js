@@ -49,6 +49,11 @@ export default {
           "dampak",
           "/data/dampak.json",
           null
+        ],
+        [
+          "himawari",
+          "/api/himawari",
+          3
         ]
       ],
       "kejadian": {

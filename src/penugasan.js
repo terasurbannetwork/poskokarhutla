@@ -14,6 +14,7 @@ import {km} from "./titik.js";
 import {akunAktif, tugasDalam, dalamLingkup, jsonAman} from "./instansi.js";
 import {modAtauStaf, dalamWilayahStaf, stafNyata, P_VALIDASI} from "./staf.js";
 import {gudangTerdekat} from "./inventaris.js";
+import {kabarDarurat} from "./kabar.js";
 
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM;
 const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -329,7 +330,7 @@ async function anginRegu(env, p, kini, cache = new Map()) {
   const pos = await env.DB.prepare("SELECT lat, lon FROM penugasan_posisi WHERE penugasan_id = ? AND pada > ? ORDER BY pada DESC LIMIT 1").bind(p.id, kini - KESELAMATAN.anginPosisiMaksMenit * MENIT).first();
   return pos ? anginKeRegu(await muatCuaca(env, p.lat, p.lon, cache), p, pos, kini) : null;
 }
-async function darurat(env, req, kini) {
+async function darurat(env, req, kini, ctx) {
   const d = await dariToken(env, req, kini, true); if (d.r) return d.r; const p = d.p;
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (!Object.hasOwn(JENIS_DARURAT, b.o.jenis)) return gagal(400, `jenis darurat harus ${Object.keys(JENIS_DARURAT).join("/")}`);
@@ -339,6 +340,9 @@ async function darurat(env, req, kini) {
   if ((await env.DB.prepare("SELECT count(*) n FROM penugasan_darurat WHERE penugasan_id = ? AND pada > ?").bind(p.id, kini - 10 * MENIT).first()).n >= KESELAMATAN.daruratPer10Menit)
     return gagal(429, `maksimal ${KESELAMATAN.daruratPer10Menit} panggilan darurat per 10 menit per tautan; hubungi 112 atau komandan lewat telepon`, {"retry-after": "60"});
   await env.DB.prepare("INSERT INTO penugasan_darurat (penugasan_id, jenis, lat, lon, akurasi, pada) VALUES (?, ?, ?, ?, ?, ?)").bind(p.id, b.o.jenis, ada ? Math.round(lat * 1e5) / 1e5 : null, ada ? Math.round(lon * 1e5) / 1e5 : null, akurasi, kini).run();
+  /* kabar seketika ke pemilik penugasan + Posko pusat (src/kabar.js, idempoten); gagal kirim tidak menggagalkan panggilan darurat */
+  const kabar = kabarDarurat(env, p, b.o.jenis, JENIS_DARURAT[b.o.jenis], kini).catch(e => console.error("kabar darurat", e?.message));
+  if (ctx?.waitUntil) ctx.waitUntil(kabar); else await kabar;
   return json({ok: true, pada: kini, jenis: b.o.jenis, posisi_tercatat: ada}, 201);
 }
 
@@ -452,7 +456,7 @@ const RUTE_ASLI = {
   "POST /api/lacak/posisi": (env, req, url, kini) => posisi(env, req, kini),
   "POST /api/lacak/tiba": (env, req, url, kini) => tiba(env, req, kini),
   "POST /api/lacak/selesai": (env, req, url, kini) => selesai(env, req, kini),
-  "POST /api/lacak/darurat": (env, req, url, kini) => darurat(env, req, kini),
+  "POST /api/lacak/darurat": (env, req, url, kini, ctx) => darurat(env, req, kini, ctx),
   "GET /api/instansi/usulan/:id": (env, req, url, kini, ctx, id) => usulan(env, req, kini, id),
 };
 /* kiriman bersesi dan kiriman lacak wajib header x-pb: 1 (anti-CSRF; halaman mengirimnya otomatis); tabel 0035 belum ada = 503 yang jelas */

@@ -6,14 +6,17 @@
 <meta name="robots" content="noindex,nofollow">
 <meta name="referrer" content="no-referrer">
 <meta name="theme-color" content="#0b2545">
-<title>Lapor Lapangan · Posko Karhutla</title>
+<title>Lapor Lapangan | Posko Karhutla</title>
 <link rel="stylesheet" href="/lapangan.css?v=1">
+<link rel="stylesheet" href="/instansi_kartu.css?v=1">
+<link rel="stylesheet" href="/lapangan_tugas.css?v=1">
 <link rel="stylesheet" href="/inti/lapor-gelap.css?v=1">
 </head>
 <body>
 <header class="lp-kop">
   <h1>Lapor Lapangan</h1>
   <p id="regu" class="lp-regu">Memeriksa kode regu…</p>
+  <p id="jaringan" class="lp-jaringan" role="status" aria-live="polite"><span id="jaringanTeks">Memeriksa sinyal…</span><span id="jaringanN" class="lp-n" hidden></span></p>
 </header>
 <main class="lp-isi">
   <p id="tanpaKode" class="lp-banner" hidden>Halaman ini hanya untuk regu yang punya tautan dari posko. Buka lagi tautan yang dikirim posko ke ponsel Anda.</p>
@@ -21,6 +24,10 @@
   <section id="antrean" class="lp-antrean" hidden>
     <p id="antreanTeks"></p>
     <button type="button" id="kirimLagi" class="lp-tombol">Kirim sekarang</button>
+  </section>
+  <section id="tugas" class="lp-blok lp-tugas" aria-labelledby="hTugas" hidden>
+    <h2 id="hTugas">Api yang ditugaskan</h2>
+    <div id="tugasIsi"></div>
   </section>
   <form id="f" autocomplete="off" novalidate>
     <section class="lp-blok">
@@ -47,6 +54,8 @@
       <h2>5. Catatan dan foto</h2>
       <label>Catatan (maksimal 500 huruf)<textarea id="catatan" rows="3" maxlength="500"></textarea></label>
       <label>Foto lokasi (boleh dikosongkan)<input id="foto" type="file" accept="image/*" capture="environment"></label>
+      <label>Tautan mosaik drone, OpenDroneMap (boleh dikosongkan)<input id="drone" type="url" inputmode="url" maxlength="200" autocomplete="off" placeholder="https://…"></label>
+      <p class="lp-kecil">Bukti padam dari drone: tempel tautan hasil olahan OpenDroneMap. Tautan ikut tertulis di catatan laporan.</p>
     </section>
     <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button>
   </form>
@@ -57,6 +66,9 @@
     <div id="rrWadah" class="lp-rr" hidden></div>
   </section>
 </main>
+<script src="/instansi_kartu.js?v=1" defer></script>
+<script src="/instansi_akses.js?v=1" defer></script>
+<script src="/lapangan_tugas.js?v=1" defer></script>
 <script src="/lapangan.js?v=1" defer></script>
 </body>
 </html>

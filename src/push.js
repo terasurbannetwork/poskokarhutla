@@ -4,7 +4,7 @@
    rute langganan dan uji menjawab 503, status menjawab {tersedia:false}, cron keluar tanpa galat. Buat kunci: node scripts/bnpb/vapid.mjs.
    Isi notifikasi hanya angka dan nama wilayah akun itu sendiri, tanpa kontak atau nama orang. Endpoint + kunci perangkat tidak pernah keluar dari server.
    Perhitungan memakai ulang logika instansi.js (tenggat, butirApiMunculLagi, butirCekUlang) dan dibatasi ke wilayah akun.
-   Darurat regu TIDAK menunggu 3 jam: belum dikerjakan (saran lanjutan, lihat laporan).
+   Darurat regu dan tugas level 3 baru TIDAK menunggu 3 jam: src/kabar.js memakai kirimKe di bawah.
    ponytail: kerja per invokasi <= 100 akun dan <= 40 kiriman (batas subrequest akun Free); sisanya dilanjut menit berikutnya lewat penanda putaran. */
 import {json, gagal, acak, bacaBody} from "./worker.js";
 import {akunAktif, tenggat, butirApiMunculLagi, butirCekUlang, tanpaTabel, PROV} from "./instansi.js";
@@ -48,7 +48,7 @@ export async function enkripsi(pesan, p256dh, auth) {
 }
 
 /* kirim satu pesan ke daftar perangkat -> [{id, status}] (status 0 = jaringan gagal). topic = ringkas akun supaya pesan lama yang belum terkirim digantikan. */
-async function kirimKe(env, subs, payload, topik, kini) {
+export async function kirimKe(env, subs, payload, topik, kini) {
   const kunci = await kunciVapid(env); payload = {...payload};
   while (te.encode(JSON.stringify(payload)).length > MAKS_PESAN && (payload.isi || "").length) payload.isi = payload.isi.slice(0, Math.max(0, payload.isi.length - 100));   // batas RFC 8291 satu record: 3993 byte
   const isi = te.encode(JSON.stringify(payload)); if (isi.length > MAKS_PESAN) throw new Error("payload push terlalu besar");
@@ -62,8 +62,8 @@ async function kirimKe(env, subs, payload, topik, kini) {
     } catch (e) { return {id: s.id, status: 0}; }
   }));
 }
-const mati = st => st === 404 || st === 410;
-const catatHasil = (env, hasil, kini) => hasil.flatMap(h => mati(h.status) ? [env.DB.prepare("DELETE FROM push_langganan WHERE id = ?").bind(h.id)]
+export const mati = st => st === 404 || st === 410;
+export const catatHasil = (env, hasil, kini) => hasil.flatMap(h => mati(h.status) ? [env.DB.prepare("DELETE FROM push_langganan WHERE id = ?").bind(h.id)]
   : [env.DB.prepare("UPDATE push_langganan SET terakhir_status = ?, terakhir_pada = ? WHERE id = ?").bind(h.status, kini, h.id)]);
 
 /* ---------------- rute ---------------- */

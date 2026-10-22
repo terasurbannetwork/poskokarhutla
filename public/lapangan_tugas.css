@@ -1,0 +1,31 @@
+/* /lapangan: bilah jaringan, tugas api (Kartu Api), peta luring. Token warna dari lapangan.css; mode gelap ikut lapor-gelap.css. Tanpa gaya inline (CSP). */
+.lp-jaringan{display:flex;align-items:center;gap:10px;margin:8px 0 0;min-height:44px;padding:8px 12px;border-radius:12px;background:rgb(255 255 255/.14);font-size:15px;font-weight:700;color:#fff}
+.lp-jaringan::before{content:"";width:12px;height:12px;border-radius:50%;background:#7bdc9c;flex:none}
+.lp-jaringan.luring{background:#7a2c1e}.lp-jaringan.luring::before{background:#ffb4a2}
+.lp-jaringan .lp-n{margin-left:auto;background:#fff;color:var(--navy);border-radius:999px;padding:2px 10px;min-width:28px;text-align:center}
+.lp-tugas{--surface:var(--card);--soft:var(--paper);display:grid;gap:12px}
+.lp-tugas h3{margin:0;font-size:20px}
+.lp-tugas-kop{display:grid;gap:4px}
+.lp-jarak{margin:0;font-weight:700;color:var(--ink)}
+.lp-simpanan{margin:0;padding:8px 12px;border-radius:12px;background:color-mix(in srgb,var(--emas) 18%,var(--card));font-size:14px;font-weight:600}
+.lp-keadaan{display:grid;gap:8px;padding:12px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--line)}
+.lp-keadaan.galat b{color:var(--merah)}
+.lp-keadaan.memuat b::after{content:"";display:inline-block;width:.8em;height:.8em;margin-left:8px;border:2px solid var(--line);border-top-color:var(--navy);border-radius:50%;animation:lp-putar 1s linear infinite}
+@keyframes lp-putar{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.lp-keadaan.memuat b::after{animation:none}}
+.lp-peta-blok{display:grid;gap:10px}
+.lp-peta{height:300px;border-radius:14px;overflow:hidden;box-shadow:0 0 0 1px var(--line);background:var(--paper)}
+.lp-peta-blok progress{width:100%;height:14px}
+/* Kartu Api dan Kartu akses di dalam halaman regu */
+.lp-tugas .kp-kartu{margin:0}
+.lp-tugas .kp-tombol{min-height:48px}
+.ak-kartu{background:var(--card);border-radius:16px;box-shadow:0 0 0 1px var(--line);padding:14px;display:grid;gap:10px}
+.ak-kartu h2{font-size:17px;margin:0}
+.ak-pil{justify-self:start;font-size:12.5px;font-weight:700;padding:3px 10px;border-radius:999px;background:color-mix(in srgb,var(--emas) 22%,transparent)}
+.ak-baris{display:grid;gap:2px;padding-top:10px;border-top:1px solid var(--line)}
+.ak-baris:first-of-type{border-top:0;padding-top:0}
+.ak-k{font-size:13px;color:var(--ink2);font-weight:600}.ak-baris b{font-size:17px}.ak-baris p{margin:2px 0 0;font-size:14px;color:var(--ink2)}
+.ak-jenis{font-size:12px;font-weight:700;padding:1px 8px;border-radius:999px;background:var(--paper);margin-left:4px}
+.ak-jalan{background:var(--paper);border-radius:12px;padding:10px 12px}
+.ak-bawa{margin:4px 0 0;padding-left:20px}
+.lp-tugas ol{margin:0;padding-left:22px}

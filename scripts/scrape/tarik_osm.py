@@ -47,7 +47,19 @@ area["ISO3166-2"="ID-{ISO[kode]}"]->.a;
 out center tags;"""
 
 
-JENIS = {"jalan": q_jalan, "sungai": q_sungai, "fasilitas": q_fasilitas}
+def q_air(kode):
+    """Tampungan air untuk sumber pompa/estafet (air_dem.py): embung, waduk, danau, kolam. Hanya titik tengah + tag."""
+    return f"""[out:json][timeout:300];
+area["ISO3166-2"="ID-{ISO[kode]}"]->.a;
+(
+  nwr[landuse~"^(reservoir|basin)$"](area.a);
+  nwr[natural=water][water~"^(reservoir|pond|lake|basin|oxbow)$"](area.a);
+  nwr[natural=water][name~"embung|waduk|danau|telaga",i](area.a);
+);
+out center tags;"""
+
+
+JENIS = {"jalan": q_jalan, "sungai": q_sungai, "fasilitas": q_fasilitas, "air": q_air}
 
 
 def ubin(kode):
@@ -81,7 +93,7 @@ if __name__ == "__main__":
     # cakupan bawaan (tanpa kode): fasilitas 9 provinsi prioritas, jalan 38 provinsi, sungai/kanal prioritas + bergambut
     from wilayah import PROVINSI
     from kanal import GAMBUT_LAIN
-    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN}
+    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN, "air": PRIORITAS + GAMBUT_LAIN}
     for j in jenis:
         for kode in kodes or bawaan[j]:
             n = sum(1 for _ in semua(kode, j))

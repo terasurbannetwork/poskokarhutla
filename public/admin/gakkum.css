@@ -69,3 +69,11 @@ body.gk-buka{overflow:hidden}
 .gk-bukti{break-inside:avoid;margin:0 0 10px}
 .gk-bukti p{margin:0 0 3px}
 .gk-curiga{color:#b3261e}
+/* manifest bukti dan rantai kustodi */
+.gk-hash{font-family:ui-monospace,Menlo,monospace;font-size:8.5px;word-break:break-all}
+.gk-hash-nihil{color:#a4401f;font-weight:700}
+.gk-man td,.gk-man th{vertical-align:top}
+.gk-man .n{white-space:nowrap}
+.gk-tb{break-inside:auto}.gk-tb tr{break-inside:avoid}
+.gk-tombolman{margin:6px 0}
+@media print{.gk-tombolman{display:none}}

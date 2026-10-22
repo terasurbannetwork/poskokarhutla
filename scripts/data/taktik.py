@@ -27,6 +27,7 @@ import datetime as dt, json, math, os, re, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
 import gambut_bara as GB  # noqa: E402
+import kalibrasi as CAL  # noqa: E402
 import operasi as OP  # noqa: E402  (kebutuhan sumber daya: rumus satu-satunya di operasi.kebutuhan/total)
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
 from akses import KAKI_KMJ, daftar_akses, pasangkan_akses  # noqa: E402  (4 km/jam, kecepatan jalan kaki graf akses.json)
@@ -436,6 +437,8 @@ def rekomendasi(t, op, kd, kl, ak, himawari, koef, omc_hari, tugas_dibuat, pm25=
     cara.sort(key=lambda c: c["peran"] != "utama")
     M_ = [c["metode"] for c in cara[:4]]  # stabil: utama dulu, heli pelengkap tak pernah di depan
     kb = kebutuhan(op0, jenis, lance, T, {"air_km": air, "jalan_km": jalan, "dekat": dekat, "sumur_bor": "sumur_bor" in M_, "injeksi": inj}, rekon=rekon) if op0 else None
+    if kb and jenis == "gambut" and CAL.n_koef(koef, "bara_regu", "ha_bara_piksel"):
+        kb["berdasarkan_insiden"] = CAL.n_koef(koef, "bara_regu", "ha_bara_piksel")   # koef bara_regu + ha_bara_piksel dikalibrasi dari isian lapangan
     if kb:
         kb["pembasah"] = pembasah(jenis, bara, kl.get("dc"), wt, op0, T, kb["melampaui_rujukan_lapangan"])
     if kb and kb["melampaui_rujukan_lapangan"]:
@@ -594,6 +597,11 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
     pm = {(r[0], r[1]): r[2] for r in hari_ini if bt is not None and r[2] >= bt}
     out = {"dibuat": tugas["dibuat"], **{k: v for k, v in tugas.items() if k not in ("dibuat", "kompleks", "taktik_ambang")},
            "taktik_ambang": {**AMBANG_META, "rumus": RUMUS}, "taktik_catatan": CATATAN, "kompleks": []}
+    kal = {n: {"n": v["kalibrasi"]["n"], "dari": v["kalibrasi"]["dari"], "sampai": v["kalibrasi"]["sampai"]} for n, v in koef.items() if isinstance(v, dict) and v.get("kalibrasi")}
+    if GB.KAL_N:
+        kal["kedalaman_bara"] = {"n": GB.KAL_N}
+    if kal:
+        out["kalibrasi"] = kal   # "berdasarkan N insiden" untuk koefisien yang dipakai kebutuhan bara; nama koefisien -> n
     for t in tugas["kompleks"]:
         t = {k: v for k, v in t.items() if k not in ("rekomendasi", "akses")}
         ak = daf_ak.get(t["id"])
@@ -610,6 +618,8 @@ def susun(tugas, op, kendala, akses, kluster, himawari, udara=None, jalan=None):
 
 
 def main():
+    OP.pasang_kalibrasi()   # KOEF operasi.py yang dipakai OP.k/OP.total sama dengan operasi.json
+    GB.pasang_kalibrasi()
     tugas = baca("tugas_kompleks.json")
     if not tugas:
         print("taktik: tugas_kompleks.json tidak ada, dilewati")
@@ -716,6 +726,10 @@ def uji():
     assert r["kebutuhan"]["target_hari"] == 3 and kb["regu"][1] == ref["regu"] and kb["personel"][1] == ref["personel"] and kb["selang_m"][1] == ref["selang"], (kb, ref)
     assert r["kebutuhan"]["dasar"]["luas_ha"] == [10, 20, 40] and kb["bor"] == [10, 20, 40] and kb["lance_cm"] == 100 and kb["jet_shooter"][1] == ref["regu_bara"], kb
     assert all(len(kb[x]) == 3 for x in ("regu", "personel", "selang_m", "bor", "heli", "air_l_hari", "jet_shooter"))
+    assert "berdasarkan_insiden" not in r["kebutuhan"]   # KOEF uji tanpa kalibrasi
+    kk = {n: dict(v, kalibrasi={"n": 12, "dari": "a", "sampai": "b"}) for n, v in KOEF.items()}
+    kk.update(bara_regu=dict(KOEF["isi_ambang"], kalibrasi={"n": 12}), ha_bara_piksel=dict(KOEF["isi_ambang"], kalibrasi={"n": 15}))
+    assert R(T(), c, {"air_km": 1.0, "kaki_km": 1.0}, {"bara": b}, koef=kk)["kebutuhan"]["berdasarkan_insiden"] == 12   # terkecil dari dua koefisien
     rm = R(T(), dict(c, jenis="mineral", isi=5), {"air_km": 1.0, "kaki_km": 1.0}, None)
     # pembasah: gambut + bara -> 1% air; gambut basah tanpa tanda kering -> null; mineral/savana -> null; DC dan muka air memicu tanpa bara
     pb = r["kebutuhan"]["pembasah"]

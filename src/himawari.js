@@ -16,6 +16,11 @@ export async function muatHimawari(env) {
   try { const o = await env.MEDIA?.get("data/himawari.json"); return o ? JSON.parse(await new Response(o.body).text()) : null; } catch (e) { return null; }
 }
 
+/* waktu data (kunci `acuan`, selalu kunci pertama) tanpa mengurai berkas: baca 300 byte awal dari R2. null = objek/kunci tidak ada. Dipakai /api/status. */
+export async function himawariDibuat(env) {
+  try { const o = await env.MEDIA?.get("data/himawari.json", {range: {offset: 0, length: 300}}); const t = o ? await new Response(o.body).text() : "", w = Date.parse(t.match(/"acuan"\s*:\s*"([^"]+)"/)?.[1]); return Number.isNaN(w) ? null : w; } catch (e) { return null; }
+}
+
 /* hw = {acuan, baris}; firms = {acuan, baris: [[lat, lon, jam(negatif, jam sebelum acuan), ...]]} atau null. Mengembalikan baris
    [lat, lon, u, frp, level, rel, qf, n, u0, baru]; baris lama 7 kolom: n = 1, u0 = u. diIndonesia(lat, lon): FIRMS di D1 membuang titik negara tetangga,
    jadi tanpa saringan ini api di Malaysia/Timor Leste/PNG selalu tampak "baru". */

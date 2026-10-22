@@ -17,7 +17,7 @@
     let r; try { r = await fetch("/api/lacak/" + jalur, {method: metode, headers: h, body: body === undefined ? undefined : JSON.stringify(body), keepalive: !!keepalive}); }
     catch (e) { return {ok: false, status: 0, j: {galat: "Tidak ada sinyal."}}; }
     const j = await r.json().catch(() => ({}));
-    return {ok: r.ok, status: r.status, j};
+    return {ok: r.ok, status: r.status, j, simpanan: r.headers.get("x-dari-cache") ? Number(r.headers.get("x-disimpan")) || 1 : 0};
   }
   const pesan = (t, k) => { const p = $("pesanUtama"); p.textContent = t || ""; p.className = "lk-pesan " + (k || ""); p.hidden = !t; };
   const jamLokal = () => new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"});
@@ -146,6 +146,8 @@
   });
 
   /* ---- mulai ---- */
+  /* service worker (public/sw-lapangan.js, scope /lacak): halaman + info tugas terakhir (per token) tetap terbuka tanpa sinyal */
+  if ("serviceWorker" in navigator) addEventListener("load", () => setTimeout(() => navigator.serviceWorker.register("/sw-lapangan.js", {scope: "/lacak"}).catch(() => {}), 1500));
   (async function muat() {
     if (!TOKEN) return matikan({galat: "Alamat tautan tidak lengkap. Buka lagi tautan dari WhatsApp."});
     try { const m = {name: "Tugas api", short_name: "Tugas api", start_url: "/lacak#" + TOKEN, scope: "/lacak", display: "standalone", orientation: "portrait", background_color: "#0b2545", theme_color: "#0b2545", icons: [{src: "/img/logo.svg", sizes: "any", type: "image/svg+xml"}]};
@@ -155,6 +157,7 @@
     if (r.status === 410) return matikan(r.j);
     if (!r.ok) { pesan(r.j.galat || "Tugas belum bisa dimuat. Periksa sinyal lalu muat ulang halaman.", "galat"); return; }
     info = r.j; $("isi").hidden = false; pesan(""); gambar();
+    if (r.simpanan) pesan(`Tanpa sinyal. Menampilkan tugas yang tersimpan${r.simpanan > 1 ? " sejak " + new Date(r.simpanan).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : ""}. Posisi baru terkirim saat sinyal kembali.`, "galat");
     if (info.penugasan.berangkat_pada) { berangkat = true; tibaSudah = !!info.penugasan.tiba_pada; status("Melanjutkan pengiriman posisi…", ""); mulaiWatch(); jagaLayar(); }
     tombolJalan();
   })();

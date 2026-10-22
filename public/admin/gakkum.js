@@ -22,7 +22,7 @@
   const kira = v => v == null || isNaN(v) ? "–" : v <= 0 ? "0" : "sekitar " + fmt(Math.max(10, Math.round(v / 10) * 10));   // satu piksel VIIRS ≈ 14 ha: tanpa presisi palsu
   const ambil = async u => { const r = await fetch(u); if (!r.ok) throw new Error(`${u} galat ${r.status}`); return r.json(); };
 
-  let IDX, IDX_RIW = "", RIW = {}, CITJ = {}, prov = "", daftar = [], jenis = "", cari = "", hal = 0;
+  let IDX, IDX_RIW = "", RIW_DIBUAT = null, RIW = {}, CITJ = {}, prov = "", daftar = [], jenis = "", cari = "", hal = 0;
   const st = {urut: "luas_bakar_ha", turun: true};
   const KOLOM = [["nama", "Konsesi"], ["jenis", "Jenis"], ["kab", "Kabupaten"], ["luas_ha", "Luas (ha)"], ["titik", "Titik 2026"], ["titik_7h", "Titik 7 hari"], ["luas_bakar_ha", "Terbakar (ha)"], ["persen_bakar", "Terbakar (%)"]];
   const nilai = (r, k) => k === "kab" ? (r.kab || []).join(", ") : r[k];
@@ -83,23 +83,85 @@
     (geom || []).forEach(g => g.coordinates && naik(g.coordinates)); return a[0] <= a[2] ? a : null;
   }
   const PADAM = {dilaporkan: "Padam dilaporkan", terverifikasi: "Padam terverifikasi satelit", muncul_lagi: "Api muncul lagi"};
+  /* SHA-256 hanya dari API (dicatat saat unggah). Tidak pernah dihitung dari gambar yang diunduh ulang: itu bukan berkas asli. */
+  const hashM = m => /^[0-9a-f]{64}$/.test(m.sha256 || "") ? `SHA-256 <code class="gk-hash">${esc(m.sha256)}</code>` : `<span class="gk-hash-nihil">hash belum tercatat (unggahan sebelum 0044)</span>`;
+  const idM = m => String(m.url || m.id || "").split("/").pop();
   const fotoBukti = m => `<figure class="gk-fig gk-bfoto"><img src="${esc(m.thumb)}" alt="Foto lapangan">
-    <figcaption>${m.jenis === "video" ? "Video, " : ""}${esc(m.exif_waktu ? wib(m.exif_waktu) : "waktu EXIF tidak ada")}<br>${m.exif_lat != null ? `${fmt(m.exif_lat, 5)}, ${fmt(m.exif_lon, 5)}` : "koordinat EXIF tidak ada"}${m.gps_curiga ? `<br><b class="gk-curiga">GPS diragukan</b>` : ""}${m.orang_terdeteksi ? `<br>${fmt(m.orang_terdeteksi)} orang terlihat` : ""}</figcaption></figure>`;
+    <figcaption>${m.jenis === "video" ? "Video, " : ""}${esc(m.exif_waktu ? wib(m.exif_waktu) : "waktu EXIF tidak ada")}<br>${m.exif_lat != null ? `${fmt(m.exif_lat, 5)}, ${fmt(m.exif_lon, 5)}` : "koordinat EXIF tidak ada"}${m.gps_curiga ? `<br><b class="gk-curiga">GPS diragukan</b>` : ""}${m.orang_terdeteksi ? `<br>${fmt(m.orang_terdeteksi)} orang terlihat` : ""}<br>${hashM(m)}</figcaption></figure>`;
   const bagianBukti = ts => ts.length ? ts.map(t => `<div class="gk-bukti"><p><b>Deteksi ${esc(wib(t.waktu_deteksi))}</b>, ${esc(t.kab)}${t.kec ? ", " + esc(t.kec) : ""}, ${fmt(t.lat, 4)}, ${fmt(t.lon, 4)}${t.luas_ha != null ? `, ${fmt(t.luas_ha, 1)} ha` : ""}</p>
       <p class="gk-sub">${esc(t.padam ? PADAM[t.padam] || t.padam : t.status === "bukan_api" ? "Dikonfirmasi bukan api" : "Belum dilaporkan padam")}${t.padam_pada ? `, ${esc(wib(t.padam_pada))}` : ""}${(() => { const i = t.isian.filter(x => x.status_api).pop(); return i ? `. Isian terakhir: api ${esc(i.status_api)}${i.lahan_teramati ? `, lahan ${esc(i.lahan_teramati)}` : ""}${i.kedalaman_bara_cm != null ? `, bara ${fmt(i.kedalaman_bara_cm)} cm` : ""}` : ""; })()}</p>
       ${t.media.length ? `<div class="gk-citra">${t.media.slice(0, 6).map(fotoBukti).join("")}</div>${t.media.length > 6 ? `<p class="gk-sub">dan ${fmt(t.media.length - 6)} berkas lain tersimpan</p>` : ""}` : `<p class="gk-sub">Belum ada foto atau video.</p>`}</div>`).join("")
     : `<p class="gk-kosong">Belum ada bukti lapangan di konsesi ini</p>`;
-  async function muatBukti(r, wadah) {
+  async function muatBukti(r, wadah, wManifest, ctx) {
     const bb = bboxGeom(r.geom);
-    if (!bb) { wadah.innerHTML = bagianBukti([]); return; }
-    try {
+    let ts = null;
+    if (!bb) ts = [];
+    else try {
       const d = await ambil(`/api/ops/bukti?bbox=${bb.map(x => +x.toFixed(5)).join(",")}`);
-      wadah.innerHTML = bagianBukti((d.tugas || []).filter(t => dalamPoli(t.lon, t.lat, r.geom)));
-    } catch (e) { wadah.innerHTML = `<p class="gk-kosong">Bukti lapangan belum bisa dibuka (butuh akses analis konsesi atau Pusdalops). Coba muat ulang.</p>`; }
+      ts = (d.tugas || []).filter(t => dalamPoli(t.lon, t.lat, r.geom));
+    } catch (e) { ts = null; }
+    wadah.innerHTML = ts ? bagianBukti(ts) : `<p class="gk-kosong">Bukti lapangan belum bisa dibuka (butuh akses analis konsesi atau Pusdalops). Coba muat ulang.</p>`;
     wadah.querySelectorAll("img").forEach(im => im.addEventListener("error", () => { const x = document.createElement("div"); x.className = "gk-nocitra"; x.textContent = "Foto tidak tersedia"; im.replaceWith(x); }));
+    await tampilManifest(r, ts, wManifest, ctx);
+  }
+
+  /* ---------- manifest bukti: daftar berurut semua butir bukti + SHA-256 JSON kanonik (kunci terurut, tanpa spasi) ---------- */
+  const kanon = v => Array.isArray(v) ? v.map(kanon) : v && typeof v === "object" ? Object.fromEntries(Object.keys(v).sort().map(k => [k, kanon(v[k])])) : v === undefined ? null : v;
+  const heks = async teks => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(teks)))].map(b => b.toString(16).padStart(2, "0")).join("");
+  const iso = ms => ms == null ? null : new Date(ms).toISOString();
+  let pencetakP;
+  const pencetak = () => pencetakP ||= (document.body.dataset.staf === "1"
+    ? fetch("/api/staf/saya").then(r => r.ok ? r.json() : null).then(j => j?.staf?.username ? "akun staf " + j.staf.username : "akun staf (tidak terbaca)").catch(() => "akun staf (tidak terbaca)")
+    : Promise.resolve("Super Admin (sesi admin)"));
+  function susunManifest(r, ts) {
+    const it = [], tambah = (jenis, o) => it.push({no: it.length + 1, jenis, ...o});
+    tambah("berkas_data", {url: D + "index.json", dibuat: IDX.dibuat || null});
+    tambah("berkas_data", {url: `${D}${prov}.json`, dibuat: null});
+    tambah("berkas_data", {url: D + "sawit_riwayat.json", dibuat: RIW_DIBUAT});
+    tambah("berkas_data", {url: D + "citra_jelas.json", dibuat: null});
+    (CITJ[r.id] || []).slice().sort((a, b) => a.tgl.localeCompare(b.tgl)).forEach(c => tambah("citra_sentinel", {adegan: c.adegan || null, tanggal: c.tgl, satelit: c.satelit || null, awan_persen: c.awan ?? null, berkas: c.f || null}));
+    const e = RIW[r.id]; e?.citra && Object.entries(e.citra).forEach(([k, c]) => c && tambah("citra_riwayat_2015", {peran: k, adegan: c.adegan || null, tanggal: c.tgl || null, berkas: c.f || null}));
+    (r.harian || []).forEach(h => tambah("titik_firms_harian", {sumber: IDX.sumber_titik, tanggal: h[0], titik: h[1]}));
+    ts === null ? tambah("bukti_lapangan", {status: "tidak dimuat (tanpa akses atau galat)"}) : ts.forEach(t => {
+      tambah("tugas_api", {id: t.id, deteksi: iso(t.waktu_deteksi), lat: t.lat, lon: t.lon, padam: t.padam || null, padam_pada: iso(t.padam_pada)});
+      (t.media || []).forEach(m => tambah("media_lapangan", {id: idM(m), tugas_id: t.id, berkas_jenis: m.jenis, sha256: /^[0-9a-f]{64}$/.test(m.sha256 || "") ? m.sha256 : null, instansi: m.instansi || null, diunggah: iso(m.dibuat),
+        exif_waktu: iso(m.exif_waktu), exif_lat: m.exif_lat ?? null, exif_lon: m.exif_lon ?? null, gps_curiga: !!m.gps_curiga,
+        diverifikasi_oleh: m.diverifikasi_oleh || null, diverifikasi_pada: iso(m.diverifikasi_pada)}));
+    });
+    return {versi: 1, konsesi_id: r.id, item: it};
+  }
+  const NAMA_JENIS = {berkas_data: "Berkas data", citra_sentinel: "Citra Sentinel-2", citra_riwayat_2015: "Citra riwayat 2015", titik_firms_harian: "Titik FIRMS harian", tugas_api: "Tugas api", media_lapangan: "Media lapangan", bukti_lapangan: "Bukti lapangan"};
+  const ringkasButir = b => b.jenis === "berkas_data" ? `${esc(b.url)}, dibuat ${esc(b.dibuat || "tidak tercatat di berkas")}`
+    : b.jenis === "citra_sentinel" ? `${esc(b.adegan || b.berkas || "")}, ${esc(tgl(b.tanggal))}`
+    : b.jenis === "citra_riwayat_2015" ? `${esc(b.peran)}, ${esc(b.adegan || b.berkas || "")}${b.tanggal ? ", " + esc(tgl(b.tanggal)) : ""}`
+    : b.jenis === "tugas_api" ? `${esc(b.id)}, deteksi ${esc(wib(b.deteksi))}, ${fmt(b.lat, 4)}, ${fmt(b.lon, 4)}`
+    : b.jenis === "media_lapangan" ? `${esc(b.id)} (${esc(b.instansi || "instansi tidak tercatat")}), ${b.sha256 ? `<code class="gk-hash">${esc(b.sha256)}</code>` : `<span class="gk-hash-nihil">hash belum tercatat (unggahan sebelum 0044)</span>`}`
+    : esc(b.status || "");
+  async function tampilManifest(r, ts, w, ctx) {
+    const man = susunManifest(r, ts), teks = JSON.stringify(kanon(man));
+    let hash = "";
+    try { hash = await heks(teks); } catch (e) { hash = ""; }
+    const oleh = await pencetak();
+    const harian = man.item.filter(b => b.jenis === "titik_firms_harian"), lain = man.item.filter(b => b.jenis !== "titik_firms_harian");
+    const baris = b => `<tr><td class="n">${fmt(b.no)}</td><td>${esc(NAMA_JENIS[b.jenis] || b.jenis)}</td><td>${ringkasButir(b)}</td></tr>`;
+    const media = man.item.filter(b => b.jenis === "media_lapangan");
+    w.innerHTML = `<table class="gk-tb gk-man"><thead><tr><th>No</th><th>Jenis</th><th>Keterangan</th></tr></thead><tbody>${lain.map(baris).join("")}${harian.length ? `<tr><td class="n">${fmt(harian[0].no)} sampai ${fmt(harian[harian.length - 1].no)}</td><td>${NAMA_JENIS.titik_firms_harian}</td><td>${fmt(harian.length)} baris (tanggal dan jumlah titik), dari ${esc(tgl(harian[0].tanggal))} sampai ${esc(tgl(harian[harian.length - 1].tanggal))}; seluruh baris ada di berkas .json</td></tr>` : ""}</tbody></table>
+      <table class="gk-kv"><tbody>${baris2("Hash manifest (SHA-256)", hash ? `<code class="gk-hash" id="gkHashMan">${esc(hash)}</code>` : `<span class="gk-hash-nihil">peramban ini tidak bisa menghitung hash (butuh https)</span>`)}
+        ${baris2("Dibuat", esc(wib(ctx.dibuat)))}${baris2("Dicetak oleh", esc(oleh))}${baris2("Isi hash", `${fmt(man.item.length)} butir, JSON kanonik (kunci terurut, tanpa spasi), UTF-8`)}
+        ${baris2("Cara memeriksa", `unduh berkas .json di bawah, lalu jalankan <code>shasum -a 256 manifest.json</code>; hasilnya harus sama dengan hash di atas`)}</tbody></table>
+      <p class="gk-sub gk-tombolman"><button type="button" class="ad-tombol kecil" id="gkUnduhMan">${ikon("berkas")}Unduh manifest (.json)</button></p>
+      <p class="gk-sub"><b>Hash membuktikan berkas tidak berubah sejak diunggah, bukan bahwa isinya benar.</b></p>`;
+    w.querySelector("#gkUnduhMan").addEventListener("click", () => {
+      const u = URL.createObjectURL(new Blob([teks], {type: "application/json"})), a = document.createElement("a");
+      a.href = u; a.download = `manifest-${r.id}.json`; document.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);
+    });
+    ctx.kustodi.innerHTML = media.length ? `<table class="gk-tb"><thead><tr><th>Berkas</th><th>Diunggah oleh</th><th>Diunggah</th><th>Diambil (EXIF)</th><th>Diverifikasi atau dimoderasi</th></tr></thead><tbody>${media.map(b => `<tr><td>${esc(b.id)}</td><td>${esc(b.instansi || "tidak tercatat")}</td><td>${esc(b.diunggah ? wib(b.diunggah) : "tidak tercatat")}</td><td>${esc(b.exif_waktu ? wib(b.exif_waktu) : "tidak ada")}${b.gps_curiga ? " (GPS diragukan)" : ""}</td><td>${esc(b.diverifikasi_oleh ? b.diverifikasi_oleh + (b.diverifikasi_pada ? ", " + wib(b.diverifikasi_pada) : "") : "tidak dicatat di data")}</td></tr>`).join("")}</tbody></table>`
+      : `<p class="gk-kosong">Tidak ada media lapangan di konsesi ini, jadi belum ada rantai kustodi.</p>`;
+    ctx.kustodi.insertAdjacentHTML("beforeend", `<p class="gk-sub">Dicetak oleh ${esc(oleh)} pada ${esc(wib(ctx.dibuat))}.</p>`);
   }
 
   /* ---------- berkas A4 ---------- */
+  const baris2 = (k, v) => `<tr><th>${esc(k)}</th><td>${v}</td></tr>`;
   const baris = (k, v) => v == null || v === "" ? "" : `<tr><th>${esc(k)}</th><td>${v}</td></tr>`;
   function figur(c, judul) {
     const src = c?.f ? (/^(\/|https?:)/.test(c.f) ? c.f : "/data/" + c.f) : "";
@@ -144,7 +206,11 @@
       <ul class="gk-sumber"><li>Titik panas: ${esc(sumT(IDX.sumber_titik))}, ${esc(tgl(IDX.dari))} sampai ${esc(sam(IDX.sampai))}. Celah: ${esc(IDX.celah)}.</li>
         <li>Batas konsesi: ${esc(sk || "tidak tercatat")}.</li>${e ? `<li>Riwayat 2015: ${esc(IDX_RIW)}</li>` : ""}
         <li>Citra: Sentinel-2 L2A (Copernicus), Landsat (USGS) bila ada.</li><li>Data diunduh dan dihitung: ${esc(wib(IDX.dibuat))}.</li></ul>
-      <p class="gk-catatan"><b>Bahan awal, bukan alat bukti sah tanpa verifikasi lapangan.</b> Batas konsesi bertanggal sekitar 2014 dan bisa sudah berubah. Berkas ini tidak dikirim ke siapa pun; hanya dicetak atau disimpan sebagai PDF oleh petugas.</p>
+      <h3>8. Manifest bukti</h3>
+      <div id="gkManifest"><p class="gk-sub">Menyusun manifest…</p></div>
+      <h3>9. Rantai kustodi</h3>
+      <div id="gkKustodi"><p class="gk-sub">Menyusun rantai kustodi…</p></div>
+      <p class="gk-catatan"><b>Bahan awal, bukan alat bukti sah tanpa verifikasi lapangan.</b> Hash membuktikan berkas tidak berubah sejak diunggah, bukan bahwa isinya benar. Batas konsesi bertanggal sekitar 2014 dan bisa sudah berubah. Berkas ini tidak dikirim ke siapa pun; hanya dicetak atau disimpan sebagai PDF oleh petugas.</p>
     </article>`;
   }
   function berkas(r) {
@@ -158,7 +224,7 @@
     m.querySelector("#gkTutup").addEventListener("click", tutup);
     m.querySelector("#gkCetak").addEventListener("click", () => window.print());
     m.querySelectorAll("img").forEach(im => im.addEventListener("error", () => { const d = document.createElement("div"); d.className = "gk-nocitra"; d.textContent = "Citra tidak tersedia"; im.replaceWith(d); }));
-    muatBukti(r, m.querySelector("#gkBukti"));
+    muatBukti(r, m.querySelector("#gkBukti"), m.querySelector("#gkManifest"), {dibuat: new Date().toISOString(), kustodi: m.querySelector("#gkKustodi")});
     m.querySelector("#gkTutup").focus();
   }
 
@@ -166,7 +232,7 @@
     app.innerHTML = `<p class="ad-redup">Memuat…</p>`;
     try {
       [IDX, RIW, CITJ] = await Promise.all([ambil(D + "index.json"),
-        ambil(D + "sawit_riwayat.json").then(d => { IDX_RIW = d.sumber?.[0] || ""; return Object.fromEntries((d.perusahaan || []).map(e => [e.id, e])); }).catch(() => ({})),
+        ambil(D + "sawit_riwayat.json").then(d => { IDX_RIW = d.sumber?.[0] || ""; RIW_DIBUAT = d.dibuat || null; return Object.fromEntries((d.perusahaan || []).map(e => [e.id, e])); }).catch(() => ({})),
         ambil(D + "citra_jelas.json").catch(() => ({}))]);
     } catch (e) { app.innerHTML = `<p class="gk-pesan galat">Data konsesi belum bisa dibuka. Coba muat ulang.</p>`; return; }
     kerangka();

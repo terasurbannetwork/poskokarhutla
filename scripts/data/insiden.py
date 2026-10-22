@@ -448,7 +448,7 @@ def langkah(ins, ks, baris, acuan, kini, fk=None, masuk=None):
         terapkan(r, cs, uk, kini, fk)
         disentuh.add(menang)
         for c in cs:
-            hasil[c["id"]] = dict(uk[c["id"]], insiden=menang)
+            hasil[c["id"]] = dict(uk[c["id"]], insiden=menang, insiden_awal=r["awal"], insiden_awal_ms=int(baca_t(r["awal"]).timestamp() * 1000))   # deteksi pertama insiden (stabil lintas putaran) -> tugas_api.terdeteksi_awal
             if r.get("luas_koreksi"):
                 hasil[c["id"]]["luas_koreksi"] = r["luas_koreksi"]
     for i, r in list(ins.items()):    # peluruhan: padam, rapikan, buang yang kedaluwarsa
@@ -561,6 +561,7 @@ def uji():
     ins = {}
     h = langkah(ins, [_kotak("K0001", -3.0, 112.0)], [], t0, t0)
     iid = h["K0001"]["insiden"]
+    assert h["K0001"]["insiden_awal"] == ins[iid]["awal"] and h["K0001"]["insiden_awal_ms"] == int(baca_t(ins[iid]["awal"]).timestamp() * 1000), h["K0001"]
     assert iid == "62-261020-001" or iid.startswith("62-2610"), iid
     h = langkah(ins, [_kotak("K0005", -3.001, 112.002)], [], jam(3), jam(3))
     assert h["K0005"]["insiden"] == iid and len(ins) == 1 and len(ins[iid]["riwayat"]) == 2, (h, ins)

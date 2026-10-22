@@ -27,6 +27,10 @@ import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
+import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
+import {RUTE_PIPA} from "./pipa.js";
+import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
+import {bersihkanKabar} from "./kabar.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
 import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
@@ -38,6 +42,7 @@ import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.j
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
 import {perbaruiSihka, dasarSihka, ruteSihka} from "./sihka.js";
+import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
 import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
@@ -463,7 +468,8 @@ async function dibuatAset(env, asal, jalur) {
   } catch (e) { return null; }
 }
 async function umurSumber(env, url, kini, [jalur, ambang]) {
-  const w = jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
+  if (jalur === "/api/himawari" && !env.MEDIA) return {dibuat: null, umur_jam: null, ambang_jam: ambang, basi: false};   // R2 tidak terpasang (uji/dev): tidak dinilai
+  const w = jalur === "/api/himawari" ? await himawariDibuat(env) : jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
   return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
 }
 async function periksaStatus(env, url, kini) {
@@ -516,6 +522,8 @@ const RUTE = {
   ...RUTE_RISET,
   ...RUTE_MEJA,
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
+  ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
+  ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
@@ -729,6 +737,7 @@ export default {
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
+      try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -767,7 +776,10 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan
     try { console.log("ews", JSON.stringify(await Ews.bersihkanEws(env, sekarang)), JSON.stringify(await Ews.kirimEws(env, sekarang))); } catch (e) { console.error("ews", e); }   // migrasi 0011 belum jalan = cron lain tetap jalan
     const kini = Date.now();   // pita gangguan di grafik statistik: sumber basi tercatat per jam
-    try { await St.catatGangguan(env, await periksaStatus(env, new URL("http://aset.lokal/"), kini), kini); } catch (e) { console.error("gangguan", e?.message); }
+    let hs = null;
+    try { hs = await periksaStatus(env, new URL("http://aset.lokal/"), kini); await St.catatGangguan(env, hs, kini); } catch (e) { console.error("gangguan", e?.message); }
+    if (hs) try { await catatRiwayatStatus(env, hs, kini); } catch (e) { console.error("riwayat status", e?.message); }   // migrasi 0042 belum jalan = dilewati
+    try { await bersihkanKabar(env, kini); await bersihkanAlarm(env, kini); } catch (e) { console.error("kabar/alarm", e?.message); }
     try { await Pub.musnahkanGaram(env, kini).run(); } catch (e) { console.error("garam", e?.message); }   // garam hari sebelumnya dimusnahkan: hash kemarin tak bisa dicocokkan lagi
     try {
       const ip = await env.DB.prepare("SELECT min(diambil) t, count(*) n FROM stat_ip").first();   // daftar IP perayap: sehari sekali

@@ -13,6 +13,7 @@ import datetime as dt, json, math, os, shutil, subprocess, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, Poligon  # noqa: E402
+import kalibrasi as KAL  # noqa: E402  (koefisien dari isian lapangan; dipasang di main/taktik.main, bukan saat impor, supaya uji hermetis)
 
 DATA = os.path.join(AKAR, "public/data")
 WIB = dt.timezone(dt.timedelta(hours=7))
@@ -132,6 +133,11 @@ KOEF = {
 }
 
 
+def pasang_kalibrasi(kal=None):
+    """Timpa KOEF (gambut, n >= KAL.N_MIN) dari public/data/kalibrasi.json bila ada. -> daftar koefisien yang ditimpa."""
+    return KAL.terapkan_koef(KOEF, kal if kal is not None else KAL.muat())
+
+
 def k(nama, s):
     """nilai koefisien untuk skenario s (0 optimis, 1 tengah, 2 pesimis)."""
     return KOEF[nama][("lo", "mid", "hi")[s]]
@@ -223,6 +229,7 @@ def baca(nama):
 
 
 def main():
+    kalibrasi = pasang_kalibrasi()
     meta, kl, ak, kn = baca("meta.json"), baca("kluster.json"), baca("akses.json") or {}, baca("kanal.json")
     bn, ans, dop, prev, res = baca("bnpb.json"), baca("fwi_ansambel.json"), baca("daops.json") or [], baca("preventif.json"), baca("operasi_resmi.json")
     gb = Poligon(os.path.join(DATA, "lahan/gambut.geojson"))
@@ -324,10 +331,11 @@ def main():
 
     hasil = {"dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%dT%H:%M+07:00"), "per": meta.get("hari_wib"), "data_terakhir": meta.get("data_terakhir"),
              "catatan": "Perkiraan perencanaan dari citra satelit dan koefisien terbuka; bukan perintah operasi. Beban kerja dalam regu-hari; halaman membaginya dengan target hari.",
-             "koef": KOEF, "rekonsiliasi": rek, "prov": prov, "kompleks": out,
+             "koef": KOEF, "kalibrasi": {nama: KOEF[nama]["kalibrasi"] for nama in kalibrasi}, "rekonsiliasi": rek, "prov": prov, "kompleks": out,
              "ringkas_T3": {s: total(out, 3, i) for s, i in S.items()}}
     json.dump(hasil, open(os.path.join(DATA, "operasi.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     t = hasil["ringkas_T3"]["tengah"]
+    print(f"operasi.json: koefisien terkalibrasi {kalibrasi or 'tidak ada (bawaan)'}")
     print(f"operasi.json: {len(out)} kompleks; T=3 tengah: {t['regu']} regu, {t['personel']} personel, {t['pompa']} pompa, {t['bor']} titik bor, {t['heli']} heli")
 
 
