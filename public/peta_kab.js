@@ -28,7 +28,10 @@
 
   /* ---------- peta ---------- */
   const ada = () => !!(peta && peta.getLayer("kab-fill"));
-  const tampil = on => ["kab-fill", "kab-line"].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"));
+  /* warna wilayah (wil-fill) mati selama peta kabupaten menyala: petak bernilai 0 transparan, jadi warna provinsi di bawahnya tembus dan
+     skala hangatnya tak terbedakan dari oranye "belum padam". Klik sudah diambil alih kab-fill (sumbernya memuat semua kabupaten), jadi tak ada yang hilang */
+  const latarWil = () => peta.getLayer("wil-fill") && peta.setLayoutProperty("wil-fill", "visibility", st.metrik ? "none" : S.panel === "riw" || Peta.lihat("wilayah") ? "visible" : "none");
+  const tampil = on => { ["kab-fill", "kab-line"].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none")); latarWil(); };
   /* di bawah label peta dasar, di atas warna wilayah: nama tempat tetap terbaca di atas pilihan warna */
   function pasang() {
     if (!D || !peta || peta.getSource("kab")) return;
@@ -152,11 +155,14 @@
       e.stopImmediatePropagation();
       if (i.checked) L.querySelectorAll('input[data-l^="kab"]').forEach(x => { if (x !== i) x.checked = false; });   /* dua pilihan warna di satu peta tidak terbaca */
       st.metrik = i.checked ? m : null; nanti(terapkan); }, true);
+    /* kotak "Warna wilayah" dan ganti panel menyalakan wil-fill lagi lewat penangan bawaan (jalan lebih dulu): padamkan lagi selagi peta kabupaten menyala */
+    L.addEventListener("change", e => { if (e.target.closest('input[data-l="wilayah"]') && st.metrik) latarWil(); });
+    const ww = Peta.warnaWil; Peta.warnaWil = function () { const r = ww.apply(this, arguments); if (st.metrik) latarWil(); return r; };
     /* ganti peta dasar = setStyle(diff:false): semua lapisan hilang, pasang ulang yang menyala */
     const tunggu = () => { if (!peta) return setTimeout(tunggu, 300);
       peta.on("style.load", () => setTimeout(() => { if (st.metrik && D) { pasang(); tampil(true); gambar(); } }, 60)); };
     tunggu();
   }
-  window.PetaKab = {klik};
+  window.PetaKab = {klik, aktif: () => !!st.metrik};
   document.readyState === "loading" ? document.addEventListener("DOMContentLoaded", hubungkan) : hubungkan();
 })();

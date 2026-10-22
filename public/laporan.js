@@ -188,11 +188,11 @@ function modelPK(P) {
   const r = R.rentang(PKD, pet.mode, ref, pet.a, pet.b) || {i0: PKD.n - 1, i1: PKD.n - 1}, [kw, lw] = R.waktuBagian(PKD, pet.mode, r.i0, r.i1, m);
   const nm = m === "luas" && r.i0 !== r.i1 ? "Jumlah luas harian (perkiraan satelit)" : I.nm;   /* luas periode = jumlah harian: area yang sama bisa terhitung di beberapa hari */
   const w = `${kw} <span class="lp-w">${lw}</span>`, wTeks = `${kw} ${lw}`;   /* label tanggal di simpulnya sendiri: kalimat tetap terjemahan tetap, tanggal ikut locale */
-  const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `${fmt(R.bulat2(x))} ha`, mt = PKD.metode || {};   /* luas satelit: dua angka penting (R.bulat2), tanpa tanda plus-minus */
+  const bd = R.banding(PKD, m, r.i0, r.i1), {sekarang, sebelum, nama} = bd, v = x => m === "hot" ? `${fmt(x)} titik` : `${fmt(x)} ha`, mt = PKD.metode || {};   /* luas satelit: angka persis seperti deck (pilihan pemilik 22 Okt 2026), tanpa tanda plus-minus */
   const rows = PKD.kode.filter(k => !P.length || P.includes(k)).map(k => ({k, nama: PKD.prov[k].nama, t: sekarang[k] || 0, tp: sebelum ? sebelum[k] || 0 : null})).filter(x => x.t > 0).sort((a, c) => c.t - a.t);
   const tot = rows.reduce((a, x) => a + x.t, 0), totNas = PKD.kode.reduce((a, k) => a + (sekarang[k] || 0), 0), top = rows[0];   /* porsi selalu dari total nasional */
   const j = !top ? `${I.kosong} ${w}` : m === "hot" ? `${Kartu.hl(fmt(rows.length))} provinsi mencatat titik panas ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${Kartu.hl(fmt(top.t))} titik)`
-    : `${nm} ${Kartu.hl(fmt(R.bulat2(tot)) + " ha")} ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${v(top.t)})`;
+    : `${nm} ${Kartu.hl(fmt(tot) + " ha")} ${w}, terbanyak ${Kartu.hl(esc(top.nama))} (${v(top.t)})`;
   const dari = r.i0 === r.i1 ? "hari sebelumnya" : "periode sebelumnya";
   /* kaki: tiap kalimat di simpulnya sendiri supaya terjemahan EN per kalimat (teks metode dari JSON diterjemahkan per kunci di en.json) */
   const tetap = t => [t, "."];   /* kalimat tetap: titik penutup di luar simpul, supaya kunci en.json tanpa titik */

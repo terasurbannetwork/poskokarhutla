@@ -203,7 +203,7 @@ test('pengabelan: peta_kab.js sah secara sintaks; index.html memuatnya sesudah p
 test('selera pemilik: angka di tooltip/popup overlay ditulis apa adanya ("1.234 ha"), tanpa tanda ±', () => {
   const j = baca('public/peta_kab.js')
   assert.doesNotMatch(j, /±/, 'peta_kab.js memakai ± (pemilik: tanpa ±)')
-  assert.match(j, /const nilai = k => hit\[k\] \? `\$\{fmt\(hit\[k\]\)\} ha` : "Tanpa deteksi"/)
+  assert.equal(R.teksKab('luas', 91322, n => n.toLocaleString('id-ID')), '91.322 ha', 'pemilik 22 Okt 2026: angka luas persis seperti deck, tidak dibulatkan')
   assert.doesNotMatch(baca('public/peta_kab.css'), /±/)
 })
 
@@ -215,7 +215,7 @@ test('en.json: kalimat baru overlay kabupaten (sumber FIRMS, deteksi ulang, belu
 
 test('overlay kabupaten: sumber disebut, periode jumlah diberi catatan deteksi ulang, satu penghitung waktu per input tanggal, warna lewat feature-state, pasang dipisah dari gambar', () => {
   const j = baca('public/peta_kab.js')
-  assert.match(j, /R\.teksKab\(st\.metrik, hit\[k\], fmt\)/, 'angka tooltip/popup lewat R.teksKab (bulat2 + belum padam 0 = "0 ha")')
+  assert.match(j, /R\.teksKab\(st\.metrik, hit\[k\], fmt\)/, 'angka tooltip/popup lewat R.teksKab (angka persis + belum padam 0 = "0 ha")')
   assert.match(j, /R\.kosongKab\(m, kls\.maks\)/, 'baris legenda petak kosong lewat R.kosongKab')
   assert.match(j, /Perkiraan satelit NASA FIRMS, bukan luas resmi\./, 'popup menyebut sumber')
   assert.match(j, /Api yang sama terhitung lagi tiap hari\./, 'jumlah periode luas diberi catatan deteksi ulang')
@@ -250,7 +250,7 @@ test('teksKab / kosongKab: belum padam 0 tidak pernah tertulis "Tanpa deteksi" (
   const f = n => n.toLocaleString('id-ID')
   assert.equal(R.teksKab('luas', undefined, f), 'Tanpa deteksi'); assert.equal(R.teksKab('luas', 0, f), 'Tanpa deteksi')
   assert.equal(R.teksKab('belum', undefined, f), '0 ha'); assert.equal(R.teksKab('belum', 0, f), '0 ha')
-  assert.equal(R.teksKab('luas', 4687, f), '4.700 ha'); assert.equal(R.teksKab('belum', 397, f), '400 ha'); assert.equal(R.teksKab('luas', 83, f), '83 ha')
+  assert.equal(R.teksKab('luas', 4687, f), '4.687 ha'); assert.equal(R.teksKab('belum', 397, f), '397 ha'); assert.equal(R.teksKab('luas', 83, f), '83 ha')
   for (const v of [undefined, 0, 5, 4687]) assert.doesNotMatch(R.teksKab('belum', v, f), /Tanpa deteksi/)
   for (const maks of [0, 1, 5, 4687]) assert.doesNotMatch(R.kosongKab('belum', maks), /Tanpa deteksi/)
   assert.equal(R.kosongKab('luas', 5), 'Tanpa deteksi'); assert.equal(R.kosongKab('luas', 0), 'Tanpa deteksi pada periode ini')
