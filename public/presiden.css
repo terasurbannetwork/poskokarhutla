@@ -1,0 +1,41 @@
+/* /presiden: hanya yang tak tercakup gaya bersama (inti/insight.css, kartu.css, tabel.css, tema.css) */
+*{box-sizing:border-box}
+html,body{margin:0}
+h3{font-family:var(--display);letter-spacing:-.018em;margin:0}
+.mark{display:flex;align-items:center;gap:10px;min-width:0}
+.mark b{font-family:var(--display);font-weight:800;font-size:15.5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.stat{margin-left:auto;display:flex;align-items:center;gap:12px}
+.upd{font-size:12px;opacity:.85;white-space:nowrap}
+.iconbtn{text-decoration:none}
+main#insight{max-width:1400px;padding:calc(var(--top) + 16px) 16px 24px;grid-template-columns:repeat(auto-fill,minmax(min(100%,560px),1fr));align-items:start}
+.kosong{padding:28px;text-align:center;color:var(--ink2)}
+#insight > .kosong{grid-column:1/-1}
+.pr-ey{display:flex;flex-wrap:wrap;gap:0 6px;align-items:flex-start}
+.pr-ey .pl{margin-bottom:8px}
+.pr-sat{text-align:right;font-size:11px;color:var(--ink2);margin-bottom:2px}
+.pr-gr{min-height:0}
+.pr-angka{display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 0}
+.pr-angka .pl{height:auto;min-height:24px;padding-block:3px;font-size:12px;white-space:normal;max-width:100%}
+#insight .ex-bd{display:grid;gap:14px}
+#insight .ex-bd:empty{display:none}
+.pr-tl{display:grid;gap:8px}
+.pr-tl > div{display:flex;gap:8px;align-items:flex-start;font-size:13px;line-height:1.45}
+.pr-tl .pl{flex:none;margin-top:1px}
+.pr-cat{margin:0;font-size:12px;font-style:italic;color:var(--ink2)}
+.pr-kosong{padding:6px 0;color:var(--ink2);font-size:13px}
+td.t{max-width:30ch;overflow:hidden;text-overflow:ellipsis}
+#insight .ex-ft .per{margin-left:auto}
+/* tertanam: latar transparan, kartu tanpa bayangan, satu kolom */
+html.emb,.emb body{background:transparent}
+.emb header.top{display:none}
+.emb main#insight{padding:0;max-width:none;grid-template-columns:minmax(0,1fr)}
+.emb #insight .ex{box-shadow:none}
+@media (max-width:640px){
+  main#insight{padding-inline:10px;gap:12px}
+  .upd{display:none}
+  .mark b{font-size:14px}
+  #insight .ex-hd{padding:14px 16px 12px}
+  #insight .ex-bd{padding:14px 16px 8px}
+  #insight .ex-ft{padding:10px 16px 14px}
+  #insight .ex h3{font-size:18px}
+}

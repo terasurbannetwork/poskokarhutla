@@ -1,0 +1,40 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Pantau Karhutla untuk Presiden</title>
+<meta name="description" content="Ringkasan karhutla untuk pimpinan: apa yang perlu ditindaklanjuti dan oleh siapa. Data terbuka, satu berkas JSON.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<script>
+  /* ?w=<id> = tampilan tertanam (iframe): selalu terang, tanpa kepala. Selain itu ikut tema tersimpan. */
+  const emb = new URLSearchParams(location.search).has("w");
+  if (emb) { document.documentElement.dataset.theme = "light"; document.documentElement.classList.add("emb"); }
+  else try { const t = JSON.parse(localStorage.getItem("pk-tema")); if (t) document.documentElement.dataset.theme = t; } catch (e) {}
+</script>
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/inti/tabel.css">
+<link rel="stylesheet" href="/inti/insight.css">
+<link rel="stylesheet" href="/inti/kartu.css">
+<link rel="stylesheet" href="/presiden.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark"><a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><b>Pantau Karhutla untuk Presiden</b></div>
+  <div class="stat">
+    <span class="upd" id="upd"></span>
+    <a class="iconbtn" href="/data/presiden/semua.json" download="presiden-semua.json" aria-label="Unduh data JSON" title="Unduh data JSON"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 20h14"/></svg></a>
+  </div>
+</header>
+<main id="insight"><div class="kosong">Memuat…</div></main>
+<script src="/inti/format.js"></script>
+<script src="/inti/kartu.js"></script>
+<script src="/presiden.js"></script>
+</body>
+</html>

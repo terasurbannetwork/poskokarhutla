@@ -45,6 +45,21 @@ uji("gel2/W1: CSP halaman /lapangan mengizinkan service worker (worker-src 'self
   const csp = r.headers.get("content-security-policy"); assert.match(csp, /worker-src 'self' blob:;/); assert.match(csp, /frame-ancestors 'none'/); assert.ok(!/worker-src blob:/.test(csp));
 });
 
+uji("gel2/presiden: /presiden publik tanpa sesi di centurisk97.id dan boleh di-iframe; /presiden.html dialihkan; halaman lain tetap terkunci", async () => {
+  const f = (u, o = {}) => U.mf.dispatchFetch("https://centurisk97.id" + u, {redirect: "manual", ...o});
+  for (const u of ["/presiden", "/presiden?w=provinsi", "/presiden/"]) {
+    const r = await f(u); assert.equal(r.status, 200, u); await r.text();
+    assert.equal(r.headers.get("x-frame-options"), null, u);
+    const csp = r.headers.get("content-security-policy-report-only"); assert.match(csp, /frame-ancestors \*;/); assert.ok(!r.headers.get("content-security-policy"));
+  }
+  const h = await f("/presiden.html?w=provinsi"); assert.equal(h.status, 303); assert.equal(h.headers.get("location"), "/presiden?w=provinsi");
+  const i = await f("/"); assert.equal(i.status, 303, "/ tetap terkunci"); assert.match(i.headers.get("location"), /^\/admin\/masuk/);
+  assert.equal((await f("/paparan")).status, 303, "halaman HTML lain tetap terkunci");
+  const hd = await f("/presiden", {method: "HEAD"}); assert.equal(hd.status, 200, "HEAD"); assert.equal(hd.headers.get("x-frame-options"), null, "HEAD tanpa XFO");
+  const ganda = await f("/presiden//"); await ganda.text(); assert.notEqual(ganda.status, 200, "/presiden// bukan pintu kedua");
+  const besar = await f("/PRESIDEN.HTML"); assert.equal(besar.status, 303); assert.match(besar.headers.get("location"), /^\/admin\/masuk/);
+});
+
 uji("gel2/W2: GET /api/lapangan/tugas: kode regu wajib, maks 20 tugas buka di kabupaten regu, regu lain tak melihat tugas regu ini, bentuk sama dengan rincian tugas, private no-store", async () => {
   const A = await regu({kab: "Katingan"}), B = await regu({nama: "Regu Dua", kab: "Kapuas"});
   assert.equal((await api("GET", "/api/lapangan/tugas")).s, 403, "tanpa kode"); assert.equal((await api("GET", "/api/lapangan/tugas", undefined, {"x-kode-regu": "0".repeat(26)})).s, 403, "kode salah");

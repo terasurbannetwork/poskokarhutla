@@ -635,7 +635,8 @@ uji("origin tak terurai ditolak 403 JSON (bukan 500) di rute POST", async () => 
 
 uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; semua halaman lain tertutup (halaman baru ikut terkunci)", async () => {
   /* /instansi masuk daftar putih atas keputusan pemilik 21 Okt 2026: pemda, polisi, dan TNI memakai akun instansi sendiri (bukan sesi admin); sesi, status aktif, dan cakupan dicek di API */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/instansi"], "daftar putih persis dua halaman, masing-masing bersama alasan");
+  /* /presiden: panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026) */
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/presiden", "/instansi"], "daftar putih persis tiga halaman, masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);

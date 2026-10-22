@@ -584,6 +584,7 @@ export const HTML_RUTE = [
   [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
   [/^\/laporan-konsesi\/?$/, "/laporan_konsesi.html", "/laporan-konsesi"],   // laporan konsesi terbakar 2026, hanya *.workers.dev   // laporan harian karhutla (public/laporan.*)
+  [/^\/presiden\/?$/, "/presiden.html", "/presiden"],   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -591,6 +592,7 @@ export const HTML_RUTE = [
 /* Cakupan: gerbang ini menutup CANGKANG HALAMAN (HTML, termasuk berkas .html yang dibuka langsung lewat run_worker_first di wrangler*.jsonc),
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
+  ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"]]);
 function halamanTerkunci(url) {
   const jalur = url.pathname.replace(/\/+$/, "") || "/";
@@ -659,6 +661,15 @@ export async function cacheTepi(req, ctx, detik, buat) {
   return out;
 }
 
+/* /presiden saja: boleh di-iframe dari domain mana pun (pemilik 22 Okt 2026). ASSETS.fetch membawa X-Frame-Options SAMEORIGIN
+   dari /* di public/_headers, jadi ditimpa di sini (satu-satunya tempat). 'unsafe-inline' untuk skrip tema di kepala presiden.html. */
+const CSP_PRESIDEN = "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors *; object-src 'none'; base-uri 'self'; form-action 'none'";
+function bisaDiIframe(res) {
+  const h = new Headers(res.headers); h.delete("x-frame-options"); h.delete("content-security-policy");
+  h.set("content-security-policy-report-only", CSP_PRESIDEN);
+  return new Response(res.body, {status: res.status, statusText: res.statusText, headers: h});
+}
+
 export default {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
@@ -685,6 +696,7 @@ export default {
     }
     if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});   // satu pintu: /instansi (CSP ketat)
+    if (url.pathname === "/presiden.html") return new Response(null, {status: 303, headers: {location: "/presiden" + url.search, "cache-control": "no-store"}});   // satu pintu: /presiden (publik, bisa di-iframe)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)
     if (HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)) {
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
@@ -692,7 +704,8 @@ export default {
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
     }
     const r = await rute(env, req, url, ctx); if (r) return r;
-    const h = await layaniHTML(req, env, ctx, url); if (h) return h;
+    const h = await layaniHTML(req, env, ctx, url);
+    if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : h;
     if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {

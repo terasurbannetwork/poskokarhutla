@@ -450,6 +450,11 @@ def main():
     except Exception as e:
         gagal = repr(e)
     print(f"laporan.json: {os.path.getsize(jalur)} byte, {len(lap['hari'])} hari, {len(lap['prov'])} prov, {len(lap['kab'])} kab, lengkap {lap['hari_lengkap']}")
+    try:   # panel presiden dibangun dari berkas yang baru ditulis; gagalnya tidak menahan laporan
+        import presiden
+        presiden.main()
+    except Exception as e:
+        print(f"peringatan: panel presiden gagal: {e!r}", file=sys.stderr)
     if gagal:
         sys.exit(f"musim_harian.json TIDAK diperbarui: {gagal}")
 
