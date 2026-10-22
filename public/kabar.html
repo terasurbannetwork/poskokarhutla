@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Kabar Api per Kabupaten</title>
+<meta name="description" content="Api prioritas per kabupaten dari deteksi satelit: lokasi, arah ke titik masuk, kebutuhan regu, dan teks siap diteruskan lewat WhatsApp.">
+<meta name="robots" content="noindex">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
+<link rel="stylesheet" href="/inti/kepala.css">
+<link rel="stylesheet" href="/inti/tema.css">
+<link rel="stylesheet" href="/instansi_kartu.css">
+<link rel="stylesheet" href="/kabar.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark"><a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><b>Kabar Api per Kabupaten</b></div>
+</header>
+<main class="kb">
+  <label class="kb-pilih"><span>Kabupaten</span><select id="kab" aria-label="Pilih kabupaten"><option value="">Memuat…</option></select></label>
+  <section id="ringkas" class="kb-ringkas" hidden></section>
+  <ol id="daftar" class="kb-daftar"></ol>
+  <p class="kb-catatan">Deteksi satelit (VIIRS, MODIS, Himawari) dan hitungan Pantau Bencana. Belum divalidasi lapangan. Yang tampil hanya api yang lolos syarat tugas: level 3, atau level 2 dekat permukiman, di konsesi, atau sedang tumbuh.</p>
+</main>
+<script src="/instansi_wilayah.js"></script>
+<script src="/instansi_kartu.js"></script>
+<script src="/kabar.js"></script>
+</body>
+</html>

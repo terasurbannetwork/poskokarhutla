@@ -76,3 +76,4 @@
 @media (prefers-reduced-motion:reduce){.lka-btn,.lka-bar i{transition:none}.lka-btn:active:not(:disabled){transform:none}}
 .lka-kartu[hidden],.lka-deck[hidden]{display:none}
 @media (max-width:560px){.lka-sumber-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.lka-sumber{padding:10px 10px;gap:6px}.lka-sumber-kepala{flex-wrap:wrap}.lka-sumber .lka-btn{flex:0 0 auto;min-height:38px}.lka-sumber .lka-redup{font-size:11.5px}}
+a.lka-chip{display:inline-flex;align-items:center;text-decoration:none}a.lka-chip[aria-current=page]{background:var(--gradien);color:#fff;box-shadow:none}

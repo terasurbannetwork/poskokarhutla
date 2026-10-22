@@ -30,8 +30,24 @@
   else { const b = baca(K_KODE); if (b && /^[0-9a-f]{26}$/.test(b)) kode = b; }
 
   /* ---- form dari daftar tetap ---- */
-  $("status").innerHTML = STATUS.map(s => `<label class="lp-pil"><input type="radio" name="status" value="${s}"><span>${NAMA_STATUS[s]}</span></label>`).join("");
-  $("kendala").innerHTML = KENDALA_KODE.map(k => `<label class="lp-cek"><input type="checkbox" value="${k}">${NAMA_KENDALA[k]}</label>`).join("");
+  /* kendala khusus api: disembunyikan untuk bahaya lain (kunci ke server tidak berubah) */
+  const KENDALA_API = new Set(["air_jauh", "akses_sulit_rawa", "air_tidak_cukup", "asap_tebal"]);
+  let bentuk = {b: "karhutla", api: true, sebut: "Api", titik: "titik api", kondisi: "Kondisi api", st: null, hipotesis: false};
+  const lokKosong = () => `Belum ada lokasi. Berdiri di dekat ${bentuk.titik}, lalu tekan tombol.`;
+  /* dipanggil lapangan_tugas.js tiap tugas tampil: kata per bahaya dari KartuApi.KAMUS, modul api (luas, padam, sumber air, drone) hanya untuk karhutla. Kecil dan sinkron (INP). */
+  let dibangun = false;
+  function atur(f) {
+    if (dibangun && f.b === bentuk.b) { bentuk = f; return; }   // bahaya sama: formulir (isian, centang) dibiarkan
+    const pilih = (document.querySelector('input[name="status"]:checked') || {}).value, kosong = !lokasi;
+    dibangun = true; bentuk = f;
+    $("status").innerHTML = STATUS.filter(s => !f.st || f.st[s]).map(s => `<label class="lp-pil"><input type="radio" name="status" value="${s}"${s === pilih ? " checked" : ""}><span>${f.st ? f.st[s] : NAMA_STATUS[s]}</span></label>`).join("");
+    $("kendala").innerHTML = KENDALA_KODE.filter(k => f.api || !KENDALA_API.has(k)).map(k => `<label class="lp-cek"><input type="checkbox" value="${k}">${NAMA_KENDALA[k]}</label>`).join("");
+    $("hKondisi").textContent = "2. " + f.kondisi; $("status").setAttribute("aria-label", f.kondisi);
+    $("hTugas").textContent = `${f.sebut} yang ditugaskan`;
+    for (const e of document.querySelectorAll("[data-api]")) { e.hidden = !f.api; if (!f.api) for (const i of e.querySelectorAll("input,select")) i.value = ""; }
+    if (kosong) $("lokasi").textContent = lokKosong();
+  }
+  atur(bentuk);
   $("air").innerHTML = `<option value="">Tidak diisi</option>` + SUMBER_AIR.map(a => `<option value="${a}">${NAMA_AIR[a]}</option>`).join("");
 
   /* ---- GPS: tiga bacaan segar berurutan ---- */
@@ -141,7 +157,7 @@
     if (!kode || !kh) return pesan("Buka dulu tautan dari posko.", "galat");
     const status = (document.querySelector('input[name="status"]:checked') || {}).value;
     if (!lokasi) return pesan("Ambil lokasi dulu (tombol 1).", "galat");
-    if (!status) return pesan("Pilih kondisi api (bagian 2).", "galat");
+    if (!status) return pesan(`Pilih ${bentuk.kondisi.toLowerCase()} (bagian 2).`, "galat");
     let luas, padam, personel;
     try { luas = angka("luas"); padam = angka("padam"); personel = angka("personel", true); } catch (x) { return pesan(x.message.replace('"luas"', '"luas terbakar"').replace('"padam"', '"dipadamkan"'), "galat"); }
     if (padam != null && (luas == null || padam > luas)) return pesan("Dipadamkan harus diisi bersama luas dan tidak boleh lebih besar dari luas.", "galat");
@@ -164,7 +180,7 @@
       if (!drafSimpan(a)) { t.disabled = false; return pesan("Ponsel menolak menyimpan draf (penyimpanan penuh atau mode pribadi).", "galat"); }
       if (adaFoto) pesan("Foto tidak ikut draf (penyimpanan ponsel penuh). Laporan tetap dikirim.", "galat");
     }
-    $("f").reset(); lokasi = null; $("lokasi").textContent = "Belum ada lokasi. Berdiri di dekat titik api, lalu tekan tombol.";
+    $("f").reset(); lokasi = null; $("lokasi").textContent = lokKosong();
     t.disabled = false;
     await kirimAntrean();
   });
@@ -209,7 +225,7 @@
     tampilAntrean();
     if (!kode) { $("regu").textContent = "Belum ada kode regu"; $("tanpaKode").hidden = false; $("kirim").disabled = true; return; }
     $("tugas").hidden = false;
-    window.LapanganTugas?.mulai({kode: () => kode, kh: () => kh, lokasi: () => lokasi, jaringan, kodeMati: kodeTidakBerlaku, muatMapLibre});
+    window.LapanganTugas?.mulai({bentuk: atur, kode: () => kode, kh: () => kh, lokasi: () => lokasi, jaringan, kodeMati: kodeTidakBerlaku, muatMapLibre});
     try {
       const r = await fetch("/api/lapangan/saya", {headers: hdr()});
       jaringan(!r.headers.get("x-dari-cache"));

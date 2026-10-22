@@ -187,18 +187,24 @@ const jenisProv = c => (c.D.kompleks.jenis || []).map(j => ({k: j.jenis, n: j.pr
 
 /* ------------------------------------------------------------ slide */
 const REGISTRI = [];
-const slide = (id, judul, bagian, siap, gambar) => REGISTRI.push({id, judul, bagian, aktif: true, siap, gambar});
+/* bencana: ?bencana= di /paparan. Slide lama = khusus karhutla (tak berubah); slide "b_*" = bencana lain, bahannya c.B dari spek (public/laporan_bencana_spek.js dariLaporan) dan c.D.laporan (laporan.json v1).
+   berlaku(s, b) dipakai paparan.js supaya tiap halaman hanya menampilkan slide yang cocok; siap() juga menjaga bila dipanggil langsung. */
+const hz = c => !!c.bencana && c.bencana !== "karhutla", NB = c => c.namaB || "Karhutla";
+const berlaku = (s, b) => !s.khusus || s.khusus === (b && b !== "karhutla" ? "bahaya" : "karhutla");
+const slide = (id, judul, bagian, siap, gambar) => REGISTRI.push({id, judul, bagian, aktif: true, khusus: "karhutla", siap: c => hz(c) ? "khusus karhutla" : siap(c), gambar});
+const slideU = (id, judul, bagian, siap, gambar) => REGISTRI.push({id, judul, bagian, aktif: true, siap, gambar});   // dipakai semua bencana
+const slideB = (id, judul, bagian, siap, gambar) => REGISTRI.push({id, judul, bagian, aktif: true, khusus: "bahaya", siap: c => !hz(c) ? "khusus bencana selain karhutla" : c.B ? siap(c) : "berkas laporan otomatis tidak mencakup tanggal ini", gambar});
 
-slide("sampul", "Sampul", "awal", () => null, (k, c) => {
+slideU("sampul", "Sampul", "awal", () => null, (k, c) => {
   const t = c.templat.sampul || {};
   k.kotak(0, 0, W, H, {f: C.putih});
   k.kotak(9.2, 0, W - 9.2, H, {f: C.navy});
   if (c.foto) { k.gambar(c.foto.data, 9.2, 0, W - 9.2, H); k.teks(9.3, 7.17, W - 9.4, 0.18, c.foto.kredit, {s: 6.5, c: C.putih, a: "r"}); }
-  else { k.teks(9.9, 2.4, 3.1, 1.3, "Paparan Rakor Karhutla", {s: 20, b: true, c: C.putih}); k.teks(9.9, 3.5, 3.1, 1.0, `Data ${c.namaProv}, ${tglP(c.tgl)}`, {s: 11, c: "B8C4D0"}); }
+  else { k.teks(9.9, 2.4, 3.1, 1.3, `Paparan Rakor ${NB(c)}`, {s: 20, b: true, c: C.putih}); k.teks(9.9, 3.5, 3.1, 1.0, `Data ${c.namaProv}, ${tglP(c.tgl)}`, {s: 11, c: "B8C4D0"}); }
   logo(k, c, 0.6);
-  k.teks(0.6, 2.0, 8.2, 2.0, `Rapat Koordinasi Penanganan dan Pengendalian Darurat Karhutla Provinsi ${c.namaProv} Tahun 2026`, {s: 30, b: true});
+  k.teks(0.6, 2.0, 8.2, 2.0, `Rapat Koordinasi Penanganan dan Pengendalian Darurat ${NB(c)} Provinsi ${c.namaProv} Tahun 2026`, {s: 30, b: true});
   k.teks(0.6, 4.05, 8.2, 0.35, c.merek, {s: 15, b: true, c: C.biru});
-  k.teks(0.6, 4.45, 8.2, 0.3, `Ditujukan kepada seluruh pemangku kepentingan pengendalian karhutla ${c.namaProv}`, {s: 11});
+  k.teks(0.6, 4.45, 8.2, 0.3, `Ditujukan kepada seluruh pemangku kepentingan pengendalian ${NB(c).toLowerCase()} ${c.namaProv}`, {s: 11});
   k.garis(0.6, 5.0, 8.2, 5.0, {c: "555555", w: 0.75});
   let y = 5.15;
   if (t.penyaji) { k.teks(0.6, y, 8.2, 0.22, "DIPRESENTASIKAN OLEH", {s: 8, b: true, c: C.jingga}); k.teks(0.6, y + 0.27, 8.2, 0.3, t.penyaji, {s: 13, b: true}); y += 0.62; }
@@ -208,7 +214,7 @@ slide("sampul", "Sampul", "awal", () => null, (k, c) => {
   k.teks(0.6, 7.12, 8, 0.2, `${c.merek} | Copyright 2026`, {s: 7.5});
 });
 
-slide("daftar", "Daftar isi", "awal", () => null, (k, c) => {
+slideU("daftar", "Daftar isi", "awal", () => null, (k, c) => {
   k.kotak(0, 0, W, H, {f: C.putih}); k.kotak(4.75, 0, W - 4.75, H, {f: "E6E6E6"});
   logo(k, c, 0.6);
   k.teks(0.6, 3.2, 3.8, 0.7, "Daftar isi", {s: 28, b: true});
@@ -419,6 +425,69 @@ slide("lampiran_kab", "Lampiran: titik dan luas per kab/kota", "lampiran", c => 
   batangH(k, 6.95, 2.1, 5.8, 4.55, b, {lw: 2.0, s: 8});
 });
 
+/* ------------------------------------------------------------ slide bencana selain karhutla (?bencana=)
+   Bahan: c.B = dariLaporan(laporan.json v1, c.tgl) dari spek (nilai hari terpilih, sorot, prakiraan, sumber) dan c.D.laporan untuk deret hari. Tanpa angka = slide dilewati beralasan, bukan nol. */
+const adaN = v => typeof v === "number" && isFinite(v);
+const ubahB = u => u?.teks ?? "";
+const sumberB = c => c.B.sumber.map(x => x.nama).filter(Boolean).join(", ") || "laporan harian otomatis";
+const utamaB = c => c.B.metrik.find(m => m.utama);
+const deretB = (c, o) => { const i = c.B.indeks, a = Math.max(0, i - 11); return {v: o.slice(a, i + 1), l: c.D.laporan.hari.slice(a, i + 1).map(tglK)}; };
+const itemB = (c, seri) => { const d = deretB(c, seri), mx = Math.max(...d.v.filter(adaN), -1); return d.v.map((v, j) => ({l: d.l[j], v: adaN(v) ? v : 0, on: adaN(v) && v === mx && mx > 0, lab: adaN(v) ? undefined : "–"})); };
+
+slideB("b_nasional", "Situasi nasional", "situasi", c => c.B.nasional ? null : "tidak ada angka nasional pada tanggal ini", (k, c) => {
+  const B = c.B, u = B.nasional.find(m => m.utama) ?? B.nasional[0], mu = utamaB(c);
+  rangka(k, c, {
+    panel: B.nasional.slice(0, 4).map(m => ({a: `${fmt(m.nilai, m.desimal)} ${m.satuan}`.trim(), k: m.label + (m.ubah ? `, ${ubahB(m.ubah)}` : "")})),
+    judul: [R(`${fmt(u.nilai, u.desimal)} ${u.satuan}`, C.jingga), R(` ${u.label.toLowerCase()} pada ${tglP(c.tgl)}`), B.otomatis.berjalan ? R(" (hari berjalan, belum final)") : R("")],
+    sub: [R(`${NB(c)} nasional, berkas laporan harian posisi ${tglP((B.otomatis.cutoff || c.tgl).slice(0, 10))}`)],
+    sumber: sumberB(c),
+  });
+  judulBagian(k, 0.6, 1.6, 8.7, `${mu.label}, hari terakhir (${mu.satuan})`);
+  batangV(k, 0.6, 2.1, 8.7, 4.5, itemB(c, c.D.laporan.nasional[mu.k] || []), {lab: v => fmt(v, mu.desimal)});
+});
+
+slideB("b_provinsi", "Kondisi {prov}", "situasi", c => Object.keys(c.B.prov[c.prov]?.metrik || {}).length ? null : "tidak ada angka provinsi pada tanggal ini", (k, c) => {
+  const B = c.B, p = B.prov[c.prov], mu = utamaB(c), ms = B.metrik.filter(m => p.metrik[m.k] != null), uv = p.metrik[mu.k];
+  rangka(k, c, {
+    panel: ms.slice(0, 4).map(m => ({a: `${fmt(p.metrik[m.k], m.desimal)} ${m.satuan}`.trim(), k: m.label})),
+    judul: [R(c.namaProv + " ", C.biru), uv != null ? R(`${fmt(uv, mu.desimal)} ${mu.satuan}`, C.jingga) : R("tanpa angka"), R(` ${mu.label.toLowerCase()} pada ${tglP(c.tgl)}`)],
+    sumber: sumberB(c),
+  });
+  judulBagian(k, 0.6, 1.6, 8.7, `${c.namaProv}: ${mu.label}, hari terakhir (${mu.satuan})`);
+  batangV(k, 0.6, 2.1, 8.7, 4.5, itemB(c, c.D.laporan.prov[c.prov]?.[mu.k] || []), {lab: v => fmt(v, mu.desimal)});
+});
+
+slideB("b_peringkat", "Provinsi dengan nilai tertinggi", "situasi", c => Object.values(c.B.prov).some(p => adaN(p.metrik[utamaB(c).k])) ? null : "tidak ada angka provinsi pada tanggal ini", (k, c) => {
+  const B = c.B, mu = utamaB(c), ms = B.metrik.slice(0, 4), baris = Object.entries(B.prov).filter(([, p]) => adaN(p.metrik[mu.k])).sort((a, b) => b[1].metrik[mu.k] - a[1].metrik[mu.k] || a[1].nama.localeCompare(b[1].nama, "id")).slice(0, 12);
+  rangka(k, c, {judul: [R(baris[0][1].nama + " ", C.biru), R(`${fmt(baris[0][1].metrik[mu.k], mu.desimal)} ${mu.satuan}`, C.jingga), R(` paling tinggi untuk ${mu.label.toLowerCase()} pada ${tglP(c.tgl)}, dari ${Object.values(B.prov).filter(p => adaN(p.metrik[mu.k])).length} provinsi`)], sumber: sumberB(c)});
+  judulBagian(k, 0.6, 1.6, 12.15, `Provinsi, ${tglP(c.tgl)}`);
+  tabel(k, 0.6, 2.05, 12.15, [{j: "Provinsi", w: 3}, ...ms.map(m => ({j: `${m.label} (${m.satuan})`, w: 2.2, a: "r"}))],
+    baris.map(([kode, p]) => [{t: p.nama, b: kode === c.prov}, ...ms.map(m => ({t: adaN(p.metrik[m.k]) ? fmt(p.metrik[m.k], m.desimal) : "NA", b: m.utama, c: m.utama ? C.jingga : undefined}))]), {rh: 0.38, s: 9});
+});
+
+slideB("b_sorot", "Perlu perhatian", "situasi", c => c.B.sorot ? null : "berkas otomatis tidak memuat butir perlu perhatian", (k, c) => {
+  const B = c.B, so = [...B.sorot].sort((a, b) => (b.prov === c.prov) - (a.prov === c.prov)).slice(0, 7), W2 = {awas: "B8392B", siaga: C.jingga, waspada: "A88A3C", info: C.biru};
+  rangka(k, c, {judul: [R(`${B.sorot.length} butir`, C.jingga), R(" perlu perhatian pada laporan harian "), R(NB(c).toLowerCase(), C.biru)], sumber: sumberB(c)});
+  so.forEach((x, i) => { const y = 1.6 + i * 0.72;
+    k.kotak(0.6, y + 0.1, 0.95, 0.26, {f: W2[x.tingkat] || C.biru, r: 0.13}); k.teks(0.6, y + 0.1, 0.95, 0.26, String(x.tingkat).charAt(0).toUpperCase() + String(x.tingkat).slice(1), {s: 8, b: true, c: C.putih, a: "c", v: "m"});
+    k.teks(1.75, y, 10.9, 0.32, x.judul, {s: 11, b: true, v: "m"}); k.teks(1.75, y + 0.32, 10.9, 0.3, x.teks || "", {s: 9, c: C.abu2}); k.garis(0.6, y + 0.66, 12.75, y + 0.66, {c: "DDDDDD", w: 0.5}); });
+});
+
+slideB("b_prakiraan", "Prakiraan", "situasi", c => c.B.prakiraan ? null : "berkas otomatis tidak memuat prakiraan", (k, c) => {
+  const B = c.B, p = B.prakiraan, nh = p.hari.length, lw = Math.min(1.0, 7.2 / nh);
+  rangka(k, c, {judul: [R(p.judul)], sumber: sumberB(c)});
+  tabel(k, 0.6, 1.6, 12.15, [{j: "Wilayah", w: 12.15 - nh * lw}, ...p.hari.map(h => ({j: tglK(h), w: lw, a: "r"}))], p.baris.map(b => [{t: b.label, b: true}, ...p.hari.map((_, j) => adaN(b.nilai[j]) ? fmt(b.nilai[j], 2) : "NA")]), {rh: 0.4, s: 9});
+  if (p.baris[0]?.satuan) k.teks(0.6, 1.6 + 0.34 + p.baris.length * 0.4 + 0.12, 12, 0.3, `Satuan nilai: ${p.baris[0].satuan}.`, {s: 8.5, c: C.abu2});
+});
+
+slideB("b_sumber", "Sumber dan catatan data", "lampiran", () => null, (k, c) => {
+  const B = c.B, o = B.otomatis;
+  rangka(k, c, {judul: [R("Sumber dan catatan data "), R(NB(c).toLowerCase(), C.biru)], sumber: sumberB(c)});
+  const baris = [...B.sumber.map(x => [x.nama, x.catatan || ""]), ["Posisi berkas", `dibuat ${o.dibuat || "tidak tercatat"}, data terakhir masuk ${o.cutoff || "tidak tercatat"}`], ["Tanggal data", `${tglP(c.tgl)}${o.berjalan ? ", hari berjalan dan belum final" : ""}`],
+    ["Arti NA", "belum ada data pada berkas; angka tidak diisi dari hari lain"]];
+  tabel(k, 0.6, 1.6, 12.15, [{j: "Sumber atau catatan", w: 4.5}, {j: "Keterangan", w: 7.65}], baris.slice(0, 12).map(b => [{t: b[0], b: true}, b[1]]), {rh: 0.4, s: 9});
+});
+
 /* ------------------------------------------------------------ slide teks bebas (dari templat; isinya TIDAK dikarang) */
 function slideTeks(e) {
   const o = {id: e.id, judul: e.judul || "Slide teks", bagian: e.bagian || "arahan", aktif: e.aktif !== false, tambahan: true, siap: () => null};
@@ -457,5 +526,5 @@ function cekTemplat(t) {
   } catch (e) { return null; }
 }
 
-window.PaparanSlide = {urlAman, cekTemplat, lengkapi, W, H, C, REGISTRI, KanvasPptx, KanvasPdf, KanvasHtml, slideTeks, fmt, tglP, LEVEL};
+window.PaparanSlide = {urlAman, cekTemplat, lengkapi, berlaku, W, H, C, REGISTRI, KanvasPptx, KanvasPdf, KanvasHtml, slideTeks, fmt, tglP, LEVEL};
 })();

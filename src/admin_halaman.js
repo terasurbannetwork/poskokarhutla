@@ -129,11 +129,11 @@ export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…"
 <script src="/admin/korban.js?v=2"></script>`, ctx);
 
 /* Laporan Karhutla otomatis (/admin/laporan-karhutla): berkas klien memakai garis bawah (public/admin/laporan_karhutla.*) */
-export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=1" rel="stylesheet">
+export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=2" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=3"></script>
-<script src="/admin/laporan_karhutla.js?v=2" type="module"></script>`, ctx);
+<script src="/admin/laporan_karhutla.js?v=3" type="module"></script>`, ctx);
 
 /* Sortie OMC dan evaluasinya (/admin/omc): peta sasaran digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
 export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link href="/admin/omc.css?v=1" rel="stylesheet">

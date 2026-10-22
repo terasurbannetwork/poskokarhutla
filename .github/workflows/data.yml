@@ -230,7 +230,9 @@ jobs:
       # harian.py menulis ulang tugas_kompleks.json tanpa kunci insiden; tanpa langkah ini Kartu Api kosong sampai putaran titik.yml berikutnya
       - name: Insiden api, front, luas terkoreksi (boleh gagal)
         continue-on-error: true
-        run: python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+        run: |
+          python3 scripts/data/insiden.py --uji && python3 scripts/data/insiden.py || echo "::warning title=insiden::insiden.py gagal; tugas_kompleks.json tanpa kunci insiden"
+          python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
       # luas terukur Sentinel-2 (dNBR) per insiden yang sudah >= 7 hari tak terdeteksi; hasil menumpuk di public/data/luas_citra.json,
       # ikut cache data- (sama seperti insiden.json) dan terbit lewat deploy/`git add public/data`

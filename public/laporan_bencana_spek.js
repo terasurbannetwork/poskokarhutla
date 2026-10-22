@@ -10,7 +10,7 @@ import {teksWABencana} from "./laporan_bencana_wa.js";
 
 const {Baca, tanggalData, kodeDariSumber, namaProv} = K;
 const nn = v => typeof v === "number" && Number.isFinite(v);
-const id = (x, d = 0) => nn(x) ? Number(x).toLocaleString("id-ID", {maximumFractionDigits: d}) : "tidak ada data";
+const id = (x, d = 0) => nn(x) ? Number(x).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "tidak ada data";
 const potong = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 const MAKS_PRIORITAS = 6;
 export const DAMPAK = {meninggal: "meninggal", hilang: "hilang", luka: "luka", mengungsi: "mengungsi", terdampak: "jiwa terdampak"};   // semua dalam jiwa
@@ -51,7 +51,18 @@ export function pilihPrioritas(L, td, maks = MAKS_PRIORITAS) {
   return Object.entries(L.prov || {}).map(([k, p]) => [k, p?.[u.k]?.[i]]).filter(([k, v]) => /^\d{2}$/.test(k) && nn(v) && v > 0)
     .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, maks).map(x => x[0]);
 }
-const ubahDari = (a, b) => !nn(a) || !nn(b) ? null : a === b ? {arah: "tetap", persen: 0} : {arah: a > b ? "naik" : "turun", persen: b === 0 ? null : Math.round(Math.abs(a - b) / Math.abs(b) * 100)};
+/* perubahan terhadap hari sebelumnya. Persen hanya untuk cacah bulat (desimal 0): besaran berskala log atau berdesimal (magnitudo, curah hujan) memakai selisih nilai, bukan persen (presisi palsu).
+   teks = kalimat jadi, satu-satunya sumber untuk WA, slide, dan kesimpulan. */
+function ubahDari(a, b, desimal = 0) {
+  if (!nn(a) || !nn(b)) return null;
+  const f = x => id(x, desimal);
+  if (a === b) return {arah: "tetap", persen: 0, dari: b, teks: "sama dengan hari sebelumnya"};
+  const arah = a > b ? "naik" : "turun";
+  if (b === 0) return {arah, persen: null, dari: 0, teks: `${arah} dari nol`};
+  if (desimal > 0) return {arah, persen: null, dari: b, teks: `${arah} dari ${f(b)} pada hari sebelumnya`};
+  const persen = Math.round(Math.abs(a - b) / Math.abs(b) * 100);
+  return {arah, persen, dari: b, teks: `${arah} ${f(persen)} persen dari hari sebelumnya`};
+}
 /* null bila laporan.json tidak sah atau tidak mencakup tanggal data. Satu pembangun untuk snapshot (agregasi) DAN paparan (/paparan?bencana=). */
 export function dariLaporan(L, td) {
   if (!L || L.v !== 1 || !Array.isArray(L.hari) || !Array.isArray(L.metrik) || !L.metrik.length) return null;
@@ -60,7 +71,7 @@ export function dariLaporan(L, td) {
   const metrik = L.metrik.map(m => ({k: m.k, label: String(m.label), satuan: String(m.satuan ?? ""), desimal: m.desimal | 0, utama: !!m.utama, arah: m.arah ?? "netral", agregat: m.agregat ?? null}));
   if (!metrik.some(m => m.utama)) metrik[0].utama = true;
   const utama = metrik.find(m => m.utama);
-  const nasional = metrik.map(m => ({...m, nilai: nilai(L.nasional, m.k, i), kemarin: i > 0 ? nilai(L.nasional, m.k, i - 1) : null})).filter(m => m.nilai != null).map(m => ({...m, ubah: ubahDari(m.nilai, m.kemarin)}));
+  const nasional = metrik.map(m => ({...m, nilai: nilai(L.nasional, m.k, i), kemarin: i > 0 ? nilai(L.nasional, m.k, i - 1) : null})).filter(m => m.nilai != null).map(m => ({...m, ubah: ubahDari(m.nilai, m.kemarin, m.desimal)}));
   const tiga = []; for (let j = Math.max(0, i - 2); j <= i; j++) { const v = nilai(L.nasional, utama.k, j); if (v != null) tiga.push({tanggal_data: L.hari[j], nilai: v}); }
   const prov = {};
   for (const [kode, p] of Object.entries(L.prov || {})) if (/^\d{2}$/.test(kode)) {
@@ -114,7 +125,7 @@ const KATA_SORT = {awas: 3, siaga: 2, waspada: 1, info: 0};
 export function kesimpulan(s) {
   const k = [], n = s.nasional?.find(m => m.utama) ?? s.nasional?.[0];
   if (n) {
-    const u = n.ubah ? (n.ubah.arah === "tetap" ? ", sama dengan hari sebelumnya" : `, ${n.ubah.arah} ${n.ubah.persen == null ? "dari nol" : id(n.ubah.persen) + " persen"} dari hari sebelumnya`) : "";
+    const u = n.ubah ? ", " + n.ubah.teks : "";
     k.push(`Data ${s.tanggal_data}: ${id(n.nilai, n.desimal)} ${n.satuan} (${n.label})${u}.`);
   } else if (s.data_otomatis) k.push(`Pantauan otomatis ${s.nama_bencana.toLowerCase()} untuk ${s.tanggal_data} tidak tersedia (${s.data_otomatis.alasan}${s.data_otomatis.hari_lengkap ? `, hari lengkap terakhir ${s.data_otomatis.hari_lengkap}` : ""}).`);
   const wajib = s.provinsi.filter(p => p.wajib), terisi = wajib.filter(p => p.ada).length;

@@ -2,7 +2,10 @@
    dan menyusun PPTX/PDF lewat registri public/paparan_slide.js (satu fungsi gambar per slide, tiga keluaran).
    Klik tidak membekukan layar: status ditulis langsung, kerja berat per slide diselingi jeda (setTimeout 0). */
 (() => {
-const PS = window.PaparanSlide, $ = s => document.querySelector(s), KUNCI = "pk-paparan-templat";
+/* ?bencana=<bahaya>: kosong = karhutla (alur lama, tak berubah). Bahaya lain memakai laporan.json v1 bahaya itu + slide b_* (paparan_slide.js) dengan bahan dari spek (laporan_bencana_spek.js).
+   Nilai divalidasi terhadap registri (BENCANA di laporan_karhutla_spek.js) di awal(); templat lokal terpisah per bahaya supaya urutan slide karhutla tidak tertimpa. */
+const BENC = new URLSearchParams(location.search).get("bencana") || "karhutla", HZ = BENC !== "karhutla";
+const PS = window.PaparanSlide, $ = s => document.querySelector(s), KUNCI = HZ ? "pk-paparan-templat-" + BENC.replace(/[^a-z]/g, "").slice(0, 12) : "pk-paparan-templat";
 const LIB = {
   pdf: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf],   // sama dengan bagikan.js
   pptx: ["https://cdn.jsdelivr.net/npm/pptxgenjs@3.12.0/dist/pptxgen.bundle.js", () => window.PptxGenJS],
@@ -20,15 +23,16 @@ const situsW = host.endsWith(".workers.dev") || host === "centurisk97.id" || hos
 const izinPerusahaan = situsW || host === "localhost" || host === "127.0.0.1";
 const merek = situsW ? "Centurisk97" : "Pantau Bencana";
 
-const S = {draf: false, foto: null, D: null, prov: "62", tgl: null, templat: null, susunan: [], gambar: Object.create(null), logo: null, gen: 0, sibuk: false};
+const S = {bencana: BENC, namaB: "Karhutla", B: null, SB: null, draf: false, foto: null, D: null, prov: "62", tgl: null, templat: null, susunan: [], gambar: Object.create(null), logo: null, gen: 0, sibuk: false};
 const perusahaan = {};
 
 /* ---------------------------------------------------------------- templat: satu titik ganti sumber */
 const urlAman = PS.urlAman, cekTemplat = PS.cekTemplat;   // validasi templat tinggal di paparan_slide.js (murni, diuji node --test)
 async function muatTemplat() {
   /* urutan sumber (satu titik ganti): server (D1) -> bawaan berkas statis -> draf lokal yang lolos cekTemplat */
-  let t = cekTemplat(await opsi("/api/paparan/templat")); S.draf = false;
-  if (!t || (!t.slide.length && !t.tambahan.length)) t = cekTemplat(await opsi("/data/paparan_templat.json")) || {versi: 1, sampul: {}, slide: [], tambahan: []};
+  const kosong = {versi: 1, sampul: {}, slide: [], tambahan: []};
+  let t = HZ ? kosong : cekTemplat(await opsi("/api/paparan/templat")); S.draf = false;   // templat server dan bawaan hanya untuk deck karhutla
+  if (!HZ && (!t || (!t.slide.length && !t.tambahan.length))) t = cekTemplat(await opsi("/data/paparan_templat.json")) || kosong;
   try { const l = cekTemplat(JSON.parse(localStorage.getItem(KUNCI))); if (l) { S.draf = true; t = l; } } catch (e) {}
   return t;
 }
@@ -44,9 +48,9 @@ function templatSaatIni() {
   return {versi: t.versi || 1, sampul: t.sampul || {}, slide, tambahan};
 }
 function susun(t) {
-  const reg = new Map(PS.REGISTRI.map(s => [s.id, s]));
+  const ada = PS.REGISTRI.filter(s => PS.berlaku(s, BENC)), reg = new Map(ada.map(s => [s.id, s]));
   const arr = [...(t.slide || [])].sort((a, b) => a.urutan - b.urutan).filter(x => reg.has(x.id)).map(x => ({id: x.id, aktif: x.aktif !== false}));
-  PS.REGISTRI.forEach(s => { if (!arr.some(x => x.id === s.id)) arr.push({id: s.id, aktif: true}); });
+  ada.forEach(s => { if (!arr.some(x => x.id === s.id)) arr.push({id: s.id, aktif: true}); });
   (t.tambahan || []).forEach(e => { const i = arr.findIndex(x => x.id === e.setelah), n = {id: e.id, aktif: e.aktif !== false}; i < 0 ? arr.push(n) : arr.splice(i + 1, 0, n); });
   return arr;
 }
@@ -56,7 +60,7 @@ const defSlide = id => PS.REGISTRI.find(s => s.id === id) || ((S.templat.tambaha
 const namaProv = () => S.D.laporan.prov[S.prov]?.nama || S.prov;
 function ctxDasar() {
   const D = {...S.D, perusahaan: perusahaan[S.prov] || null};
-  return {D, prov: S.prov, namaProv: namaProv(), tgl: S.tgl, merek, izinPerusahaan, logo: S.logo, foto: S.foto, templat: S.templat, gambar: S.gambar};
+  return {D, bencana: BENC, namaB: S.namaB, B: S.B, prov: S.prov, namaProv: namaProv(), tgl: S.tgl, merek, izinPerusahaan, logo: S.logo, foto: S.foto, templat: S.templat, gambar: S.gambar};
 }
 function alasan(s, c) { try { return s.siap(c); } catch (e) { return "data tidak lengkap"; } }
 /* slide yang akan dibuat: aktif dan datanya siap; sekaligus nomor halaman dan data daftar isi */
@@ -117,7 +121,7 @@ function isiSampul() { const t = S.templat.sampul || {}; $("#ppPenyaji").value =
 
 /* ---------------------------------------------------------------- data */
 async function muatPerusahaan(p) {
-  if (!izinPerusahaan || perusahaan[p] !== undefined) return;
+  if (HZ || !izinPerusahaan || perusahaan[p] !== undefined) return;
   perusahaan[p] = await opsi(`/data/konsesi2026/${p}.json`);
 }
 async function muatGambarTambahan() {
@@ -144,13 +148,29 @@ async function muatFoto() {
     S.foto = {data: c.toDataURL("image/jpeg", 0.85), kredit: `Foto: ${kr.penulis}, ${kr.lisensi}`};
   } catch (e) { console.warn("foto sampul tidak dimuat", e); }
 }
+/* bahaya lain: laporan.json v1 saja; S.B = bahan hari terpilih dari spek (satu pembangun dengan snapshot laporan harian) */
+const hitungB = () => { S.B = HZ ? S.SB.dariLaporan(S.D.laporan, S.tgl) : null; };
 async function awal() {
-  const [laporan, kumulatif, sejarah, kompleks, operasi, templat] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto()]);
-  S.D = {laporan, kumulatif, sejarah, kompleks, operasi}; S.templat = templat; S.susunan = susun(templat);
-  /* satu tanggal potong untuk seluruh deck; pilihan dimulai dari batas arsip sejarah.json (titik arsip tidak bisa dipotong lebih awal) */
-  const batas = new Date(Date.parse(sejarah.dibuat.slice(0, 10)) - 864e5).toISOString().slice(0, 10), pilihan = laporan.hari.filter(h => h >= batas);
-  laporan.hari_pilihan = pilihan.length ? pilihan : laporan.hari;
-  S.tgl = laporan.hari_pilihan.includes(laporan.hari_lengkap) ? laporan.hari_lengkap : laporan.hari_pilihan.at(-1);
+  let laporan, templat;
+  if (HZ) {
+    const KS = await import("/laporan_karhutla_spek.js");
+    if (!KS.bencanaSah(BENC)) { $("#ppSt").textContent = `Bencana tidak dikenal. Pilih salah satu dari ${KS.DAFTAR_BENCANA.join(", ")}.`; $("#upd").textContent = "Bencana tidak dikenal"; return; }
+    S.SB = await import("/laporan_bencana_spek.js"); S.namaB = KS.BENCANA[BENC].nama;
+    [laporan, templat] = await Promise.all([muatJSON(KS.BENCANA[BENC].url), muatTemplat(), muatLogo(), muatFoto()]);
+    S.D = {laporan}; S.templat = templat; S.susunan = susun(templat); laporan.hari_pilihan = laporan.hari;
+    S.tgl = laporan.hari.includes(laporan.hari_lengkap) ? laporan.hari_lengkap : laporan.hari.at(-1); hitungB();
+    S.prov = S.SB.pilihPrioritas(laporan, S.tgl, 1)[0] || Object.keys(laporan.prov)[0];
+    document.title = `Paparan Rakor ${S.namaB} · ${merek}`; $("#p-paparan h1").textContent = `Paparan Rakor ${S.namaB}`;
+  } else {
+    let kumulatif, sejarah, kompleks, operasi;
+    [laporan, kumulatif, sejarah, kompleks, operasi, templat] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto()]);
+    S.D = {laporan, kumulatif, sejarah, kompleks, operasi}; S.templat = templat; S.susunan = susun(templat);
+    /* satu tanggal potong untuk seluruh deck; pilihan dimulai dari batas arsip sejarah.json (titik arsip tidak bisa dipotong lebih awal) */
+    const batas = new Date(Date.parse(sejarah.dibuat.slice(0, 10)) - 864e5).toISOString().slice(0, 10), pilihan = laporan.hari.filter(h => h >= batas);
+    laporan.hari_pilihan = pilihan.length ? pilihan : laporan.hari;
+    S.tgl = laporan.hari_pilihan.includes(laporan.hari_lengkap) ? laporan.hari_lengkap : laporan.hari_pilihan.at(-1);
+  }
+  await isiPilihanBencana();
   $("#ppProv").innerHTML = Object.entries(laporan.prov).map(([k, v]) => `<option value="${k}"${k === S.prov ? " selected" : ""}>${esc(v.nama)}</option>`).join("");
   $("#ppTgl").innerHTML = [...laporan.hari_pilihan].reverse().map(h => `<option value="${h}"${h === S.tgl ? " selected" : ""}>${PS.tglP(h)}</option>`).join("");
   PilihCantik.pasang(); isiSampul();
@@ -158,8 +178,15 @@ async function awal() {
   await Promise.all([muatPerusahaan(S.prov), muatGambarTambahan()]);
   tandaiDraf(); gambarAtur(); await pratinjau();
 }
+/* pemilih bencana: ganti = muat ulang halaman dengan ?bencana= (deck, templat, dan data semuanya milik satu bahaya) */
+async function isiPilihanBencana() {
+  const sel = $("#ppBencana"); let KS;
+  try { KS = await import("/laporan_karhutla_spek.js"); } catch (e) { sel.closest("label").hidden = true; return; }
+  sel.innerHTML = KS.DAFTAR_BENCANA.map(b => `<option value="${b}"${b === BENC ? " selected" : ""}>${esc(KS.BENCANA[b].nama)}</option>`).join("");
+  sel.onchange = () => { location.search = sel.value === "karhutla" ? "" : "?bencana=" + sel.value; };
+}
 $("#ppProv").addEventListener("change", async e => { S.prov = e.target.value; await muatPerusahaan(S.prov); gambarAtur(); jadwalkan(); });
-$("#ppTgl").addEventListener("change", e => { S.tgl = e.target.value; $("#upd").textContent = "Data s.d. " + PS.tglP(S.tgl); gambarAtur(); jadwalkan(); });
+$("#ppTgl").addEventListener("change", e => { S.tgl = e.target.value; hitungB(); $("#upd").textContent = "Data s.d. " + PS.tglP(S.tgl); gambarAtur(); jadwalkan(); });
 window.addEventListener("resize", () => requestAnimationFrame(skala));
 
 /* ---------------------------------------------------------------- unduh */
@@ -170,10 +197,10 @@ async function unduh(jenis) {
   const tombol = [$("#ppPptx"), $("#ppPdf")], st = $("#ppSt"); tombol.forEach(b => b.disabled = true);
   try {
     st.textContent = "Memuat pustaka…"; await muatLib(jenis); await muatGambarTambahan(); await jeda();
-    const rc = rencana(), n = rc.length, nama = `Paparan-Rakor-Karhutla-${namaProv().replace(/\s+/g, "-")}-${S.tgl}.${jenis}`;
+    const rc = rencana(), n = rc.length, nama = `Paparan-Rakor-${S.namaB.replace(/[\s,]+/g, "-")}-${namaProv().replace(/\s+/g, "-")}-${S.tgl}.${jenis}`;
     let blob;
     if (jenis === "pptx") {
-      const P = new window.PptxGenJS(); P.layout = "LAYOUT_WIDE"; P.title = `Paparan Rakor Karhutla ${namaProv()}`; P.company = merek;
+      const P = new window.PptxGenJS(); P.layout = "LAYOUT_WIDE"; P.title = `Paparan Rakor ${S.namaB} ${namaProv()}`; P.company = merek;
       for (let i = 0; i < n; i++) { st.textContent = `Menyusun slide ${i + 1}/${n}…`; await jeda(); rc[i].s.buat(rc[i].c).pptx(P.addSlide()); }
       st.textContent = "Mengemas berkas PPTX…"; await jeda(); blob = await P.write({outputType: "blob"});
     } else {

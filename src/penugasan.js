@@ -11,7 +11,9 @@ import {json, gagal, acak, sha, bacaBody, normalWA, ipHash} from "./worker.js";
 import {tx, num} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {km} from "./titik.js";
-import {akunAktif, tugasDalam, dalamLingkup, jsonAman} from "./instansi.js";
+import {akunAktif, tugasDalam, dalamLingkup, jsonAman, bencanaPer} from "./instansi.js";
+import {labelBencana} from "./tugas_bencana.js";
+const tandaiBencana = async (env, t, id) => { t.bencana = (await bencanaPer(env, [{id}])).get(id) ?? "karhutla"; t.bencana_nama = labelBencana(t.bencana).nama; };
 import {modAtauStaf, dalamWilayahStaf, stafNyata, P_VALIDASI} from "./staf.js";
 import {gudangTerdekat} from "./inventaris.js";
 import {kabarDarurat} from "./kabar.js";
@@ -97,7 +99,7 @@ async function daftarUntukTugas(env, t, kini, akunId) {
 /* ================================================================ sisi akun instansi (sesi) */
 const pesanTugas = (t, p, tautan, kedaluwarsa) => {
   const tempat = [t.kec, t.kab].filter(Boolean).join(", "), sampai = new Date(kedaluwarsa).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "long", hour: "2-digit", minute: "2-digit"});
-  return `Yth. ${p.nama}. Anda ditugaskan ke titik api di ${tempat} (koordinat ${Number(t.lat).toFixed(4)}, ${Number(t.lon).toFixed(4)}) sebagai ${PERAN[p.peran].toLowerCase()}. Buka tautan ini untuk checklist persiapan, navigasi, dan berbagi posisi saat berangkat: ${tautan} `
+  return `Yth. ${p.nama}. Anda ditugaskan ke ${t.bencana && t.bencana !== "karhutla" ? "lokasi " + t.bencana_nama.toLowerCase() : "titik api"} di ${tempat} (koordinat ${Number(t.lat).toFixed(4)}, ${Number(t.lon).toFixed(4)}) sebagai ${PERAN[p.peran].toLowerCase()}. Buka tautan ini untuk checklist persiapan, navigasi, dan berbagi posisi saat berangkat: ${tautan} `
     + `Tautan berlaku sampai ${sampai} WIB. Jangan bagikan tautan ini ke orang lain. Hati-hati di jalan.`;
 };
 const tautanWa = (no, teks) => `https://wa.me/${no ?? ""}?text=${encodeURIComponent(teks)}`;
@@ -107,6 +109,7 @@ async function tokenBaru() { const token = acak(18); return {token, sha: await s
 async function buat(env, req, url, kini, id) {
   const a = await akunAktif(env, req, kini); if (a instanceof Response) return a;
   const t = await tugasDalam(env, a, id); if (t instanceof Response) return t;
+  await tandaiBencana(env, t, id);
   const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
   const o = b.o, nama = tx(o.nama, 80); if (!nama || nama.length < 2) return gagal(400, "nama orang yang ditugaskan 2-80 karakter");
   if (!Object.hasOwn(PERAN, o.peran)) return gagal(400, `peran harus ${Object.keys(PERAN).join("/")}`);
@@ -151,6 +154,7 @@ async function terbitUlang(env, req, url, kini, pid) {
   if (p.tstatus !== "buka") return gagal(409, "tugas ini sudah ditutup; tautan tidak bisa diterbitkan ulang");
   if (p.status === "selesai") return gagal(409, "penugasan ini sudah selesai; riwayat waktunya tidak boleh dihapus. Buat penugasan baru bila perlu.");
   const l = await laju(env, a.id, "instansi.tugaskan", [[JAM, 60]], kini); if (l) return l;
+  await tandaiBencana(env, p, p.tugas_id);
   const {token, sha: th} = await tokenBaru(), kedaluwarsa = kini + jam * JAM;
   await env.DB.prepare("UPDATE penugasan SET token_sha = ?, status = 'aktif', kedaluwarsa = ?, dibuka_pada = NULL, berangkat_pada = NULL, tiba_pada = NULL, selesai_pada = NULL WHERE id = ?").bind(th, kedaluwarsa, pid).run();
   return json(hasilTautan(url, p, {...p, wa: p.akun_id === a.id ? p.wa : null}, token, kedaluwarsa), 201);

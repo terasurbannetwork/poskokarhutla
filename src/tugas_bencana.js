@@ -8,8 +8,12 @@
    Urutan kunci top-level dari pipeline: dibuat, bencana, lengkap, [label], syarat_ambang, kompleks. kekeringan: butir otomatis:false (hanya memperbarui tugas yang sudah ada) dan membawa `hipotesis` (bool) di kartu.
    Kunci tugas bahaya lain = butir.id (kode kejadian stabil, mis. B0038; disimpan sebagai insiden di tugas_kartu); tanpa id baru jatuh ke lokasi 2 km.
    Aturan selesai (`reda`): butir dianggap "reda" bila id-nya hilang dari berkas, atau status ada di `normal`, atau level <= `levelMaks`, atau kartu.level <= `kartuLevelMaks`.
+   umurMaksJam (opsional): tugas buka yang lebih tua dari ini ditutup otomatis oleh tutupKedaluwarsa (instansi.js), dijalankan tiap jam di bersihkanInstansi; berlaku juga bila reda: null.
    `berturut` versi berturut-turut yang reda menutup tugas otomatis (status padam, padam_verif padam_terverifikasi). reda: null = tanpa penutupan otomatis (laporan regu saja).
    Murni: tanpa impor, aman dipakai push/kabar/pantau/sla tanpa siklus. */
+/* ANGKA KEBIJAKAN, bukan angka bersumber (tidak ditemukan di docs repo): jendela kaji cepat gempa. Tugas gempa yang `dibuat`-nya lebih tua dari ini ditutup otomatis
+   (padam_dilaporkan, lalu padam_terverifikasi 48 jam kemudian) karena tak ada sinyal "reda" untuk gempa. Pemilik boleh mengubahnya di sini saja. */
+export const UMUR_KAJI_CEPAT_JAM = 72;
 export const KUNCI_UMUM = ["insiden", "front", "masuk", "insiden_awal_ms", "insiden_awal", "nama", "tingkat", "mulai", "jiwa", "syarat"];
 const NORMAL = ["normal", "aman", "surut", "selesai", "berakhir"];
 /* kunciKartu = KUNCI_UMUM + kartu hazard dari pipeline (scripts/umum/tugas.py). reda.kartuLevelMaks: kartu.level (tingkat resmi PVMBG) <= nilai = reda. */
@@ -18,7 +22,7 @@ export const BENCANA = {
     kunciKartu: ["insiden", "front", "masuk", "radius_m", "luas_aktif", "luas_koreksi", "tren", "konsesi", "syarat", "insiden_awal_ms", "insiden_awal", "jenis", "firespot"]},
   banjir: {nama: "Banjir", sebut: "Banjir", kata: "surut", berkas: "tugas_banjir.json", meta: "tugas_banjir_dibuat", reda: {berturut: 2, normal: NORMAL, levelMaks: 1},
     kunciKartu: [...KUNCI_UMUM, "jiwa_terdampak", "hujan_mm"]},
-  gempa: {nama: "Gempa", sebut: "Gempa", kata: "selesai", berkas: "tugas_gempa.json", meta: "tugas_gempa_dibuat", reda: null,
+  gempa: {nama: "Gempa", sebut: "Gempa", kata: "selesai", berkas: "tugas_gempa.json", meta: "tugas_gempa_dibuat", reda: null, umurMaksJam: UMUR_KAJI_CEPAT_JAM,
     kunciKartu: [...KUNCI_UMUM, "mag", "mmi_maks", "jiwa_mmi6", "dalam_km", "dasar"]},
   gunungapi: {nama: "Gunungapi", sebut: "Gunungapi", kata: "turun status", berkas: "tugas_gunungapi.json", meta: "tugas_gunungapi_dibuat", reda: {berturut: 1, normal: NORMAL, levelMaks: 1, kartuLevelMaks: 2},
     kunciKartu: [...KUNCI_UMUM, "level", "radius_krb_km", "jiwa_krb", "dasar"]},

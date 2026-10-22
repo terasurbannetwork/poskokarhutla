@@ -10,13 +10,13 @@ const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "
 const tglP = t => { const [y, m, d] = String(t).split("-").map(Number); return `${d} ${BULAN[m - 1]} ${y}`; };
 const tglK = t => { const [, m, d] = String(t).split("-").map(Number); return `${d} ${BULAN[m - 1].slice(0, 3)}`; };
 const nn = v => typeof v === "number" && Number.isFinite(v);
-const ang = (v, d = 0) => nn(v) ? Number(v).toLocaleString("id-ID", {minimumFractionDigits: 0, maximumFractionDigits: d}) : "NA";
+const ang = (v, d = 0) => nn(v) ? Number(v).toLocaleString("id-ID", {minimumFractionDigits: d, maximumFractionDigits: d}) : "NA";
 const ketik = (t, n) => { t = String(t ?? ""); return t.length > n ? t.slice(0, n - 1) + "…" : t; };
 const kap = t => String(t).charAt(0).toUpperCase() + String(t).slice(1);
 const TINGKAT = {awas: ["Awas", C.merah], siaga: ["Siaga", C.jingga], waspada: ["Waspada", "A88A3C"], info: ["Info", C.biru]};
 const DAMPAK = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["terdampak", "jiwa terdampak"]];
 const namaSumber = s => (s.sumber || []).map(x => x.nama).filter(Boolean).join(", ") || "laporan harian otomatis";
-const ubahTeks = u => !u ? null : u.arah === "tetap" ? "sama dengan hari sebelumnya" : `${u.arah} ${u.persen == null ? "dari nol" : ang(u.persen) + " persen"} dari hari sebelumnya`;
+const ubahTeks = u => u?.teks ?? null;
 const unggul = s => s.nasional?.find(m => m.utama) ?? s.nasional?.[0] ?? null;
 
 /* ------------------------------------------------------------ komponen */

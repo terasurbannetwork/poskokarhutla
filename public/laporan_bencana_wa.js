@@ -5,10 +5,10 @@
 import {tglPanjang, hariPanjang} from "./laporan_karhutla_wa.js";
 
 const nn = v => typeof v === "number" && Number.isFinite(v);
-const fmt = (n, d = 0) => Number(n).toLocaleString("id-ID", {maximumFractionDigits: d, minimumFractionDigits: 0});
+const fmt = (n, d = 0) => Number(n).toLocaleString("id-ID", {maximumFractionDigits: d, minimumFractionDigits: d});
 const B = t => `*${t}*`, I = t => `_${t}_`, H1 = t => `***${t}***`, H2 = t => `**${t}**`;
 const kapital = t => String(t).charAt(0).toUpperCase() + String(t).slice(1);
-const ubahTeks = u => !u ? "" : u.arah === "tetap" ? ", sama dengan hari sebelumnya" : `, ${u.arah} ${u.persen == null ? "dari nol" : fmt(u.persen) + " persen"} dari hari sebelumnya`;
+const ubahTeks = u => u?.teks ? ", " + u.teks : "";
 const namaSumber = s => (s.sumber || []).map(x => x.nama).filter(Boolean).join(", ") || "laporan harian otomatis";
 const DAMPAK = [["meninggal", "meninggal"], ["hilang", "hilang"], ["luka", "luka"], ["mengungsi", "mengungsi"], ["terdampak", "jiwa terdampak"]];
 const kalimat = t => { t = String(t).trim(); return /[.!?]$/.test(t) ? t : t + "."; };

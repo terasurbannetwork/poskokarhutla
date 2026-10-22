@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0b2545">
 <title>Lapor Lapangan | Posko Karhutla</title>
 <link rel="stylesheet" href="/lapangan.css?v=1">
-<link rel="stylesheet" href="/instansi_kartu.css?v=1">
+<link rel="stylesheet" href="/instansi_kartu.css?v=2">
 <link rel="stylesheet" href="/lapangan_tugas.css?v=1">
 <link rel="stylesheet" href="/inti/lapor-gelap.css?v=1">
 </head>
@@ -36,26 +36,26 @@
       <p id="lokasi" class="lp-kecil">Belum ada lokasi. Berdiri di dekat titik api, lalu tekan tombol.</p>
     </section>
     <section class="lp-blok">
-      <h2>2. Kondisi api</h2>
+      <h2 id="hKondisi">2. Kondisi api</h2>
       <div id="status" class="lp-pilihan" role="radiogroup" aria-label="Kondisi api"></div>
     </section>
     <section class="lp-blok">
       <h2>3. Angka</h2>
-      <label>Luas terbakar (hektare)<input id="luas" inputmode="decimal" autocomplete="off" placeholder="mis. 2,5"></label>
-      <label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal" autocomplete="off" placeholder="mis. 1"></label>
+      <label data-api>Luas terbakar (hektare)<input id="luas" inputmode="decimal" autocomplete="off" placeholder="mis. 2,5"></label>
+      <label data-api>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal" autocomplete="off" placeholder="mis. 1"></label>
       <label>Jumlah personel di lokasi<input id="personel" inputmode="numeric" autocomplete="off" placeholder="mis. 12"></label>
     </section>
     <section class="lp-blok">
       <h2>4. Kendala</h2>
       <div id="kendala" class="lp-centang"></div>
-      <label>Sumber air terdekat<select id="air"></select></label>
+      <label data-api>Sumber air terdekat<select id="air"></select></label>
     </section>
     <section class="lp-blok">
       <h2>5. Catatan dan foto</h2>
       <label>Catatan (maksimal 500 huruf)<textarea id="catatan" rows="3" maxlength="500"></textarea></label>
       <label>Foto lokasi (boleh dikosongkan)<input id="foto" type="file" accept="image/*" capture="environment"></label>
-      <label>Tautan mosaik drone, OpenDroneMap (boleh dikosongkan)<input id="drone" type="url" inputmode="url" maxlength="200" autocomplete="off" placeholder="https://…"></label>
-      <p class="lp-kecil">Bukti padam dari drone: tempel tautan hasil olahan OpenDroneMap. Tautan ikut tertulis di catatan laporan.</p>
+      <label data-api>Tautan mosaik drone, OpenDroneMap (boleh dikosongkan)<input id="drone" type="url" inputmode="url" maxlength="200" autocomplete="off" placeholder="https://…"></label>
+      <p class="lp-kecil" data-api>Bukti padam dari drone: tempel tautan hasil olahan OpenDroneMap. Tautan ikut tertulis di catatan laporan.</p>
     </section>
     <button type="submit" id="kirim" class="lp-tombol utama besar">Kirim laporan</button>
   </form>
@@ -66,9 +66,9 @@
     <div id="rrWadah" class="lp-rr" hidden></div>
   </section>
 </main>
-<script src="/instansi_kartu.js?v=1" defer></script>
+<script src="/instansi_kartu.js?v=2" defer></script>
 <script src="/instansi_akses.js?v=1" defer></script>
-<script src="/lapangan_tugas.js?v=1" defer></script>
-<script src="/lapangan.js?v=1" defer></script>
+<script src="/lapangan_tugas.js?v=2" defer></script>
+<script src="/lapangan.js?v=2" defer></script>
 </body>
 </html>

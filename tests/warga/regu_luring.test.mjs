@@ -16,7 +16,7 @@ test("acuanLokal mengambil js/css lokal saja", () => {
 });
 /* Pengikatan draf dan peta luring ke kode regu (ponsel bersama). */
 const muatLapangan = () => {   // lapangan.js penuh dengan DOM palsu (Proxy elemen)
-  const el = () => new Proxy(function () {}, {get: (t, k) => k === "addEventListener" ? () => {} : t[k], set: (t, k, v) => (t[k] = v, true), apply: () => el()});
+  const el = () => new Proxy(function () {}, {get: (t, k) => k === "addEventListener" || k === "setAttribute" ? () => {} : t[k], set: (t, k, v) => (t[k] = v, true), apply: () => el()});
   const simpan = new Map(), ls = {getItem: k => simpan.has(k) ? simpan.get(k) : null, setItem: (k, v) => simpan.set(k, String(v)), removeItem: k => simpan.delete(k)};
   const w = {location: {hash: "", pathname: "/lapangan"}, history: {replaceState() {}}, addEventListener() {}};
   const c = vm.createContext({window: w, localStorage: ls, console, JSON, Array, Number, Uint8Array, TextEncoder, Promise, setInterval() {}, setTimeout() {},
@@ -42,4 +42,32 @@ test("capLama: draf lama tanpa cap diberi hash kode tersimpan, bukan dibuang; ta
   assert.equal(saringDraf(a, "aaaa").milik.length, 1);   // kode sama: draf lama selamat
   assert.equal(saringDraf(a, "cccc").buang, 2);           // kode lain: dibuang
   assert.equal(saringDraf(capLama(lama, null), "aaaa").buang, 2);   // tanpa kode tersimpan: dibuang
+});
+
+/* Multi-bahaya: layar regu memakai KartuApi.KAMUS (satu kamus), karhutla tanpa `bencana` tidak berubah */
+import {muatKartu} from "../bnpb/kartu_fixture.mjs";
+const bentukDari = () => { const c = vm.createContext({console, Math, Set, Number}); c.globalThis = c; vm.runInContext(baca("lapangan_tugas.js"), c); return c.LapanganTugas.bentukForm; };
+test("bentukForm: tanpa bencana atau tanpa KartuApi = karhutla, teks bawaan", () => {
+  const f = bentukDari(), K = muatKartu();
+  for (const b of [f({id: 1}, K), f(null, K), f({bencana: "tidak_ada"}, K), f({bencana: "banjir"}, null)]) assert.deepEqual({...b}, {b: "karhutla", api: true, sebut: "Api", titik: "titik api", kondisi: "Kondisi api", st: null, hipotesis: false});
+});
+test("bentukForm: banjir memakai kata surut, bukan api; kunci status ke server tetap", () => {
+  const b = bentukDari()({bencana: "banjir", bencana_nama: "Banjir"}, muatKartu());
+  assert.equal(b.api, false); assert.equal(b.sebut, "Banjir"); assert.equal(b.kondisi, "Kondisi banjir");
+  assert.deepEqual(Object.keys(b.st), ["menyala", "bara", "padam", "tidak_ditemukan"]);
+  assert.equal(b.st.padam, "Sudah surut"); assert.equal(b.st.tidak_ditemukan, "Bukan banjir"); assert.equal(b.hipotesis, false);
+});
+test("bentukForm: gempa tanpa pilihan selesai; kekeringan selalu Hipotesis", () => {
+  const f = bentukDari(), K = muatKartu();
+  assert.equal(f({bencana: "gempa"}, K).st.padam, null);
+  assert.equal(f({bencana: "kekeringan"}, K).hipotesis, true);
+  assert.equal(f({bencana: "cuaca", hipotesis: true}, K).hipotesis, true);
+});
+test("lapangan: modul api hanya untuk karhutla, tanpa kamus salinan, ?v= dinaikkan", () => {
+  const h = baca("lapangan.html"), j = baca("lapangan.js"), t = baca("lapangan_tugas.js");
+  for (const k of ["Luas terbakar", "Sudah dipadamkan", "Sumber air terdekat", "Tautan mosaik drone"]) assert.match(h, new RegExp(`<label data-api>${k}`));
+  assert.match(h, /id="hKondisi"/); assert.match(h, /lapangan_tugas\.js\?v=2/); assert.match(h, /instansi_kartu\.js\?v=2/); assert.match(h, /lapangan\.js\?v=2/);
+  assert.match(j, /mulai\(\{bentuk: atur,/); assert.match(t, /bt\.api && window\.AksesKartu/); assert.match(t, /bt\.api && cara\.length/);
+  assert.doesNotMatch(j + t, /Banjir sudah surut|Mulai surut|Masih tergenang/, "kamus tidak boleh disalin");
+  assert.match(baca("sw-lapangan.js"), /VERSI = 2,/);
 });

@@ -74,3 +74,5 @@ data/terkunci/
 # jejak GPS regu ditarik CI harian dari API, bukan git
 data/jejak_regu.json
 data/jejak_regu.tmp
+# kabar api per kabupaten (scripts/data/kabar_kab.py): dibuat ulang tiap putaran titik.yml/data.yml, terbit lewat cache data-, bukan git
+public/data/kabar/

@@ -46,7 +46,7 @@ function tabel(w) {
 }
 
 function kartu(w) {
-  const kosong = w.status === "kosong", umur = w.status === "basi" && w.per ? Date.now() - new Date(w.per) : 0;
+  const kosong = w.status === "kosong", basi = w.status === "basi" && w.per;   /* basi: kartu diredupkan + tanggal data (pemilik 22 Okt) */
   const tl = w.tindak_lanjut?.length ? `<div class="pr-tl"><span class="lbl">Tindak lanjut</span>${w.tindak_lanjut.map(x => `<div>${pl(x.siapa, "var(--brand2)")}<span>${esc(x.apa)}</span></div>`).join("")}</div>` : "";
   const g = !kosong && w.grafik?.label?.length ? w.grafik : null;
   if (g && g.seri.length > 1) Kartu.leg(g.seri.map((s, i) => [WARNA[i % 4], esc(s.nama)]));
@@ -54,10 +54,10 @@ function kartu(w) {
     + (!kosong && w.baris?.length ? tabel(w) : "") + tl + (w.catatan ? `<p class="pr-cat">${esc(w.catatan)}</p>` : "");
   const angka = !kosong && w.angka?.length ? `<div class="pr-angka">${w.angka.map(kunci).join("")}</div>` : "";
   return Kartu.ex(sorot(w.judul) + "", "", "", isi, "Sumber: " + esc(w.sumber || "–"))
-    .replace('<span class="ex-ey"></span>', () => `<div class="pr-ey"><span class="ex-ey">${esc(w.label)}</span>${umur ? pl("Data berumur " + fmt.durasi(umur), "var(--warn)") : ""}</div>`)
+    .replace('<span class="ex-ey"></span>', () => `<div class="pr-ey"><span class="ex-ey">${esc(w.label)}</span>${basi ? pl("Data terakhir " + tgl(w.per.slice(0, 10) + "T23:59"), "var(--warn)") : ""}</div>`)
     .replace("</header>", () => angka + "</header>")
     .replace("</footer>", () => w.per ? `<span class="per">Per ${tgl(w.per)}</span></footer>` : "</footer>")
-    .replace("<article", () => `<article data-w="${esc(w.id)}"`);
+    .replace("<article", () => `<article data-w="${esc(w.id)}"${basi ? " data-basi" : ""}`);
 }
 
 let W = [], WM = new Map();

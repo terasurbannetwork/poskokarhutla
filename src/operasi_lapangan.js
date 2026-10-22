@@ -11,7 +11,8 @@ import {json, gagal, acak, bacaBody} from "./worker.js";
 import {tx, num, modOK, superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {km} from "./titik.js";
-import {akunAktif, dalamLingkup, jsonAman, PROV} from "./instansi.js";
+import {akunAktif, dalamLingkup, jsonAman, bencanaPer, PROV} from "./instansi.js";
+import {labelBencana} from "./tugas_bencana.js";
 import {modAtauStaf, dalamWilayahStaf, stafNyata, dariStaf} from "./staf.js";
 import {BARANG} from "./meja_spek.js";
 import {sisipLogistik} from "./meja.js";
@@ -157,7 +158,9 @@ async function sedot(env, jalur, penanda, selesai, maks = 3e5) {
 /* indeks penutup elemen JSON (objek/larik) yang dimulai di `mulai`, atau -1 bila belum lengkap. Isinya angka saja (tanpa string berkurung). */
 const penutup = (t, mulai) => { let d = 0; for (let i = mulai; i < t.length; i++) { const c = t[i]; if (c === "[" || c === "{") d++; else if (c === "]" || c === "}") { d--; if (d === 0) return i + 1; } } return -1; };
 const KLUSTER = new Map();   // id kompleks -> {waktu, nilai}; 10 menit
+const bencanaTugas = async (env, t) => (await bencanaPer(env, [t])).get(t.id) ?? "karhutla";
 async function infoKluster(env, t, kini) {
+  if (await bencanaTugas(env, t) !== "karhutla") return null;   // kluster, poligon, dan angin berasal dari tugas_kompleks.json (karhutla): banjir dkk tidak boleh menempel pada api terdekat
   let ks; try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal/data/tugas_kompleks.json")); if (!r.ok) { r.body?.cancel(); return null; } ks = (await r.json())?.kompleks; } catch (e) { return null; }
   let dekat = null;
   for (const k of Array.isArray(ks) ? ks : []) { if (!titikSah(k?.lat, k?.lon) || typeof k.id !== "string" || !/^K\d{1,8}$/.test(k.id)) continue; const j = km(t.lat, t.lon, k.lat, k.lon); if (j <= BATAS.kompleksKm && (!dekat || j < dekat.jarak_km)) dekat = {id: k.id, jarak_km: j}; }
@@ -238,7 +241,8 @@ async function petaOperasi(env, req, kini, id) {
   const drops = (await nilaiDrop(env, drop.results, kini)).map(x => bentukDrop(x, kini));
   const sk = sumber.results.map(s => ({s, j: km(t.lat, t.lon, s.lat, s.lon)})).filter(x => x.j <= BATAS.sumberKm).sort((a, b) => a.j - b.j).map(x => bentukSumber(x.s, x.j));
   const g = garis.results.map(bentukGaris);
-  return json({kini, tugas: {id: t.id, prov: t.prov, kab: t.kab, kec: t.kec, lat: t.lat, lon: t.lon, status: t.status, level: t.level, luas_ha: t.luas_ha, padam_verif: t.padam_verif, dummy: t.dummy},
+  const bc = await bencanaTugas(env, t);
+  return json({kini, tugas: {id: t.id, prov: t.prov, kab: t.kab, kec: t.kec, lat: t.lat, lon: t.lon, status: t.status, level: t.level, luas_ha: t.luas_ha, padam_verif: t.padam_verif, dummy: t.dummy, bencana: bc, bencana_nama: labelBencana(bc).nama},
     kluster: kl && {id: kl.id, jarak_km: bulat(kl.jarak_km), poligon: kl.poligon}, angin: anginDari(kl), penugasan: pen,
     garis: g.filter(x => x.jenis === "garis_api" || x.jenis === "padam"), sektor: g.filter(x => x.jenis.startsWith("sektor_")), sumber_air: sk,
     permintaan: perm.results.map(r => bentukPermintaan(r, drops.filter(x => x.permintaan_id === r.id))), drop: drops,
@@ -356,8 +360,9 @@ async function awalPeriode(env, t, kini) {
   const ketua = pen.find(p => p.peran === "ketua_regu") ?? pen[0], tempat = [t.kec, t.kab].filter(Boolean).join(", ");
   const alat = Array.isArray(rek?.alat) ? rek.alat.filter(x => typeof x === "string").join(", ").slice(0, 400) : null;
   const cuaca = ang ? `Angin ${ang.ws_kmj ?? "tidak diketahui"} km/jam${ang.dari ? ` dari ${ang.dari}` : ""}` : null;
-  return {sasaran: `Padamkan api di ${tempat}, cegah meluas ke luar sektor${cara ? `, metode utama ${cara}` : ""}.`.slice(0, 500), pj: ketua?.nama ?? null, regu: pen.map(p => `${p.nama} (${p.peran})`).slice(0, 40), alat: alat || null,
-    cuaca, keselamatan: ang?.dari ? `Pakai APD lengkap. Angin datang dari ${ang.dari}: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.` : "Pakai APD lengkap. Arah angin belum diketahui: tetapkan jalur keluar dan titik kumpul.", sektor: []};
+  const bc = await bencanaTugas(env, t), lain = bc !== "karhutla";
+  return {sasaran: (lain ? `Tangani ${labelBencana(bc).nama.toLowerCase()} di ${tempat}, utamakan keselamatan warga dan regu.` : `Padamkan api di ${tempat}, cegah meluas ke luar sektor${cara ? `, metode utama ${cara}` : ""}.`).slice(0, 500), pj: ketua?.nama ?? null, regu: pen.map(p => `${p.nama} (${p.peran})`).slice(0, 40), alat: alat || null,
+    cuaca, keselamatan: lain ? "Pakai APD sesuai bahaya. Tetapkan jalur keluar dan titik kumpul, pantau peringatan resmi." : ang?.dari ? `Pakai APD lengkap. Angin datang dari ${ang.dari}: jangan berada searah angin dari api, tetapkan jalur keluar dan titik kumpul.` : "Pakai APD lengkap. Arah angin belum diketahui: tetapkan jalur keluar dan titik kumpul.", sektor: []};
 }
 const bacaPeriode = (o, dasar) => {
   const f = {};
@@ -590,7 +595,8 @@ async function linimasa(env, req, kini, id) {
     aman("SELECT waktu, sumber, jarak_km FROM tugas_muncul WHERE tugas_id = ?", id), aman("SELECT id, catatan, dibuat FROM ops_pelajaran WHERE tugas_id = ? ORDER BY dibuat", id)]);
   const drops = await nilaiDrop(env, drop, kini), E = [];
   const tambah = (waktu, jenis, ket, ref = null) => { if (waktu != null) E.push({waktu, jenis, ket, ref}); };
-  tambah(t.dibuat, "deteksi", `Titik api terdeteksi satelit dan tugas dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}`);
+  const bc = await bencanaTugas(env, t);
+  tambah(t.dibuat, "deteksi", bc === "karhutla" ? `Titik api terdeteksi satelit dan tugas dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}` : `Tugas ${labelBencana(bc).nama.toLowerCase()} dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}`);
   tambah(t.konfirmasi_pada, "konfirmasi", "Konfirmasi lapangan diterima");
   for (const i of isian) tambah(i.dibuat, i.langkah === "konfirmasi" ? "isian_konfirmasi" : "isian_kabar", i.langkah === "konfirmasi" ? `Isian konfirmasi: ${HASIL_LABEL[i.hasil] ?? i.hasil}` : `Kabar tindakan: api ${i.status_api}`, i.id);
   for (const p of pen) { tambah(p.dibuat, "penugasan", `${p.nama} ditugaskan sebagai ${p.peran}`, p.id); tambah(p.berangkat_pada, "berangkat", `${p.nama} berangkat`, p.id); tambah(p.tiba_pada, "tiba", `${p.nama} tiba di lokasi`, p.id); tambah(p.selesai_pada, "selesai_tugas", `${p.nama} selesai bertugas`, p.id); }

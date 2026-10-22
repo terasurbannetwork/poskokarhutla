@@ -85,3 +85,5 @@ html.emb,.emb body{background:transparent}
 .pr-lg .kl i{display:inline-block;width:12px;height:9px;border-radius:2px}
 .pr-lg .kl i.bl{border-radius:50%;height:auto;opacity:.7}
 .pr-lg .cat{flex:1 0 100%;text-align:center;font-style:italic;color:#5d6d86}
+/* kartu basi: isi diredupkan, pill tanggal data tetap terbaca (pemilik 22 Okt 2026) */
+[data-basi] :is(h3,.pr-angka,.ex-bd){opacity:.5;filter:grayscale(.6)}

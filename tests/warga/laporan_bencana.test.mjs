@@ -8,6 +8,7 @@ import assert from "node:assert/strict";
 import {createHash} from "node:crypto";
 import {existsSync, readFileSync} from "node:fs";
 import path from "node:path";
+import vm from "node:vm";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
@@ -131,6 +132,68 @@ uji("adaptor membaca laporan.json v1 NYATA tiap bahaya: bagian tanpa angka dihil
   }
   assert.equal(SB.dariLaporan(JSON.parse(teks("public/gempa/data/laporan.json")), "1999-01-01"), null, "hari di luar berkas = null");
   assert.equal(SB.dariLaporan({v: 2}, "2026-01-01"), null);
+  /* besaran berdesimal (magnitudo) tidak dipersenkan: presisi palsu */
+  const mag = SB.dariLaporan({v: 1, hari: ["2026-01-01", "2026-01-02"], metrik: [{k: "m", label: "M terbesar", satuan: "M", desimal: 1, utama: true}, {k: "n", label: "Jumlah", satuan: "kejadian", desimal: 0}], nasional: {m: [4.9, 5], n: [0, 3]}, prov: {}, sumber: []}, "2026-01-02");
+  assert.deepEqual(mag.nasional.map(m => m.ubah.teks), ["naik dari 4,9 pada hari sebelumnya", "naik dari nol"]); assert.equal(mag.nasional[0].ubah.persen, null);
+  assert.match(SB.spek("gempa").teksWA(SB.spek("gempa").agregasi({tanggal_laporan: "2026-01-03", prioritas: [], kiriman: {}, laporan: {v: 1, bencana: "gempa", hari: ["2026-01-01", "2026-01-02"], metrik: [{k: "m", label: "M terbesar", satuan: "M", desimal: 1, utama: true}], nasional: {m: [4.9, 5]}, prov: {}, sumber: [{nama: "BMKG"}]}, dikunci_oleh: "a", dikunci_pada: 1})).laporan, /\*5,0 M\* \(M terbesar\), naik dari 4,9 pada hari sebelumnya/, "desimal sesuai berkas: 5,0 bukan 5");
+});
+
+/* ================================================================ deck dan paparan (skrip klasik dijalankan nyata di vm, kanvas perekam) */
+const win = {}, ctxVm = {window: win, document: {}, Intl, Date, Math};
+vm.createContext(ctxVm);
+for (const f of ["paparan_slide", "laporan_bnpb_slide", "laporan_bahaya_slide"]) vm.runInContext(teks(`public/${f}.js`), ctxVm, {filename: f});
+const PS = win.PaparanSlide, BS = win.LaporanBahayaSlide;
+const rekam = () => { const t = [], k = {teks: (x, y, w, h, r, o = {}) => t.push((typeof r === "string" ? [{t: r}] : Array.isArray(r) ? r : [r]).map(p => p.t ?? p).join("")), kotak() {}, garis() {}, bulat() {}, gambar() {}}; return {k, t}; };
+const ar = x => JSON.parse(JSON.stringify(x));   // salin lintas realm sebelum deepEqual
+const isiSlide = (sl, c) => { const r = rekam(); sl.gambar(r.k, c); return r.t.join(" | "); };
+const bersih = (x, id) => assert.ok(!/undefined|NaN|\[object|\bnull\b| · /.test(x), `slide ${id} bersih dari undefined, NaN, null, dan titik tengah: ${x.slice(0, 300)}`);
+
+uji("deck bahaya dari snapshot: slide mengikuti data, angka dan sumber tercetak, bagian null dilewati beralasan, DRAF berwatermark, tanpa nol karangan", async () => {
+  const SPB = SB.spek("banjir"), isiKiriman = SPB.normalisasi("prov:72", SULTENG, "2026-10-20", true).isi;
+  const snapB = SPB.agregasi({tanggal_laporan: "2026-10-20", prioritas: ["72", "62"], kiriman: {"prov:72": {isi: isiKiriman}}, pengecualian: [{sumber: "prov:62", alasan: "Kalteng belum mengirim laporan"}], laporan: FX.banjir(), dikunci_oleh: "admin", dikunci_pada: 1});
+  const d = BS.deck(snapB), lewatB = Object.fromEntries(d.dilewati.map(y => [y.id, y.alasan])), t = d.slide.map((x, i) => isiSlide(x, {no: i + 1, total: d.slide.length, aset: {}, s: snapB, ex: {lewat: lewatB}, tahun: "2026"}));
+  assert.deepEqual(ar(d.slide.map(x => x.id)), ["utama", "tren", "provinsi", "lapprov", "sorot", "metode"]); assert.deepEqual(ar(d.dilewati.map(x => x.id)), ["prakiraan"]); assert.match(d.dilewati[0].alasan, /tidak memuat prakiraan/);
+  for (const x of ["5 kecamatan", "siaga atau awas banjir", "9.823", "naik 25 persen dari hari sebelumnya", "BMKG, InaRISK BNPB"]) assert.ok(t[0].includes(x), `utama memuat "${x}"`);
+  assert.ok(t[1].includes("2 menjadi 5 kecamatan") && t[1].includes("17 Oktober 2026"), "tren dari tiga hari fixture"); assert.ok(t[2].includes("Sulawesi Tengah") && t[2].includes("Kalimantan Tengah") && t[2].includes("lanjut tanpa laporan: Kalteng belum mengirim laporan"), "provinsi dan pengecualian");
+  assert.ok(t[3].includes("3 meninggal, 1 hilang, 5 luka, 200 mengungsi, 1.500 jiwa terdampak") && t[3].includes("Evakuasi dan dapur umum"), "laporan provinsi"); assert.ok(t[4].includes("Sulawesi Tengah: 3 kecamatan siaga banjir")); assert.ok(t[5].includes("Prakiraan: berkas otomatis tidak memuat prakiraan") && t[5].includes("Kalimantan Tengah: data terakhir tidak ada"), "metode mencatat slide dilewati dan pengecualian");
+  d.slide.forEach((x, i) => bersih(t[i], x.id));
+  const draf = rekam(); BS.deck(snapB, {draf: true}).slide[0].gambar(draf.k, {no: 1, aset: {}, s: snapB, ex: {lewat: {}}, tahun: "2026", draf: true}); assert.ok(draf.t.includes("DRAF"), "watermark DRAF");
+  assert.match(BS.namaBerkas({...snapB, ralat: 2}, "pptx"), /^Laporan-Harian-Banjir-20-Okt-2026-Ralat-2\.pptx$/);
+  /* gunungapi jarang: tanpa kiriman, metrik null tidak jadi nol; tanpa berkas otomatis semua bagian dilewati beralasan dan utama menulis belum ada data */
+  const sg = SB.spek("gunungapi").agregasi({tanggal_laporan: "2026-10-20", prioritas: ["35"], kiriman: {}, laporan: FX.gunungapi(), dikunci_oleh: "a", dikunci_pada: 1}), dg = BS.deck(sg), tg = dg.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: sg, ex: {lewat: {}}, tahun: "2026"}));
+  assert.deepEqual(ar(dg.slide.map(x => x.id)), ["utama", "tren", "provinsi", "sorot", "metode"], "tanpa laporan provinsi: slide lapprov dilewati"); assert.ok(dg.dilewati.find(x => x.id === "lapprov").alasan.length > 10); assert.ok(!tg[0].includes("bandara"), "bandara_abu null tidak digambar"); tg.forEach((x, i) => bersih(x, dg.slide[i].id));
+  const kosong = SB.spek("gunungapi").agregasi({tanggal_laporan: "2026-10-25", prioritas: [], kiriman: {}, laporan: FX.gunungapi(), dikunci_oleh: "a", dikunci_pada: 1}), dk = BS.deck(kosong), tk = dk.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: kosong, ex: {lewat: Object.fromEntries(dk.dilewati.map(y => [y.id, y.alasan]))}, tahun: "2026"}));
+  assert.deepEqual(ar(dk.slide.map(x => x.id)), ["utama", "metode"]); assert.ok(tk[0].includes("belum ada data") && tk[0].includes("tidak mencakup 2026-10-24")); assert.ok(tk[1].includes("Slide yang dilewati") && tk[1].includes("Tiga hari terakhir")); dk.slide.forEach((x, i) => bersih(tk[i], x.id));
+  /* semua bahaya dari berkas NYATA: deck terbangun dan bersih */
+  for (const b of K.DAFTAR_BENCANA.filter(x => x !== "karhutla")) {
+    const L = JSON.parse(teks("public" + K.BENCANA[b].url)), td = L.hari.at(-1), sn = SB.spek(b).agregasi({tanggal_laporan: K.geserHari(td, 1), prioritas: SB.pilihPrioritas(L, td), kiriman: {}, laporan: L, dikunci_oleh: "a", dikunci_pada: 1}), dd = BS.deck(sn);
+    assert.ok(dd.slide.length >= 3, `${b}: deck punya isi`); dd.slide.forEach((x, i) => bersih(isiSlide(x, {no: i + 1, aset: {}, s: sn, ex: {lewat: {}}, tahun: "2026"}), `${b}/${x.id}`));
+  }
+});
+
+uji("paparan ?bencana=: slide karhutla khusus karhutla, slide b_* hanya bencana lain dengan bahan dari spek, sampul memakai nama bahaya, karhutla tetap utuh", async () => {
+  const L = FX.banjir(), td = "2026-10-19", B = SB.dariLaporan(L, td), dasar = {D: {laporan: L}, B, prov: "72", namaProv: "Sulawesi Tengah", tgl: td, merek: "Pantau Bencana", templat: {sampul: {}}, gambar: {}};
+  const c = {...dasar, bencana: "banjir", namaB: "Banjir, longsor dan rob"}, karhutla = {...dasar, bencana: undefined, B: null};
+  const reg = PS.REGISTRI, khusus = reg.filter(s => s.khusus === "karhutla").map(s => s.id), bahaya = reg.filter(s => s.khusus === "bahaya").map(s => s.id);
+  assert.deepEqual(ar(khusus), ["nasional", "provinsi", "harian", "operasi", "konsesi", "konsesi12", "profil3", "lampiran_kab"]); assert.deepEqual(ar(bahaya), ["b_nasional", "b_provinsi", "b_peringkat", "b_sorot", "b_prakiraan", "b_sumber"]);
+  for (const id of khusus) { assert.equal(reg.find(x => x.id === id).siap(c), "khusus karhutla"); assert.equal(PS.berlaku(reg.find(x => x.id === id), "banjir"), false); assert.equal(PS.berlaku(reg.find(x => x.id === id), "karhutla"), true); assert.equal(PS.berlaku(reg.find(x => x.id === id), undefined), true); }
+  for (const id of bahaya) { const sl = reg.find(x => x.id === id); assert.equal(PS.berlaku(sl, "karhutla"), false, id + " tidak tampil di paparan karhutla"); assert.equal(PS.berlaku(sl, "banjir"), true); assert.ok(sl.siap(karhutla), id + " dilewati bila dipanggil di konteks karhutla"); }
+  assert.equal(PS.berlaku(reg.find(x => x.id === "sampul"), "gempa"), true); assert.equal(PS.berlaku(reg.find(x => x.id === "daftar"), "karhutla"), true);
+  const aktif = reg.filter(s => PS.berlaku(s, "banjir") && !s.siap(c)), lewat = reg.filter(s => PS.berlaku(s, "banjir") && s.siap(c)).map(s => s.id);
+  assert.deepEqual(ar(aktif.map(s => s.id)), ["sampul", "daftar", "b_nasional", "b_provinsi", "b_peringkat", "b_sorot", "b_sumber"]); assert.deepEqual(ar(lewat), ["b_prakiraan"]);
+  const urutan = aktif.map((s, i) => ({id: s.id, bagian: s.bagian, judulTampil: s.judul.replace("{prov}", c.namaProv), hal: i + 1})), tt = Object.fromEntries(aktif.map((s, i) => [s.id, isiSlide(s, {...c, no: i + 1, urutan})]));
+  assert.ok(tt.sampul.includes("Paparan Rakor Banjir, longsor dan rob") && tt.sampul.includes("Pengendalian Darurat Banjir, longsor dan rob Provinsi Sulawesi Tengah Tahun 2026") && tt.sampul.includes("pengendalian banjir, longsor dan rob Sulawesi Tengah"), "sampul memakai nama bahaya");
+  assert.ok(tt.b_nasional.includes("5 kecamatan siaga atau awas banjir pada 19 Oktober 2026") && tt.b_nasional.includes("9.823 jiwa") && tt.b_nasional.includes("naik 25 persen dari hari sebelumnya") && tt.b_nasional.includes("BMKG, InaRISK BNPB"), "angka dan sumber dari spek");
+  assert.ok(tt.b_provinsi.includes("Sulawesi Tengah") && tt.b_provinsi.includes("3 kecamatan siaga atau awas banjir") && tt.b_provinsi.includes("6.000 jiwa")); assert.ok(tt.b_peringkat.indexOf("Sulawesi Tengah") < tt.b_peringkat.indexOf("Kalimantan Tengah"), "urut menurun menurut metrik utama"); assert.ok(tt.b_peringkat.includes("Aceh"), "nol yang dilaporkan sumber tetap tampil (bukan nol karangan)");
+  assert.ok(tt.b_sorot.includes("Sulawesi Tengah: 3 kecamatan siaga banjir")); assert.ok(tt.b_sumber.includes("BMKG") && tt.b_sumber.includes("InaRISK BNPB") && tt.b_sumber.includes("Arti NA")); assert.ok(tt.daftar.includes("Situasi nasional") && tt.daftar.includes("Kondisi Sulawesi Tengah"));
+  for (const [id, x] of Object.entries(tt)) bersih(x, id);
+  /* karhutla: sampul persis seperti dulu */
+  const sk = isiSlide(reg.find(x => x.id === "sampul"), {...karhutla, namaProv: "Kalimantan Tengah", no: 1, urutan: []});
+  assert.ok(sk.includes("Paparan Rakor Karhutla") && sk.includes("Rapat Koordinasi Penanganan dan Pengendalian Darurat Karhutla Provinsi Kalimantan Tengah Tahun 2026") && sk.includes("pengendalian karhutla Kalimantan Tengah"), "sampul karhutla tak berubah");
+  /* tanggal di luar berkas: bahan null, semua slide b_* dilewati beralasan */
+  const kosong = {...c, B: SB.dariLaporan(L, "2030-01-01")}; for (const id of bahaya) assert.match(reg.find(x => x.id === id).siap(kosong), /tidak mencakup tanggal/);
+  /* sparse: bahaya tanpa nilai provinsi pada hari itu, b_provinsi dilewati */
+  const g = FX.gunungapi(), cg = {...c, D: {laporan: g}, B: SB.dariLaporan(g, "2026-10-17"), tgl: "2026-10-17", bencana: "gunungapi", prov: "35"}; assert.equal(cg.B.nasional, null); assert.match(reg.find(x => x.id === "b_nasional").siap(cg), /tidak ada angka nasional/); assert.match(reg.find(x => x.id === "b_provinsi").siap(cg), /tidak ada angka provinsi/);
 });
 
 /* ================================================================ validasi ?bencana= */
@@ -191,7 +254,7 @@ uji("banjir: kunci dengan 'lanjut tanpa' beralasan menghasilkan snapshot beku, t
   assert.equal(await n("lk_hari", "tanggal_laporan = ?", T), 0, "karhutla tidak tersentuh"); assert.equal(await n("lkb_snapshot", "bencana = 'banjir' AND tanggal_laporan = ?", T), 1);
   const s = await snap("banjir", T); assert.equal(s.s, 200, s.t); assert.equal(s.j.utuh, true); assert.equal(s.j.terbaru, true); const sn = s.j.snapshot;
   assert.equal(sn.bencana, "banjir"); assert.equal(sn.tanggal_data, "2026-10-19"); assert.equal(sn.status, "dikunci_pengecualian"); assert.deepEqual(sn.prioritas, ["72", "62"]);
-  assert.deepEqual(sn.nasional.map(m => [m.k, m.nilai, m.kemarin]), [["banjir_sa", 5, 4], ["penduduk", 9823, 8000]]); assert.deepEqual(sn.nasional[0].ubah, {arah: "naik", persen: 25}); assert.deepEqual(sn.tiga_hari.map(x => x.nilai), [2, 4, 5]);
+  assert.deepEqual(sn.nasional.map(m => [m.k, m.nilai, m.kemarin]), [["banjir_sa", 5, 4], ["penduduk", 9823, 8000]]); assert.deepEqual(sn.nasional[0].ubah, {arah: "naik", persen: 25, dari: 4, teks: "naik 25 persen dari hari sebelumnya"}); assert.deepEqual(sn.tiga_hari.map(x => x.nilai), [2, 4, 5]);
   assert.deepEqual(sn.dampak_provinsi, {provinsi: 1, meninggal: 3, hilang: 1, luka: 5, mengungsi: 200, terdampak: 1500}, "dampak hanya dari provinsi yang melapor (disetujui)");
   assert.equal(sn.provinsi[0].kiriman.ringkasan, SULTENG.ringkasan); assert.equal(sn.provinsi[1].kiriman, null, "Kalteng tanpa kiriman: kiriman null, bukan nol"); assert.equal(sn.provinsi[1].lanjut_tanpa.alasan, "Kalteng belum mengirim, data terakhir belum ada");
   assert.deepEqual(sn.provinsi[1].metrik, {banjir_sa: 2, penduduk: 3823}, "angka otomatis Kalteng tetap dari sumber"); assert.equal(sn.sorot[0].prov, "72"); assert.equal(sn.prakiraan, null, "tanpa prakiraan di berkas: bagian null"); assert.equal(sn.tambahan, null);
