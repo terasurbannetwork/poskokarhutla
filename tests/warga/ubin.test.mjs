@@ -4,6 +4,7 @@ import {test as uji} from "node:test";
 import assert from "node:assert/strict";
 import {layaniUbin, uraiRange, UBIN} from "../../src/ubin.js";
 import worker from "../../src/worker.js";
+import {readFileSync} from "node:fs";
 
 const ISI = new Uint8Array(1000).map((_, i) => (i * 7 + 3) & 255), ETAG = '"abc123"', NAMA = [...UBIN][0], J = `/ubin/${NAMA}.pmtiles`;
 function r2(ubah = {}) {
@@ -137,7 +138,9 @@ uji("ubin: lewat worker.fetch melayani /ubin/ dan tidak mengganggu aset lain", a
 });
 
 uji("himawari: R2 data/himawari.json disajikan; objek hilang = kosong 200", async () => {
-  const isi = '{"acuan":"2026-10-19T00:00Z","baris":[[-2,114,1,5,1,1,1]]}', ada = {MEDIA: {get: async k => k === "data/himawari.json" ? {body: new Response(isi).body} : null}};
+  const isi = '{"acuan":"2026-10-19T00:00Z","baris":[[-2,114,1,5,1,1,1]]}', ada = {MEDIA: {get: async k => k === "data/himawari.json" ? {body: new Response(isi).body} : null},
+    /* poligon provinsi asli: /api/himawari hanya mengirim titik di wilayah Indonesia */
+    ASSETS: {fetch: async q => new Response(readFileSync(new URL("../../public" + new URL(q.url).pathname, import.meta.url)))}};
   const a = await worker.fetch(new Request("https://x.test/api/himawari"), ada, undefined);
   assert.equal(a.status, 200); assert.match(a.headers.get("content-type"), /application\/json/); assert.match(a.headers.get("cache-control"), /max-age=300/);
   const j = await a.json(); assert.deepEqual(j.baris, [[-2, 114, 1, 5, 1, 1, 1, 1, 1, 0]]); assert.equal(j.n_baru, 0); assert.equal(j.kolom.at(-1), "baru");
