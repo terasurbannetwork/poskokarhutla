@@ -20,7 +20,6 @@ import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
-import {RUTE_KARBON, pantauKarbon} from "./karbon.js";
 import {RUTE_ALUN} from "./alun.js";
 import {RUTE_RISET} from "./riset.js";
 import {RUTE_MEJA, segarkanRingkas} from "./meja.js";
@@ -550,7 +549,6 @@ const RUTE = {
   ...RUTE_KUNCI_API,   // penerbitan kunci API mitra (/api/v1/*, src/api_v1.js); API-nya sendiri ditangani langsung di fetch()
   "GET /admin/kunci-api": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanKunciApi()),
   ...RUTE_BANGUNAN,   // paparan bangunan Open Buildings dari R2 MEDIA bangunan/, hanya pengguna masuk (src/bangunan.js)
-  ...RUTE_KARBON,   // Pantau Karbon: proyek, pemantauan, kesepakatan, buku kredit, hanya pengguna masuk (src/karbon.js, docs/karbon/RANCANGAN.md §5)
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
@@ -599,7 +597,6 @@ export const HTML_RUTE = [
   [/^\/presiden\/?$/, "/presiden.html", "/presiden"],   // panel publik agregat karhutla untuk dashboard presiden (public/presiden*); boleh di-iframe dari domain mana pun
   [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
-  [/^\/karbon\/?$/, "/karbon/index.html", "/karbon"],   // Pantau Karbon (public/karbon/), hanya situs Centurisk97 dan wajib masuk
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -628,7 +625,7 @@ async function layaniHTML(req, env, ctx, url) {
   const tt = situsCenturisk(url.hostname) && url.pathname.match(/^(\/[a-z]+)?\/tentang(-halaman)?\/?$/);
   if (tt) return Response.redirect(new URL(tt[1] ? `${tt[1]}/peta` : "/", url), 302);
   /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
-  if ((jalur === "/laporan-konsesi" || jalur === "/laporan-bnpb" || jalur === "/karbon") && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
+  if ((jalur === "/laporan-konsesi" || jalur === "/laporan-bnpb") && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya
   const aset = await terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL(cocok[1], url), req)));
   if (!aset.ok || req.method === "HEAD") return aset;
@@ -773,7 +770,6 @@ export default {
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
-      if (w.getUTCHours() === 23 && m === 48) try { console.log("karbon", JSON.stringify(await pantauKarbon(env, sekarang))); } catch (e) { console.error("karbon", e?.message); }   // pemantauan proyek karbon 06.48 WIB (invokasi sendiri, anggaran subrequest sendiri): GFW + FIRMS D1 (src/karbon.js)
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat

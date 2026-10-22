@@ -124,26 +124,6 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8799
-    },
-    {
-      "name": "karbon",
-      "runtimeExecutable": "npx",
-      "runtimeArgs": [
-        "wrangler",
-        "dev",
-        "--local",
-        "--port",
-        "8801",
-        "--persist-to",
-        ".wrangler/karbon",
-        "--var",
-        "SESI_KUNCI:kunci-lokal",
-        "--var",
-        "AKUN_SITUS_UJI:uji:sandi-uji",
-        "--var",
-        "IP_SALT:garam-lokal"
-      ],
-      "port": 8801
     }
   ]
 }
