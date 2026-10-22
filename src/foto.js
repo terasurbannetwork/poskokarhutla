@@ -40,7 +40,9 @@ const namaKat = (b, k) => KAT_BENCANA[b || "karhutla"]?.[k] || k;
 const ALASAN = ["tidak_relevan", "palsu", "kasar", "pribadi", "lainnya"];
 const MAKS = {foto: 3 * 1048576, video: 30 * 1048576, thumb: 300 * 1024}, MAKS_DURASI = 60, AKURASI_MAKS = 1000;
 const EXIF_JARAK_MAKS = 5000, EXIF_UMUR_MAKS = 48 * JAM, GPS_UMUR_MAKS = 10 * MENIT, UMUR_DAFTAR = 90 * HARI;
-const jarakM = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371e3; };
+/* aturan media (dipakai juga src/instansi.js: satu sumber aturan foto/video) */
+export const ATURAN_MEDIA = {maks: MAKS, durasi: MAKS_DURASI, exifJarak: EXIF_JARAK_MAKS, exifUmur: EXIF_UMUR_MAKS};
+export const jarakM = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371e3; };
 const RE_EMAIL = /^[^\s@<>()",;:]{1,64}@[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?(?:\.[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?)*\.[A-Za-z]{2,}$/;
 const tanpaMedia = () => gagal(503, "penyimpanan foto belum diaktifkan (R2 binding MEDIA)");
 

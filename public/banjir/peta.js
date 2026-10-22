@@ -1,6 +1,9 @@
 "use strict";
 /* ================================================================ peta */
 let peta = null;
+/* turun tanah dari literatur (hipotesis, kutipan): dimuat sekali untuk kartu rob */
+let SUBS_LIT = null; fetch("data/subsiden_literatur.json").then(r => r.ok ? r.json() : null).then(j => SUBS_LIT = j).catch(() => {});
+const subsKota = kab => /Jakarta/.test(kab) ? "jakarta" : /Semarang|Demak/.test(kab) ? "semarang" : /Pekalongan/.test(kab) ? "pekalongan" : /Medan/.test(kab) ? "medan" : null;
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 /* ruang peta yang terlihat diukur dari panel kiri, panel kanan, dan garis waktu (bukan angka tetap), seperti padRuang karhutla */
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
@@ -151,7 +154,8 @@ const Peta = {
     return PI.kartuTip({judul: esc(t.kec), kepala: lambang(t.prov, t.kab), stat: [["sungai", k < 0 ? "–" : LEVEL[k], "status", k < 0 ? "#9aa8b8" : W[k], k >= 2], ["debit", fmt(Math.round(t.puncak)) + " m³/s", "puncak 7 hari", "#3f7fb8"],
       ...(t.q2 ? [["rasio", f2(t.puncak / t.q2) + "×", "dari banjir 2 th", "#3f7fb8"]] : [])]}); },
   kartuRob(i, k) { const t = S.rob.titik[i], j = S.rob.hari.indexOf(S.st.hari[S.hari]), h = j < 0 ? null : t.h[j]; if (!t) return "";
-    return PI.kartuTip({judul: esc(t.kec || t.kab), kepala: lambang(t.prov, t.kab), stat: [["ombak", LEVEL[k], "status", k ? WARNA_LV[k] : "#2b8c86", k >= 2], ["debit", h == null ? "–" : f2(h) + " m", "muka laut", "#2b8c86"]]}); },
+    return PI.kartuTip({judul: esc(t.kec || t.kab), kepala: lambang(t.prov, t.kab), stat: [["ombak", LEVEL[k], "status", k ? WARNA_LV[k] : "#2b8c86", k >= 2], ["debit", h == null ? "–" : f2(h) + " m", "muka laut", "#2b8c86"],
+      ...(() => { const sb = SUBS_LIT?.kota?.[subsKota(t.kab || "")]?.sumber?.[0]; return sb && sb.maks_cm_thn ? [["rasio", "sampai " + fmt(sb.maks_cm_thn) + " cm/th", "turun tanah, literatur (hipotesis)", "#b8782f"]] : []; })()]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
     let hov = null, diTitik = false; const tip = () => PI?.sembunyiTip();

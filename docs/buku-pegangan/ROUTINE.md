@@ -1,40 +1,43 @@
 # Routine `pembaru-buku-pegangan-pb`
 
 Salinan prompt routine yang terbaca manusia. Prompt yang terpasang hidup di luar git
-(`~/.claude/scheduled-tasks/`), jadi tiap kali prompt terpasang disunting, salinan ini ikut disunting di
-giliran yang sama lalu diadu dengan `diff` (pelajaran Buku Pegangan MBG §21).
+(`~/.claude/scheduled-tasks/pembaru-buku-pegangan-pb/SKILL.md`), jadi tiap kali prompt terpasang disunting,
+salinan ini ikut disunting di giliran yang sama lalu diadu dengan `diff`.
 
-- Jadwal: tiap hari 21.00 WIB, sesudah keputusan hari itu selesai dan sesudah `data.yml` 21.20 WIB tidak bentrok
-  karena routine ini tidak menyentuh pipeline.
-- Mesin: Mac mini (satu mesin saja; dua pemicu untuk satu berkas berarti dua commit yang saling menimpa).
-- Status: BELUM didaftarkan. Pendaftaran menunggu persetujuan pemilik.
+- Jadwal: tiap hari 21.00 WIB (cron `0 21 * * *`, jeda acak beberapa menit), tidak menyentuh pipeline.
+- Mesin: Mac ini, aplikasi Claude desktop (jalan saat aplikasi terbuka; bila tertutup, jalan saat dibuka lagi).
+- Mode: Auto. Hanya buku pantau-bencana; rencana-multi-bencana disegarkan manual.
+- Status: terdaftar 22 Okt 2026.
 
 ## Prompt
 
 ```
-Repo: poskokarhutla
+Repo: /Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla (branch main saja; jangan buat branch atau worktree). Repo ini di iCloud: stage path eksplisit saja, bungkus git jaringan dengan batas waktu (perl -e 'alarm 90; exec @ARGV' git fetch).
 
-LANGKAH 0. git fetch; kerja di atas origin/main terbaru. Kalau ada commit routine yang belum terdorong
-(git log origin/main..HEAD), dorong dulu, jangan menulis ulang.
+Tugas: segarkan artifact "Buku Pegangan Pantau Bencana" bila ada keputusan atau perubahan baru. Hari sepi: berhenti tanpa menulis apa pun.
 
-LANGKAH 1. Baca docs/buku-pegangan/ARTIFACT.json. Untuk tiap buku, bandingkan commit di "commit" dengan
-git log sejak commit itu atas berkas sumbernya:
-- pantau-bencana: AGENTS.md, .claude/ilmu-agent/*.md, memori pemilik proyek ini
-  (gaya-kartu-insight, fitur-disembunyikan), docs/multi-bencana/**, git log public/ src/ scripts/
-- rencana-multi-bencana: docs/multi-bencana/**
-Kalau tidak ada yang berubah: berhenti tanpa menulis apa pun.
+LANGKAH 0. git fetch; pastikan main lokal tidak tertinggal origin/main (git pull --ff-only bila aman). Kalau ada commit routine ini yang belum terdorong (git log origin/main..HEAD dengan pesan "Buku pegangan:"), dorong dulu, jangan menulis ulang.
 
-LANGKAH 2. Untuk pantau-bencana: tambahkan entri Riwayat bertanggal hari ini (kutipan pemilik kalau ada di
-memori atau pesan commit), lalu sesuaikan bagian aturannya. Jangan mengarang keputusan; yang tidak punya
-sumber tertulis tidak masuk.
+LANGKAH 1. Baca docs/buku-pegangan/ARTIFACT.json, entri "pantau-bencana" (url, sumber, commit, disegarkan). Kumpulkan perubahan sejak commit itu:
+- git log <commit>..HEAD --no-merges --format='%ad %h %s' --date=short (abaikan commit data otomatis dan pesan "gas"/"gsa"/"asg" kecuali isinya berarti; untuk "gas" lihat --stat)
+- berkas memori pemilik yang berubah sejak tanggal "disegarkan": /Users/priyankaalfatehan28/.claude/projects/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/memory/*.md (sumber kutipan pemilik dan keputusan)
+- AGENTS.md, scripts/agents/roster.json, tests/agen/*.test.mjs, docs/bnpb/STATUS.md, docs/multi-bencana/**, public/bencana.json, wrangler.jsonc, migrations/
+Kalau tidak ada yang berarti: berhenti.
 
-LANGKAH 3. python3 docs/buku-pegangan/bangun.py <nama>. Untuk rencana-multi-bencana, bangun dulu
-docs/multi-bencana/_gabung.md dengan python3 docs/buku-pegangan/gabung.py.
+LANGKAH 2. Sunting docs/buku-pegangan/pantau-bencana.md:
+- Tambah entri Riwayat bertanggal (terbaru di atas, daftar bernomor); kutipan pemilik miring, hanya kutipan yang tertulis di memori atau pesan commit. Jangan mengarang keputusan.
+- Sesuaikan bab terkait: Keputusan pemilik (Diputus/Belum diputus), Stack & peta repo, Situs per alamat, Halaman & rute, Selera tampilan, Angka & copy, Fitur yang disembunyikan, Model & data, Ruang Koordinasi BNPB, Ruang Instansi, Gerbang penjaga, Insiden & pelajaran, Armada agent (hitung dari roster.json), Tugas pemilik.
+- Perbarui baris "Disegarkan <tanggal>" dan "commit <sha pendek HEAD>".
+- Gaya wajib: bahasa Indonesia lugas, tanpa em dash, tanpa titik tengah " · " sebagai pemisah, tanpa emoji, tanpa kalimat bergaya/slogan. Cek: grep -n '—\| · ' hanya boleh muncul di dalam kutipan aturan.
 
-LANGKAH 4. Terbitkan ulang ke URL di ARTIFACT.json (url wajib diisi, tidak pernah artifact baru).
+LANGKAH 3. python3 docs/buku-pegangan/bangun.py pantau-bencana
 
-LANGKAH 5. Perbarui "commit" (sha sungguhan, bukan "lokal") dan "disegarkan" di ARTIFACT.json, commit
-dengan path spesifik (git commit -- docs/buku-pegangan/...), lalu git push origin HEAD:main.
+LANGKAH 4. Terbitkan ulang dengan tool Artifact: publish, file_path = docs/buku-pegangan/terbit/pantau-bencana.html (path absolut), url = url di ARTIFACT.json (https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z). Bila diminta read dulu, read url itu lalu publish lagi. TIDAK PERNAH menerbitkan sebagai artifact baru tanpa url.
 
-Batas: tidak menyentuh kode app, data, workflow, atau migrasi. Tidak deploy.
+LANGKAH 5. Perbarui "commit" (sha sungguhan HEAD) dan "disegarkan" (YYYY-MM-DD) entri pantau-bencana di ARTIFACT.json. Commit hanya tiga berkas:
+git add -- docs/buku-pegangan/pantau-bencana.md docs/buku-pegangan/terbit/pantau-bencana.html docs/buku-pegangan/ARTIFACT.json
+git commit -m "Buku pegangan: segarkan sampai <tanggal> (<ringkas isi>)" -- <tiga berkas yang sama>
+Lalu push dengan batas waktu: perl -e 'alarm 120; exec @ARGV' git push origin HEAD:main. Gagal push: biarkan commit lokal, laporkan.
+
+Batas: tidak menyentuh kode app, data, workflow, migrasi, atau berkas lain. Tidak deploy, tidak wrangler. Laporan akhir: satu-dua kalimat, apa yang masuk Riwayat dan sha commit, atau "tidak ada perubahan".
 ```

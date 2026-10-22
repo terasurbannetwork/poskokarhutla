@@ -1,0 +1,61 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Risiko kebakaran permukiman | Pantau Bencana</title>
+<meta name="description" content="Indeks risiko kebakaran permukiman padat per kelurahan, DKI Jakarta: kepadatan bangunan, waktu tempuh Damkar, dan jalan gang.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/inti/kartu.css" rel="stylesheet">
+<link href="/bnpb/kebakaran.css?v=2" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Kebakaran</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul">
+    <h1>Risiko kebakaran permukiman</h1>
+    <span class="bn-pil kb-peringatan" id="pilLabel" hidden></span>
+    <span class="bn-pil" id="pilKota" hidden></span>
+    <span class="bn-pil" id="pilHari" hidden></span>
+  </div>
+  <p id="pesan" class="bn-pesan" role="status">Memuat data…</p>
+  <section class="bn-kartu kb-kartu" id="isi" hidden>
+    <div class="kb-ringkas" id="ringkas"></div>
+    <div class="kb-sorot" id="sorot" aria-live="polite">Ketuk kelurahan untuk melihat rincian.</div>
+    <svg id="peta" class="kb-svg" role="img" aria-label="Peta kelurahan menurut kelas risiko kebakaran"></svg>
+    <div class="ad-leg" id="legenda"></div>
+
+    <div class="kb-kepala"><h2>Kelurahan</h2>
+      <label class="kb-saring">Kota<select id="fKota"></select></label></div>
+    <div class="ad-tabel-wadah kb-tabel"><table class="ad-tabel"><thead><tr id="kepalaTabel">
+      <th><button type="button" data-k="nama">Kelurahan<i></i></button></th>
+      <th><button type="button" data-k="kec">Kecamatan<i></i></button></th>
+      <th><button type="button" data-k="kab">Kota<i></i></button></th>
+      <th><button type="button" data-k="skor">Risiko<i>↓</i></button></th>
+      <th><button type="button" data-k="menit">Damkar (menit)<i></i></button></th>
+      <th><button type="button" data-k="gang">Gang (%)<i></i></button></th>
+      <th><button type="button" data-k="kb">Kebakaran 2024–2025<i></i></button></th>
+    </tr></thead><tbody id="isiTabel"></tbody></table></div>
+    <div id="halTabel"></div>
+
+    <div class="kb-kepala"><h2>Uji balik</h2><span class="bn-pil" id="pilVonis"></span></div>
+    <p class="kb-aturan" id="aturan"></p>
+    <div id="uji"></div>
+    <p class="kb-sumber" id="sumber"></p>
+  </section>
+</main>
+
+<dialog id="dlg" class="kb-dlg" aria-labelledby="dlgJudul">
+  <div class="kb-dlg-isi" id="dlgIsi"></div>
+</dialog>
+<script src="/inti/format.js"></script>
+<script src="/inti/tabel.js"></script>
+<script src="/bnpb/kebakaran.js?v=2"></script>
+</body>
+</html>

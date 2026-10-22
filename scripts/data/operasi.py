@@ -53,7 +53,8 @@ KOEF = {
     "bara_regu": dict(lo=2.8, mid=1.0, hi=0.5, satuan="ha/regu/hari",
         sumber="Kasus Manggala Agni 2026: Aceh Selatan 28 ha gambut oleh 1 regu dalam 10 hari (2,8 ha/hari); Air Hitam Pekanbaru 1 ha dalam 2 hari (0,5); Nagan Raya 10 ha dalam 9 hari",
         url="https://www.metrotvnews.com/read/bD2CwzLL-kebakaran-28-hektare-lahan-gambut-di-aceh-selatan-padam",
-        arti="Luas gambut membara yang bisa dipadamkan tuntas (disiram, disuntik, dicek suhunya) oleh satu regu dalam sehari."),
+        arti="Luas gambut membara yang bisa dipadamkan tuntas (disiram, disuntik, dicek suhunya) oleh satu regu dalam sehari.",
+        catatan_regional="kasus tunggal Aceh Selatan; rasio regional BNPB 20-21 Okt 45-149 personel per ha per hari (termasuk standby dan shift), model tengah 24,75"),
     "air_bara": dict(lo=72000, mid=200000, hi=500000, satuan="L/ha",
         sumber="Santoso dkk. 2021 (Int. J. Wildland Fire 30(5), uji lapangan Palangka Raya 7,2 L/m2); uji lab 16-24 L/m2; Prof. Yulianto (UI) 200 rb-1 jt L/ha",
         url="https://www.publish.csiro.au/wf/Fulltext/WF20117",
@@ -103,6 +104,10 @@ KOEF = {
         sumber="fwi_ansambel.json (ECMWF 51 anggota): ph = peluang hujan >= 5 mm/24 jam; BMKG: OMC butuh awan potensial hujan",
         url="https://katadata.co.id/berita/nasional/6a68baaa58ca1/bmkg-sasar-modifikasi-cuaca-di-6-provinsi-riau-hingga-kalimantan-jadi-priori",
         arti="Hari layak OMC = peluang hujan rata-rata provinsi 15-60%: awan ada tetapi hujan belum pasti. < 15% tidak ada awan untuk disemai; > 60% hujan alami sudah mungkin."),
+    "omc_ph_maks": dict(lo=0.6, mid=0.6, hi=0.6, satuan="peluang hujan",
+        sumber="Sama dengan omc_ph (fwi_ansambel.json ph; BMKG: OMC butuh awan potensial hujan); batas atas 60% dari arti omc_ph, dulu tertulis langsung di kode",
+        url="https://katadata.co.id/berita/nasional/6a68baaa58ca1/bmkg-sasar-modifikasi-cuaca-di-6-provinsi-riau-hingga-kalimantan-jadi-priori",
+        arti="Di atas 60% hujan alami sudah mungkin, jadi hari itu tidak dihitung layak OMC."),
     "air_minum": dict(lo=4, mid=5, hi=8, satuan="L/orang/hari",
         sumber="Sphere Handbook 2018: 2,5-3 L/orang/hari untuk bertahan hidup, lebih tinggi untuk kerja berat di udara panas",
         url="https://spherestandards.org/handbook/editions/",
@@ -292,7 +297,7 @@ def main():
             for i, t in enumerate(ans["hari"]):
                 v = [x[i] for x in L if x[i] is not None]
                 m = sum(v) / len(v) if v else 0
-                if k("omc_ph", 1) <= m <= 0.6:
+                if k("omc_ph", 1) <= m <= k("omc_ph_maks", 1):
                     hari.append(t)
             prov.setdefault(kd, {})["omc"] = {"hari": hari, "dari": ans["hari"]}
     if prev:

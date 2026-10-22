@@ -48,6 +48,7 @@
 <link rel="stylesheet" href="../inti/metode-kartu.css">
 <link rel="stylesheet" href="gunungapi.css">
 <link rel="stylesheet" href="../inti/kartu.css">
+<link rel="stylesheet" href="../inti/peringatan-berita.css">
 <link rel="stylesheet" href="sim.css">
 </head>
 <body>
@@ -116,7 +117,7 @@
   </section>
 
   <section class="page scroll" id="p-kejadian" aria-label="Kejadian gunung api"><div class="wrap" id="kejadian"></div></section>
-  <section class="page scroll" id="p-insight" aria-label="Insight gunung api"><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-insight" aria-label="Insight gunung api"><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div></section>
   <section class="page scroll" id="p-berita" aria-label="Berita gunung api"><div class="wrap" id="berita"></div></section>
   <section class="page scroll" id="p-tren" aria-label="Tren gunung api"><div class="wrap" id="tren"></div></section>
   <section class="page scroll" id="p-dampak" aria-label="Dampak gunung api"><div class="wrap" id="dampak"></div></section>
@@ -133,6 +134,8 @@
 <script src="../inti/tip.js"></script>
 <script src="../inti/peluang.js"></script>
 <script src="../inti/tabel.js"></script>
+<script src="../inti/peringatan-berita.js"></script>
+<script>PeringatanBerita.pasang("#pbBerita","gunungapi")</script>
 <script src="angka.js"></script>
 <script src="app.js"></script>
 <script src="peta.js"></script>

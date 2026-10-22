@@ -89,3 +89,18 @@ Nilai di atas contoh bentuk, bukan angka putusan. Kosakata `kata` mengikuti
 
 Tiap langkah: karhutla tetap tampil identik (uji balik dan tangkapan layar sebelum/sesudah), dan
 gerbang `gerbang-tanpa-salin` menolak salinan baru dari modul kelas A–C di folder bencana.
+
+## 7. Lapisan pesisir: abrasi (21 Okt 2026)
+
+Abrasi, bencana BNPB ke-8 yang belum punya modul, masuk sebagai **lapisan**, bukan entri bencana baru: entri baru
+menuntut halaman, tabel rujukan `bahaya`/`foto_kategori` di D1, dan workflow (§3.3 ARSITEKTUR), sedangkan datanya tahunan
+dan paling berguna di samping rob. Colokannya:
+
+| Bagian | Isi |
+| --- | --- |
+| Pipeline | `scripts/pesisir/abrasi.py` (pengerja `pesisir`); COG dibaca lewat `scripts/data/citra.py` (`COG`, `ambil`, `ke_utm`, `buka_ubin`), tidak disalin |
+| Keluaran | `public/pesisir/data/abrasi.json`: transek 1 km (garis dasar, arah ke laut, jarak garis pantai per tahun, laju, selang 95%, keyakinan, desa) |
+| Registry | `"abrasi"` di `lapisan` entri `banjir` (`public/bencana.json`); layar banjir yang memasangnya membaca `/pesisir/data/abrasi.json` |
+| Metode, validasi, usulan jadwal | [`bencana/abrasi.md`](bencana/abrasi.md) |
+
+Naik jadi entri bencana sendiri (`id: "abrasi"`) baru bila ada halaman, `lapor_bahaya`/`foto_kategori` di D1, dan workflow.

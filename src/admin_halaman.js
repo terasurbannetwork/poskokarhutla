@@ -13,27 +13,37 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=6" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum"];
-const subBnpb = aktif => BNPB.includes(aktif) ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${BNPB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
-const atas = aktif => `<header class="ad-top">
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc"];
+/* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
+const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
+/* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
+   omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
+export const HALAMAN_STAF = {pantau: null, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"]};
+const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
+const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
+const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep staf">Staf</span>
+  <nav aria-label="Halaman staf">${Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, ctx.peran)).map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>
+  ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span><button class="ad-keluar" type="button" data-staf-keluar>Keluar</button>` : ""}
+</header>` : `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>
   <nav>${Object.entries(HAL).filter(([k]) => !BNPB.includes(k) || k === BNPB[0]).map(([k, [ik, l]]) => BNPB.includes(k)
-    ? `<a href="/admin/${k}" ${BNPB.includes(aktif) ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
+    ? `<a href="/admin/${k}" ${BNPB.includes(aktif) || aktif === "instansi" ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
     : `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
-const halaman = (k, memuat, ekor) => `${kepala(`${HAL[k][1]} · Pantau Bencana`)}
-<body>
-${atas(k)}
+const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Pantau Bencana`)}
+<body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
+${atas(k, ctx)}
 <main class="ad-wrap">
-  ${subBnpb(k)}
+  ${subNav(k, ctx)}
   <div class="ad-judul"><span class="ad-ikon" aria-hidden="true">${HAL[k][0]}</span><h1>${HAL[k][1]}</h1><div class="ad-judul-aksi" id="aksiJudul"></div></div>
   <div class="ad-isi" id="app"><p class="ad-redup">${memuat}</p></div>
 </main>
@@ -81,13 +91,56 @@ export const halamanFoto = () => halaman("foto", "Memuat antrean foto…", `<lin
 export const halamanSosmed = () => halaman("sosmed", "Memuat post…", `<link href="/admin/sosmed.css?v=1" rel="stylesheet">
 <script src="/admin/sosmed.js?v=1"></script>`);
 
-export const halamanPosko = () => halaman("posko", "Memuat Ruang Posko…", `<link href="/admin/posko.css?v=1" rel="stylesheet">
-<script src="/admin/posko.js?v=1"></script>`);
+export const halamanPosko = ctx => halaman("posko", "Memuat Ruang Posko…", `<link href="/admin/posko.css?v=1" rel="stylesheet">
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/posko.js?v=2"></script>`, ctx);
+
+/* Akun Instansi & Tugas Api (/admin/instansi): helper bersama bersama.js lalu skrip halaman */
+export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansi…", `<link href="/admin/instansi.css?v=3" rel="stylesheet">
+<link href="/instansi_kebutuhan.css?v=1" rel="stylesheet">
+<link href="/instansi_tugaskan.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/instansi_kebutuhan.js?v=2"></script>
+<script src="/instansi_akses.js?v=1"></script>
+<script src="/instansi_tugaskan.js?v=1"></script>
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/instansi.js?v=3"></script>`, ctx);
+
+/* Inventaris peralatan pemadam (/admin/inventaris): peta gudang digambar SVG sendiri oleh skrip halaman, jadi CSP admin tidak berubah */
+export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alat…", `<link href="/admin/inventaris.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/inventaris.js?v=2"></script>`, ctx);
+
+/* Laporan korban jiwa (/admin/korban): peta titik digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
+export const halamanKorban = ctx => halaman("korban", "Memuat laporan korban…", `<link href="/admin/korban.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/inti/foto_kecil.js?v=1"></script>
+<script src="/admin/korban.js?v=2"></script>`, ctx);
+
+/* Laporan Karhutla otomatis (/admin/laporan-karhutla): berkas klien memakai garis bawah (public/admin/laporan_karhutla.*) */
+export const halamanLaporanKarhutla = ctx => halaman("laporan-karhutla", "Memuat Laporan Karhutla…", `<link href="/admin/laporan_karhutla.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/laporan_karhutla.js?v=2" type="module"></script>`, ctx);
+
+/* Sortie OMC dan evaluasinya (/admin/omc): peta sasaran digambar SVG oleh skrip halaman (CSP admin tidak berubah) */
+export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link href="/admin/omc.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/instansi_wilayah.js?v=1"></script>
+<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/omc.js?v=2"></script>`, ctx);
 
 /* Ruang Koordinasi BNPB: satu pola untuk keempat halaman (skrip + gaya di public/admin/<k>.js|css) */
-export const halamanBnpb = k => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
-<script src="/admin/bersama.js?v=1"></script>
-<script src="/admin/${k}.js?v=1"></script>`);
+export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<link href="/admin/${k}.css?v=1" rel="stylesheet">
+${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
+` : ""}<script src="/admin/bersama.js?v=3"></script>
+<script src="/admin/${k}.js?v=${k === "pantau" ? 2 : 1}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
@@ -103,7 +156,7 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=6" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
 </head>
 <body class="pb">
 <header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>

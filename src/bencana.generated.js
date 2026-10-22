@@ -318,7 +318,8 @@ export default {
         "sekolah",
         "fasilitas",
         "jalan",
-        "sungai"
+        "sungai",
+        "abrasi"
       ],
       "berita": {
         "kueri": [
@@ -879,6 +880,7 @@ export default {
         "berita",
         "tren",
         "dampak",
+        "simulasi",
         "posko",
         "foto",
         "tentang",
@@ -986,7 +988,10 @@ export default {
         ],
         "leksikon": "scripts/kekeringan/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "halaman": {
+        "simulasi": "simulasi.html"
+      }
     }
   ]
 };

@@ -1,0 +1,169 @@
+{
+ "label": "hipotesis: kutipan literatur, bukan pengukuran Pantau Bencana",
+ "diperbarui": "2026-10-21",
+ "catatan_metode": "Angka dari abstrak/halaman penerbit yang dibaca langsung pada 21 Okt 2026. Rentang tidak sebanding antarkota: periode, metode, dan besaran (vertikal atau LOS) berbeda. Tidak diverifikasi: Chaussard dkk. 2013 (doi 10.1016/j.rse.2012.10.015, abstrak diblokir penerbit) dan Wu dkk. 2022 (doi 10.1029/2022GL098477, tabel kota di berkas yang diblokir), sengaja tidak dimasukkan.",
+ "kota": {
+  "jakarta": {
+   "kota": "Jakarta",
+   "sumber": [
+    {
+     "kutipan": "Abidin dkk. 2011",
+     "ringkas": "Penurunan Jakarta 1982 sampai 2010: umumnya 1 sampai 15 cm per tahun, beberapa lokasi 20 sampai 28 cm per tahun.",
+     "min_cm_thn": 1,
+     "tengah_cm_thn": 15,
+     "maks_cm_thn": 28,
+     "periode": "1982-2010",
+     "metode": "levelling, GPS, InSAR",
+     "sitasi": "Abidin, H.Z., Andreas, H., Gumilar, I., Fukuda, Y., Pohan, Y.E., Deguchi, T. (2011). Land subsidence of Jakarta (Indonesia) and its relation with urban development. Natural Hazards 59(3), 1753-1771.",
+     "url": "https://doi.org/10.1007/s11069-011-9866-9",
+     "verifikasi": "abstrak penerbit dibaca 21 Okt 2026"
+    },
+    {
+     "kutipan": "Sidiq dkk. 2021",
+     "ringkas": "Jakarta maksimum lebih dari 5 cm per tahun (SBAS Sentinel-1, 70 lebih citra).",
+     "min_cm_thn": null,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 5,
+     "periode": "2016-2020",
+     "metode": "InSAR SBAS Sentinel-1",
+     "sitasi": "Sidiq, T.P., Gumilar, I., Meilano, I., Abidin, H.Z., Andreas, H., Permana, A. (2021). Land Subsidence of Java North Coast Observed by SAR Interferometry. IOP Conf. Ser.: Earth Environ. Sci. 873, 012078.",
+     "url": "https://doi.org/10.1088/1755-1315/873/1/012078",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026; angka 'lebih dari 5', batas atas tak disebut"
+    }
+   ]
+  },
+  "semarang": {
+   "kota": "Semarang",
+   "sumber": [
+    {
+     "kutipan": "Abidin dkk. 2013",
+     "ringkas": "Semarang 1999 sampai 2011: sampai sekitar 19 cm per tahun; GPS 2008-2011 rata-rata ruang 6 sampai 7 cm per tahun, maksimum 14 sampai 19 cm per tahun di lokasi tertentu; pesisir utara lebih cepat.",
+     "min_cm_thn": 6,
+     "tengah_cm_thn": 7,
+     "maks_cm_thn": 19,
+     "periode": "1999-2011 (GPS 2008-2011)",
+     "metode": "levelling, InSAR, mikrogravitasi, GPS",
+     "sitasi": "Abidin, H.Z., Andreas, H., Gumilar, I., Sidiq, T.P., Fukuda, Y. (2013). Land subsidence in coastal city of Semarang (Indonesia): characteristics, impacts and causes. Geomatics, Natural Hazards and Risk 4(3), 226-240.",
+     "url": "https://doi.org/10.1080/19475705.2012.692336",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026; min/maks = rata-rata ruang dan maksimum lokal"
+    },
+    {
+     "kutipan": "Sidiq dkk. 2021",
+     "ringkas": "Semarang dan Demak sampai 8 cm per tahun.",
+     "min_cm_thn": null,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 8,
+     "periode": "2016-2020",
+     "metode": "InSAR SBAS Sentinel-1",
+     "sitasi": "Sidiq, T.P., dkk. (2021). Land Subsidence of Java North Coast Observed by SAR Interferometry. IOP Conf. Ser.: Earth Environ. Sci. 873, 012078.",
+     "url": "https://doi.org/10.1088/1755-1315/873/1/012078",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026"
+    },
+    {
+     "kutipan": "Mous dkk. 2024",
+     "ringkas": "Laju lebih dari 10 cm per tahun pada satuan geologi pesisir tak terkonsolidasi.",
+     "min_cm_thn": 10,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": null,
+     "periode": "tak disebut di abstrak",
+     "metode": "InSAR PS",
+     "sitasi": "Mous, T., van Veen, B., van Oost, R., Akmalia, R., van Dam, R., Handayani, W., dkk. (2024). Explaining land subsidence variation along the north coast of Java for Semarang and Pekalongan, Indonesia. EarthArXiv (pracetak, belum ditelaah sejawat).",
+     "url": "https://doi.org/10.31223/x5rh72",
+     "verifikasi": "pracetak; abstrak dibaca via OpenAlex 21 Okt 2026"
+    }
+   ]
+  },
+  "pekalongan": {
+   "kota": "Pekalongan",
+   "sumber": [
+    {
+     "kutipan": "Sidiq dkk. 2023",
+     "ringkas": "Maksimum 16 cm per tahun di barat kota; bagian pesisir sekitar 5 cm per tahun; laju hampir konstan 7 tahun.",
+     "min_cm_thn": 5,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 16,
+     "periode": "2016-2023",
+     "metode": "InSAR PS Sentinel-1 naik dan turun, GACOS, acuan CORS BIG",
+     "sitasi": "Sidiq, T.P., Adiwijaya, R., Nugroho, E., Gumilar, I., Abidin, H.Z. (2023). Long term subsidence rate in Pekalongan city observed by SAR Interferometry. IOP Conf. Ser.: Earth Environ. Sci. 1276, 012014.",
+     "url": "https://doi.org/10.1088/1755-1315/1276/1/012014",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026"
+    },
+    {
+     "kutipan": "Handoko dkk. 2026",
+     "ringkas": "Lebih dari 5 cm per tahun (50 mm) di bagian Pekalongan Utara, sesuai dengan GNSS.",
+     "min_cm_thn": 5,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": null,
+     "periode": "2016-2024",
+     "metode": "InSAR Sentinel-1, GNSS",
+     "sitasi": "Handoko, E.Y., Anjasmara, I.M., Kurniawan, A., Maulida, P., Khomsin, Nusantara, C.A.T., dkk. (2026). Integrated Geodetic Satellite Observations for Coastal Flooding Risk Modeling. J. Phys.: Conf. Ser. 3238, 012037.",
+     "url": "https://doi.org/10.1088/1742-6596/3238/1/012037",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026"
+    },
+    {
+     "kutipan": "Sidiq dkk. 2021",
+     "ringkas": "Pekalongan sampai 7 cm per tahun.",
+     "min_cm_thn": null,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 7,
+     "periode": "2016-2020",
+     "metode": "InSAR SBAS Sentinel-1",
+     "sitasi": "Sidiq, T.P., dkk. (2021). Land Subsidence of Java North Coast Observed by SAR Interferometry. IOP Conf. Ser.: Earth Environ. Sci. 873, 012078.",
+     "url": "https://doi.org/10.1088/1755-1315/873/1/012078",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026"
+    }
+   ]
+  },
+  "surabaya": {
+   "kota": "Surabaya",
+   "sumber": [
+    {
+     "kutipan": "Anjasmara dkk. 2020",
+     "ringkas": "Laju LOS (bukan vertikal) -40 sampai +30 mm per tahun; di Asemrowo (Surabaya utara) sampai -45 mm per tahun.",
+     "min_cm_thn": null,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 4.5,
+     "periode": "Mei 2015 sampai Sep 2017",
+     "metode": "InSAR SBAS Sentinel-1A (28 citra), laju LOS",
+     "sitasi": "Anjasmara, I.M., Yulyta, S., Taufik, M. (2020). Application of Time Series InSAR (SBAS) Method using Sentinel-1A Data for Land Subsidence Detection in Surabaya. Int. J. Adv. Sci. Eng. Inf. Technol. 10(1), 191-197.",
+     "url": "https://doi.org/10.18517/ijaseit.10.1.6749",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026; besaran LOS, vertikal bisa lebih besar"
+    }
+   ]
+  },
+  "medan": {
+   "kota": "Medan dan Belawan",
+   "sumber": [
+    {
+     "kutipan": "Tambunan dkk. 2026",
+     "ringkas": "GNSS 0,84 sampai 8,76 cm per tahun turun; DInSAR 6,18 sampai 13,56 cm per tahun; rerata 6,41 cm per tahun; RMSE antar metode 6,57 cm.",
+     "min_cm_thn": 0.84,
+     "tengah_cm_thn": 8.76,
+     "maks_cm_thn": 13.56,
+     "periode": "tak disebut di abstrak",
+     "metode": "GNSS 10 patok, DInSAR Sentinel-1A",
+     "sitasi": "Tambunan, E., Lumban-Gaol, J., Sumantyo, J.T.S., Nurjaya, I.W., Radjawane, I.M., Arhatin, R.E., dkk. (2026). Land subsidence analysis using DInSAR and GNSS survey in Medan-Belawan City, North Sumatera, Indonesia. BIO Web of Conferences 220, 05009.",
+     "url": "https://doi.org/10.1051/bioconf/202622005009",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026; min dan maks di sini = rentang GNSS dan puncak DInSAR"
+    },
+    {
+     "kutipan": "Perdana dkk. 2025",
+     "ringkas": "Rentang LOS -48,6 sampai +54,1 mm per tahun di daerah kajian; penurunan menonjol di Medan dan Dumai.",
+     "min_cm_thn": null,
+     "tengah_cm_thn": null,
+     "maks_cm_thn": 4.86,
+     "periode": "2015-2023",
+     "metode": "InSAR SBAS LiCSBAS, GACOS",
+     "sitasi": "Perdana, R.S., Anggara, O.H., Suhadha, A.G., Pangestika, D.A., Atmojo, A.T., Al Attar, M.F., dkk. (2025). Assessing land subsidence from anthropogenic activity in Northern Sumatra, Indonesia revealed using Sentinel-1 InSAR. J. Degraded Min. Lands Manag. 12(2), 7235-7245.",
+     "url": "https://doi.org/10.15243/jdmlm.2025.122.7235",
+     "verifikasi": "abstrak dibaca via OpenAlex 21 Okt 2026; besaran LOS bukan vertikal"
+    }
+   ]
+  },
+  "cirebon": {
+   "kota": "Cirebon",
+   "sumber": [],
+   "catatan": "Makalah pembanding teridentifikasi tetapi angkanya BELUM terverifikasi (abstrak diblokir penerbit): Bramanto, Gumilar, Sidiq, Rahmawan, Abidin (2023). Geodetic evidence of land subsidence in Cirebon, Indonesia. Remote Sens. Appl. Soc. Environ. 30, 100933. https://doi.org/10.1016/j.rsase.2023.100933. Tidak ada angka ditampilkan."
+  }
+ }
+}

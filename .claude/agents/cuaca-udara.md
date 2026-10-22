@@ -49,6 +49,9 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/udara/**`
 - `tests/cuaca/**`
 - `tests/udara/**`
+- `scripts/omc/**`
+- `public/omc/**`
+- `tests/omc/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

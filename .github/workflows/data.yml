@@ -197,6 +197,7 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: |
           python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
+          python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
           python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
 
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
@@ -308,6 +309,7 @@ jobs:
           python3 scripts/data/fwi.py
           python3 scripts/data/aturan.py
           python3 scripts/data/harian.py uji
+          python3 scripts/data/taktik.py uji
           python3 scripts/geo/batas.py uji
           python3 scripts/data/posko.py uji
           python3 scripts/data/udara_rekom.py uji

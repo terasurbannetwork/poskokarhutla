@@ -123,6 +123,13 @@ jobs:
             done
           done
 
+      # Berita tujuh bencana (termasuk karhutla public/data/berita.json dari cache data-) -> peringatan & kejadian terstruktur,
+      # public/banjir/data/peringatan_berita.json (ikut cache banjir-). SESUDAH langkah berita di atas.
+      - name: Peringatan dari berita (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: python3 scripts/umum/peringatan_berita.py uji && python3 scripts/umum/peringatan_berita.py
+
       # Kejadian berkode C (cuaca), U (udara), V (gunung api), D (kekeringan): SESUDAH semua modul masukan di atas.
       # Menulis public/banjir/data/kejadian_<id>_{awal,geo,nomor}.json (ber-cache). Adaptor yang masukannya basi/hilang = tidak menulis apa pun.
       - name: Kejadian berkode lintas bencana (boleh gagal)

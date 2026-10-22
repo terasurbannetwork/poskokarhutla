@@ -317,7 +317,8 @@
         "sekolah",
         "fasilitas",
         "jalan",
-        "sungai"
+        "sungai",
+        "abrasi"
       ],
       "berita": {
         "kueri": [
@@ -878,6 +879,7 @@
         "berita",
         "tren",
         "dampak",
+        "simulasi",
         "posko",
         "foto",
         "tentang",
@@ -985,7 +987,10 @@
         ],
         "leksikon": "scripts/kekeringan/berita.py"
       },
-      "prioritas": []
+      "prioritas": [],
+      "halaman": {
+        "simulasi": "simulasi.html"
+      }
     }
   ]
 }

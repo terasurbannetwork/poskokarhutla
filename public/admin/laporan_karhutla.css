@@ -1,0 +1,78 @@
+/* Laporan Karhutla (/admin/laporan-karhutla): ponsel dulu, lalu desktop; terang dan gelap lewat token admin.css (--card, --soft, --ink, --c1..c7).
+   Bahasa visual /bnpb: deret angka ringkas berkartu, judul kartu berikon garis, pil berwarna, kartu sumber bergaris status, grid melebar di desktop.
+   Tombol bulat (.ad-bulat) dari admin.css. CSP admin tanpa gaya inline: lebar bilah progres dan skala slide diatur lewat CSSOM di skrip. */
+.lka-pesan{margin:0;font-weight:700;font-size:13px;min-height:1.2em}.lka-pesan.ok{color:var(--c4)}.lka-pesan.galat{color:var(--c1)}
+.lka-redup{color:var(--ink2);font-size:12.5px;margin:0;overflow-wrap:anywhere}
+.ad-wrap:has(.lka-kepala){max-width:1440px}
+/* kepala: tanggal, status hari, segarkan */
+.lka-kepala{display:flex;gap:10px 18px;flex-wrap:wrap;align-items:center;background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px 16px}
+.lka-kepala-isi{display:grid;gap:4px;flex:1 1 260px;min-width:0}
+.lka-kartu,.lka-bag{display:grid;gap:12px}
+.lka-kartu{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:16px 18px;margin-top:2px}
+.lka-judul-kartu{display:flex;align-items:center;gap:8px;min-width:0}.lka-judul-kartu h3{margin:0;font-size:15px;font-weight:800;flex:1 1 auto;min-width:0}
+.lka-judul-kartu>svg{width:18px;height:18px;flex:none;color:var(--navy2)}
+:root[data-theme="dark"] .lka-judul-kartu>svg{color:var(--c5)}@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .lka-judul-kartu>svg{color:var(--c5)}}
+.lka-kartu h4{margin:0;font-size:14px}
+/* pil */
+.lka-pil{display:inline-flex;align-items:center;font-size:11.5px;font-weight:800;padding:3px 10px;border-radius:999px;background:var(--soft);color:var(--ink2);white-space:nowrap}
+.lka-pil.hari-lengkap,.lka-pil.st-terkirim{background:color-mix(in srgb,var(--c5) 18%,transparent);color:color-mix(in srgb,var(--c5) 78%,var(--ink))}
+.lka-pil.hari-dikunci,.lka-pil.st-disetujui{background:color-mix(in srgb,var(--c4) 20%,transparent);color:color-mix(in srgb,var(--c4) 72%,var(--ink))}
+.lka-pil.hari-dikunci_pengecualian,.lka-pil.kuning,.lka-pil.st-draf{background:color-mix(in srgb,var(--c2) 22%,transparent);color:color-mix(in srgb,var(--c2) 70%,var(--ink))}
+.lka-pil.merah,.lka-pil.st-dikembalikan,.lka-pil.hari-belum_lengkap{background:color-mix(in srgb,var(--c1) 16%,transparent);color:color-mix(in srgb,var(--c1) 78%,var(--ink))}
+.lka-pil.dummy{background:color-mix(in srgb,var(--c6) 18%,transparent);color:color-mix(in srgb,var(--c6) 78%,var(--ink));font-size:10px;letter-spacing:.06em}
+/* tombol */
+.lka-btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;min-height:44px;padding:0 16px;border:0;border-radius:10px;background:var(--card);box-shadow:var(--ring);color:var(--ink);font:700 13.5px/1.2 var(--font);cursor:pointer;text-decoration:none;touch-action:manipulation}
+.lka-btn svg{width:16px;height:16px;flex:none}
+.lka-btn.utama{background:var(--gradien);color:#fff;box-shadow:none}.lka-btn.bahaya{color:var(--c1)}.lka-btn.wa{color:var(--c4)}.lka-btn.kecil{min-height:40px;padding:0 12px;font-size:13px}
+.lka-btn:disabled{opacity:.45;cursor:not-allowed}.lka-btn:active:not(:disabled){transform:scale(.97)}
+.lka-btn:focus-visible,.lka-chip:focus-visible,.lka-kol input:focus-visible,.lka-kol select:focus-visible,.lka-prioritas summary:focus-visible,.lka-ralat summary:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+@media (hover:hover) and (pointer:fine){.lka-btn:not(:disabled):not(.utama):hover{background:var(--soft)}.lka-btn.utama:not(:disabled):hover{filter:brightness(1.12)}.lka-sumber:hover{box-shadow:var(--bayang),0 0 0 1px color-mix(in srgb,var(--c5) 40%,transparent)}}
+.lka-aksi{display:flex;gap:6px 8px;flex-wrap:wrap;align-items:center}
+/* deret angka ringkas */
+.lka-ringkas-atas{display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.lka-kpi{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:14px 16px;display:grid;gap:2px;align-content:start;min-width:0}
+.lka-kpi b{font:800 26px/1.1 var(--display);font-variant-numeric:tabular-nums;letter-spacing:-.02em;overflow-wrap:anywhere}.lka-kpi.awas b{color:var(--c1)}
+.lka-kpi span{color:var(--ink2);font-size:12px;font-weight:700}.lka-kpi.lebar{grid-column:1/-1}
+.lka-bar{height:8px;border-radius:999px;background:var(--soft);overflow:hidden;margin-top:8px}.lka-bar i{display:block;height:100%;border-radius:999px;background:var(--c4);transition:width .3s}
+/* kartu sumber */
+.lka-sumber-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(250px,1fr))}
+.lka-sumber{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:12px 14px;border-left:4px solid var(--ink3);display:grid;gap:8px;align-content:start;min-width:0}
+.lka-sumber.st-draf{border-left-color:var(--c2)}.lka-sumber.st-terkirim{border-left-color:var(--c5)}.lka-sumber.st-dikembalikan{border-left-color:var(--c1)}.lka-sumber.st-disetujui{border-left-color:var(--c4)}.lka-sumber.dipilih{outline:2px solid var(--c5)}
+.lka-sumber-kepala{display:flex;align-items:center;justify-content:space-between;gap:8px}.lka-sumber-kepala b{font-size:14px;font-weight:800;overflow-wrap:anywhere}
+.lka-banner{margin:0;padding:10px 12px;border-radius:12px;font-weight:600;font-size:13px;background:var(--soft)}
+.lka-banner p{margin:0}.lka-banner.galat{background:color-mix(in srgb,var(--c1) 14%,var(--card))}.lka-banner.kuning{background:color-mix(in srgb,var(--c2) 22%,var(--card))}.lka-banner.ok{background:color-mix(in srgb,var(--c4) 18%,var(--card))}
+/* tabel isi (ringkasan FS), formulir kiriman */
+.lka-tabel-wadah{overflow-x:auto}.lka-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:520px}
+.lka-tabel th{text-align:left;color:var(--ink2);font-size:11.5px;padding:6px 8px}.lka-tabel td{padding:8px;border-top:1px solid var(--line);vertical-align:top}.lka-tabel small{display:block;color:var(--ink2)}
+.lka-grid{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(135px,1fr))}
+.lka-kol{display:grid;gap:4px;font-weight:700;font-size:12.5px;min-width:0}.lka-kol input:not([type=checkbox]),.lka-kol select{height:42px;border:0;border-radius:10px;background:var(--soft);padding:0 10px;font:600 14px var(--font);color:var(--ink);min-width:0;width:100%}
+.lka-kol.cek{display:flex;gap:8px;align-items:center;min-height:40px;font-weight:600}.lka-kol.cek input{width:20px;height:20px;flex:none}
+.lka-kepala .lka-kol input{width:auto;min-width:150px}
+.lka-daftar{list-style:none;margin:0;padding:0;display:grid;gap:10px}.lka-baris-isi{background:var(--soft);border-radius:12px;padding:10px;display:grid;gap:8px}.lka-baris-isi .lka-kol input:not([type=checkbox]),.lka-baris-isi .lka-kol select{background:var(--card)}
+.lka-blok{display:grid;gap:8px}.lka-detail-kepala{display:flex;gap:6px 10px;flex-wrap:wrap;align-items:center}
+.lka-ringkas{margin:0;padding-left:18px;display:grid;gap:3px;font-size:13px}
+.lka-cek-kel.merah h4{color:var(--c1)}.lka-cek-kel ul{margin:4px 0 0;padding-left:18px;display:grid;gap:3px;font-size:13px}.lka-cek-kel li.ok{opacity:.7}
+.lka-verif{display:grid;gap:8px;border-top:1px solid var(--line);padding-top:10px}
+.lka-lanjut{list-style:none;margin:0;padding:0;display:grid;gap:8px}.lka-alasan{width:100%;height:42px;border:0;border-radius:10px;background:var(--soft);padding:0 10px;font:600 14px var(--font);margin-top:4px;color:var(--ink)}
+.lka-pilihan{display:grid;gap:2px 12px;grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+.lka-prioritas summary,.lka-ralat summary,.lka-riwayat summary{cursor:pointer;font-weight:800;min-height:40px;display:flex;align-items:center}
+.lka-riwayat ol{margin:6px 0 0;padding-left:18px;font-size:12px;color:var(--ink2);display:grid;gap:2px}
+/* teks WA */
+.lka-chip-baris{display:flex;gap:6px;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.lka-chip{flex:none;min-height:38px;border:0;border-radius:999px;padding:0 14px;background:var(--card);box-shadow:var(--ring);cursor:pointer;font-weight:700;font-size:12.5px;color:var(--ink2);touch-action:manipulation}.lka-chip[aria-pressed=true]{background:var(--gradien);color:#fff;box-shadow:none}
+.lka-wa{width:100%;border:0;border-radius:12px;background:var(--soft);padding:10px 12px;font:13px/1.5 ui-monospace,Menlo,monospace;color:var(--ink);resize:vertical;box-sizing:border-box}
+/* paparan: pratinjau slide (kanvas 1333x750 diskalakan lewat CSSOM) */
+.lka-deck{display:grid;gap:14px;grid-template-columns:minmax(0,1fr)}.lka-deck[hidden]{display:none}.lka-deck figure{margin:0;display:grid;gap:6px}
+.lka-deck figcaption{font-size:12px;font-weight:700;color:var(--ink2)}
+.sl-wrap{position:relative;width:100%;aspect-ratio:16/9;overflow:hidden;background:#fff;border:1px solid var(--line);border-radius:8px;box-shadow:var(--bayang)}
+.sl-stage{position:absolute;left:0;top:0;transform-origin:0 0;background:#fff;color:#1a1a1a;font-family:Roboto,Helvetica,Arial,sans-serif}
+/* masuk dan keadaan kosong */
+.lka-masuk{max-width:420px;margin:24px auto;background:var(--card);border-radius:20px;box-shadow:var(--bayang);padding:22px;display:grid;gap:12px}.lka-form{display:grid;gap:8px}.lka-form label{font-weight:700;font-size:12.5px}
+.lka-form input{height:42px;border:0;border-radius:10px;background:var(--soft);padding:0 12px;font-size:14px;width:100%;box-sizing:border-box;color:var(--ink)}
+.lka-kosong{text-align:center;color:var(--ink2);font-weight:600;padding:28px 16px;background:var(--card);border-radius:16px;box-shadow:var(--bayang)}
+@media (min-width:640px){.lka-ringkas-atas{grid-template-columns:repeat(auto-fill,minmax(150px,1fr))}.lka-kpi.lebar{grid-column:span 2}}
+@media (min-width:1000px){.lka-deck{grid-template-columns:repeat(2,minmax(0,1fr))}.lka-ringkas-atas{grid-template-columns:repeat(6,minmax(0,1fr))}.lka-kpi.lebar{grid-column:span 2}}
+@media (min-width:1500px){.lka-deck{grid-template-columns:repeat(3,minmax(0,1fr))}}
+@media (max-width:560px){.lka-kartu{padding:14px}.lka-kpi b{font-size:22px}.lka-btn{flex:1 1 auto}}
+@media (prefers-reduced-motion:reduce){.lka-btn,.lka-bar i{transition:none}.lka-btn:active:not(:disabled){transform:none}}
+.lka-kartu[hidden],.lka-deck[hidden]{display:none}
+@media (max-width:560px){.lka-sumber-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}.lka-sumber{padding:10px 10px;gap:6px}.lka-sumber-kepala{flex-wrap:wrap}.lka-sumber .lka-btn{flex:0 0 auto;min-height:38px}.lka-sumber .lka-redup{font-size:11.5px}}

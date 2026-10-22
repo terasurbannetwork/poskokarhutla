@@ -118,6 +118,7 @@
         "public/foto.*",
         "public/titik_live.js",
         "public/statistik_publik.js",
+        "public/instansi*",
         "WARGA.md",
         ".dev.vars.example"
       ]
@@ -371,7 +372,10 @@
         "public/cuaca/**",
         "public/udara/**",
         "tests/cuaca/**",
-        "tests/udara/**"
+        "tests/udara/**",
+        "scripts/omc/**",
+        "public/omc/**",
+        "tests/omc/**"
       ]
     },
     {
@@ -421,6 +425,26 @@
         "docs/bnpb/**",
         "public/admin/pimpinan.*",
         "public/admin/gakkum.*"
+      ]
+    },
+    {
+      "nama": "pesisir",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul pesisir: abrasi garis pantai tahunan dari Landsat (MNDWI, Otsu, transek 1 km, laju regresi), keluaran public/pesisir/data.",
+      "kapan": "scripts/pesisir/**, public/pesisir/**, tests/pesisir/**, atau lapisan abrasi disentuh atau rusak",
+      "fokus": [
+        "Python stdlib saja; COG dibaca lewat scripts/data/citra.py (impor, jangan salin)",
+        "Transek tetap dari tahun ke tahun: dibaca dari keluaran lama, OSM hanya untuk transek pertama",
+        "Angka jujur: belum koreksi pasang surut, laju dengan selang 95% dan keyakinan; validasi terhadap literatur ditulis di docs/multi-bencana/bencana/abrasi.md"
+      ],
+      "larangan": "Jangan menyentuh worker/D1, scripts/data (milik pipa-data), modul banjir, atau .github/workflows (cukup usulan).",
+      "bisa": "membangun & membetulkan pipeline abrasi garis pantai dan keluarannya",
+      "tidak": "worker dan D1; layar banjir; karhutla; menyunting .github/workflows",
+      "milik": [
+        "scripts/pesisir/**",
+        "public/pesisir/**",
+        "tests/pesisir/**"
       ]
     }
   ]

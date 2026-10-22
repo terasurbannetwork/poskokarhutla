@@ -80,12 +80,14 @@ function KanvasPdf(doc) {
 }
 
 function KanvasHtml(el) {
-  const px = v => (v * 100).toFixed(1) + "px", esc = t => String(t).replace(/[&<>]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;"}[c]));
+  const px = v => (v * 100).toFixed(1) + "px";
   const tambah = (css, isi = "") => { const d = document.createElement("div"); d.style.cssText = "position:absolute;" + css; d.innerHTML = isi; el.appendChild(d); return d; };
   return {
-    teks(x, y, w, h, r, o = {}) {
-      const isi = runsDari(r).map(p => `<span style="color:#${p.c || o.c || C.teks};font-weight:${(p.b ?? o.b) ? 700 : 400};font-style:${(p.i ?? o.i) ? "italic" : "normal"}">${esc(p.t)}</span>`).join("");
-      tambah(`left:${px(x)};top:${px(y)};width:${px(w)};height:${px(h)};font:${o.s || 10}pt/1.2 Roboto,Helvetica,Arial,sans-serif;font-size:${((o.s || 10) * 100 / 72).toFixed(1)}px;text-align:${rataKanan[o.a || "l"]};display:flex;align-items:${o.v === "m" ? "center" : "flex-start"}`, `<div style="width:100%">${isi}</div>`);
+    teks(x, y, w, h, r, o = {}) {   // DOM murni (bukan innerHTML bergaya): lolos CSP tanpa 'unsafe-inline' (halaman /admin)
+      const kotak = tambah(`left:${px(x)};top:${px(y)};width:${px(w)};height:${px(h)};font:${o.s || 10}pt/1.2 Roboto,Helvetica,Arial,sans-serif;font-size:${((o.s || 10) * 100 / 72).toFixed(1)}px;text-align:${rataKanan[o.a || "l"]};display:flex;align-items:${o.v === "m" ? "center" : "flex-start"}`), isi = document.createElement("div");
+      isi.style.width = "100%";
+      for (const p of runsDari(r)) { const sp = document.createElement("span"); sp.textContent = p.t; sp.style.color = "#" + (p.c || o.c || C.teks); sp.style.fontWeight = (p.b ?? o.b) ? "700" : "400"; sp.style.fontStyle = (p.i ?? o.i) ? "italic" : "normal"; isi.appendChild(sp); }
+      kotak.appendChild(isi);
     },
     kotak(x, y, w, h, o = {}) { tambah(`left:${px(x)};top:${px(y)};width:${px(w)};height:${px(h)};box-sizing:border-box;${o.f ? `background:#${o.f};` : ""}${o.l ? `border:${(o.lw || 0.75) * 100 / 72}px solid #${o.l};` : ""}${o.r ? `border-radius:${px(Math.min(o.r, h / 2, w / 2))};` : ""}`); },
     garis(x1, y1, x2, y2, o = {}) {

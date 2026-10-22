@@ -10,16 +10,17 @@
   const UNSUR = ["BPBD", "Manggala Agni", "TNI", "Polri", "MPA", "Damkar", "Perusahaan", "Relawan", "Lainnya"];
   const STATUS_LAP = {menyala: "Menyala", bara: "Bara", padam: "Padam", tidak_ditemukan: "Tidak ditemukan"};
   const STATUS_P = {baru: "Baru", dipanggil: "Dipanggil", direspons: "Direspons", dicek: "Dicek lapangan", tindak_lanjut: "Tindak lanjut", selesai: "Selesai", abaikan: "Diabaikan"};
-  const TABS = [["antrean", "📞 Antrean & Panggilan"], ["neraca", "📊 Neraca harian"], ["laporan", "📝 Laporan regu"], ["regu", "👥 Regu"], ["kontak", "☎️ Kontak PT"], ["templat", "🖥️ Templat paparan"]];
+  /* staf analis_konsesi hanya membuka antrean panggilan dan Kontak PT (hak API-nya); tab lain tidak dirender. Admin: semua. */
+  const TABS = [["antrean", "📞 Antrean & Panggilan"], ["neraca", "📊 Neraca harian"], ["laporan", "📝 Laporan regu"], ["regu", "👥 Regu"], ["kontak", "☎️ Kontak PT"], ["templat", "🖥️ Templat paparan"]].filter(([k]) => !window.Admin.staf || k === "antrean" || k === "kontak");
   let tab = "antrean", semua = false, tglNeraca = hariIni(), tglLaporan = hariIni(), timer = null, antrean = null;
 
   async function kirim(url, body) {
-    const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json"}, body: JSON.stringify(body)});
+    const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(body)});   // x-pb wajib untuk sesi staf
     return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))};
   }
   async function ambil(url) {
     const r = await fetch(url);
-    if (r.status === 403) { location.href = "/admin/masuk"; throw new Error("perlu masuk"); }
+    if (r.status === 403) { location.href = window.Admin.staf ? "/admin/pantau" : "/admin/masuk"; throw new Error("perlu masuk"); }
     return r.json();
   }
   const pil = (kelas, t) => `<span class="pk-pil ${esc(kelas)}">${esc(t)}</span>`;
@@ -166,7 +167,7 @@
   const TAMPIL = {antrean: tampilAntrean, neraca: tampilNeraca, laporan: tampilLaporan, regu: tampilRegu, kontak: tampilKontak, templat: tampilTemplat};
 
   /* ================= dummy (DUMMY.md): 🧪 isi seluruh rantai Ruang Posko, 🧹 hapus semua dummy ================= */
-  aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
+  if (!window.Admin.staf) aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   aksiJudul.addEventListener("click", async e => {
     const d = e.target.closest("[data-dummy]"); if (!d) return;
     if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy Ruang Posko (regu, laporan, neraca, panggilan, kontak contoh)? Data asli tidak tersentuh.")) return;

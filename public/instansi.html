@@ -1,0 +1,105 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="referrer" content="no-referrer">
+<meta name="theme-color" content="#0b2545">
+<title>Instansi: Tugas Api | Pantau Bencana</title>
+<!-- Font sama dengan /bnpb (Inter dan Plus Jakarta Sans). CSP /instansi (src/instansi.js) belum mengizinkan fonts.googleapis.com dan fonts.gstatic.com: sampai warga-api menambahkannya, peramban memakai font sistem (token --font sudah punya cadangan). -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="/bnpb/bnpb.css?v=1">
+<link rel="stylesheet" href="/instansi.css?v=4">
+<link rel="stylesheet" href="/instansi_kebutuhan.css?v=1">
+<link rel="stylesheet" href="/instansi_alat.css?v=1">
+<link rel="stylesheet" href="/instansi_laporan.css?v=1">
+<link rel="stylesheet" href="/instansi_tugaskan.css?v=1">
+<link rel="stylesheet" href="/instansi_korban.css?v=1">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a>
+  <span class="ad-sep">Instansi</span>
+  <button type="button" id="keluar" class="ad-keluar in-keluar" hidden>Keluar</button>
+</header>
+<main class="bn-wrap in-wrap">
+  <div class="bn-judul">
+    <h1>Tugas api</h1>
+    <span id="akun" class="bn-pil in-akun" hidden></span>
+  </div>
+  <p id="pesan" class="lp-pesan" role="status" aria-live="polite"></p>
+
+  <section id="vMasuk" class="in-masuk" hidden>
+    <div class="in-masuk-kepala">
+      <span class="in-ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M12 3c1 3.5 4.5 5.5 4.5 10a4.5 4.5 0 0 1-9 0c0-2 1-3 2-4 .3 1.2 1 1.8 1.8 2C11.5 8.5 11.2 5.5 12 3z"/></svg></span>
+      <h2>Masuk</h2>
+      <p class="lp-kecil">Username dan sandi awal diberikan admin. Setelah akunmu aktif, kamu diminta membuat sandi baru yang hanya kamu yang tahu. Lupa sandi? Minta admin mengatur ulang.</p>
+    </div>
+    <form id="fMasuk" class="in-form-masuk" autocomplete="on" novalidate>
+      <label for="mUser">Username<input id="mUser" name="username" autocapitalize="none" autocorrect="off" spellcheck="false" autocomplete="username" enterkeyhint="next" placeholder="mis. pemkabseruyan"></label>
+      <label for="mSandi">Sandi
+        <span class="in-sandi-isian"><input id="mSandi" name="password" type="password" autocomplete="current-password" enterkeyhint="go" autocapitalize="none" spellcheck="false">
+          <button type="button" id="mMata" class="in-mata" aria-pressed="false" aria-label="Tampilkan sandi"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12s3.5-7 10-7 10 7 10 7-3.5 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/><path class="coret" d="M4 4l16 16"/></svg></button></span></label>
+      <button type="submit" id="mKirim" class="lp-tombol utama">Masuk</button>
+    </form>
+  </section>
+
+  <section id="vGanti" class="in-masuk" hidden>
+    <div class="in-masuk-kepala">
+      <span class="in-ikon" aria-hidden="true"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
+      <h2>Buat sandi baru</h2>
+    </div>
+    <div id="gAwal" class="in-langkah-isi"><p>Sandi awal akun ini dibuat dan diketahui admin. Demi keamanan, buat sandi baru sebelum memakai akun. Sandi baru dibuat acak oleh sistem, hanya tampil sekali di layar ini, dan sandi awal langsung hangus.</p>
+      <button type="button" id="gBuat" class="lp-tombol utama">Buat sandi baru</button></div>
+    <div id="gHasil" class="in-langkah-isi" hidden><p>Sandi baru kamu. Catat atau simpan di pengelola sandi SEKARANG, karena tidak akan ditampilkan lagi. Bila hilang, minta reset ke admin.</p>
+      <p id="gSandi" class="in-sandi"></p><button type="button" id="gSalin" class="lp-tombol">Salin sandi</button><button type="button" id="gLanjut" class="lp-tombol utama">Saya sudah menyimpannya, lanjut</button></div>
+  </section>
+
+  <section id="vVerif" class="in-verif" hidden>
+    <p id="verifBanner" class="lp-banner" role="status"></p>
+    <form id="fVerif" class="in-blok" autocomplete="on" novalidate>
+      <h2>Verifikasi wakil instansi</h2>
+      <div class="in-grid-isian">
+        <label for="vNama">Nama lengkap<input id="vNama" maxlength="100" autocomplete="name"></label>
+        <label for="vNip">NIP atau NRP<input id="vNip" maxlength="30" inputmode="numeric" autocomplete="off"></label>
+        <label for="vPangkat">Pangkat atau golongan (boleh kosong)<input id="vPangkat" maxlength="60" autocomplete="off"></label>
+        <label for="vJabatan">Jabatan<input id="vJabatan" maxlength="100" autocomplete="organization-title"></label>
+        <label for="vUnit">Unit kerja<input id="vUnit" maxlength="120" autocomplete="organization"></label>
+        <label for="vEmail">Email dinas<input id="vEmail" type="email" maxlength="254" autocapitalize="none" autocomplete="email"></label>
+        <label for="vWa">Nomor WhatsApp<input id="vWa" inputmode="tel" maxlength="30" placeholder="mis. 0812xxxxxxx" autocomplete="tel"></label>
+        <label for="vTelp">Telepon kantor resmi (boleh kosong)<input id="vTelp" inputmode="tel" maxlength="20" autocomplete="tel-national"></label>
+      </div>
+      <div class="in-grid-isian">
+        <div class="in-berkas"><label for="vSurat">Surat tugas atau SK (PDF atau JPEG, maksimal 3 MB)<input id="vSurat" type="file" accept="application/pdf,image/jpeg"></label>
+          <p id="vSuratInfo" class="lp-kecil"></p></div>
+        <div class="in-berkas"><label for="vKartu">Foto kartu pegawai atau KTA<input id="vKartu" type="file" accept="image/*"></label>
+          <p id="vKartuInfo" class="lp-kecil"></p></div>
+      </div>
+      <button type="submit" id="vKirim" class="lp-tombol utama">Kirim verifikasi</button>
+    </form>
+  </section>
+
+  <section id="vUtama" hidden>
+    <div id="banner" class="in-banner" role="status" hidden></div>
+    <nav id="tab" class="ad-tabs in-tab" aria-label="Menu instansi">
+      <button type="button" data-tab="tugas" aria-pressed="true">Tugas api</button>
+      <button type="button" data-tab="kontak" aria-pressed="false">Kontak konsesi</button>
+    </nav>
+    <div id="isi" class="in-isi"></div>
+  </section>
+</main>
+<script src="/inti/format.js" defer></script>
+<script src="/instansi_wilayah.js?v=1" defer></script>
+<script src="/instansi_kebutuhan.js?v=2" defer></script>
+<script src="/instansi_akses.js?v=1" defer></script>
+<script src="/instansi_tugaskan.js?v=1" defer></script>
+<script src="/instansi.js?v=4" defer></script>
+<script src="/inti/foto_kecil.js?v=1" defer></script>
+<script src="/instansi_alat.js?v=3" defer></script>
+<script src="/instansi_laporan.js?v=2" defer></script>
+<script src="/instansi_korban.js?v=2" defer></script>
+</body>
+</html>

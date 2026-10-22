@@ -67,6 +67,10 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py
 
+      - name: Taktik per kompleks (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
+
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true
@@ -130,6 +134,17 @@ jobs:
             data/raw/banjir
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
+
+      # Prioritas dampak tiap 6 jam (Ruang Koordinasi F2): jalan 00, 06, 12, 18 UTC menumpang titik panas segar dari langkah di atas; bahaya lain dari
+      # cache banjir- yang dipulihkan. Uji balik prospektif tetap harian di lintas.yml. Worker membaca hasilnya menit 55 (src/pengingat.js).
+      - name: Indeks risiko dan prioritas dampak tiap 6 jam (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          j=$((10#$(date -u +%H)))
+          if [ $((j % 6)) -ne 0 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
+          python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
+          python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py
 
       # citra satelit ikut tiap 3 jam supaya galeri Insight & laci kompleks tidak pernah kosong (cache gambar dipakai ulang, jadi cepat)
       - name: Citra satelit kompleks prioritas (boleh gagal)

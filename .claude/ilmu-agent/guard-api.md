@@ -79,3 +79,4 @@ Rute/pola yang KURANG gerbang saat ini (jadikan temuan bila disentuh):
 - 2026-10-19 · Rute GET yang membangun kunci cache dari url.search mentah bisa dibengkakkan (?dari=X&dari=X...). Bangun kunci dari nilai tervalidasi seperti gempa.js:273.
 - 2026-10-19 · Peta lookup literal {a:1}[input] menembus Object.prototype (toString, constructor, __proto__) dan lolos cek undefined; pakai Object.hasOwn sebelum indeks.
 - 2026-10-20 · Arsip publik yang menyalin masukan endpoint warga (R2, sekali tulis) mengabadikan laporan yang kemudian disembunyikan: takedown tidak merambat. Cek tiap snapshot publik terhadap moderasi sebelum disimpan atau arsipkan hanya agregat.
+- 2026-10-21 · Modul baru yang butuh tabel migrasi: rute() menjadikan 'no such table' jadi 500 generik. Gerbang migrasi (503 'fitur belum diaktifkan') harus dibungkus sekali di tabel modul, dan ada uji yang menjalankan kondisi tabel belum ada.

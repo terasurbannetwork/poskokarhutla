@@ -487,7 +487,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   const B = structuredClone(REG); B.bencana.find(b => b.id === "cuaca").status = "uji";
   const tmp = mkdtempSync(path.join(tmpdir(), "uji-registry-"));
   cpSync(path.join(AKAR, "src"), path.join(tmp, "src"), {recursive: true});
-  mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
+  mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);
   const mf2 = new Miniflare({...opsi(), scriptPath: path.join(tmp, "src/worker.js"), modulesRoot: tmp, d1Databases: {DB: "uji-registry"}});
   try {

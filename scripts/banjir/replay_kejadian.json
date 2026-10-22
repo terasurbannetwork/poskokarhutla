@@ -1,0 +1,1203 @@
+{
+ "_catatan": "Masukan kejadian replay dari riset web 22 Okt 2026 (sesi induk). Jendela waktu alat ukur dan koordinat stasiun adalah tafsiran pengerja (ditandai), angka mm dan URL dari riset. DAS luas/CN/Tc awal masih pengisi, hidrograf dikalibrasi ke laporan puncak.",
+ "id": "maret2025",
+ "judul": "Replay Banjir Jabodetabek",
+ "mulai": "2025-03-02T00:00:00+07:00",
+ "jam": 96,
+ "sebelum_jam": 168,
+ "kisi": {
+  "lat": -6.26,
+  "lon": 106.945,
+  "sisi_m": 24000,
+  "n": 400
+ },
+ "amc": null,
+ "stasiun": [
+  {
+   "nama": "Katulampa",
+   "lat": -6.634,
+   "lon": 106.839,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 225.0,
+   "periode": "24 jam hingga pagi 4 Mar (BMKG via Tempo)",
+   "mulai": "2025-03-03T07:00:00+07:00",
+   "akhir": "2025-03-04T07:00:00+07:00",
+   "url": "https://www.tempo.co/lingkungan/curah-hujan-katulampa-bogor-jadi-yang-tertinggi-di-jabodetabek-bendung-siaga-2--1214857",
+   "dipakai": true,
+   "catatan": ""
+  },
+  {
+   "nama": "Citeko",
+   "lat": -6.7,
+   "lon": 106.85,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 126,
+   "periode": "24 jam hingga 4 Mar",
+   "mulai": "2025-03-03T07:00:00+07:00",
+   "akhir": "2025-03-04T07:00:00+07:00",
+   "url": "https://www.tempo.co/lingkungan/curah-hujan-katulampa-bogor-jadi-yang-tertinggi-di-jabodetabek-bendung-siaga-2--1214857",
+   "dipakai": true,
+   "catatan": ""
+  },
+  {
+   "nama": "Cibeureum",
+   "lat": -6.7,
+   "lon": 106.95,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 167.6,
+   "periode": "2 Mar",
+   "mulai": "2025-03-02T00:00:00+07:00",
+   "akhir": "2025-03-03T00:00:00+07:00",
+   "url": "https://www.majalahlintas.com/intensitas-curah-hujan-lebih-rendah-dari-2020-ini-alasan-banjir-jabodetabek-2025-lebih-parah/",
+   "dipakai": true,
+   "catatan": "jendela 'tgl 2 Mar' ditafsir hari kalender 2 Mar"
+  },
+  {
+   "nama": "Angke Hulu (Jakarta)",
+   "lat": -6.19,
+   "lon": 106.75,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 140,
+   "periode": "24 jam hingga 4 Mar",
+   "mulai": "2025-03-03T07:00:00+07:00",
+   "akhir": "2025-03-04T07:00:00+07:00",
+   "url": "https://www.tempo.co/lingkungan/curah-hujan-katulampa-bogor-jadi-yang-tertinggi-di-jabodetabek-bendung-siaga-2--1214857",
+   "dipakai": true,
+   "catatan": ""
+  },
+  {
+   "nama": "Sumur Batu, Bekasi",
+   "lat": -6.35,
+   "lon": 107.0,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 208,
+   "periode": "4 Mar (BMKG, Guswanto)",
+   "mulai": "2025-03-03T07:00:00+07:00",
+   "akhir": "2025-03-04T07:00:00+07:00",
+   "url": "https://www.kompas.tv/info-publik/577958/penjelasan-bmkg-soal-banjir-di-wilayah-jabodetabek",
+   "dipakai": true,
+   "catatan": "'4 Mar' ditafsir 24 jam sampai 4 Mar 07.00"
+  },
+  {
+   "nama": "Katulampa (angka alternatif)",
+   "lat": -6.634,
+   "lon": 106.839,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 232.0,
+   "periode": "3 Mar (ringkasan BMKG via pencarian; berbeda dari 225)",
+   "mulai": "2025-03-03T07:00:00+07:00",
+   "akhir": "2025-03-04T07:00:00+07:00",
+   "url": "https://www.majalahlintas.com/intensitas-curah-hujan-lebih-rendah-dari-2020-ini-alasan-banjir-jabodetabek-2025-lebih-parah/",
+   "dipakai": false,
+   "catatan": "duplikat Katulampa berbeda dari 225, tidak dipakai"
+  },
+  {
+   "nama": "Kota Bogor",
+   "lat": -6.6,
+   "lon": 106.8,
+   "koordinat": "perkiraan peneliti sesi (bukan koordinat resmi stasiun)",
+   "mm": 110,
+   "periode": "malam 2 Mar (ekstrem, 'lebih dari 110 mm/hari')",
+   "mulai": "2025-03-02T12:00:00+07:00",
+   "akhir": "2025-03-03T12:00:00+07:00",
+   "url": "https://www.kompas.tv/info-publik/577958/penjelasan-bmkg-soal-banjir-di-wilayah-jabodetabek",
+   "dipakai": false,
+   "catatan": "batas bawah (>110), bukan total"
+  }
+ ],
+ "sungai": [
+  {
+   "id": "kali_bekasi",
+   "nama": "Kali Bekasi",
+   "masuk": {
+    "lat": -6.36,
+    "lon": 106.985,
+    "jendela_sel": 10,
+    "jumlah_sel": 3,
+    "baris_dari_tepi": 4
+   },
+   "das": {
+    "luas_km2": 500,
+    "cn": 76,
+    "tc_jam": 12,
+    "aliran_dasar_m3s": 50,
+    "bbox_hujan": {
+     "lat": [
+      -6.65,
+      -6.33
+     ],
+     "lon": [
+      106.78,
+      107.15
+     ]
+    },
+    "pusat": {
+     "lat": -6.5,
+     "lon": 106.97
+    },
+    "sumber": "pengisi: luas DAS Cileungsi + Cikeas sampai P2C sekitar 500 km2 dari permintaan pemilik, belum ada sumber tertulis; CN dan Tc asumsi; aliran dasar sesuai catatan spesifikasi (63 sampai 70 m3/dtk harian GloFAS)",
+    "sementara": true,
+    "kalibrasi": {
+     "puncak_m3s": 1050,
+     "jam_puncak_wib": "2025-03-04T06:30",
+     "lebar_jam": 3,
+     "bebas": [
+      "tc_jam",
+      "cn"
+     ],
+     "sumber": "Antara Lampung: puncak 875 cm 06.30 4 Mar, Bendung Bekasi 1.100 m3/dtk (kapasitas 1.000); sasaran 1.050 dari arahan sesi induk 1.000-1.100. https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya"
+    }
+   }
+  },
+  {
+   "id": "ciliwung",
+   "nama": "Ciliwung",
+   "masuk": {
+    "lat": -6.36,
+    "lon": 106.84,
+    "jendela_sel": 10,
+    "jumlah_sel": 3,
+    "baris_dari_tepi": 4
+   },
+   "das": {
+    "luas_km2": 330,
+    "cn": 78,
+    "tc_jam": 10,
+    "aliran_dasar_m3s": 20,
+    "bbox_hujan": {
+     "lat": [
+      -6.7,
+      -6.34
+     ],
+     "lon": [
+      106.78,
+      106.99
+     ]
+    },
+    "pusat": {
+     "lat": -6.52,
+     "lon": 106.88
+    },
+    "sumber": "pengisi: luas DAS Ciliwung sampai Depok/Manggarai sekitar 330 km2 dari permintaan pemilik, belum ada sumber tertulis; CN dan Tc asumsi",
+    "sementara": true,
+    "kalibrasi": {
+     "puncak_m3s": null,
+     "jam_puncak_wib": "2025-03-04T09:00",
+     "lebar_jam": 3,
+     "bebas": [
+      "tc_jam"
+     ],
+     "sumber": "Air sampai Jakarta Timur sekitar 12.00 4 Mar, Manggarai 830 cm 11.00 (Liputan6, Metro TV); puncak masuk di tepi selatan kisi ditaksir 3 jam sebelumnya (asumsi pengerja). https://www.liputan6.com/news/read/5944835/bendungan-katulampa-siaga-3-hingga-selasa-siang-4-maret-2025-warga-jakarta-waspada-banjir-kiriman"
+    }
+   }
+  }
+ ],
+ "titik_pantau": [
+  {
+   "id": "p2c",
+   "nama": "P2C Kali Bekasi",
+   "lat": -6.265,
+   "lon": 107.0,
+   "radius_sel": 4,
+   "sumber": "pengisi: koordinat perkiraan",
+   "sementara": true
+  },
+  {
+   "id": "kali_bekasi",
+   "nama": "Kali Bekasi (Jatiasih)",
+   "lat": -6.3,
+   "lon": 106.96,
+   "radius_sel": 4,
+   "sumber": "pengisi: koordinat perkiraan",
+   "sementara": true
+  },
+  {
+   "id": "ciliwung",
+   "nama": "Ciliwung (Kampung Melayu)",
+   "lat": -6.224,
+   "lon": 106.866,
+   "radius_sel": 4,
+   "sumber": "pengisi: koordinat perkiraan",
+   "sementara": true
+  }
+ ],
+ "area": [
+  {
+   "id": "jatiasih",
+   "nama": "Jatiasih",
+   "lat": -6.29,
+   "lon": 106.96
+  },
+  {
+   "id": "pgp",
+   "nama": "Pondok Gede Permai",
+   "lat": -6.29,
+   "lon": 106.96
+  },
+  {
+   "id": "mega_bekasi",
+   "nama": "Mega Bekasi",
+   "lat": -6.225,
+   "lon": 107.0
+  },
+  {
+   "id": "pekayon",
+   "nama": "Pekayon",
+   "lat": -6.27,
+   "lon": 106.99
+  },
+  {
+   "id": "bekasi_utara",
+   "nama": "Bekasi Utara",
+   "lat": -6.19,
+   "lon": 107.0
+  },
+  {
+   "id": "kampung_melayu",
+   "nama": "Kampung Melayu",
+   "lat": -6.224,
+   "lon": 106.866
+  },
+  {
+   "id": "cawang",
+   "nama": "Cawang",
+   "lat": -6.243,
+   "lon": 106.875
+  },
+  {
+   "id": "bidara_cina",
+   "nama": "Bidara Cina",
+   "lat": -6.232,
+   "lon": 106.871
+  }
+ ],
+ "laporan": [
+  {
+   "id": "l01",
+   "nama": "Gang Mawar RT 8 RW 3",
+   "kec": "Bekasi Timur",
+   "kota": "Kota Bekasi",
+   "lat": -6.246,
+   "lon": 107.02,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:31:00+07:00",
+   "waktu_asli": "2025-03-04T00:31 (air masuk); update 07:00",
+   "kedalaman_cm": 300,
+   "media": "detik (data BPBD Kota Bekasi)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l02",
+   "nama": "Gang Semar RT 4 RW 4",
+   "kec": "Bekasi Timur",
+   "kota": "Kota Bekasi",
+   "lat": -6.248,
+   "lon": 107.018,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:57:00+07:00",
+   "waktu_asli": "2025-03-04T00:57",
+   "kedalaman_cm": 70,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l03",
+   "nama": "Kampung Lengkak RT 04 RW 8",
+   "kec": "Bekasi Timur",
+   "kota": "Kota Bekasi",
+   "lat": -6.242,
+   "lon": 107.013,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T02:27:00+07:00",
+   "waktu_asli": "2025-03-04T02:27",
+   "kedalaman_cm": 80,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l04",
+   "nama": "Kampung Lebak, Kel. Teluk Pucung",
+   "kec": "Bekasi Utara",
+   "kota": "Kota Bekasi",
+   "lat": -6.199,
+   "lon": 106.997,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T01:39:00+07:00",
+   "waktu_asli": "2025-03-04T01:39",
+   "kedalaman_cm": 210,
+   "media": "detik / Metro TV (110 awal, 180-210 update)",
+   "url": "https://www.metrotvnews.com/read/kqYCYZ3A-20-titik-banjir-kepung-kota-bekasi"
+  },
+  {
+   "id": "l05",
+   "nama": "Perumahan Bumi Satria Kencana",
+   "kec": "Bekasi Selatan",
+   "kota": "Kota Bekasi",
+   "lat": -6.279,
+   "lon": 106.976,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T01:48:00+07:00",
+   "waktu_asli": "2025-03-04T01:48",
+   "kedalaman_cm": 110,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l06",
+   "nama": "Perumahan Jaka Kencana",
+   "kec": "Bekasi Selatan",
+   "kota": "Kota Bekasi",
+   "lat": -6.268,
+   "lon": 106.98,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T04:03:00+07:00",
+   "waktu_asli": "2025-03-04T04:03",
+   "kedalaman_cm": 300,
+   "media": "Metro TV (detik awal 50, update 300 pukul 07:00; ragu)",
+   "url": "https://www.metrotvnews.com/read/kqYCYZ3A-20-titik-banjir-kepung-kota-bekasi"
+  },
+  {
+   "id": "l07",
+   "nama": "Perumahan Depnaker",
+   "kec": "Bekasi Selatan",
+   "kota": "Kota Bekasi",
+   "lat": -6.26,
+   "lon": 106.985,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T04:10:00+07:00",
+   "waktu_asli": "2025-03-04T04:10",
+   "kedalaman_cm": 150,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l08",
+   "nama": "RT 1, 8, 9 RW 03 Kel. Kali Baru",
+   "kec": "Medan Satria",
+   "kota": "Kota Bekasi",
+   "lat": -6.209,
+   "lon": 106.985,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:47:00+07:00",
+   "waktu_asli": "2025-03-04T00:47",
+   "kedalaman_cm": 100,
+   "media": "detik (40 KK)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l09",
+   "nama": "Perum Bumi Nasio Indah",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.303,
+   "lon": 106.975,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-03T23:46:00+07:00",
+   "waktu_asli": "2025-03-03T23:46",
+   "kedalaman_cm": 120,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l10",
+   "nama": "Perum Jatiluhur",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.305,
+   "lon": 106.965,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:44:00+07:00",
+   "waktu_asli": "2025-03-04T00:44",
+   "kedalaman_cm": 150,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l11",
+   "nama": "Perum Graha Indah",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.3,
+   "lon": 106.958,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T01:24:00+07:00",
+   "waktu_asli": "2025-03-04T01:24",
+   "kedalaman_cm": 150,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l12",
+   "nama": "Perum Buana",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.299,
+   "lon": 106.962,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T01:24:00+07:00",
+   "waktu_asli": "2025-03-04T01:24",
+   "kedalaman_cm": 150,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l13",
+   "nama": "Perum Pondok Gede Permai",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.29,
+   "lon": 106.956,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:10:00+07:00",
+   "waktu_asli": "2025-03-04T00:10 (menggenang); 03:15 limpas tanggul",
+   "kedalaman_cm": 300,
+   "media": "detik (Kompas TV menyebut hingga 4 m di dalam komplek, ragu)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l14",
+   "nama": "Perumahan Villa Jati Rasa, Jl. Merpati Blok C10",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.285,
+   "lon": 106.97,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T04:29:00+07:00",
+   "waktu_asli": "2025-03-04T04:29",
+   "kedalaman_cm": 300,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l15",
+   "nama": "Perum Taman Bougenville Fajar",
+   "kec": "Pondok Gede",
+   "kota": "Kota Bekasi",
+   "lat": -6.279,
+   "lon": 106.925,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T00:26:00+07:00",
+   "waktu_asli": "2025-03-04T00:26",
+   "kedalaman_cm": 40,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l16",
+   "nama": "Komplek Dosen IKIP",
+   "kec": "Pondok Gede",
+   "kota": "Kota Bekasi",
+   "lat": -6.263,
+   "lon": 106.907,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-03T23:42:00+07:00",
+   "waktu_asli": "2025-03-03T23:42",
+   "kedalaman_cm": 155,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l17",
+   "nama": "Perum Jati Bening Permai",
+   "kec": "Pondok Gede",
+   "kota": "Kota Bekasi",
+   "lat": -6.264,
+   "lon": 106.934,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-03T23:43:00+07:00",
+   "waktu_asli": "2025-03-03T23:43",
+   "kedalaman_cm": 50,
+   "media": "detik",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l18",
+   "nama": "Perum Taman Narogong Indah",
+   "kec": "Rawalumbu",
+   "kota": "Kota Bekasi",
+   "lat": -6.29068,
+   "lon": 107.01103,
+   "lokasi": "nominatim_residential",
+   "waktu": "2025-03-04T00:30:00+07:00",
+   "waktu_asli": "2025-03-04T00:30",
+   "kedalaman_cm": 40,
+   "media": "detik (surut ~05:00)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l19",
+   "nama": "Jembatan II Rawalumbu",
+   "kec": "Rawalumbu",
+   "kota": "Kota Bekasi",
+   "lat": -6.27203,
+   "lon": 107.00153,
+   "lokasi": "nominatim_neighbourhood",
+   "waktu": "2025-03-04T00:35:00+07:00",
+   "waktu_asli": "2025-03-04T00:35",
+   "kedalaman_cm": 20,
+   "media": "detik (surut ~03:30)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l20",
+   "nama": "Kemang Pratama",
+   "kec": "Rawalumbu",
+   "kota": "Kota Bekasi",
+   "lat": -6.283,
+   "lon": 107.0,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T02:13:00+07:00",
+   "waktu_asli": "2025-03-04T02:13",
+   "kedalaman_cm": 50,
+   "media": "detik (jembatan Kemang Pratama amblas, CNBC Indonesia)",
+   "url": "https://news.detik.com/berita/d-7805489/20-titik-banjir-tersebar-di-7-kecamatan-kota-bekasi-ini-daftarnya"
+  },
+  {
+   "id": "l21",
+   "nama": "Pekayon Jaya",
+   "kec": "Bekasi Selatan",
+   "kota": "Kota Bekasi",
+   "lat": -6.278,
+   "lon": 106.977,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": null,
+   "waktu_asli": "2025-03-04 (jam tidak disebut)",
+   "kedalaman_cm": 200,
+   "media": "Liputan6 (satu-satunya sumber; ragu)",
+   "url": "https://www.liputan6.com/hot/read/5944332/viral-penampakan-banjir-bekasi-2025-disebut-jadi-yang-terparah-dalam-beberapa-tahun-terakhir"
+  },
+  {
+   "id": "l22",
+   "nama": "Jl. Raya Pekayon (Jaka Setia)",
+   "kec": "Bekasi Selatan",
+   "kota": "Kota Bekasi",
+   "lat": -6.2623,
+   "lon": 106.98728,
+   "lokasi": "nominatim_primary",
+   "waktu": null,
+   "waktu_asli": "2025-03-04 (jam tidak disebut)",
+   "kedalaman_cm": 100,
+   "media": "Metro TV 50-100 cm; detik 1 m",
+   "url": "https://www.metrotvnews.com/play/KXyCQ6jg-banjir-rendam-jalan-raya-pekayon-bekasi"
+  },
+  {
+   "id": "l23",
+   "nama": "Pondok Mitra Lestari",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.288,
+   "lon": 106.97,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": null,
+   "waktu_asli": "2025-03-04 (jam tidak disebut)",
+   "kedalaman_cm": 300,
+   "media": "ringkasan hasil pencarian (> 3 m, sumber primer tidak dibuka; ragu)",
+   "url": "https://www.tempo.co/politik/bpbd-banjir-landa-20-titik-di-kota-bekasi--1214921"
+  },
+  {
+   "id": "l24",
+   "nama": "Grand Galaxy City",
+   "kec": "Jatiasih",
+   "kota": "Kota Bekasi",
+   "lat": -6.28,
+   "lon": 106.974,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T12:00:00+07:00",
+   "waktu_asli": "2025-03-04T12:00 (artikel)",
+   "kedalaman_cm": 125,
+   "media": "detikJabar",
+   "url": "https://www.detik.com/jabar/berita/d-7805793/catat-ini-titik-banjir-di-wilayah-bogor-bekasi-dan-depok"
+  },
+  {
+   "id": "l25",
+   "nama": "Kampung Melayu (30 RT, 40-250 cm; 4 RT 100 cm pukul 10:00)",
+   "kec": "Jatinegara",
+   "kota": "Jakarta Timur",
+   "lat": -6.21936,
+   "lon": 106.86362,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 100,
+   "media": "detik (BPBD DKI); 5 Mar 06:00 BPBD: 40-250",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l26",
+   "nama": "Kel. Bidara Cina",
+   "kec": "Jatinegara",
+   "kota": "Jakarta Timur",
+   "lat": -6.23302,
+   "lon": 106.86647,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 200,
+   "media": "detik (120-200); Metro TV 12:00 120-370; BPBD 5 Mar 180-220",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l27",
+   "nama": "Kel. Cawang",
+   "kec": "Kramat Jati",
+   "kota": "Jakarta Timur",
+   "lat": -6.24591,
+   "lon": 106.87123,
+   "lokasi": "nominatim_station",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 320,
+   "media": "detik (7 RT)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l28",
+   "nama": "Kel. Cililitan (RW 07 sekitar 180 cm menurut detik)",
+   "kec": "Kramat Jati",
+   "kota": "Jakarta Timur",
+   "lat": -6.26247,
+   "lon": 106.86381,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 60,
+   "media": "detik (60); BPBD 5 Mar 190-200",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l29",
+   "nama": "Kel. Bale Kambang",
+   "kec": "Kramat Jati",
+   "kota": "Jakarta Timur",
+   "lat": -6.28132,
+   "lon": 106.85203,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 250,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l30",
+   "nama": "Kel. Gedong",
+   "kec": "Pasar Rebo",
+   "kota": "Jakarta Timur",
+   "lat": -6.30354,
+   "lon": 106.86117,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 500,
+   "media": "detik (300-500; Tempo 350)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l31",
+   "nama": "Kel. Cipinang Muara",
+   "kec": "Jatinegara",
+   "kota": "Jakarta Timur",
+   "lat": -6.22621,
+   "lon": 106.88817,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 80,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l32",
+   "nama": "Kel. Rawajati",
+   "kec": "Pancoran",
+   "kota": "Jakarta Selatan",
+   "lat": -6.25802,
+   "lon": 106.85499,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 350,
+   "media": "detik (170-350)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l33",
+   "nama": "Kel. Pengadegan",
+   "kec": "Pancoran",
+   "kota": "Jakarta Selatan",
+   "lat": -6.24891,
+   "lon": 106.85435,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 100,
+   "media": "detik; BPBD 5 Mar 06:00: 310",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l34",
+   "nama": "Kel. Kebon Baru",
+   "kec": "Tebet",
+   "kota": "Jakarta Selatan",
+   "lat": -6.23295,
+   "lon": 106.86149,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 120,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l35",
+   "nama": "Kel. Pejaten Timur",
+   "kec": "Pasar Minggu",
+   "kota": "Jakarta Selatan",
+   "lat": -6.28088,
+   "lon": 106.84691,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 120,
+   "media": "detik (30-120)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l36",
+   "nama": "Kel. Lenteng Agung",
+   "kec": "Jagakarsa",
+   "kota": "Jakarta Selatan",
+   "lat": -6.33031,
+   "lon": 106.83468,
+   "lokasi": "nominatim_station",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 100,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l37",
+   "nama": "Kel. Cipulir",
+   "kec": "Kebayoran Lama",
+   "kota": "Jakarta Selatan",
+   "lat": -6.23857,
+   "lon": 106.77344,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 200,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l38",
+   "nama": "Kel. Bintaro",
+   "kec": "Pesanggrahan",
+   "kota": "Jakarta Selatan",
+   "lat": -6.26823,
+   "lon": 106.76484,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 200,
+   "media": "detik",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l39",
+   "nama": "Kel. Pondok Pinang",
+   "kec": "Kebayoran Lama",
+   "kota": "Jakarta Selatan",
+   "lat": -6.27364,
+   "lon": 106.77895,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 140,
+   "media": "detik (100-140)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l40",
+   "nama": "Kel. Kedoya Selatan",
+   "kec": "Kebon Jeruk",
+   "kota": "Jakarta Barat",
+   "lat": -6.18064,
+   "lon": 106.76035,
+   "lokasi": "nominatim_administrative",
+   "waktu": "2025-03-04T10:00:00+07:00",
+   "waktu_asli": "2025-03-04T10:00",
+   "kedalaman_cm": 90,
+   "media": "detik (70-90)",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "id": "l41",
+   "nama": "Kampung Kapling, Jl. Kampung Kapling",
+   "kec": "Pancoran Mas",
+   "kota": "Depok",
+   "lat": -6.4,
+   "lon": 106.818,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T12:00:00+07:00",
+   "waktu_asli": "2025-03-04T12:00 (artikel; jam kejadian tidak disebut)",
+   "kedalaman_cm": 120,
+   "media": "detikJabar (data Pemkot Depok)",
+   "url": "https://www.detik.com/jabar/berita/d-7805793/catat-ini-titik-banjir-di-wilayah-bogor-bekasi-dan-depok"
+  },
+  {
+   "id": "l42",
+   "nama": "Perumahan Sukmajaya Permata / Tirtajaya",
+   "kec": "Sukmajaya",
+   "kota": "Depok",
+   "lat": -6.377,
+   "lon": 106.835,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T12:00:00+07:00",
+   "waktu_asli": "2025-03-04T12:00 (artikel)",
+   "kedalaman_cm": 70,
+   "media": "detikJabar",
+   "url": "https://www.detik.com/jabar/berita/d-7805793/catat-ini-titik-banjir-di-wilayah-bogor-bekasi-dan-depok"
+  },
+  {
+   "id": "l43",
+   "nama": "Perumahan Sawangan Asri",
+   "kec": "Sawangan",
+   "kota": "Depok",
+   "lat": -6.404,
+   "lon": 106.76,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": null,
+   "waktu_asli": "2025-03-04 (jam tidak disebut)",
+   "kedalaman_cm": 150,
+   "media": "ringkasan pencarian dari Poros Jakarta (sumber primer tidak dibuka)",
+   "url": "https://www.porosjakarta.com/bodetabek/066416652/banjir-depok-2025-kali-pesanggrahan-dan-kali-angke-meluap-ratusan-rumah-di-sawangan-terendam-hingga-15-meter"
+  },
+  {
+   "id": "l44",
+   "nama": "Sekitar Situ Cikaret, Cibinong",
+   "kec": "Cibinong",
+   "kota": "Kabupaten Bogor",
+   "lat": -6.48,
+   "lon": 106.84,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T12:00:00+07:00",
+   "waktu_asli": "2025-03-04T12:00 (artikel)",
+   "kedalaman_cm": 30,
+   "media": "detikJabar",
+   "url": "https://www.detik.com/jabar/berita/d-7805793/catat-ini-titik-banjir-di-wilayah-bogor-bekasi-dan-depok"
+  },
+  {
+   "id": "l45",
+   "nama": "Perum Pondok Maharta RW 9-10, Pondok Kacang Timur",
+   "kec": "Pondok Aren",
+   "kota": "Tangerang Selatan",
+   "lat": -6.254,
+   "lon": 106.74,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T04:25:00+07:00",
+   "waktu_asli": "2025-03-04T04:25",
+   "kedalaman_cm": 120,
+   "media": "detik (BPBD Tangsel; 30-120, 650 KK)",
+   "url": "https://news.detik.com/berita/d-7805671/banjir-landa-jabodetabek-ini-daftar-wilayah-yang-terdampak"
+  },
+  {
+   "id": "l46",
+   "nama": "Perum Taman Mangu, Jurangmangu Barat",
+   "kec": "Pondok Aren",
+   "kota": "Tangerang Selatan",
+   "lat": -6.27,
+   "lon": 106.723,
+   "lokasi": "perkiraan_peneliti",
+   "waktu": "2025-03-04T04:25:00+07:00",
+   "waktu_asli": "2025-03-04T04:25",
+   "kedalaman_cm": 60,
+   "media": "detik (BPBD Tangsel, 400 KK)",
+   "url": "https://news.detik.com/berita/d-7805671/banjir-landa-jabodetabek-ini-daftar-wilayah-yang-terdampak"
+  },
+  {
+   "id": "l47",
+   "nama": "Ciledug Indah I",
+   "kec": "Ciledug",
+   "kota": "Kota Tangerang",
+   "lat": -6.2297,
+   "lon": 106.7234,
+   "lokasi": "nominatim_primary",
+   "waktu": null,
+   "waktu_asli": "2025-03-04 (jam tidak disebut)",
+   "kedalaman_cm": null,
+   "media": "ringkasan pencarian (14 titik Kota Tangerang; kedalaman tidak ditemukan)",
+   "url": "https://lensametro.com/tiga-wilayah-di-kota-tangerang-terendam-banjir-akibat-luapan-sungai-cisadane-puluhan-kk-terdampak/"
+  }
+ ],
+ "kalibrasi_sungai_catatan": {
+  "kali_bekasi": "Cileungsi: 400 cm Siaga 1 pukul 23.00 3 Mar, 500 cm 23.40, 710 cm 03.00 4 Mar, PUNCAK 875 cm 06.30 4 Mar (normal 350); Bendung Bekasi debit 1.100 m3/dtk (kapasitas 1.000). Air masuk Jatiasih/Pondok Gede 23.42-23.46 3 Mar, Pondok Gede Permai menggenang 00.10, limpas tanggul 03.15 4 Mar; surut Rawalumbu mulai 03.30-05.00 4 Mar (sebagian), Kota Bekasi bersih 12 Mar.",
+  "ciliwung": "Katulampa 220 cm Siaga 1 21.33 2 Mar (514,7 m3/dtk); 3 Mar 22.00 120 cm, 23.00 170 cm, ~200 cm 23.30; Depok Siaga 1 ~00.40-02.00 4 Mar (350 cm); Manggarai 785 cm 08.00, 830 cm 11.00, 850 cm sore 4 Mar; air sampai Jakarta Timur ~12.00 4 Mar (60-120 cm); surut mulai ~18.00 4 Mar."
+ },
+ "linimasa_pos": [
+  {
+   "waktu_wib": "2025-03-02T21:33",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 220,
+   "status": "Siaga 1 (debit 514.659 L/dtk)",
+   "url": "https://megapolitan.antaranews.com/berita/365701/puncak-bogor-diguyur-hujan-bendung-katulampa-sentuh-siaga-1-pada-minggu-petang"
+  },
+  {
+   "waktu_wib": "2025-03-02T22:15",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 160,
+   "status": "Siaga 2 (debit 307.467 L/dtk); air diperkirakan tiba Jakarta ~06:30 3 Mar (Wali Kota Bogor)",
+   "url": "https://megapolitan.antaranews.com/berita/365701/puncak-bogor-diguyur-hujan-bendung-katulampa-sentuh-siaga-1-pada-minggu-petang"
+  },
+  {
+   "waktu_wib": "2025-03-03T19:00",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 70,
+   "status": "Siaga 3? (naik dari 70)",
+   "url": "https://www.liputan6.com/news/read/5944835/bendungan-katulampa-siaga-3-hingga-selasa-siang-4-maret-2025-warga-jakarta-waspada-banjir-kiriman"
+  },
+  {
+   "waktu_wib": "2025-03-03T19:30",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 90,
+   "status": "Siaga 3 (debit 113.417 L/dtk)",
+   "url": "https://www.metrotvnews.com/read/b1oCV4lQ-mendekati-200-centimeter-status-bendung-katulampa-siaga-2-banjir"
+  },
+  {
+   "waktu_wib": "2025-03-03T22:00",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 120,
+   "status": "naik, debit 188.887 L/dtk",
+   "url": "https://www.metrotvnews.com/read/b1oCV4lQ-mendekati-200-centimeter-status-bendung-katulampa-siaga-2-banjir"
+  },
+  {
+   "waktu_wib": "2025-03-03T22:05",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 130,
+   "status": "debit 216.914 L/dtk",
+   "url": "https://www.metrotvnews.com/read/b1oCV4lQ-mendekati-200-centimeter-status-bendung-katulampa-siaga-2-banjir"
+  },
+  {
+   "waktu_wib": "2025-03-03T22:30",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 150,
+   "status": "debit 276.246 L/dtk",
+   "url": "https://www.metrotvnews.com/read/b1oCV4lQ-mendekati-200-centimeter-status-bendung-katulampa-siaga-2-banjir"
+  },
+  {
+   "waktu_wib": "2025-03-03T23:00",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 170,
+   "status": "Siaga 2 (Kompas/Antara 170; RMOL 150 dan Metro ~200 pada 23:30: ANGKA BERBEDA ANTAR MEDIA)",
+   "url": "https://megapolitan.kompas.com/read/2025/03/03/23512551/bendung-katulampa-bogor-berstatus-siaga-2-jakarta-berpotensi-banjir-malam"
+  },
+  {
+   "waktu_wib": "2025-03-03T23:00",
+   "pos": "Bendung Katulampa (versi RMOL)",
+   "tma_cm": 150,
+   "status": "Siaga 2, 2.248 L/dtk (angka debit meragukan)",
+   "url": "https://rmol.id/nusantara/read/2025/03/03/658414/ketinggian-air-di-bendung-katulampa-meningkat-warga-jakarta-waspada"
+  },
+  {
+   "waktu_wib": "2025-03-03T23:30",
+   "pos": "Bendung Katulampa",
+   "tma_cm": 200,
+   "status": "hampir 200 cm",
+   "url": "https://www.metrotvnews.com/read/b1oCV4lQ-mendekati-200-centimeter-status-bendung-katulampa-siaga-2-banjir"
+  },
+  {
+   "waktu_wib": "2025-03-03T21:40",
+   "pos": "Pos Depok (Panus)",
+   "tma_cm": null,
+   "status": "Siaga 3 (menurut rekap BPBD DKI: Siaga 2 pukul 23:00 dan Siaga 1 pukul 02:00 4 Mar); TMA cm tidak ditemukan untuk Mar 3",
+   "url": "https://bpbd.jakarta.go.id/ppid/berita/1574/update-info-terkini-genangan-05-maret-2025-s-d-pukul-06-00-wib"
+  },
+  {
+   "waktu_wib": "2025-03-04T00:40",
+   "pos": "Pos Depok",
+   "tma_cm": 350,
+   "status": "Siaga 1 (BPBD DKI via media; jam 00:40 vs 02:00 berbeda antar sumber)",
+   "url": "https://inp.polri.go.id/artikel/depok-monitoring-post-on-alert-level-1-bpbd-warns-residents-to-stay-vigilant"
+  },
+  {
+   "waktu_wib": "2025-03-03T23:00",
+   "pos": "Pos Cileungsi (KP2C)",
+   "tma_cm": 400,
+   "status": "Siaga 1, peringatan dini ~3,5 jam sebelum banjir",
+   "url": "https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya"
+  },
+  {
+   "waktu_wib": "2025-03-03T23:40",
+   "pos": "Pos Cileungsi (KP2C)",
+   "tma_cm": 500,
+   "status": "arus deras, CCTV pos hanyut",
+   "url": "https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya"
+  },
+  {
+   "waktu_wib": "2025-03-04T03:00",
+   "pos": "Kali Bekasi (P2C/KP2C)",
+   "tma_cm": 710,
+   "status": "batas normal 350 cm; tanggul meluap/limpas di beberapa titik (Pondok Gede Permai 03:15)",
+   "url": "https://www.pojoksatu.id/nasional/1085720464/penyebab-banjir-besar-bekasi-4-maret-2025-sungai-cileungsi-cikeas-meluap-rendam-7-kecamatan"
+  },
+  {
+   "waktu_wib": "2025-03-04T06:30",
+   "pos": "Kali Bekasi (P2C/KP2C)",
+   "tma_cm": 875,
+   "status": "puncak; Bendung Bekasi debit 1.100 m3/dtk vs kapasitas 1.000 (Antara Lampung; ragu: Wali Kota menyebut 8 m tanpa jam)",
+   "url": "https://lampung.antaranews.com/berita/766837/petaka-akibat-kali-bekasi-meluap-ini-ternyata-penyebabnya"
+  },
+  {
+   "waktu_wib": "2025-03-04T04:00",
+   "pos": "Pintu Air Karet",
+   "tma_cm": null,
+   "status": "Siaga 3 mulai 04:00 (cm tidak ada)",
+   "url": "https://bpbd.jakarta.go.id/ppid/berita/1574/update-info-terkini-genangan-05-maret-2025-s-d-pukul-06-00-wib"
+  },
+  {
+   "waktu_wib": "2025-03-04T07:00",
+   "pos": "Pintu Air Manggarai",
+   "tma_cm": null,
+   "status": "Siaga 3 mulai 07:00 (BPBD DKI)",
+   "url": "https://bpbd.jakarta.go.id/ppid/berita/1574/update-info-terkini-genangan-05-maret-2025-s-d-pukul-06-00-wib"
+  },
+  {
+   "waktu_wib": "2025-03-04T08:00",
+   "pos": "Pintu Air Manggarai",
+   "tma_cm": 785,
+   "status": "naik",
+   "url": "https://www.metrotvnews.com/play/NnjCel1a-debit-air-di-pintu-air-manggarai-meningkat-ke-siaga-3-warga-diminta-waspada"
+  },
+  {
+   "waktu_wib": "2025-03-04T11:00",
+   "pos": "Pintu Air Manggarai",
+   "tma_cm": 830,
+   "status": "Siaga 3",
+   "url": "https://www.metrotvnews.com/play/NnjCel1a-debit-air-di-pintu-air-manggarai-meningkat-ke-siaga-3-warga-diminta-waspada"
+  },
+  {
+   "waktu_wib": "2025-03-04T17:00",
+   "pos": "Pintu Air Manggarai",
+   "tma_cm": 850,
+   "status": "Siaga 2 (Gubernur Pramono; jam persis sore, tidak disebut)",
+   "url": "https://megapolitan.kompas.com/read/2025/03/04/17583711/pramono-jakarta-siaga-2-tinggi-air-di-pintu-air-manggarai-850-cm"
+  },
+  {
+   "waktu_wib": "2025-03-04T12:00",
+   "pos": "Banjir kiriman sampai Jakarta Timur",
+   "tma_cm": null,
+   "status": "genangan 60-120 cm Jakarta Timur sejak sekitar 12:00",
+   "url": "https://www.liputan6.com/news/read/5944835/bendungan-katulampa-siaga-3-hingga-selasa-siang-4-maret-2025-warga-jakarta-waspada-banjir-kiriman"
+  },
+  {
+   "waktu_wib": "2025-03-04T18:00",
+   "pos": "Jakarta Timur (umum)",
+   "tma_cm": null,
+   "status": "sejumlah wilayah mulai surut 18:00 (Tempo, via ringkasan pencarian)",
+   "url": "https://www.tempo.co/politik/banjir-jakarta-meluas-ketinggian-air-di-beberapa-lokasi-2-7-meter-1915336"
+  },
+  {
+   "waktu_wib": "2025-03-05T06:00",
+   "pos": "BPBD DKI (rekap)",
+   "tma_cm": null,
+   "status": "100 RT + 2 ruas jalan tergenang; Katulampa Siaga 3 (19:30)/Siaga 2 (23:00); Depok Siaga 2 (23:00)/Siaga 1 (02:00); Manggarai Siaga 3 (07:00)",
+   "url": "https://bpbd.jakarta.go.id/ppid/berita/1574/update-info-terkini-genangan-05-maret-2025-s-d-pukul-06-00-wib"
+  },
+  {
+   "waktu_wib": "2025-03-05T23:00",
+   "pos": "Jakarta (seluruh)",
+   "tma_cm": null,
+   "status": "seluruh genangan DKI dilaporkan surut (via ringkasan pencarian, sumber primer tidak dibuka)",
+   "url": "https://www.tempo.co/politik/dinas-sda-jakarta-akan-lanjutkan-pengerukan-sungai-untuk-tangani-banjir-1215491"
+  },
+  {
+   "waktu_wib": "2025-03-06",
+   "pos": "Pintu Air Manggarai",
+   "tma_cm": null,
+   "status": "turun ke Siaga 4",
+   "url": "https://www.tempo.co/politik/pintu-air-manggarai-berstatus-siaga-4-pramono-anung-kondisi-jakarta-telah-normal-kembali-1215907"
+  }
+ ],
+ "dampak": [
+  {
+   "sumber": "BNPB via Kompas 4 Mar 14:23",
+   "isi": "155 rumah terendam (140 Kota Bekasi, 15 Kab Bekasi), 150-200 cm; Jakarta 323 rumah/1.027 jiwa; Kab Tangerang 350 rumah",
+   "url": "https://nasional.kompas.com/read/2025/03/04/14231851/bnpb-155-rumah-di-bekasi-terendam-banjir-hingga-2-meter"
+  },
+  {
+   "sumber": "BNPB (4-5 Mar)",
+   "isi": "Kota Bekasi 25 kelurahan di 12 kecamatan, 18.738 KK / 61.233 jiwa; Kab Bekasi 18 desa 10 kec, 13.704 KK / 51.320 jiwa",
+   "url": "https://www.menpan.go.id/site/berita-terkini/berita-daerah/bnpb-kerahkan-bantuan-untuk-51-320-jiwa-terdampak-banjir-jabodetabek"
+  },
+  {
+   "sumber": "Pemkot Bekasi via Republika",
+   "isi": "16.000 jiwa terdampak, ~5.000 mengungsi, tanggap darurat 3-5 Mar, 8 dari 12 kecamatan (Wali Kota)",
+   "url": "https://news.republika.co.id/berita/ssmscn377/banjir-di-8-kecamatan-kota-bekasi-tetapkan-status-tanggap-darurat"
+  },
+  {
+   "sumber": "BNPB Buletin Info Bencana Mar 2025",
+   "isi": "Kota Bekasi 3 Mar: 29 kelurahan di 8 kecamatan, 1 meninggal, 83.819 terdampak/mengungsi (angka besar, ragu); surut sejak 9 Mar",
+   "url": "https://bnpb.go.id/storage/app/media/Buletin%20Info%20Bencana/2025%20Buletin%20Info%20Bencana/2025%20Maret/Buletin%20Info%20Bencana%20Maret%202025.pdf"
+  },
+  {
+   "sumber": "BPBD DKI 5 Mar 06:00",
+   "isi": "100 RT + 2 ruas jalan; Jaktim 42 RT, Jaksel 38, Jakbar 18, Jakpus 2; ~4.258 pengungsi di 25 lokasi",
+   "url": "https://bpbd.jakarta.go.id/ppid/berita/1574/update-info-terkini-genangan-05-maret-2025-s-d-pukul-06-00-wib"
+  },
+  {
+   "sumber": "BPBD DKI 4 Mar 10:00 (detik)",
+   "isi": "77 RT; pengungsi tercatat 1.410 di lokasi yang disebut",
+   "url": "https://www.detik.com/jatim/berita/d-7805902/77-rt-di-jakarta-terendam-banjir-ketinggian-air-capai-5-meter"
+  },
+  {
+   "sumber": "Wikipedia id (sekunder)",
+   "isi": "minimal 9 meninggal (Bogor 4, Kota Bekasi 2, Kab Bekasi 1, Jaksel 1, Karawang 1); 1 hilang terseret Kali Bekasi di Jatiasih (Kompas TV)",
+   "url": "https://id.wikipedia.org/wiki/Banjir_Jakarta_2025"
+  },
+  {
+   "sumber": "BNPB via RCTI+",
+   "isi": "kerugian dan kerusakan ~Rp1,6 triliun",
+   "url": "https://www.rctiplus.com/news/detail/okezone/4719157/fantastis--kerugian-akibat-banjir-di-jabodetabek-capai-rp1-6-triliun"
+  },
+  {
+   "sumber": "Pemkot Bekasi 12 Mar",
+   "isi": "genangan tidak ada, 29 jiwa masih mengungsi di Gudang BNPB Jatirasa",
+   "url": "https://bekasikota.go.id/detail/situasi-terkini-penanganan-darurat-bencana-banjir-di-kota-bekasi"
+  }
+ ],
+ "validasi_luas": "ITB: survei 171 titik, 380 ha tergenang (Kota Bekasi), kedalaman maks 3,32 m; simulasi ITB 720 ha, 3,51 m. https://itb.ac.id/berita/dosen-meteorologi-itb-ungkap-fakta-banjir-bekasi-2025-tanggul-tak-lagi-cukup/62288",
+ "kota_bekasi_poligon": {
+  "catatan": "POLIGON KASAR buatan pengerja (bukan batas BPS) untuk menghitung luas tergenang Kota Bekasi lawan survei ITB; ganti dengan batas resmi bila ada",
+  "titik": [
+   [
+    106.935,
+    -6.215
+   ],
+   [
+    106.99,
+    -6.15
+   ],
+   [
+    107.045,
+    -6.165
+   ],
+   [
+    107.055,
+    -6.25
+   ],
+   [
+    107.035,
+    -6.32
+   ],
+   [
+    106.975,
+    -6.365
+   ],
+   [
+    106.935,
+    -6.31
+   ]
+  ]
+ }
+}

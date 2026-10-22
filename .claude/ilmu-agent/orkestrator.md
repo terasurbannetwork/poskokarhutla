@@ -29,3 +29,4 @@
 ## Kasus
 
 - 2026-10-15 · Armada 14 agent dipasang dari pola gemah-ripah; ilmu awal diisi oleh empat agent Sonnet paralel.
+- 2026-10-21 · 2026-10-21 Halaman baru di public/bnpb/ tidak bisa dibuka langsung sebagai aset: worker menjawab 404 untuk /bnpb/*.html yang tak ada di BNPB_BERSIH (src/worker.js). Brief pengerja ruang-bnpb yang melarang src/** membuat halaman tak terjangkau; uji http.server statis meloloskannya. Halaman BNPB baru = rute di RUTE_BNPB (src/bnpb.js) + BNPB_BERSIH + tests/warga/bnpb.test.mjs + cakupan.json + tests/bnpb/layar.test.mjs, diuji lewat wrangler dev, bukan server statis.

@@ -312,3 +312,7 @@ button{-webkit-tap-highlight-color:transparent}
 .ad-vital.baik b{color:#3f8a5c}.ad-vital.perlu b{color:#b58a1c}.ad-vital.buruk b{color:#c9503a}
 .ad-tip[hidden]{display:none}
 .ad-hantu .ad-rank{opacity:1}.ad-hantu .k i,.ad-hantu .n i{background:color-mix(in srgb,var(--ink) 8%,var(--surface))}.ad-hantu .bar i{background:color-mix(in srgb,var(--ink) 16%,var(--surface))}
+/* kerangka staf: lencana STAF (bukan ADMIN), nama staf di kanan, Keluar berupa tombol (bukan form admin) */
+.ad-sep.staf{background:color-mix(in srgb,var(--emas) 32%,transparent);box-shadow:inset 0 0 0 1px color-mix(in srgb,var(--emas) 70%,transparent)}
+.ad-staf-nama{margin-left:auto;max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12.5px;font-weight:700;color:rgb(255 255 255 / .85)}
+@media (max-width:560px){.ad-staf-nama{margin-left:auto}}
