@@ -58,6 +58,15 @@ def kelas_fwi(fwi):
     return 0 if fwi < 2 else 1 if fwi < 7 else 2 if fwi < 14 else 3
 
 
+def kelas_fwi_persentil(fwi, tab):
+    """Alternatif kelas_fwi: kelas 0-3 dari persentil FWI historis provinsi (tab = {'p50','p80','p97'} dari
+    public/data/persentil_fwi.json, dibuat scripts/data/persentil_fwi.py). <P50, P50-P80, P80-P97, >=P97.
+    Tanpa tabel -> kelas absolut. INFO PEMBANDING: belum dipakai status() (lihat keputusan di persentil_fwi.py)."""
+    if not tab:
+        return kelas_fwi(fwi)
+    return 0 if fwi < tab["p50"] else 1 if fwi < tab["p80"] else 2 if fwi < tab["p97"] else 3
+
+
 def kelas_dc(dc):
     """BMKG: 0-140 basah, 141-260 lembap, 261-350 kering, > 350 sangat kering (larang bakar, risiko asap)."""
     return 0 if dc <= 140 else 1 if dc <= 260 else 2 if dc <= 350 else 3
@@ -130,6 +139,9 @@ if __name__ == "__main__":
     assert kronis > sekali, (kronis, sekali)  # terbakar tiap tahun lebih berisiko dari satu kali besar
     assert skor_dengan_riwayat(10, 100) == 20 and skor_dengan_riwayat(10, 0) == 10
     assert [kelas_fwi(x) for x in (0.9, 1.99, 2, 6.9, 7, 13.9, 14)] == [0, 0, 1, 1, 2, 2, 3]
+    tab = {"p50": 3, "p80": 8, "p97": 20}
+    assert [kelas_fwi_persentil(x, tab) for x in (2.9, 3, 7.9, 8, 19.9, 20)] == [0, 1, 1, 2, 2, 3]
+    assert kelas_fwi_persentil(9, None) == kelas_fwi(9) == 2
     assert [kelas_dc(x) for x in (140, 141, 260, 350, 351)] == [0, 1, 1, 2, 3]
     assert keparahan(2, 1, 2, 0, 1) == 1 and keparahan(5, 2, 2, 3, 2) == 2 and keparahan(30, 1, 30, 0, 12) == 3
     assert keparahan(40, 1, 40, 0, 6) == 2
