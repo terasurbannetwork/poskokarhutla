@@ -27,7 +27,7 @@ import {BENCANA, DAFTAR_BENCANA, bencanaId, labelBencana, bacaBencana, butirReda
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM, TENGGAT_KONFIRMASI = 6 * JAM, TENGGAT_KABAR = 24 * JAM, SESI_UMUR = 30 * HARI, GABUNG_KM = 2, JAUH_KM = 5;
 /* bacaan GPS boleh sampai 6 jam lalu: isian dari antrean luring terkirim saat sinyal kembali (sama dengan laporan regu posko, src/posko.js) */
 const GPS_UMUR_MAKS = 6 * JAM;
-const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5}, MAKS_DOK = 3 * 1048576, MAKS_FOTO = 2 * 1048576, COOKIE = "sesi_instansi", MAKS_REKOMENDASI = 3000;
+const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5}, MAKS_DOK = 3 * 1048576, MAKS_FOTO = 2 * 1048576, COOKIE = "sesi_instansi", MAKS_REKOMENDASI = 2000;   // = CHECK tugas_api di D1 produksi; 0029 di repo menulis 3000 karena disunting sesudah diterapkan (276d247c), produksi tetap 2000
 /* daftar tetap: sama dengan CHECK/trigger di 0029 dan public/instansi.js (dijaga instansi.test.mjs) */
 export const JENIS = ["pemprov", "pemkab", "pemkot", "polda", "polres", "kodam", "kodim"];
 export const STATUS_AKUN = ["belum_klaim", "menunggu", "aktif", "ditolak", "dicabut"];
