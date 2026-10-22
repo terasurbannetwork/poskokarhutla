@@ -63,6 +63,40 @@ jobs:
           python3 scripts/data/ringkasan.py
           python3 scripts/data/aktor_walhi.py  # terakhir: gagalnya tidak menahan turunan lain
 
+      # Luas terbakar / belum padam metode deck BNPB (indikator Real Time, overlay kabupaten, laporan, API v1). Hari WIB d lengkap
+      # sesudah d+1 04.00, jadi putaran pagi menerbitkan kemarin. Harian hanya mengunduh hari baru + 4 hari terakhir (± 2 menit);
+      # trio prov/kab/wil yang hilang atau tak selaras = bangun ulang penuh (± 35 menit), dicicil antarputaran lewat cache peta-utc-.
+      - name: Pulihkan cache FIRMS per hari UTC untuk peta luas
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/peta_karhutla/utc
+          key: peta-utc-${{ github.run_id }}
+          restore-keys: peta-utc-
+
+      - name: Peta luas terbakar dan belum padam (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 12
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: |
+          # cache data- bisa membawa trio yang lebih tua atau tak lengkap dari versi repo: pakai versi repo bila lebih baru
+          akhir() { python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['hari'][-1])" "$1" 2>/dev/null || echo 0; }
+          git show HEAD:public/data/peta_karhutla.json > /tmp/pk_repo.json 2>/dev/null || true
+          if [ ! -f public/data/peta_karhutla_kab.json ] || [ ! -f public/data/peta_karhutla_wil.json ] \
+             || [[ "$(akhir /tmp/pk_repo.json)" > "$(akhir public/data/peta_karhutla.json)" ]]; then
+            f=$(git ls-files 'public/data/peta_karhutla*.json'); [ -z "$f" ] || git checkout HEAD -- $f
+          fi
+          python3 scripts/data/peta_karhutla.py --uji
+          python3 scripts/data/peta_karhutla.py
+
+      - name: Simpan cache FIRMS per hari UTC untuk peta luas
+        if: always()
+        continue-on-error: true
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/peta_karhutla/utc
+          key: peta-utc-${{ github.run_id }}
+
       - name: Kendala lapangan per kompleks (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py
