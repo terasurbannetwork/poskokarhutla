@@ -60,6 +60,20 @@ test("jiwa rentan: tak pernah melebihi penduduk × porsi rentan; hujan menghapus
   assert.ok(penuh.hariKrisis > 0 && penuh.hariKrisis <= S.H);
 });
 
+test("anomali: tahun normal tidak memberi jiwa rentan walau tanah kering; tahun lebih kering dari Normal memberi; hindcast 2015 jauh di atas normal", () => {
+  const idx = [0, 1], cfg = {tanam: 0, laju: 0, kap: 0, omc: 0}, normal = mini(5), kering = mini(0), basah = mini(5);
+  const norm = {sk: normal.sk, hj: normal.hj}, pk = (m, n) => S.dampak(m.D, S.jalankan(m.D, m.sk, m.hj, cfg, idx, n), idx).jiwaPuncak;
+  assert.ok(pk(kering) > 5000, "tanpa pembanding: tanah kering = rentan (aturan lama)");
+  assert.equal(pk(basah, norm), 0, "tahun sama dengan Normal: anomali nol walau tanah sendiri kering");
+  const lembab = mini(60), normL = {sk: lembab.sk, hj: lembab.hj};
+  assert.ok(pk(kering, normL) > 5000, `0 mm vs Normal 60 mm/minggu: harus rentan, dapat ${pk(kering, normL)}`);
+  const n = json("data/kekeringan_neraca.json"), h = json("kekeringan/data/hindcast.json"), c = n.sel_data;
+  const D = {...c, n: c.lat.length, param: n.param, dr0: c.dr0.map(() => 0), km2: c.lat.map(la => 3098 * Math.cos(la * Math.PI / 180)), rentan: c.lat.map(() => 1), nKering: 14}, snk = n.skenario.normal_k, nm = {sk: snk, hj: S.hujanHarian(D, snk)};
+  const puncak = sk => Math.max(...S.jalankan(D, sk, S.hujanHarian(D, sk), cfg, undefined, nm).jiwa), total = c.jiwa.reduce((a, b) => a + b, 0);
+  assert.ok(puncak(snk) < 0.01 * total, `Normal sintetis memberi ${puncak(snk)} jiwa rentan, harus < 1% penduduk`);
+  assert.ok(puncak({int: 15, ...h.tahun["2015"]}) > 20 * Math.max(1, puncak(snk)) && puncak({int: 15, ...h.tahun["2015"]}) > 0.2 * total, "2015 (El Niño kuat) harus jauh di atas Normal");
+});
+
 test("dampak padi: hujan cukup hampir tidak menghilangkan padi", () => {
   const basah = jalan(400), kering = jalan(0);
   assert.ok(basah.dasar.hilang < 0.05 * kering.dasar.hilang, `hujan 400 mm/minggu: hilang ${basah.dasar.hilang} ha, seharusnya jauh di bawah ${kering.dasar.hilang}`);

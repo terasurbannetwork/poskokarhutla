@@ -37,15 +37,18 @@ function hujanHarian(D, sk) {
 
 /* Hasil padi: FAO-33 (Doorenbos & Kassam 1979) Ya/Ym = 1 - ky (1 - sum ETa / sum ETc), ky padi 1,09 dan batas gagal 50% sama dengan scripts/kekeringan/padi.py.
    Kebun (sawit, HTI): bak kedua per sel, Kc 0,95, p 0,65, Zr 0,9 m (FAO-56 Tabel 12 dan 22, kelompok palem; belum dicocokkan ke teks seperti padi). */
-const AMBANG_JIWA = 1000, SPI_KERING = -1.5, KY = 1.09, GAGAL = 0.5, KEBUN = {kc: 0.95, p: 0.65, zr: 0.9};
+const AMBANG_JIWA = 1000, SPI_KERING = -1.5, ANOMALI = 0.2, KY = 1.09, GAGAL = 0.5, KEBUN = {kc: 0.95, p: 0.65, zr: 0.9};
 
 /* jalankan bak untuk sel idx (bawaan semua). cfg = {tanam, laju, kap, omc} (omc = pecahan tambahan hujan pada hari yang sudah hujan) */
-function jalankan(D, sk, hj, cfg, idx) {
+/* norm = {sk, hj}: skenario Normal bertanggal mulai sama. Dengan norm, krisis air butuh ANOMALI: tanah acuan lebih kering dari tanah acuan di bawah Normal sedikitnya ANOMALI (ASUMSI 0,2) × TAW,
+   selain stres berat; tanpa itu musim kemarau biasa pun "kering" di hampir semua sel. Sel dengan SPI-3 teramati <= -1,5 lolos tanpa syarat anomali (kekeringan sudah terukur). Tanpa norm: syarat stres saja. */
+function jalankan(D, sk, hj, cfg, idx, norm) {
   const N = D.n, P = D.param, dr = new Float32Array(N * H), ks = new Float32Array(N * H), eta = new Float32Array(N * H), irg = new Float32Array(N * H), loss = new Float32Array(N);
   const musim = P.fase.reduce((a, b) => a + b, 0), jiwa = new Float64Array(H), luas = new Float64Array(H), kebun = new Float64Array(H);
   for (const i of idx || Array.from({length: N}, (_, k) => k)) {
     const taw = D.taw[i], raw = P.p * taw, E = sk.et0[i], kHa = D.kebun ? D.kebun[i] : 0, tawK = taw * KEBUN.zr / P.zr;
     let d = D.dr0[i], dK = d / taw * tawK, dT = d, sisa = cfg.kap, sEta = 0, sEtc = 0, nK = D.nKering || 14;
+    const En = norm ? norm.sk.et0[i] : null; let dN = d, spiK = !!(D.spi && D.spi[i] != null && D.spi[i] <= SPI_KERING);
     let seri = D.spi && D.spi[i] != null && D.spi[i] <= SPI_KERING ? nK : 0, rentan = D.rentan ? D.rentan[i] : 1;   /* seri = hari berturut-turut tanah stres; SPI-3 teramati kering dihitung sudah memenuhi N hari */
     for (let t = 0; t < H; t++) {
       const umur = t - cfg.tanam, h0 = hj[i * H + t], h = h0 * (1 + (h0 > 0 ? cfg.omc : 0)), e0 = E[Math.min(E.length - 1, Math.floor(t / 30))], kc = kcPadi(umur, P);
@@ -56,7 +59,9 @@ function jalankan(D, sk, hj, cfg, idx) {
       if (umur >= 0 && umur < musim) { sEta += r[1]; sEtc += kc * e0; }
       if (r[2] < P.ambang_berat) luas[t] += D.km2[i];
       /* krisis air: tanah acuan (Kc 1,0, tak bergantung padi) stres berat sekurangnya N hari berturut-turut; hanya porsi penduduk yang bergantung sumber musiman */
-      const rT = langkah(dT, taw, P.p, 1.0, e0, h); dT = rT[0]; seri = rT[2] < P.ambang_berat ? seri + 1 : 0;
+      const rT = langkah(dT, taw, P.p, 1.0, e0, h); dT = rT[0];
+      if (norm) dN = langkah(dN, taw, P.p, 1.0, En[Math.min(En.length - 1, Math.floor(t / 30))], norm.hj[i * H + t])[0];
+      seri = rT[2] < P.ambang_berat && (!norm || spiK || dT - dN >= ANOMALI * taw) ? seri + 1 : 0;
       if (seri >= nK) jiwa[t] += D.jiwa[i] * rentan;
       if (kHa > 0) { const rk = langkah(dK, tawK, KEBUN.p, KEBUN.kc, e0, h); dK = rk[0]; if (rk[2] < P.ambang_berat) kebun[t] += kHa; }
     }
@@ -88,7 +93,7 @@ const fokusSel = (D, i0, r = 1) => { const o = []; for (let i = 0; i < D.n; i++)
    T = Tanggap (sim_tanggap.js); ctx = {tanam, pangkalan, biayaOmcHari}. Pompa/tanam awal hanya menyelamatkan padi; tangki/sumur bor hanya air bersih;
    hujan buatan dinilai dari keduanya lewat model (jiwa = turunnya puncak jiwa di sel stres). */
 function evaluasi(T, D, sk, hj, idx, ctx) {
-  const A = ctx.asumsi || T.ASUMSI, dasar = jalankan(D, sk, hj, {tanam: ctx.tanam, laju: 0, kap: 0, omc: 0}, idx), md = dampak(D, dasar, idx), nP = ctx.pangkalan.length;
+  const A = ctx.asumsi || T.ASUMSI, dasar = jalankan(D, sk, hj, {tanam: ctx.tanam, laju: 0, kap: 0, omc: 0}, idx, ctx.norm), md = dampak(D, dasar, idx), nP = ctx.pangkalan.length;
   const cakup = ha => md.sawah > 0 ? Math.min(1, ha / md.sawah) : 0;
   const DEF = [
     {id: "t2", nama: "Truk tangki, 2 per pangkalan", jenis: "tangki", n: 2}, {id: "t10", nama: "Truk tangki, 10 per pangkalan", jenis: "tangki", n: 10},
@@ -103,14 +108,14 @@ function evaluasi(T, D, sk, hj, idx, ctx) {
     else if (k.jenis === "pompa") { const c = cakup(k.n * A.pompa_ha); cfg.laju = A.laju_irigasi * c; cfg.kap = A.pompa_kap_mm * c; biaya = k.n * (A.pompa_modal + A.pompa_bbm_hari * 60); rinci = `${k.n * A.pompa_ha} ha terjangkau, ${Math.round(c * 100)}% sawah kawasan`; }
     else if (k.jenis === "awal") { cfg.tanam = Math.max(0, ctx.tanam - k.hari); biaya = md.sawah * A.awal_ha; rinci = `seluruh sawah kawasan`; }
     else { cfg.omc = k.persen / 100; biaya = A.omc_hari * (ctx.biayaOmcHari || A.omc_rp_hari); rinci = `${A.omc_hari} hari operasi`; }
-    const R = k.jenis === "tangki" || k.jenis === "sumur" ? dasar : jalankan(D, sk, hj, cfg, idx), m = dampak(D, R, idx);
+    const R = k.jenis === "tangki" || k.jenis === "sumur" ? dasar : jalankan(D, sk, hj, cfg, idx, ctx.norm), m = dampak(D, R, idx);
     const padiHa = Math.max(0, md.hilang - m.hilang), jw = k.jenis === "omc" ? Math.max(0, md.jiwaPuncak - m.jiwaPuncak) : jiwa;
     return {...k, padiHa, jiwa: Math.round(jw), biaya, rinci, perHa: T.perUnit(biaya, padiHa), perJiwa: T.perUnit(biaya, jw)};
   });
   return {dasar: md, kand, n: idx.length};
 }
 
-if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, hujanHarian, jalankan, dampak, fokusSel, evaluasi, pita, H, KY, GAGAL, AMBANG_JIWA};
+if (typeof module !== "undefined") module.exports = {langkah, kcPadi, fasePadi, hujanHarian, jalankan, dampak, fokusSel, evaluasi, pita, H, KY, GAGAL, AMBANG_JIWA, ANOMALI};
 
 if (typeof document !== "undefined") (() => {
 const $ = s => document.querySelector(s), fmt1 = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
@@ -149,13 +154,14 @@ let antri = false;
 function jadwal() { if (antri) return; antri = true; nanti(() => { antri = false; hitung(); }); }
 /* jalan tanpa perlakuan (A) dan Normal (N) dipakai ulang selama skenario, mulai, dan tanggal tanam sama: penggeser perlakuan hanya menjalankan satu jalan */
 const cache = new Map();
-function jalanCache(D, key, hj) { const ck = key + "|" + S.mulai + "|" + S.tanam; let r = cache.get(ck); if (!r) { r = jalankan(D, S.D.skenario[key], hj, cfgDasar()); cache.set(ck, r); if (cache.size > 10) cache.delete(cache.keys().next().value); } return r; }
+const normOf = () => { const kn = "normal" + (S.mulai === "kemarau" ? "_k" : ""), sn = S.D.skenario[kn]; return sn ? {sk: sn, hj: S.hj[kn] ||= hujanHarian(S.D, sn)} : undefined; };
+function jalanCache(D, key, hj) { const ck = key + "|" + S.mulai + "|" + S.tanam; let r = cache.get(ck); if (!r) { r = jalankan(D, S.D.skenario[key], hj, cfgDasar(), undefined, normOf()); cache.set(ck, r); if (cache.size > 10) cache.delete(cache.keys().next().value); } return r; }
 const pcOf = R => R.pct ||= Array.from(R.luas, v => v / S.D.tot * 100);
 function hitung() {
   const key = kunciSk(), sk = S.D.skenario[key]; S.hj[key] ||= hujanHarian(S.D, sk);
   const D = S.mulai === "kemarau" ? {...S.D, dr0: S.D.nol, spi: null} : S.D;   /* awal kemarau: simpanan penuh (Dr = 0), SPI hari ini tak berlaku */
   S.A = jalanCache(D, key, S.hj[key]);
-  S.B = S.pl === "none" ? S.A : jalankan(D, sk, S.hj[key], cfgPerlakuan());
+  S.B = S.pl === "none" ? S.A : jalankan(D, sk, S.hj[key], cfgPerlakuan(), undefined, normOf());
   const kn = "normal" + (S.mulai === "kemarau" ? "_k" : ""), skn = S.D.skenario[kn];   /* pembanding: Normal, tanggal mulai dan tanam sama, tanpa perlakuan */
   if (S.sk !== "normal" && skn) { S.hj[kn] ||= hujanHarian(S.D, skn); S.N = jalanCache(D, kn, S.hj[kn]); } else S.N = null;
   S.pA = pcOf(S.A); S.pB = pcOf(S.B); S.pN = S.N ? pcOf(S.N) : null; S.mxA = Math.max(...S.pA); S.mxB = Math.max(...S.pB); S.mxN = S.pN ? Math.max(...S.pN) : 0;
@@ -310,10 +316,11 @@ function terapkanAsumsi() {
 /* Kalibrasi satu pengali (porsi rentan) terhadap jiwa terdampak DIBI. Hindcast = hujan dan ET0 bulanan NASA POWER tahun nyata (hindcast.json; hanya 2015 dan 2023 ada, 2019 tidak),
    mulai 1 Juni simpanan penuh. Porsi tahun y = DIBI_y / jiwa kering puncak model (porsi 100%). Dipakai tahun terbaru ber-DIBI; tahun lain menguji (LOO dua tahun). */
 function kalibrasi() {
-  const H_ = S.hind, th = S.dibi || {}; if (!H_) return null;
+  const H_ = S.hind, th = S.dibi || {}, snk = S.D.skenario.normal_k; if (!H_ || !snk) return null;   /* pembanding anomali: Normal dengan mulai 1 Juni yang sama */
+  S.hj.normal_k ||= hujanHarian(S.D, snk); const norm = {sk: snk, hj: S.hj.normal_k};
   const D = {...S.D, dr0: S.D.nol, spi: null, rentan: S.D.lat.map(() => 1), nKering: S.As.hari_kering}, rows = [];
   for (const y of Object.keys(H_.tahun)) {
-    const sk = {int: 15, ...H_.tahun[y]}, R = jalankan(D, sk, hujanHarian(D, sk), cfgDasar()), obs = th[y] ? th[y].terdampak : 0, kej = th[y] ? th[y].kejadian : 0;
+    const sk = {int: 15, ...H_.tahun[y]}, R = jalankan(D, sk, hujanHarian(D, sk), cfgDasar(), undefined, norm), obs = th[y] ? th[y].terdampak : 0, kej = th[y] ? th[y].kejadian : 0;
     if (obs > 0) rows.push({y, model: Math.max(...R.jiwa), obs, kej, k: obs / Math.max(...R.jiwa)});
   }
   if (!rows.length) return null;
@@ -364,7 +371,7 @@ function hitungTanggap() {
   const D = S.D, key = kunciSk(), sk = D.skenario[key], Dm = S.mulai === "kemarau" ? {...D, dr0: D.nol, spi: null} : D, idx = fokusSel(D, S.sel, 1);
   S.hj[key] ||= hujanHarian(D, sk);
   const pang = S.pangkalan.length ? Tanggap.pangkalanTerdekat(D.lat[S.sel], D.lon[S.sel], S.pangkalan, S.As.pangkalan_n, S.As) : [];
-  S.ev = evaluasi(Tanggap, Dm, sk, S.hj[key], idx, {tanam: S.tanam, pangkalan: pang, biayaOmcHari: S.omcRp || undefined, asumsi: S.As}); S.ev.pang = pang; S.ev.pita = pita(Tanggap, Dm, sk, idx, {tanam: S.tanam, pangkalan: pang, biayaOmcHari: S.omcRp || undefined, asumsi: S.As});
+  S.ev = evaluasi(Tanggap, Dm, sk, S.hj[key], idx, {tanam: S.tanam, pangkalan: pang, biayaOmcHari: S.omcRp || undefined, asumsi: S.As, norm: normOf()}); S.ev.pang = pang; S.ev.pita = pita(Tanggap, Dm, sk, idx, {tanam: S.tanam, pangkalan: pang, biayaOmcHari: S.omcRp || undefined, asumsi: S.As, norm: normOf()});
   gambarFokus(); renderTanggap();
 }
 function renderTanggap() {
@@ -449,7 +456,7 @@ Dr' = Dr − hujan − irigasi + ETa      (pers. 85), dipotong ke 0 sampai TAW</
   <h4>Tutupan lahan, dampak, dan peringkat perlakuan</h4>
   <ul><li>Bawaan simulasi: sel dengan SPI-3 terendah hari ini (kekeringan_grid.json, dibatasi −3 dan tanpa sel yang lebih dari separuh tahun dasarnya tanpa hujan) di antara sel berpenduduk di atas 50.000 jiwa, dengan prakiraan ECMWF dari hari ini. Bukan sel berpenduduk terbanyak.</li>
   <li>Tutupan dari lapisan repo (scripts/kekeringan/tutupan.py): hutan = kawasan hutan KLHK dan konsesi HPH, kebun = konsesi sawit dan HTI, gambut = peta gambut. Dirasterkan ke piksel 5,6 km. <b>Luas sawah tidak ada di data terbuka mana pun di repo.</b> Sawah per sel = lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali faktor supaya jumlahnya ${f(S.D.tutupan ? Math.round(S.D.tutupan.lbs_ha / 1e5) / 10 : 0)} juta ha: ${S.D.tutupan ? esc(S.D.tutupan.lbs_dari) : ""}. Luas baku sawah per provinsi tidak bisa diunduh otomatis (BPS webapi butuh kunci, ATR/BPN tanpa unduhan terbuka); begitu data/lbs_provinsi.json ada, tiap provinsi memakai angkanya sendiri. Sebaran merata di dalam provinsi. Pakai sebagai urutan besaran dan untuk membandingkan perlakuan, bukan sebagai luas sawah sel itu.</li>
-  <li>Padi hilang = luas sawah × turunnya hasil FAO-33 (1 − ky × (1 − ΣETa/ΣETc), ky padi ${f(KY)}), puso bila turun 50% atau lebih (sama dengan padi.py). Kebun: bak kedua, Kc 0,95, p 0,65, Zr 0,9 m. Jiwa rentan krisis air = penduduk sel × porsi yang bergantung sumber air musiman (sumur gali, mata air, hujan, air permukaan), pada hari tanah acuan (Kc 1,0, tak bergantung padi) stres berat sekurangnya N hari berturut-turut; sel dengan SPI-3 teramati ≤ −1,5 dianggap sudah memenuhi N hari selama tanahnya masih stres. Porsi bawaan ${f(Math.round(S.As.porsi_rentan * 1000) / 10)}% ${S.kal && !S.airMinum ? "hasil kalibrasi ke DIBI (lihat bawah)" : "ASUMSI"} dan N = ${f(S.As.hari_kering)} hari (ASUMSI) bisa diubah di kartu Asumsi; tabel Susenas per provinsi belum ada (BPS webapi butuh kunci, tabel web tak terunduh), begitu data/air_minum.json ada porsi per provinsi dipakai. Kebutuhan air 15 liter per orang per hari (Sphere 2018). Hari krisis = hari dengan jiwa rentan sekurangnya ${f(AMBANG_JIWA)} (ASUMSI).</li>
+  <li>Padi hilang = luas sawah × turunnya hasil FAO-33 (1 − ky × (1 − ΣETa/ΣETc), ky padi ${f(KY)}), puso bila turun 50% atau lebih (sama dengan padi.py). Kebun: bak kedua, Kc 0,95, p 0,65, Zr 0,9 m. Jiwa rentan krisis air = penduduk sel × porsi yang bergantung sumber air musiman (sumur gali, mata air, hujan, air permukaan), pada hari tanah acuan (Kc 1,0, tak bergantung padi) stres berat DAN lebih kering dari tanah acuan di bawah skenario Normal sedikitnya ${f(ANOMALI)} × TAW (ASUMSI), sekurangnya N hari berturut-turut. Syarat anomali mencegah kemarau biasa dihitung krisis (aturan sebelumnya memberi 176 sampai 189 juta jiwa di tahun kering maupun normal). Sel dengan SPI-3 teramati ≤ −1,5 lolos tanpa syarat anomali selama tanahnya stres. Persentil terhadap klimatologi 1991-2025 tidak dipakai: bahan iklim hanya memuat rerata dan enam tahun tertentu, bukan sebaran harian. Porsi bawaan ${f(Math.round(S.As.porsi_rentan * 1000) / 10)}% ${S.kal && !S.airMinum ? "hasil kalibrasi ke DIBI (lihat bawah)" : "ASUMSI"} dan N = ${f(S.As.hari_kering)} hari (ASUMSI) bisa diubah di kartu Asumsi; tabel Susenas per provinsi belum ada (BPS webapi butuh kunci, tabel web tak terunduh), begitu data/air_minum.json ada porsi per provinsi dipakai. Kebutuhan air 15 liter per orang per hari (Sphere 2018). Hari krisis = hari dengan jiwa rentan sekurangnya ${f(AMBANG_JIWA)} (ASUMSI).</li>
   <li>Kawasan dampak dan peringkat: sel dalam ±1° dari sel pilihan. Tiap kandidat dijalankan lewat bak yang sama, manfaat = selisih terhadap tanpa perlakuan.</li>
   <li>Truk tangki: kecepatan ${f(S.As.laju_kmj)} km/jam dan jarak tujuan minimal ${f(S.As.jarak_dalam_sel_km)} km (keduanya ASUMSI, ubah di kartu Asumsi); pangkalan = tiga kantor BPBD kabupaten terdekat (posko_kekeringan.json, hanya yang terdata); waktu tempuh dari jarak lurus × 1,4 ÷ 40 km/jam seperti posko.py, bukan jaringan jalan; satu putaran = pergi, pulang, 1 jam isi dan bongkar; kerja 10 jam; tangki 5.000 liter. Jumlah truk adalah pengandaian, bukan data armada BPBD. Sumur bor 2 liter/detik, 12 jam/hari, untuk air bersih. Pompanisasi 10 ha per pompa, 6 mm/hari, sumber 150 mm (sungai atau embung terbatas).</li>
   <li>Biaya: sewa truk Rp1,5 jt/hari, sumur bor Rp200 jt/titik, pompa Rp30 jt + BBM Rp300 rb/hari, tanam awal Rp400 rb/ha, hujan buatan 5 hari × Rp220 jt (keputusan.json, Kemenhut 2026). Selain hujan buatan semuanya asumsi perencanaan, belum harga resmi.</li>
